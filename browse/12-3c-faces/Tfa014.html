@@ -28,7 +28,7 @@
 <li>09-healing-menus H049/H077/H094</li>
 </ul></section>
 <section><h2>Description</h2>
-<p>An `ADVANCED_FACE` whose total area is below a user-configured small-face threshold but is not strictly a spot / strip / pin / sliver. Typical shape: a square face on a `PLANE` of size 0.05 × 0.05 mm (≈2.5e-3 mm²) — small enough for downstream meshers/healers to drop. Common in meshing prep where the user wants to drop sub-feature-size faces.</p></section>
+<p>An `ADVANCED_FACE` whose total area is below a user-configured small-face threshold but is not strictly a spot / strip / pin / sliver. Typical shape: a square face on a `PLANE` of size 0.05 × 0.05 mm (≈2.5e-3 mm²); small enough for downstream meshers/healers to drop. Common in meshing prep where the user wants to drop sub-feature-size faces.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>Boolean fragment leaving a fingernail-sized residual face on an otherwise large solid.</p></section>
 <section><h2>Expected kernel behavior</h2>

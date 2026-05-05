@@ -29,7 +29,7 @@
 <li>Mantis 0030362)</li>
 </ul></section>
 <section><h2>Description</h2>
-<p>Writing dimensions in inches produces STEP files with invalid cross-references between dimension entities. Common signature: two separate `CONVERSION_BASED_UNIT(&#x27;INCH&#x27;, ..)` instances (different `#NNN` ids) both defined with the same conversion factor 25.4, with different `LENGTH_MEASURE_WITH_UNIT` records pointing at one or the other — duplicate unit definitions reused inconsistently across multiple measures.</p></section>
+<p>Writing dimensions in inches produces STEP files with invalid cross-references between dimension entities. Common signature: two separate `CONVERSION_BASED_UNIT(&#x27;INCH&#x27;, ..)` instances (different `#NNN` ids) both defined with the same conversion factor 25.4, with different `LENGTH_MEASURE_WITH_UNIT` records pointing at one or the other; duplicate unit definitions reused inconsistently across multiple measures.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>XCAF document with dimensions in inch units; export to STEP.</p></section>
 <section><h2>Expected kernel behavior</h2>

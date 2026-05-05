@@ -29,7 +29,7 @@
 <li>OCCT MANTIS#0026627 (OCCT MANTIS tracker 502 as of 2026-05-02)</li>
 </ul></section>
 <section><h2>Description</h2>
-<p>An XCAF document is built from a large STEP file with a deep assembly tree. The XCAF builder iterates assembly nodes recursively; for an N-level tree with M instances per level, it visits every instance N times — exponential. Apparent hang on files with deep assemblies.</p></section>
+<p>An XCAF document is built from a large STEP file with a deep assembly tree. The XCAF builder iterates assembly nodes recursively; for an N-level tree with M instances per level, it visits every instance N times; exponential. Apparent hang on files with deep assemblies.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>STEP file with 8-level deep assembly, 10 instances per level (10⁸ visits). Build XCAF tree.</p></section>
 <section><h2>Expected kernel behavior</h2>

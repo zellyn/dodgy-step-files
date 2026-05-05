@@ -30,11 +30,11 @@
 <section><h2>Sender</h2>
 <p>Server-side / sandboxed pipelines that hand the kernel a `std::istream` or memory buffer rather than a filesystem path.</p></section>
 <section><h2>Description</h2>
-<p>The STEP reader&#x27;s public API takes a filesystem path and internally `fopen`s it. A consumer that has the STEP content in memory (downloaded from object storage, unzipped from a `.stpz` wrapper, or read from a pipe) is forced to spill it to a temporary file first — which fails on read-only / chrooted hosts and adds I/O cost. The bug class is &quot;API expects path; offers no stream entry point&quot;, and the on-disk file content is well-formed; the defect is in the reader&#x27;s I/O contract.</p></section>
+<p>The STEP reader&#x27;s public API takes a filesystem path and internally `fopen`s it. A consumer that has the STEP content in memory (downloaded from object storage, unzipped from a `.stpz` wrapper, or read from a pipe) is forced to spill it to a temporary file first; which fails on read-only / chrooted hosts and adds I/O cost. The bug class is &quot;API expects path; offers no stream entry point&quot;, and the on-disk file content is well-formed; the defect is in the reader&#x27;s I/O contract.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>well-formed minimal STEP file (10-line cube). The catalog entry documents that consumers must spill to disk because the reader has no `Read(std::istream&amp;)` overload.</p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal-and-accept — provide an `istream`-based read entry point; never require a seekable filesystem path. Document that producers may call the stream-based API directly.</p></section>
+<p>heal-and-accept; provide an `istream`-based read entry point; never require a seekable filesystem path. Document that producers may call the stream-based API directly.</p></section>
 <section><h2>Notes</h2>
 <p>**See also**: Pf022. Synonyms: &quot;STEP reader requires file path&quot;, &quot;no in-memory STEP import&quot;, &quot;cannot read STEP from std::istream&quot;, &quot;API needs filesystem path&quot;.</p></section>
 <section><h2>Expected validation</h2>

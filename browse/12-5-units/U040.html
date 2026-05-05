@@ -30,21 +30,20 @@
 <section><h2>Sender</h2>
 <p>deduced — exporters that emit pressure as a fully-decomposed SI derived unit rather than a CONVERSION_BASED_UNIT(&#x27;Pa&#x27;,..) shorthand</p></section>
 <section><h2>Description</h2>
-<p>Pascal (Pa) is dimensionally `kg·m^(-1)·s^(-2)`. A producer that emits pressure as a `DERIVED_UNIT` composed of three `DERIVED_UNIT_ELEMENT` entries (mass at exponent +1, length at exponent -1, time at exponent -2) is spec-conforming but stresses receivers that pattern-match on a single named pressure unit. Defects: an element exponent is wrong (mass at exponent +2 instead of +1); the element ordering differs across files (some receivers&#x27; lookup is order-sensitive); the underlying base units mix SI prefixes inconsistently (mass in `kg`, length in `mm` — pressure becomes `kg·mm^(-1)·s^(-2)`, off by 1000× from `kg·m^(-1)·s^(-2)`). Bug-reporter language: &quot;STEP pressure unit not recognised&quot;, &quot;Pa from derived units&quot;, &quot;validation property pressure 1000x wrong&quot;.</p></section>
+<p>Pascal (Pa) is dimensionally `kg·m^(-1)·s^(-2)`. A producer that emits pressure as a `DERIVED_UNIT` composed of three `DERIVED_UNIT_ELEMENT` entries (mass at exponent +1, length at exponent -1, time at exponent -2) is spec-conforming but stresses receivers that pattern-match on a single named pressure unit. Defects: an element exponent is wrong (mass at exponent +2 instead of +1); the element ordering differs across files (some receivers&#x27; lookup is order-sensitive); the underlying base units mix SI prefixes inconsistently (mass in `kg`, length in `mm`; pressure becomes `kg·mm^(-1)·s^(-2)`, off by 1000× from `kg·m^(-1)·s^(-2)`). Bug-reporter language: &quot;STEP pressure unit not recognised&quot;, &quot;Pa from derived units&quot;, &quot;validation property pressure 1000x wrong&quot;.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>`#1=DERIVED_UNIT_ELEMENT(#mass_unit,1.0)`, `#2=DERIVED_UNIT_ELEMENT(#length_unit,-1.0)`, `#3=DERIVED_UNIT_ELEMENT(#time_unit,-2.0)`, `#4=DERIVED_UNIT((#1,#2,#3))`. Variant fixture: length unit is millimetre (`MILLI METRE`), mass unit is kilogram, time unit is second — the composed unit is 1000× off from Pa.</p></section>
 <section><h2>Expected kernel behavior</h2>
 <p>Heal and accept: detect / normalize the dimensional signature of pressure (mass^1 length^-1 time^-2) and bind to a Pa context regardless of element order; coerce SI prefix mismatches deterministically; warn when the composition does not reduce to a recognised SI unit.</p></section>
 <section><h2>Notes</h2>
-<p>First entry exercising multi-element DERIVED_UNIT composition. **See also**: U021, U026. Synonyms: &quot;STEP pressure Pa garbled&quot;, &quot;Pa unit not recognised from derived chain&quot;, &quot;DERIVED_UNIT pressure 1000x wrong&quot;, &quot;validation pressure derived unit&quot;, &quot;Pa from kg.m^-1.s^-2 not bound&quot;.</p></section>
+<p>First entry exercising multi-element DERIVED_UNIT composition. **See also**: U021, U026, U041. Synonyms: &quot;STEP pressure Pa garbled&quot;, &quot;Pa unit not recognised from derived chain&quot;, &quot;DERIVED_UNIT pressure 1000x wrong&quot;, &quot;validation pressure derived unit&quot;, &quot;Pa from kg.m^-1.s^-2 not bound&quot;.- **Byte assertion**: contains(b&#x27;DERIVED_UNIT_ELEMENT&#x27;) and contains(b&#x27;DERIVED_UNIT(&#x27;)</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">
-<li><code>contains(b&#x27;DERIVED_UNIT_ELEMENT&#x27;) and contains(b&#x27;DERIVED_UNIT(&#x27;)</code></li>
 <li><code>count(b&#x27;DERIVED_UNIT_ELEMENT&#x27;) &gt;= 3</code></li>
 </ul></section>
 <section><h2>Cross-references</h2>
-<p><a href="U021.html">U021</a>, <a href="U026.html">U026</a></p>
+<p><a href="U021.html">U021</a>, <a href="U026.html">U026</a>, <a href="U041.html">U041</a></p>
 </section>
 <section><h2>Live oracle output</h2>
 <table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>

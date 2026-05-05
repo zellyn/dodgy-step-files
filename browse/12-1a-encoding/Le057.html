@@ -32,13 +32,13 @@
 <section><h2>Sender</h2>
 <p>deduced — producers that hand-format Part-21 for human readability, post-process with text editors, or round-trip through tools that auto-insert blank lines (some VCS line-ending normalisers, some pretty-printers)</p></section>
 <section><h2>Description</h2>
-<p>ISO 10303-21 §6.2 allows arbitrary whitespace (including newlines) between records — the record terminator is the `;`, and what follows is lexically free until the next record&#x27;s leading token. A producer that emits each record on its own line plus a trailing blank line (`..);\n\n`) is technically conformant but stresses streaming tokenisers that special-case `;\n` as a &quot;next record starts here&quot; boundary. Mixing `;\n` and `;\n\n` and `; #NEXT=` (no separator) within the same DATA section is non-canonical: a strict tokeniser that picks one form may mis-frame the others. Bug-reporter language: &quot;STEP file has blank lines between records&quot;, &quot;extra newlines confuse parser&quot;, &quot;EOR formatting inconsistent across DATA section&quot;.</p></section>
+<p>ISO 10303-21 §6.2 allows arbitrary whitespace (including newlines) between records; the record terminator is the `;`, and what follows is lexically free until the next record&#x27;s leading token. A producer that emits each record on its own line plus a trailing blank line (`..);\n\n`) is technically conformant but stresses streaming tokenisers that special-case `;\n` as a &quot;next record starts here&quot; boundary. Mixing `;\n` and `;\n\n` and `; #NEXT=` (no separator) within the same DATA section is non-canonical: a strict tokeniser that picks one form may mis-frame the others. Bug-reporter language: &quot;STEP file has blank lines between records&quot;, &quot;extra newlines confuse parser&quot;, &quot;EOR formatting inconsistent across DATA section&quot;.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>a DATA section where some records end with `;\n` and the next begins immediately, others end with `;\n\n` (blank line between), and one record runs `;` followed by another record on the same line `;#11=..`. All three are spec-conformant; the inconsistency is the defect.</p></section>
 <section><h2>Expected kernel behavior</h2>
 <p>tokenise on `;` alone; treat all whitespace (including blank lines) between records as ignorable. Never reject a file for inter-record whitespace variation.</p></section>
 <section><h2>Notes</h2>
-<p>Sibling of Le056 (Part 1 — different EOR variant). **See also**: Le054, Le056, Le058. Synonyms: &quot;blank lines in STEP DATA&quot;, &quot;non-canonical record separator&quot;, &quot;mixed EOR whitespace&quot;.</p></section>
+<p>Sibling of Le056 (Part 1, different EOR variant). **See also**: Le054, Le056, Le058. Synonyms: &quot;blank lines in STEP DATA&quot;, &quot;non-canonical record separator&quot;, &quot;mixed EOR whitespace&quot;.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">

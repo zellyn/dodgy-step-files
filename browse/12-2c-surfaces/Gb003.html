@@ -27,15 +27,15 @@
 <li>OCCT GeomLib_CheckBSplineCurve (uncovered class evidence)</li>
 </ul></section>
 <section><h2>Sender</h2>
-<p>deduced — OCCT uncovered-class sweep, Pass C</p></section>
+<p>deduced — OCCT uncovered-class sweep</p></section>
 <section><h2>Description</h2>
-<p>A `B_SPLINE_CURVE_WITH_KNOTS` declares `closed = .T.` and the first/last control points coincide, but the start and end tangents differ in sign — meaning the curve closes positionally but the tangent has a sharp reversal at the closure point (a cusp). Bug-reporter language: &quot;closed B-spline has cusp&quot;, &quot;closure tangent reversed&quot;, &quot;C0 closure but no C1&quot;.</p></section>
+<p>A `B_SPLINE_CURVE_WITH_KNOTS` declares `closed = .T.` and the first/last control points coincide, but the start and end tangents differ in sign; meaning the curve closes positionally but the tangent has a sharp reversal at the closure point (a cusp). Bug-reporter language: &quot;closed B-spline has cusp&quot;, &quot;closure tangent reversed&quot;, &quot;C0 closure but no C1&quot;.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>A degree-3 B-spline with knot vector `(0,0,0,0,1,1,1,1)` and control points (1,0,0), (0,1,0), (-1,0,0), (0,-1,0), (1,0,0). Marked closed; tangents at start vs end are perpendicular but the file claims smooth closure.</p></section>
 <section><h2>Expected kernel behavior</h2>
 <p>Reject the smooth-closure claim; or open the curve at the cusp.</p></section>
 <section><h2>Notes</h2>
-<p>Bug-reporter synonyms: &quot;B-spline cusp at closure&quot;, &quot;tangent jump at periodicity&quot;. Bytes alone are insufficient to demonstrate this defect — needs sibling input fixture. Tagged provenance_tier: runtime-only. **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog&#x27;s allowed set ({heal, reject}). Kernel-bug witnessed: catalog allows either heal or reject; OCC silently accepts the bad input without doing either. Synonyms: &quot;B-spline cusp at closure&quot;, &quot;tangent jump at periodicity&quot;, &quot;closed B-spline has reversed end-tangent&quot;, &quot;closure tangent reversed&quot;, &quot;C0 closure but no C1 on closed BSpline&quot;.</p></section>
+<p>Bug-reporter synonyms: &quot;B-spline cusp at closure&quot;, &quot;tangent jump at periodicity&quot;. Bytes alone are insufficient to demonstrate this defect; needs sibling input fixture. Tagged provenance_tier: runtime-only. **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog&#x27;s allowed set ({heal, reject}). Kernel-bug witnessed: catalog allows either heal or reject; OCC silently accepts the bad input without doing either. Synonyms: &quot;B-spline cusp at closure&quot;, &quot;tangent jump at periodicity&quot;, &quot;closed B-spline has reversed end-tangent&quot;, &quot;closure tangent reversed&quot;, &quot;C0 closure but no C1 on closed BSpline&quot;.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">

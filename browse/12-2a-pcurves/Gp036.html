@@ -27,7 +27,7 @@
 <li>OCCT MANTIS#0028595 (OCCT MANTIS tracker 502 as of 2026-05-02)</li>
 </ul></section>
 <section><h2>Description</h2>
-<p>A 2D-curve-shift routine intended for periodic surfaces is invoked on a planar (non-periodic) surface. The routine shifts the pcurve by the surface&#x27;s &quot;period&quot; — but on a non-periodic surface the period is undefined, returning zero or NaN. The pcurve becomes invalid.</p></section>
+<p>A 2D-curve-shift routine intended for periodic surfaces is invoked on a planar (non-periodic) surface. The routine shifts the pcurve by the surface&#x27;s &quot;period&quot;; but on a non-periodic surface the period is undefined, returning zero or NaN. The pcurve becomes invalid.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>Planar face with a wire whose pcurves were emitted with U values outside the face&#x27;s parametric range. Healer applies a shift; on planar surface the shift is degenerate.</p></section>
 <section><h2>Expected kernel behavior</h2>

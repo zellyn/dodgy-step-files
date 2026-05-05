@@ -27,9 +27,9 @@
 <li>OCCT BRepOffset_Status.Reversed (uncovered class evidence)</li>
 </ul></section>
 <section><h2>Sender</h2>
-<p>deduced — OCCT uncovered-class sweep, Pass C</p></section>
+<p>deduced — OCCT uncovered-class sweep</p></section>
 <section><h2>Description</h2>
-<p>A cylindrical face of radius R is offset inward by R + δ (δ &gt; 0). The offset surface is on the opposite side of the axis from the original — the face has effectively been turned inside out. Bug-reporter language: &quot;offset reversed&quot;, &quot;offset inside-out&quot;, &quot;offset distance &gt; radius&quot;.</p></section>
+<p>A cylindrical face of radius R is offset inward by R + δ (δ &gt; 0). The offset surface is on the opposite side of the axis from the original; the face has been turned inside out.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>A cylinder of radius 5 mm. Request inward offset of 6 mm.</p></section>
 <section><h2>Expected kernel behavior</h2>

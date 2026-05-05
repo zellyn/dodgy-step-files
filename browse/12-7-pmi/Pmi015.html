@@ -33,14 +33,16 @@
 <section><h2>Expected kernel behavior</h2>
 <p>Heal and accept: coerce any plane parallel to the annotation_plane within `representation_context` tolerance; do not require strict on-plane coincidence.</p></section>
 <section><h2>Notes</h2>
-<p>Synonyms: &quot;annotation geometry slightly offset from annotation_plane&quot;, &quot;PMI text not exactly in declared plane&quot;, &quot;small-offset PMI parallelism violation&quot;.</p></section>
+<p>**See also**: Pmi047. Synonyms: &quot;annotation geometry slightly offset from annotation_plane&quot;, &quot;PMI text not exactly in declared plane&quot;, &quot;small-offset PMI parallelism violation&quot;.- **Byte assertion**: contains(b&#x27;ANNOTATION_CURVE_OCCURRENCE&#x27;)</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">
-<li><code>contains(b&#x27;ANNOTATION_CURVE_OCCURRENCE&#x27;)</code></li>
 <li><code>contains(b&#x27;ANNOTATION_PLANE&#x27;)</code></li>
 <li><code>contains(b&#x27;POLYLINE&#x27;)</code></li>
 </ul></section>
+<section><h2>Cross-references</h2>
+<p><a href="Pmi047.html">Pmi047</a></p>
+</section>
 <section><h2>Live oracle output</h2>
 <table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
 <tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
@@ -103,7 +105,7 @@
 <span class="lineno">46</span>#42 = CARTESIAN_POINT(&#x27;q3&#x27;,(10.0,5.0,0.05));
 <span class="lineno">47</span>#43 = <mark>POLYLINE</mark>(&#x27;annot_curve&#x27;,(#40,#41,#42));
 <span class="lineno">48</span>#44 = NULL_STYLE(.NULL.);
-<span class="lineno">49</span>#45 = <mark>ANNOTATION_CURVE_OCCURRENCE</mark>(&#x27;annot_occ&#x27;,(#44),#43);
+<span class="lineno">49</span>#45 = ANNOTATION_CURVE_OCCURRENCE(&#x27;annot_occ&#x27;,(#44),#43);
 <span class="lineno">50</span>#50 = DRAUGHTING_MODEL(&#x27;Default&#x27;,(#45),#25);
 <span class="lineno">51</span>#60 = SHAPE_REPRESENTATION(&#x27;&#x27;,(#33),#25);
 <span class="lineno">52</span>#61 = SHAPE_DEFINITION_REPRESENTATION(#17,#60);

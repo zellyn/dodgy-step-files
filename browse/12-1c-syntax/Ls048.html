@@ -33,7 +33,7 @@
 <section><h2>Expected kernel behavior</h2>
 <p>Reject the record (or accept-with-warning and synthesise the missing ancestor); never silently bind to an arbitrary subset of the type lattice.</p></section>
 <section><h2>Notes</h2>
-<p>**See also**: Ls010, Ls047. **OCC behavior**: silently accepts (no diagnostic, empty result); catalog disallows silent-accept. Kernel-bug witnessed: receivers enforcing the spec must reject (or surface a diagnostic) — silent acceptance defeats the catalog&#x27;s stated invariant. Synonyms: &quot;complex entity ancestor leaf omitted&quot;, &quot;NAMED_UNIT missing from complex unit record&quot;, &quot;STEP multi-inheritance ancestor missing&quot;, &quot;incomplete leaf chain in complex entity&quot;, &quot;leaf elision in complex record&quot;.</p></section>
+<p>**See also**: Ls010, Ls047. **OCC behavior**: silently accepts (no diagnostic, empty result); catalog disallows silent-accept. Kernel-bug witnessed: receivers enforcing the spec must reject (or surface a diagnostic); silent acceptance defeats the catalog&#x27;s stated invariant. Synonyms: &quot;complex entity ancestor leaf omitted&quot;, &quot;NAMED_UNIT missing from complex unit record&quot;, &quot;STEP multi-inheritance ancestor missing&quot;, &quot;incomplete leaf chain in complex entity&quot;, &quot;leaf elision in complex record&quot;.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">

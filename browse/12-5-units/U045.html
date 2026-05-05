@@ -34,7 +34,7 @@
 <section><h2>Reproducer recipe</h2>
 <p>`#100=CARTESIAN_TRANSFORMATION_OPERATOR_3D(&#x27;inch_to_mm&#x27;, #11, #12, #10, 25.4, #13);` referenced as a transformation between two `REPRESENTATION_RELATIONSHIP_WITH_TRANSFORMATION` representations. step-g loads but does not apply `scale`.</p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal-and-accept — `LoadONBrep` must build a uniform-scale `ON_Xform` from the parsed `scale` value; emit `W_OPERATOR_SCALE_APPLIED` diagnostic recording the factor.</p></section>
+<p>heal-and-accept; `LoadONBrep` must build a uniform-scale `ON_Xform` from the parsed `scale` value; emit `W_OPERATOR_SCALE_APPLIED` diagnostic recording the factor.</p></section>
 <section><h2>Notes</h2>
 <p>**See also**: U015, Wr050, M061. Synonyms: &quot;CartesianTransformationOperator scale parsed but ignored&quot;, &quot;STEP scale operator does nothing on import&quot;, &quot;step-g LoadONBrep stub for transformation operator&quot;, &quot;uniform scale 25.4 dropped by reader&quot;, &quot;BRL-CAD subassembly arrives unit scale despite operator scale&quot;.</p></section>
 <section><h2>Expected validation</h2>

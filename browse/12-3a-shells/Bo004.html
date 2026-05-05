@@ -26,7 +26,7 @@
 <li>OCCT BRepCheck_Solid.cxx EnclosedRegion branch (uncovered class evidence)</li>
 </ul></section>
 <section><h2>Sender</h2>
-<p>deduced — OCCT uncovered-class sweep, Pass C</p></section>
+<p>deduced — OCCT uncovered-class sweep</p></section>
 <section><h2>Description</h2>
 <p>The outer `CLOSED_SHELL` of a solid has topological genus ≥ 1 — it bounds one or more interior cavities — yet the `MANIFOLD_SOLID_BREP` carries no `BREP_WITH_VOIDS` wrapper to describe those cavities. The kernel observes that point-in-solid classification disagrees with the user&#x27;s intent: regions inside the cavity look &quot;solid&quot; rather than &quot;void&quot;. Bug-reporter language: &quot;interior cavity not described&quot;, &quot;hidden hole inside solid&quot;.</p></section>
 <section><h2>Reproducer recipe</h2>
@@ -34,7 +34,7 @@
 <section><h2>Expected kernel behavior</h2>
 <p>Heal by promoting the solid to `BREP_WITH_VOIDS`, synthesizing inner shells from the disconnected components of the outer shell&#x27;s complement; or reject with a diagnostic that the solid encloses an undescribed region.</p></section>
 <section><h2>Notes</h2>
-<p>This is the &quot;EnclosedRegion&quot; branch — distinct from a leaky shell (Tsh007). Synonyms: &quot;interior cavity not described&quot;, &quot;hidden hole inside solid&quot;, &quot;torus-like solid missing void wrapper&quot;, &quot;solid genus mismatch&quot;, &quot;internal hollow not flagged as void&quot;.</p></section>
+<p>This is the &quot;EnclosedRegion&quot; branch; distinct from a leaky shell (Tsh007). Synonyms: &quot;interior cavity not described&quot;, &quot;hidden hole inside solid&quot;, &quot;torus-like solid missing void wrapper&quot;, &quot;solid genus mismatch&quot;, &quot;internal hollow not flagged as void&quot;.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(53) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

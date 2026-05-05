@@ -26,7 +26,7 @@
 <li>synthesized time-bomb.</li>
 </ul></section>
 <section><h2>Description</h2>
-<p>Two `ADVANCED_FACE`s (planar, parallel, same outline) are separated by exactly 1.0e-6 mm — equal to the declared tolerance. A kernel comparing strict `&lt;` keeps them as separate faces (a thin slab). A kernel comparing `&lt;=` merges them and the slab disappears, leaving a single face. Both interpretations are mathematically reasonable but produce different geometry.</p></section>
+<p>Two `ADVANCED_FACE`s (planar, parallel, same outline) are separated by exactly 1.0e-6 mm; equal to the declared tolerance. A kernel comparing strict `&lt;` keeps them as separate faces (a thin slab). A kernel comparing `&lt;=` merges them and the slab disappears, leaving a single face. Both interpretations are mathematically reasonable but produce different geometry.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>Two coplanar `ADVANCED_FACE`s on parallel `PLANE`s offset by 1.0e-6 mm; declared uncertainty 1.0e-6 mm. Wrap in PRODUCT chain.</p></section>
 <section><h2>Expected kernel behavior</h2>

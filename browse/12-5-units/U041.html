@@ -36,7 +36,7 @@
 <section><h2>Expected kernel behavior</h2>
 <p>detect the dimensional signature of dynamic viscosity (mass^1 length^-1 time^-1) and bind to a Pa·s context; never silently flatten time exponent and produce Pa.</p></section>
 <section><h2>Notes</h2>
-<p>**See also**: U040. **OCC behavior**: silently accepts (no diagnostic, empty result); catalog disallows silent-accept. Kernel-bug witnessed: receivers enforcing the spec must reject (or surface a diagnostic) — silent acceptance defeats the catalog&#x27;s stated invariant. Synonyms: &quot;STEP viscosity unit not recognised&quot;, &quot;Pa.s read as Pa&quot;, &quot;dynamic viscosity derived chain unsupported&quot;, &quot;STEP material viscosity wrong unit&quot;, &quot;viscosity flattened to pressure&quot;.</p></section>
+<p>**See also**: U040. **OCC behavior**: silently accepts (no diagnostic, empty result); catalog disallows silent-accept. Kernel-bug witnessed: receivers enforcing the spec must reject (or surface a diagnostic); silent acceptance defeats the catalog&#x27;s stated invariant. Synonyms: &quot;STEP viscosity unit not recognised&quot;, &quot;Pa.s read as Pa&quot;, &quot;dynamic viscosity derived chain unsupported&quot;, &quot;STEP material viscosity wrong unit&quot;, &quot;viscosity flattened to pressure&quot;.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">

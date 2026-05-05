@@ -31,7 +31,7 @@
 <section><h2>Sender</h2>
 <p>Writers that insert a timestamp or random suffix into entity numbering</p></section>
 <section><h2>Description</h2>
-<p>A round-trip (read STEP → no-op → write STEP) produces a file that differs from the input not in geometry but in the choice of `#N` numbering — every export uses different numbers. This breaks regression tests that compare files for equivalence by hash. Bug-reporter language: &quot;STEP files differ after no-op round-trip&quot;, &quot;file hashes change every export&quot;, &quot;diff is just renumbering&quot;.</p></section>
+<p>A round-trip (read STEP → no-op → write STEP) produces a file that differs from the input not in geometry but in the choice of `#N` numbering; every export uses different numbers. This breaks regression tests that compare files for equivalence by hash. Bug-reporter language: &quot;STEP files differ after no-op round-trip&quot;, &quot;file hashes change every export&quot;, &quot;diff is just renumbering&quot;.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>a file with deliberately non-canonical numbering (`#42, #17, #99, #1`) to demonstrate the post-pathology state.</p></section>
 <section><h2>Expected kernel behavior</h2>

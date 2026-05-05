@@ -27,15 +27,15 @@
 <li>OCCT BRepOffset_MakeOffset.cxx:4416, 4427 (BadNormalsOnGeometry) (uncovered class evidence)</li>
 </ul></section>
 <section><h2>Sender</h2>
-<p>deduced — OCCT uncovered-class sweep, Pass C</p></section>
+<p>deduced — OCCT uncovered-class sweep</p></section>
 <section><h2>Description</h2>
-<p>A face on a periodic surface (e.g., `CYLINDRICAL_SURFACE`) is supplied with `same_sense = .F.` so the face normal contradicts the surface&#x27;s natural normal direction. An offset request then has no consistent direction to push. Bug-reporter language: &quot;offset bad normals&quot;, &quot;face normal flipped before offset&quot;, &quot;offset cannot start — normal direction unclear&quot;.</p></section>
+<p>A face on a periodic surface (e.g., `CYLINDRICAL_SURFACE`) is supplied with `same_sense = .F.`, so the face normal contradicts the surface&#x27;s natural normal direction. An offset request then has no consistent direction to push.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>An `ADVANCED_FACE` on a cylindrical surface with `same_sense = .F.`. Submit the face for an outward offset.</p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>Recompute normals; or reject with diagnostic naming the offending face.</p></section>
+<p>Recompute normals, or reject with a diagnostic naming the offending face.</p></section>
 <section><h2>Notes</h2>
-<p>Synonyms: &quot;offset normal flip&quot;, &quot;face sense fights surface&quot;, &quot;offset bad normals&quot;, &quot;face normal flipped before offset&quot;, &quot;same_sense=F breaks offset&quot;.</p></section>
+<p>Synonyms: &quot;offset normal flip&quot;, &quot;face sense fights surface&quot;, &quot;offset bad normals&quot;, &quot;face normal flipped before offset&quot;, &quot;same_sense=F breaks offset&quot;, &quot;offset cannot start, normal direction unclear&quot;.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(3) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

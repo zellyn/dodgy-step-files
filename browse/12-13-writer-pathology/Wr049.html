@@ -30,7 +30,7 @@
 <section><h2>Sender</h2>
 <p>FreeCAD PartDesign subtractive-pipe feature with rounded-corner transition between segments.</p></section>
 <section><h2>Description</h2>
-<p>A subtractive-pipe (PartDesign-style sweep used for material removal) along a path with 90° or greater bends with rounded corner transitions emits the corner-fill sphere as part of the additive-result solid in the STEP file, even though the source kernel correctly hides it during display. On re-import the geometry shows a solid sphere occupying the would-be-hollow joint region. The on-disk symptom is a stray closed sub-shell whose centre coincides with the bend pivot point and whose radius equals the pipe radius — a sub-shell that should have been Boolean-subtracted before emission.</p></section>
+<p>A subtractive-pipe (PartDesign-style sweep used for material removal) along a path with 90° or greater bends with rounded corner transitions emits the corner-fill sphere as part of the additive-result solid in the STEP file, even though the source kernel correctly hides it during display. On re-import the geometry shows a solid sphere occupying the would-be-hollow joint region. The on-disk symptom is a stray closed sub-shell whose centre coincides with the bend pivot point and whose radius equals the pipe radius; a sub-shell that should have been Boolean-subtracted before emission.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>STEP file with a `SHELL_BASED_SURFACE_MODEL` containing two cylindrical sub-shells joined at a right angle, plus an extra closed `SPHERICAL_SURFACE`-bounded sub-shell at the joint pivot — the sphere is the residual that should have been hidden.</p></section>
 <section><h2>Expected kernel behavior</h2>

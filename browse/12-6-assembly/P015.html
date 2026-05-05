@@ -28,7 +28,7 @@
 <section><h2>Sender</h2>
 <p>FreeCAD (PartDesign with SubShapeBinder offsets)</p></section>
 <section><h2>Description</h2>
-<p>A solid that is closed in the producer is wrapped as `MANIFOLD_SOLID_BREP` but at least one edge appears only once across the shell, or one face&#x27;s `FACE_OUTER_BOUND` orientation is inverted — so the result is not actually manifold. Re-import yields zero solids; STL still works because tessellation ignores topology.</p></section>
+<p>A solid that is closed in the producer is wrapped as `MANIFOLD_SOLID_BREP` but at least one edge appears only once across the shell, or one face&#x27;s `FACE_OUTER_BOUND` orientation is inverted; so the result is not actually manifold. Re-import yields zero solids; STL still works because tessellation ignores topology.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>STEP file with all faces individually valid but at least one edge appearing only once; or one face with inverted outer-bound orientation. Optionally drop `MANIFOLD_SOLID_BREP` wrapper and emit only `SHELL_BASED_SURFACE_MODEL`.</p></section>
 <section><h2>Expected kernel behavior</h2>

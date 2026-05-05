@@ -33,14 +33,16 @@
 <section><h2>Expected kernel behavior</h2>
 <p>Warn; reject the annotation.</p></section>
 <section><h2>Notes</h2>
-<p>Synonyms: &quot;annotation has no annotation_plane&quot;, &quot;PMI text without associated plane&quot;, &quot;annotation_plane reference missing&quot;.</p></section>
+<p>**See also**: Pmi014, Pmi015. Synonyms: &quot;annotation has no annotation_plane&quot;, &quot;PMI text without associated plane&quot;, &quot;annotation_plane reference missing&quot;.- **Byte assertion**: contains(b&#x27;ANNOTATION_CURVE_OCCURRENCE&#x27;)</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">
-<li><code>contains(b&#x27;ANNOTATION_CURVE_OCCURRENCE&#x27;)</code></li>
 <li><code>contains(b&#x27;PRESENTATION_STYLE_ASSIGNMENT&#x27;)</code></li>
 <li><code>count_entity_def(b&#x27;ANNOTATION_PLANE&#x27;) == 1</code></li>
 </ul></section>
+<section><h2>Cross-references</h2>
+<p><a href="Pmi014.html">Pmi014</a>, <a href="Pmi015.html">Pmi015</a></p>
+</section>
 <section><h2>Live oracle output</h2>
 <table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
 <tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
@@ -56,7 +58,7 @@
 <details>
 <summary>Show fixture bytes (with defect highlighting)</summary>
 <pre class="fixture-bytes"><span class="lineno">1</span>/* Pmi047 - Annotation has no annotation_plane
-<span class="lineno">2</span>   Defect: A graphic PMI <mark>ANNOTATION_CURVE_OCCURRENCE</mark> is not referenced by
+<span class="lineno">2</span>   Defect: A graphic PMI ANNOTATION_CURVE_OCCURRENCE is not referenced by
 <span class="lineno">3</span>   any ANNOTATION_PLANE.elements list. Without an annotation plane the
 <span class="lineno">4</span>   placement is ambiguous - readers cannot determine the 2D plane in
 <span class="lineno">5</span>   which the leader and text live. NIST SFA S027. Receivers should
@@ -100,7 +102,7 @@
 <span class="lineno">43</span>#51 = DRAUGHTING_PRE_DEFINED_CURVE_FONT(&#x27;continuous&#x27;);
 <span class="lineno">44</span>#52 = COLOUR_RGB(&#x27;&#x27;,0.0,0.0,0.0);
 <span class="lineno">45</span>#53 = <mark>PRESENTATION_STYLE_ASSIGNMENT</mark>((#50));
-<span class="lineno">46</span>#60 = <mark>ANNOTATION_CURVE_OCCURRENCE</mark>(&#x27;orphan_annotation&#x27;,(#53),#43);
+<span class="lineno">46</span>#60 = ANNOTATION_CURVE_OCCURRENCE(&#x27;orphan_annotation&#x27;,(#53),#43);
 <span class="lineno">47</span>/* Defect: no ANNOTATION_PLANE references #60.
 <span class="lineno">48</span>   The single annotation plane below has an empty elements list. */
 <span class="lineno">49</span>#70 = PLANE(&#x27;empty_plane&#x27;,#33);

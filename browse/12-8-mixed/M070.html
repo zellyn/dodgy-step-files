@@ -26,7 +26,7 @@
 <li>OCCT MANTIS#0025357 (OCCT MANTIS tracker 502 as of 2026-05-02)</li>
 </ul></section>
 <section><h2>Description</h2>
-<p>An STL writer is invoked on a shape that already has an attached triangulation. The writer ignores the existing mesh and re-tessellates from B-rep using default deflection — losing the user&#x27;s carefully-tuned mesh.</p></section>
+<p>An STL writer is invoked on a shape that already has an attached triangulation. The writer ignores the existing mesh and re-tessellates from B-rep using default deflection; losing the user&#x27;s carefully-tuned mesh.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>Shape with attached triangulation (e.g., from a prior `BRepMesh_IncrementalMesh` call with custom deflection); write to STL.</p></section>
 <section><h2>Expected kernel behavior</h2>

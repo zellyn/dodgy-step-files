@@ -33,7 +33,7 @@
 <section><h2>Reproducer recipe</h2>
 <p>`MANIFOLD_SOLID_BREP` where one `ADVANCED_FACE` is referenced with inverted sense (`.F.` where `.T.` required) so its normal points inward.</p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal — orientation-propagation flood-fill from a known-correct seed; flip face/wire orientations consistently with face&#x27;s outward normal; reject if shell is too disconnected to orient consistently.</p></section>
+<p>heal; orientation-propagation flood-fill from a known-correct seed; flip face/wire orientations consistently with face&#x27;s outward normal; reject if shell is too disconnected to orient consistently.</p></section>
 <section><h2>Notes</h2>
 <p>**See also**: Tsh009, Tsh018, Twi024. Synonyms: &quot;face normal points wrong way&quot;, &quot;face orientation flipped relative to shell&quot;, &quot;mixed inward and outward normals on shell&quot;, &quot;boolean leaves inverted face flags&quot;, &quot;shell has some faces inside-out&quot;.</p></section>
 <section><h2>Expected validation</h2>

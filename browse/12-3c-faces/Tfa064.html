@@ -26,7 +26,7 @@
 <li>OCCT MANTIS#0025553 (OCCT MANTIS tracker 502 as of 2026-05-02)</li>
 </ul></section>
 <section><h2>Description</h2>
-<p>A face on a closed surface has a wire that includes part of the seam edge but not all. The seam-fix routine adds the missing portion to the wire — but inserts it at the wrong position, producing a wire whose edges are no longer in topological order. Wire becomes invalid.</p></section>
+<p>A face on a closed surface has a wire that includes part of the seam edge but not all. The seam-fix routine adds the missing portion to the wire; but inserts it at the wrong position, producing a wire whose edges are no longer in topological order. Wire becomes invalid.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>Cylindrical face whose wire has the seam at `U=0` for the lower half (`V=[0, h/2]`) but not the upper half (`V=[h/2, h]`). Heal inserts the missing upper half at the wire&#x27;s tail rather than splicing it adjacent to its existing partner.</p></section>
 <section><h2>Expected kernel behavior</h2>

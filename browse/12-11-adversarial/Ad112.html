@@ -37,7 +37,7 @@
 <section><h2>Expected kernel behavior</h2>
 <p>cap the gzip-layer recursion depth at 1 (or a small bounded N) with a precise diagnostic when exceeded; refuse files whose decompressed body still has the gzip magic at offset 0; treat the wrapper layer as adversarial.</p></section>
 <section><h2>Notes</h2>
-<p>Companion to Ad110 (single-layer ratio bomb); orthogonal axis (depth, not ratio). **See also**: Ad027, Ad105, Ad110, Ad111, Pf030. Provenance tier: cross-file-state — bytes alone (a Part-21 body) cannot demonstrate this defect; the bomb is in the stack of gzip wrappers. **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog&#x27;s allowed set ({reject}). Kernel-bug witnessed: receivers must reject this fixture per the catalog&#x27;s stated invariant.</p></section>
+<p>Companion to Ad110 (single-layer ratio bomb); orthogonal axis (depth, not ratio). **See also**: Ad027, Ad105, Ad110, Ad111, Pf030. Provenance tier: cross-file-state; bytes alone (a Part-21 body) cannot demonstrate this defect; the bomb is in the stack of gzip wrappers. **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog&#x27;s allowed set ({reject}). Kernel-bug witnessed: receivers must reject this fixture per the catalog&#x27;s stated invariant.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Provenance tier</h2>

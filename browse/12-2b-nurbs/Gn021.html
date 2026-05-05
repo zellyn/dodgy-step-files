@@ -28,7 +28,7 @@
 <li>18-other-issues.md (I010 — OCCT #994)</li>
 </ul></section>
 <section><h2>Description</h2>
-<p>A face referencing `#157=OFFSET_SURFACE(&#x27;&#x27;,#288,20.0,.F.)` where `#288` is a complex `(B_SPLINE_SURFACE .. )` aggregate fails to render. Replacing `#157` directly with `#288` succeeds — broken indirection through `OFFSET_SURFACE` over a NURBS base.</p></section>
+<p>A face referencing `#157=OFFSET_SURFACE(&#x27;&#x27;,#288,20.0,.F.)` where `#288` is a complex `(B_SPLINE_SURFACE .. )` aggregate fails to render. Replacing `#157` directly with `#288` succeeds; broken indirection through `OFFSET_SURFACE` over a NURBS base.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>Author minimal STEP with `OFFSET_SURFACE` referencing a complex `B_SPLINE_SURFACE` aggregate base; reference from `ADVANCED_FACE`.</p></section>
 <section><h2>Expected kernel behavior</h2>

@@ -30,11 +30,11 @@
 <section><h2>Sender</h2>
 <p>Tools that emit a `MANIFOLD_SOLID_BREP` whose `outer` references a `CLOSED_SHELL` but where the shell&#x27;s faces actually leave gaps (free edges) — the schema requires the outer shell to be topologically closed.</p></section>
 <section><h2>Description</h2>
-<p>The schema mandates that the outer shell of a `MANIFOLD_SOLID_BREP` be a watertight `CLOSED_SHELL`. Some producers route an `OPEN_SHELL` through the same slot or emit a `CLOSED_SHELL` whose face/edge graph has free edges. The reader accepts both forms — the resulting &quot;solid&quot; has open boundary, downstream Boolean operations fail with cryptic errors, and the user is never told the file was malformed.</p></section>
+<p>The schema mandates that the outer shell of a `MANIFOLD_SOLID_BREP` be a watertight `CLOSED_SHELL`. Some producers route an `OPEN_SHELL` through the same slot or emit a `CLOSED_SHELL` whose face/edge graph has free edges. The reader accepts both forms; the resulting &quot;solid&quot; has open boundary, downstream Boolean operations fail with cryptic errors, and the user is never told the file was malformed.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>`#10=OPEN_SHELL(&#x27;&#x27;,(#11,#12));` then `#20=MANIFOLD_SOLID_BREP(&#x27;&#x27;,#10);` — schema requires a `CLOSED_SHELL` here. Reader silently treats as solid.</p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>reject — verify shell closedness (every edge belongs to exactly two faces of the shell) before promoting to solid; emit `E_OPEN_OUTER_SHELL` when the invariant fails.</p></section>
+<p>reject; verify shell closedness (every edge belongs to exactly two faces of the shell) before promoting to solid; emit `E_OPEN_OUTER_SHELL` when the invariant fails.</p></section>
 <section><h2>Notes</h2>
 <p>**See also**: Tsh021, Tsh041. Synonyms: &quot;STEP Reader allows opened shells as outer&quot;, &quot;MANIFOLD_SOLID_BREP open outer&quot;, &quot;non-closed outer shell accepted as solid&quot;, &quot;STEP solid invariant violated by reader&quot;.</p></section>
 <section><h2>Expected validation</h2>

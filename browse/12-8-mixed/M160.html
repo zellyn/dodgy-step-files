@@ -33,7 +33,7 @@
 <section><h2>Reproducer recipe</h2>
 <p>Two `ADVANCED_BREP_SHAPE_REPRESENTATION` entities linked by `SHAPE_REPRESENTATION_RELATIONSHIP(#A,#B)` where the top-level `PRODUCT_DEFINITION_SHAPE` only sees representation B. Reader imports nothing.</p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal-and-accept — traverse `SHAPE_REPRESENTATION_RELATIONSHIP` in both directions during shape resolution; emit `W_UNATTACHED_SHAPE_REPRESENTATION` if any representation containing geometry is unreached at the end of the import.</p></section>
+<p>heal-and-accept; traverse `SHAPE_REPRESENTATION_RELATIONSHIP` in both directions during shape resolution; emit `W_UNATTACHED_SHAPE_REPRESENTATION` if any representation containing geometry is unreached at the end of the import.</p></section>
 <section><h2>Notes</h2>
 <p>**See also**: A067, M120. Synonyms: &quot;STEP file is not imported correctly&quot;, &quot;reader returns empty document on valid file&quot;, &quot;SHAPE_REPRESENTATION_RELATIONSHIP not traversed&quot;, &quot;silent-empty import on legitimate STEP file&quot;.</p></section>
 <section><h2>Expected validation</h2>

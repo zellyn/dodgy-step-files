@@ -30,7 +30,7 @@
 <section><h2>Sender</h2>
 <p>FreeCAD PartDesign Body whose visible Tip is the last operation (e.g., a Pocket) but where the document&#x27;s &quot;exported feature&quot; pointer is one revision behind.</p></section>
 <section><h2>Description</h2>
-<p>A Body whose linear feature stack is `Pad → Fillet → Pocket` with the Tip set to `Pocket` exports as `Pad → Fillet` only. The visible result in the 3D view shows the Pocket; the STEP file has it stripped. The on-disk symptom is a `MANIFOLD_SOLID_BREP` that lacks the inner `FACE_OUTER_BOUND` corresponding to the pocket walls — every face of the pre-pocket Pad+Fillet shape is present, but no pocket-bottom face nor pocket-wall faces.</p></section>
+<p>A Body whose linear feature stack is `Pad → Fillet → Pocket` with the Tip set to `Pocket` exports as `Pad → Fillet` only. The visible result in the 3D view shows the Pocket; the STEP file has it stripped. The on-disk symptom is a `MANIFOLD_SOLID_BREP` that lacks the inner `FACE_OUTER_BOUND` corresponding to the pocket walls; every face of the pre-pocket Pad+Fillet shape is present, but no pocket-bottom face nor pocket-wall faces.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>STEP solid representing a 20 mm cube with a fillet on one edge but no pocket — even though the catalog entry claims the body is &quot;cube, filleted, pocketed&quot;.</p></section>
 <section><h2>Expected kernel behavior</h2>

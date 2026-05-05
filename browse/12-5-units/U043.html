@@ -30,7 +30,7 @@
 <section><h2>Sender</h2>
 <p>STEP-receiving slicers that auto-detect unit by comparing `LENGTH_UNIT` declaration against a hard-coded &quot;expected mm&quot; assumption and silently flip when the file has an explicit `INCH` declaration.</p></section>
 <section><h2>Description</h2>
-<p>A producer-side STEP correctly declares `INCH` units with inch-scale numerical values. A receiver that hard-codes &quot;STEP files are mm&quot; silently treats the inch values as mm — yielding a 25.4× too-small model. Mirror image of Wr044. The on-disk file is well-formed; the bug is that some slicer lineage assumes mm regardless of the declared unit context.</p></section>
+<p>A producer-side STEP correctly declares `INCH` units with inch-scale numerical values. A receiver that hard-codes &quot;STEP files are mm&quot; silently treats the inch values as mm; yielding a 25.4× too-small model. Mirror image of Wr044. The on-disk file is well-formed; the bug is that some slicer lineage assumes mm regardless of the declared unit context.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>STEP file with `LENGTH_UNIT` complex record `(LENGTH_UNIT() NAMED_UNIT(*) CONVERSION_BASED_UNIT(&#x27;INCH&#x27;, ..))` and `CARTESIAN_POINT` corner coordinates `(1.0, 1.0, 1.0)` (one inch — should appear as 25.4 mm to a correct receiver).</p></section>
 <section><h2>Expected kernel behavior</h2>

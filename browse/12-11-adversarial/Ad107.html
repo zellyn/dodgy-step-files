@@ -38,7 +38,7 @@
 <section><h2>Expected kernel behavior</h2>
 <p>cap entity-expansion depth and expanded-text size in the XML parser used to load STEP-XML; reject documents that exceed the cap with a precise diagnostic; treat as adversarial.</p></section>
 <section><h2>Notes</h2>
-<p>Sibling of Ad104 (XXE via SYSTEM URI); both attack the STEP-XML wrapper. Synonyms: &quot;billion laughs in STEP&quot;, &quot;XML entity bomb in STEP-XML&quot;, &quot;exponential entity expansion&quot;. Provenance tier: cross-file-state — defect is in the .stpx wrapper&#x27;s DTD layer, not in the .stp body; bytes-level demonstration is the XML prologue. **See also**: Ad104, Ad108, Ad109. **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog&#x27;s allowed set ({reject}). Kernel-bug witnessed: receivers must reject this fixture per the catalog&#x27;s stated invariant.</p></section>
+<p>Sibling of Ad104 (XXE via SYSTEM URI); both attack the STEP-XML wrapper. Synonyms: &quot;billion laughs in STEP&quot;, &quot;XML entity bomb in STEP-XML&quot;, &quot;exponential entity expansion&quot;. Provenance tier: cross-file-state; defect is in the .stpx wrapper&#x27;s DTD layer, not in the .stp body; bytes-level demonstration is the XML prologue. **See also**: Ad104, Ad108, Ad109. **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog&#x27;s allowed set ({reject}). Kernel-bug witnessed: receivers must reject this fixture per the catalog&#x27;s stated invariant.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Provenance tier</h2>

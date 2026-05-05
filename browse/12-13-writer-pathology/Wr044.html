@@ -31,7 +31,7 @@
 <section><h2>Sender</h2>
 <p>FreeCAD with OCCT 7.8.x where the user picks &quot;inch&quot; in the STEP-export unit drop-down but the writer skips the value-side conversion.</p></section>
 <section><h2>Description</h2>
-<p>The user selects inches in the STEP-export unit dialog. The writer emits a `LENGTH_UNIT` complex record claiming inches, but every `CARTESIAN_POINT` carries the original millimetre values verbatim with no scale division. A part the user authored as a 25.4 mm cube round-trips as a 25.4 inch (645 mm) cube — visibly 25.4× larger on re-import. The unit declaration and the numeric content disagree.</p></section>
+<p>The user selects inches in the STEP-export unit dialog. The writer emits a `LENGTH_UNIT` complex record claiming inches, but every `CARTESIAN_POINT` carries the original millimetre values verbatim with no scale division. A part the user authored as a 25.4 mm cube round-trips as a 25.4 inch (645 mm) cube; visibly 25.4× larger on re-import. The unit declaration and the numeric content disagree.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>minimal `MANIFOLD_SOLID_BREP` cube; `GEOMETRIC_REPRESENTATION_CONTEXT` with `LENGTH_UNIT` complex record `(LENGTH_UNIT() NAMED_UNIT(*) CONVERSION_BASED_UNIT(&#x27;INCH&#x27;, ..))`; `CARTESIAN_POINT` corner coordinates `(25.4, 25.4, 25.4)` (millimetre values, not inches).</p></section>
 <section><h2>Expected kernel behavior</h2>

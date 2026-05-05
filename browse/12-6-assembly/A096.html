@@ -30,11 +30,11 @@
 <section><h2>Sender</h2>
 <p>OCCT&#x27;s `STEPCAFControl_Writer` when exporting an assembly with multiple instances of the same part, where one instance is at the identity transform and others are placed.</p></section>
 <section><h2>Description</h2>
-<p>An assembly contains three instances of the same part: one at the world origin (identity location) and two placed by transforms. The writer&#x27;s de-duplication pass mistakes &quot;identity location&quot; for &quot;no instance&quot; and skips the world-origin instance entirely. Output file has the part placed twice instead of three times. Asymmetric — the bug only manifests when at least one instance is at identity AND at least one instance has a non-identity transform.</p></section>
+<p>An assembly contains three instances of the same part: one at the world origin (identity location) and two placed by transforms. The writer&#x27;s de-duplication pass mistakes &quot;identity location&quot; for &quot;no instance&quot; and skips the world-origin instance entirely. Output file has the part placed twice instead of three times. Asymmetric; the bug only manifests when at least one instance is at identity AND at least one instance has a non-identity transform.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>Assembly with one `NEXT_ASSEMBLY_USAGE_OCCURRENCE` whose location is identity, plus two more whose locations are non-identity. Output drops the identity-placed instance.</p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal-and-accept — every distinct `NEXT_ASSEMBLY_USAGE_OCCURRENCE` corresponds to one emitted instance regardless of its location&#x27;s identity; never use &quot;is identity transform&quot; as a skip predicate.</p></section>
+<p>heal-and-accept; every distinct `NEXT_ASSEMBLY_USAGE_OCCURRENCE` corresponds to one emitted instance regardless of its location&#x27;s identity; never use &quot;is identity transform&quot; as a skip predicate.</p></section>
 <section><h2>Notes</h2>
 <p>**See also**: A082, A104. Synonyms: &quot;STEPCAFControl_Writer drops identity-placed instance&quot;, &quot;writer skips identity-location instance with partners&quot;, &quot;STEP export missing assembly instance&quot;, &quot;identity-transform instance not exported&quot;.</p></section>
 <section><h2>Expected validation</h2>

@@ -29,7 +29,7 @@
 <section><h2>Sender</h2>
 <p>Onshape (workspace inches)</p></section>
 <section><h2>Description</h2>
-<p>A part modelled in Onshape with inch units exports to STEP whose `LENGTH_UNIT` is metric (millimetres) — but coordinates are exact inch-to-mm conversions like 25.4 (1 in) and 63.5 (2.5 in). Geometry is preserved but the display-unit choice is lost: the file looks like an inch part rewritten as mm without scaling. Receivers display in mm with mm display tolerances.</p></section>
+<p>A part modelled in Onshape with inch units exports to STEP whose `LENGTH_UNIT` is metric (millimetres); but coordinates are exact inch-to-mm conversions like 25.4 (1 in) and 63.5 (2.5 in). Geometry is preserved but the display-unit choice is lost: the file looks like an inch part rewritten as mm without scaling. Receivers display in mm with mm display tolerances.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>Onshape workspace=inch; export STEP; result file declares metric SI unit although authoring was in inches.</p></section>
 <section><h2>Expected kernel behavior</h2>

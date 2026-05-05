@@ -27,7 +27,7 @@
 <li>18-other-issues.md I064 (OCCT #688)</li>
 </ul></section>
 <section><h2>Description</h2>
-<p>Enabling parallel meshing with the default thread pool causes per-thread stack overflows on real STEP imports — TBB worker stacks default to 1 MB, the recursive mesher overruns them on large faces, the thread pool catches the overflow but loses partial output. Configuring 8 MB worker stacks works but degrades throughput.</p></section>
+<p>Enabling parallel meshing with the default thread pool causes per-thread stack overflows on real STEP imports; TBB worker stacks default to 1 MB, the recursive mesher overruns them on large faces, the thread pool catches the overflow but loses partial output. Configuring 8 MB worker stacks works but degrades throughput.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>Real STEP with large faces; parallel meshing enabled.</p></section>
 <section><h2>Expected kernel behavior</h2>

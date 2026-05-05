@@ -28,7 +28,7 @@
 <li>16-iso-spec N053</li>
 </ul></section>
 <section><h2>Description</h2>
-<p>ISO 10303-21 distinguishes `#NAME`/`@NAME` (uppercase identifier — refers to a schema-defined constant) from `#NNN`/`@NNN` (refers to an instance). Tools occasionally emit `#PI` thinking it is a literal alias when the schema defines no such constant, producing an unresolved-reference error.</p></section>
+<p>ISO 10303-21 distinguishes `#NAME`/`@NAME` (uppercase identifier, refers to a schema-defined constant) from `#NNN`/`@NNN` (refers to an instance). Tools occasionally emit `#PI` thinking it is a literal alias when the schema defines no such constant, producing an unresolved-reference error.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>`#1=DIRECTION(&#x27;&#x27;,(#PI,0.,0.));` where `PI` is not a schema-defined constant.</p></section>
 <section><h2>Expected kernel behavior</h2>

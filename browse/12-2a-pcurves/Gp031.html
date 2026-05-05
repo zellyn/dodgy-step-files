@@ -28,13 +28,13 @@
 <li>05-occt-shapefix.md F063 (`ShapeBuild_Edge.cxx:647`)</li>
 </ul></section>
 <section><h2>Description</h2>
-<p>After an IGES BRep round-trip (or other translator path), a cylindrical face appears with two distinct but identically-defined `CYLINDRICAL_SURFACE` instances (e.g. `#20` and `#21`) where each `ADVANCED_FACE` uses one copy; analytic identity is lost. A single 3D edge then has two pcurves on these supposedly-same surfaces — duplicate surface definitions and aliased pcurves create confusion, and pcurves stored against the second copy disagree with those against the first even though geometrically identical.</p></section>
+<p>After an IGES BRep round-trip (or other translator path), a cylindrical face appears with two distinct but identically-defined `CYLINDRICAL_SURFACE` instances (e.g. `#20` and `#21`) where each `ADVANCED_FACE` uses one copy; analytic identity is lost. A single 3D edge then has two pcurves on these supposedly-same surfaces; duplicate surface definitions and aliased pcurves create confusion, and pcurves stored against the second copy disagree with those against the first even though geometrically identical.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>Cylindrical face → IGES BRep → re-import; check that all faces of the cylinder share the same `Geom_CylindricalSurface` handle.</p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal — canonicalize duplicate analytic surfaces post-IGES; re-bind pcurves to the canonical surface.</p></section>
+<p>heal; canonicalize duplicate analytic surfaces post-IGES; re-bind pcurves to the canonical surface.</p></section>
 <section><h2>Notes</h2>
-<p>**See also**: Gn023, Gp016. **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog&#x27;s allowed set ({heal}). Kernel-bug witnessed: catalog asks for healing; OCC neither heals nor rejects — the input is dropped on the floor without diagnostic. Synonyms: &quot;duplicate CYLINDRICAL_SURFACE instances after IGES BRep round-trip&quot;, &quot;cylinder analytic identity lost&quot;, &quot;two copies of same cylindrical surface&quot;, &quot;duplicate analytic surfaces after IGES round-trip&quot;, &quot;pcurves on supposedly-same cylinder disagree&quot;.</p></section>
+<p>**See also**: Gn023, Gp016. **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog&#x27;s allowed set ({heal}). Kernel-bug witnessed: catalog asks for healing; OCC neither heals nor rejects; the input is dropped on the floor without diagnostic. Synonyms: &quot;duplicate CYLINDRICAL_SURFACE instances after IGES BRep round-trip&quot;, &quot;cylinder analytic identity lost&quot;, &quot;two copies of same cylindrical surface&quot;, &quot;duplicate analytic surfaces after IGES round-trip&quot;, &quot;pcurves on supposedly-same cylinder disagree&quot;.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Cross-references</h2>

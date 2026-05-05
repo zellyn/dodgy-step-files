@@ -27,13 +27,13 @@
 <li>W007, W017, X015</li>
 </ul></section>
 <section><h2>Description</h2>
-<p>A `B_SPLINE_SURFACE_WITH_KNOTS` whose control net has interior rows transposed or that traverse U in opposite directions, so the Jacobian flips sign within the parameter range — a folded / non-injective surface parametrisation. Typical shape: a degree 3×2 surface with a 4×3 control net and clamped knot multiplicities like (4,4) U and (3,3) V where two interior rows swap order. Common output of poorly-trimmed offset surfaces or Boolean-derived subdivision surfaces.</p></section>
+<p>A `B_SPLINE_SURFACE_WITH_KNOTS` whose control net has interior rows transposed or that traverse U in opposite directions, so the Jacobian flips sign within the parameter range; a folded / non-injective surface parametrisation. Typical shape: a degree 3×2 surface with a 4×3 control net and clamped knot multiplicities like (4,4) U and (3,3) V where two interior rows swap order. Common output of poorly-trimmed offset surfaces or Boolean-derived subdivision surfaces.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>BSpline surface with two interior control rows transposed so the parametric mapping is non-injective; reference from `ADVANCED_FACE`.</p></section>
 <section><h2>Expected kernel behavior</h2>
 <p>heal by surface re-fit; reject with &quot;non-injective surface parametrization&quot; diagnostic; never silently use the surface for projection.</p></section>
 <section><h2>Notes</h2>
-<p>**See also**: Gn025, Twi041. **OCC behavior**: silently accepts the folded BSpline surface and uses it without re-fit or diagnostic; kernel mishandling — the catalog above forbids silent acceptance. Synonyms: &quot;self-intersecting BSpline surface Jacobian sign change&quot;, &quot;folded NURBS surface non-injective&quot;, &quot;B-spline surface control rows transposed&quot;, &quot;surface fold creates non-injective parametrisation&quot;, &quot;BSpline surface from poorly-trimmed offset folds back&quot;.</p></section>
+<p>**See also**: Gn025, Twi041. **OCC behavior**: silently accepts the folded BSpline surface and uses it without re-fit or diagnostic; kernel mishandling; the catalog above forbids silent acceptance. Synonyms: &quot;self-intersecting BSpline surface Jacobian sign change&quot;, &quot;folded NURBS surface non-injective&quot;, &quot;B-spline surface control rows transposed&quot;, &quot;surface fold creates non-injective parametrisation&quot;, &quot;BSpline surface from poorly-trimmed offset folds back&quot;.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">

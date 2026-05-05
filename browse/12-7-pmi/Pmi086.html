@@ -28,7 +28,7 @@
 <li>OCCT MANTIS#0033165 (OCCT MANTIS tracker 502 as of 2026-05-02)</li>
 </ul></section>
 <section><h2>Description</h2>
-<p>A document with `GENERAL_PROPERTY` entries (AP242 free-form attributes) writes to STEP successfully. But the writer routes attributes through the styled-item pipeline only for shapes with non-trivial geometry — empty shape representations lose their general attributes even when they have valuable metadata.</p></section>
+<p>A document with `GENERAL_PROPERTY` entries (AP242 free-form attributes) writes to STEP successfully. But the writer routes attributes through the styled-item pipeline only for shapes with non-trivial geometry; empty shape representations lose their general attributes even when they have valuable metadata.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>Document with one part marked as a &quot;configuration placeholder&quot; (no geometry, only metadata: revision, status, owner). Writer drops the metadata.</p></section>
 <section><h2>Expected kernel behavior</h2>

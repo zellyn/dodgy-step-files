@@ -29,7 +29,7 @@
 <section><h2>Sender</h2>
 <p>deduced — FEA preprocessor concatenating two overlapping selections without dedup</p></section>
 <section><h2>Description</h2>
-<p>A `NODE_GROUP` contains the same `NODE` reference twice (e.g. `(#100, #101, #100)`). Constraints / loads applied to the group act twice on the duplicated node — the load is doubled or the BC is over- constrained. Bug-reporter language: &quot;AP209 node group has duplicate&quot;, &quot;FEM load applied 2x to one node&quot;, &quot;node-group set semantics violated&quot;.</p></section>
+<p>A `NODE_GROUP` contains the same `NODE` reference twice (e.g. `(#100, #101, #100)`). Constraints / loads applied to the group act twice on the duplicated node; the load is doubled or the BC is over- constrained. Bug-reporter language: &quot;AP209 node group has duplicate&quot;, &quot;FEM load applied 2x to one node&quot;, &quot;node-group set semantics violated&quot;.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>`NODE_GROUP(&#x27;fixed&#x27;, (#100, #101, #100), $)`.</p></section>
 <section><h2>Expected kernel behavior</h2>

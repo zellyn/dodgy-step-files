@@ -31,7 +31,7 @@
 <section><h2>Reproducer recipe</h2>
 <p>Set face tolerance to `1e-9` on a face whose actual edge gap is `1e-5`, then `ShapeFix_Shape::Perform`.</p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal — recompute tolerance from current geometry rather than trusting user-set sub-resolution tolerance.</p></section>
+<p>heal; recompute tolerance from current geometry rather than trusting user-set sub-resolution tolerance.</p></section>
 <section><h2>Notes</h2>
 <p>Synonyms: &quot;lowering face tolerance creates vertex/vertex intersection&quot;, &quot;ShapeFix sees coincident vertices as separate&quot;, &quot;shrinking tolerance triggers spurious intersections&quot;.</p></section>
 <section><h2>Expected validation</h2>

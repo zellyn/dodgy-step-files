@@ -32,17 +32,16 @@
 <section><h2>Expected kernel behavior</h2>
 <p>replace face after wire reordering, even if no other fix occurred.</p></section>
 <section><h2>Notes</h2>
-<p>**See also**: Twi008. Synonyms: &quot;edges scrambled out of cyclic order&quot;, &quot;torus wire not in head-to-tail order&quot;, &quot;wire reorder lost after healing&quot;, &quot;scrambled EDGE_LOOP needs reorder only&quot;, &quot;fix succeeds but face still references unfixed wire&quot;.</p></section>
+<p>**See also**: Twi008, Twi038. Synonyms: &quot;edges scrambled out of cyclic order&quot;, &quot;torus wire not in head-to-tail order&quot;, &quot;wire reorder lost after healing&quot;, &quot;scrambled EDGE_LOOP needs reorder only&quot;, &quot;fix succeeds but face still references unfixed wire&quot;.- **Tier-3 assertion**: face[0].surface_type == &quot;torus&quot;</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">
-<li><code>face[0].surface_type == &quot;torus&quot;</code></li>
 <li><code>n_edges_total &gt;= 4</code></li>
 <li><code>n_vertices_total &gt;= 8</code></li>
 <li><code>brepcheck.valid == False</code></li>
 </ul></section>
 <section><h2>Cross-references</h2>
-<p><a href="Twi008.html">Twi008</a></p>
+<p><a href="Twi008.html">Twi008</a>, <a href="Twi038.html">Twi038</a></p>
 </section>
 <section><h2>Live oracle output</h2>
 <table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>

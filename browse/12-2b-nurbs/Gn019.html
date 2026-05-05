@@ -27,7 +27,7 @@
 <li>14-brlcad-rhino.md (K007, `OpenNurbsInterfaces.cpp:1596`)</li>
 </ul></section>
 <section><h2>Description</h2>
-<p>A pcurve on a `CYLINDRICAL_SURFACE` (or other periodic surface) is a degenerate `B_SPLINE_CURVE_WITH_KNOTS` of degree 1 whose two control points are both at the same UV (e.g. both (0,0)) — a zero-length pcurve typically representing a seam. When sampling such a pcurve for an `ON_BrepTrim`, step-g gets fewer than 2 distinct sample points, yielding a degenerate trim. Likely from `seam_curve` or near-singular pcurve evaluation on closed surfaces.</p></section>
+<p>A pcurve on a `CYLINDRICAL_SURFACE` (or other periodic surface) is a degenerate `B_SPLINE_CURVE_WITH_KNOTS` of degree 1 whose two control points are both at the same UV (e.g. both (0,0)); a zero-length pcurve typically representing a seam. When sampling such a pcurve for an `ON_BrepTrim`, step-g gets fewer than 2 distinct sample points, yielding a degenerate trim. Likely from `seam_curve` or near-singular pcurve evaluation on closed surfaces.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>cylinder/cone with seam edge whose `pcurve_or_surface.pcurve` evaluates to a single point at the apex/seam.</p></section>
 <section><h2>Expected kernel behavior</h2>

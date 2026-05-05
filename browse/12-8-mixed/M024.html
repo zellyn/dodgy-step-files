@@ -31,7 +31,7 @@
 <section><h2>Reproducer recipe</h2>
 <p>Convert an STL of a scan to STEP via patch fitting; check `ADVANCED_FACE` edges for tolerance-exceeding gaps to neighbour faces.</p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal — use a single shared trim curve fitted to a tighter tolerance than the patch interior; enforce watertightness as a fitting constraint, not a cleanup step.</p></section>
+<p>heal; use a single shared trim curve fitted to a tighter tolerance than the patch interior; enforce watertightness as a fitting constraint, not a cleanup step.</p></section>
 <section><h2>Notes</h2>
 <p>Synonyms: &quot;mesh-to-BRep gaps at trims&quot;, &quot;non-watertight reverse-engineered face&quot;, &quot;patch fitting leaves trim gaps&quot;, &quot;STL-to-NURBS not watertight&quot;. **OCC behavior**: the validity-checker does not flag sub-tolerance trim-curve gaps in the mesh-to-BRep result; tier-3 valid-flag should be ignored for this entry. The reader most likely silently fixes or ignores the gap on import.</p></section>
 <section><h2>Expected validation</h2>

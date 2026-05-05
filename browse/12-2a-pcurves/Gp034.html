@@ -27,7 +27,7 @@
 <li>OCCT `ShapeExtend_ComplexCurve::CheckConnectivity` (`ShapeExtend_ComplexCurve.hxx:88`)</li>
 </ul></section>
 <section><h2>Description</h2>
-<p>A `COMPOSITE_CURVE` lists multiple segments that are intended to form a single continuous curve. Segment N&#x27;s last 3D point sits at a distance of several millimetres from segment N+1&#x27;s first 3D point — far beyond any reasonable connectivity tolerance. The composite curve is not actually connected; treating it as one curve produces invalid downstream geometry.</p></section>
+<p>A `COMPOSITE_CURVE` lists multiple segments that are intended to form a single continuous curve. Segment N&#x27;s last 3D point sits at a distance of several millimetres from segment N+1&#x27;s first 3D point; far beyond any reasonable connectivity tolerance. The composite curve is not actually connected; treating it as one curve produces invalid downstream geometry.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>Two LINE-based EDGE_CURVEs whose vertices are at `(5,0,0)` and `(5.005,0,0)` respectively. Both edges share a wire but the kernel must report a 5e-3 disconnect.</p></section>
 <section><h2>Expected kernel behavior</h2>

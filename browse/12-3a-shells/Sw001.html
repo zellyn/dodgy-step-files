@@ -27,7 +27,7 @@
 <li>OCCT BRepBuilderAPI_Sewing.hxx:120, .cxx:2124 (NbMultipleEdges) (uncovered class evidence)</li>
 </ul></section>
 <section><h2>Sender</h2>
-<p>deduced — OCCT uncovered-class sweep, Pass C</p></section>
+<p>deduced — OCCT uncovered-class sweep</p></section>
 <section><h2>Description</h2>
 <p>Three or more faces are positioned with a common boundary curve. When the sewer joins them, the result is a &quot;multiple edge&quot; — a non-manifold join — but no diagnostic warns the consumer that the result is non-manifold. Typical fixture: three ADVANCED_FACEs on three different PLANEs (e.g., horizontal, vertical_xz, vertical_yz) sharing a common origin or edge, often with empty bound lists, none yet wrapped in a SHELL. Bug-reporter language: &quot;sewing produces non-manifold&quot;, &quot;multiple edge&quot;, &quot;T-junction after sew&quot;, &quot;three faces meet at one edge&quot;.</p></section>
 <section><h2>Reproducer recipe</h2>

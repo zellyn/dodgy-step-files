@@ -27,7 +27,7 @@
 <li>OCCT BRepBuilderAPI_FastSewing.cxx:199, 236 (FS_InfiniteSurface) (uncovered class evidence)</li>
 </ul></section>
 <section><h2>Sender</h2>
-<p>deduced — OCCT uncovered-class sweep, Pass C</p></section>
+<p>deduced — OCCT uncovered-class sweep</p></section>
 <section><h2>Description</h2>
 <p>A face&#x27;s underlying surface is an unbounded analytic (`PLANE`, `CYLINDRICAL_SURFACE` with no trim, etc.) and the fast-sewing path requires bounded UV space. Bug-reporter language: &quot;infinite surface in sewing&quot;, &quot;unbounded face fails fast sew&quot;.</p></section>
 <section><h2>Reproducer recipe</h2>
@@ -35,14 +35,16 @@
 <section><h2>Expected kernel behavior</h2>
 <p>Heal and accept: compute the UV bounding box from the wire, coerce the trim implicitly, and fall through.</p></section>
 <section><h2>Notes</h2>
-<p>Synonyms: &quot;untrimmed face&quot;, &quot;infinite extent face&quot;, &quot;infinite surface in sewing&quot;, &quot;unbounded plane face fails fast sew&quot;, &quot;face missing rectangular trim&quot;.</p></section>
+<p>**See also**: Sw004. Synonyms: &quot;untrimmed face&quot;, &quot;infinite extent face&quot;, &quot;infinite surface in sewing&quot;, &quot;unbounded plane face fails fast sew&quot;, &quot;face missing rectangular trim&quot;.- **Byte assertion**: count_entity_def(b&#x27;ADVANCED_FACE&#x27;) == 1</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">
-<li><code>count_entity_def(b&#x27;ADVANCED_FACE&#x27;) == 1</code></li>
 <li><code>not_contains(b&#x27;RECTANGULAR_TRIMMED_SURFACE&#x27;)</code></li>
 <li><code>count_entity_def(b&#x27;PLANE&#x27;) &gt;= 1</code></li>
 </ul></section>
+<section><h2>Cross-references</h2>
+<p><a href="Sw004.html">Sw004</a></p>
+</section>
 <section><h2>Live oracle output</h2>
 <table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
 <tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
@@ -75,7 +77,7 @@
 <span class="lineno">16</span>#13=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#10,#11,#12);
 <span class="lineno">17</span>/* Untrimmed plane - infinite extent */
 <span class="lineno">18</span><mark>#14=PLANE(</mark>&#x27;infinite_plane&#x27;,#13);
-<span class="lineno">19</span><mark>#100=ADVANCED_FACE(</mark>&#x27;face_on_infinite_plane&#x27;,(),#14,.T.);
+<span class="lineno">19</span>#100=ADVANCED_FACE(&#x27;face_on_infinite_plane&#x27;,(),#14,.T.);
 <span class="lineno">20</span>ENDSEC;
 <span class="lineno">21</span>END-ISO-10303-21;
 </pre>

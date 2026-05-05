@@ -27,15 +27,15 @@
 <li>OCCT Interface_InterfaceModel.cxx:276 (Interface_StateUnloaded) (uncovered class evidence)</li>
 </ul></section>
 <section><h2>Sender</h2>
-<p>deduced — OCCT uncovered-class sweep, Pass C</p></section>
+<p>deduced — OCCT uncovered-class sweep</p></section>
 <section><h2>Description</h2>
-<p>A reader&#x27;s data state is &quot;Unloaded&quot; — the file was opened but the entity table was never populated (e.g., parser bailed silently after the header). Downstream consumers see an empty model and may not realize the load was incomplete. Bug-reporter language: &quot;STEP loaded but empty&quot;, &quot;no entities in file&quot;, &quot;kernel imports nothing silently&quot;.</p></section>
+<p>A reader&#x27;s data state is &quot;Unloaded&quot;; the file was opened but the entity table was never populated (e.g., parser bailed silently after the header). Downstream consumers see an empty model and may not realize the load was incomplete. Bug-reporter language: &quot;STEP loaded but empty&quot;, &quot;no entities in file&quot;, &quot;kernel imports nothing silently&quot;.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>A Part-21 file with a valid HEADER but a DATA section that contains only a comment, no entities; `ENDSEC` ends the section.</p></section>
 <section><h2>Expected kernel behavior</h2>
 <p>Reject load failures explicitly: distinguish &quot;empty data&quot; from &quot;load failed&quot; with separate diagnostic codes; never let the consumer see an empty model from a load failure. Must not silently accept failed load.</p></section>
 <section><h2>Notes</h2>
-<p>Bug-reporter synonyms: &quot;silent empty load&quot;, &quot;model unloaded&quot;. Provenance tier: runtime-only — bytes alone cannot demonstrate this defect; the symptom is a kernel-internal load-state value (Unloaded vs. Loaded) and a missing diagnostic, both of which manifest only at parse/load time. A behavioral test against a reader implementation is the appropriate venue. Synonyms: &quot;STEP loaded but empty&quot;, &quot;no entities loaded silently&quot;, &quot;model unloaded after parse&quot;, &quot;load skipped without error&quot;, &quot;empty model after STEP read&quot;.</p></section>
+<p>Bug-reporter synonyms: &quot;silent empty load&quot;, &quot;model unloaded&quot;. Provenance tier: runtime-only; bytes alone cannot demonstrate this defect; the symptom is a kernel-internal load-state value (Unloaded vs. Loaded) and a missing diagnostic, both of which manifest only at parse/load time. A behavioral test against a reader implementation is the appropriate venue. Synonyms: &quot;STEP loaded but empty&quot;, &quot;no entities loaded silently&quot;, &quot;model unloaded after parse&quot;, &quot;load skipped without error&quot;, &quot;empty model after STEP read&quot;.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Provenance tier</h2>

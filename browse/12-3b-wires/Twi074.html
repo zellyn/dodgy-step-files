@@ -32,14 +32,16 @@
 <section><h2>Expected kernel behavior</h2>
 <p>return short-edge index and split-parameter; do not modify the wire.</p></section>
 <section><h2>Notes</h2>
-<p>Per-pair counterpart to FixNotchedEdges. Synonyms: &quot;single-pair notch detection&quot;, &quot;is this edge pair a notch query&quot;, &quot;diagnose specific triplet for notch shape&quot;, &quot;per-pair notch diagnostic with split parameter&quot;.</p></section>
+<p>**See also**: Twi054. Per-pair counterpart to FixNotchedEdges. Synonyms: &quot;single-pair notch detection&quot;, &quot;is this edge pair a notch query&quot;, &quot;diagnose specific triplet for notch shape&quot;, &quot;per-pair notch diagnostic with split parameter&quot;.- **Tier-3 assertion**: n_edges_total &gt;= 5</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(11) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">
-<li><code>n_edges_total &gt;= 5</code></li>
 <li><code>face[0].surface_type == &quot;plane&quot;</code></li>
 <li><code>n_vertices_total &gt;= 8</code></li>
 </ul></section>
+<section><h2>Cross-references</h2>
+<p><a href="Twi054.html">Twi054</a></p>
+</section>
 <section><h2>Live oracle output</h2>
 <table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
 <tr><td><code>occt_heal_on</code></td><td><code>shape(1)</code></td></tr>

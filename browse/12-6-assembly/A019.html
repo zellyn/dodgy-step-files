@@ -26,7 +26,7 @@
 <li>V047 (CATIA → SolidWorks all white), W024 (HOOPS face-level styling), M032 (CAx-IF styling RP), R063 (OCCT bug33317 reference shape color), G036 (tessellated face style binding), G098 (OCCT non-manifold loses attributes).</li>
 </ul></section>
 <section><h2>Description</h2>
-<p>Multiple distinct face colours in the producer become identical white in the consumer. Per-face colours are bound via `STYLED_ITEM` / `PRESENTATION_STYLE_ASSIGNMENT` / `SURFACE_STYLE_FILL_AREA` / `FILL_AREA_STYLE_COLOUR` chains. Common signature: three `ADVANCED_FACE` instances all share the same supporting `PLANE` (e.g. `#64`) but each has its own distinct `STYLED_ITEM` / `COLOUR_RGB` — XCAF risks merging the faces (since they overlap geometrically) and collapsing the per-face colour binding. After re-tessellation or face-merge healing the binding is lost. Non-manifold STEP reader path skips XCAF attribute application.</p></section>
+<p>Multiple distinct face colours in the producer become identical white in the consumer. Per-face colours are bound via `STYLED_ITEM` / `PRESENTATION_STYLE_ASSIGNMENT` / `SURFACE_STYLE_FILL_AREA` / `FILL_AREA_STYLE_COLOUR` chains. Common signature: three `ADVANCED_FACE` instances all share the same supporting `PLANE` (e.g. `#64`) but each has its own distinct `STYLED_ITEM` / `COLOUR_RGB`; XCAF risks merging the faces (since they overlap geometrically) and collapsing the per-face colour binding. After re-tessellation or face-merge healing the binding is lost. Non-manifold STEP reader path skips XCAF attribute application.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>Face with full styled_item chain on COLOUR_RGB(0.8,0.1,0.1); subject to sliver-face removal and re-export.</p></section>
 <section><h2>Expected kernel behavior</h2>

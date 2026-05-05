@@ -28,7 +28,7 @@
 <li>binding null) (uncovered class evidence)</li>
 </ul></section>
 <section><h2>Sender</h2>
-<p>deduced — OCCT uncovered-class sweep, Pass C</p></section>
+<p>deduced — OCCT uncovered-class sweep</p></section>
 <section><h2>Description</h2>
 <p>A C++ exception is thrown during the transfer of a single entity; the transfer record is &quot;bound&quot; but the bound result is null. Downstream consumers see &quot;Done&quot; status with no shape attached. Typical fixture: a B_SPLINE_CURVE_WITH_KNOTS whose CARTESIAN_POINT control points use extreme-magnitude IEEE-754 values (e.g., 1.0E+308 near the ceiling, or a subnormal like 5.0E-324) that overflow during arithmetic. Bug-reporter language: &quot;kernel says done but produced nothing&quot;, &quot;transfer succeeded with empty result&quot;, &quot;extreme-magnitude coordinates overflow&quot;.</p></section>
 <section><h2>Reproducer recipe</h2>
@@ -36,7 +36,7 @@
 <section><h2>Expected kernel behavior</h2>
 <p>Reject and emit the underlying exception text: mark the transfer as Error, not Done; must not silently swallow exceptions.</p></section>
 <section><h2>Notes</h2>
-<p>Synonyms: &quot;silent transfer failure&quot;. Provenance tier: runtime-only — bytes alone cannot demonstrate this defect; the symptom is a transfer-time C++ exception silently swallowed and replaced with a null binding plus a &quot;Done&quot; status. The static fixture only carries the trigger geometry; demonstrating the swallowed exception requires a kernel runtime trace. Synonyms: &quot;STEP entity bound to null after exception&quot;, &quot;B-spline with extreme coords gives null&quot;, &quot;1.0E+308 control point swallows exception&quot;, &quot;STEP transfer Done but shape null&quot;, &quot;exception swallowed during STEP transfer&quot;.</p></section>
+<p>Synonyms: &quot;silent transfer failure&quot;. Provenance tier: runtime-only; bytes alone cannot demonstrate this defect; the symptom is a transfer-time C++ exception silently swallowed and replaced with a null binding plus a &quot;Done&quot; status. The static fixture only carries the trigger geometry; demonstrating the swallowed exception requires a kernel runtime trace. Synonyms: &quot;STEP entity bound to null after exception&quot;, &quot;B-spline with extreme coords gives null&quot;, &quot;1.0E+308 control point swallows exception&quot;, &quot;STEP transfer Done but shape null&quot;, &quot;exception swallowed during STEP transfer&quot;.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Provenance tier</h2>

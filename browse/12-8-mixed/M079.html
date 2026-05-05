@@ -34,7 +34,7 @@
 <section><h2>Expected kernel behavior</h2>
 <p>detect unattached constraints; warn and skip, or reject as malformed; never silently apply to all nodes.</p></section>
 <section><h2>Notes</h2>
-<p>Synonyms: &quot;AP209 boundary condition has no nodes&quot;, &quot;FEM constraint applies to nothing&quot;, &quot;empty NODE_GROUP on constraint&quot;, &quot;BC node-set unresolved&quot;, &quot;AP209 boundary condition empty&quot;. **See also**: M037, M038. **OCC behavior**: silently consumes the AP209 file as a B-rep producer (FEM constraints are ignored entirely on the read path) without surfacing that the empty-node-group constraint was abandoned; kernel mishandling — the catalog above forbids silent application.</p></section>
+<p>Synonyms: &quot;AP209 boundary condition has no nodes&quot;, &quot;FEM constraint applies to nothing&quot;, &quot;empty NODE_GROUP on constraint&quot;, &quot;BC node-set unresolved&quot;, &quot;AP209 boundary condition empty&quot;. **See also**: M037, M038. **OCC behavior**: silently consumes the AP209 file as a B-rep producer (FEM constraints are ignored entirely on the read path) without surfacing that the empty-node-group constraint was abandoned; kernel mishandling; the catalog above forbids silent application.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">

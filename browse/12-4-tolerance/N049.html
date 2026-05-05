@@ -30,11 +30,11 @@
 <section><h2>Sender</h2>
 <p>Producers whose `EDGE_CURVE` end-vertex coordinates do not lie exactly on the underlying curve at the receiver&#x27;s tolerance, or whose face boundary loops are not perfectly closed.</p></section>
 <section><h2>Description</h2>
-<p>A STEP file imports without diagnostic, but `BRepCheck_Analyzer` on the resulting shape returns `BRepCheck_InvalidPointOnCurve` / `BRepCheck_NotClosed` / `BRepCheck_InvalidWire`. The defect is at the boundary between the producer&#x27;s tolerance and the receiver&#x27;s: the file is structurally legal, the geometry is &quot;almost&quot; valid, and the reader silently accepts but downstream operations (Boolean, mesh, sewn-shell promotion) fail with cryptic errors. Distinct from M160 (silent-empty) — here a shape is produced, but it is not valid.</p></section>
+<p>A STEP file imports without diagnostic, but `BRepCheck_Analyzer` on the resulting shape returns `BRepCheck_InvalidPointOnCurve` / `BRepCheck_NotClosed` / `BRepCheck_InvalidWire`. The defect is at the boundary between the producer&#x27;s tolerance and the receiver&#x27;s: the file is structurally legal, the geometry is &quot;almost&quot; valid, and the reader silently accepts but downstream operations (Boolean, mesh, sewn-shell promotion) fail with cryptic errors. Distinct from M160 (silent-empty); here a shape is produced, but it is not valid.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>`EDGE_CURVE` whose end-vertex `CARTESIAN_POINT` is at distance `2e-6` from the curve at the curve&#x27;s parameter; receiver&#x27;s edge tolerance is `1e-7`. Reader imports; `BRepCheck` flags.</p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal-and-accept — auto-bump edge tolerance during import to the maximum of the producer&#x27;s claimed tolerance and the measured point-on-curve deviation; emit `W_TOLERANCE_BUMPED`. Downstream operations should never see an invalid shape.</p></section>
+<p>heal-and-accept; auto-bump edge tolerance during import to the maximum of the producer&#x27;s claimed tolerance and the measured point-on-curve deviation; emit `W_TOLERANCE_BUMPED`. Downstream operations should never see an invalid shape.</p></section>
 <section><h2>Notes</h2>
 <p>**See also**: N015, N028, Twi099. Synonyms: &quot;reading STEP file produces invalid shape&quot;, &quot;BRepCheck flags imported shape&quot;, &quot;STEP import yields shape that fails Analyzer&quot;, &quot;tolerance mismatch between producer and receiver&quot;.</p></section>
 <section><h2>Expected validation</h2>

@@ -26,9 +26,9 @@
 <li>OCCT BRepLib_MakeShell ShellError.DisconnectedShell (uncovered class evidence)</li>
 </ul></section>
 <section><h2>Sender</h2>
-<p>deduced — OCCT uncovered-class sweep, Pass C</p></section>
+<p>deduced — OCCT uncovered-class sweep</p></section>
 <section><h2>Description</h2>
-<p>A `CLOSED_SHELL` (or `OPEN_SHELL`) lists faces in two disconnected components — there is no chain of shared edges connecting them. The &quot;shell&quot; is really two shells stuffed into one wrapper. Bug-reporter language: &quot;shell is two pieces&quot;, &quot;disconnected shell&quot;, &quot;shell falls apart&quot;.</p></section>
+<p>A `CLOSED_SHELL` (or `OPEN_SHELL`) lists faces in two disconnected components; there is no chain of shared edges connecting them. The &quot;shell&quot; is really two shells stuffed into one wrapper. Bug-reporter language: &quot;shell is two pieces&quot;, &quot;disconnected shell&quot;, &quot;shell falls apart&quot;.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>A `CLOSED_SHELL` with two cubes&#x27; worth of faces (12 faces total), built from disjoint vertex sets (no shared edge between the two cubes).</p></section>
 <section><h2>Expected kernel behavior</h2>

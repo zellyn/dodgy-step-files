@@ -35,7 +35,7 @@
 <section><h2>Expected kernel behavior</h2>
 <p>convert Bezier→NURBS internally (algebraic identity); never silently drop face geometry due to unsupported but trivially-convertible surface form.</p></section>
 <section><h2>Notes</h2>
-<p>**OCC behavior**: silently drops the Bezier surface and produces empty geometry without a diagnostic; kernel mishandling — the catalog above forbids silent face-geometry loss. Synonyms: &quot;BEZIER_SURFACE algebraically degree-d NURBS dropped&quot;, &quot;rational Bezier patch with knot multiplicity equal to degree+1 unhandled&quot;, &quot;Bezier basis surface needs internal NURBS conversion&quot;, &quot;trivially-convertible Bezier surface form unhandled&quot;.</p></section>
+<p>**OCC behavior**: silently drops the Bezier surface and produces empty geometry without a diagnostic; kernel mishandling; the catalog above forbids silent face-geometry loss. Synonyms: &quot;BEZIER_SURFACE algebraically degree-d NURBS dropped&quot;, &quot;rational Bezier patch with knot multiplicity equal to degree+1 unhandled&quot;, &quot;Bezier basis surface needs internal NURBS conversion&quot;, &quot;trivially-convertible Bezier surface form unhandled&quot;.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">

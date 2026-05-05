@@ -27,7 +27,7 @@
 <li>08-occt-gitlog.md G095 (Mantis 0032557)</li>
 </ul></section>
 <section><h2>Description</h2>
-<p>Converting a periodic surface (cylinder, torus) into an explicit `B_SPLINE_SURFACE_WITH_KNOTS` yields a non-periodic NURBS whose parametric domain does not exactly match the original. Pcurves whose endpoints landed cleanly on the period boundary end up with small gaps at the wrap-around: typically two pcurves on the same 3D edge end up nearly coincident (e.g. one at u=0 and the other at u=0.999, within 0.001 in U) but not identical — nearly-duplicate pcurves on the same edge straddling the converted seam.</p></section>
+<p>Converting a periodic surface (cylinder, torus) into an explicit `B_SPLINE_SURFACE_WITH_KNOTS` yields a non-periodic NURBS whose parametric domain does not exactly match the original. Pcurves whose endpoints landed cleanly on the period boundary end up with small gaps at the wrap-around: typically two pcurves on the same 3D edge end up nearly coincident (e.g. one at u=0 and the other at u=0.999, within 0.001 in U) but not identical; nearly-duplicate pcurves on the same edge straddling the converted seam.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>Apply a periodic-surface-to-NURBS conversion to a face on a `CYLINDRICAL_SURFACE`; check pcurve endpoints&#x27; UV against the new BSpline surface&#x27;s UV bounds.</p></section>
 <section><h2>Expected kernel behavior</h2>

@@ -34,7 +34,7 @@
 <section><h2>Reproducer recipe</h2>
 <p>Import a STEP from a system that always writes NURBS; query a &quot;cylindrical&quot; face&#x27;s `BRepAdaptor_Surface::GetType()` — returns `GeomAbs_BSplineSurface` instead of `GeomAbs_Cylinder`.</p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal — `convert-to-canonical` / `ShapeCustom_BSplineRestriction` with a tolerance recovers the analytic form; reject canonicalization if recovered surface deviates beyond user-supplied tolerance, since otherwise watertightness is lost.</p></section>
+<p>heal; `convert-to-canonical` / `ShapeCustom_BSplineRestriction` with a tolerance recovers the analytic form; reject canonicalization if recovered surface deviates beyond user-supplied tolerance, since otherwise watertightness is lost.</p></section>
 <section><h2>Notes</h2>
 <p>**See also**: Pmi041, Gn014. Synonyms: &quot;cylinder stored as B-spline instead of analytic&quot;, &quot;feature recognition can&#x27;t find hole as B-spline&quot;, &quot;analytic surface lost as NURBS&quot;, &quot;kernel doesn&#x27;t recognize quarter cylinder&quot;, &quot;B-spline that should be cylinder or plane&quot;.</p></section>
 <section><h2>Expected validation</h2>

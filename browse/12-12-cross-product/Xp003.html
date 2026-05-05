@@ -27,11 +27,11 @@
 <li>synthesized cross-product.</li>
 </ul></section>
 <section><h2>Description</h2>
-<p>An `OPEN_SHELL` contains three planar faces that all share the same `EDGE_CURVE`. One of the three faces is a sliver — its area is near-zero because two of its bounding edges differ only in the third decimal. The non-manifoldness and the sliver are co-located: the same edge that is shared by three faces is also one of the two near-coincident edges of the sliver.</p></section>
+<p>An `OPEN_SHELL` contains three planar faces that all share the same `EDGE_CURVE`. One of the three faces is a sliver; its area is near-zero because two of its bounding edges differ only in the third decimal. The non-manifoldness and the sliver are co-located: the same edge that is shared by three faces is also one of the two near-coincident edges of the sliver.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>Three `ADVANCED_FACE`s on a planar surface, each bounded by an `EDGE_LOOP` referencing a common `EDGE_CURVE` `#E`. The third face&#x27;s outer wire contains `#E` plus a second edge whose endpoints differ from `#E`&#x27;s by 1e-4.</p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>Two independent decisions — whether to collapse the sliver (and if so, into which neighbour), and whether to treat the 3-face junction as legitimate non-manifold topology or a malformed shell. The corpus does not prescribe order.</p></section>
+<p>Two independent decisions; whether to collapse the sliver (and if so, into which neighbour), and whether to treat the 3-face junction as legitimate non-manifold topology or a malformed shell. The corpus does not prescribe order.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">

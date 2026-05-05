@@ -35,7 +35,7 @@
 <section><h2>Reproducer recipe</h2>
 <p>minimal Part-21 file where each `#NNN=ENTITY(..);` line ends with ` ` (three spaces) before `\n`.</p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>read tolerantly — the spec permits insignificant whitespace anywhere outside string literals. Optionally normalise on re-emit. A downstream tool that warns on this is over-strict; a producer that emits this is sloppy but not malformed.</p></section>
+<p>read tolerantly; the spec permits insignificant whitespace anywhere outside string literals. Optionally normalise on re-emit. A downstream tool that warns on this is over-strict; a producer that emits this is sloppy but not malformed.</p></section>
 <section><h2>Notes</h2>
 <p>Practically harmless to parse; the cost is to humans who diff exports.</p></section>
 <section><h2>Expected validation</h2>

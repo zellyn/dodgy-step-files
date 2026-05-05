@@ -31,11 +31,11 @@
 <section><h2>Sender</h2>
 <p>OCCT writer when an XCAF document carries `XCAFDoc_GeomToleranceTool` or `XCAFDoc_DimTolTool` records.</p></section>
 <section><h2>Description</h2>
-<p>An XCAF document has a flatness tolerance, a position tolerance, and a datum reference attached to a face. The writer&#x27;s STEP-AP242 export pass emits the geometry but not the GD&amp;T records — the output file has no `GEOMETRIC_TOLERANCE`, no `DIMENSIONAL_LOCATION`, no `DATUM_REFERENCE`. The producer&#x27;s intent is lost. Bug class: writer coverage gap on PMI side.</p></section>
+<p>An XCAF document has a flatness tolerance, a position tolerance, and a datum reference attached to a face. The writer&#x27;s STEP-AP242 export pass emits the geometry but not the GD&amp;T records; the output file has no `GEOMETRIC_TOLERANCE`, no `DIMENSIONAL_LOCATION`, no `DATUM_REFERENCE`. The producer&#x27;s intent is lost. Bug class: writer coverage gap on PMI side.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>XCAF document with one face and a flatness tolerance. Run `STEPCAFControl_Writer::Perform`. Output omits GD&amp;T entirely.</p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal-and-accept — writer emits every GD&amp;T record present in the XCAF document; missing record types raise `W_GDT_NOT_SUPPORTED` rather than silently dropping. AP242 is the canonical schema for PMI export.</p></section>
+<p>heal-and-accept; writer emits every GD&amp;T record present in the XCAF document; missing record types raise `W_GDT_NOT_SUPPORTED` rather than silently dropping. AP242 is the canonical schema for PMI export.</p></section>
 <section><h2>Notes</h2>
 <p>**See also**: Pmi031. Synonyms: &quot;export of GDT from XCAF to STEP&quot;, &quot;geometric tolerances not written to STEP AP242&quot;, &quot;PMI lost on STEP export&quot;, &quot;XCAF GD&amp;T not round-tripping&quot;.</p></section>
 <section><h2>Expected validation</h2>

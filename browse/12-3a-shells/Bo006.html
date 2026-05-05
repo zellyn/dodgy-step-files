@@ -26,13 +26,13 @@
 <li>OCCT BRepCheck_Edge.cxx:536, BRepCheck_Shell.cxx:410 (InvalidMultiConnexity) (uncovered class evidence)</li>
 </ul></section>
 <section><h2>Sender</h2>
-<p>deduced — OCCT uncovered-class sweep, Pass C</p></section>
+<p>deduced — OCCT uncovered-class sweep</p></section>
 <section><h2>Description</h2>
 <p>A single `EDGE_CURVE` is referenced by `ORIENTED_EDGE`s belonging to three (or more) distinct faces of one shell, but the shell is meant to be a 2-manifold. The expected invariant — every edge of a 2-manifold shell is incident to exactly two faces — is violated. Bug-reporter language: &quot;non-manifold edge&quot;, &quot;T-junction&quot;, &quot;edge in three faces&quot;, &quot;non-manifold seam&quot;.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>Three `ADVANCED_FACE` entries whose outer `EDGE_LOOP`s each reference the same `EDGE_CURVE` (with possibly different orientations). Wrap them in a `CLOSED_SHELL` along with whatever else is needed to close the topology.</p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>Reject as non-manifold, or split the model into manifold sub-shells, or accept with a non-manifold marker — kernel-design choice.</p></section>
+<p>Reject as non-manifold, or split the model into manifold sub-shells, or accept with a non-manifold marker; kernel-design choice.</p></section>
 <section><h2>Notes</h2>
 <p>Synonyms: &quot;T-junction edge&quot;, &quot;non-manifold T&quot;, &quot;edge with three incident faces&quot;, &quot;non-manifold seam in 2-manifold shell&quot;, &quot;edge referenced by more than two faces&quot;. **See also**: Sw001, Tsh020.</p></section>
 <section><h2>Expected validation</h2>

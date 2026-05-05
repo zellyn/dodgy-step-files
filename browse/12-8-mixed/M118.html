@@ -29,7 +29,7 @@
 <section><h2>Sender</h2>
 <p>deduced — multi-mesher pipeline that didn&#x27;t insert MPC tying at the tet-hex interface</p></section>
 <section><h2>Description</h2>
-<p>A linear tet (3 nodes per face) and a linear hex (4 nodes per face) share the same geometric face. The tet face has 3 nodes; the hex face has 4 nodes. There is no `MULTI_POINT_CONSTRAINT` tying the fourth-node displacement to the tet&#x27;s three nodes. The interface is geometrically continuous but kinematically free — the solver computes separation across the face. Bug-reporter language: &quot;AP209 non-conforming mesh&quot;, &quot;FEM tet-hex interface ungated&quot;, &quot;mesh leaks at element boundary&quot;.</p></section>
+<p>A linear tet (3 nodes per face) and a linear hex (4 nodes per face) share the same geometric face. The tet face has 3 nodes; the hex face has 4 nodes. There is no `MULTI_POINT_CONSTRAINT` tying the fourth-node displacement to the tet&#x27;s three nodes. The interface is geometrically continuous but kinematically free; the solver computes separation across the face. Bug-reporter language: &quot;AP209 non-conforming mesh&quot;, &quot;FEM tet-hex interface ungated&quot;, &quot;mesh leaks at element boundary&quot;.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>A `VOLUME_3D_ELEMENT_DESCRIPTOR` for a tet sharing one face geometrically with another `VOLUME_3D_ELEMENT_DESCRIPTOR` hex; no MPCs tying the extra hex node.</p></section>
 <section><h2>Expected kernel behavior</h2>

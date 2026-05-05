@@ -29,13 +29,13 @@
 <li>CAx-IF Sheet-Metal Recommended Practices §bend-radius minima</li>
 </ul></section>
 <section><h2>Description</h2>
-<p>AP242 flat_pattern carries the material thickness and per-bend inside-radius. Sheet-metal manufacturability requires `bend_radius ≥ material_thickness` (a tighter bend cracks or tears the material, and the K-factor calibration breaks down). A producer that emits `material_thickness = 2.0 mm` and `bend_radius = 0.5 mm` leaves a flat pattern that is geometrically representable but unmanufacturable. Receivers either reject (manufacturability), warn, or accept (silent producer of a bad K-factor / bad neutral-axis geometry — the unrolled length will be wrong). Bug-reporter language: &quot;bend radius too small for thickness&quot;, &quot;AP242 flat pattern impossible bend radius&quot;, &quot;K-factor calibration fails&quot;.</p></section>
+<p>AP242 flat_pattern carries the material thickness and per-bend inside-radius. Sheet-metal manufacturability requires `bend_radius ≥ material_thickness` (a tighter bend cracks or tears the material, and the K-factor calibration breaks down). A producer that emits `material_thickness = 2.0 mm` and `bend_radius = 0.5 mm` leaves a flat pattern that is geometrically representable but unmanufacturable. Receivers either reject (manufacturability), warn, or accept (silent producer of a bad K-factor / bad neutral-axis geometry, the unrolled length will be wrong). Bug-reporter language: &quot;bend radius too small for thickness&quot;, &quot;AP242 flat pattern impossible bend radius&quot;, &quot;K-factor calibration fails&quot;.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>A `SHAPE_ASPECT(&#x27;flat_pattern&#x27;)` with `DIMENSIONAL_SIZE(&#x27;material_thickness&#x27;) = 2.0` and a child `SHAPE_ASPECT(&#x27;bend_line&#x27;)` whose `DIMENSIONAL_SIZE(&#x27;bend_radius&#x27;) = 0.5`.</p></section>
 <section><h2>Expected kernel behavior</h2>
 <p>warn `W_BEND_RADIUS_BELOW_THICKNESS` (manufacturability) and proceed; or reject if the kernel&#x27;s policy treats this as a hard constraint.</p></section>
 <section><h2>Notes</h2>
-<p>Distinct from Pmi114 (angle out of range) — Pmi115 is dimensional consistency between two attributes. **See also**: Pmi114, Pmi116, Pmi117, Pmi118. Synonyms: &quot;FLAT_PATTERN bend radius less than material thickness&quot;, &quot;sheet-metal bend radius too small&quot;, &quot;K-factor calibration breaks&quot;, &quot;bend radius below sheet thickness&quot;.</p></section>
+<p>Distinct from Pmi114 (angle out of range); Pmi115 is dimensional consistency between two attributes. **See also**: Pmi114, Pmi116, Pmi117, Pmi118. Synonyms: &quot;FLAT_PATTERN bend radius less than material thickness&quot;, &quot;sheet-metal bend radius too small&quot;, &quot;K-factor calibration breaks&quot;, &quot;bend radius below sheet thickness&quot;.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

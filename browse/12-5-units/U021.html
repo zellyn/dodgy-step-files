@@ -32,7 +32,7 @@
 <section><h2>Reproducer recipe</h2>
 <p>define a `force_unit` (Newton) whose `derived_unit_element` references a `mass_unit` with no prefix; or a free-standing mass unit with prefix other than `.KILO.`.</p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>validate — when a derived SI unit pulls in `mass_unit`, ensure prefix is `.KILO.`; reject or auto-convert otherwise.</p></section>
+<p>validate; when a derived SI unit pulls in `mass_unit`, ensure prefix is `.KILO.`; reject or auto-convert otherwise.</p></section>
 <section><h2>Notes</h2>
 <p>**See also**: U026. Synonyms: &quot;KILO prefix missing on mass_unit&quot;, &quot;Newton built without kilo prefix&quot;, &quot;force_unit derived from gram instead of kg&quot;, &quot;STEP Newton off by 1000&quot;, &quot;mass_unit prefix wrong in derived SI&quot;.</p></section>
 <section><h2>Expected validation</h2>

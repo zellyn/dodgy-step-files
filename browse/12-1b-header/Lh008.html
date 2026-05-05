@@ -31,7 +31,7 @@
 <section><h2>Reproducer recipe</h2>
 <p>`HEADER; FILE_DESCRIPTION((&#x27;&#x27;),&#x27;2;1&#x27;); FILE_NAME(..); FILE_SCHEMA((&#x27;AP203_CONFIG_CONTROL_DESIGN&#x27;)); FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN&#x27;)); ENDSEC;`</p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>reject — exactly one FILE_SCHEMA permitted.</p></section>
+<p>reject; exactly one FILE_SCHEMA permitted.</p></section>
 <section><h2>Notes</h2>
 <p>**See also**: Lh006. Synonyms: &quot;duplicate FILE_SCHEMA records&quot;, &quot;two FILE_SCHEMA lines in HEADER&quot;, &quot;conflicting schema names in header&quot;, &quot;second FILE_SCHEMA overrides first&quot;, &quot;schema declared twice with different names&quot;.</p></section>
 <section><h2>Expected validation</h2>

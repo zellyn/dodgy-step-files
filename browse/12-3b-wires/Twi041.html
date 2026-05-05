@@ -29,7 +29,7 @@
 <section><h2>Sender</h2>
 <p>IFC importer; also any STEP-translated face with INTERNAL sub-shapes</p></section>
 <section><h2>Description</h2>
-<p>An `ADVANCED_FACE` with a normal square `FACE_OUTER_BOUND` plus an inner `FACE_BOUND` containing a `VERTEX_LOOP` that wraps a single `VERTEX_POINT` inside the outer wire (e.g. at (5, 5, 0)) — a wire-bound that visits an internal vertex with no edge. Such INTERNAL-orientation vertex sub-shapes cause an outer-wire-detection pass to spin indefinitely, or to skip the primal wire when iteration reports only vertex children remaining. The face&#x27;s outer wire is unreachable through naive child iteration when non-wire children appear in the traversal order.</p></section>
+<p>An `ADVANCED_FACE` with a normal square `FACE_OUTER_BOUND` plus an inner `FACE_BOUND` containing a `VERTEX_LOOP` that wraps a single `VERTEX_POINT` inside the outer wire (e.g. at (5, 5, 0)); a wire-bound that visits an internal vertex with no edge. Such INTERNAL-orientation vertex sub-shapes cause an outer-wire-detection pass to spin indefinitely, or to skip the primal wire when iteration reports only vertex children remaining. The face&#x27;s outer wire is unreachable through naive child iteration when non-wire children appear in the traversal order.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>Face with one wire and several INTERNAL-oriented vertex sub-shapes in iteration order.</p></section>
 <section><h2>Expected kernel behavior</h2>

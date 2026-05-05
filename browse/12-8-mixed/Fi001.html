@@ -26,9 +26,9 @@
 <li>OCCT ChFi3d_Builder_2.cxx:3177, 3218 (ChFiDS_TwistedSurface) (uncovered class evidence)</li>
 </ul></section>
 <section><h2>Sender</h2>
-<p>deduced — OCCT uncovered-class sweep, Pass C</p></section>
+<p>deduced — OCCT uncovered-class sweep</p></section>
 <section><h2>Description</h2>
-<p>A user requests a fillet along a contour of edges that pass from a concave region into a convex region (or vice versa) mid-spine. The fillet surface that would be needed twists across the concavity flip — convex-side fillet meets concave-side fillet in a self-intersecting way. Bug-reporter language: &quot;fillet twists&quot;, &quot;fillet self-intersects on contour&quot;, &quot;fillet spans convex/concave change&quot;.</p></section>
+<p>A user requests a fillet along a contour of edges that pass from a concave region into a convex region (or vice versa) mid-spine. The fillet surface that would be needed twists across the concavity flip; convex-side fillet meets concave-side fillet in a self-intersecting way. Bug-reporter language: &quot;fillet twists&quot;, &quot;fillet self-intersects on contour&quot;, &quot;fillet spans convex/concave change&quot;.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>A solid whose spine edge has a vertex where the dihedral angle transitions from &lt;180° (convex) to &gt;180° (concave). Request a fillet on the entire spine.</p></section>
 <section><h2>Expected kernel behavior</h2>

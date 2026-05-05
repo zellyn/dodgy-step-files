@@ -26,7 +26,7 @@
 <li>OCCT BRepCheck_Solid.cxx (InvalidImbricationOfShells code path) (uncovered class evidence)</li>
 </ul></section>
 <section><h2>Sender</h2>
-<p>deduced — OCCT uncovered-class sweep, Pass C</p></section>
+<p>deduced — OCCT uncovered-class sweep</p></section>
 <section><h2>Description</h2>
 <p>A `BREP_WITH_VOIDS` carries two inner void shells where one void is fully enclosed by the other rather than disjoint. The kernel cannot construct a clean inside/outside classification because the void hierarchy is malformed: a region the inner void declares &quot;solid material&quot; the outer void declares &quot;empty space&quot;. Bug-reporter language: &quot;nested cavities&quot;, &quot;voids inside voids&quot;, &quot;shell inside another shell&quot;.</p></section>
 <section><h2>Reproducer recipe</h2>

@@ -33,7 +33,7 @@
 <section><h2>Reproducer recipe</h2>
 <p>Block with one through-hole; emit two half-`advanced_face`s sharing the same `cylindrical_surface` axis with opposite parameter ranges; attach diameter `dimensional_size` and a position `geometric_tolerance` whose `shape_aspect` is referenced by two GISUs; bind a single `v5_uuid_attribute` via `uuid_set_items` to both halves.</p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal — recognize the two halves as one cylindrical feature (or honor multi-GISU on the shared `shape_aspect`); merge by `uuid_set_items` membership before reporting feature counts.</p></section>
+<p>heal: recognize the two halves as one cylindrical feature (or honor multi-GISU on the shared `shape_aspect`); merge by `uuid_set_items` membership before reporting feature counts.</p></section>
 <section><h2>Notes</h2>
 <p>**See also**: N044. Synonyms: &quot;hole emitted as two half-cylinders&quot;, &quot;PMI feature association broken because hole is split&quot;, &quot;split-cylinder hole loses dimension link&quot;, &quot;diameter callout doesn&#x27;t bind to hole&quot;.</p></section>
 <section><h2>Expected validation</h2>

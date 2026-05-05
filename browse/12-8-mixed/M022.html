@@ -28,13 +28,13 @@
 <li>10-vendor-kbs.md (V015 PMI/tessellation)</li>
 </ul></section>
 <section><h2>Description</h2>
-<p>BRL-CAD&#x27;s `step-g` and many other readers ignore `tessellated_solid`, `triangulated_face`, `complex_triangulated_surface_set` — only B-rep paths are consumed. Files containing only mesh entities appear empty.</p></section>
+<p>BRL-CAD&#x27;s `step-g` and many other readers ignore `tessellated_solid`, `triangulated_face`, `complex_triangulated_surface_set`; only B-rep paths are consumed. Files containing only mesh entities appear empty.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>AP242 file using `TRIANGULATED_FACE` and `COMPLEX_TRIANGULATED_SURFACE_SET` with no `MANIFOLD_SOLID_BREP` entity.</p></section>
 <section><h2>Expected kernel behavior</h2>
 <p>import as mesh object (or convert mesh to lightweight surface); never silently drop.</p></section>
 <section><h2>Notes</h2>
-<p>Synonyms: &quot;mesh-only AP242 appears empty&quot;, &quot;STL-derived tessellation ignored&quot;, &quot;triangulated_face skipped by importer&quot;, &quot;B-rep-only reader drops mesh entities&quot;, &quot;BRL-CAD step-g ignores tessellated solid and triangulated face entities&quot;. **OCC behavior**: silently produces empty results on mesh-only AP242 files (the BRep path consumes nothing) without surfacing that mesh entities were skipped; kernel mishandling — the catalog above forbids silent drop.</p></section>
+<p>Synonyms: &quot;mesh-only AP242 appears empty&quot;, &quot;STL-derived tessellation ignored&quot;, &quot;triangulated_face skipped by importer&quot;, &quot;B-rep-only reader drops mesh entities&quot;, &quot;BRL-CAD step-g ignores tessellated solid and triangulated face entities&quot;. **OCC behavior**: silently produces empty results on mesh-only AP242 files (the BRep path consumes nothing) without surfacing that mesh entities were skipped; kernel mishandling; the catalog above forbids silent drop.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">

@@ -26,7 +26,7 @@
 <li>OCCT `ShapeAnalysis_CheckSmallFace::CheckStripEdges` (`ShapeAnalysis_CheckSmallFace.hxx:85`)</li>
 </ul></section>
 <section><h2>Description</h2>
-<p>Two long edges of a wire are within tolerance distance of each other along the full parameter range of both. The pair-of-edges check operates without knowing the host face — it is purely about whether two edges describe approximately the same curve.</p></section>
+<p>Two long edges of a wire are within tolerance distance of each other along the full parameter range of both. The pair-of-edges check operates without knowing the host face; it is purely about whether two edges describe approximately the same curve.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>A wire with two parallel edges from `(0,0,0)→(100,0,0)` and `(0,1e-6,0)→(100,1e-6,0)`; the gap is 1e-6 over a 100-unit length.</p></section>
 <section><h2>Expected kernel behavior</h2>

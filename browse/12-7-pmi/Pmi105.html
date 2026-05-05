@@ -30,7 +30,7 @@
 <li>bug-reporter language: &quot;AP242 boss base not on face&quot;, &quot;boss floating above plate&quot;, &quot;BOSS base offset from host&quot;.</li>
 </ul></section>
 <section><h2>Description</h2>
-<p>AP242 `boss` carries an `AXIS2_PLACEMENT_3D` for its base; the geometric invariant is that the boss base plane coincides with the host face plane (the boss attaches *to* the substrate). A producer that emits a boss whose base is offset by 5 mm from the host face leaves the feature physically disconnected from the substrate — constructive evaluation produces a floating cylinder. Receivers diverge: some snap the boss to the face, some accept and produce a non-manifold solid, some reject. Bug-reporter language: &quot;BOSS base not coplanar with host&quot;, &quot;boss floats above plate&quot;, &quot;AP242 boss base offset&quot;.</p></section>
+<p>AP242 `boss` carries an `AXIS2_PLACEMENT_3D` for its base; the geometric invariant is that the boss base plane coincides with the host face plane (the boss attaches *to* the substrate). A producer that emits a boss whose base is offset by 5 mm from the host face leaves the feature physically disconnected from the substrate; constructive evaluation produces a floating cylinder. Receivers diverge: some snap the boss to the face, some accept and produce a non-manifold solid, some reject. Bug-reporter language: &quot;BOSS base not coplanar with host&quot;, &quot;boss floats above plate&quot;, &quot;AP242 boss base offset&quot;.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>a planar host face at z=0; a `SHAPE_ASPECT(&#x27;BOSS&#x27;,..)` whose `AXIS2_PLACEMENT_3D` location is `(25.0, 25.0, 5.0)` (5 mm offset above the host face).</p></section>
 <section><h2>Expected kernel behavior</h2>

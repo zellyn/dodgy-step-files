@@ -30,7 +30,7 @@
 <li>bug-reporter language: &quot;AP242 groove width zero&quot;, &quot;groove with no opening&quot;, &quot;GROOVE degenerate width&quot;.</li>
 </ul></section>
 <section><h2>Description</h2>
-<p>AP242 `groove` is a recessed feature with `groove_width`, `groove_depth`, and a profile/sweep description. The geometric invariant: `groove_width &gt; 0` (a zero-width groove removes no material — the feature is degenerate). A producer that emits `groove_width=0.0` leaves a feature definition that cannot be physically realised. Receivers diverge: some accept and produce a zero-volume cut, some reject as malformed, some silently substitute a default width. Bug-reporter language: &quot;GROOVE has zero width&quot;, &quot;AP242 groove with no opening&quot;, &quot;groove width attribute is zero&quot;.</p></section>
+<p>AP242 `groove` is a recessed feature with `groove_width`, `groove_depth`, and a profile/sweep description. The geometric invariant: `groove_width &gt; 0` (a zero-width groove removes no material, the feature is degenerate). A producer that emits `groove_width=0.0` leaves a feature definition that cannot be physically realised. Receivers diverge: some accept and produce a zero-volume cut, some reject as malformed, some silently substitute a default width. Bug-reporter language: &quot;GROOVE has zero width&quot;, &quot;AP242 groove with no opening&quot;, &quot;groove width attribute is zero&quot;.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>a planar host face; a `SHAPE_ASPECT(&#x27;GROOVE&#x27;,..)` with `DIMENSIONAL_SIZE` of `groove_width=0.0 mm` and `groove_depth=2.0 mm`.</p></section>
 <section><h2>Expected kernel behavior</h2>

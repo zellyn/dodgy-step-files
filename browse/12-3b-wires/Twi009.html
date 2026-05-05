@@ -26,7 +26,7 @@
 <li>05-occt-shapefix.md F021 (FixSplitCommonVertex)</li>
 </ul></section>
 <section><h2>Description</h2>
-<p>STEP requires that each wire of a face own its own distinct `VERTEX_POINT`s. The sender produces a face whose outer wire and inner wire reference the same `VERTEX_POINT` instance — legal in some kernel-internal BRep representations, but invalid in STEP and ambiguous to receivers expecting per-wire vertex ownership.</p></section>
+<p>STEP requires that each wire of a face own its own distinct `VERTEX_POINT`s. The sender produces a face whose outer wire and inner wire reference the same `VERTEX_POINT` instance; legal in some kernel-internal BRep representations, but invalid in STEP and ambiguous to receivers expecting per-wire vertex ownership.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>`FACE_OUTER_BOUND` and `FACE_BOUND` whose `EDGE_LOOP`s reference the same `VERTEX_POINT` `#v`.</p></section>
 <section><h2>Expected kernel behavior</h2>

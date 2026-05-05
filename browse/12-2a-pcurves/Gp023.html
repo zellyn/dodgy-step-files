@@ -27,7 +27,7 @@
 <li>13-quaoar.md B012</li>
 </ul></section>
 <section><h2>Description</h2>
-<p>A face on a periodic surface (full `CYLINDRICAL_SURFACE`, `TOROIDAL_SURFACE`, etc.) is trimmed to a sub-band of U (e.g. U in [π, 2π]). Pcurve parameterisations for edges following a `CIRCLE` start at the wrong angle relative to the trimmed band — e.g. a pcurve `LINE` starts at u=π instead of u=0, off by π from the circle start angle. Equivalently, projecting a 3D point onto the trimmed periodic surface returns a UV pair outside the face&#x27;s actual `[UMin,UMax]/[VMin,VMax]` band, even though a valid in-range pre-image exists in another period. Mesh-node reprojection during sheet-metal unfolding lands in the wrong period.</p></section>
+<p>A face on a periodic surface (full `CYLINDRICAL_SURFACE`, `TOROIDAL_SURFACE`, etc.) is trimmed to a sub-band of U (e.g. U in [π, 2π]). Pcurve parameterisations for edges following a `CIRCLE` start at the wrong angle relative to the trimmed band; e.g. a pcurve `LINE` starts at u=π instead of u=0, off by π from the circle start angle. Equivalently, projecting a 3D point onto the trimmed periodic surface returns a UV pair outside the face&#x27;s actual `[UMin,UMax]/[VMin,VMax]` band, even though a valid in-range pre-image exists in another period. Mesh-node reprojection during sheet-metal unfolding lands in the wrong period.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>Face on full cylinder trimmed to U in `[π,2π]`; pick a 3D point above the face; project; observe returned U near 0.</p></section>
 <section><h2>Expected kernel behavior</h2>

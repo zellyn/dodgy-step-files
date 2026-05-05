@@ -31,11 +31,11 @@
 <section><h2>Sender</h2>
 <p>SolidWorks (inch units), Onshape (workspace inches)</p></section>
 <section><h2>Description</h2>
-<p>A STEP file written in inches is silently treated as millimetres because the `LENGTH_UNIT` declaration is parsed inconsistently. Many possibilities exist for declaring units (named units, conversion-based units, context-dependent units) and OpenCascade-based readers default to mm. Result: a 2 inch feature appears 50.8 mm in source vs 2 mm in target — a 25.4× error.</p></section>
+<p>A STEP file written in inches is silently treated as millimetres because the `LENGTH_UNIT` declaration is parsed inconsistently. Many possibilities exist for declaring units (named units, conversion-based units, context-dependent units) and OpenCascade-based readers default to mm. Result: a 2 inch feature appears 50.8 mm in source vs 2 mm in target; a 25.4× error.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>SolidWorks STEP with `( LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT($,.METRE.) )` plus a conversion-based wrapper for inches; receiver reads the wrapper as identity.</p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal — resolve full unit-conversion chain to a single SI scale factor; reject if ambiguous; never default silently.</p></section>
+<p>heal; resolve full unit-conversion chain to a single SI scale factor; reject if ambiguous; never default silently.</p></section>
 <section><h2>Notes</h2>
 <p>**See also**: U006. Synonyms: &quot;inches silently treated as mm&quot;, &quot;25.4x scale error on import&quot;, &quot;inch model arrives 25.4 times too small&quot;, &quot;LENGTH_UNIT inch parsed as default mm&quot;.</p></section>
 <section><h2>Expected validation</h2>

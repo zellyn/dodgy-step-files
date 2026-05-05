@@ -27,7 +27,7 @@
 <li>13-quaoar.md B003</li>
 </ul></section>
 <section><h2>Description</h2>
-<p>Querying the supporting surface of a face eagerly walks every edge of every bounding wire to compute UV bounds, even when the caller only needs the surface type. Common shape: an `ADVANCED_FACE` with one outer bound plus many circular inner `FACE_BOUND` holes on a single plane (perforated sheet) — the cost multiplies by hole count, producing quadratic-in-feature-count writer time.</p></section>
+<p>Querying the supporting surface of a face eagerly walks every edge of every bounding wire to compute UV bounds, even when the caller only needs the surface type. Common shape: an `ADVANCED_FACE` with one outer bound plus many circular inner `FACE_BOUND` holes on a single plane (perforated sheet); the cost multiplies by hole count, producing quadratic-in-feature-count writer time.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>time the STEP writer&#x27;s transfer pass on a sheet with thousands of holes.</p></section>
 <section><h2>Expected kernel behavior</h2>

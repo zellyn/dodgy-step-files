@@ -31,7 +31,7 @@
 <section><h2>Reproducer recipe</h2>
 <p>torus with negative major radius; seam edge with 3D length 1e-7; loop = `(seam_fwd, other, seam_rev, other2)` such that the seam edge appears doubled.</p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>Heal and accept, or warn and accept: vendor-radius policy normalizes the radius, tolerance-boundary policy decides at the boundary, repeated-seam invariant coerces / repairs the seam — each independently.</p></section>
+<p>Heal and accept, or warn and accept: vendor-radius policy normalizes the radius, tolerance-boundary policy decides at the boundary, repeated-seam invariant coerces / repairs the seam; each independently.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">

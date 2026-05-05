@@ -27,9 +27,9 @@
 <li>OCCT BRepLib_MakeFace FaceError.CurveProjectionFailed (uncovered class evidence)</li>
 </ul></section>
 <section><h2>Sender</h2>
-<p>deduced — OCCT uncovered-class sweep, Pass C</p></section>
+<p>deduced — OCCT uncovered-class sweep</p></section>
 <section><h2>Description</h2>
-<p>A face&#x27;s bounding edge has a 3D curve that does not lie on the face&#x27;s surface — the 3D curve is significantly off-surface. The kernel cannot project the curve into UV to build a pcurve because the projection diverges or is multi-valued. Bug-reporter language: &quot;edge not on surface&quot;, &quot;pcurve construction failed&quot;, &quot;edge floats above face&quot;.</p></section>
+<p>A face&#x27;s bounding edge has a 3D curve that does not lie on the face&#x27;s surface; the 3D curve is significantly off-surface. The kernel cannot project the curve into UV to build a pcurve because the projection diverges or is multi-valued. Bug-reporter language: &quot;edge not on surface&quot;, &quot;pcurve construction failed&quot;, &quot;edge floats above face&quot;.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>An `ADVANCED_FACE` on a `PLANE` (z=0). The face&#x27;s outer wire references an `EDGE_CURVE` whose `LINE` runs at `z=0.5` — well above the plane.</p></section>
 <section><h2>Expected kernel behavior</h2>

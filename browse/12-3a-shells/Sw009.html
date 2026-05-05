@@ -27,9 +27,9 @@
 <li>OCCT BRepBuilderAPI_FastSewing.cxx (SameParameter handling) (uncovered class evidence)</li>
 </ul></section>
 <section><h2>Sender</h2>
-<p>deduced — OCCT uncovered-class sweep, Pass C</p></section>
+<p>deduced — OCCT uncovered-class sweep</p></section>
 <section><h2>Description</h2>
-<p>An incoming EDGE_CURVE has its `same_parameter` flag falsely set true; fast-sewing skips the parameter-reconciliation pass that would catch it. The result is a sewn shell with edges whose 3D curve and pcurve disagree. Typical fixture: an EDGE_CURVE references a 3D LINE for its curve geometry; a separate LINE_2D/VECTOR_2D/DIRECTION_2D pcurve is also defined but parameterized differently and not connected via PCURVE/SURFACE_CURVE to the edge — the parametric pcurve dangles separately. Bug-reporter language: &quot;same_parameter flag stuck&quot;, &quot;fast sew skips parameter reconciliation&quot;, &quot;orphan pcurve / dangling LINE_2D&quot;.</p></section>
+<p>An incoming EDGE_CURVE has its `same_parameter` flag falsely set true; fast-sewing skips the parameter-reconciliation pass that would catch it. The result is a sewn shell with edges whose 3D curve and pcurve disagree. Typical fixture: an EDGE_CURVE references a 3D LINE for its curve geometry; a separate LINE_2D/VECTOR_2D/DIRECTION_2D pcurve is also defined but parameterized differently and not connected via PCURVE/SURFACE_CURVE to the edge; the parametric pcurve dangles separately. Bug-reporter language: &quot;same_parameter flag stuck&quot;, &quot;fast sew skips parameter reconciliation&quot;, &quot;orphan pcurve / dangling LINE_2D&quot;.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>An EDGE_CURVE with `same_parameter = .T.` referencing a 3D LINE; alongside it, a free LINE_2D/VECTOR_2D pcurve with a different parameter range that is not bound via PCURVE/SURFACE_CURVE. Pass through fast sewing.</p></section>
 <section><h2>Expected kernel behavior</h2>

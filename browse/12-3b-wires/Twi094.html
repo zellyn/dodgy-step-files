@@ -27,7 +27,7 @@
 <li>OCCT MANTIS#0022822 (OCCT MANTIS tracker 502 as of 2026-05-02)</li>
 </ul></section>
 <section><h2>Description</h2>
-<p>An open (non-closed) wire&#x27;s first or last edge is silently dropped by a wire-build step that was written assuming the wire is closed (so the &quot;first&quot; edge&#x27;s predecessor is the &quot;last&quot; edge). When the wire is open, that wraparound logic skips the first or last edge. Typical fixture: an EDGE_LOOP listing four edges over vertices V13-&gt;V15-&gt;V17-&gt;V19-&gt;V21, with an additional VERTEX_POINT V11 at the origin defined but never referenced by any ORIENTED_EDGE — the missing first edge leaves an orphan vertex and an open wire.</p></section>
+<p>An open (non-closed) wire&#x27;s first or last edge is silently dropped by a wire-build step that was written assuming the wire is closed (so the &quot;first&quot; edge&#x27;s predecessor is the &quot;last&quot; edge). When the wire is open, that wraparound logic skips the first or last edge. Typical fixture: an EDGE_LOOP listing four edges over vertices V13-&gt;V15-&gt;V17-&gt;V19-&gt;V21, with an additional VERTEX_POINT V11 at the origin defined but never referenced by any ORIENTED_EDGE; the missing first edge leaves an orphan vertex and an open wire.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>A five-vertex open polyline wire where one endpoint VERTEX_POINT is defined but no ORIENTED_EDGE references it (orphan vertex), yielding a four-edge wire missing the first or last edge.</p></section>
 <section><h2>Expected kernel behavior</h2>

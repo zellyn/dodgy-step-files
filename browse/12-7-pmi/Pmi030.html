@@ -31,9 +31,9 @@
 <section><h2>Reproducer recipe</h2>
 <p>`projected_zone_definition` with magnitude `-5.0`.</p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>Take absolute value and warn, or reject — but never silently use the negative value.</p></section>
+<p>Take absolute value and warn, or reject; but never silently use the negative value.</p></section>
 <section><h2>Notes</h2>
-<p>**OCC behavior**: silently accepts the negative-magnitude `projected_zone_definition` with no diagnostic; kernel mishandling — the catalog above forbids silent use of the negative value. Synonyms: &quot;negative projected tolerance zone length&quot;, &quot;projected zone length below zero&quot;, &quot;tolerance projection length encoded negative&quot;.</p></section>
+<p>**OCC behavior**: silently accepts the negative-magnitude `projected_zone_definition` with no diagnostic; kernel mishandling; the catalog above forbids silent use of the negative value. Synonyms: &quot;negative projected tolerance zone length&quot;, &quot;projected zone length below zero&quot;, &quot;tolerance projection length encoded negative&quot;.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">

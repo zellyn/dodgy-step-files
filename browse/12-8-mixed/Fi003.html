@@ -26,9 +26,9 @@
 <li>OCCT ChFi3d_Builder_2.cxx:1067 (ChFiDS_StartsolFailure) (uncovered class evidence)</li>
 </ul></section>
 <section><h2>Sender</h2>
-<p>deduced — OCCT uncovered-class sweep, Pass C</p></section>
+<p>deduced — OCCT uncovered-class sweep</p></section>
 <section><h2>Description</h2>
-<p>User requests a fillet of radius R on a spine edge where one of the adjacent face&#x27;s principal curvatures is less than 1/R — meaning the fillet rolling-ball cannot fit between the faces without intersecting them. Bug-reporter language: &quot;fillet radius too large&quot;, &quot;rolling ball doesn&#x27;t fit&quot;, &quot;fillet start failure&quot;.</p></section>
+<p>User requests a fillet of radius R on a spine edge where one of the adjacent face&#x27;s principal curvatures is less than 1/R; meaning the fillet rolling-ball cannot fit between the faces without intersecting them. Bug-reporter language: &quot;fillet radius too large&quot;, &quot;rolling ball doesn&#x27;t fit&quot;, &quot;fillet start failure&quot;.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>A small cylinder (radius 5 mm) with a spine edge at one end. Request a fillet of radius 6 mm at that edge.</p></section>
 <section><h2>Expected kernel behavior</h2>

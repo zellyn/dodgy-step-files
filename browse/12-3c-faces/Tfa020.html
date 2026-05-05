@@ -31,7 +31,7 @@
 <li>17-standards M021</li>
 </ul></section>
 <section><h2>Description</h2>
-<p>A shell that should be closed has free (naked) edges — edges incident to fewer than two faces. Either a face is missing (W009), or adjacent face boundaries weren&#x27;t sewn within tolerance.</p></section>
+<p>A shell that should be closed has free (naked) edges; edges incident to fewer than two faces. Either a face is missing (W009), or adjacent face boundaries weren&#x27;t sewn within tolerance.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>Shell exported as separate faces (no `CLOSED_SHELL`), with `OPEN_SHELL` carrying free boundary loops where adjacent face edges sit within `1e-5` m of each other but reference different `EDGE_CURVE` records.</p></section>
 <section><h2>Expected kernel behavior</h2>

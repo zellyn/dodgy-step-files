@@ -33,7 +33,7 @@
 <section><h2>Reproducer recipe</h2>
 <p>`#N=BREP_WITH_VOIDS(&#x27;&#x27;,#outer,(#void));` where `#void` is a `CLOSED_SHELL` whose orientation in `oriented_closed_shell` is `.T.` instead of `.F.`.</p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal — detect mis-oriented voids by signed-volume sign; auto-reverse with warning.</p></section>
+<p>heal; detect mis-oriented voids by signed-volume sign; auto-reverse with warning.</p></section>
 <section><h2>Notes</h2>
 <p>**See also**: Tsh009. Synonyms: &quot;interior void mis-classified as positive volume&quot;, &quot;hollow part loses its inner cavity&quot;, &quot;void shell oriented backwards&quot;, &quot;internal hole counts as solid material&quot;, &quot;BREP_WITH_VOIDS void direction wrong&quot;.</p></section>
 <section><h2>Expected validation</h2>

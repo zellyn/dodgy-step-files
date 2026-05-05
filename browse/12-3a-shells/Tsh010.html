@@ -33,7 +33,7 @@
 <section><h2>Reproducer recipe</h2>
 <p>`MANIFOLD_SOLID_BREP` where one `ADVANCED_FACE` is referenced with inverted sense (`.F.` instead of `.T.`, or wrong `same_sense` on the face) so its normal points inward.</p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal — orientation-propagation flood-fill from a known-correct seed; reject only if the shell is too disconnected to orient consistently.</p></section>
+<p>heal; orientation-propagation flood-fill from a known-correct seed; reject only if the shell is too disconnected to orient consistently.</p></section>
 <section><h2>Notes</h2>
 <p>**See also**: Tsh009. Synonyms: &quot;face normal points the wrong way&quot;, &quot;renderer shows inside-out shading&quot;, &quot;single face flipped on closed body&quot;, &quot;simulation boundary conditions wrong from flipped face&quot;, &quot;one face reversed in otherwise-good solid&quot;.</p></section>
 <section><h2>Expected validation</h2>

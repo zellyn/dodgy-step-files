@@ -28,7 +28,7 @@
 <li>21-patents.md (X004)</li>
 </ul></section>
 <section><h2>Description</h2>
-<p>A 3D curve (typically `B_SPLINE_CURVE_WITH_KNOTS`) crosses itself within the edge&#x27;s parameter range, or a `COMPOSITE_CURVE` segment doubles back. Common shape: a degree-3 B-spline whose first and last control points are both at the same point (e.g. both (0,0,0)) with a clamped knot vector — a closed figure-eight whose `EDGE_CURVE` has start/end vertices coincident at that same point. Common output of poorly-trimmed offset surfaces or translator re-fitting.</p></section>
+<p>A 3D curve (typically `B_SPLINE_CURVE_WITH_KNOTS`) crosses itself within the edge&#x27;s parameter range, or a `COMPOSITE_CURVE` segment doubles back. Common shape: a degree-3 B-spline whose first and last control points are both at the same point (e.g. both (0,0,0)) with a clamped knot vector; a closed figure-eight whose `EDGE_CURVE` has start/end vertices coincident at that same point. Common output of poorly-trimmed offset surfaces or translator re-fitting.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>`B_SPLINE_CURVE_WITH_KNOTS` of degree 3 with a control polygon that produces a figure-eight inside `[u_first, u_last]`; reference from an `EDGE_CURVE`.</p></section>
 <section><h2>Expected kernel behavior</h2>

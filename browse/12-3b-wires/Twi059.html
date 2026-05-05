@@ -27,7 +27,7 @@
 <li>OCCT `ShapeAnalysis_Edge::CheckVerticesWithCurve3d` (`ShapeAnalysis_Edge.hxx:156`)</li>
 </ul></section>
 <section><h2>Description</h2>
-<p>An edge&#x27;s start (or end) VERTEX_POINT lies further than the vertex&#x27;s tolerance from where the 3D curve&#x27;s first (or last) parameter evaluates. The edge is &quot;broken&quot; — geometric path doesn&#x27;t match the topological endpoint.</p></section>
+<p>An edge&#x27;s start (or end) VERTEX_POINT lies further than the vertex&#x27;s tolerance from where the 3D curve&#x27;s first (or last) parameter evaluates. The edge is &quot;broken&quot;; geometric path doesn&#x27;t match the topological endpoint.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>VERTEX_POINT at `(10.005, 10, 0)` paired with a 3D LINE that evaluates to `(10, 10, 0)` at the edge&#x27;s last parameter; declared vertex tolerance 1e-6.</p></section>
 <section><h2>Expected kernel behavior</h2>

@@ -27,7 +27,7 @@
 <li>OCCT BRepOffsetAPI_FindContigousEdges (uncovered class evidence)</li>
 </ul></section>
 <section><h2>Sender</h2>
-<p>deduced — OCCT uncovered-class sweep, Pass C</p></section>
+<p>deduced — OCCT uncovered-class sweep</p></section>
 <section><h2>Description</h2>
 <p>A &quot;find-contiguous-edges&quot; pass identifies free edges that *would* match across faces, but the pairs have different parameter lengths even though their 3D extents are similar. Typical fixture: two LINE entities from the same origin — one with a unit-magnitude VECTOR along a unit DIRECTION, the other with a unit-magnitude VECTOR along a non-unit DIRECTION (e.g., (0.5,0,0)) — covering the same 3D extent but with different parameter lengths. Bug-reporter language: &quot;contiguous edges mismatched length&quot;, &quot;free edge pair length differ&quot;, &quot;non-unit DIRECTION breaks parameterization&quot;.</p></section>
 <section><h2>Reproducer recipe</h2>

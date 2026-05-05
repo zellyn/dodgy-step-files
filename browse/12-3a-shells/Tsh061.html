@@ -28,7 +28,7 @@
 <li>OCCT MANTIS#0027309 (OCCT MANTIS tracker 502 as of 2026-05-02)</li>
 </ul></section>
 <section><h2>Description</h2>
-<p>After Boolean intersection of two complex shapes, the result has internal seam edges shared by three faces (a non-manifold interior edge). Same-surface face merging visits this edge from each incident face and records contradictory merge decisions, producing a shape that fails Boolean validity check (&quot;InvalidMultiConnexity&quot; — edge connected to too many faces in the result).</p></section>
+<p>After Boolean intersection of two complex shapes, the result has internal seam edges shared by three faces (a non-manifold interior edge). Same-surface face merging visits this edge from each incident face and records contradictory merge decisions, producing a shape that fails Boolean validity check (&quot;InvalidMultiConnexity&quot;; edge connected to too many faces in the result).</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>Compound built from Boolean-intersect of two cylinders; the intersection introduces an interior seam edge with three incident faces. Unify; check `bopcheck`.</p></section>
 <section><h2>Expected kernel behavior</h2>

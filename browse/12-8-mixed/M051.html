@@ -38,7 +38,7 @@
 <section><h2>Expected kernel behavior</h2>
 <p>accept; emit one face/surface object per surface; offer optional stitching pass; preserve as wireframe shape; never silently drop.</p></section>
 <section><h2>Notes</h2>
-<p>Synonyms: &quot;bare GEOMETRIC_SET silent-empty&quot;, &quot;wireframe-only file appears empty&quot;, &quot;GEOMETRIC_CURVE_SET with non-geometric children&quot;, &quot;bare surface set rejected as no solid&quot;. **OCC behavior**: silently produces empty results on bare `GEOMETRIC_SET` / `GEOMETRIC_CURVE_SET` files without surfacing the wireframe-only or surface-only nature of the input; kernel mishandling — the catalog above forbids silent drop.</p></section>
+<p>Synonyms: &quot;bare GEOMETRIC_SET silent-empty&quot;, &quot;wireframe-only file appears empty&quot;, &quot;GEOMETRIC_CURVE_SET with non-geometric children&quot;, &quot;bare surface set rejected as no solid&quot;. **OCC behavior**: silently produces empty results on bare `GEOMETRIC_SET` / `GEOMETRIC_CURVE_SET` files without surfacing the wireframe-only or surface-only nature of the input; kernel mishandling; the catalog above forbids silent drop.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">

@@ -26,7 +26,7 @@
 <li>OCCT STEPControl_ActorRead.cxx:2179, 2183 (transformation relation handling) (uncovered class evidence)</li>
 </ul></section>
 <section><h2>Sender</h2>
-<p>deduced — OCCT uncovered-class sweep, Pass C</p></section>
+<p>deduced — OCCT uncovered-class sweep</p></section>
 <section><h2>Description</h2>
 <p>A child component&#x27;s transformation reference (e.g., `ITEM_DEFINED_TRANSFORMATION`) cannot be resolved to a valid 4×4 matrix; the reader falls back to identity placement. The child appears at the wrong location. Bug-reporter language: &quot;child placement wrong&quot;, &quot;STEP transformation creation failed&quot;, &quot;components stack at origin&quot;.</p></section>
 <section><h2>Reproducer recipe</h2>
@@ -34,7 +34,7 @@
 <section><h2>Expected kernel behavior</h2>
 <p>Reject the assembly placement as malformed; do not silently use identity.</p></section>
 <section><h2>Notes</h2>
-<p>Synonyms: &quot;child at origin bug&quot;, &quot;STEP transformation creation failed&quot;, &quot;child placement wrong&quot;, &quot;ITEM_DEFINED_TRANSFORMATION fell back to identity&quot;, &quot;zero-vector DIRECTION in placement&quot;. **OCC behavior**: silently substitutes the identity placement when the transformation reference cannot be resolved, leaving children at the origin without a diagnostic; kernel mishandling — the catalog above forbids silent identity-substitution.</p></section>
+<p>Synonyms: &quot;child at origin bug&quot;, &quot;STEP transformation creation failed&quot;, &quot;child placement wrong&quot;, &quot;ITEM_DEFINED_TRANSFORMATION fell back to identity&quot;, &quot;zero-vector DIRECTION in placement&quot;. **OCC behavior**: silently substitutes the identity placement when the transformation reference cannot be resolved, leaving children at the origin without a diagnostic; kernel mishandling; the catalog above forbids silent identity-substitution.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">

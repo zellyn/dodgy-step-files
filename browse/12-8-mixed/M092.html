@@ -29,7 +29,7 @@
 <section><h2>Sender</h2>
 <p>deduced — STEP-NC publisher emitting workingsteps in authoring order rather than dependency order</p></section>
 <section><h2>Description</h2>
-<p>A `WORKPLAN` lists its `its_elements` in an order that violates feature dependencies: a finishing pass appears before the roughing pass, or a drilling step on a hole appears before the spot-drilling step that locates it. Per AP238 §6.4 a workplan&#x27;s element list is the *executable* sequence — order is semantic, not editorial. A controller running the file as written produces a part with a broken/missing locator. Bug-reporter language: &quot;STEP-NC workingsteps run in wrong order&quot;, &quot;AP238 finishing before roughing&quot;, &quot;workplan order doesn&#x27;t make sense&quot;.</p></section>
+<p>A `WORKPLAN` lists its `its_elements` in an order that violates feature dependencies: a finishing pass appears before the roughing pass, or a drilling step on a hole appears before the spot-drilling step that locates it. Per AP238 §6.4 a workplan&#x27;s element list is the *executable* sequence; order is semantic, not editorial. A controller running the file as written produces a part with a broken/missing locator. Bug-reporter language: &quot;STEP-NC workingsteps run in wrong order&quot;, &quot;AP238 finishing before roughing&quot;, &quot;workplan order doesn&#x27;t make sense&quot;.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>`WORKPLAN(&#x27;main&#x27;,(#finish_step, #rough_step),$,$,$)` where `#finish_step` is a finishing `MACHINING_OPERATION` referencing the same feature as `#rough_step` (a roughing operation), with the finishing step listed first.</p></section>
 <section><h2>Expected kernel behavior</h2>

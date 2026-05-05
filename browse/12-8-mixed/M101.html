@@ -29,7 +29,7 @@
 <section><h2>Sender</h2>
 <p>deduced — CAM publisher mis-classifying feature dimensionality</p></section>
 <section><h2>Description</h2>
-<p>A `TWO5D_MILLING_OPERATION` (Z-constant, X-Y contour pass) references a feature whose toolpath topology is intrinsically 3D — e.g. a `FREEFORM_FEATURE` on a sculpted surface. The 2.5D Z-step semantics cannot represent the surface; consumers either silently approximate (gouging the surface or leaving stock) or fail to plan motion. Bug-reporter language: &quot;AP238 2.5D op on 3D feature&quot;, &quot;STEP-NC contour can&#x27;t follow surface&quot;, &quot;wrong operation type for feature&quot;.</p></section>
+<p>A `TWO5D_MILLING_OPERATION` (Z-constant, X-Y contour pass) references a feature whose toolpath topology is intrinsically 3D; e.g. a `FREEFORM_FEATURE` on a sculpted surface. The 2.5D Z-step semantics cannot represent the surface; consumers either silently approximate (gouging the surface or leaving stock) or fail to plan motion. Bug-reporter language: &quot;AP238 2.5D op on 3D feature&quot;, &quot;STEP-NC contour can&#x27;t follow surface&quot;, &quot;wrong operation type for feature&quot;.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>A `TWO5D_MILLING_OPERATION` whose `its_feature` attribute references a freeform-surface feature.</p></section>
 <section><h2>Expected kernel behavior</h2>

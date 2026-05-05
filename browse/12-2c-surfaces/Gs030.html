@@ -27,11 +27,11 @@
 <li>B025, W013</li>
 </ul></section>
 <section><h2>Description</h2>
-<p>After local edits (face translation, blend suppression, partial defeaturing) an edge&#x27;s stored 3D curve no longer matches the geometric intersection of its two host faces. Edge survives as topology but its curve is stale, leading to large tolerances or visible cracks. TransMagic&#x27;s &quot;edges for the geometry do not match the surfaces that they are edges for&quot; — also applies to translator output where edges deviate from cylinder/cone surfaces beyond tolerance.</p></section>
+<p>After local edits (face translation, blend suppression, partial defeaturing) an edge&#x27;s stored 3D curve no longer matches the geometric intersection of its two host faces. Edge survives as topology but its curve is stale, leading to large tolerances or visible cracks. TransMagic&#x27;s &quot;edges for the geometry do not match the surfaces that they are edges for&quot;; also applies to translator output where edges deviate from cylinder/cone surfaces beyond tolerance.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>`ADVANCED_FACE` on `CYLINDRICAL_SURFACE` of radius 10 mm whose `EDGE_CURVE` is a `LINE` 0.5 mm radially off the cylinder.</p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal — `rebuild-edge` re-intersects host faces and rebuilds vertices; reproject curve onto surface, or replace with surface intersection.</p></section>
+<p>heal; `rebuild-edge` re-intersects host faces and rebuilds vertices; reproject curve onto surface, or replace with surface intersection.</p></section>
 <section><h2>Notes</h2>
 <p>**See also**: Tsh042, N024. Synonyms: &quot;edge geometry inconsistent with adjacent faces actual intersection&quot;, &quot;edges for the geometry do not match the surfaces&quot;, &quot;stale edge curve after face translation&quot;, &quot;edge deviates from cylinder beyond tolerance&quot;, &quot;edge curve doesn lie on host surface intersection&quot;.</p></section>
 <section><h2>Expected validation</h2>

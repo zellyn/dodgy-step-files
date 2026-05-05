@@ -27,7 +27,7 @@
 <li>14-brlcad-rhino K008</li>
 </ul></section>
 <section><h2>Description</h2>
-<p>An `OFFSET_SURFACE` built on a `PLANE` (or other base surface) whose offset distance is below the importer&#x27;s working tolerance — typical signature: offset 5e-5 mm with the face&#x27;s `EDGE_CURVE`s sitting at z=5e-5 to lift onto the offset surface. BRL-CAD&#x27;s `step-g` importer hard-codes `m_tolerance = 1e-3` for edges and trims rather than reading the file&#x27;s `UNCERTAINTY_MEASURE_WITH_UNIT` / `representation_context.length_measure`. Models requiring tighter tolerance lose feature fidelity; offset surfaces barely separated from their base plane are crushed back into the base plane.</p></section>
+<p>An `OFFSET_SURFACE` built on a `PLANE` (or other base surface) whose offset distance is below the importer&#x27;s working tolerance; typical signature: offset 5e-5 mm with the face&#x27;s `EDGE_CURVE`s sitting at z=5e-5 to lift onto the offset surface. BRL-CAD&#x27;s `step-g` importer hard-codes `m_tolerance = 1e-3` for edges and trims rather than reading the file&#x27;s `UNCERTAINTY_MEASURE_WITH_UNIT` / `representation_context.length_measure`. Models requiring tighter tolerance lose feature fidelity; offset surfaces barely separated from their base plane are crushed back into the base plane.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>AP203 file with `UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.000001), …, &#x27;distance_accuracy_value&#x27;, &#x27;&#x27;)` imported via step-g.</p></section>
 <section><h2>Expected kernel behavior</h2>

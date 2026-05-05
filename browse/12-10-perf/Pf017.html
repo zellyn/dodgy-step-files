@@ -30,7 +30,7 @@
 <section><h2>Sender</h2>
 <p>large single-shell STEP</p></section>
 <section><h2>Description</h2>
-<p>STEP importer hangs and consumes huge memory during the import-time healing pass on one big shell — each pass exposes another defect, requiring further iteration; the iteration loop is unbounded and does not converge.</p></section>
+<p>STEP importer hangs and consumes huge memory during the import-time healing pass on one big shell; each pass exposes another defect, requiring further iteration; the iteration loop is unbounded and does not converge.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>Any large single-`CLOSED_SHELL` STEP that triggers a full healing pass during import.</p></section>
 <section><h2>Expected kernel behavior</h2>

@@ -38,7 +38,7 @@
 <section><h2>Reproducer recipe</h2>
 <p>any of the above patterns; e.g. `STYLED_ITEM(&#x27;&#x27;,(..),#null);` where `#null` is unresolved.</p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>Every reader path must be defensive against null and dangling references — warn-and-accept (skip the offending instance with diagnostic), return an empty/partial result, or reject and signal failure via a status flag. Never let an unhandled exception escape across the parser/importer ABI; must not crash.</p></section>
+<p>Every reader path must be defensive against null and dangling references; warn-and-accept (skip the offending instance with diagnostic), return an empty/partial result, or reject and signal failure via a status flag. Never let an unhandled exception escape across the parser/importer ABI; must not crash.</p></section>
 <section><h2>Notes</h2>
 <p>Cross-oracle: pure-Python Part-21 validator rejects (reject(E_UNRESOLVED_REFS)); OCCT silently accepts (load is `empty`). OCC auto-heals a spec-level violation.</p></section>
 <section><h2>Expected validation</h2>

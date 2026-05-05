@@ -27,7 +27,7 @@
 <li>OCCT `ShapeAnalysis_Wire::CheckSeam` (`ShapeAnalysis_Wire.hxx:298`)</li>
 </ul></section>
 <section><h2>Description</h2>
-<p>A seam edge of a face on a periodic surface (cylinder, sphere, torus) carries two pcurves — one for the FORWARD side, one for the REVERSED side. The diagnostic detects the case where these have been swapped: FORWARD-side carries the pcurve that should be on REVERSED, and vice versa.</p></section>
+<p>A seam edge of a face on a periodic surface (cylinder, sphere, torus) carries two pcurves; one for the FORWARD side, one for the REVERSED side. The diagnostic detects the case where these have been swapped: FORWARD-side carries the pcurve that should be on REVERSED, and vice versa.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>A seam edge of a cylindrical face where the forward pcurve is at U=2π and the reversed pcurve is at U=0 (correct order is the reverse).</p></section>
 <section><h2>Expected kernel behavior</h2>

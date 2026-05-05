@@ -30,11 +30,11 @@
 <section><h2>Sender</h2>
 <p>OCCT&#x27;s STEP writer when exporting a sewn shell whose adjacent faces share an underlying analytic surface (e.g., two halves of a cylinder split at the seam).</p></section>
 <section><h2>Description</h2>
-<p>Two faces that share an underlying surface (e.g., two adjacent planar faces co-planar in 3D) are written out with two separate `PLANE` / `CYLINDRICAL_SURFACE` instances rather than one shared instance. On re-import, the receiver computes face-face adjacency from surface-identity and concludes the two faces are not adjacent — the shell has free edges where it should be closed, downstream Booleans fail.</p></section>
+<p>Two faces that share an underlying surface (e.g., two adjacent planar faces co-planar in 3D) are written out with two separate `PLANE` / `CYLINDRICAL_SURFACE` instances rather than one shared instance. On re-import, the receiver computes face-face adjacency from surface-identity and concludes the two faces are not adjacent; the shell has free edges where it should be closed, downstream Booleans fail.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>Two adjacent rectangular faces, both on the plane `z=0`. Writer emits `#10=PLANE(..)` and `#20=PLANE(..)` with identical numerical content rather than sharing one instance. Receiver sees two non-conformal faces.</p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal-and-accept — writer canonicalises analytic surfaces and shares one instance for surface-equal faces; emit one `PLANE`/`CYLINDRICAL_SURFACE`/etc. per equivalence class. Receivers must additionally re-canonicalise on import.</p></section>
+<p>heal-and-accept; writer canonicalises analytic surfaces and shares one instance for surface-equal faces; emit one `PLANE`/`CYLINDRICAL_SURFACE`/etc. per equivalence class. Receivers must additionally re-canonicalise on import.</p></section>
 <section><h2>Notes</h2>
 <p>**See also**: Tfa023, A079. Synonyms: &quot;STEP export duplicates surfaces&quot;, &quot;non-conformal faces after STEP round-trip&quot;, &quot;writer emits two surfaces for one shared surface&quot;, &quot;face-face adjacency lost on round-trip&quot;.</p></section>
 <section><h2>Expected validation</h2>

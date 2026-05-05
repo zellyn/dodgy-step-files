@@ -28,7 +28,7 @@
 <li>09-healing-menus.md H024, H025 (orient_polygon_soup, orient_to_bound_a_volume)</li>
 </ul></section>
 <section><h2>Description</h2>
-<p>Adjacent faces with opposite outward normals — one or more faces in a `CLOSED_SHELL` carry `same_sense=.F.` while their neighbours carry `.T.`, producing a face flipped inward. Common signature: a six-face cube `CLOSED_SHELL` where five faces have orientation `.T.` and exactly one face (e.g. the +Y wall) is `.F.`, breaking normal coherence. Aggregates with open-shell and non-manifold defects into the umbrella &quot;non-PWN / non-solid&quot; class (~50% of Thingi10K).</p></section>
+<p>Adjacent faces with opposite outward normals; one or more faces in a `CLOSED_SHELL` carry `same_sense=.F.` while their neighbours carry `.T.`, producing a face flipped inward. Common signature: a six-face cube `CLOSED_SHELL` where five faces have orientation `.T.` and exactly one face (e.g. the +Y wall) is `.F.`, breaking normal coherence. Aggregates with open-shell and non-manifold defects into the umbrella &quot;non-PWN / non-solid&quot; class (~50% of Thingi10K).</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>Two adjacent quad faces sharing an edge but with `same_sense=.T.` mismatch on the shared edge.</p></section>
 <section><h2>Expected kernel behavior</h2>

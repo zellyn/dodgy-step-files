@@ -32,7 +32,7 @@
 <section><h2>Expected kernel behavior</h2>
 <p>Strict reject by default; lenient mode auto-promote INTEGER → REAL with a warning. Never silently coerce.</p></section>
 <section><h2>Notes</h2>
-<p>A primary cause of integer-vs-real type-coercion bugs. **See also**: Ad049, Ls002, Ls003, Ls004, Ls005, Ls006, Ls009. **OCC behavior**: silently coerces the integer to a REAL with no diagnostic; kernel mishandling — the catalog above forbids silent coercion. Synonyms: &quot;REAL with no decimal point&quot;, &quot;integer where REAL required&quot;, &quot;1 written instead of 1.&quot;, &quot;DIRECTION coords missing dots&quot;, &quot;STEP REAL missing trailing period&quot;.</p></section>
+<p>A primary cause of integer-vs-real type-coercion bugs. **See also**: Ad049, Ls002, Ls003, Ls004, Ls005, Ls006, Ls009. **OCC behavior**: silently coerces the integer to a REAL with no diagnostic; kernel mishandling; the catalog above forbids silent coercion. Synonyms: &quot;REAL with no decimal point&quot;, &quot;integer where REAL required&quot;, &quot;1 written instead of 1.&quot;, &quot;DIRECTION coords missing dots&quot;, &quot;STEP REAL missing trailing period&quot;.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">

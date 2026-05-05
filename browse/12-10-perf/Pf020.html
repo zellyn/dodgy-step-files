@@ -32,7 +32,7 @@
 <section><h2>Expected kernel behavior</h2>
 <p>Heal and accept: `Backup`/`Delta` lifetime in OCAF must be bounded; coerce to release after commit.</p></section>
 <section><h2>Notes</h2>
-<p>Provenance tier: cross-file-state — bytes alone cannot demonstrate this defect; the symptom is monotonic memory growth across thousands of modify/commit cycles in long-running kernel state. A single fixture cannot embody the leak; the kernel&#x27;s cross-transaction state cache must retain (and fail to release) snapshots over many iterations. An external memory measurement against a long-running test loop is the appropriate venue.</p></section>
+<p>Provenance tier: cross-file-state; bytes alone cannot demonstrate this defect; the symptom is monotonic memory growth across thousands of modify/commit cycles in long-running kernel state. A single fixture cannot embody the leak; the kernel&#x27;s cross-transaction state cache must retain (and fail to release) snapshots over many iterations. An external memory measurement against a long-running test loop is the appropriate venue.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a</code></p></section>
 <section><h2>Provenance tier</h2>

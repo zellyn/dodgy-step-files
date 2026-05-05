@@ -28,11 +28,11 @@
 <li>Mantis 0031485, 0032914</li>
 </ul></section>
 <section><h2>Description</h2>
-<p>STEP reader&#x27;s non-manifold path skips XCAF attribute application; STEP non-manifold export drops every XCAF attribute (regression after 31617 fix). Common signature: a `NON_MANIFOLD_SURFACE_SHAPE_REPRESENTATION` whose `SHELL_BASED_SURFACE_MODEL` carries multiple `OPEN_SHELL`s (e.g. three shells in a T-shape sharing an edge) with `STYLED_ITEM` colour and `PRESENTATION_LAYER_ASSIGNMENT` layer attached — names, colours, layers all lost on the non-manifold reader path.</p></section>
+<p>STEP reader&#x27;s non-manifold path skips XCAF attribute application; STEP non-manifold export drops every XCAF attribute (regression after 31617 fix). Common signature: a `NON_MANIFOLD_SURFACE_SHAPE_REPRESENTATION` whose `SHELL_BASED_SURFACE_MODEL` carries multiple `OPEN_SHELL`s (e.g. three shells in a T-shape sharing an edge) with `STYLED_ITEM` colour and `PRESENTATION_LAYER_ASSIGNMENT` layer attached; names, colours, layers all lost on the non-manifold reader path.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>STEP file with `NON_MANIFOLD_SURFACE_SHAPE_REPRESENTATION` carrying colors; or set `write.step.nonmanifold 1` and SetName then WriteStep — re-import shows auto names.</p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal — apply colors/styles in non-manifold path; retain attribute mapping after topology copy.</p></section>
+<p>heal; apply colors/styles in non-manifold path; retain attribute mapping after topology copy.</p></section>
 <section><h2>Notes</h2>
 <p>Synonyms: &quot;non-manifold loses XCAF colors&quot;, &quot;OPEN_SHELL multiple shared edges color drop&quot;, &quot;non-manifold export drops layer attrs&quot;, &quot;NON_MANIFOLD_SURFACE_SHAPE_REPRESENTATION attribute loss&quot;. **See also**: A019, Tsh022.</p></section>
 <section><h2>Expected validation</h2>

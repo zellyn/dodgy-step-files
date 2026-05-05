@@ -33,7 +33,7 @@
 <section><h2>Expected kernel behavior</h2>
 <p>heal — accept PDS child; resolve PDS → PD silently.</p></section>
 <section><h2>Notes</h2>
-<p>**See also**: A034. **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog&#x27;s allowed set ({heal}). Kernel-bug witnessed: catalog asks for healing; OCC neither heals nor rejects — the input is dropped on the floor without diagnostic. Synonyms: &quot;NAUO target points to PRODUCT_DEFINITION_SHAPE not PRODUCT_DEFINITION&quot;, &quot;assembly link uses wrong entity type&quot;, &quot;schema rule broken for component reference&quot;, &quot;STEP reader confused by NAUO-&gt;PDS chain&quot;.</p></section>
+<p>**See also**: A034. **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog&#x27;s allowed set ({heal}). Kernel-bug witnessed: catalog asks for healing; OCC neither heals nor rejects; the input is dropped on the floor without diagnostic. Synonyms: &quot;NAUO target points to PRODUCT_DEFINITION_SHAPE not PRODUCT_DEFINITION&quot;, &quot;assembly link uses wrong entity type&quot;, &quot;schema rule broken for component reference&quot;, &quot;STEP reader confused by NAUO-&gt;PDS chain&quot;.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">

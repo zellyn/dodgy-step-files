@@ -27,15 +27,15 @@
 <li>OCCT BRepCheck_Face.cxx:519, 540 (BadOrientationOfSubshape) (uncovered class evidence)</li>
 </ul></section>
 <section><h2>Sender</h2>
-<p>deduced — OCCT uncovered-class sweep, Pass C</p></section>
+<p>deduced — OCCT uncovered-class sweep</p></section>
 <section><h2>Description</h2>
-<p>An `ADVANCED_FACE` has its outer wire wound clockwise (when the surface normal is taken as outward) and its inner wires wound counter-clockwise — i.e., the orientations are swapped relative to the convention. Bug-reporter language: &quot;wire winds wrong way&quot;, &quot;outer loop reversed&quot;, &quot;hole oriented as outer&quot;.</p></section>
+<p>An `ADVANCED_FACE` has its outer wire wound clockwise (when the surface normal is taken as outward) and its inner wires wound counter-clockwise; i.e., the orientations are swapped relative to the convention. Bug-reporter language: &quot;wire winds wrong way&quot;, &quot;outer loop reversed&quot;, &quot;hole oriented as outer&quot;.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>`ADVANCED_FACE` whose outer `EDGE_LOOP` traces vertices in the wrong direction relative to the surface normal.</p></section>
 <section><h2>Expected kernel behavior</h2>
 <p>Detect via signed-area in UV; flip the offending loop, or reject the face.</p></section>
 <section><h2>Notes</h2>
-<p>Distinct from Tsh010 (face same_sense flipped) — this is wire-loop winding direction. Synonyms: &quot;wire winds wrong way&quot;, &quot;outer loop reversed&quot;, &quot;hole oriented as outer&quot;, &quot;inner wire winds same direction as outer&quot;.</p></section>
+<p>Distinct from Tsh010 (face same_sense flipped); this is wire-loop winding direction. Synonyms: &quot;wire winds wrong way&quot;, &quot;outer loop reversed&quot;, &quot;hole oriented as outer&quot;, &quot;inner wire winds same direction as outer&quot;.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(17) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

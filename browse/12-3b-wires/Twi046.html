@@ -27,7 +27,7 @@
 <li>OCCT `ShapeFix_Edge::FixRemoveCurve3d` (`ShapeFix_Edge.hxx:75`)</li>
 </ul></section>
 <section><h2>Description</h2>
-<p>An EDGE_CURVE&#x27;s 3D representation, evaluated at the edge&#x27;s parameter range, returns points that are not the same as the edge&#x27;s start/end VERTEX_POINTs — the curve goes somewhere else entirely. Senders that regenerated the curve without coordinating with vertices, or that copied the wrong curve handle, produce this.</p></section>
+<p>An EDGE_CURVE&#x27;s 3D representation, evaluated at the edge&#x27;s parameter range, returns points that are not the same as the edge&#x27;s start/end VERTEX_POINTs; the curve goes somewhere else entirely. Senders that regenerated the curve without coordinating with vertices, or that copied the wrong curve handle, produce this.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>An EDGE_CURVE whose vertices are at `(0,0,0)` and `(2,0,0)` but whose 3D curve is a LINE in the +Z direction starting at `(0,0,0)` — the curve ends at `(0,0,1)`, far from the second vertex.</p></section>
 <section><h2>Expected kernel behavior</h2>

@@ -37,7 +37,7 @@
 <section><h2>Expected kernel behavior</h2>
 <p>Heal and accept: normalize / apply unit context per child sub-representation; never assume a document-wide unit; coerce / scale at `MAPPED_ITEM` / sub-assembly boundary using each child&#x27;s own `GEOMETRIC_REPRESENTATION_CONTEXT` global units.</p></section>
 <section><h2>Notes</h2>
-<p>Cross-oracle: pure-Python Part-21 validator accepts (`accept`); OCCT crashes (`signal(11)`). The crash is on the kernel side — the file is spec-conformant Part-21. Synonyms: &quot;NX assembly mixed inch and mm parts&quot;, &quot;subassembly inch parts scale wrong vs mm&quot;, &quot;MAPPED_ITEM cross-context unit mixing&quot;, &quot;STEP assembly inconsistent unit scaling&quot;, &quot;mixed inch+mm assembly mis-scales&quot;.</p></section>
+<p>Cross-oracle: pure-Python Part-21 validator accepts (`accept`); OCCT crashes (`signal(11)`). The crash is on the kernel side; the file is spec-conformant Part-21. Synonyms: &quot;NX assembly mixed inch and mm parts&quot;, &quot;subassembly inch parts scale wrong vs mm&quot;, &quot;MAPPED_ITEM cross-context unit mixing&quot;, &quot;STEP assembly inconsistent unit scaling&quot;, &quot;mixed inch+mm assembly mis-scales&quot;.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a</code></p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">

@@ -29,19 +29,21 @@
 <li>09-healing-menus.md (H055)</li>
 </ul></section>
 <section><h2>Description</h2>
-<p>Curves / surfaces have degree or segment count exceeding what the target system can read — typically a degree-9 univariate `B_SPLINE_CURVE_WITH_KNOTS` with only ~10 Bezier-style clamped control points, or a degree-9-by-degree-7 `B_SPLINE_SURFACE_WITH_KNOTS` with rank-deficient control nets (every U-row identical). A degree-restriction healer re-fits with a target degree, segment cap and continuity. A historical typo bug caused fits not to achieve requested continuity.</p></section>
+<p>Curves / surfaces have degree or segment count exceeding what the target system can read; typically a degree-9 univariate `B_SPLINE_CURVE_WITH_KNOTS` with only ~10 Bezier-style clamped control points, or a degree-9-by-degree-7 `B_SPLINE_SURFACE_WITH_KNOTS` with rank-deficient control nets (every U-row identical). A degree-restriction healer re-fits with a target degree, segment cap and continuity. A historical typo bug caused fits not to achieve requested continuity.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>STEP with `B_SPLINE_CURVE_WITH_KNOTS` degree 9 or `B_SPLINE_SURFACE_WITH_KNOTS` (9,7); pass through `ShapeCustom_BSplineRestriction` targeting degree 3 with C2 continuity.</p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal — re-fit within stated tolerance; report deviation; refuse output if requested continuity cannot be met.</p></section>
+<p>heal; re-fit within stated tolerance; report deviation; refuse output if requested continuity cannot be met.</p></section>
 <section><h2>Notes</h2>
-<p>**OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog&#x27;s allowed set ({heal, reject}). Kernel-bug witnessed: catalog allows either heal or reject; OCC silently accepts the bad input without doing either. Synonyms: &quot;excess-degree B-spline curve needs degree reduction&quot;, &quot;high-degree NURBS surface 9x7 over-spec&quot;, &quot;degree-restriction healer needed for legacy export&quot;, &quot;B-spline degree exceeds target system limit&quot;, &quot;rank-deficient high-degree NURBS net&quot;.</p></section>
+<p>**See also**: Gn026. **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog&#x27;s allowed set ({heal, reject}). Kernel-bug witnessed: catalog allows either heal or reject; OCC silently accepts the bad input without doing either. Synonyms: &quot;excess-degree B-spline curve needs degree reduction&quot;, &quot;high-degree NURBS surface 9x7 over-spec&quot;, &quot;degree-restriction healer needed for legacy export&quot;, &quot;B-spline degree exceeds target system limit&quot;, &quot;rank-deficient high-degree NURBS net&quot;.- **Byte assertion**: contains(b&#x27;B_SPLINE_SURFACE&#x27;)</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">
-<li><code>contains(b&#x27;B_SPLINE_SURFACE&#x27;)</code></li>
 <li><code>contains(b&#x27;B_SPLINE_CURVE&#x27;)</code></li>
 </ul></section>
+<section><h2>Cross-references</h2>
+<p><a href="Gn026.html">Gn026</a></p>
+</section>
 <section><h2>Live oracle output</h2>
 <table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
 <tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
@@ -61,7 +63,7 @@
 <span class="lineno">3</span>   target system reads. ShapeCustom_BSplineRestriction is meant to re-fit
 <span class="lineno">4</span>   the entity at a target degree and target continuity (e.g. degree 3, C2).
 <span class="lineno">5</span>   This file emits a degree-9 <mark>B_SPLINE_CURVE</mark>_WITH_KNOTS and a
-<span class="lineno">6</span>   <mark>B_SPLINE_SURFACE</mark>_WITH_KNOTS of degree (9,7) intended as input to that
+<span class="lineno">6</span>   B_SPLINE_SURFACE_WITH_KNOTS of degree (9,7) intended as input to that
 <span class="lineno">7</span>   healer.  A compliant healer must report the deviation and refuse if
 <span class="lineno">8</span>   continuity cannot be met.
 <span class="lineno">9</span>   Sources: bug23944 / R081, ShapeCustom_BSplineRestriction (F052), H055. */
@@ -102,7 +104,7 @@
 <span class="lineno">44</span>#208=CARTESIAN_POINT(&#x27;s07&#x27;,(0.0,7.0,0.0));
 <span class="lineno">45</span>/* Reuse the row-1 ids for rows 2..10 as a stand-in; the defect is the
 <span class="lineno">46</span>   degree label not the geometric variation. */
-<span class="lineno">47</span>#300=<mark>B_SPLINE_SURFACE</mark>_WITH_KNOTS(&#x27;deg97_surface&#x27;,
+<span class="lineno">47</span>#300=B_SPLINE_SURFACE_WITH_KNOTS(&#x27;deg97_surface&#x27;,
 <span class="lineno">48</span>  9,7,
 <span class="lineno">49</span>  ((#201,#202,#203,#204,#205,#206,#207,#208),
 <span class="lineno">50</span>   (#201,#202,#203,#204,#205,#206,#207,#208),

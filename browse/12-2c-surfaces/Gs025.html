@@ -27,7 +27,7 @@
 <li>R006, F047, F075, M006, L043, H054</li>
 </ul></section>
 <section><h2>Description</h2>
-<p>A `B_SPLINE_CURVE_WITH_KNOTS` (or surface) whose interior knot multiplicity equals the curve / surface order produces only C0 continuity at the join — a visible cusp / kink on an otherwise smooth curve. Typical shape: a degree-3 B-spline with 7 control points that peak at y=2 and immediately drop to y=-2 with an interior knot of multiplicity 3. Downstream CAD/CAM/CAE tools assume at least C1; after format conversion, neighbouring faces show G0/G1/G2 discontinuities at shared edges that were smooth in the source.</p></section>
+<p>A `B_SPLINE_CURVE_WITH_KNOTS` (or surface) whose interior knot multiplicity equals the curve / surface order produces only C0 continuity at the join; a visible cusp / kink on an otherwise smooth curve. Typical shape: a degree-3 B-spline with 7 control points that peak at y=2 and immediately drop to y=-2 with an interior knot of multiplicity 3. Downstream CAD/CAM/CAE tools assume at least C1; after format conversion, neighbouring faces show G0/G1/G2 discontinuities at shared edges that were smooth in the source.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>BSpline curve with internal knot of multiplicity equal to order producing a G0-only spot; or two adjacent faces emitted as `RATIONAL_B_SPLINE_SURFACE` patches whose tangent planes at the shared edge differ by more than the resolution tolerance.</p></section>
 <section><h2>Expected kernel behavior</h2>

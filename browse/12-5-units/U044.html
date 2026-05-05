@@ -34,7 +34,7 @@
 <section><h2>Reproducer recipe</h2>
 <p>STEP file with `MAPPED_ITEM` whose `mapping_origin` is `AXIS2_PLACEMENT_3D(..)` with right-handed axes and `mapping_target` has axes such that `x × y ≠ z`. Imported instance is in the wrong location.</p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal-and-accept — verify both axes orthogonality AND right-handedness when constructing transforms; emit `W_LEFT_HANDED_PLACEMENT` and either flip-and-record or reject. Never produce a silently wrong transform.</p></section>
+<p>heal-and-accept; verify both axes orthogonality AND right-handedness when constructing transforms; emit `W_LEFT_HANDED_PLACEMENT` and either flip-and-record or reject. Never produce a silently wrong transform.</p></section>
 <section><h2>Notes</h2>
 <p>**See also**: U015, U016. Synonyms: &quot;gp_Trsf incorrect transformation between two Ax3&quot;, &quot;left-handed placement gives wrong transform&quot;, &quot;STEP MAPPED_ITEM placement composition wrong&quot;, &quot;AXIS2_PLACEMENT_3D handedness ignored&quot;.</p></section>
 <section><h2>Expected validation</h2>

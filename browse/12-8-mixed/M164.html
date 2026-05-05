@@ -30,7 +30,7 @@
 <section><h2>Sender</h2>
 <p>FreeCAD PartDesign LinearPattern feature instantiated 4 times over an arc-shaped Pad.</p></section>
 <section><h2>Description</h2>
-<p>A LinearPattern of count=4 over an arc-shaped Pad yields a solid where the 4th instance&#x27;s face normals are inverted relative to the first 3. The on-disk symptom is 4 `MANIFOLD_SOLID_BREP`s where instances 1–3 have consistent `AXIS2_PLACEMENT_3D` direction vectors but the 4th has its `axis` direction `(0.0, 0.0, -1.0)` instead of `(0.0, 0.0, 1.0)`. Pattern counts other than 4 reproduce the issue at counts 8, 12 (multiples of 4) — suggesting a sign-bit overflow in the pattern&#x27;s index-to-transform table.</p></section>
+<p>A LinearPattern of count=4 over an arc-shaped Pad yields a solid where the 4th instance&#x27;s face normals are inverted relative to the first 3. The on-disk symptom is 4 `MANIFOLD_SOLID_BREP`s where instances 1–3 have consistent `AXIS2_PLACEMENT_3D` direction vectors but the 4th has its `axis` direction `(0.0, 0.0, -1.0)` instead of `(0.0, 0.0, 1.0)`. Pattern counts other than 4 reproduce the issue at counts 8, 12 (multiples of 4); suggesting a sign-bit overflow in the pattern&#x27;s index-to-transform table.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>STEP file with 4 `MAPPED_ITEM`s referencing the same `REPRESENTATION_MAP`, where the 4th&#x27;s `transformation_operator.axis` is `(0.0, 0.0, -1.0)` while instances 1–3 have `(0.0, 0.0, 1.0)`.</p></section>
 <section><h2>Expected kernel behavior</h2>

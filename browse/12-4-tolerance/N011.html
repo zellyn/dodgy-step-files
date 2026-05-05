@@ -27,7 +27,7 @@
 <li>08-occt-gitlog G075 (Mantis 0031202)</li>
 </ul></section>
 <section><h2>Description</h2>
-<p>A periodic face needs a seam edge inserted to close its UV bound, but the seam would lie entirely inside an already-existing vertex tolerance ball. Inserting the seam anyway creates a &quot;real&quot; edge of length zero whose endpoints are tolerance-equivalent — violating the invariant that the vertex tolerance ball does not cover any real edge.</p></section>
+<p>A periodic face needs a seam edge inserted to close its UV bound, but the seam would lie entirely inside an already-existing vertex tolerance ball. Inserting the seam anyway creates a &quot;real&quot; edge of length zero whose endpoints are tolerance-equivalent; violating the invariant that the vertex tolerance ball does not cover any real edge.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>Cylindrical face whose seam falls inside vertex tolerance ball.</p></section>
 <section><h2>Expected kernel behavior</h2>

@@ -27,7 +27,7 @@
 <li>18-other-issues.md I044 (pythonocc-core #702)</li>
 </ul></section>
 <section><h2>Description</h2>
-<p>The file parses successfully but the subsequent root-transfer pass dereferences an out-of-range index and aborts. Common trigger shape: a `SHAPE_REPRESENTATION` whose `items` list is empty (`()`) combined with a dangling product chain — a `PRODUCT_DEFINITION_SHAPE` with no `SHAPE_DEFINITION_REPRESENTATION` linking it back to any representation. Producer signature: STEP/IGES emitted by a particular Rhino-6 build, which exposes the receiver&#x27;s missing bound-check.</p></section>
+<p>The file parses successfully but the subsequent root-transfer pass dereferences an out-of-range index and aborts. Common trigger shape: a `SHAPE_REPRESENTATION` whose `items` list is empty (`()`) combined with a dangling product chain; a `PRODUCT_DEFINITION_SHAPE` with no `SHAPE_DEFINITION_REPRESENTATION` linking it back to any representation. Producer signature: STEP/IGES emitted by a particular Rhino-6 build, which exposes the receiver&#x27;s missing bound-check.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>any Rhino-6-emitted STEP loaded through the STEP reader&#x27;s root-transfer entrypoint.</p></section>
 <section><h2>Expected kernel behavior</h2>

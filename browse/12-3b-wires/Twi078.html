@@ -27,7 +27,7 @@
 <li>OCCT `ShapeAnalysis_WireOrder::Perform` (`ShapeAnalysis_WireOrder.hxx:107`)</li>
 </ul></section>
 <section><h2>Description</h2>
-<p>Edges of a wire emitted in arbitrary order. The analyzer must reconstruct head-to-tail order using 3D and 2D vertex matching with a starting tolerance and report `STATUS_DONE` (reordered, no reversal needed) — distinct from `STATUS_DONE2` (some edges needed flipping) and `STATUS_FAIL` (could not reorder).</p></section>
+<p>Edges of a wire emitted in arbitrary order. The analyzer must reconstruct head-to-tail order using 3D and 2D vertex matching with a starting tolerance and report `STATUS_DONE` (reordered, no reversal needed); distinct from `STATUS_DONE2` (some edges needed flipping) and `STATUS_FAIL` (could not reorder).</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>A wire whose four edges, when listed in order `[3, 1, 4, 2]`, form a valid square in head-to-tail traversal.</p></section>
 <section><h2>Expected kernel behavior</h2>

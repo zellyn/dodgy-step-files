@@ -31,13 +31,13 @@
 <section><h2>Sender</h2>
 <p>Writers configured to emit AP203 because a downstream consumer doesn&#x27;t speak AP242, with no warning that AP242-specific content (PMI, kinematics, composite materials) is dropped silently</p></section>
 <section><h2>Description</h2>
-<p>The input declared `FILE_SCHEMA((&#x27;AP242_MANAGED_MODEL_BASED_3D_ENGINEERING&#x27;))` and contained `GEOMETRIC_TOLERANCE`, `DRAUGHTING_ANNOTATION_OCCURRENCE`, and `KINEMATIC_LINK` entities. The re-emitted file declares `FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN&#x27;))` and contains only the geometry — every AP242-specific entity is gone. Bug-reporter language: &quot;schema downgrade lost data&quot;, &quot;AP203 export drops PMI&quot;, &quot;STEP went from 242 to 203&quot;.</p></section>
+<p>The input declared `FILE_SCHEMA((&#x27;AP242_MANAGED_MODEL_BASED_3D_ENGINEERING&#x27;))` and contained `GEOMETRIC_TOLERANCE`, `DRAUGHTING_ANNOTATION_OCCURRENCE`, and `KINEMATIC_LINK` entities. The re-emitted file declares `FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN&#x27;))` and contains only the geometry; every AP242-specific entity is gone. Bug-reporter language: &quot;schema downgrade lost data&quot;, &quot;AP203 export drops PMI&quot;, &quot;STEP went from 242 to 203&quot;.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>a fixture with `FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;))` and only AP203-compatible entities, with a comment noting the input was AP242 with PMI and kinematics.</p></section>
 <section><h2>Expected kernel behavior</h2>
 <p>Warn and accept: preserve the input schema on round-trip when possible; emit a loud warning on any schema downgrade that drops entities.</p></section>
 <section><h2>Notes</h2>
-<p>§12.7 covers PMI loss; Wr031 covers the schema-level root cause. Bytes alone are insufficient to demonstrate this defect — needs sibling input fixture. Tagged provenance_tier: requires-sibling-pair.</p></section>
+<p>§12.7 covers PMI loss; Wr031 covers the schema-level root cause. Bytes alone are insufficient to demonstrate this defect; needs sibling input fixture. Tagged provenance_tier: requires-sibling-pair.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">

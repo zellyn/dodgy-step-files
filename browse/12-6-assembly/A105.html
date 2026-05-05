@@ -30,11 +30,11 @@
 <section><h2>Sender</h2>
 <p>STEP files emitted by older toolchains that use the `MECHANICAL_DESIGN_GEOMETRIC_PRESENTATION_REPRESENTATION` route for colours rather than the per-face `STYLED_ITEM` route.</p></section>
 <section><h2>Description</h2>
-<p>A STEP file declares colours through `MECHANICAL_DESIGN_GEOMETRIC_PRESENTATION_REPRESENTATION` containing `STYLED_ITEM`s that point at the assembly-occurrence level rather than per-face. The 6.9.x reader resolved these and assigned colours; the 7.4.0 reader&#x27;s refactored colour pipeline only consults the per-face route, so the file&#x27;s colours are silently dropped. A regression — the producer is unchanged; the receiver lost coverage.</p></section>
+<p>A STEP file declares colours through `MECHANICAL_DESIGN_GEOMETRIC_PRESENTATION_REPRESENTATION` containing `STYLED_ITEM`s that point at the assembly-occurrence level rather than per-face. The 6.9.x reader resolved these and assigned colours; the 7.4.0 reader&#x27;s refactored colour pipeline only consults the per-face route, so the file&#x27;s colours are silently dropped. A regression; the producer is unchanged; the receiver lost coverage.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>STEP file with `MECHANICAL_DESIGN_GEOMETRIC_PRESENTATION_REPRESENTATION` containing one `STYLED_ITEM` pointing at a `SHAPE_REPRESENTATION`. 6.9.x renders red; 7.4.0+ renders grey.</p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal-and-accept — every recognised colour-assignment path (per-face, per-occurrence, per-representation, draughting-presentation) must contribute to XCAF; emit `W_LEGACY_COLOUR_ROUTE` rather than dropping the assignment.</p></section>
+<p>heal-and-accept; every recognised colour-assignment path (per-face, per-occurrence, per-representation, draughting-presentation) must contribute to XCAF; emit `W_LEGACY_COLOUR_ROUTE` rather than dropping the assignment.</p></section>
 <section><h2>Notes</h2>
 <p>**See also**: A103, A081. Synonyms: &quot;regression colours no longer showing on STEP files&quot;, &quot;OCC 7.4 colour pipeline regression&quot;, &quot;MECHANICAL_DESIGN_GEOMETRIC_PRESENTATION_REPRESENTATION colour dropped&quot;, &quot;appearance lost across kernel versions&quot;.</p></section>
 <section><h2>Expected validation</h2>

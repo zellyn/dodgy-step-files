@@ -30,7 +30,7 @@
 <li>09-healing-menus H057</li>
 </ul></section>
 <section><h2>Description</h2>
-<p>An `EDGE_CURVE` declares the same-parameter invariant (3D curve and pcurve share parameterisation, `SameParameter=.T.`), but a sampling check shows the maximum point-wise deviation exceeds the declared edge tolerance. Typical pattern: a 3D `LINE` from (0,0,0) to (10,0,0) plus a pcurve `LINE` on a `PLANE` running at v=0.005 — the pcurve lifts to a curve offset by 0.005 mm from the 3D curve, but the edge tolerance is only 1e-6. The flag was set without re-validation after a geometry edit, so the metadata claims an invariant the data no longer satisfies; the same-parameter flag is true but curves disagree at sampled values.</p></section>
+<p>An `EDGE_CURVE` declares the same-parameter invariant (3D curve and pcurve share parameterisation, `SameParameter=.T.`), but a sampling check shows the maximum point-wise deviation exceeds the declared edge tolerance. Typical pattern: a 3D `LINE` from (0,0,0) to (10,0,0) plus a pcurve `LINE` on a `PLANE` running at v=0.005; the pcurve lifts to a curve offset by 0.005 mm from the 3D curve, but the edge tolerance is only 1e-6. The flag was set without re-validation after a geometry edit, so the metadata claims an invariant the data no longer satisfies; the same-parameter flag is true but curves disagree at sampled values.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>Build an `EDGE_CURVE` with both 3D BSpline and pcurve. Reproject the pcurve at a different sampling. Set the same-parameter flag without recomputing. Run a topology checker.</p></section>
 <section><h2>Expected kernel behavior</h2>

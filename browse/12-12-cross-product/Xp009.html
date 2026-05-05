@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p>leading BOM bytes; valid header; one surface with v-knots `(0,0,0,0.4,0.3,1,1,1)`; no closing `END-ISO-10303-21;`.</p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>Heal and accept, or reject with diagnostic: each invariant is addressed independently — encoding policy on BOM, framing-token policy, knot-vector validity. A kernel that rejects (fails fast) on BOM never gets to the knot defect; one that heals (accepts) BOM must then face it.</p></section>
+<p>Heal and accept, or reject with diagnostic: each invariant is addressed independently; encoding policy on BOM, framing-token policy, knot-vector validity. A kernel that rejects (fails fast) on BOM never gets to the knot defect; one that heals (accepts) BOM must then face it.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=reject/reject gmsh=reject ifc=reject</code></p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">

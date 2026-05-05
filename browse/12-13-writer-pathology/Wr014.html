@@ -30,7 +30,7 @@
 <section><h2>Sender</h2>
 <p>Writers that hash entity identity to a wide integer space and use the hash as the instance number directly</p></section>
 <section><h2>Description</h2>
-<p>A file with 50 entities uses instance numbers like `#42`, `#9876543`, `#21000000` — the maximum number is many orders of magnitude larger than the entity count. Spec-conforming, but a class of receivers naïvely pre-allocates an array of size `max(#N)`, blowing up memory. Bug-reporter language: &quot;STEP file with huge instance numbers&quot;, &quot;out of memory loading 50-entity file&quot;, &quot;instance #N overflow&quot;.</p></section>
+<p>A file with 50 entities uses instance numbers like `#42`, `#9876543`, `#21000000`; the maximum number is many orders of magnitude larger than the entity count. Spec-conforming, but a class of receivers naïvely pre-allocates an array of size `max(#N)`, blowing up memory. Bug-reporter language: &quot;STEP file with huge instance numbers&quot;, &quot;out of memory loading 50-entity file&quot;, &quot;instance #N overflow&quot;.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>a 5-entity file where the highest instance number is `#999999999`.</p></section>
 <section><h2>Expected kernel behavior</h2>

@@ -27,7 +27,7 @@
 <li>OCCT `ShapeAnalysis_TransferParameters::Perform` (`ShapeAnalysis_TransferParameters.hxx:63`)</li>
 </ul></section>
 <section><h2>Description</h2>
-<p>An EDGE_CURVE whose 3D curve and pcurve are correctly shaped but whose parameter ranges differ by a non-affine reparam (e.g., 3D representation is a non-uniform B_SPLINE_CURVE_WITH_KNOTS with non-uniform knot vector while the pcurve is a uniform LINE). Transferring a list of sample parameters from one representation to the other is non-trivial — naive linear remapping produces wrong sample points; a point at parameter t on one curve doesn&#x27;t correspond to the same arc-length point on the other.</p></section>
+<p>An EDGE_CURVE whose 3D curve and pcurve are correctly shaped but whose parameter ranges differ by a non-affine reparam (e.g., 3D representation is a non-uniform B_SPLINE_CURVE_WITH_KNOTS with non-uniform knot vector while the pcurve is a uniform LINE). Transferring a list of sample parameters from one representation to the other is non-trivial; naive linear remapping produces wrong sample points; a point at parameter t on one curve doesn&#x27;t correspond to the same arc-length point on the other.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>An EDGE_CURVE whose 3D representation is a non-uniform B_SPLINE_CURVE_WITH_KNOTS and whose pcurve is a uniform LINE — 3D arc-length and pcurve U-distance follow different monotone functions of the underlying parameter.</p></section>
 <section><h2>Expected kernel behavior</h2>

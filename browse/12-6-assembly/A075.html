@@ -31,13 +31,13 @@
 <li>OCCT MANTIS#0022680 (OCCT MANTIS tracker 502 as of 2026-05-02)</li>
 </ul></section>
 <section><h2>Description</h2>
-<p>A STEP file from SolidWorks 2018 (or similar producers) is imported but the resulting document contains no shapes — only an empty XCAF root. Diagnostics report success. Common cause: the file&#x27;s `PRODUCT_DEFINITION` chain is rooted in a representation type the reader silently skips (e.g., `MANIFOLD_SURFACE_SHAPE_REPRESENTATION` instead of `ADVANCED_BREP_SHAPE_REPRESENTATION`).</p></section>
+<p>A STEP file from SolidWorks 2018 (or similar producers) is imported but the resulting document contains no shapes; only an empty XCAF root. Diagnostics report success. Common cause: the file&#x27;s `PRODUCT_DEFINITION` chain is rooted in a representation type the reader silently skips (e.g., `MANIFOLD_SURFACE_SHAPE_REPRESENTATION` instead of `ADVANCED_BREP_SHAPE_REPRESENTATION`).</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>STEP file whose `PRODUCT_DEFINITION` references `MANIFOLD_SURFACE_SHAPE_REPRESENTATION` carrying real geometry; reader expects only `ADVANCED_BREP_SHAPE_REPRESENTATION`.</p></section>
 <section><h2>Expected kernel behavior</h2>
 <p>Heal and accept: reader recognises every representation subtype that is geometry-bearing; if a subtype is unsupported, reject with a diagnostic listing the entity type rather than silently emptying the result.</p></section>
 <section><h2>Notes</h2>
-<p>Provenance tier: runtime-only — kernel reports no free-shape after import; defect is reader behavior.</p></section>
+<p>Provenance tier: runtime-only; kernel reports no free-shape after import; defect is reader behavior.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Provenance tier</h2>

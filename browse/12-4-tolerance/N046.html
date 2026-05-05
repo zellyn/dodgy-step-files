@@ -28,7 +28,7 @@
 <li>OCCT MANTIS#0022826 (OCCT MANTIS tracker 502 as of 2026-05-02)</li>
 </ul></section>
 <section><h2>Description</h2>
-<p>A point-projection-onto-surface routine uses a hard-coded tolerance instead of consulting the input shape&#x27;s vertex/edge tolerance or the file&#x27;s declared UNCERTAINTY_MEASURE_WITH_UNIT. When the input context declares tolerance 1e-3, the projection fails because the routine still uses 1e-7. Typical fixture: a free CARTESIAN_POINT at e.g. (0.5, 0.5, 5e-4) sits 5e-4 above a PLANE z=0 — within the declared 1e-3 mm context tolerance, but the kernel can&#x27;t project it.</p></section>
+<p>A point-projection-onto-surface routine uses a hard-coded tolerance instead of consulting the input shape&#x27;s vertex/edge tolerance or the file&#x27;s declared UNCERTAINTY_MEASURE_WITH_UNIT. When the input context declares tolerance 1e-3, the projection fails because the routine still uses 1e-7. Typical fixture: a free CARTESIAN_POINT at e.g. (0.5, 0.5, 5e-4) sits 5e-4 above a PLANE z=0; within the declared 1e-3 mm context tolerance, but the kernel can&#x27;t project it.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>PLANE z=0 with file-scope tolerance 1e-3; project a free CARTESIAN_POINT at (0.5, 0.5, 5e-4) onto the surface. Routine reports &quot;no projection found&quot; because internal tolerance is 1e-7.</p></section>
 <section><h2>Expected kernel behavior</h2>

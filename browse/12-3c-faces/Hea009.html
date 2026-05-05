@@ -27,7 +27,7 @@
 <li>OCCT `ShapeUpgrade_ShapeConvertToBezier::Perform` (`ShapeUpgrade_ShapeConvertToBezier.hxx:108`)</li>
 </ul></section>
 <section><h2>Description</h2>
-<p>A shape whose surfaces and curves are mixed analytic (LINE, PLANE, CYLINDRICAL_SURFACE) and B-spline. The convert-to-Bezier pipeline must handle each representation kind, splitting at non-Bezier breaks (C0 knots, kinks) where needed. Typical fixture: an ADVANCED_FACE with a single FACE_OUTER_BOUND whose curve is a B_SPLINE_CURVE_WITH_KNOTS with 5 control points and degree 2 — a B-spline that is not yet a single Bezier segment and must be converted. Some receivers (e.g., Bezier-only meshers) require this normalization.</p></section>
+<p>A shape whose surfaces and curves are mixed analytic (LINE, PLANE, CYLINDRICAL_SURFACE) and B-spline. The convert-to-Bezier pipeline must handle each representation kind, splitting at non-Bezier breaks (C0 knots, kinks) where needed. Typical fixture: an ADVANCED_FACE with a single FACE_OUTER_BOUND whose curve is a B_SPLINE_CURVE_WITH_KNOTS with 5 control points and degree 2; a B-spline that is not yet a single Bezier segment and must be converted. Some receivers (e.g., Bezier-only meshers) require this normalization.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>An ADVANCED_FACE on a B-spline surface with C0 knot, or an EDGE_CURVE whose 3D curve is a degree-2 B_SPLINE_CURVE_WITH_KNOTS (not yet Bezier) — both must convert to Bezier.</p></section>
 <section><h2>Expected kernel behavior</h2>

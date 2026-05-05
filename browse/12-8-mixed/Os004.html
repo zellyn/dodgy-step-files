@@ -27,9 +27,9 @@
 <li>OCCT BRepOffset_MakeOffset.cxx:4230 (NotConnectedShell) (uncovered class evidence)</li>
 </ul></section>
 <section><h2>Sender</h2>
-<p>deduced — OCCT uncovered-class sweep, Pass C</p></section>
+<p>deduced — OCCT uncovered-class sweep</p></section>
 <section><h2>Description</h2>
-<p>The shell submitted for offsetting consists of two or more disconnected face groups; the offset algorithm cannot construct a connected offset shell. Bug-reporter language: &quot;offset on disconnected shell fails&quot;, &quot;shell falls apart in offset&quot;.</p></section>
+<p>The shell submitted for offsetting consists of two or more disconnected face groups; the offset algorithm cannot construct a connected offset shell.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>Two cubes&#x27; worth of faces with no shared edge, wrapped in one `OPEN_SHELL`.</p></section>
 <section><h2>Expected kernel behavior</h2>

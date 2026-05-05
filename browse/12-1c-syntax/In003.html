@@ -27,15 +27,15 @@
 <li>OCCT Interface_Check.hxx:97 (Mend method) (uncovered class evidence)</li>
 </ul></section>
 <section><h2>Sender</h2>
-<p>deduced — OCCT uncovered-class sweep, Pass C</p></section>
+<p>deduced — OCCT uncovered-class sweep</p></section>
 <section><h2>Description</h2>
-<p>A reader&#x27;s `Mend()` step takes a Fail-class diagnostic and downgrades it to a Warning if the kernel &quot;fixed&quot; the underlying problem. A consumer relying on the original Fail to gate further processing now misses it. Typical fixture: a B_SPLINE_CURVE_WITH_KNOTS whose knot multiplicities don&#x27;t match the required count (e.g., degree 2 with 3 control points needs 6 knots, but the multiplicities sum to 7) — a Fail-class condition that gets auto-mended and silently demoted. Bug-reporter language: &quot;kernel hid an error&quot;, &quot;fail downgraded to warning silently&quot;, &quot;wrong knot count not reported&quot;.</p></section>
+<p>A reader&#x27;s `Mend()` step takes a Fail-class diagnostic and downgrades it to a Warning if the kernel &quot;fixed&quot; the underlying problem. A consumer relying on the original Fail to gate further processing now misses it. Typical fixture: a B_SPLINE_CURVE_WITH_KNOTS whose knot multiplicities don&#x27;t match the required count (e.g., degree 2 with 3 control points needs 6 knots, but the multiplicities sum to 7); a Fail-class condition that gets auto-mended and silently demoted. Bug-reporter language: &quot;kernel hid an error&quot;, &quot;fail downgraded to warning silently&quot;, &quot;wrong knot count not reported&quot;.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>An entity that triggers a Fail-class check (e.g., a `B_SPLINE_CURVE_WITH_KNOTS` whose knot count is off-by-one — degree 2 with 3 control points but knot_multiplicities sum to 7 instead of the expected 6) but is then auto-fixed by the reader.</p></section>
 <section><h2>Expected kernel behavior</h2>
 <p>Warn and accept: always preserve the original severity; record the Mend as a separate &quot;auto-corrected&quot; event. Must not silently downgrade Fail to Warning.</p></section>
 <section><h2>Notes</h2>
-<p>Synonyms: &quot;silent error fix&quot;, &quot;fail demoted&quot;. Provenance tier: runtime-only — bytes alone cannot demonstrate this defect; the symptom is a runtime mutation of the diagnostic-severity record (Fail demoted to Warning) inside the kernel&#x27;s check object. The static fixture only encodes the input precondition; observing the demotion requires a kernel runtime trace. Synonyms: &quot;STEP Mend demotes Fail to Warning&quot;, &quot;auto-fix hides original failure&quot;, &quot;kernel mend hides bad knot count&quot;, &quot;B_SPLINE knot defect silently fixed&quot;, &quot;Fail downgraded to Warning by kernel&quot;.</p></section>
+<p>Synonyms: &quot;silent error fix&quot;, &quot;fail demoted&quot;. Provenance tier: runtime-only; bytes alone cannot demonstrate this defect; the symptom is a runtime mutation of the diagnostic-severity record (Fail demoted to Warning) inside the kernel&#x27;s check object. The static fixture only encodes the input precondition; observing the demotion requires a kernel runtime trace. Synonyms: &quot;STEP Mend demotes Fail to Warning&quot;, &quot;auto-fix hides original failure&quot;, &quot;kernel mend hides bad knot count&quot;, &quot;B_SPLINE knot defect silently fixed&quot;, &quot;Fail downgraded to Warning by kernel&quot;.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Provenance tier</h2>

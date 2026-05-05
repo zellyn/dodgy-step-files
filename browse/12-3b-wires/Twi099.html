@@ -30,7 +30,7 @@
 <section><h2>Sender</h2>
 <p>OCCT&#x27;s own STEP writer when round-tripping an edge whose two endpoint vertices are within tolerance and got merged upstream.</p></section>
 <section><h2>Description</h2>
-<p>An `EDGE_CURVE` references the same `VERTEX_POINT` instance for both its start and end vertex slots. This makes the edge a single-point self-loop — a degenerate edge with zero arc length. The producer is OCCT itself, so the same kernel that emits the file is the only one that fully accepts it; strict downstream readers (STEP-File-Analyzer, JSDAI) flag it as an invariant violation.</p></section>
+<p>An `EDGE_CURVE` references the same `VERTEX_POINT` instance for both its start and end vertex slots. This makes the edge a single-point self-loop; a degenerate edge with zero arc length. The producer is OCCT itself, so the same kernel that emits the file is the only one that fully accepts it; strict downstream readers (STEP-File-Analyzer, JSDAI) flag it as an invariant violation.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>`#10=VERTEX_POINT(&#x27;&#x27;,#11);` followed by `#20=EDGE_CURVE(&#x27;&#x27;,#10,#10,#15,.T.);` referencing the same vertex twice — start and end both `#10`.</p></section>
 <section><h2>Expected kernel behavior</h2>

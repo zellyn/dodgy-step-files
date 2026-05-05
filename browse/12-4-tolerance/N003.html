@@ -27,7 +27,7 @@
 <li>03-occt-tests R030 (OCC26642, OCC26656)</li>
 </ul></section>
 <section><h2>Description</h2>
-<p>When two adjacent faces with the same supporting surface are merged into one (their shared edge is dissolved), the resulting shared vertex inherits a tolerance equal to the worst-case vertex among the merged inputs — e.g. `1e-1` even though one input vertex was `2e-7`. Downstream algorithms then treat points as fuzzy-equal where they were previously precise.</p></section>
+<p>When two adjacent faces with the same supporting surface are merged into one (their shared edge is dissolved), the resulting shared vertex inherits a tolerance equal to the worst-case vertex among the merged inputs; e.g. `1e-1` even though one input vertex was `2e-7`. Downstream algorithms then treat points as fuzzy-equal where they were previously precise.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>Two coplanar faces with vertex tolerance 2e-7 and one vertex with tolerance 1e-1 (from prior healing). Apply same-domain face merging.</p></section>
 <section><h2>Expected kernel behavior</h2>

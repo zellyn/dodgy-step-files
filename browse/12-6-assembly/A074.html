@@ -27,13 +27,13 @@
 <li>OCCT MANTIS#0033183 (OCCT MANTIS tracker 502 as of 2026-05-02)</li>
 </ul></section>
 <section><h2>Description</h2>
-<p>A STEP file containing texture data (`IMAGE_TEXTURE`, `TEXTURE_MAPPING`) is imported; texture appears correctly in the XCAF document. Saving the document to OCCT&#x27;s binary XBF format and reloading loses the texture — the binary persistence layer skips texture attributes.</p></section>
+<p>A STEP file containing texture data (`IMAGE_TEXTURE`, `TEXTURE_MAPPING`) is imported; texture appears correctly in the XCAF document. Saving the document to OCCT&#x27;s binary XBF format and reloading loses the texture; the binary persistence layer skips texture attributes.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>STEP file with a textured face; import, save XBF, reload XBF — texture binding is missing.</p></section>
 <section><h2>Expected kernel behavior</h2>
 <p>Heal and accept: persistence layer round-trips every document attribute including textures; if a kernel doesn&#x27;t support textures, it must reject with a clear &quot;feature not supported&quot; diagnostic at save time, not silently lose data.</p></section>
 <section><h2>Notes</h2>
-<p>Provenance tier: requires-sibling-pair — texture lost across XBF roundtrip; needs both pre- and post-roundtrip files.</p></section>
+<p>Provenance tier: requires-sibling-pair; texture lost across XBF roundtrip; needs both pre- and post-roundtrip files.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Provenance tier</h2>

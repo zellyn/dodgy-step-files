@@ -29,7 +29,7 @@
 <section><h2>Sender</h2>
 <p>deduced — STEP-NC publisher exporting feature library shared across multiple parts without filtering</p></section>
 <section><h2>Description</h2>
-<p>A `MACHINING_WORKINGSTEP` references a `MACHINING_FEATURE` by id; the feature exists in the file but is associated with a different workpiece — the workingstep&#x27;s setup machines workpiece A while the cited feature lives on workpiece B. The toolpath is computed against feature B&#x27;s placement and crashes the tool against workpiece A. Bug-reporter language: &quot;STEP-NC workingstep machines wrong feature&quot;, &quot;AP238 feature on wrong part&quot;, &quot;tool crash because wrong workpiece feature&quot;.</p></section>
+<p>A `MACHINING_WORKINGSTEP` references a `MACHINING_FEATURE` by id; the feature exists in the file but is associated with a different workpiece; the workingstep&#x27;s setup machines workpiece A while the cited feature lives on workpiece B. The toolpath is computed against feature B&#x27;s placement and crashes the tool against workpiece A. Bug-reporter language: &quot;STEP-NC workingstep machines wrong feature&quot;, &quot;AP238 feature on wrong part&quot;, &quot;tool crash because wrong workpiece feature&quot;.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>Two `WORKPIECE`s declared; a `WORKINGSTEP` whose setup mounts workpiece A but whose `its_feature` belongs to workpiece B.</p></section>
 <section><h2>Expected kernel behavior</h2>

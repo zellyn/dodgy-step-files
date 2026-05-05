@@ -30,11 +30,11 @@
 <section><h2>Sender</h2>
 <p>OCCT&#x27;s STEP writer when configured to emit pcurves (`write.surfacecurve.mode = 1`).</p></section>
 <section><h2>Description</h2>
-<p>When pcurves are emitted alongside 3D curves on `EDGE_CURVE`, every receiver re-projects them to verify consistency. The writer&#x27;s pcurve, computed by a separate pass after the 3D curve is fixed, often disagrees with the 3D curve at the edge tolerance — a re-import yields edges that drift off the surface, faces with `BRepCheck_InvalidEdgeOnSurface` errors, or sewing failures. The community workaround is to disable pcurve emission entirely; the kernel-side bug is that the two representations are not co-fitted.</p></section>
+<p>When pcurves are emitted alongside 3D curves on `EDGE_CURVE`, every receiver re-projects them to verify consistency. The writer&#x27;s pcurve, computed by a separate pass after the 3D curve is fixed, often disagrees with the 3D curve at the edge tolerance; a re-import yields edges that drift off the surface, faces with `BRepCheck_InvalidEdgeOnSurface` errors, or sewing failures. The community workaround is to disable pcurve emission entirely; the kernel-side bug is that the two representations are not co-fitted.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>STEP file with `SURFACE_CURVE` carrying both a 3D curve and a `PCURVE` whose 2D parametric curve evaluates ~ε off the 3D curve when projected onto the surface. Receiver reports edge-on-surface tolerance violation.</p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal-and-accept — pcurves must be co-fitted with the 3D curve so that surface-evaluated pcurve and 3D curve agree within the edge tolerance; if they cannot be fitted, omit the pcurve and let the receiver re-project.</p></section>
+<p>heal-and-accept; pcurves must be co-fitted with the 3D curve so that surface-evaluated pcurve and 3D curve agree within the edge tolerance; if they cannot be fitted, omit the pcurve and let the receiver re-project.</p></section>
 <section><h2>Notes</h2>
 <p>**See also**: Gp028, Tfa023. Synonyms: &quot;STEP writer pcurves disagree with 3D curves&quot;, &quot;disable writing pcurves to STEP and IGES by default&quot;, &quot;edge tolerance violated by writer pcurve&quot;, &quot;pcurve drift after STEP round-trip&quot;.</p></section>
 <section><h2>Expected validation</h2>

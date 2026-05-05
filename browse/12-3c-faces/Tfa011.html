@@ -31,7 +31,7 @@
 <section><h2>Reproducer recipe</h2>
 <p>`ADVANCED_FACE` with two `FACE_OUTER_BOUND` records (or, equivalently, one outer wire and one `FACE_BOUND` that geometrically duplicates it).</p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal — split into two faces (one per outer wire) or merge if outer wires coincide; reject if the loops cross.</p></section>
+<p>heal; split into two faces (one per outer wire) or merge if outer wires coincide; reject if the loops cross.</p></section>
 <section><h2>Notes</h2>
 <p>Synonyms: &quot;face needs splitting into separate faces&quot;, &quot;two outer boundaries on one face&quot;, &quot;face has multiple outer loops&quot;, &quot;ADVANCED_FACE with two FACE_OUTER_BOUND entries&quot;, &quot;face encloses two disjoint regions&quot;.</p></section>
 <section><h2>Expected validation</h2>

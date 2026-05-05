@@ -27,7 +27,7 @@
 <li>OCCT `ShapeAnalysis_Wire::CheckLacking` (`ShapeAnalysis_Wire.hxx:236`)</li>
 </ul></section>
 <section><h2>Description</h2>
-<p>Between two consecutive edges of a wire, the pcurve endpoints differ by more than the shared vertex&#x27;s tolerance can cover. The 3D coordinates may agree but in UV there is a gap that requires *insertion* of a connecting edge — not just snapping.</p></section>
+<p>Between two consecutive edges of a wire, the pcurve endpoints differ by more than the shared vertex&#x27;s tolerance can cover. The 3D coordinates may agree but in UV there is a gap that requires *insertion* of a connecting edge; not just snapping.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>An edge ends at UV `(10, 0)`; the next edge starts at UV `(10.5, 0)` — pcurve gap 0.5 in UV space, but 3D distance is small because the host surface compresses parameter space at that location.</p></section>
 <section><h2>Expected kernel behavior</h2>

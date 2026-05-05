@@ -27,7 +27,7 @@
 <li>synthesized time-bomb.</li>
 </ul></section>
 <section><h2>Description</h2>
-<p>Variant of Tb003 with a non-decimal scale factor. Same hierarchy invariant in mm; the file is converted on import to inches (factor 25.4). Floating-point round-off during the multiplication leaves tolerances at unequal numbers of significant digits, and the strict hierarchy ordering may be violated by ULP-scale drift. A vertex tolerance was 1.000e-6 mm, an edge tolerance was 1.001e-6 mm — after `*25.4` they may end up `2.54e-5` and `2.54254e-5`, but with a kernel that round-trips through `float32` for some fields the equality flips.</p></section>
+<p>Variant of Tb003 with a non-decimal scale factor. Same hierarchy invariant in mm; the file is converted on import to inches (factor 25.4). Floating-point round-off during the multiplication leaves tolerances at unequal numbers of significant digits, and the strict hierarchy ordering may be violated by ULP-scale drift. A vertex tolerance was 1.000e-6 mm, an edge tolerance was 1.001e-6 mm; after `*25.4` they may end up `2.54e-5` and `2.54254e-5`, but with a kernel that round-trips through `float32` for some fields the equality flips.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>Three uncertainties at 1.000e-6, 1.001e-6, 1.002e-6 in mm-declared file with hierarchy invariant just barely holding; wrap in PRODUCT chain.</p></section>
 <section><h2>Expected kernel behavior</h2>

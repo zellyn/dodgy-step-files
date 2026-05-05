@@ -31,7 +31,7 @@
 <li>OCCT MANTIS#0030024 (OCCT MANTIS tracker 502 as of 2026-05-02)</li>
 </ul></section>
 <section><h2>Description</h2>
-<p>A document carrying pretessellated geometry (`TESSELLATED_FACE`, `TRIANGULATED_FACE`) alongside B-rep is written. The writer&#x27;s tessellation emitter is gated behind `read.step.tessellated` config; when the flag is off, the entire tessellated content is silently dropped — even though the source has it and the output schema (AP242) supports it.</p></section>
+<p>A document carrying pretessellated geometry (`TESSELLATED_FACE`, `TRIANGULATED_FACE`) alongside B-rep is written. The writer&#x27;s tessellation emitter is gated behind `read.step.tessellated` config; when the flag is off, the entire tessellated content is silently dropped; even though the source has it and the output schema (AP242) supports it.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>Document with one face carrying both `ADVANCED_FACE` geometry and a `TESSELLATED_FACE` mesh. Write with default config.</p></section>
 <section><h2>Expected kernel behavior</h2>

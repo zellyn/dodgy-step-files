@@ -28,13 +28,13 @@
 <li>OCCT MANTIS#0032914 (OCCT MANTIS tracker 502 as of 2026-05-02)</li>
 </ul></section>
 <section><h2>Description</h2>
-<p>A compound containing solids and one isolated vertex is exported in non-manifold mode (`write.step.nonmanifold`). The non-manifold writer iterates faces / edges and ignores the vertex entirely — vertex is silently dropped.</p></section>
+<p>A compound containing solids and one isolated vertex is exported in non-manifold mode (`write.step.nonmanifold`). The non-manifold writer iterates faces / edges and ignores the vertex entirely; vertex is silently dropped.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>Compound = one cube + one isolated vertex at `(10,10,10)`. Set `write.step.nonmanifold` = true; write.</p></section>
 <section><h2>Expected kernel behavior</h2>
 <p>Heal and accept: non-manifold writer emits every top-level shape including isolated vertices and edges; do not filter by topology type. Must not silently emit empty.</p></section>
 <section><h2>Notes</h2>
-<p>Provenance tier: writer-side — non-manifold export emits empty compound where vertex expected.</p></section>
+<p>Provenance tier: writer-side; non-manifold export emits empty compound where vertex expected.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Provenance tier</h2>

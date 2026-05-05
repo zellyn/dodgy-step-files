@@ -28,7 +28,7 @@
 <li>T043, N050</li>
 </ul></section>
 <section><h2>Description</h2>
-<p>Truncated coordinate list `((1.,2.,3.),(4.,5.,6.)` (one `)` short) causes scanners to walk past the `;` of the next instance. Particularly common when nested aggregates contain empty inner lists (`(())` vs `()`).</p></section>
+<p>A truncated coordinate list like `((1.,2.,3.),(4.,5.,6.)` (one `)` short) causes scanners to walk past the `;` of the next instance. Common when nested aggregates contain empty inner lists (`(())` vs `()`).</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>`#1=IFCPOLYLINE((#2,#3,#4); #5=..`</p></section>
 <section><h2>Expected kernel behavior</h2>

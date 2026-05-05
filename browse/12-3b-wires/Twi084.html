@@ -27,7 +27,7 @@
 <li>OCCT BRepLib_MakeEdge EdgeError.DifferentPointsOnClosedCurve (uncovered class evidence)</li>
 </ul></section>
 <section><h2>Sender</h2>
-<p>deduced — OCCT uncovered-class sweep, Pass C</p></section>
+<p>deduced — OCCT uncovered-class sweep</p></section>
 <section><h2>Description</h2>
 <p>An `EDGE_CURVE` whose underlying `edge_geometry` is a closed curve (a circle, an ellipse, a closed B-spline) declares its start vertex and end vertex to be at *different* coordinates. The expected invariant — a closed curve&#x27;s two endpoints coincide in 3D — is violated. Bug-reporter language: &quot;closed curve has gap&quot;, &quot;circle&#x27;s endpoints don&#x27;t meet&quot;, &quot;circle edge open&quot;.</p></section>
 <section><h2>Reproducer recipe</h2>

@@ -27,11 +27,11 @@
 <li>synthesized cross-product.</li>
 </ul></section>
 <section><h2>Description</h2>
-<p>A face on a closed `CYLINDRICAL_SURFACE` is bounded by three edges. Edge[1].end ≠ Edge[2].start (gap of 0.5 in 3D — far above any reasonable tolerance). The pcurves are absent. The wire&#x27;s 3D path also wraps around the cylinder (covers &gt; one period in U). All three classes interact on the same wire.</p></section>
+<p>A face on a closed `CYLINDRICAL_SURFACE` is bounded by three edges. Edge[1].end ≠ Edge[2].start (gap of 0.5 in 3D, far above any reasonable tolerance). The pcurves are absent. The wire&#x27;s 3D path also wraps around the cylinder (covers &gt; one period in U). All three classes interact on the same wire.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>cylinder; face wire with three open edges, gaps, no pcurves, total U-extent &gt; 2π.</p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>Heal and accept, or reject with E_CONNECTEDNESS / E_MISSING_PCURVE diagnostic: connectedness invariant, pcurve-existence invariant, and period-spanning invariant each addressed — repair where possible, otherwise reject.</p></section>
+<p>Heal and accept, or reject with E_CONNECTEDNESS / E_MISSING_PCURVE diagnostic: connectedness invariant, pcurve-existence invariant, and period-spanning invariant each addressed; repair where possible, otherwise reject.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">

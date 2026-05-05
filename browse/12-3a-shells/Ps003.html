@@ -34,7 +34,7 @@
 <section><h2>Expected kernel behavior</h2>
 <p>Verify each face&#x27;s effective outward normal is consistent with the shell&#x27;s outside; flip, reject, or report the inconsistent face. A correct kernel should not silently return a solid that fails point-in-solid tests near the flipped face.</p></section>
 <section><h2>Notes</h2>
-<p>Tier-3 metric: ray cast from a clearly-exterior point along -Z toward the cube — should hit the top face&#x27;s outward side first. With same_sense=.F. the outward side is now inward. Synonyms: &quot;one face is inside-out&quot;, &quot;ray-cast hits surface from wrong direction&quot;, &quot;hole in shell where there shouldn&#x27;t be one&quot;, &quot;single face same_sense flipped on cube&quot;, &quot;top face normal points down into solid&quot;.</p></section>
+<p>Tier-3 metric: ray cast from a clearly-exterior point along -Z toward the cube; should hit the top face&#x27;s outward side first. With same_sense=.F. the outward side is now inward. Synonyms: &quot;one face is inside-out&quot;, &quot;ray-cast hits surface from wrong direction&quot;, &quot;hole in shell where there shouldn&#x27;t be one&quot;, &quot;single face same_sense flipped on cube&quot;, &quot;top face normal points down into solid&quot;.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(27) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

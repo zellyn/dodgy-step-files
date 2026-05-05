@@ -27,7 +27,7 @@
 <li>OCCT `ShapeAnalysis_TransferParametersProj::Perform` (`ShapeAnalysis_TransferParametersProj.hxx:52`)</li>
 </ul></section>
 <section><h2>Description</h2>
-<p>An edge for which 3D-to-2D parameter transfer requires actual projection onto the host surface, not just affine remapping. Used when surface curvature varies along the edge — affine maps would produce wrong sample positions.</p></section>
+<p>An edge for which 3D-to-2D parameter transfer requires actual projection onto the host surface, not just affine remapping. Used when surface curvature varies along the edge; affine maps would produce wrong sample positions.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>An edge on a NURBS surface where the surface&#x27;s metric varies by 10× along the edge length.</p></section>
 <section><h2>Expected kernel behavior</h2>

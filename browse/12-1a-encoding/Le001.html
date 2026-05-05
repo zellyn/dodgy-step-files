@@ -31,11 +31,11 @@
 <section><h2>Sender</h2>
 <p>Windows-based authoring tools that round-trip through &quot;auto-detect text&quot; editors</p></section>
 <section><h2>Description</h2>
-<p>A leading `EF BB BF` byte sequence appears before the literal `ISO-10303-21;` start token. The spec&#x27;s framing grammar mandates that the magic token be the first non-whitespace content with no BOM allowance, so strict parsers fail on the first non-ASCII byte. In Ed.3 the file body default encoding is UTF-8, which makes a leading BOM harmless data but still not part of the magic.</p></section>
+<p>A leading `EF BB BF` byte sequence appears before the literal `ISO-10303-21;` start token. The spec&#x27;s framing grammar requires the magic token to be the first non-whitespace content with no BOM allowance, so strict parsers fail on the first non-ASCII byte. In Ed.3 the file body default encoding is UTF-8, which makes a leading BOM harmless data but still not part of the magic.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>file beginning with bytes `EF BB BF 49 53 4F 2D 31 30 33 30 33 2D 32 31 3B …`</p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal — silently strip a single leading UTF-8 BOM at offset 0 with a warning; reject UTF-16/UTF-32 BOMs (`FF FE`, `FE FF`, `FF FE 00 00`, `00 00 FE FF`) with a clear `E_UNEXPECTED_BOM` diagnostic.</p></section>
+<p>heal: silently strip a single leading UTF-8 BOM at offset 0 with a warning; reject UTF-16/UTF-32 BOMs (`FF FE`, `FE FF`, `FF FE 00 00`, `00 00 FE FF`) with a clear `E_UNEXPECTED_BOM` diagnostic.</p></section>
 <section><h2>Notes</h2>
 <p>Cross-oracle: pure-Python Part-21 validator accepts (`warn(W_BOM)`); OCCT rejects (`reject`). OCC enforces stricter framing than the spec text requires. Synonyms: &quot;UTF-8 BOM before ISO-10303-21&quot;, &quot;byte order mark at start of STEP file&quot;, &quot;EF BB BF before magic line&quot;, &quot;parser fails on first byte BOM&quot;, &quot;STEP file starts with BOM&quot;.</p></section>
 <section><h2>Expected validation</h2>

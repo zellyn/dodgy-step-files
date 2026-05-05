@@ -33,7 +33,7 @@
 <section><h2>Reproducer recipe</h2>
 <p>Export an ACIS body that uses a tolerant edge with tolerance 5e-4 to STEP; import into a Parasolid pipeline that demands geometric intersection within 1e-6.</p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal — tag every edge and vertex with a per-entity tolerance; rebuild face/edge adjacencies up to that tolerance; only error if re-intersection demonstrates the relation cannot be established.</p></section>
+<p>heal; tag every edge and vertex with a per-entity tolerance; rebuild face/edge adjacencies up to that tolerance; only error if re-intersection demonstrates the relation cannot be established.</p></section>
 <section><h2>Notes</h2>
 <p>**See also**: Tsh001. Synonyms: &quot;body valid in ACIS but rejected by Parasolid&quot;, &quot;kernel-specific tolerance bookkeeping&quot;, &quot;tolerant edge accepted in source rejected in target&quot;, &quot;kernels disagree on what counts as one vertex&quot;.</p></section>
 <section><h2>Expected validation</h2>

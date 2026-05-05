@@ -28,7 +28,7 @@
 <li>OCCT MANTIS#0032556 (OCCT MANTIS tracker 502 as of 2026-05-02)</li>
 </ul></section>
 <section><h2>Description</h2>
-<p>A `TOROIDAL_SURFACE` is emitted with `major_radius` and `minor_radius` swapped (a producer convention from a legacy tool that stored them in opposite order). Reader interprets the values literally, producing a torus with reversed proportions — what should be a thin donut becomes an apple/lemon (minor &gt; major, no central hole).</p></section>
+<p>A `TOROIDAL_SURFACE` is emitted with `major_radius` and `minor_radius` swapped (a producer convention from a legacy tool that stored them in opposite order). Reader interprets the values literally, producing a torus with reversed proportions; what should be a thin donut becomes an apple/lemon (minor &gt; major, no central hole).</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>`TOROIDAL_SURFACE(&#x27;&#x27;,#axis, 0.5, 5.0)` where the intended torus has `major_radius=5.0` and `minor_radius=0.5`. Producer emitted the values reversed.</p></section>
 <section><h2>Expected kernel behavior</h2>

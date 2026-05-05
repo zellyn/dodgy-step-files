@@ -33,7 +33,7 @@
 <section><h2>Reproducer recipe</h2>
 <p>Two faces on same non-periodic BSpline surface that happen to share a long curve along U=const, where the U-range does not wrap.</p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal — verify periodicity flag and parametric distance before treating as seam; do not insert seam-degenerate edge.</p></section>
+<p>heal; verify periodicity flag and parametric distance before treating as seam; do not insert seam-degenerate edge.</p></section>
 <section><h2>Notes</h2>
 <p>Synonyms: &quot;pseudo-seam edge surface_curve has same pcurve twice&quot;, &quot;looks like seam but surface not periodic&quot;, &quot;PCURVE_S1_AND_S2 with duplicate pcurve reference&quot;, &quot;seam-like edge on non-periodic BSpline surface&quot;, &quot;false seam from coincidental shared edge&quot;.</p></section>
 <section><h2>Expected validation</h2>

@@ -39,6 +39,11 @@ from step_corpus._build_catalog_json import RESEARCH_ROOT
 
 V2_OUT = Path("/tmp/cad-v2-out")
 
+# Public GitHub repository URL. Used for "View on GitHub" links and for
+# linking to the rendered (rather than raw) Markdown of top-level docs.
+GITHUB_REPO_URL = "https://github.com/zellyn/dodgy-step-files"
+GITHUB_BLOB_MAIN = f"{GITHUB_REPO_URL}/blob/main"
+
 # Friendly labels for each section_dir. Used by the browser/landing pages.
 SECTION_LABELS: dict[str, str] = {
     "12-1a-encoding": "§12.1a Encoding & string-literal defects",
@@ -871,9 +876,9 @@ def render_landing(by_section: dict[str, list[dict]],
                '(crash, silent-loss, …) &rarr;</a></li>')
     # Pick a representative section for "browse all"
     out.append('<li><a href="browse/index.html">Browse all entries &rarr;</a></li>')
-    out.append('<li><a href="STEP_PROBLEM_CATALOG.md">Catalog markdown (raw) &rarr;</a></li>')
-    out.append('<li><a href="QUALITY_DASHBOARD.md">Quality dashboard &rarr;</a></li>')
-    out.append('<li><a href="https://github.com/zellyn/cad/tree/main/research">View on GitHub &rarr;</a></li>')
+    out.append(f'<li><a href="{GITHUB_BLOB_MAIN}/STEP_PROBLEM_CATALOG.md">Catalog markdown (rendered on GitHub) &rarr;</a></li>')
+    out.append(f'<li><a href="{GITHUB_BLOB_MAIN}/QUALITY_DASHBOARD.md">Quality dashboard &rarr;</a></li>')
+    out.append(f'<li><a href="{GITHUB_REPO_URL}">View on GitHub &rarr;</a></li>')
     out.append('</ul>')
     out.append('</section>')
 

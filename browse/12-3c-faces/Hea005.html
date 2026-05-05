@@ -26,7 +26,7 @@
 <li>OCCT `ShapeAnalysis_FreeBoundsProperties::CheckNotches` (`ShapeAnalysis_FreeBoundsProperties.hxx:135`)</li>
 </ul></section>
 <section><h2>Description</h2>
-<p>A free-bound contour (EDGE_LOOP / outer wire) has one or more notches — sharp inward triangular detours where a straight side has been broken into 3+ ORIENTED_EDGEs through extra VERTEX_POINTs offset perpendicular to the main side (typical detour: (0,0,0)-&gt;(4.5,0,0)-&gt;(5.0,0.05,0)-&gt;(5.5,0,0)-&gt;(10,0,0)). The check must report each with width and depth so the user can decide whether to flatten or split the host face.</p></section>
+<p>A free-bound contour (EDGE_LOOP / outer wire) has one or more notches; sharp inward triangular detours where a straight side has been broken into 3+ ORIENTED_EDGEs through extra VERTEX_POINTs offset perpendicular to the main side (typical detour: (0,0,0)-&gt;(4.5,0,0)-&gt;(5.0,0.05,0)-&gt;(5.5,0,0)-&gt;(10,0,0)). The check must report each with width and depth so the user can decide whether to flatten or split the host face.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>An OPEN_SHELL whose face&#x27;s outer EDGE_LOOP has the notched-wire defect from Twi054 — vertices V_notch_a, V_notch_apex, V_notch_b interrupt an otherwise straight side.</p></section>
 <section><h2>Expected kernel behavior</h2>

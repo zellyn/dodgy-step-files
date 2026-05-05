@@ -26,7 +26,7 @@
 <li>OCCT `ShapeFix_WireSegment::CheckPatchIndex` (`ShapeFix_WireSegment.hxx:148`)</li>
 </ul></section>
 <section><h2>Description</h2>
-<p>An edge on a face built atop a RECTANGULAR_COMPOSITE_SURFACE carries patch-index metadata identifying which sub-patch the edge crosses. The metadata is invalid (`IUMin &gt; IUMax`, or the edge claims it spans more than one patch in a single segment when it actually doesn&#x27;t), making it impossible to localize the edge to a specific patch for evaluation. A related fixture pattern: two ADVANCED_FACEs share the same FACE_OUTER_BOUND wire while referencing two different host PLANEs (e.g., one PLANE at origin, another at (1,0,0)) — the same wire reused as boundary on two distinct host surfaces.</p></section>
+<p>An edge on a face built atop a RECTANGULAR_COMPOSITE_SURFACE carries patch-index metadata identifying which sub-patch the edge crosses. The metadata is invalid (`IUMin &gt; IUMax`, or the edge claims it spans more than one patch in a single segment when it actually doesn&#x27;t), making it impossible to localize the edge to a specific patch for evaluation. A related fixture pattern: two ADVANCED_FACEs share the same FACE_OUTER_BOUND wire while referencing two different host PLANEs (e.g., one PLANE at origin, another at (1,0,0)); the same wire reused as boundary on two distinct host surfaces.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>Composite surface of two abutting PLANE patches; an edge crosses both patches but its segment record claims `IUMax = IUMin + 2` (skipping a patch). Or: two ADVANCED_FACEs sharing one FACE_OUTER_BOUND but pointing at distinct PLANE entities.</p></section>
 <section><h2>Expected kernel behavior</h2>

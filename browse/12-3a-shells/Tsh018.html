@@ -31,7 +31,7 @@
 <section><h2>Reproducer recipe</h2>
 <p>After `BRepPrimAPI_MakeRevol`, compare orientation of `LastShape()` with orientation of the equivalent face found via `TopExp_Explorer(solid, TopAbs_FACE)`.</p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal — `LastShape()` (and `FirstShape`/`Generated`/`Modified`) should report a face with the same orientation it carries inside the parent solid.</p></section>
+<p>heal; `LastShape()` (and `FirstShape`/`Generated`/`Modified`) should report a face with the same orientation it carries inside the parent solid.</p></section>
 <section><h2>Notes</h2>
 <p>**See also**: Tfa034, Tsh009. Synonyms: &quot;face orientation different inside vs outside parent&quot;, &quot;child face flipped relative to its solid&quot;, &quot;follow-up operation sees wrong face normal direction&quot;, &quot;API returns inconsistent orientation after revolve&quot;, &quot;first-or-last shape disagrees with explorer&quot;.</p></section>
 <section><h2>Expected validation</h2>

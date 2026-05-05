@@ -34,7 +34,7 @@
 <section><h2>Expected kernel behavior</h2>
 <p>reader rejects empty / null filenames at entry; never crash on bad arguments.</p></section>
 <section><h2>Notes</h2>
-<p>**See also**: Ad082. Provenance tier: runtime-only — there is no `.stp` to author; the defect is triggered by an empty or null path passed to the reader API, which fails before any file content is read. Demonstrating this requires invoking the reader with bad arguments, not a fixture file. **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog&#x27;s allowed set ({reject}). Kernel-bug witnessed: receivers must reject this fixture per the catalog&#x27;s stated invariant.</p></section>
+<p>**See also**: Ad082. Provenance tier: runtime-only; there is no `.stp` to author; the defect is triggered by an empty or null path passed to the reader API, which fails before any file content is read. Demonstrating this requires invoking the reader with bad arguments, not a fixture file. **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog&#x27;s allowed set ({reject}). Kernel-bug witnessed: receivers must reject this fixture per the catalog&#x27;s stated invariant.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Provenance tier</h2>

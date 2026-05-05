@@ -27,7 +27,7 @@
 <li>06-nist-sfa.md S031 (sfa-valprop.tcl:649,654,672,679)</li>
 </ul></section>
 <section><h2>Description</h2>
-<p>A `CONVERSION_BASED_UNIT` declares `dimensional_exponents` that don&#x27;t match the physical quantity it claims to represent — e.g. mass-exponent 0 on a mass unit; length-exponent != −3 for density.</p></section>
+<p>A `CONVERSION_BASED_UNIT` declares `dimensional_exponents` that don&#x27;t match the physical quantity it claims to represent; e.g. mass-exponent 0 on a mass unit; length-exponent != −3 for density.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>`CONVERSION_BASED_UNIT` named `&#x27;POUND&#x27;` with `DIMENSIONAL_EXPONENTS(0,0,0,0,0,0,0)` (all zero) referenced from a mass measure.</p></section>
 <section><h2>Expected kernel behavior</h2>

@@ -38,7 +38,7 @@
 <section><h2>Expected kernel behavior</h2>
 <p>disable external-DTD resolution by default in the XML parser used for STEP-XML; reject documents whose DOCTYPE names an external SYSTEM identifier with a precise diagnostic; treat as adversarial. If a producer legitimately needs DTD validation, require the DTD to be inlined.</p></section>
 <section><h2>Notes</h2>
-<p>Twin of Ad104 (external entity inside the document); this entry attacks the DOCTYPE itself. Synonyms: &quot;external DTD in STEP-XML&quot;, &quot;remote DTD fetch&quot;, &quot;XXE via DOCTYPE SYSTEM&quot;. Provenance tier: cross-file-state — defect is in the .stpx wrapper, not in the .stp body. **See also**: Ad104, Ad107, Ad109. **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog&#x27;s allowed set ({reject}). Kernel-bug witnessed: receivers must reject this fixture per the catalog&#x27;s stated invariant.</p></section>
+<p>Twin of Ad104 (external entity inside the document); this entry attacks the DOCTYPE itself. Synonyms: &quot;external DTD in STEP-XML&quot;, &quot;remote DTD fetch&quot;, &quot;XXE via DOCTYPE SYSTEM&quot;. Provenance tier: cross-file-state; defect is in the .stpx wrapper, not in the .stp body. **See also**: Ad104, Ad107, Ad109. **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog&#x27;s allowed set ({reject}). Kernel-bug witnessed: receivers must reject this fixture per the catalog&#x27;s stated invariant.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Provenance tier</h2>

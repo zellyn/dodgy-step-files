@@ -27,7 +27,7 @@
 <li>OCCT MANTIS#0031378 (OCCT MANTIS tracker 502 as of 2026-05-02)</li>
 </ul></section>
 <section><h2>Description</h2>
-<p>A reader is configured to compute incremental BRep mesh during STEP load. The mesh step has worst-case quadratic behaviour on files with many small faces — minutes-long load on shells with thousands of faces.</p></section>
+<p>A reader is configured to compute incremental BRep mesh during STEP load. The mesh step has worst-case quadratic behaviour on files with many small faces; minutes-long load on shells with thousands of faces.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>STEP file with 5,000 small faces; load with auto-mesh enabled. Mesh phase runs for minutes per file.</p></section>
 <section><h2>Expected kernel behavior</h2>

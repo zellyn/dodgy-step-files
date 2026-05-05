@@ -33,14 +33,16 @@
 <section><h2>Expected kernel behavior</h2>
 <p>Heal and accept: support both forms on import per spec; coerce the emit to whichever form preserves source intent.</p></section>
 <section><h2>Notes</h2>
-<p>Synonyms: &quot;annotation_plane plane vs planar_box ambiguity&quot;, &quot;ambiguous annotation_plane representation&quot;, &quot;annotation plane shape unclear (plane or planar_box)&quot;.</p></section>
+<p>**See also**: Pmi047. Synonyms: &quot;annotation_plane plane vs planar_box ambiguity&quot;, &quot;ambiguous annotation_plane representation&quot;, &quot;annotation plane shape unclear (plane or planar_box)&quot;.- **Byte assertion**: count_entity_def(b&#x27;ANNOTATION_PLANE&#x27;) == 2</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">
-<li><code>count_entity_def(b&#x27;ANNOTATION_PLANE&#x27;) == 2</code></li>
 <li><code>contains(b&#x27;PLANAR_BOX&#x27;)</code></li>
 <li><code>contains(b&#x27;PLANE&#x27;)</code></li>
 </ul></section>
+<section><h2>Cross-references</h2>
+<p><a href="Pmi047.html">Pmi047</a></p>
+</section>
 <section><h2>Live oracle output</h2>
 <table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
 <tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
@@ -96,10 +98,10 @@
 <span class="lineno">39</span>#35 = AXIS2_PLACEMENT_3D(&#x27;axis_box&#x27;,#34,#31,#32);
 <span class="lineno">40</span>/* Form 1: unbounded <mark>PLANE</mark> */
 <span class="lineno">41</span>#40 = <mark>PLANE</mark>(&#x27;plane_unbounded&#x27;,#33);
-<span class="lineno">42</span><mark>#41 = ANNOTATION_PLANE(</mark>&#x27;PMI_zone_unbounded&#x27;,(),#40,());
+<span class="lineno">42</span>#41 = ANNOTATION_<mark>PLANE</mark>(&#x27;PMI_zone_unbounded&#x27;,(),#40,());
 <span class="lineno">43</span>/* Form 2: <mark>PLANAR_BOX</mark> (axis placement + sizes) */
 <span class="lineno">44</span>#50 = <mark>PLANAR_BOX</mark>(100.0,50.0,#35);
-<span class="lineno">45</span><mark>#51 = ANNOTATION_PLANE(</mark>&#x27;PMI_zone_bounded&#x27;,(),#50,());
+<span class="lineno">45</span>#51 = ANNOTATION_<mark>PLANE</mark>(&#x27;PMI_zone_bounded&#x27;,(),#50,());
 <span class="lineno">46</span>/* Both annotation planes appear in the draughting model â readers that
 <span class="lineno">47</span>   support only one form lose information about the other. */
 <span class="lineno">48</span>#60 = DRAUGHTING_MODEL(&#x27;Default&#x27;,(),#25);

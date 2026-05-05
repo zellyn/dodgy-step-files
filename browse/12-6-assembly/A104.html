@@ -35,7 +35,7 @@
 <section><h2>Reproducer recipe</h2>
 <p>XDE document with two assembly branches; branch A has shape, branch B is empty. Call `STEPCAFControl_Writer::Perform` with external-reference mode. Writer throws.</p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal-and-accept — every writer entry point validates the document graph before opening output files; emit `W_EMPTY_BRANCH` and skip empty branches; never throw across the writer&#x27;s public API.</p></section>
+<p>heal-and-accept; every writer entry point validates the document graph before opening output files; emit `W_EMPTY_BRANCH` and skip empty branches; never throw across the writer&#x27;s public API.</p></section>
 <section><h2>Notes</h2>
 <p>**See also**: A082, A096. Synonyms: &quot;STEP writer exception in ExternalReferences mode&quot;, &quot;multi-file STEP export throws on empty branch&quot;, &quot;writer crashes when peer document missing&quot;, &quot;Standard_DomainError during STEP write&quot;.</p></section>
 <section><h2>Expected validation</h2>

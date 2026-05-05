@@ -32,9 +32,9 @@
 <section><h2>Reproducer recipe</h2>
 <p>`B_SPLINE_CURVE_WITH_KNOTS` of degree 3 with an interior knot of multiplicity 3, producing a sharp tangent break.</p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal — split the curve at C0 points so each piece is at least C1; emit each piece as its own `EDGE_CURVE` with shared vertices.</p></section>
+<p>heal; split the curve at C0 points so each piece is at least C1; emit each piece as its own `EDGE_CURVE` with shared vertices.</p></section>
 <section><h2>Notes</h2>
-<p>**See also**: Gs025. **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog&#x27;s allowed set ({heal}). Kernel-bug witnessed: catalog asks for healing; OCC neither heals nor rejects — the input is dropped on the floor without diagnostic. Synonyms: &quot;C0 join in B-spline curve needs split&quot;, &quot;BSpline curve has slope discontinuity&quot;, &quot;split BSpline at interior knot multiplicity equal to degree&quot;, &quot;downstream tool needs C1 continuity&quot;, &quot;tangent break inside B-spline curve&quot;.</p></section>
+<p>**See also**: Gs025. **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog&#x27;s allowed set ({heal}). Kernel-bug witnessed: catalog asks for healing; OCC neither heals nor rejects; the input is dropped on the floor without diagnostic. Synonyms: &quot;C0 join in B-spline curve needs split&quot;, &quot;BSpline curve has slope discontinuity&quot;, &quot;split BSpline at interior knot multiplicity equal to degree&quot;, &quot;downstream tool needs C1 continuity&quot;, &quot;tangent break inside B-spline curve&quot;.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(3) ifc=schema_n/a</code></p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">

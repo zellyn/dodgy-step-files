@@ -27,7 +27,7 @@
 <li>OCCT BRepLib::EnsureNormalConsistency (uncovered class evidence)</li>
 </ul></section>
 <section><h2>Sender</h2>
-<p>deduced — OCCT uncovered-class sweep, Pass C</p></section>
+<p>deduced — OCCT uncovered-class sweep</p></section>
 <section><h2>Description</h2>
 <p>A triangulated face (AP242 ed.2 `TRIANGULATED_FACE`) declares per-node normals, and at a smooth-edge node shared with the neighbour face, the two face&#x27;s per-node normals point in noticeably different directions. Bug-reporter language: &quot;vertex normals don&#x27;t match across edge&quot;, &quot;normal inconsistency&quot;, &quot;lighting seam in tessellation&quot;.</p></section>
 <section><h2>Reproducer recipe</h2>
@@ -35,7 +35,7 @@
 <section><h2>Expected kernel behavior</h2>
 <p>Average normals across smooth edges, or recompute from surface gradients.</p></section>
 <section><h2>Notes</h2>
-<p>Shows up as visible shading seams in renderers. **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog&#x27;s allowed set ({heal}). Kernel-bug witnessed: catalog asks for healing; OCC neither heals nor rejects — the input is dropped on the floor without diagnostic. Synonyms: &quot;vertex normals don&#x27;t match across edge&quot;, &quot;normal inconsistency&quot;, &quot;lighting seam in tessellation&quot;, &quot;per-vertex normal mismatch on shared node&quot;, &quot;triangulation has shading discontinuity&quot;.</p></section>
+<p>Shows up as visible shading seams in renderers. **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog&#x27;s allowed set ({heal}). Kernel-bug witnessed: catalog asks for healing; OCC neither heals nor rejects; the input is dropped on the floor without diagnostic. Synonyms: &quot;vertex normals don&#x27;t match across edge&quot;, &quot;normal inconsistency&quot;, &quot;lighting seam in tessellation&quot;, &quot;per-vertex normal mismatch on shared node&quot;, &quot;triangulation has shading discontinuity&quot;.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">

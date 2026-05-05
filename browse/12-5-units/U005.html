@@ -28,7 +28,7 @@
 <section><h2>Sender</h2>
 <p>AutoCAD Plant 3D</p></section>
 <section><h2>Description</h2>
-<p>Models authored in Plant 3D export to STEP with a `LENGTH_UNIT` context whose declared unit does not match drawing units, so external receivers see mismatched scale. Typical signature: `LENGTH_UNIT` declared as millimetres with `UNCERTAINTY_MEASURE_WITH_UNIT` 0.001 mm, but coordinates of 1.0 and 2.5 — a sub-millimetre or unscaled inch fragment sitting in a mm context.</p></section>
+<p>Models authored in Plant 3D export to STEP with a `LENGTH_UNIT` context whose declared unit does not match drawing units, so external receivers see mismatched scale. Typical signature: `LENGTH_UNIT` declared as millimetres with `UNCERTAINTY_MEASURE_WITH_UNIT` 0.001 mm, but coordinates of 1.0 and 2.5; a sub-millimetre or unscaled inch fragment sitting in a mm context.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>

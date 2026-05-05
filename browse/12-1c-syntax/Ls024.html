@@ -28,7 +28,7 @@
 <li>A025, N002 (notes)</li>
 </ul></section>
 <section><h2>Description</h2>
-<p>Material appearing after `END-ISO-10303-21;` — appended log lines, multiple concatenated files, or stray `DATA;ENDSEC;` blocks. Greedy regex parsers may match across boundaries.</p></section>
+<p>Material appearing after `END-ISO-10303-21;`; appended log lines, multiple concatenated files, or stray `DATA;ENDSEC;` blocks. Greedy regex parsers may match across boundaries.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>`END-ISO-10303-21;\n&lt;garbage bytes&gt;` or `..ENDSEC;DATA;ENDSEC;DATA;..END-ISO-10303-21;`</p></section>
 <section><h2>Expected kernel behavior</h2>

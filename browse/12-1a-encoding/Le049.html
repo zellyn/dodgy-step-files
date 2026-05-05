@@ -28,13 +28,13 @@
 <li>OCCT MANTIS#0028454 (OCCT MANTIS tracker 502 as of 2026-05-02)</li>
 </ul></section>
 <section><h2>Description</h2>
-<p>A STEP writer normalises line endings by stripping all `\r` characters. When a string literal contains a literal carriage return (e.g., a multi-line description in a `DESCRIPTION` field), the stripping also applies inside string contexts — corrupting embedded text.</p></section>
+<p>A STEP writer normalises line endings by stripping all `\r` characters. When a string literal contains a literal carriage return (e.g., a multi-line description in a `DESCRIPTION` field), the stripping also applies inside string contexts; corrupting embedded text.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>STEP record `DESCRIPTION_ATTRIBUTE(&#x27;line1\r\nline2&#x27;,&#x27;desc&#x27;)` where the `\r` is intentional. Writer strips, output reads `line1\nline2`.</p></section>
 <section><h2>Expected kernel behavior</h2>
 <p>Heal and accept: line-ending normalisation only outside string literals; preserve string contents byte-for-byte (with proper escaping via `\X\` if needed). Must not silently strip CR.</p></section>
 <section><h2>Notes</h2>
-<p>**See also**: Le017, Le028. Provenance tier: requires-sibling-pair — bytes alone cannot demonstrate the writer-side stripping; the defect is the differential between the writer&#x27;s input (string containing `\r`) and its output (string without `\r`). Demonstrating this requires both an input fixture and the corrupted output it produces, exercised through a STEP writer. Synonyms: &quot;STEP writer strips carriage return&quot;, &quot;CR removed during STEP write&quot;, &quot;line endings normalised by writer&quot;, &quot;STEP export drops CR&quot;, &quot;writer rewrites CRLF to LF&quot;.</p></section>
+<p>**See also**: Le017, Le028. Provenance tier: requires-sibling-pair; bytes alone cannot demonstrate the writer-side stripping; the defect is the differential between the writer&#x27;s input (string containing `\r`) and its output (string without `\r`). Demonstrating this requires both an input fixture and the corrupted output it produces, exercised through a STEP writer. Synonyms: &quot;STEP writer strips carriage return&quot;, &quot;CR removed during STEP write&quot;, &quot;line endings normalised by writer&quot;, &quot;STEP export drops CR&quot;, &quot;writer rewrites CRLF to LF&quot;.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Provenance tier</h2>

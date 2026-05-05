@@ -28,7 +28,7 @@
 <li>21-patents X001 (Telesis Group US 2004/0174362)</li>
 </ul></section>
 <section><h2>Description</h2>
-<p>After format conversion the endpoints of adjacent 3D curve segments along a wire no longer meet within geometric tolerance — a class introduced *by translation*, not present in the native model. Source seam tolerance 1e-3 through a kernel that demands 1e-5 leaves position, cross-tangent, and cross-curvature gaps.</p></section>
+<p>After format conversion the endpoints of adjacent 3D curve segments along a wire no longer meet within geometric tolerance; a class introduced *by translation*, not present in the native model. Source seam tolerance 1e-3 through a kernel that demands 1e-5 leaves position, cross-tangent, and cross-curvature gaps.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>Concatenated `B_SPLINE_CURVE_WITH_KNOTS` segments where end control points of segment N do not equal start control points of segment N+1 within `geometric_representation_context` tolerance.</p></section>
 <section><h2>Expected kernel behavior</h2>

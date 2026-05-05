@@ -28,7 +28,7 @@
 <li>N009/ISO 10303-21 Ed.3 §6.4.3 Table 4</li>
 </ul></section>
 <section><h2>Description</h2>
-<p>`\F\` introduces a single-character alternate-font selector (used for CJK font shifts) — exactly one letter follows. Tools sometimes embed multi-character font tags as if it were an HTML tag (`\F\bold\F\`).</p></section>
+<p>`\F\` introduces a single-character alternate-font selector (used for CJK font shifts); exactly one letter follows. Tools sometimes embed multi-character font tags as if it were an HTML tag (`\F\bold\F\`).</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>`&#x27;mix\F\katakana hello&#x27;` (illegal multi-letter tag).</p></section>
 <section><h2>Expected kernel behavior</h2>

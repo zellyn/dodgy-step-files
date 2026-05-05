@@ -34,7 +34,7 @@
 <section><h2>Reproducer recipe</h2>
 <p>Two `MANIFOLD_SOLID_BREP`s whose oriented bounding boxes touch along a single shared planar face that resolves to identical control points.</p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal — sew across coincident faces with ε-tolerance; or warn and let downstream offset by ±ε.</p></section>
+<p>heal; sew across coincident faces with ε-tolerance; or warn and let downstream offset by ±ε.</p></section>
 <section><h2>Notes</h2>
 <p>**See also**: Tsh026. Synonyms: &quot;duplicate face between adjacent parts&quot;, &quot;two solids touch but don&#x27;t share geometry&quot;, &quot;non-shared coincident face&quot;, &quot;FEA mesh has no node continuity at part interface&quot;, &quot;zero-thickness contact between parts&quot;.</p></section>
 <section><h2>Expected validation</h2>

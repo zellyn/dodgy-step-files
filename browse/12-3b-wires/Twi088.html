@@ -27,9 +27,9 @@
 <li>OCCT BRepLib::BuildCurves3d (uncovered class evidence)</li>
 </ul></section>
 <section><h2>Sender</h2>
-<p>deduced — OCCT uncovered-class sweep, Pass C</p></section>
+<p>deduced — OCCT uncovered-class sweep</p></section>
 <section><h2>Description</h2>
-<p>An edge appears in face wires only via its pcurve representations on adjacent faces — there is no 3D curve attached to the edge itself. The edge is &quot;implicit&quot; (defined only by surface intersection). Bug-reporter language: &quot;edge has only pcurve&quot;, &quot;no 3D geometry on edge&quot;, &quot;edge derived from surfaces only&quot;.</p></section>
+<p>An edge appears in face wires only via its pcurve representations on adjacent faces; there is no 3D curve attached to the edge itself. The edge is &quot;implicit&quot; (defined only by surface intersection). Bug-reporter language: &quot;edge has only pcurve&quot;, &quot;no 3D geometry on edge&quot;, &quot;edge derived from surfaces only&quot;.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>An `EDGE_CURVE` whose `edge_geometry` is null, but `PCURVE`s on two adjacent faces describe the edge in UV.</p></section>
 <section><h2>Expected kernel behavior</h2>

@@ -31,18 +31,17 @@
 <section><h2>Reproducer recipe</h2>
 <p>BRep face requiring only wire-reorder; run a healing pass; observe original unfixed face still present in the output.</p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>a healing pass that produces a modified sub-shape must propagate the replacement up the parent chain unconditionally — any sub-fix that succeeds must result in the parent referring to the new sub-shape.</p></section>
+<p>a healing pass that produces a modified sub-shape must propagate the replacement up the parent chain unconditionally; any sub-fix that succeeds must result in the parent referring to the new sub-shape.</p></section>
 <section><h2>Notes</h2>
-<p>**See also**: Twi003. Synonyms: &quot;wire reorder healing not propagated to face&quot;, &quot;fix succeeds but parent face not updated&quot;, &quot;scrambled wire fixed but ignored&quot;, &quot;healing pass returns success without applying fix&quot;, &quot;shape still references unhealed wire after repair&quot;.</p></section>
+<p>**See also**: Twi003, Twi028. Synonyms: &quot;wire reorder healing not propagated to face&quot;, &quot;fix succeeds but parent face not updated&quot;, &quot;scrambled wire fixed but ignored&quot;, &quot;healing pass returns success without applying fix&quot;, &quot;shape still references unhealed wire after repair&quot;.- **Tier-3 assertion**: n_edges_total &gt;= 4</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">
-<li><code>n_edges_total &gt;= 4</code></li>
 <li><code>face[0].surface_type == &quot;plane&quot;</code></li>
 <li><code>n_vertices_total &gt;= 8</code></li>
 </ul></section>
 <section><h2>Cross-references</h2>
-<p><a href="Twi003.html">Twi003</a></p>
+<p><a href="Twi003.html">Twi003</a>, <a href="Twi028.html">Twi028</a></p>
 </section>
 <section><h2>Live oracle output</h2>
 <table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>

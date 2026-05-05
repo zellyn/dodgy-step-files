@@ -33,7 +33,7 @@
 <section><h2>Reproducer recipe</h2>
 <p>`param xstep.cascade.unit M; ReadStep D multi_solids.stp; bounding -dump`. Compare with `MM` import scaled by 1000.</p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal — compute working tolerance from vertex resolution + surface resolution at each entity, not from a single kernel-wide constant; produce finite geometry equivalent to `MM` import scaled by 1000.</p></section>
+<p>heal; compute working tolerance from vertex resolution + surface resolution at each entity, not from a single kernel-wide constant; produce finite geometry equivalent to `MM` import scaled by 1000.</p></section>
 <section><h2>Notes</h2>
 <p>Synonyms: &quot;meters cascade unit inflates tolerance&quot;, &quot;unit set to M corrupts geometry&quot;, &quot;OCCT meters mode produces 1e+100 bbox&quot;, &quot;BSpline segments missed under M unit setting&quot;.</p></section>
 <section><h2>Expected validation</h2>

@@ -30,13 +30,13 @@
 <li>CAx-IF Inspection Recommended Practices</li>
 </ul></section>
 <section><h2>Description</h2>
-<p>AP242 `locating_feature` carries a feature size (e.g. a 5 mm-diameter datum target circle) plus a companion tolerance-zone magnitude that constrains how the locator may shift. The implicit invariant: `tolerance_zone_magnitude &lt;= locator_feature_size` (a 20 mm tolerance zone on a 5 mm locator means the locator is unconstrained — any position within a zone four times its own size is acceptable, which is not a constraint). A producer that emits the two values reversed leaves a locator that is functionally absent. Receivers either swap the two values heuristically, reject, or accept the contradiction and report inspection passes that should not pass. Bug-reporter language: &quot;tolerance zone bigger than feature&quot;, &quot;datum target tolerance unbounded&quot;, &quot;locator essentially unconstrained&quot;.</p></section>
+<p>AP242 `locating_feature` carries a feature size (e.g. a 5 mm-diameter datum target circle) plus a companion tolerance-zone magnitude that constrains how the locator may shift. The implicit invariant: `tolerance_zone_magnitude &lt;= locator_feature_size` (a 20 mm tolerance zone on a 5 mm locator means the locator is unconstrained, any position within a zone four times its own size is acceptable, which is not a constraint). A producer that emits the two values reversed leaves a locator that is functionally absent. Receivers either swap the two values heuristically, reject, or accept the contradiction and report inspection passes that should not pass. Bug-reporter language: &quot;tolerance zone bigger than feature&quot;, &quot;datum target tolerance unbounded&quot;, &quot;locator essentially unconstrained&quot;.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>a `SHAPE_ASPECT(&#x27;locating_feature&#x27;,..)`; a `DIMENSIONAL_SIZE(*, &#x27;locator_size&#x27;)` of 5 mm and a second `DIMENSIONAL_SIZE(*, &#x27;tolerance_zone_magnitude&#x27;)` of 20 mm — the tolerance zone is larger than the locator.</p></section>
 <section><h2>Expected kernel behavior</h2>
 <p>reject as malformed and name the relationship that is violated; never silently swap.</p></section>
 <section><h2>Notes</h2>
-<p>Distinct from Pmi071 (zero-offset projected zone) — Pmi126 is a magnitude inversion. **See also**: Pmi071, Pmi125. Synonyms: &quot;tolerance zone larger than feature&quot;, &quot;datum-target tolerance exceeds locator size&quot;, &quot;locating_feature unconstrained by oversized zone&quot;.</p></section>
+<p>Distinct from Pmi071 (zero-offset projected zone); Pmi126 is a magnitude inversion. **See also**: Pmi071, Pmi125. Synonyms: &quot;tolerance zone larger than feature&quot;, &quot;datum-target tolerance exceeds locator size&quot;, &quot;locating_feature unconstrained by oversized zone&quot;.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

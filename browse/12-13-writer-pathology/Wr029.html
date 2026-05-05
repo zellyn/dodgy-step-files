@@ -30,13 +30,13 @@
 <section><h2>Sender</h2>
 <p>Writers that paste user-entered description text into `FILE_DESCRIPTION` without escaping line breaks</p></section>
 <section><h2>Description</h2>
-<p>A `FILE_DESCRIPTION((&#x27;line one\nline two&#x27;),&#x27;2;1&#x27;)` where the literal `\n` is an embedded newline (not the two-character escape — the actual 0x0A byte) terminates the string for crude line-based parsers. Spec violation per ISO 10303-21 §6.4 (control characters in string literals). Bug-reporter language: &quot;STEP file string has line break&quot;, &quot;FILE_DESCRIPTION corrupt&quot;.</p></section>
+<p>A `FILE_DESCRIPTION((&#x27;line one\nline two&#x27;),&#x27;2;1&#x27;)` where the literal `\n` is an embedded newline (not the two-character escape, the actual 0x0A byte) terminates the string for crude line-based parsers. Spec violation per ISO 10303-21 §6.4 (control characters in string literals). Bug-reporter language: &quot;STEP file string has line break&quot;, &quot;FILE_DESCRIPTION corrupt&quot;.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>literal `FILE_DESCRIPTION((&#x27;first line` (newline) `second line&#x27;),&#x27;2;1&#x27;)`.</p></section>
 <section><h2>Expected kernel behavior</h2>
 <p>reject as malformed per spec; do not silently splice the broken string back together because the splice point is undefined.</p></section>
 <section><h2>Notes</h2>
-<p>Le017 covers from read side; Wr029 attributes to writer. **OCC behavior**: silently accepts the broken-string file (no diagnostic, empty result); kernel mishandling — not what kernels should do.</p></section>
+<p>Le017 covers from read side; Wr029 attributes to writer. **OCC behavior**: silently accepts the broken-string file (no diagnostic, empty result); kernel mishandling; not what kernels should do.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">

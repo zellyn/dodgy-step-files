@@ -28,7 +28,7 @@
 <li>17-standards-bodies.md M007</li>
 </ul></section>
 <section><h2>Description</h2>
-<p>For one edge, the 3D-curve evaluation and the pcurve lifted through the host surface land at different points along part of the edge — the two representations of the same edge disagree about where the edge actually is, by more than the edge&#x27;s tolerance. Common shapes: pcurve `LINE` whose `DIRECTION` ratios are slightly skewed from the canonical axis (e.g. (0.99875,0.04994) instead of (1,0)) or whose `VECTOR` magnitude is off unit (e.g. 1.0012 instead of 1.0), so the lifted pcurve diverges from the 3D `LINE` along the edge. Senders that store both pcurve and 3D curve but recompute one from the other independently introduce this divergence.</p></section>
+<p>For one edge, the 3D-curve evaluation and the pcurve lifted through the host surface land at different points along part of the edge; the two representations of the same edge disagree about where the edge actually is, by more than the edge&#x27;s tolerance. Common shapes: pcurve `LINE` whose `DIRECTION` ratios are slightly skewed from the canonical axis (e.g. (0.99875,0.04994) instead of (1,0)) or whose `VECTOR` magnitude is off unit (e.g. 1.0012 instead of 1.0), so the lifted pcurve diverges from the 3D `LINE` along the edge. Senders that store both pcurve and 3D curve but recompute one from the other independently introduce this divergence.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>`EDGE_CURVE` with both 3D `LINE` and `PCURVE` whose evaluated points diverge by &gt;1e-3 mm on a face whose declared tolerance is 1e-6.</p></section>
 <section><h2>Expected kernel behavior</h2>

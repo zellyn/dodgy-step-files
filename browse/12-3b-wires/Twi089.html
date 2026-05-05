@@ -27,7 +27,7 @@
 <li>OCCT BRepLib::FuseEdges (uncovered class evidence)</li>
 </ul></section>
 <section><h2>Sender</h2>
-<p>deduced — OCCT uncovered-class sweep, Pass C</p></section>
+<p>deduced — OCCT uncovered-class sweep</p></section>
 <section><h2>Description</h2>
 <p>Two edges with collinear (or co-curve) geometry share a vertex of degree 2, and that vertex is not topologically necessary (no other face uses it). The expected post-condition: fuse the two edges into one, removing the spurious vertex. Bug-reporter language: &quot;extra vertex on edge&quot;, &quot;edge unnecessarily split&quot;, &quot;kernel didn&#x27;t merge collinear edges&quot;.</p></section>
 <section><h2>Reproducer recipe</h2>

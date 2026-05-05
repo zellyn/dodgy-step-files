@@ -30,7 +30,7 @@
 <section><h2>Sender</h2>
 <p>Writers that hard-code a schema list rather than computing the minimal set actually referenced</p></section>
 <section><h2>Description</h2>
-<p>`FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN&#x27;,&#x27;CONFIG_CONTROL_DESIGN&#x27;,&#x27;AP242_MANAGED_MODEL_BASED_3D_ENGINEERING&#x27;))` — three schemas declared, but the DATA section uses only AP203 entities. The receiver may load the file under whichever schema it understands, and any AP242-specific validation passes vacuously because the AP242 entities aren&#x27;t there. Bug-reporter language: &quot;STEP claims multiple schemas&quot;, &quot;FILE_SCHEMA over-declared&quot;, &quot;AP242 listed but not used&quot;.</p></section>
+<p>`FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN&#x27;,&#x27;CONFIG_CONTROL_DESIGN&#x27;,&#x27;AP242_MANAGED_MODEL_BASED_3D_ENGINEERING&#x27;))`; three schemas declared, but the DATA section uses only AP203 entities. The receiver may load the file under whichever schema it understands, and any AP242-specific validation passes vacuously because the AP242 entities aren&#x27;t there. Bug-reporter language: &quot;STEP claims multiple schemas&quot;, &quot;FILE_SCHEMA over-declared&quot;, &quot;AP242 listed but not used&quot;.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>standard AP203 entity body with `FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;,&#x27;AP242_MANAGED_MODEL_BASED_3D_ENGINEERING&#x27;))`.</p></section>
 <section><h2>Expected kernel behavior</h2>

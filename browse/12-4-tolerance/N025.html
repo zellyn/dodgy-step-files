@@ -30,11 +30,11 @@
 <li>W045 (duplicate vertices)</li>
 </ul></section>
 <section><h2>Description</h2>
-<p>Imported B-reps regularly contain pairs of vertices and edges that the designer intended to be the same but which sit a few microns apart due to translator round-off. Coordinates agree to 1e-4 but topology stores them as distinct entities — a &quot;crack&quot; rather than a &quot;gap&quot; because geometric distance is zero by some metrics yet topology is broken.</p></section>
+<p>Imported B-reps regularly contain pairs of vertices and edges that the designer intended to be the same but which sit a few microns apart due to translator round-off. Coordinates agree to 1e-4 but topology stores them as distinct entities; a &quot;crack&quot; rather than a &quot;gap&quot; because geometric distance is zero by some metrics yet topology is broken.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>STEP file from translator A whose two adjacent `ADVANCED_FACE`s each instantiate their own `VERTEX_POINT` for the corner; coordinates agree to 1e-4.</p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal — stitch by spatial proximity within tolerance; merge duplicate vertices and split/reconcile edges.</p></section>
+<p>heal; stitch by spatial proximity within tolerance; merge duplicate vertices and split/reconcile edges.</p></section>
 <section><h2>Notes</h2>
 <p>**See also**: N007. Synonyms: &quot;vertices coincide spatially but topology distinct&quot;, &quot;coincident edges not shared after translation&quot;, &quot;topology cracks despite zero distance&quot;, &quot;coordinates equal but vertices not the same entity&quot;.</p></section>
 <section><h2>Expected validation</h2>

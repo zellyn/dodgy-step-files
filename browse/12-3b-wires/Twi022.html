@@ -28,7 +28,7 @@
 <li>04-occt-translation.md Q032 (seam curve with same pcurve twice)</li>
 </ul></section>
 <section><h2>Description</h2>
-<p>A seam edge on a periodic face is supposed to carry two pcurves — one on the U=0 side and one on the U=period side. The input either swaps the two pcurves (each is on the wrong side) or assigns the same pcurve to both slots. The wire fails to close in UV: a step of one full period that the seam edge should take in parameter space is missing.</p></section>
+<p>A seam edge on a periodic face is supposed to carry two pcurves; one on the U=0 side and one on the U=period side. The input either swaps the two pcurves (each is on the wrong side) or assigns the same pcurve to both slots. The wire fails to close in UV: a step of one full period that the seam edge should take in parameter space is missing.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>`SEAM_CURVE` referencing the same `PCURVE` for both `associated_geometry` slots.</p></section>
 <section><h2>Expected kernel behavior</h2>

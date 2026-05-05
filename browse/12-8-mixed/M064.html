@@ -27,7 +27,7 @@
 <li>OCCT STEPControl_ActorRead.cxx:2116 (&quot;No Length Uncertainty, value of read.precision.val is taken&quot;) (uncovered class evidence)</li>
 </ul></section>
 <section><h2>Sender</h2>
-<p>deduced — OCCT uncovered-class sweep, Pass C</p></section>
+<p>deduced — OCCT uncovered-class sweep</p></section>
 <section><h2>Description</h2>
 <p>Context lacks an `UNCERTAINTY_MEASURE_WITH_UNIT` for length; the reader substitutes a fixed precision constant. Models that genuinely need a tighter or looser tolerance silently get the wrong one. Bug-reporter language: &quot;no tolerance in file&quot;, &quot;kernel-default precision used&quot;.</p></section>
 <section><h2>Reproducer recipe</h2>

@@ -26,7 +26,7 @@
 <li>OCCT `ShapeFix_Solid::Perform` (`ShapeFix_Solid.hxx:56`)</li>
 </ul></section>
 <section><h2>Description</h2>
-<p>A MANIFOLD_SOLID_BREP built from one or more shells with internal defects, in particular one whose `outer` slot wraps an OPEN_SHELL rather than a CLOSED_SHELL — a manifold solid requires a closed shell. The solid-level orchestrator must propagate fixes inward to shells/faces and then re-evaluate solid-level invariants (closure, orientation toward outer void, finiteness).</p></section>
+<p>A MANIFOLD_SOLID_BREP built from one or more shells with internal defects, in particular one whose `outer` slot wraps an OPEN_SHELL rather than a CLOSED_SHELL; a manifold solid requires a closed shell. The solid-level orchestrator must propagate fixes inward to shells/faces and then re-evaluate solid-level invariants (closure, orientation toward outer void, finiteness).</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>A MANIFOLD_SOLID_BREP whose outer shell is an OPEN_SHELL (not a CLOSED_SHELL); the kernel must detect the non-closure and either decline to construct the solid or insert capping shells.</p></section>
 <section><h2>Expected kernel behavior</h2>

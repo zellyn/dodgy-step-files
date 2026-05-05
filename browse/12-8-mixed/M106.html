@@ -29,7 +29,7 @@
 <section><h2>Sender</h2>
 <p>deduced — STEP-NC publisher with feed-rate mis-applied (slow rate on long pass)</p></section>
 <section><h2>Description</h2>
-<p>The summed `EXECUTION_TIME` of the operations in a `WORKPLAN` exceeds 28800 seconds (8-hour shift) — e.g., a single workplan declaring 50 hours of continuous machining. While not formally a STEP error, it indicates a unit-confusion or feedrate-stuck-at-zero condition upstream worth flagging. Bug-reporter language: &quot;AP238 cycle time absurdly long&quot;, &quot;STEP-NC workplan won&#x27;t finish in a shift&quot;, &quot;feedrate units wrong (cycle time 50h)&quot;.</p></section>
+<p>The summed `EXECUTION_TIME` of the operations in a `WORKPLAN` exceeds 28800 seconds (8-hour shift); e.g., a single workplan declaring 50 hours of continuous machining. While not formally a STEP error, it indicates a unit-confusion or feedrate-stuck-at-zero condition upstream worth flagging. Bug-reporter language: &quot;AP238 cycle time absurdly long&quot;, &quot;STEP-NC workplan won&#x27;t finish in a shift&quot;, &quot;feedrate units wrong (cycle time 50h)&quot;.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>A `MACHINING_OPERATION` with `EXECUTION_TIME` of 180000.0 seconds (50 hours) attached.</p></section>
 <section><h2>Expected kernel behavior</h2>

@@ -26,13 +26,13 @@
 <li>synthesized time-bomb.</li>
 </ul></section>
 <section><h2>Description</h2>
-<p>`UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-30), ..)`. The value is below any reasonable kernel&#x27;s working precision. A kernel that respects the declared value tries to compare features at 1e-30 precision and rejects everything as having gaps. A kernel that floors at `Precision::Confusion()` silently uses 1e-7 — the file imports cleanly but its declared expectation has been overridden. Producer and receiver silently disagree about precision.</p></section>
+<p>`UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-30), ..)`. The value is below any reasonable kernel&#x27;s working precision. A kernel that respects the declared value tries to compare features at 1e-30 precision and rejects everything as having gaps. A kernel that floors at `Precision::Confusion()` silently uses 1e-7; the file imports cleanly but its declared expectation has been overridden. Producer and receiver silently disagree about precision.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>PRODUCT-wrapped simple shape with `UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-30), ..)`.</p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>tolerance values outside the kernel&#x27;s documented operating range must be flagged; either coerce-and-warn or reject-with-diagnostic — never silent substitution.</p></section>
+<p>tolerance values outside the kernel&#x27;s documented operating range must be flagged; either coerce-and-warn or reject-with-diagnostic; never silent substitution.</p></section>
 <section><h2>Notes</h2>
-<p>**See also**: Tb018, Tb020. **OCC behavior**: silently substitutes the floored working-precision value for the absurdly-tight declared uncertainty; kernel mishandling — the catalog above forbids silent substitution. Synonyms: &quot;uncertainty 1e-30 below working precision&quot;, &quot;absurdly tight tolerance&quot;, &quot;tolerance below kernel resolution&quot;, &quot;tolerance value impossibly small&quot;.</p></section>
+<p>**See also**: Tb018, Tb020. **OCC behavior**: silently substitutes the floored working-precision value for the absurdly-tight declared uncertainty; kernel mishandling; the catalog above forbids silent substitution. Synonyms: &quot;uncertainty 1e-30 below working precision&quot;, &quot;absurdly tight tolerance&quot;, &quot;tolerance below kernel resolution&quot;, &quot;tolerance value impossibly small&quot;.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">

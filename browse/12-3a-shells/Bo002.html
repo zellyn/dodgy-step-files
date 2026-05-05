@@ -28,9 +28,9 @@
 <li>BRepCheck_Shell.cxx:155 (uncovered class evidence)</li>
 </ul></section>
 <section><h2>Sender</h2>
-<p>deduced — OCCT uncovered-class sweep, Pass C</p></section>
+<p>deduced — OCCT uncovered-class sweep</p></section>
 <section><h2>Description</h2>
-<p>A shape representation lists a top-level `MANIFOLD_SOLID_BREP` whose `outer` slot is itself an entity reference to a non-existent or null shell. This is the degenerate edge of &quot;empty shell&quot; — there is not even a wrapper for the boundary.</p></section>
+<p>A shape representation lists a top-level `MANIFOLD_SOLID_BREP` whose `outer` slot is itself an entity reference to a non-existent or null shell. This is the degenerate edge of &quot;empty shell&quot;; there is not even a wrapper for the boundary.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>`MANIFOLD_SOLID_BREP` whose `outer` reference resolves to nothing in the data section.</p></section>
 <section><h2>Expected kernel behavior</h2>

@@ -32,7 +32,7 @@
 <section><h2>Reproducer recipe</h2>
 <p>Plane at z=0 (10x10 outer rectangle, 4x4 inner hole). Outer loop visits corners CW seen from +Z. Inner loop visits corners CCW. Wrap as ADVANCED_FACE / OPEN_SHELL / SHELL_BASED_SURFACE_MODEL / MANIFOLD_SURFACE_SHAPE_REPRESENTATION.</p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>Verify loop orientations against the face surface normal — outer loops CCW, inner loops CW (or whatever convention the kernel chooses), and either flip non-conforming loops, reject the face, or report the inversion. Should not silently produce a face whose point-membership predicate is the complement of the producer&#x27;s intent.</p></section>
+<p>Verify loop orientations against the face surface normal; outer loops CCW, inner loops CW (or whatever convention the kernel chooses), and either flip non-conforming loops, reject the face, or report the inversion. Should not silently produce a face whose point-membership predicate is the complement of the producer&#x27;s intent.</p></section>
 <section><h2>Notes</h2>
 <p>Tier-3 metric: signed area of each loop. Outer should have positive signed area; inner negative. This fixture has them reversed. Synonyms: &quot;face inside-out&quot;, &quot;hole in plate appears solid&quot;, &quot;boolean subtraction adds material&quot;, &quot;inner and outer loops swapped&quot;, &quot;hole loop winds same direction as outer&quot;.</p></section>
 <section><h2>Expected validation</h2>

@@ -31,7 +31,7 @@
 <section><h2>Sender</h2>
 <p>Writers that linearise a kernel&#x27;s &quot;seam edge&quot; annotation into two ordinary edges with a duplicate vertex</p></section>
 <section><h2>Description</h2>
-<p>The input had a `CYLINDRICAL_SURFACE` face whose UV-seam edge was marked (the wire crosses the U=0/U=2π identification), so the receiver knows the surface is closed at that edge. The re-emitted file contains two ordinary edges with duplicate vertices at the seam, no `seam` flag — the receiver sees an open shell where the original was closed. Bug-reporter language: &quot;cylinder seam lost on re-export&quot;, &quot;shell became non-watertight after round-trip&quot;, &quot;duplicate vertices at seam&quot;.</p></section>
+<p>The input had a `CYLINDRICAL_SURFACE` face whose UV-seam edge was marked (the wire crosses the U=0/U=2π identification), so the receiver knows the surface is closed at that edge. The re-emitted file contains two ordinary edges with duplicate vertices at the seam, no `seam` flag; the receiver sees an open shell where the original was closed. Bug-reporter language: &quot;cylinder seam lost on re-export&quot;, &quot;shell became non-watertight after round-trip&quot;, &quot;duplicate vertices at seam&quot;.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>a cylindrical face whose `FACE_OUTER_BOUND` is composed of four ordinary `EDGE_CURVE` entries (top, bottom, side-A, side-B), where side-A and side-B share endpoints in 3D but at distinct VERTEX_POINT entities at U=0 and U=2π.</p></section>
 <section><h2>Expected kernel behavior</h2>

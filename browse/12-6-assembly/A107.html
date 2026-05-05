@@ -35,7 +35,7 @@
 <section><h2>Reproducer recipe</h2>
 <p>Document with one box, one colour assignment. Save BinXCAF in 6.9.x. Reload in 7.4.0+. Colours absent.</p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal-and-accept — the persistence layer registers all historical driver tags; emit `W_UNKNOWN_DRIVER_TAG` and skip rather than corrupting the file. Round-trip through STEP must preserve colour.</p></section>
+<p>heal-and-accept; the persistence layer registers all historical driver tags; emit `W_UNKNOWN_DRIVER_TAG` and skip rather than corrupting the file. Round-trip through STEP must preserve colour.</p></section>
 <section><h2>Notes</h2>
 <p>**See also**: A105, A081, U036. Synonyms: &quot;regression cannot read BinOcaf document with colour&quot;, &quot;BinXCAF colour driver tag unknown&quot;, &quot;persistence format regression after 7.4&quot;, &quot;OCAF colour lost on reload&quot;.</p></section>
 <section><h2>Expected validation</h2>

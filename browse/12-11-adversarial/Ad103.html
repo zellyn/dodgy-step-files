@@ -34,7 +34,7 @@
 <section><h2>Expected kernel behavior</h2>
 <p>Heal and accept: vertex-union table is updated atomically; callers can re-query absorbed vertices and get the canonical replacement. Must not throw on already-absorbed vertex.</p></section>
 <section><h2>Notes</h2>
-<p>**See also**: Tsh050, N045. Provenance tier: runtime-only — bytes alone cannot demonstrate this defect; the symptom is a use-after-free against the vertex-union table during a second merge pass. The static fixture encodes only the input precondition (coincident vertices); the stale-entry access requires the kernel to perform two successive merge operations and retain the multi-pass merge state.</p></section>
+<p>**See also**: Tsh050, N045. Provenance tier: runtime-only; bytes alone cannot demonstrate this defect; the symptom is a use-after-free against the vertex-union table during a second merge pass. The static fixture encodes only the input precondition (coincident vertices); the stale-entry access requires the kernel to perform two successive merge operations and retain the multi-pass merge state.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Provenance tier</h2>

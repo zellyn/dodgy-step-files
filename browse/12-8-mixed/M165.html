@@ -30,7 +30,7 @@
 <section><h2>Sender</h2>
 <p>FreeCAD with knurled-cylinder PartDesign feature.</p></section>
 <section><h2>Description</h2>
-<p>A cylindrical body decorated with a knurl (dense pattern of small triangular pockets) emits a STEP where some of the densely packed `ADVANCED_FACE`s along the knurl ridges are degenerate slivers whose `FACE_OUTER_BOUND` collapses to a near-zero-area loop. The receiver loads, validates each face individually as planar, but the dense cluster leaves several missing faces, producing visible &quot;holes&quot; in the surface when rendered — the kernel&#x27;s writer-side de-duplication of co-incident vertices prunes faces below an internal area threshold.</p></section>
+<p>A cylindrical body decorated with a knurl (dense pattern of small triangular pockets) emits a STEP where some of the densely packed `ADVANCED_FACE`s along the knurl ridges are degenerate slivers whose `FACE_OUTER_BOUND` collapses to a near-zero-area loop. The receiver loads, validates each face individually as planar, but the dense cluster leaves several missing faces, producing visible &quot;holes&quot; in the surface when rendered; the kernel&#x27;s writer-side de-duplication of co-incident vertices prunes faces below an internal area threshold.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>STEP solid with a `MANIFOLD_SOLID_BREP` containing several `ADVANCED_FACE`s whose `FACE_OUTER_BOUND` `EDGE_LOOP` has 3 edges of length &lt; 1e-3 forming a sub-tolerance triangle face that the receiver may prune.</p></section>
 <section><h2>Expected kernel behavior</h2>

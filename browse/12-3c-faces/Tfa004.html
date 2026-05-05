@@ -35,7 +35,7 @@
 <section><h2>Reproducer recipe</h2>
 <p>`ADVANCED_FACE` on `SPHERICAL_SURFACE` whose only `FACE_BOUND` wraps a single inner wire; emit no `FACE_OUTER_BOUND`.</p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal — insert the natural surface boundary first, then orient inner wires as holes. Do NOT pre-orient inner wires before natural-bound insertion on closed surfaces.</p></section>
+<p>heal; insert the natural surface boundary first, then orient inner wires as holes. Do NOT pre-orient inner wires before natural-bound insertion on closed surfaces.</p></section>
 <section><h2>Notes</h2>
 <p>**See also**: Tfa005, Twi021. Synonyms: &quot;sphere face has only a hole&quot;, &quot;torus face missing outer boundary&quot;, &quot;closed surface with only inner wire flips region&quot;, &quot;face represents whole surface minus hole but kernel inverts it&quot;, &quot;natural seam not added before orientation&quot;.</p></section>
 <section><h2>Expected validation</h2>

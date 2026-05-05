@@ -27,9 +27,9 @@
 <li>OCCT BRepCheck_Shell.cxx:155 (uncovered class evidence)</li>
 </ul></section>
 <section><h2>Sender</h2>
-<p>deduced — OCCT uncovered-class sweep, Pass C</p></section>
+<p>deduced — OCCT uncovered-class sweep</p></section>
 <section><h2>Description</h2>
-<p>A `MANIFOLD_SOLID_BREP` (or `BREP_WITH_VOIDS`) references a `CLOSED_SHELL` whose face list is empty. The &quot;solid&quot; therefore has no boundary at all — there is no surface to act as the inside/outside divider. Producers occasionally emit this when an upstream filter strips every face of a body but leaves the wrapper entities intact.</p></section>
+<p>A `MANIFOLD_SOLID_BREP` (or `BREP_WITH_VOIDS`) references a `CLOSED_SHELL` whose face list is empty. The &quot;solid&quot; therefore has no boundary at all; there is no surface to act as the inside/outside divider. Producers occasionally emit this when an upstream filter strips every face of a body but leaves the wrapper entities intact.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>A `MANIFOLD_SOLID_BREP` whose `outer` attribute references a `CLOSED_SHELL` with `cfs_faces=()`.</p></section>
 <section><h2>Expected kernel behavior</h2>

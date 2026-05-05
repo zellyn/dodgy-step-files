@@ -26,9 +26,9 @@
 <li>OCCT BRepCheck_Shell.cxx:797, BRepCheck_Face.cxx:566 (UnorientableShape) (uncovered class evidence)</li>
 </ul></section>
 <section><h2>Sender</h2>
-<p>deduced — OCCT uncovered-class sweep, Pass C</p></section>
+<p>deduced — OCCT uncovered-class sweep</p></section>
 <section><h2>Description</h2>
-<p>A shell&#x27;s per-face `same_sense` flags and edge orientations form a non-orientable assembly: there is no choice of &quot;outward&quot; that propagates consistently around the shell&#x27;s edge graph. A Möbius-strip-like topology emerges — when the kernel walks face-to-face across shared edges, the sense flips after a closed loop. Common fixture pattern: an OPEN_SHELL whose ADVANCED_FACEs all sit on the same PLANE while one face&#x27;s same_sense flag is flipped relative to its neighbour, producing a non-orientable face arrangement. Bug-reporter language: &quot;Möbius shell&quot;, &quot;kernel says shape is non-orientable&quot;, &quot;cannot determine inside vs outside&quot;, &quot;flipped face same_sense breaks orientation&quot;.</p></section>
+<p>A shell&#x27;s per-face `same_sense` flags and edge orientations form a non-orientable assembly: there is no choice of &quot;outward&quot; that propagates consistently around the shell&#x27;s edge graph. A Möbius-strip-like topology emerges; when the kernel walks face-to-face across shared edges, the sense flips after a closed loop. Common fixture pattern: an OPEN_SHELL whose ADVANCED_FACEs all sit on the same PLANE while one face&#x27;s same_sense flag is flipped relative to its neighbour, producing a non-orientable face arrangement. Bug-reporter language: &quot;Möbius shell&quot;, &quot;kernel says shape is non-orientable&quot;, &quot;cannot determine inside vs outside&quot;, &quot;flipped face same_sense breaks orientation&quot;.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>An OPEN_SHELL of three rectangular `ADVANCED_FACE` entries (often all on the same PLANE) connected end-to-end into a closed loop. The third face&#x27;s `same_sense=.F.` is set so that, when traversed in the closed loop, the orientation reverses.</p></section>
 <section><h2>Expected kernel behavior</h2>

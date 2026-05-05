@@ -27,7 +27,7 @@
 <li>T025, Q046, G088, N032</li>
 </ul></section>
 <section><h2>Description</h2>
-<p>Multiple-inheritance entities are encoded as parts whitespace-separated inside outer parens — `#1=( A() B() C() )`. The external mapping requires alphabetic leaf order; a writer that emits leaves in arbitrary order produces a record that compliant readers should warn about (not reject).</p></section>
+<p>Multiple-inheritance entities are encoded as parts whitespace-separated inside outer parens; `#1=( A() B() C() )`. The external mapping requires alphabetic leaf order; a writer that emits leaves in arbitrary order produces a record that compliant readers should warn about (not reject).</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>`#10=( CONVERSION_BASED_UNIT(&#x27;DEG&#x27;,#9) NAMED_UNIT(*) PLANE_ANGLE_UNIT() );` (well-formed) and the same with leaves reordered, e.g. `#20=( PLANE_ANGLE_UNIT() NAMED_UNIT(*) CONVERSION_BASED_UNIT(&#x27;DEG&#x27;,#9) );`.</p></section>
 <section><h2>Expected kernel behavior</h2>

@@ -27,7 +27,7 @@
 <li>OCCT MANTIS#0028227 (OCCT MANTIS tracker 502 as of 2026-05-02)</li>
 </ul></section>
 <section><h2>Description</h2>
-<p>When same-surface face merging is invoked with a flag instructing it to preserve a specified set of edges, the algorithm processes the surrounding topology but still merges across the protected edges — typically because the flag is consulted at the top-level call site but not propagated into the inner edge-walker.</p></section>
+<p>When same-surface face merging is invoked with a flag instructing it to preserve a specified set of edges, the algorithm processes the surrounding topology but still merges across the protected edges; typically because the flag is consulted at the top-level call site but not propagated into the inner edge-walker.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>Two coplanar faces sharing an edge that is marked as &quot;keep&quot;. Call unify with a list of edges to preserve. Resulting shape no longer contains the kept edge.</p></section>
 <section><h2>Expected kernel behavior</h2>

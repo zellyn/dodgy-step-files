@@ -28,7 +28,7 @@
 <li>bug-report patterns &quot;swept profile lost&quot;, &quot;vase imported as cone&quot;, &quot;B-spline simplified during export&quot;</li>
 </ul></section>
 <section><h2>Description</h2>
-<p>A producer modelled a &quot;vase&quot; — a closed solid of revolution whose generatrix is a B-spline curve that bulges outward at mid-height. The export pipeline simplified the generatrix to a single straight line, yielding a CONICAL_SURFACE. The resulting solid is a perfectly valid frustum-like cone; the producer thought it was a curved vase. The file is clean and topologically sound.</p></section>
+<p>A producer modelled a &quot;vase&quot;; a closed solid of revolution whose generatrix is a B-spline curve that bulges outward at mid-height. The export pipeline simplified the generatrix to a single straight line, yielding a CONICAL_SURFACE. The resulting solid is a perfectly valid frustum-like cone; the producer thought it was a curved vase. The file is clean and topologically sound.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>A frustum of revolution: cone apex on Z-axis, half-angle small enough that radius goes from 5 at z=0 to 2 at z=10. Top and bottom planar disk faces, side cone face. CLOSED_SHELL, MANIFOLD_SOLID_BREP.</p></section>
 <section><h2>Expected kernel behavior</h2>

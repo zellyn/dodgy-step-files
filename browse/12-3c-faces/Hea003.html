@@ -26,7 +26,7 @@
 <li>OCCT `ShapeAnalysis_FreeBoundsProperties::Perform` (`ShapeAnalysis_FreeBoundsProperties.hxx:95`)</li>
 </ul></section>
 <section><h2>Description</h2>
-<p>A shell with one or more free bounds (open boundaries). The kernel&#x27;s free-bound analyzer must compute, per bound, the area of the contour, perimeter, average length-to-width ratio, average width, and notch list — all derived from the same boundary representation in one pass to avoid recomputing.</p></section>
+<p>A shell with one or more free bounds (open boundaries). The kernel&#x27;s free-bound analyzer must compute, per bound, the area of the contour, perimeter, average length-to-width ratio, average width, and notch list; all derived from the same boundary representation in one pass to avoid recomputing.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>An open shell containing a single rectangular face; the analyzer reports a single free bound with width 10, length 10, area 100, no notches.</p></section>
 <section><h2>Expected kernel behavior</h2>

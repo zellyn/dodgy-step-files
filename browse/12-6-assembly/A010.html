@@ -28,7 +28,7 @@
 <li>G096 (OCCT 87b7b49 / Mantis 0032679), R062 (OCCT bug32679), G052 (PRODUCT_DEFINITION_WITH_ASSOCIATED_DOCUMENTS), K025 (SolidWorks → Rhino name slot mismatch).</li>
 </ul></section>
 <section><h2>Description</h2>
-<p>STEP writer drops instance-level names when assembly itself has no name. Or PD_WITH_ASSOCIATED_DOCUMENTS carries its own name that the reader doesn&#x27;t pick up. Or SolidWorks writes the name in `PRODUCT.name` while Rhino looks at `MANIFOLD_SOLID_BREP.name`. STEP has multiple name slots: `product.name`, `product_definition_formation.id`, `next_assembly_usage_occurrence.name`, `manifold_solid_brep.name`, `representation.name` — vendors disagree which one is canonical.</p></section>
+<p>STEP writer drops instance-level names when assembly itself has no name. Or PD_WITH_ASSOCIATED_DOCUMENTS carries its own name that the reader doesn&#x27;t pick up. Or SolidWorks writes the name in `PRODUCT.name` while Rhino looks at `MANIFOLD_SOLID_BREP.name`. STEP has multiple name slots: `product.name`, `product_definition_formation.id`, `next_assembly_usage_occurrence.name`, `manifold_solid_brep.name`, `representation.name`; vendors disagree which one is canonical.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>XCAF document with named NAUO under unnamed assembly; export-import-export and check name preservation.</p></section>
 <section><h2>Expected kernel behavior</h2>

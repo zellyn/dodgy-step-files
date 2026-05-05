@@ -27,7 +27,7 @@
 <li>18-other-issues.md (I045 — pythonocc-core #661)</li>
 </ul></section>
 <section><h2>Description</h2>
-<p>After STEP→BREP via OCC `BRepTools` write, `B_SPLINE_CURVE_WITH_KNOTS` instances appear that were never in the source — analytic `CIRCLE` edges bounding a `CYLINDRICAL_SURFACE` are replaced with NURBS approximations. Source signature: a cylinder authored with two `CIRCLE` cap edges where each `EDGE_CURVE` uses the same `VERTEX_POINT` for start and end (a closed circular edge with one self-paired vertex per cap).</p></section>
+<p>After STEP→BREP via OCC `BRepTools` write, `B_SPLINE_CURVE_WITH_KNOTS` instances appear that were never in the source; analytic `CIRCLE` edges bounding a `CYLINDRICAL_SURFACE` are replaced with NURBS approximations. Source signature: a cylinder authored with two `CIRCLE` cap edges where each `EDGE_CURVE` uses the same `VERTEX_POINT` for start and end (a closed circular edge with one self-paired vertex per cap).</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>Read a STEP with `CYLINDRICAL_SURFACE` faces, write BRep, compare edge curve types.</p></section>
 <section><h2>Expected kernel behavior</h2>

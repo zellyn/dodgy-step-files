@@ -33,7 +33,7 @@
 <section><h2>Reproducer recipe</h2>
 <p>For a 1.6 mm board, export both VRML and STEP from the same KiCad project. Inspect the bounding box and assembly origin in each.</p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal — when a producer with known origin-convention drift is detected (via `FILE_DESCRIPTION` heuristics), warn and offer re-anchoring.</p></section>
+<p>heal; when a producer with known origin-convention drift is detected (via `FILE_DESCRIPTION` heuristics), warn and offer re-anchoring.</p></section>
 <section><h2>Notes</h2>
 <p>Synonyms: &quot;VRML uses board center, STEP uses board bottom&quot;, &quot;Z=0 differs between formats from same producer&quot;, &quot;components shifted by half board thickness across formats&quot;.</p></section>
 <section><h2>Expected validation</h2>

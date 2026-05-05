@@ -26,15 +26,15 @@
 <li>OCCT BRepLib::EncodeRegularity (uncovered class evidence)</li>
 </ul></section>
 <section><h2>Sender</h2>
-<p>deduced — OCCT uncovered-class sweep, Pass C</p></section>
+<p>deduced — OCCT uncovered-class sweep</p></section>
 <section><h2>Description</h2>
-<p>Two ADVANCED_FACEs on CYLINDRICAL_SURFACEs (often defined as two distinct surface entities with identical axis and radius — duplicates of one cylinder) meet along a shared circular edge; their normals at the edge are tangent-continuous (G1) but the edge is tagged in the model as a sharp boundary (e.g., `C0` continuity). Or the inverse: an edge is tagged smooth but the two surfaces meet at an angle. Bug-reporter language: &quot;edge continuity wrong&quot;, &quot;smooth edge marked sharp&quot;, &quot;fillet edge marked as crease&quot;, &quot;duplicate cylinders should share one surface&quot;.</p></section>
+<p>Two ADVANCED_FACEs on CYLINDRICAL_SURFACEs (often defined as two distinct surface entities with identical axis and radius, duplicates of one cylinder) meet along a shared circular edge; their normals at the edge are tangent-continuous (G1) but the edge is tagged in the model as a sharp boundary (e.g., `C0` continuity). Or the inverse: an edge is tagged smooth but the two surfaces meet at an angle. Bug-reporter language: &quot;edge continuity wrong&quot;, &quot;smooth edge marked sharp&quot;, &quot;fillet edge marked as crease&quot;, &quot;duplicate cylinders should share one surface&quot;.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>Two ADVANCED_FACEs on two CYLINDRICAL_SURFACE entities that are duplicates (same axis, same radius) sharing a tangent edge, with the edge marked `C0` in the source model. (In STEP this is implicit in face tessellation tools but not in the entity graph; the reproducer is geometric — surfaces meet smoothly.)</p></section>
 <section><h2>Expected kernel behavior</h2>
 <p>Heal and accept: recompute regularity from face normals; correct the tag.</p></section>
 <section><h2>Notes</h2>
-<p>Affects downstream meshing and shading. Provenance tier: runtime-only — bytes alone cannot demonstrate this defect; STEP edge entities have no continuity-tag attribute, so the &quot;C0 vs G1&quot; mistagging exists only as kernel-internal regularity state populated during the regularity-encoding pass. The static fixture encodes only the geometric trigger (two cylinders meeting tangentially). A behavioral test against the regularity-encoder is the appropriate venue. Synonyms: &quot;edge continuity wrong&quot;, &quot;smooth edge marked sharp&quot;, &quot;fillet edge marked as crease&quot;, &quot;duplicate cylinders should share one surface&quot;, &quot;regularity tag disagrees with measured smoothness&quot;.</p></section>
+<p>Affects downstream meshing and shading. Provenance tier: runtime-only; bytes alone cannot demonstrate this defect; STEP edge entities have no continuity-tag attribute, so the &quot;C0 vs G1&quot; mistagging exists only as kernel-internal regularity state populated during the regularity-encoding pass. The static fixture encodes only the geometric trigger (two cylinders meeting tangentially). A behavioral test against the regularity-encoder is the appropriate venue. Synonyms: &quot;edge continuity wrong&quot;, &quot;smooth edge marked sharp&quot;, &quot;fillet edge marked as crease&quot;, &quot;duplicate cylinders should share one surface&quot;, &quot;regularity tag disagrees with measured smoothness&quot;.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(10) ifc=schema_n/a</code></p></section>
 <section><h2>Provenance tier</h2>

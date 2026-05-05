@@ -34,7 +34,7 @@
 <section><h2>Reproducer recipe</h2>
 <p>`#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-6), #10, &#x27;distance_accuracy_value&#x27;, &#x27;&#x27;);` plus `#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3) GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13)) GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12)) REPRESENTATION_CONTEXT(&#x27;&#x27;,&#x27;3D&#x27;));`. step-g treats every edge with 1e-3 tolerance, ignoring the 1e-6 declared by the file.</p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal-and-accept — every importer must consult the active `GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT` and pass the file&#x27;s tolerance into all edge/face/healing tolerance slots; emit `W_TOLERANCE_FROM_FILE` so users can confirm the value used.</p></section>
+<p>heal-and-accept; every importer must consult the active `GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT` and pass the file&#x27;s tolerance into all edge/face/healing tolerance slots; emit `W_TOLERANCE_FROM_FILE` so users can confirm the value used.</p></section>
 <section><h2>Notes</h2>
 <p>**See also**: N019, U033. Umbrella over N019 (which is the offset-surface specific manifestation). Synonyms: &quot;STEP UNCERTAINTY_MEASURE_WITH_UNIT ignored&quot;, &quot;importer hard-codes 1e-3 tolerance&quot;, &quot;distance_accuracy_value not consumed&quot;, &quot;BRL-CAD step-g ignores file uncertainty everywhere&quot;, &quot;tight-precision authoring downgraded to working precision&quot;. **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog&#x27;s allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.</p></section>
 <section><h2>Expected validation</h2>

@@ -31,13 +31,13 @@
 <section><h2>Sender</h2>
 <p>STEP exporters in 3D-only mode; IGES BRep round-trips; Multiboard parts library</p></section>
 <section><h2>Description</h2>
-<p>An `EDGE_CURVE` bounding a face has only its 3D curve populated; no parametric (pcurve) representation accompanies the edge on its host surface. Many writers strip pcurves entirely or fail to compute them per-face. Receivers that assume every edge-on-face has a pcurve dereference null and crash; receivers that tolerate the absence must reconstruct the pcurve themselves by projecting the 3D curve onto the surface.</p></section>
+<p>An `EDGE_CURVE` bounding a face has only its 3D curve populated; no parametric (pcurve) representation accompanies the edge on its host surface. Many writers strip pcurves entirely or fail to compute them per-face. Receivers that assume every edge-on-face has a pcurve dereference null and crash; receivers that tolerate the absence must reconstruct the pcurve by projecting the 3D curve onto the surface.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>`EDGE_CURVE` references a 3D `LINE`/`B_SPLINE_CURVE_WITH_KNOTS` and bounds an `ADVANCED_FACE`; the corresponding `SURFACE_CURVE.associated_geometry` lacks any `PCURVE` entry. With STEP writer flag &quot;Write out curves in parametric space of surface&quot; enabled but no cached pcurve.</p></section>
 <section><h2>Expected kernel behavior</h2>
 <p>synthesise the missing pcurve by projecting the 3D curve onto the host surface, or reject the input as malformed. Never dereference a null pcurve handle.</p></section>
 <section><h2>Notes</h2>
-<p>Cross-oracle: pure-Python Part-21 validator accepts (`accept`); OCCT crashes (`signal(11)`). The crash is on the kernel side — the file is spec-conformant Part-21.</p></section>
+<p>Cross-oracle: pure-Python Part-21 validator accepts (`accept`); OCCT crashes (`signal(11)`). The crash is on the kernel side; the file is spec-conformant Part-21.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a</code></p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">

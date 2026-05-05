@@ -28,7 +28,7 @@
 <li>OCCT MANTIS#0023771 (OCCT MANTIS tracker 502 as of 2026-05-02)</li>
 </ul></section>
 <section><h2>Description</h2>
-<p>A surface of revolution whose basis curve is itself an `OFFSET_CURVE_3D` round-trips through STEP/IGES; the offset relationship is lost — the receiver sees a freshly-evaluated B-spline approximation of the offset curve rather than the original &quot;offset by 0.1 of curve X&quot; representation. Subsequent edits (changing the original X) no longer propagate.</p></section>
+<p>A surface of revolution whose basis curve is itself an `OFFSET_CURVE_3D` round-trips through STEP/IGES; the offset relationship is lost; the receiver sees a freshly-evaluated B-spline approximation of the offset curve rather than the original &quot;offset by 0.1 of curve X&quot; representation. Subsequent edits (changing the original X) no longer propagate.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>`SURFACE_OF_REVOLUTION` whose basis is `OFFSET_CURVE_3D` referencing a `B_SPLINE_CURVE`. Round-trip; offset is baked into a new B-spline.</p></section>
 <section><h2>Expected kernel behavior</h2>

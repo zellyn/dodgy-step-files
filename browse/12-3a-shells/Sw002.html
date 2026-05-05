@@ -27,7 +27,7 @@
 <li>OCCT BRepBuilderAPI_Sewing.hxx:169 (NbDeletedFaces) (uncovered class evidence)</li>
 </ul></section>
 <section><h2>Sender</h2>
-<p>deduced — OCCT uncovered-class sweep, Pass C</p></section>
+<p>deduced — OCCT uncovered-class sweep</p></section>
 <section><h2>Description</h2>
 <p>A face whose area is below the squared sewing tolerance is removed entirely by the sewer with no diagnostic — the consumer sees a clean shell with one fewer face than the input. Typical fixture: an ADVANCED_FACE whose underlying PLANE references CARTESIAN_POINTs covering only a sub-micron sliver region (e.g., (0,0,0), (1e-6,0,0), (1e-6,1e-6,0), (0,1e-6,0)) — a face whose extent is below typical tolerance. Empty bound lists may also feature in such fixtures. Bug-reporter language: &quot;face missing after sewing&quot;, &quot;sewer dropped face&quot;, &quot;face silently lost&quot;, &quot;sub-micron sliver&quot;.</p></section>
 <section><h2>Reproducer recipe</h2>

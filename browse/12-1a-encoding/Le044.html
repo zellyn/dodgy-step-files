@@ -29,7 +29,7 @@
 <li>16-iso-spec ISO 10303-21 Ed.3 §6.4.3 (`\X2\.\X0\` 4-hex groups)</li>
 </ul></section>
 <section><h2>Description</h2>
-<p>`\X2\.\X0\` wraps 4-hex-digit groups each denoting one UCS-2 (BMP) scalar. Surrogate halves U+D800.U+DFFF are not BMP characters — they exist only as paired surrogates of UTF-16. A Java-vintage exporter that internally holds Java `char[]` (allowing lone surrogates) and writes them out one-by-one as `\X2\DXXX\X0\` produces a malformed but parseable token. A surrogate pair encoded as two `\X2\` groups (CESU-8-like) round-trips by accident on tools that decode UTF-16 surrogates.</p></section>
+<p>`\X2\.\X0\` wraps 4-hex-digit groups each denoting one UCS-2 (BMP) scalar. Surrogate halves U+D800.U+DFFF are not BMP characters; they exist only as paired surrogates of UTF-16. A Java-vintage exporter that internally holds Java `char[]` (allowing lone surrogates) and writes them out one-by-one as `\X2\DXXX\X0\` produces a malformed but parseable token. A surrogate pair encoded as two `\X2\` groups (CESU-8-like) round-trips by accident on tools that decode UTF-16 surrogates.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>`&#x27;lone=\X2\D801\X0\&#x27;` — D801 is a high-surrogate half. `&#x27;pair=\X2\D801DC37\X0\&#x27;` — high+low surrogate pair.</p></section>
 <section><h2>Expected kernel behavior</h2>

@@ -27,7 +27,7 @@
 <li>bug-report patterns &quot;GD&amp;T datum order wrong&quot;, &quot;PMI compartments swapped&quot;, &quot;primary/secondary/tertiary mixed up&quot;</li>
 </ul></section>
 <section><h2>Description</h2>
-<p>A block with three labeled DATUM_FEATUREs (A on bottom, B on front, C on left). The producer intended a position tolerance |⌖|0.05|A|B|C|. Due to a list-ordering bug in the PMI exporter, the DATUM_SYSTEM lists compartments in order (A, C, B). The schema accepts any order; the tolerance is mathematically valid but yields a different inspection regime — secondary and tertiary roles swap, so the constraint axes the gauge uses are different.</p></section>
+<p>A block with three labeled DATUM_FEATUREs (A on bottom, B on front, C on left). The producer intended a position tolerance |⌖|0.05|A|B|C|. Due to a list-ordering bug in the PMI exporter, the DATUM_SYSTEM lists compartments in order (A, C, B). The schema accepts any order; the tolerance is mathematically valid but yields a different inspection regime; secondary and tertiary roles swap, so the constraint axes the gauge uses are different.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>A 10x10x10 block with three DATUMs (A, B, C) mapped to bottom/front/left faces via three GISUs. A POSITION_TOLERANCE attached to a DATUM_SYSTEM whose datum_constraints list is (A_compartment, C_compartment, B_compartment).</p></section>
 <section><h2>Expected kernel behavior</h2>

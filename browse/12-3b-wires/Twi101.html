@@ -35,7 +35,7 @@
 <section><h2>Reproducer recipe</h2>
 <p>`#20=POLYLINE(&#x27;chamfer_basis&#x27;,(#10,#11,#12));` referenced from a topology entity via its underlying-curve slot; step-g loads the polyline points but the LoadONBrep stub drops the basis.</p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal-and-accept — Polyline must override `LoadONBrep` to build a piecewise-linear `ON_PolylineCurve`; if more than 2 vertices, optionally promote to a degree-1 B-spline with knot multiplicity 2 at endpoints.</p></section>
+<p>heal-and-accept; Polyline must override `LoadONBrep` to build a piecewise-linear `ON_PolylineCurve`; if more than 2 vertices, optionally promote to a degree-1 B-spline with knot multiplicity 2 at endpoints.</p></section>
 <section><h2>Notes</h2>
 <p>**See also**: Twi100, Pmi053. Synonyms: &quot;POLYLINE basis dropped&quot;, &quot;step-g Polyline LoadONBrep stub&quot;, &quot;broken-line chamfer disappears on STEP import&quot;, &quot;polyline silently lost&quot;, &quot;Pro/E chamfer polyline drops in BRL-CAD&quot;.</p></section>
 <section><h2>Expected validation</h2>

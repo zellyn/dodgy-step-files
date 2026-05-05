@@ -30,7 +30,7 @@
 <section><h2>Sender</h2>
 <p>Buggy writers that mis-handle the inheritance-override mechanism for complex (subtype) entities and apply it to non-inherited attributes</p></section>
 <section><h2>Description</h2>
-<p>The `*` token denotes an attribute inherited from a supertype and overridden in a subtype context — valid only inside complex (subtype-stack) records. The producer emits `*` in a simple-entity instance where no supertype exists, producing `CARTESIAN_POINT(&#x27;p&#x27;,(*,0.0,0.0))` or similar. Receivers diverge: some treat `*` as an error, some treat it as zero, some treat it as `$`. Bug-reporter language: &quot;asterisk where number expected&quot;, &quot;STEP file has stars in coordinates&quot;, &quot;writer used override-marker incorrectly&quot;.</p></section>
+<p>The `*` token denotes an attribute inherited from a supertype and overridden in a subtype context; valid only inside complex (subtype-stack) records. The producer emits `*` in a simple-entity instance where no supertype exists, producing `CARTESIAN_POINT(&#x27;p&#x27;,(*,0.0,0.0))` or similar. Receivers diverge: some treat `*` as an error, some treat it as zero, some treat it as `$`. Bug-reporter language: &quot;asterisk where number expected&quot;, &quot;STEP file has stars in coordinates&quot;, &quot;writer used override-marker incorrectly&quot;.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>`CARTESIAN_POINT(&#x27;p&#x27;,(*,0.0,0.0))` in a non-subtype context.</p></section>
 <section><h2>Expected kernel behavior</h2>

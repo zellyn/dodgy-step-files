@@ -30,7 +30,7 @@
 <section><h2>Sender</h2>
 <p>FreeCAD itself</p></section>
 <section><h2>Description</h2>
-<p>An assembly-document carries non-shape labels (Joints, Variables, Constraints, Configurations, LinkGroup) — labels whose attached topological shape is null. The STEP writer&#x27;s color-attribution pass dereferences the null shape during traversal and crashes; the resulting STEP file is truncated mid-write.</p></section>
+<p>An assembly-document carries non-shape labels (Joints, Variables, Constraints, Configurations, LinkGroup); labels whose attached topological shape is null. The STEP writer&#x27;s color-attribution pass dereferences the null shape during traversal and crashes; the resulting STEP file is truncated mid-write.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>Truncated STEP file (writer crash before END marker) — also see P069 for general truncation.</p></section>
 <section><h2>Expected kernel behavior</h2>

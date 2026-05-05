@@ -31,7 +31,7 @@
 <section><h2>Reproducer recipe</h2>
 <p>A `MANIFOLD_SOLID_BREP` with three `UNCERTAINTY_MEASURE_WITH_UNIT` records (1e-6, 1e-5, 1e-4) labelled vertex/edge/face. The file&#x27;s `LENGTH_UNIT` is `.MILLI.METRE.`. Receiver may rescale to `.METRE.`.</p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>produce a consistent hierarchy regardless of internal unit scaling — either rescale tolerances atomically with coordinates, or document a single canonical working-unit and reject input that cannot survive the conversion.</p></section>
+<p>produce a consistent hierarchy regardless of internal unit scaling; either rescale tolerances atomically with coordinates, or document a single canonical working-unit and reject input that cannot survive the conversion.</p></section>
 <section><h2>Notes</h2>
 <p>**See also**: N001, U001. Searchable as &quot;tolerance hierarchy. Synonyms: &quot;tolerance hierarchy flips when scaled to meters&quot;, &quot;uncertainty values change order under unit change&quot;, &quot;vertex/edge/face hierarchy inverts on unit conversion&quot;, &quot;scaling breaks tolerance ordering&quot;. violated after metric conversion&quot;, &quot;STEP unit conversion broke tolerances&quot;.</p></section>
 <section><h2>Expected validation</h2>

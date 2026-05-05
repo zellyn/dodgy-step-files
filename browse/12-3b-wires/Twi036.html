@@ -28,7 +28,7 @@
 <section><h2>Sender</h2>
 <p>CATIA01 #1727</p></section>
 <section><h2>Description</h2>
-<p>Two adjacent edges meet in 3D within tolerance but their pcurve endpoints in UV are separated by a parametric gap that no vertex tolerance can bridge — the wire is connected in 3D but missing a &quot;lacking edge&quot; in UV. The face&#x27;s parametric outline cannot be closed without adding a synthetic edge to span the UV gap.</p></section>
+<p>Two adjacent edges meet in 3D within tolerance but their pcurve endpoints in UV are separated by a parametric gap that no vertex tolerance can bridge; the wire is connected in 3D but missing a &quot;lacking edge&quot; in UV. The face&#x27;s parametric outline cannot be closed without adding a synthetic edge to span the UV gap.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>Two `EDGE_CURVE`s sharing a vertex in 3D, but their `PCURVE` endpoints on the face surface differ in UV by Δu,Δv &gt; 1e-3 with surface scale 1.</p></section>
 <section><h2>Expected kernel behavior</h2>

@@ -27,9 +27,9 @@
 <li>OCCT BRepOffset_MakeOffset.cxx:1401 (CannotTrimEdges) (uncovered class evidence)</li>
 </ul></section>
 <section><h2>Sender</h2>
-<p>deduced — OCCT uncovered-class sweep, Pass C</p></section>
+<p>deduced — OCCT uncovered-class sweep</p></section>
 <section><h2>Description</h2>
-<p>After offsetting each face independently, the edges between neighbouring offset faces don&#x27;t intersect cleanly to produce shared trim curves. Bug-reporter language: &quot;offset edge trimming failed&quot;, &quot;offset faces don&#x27;t reconnect&quot;.</p></section>
+<p>After offsetting each face independently, the edges between neighbouring offset faces don&#x27;t intersect cleanly to produce shared trim curves.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>A solid with two adjacent faces whose normals differ by a small angle and whose offset distances are large enough that the offset surfaces miss each other.</p></section>
 <section><h2>Expected kernel behavior</h2>

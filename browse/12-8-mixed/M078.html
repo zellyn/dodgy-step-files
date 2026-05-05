@@ -36,16 +36,15 @@
 <section><h2>Expected kernel behavior</h2>
 <p>validate node-count against the declared topology; drop the element with a warning, or reject the file.</p></section>
 <section><h2>Notes</h2>
-<p>Synonyms: &quot;AP209 hex node count wrong&quot;, &quot;quadratic hex with 12 nodes not 20&quot;, &quot;FEA element node count wrong for hex8&quot;, &quot;AP209 element under-noded&quot;, &quot;hex element missing mid-edge nodes&quot;. **See also**: M037 (the tetrahedral analog).</p></section>
+<p>Synonyms: &quot;AP209 hex node count wrong&quot;, &quot;quadratic hex with 12 nodes not 20&quot;, &quot;FEA element node count wrong for hex8&quot;, &quot;AP209 element under-noded&quot;, &quot;hex element missing mid-edge nodes&quot;. **See also**: M037, M109, analog, tetrahedral, the.- **Byte assertion**: contains(b&#x27;STRUCTURAL_ANALYSIS_DESIGN&#x27;)</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">
-<li><code>contains(b&#x27;STRUCTURAL_ANALYSIS_DESIGN&#x27;)</code></li>
 <li><code>contains(b&#x27;quadratic_hexahedron&#x27;)</code></li>
 <li><code>contains(b&#x27;VOLUME_3D_ELEMENT_DESCRIPTOR&#x27;)</code></li>
 </ul></section>
 <section><h2>Cross-references</h2>
-<p><a href="M037.html">M037</a></p>
+<p><a href="M037.html">M037</a>, <a href="M109.html">M109</a></p>
 </section>
 <section><h2>Live oracle output</h2>
 <table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
@@ -70,7 +69,7 @@
 <span class="lineno">7</span>HEADER;
 <span class="lineno">8</span>FILE_DESCRIPTION((&#x27;M078 test case&#x27;,&#x27;AP209 <mark>quadratic_hexahedron</mark> with 12 nodes&#x27;),&#x27;2;1&#x27;);
 <span class="lineno">9</span>FILE_NAME(&#x27;M078.stp&#x27;,&#x27;2026-04-30T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
-<span class="lineno">10</span>FILE_SCHEMA((&#x27;<mark>STRUCTURAL_ANALYSIS_DESIGN</mark> { 1 0 10303 209 1 0 0 }&#x27;));
+<span class="lineno">10</span>FILE_SCHEMA((&#x27;STRUCTURAL_ANALYSIS_DESIGN { 1 0 10303 209 1 0 0 }&#x27;));
 <span class="lineno">11</span>ENDSEC;
 <span class="lineno">12</span>DATA;
 <span class="lineno">13</span>#1=APPLICATION_CONTEXT(&#x27;structural_analysis_design&#x27;);

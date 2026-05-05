@@ -27,7 +27,7 @@
 <li>A021, S002</li>
 </ul></section>
 <section><h2>Description</h2>
-<p>Parser copies entity name into a fixed-size identifier buffer — classic strcpy overflow. ISO conformance class permits long names but not unbounded. Embedded `-` (hyphen) in identifiers is also disallowed (`BS7752-1`).</p></section>
+<p>Parser copies entity name into a fixed-size identifier buffer; classic strcpy overflow. ISO conformance class permits long names but not unbounded. Embedded `-` (hyphen) in identifiers is also disallowed (`BS7752-1`).</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>`#1=AAAA…(64 KiB)…(..);` and `#2=BS7752-1(..)`.</p></section>
 <section><h2>Expected kernel behavior</h2>

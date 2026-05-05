@@ -29,7 +29,7 @@
 <li>OCCT MANTIS#0022962 (OCCT MANTIS tracker 502 as of 2026-05-02)</li>
 </ul></section>
 <section><h2>Description</h2>
-<p>A document has both a colour and a richer material record (with reflectance / shininess) attached to one face. STEP writer emits both but the colour record overrides the material record on re-import — the reader&#x27;s &quot;first matching style wins&quot; logic loses the material details.</p></section>
+<p>A document has both a colour and a richer material record (with reflectance / shininess) attached to one face. STEP writer emits both but the colour record overrides the material record on re-import; the reader&#x27;s &quot;first matching style wins&quot; logic loses the material details.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>Face with `Quantity_Color` + `Graphic3d_MaterialAspect` attached. Round-trip through STEP.</p></section>
 <section><h2>Expected kernel behavior</h2>

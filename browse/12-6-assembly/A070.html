@@ -27,13 +27,13 @@
 <li>OCCT MANTIS#0031466 (OCCT MANTIS tracker 502 as of 2026-05-02)</li>
 </ul></section>
 <section><h2>Description</h2>
-<p>A STEP file containing `PRESENTATION_LAYER_ASSIGNMENT` records with layer names is read; the resulting XCAF document has no layer attributes — the assignment records were parsed but their target layer name was discarded.</p></section>
+<p>A STEP file containing `PRESENTATION_LAYER_ASSIGNMENT` records with layer names is read; the resulting XCAF document has no layer attributes; the assignment records were parsed but their target layer name was discarded.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>STEP file with `PRESENTATION_LAYER_ASSIGNMENT( &#x27;layer1&#x27;,&#x27;&#x27;,(#100,#101))` referencing two faces. After import, layer attribute on the faces is missing.</p></section>
 <section><h2>Expected kernel behavior</h2>
 <p>Heal and accept: layer-assignment entities populate XCAF layer table; faces / edges retain layer-name metadata. Must not silently drop layers.</p></section>
 <section><h2>Notes</h2>
-<p>Provenance tier: runtime-only — kernel imports STEP but loses layer info; defect is in the importer, not byte-encodable.</p></section>
+<p>Provenance tier: runtime-only; kernel imports STEP but loses layer info; defect is in the importer, not byte-encodable.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Provenance tier</h2>

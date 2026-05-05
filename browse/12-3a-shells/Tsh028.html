@@ -32,7 +32,7 @@
 <section><h2>Reproducer recipe</h2>
 <p>`STYLED_ITEM` referencing an `ADVANCED_FACE` that gets dropped by sliver-face healing (`ShapeFix_Face::FixSmallAreaWire`); or two-level assembly with color on inner solid, flatten via `XCAFDoc_ShapeTool::CopyShape`.</p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal — re-bind to surviving merged face when possible; propagate `STYLED_ITEM` through every level of `NEXT_ASSEMBLY_USAGE_OCCURRENCE` during flatten.</p></section>
+<p>heal; re-bind to surviving merged face when possible; propagate `STYLED_ITEM` through every level of `NEXT_ASSEMBLY_USAGE_OCCURRENCE` during flatten.</p></section>
 <section><h2>Notes</h2>
 <p>Synonyms: &quot;color disappears after sliver removal&quot;, &quot;face style lost when small face dropped&quot;, &quot;presentation style references missing face&quot;, &quot;color attribute orphaned after healing&quot;, &quot;nested assembly flatten loses inner-component color&quot;.</p></section>
 <section><h2>Expected validation</h2>

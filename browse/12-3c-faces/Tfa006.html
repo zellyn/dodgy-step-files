@@ -34,7 +34,7 @@
 <section><h2>Reproducer recipe</h2>
 <p>An `ADVANCED_FACE` on a `PLANE` whose 4-edge `FACE_OUTER_BOUND` traces vertices at `(0,0,0), (1e-9,0,0), (1e-9,1e-9,0), (0,1e-9,0)`.</p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal — collapse the spot face to a `tolerant_vertex`; remove the face from the shell; re-stitch incident edges via that vertex.</p></section>
+<p>heal; collapse the spot face to a `tolerant_vertex`; remove the face from the shell; re-stitch incident edges via that vertex.</p></section>
 <section><h2>Notes</h2>
 <p>**See also**: Gs014. Synonyms: &quot;face collapsed to a single point&quot;, &quot;all face vertices are at the same XYZ&quot;, &quot;face has zero area within tolerance&quot;, &quot;spot face needs to become a tolerant vertex&quot;, &quot;face boundary fits inside a single point&quot;.</p></section>
 <section><h2>Expected validation</h2>

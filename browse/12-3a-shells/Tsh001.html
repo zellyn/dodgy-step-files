@@ -34,7 +34,7 @@
 <section><h2>Reproducer recipe</h2>
 <p>`#N=MANIFOLD_SOLID_BREP(&#x27;&#x27;,#M);` where `#M=OPEN_SHELL(&#x27;&#x27;,(..));`.</p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal — accept with warning; if topology demonstrably closes, promote to closed shell; otherwise treat as compound of faces.</p></section>
+<p>heal: accept with warning; if topology demonstrably closes, promote to closed shell; otherwise treat as compound of faces.</p></section>
 <section><h2>Notes</h2>
 <p>**See also**: N026, Tsh002, Tsh003, Tsh004, Tsh005, Tsh006. Synonyms: &quot;solid built from open shell instead of closed&quot;, &quot;manifold solid wrapping non-manifold geometry&quot;, &quot;solid body has leaks&quot;, &quot;outer boundary of solid is not watertight&quot;, &quot;schema says closed but file says open&quot;.</p></section>
 <section><h2>Expected validation</h2>

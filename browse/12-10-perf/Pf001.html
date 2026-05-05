@@ -30,7 +30,7 @@
 <section><h2>Sender</h2>
 <p>PTC Creo (large 1+ GB AP242 assemblies)</p></section>
 <section><h2>Description</h2>
-<p>STEP files exceeding 1 GB cause downstream consumers (Inventor, AutoCAD, Navisworks) to allocate memory unboundedly until OOM even on hosts with 96 GB RAM. The producing kernel re-imports the same file successfully, so the file is not corrupt — the receiver simply cannot scale.</p></section>
+<p>STEP files exceeding 1 GB cause downstream consumers (Inventor, AutoCAD, Navisworks) to allocate memory unboundedly until OOM even on hosts with 96 GB RAM. The producing kernel re-imports the same file successfully, so the file is not corrupt; the receiver simply cannot scale.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>AP242 STEP with thousands of `MANIFOLD_SOLID_BREP`s in nested `NEXT_ASSEMBLY_USAGE_OCCURRENCE` chains, total size &gt; 1 GB.</p></section>
 <section><h2>Expected kernel behavior</h2>

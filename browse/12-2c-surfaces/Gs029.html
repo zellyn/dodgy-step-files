@@ -33,7 +33,7 @@
 <section><h2>Reproducer recipe</h2>
 <p>`TRIMMED_CURVE` over a unit-radius `CIRCLE` with `trim_1=PARAMETER_VALUE(2π)`, `trim_2=PARAMETER_VALUE(0)` and `sense_agreement=.T.`.</p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal — clamp/wrap parameter values into natural domain; if `last &lt; first`, swap or wrap modulo period.</p></section>
+<p>heal; clamp/wrap parameter values into natural domain; if `last &lt; first`, swap or wrap modulo period.</p></section>
 <section><h2>Notes</h2>
 <p>**See also**: Gp007. Synonyms: &quot;curve last parameter less than first&quot;, &quot;trimmed_curve has reversed parameter range&quot;, &quot;EDGE_CURVE first/last out of natural domain&quot;, &quot;trim_2 less than trim_1 on circle&quot;, &quot;PARAMETER_VALUE last smaller than first&quot;.</p></section>
 <section><h2>Expected validation</h2>

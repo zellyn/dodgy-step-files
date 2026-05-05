@@ -32,9 +32,9 @@
 <section><h2>Reproducer recipe</h2>
 <p>Add `#607638=TESSELLATED_SHELL(&#x27;&#x27;,(),$);` to any AP242 file referencing it from a `SHAPE_REPRESENTATION`.</p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal — reject the malformed entity, continue reading.</p></section>
+<p>heal; reject the malformed entity, continue reading.</p></section>
 <section><h2>Notes</h2>
-<p>Synonyms: &quot;empty TESSELLATED_SHELL crashes&quot;, &quot;ReadFile crash on empty shell&quot;, &quot;tessellated shell with empty argument list&quot;, &quot;crash on TESSELLATED_SHELL((),$)&quot;. Cross-oracle: pure-Python Part-21 validator accepts (`accept`); OCCT crashes (`signal(11)`). The crash is on the kernel side — the file is spec-conformant Part-21.</p></section>
+<p>Synonyms: &quot;empty TESSELLATED_SHELL crashes&quot;, &quot;ReadFile crash on empty shell&quot;, &quot;tessellated shell with empty argument list&quot;, &quot;crash on TESSELLATED_SHELL((),$)&quot;. Cross-oracle: pure-Python Part-21 validator accepts (`accept`); OCCT crashes (`signal(11)`). The crash is on the kernel side; the file is spec-conformant Part-21.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a</code></p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">

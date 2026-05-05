@@ -31,7 +31,7 @@
 <section><h2>Sender</h2>
 <p>ProSTEP TR9 `r0501-ug.stp`; CATIA via near-closed BSpline; SolidWorks (avoidable with &quot;Split Periodic Faces&quot;)</p></section>
 <section><h2>Description</h2>
-<p>Face on cylinder/sphere/torus/closed-BSpline bounded by wire(s) closed in 3D but open in UV — the explicit seam edge along the U=0 (or V=0) isoline is missing from the wire. The receiver sees a wire that doesn&#x27;t close in 2D parameter space, even though the 3D endpoints meet.</p></section>
+<p>Face on cylinder/sphere/torus/closed-BSpline bounded by wire(s) closed in 3D but open in UV; the explicit seam edge along the U=0 (or V=0) isoline is missing from the wire. The receiver sees a wire that doesn&#x27;t close in 2D parameter space, even though the 3D endpoints meet.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>`ADVANCED_FACE` on `CYLINDRICAL_SURFACE` whose outer loop traverses U from 0 to 2π but no `EDGE_CURVE` on U=0 to seam-close.</p></section>
 <section><h2>Expected kernel behavior</h2>

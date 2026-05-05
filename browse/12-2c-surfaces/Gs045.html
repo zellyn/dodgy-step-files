@@ -28,7 +28,7 @@
 <li>16-iso-spec ISO 10303-42 §SURFACE_OF_REVOLUTION</li>
 </ul></section>
 <section><h2>Description</h2>
-<p>A SURFACE_OF_REVOLUTION sweeps a basis curve about an axis. If the axis crosses the basis curve at an interior point, one side of the curve is swept &quot;inward&quot; while the other is swept &quot;outward&quot;, producing a self-intersecting surface that folds through itself near the axis. Distinct from existing entries about co-axial / parallel sweeps — this is the *crossing* pathological case.</p></section>
+<p>A SURFACE_OF_REVOLUTION sweeps a basis curve about an axis. If the axis crosses the basis curve at an interior point, one side of the curve is swept &quot;inward&quot; while the other is swept &quot;outward&quot;, producing a self-intersecting surface that folds through itself near the axis. Distinct from existing entries about co-axial / parallel sweeps; this is the *crossing* pathological case.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>basis LINE from x=-2 to x=+2 along y=0,z=0; revolution axis = Y-axis at origin. The line crosses the axis at (0,0,0) interior to the basis parameter range.</p></section>
 <section><h2>Expected kernel behavior</h2>

@@ -27,7 +27,7 @@
 <li>G013 (OCCT 89180f9 / Mantis 0029803).</li>
 </ul></section>
 <section><h2>Description</h2>
-<p>AP242 files use inch units inside `GEOMETRIC_REPRESENTATION_CONTEXT` for axis placements in `CONSTRUCTIVE_GEOMETRY_REPRESENTATION_RELATIONSHIP`, but unit was not applied — axes land at wrong scale, mis-positioning every component that uses them.</p></section>
+<p>AP242 files use inch units inside `GEOMETRIC_REPRESENTATION_CONTEXT` for axis placements in `CONSTRUCTIVE_GEOMETRY_REPRESENTATION_RELATIONSHIP`, but unit was not applied; axes land at wrong scale, mis-positioning every component that uses them.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>STEP file with construction geometry encoded as AXIS2_PLACEMENT_3D entities under CGR with non-default units.</p></section>
 <section><h2>Expected kernel behavior</h2>

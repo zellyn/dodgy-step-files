@@ -35,7 +35,7 @@
 <section><h2>Reproducer recipe</h2>
 <p>`#41=BOUNDED_PCURVE(&#x27;bp_on_plane&#x27;, #14, #40);` referenced from a `SURFACE_CURVE.associated_geometry`. step-g loads the entity; LoadONBrep stub returns false.</p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal-and-accept — `BoundedPCurve::LoadONBrep` must defer to its underlying definitional basis curve and reparameterise to the bounded subrange; if unhandled, emit `W_BOUNDED_PCURVE_FALLBACK` and project from 3D.</p></section>
+<p>heal-and-accept; `BoundedPCurve::LoadONBrep` must defer to its underlying definitional basis curve and reparameterise to the bounded subrange; if unhandled, emit `W_BOUNDED_PCURVE_FALLBACK` and project from 3D.</p></section>
 <section><h2>Notes</h2>
 <p>**See also**: Gn019, Twi100, Twi101. Synonyms: &quot;BOUNDED_PCURVE LoadONBrep stub&quot;, &quot;step-g BOUNDED_PCURVE drop&quot;, &quot;BOUNDED_PCURVE subtype unimplemented&quot;.</p></section>
 <section><h2>Expected validation</h2>

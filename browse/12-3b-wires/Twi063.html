@@ -26,7 +26,7 @@
 <li>OCCT `ShapeAnalysis_Edge::CheckOverlapping` (`ShapeAnalysis_Edge.hxx:237`)</li>
 </ul></section>
 <section><h2>Description</h2>
-<p>Two distinct EDGE_CURVEs share a finite-length segment of the same underlying curve — distance between them stays below tolerance over a non-zero parameter interval. The edges are not duplicates (their endpoints differ), but their interiors collide.</p></section>
+<p>Two distinct EDGE_CURVEs share a finite-length segment of the same underlying curve; distance between them stays below tolerance over a non-zero parameter interval. The edges are not duplicates (their endpoints differ), but their interiors collide.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>Edge A from `(0,0,0)→(5,0,0)` along the X-axis; edge B from `(2,0,0)→(7,0,0)` along the same axis. Overlap span: `[2,5]`.</p></section>
 <section><h2>Expected kernel behavior</h2>

@@ -27,7 +27,7 @@
 <li>OCCT MANTIS#0005027 (OCCT MANTIS tracker 502 as of 2026-05-02)</li>
 </ul></section>
 <section><h2>Description</h2>
-<p>A STEP wire encodes a self-crossing path: edges visit a shared vertex twice, forming a figure-eight or a small detour loop. The reader builds a wire object that conflates the two visits, dropping the second occurrence — geometry is lost.</p></section>
+<p>A STEP wire encodes a self-crossing path: edges visit a shared vertex twice, forming a figure-eight or a small detour loop. The reader builds a wire object that conflates the two visits, dropping the second occurrence; geometry is lost.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>Eight-edge wire whose vertex sequence is `A → B → C → D → B → E → F → A`. Vertex B appears twice (figure-eight cross). Reader collapses to a six-edge wire `A → B → C → D → E → F → A`.</p></section>
 <section><h2>Expected kernel behavior</h2>

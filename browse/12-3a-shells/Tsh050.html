@@ -35,7 +35,7 @@
 <section><h2>Expected kernel behavior</h2>
 <p>Heal and accept: coerce / merge so edges shared between merged faces are removed from the resulting wire; only true boundary edges of the union are retained.</p></section>
 <section><h2>Notes</h2>
-<p>**See also**: Tsh046, Tsh049. Provenance tier: runtime-only — bytes alone cannot demonstrate this defect; the static fixture encodes only the merge precondition (two coplanar faces sharing an edge). The defective wire arises only after the kernel performs the merge operation. A behavioral test against the merge implementation is the appropriate venue. Synonyms: &quot;shared edges not removed after face merge&quot;, &quot;interior edge listed twice in merged wire&quot;, &quot;dangling zero-area edge after unification&quot;, &quot;merged face wire still has internal partitions&quot;, &quot;edges between merged faces not deduped&quot;.</p></section>
+<p>**See also**: Tsh046, Tsh049. Provenance tier: runtime-only; bytes alone cannot demonstrate this defect; the static fixture encodes only the merge precondition (two coplanar faces sharing an edge). The defective wire arises only after the kernel performs the merge operation. A behavioral test against the merge implementation is the appropriate venue. Synonyms: &quot;shared edges not removed after face merge&quot;, &quot;interior edge listed twice in merged wire&quot;, &quot;dangling zero-area edge after unification&quot;, &quot;merged face wire still has internal partitions&quot;, &quot;edges between merged faces not deduped&quot;.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Provenance tier</h2>

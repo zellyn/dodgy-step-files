@@ -27,11 +27,11 @@
 <li>18-other-issues.md I059 (OCCT #844)</li>
 </ul></section>
 <section><h2>Description</h2>
-<p>A shape whose entity definition order forces forward references — for example a `FACE_OUTER_BOUND` (#21) references an `EDGE_LOOP` (#22) that itself references an `ORIENTED_EDGE` (#200) defined later in the file. The ASCII reader handles such forward references cleanly, but the binary BREP reader throws an unhandled indexed-map lookup-failure exception on the same canonical content. The two serialisations do not maintain parity.</p></section>
+<p>A shape whose entity definition order forces forward references; for example a `FACE_OUTER_BOUND` (#21) references an `EDGE_LOOP` (#22) that itself references an `ORIENTED_EDGE` (#200) defined later in the file. The ASCII reader handles such forward references cleanly, but the binary BREP reader throws an unhandled indexed-map lookup-failure exception on the same canonical content. The two serialisations do not maintain parity.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>shapes attached to issue; load through both readers and observe one accepts, the other throws.</p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>ASCII and binary serialisations of the same shape data must produce identical results — both accept or both reject. Throwing in one and accepting in the other is a parser-parity bug.</p></section>
+<p>ASCII and binary serialisations of the same shape data must produce identical results; both accept or both reject. Throwing in one and accepting in the other is a parser-parity bug.</p></section>
 <section><h2>Notes</h2>
 <p>**See also**: Ad043. **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog&#x27;s allowed set ({reject}). Kernel-bug witnessed: receivers must reject this fixture per the catalog&#x27;s stated invariant.</p></section>
 <section><h2>Expected validation</h2>

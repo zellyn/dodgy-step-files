@@ -28,7 +28,7 @@
 <li>OCCT MANTIS#0027004 (OCCT MANTIS tracker 502 as of 2026-05-02)</li>
 </ul></section>
 <section><h2>Description</h2>
-<p>Two faces that should be merged have surface normals pointing in opposite directions (one face is reversed relative to its partner). Same-surface detection compares unsigned surface descriptors and decides to merge — but the merge produces an inverted-orientation face that breaks shell normals.</p></section>
+<p>Two faces that should be merged have surface normals pointing in opposite directions (one face is reversed relative to its partner). Same-surface detection compares unsigned surface descriptors and decides to merge; but the merge produces an inverted-orientation face that breaks shell normals.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>Two coplanar quads on the same plane; one with outward normal `+Z`, the other reversed (`-Z`). Both faces share an edge along their common boundary. Unify expected to either skip (different orientations) or merge with a single normal.</p></section>
 <section><h2>Expected kernel behavior</h2>

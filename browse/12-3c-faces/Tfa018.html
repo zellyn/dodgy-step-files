@@ -28,7 +28,7 @@
 <li>08-occt-gitlog G103 (Mantis 0033193 / 0032581 / 0032623 / 0032715)</li>
 </ul></section>
 <section><h2>Description</h2>
-<p>When merging same-domain faces across a periodic seam (e.g. a cylinder split into two halves A and B), the seam-reconstruction path that emits the new edge crashes in debug mode, returns invalid geometry in release mode, or leaves the union incomplete. Common signature: the two seam `EDGE_CURVE`s are each referenced by both halves&#x27; `EDGE_LOOP`s as `ORIENTED_EDGE`s with opposing `.T.`/`.F.` senses — each seam edge appears twice with the confusing same-edge-different-sense pattern. The kernel needed to synthesise the seam edge from one of the input pcurves but failed to copy it correctly.</p></section>
+<p>When merging same-domain faces across a periodic seam (e.g. a cylinder split into two halves A and B), the seam-reconstruction path that emits the new edge crashes in debug mode, returns invalid geometry in release mode, or leaves the union incomplete. Common signature: the two seam `EDGE_CURVE`s are each referenced by both halves&#x27; `EDGE_LOOP`s as `ORIENTED_EDGE`s with opposing `.T.`/`.F.` senses; each seam edge appears twice with the confusing same-edge-different-sense pattern. The kernel needed to synthesise the seam edge from one of the input pcurves but failed to copy it correctly.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>Compound of co-cylindrical faces with implicit seam between them.</p></section>
 <section><h2>Expected kernel behavior</h2>

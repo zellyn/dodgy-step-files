@@ -26,7 +26,7 @@
 <li>OCCT `ShapeFix_Shape::Perform` (`ShapeFix_Shape.hxx:58`)</li>
 </ul></section>
 <section><h2>Description</h2>
-<p>A top-level shape (GEOMETRIC_SET compound, solid, shell, or single face) has multiple defects whose fix order matters — fixing wires before faces vs. after produces different end-states. The shape-level orchestrator iterates over sub-shapes and invokes the appropriate sub-fixer; the orchestrator must converge on a stable result and not loop indefinitely. Typical fixture: a GEOMETRIC_SET mixing an ADVANCED_FACE with a scrambled inner triangular hole EDGE_LOOP, an OPEN_SHELL whose face has a flipped same_sense, and a free EDGE_LOOP wire whose ORIENTED_EDGEs are listed out of head-to-tail order.</p></section>
+<p>A top-level shape (GEOMETRIC_SET compound, solid, shell, or single face) has multiple defects whose fix order matters; fixing wires before faces vs. after produces different end-states. The shape-level orchestrator iterates over sub-shapes and invokes the appropriate sub-fixer; the orchestrator must converge on a stable result and not loop indefinitely. Typical fixture: a GEOMETRIC_SET mixing an ADVANCED_FACE with a scrambled inner triangular hole EDGE_LOOP, an OPEN_SHELL whose face has a flipped same_sense, and a free EDGE_LOOP wire whose ORIENTED_EDGEs are listed out of head-to-tail order.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>A GEOMETRIC_SET compound that mixes a defective face (Tfa037-style), a defective shell (Tsh043-style), and a free wire (Twi051-style); the orchestrator must dispatch to each sub-fixer.</p></section>
 <section><h2>Expected kernel behavior</h2>

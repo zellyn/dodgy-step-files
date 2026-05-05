@@ -30,7 +30,7 @@
 <section><h2>Sender</h2>
 <p>FreeCAD (Link with -1 scale)</p></section>
 <section><h2>Description</h2>
-<p>A `MAPPED_ITEM` whose `transformation_operator` `AXIS2_PLACEMENT_3D` encodes a left-handed coordinate system (improper rotation, det = -1) doesn&#x27;t round-trip — receiver loses the reflection.</p></section>
+<p>A `MAPPED_ITEM` whose `transformation_operator` `AXIS2_PLACEMENT_3D` encodes a left-handed coordinate system (improper rotation, det = -1) doesn&#x27;t round-trip; receiver loses the reflection.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>STEP `MAPPED_ITEM` with `AXIS2_PLACEMENT_3D` direction vectors that form a left-handed frame.</p></section>
 <section><h2>Expected kernel behavior</h2>

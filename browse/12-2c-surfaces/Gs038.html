@@ -27,7 +27,7 @@
 <li>G074, G108</li>
 </ul></section>
 <section><h2>Description</h2>
-<p>2D points along a projected pcurve sometimes have a huge jump (&gt;0.95 of UV range) on BSpline surface when 3D points are close — surface near-periodicity not recognized. Self-touching closed BSpline surface where 2D pcurve crosses near the wrap-around boundary.</p></section>
+<p>2D points along a projected pcurve sometimes have a huge jump (&gt;0.95 of UV range) on BSpline surface when 3D points are close; surface near-periodicity not recognized. Self-touching closed BSpline surface where 2D pcurve crosses near the wrap-around boundary.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>Self-touching BSpline surface with pcurve crossing the near-period; sample pcurve at uniform parameter and observe UV jump &gt; 0.95 of period.</p></section>
 <section><h2>Expected kernel behavior</h2>

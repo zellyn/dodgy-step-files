@@ -30,7 +30,7 @@
 <li>OCCT GitHub#600</li>
 </ul></section>
 <section><h2>Description</h2>
-<p>A 3D B-spline curve, closed (first control point == last), is projected onto a surface to compute a pcurve. The projection algorithm walks the curve with discontinuity at the closing seam — the resulting pcurve has a wild excursion near the seam, parameter range no longer matches the input curve&#x27;s range.</p></section>
+<p>A 3D B-spline curve, closed (first control point == last), is projected onto a surface to compute a pcurve. The projection algorithm walks the curve with discontinuity at the closing seam; the resulting pcurve has a wild excursion near the seam, parameter range no longer matches the input curve&#x27;s range.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>Closed B-spline curve (degree 3, 8 control points with first == last); project onto plane. Pcurve has spike at seam parameter.</p></section>
 <section><h2>Expected kernel behavior</h2>

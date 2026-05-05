@@ -27,7 +27,7 @@
 <li>OCCT ChFi3d_Builder_1.cxx:460, BRepFilletAPI_MakeFillet.cxx:507 (FaultyVertex) (uncovered class evidence)</li>
 </ul></section>
 <section><h2>Sender</h2>
-<p>deduced — OCCT uncovered-class sweep, Pass C</p></section>
+<p>deduced — OCCT uncovered-class sweep</p></section>
 <section><h2>Description</h2>
 <p>A fillet contour terminates at a vertex where the fillet surface needs to be trimmed by the adjacent faces, but the trimming operation produces a degenerate or non-simply-connected piece. Fixture precondition: two ADVANCED_FACEs share a spine edge with near-coplanar normals (e.g., (0,0,1) and (0.001,0,~1)) so the dihedral angle at the vertex is near zero. Bug-reporter language: &quot;fillet faulty at corner&quot;, &quot;fillet termination fails&quot;, &quot;near-coplanar faces share spine&quot;.</p></section>
 <section><h2>Reproducer recipe</h2>

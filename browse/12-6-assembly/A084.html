@@ -27,13 +27,13 @@
 <li>OCCT MANTIS#0032817 (OCCT MANTIS tracker 502 as of 2026-05-02)</li>
 </ul></section>
 <section><h2>Description</h2>
-<p>An edge backed by a trimmed curve (e.g., a half-circle arc) is exported with the full underlying parent curve plus separate trim markers — but the exporter omits the trim markers entirely. The re-imported edge spans the full parent curve, giving wrong arc length.</p></section>
+<p>An edge backed by a trimmed curve (e.g., a half-circle arc) is exported with the full underlying parent curve plus separate trim markers; but the exporter omits the trim markers entirely. The re-imported edge spans the full parent curve, giving wrong arc length.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>Edge on a circle from parameter `t=0` to `t=π`. After export, file emits `CIRCLE` plus `EDGE_CURVE` with full-parameter range `[0, 2π]` instead of `[0, π]`.</p></section>
 <section><h2>Expected kernel behavior</h2>
 <p>Heal and accept: every edge writes its trim parameters; receivers see the intended sub-arc. Must not silently drop trim parameters.</p></section>
 <section><h2>Notes</h2>
-<p>Provenance tier: writer-side — writer emits untrimmed where trimmed expected.</p></section>
+<p>Provenance tier: writer-side; writer emits untrimmed where trimmed expected.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Provenance tier</h2>

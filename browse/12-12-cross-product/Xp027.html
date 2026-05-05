@@ -31,7 +31,7 @@
 <section><h2>Sender</h2>
 <p>any STEP writer that puts the full source path in a FILE_NAME header field</p></section>
 <section><h2>Description</h2>
-<p>ISO 10303-21 §6.2 lets FILE_NAME&#x27;s third argument hold the author list with no per-element length bound. Some writers (or pre-processing utilities) populate it (or a sibling header field) with the full source disk path — a UNC \\\\server\\share\\very\\long\\path; receivers that pre-allocate MAX_PATH=260 buffers for header parsing hang on the long string or repeatedly re-walk it during progress-bar updates, leading to the &quot;stuck at 95%&quot; symptom.</p></section>
+<p>ISO 10303-21 §6.2 lets FILE_NAME&#x27;s third argument hold the author list with no per-element length bound. Some writers (or pre-processing utilities) populate it (or a sibling header field) with the full source disk path; a UNC \\\\server\\share\\very\\long\\path; receivers that pre-allocate MAX_PATH=260 buffers for header parsing hang on the long string or repeatedly re-walk it during progress-bar updates, leading to the &quot;stuck at 95%&quot; symptom.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>FILE_NAME third arg is an author list whose only element is a UNC path 350+ characters long (e.g. \\\\\\\\corp.example.com\\\\engineering\\\\projects\\\\..); rest of header standard; trivial DATA section.</p></section>
 <section><h2>Expected kernel behavior</h2>

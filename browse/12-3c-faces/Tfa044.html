@@ -27,7 +27,7 @@
 <li>OCCT `ShapeFix_FixSmallFace::FixPinFace` (`ShapeFix_FixSmallFace.hxx:82`)</li>
 </ul></section>
 <section><h2>Description</h2>
-<p>A face whose outer wire pinches to a single near-vertex pin — a sharp protrusion whose width tapers to 0 at one corner. Subsequent meshing/Boolean operations corrupt at the pin tip; the face&#x27;s normal is undefined there.</p></section>
+<p>A face whose outer wire pinches to a single near-vertex pin; a sharp protrusion whose width tapers to 0 at one corner. Subsequent meshing/Boolean operations corrupt at the pin tip; the face&#x27;s normal is undefined there.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>A triangular face with vertices at `(0,0)`, `(10, 0.001)`, `(10, -0.001)` — opening angle ≈ 0.0002 rad.</p></section>
 <section><h2>Expected kernel behavior</h2>

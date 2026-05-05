@@ -27,15 +27,15 @@
 <li>OCCT BRepBuilderAPI_FastSewing.cxx:480 (FS_FindVertexError) (uncovered class evidence)</li>
 </ul></section>
 <section><h2>Sender</h2>
-<p>deduced — OCCT uncovered-class sweep, Pass C</p></section>
+<p>deduced — OCCT uncovered-class sweep</p></section>
 <section><h2>Description</h2>
-<p>While building the fast-sewing vertex table, a wire endpoint hashes to a bucket containing only vertices at very different 3D coordinates — no near-coincident match within the sewing tolerance. The algorithm cannot decide whether to dedup or insert. Typical fixture: two VERTEX_POINTs with widely separated coordinates (e.g., (0,0,0) and (1e6,0,0)) that nonetheless share a hash bucket. Bug-reporter language: &quot;fast sew vertex hashing mismatch&quot;, &quot;vertex not found&quot;, &quot;widely-separated VERTEX_POINTs collide in hash&quot;.</p></section>
+<p>While building the fast-sewing vertex table, a wire endpoint hashes to a bucket containing only vertices at very different 3D coordinates; no near-coincident match within the sewing tolerance. The algorithm cannot decide whether to dedup or insert. Typical fixture: two VERTEX_POINTs with widely separated coordinates (e.g., (0,0,0) and (1e6,0,0)) that nonetheless share a hash bucket. Bug-reporter language: &quot;fast sew vertex hashing mismatch&quot;, &quot;vertex not found&quot;, &quot;widely-separated VERTEX_POINTs collide in hash&quot;.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>Two VERTEX_POINTs whose 3D coordinates differ by a large magnitude (e.g., (0,0,0) and (1e6,0,0)) that, due to the underlying float bit pattern, fall into the same hash bucket but are spatially distant — possibly with no edges or shells defined.</p></section>
 <section><h2>Expected kernel behavior</h2>
 <p>Heal and accept: normalize with spatial hashing under tolerance, not bit-equal hashing; fall back to the slow path.</p></section>
 <section><h2>Notes</h2>
-<p>Rare; depends on hash function used. Provenance tier: runtime-only — bytes alone cannot demonstrate this defect; the symptom is a hash-bucket collision inside the fast-sewing vertex table during a sewing operation. The static fixture encodes only the inputs; whether they collide depends on the kernel&#x27;s specific hash function and table size. A behavioral test against the sewing implementation is the appropriate venue. Synonyms: &quot;fast sew vertex hashing mismatch&quot;, &quot;vertex not found&quot;, &quot;widely-separated VERTEX_POINTs collide in hash&quot;, &quot;hash bucket collision in vertex table&quot;, &quot;spatial hash needed instead of bit-equal&quot;.</p></section>
+<p>Rare; depends on hash function used. Provenance tier: runtime-only; bytes alone cannot demonstrate this defect; the symptom is a hash-bucket collision inside the fast-sewing vertex table during a sewing operation. The static fixture encodes only the inputs; whether they collide depends on the kernel&#x27;s specific hash function and table size. A behavioral test against the sewing implementation is the appropriate venue. Synonyms: &quot;fast sew vertex hashing mismatch&quot;, &quot;vertex not found&quot;, &quot;widely-separated VERTEX_POINTs collide in hash&quot;, &quot;hash bucket collision in vertex table&quot;, &quot;spatial hash needed instead of bit-equal&quot;.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Provenance tier</h2>

@@ -30,7 +30,7 @@
 <section><h2>Sender</h2>
 <p>Modellers that emit `SURFACE_OF_REVOLUTION` whose generatrix is an `ELLIPSE` and whose axis passes through the ellipse centre.</p></section>
 <section><h2>Description</h2>
-<p>A `SURFACE_OF_REVOLUTION` references an `ELLIPSE` as its swept curve and a vertical axis that passes through the ellipse&#x27;s centre. The resulting analytic surface is degenerate at both poles where the generatrix meets the axis (zero-radius circles). On import, OCCT cannot recover a usable parametric surface — the face appears empty, geometry is dropped silently, or a heal pass replaces the analytic with a high-cost B-spline approximation. Writers should refuse to emit this construction and instead emit two half-spheres / a torus depending on whether the axis is in-plane.</p></section>
+<p>A `SURFACE_OF_REVOLUTION` references an `ELLIPSE` as its swept curve and a vertical axis that passes through the ellipse&#x27;s centre. The resulting analytic surface is degenerate at both poles where the generatrix meets the axis (zero-radius circles). On import, OCCT cannot recover a usable parametric surface; the face appears empty, geometry is dropped silently, or a heal pass replaces the analytic with a high-cost B-spline approximation. Writers should refuse to emit this construction and instead emit two half-spheres / a torus depending on whether the axis is in-plane.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>`#1=ELLIPSE(&#x27;&#x27;,#2,1.0,0.5);` with `#2` an axis placement at the origin; `#10=SURFACE_OF_REVOLUTION(&#x27;&#x27;,#11,#1);` with `#11` an axis through the ellipse centre. Importer should warn or normalize.</p></section>
 <section><h2>Expected kernel behavior</h2>

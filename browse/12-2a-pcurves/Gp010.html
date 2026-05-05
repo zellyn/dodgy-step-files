@@ -34,7 +34,7 @@
 <section><h2>Reproducer recipe</h2>
 <p>`SURFACE_CURVE(&#x27;&#x27;,#3dcurve,(#assoc_geom),.PCURVE_S1.)` where `#assoc_geom` is a 3D `LINE` lying in the host `PLANE`, instead of a `PCURVE`.</p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>Heal and accept — derive 2D parameter curve from 3D curve when the surface is flat; for true pcurves, evaluate in (u,v) and lift via basis surface.</p></section>
+<p>Heal and accept; derive 2D parameter curve from 3D curve when the surface is flat; for true pcurves, evaluate in (u,v) and lift via basis surface.</p></section>
 <section><h2>Notes</h2>
 <p>**See also**: Gn030, Gp001. Synonyms: &quot;3D curve used where pcurve expected&quot;, &quot;associated_geometry has 3D line not 2D pcurve&quot;, &quot;Parasolid file with 3D curve in surface_curve slot&quot;, &quot;importer expects 2D pcurve gets 3D curve&quot;, &quot;flat surface has 3D edge curve instead of parametric&quot;.</p></section>
 <section><h2>Expected validation</h2>

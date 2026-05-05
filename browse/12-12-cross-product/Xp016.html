@@ -27,7 +27,7 @@
 <li>synthesized cross-product.</li>
 </ul></section>
 <section><h2>Description</h2>
-<p>`AXIS2_PLACEMENT_3D` references `DIRECTION(&#x27;&#x27;,(0.,0.,0.))` (zero-magnitude direction). The placement also references `#999` for its origin — an entity that itself transitively references back to the placement (cycle). Forward reference, cycle, and direction-degeneracy combine.</p></section>
+<p>`AXIS2_PLACEMENT_3D` references `DIRECTION(&#x27;&#x27;,(0.,0.,0.))` (zero-magnitude direction). The placement also references `#999` for its origin; an entity that itself transitively references back to the placement (cycle). Forward reference, cycle, and direction-degeneracy combine.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>`#10=DIRECTION(&#x27;&#x27;,(0.,0.,0.));` `#11=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#999,#10,#10);` `#999=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#11,#10,#10);` (cycle).</p></section>
 <section><h2>Expected kernel behavior</h2>

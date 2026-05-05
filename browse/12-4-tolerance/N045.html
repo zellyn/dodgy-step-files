@@ -26,13 +26,13 @@
 <li>OCCT MANTIS#0024922 (OCCT MANTIS tracker 502 as of 2026-05-02)</li>
 </ul></section>
 <section><h2>Description</h2>
-<p>Two edges intersect inside their parameter range but the intersection point is within vertex tolerance of one edge&#x27;s endpoint. A wire-intersection check filters out the intersection because the vertex &quot;owns&quot; that point — leaving an undetected interior intersection that invalidates the wire downstream.</p></section>
+<p>Two edges intersect inside their parameter range but the intersection point is within vertex tolerance of one edge&#x27;s endpoint. A wire-intersection check filters out the intersection because the vertex &quot;owns&quot; that point; leaving an undetected interior intersection that invalidates the wire downstream.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>Two edges meeting at a `T`-junction: one edge ends at vertex V; the other passes through V&#x27;s tolerance ball but does not end at V. Edge-intersection check returns &quot;no intersection&quot; because the point is inside V&#x27;s tolerance.</p></section>
 <section><h2>Expected kernel behavior</h2>
 <p>edge-intersection report &quot;intersection inside vertex tolerance&quot; as a distinct status; do not silently filter.</p></section>
 <section><h2>Notes</h2>
-<p>**See also**: Twi049, N039. **OCC behavior**: silently filters out the edge-internal intersection with no diagnostic; kernel mishandling — the catalog above forbids silent filtering. Synonyms: &quot;edge-internal intersection ignored&quot;, &quot;two edges cross inside parameter range but missed&quot;, &quot;intersection check only at endpoints&quot;, &quot;vertex tolerance check skips edge interior&quot;.</p></section>
+<p>**See also**: Twi049, N039. **OCC behavior**: silently filters out the edge-internal intersection with no diagnostic; kernel mishandling; the catalog above forbids silent filtering. Synonyms: &quot;edge-internal intersection ignored&quot;, &quot;two edges cross inside parameter range but missed&quot;, &quot;intersection check only at endpoints&quot;, &quot;vertex tolerance check skips edge interior&quot;.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">

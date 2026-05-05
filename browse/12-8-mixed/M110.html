@@ -30,7 +30,7 @@
 <section><h2>Sender</h2>
 <p>deduced — composite-modeling tool storing ply angle as raw vector without normalization</p></section>
 <section><h2>Description</h2>
-<p>A composite ply&#x27;s fiber orientation `DIRECTION` ratios sum to a magnitude of e.g. `2.0` (vector `(2.0, 0.0, 0.0)`) instead of unit length. STEP `DIRECTION` is supposed to be unit-normalized — consumers that use the ratios directly (e.g. for stiffness-matrix transformation) compute doubled effective fiber-angle weight. Bug-reporter language: &quot;AP209 ply direction not unit&quot;, &quot;fiber angle vector wrong magnitude&quot;, &quot;composite stiffness 2x off&quot;.</p></section>
+<p>A composite ply&#x27;s fiber orientation `DIRECTION` ratios sum to a magnitude of e.g. `2.0` (vector `(2.0, 0.0, 0.0)`) instead of unit length. STEP `DIRECTION` is supposed to be unit-normalized; consumers that use the ratios directly (e.g. for stiffness-matrix transformation) compute doubled effective fiber-angle weight. Bug-reporter language: &quot;AP209 ply direction not unit&quot;, &quot;fiber angle vector wrong magnitude&quot;, &quot;composite stiffness 2x off&quot;.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>`DIRECTION(&#x27;ply_0deg&#x27;, (2.0, 0.0, 0.0))` referenced as a ply orientation in a `LAMINATE_TABLE`.</p></section>
 <section><h2>Expected kernel behavior</h2>

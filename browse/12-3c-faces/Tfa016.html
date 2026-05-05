@@ -35,7 +35,7 @@
 <section><h2>Reproducer recipe</h2>
 <p>Boolean-fuse two boxes sharing a face; result has two coplanar faces on the shared plane separated by a useless internal edge.</p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>merge adjacent faces that share one underlying surface and have collinear shared edges, leaving the topology with one face per geometric region. The merge must respect periodic directions — do not merge across a cylinder/torus seam.</p></section>
+<p>merge adjacent faces that share one underlying surface and have collinear shared edges, leaving the topology with one face per geometric region. The merge must respect periodic directions; do not merge across a cylinder/torus seam.</p></section>
 <section><h2>Notes</h2>
 <p>**See also**: Tfa017, Tfa018, Tfa032. Synonyms: &quot;coplanar faces left as separate entities&quot;, &quot;two faces on same plane joined by fake edge&quot;, &quot;redundant internal edge between coplanar faces&quot;, &quot;feature recognition sees split where input was one face&quot;, &quot;boolean union didn&#x27;t merge coplanar pair&quot;.</p></section>
 <section><h2>Expected validation</h2>

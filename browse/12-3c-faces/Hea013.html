@@ -26,17 +26,16 @@
 <li>OCCT `ShapeProcess_UOperator::Perform` (`ShapeProcess_UOperator.hxx:37`)</li>
 </ul></section>
 <section><h2>Description</h2>
-<p>A kernel API for registering ad-hoc user operators in the shape-healing pipeline; same contract as Hea012 but injected by a caller rather than being part of the kernel&#x27;s built-in operator set. Lets host applications splice domain-specific healing into the standard pipeline. Typical input fixture: a rectangular ADVANCED_FACE with an inner triangle FACE_BOUND whose VERTEX_POINTs are near-coincident and whose ORIENTED_EDGEs are listed in scrambled order — structurally identical input to Hea012.</p></section>
+<p>A kernel API for registering ad-hoc user operators in the shape-healing pipeline; same contract as Hea012 but injected by a caller rather than being part of the kernel&#x27;s built-in operator set. Lets host applications splice domain-specific healing into the standard pipeline. Typical input fixture: a rectangular ADVANCED_FACE with an inner triangle FACE_BOUND whose VERTEX_POINTs are near-coincident and whose ORIENTED_EDGEs are listed in scrambled order; structurally identical input to Hea012.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>As Hea012 (face with scrambled inner FACE_BOUND triangle) supplied to a user-registered operator.</p></section>
 <section><h2>Expected kernel behavior</h2>
 <p>Heal and accept: identical to Hea012 but allow runtime registration; sandbox the user operator if its execution diverges.</p></section>
 <section><h2>Notes</h2>
-<p>Concrete subclass of Hea012&#x27;s contract. Synonyms: &quot;user-defined healing operator&quot;, &quot;register custom healer in pipeline&quot;, &quot;host application splices custom healing step&quot;, &quot;ad-hoc operator injected by caller&quot;.</p></section>
+<p>**See also**: Hea012. Concrete subclass of Hea012&#x27;s contract. Synonyms: &quot;user-defined healing operator&quot;, &quot;register custom healer in pipeline&quot;, &quot;host application splices custom healing step&quot;, &quot;ad-hoc operator injected by caller&quot;.- **Tier-3 assertion**: n_edges_total &gt;= 4</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">
-<li><code>n_edges_total &gt;= 4</code></li>
 <li><code>face[0].surface_type == &quot;plane&quot;</code></li>
 <li><code>n_vertices_total &gt;= 8</code></li>
 </ul></section>

@@ -27,7 +27,7 @@
 <li>F008</li>
 </ul></section>
 <section><h2>Description</h2>
-<p>An edge&#x27;s 3D curve and 2D pcurve trace the edge in opposite parameter directions — sampling 3D curve at parameter t and pcurve at the same t lands at opposite ends of the edge. If left uncorrected, projecting between 3D and UV returns wrong-side parameters and downstream geometry queries return reversed answers.</p></section>
+<p>An edge&#x27;s 3D curve and 2D pcurve trace the edge in opposite parameter directions; sampling 3D curve at parameter t and pcurve at the same t lands at opposite ends of the edge. If left uncorrected, projecting between 3D and UV returns wrong-side parameters and downstream geometry queries return reversed answers.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>`EDGE_CURVE` with 3D curve from t=0 to t=1; surface curve with pcurve traced as 1→0 in surface parameter; both linked to same `EDGE_CURVE`.</p></section>
 <section><h2>Expected kernel behavior</h2>

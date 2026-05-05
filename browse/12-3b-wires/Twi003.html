@@ -29,7 +29,7 @@
 <li>19-datasets.md D004 (ABC dataset)</li>
 </ul></section>
 <section><h2>Description</h2>
-<p>Edge n&#x27;s end vertex is not edge n+1&#x27;s start vertex — they are positioned at distinct `VERTEX_POINT`s separated by more than the kernel&#x27;s vertex-equality tolerance. The edges are listed in traversal order but the wire is broken: there is a 3D gap between consecutive edges. Affects ~5% of &quot;imperfect&quot; Onshape STEP exports per ABC paper.</p></section>
+<p>Edge n&#x27;s end vertex is not edge n+1&#x27;s start vertex; they are positioned at distinct `VERTEX_POINT`s separated by more than the kernel&#x27;s vertex-equality tolerance. The edges are listed in traversal order but the wire is broken: there is a 3D gap between consecutive edges. Affects ~5% of &quot;imperfect&quot; Onshape STEP exports per ABC paper.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>STEP face whose `EDGE_LOOP` enumerates `ORIENTED_EDGE`s in topological order but with vertex `VERTEX_POINT`s separated by a small but &gt;tolerance gap.</p></section>
 <section><h2>Expected kernel behavior</h2>

@@ -28,11 +28,11 @@
 <li>08-occt-gitlog.md G076 (Mantis 0029717), G092 (Mantis 0027781)</li>
 </ul></section>
 <section><h2>Description</h2>
-<p>When a hole-wire-removal pass runs on a face that has been reversed (its normal points the other way), the rebuilt face emerges with mis-oriented wires — the algorithm rebuilt the face from scratch and lost the original wire-orientation context. A related case: when the face carries a non-identity placement transform, the helper face used to project pcurves is built without preserving the placement and pcurves are dropped.</p></section>
+<p>When a hole-wire-removal pass runs on a face that has been reversed (its normal points the other way), the rebuilt face emerges with mis-oriented wires; the algorithm rebuilt the face from scratch and lost the original wire-orientation context. A related case: when the face carries a non-identity placement transform, the helper face used to project pcurves is built without preserving the placement and pcurves are dropped.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>Reversed face containing small (sub-tolerance) hole wire; or located face with sub-tolerance hole wire.</p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>Heal and accept: a same-shape healing / repair pass preserves face orientation and placement context across the rebuild — wires emerge with the same orientation relative to the face, and pcurves survive.</p></section>
+<p>Heal and accept: a same-shape healing / repair pass preserves face orientation and placement context across the rebuild; wires emerge with the same orientation relative to the face, and pcurves survive.</p></section>
 <section><h2>Notes</h2>
 <p>**See also**: Twi044. Synonyms: &quot;small wire removal flips orientation on reversed face&quot;, &quot;hole removal on located face drops pcurves&quot;, &quot;rebuilt face has wrong wire direction after healing&quot;, &quot;FixSmallAreaWire mis-orients on reversed face&quot;, &quot;small-hole removal loses placement transform&quot;.</p></section>
 <section><h2>Expected validation</h2>

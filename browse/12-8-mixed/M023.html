@@ -27,11 +27,11 @@
 <li>FreeCAD `Part / Create shape from mesh`</li>
 </ul></section>
 <section><h2>Description</h2>
-<p>Mesh-to-BRep tools fit `B_SPLINE_SURFACE_WITH_KNOTS` patches per triangle and stitch them; near sharp creases the per-triangle patches&#x27; inner trims cross outside their outer bounds. Common signature: a face whose outer rectangular `FACE_OUTER_BOUND` is a 2×2 square but whose inner triangular `FACE_BOUND` has vertices (e.g. (1,1), (3,1), (2,3)) that extend outside the outer square — a self-intersecting face from mesh-to-NURBS conversion. Output STEP loads but every later Boolean fails.</p></section>
+<p>Mesh-to-BRep tools fit `B_SPLINE_SURFACE_WITH_KNOTS` patches per triangle and stitch them; near sharp creases the per-triangle patches&#x27; inner trims cross outside their outer bounds. Common signature: a face whose outer rectangular `FACE_OUTER_BOUND` is a 2×2 square but whose inner triangular `FACE_BOUND` has vertices (e.g. (1,1), (3,1), (2,3)) that extend outside the outer square; a self-intersecting face from mesh-to-NURBS conversion. Output STEP loads but every later Boolean fails.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>STL with creases &gt; ~30°; sew tolerance ≤ 1e-6; resulting `ADVANCED_FACE` contains pcurves that cross.</p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal — STL→STEP path should emit faceted BRep (`FACETED_BREP`/`OPEN_SHELL`) rather than smooth NURBS, or run self-intersection healing as a final step.</p></section>
+<p>heal; STL→STEP path should emit faceted BRep (`FACETED_BREP`/`OPEN_SHELL`) rather than smooth NURBS, or run self-intersection healing as a final step.</p></section>
 <section><h2>Notes</h2>
 <p>Synonyms: &quot;mesh-to-NURBS inner trim outside outer&quot;, &quot;STL-to-STEP face self-intersects&quot;, &quot;FACE_BOUND extends past outer bound&quot;, &quot;self-intersecting reverse-engineered face&quot;. **See also**: Pf015. **OCC behavior**: the validity-checker does not flag inner-trim-outside-outer-bound on the mesh-to-NURBS face; tier-3 valid-flag should be ignored for this entry. The reader most likely silently fixes or ignores the self-intersecting trim on import.</p></section>
 <section><h2>Expected validation</h2>

@@ -30,7 +30,7 @@
 <li>CAx-IF Tessellated 3D Geometry RP v1.1</li>
 </ul></section>
 <section><h2>Description</h2>
-<p>AP242 supports tessellated geometry via `TESSELLATED_SHAPE_REPRESENTATION`. Tools that re-tessellate from precise B-Rep on receive get a different mesh than the one stored — breaking visual diff, PMI-on-tessellation links, and validation.</p></section>
+<p>AP242 supports tessellated geometry via `TESSELLATED_SHAPE_REPRESENTATION`. Tools that re-tessellate from precise B-Rep on receive get a different mesh than the one stored; breaking visual diff, PMI-on-tessellation links, and validation.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>File containing both precise B-Rep and tessellated repr; on import the kernel discards the tessellation and recomputes.</p></section>
 <section><h2>Expected kernel behavior</h2>

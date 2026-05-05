@@ -28,7 +28,7 @@
 <li>OCCT MANTIS#0031441 (OCCT MANTIS tracker 502 as of 2026-05-02)</li>
 </ul></section>
 <section><h2>Description</h2>
-<p>A solid carries a non-identity location (mirror or scale). When face unification is invoked, the algorithm operates in the local coordinate frame but neglects to propagate the transform when checking surface coincidence — same-domain detection produces false positives between faces that are coincident only after transform but not in object-local coordinates.</p></section>
+<p>A solid carries a non-identity location (mirror or scale). When face unification is invoked, the algorithm operates in the local coordinate frame but neglects to propagate the transform when checking surface coincidence; same-domain detection produces false positives between faces that are coincident only after transform but not in object-local coordinates.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>`MAPPED_ITEM` instancing a closed shell twice via two `AXIS2_PLACEMENT_3D`s — one identity, one a mirror through the YZ plane. Both instances should remain distinct after unification; defective unifier collapses them.</p></section>
 <section><h2>Expected kernel behavior</h2>

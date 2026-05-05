@@ -32,7 +32,7 @@
 <section><h2>Expected kernel behavior</h2>
 <p>surface both timestamps to the user; do not silently prefer one. If a single canonical date must be chosen, define the precedence rule deterministically (e.g. FILE_NAME wins for compatibility) and warn on mismatch.</p></section>
 <section><h2>Notes</h2>
-<p>**See also**: Lh016. **OCC behavior**: silently picks one timestamp without surfacing the conflict; kernel mishandling — the catalog above forbids silent preference. Synonyms: &quot;FILE_INFO contradicts FILE_NAME date&quot;, &quot;two timestamps disagree in header&quot;, &quot;FILE_NAME and FILE_INFO timestamps differ&quot;, &quot;STEP header timestamp conflict&quot;, &quot;Ed.3 FILE_INFO date disagrees&quot;.</p></section>
+<p>**See also**: Lh016. **OCC behavior**: silently picks one timestamp without surfacing the conflict; kernel mishandling; the catalog above forbids silent preference. Synonyms: &quot;FILE_INFO contradicts FILE_NAME date&quot;, &quot;two timestamps disagree in header&quot;, &quot;FILE_NAME and FILE_INFO timestamps differ&quot;, &quot;STEP header timestamp conflict&quot;, &quot;Ed.3 FILE_INFO date disagrees&quot;.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">

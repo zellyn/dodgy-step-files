@@ -28,11 +28,11 @@
 <section><h2>Sender</h2>
 <p>TransMagic Diagnostic Part 2 doc</p></section>
 <section><h2>Description</h2>
-<p>The `VERTEX_POINT` coordinate does not coincide with the curve evaluation at the edge&#x27;s parameter endpoint(s) — wire orientation/snap defect at corners.</p></section>
+<p>The `VERTEX_POINT` coordinate does not coincide with the curve evaluation at the edge&#x27;s parameter endpoint(s); wire orientation/snap defect at corners.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>`EDGE_CURVE` referencing a `LINE` from (0,0,0) to (10,0,0) but with start `VERTEX_POINT` at (0.001, 0.001, 0); offset both ends similarly.</p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal — snap vertex to curve endpoint within tolerance; if outside, mark tolerant edge or reject.</p></section>
+<p>heal; snap vertex to curve endpoint within tolerance; if outside, mark tolerant edge or reject.</p></section>
 <section><h2>Notes</h2>
 <p>**See also**: Gs030, Tfa019, Twi011. Synonyms: &quot;vertex coordinate doesn&#x27;t match curve endpoint&quot;, &quot;corner snap defect at edge ends&quot;, &quot;vertex offset from line by tolerance&quot;, &quot;wire vertex misplaced relative to underlying line&quot;, &quot;endpoint position disagrees with curve evaluation&quot;.</p></section>
 <section><h2>Expected validation</h2>

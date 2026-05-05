@@ -34,7 +34,7 @@
 <section><h2>Reproducer recipe</h2>
 <p>Author a STEP-AP203 file whose HEADER declares `CONFIG_CONTROL_DESIGN`, omit the `PRODUCT`/`PRODUCT_DEFINITION` chain that AUTOMOTIVE_DESIGN tooling expects, but keep a normal `MANIFOLD_SOLID_BREP` payload.</p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>Reject with explicit diagnostic identifying the missing `PRODUCT` parent, or accept successfully. Silent empty result (silent-accept) is the bug — must not silently accept.</p></section>
+<p>Reject with explicit diagnostic identifying the missing `PRODUCT` parent, or accept successfully. Silent empty result (silent-accept) is the bug; must not silently accept.</p></section>
 <section><h2>Notes</h2>
 <p>Synonyms: &quot;CONFIG_CONTROL_DESIGN file with no PRODUCT entity&quot;, &quot;schema variant missing required PRODUCT&quot;, &quot;CCD-only STEP file rejected by readers&quot;.</p></section>
 <section><h2>Expected validation</h2>

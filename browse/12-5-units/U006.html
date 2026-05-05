@@ -29,7 +29,7 @@
 <section><h2>Sender</h2>
 <p>SolidWorks (inch units)</p></section>
 <section><h2>Description</h2>
-<p>PrePoMax recognizes the STEP file as inch and then multiplies coordinates by 25.4, leaving the body 25.4× too large — the conversion is applied where coordinates are already in mm.</p></section>
+<p>PrePoMax recognizes the STEP file as inch and then multiplies coordinates by 25.4, leaving the body 25.4× too large; the conversion is applied where coordinates are already in mm.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>inch SolidWorks STEP with `CONVERSION_BASED_UNIT(&#x27;INCH&#x27;,#lmwu)` and `LENGTH_MEASURE_WITH_UNIT(LENGTH_MEASURE(25.4),#mm)` — coordinates in mm — receiver multiplies by 25.4 again.</p></section>
 <section><h2>Expected kernel behavior</h2>

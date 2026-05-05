@@ -27,13 +27,13 @@
 <li>03-occt-tests.md R075 (`bug28523`)</li>
 </ul></section>
 <section><h2>Description</h2>
-<p>An `ADVANCED_FACE` whose `same_sense` flag is `.F.` while the supporting surface (e.g. a `PLANE` with +Z normal) is itself oriented normally — the face flag inverts the surface normal so the orientation is inverse of the host surface. Healing reverses face orientation, producing negative computed area downstream.</p></section>
+<p>An `ADVANCED_FACE` whose `same_sense` flag is `.F.` while the supporting surface (e.g. a `PLANE` with +Z normal) is itself oriented normally; the face flag inverts the surface normal so the orientation is inverse of the host surface. Healing reverses face orientation, producing negative computed area downstream.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>input with one mis-oriented face that triggers ShapeFix orientation flip.</p></section>
 <section><h2>Expected kernel behavior</h2>
 <p>post-fix invariant check; correct orientation idempotently.</p></section>
 <section><h2>Notes</h2>
-<p>**See also**: Ad043. **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog&#x27;s allowed set ({heal}). Kernel-bug witnessed: catalog asks for healing; OCC neither heals nor rejects — the input is dropped on the floor without diagnostic.</p></section>
+<p>**See also**: Ad043. **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog&#x27;s allowed set ({heal}). Kernel-bug witnessed: catalog asks for healing; OCC neither heals nor rejects; the input is dropped on the floor without diagnostic.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">

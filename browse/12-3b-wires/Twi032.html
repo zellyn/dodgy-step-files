@@ -28,7 +28,7 @@
 <li>09-healing-menus.md H053</li>
 </ul></section>
 <section><h2>Description</h2>
-<p>Periodic face (cylinder, sphere, torus) wrapping U or V needs to be split at the seam into multiple faces — for downstream meshing, parametric trimming, or BSpline conversion. Closed-edge splitting is a sub-step.</p></section>
+<p>Periodic face (cylinder, sphere, torus) wrapping U or V needs to be split at the seam into multiple faces; for downstream meshing, parametric trimming, or BSpline conversion. Closed-edge splitting is a sub-step.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>BRep solid with full cylinder face (one face spans 360°); pass through `ShapeUpgrade_ShapeDivideClosed`.</p></section>
 <section><h2>Expected kernel behavior</h2>

@@ -31,7 +31,7 @@
 <section><h2>Sender</h2>
 <p>Writers whose internal assembly model is flat (one-level), forced to flatten multi-level assembly trees on export</p></section>
 <section><h2>Description</h2>
-<p>The input had a hierarchical assembly: `top → subassembly_A → part_1, part_2; top → subassembly_B → part_3, part_4` represented via `NEXT_ASSEMBLY_USAGE_OCCURRENCE` chains. The re-emitted file flattens to `top → part_1, part_2, part_3, part_4` — semantically wrong, the subassembly grouping is lost. Bug-reporter language: &quot;subassembly structure flattened&quot;, &quot;STEP lost assembly hierarchy&quot;, &quot;all parts now siblings&quot;.</p></section>
+<p>The input had a hierarchical assembly: `top → subassembly_A → part_1, part_2; top → subassembly_B → part_3, part_4` represented via `NEXT_ASSEMBLY_USAGE_OCCURRENCE` chains. The re-emitted file flattens to `top → part_1, part_2, part_3, part_4`; semantically wrong, the subassembly grouping is lost. Bug-reporter language: &quot;subassembly structure flattened&quot;, &quot;STEP lost assembly hierarchy&quot;, &quot;all parts now siblings&quot;.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>a flat NAUO chain `top → part_1, part_2, part_3, part_4` with comment noting the original had two intermediate subassemblies.</p></section>
 <section><h2>Expected kernel behavior</h2>

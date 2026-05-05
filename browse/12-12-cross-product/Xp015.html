@@ -27,11 +27,11 @@
 <li>synthesized cross-product.</li>
 </ul></section>
 <section><h2>Description</h2>
-<p>A face on a `CYLINDRICAL_SURFACE` has a wire that self-intersects in UV near the seam line (u=0 / u=2π). The seam edge is missing — what should be a single edge along the seam appears as two separate edges, neither shared. The pcurve self-intersection happens exactly at u=2π (a parametric ambiguity). All three are interactions between the periodic surface&#x27;s UV space and the wire&#x27;s combinatorics.</p></section>
+<p>A face on a `CYLINDRICAL_SURFACE` has a wire that self-intersects in UV near the seam line (u=0 / u=2π). The seam edge is missing; what should be a single edge along the seam appears as two separate edges, neither shared. The pcurve self-intersection happens exactly at u=2π (a parametric ambiguity). All three are interactions between the periodic surface&#x27;s UV space and the wire&#x27;s combinatorics.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>cylinder, face wire of 4 edges crossing the seam; the crossover is a self-intersection in UV; no seam edge listed.</p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>Heal and accept: seam-edge synthesis policy (synthesize / repair), UV-shift policy (normalize), self-intersection resolution (heal) — all three engage.</p></section>
+<p>Heal and accept: seam-edge synthesis policy (synthesize / repair), UV-shift policy (normalize), self-intersection resolution (heal); all three engage.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">

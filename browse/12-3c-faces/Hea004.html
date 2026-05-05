@@ -26,7 +26,7 @@
 <li>OCCT `ShapeAnalysis_FreeBoundsProperties::CheckContours` (`ShapeAnalysis_FreeBoundsProperties.hxx:133`)</li>
 </ul></section>
 <section><h2>Description</h2>
-<p>An OPEN_SHELL with multiple free bounds (EDGE_LOOPs) where most are smooth but one has measurable defects. A precision parameter controls which contours are flagged for downstream healing (those whose defect magnitude exceeds the precision). Typical fixture: an EDGE_LOOP with a long side decomposed into many sub-segments, with intermediate VERTEX_POINTs wiggling by +/-1e-7 (well below typical tolerance) — sub-precision noise encoded as separate ORIENTED_EDGEs.</p></section>
+<p>An OPEN_SHELL with multiple free bounds (EDGE_LOOPs) where most are smooth but one has measurable defects. A precision parameter controls which contours are flagged for downstream healing (those whose defect magnitude exceeds the precision). Typical fixture: an EDGE_LOOP with a long side decomposed into many sub-segments, with intermediate VERTEX_POINTs wiggling by +/-1e-7 (well below typical tolerance); sub-precision noise encoded as separate ORIENTED_EDGEs.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>As Hea003 with an EDGE_LOOP whose perimeter has sub-precision wiggles (e.g., 13 ORIENTED_EDGEs where 10 sub-segments along one side encode a vertex wiggle of +/-1e-7 in one axis).</p></section>
 <section><h2>Expected kernel behavior</h2>

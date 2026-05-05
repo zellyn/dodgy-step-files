@@ -32,9 +32,9 @@
 <section><h2>Reproducer recipe</h2>
 <p>`#1=ORIENTED_EDGE(&#x27;&#x27;,*,*,#2,.T.); #2=ORIENTED_EDGE(..,#3,.T.); #3=EDGE_CURVE(..);`</p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal-by-traversal — chase ORIENTED_EDGE chains until an EDGE_CURVE is found, composing the orientation flags; never crash.</p></section>
+<p>heal-by-traversal; chase ORIENTED_EDGE chains until an EDGE_CURVE is found, composing the orientation flags; never crash.</p></section>
 <section><h2>Notes</h2>
-<p>The translator&#x27;s edge-loop transfer pass must chase wrapper chains until it finds the underlying `EDGE_CURVE`, composing orientation flags as it descends. Validation observed: silent-empty rather than a crash. Without a PRODUCT chain the transfer never invokes the edge-loop translator; with a wrap chain the receiver silently heals (chases the wrapper). The kernel-mishandling-by-silent-acceptance still demonstrates the defect class — the bare reader&#x27;s malformed-reference handling is not exercised at fixture scale. **See also**: Twi005, Twi006. Synonyms: &quot;edge wraps another edge instead of curve&quot;, &quot;double-wrapped edge reference&quot;, &quot;ORIENTED_EDGE points at another ORIENTED_EDGE&quot;, &quot;indirect edge reference chain&quot;, &quot;wrapper chain in edge topology&quot;.</p></section>
+<p>The translator&#x27;s edge-loop transfer pass must chase wrapper chains until it finds the underlying `EDGE_CURVE`, composing orientation flags as it descends. Validation observed: silent-empty rather than a crash. Without a PRODUCT chain the transfer never invokes the edge-loop translator; with a wrap chain the receiver silently heals (chases the wrapper). The kernel-mishandling-by-silent-acceptance still demonstrates the defect class; the bare reader&#x27;s malformed-reference handling is not exercised at fixture scale. **See also**: Twi005, Twi006. Synonyms: &quot;edge wraps another edge instead of curve&quot;, &quot;double-wrapped edge reference&quot;, &quot;ORIENTED_EDGE points at another ORIENTED_EDGE&quot;, &quot;indirect edge reference chain&quot;, &quot;wrapper chain in edge topology&quot;.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(3) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

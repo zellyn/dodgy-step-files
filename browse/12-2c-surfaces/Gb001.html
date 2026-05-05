@@ -27,15 +27,15 @@
 <li>OCCT Approx_Status.NoApproximation (uncovered class evidence)</li>
 </ul></section>
 <section><h2>Sender</h2>
-<p>deduced — OCCT uncovered-class sweep, Pass C</p></section>
+<p>deduced — OCCT uncovered-class sweep</p></section>
 <section><h2>Description</h2>
-<p>A user requests a B-spline approximation of a non-rational curve (e.g., a polynomial of high degree) within tolerance ε. The approximation algorithm does not converge — the residual remains above ε after the maximum number of refinement iterations. Bug-reporter language: &quot;approximation didn&#x27;t converge&quot;, &quot;B-spline fit failed&quot;, &quot;tolerance too tight for fit&quot;.</p></section>
+<p>A user requests a B-spline approximation of a non-rational curve (e.g., a polynomial of high degree) within tolerance ε. The approximation algorithm does not converge; the residual remains above ε after the maximum number of refinement iterations. Bug-reporter language: &quot;approximation didn&#x27;t converge&quot;, &quot;B-spline fit failed&quot;, &quot;tolerance too tight for fit&quot;.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>A `LINE` evaluated at densely-sampled points; request a B-spline approximation through these points within tolerance below the kernel&#x27;s working precision.</p></section>
 <section><h2>Expected kernel behavior</h2>
 <p>Return the partial result with the achieved residual reported; or reject.</p></section>
 <section><h2>Notes</h2>
-<p>Synonyms: &quot;fit didn&#x27;t converge&quot;. Bytes alone are insufficient to demonstrate this defect — needs sibling input fixture. Tagged provenance_tier: runtime-only. **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog&#x27;s allowed set ({reject}). Kernel-bug witnessed: receivers must reject this fixture per the catalog&#x27;s stated invariant.</p></section>
+<p>Synonyms: &quot;fit didn&#x27;t converge&quot;. Bytes alone are insufficient to demonstrate this defect; needs sibling input fixture. Tagged provenance_tier: runtime-only. **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog&#x27;s allowed set ({reject}). Kernel-bug witnessed: receivers must reject this fixture per the catalog&#x27;s stated invariant.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">

@@ -34,7 +34,7 @@
 <section><h2>Expected kernel behavior</h2>
 <p>reject with `E_DUPLICATE_INSTANCE_ID` before constructing the second instance; never silently overwrite or free-then-reuse.</p></section>
 <section><h2>Notes</h2>
-<p>**See also**: Ad038, Lh024. **OCC behavior**: silently accepts duplicate instance IDs (typically last-write-wins) without diagnostic; kernel mishandling — the catalog above forbids silent overwrite. Synonyms: &quot;duplicate instance ID in DATA&quot;, &quot;#42 defined twice in STEP&quot;, &quot;concatenated STEP files have ID collision&quot;, &quot;two definitions of same #N&quot;, &quot;instance ID overwrites previous&quot;.</p></section>
+<p>**See also**: Ad038, Lh024. **OCC behavior**: silently accepts duplicate instance IDs (typically last-write-wins) without diagnostic; kernel mishandling; the catalog above forbids silent overwrite. Synonyms: &quot;duplicate instance ID in DATA&quot;, &quot;#42 defined twice in STEP&quot;, &quot;concatenated STEP files have ID collision&quot;, &quot;two definitions of same #N&quot;, &quot;instance ID overwrites previous&quot;.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">

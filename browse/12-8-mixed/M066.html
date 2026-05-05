@@ -26,9 +26,9 @@
 <li>OCCT STEPControl_ActorWrite.cxx:992 (&quot;NonManifold COMPSOLID was translated like a set of SOLIDs&quot;) (uncovered class evidence)</li>
 </ul></section>
 <section><h2>Sender</h2>
-<p>deduced — OCCT uncovered-class sweep, Pass C</p></section>
+<p>deduced — OCCT uncovered-class sweep</p></section>
 <section><h2>Description</h2>
-<p>A non-manifold `COMPSOLID` (multiple solids sharing faces) is silently broken into separate `MANIFOLD_SOLID_BREP`s on write — the shared-face topology is lost. Round-tripping the file via OCCT no longer reflects the original non-manifold structure. Bug-reporter language: &quot;compsolid lost&quot;, &quot;non-manifold broken on round-trip&quot;.</p></section>
+<p>A non-manifold `COMPSOLID` (multiple solids sharing faces) is silently broken into separate `MANIFOLD_SOLID_BREP`s on write; the shared-face topology is lost. Round-tripping the file via OCCT no longer reflects the original non-manifold structure. Bug-reporter language: &quot;compsolid lost&quot;, &quot;non-manifold broken on round-trip&quot;.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>Two solids sharing a single face, wrapped in a compsolid; export round-trip.</p></section>
 <section><h2>Expected kernel behavior</h2>

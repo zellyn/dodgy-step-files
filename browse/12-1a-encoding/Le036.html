@@ -35,7 +35,7 @@
 <section><h2>Expected kernel behavior</h2>
 <p>Heal and accept: preserve exact Unicode through encode/decode/storage; emit `\X2\…\X0\` only when the Ed.2 conformance class requires it. Must not silently lose Unicode content.</p></section>
 <section><h2>Notes</h2>
-<p>**See also**: Le022. Provenance tier: requires-sibling-pair — bytes alone cannot demonstrate round-trip loss; the defect is the differential between the input file and the writer&#x27;s output. Demonstrating this requires both an `&lt;id&gt;.input.stp` fixture and the corrupted `&lt;id&gt;.stp` produced by re-export through the lossy XML/DB layer. Synonyms: &quot;X2 content lost in XML round trip&quot;, &quot;Unicode dropped through database layer&quot;, &quot;VARCHAR truncates STEP Unicode&quot;, &quot;STEP characters become question marks after DB store&quot;, &quot;round-trip loses backslash X2 content&quot;.</p></section>
+<p>**See also**: Le022. Provenance tier: requires-sibling-pair; bytes alone cannot demonstrate round-trip loss; the defect is the differential between the input file and the writer&#x27;s output. Demonstrating this requires both an `&lt;id&gt;.input.stp` fixture and the corrupted `&lt;id&gt;.stp` produced by re-export through the lossy XML/DB layer. Synonyms: &quot;X2 content lost in XML round trip&quot;, &quot;Unicode dropped through database layer&quot;, &quot;VARCHAR truncates STEP Unicode&quot;, &quot;STEP characters become question marks after DB store&quot;, &quot;round-trip loses backslash X2 content&quot;.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Provenance tier</h2>

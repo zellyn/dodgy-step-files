@@ -34,9 +34,9 @@
 <section><h2>Reproducer recipe</h2>
 <p>synthesize component STEP with explicit `CONVERSION_BASED_UNIT(&#x27;INCH&#x27;, .., 25.4·MILLIMETRE)`; merge into mm board without unit-aware transformer.</p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal — apply unit conversion at `MAPPED_ITEM` / sub-assembly boundary using each component&#x27;s own `GEOMETRIC_REPRESENTATION_CONTEXT` global units.</p></section>
+<p>heal; apply unit conversion at `MAPPED_ITEM` / sub-assembly boundary using each component&#x27;s own `GEOMETRIC_REPRESENTATION_CONTEXT` global units.</p></section>
 <section><h2>Notes</h2>
-<p>Cross-oracle: pure-Python Part-21 validator accepts (`accept`); OCCT crashes (`signal(11)`). The crash is on the kernel side — the file is spec-conformant Part-21. Synonyms: &quot;KiCad board mm with inch components&quot;, &quot;naive STEP merger ignores per-context unit&quot;, &quot;KiCad component placed at wrong scale&quot;, &quot;vendor STEP inch model into mm board&quot;, &quot;MAPPED_ITEM unit boundary unhandled&quot;.</p></section>
+<p>Cross-oracle: pure-Python Part-21 validator accepts (`accept`); OCCT crashes (`signal(11)`). The crash is on the kernel side; the file is spec-conformant Part-21. Synonyms: &quot;KiCad board mm with inch components&quot;, &quot;naive STEP merger ignores per-context unit&quot;, &quot;KiCad component placed at wrong scale&quot;, &quot;vendor STEP inch model into mm board&quot;, &quot;MAPPED_ITEM unit boundary unhandled&quot;.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a</code></p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">

@@ -34,7 +34,7 @@
 <section><h2>Reproducer recipe</h2>
 <p>`MANIFOLD_SOLID_BREP` of a 10mm cube with a 0.05mm fillet on one edge. Writer emits coordinates rounded to 1e-6; the fillet&#x27;s distinct vertices collapse to one. Receiver sees a degenerate face.</p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal-and-accept — writer chooses precision based on minimum-feature-size, not just bounding box; emit `W_PRECISION_LIMITED` if any pair of distinct vertices would round to the same coordinate at the chosen precision and bump precision automatically.</p></section>
+<p>heal-and-accept; writer chooses precision based on minimum-feature-size, not just bounding box; emit `W_PRECISION_LIMITED` if any pair of distinct vertices would round to the same coordinate at the chosen precision and bump precision automatically.</p></section>
 <section><h2>Notes</h2>
 <p>**See also**: N028, Twi099. Synonyms: &quot;STEP export fail for round part in FreeCAD&quot;, &quot;fillet edges go missing on round-trip&quot;, &quot;writer precision drops sub-mm fillet&quot;, &quot;round part exported as sharp edges&quot;.</p></section>
 <section><h2>Expected validation</h2>

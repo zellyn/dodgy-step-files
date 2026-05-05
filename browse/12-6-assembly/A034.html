@@ -33,7 +33,7 @@
 <section><h2>Reproducer recipe</h2>
 <p>AP214 file with `#27=SHAPE_DEFINITION_REPRESENTATION(#23,#26)` where `#23` is a `SHAPE_ASPECT` instead of `PROPERTY_DEFINITION_SHAPE`.</p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal — skip SDRs whose Definition is not PropertyDefinition; emit warning; never deref blindly.</p></section>
+<p>heal; skip SDRs whose Definition is not PropertyDefinition; emit warning; never deref blindly.</p></section>
 <section><h2>Notes</h2>
 <p>**See also**: A009. Validation observed: silent-empty rather than crash. Kernel-mishandling-by-silent-acceptance still demonstrates the defect class. Synonyms: &quot;CheckSRRReversesNAUO crashes with SHAPE_ASPECT instead of PROPERTY_DEFINITION&quot;, &quot;segfault during assembly check&quot;, &quot;SDR with shape_aspect breaks reader&quot;, &quot;STEP reader null-deref on assembly traversal&quot;.</p></section>
 <section><h2>Expected validation</h2>

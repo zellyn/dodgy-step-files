@@ -32,7 +32,7 @@
 <section><h2>Reproducer recipe</h2>
 <p>Two `ADVANCED_FACE`s sharing an identical `B_SPLINE_CURVE_WITH_KNOTS` geometry but each referencing its own `EDGE_CURVE` and `ORIENTED_EDGE`.</p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal — merge coincident vertices/edges within tolerance; downgrade cracks to gaps then run gap pipeline. After healing, edge ancestor-count = 2 for shared boundaries.</p></section>
+<p>heal; merge coincident vertices/edges within tolerance; downgrade cracks to gaps then run gap pipeline. After healing, edge ancestor-count = 2 for shared boundaries.</p></section>
 <section><h2>Notes</h2>
 <p>**See also**: Tsh042, Twi043. Synonyms: &quot;adjacent faces use different vertices on shared boundary&quot;, &quot;duplicate vertices at face seam&quot;, &quot;topology has cracks despite zero distance&quot;, &quot;two faces meet but share no vertex&quot;, &quot;FaceConnect didn&#x27;t unify boundary vertices&quot;.</p></section>
 <section><h2>Expected validation</h2>

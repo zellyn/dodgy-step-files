@@ -28,7 +28,7 @@
 <li>06-nist-sfa.md S033 (sfa-valprop.tcl:351,942 — missing `unit_component`)</li>
 </ul></section>
 <section><h2>Description</h2>
-<p>Validation properties (volume, surface area, centroid) emitted with measure units that don&#x27;t match the model&#x27;s `GEOMETRIC_REPRESENTATION_CONTEXT` — or with no `unit_component` at all.</p></section>
+<p>Validation properties (volume, surface area, centroid) emitted with measure units that don&#x27;t match the model&#x27;s `GEOMETRIC_REPRESENTATION_CONTEXT`; or with no `unit_component` at all.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>XCAF with validation properties exported in non-mm units while geometry GRC is mm; or `MEASURE_REPRESENTATION_ITEM` with no `unit_component` reference.</p></section>
 <section><h2>Expected kernel behavior</h2>

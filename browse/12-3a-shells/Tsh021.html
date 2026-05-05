@@ -28,11 +28,11 @@
 <li>15-academic.md L012, L047 (Attene 2013)</li>
 </ul></section>
 <section><h2>Description</h2>
-<p>A vertex whose 1-ring is not a single fan — touching cones, bowtie meshes (two fans glued at a single point). Common when two solids touch at exactly one vertex (hourglass).</p></section>
+<p>A vertex whose 1-ring is not a single fan; touching cones, bowtie meshes (two fans glued at a single point). Common when two solids touch at exactly one vertex (hourglass).</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>Two solids that share only one common `VERTEX_POINT`; or hand-construct a face fan-of-fans.</p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal — duplicate the vertex into one copy per fan; topology becomes 2-manifold at cost of vertex count growth.</p></section>
+<p>heal; duplicate the vertex into one copy per fan; topology becomes 2-manifold at cost of vertex count growth.</p></section>
 <section><h2>Notes</h2>
 <p>**See also**: Tsh019. Synonyms: &quot;two solids touch at a single point&quot;, &quot;bowtie geometry pinches at vertex&quot;, &quot;hourglass topology&quot;, &quot;fan of fans at one vertex&quot;, &quot;non-manifold pinch point&quot;.</p></section>
 <section><h2>Expected validation</h2>

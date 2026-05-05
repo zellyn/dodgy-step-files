@@ -29,7 +29,7 @@
 <li>OCCT MANTIS#0029436 (OCCT MANTIS tracker 502 as of 2026-05-02)</li>
 </ul></section>
 <section><h2>Description</h2>
-<p>An &quot;expand compounds&quot; operation flattens nested compounds into a single-level XCAF document. Sub-shapes that carry local `AXIS2_PLACEMENT_3D` locations have those locations dropped during expansion — flattened parts pile up at the world origin.</p></section>
+<p>An &quot;expand compounds&quot; operation flattens nested compounds into a single-level XCAF document. Sub-shapes that carry local `AXIS2_PLACEMENT_3D` locations have those locations dropped during expansion; flattened parts pile up at the world origin.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>Compound containing two `MAPPED_ITEM` instances of one solid at distinct locations. Run expand-compounds; both instances now have identity location.</p></section>
 <section><h2>Expected kernel behavior</h2>

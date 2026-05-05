@@ -27,7 +27,7 @@
 <li>OCCT BRepCheck_Edge.cxx:147, BRepCheck_Wire.cxx:760 (InvalidDegeneratedFlag) (uncovered class evidence)</li>
 </ul></section>
 <section><h2>Sender</h2>
-<p>deduced — OCCT uncovered-class sweep, Pass C</p></section>
+<p>deduced — OCCT uncovered-class sweep</p></section>
 <section><h2>Description</h2>
 <p>An EDGE_CURVE&#x27;s &quot;degenerate&quot; flag is set true (the edge is meant to collapse to a single 3D point — typically a pole on a surface of revolution) but the underlying 3D LINE has positive length between two distinct VERTEX_POINTs. Conversely: a positive-length curve marked as degenerate, or a true pole-edge missing the flag. Typical fixture: an EDGE_CURVE between distinct VERTEX_POINTs (e.g., (0,0,0) and (1,0,0)) on a unit-length LINE with `same_sense=.T.` — the geometry is fine and not degenerate, but a flag elsewhere claims degeneracy. Bug-reporter language: &quot;degenerate flag wrong&quot;, &quot;pole edge not marked&quot;, &quot;zero-length edge marked non-degenerate&quot;, &quot;geometry not actually degenerate&quot;.</p></section>
 <section><h2>Reproducer recipe</h2>

@@ -31,13 +31,13 @@
 <section><h2>Sender</h2>
 <p>Lightweight viewers and web-based CAD tools that internally tessellate on import and have only a tessellation export path</p></section>
 <section><h2>Description</h2>
-<p>A file that arrived at the writer carrying `MANIFOLD_SOLID_BREP` geometry is re-exported as `TESSELLATED_SHELL_REPRESENTATION` (AP242) or as a mesh-of-PLANE faces approximating the original surfaces. The semantic loss is silent — the file is well-formed, but the analytical surfaces are gone. Bug-reporter language: &quot;STEP went from B-rep to mesh&quot;, &quot;lost analytical surfaces on round-trip&quot;, &quot;cylinder became 36 facets&quot;, &quot;STEP file is now triangulated&quot;.</p></section>
+<p>A file that arrived at the writer carrying `MANIFOLD_SOLID_BREP` geometry is re-exported as `TESSELLATED_SHELL_REPRESENTATION` (AP242) or as a mesh-of-PLANE faces approximating the original surfaces. The semantic loss is silent; the file is well-formed, but the analytical surfaces are gone. Bug-reporter language: &quot;STEP went from B-rep to mesh&quot;, &quot;lost analytical surfaces on round-trip&quot;, &quot;cylinder became 36 facets&quot;, &quot;STEP file is now triangulated&quot;.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>a STEP file that contains only `TESSELLATED_SHELL_REPRESENTATION` with triangle list, claiming to represent what was originally a `CYLINDRICAL_SURFACE`.</p></section>
 <section><h2>Expected kernel behavior</h2>
 <p>Warn and accept: detect tessellation-only content and emit a warning that round-trip from this file forward will be mesh-quality only; do not auto-fit (heal) surfaces back from triangles unless explicitly requested.</p></section>
 <section><h2>Notes</h2>
-<p>Schema-version-agnostic — both AP203 and AP242 permit tessellated representations.</p></section>
+<p>Schema-version-agnostic; both AP203 and AP242 permit tessellated representations.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">

@@ -31,7 +31,7 @@
 <section><h2>Sender</h2>
 <p>FreeCAD PartDesign body whose history includes a Boolean Cut whose tool comes from a SubShapeBinder cross-document reference.</p></section>
 <section><h2>Description</h2>
-<p>A body authored as `BasePad → BooleanCut(tool=SubShapeBinder(&#x27;Other_Body.Face&#x27;))` exports a STEP whose `MANIFOLD_SOLID_BREP` contains `ADVANCED_FACE`s with `EDGE_CURVE` references that point to entity numbers existing in the file but whose `EDGE_LOOP` contains an `ORIENTED_EDGE` whose `edge_element` is `*` (asterisk-implicit) without the matching parent definition — in other words, `*`-oriented edges escape into the file body. The receiver attempts to dereference and crashes (PrusaSlicer) or yields empty (FreeCAD self-import).</p></section>
+<p>A body authored as `BasePad → BooleanCut(tool=SubShapeBinder(&#x27;Other_Body.Face&#x27;))` exports a STEP whose `MANIFOLD_SOLID_BREP` contains `ADVANCED_FACE`s with `EDGE_CURVE` references that point to entity numbers existing in the file but whose `EDGE_LOOP` contains an `ORIENTED_EDGE` whose `edge_element` is `*` (asterisk-implicit) without the matching parent definition; in other words, `*`-oriented edges escape into the file body. The receiver attempts to dereference and crashes (PrusaSlicer) or yields empty (FreeCAD self-import).</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>STEP body where one `EDGE_LOOP` contains an `ORIENTED_EDGE(&#x27;&#x27;,*,*,#99,.T.)` referencing `#99` whose `edge_element` is itself `*`.</p></section>
 <section><h2>Expected kernel behavior</h2>

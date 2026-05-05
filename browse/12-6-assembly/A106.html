@@ -31,7 +31,7 @@
 <section><h2>Sender</h2>
 <p>Producers that emit a `PRESENTATION_STYLE_ASSIGNMENT` whose `styles` list is empty (`( )`) — schema-illegal but emitted by some hand-edited fixtures and a handful of legacy translators.</p></section>
 <section><h2>Description</h2>
-<p>A `PRESENTATION_STYLE_ASSIGNMENT` arrives with an empty `styles` list. The translation pass dereferences `styles[0]` without a bounds check and crashes with `SIGSEGV` / Windows access violation. Distinct from Ad117 (dangling reference) — here the list is well-formed but empty.</p></section>
+<p>A `PRESENTATION_STYLE_ASSIGNMENT` arrives with an empty `styles` list. The translation pass dereferences `styles[0]` without a bounds check and crashes with `SIGSEGV` / Windows access violation. Distinct from Ad117 (dangling reference); here the list is well-formed but empty.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>`#100=PRESENTATION_STYLE_ASSIGNMENT(());` referenced from a `STYLED_ITEM`. Reader crashes when translating the styled item.</p></section>
 <section><h2>Expected kernel behavior</h2>

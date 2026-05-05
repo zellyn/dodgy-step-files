@@ -26,7 +26,7 @@
 <li>OCCT `ShapeFix_FixSmallFace::FixStripFace` (`ShapeFix_FixSmallFace.hxx:53`)</li>
 </ul></section>
 <section><h2>Description</h2>
-<p>A face is bounded by two long edges that are confused along their full length (separated by &lt; tolerance) and two tiny end edges. The face is a degenerate sliver — typically the residue of a Boolean-cut subtraction along a feature edge.</p></section>
+<p>A face is bounded by two long edges that are confused along their full length (separated by &lt; tolerance) and two tiny end edges. The face is a degenerate sliver; typically the residue of a Boolean-cut subtraction along a feature edge.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>A face whose outer wire is `(0,0)→(100,0)→(100,1e-3)→(0,1e-3)→(0,0)` — aspect ratio 1e5.</p></section>
 <section><h2>Expected kernel behavior</h2>

@@ -32,7 +32,7 @@
 <section><h2>Reproducer recipe</h2>
 <p>Two `EDGE_CURVE`s sharing a `VERTEX_POINT` whose pcurve evaluations on the same host surface differ by `(ΔU,ΔV) &gt; 1e-3` despite identical 3D endpoints.</p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>reconcile the parametric representation so the wire is connected in UV — snap pcurve endpoints to a common UV value, recompute one pcurve from the other, or reject as malformed if the gap exceeds the kernel&#x27;s working precision.</p></section>
+<p>reconcile the parametric representation so the wire is connected in UV; snap pcurve endpoints to a common UV value, recompute one pcurve from the other, or reject as malformed if the gap exceeds the kernel&#x27;s working precision.</p></section>
 <section><h2>Notes</h2>
 <p>**See also**: Gp026, Twi003. **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog&#x27;s allowed set ({reject}). Kernel-bug witnessed: receivers must reject this fixture per the catalog&#x27;s stated invariant. Synonyms: &quot;2D gap between consecutive edges in wire&quot;, &quot;pcurves disagree at shared vertex in UV&quot;, &quot;wire connected in 3D but open in UV&quot;, &quot;pcurve endpoint mismatch at shared vertex&quot;, &quot;edges share 3D vertex but pcurves diverge&quot;.</p></section>
 <section><h2>Expected validation</h2>

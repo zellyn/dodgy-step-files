@@ -30,7 +30,7 @@
 <section><h2>Sender</h2>
 <p>not sender-specific; observed when a writer normalizes faces using a wrong convention or after an in-place &quot;flip-all-normals&quot; debug op leaks into a release.</p></section>
 <section><h2>Description</h2>
-<p>A topologically closed CLOSED_SHELL whose every constituent face has its supporting surface&#x27;s stored normal pointing into the volume rather than out. Loop orientations are internally consistent with the flipped surface frames, so edge-degree-2 and orientation-coherence checks pass. Kernel accepts the file silently; tier-3 introspection (signed volume integral, ray-cast-from-far-away parity) reveals signed volume is negative — i.e., the &quot;solid&quot; is actually the complement of the intended cube.</p></section>
+<p>A topologically closed CLOSED_SHELL whose every constituent face has its supporting surface&#x27;s stored normal pointing into the volume rather than out. Loop orientations are internally consistent with the flipped surface frames, so edge-degree-2 and orientation-coherence checks pass. Kernel accepts the file silently; tier-3 introspection (signed volume integral, ray-cast-from-far-away parity) reveals signed volume is negative; i.e., the &quot;solid&quot; is actually the complement of the intended cube.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>A unit cube with 8 vertices, 12 line edges, 6 PLANE surfaces. Each PLANE&#x27;s AXIS2_PLACEMENT_3D.axis points toward the cube center rather than away. Each face&#x27;s edge-loop is consistent with that flipped axis. Wrap as MANIFOLD_SOLID_BREP and reference from ADVANCED_BREP_SHAPE_REPRESENTATION.</p></section>
 <section><h2>Expected kernel behavior</h2>

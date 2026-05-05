@@ -27,7 +27,7 @@
 <li>synthesized cross-product.</li>
 </ul></section>
 <section><h2>Description</h2>
-<p>A `RATIONAL_B_SPLINE_CURVE` has a knot vector with two consecutive equal knots not justified by multiplicity; one of its weights is zero (rendering the rational evaluation indeterminate at that pole); and the control polygon has a cusp where two consecutive control points are separated by ~1e-7 — exactly at the OCCT default `Precision:: Confusion()` boundary. Three independent NURBS-quality invariants are violated.</p></section>
+<p>A `RATIONAL_B_SPLINE_CURVE` has a knot vector with two consecutive equal knots not justified by multiplicity; one of its weights is zero (rendering the rational evaluation indeterminate at that pole); and the control polygon has a cusp where two consecutive control points are separated by ~1e-7; exactly at the OCCT default `Precision:: Confusion()` boundary. Three independent NURBS-quality invariants are violated.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>Cubic `(BOUNDED_CURVE() B_SPLINE_CURVE(..) RATIONAL_B_SPLINE_CURVE(..) ..)` with five control points, knot vector `(0,0,0,0,0.5,0.5,1,1,1,1)` (the inner pair is duplicated without justification), weights `(1.0,0.0,1.0,1.0,1.0)`, and CPs `(0,0,0)`, `(1e-7,0,0)`, `(1,0,0)`, `(2,1,0)`, `(3,0,0)`.</p></section>
 <section><h2>Expected kernel behavior</h2>

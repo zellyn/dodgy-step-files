@@ -27,13 +27,13 @@
 <li>04-occt-translation.md (Q061: `RWStepGeom_RWBSplineSurfaceWithKnots.cxx:353-429`)</li>
 </ul></section>
 <section><h2>Description</h2>
-<p>A `B_SPLINE_SURFACE_WITH_KNOTS` V knot vector violates the non-decreasing invariant by containing a strictly descending pair (e.g. `(0.0, 0.6, 0.4, 1.0)` — 0.6 then 0.4). A compliant reader must reject the surface with a diagnostic naming the offending index.</p></section>
+<p>A `B_SPLINE_SURFACE_WITH_KNOTS` V knot vector violates the non-decreasing invariant by containing a strictly descending pair (e.g. `(0.0, 0.6, 0.4, 1.0)`; 0.6 then 0.4). A compliant reader must reject the surface with a diagnostic naming the offending index.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>`B_SPLINE_SURFACE_WITH_KNOTS` whose `v_knots` array contains a value strictly less than the prior value.</p></section>
 <section><h2>Expected kernel behavior</h2>
 <p>reject the surface with a diagnostic naming the offending index; never silently accept.</p></section>
 <section><h2>Notes</h2>
-<p>**See also**: Gn001, Gn003. **OCC behavior**: silently accepts (no diagnostic, empty result); catalog disallows silent-accept. Kernel-bug witnessed: receivers enforcing the spec must reject (or surface a diagnostic) — silent acceptance defeats the catalog&#x27;s stated invariant. Synonyms: &quot;B-spline knots non-monotonic&quot;, &quot;V knot vector strictly descending&quot;, &quot;BSpline surface knot vector not non-decreasing&quot;, &quot;knots violate non-decreasing invariant&quot;, &quot;knot value smaller than prior in BSpline surface&quot;.</p></section>
+<p>**See also**: Gn001, Gn003. **OCC behavior**: silently accepts (no diagnostic, empty result); catalog disallows silent-accept. Kernel-bug witnessed: receivers enforcing the spec must reject (or surface a diagnostic); silent acceptance defeats the catalog&#x27;s stated invariant. Synonyms: &quot;B-spline knots non-monotonic&quot;, &quot;V knot vector strictly descending&quot;, &quot;BSpline surface knot vector not non-decreasing&quot;, &quot;knots violate non-decreasing invariant&quot;, &quot;knot value smaller than prior in BSpline surface&quot;.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">

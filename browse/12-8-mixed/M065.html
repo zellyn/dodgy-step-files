@@ -27,7 +27,7 @@
 <li>OCCT STEPControl_ActorRead.cxx:736 (&quot;Product has both sub-assemblies and directly assigned shape&quot;) (uncovered class evidence)</li>
 </ul></section>
 <section><h2>Sender</h2>
-<p>deduced — OCCT uncovered-class sweep, Pass C</p></section>
+<p>deduced — OCCT uncovered-class sweep</p></section>
 <section><h2>Description</h2>
 <p>A `PRODUCT_DEFINITION` is the parent of one or more NAUO children and *also* has its own `SHAPE_DEFINITION_REPRESENTATION` providing a direct shape. The reader doesn&#x27;t know whether the product&#x27;s geometry is &quot;the assembly&quot; or &quot;the part on its own&quot;. Bug-reporter language: &quot;product is both assembly and part&quot;, &quot;duplicate geometry assignment&quot;.</p></section>
 <section><h2>Reproducer recipe</h2>

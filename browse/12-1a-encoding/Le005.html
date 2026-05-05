@@ -38,7 +38,7 @@
 <section><h2>Expected kernel behavior</h2>
 <p>validate group count and codepoint range; emit `E_BAD_X2_DIRECTIVE` on malformed input; warn-and-best-effort decode the chars present without crashing.</p></section>
 <section><h2>Notes</h2>
-<p>Crash potential when an out-of-range value is fed to a downstream UTF-8 encoder. Validation observed: silent-empty rather than the cited crash — the malformed string in PERSON.name does not reach the downstream UTF-8 encoder at fixture scale; the kernel-mishandling-by-silent-acceptance still demonstrates the defect class. **See also**: Le026, Le032, Le051, Le052, Le053. Synonyms: &quot;X2 UCS-2 escape with three hex digits&quot;, &quot;X2 hex group not multiple of four&quot;, &quot;malformed Unicode escape in PERSON name&quot;, &quot;X2 directive odd-length payload&quot;, &quot;STEP Unicode escape rejects 3-digit group&quot;.</p></section>
+<p>Crash potential when an out-of-range value is fed to a downstream UTF-8 encoder. Validation observed: silent-empty rather than the cited crash; the malformed string in PERSON.name does not reach the downstream UTF-8 encoder at fixture scale; the kernel-mishandling-by-silent-acceptance still demonstrates the defect class. **See also**: Le026, Le032, Le051, Le052, Le053. Synonyms: &quot;X2 UCS-2 escape with three hex digits&quot;, &quot;X2 hex group not multiple of four&quot;, &quot;malformed Unicode escape in PERSON name&quot;, &quot;X2 directive odd-length payload&quot;, &quot;STEP Unicode escape rejects 3-digit group&quot;.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">

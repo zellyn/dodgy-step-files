@@ -26,7 +26,7 @@
 <li>OCCT `ShapeExtend_CompositeSurface::CheckConnectivity` (`ShapeExtend_CompositeSurface.hxx:297`)</li>
 </ul></section>
 <section><h2>Description</h2>
-<p>A RECTANGULAR_COMPOSITE_SURFACE has a 3D gap on the shared boundary between two neighboring patches — patches do not actually touch within the connectivity tolerance. Faces built atop the composite have invalid topology because the surface is not a single continuous manifold.</p></section>
+<p>A RECTANGULAR_COMPOSITE_SURFACE has a 3D gap on the shared boundary between two neighboring patches; patches do not actually touch within the connectivity tolerance. Faces built atop the composite have invalid topology because the surface is not a single continuous manifold.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>Two abutting plane patches whose touching edges should be at U=1 but the second patch&#x27;s origin is at `(1.005,0,0)` instead of `(1,0,0)`.</p></section>
 <section><h2>Expected kernel behavior</h2>

@@ -31,7 +31,7 @@
 <section><h2>Sender</h2>
 <p>FreeCAD when exporting a non-zero-Placement Body directly (workaround: wrap in Compound first).</p></section>
 <section><h2>Description</h2>
-<p>A Body whose document Placement is non-identity (e.g. rotated 45° about Z, translated 100 mm in X) is written out as if the Placement were identity — the writer flattens the model-space coordinates from local-frame coordinates without composing the Placement transform, so the geometry is emitted in body-local coordinates with no `AXIS2_PLACEMENT_3D` carrying the original orientation. Round-tripping into KiCad / FreeCAD itself yields a part at the origin without rotation. Wrapping the Body in a Compound first is the user-side workaround because the Compound has identity placement.</p></section>
+<p>A Body whose document Placement is non-identity (e.g. rotated 45° about Z, translated 100 mm in X) is written out as if the Placement were identity; the writer flattens the model-space coordinates from local-frame coordinates without composing the Placement transform, so the geometry is emitted in body-local coordinates with no `AXIS2_PLACEMENT_3D` carrying the original orientation. Round-tripping into KiCad / FreeCAD itself yields a part at the origin without rotation. Wrapping the Body in a Compound first is the user-side workaround because the Compound has identity placement.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>STEP file with a single `MANIFOLD_SOLID_BREP` whose `SHAPE_REPRESENTATION` `AXIS2_PLACEMENT_3D` is the identity, but the source kernel had a non-identity placement before export.</p></section>
 <section><h2>Expected kernel behavior</h2>

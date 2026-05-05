@@ -30,7 +30,7 @@
 <li>bug-reporter language: &quot;AP242 boss with no protrusion&quot;, &quot;BOSS height zero&quot;, &quot;boss is just an outline&quot;.</li>
 </ul></section>
 <section><h2>Description</h2>
-<p>AP242 `boss` height must be strictly positive (the boss is a *raised* feature). A producer that emits `boss_height=0.0` leaves a feature that adds no material — equivalent to drawing a circular outline on the host face with no extrusion. Receivers diverge: some accept and produce a zero-volume feature that confuses downstream BOM and machining tooling, some reject as malformed, some silently substitute a default height. Bug-reporter language: &quot;BOSS has zero height&quot;, &quot;AP242 boss with no protrusion&quot;, &quot;boss height is zero&quot;.</p></section>
+<p>AP242 `boss` height must be strictly positive (the boss is a *raised* feature). A producer that emits `boss_height=0.0` leaves a feature that adds no material; equivalent to drawing a circular outline on the host face with no extrusion. Receivers diverge: some accept and produce a zero-volume feature that confuses downstream BOM and machining tooling, some reject as malformed, some silently substitute a default height. Bug-reporter language: &quot;BOSS has zero height&quot;, &quot;AP242 boss with no protrusion&quot;, &quot;boss height is zero&quot;.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>a planar host face; a `SHAPE_ASPECT(&#x27;BOSS&#x27;,..)` with `DIMENSIONAL_SIZE` of `boss_diameter=12.0 mm` and `boss_height=0.0 mm`.</p></section>
 <section><h2>Expected kernel behavior</h2>

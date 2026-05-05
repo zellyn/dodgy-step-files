@@ -26,7 +26,7 @@
 <li>OCCT `ShapeAnalysis_CheckSmallFace::CheckSpotFace` (`ShapeAnalysis_CheckSmallFace.hxx:73`)</li>
 </ul></section>
 <section><h2>Description</h2>
-<p>As Tfa041 but emphasizing the diagnostic-only phase: the analyzer must detect the spot classification and emit a structured warning containing the spot&#x27;s 3D location (`Pnt`) before any healer is invoked. Typical fixture: an ADVANCED_FACE whose outer EDGE_LOOP encloses a sub-tolerance area (e.g., a 0.001 x 0.001 mm square at the origin) — same sub-precision spot pattern as Tfa040/Tfa041/Tfa043. Lets users inspect spot positions and decide on tolerance policy.</p></section>
+<p>As Tfa041 but emphasizing the diagnostic-only phase: the analyzer must detect the spot classification and emit a structured warning containing the spot&#x27;s 3D location (`Pnt`) before any healer is invoked. Typical fixture: an ADVANCED_FACE whose outer EDGE_LOOP encloses a sub-tolerance area (e.g., a 0.001 x 0.001 mm square at the origin); same sub-precision spot pattern as Tfa040/Tfa041/Tfa043. Lets users inspect spot positions and decide on tolerance policy.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>As Tfa041 — a sub-precision spot ADVANCED_FACE.</p></section>
 <section><h2>Expected kernel behavior</h2>

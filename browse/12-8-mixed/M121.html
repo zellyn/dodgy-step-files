@@ -29,7 +29,7 @@
 <section><h2>Sender</h2>
 <p>deduced — FEA exporter sorting time-vs-amplitude pairs by amplitude rather than by time</p></section>
 <section><h2>Description</h2>
-<p>A time-varying force is encoded as a paired list of (time, amplitude) tuples whose time component is not monotonically increasing — e.g., `[(0,0), (1,5), (0.5,3), (2,7)]`. A transient solver using these as time-stamped loads either overshoots, walks backwards in time, or fails to interpolate. Bug-reporter language: &quot;AP209 time vector out of order&quot;, &quot;FEM transient load timestamps wrong&quot;, &quot;time history not monotonic&quot;.</p></section>
+<p>A time-varying force is encoded as a paired list of (time, amplitude) tuples whose time component is not monotonically increasing; e.g., `[(0,0), (1,5), (0.5,3), (2,7)]`. A transient solver using these as time-stamped loads either overshoots, walks backwards in time, or fails to interpolate. Bug-reporter language: &quot;AP209 time vector out of order&quot;, &quot;FEM transient load timestamps wrong&quot;, &quot;time history not monotonic&quot;.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>A list of paired `(REAL, REAL)` describing time and load amplitude where the time series goes `0.0, 1.0, 0.5, 2.0`.</p></section>
 <section><h2>Expected kernel behavior</h2>

@@ -35,7 +35,7 @@
 <section><h2>Expected kernel behavior</h2>
 <p>Heal and accept: document destruction releases all internal caches; no shared globals retain entity references between reads. Must not leak memory.</p></section>
 <section><h2>Notes</h2>
-<p>**See also**: A076. Provenance tier: cross-file-state — bytes alone cannot demonstrate this defect; the symptom is monotonic process-RSS growth across many successive reads of any STEP file. Demonstrating this requires the kernel to retain state across documents and an external memory measurement, not a single fixture.</p></section>
+<p>**See also**: A076. Provenance tier: cross-file-state; bytes alone cannot demonstrate this defect; the symptom is monotonic process-RSS growth across many successive reads of any STEP file. Demonstrating this requires the kernel to retain state across documents and an external memory measurement, not a single fixture.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Provenance tier</h2>

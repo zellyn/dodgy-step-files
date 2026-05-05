@@ -34,7 +34,7 @@
 <section><h2>Reproducer recipe</h2>
 <p>a `MANIFOLD_SOLID_BREP` representing a 10x10x10 mm cube (volume 1000 mm³); a `GEOMETRIC_VALIDATION_PROPERTY` with `VOLUME_MEASURE(500.0)` claiming half the actual volume.</p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>compute the validation property at load time and compare to the claimed value; surface the disagreement with both numbers and the offending body. The validation property&#x27;s purpose is exactly this discrepancy — silent acceptance defeats it.</p></section>
+<p>compute the validation property at load time and compare to the claimed value; surface the disagreement with both numbers and the offending body. The validation property&#x27;s purpose is exactly this discrepancy; silent acceptance defeats it.</p></section>
 <section><h2>Notes</h2>
 <p>First entry exercising GEOMETRIC_VALIDATION_PROPERTY for the volume metric. **See also**: Pmi088, Pmi089, M029. Synonyms: &quot;STEP validation volume mismatch&quot;, &quot;round-trip volume drift&quot;, &quot;GEOMETRIC_VALIDATION_PROPERTY claimed volume disagrees with geometry&quot;, &quot;volume validation property mismatch&quot;, &quot;claimed solid volume wrong&quot;.</p></section>
 <section><h2>Expected validation</h2>

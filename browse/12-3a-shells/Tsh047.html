@@ -29,7 +29,7 @@
 <li>OCCT MANTIS#0030174 (OCCT MANTIS tracker 502 as of 2026-05-02)</li>
 </ul></section>
 <section><h2>Description</h2>
-<p>A cylindrical face with a closed seam has been emitted as two half-cylinder faces sharing a seam edge. The kernel&#x27;s face-unification step recognises both carry the same underlying `CYLINDRICAL_SURFACE` and merges them — but in doing so reuses the seam edge as an interior edge, producing a non-manifold result (the seam edge belongs to one merged face but is referenced twice).</p></section>
+<p>A cylindrical face with a closed seam has been emitted as two half-cylinder faces sharing a seam edge. The kernel&#x27;s face-unification step recognises both carry the same underlying `CYLINDRICAL_SURFACE` and merges them; but in doing so reuses the seam edge as an interior edge, producing a non-manifold result (the seam edge belongs to one merged face but is referenced twice).</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>Two `ADVANCED_FACE`s on the same `CYLINDRICAL_SURFACE` (radius R, axis Z), parameter ranges `U=[0,π]` and `U=[π,2π]`, sharing two vertical seam edges along `U=0` and `U=π`. After merging, the seam at `U=0` is preserved but the merged face lists it twice in its outer wire.</p></section>
 <section><h2>Expected kernel behavior</h2>

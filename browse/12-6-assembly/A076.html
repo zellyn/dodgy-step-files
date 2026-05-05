@@ -28,13 +28,13 @@
 <li>OCCT MANTIS#0033641 (OCCT MANTIS tracker 502 as of 2026-05-02)</li>
 </ul></section>
 <section><h2>Description</h2>
-<p>AP242 introduces `GENERAL_PROPERTY` as a generic attribute mechanism — arbitrary key/value pairs attached to products. A STEP reader configured for AP203 silently discards these; even an AP242-aware reader may discard them if its metadata flag is off by default.</p></section>
+<p>AP242 introduces `GENERAL_PROPERTY` as a generic attribute mechanism; arbitrary key/value pairs attached to products. A STEP reader configured for AP203 silently discards these; even an AP242-aware reader may discard them if its metadata flag is off by default.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>AP242 STEP file with `GENERAL_PROPERTY(&#x27;density&#x27;, &#x27;7.85&#x27;)` and `GENERAL_PROPERTY(&#x27;material&#x27;, &#x27;STEEL&#x27;)` attached to one part. Read with default config.</p></section>
 <section><h2>Expected kernel behavior</h2>
 <p>Heal and accept: AP242 reader populates document-level property table from `GENERAL_PROPERTY` entities; default config preserves metadata. Must not silently drop properties.</p></section>
 <section><h2>Notes</h2>
-<p>Provenance tier: runtime-only — kernel drops GENERAL_PROPERTY on import; defect is reader behavior.</p></section>
+<p>Provenance tier: runtime-only; kernel drops GENERAL_PROPERTY on import; defect is reader behavior.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Provenance tier</h2>

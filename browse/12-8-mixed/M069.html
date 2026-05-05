@@ -32,7 +32,7 @@
 <section><h2>Reproducer recipe</h2>
 <p>`TRIANGULATED_FACE` with `pnval = ()` (empty list).</p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>Heal and accept: empty `pnval` is legal — fall back to 3D vertex indices for parameterless meshes; emit synthetic UV when downstream consumers require it.</p></section>
+<p>Heal and accept: empty `pnval` is legal; fall back to 3D vertex indices for parameterless meshes; emit synthetic UV when downstream consumers require it.</p></section>
 <section><h2>Notes</h2>
 <p>Synonyms: &quot;TRIANGULATED_FACE missing pnval&quot;, &quot;AP242 reader rejects empty pnval&quot;, &quot;tessellated face has no parametric indices&quot;, &quot;mesh-only triangulation lacks UV indices&quot;. **See also**: M057.</p></section>
 <section><h2>Expected validation</h2>

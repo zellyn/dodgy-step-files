@@ -27,7 +27,7 @@
 <li>05-occt-shapefix.md F030 (FixWiresTwoCoincEdges)</li>
 </ul></section>
 <section><h2>Description</h2>
-<p>A single wire contains two distinct edges whose 3D and 2D traces coincide within tolerance — both edges describe the same arc, but the wire references them as separate entries. Likely from a failed Boolean or duplicate-injection during translation.</p></section>
+<p>A single wire contains two distinct edges whose 3D and 2D traces coincide within tolerance; both edges describe the same arc, but the wire references them as separate entries. Likely from a failed Boolean or duplicate-injection during translation.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>Wire `[e1, e2, e3, e2&#x27;, e4]` where `e2&#x27;` is geometrically equal to `e2`.</p></section>
 <section><h2>Expected kernel behavior</h2>

@@ -28,7 +28,7 @@
 <li>bug-report patterns &quot;left-hand part imported as right-hand&quot;, &quot;thread direction reversed&quot;, &quot;bracket mirrored after import&quot;</li>
 </ul></section>
 <section><h2>Description</h2>
-<p>An L-shaped bracket whose intended right-hand configuration was mirrored across the X axis during export — every X coordinate was negated. Topology, face count, edge count, and unit context are all unchanged; the part is a valid L-bracket, just the wrong-handed one. For chiral mechanical parts (threads, hand-side brackets, steering linkages) this is a critical defect that the kernel cannot detect from the geometry alone.</p></section>
+<p>An L-shaped bracket whose intended right-hand configuration was mirrored across the X axis during export; every X coordinate was negated. Topology, face count, edge count, and unit context are all unchanged; the part is a valid L-bracket, just the wrong-handed one. For chiral mechanical parts (threads, hand-side brackets, steering linkages) this is a critical defect that the kernel cannot detect from the geometry alone.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>An extruded L-shape with vertices at (0,0), (-1,0), (-1,2), (1,2), (1,1), (0,1) (in z=0 plane), extruded to z=1 — i.e., the X-mirror of the producer&#x27;s intended footprint (0,0), (1,0), (1,2), (-1,2), (-1,1), (0,1).</p></section>
 <section><h2>Expected kernel behavior</h2>

@@ -29,13 +29,13 @@
 <li>09-healing-menus.md (H056)</li>
 </ul></section>
 <section><h2>Description</h2>
-<p>Some legacy receivers accept Bezier (no internal knots) but not arbitrary NURBS. Common shape: a bicubic `B_SPLINE_SURFACE_WITH_KNOTS` with a 6×4 control net and a U knot vector like `(4,1,1,4)` over (0, 0.33, 0.67, 1) — a surface that would split exactly into Bezier patches at the interior knots. A converter must split the B-spline surface at its interior knots into Bezier patches, each with multiplicity = degree+1 at endpoints.</p></section>
+<p>Some legacy receivers accept Bezier (no internal knots) but not arbitrary NURBS. Common shape: a bicubic `B_SPLINE_SURFACE_WITH_KNOTS` with a 6×4 control net and a U knot vector like `(4,1,1,4)` over (0, 0.33, 0.67, 1); a surface that would split exactly into Bezier patches at the interior knots. A converter must split the B-spline surface at its interior knots into Bezier patches, each with multiplicity = degree+1 at endpoints.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>STEP with a degree-3 NURBS surface having two interior knots in U; convert to Bezier — output should be 3 Bezier patches per V-strip.</p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal — exact split at interior knots; preserve continuity across resulting patches; warn if numerical re-fit was needed for rational surfaces.</p></section>
+<p>heal; exact split at interior knots; preserve continuity across resulting patches; warn if numerical re-fit was needed for rational surfaces.</p></section>
 <section><h2>Notes</h2>
-<p>**OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog&#x27;s allowed set ({heal}). Kernel-bug witnessed: catalog asks for healing; OCC neither heals nor rejects — the input is dropped on the floor without diagnostic. Synonyms: &quot;split B-spline surface at interior knots into Bezier patches&quot;, &quot;convert NURBS to Bezier for legacy receiver&quot;, &quot;Bezier conversion needed for downstream tool&quot;, &quot;exact split at interior knots produces Bezier patches&quot;, &quot;legacy receiver expects Bezier not arbitrary NURBS&quot;.</p></section>
+<p>**OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog&#x27;s allowed set ({heal}). Kernel-bug witnessed: catalog asks for healing; OCC neither heals nor rejects; the input is dropped on the floor without diagnostic. Synonyms: &quot;split B-spline surface at interior knots into Bezier patches&quot;, &quot;convert NURBS to Bezier for legacy receiver&quot;, &quot;Bezier conversion needed for downstream tool&quot;, &quot;exact split at interior knots produces Bezier patches&quot;, &quot;legacy receiver expects Bezier not arbitrary NURBS&quot;.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">

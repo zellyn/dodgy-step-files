@@ -29,7 +29,7 @@
 <section><h2>Sender</h2>
 <p>hand-edited or partially-generated files; minimalist exporters (W033 echo)</p></section>
 <section><h2>Description</h2>
-<p>ISO 10303-21 mandates exactly one each of FILE_DESCRIPTION, FILE_NAME, FILE_SCHEMA, in that order. Real files appear with FILE_SCHEMA omitted, FILE_NAME twice, FILE_DESCRIPTION/FILE_NAME swapped, or DATA before HEADER.</p></section>
+<p>ISO 10303-21 requires exactly one each of FILE_DESCRIPTION, FILE_NAME, FILE_SCHEMA, in that order. Real files appear with FILE_SCHEMA omitted, FILE_NAME twice, FILE_DESCRIPTION/FILE_NAME swapped, or DATA before HEADER.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>`HEADER; FILE_NAME(&#x27;a.stp&#x27;,&#x27;..&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;); FILE_DESCRIPTION((&#x27;&#x27;),&#x27;2;1&#x27;); ENDSEC;` (no FILE_SCHEMA); or `ISO-10303-21; DATA; #1=A(); ENDSEC; END-ISO-10303-21;` (no HEADER at all).</p></section>
 <section><h2>Expected kernel behavior</h2>

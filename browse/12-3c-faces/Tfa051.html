@@ -26,7 +26,7 @@
 <li>OCCT `ShapeUpgrade_FaceDivide::Perform` (`ShapeUpgrade_FaceDivide.hxx:73`)</li>
 </ul></section>
 <section><h2>Description</h2>
-<p>A face on a surface with internal C0 knots, large parameter span, or multiple analytic regions. Downstream tools handle smaller pieces better — meshers produce more uniform elements, Booleans avoid the C0 line, fillet engines find tangents. The face-divide pipeline produces a shell of replacement sub-faces.</p></section>
+<p>A face on a surface with internal C0 knots, large parameter span, or multiple analytic regions. Downstream tools handle smaller pieces better; meshers produce more uniform elements, Booleans avoid the C0 line, fillet engines find tangents. The face-divide pipeline produces a shell of replacement sub-faces.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>A square face whose underlying surface has a C0 line at U=0.5; the division must split the face into two sub-faces along that isoline.</p></section>
 <section><h2>Expected kernel behavior</h2>

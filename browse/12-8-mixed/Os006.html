@@ -26,9 +26,9 @@
 <li>OCCT BRepOffset_MakeOffset.cxx:4554 (CannotFuseVertices) (uncovered class evidence)</li>
 </ul></section>
 <section><h2>Sender</h2>
-<p>deduced — OCCT uncovered-class sweep, Pass C</p></section>
+<p>deduced — OCCT uncovered-class sweep</p></section>
 <section><h2>Description</h2>
-<p>Per-edge offset produces a small triangle of &quot;extra&quot; surface near each corner; the algorithm tries to fuse the three (or more) corner vertices into one but fails when the offset distances or local angles disagree. Bug-reporter language: &quot;offset corner gap&quot;, &quot;offset can&#x27;t merge corners&quot;.</p></section>
+<p>Per-edge offset produces a small triangle of &quot;extra&quot; surface near each corner; the algorithm tries to fuse the three (or more) corner vertices into one but fails when the offset distances or local angles disagree.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>A polyhedral solid with one corner vertex of valence 4; request a uniform outward offset.</p></section>
 <section><h2>Expected kernel behavior</h2>

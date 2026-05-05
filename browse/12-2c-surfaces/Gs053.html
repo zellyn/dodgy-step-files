@@ -28,7 +28,7 @@
 <li>OCCT MANTIS#0022492 (OCCT MANTIS tracker 502 as of 2026-05-02)</li>
 </ul></section>
 <section><h2>Description</h2>
-<p>A sphere scaled non-uniformly by `MAPPED_ITEM` is exported as a `B_SPLINE_SURFACE` because the scaled sphere is no longer a sphere. The exporter writes the B-spline but with a parameter range mismatched to the underlying knot vector — re-import shows a partial / clipped sphere.</p></section>
+<p>A sphere scaled non-uniformly by `MAPPED_ITEM` is exported as a `B_SPLINE_SURFACE` because the scaled sphere is no longer a sphere. The exporter writes the B-spline but with a parameter range mismatched to the underlying knot vector; re-import shows a partial / clipped sphere.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>Sphere radius 1.0, scaled by `(2.0, 1.0, 1.0)` (becomes an ellipsoid). Exported as `B_SPLINE_SURFACE`; parameter range declared `[0,1]×[0,1]` but knots span `[0,2π]×[0,π]`.</p></section>
 <section><h2>Expected kernel behavior</h2>

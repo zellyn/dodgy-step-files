@@ -35,7 +35,7 @@
 <section><h2>Expected kernel behavior</h2>
 <p>reject as malformed when a required attribute is `$`; do not silently substitute Z+X defaults because the producer&#x27;s intent is unrecoverable.</p></section>
 <section><h2>Notes</h2>
-<p>AP242 marks `axis` and `ref_direction` as OPTIONAL in the EXPRESS — but most receivers expect both populated when the placement is referenced from a non-trivial geometry context. **OCC behavior**: silently substitutes the Z+X default convention rather than rejecting; this is the kernel mishandling the catalog above forbids.</p></section>
+<p>AP242 marks `axis` and `ref_direction` as OPTIONAL in the EXPRESS; but most receivers expect both populated when the placement is referenced from a non-trivial geometry context. **OCC behavior**: silently substitutes the Z+X default convention rather than rejecting; this is the kernel mishandling the catalog above forbids.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">

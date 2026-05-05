@@ -31,7 +31,7 @@
 <li>22-niche-forums.md</li>
 </ul></section>
 <section><h2>Description</h2>
-<p>An `EDGE_CURVE` whose 3D length is below the kernel&#x27;s working tolerance — both endpoint vertices are nearly coincident. Often the remnant of a translated tangency or an over-trimmed edge. The edge contributes nothing to the topology but its presence in the host wire confuses traversal-order and self-intersection logic.</p></section>
+<p>An `EDGE_CURVE` whose 3D length is below the kernel&#x27;s working tolerance; both endpoint vertices are nearly coincident. Often the remnant of a translated tangency or an over-trimmed edge. The edge contributes nothing to the topology but its presence in the host wire confuses traversal-order and self-intersection logic.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>`EDGE_CURVE` whose two `VERTEX_POINT` `CARTESIAN_POINT`s differ by 1e-9 m on a 1 m part; underlying `LINE` of nominally that length.</p></section>
 <section><h2>Expected kernel behavior</h2>

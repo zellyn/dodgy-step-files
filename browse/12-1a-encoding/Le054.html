@@ -35,9 +35,9 @@
 <section><h2>Reproducer recipe</h2>
 <p>a `PRODUCT.name` whose body contains the bytes `\X\91`, `\X\92`, `\X\80`, `\X\97` — left/right single-quote, Euro, em-dash in Windows-1252; or as raw bytes `0x91 0x92 0x80 0x97` inside an Ed.2-declared file.</p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>surface the ambiguity to the user — name the byte and the page-selection policy. A receiver may treat 0x80.0x9F as Windows-1252 if it documents the policy; or reject on encountering C1 control bytes inside a string body. Silent reinterpretation across vendor policies hides the disagreement.</p></section>
+<p>surface the ambiguity to the user; name the byte and the page-selection policy. A receiver may treat 0x80.0x9F as Windows-1252 if it documents the policy; or reject on encountering C1 control bytes inside a string body. Silent reinterpretation across vendor policies hides the disagreement.</p></section>
 <section><h2>Notes</h2>
-<p>Synonyms: &quot;smart-quote in STEP&quot;, &quot;cp1252 high-bit&quot;, &quot;C1 control byte in string&quot;. **See also**: Le002, Le009. Validation observed: silent acceptance — kernel-mishandling-by-silent-page-reinterpretation demonstrates the defect class.</p></section>
+<p>Synonyms: &quot;smart-quote in STEP&quot;, &quot;cp1252 high-bit&quot;, &quot;C1 control byte in string&quot;. **See also**: Le002, Le009. Validation observed: silent acceptance; kernel-mishandling-by-silent-page-reinterpretation demonstrates the defect class.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">

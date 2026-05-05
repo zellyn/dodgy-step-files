@@ -27,7 +27,7 @@
 <li>17-standards-bodies (M030), 02-caxif (External Reference v3.1 §7.5.2)</li>
 </ul></section>
 <section><h2>Description</h2>
-<p>AP242 supports referencing geometric elements (a specific face, edge) in a separate Part 21 file via `component_path_shape_aspect` / External Element Reference / DDP linking. When the package is repacked or split, the references break — PMI in file A points to a face in file B that no longer exists or has a different ID. Additionally, `component_path_shape_aspect.of_shape.product_definition_shape.definition` must reference the root product_definition; the leaf-end shape_aspect&#x27;s `of_shape.definition` must reference the leaf product_definition. Mid-tree anchors are wrong.</p></section>
+<p>AP242 supports referencing geometric elements (a specific face, edge) in a separate Part 21 file via `component_path_shape_aspect` / External Element Reference / DDP linking. When the package is repacked or split, the references break; PMI in file A points to a face in file B that no longer exists or has a different ID. Additionally, `component_path_shape_aspect.of_shape.product_definition_shape.definition` must reference the root product_definition; the leaf-end shape_aspect&#x27;s `of_shape.definition` must reference the leaf product_definition. Mid-tree anchors are wrong.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>DDP archive where assembly-level PMI in `assembly.stp` references face 47 in `part_3.stp`; rename/re-export `part_3.stp` and the link breaks. Or set `of_shape` to point at L-Bracket-Assembly (intermediate) when it should point at AS1 (root).</p></section>
 <section><h2>Expected kernel behavior</h2>

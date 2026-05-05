@@ -28,7 +28,7 @@
 <li>09-healing-menus.md H099, H100</li>
 </ul></section>
 <section><h2>Description</h2>
-<p>In a face&#x27;s parametric (UV) domain, the outer `EDGE_LOOP`&#x27;s start and end vertices do not coincide within face tolerance, so the contour does not partition the plane (Jordan-curve failure). Typical pattern: face on a `CYLINDRICAL_SURFACE` whose seam edges each carry pcurves referenced via separate `DEFINITIONAL_REPRESENTATION`s that do not align — a gap remains at the u=2π vs u=0 seam between consecutive `ORIENTED_EDGE`s. Caused by missed seam edges on periodic surfaces, or by corrupt pcurves with gaps.</p></section>
+<p>In a face&#x27;s parametric (UV) domain, the outer `EDGE_LOOP`&#x27;s start and end vertices do not coincide within face tolerance, so the contour does not partition the plane (Jordan-curve failure). Typical pattern: face on a `CYLINDRICAL_SURFACE` whose seam edges each carry pcurves referenced via separate `DEFINITIONAL_REPRESENTATION`s that do not align; a gap remains at the u=2π vs u=0 seam between consecutive `ORIENTED_EDGE`s. Caused by missed seam edges on periodic surfaces, or by corrupt pcurves with gaps.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>Face on a cylinder, omit the seam edge so the outer wire is open in UV; renderers fall back to isolines instead of triangulating.</p></section>
 <section><h2>Expected kernel behavior</h2>

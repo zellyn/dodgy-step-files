@@ -33,7 +33,7 @@
 <section><h2>Reproducer recipe</h2>
 <p>`TOROIDAL_SURFACE(&#x27;&#x27;,axis2,major:=10.0,minor:=-2.0)` referenced by an `ADVANCED_FACE`; or major_radius negative and SameSense interpreted by writer as flip.</p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal — interpret negative-radius torus as orientation flip; reject only when the absolute dimensions are physically impossible.</p></section>
+<p>heal; interpret negative-radius torus as orientation flip; reject only when the absolute dimensions are physically impossible.</p></section>
 <section><h2>Notes</h2>
 <p>Recurs across OCCT bug R001 (bug11857) and Mantis 0026376; maintainer-acknowledged orientation pathology in J010. **See also**: Gs036, Tsh035. Synonyms: &quot;torus negative major radius&quot;, &quot;TOROIDAL_SURFACE has negative MajorRadius&quot;, &quot;SolidWorks negative-radius torus orientation marker&quot;, &quot;Pro/E torus with sign-flipped radius&quot;, &quot;torus radius negative encodes face flip&quot;.</p></section>
 <section><h2>Expected validation</h2>

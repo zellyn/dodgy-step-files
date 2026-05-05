@@ -30,7 +30,7 @@
 <section><h2>Sender</h2>
 <p>deduced — exporters where the centroid cache becomes stale after a final translation / placement-flatten step</p></section>
 <section><h2>Description</h2>
-<p>A `GEOMETRIC_VALIDATION_PROPERTY` claims a centroid (a `CARTESIAN_POINT`) for a body; the centroid the receiver computes is at a different location. Common cause: the producer&#x27;s exporter computes the centroid in the body&#x27;s local frame and the file emits the body in a parent-applied placement, but the validation property is in the local frame too — the receiver compares world-frame computed centroid against local-frame claimed centroid. Bug-reporter language: &quot;STEP centroid wrong&quot;, &quot;validation centroid mislocated&quot;, &quot;centroid in wrong frame&quot;.</p></section>
+<p>A `GEOMETRIC_VALIDATION_PROPERTY` claims a centroid (a `CARTESIAN_POINT`) for a body; the centroid the receiver computes is at a different location. Common cause: the producer&#x27;s exporter computes the centroid in the body&#x27;s local frame and the file emits the body in a parent-applied placement, but the validation property is in the local frame too; the receiver compares world-frame computed centroid against local-frame claimed centroid. Bug-reporter language: &quot;STEP centroid wrong&quot;, &quot;validation centroid mislocated&quot;, &quot;centroid in wrong frame&quot;.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>a 10x10x10 mm cube whose `MANIFOLD_SOLID_BREP` is placed at world `(100, 0, 0)`. The body&#x27;s actual centroid is `(105, 5, 5)` in world coordinates. A `GEOMETRIC_VALIDATION_PROPERTY` claims centroid `(5.0, 5.0, 5.0)` (the local-frame value, missing the parent translation).</p></section>
 <section><h2>Expected kernel behavior</h2>

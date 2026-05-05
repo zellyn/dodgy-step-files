@@ -33,9 +33,9 @@
 <section><h2>Reproducer recipe</h2>
 <p>Two `ADVANCED_FACE`s sharing an `EDGE_CURVE` whose `SURFACE_CURVE` contains two pcurves on a non-periodic BSpline surface whose endpoints touch within `Precision::Confusion()`.</p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal — detect the near-periodic surface, treat it as periodic for the seam, and reconcile both pcurves.</p></section>
+<p>heal; detect the near-periodic surface, treat it as periodic for the seam, and reconcile both pcurves.</p></section>
 <section><h2>Notes</h2>
-<p>**See also**: Gs005. **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog&#x27;s allowed set ({heal}). Kernel-bug witnessed: catalog asks for healing; OCC neither heals nor rejects — the input is dropped on the floor without diagnostic. Synonyms: &quot;CATIA cylinder as near-closed B-spline surface&quot;, &quot;two pcurves on non-periodic surface acting like seam&quot;, &quot;near-closed BSpline surface treated as cylinder&quot;, &quot;CATIA like-seam idiom on B-spline&quot;, &quot;shared edge with two pcurves on non-periodic surface&quot;.</p></section>
+<p>**See also**: Gs005. **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog&#x27;s allowed set ({heal}). Kernel-bug witnessed: catalog asks for healing; OCC neither heals nor rejects; the input is dropped on the floor without diagnostic. Synonyms: &quot;CATIA cylinder as near-closed B-spline surface&quot;, &quot;two pcurves on non-periodic surface acting like seam&quot;, &quot;near-closed BSpline surface treated as cylinder&quot;, &quot;CATIA like-seam idiom on B-spline&quot;, &quot;shared edge with two pcurves on non-periodic surface&quot;.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">

@@ -27,7 +27,7 @@
 <li>03-occt-tests.md R054 (bug23567 — `stepfileunits` returned wrong primary unit)</li>
 </ul></section>
 <section><h2>Description</h2>
-<p>The reader API entry point that returns the file&#x27;s length unit reports a unit different from the one the receiver actually applied to coordinates during transfer. Downstream tools that read the reported unit and apply scaling produce wrong geometry — coordinates end up scaled inconsistently with the unit label.</p></section>
+<p>The reader API entry point that returns the file&#x27;s length unit reports a unit different from the one the receiver actually applied to coordinates during transfer. Downstream tools that read the reported unit and apply scaling produce wrong geometry; coordinates end up scaled inconsistently with the unit label.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>STEP with multiple `length_unit` records or with a `LENGTH_UNIT_AND_GLOBAL_UNIT_ASSIGNED_CONTEXT` complex; the file-units query returns an unrelated nested unit.</p></section>
 <section><h2>Expected kernel behavior</h2>

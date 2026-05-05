@@ -30,7 +30,7 @@
 <section><h2>Sender</h2>
 <p>gmsh writing STEP from a once-populated, now-cleared model; OCCT Draw `stepread` followed by `stepwrite`</p></section>
 <section><h2>Description</h2>
-<p>After import-then-partial-clear, the writer emits &quot;No suitable CAD data found&quot; non-deterministically — depends on past actions, not on whether the document currently contains shapes. In OCCT Draw, a `stepread` populates a transient model that the next `stepwrite` re-uses, doubling the output and producing a file twice the expected size.</p></section>
+<p>After import-then-partial-clear, the writer emits &quot;No suitable CAD data found&quot; non-deterministically; depends on past actions, not on whether the document currently contains shapes. In OCCT Draw, a `stepread` populates a transient model that the next `stepwrite` re-uses, doubling the output and producing a file twice the expected size.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>import STEP, `gmsh.model.remove()` some entities, then `gmsh.write(&quot;out.step&quot;)`; or `stepread file.stp sh *` followed by `stepwrite a sh_1 file.stp`.</p></section>
 <section><h2>Expected kernel behavior</h2>

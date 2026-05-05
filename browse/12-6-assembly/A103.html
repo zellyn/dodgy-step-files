@@ -30,11 +30,11 @@
 <section><h2>Sender</h2>
 <p>Authoring tools that emit `STYLED_ITEM` colour assignments at the assembly-occurrence level rather than per-face, or that route colour through `MECHANICAL_DESIGN_PRESENTATION_REPRESENTATION_WITH_DRAUGHTING` which the reader&#x27;s first pass may skip.</p></section>
 <section><h2>Description</h2>
-<p>A STEP file has well-formed `COLOUR_RGB` records and `PRESENTATION_STYLE_ASSIGNMENT`s wired to faces, but the reader&#x27;s `XCAFDoc_ColorTool::SetColor` does not pick them up. The geometry imports cleanly, but the resulting `XCAFDoc_DocumentTool` has no colour assignments at all — every face is the default grey. The producer&#x27;s intent (red shaft, blue housing) is silently lost.</p></section>
+<p>A STEP file has well-formed `COLOUR_RGB` records and `PRESENTATION_STYLE_ASSIGNMENT`s wired to faces, but the reader&#x27;s `XCAFDoc_ColorTool::SetColor` does not pick them up. The geometry imports cleanly, but the resulting `XCAFDoc_DocumentTool` has no colour assignments at all; every face is the default grey. The producer&#x27;s intent (red shaft, blue housing) is silently lost.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>STEP solid with `STYLED_ITEM` referring to `PRESENTATION_STYLE_ASSIGNMENT` containing `SURFACE_STYLE_USAGE` with `SURFACE_SIDE_STYLE` and `SURFACE_STYLE_FILL_AREA` plus `FILL_AREA_STYLE_COLOUR` pointing at `COLOUR_RGB`. Reader imports geometry but no colour reaches XCAF.</p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal-and-accept — every `STYLED_ITEM` whose target resolves to a known shape contributes a colour assignment to XCAF; unresolved styles emit `W_UNREACHED_STYLE` but never silently disappear.</p></section>
+<p>heal-and-accept; every `STYLED_ITEM` whose target resolves to a known shape contributes a colour assignment to XCAF; unresolved styles emit `W_UNREACHED_STYLE` but never silently disappear.</p></section>
 <section><h2>Notes</h2>
 <p>**See also**: A105, A081. Synonyms: &quot;STEP model imported with no colours&quot;, &quot;colours present in file lost on import&quot;, &quot;STYLED_ITEM not reaching XCAFDoc_ColorTool&quot;, &quot;appearance dropped during STEP read&quot;.</p></section>
 <section><h2>Expected validation</h2>

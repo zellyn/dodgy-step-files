@@ -26,7 +26,7 @@
 <li>05-occt-shapefix.md F074 (ShapeFix_Wire.hxx:184-186 ClosedWireMode)</li>
 </ul></section>
 <section><h2>Description</h2>
-<p>An `EDGE_LOOP` is missing the edge that would close it back to its starting vertex — for example three `ORIENTED_EDGE`s forming an L-shape (bottom, right, top, with no closing left edge), so the wire never returns to its start vertex. The fixer&#x27;s default `ClosedWireMode` mis-matches the caller&#x27;s expectation: a closed wire missing one edge gets treated as intentionally open and never repaired.</p></section>
+<p>An `EDGE_LOOP` is missing the edge that would close it back to its starting vertex; for example three `ORIENTED_EDGE`s forming an L-shape (bottom, right, top, with no closing left edge), so the wire never returns to its start vertex. The fixer&#x27;s default `ClosedWireMode` mis-matches the caller&#x27;s expectation: a closed wire missing one edge gets treated as intentionally open and never repaired.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>STEP face whose outer wire has a small gap &gt; tol; pass through `ShapeFix_Wire` with default `ClosedWireMode=Standard_False`.</p></section>
 <section><h2>Expected kernel behavior</h2>

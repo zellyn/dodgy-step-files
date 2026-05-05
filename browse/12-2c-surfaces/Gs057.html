@@ -34,7 +34,7 @@
 <section><h2>Reproducer recipe</h2>
 <p>`#300=RECTANGULAR_COMPOSITE_SURFACE(&#x27;quilt&#x27;,((#101,#201)));` where `#101` and `#201` are SURFACE_PATCH wrappers around BEZIER patches. step-g LoadONBrep stub drops the face that references `#300`.</p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal-and-accept — promote the patch grid to a single `B_SPLINE_SURFACE_WITH_KNOTS` (multiplicity = degree+1 at the internal patch boundaries) and feed the result to the existing BSpline importer; emit `W_RECTANGULAR_COMPOSITE_PROMOTED` so users know the conversion happened.</p></section>
+<p>heal-and-accept; promote the patch grid to a single `B_SPLINE_SURFACE_WITH_KNOTS` (multiplicity = degree+1 at the internal patch boundaries) and feed the result to the existing BSpline importer; emit `W_RECTANGULAR_COMPOSITE_PROMOTED` so users know the conversion happened.</p></section>
 <section><h2>Notes</h2>
 <p>**See also**: Gs058, Gs041, Tfa036, Gn018. Synonyms: &quot;RECTANGULAR_COMPOSITE_SURFACE LoadONBrep stub&quot;, &quot;step-g composite quilt unimplemented&quot;, &quot;patch quilt face dropped&quot;, &quot;promote to NURBS not done&quot;, &quot;BRL-CAD step-g RECTANGULAR_COMPOSITE_SURFACE skipped&quot;.</p></section>
 <section><h2>Expected validation</h2>

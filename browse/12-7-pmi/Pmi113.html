@@ -29,7 +29,7 @@
 <li>CAx-IF Feature-Information Recommended Practices</li>
 </ul></section>
 <section><h2>Description</h2>
-<p>AP242 composite_feature wraps two-or-more sub-features. A producer that emits a composite SHAPE_ASPECT with zero `SHAPE_ASPECT_RELATIONSHIP` records pointing at it leaves an empty composite — semantically meaningless. This typically arises when a source-CAD edit deletes every sub-feature but leaves the composite wrapper alive. Receivers either treat the empty composite as a degenerate single feature, drop the composite entirely, or reject. Bug-reporter language: &quot;empty composite_feature&quot;, &quot;composite with no members&quot;, &quot;AP242 composite has zero sub-features&quot;.</p></section>
+<p>AP242 composite_feature wraps two-or-more sub-features. A producer that emits a composite SHAPE_ASPECT with zero `SHAPE_ASPECT_RELATIONSHIP` records pointing at it leaves an empty composite; semantically meaningless. This typically arises when a source-CAD edit deletes every sub-feature but leaves the composite wrapper alive. Receivers either treat the empty composite as a degenerate single feature, drop the composite entirely, or reject. Bug-reporter language: &quot;empty composite_feature&quot;, &quot;composite with no members&quot;, &quot;AP242 composite has zero sub-features&quot;.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>A `SHAPE_ASPECT(&#x27;composite_feature_empty&#x27;)` with no incoming `SHAPE_ASPECT_RELATIONSHIP` records that name it as parent; explicit descriptive property `composite_member_count = &#x27;0&#x27;`.</p></section>
 <section><h2>Expected kernel behavior</h2>

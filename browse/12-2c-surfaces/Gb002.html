@@ -27,7 +27,7 @@
 <li>OCCT GeomLProp_SLProps (LProp_Status::Undefined) (uncovered class evidence)</li>
 </ul></section>
 <section><h2>Sender</h2>
-<p>deduced — OCCT uncovered-class sweep, Pass C</p></section>
+<p>deduced — OCCT uncovered-class sweep</p></section>
 <section><h2>Description</h2>
 <p>A surface property query (tangent in U, V, or normal) at a specific UV parameter returns &quot;undefined&quot; because the surface partial derivatives vanish there (a pole, a degenerate corner). Bug-reporter language: &quot;surface tangent undefined&quot;, &quot;normal not computable&quot;, &quot;pole on surface&quot;.</p></section>
 <section><h2>Reproducer recipe</h2>
@@ -35,7 +35,7 @@
 <section><h2>Expected kernel behavior</h2>
 <p>Reject with status: return the undefined status to the caller; do not return a NaN or arbitrary unit vector. Must not silently accept.</p></section>
 <section><h2>Notes</h2>
-<p>Common cause of NaN propagation when the caller assumes Defined. Bytes alone are insufficient to demonstrate this defect — needs sibling input fixture. Tagged provenance_tier: runtime-only. Synonyms: &quot;surface tangent undefined&quot;, &quot;normal not computable&quot;, &quot;pole on surface returns LProp_Status.Undefined&quot;, &quot;surface partial derivatives vanish at parameter&quot;, &quot;U-tangent zero at sphere pole&quot;.</p></section>
+<p>Common cause of NaN propagation when the caller assumes Defined. Bytes alone are insufficient to demonstrate this defect; needs sibling input fixture. Tagged provenance_tier: runtime-only. Synonyms: &quot;surface tangent undefined&quot;, &quot;normal not computable&quot;, &quot;pole on surface returns LProp_Status.Undefined&quot;, &quot;surface partial derivatives vanish at parameter&quot;, &quot;U-tangent zero at sphere pole&quot;.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">

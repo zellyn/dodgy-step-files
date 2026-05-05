@@ -30,7 +30,7 @@
 <section><h2>Sender</h2>
 <p>Writers that initialise the product structure tree before geometry is computed and forget to suppress empty trees on export when computation fails or is cancelled</p></section>
 <section><h2>Description</h2>
-<p>The file contains a complete product-structure scaffold (`APPLICATION_CONTEXT`, `PRODUCT`, `PRODUCT_DEFINITION`, `SHAPE_DEFINITION_REPRESENTATION`, `SHAPE_REPRESENTATION`) with all the right cross-references, but the `SHAPE_REPRESENTATION.items` list is empty or contains only placement axes — no `MANIFOLD_SOLID_BREP`, no `SHELL_BASED_SURFACE_MODEL`, no `TESSELLATED_SHELL_REPRESENTATION`. The receiver loads &quot;successfully&quot; but reports zero solids. Bug-reporter language: &quot;STEP file loaded but nothing visible&quot;, &quot;empty model&quot;, &quot;product tree but no geometry&quot;, &quot;ghost STEP file&quot;.</p></section>
+<p>The file contains a complete product-structure scaffold (`APPLICATION_CONTEXT`, `PRODUCT`, `PRODUCT_DEFINITION`, `SHAPE_DEFINITION_REPRESENTATION`, `SHAPE_REPRESENTATION`) with all the right cross-references, but the `SHAPE_REPRESENTATION.items` list is empty or contains only placement axes; no `MANIFOLD_SOLID_BREP`, no `SHELL_BASED_SURFACE_MODEL`, no `TESSELLATED_SHELL_REPRESENTATION`. The receiver loads &quot;successfully&quot; but reports zero solids. Bug-reporter language: &quot;STEP file loaded but nothing visible&quot;, &quot;empty model&quot;, &quot;product tree but no geometry&quot;, &quot;ghost STEP file&quot;.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>full scaffold ending with `SHAPE_REPRESENTATION(&#x27;main&#x27;,(#13),#24)` where `#13` is just an `AXIS2_PLACEMENT_3D` and there is no shape.</p></section>
 <section><h2>Expected kernel behavior</h2>

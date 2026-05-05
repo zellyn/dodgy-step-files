@@ -28,7 +28,7 @@
 <li>W032/CAD Exchanger CHANGES v3.24.12</li>
 </ul></section>
 <section><h2>Description</h2>
-<p>`\N\` toggles a notation context. Generators emit it without the spec-required following digit, or assume it means &quot;newline&quot; (it does not — newlines must be encoded as `\X\0A`). The same defect can also span a physical line break in the source.</p></section>
+<p>`\N\` toggles a notation context. Generators emit it without the spec-required following digit, or assume it means &quot;newline&quot; (it does not; newlines must be encoded as `\X\0A`). The same defect can also span a physical line break in the source.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>`&#x27;line1\N\line2&#x27;` (writer assumed `\N\` == LF).</p></section>
 <section><h2>Expected kernel behavior</h2>

@@ -27,7 +27,7 @@
 <li>18-other-issues.md I019 (OCCT #1024)</li>
 </ul></section>
 <section><h2>Description</h2>
-<p>LeakSanitizer flags allocations originating from the static enum-table initialisation triggered by the STEP/IGES controller constructor — static singletons are retained on shutdown rather than freed at exit.</p></section>
+<p>LeakSanitizer flags allocations originating from the static enum-table initialisation triggered by the STEP/IGES controller constructor; static singletons are retained on shutdown rather than freed at exit.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>Build with LeakSanitizer, initialise the STEP controller, exit cleanly. Observe leak reports for the static enum tables.</p></section>
 <section><h2>Expected kernel behavior</h2>

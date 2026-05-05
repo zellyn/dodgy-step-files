@@ -27,9 +27,9 @@
 <li>OCCT STEPControl_ActorWrite.cxx:1811 (&quot;scaling factor, skipped&quot;) (uncovered class evidence)</li>
 </ul></section>
 <section><h2>Sender</h2>
-<p>deduced — OCCT uncovered-class sweep, Pass C</p></section>
+<p>deduced — OCCT uncovered-class sweep</p></section>
 <section><h2>Description</h2>
-<p>A child component&#x27;s placement transformation includes a non-unit scale factor — typically encoded as DIRECTION ratios with magnitude != 1.0 (e.g., `(2.0, 0.0, 0.0)`) inside an AXIS2_PLACEMENT_3D or ITEM_DEFINED_TRANSFORMATION. The writer drops the scale silently because STEP placements canonically have no scale and DIRECTION should be normalized. The exported file represents the child at the wrong size. Bug-reporter language: &quot;scale factor lost on write&quot;, &quot;STEP doesn&#x27;t preserve scale&quot;, &quot;exported assembly wrong size&quot;, &quot;non-unit DIRECTION encodes hidden scale&quot;.</p></section>
+<p>A child component&#x27;s placement transformation includes a non-unit scale factor; typically encoded as DIRECTION ratios with magnitude != 1.0 (e.g., `(2.0, 0.0, 0.0)`) inside an AXIS2_PLACEMENT_3D or ITEM_DEFINED_TRANSFORMATION. The writer drops the scale silently because STEP placements canonically have no scale and DIRECTION should be normalized. The exported file represents the child at the wrong size. Bug-reporter language: &quot;scale factor lost on write&quot;, &quot;STEP doesn&#x27;t preserve scale&quot;, &quot;exported assembly wrong size&quot;, &quot;non-unit DIRECTION encodes hidden scale&quot;.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>An assembly where a child&#x27;s AXIS2_PLACEMENT_3D references DIRECTION entities with non-unit ratios (e.g., (2.0, 0.0, 0.0) and (0.0, 2.0, 0.0)) implicitly encoding scale 2.0; on write, the scale silently becomes 1.0.</p></section>
 <section><h2>Expected kernel behavior</h2>

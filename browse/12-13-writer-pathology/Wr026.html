@@ -31,13 +31,13 @@
 <section><h2>Sender</h2>
 <p>Writers that include vendor-version strings in `FILE_DESCRIPTION.description` such that downstream readers branch on them</p></section>
 <section><h2>Description</h2>
-<p>The producer writes `FILE_DESCRIPTION((&#x27;CAD-System-X version 12.4.1 build 2026-04-15&#x27;),&#x27;2;1&#x27;)`. Some receivers contain heuristic special-casing keyed on vendor strings — they apply a &quot;fix-up X model&quot; filter only if the vendor string matches. This couples the receiver&#x27;s behaviour to the producer&#x27;s exact wording, so a minor wording change (&quot;CAD-System X&quot; with a space versus &quot;CAD-System-X&quot; with a hyphen) silently disables the fix-up. Bug-reporter language: &quot;STEP file behaves differently after vendor renamed product&quot;, &quot;kernel detects wrong vendor&quot;, &quot;vendor sniffing failed&quot;.</p></section>
+<p>The producer writes `FILE_DESCRIPTION((&#x27;CAD-System-X version 12.4.1 build 2026-04-15&#x27;),&#x27;2;1&#x27;)`. Some receivers contain heuristic special-casing keyed on vendor strings; they apply a &quot;fix-up X model&quot; filter only if the vendor string matches. This couples the receiver&#x27;s behaviour to the producer&#x27;s exact wording, so a minor wording change (&quot;CAD-System X&quot; with a space versus &quot;CAD-System-X&quot; with a hyphen) silently disables the fix-up. Bug-reporter language: &quot;STEP file behaves differently after vendor renamed product&quot;, &quot;kernel detects wrong vendor&quot;, &quot;vendor sniffing failed&quot;.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>a fixture with `FILE_DESCRIPTION((&#x27;CAD-System-X v12.4.1&#x27;),&#x27;2;1&#x27;)` and a comment noting the receiver special-cases the exact spelling.</p></section>
 <section><h2>Expected kernel behavior</h2>
 <p>Heal and accept: normalize / avoid behaviour-altering vendor sniffing; if vendor-specific compatibility is needed, expose it as an explicit user opt-in.</p></section>
 <section><h2>Notes</h2>
-<p>Sender-attribution in `FILE_DESCRIPTION` is a long-standing interop hazard. Bytes alone are insufficient to demonstrate this defect — needs sibling input fixture. Tagged provenance_tier: requires-sibling-pair.</p></section>
+<p>Sender-attribution in `FILE_DESCRIPTION` is a long-standing interop hazard. Bytes alone are insufficient to demonstrate this defect; needs sibling input fixture. Tagged provenance_tier: requires-sibling-pair.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">

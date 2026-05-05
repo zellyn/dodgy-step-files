@@ -26,7 +26,7 @@
 <li>OCCT MANTIS#0028449 (OCCT MANTIS tracker 502 as of 2026-05-02)</li>
 </ul></section>
 <section><h2>Description</h2>
-<p>A GD&amp;T annotation plane on a face has its normal vector pointing into the part rather than out. Reader copies the plane normal from the underlying surface but does not consult the face orientation, so flipped faces produce flipped annotation planes — text appears facing away from viewer.</p></section>
+<p>A GD&amp;T annotation plane on a face has its normal vector pointing into the part rather than out. Reader copies the plane normal from the underlying surface but does not consult the face orientation, so flipped faces produce flipped annotation planes; text appears facing away from viewer.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>Face with reversed orientation (`.F.`); GD&amp;T annotation plane sharing the face&#x27;s surface. Reader produces annotation with normal opposite the face&#x27;s outward direction.</p></section>
 <section><h2>Expected kernel behavior</h2>

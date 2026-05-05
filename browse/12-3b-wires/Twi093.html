@@ -26,7 +26,7 @@
 <li>OCCT MANTIS#0023451 (OCCT MANTIS tracker 502 as of 2026-05-02)</li>
 </ul></section>
 <section><h2>Description</h2>
-<p>A face on a closed surface (cylinder, torus) has a wire that crosses the seam but does not include the seam edge. A seam-reconstruction pass synthesises the missing seam edge — but inserts it through the existing wire path, producing a wire that intersects itself at the synthesised seam.</p></section>
+<p>A face on a closed surface (cylinder, torus) has a wire that crosses the seam but does not include the seam edge. A seam-reconstruction pass synthesises the missing seam edge; but inserts it through the existing wire path, producing a wire that intersects itself at the synthesised seam.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>Cylindrical face, single closed wire that runs from `(U=0, V=0)` to `(U=2π, V=h)` directly. Healer inserts a seam edge at `U=0, V=[0,h]` without reordering the existing wire, creating a figure-eight.</p></section>
 <section><h2>Expected kernel behavior</h2>

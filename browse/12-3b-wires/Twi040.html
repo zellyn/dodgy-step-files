@@ -28,11 +28,11 @@
 <section><h2>Sender</h2>
 <p>any STEP with wires whose pcurve / 3D-curve disagree by `Precision::Confusion()`</p></section>
 <section><h2>Description</h2>
-<p>An `EDGE_CURVE` `LINE` on a `CYLINDRICAL_SURFACE` whose start point is offset from the surface by `Precision::Confusion()`-scale (e.g. line starting at (10.0000001, 0, 0) on a R=10 cylinder while the endpoint `VERTEX_POINT`s lie exactly on R=10), so the edge does not quite lie on the host surface. Until gmsh 4.11 this logged a &quot;Recomputing incorrect OpenCASCADE wire&quot; warning and fixed the wire; from 4.12 the same input throws fatal exceptions on identical surfaces — a tolerance-handling regression.</p></section>
+<p>An `EDGE_CURVE` `LINE` on a `CYLINDRICAL_SURFACE` whose start point is offset from the surface by `Precision::Confusion()`-scale (e.g. line starting at (10.0000001, 0, 0) on a R=10 cylinder while the endpoint `VERTEX_POINT`s lie exactly on R=10), so the edge does not quite lie on the host surface. Until gmsh 4.11 this logged a &quot;Recomputing incorrect OpenCASCADE wire&quot; warning and fixed the wire; from 4.12 the same input throws fatal exceptions on identical surfaces; a tolerance-handling regression.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>STEP with `EDGE_LOOP` whose `EDGE_CURVE` start/end points disagree by ~`Precision::Confusion()` from the surface parametric trace.</p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal — degrade to warning + accept the file with a fudged wire when fix fails, matching pre-4.12 behavior.</p></section>
+<p>heal; degrade to warning + accept the file with a fudged wire when fix fails, matching pre-4.12 behavior.</p></section>
 <section><h2>Notes</h2>
 <p>**See also**: Gs009. Synonyms: &quot;Could not fix wire in surface error&quot;, &quot;edge slightly off cylinder surface&quot;, &quot;gmsh 4.12 throws on tolerance-scale wire deviation&quot;, &quot;edge offset by Precision::Confusion&quot;, &quot;wire fixer regression after OCCT bump&quot;.</p></section>
 <section><h2>Expected validation</h2>

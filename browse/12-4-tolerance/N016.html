@@ -34,7 +34,7 @@
 <section><h2>Reproducer recipe</h2>
 <p>CATIA-emitted STEP with file tolerance 0.0001 mm but specific edges using 0.005 mm tolerance metadata.</p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal — respect per-edge tolerance metadata; do not collapse to a single document tolerance. Tag every edge/vertex with its own tolerance budget.</p></section>
+<p>heal; respect per-edge tolerance metadata; do not collapse to a single document tolerance. Tag every edge/vertex with its own tolerance budget.</p></section>
 <section><h2>Notes</h2>
 <p>**See also**: U028. Synonyms: &quot;CATIA per-edge tolerance much larger than file default&quot;, &quot;edges carry their own precision values&quot;, &quot;shell looks open because reader missed per-edge tolerance&quot;, &quot;global tolerance too tight vs per-edge values&quot;.</p></section>
 <section><h2>Expected validation</h2>

@@ -30,7 +30,7 @@
 <li>CAx-IF Feature-Information Recommended Practices</li>
 </ul></section>
 <section><h2>Description</h2>
-<p>AP242 composite_feature relationships are encoded via `SHAPE_ASPECT_RELATIONSHIP` records linking a parent feature to its sub-features. The graph must be acyclic — a feature cannot be (transitively) its own sub-feature. A producer that emits two composite-membership records (A → B as sub-of-A, B → A as sub-of-B) creates a cycle. Receivers that materialize the feature tree may enter unbounded recursion (kernel hang), detect the cycle and reject, or silently break the cycle at first repeat (silently choosing one resolution). Bug-reporter language: &quot;composite_feature cycle&quot;, &quot;shape_aspect_relationship loop&quot;, &quot;feature is its own ancestor&quot;.</p></section>
+<p>AP242 composite_feature relationships are encoded via `SHAPE_ASPECT_RELATIONSHIP` records linking a parent feature to its sub-features. The graph must be acyclic; a feature cannot be (transitively) its own sub-feature. A producer that emits two composite-membership records (A → B as sub-of-A, B → A as sub-of-B) creates a cycle. Receivers that materialize the feature tree may enter unbounded recursion (kernel hang), detect the cycle and reject, or silently break the cycle at first repeat (silently choosing one resolution). Bug-reporter language: &quot;composite_feature cycle&quot;, &quot;shape_aspect_relationship loop&quot;, &quot;feature is its own ancestor&quot;.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>Two `SHAPE_ASPECT` records (composite_A, composite_B) and two `SHAPE_ASPECT_RELATIONSHIP` records: (relating=A, related=B) and (relating=B, related=A) — the cycle is two records long.</p></section>
 <section><h2>Expected kernel behavior</h2>

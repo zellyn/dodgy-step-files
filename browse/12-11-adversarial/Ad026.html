@@ -28,11 +28,11 @@
 <li>04-occt-translation.md Q023 (composite curve self-cyclic)</li>
 </ul></section>
 <section><h2>Description</h2>
-<p>`#1=(A() B(#1))` — sub-entity references outer instance during construction. Two-phase build that derefs `#1` while still constructing → half-initialised vtable use (UAF in C++).</p></section>
+<p>`#1=(A() B(#1))`; sub-entity references outer instance during construction. Two-phase build that derefs `#1` while still constructing → half-initialised vtable use (UAF in C++).</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>any complex entity whose attributes include `#self`.</p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>Heal and accept: build attribute graph in two passes — allocate placeholder shells first, bind references after. Must not crash or infinite loop.</p></section>
+<p>Heal and accept: build attribute graph in two passes; allocate placeholder shells first, bind references after. Must not crash or infinite loop.</p></section>
 <section><h2>Notes</h2>
 <p>H; hard-to-reach UAF. **See also**: Ad004.</p></section>
 <section><h2>Expected validation</h2>

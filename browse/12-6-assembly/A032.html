@@ -30,9 +30,9 @@
 <section><h2>Reproducer recipe</h2>
 <p>AP242 Ed.2 reader with internal int mapping for `geometric_tolerance_modifier` reads an Ed.3 file.</p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal — compare by string name, not ordinal; detect schema version from `FILE_SCHEMA` and choose mapping accordingly.</p></section>
+<p>heal; compare by string name, not ordinal; detect schema version from `FILE_SCHEMA` and choose mapping accordingly.</p></section>
 <section><h2>Notes</h2>
-<p>**See also**: A030. **OCC behavior**: emits a diagnostic but produces no shape (warn-and-proceed by oracle, but result is empty); outside catalog&#x27;s allowed set ({heal}). Kernel-bug witnessed: catalog asks for healing; OCC neither heals nor rejects — the input is dropped on the floor without diagnostic. Synonyms: &quot;enum order changed between AP242 Ed.2 and Ed.3&quot;, &quot;wrong enum value on schema migration&quot;, &quot;enum reordering between editions breaks file&quot;.</p></section>
+<p>**See also**: A030. **OCC behavior**: emits a diagnostic but produces no shape (warn-and-proceed by oracle, but result is empty); outside catalog&#x27;s allowed set ({heal}). Kernel-bug witnessed: catalog asks for healing; OCC neither heals nor rejects; the input is dropped on the floor without diagnostic. Synonyms: &quot;enum order changed between AP242 Ed.2 and Ed.3&quot;, &quot;wrong enum value on schema migration&quot;, &quot;enum reordering between editions breaks file&quot;.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">

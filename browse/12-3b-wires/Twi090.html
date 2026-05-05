@@ -26,7 +26,7 @@
 <li>OCCT MANTIS#0030927 (OCCT MANTIS tracker 502 as of 2026-05-02)</li>
 </ul></section>
 <section><h2>Description</h2>
-<p>A wire&#x27;s `closed` flag was computed at construction. Subsequent healing replaces one of the wire&#x27;s edges (e.g., to fix a SameRange flag). The new edge connects the same vertices as the old one, so the wire is still closed — but the flag is not recomputed and propagates `closed=false` to downstream consumers (face validity check, STEP exporter).</p></section>
+<p>A wire&#x27;s `closed` flag was computed at construction. Subsequent healing replaces one of the wire&#x27;s edges (e.g., to fix a SameRange flag). The new edge connects the same vertices as the old one, so the wire is still closed; but the flag is not recomputed and propagates `closed=false` to downstream consumers (face validity check, STEP exporter).</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>A four-edge rectangular wire where one straight edge has been replaced by a polyline of two collinear edges joined at a vertex in the middle of the original edge. Wire is still closed; cached `closed_flag` says open.</p></section>
 <section><h2>Expected kernel behavior</h2>

@@ -28,7 +28,7 @@
 <li>synthesized cross-product.</li>
 </ul></section>
 <section><h2>Description</h2>
-<p>`FILE_SCHEMA` declares `CONFIG_CONTROL_DESIGN { 1 0 10303 203 1 1 1 1 }` (AP203). The DATA section contains AP242-only entities (`TESSELLATED_FACE`, `COMPLEX_TRIANGULATED_ SURFACE_SET`). One `ADVANCED_FACE` references `#999` for its `face_geometry` — but `#999` is never defined in the file (forward reference that never resolves). All three are independent failures of the reference-/schema-consistency invariant.</p></section>
+<p>`FILE_SCHEMA` declares `CONFIG_CONTROL_DESIGN { 1 0 10303 203 1 1 1 1 }` (AP203). The DATA section contains AP242-only entities (`TESSELLATED_FACE`, `COMPLEX_TRIANGULATED_ SURFACE_SET`). One `ADVANCED_FACE` references `#999` for its `face_geometry`; but `#999` is never defined in the file (forward reference that never resolves). All three are independent failures of the reference-/schema-consistency invariant.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>AP203 schema in header; DATA contains a `TRIANGULATED_FACE`, an `ADVANCED_FACE` whose `face_geometry` slot is `#999`, and no `#999` definition. Other entities resolve normally.</p></section>
 <section><h2>Expected kernel behavior</h2>

@@ -26,7 +26,7 @@
 <li>OCCT MANTIS#0028471 (OCCT MANTIS tracker 502 as of 2026-05-02)</li>
 </ul></section>
 <section><h2>Description</h2>
-<p>A compound containing several instances of the same shape via different `AXIS2_PLACEMENT_3D`s is processed by a pass that bakes locations into geometry. Each instance is duplicated with its own geometry — shared topology between instances is lost. Memory blows up and downstream feature recognition treats every instance as independent.</p></section>
+<p>A compound containing several instances of the same shape via different `AXIS2_PLACEMENT_3D`s is processed by a pass that bakes locations into geometry. Each instance is duplicated with its own geometry; shared topology between instances is lost. Memory blows up and downstream feature recognition treats every instance as independent.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>Compound of 10 `MAPPED_ITEM`s of one prismatic shape at 10 different translations. After RemoveLocations, geometry is duplicated 10 times.</p></section>
 <section><h2>Expected kernel behavior</h2>

@@ -29,7 +29,7 @@
 <li>OCCT GitHub#981</li>
 </ul></section>
 <section><h2>Description</h2>
-<p>A specific shape-healing internal change (gluing edges with pcurves) introduced regression on a class of input shapes — shapes with edges that have pcurves attached to faces sharing an underlying surface. Post-heal results are valid topology but with wrong pcurve parameterisation. Typical input fixture: two ADVANCED_FACEs on the same PLANE share one EDGE_CURVE whose SURFACE_CURVE has two PCURVE entries with `master_representation = .PCURVE_S1_AND_S2.` but both pcurves are duplicates (identical UV start point, identical direction) instead of representing the two opposite sides.</p></section>
+<p>A specific shape-healing internal change (gluing edges with pcurves) introduced regression on a class of input shapes; shapes with edges that have pcurves attached to faces sharing an underlying surface. Post-heal results are valid topology but with wrong pcurve parameterisation. Typical input fixture: two ADVANCED_FACEs on the same PLANE share one EDGE_CURVE whose SURFACE_CURVE has two PCURVE entries with `master_representation = .PCURVE_S1_AND_S2.` but both pcurves are duplicates (identical UV start point, identical direction) instead of representing the two opposite sides.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>Two ADVANCED_FACEs on the same `PLANE` sharing one EDGE_CURVE that has a SURFACE_CURVE with two duplicate PCURVE entries (.PCURVE_S1_AND_S2.). After glue-edges-with-pcurves, the edge has only one pcurve and references the wrong face&#x27;s parameter frame.</p></section>
 <section><h2>Expected kernel behavior</h2>

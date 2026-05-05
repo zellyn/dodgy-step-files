@@ -30,7 +30,7 @@
 <section><h2>Sender</h2>
 <p>PTC Creo with default relative accuracy</p></section>
 <section><h2>Description</h2>
-<p>Long thin parts (e.g. 2.5 m extrusion with sub-mm helical features) export with visibly warped helical `B_SPLINE_CURVE_WITH_KNOTS` because Creo&#x27;s relative accuracy tessellates surfaces too coarsely on export. Typical signature: a B-spline approximating a tall helix carries only ~16 control points across z=0.2500, the poles zig-zag in x sign and barely move radially — severe under-sampling, far fewer poles per turn than a faithful helix needs. Recommended workaround is absolute accuracy 1e-4 + disable surface simplification.</p></section>
+<p>Long thin parts (e.g. 2.5 m extrusion with sub-mm helical features) export with visibly warped helical `B_SPLINE_CURVE_WITH_KNOTS` because Creo&#x27;s relative accuracy tessellates surfaces too coarsely on export. Typical signature: a B-spline approximating a tall helix carries only ~16 control points across z=0.2500, the poles zig-zag in x sign and barely move radially; severe under-sampling, far fewer poles per turn than a faithful helix needs. Recommended workaround is absolute accuracy 1e-4 + disable surface simplification.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>Author a 2500 mm shaft with a 0.5 mm-pitch helical thread feature in Creo at default (relative) accuracy; export to STEP.</p></section>
 <section><h2>Expected kernel behavior</h2>

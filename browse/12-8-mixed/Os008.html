@@ -26,9 +26,9 @@
 <li>OCCT BRepOffset_MakeOffset.cxx:880 (MixedConnectivity) (uncovered class evidence)</li>
 </ul></section>
 <section><h2>Sender</h2>
-<p>deduced — OCCT uncovered-class sweep, Pass C</p></section>
+<p>deduced — OCCT uncovered-class sweep</p></section>
 <section><h2>Description</h2>
-<p>Two faces meet along a shared edge that is C0 (a sharp crease) on part of its length and G1 (smooth) on the rest. Offset must produce different surface types for each subsection. Bug-reporter language: &quot;mixed connectivity offset&quot;, &quot;edge partly smooth partly sharp&quot;.</p></section>
+<p>Two faces meet along a shared edge that is C0 (a sharp crease) on part of its length and G1 (smooth) on the rest. Offset must produce different surface types for each subsection.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>Two B-spline faces sharing an edge whose tangent jump is zero on `t∈[0,0.5]` and non-zero on `t∈[0.5,1]`.</p></section>
 <section><h2>Expected kernel behavior</h2>

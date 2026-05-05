@@ -26,13 +26,13 @@
 <li>W033 (CAD Exchanger CHANGES v3.24.13).</li>
 </ul></section>
 <section><h2>Description</h2>
-<p>STEP file with `MANIFOLD_SOLID_BREP` data but no `PRODUCT`, `PRODUCT_DEFINITION`, or `SHAPE_DEFINITION_REPRESENTATION` — common in minimalist exporters and many open-source / hobbyist tools.</p></section>
+<p>STEP file with `MANIFOLD_SOLID_BREP` data but no `PRODUCT`, `PRODUCT_DEFINITION`, or `SHAPE_DEFINITION_REPRESENTATION`; common in minimalist exporters and many open-source / hobbyist tools.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>bare `ADVANCED_BREP_SHAPE_REPRESENTATION` with no `PRODUCT_DEFINITION_SHAPE` reference.</p></section>
 <section><h2>Expected kernel behavior</h2>
 <p>synthesize default product wrapper; warn.</p></section>
 <section><h2>Notes</h2>
-<p>**See also**: A003. **OCC behavior**: emits a diagnostic but produces no shape (warn-and-proceed by oracle, but result is empty); outside catalog&#x27;s allowed set ({heal}). Kernel-bug witnessed: catalog asks for healing; OCC neither heals nor rejects — the input is dropped on the floor without diagnostic. Synonyms: &quot;minimal STEP has no PRODUCT entity&quot;, &quot;implicit product structure missing&quot;, &quot;file lacks any product definition&quot;, &quot;geometry-only STEP without metadata&quot;.</p></section>
+<p>**See also**: A003. **OCC behavior**: emits a diagnostic but produces no shape (warn-and-proceed by oracle, but result is empty); outside catalog&#x27;s allowed set ({heal}). Kernel-bug witnessed: catalog asks for healing; OCC neither heals nor rejects; the input is dropped on the floor without diagnostic. Synonyms: &quot;minimal STEP has no PRODUCT entity&quot;, &quot;implicit product structure missing&quot;, &quot;file lacks any product definition&quot;, &quot;geometry-only STEP without metadata&quot;.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">

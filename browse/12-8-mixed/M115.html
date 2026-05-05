@@ -29,7 +29,7 @@
 <section><h2>Sender</h2>
 <p>deduced — FEA preprocessor inverting weights when distributing through a coupling element</p></section>
 <section><h2>Description</h2>
-<p>A `NODE_WITH_FORCE` is part of a distributed load whose per-node weights include negative values, e.g. weights `(0.6, 0.6, -0.2)` summing to 1.0 — the distribution forces a *pulling* contribution at the third node when the resultant force is downward. While the resultant is preserved, the local load shape is unphysical and stress concentrations appear at the negative-weight node. Bug-reporter language: &quot;AP209 negative load weight&quot;, &quot;FEM unphysical distribution&quot;, &quot;node pulled instead of pushed&quot;.</p></section>
+<p>A `NODE_WITH_FORCE` is part of a distributed load whose per-node weights include negative values, e.g. weights `(0.6, 0.6, -0.2)` summing to 1.0; the distribution forces a *pulling* contribution at the third node when the resultant force is downward. While the resultant is preserved, the local load shape is unphysical and stress concentrations appear at the negative-weight node. Bug-reporter language: &quot;AP209 negative load weight&quot;, &quot;FEM unphysical distribution&quot;, &quot;node pulled instead of pushed&quot;.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>Three `NODE_WITH_FORCE` entries with force distribution factors `0.6, 0.6, -0.2`.</p></section>
 <section><h2>Expected kernel behavior</h2>

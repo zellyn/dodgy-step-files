@@ -27,9 +27,9 @@
 <li>OCCT BRepCheck_Face.cxx:100 (NoSurface) (uncovered class evidence)</li>
 </ul></section>
 <section><h2>Sender</h2>
-<p>deduced — OCCT uncovered-class sweep, Pass C</p></section>
+<p>deduced — OCCT uncovered-class sweep</p></section>
 <section><h2>Description</h2>
-<p>An `ADVANCED_FACE` is declared but its `face_geometry` slot is null or references a non-existent entity. The face has bounding wires but nothing to bound — there is no surface in 3D for the face to lie on. Bug-reporter language: &quot;face has no surface&quot;, &quot;face_geometry missing&quot;, &quot;kernel can&#x27;t compute face area&quot;.</p></section>
+<p>An `ADVANCED_FACE` is declared but its `face_geometry` slot is null or references a non-existent entity. The face has bounding wires but nothing to bound; there is no surface in 3D for the face to lie on. Bug-reporter language: &quot;face has no surface&quot;, &quot;face_geometry missing&quot;, &quot;kernel can&#x27;t compute face area&quot;.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>`ADVANCED_FACE` with `face_geometry = $` (omitted/null) but a non-empty `bounds` list.</p></section>
 <section><h2>Expected kernel behavior</h2>

@@ -31,7 +31,7 @@
 <section><h2>Reproducer recipe</h2>
 <p>Apply a chain of 50 Boolean operations to a Manifold mesh; query `GetEpsilon()` between operations; observe monotone growth.</p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal — track per-mesh ε explicitly; expose to caller; refuse Boolean when ε exceeds a fraction of model size.</p></section>
+<p>heal; track per-mesh ε explicitly; expose to caller; refuse Boolean when ε exceeds a fraction of model size.</p></section>
 <section><h2>Notes</h2>
 <p>**See also**: Pf021, Pf023. Synonyms: &quot;epsilon grows past input scale&quot;, &quot;Manifold validity epsilon balloons&quot;, &quot;cumulative transform error inflates epsilon&quot;, &quot;boolean unstable after epsilon grew&quot;.</p></section>
 <section><h2>Expected validation</h2>

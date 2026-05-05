@@ -27,7 +27,7 @@
 <li>16-iso-spec AP242 §ROUND_HOLE</li>
 </ul></section>
 <section><h2>Description</h2>
-<p>AP242 ROUND_HOLE carries a `depth` or `through_depth` attribute. A producer that copies a hole feature from a thicker design without updating the depth emits a hole deeper than the material thickness — geometrically the hole exits the back face but is encoded as a blind hole. Receivers that simulate hole removal compute either a non-watertight result or an error.</p></section>
+<p>AP242 ROUND_HOLE carries a `depth` or `through_depth` attribute. A producer that copies a hole feature from a thicker design without updating the depth emits a hole deeper than the material thickness; geometrically the hole exits the back face but is encoded as a blind hole. Receivers that simulate hole removal compute either a non-watertight result or an error.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>SHAPE_ASPECT `&#x27;round_hole&#x27;` with DIMENSIONAL_SIZE(`&#x27;distance&#x27;`) of 50.0mm in a host part 5mm thick.</p></section>
 <section><h2>Expected kernel behavior</h2>

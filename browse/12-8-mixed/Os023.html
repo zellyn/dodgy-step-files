@@ -27,9 +27,9 @@
 <li>OCCT BRepOffsetAPI_MakeThickSolid (uncovered class evidence)</li>
 </ul></section>
 <section><h2>Sender</h2>
-<p>deduced — OCCT uncovered-class sweep, Pass C</p></section>
+<p>deduced — OCCT uncovered-class sweep</p></section>
 <section><h2>Description</h2>
-<p>A thin shell is &quot;thickened&quot; inward by a distance that causes the inner offset surface to self-intersect — the inner surfaces from neighbouring faces collide. Bug-reporter language: &quot;thicken self-intersects&quot;, &quot;thickening too much&quot;, &quot;shell thickness exceeds local diameter&quot;.</p></section>
+<p>A thin shell is &quot;thickened&quot; inward by a distance that causes the inner offset surface to self-intersect; the inner surfaces from neighbouring faces collide. Bug-reporter language: &quot;thicken self-intersects&quot;, &quot;thickening too much&quot;, &quot;shell thickness exceeds local diameter&quot;.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>A small cylindrical hole of radius 5 mm in a plate; request inward thickening of 10 mm (more than the hole diameter).</p></section>
 <section><h2>Expected kernel behavior</h2>

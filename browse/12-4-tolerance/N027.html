@@ -27,11 +27,11 @@
 <li>22-niche-forums Y012 (gmsh #3288, #2571)</li>
 </ul></section>
 <section><h2>Description</h2>
-<p>gmsh user sets `Geometry.OCCTargetUnit = &quot;M&quot;`, but a STEP `CYLINDRICAL_SURFACE` of r=1 h=10 in MILLI-METRE units gets imported as r=1000 h=10000 (the ×1000 scaling is applied unexpectedly). Common signature: a small 1 mm-radius cylinder with vertex coordinates like (0, 0.001, 0) and declared `UNCERTAINTY_MEASURE_WITH_UNIT` 1e-6 mm — relative precision is at the working-tolerance boundary, so any unit conversion glitch is immediately visible. The setting is honored when the file enters via `importShapes` but skipped when via `importShapesNativePointer`. Different geometries from the same producer require different `OCCTargetUnit` values to mesh.</p></section>
+<p>gmsh user sets `Geometry.OCCTargetUnit = &quot;M&quot;`, but a STEP `CYLINDRICAL_SURFACE` of r=1 h=10 in MILLI-METRE units gets imported as r=1000 h=10000 (the ×1000 scaling is applied unexpectedly). Common signature: a small 1 mm-radius cylinder with vertex coordinates like (0, 0.001, 0) and declared `UNCERTAINTY_MEASURE_WITH_UNIT` 1e-6 mm; relative precision is at the working-tolerance boundary, so any unit conversion glitch is immediately visible. The setting is honored when the file enters via `importShapes` but skipped when via `importShapesNativePointer`. Different geometries from the same producer require different `OCCTargetUnit` values to mesh.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>STEP with `LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.)`; load via OCC C++ then hand to gmsh via pointer interface.</p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal — always apply target-unit conversion at the OCC→consumer boundary, regardless of the entry path.</p></section>
+<p>heal; always apply target-unit conversion at the OCC→consumer boundary, regardless of the entry path.</p></section>
 <section><h2>Notes</h2>
 <p>Synonyms: &quot;gmsh OCCTargetUnit silently ignored&quot;, &quot;small mm cylinder imported with x1000 scale&quot;, &quot;different geometries need different OCCTargetUnit settings&quot;, &quot;importShapesNativePointer skips unit conversion&quot;.</p></section>
 <section><h2>Expected validation</h2>

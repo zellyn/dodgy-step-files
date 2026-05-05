@@ -31,11 +31,11 @@
 <section><h2>Sender</h2>
 <p>Producers that emit chains of segments stitched into a single basis — common in fillet round-corner basis where each fillet quadrant is a separate composite segment.</p></section>
 <section><h2>Description</h2>
-<p>A topology entity whose underlying basis is a `COMPOSITE_CURVE_ON_SURFACE` (a chain of `COMPOSITE_CURVE_SEGMENT`s, each carrying a transition_code, all laid out on one host) loses both its 3D geometry and its endpoint resolution: the LoadONBrep stub in `CompositeCurveOnSurface.cpp` returns false, the inherited PointAtStart/PointAtEnd stubs in `CompositeCurve.cpp` return null, and the ON_Brep ends up with a zero-length trim. Distinct from Gs054 (composite segment self-cyclic — a graph-cycle defect) and Gs037 (offset-of-extrusion iso failure): this is the wholesale unimplemented dispatch.</p></section>
+<p>A topology entity whose underlying basis is a `COMPOSITE_CURVE_ON_SURFACE` (a chain of `COMPOSITE_CURVE_SEGMENT`s, each carrying a transition_code, all laid out on one host) loses both its 3D geometry and its endpoint resolution: the LoadONBrep stub in `CompositeCurveOnSurface.cpp` returns false, the inherited PointAtStart/PointAtEnd stubs in `CompositeCurve.cpp` return null, and the ON_Brep ends up with a zero-length trim. Distinct from Gs054 (composite segment self-cyclic, a graph-cycle defect) and Gs037 (offset-of-extrusion iso failure): this is the wholesale unimplemented dispatch.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>`#80=COMPOSITE_CURVE_ON_SURFACE(&#x27;chain&#x27;,(#70,#71),.U.);` referenced from a topology entity; step-g stubs out.</p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal-and-accept — the importer must walk the segment list, reconstruct each segment, and concatenate them into a single ON_BrepTrim; if unhandled emit `W_COMPOSITE_CURVE_ON_SURFACE_FALLBACK` and either project to 3D or reject with a precise diagnostic.</p></section>
+<p>heal-and-accept; the importer must walk the segment list, reconstruct each segment, and concatenate them into a single ON_BrepTrim; if unhandled emit `W_COMPOSITE_CURVE_ON_SURFACE_FALLBACK` and either project to 3D or reject with a precise diagnostic.</p></section>
 <section><h2>Notes</h2>
 <p>**See also**: Gs054, Gs037, Tfa036. Synonyms: &quot;COMPOSITE_CURVE_ON_SURFACE LoadONBrep stub&quot;, &quot;step-g drops composite-curve-on-surface&quot;, &quot;composite basis unimplemented&quot;, &quot;PointAtStart not implemented for composite&quot;, &quot;fillet quadrant chain dropped from STEP import&quot;.</p></section>
 <section><h2>Expected validation</h2>

@@ -38,7 +38,7 @@
 <section><h2>Reproducer recipe</h2>
 <p>a `SEAM_CURVE` referenced from a cylinder host; step-g&#x27;s `SeamCurve::LoadONBrep` stub returns false and the seam geometry is lost.</p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>reject — every stubbed dispatch must escalate to a `STEP_LOAD_ERROR` that propagates to the top-level converter; the converter must exit non-zero when any subgraph reachable from a referenced `ADVANCED_BREP_SHAPE_REPRESENTATION` returned false. Distinct from In013 (the kernel-actor &quot;no actor&quot; case): here the actor exists but is a stub.</p></section>
+<p>reject; every stubbed dispatch must escalate to a `STEP_LOAD_ERROR` that propagates to the top-level converter; the converter must exit non-zero when any subgraph reachable from a referenced `ADVANCED_BREP_SHAPE_REPRESENTATION` returned false. Distinct from In013 (the kernel-actor &quot;no actor&quot; case): here the actor exists but is a stub.</p></section>
 <section><h2>Notes</h2>
 <p>**See also**: Gn038, Twi100, Twi101, Gs057, Gs058, U045, In013, Pf037. Synonyms: &quot;step-g LoadONBrep not implemented umbrella&quot;, &quot;virtual-dispatch fall-through silently drops geometry&quot;, &quot;stderr-only diagnostic for missing subtype&quot;, &quot;BRL-CAD step-g cannot escalate stub-misses to error&quot;.</p></section>
 <section><h2>Expected validation</h2>

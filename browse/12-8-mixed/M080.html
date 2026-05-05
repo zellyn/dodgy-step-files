@@ -30,7 +30,7 @@
 <section><h2>Sender</h2>
 <p>deduced — FEA exporter mixing engineering and SI conventions</p></section>
 <section><h2>Description</h2>
-<p>An elastic-property `MEASURE_WITH_UNIT` for Young&#x27;s modulus carries the numeric value `200000.0` (the canonical mm-MPa value for steel) in a context whose unit is Pascals (SI). Imported as Pa, the modulus is 200 kPa instead of 200 GPa — six orders of magnitude too soft. Bug-reporter language: &quot;FEM material 1e6× wrong&quot;, &quot;modulus imported as Pa not MPa&quot;, &quot;AP209 material units off by million&quot;.</p></section>
+<p>An elastic-property `MEASURE_WITH_UNIT` for Young&#x27;s modulus carries the numeric value `200000.0` (the canonical mm-MPa value for steel) in a context whose unit is Pascals (SI). Imported as Pa, the modulus is 200 kPa instead of 200 GPa; six orders of magnitude too soft. Bug-reporter language: &quot;FEM material 1e6× wrong&quot;, &quot;modulus imported as Pa not MPa&quot;, &quot;AP209 material units off by million&quot;.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>`MEASURE_WITH_UNIT(POSITIVE_RATIO_MEASURE(200000.0), derived_unit_in_pascals)` paired with a context whose `LENGTH_UNIT` is metre.</p></section>
 <section><h2>Expected kernel behavior</h2>

@@ -34,7 +34,7 @@
 <section><h2>Reproducer recipe</h2>
 <p>STEP file with two distinct `APPLICATION_CONTEXT` records. Parser accepts; `STEPCAFControl_Reader::Transfer` returns false. Document is empty.</p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal-and-accept — transfer pass tolerates multiple `APPLICATION_CONTEXT` records by matching on string content; emit `W_DUPLICATE_APPLICATION_CONTEXT` and proceed. Parser-OK + empty-document is a contract violation.</p></section>
+<p>heal-and-accept; transfer pass tolerates multiple `APPLICATION_CONTEXT` records by matching on string content; emit `W_DUPLICATE_APPLICATION_CONTEXT` and proceed. Parser-OK + empty-document is a contract violation.</p></section>
 <section><h2>Notes</h2>
 <p>**See also**: M165, A067. Synonyms: &quot;error transferring STEP model to OCAF document&quot;, &quot;STEPCAFControl_Reader Transfer returns false&quot;, &quot;parser succeeds but transfer fails&quot;, &quot;duplicate APPLICATION_CONTEXT breaks transfer&quot;.</p></section>
 <section><h2>Expected validation</h2>

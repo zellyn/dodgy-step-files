@@ -27,7 +27,7 @@
 <li>synthesized time-bomb.</li>
 </ul></section>
 <section><h2>Description</h2>
-<p>`UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.0), ..)` declares zero tolerance. A receiver that uses the declared value verbatim performs exact-equality comparisons — any sub-bit drift is a &quot;real&quot; defect. A receiver that floors the working tolerance at `Precision::Confusion()` silently substitutes 1e-7 and behaves identically to a normal file. The zero declaration is a producer&#x27;s request for exact arithmetic that may or may not be honoured.</p></section>
+<p>`UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.0), ..)` declares zero tolerance. A receiver that uses the declared value verbatim performs exact-equality comparisons; any sub-bit drift is a &quot;real&quot; defect. A receiver that floors the working tolerance at `Precision::Confusion()` silently substitutes 1e-7 and behaves identically to a normal file. The zero declaration is a producer&#x27;s request for exact arithmetic that may or may not be honoured.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>A simple shape (planar quad or single edge) in a PRODUCT-wrapped representation with `UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.0), ..)`.</p></section>
 <section><h2>Expected kernel behavior</h2>

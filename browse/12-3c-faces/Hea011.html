@@ -26,7 +26,7 @@
 <li>OCCT `ShapeProcess::Perform` (`ShapeProcess.hxx:87`)</li>
 </ul></section>
 <section><h2>Description</h2>
-<p>A top-level driver runs a sequence of named healing operators (&quot;fix-shape, split-closed-faces, ..&quot;). The sequence is configured at runtime; operator parameters come from a context resource. Errors at any step must be aggregated; the driver must not silently skip failed operators. Typical fixture: a GEOMETRIC_SET with multiple defect classes — a sub-tolerance EDGE_CURVE (length ~1e-7 between near-coincident VERTEX_POINTs), a rectangular shell, and an EDGE_CURVE whose 3D length disagrees with its pcurve length (same-parameter violation).</p></section>
+<p>A top-level driver runs a sequence of named healing operators (&quot;fix-shape, split-closed-faces, ..&quot;). The sequence is configured at runtime; operator parameters come from a context resource. Errors at any step must be aggregated; the driver must not silently skip failed operators. Typical fixture: a GEOMETRIC_SET with multiple defect classes; a sub-tolerance EDGE_CURVE (length ~1e-7 between near-coincident VERTEX_POINTs), a rectangular shell, and an EDGE_CURVE whose 3D length disagrees with its pcurve length (same-parameter violation).</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>A multi-defect GEOMETRIC_SET compound (sub-tolerance edge, rectangular shell, same-parameter pcurve mismatch); driver invoked with operator list &quot;fix-shape, same-parameter, remove-small-edges&quot;.</p></section>
 <section><h2>Expected kernel behavior</h2>

@@ -26,7 +26,7 @@
 <li>OCCT `ShapeFix_FixSmallFace::Perform` (`ShapeFix_FixSmallFace.hxx:41`)</li>
 </ul></section>
 <section><h2>Description</h2>
-<p>An ADVANCED_FACE that simultaneously satisfies multiple &quot;small face&quot; heuristics — bounding box below precision (sub-tolerance spot face, e.g., a 0.001 x 0.001 mm square outer EDGE_LOOP at the origin), aspect ratio extreme in one direction (strip), and a sharp single-vertex pinch (pin). The pipeline must classify before applying a removal/healing strategy; the wrong classification produces a different (worse) result.</p></section>
+<p>An ADVANCED_FACE that simultaneously satisfies multiple &quot;small face&quot; heuristics; bounding box below precision (sub-tolerance spot face, e.g., a 0.001 x 0.001 mm square outer EDGE_LOOP at the origin), aspect ratio extreme in one direction (strip), and a sharp single-vertex pinch (pin). The pipeline must classify before applying a removal/healing strategy; the wrong classification produces a different (worse) result.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>A near-zero-area ADVANCED_FACE whose outer EDGE_LOOP vertices are all within 1e-3 of `(0,0)` — a sub-tolerance spot face.</p></section>
 <section><h2>Expected kernel behavior</h2>

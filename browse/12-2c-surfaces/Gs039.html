@@ -34,7 +34,7 @@
 <section><h2>Expected kernel behavior</h2>
 <p>accept what is present; rely on validation properties (volume, area, centroid checksums) to detect loss; never silently emit zero-volume body.</p></section>
 <section><h2>Notes</h2>
-<p>**See also**: Tsh004, Tsh006. **OCC behavior**: silently imports the cap-only shell as a zero-volume body without surfacing a checksum-mismatch diagnostic; kernel mishandling — the catalog above forbids silent zero-volume acceptance. Synonyms: &quot;helical sweep silently emitted as incomplete shell&quot;, &quot;variable-radius blend missing from STEP&quot;, &quot;cap-only face on SPHERICAL_SURFACE with VERTEX_LOOP&quot;, &quot;writer drops side walls of helix sweep&quot;, &quot;feature kind vanishes after STEP export&quot;.</p></section>
+<p>**See also**: Tsh004, Tsh006. **OCC behavior**: silently imports the cap-only shell as a zero-volume body without surfacing a checksum-mismatch diagnostic; kernel mishandling; the catalog above forbids silent zero-volume acceptance. Synonyms: &quot;helical sweep silently emitted as incomplete shell&quot;, &quot;variable-radius blend missing from STEP&quot;, &quot;cap-only face on SPHERICAL_SURFACE with VERTEX_LOOP&quot;, &quot;writer drops side walls of helix sweep&quot;, &quot;feature kind vanishes after STEP export&quot;.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">

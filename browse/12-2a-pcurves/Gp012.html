@@ -27,13 +27,13 @@
 <li>04-occt-translation.md Q033 (`StepToTopoDS_TranslateEdgeLoop.cxx:573-575`)</li>
 </ul></section>
 <section><h2>Description</h2>
-<p>A `SURFACE_CURVE` (typically a seam edge on a periodic surface) should carry two pcurves in its `associated_geometry` set, but the list contains a `PCURVE` followed by a `$` (null) entry — a null member inside a Part-21 SET attribute. On a true seam edge, the second pcurve is missing entirely; a translator must synthesize it from the present one by period-shifting, or the seam fails to register.</p></section>
+<p>A `SURFACE_CURVE` (typically a seam edge on a periodic surface) should carry two pcurves in its `associated_geometry` set, but the list contains a `PCURVE` followed by a `$` (null) entry; a null member inside a Part-21 SET attribute. On a true seam edge, the second pcurve is missing entirely; a translator must synthesize it from the present one by period-shifting, or the seam fails to register.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>`SEAM_CURVE(&#x27;&#x27;,#3d,(#pc1, $),.PCURVE_S1.)` on a cylindrical face.</p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal — synthesize the missing pcurve as `pc1 ± period`.</p></section>
+<p>heal; synthesize the missing pcurve as `pc1 ± period`.</p></section>
 <section><h2>Notes</h2>
-<p>**See also**: Twi022. **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog&#x27;s allowed set ({heal}). Kernel-bug witnessed: catalog asks for healing; OCC neither heals nor rejects — the input is dropped on the floor without diagnostic. Synonyms: &quot;seam edge on periodic surface missing one of its two parametric curves&quot;, &quot;null pcurve in associated_geometry list&quot;, &quot;seam_curve has dollar-sign for second pcurve&quot;, &quot;missing pcurve entry on seam edge&quot;, &quot;associated_geometry contains null parametric curve member&quot;, &quot;seam pcurve list has $ placeholder&quot;.</p></section>
+<p>**See also**: Twi022. **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog&#x27;s allowed set ({heal}). Kernel-bug witnessed: catalog asks for healing; OCC neither heals nor rejects; the input is dropped on the floor without diagnostic. Synonyms: &quot;seam edge on periodic surface missing one of its two parametric curves&quot;, &quot;null pcurve in associated_geometry list&quot;, &quot;seam_curve has dollar-sign for second pcurve&quot;, &quot;missing pcurve entry on seam edge&quot;, &quot;associated_geometry contains null parametric curve member&quot;, &quot;seam pcurve list has $ placeholder&quot;.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">

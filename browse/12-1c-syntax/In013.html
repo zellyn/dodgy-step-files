@@ -27,15 +27,15 @@
 <li>OCCT Transfer_StatusResult Void/Defined transitions (uncovered class evidence)</li>
 </ul></section>
 <section><h2>Sender</h2>
-<p>deduced — OCCT uncovered-class sweep, Pass C</p></section>
+<p>deduced — OCCT uncovered-class sweep</p></section>
 <section><h2>Description</h2>
-<p>A transfer process expected to produce a Defined result for an entity, but the result remains Void because no actor handled the entity type. The transfer log doesn&#x27;t flag the void as an error. Typical fixture: the DATA section contains an entity of a made-up or future type (e.g., `HYPOTHETICAL_AP242_ED2_FUTURE_ENTITY`) that no standard schema defines and no kernel actor recognizes — the reader silently skips it. Bug-reporter language: &quot;entity type not transferred&quot;, &quot;kernel skipped entity silently&quot;, &quot;unknown entity type ignored&quot;.</p></section>
+<p>A transfer process expected to produce a Defined result for an entity, but the result remains Void because no actor handled the entity type. The transfer log doesn&#x27;t flag the void as an error. Typical fixture: the DATA section contains an entity of a made-up or future type (e.g., `HYPOTHETICAL_AP242_ED2_FUTURE_ENTITY`) that no standard schema defines and no kernel actor recognizes; the reader silently skips it. Bug-reporter language: &quot;entity type not transferred&quot;, &quot;kernel skipped entity silently&quot;, &quot;unknown entity type ignored&quot;.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>An entity of a type the actor pool doesn&#x27;t recognize (e.g., a made-up `HYPOTHETICAL_AP242_ED2_FUTURE_ENTITY` or an AP242 ed.2 entity that the reader wasn&#x27;t compiled with).</p></section>
 <section><h2>Expected kernel behavior</h2>
 <p>Emit &quot;no actor for entity type X&quot; warning; track unrecognized types in a per-file summary.</p></section>
 <section><h2>Notes</h2>
-<p>Synonyms: &quot;STEP entity skipped&quot;. Provenance tier: runtime-only — bytes alone cannot demonstrate this defect; the symptom is the transfer-status field staying Void with no diagnostic emitted. The static fixture encodes only the trigger (an unknown entity type); observing the silent-Void requires a kernel runtime trace. Synonyms: &quot;unknown entity type silently skipped&quot;, &quot;made-up STEP entity not transferred&quot;, &quot;future-schema entity Void after transfer&quot;, &quot;STEP entity skipped without warning&quot;, &quot;transfer Status remains Void&quot;.</p></section>
+<p>Synonyms: &quot;STEP entity skipped&quot;. Provenance tier: runtime-only; bytes alone cannot demonstrate this defect; the symptom is the transfer-status field staying Void with no diagnostic emitted. The static fixture encodes only the trigger (an unknown entity type); observing the silent-Void requires a kernel runtime trace. Synonyms: &quot;unknown entity type silently skipped&quot;, &quot;made-up STEP entity not transferred&quot;, &quot;future-schema entity Void after transfer&quot;, &quot;STEP entity skipped without warning&quot;, &quot;transfer Status remains Void&quot;.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Provenance tier</h2>

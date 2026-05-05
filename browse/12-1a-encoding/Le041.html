@@ -30,7 +30,7 @@
 <li>Unicode standard §3.8 (surrogate code points are not legal scalars)</li>
 </ul></section>
 <section><h2>Description</h2>
-<p>`\Q\NNN\Q\` accepts decimal Unicode scalars, but values 55296.57343 (the UTF-16 surrogate halves) are not legal Unicode scalars — they exist only as paired surrogates in the UTF-16 transformation. A kernel that decodes `\Q\55296\Q\` into a UTF-8 stream produces an ill-formed sequence (CESU-8 / WTF-8 territory) that downstream tooling may reject. The producer may have meant a non-BMP character but failed to emit the surrogate pair, or may be re-encoding a Java/JavaScript string that allowed lone surrogates internally.</p></section>
+<p>`\Q\NNN\Q\` accepts decimal Unicode scalars, but values 55296.57343 (the UTF-16 surrogate halves) are not legal Unicode scalars; they exist only as paired surrogates in the UTF-16 transformation. A kernel that decodes `\Q\55296\Q\` into a UTF-8 stream produces an ill-formed sequence (CESU-8 / WTF-8 territory) that downstream tooling may reject. The producer may have meant a non-BMP character but failed to emit the surrogate pair, or may be re-encoding a Java/JavaScript string that allowed lone surrogates internally.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>`PRODUCT.name=&#x27;lone=\Q\55296\Q\&#x27;` — value 55296 is U+D800, a high-surrogate half.</p></section>
 <section><h2>Expected kernel behavior</h2>

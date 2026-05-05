@@ -28,7 +28,7 @@
 <section><h2>Sender</h2>
 <p>FreeCAD itself (Part workbench Sweep)</p></section>
 <section><h2>Description</h2>
-<p>A face on a sphere produced by sweeping with a particular profile orientation has its `FACE_OUTER_BOUND.orientation` reversed in the output STEP — visually inside-out. Mirror-sweep variant is correct.</p></section>
+<p>A face on a sphere produced by sweeping with a particular profile orientation has its `FACE_OUTER_BOUND.orientation` reversed in the output STEP; visually inside-out. Mirror-sweep variant is correct.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>Author a `MANIFOLD_SOLID_BREP` containing an `ADVANCED_FACE` with `SPHERICAL_SURFACE` underlying, whose `FACE_OUTER_BOUND` includes seam edges with explicit `.F.` orientation flags on a `surface_curve`.</p></section>
 <section><h2>Expected kernel behavior</h2>

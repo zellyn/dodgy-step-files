@@ -31,7 +31,7 @@
 <section><h2>Reproducer recipe</h2>
 <p>`MANIFOLD_SOLID_BREP(&#x27;&#x27;,#OPEN_SHELL_REF);` with `VERTEX_POINT.tolerance &gt; EDGE_CURVE.tolerance`; coordinates in the range 0.001 with mm declared.</p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>Heal and accept, or warn and accept: schema-class invariant, tolerance-hierarchy invariant, and unit-vs-magnitude policy each addressed independently — repair where possible, warn otherwise.</p></section>
+<p>Heal and accept, or warn and accept: schema-class invariant, tolerance-hierarchy invariant, and unit-vs-magnitude policy each addressed independently; repair where possible, warn otherwise.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">

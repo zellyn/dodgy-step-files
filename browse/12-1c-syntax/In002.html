@@ -27,15 +27,15 @@
 <li>OCCT Interface_InterfaceModel.cxx:281 (Interface_LoadWarning) (uncovered class evidence)</li>
 </ul></section>
 <section><h2>Sender</h2>
-<p>deduced — OCCT uncovered-class sweep, Pass C</p></section>
+<p>deduced — OCCT uncovered-class sweep</p></section>
 <section><h2>Description</h2>
-<p>Two different sources of warnings (parser warnings about file syntax vs. semantic warnings about data content) are mapped onto the same severity bucket. A consumer who suppresses load warnings ends up suppressing data warnings too. Typical fixture: a stray comment between HEADER&#x27;s ENDSEC and the DATA section (parser-level warning) plus a B_SPLINE_CURVE_WITH_KNOTS at the upper-boundary degree (e.g., degree 25 — a data-level warning). Bug-reporter language: &quot;warnings hidden&quot;, &quot;parser warnings vs data warnings confused&quot;.</p></section>
+<p>Two different sources of warnings (parser warnings about file syntax vs. semantic warnings about data content) are mapped onto the same severity bucket. A consumer who suppresses load warnings ends up suppressing data warnings too. Typical fixture: a stray comment between HEADER&#x27;s ENDSEC and the DATA section (parser-level warning) plus a B_SPLINE_CURVE_WITH_KNOTS at the upper-boundary degree (e.g., degree 25, a data-level warning). Bug-reporter language: &quot;warnings hidden&quot;, &quot;parser warnings vs data warnings confused&quot;.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>A file with both a parser-level warning (a stray comment between ENDSEC and DATA, or in another unusual place) and a data-level warning (e.g., a B_SPLINE_CURVE_WITH_KNOTS at the spec-boundary degree).</p></section>
 <section><h2>Expected kernel behavior</h2>
 <p>Distinguish severity classes; separate warning channels.</p></section>
 <section><h2>Notes</h2>
-<p>Bug-reporter synonyms: &quot;diagnostic channel confusion&quot;. Provenance tier: runtime-only — bytes alone cannot demonstrate this defect; the symptom is the conflation of two diagnostic severity channels emitted by the kernel during parse + transfer. A behavioral test that captures the kernel&#x27;s diagnostic stream is the appropriate venue. Synonyms: &quot;STEP load warning vs data warning conflated&quot;, &quot;diagnostic severity confused&quot;, &quot;syntax warning suppresses semantic warning&quot;, &quot;warning channel mixed for STEP load&quot;, &quot;STEP warning bucket conflated&quot;.</p></section>
+<p>Bug-reporter synonyms: &quot;diagnostic channel confusion&quot;. Provenance tier: runtime-only; bytes alone cannot demonstrate this defect; the symptom is the conflation of two diagnostic severity channels emitted by the kernel during parse + transfer. A behavioral test that captures the kernel&#x27;s diagnostic stream is the appropriate venue. Synonyms: &quot;STEP load warning vs data warning conflated&quot;, &quot;diagnostic severity confused&quot;, &quot;syntax warning suppresses semantic warning&quot;, &quot;warning channel mixed for STEP load&quot;, &quot;STEP warning bucket conflated&quot;.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Provenance tier</h2>

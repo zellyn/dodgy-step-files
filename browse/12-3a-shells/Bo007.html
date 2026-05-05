@@ -26,7 +26,7 @@
 <li>OCCT BRepCheck_Shell.cxx:212 (SubshapeNotInShape / duplicate-face path) (uncovered class evidence)</li>
 </ul></section>
 <section><h2>Sender</h2>
-<p>deduced — OCCT uncovered-class sweep, Pass C</p></section>
+<p>deduced — OCCT uncovered-class sweep</p></section>
 <section><h2>Description</h2>
 <p>A `CLOSED_SHELL` references the same `ADVANCED_FACE` entity in its face list twice (or two `ADVANCED_FACE`s sharing identical geometry and orientation). The shell topology is therefore over-counted: the same surface region is listed as belonging to the boundary twice. Bug-reporter language: &quot;duplicate face in shell&quot;, &quot;face listed twice&quot;, &quot;same face appears multiple times&quot;.</p></section>
 <section><h2>Reproducer recipe</h2>

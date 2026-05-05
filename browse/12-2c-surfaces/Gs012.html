@@ -27,11 +27,11 @@
 <li>W008, B022</li>
 </ul></section>
 <section><h2>Description</h2>
-<p>A face&#x27;s outer or inner `EDGE_LOOP` has segments that cross each other in surface UV parameter space, even when 3D positions look fine — a bow-tie / self-crossing quadrilateral. Typical shape on a planar face: an `EDGE_LOOP` visiting four vertices where two diagonal `EDGE_CURVE`s ((0,0)→(10,10) and (10,0)→(0,10)) are interleaved with axial edges, producing a bow-tie in the face&#x27;s UV plane. CADfix has a dedicated repair flow; failure in UV closure means the contour does not partition the plane (Jordan-curve violation).</p></section>
+<p>A face&#x27;s outer or inner `EDGE_LOOP` has segments that cross each other in surface UV parameter space, even when 3D positions look fine; a bow-tie / self-crossing quadrilateral. Typical shape on a planar face: an `EDGE_LOOP` visiting four vertices where two diagonal `EDGE_CURVE`s ((0,0)→(10,10) and (10,0)→(0,10)) are interleaved with axial edges, producing a bow-tie in the face&#x27;s UV plane. CADfix has a dedicated repair flow; failure in UV closure means the contour does not partition the plane (Jordan-curve violation).</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>`FACE_OUTER_BOUND` with four `ORIENTED_EDGE`s whose 2D pcurves form a bow-tie in the face&#x27;s UV plane.</p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>reject — boundary cannot be unambiguously interpreted; healers must split the face or report. Do not assume orientation by ad-hoc winding.</p></section>
+<p>reject; boundary cannot be unambiguously interpreted; healers must split the face or report. Do not assume orientation by ad-hoc winding.</p></section>
 <section><h2>Notes</h2>
 <p>**See also**: Gp026. Synonyms: &quot;non-simple EDGE_LOOP self-crosses in UV&quot;, &quot;bow-tie quadrilateral face boundary&quot;, &quot;face wire crosses itself in parameter space&quot;, &quot;Jordan-curve violation in face outer bound&quot;, &quot;edge_loop forms bow-tie in UV plane&quot;.</p></section>
 <section><h2>Expected validation</h2>

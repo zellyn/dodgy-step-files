@@ -28,7 +28,7 @@
 <section><h2>Sender</h2>
 <p>KiCad pcbnew (custom-pad with arc, bottom layer mirroring + non-zero rotation)</p></section>
 <section><h2>Description</h2>
-<p>A custom pad shape consisting of one arc and one line is mirrored to the bottom layer with a small non-zero rotation. The mirror operation negates Y but does not invert the arc&#x27;s parameterisation symmetrically, so the resulting wire&#x27;s closure check fails at floating-point ULP level — the wire reads as &quot;not closed in 2D&quot; / &quot;self-interfering&quot; even though the geometry is fine.</p></section>
+<p>A custom pad shape consisting of one arc and one line is mirrored to the bottom layer with a small non-zero rotation. The mirror operation negates Y but does not invert the arc&#x27;s parameterisation symmetrically, so the resulting wire&#x27;s closure check fails at floating-point ULP level; the wire reads as &quot;not closed in 2D&quot; / &quot;self-interfering&quot; even though the geometry is fine.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>Footprint with custom pad consisting of one arc + line; place on bottom layer at rotation 1° or 45°; export STEP.</p></section>
 <section><h2>Expected kernel behavior</h2>

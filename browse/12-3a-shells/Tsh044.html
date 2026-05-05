@@ -27,11 +27,11 @@
 <li>OCCT `ShapeAnalysis_Shell::CheckOrientedShells` (`ShapeAnalysis_Shell.hxx:52`)</li>
 </ul></section>
 <section><h2>Description</h2>
-<p>A shell-orientation analyzer checks that each edge appears either once (free edge — legal in an open shell) or twice with opposite FORWARD/REVERSED orientations (legal for a connected pair). Edges appearing twice with the same orientation, or three or more times, are defects. The diagnostic must distinguish a true non-watertight (&quot;naked&quot;, &quot;leaky&quot;) defect from a legitimately open free boundary.</p></section>
+<p>A shell-orientation analyzer checks that each edge appears either once (free edge, legal in an open shell) or twice with opposite FORWARD/REVERSED orientations (legal for a connected pair). Edges appearing twice with the same orientation, or three or more times, are defects. The diagnostic must distinguish a true non-watertight (&quot;naked&quot;, &quot;leaky&quot;) defect from a legitimately open free boundary.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>An OPEN_SHELL of two squares sharing no common edge — every edge appears exactly once. The &quot;shell&quot; is two disjoint plates; orientation analysis must label every edge as a free edge (legal) and flag the absence of any sharing as informational.</p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>a per-edge tally with three buckets — shared-with-opposite-orientation (good), free (legal in open shells, optionally reported), and pathological (same-orientation pair, or count&gt;2). Kernels intending to build a closed solid must reject the second bucket; kernels handling open shells may accept it.</p></section>
+<p>a per-edge tally with three buckets; shared-with-opposite-orientation (good), free (legal in open shells, optionally reported), and pathological (same-orientation pair, or count&gt;2). Kernels intending to build a closed solid must reject the second bucket; kernels handling open shells may accept it.</p></section>
 <section><h2>Notes</h2>
 <p>Free edges are also called &quot;naked edges&quot; in some kernels; both terms in scope. Synonyms: &quot;naked edges versus duplicate edges&quot;, &quot;open shell free boundary classification&quot;, &quot;edge appears once is legal but twice with same orientation isn&#x27;t&quot;, &quot;shell analyzer must distinguish leak from intentional opening&quot;, &quot;non-watertight defect versus open boundary&quot;.</p></section>
 <section><h2>Expected validation</h2>

@@ -28,13 +28,13 @@
 <li>OCCT MANTIS#0032914 (OCCT MANTIS tracker 502 as of 2026-05-02)</li>
 </ul></section>
 <section><h2>Description</h2>
-<p>A `COMPSOLID` (cellular solid — multiple cells sharing faces) cannot be expressed natively in AP203/AP214 and the writer&#x27;s fallback is to write each cell as a separate solid. In nonmanifold mode the writer should emit shared faces with proper non-manifold markers but instead duplicates the shared faces, losing the cellular relationship.</p></section>
+<p>A `COMPSOLID` (cellular solid, multiple cells sharing faces) cannot be expressed natively in AP203/AP214 and the writer&#x27;s fallback is to write each cell as a separate solid. In nonmanifold mode the writer should emit shared faces with proper non-manifold markers but instead duplicates the shared faces, losing the cellular relationship.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>`COMPSOLID` of two cubes sharing one face. Write in nonmanifold mode. Output has each cube as a separate solid; shared face appears twice.</p></section>
 <section><h2>Expected kernel behavior</h2>
 <p>Heal and accept: nonmanifold export preserves shared faces using `NON_MANIFOLD_SURFACE_SHAPE_REPRESENTATION`; cellular topology recoverable on re-import. Must not silently lose COMPSOLID.</p></section>
 <section><h2>Notes</h2>
-<p>Provenance tier: writer-side — writer loses COMPSOLID in non-manifold export.</p></section>
+<p>Provenance tier: writer-side; writer loses COMPSOLID in non-manifold export.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Provenance tier</h2>

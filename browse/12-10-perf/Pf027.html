@@ -28,7 +28,7 @@
 <li>19-datasets.md D020</li>
 </ul></section>
 <section><h2>Description</h2>
-<p>Mixed length scales (1500 mm shaft with 0.05 mm fillets, gear teeth with 0.01 mm chamfers) are geometrically valid but tessellate into tiny faces, edges shorter than mesher tolerance, and degenerate Jacobians. Fusion 360 Gallery filtered out **7,232 of 42,912 (~17%)** of its STEP set as &quot;could not be meshed at ~2,500 edges&quot; — the largest single rejection bucket measured.</p></section>
+<p>Mixed length scales (1500 mm shaft with 0.05 mm fillets, gear teeth with 0.01 mm chamfers) are geometrically valid but tessellate into tiny faces, edges shorter than mesher tolerance, and degenerate Jacobians. Fusion 360 Gallery filtered out **7,232 of 42,912 (~17%)** of its STEP set as &quot;could not be meshed at ~2,500 edges&quot;; the largest single rejection bucket measured.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>STEP of long shaft with sub-tolerance fillets; attempt isotropic remesh to fixed budget.</p></section>
 <section><h2>Expected kernel behavior</h2>

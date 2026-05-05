@@ -31,7 +31,7 @@
 <section><h2>Reproducer recipe</h2>
 <p>`EDGE_CURVE` whose 3D-curve `[first,last]` corresponds to U=`[5,7]` of host surface, but the pcurve is defined only on U=`[0,2π]`.</p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal — wrap parameters via period; if the surface is not periodic, reject the edge with diagnostic.</p></section>
+<p>heal; wrap parameters via period; if the surface is not periodic, reject the edge with diagnostic.</p></section>
 <section><h2>Notes</h2>
 <p>**OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog&#x27;s allowed set ({heal, reject}). Kernel-bug witnessed: catalog allows either heal or reject; OCC silently accepts the bad input without doing either. Synonyms: &quot;trimming of 2D curve failed&quot;, &quot;pcurve clip to edge range fails&quot;, &quot;edge construction aborts on pcurve trim&quot;, &quot;2D-curve trim outside pcurve domain&quot;, &quot;edge construction fails clipping pcurve&quot;.</p></section>
 <section><h2>Expected validation</h2>

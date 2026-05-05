@@ -35,7 +35,7 @@
 <section><h2>Reproducer recipe</h2>
 <p>Export from a surface-only mode; ensure no `MANIFOLD_SOLID_BREP` is emitted; adjacent face boundaries differ by tolerance &gt; receiver&#x27;s sewing tolerance.</p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal — sew within scaled tolerance, attempt `MakeSolid`; fall back to surface model only if sew fails; report which edge gaps blocked closure.</p></section>
+<p>heal; sew within scaled tolerance, attempt `MakeSolid`; fall back to surface model only if sew fails; report which edge gaps blocked closure.</p></section>
 <section><h2>Notes</h2>
 <p>**See also**: Gs039, Tsh001. Synonyms: &quot;surface model imported in place of solid&quot;, &quot;STEP gives sheet body instead of solid&quot;, &quot;FEA mesher refuses imported body&quot;, &quot;Rhino round-trip drops solid&quot;, &quot;loose face boundaries prevent solid promotion&quot;.</p></section>
 <section><h2>Expected validation</h2>

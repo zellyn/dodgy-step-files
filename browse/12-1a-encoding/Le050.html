@@ -35,7 +35,7 @@
 <section><h2>Expected kernel behavior</h2>
 <p>Heal and accept: writer escapes non-ASCII via the edition-appropriate directive (`\X2\` for Ed.2, raw UTF-8 for Ed.3 with proper FILE_DESCRIPTION declaration). Must not silently drop Unicode.</p></section>
 <section><h2>Notes</h2>
-<p>**See also**: Le022, Le001. Provenance tier: requires-sibling-pair — bytes alone cannot demonstrate the writer-side dropping; the defect is the differential between the in-memory document name and the bytes the writer emits. Demonstrating this requires both the producer-input state (document with non-ASCII name) and the corrupted output it produces. Synonyms: &quot;Unicode dropped in STEP export&quot;, &quot;Cyrillic name lost on write&quot;, &quot;non-ASCII silently stripped by writer&quot;, &quot;STEP writer drops accented chars&quot;, &quot;Unicode characters lost during export&quot;.</p></section>
+<p>**See also**: Le022, Le001. Provenance tier: requires-sibling-pair; bytes alone cannot demonstrate the writer-side dropping; the defect is the differential between the in-memory document name and the bytes the writer emits. Demonstrating this requires both the producer-input state (document with non-ASCII name) and the corrupted output it produces. Synonyms: &quot;Unicode dropped in STEP export&quot;, &quot;Cyrillic name lost on write&quot;, &quot;non-ASCII silently stripped by writer&quot;, &quot;STEP writer drops accented chars&quot;, &quot;Unicode characters lost during export&quot;.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Provenance tier</h2>

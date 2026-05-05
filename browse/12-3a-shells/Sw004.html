@@ -27,7 +27,7 @@
 <li>OCCT BRepBuilderAPI_FastSewing.cxx:183, 220 (FS_FaceWithNullSurface) (uncovered class evidence)</li>
 </ul></section>
 <section><h2>Sender</h2>
-<p>deduced — OCCT uncovered-class sweep, Pass C</p></section>
+<p>deduced — OCCT uncovered-class sweep</p></section>
 <section><h2>Description</h2>
 <p>An input face passed to a fast-sewing path has a null surface reference. The fast-sewing algorithm has no fallback for surface evaluation; it aborts. Bug-reporter language: &quot;fast sewing fails on null face&quot;, &quot;null surface in fast sew&quot;.</p></section>
 <section><h2>Reproducer recipe</h2>
@@ -35,13 +35,15 @@
 <section><h2>Expected kernel behavior</h2>
 <p>Warn and accept: skip the face with a diagnostic; or heal and accept by falling back to slow sewing.</p></section>
 <section><h2>Notes</h2>
-<p>Synonyms: &quot;fast sewing fails on null face&quot;, &quot;null surface in fast sew&quot;, &quot;ADVANCED_FACE with no face_geometry&quot;, &quot;face_geometry slot is dollar&quot;, &quot;fast-sewer aborts on missing surface&quot;.</p></section>
+<p>**See also**: Sw005. Synonyms: &quot;fast sewing fails on null face&quot;, &quot;null surface in fast sew&quot;, &quot;ADVANCED_FACE with no face_geometry&quot;, &quot;face_geometry slot is dollar&quot;, &quot;fast-sewer aborts on missing surface&quot;.- **Byte assertion**: matches(rb&#x27;ADVANCED_FACE\([^,]+,\(\),\$,&#x27;)</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">
-<li><code>matches(rb&#x27;ADVANCED_FACE\([^,]+,\(\),\$,&#x27;)</code></li>
 <li><code>contains(b&#x27;OPEN_SHELL&#x27;)</code></li>
 </ul></section>
+<section><h2>Cross-references</h2>
+<p><a href="Sw005.html">Sw005</a></p>
+</section>
 <section><h2>Live oracle output</h2>
 <table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
 <tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
@@ -67,7 +69,7 @@
 <span class="lineno">9</span>DATA;
 <span class="lineno">10</span>#1=APPLICATION_CONTEXT(&#x27;automotive_design&#x27;);
 <span class="lineno">11</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,&#x27;automotive_design&#x27;,2000,#1);
-<span class="lineno">12</span>#100=<mark>ADVANCED_FACE(&#x27;null_surface_face&#x27;,(),$,</mark>.T.);
+<span class="lineno">12</span>#100=ADVANCED_FACE(&#x27;null_surface_face&#x27;,(),$,.T.);
 <span class="lineno">13</span>#200=<mark>OPEN_SHELL</mark>(&#x27;shell_with_null_face&#x27;,(#100));
 <span class="lineno">14</span>ENDSEC;
 <span class="lineno">15</span>END-ISO-10303-21;

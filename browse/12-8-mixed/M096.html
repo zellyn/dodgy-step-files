@@ -29,7 +29,7 @@
 <section><h2>Sender</h2>
 <p>deduced — CAM post-processor emitting tool-up moves implicitly</p></section>
 <section><h2>Description</h2>
-<p>A `TRAJECTORY` consists of two `COMPOSITE_CURVE_SEGMENT`s whose endpoints don&#x27;t coincide — segment A ends at `(10,0,0)` and segment B starts at `(20,0,0)`, with no connecting `CURVE` between them. The CAM tool presumably intended a rapid-traverse retract / reposition, but emitted no explicit connector. The controller either fails to plan motion or executes a feed-rate move through the workpiece. Bug-reporter language: &quot;AP238 toolpath has gap&quot;, &quot;STEP-NC missing rapid move&quot;, &quot;trajectory segments don&#x27;t connect&quot;.</p></section>
+<p>A `TRAJECTORY` consists of two `COMPOSITE_CURVE_SEGMENT`s whose endpoints don&#x27;t coincide; segment A ends at `(10,0,0)` and segment B starts at `(20,0,0)`, with no connecting `CURVE` between them. The CAM tool presumably intended a rapid-traverse retract / reposition, but emitted no explicit connector. The controller either fails to plan motion or executes a feed-rate move through the workpiece. Bug-reporter language: &quot;AP238 toolpath has gap&quot;, &quot;STEP-NC missing rapid move&quot;, &quot;trajectory segments don&#x27;t connect&quot;.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>`COMPOSITE_CURVE` with two segments `(0,0,0)→(10,0,0)` and `(20,0,0)→(30,0,0)`, with no third connecting segment, used as a `TRAJECTORY` basis curve.</p></section>
 <section><h2>Expected kernel behavior</h2>

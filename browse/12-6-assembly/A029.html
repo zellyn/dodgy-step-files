@@ -28,13 +28,13 @@
 <li>M014 (CAx-IF UDA v1.8).</li>
 </ul></section>
 <section><h2>Description</h2>
-<p>Same UDA template implemented differently across CAD systems — bound to `product`, to `product_definition`, to `next_assembly_usage_occurrence`, or to a shape aspect. Round-trip loses the binding because the receiver expects a different target.</p></section>
+<p>Same UDA template implemented differently across CAD systems; bound to `product`, to `product_definition`, to `next_assembly_usage_occurrence`, or to a shape aspect. Round-trip loses the binding because the receiver expects a different target.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>NX writes UDA on `product_definition`; CATIA reader expects it on `next_assembly_usage_occurrence`; data is ignored on reimport.</p></section>
 <section><h2>Expected kernel behavior</h2>
 <p>preserve UDA verbatim using the rec-practice template; do not silently re-bind.</p></section>
 <section><h2>Notes</h2>
-<p>**See also**: A016. **OCC behavior**: silently drops UDAs whose target binding does not match its expectations rather than preserving them verbatim; kernel mishandling — the catalog above forbids silent re-binding (or silent loss). Synonyms: &quot;UDA bound to wrong target after import&quot;, &quot;user-defined attribute target inconsistent&quot;, &quot;attribute assigned to part but appears on instance&quot;, &quot;UDA target-binding mismatch&quot;.</p></section>
+<p>**See also**: A016. **OCC behavior**: silently drops UDAs whose target binding does not match its expectations rather than preserving them verbatim; kernel mishandling; the catalog above forbids silent re-binding (or silent loss). Synonyms: &quot;UDA bound to wrong target after import&quot;, &quot;user-defined attribute target inconsistent&quot;, &quot;attribute assigned to part but appears on instance&quot;, &quot;UDA target-binding mismatch&quot;.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">

@@ -34,7 +34,7 @@
 <section><h2>Expected kernel behavior</h2>
 <p>parse FILE_POPULATION metadata and either apply the named population to the entire DATA section deterministically or reject the unterminated population with a diagnostic; do not silently apply to an arbitrary subset.</p></section>
 <section><h2>Notes</h2>
-<p>**See also**: Lh016. **OCC behavior**: silently accepts the unterminated `FILE_POPULATION` record with no diagnostic; kernel mishandling — the catalog above forbids silent application to an arbitrary subset. Synonyms: &quot;FILE_POPULATION unterminated&quot;, &quot;STEP population set without close marker&quot;, &quot;FILE_POPULATION missing terminator&quot;, &quot;instances belong to no population&quot;, &quot;ambiguous FILE_POPULATION boundary&quot;.</p></section>
+<p>**See also**: Lh016. **OCC behavior**: silently accepts the unterminated `FILE_POPULATION` record with no diagnostic; kernel mishandling; the catalog above forbids silent application to an arbitrary subset. Synonyms: &quot;FILE_POPULATION unterminated&quot;, &quot;STEP population set without close marker&quot;, &quot;FILE_POPULATION missing terminator&quot;, &quot;instances belong to no population&quot;, &quot;ambiguous FILE_POPULATION boundary&quot;.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">

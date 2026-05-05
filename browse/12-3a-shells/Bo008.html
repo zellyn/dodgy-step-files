@@ -27,7 +27,7 @@
 <li>OCCT BRepCheck_Vertex.cxx:96, BRepCheck_Edge.cxx:299 (SubshapeNotInShape) (uncovered class evidence)</li>
 </ul></section>
 <section><h2>Sender</h2>
-<p>deduced — OCCT uncovered-class sweep, Pass C</p></section>
+<p>deduced — OCCT uncovered-class sweep</p></section>
 <section><h2>Description</h2>
 <p>A `VERTEX_POINT` listed as an endpoint of an `EDGE_CURVE` is not actually walked-to from the edge&#x27;s geometry: the edge&#x27;s start/end parameter evaluation yields a different point. The vertex was attached at the wrong topological level by the producer. Bug-reporter language: &quot;vertex doesn&#x27;t match edge&quot;, &quot;stray vertex on edge&quot;, &quot;topology references a sub-shape not in the parent&quot;.</p></section>
 <section><h2>Reproducer recipe</h2>

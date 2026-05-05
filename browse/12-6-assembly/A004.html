@@ -29,7 +29,7 @@
 <section><h2>Sender</h2>
 <p>any producer that splits assembly into per-component files; PTC Creo with referenced (not converted) components.</p></section>
 <section><h2>Description</h2>
-<p>A `NEXT_ASSEMBLY_USAGE_OCCURRENCE` whose `related_product_definition` slot points at an entity id (e.g. `#99999`) that doesn&#x27;t exist in the file — the partner component was lost, the path was unreachable, or the component was filtered out. Many readers report &quot;successfully read&quot; while silently dropping the component.</p></section>
+<p>A `NEXT_ASSEMBLY_USAGE_OCCURRENCE` whose `related_product_definition` slot points at an entity id (e.g. `#99999`) that doesn&#x27;t exist in the file; the partner component was lost, the path was unreachable, or the component was filtered out. Many readers report &quot;successfully read&quot; while silently dropping the component.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>Split a multi-product assembly into per-component STEP files; remove one of the partners; reload the parent.</p></section>
 <section><h2>Expected kernel behavior</h2>

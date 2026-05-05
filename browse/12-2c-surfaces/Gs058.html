@@ -35,7 +35,7 @@
 <section><h2>Reproducer recipe</h2>
 <p>`#101=SURFACE_PATCH(#100, .CONT_SAME_GRADIENT_SAME_CURVATURE., .CONT_SAME_GRADIENT_SAME_CURVATURE., .T., .F.);`. step-g loads the value but applies it nowhere.</p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal-and-accept — every importer that consumes a `SURFACE_PATCH` (whether via `RECTANGULAR_COMPOSITE_SURFACE` or directly) must convert the parsed `transition_code` into the appropriate knot multiplicity at the patch boundary; emit `W_PATCH_TRANSITION_HONORED` recording which transition was applied.</p></section>
+<p>heal-and-accept; every importer that consumes a `SURFACE_PATCH` (whether via `RECTANGULAR_COMPOSITE_SURFACE` or directly) must convert the parsed `transition_code` into the appropriate knot multiplicity at the patch boundary; emit `W_PATCH_TRANSITION_HONORED` recording which transition was applied.</p></section>
 <section><h2>Notes</h2>
 <p>**See also**: Gs057, Gn017. Synonyms: &quot;SURFACE_PATCH transition_code dropped&quot;, &quot;step-g ignores patch continuity metadata&quot;, &quot;CONT_SAME_GRADIENT_SAME_CURVATURE not applied&quot;, &quot;u_sense / v_sense booleans lost&quot;, &quot;patch-boundary C2 hint discarded by importer&quot;.</p></section>
 <section><h2>Expected validation</h2>

@@ -26,15 +26,15 @@
 <li>OCCT BRepLib::OrientClosedSolid (uncovered class evidence)</li>
 </ul></section>
 <section><h2>Sender</h2>
-<p>deduced — OCCT uncovered-class sweep, Pass C</p></section>
+<p>deduced — OCCT uncovered-class sweep</p></section>
 <section><h2>Description</h2>
-<p>A `MANIFOLD_SOLID_BREP` references a closed shell whose faces are collectively oriented inward — the divergence theorem applied to the shell yields a negative volume. The kernel cannot decide which side is &quot;inside&quot; without flipping. Bug-reporter language: &quot;solid has negative volume&quot;, &quot;shell normals point inward&quot;, &quot;kernel says solid is inside-out&quot;.</p></section>
+<p>A `MANIFOLD_SOLID_BREP` references a closed shell whose faces are collectively oriented inward; the divergence theorem applied to the shell yields a negative volume. The kernel cannot decide which side is &quot;inside&quot; without flipping. Bug-reporter language: &quot;solid has negative volume&quot;, &quot;shell normals point inward&quot;, &quot;kernel says solid is inside-out&quot;.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>A six-face cube `CLOSED_SHELL` where all six face `same_sense` flags are set so normals point toward the center.</p></section>
 <section><h2>Expected kernel behavior</h2>
 <p>Compute volume via divergence; heal by flipping the outer shell if negative, or reject.</p></section>
 <section><h2>Notes</h2>
-<p>**See also**: Tsh009. Distinct: Tsh009 captures the same input pattern; this entry captures the kernel&#x27;s decision point — a closed-solid orienter that has the option to flip versus reject. Synonyms: &quot;solid has negative volume&quot;, &quot;shell normals point inward&quot;, &quot;kernel says solid is inside-out&quot;, &quot;all face normals point to centre&quot;, &quot;divergence theorem returns negative&quot;.</p></section>
+<p>**See also**: Tsh009. Distinct: Tsh009 captures the same input pattern; this entry captures the kernel&#x27;s decision point; a closed-solid orienter that has the option to flip versus reject. Synonyms: &quot;solid has negative volume&quot;, &quot;shell normals point inward&quot;, &quot;kernel says solid is inside-out&quot;, &quot;all face normals point to centre&quot;, &quot;divergence theorem returns negative&quot;.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(27) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

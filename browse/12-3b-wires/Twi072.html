@@ -32,16 +32,15 @@
 <section><h2>Expected kernel behavior</h2>
 <p>Heal and accept: normalize an O(1) check returning OK/DONE/FAIL plus the gap value.</p></section>
 <section><h2>Notes</h2>
-<p>Per-junction counterpart to Twi068 (whole-wire). Synonyms: &quot;single-junction 3D gap query&quot;, &quot;specific gap location query&quot;, &quot;ask about one specific junction in wire&quot;, &quot;wire gap diagnostic at one index&quot;.</p></section>
+<p>**See also**: Twi073. Per-junction counterpart to Twi068 (whole-wire). Synonyms: &quot;single-junction 3D gap query&quot;, &quot;specific gap location query&quot;, &quot;ask about one specific junction in wire&quot;, &quot;wire gap diagnostic at one index&quot;.- **Tier-3 assertion**: n_edges_total &gt;= 3</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=reject ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">
-<li><code>n_edges_total &gt;= 3</code></li>
 <li><code>face[0].surface_type == &quot;plane&quot;</code></li>
 <li><code>n_vertices_total &gt;= 6</code></li>
 </ul></section>
 <section><h2>Cross-references</h2>
-<p><a href="Twi068.html">Twi068</a></p>
+<p><a href="Twi073.html">Twi073</a>, <a href="Twi068.html">Twi068</a></p>
 </section>
 <section><h2>Live oracle output</h2>
 <table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>

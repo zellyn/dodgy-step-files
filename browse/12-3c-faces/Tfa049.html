@@ -26,7 +26,7 @@
 <li>OCCT `ShapeAnalysis_CheckSmallFace::CheckPin` (`ShapeAnalysis_CheckSmallFace.hxx:146`)</li>
 </ul></section>
 <section><h2>Description</h2>
-<p>An ADVANCED_FACE has a pin (singular tip), but pins come in three morphologies that need different healing: smooth-tapered tip (no need to act), sharp tip with discontinuous tangent, and stretched pin where another vertex along the boundary could re-bound the face. The analyzer must distinguish these. Typical fixture: a triangular outer EDGE_LOOP with vertices (0,0,0), (10,0.001,0), (10,-0.001,0) — a long thin pin shape ~10mm long with sub-mm width at the tip.</p></section>
+<p>An ADVANCED_FACE has a pin (singular tip), but pins come in three morphologies that need different healing: smooth-tapered tip (no need to act), sharp tip with discontinuous tangent, and stretched pin where another vertex along the boundary could re-bound the face. The analyzer must distinguish these. Typical fixture: a triangular outer EDGE_LOOP with vertices (0,0,0), (10,0.001,0), (10,-0.001,0); a long thin pin shape ~10mm long with sub-mm width at the tip.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>A triangular ADVANCED_FACE with two near-collinear long edges meeting at a tip (e.g., (0,0,0)-&gt;(10,0.001,0)-&gt;(10,-0.001,0)-&gt;back); the angle is sharp enough to qualify as a sharp pin.</p></section>
 <section><h2>Expected kernel behavior</h2>

@@ -30,7 +30,7 @@
 <li>15-academic.md L013, L026</li>
 </ul></section>
 <section><h2>Description</h2>
-<p>An edge shared by three or more faces — surface is not locally homeomorphic to a disk along the edge. Two cubes sharing one common edge (4 faces meet at one edge) emitted as one `MANIFOLD_SOLID_BREP` is the canonical case. Many translators silently smash these into one `CLOSED_SHELL`.</p></section>
+<p>An edge shared by three or more faces; surface is not locally homeomorphic to a disk along the edge. Two cubes sharing one common edge (4 faces meet at one edge) emitted as one `MANIFOLD_SOLID_BREP` is the canonical case. Many translators silently smash these into one `CLOSED_SHELL`.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>`MANIFOLD_SOLID_BREP` whose `CLOSED_SHELL` contains an edge appearing as `ORIENTED_EDGE` referent in 3+ `FACE_BOUND` chains; or two `OPEN_SHELL`s with shared `EDGE_CURVE` joined into one compound.</p></section>
 <section><h2>Expected kernel behavior</h2>

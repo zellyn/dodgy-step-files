@@ -33,7 +33,7 @@
 <section><h2>Expected kernel behavior</h2>
 <p>detect the C0 break and either split the curve into two C∞-internal pieces, raise the knot multiplicity to enforce a true G1+ join, or report the discontinuity as a quality metric so downstream tools can handle it explicitly.</p></section>
 <section><h2>Notes</h2>
-<p>Same defect applies to pcurve splitting on host surfaces. **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog&#x27;s allowed set ({heal}). Kernel-bug witnessed: catalog asks for healing; OCC neither heals nor rejects — the input is dropped on the floor without diagnostic. Synonyms: &quot;B-spline curve has C0 internal break&quot;, &quot;interior knot multiplicity equals degree creates kink&quot;, &quot;downstream tools cannot ingest C0 spline&quot;, &quot;knot multiplicity=degree produces visible cusp&quot;, &quot;B-spline kink at interior knot&quot;.</p></section>
+<p>Same defect applies to pcurve splitting on host surfaces. **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog&#x27;s allowed set ({heal}). Kernel-bug witnessed: catalog asks for healing; OCC neither heals nor rejects; the input is dropped on the floor without diagnostic. Synonyms: &quot;B-spline curve has C0 internal break&quot;, &quot;interior knot multiplicity equals degree creates kink&quot;, &quot;downstream tools cannot ingest C0 spline&quot;, &quot;knot multiplicity=degree produces visible cusp&quot;, &quot;B-spline kink at interior knot&quot;.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">

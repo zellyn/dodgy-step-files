@@ -27,7 +27,7 @@
 <li>Q056, Q057, S020, S021, W020</li>
 </ul></section>
 <section><h2>Description</h2>
-<p>`DIRECTION` with all-zero direction_ratios (S020); `VECTOR` with zero magnitude (Q057); `axis2_placement_3d` whose `axis` and `ref_direction` are colinear so an orthonormal frame cannot be constructed (S021); `PLANE` whose ref direction is parallel to its normal (W020 — degenerate plane causes import crashes).</p></section>
+<p>`DIRECTION` with all-zero direction_ratios (S020); `VECTOR` with zero magnitude (Q057); `axis2_placement_3d` whose `axis` and `ref_direction` are colinear so an orthonormal frame cannot be constructed (S021); `PLANE` whose ref direction is parallel to its normal (W020, degenerate plane causes import crashes).</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>`DIRECTION(&#x27;&#x27;,(0.,0.,0.))` referenced by `AXIS2_PLACEMENT_3D`; or axis `(0,0,1)` and ref_direction `(0,0,1)`.</p></section>
 <section><h2>Expected kernel behavior</h2>

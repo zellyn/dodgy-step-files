@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p>`EDGE_CURVE(&#x27;&#x27;,#v1,#v2,#circle_geom,.T.);` with `#circle_geom` a full `CIRCLE` and `#v1`, `#v2` distinct entities.</p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal — translator reuses the first vertex on both ends.</p></section>
+<p>heal; translator reuses the first vertex on both ends.</p></section>
 <section><h2>Notes</h2>
 <p>The translator&#x27;s edge-transfer pass must detect the closed-curve case and reuse the same vertex at both ends, regardless of how many distinct vertex entities the file references. **See also**: Twi002, Twi018. Synonyms: &quot;circle edge has two distinct endpoints&quot;, &quot;full circle stored with separate start and end vertex&quot;, &quot;closed curve uses two vertex instances&quot;, &quot;ellipse edge with mismatched endpoints&quot;, &quot;periodic curve doesn&#x27;t reuse vertex&quot;.</p></section>
 <section><h2>Expected validation</h2>

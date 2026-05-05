@@ -28,7 +28,7 @@
 <li>OCCT GitHub#565 (OCCT MANTIS tracker 502 as of 2026-05-02)</li>
 </ul></section>
 <section><h2>Description</h2>
-<p>A wire-cleanup pass intended to remove &quot;tail&quot; edges (short detours) is applied to a wire whose tails are deliberately significant — feature edges encoding small chamfers or fillets. The algorithm classifies them as removable noise and drops them, simplifying geometry beyond intent.</p></section>
+<p>A wire-cleanup pass intended to remove &quot;tail&quot; edges (short detours) is applied to a wire whose tails are deliberately significant; feature edges encoding small chamfers or fillets. The algorithm classifies them as removable noise and drops them, simplifying geometry beyond intent.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>Wire of 6 edges, two of which are short (1 mm each, vs others at 100 mm). Tails-fix removes both short edges.</p></section>
 <section><h2>Expected kernel behavior</h2>

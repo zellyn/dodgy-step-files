@@ -31,13 +31,13 @@
 <section><h2>Sender</h2>
 <p>deduced — producers porting from EXPRESS-G-style notation, Fortran-derived writers, in-house exporters that paraphrase the EXPRESS BOOLEAN keyword</p></section>
 <section><h2>Description</h2>
-<p>ISO 10303-21 spells boolean values `.T.` and `.F.` (single letter, dot-bracketed). A few producers emit the EXPRESS keyword spellings `.TRUE.` and `.FALSE.` (or even unquoted `TRUE`/`FALSE`) inside Part-21 attribute slots. Strict lexers expecting exactly `.T.` or `.F.` either reject or mis-tokenise the surrounding record; heuristic lexers may accept the long form. The defect propagates whenever the producer assumes the Part-21 lexeme matches the EXPRESS reserved word — e.g. `same_sense=.TRUE.`. Bug-reporter language: &quot;STEP file uses .TRUE.&quot;, &quot;parser rejects boolean attribute&quot;, &quot;writer used long-form boolean&quot;.</p></section>
+<p>ISO 10303-21 spells boolean values `.T.` and `.F.` (single letter, dot-bracketed). A few producers emit the EXPRESS keyword spellings `.TRUE.` and `.FALSE.` (or even unquoted `TRUE`/`FALSE`) inside Part-21 attribute slots. Strict lexers expecting exactly `.T.` or `.F.` either reject or mis-tokenise the surrounding record; heuristic lexers may accept the long form. The defect propagates whenever the producer assumes the Part-21 lexeme matches the EXPRESS reserved word; e.g. `same_sense=.TRUE.`. Bug-reporter language: &quot;STEP file uses .TRUE.&quot;, &quot;parser rejects boolean attribute&quot;, &quot;writer used long-form boolean&quot;.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>an `EDGE_CURVE` whose `same_sense` attribute is `.TRUE.` rather than `.T.`; a second instance with `.FALSE.` rather than `.F.`.</p></section>
 <section><h2>Expected kernel behavior</h2>
 <p>reject as malformed with a diagnostic naming the offending lexeme; or, in lenient mode, accept the long form with a warning. Silent acceptance hides the producer-side defect.</p></section>
 <section><h2>Notes</h2>
-<p>Cousin of Wr041 (writer-side root cause). **See also**: Wr041, Le027. Synonyms: &quot;STEP boolean wrong format&quot;, &quot;long-form boolean&quot;, &quot;TRUE/FALSE in STEP file&quot;. **OCC behavior**: silently accepts (no diagnostic, empty result); catalog disallows silent-accept. Kernel-bug witnessed: receivers enforcing the spec must reject (or surface a diagnostic) — silent acceptance defeats the catalog&#x27;s stated invariant.</p></section>
+<p>Cousin of Wr041 (writer-side root cause). **See also**: Wr041, Le027. Synonyms: &quot;STEP boolean wrong format&quot;, &quot;long-form boolean&quot;, &quot;TRUE/FALSE in STEP file&quot;. **OCC behavior**: silently accepts (no diagnostic, empty result); catalog disallows silent-accept. Kernel-bug witnessed: receivers enforcing the spec must reject (or surface a diagnostic); silent acceptance defeats the catalog&#x27;s stated invariant.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">

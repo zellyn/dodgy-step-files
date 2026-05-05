@@ -27,7 +27,7 @@
 <li>G061 (OCCT 9592ae2 / Mantis 0027457 — BRepTools_PurgeLocations), W039 (HOOPS Exchange Parasolid mirrored MAPPED_ITEM), K017 (Rhino mirrored block + pcurve flip), J006 (Onshape post-rotation disintegration).</li>
 </ul></section>
 <section><h2>Description</h2>
-<p>A `MAPPED_ITEM`&#x27;s target `AXIS2_PLACEMENT_3D` uses `DIRECTION` axes that form a left-handed (mirrored) frame — for example Z=(0,0,1) and X=(-1,0,0), so the implicit Y=Z×X=(0,-1,0) gives a negative-determinant placement. Shape locations containing scale or mirror are sources of invalid STEP/IGES output: the mirrored instance is exported with a copy whose orientation is silently corrected, flipping handedness. When &quot;Export parameter space curves&quot; is enabled and the block instance has negative-determinant transform, surfaces import with reversed normals.</p></section>
+<p>A `MAPPED_ITEM`&#x27;s target `AXIS2_PLACEMENT_3D` uses `DIRECTION` axes that form a left-handed (mirrored) frame; for example Z=(0,0,1) and X=(-1,0,0), so the implicit Y=Z×X=(0,-1,0) gives a negative-determinant placement. Shape locations containing scale or mirror are sources of invalid STEP/IGES output: the mirrored instance is exported with a copy whose orientation is silently corrected, flipping handedness. When &quot;Export parameter space curves&quot; is enabled and the block instance has negative-determinant transform, surfaces import with reversed normals.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>Shape with `gp_Trsf` containing scale or mirror; export. Or Rhino model with block instance scaled `(-1,1,1)` exported with pcurves on.</p></section>
 <section><h2>Expected kernel behavior</h2>

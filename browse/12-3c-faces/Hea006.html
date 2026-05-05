@@ -26,7 +26,7 @@
 <li>OCCT `ShapeAnalysis_ShapeContents::Perform` (`ShapeAnalysis_ShapeContents.hxx:47`)</li>
 </ul></section>
 <section><h2>Description</h2>
-<p>A compound shape whose constituents the kernel must enumerate and tally — counts of faces, edges, vertices, wires, distinct surface kinds, distinct curve kinds, total volume, etc. Drives downstream defect-detection (e.g., &quot;any shape with &gt; N faces gets a stricter check&quot;).</p></section>
+<p>A compound shape whose constituents the kernel must enumerate and tally; counts of faces, edges, vertices, wires, distinct surface kinds, distinct curve kinds, total volume, etc. Drives downstream defect-detection (e.g., &quot;any shape with &gt; N faces gets a stricter check&quot;).</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>A compound containing one face plus a free wire; the report shows 1 face, 1 wire, 4 edges, 4 vertices.</p></section>
 <section><h2>Expected kernel behavior</h2>

@@ -32,7 +32,7 @@
 <section><h2>Reproducer recipe</h2>
 <p>Build a `TopoDS_Compound` containing a single shell; write to STEP; re-read; iterate faces and check `TopoDS_Shape::Location().IsIdentity()`.</p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal — collapse identity locations on leaf faces during reader (or in a healer pass); `RemoveLocations` flattens orphan locations on sub-shapes.</p></section>
+<p>heal; collapse identity locations on leaf faces during reader (or in a healer pass); `RemoveLocations` flattens orphan locations on sub-shapes.</p></section>
 <section><h2>Notes</h2>
 <p>**See also**: Tfa030. Synonyms: &quot;faces have spurious near-identity transforms after round-trip&quot;, &quot;compound treated as assembly inflates per-face locations&quot;, &quot;STEP read adds bogus TopLoc per face&quot;, &quot;IsEqual fails on round-tripped faces&quot;.</p></section>
 <section><h2>Expected validation</h2>

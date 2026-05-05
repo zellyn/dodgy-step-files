@@ -32,16 +32,15 @@
 <section><h2>Expected kernel behavior</h2>
 <p>Heal and accept: detect notch-shaped triplets; repair by removing the short edge and extending the two long neighbors to meet; or warn and accept by leaving the notch and reporting it as a quality metric. Threshold for &quot;short&quot; is kernel-policy.</p></section>
 <section><h2>Notes</h2>
-<p>Search terms: &quot;notch&quot;, &quot;spike&quot;, &quot;snag&quot;, &quot;tail&quot; (Twi077 covers a different sub-case). Synonyms: &quot;wire has triangular bump&quot;, &quot;boolean leftover causes notch in wire&quot;, &quot;small detour edge between long ones&quot;, &quot;wire side has sub-mm protrusion&quot;.</p></section>
+<p>**See also**: Twi074. Search terms: &quot;notch&quot;, &quot;spike&quot;, &quot;snag&quot;, &quot;tail&quot; (Twi077 covers a different sub-case). Synonyms: &quot;wire has triangular bump&quot;, &quot;boolean leftover causes notch in wire&quot;, &quot;small detour edge between long ones&quot;, &quot;wire side has sub-mm protrusion&quot;.- **Tier-3 assertion**: n_edges_total &gt;= 5</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(11) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">
-<li><code>n_edges_total &gt;= 5</code></li>
 <li><code>face[0].surface_type == &quot;plane&quot;</code></li>
 <li><code>n_vertices_total &gt;= 8</code></li>
 </ul></section>
 <section><h2>Cross-references</h2>
-<p><a href="Twi077.html">Twi077</a></p>
+<p><a href="Twi074.html">Twi074</a>, <a href="Twi077.html">Twi077</a></p>
 </section>
 <section><h2>Live oracle output</h2>
 <table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>

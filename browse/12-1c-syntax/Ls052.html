@@ -33,7 +33,7 @@
 <section><h2>Expected kernel behavior</h2>
 <p>Detect overflow during digit accumulation and reject with `E_INSTANCE_ID_RANGE`; never silently wrap.</p></section>
 <section><h2>Notes</h2>
-<p>**See also**: Ls038, Ls051. **OCC behavior**: silently accepts (no diagnostic, empty result); catalog disallows silent-accept. Kernel-bug witnessed: receivers enforcing the spec must reject (or surface a diagnostic) — silent acceptance defeats the catalog&#x27;s stated invariant. Synonyms: &quot;instance ID wraps to low number&quot;, &quot;ID past UINT64_MAX collides with #1&quot;, &quot;modular wrap on STEP instance ID&quot;, &quot;STEP ID overflow type confusion&quot;, &quot;huge ID wraps to small ID&quot;.</p></section>
+<p>**See also**: Ls038, Ls051. **OCC behavior**: silently accepts (no diagnostic, empty result); catalog disallows silent-accept. Kernel-bug witnessed: receivers enforcing the spec must reject (or surface a diagnostic); silent acceptance defeats the catalog&#x27;s stated invariant. Synonyms: &quot;instance ID wraps to low number&quot;, &quot;ID past UINT64_MAX collides with #1&quot;, &quot;modular wrap on STEP instance ID&quot;, &quot;STEP ID overflow type confusion&quot;, &quot;huge ID wraps to small ID&quot;.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">

@@ -31,7 +31,7 @@
 <section><h2>Reproducer recipe</h2>
 <p>STEP wire on planar face containing two near-tangent edges; bbox-based intersection test with default sample count misses the crossing.</p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal — use density-of-discretization correlated with curve curvature for bbox; never rely on a fixed sample count; enforce minimum sample count ≥ 2 on degenerate inputs.</p></section>
+<p>heal; use density-of-discretization correlated with curve curvature for bbox; never rely on a fixed sample count; enforce minimum sample count ≥ 2 on degenerate inputs.</p></section>
 <section><h2>Notes</h2>
 <p>**See also**: Pf006. **OCC behavior**: the validity-checker does not flag the near-tangent edge intersections missed by coarse bbox sampling; tier-3 valid-flag should be ignored for this entry. The reader most likely silently fixes or ignores the missed self-intersection on import. Synonyms: &quot;self-intersection missed by sparse sampling&quot;, &quot;coarse bounding box check misses near-tangent&quot;, &quot;p-curves with too few samples cause degenerate trims&quot;, &quot;near-tangent curves miss intersection due to undersample&quot;.</p></section>
 <section><h2>Expected validation</h2>

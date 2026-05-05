@@ -30,7 +30,7 @@
 <section><h2>Sender</h2>
 <p>deduced — CAM publisher emitting trajectory with omitted retract height</p></section>
 <section><h2>Description</h2>
-<p>A `TRAJECTORY`&#x27;s approach segment passes from the tool-change position straight through the workpiece volume to reach the feature start — i.e., the line segment from `(0,0,200)` to `(50,30,-5)` intersects the workpiece body at `(50,30,0)`. The implicit retract is missing. The controller either crashes the tool against the workpiece or performs an unintended plunge. Bug-reporter language: &quot;AP238 tool collision&quot;, &quot;STEP-NC plunge through part&quot;, &quot;approach trajectory hits workpiece&quot;.</p></section>
+<p>A `TRAJECTORY`&#x27;s approach segment passes from the tool-change position straight through the workpiece volume to reach the feature start; i.e., the line segment from `(0,0,200)` to `(50,30,-5)` intersects the workpiece body at `(50,30,0)`. The implicit retract is missing. The controller either crashes the tool against the workpiece or performs an unintended plunge. Bug-reporter language: &quot;AP238 tool collision&quot;, &quot;STEP-NC plunge through part&quot;, &quot;approach trajectory hits workpiece&quot;.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>`TRAJECTORY` whose first segment is a straight `LINE` from `(0,0,200)` to `(50,30,-5)`, with workpiece geometry occupying the box `(0.100, 0.100, 0.50)`.</p></section>
 <section><h2>Expected kernel behavior</h2>

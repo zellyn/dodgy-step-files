@@ -27,11 +27,11 @@
 <li>04-occt-translation Q019</li>
 </ul></section>
 <section><h2>Description</h2>
-<p>An `ADVANCED_FACE` is emitted with an empty bounds list — no `FACE_OUTER_BOUND` and no `FACE_BOUND`. Either the writer dropped the loop or the face represents a complete surface (sphere/torus) where natural bounds are implied.</p></section>
+<p>An `ADVANCED_FACE` is emitted with an empty bounds list; no `FACE_OUTER_BOUND` and no `FACE_BOUND`. Either the writer dropped the loop or the face represents a complete surface (sphere/torus) where natural bounds are implied.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>`#10=ADVANCED_FACE(&#x27;&#x27;,(),#20,.T.);` whose `face_geometry #20` is a `SPHERICAL_SURFACE` or `TOROIDAL_SURFACE`.</p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>Heal and accept: when the surface is closed/periodic in U and V, repair the face by inserting natural bounds. Otherwise, reject the face with a diagnostic — never construct a face with an empty wire set.</p></section>
+<p>Heal and accept: when the surface is closed/periodic in U and V, repair the face by inserting natural bounds. Otherwise, reject the face with a diagnostic; never construct a face with an empty wire set.</p></section>
 <section><h2>Notes</h2>
 <p>**See also**: Tfa001. Synonyms: &quot;face has empty bounds list&quot;, &quot;face has no outer wire and no inner wire&quot;, &quot;advanced face with empty wire set&quot;, &quot;face on sphere or torus has no boundary&quot;, &quot;natural bounds missing on closed surface&quot;.</p></section>
 <section><h2>Expected validation</h2>

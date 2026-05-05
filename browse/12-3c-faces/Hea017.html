@@ -30,7 +30,7 @@
 <section><h2>Sender</h2>
 <p>FreeCAD Part Workbench 2D-Offset feature applied to a sketch path that has self-intersecting offset traces (non-manifold offset).</p></section>
 <section><h2>Description</h2>
-<p>A Pad whose profile is a 2D Offset of an open path emits a STEP whose extruded sweep has a discontinuity in the side-wall shell where the offset trace self-intersected. The on-disk symptom is a `MANIFOLD_SOLID_BREP` whose side-wall sweep contains two `ADVANCED_FACE`s that share an edge whose `EDGE_CURVE` has a discontinuous parametric trace — at one point the curve doubles back on itself.</p></section>
+<p>A Pad whose profile is a 2D Offset of an open path emits a STEP whose extruded sweep has a discontinuity in the side-wall shell where the offset trace self-intersected. The on-disk symptom is a `MANIFOLD_SOLID_BREP` whose side-wall sweep contains two `ADVANCED_FACE`s that share an edge whose `EDGE_CURVE` has a discontinuous parametric trace; at one point the curve doubles back on itself.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>STEP body with an `ADVANCED_FACE` whose `EDGE_LOOP` contains an `ORIENTED_EDGE` whose underlying `EDGE_CURVE` is a `B_SPLINE_CURVE_WITH_KNOTS` whose first and last control point are the same but with opposite tangents — a degenerate-loop edge.</p></section>
 <section><h2>Expected kernel behavior</h2>

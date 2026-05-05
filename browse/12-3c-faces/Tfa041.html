@@ -27,7 +27,7 @@
 <li>OCCT `ShapeFix_FixSmallFace::FixSpotFace` (`ShapeFix_FixSmallFace.hxx:44`)</li>
 </ul></section>
 <section><h2>Description</h2>
-<p>An ADVANCED_FACE whose outer wire&#x27;s bounding box is smaller than the kernel&#x27;s working precision in both U and V. The face is geometrically a point — it has no usable interior and contributes nothing to the shape&#x27;s volume or boundary.</p></section>
+<p>An ADVANCED_FACE whose outer wire&#x27;s bounding box is smaller than the kernel&#x27;s working precision in both U and V. The face is geometrically a point; it has no usable interior and contributes nothing to the shape&#x27;s volume or boundary.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>A square face with vertices at `(0,0)`, `(0.001,0)`, `(0.001,0.001)`, `(0,0.001)`.</p></section>
 <section><h2>Expected kernel behavior</h2>

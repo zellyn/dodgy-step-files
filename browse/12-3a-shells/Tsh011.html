@@ -28,7 +28,7 @@
 <li>05-occt-shapefix.md F022 (FixOrientation)</li>
 </ul></section>
 <section><h2>Description</h2>
-<p>An `EDGE_LOOP`&#x27;s `ORIENTED_EDGE.orientation` flags are inconsistent with the geometric winding required by the face&#x27;s outward normal — the outer wire winds the wrong way, or a hole is oriented as if it were the outer bound.</p></section>
+<p>An `EDGE_LOOP`&#x27;s `ORIENTED_EDGE.orientation` flags are inconsistent with the geometric winding required by the face&#x27;s outward normal; the outer wire winds the wrong way, or a hole is oriented as if it were the outer bound.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>`FACE_OUTER_BOUND` with three edges, one `ORIENTED_EDGE` having `.F.` when geometrically `.T.` is required for outward winding.</p></section>
 <section><h2>Expected kernel behavior</h2>

@@ -27,13 +27,13 @@
 <li>bug-report patterns &quot;PMI on wrong face&quot;, &quot;tolerance attached to back face instead of front&quot;, &quot;GD&amp;T frame references neighboring face&quot;</li>
 </ul></section>
 <section><h2>Description</h2>
-<p>A thin block (1mm thick in Y) where the producer intended a flatness tolerance on FACE_A (front, y=0). Due to a face-indexing bug in the PMI exporter, the GISU references FACE_B (back, y=1) — a face geometrically very close but functionally unrelated. The tolerance frame, datum system, and value are all well-formed. Kernel accepts the file silently; tier-3 introspection (cross-check intended-target metadata names against actual GISU references, or annotation-leader-line endpoint vs. face geometry) reveals the misattachment.</p></section>
+<p>A thin block (1mm thick in Y) where the producer intended a flatness tolerance on FACE_A (front, y=0). Due to a face-indexing bug in the PMI exporter, the GISU references FACE_B (back, y=1); a face geometrically very close but functionally unrelated. The tolerance frame, datum system, and value are all well-formed. Kernel accepts the file silently; tier-3 introspection (cross-check intended-target metadata names against actual GISU references, or annotation-leader-line endpoint vs. face geometry) reveals the misattachment.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>A 10x1x5 block with the front face named &#x27;FACE_A_FRONT&#x27; and back face named &#x27;FACE_B_BACK&#x27;. A FLATNESS_TOLERANCE attached to a SHAPE_ASPECT whose GISU references the back face. Wrap in AP242_MANAGED_MODEL_BASED_3D_ENGINEERING_MIM_LF schema.</p></section>
 <section><h2>Expected kernel behavior</h2>
 <p>Surface every PMI-to-feature link as a pair (PMI-frame, target-face) so downstream tools can verify alignment between the leader-line geometry, the face name, and the tolerance semantics. Should not silently propagate a tolerance to a face the producer never intended.</p></section>
 <section><h2>Notes</h2>
-<p>Tier-3 metric: leader-line endpoint distance to GISU-target face vs. distance to nearest other face — if the nearest face is different, the tolerance is likely misattached. Synonyms: &quot;PMI on wrong face&quot;, &quot;tolerance attached to back face instead of front&quot;, &quot;GD&amp;T frame references neighboring face&quot;, &quot;annotation points to wrong face&quot;, &quot;flatness tolerance bound to neighbor face&quot;.</p></section>
+<p>Tier-3 metric: leader-line endpoint distance to GISU-target face vs. distance to nearest other face; if the nearest face is different, the tolerance is likely misattached. Synonyms: &quot;PMI on wrong face&quot;, &quot;tolerance attached to back face instead of front&quot;, &quot;GD&amp;T frame references neighboring face&quot;, &quot;annotation points to wrong face&quot;, &quot;flatness tolerance bound to neighbor face&quot;.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(27) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

@@ -27,7 +27,7 @@
 <li>synthesized cross-product.</li>
 </ul></section>
 <section><h2>Description</h2>
-<p>A `CLOSED_SHELL` of 6 faces representing a cube. One face has an inverted `same_sense`. A second face&#x27;s outer wire contains a duplicate `ORIENTED_EDGE` (the same edge listed twice with different orientations). A third face&#x27;s outer boundary doesn&#x27;t quite reach the shared edge of its neighbour — leaving a 1e-3 gap. Three classic shell-quality problems coexist.</p></section>
+<p>A `CLOSED_SHELL` of 6 faces representing a cube. One face has an inverted `same_sense`. A second face&#x27;s outer wire contains a duplicate `ORIENTED_EDGE` (the same edge listed twice with different orientations). A third face&#x27;s outer boundary doesn&#x27;t quite reach the shared edge of its neighbour; leaving a 1e-3 gap. Three classic shell-quality problems coexist.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>6-face cube; face 3&#x27;s `same_sense=.F.`; face 4&#x27;s EDGE_LOOP has the same edge twice; face 5 ends 1e-3 short of the shared edge.</p></section>
 <section><h2>Expected kernel behavior</h2>

@@ -29,7 +29,7 @@
 <li>09-healing-menus.md H002 (CGAL stitch_boundary_cycle)</li>
 </ul></section>
 <section><h2>Description</h2>
-<p>A wire&#x27;s edge sequence visits the same vertex twice mid-traversal — the face is topologically two disks joined at a single point (a figure-eight or pinched face). Outer-boundary integrity check fails; downstream Booleans break.</p></section>
+<p>A wire&#x27;s edge sequence visits the same vertex twice mid-traversal; the face is topologically two disks joined at a single point (a figure-eight or pinched face). Outer-boundary integrity check fails; downstream Booleans break.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>Planar face whose outer wire visits a shared `VERTEX_POINT` twice; export.</p></section>
 <section><h2>Expected kernel behavior</h2>

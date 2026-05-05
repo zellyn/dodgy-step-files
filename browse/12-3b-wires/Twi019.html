@@ -27,7 +27,7 @@
 <li>09-healing-menus.md H053 (SplitClosedFaces)</li>
 </ul></section>
 <section><h2>Description</h2>
-<p>An `EDGE_CURVE` whose underlying curve is closed (full circle / ellipse) is used as a single edge — the curve goes around 360° and the edge&#x27;s start vertex equals its end vertex. Downstream tools that expect every edge to be a topologically open arc (with two distinct endpoints) require the edge to be split at a seam parameter or a natural break.</p></section>
+<p>An `EDGE_CURVE` whose underlying curve is closed (full circle / ellipse) is used as a single edge; the curve goes around 360° and the edge&#x27;s start vertex equals its end vertex. Downstream tools that expect every edge to be a topologically open arc (with two distinct endpoints) require the edge to be split at a seam parameter or a natural break.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>Edge wraps full 360° on cylindrical face without explicit seam; receiver needs to split into two half-edges.</p></section>
 <section><h2>Expected kernel behavior</h2>

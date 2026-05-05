@@ -27,11 +27,11 @@
 <li>OCCT BRepOffsetAPI_ThruSections.cxx (NotSameTopology) (uncovered class evidence)</li>
 </ul></section>
 <section><h2>Sender</h2>
-<p>deduced — OCCT uncovered-class sweep, Pass C</p></section>
+<p>deduced — OCCT uncovered-class sweep</p></section>
 <section><h2>Description</h2>
-<p>A loft (ThruSections) is requested between two profiles: profile 1 is a closed wire (a circle), profile 2 is an open wire (an arc). The loft algorithm needs both endpoints free or both joined; mixing them is unsupported. Bug-reporter language: &quot;loft profiles topology mismatch&quot;, &quot;open and closed loft profiles&quot;.</p></section>
+<p>A loft (ThruSections) is requested between two profiles: profile 1 is a closed wire (a circle), profile 2 is an open wire (an arc). The loft algorithm needs both endpoints free or both joined; mixing them is unsupported.</p></section>
 <section><h2>Reproducer recipe</h2>
-<p>Two `WIRE` entities — one a `CIRCLE`-edge wire (closed), one a single-`LINE`-edge wire (open) — submitted as ThruSections profiles.</p></section>
+<p>Two `WIRE` entities (one a `CIRCLE`-edge wire, closed; one a single-`LINE`-edge wire, open) submitted as ThruSections profiles.</p></section>
 <section><h2>Expected kernel behavior</h2>
 <p>Reject with topology-mismatch diagnostic, or close the open profile by adding endpoints.</p></section>
 <section><h2>Notes</h2>

@@ -27,7 +27,7 @@
 <li>OCCT MANTIS#0024759 (OCCT MANTIS tracker 502 as of 2026-05-02)</li>
 </ul></section>
 <section><h2>Description</h2>
-<p>A STEP file written under a non-C locale (e.g., Czech, German) uses comma as the decimal separator (`1,5` instead of `1.5`). When read on a system with C locale, the parser interprets `1,5` as two integers separated by a comma — the second integer being silently shifted into the next parameter. Misalignment leads to crash deeper in the geometry builder.</p></section>
+<p>A STEP file written under a non-C locale (e.g., Czech, German) uses comma as the decimal separator (`1,5` instead of `1.5`). When read on a system with C locale, the parser interprets `1,5` as two integers separated by a comma; the second integer being silently shifted into the next parameter. Misalignment leads to crash deeper in the geometry builder.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>STEP file containing `CARTESIAN_POINT(&#x27;&#x27;,(1,5,2,5,3,5))` intended as `(1.5, 2.5, 3.5)`.</p></section>
 <section><h2>Expected kernel behavior</h2>

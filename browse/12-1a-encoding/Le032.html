@@ -27,7 +27,7 @@
 <li>W032/CAD Exchanger CHANGES v3.24.12, v3.24.13</li>
 </ul></section>
 <section><h2>Description</h2>
-<p>A pretty-printer or broken splice writes a hex run across a `\r\n` boundary, e.g. `\X2\30A2 30A4\X0\` where the space is actually a CR LF. Per Part-21 §5.2 those bytes are ignored, so a tolerant lexer must accept the split — but many implementations consume the directive byte-greedily and fail on the line-end.</p></section>
+<p>A pretty-printer or broken splice writes a hex run across a `\r\n` boundary, e.g. `\X2\30A2 30A4\X0\` where the space is actually a CR LF. Per Part-21 §5.2 those bytes are ignored, so a tolerant lexer must accept the split; but many implementations consume the directive byte-greedily and fail on the line-end.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>a `STRING` literal `&#x27;foo\X2\30A2&lt;CR LF&gt;30A4\X0\bar&#x27;` split mid-escape.</p></section>
 <section><h2>Expected kernel behavior</h2>

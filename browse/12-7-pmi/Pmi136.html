@@ -30,13 +30,13 @@
 <li>OCCT ChFi3d_Builder rolling-ball construction</li>
 </ul></section>
 <section><h2>Description</h2>
-<p>AP242 `fillet` is a rolling-ball blend along a host edge. The geometric invariant: the rolling-ball radius must be strictly less than the smallest extent of every face adjacent to the filleted edge. A producer that emits a 40 mm fillet on the edge of a 30x30 mm face leaves a feature whose construction is impossible — the ball cannot fit anywhere on the host face. Receivers either clamp the radius (silently shrinking the feature), reject, or attempt construction and produce self-intersecting surfaces. Bug-reporter language: &quot;fillet doesn&#x27;t fit on face&quot;, &quot;AP242 fillet radius too large&quot;, &quot;rolling-ball larger than face&quot;.</p></section>
+<p>AP242 `fillet` is a rolling-ball blend along a host edge. The geometric invariant: the rolling-ball radius must be strictly less than the smallest extent of every face adjacent to the filleted edge. A producer that emits a 40 mm fillet on the edge of a 30x30 mm face leaves a feature whose construction is impossible; the ball cannot fit anywhere on the host face. Receivers either clamp the radius (silently shrinking the feature), reject, or attempt construction and produce self-intersecting surfaces. Bug-reporter language: &quot;fillet doesn&#x27;t fit on face&quot;, &quot;AP242 fillet radius too large&quot;, &quot;rolling-ball larger than face&quot;.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>a `SHAPE_ASPECT(&#x27;fillet&#x27;,..)` whose GISU references an EDGE_CURVE on a 30x30 mm planar face; `DIMENSIONAL_SIZE(*,&#x27;fillet_radius&#x27;)` of 40 mm (larger than the 30 mm smallest face extent).</p></section>
 <section><h2>Expected kernel behavior</h2>
 <p>reject as malformed when fillet_radius &gt;= min(face_extent_u, face_extent_v) for every adjacent face; or clamp with a stable `W_FILLET_DOES_NOT_FIT` diagnostic.</p></section>
 <section><h2>Notes</h2>
-<p>Distinct from Pmi135 (sign defect) — Pmi136 is a geometric-fit defect. Distinct from Fi001 (concavity-flip): here the construction fails on size, not topology. **See also**: Pmi135, Pmi133, Fi001. Synonyms: &quot;FILLET radius larger than face&quot;, &quot;AP242 fillet doesn&#x27;t fit&quot;, &quot;rolling-ball blend exceeds host extent&quot;, &quot;fillet too big for face&quot;.</p></section>
+<p>Distinct from Pmi135 (sign defect); Pmi136 is a geometric-fit defect. Distinct from Fi001 (concavity-flip): here the construction fails on size, not topology. **See also**: Pmi135, Pmi133, Fi001. Synonyms: &quot;FILLET radius larger than face&quot;, &quot;AP242 fillet doesn&#x27;t fit&quot;, &quot;rolling-ball blend exceeds host extent&quot;, &quot;fillet too big for face&quot;.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

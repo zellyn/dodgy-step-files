@@ -31,7 +31,7 @@
 <section><h2>Sender</h2>
 <p>Writers that build complex records by iterating an unordered set of supertype names</p></section>
 <section><h2>Description</h2>
-<p>A complex (subtype-stack) record like `(LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT(.MILLI.,.METRE.))` is re-emitted on round-trip as `(SI_UNIT(.MILLI.,.METRE.) NAMED_UNIT(*) LENGTH_UNIT())` — the same complex entity but with the supertype list reordered. Spec-conforming (the order within `(... ..)` is supertype-significant per ISO 10303-21 §11 but only by inheritance hierarchy, not by emission order); receivers that build canonical hash strings see the file as different. Bug-reporter language: &quot;subtype-stack reordered&quot;, &quot;complex entity attribute order changed&quot;, &quot;STEP round-trip permutes inheritance order&quot;.</p></section>
+<p>A complex (subtype-stack) record like `(LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT(.MILLI.,.METRE.))` is re-emitted on round-trip as `(SI_UNIT(.MILLI.,.METRE.) NAMED_UNIT(*) LENGTH_UNIT())`; the same complex entity but with the supertype list reordered. Spec-conforming (the order within `(... ..)` is supertype-significant per ISO 10303-21 §11 but only by inheritance hierarchy, not by emission order); receivers that build canonical hash strings see the file as different. Bug-reporter language: &quot;subtype-stack reordered&quot;, &quot;complex entity attribute order changed&quot;, &quot;STEP round-trip permutes inheritance order&quot;.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>`#20=(SI_UNIT(.MILLI.,.METRE.) NAMED_UNIT(*) LENGTH_UNIT());` (canonical ordering would be `LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT(..)`).</p></section>
 <section><h2>Expected kernel behavior</h2>

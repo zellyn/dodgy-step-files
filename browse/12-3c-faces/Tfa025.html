@@ -32,7 +32,7 @@
 <section><h2>Reproducer recipe</h2>
 <p>Compound where two `EDGE_CURVE`s reference the same `LINE` between identical `VERTEX_POINT`s, but live in different parents.</p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal — merge coincident edges within tolerance; rebind ancestors to the kept edge.</p></section>
+<p>heal; merge coincident edges within tolerance; rebind ancestors to the kept edge.</p></section>
 <section><h2>Notes</h2>
 <p>**See also**: Twi033. Synonyms: &quot;duplicate edges over same line and vertices&quot;, &quot;coincident edges in wireframe&quot;, &quot;same edge defined four times with duplicate underlying entities&quot;, &quot;edges sharing geometry but stored separately&quot;, &quot;edge dedup needed across patches&quot;.</p></section>
 <section><h2>Expected validation</h2>

@@ -30,7 +30,7 @@
 <section><h2>Sender</h2>
 <p>Any user with non-Western locale who saves the STEP file under a Cyrillic / Chinese / Japanese filename.</p></section>
 <section><h2>Description</h2>
-<p>The file content is well-formed Part-21 ASCII; the failure is that the importer (or its OCCT path-handling layer) cannot open the file when the filename or the path contains non-ASCII bytes that the current process locale cannot map. The receiver-side diagnostic surfaces as &quot;import error&quot; with no specific guidance. Distinct from P002 (encoding *inside* the file) — here the bytes inside the file are clean and the offending bytes are in the path the OS hands to the reader.</p></section>
+<p>The file content is well-formed Part-21 ASCII; the failure is that the importer (or its OCCT path-handling layer) cannot open the file when the filename or the path contains non-ASCII bytes that the current process locale cannot map. The receiver-side diagnostic surfaces as &quot;import error&quot; with no specific guidance. Distinct from P002 (encoding *inside* the file); here the bytes inside the file are clean and the offending bytes are in the path the OS hands to the reader.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>well-formed minimal STEP file (`MANIFOLD_SOLID_BREP` cube). The fixture filename in this repo is plain ASCII (`Ad116.stp`); the catalog entry documents that some readers fail to open the *same content* when saved as `Ножки.stp` or `床.stp`. Provenance tier: bytes-sufficient as a structural representative; the OS-level filename-handling defect is path-side, not file-content-side.</p></section>
 <section><h2>Expected kernel behavior</h2>

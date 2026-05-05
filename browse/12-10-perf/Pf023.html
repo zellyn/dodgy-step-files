@@ -29,7 +29,7 @@
 <li>11-translator-vendors.md W015</li>
 </ul></section>
 <section><h2>Description</h2>
-<p>A wire-healing pass iterates until its modification flags settle; each fix can introduce a new defect that needs another pass (e.g., reordering exposes self-intersection; closing a gap exposes a tolerance violation). Vendors document &quot;running healing twice converts splines to analytics&quot; — an admission that single-pass coverage is insufficient. Without an iteration cap, pathological inputs loop indefinitely.</p></section>
+<p>A wire-healing pass iterates until its modification flags settle; each fix can introduce a new defect that needs another pass (e.g., reordering exposes self-intersection; closing a gap exposes a tolerance violation). Vendors document &quot;running healing twice converts splines to analytics&quot;; an admission that single-pass coverage is insufficient. Without an iteration cap, pathological inputs loop indefinitely.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>STEP wire with simultaneous reorder need, 3D/2D mismatch, and self-intersecting micro-loop; run an iterative wire-healing pass with default settings.</p></section>
 <section><h2>Expected kernel behavior</h2>

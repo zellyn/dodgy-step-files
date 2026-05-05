@@ -31,13 +31,13 @@
 <section><h2>Sender</h2>
 <p>Writers with hard-coded schema-id strings that include a future or fictional version</p></section>
 <section><h2>Description</h2>
-<p>`FILE_SCHEMA((&#x27;AP242_MANAGED_MODEL_BASED_3D_ENGINEERING { 1 0 10303 442 1 99 99 }&#x27;))` — the schema name is recognised but the version tuple is unparseable or refers to a non-existent edition. Receivers either reject or ignore the version and load under the last-known compatible schema. Bug-reporter language: &quot;STEP schema version unknown&quot;, &quot;future schema version in file&quot;.</p></section>
+<p>`FILE_SCHEMA((&#x27;AP242_MANAGED_MODEL_BASED_3D_ENGINEERING { 1 0 10303 442 1 99 99 }&#x27;))`; the schema name is recognised but the version tuple is unparseable or refers to a non-existent edition. Receivers either reject or ignore the version and load under the last-known compatible schema. Bug-reporter language: &quot;STEP schema version unknown&quot;, &quot;future schema version in file&quot;.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>`FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 99 1 1 }&#x27;))` (year tuple 99 is implausible).</p></section>
 <section><h2>Expected kernel behavior</h2>
 <p>warn on unrecognised schema version and either reject or load under the closest known schema with a diagnostic; never silently treat unknown as known.</p></section>
 <section><h2>Notes</h2>
-<p>Cousin of Lh004-class. **OCC behavior**: silently accepts the unparseable schema-version tuple (no warning); kernel mishandling — the catalog above forbids treating unknown as known.</p></section>
+<p>Cousin of Lh004-class. **OCC behavior**: silently accepts the unparseable schema-version tuple (no warning); kernel mishandling; the catalog above forbids treating unknown as known.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">

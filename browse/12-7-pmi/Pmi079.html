@@ -28,7 +28,7 @@
 <li>OCCT MANTIS#0027313 (OCCT MANTIS tracker 502 as of 2026-05-02)</li>
 </ul></section>
 <section><h2>Description</h2>
-<p>A dimension PMI is created in the source CAD tool, imported correctly, but lost on a subsequent export — the writer&#x27;s GD&amp;T emitter does not iterate the document&#x27;s full attribute tree.</p></section>
+<p>A dimension PMI is created in the source CAD tool, imported correctly, but lost on a subsequent export; the writer&#x27;s GD&amp;T emitter does not iterate the document&#x27;s full attribute tree.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>Document with two PMI dimensions; only one attached to a face directly, the other attached via `SHAPE_ASPECT`. Write STEP. Output has only the face-attached dimension.</p></section>
 <section><h2>Expected kernel behavior</h2>

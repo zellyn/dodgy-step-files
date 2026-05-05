@@ -29,13 +29,13 @@
 <section><h2>Sender</h2>
 <p>Solid Edge (mm)</p></section>
 <section><h2>Description</h2>
-<p>STEP written from Solid Edge with `LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT(.MILLI., .METRE.)` plus a small `UNCERTAINTY_MEASURE_WITH_UNIT` (e.g. 0.001 mm) and coordinates in mm (e.g. 100×50 mm extents) is interpreted by Inventor as base SI (metre), giving an imported part 1000 times bigger than expected after the unit conversion. Receiver ignores the producer&#x27;s `LENGTH_UNIT` context (and any auxiliary `DIMENSIONAL_EXPONENTS` instance) and defaults to base SI.</p></section>
+<p>STEP written from Solid Edge with `LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT(.MILLI., .METRE.)` plus a small `UNCERTAINTY_MEASURE_WITH_UNIT` (e.g. 0.001 mm) and coordinates in mm (e.g. 100×50 mm extents) is interpreted by Inventor as base SI (metre), giving an imported part 1000 times bigger than expected after the unit conversion. The receiver ignores the producer&#x27;s `LENGTH_UNIT` context (and any auxiliary `DIMENSIONAL_EXPONENTS` instance) and defaults to base SI.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>`GEOMETRIC_REPRESENTATION_CONTEXT` whose units list contains `(LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT(.MILLI., .METRE.))`; coordinates encoded as raw mm; reader that strips the prefix and treats the number as metres.</p></section>
 <section><h2>Expected kernel behavior</h2>
 <p>reject default-to-base; honour `SI_UNIT.prefix`; never silently rescale because the reader expected another unit.</p></section>
 <section><h2>Notes</h2>
-<p>**See also**: U002, U003, U015. **OCC behavior**: silently accepts the millimetre-prefixed file with no scale-mismatch diagnostic — the surrounding tooling pipeline is what mis-reads; kernel mishandling — the catalog above forbids silent rescaling. Synonyms: &quot;Solid Edge mm imported as meters 1000x bigger&quot;, &quot;Inventor reads STEP mm as metres&quot;, &quot;STEP imported 1000 times too large&quot;, &quot;mm prefix ignored on STEP import&quot;, &quot;MILLI METRE silently treated as METRE&quot;.</p></section>
+<p>**See also**: U002, U003, U015. **OCC behavior**: silently accepts the millimetre-prefixed file with no scale-mismatch diagnostic. The surrounding tooling pipeline is what mis-reads; the catalog above forbids silent rescaling. Synonyms: &quot;Solid Edge mm imported as meters 1000x bigger&quot;, &quot;Inventor reads STEP mm as metres&quot;, &quot;STEP imported 1000 times too large&quot;, &quot;mm prefix ignored on STEP import&quot;, &quot;MILLI METRE silently treated as METRE&quot;.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">

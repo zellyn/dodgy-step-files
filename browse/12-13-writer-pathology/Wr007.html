@@ -36,7 +36,7 @@
 <section><h2>Expected kernel behavior</h2>
 <p>reject as malformed with a diagnostic that names the offending attribute and column; do not silently accept comma-decimals because that makes the failure mode geometric rather than syntactic.</p></section>
 <section><h2>Notes</h2>
-<p>Le023 covers this from the read side; Wr007 documents the producer-side root cause. **OCC behavior**: silently accepts the malformed file (no diagnostic, empty result) — kernel mishandling is the documented signal here; the catalog claim above describes the desired future behavior, not what OCC does today.</p></section>
+<p>Le023 covers this from the read side; Wr007 documents the producer-side root cause. **OCC behavior**: silently accepts the malformed file (no diagnostic, empty result); kernel mishandling is the documented signal here; the catalog claim above describes the desired future behavior, not what OCC does today.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">

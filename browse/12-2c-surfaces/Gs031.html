@@ -31,7 +31,7 @@
 <section><h2>Reproducer recipe</h2>
 <p>Take a trimmed face F1 on surface S1; build F2 on different surface S2 by reprojecting every edge of F1 onto S2 without first deduplicating the outer wire.</p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>a face-construction or rehosting pass must ensure exactly one outer wire per face — merge duplicates or reject. A multiply-traced outer wire produces ambiguous parametric trims.</p></section>
+<p>a face-construction or rehosting pass must ensure exactly one outer wire per face; merge duplicates or reject. A multiply-traced outer wire produces ambiguous parametric trims.</p></section>
 <section><h2>Notes</h2>
 <p>**See also**: Gp014. Synonyms: &quot;ADVANCED_FACE has two FACE_OUTER_BOUND entries&quot;, &quot;duplicated outer contour with overlapping pcurves&quot;, &quot;face has two outer wires&quot;, &quot;outer boundary stored twice&quot;, &quot;rehosting face onto new surface duplicates wire&quot;.</p></section>
 <section><h2>Expected validation</h2>

@@ -29,7 +29,7 @@
 <li>OCCT MANTIS#0033631 (OCCT MANTIS tracker 502 as of 2026-05-02)</li>
 </ul></section>
 <section><h2>Description</h2>
-<p>A STEP entity&#x27;s numeric parameter contains a malformed value — empty string where a number is expected, comma-separated triple where two are expected, scientific notation with non-digit exponent. Reader&#x27;s parameter-conversion crashes via an out-of-range error or uncaught numeric-parse exception.</p></section>
+<p>A STEP entity&#x27;s numeric parameter contains a malformed value; empty string where a number is expected, comma-separated triple where two are expected, scientific notation with non-digit exponent. Reader&#x27;s parameter-conversion crashes via an out-of-range error or uncaught numeric-parse exception.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>`CARTESIAN_POINT(&#x27;&#x27;,(1.0, , 3.0))` (empty middle); `CARTESIAN_POINT(&#x27;&#x27;,(1.0,2.0,3.0,4.0))` (extra value); `LINE` with `VECTOR` magnitude `&#x27;1e+&#x27;` (incomplete exponent).</p></section>
 <section><h2>Expected kernel behavior</h2>

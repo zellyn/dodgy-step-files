@@ -33,7 +33,7 @@
 <section><h2>Reproducer recipe</h2>
 <p>STEP with `UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.027352…), …, &#x27;distance_accuracy_value&#x27;, &#x27;&#x27;)` on geometry actually accurate to 1e-6.</p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal — cap reported tolerance against geometric tightness measured from the actual model; offer override; default to `read.precision.val` parameter when uncertainty is missing or implausible.</p></section>
+<p>heal; cap reported tolerance against geometric tightness measured from the actual model; offer override; default to `read.precision.val` parameter when uncertainty is missing or implausible.</p></section>
 <section><h2>Notes</h2>
 <p>**See also**: N019. Synonyms: &quot;uncertainty value looks like template default&quot;, &quot;constant 0.027352 tolerance from exporter&quot;, &quot;uncertainty is fixed default not real precision&quot;, &quot;writer emits placeholder tolerance value&quot;.</p></section>
 <section><h2>Expected validation</h2>

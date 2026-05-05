@@ -30,11 +30,11 @@
 <section><h2>Sender</h2>
 <p>German-locale CAD authoring tools (Catia / NX / Solid Edge German installs) that emit Ed.2 STEP with raw ISO-8859-1 bytes for `PRODUCT.name` like `&#x27;Schrägverzahnt&#x27;`.</p></section>
 <section><h2>Description</h2>
-<p>A producer emits Ed.2-style STEP where `&#x27;ä&#x27;` appears as raw byte `0xE4` inside the string literal — schema-legal under the Ed.2 default of ISO-8859-1. The current reader assumes Ed.3 UTF-8, sees an isolated continuation byte, and either replaces with `?`, drops the character, or (in older builds) overruns into the next byte and corrupts the string. The producer&#x27;s intent is preserved on disk; the receiver mangles it on import.</p></section>
+<p>A producer emits Ed.2-style STEP where `&#x27;ä&#x27;` appears as raw byte `0xE4` inside the string literal; schema-legal under the Ed.2 default of ISO-8859-1. The current reader assumes Ed.3 UTF-8, sees an isolated continuation byte, and either replaces with `?`, drops the character, or (in older builds) overruns into the next byte and corrupts the string. The producer&#x27;s intent is preserved on disk; the receiver mangles it on import.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>`#100=PRODUCT(&#x27;Schr\xe4gverzahnt&#x27;,&#x27;&#x27;,&#x27;&#x27;,(#101));` — the bytes `0xE4` should decode to `ä` per Ed.2 default; UTF-8-only readers misinterpret.</p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal-and-accept — inspect `FILE_DESCRIPTION`&#x27;s `implementation_level` and conformance class to determine edition; on Ed.2, decode high-bit bytes as ISO-8859-1; on Ed.3, decode as UTF-8 and reject isolated continuation bytes with `E_BAD_UTF8`.</p></section>
+<p>heal-and-accept; inspect `FILE_DESCRIPTION`&#x27;s `implementation_level` and conformance class to determine edition; on Ed.2, decode high-bit bytes as ISO-8859-1; on Ed.3, decode as UTF-8 and reject isolated continuation bytes with `E_BAD_UTF8`.</p></section>
 <section><h2>Notes</h2>
 <p>**See also**: Le002, Le021. Synonyms: &quot;bug in OCC with german letter&quot;, &quot;umlaut in PRODUCT.name garbled&quot;, &quot;ISO-8859-1 ä misread as UTF-8 by STEP reader&quot;, &quot;high-bit byte mis-decoded in part name&quot;.</p></section>
 <section><h2>Expected validation</h2>

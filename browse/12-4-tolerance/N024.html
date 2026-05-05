@@ -31,7 +31,7 @@
 <section><h2>Reproducer recipe</h2>
 <p>Translate one host face of an edge by a small offset without rebuilding the edge; compare `BRepAdaptor_Curve(edge)` to `IntPatch_Intersection(s1, s2)` — they diverge.</p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal — `rebuild-edge` re-intersects host faces and rebuilds vertices; vertex-freezing flag handles near-tangential cases.</p></section>
+<p>heal; `rebuild-edge` re-intersects host faces and rebuilds vertices; vertex-freezing flag handles near-tangential cases.</p></section>
 <section><h2>Notes</h2>
 <p>**See also**: Gs030. Synonyms: &quot;edge curve stale after face moved&quot;, &quot;LINE is at old position after face translate&quot;, &quot;edit moved face but edge geometry didn&#x27;t follow&quot;, &quot;two planes exist but edge still on old one&quot;, &quot;edge curve doesn&#x27;t match host face intersection&quot;.</p></section>
 <section><h2>Expected validation</h2>

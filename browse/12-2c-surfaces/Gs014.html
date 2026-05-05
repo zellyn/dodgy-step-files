@@ -27,7 +27,7 @@
 <li>F024, F025, F026, F027, R017, W004, W020, L004, L011, M002, H013, H014, H049, H077, H094, H104, H105</li>
 </ul></section>
 <section><h2>Description</h2>
-<p>Family of degenerate `ADVANCED_FACE` defects: spot (face collapses to a point, e.g. from Pro/E export rounding), strip (one parametric direction is near-zero), pin / sliver (extreme aspect ratio — for example a rectangle on a `PLANE` 100 units wide but only 1e-7 units tall, width many orders of magnitude smaller than length and within distance tolerance), and zero-area faces with collinear vertices. The underlying surface may be well-defined; the face&#x27;s trim collapses the area.</p></section>
+<p>Family of degenerate `ADVANCED_FACE` defects: spot (face collapses to a point, e.g. from Pro/E export rounding), strip (one parametric direction is near-zero), pin / sliver (extreme aspect ratio; for example a rectangle on a `PLANE` 100 units wide but only 1e-7 units tall, width many orders of magnitude smaller than length and within distance tolerance), and zero-area faces with collinear vertices. The underlying surface may be well-defined; the face&#x27;s trim collapses the area.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>4-edge `ADVANCED_FACE` whose two long sides are 100mm and two short sides are 1e-7 mm; or `PLANE` whose ref direction equals normal direction (zero-area on construction); or face with all vertices within tolerance ball.</p></section>
 <section><h2>Expected kernel behavior</h2>

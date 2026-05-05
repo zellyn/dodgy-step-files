@@ -28,7 +28,7 @@
 <li>04-occt-translation.md Q028, Q029</li>
 </ul></section>
 <section><h2>Description</h2>
-<p>A STEP compound contains free wires or edges with no parent face — wireframe content with no surface model. Related cases: `EDGE_BASED_WIREFRAME_MODEL` / `FACE_BASED_SURFACE_MODEL` instances with empty content. A receiver expecting solid or surface bodies needs to handle these as wireframe-only assets.</p></section>
+<p>A STEP compound contains free wires or edges with no parent face; wireframe content with no surface model. Related cases: `EDGE_BASED_WIREFRAME_MODEL` / `FACE_BASED_SURFACE_MODEL` instances with empty content. A receiver expecting solid or surface bodies needs to handle these as wireframe-only assets.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>STEP compound containing only `ORIENTED_EDGE` with no parent face; or empty wireframe model.</p></section>
 <section><h2>Expected kernel behavior</h2>

@@ -36,7 +36,7 @@
 <section><h2>Reproducer recipe</h2>
 <p>A topologically closed shell whose root entity in `ADVANCED_BREP_SHAPE_REPRESENTATION` is `SHELL_BASED_SURFACE_MODEL → OPEN_SHELL` instead of `MANIFOLD_SOLID_BREP → CLOSED_SHELL`.</p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal — promote to closed shell when topology proves closure; sew within scaled tolerance and try `MakeSolid`; do not rely solely on entity type.</p></section>
+<p>heal; promote to closed shell when topology proves closure; sew within scaled tolerance and try `MakeSolid`; do not rely solely on entity type.</p></section>
 <section><h2>Notes</h2>
 <p>Synonyms: &quot;closed solid emitted as OPEN_SHELL&quot;, &quot;solid demoted to sheet body&quot;, &quot;manifold solid as shell-based-surface-model&quot;, &quot;solid expected but open shell found&quot;. **See also**: P015.</p></section>
 <section><h2>Expected validation</h2>

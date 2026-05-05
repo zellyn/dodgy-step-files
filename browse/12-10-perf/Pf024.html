@@ -29,7 +29,7 @@
 <li>OCCT ea1114e)</li>
 </ul></section>
 <section><h2>Description</h2>
-<p>Intersection-healing algorithm could infinite-loop on certain edges because a split-index range check was missing. Common trigger: an `EDGE_LOOP` with self-intersecting diagonals — for example four edges A→C, B→D, A→B, C→D in cross order forming an X-shape — exercises the missing bound on the split index.</p></section>
+<p>Intersection-healing algorithm could infinite-loop on certain edges because a split-index range check was missing. Common trigger: an `EDGE_LOOP` with self-intersecting diagonals; for example four edges A→C, B→D, A→B, C→D in cross order forming an X-shape — exercises the missing bound on the split index.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>face whose intersection-tool encounters out-of-range split.</p></section>
 <section><h2>Expected kernel behavior</h2>

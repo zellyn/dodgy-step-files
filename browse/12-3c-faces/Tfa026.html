@@ -33,7 +33,7 @@
 <section><h2>Reproducer recipe</h2>
 <p>`#157=OFFSET_SURFACE(&#x27;&#x27;,#288,20.0,.F.);` where `#288=(BOUNDED_SURFACE() B_SPLINE_SURFACE() ..)` complex aggregate.</p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>accept — UIso/VIso evaluation must descend through offset/extrusion wrappers; emit warning that offset surface is out of AP214 scope; do not crash on indirect chain.</p></section>
+<p>accept; UIso/VIso evaluation must descend through offset/extrusion wrappers; emit warning that offset surface is out of AP214 scope; do not crash on indirect chain.</p></section>
 <section><h2>Notes</h2>
 <p>**See also**: Gn021. Synonyms: &quot;offset surface used out of AP214 scope&quot;, &quot;offset on top of B-spline base fails translation&quot;, &quot;offset of extrusion surface throws exception&quot;, &quot;compound offset surface chain unsupported&quot;.</p></section>
 <section><h2>Expected validation</h2>

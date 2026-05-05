@@ -31,7 +31,7 @@
 <section><h2>Sender</h2>
 <p>FreeCAD 1.0RC2 (and earlier stretches): export pipeline emits a file that the import pipeline of the same build silently rejects.</p></section>
 <section><h2>Description</h2>
-<p>A file authored in build N, exported as STEP from build N, and re-imported into build N produces zero geometry — yet the same file imports cleanly into build N-1. The signature is a `SHAPE_REPRESENTATION` whose `AXIS2_PLACEMENT_3D` first attribute (`location`) refers to a `CARTESIAN_POINT` that was emitted *after* the `SHAPE_REPRESENTATION` in the file but referenced from within (forward reference is legal per ISO 10303-21 §11 but the build-N reader has a regression in its forward-reference resolver).</p></section>
+<p>A file authored in build N, exported as STEP from build N, and re-imported into build N produces zero geometry; yet the same file imports cleanly into build N-1. The signature is a `SHAPE_REPRESENTATION` whose `AXIS2_PLACEMENT_3D` first attribute (`location`) refers to a `CARTESIAN_POINT` that was emitted *after* the `SHAPE_REPRESENTATION` in the file but referenced from within (forward reference is legal per ISO 10303-21 §11 but the build-N reader has a regression in its forward-reference resolver).</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>STEP file where `#10=SHAPE_REPRESENTATION(&#x27;part&#x27;,(#100),#101);` appears before `#100=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#150,#151,#152);` and `#150=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));` — every reference is forward-only.</p></section>
 <section><h2>Expected kernel behavior</h2>

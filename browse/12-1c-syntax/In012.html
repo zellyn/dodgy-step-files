@@ -27,7 +27,7 @@
 <li>OCCT Transfer_TransferDeadLoop.hxx (uncovered class evidence)</li>
 </ul></section>
 <section><h2>Sender</h2>
-<p>deduced — OCCT uncovered-class sweep, Pass C</p></section>
+<p>deduced — OCCT uncovered-class sweep</p></section>
 <section><h2>Description</h2>
 <p>The transfer engine detects a dependency cycle (entity A references B references C references A) and raises a dead-loop exception. Bug-reporter language: &quot;STEP file has cycle&quot;, &quot;circular reference&quot;, &quot;kernel detects loop&quot;.</p></section>
 <section><h2>Reproducer recipe</h2>
@@ -35,7 +35,7 @@
 <section><h2>Expected kernel behavior</h2>
 <p>Detect cycle; reject the file; emit the cycle path in the diagnostic.</p></section>
 <section><h2>Notes</h2>
-<p>Synonyms: &quot;circular dependency&quot;, &quot;STEP cycle&quot;. Provenance tier: runtime-only — the bytes can encode a reference cycle, but the catalogued defect is the kernel&#x27;s transfer-time watchdog firing (or failing to fire). Whether the kernel produces the dead-loop diagnostic vs. recursing forever is a runtime behavior, not a property of the file content. A behavioral test against a transfer engine is the appropriate venue. Synonyms: &quot;STEP entity reference cycle&quot;, &quot;circular references in STEP DATA&quot;, &quot;kernel detects loop in STEP&quot;, &quot;watchdog fires on STEP cycle&quot;, &quot;dependency cycle entity references&quot;.</p></section>
+<p>Synonyms: &quot;circular dependency&quot;, &quot;STEP cycle&quot;. Provenance tier: runtime-only; the bytes can encode a reference cycle, but the catalogued defect is the kernel&#x27;s transfer-time watchdog firing (or failing to fire). Whether the kernel produces the dead-loop diagnostic vs. recursing forever is a runtime behavior, not a property of the file content. A behavioral test against a transfer engine is the appropriate venue. Synonyms: &quot;STEP entity reference cycle&quot;, &quot;circular references in STEP DATA&quot;, &quot;kernel detects loop in STEP&quot;, &quot;watchdog fires on STEP cycle&quot;, &quot;dependency cycle entity references&quot;.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Provenance tier</h2>

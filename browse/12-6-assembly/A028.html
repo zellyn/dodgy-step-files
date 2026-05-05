@@ -32,7 +32,7 @@
 <section><h2>Expected kernel behavior</h2>
 <p>maintain stable identifiers across simplification; merge multiple features into one but preserve the union of their face/edge/vertex IDs as aliases; explicit traceable mapping data structure between CAD and engineering-model entities.</p></section>
 <section><h2>Notes</h2>
-<p>**See also**: N044. **OCC behavior**: emits a diagnostic but produces no shape (warn-and-proceed by oracle, but result is empty); outside catalog&#x27;s allowed set ({heal}). Kernel-bug witnessed: catalog asks for healing; OCC neither heals nor rejects — the input is dropped on the floor without diagnostic. Synonyms: &quot;defeaturing for CAE drops references to original geometry&quot;, &quot;simplified mesh loses link to source PMI&quot;, &quot;downstream tool can&#x27;t trace back to original part&quot;, &quot;reference loss when feature suppressed for analysis&quot;.</p></section>
+<p>**See also**: N044. **OCC behavior**: emits a diagnostic but produces no shape (warn-and-proceed by oracle, but result is empty); outside catalog&#x27;s allowed set ({heal}). Kernel-bug witnessed: catalog asks for healing; OCC neither heals nor rejects; the input is dropped on the floor without diagnostic. Synonyms: &quot;defeaturing for CAE drops references to original geometry&quot;, &quot;simplified mesh loses link to source PMI&quot;, &quot;downstream tool can&#x27;t trace back to original part&quot;, &quot;reference loss when feature suppressed for analysis&quot;.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">

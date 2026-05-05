@@ -31,7 +31,7 @@
 <section><h2>Reproducer recipe</h2>
 <p>Two `LENGTH_UNIT` records — one bound to the `GEOMETRIC_REPRESENTATION_CONTEXT` (mm), one bound to the `UNCERTAINTY_MEASURE_WITH_UNIT` (m). Coordinates in mm.</p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>Heal and accept: normalize the unit-binding policy for tolerance per spec — each `UNCERTAINTY_MEASURE_WITH_UNIT` carries its own unit, and receivers convert / coerce before comparing to coordinates.</p></section>
+<p>Heal and accept: normalize the unit-binding policy for tolerance per spec; each `UNCERTAINTY_MEASURE_WITH_UNIT` carries its own unit, and receivers convert / coerce before comparing to coordinates.</p></section>
 <section><h2>Notes</h2>
 <p>**See also**: U001. Searchable as &quot;tolerance in wrong units&quot;,. Synonyms: &quot;tolerance in different unit from coordinates&quot;, &quot;uncertainty unit doesn&#x27;t match length unit&quot;, &quot;tolerance specified in mm but coordinates in m&quot;, &quot;unit mismatch between tolerance and geometry&quot;. &quot;STEP file 1000× too tight or too loose&quot;.</p></section>
 <section><h2>Expected validation</h2>

@@ -29,7 +29,7 @@
 <li>09-healing-menus.md</li>
 </ul></section>
 <section><h2>Description</h2>
-<p>The edges in an `EDGE_LOOP` are emitted in arbitrary order — the head/tail vertices of consecutive entries do not match, but the edges as a set can be reordered into a valid head-to-tail traversal. Common with Pro/E composite-curve segments where the exporter writes edges in arbitrary slot order.</p></section>
+<p>The edges in an `EDGE_LOOP` are emitted in arbitrary order; the head/tail vertices of consecutive entries do not match, but the edges as a set can be reordered into a valid head-to-tail traversal. Common with Pro/E composite-curve segments where the exporter writes edges in arbitrary slot order.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>STEP face whose `EDGE_LOOP` lists edges in non-traversal order; vertices common but not adjacent.</p></section>
 <section><h2>Expected kernel behavior</h2>

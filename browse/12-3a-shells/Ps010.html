@@ -28,7 +28,7 @@
 <li>bug-report patterns &quot;wire goes the wrong way&quot;, &quot;loop traversed backwards&quot;, &quot;edge orientation flag inverted&quot;</li>
 </ul></section>
 <section><h2>Description</h2>
-<p>A planar face with a square outer loop. Each underlying EDGE_CURVE is constructed so its 3D direction matches the intended CCW traversal — but every ORIENTED_EDGE on that loop has orientation=.F., reversing each one. Adjacent endpoints still match (the loop closes), every edge has degree 2, kernel accepts the file silently. Tier-3 introspection (signed-area of the loop in the face&#x27;s parametric domain vs. surface normal) reveals the loop traverses CW where CCW was intended.</p></section>
+<p>A planar face with a square outer loop. Each underlying EDGE_CURVE is constructed so its 3D direction matches the intended CCW traversal; but every ORIENTED_EDGE on that loop has orientation=.F., reversing each one. Adjacent endpoints still match (the loop closes), every edge has degree 2, kernel accepts the file silently. Tier-3 introspection (signed-area of the loop in the face&#x27;s parametric domain vs. surface normal) reveals the loop traverses CW where CCW was intended.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>Square face at z=0 with vertices at (0,0), (1,0), (1,1), (0,1). Four EDGE_CURVEs whose underlying LINE direction vectors trace the CCW path. Four ORIENTED_EDGEs each with orientation=.F. EDGE_LOOP composed of those four.</p></section>
 <section><h2>Expected kernel behavior</h2>

@@ -27,18 +27,18 @@
 <li>03-occt-tests.md (R081 bug23944)</li>
 </ul></section>
 <section><h2>Description</h2>
-<p>A high-degree (e.g. degree-9) univariate `B_SPLINE_CURVE_WITH_KNOTS` with ~10 clamped control points (knot vector with multiplicities (10,10) — a full-degree Bezier-ish curve) that downstream tooling must reduce/restrict in degree. A historical typo in the restriction parameters produced surfaces that did not achieve the requested continuity even though the API reported success. Direct hazard: kernels that trust the restriction output ship sub-spec geometry downstream.</p></section>
+<p>A high-degree (e.g. degree-9) univariate `B_SPLINE_CURVE_WITH_KNOTS` with ~10 clamped control points (knot vector with multiplicities (10,10); a full-degree Bezier-ish curve) that downstream tooling must reduce/restrict in degree. A historical typo in the restriction parameters produced surfaces that did not achieve the requested continuity even though the API reported success. Direct hazard: kernels that trust the restriction output ship sub-spec geometry downstream.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>Pass a degree-9 BSpline through `ShapeCustom_BSplineRestriction` requesting C2 continuity at degree 3; verify resulting surface continuity.</p></section>
 <section><h2>Expected kernel behavior</h2>
 <p>Reject when continuity not achievable: BSpline restriction must achieve the requested continuity exactly or fail loudly; never silently accept sub-spec output.</p></section>
 <section><h2>Notes</h2>
-<p>Synonyms: &quot;high-degree clamped B-spline degree restriction&quot;, &quot;BSpline restriction silently fails to achieve requested continuity&quot;, &quot;degree-9 reduction does not honor C2 request&quot;, &quot;BSpline degree-restriction post-condition not met&quot;, &quot;degree restriction returns sub-spec curve&quot;.</p></section>
+<p>**See also**: Gn011. Synonyms: &quot;high-degree clamped B-spline degree restriction&quot;, &quot;BSpline restriction silently fails to achieve requested continuity&quot;, &quot;degree-9 reduction does not honor C2 request&quot;, &quot;BSpline degree-restriction post-condition not met&quot;, &quot;degree restriction returns sub-spec curve&quot;.- **Byte assertion**: contains(b&#x27;B_SPLINE_CURVE&#x27;)</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
-<section><h2>Byte assertions</h2><ul class="assertions">
-<li><code>contains(b&#x27;B_SPLINE_CURVE&#x27;)</code></li>
-</ul></section>
+<section><h2>Cross-references</h2>
+<p><a href="Gn011.html">Gn011</a></p>
+</section>
 <section><h2>Live oracle output</h2>
 <table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
 <tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
@@ -52,14 +52,14 @@
 </section>
 <section><h2>Fixture content</h2>
 <details>
-<summary>Show fixture bytes (with defect highlighting)</summary>
+<summary>Show fixture bytes</summary>
 <pre class="fixture-bytes"><span class="lineno">1</span>/* Gn026 - BSpline-restriction approximation correctness (typo bug)
 <span class="lineno">2</span>   Defect (input side): a high-degree BSpline that, when passed through
 <span class="lineno">3</span>   ShapeCustom_BSplineRestriction targeting degree 3 with C2 continuity,
 <span class="lineno">4</span>   may NOT actually achieve C2 due to a historical typo in
 <span class="lineno">5</span>   ShapeCustom_RestrictionParameters.  Direct hazard: kernels that trust
 <span class="lineno">6</span>   the restriction output ship sub-spec geometry downstream.
-<span class="lineno">7</span>   This file is the input: degree-9 single Bezier-style <mark>B_SPLINE_CURVE</mark>_WITH_KNOTS
+<span class="lineno">7</span>   This file is the input: degree-9 single Bezier-style B_SPLINE_CURVE_WITH_KNOTS
 <span class="lineno">8</span>   with a bend.  Verifier should compare requested-vs-achieved continuity
 <span class="lineno">9</span>   on the restriction output. */
 <span class="lineno">10</span>ISO-10303-21;
@@ -83,7 +83,7 @@
 <span class="lineno">28</span>#17=CARTESIAN_POINT(&#x27;p7&#x27;,( 7.0,-1.0, 0.0));
 <span class="lineno">29</span>#18=CARTESIAN_POINT(&#x27;p8&#x27;,( 8.0,-0.5, 0.0));
 <span class="lineno">30</span>#19=CARTESIAN_POINT(&#x27;p9&#x27;,( 9.0, 0.0, 0.0));
-<span class="lineno">31</span>#100=<mark>B_SPLINE_CURVE</mark>_WITH_KNOTS(&#x27;deg9_for_restrict&#x27;,9,
+<span class="lineno">31</span>#100=B_SPLINE_CURVE_WITH_KNOTS(&#x27;deg9_for_restrict&#x27;,9,
 <span class="lineno">32</span>  (#10,#11,#12,#13,#14,#15,#16,#17,#18,#19),
 <span class="lineno">33</span>  .UNSPECIFIED.,.F.,.F.,
 <span class="lineno">34</span>  (10,10),

@@ -32,9 +32,9 @@
 <section><h2>Reproducer recipe</h2>
 <p>Full revolution face on `CYLINDRICAL_SURFACE` (angular span 2π).</p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal — split into N faces (configurable angular cap); preserve the underlying surface; insert seam edges between segments.</p></section>
+<p>heal; split into N faces (configurable angular cap); preserve the underlying surface; insert seam edges between segments.</p></section>
 <section><h2>Notes</h2>
-<p>**See also**: Tfa013. Provenance tier: runtime-only — the bytes encode a valid full-revolution face with a doubled seam edge, but the catalogued defect is the kernel&#x27;s split-angle healing pass behavior (whether and how it subdivides the face). The healing decision and its quality manifest only at kernel runtime; the static fixture encodes only the trigger geometry. Synonyms: &quot;cylinder face uses one seam edge twice&quot;, &quot;full revolution face spans 360 degrees&quot;, &quot;split_angle exceeded on revolved face&quot;, &quot;single seam in EDGE_LOOP appears with both .T. and .F.&quot;, &quot;downstream mesher fails on full revolution face&quot;.</p></section>
+<p>**See also**: Tfa013. Provenance tier: runtime-only; the bytes encode a valid full-revolution face with a doubled seam edge, but the catalogued defect is the kernel&#x27;s split-angle healing pass behavior (whether and how it subdivides the face). The healing decision and its quality manifest only at kernel runtime; the static fixture encodes only the trigger geometry. Synonyms: &quot;cylinder face uses one seam edge twice&quot;, &quot;full revolution face spans 360 degrees&quot;, &quot;split_angle exceeded on revolved face&quot;, &quot;single seam in EDGE_LOOP appears with both .T. and .F.&quot;, &quot;downstream mesher fails on full revolution face&quot;.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(6) ifc=schema_n/a</code></p></section>
 <section><h2>Provenance tier</h2>

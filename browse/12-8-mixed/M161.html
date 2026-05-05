@@ -34,7 +34,7 @@
 <section><h2>Reproducer recipe</h2>
 <p>Valid STEP file in which one `EDGE_CURVE` references `#9999` (not defined). Reader imports without diagnostic; the resulting edge has no underlying curve.</p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>reject — every reference resolved during deserialisation is checked against the entity table; emit `E_DANGLING_REFERENCE` with offset of the offending reference; do not proceed with partial geometry.</p></section>
+<p>reject; every reference resolved during deserialisation is checked against the entity table; emit `E_DANGLING_REFERENCE` with offset of the offending reference; do not proceed with partial geometry.</p></section>
 <section><h2>Notes</h2>
 <p>**See also**: Ad117, M165. Synonyms: &quot;STEP reader does not check wrong data&quot;, &quot;dangling references silently accepted&quot;, &quot;no cross-reference validation in IGES/STEP&quot;, &quot;missing input validation in reader&quot;.</p></section>
 <section><h2>Expected validation</h2>

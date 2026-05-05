@@ -29,7 +29,7 @@
 <section><h2>Sender</h2>
 <p>ProSTEP UG ug_exhaust-A.stp #284920</p></section>
 <section><h2>Description</h2>
-<p>Pcurves of an entire wire on a `CYLINDRICAL_SURFACE` (or other periodic surface) are shifted by an integer multiple of the surface period — for example a pcurve `LINE` whose start U coordinate is 12.566 (= 4π) on a radius-5 cylinder, more than 2π outside the canonical [0, 2π) seam range. The wire&#x27;s UV image is correctly shaped but offset by 2π (or 4π) in U from where it should be. The whole contour is in the wrong period band; a re-alignment pass that does not produce a single coherent band leaves the wire un-meshable.</p></section>
+<p>Pcurves of an entire wire on a `CYLINDRICAL_SURFACE` (or other periodic surface) are shifted by an integer multiple of the surface period; for example a pcurve `LINE` whose start U coordinate is 12.566 (= 4π) on a radius-5 cylinder, more than 2π outside the canonical [0, 2π) seam range. The wire&#x27;s UV image is correctly shaped but offset by 2π (or 4π) in U from where it should be. The whole contour is in the wrong period band; a re-alignment pass that does not produce a single coherent band leaves the wire un-meshable.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>Cylinder face; wire with edges whose pcurves trace U in [4π, 6π] instead of [0, 2π], with otherwise correct shape.</p></section>
 <section><h2>Expected kernel behavior</h2>

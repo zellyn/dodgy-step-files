@@ -26,7 +26,7 @@
 <li>06-nist-sfa S015, 07-stepcode-ifcopenshell T030</li>
 </ul></section>
 <section><h2>Description</h2>
-<p>Edition 3 introduces three optional sections: ANCHOR (named external entry points), REFERENCE (named external links via URI), SIGNATURE (digital signature). `implementation_level` becomes `&#x27;4;1&#x27;`. Older Edition-2 readers either fail to parse the sections, or strip and re-parse, or warn-and-skip — behavior is implementation-defined.</p></section>
+<p>Edition 3 introduces three optional sections: ANCHOR (named external entry points), REFERENCE (named external links via URI), SIGNATURE (digital signature). `implementation_level` becomes `&#x27;4;1&#x27;`. Older Edition-2 readers either fail to parse the sections, or strip and re-parse, or warn-and-skip; behavior is implementation-defined.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>`HEADER;..ENDSEC;ANCHOR;&lt;a&gt;=#1;ENDSEC;DATA;..` or add a SIGNATURE section after DATA.</p></section>
 <section><h2>Expected kernel behavior</h2>

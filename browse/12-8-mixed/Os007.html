@@ -27,9 +27,9 @@
 <li>OCCT BRepOffset_MakeOffset.cxx:4518 (CannotExtentEdge) (uncovered class evidence)</li>
 </ul></section>
 <section><h2>Sender</h2>
-<p>deduced — OCCT uncovered-class sweep, Pass C</p></section>
+<p>deduced — OCCT uncovered-class sweep</p></section>
 <section><h2>Description</h2>
-<p>An offset edge needs to be extended past its source endpoints to meet a neighbouring offset edge, but the underlying curve cannot be evaluated outside its domain (e.g., the curve is a B_SPLINE_CURVE_WITH_KNOTS with clamped boundary knots — multiplicity equal to degree+1 at both ends — so the curve has no analytic extrapolation). Bug-reporter language: &quot;can&#x27;t extend offset edge&quot;, &quot;offset edge runs out&quot;, &quot;clamped B-spline cannot extend&quot;.</p></section>
+<p>An offset edge needs to be extended past its source endpoints to meet a neighbouring offset edge, but the underlying curve cannot be evaluated outside its domain (e.g., a `B_SPLINE_CURVE_WITH_KNOTS` with clamped boundary knots, multiplicity equal to degree+1 at both ends, has no analytic extrapolation).</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>A B_SPLINE_CURVE_WITH_KNOTS with clamped boundary (e.g., degree 2, 3 control points, knot multiplicities (3,3) at (0.0, 1.0)) used as an EDGE_CURVE; offset request requires extension past the trim domain.</p></section>
 <section><h2>Expected kernel behavior</h2>

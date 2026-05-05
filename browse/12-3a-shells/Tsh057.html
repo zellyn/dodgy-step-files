@@ -29,7 +29,7 @@
 <li>OCCT MANTIS#0028343 (OCCT MANTIS tracker 502 as of 2026-05-02)</li>
 </ul></section>
 <section><h2>Description</h2>
-<p>Two adjacent ADVANCED_FACEs meet at an EDGE_CURVE with PLANE normals differing by a small angle (e.g., 1e-4 rad — just below the merge threshold). The shared edge&#x27;s VERTEX_POINTs may even have slightly different coordinates on each side (~1e-4 mm offset in z). Single-edge same-surface check passes; merging produces a face whose interior is on the wrong side of the original edges (a self-overlapping face with negative area in some region).</p></section>
+<p>Two adjacent ADVANCED_FACEs meet at an EDGE_CURVE with PLANE normals differing by a small angle (e.g., 1e-4 rad, just below the merge threshold). The shared edge&#x27;s VERTEX_POINTs may even have slightly different coordinates on each side (~1e-4 mm offset in z). Single-edge same-surface check passes; merging produces a face whose interior is on the wrong side of the original edges (a self-overlapping face with negative area in some region).</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>Two near-coplanar ADVANCED_FACEs with PLANE normals differing by ~0.0001 radians (e.g., (0,0,1) vs (0.0001,0,~1)) sharing an EDGE_CURVE. Optionally the shared edge has different VERTEX_POINT z coords on each side (~9.999e-5 vs 0). After &quot;merge&quot;, the resulting face&#x27;s parameter-space outline overlaps itself.</p></section>
 <section><h2>Expected kernel behavior</h2>
