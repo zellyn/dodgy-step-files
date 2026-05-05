@@ -1,0 +1,25 @@
+ISO-10303-21;
+/* Os013 - Pipe section plane parallel to guide curve.
+ * Defect: guide is a LINE along X at z=0; section plane at z=10,
+ * normal +Z - the plane is parallel to the guide and never meets it. */
+HEADER;
+FILE_DESCRIPTION(('Os013 - pipe plane misses guide','Pass C gap-fill'),'2;1');
+FILE_NAME('Os013.stp','2026-04-30T00:00:00',(''),(''),'gap-fill C','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+/* Guide line z=0 along +X */
+#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#11=DIRECTION('',(1.0,0.0,0.0));
+#12=VECTOR('',#11,1.0);
+#13=LINE('guide_line',#10,#12);
+/* Section plane at z=10, normal +Z - parallel to guide */
+#20=CARTESIAN_POINT('plane_origin',(0.0,0.0,10.0));
+#21=DIRECTION('plane_normal_z',(0.0,0.0,1.0));
+#22=DIRECTION('',(1.0,0.0,0.0));
+#23=AXIS2_PLACEMENT_3D('',#20,#21,#22);
+#24=PLANE('section_plane_parallel_to_guide',#23);
+ENDSEC;
+END-ISO-10303-21;

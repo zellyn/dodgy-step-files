@@ -1,0 +1,80 @@
+/* Ps002 - FACE_OUTER_BOUND traversed clockwise; inner loop traversed CCW - kernel accepts file silently; tier-3 introspection reveals "inside" and "outside" of the face are swapped */
+ISO-10303-21;
+HEADER;
+FILE_DESCRIPTION(('Ps002 pathological-success','Outer/inner loop orientations swapped'),'2;1');
+FILE_NAME('Ps002.stp','2026-04-26T00:00:00',(''),(''),'manual','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+/* Plate 10x10 in z=0 plane with a 4x4 square hole at center.
+   Plate corners: (0,0), (10,0), (10,10), (0,10).
+   Hole corners:  (3,3), (7,3),  (7,7),  (3,7). */
+#100=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#101=CARTESIAN_POINT('',(10.0,0.0,0.0));
+#102=CARTESIAN_POINT('',(10.0,10.0,0.0));
+#103=CARTESIAN_POINT('',(0.0,10.0,0.0));
+#104=CARTESIAN_POINT('',(3.0,3.0,0.0));
+#105=CARTESIAN_POINT('',(7.0,3.0,0.0));
+#106=CARTESIAN_POINT('',(7.0,7.0,0.0));
+#107=CARTESIAN_POINT('',(3.0,7.0,0.0));
+#110=VERTEX_POINT('',#100); #111=VERTEX_POINT('',#101);
+#112=VERTEX_POINT('',#102); #113=VERTEX_POINT('',#103);
+#114=VERTEX_POINT('',#104); #115=VERTEX_POINT('',#105);
+#116=VERTEX_POINT('',#106); #117=VERTEX_POINT('',#107);
+/* Plane normal +Z so CCW = outward-facing; outer loop should be CCW. */
+#200=DIRECTION('',(0.0,0.0,1.0));
+#201=DIRECTION('',(1.0,0.0,0.0));
+#210=CARTESIAN_POINT('',(5.0,5.0,0.0));
+#211=AXIS2_PLACEMENT_3D('',#210,#200,#201);
+#212=PLANE('',#211);
+/* Edges - outer rectangle */
+#300=DIRECTION('',(1.0,0.0,0.0)); #301=VECTOR('',#300,1.0);
+#302=DIRECTION('',(0.0,1.0,0.0)); #303=VECTOR('',#302,1.0);
+#310=LINE('',#100,#301); #311=EDGE_CURVE('',#110,#111,#310,.T.);
+#312=LINE('',#101,#303); #313=EDGE_CURVE('',#111,#112,#312,.T.);
+#314=LINE('',#103,#301); #315=EDGE_CURVE('',#113,#112,#314,.T.);
+#316=LINE('',#100,#303); #317=EDGE_CURVE('',#110,#113,#316,.T.);
+/* Edges - inner rectangle (hole) */
+#320=LINE('',#104,#301); #321=EDGE_CURVE('',#114,#115,#320,.T.);
+#322=LINE('',#105,#303); #323=EDGE_CURVE('',#115,#116,#322,.T.);
+#324=LINE('',#107,#301); #325=EDGE_CURVE('',#117,#116,#324,.T.);
+#326=LINE('',#104,#303); #327=EDGE_CURVE('',#114,#117,#326,.T.);
+/* DEFECT: outer loop traversed clockwise (110->113->112->111->110)
+   when viewed from +Z; this is opposite to the CCW convention.
+   Inner hole loop traversed CCW (114->115->116->117->114) -- which is
+   the convention for OUTER loops, not inner. The two are swapped. */
+#400=ORIENTED_EDGE('',*,*,#317,.T.);
+#401=ORIENTED_EDGE('',*,*,#315,.T.);
+#402=ORIENTED_EDGE('',*,*,#313,.F.);
+#403=ORIENTED_EDGE('',*,*,#311,.F.);
+#404=EDGE_LOOP('outer_CW',(#400,#401,#402,#403));
+#405=FACE_OUTER_BOUND('outer_bound',#404,.T.);
+/* Inner hole loop CCW (should be CW when viewed from +Z) */
+#410=ORIENTED_EDGE('',*,*,#321,.T.);
+#411=ORIENTED_EDGE('',*,*,#323,.T.);
+#412=ORIENTED_EDGE('',*,*,#325,.F.);
+#413=ORIENTED_EDGE('',*,*,#327,.F.);
+#414=EDGE_LOOP('inner_CCW',(#410,#411,#412,#413));
+#415=FACE_BOUND('inner_bound',#414,.T.);
+#420=ADVANCED_FACE('inverted_loops',(#405,#415),#212,.T.);
+/* Wrap as a shell-based surface model so the file loads. */
+#500=OPEN_SHELL('plate_shell',(#420));
+#510=SHELL_BASED_SURFACE_MODEL('plate',(#500));
+/* PRODUCT chain so OCCT TransferRoots produces a shape. */
+#9000=PRODUCT_CONTEXT('',#1,'mechanical');
+#9001=PRODUCT('Ps002','Ps002','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
+#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
+#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#510),#9010);
+#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+ENDSEC;
+END-ISO-10303-21;

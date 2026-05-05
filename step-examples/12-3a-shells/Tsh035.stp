@@ -1,0 +1,63 @@
+ISO-10303-21;
+/* Tsh035 - DEGENERATE_TOROIDAL_SURFACE orientation depends on revolve geometry
+ * Defect: When the toroid is created by revolving a profile whose
+ * curvature center sits to the left of the rotation axis and below the
+ * upper edge, OCCT inverts the surface normal; mirror cases work.
+ * Causes flipped face shading and hole-vs-stud mis-classification.
+ *
+ * This file: a DEGENERATE_TOROIDAL_SURFACE whose major_radius is
+ * negative -- the profile circle's center sits inside the rotation
+ * axis, so the swept surface degenerates (lemon/apple form). Combined
+ * with a profile arc placed in the inverted half-plane, the kernel's
+ * orientation heuristics from (major_radius, minor_radius) sign
+ * disagree with the bounding wire's parametric direction. The
+ * advised fix is to choose orientation from the bounding wire, not
+ * the radius signs.
+ * Sources: J010. */
+HEADER;
+FILE_DESCRIPTION(('Tsh035 test case','Degenerate toroid orientation ambiguity'),'2;1');
+FILE_NAME('Tsh035.stp','2026-04-26T00:00:00',(''),(''),'auto-generated','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+/* Revolution axis at origin, +Z. */
+#100=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#101=DIRECTION('',(0.0,0.0,1.0));
+#102=DIRECTION('',(1.0,0.0,0.0));
+#103=AXIS2_PLACEMENT_3D('axis_origin',#100,#101,#102);
+/* DEGENERATE_TOROIDAL_SURFACE: major_radius < minor_radius produces a
+   self-intersecting (apple/lemon) toroid. Here we use a NEGATIVE
+   major_radius -- the case J010 reports as inducing inverted
+   surface normals when paired with a profile placed in the
+   inverted half-plane. */
+#200=DEGENERATE_TOROIDAL_SURFACE('degenerate_torus',#103,-0.3,1.0,.T.);
+/* A small bounding wire on the surface using its (u,v) parametric
+   space. The wire winds in the +u direction along the parametric
+   axis -- this is the direction the healing recommendation says
+   to consult instead of the radius sign convention. */
+#300=CARTESIAN_POINT('',(0.7,0.0,0.0)); /* parametric u=0, v=0 */
+#301=CARTESIAN_POINT('',(0.0,0.0,1.0)); /* on degenerate apex */
+#310=VERTEX_POINT('',#300); #311=VERTEX_POINT('',#301);
+/* Profile arc placed in the "inverted" half-plane (x<0 side
+   relative to the revolve axis when viewed in the rotating frame). */
+#320=CARTESIAN_POINT('',(-0.5,0.0,0.0));
+#321=DIRECTION('',(0.0,0.0,1.0));
+#322=DIRECTION('',(1.0,0.0,0.0));
+#323=AXIS2_PLACEMENT_3D('profile_inverted',#320,#321,#322);
+#324=CIRCLE('inverted_profile_arc',#323,0.5);
+#330=EDGE_CURVE('',#310,#311,#324,.T.);
+#400=ORIENTED_EDGE('',*,*,#330,.T.);
+#401=ORIENTED_EDGE('',*,*,#330,.F.);
+#404=EDGE_LOOP('seam_loop',(#400,#401));
+#405=FACE_OUTER_BOUND('',#404,.T.);
+/* face same_sense .T. -- but the negative major_radius coupled with
+   the "left half plane" profile creates a sign-vs-direction conflict.
+   A robust kernel must consult #404's parametric direction (not the
+   sign of major_radius) to derive the surface's outward normal. */
+#406=ADVANCED_FACE('face_on_degenerate_torus',(#405),#200,.T.);
+#500=OPEN_SHELL('degenerate_torus_shell',(#406));
+#510=SHELL_BASED_SURFACE_MODEL('container',(#500));
+ENDSEC;
+END-ISO-10303-21;

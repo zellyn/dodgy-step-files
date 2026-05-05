@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Gp038 — Vertex 3D point and pcurve do not match within tolerance</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.2a Pcurve defects</a> <span class="sep">/</span> <span class="current">Gp038</span>
+</nav>
+<header class="title-bar">
+<h1>Gp038 <span class="sep">—</span> <span class="entry-title">Vertex 3D point and pcurve do not match within tolerance</span></h1>
+<p class="category">§12.2a pcurves</p>
+<p class="severity-badge severity-p1">P1 — silent data loss</p>
+<p class="tag-pills">
+<a class="tag tag-geometry" href="../by-tag/geometry/index.html">geometry</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-2a-pcurves/Gp038.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-2a-pcurves/Gp038.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>OCCT MANTIS#0025634 (OCCT MANTIS tracker 502 as of 2026-05-02)</li>
+</ul></section>
+<section><h2>Description</h2>
+<p>An edge&#x27;s vertex point in 3D and the pcurve evaluated at the corresponding parameter disagree beyond vertex tolerance. The edge passes 3D-curve-vs-vertex check (because 3D curve does match vertex) but fails 2D-pcurve check.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>Edge with vertex V at `(1.0, 0.0, 0.0)`; 3D curve is a line from `(1.0, 0.0, 0.0)` to `(2.0, 0.0, 0.0)`. Pcurve on the hosting face evaluates at parameter 0 to UV `(0.5, 0.0)` whose 3D image is `(1.05, 0.0, 0.0)` — beyond vertex tolerance.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>Reject if either fails: vertex-pcurve consistency check separate from vertex-3D-curve check; both must pass independently.</p></section>
+<section><h2>Notes</h2>
+<p>**See also**: Twi060, Twi088, Twi059. Synonyms: &quot;vertex 3D point and pcurve disagree at endpoint&quot;, &quot;pcurve evaluation at edge endpoint differs from vertex&quot;, &quot;vertex-pcurve consistency check fails&quot;, &quot;edge passes 3D check but fails 2D check&quot;, &quot;UV at parameter doesn&#x27;t lift to vertex 3D position&quot;.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>contains(b&#x27;SURFACE_CURVE&#x27;)</code></li>
+<li><code>contains(b&#x27;EDGE_CURVE&#x27;)</code></li>
+<li><code>count_entity_def(b&#x27;PCURVE&#x27;) &gt;= 1</code></li>
+</ul></section>
+<section><h2>Cross-references</h2>
+<p><a href="../12-3b-wires/Twi060.html">Twi060</a>, <a href="../12-3b-wires/Twi088.html">Twi088</a>, <a href="../12-3b-wires/Twi059.html">Twi059</a></p>
+</section>
+<section><h2>Live oracle output</h2>
+<table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
+<tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>no_shapes_loaded</code></td></tr>
+</tbody></table>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* Gp038 - Vertex point and pcurve disagree beyond tolerance
+<span class="lineno">3</span> * Defect: an edge has start VERTEX at (1.0,0.0,0.0); its 3D LINE
+<span class="lineno">4</span> * agrees; but the bound PCURVE 2D LINE, when evaluated at parameter 0
+<span class="lineno">5</span> * on the host plane, places the start at (1.05,0.0). The 0.05 mismatch
+<span class="lineno">6</span> * exceeds typical 1e-6 vertex tolerance. */
+<span class="lineno">7</span>HEADER;
+<span class="lineno">8</span>FILE_DESCRIPTION((&#x27;Gp038 test case&#x27;,&#x27;Vertex point and pcurve disagree beyond tolerance&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">9</span>FILE_NAME(&#x27;Gp038.stp&#x27;,&#x27;2026-04-30T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">10</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }&#x27;));
+<span class="lineno">11</span>ENDSEC;
+<span class="lineno">12</span>DATA;
+<span class="lineno">13</span>#1=APPLICATION_CONTEXT(&#x27;automotive_design&#x27;);
+<span class="lineno">14</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,&#x27;automotive_design&#x27;,2000,#1);
+<span class="lineno">15</span>/* Host plane */
+<span class="lineno">16</span>#100=CARTESIAN_POINT(&#x27;origin&#x27;,(0.0,0.0,0.0));
+<span class="lineno">17</span>#101=DIRECTION(&#x27;z&#x27;,(0.0,0.0,1.0));
+<span class="lineno">18</span>#102=DIRECTION(&#x27;x&#x27;,(1.0,0.0,0.0));
+<span class="lineno">19</span>#103=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#100,#101,#102);
+<span class="lineno">20</span>#104=PLANE(&#x27;host&#x27;,#103);
+<span class="lineno">21</span>/* Vertices: V0 at (1,0,0), V1 at (2,0,0) */
+<span class="lineno">22</span>#110=CARTESIAN_POINT(&#x27;vertex_3d&#x27;,(1.0,0.0,0.0));
+<span class="lineno">23</span>#111=VERTEX_POINT(&#x27;v0_at_1&#x27;,#110);
+<span class="lineno">24</span>#112=CARTESIAN_POINT(&#x27;end_3d&#x27;,(2.0,0.0,0.0));
+<span class="lineno">25</span>#113=VERTEX_POINT(&#x27;v1_at_2&#x27;,#112);
+<span class="lineno">26</span>/* 3D curve: LINE from V0 along +x */
+<span class="lineno">27</span>#120=DIRECTION(&#x27;+x&#x27;,(1.0,0.0,0.0));
+<span class="lineno">28</span>#121=VECTOR(&#x27;vx&#x27;,#120,1.0);
+<span class="lineno">29</span>#122=LINE(&#x27;e_3d&#x27;,#110,#121);
+<span class="lineno">30</span>/* PCURVE: 2D LINE whose param=0 image is (1.05, 0). 0.05 mismatch */
+<span class="lineno">31</span>#130=CARTESIAN_POINT(&#x27;vertex_pcurve_eval&#x27;,(1.05,0.0));
+<span class="lineno">32</span>#131=DIRECTION(&#x27;puv_dir&#x27;,(1.0,0.0));
+<span class="lineno">33</span>#132=VECTOR(&#x27;puv_vec&#x27;,#131,1.0);
+<span class="lineno">34</span>#133=LINE(&#x27;e_pc&#x27;,#130,#132);
+<span class="lineno">35</span>#134=DEFINITIONAL_REPRESENTATION(&#x27;e_pc_def&#x27;,(#133),#103);
+<span class="lineno">36</span><mark>#135=PCURVE(</mark>&#x27;e_pc&#x27;,#104,#134);
+<span class="lineno">37</span>/* <mark>SURFACE_CURVE</mark> wiring 3D and 2D parameterisations together */
+<span class="lineno">38</span>#140=<mark>SURFACE_CURVE</mark>(&#x27;e_sc&#x27;,#122,(#135),.PCURVE_S1.);
+<span class="lineno">39</span>/* <mark>EDGE_CURVE</mark> explicitly using V0 and V1 â the disagreement between
+<span class="lineno">40</span> * V0&#x27;s 3D position (1,0,0) and the pcurve&#x27;s parameter-0 image (1.05,0)
+<span class="lineno">41</span> * is the cited tolerance breach. */
+<span class="lineno">42</span>#141=<mark>EDGE_CURVE</mark>(&#x27;vertex_pcurve_disagree&#x27;,#111,#113,#140,.T.);
+<span class="lineno">43</span>ENDSEC;
+<span class="lineno">44</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Gp037.html">&larr; Gp037</a> <a class="up" href="index.html">§12.2a Pcurve defects</a> <a class="next" href="Gp039.html">Gp039 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

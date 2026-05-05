@@ -1,0 +1,67 @@
+ISO-10303-21;
+/* Os017 - Draft vertex recomputation fails.
+ * Defect: corner vertex of valence 3 with three faces meeting; three
+ * different draft angles produce drafted surfaces whose triple
+ * intersection is empty. Encoded: corner VERTEX_POINT + three
+ * incident EDGE_CURVEs + three ADVANCED_FACEs. */
+HEADER;
+FILE_DESCRIPTION(('Os017 test case','Draft vertex recomputation fails'),'2;1');
+FILE_NAME('Os017.stp','2026-04-30T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+/* The valence-3 corner */
+#10=CARTESIAN_POINT('valence_3_corner',(0.0,0.0,0.0));
+#11=VERTEX_POINT('corner',#10);
+/* Three neighbour vertices */
+#20=CARTESIAN_POINT('',(1.0,0.0,0.0));#21=VERTEX_POINT('',#20);
+#22=CARTESIAN_POINT('',(0.0,1.0,0.0));#23=VERTEX_POINT('',#22);
+#24=CARTESIAN_POINT('',(0.0,0.0,1.0));#25=VERTEX_POINT('',#24);
+/* Three lines */
+#30=DIRECTION('',(1.0,0.0,0.0));#31=VECTOR('',#30,1.0);#32=LINE('',#10,#31);
+#33=DIRECTION('',(0.0,1.0,0.0));#34=VECTOR('',#33,1.0);#35=LINE('',#10,#34);
+#36=DIRECTION('',(0.0,0.0,1.0));#37=VECTOR('',#36,1.0);#38=LINE('',#10,#37);
+/* Three EDGE_CURVEs incident on corner */
+#40=EDGE_CURVE('e_x',#11,#21,#32,.T.);
+#41=EDGE_CURVE('e_y',#11,#23,#35,.T.);
+#42=EDGE_CURVE('e_z',#11,#25,#38,.T.);
+/* Three face surfaces */
+#50=AXIS2_PLACEMENT_3D('',#10,#36,#30);
+#51=PLANE('face_xy',#50);
+#52=AXIS2_PLACEMENT_3D('',#10,#33,#30);
+#53=PLANE('face_xz',#52);
+#54=AXIS2_PLACEMENT_3D('',#10,#30,#33);
+#55=PLANE('face_yz',#54);
+/* Loops: each face's loop pairs two of the three edges */
+#60=ORIENTED_EDGE('',*,*,#40,.T.);
+#61=ORIENTED_EDGE('',*,*,#41,.T.);
+#62=ORIENTED_EDGE('',*,*,#42,.T.);
+#63=EDGE_LOOP('xy_loop',(#60,#61));
+#64=EDGE_LOOP('xz_loop',(#60,#62));
+#65=EDGE_LOOP('yz_loop',(#61,#62));
+#70=FACE_OUTER_BOUND('',#63,.T.);
+#71=FACE_OUTER_BOUND('',#64,.T.);
+#72=FACE_OUTER_BOUND('',#65,.T.);
+#80=ADVANCED_FACE('face_xy',(#70),#51,.T.);
+#81=ADVANCED_FACE('face_xz',(#71),#53,.T.);
+#82=ADVANCED_FACE('face_yz',(#72),#55,.T.);
+/* Minimal PRODUCT chain so OCCT TransferRoots produces a shape. */
+#9010=PRODUCT_CONTEXT('',#1,'mechanical');
+#9011=PRODUCT('Os017','Os017','',(#9010));
+#9012=PRODUCT_DEFINITION_FORMATION('','',#9011);
+#9013=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9014=PRODUCT_DEFINITION('','',#9012,#9013);
+#9015=PRODUCT_DEFINITION_SHAPE('','',#9014);
+#9020=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9021=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9022=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9023=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9020,'distance_accuracy_value','');
+#9024=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9023))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9020,#9021,#9022))REPRESENTATION_CONTEXT('','3D'));
+#9030=OPEN_SHELL('wrap_shell',(#80,#81,#82));
+#9031=SHELL_BASED_SURFACE_MODEL('wrap_sbsm',(#9030));
+#9050=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9031),#9024);
+#9051=SHAPE_DEFINITION_REPRESENTATION(#9015,#9050);
+ENDSEC;
+END-ISO-10303-21;

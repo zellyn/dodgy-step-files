@@ -1,0 +1,84 @@
+ISO-10303-21;
+/*
+ * A038 — Constructive Geometry Representation Relationship — assembly axis
+ *        placements
+ * Defect (OCCT 89180f9 / Mantis 0029803):
+ *   AP242 files use inch units inside GEOMETRIC_REPRESENTATION_CONTEXT for axis
+ *   placements in CONSTRUCTIVE_GEOMETRY_REPRESENTATION_RELATIONSHIP, but the
+ *   unit was not applied — axes land at the wrong scale, mis-positioning every
+ *   component that uses them.
+ * Reproducer: STEP file with construction geometry encoded as AXIS2_PLACEMENT_3D
+ *   entities under a CGR with non-default (inch) units.
+ * Expected kernel: apply unit scaling to construction-geometry placements;
+ *   expose `read.step.constructivegeom.relationship` opt-in flag.
+ */
+HEADER;
+FILE_DESCRIPTION(('A038 inch-unit construction geometry under CGR — unit not applied'),'2;1');
+FILE_NAME('A038.stp','2026-04-26T00:00:00',('catalog'),('cad'),'manual','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#10 = APPLICATION_CONTEXT('automotive design');
+#11 = APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2001,#10);
+#12 = PRODUCT_CONTEXT('',#10,'mechanical');
+#13 = PRODUCT_DEFINITION_CONTEXT('part definition',#10,'design');
+#20 = PRODUCT('A038_ASSY','','',(#12));
+#21 = PRODUCT_DEFINITION_FORMATION('','',#20);
+#22 = PRODUCT_DEFINITION('design','',#21,#13);
+#23 = PRODUCT_DEFINITION_SHAPE('','',#22);
+#30 = PRODUCT('PART_X','','',(#12));
+#31 = PRODUCT_DEFINITION_FORMATION('','',#30);
+#32 = PRODUCT_DEFINITION('design','',#31,#13);
+#33 = PRODUCT_DEFINITION_SHAPE('','',#32);
+#40 = NEXT_ASSEMBLY_USAGE_OCCURRENCE('1','PART_X_INST','',#22,#32,$);
+/* Main context — millimetres */
+#50 = ( LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT(.MILLI.,.METRE.) );
+#51 = ( NAMED_UNIT(*) PLANE_ANGLE_UNIT() SI_UNIT($,.RADIAN.) );
+#52 = ( NAMED_UNIT(*) SI_UNIT($,.STERADIAN.) SOLID_ANGLE_UNIT() );
+#53 = UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#50,'distance_accuracy_value','');
+#54 = ( GEOMETRIC_REPRESENTATION_CONTEXT(3) GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#53))
+        GLOBAL_UNIT_ASSIGNED_CONTEXT((#50,#51,#52)) REPRESENTATION_CONTEXT('','3D') );
+/* Construction-geometry context — INCHES */
+#55 = ( CONVERSION_BASED_UNIT('INCH',#56) LENGTH_UNIT() NAMED_UNIT(#57) );
+#56 = LENGTH_MEASURE_WITH_UNIT(LENGTH_MEASURE(25.4),#50);
+#57 = DIMENSIONAL_EXPONENTS(1.,0.,0.,0.,0.,0.,0.);
+#58 = ( GEOMETRIC_REPRESENTATION_CONTEXT(3) GLOBAL_UNIT_ASSIGNED_CONTEXT((#55,#51,#52))
+        REPRESENTATION_CONTEXT('cgr','3D') );
+#60 = CARTESIAN_POINT('',(0.0,0.0,0.0));
+#61 = DIRECTION('',(0.0,0.0,1.0));
+#62 = DIRECTION('',(1.0,0.0,0.0));
+#63 = AXIS2_PLACEMENT_3D('part_origin',#60,#61,#62);
+#64 = SHAPE_REPRESENTATION('part_rep',(#63),#54);
+#65 = SHAPE_DEFINITION_REPRESENTATION(#33,#64);
+#66 = REPRESENTATION_MAP(#63,#64);
+#67 = MAPPED_ITEM('inst',#66,#63);
+/* DEFECT: an AXIS2_PLACEMENT_3D under an inch-unit CGR placed at value 4.0
+   (intended: 4 in = 101.6 mm). If the reader does not honor the inch unit
+   on the CGR side, all instances using this construction frame are off. */
+#70 = CARTESIAN_POINT('cgr_origin_in_inches',(4.0,0.0,0.0));
+#71 = AXIS2_PLACEMENT_3D('cgr_axis',#70,#61,#62);
+#72 = REPRESENTATION('construction_geom',(#71),#58);
+#73 = CONSTRUCTIVE_GEOMETRY_REPRESENTATION_RELATIONSHIP('cgr_link','',
+        #64,#72);
+#80 = AXIS2_PLACEMENT_3D('assy_origin',#60,#61,#62);
+#81 = SHAPE_REPRESENTATION('assy_rep',(#80,#67),#54);
+#82 = SHAPE_DEFINITION_REPRESENTATION(#23,#81);
+/* Extended catalog notes:
+ * This reproducer is a minimal demonstrator of the §12.6 entry
+ * referenced in the /* */ header above. The entity-graph above
+ * is just enough to exercise the defect on a writer or reader
+ * test harness; it is NOT a production-quality assembly.
+ *
+ * License: this file is part of a defect catalog assembled from
+ * publicly described bug reports and recommended-practice notes.
+ * No proprietary geometry or names are reproduced. The entity IDs
+ * and minimal coordinates are author-original.
+ *
+ * Cross-refs: see STEP_PROBLEM_CATALOG.md §12.6 for full entry,
+ * source list, sender attribution and expected kernel behavior.
+ */
+#900 = DESCRIPTIVE_REPRESENTATION_ITEM('catalog_id','A038');
+#901 = DESCRIPTIVE_REPRESENTATION_ITEM('catalog_section','12.6 assembly hierarchy');
+#902 = DESCRIPTIVE_REPRESENTATION_ITEM('catalog_status','pending');
+ENDSEC;
+END-ISO-10303-21;

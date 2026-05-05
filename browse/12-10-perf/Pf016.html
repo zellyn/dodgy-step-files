@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Pf016 — STEP assembly reader hangs in Transfer on cyclic `SHAPE_REPRESENTATION_RELATIONSHIP` web (Catia/NX-emitted file, OCCT 7.9)</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.10 Scale &amp; performance</a> <span class="sep">/</span> <span class="current">Pf016</span>
+</nav>
+<header class="title-bar">
+<h1>Pf016 <span class="sep">—</span> <span class="entry-title">STEP assembly reader hangs in Transfer on cyclic `SHAPE_REPRESENTATION_RELATIONSHIP` web (Catia/NX-emitted file, OCCT 7.9)</span></h1>
+<p class="category">§12.10 (sub-class: dependency-depth / pathological loop)</p>
+<p class="severity-badge severity-p2">P2 — spec deviation (no data loss)</p>
+<p class="tag-pills">
+<a class="tag tag-performance" href="../by-tag/performance/index.html">performance</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-10-perf/Pf016.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-10-perf/Pf016.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>18-other-issues.md I002 (OCCT #712)</li>
+</ul></section>
+<section><h2>Sender</h2>
+<p>CATIA / NX (file `250709r8000_asm-all`)</p></section>
+<section><h2>Description</h2>
+<p>STEP file is accepted by Catia and NX but hangs OCCT 7.9 indefinitely during the Transfer phase (post-parse). Common shape: a small set of `SHAPE_REPRESENTATION` entities connected by many `SHAPE_REPRESENTATION_RELATIONSHIP` edges forming a cyclic cross-relation web (e.g. 8 SRs joined by 16 SRRs as a ring with diagonals), causing the Transfer traversal to follow cycles indefinitely.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>Real assembly file; reproduces on any code path calling `reader.Transfer(doc)` after `ReadFile` returns `IFSelect_RetDone`.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>Reject with E_TRANSFER_TIMEOUT diagnostic: bound transfer time, detect pathological cyclic SHAPE_REPRESENTATION_RELATIONSHIP loops, and bail with a diagnostic. Must not hang. Must not infinite loop.</p></section>
+<section><h2>Notes</h2>
+<p>distinct from #417 (huge-shell ShapeFix slowness). **See also**: A026.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>count_entity_def(b&#x27;CARTESIAN_POINT&#x27;) &gt;= 1</code></li>
+</ul></section>
+<section><h2>Cross-references</h2>
+<p><a href="../12-6-assembly/A026.html">A026</a></p>
+</section>
+<section><h2>Live oracle output</h2>
+<table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
+<tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>warn(W_COMPLEX_ORDER)</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>no_shapes_loaded</code></td></tr>
+</tbody></table>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>/* Pf016 - STEPCAFControl_Reader::Transfer hangs indefinitely on Catia/NX
+<span class="lineno">2</span>   file (OCCT 7.9, file 250709r8000_asm-all). The file parses cleanly with
+<span class="lineno">3</span>   IFSelect_RetDone, but the post-parse Transfer phase enters a
+<span class="lineno">4</span>   pathological loop documented in OCCT #712. Distinct from #417
+<span class="lineno">5</span>   (huge-shell ShapeFix slowness) per the issue notes.
+<span class="lineno">6</span>   Pattern (best-known reconstruction): nested SHAPE_REPRESENTATION_
+<span class="lineno">7</span>   RELATIONSHIP web combined with REPRESENTATION_RELATIONSHIP_WITH_TRANS
+<span class="lineno">8</span>   FORMATION instances forms a graph that the Transfer-phase walker
+<span class="lineno">9</span>   visits exponentially when assembly contexts overlap.
+<span class="lineno">10</span>   Scaling-up: this fixture shows the relationship-web shape with 8
+<span class="lineno">11</span>   shape-reps and 8 cross-relations. Replicate to thousands of mutually
+<span class="lineno">12</span>   connected SHAPE_REPRESENTATIONs to reproduce the hang. */
+<span class="lineno">13</span>ISO-10303-21;
+<span class="lineno">14</span>HEADER;
+<span class="lineno">15</span>FILE_DESCRIPTION((&#x27;Pf016 - STEPCAFControl_Reader::Transfer hang stub&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">16</span>FILE_NAME(&#x27;Pf016.stp&#x27;,&#x27;2026-04-26T00:00:00&#x27;,(&#x27;auto-generated&#x27;),(&#x27;&#x27;),
+<span class="lineno">17</span>  &#x27;auto-generated&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">18</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
+<span class="lineno">19</span>ENDSEC;
+<span class="lineno">20</span>DATA;
+<span class="lineno">21</span><mark>#1=CARTESIAN_POINT(</mark>&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">22</span>#2=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">23</span>#3=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">24</span>#4=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#1,#2,#3);
+<span class="lineno">25</span>#5=( GEOMETRIC_REPRESENTATION_CONTEXT(3) GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT
+<span class="lineno">26</span>  ((#6)) GLOBAL_UNIT_ASSIGNED_CONTEXT((#7)) REPRESENTATION_CONTEXT(&#x27;&#x27;,&#x27;3D&#x27;) );
+<span class="lineno">27</span>#6=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-6),#7,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">28</span>#7=( NAMED_UNIT(*) SI_UNIT(.MILLI.,.METRE.) LENGTH_UNIT() );
+<span class="lineno">29</span>/* eight shape-reps to cross-link */
+<span class="lineno">30</span>#10=SHAPE_REPRESENTATION(&#x27;R1&#x27;,(#4),#5);
+<span class="lineno">31</span>#11=SHAPE_REPRESENTATION(&#x27;R2&#x27;,(#4),#5);
+<span class="lineno">32</span>#12=SHAPE_REPRESENTATION(&#x27;R3&#x27;,(#4),#5);
+<span class="lineno">33</span>#13=SHAPE_REPRESENTATION(&#x27;R4&#x27;,(#4),#5);
+<span class="lineno">34</span>#14=SHAPE_REPRESENTATION(&#x27;R5&#x27;,(#4),#5);
+<span class="lineno">35</span>#15=SHAPE_REPRESENTATION(&#x27;R6&#x27;,(#4),#5);
+<span class="lineno">36</span>#16=SHAPE_REPRESENTATION(&#x27;R7&#x27;,(#4),#5);
+<span class="lineno">37</span>#17=SHAPE_REPRESENTATION(&#x27;R8&#x27;,(#4),#5);
+<span class="lineno">38</span>/* cross-relation web - each rep relates to its neighbours forming
+<span class="lineno">39</span>   a strongly-connected component the Transfer walker must enumerate */
+<span class="lineno">40</span>#20=SHAPE_REPRESENTATION_RELATIONSHIP(&#x27;&#x27;,&#x27;&#x27;,#10,#11);
+<span class="lineno">41</span>#21=SHAPE_REPRESENTATION_RELATIONSHIP(&#x27;&#x27;,&#x27;&#x27;,#11,#12);
+<span class="lineno">42</span>#22=SHAPE_REPRESENTATION_RELATIONSHIP(&#x27;&#x27;,&#x27;&#x27;,#12,#13);
+<span class="lineno">43</span>#23=SHAPE_REPRESENTATION_RELATIONSHIP(&#x27;&#x27;,&#x27;&#x27;,#13,#14);
+<span class="lineno">44</span>#24=SHAPE_REPRESENTATION_RELATIONSHIP(&#x27;&#x27;,&#x27;&#x27;,#14,#15);
+<span class="lineno">45</span>#25=SHAPE_REPRESENTATION_RELATIONSHIP(&#x27;&#x27;,&#x27;&#x27;,#15,#16);
+<span class="lineno">46</span>#26=SHAPE_REPRESENTATION_RELATIONSHIP(&#x27;&#x27;,&#x27;&#x27;,#16,#17);
+<span class="lineno">47</span>#27=SHAPE_REPRESENTATION_RELATIONSHIP(&#x27;&#x27;,&#x27;&#x27;,#17,#10);
+<span class="lineno">48</span>/* additional cross-edges form the dense web that hangs Transfer */
+<span class="lineno">49</span>#30=SHAPE_REPRESENTATION_RELATIONSHIP(&#x27;&#x27;,&#x27;&#x27;,#10,#13);
+<span class="lineno">50</span>#31=SHAPE_REPRESENTATION_RELATIONSHIP(&#x27;&#x27;,&#x27;&#x27;,#11,#15);
+<span class="lineno">51</span>#32=SHAPE_REPRESENTATION_RELATIONSHIP(&#x27;&#x27;,&#x27;&#x27;,#12,#16);
+<span class="lineno">52</span>#33=SHAPE_REPRESENTATION_RELATIONSHIP(&#x27;&#x27;,&#x27;&#x27;,#14,#17);
+<span class="lineno">53</span>#34=SHAPE_REPRESENTATION_RELATIONSHIP(&#x27;&#x27;,&#x27;&#x27;,#10,#15);
+<span class="lineno">54</span>#35=SHAPE_REPRESENTATION_RELATIONSHIP(&#x27;&#x27;,&#x27;&#x27;,#11,#17);
+<span class="lineno">55</span>#36=SHAPE_REPRESENTATION_RELATIONSHIP(&#x27;&#x27;,&#x27;&#x27;,#12,#14);
+<span class="lineno">56</span>#37=SHAPE_REPRESENTATION_RELATIONSHIP(&#x27;&#x27;,&#x27;&#x27;,#13,#16);
+<span class="lineno">57</span>ENDSEC;
+<span class="lineno">58</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Pf015.html">&larr; Pf015</a> <a class="up" href="index.html">§12.10 Scale &amp; performance</a> <a class="next" href="Pf017.html">Pf017 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

@@ -1,0 +1,69 @@
+ISO-10303-21;
+/* Twi049 - Self-intersecting wire on a host face
+ * Defect: a single closed wire's edges cross each other in 2D when
+ * projected onto the host face's parameter space. The kernel must split
+ * the wire at the intersection or reject the face as malformed. */
+HEADER;
+FILE_DESCRIPTION(('Twi049 test case','Self-intersecting wire on a host face'),'2;1');
+FILE_NAME('Twi049.stp','2026-04-26T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+/* Self-intersecting wire: figure-eight on a planar face */
+#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#11=DIRECTION('',(0.0,0.0,1.0));
+#12=DIRECTION('',(1.0,0.0,0.0));
+#13=AXIS2_PLACEMENT_3D('',#10,#11,#12);
+#14=PLANE('',#13);
+#20=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#21=VERTEX_POINT('',#20);
+#22=CARTESIAN_POINT('',(10.0,10.0,0.0));
+#23=VERTEX_POINT('',#22);
+#24=CARTESIAN_POINT('',(10.0,0.0,0.0));
+#25=VERTEX_POINT('',#24);
+#26=CARTESIAN_POINT('',(0.0,10.0,0.0));
+#27=VERTEX_POINT('',#26);
+#30=DIRECTION('',(0.7071067811865475,0.7071067811865475,0.0));
+#31=VECTOR('',#30,1.4142);
+#32=LINE('',#20,#31);
+#33=DIRECTION('',(0.0,-1.0,0.0));
+#34=VECTOR('',#33,1.0);
+#35=LINE('',#22,#34);
+#36=DIRECTION('',(-0.7071067811865475,0.7071067811865475,0.0));
+#37=VECTOR('',#36,1.4142);
+#38=LINE('',#24,#37);
+#39=DIRECTION('',(0.0,-1.0,0.0));
+#40=VECTOR('',#39,1.0);
+#41=LINE('',#26,#40);
+#50=EDGE_CURVE('',#21,#23,#32,.T.);
+#51=EDGE_CURVE('',#23,#25,#35,.T.);
+#52=EDGE_CURVE('',#25,#27,#38,.T.);
+#53=EDGE_CURVE('',#27,#21,#41,.T.);
+#60=ORIENTED_EDGE('',*,*,#50,.T.);
+#61=ORIENTED_EDGE('',*,*,#51,.T.);
+#62=ORIENTED_EDGE('',*,*,#52,.T.);
+#63=ORIENTED_EDGE('',*,*,#53,.T.);
+/* Edges 50 (diag up-right) and 52 (diag down-left) cross at (5,5) */
+#70=EDGE_LOOP('',(#60,#61,#62,#63));
+#71=FACE_OUTER_BOUND('',#70,.T.);
+#72=ADVANCED_FACE('',(#71),#14,.T.);
+/* Wrap: minimal PRODUCT chain so OCCT TransferRoots produces a shape. */
+#9000=PRODUCT_CONTEXT('',#1,'mechanical');
+#9001=PRODUCT('Twi049','Twi049','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
+#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
+#9020=OPEN_SHELL('wrap_shell',(#72));
+#9021=SHELL_BASED_SURFACE_MODEL('wrap_sbsm',(#9020));
+#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#9010);
+#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+ENDSEC;
+END-ISO-10303-21;

@@ -1,0 +1,70 @@
+ISO-10303-21;
+/* Tsh033 - Mirrored block instances flip surface direction with parameter-space curves
+ * Defect: When a block instance is exported with a true reflection
+ * transform (negative determinant), some receivers silently right-handize
+ * the frame, flipping surface normals. AXIS2_PLACEMENT_3D is by
+ * construction always right-handed (axis x ref produces a right-handed
+ * triad regardless of the ref_direction sign), so a reflection cannot
+ * be encoded as a placement. The correct STEP encoding for a true
+ * reflection is CARTESIAN_TRANSFORMATION_OPERATOR_3D with scale = -1
+ * (or with axis3 set to -(axis1 x axis2) -- a non-orthonormal frame
+ * having determinant -1) referenced through MAPPED_ITEM via a
+ * representation_relationship.
+ *
+ * This file: a planar face wrapped in a REPRESENTATION_MAP, then
+ * instanced two ways:
+ *   - #800 with an identity AXIS2_PLACEMENT_3D (proper rigid placement)
+ *   - #810 with a reflecting CARTESIAN_TRANSFORMATION_OPERATOR_3D
+ *     whose `scale = -1.0` mirrors through the origin (det = -1).
+ * Sources: K017, W039. */
+HEADER;
+FILE_DESCRIPTION(('Tsh033 test case','Mirrored MAPPED_ITEM via CARTESIAN_TRANSFORMATION_OPERATOR_3D scale=-1'),'2;1');
+FILE_NAME('Tsh033.stp','2026-04-26T00:00:00',(''),(''),'auto-generated','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+/* The original master face geometry (a unit square in the XY plane). */
+#100=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#101=CARTESIAN_POINT('',(1.0,0.0,0.0));
+#102=CARTESIAN_POINT('',(1.0,1.0,0.0));
+#103=CARTESIAN_POINT('',(0.0,1.0,0.0));
+#110=VERTEX_POINT('',#100); #111=VERTEX_POINT('',#101);
+#112=VERTEX_POINT('',#102); #113=VERTEX_POINT('',#103);
+#200=DIRECTION('',(0.0,0.0,1.0)); #201=DIRECTION('',(1.0,0.0,0.0));
+#211=AXIS2_PLACEMENT_3D('master_axes',#100,#200,#201); #212=PLANE('master_plane',#211);
+#300=DIRECTION('',(1.0,0.0,0.0)); #301=VECTOR('',#300,1.0);
+#302=DIRECTION('',(0.0,1.0,0.0)); #303=VECTOR('',#302,1.0);
+#310=LINE('',#100,#301); #311=EDGE_CURVE('',#110,#111,#310,.T.);
+#312=LINE('',#101,#303); #313=EDGE_CURVE('',#111,#112,#312,.T.);
+#314=LINE('',#103,#301); #315=EDGE_CURVE('',#113,#112,#314,.T.);
+#316=LINE('',#100,#303); #317=EDGE_CURVE('',#110,#113,#316,.T.);
+#400=ORIENTED_EDGE('',*,*,#311,.T.); #401=ORIENTED_EDGE('',*,*,#313,.T.);
+#402=ORIENTED_EDGE('',*,*,#315,.F.); #403=ORIENTED_EDGE('',*,*,#317,.F.);
+#404=EDGE_LOOP('',(#400,#401,#402,#403)); #405=FACE_OUTER_BOUND('',#404,.T.);
+#406=ADVANCED_FACE('master_face',(#405),#212,.T.);
+#500=OPEN_SHELL('master_shell',(#406));
+#510=SHELL_BASED_SURFACE_MODEL('master_model',(#500));
+/* Representation map: master in its own coordinate system. */
+#600=AXIS2_PLACEMENT_3D('rep_origin',#100,#200,#201);
+#601=REPRESENTATION_MAP(#600,#510);
+/* Instance A: identity AXIS2_PLACEMENT_3D - proper right-handed placement. */
+#700=CARTESIAN_POINT('',(2.0,0.0,0.0));
+#701=DIRECTION('',(0.0,0.0,1.0));
+#702=DIRECTION('',(1.0,0.0,0.0));
+#703=AXIS2_PLACEMENT_3D('right_handed_target',#700,#701,#702);
+#800=MAPPED_ITEM('instance_identity',#601,#703);
+/* Defect: instance B uses a CARTESIAN_TRANSFORMATION_OPERATOR_3D with
+   scale = -1.0. This is a true reflection through the origin (det = -1).
+   STEP allows this where AXIS2_PLACEMENT_3D cannot (placements are
+   always right-handed by construction). Receivers that "silently
+   correct" handedness flip surface normals on this instance. */
+#710=CARTESIAN_POINT('',(0.0,2.0,0.0));
+#711=DIRECTION('',(1.0,0.0,0.0));
+#712=DIRECTION('',(0.0,1.0,0.0));
+#713=DIRECTION('',(0.0,0.0,1.0));
+#714=CARTESIAN_TRANSFORMATION_OPERATOR_3D('mirror_xform',#711,#712,#710,-1.0,#713);
+#810=MAPPED_ITEM('instance_mirrored',#601,#714);
+ENDSEC;
+END-ISO-10303-21;

@@ -1,0 +1,33 @@
+ISO-10303-21;
+/* Twi081 - Edge has multiple distinct 3D curves.
+ * Defect: two EDGE_CURVE entities share endpoints (#V1,#V2) but
+ * reference different 3D-curve geometries (a LINE and a B_SPLINE_CURVE
+ * that disagree about the curve between the same points). */
+HEADER;
+FILE_DESCRIPTION(('Twi081 - Edge has multiple distinct 3D curves attached','Pass C gap-fill'),'2;1');
+FILE_NAME('Twi081.stp','2026-04-30T00:00:00',(''),(''),'gap-fill C','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+/* Two vertices */
+#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#11=CARTESIAN_POINT('',(2.0,0.0,0.0));
+#12=VERTEX_POINT('',#10);
+#13=VERTEX_POINT('',#11);
+/* Curve A: LINE */
+#20=DIRECTION('',(1.0,0.0,0.0));
+#21=VECTOR('',#20,1.0);
+#22=LINE('curve_A_line',#10,#21);
+/* Curve B: arc bulging up */
+#30=CARTESIAN_POINT('',(1.0,1.0,0.0));
+#31=DIRECTION('',(0.0,0.0,1.0));
+#32=DIRECTION('',(1.0,0.0,0.0));
+#33=AXIS2_PLACEMENT_3D('',#30,#31,#32);
+#34=CIRCLE('curve_B_arc',#33,1.414);
+/* Two edges sharing endpoints but with different geometries */
+#40=EDGE_CURVE('edge_with_line',#12,#13,#22,.T.);
+#41=EDGE_CURVE('edge_with_arc',#12,#13,#34,.T.);
+ENDSEC;
+END-ISO-10303-21;

@@ -1,0 +1,32 @@
+ISO-10303-21;
+/* M077 - AP238 fixture_usage references a workpiece not in the assembly.
+ * Defect: SETUP.its_workpiece_setup lists fixture references to
+ * WORKPIECE entities (datum-mating fixture stacks) that are declared in
+ * the file, but the WORKPIECE_SETUP.its_workpiece points to a different
+ * WORKPIECE id, leaving the fixture orphaned in space. */
+HEADER;
+FILE_DESCRIPTION(('M077 test case','AP238 fixture orphaned from workpiece'),'2;1');
+FILE_NAME('M077.stp','2026-04-30T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AP238_STEP_NC_MIM { 1 0 10303 238 1 0 0 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('numerical_control_machining');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
+  'numerical_control_machining',2007,#1);
+#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10))
+     REPRESENTATION_CONTEXT('setup','3D'));
+/* Two workpieces */
+#100=WORKPIECE('plate_a',$,$,$,$,$,$);
+#101=WORKPIECE('plate_b',$,$,$,$,$,$);
+/* A fixture vise referencing plate_a */
+#110=WORKPIECE('vise_jaw',$,$,$,$,$,$);
+#120=WORKPIECE_SETUP(#100,$,$,(#110),$);
+/* Defect: SETUP names plate_b as its workpiece, but the workpiece_setup
+ * above references plate_a - the vise jaws are now constraining a part
+ * that isn't the one being machined in this setup. */
+#200=SETUP('main_setup',(#120),$,$,$);
+#210=MACHINING_WORKINGSTEP('ws',$,$,#101,#200);
+ENDSEC;
+END-ISO-10303-21;

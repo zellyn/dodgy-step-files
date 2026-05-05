@@ -1,0 +1,61 @@
+/* Ad082 - BinTools.Read_s vs ASCII parser parity
+   Source: STEP_PROBLEM_CATALOG.md §12.11 Ad082;
+           mining 18-other-issues.md I059 (OCCT #844).
+   Pattern: BinTools::Read_s raises
+           Standard_Failure('NCollection_IndexedMap::FindKey') on
+           shapes that the ASCII reader handles cleanly. The parity
+           bug between binary BREP (.brep binary form) and STEP/ASCII
+           BREP readers manifests when a sub-shape index is referenced
+           before the producing entity is registered in the indexed map.
+   Reproducer recipe (per catalog): shapes attached to OCCT issue 844;
+           both readers via DRAW.
+   Expected kernel behavior: parity between binary and ASCII BREP
+           readers; missing index must be a recoverable diagnostic in
+           both paths.
+   STEP analogue used here: a forward edge reference where the EDGE_LOOP
+   names #200, but #200 (an oriented edge) is bound only later in the
+   stream and its underlying edge_curve cycles. Catches index-map
+   readers that build the map in stream order without a two-pass bind.
+   License-clean: hand-synthesized. */
+ISO-10303-21;
+HEADER;
+FILE_DESCRIPTION(
+  ('Ad082 - forward-ref subshape index for binary/ascii parity probe'),
+  '2;1');
+FILE_NAME('Ad082.stp','2026-04-26T00:00:00',
+  ('auto-generated'),(''),'auto-generated','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
+  'automotive_design',2001,#1);
+#3=PRODUCT_CONTEXT('',#1,'mechanical');
+#4=PRODUCT('Ad082','parity probe','',(#3));
+#5=PRODUCT_DEFINITION_FORMATION('','',#4);
+#6=PRODUCT_DEFINITION_CONTEXT('',#1,'design');
+#7=PRODUCT_DEFINITION('design','',#5,#6);
+#8=PRODUCT_DEFINITION_SHAPE('','',#7);
+/* EDGE_LOOP forward-references #200, declared later. */
+#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#11=DIRECTION('',(0.0,0.0,1.0));
+#12=DIRECTION('',(1.0,0.0,0.0));
+#13=AXIS2_PLACEMENT_3D('',#10,#11,#12);
+#20=PLANE('',#13);
+#21=FACE_OUTER_BOUND('',#22,.T.);
+#22=EDGE_LOOP('',(#200));
+#23=ADVANCED_FACE('',(#21),#20,.T.);
+#24=CLOSED_SHELL('',(#23));
+#25=MANIFOLD_SOLID_BREP('Ad082',#24);
+/* late-bound oriented edge whose underlying edge_curve cycles back
+   to itself - tests both forward-ref handling AND cycle detection
+   paths inside the indexed-map sub-shape lookup. */
+#100=CARTESIAN_POINT('',(1.0,0.0,0.0));
+#101=VERTEX_POINT('',#10);
+#102=VERTEX_POINT('',#100);
+#103=LINE('',#10,#104);
+#104=VECTOR('',#12,1.0);
+#105=EDGE_CURVE('',#101,#102,#103,.T.);
+#200=ORIENTED_EDGE('',*,*,#105,.T.);
+ENDSEC;
+END-ISO-10303-21;

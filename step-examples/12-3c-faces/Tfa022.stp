@@ -1,0 +1,61 @@
+/* Tfa022 - ConnectEdgesToWires produces wires with wrong Closed flag
+ * Defect: ShapeAnalysis_FreeBounds::ConnectEdgesToWires returns wires
+ * marked Closed=true when geometrically not closed, or marks closed
+ * wires as open. Repeated runs give different ordering (non-determinism,
+ * bug22924). Healer should recompute Closed flag from final endpoint
+ * coincidence within stated tolerance and provide deterministic
+ * ordering across runs.
+ * Reproducer: set of free edges whose endpoint pairing yields one wire
+ * that almost closes within tolerance - last vertex offset by 1e-6.
+ */
+ISO-10303-21;
+HEADER;
+FILE_DESCRIPTION(('Tfa022 ConnectEdgesToWires Closed flag'),'2;1');
+FILE_NAME('Tfa022.stp','2026-04-26T00:00:00',(''),(''),
+  'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
+  'automotive_design',2009,#1);
+#10=CARTESIAN_POINT('origin',(0.0,0.0,0.0));
+/* Quasi-square loop: last vertex is at (0, 1e-6, 0) instead of origin
+ * so the loop almost-closes within tolerance.                          */
+#20=CARTESIAN_POINT('p0',(0.0,0.0,0.0));
+#21=CARTESIAN_POINT('p1',(10.0,0.0,0.0));
+#22=CARTESIAN_POINT('p2',(10.0,10.0,0.0));
+#23=CARTESIAN_POINT('p3',(0.0,10.0,0.0));
+/* p4 is supposed to be p0 but isn't.                                   */
+#24=CARTESIAN_POINT('p4',(0.0,1.0E-6,0.0));
+#30=VERTEX_POINT('',#20);
+#31=VERTEX_POINT('',#21);
+#32=VERTEX_POINT('',#22);
+#33=VERTEX_POINT('',#23);
+#34=VERTEX_POINT('',#24);
+#40=DIRECTION('',(1.0,0.0,0.0));
+#41=DIRECTION('',(0.0,1.0,0.0));
+#42=DIRECTION('',(-1.0,0.0,0.0));
+#43=DIRECTION('',(0.0,-1.0,0.0));
+#50=VECTOR('',#40,10.0);
+#51=VECTOR('',#41,10.0);
+#52=VECTOR('',#42,10.0);
+#53=VECTOR('',#43,10.0);
+#60=LINE('',#20,#50);
+#61=LINE('',#21,#51);
+#62=LINE('',#22,#52);
+#63=LINE('',#23,#53);
+#70=EDGE_CURVE('',#30,#31,#60,.T.);
+#71=EDGE_CURVE('',#31,#32,#61,.T.);
+#72=EDGE_CURVE('',#32,#33,#62,.T.);
+#73=EDGE_CURVE('',#33,#34,#63,.T.);
+/* Free edges in a compound, no faces - expects ConnectEdgesToWires.    */
+#80=ORIENTED_EDGE('',*,*,#70,.T.);
+#81=ORIENTED_EDGE('',*,*,#71,.T.);
+#82=ORIENTED_EDGE('',*,*,#72,.T.);
+#83=ORIENTED_EDGE('',*,*,#73,.T.);
+/* Defect site: the wire endpoints (p0, p4) differ by 1e-6 in y - the
+ * Closed flag may be reported incorrectly depending on tolerance.      */
+#90=EDGE_LOOP('almost_closed',(#80,#81,#82,#83));
+ENDSEC;
+END-ISO-10303-21;

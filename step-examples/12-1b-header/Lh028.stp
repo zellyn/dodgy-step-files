@@ -1,0 +1,42 @@
+/* Lh028 — Forward reference inside ANCHOR section to undefined data
+ *         instance
+ * Defect: ANCHOR may reference data instances, but every #NNN it
+ * names must eventually resolve in some DATA section of the same
+ * file. This file's ANCHOR names #100 but the DATA section defines
+ * only #1..#24 (no #100). Strict readers must reject as undefined
+ * reference after the two-pass declare/resolve phase; tolerant
+ * readers may accept the file but mark the anchor as broken. */
+ISO-10303-21;
+HEADER;
+FILE_DESCRIPTION((''),'4;1');
+FILE_NAME('Lh028.stp','2026-04-26T00:00:00',(''),(''),
+  'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN'));
+ENDSEC;
+ANCHOR;
+/* #100 is never defined in DATA below — undefined-anchor defect. */
+<part_anchor>=#100;
+/* Well-formed anchor for a defined instance: */
+<placement_anchor>=#13;
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
+  'automotive_design',2009,#1);
+#3=PRODUCT_CONTEXT('part',#1,'mechanical');
+#4=PRODUCT('Lh028-part','Lh028 demo','',(#3));
+#10=CARTESIAN_POINT('origin',(0.0,0.0,0.0));
+#11=DIRECTION('z',(0.0,0.0,1.0));
+#12=DIRECTION('x',(1.0,0.0,0.0));
+#13=AXIS2_PLACEMENT_3D('placement',#10,#11,#12);
+#20=(LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT(.MILLI.,.METRE.));
+#21=(NAMED_UNIT(*) PLANE_ANGLE_UNIT() SI_UNIT($,.RADIAN.));
+#22=(NAMED_UNIT(*) SI_UNIT($,.STERADIAN.) SOLID_ANGLE_UNIT());
+#23=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#20,
+  'distance_accuracy_value','');
+#24=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#23))
+  GLOBAL_UNIT_ASSIGNED_CONTEXT((#20,#21,#22))
+  REPRESENTATION_CONTEXT('Lh028','3D'));
+ENDSEC;
+END-ISO-10303-21;

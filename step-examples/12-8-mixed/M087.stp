@@ -1,0 +1,26 @@
+ISO-10303-21;
+/* M087 - AP210 signal-net references nonexistent terminal.
+ * Defect: an INTERCONNECT_MODULE_TERMINAL_END references a TERMINAL by
+ * id, but the cited TERMINAL is not declared in the file. The net is
+ * left dangling at one end - a downstream connectivity check reports a
+ * net with one terminal connection instead of two. */
+HEADER;
+FILE_DESCRIPTION(('M087 test case','AP210 signal net references missing terminal'),'2;1');
+FILE_NAME('M087.stp','2026-04-30T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('ELECTRONIC_ASSEMBLY_INTERCONNECT_AND_PACKAGING_DESIGN { 1 0 10303 210 3 1 0 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('electronic_assembly_interconnect_and_packaging_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
+  'electronic_assembly_interconnect_and_packaging_design',2014,#1);
+#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#100=PRODUCT('U1','MCU','MCU package',(#1));
+#101=PRODUCT('U2','SRAM','SRAM package',(#1));
+#110=TERMINAL('U1.PA0',$,$);
+/* Defect: U2.PA0 declared on the net side as #999, never given a
+ * TERMINAL definition. */
+#200=NETWORK_NODE('CLK_net_node_a',#110);
+#201=NETWORK_NODE('CLK_net_node_b',#999);
+#300=NETWORK('CLK_net',(#200,#201),$);
+ENDSEC;
+END-ISO-10303-21;

@@ -1,0 +1,36 @@
+ISO-10303-21;
+/* M040 - STYLED_ITEM.item is NULL or unresolved.
+ * Defect: STYLED_ITEM entity has its `item` slot set to NULL ($).
+ * OCCT historically dereferenced the slot via IsKind(), causing a
+ * crash (Mantis 28147, 28797, 29633). Readers must null-check and
+ * skip styling for that item. */
+HEADER;
+FILE_DESCRIPTION(('M040 test case','STYLED_ITEM with NULL item'),'2;1');
+FILE_NAME('M040.stp','2026-04-26T00:00:00',(''),(''),'auto-generated','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#11=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#12=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.E-6),#10,'distance_accuracy_value','');
+#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+     GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13))
+     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12))
+     REPRESENTATION_CONTEXT('part','3D'));
+/* Color and style */
+#600=COLOUR_RGB('green',0.0,1.0,0.0);
+#601=FILL_AREA_STYLE_COLOUR('',#600);
+#602=FILL_AREA_STYLE('',(#601));
+#603=SURFACE_STYLE_FILL_AREA(#602);
+#604=SURFACE_SIDE_STYLE('',(#603));
+#605=SURFACE_STYLE_USAGE(.BOTH.,#604);
+#606=PRESENTATION_STYLE_ASSIGNMENT((#605));
+/* Defect: STYLED_ITEM.item is NULL ($). */
+#610=STYLED_ITEM('null_item_style',(#606),$);
+#620=MECHANICAL_DESIGN_GEOMETRIC_PRESENTATION_REPRESENTATION(
+       '',(#610),#14);
+ENDSEC;
+END-ISO-10303-21;

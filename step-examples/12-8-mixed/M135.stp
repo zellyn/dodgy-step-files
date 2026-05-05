@@ -1,0 +1,25 @@
+ISO-10303-21;
+/* M135 - AP203 declares CONFIG_CONTROL_DESIGN (CC1) but uses CC2-only
+ * entities.
+ * Defect: a file declares the legacy CONFIG_CONTROL_DESIGN schema in
+ * its FILE_SCHEMA, yet uses entities such as DESIGN_CONTEXT and
+ * MECHANICAL_CONTEXT that were introduced in the AP203 second-edition
+ * (CC2 / CCD2) schema. CC1-strict readers will reject the unknown
+ * entities; lax readers may accept and produce inconsistent results. */
+HEADER;
+FILE_DESCRIPTION(('M135 test case','AP203 CC1 schema with CC2 entities'),'2;1');
+FILE_NAME('M135.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('CONFIG_CONTROL_DESIGN'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('configuration controlled 3D design of mechanical parts and assemblies');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','config_control_design',1994,#1);
+/* Defect: DESIGN_CONTEXT and MECHANICAL_CONTEXT are CC2-only entities,
+ * not in the original CC1 schema declared above. */
+#3=DESIGN_CONTEXT('design_ctx',#1,'design');
+#4=MECHANICAL_CONTEXT('mech_ctx',#1,'mechanical');
+#10=PRODUCT('part_x','part_x','sample',(#3,#4));
+#20=PRODUCT_DEFINITION_FORMATION('rev_A','released',#10);
+#30=PRODUCT_DEFINITION('design','',#20,#3);
+ENDSEC;
+END-ISO-10303-21;

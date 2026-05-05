@@ -1,0 +1,22 @@
+/* Le002 — Edition-default encoding mismatch (Ed.2 ISO-8859-1 vs Ed.3 UTF-8)
+   Defect: file declares Ed.3 implementation_level but uses Ed.2-style \X\E9
+   single-byte ISO-8859 escape for the character e-acute. A strict Ed.3-only
+   reader assuming raw UTF-8 may double-decode or mishandle this lawful form.
+   The literal value should decode to the single character "e-acute". */
+ISO-10303-21;
+HEADER;
+FILE_DESCRIPTION(('Le002 - Edition-default encoding mismatch (Ed.2 ISO-8859-1 vs Ed.3 UTF-8)'),'4');
+FILE_NAME('Le002.stp','2026-04-26T00:00:00',('auto-generated'),(''),
+  'auto-generated','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+#10=CARTESIAN_POINT('caf\X\E9',(0.0,0.0,0.0));
+#20=DIRECTION('',(0.0,0.0,1.0));
+#30=DIRECTION('',(1.0,0.0,0.0));
+#40=AXIS2_PLACEMENT_3D('',#10,#20,#30);
+#50=PRODUCT('caf\X\E9-Ed3','caf\X\E9 (E acute via X-escape)','description',(#60));
+#60=PRODUCT_CONTEXT('part definition',#70,'mechanical');
+#70=APPLICATION_CONTEXT('automotive_design');
+ENDSEC;
+END-ISO-10303-21;

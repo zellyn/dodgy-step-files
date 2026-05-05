@@ -1,0 +1,103 @@
+/* Pf006 - Quadratic self-intersection check on perforated sheets
+   Pattern: a flat sheet with hundreds of small circular holes. The
+   wire self-intersection check inside ShapeFix is O(n^2) per wire and
+   per face, dominating ~90% of read time on these inputs (quaoar B002).
+   Real defects are almost never found.
+   Scaling-up: this fixture has 6 hole wires on one sheet face. Replicate
+   the inner-bound circle pattern to ~1000 holes per sheet to trigger the
+   pathological self-intersection-check time during STEPControl_Reader::
+   TransferRoots. */
+ISO-10303-21;
+HEADER;
+FILE_DESCRIPTION(('Pf006 - perforated sheet, quadratic self-intersect check'),'2;1');
+FILE_NAME('Pf006.stp','2026-04-26T00:00:00',('auto-generated'),(''),
+  'auto-generated','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=DIRECTION('',(0.0,0.0,1.0));
+#3=DIRECTION('',(1.0,0.0,0.0));
+#4=AXIS2_PLACEMENT_3D('',#1,#2,#3);
+/* hole centers (replicate to ~1000) */
+#10=CARTESIAN_POINT('',(1.0,1.0,0.0));
+#11=CARTESIAN_POINT('',(2.0,1.0,0.0));
+#12=CARTESIAN_POINT('',(3.0,1.0,0.0));
+#13=CARTESIAN_POINT('',(1.0,2.0,0.0));
+#14=CARTESIAN_POINT('',(2.0,2.0,0.0));
+#15=CARTESIAN_POINT('',(3.0,2.0,0.0));
+/* axis placements per hole */
+#20=AXIS2_PLACEMENT_3D('',#10,#2,#3);
+#21=AXIS2_PLACEMENT_3D('',#11,#2,#3);
+#22=AXIS2_PLACEMENT_3D('',#12,#2,#3);
+#23=AXIS2_PLACEMENT_3D('',#13,#2,#3);
+#24=AXIS2_PLACEMENT_3D('',#14,#2,#3);
+#25=AXIS2_PLACEMENT_3D('',#15,#2,#3);
+/* hole circles */
+#30=CIRCLE('',#20,0.2);
+#31=CIRCLE('',#21,0.2);
+#32=CIRCLE('',#22,0.2);
+#33=CIRCLE('',#23,0.2);
+#34=CIRCLE('',#24,0.2);
+#35=CIRCLE('',#25,0.2);
+/* vertices on each hole (start point) */
+#40=VERTEX_POINT('',#10);
+#41=VERTEX_POINT('',#11);
+#42=VERTEX_POINT('',#12);
+#43=VERTEX_POINT('',#13);
+#44=VERTEX_POINT('',#14);
+#45=VERTEX_POINT('',#15);
+/* edge curves (closed circle = same start/end vertex) */
+#50=EDGE_CURVE('',#40,#40,#30,.T.);
+#51=EDGE_CURVE('',#41,#41,#31,.T.);
+#52=EDGE_CURVE('',#42,#42,#32,.T.);
+#53=EDGE_CURVE('',#43,#43,#33,.T.);
+#54=EDGE_CURVE('',#44,#44,#34,.T.);
+#55=EDGE_CURVE('',#45,#45,#35,.T.);
+/* oriented edges */
+#60=ORIENTED_EDGE('',*,*,#50,.T.);
+#61=ORIENTED_EDGE('',*,*,#51,.T.);
+#62=ORIENTED_EDGE('',*,*,#52,.T.);
+#63=ORIENTED_EDGE('',*,*,#53,.T.);
+#64=ORIENTED_EDGE('',*,*,#54,.T.);
+#65=ORIENTED_EDGE('',*,*,#55,.T.);
+/* inner edge loops (one per hole) */
+#70=EDGE_LOOP('',(#60));
+#71=EDGE_LOOP('',(#61));
+#72=EDGE_LOOP('',(#62));
+#73=EDGE_LOOP('',(#63));
+#74=EDGE_LOOP('',(#64));
+#75=EDGE_LOOP('',(#65));
+/* face inner bounds */
+#80=FACE_BOUND('',#70,.T.);
+#81=FACE_BOUND('',#71,.T.);
+#82=FACE_BOUND('',#72,.T.);
+#83=FACE_BOUND('',#73,.T.);
+#84=FACE_BOUND('',#74,.T.);
+#85=FACE_BOUND('',#75,.T.);
+/* outer rectangle for the sheet */
+#90=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#91=CARTESIAN_POINT('',(10.0,0.0,0.0));
+#92=CARTESIAN_POINT('',(10.0,5.0,0.0));
+#93=CARTESIAN_POINT('',(0.0,5.0,0.0));
+#94=VERTEX_POINT('',#90);
+#95=VERTEX_POINT('',#91);
+#96=VERTEX_POINT('',#92);
+#97=VERTEX_POINT('',#93);
+#98=VECTOR('',#3,1.0);
+#99=LINE('',#90,#98);
+#150=EDGE_CURVE('',#94,#95,#99,.T.);
+#151=EDGE_CURVE('',#95,#96,#99,.T.);
+#152=EDGE_CURVE('',#96,#97,#99,.T.);
+#153=EDGE_CURVE('',#97,#94,#99,.T.);
+#160=ORIENTED_EDGE('',*,*,#150,.T.);
+#161=ORIENTED_EDGE('',*,*,#151,.T.);
+#162=ORIENTED_EDGE('',*,*,#152,.T.);
+#163=ORIENTED_EDGE('',*,*,#153,.T.);
+#170=EDGE_LOOP('',(#160,#161,#162,#163));
+#180=FACE_OUTER_BOUND('',#170,.T.);
+#190=PLANE('',#4);
+/* the perforated face: 1 outer + many inner = N^2 self-intersect cost */
+#200=ADVANCED_FACE('',(#180,#80,#81,#82,#83,#84,#85),#190,.T.);
+ENDSEC;
+END-ISO-10303-21;

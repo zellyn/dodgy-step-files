@@ -1,0 +1,38 @@
+/* Ls013 - Empty parameter list () versus typed empty parameter
+   ----------------------------------------------------------------------
+   Catalog section : §12.1c parameter syntax
+   Sources         : T026, N054
+   See also        : Ad015
+   ----------------------------------------------------------------------
+   Defect
+     Two distinct empty-list forms exist:
+       - a zero-attribute entity record  : #1=BOUNDED_SURFACE();
+       - an empty typed parameter        : IFCMEASURE(())
+     The lexical layer accepts #1=PRODUCT();, but the schema expects N
+     attributes, so the semantic layer must reject. Generators emit zero-
+     argument forms when default-construction logic produces empty slots.
+   Expected behavior
+     Lex layer accepts () as zero-argument record. Semantic layer must
+     reject if the schema requires N>0 attributes with the diagnostic
+     "0 attributes, expected N". Reject zero-argument typed parameters
+     unless the schema explicitly permits them.
+   ----------------------------------------------------------------------
+*/
+ISO-10303-21;
+HEADER;
+FILE_DESCRIPTION(('Ls013 - empty parameter list versus typed empty parameter'),'2;1');
+FILE_NAME('Ls013.stp','2026-04-26T00:00:00',('auto-generated'),(''),
+  'auto-generated','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+/* Defect: zero-argument entity record where schema requires N attributes */
+#10=BOUNDED_SURFACE();
+/* Defect: empty typed parameter where the schema expects a value */
+#20=IFCMEASURE(IFCLENGTHMEASURE());
+/* Defect: zero-argument PRODUCT (schema-illegal) */
+#30=PRODUCT();
+/* Defect: nested empty typed parameter inside an aggregate */
+#40=PROPERTY_LIST((IFCMEASURE(IFCLENGTHMEASURE())));
+ENDSEC;
+END-ISO-10303-21;

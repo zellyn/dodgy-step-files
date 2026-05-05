@@ -1,0 +1,49 @@
+/* Gn018 - BEZIER_SURFACE and RATIONAL_BEZIER_SURFACE unimplemented
+   Defect: BRL-CAD step-g (and other consumers) emit
+   "LoadONBrep() not implemented for <entity>" when the file references
+   BEZIER_SURFACE or RATIONAL_BEZIER_SURFACE, even though they are
+   algebraically NURBS patches with knot multiplicity = degree+1 at each
+   endpoint and no interior knots.  This file emits one of each as
+   SIMPLE entities (the names BEZIER_SURFACE / RATIONAL_BEZIER_SURFACE
+   are explicit subtypes of B_SPLINE_SURFACE in the AP214 schema, and
+   producers really do emit them as simple entities -- that is what
+   trips step-g, not the complex-entity wrapping).
+   Sources: K006 BRL-CAD OpenNurbsInterfaces.cpp:554, :800. */
+ISO-10303-21;
+HEADER;
+FILE_DESCRIPTION(
+  ('Gn018 - BEZIER_SURFACE and RATIONAL_BEZIER_SURFACE entities'),'2;1');
+FILE_NAME('Gn018.stp','2026-04-26T00:00:00',('auto-generated'),(''),
+  'auto-generated','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+/* Bezier surface 4x4 control net, degree (3,3). */
+#10=CARTESIAN_POINT('b00',(0.0,0.0,0.0));
+#11=CARTESIAN_POINT('b01',(0.0,1.0,0.0));
+#12=CARTESIAN_POINT('b02',(0.0,2.0,0.0));
+#13=CARTESIAN_POINT('b03',(0.0,3.0,0.0));
+#20=CARTESIAN_POINT('b10',(1.0,0.0,0.5));
+#21=CARTESIAN_POINT('b11',(1.0,1.0,1.0));
+#22=CARTESIAN_POINT('b12',(1.0,2.0,1.0));
+#23=CARTESIAN_POINT('b13',(1.0,3.0,0.5));
+#30=CARTESIAN_POINT('b20',(2.0,0.0,0.5));
+#31=CARTESIAN_POINT('b21',(2.0,1.0,1.0));
+#32=CARTESIAN_POINT('b22',(2.0,2.0,1.0));
+#33=CARTESIAN_POINT('b23',(2.0,3.0,0.5));
+#40=CARTESIAN_POINT('b30',(3.0,0.0,0.0));
+#41=CARTESIAN_POINT('b31',(3.0,1.0,0.0));
+#42=CARTESIAN_POINT('b32',(3.0,2.0,0.0));
+#43=CARTESIAN_POINT('b33',(3.0,3.0,0.0));
+/* Defect: BEZIER_SURFACE simple entity (subtype of B_SPLINE_SURFACE) --
+   step-g prints LoadONBrep() not implemented and drops the face. */
+#100=BEZIER_SURFACE('bezier_face',3,3,
+  ((#10,#11,#12,#13),(#20,#21,#22,#23),(#30,#31,#32,#33),(#40,#41,#42,#43)),
+  .UNSPECIFIED.,.F.,.F.,.F.);
+/* Defect: RATIONAL_BEZIER_SURFACE simple entity -- same drop behaviour. */
+#200=RATIONAL_BEZIER_SURFACE('rational_bezier_face',3,3,
+  ((#10,#11,#12,#13),(#20,#21,#22,#23),(#30,#31,#32,#33),(#40,#41,#42,#43)),
+  .UNSPECIFIED.,.F.,.F.,.F.,
+  ((1.0,1.0,1.0,1.0),(1.0,2.0,2.0,1.0),(1.0,2.0,2.0,1.0),(1.0,1.0,1.0,1.0)));
+ENDSEC;
+END-ISO-10303-21;

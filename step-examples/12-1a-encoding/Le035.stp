@@ -1,0 +1,30 @@
+/* Le035 — Encoding directives emitted in Ed.3 UTF-8 file unnecessarily
+   Defect: an Ed.3 producer that retains Ed.2 codepaths emits \S\, \P\, \X\
+   even though the body is UTF-8 by default. Strict Ed.3 readers that assume
+   raw multi-byte UTF-8 may then double-decode a sequence that has both an
+   \X\ escape AND raw multi-byte UTF-8 for the same character. This file
+   declares implementation_level '4' (Ed.3) and contains:
+     - 'caf\X\E9'           -- e-acute via Ed.2-style \X\
+     - 'caf\PA\\S\i'        -- explicit page selector + \S\ shift
+     - 'caf<UTF-8 e-acute>' -- raw UTF-8 multi-byte 0xC3 0xA9
+   A correct kernel accepts both edition styles regardless of declared
+   edition and never assumes the file declares its encoding mode. */
+ISO-10303-21;
+HEADER;
+FILE_DESCRIPTION(('Le035 - Ed.2 directives in declared Ed.3 UTF-8 file'),'4');
+FILE_NAME('Le035.stp','2026-04-26T00:00:00',('auto-generated'),(''),
+  'auto-generated','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+/* Ed.2-style single-byte \X\ in declared Ed.3 file */
+#10=PERSON('p1','caf\X\E9','given',$,$,$,$,$);
+/* explicit \PA\ + \S\ chaining in Ed.3 file */
+#11=PERSON('p2','caf\PA\\S\i','given',$,$,$,$,$);
+#12=PERSON('p3','café','given',$,$,$,$,$);
+#20=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#21=DIRECTION('',(0.0,0.0,1.0));
+#22=DIRECTION('',(1.0,0.0,0.0));
+#23=AXIS2_PLACEMENT_3D('',#20,#21,#22);
+ENDSEC;
+END-ISO-10303-21;

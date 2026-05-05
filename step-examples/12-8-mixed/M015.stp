@@ -1,0 +1,40 @@
+ISO-10303-21;
+/* M015 - Tessellated PMI placement: third coordinate not zero in
+ * tessellated_geometric_set (repositioned form preferred).
+ * Defect: tessellated annotation lying in a plane at z=10 is emitted
+ * with absolute 3D coordinates (every point has z=10) instead of the
+ * preferred "repositioned" form, where the COORDINATES_LIST has z=0
+ * and a REPOSITIONED_TESSELLATED_ITEM places the set at z=10 via an
+ * AXIS2_PLACEMENT_3D. The non-repositioned form bloats the file and
+ * loses the 2D semantic of an annotation. Readers must support both;
+ * writers should prefer the repositioned form. */
+HEADER;
+FILE_DESCRIPTION(('M015 test case','tessellated annotation absolute coords (z!=0)'),'2;1');
+FILE_NAME('M015.stp','2026-04-26T00:00:00',(''),(''),'auto-generated','','');
+FILE_SCHEMA(('AP242_MANAGED_MODEL_BASED_3D_ENGINEERING_MIM_LF { 1 0 10303 442 1 1 4 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('managed model based 3d engineering');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
+  'ap242_managed_model_based_3d_engineering',2014,#1);
+#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#11=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#12=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.E-6),#10,'distance_accuracy_value','');
+#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+     GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13))
+     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12))
+     REPRESENTATION_CONTEXT('part','3D'));
+/* Coordinates: 4 points lying in z=10 plane (NOT z=0).
+ * The recommended form would have z=0 here and a repositioning axis
+ * at z=10 below. */
+#100=COORDINATES_LIST('annot_coords_absolute',4,
+       ((0.0,0.0,10.0),(1.0,0.0,10.0),
+        (1.0,1.0,10.0),(0.0,1.0,10.0)));
+/* tessellated_curve_set forming a square outline */
+#110=TESSELLATED_CURVE_SET('annot_outline',#100,((1,2,3,4,1)));
+/* Tessellated geometric set wrapping the curve set */
+#120=TESSELLATED_GEOMETRIC_SET('annot_set',(#110));
+#200=TESSELLATED_SHAPE_REPRESENTATION('annotation_repr',(#120),#14);
+ENDSEC;
+END-ISO-10303-21;

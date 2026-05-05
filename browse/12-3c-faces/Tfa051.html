@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Tfa051 — Face needs splitting (knot insertion / sub-faces) for downstream tools</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.3c Faces / sewing / free bound</a> <span class="sep">/</span> <span class="current">Tfa051</span>
+</nav>
+<header class="title-bar">
+<h1>Tfa051 <span class="sep">—</span> <span class="entry-title">Face needs splitting (knot insertion / sub-faces) for downstream tools</span></h1>
+<p class="category">§12.3c faces / sewing / free bounds (sub-class: face split)</p>
+<p class="tag-pills">
+<a class="tag tag-topology" href="../by-tag/topology/index.html">topology</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-3c-faces/Tfa051.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-3c-faces/Tfa051.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>OCCT `ShapeUpgrade_FaceDivide::Perform` (`ShapeUpgrade_FaceDivide.hxx:73`)</li>
+</ul></section>
+<section><h2>Description</h2>
+<p>A face on a surface with internal C0 knots, large parameter span, or multiple analytic regions. Downstream tools handle smaller pieces better — meshers produce more uniform elements, Booleans avoid the C0 line, fillet engines find tangents. The face-divide pipeline produces a shell of replacement sub-faces.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>A square face whose underlying surface has a C0 line at U=0.5; the division must split the face into two sub-faces along that isoline.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>emit a shell of sub-faces with consistent orientation, sharing edges along the cut, with re-stitched outer wires. The split criteria are kernel policy.</p></section>
+<section><h2>Notes</h2>
+<p>Face-side counterpart to Gp033 (curve split) and Gs049 (surface split). Synonyms: &quot;B-spline surface with C0 knot ridge&quot;, &quot;knot multiplicity equals degree creates C0 continuity&quot;, &quot;rectangular boundary crosses C0 ridge&quot;, &quot;face needs splitting at internal C0 knot&quot;, &quot;sub-face division at parametric break&quot;, &quot;face on multi-region NURBS surface&quot;.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a</code></p></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>n_edges_total &gt;= 4</code></li>
+<li><code>face[0].surface_type == &quot;bspline&quot;</code></li>
+<li><code>n_vertices_total &gt;= 8</code></li>
+</ul></section>
+<section><h2>Cross-references</h2>
+<p><a href="../12-2a-pcurves/Gp033.html">Gp033</a>, <a href="../12-2c-surfaces/Gs049.html">Gs049</a></p>
+</section>
+<section><h2>Live oracle output</h2>
+<table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
+<tr><td><code>occt_heal_on</code></td><td><code>shape(1)</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>shape(1)</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>shape(9)</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>shape(9)</code></td></tr>
+<tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>not_manifold</code></td></tr>
+</tbody></table>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* Tfa051 - Face needs splitting (knot insertion / sub-faces) for downstream tools
+<span class="lineno">3</span> * Square face on a B_SPLINE_SURFACE_WITH_KNOTS. Surface is bicubic in U,
+<span class="lineno">4</span> * cubic in V, with an INTERIOR knot at U=0.5 of multiplicity 3 (= degree),
+<span class="lineno">5</span> * producing a C0 isoline at U=0.5 -- the face needs to be split into
+<span class="lineno">6</span> * sub-faces along that isoline. */
+<span class="lineno">7</span>HEADER;
+<span class="lineno">8</span>FILE_DESCRIPTION((&#x27;Tfa051 test case&#x27;,&#x27;B-spline surface with C0 isoline at U=0.5 -- face needs splitting&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">9</span>FILE_NAME(&#x27;Tfa051.stp&#x27;,&#x27;2026-04-30T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">10</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }&#x27;));
+<span class="lineno">11</span>ENDSEC;
+<span class="lineno">12</span>DATA;
+<span class="lineno">13</span>#1=APPLICATION_CONTEXT(&#x27;automotive_design&#x27;);
+<span class="lineno">14</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,&#x27;automotive_design&#x27;,2000,#1);
+<span class="lineno">15</span>/* B-spline surface: cubic in U with knot multiplicities (4,3,4) at (0,0.5,1) -- C0 at U=0.5.
+<span class="lineno">16</span> * Cubic in V with knot multiplicities (4,4) at (0,1) -- smooth in V.
+<span class="lineno">17</span> * Control point grid is 7x4 (matches U-knot count - degree - 1 = 4+3+4 - 3 - 1 = 7,
+<span class="lineno">18</span> * V control count = 4+4 - 3 - 1 = 4). */
+<span class="lineno">19</span>#10=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));#11=CARTESIAN_POINT(&#x27;&#x27;,(0.0,3.3,0.0));
+<span class="lineno">20</span>#12=CARTESIAN_POINT(&#x27;&#x27;,(0.0,6.6,0.0));#13=CARTESIAN_POINT(&#x27;&#x27;,(0.0,10.0,0.0));
+<span class="lineno">21</span>#14=CARTESIAN_POINT(&#x27;&#x27;,(2.5,0.0,0.0));#15=CARTESIAN_POINT(&#x27;&#x27;,(2.5,3.3,0.0));
+<span class="lineno">22</span>#16=CARTESIAN_POINT(&#x27;&#x27;,(2.5,6.6,0.0));#17=CARTESIAN_POINT(&#x27;&#x27;,(2.5,10.0,0.0));
+<span class="lineno">23</span>#18=CARTESIAN_POINT(&#x27;&#x27;,(5.0,0.0,0.0));#19=CARTESIAN_POINT(&#x27;&#x27;,(5.0,3.3,0.0));
+<span class="lineno">24</span>#20=CARTESIAN_POINT(&#x27;&#x27;,(5.0,6.6,0.0));#21=CARTESIAN_POINT(&#x27;&#x27;,(5.0,10.0,0.0));
+<span class="lineno">25</span>#22=CARTESIAN_POINT(&#x27;C0_at_U0p5_a&#x27;,(5.0,0.0,0.0));#23=CARTESIAN_POINT(&#x27;C0_at_U0p5_b&#x27;,(5.0,3.3,0.0));
+<span class="lineno">26</span>#24=CARTESIAN_POINT(&#x27;C0_at_U0p5_c&#x27;,(5.0,6.6,0.0));#25=CARTESIAN_POINT(&#x27;C0_at_U0p5_d&#x27;,(5.0,10.0,0.0));
+<span class="lineno">27</span>#26=CARTESIAN_POINT(&#x27;&#x27;,(5.0,0.0,1.0));#27=CARTESIAN_POINT(&#x27;&#x27;,(5.0,3.3,1.0));
+<span class="lineno">28</span>#28=CARTESIAN_POINT(&#x27;&#x27;,(5.0,6.6,1.0));#29=CARTESIAN_POINT(&#x27;&#x27;,(5.0,10.0,1.0));
+<span class="lineno">29</span>#30=CARTESIAN_POINT(&#x27;&#x27;,(7.5,0.0,1.0));#31=CARTESIAN_POINT(&#x27;&#x27;,(7.5,3.3,1.0));
+<span class="lineno">30</span>#32=CARTESIAN_POINT(&#x27;&#x27;,(7.5,6.6,1.0));#33=CARTESIAN_POINT(&#x27;&#x27;,(7.5,10.0,1.0));
+<span class="lineno">31</span>#34=CARTESIAN_POINT(&#x27;&#x27;,(10.0,0.0,1.0));#35=CARTESIAN_POINT(&#x27;&#x27;,(10.0,3.3,1.0));
+<span class="lineno">32</span>#36=CARTESIAN_POINT(&#x27;&#x27;,(10.0,6.6,1.0));#37=CARTESIAN_POINT(&#x27;&#x27;,(10.0,10.0,1.0));
+<span class="lineno">33</span>#40=B_SPLINE_SURFACE_WITH_KNOTS(&#x27;host_surface_with_C0&#x27;,3,3,
+<span class="lineno">34</span>((#10,#11,#12,#13),(#14,#15,#16,#17),(#18,#19,#20,#21),
+<span class="lineno">35</span>(#22,#23,#24,#25),(#26,#27,#28,#29),(#30,#31,#32,#33),(#34,#35,#36,#37)),
+<span class="lineno">36</span>.UNSPECIFIED.,.F.,.F.,.F.,(4,3,4),(4,4),(0.0,0.5,1.0),(0.0,1.0),.UNSPECIFIED.);
+<span class="lineno">37</span>/* Square face boundary on the host surface: corners at (0,0)..(10,10) */
+<span class="lineno">38</span>#50=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));#51=VERTEX_POINT(&#x27;&#x27;,#50);
+<span class="lineno">39</span>#52=CARTESIAN_POINT(&#x27;&#x27;,(10.0,0.0,1.0));#53=VERTEX_POINT(&#x27;&#x27;,#52);
+<span class="lineno">40</span>#54=CARTESIAN_POINT(&#x27;&#x27;,(10.0,10.0,1.0));#55=VERTEX_POINT(&#x27;&#x27;,#54);
+<span class="lineno">41</span>#56=CARTESIAN_POINT(&#x27;&#x27;,(0.0,10.0,0.0));#57=VERTEX_POINT(&#x27;&#x27;,#56);
+<span class="lineno">42</span>#60=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.1));#61=VECTOR(&#x27;&#x27;,#60,1.0);#62=LINE(&#x27;&#x27;,#50,#61);
+<span class="lineno">43</span>#63=EDGE_CURVE(&#x27;&#x27;,#51,#53,#62,.T.);
+<span class="lineno">44</span>#64=DIRECTION(&#x27;&#x27;,(0.0,1.0,0.0));#65=VECTOR(&#x27;&#x27;,#64,1.0);#66=LINE(&#x27;&#x27;,#52,#65);
+<span class="lineno">45</span>#67=EDGE_CURVE(&#x27;&#x27;,#53,#55,#66,.T.);
+<span class="lineno">46</span>#68=DIRECTION(&#x27;&#x27;,(-1.0,0.0,-0.1));#69=VECTOR(&#x27;&#x27;,#68,1.0);#70=LINE(&#x27;&#x27;,#54,#69);
+<span class="lineno">47</span>#71=EDGE_CURVE(&#x27;&#x27;,#55,#57,#70,.T.);
+<span class="lineno">48</span>#72=DIRECTION(&#x27;&#x27;,(0.0,-1.0,0.0));#73=VECTOR(&#x27;&#x27;,#72,1.0);#74=LINE(&#x27;&#x27;,#56,#73);
+<span class="lineno">49</span>#75=EDGE_CURVE(&#x27;&#x27;,#57,#51,#74,.T.);
+<span class="lineno">50</span>#80=ORIENTED_EDGE(&#x27;&#x27;,*,*,#63,.T.);
+<span class="lineno">51</span>#81=ORIENTED_EDGE(&#x27;&#x27;,*,*,#67,.T.);
+<span class="lineno">52</span>#82=ORIENTED_EDGE(&#x27;&#x27;,*,*,#71,.T.);
+<span class="lineno">53</span>#83=ORIENTED_EDGE(&#x27;&#x27;,*,*,#75,.T.);
+<span class="lineno">54</span>#84=EDGE_LOOP(&#x27;&#x27;,(#80,#81,#82,#83));
+<span class="lineno">55</span>#85=FACE_OUTER_BOUND(&#x27;&#x27;,#84,.T.);
+<span class="lineno">56</span>#90=ADVANCED_FACE(&#x27;face_with_C0_at_U0p5&#x27;,(#85),#40,.T.);
+<span class="lineno">57</span>/* Wrap: minimal PRODUCT chain so OCCT TransferRoots produces a shape. */
+<span class="lineno">58</span>#9000=PRODUCT_CONTEXT(&#x27;&#x27;,#1,&#x27;mechanical&#x27;);
+<span class="lineno">59</span>#9001=PRODUCT(&#x27;Tfa051&#x27;,&#x27;Tfa051&#x27;,&#x27;&#x27;,(#9000));
+<span class="lineno">60</span>#9002=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#9001);
+<span class="lineno">61</span>#9003=PRODUCT_DEFINITION_CONTEXT(&#x27;part definition&#x27;,#1,&#x27;design&#x27;);
+<span class="lineno">62</span>#9004=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,#9002,#9003);
+<span class="lineno">63</span>#9005=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,#9004);
+<span class="lineno">64</span>#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">65</span>#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+<span class="lineno">66</span>#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+<span class="lineno">67</span>#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,&#x27;distance_accuracy_value&#x27;,&#x27;&#x27;);
+<span class="lineno">68</span>#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT(&#x27;&#x27;,&#x27;3D&#x27;));
+<span class="lineno">69</span>#9020=OPEN_SHELL(&#x27;wrap_shell&#x27;,(#90));
+<span class="lineno">70</span>#9021=SHELL_BASED_SURFACE_MODEL(&#x27;wrap_sbsm&#x27;,(#9020));
+<span class="lineno">71</span>#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION(&#x27;&#x27;,(#9021),#9010);
+<span class="lineno">72</span>#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+<span class="lineno">73</span>ENDSEC;
+<span class="lineno">74</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Tfa050.html">&larr; Tfa050</a> <a class="up" href="index.html">§12.3c Faces / sewing / free bound</a> <a class="next" href="Tfa052.html">Tfa052 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

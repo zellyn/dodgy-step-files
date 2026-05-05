@@ -1,0 +1,19 @@
+/* Wr014 - Sparse instance numbering with huge gaps - instance numbers are hash values */
+ISO-10303-21;
+HEADER;
+FILE_DESCRIPTION(('Wr014 - sparse instance numbering with huge gaps'),'2;1');
+FILE_NAME('Wr014.stp','2026-04-30T00:00:00',(''),(''),
+  'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+#42=APPLICATION_CONTEXT('mechanical design');
+#9876543=PRODUCT_CONTEXT('part',#42,'mechanical');
+#21000000=PRODUCT('Wr014-part','Wr014 demo','',(#9876543));
+#999999999=CARTESIAN_POINT('origin',(0.0,0.0,0.0));
+#314159265=DIRECTION('z',(0.0,0.0,1.0));
+#271828182=DIRECTION('x',(1.0,0.0,0.0));
+#161803398=AXIS2_PLACEMENT_3D('p',#999999999,#314159265,#271828182);
+#577215664=(LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT(.MILLI.,.METRE.));
+ENDSEC;
+END-ISO-10303-21;

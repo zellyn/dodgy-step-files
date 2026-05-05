@@ -1,0 +1,125 @@
+ISO-10303-21;
+/* Hea001 - Top-level shape-healing pipeline must converge over multi-defect input
+ * Compound bundling THREE distinct defective sub-shapes:
+ *   (a) Tfa037-style square face wrapping a defective inner wire (scrambled,
+ *       sub-tolerance, wrong orientation) -- exercises face-level fixers;
+ *   (b) Tsh043-style two-face open shell with one face's same_sense flipped
+ *       and a shared edge re-used in opposite orientation -- exercises shell-level fixers;
+ *   (c) Twi051-style 3-edge scrambled-order free wire -- exercises wire-level fixers.
+ * Wrapped in a SHAPE_REPRESENTATION with a GEOMETRIC_SET of all three. */
+HEADER;
+FILE_DESCRIPTION(('Hea001 test case','Compound mixing defective face + defective shell + free wire'),'2;1');
+FILE_NAME('Hea001.stp','2026-04-30T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+/* === (a) Defective face: square outer + defective inner wire === */
+#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#11=DIRECTION('',(0.0,0.0,1.0));#12=DIRECTION('',(1.0,0.0,0.0));
+#13=AXIS2_PLACEMENT_3D('',#10,#11,#12);#14=PLANE('faceA_plane',#13);
+#20=CARTESIAN_POINT('',(0.0,0.0,0.0));#21=VERTEX_POINT('',#20);
+#22=CARTESIAN_POINT('',(10.0,0.0,0.0));#23=VERTEX_POINT('',#22);
+#24=CARTESIAN_POINT('',(10.0,10.0,0.0));#25=VERTEX_POINT('',#24);
+#26=CARTESIAN_POINT('',(0.0,10.0,0.0));#27=VERTEX_POINT('',#26);
+#30=DIRECTION('',(1.0,0.0,0.0));#31=VECTOR('',#30,1.0);#32=LINE('',#20,#31);
+#33=EDGE_CURVE('',#21,#23,#32,.T.);
+#34=DIRECTION('',(0.0,1.0,0.0));#35=VECTOR('',#34,1.0);#36=LINE('',#22,#35);
+#37=EDGE_CURVE('',#23,#25,#36,.T.);
+#38=DIRECTION('',(-1.0,0.0,0.0));#39=VECTOR('',#38,1.0);#40=LINE('',#24,#39);
+#41=EDGE_CURVE('',#25,#27,#40,.T.);
+#42=DIRECTION('',(0.0,-1.0,0.0));#43=VECTOR('',#42,1.0);#44=LINE('',#26,#43);
+#45=EDGE_CURVE('',#27,#21,#44,.T.);
+#46=ORIENTED_EDGE('',*,*,#33,.T.);#47=ORIENTED_EDGE('',*,*,#37,.T.);
+#48=ORIENTED_EDGE('',*,*,#41,.T.);#49=ORIENTED_EDGE('',*,*,#45,.T.);
+#50=EDGE_LOOP('outer_A',(#46,#47,#48,#49));
+#51=FACE_OUTER_BOUND('',#50,.T.);
+/* defective inner wire: tiny, scrambled, wrong-orientation flag */
+#60=CARTESIAN_POINT('',(5.0,5.0,0.0));#61=VERTEX_POINT('',#60);
+#62=CARTESIAN_POINT('',(5.001,5.0,0.0));#63=VERTEX_POINT('',#62);
+#64=CARTESIAN_POINT('',(5.0,5.001,0.0));#65=VERTEX_POINT('',#64);
+#66=DIRECTION('',(1.0,0.0,0.0));#67=VECTOR('',#66,1.0);#68=LINE('',#60,#67);
+#69=EDGE_CURVE('inner_e1',#61,#63,#68,.T.);
+#70=DIRECTION('',(-0.7071067811865475,0.7071067811865475,0.0));#71=VECTOR('',#70,1.4142);#72=LINE('',#62,#71);
+#73=EDGE_CURVE('inner_e2',#63,#65,#72,.T.);
+#74=DIRECTION('',(0.0,-1.0,0.0));#75=VECTOR('',#74,1.0);#76=LINE('',#64,#75);
+#77=EDGE_CURVE('inner_e3',#65,#61,#76,.T.);
+#78=ORIENTED_EDGE('inner_oe_e3',*,*,#77,.T.);
+#79=ORIENTED_EDGE('inner_oe_e1',*,*,#69,.T.);
+#80=ORIENTED_EDGE('inner_oe_e2',*,*,#73,.T.);
+#81=EDGE_LOOP('inner_scrambled',(#78,#79,#80));
+#82=FACE_INNER_BOUND('inner_wrong_orientation',#81,.T.);
+#90=ADVANCED_FACE('part_a_defective_face',(#51,#82),#14,.T.);
+/* === (b) Defective shell: two faces sharing an edge, second face flipped === */
+#100=CARTESIAN_POINT('',(0.0,0.0,5.0));#101=AXIS2_PLACEMENT_3D('',#100,#11,#12);
+#102=PLANE('shell_planeA',#101);
+#103=CARTESIAN_POINT('',(0.0,0.0,5.0));#104=AXIS2_PLACEMENT_3D('',#103,#11,#12);
+#105=PLANE('shell_planeB',#104);
+#110=CARTESIAN_POINT('',(0.0,0.0,5.0));#111=VERTEX_POINT('Sa',#110);
+#112=CARTESIAN_POINT('',(2.0,0.0,5.0));#113=VERTEX_POINT('Ss0',#112);
+#114=CARTESIAN_POINT('',(2.0,2.0,5.0));#115=VERTEX_POINT('Ss1',#114);
+#116=CARTESIAN_POINT('',(0.0,2.0,5.0));#117=VERTEX_POINT('Sb',#116);
+#118=CARTESIAN_POINT('',(4.0,0.0,5.0));#119=VERTEX_POINT('Sc',#118);
+#120=CARTESIAN_POINT('',(4.0,2.0,5.0));#121=VERTEX_POINT('Sd',#120);
+#125=DIRECTION('',(1.0,0.0,0.0));#126=VECTOR('',#125,1.0);#127=LINE('',#110,#126);
+#128=EDGE_CURVE('shell_A_bottom',#111,#113,#127,.T.);
+#129=DIRECTION('',(0.0,1.0,0.0));#130=VECTOR('',#129,1.0);#131=LINE('',#112,#130);
+#132=EDGE_CURVE('shell_shared',#113,#115,#131,.T.);
+#133=DIRECTION('',(-1.0,0.0,0.0));#134=VECTOR('',#133,1.0);#135=LINE('',#114,#134);
+#136=EDGE_CURVE('shell_A_top',#115,#117,#135,.T.);
+#137=DIRECTION('',(0.0,-1.0,0.0));#138=VECTOR('',#137,1.0);#139=LINE('',#116,#138);
+#140=EDGE_CURVE('shell_A_left',#117,#111,#139,.T.);
+#141=DIRECTION('',(1.0,0.0,0.0));#142=VECTOR('',#141,1.0);#143=LINE('',#112,#142);
+#144=EDGE_CURVE('shell_B_bottom',#113,#119,#143,.T.);
+#145=DIRECTION('',(0.0,1.0,0.0));#146=VECTOR('',#145,1.0);#147=LINE('',#118,#146);
+#148=EDGE_CURVE('shell_B_right',#119,#121,#147,.T.);
+#149=DIRECTION('',(-1.0,0.0,0.0));#150=VECTOR('',#149,1.0);#151=LINE('',#120,#150);
+#152=EDGE_CURVE('shell_B_top',#121,#115,#151,.T.);
+#160=ORIENTED_EDGE('',*,*,#128,.T.);#161=ORIENTED_EDGE('',*,*,#132,.T.);
+#162=ORIENTED_EDGE('',*,*,#136,.T.);#163=ORIENTED_EDGE('',*,*,#140,.T.);
+#164=EDGE_LOOP('shellA_outer',(#160,#161,#162,#163));
+#165=FACE_OUTER_BOUND('',#164,.T.);
+#166=ADVANCED_FACE('shell_faceA',(#165),#102,.T.);
+#170=ORIENTED_EDGE('',*,*,#144,.T.);#171=ORIENTED_EDGE('',*,*,#148,.T.);
+#172=ORIENTED_EDGE('',*,*,#152,.T.);#173=ORIENTED_EDGE('',*,*,#132,.F.);
+#174=EDGE_LOOP('shellB_outer',(#170,#171,#172,#173));
+#175=FACE_OUTER_BOUND('',#174,.T.);
+/* DEFECT: face B same_sense .F. -- shell orientation flipped on this face. */
+#176=ADVANCED_FACE('shell_faceB_flipped',(#175),#105,.F.);
+#180=OPEN_SHELL('part_b_defective_shell',(#166,#176));
+/* === (c) Free wire: 3-edge scrambled-order triangle === */
+#200=CARTESIAN_POINT('',(0.0,0.0,10.0));#201=VERTEX_POINT('Wa',#200);
+#202=CARTESIAN_POINT('',(1.0,0.0,10.0));#203=VERTEX_POINT('Wb',#202);
+#204=CARTESIAN_POINT('',(0.5,0.866,10.0));#205=VERTEX_POINT('Wc',#204);
+#206=DIRECTION('',(1.0,0.0,0.0));#207=VECTOR('',#206,1.0);#208=LINE('',#200,#207);
+#209=EDGE_CURVE('wire_e1',#201,#203,#208,.T.);
+#210=DIRECTION('',(-0.5,0.866,0.0));#211=VECTOR('',#210,1.0);#212=LINE('',#202,#211);
+#213=EDGE_CURVE('wire_e2',#203,#205,#212,.T.);
+#214=DIRECTION('',(-0.5,-0.866,0.0));#215=VECTOR('',#214,1.0);#216=LINE('',#204,#215);
+#217=EDGE_CURVE('wire_e3',#205,#201,#216,.T.);
+#218=ORIENTED_EDGE('w_oe_e3',*,*,#217,.T.);
+#219=ORIENTED_EDGE('w_oe_e1',*,*,#209,.T.);
+#220=ORIENTED_EDGE('w_oe_e2',*,*,#213,.T.);
+#221=EDGE_LOOP('part_c_free_wire_scrambled',(#218,#219,#220));
+/* Wrap all three in a compound (geometric set) under SHAPE_REPRESENTATION */
+#300=GEOMETRIC_SET('compound_three_defects',(#90,#180,#221));
+#310=GEOMETRIC_REPRESENTATION_CONTEXT('shape_repr',(#13),3);
+#311=SHAPE_REPRESENTATION('multi_defect_shape',(#300),#310);
+/* Wrap: minimal PRODUCT chain so OCCT TransferRoots produces a shape. */
+#9000=PRODUCT_CONTEXT('',#1,'mechanical');
+#9001=PRODUCT('Hea001','Hea001','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
+#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
+#9021=SHELL_BASED_SURFACE_MODEL('wrap_sbsm',(#180));
+#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#9010);
+#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+ENDSEC;
+END-ISO-10303-21;

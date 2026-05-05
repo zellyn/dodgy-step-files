@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Gn009 — High-degree NURBS surface bloat (degree &gt;5, redundant knots)</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.2b NURBS / B-spline</a> <span class="sep">/</span> <span class="current">Gn009</span>
+</nav>
+<header class="title-bar">
+<h1>Gn009 <span class="sep">—</span> <span class="entry-title">High-degree NURBS surface bloat (degree &gt;5, redundant knots)</span></h1>
+<p class="category">§12.2b NURBS/knots</p>
+<p class="severity-badge severity-p1">P1 — silent data loss</p>
+<p class="tag-pills">
+<a class="tag tag-geometry" href="../by-tag/geometry/index.html">geometry</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-2b-nurbs/Gn009.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-2b-nurbs/Gn009.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>11-translator-vendors.md (W016 — CADfix tutorial &quot;Reducing High Degree NURBS Surfaces&quot;)</li>
+</ul></section>
+<section><h2>Description</h2>
+<p>A `B_SPLINE_SURFACE_WITH_KNOTS` of degree &gt;5 in either direction with hundreds of control points where degree-3 would suffice. Often produced by aggressive degree-elevation in source kernels. Causes meshing slowdowns; main impact on FEA prep.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>Simple flat-ish patch exported as `B_SPLINE_SURFACE_WITH_KNOTS` of degree (9,9) with redundant interior knots and ~1000 control points.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>Accept on import; offer heal-and-accept (re-fit / degree-reduction within tolerance) via `ShapeCustom_BSplineRestriction`.</p></section>
+<section><h2>Notes</h2>
+<p>Synonyms: &quot;high-degree NURBS surface bloat&quot;, &quot;B-spline degree above 5 with hundreds of poles&quot;, &quot;redundant knots inflate NURBS surface&quot;, &quot;degree-9 NURBS where degree-3 would suffice&quot;, &quot;BSpline surface degree-elevation bloat slows mesher&quot;.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>contains(b&#x27;B_SPLINE_SURFACE&#x27;)</code></li>
+</ul></section>
+<section><h2>Live oracle output</h2>
+<table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
+<tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>reject(E_REAL_NO_DOT)</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>no_shapes_loaded</code></td></tr>
+</tbody></table>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* Gn009 - High-degree NURBS surface bloat (degree &gt;5, redundant knots)
+<span class="lineno">3</span>   Defect: a near-flat patch is exported as <mark>B_SPLINE_SURFACE</mark>_WITH_KNOTS of
+<span class="lineno">4</span>   degree (9,9) with REDUNDANT INTERIOR KNOTS, where degree-3 with a few
+<span class="lineno">5</span>   control points would suffice.  Often produced by aggressive degree-
+<span class="lineno">6</span>   elevation in the source kernel; causes meshing slowdowns and is a main
+<span class="lineno">7</span>   impact on FEA prep.  See CADfix tutorial &quot;Reducing High Degree NURBS
+<span class="lineno">8</span>   Surfaces&quot; (W016).
+<span class="lineno">9</span>   The knot vector here is (10, 1, 1, 1, 1, 10) on each side: i.e. degree
+<span class="lineno">10</span>   9 with FOUR simple interior knots, giving five spans across the patch
+<span class="lineno">11</span>   instead of one Bezier span.  That requires 14 poles per row -- a
+<span class="lineno">12</span>   14x14 net of near-coplanar points.  A degree-3 PLANE patch with a few
+<span class="lineno">13</span>   poles would represent the same shape within authoring tolerance.
+<span class="lineno">14</span>   Bytes: full 14x14 net of unique CARTESIAN_POINTs (no ID re-use). */
+<span class="lineno">15</span>HEADER;
+<span class="lineno">16</span>FILE_DESCRIPTION((&#x27;Gn009 - degree-9 NURBS bloat with interior knots&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">17</span>FILE_NAME(&#x27;Gn009.stp&#x27;,&#x27;2026-04-26T00:00:00&#x27;,(&#x27;auto-generated&#x27;),(&#x27;&#x27;),
+<span class="lineno">18</span>  &#x27;auto-generated&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">19</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
+<span class="lineno">20</span>ENDSEC;
+<span class="lineno">21</span>DATA;
+<span class="lineno">22</span>/* 14x14 control net.  All z=0 except a tiny +1e-6 bump near (i=6,j=6). */
+<span class="lineno">23</span>#1001=CARTESIAN_POINT(&#x27;p&#x27;,(0.0,0.0,0.0));
+<span class="lineno">24</span>#1002=CARTESIAN_POINT(&#x27;p&#x27;,(0.0,1.0,0.0));
+<span class="lineno">25</span>#1003=CARTESIAN_POINT(&#x27;p&#x27;,(0.0,2.0,0.0));
+<span class="lineno">26</span>#1004=CARTESIAN_POINT(&#x27;p&#x27;,(0.0,3.0,0.0));
+<span class="lineno">27</span>#1005=CARTESIAN_POINT(&#x27;p&#x27;,(0.0,4.0,0.0));
+<span class="lineno">28</span>#1006=CARTESIAN_POINT(&#x27;p&#x27;,(0.0,5.0,0.0));
+<span class="lineno">29</span>#1007=CARTESIAN_POINT(&#x27;p&#x27;,(0.0,6.0,0.0));
+<span class="lineno">30</span>#1008=CARTESIAN_POINT(&#x27;p&#x27;,(0.0,7.0,0.0));
+<span class="lineno">31</span>#1009=CARTESIAN_POINT(&#x27;p&#x27;,(0.0,8.0,0.0));
+<span class="lineno">32</span>#1010=CARTESIAN_POINT(&#x27;p&#x27;,(0.0,9.0,0.0));
+<span class="lineno">33</span>#1011=CARTESIAN_POINT(&#x27;p&#x27;,(0.0,10.0,0.0));
+<span class="lineno">34</span>#1012=CARTESIAN_POINT(&#x27;p&#x27;,(0.0,11.0,0.0));
+<span class="lineno">35</span>#1013=CARTESIAN_POINT(&#x27;p&#x27;,(0.0,12.0,0.0));
+<span class="lineno">36</span>#1014=CARTESIAN_POINT(&#x27;p&#x27;,(0.0,13.0,0.0));
+<span class="lineno">37</span>#1101=CARTESIAN_POINT(&#x27;p&#x27;,(1.0,0.0,0.0));
+<span class="lineno">38</span>#1102=CARTESIAN_POINT(&#x27;p&#x27;,(1.0,1.0,0.0));
+<span class="lineno">39</span>#1103=CARTESIAN_POINT(&#x27;p&#x27;,(1.0,2.0,0.0));
+<span class="lineno">40</span>#1104=CARTESIAN_POINT(&#x27;p&#x27;,(1.0,3.0,0.0));
+<span class="lineno">41</span>#1105=CARTESIAN_POINT(&#x27;p&#x27;,(1.0,4.0,0.0));
+<span class="lineno">42</span>#1106=CARTESIAN_POINT(&#x27;p&#x27;,(1.0,5.0,0.0));
+<span class="lineno">43</span>#1107=CARTESIAN_POINT(&#x27;p&#x27;,(1.0,6.0,0.0));
+<span class="lineno">44</span>#1108=CARTESIAN_POINT(&#x27;p&#x27;,(1.0,7.0,0.0));
+<span class="lineno">45</span>#1109=CARTESIAN_POINT(&#x27;p&#x27;,(1.0,8.0,0.0));
+<span class="lineno">46</span>#1110=CARTESIAN_POINT(&#x27;p&#x27;,(1.0,9.0,0.0));
+<span class="lineno">47</span>#1111=CARTESIAN_POINT(&#x27;p&#x27;,(1.0,10.0,0.0));
+<span class="lineno">48</span>#1112=CARTESIAN_POINT(&#x27;p&#x27;,(1.0,11.0,0.0));
+<span class="lineno">49</span>#1113=CARTESIAN_POINT(&#x27;p&#x27;,(1.0,12.0,0.0));
+<span class="lineno">50</span>#1114=CARTESIAN_POINT(&#x27;p&#x27;,(1.0,13.0,0.0));
+<span class="lineno">51</span>#1201=CARTESIAN_POINT(&#x27;p&#x27;,(2.0,0.0,0.0));
+<span class="lineno">52</span>#1202=CARTESIAN_POINT(&#x27;p&#x27;,(2.0,1.0,0.0));
+<span class="lineno">53</span>#1203=CARTESIAN_POINT(&#x27;p&#x27;,(2.0,2.0,0.0));
+<span class="lineno">54</span>#1204=CARTESIAN_POINT(&#x27;p&#x27;,(2.0,3.0,0.0));
+<span class="lineno">55</span>#1205=CARTESIAN_POINT(&#x27;p&#x27;,(2.0,4.0,0.0));
+<span class="lineno">56</span>#1206=CARTESIAN_POINT(&#x27;p&#x27;,(2.0,5.0,0.0));
+<span class="lineno">57</span>#1207=CARTESIAN_POINT(&#x27;p&#x27;,(2.0,6.0,0.0));
+<span class="lineno">58</span>#1208=CARTESIAN_POINT(&#x27;p&#x27;,(2.0,7.0,0.0));
+<span class="lineno">59</span>#1209=CARTESIAN_POINT(&#x27;p&#x27;,(2.0,8.0,0.0));
+<span class="lineno">60</span>#1210=CARTESIAN_POINT(&#x27;p&#x27;,(2.0,9.0,0.0));
+<span class="lineno">61</span>#1211=CARTESIAN_POINT(&#x27;p&#x27;,(2.0,10.0,0.0));
+<span class="lineno">62</span>#1212=CARTESIAN_POINT(&#x27;p&#x27;,(2.0,11.0,0.0));
+<span class="lineno">63</span>#1213=CARTESIAN_POINT(&#x27;p&#x27;,(2.0,12.0,0.0));
+<span class="lineno">64</span>#1214=CARTESIAN_POINT(&#x27;p&#x27;,(2.0,13.0,0.0));
+<span class="lineno">65</span>#1301=CARTESIAN_POINT(&#x27;p&#x27;,(3.0,0.0,0.0));
+<span class="lineno">66</span>#1302=CARTESIAN_POINT(&#x27;p&#x27;,(3.0,1.0,0.0));
+<span class="lineno">67</span>#1303=CARTESIAN_POINT(&#x27;p&#x27;,(3.0,2.0,0.0));
+<span class="lineno">68</span>#1304=CARTESIAN_POINT(&#x27;p&#x27;,(3.0,3.0,0.0));
+<span class="lineno">69</span>#1305=CARTESIAN_POINT(&#x27;p&#x27;,(3.0,4.0,0.0));
+<span class="lineno">70</span>#1306=CARTESIAN_POINT(&#x27;p&#x27;,(3.0,5.0,0.0));
+<span class="lineno">71</span>#1307=CARTESIAN_POINT(&#x27;p&#x27;,(3.0,6.0,0.0));
+<span class="lineno">72</span>#1308=CARTESIAN_POINT(&#x27;p&#x27;,(3.0,7.0,0.0));
+<span class="lineno">73</span>#1309=CARTESIAN_POINT(&#x27;p&#x27;,(3.0,8.0,0.0));
+<span class="lineno">74</span>#1310=CARTESIAN_POINT(&#x27;p&#x27;,(3.0,9.0,0.0));
+<span class="lineno">75</span>#1311=CARTESIAN_POINT(&#x27;p&#x27;,(3.0,10.0,0.0));
+<span class="lineno">76</span>#1312=CARTESIAN_POINT(&#x27;p&#x27;,(3.0,11.0,0.0));
+<span class="lineno">77</span>#1313=CARTESIAN_POINT(&#x27;p&#x27;,(3.0,12.0,0.0));
+<span class="lineno">78</span>#1314=CARTESIAN_POINT(&#x27;p&#x27;,(3.0,13.0,0.0));
+<span class="lineno">79</span>#1401=CARTESIAN_POINT(&#x27;p&#x27;,(4.0,0.0,0.0));
+<span class="lineno">80</span>#1402=CARTESIAN_POINT(&#x27;p&#x27;,(4.0,1.0,0.0));
+<span class="lineno">81</span>#1403=CARTESIAN_POINT(&#x27;p&#x27;,(4.0,2.0,0.0));
+<span class="lineno">82</span>#1404=CARTESIAN_POINT(&#x27;p&#x27;,(4.0,3.0,0.0));
+<span class="lineno">83</span>#1405=CARTESIAN_POINT(&#x27;p&#x27;,(4.0,4.0,0.0));
+<span class="lineno">84</span>#1406=CARTESIAN_POINT(&#x27;p&#x27;,(4.0,5.0,0.0));
+<span class="lineno">85</span>#1407=CARTESIAN_POINT(&#x27;p&#x27;,(4.0,6.0,0.0));
+<span class="lineno">86</span>#1408=CARTESIAN_POINT(&#x27;p&#x27;,(4.0,7.0,0.0));
+<span class="lineno">87</span>#1409=CARTESIAN_POINT(&#x27;p&#x27;,(4.0,8.0,0.0));
+<span class="lineno">88</span>#1410=CARTESIAN_POINT(&#x27;p&#x27;,(4.0,9.0,0.0));
+<span class="lineno">89</span>#1411=CARTESIAN_POINT(&#x27;p&#x27;,(4.0,10.0,0.0));
+<span class="lineno">90</span>#1412=CARTESIAN_POINT(&#x27;p&#x27;,(4.0,11.0,0.0));
+<span class="lineno">91</span>#1413=CARTESIAN_POINT(&#x27;p&#x27;,(4.0,12.0,0.0));
+<span class="lineno">92</span>#1414=CARTESIAN_POINT(&#x27;p&#x27;,(4.0,13.0,0.0));
+<span class="lineno">93</span>#1501=CARTESIAN_POINT(&#x27;p&#x27;,(5.0,0.0,0.0));
+<span class="lineno">94</span>#1502=CARTESIAN_POINT(&#x27;p&#x27;,(5.0,1.0,0.0));
+<span class="lineno">95</span>#1503=CARTESIAN_POINT(&#x27;p&#x27;,(5.0,2.0,0.0));
+<span class="lineno">96</span>#1504=CARTESIAN_POINT(&#x27;p&#x27;,(5.0,3.0,0.0));
+<span class="lineno">97</span>#1505=CARTESIAN_POINT(&#x27;p&#x27;,(5.0,4.0,0.0));
+<span class="lineno">98</span>#1506=CARTESIAN_POINT(&#x27;p&#x27;,(5.0,5.0,0.0));
+<span class="lineno">99</span>#1507=CARTESIAN_POINT(&#x27;p&#x27;,(5.0,6.0,0.0));
+<span class="lineno">100</span>#1508=CARTESIAN_POINT(&#x27;p&#x27;,(5.0,7.0,0.0));
+<span class="lineno">101</span>#1509=CARTESIAN_POINT(&#x27;p&#x27;,(5.0,8.0,0.0));
+<span class="lineno">102</span>#1510=CARTESIAN_POINT(&#x27;p&#x27;,(5.0,9.0,0.0));
+<span class="lineno">103</span>#1511=CARTESIAN_POINT(&#x27;p&#x27;,(5.0,10.0,0.0));
+<span class="lineno">104</span>#1512=CARTESIAN_POINT(&#x27;p&#x27;,(5.0,11.0,0.0));
+<span class="lineno">105</span>#1513=CARTESIAN_POINT(&#x27;p&#x27;,(5.0,12.0,0.0));
+<span class="lineno">106</span>#1514=CARTESIAN_POINT(&#x27;p&#x27;,(5.0,13.0,0.0));
+<span class="lineno">107</span>#1601=CARTESIAN_POINT(&#x27;p&#x27;,(6.0,0.0,0.0));
+<span class="lineno">108</span>#1602=CARTESIAN_POINT(&#x27;p&#x27;,(6.0,1.0,0.0));
+<span class="lineno">109</span>#1603=CARTESIAN_POINT(&#x27;p&#x27;,(6.0,2.0,0.0));
+<span class="lineno">110</span>#1604=CARTESIAN_POINT(&#x27;p&#x27;,(6.0,3.0,0.0));
+<span class="lineno">111</span>#1605=CARTESIAN_POINT(&#x27;p&#x27;,(6.0,4.0,0.0));
+<span class="lineno">112</span>#1606=CARTESIAN_POINT(&#x27;p&#x27;,(6.0,5.0,0.0));
+<span class="lineno">113</span>#1607=CARTESIAN_POINT(&#x27;p&#x27;,(6.0,6.0,1e-06));
+<span class="lineno">114</span>#1608=CARTESIAN_POINT(&#x27;p&#x27;,(6.0,7.0,0.0));
+<span class="lineno">115</span>#1609=CARTESIAN_POINT(&#x27;p&#x27;,(6.0,8.0,0.0));
+<span class="lineno">116</span>#1610=CARTESIAN_POINT(&#x27;p&#x27;,(6.0,9.0,0.0));
+<span class="lineno">117</span>#1611=CARTESIAN_POINT(&#x27;p&#x27;,(6.0,10.0,0.0));
+<span class="lineno">118</span>#1612=CARTESIAN_POINT(&#x27;p&#x27;,(6.0,11.0,0.0));
+<span class="lineno">119</span>#1613=CARTESIAN_POINT(&#x27;p&#x27;,(6.0,12.0,0.0));
+<span class="lineno">120</span>#1614=CARTESIAN_POINT(&#x27;p&#x27;,(6.0,13.0,0.0));
+<span class="lineno">121</span>#1701=CARTESIAN_POINT(&#x27;p&#x27;,(7.0,0.0,0.0));
+<span class="lineno">122</span>#1702=CARTESIAN_POINT(&#x27;p&#x27;,(7.0,1.0,0.0));
+<span class="lineno">123</span>#1703=CARTESIAN_POINT(&#x27;p&#x27;,(7.0,2.0,0.0));
+<span class="lineno">124</span>#1704=CARTESIAN_POINT(&#x27;p&#x27;,(7.0,3.0,0.0));
+<span class="lineno">125</span>#1705=CARTESIAN_POINT(&#x27;p&#x27;,(7.0,4.0,0.0));
+<span class="lineno">126</span>#1706=CARTESIAN_POINT(&#x27;p&#x27;,(7.0,5.0,0.0));
+<span class="lineno">127</span>#1707=CARTESIAN_POINT(&#x27;p&#x27;,(7.0,6.0,0.0));
+<span class="lineno">128</span>#1708=CARTESIAN_POINT(&#x27;p&#x27;,(7.0,7.0,0.0));
+<span class="lineno">129</span>#1709=CARTESIAN_POINT(&#x27;p&#x27;,(7.0,8.0,0.0));
+<span class="lineno">130</span>#1710=CARTESIAN_POINT(&#x27;p&#x27;,(7.0,9.0,0.0));
+<span class="lineno">131</span>#1711=CARTESIAN_POINT(&#x27;p&#x27;,(7.0,10.0,0.0));
+<span class="lineno">132</span>#1712=CARTESIAN_POINT(&#x27;p&#x27;,(7.0,11.0,0.0));
+<span class="lineno">133</span>#1713=CARTESIAN_POINT(&#x27;p&#x27;,(7.0,12.0,0.0));
+<span class="lineno">134</span>#1714=CARTESIAN_POINT(&#x27;p&#x27;,(7.0,13.0,0.0));
+<span class="lineno">135</span>#1801=CARTESIAN_POINT(&#x27;p&#x27;,(8.0,0.0,0.0));
+<span class="lineno">136</span>#1802=CARTESIAN_POINT(&#x27;p&#x27;,(8.0,1.0,0.0));
+<span class="lineno">137</span>#1803=CARTESIAN_POINT(&#x27;p&#x27;,(8.0,2.0,0.0));
+<span class="lineno">138</span>#1804=CARTESIAN_POINT(&#x27;p&#x27;,(8.0,3.0,0.0));
+<span class="lineno">139</span>#1805=CARTESIAN_POINT(&#x27;p&#x27;,(8.0,4.0,0.0));
+<span class="lineno">140</span>#1806=CARTESIAN_POINT(&#x27;p&#x27;,(8.0,5.0,0.0));
+<span class="lineno">141</span>#1807=CARTESIAN_POINT(&#x27;p&#x27;,(8.0,6.0,0.0));
+<span class="lineno">142</span>#1808=CARTESIAN_POINT(&#x27;p&#x27;,(8.0,7.0,0.0));
+<span class="lineno">143</span>#1809=CARTESIAN_POINT(&#x27;p&#x27;,(8.0,8.0,0.0));
+<span class="lineno">144</span>#1810=CARTESIAN_POINT(&#x27;p&#x27;,(8.0,9.0,0.0));
+<span class="lineno">145</span>#1811=CARTESIAN_POINT(&#x27;p&#x27;,(8.0,10.0,0.0));
+<span class="lineno">146</span>#1812=CARTESIAN_POINT(&#x27;p&#x27;,(8.0,11.0,0.0));
+<span class="lineno">147</span>#1813=CARTESIAN_POINT(&#x27;p&#x27;,(8.0,12.0,0.0));
+<span class="lineno">148</span>#1814=CARTESIAN_POINT(&#x27;p&#x27;,(8.0,13.0,0.0));
+<span class="lineno">149</span>#1901=CARTESIAN_POINT(&#x27;p&#x27;,(9.0,0.0,0.0));
+<span class="lineno">150</span>#1902=CARTESIAN_POINT(&#x27;p&#x27;,(9.0,1.0,0.0));
+<span class="lineno">151</span>#1903=CARTESIAN_POINT(&#x27;p&#x27;,(9.0,2.0,0.0));
+<span class="lineno">152</span>#1904=CARTESIAN_POINT(&#x27;p&#x27;,(9.0,3.0,0.0));
+<span class="lineno">153</span>#1905=CARTESIAN_POINT(&#x27;p&#x27;,(9.0,4.0,0.0));
+<span class="lineno">154</span>#1906=CARTESIAN_POINT(&#x27;p&#x27;,(9.0,5.0,0.0));
+<span class="lineno">155</span>#1907=CARTESIAN_POINT(&#x27;p&#x27;,(9.0,6.0,0.0));
+<span class="lineno">156</span>#1908=CARTESIAN_POINT(&#x27;p&#x27;,(9.0,7.0,0.0));
+<span class="lineno">157</span>#1909=CARTESIAN_POINT(&#x27;p&#x27;,(9.0,8.0,0.0));
+<span class="lineno">158</span>#1910=CARTESIAN_POINT(&#x27;p&#x27;,(9.0,9.0,0.0));
+<span class="lineno">159</span>#1911=CARTESIAN_POINT(&#x27;p&#x27;,(9.0,10.0,0.0));
+<span class="lineno">160</span>#1912=CARTESIAN_POINT(&#x27;p&#x27;,(9.0,11.0,0.0));
+<span class="lineno">161</span>#1913=CARTESIAN_POINT(&#x27;p&#x27;,(9.0,12.0,0.0));
+<span class="lineno">162</span>#1914=CARTESIAN_POINT(&#x27;p&#x27;,(9.0,13.0,0.0));
+<span class="lineno">163</span>#2001=CARTESIAN_POINT(&#x27;p&#x27;,(10.0,0.0,0.0));
+<span class="lineno">164</span>#2002=CARTESIAN_POINT(&#x27;p&#x27;,(10.0,1.0,0.0));
+<span class="lineno">165</span>#2003=CARTESIAN_POINT(&#x27;p&#x27;,(10.0,2.0,0.0));
+<span class="lineno">166</span>#2004=CARTESIAN_POINT(&#x27;p&#x27;,(10.0,3.0,0.0));
+<span class="lineno">167</span>#2005=CARTESIAN_POINT(&#x27;p&#x27;,(10.0,4.0,0.0));
+<span class="lineno">168</span>#2006=CARTESIAN_POINT(&#x27;p&#x27;,(10.0,5.0,0.0));
+<span class="lineno">169</span>#2007=CARTESIAN_POINT(&#x27;p&#x27;,(10.0,6.0,0.0));
+<span class="lineno">170</span>#2008=CARTESIAN_POINT(&#x27;p&#x27;,(10.0,7.0,0.0));
+<span class="lineno">171</span>#2009=CARTESIAN_POINT(&#x27;p&#x27;,(10.0,8.0,0.0));
+<span class="lineno">172</span>#2010=CARTESIAN_POINT(&#x27;p&#x27;,(10.0,9.0,0.0));
+<span class="lineno">173</span>#2011=CARTESIAN_POINT(&#x27;p&#x27;,(10.0,10.0,0.0));
+<span class="lineno">174</span>#2012=CARTESIAN_POINT(&#x27;p&#x27;,(10.0,11.0,0.0));
+<span class="lineno">175</span>#2013=CARTESIAN_POINT(&#x27;p&#x27;,(10.0,12.0,0.0));
+<span class="lineno">176</span>#2014=CARTESIAN_POINT(&#x27;p&#x27;,(10.0,13.0,0.0));
+<span class="lineno">177</span>#2101=CARTESIAN_POINT(&#x27;p&#x27;,(11.0,0.0,0.0));
+<span class="lineno">178</span>#2102=CARTESIAN_POINT(&#x27;p&#x27;,(11.0,1.0,0.0));
+<span class="lineno">179</span>#2103=CARTESIAN_POINT(&#x27;p&#x27;,(11.0,2.0,0.0));
+<span class="lineno">180</span>#2104=CARTESIAN_POINT(&#x27;p&#x27;,(11.0,3.0,0.0));
+<span class="lineno">181</span>#2105=CARTESIAN_POINT(&#x27;p&#x27;,(11.0,4.0,0.0));
+<span class="lineno">182</span>#2106=CARTESIAN_POINT(&#x27;p&#x27;,(11.0,5.0,0.0));
+<span class="lineno">183</span>#2107=CARTESIAN_POINT(&#x27;p&#x27;,(11.0,6.0,0.0));
+<span class="lineno">184</span>#2108=CARTESIAN_POINT(&#x27;p&#x27;,(11.0,7.0,0.0));
+<span class="lineno">185</span>#2109=CARTESIAN_POINT(&#x27;p&#x27;,(11.0,8.0,0.0));
+<span class="lineno">186</span>#2110=CARTESIAN_POINT(&#x27;p&#x27;,(11.0,9.0,0.0));
+<span class="lineno">187</span>#2111=CARTESIAN_POINT(&#x27;p&#x27;,(11.0,10.0,0.0));
+<span class="lineno">188</span>#2112=CARTESIAN_POINT(&#x27;p&#x27;,(11.0,11.0,0.0));
+<span class="lineno">189</span>#2113=CARTESIAN_POINT(&#x27;p&#x27;,(11.0,12.0,0.0));
+<span class="lineno">190</span>#2114=CARTESIAN_POINT(&#x27;p&#x27;,(11.0,13.0,0.0));
+<span class="lineno">191</span>#2201=CARTESIAN_POINT(&#x27;p&#x27;,(12.0,0.0,0.0));
+<span class="lineno">192</span>#2202=CARTESIAN_POINT(&#x27;p&#x27;,(12.0,1.0,0.0));
+<span class="lineno">193</span>#2203=CARTESIAN_POINT(&#x27;p&#x27;,(12.0,2.0,0.0));
+<span class="lineno">194</span>#2204=CARTESIAN_POINT(&#x27;p&#x27;,(12.0,3.0,0.0));
+<span class="lineno">195</span>#2205=CARTESIAN_POINT(&#x27;p&#x27;,(12.0,4.0,0.0));
+<span class="lineno">196</span>#2206=CARTESIAN_POINT(&#x27;p&#x27;,(12.0,5.0,0.0));
+<span class="lineno">197</span>#2207=CARTESIAN_POINT(&#x27;p&#x27;,(12.0,6.0,0.0));
+<span class="lineno">198</span>#2208=CARTESIAN_POINT(&#x27;p&#x27;,(12.0,7.0,0.0));
+<span class="lineno">199</span>#2209=CARTESIAN_POINT(&#x27;p&#x27;,(12.0,8.0,0.0));
+<span class="lineno">200</span>#2210=CARTESIAN_POINT(&#x27;p&#x27;,(12.0,9.0,0.0));
+<span class="lineno">201</span>#2211=CARTESIAN_POINT(&#x27;p&#x27;,(12.0,10.0,0.0));
+<span class="lineno">202</span>#2212=CARTESIAN_POINT(&#x27;p&#x27;,(12.0,11.0,0.0));
+<span class="lineno">203</span>#2213=CARTESIAN_POINT(&#x27;p&#x27;,(12.0,12.0,0.0));
+<span class="lineno">204</span>#2214=CARTESIAN_POINT(&#x27;p&#x27;,(12.0,13.0,0.0));
+<span class="lineno">205</span>#2301=CARTESIAN_POINT(&#x27;p&#x27;,(13.0,0.0,0.0));
+<span class="lineno">206</span>#2302=CARTESIAN_POINT(&#x27;p&#x27;,(13.0,1.0,0.0));
+<span class="lineno">207</span>#2303=CARTESIAN_POINT(&#x27;p&#x27;,(13.0,2.0,0.0));
+<span class="lineno">208</span>#2304=CARTESIAN_POINT(&#x27;p&#x27;,(13.0,3.0,0.0));
+<span class="lineno">209</span>#2305=CARTESIAN_POINT(&#x27;p&#x27;,(13.0,4.0,0.0));
+<span class="lineno">210</span>#2306=CARTESIAN_POINT(&#x27;p&#x27;,(13.0,5.0,0.0));
+<span class="lineno">211</span>#2307=CARTESIAN_POINT(&#x27;p&#x27;,(13.0,6.0,0.0));
+<span class="lineno">212</span>#2308=CARTESIAN_POINT(&#x27;p&#x27;,(13.0,7.0,0.0));
+<span class="lineno">213</span>#2309=CARTESIAN_POINT(&#x27;p&#x27;,(13.0,8.0,0.0));
+<span class="lineno">214</span>#2310=CARTESIAN_POINT(&#x27;p&#x27;,(13.0,9.0,0.0));
+<span class="lineno">215</span>#2311=CARTESIAN_POINT(&#x27;p&#x27;,(13.0,10.0,0.0));
+<span class="lineno">216</span>#2312=CARTESIAN_POINT(&#x27;p&#x27;,(13.0,11.0,0.0));
+<span class="lineno">217</span>#2313=CARTESIAN_POINT(&#x27;p&#x27;,(13.0,12.0,0.0));
+<span class="lineno">218</span>#2314=CARTESIAN_POINT(&#x27;p&#x27;,(13.0,13.0,0.0));
+<span class="lineno">219</span>
+<span class="lineno">220</span>#9000=<mark>B_SPLINE_SURFACE</mark>_WITH_KNOTS(&#x27;degree9_bloat&#x27;,
+<span class="lineno">221</span>  9,9,
+<span class="lineno">222</span>  ((#1001,#1002,#1003,#1004,#1005,#1006,#1007,#1008,#1009,#1010,#1011,#1012,#1013,#1014),
+<span class="lineno">223</span>   (#1101,#1102,#1103,#1104,#1105,#1106,#1107,#1108,#1109,#1110,#1111,#1112,#1113,#1114),
+<span class="lineno">224</span>   (#1201,#1202,#1203,#1204,#1205,#1206,#1207,#1208,#1209,#1210,#1211,#1212,#1213,#1214),
+<span class="lineno">225</span>   (#1301,#1302,#1303,#1304,#1305,#1306,#1307,#1308,#1309,#1310,#1311,#1312,#1313,#1314),
+<span class="lineno">226</span>   (#1401,#1402,#1403,#1404,#1405,#1406,#1407,#1408,#1409,#1410,#1411,#1412,#1413,#1414),
+<span class="lineno">227</span>   (#1501,#1502,#1503,#1504,#1505,#1506,#1507,#1508,#1509,#1510,#1511,#1512,#1513,#1514),
+<span class="lineno">228</span>   (#1601,#1602,#1603,#1604,#1605,#1606,#1607,#1608,#1609,#1610,#1611,#1612,#1613,#1614),
+<span class="lineno">229</span>   (#1701,#1702,#1703,#1704,#1705,#1706,#1707,#1708,#1709,#1710,#1711,#1712,#1713,#1714),
+<span class="lineno">230</span>   (#1801,#1802,#1803,#1804,#1805,#1806,#1807,#1808,#1809,#1810,#1811,#1812,#1813,#1814),
+<span class="lineno">231</span>   (#1901,#1902,#1903,#1904,#1905,#1906,#1907,#1908,#1909,#1910,#1911,#1912,#1913,#1914),
+<span class="lineno">232</span>   (#2001,#2002,#2003,#2004,#2005,#2006,#2007,#2008,#2009,#2010,#2011,#2012,#2013,#2014),
+<span class="lineno">233</span>   (#2101,#2102,#2103,#2104,#2105,#2106,#2107,#2108,#2109,#2110,#2111,#2112,#2113,#2114),
+<span class="lineno">234</span>   (#2201,#2202,#2203,#2204,#2205,#2206,#2207,#2208,#2209,#2210,#2211,#2212,#2213,#2214),
+<span class="lineno">235</span>   (#2301,#2302,#2303,#2304,#2305,#2306,#2307,#2308,#2309,#2310,#2311,#2312,#2313,#2314)),
+<span class="lineno">236</span>  .UNSPECIFIED.,.F.,.F.,.F.,
+<span class="lineno">237</span>  (10,1,1,1,1,10),
+<span class="lineno">238</span>  (10,1,1,1,1,10),
+<span class="lineno">239</span>  (0.0,0.2,0.4,0.6,0.8,1.0),
+<span class="lineno">240</span>  (0.0,0.2,0.4,0.6,0.8,1.0),
+<span class="lineno">241</span>  .UNSPECIFIED.);
+<span class="lineno">242</span>ENDSEC;
+<span class="lineno">243</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Gn008.html">&larr; Gn008</a> <a class="up" href="index.html">§12.2b NURBS / B-spline</a> <a class="next" href="Gn010.html">Gn010 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Tfa026 — OFFSET_SURFACE used (out of AP214 scope)</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.3c Faces / sewing / free bound</a> <span class="sep">/</span> <span class="current">Tfa026</span>
+</nav>
+<header class="title-bar">
+<h1>Tfa026 <span class="sep">—</span> <span class="entry-title">OFFSET_SURFACE used (out of AP214 scope)</span></h1>
+<p class="category">§12.3c face-sliver-sewing</p>
+<p class="severity-badge severity-p1">P1 — silent data loss</p>
+<p class="tag-pills">
+<a class="tag tag-topology" href="../by-tag/topology/index.html">topology</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-3c-faces/Tfa026.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-3c-faces/Tfa026.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>04-occt-translation Q017 (StepToTopoDS_TranslateFace.cxx:538-541)</li>
+<li>08-occt-gitlog G065/G106</li>
+<li>18-other-issues I010</li>
+</ul></section>
+<section><h2>Description</h2>
+<p>An `ADVANCED_FACE` references an `OFFSET_SURFACE` whose basis is itself a complex `B_SPLINE_SURFACE` aggregate or a `SURFACE_OF_LINEAR_EXTRUSION`. Translator emits warning; iso evaluation through offset+extrusion chain raises exception (G065, G106). I010 reports failure when `OFFSET_SURFACE` wraps a complex base, succeeding when the base is referenced directly.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>`#157=OFFSET_SURFACE(&#x27;&#x27;,#288,20.0,.F.);` where `#288=(BOUNDED_SURFACE() B_SPLINE_SURFACE() ..)` complex aggregate.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>accept — UIso/VIso evaluation must descend through offset/extrusion wrappers; emit warning that offset surface is out of AP214 scope; do not crash on indirect chain.</p></section>
+<section><h2>Notes</h2>
+<p>**See also**: Gn021. Synonyms: &quot;offset surface used out of AP214 scope&quot;, &quot;offset on top of B-spline base fails translation&quot;, &quot;offset of extrusion surface throws exception&quot;, &quot;compound offset surface chain unsupported&quot;.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=shape(1)/shape(1) gmsh=shape(2) ifc=schema_n/a</code></p></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>face[0].surface_type == &quot;offset&quot;</code></li>
+<li><code>face[1].surface_type == &quot;offset&quot;</code></li>
+</ul></section>
+<section><h2>Cross-references</h2>
+<p><a href="../12-2b-nurbs/Gn021.html">Gn021</a></p>
+</section>
+<section><h2>Live oracle output</h2>
+<table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
+<tr><td><code>occt_heal_on</code></td><td><code>shape(1)</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>shape(1)</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>shape(2)</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>shape(2)</code></td></tr>
+<tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>empty_mesh</code></td></tr>
+</tbody></table>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>/* Tfa026 - OFFSET_SURFACE used (out of AP214 scope)
+<span class="lineno">2</span> * Defect: an ADVANCED_FACE references an OFFSET_SURFACE whose basis is
+<span class="lineno">3</span> * itself a complex aggregate (e.g., a B_SPLINE_SURFACE) or a
+<span class="lineno">4</span> * SURFACE_OF_LINEAR_EXTRUSION. Translator emits warning; iso evaluation
+<span class="lineno">5</span> * through the offset+extrusion chain raises an exception. I010 reports
+<span class="lineno">6</span> * failure when OFFSET_SURFACE wraps a complex base, succeeding when
+<span class="lineno">7</span> * the base is referenced directly.
+<span class="lineno">8</span> *
+<span class="lineno">9</span> * Sources cited in catalog: 04-occt-translation Q017
+<span class="lineno">10</span> * (StepToTopoDS_TranslateFace.cxx:538-541); 08-occt-gitlog G065/G106;
+<span class="lineno">11</span> * 18-other-issues I010.
+<span class="lineno">12</span> *
+<span class="lineno">13</span> * Expected kernel behavior: accept - UIso/VIso evaluation must descend
+<span class="lineno">14</span> * through offset/extrusion wrappers; emit warning that offset surface
+<span class="lineno">15</span> * is out of AP214 strict scope; do not crash on indirect chain.
+<span class="lineno">16</span> *
+<span class="lineno">17</span> * Reproducer: OFFSET_SURFACE with offset_distance = 20.0 on the linear
+<span class="lineno">18</span> * extrusion of a B-spline curve. To document the boundary of the
+<span class="lineno">19</span> * defect this file also emits a second OFFSET_SURFACE built directly
+<span class="lineno">20</span> * on a PLANE - that simpler form is reported to translate without
+<span class="lineno">21</span> * issue, while the chained form below triggers the bug.
+<span class="lineno">22</span> */
+<span class="lineno">23</span>ISO-10303-21;
+<span class="lineno">24</span>HEADER;
+<span class="lineno">25</span>FILE_DESCRIPTION((&#x27;Tfa026 OFFSET_SURFACE out of AP214 scope&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">26</span>FILE_NAME(&#x27;Tfa026.stp&#x27;,&#x27;2026-04-26T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),
+<span class="lineno">27</span>  &#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">28</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN&#x27;));
+<span class="lineno">29</span>ENDSEC;
+<span class="lineno">30</span>DATA;
+<span class="lineno">31</span>#1=APPLICATION_CONTEXT(&#x27;automotive design&#x27;);
+<span class="lineno">32</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,
+<span class="lineno">33</span>  &#x27;automotive_design&#x27;,2009,#1);
+<span class="lineno">34</span>/* Basis curve: degree-2 B-spline through three control points.         */
+<span class="lineno">35</span>#10=CARTESIAN_POINT(&#x27;cp0&#x27;,(0.0,0.0,0.0));
+<span class="lineno">36</span>#11=CARTESIAN_POINT(&#x27;cp1&#x27;,(5.0,5.0,0.0));
+<span class="lineno">37</span>#12=CARTESIAN_POINT(&#x27;cp2&#x27;,(10.0,0.0,0.0));
+<span class="lineno">38</span>#20=B_SPLINE_CURVE_WITH_KNOTS(&#x27;basis_curve&#x27;,2,(#10,#11,#12),
+<span class="lineno">39</span>  .UNSPECIFIED.,.F.,.F.,(3,3),(0.0,1.0),.UNSPECIFIED.);
+<span class="lineno">40</span>/* Linear extrusion of the spline curve in +Z by 10.                    */
+<span class="lineno">41</span>#30=DIRECTION(&#x27;extrude_dir&#x27;,(0.0,0.0,1.0));
+<span class="lineno">42</span>#31=VECTOR(&#x27;extrude_vec&#x27;,#30,10.0);
+<span class="lineno">43</span>#40=SURFACE_OF_LINEAR_EXTRUSION(&#x27;extruded_basis&#x27;,#20,#31);
+<span class="lineno">44</span>/* Defect site #1: OFFSET_SURFACE wrapping the extrusion - chain of
+<span class="lineno">45</span> * indirect surfaces that AP214 does not formally support.              */
+<span class="lineno">46</span>#50=OFFSET_SURFACE(&#x27;offset_complex&#x27;,#40,20.0,.F.);
+<span class="lineno">47</span>/* Degenerate VERTEX_LOOP outer bound - sufficient to make the face
+<span class="lineno">48</span> * a real BREP entity that OCCT will load and process; the defect is
+<span class="lineno">49</span> * exercised on surface evaluation, not edge-loop topology.            */
+<span class="lineno">50</span>#52=CARTESIAN_POINT(&#x27;seed_complex&#x27;,(0.0,0.0,0.0));
+<span class="lineno">51</span>#53=VERTEX_POINT(&#x27;&#x27;,#52);
+<span class="lineno">52</span>#54=VERTEX_LOOP(&#x27;&#x27;,#53);
+<span class="lineno">53</span>#55=FACE_OUTER_BOUND(&#x27;&#x27;,#54,.T.);
+<span class="lineno">54</span>#51=ADVANCED_FACE(&#x27;offset_complex_face&#x27;,(#55),#50,.T.);
+<span class="lineno">55</span>/* Comparison case: simple OFFSET_SURFACE on a PLANE (this case is
+<span class="lineno">56</span> * reported to translate successfully).                                 */
+<span class="lineno">57</span>#60=CARTESIAN_POINT(&#x27;plane_origin&#x27;,(50.0,0.0,0.0));
+<span class="lineno">58</span>#61=DIRECTION(&#x27;z&#x27;,(0.0,0.0,1.0));
+<span class="lineno">59</span>#62=DIRECTION(&#x27;x&#x27;,(1.0,0.0,0.0));
+<span class="lineno">60</span>#63=AXIS2_PLACEMENT_3D(&#x27;plane_plc&#x27;,#60,#61,#62);
+<span class="lineno">61</span>#64=PLANE(&#x27;plane_xy&#x27;,#63);
+<span class="lineno">62</span>#65=OFFSET_SURFACE(&#x27;offset_simple&#x27;,#64,20.0,.F.);
+<span class="lineno">63</span>#67=CARTESIAN_POINT(&#x27;seed_simple&#x27;,(50.0,0.0,0.0));
+<span class="lineno">64</span>#68=VERTEX_POINT(&#x27;&#x27;,#67);
+<span class="lineno">65</span>#69=VERTEX_LOOP(&#x27;&#x27;,#68);
+<span class="lineno">66</span>#71=FACE_OUTER_BOUND(&#x27;&#x27;,#69,.T.);
+<span class="lineno">67</span>#66=ADVANCED_FACE(&#x27;offset_simple_face&#x27;,(#71),#65,.T.);
+<span class="lineno">68</span>/* Container shell.                                                     */
+<span class="lineno">69</span>#70=OPEN_SHELL(&#x27;offset_demo_shell&#x27;,(#51,#66));
+<span class="lineno">70</span>/* Wrap: minimal PRODUCT chain so OCCT TransferRoots produces a shape. */
+<span class="lineno">71</span>#9000=PRODUCT_CONTEXT(&#x27;&#x27;,#1,&#x27;mechanical&#x27;);
+<span class="lineno">72</span>#9001=PRODUCT(&#x27;Tfa026&#x27;,&#x27;Tfa026&#x27;,&#x27;&#x27;,(#9000));
+<span class="lineno">73</span>#9002=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#9001);
+<span class="lineno">74</span>#9003=PRODUCT_DEFINITION_CONTEXT(&#x27;part definition&#x27;,#1,&#x27;design&#x27;);
+<span class="lineno">75</span>#9004=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,#9002,#9003);
+<span class="lineno">76</span>#9005=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,#9004);
+<span class="lineno">77</span>#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">78</span>#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+<span class="lineno">79</span>#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+<span class="lineno">80</span>#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,&#x27;distance_accuracy_value&#x27;,&#x27;&#x27;);
+<span class="lineno">81</span>#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT(&#x27;&#x27;,&#x27;3D&#x27;));
+<span class="lineno">82</span>#9021=SHELL_BASED_SURFACE_MODEL(&#x27;wrap_sbsm&#x27;,(#70));
+<span class="lineno">83</span>#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION(&#x27;&#x27;,(#9021),#9010);
+<span class="lineno">84</span>#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+<span class="lineno">85</span>ENDSEC;
+<span class="lineno">86</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Tfa025.html">&larr; Tfa025</a> <a class="up" href="index.html">§12.3c Faces / sewing / free bound</a> <a class="next" href="Tfa028.html">Tfa028 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

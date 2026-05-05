@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Ls020 — Trailing semicolon after `ENDSEC` missing</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.1c Part-21 grammar</a> <span class="sep">/</span> <span class="current">Ls020</span>
+</nav>
+<header class="title-bar">
+<h1>Ls020 <span class="sep">—</span> <span class="entry-title">Trailing semicolon after `ENDSEC` missing</span></h1>
+<p class="category">§12.1c structural / framing</p>
+<p class="tag-pills">
+<a class="tag tag-syntax" href="../by-tag/syntax/index.html">syntax</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-1c-syntax/Ls020.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-1c-syntax/Ls020.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>N049</li>
+</ul></section>
+<section><h2>Description</h2>
+<p>Each `ENDSEC` must be followed by a semicolon. Files sometimes carry `ENDSEC` followed directly by a newline and the next section keyword.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>`HEADER;\n..\nENDSEC\nDATA;`</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>Reject in strict mode; lenient may accept and warn.</p></section>
+<section><h2>Notes</h2>
+<p>Synonyms: &quot;ENDSEC without trailing semicolon&quot;, &quot;STEP ENDSEC missing semicolon&quot;, &quot;section terminator no semicolon&quot;, &quot;ENDSEC followed by newline only&quot;, &quot;STEP ENDSEC newline before next keyword&quot;.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=reject/reject gmsh=reject ifc=schema_n/a</code></p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>matches(rb&#x27;ENDSEC\s*\n\s*DATA;&#x27;)</code></li>
+<li><code>count(b&#x27;ENDSEC&#x27;) &gt;= 1</code></li>
+</ul></section>
+<section><h2>Live oracle output</h2>
+<table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
+<tr><td><code>occt_heal_on</code></td><td><code>reject</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>reject</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>reject</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>reject</code></td></tr>
+<tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>reject(E_NO_DATA)</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>step_read_failed</code></td></tr>
+</tbody></table>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>/* Ls020 - Trailing semicolon after <mark>ENDSEC</mark> missing
+<span class="lineno">2</span>   ----------------------------------------------------------------------
+<span class="lineno">3</span>   Catalog section : Â§12.1c structural / framing
+<span class="lineno">4</span>   Sources         : N049
+<span class="lineno">5</span>   Originally also catalogued as: Ad066
+<span class="lineno">6</span>   ----------------------------------------------------------------------
+<span class="lineno">7</span>   Defect
+<span class="lineno">8</span>     Each <mark>ENDSEC</mark> must be followed by a semicolon. Files sometimes carry
+<span class="lineno">9</span>     <mark>ENDSEC</mark> followed directly by a newline and the next section keyword,
+<span class="lineno">10</span>     usually because a hand-edited file dropped the terminator or a
+<span class="lineno">11</span>     generator concatenated sections without inserting it.
+<span class="lineno">12</span>   Expected behavior
+<span class="lineno">13</span>     Strict reject (&quot;expected &#x27;;&#x27; after <mark>ENDSEC</mark>&quot;); lenient may accept and
+<span class="lineno">14</span>     warn once per section.
+<span class="lineno">15</span>   ----------------------------------------------------------------------
+<span class="lineno">16</span>   Reproducer
+<span class="lineno">17</span>     HEADER;
+<span class="lineno">18</span>     ...
+<span class="lineno">19</span>     <mark>ENDSEC</mark>               &lt;- missing &#x27;;&#x27;
+<span class="lineno">20</span>     DATA;
+<span class="lineno">21</span>   ----------------------------------------------------------------------
+<span class="lineno">22</span>*/
+<span class="lineno">23</span>ISO-10303-21;
+<span class="lineno">24</span>HEADER;
+<span class="lineno">25</span>FILE_DESCRIPTION((&#x27;Ls020 - <mark>ENDSEC</mark> without trailing semicolon&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">26</span>FILE_NAME(&#x27;Ls020.stp&#x27;,&#x27;2026-04-26T00:00:00&#x27;,(&#x27;auto-generated&#x27;),(&#x27;&#x27;),
+<span class="lineno">27</span>  &#x27;auto-generated&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">28</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
+<span class="lineno">29</span><mark>ENDSEC</mark>
+<span class="lineno">30</span><mark>DATA;</mark>
+<span class="lineno">31</span>#10=CARTESIAN_POINT(&#x27;origin&#x27;,(0.0,0.0,0.0));
+<span class="lineno">32</span>#20=DIRECTION(&#x27;x&#x27;,(1.0,0.0,0.0));
+<span class="lineno">33</span>#30=AXIS2_PLACEMENT_3D(&#x27;placement&#x27;,#10,#20,$);
+<span class="lineno">34</span><mark>ENDSEC</mark>;
+<span class="lineno">35</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Ls019.html">&larr; Ls019</a> <a class="up" href="index.html">§12.1c Part-21 grammar</a> <a class="next" href="Ls023.html">Ls023 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

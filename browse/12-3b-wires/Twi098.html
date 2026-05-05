@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Twi098 — `FixTails` removes wire tail edges incorrectly (EDGE_LOOP with intentional short feature edges, e.g., a chamfer edge plus a disconnected free-floating short edge)</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.3b Wires / loops / edges</a> <span class="sep">/</span> <span class="current">Twi098</span>
+</nav>
+<header class="title-bar">
+<h1>Twi098 <span class="sep">—</span> <span class="entry-title">`FixTails` removes wire tail edges incorrectly (EDGE_LOOP with intentional short feature edges, e.g., a chamfer edge plus a disconnected free-floating short edge)</span></h1>
+<p class="category">§12.3b wires/loops/edges</p>
+<p class="severity-badge severity-p1">P1 — silent data loss</p>
+<p class="tag-pills">
+<a class="tag tag-topology" href="../by-tag/topology/index.html">topology</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-3b-wires/Twi098.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-3b-wires/Twi098.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>OCCT MANTIS#0026282</li>
+<li>OCCT GitHub#565 (OCCT MANTIS tracker 502 as of 2026-05-02)</li>
+</ul></section>
+<section><h2>Description</h2>
+<p>A wire-cleanup pass intended to remove &quot;tail&quot; edges (short detours) is applied to a wire whose tails are deliberately significant — feature edges encoding small chamfers or fillets. The algorithm classifies them as removable noise and drops them, simplifying geometry beyond intent.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>Wire of 6 edges, two of which are short (1 mm each, vs others at 100 mm). Tails-fix removes both short edges.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>Heal and accept: normalize the tail-removal threshold to a configurable parameter; the default does not remove edges above the ~tolerance scale; documented threshold semantics.</p></section>
+<section><h2>Notes</h2>
+<p>**See also**: Twi054, Twi077. Synonyms: &quot;FixTails drops chamfer edges&quot;, &quot;tail-removal eats feature geometry&quot;, &quot;wire cleanup destroys small chamfers&quot;, &quot;short feature edges classified as noise&quot;, &quot;intentional small edges removed by healer&quot;.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>contains(b&#x27;e3_short_1mm_chamfer&#x27;)</code></li>
+<li><code>contains(b&#x27;e6_short_1mm_fillet_marker&#x27;)</code></li>
+<li><code>contains(b&#x27;hex_with_two_short_features&#x27;)</code></li>
+</ul></section>
+<section><h2>Cross-references</h2>
+<p><a href="Twi054.html">Twi054</a>, <a href="Twi077.html">Twi077</a></p>
+</section>
+<section><h2>Live oracle output</h2>
+<table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
+<tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>no_shapes_loaded</code></td></tr>
+</tbody></table>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* Twi098 - `FixTails` removes wire tail edges incorrectly
+<span class="lineno">3</span> * Six-edge wire encoding a hex outline whose two short feature edges (1 mm
+<span class="lineno">4</span> * each) are deliberate chamfer/fillet markers; the remaining four edges
+<span class="lineno">5</span> * are 100 mm long. A naive FixTails will classify the two short edges
+<span class="lineno">6</span> * as removable noise. */
+<span class="lineno">7</span>HEADER;
+<span class="lineno">8</span>FILE_DESCRIPTION((&#x27;Twi098 test case&#x27;,&#x27;Six-edge wire mixing 1mm and 100mm edges -- short edges are intentional features&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">9</span>FILE_NAME(&#x27;Twi098.stp&#x27;,&#x27;2026-04-30T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">10</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }&#x27;));
+<span class="lineno">11</span>ENDSEC;
+<span class="lineno">12</span>DATA;
+<span class="lineno">13</span>#1=APPLICATION_CONTEXT(&#x27;automotive_design&#x27;);
+<span class="lineno">14</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,&#x27;automotive_design&#x27;,2000,#1);
+<span class="lineno">15</span>/* Six vertices forming a hex with a chamfer-style cut on the top-right corner.
+<span class="lineno">16</span> * Long edges are 100mm; short edges are 1mm. */
+<span class="lineno">17</span>#10=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));#11=VERTEX_POINT(&#x27;V1&#x27;,#10);
+<span class="lineno">18</span>#12=CARTESIAN_POINT(&#x27;&#x27;,(100.0,0.0,0.0));#13=VERTEX_POINT(&#x27;V2&#x27;,#12);
+<span class="lineno">19</span>#14=CARTESIAN_POINT(&#x27;&#x27;,(100.0,99.0,0.0));#15=VERTEX_POINT(&#x27;V3_chamfer_lo&#x27;,#14);
+<span class="lineno">20</span>#16=CARTESIAN_POINT(&#x27;&#x27;,(99.0,100.0,0.0));#17=VERTEX_POINT(&#x27;V4_chamfer_hi&#x27;,#16);
+<span class="lineno">21</span>#18=CARTESIAN_POINT(&#x27;&#x27;,(0.0,100.0,0.0));#19=VERTEX_POINT(&#x27;V5&#x27;,#18);
+<span class="lineno">22</span>/* edge1: V1-&gt;V2 (100mm bottom) */
+<span class="lineno">23</span>#20=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));#21=VECTOR(&#x27;&#x27;,#20,1.0);#22=LINE(&#x27;&#x27;,#10,#21);
+<span class="lineno">24</span>#23=EDGE_CURVE(&#x27;e1_long_100mm&#x27;,#11,#13,#22,.T.);
+<span class="lineno">25</span>/* edge2: V2-&gt;V3 (99mm right side, before chamfer) */
+<span class="lineno">26</span>#24=DIRECTION(&#x27;&#x27;,(0.0,1.0,0.0));#25=VECTOR(&#x27;&#x27;,#24,1.0);#26=LINE(&#x27;&#x27;,#12,#25);
+<span class="lineno">27</span>#27=EDGE_CURVE(&#x27;e2_long_99mm&#x27;,#13,#15,#26,.T.);
+<span class="lineno">28</span>/* edge3: V3-&gt;V4 (1mm chamfer, sqrt(2)~=1.41) -- SHORT FEATURE */
+<span class="lineno">29</span>#28=DIRECTION(&#x27;&#x27;,(-0.7071067811865475,0.7071067811865475,0.0));#29=VECTOR(&#x27;&#x27;,#28,1.4142);#30=LINE(&#x27;&#x27;,#14,#29);
+<span class="lineno">30</span>#31=EDGE_CURVE(&#x27;<mark>e3_short_1mm_chamfer</mark>&#x27;,#15,#17,#30,.T.);
+<span class="lineno">31</span>/* edge4: V4-&gt;V5 (99mm top) */
+<span class="lineno">32</span>#32=DIRECTION(&#x27;&#x27;,(-1.0,0.0,0.0));#33=VECTOR(&#x27;&#x27;,#32,1.0);#34=LINE(&#x27;&#x27;,#16,#33);
+<span class="lineno">33</span>#35=EDGE_CURVE(&#x27;e4_long_99mm&#x27;,#17,#19,#34,.T.);
+<span class="lineno">34</span>/* edge5: V5-&gt;V1 (100mm left) */
+<span class="lineno">35</span>#36=DIRECTION(&#x27;&#x27;,(0.0,-1.0,0.0));#37=VECTOR(&#x27;&#x27;,#36,1.0);#38=LINE(&#x27;&#x27;,#18,#37);
+<span class="lineno">36</span>#39=EDGE_CURVE(&#x27;e5_long_100mm&#x27;,#19,#11,#38,.T.);
+<span class="lineno">37</span>/* edge6: an extra short feature edge -- 1mm tab inside V1 (a fake fillet marker) */
+<span class="lineno">38</span>#40=CARTESIAN_POINT(&#x27;tab_a&#x27;,(0.5,0.0,0.0));#41=VERTEX_POINT(&#x27;Vtab_a&#x27;,#40);
+<span class="lineno">39</span>#42=CARTESIAN_POINT(&#x27;tab_b&#x27;,(0.5,0.001,0.0));#43=VERTEX_POINT(&#x27;Vtab_b&#x27;,#42);
+<span class="lineno">40</span>#44=DIRECTION(&#x27;&#x27;,(0.0,1.0,0.0));#45=VECTOR(&#x27;&#x27;,#44,1.0);#46=LINE(&#x27;&#x27;,#40,#45);
+<span class="lineno">41</span>#47=EDGE_CURVE(&#x27;<mark>e6_short_1mm_fillet_marker</mark>&#x27;,#41,#43,#46,.T.);
+<span class="lineno">42</span>#50=ORIENTED_EDGE(&#x27;&#x27;,*,*,#23,.T.);
+<span class="lineno">43</span>#51=ORIENTED_EDGE(&#x27;&#x27;,*,*,#27,.T.);
+<span class="lineno">44</span>#52=ORIENTED_EDGE(&#x27;&#x27;,*,*,#31,.T.);
+<span class="lineno">45</span>#53=ORIENTED_EDGE(&#x27;&#x27;,*,*,#35,.T.);
+<span class="lineno">46</span>#54=ORIENTED_EDGE(&#x27;&#x27;,*,*,#39,.T.);
+<span class="lineno">47</span>#55=ORIENTED_EDGE(&#x27;&#x27;,*,*,#47,.T.);
+<span class="lineno">48</span>#56=EDGE_LOOP(&#x27;<mark>hex_with_two_short_features</mark>&#x27;,(#50,#51,#52,#53,#54,#55));
+<span class="lineno">49</span>ENDSEC;
+<span class="lineno">50</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Twi097.html">&larr; Twi097</a> <a class="up" href="index.html">§12.3b Wires / loops / edges</a> <a class="next" href="Twi099.html">Twi099 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

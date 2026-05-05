@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Tfa048 — Strip face flagged using caller-supplied tolerance</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.3c Faces / sewing / free bound</a> <span class="sep">/</span> <span class="current">Tfa048</span>
+</nav>
+<header class="title-bar">
+<h1>Tfa048 <span class="sep">—</span> <span class="entry-title">Strip face flagged using caller-supplied tolerance</span></h1>
+<p class="category">§12.3c faces / sewing / free bounds (sub-class: strip diagnostic)</p>
+<p class="tag-pills">
+<a class="tag tag-topology" href="../by-tag/topology/index.html">topology</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-3c-faces/Tfa048.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-3c-faces/Tfa048.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>OCCT `ShapeAnalysis_CheckSmallFace::CheckStripFace` (`ShapeAnalysis_CheckSmallFace.hxx:119`)</li>
+</ul></section>
+<section><h2>Description</h2>
+<p>A face that is a strip only at tolerances larger than its own edge tolerances. The caller supplies a tolerance band; the analyzer determines whether the face fits the band (its width is less than the supplied tolerance). Permits queries like &quot;is this face a strip at 1mm tolerance?&quot; independent of its own tolerance metadata.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>A 100x0.5 face whose edge tolerances are 1e-7 — only a strip at tolerances ≥ 0.5.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>Heal and accept: parameterize / coerce the strip check with a caller-supplied tolerance; report the direction and bounding edges.</p></section>
+<section><h2>Notes</h2>
+<p>Generalization of Tfa047 with explicit tolerance. Synonyms: &quot;is this face a strip at given tolerance&quot;, &quot;strip detection at user tolerance band&quot;, &quot;tolerance-parameterized strip query&quot;, &quot;face is strip only above given tolerance&quot;.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a</code></p></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>face[0].sliver_aspect_max_min &gt; 1e3</code></li>
+<li><code>n_edges_total &gt;= 4</code></li>
+<li><code>face[0].surface_type == &quot;plane&quot;</code></li>
+<li><code>n_vertices_total &gt;= 8</code></li>
+</ul></section>
+<section><h2>Cross-references</h2>
+<p><a href="Tfa047.html">Tfa047</a></p>
+</section>
+<section><h2>Live oracle output</h2>
+<table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
+<tr><td><code>occt_heal_on</code></td><td><code>shape(1)</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>shape(1)</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>shape(9)</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>shape(9)</code></td></tr>
+<tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>not_manifold</code></td></tr>
+</tbody></table>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* Tfa048 - Strip face flagged using caller-supplied tolerance
+<span class="lineno">3</span> * 100 x 0.5 plane patch on PLANE; an UNCERTAINTY_MEASURE_WITH_UNIT entity
+<span class="lineno">4</span> * declares the face&#x27;s intrinsic edge tolerance at 1e-7. The face is only
+<span class="lineno">5</span> * a &quot;strip&quot; at caller tolerances &gt;= 0.5; with the caller supplying e.g.
+<span class="lineno">6</span> * 1mm, it qualifies. */
+<span class="lineno">7</span>HEADER;
+<span class="lineno">8</span>FILE_DESCRIPTION((&#x27;Tfa048 test case&#x27;,&#x27;100x0.5 face with intrinsic edge tolerance 1e-7 -- strip only at caller tol &gt;=0.5&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">9</span>FILE_NAME(&#x27;Tfa048.stp&#x27;,&#x27;2026-04-30T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">10</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }&#x27;));
+<span class="lineno">11</span>ENDSEC;
+<span class="lineno">12</span>DATA;
+<span class="lineno">13</span>#1=APPLICATION_CONTEXT(&#x27;automotive_design&#x27;);
+<span class="lineno">14</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,&#x27;automotive_design&#x27;,2000,#1);
+<span class="lineno">15</span>/* Strip face: 100 x 0.5 plane patch -- aspect ratio 200 */
+<span class="lineno">16</span>#10=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">17</span>#11=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">18</span>#12=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">19</span>#13=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#10,#11,#12);
+<span class="lineno">20</span>#14=PLANE(&#x27;&#x27;,#13);
+<span class="lineno">21</span>#20=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">22</span>#21=VERTEX_POINT(&#x27;&#x27;,#20);
+<span class="lineno">23</span>#22=CARTESIAN_POINT(&#x27;&#x27;,(100.0,0.0,0.0));
+<span class="lineno">24</span>#23=VERTEX_POINT(&#x27;&#x27;,#22);
+<span class="lineno">25</span>#24=CARTESIAN_POINT(&#x27;&#x27;,(100.0,0.5,0.0));
+<span class="lineno">26</span>#25=VERTEX_POINT(&#x27;&#x27;,#24);
+<span class="lineno">27</span>#26=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.5,0.0));
+<span class="lineno">28</span>#27=VERTEX_POINT(&#x27;&#x27;,#26);
+<span class="lineno">29</span>#30=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));#31=VECTOR(&#x27;&#x27;,#30,1.0);#32=LINE(&#x27;&#x27;,#20,#31);
+<span class="lineno">30</span>#33=DIRECTION(&#x27;&#x27;,(0.0,1.0,0.0));#34=VECTOR(&#x27;&#x27;,#33,1.0);#35=LINE(&#x27;&#x27;,#22,#34);
+<span class="lineno">31</span>#36=DIRECTION(&#x27;&#x27;,(-1.0,0.0,0.0));#37=VECTOR(&#x27;&#x27;,#36,1.0);#38=LINE(&#x27;&#x27;,#24,#37);
+<span class="lineno">32</span>#39=DIRECTION(&#x27;&#x27;,(0.0,-1.0,0.0));#40=VECTOR(&#x27;&#x27;,#39,1.0);#41=LINE(&#x27;&#x27;,#26,#40);
+<span class="lineno">33</span>#50=EDGE_CURVE(&#x27;&#x27;,#21,#23,#32,.T.);
+<span class="lineno">34</span>#51=EDGE_CURVE(&#x27;&#x27;,#23,#25,#35,.T.);
+<span class="lineno">35</span>#52=EDGE_CURVE(&#x27;&#x27;,#25,#27,#38,.T.);
+<span class="lineno">36</span>#53=EDGE_CURVE(&#x27;&#x27;,#27,#21,#41,.T.);
+<span class="lineno">37</span>#60=ORIENTED_EDGE(&#x27;&#x27;,*,*,#50,.T.);
+<span class="lineno">38</span>#61=ORIENTED_EDGE(&#x27;&#x27;,*,*,#51,.T.);
+<span class="lineno">39</span>#62=ORIENTED_EDGE(&#x27;&#x27;,*,*,#52,.T.);
+<span class="lineno">40</span>#63=ORIENTED_EDGE(&#x27;&#x27;,*,*,#53,.T.);
+<span class="lineno">41</span>#70=EDGE_LOOP(&#x27;&#x27;,(#60,#61,#62,#63));
+<span class="lineno">42</span>#71=FACE_OUTER_BOUND(&#x27;&#x27;,#70,.T.);
+<span class="lineno">43</span>#72=ADVANCED_FACE(&#x27;strip_100_by_0p5&#x27;,(#71),#14,.T.);
+<span class="lineno">44</span>/* Per-shape edge tolerance assertion: 1e-7 -- the face only qualifies as a
+<span class="lineno">45</span> * &quot;strip&quot; when the caller&#x27;s tolerance band exceeds the face&#x27;s narrow dim. */
+<span class="lineno">46</span>#80=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">47</span>#81=DIMENSIONAL_EXPONENTS(0.0,0.0,0.0,0.0,0.0,0.0,0.0);
+<span class="lineno">48</span>#82=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">49</span>#83=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#82,&#x27;edge tolerance&#x27;,&#x27;intrinsic edge tolerance&#x27;);
+<span class="lineno">50</span>/* Wrap: minimal PRODUCT chain so OCCT TransferRoots produces a shape. */
+<span class="lineno">51</span>#9000=PRODUCT_CONTEXT(&#x27;&#x27;,#1,&#x27;mechanical&#x27;);
+<span class="lineno">52</span>#9001=PRODUCT(&#x27;Tfa048&#x27;,&#x27;Tfa048&#x27;,&#x27;&#x27;,(#9000));
+<span class="lineno">53</span>#9002=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#9001);
+<span class="lineno">54</span>#9003=PRODUCT_DEFINITION_CONTEXT(&#x27;part definition&#x27;,#1,&#x27;design&#x27;);
+<span class="lineno">55</span>#9004=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,#9002,#9003);
+<span class="lineno">56</span>#9005=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,#9004);
+<span class="lineno">57</span>#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">58</span>#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+<span class="lineno">59</span>#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+<span class="lineno">60</span>#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,&#x27;distance_accuracy_value&#x27;,&#x27;&#x27;);
+<span class="lineno">61</span>#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT(&#x27;&#x27;,&#x27;3D&#x27;));
+<span class="lineno">62</span>#9020=OPEN_SHELL(&#x27;wrap_shell&#x27;,(#72));
+<span class="lineno">63</span>#9021=SHELL_BASED_SURFACE_MODEL(&#x27;wrap_sbsm&#x27;,(#9020));
+<span class="lineno">64</span>#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION(&#x27;&#x27;,(#9021),#9010);
+<span class="lineno">65</span>#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+<span class="lineno">66</span>ENDSEC;
+<span class="lineno">67</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Tfa047.html">&larr; Tfa047</a> <a class="up" href="index.html">§12.3c Faces / sewing / free bound</a> <a class="next" href="Tfa049.html">Tfa049 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

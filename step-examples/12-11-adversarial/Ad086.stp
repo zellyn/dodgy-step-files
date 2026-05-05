@@ -1,0 +1,66 @@
+/* Ad086 - translator catches Standard_Failure at entity boundary
+   Source: STEP_PROBLEM_CATALOG.md §12.11 Ad086;
+           mining 04-occt-translation.md Q078;
+           03-occt-tests.md R073 (parse.rules tolerates
+           OSD_Exception_ACCESS_VIOLATION, Software error,
+           Syntax error, Transfer error).
+   Pattern: OCCT translator paths catch Standard_Failure at the
+           entity boundary and convert it to TP_FAIL; CI test
+           infrastructure documents a list of "expected to be
+           tolerated" malformations including ACCESS_VIOLATION.
+           This *masks* exploitable conditions: a fuzzer's
+           ACCESS_VIOLATION on a malformed entity is converted to
+           TP_FAIL and the next entity is processed as if nothing
+           happened.
+   Reproducer recipe (per catalog): any input that triggers
+           OSD_Exception_ACCESS_VIOLATION inside the translator.
+   Expected kernel behavior: treat ACCESS_VIOLATION as a fatal
+           kernel bug, never as "tolerated"; propagate a clear
+           diagnostic; surface the original exception to the
+           caller for triage.
+   STEP analogue: stack a sequence of malformed entities each of
+   which the translator catches and tolerates; in production this
+   silently hides any ACCESS_VIOLATION among them.
+   License-clean: hand-synthesized. */
+ISO-10303-21;
+HEADER;
+FILE_DESCRIPTION(
+  ('Ad086 - boundary-caught Standard_Failure mask probe'),
+  '2;1');
+FILE_NAME('Ad086.stp','2026-04-26T00:00:00',
+  ('auto-generated'),(''),'auto-generated','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
+  'automotive_design',2001,#1);
+#3=PRODUCT_CONTEXT('',#1,'mechanical');
+#4=PRODUCT('Ad086','mask probe','',(#3));
+#5=PRODUCT_DEFINITION_FORMATION('','',#4);
+#6=PRODUCT_DEFINITION_CONTEXT('',#1,'design');
+#7=PRODUCT_DEFINITION('design','',#5,#6);
+/* row 1: forward reference that resolves to the wrong type.
+   classic ACCESS_VIOLATION trigger inside type-erased select casts. */
+#10=DIRECTION('',(0.0,0.0,1.0));
+#11=DIRECTION('',(1.0,0.0,0.0));
+#12=AXIS2_PLACEMENT_3D('',#7,#10,#11);
+/* row 2: cartesian point with arity mismatch (2 coords, expected 3). */
+#13=CARTESIAN_POINT('arity-mismatch',(0.0,0.0));
+/* row 3: NaN literal smuggled as a Real - typically tolerated. */
+#14=CARTESIAN_POINT('nan',(0.0,0.0,1.0E+999));
+/* row 4: line whose direction vector references a CARTESIAN_POINT
+   instead of a DIRECTION; vtable cast surfaces ACCESS_VIOLATION
+   on some translator paths, swallowed at boundary on others. */
+#15=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#16=VECTOR('',#15,1.0);
+#17=LINE('',#15,#16);
+/* row 5: a perfectly valid placement and plane so the file isn't
+   structurally rejected up front - the masked failures happen
+   inside per-entity processing while overall transfer claims to
+   succeed for the well-formed entities. */
+#18=AXIS2_PLACEMENT_3D('clean',#15,#10,#11);
+#19=PLANE('clean',#18);
+#20=PRODUCT_DEFINITION_SHAPE('','',#7);
+ENDSEC;
+END-ISO-10303-21;

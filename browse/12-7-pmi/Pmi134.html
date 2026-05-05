@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Pmi134 — `CHAMFER` with two contradictory `chamfer_angle` attributes (45 deg and 60 deg)</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.7 PMI / GD&amp;T</a> <span class="sep">/</span> <span class="current">Pmi134</span>
+</nav>
+<header class="title-bar">
+<h1>Pmi134 <span class="sep">—</span> <span class="entry-title">`CHAMFER` with two contradictory `chamfer_angle` attributes (45 deg and 60 deg)</span></h1>
+<p class="category">§12.7 (sub-class: AP242 feature definition)</p>
+<p class="severity-badge severity-p1">P1 — silent data loss</p>
+<p class="tag-pills">
+<a class="tag tag-round-trip" href="../by-tag/round-trip/index.html">round-trip</a>
+<a class="tag tag-spec-violation" href="../by-tag/spec-violation/index.html">spec-violation</a>
+<a class="tag tag-pmi" href="../by-tag/pmi/index.html">pmi</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-7-pmi/Pmi134.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-7-pmi/Pmi134.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>16-iso-spec AP242 §chamfer</li>
+<li>CAx-IF Recommended Practices for chamfer features</li>
+</ul></section>
+<section><h2>Description</h2>
+<p>AP242 `chamfer` carries a single `chamfer_angle` attribute (the angle of the cut measured from one of the adjacent faces). The implicit invariant: there is exactly one chamfer angle. A producer that emits two `DIMENSIONAL_SIZE` records both named `chamfer_angle` with different values (45 deg = π/4 and 60 deg = π/3) leaves a feature that is internally contradictory. Receivers either pick the first, pick the last, average them, reject, or silently emit one and drop the other. Round-trip differential tests fail because different kernels pick differently. Bug-reporter language: &quot;chamfer has two angles&quot;, &quot;AP242 chamfer attributes conflict&quot;, &quot;feature has duplicate chamfer_angle&quot;.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>a `SHAPE_ASPECT(&#x27;chamfer&#x27;,..)`; two `DIMENSIONAL_SIZE` entries both named `&#x27;chamfer_angle&#x27;`, with `MEASURE_REPRESENTATION_ITEM` values `PLANE_ANGLE_MEASURE(0.7853981634)` (45 deg) and `PLANE_ANGLE_MEASURE(1.0471975512)` (60 deg).</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>reject as malformed when a feature has two `DIMENSIONAL_SIZE` records of the same `attribute_name` with conflicting values; never silently pick one.</p></section>
+<section><h2>Notes</h2>
+<p>Distinct from Pmi133 (size-vs-edge invariant) — Pmi134 is duplicate-attribute contradiction. **See also**: Pmi133, Pmi092. Synonyms: &quot;CHAMFER two angle attributes&quot;, &quot;AP242 duplicate chamfer_angle&quot;, &quot;chamfer feature 45 vs 60&quot;, &quot;conflicting chamfer angle values&quot;.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a</code></p></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>n_faces_total == 1</code></li>
+<li><code>face[0].surface_type == &quot;plane&quot;</code></li>
+<li><code>face[0].edge_count == 4</code></li>
+<li><code>face[0].area &gt; 899</code></li>
+<li><code>face[0].area &lt; 901</code></li>
+</ul></section>
+<section><h2>Cross-references</h2>
+<p><a href="Pmi133.html">Pmi133</a>, <a href="Pmi092.html">Pmi092</a></p>
+</section>
+<section><h2>Live oracle output</h2>
+<table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
+<tr><td><code>occt_heal_on</code></td><td><code>shape(1)</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>shape(1)</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>shape(9)</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>shape(9)</code></td></tr>
+<tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>not_manifold</code></td></tr>
+</tbody></table>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>/* Pmi134 - CHAMFER with two contradictory angle attributes (45 deg AND 60 deg)
+<span class="lineno">2</span> * Defect: a chamfer feature carries two DIMENSIONAL_SIZE entries both
+<span class="lineno">3</span> * named &#x27;chamfer_angle&#x27; but with different values (45 and 60 degrees).
+<span class="lineno">4</span> * AP242 chamfer features have a single angle attribute; emitting two
+<span class="lineno">5</span> * is a producer-side bug. Receivers either pick one (which?), reject,
+<span class="lineno">6</span> * or use the average. */
+<span class="lineno">7</span>ISO-10303-21;
+<span class="lineno">8</span>HEADER;
+<span class="lineno">9</span>FILE_DESCRIPTION((&#x27;Pmi134 - CHAMFER with two contradictory angle attributes&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">10</span>FILE_NAME(&#x27;Pmi134.stp&#x27;,&#x27;2026-05-02T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">11</span>FILE_SCHEMA((&#x27;AP242_MANAGED_MODEL_BASED_3D_ENGINEERING_MIM_LF { 1 0 10303 442 1 1 4 }&#x27;));
+<span class="lineno">12</span>ENDSEC;
+<span class="lineno">13</span>DATA;
+<span class="lineno">14</span>#1=APPLICATION_CONTEXT(&#x27;managed model based 3d engineering&#x27;);
+<span class="lineno">15</span>#2=PRODUCT_CONTEXT(&#x27;part&#x27;,#1,&#x27;mechanical&#x27;);
+<span class="lineno">16</span>#3=PRODUCT(&#x27;Pmi134&#x27;,&#x27;chamfer_two_angles&#x27;,&#x27;&#x27;,(#2));
+<span class="lineno">17</span>#4=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#3);
+<span class="lineno">18</span>#5=PRODUCT_DEFINITION_CONTEXT(&#x27;&#x27;,#1,&#x27;design&#x27;);
+<span class="lineno">19</span>#6=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,#4,#5);
+<span class="lineno">20</span>#7=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,#6);
+<span class="lineno">21</span>#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">22</span>#11=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+<span class="lineno">23</span>#12=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+<span class="lineno">24</span>#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#10,&#x27;tol&#x27;,&#x27;&#x27;);
+<span class="lineno">25</span>#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3) GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13)) GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12)) REPRESENTATION_CONTEXT(&#x27;&#x27;,&#x27;3D&#x27;));
+<span class="lineno">26</span>/* 30x30 mm planar host face. */
+<span class="lineno">27</span>#100=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">28</span>#101=CARTESIAN_POINT(&#x27;&#x27;,(30.0,0.0,0.0));
+<span class="lineno">29</span>#102=CARTESIAN_POINT(&#x27;&#x27;,(30.0,30.0,0.0));
+<span class="lineno">30</span>#103=CARTESIAN_POINT(&#x27;&#x27;,(0.0,30.0,0.0));
+<span class="lineno">31</span>#110=VERTEX_POINT(&#x27;&#x27;,#100); #111=VERTEX_POINT(&#x27;&#x27;,#101);
+<span class="lineno">32</span>#112=VERTEX_POINT(&#x27;&#x27;,#102); #113=VERTEX_POINT(&#x27;&#x27;,#103);
+<span class="lineno">33</span>#200=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">34</span>#201=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">35</span>#202=DIRECTION(&#x27;&#x27;,(0.0,1.0,0.0));
+<span class="lineno">36</span>#210=AXIS2_PLACEMENT_3D(&#x27;plate_origin&#x27;,#100,#200,#201);
+<span class="lineno">37</span>#211=PLANE(&#x27;host_face_30x30&#x27;,#210);
+<span class="lineno">38</span>#300=VECTOR(&#x27;&#x27;,#201,30.0);
+<span class="lineno">39</span>#301=VECTOR(&#x27;&#x27;,#202,30.0);
+<span class="lineno">40</span>#310=LINE(&#x27;&#x27;,#100,#300); #311=EDGE_CURVE(&#x27;&#x27;,#110,#111,#310,.T.);
+<span class="lineno">41</span>#312=LINE(&#x27;&#x27;,#101,#301); #313=EDGE_CURVE(&#x27;&#x27;,#111,#112,#312,.T.);
+<span class="lineno">42</span>#314=LINE(&#x27;&#x27;,#103,#300); #315=EDGE_CURVE(&#x27;&#x27;,#113,#112,#314,.T.);
+<span class="lineno">43</span>#316=LINE(&#x27;&#x27;,#100,#301); #317=EDGE_CURVE(&#x27;&#x27;,#110,#113,#316,.T.);
+<span class="lineno">44</span>#400=ORIENTED_EDGE(&#x27;&#x27;,*,*,#311,.T.); #401=ORIENTED_EDGE(&#x27;&#x27;,*,*,#313,.T.);
+<span class="lineno">45</span>#402=ORIENTED_EDGE(&#x27;&#x27;,*,*,#315,.F.); #403=ORIENTED_EDGE(&#x27;&#x27;,*,*,#317,.F.);
+<span class="lineno">46</span>#404=EDGE_LOOP(&#x27;&#x27;,(#400,#401,#402,#403));
+<span class="lineno">47</span>#405=FACE_OUTER_BOUND(&#x27;&#x27;,#404,.T.);
+<span class="lineno">48</span>#406=ADVANCED_FACE(&#x27;plate_face&#x27;,(#405),#211,.T.);
+<span class="lineno">49</span>#500=OPEN_SHELL(&#x27;plate_shell&#x27;,(#406));
+<span class="lineno">50</span>#501=SHELL_BASED_SURFACE_MODEL(&#x27;plate_model&#x27;,(#500));
+<span class="lineno">51</span>#502=MANIFOLD_SURFACE_SHAPE_REPRESENTATION(&#x27;shape&#x27;,(#501,#210),#14);
+<span class="lineno">52</span>#503=SHAPE_DEFINITION_REPRESENTATION(#7,#502);
+<span class="lineno">53</span>/* Chamfer with two contradictory chamfer_angle attributes. */
+<span class="lineno">54</span>#600=SHAPE_ASPECT(&#x27;chamfer&#x27;,&#x27;chamfer with two angle values 45 and 60&#x27;,#7,.T.);
+<span class="lineno">55</span>#601=GEOMETRIC_ITEM_SPECIFIC_USAGE(&#x27;GISU&#x27;,$,#600,#502,#311);
+<span class="lineno">56</span>#610=DIMENSIONAL_SIZE(#600,&#x27;chamfer_size&#x27;);
+<span class="lineno">57</span>#611=MEASURE_REPRESENTATION_ITEM(&#x27;chamfer_size&#x27;,LENGTH_MEASURE(2.0),#10);
+<span class="lineno">58</span>#612=SHAPE_DIMENSION_REPRESENTATION(&#x27;&#x27;,(#611),#14);
+<span class="lineno">59</span>/* Defect: two chamfer_angle DIMENSIONAL_SIZEs with different values. */
+<span class="lineno">60</span>#620=DIMENSIONAL_SIZE(#600,&#x27;chamfer_angle&#x27;);
+<span class="lineno">61</span>#621=MEASURE_REPRESENTATION_ITEM(&#x27;chamfer_angle&#x27;,PLANE_ANGLE_MEASURE(0.7853981634),#11);
+<span class="lineno">62</span>#622=SHAPE_DIMENSION_REPRESENTATION(&#x27;&#x27;,(#621),#14);
+<span class="lineno">63</span>#630=DIMENSIONAL_SIZE(#600,&#x27;chamfer_angle&#x27;);
+<span class="lineno">64</span>#631=MEASURE_REPRESENTATION_ITEM(&#x27;chamfer_angle&#x27;,PLANE_ANGLE_MEASURE(1.0471975512),#11);
+<span class="lineno">65</span>#632=SHAPE_DIMENSION_REPRESENTATION(&#x27;&#x27;,(#631),#14);
+<span class="lineno">66</span>ENDSEC;
+<span class="lineno">67</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Pmi133.html">&larr; Pmi133</a> <a class="up" href="index.html">§12.7 PMI / GD&amp;T</a> <a class="next" href="Pmi135.html">Pmi135 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

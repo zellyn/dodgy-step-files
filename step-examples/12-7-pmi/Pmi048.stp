@@ -1,0 +1,48 @@
+/* Pmi048 - Graphic PMI annotation missing color
+   Defect: An ANNOTATION_CURVE_OCCURRENCE has no PRESENTATION_STYLE_ASSIGNMENT
+   referencing a COLOUR_RGB - i.e. no STYLED_ITEM chain. Receivers must
+   default (typically black). NIST SFA S026 records this. */
+ISO-10303-21;
+HEADER;
+FILE_DESCRIPTION(('Pmi048 - graphic PMI missing color/style',
+  'CAx-IF Rec.Pracs.---PMI Rep & Pres---v4.1'),'2;1');
+FILE_NAME('Pmi048.stp','2026-04-26T00:00:00',('catalog'),('cad'),
+  'manual','','');
+FILE_SCHEMA(('AP242_MANAGED_MODEL_BASED_3D_ENGINEERING_MIM_LF { 1 0 10303 442 1 1 4 }'));
+ENDSEC;
+DATA;
+#10 = APPLICATION_CONTEXT('managed model based 3d engineering');
+#11 = APPLICATION_PROTOCOL_DEFINITION('international standard',
+  'ap242_managed_model_based_3d_engineering',2020,#10);
+#12 = PRODUCT_CONTEXT('',#10,'mechanical');
+#13 = PRODUCT('Pmi048','UncolouredAnnotationPart','',(#12));
+#14 = PRODUCT_DEFINITION_FORMATION('','',#13);
+#15 = PRODUCT_DEFINITION_CONTEXT('',#10,'design');
+#16 = PRODUCT_DEFINITION('','',#14,#15);
+#17 = PRODUCT_DEFINITION_SHAPE('','',#16);
+#20 = ( LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT(.MILLI.,.METRE.) );
+#22 = ( NAMED_UNIT(*) PLANE_ANGLE_UNIT() SI_UNIT($,.RADIAN.) );
+#23 = ( NAMED_UNIT(*) SI_UNIT($,.STERADIAN.) SOLID_ANGLE_UNIT() );
+#24 = UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#20,
+  'distance_accuracy_value','');
+#25 = ( GEOMETRIC_REPRESENTATION_CONTEXT(3)
+  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#24))
+  GLOBAL_UNIT_ASSIGNED_CONTEXT((#20,#22,#23))
+  REPRESENTATION_CONTEXT('','3D') );
+#30 = CARTESIAN_POINT('',(0.0,0.0,0.0));
+#31 = DIRECTION('',(0.0,0.0,1.0));
+#32 = DIRECTION('',(1.0,0.0,0.0));
+#33 = AXIS2_PLACEMENT_3D('',#30,#31,#32);
+#40 = CARTESIAN_POINT('',(0.0,0.0,0.0));
+#41 = CARTESIAN_POINT('',(15.0,0.0,0.0));
+#42 = POLYLINE('leader',(#40,#41));
+/* Defect: ANNOTATION_CURVE_OCCURRENCE with empty styles list and no
+   STYLED_ITEM chain. */
+#50 = ANNOTATION_CURVE_OCCURRENCE('uncoloured',(),#42);
+#60 = DRAUGHTING_MODEL('Default',(#50),#25);
+#61 = PLANE('ann_plane',#33);
+#62 = ANNOTATION_PLANE('PMI',(#50),#61,());
+#90 = SHAPE_REPRESENTATION('',(#33),#25);
+#91 = SHAPE_DEFINITION_REPRESENTATION(#17,#90);
+ENDSEC;
+END-ISO-10303-21;

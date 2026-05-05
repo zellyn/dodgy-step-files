@@ -1,0 +1,64 @@
+/* Tfa025 - Glue Edges (coincident edges)
+ * Defect: edge-level analogue of Glue Faces - a wireframe model or
+ * sewing residue carries duplicate edges across patches that should be
+ * shared. Two EDGE_CURVE entities reference the same LINE between
+ * identical VERTEX_POINTs but live in different parents.
+ *
+ * Sources cited in catalog: 09-healing-menus H064, H102; 11-vendor W045.
+ *
+ * Expected kernel behavior: heal - merge coincident edges within
+ * tolerance and rebind ancestors to the kept edge.
+ *
+ * Reproducer scenarios in this file:
+ *  (1) Two EDGE_CURVEs sharing identical LINE and VERTEX_POINTs but
+ *      with separate identity - the simplest "glue edge" case.
+ *  (2) Two EDGE_CURVEs whose underlying LINEs are different objects
+ *      with identical numerical content (same direction, same anchor).
+ *  (3) Two EDGE_CURVEs whose VERTEX_POINTs are different objects with
+ *      identical coordinates - the duplicate-vertex variant of glue.
+ */
+ISO-10303-21;
+HEADER;
+FILE_DESCRIPTION(('Tfa025 glue edges coincident'),'2;1');
+FILE_NAME('Tfa025.stp','2026-04-26T00:00:00',(''),(''),
+  'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
+  'automotive_design',2009,#1);
+/* Common endpoints for scenario 1.                                     */
+#10=CARTESIAN_POINT('p0',(0.0,0.0,0.0));
+#11=CARTESIAN_POINT('p1',(10.0,0.0,0.0));
+#20=VERTEX_POINT('v0',#10);
+#21=VERTEX_POINT('v1',#11);
+#30=DIRECTION('xdir',(1.0,0.0,0.0));
+#31=VECTOR('xvec_10',#30,10.0);
+#40=LINE('line_shared',#10,#31);
+/* Scenario 1 defect: two distinct EDGE_CURVE entities, identical
+ * geometry and identical endpoints, in different parent wires.         */
+#50=EDGE_CURVE('edge_copy_1',#20,#21,#40,.T.);
+#51=EDGE_CURVE('edge_copy_2',#20,#21,#40,.T.);
+/* Scenario 2: two duplicate LINE objects with identical content.       */
+#52=DIRECTION('xdir_dup',(1.0,0.0,0.0));
+#53=VECTOR('xvec_10_dup',#52,10.0);
+#54=LINE('line_dup',#10,#53);
+#55=EDGE_CURVE('edge_dup_line',#20,#21,#54,.T.);
+/* Scenario 3: duplicate VERTEX_POINTs at identical coordinates.        */
+#56=CARTESIAN_POINT('p0_dup',(0.0,0.0,0.0));
+#57=CARTESIAN_POINT('p1_dup',(10.0,0.0,0.0));
+#58=VERTEX_POINT('v0_dup',#56);
+#59=VERTEX_POINT('v1_dup',#57);
+#60=EDGE_CURVE('edge_dup_vtx',#58,#59,#40,.T.);
+/* Wrap each duplicate edge in its own oriented-edge.                   */
+#70=ORIENTED_EDGE('',*,*,#50,.T.);
+#71=ORIENTED_EDGE('',*,*,#51,.T.);
+#72=ORIENTED_EDGE('',*,*,#55,.T.);
+#73=ORIENTED_EDGE('',*,*,#60,.T.);
+/* Group all duplicate edges into a wireframe geometric_curve_set so a
+ * Glue Edges pass can find and merge them.                             */
+#80=GEOMETRIC_CURVE_SET('wireframe_with_duplicates',
+  (#50,#51,#55,#60));
+ENDSEC;
+END-ISO-10303-21;

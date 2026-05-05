@@ -1,0 +1,96 @@
+ISO-10303-21;
+/*
+ * P015 — Non-manifold or open shell exported as MANIFOLD_SOLID_BREP
+ * Defect (FreeCAD #25774, #16292, #26639; FreeCAD PartDesign with
+ *         SubShapeBinder offsets):
+ *   A solid that is closed in the producer is wrapped as MANIFOLD_SOLID_BREP
+ *   but at least one edge appears only once across the shell, or one face's
+ *   FACE_OUTER_BOUND orientation is inverted — so the result is not actually
+ *   manifold. Re-import yields zero solids; STL still works because
+ *   tessellation ignores topology.
+ * Reproducer (mini): a CLOSED_SHELL referenced by MANIFOLD_SOLID_BREP whose
+ *   constituent faces share an edge that is referenced only once (open).
+ * Expected kernel: either heal to solid, or expose explicitly as open shell
+ *   with warning.
+ */
+HEADER;
+FILE_DESCRIPTION(('P015 non-manifold/open shell wrapped as MANIFOLD_SOLID_BREP'),'2;1');
+FILE_NAME('P015.stp','2026-04-26T00:00:00',('catalog'),('cad'),'manual','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#10 = APPLICATION_CONTEXT('automotive design');
+#11 = APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2001,#10);
+#12 = PRODUCT_CONTEXT('',#10,'mechanical');
+#13 = PRODUCT_DEFINITION_CONTEXT('part definition',#10,'design');
+#20 = PRODUCT('P015_ASSY','','',(#12));
+#21 = PRODUCT_DEFINITION_FORMATION('','',#20);
+#22 = PRODUCT_DEFINITION('design','',#21,#13);
+#23 = PRODUCT_DEFINITION_SHAPE('','',#22);
+#30 = PRODUCT('OPEN_SHELL_AS_SOLID','SubShapeBinder offset','',(#12));
+#31 = PRODUCT_DEFINITION_FORMATION('','',#30);
+#32 = PRODUCT_DEFINITION('design','',#31,#13);
+#33 = PRODUCT_DEFINITION_SHAPE('','',#32);
+#40 = NEXT_ASSEMBLY_USAGE_OCCURRENCE('1','OPEN_SHELL_INST','',#22,#32,$);
+/* Two coplanar faces sharing one edge — but in our shell we only reference
+   each face's outer loop ONCE, so the shared edge appears in exactly one
+   face and the shell is open. */
+#90 = CARTESIAN_POINT('p0',(0.0,0.0,0.0));
+#91 = CARTESIAN_POINT('p1',(1.0,0.0,0.0));
+#92 = CARTESIAN_POINT('p2',(1.0,1.0,0.0));
+#93 = CARTESIAN_POINT('p3',(0.0,1.0,0.0));
+#94 = VERTEX_POINT('v0',#90);
+#95 = VERTEX_POINT('v1',#91);
+#96 = VERTEX_POINT('v2',#92);
+#97 = VERTEX_POINT('v3',#93);
+#98 = DIRECTION('z',(0.0,0.0,1.0));
+#99 = DIRECTION('x',(1.0,0.0,0.0));
+#100 = AXIS2_PLACEMENT_3D('plane_axes',#90,#98,#99);
+#101 = PLANE('plane',#100);
+#102 = VECTOR('vx',#99,1.0);
+#103 = LINE('e01_line',#90,#102);
+#104 = EDGE_CURVE('e01',#94,#95,#103,.T.);
+#105 = ORIENTED_EDGE('oe01',*,*,#104,.T.);
+#106 = EDGE_LOOP('loop_partial',(#105));
+#107 = FACE_OUTER_BOUND('fb_partial',#106,.T.);
+#108 = ADVANCED_FACE('open_face',(#107),#101,.T.);
+/* DEFECT: CLOSED_SHELL with only one face whose loop has only one edge —
+   shell is degenerate / open but is wrapped as MANIFOLD_SOLID_BREP. */
+#109 = CLOSED_SHELL('open_shell',(#108));
+#110 = MANIFOLD_SOLID_BREP('mislabelled_solid',#109);
+#50 = ( LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT(.MILLI.,.METRE.) );
+#51 = ( NAMED_UNIT(*) PLANE_ANGLE_UNIT() SI_UNIT($,.RADIAN.) );
+#52 = ( NAMED_UNIT(*) SI_UNIT($,.STERADIAN.) SOLID_ANGLE_UNIT() );
+#53 = UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#50,'distance_accuracy_value','');
+#54 = ( GEOMETRIC_REPRESENTATION_CONTEXT(3) GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#53))
+        GLOBAL_UNIT_ASSIGNED_CONTEXT((#50,#51,#52)) REPRESENTATION_CONTEXT('','3D') );
+#60 = CARTESIAN_POINT('',(0.0,0.0,0.0));
+#61 = DIRECTION('',(0.0,0.0,1.0));
+#62 = DIRECTION('',(1.0,0.0,0.0));
+#63 = AXIS2_PLACEMENT_3D('part_origin',#60,#61,#62);
+#64 = ADVANCED_BREP_SHAPE_REPRESENTATION('part_rep',(#63,#110),#54);
+#65 = SHAPE_DEFINITION_REPRESENTATION(#33,#64);
+#66 = REPRESENTATION_MAP(#63,#64);
+#67 = MAPPED_ITEM('inst',#66,#63);
+#80 = AXIS2_PLACEMENT_3D('assy_origin',#60,#61,#62);
+#81 = SHAPE_REPRESENTATION('assy_rep',(#80,#67),#54);
+#82 = SHAPE_DEFINITION_REPRESENTATION(#23,#81);
+/* Extended catalog notes:
+ * This reproducer is a minimal demonstrator of the §12.6 entry
+ * referenced in the /* */ header above. The entity-graph above
+ * is just enough to exercise the defect on a writer or reader
+ * test harness; it is NOT a production-quality assembly.
+ *
+ * License: this file is part of a defect catalog assembled from
+ * publicly described bug reports and recommended-practice notes.
+ * No proprietary geometry or names are reproduced. The entity IDs
+ * and minimal coordinates are author-original.
+ *
+ * Cross-refs: see STEP_PROBLEM_CATALOG.md §12.6 for full entry,
+ * source list, sender attribution and expected kernel behavior.
+ */
+#900 = DESCRIPTIVE_REPRESENTATION_ITEM('catalog_id','P015');
+#901 = DESCRIPTIVE_REPRESENTATION_ITEM('catalog_section','12.6 assembly hierarchy');
+#902 = DESCRIPTIVE_REPRESENTATION_ITEM('catalog_status','pending');
+ENDSEC;
+END-ISO-10303-21;

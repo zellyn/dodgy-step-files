@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Tfa010 — Splitting vertex within face (vertex of one wire on edge of another)</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.3c Faces / sewing / free bound</a> <span class="sep">/</span> <span class="current">Tfa010</span>
+</nav>
+<header class="title-bar">
+<h1>Tfa010 <span class="sep">—</span> <span class="entry-title">Splitting vertex within face (vertex of one wire on edge of another)</span></h1>
+<p class="category">§12.3c face-sliver-sewing</p>
+<p class="tag-pills">
+<a class="tag tag-topology" href="../by-tag/topology/index.html">topology</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-3c-faces/Tfa010.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-3c-faces/Tfa010.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>05-occt-shapefix F029 (ShapeAnalysis_CheckSmallFace::CheckSplittingVertices)</li>
+<li>09-healing-menus H106 (FaceSplitByVertices)</li>
+</ul></section>
+<section><h2>Description</h2>
+<p>A face contains a vertex sub-shape that lies on the interior of another wire&#x27;s edge, effectively bisecting the face. The face boundary&#x27;s regularity is broken; downstream Booleans see ambiguous adjacency.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>`ADVANCED_FACE` whose outer wire passes by a vertex `V`, and an inner wire (or another part of the outer wire) anchors a separate edge at `V` lying on the first wire&#x27;s edge curve.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>heal — split the face at the splitting vertex into two (or more) regular faces; alternatively flag and surface the defect to the user.</p></section>
+<section><h2>Notes</h2>
+<p>**See also**: Gs034. Synonyms: &quot;vertex sits on the middle of another edge&quot;, &quot;T-junction inside a face&quot;, &quot;wire vertex bisects another wire&#x27;s edge&quot;, &quot;face has interior vertex breaking adjacency&quot;, &quot;splitting vertex inside face boundary&quot;.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=shape(1)/shape(1) gmsh=reject ifc=schema_n/a</code></p></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>n_edges_total &gt;= 6</code></li>
+<li><code>face[0].surface_type == &quot;plane&quot;</code></li>
+<li><code>n_vertices_total &gt;= 8</code></li>
+</ul></section>
+<section><h2>Cross-references</h2>
+<p><a href="../12-2c-surfaces/Gs034.html">Gs034</a></p>
+</section>
+<section><h2>Live oracle output</h2>
+<table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
+<tr><td><code>occt_heal_on</code></td><td><code>shape(1)</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>shape(1)</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>reject</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>reject</code></td></tr>
+<tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>not_manifold</code></td></tr>
+</tbody></table>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>/* Tfa010 - Splitting vertex within face (vertex of one wire on edge of another)
+<span class="lineno">2</span> * Defect: a face contains a vertex that lies on the interior of another
+<span class="lineno">3</span> * wire&#x27;s edge, effectively bisecting the face. The face boundary
+<span class="lineno">4</span> * regularity is broken; downstream Booleans see ambiguous adjacency.
+<span class="lineno">5</span> * Healer should split the face at the splitting vertex into two (or more)
+<span class="lineno">6</span> * regular faces, or flag and surface the defect.
+<span class="lineno">7</span> * Reproducer: ADVANCED_FACE outer wire 0,0 -&gt; 10,0 -&gt; 10,10 -&gt; 0,10. An
+<span class="lineno">8</span> * inner edge from (5,5) to (5,0) anchors a vertex (5,0) sitting on the
+<span class="lineno">9</span> * interior of the outer wire&#x27;s bottom edge.
+<span class="lineno">10</span> */
+<span class="lineno">11</span>ISO-10303-21;
+<span class="lineno">12</span>HEADER;
+<span class="lineno">13</span>FILE_DESCRIPTION((&#x27;Tfa010 splitting vertex within face&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">14</span>FILE_NAME(&#x27;Tfa010.stp&#x27;,&#x27;2026-04-26T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),
+<span class="lineno">15</span>  &#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">16</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN&#x27;));
+<span class="lineno">17</span>ENDSEC;
+<span class="lineno">18</span>DATA;
+<span class="lineno">19</span>#1=APPLICATION_CONTEXT(&#x27;automotive design&#x27;);
+<span class="lineno">20</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,
+<span class="lineno">21</span>  &#x27;automotive_design&#x27;,2009,#1);
+<span class="lineno">22</span>#10=CARTESIAN_POINT(&#x27;origin&#x27;,(0.0,0.0,0.0));
+<span class="lineno">23</span>#11=DIRECTION(&#x27;z&#x27;,(0.0,0.0,1.0));
+<span class="lineno">24</span>#12=DIRECTION(&#x27;x&#x27;,(1.0,0.0,0.0));
+<span class="lineno">25</span>#13=AXIS2_PLACEMENT_3D(&#x27;plc&#x27;,#10,#11,#12);
+<span class="lineno">26</span>#20=PLANE(&#x27;plane_xy&#x27;,#13);
+<span class="lineno">27</span>#21=CARTESIAN_POINT(&#x27;p0&#x27;,(0.0,0.0,0.0));
+<span class="lineno">28</span>#22=CARTESIAN_POINT(&#x27;p1&#x27;,(10.0,0.0,0.0));
+<span class="lineno">29</span>#23=CARTESIAN_POINT(&#x27;p2&#x27;,(10.0,10.0,0.0));
+<span class="lineno">30</span>#24=CARTESIAN_POINT(&#x27;p3&#x27;,(0.0,10.0,0.0));
+<span class="lineno">31</span>/* Splitting vertex (5,0) sits on outer wire bottom edge interior.     */
+<span class="lineno">32</span>#25=CARTESIAN_POINT(&#x27;split&#x27;,(5.0,0.0,0.0));
+<span class="lineno">33</span>/* Mid vertex (5,5) for the splitting interior edge.                   */
+<span class="lineno">34</span>#26=CARTESIAN_POINT(&#x27;mid&#x27;,(5.0,5.0,0.0));
+<span class="lineno">35</span>#30=VERTEX_POINT(&#x27;&#x27;,#21);
+<span class="lineno">36</span>#31=VERTEX_POINT(&#x27;&#x27;,#22);
+<span class="lineno">37</span>#32=VERTEX_POINT(&#x27;&#x27;,#23);
+<span class="lineno">38</span>#33=VERTEX_POINT(&#x27;&#x27;,#24);
+<span class="lineno">39</span>#34=VERTEX_POINT(&#x27;split_v&#x27;,#25);
+<span class="lineno">40</span>#35=VERTEX_POINT(&#x27;mid_v&#x27;,#26);
+<span class="lineno">41</span>#40=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">42</span>#41=DIRECTION(&#x27;&#x27;,(0.0,1.0,0.0));
+<span class="lineno">43</span>#42=DIRECTION(&#x27;&#x27;,(-1.0,0.0,0.0));
+<span class="lineno">44</span>#43=DIRECTION(&#x27;&#x27;,(0.0,-1.0,0.0));
+<span class="lineno">45</span>#50=VECTOR(&#x27;&#x27;,#40,10.0);
+<span class="lineno">46</span>#51=VECTOR(&#x27;&#x27;,#41,10.0);
+<span class="lineno">47</span>#52=VECTOR(&#x27;&#x27;,#42,10.0);
+<span class="lineno">48</span>#53=VECTOR(&#x27;&#x27;,#43,10.0);
+<span class="lineno">49</span>#54=VECTOR(&#x27;&#x27;,#43,5.0);
+<span class="lineno">50</span>#60=LINE(&#x27;&#x27;,#21,#50);
+<span class="lineno">51</span>#61=LINE(&#x27;&#x27;,#22,#51);
+<span class="lineno">52</span>#62=LINE(&#x27;&#x27;,#23,#52);
+<span class="lineno">53</span>#63=LINE(&#x27;&#x27;,#24,#53);
+<span class="lineno">54</span>#64=LINE(&#x27;inner_line&#x27;,#26,#54);
+<span class="lineno">55</span>#70=EDGE_CURVE(&#x27;&#x27;,#30,#31,#60,.T.);
+<span class="lineno">56</span>#71=EDGE_CURVE(&#x27;&#x27;,#31,#32,#61,.T.);
+<span class="lineno">57</span>#72=EDGE_CURVE(&#x27;&#x27;,#32,#33,#62,.T.);
+<span class="lineno">58</span>#73=EDGE_CURVE(&#x27;&#x27;,#33,#30,#63,.T.);
+<span class="lineno">59</span>/* Inner edge (5,5)-&gt;(5,0); its endpoint (5,0) lies on the interior of
+<span class="lineno">60</span> * outer edge #70 - the splitting vertex defect.                       */
+<span class="lineno">61</span>#74=EDGE_CURVE(&#x27;inner&#x27;,#35,#34,#64,.T.);
+<span class="lineno">62</span>#80=ORIENTED_EDGE(&#x27;&#x27;,*,*,#70,.T.);
+<span class="lineno">63</span>#81=ORIENTED_EDGE(&#x27;&#x27;,*,*,#71,.T.);
+<span class="lineno">64</span>#82=ORIENTED_EDGE(&#x27;&#x27;,*,*,#72,.T.);
+<span class="lineno">65</span>#83=ORIENTED_EDGE(&#x27;&#x27;,*,*,#73,.T.);
+<span class="lineno">66</span>#84=ORIENTED_EDGE(&#x27;&#x27;,*,*,#74,.T.);
+<span class="lineno">67</span>#90=EDGE_LOOP(&#x27;outer&#x27;,(#80,#81,#82,#83));
+<span class="lineno">68</span>/* Inner wire as a degenerate (open) FACE_BOUND: anchors vertex (5,0). */
+<span class="lineno">69</span>#91=EDGE_LOOP(&#x27;inner&#x27;,(#84));
+<span class="lineno">70</span>#100=FACE_OUTER_BOUND(&#x27;&#x27;,#90,.T.);
+<span class="lineno">71</span>#101=FACE_BOUND(&#x27;&#x27;,#91,.T.);
+<span class="lineno">72</span>#110=ADVANCED_FACE(&#x27;split_vertex&#x27;,(#100,#101),#20,.T.);
+<span class="lineno">73</span>/* Minimal PRODUCT chain so OCCT TransferRoots produces a shape. */
+<span class="lineno">74</span>#9000=PRODUCT_CONTEXT(&#x27;&#x27;,#1,&#x27;mechanical&#x27;);
+<span class="lineno">75</span>#9001=PRODUCT(&#x27;Tfa010&#x27;,&#x27;Tfa010&#x27;,&#x27;&#x27;,(#9000));
+<span class="lineno">76</span>#9002=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#9001);
+<span class="lineno">77</span>#9003=PRODUCT_DEFINITION_CONTEXT(&#x27;part definition&#x27;,#1,&#x27;design&#x27;);
+<span class="lineno">78</span>#9004=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,#9002,#9003);
+<span class="lineno">79</span>#9005=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,#9004);
+<span class="lineno">80</span>#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">81</span>#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+<span class="lineno">82</span>#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+<span class="lineno">83</span>#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,&#x27;distance_accuracy_value&#x27;,&#x27;&#x27;);
+<span class="lineno">84</span>#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT(&#x27;&#x27;,&#x27;3D&#x27;));
+<span class="lineno">85</span>#9020=OPEN_SHELL(&#x27;wrap_shell&#x27;,(#110));
+<span class="lineno">86</span>#9021=SHELL_BASED_SURFACE_MODEL(&#x27;wrap_sbsm&#x27;,(#9020));
+<span class="lineno">87</span>#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION(&#x27;&#x27;,(#9021),#9010);
+<span class="lineno">88</span>#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+<span class="lineno">89</span>ENDSEC;
+<span class="lineno">90</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Tfa008.html">&larr; Tfa008</a> <a class="up" href="index.html">§12.3c Faces / sewing / free bound</a> <a class="next" href="Tfa011.html">Tfa011 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

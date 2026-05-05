@@ -1,0 +1,29 @@
+ISO-10303-21;
+/* M098 - AP238 tool feedrate exceeds manufacturer rated maximum.
+ * Defect: a MACHINING_TOOL_FEEDSPEED declares 50000.0 mm/min for a
+ * 6mm carbide end-mill (rated maximum ~3000 mm/min). The controller
+ * either clips silently or runs the tool until it breaks. */
+HEADER;
+FILE_DESCRIPTION(('M098 test case','AP238 feedrate above tool envelope'),'2;1');
+FILE_NAME('M098.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AP238_STEP_NC_MIM { 1 0 10303 238 1 0 0 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('numerical_control_machining');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
+  'numerical_control_machining',2007,#1);
+#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#15=(NAMED_UNIT(*)SI_UNIT($,.SECOND.)TIME_UNIT());
+#16=(DERIVED_UNIT_ELEMENT(#10,1.0));
+#17=(DERIVED_UNIT_ELEMENT(#15,-1.0));
+#18=DERIVED_UNIT((#16,#17));
+#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#15))
+     REPRESENTATION_CONTEXT('nc','3D'));
+/* Defect: 50000 mm/min on a small end-mill - way past envelope. */
+#80=MEASURE_WITH_UNIT(POSITIVE_RATIO_MEASURE(50000.0),#18);
+#90=MACHINING_TOOL_FEEDSPEED($,#80,$);
+#100=MACHINING_OPERATION('rough_pocket',$,$,$,$,$);
+#200=WORKPLAN('main',(#100),$,$,$);
+ENDSEC;
+END-ISO-10303-21;

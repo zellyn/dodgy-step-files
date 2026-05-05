@@ -1,0 +1,40 @@
+/* N020 - Coordinate-system origin offset: hard-coded BOARD_OFFSET 0.05mm in PCB->MCAD pipeline
+ * Defect: KiCad hard-codes a BOARD_OFFSET = 0.05 mm constant on every
+ * component's AXIS2_PLACEMENT_3D, floating components above the board surface
+ * to avoid Z-fighting in viewers. Downstream MCAD tools that build enclosure
+ * geometry against the PCB top face see consistent 0.05 mm misalignment.
+ * Reproducer: every component placement carries Z=0.05 in its location
+ * cartesian_point, with no physical clearance to justify it.
+ */
+ISO-10303-21;
+HEADER;
+FILE_DESCRIPTION(('N020 KiCad hard-coded BOARD_OFFSET 0.05mm Z-fight avoidance'),'2;1');
+FILE_NAME('N020.stp','2026-04-26T00:00:00',(''),(''),
+  'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
+  'automotive_design',2009,#1);
+/* All component placements use Z=0.05 (BOARD_OFFSET), no physical reason */
+#10=CARTESIAN_POINT('comp1_loc',(10.0,10.0,0.05));
+#11=CARTESIAN_POINT('comp2_loc',(20.0,15.0,0.05));
+#12=CARTESIAN_POINT('comp3_loc',(30.0,12.0,0.05));
+#20=DIRECTION('z',(0.0,0.0,1.0));
+#21=DIRECTION('x',(1.0,0.0,0.0));
+/* Defect site: every footprint instance gets the same hard-coded 0.05 offset */
+#30=AXIS2_PLACEMENT_3D('comp1_BOARD_OFFSET',#10,#20,#21);
+#31=AXIS2_PLACEMENT_3D('comp2_BOARD_OFFSET',#11,#20,#21);
+#32=AXIS2_PLACEMENT_3D('comp3_BOARD_OFFSET',#12,#20,#21);
+#40=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#41=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#42=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#50=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-5),#40,
+  'distance_accuracy_value','board_modeling_tol');
+#60=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#50))
+  GLOBAL_UNIT_ASSIGNED_CONTEXT((#40,#41,#42))
+  REPRESENTATION_CONTEXT('pcb_ctx','3D'));
+ENDSEC;
+END-ISO-10303-21;

@@ -1,0 +1,22 @@
+ISO-10303-21;
+/* Gs052 - Surface of revolution with offset basis curve loses offset
+ * Defect: SURFACE_OF_REVOLUTION whose basis is OFFSET_CURVE_3D; round-trip bakes offset into B-spline */
+HEADER;
+FILE_DESCRIPTION(('Gs052 test case','Surface of revolution with offset basis curve loses offset'),'2;1');
+FILE_NAME('Gs052.stp','2026-04-30T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+#100=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#101=DIRECTION('',(0.0,0.0,1.0));#102=AXIS1_PLACEMENT('axis',#100,#101);
+#103=DIRECTION('offset_dir',(0.0,1.0,0.0));
+#104=CARTESIAN_POINT('basis_p1',(1.0,0.0,0.0));
+#105=CARTESIAN_POINT('basis_p2',(1.0,0.0,1.0));
+#106=DIRECTION('basis_dir',(0.0,0.0,1.0));#107=VECTOR('',#106,1.0);
+#108=LINE('basis_curve',#104,#107);
+#109=OFFSET_CURVE_3D('offset_basis',#108,0.1,.T.,#103);
+#110=SURFACE_OF_REVOLUTION('rev_with_offset_basis',#109,#102);
+ENDSEC;
+END-ISO-10303-21;

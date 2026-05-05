@@ -1,0 +1,50 @@
+/* Gn019 - Sample count <2 in pcurve approximation
+   Defect: when sampling a pcurve for openNURBS ON_BrepTrim, step-g
+   sometimes gets fewer than 2 sample points, yielding a degenerate trim.
+   Likely from the seam_curve or near-singular pcurve evaluation on a
+   closed surface (cylinder/cone) at the apex/seam.
+   This file emits a CYLINDRICAL_SURFACE plus a SURFACE_CURVE whose
+   pcurve is a degree-1 BSpline whose two control points coincide -- so
+   any naive evaluator counts it as a single sample point.  The healer
+   should enforce >= 2 samples and fall back to endpoint+midpoint+endpoint
+   adaptive refinement. */
+ISO-10303-21;
+HEADER;
+FILE_DESCRIPTION(
+  ('Gn019 - degenerate pcurve with <2 distinct samples on cylinder seam'),
+  '2;1');
+FILE_NAME('Gn019.stp','2026-04-26T00:00:00',('auto-generated'),(''),
+  'auto-generated','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+/* Host cylinder, axis = +z, radius = 5. */
+#10=CARTESIAN_POINT('axis_o',(0.0,0.0,0.0));
+#11=DIRECTION('axis_z',(0.0,0.0,1.0));
+#12=DIRECTION('ref_x',(1.0,0.0,0.0));
+#13=AXIS2_PLACEMENT_3D('cyl_pl',#10,#11,#12);
+#20=CYLINDRICAL_SURFACE('cyl',#13,5.0);
+/* Defect: pcurve is a degree-1 B_SPLINE_CURVE_WITH_KNOTS in the (u,v)
+   parameter plane whose two control points coincide -- gives 1 distinct
+   sample point. */
+#30=CARTESIAN_POINT('uv0',(0.0,0.0));
+#31=CARTESIAN_POINT('uv1',(0.0,0.0));
+#40=B_SPLINE_CURVE_WITH_KNOTS('degenerate_pcurve',1,(#30,#31),
+  .UNSPECIFIED.,.F.,.F.,(2,2),(0.0,1.0),.UNSPECIFIED.);
+#50=DEFINITIONAL_REPRESENTATION('',(#40),#60);
+/* Parameter space (u,v in 2D) for the cylinder. */
+#60=(
+  GEOMETRIC_REPRESENTATION_CONTEXT(2)
+  PARAMETRIC_REPRESENTATION_CONTEXT()
+  REPRESENTATION_CONTEXT('cyl_param','2D'));
+/* PCURVE wrapping the degenerate definitional representation. */
+#70=PCURVE('seam_pcurve',#20,#50);
+/* The 3D seam line on the cylinder is a meridian at u=0. */
+#80=CARTESIAN_POINT('seam_a',(5.0,0.0,0.0));
+#81=CARTESIAN_POINT('seam_b',(5.0,0.0,1.0));
+#82=DIRECTION('seam_dir',(0.0,0.0,1.0));
+#83=VECTOR('seam_vec',#82,1.0);
+#84=LINE('seam_line',#80,#83);
+#85=SURFACE_CURVE('seam',#84,(#70),.PCURVE_S1.);
+ENDSEC;
+END-ISO-10303-21;

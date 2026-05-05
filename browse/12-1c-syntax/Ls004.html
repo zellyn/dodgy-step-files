@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Ls004 — Fortran-style `D` exponent (`1.0D5`)</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.1c Part-21 grammar</a> <span class="sep">/</span> <span class="current">Ls004</span>
+</nav>
+<header class="title-bar">
+<h1>Ls004 <span class="sep">—</span> <span class="entry-title">Fortran-style `D` exponent (`1.0D5`)</span></h1>
+<p class="category">§12.1c numeric-literal grammar</p>
+<p class="severity-badge severity-p1">P1 — silent data loss</p>
+<p class="tag-pills">
+<a class="tag tag-syntax" href="../by-tag/syntax/index.html">syntax</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-1c-syntax/Ls004.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-1c-syntax/Ls004.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>T023</li>
+</ul></section>
+<section><h2>Description</h2>
+<p>Some legacy Fortran-fronted exporters (older I-DEAS, CADAM converters) emit `1.0D5` instead of `1.0E5`. ISO 10303-21 only allows `E`/`e`.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>`#1=DIRECTION(&#x27;&#x27;,(1.0D5,0.,0.));`</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>Reject with diagnostic &quot;exponent must be &#x27;E&#x27;, got &#x27;D&#x27;&quot;.</p></section>
+<section><h2>Notes</h2>
+<p>**See also**: Ls001. Synonyms: &quot;Fortran D exponent in STEP&quot;, &quot;1.0D5 instead of 1.0E5&quot;, &quot;legacy Fortran writer emits D exponent&quot;, &quot;I-DEAS D-exponent REAL&quot;, &quot;CADAM D-style exponent&quot;.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>matches(rb&#x27;\d[Dd][+-]?\d&#x27;)</code></li>
+<li><code>contains(b&#x27;1.0D5&#x27;) or contains(b&#x27;1.5D-3&#x27;)</code></li>
+</ul></section>
+<section><h2>Cross-references</h2>
+<p><a href="Ls001.html">Ls001</a></p>
+</section>
+<section><h2>Live oracle output</h2>
+<table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
+<tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>no_shapes_loaded</code></td></tr>
+</tbody></table>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>/* Ls004 - Fortran-style &quot;D&quot; exponent (1.<mark>0D5</mark>)
+<span class="lineno">2</span>   ----------------------------------------------------------------------
+<span class="lineno">3</span>   Catalog section : Â§12.1c numeric-literal grammar
+<span class="lineno">4</span>   Sources         : T023
+<span class="lineno">5</span>   See also        : Ls001
+<span class="lineno">6</span>   ----------------------------------------------------------------------
+<span class="lineno">7</span>   Defect
+<span class="lineno">8</span>     Some legacy Fortran-fronted exporters (older I-DEAS, CADAM converters)
+<span class="lineno">9</span>     emit 1.<mark>0D5</mark> instead of 1.0E5. ISO 10303-21 only allows &#x27;E&#x27; (or, in
+<span class="lineno">10</span>     practice, &#x27;e&#x27;) in the exponent. The DIRECTION and CARTESIAN_POINT
+<span class="lineno">11</span>     literals below carry the Fortran-style &#x27;D&#x27; exponent.
+<span class="lineno">12</span>   Expected behavior
+<span class="lineno">13</span>     Reject with diagnostic &quot;exponent must be &#x27;E&#x27;, got &#x27;D&#x27;&quot;. Lenient
+<span class="lineno">14</span>     mode may treat &#x27;D&#x27; as &#x27;E&#x27; but should always emit a warning.
+<span class="lineno">15</span>   ----------------------------------------------------------------------
+<span class="lineno">16</span>*/
+<span class="lineno">17</span>ISO-10303-21;
+<span class="lineno">18</span>HEADER;
+<span class="lineno">19</span>FILE_DESCRIPTION((&#x27;Ls004 - Fortran D exponent on REAL&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">20</span>FILE_NAME(&#x27;Ls004.stp&#x27;,&#x27;2026-04-26T00:00:00&#x27;,(&#x27;auto-generated&#x27;),(&#x27;&#x27;),
+<span class="lineno">21</span>  &#x27;auto-generated&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">22</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
+<span class="lineno">23</span>ENDSEC;
+<span class="lineno">24</span>DATA;
+<span class="lineno">25</span>#10=CARTESIAN_POINT(&#x27;origin&#x27;,(0.0,0.0,0.0));
+<span class="lineno">26</span>/* Defect: Fortran-style &#x27;D&#x27; exponent in REAL literals */
+<span class="lineno">27</span>#20=DIRECTION(&#x27;z&#x27;,(1.<mark>0D5</mark>,0.0,0.0));
+<span class="lineno">28</span>#30=CARTESIAN_POINT(&#x27;p&#x27;,(1.<mark>5D-3</mark>,2.<mark>0D+2</mark>,3.<mark>0D0</mark>));
+<span class="lineno">29</span>/* Defect: lower-case &#x27;d&#x27; Fortran exponent */
+<span class="lineno">30</span>#31=CARTESIAN_POINT(&#x27;q&#x27;,(1.<mark>5d-3</mark>,2.<mark>0d+2</mark>,3.<mark>0d0</mark>));
+<span class="lineno">31</span>#40=AXIS2_PLACEMENT_3D(&#x27;placement&#x27;,#10,#20,$);
+<span class="lineno">32</span>ENDSEC;
+<span class="lineno">33</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Ls003.html">&larr; Ls003</a> <a class="up" href="index.html">§12.1c Part-21 grammar</a> <a class="next" href="Ls005.html">Ls005 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

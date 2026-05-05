@@ -1,0 +1,58 @@
+/* Pf032 - Reader hangs during XCAF tree build on deep assembly.
+ * Pattern: 8-level deep assembly with 10 instances per level (10^8
+ * visits without memoisation). Production scale: 8 levels x 10
+ * children = exponential XCAF tree-build.
+ * Notes: scaled-down representative - this fixture has 3 levels x 2
+ * instances (8 NAUO chain links). Replicate to depth 8 with branching
+ * 10 to reproduce the production hang. */
+ISO-10303-21;
+HEADER;
+FILE_DESCRIPTION(('Pf032 test case','Hang during XCAF tree build on deep assembly'),'2;1');
+FILE_NAME('Pf032.stp','2026-04-30T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+#10=PRODUCT_CONTEXT('',#1,'mechanical');
+#13=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+/* Level 0 root */
+#20=PRODUCT('ROOT','root','',(#10));
+#21=PRODUCT_DEFINITION_FORMATION('','',#20);
+#22=PRODUCT_DEFINITION('design','',#21,#13);
+/* Level 1: two children */
+#30=PRODUCT('L1A','l1a','',(#10));
+#31=PRODUCT_DEFINITION_FORMATION('','',#30);
+#32=PRODUCT_DEFINITION('design','',#31,#13);
+#33=PRODUCT('L1B','l1b','',(#10));
+#34=PRODUCT_DEFINITION_FORMATION('','',#33);
+#35=PRODUCT_DEFINITION('design','',#34,#13);
+#40=NEXT_ASSEMBLY_USAGE_OCCURRENCE('1a','','',#22,#32,$);
+#41=NEXT_ASSEMBLY_USAGE_OCCURRENCE('1b','','',#22,#35,$);
+/* Level 2: two children under each L1 */
+#50=PRODUCT('L2AA','l2aa','',(#10));
+#51=PRODUCT_DEFINITION_FORMATION('','',#50);
+#52=PRODUCT_DEFINITION('design','',#51,#13);
+#53=PRODUCT('L2AB','l2ab','',(#10));
+#54=PRODUCT_DEFINITION_FORMATION('','',#53);
+#55=PRODUCT_DEFINITION('design','',#54,#13);
+#60=PRODUCT('L2BA','l2ba','',(#10));
+#61=PRODUCT_DEFINITION_FORMATION('','',#60);
+#62=PRODUCT_DEFINITION('design','',#61,#13);
+#63=PRODUCT('L2BB','l2bb','',(#10));
+#64=PRODUCT_DEFINITION_FORMATION('','',#63);
+#65=PRODUCT_DEFINITION('design','',#64,#13);
+#70=NEXT_ASSEMBLY_USAGE_OCCURRENCE('2aa','','',#32,#52,$);
+#71=NEXT_ASSEMBLY_USAGE_OCCURRENCE('2ab','','',#32,#55,$);
+#72=NEXT_ASSEMBLY_USAGE_OCCURRENCE('2ba','','',#35,#62,$);
+#73=NEXT_ASSEMBLY_USAGE_OCCURRENCE('2bb','','',#35,#65,$);
+/* Level 3 leaves under each L2 */
+#80=PRODUCT('L3','l3_leaf','',(#10));
+#81=PRODUCT_DEFINITION_FORMATION('','',#80);
+#82=PRODUCT_DEFINITION('design','',#81,#13);
+#90=NEXT_ASSEMBLY_USAGE_OCCURRENCE('3aa','','',#52,#82,$);
+#91=NEXT_ASSEMBLY_USAGE_OCCURRENCE('3ab','','',#55,#82,$);
+#92=NEXT_ASSEMBLY_USAGE_OCCURRENCE('3ba','','',#62,#82,$);
+#93=NEXT_ASSEMBLY_USAGE_OCCURRENCE('3bb','','',#65,#82,$);
+ENDSEC;
+END-ISO-10303-21;

@@ -1,0 +1,15 @@
+ISO-10303-21;
+/* M069 - TRIANGULATED_FACE without pnval
+ * Defect: TRIANGULATED_FACE with pnval = (); AP242 reader rejects entity */
+HEADER;
+FILE_DESCRIPTION(('M058 test case','TRIANGULATED_FACE without pnval'),'2;1');
+FILE_NAME('M069.stp','2026-04-30T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+#100=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#101=TRIANGULATED_FACE('no_pnval','',(#100),(),(),(),'',$);
+ENDSEC;
+END-ISO-10303-21;

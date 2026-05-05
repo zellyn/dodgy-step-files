@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>M110 — AP209 ply orientation vector not normalized</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.8 Mixed (tessellation, validation properties, etc.)</a> <span class="sep">/</span> <span class="current">M110</span>
+</nav>
+<header class="title-bar">
+<h1>M110 <span class="sep">—</span> <span class="entry-title">AP209 ply orientation vector not normalized</span></h1>
+<p class="category">§12.8 mixed (sub-class: AP209 material orientation)</p>
+<p class="severity-badge severity-p1">P1 — silent data loss</p>
+<p class="tag-pills">
+<a class="tag tag-spec-violation" href="../by-tag/spec-violation/index.html">spec-violation</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-8-mixed/M110.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-8-mixed/M110.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>deduced from AP209 §8 composite ply orientation</li>
+<li>ISO 10303-42 direction normalization convention</li>
+</ul></section>
+<section><h2>Sender</h2>
+<p>deduced — composite-modeling tool storing ply angle as raw vector without normalization</p></section>
+<section><h2>Description</h2>
+<p>A composite ply&#x27;s fiber orientation `DIRECTION` ratios sum to a magnitude of e.g. `2.0` (vector `(2.0, 0.0, 0.0)`) instead of unit length. STEP `DIRECTION` is supposed to be unit-normalized — consumers that use the ratios directly (e.g. for stiffness-matrix transformation) compute doubled effective fiber-angle weight. Bug-reporter language: &quot;AP209 ply direction not unit&quot;, &quot;fiber angle vector wrong magnitude&quot;, &quot;composite stiffness 2x off&quot;.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>`DIRECTION(&#x27;ply_0deg&#x27;, (2.0, 0.0, 0.0))` referenced as a ply orientation in a `LAMINATE_TABLE`.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>normalize direction silently and warn; or reject the ply specification as malformed.</p></section>
+<section><h2>Notes</h2>
+<p>Synonyms: &quot;AP209 unnormalized direction&quot;, &quot;ply orientation magnitude wrong&quot;, &quot;fiber DIRECTION not unit length&quot;, &quot;STEP DIRECTION ratios sum &gt;1&quot;. Synonyms: &quot;AP209 unnormalized direction&quot;, &quot;ply orientation magnitude wrong&quot;.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>contains(b&#x27;STRUCTURAL_ANALYSIS_DESIGN&#x27;)</code></li>
+<li><code>contains(b&#x27;DIRECTION&#x27;)</code></li>
+<li><code>contains(b&#x27;(2.0,0.0,0.0)&#x27;)</code></li>
+</ul></section>
+<section><h2>Live oracle output</h2>
+<table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
+<tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>no_shapes_loaded</code></td></tr>
+</tbody></table>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* M110 - AP209 ply orientation vector not normalized.
+<span class="lineno">3</span> * Defect: a <mark>DIRECTION</mark> used as a ply fiber orientation has magnitude
+<span class="lineno">4</span> * 2.0 instead of unit length. Consumers using the ratios directly for
+<span class="lineno">5</span> * stiffness-matrix transformation compute doubled effective fiber
+<span class="lineno">6</span> * weight. */
+<span class="lineno">7</span>HEADER;
+<span class="lineno">8</span>FILE_DESCRIPTION((&#x27;M110 test case&#x27;,&#x27;AP209 ply <mark>DIRECTION</mark> not unit length&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">9</span>FILE_NAME(&#x27;M110.stp&#x27;,&#x27;2026-05-02T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">10</span>FILE_SCHEMA((&#x27;<mark>STRUCTURAL_ANALYSIS_DESIGN</mark> { 1 0 10303 209 1 0 0 }&#x27;));
+<span class="lineno">11</span>ENDSEC;
+<span class="lineno">12</span>DATA;
+<span class="lineno">13</span>#1=APPLICATION_CONTEXT(&#x27;structural_analysis_design&#x27;);
+<span class="lineno">14</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,
+<span class="lineno">15</span>  &#x27;structural_analysis_design&#x27;,2001,#1);
+<span class="lineno">16</span>#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">17</span>#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+<span class="lineno">18</span>     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10))
+<span class="lineno">19</span>     REPRESENTATION_CONTEXT(&#x27;fea&#x27;,&#x27;3D&#x27;));
+<span class="lineno">20</span>/* Defect: <mark>DIRECTION</mark> ratios magnitude = 2.0 instead of 1.0. */
+<span class="lineno">21</span>#100=<mark>DIRECTION</mark>(&#x27;ply_0deg_unnormalized&#x27;,<mark>(2.0,0.0,0.0)</mark>);
+<span class="lineno">22</span>/* Reference from a laminate so the direction has functional weight. */
+<span class="lineno">23</span>#200=LAMINATE_TABLE(&#x27;skin&#x27;,(#100),$);
+<span class="lineno">24</span>ENDSEC;
+<span class="lineno">25</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="M109.html">&larr; M109</a> <a class="up" href="index.html">§12.8 Mixed (tessellation, validation properties, etc.)</a> <a class="next" href="M111.html">M111 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

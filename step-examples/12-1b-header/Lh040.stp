@@ -1,0 +1,21 @@
+ISO-10303-21;
+/* Lh040 - FILE_INFO Edition-3 header record carrying revision
+ * metadata that contradicts FILE_NAME's date field
+ * Defect: Edition-3 FILE_INFO is intended for additional revision /
+ * metadata that did not fit Edition-2's FILE_NAME. Producers
+ * supporting both editions sometimes write FILE_NAME with one
+ * timestamp and FILE_INFO with a different one, leaving the
+ * receiver to choose between them. */
+HEADER;
+FILE_DESCRIPTION(('Lh040 - FILE_INFO date contradicts FILE_NAME date'),'2;1');
+FILE_NAME('Lh040.stp','2026-04-26T00:00:00',(''),(''),
+  'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+/* Defect: FILE_INFO claims a date 10 years earlier than FILE_NAME */
+FILE_INFO('rev','2016-01-01T00:00:00','release-r12');
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#10=CARTESIAN_POINT('origin',(0.0,0.0,0.0));
+ENDSEC;
+END-ISO-10303-21;

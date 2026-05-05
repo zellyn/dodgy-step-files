@@ -1,0 +1,66 @@
+ISO-10303-21;
+/* Gp036 - Pcurve shifting on non-periodic surface
+ * Defect: planar face whose face_outer_bound wire references PCURVE 2D
+ *   parametric points lying outside the host PLANE's natural parametric
+ *   range. Plane is a non-periodic surface, yet the pcurves run U from
+ *   -2.0 to +12.0, well outside the [0,10]x[0,10] face bound. */
+HEADER;
+FILE_DESCRIPTION(('Gp036 test case','Pcurve shifting on non-periodic surface'),'2;1');
+FILE_NAME('Gp036.stp','2026-04-30T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+/* Host non-periodic plane */
+#100=CARTESIAN_POINT('origin',(0.0,0.0,0.0));
+#101=DIRECTION('z',(0.0,0.0,1.0));
+#102=DIRECTION('x',(1.0,0.0,0.0));
+#103=AXIS2_PLACEMENT_3D('plane_axes',#100,#101,#102);
+#104=PLANE('non_periodic',#103);
+/* Face vertices in 3D */
+#110=CARTESIAN_POINT('v0',(0.0,0.0,0.0));
+#111=VERTEX_POINT('v0',#110);
+#112=CARTESIAN_POINT('v1',(10.0,0.0,0.0));
+#113=VERTEX_POINT('v1',#112);
+#114=CARTESIAN_POINT('v2',(10.0,10.0,0.0));
+#115=VERTEX_POINT('v2',#114);
+#116=CARTESIAN_POINT('v3',(0.0,10.0,0.0));
+#117=VERTEX_POINT('v3',#116);
+/* 3D LINE curves for each edge */
+#120=DIRECTION('+x',(1.0,0.0,0.0));
+#121=VECTOR('vx',#120,10.0);
+#122=LINE('e0_3d',#110,#121);
+#123=DIRECTION('+y',(0.0,1.0,0.0));
+#124=VECTOR('vy',#123,10.0);
+#125=LINE('e1_3d',#112,#124);
+#126=DIRECTION('-x',(-1.0,0.0,0.0));
+#127=VECTOR('vmx',#126,10.0);
+#128=LINE('e2_3d',#114,#127);
+#129=DIRECTION('-y',(0.0,-1.0,0.0));
+#130=VECTOR('vmy',#129,10.0);
+#131=LINE('e3_3d',#116,#130);
+/* Pcurves in the (u,v) domain of the plane.
+ * Defect: U values -2.0 and +12.0 lie outside the [0,10] face range. */
+#140=CARTESIAN_POINT('puv_e0_a',(-2.0,0.0));
+#141=CARTESIAN_POINT('puv_e0_b',(12.0,0.0));
+#142=DIRECTION('puv_e0_dir',(1.0,0.0));
+#143=VECTOR('puv_e0_vec',#142,14.0);
+#144=LINE('e0_pc',#140,#143);
+#145=DEFINITIONAL_REPRESENTATION('e0_pc',(#144),#103);
+#146=PCURVE('e0_pc',#104,#145);
+/* Edge curves with PCURVE wired in via SURFACE_CURVE */
+#150=SURFACE_CURVE('e0_sc',#122,(#146),.PCURVE_S1.);
+#151=EDGE_CURVE('e0',#111,#113,#150,.T.);
+#152=ORIENTED_EDGE('',*,*,#151,.T.);
+#153=EDGE_CURVE('e1',#113,#115,#125,.T.);
+#154=ORIENTED_EDGE('',*,*,#153,.T.);
+#155=EDGE_CURVE('e2',#115,#117,#128,.T.);
+#156=ORIENTED_EDGE('',*,*,#155,.T.);
+#157=EDGE_CURVE('e3',#117,#111,#131,.T.);
+#158=ORIENTED_EDGE('',*,*,#157,.T.);
+#160=EDGE_LOOP('outer',(#152,#154,#156,#158));
+#161=FACE_OUTER_BOUND('',#160,.T.);
+#162=ADVANCED_FACE('out_of_range_pcurve',(#161),#104,.T.);
+ENDSEC;
+END-ISO-10303-21;

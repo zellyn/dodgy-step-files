@@ -1,0 +1,47 @@
+ISO-10303-21;
+/* Xp036 - Cross-product: STEP file with valid STYLED_ITEM colour
+ *   metadata is imported with the kernel's bare reader (STEPControl_Reader
+ *   in OCC, equivalent low-level path) instead of the XCAF/CAF-aware
+ *   reader; all colour information is silently discarded and faces
+ *   render in the default appearance.
+ * Source: github.com/CadQuery/cadquery issue #1638 "Problem importing
+ *   STEP with colours"; CadQuery discussion 1454 "combine colored step
+ *   files". A user reports that imported STEP files always appear yellow
+ *   in CQ-Editor.
+ * Defect: a STYLED_ITEM correctly references a PRESENTATION_STYLE_ASSIGNMENT
+ *   carrying a COLOUR_RGB(1.0, 0.0, 0.0) red. A naive reader sees only the
+ *   ADVANCED_FACE/MANIFOLD_SOLID_BREP graph and never reaches the
+ *   STYLED_ITEM (it lives in a parallel forest of presentation entities).
+ *   Round-trip thus drops the colour. */
+HEADER;
+FILE_DESCRIPTION(('Xp036 cross-product','styled_item dropped by bare STEPControl_Reader'),'2;1');
+FILE_NAME('Xp036.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#11=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#12=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#10,'tol','');
+#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13))GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12))REPRESENTATION_CONTEXT('','3D'));
+#20=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#21=DIRECTION('',(0.0,0.0,1.0));
+#22=DIRECTION('',(1.0,0.0,0.0));
+#23=AXIS2_PLACEMENT_3D('',#20,#21,#22);
+#24=PLANE('',#23);
+#25=ADVANCED_FACE('red_face_should_keep_color',(),#24,.T.);
+#26=CLOSED_SHELL('shell',(#25));
+#27=MANIFOLD_SOLID_BREP('solid',#26);
+/* Presentation forest - a bare reader will never visit it */
+#40=COLOUR_RGB('red_should_be_preserved',1.0,0.0,0.0);
+#41=FILL_AREA_STYLE_COLOUR('',#40);
+#42=FILL_AREA_STYLE('',(#41));
+#43=SURFACE_STYLE_FILL_AREA(#42);
+#44=SURFACE_SIDE_STYLE('',(#43));
+#45=SURFACE_STYLE_USAGE(.BOTH.,#44);
+#46=PRESENTATION_STYLE_ASSIGNMENT((#45));
+#47=STYLED_ITEM('only_visited_by_XCAF_reader',(#46),#25);
+#48=MECHANICAL_DESIGN_GEOMETRIC_PRESENTATION_REPRESENTATION('',(#47),#14);
+ENDSEC;
+END-ISO-10303-21;

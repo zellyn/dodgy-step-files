@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>M155 — AP210 net connectivity ends at a non-pin element</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.8 Mixed (tessellation, validation properties, etc.)</a> <span class="sep">/</span> <span class="current">M155</span>
+</nav>
+<header class="title-bar">
+<h1>M155 <span class="sep">—</span> <span class="entry-title">AP210 net connectivity ends at a non-pin element</span></h1>
+<p class="category">§12.8 mixed (sub-class: AP210 net endpoint type)</p>
+<p class="severity-badge severity-p1">P1 — silent data loss</p>
+<p class="tag-pills">
+<a class="tag tag-spec-violation" href="../by-tag/spec-violation/index.html">spec-violation</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-8-mixed/M155.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-8-mixed/M155.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>16-iso-spec ISO 10303-210 §7 (network_node referenced endpoint type)</li>
+<li>bug-reporter language: &quot;AP210 net ends at point&quot;, &quot;PCB trace ends in nothing&quot;, &quot;ECAD net dangling at non-pin&quot;.</li>
+</ul></section>
+<section><h2>Sender</h2>
+<p>deduced — ECAD exporter that wrote net endpoints from a routing-graph node (point), missing the conversion to a TERMINAL</p></section>
+<section><h2>Description</h2>
+<p>A `NETWORK_NODE` references an element that is not a `TERMINAL` - it points to a `CARTESIAN_POINT` instead. The trace ends in the middle of nothing - there is no electrical pin at the endpoint. Bug-reporter language: &quot;AP210 net to non-pin&quot;, &quot;PCB trace ends at point&quot;, &quot;ECAD connectivity to non-terminal&quot;.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>`NETWORK_NODE(&#x27;node_floating&#x27;, cartesian_point)` in a `NETWORK` list.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>validate `NETWORK_NODE` references point at `TERMINAL` (or compatible electrical endpoint); reject or warn.</p></section>
+<section><h2>Notes</h2>
+<p>Synonyms: &quot;AP210 endpoint not a pin&quot;, &quot;PCB trace dangling&quot;, &quot;ECAD net to wrong type&quot;.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>contains(b&#x27;ELECTRONIC_ASSEMBLY_INTERCONNECT_AND_PACKAGING_DESIGN&#x27;)</code></li>
+<li><code>contains(b&#x27;NETWORK_NODE&#x27;)</code></li>
+<li><code>contains(b&#x27;CARTESIAN_POINT&#x27;)</code></li>
+</ul></section>
+<section><h2>Live oracle output</h2>
+<table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
+<tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>no_shapes_loaded</code></td></tr>
+</tbody></table>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* M155 - AP210 net connection ends at a non-pin element.
+<span class="lineno">3</span> * Defect: a <mark>NETWORK_NODE</mark> references an element that is not a TERMINAL
+<span class="lineno">4</span> * - it points to a <mark>CARTESIAN_POINT</mark> instead. The trace ends in the
+<span class="lineno">5</span> * middle of nothing - there is no electrical pin at the endpoint. */
+<span class="lineno">6</span>HEADER;
+<span class="lineno">7</span>FILE_DESCRIPTION((&#x27;M155 test case&#x27;,&#x27;AP210 net connects to non-pin&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">8</span>FILE_NAME(&#x27;M155.stp&#x27;,&#x27;2026-05-02T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">9</span>FILE_SCHEMA((&#x27;<mark>ELECTRONIC_ASSEMBLY_INTERCONNECT_AND_PACKAGING_DESIGN</mark> { 1 0 10303 210 3 1 0 }&#x27;));
+<span class="lineno">10</span>ENDSEC;
+<span class="lineno">11</span>DATA;
+<span class="lineno">12</span>#1=APPLICATION_CONTEXT(&#x27;electronic_assembly_interconnect_and_packaging_design&#x27;);
+<span class="lineno">13</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,
+<span class="lineno">14</span>  &#x27;electronic_assembly_interconnect_and_packaging_design&#x27;,2014,#1);
+<span class="lineno">15</span>#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">16</span>#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+<span class="lineno">17</span>     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10))
+<span class="lineno">18</span>     REPRESENTATION_CONTEXT(&#x27;pcb&#x27;,&#x27;3D&#x27;));
+<span class="lineno">19</span>#100=TERMINAL(&#x27;U1_p1&#x27;,&#x27;signal_input&#x27;,$);
+<span class="lineno">20</span>/* Defect: <mark>NETWORK_NODE</mark> #201 references <mark>CARTESIAN_POINT</mark>, not a TERMINAL. */
+<span class="lineno">21</span>#150=<mark>CARTESIAN_POINT</mark>(&#x27;floating_endpoint&#x27;,(20.0,15.0,0.0));
+<span class="lineno">22</span>#200=<mark>NETWORK_NODE</mark>(&#x27;node_a&#x27;,#100);
+<span class="lineno">23</span>#201=<mark>NETWORK_NODE</mark>(&#x27;node_floating&#x27;,#150);
+<span class="lineno">24</span>#300=NETWORK(&#x27;SIG_1&#x27;,(#200,#201),(#200));
+<span class="lineno">25</span>ENDSEC;
+<span class="lineno">26</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="M154.html">&larr; M154</a> <a class="up" href="index.html">§12.8 Mixed (tessellation, validation properties, etc.)</a> <a class="next" href="M156.html">M156 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

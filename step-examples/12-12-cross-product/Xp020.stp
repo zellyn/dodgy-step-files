@@ -1,0 +1,57 @@
+ISO-10303-21;
+/* Xp020 - Cross-product: PMI binding spans a TESSELLATED_FACE and an
+ *   ADVANCED_FACE (two halves of a hole), but the tessellated face has
+ *   no STYLED_ITEM (style binding lost), and the unit context says inches
+ *   while the PMI text value is in mm.
+ * Builds on M020 (tess style binding lost) + Pmi001 (PMI across tess+brep) +
+ *   U005 (drawing-vs-context unit disagreement). */
+HEADER;
+FILE_DESCRIPTION(('Xp020 cross-product','PMI tess+brep x style lost x unit conflict'),'2;1');
+FILE_NAME('Xp020.stp','2026-04-26T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AP242_MANAGED_MODEL_BASED_3D_ENGINEERING_MIM_LF { 1 0 10303 442 1 1 4 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('managed model based 3d engineering');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
+  'ap242_managed_model_based_3d_engineering',2014,#1);
+/* Defect 3: LENGTH_UNIT inch */
+#10=(LENGTH_UNIT()NAMED_UNIT(*)CONVERSION_BASED_UNIT('inch',#100));
+#100=DIMENSIONAL_EXPONENTS(1.0,0.0,0.0,0.0,0.0,0.0,0.0);
+#11=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#12=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.E-6),#10,'distance_accuracy_value','');
+#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+     GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13))
+     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12))
+     REPRESENTATION_CONTEXT('part','3D'));
+/* BRep half of a cylinder */
+#200=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#201=DIRECTION('',(0.0,0.0,1.0));
+#202=DIRECTION('',(1.0,0.0,0.0));
+#203=AXIS2_PLACEMENT_3D('',#200,#201,#202);
+#204=CYLINDRICAL_SURFACE('',#203,5.0);
+#205=CARTESIAN_POINT('a',(5.0,0.0,0.0));
+#206=CARTESIAN_POINT('b',(5.0,0.0,1.0));
+#207=VERTEX_POINT('',#205);
+#208=VERTEX_POINT('',#206);
+#209=LINE('',#205,VECTOR('',#201,1.0));
+#210=EDGE_CURVE('',#207,#208,#209,.T.);
+#211=ORIENTED_EDGE('',*,*,#210,.T.);
+#212=EDGE_LOOP('',(#211));
+#213=FACE_OUTER_BOUND('',#212,.T.);
+#214=ADVANCED_FACE('brep_half',(#213),#204,.T.);
+/* Tessellated half */
+#300=COORDINATES_LIST('',3,((-5.0,0.0,0.0),(-5.0,0.0,1.0),(-5.0,0.5,0.5)));
+#310=TRIANGULATED_FACE('tess_half',#300,$,$,(),((1,2,3)));
+/* Defect 2: tessellated face has NO STYLED_ITEM bound to it */
+#320=PRESENTATION_STYLE_ASSIGNMENT(());
+/* (Note: only #214 has its style implied via PRODUCT_DEFINITION; #310 has none.) */
+/* PMI: dimensional_size cites a shape_aspect bound to BOTH halves */
+#400=PRODUCT_DEFINITION_SHAPE('','',$);
+#401=SHAPE_ASPECT('hole','through-hole',#400,.T.);
+#410=GEOMETRIC_ITEM_SPECIFIC_USAGE('','',#401,$,#214);
+#411=GEOMETRIC_ITEM_SPECIFIC_USAGE('','',#401,$,#310);
+/* Defect 3: diameter value 10.0 makes sense in mm but unit context is inches */
+#420=DIMENSIONAL_SIZE(#401,'10.0');
+ENDSEC;
+END-ISO-10303-21;

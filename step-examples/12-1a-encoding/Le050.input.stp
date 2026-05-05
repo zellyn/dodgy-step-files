@@ -1,0 +1,18 @@
+ISO-10303-21;
+/* Le050 INPUT — pre-Unicode-drop source for Le050.stp
+ * Sibling input fixture: producer emits with Cyrillic 'Тест' encoded
+ * properly via \X2\ escapes (UCS-2 hex). Le050.stp shows the post-drop
+ * state where the writer's encoder dropped the non-ASCII content. */
+HEADER;
+FILE_DESCRIPTION(('Le050.input pre-Unicode-drop source'),'2;1');
+FILE_NAME('Le050.input.stp','2026-05-01T00:00:00',(''),(''),
+  'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#10=PRODUCT('test-cyrillic-\X2\0422043504410442\X0\',
+            'name contains Cyrillic Тест','',(#11));
+#11=PRODUCT_CONTEXT('mech',#1,'mechanical');
+ENDSEC;
+END-ISO-10303-21;

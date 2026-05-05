@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Ad031 — Malformed `FILE_DESCRIPTION` (missing `implementation_level` argument) triggers use-after-free in deferred header diagnostic</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.11 Adversarial / parser robustness</a> <span class="sep">/</span> <span class="current">Ad031</span>
+</nav>
+<header class="title-bar">
+<h1>Ad031 <span class="sep">—</span> <span class="entry-title">Malformed `FILE_DESCRIPTION` (missing `implementation_level` argument) triggers use-after-free in deferred header diagnostic</span></h1>
+<p class="category">§12.11 (sub-class: UAF)</p>
+<p class="severity-badge severity-p2">P2 — spec deviation (no data loss)</p>
+<p class="tag-pills">
+<a class="tag tag-crash" href="../by-tag/crash/index.html">crash</a>
+<a class="tag tag-adversarial" href="../by-tag/adversarial/index.html">adversarial</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-11-adversarial/Ad031.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-11-adversarial/Ad031.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>12-adversarial.md A031</li>
+<li>ZDI-24-268 / CVE-2024-1847 (eDrawings UAF on file reading)</li>
+</ul></section>
+<section><h2>Description</h2>
+<p>Parser opens header parsing context, frees on `ENDSEC;`, but a deferred diagnostic emitter still holds a pointer to a string copied from the header. Common trigger: a `FILE_DESCRIPTION` header missing its `implementation_level` second argument (only one positional argument supplied), so a deferred diagnostic referencing the freed string fires after `ENDSEC;`.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>header with malformed `FILE_DESCRIPTION` followed by valid `DATA;` triggering deferred diagnostic referencing freed memory.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>Reject malformed FILE_DESCRIPTION with diagnostic; own all diagnostic-bound strings via the diagnostic arena, not the parser&#x27;s transient allocator. Must not crash via use-after-free.</p></section>
+<section><h2>Notes</h2>
+<p>H. **See also**: Ad084. Validation observed: silent-empty rather than the cited crash. The structural attack pattern (e.g., billion-laughs / cyclic-reference / very-large-string) is demonstrated; production-scale exploitation requires inflating the size factor as described. Kernel-mishandling-by-silent-acceptance is itself a defect signal at fixture scale.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>matches(rb&quot;FILE_DESCRIPTION\(\([^;]*\)\s*\)\s*;&quot;)</code></li>
+<li><code>matches(rb&#x27;FILE_DESCRIPTION\(\([^)]+\)\s*\)\s*;&#x27;)</code></li>
+</ul></section>
+<section><h2>Cross-references</h2>
+<p><a href="Ad084.html">Ad084</a></p>
+</section>
+<section><h2>Live oracle output</h2>
+<table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
+<tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>no_shapes_loaded</code></td></tr>
+</tbody></table>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>/* Ad031 - Use-after-free on header-mode-handle reuse
+<span class="lineno">2</span>   ----------------------------------------------------------------------
+<span class="lineno">3</span>   Catalog section : Â§12.11 adversarial / parser robustness (sub-class: UAF)
+<span class="lineno">4</span>   Sources         : 12-adversarial.md A031; ZDI-24-268 / CVE-2024-1847
+<span class="lineno">5</span>                     (eDrawings UAF on file reading)
+<span class="lineno">6</span>   See also        : Ad084
+<span class="lineno">7</span>   Severity        : H
+<span class="lineno">8</span>   ----------------------------------------------------------------------
+<span class="lineno">9</span>   WARNING: This file is INTENTIONALLY MALFORMED. It is a test input for
+<span class="lineno">10</span>   parser-robustness checks, NOT a valid STEP exchange document.
+<span class="lineno">11</span>   ----------------------------------------------------------------------
+<span class="lineno">12</span>   Defect
+<span class="lineno">13</span>     Parser opens a header-parsing context, frees its transient allocator
+<span class="lineno">14</span>     on ENDSEC;, but a deferred diagnostic emitter still holds a pointer
+<span class="lineno">15</span>     into header strings. The attack vector is a malformed
+<span class="lineno">16</span>     FILE_DESCRIPTION whose diagnostic is queued (not flushed) until well
+<span class="lineno">17</span>     after the header arena is destroyed; the eventual flush dereferences
+<span class="lineno">18</span>     freed memory.
+<span class="lineno">19</span>   Reproducer recipe
+<span class="lineno">20</span>     Header with malformed FILE_DESCRIPTION (missing implementation_level
+<span class="lineno">21</span>     argument so a deferred diagnostic is queued) followed by a valid
+<span class="lineno">22</span>     DATA section whose translation triggers the diagnostic flush.
+<span class="lineno">23</span>   Expected kernel behavior
+<span class="lineno">24</span>     Own all diagnostic-bound strings via a long-lived diagnostic arena,
+<span class="lineno">25</span>     never alias parser-temp memory. Emit E_HEADER_MALFORMED at the time
+<span class="lineno">26</span>     of the parse error; do not defer past arena destruction.
+<span class="lineno">27</span>   ----------------------------------------------------------------------
+<span class="lineno">28</span>*/
+<span class="lineno">29</span>ISO-10303-21;
+<span class="lineno">30</span>HEADER;
+<span class="lineno">31</span>/* Defect: FILE_DESCRIPTION missing the implementation_level argument
+<span class="lineno">32</span>   (only one positional arg). Diagnostic captures pointer into the
+<span class="lineno">33</span>   description string and queues for later emission. */
+<span class="lineno">34</span><mark>FILE_DESCRIPTION((&#x27;Ad031 - malformed header triggers deferred diagnostic&#x27;));</mark>
+<span class="lineno">35</span>FILE_NAME(&#x27;Ad031.stp&#x27;,&#x27;2026-04-26T00:00:00&#x27;,(&#x27;auto-generated&#x27;),(&#x27;&#x27;),
+<span class="lineno">36</span>  &#x27;auto-generated&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">37</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
+<span class="lineno">38</span>ENDSEC;
+<span class="lineno">39</span>DATA;
+<span class="lineno">40</span>#10=CARTESIAN_POINT(&#x27;origin&#x27;,(0.0,0.0,0.0));
+<span class="lineno">41</span>#20=DIRECTION(&#x27;z&#x27;,(0.0,0.0,1.0));
+<span class="lineno">42</span>#30=DIRECTION(&#x27;x&#x27;,(1.0,0.0,0.0));
+<span class="lineno">43</span>#40=AXIS2_PLACEMENT_3D(&#x27;placement&#x27;,#10,#20,#30);
+<span class="lineno">44</span>ENDSEC;
+<span class="lineno">45</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Ad030.html">&larr; Ad030</a> <a class="up" href="index.html">§12.11 Adversarial / parser robustness</a> <a class="next" href="Ad032.html">Ad032 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

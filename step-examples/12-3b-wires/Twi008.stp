@@ -1,0 +1,65 @@
+ISO-10303-21;
+/* Twi008 - Wire ordering ambiguous between 2D and 3D ("miscible mode") on periodic surface
+ * Defect: Wire is consistent in 3D order but inconsistent in 2D pcurve order on
+ * a torus / cylinder / sphere. Pure 3D-only or pure 2D-only reorder leaves one
+ * space wrong. For periodic surfaces use combined 2D/3D ShapeAnalysis_WireOrder
+ * before emitting / healing (Mantis 0032922). */
+HEADER;
+FILE_DESCRIPTION(('Twi008 test case','Wire ordering miscible 2D/3D on periodic surface'),'2;1');
+FILE_NAME('Twi008.stp','2026-04-26T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#11=DIRECTION('',(0.0,0.0,1.0));
+#12=DIRECTION('',(1.0,0.0,0.0));
+#13=AXIS2_PLACEMENT_3D('',#10,#11,#12);
+/* Toroidal surface: major radius 10, minor radius 2 */
+#20=TOROIDAL_SURFACE('',#13,10.0,2.0);
+/* Four vertices on the torus, lying along U=0,pi/2,pi,3pi/2 on V=0 */
+#30=CARTESIAN_POINT('',(12.0,0.0,0.0));
+#31=VERTEX_POINT('',#30);
+#32=CARTESIAN_POINT('',(0.0,12.0,0.0));
+#33=VERTEX_POINT('',#32);
+#34=CARTESIAN_POINT('',(-12.0,0.0,0.0));
+#35=VERTEX_POINT('',#34);
+#36=CARTESIAN_POINT('',(0.0,-12.0,0.0));
+#37=VERTEX_POINT('',#36);
+/* Four 3D arcs along U direction */
+#40=AXIS2_PLACEMENT_3D('',#10,#11,#12);
+#41=CIRCLE('',#40,10.0);
+#42=EDGE_CURVE('',#31,#33,#41,.T.);
+#43=EDGE_CURVE('',#33,#35,#41,.T.);
+#44=EDGE_CURVE('',#35,#37,#41,.T.);
+#45=EDGE_CURVE('',#37,#31,#41,.T.);
+/* Defect: ORIENTED_EDGE flags are 3D-consistent (all .T.) but 2D pcurves
+ * (omitted here for brevity) would put the wire going u: 0 -> pi/2 -> -pi
+ * -> -pi/2 -> 0 - 3D-correct but 2D-wraps non-monotonically. Combined
+ * 2D/3D reorder is required. */
+#50=ORIENTED_EDGE('',*,*,#42,.T.);
+#51=ORIENTED_EDGE('',*,*,#43,.T.);
+#52=ORIENTED_EDGE('',*,*,#44,.T.);
+#53=ORIENTED_EDGE('',*,*,#45,.T.);
+#60=EDGE_LOOP('',(#50,#51,#52,#53));
+#61=FACE_OUTER_BOUND('',#60,.T.);
+#62=ADVANCED_FACE('',(#61),#20,.T.);
+/* Wrap: minimal PRODUCT chain so OCCT TransferRoots produces a shape. */
+#9000=PRODUCT_CONTEXT('',#1,'mechanical');
+#9001=PRODUCT('Twi008','Twi008','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
+#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
+#9020=OPEN_SHELL('wrap_shell',(#62));
+#9021=SHELL_BASED_SURFACE_MODEL('wrap_sbsm',(#9020));
+#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#9010);
+#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+ENDSEC;
+END-ISO-10303-21;

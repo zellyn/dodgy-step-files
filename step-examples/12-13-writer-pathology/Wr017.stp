@@ -1,0 +1,24 @@
+/* Wr017 - Tessellation re-emitted from B-rep input - silent precision loss */
+ISO-10303-21;
+HEADER;
+FILE_DESCRIPTION(('Wr017 - tessellated re-export of B-rep'),'2;1');
+FILE_NAME('Wr017.stp','2026-04-30T00:00:00',(''),(''),
+  'cad-research-suite','','');
+FILE_SCHEMA(('AP242_MANAGED_MODEL_BASED_3D_ENGINEERING { 1 0 10303 442 1 1 4 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('mechanical design');
+#10=CARTESIAN_POINT('p1',(0.0,0.0,0.0));
+#11=CARTESIAN_POINT('p2',(1.0,0.0,0.0));
+#12=CARTESIAN_POINT('p3',(0.5,0.866,0.0));
+#13=CARTESIAN_POINT('p4',(0.5,0.289,1.0));
+/* Wr017: input was a CYLINDRICAL_SURFACE with analytical exact geometry;
+   writer tessellated it to a triangle list before emit. The mesh
+   approximates the original cylinder with 4 triangles. Down-stream
+   readers cannot reconstruct the original analytical surface. */
+#20=COORDINATES_LIST('coords',4,((0.0,0.0,0.0),(1.0,0.0,0.0),(0.5,0.866,0.0),(0.5,0.289,1.0)));
+#21=TRIANGULATED_FACE('tri_face',(#20),$,$,(1,2,3),(2,3,4),(3,4,1),(4,1,2));
+#22=TESSELLATED_SHELL_REPRESENTATION('tess_shell',(#21),$);
+#30=(LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT(.MILLI.,.METRE.));
+ENDSEC;
+END-ISO-10303-21;

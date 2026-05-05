@@ -1,0 +1,21 @@
+/* Wr042 - Inconsistent end-of-record terminator: ;\n and ;\r\n mixed in same file
+ * Defect: alternate records use bare LF and CRLF terminators within
+ * the same DATA section. Whitespace-tolerant parsers accept; tools
+ * line-counting for diagnostics report inconsistent line numbers. */
+ISO-10303-21;
+HEADER;
+FILE_DESCRIPTION(('Wr042 - mixed ;\n and ;\r\n line endings'),'2;1');
+FILE_NAME('Wr042.stp','2026-04-30T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=PRODUCT_CONTEXT('part',#1,'mechanical');
+#3=PRODUCT('Wr042','mixed_line_endings','',(#2));
+#4=PRODUCT_DEFINITION_FORMATION('','',#3);
+#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#11=CARTESIAN_POINT('',(1.0,0.0,0.0));
+#12=DIRECTION('',(1.0,0.0,0.0));
+#13=AXIS2_PLACEMENT_3D('',#10,#12,#12);
+ENDSEC;
+END-ISO-10303-21;

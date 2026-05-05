@@ -1,0 +1,23 @@
+ISO-10303-21;
+/* M134 - AP203 two distinct PERSON entities share the same id.
+ * Defect: two PERSON instances declare identifier 'jdoe' for two
+ * different individuals (one with last_name 'Doe', another with
+ * last_name 'Doppelganger'). PERSON.id is intended to uniquely
+ * identify the person across the design pool; this collision makes
+ * downstream APPROVED_BY assignments ambiguous. */
+HEADER;
+FILE_DESCRIPTION(('M134 test case','AP203 PERSON id collision'),'2;1');
+FILE_NAME('M134.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('CONFIG_CONTROL_DESIGN'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('configuration controlled 3D design of mechanical parts and assemblies');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','config_control_design',1994,#1);
+/* Defect: two distinct PERSON entities both use id 'jdoe'. */
+#100=PERSON('jdoe','Doe','John',('A.'),('Mr.'),(),(),());
+#101=PERSON('jdoe','Doppelganger','Jane',('B.'),('Dr.'),(),(),());
+#110=ORGANIZATION('acme','Acme Corp','aerospace supplier');
+#120=PERSON_AND_ORGANIZATION(#100,#110);
+#121=PERSON_AND_ORGANIZATION(#101,#110);
+ENDSEC;
+END-ISO-10303-21;

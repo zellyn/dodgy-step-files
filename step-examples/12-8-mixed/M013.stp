@@ -1,0 +1,56 @@
+ISO-10303-21;
+/* M013 - Saved-view supplemental geometry split across multiple CGRs.
+ * Recommended pattern: one global CGR with all supplemental elements,
+ * PLUS one or more shape_representation instances per saved view,
+ * tagged with description_attribute = 'supplemental geometry subset'
+ * and listing the subset of elements visible in that view.
+ * This file demonstrates the pattern: 4 supplemental planes total
+ * (#110, #114, #118, #122). View1 shows planes #110, #114; View2
+ * shows planes #114, #118, #122. Two SR instances carry the magic
+ * description and reference the subset items. */
+HEADER;
+FILE_DESCRIPTION(('M013 test case','saved-view supplemental geometry subsets'),'2;1');
+FILE_NAME('M013.stp','2026-04-26T00:00:00',(''),(''),'auto-generated','','');
+FILE_SCHEMA(('AP242_MANAGED_MODEL_BASED_3D_ENGINEERING_MIM_LF { 1 0 10303 442 1 1 4 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('managed model based 3d engineering');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
+  'ap242_managed_model_based_3d_engineering',2014,#1);
+#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#11=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#12=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.E-6),#10,'distance_accuracy_value','');
+#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+     GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13))
+     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12))
+     REPRESENTATION_CONTEXT('part','3D'));
+/* Four supplemental planes */
+#100=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#101=DIRECTION('',(0.0,0.0,1.0));
+#102=DIRECTION('',(1.0,0.0,0.0));
+#103=AXIS2_PLACEMENT_3D('',#100,#101,#102);
+#110=PLANE('plane_A',#103);
+#104=CARTESIAN_POINT('',(0.0,0.0,5.0));
+#113=AXIS2_PLACEMENT_3D('',#104,#101,#102);
+#114=PLANE('plane_B',#113);
+#105=CARTESIAN_POINT('',(0.0,0.0,10.0));
+#117=AXIS2_PLACEMENT_3D('',#105,#101,#102);
+#118=PLANE('plane_C',#117);
+#106=CARTESIAN_POINT('',(0.0,0.0,15.0));
+#121=AXIS2_PLACEMENT_3D('',#106,#101,#102);
+#122=PLANE('plane_D',#121);
+/* Global CGR contains all four. */
+#200=CONSTRUCTIVE_GEOMETRY_REPRESENTATION('all_supplemental',
+       (#110,#114,#118,#122),#14);
+/* Saved-view subsets via tagged shape_representation. */
+#300=REPRESENTATION('view1_subset',(#110,#114),#14);
+#301=DESCRIPTIVE_REPRESENTATION_ITEM('description_attribute',
+       'supplemental geometry subset');
+#302=REPRESENTATION('view1_subset_tagged',(#110,#114,#301),#14);
+#310=REPRESENTATION('view2_subset',(#114,#118,#122),#14);
+#311=DESCRIPTIVE_REPRESENTATION_ITEM('description_attribute',
+       'supplemental geometry subset');
+#312=REPRESENTATION('view2_subset_tagged',(#114,#118,#122,#311),#14);
+ENDSEC;
+END-ISO-10303-21;

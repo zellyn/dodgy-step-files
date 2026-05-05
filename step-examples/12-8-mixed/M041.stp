@@ -1,0 +1,64 @@
+ISO-10303-21;
+/* M041 - Surface transparency (SURFACE_STYLE_TRANSPARENT) ignored on
+ * import / not emitted on export.
+ * Defect: AP203/AP214 has no first-class alpha; transparency is
+ * conventionally encoded via SURFACE_STYLE_TRANSPARENT inside
+ * SURFACE_SIDE_STYLE. Producers writing only COLOUR_RGB lose alpha;
+ * receivers reading only COLOUR_RGB ignore alpha when present.
+ * This fixture writes a face with alpha=0.5 (50% transparent) AND
+ * a separate face that has only COLOUR_RGB (no transparency) - the
+ * latter is the "lost" path. Additionally, a third face uses an
+ * outright invalid transparency=1.0 (fully invisible). */
+HEADER;
+FILE_DESCRIPTION(('M041 test case','SURFACE_STYLE_TRANSPARENT and missing alpha'),'2;1');
+FILE_NAME('M041.stp','2026-04-26T00:00:00',(''),(''),'auto-generated','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#11=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#12=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.E-6),#10,'distance_accuracy_value','');
+#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+     GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13))
+     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12))
+     REPRESENTATION_CONTEXT('part','3D'));
+/* Three placeholder representation_items as styling targets. */
+#100=CARTESIAN_POINT('face1_marker',(0.0,0.0,0.0));
+#101=CARTESIAN_POINT('face2_marker',(1.0,0.0,0.0));
+#102=CARTESIAN_POINT('face3_marker',(2.0,0.0,0.0));
+/* Face 1: 50% transparent blue (correct usage). */
+#200=COLOUR_RGB('blue',0.0,0.0,1.0);
+#201=FILL_AREA_STYLE_COLOUR('',#200);
+#202=FILL_AREA_STYLE('',(#201));
+#203=SURFACE_STYLE_FILL_AREA(#202);
+#204=SURFACE_STYLE_TRANSPARENT(0.5);
+#205=SURFACE_SIDE_STYLE('',(#203,#204));
+#206=SURFACE_STYLE_USAGE(.BOTH.,#205);
+#207=PRESENTATION_STYLE_ASSIGNMENT((#206));
+#208=STYLED_ITEM('blue_50pct',(#207),#100);
+/* Face 2: red, NO SURFACE_STYLE_TRANSPARENT - the "lost alpha" path. */
+#300=COLOUR_RGB('red',1.0,0.0,0.0);
+#301=FILL_AREA_STYLE_COLOUR('',#300);
+#302=FILL_AREA_STYLE('',(#301));
+#303=SURFACE_STYLE_FILL_AREA(#302);
+#304=SURFACE_SIDE_STYLE('',(#303));
+#305=SURFACE_STYLE_USAGE(.BOTH.,#304);
+#306=PRESENTATION_STYLE_ASSIGNMENT((#305));
+#307=STYLED_ITEM('red_no_alpha',(#306),#101);
+/* Face 3: invalid - alpha = 1.0 (totally invisible). */
+#400=COLOUR_RGB('green',0.0,1.0,0.0);
+#401=FILL_AREA_STYLE_COLOUR('',#400);
+#402=FILL_AREA_STYLE('',(#401));
+#403=SURFACE_STYLE_FILL_AREA(#402);
+#404=SURFACE_STYLE_TRANSPARENT(1.0);
+#405=SURFACE_SIDE_STYLE('',(#403,#404));
+#406=SURFACE_STYLE_USAGE(.BOTH.,#405);
+#407=PRESENTATION_STYLE_ASSIGNMENT((#406));
+#408=STYLED_ITEM('green_fully_transparent',(#407),#102);
+#500=MECHANICAL_DESIGN_GEOMETRIC_PRESENTATION_REPRESENTATION(
+       '',(#208,#307,#408),#14);
+ENDSEC;
+END-ISO-10303-21;

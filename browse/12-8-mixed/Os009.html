@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Os009 — ThruSections loft profile is closed wire mixed with open wire</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.8 Mixed (tessellation, validation properties, etc.)</a> <span class="sep">/</span> <span class="current">Os009</span>
+</nav>
+<header class="title-bar">
+<h1>Os009 <span class="sep">—</span> <span class="entry-title">ThruSections loft profile is closed wire mixed with open wire</span></h1>
+<p class="category">§12.8 (sub-class: loft profile topology mismatch)</p>
+<p class="severity-badge severity-p1">P1 — silent data loss</p>
+<p class="tag-pills">
+<a class="tag tag-topology" href="../by-tag/topology/index.html">topology</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-8-mixed/Os009.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-8-mixed/Os009.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>OCCT BRepOffsetAPI_ThruSections.cxx (NotSameTopology) (uncovered class evidence)</li>
+</ul></section>
+<section><h2>Sender</h2>
+<p>deduced — OCCT uncovered-class sweep, Pass C</p></section>
+<section><h2>Description</h2>
+<p>A loft (ThruSections) is requested between two profiles: profile 1 is a closed wire (a circle), profile 2 is an open wire (an arc). The loft algorithm needs both endpoints free or both joined; mixing them is unsupported. Bug-reporter language: &quot;loft profiles topology mismatch&quot;, &quot;open and closed loft profiles&quot;.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>Two `WIRE` entities — one a `CIRCLE`-edge wire (closed), one a single-`LINE`-edge wire (open) — submitted as ThruSections profiles.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>Reject with topology-mismatch diagnostic, or close the open profile by adding endpoints.</p></section>
+<section><h2>Notes</h2>
+<p>Synonyms: &quot;loft topology mismatch&quot;, &quot;open and closed loft profile&quot;, &quot;ThruSections mixed open/closed wires&quot;, &quot;loft profile boundary inconsistent&quot;. **See also**: Os010.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>contains(b&#x27;CIRCLE&#x27;)</code></li>
+<li><code>contains(b&#x27;LINE&#x27;)</code></li>
+</ul></section>
+<section><h2>Cross-references</h2>
+<p><a href="Os010.html">Os010</a></p>
+</section>
+<section><h2>Live oracle output</h2>
+<table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
+<tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>no_shapes_loaded</code></td></tr>
+</tbody></table>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* Os009 - Loft with mixed open/closed profiles.
+<span class="lineno">3</span> * Defect: ThruSections receives two profiles - profile 1 is a
+<span class="lineno">4</span> * closed wire (<mark>CIRCLE</mark>), profile 2 is an open wire (single <mark>LINE</mark>). */
+<span class="lineno">5</span>HEADER;
+<span class="lineno">6</span>FILE_DESCRIPTION((&#x27;Os009 - loft topology mismatch&#x27;,&#x27;Pass C gap-fill&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">7</span>FILE_NAME(&#x27;Os009.stp&#x27;,&#x27;2026-04-30T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;gap-fill C&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">8</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }&#x27;));
+<span class="lineno">9</span>ENDSEC;
+<span class="lineno">10</span>DATA;
+<span class="lineno">11</span>#1=APPLICATION_CONTEXT(&#x27;automotive_design&#x27;);
+<span class="lineno">12</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,&#x27;automotive_design&#x27;,2000,#1);
+<span class="lineno">13</span>/* Closed wire (circle at z=0) + open wire (line at z=1) */
+<span class="lineno">14</span>#10=CARTESIAN_POINT(&#x27;center&#x27;,(0.0,0.0,0.0));
+<span class="lineno">15</span>#11=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">16</span>#12=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">17</span>#13=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#10,#11,#12);
+<span class="lineno">18</span>#14=<mark>CIRCLE</mark>(&#x27;profile1_closed&#x27;,#13,1.0);
+<span class="lineno">19</span>#20=CARTESIAN_POINT(&#x27;s&#x27;,(0.0,0.0,1.0));
+<span class="lineno">20</span>#21=CARTESIAN_POINT(&#x27;e&#x27;,(1.0,0.0,1.0));
+<span class="lineno">21</span>#22=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">22</span>#23=VECTOR(&#x27;&#x27;,#22,1.0);
+<span class="lineno">23</span>#24=<mark>LINE</mark>(&#x27;profile2_open&#x27;,#20,#23);
+<span class="lineno">24</span>ENDSEC;
+<span class="lineno">25</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Os008.html">&larr; Os008</a> <a class="up" href="index.html">§12.8 Mixed (tessellation, validation properties, etc.)</a> <a class="next" href="Os010.html">Os010 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

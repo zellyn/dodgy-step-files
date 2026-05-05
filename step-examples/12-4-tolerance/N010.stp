@@ -1,0 +1,41 @@
+/* N010 - EDGE_CURVE shorter than vertex tolerance (tiny edge covered by vertices)
+ * Defect: An edge whose 3D length is less than the bounding vertex tolerances.
+ * The two vertex tolerance balls already touch each other; the edge geometry
+ * adds nothing and trips Boolean / mesh algorithms.
+ * Reproducer: edge whose 3D length is 5e-5 mm, while declared tolerance is
+ * 1e-4 mm; len(curve) < tol(V1) + tol(V2).
+ */
+ISO-10303-21;
+HEADER;
+FILE_DESCRIPTION(('N010 EDGE_CURVE shorter than vertex tolerance'),'2;1');
+FILE_NAME('N010.stp','2026-04-26T00:00:00',(''),(''),
+  'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
+  'automotive_design',2009,#1);
+/* Two vertices 5e-5 mm apart, each carrying tolerance 1e-4 mm:
+ * tolerance balls already overlap and the edge between them is
+ * geometrically a no-op. */
+#10=CARTESIAN_POINT('p_a',(0.0,0.0,0.0));
+#11=CARTESIAN_POINT('p_b',(5.0E-5,0.0,0.0));
+#20=VERTEX_POINT('v_a_tol1e-4',#10);
+#21=VERTEX_POINT('v_b_tol1e-4',#11);
+#30=DIRECTION('+x',(1.0,0.0,0.0));
+#31=VECTOR('',#30,5.0E-5);
+#32=LINE('tiny_curve',#10,#31);
+/* Defect site: edge whose curve length 5e-5 is below sum of vertex tols */
+#40=EDGE_CURVE('subtolerance_edge',#20,#21,#32,.T.);
+#50=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#51=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#52=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#60=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-4),#50,
+  'distance_accuracy_value','vertex_tol_exceeds_edge_length');
+#70=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#60))
+  GLOBAL_UNIT_ASSIGNED_CONTEXT((#50,#51,#52))
+  REPRESENTATION_CONTEXT('ctx','3D'));
+ENDSEC;
+END-ISO-10303-21;

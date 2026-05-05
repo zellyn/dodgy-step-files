@@ -1,0 +1,68 @@
+ISO-10303-21;
+/*
+ * A006 — Components collapse to (0,0,0) / placement transforms lost
+ * Defect (FreeCAD Assembly2 / Creo / CATIA V5 R21 / OCCT root transform):
+ *   Subassembly transforms encoded only as relative deltas in NAUO chain;
+ *   receiver flattens to absolute coords using identity. Or some STEP files
+ *   put the assembly transform on the root SHAPE_REPRESENTATION (not on
+ *   NAUO/SRR), and OCCT either applies it wrong or not at all. Result:
+ *   every component lands at the origin.
+ * This example: NAUO present, but no SHAPE_REPRESENTATION_RELATIONSHIP
+ *   resolves the placement chain. Receivers default to identity.
+ * Expected kernel: warn when NAUO chain has no resolvable transform; new
+ *   read.step.root.transformation switch; default identity but report.
+ */
+HEADER;
+FILE_DESCRIPTION(('A006 NAUO chain with no resolvable SRR — collapse to origin'),'2;1');
+FILE_NAME('A006.stp','2026-04-26T00:00:00',('catalog'),('cad'),'manual','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#10 = APPLICATION_CONTEXT('automotive design');
+#11 = APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2001,#10);
+#12 = PRODUCT_CONTEXT('',#10,'mechanical');
+#13 = PRODUCT_DEFINITION_CONTEXT('part definition',#10,'design');
+/* Assembly */
+#20 = PRODUCT('A006_ASSY','assembly','',(#12));
+#21 = PRODUCT_DEFINITION_FORMATION('','',#20);
+#22 = PRODUCT_DEFINITION('design','',#21,#13);
+#23 = PRODUCT_DEFINITION_SHAPE('','',#22);
+/* Two children that should land at distinct positions */
+#30 = PRODUCT('PART_A','part A','',(#12));
+#31 = PRODUCT_DEFINITION_FORMATION('','',#30);
+#32 = PRODUCT_DEFINITION('design','',#31,#13);
+#33 = PRODUCT_DEFINITION_SHAPE('','',#32);
+#34 = PRODUCT('PART_B','part B','',(#12));
+#35 = PRODUCT_DEFINITION_FORMATION('','',#34);
+#36 = PRODUCT_DEFINITION('design','',#35,#13);
+#37 = PRODUCT_DEFINITION_SHAPE('','',#36);
+#40 = NEXT_ASSEMBLY_USAGE_OCCURRENCE('1','A','',#22,#32,$);
+#41 = NEXT_ASSEMBLY_USAGE_OCCURRENCE('2','B','',#22,#36,$);
+/* Units */
+#50 = ( LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT(.MILLI.,.METRE.) );
+#51 = ( NAMED_UNIT(*) PLANE_ANGLE_UNIT() SI_UNIT($,.RADIAN.) );
+#52 = ( NAMED_UNIT(*) SI_UNIT($,.STERADIAN.) SOLID_ANGLE_UNIT() );
+#53 = UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#50,'distance_accuracy_value','');
+#54 = ( GEOMETRIC_REPRESENTATION_CONTEXT(3) GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#53))
+        GLOBAL_UNIT_ASSIGNED_CONTEXT((#50,#51,#52)) REPRESENTATION_CONTEXT('','3D') );
+/* Component representations */
+#60 = CARTESIAN_POINT('',(0.0,0.0,0.0));
+#61 = DIRECTION('',(0.0,0.0,1.0));
+#62 = DIRECTION('',(1.0,0.0,0.0));
+#63 = AXIS2_PLACEMENT_3D('A_origin',#60,#61,#62);
+#64 = SHAPE_REPRESENTATION('A_rep',(#63),#54);
+#65 = SHAPE_DEFINITION_REPRESENTATION(#33,#64);
+#70 = AXIS2_PLACEMENT_3D('B_origin',#60,#61,#62);
+#71 = SHAPE_REPRESENTATION('B_rep',(#70),#54);
+#72 = SHAPE_DEFINITION_REPRESENTATION(#37,#71);
+/* Assembly representation */
+#80 = AXIS2_PLACEMENT_3D('assy_origin',#60,#61,#62);
+#81 = SHAPE_REPRESENTATION('assy_rep',(#80),#54);
+#82 = SHAPE_DEFINITION_REPRESENTATION(#23,#81);
+/* DEFECT: there is NO SHAPE_REPRESENTATION_RELATIONSHIP, no
+   CONTEXT_DEPENDENT_SHAPE_REPRESENTATION, no MAPPED_ITEM connecting
+   the assembly representation to the component representations.
+   The NAUOs are present but receiver has no way to resolve placement.
+   Both components collapse to (0,0,0) on import. */
+ENDSEC;
+END-ISO-10303-21;

@@ -1,0 +1,30 @@
+ISO-10303-21;
+/* M121 - AP209 time-history loadcase with non-monotonic time vector.
+ * Defect: a transient load amplitude series is encoded as paired
+ * (time, force) values whose time component is not monotonically
+ * increasing - 0.0, 1.0, 0.5, 2.0. */
+HEADER;
+FILE_DESCRIPTION(('M121 test case','AP209 transient load time vector unsorted'),'2;1');
+FILE_NAME('M121.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('STRUCTURAL_ANALYSIS_DESIGN { 1 0 10303 209 1 0 0 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('structural_analysis_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
+  'structural_analysis_design',2001,#1);
+#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#15=(NAMED_UNIT(*)SI_UNIT($,.SECOND.)TIME_UNIT());
+#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#15))
+     REPRESENTATION_CONTEXT('fea','3D'));
+#100=CARTESIAN_POINT('a',(0.0,0.0,0.0));
+#110=NODE('n1',(#100),$);
+/* Defect: time vector goes 0.0, 1.0, 0.5, 2.0 - non-monotonic.
+   Encoded here as a list of MEASURE_WITH_UNIT in the time series. */
+#200=MEASURE_WITH_UNIT(TIME_MEASURE(0.0),#15);
+#201=MEASURE_WITH_UNIT(TIME_MEASURE(1.0),#15);
+#202=MEASURE_WITH_UNIT(TIME_MEASURE(0.5),#15);
+#203=MEASURE_WITH_UNIT(TIME_MEASURE(2.0),#15);
+#300=NODE_WITH_FORCE('time_series_load',#110,(0.0,5.0,3.0,7.0));
+ENDSEC;
+END-ISO-10303-21;

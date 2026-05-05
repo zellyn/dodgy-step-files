@@ -1,0 +1,28 @@
+/* Le016 — Single backslash inside a string literal (Windows path)
+   Defect: a literal backslash must be doubled (\\). Generators copying
+   Windows paths verbatim emit single backslashes, accidentally forming
+   what looks like a malformed \X\ or \S\ directive. This file embeds:
+     'C:\path'                        -- bare illegal single backslash
+     'C:\Users\Test\X1\file.stp'      -- \X1 resembles malformed \X\
+     'C:\\good\\path'                 -- correct doubled-backslash form
+   for contrast. A round-trip-correct kernel preserves literal backslashes. */
+ISO-10303-21;
+HEADER;
+FILE_DESCRIPTION(('Le016 - single backslash in Windows path string'),'2;1');
+FILE_NAME('Le016.stp','2026-04-26T00:00:00',('auto-generated'),(''),
+  'auto-generated','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+/* bare single backslash */
+#10=PERSON('p1','C:\path','given',$,$,$,$,$);
+/* path that masquerades as malformed \X\ directive */
+#11=PERSON('p2','C:\Users\Test\X1\file.stp','given',$,$,$,$,$);
+/* correctly-doubled backslashes for contrast */
+#12=PERSON('p3','C:\\good\\path','given',$,$,$,$,$);
+#20=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#21=DIRECTION('',(0.0,0.0,1.0));
+#22=DIRECTION('',(1.0,0.0,0.0));
+#23=AXIS2_PLACEMENT_3D('',#20,#21,#22);
+ENDSEC;
+END-ISO-10303-21;

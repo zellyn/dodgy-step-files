@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Twi017 — Closed 3D curve with two distinct VERTEX_POINTs (single-edge closed)</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.3b Wires / loops / edges</a> <span class="sep">/</span> <span class="current">Twi017</span>
+</nav>
+<header class="title-bar">
+<h1>Twi017 <span class="sep">—</span> <span class="entry-title">Closed 3D curve with two distinct VERTEX_POINTs (single-edge closed)</span></h1>
+<p class="category">§12.3b wire-loop</p>
+<p class="tag-pills">
+<a class="tag tag-topology" href="../by-tag/topology/index.html">topology</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-3b-wires/Twi017.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-3b-wires/Twi017.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>04-occt-translation.md Q007</li>
+</ul></section>
+<section><h2>Description</h2>
+<p>An EDGE_CURVE whose 3D curve is closed (full circle/ellipse) but cites two distinct VERTEX_POINTs as endpoints; per STEP/OCCT, a closed curve must reuse the same vertex at both ends.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>`EDGE_CURVE(&#x27;&#x27;,#v1,#v2,#circle_geom,.T.);` with `#circle_geom` a full `CIRCLE` and `#v1`, `#v2` distinct entities.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>heal — translator reuses the first vertex on both ends.</p></section>
+<section><h2>Notes</h2>
+<p>The translator&#x27;s edge-transfer pass must detect the closed-curve case and reuse the same vertex at both ends, regardless of how many distinct vertex entities the file references. **See also**: Twi002, Twi018. Synonyms: &quot;circle edge has two distinct endpoints&quot;, &quot;full circle stored with separate start and end vertex&quot;, &quot;closed curve uses two vertex instances&quot;, &quot;ellipse edge with mismatched endpoints&quot;, &quot;periodic curve doesn&#x27;t reuse vertex&quot;.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=shape(1)/shape(1) gmsh=shape(3) ifc=schema_n/a</code></p></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>n_edges_total == 1</code></li>
+<li><code>n_vertices_total == 2</code></li>
+<li><code>face[0].surface_type == &quot;plane&quot;</code></li>
+<li><code>n_edges_total &gt;= 1</code></li>
+</ul></section>
+<section><h2>Cross-references</h2>
+<p><a href="Twi002.html">Twi002</a>, <a href="Twi018.html">Twi018</a></p>
+</section>
+<section><h2>Live oracle output</h2>
+<table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
+<tr><td><code>occt_heal_on</code></td><td><code>shape(1)</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>shape(1)</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>shape(3)</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>shape(3)</code></td></tr>
+<tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>not_manifold</code></td></tr>
+</tbody></table>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* Twi017 - Closed 3D curve with two distinct VERTEX_POINTs (single-edge closed)
+<span class="lineno">3</span> * Defect: An EDGE_CURVE whose 3D curve is closed (full CIRCLE here) but cites
+<span class="lineno">4</span> * two distinct VERTEX_POINTs as endpoints; per STEP/OCCT a closed curve must
+<span class="lineno">5</span> * reuse the same vertex at both ends. Translator should heal by reusing the
+<span class="lineno">6</span> * first vertex on both ends (StepToTopoDS_TranslateEdge.cxx:467-480). */
+<span class="lineno">7</span>HEADER;
+<span class="lineno">8</span>FILE_DESCRIPTION((&#x27;Twi017 test case&#x27;,&#x27;Closed curve with two distinct VERTEX_POINTs&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">9</span>FILE_NAME(&#x27;Twi017.stp&#x27;,&#x27;2026-04-26T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">10</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }&#x27;));
+<span class="lineno">11</span>ENDSEC;
+<span class="lineno">12</span>DATA;
+<span class="lineno">13</span>#1=APPLICATION_CONTEXT(&#x27;automotive_design&#x27;);
+<span class="lineno">14</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,&#x27;automotive_design&#x27;,2000,#1);
+<span class="lineno">15</span>#10=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">16</span>#11=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">17</span>#12=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">18</span>#13=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#10,#11,#12);
+<span class="lineno">19</span>#20=PLANE(&#x27;&#x27;,#13);
+<span class="lineno">20</span>/* Closed circle of radius 5 centered at origin */
+<span class="lineno">21</span>#30=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#10,#11,#12);
+<span class="lineno">22</span>#31=CIRCLE(&#x27;&#x27;,#30,5.0);
+<span class="lineno">23</span>/* Defect: two distinct VERTEX_POINT instances at the same 3D position
+<span class="lineno">24</span> * (5,0,0) - the closed curve must reuse a single vertex */
+<span class="lineno">25</span>#32=CARTESIAN_POINT(&#x27;&#x27;,(5.0,0.0,0.0));
+<span class="lineno">26</span>#33=VERTEX_POINT(&#x27;&#x27;,#32);
+<span class="lineno">27</span>#34=CARTESIAN_POINT(&#x27;&#x27;,(5.0,0.0,0.0));
+<span class="lineno">28</span>#35=VERTEX_POINT(&#x27;&#x27;,#34);
+<span class="lineno">29</span>#40=EDGE_CURVE(&#x27;&#x27;,#33,#35,#31,.T.);
+<span class="lineno">30</span>#41=ORIENTED_EDGE(&#x27;&#x27;,*,*,#40,.T.);
+<span class="lineno">31</span>#62=EDGE_LOOP(&#x27;&#x27;,(#41));
+<span class="lineno">32</span>#63=FACE_OUTER_BOUND(&#x27;&#x27;,#62,.T.);
+<span class="lineno">33</span>#64=ADVANCED_FACE(&#x27;&#x27;,(#63),#20,.T.);
+<span class="lineno">34</span>/* Minimal PRODUCT chain so OCCT TransferRoots produces a shape. */
+<span class="lineno">35</span>#9000=PRODUCT_CONTEXT(&#x27;&#x27;,#1,&#x27;mechanical&#x27;);
+<span class="lineno">36</span>#9001=PRODUCT(&#x27;Twi017&#x27;,&#x27;Twi017&#x27;,&#x27;&#x27;,(#9000));
+<span class="lineno">37</span>#9002=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#9001);
+<span class="lineno">38</span>#9003=PRODUCT_DEFINITION_CONTEXT(&#x27;part definition&#x27;,#1,&#x27;design&#x27;);
+<span class="lineno">39</span>#9004=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,#9002,#9003);
+<span class="lineno">40</span>#9005=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,#9004);
+<span class="lineno">41</span>#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">42</span>#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+<span class="lineno">43</span>#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+<span class="lineno">44</span>#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,&#x27;distance_accuracy_value&#x27;,&#x27;&#x27;);
+<span class="lineno">45</span>#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT(&#x27;&#x27;,&#x27;3D&#x27;));
+<span class="lineno">46</span>#9020=OPEN_SHELL(&#x27;wrap_shell&#x27;,(#64));
+<span class="lineno">47</span>#9021=SHELL_BASED_SURFACE_MODEL(&#x27;wrap_sbsm&#x27;,(#9020));
+<span class="lineno">48</span>#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION(&#x27;&#x27;,(#9021),#9010);
+<span class="lineno">49</span>#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+<span class="lineno">50</span>ENDSEC;
+<span class="lineno">51</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Twi013.html">&larr; Twi013</a> <a class="up" href="index.html">§12.3b Wires / loops / edges</a> <a class="next" href="Twi018.html">Twi018 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

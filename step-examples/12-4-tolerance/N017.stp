@@ -1,0 +1,41 @@
+/* N017 - UNCERTAINTY_MEASURE_WITH_UNIT populated with a fixed field-default value (untrustworthy)
+ * Defect: Many STEP exporters emit UNCERTAINTY_MEASURE_WITH_UNIT with a
+ * constant field-default value (e.g. 0.027352...) rather than a true measure
+ * of producer-side precision. Receivers that take this value as document
+ * tolerance get bad joins and false gaps when the real geometry is accurate
+ * to 1e-6.
+ * Reproducer: file emits the constant 0.027352 as distance_accuracy_value
+ * while real geometry is accurate to 1e-6.
+ */
+ISO-10303-21;
+HEADER;
+FILE_DESCRIPTION(('N017 UNCERTAINTY field-default 0.027352 untrustworthy'),'2;1');
+FILE_NAME('N017.stp','2026-04-26T00:00:00',(''),(''),
+  'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
+  'automotive_design',2009,#1);
+#10=CARTESIAN_POINT('p0',(0.0,0.0,0.0));
+#11=CARTESIAN_POINT('p1',(50.0,0.0,0.0));
+#20=VERTEX_POINT('',#10);
+#21=VERTEX_POINT('',#11);
+#30=DIRECTION('+x',(1.0,0.0,0.0));
+#31=VECTOR('',#30,50.0);
+#32=LINE('',#10,#31);
+#40=EDGE_CURVE('edge_w_field_default_tol',#20,#21,#32,.T.);
+#50=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#51=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#52=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+/* Defect site: 0.027352... is an exporter field-default constant, NOT a real
+ * measure of producer precision. Real geometry is accurate to 1e-6 mm. */
+#60=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.027352),#50,
+  'distance_accuracy_value','confusion accuracy');
+#70=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#60))
+  GLOBAL_UNIT_ASSIGNED_CONTEXT((#50,#51,#52))
+  REPRESENTATION_CONTEXT('ctx','3D'));
+ENDSEC;
+END-ISO-10303-21;

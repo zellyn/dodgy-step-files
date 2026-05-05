@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Tsh028 — `STYLED_ITEM` attached to sub-tolerance sliver `ADVANCED_FACE` (lost / mis-bound on healing)</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.3a Shells / orientation</a> <span class="sep">/</span> <span class="current">Tsh028</span>
+</nav>
+<header class="title-bar">
+<h1>Tsh028 <span class="sep">—</span> <span class="entry-title">`STYLED_ITEM` attached to sub-tolerance sliver `ADVANCED_FACE` (lost / mis-bound on healing)</span></h1>
+<p class="category">§12.3a shell-orientation</p>
+<p class="severity-badge severity-p1">P1 — silent data loss</p>
+<p class="tag-pills">
+<a class="tag tag-topology" href="../by-tag/topology/index.html">topology</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-3a-shells/Tsh028.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-3a-shells/Tsh028.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>17-standards-bodies.md M032</li>
+<li>22-niche-forums.md Y004</li>
+</ul></section>
+<section><h2>Description</h2>
+<p>Per-face `STYLED_ITEM` / `PRESENTATION_STYLE_ASSIGNMENT` references break when the face they target is dropped by sliver-face removal or merged with neighbors during orientation healing. Common signature: a 3-edge sliver `ADVANCED_FACE` whose two long-side vertices differ in only one coordinate by ~1e-9 mm — width below the working tolerance — with a `STYLED_ITEM` attached. Also seen with nested `PRODUCT_DEFINITION` hierarchy where flatten loses inner-component color.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>`STYLED_ITEM` referencing an `ADVANCED_FACE` that gets dropped by sliver-face healing (`ShapeFix_Face::FixSmallAreaWire`); or two-level assembly with color on inner solid, flatten via `XCAFDoc_ShapeTool::CopyShape`.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>heal — re-bind to surviving merged face when possible; propagate `STYLED_ITEM` through every level of `NEXT_ASSEMBLY_USAGE_OCCURRENCE` during flatten.</p></section>
+<section><h2>Notes</h2>
+<p>Synonyms: &quot;color disappears after sliver removal&quot;, &quot;face style lost when small face dropped&quot;, &quot;presentation style references missing face&quot;, &quot;color attribute orphaned after healing&quot;, &quot;nested assembly flatten loses inner-component color&quot;.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>contains(b&#x27;OPEN_SHELL&#x27;)</code></li>
+<li><code>contains(b&#x27;SHELL_BASED_SURFACE_MODEL&#x27;)</code></li>
+<li><code>count_entity_def(b&#x27;ADVANCED_FACE&#x27;) == 2</code></li>
+</ul></section>
+<section><h2>Live oracle output</h2>
+<table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
+<tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>no_shapes_loaded</code></td></tr>
+</tbody></table>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* Tsh028 - STYLED_ITEM lost / mis-bound after sliver-face removal or shell merge
+<span class="lineno">3</span> * Defect: Per-face STYLED_ITEM / PRESENTATION_STYLE_ASSIGNMENT references
+<span class="lineno">4</span> * break when the referenced face is dropped by sliver-face removal
+<span class="lineno">5</span> * (ShapeFix_Face::FixSmallAreaWire) or merged with neighbours during
+<span class="lineno">6</span> * orientation healing.
+<span class="lineno">7</span> *
+<span class="lineno">8</span> * This file: a square plate plus a tiny sliver-face (~1e-9 area) that
+<span class="lineno">9</span> * a healer would drop. A STYLED_ITEM (#900) is bound to the sliver
+<span class="lineno">10</span> * face #466 -- when the healer drops #466 the style binding becomes
+<span class="lineno">11</span> * a dangling reference. A second STYLED_ITEM (#910) targets the main
+<span class="lineno">12</span> * face #406 to demonstrate the surviving-binding contrast.
+<span class="lineno">13</span> * Sources: M032, Y004. */
+<span class="lineno">14</span>HEADER;
+<span class="lineno">15</span>FILE_DESCRIPTION((&#x27;Tsh028 test case&#x27;,&#x27;STYLED_ITEM bound to sliver face&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">16</span>FILE_NAME(&#x27;Tsh028.stp&#x27;,&#x27;2026-04-26T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;auto-generated&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">17</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }&#x27;));
+<span class="lineno">18</span>ENDSEC;
+<span class="lineno">19</span>DATA;
+<span class="lineno">20</span>#1=APPLICATION_CONTEXT(&#x27;automotive_design&#x27;);
+<span class="lineno">21</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,&#x27;automotive_design&#x27;,2000,#1);
+<span class="lineno">22</span>/* Square plate corners */
+<span class="lineno">23</span>#100=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">24</span>#101=CARTESIAN_POINT(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">25</span>#102=CARTESIAN_POINT(&#x27;&#x27;,(1.0,1.0,0.0));
+<span class="lineno">26</span>#103=CARTESIAN_POINT(&#x27;&#x27;,(0.0,1.0,0.0));
+<span class="lineno">27</span>#110=VERTEX_POINT(&#x27;&#x27;,#100); #111=VERTEX_POINT(&#x27;&#x27;,#101);
+<span class="lineno">28</span>#112=VERTEX_POINT(&#x27;&#x27;,#102); #113=VERTEX_POINT(&#x27;&#x27;,#103);
+<span class="lineno">29</span>/* Sliver triangle: extra vertex at (1, 1e-9, 0) -- a tiny triangle
+<span class="lineno">30</span>   between #111 and #112 with a near-zero area. */
+<span class="lineno">31</span>#120=CARTESIAN_POINT(&#x27;&#x27;,(1.0,0.000000001,0.0));
+<span class="lineno">32</span>#121=VERTEX_POINT(&#x27;&#x27;,#120);
+<span class="lineno">33</span>#200=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0)); #201=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">34</span>#211=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#100,#200,#201); #212=PLANE(&#x27;main_plane&#x27;,#211);
+<span class="lineno">35</span>#220=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#101,#200,#201); #222=PLANE(&#x27;sliver_plane&#x27;,#220);
+<span class="lineno">36</span>#300=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0)); #301=VECTOR(&#x27;&#x27;,#300,1.0);
+<span class="lineno">37</span>#302=DIRECTION(&#x27;&#x27;,(0.0,1.0,0.0)); #303=VECTOR(&#x27;&#x27;,#302,1.0);
+<span class="lineno">38</span>#310=LINE(&#x27;&#x27;,#100,#301); #311=EDGE_CURVE(&#x27;&#x27;,#110,#111,#310,.T.);
+<span class="lineno">39</span>#312=LINE(&#x27;&#x27;,#101,#303); #313=EDGE_CURVE(&#x27;&#x27;,#111,#112,#312,.T.);
+<span class="lineno">40</span>#314=LINE(&#x27;&#x27;,#103,#301); #315=EDGE_CURVE(&#x27;&#x27;,#113,#112,#314,.T.);
+<span class="lineno">41</span>#316=LINE(&#x27;&#x27;,#100,#303); #317=EDGE_CURVE(&#x27;&#x27;,#110,#113,#316,.T.);
+<span class="lineno">42</span>/* Sliver triangle edges: #111-&gt;#121-&gt;#112 */
+<span class="lineno">43</span>#320=DIRECTION(&#x27;&#x27;,(0.0,1.0,0.0)); #321=VECTOR(&#x27;&#x27;,#320,0.000000001);
+<span class="lineno">44</span>#322=LINE(&#x27;&#x27;,#101,#321); #323=EDGE_CURVE(&#x27;&#x27;,#111,#121,#322,.T.);
+<span class="lineno">45</span>#324=DIRECTION(&#x27;&#x27;,(0.0,1.0,0.0)); #325=VECTOR(&#x27;&#x27;,#324,0.999999999);
+<span class="lineno">46</span>#326=LINE(&#x27;&#x27;,#120,#325); #327=EDGE_CURVE(&#x27;&#x27;,#121,#112,#326,.T.);
+<span class="lineno">47</span>/* Main face */
+<span class="lineno">48</span>#400=ORIENTED_EDGE(&#x27;&#x27;,*,*,#311,.T.); #401=ORIENTED_EDGE(&#x27;&#x27;,*,*,#313,.T.);
+<span class="lineno">49</span>#402=ORIENTED_EDGE(&#x27;&#x27;,*,*,#315,.F.); #403=ORIENTED_EDGE(&#x27;&#x27;,*,*,#317,.F.);
+<span class="lineno">50</span>#404=EDGE_LOOP(&#x27;&#x27;,(#400,#401,#402,#403)); #405=FACE_OUTER_BOUND(&#x27;&#x27;,#404,.T.);
+<span class="lineno">51</span><mark>#406=ADVANCED_FACE(</mark>&#x27;main_face&#x27;,(#405),#212,.T.);
+<span class="lineno">52</span>/* Sliver face: degenerate triangle with two effectively coincident
+<span class="lineno">53</span>   sides. Healers drop this face. */
+<span class="lineno">54</span>#460=ORIENTED_EDGE(&#x27;&#x27;,*,*,#323,.T.); #461=ORIENTED_EDGE(&#x27;&#x27;,*,*,#327,.T.);
+<span class="lineno">55</span>#462=ORIENTED_EDGE(&#x27;&#x27;,*,*,#313,.F.);
+<span class="lineno">56</span>#464=EDGE_LOOP(&#x27;&#x27;,(#460,#461,#462)); #465=FACE_OUTER_BOUND(&#x27;&#x27;,#464,.T.);
+<span class="lineno">57</span><mark>#466=ADVANCED_FACE(</mark>&#x27;sliver_face_to_be_removed&#x27;,(#465),#222,.T.);
+<span class="lineno">58</span>/* Open shell aggregating both. */
+<span class="lineno">59</span>#500=<mark>OPEN_SHELL</mark>(&#x27;plate_with_sliver&#x27;,(#406,#466));
+<span class="lineno">60</span>#510=<mark>SHELL_BASED_SURFACE_MODEL</mark>(&#x27;container&#x27;,(#500));
+<span class="lineno">61</span>/* Color/style assignments. #800 is the geometric_representation_context. */
+<span class="lineno">62</span>#700=COLOUR_RGB(&#x27;&#x27;,0.8,0.2,0.2);
+<span class="lineno">63</span>#701=FILL_AREA_STYLE_COLOUR(&#x27;&#x27;,#700);
+<span class="lineno">64</span>#702=FILL_AREA_STYLE(&#x27;&#x27;,(#701));
+<span class="lineno">65</span>#703=SURFACE_STYLE_FILL_AREA(#702);
+<span class="lineno">66</span>#704=SURFACE_SIDE_STYLE(&#x27;&#x27;,(#703));
+<span class="lineno">67</span>#705=SURFACE_STYLE_USAGE(.BOTH.,#704);
+<span class="lineno">68</span>#706=PRESENTATION_STYLE_ASSIGNMENT((#705));
+<span class="lineno">69</span>#710=COLOUR_RGB(&#x27;&#x27;,0.2,0.8,0.2);
+<span class="lineno">70</span>#711=FILL_AREA_STYLE_COLOUR(&#x27;&#x27;,#710);
+<span class="lineno">71</span>#712=FILL_AREA_STYLE(&#x27;&#x27;,(#711));
+<span class="lineno">72</span>#713=SURFACE_STYLE_FILL_AREA(#712);
+<span class="lineno">73</span>#714=SURFACE_SIDE_STYLE(&#x27;&#x27;,(#713));
+<span class="lineno">74</span>#715=SURFACE_STYLE_USAGE(.BOTH.,#714);
+<span class="lineno">75</span>#716=PRESENTATION_STYLE_ASSIGNMENT((#715));
+<span class="lineno">76</span>/* Defect: STYLED_ITEM bound to the sliver face #466 -- this binding
+<span class="lineno">77</span>   will dangle once healers drop the sliver face. */
+<span class="lineno">78</span>#900=STYLED_ITEM(&#x27;style_on_sliver&#x27;,(#706),#466);
+<span class="lineno">79</span>/* Surviving binding for contrast: style on main face. */
+<span class="lineno">80</span>#910=STYLED_ITEM(&#x27;style_on_main&#x27;,(#716),#406);
+<span class="lineno">81</span>ENDSEC;
+<span class="lineno">82</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Tsh027.html">&larr; Tsh027</a> <a class="up" href="index.html">§12.3a Shells / orientation</a> <a class="next" href="Tsh029.html">Tsh029 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

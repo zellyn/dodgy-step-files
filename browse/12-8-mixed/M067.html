@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>M067 — Transformation relation creation failed (AXIS2_PLACEMENT_3D with zero-vector DIRECTION ratios in ITEM_DEFINED_TRANSFORMATION); placement falls back to identity</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.8 Mixed (tessellation, validation properties, etc.)</a> <span class="sep">/</span> <span class="current">M067</span>
+</nav>
+<header class="title-bar">
+<h1>M067 <span class="sep">—</span> <span class="entry-title">Transformation relation creation failed (AXIS2_PLACEMENT_3D with zero-vector DIRECTION ratios in ITEM_DEFINED_TRANSFORMATION); placement falls back to identity</span></h1>
+<p class="category">§12.8 (sub-class: assembly transformation)</p>
+<p class="tag-pills">
+<a class="tag tag-assembly" href="../by-tag/assembly/index.html">assembly</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-8-mixed/M067.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-8-mixed/M067.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>OCCT STEPControl_ActorRead.cxx:2179, 2183 (transformation relation handling) (uncovered class evidence)</li>
+</ul></section>
+<section><h2>Sender</h2>
+<p>deduced — OCCT uncovered-class sweep, Pass C</p></section>
+<section><h2>Description</h2>
+<p>A child component&#x27;s transformation reference (e.g., `ITEM_DEFINED_TRANSFORMATION`) cannot be resolved to a valid 4×4 matrix; the reader falls back to identity placement. The child appears at the wrong location. Bug-reporter language: &quot;child placement wrong&quot;, &quot;STEP transformation creation failed&quot;, &quot;components stack at origin&quot;.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>An NAUO whose transformation references an `ITEM_DEFINED_TRANSFORMATION` whose `transform_item_2` axis directions are zero vectors.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>Reject the assembly placement as malformed; do not silently use identity.</p></section>
+<section><h2>Notes</h2>
+<p>Synonyms: &quot;child at origin bug&quot;, &quot;STEP transformation creation failed&quot;, &quot;child placement wrong&quot;, &quot;ITEM_DEFINED_TRANSFORMATION fell back to identity&quot;, &quot;zero-vector DIRECTION in placement&quot;. **OCC behavior**: silently substitutes the identity placement when the transformation reference cannot be resolved, leaving children at the origin without a diagnostic; kernel mishandling — the catalog above forbids silent identity-substitution.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>contains(b&#x27;ITEM_DEFINED_TRANSFORMATION&#x27;)</code></li>
+<li><code>matches(rb&#x27;DIRECTION\(\&#x27;zero_vec\&#x27;,\(0\.0,0\.0,0\.0\)\)&#x27;)</code></li>
+</ul></section>
+<section><h2>Live oracle output</h2>
+<table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
+<tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>no_shapes_loaded</code></td></tr>
+</tbody></table>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* M067 - Transformation creation fails; placement falls back to identity.
+<span class="lineno">3</span> * Defect: <mark>ITEM_DEFINED_TRANSFORMATION</mark> references AXIS2_PLACEMENT
+<span class="lineno">4</span> * with zero-vector directions. */
+<span class="lineno">5</span>HEADER;
+<span class="lineno">6</span>FILE_DESCRIPTION((&#x27;In014 - transformation creation fails&#x27;,&#x27;Pass C gap-fill&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">7</span>FILE_NAME(&#x27;M067.stp&#x27;,&#x27;2026-04-30T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;gap-fill C&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">8</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }&#x27;));
+<span class="lineno">9</span>ENDSEC;
+<span class="lineno">10</span>DATA;
+<span class="lineno">11</span>#1=APPLICATION_CONTEXT(&#x27;automotive_design&#x27;);
+<span class="lineno">12</span>#10=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">13</span>#11=<mark>DIRECTION(&#x27;zero_vec&#x27;,(0.0,0.0,0.0))</mark>;
+<span class="lineno">14</span>#12=DIRECTION(&#x27;zero_vec_2&#x27;,(0.0,0.0,0.0));
+<span class="lineno">15</span>#13=AXIS2_PLACEMENT_3D(&#x27;bad_placement&#x27;,#10,#11,#12);
+<span class="lineno">16</span>#20=<mark>ITEM_DEFINED_TRANSFORMATION</mark>(&#x27;failed&#x27;,&#x27;&#x27;,#13,#13);
+<span class="lineno">17</span>ENDSEC;
+<span class="lineno">18</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="M066.html">&larr; M066</a> <a class="up" href="index.html">§12.8 Mixed (tessellation, validation properties, etc.)</a> <a class="next" href="M068.html">M068 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

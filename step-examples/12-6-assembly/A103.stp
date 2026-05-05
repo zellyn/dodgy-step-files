@@ -1,0 +1,29 @@
+ISO-10303-21;
+/* A103 - Geometry imports correctly but every face arrives with no colour assigned
+ * Defect: STYLED_ITEM/COLOUR_RGB present in file but reader's XCAFDoc_ColorTool
+ * does not pick them up; geometry imports cleanly, all faces default grey. */
+HEADER;
+FILE_DESCRIPTION(('A103 - STEP model imported with no colours despite well-formed STYLED_ITEM'),'2;1');
+FILE_NAME('A103.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#11=DIRECTION('',(0.0,0.0,1.0));
+#12=DIRECTION('',(1.0,0.0,0.0));
+#13=AXIS2_PLACEMENT_3D('',#10,#11,#12);
+#20=PLANE('',#13);
+#30=ADVANCED_FACE('face',(),#20,.T.);
+#40=COLOUR_RGB('red',1.0,0.0,0.0);
+#41=FILL_AREA_STYLE_COLOUR('',#40);
+#42=FILL_AREA_STYLE('',(#41));
+#43=SURFACE_STYLE_FILL_AREA(#42);
+#44=SURFACE_SIDE_STYLE('',(#43));
+#45=SURFACE_STYLE_USAGE(.BOTH.,#44);
+#46=PRESENTATION_STYLE_ASSIGNMENT((#45));
+/* STYLED_ITEM is well-formed but reader's per-face colour pipeline misses it. */
+#50=STYLED_ITEM('per_face_style',(#46),#30);
+ENDSEC;
+END-ISO-10303-21;

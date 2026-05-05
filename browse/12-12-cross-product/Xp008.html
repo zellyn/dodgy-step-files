@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Xp008 — Empty EDGE_LOOP × empty FACE_OUTER_BOUND × otherwise-valid solid</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.12 Cross-product</a> <span class="sep">/</span> <span class="current">Xp008</span>
+</nav>
+<header class="title-bar">
+<h1>Xp008 <span class="sep">—</span> <span class="entry-title">Empty EDGE_LOOP × empty FACE_OUTER_BOUND × otherwise-valid solid</span></h1>
+<p class="category">§12.12 cross-product (wires × faces × shells)</p>
+<p class="severity-badge severity-p1">P1 — silent data loss</p>
+<p class="tag-pills">
+<a class="tag tag-interop" href="../by-tag/interop/index.html">interop</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-12-cross-product/Xp008.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-12-cross-product/Xp008.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>synthesized cross-product.</li>
+</ul></section>
+<section><h2>Description</h2>
+<p>A `MANIFOLD_SOLID_BREP` containing 7 faces of a cube. One face&#x27;s `EDGE_LOOP` has an empty edge aggregate; another face&#x27;s `face_geometry` slot is `$`. The remaining 5 faces are valid. A robust kernel must skip both malformed faces and decide whether the result (an open shell) can be repaired into a solid.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>6 cube faces but #5 has `EDGE_LOOP(&#x27;&#x27;,())` and #6 has `face_geometry = $`.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>each malformed sub-shape rejected/skipped independently; the kernel decides whether to surface the resulting open shell or attempt repair.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>contains(b&#x27;FILE_SCHEMA&#x27;)</code></li>
+<li><code>contains(b&#x27;EDGE_CURVE&#x27;)</code></li>
+<li><code>contains(b&#x27;ADVANCED_FACE&#x27;)</code></li>
+</ul></section>
+<section><h2>Live oracle output</h2>
+<table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
+<tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>no_shapes_loaded</code></td></tr>
+</tbody></table>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* Xp008 - Cross-product: solid with one empty EDGE_LOOP and one face whose
+<span class="lineno">3</span> *   face_geometry is NULL, embedded in an otherwise-valid 6-face cube.
+<span class="lineno">4</span> * Builds on Twi001 (empty EDGE_LOOP) + Tfa001 (NULL face_geometry). */
+<span class="lineno">5</span>HEADER;
+<span class="lineno">6</span>FILE_DESCRIPTION((&#x27;Xp008 cross-product&#x27;,&#x27;empty EDGE_LOOP x null face_geometry&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">7</span>FILE_NAME(&#x27;Xp008.stp&#x27;,&#x27;2026-04-26T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">8</span><mark>FILE_SCHEMA</mark>((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }&#x27;));
+<span class="lineno">9</span>ENDSEC;
+<span class="lineno">10</span>DATA;
+<span class="lineno">11</span>#1=APPLICATION_CONTEXT(&#x27;automotive_design&#x27;);
+<span class="lineno">12</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,&#x27;automotive_design&#x27;,2000,#1);
+<span class="lineno">13</span>/* Cube vertices */
+<span class="lineno">14</span>#10=CARTESIAN_POINT(&#x27;v0&#x27;,(0.0,0.0,0.0));
+<span class="lineno">15</span>#11=CARTESIAN_POINT(&#x27;v1&#x27;,(1.0,0.0,0.0));
+<span class="lineno">16</span>#12=CARTESIAN_POINT(&#x27;v2&#x27;,(1.0,1.0,0.0));
+<span class="lineno">17</span>#13=CARTESIAN_POINT(&#x27;v3&#x27;,(0.0,1.0,0.0));
+<span class="lineno">18</span>#14=CARTESIAN_POINT(&#x27;v4&#x27;,(0.0,0.0,1.0));
+<span class="lineno">19</span>#15=CARTESIAN_POINT(&#x27;v5&#x27;,(1.0,0.0,1.0));
+<span class="lineno">20</span>#16=CARTESIAN_POINT(&#x27;v6&#x27;,(1.0,1.0,1.0));
+<span class="lineno">21</span>#17=CARTESIAN_POINT(&#x27;v7&#x27;,(0.0,1.0,1.0));
+<span class="lineno">22</span>#20=VERTEX_POINT(&#x27;&#x27;,#10);
+<span class="lineno">23</span>#21=VERTEX_POINT(&#x27;&#x27;,#11);
+<span class="lineno">24</span>#22=VERTEX_POINT(&#x27;&#x27;,#12);
+<span class="lineno">25</span>#23=VERTEX_POINT(&#x27;&#x27;,#13);
+<span class="lineno">26</span>#24=VERTEX_POINT(&#x27;&#x27;,#14);
+<span class="lineno">27</span>#25=VERTEX_POINT(&#x27;&#x27;,#15);
+<span class="lineno">28</span>#26=VERTEX_POINT(&#x27;&#x27;,#16);
+<span class="lineno">29</span>#27=VERTEX_POINT(&#x27;&#x27;,#17);
+<span class="lineno">30</span>/* Bottom face: valid */
+<span class="lineno">31</span>#30=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">32</span>#31=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">33</span>#32=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#10,#30,#31);
+<span class="lineno">34</span>#33=PLANE(&#x27;&#x27;,#32);
+<span class="lineno">35</span>#40=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">36</span>#41=VECTOR(&#x27;&#x27;,#40,1.0);
+<span class="lineno">37</span>#42=LINE(&#x27;&#x27;,#10,#41);
+<span class="lineno">38</span>#43=<mark>EDGE_CURVE</mark>(&#x27;&#x27;,#20,#21,#42,.T.);
+<span class="lineno">39</span>#44=DIRECTION(&#x27;&#x27;,(0.0,1.0,0.0));
+<span class="lineno">40</span>#45=VECTOR(&#x27;&#x27;,#44,1.0);
+<span class="lineno">41</span>#46=LINE(&#x27;&#x27;,#11,#45);
+<span class="lineno">42</span>#47=<mark>EDGE_CURVE</mark>(&#x27;&#x27;,#21,#22,#46,.T.);
+<span class="lineno">43</span>#48=LINE(&#x27;&#x27;,#13,#41);
+<span class="lineno">44</span>#49=<mark>EDGE_CURVE</mark>(&#x27;&#x27;,#23,#22,#48,.T.);
+<span class="lineno">45</span>#50=LINE(&#x27;&#x27;,#10,#45);
+<span class="lineno">46</span>#51=<mark>EDGE_CURVE</mark>(&#x27;&#x27;,#20,#23,#50,.T.);
+<span class="lineno">47</span>#60=ORIENTED_EDGE(&#x27;&#x27;,*,*,#43,.T.);
+<span class="lineno">48</span>#61=ORIENTED_EDGE(&#x27;&#x27;,*,*,#47,.T.);
+<span class="lineno">49</span>#62=ORIENTED_EDGE(&#x27;&#x27;,*,*,#49,.F.);
+<span class="lineno">50</span>#63=ORIENTED_EDGE(&#x27;&#x27;,*,*,#51,.F.);
+<span class="lineno">51</span>#70=EDGE_LOOP(&#x27;bottom&#x27;,(#60,#61,#62,#63));
+<span class="lineno">52</span>#71=FACE_OUTER_BOUND(&#x27;&#x27;,#70,.T.);
+<span class="lineno">53</span>#72=<mark>ADVANCED_FACE</mark>(&#x27;bottom&#x27;,(#71),#33,.T.);
+<span class="lineno">54</span>/* Defect 1: face with empty EDGE_LOOP */
+<span class="lineno">55</span>#80=EDGE_LOOP(&#x27;empty&#x27;,());
+<span class="lineno">56</span>#81=FACE_OUTER_BOUND(&#x27;&#x27;,#80,.T.);
+<span class="lineno">57</span>#82=<mark>ADVANCED_FACE</mark>(&#x27;empty_loop_face&#x27;,(#81),#33,.T.);
+<span class="lineno">58</span>/* Defect 2: face with face_geometry = $ (null) */
+<span class="lineno">59</span>#90=ORIENTED_EDGE(&#x27;&#x27;,*,*,#43,.T.);
+<span class="lineno">60</span>#91=EDGE_LOOP(&#x27;valid&#x27;,(#90));
+<span class="lineno">61</span>#92=FACE_OUTER_BOUND(&#x27;&#x27;,#91,.T.);
+<span class="lineno">62</span>#93=<mark>ADVANCED_FACE</mark>(&#x27;null_geom_face&#x27;,(#92),$,.T.);
+<span class="lineno">63</span>/* Three further valid faces (top, two sides) - omitted for brevity, just
+<span class="lineno">64</span> *   one more to keep the shell non-trivial */
+<span class="lineno">65</span>#100=CARTESIAN_POINT(&#x27;top_origin&#x27;,(0.0,0.0,1.0));
+<span class="lineno">66</span>#101=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#100,#30,#31);
+<span class="lineno">67</span>#102=PLANE(&#x27;&#x27;,#101);
+<span class="lineno">68</span>#103=LINE(&#x27;&#x27;,#14,#41);
+<span class="lineno">69</span>#104=<mark>EDGE_CURVE</mark>(&#x27;&#x27;,#24,#25,#103,.T.);
+<span class="lineno">70</span>#105=ORIENTED_EDGE(&#x27;&#x27;,*,*,#104,.T.);
+<span class="lineno">71</span>#106=EDGE_LOOP(&#x27;top&#x27;,(#105));
+<span class="lineno">72</span>#107=FACE_OUTER_BOUND(&#x27;&#x27;,#106,.T.);
+<span class="lineno">73</span>#108=<mark>ADVANCED_FACE</mark>(&#x27;top&#x27;,(#107),#102,.T.);
+<span class="lineno">74</span>#200=OPEN_SHELL(&#x27;&#x27;,(#72,#82,#93,#108));
+<span class="lineno">75</span>ENDSEC;
+<span class="lineno">76</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Xp007.html">&larr; Xp007</a> <a class="up" href="index.html">§12.12 Cross-product</a> <a class="next" href="Xp009.html">Xp009 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

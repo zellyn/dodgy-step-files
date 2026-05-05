@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>§12.2c Surface / curve degeneracies</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="section">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <span class="current">§12.2c Surface / curve degeneracies</span>
+</nav>
+<header class="title-bar">
+<h1>§12.2c Surface / curve degeneracies</h1>
+<p class="blurb">Surface and curve degeneracies, AP242 surface subtypes, geometric-base utilities (Gb).</p>
+<p class="meta">52 entries</p>
+</header>
+<main>
+<table class="entries"><thead><tr><th>ID</th><th>Title</th><th>Provenance</th><th>Expected validation</th></tr></thead><tbody>
+<tr><td><a href="Gb001.html"><code>Gb001</code></a></td><td>Curve approximation cannot meet the requested tolerance</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Gb002.html"><code>Gb002</code></a></td><td>Surface tangent / normal undefined at a parameter (LProp_Status.Undefined)</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Gb003.html"><code>Gb003</code></a></td><td>Closed B-spline curve has reversed end-tangent</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Gb004.html"><code>Gb004</code></a></td><td>Pcurve and 3D curve disagree by a measurable distance (CheckCurveOnSurface)</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Gs001.html"><code>Gs001</code></a></td><td>TOROIDAL_SURFACE with negative MajorRadius (SolidWorks/Pro-E orientation marker)</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Gs002.html"><code>Gs002</code></a></td><td>Degenerate (lemon/apple) torus where minor_radius &gt;= major_radius</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Gs005.html"><code>Gs005</code></a></td><td>Surface periodicity not declared but actually closed</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Gs006.html"><code>Gs006</code></a></td><td>Surface singularities (degenerate poles) not in declared form</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Gs007.html"><code>Gs007</code></a></td><td>Pcurve U coordinate outside canonical [0, 2π) seam range on `CYLINDRICAL_SURFACE` (whole wire off by period)</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Gs009.html"><code>Gs009</code></a></td><td>Self-intersecting / figure-eight `EDGE_LOOP` wire on planar face (non-simple polygon)</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Gs010.html"><code>Gs010</code></a></td><td>Self-intersecting / folded `B_SPLINE_SURFACE_WITH_KNOTS` (Jacobian sign change, transposed interior rows)</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Gs011.html"><code>Gs011</code></a></td><td>Crossed-trim `EDGE_LOOP` with non-shared diagonals (mesh-derived BRep, STL→STEP)</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Gs012.html"><code>Gs012</code></a></td><td>Non-simple `EDGE_LOOP` (face boundary self-crosses in UV: bow-tie quadrilateral)</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Gs014.html"><code>Gs014</code></a></td><td>Zero-area / sliver / degenerate `ADVANCED_FACE` (sliver, spot, strip, pin; tiny aspect-ratio rectangle)</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Gs015.html"><code>Gs015</code></a></td><td>Sliver face (high aspect ratio, two long edges within tolerance)</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Gs018.html"><code>Gs018</code></a></td><td>Mismatched orientation of 3D curve and pcurve</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Gs019.html"><code>Gs019</code></a></td><td>Pcurves shifted by integer period on closed surface</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Gs021.html"><code>Gs021</code></a></td><td>Line displaced from true position (FPX Expert PCB)</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Gs024.html"><code>Gs024</code></a></td><td>Round-trip planar face becomes trimmed B-spline (degree-1 NURBS)</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Gs025.html"><code>Gs025</code></a></td><td>`B_SPLINE_CURVE_WITH_KNOTS` C0 cusp / kink at interior knot of full multiplicity (C1 expected)</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Gs026.html"><code>Gs026</code></a></td><td>Helix on `CYLINDRICAL_SURFACE` mis-projected: pcurve missing or BSpline-approximated (analytic line lost)</td><td><code>bytes-sufficient</code></td><td><code>occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Gs028.html"><code>Gs028</code></a></td><td>Pseudo-seam edge: `SURFACE_CURVE` claims `PCURVE_S1_AND_S2` but lists same pcurve twice</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Gs029.html"><code>Gs029</code></a></td><td>Curve with last &lt; first parameter range</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Gs030.html"><code>Gs030</code></a></td><td>Edge geometry inconsistent with adjacent faces&#x27; actual intersection</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Gs031.html"><code>Gs031</code></a></td><td>`ADVANCED_FACE` with two `FACE_OUTER_BOUND` entries (duplicated outer contour, overlapping pcurves)</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Gs032.html"><code>Gs032</code></a></td><td>Surface-of-linear-extrusion whose direction is parallel to its basis line</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Gs033.html"><code>Gs033</code></a></td><td>Trim curves on `TOROIDAL_SURFACE` / NURBS produce jagged tessellation borders (`TRIMMED_CURVE` on `ELLIPSE` pcurve)</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Gs034.html"><code>Gs034</code></a></td><td>Twisted / pinched / vertex-split face: `EDGE_LOOP` revisits a shared vertex (Möbius-cell pathology)</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Gs035.html"><code>Gs035</code></a></td><td>Composite curve segment with null `parent_curve`</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Gs036.html"><code>Gs036</code></a></td><td>Negative-radius / zero-magnitude direction or vector</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Gs037.html"><code>Gs037</code></a></td><td>Offset of a surface-of-linear-extrusion fails iso-curve evaluation</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Gs038.html"><code>Gs038</code></a></td><td>Pcurve U/V parameter has large jump near periodic boundary on BSpline</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Gs039.html"><code>Gs039</code></a></td><td>Helical sweep / variable-radius blend silently emitted as incomplete shell (cap-only face on `SPHERICAL_SURFACE` with `VERTEX_LOOP` bound)</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Gs040.html"><code>Gs040</code></a></td><td>High-curvature curve / cusp from NURBS knot insertion</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Gs041.html"><code>Gs041</code></a></td><td>`RECTANGULAR_COMPOSITE_SURFACE` with non-uniform patch grid</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Gs042.html"><code>Gs042</code></a></td><td>`CURVE_BOUNDED_SURFACE` with self-intersecting (bowtie) boundary</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Gs043.html"><code>Gs043</code></a></td><td>`OFFSET_CURVE_3D` with `ref_distance` equal to the basis curve&#x27;s radius of curvature (collapse)</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Gs044.html"><code>Gs044</code></a></td><td>`INTERSECTION_CURVE` between two surfaces with multiple disjoint intersection branches, only one represented</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Gs045.html"><code>Gs045</code></a></td><td>`SURFACE_OF_REVOLUTION` whose revolution axis crosses the basis curve at an interior point</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Gs046.html"><code>Gs046</code></a></td><td>`SURFACE_OF_LINEAR_EXTRUSION` with zero-magnitude extrusion vector</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Gs047.html"><code>Gs047</code></a></td><td>`BLENDED_EDGE_SURFACE` with mismatched fillet radii at a shared vertex</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Gs048.html"><code>Gs048</code></a></td><td>`OFFSET_CURVE_2D` with sign of `ref_distance` flipping mid composite-curve chain</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Gs049.html"><code>Gs049</code></a></td><td>B-spline surface has C0 isoparametric line that triggers split-on-import</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Gs050.html"><code>Gs050</code></a></td><td>Toroidal surface stored incorrectly: major / minor swapped</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Gs051.html"><code>Gs051</code></a></td><td>Sphere/cylinder cut produces wrong pcurves on second seam</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Gs052.html"><code>Gs052</code></a></td><td>Surface of revolution with offset basis curve breaks on export</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Gs053.html"><code>Gs053</code></a></td><td>Scaled sphere as B-spline approximation broken on export</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Gs054.html"><code>Gs054</code></a></td><td>Composite curve segment self-cyclic to its containing composite</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Gs055.html"><code>Gs055</code></a></td><td>Composite curve segment with infinite trim parameters</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Gs056.html"><code>Gs056</code></a></td><td>`SURFACE_OF_REVOLUTION` of an ellipse around its own centre produces a degenerate surface</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Gs057.html"><code>Gs057</code></a></td><td>`RECTANGULAR_COMPOSITE_SURFACE` LoadONBrep stub (BRL-CAD step-g)</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Gs058.html"><code>Gs058</code></a></td><td>`SURFACE_PATCH` `transition_code` / `u_sense` / `v_sense` parsed but ignored (BRL-CAD step-g)</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+</tbody></table>
+</main>
+<footer>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

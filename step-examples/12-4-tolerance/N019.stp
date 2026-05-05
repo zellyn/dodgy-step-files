@@ -1,0 +1,47 @@
+/* N019 - OFFSET_SURFACE fixed tolerance hard-coded 1e-3 (BRL-CAD step-g)
+ * Defect: BRL-CAD's step-g importer hard-codes m_tolerance = 1e-3 for edges
+ * and trims rather than reading the file's uncertainty_measure_with_unit.
+ * Models requiring tighter tolerance lose feature fidelity; models tolerant
+ * of wider tolerance are over-rejected.
+ * Reproducer: file declares declared 1e-6 mm tolerance via
+ * GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT, but BRL-CAD's importer ignores it
+ * for OFFSET_SURFACE distance tolerance.
+ */
+ISO-10303-21;
+HEADER;
+FILE_DESCRIPTION(('N019 OFFSET_SURFACE step-g hard-coded 1e-3 ignores file uncertainty'),'2;1');
+FILE_NAME('N019.stp','2026-04-26T00:00:00',(''),(''),
+  'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
+  'automotive_design',2009,#1);
+#10=CARTESIAN_POINT('o',(0.0,0.0,0.0));
+#11=DIRECTION('z',(0.0,0.0,1.0));
+#12=DIRECTION('x',(1.0,0.0,0.0));
+#13=AXIS2_PLACEMENT_3D('plc',#10,#11,#12);
+#14=PLANE('base',#13);
+/* OFFSET_SURFACE distance is below step-g's hard-coded 1e-3 floor */
+#15=OFFSET_SURFACE(#14,5.0E-5,.T.);
+#20=CARTESIAN_POINT('p0',(0.0,0.0,5.0E-5));
+#21=CARTESIAN_POINT('p1',(10.0,0.0,5.0E-5));
+#22=VERTEX_POINT('',#20);
+#23=VERTEX_POINT('',#21);
+#30=DIRECTION('+x',(1.0,0.0,0.0));
+#31=VECTOR('',#30,10.0);
+#32=LINE('',#20,#31);
+#40=EDGE_CURVE('off_surf_edge',#22,#23,#32,.T.);
+#50=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#51=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#52=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+/* File explicitly declares tight tolerance 1e-6, but step-g forces 1e-3 */
+#60=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-6),#50,
+  'distance_accuracy_value','file_declared_tight');
+#70=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#60))
+  GLOBAL_UNIT_ASSIGNED_CONTEXT((#50,#51,#52))
+  REPRESENTATION_CONTEXT('ctx','3D'));
+ENDSEC;
+END-ISO-10303-21;

@@ -1,0 +1,55 @@
+ISO-10303-21;
+/* Gs010 - Self-intersecting / folded surface (B-spline Jacobian sign change)
+ *
+ * Sources:  W007, W017 (HOOPS Exchange out-of-range NURBS guard), X015
+ *
+ * Defect: B_SPLINE_SURFACE_WITH_KNOTS whose control net has interior rows that
+ *  swap order (Jacobian flips sign within parameter range), or whose surface
+ *  trimming has it doubled back. Common output of poorly-trimmed offset surfaces
+ *  or Boolean-derived subdivision surfaces.
+ *
+ * Reproducer:  4x3 control net where rows 0 and 1 traverse U in opposite
+ *  directions so the parametric mapping is non-injective.
+ *
+ * Expected kernel behavior:
+ *   heal by surface re-fit; reject with "non-injective surface parametrisation"
+ *   diagnostic; never silently use the surface for projection. */
+HEADER;
+FILE_DESCRIPTION(('Gs010 test case','Folded BSpline surface, Jacobian sign change'),'2;1');
+FILE_NAME('Gs010.stp','2026-04-26T00:00:00',(''),(''),'auto-generated','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+/* 4x3 control net - rows 1 and 2 are transposed, folding the surface */
+/* Row 0 (V=0): straight, ascending X */
+#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#11=CARTESIAN_POINT('',(5.0,0.0,0.0));
+#12=CARTESIAN_POINT('',(10.0,0.0,0.0));
+#13=CARTESIAN_POINT('',(15.0,0.0,0.0));
+/* Row 1 (V=0.5): SHOULD ascend in X, but is REVERSED — fold begins */
+#14=CARTESIAN_POINT('',(15.0,5.0,2.0));
+#15=CARTESIAN_POINT('',(10.0,5.0,2.0));
+#16=CARTESIAN_POINT('',(5.0,5.0,2.0));
+#17=CARTESIAN_POINT('',(0.0,5.0,2.0));
+/* Row 2 (V=1.0): ascending again */
+#18=CARTESIAN_POINT('',(0.0,10.0,4.0));
+#19=CARTESIAN_POINT('',(5.0,10.0,4.0));
+#20=CARTESIAN_POINT('',(10.0,10.0,4.0));
+#21=CARTESIAN_POINT('',(15.0,10.0,4.0));
+/* Defect: net rows 0 and 1 traverse U in opposite directions — Jacobian sign change */
+#30=B_SPLINE_SURFACE_WITH_KNOTS('',3,2,
+  ((#10,#14,#18),(#11,#15,#19),(#12,#16,#20),(#13,#17,#21)),
+  .UNSPECIFIED.,.F.,.F.,.F.,
+  (4,4),(3,3),(0.0,1.0),(0.0,1.0),
+  .UNSPECIFIED.);
+#40=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#41=VERTEX_POINT('',#40);
+#42=VERTEX_LOOP('',#41);
+#43=FACE_OUTER_BOUND('',#42,.T.);
+#44=ADVANCED_FACE('',(#43),#30,.T.);
+/* Wrap into shell - any projection / boolean attempt will hit the fold */
+#50=OPEN_SHELL('',(#44));
+ENDSEC;
+END-ISO-10303-21;

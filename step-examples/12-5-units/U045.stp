@@ -1,0 +1,37 @@
+/* U045 - CARTESIAN_TRANSFORMATION_OPERATOR scale parsed but never applied
+   Defect: BRL-CAD step-g CartesianTransformationOperator::Load reads
+   the optional `scale` REAL attribute (default 1.0) into a member
+   variable; LoadONBrep is a stub that prints "not implemented for
+   <entity>" and returns false. The scale is not applied to the
+   transformation, and a producer that emits a uniform-scale operator
+   to inflate or deflate a sub-component (e.g. a STEP file with a
+   prototype cube of side 1.0 and a per-instance scale = 25.4 to make
+   a one-inch cube) gets the unit-cube geometry with no scale at all.
+   The inverse defect on the producer side is U015 / Wr050 (writer
+   forgets to compose scale); this entry is the symmetric reader-side
+   defect.
+   Sources: BRL-CAD src/conv/step/step-g/CartesianTransformationOperator.cpp
+   Load reads `scale`; LoadONBrep is a stub that doesn't apply it. */
+ISO-10303-21;
+HEADER;
+FILE_DESCRIPTION(
+  ('U045 - CARTESIAN_TRANSFORMATION_OPERATOR scale ignored by step-g'),
+  '2;1');
+FILE_NAME('U045.stp','2026-05-02T00:00:00',('cad-research-suite'),(''),
+  'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+/* Common axis. */
+#10=CARTESIAN_POINT('o',(0.0,0.0,0.0));
+#11=DIRECTION('x',(1.0,0.0,0.0));
+#12=DIRECTION('y',(0.0,1.0,0.0));
+#13=DIRECTION('z',(0.0,0.0,1.0));
+/* Defect: CARTESIAN_TRANSFORMATION_OPERATOR_3D with `scale = 25.4`.  A
+   producer expecting one inch -> 25.4 mm scale to be applied to the
+   located sub-shape; step-g loads the value but LoadONBrep does
+   nothing with it. */
+#100=CARTESIAN_TRANSFORMATION_OPERATOR_3D(
+  'inch_to_mm_scale',#11,#12,#10,25.4,#13);
+ENDSEC;
+END-ISO-10303-21;

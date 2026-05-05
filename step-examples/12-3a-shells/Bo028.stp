@@ -1,0 +1,78 @@
+ISO-10303-21;
+/* Bo028 - Two adjacent faces meet C1-discontinuously (a kink).
+ * Defect: two PLANE faces share an edge but meet at 90 degrees -
+ * tangent jump at the seam, not C1 as some downstream tool expected. */
+HEADER;
+FILE_DESCRIPTION(('Bo028 - kink between faces','Pass C gap-fill'),'2;1');
+FILE_NAME('Bo028.stp','2026-04-30T00:00:00',(''),(''),'gap-fill C','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+/* Plane 1: horizontal in z=0 spanning x=[0..1], y=[0..1].
+ * Plane 2: vertical in y=0 spanning x=[0..1], z=[0..1].
+ * Shared edge: x=[0..1] at y=0, z=0. They meet at 90 degrees. */
+#10=CARTESIAN_POINT('p00',(0.0,0.0,0.0));   /* shared edge start  */
+#11=CARTESIAN_POINT('p10',(1.0,0.0,0.0));   /* shared edge end    */
+#12=CARTESIAN_POINT('p11',(1.0,1.0,0.0));   /* horiz far corner   */
+#13=CARTESIAN_POINT('p01',(0.0,1.0,0.0));   /* horiz far corner   */
+#14=CARTESIAN_POINT('q10',(1.0,0.0,1.0));   /* vert far corner    */
+#15=CARTESIAN_POINT('q00',(0.0,0.0,1.0));   /* vert far corner    */
+#20=VERTEX_POINT('',#10);
+#21=VERTEX_POINT('',#11);
+#22=VERTEX_POINT('',#12);
+#23=VERTEX_POINT('',#13);
+#24=VERTEX_POINT('',#14);
+#25=VERTEX_POINT('',#15);
+#30=DIRECTION('',(1.0,0.0,0.0)); #31=VECTOR('',#30,1.0);
+#32=DIRECTION('',(0.0,1.0,0.0)); #33=VECTOR('',#32,1.0);
+#34=DIRECTION('',(0.0,0.0,1.0)); #35=VECTOR('',#34,1.0);
+/* Edges of the horizontal face */
+#40=LINE('',#10,#31); #41=EDGE_CURVE('e_shared',#20,#21,#40,.T.);
+#42=LINE('',#11,#33); #43=EDGE_CURVE('',#21,#22,#42,.T.);
+#44=LINE('',#13,#31); #45=EDGE_CURVE('',#23,#22,#44,.T.);
+#46=LINE('',#10,#33); #47=EDGE_CURVE('',#20,#23,#46,.T.);
+/* Edges of the vertical face */
+#48=LINE('',#11,#35); #49=EDGE_CURVE('',#21,#24,#48,.T.);
+#50=LINE('',#15,#31); #51=EDGE_CURVE('',#25,#24,#50,.T.);
+#52=LINE('',#10,#35); #53=EDGE_CURVE('',#20,#25,#52,.T.);
+/* Horizontal face loop (z=0 plane, normal +z) */
+#60=ORIENTED_EDGE('',*,*,#41,.T.);
+#61=ORIENTED_EDGE('',*,*,#43,.T.);
+#62=ORIENTED_EDGE('',*,*,#45,.F.);
+#63=ORIENTED_EDGE('',*,*,#47,.F.);
+#64=EDGE_LOOP('',(#60,#61,#62,#63));
+#65=FACE_OUTER_BOUND('',#64,.T.);
+#70=AXIS2_PLACEMENT_3D('',#10,#34,#30);
+#71=PLANE('p_horiz',#70);
+#72=ADVANCED_FACE('horizontal',(#65),#71,.T.);
+/* Vertical face loop (y=0 plane, normal +y).
+ * Shared edge #41 is reversed since vertical face is on the other side. */
+#80=ORIENTED_EDGE('',*,*,#41,.F.);   /* shared edge, reversed */
+#81=ORIENTED_EDGE('',*,*,#53,.T.);
+#82=ORIENTED_EDGE('',*,*,#51,.T.);
+#83=ORIENTED_EDGE('',*,*,#49,.F.);
+#84=EDGE_LOOP('',(#80,#81,#82,#83));
+#85=FACE_OUTER_BOUND('',#84,.T.);
+#90=AXIS2_PLACEMENT_3D('',#10,#32,#30);   /* normal +y */
+#91=PLANE('p_vert_perpendicular',#90);
+#92=ADVANCED_FACE('vertical',(#85),#91,.T.);
+#200=OPEN_SHELL('right_angle_kink',(#72,#92));
+/* PRODUCT chain so OCCT loads the geometry. */
+#9000=PRODUCT_CONTEXT('',#1,'mechanical');
+#9001=PRODUCT('Bo028','Bo028','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
+#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
+#9021=SHELL_BASED_SURFACE_MODEL('wrap_sbsm',(#200));
+#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#9010);
+#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+ENDSEC;
+END-ISO-10303-21;

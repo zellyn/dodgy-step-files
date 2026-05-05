@@ -1,0 +1,41 @@
+ISO-10303-21;
+/* Gn035 - Circle-as-NURBS missing rational marker
+ * Defect: producer emitted a circle approximation as a degree-2 B-spline
+ * with the canonical 9-control-point knot vector for an exact-circle
+ * NURBS (mults 3,2,2,2,2,2,2,2,3 over 0,0.25,0.5,0.75,1.0). The
+ * complex AND-form below intentionally OMITS the
+ * RATIONAL_B_SPLINE_CURVE((weights_data)) half of the AND, which a
+ * correct circle-NURBS would have carried with weights
+ * (1, sqrt(2)/2, 1, sqrt(2)/2, 1, sqrt(2)/2, 1, sqrt(2)/2, 1).
+ * Without the rational marker, parsers dispatch to the non-rational
+ * fallback and silently treat all weights as 1.0 - so the curve
+ * follows the polygon corners instead of the inscribed circle. */
+/* Intended weights (NOT present in bytes; this is the defect):
+ *   (1.0, 0.7071067811865476, 1.0, 0.7071067811865476,
+ *    1.0, 0.7071067811865476, 1.0, 0.7071067811865476, 1.0) */
+HEADER;
+FILE_DESCRIPTION(('Gn035 test case','Circle-as-NURBS missing rational marker'),'2;1');
+FILE_NAME('Gn035.stp','2026-04-30T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+#100=CARTESIAN_POINT('cp1',(1.0,0.0,0.0));
+#101=CARTESIAN_POINT('cp2',(1.0,1.0,0.0));
+#102=CARTESIAN_POINT('cp3',(0.0,1.0,0.0));
+#103=CARTESIAN_POINT('cp4',(-1.0,1.0,0.0));
+#104=CARTESIAN_POINT('cp5',(-1.0,0.0,0.0));
+#105=CARTESIAN_POINT('cp6',(-1.0,-1.0,0.0));
+#106=CARTESIAN_POINT('cp7',(0.0,-1.0,0.0));
+#107=CARTESIAN_POINT('cp8',(1.0,-1.0,0.0));
+#108=CARTESIAN_POINT('cp9',(1.0,0.0,0.0));
+/* Defect: complex/AND-form B-spline carries weights data but the
+ * RATIONAL_B_SPLINE_CURVE entity-type token is missing from the
+ * AND-list. The weights appear at the end as a bare aggregate
+ * literal (1.0, 0.7071, 1.0, 0.7071, ...). Strict parsers then
+ * dispatch on (B_SPLINE_CURVE, B_SPLINE_CURVE_WITH_KNOTS) only and
+ * silently drop the weights. */
+#110=(BOUNDED_CURVE() B_SPLINE_CURVE(2,(#100,#101,#102,#103,#104,#105,#106,#107,#108),.UNSPECIFIED.,.F.,.F.) B_SPLINE_CURVE_WITH_KNOTS((3,2,2,2,2,2,2,2,3),(0.0,0.125,0.25,0.375,0.5,0.625,0.75,0.875,1.0),.UNSPECIFIED.) CURVE() GEOMETRIC_REPRESENTATION_ITEM() REPRESENTATION_ITEM('circle_as_nurbs_no_rational_marker'));
+ENDSEC;
+END-ISO-10303-21;

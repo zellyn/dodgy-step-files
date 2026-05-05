@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>§12.2b NURBS / B-spline</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="section">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <span class="current">§12.2b NURBS / B-spline</span>
+</nav>
+<header class="title-bar">
+<h1>§12.2b NURBS / B-spline</h1>
+<p class="blurb">NURBS / B-spline knot-vector pathologies: clamped/unclamped, degenerate weights, non-monotonic knots, degree mismatches.</p>
+<p class="meta">32 entries</p>
+</header>
+<main>
+<table class="entries"><thead><tr><th>ID</th><th>Title</th><th>Provenance</th><th>Expected validation</th></tr></thead><tbody>
+<tr><td><a href="Gn001.html"><code>Gn001</code></a></td><td>`B_SPLINE_SURFACE_WITH_KNOTS` U knots duplicated without justifying multiplicity</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Gn002.html"><code>Gn002</code></a></td><td>RATIONAL_BSPLINE_CURVE / SURFACE with `NbWeights ≠ NbControlPoints`</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Gn003.html"><code>Gn003</code></a></td><td>BSpline curve with empty `control_points_list`</td><td><code>bytes-sufficient</code></td><td><code>occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Gn004.html"><code>Gn004</code></a></td><td>Complex BSpline surface entity with empty knots/multiplicities</td><td><code>bytes-sufficient</code></td><td><code>occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Gn007.html"><code>Gn007</code></a></td><td>Under-sampled `B_SPLINE_CURVE_WITH_KNOTS` for long helical thread (Creo relative-accuracy tessellation)</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Gn008.html"><code>Gn008</code></a></td><td>High-curvature curves: knot multiplicity at full degree producing near-cusps</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Gn009.html"><code>Gn009</code></a></td><td>High-degree NURBS surface bloat (degree &gt;5, redundant knots)</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Gn010.html"><code>Gn010</code></a></td><td>Out-of-range / NaN NURBS control points</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Gn011.html"><code>Gn011</code></a></td><td>Excess-degree `B_SPLINE_CURVE_WITH_KNOTS` / `B_SPLINE_SURFACE_WITH_KNOTS` requiring degree restriction</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Gn012.html"><code>Gn012</code></a></td><td>C0 BSpline curves should be split into C1+ pieces</td><td><code>bytes-sufficient</code></td><td><code>occt=shape(1)/shape(1) gmsh=shape(3) ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Gn013.html"><code>Gn013</code></a></td><td>Convert elementary to BSpline (or back): producer/consumer requires specific form</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Gn014.html"><code>Gn014</code></a></td><td>`B_SPLINE_SURFACE_WITH_KNOTS` that fits a `PLANE` / `CYLINDRICAL_SURFACE` / `CONICAL_SURFACE` / `SPHERICAL_SURFACE` / `TOROIDAL_SURFACE` (canonical recognition)</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Gn015.html"><code>Gn015</code></a></td><td>Rational `B_SPLINE_SURFACE_WITH_KNOTS` that is actually a `SURFACE_OF_REVOLUTION` (sqrt(2)/2 weights, 360° sweep)</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Gn016.html"><code>Gn016</code></a></td><td>`SURFACE_OF_REVOLUTION` on `ELLIPSE`: basis curve becomes `TRIMMED_CURVE` over rational B-spline plus non-unit axis `DIRECTION` after round-trip</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Gn017.html"><code>Gn017</code></a></td><td>`B_SPLINE_SURFACE_WITH_KNOTS` requiring split-at-interior-knots Bezier conversion for legacy export</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Gn018.html"><code>Gn018</code></a></td><td>Bezier surface and rational Bezier surface unimplemented (BRL-CAD step-g)</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Gn019.html"><code>Gn019</code></a></td><td>Degenerate zero-length `B_SPLINE` pcurve (coincident control points / sample count &lt;2)</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Gn020.html"><code>Gn020</code></a></td><td>Spline approximation of analytic primitive (sender philosophy)</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Gn021.html"><code>Gn021</code></a></td><td>`OFFSET_SURFACE` of complex BSpline base fails parsing only when wrapped</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Gn023.html"><code>Gn023</code></a></td><td>STEP→BREP silently injects new `B_SPLINE_CURVE_WITH_KNOTS` (analytic `CIRCLE` cylinder cap edges replaced)</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Gn024.html"><code>Gn024</code></a></td><td>Self-intersecting `B_SPLINE_CURVE_WITH_KNOTS` edge (figure-eight or fold; coincident first/last control points)</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Gn025.html"><code>Gn025</code></a></td><td>Folded/non-injective BSpline surface (Jacobian flip)</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Gn026.html"><code>Gn026</code></a></td><td>High-degree clamped `B_SPLINE_CURVE_WITH_KNOTS` requiring degree-restriction with continuity guarantee</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Gn030.html"><code>Gn030</code></a></td><td>Flat 3D curve as p-curve (instead of 2D PCURVE)</td><td><code>bytes-sufficient</code></td><td><code>occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Gn031.html"><code>Gn031</code></a></td><td>`EDGE_CURVE` periodic-to-non-periodic conversion on small-edge export (swapped start/end vertices on tiny-radius rational B-spline arc)</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Gn032.html"><code>Gn032</code></a></td><td>Pro/E non-uniform parameter scaling on 2D Geom2dAPI_Interpolate curves</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Gn033.html"><code>Gn033</code></a></td><td>Pcurve / 3D-curve large jumps on closed-but-not-periodic `B_SPLINE_SURFACE_WITH_KNOTS` (undeclared `closed_u` seam)</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Gn034.html"><code>Gn034</code></a></td><td>B-spline knots packed below parametric resolution</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Gn035.html"><code>Gn035</code></a></td><td>Circle translated to NURBS form with rational weights but missing weight metadata</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Gn036.html"><code>Gn036</code></a></td><td>`B_SPLINE_SURFACE_WITH_KNOTS` V knot vector strictly descending</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Gn037.html"><code>Gn037</code></a></td><td>BSpline curve whose knot vector collapses to a single unique value</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Gn038.html"><code>Gn038</code></a></td><td>`BOUNDED_PCURVE` LoadONBrep stub (BRL-CAD step-g)</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+</tbody></table>
+</main>
+<footer>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

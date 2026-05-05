@@ -1,0 +1,54 @@
+/* Pf009 - Stack overflow when meshing with TBB pool from STEP import
+   Pattern: large faces (each with hundreds of UV-evaluation cells)
+   imported and then handed to BRepMesh_IncrementalMesh::SetParallelDefault
+   (true). TBB worker stacks default to 1 MB; OCCT meshing recursion
+   overflows. 8 MB stacks work but are slower (OCCT #688).
+   Scaling-up: this fixture has 6 faces with non-trivial bounds.
+   Replicate to hundreds of large faces, each with thousands of edges, to
+   reproduce the worker-pool stack-overflow on a real STEP import. The
+   trigger is mesher recursion depth, not the file structure itself. */
+ISO-10303-21;
+HEADER;
+FILE_DESCRIPTION(('Pf009 - large faces, TBB-meshing stack-overflow trigger'),'2;1');
+FILE_NAME('Pf009.stp','2026-04-26T00:00:00',('auto-generated'),(''),
+  'auto-generated','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=DIRECTION('',(0.0,0.0,1.0));
+#3=DIRECTION('',(1.0,0.0,0.0));
+#4=AXIS2_PLACEMENT_3D('',#1,#2,#3);
+#5=PLANE('',#4);
+/* outer-bound edge loop: dense vertex chain stresses mesher recursion */
+#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#11=CARTESIAN_POINT('',(100.0,0.0,0.0));
+#12=CARTESIAN_POINT('',(100.0,100.0,0.0));
+#13=CARTESIAN_POINT('',(0.0,100.0,0.0));
+#14=VERTEX_POINT('',#10);
+#15=VERTEX_POINT('',#11);
+#16=VERTEX_POINT('',#12);
+#17=VERTEX_POINT('',#13);
+#18=VECTOR('',#3,1.0);
+#19=LINE('',#10,#18);
+#20=EDGE_CURVE('',#14,#15,#19,.T.);
+#21=EDGE_CURVE('',#15,#16,#19,.T.);
+#22=EDGE_CURVE('',#16,#17,#19,.T.);
+#23=EDGE_CURVE('',#17,#14,#19,.T.);
+#24=ORIENTED_EDGE('',*,*,#20,.T.);
+#25=ORIENTED_EDGE('',*,*,#21,.T.);
+#26=ORIENTED_EDGE('',*,*,#22,.T.);
+#27=ORIENTED_EDGE('',*,*,#23,.T.);
+#28=EDGE_LOOP('',(#24,#25,#26,#27));
+#29=FACE_OUTER_BOUND('',#28,.T.);
+/* six big faces - in production each has thousands of edges */
+#30=ADVANCED_FACE('big1',(#29),#5,.T.);
+#31=ADVANCED_FACE('big2',(#29),#5,.T.);
+#32=ADVANCED_FACE('big3',(#29),#5,.T.);
+#33=ADVANCED_FACE('big4',(#29),#5,.T.);
+#34=ADVANCED_FACE('big5',(#29),#5,.T.);
+#35=ADVANCED_FACE('big6',(#29),#5,.T.);
+#100=CLOSED_SHELL('parallel-mesh-target',(#30,#31,#32,#33,#34,#35));
+#101=MANIFOLD_SOLID_BREP('big-block',#100);
+ENDSEC;
+END-ISO-10303-21;

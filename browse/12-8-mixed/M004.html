@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>M004 — Watertightness lost when each tessellated face has its own coordinates_list</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.8 Mixed (tessellation, validation properties, etc.)</a> <span class="sep">/</span> <span class="current">M004</span>
+</nav>
+<header class="title-bar">
+<h1>M004 <span class="sep">—</span> <span class="entry-title">Watertightness lost when each tessellated face has its own coordinates_list</span></h1>
+<p class="category">§12.8 (sub-class: tessellation)</p>
+<p class="severity-badge severity-p1">P1 — silent data loss</p>
+<p class="tag-pills">
+<a class="tag tag-topology" href="../by-tag/topology/index.html">topology</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-8-mixed/M004.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-8-mixed/M004.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>02-caxif.md</li>
+<li>Tessellated Geometry §5.4.3, §6</li>
+</ul></section>
+<section><h2>Description</h2>
+<p>Defining each `tessellated_face` with an independent `coordinates_list` produces duplicate vertices along shared edges. Floating-point quantization may make those duplicates non-equal, leaving sub-tolerance gaps along every shared edge. Recommendation: one `coordinates_list` per solid plus `tessellated_connecting_edge` per topological edge.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>Tessellate a unit cube so each of the six faces has its own `coordinates_list` with corner coordinates differing in the last few digits across faces.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>heal — merge nearly-coincident vertices using model uncertainty, or report the gap.</p></section>
+<section><h2>Notes</h2>
+<p>Synonyms: &quot;tessellation not watertight&quot;, &quot;duplicate vertices on shared edge&quot;, &quot;per-face coordinates_list causes gaps&quot;, &quot;tessellated mesh has sub-tolerance gaps&quot;, &quot;shared edge vertices don&#x27;t match across faces&quot;.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>count_entity_def(b&#x27;COORDINATES_LIST&#x27;) == 6</code></li>
+</ul></section>
+<section><h2>Live oracle output</h2>
+<table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
+<tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>no_shapes_loaded</code></td></tr>
+</tbody></table>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* M004 - Watertightness lost: each tessellated face has its own
+<span class="lineno">3</span> * COORDINATES_LIST with quantization-different shared-edge vertices.
+<span class="lineno">4</span> * Defect: Best practice is one COORDINATES_LIST per tessellated solid
+<span class="lineno">5</span> * plus TESSELLATED_CONNECTING_EDGE per shared edge. Here the cube&#x27;s
+<span class="lineno">6</span> * six faces each define their own list. The shared corners differ
+<span class="lineno">7</span> * after the 6th decimal (1.0000003 vs 0.9999997 vs 1.0). Vertices are
+<span class="lineno">8</span> * therefore not bitwise-equal across faces and the resulting mesh has
+<span class="lineno">9</span> * sub-tolerance gaps along every shared edge. Healers should merge
+<span class="lineno">10</span> * within model uncertainty. */
+<span class="lineno">11</span>HEADER;
+<span class="lineno">12</span>FILE_DESCRIPTION((&#x27;M004 test case&#x27;,&#x27;per-face coordinates_list breaks watertightness&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">13</span>FILE_NAME(&#x27;M004.stp&#x27;,&#x27;2026-04-26T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;auto-generated&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">14</span>FILE_SCHEMA((&#x27;AP242_MANAGED_MODEL_BASED_3D_ENGINEERING_MIM_LF { 1 0 10303 442 1 1 4 }&#x27;));
+<span class="lineno">15</span>ENDSEC;
+<span class="lineno">16</span>DATA;
+<span class="lineno">17</span>#1=APPLICATION_CONTEXT(&#x27;managed model based 3d engineering&#x27;);
+<span class="lineno">18</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,
+<span class="lineno">19</span>  &#x27;ap242_managed_model_based_3d_engineering&#x27;,2014,#1);
+<span class="lineno">20</span>#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">21</span>#11=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+<span class="lineno">22</span>#12=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+<span class="lineno">23</span>#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.E-6),#10,&#x27;distance_accuracy_value&#x27;,&#x27;&#x27;);
+<span class="lineno">24</span>#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+<span class="lineno">25</span>     GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13))
+<span class="lineno">26</span>     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12))
+<span class="lineno">27</span>     REPRESENTATION_CONTEXT(&#x27;part&#x27;,&#x27;3D&#x27;));
+<span class="lineno">28</span>/* Six independent coordinates_lists - shared corners differ in the
+<span class="lineno">29</span> * last few digits. */
+<span class="lineno">30</span><mark>#100=COORDINATES_LIST(</mark>&#x27;bottom_z0&#x27;,4,
+<span class="lineno">31</span>  ((0.0000000,0.0000000,0.0000000),(1.0000003,0.0000000,0.0000000),
+<span class="lineno">32</span>   (1.0000003,1.0000003,0.0000000),(0.0000000,1.0000003,0.0000000)));
+<span class="lineno">33</span>#110=TRIANGULATED_FACE(&#x27;bottom&#x27;,#100,$,$,(),((1,2,3),(1,3,4)));
+<span class="lineno">34</span><mark>#101=COORDINATES_LIST(</mark>&#x27;top_z1&#x27;,4,
+<span class="lineno">35</span>  ((0.0000000,0.0000000,0.9999997),(1.0000000,0.0000000,0.9999997),
+<span class="lineno">36</span>   (1.0000000,1.0000000,0.9999997),(0.0000000,1.0000000,0.9999997)));
+<span class="lineno">37</span>#111=TRIANGULATED_FACE(&#x27;top&#x27;,#101,$,$,(),((1,2,3),(1,3,4)));
+<span class="lineno">38</span><mark>#102=COORDINATES_LIST(</mark>&#x27;front_y0&#x27;,4,
+<span class="lineno">39</span>  ((0.0000000,0.0000000,0.0000003),(1.0000000,0.0000000,0.0000003),
+<span class="lineno">40</span>   (1.0000000,0.0000000,1.0000000),(0.0000000,0.0000000,1.0000000)));
+<span class="lineno">41</span>#112=TRIANGULATED_FACE(&#x27;front&#x27;,#102,$,$,(),((1,2,3),(1,3,4)));
+<span class="lineno">42</span><mark>#103=COORDINATES_LIST(</mark>&#x27;back_y1&#x27;,4,
+<span class="lineno">43</span>  ((0.0000000,0.9999997,0.0000000),(1.0000000,0.9999997,0.0000000),
+<span class="lineno">44</span>   (1.0000000,0.9999997,1.0000003),(0.0000000,0.9999997,1.0000003)));
+<span class="lineno">45</span>#113=TRIANGULATED_FACE(&#x27;back&#x27;,#103,$,$,(),((1,2,3),(1,3,4)));
+<span class="lineno">46</span><mark>#104=COORDINATES_LIST(</mark>&#x27;left_x0&#x27;,4,
+<span class="lineno">47</span>  ((0.0000000,0.0000000,0.0000000),(0.0000000,1.0000000,0.0000000),
+<span class="lineno">48</span>   (0.0000000,1.0000000,1.0000000),(0.0000000,0.0000000,1.0000000)));
+<span class="lineno">49</span>#114=TRIANGULATED_FACE(&#x27;left&#x27;,#104,$,$,(),((1,2,3),(1,3,4)));
+<span class="lineno">50</span><mark>#105=COORDINATES_LIST(</mark>&#x27;right_x1&#x27;,4,
+<span class="lineno">51</span>  ((1.0000003,0.0000000,0.0000000),(1.0000003,1.0000000,0.0000000),
+<span class="lineno">52</span>   (1.0000003,1.0000000,1.0000000),(1.0000003,0.0000000,1.0000000)));
+<span class="lineno">53</span>#115=TRIANGULATED_FACE(&#x27;right&#x27;,#105,$,$,(),((1,2,3),(1,3,4)));
+<span class="lineno">54</span>/* Solid bundles them - no tessellated_connecting_edge between faces */
+<span class="lineno">55</span>#120=TESSELLATED_SOLID(&#x27;leaky_cube&#x27;,(#110,#111,#112,#113,#114,#115),$);
+<span class="lineno">56</span>#200=TESSELLATED_SHAPE_REPRESENTATION(&#x27;&#x27;,(#120),#14);
+<span class="lineno">57</span>ENDSEC;
+<span class="lineno">58</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="M003.html">&larr; M003</a> <a class="up" href="index.html">§12.8 Mixed (tessellation, validation properties, etc.)</a> <a class="next" href="M005.html">M005 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

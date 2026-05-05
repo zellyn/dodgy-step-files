@@ -1,0 +1,110 @@
+name: validate-corpus
+
+on:
+  push:
+  pull_request:
+
+concurrency:
+  group: validate-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    name: Run multi-tier validator on every fixture
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up uv
+        uses: astral-sh/setup-uv@v3
+        with:
+          enable-cache: true
+          cache-dependency-glob: |
+            validation/uv.lock
+            validation/pyproject.toml
+
+      - name: Set up Python 3.12
+        run: uv python install 3.12
+        working-directory: validation
+
+      - name: Sync validator dependencies
+        run: uv sync --frozen
+        working-directory: validation
+
+      # ---- Self-tests run first; they're fast and catch most regressions ----
+      # 500+ tests cover: catalog integrity, byte-stable JSON round-trip,
+      # bug-report search regression, OCCT-API ratchet (corpus must stay
+      # at 0 token-leaks), tier-3 assertion regression, entity-match drift,
+      # validator self-tests, fixture lint coverage.
+      - name: Validator self-tests (pytest)
+        working-directory: validation
+        run: uv run pytest tests/ -v --tb=short
+
+      - name: Fixture lint (file-naming, header comments, framing)
+        working-directory: validation
+        run: uv run python -m step_corpus._fixture_lint
+
+      # ---- Run the full validate2 + tier3 corpus pass via the parallel runner ----
+      # Output lands in /tmp/cad-v2-out/ and /tmp/cad-v2-out-tier3/.
+      - name: Run validate2 + tier3 across full corpus
+        working-directory: validation
+        run: uv run python -m step_corpus._run_corpus --workers 4
+
+      # ---- DRIFT detection: codified Expected validation vs live oracle ----
+      # _final_verdict reads catalog Expected lines + /tmp/cad-v2-out and
+      # writes per-section reports to validation/reports/. Any DRIFT or
+      # FAIL exits non-zero.
+      - name: DRIFT detection (final verdict classifier)
+        id: verdict
+        working-directory: validation
+        run: |
+          set -euo pipefail
+          out="$(uv run python -m step_corpus._final_verdict)"
+          echo "$out"
+          echo "$out" > /tmp/final-verdict-output.txt
+          # Flag anything other than CONFIRMED / CONFIRMED-WEAK
+          if echo "$out" | grep -E "DRIFT|FAIL" > /dev/null; then
+            echo "::error::DRIFT or FAIL verdict in final classifier"
+            exit 1
+          fi
+
+      # ---- Machine-checkable tier-3 geometric assertions ----
+      # Catalog entries can carry **Tier-3 assertion**: lines (e.g.
+      # face[0].sliver_aspect_max_min > 1e6). Each is checked against
+      # live tier3 output. Any failure exits non-zero.
+      - name: Tier-3 assertions
+        working-directory: validation
+        run: uv run python -m step_corpus._tier3_assertions
+
+      # Catalog ↔ fixture entity-match drift is covered by
+      # tests/test_entity_match.py in the pytest step above; no separate
+      # step needed.
+
+      # ---- Run summary ----
+      - name: Per-section verdict summary
+        if: always()
+        run: |
+          {
+            echo "## STEP corpus validation"
+            echo
+            if [ -f /tmp/final-verdict-output.txt ]; then
+              echo '```'
+              cat /tmp/final-verdict-output.txt
+              echo '```'
+            fi
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload validation artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: validation-results
+          path: |
+            validation/reports/
+            /tmp/cad-v2-out/
+            /tmp/cad-v2-out-tier3/
+            /tmp/final-verdict-output.txt
+          if-no-files-found: warn

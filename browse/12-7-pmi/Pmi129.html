@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Pmi129 — `MARKING` with multi-line text but no `line_spacing` attribute</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.7 PMI / GD&amp;T</a> <span class="sep">/</span> <span class="current">Pmi129</span>
+</nav>
+<header class="title-bar">
+<h1>Pmi129 <span class="sep">—</span> <span class="entry-title">`MARKING` with multi-line text but no `line_spacing` attribute</span></h1>
+<p class="category">§12.7 (sub-class: AP242 feature definition)</p>
+<p class="severity-badge severity-p1">P1 — silent data loss</p>
+<p class="tag-pills">
+<a class="tag tag-pmi" href="../by-tag/pmi/index.html">pmi</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-7-pmi/Pmi129.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-7-pmi/Pmi129.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>16-iso-spec AP242 §marking</li>
+<li>CAx-IF Recommended Practices for engraved-text presentation</li>
+</ul></section>
+<section><h2>Description</h2>
+<p>AP242 `marking` text strings may contain newline / line-feed escapes (`\X\0A` or `\n` depending on encoding). Multi-line markings need a `line_spacing` dimensional attribute that specifies the vertical gap between consecutive baselines; without it, the producer&#x27;s spacing intent is ambiguous. A producer that emits a marking with two-line text but no `line_spacing` leaves the rendering up to the receiver: some default to `1.0 * font_size`, some collapse the lines onto one another, some pick a CAD-vendor-specific default that disagrees with the producer&#x27;s CAD-vendor default. Bug-reporter language: &quot;lines on top of each other&quot;, &quot;AP242 multi-line marking has no line spacing&quot;, &quot;engraving line_spacing default differs across kernels&quot;.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>a `SHAPE_ASPECT(&#x27;marking&#x27;,..)`; a `DESCRIPTIVE_REPRESENTATION_ITEM(&#x27;marking_text&#x27;,&#x27;LINE_ONE\\X\\0ALINE_TWO&#x27;)`; a `font_size` of 4 mm; **no** companion `line_spacing` dimensional attribute.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>Warn and accept: heal with a documented default (e.g. `line_spacing = 1.2 * font_size`) and emit warning `W_MARKING_NO_LINE_SPACING` so the deterministic default is auditable. Picking a vendor-specific default without surfacing the assumption is a coverage gap.</p></section>
+<section><h2>Notes</h2>
+<p>Producer-side ambiguity rather than receiver bug; tagged so that round-trip differential testing flags spacing drift. **See also**: Pmi127, Pmi128. Synonyms: &quot;MARKING multi-line no line spacing&quot;, &quot;AP242 engraving multiple lines, spacing missing&quot;, &quot;two-line marking lines collapse&quot;.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a</code></p></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>n_faces_total == 1</code></li>
+<li><code>face[0].surface_type == &quot;plane&quot;</code></li>
+<li><code>face[0].edge_count == 4</code></li>
+<li><code>face[0].area &gt; 899</code></li>
+<li><code>face[0].area &lt; 901</code></li>
+</ul></section>
+<section><h2>Cross-references</h2>
+<p><a href="Pmi127.html">Pmi127</a>, <a href="Pmi128.html">Pmi128</a></p>
+</section>
+<section><h2>Live oracle output</h2>
+<table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
+<tr><td><code>occt_heal_on</code></td><td><code>shape(1)</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>shape(1)</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>shape(9)</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>shape(9)</code></td></tr>
+<tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>not_manifold</code></td></tr>
+</tbody></table>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>/* Pmi129 - MARKING multi-line text with no line-spacing attribute
+<span class="lineno">2</span> * Defect: a marking SHAPE_ASPECT carries text containing two newline-
+<span class="lineno">3</span> * separated lines but no line_spacing dimensional attribute. Receivers
+<span class="lineno">4</span> * either default to 1.0x font size, collapse the lines, or render them
+<span class="lineno">5</span> * overlapping. The producer&#x27;s spacing intent is ambiguous. */
+<span class="lineno">6</span>ISO-10303-21;
+<span class="lineno">7</span>HEADER;
+<span class="lineno">8</span>FILE_DESCRIPTION((&#x27;Pmi129 - MARKING multi-line text without line spacing&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">9</span>FILE_NAME(&#x27;Pmi129.stp&#x27;,&#x27;2026-05-02T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">10</span>FILE_SCHEMA((&#x27;AP242_MANAGED_MODEL_BASED_3D_ENGINEERING_MIM_LF { 1 0 10303 442 1 1 4 }&#x27;));
+<span class="lineno">11</span>ENDSEC;
+<span class="lineno">12</span>DATA;
+<span class="lineno">13</span>#1=APPLICATION_CONTEXT(&#x27;managed model based 3d engineering&#x27;);
+<span class="lineno">14</span>#2=PRODUCT_CONTEXT(&#x27;part&#x27;,#1,&#x27;mechanical&#x27;);
+<span class="lineno">15</span>#3=PRODUCT(&#x27;Pmi129&#x27;,&#x27;marking_multi_line_no_spacing&#x27;,&#x27;&#x27;,(#2));
+<span class="lineno">16</span>#4=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#3);
+<span class="lineno">17</span>#5=PRODUCT_DEFINITION_CONTEXT(&#x27;&#x27;,#1,&#x27;design&#x27;);
+<span class="lineno">18</span>#6=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,#4,#5);
+<span class="lineno">19</span>#7=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,#6);
+<span class="lineno">20</span>#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">21</span>#11=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+<span class="lineno">22</span>#12=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+<span class="lineno">23</span>#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#10,&#x27;tol&#x27;,&#x27;&#x27;);
+<span class="lineno">24</span>#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3) GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13)) GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12)) REPRESENTATION_CONTEXT(&#x27;&#x27;,&#x27;3D&#x27;));
+<span class="lineno">25</span>/* 30x30 mm planar host face. */
+<span class="lineno">26</span>#100=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">27</span>#101=CARTESIAN_POINT(&#x27;&#x27;,(30.0,0.0,0.0));
+<span class="lineno">28</span>#102=CARTESIAN_POINT(&#x27;&#x27;,(30.0,30.0,0.0));
+<span class="lineno">29</span>#103=CARTESIAN_POINT(&#x27;&#x27;,(0.0,30.0,0.0));
+<span class="lineno">30</span>#110=VERTEX_POINT(&#x27;&#x27;,#100); #111=VERTEX_POINT(&#x27;&#x27;,#101);
+<span class="lineno">31</span>#112=VERTEX_POINT(&#x27;&#x27;,#102); #113=VERTEX_POINT(&#x27;&#x27;,#103);
+<span class="lineno">32</span>#200=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">33</span>#201=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">34</span>#202=DIRECTION(&#x27;&#x27;,(0.0,1.0,0.0));
+<span class="lineno">35</span>#210=AXIS2_PLACEMENT_3D(&#x27;plate_origin&#x27;,#100,#200,#201);
+<span class="lineno">36</span>#211=PLANE(&#x27;host_face_30x30&#x27;,#210);
+<span class="lineno">37</span>#300=VECTOR(&#x27;&#x27;,#201,30.0);
+<span class="lineno">38</span>#301=VECTOR(&#x27;&#x27;,#202,30.0);
+<span class="lineno">39</span>#310=LINE(&#x27;&#x27;,#100,#300); #311=EDGE_CURVE(&#x27;&#x27;,#110,#111,#310,.T.);
+<span class="lineno">40</span>#312=LINE(&#x27;&#x27;,#101,#301); #313=EDGE_CURVE(&#x27;&#x27;,#111,#112,#312,.T.);
+<span class="lineno">41</span>#314=LINE(&#x27;&#x27;,#103,#300); #315=EDGE_CURVE(&#x27;&#x27;,#113,#112,#314,.T.);
+<span class="lineno">42</span>#316=LINE(&#x27;&#x27;,#100,#301); #317=EDGE_CURVE(&#x27;&#x27;,#110,#113,#316,.T.);
+<span class="lineno">43</span>#400=ORIENTED_EDGE(&#x27;&#x27;,*,*,#311,.T.); #401=ORIENTED_EDGE(&#x27;&#x27;,*,*,#313,.T.);
+<span class="lineno">44</span>#402=ORIENTED_EDGE(&#x27;&#x27;,*,*,#315,.F.); #403=ORIENTED_EDGE(&#x27;&#x27;,*,*,#317,.F.);
+<span class="lineno">45</span>#404=EDGE_LOOP(&#x27;&#x27;,(#400,#401,#402,#403));
+<span class="lineno">46</span>#405=FACE_OUTER_BOUND(&#x27;&#x27;,#404,.T.);
+<span class="lineno">47</span>#406=ADVANCED_FACE(&#x27;plate_face&#x27;,(#405),#211,.T.);
+<span class="lineno">48</span>#500=OPEN_SHELL(&#x27;plate_shell&#x27;,(#406));
+<span class="lineno">49</span>#501=SHELL_BASED_SURFACE_MODEL(&#x27;plate_model&#x27;,(#500));
+<span class="lineno">50</span>#502=MANIFOLD_SURFACE_SHAPE_REPRESENTATION(&#x27;shape&#x27;,(#501,#210),#14);
+<span class="lineno">51</span>#503=SHAPE_DEFINITION_REPRESENTATION(#7,#502);
+<span class="lineno">52</span>/* Marking with multi-line text but NO line_spacing dimensional attribute. */
+<span class="lineno">53</span>#600=SHAPE_ASPECT(&#x27;marking&#x27;,&#x27;engraved label, two lines, no line spacing&#x27;,#7,.T.);
+<span class="lineno">54</span>#601=GEOMETRIC_ITEM_SPECIFIC_USAGE(&#x27;GISU&#x27;,$,#600,#502,#406);
+<span class="lineno">55</span>/* Two-line text with embedded \X\0A escape -- no companion line_spacing. */
+<span class="lineno">56</span>#605=DESCRIPTIVE_REPRESENTATION_ITEM(&#x27;marking_text&#x27;,&#x27;LINE_ONE\X\0ALINE_TWO&#x27;);
+<span class="lineno">57</span>#606=PROPERTY_DEFINITION(&#x27;marking_text&#x27;,&#x27;inscribed text multi-line&#x27;,#600);
+<span class="lineno">58</span>#607=PROPERTY_DEFINITION_REPRESENTATION(#606,#608);
+<span class="lineno">59</span>#608=REPRESENTATION(&#x27;marking_text_rep&#x27;,(#605),#14);
+<span class="lineno">60</span>#610=DIMENSIONAL_SIZE(#600,&#x27;font_size&#x27;);
+<span class="lineno">61</span>#611=MEASURE_REPRESENTATION_ITEM(&#x27;font_size&#x27;,LENGTH_MEASURE(4.0),#10);
+<span class="lineno">62</span>#612=SHAPE_DIMENSION_REPRESENTATION(&#x27;&#x27;,(#611),#14);
+<span class="lineno">63</span>ENDSEC;
+<span class="lineno">64</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Pmi128.html">&larr; Pmi128</a> <a class="up" href="index.html">§12.7 PMI / GD&amp;T</a> <a class="next" href="Pmi130.html">Pmi130 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

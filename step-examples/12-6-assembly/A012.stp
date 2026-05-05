@@ -1,0 +1,58 @@
+ISO-10303-21;
+/*
+ * A012 — Self-reference / cyclic external file reference
+ * Defect (OCCT 2547d97 / Mantis 0031711, A004 cyclic complex-entity ref):
+ *   External-file-assignment whose target path resolves to the main file
+ *   under translation; reader loops forever. Or a cyclic complex entity
+ *   referencing itself; semantic resolver follows ad infinitum.
+ * This example: APPLIED_EXTERNAL_IDENTIFICATION_ASSIGNMENT whose source
+ *   document is the file itself (filename matches FILE_NAME header).
+ * Expected kernel: detect identity by canonical path; skip self-reference;
+ *   Tarjan-style cycle detection during reference resolution; reject with
+ *   E_REFERENCE_CYCLE.
+ */
+HEADER;
+FILE_DESCRIPTION(('A012 self-referencing applied_external_identification_assignment'),'2;1');
+FILE_NAME('A012.stp','2026-04-26T00:00:00',('catalog'),('cad'),'manual','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#10 = APPLICATION_CONTEXT('automotive design');
+#11 = APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2001,#10);
+#12 = PRODUCT_CONTEXT('',#10,'mechanical');
+#13 = PRODUCT_DEFINITION_CONTEXT('part definition',#10,'design');
+#20 = PRODUCT('A012_ASSY','self-referencing assembly','',(#12));
+#21 = PRODUCT_DEFINITION_FORMATION('','',#20);
+#22 = PRODUCT_DEFINITION('design','',#21,#13);
+#23 = PRODUCT_DEFINITION_SHAPE('','',#22);
+#30 = PRODUCT('LEAF','leaf in self-ref file','',(#12));
+#31 = PRODUCT_DEFINITION_FORMATION('','',#30);
+#32 = PRODUCT_DEFINITION('design','',#31,#13);
+#33 = PRODUCT_DEFINITION_SHAPE('','',#32);
+#40 = NEXT_ASSEMBLY_USAGE_OCCURRENCE('1','LEAF_INST','',#22,#32,$);
+/* Units */
+#50 = ( LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT(.MILLI.,.METRE.) );
+#51 = ( NAMED_UNIT(*) PLANE_ANGLE_UNIT() SI_UNIT($,.RADIAN.) );
+#52 = ( NAMED_UNIT(*) SI_UNIT($,.STERADIAN.) SOLID_ANGLE_UNIT() );
+#53 = UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#50,'distance_accuracy_value','');
+#54 = ( GEOMETRIC_REPRESENTATION_CONTEXT(3) GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#53))
+        GLOBAL_UNIT_ASSIGNED_CONTEXT((#50,#51,#52)) REPRESENTATION_CONTEXT('','3D') );
+#60 = CARTESIAN_POINT('',(0.0,0.0,0.0));
+#61 = DIRECTION('',(0.0,0.0,1.0));
+#62 = DIRECTION('',(1.0,0.0,0.0));
+#63 = AXIS2_PLACEMENT_3D('leaf_origin',#60,#61,#62);
+#64 = SHAPE_REPRESENTATION('leaf_rep',(#63),#54);
+#65 = SHAPE_DEFINITION_REPRESENTATION(#33,#64);
+#66 = REPRESENTATION_MAP(#63,#64);
+#67 = MAPPED_ITEM('inst',#66,#63);
+#80 = AXIS2_PLACEMENT_3D('assy_origin',#60,#61,#62);
+#81 = SHAPE_REPRESENTATION('assy_rep',(#80,#67),#54);
+#82 = SHAPE_DEFINITION_REPRESENTATION(#23,#81);
+/* DEFECT: external identification points back at this very file
+   ('A012.stp'); a translator that resolves and re-loads enters an
+   infinite loop. */
+#90 = EXTERNAL_SOURCE('A012.stp');
+#91 = IDENTIFICATION_ROLE('externally_defined_identification','',$);
+#92 = APPLIED_EXTERNAL_IDENTIFICATION_ASSIGNMENT('A012','self_ref',#91,#22,#90);
+ENDSEC;
+END-ISO-10303-21;

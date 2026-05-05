@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Le057 — Records terminated with `;\n` plus extra blank lines between records</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.1a Encoding &amp; string-literal defects</a> <span class="sep">/</span> <span class="current">Le057</span>
+</nav>
+<header class="title-bar">
+<h1>Le057 <span class="sep">—</span> <span class="entry-title">Records terminated with `;\n` plus extra blank lines between records</span></h1>
+<p class="category">§12.1a encoding/strings (sub-class: end-of-record / non-canonical EOR)</p>
+<p class="severity-badge severity-p1">P1 — silent data loss</p>
+<p class="tag-pills">
+<a class="tag tag-spec-violation" href="../by-tag/spec-violation/index.html">spec-violation</a>
+<a class="tag tag-encoding" href="../by-tag/encoding/index.html">encoding</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-1a-encoding/Le057.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-1a-encoding/Le057.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>ISO 10303-21 §6.2 (record syntax: `</li>
+<li>` terminates a record, intervening whitespace is allowed)</li>
+<li>bug-reporter language: &quot;STEP file has blank lines between records&quot;, &quot;extra newlines confuse parser&quot;</li>
+</ul></section>
+<section><h2>Sender</h2>
+<p>deduced — producers that hand-format Part-21 for human readability, post-process with text editors, or round-trip through tools that auto-insert blank lines (some VCS line-ending normalisers, some pretty-printers)</p></section>
+<section><h2>Description</h2>
+<p>ISO 10303-21 §6.2 allows arbitrary whitespace (including newlines) between records — the record terminator is the `;`, and what follows is lexically free until the next record&#x27;s leading token. A producer that emits each record on its own line plus a trailing blank line (`..);\n\n`) is technically conformant but stresses streaming tokenisers that special-case `;\n` as a &quot;next record starts here&quot; boundary. Mixing `;\n` and `;\n\n` and `; #NEXT=` (no separator) within the same DATA section is non-canonical: a strict tokeniser that picks one form may mis-frame the others. Bug-reporter language: &quot;STEP file has blank lines between records&quot;, &quot;extra newlines confuse parser&quot;, &quot;EOR formatting inconsistent across DATA section&quot;.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>a DATA section where some records end with `;\n` and the next begins immediately, others end with `;\n\n` (blank line between), and one record runs `;` followed by another record on the same line `;#11=..`. All three are spec-conformant; the inconsistency is the defect.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>tokenise on `;` alone; treat all whitespace (including blank lines) between records as ignorable. Never reject a file for inter-record whitespace variation.</p></section>
+<section><h2>Notes</h2>
+<p>Sibling of Le056 (Part 1 — different EOR variant). **See also**: Le054, Le056, Le058. Synonyms: &quot;blank lines in STEP DATA&quot;, &quot;non-canonical record separator&quot;, &quot;mixed EOR whitespace&quot;.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>matches(rb&#x27;;\n\n&#x27;) or matches(rb&#x27;;\n#&#x27;)</code></li>
+<li><code>count(b&#x27;;\n\n&#x27;) &gt;= 1 or count(b&#x27;;\n&#x27;) &gt;= 3</code></li>
+</ul></section>
+<section><h2>Cross-references</h2>
+<p><a href="Le054.html">Le054</a>, <a href="Le056.html">Le056</a>, <a href="Le058.html">Le058</a></p>
+</section>
+<section><h2>Live oracle output</h2>
+<table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
+<tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>no_shapes_loaded</code></td></tr>
+</tbody></table>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>/* Le057 - Records terminated with ;\n plus extra blank lines between records
+<span class="lineno">2</span> * Defect: ISO 10303-21 6.2 allows arbitrary whitespace between records;
+<span class="lineno">3</span> * the record terminator is `;`. This fixture emits a non-canonical
+<span class="lineno">4</span> * mix of EOR formatting: some records end with `;\n` and the next
+<span class="lineno">5</span> * begins immediately, others end with `;\n\n` (blank line between),
+<span class="lineno">6</span> * and one record runs `;` followed by another record on the same
+<span class="lineno">7</span> * line. All three are spec-conformant; the inconsistency is the
+<span class="lineno">8</span> * defect that stresses streaming tokenisers. */
+<span class="lineno">9</span>ISO-10303-21;
+<span class="lineno">10</span>HEADER;
+<span class="lineno">11</span>FILE_DESCRIPTION((&#x27;Le057 - mixed EOR formatting with blank lines and inline records&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">12</span>FILE_NAME(&#x27;Le057.stp&#x27;,&#x27;2026-05-02T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">13</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }&#x27;));
+<span class="lineno">14</span>ENDSEC;
+<span class="lineno">15</span>DATA;
+<span class="lineno">16</span>#1=APPLICATION_CONTEXT(&#x27;automotive_design&#x27;);
+<span class="lineno">17</span>#10=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">18</span>
+<span class="lineno">19</span>#11=CARTESIAN_POINT(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">20</span>
+<span class="lineno">21</span>
+<span class="lineno">22</span>#12=CARTESIAN_POINT(&#x27;&#x27;,(2.0,0.0,0.0));
+<span class="lineno">23</span>#13=VERTEX_POINT(&#x27;&#x27;,#10);#14=VERTEX_POINT(&#x27;&#x27;,#11);
+<span class="lineno">24</span>#15=VERTEX_POINT(&#x27;&#x27;,#12);
+<span class="lineno">25</span>
+<span class="lineno">26</span>#16=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">27</span>#17=VECTOR(&#x27;&#x27;,#16,1.0);
+<span class="lineno">28</span>
+<span class="lineno">29</span>
+<span class="lineno">30</span>#18=LINE(&#x27;&#x27;,#10,#17);
+<span class="lineno">31</span>#19=EDGE_CURVE(&#x27;&#x27;,#13,#14,#18,.T.);
+<span class="lineno">32</span>ENDSEC;
+<span class="lineno">33</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Le056.html">&larr; Le056</a> <a class="up" href="index.html">§12.1a Encoding &amp; string-literal defects</a> <a class="next" href="Le058.html">Le058 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

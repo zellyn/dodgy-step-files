@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>A077 — Sub-assembly extraction loses XDE attributes</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.6 Assembly hierarchy</a> <span class="sep">/</span> <span class="current">A077</span>
+</nav>
+<header class="title-bar">
+<h1>A077 <span class="sep">—</span> <span class="entry-title">Sub-assembly extraction loses XDE attributes</span></h1>
+<p class="category">§12.6 assembly</p>
+<p class="severity-badge severity-p1">P1 — silent data loss</p>
+<p class="tag-pills">
+<a class="tag tag-assembly" href="../by-tag/assembly/index.html">assembly</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-6-assembly/A077.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-6-assembly/A077.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>OCCT MANTIS#0028104</li>
+<li>OCCT MANTIS#0028055</li>
+<li>OCCT MANTIS#0029888 (OCCT MANTIS tracker 502 as of 2026-05-02)</li>
+</ul></section>
+<section><h2>Description</h2>
+<p>A &quot;save sub-assembly&quot; operation extracts a child branch of a document into a new document. Names, colours, layers, and PMI attached to the extracted branch are not copied — extracted document has bare geometry only.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>Two-level assembly with names + colours on every level; extract the lower sub-assembly into a new XCAF document.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>Heal and accept: extraction copies the entire attribute subtree rooted at the extracted label; downstream document is fully styled. Must not silently lose XDE attributes.</p></section>
+<section><h2>Notes</h2>
+<p>**See also**: A064, A073. Synonyms: &quot;sub-assembly extraction loses XDE attributes&quot;, &quot;extracted subassembly missing labels and colors&quot;, &quot;splitting out a subassembly drops metadata&quot;.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>contains(b&#x27;NEXT_ASSEMBLY_USAGE_OCCURRENCE&#x27;)</code></li>
+<li><code>contains(b&#x27;STYLED_ITEM&#x27;)</code></li>
+<li><code>contains(b&#x27;COLOUR_RGB&#x27;)</code></li>
+</ul></section>
+<section><h2>Cross-references</h2>
+<p><a href="A064.html">A064</a>, <a href="A073.html">A073</a></p>
+</section>
+<section><h2>Live oracle output</h2>
+<table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
+<tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>no_shapes_loaded</code></td></tr>
+</tbody></table>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* A077 - Sub-assembly extraction loses XDE attributes
+<span class="lineno">3</span> * Defect: two-level assembly with names + colours on every level; extraction copies geometry only */
+<span class="lineno">4</span>HEADER;
+<span class="lineno">5</span>FILE_DESCRIPTION((&#x27;A077 test case&#x27;,&#x27;Sub-assembly extraction loses XDE attributes&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">6</span>FILE_NAME(&#x27;A077.stp&#x27;,&#x27;2026-04-30T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">7</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }&#x27;));
+<span class="lineno">8</span>ENDSEC;
+<span class="lineno">9</span>DATA;
+<span class="lineno">10</span>#1=APPLICATION_CONTEXT(&#x27;automotive_design&#x27;);
+<span class="lineno">11</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,&#x27;automotive_design&#x27;,2000,#1);
+<span class="lineno">12</span>#10=PRODUCT_CONTEXT(&#x27;&#x27;,#1,&#x27;mechanical&#x27;);
+<span class="lineno">13</span>#11=PRODUCT(&#x27;part1&#x27;,&#x27;part1&#x27;,&#x27;part1&#x27;,(#10));
+<span class="lineno">14</span>#12=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#11);
+<span class="lineno">15</span>#13=PRODUCT_DEFINITION_CONTEXT(&#x27;part definition&#x27;,#1,&#x27;design&#x27;);
+<span class="lineno">16</span>#14=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,#12,#13);
+<span class="lineno">17</span>#15=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,#14);
+<span class="lineno">18</span>#100=PRODUCT(&#x27;subassy&#x27;,&#x27;sub&#x27;,&#x27;&#x27;,(#10));
+<span class="lineno">19</span>#104=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#100);
+<span class="lineno">20</span>#105=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,#104,#13);
+<span class="lineno">21</span>/* <mark>NEXT_ASSEMBLY_USAGE_OCCURRENCE</mark> relating/related must be PRODUCT_DEFINITION,
+<span class="lineno">22</span> * not PRODUCT. Corrected here: 4th arg is the parent PD (#14), 5th is
+<span class="lineno">23</span> * the child PD (#105). */
+<span class="lineno">24</span>#101=<mark>NEXT_ASSEMBLY_USAGE_OCCURRENCE</mark>(&#x27;&#x27;,&#x27;sub_under_root&#x27;,&#x27;&#x27;,#14,#105,&#x27;&#x27;);
+<span class="lineno">25</span>#102=<mark>COLOUR_RGB</mark>(&#x27;&#x27;,0.0,1.0,0.0);
+<span class="lineno">26</span>#103=<mark>STYLED_ITEM</mark>(&#x27;sub_green&#x27;,(#102),#105);
+<span class="lineno">27</span>
+<span class="lineno">28</span>ENDSEC;
+<span class="lineno">29</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="A076.html">&larr; A076</a> <a class="up" href="index.html">§12.6 Assembly hierarchy</a> <a class="next" href="A078.html">A078 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

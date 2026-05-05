@@ -1,0 +1,23 @@
+/* Wr027 - Unit context emitted twice with different units - HEADER claims mm, DATA declares INCH */
+ISO-10303-21;
+HEADER;
+/* Wr027: HEADER prose says 'part in mm'; DATA-section unit context
+   resolves to INCH. Geometry was authored in inches but the HEADER
+   string is decorative from a different subsystem */
+FILE_DESCRIPTION(('Wr027 - part in mm'),'2;1');
+FILE_NAME('Wr027.stp','2026-04-30T00:00:00',(''),(''),
+  'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('mechanical design');
+#10=CARTESIAN_POINT('origin',(0.0,0.0,0.0));
+#11=DIRECTION('z',(0.0,0.0,1.0));
+#12=DIRECTION('x',(1.0,0.0,0.0));
+#13=AXIS2_PLACEMENT_3D('placement',#10,#11,#12);
+#20=(LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT($,.METRE.));
+#21=DIMENSIONAL_EXPONENTS(1.0,0.0,0.0,0.0,0.0,0.0,0.0);
+#22=LENGTH_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.0254),#20);
+#23=(CONVERSION_BASED_UNIT('INCH',#22) LENGTH_UNIT() NAMED_UNIT(#21));
+ENDSEC;
+END-ISO-10303-21;

@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>U041 — Dynamic-viscosity unit `Pa·s` built from a derived-unit chain (`kg / (m * s)`)</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.5 Units &amp; coordinate systems</a> <span class="sep">/</span> <span class="current">U041</span>
+</nav>
+<header class="title-bar">
+<h1>U041 <span class="sep">—</span> <span class="entry-title">Dynamic-viscosity unit `Pa·s` built from a derived-unit chain (`kg / (m * s)`)</span></h1>
+<p class="category">§12.5 (sub-class: derived-unit composition)</p>
+<p class="tag-pills">
+<a class="tag tag-silent-loss" href="../by-tag/silent-loss/index.html">silent-loss</a>
+<a class="tag tag-units" href="../by-tag/units/index.html">units</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-5-units/U041.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-5-units/U041.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>16-iso-spec ISO 10303-41 §DERIVED_UNIT</li>
+<li>bug-reporter language: &quot;STEP viscosity unit not recognised&quot;</li>
+</ul></section>
+<section><h2>Sender</h2>
+<p>deduced — fluid-simulation export pipelines that emit material properties via DERIVED_UNIT chains</p></section>
+<section><h2>Description</h2>
+<p>Dynamic viscosity Pa·s is `kg·m^(-1)·s^(-1)`. A producer emitting viscosity as a multi-element DERIVED_UNIT exposes the same defect classes as U040 — element exponent wrong, element ordering, mixed SI prefixes — but with a four-element span (mass +1, length -1, time -1) that some receivers flatten into a length-time-mass dictionary lookup that drops the redundant time and reads the unit as Pa instead of Pa·s. Bug-reporter language: &quot;STEP viscosity not recognised&quot;, &quot;material property pressure read instead of viscosity&quot;.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>DERIVED_UNIT with three DERIVED_UNIT_ELEMENT entries: kilogram^+1, metre^-1, second^-1.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>detect the dimensional signature of dynamic viscosity (mass^1 length^-1 time^-1) and bind to a Pa·s context; never silently flatten time exponent and produce Pa.</p></section>
+<section><h2>Notes</h2>
+<p>**See also**: U040. **OCC behavior**: silently accepts (no diagnostic, empty result); catalog disallows silent-accept. Kernel-bug witnessed: receivers enforcing the spec must reject (or surface a diagnostic) — silent acceptance defeats the catalog&#x27;s stated invariant. Synonyms: &quot;STEP viscosity unit not recognised&quot;, &quot;Pa.s read as Pa&quot;, &quot;dynamic viscosity derived chain unsupported&quot;, &quot;STEP material viscosity wrong unit&quot;, &quot;viscosity flattened to pressure&quot;.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>contains(b&#x27;DERIVED_UNIT_ELEMENT&#x27;) and contains(b&#x27;DERIVED_UNIT(&#x27;)</code></li>
+<li><code>count(b&#x27;DERIVED_UNIT_ELEMENT&#x27;) &gt;= 3</code></li>
+</ul></section>
+<section><h2>Cross-references</h2>
+<p><a href="U040.html">U040</a></p>
+</section>
+<section><h2>Live oracle output</h2>
+<table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
+<tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>warn(W_COMPLEX_ORDER)</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>no_shapes_loaded</code></td></tr>
+</tbody></table>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>/* U041 - Dynamic-viscosity Pa.s as derived-unit chain (kg / (m * s))
+<span class="lineno">2</span> * Defect: a DERIVED_UNIT composed of mass^+1, length^-1, time^-1.
+<span class="lineno">3</span> * Receivers that flatten time exponent into a length-time-mass dictionary
+<span class="lineno">4</span> * lookup may drop the redundant time and read the unit as Pa instead of
+<span class="lineno">5</span> * Pa.s. */
+<span class="lineno">6</span>ISO-10303-21;
+<span class="lineno">7</span>HEADER;
+<span class="lineno">8</span>FILE_DESCRIPTION((&#x27;U041 - dynamic viscosity Pa.s as derived unit chain&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">9</span>FILE_NAME(&#x27;U041.stp&#x27;,&#x27;2026-04-30T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">10</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }&#x27;));
+<span class="lineno">11</span>ENDSEC;
+<span class="lineno">12</span>DATA;
+<span class="lineno">13</span>#1=APPLICATION_CONTEXT(&#x27;automotive_design&#x27;);
+<span class="lineno">14</span>#3=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT($,.METRE.));
+<span class="lineno">15</span>#4=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+<span class="lineno">16</span>#5=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+<span class="lineno">17</span>#6=(NAMED_UNIT(*)MASS_UNIT()SI_UNIT(.KILO.,.GRAM.));
+<span class="lineno">18</span>#7=(NAMED_UNIT(*)SI_UNIT($,.SECOND.)TIME_MEASURE_UNIT());
+<span class="lineno">19</span>/* Pa.s = kg^+1 m^-1 s^-1 */
+<span class="lineno">20</span>#10=<mark>DERIVED_UNIT_ELEMENT</mark>(#6,1.0);
+<span class="lineno">21</span>#11=<mark>DERIVED_UNIT_ELEMENT</mark>(#3,-1.0);
+<span class="lineno">22</span>#12=<mark>DERIVED_UNIT_ELEMENT</mark>(#7,-1.0);
+<span class="lineno">23</span>#13=DERIVED_UNIT((#10,#11,#12));
+<span class="lineno">24</span>#20=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#3,
+<span class="lineno">25</span>  &#x27;distance_accuracy_value&#x27;,&#x27;&#x27;);
+<span class="lineno">26</span>#21=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+<span class="lineno">27</span>  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#20))
+<span class="lineno">28</span>  GLOBAL_UNIT_ASSIGNED_CONTEXT((#3,#4,#5))
+<span class="lineno">29</span>  REPRESENTATION_CONTEXT(&#x27;ctx&#x27;,&#x27;3D&#x27;));
+<span class="lineno">30</span>ENDSEC;
+<span class="lineno">31</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="U040.html">&larr; U040</a> <a class="up" href="index.html">§12.5 Units &amp; coordinate systems</a> <a class="next" href="U042.html">U042 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

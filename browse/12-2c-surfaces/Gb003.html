@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Gb003 — Closed B-spline curve has reversed end-tangent</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.2c Surface / curve degeneracies</a> <span class="sep">/</span> <span class="current">Gb003</span>
+</nav>
+<header class="title-bar">
+<h1>Gb003 <span class="sep">—</span> <span class="entry-title">Closed B-spline curve has reversed end-tangent</span></h1>
+<p class="category">§12.2c (sub-class: B-spline closure tangent)</p>
+<p class="tag-pills">
+<a class="tag tag-silent-loss" href="../by-tag/silent-loss/index.html">silent-loss</a>
+<a class="tag tag-geometry" href="../by-tag/geometry/index.html">geometry</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-2c-surfaces/Gb003.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-2c-surfaces/Gb003.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>OCCT GeomLib_CheckBSplineCurve (uncovered class evidence)</li>
+</ul></section>
+<section><h2>Sender</h2>
+<p>deduced — OCCT uncovered-class sweep, Pass C</p></section>
+<section><h2>Description</h2>
+<p>A `B_SPLINE_CURVE_WITH_KNOTS` declares `closed = .T.` and the first/last control points coincide, but the start and end tangents differ in sign — meaning the curve closes positionally but the tangent has a sharp reversal at the closure point (a cusp). Bug-reporter language: &quot;closed B-spline has cusp&quot;, &quot;closure tangent reversed&quot;, &quot;C0 closure but no C1&quot;.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>A degree-3 B-spline with knot vector `(0,0,0,0,1,1,1,1)` and control points (1,0,0), (0,1,0), (-1,0,0), (0,-1,0), (1,0,0). Marked closed; tangents at start vs end are perpendicular but the file claims smooth closure.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>Reject the smooth-closure claim; or open the curve at the cusp.</p></section>
+<section><h2>Notes</h2>
+<p>Bug-reporter synonyms: &quot;B-spline cusp at closure&quot;, &quot;tangent jump at periodicity&quot;. Bytes alone are insufficient to demonstrate this defect — needs sibling input fixture. Tagged provenance_tier: runtime-only. **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog&#x27;s allowed set ({heal, reject}). Kernel-bug witnessed: catalog allows either heal or reject; OCC silently accepts the bad input without doing either. Synonyms: &quot;B-spline cusp at closure&quot;, &quot;tangent jump at periodicity&quot;, &quot;closed B-spline has reversed end-tangent&quot;, &quot;closure tangent reversed&quot;, &quot;C0 closure but no C1 on closed BSpline&quot;.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>contains(b&#x27;B_SPLINE_CURVE_WITH_KNOTS(&#x27;)</code></li>
+<li><code>contains(b&#x27;.T.,.F.&#x27;)</code></li>
+<li><code>count_entity_def(b&#x27;CARTESIAN_POINT&#x27;) == 5</code></li>
+</ul></section>
+<section><h2>Live oracle output</h2>
+<table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
+<tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>no_shapes_loaded</code></td></tr>
+</tbody></table>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* Gb003 - Closed B-spline with reversed end tangent (cusp).
+<span class="lineno">3</span> * Defect: degree-3 closed B-spline with control points (1,0,0),
+<span class="lineno">4</span> * (0,1,0), (-1,0,0), (0,-1,0), (1,0,0). The curve closes positionally
+<span class="lineno">5</span> * but the start and end tangents are perpendicular - cusp. */
+<span class="lineno">6</span>HEADER;
+<span class="lineno">7</span>FILE_DESCRIPTION((&#x27;Gb003 - closed bspline reversed tangent&#x27;,&#x27;Pass C gap-fill&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">8</span>FILE_NAME(&#x27;Gb003.stp&#x27;,&#x27;2026-04-30T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;gap-fill C&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">9</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }&#x27;));
+<span class="lineno">10</span>ENDSEC;
+<span class="lineno">11</span>DATA;
+<span class="lineno">12</span>#1=APPLICATION_CONTEXT(&#x27;automotive_design&#x27;);
+<span class="lineno">13</span><mark>#10=CARTESIAN_POINT(</mark>&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">14</span><mark>#11=CARTESIAN_POINT(</mark>&#x27;&#x27;,(0.0,1.0,0.0));
+<span class="lineno">15</span><mark>#12=CARTESIAN_POINT(</mark>&#x27;&#x27;,(-1.0,0.0,0.0));
+<span class="lineno">16</span><mark>#13=CARTESIAN_POINT(</mark>&#x27;&#x27;,(0.0,-1.0,0.0));
+<span class="lineno">17</span><mark>#14=CARTESIAN_POINT(</mark>&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">18</span>/* Marked closed_curve = .T. but tangent at start (toward Y+) and end
+<span class="lineno">19</span>   (toward X+) differ by 90Â° - not a smooth closure. */
+<span class="lineno">20</span>#20=<mark>B_SPLINE_CURVE_WITH_KNOTS(</mark>&#x27;cusp_at_closure&#x27;,3,(#10,#11,#12,#13,#14),
+<span class="lineno">21</span>   .UNSPECIFIED.,<mark>.T.,.F.</mark>,(4,1,4),(0.0,0.5,1.0),.UNSPECIFIED.);
+<span class="lineno">22</span>ENDSEC;
+<span class="lineno">23</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Gb002.html">&larr; Gb002</a> <a class="up" href="index.html">§12.2c Surface / curve degeneracies</a> <a class="next" href="Gb004.html">Gb004 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

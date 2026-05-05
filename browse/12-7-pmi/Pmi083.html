@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Pmi083 — Annotation plane orientation flipped on GD&amp;T import</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.7 PMI / GD&amp;T</a> <span class="sep">/</span> <span class="current">Pmi083</span>
+</nav>
+<header class="title-bar">
+<h1>Pmi083 <span class="sep">—</span> <span class="entry-title">Annotation plane orientation flipped on GD&amp;T import</span></h1>
+<p class="category">§12.7 PMI/GD&amp;T</p>
+<p class="tag-pills">
+<a class="tag tag-pmi" href="../by-tag/pmi/index.html">pmi</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-7-pmi/Pmi083.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-7-pmi/Pmi083.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>OCCT MANTIS#0028449 (OCCT MANTIS tracker 502 as of 2026-05-02)</li>
+</ul></section>
+<section><h2>Description</h2>
+<p>A GD&amp;T annotation plane on a face has its normal vector pointing into the part rather than out. Reader copies the plane normal from the underlying surface but does not consult the face orientation, so flipped faces produce flipped annotation planes — text appears facing away from viewer.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>Face with reversed orientation (`.F.`); GD&amp;T annotation plane sharing the face&#x27;s surface. Reader produces annotation with normal opposite the face&#x27;s outward direction.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>Heal and accept: coerce the annotation plane normal to follow face orientation, not just the underlying surface; consult `ADVANCED_FACE` same-sense flag.</p></section>
+<section><h2>Notes</h2>
+<p>**See also**: Tsh001. Synonyms: &quot;annotation plane orientation flipped on GD&amp;T import&quot;, &quot;GD&amp;T text faces wrong way on read&quot;, &quot;annotation reads backward&quot;, &quot;PMI plane normal points into part&quot;.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a</code></p></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>face[0].surface_type == &quot;plane&quot;</code></li>
+<li><code>face[0].sliver_aspect_max_min &gt; 1e6</code></li>
+</ul></section>
+<section><h2>Cross-references</h2>
+<p><a href="../12-3a-shells/Tsh001.html">Tsh001</a></p>
+</section>
+<section><h2>Live oracle output</h2>
+<table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
+<tr><td><code>occt_heal_on</code></td><td><code>shape(1)</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>shape(1)</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>shape(1)</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>shape(1)</code></td></tr>
+<tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>empty_mesh</code></td></tr>
+</tbody></table>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* Pmi083 - Annotation plane orientation flipped.
+<span class="lineno">3</span> * Defect: an ADVANCED_FACE has same_sense = .F. (face flipped relative
+<span class="lineno">4</span> * to its underlying surface). A GD&amp;T ANNOTATION_PLANE shares the same
+<span class="lineno">5</span> * surface; reader copies the surface normal but ignores the face&#x27;s
+<span class="lineno">6</span> * .F. orientation, so the annotation plane points the wrong way. */
+<span class="lineno">7</span>HEADER;
+<span class="lineno">8</span>FILE_DESCRIPTION((&#x27;Pmi083 test case&#x27;,&#x27;Annotation plane orientation flipped&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">9</span>FILE_NAME(&#x27;Pmi083.stp&#x27;,&#x27;2026-04-30T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">10</span>FILE_SCHEMA((&#x27;AP242_MANAGED_MODEL_BASED_3D_ENGINEERING_MIM_LF { 1 0 10303 442 3 0 0 }&#x27;));
+<span class="lineno">11</span>ENDSEC;
+<span class="lineno">12</span>DATA;
+<span class="lineno">13</span>#1=APPLICATION_CONTEXT(&#x27;managed model based 3d engineering&#x27;);
+<span class="lineno">14</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,&#x27;ap242_managed_model_based_3d_engineering&#x27;,2020,#1);
+<span class="lineno">15</span>#10=PRODUCT_CONTEXT(&#x27;&#x27;,#1,&#x27;mechanical&#x27;);
+<span class="lineno">16</span>#11=PRODUCT(&#x27;part1&#x27;,&#x27;part1&#x27;,&#x27;part1&#x27;,(#10));
+<span class="lineno">17</span>#12=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#11);
+<span class="lineno">18</span>#13=PRODUCT_DEFINITION_CONTEXT(&#x27;part definition&#x27;,#1,&#x27;design&#x27;);
+<span class="lineno">19</span>#14=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,#12,#13);
+<span class="lineno">20</span>#15=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,#14);
+<span class="lineno">21</span>/* Shared planar surface */
+<span class="lineno">22</span>#100=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">23</span>#101=DIRECTION(&#x27;z_normal&#x27;,(0.0,0.0,1.0));
+<span class="lineno">24</span>#102=DIRECTION(&#x27;x_ref&#x27;,(1.0,0.0,0.0));
+<span class="lineno">25</span>#103=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#100,#101,#102);
+<span class="lineno">26</span>#104=PLANE(&#x27;shared_surface&#x27;,#103);
+<span class="lineno">27</span>/* Reversed face: same_sense = .F. - this is the load-bearing flag */
+<span class="lineno">28</span>#105=EDGE_LOOP(&#x27;&#x27;,());
+<span class="lineno">29</span>#106=FACE_OUTER_BOUND(&#x27;&#x27;,#105,.T.);
+<span class="lineno">30</span>#107=ADVANCED_FACE(&#x27;reversed_face&#x27;,(#106),#104,.F.);
+<span class="lineno">31</span>/* Annotation plane sharing the same surface placement.
+<span class="lineno">32</span> * Reader will copy #103&#x27;s normal (+Z) but the face&#x27;s .F. flag means
+<span class="lineno">33</span> * the outward face normal is -Z; mismatch flips the annotation. */
+<span class="lineno">34</span>#110=ANNOTATION_PLANE(&#x27;flipped_normal&#x27;,&#x27;&#x27;,(),#103);
+<span class="lineno">35</span>/* Add SDR linking PRODUCT to existing geometry. */
+<span class="lineno">36</span>#9000=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">37</span>#9001=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+<span class="lineno">38</span>#9002=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+<span class="lineno">39</span>#9003=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9000,&#x27;distance_accuracy_value&#x27;,&#x27;&#x27;);
+<span class="lineno">40</span>#9004=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9003))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9000,#9001,#9002))REPRESENTATION_CONTEXT(&#x27;&#x27;,&#x27;3D&#x27;));
+<span class="lineno">41</span>#9010=OPEN_SHELL(&#x27;wrap_shell&#x27;,(#107));
+<span class="lineno">42</span>#9011=SHELL_BASED_SURFACE_MODEL(&#x27;wrap_sbsm&#x27;,(#9010));
+<span class="lineno">43</span>#9020=MANIFOLD_SURFACE_SHAPE_REPRESENTATION(&#x27;&#x27;,(#9011),#9004);
+<span class="lineno">44</span>#9021=SHAPE_DEFINITION_REPRESENTATION(#15,#9020);
+<span class="lineno">45</span>ENDSEC;
+<span class="lineno">46</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Pmi082.html">&larr; Pmi082</a> <a class="up" href="index.html">§12.7 PMI / GD&amp;T</a> <a class="next" href="Pmi084.html">Pmi084 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

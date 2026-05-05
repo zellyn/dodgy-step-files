@@ -1,0 +1,50 @@
+ISO-10303-21;
+/* Gp027 - Closed-shape splitter post-condition: invalid SameParameter
+ * Defect: a face split off from a closed cylinder via
+ * ShapeUpgrade_ShapeDivideClosed has an EDGE_CURVE whose 3D curve and
+ * pcurve do not share parameterization, even though the SameParameter
+ * flag is .T.. The splitter forgot to call SameParameter() on outputs. */
+HEADER;
+FILE_DESCRIPTION(('Gp027 test case','Invalid SameParameter after ShapeDivideClosed'),'2;1');
+FILE_NAME('Gp027.stp','2026-04-27T00:00:00',(''),(''),'auto-generated','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#11=DIRECTION('',(0.0,0.0,1.0));
+#12=DIRECTION('',(1.0,0.0,0.0));
+#13=AXIS2_PLACEMENT_3D('',#10,#11,#12);
+#20=CYLINDRICAL_SURFACE('',#13,10.0);
+/* Half-cylinder face produced by ShapeDivideClosed - U in [0, pi] */
+#40=CARTESIAN_POINT('',(10.0,0.0,0.0));
+#41=VERTEX_POINT('',#40);
+#42=CARTESIAN_POINT('',(-10.0,0.0,0.0));
+#43=VERTEX_POINT('',#42);
+/* 3D curve: half-circle parameterized from t=0 to t=pi */
+#30=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#31=DIRECTION('',(0.0,0.0,1.0));
+#33=AXIS2_PLACEMENT_3D('',#30,#31,#12);
+#34=CIRCLE('',#33,10.0);
+/* Defect: pcurve in UV from (0,0) to (pi, 0) but parameterized
+ * over [0, 1] instead of [0, pi] - SameParameter would require [0, pi]
+ * to match the 3D circle's natural arc parameter. */
+#71=CARTESIAN_POINT('',(0.0,0.0));
+#72=DIRECTION('',(1.0,0.0));
+#73=VECTOR('',#72,3.14159265);   /* the wrong magnitude */
+#74=LINE('',#71,#73);
+#75=( GEOMETRIC_REPRESENTATION_CONTEXT(2)
+      PARAMETRIC_REPRESENTATION_CONTEXT()
+      REPRESENTATION_CONTEXT('parametric','2D') );
+#76=DEFINITIONAL_REPRESENTATION('',(#74),#75);
+#77=PCURVE('',#20,#76);
+#50=SURFACE_CURVE('',#34,(#77),.PCURVE_S1.);
+/* SameParameter flag .T. but parameterizations differ */
+#60=EDGE_CURVE('',#41,#43,#50,.T.);
+#61=ORIENTED_EDGE('',*,*,#60,.T.);
+#62=EDGE_LOOP('',(#61));
+#63=FACE_OUTER_BOUND('',#62,.T.);
+#64=ADVANCED_FACE('',(#63),#20,.T.);
+ENDSEC;
+END-ISO-10303-21;

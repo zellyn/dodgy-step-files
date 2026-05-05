@@ -1,0 +1,41 @@
+/* N007 - Vertex tolerance bump factor hard-coded 1.000001 * on disagreement
+ * Defect: StepToTopoDS_TranslateEdge -- when imported edge's 3D curve and
+ * vertex points disagree beyond preci, OCCT bumps vertex tolerance by
+ * 1.000001 * (deviation) to make the edge pass invariants. Repeated reads
+ * accumulate the factor.
+ * Reproducer: VERTEX_POINT.cartesian_point lies 1e-3 from the curve evaluation
+ * at the edge's parametric endpoint; declared uncertainty is 1e-6.
+ */
+ISO-10303-21;
+HEADER;
+FILE_DESCRIPTION(('N007 vertex tolerance bump factor 1.000001 hard-coded'),'2;1');
+FILE_NAME('N007.stp','2026-04-26T00:00:00',(''),(''),
+  'cad-research-suite','','');
+FILE_SCHEMA(('CONFIG_CONTROL_DESIGN'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('configuration controlled 3d designs of mechanical parts');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
+  'config_control_design',1994,#1);
+/* Curve evaluates to (10.0, 0, 0) at t=10; vertex stored at (10.0, 0.001, 0)
+ * -- 1e-3 mm off the curve. */
+#10=CARTESIAN_POINT('curve_start',(0.0,0.0,0.0));
+#11=CARTESIAN_POINT('vertex_off_curve',(10.0,0.001,0.0));
+#12=VERTEX_POINT('v_start',#10);
+/* Defect site: vertex_off_curve will trigger 1.000001 * 1e-3 vertex-tol bump */
+#13=VERTEX_POINT('v_end_offcurve',#11);
+#20=DIRECTION('+x',(1.0,0.0,0.0));
+#21=VECTOR('',#20,10.0);
+#22=LINE('edge_3d',#10,#21);
+#30=EDGE_CURVE('edge_pro8845',#12,#13,#22,.T.);
+#40=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#41=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#42=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#43=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-6),#40,
+  'distance_accuracy_value','declared');
+#50=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#43))
+  GLOBAL_UNIT_ASSIGNED_CONTEXT((#40,#41,#42))
+  REPRESENTATION_CONTEXT('ctx','3D'));
+ENDSEC;
+END-ISO-10303-21;

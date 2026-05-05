@@ -1,0 +1,43 @@
+ISO-10303-21;
+/* M048 - Material / appearance / physical attributes silently dropped
+ * on STEP export.
+ * Defect: density-zero material plus empty material name combination
+ * historically crashed OCCT (Mantis 32xxx series). On export, kernels
+ * should skip density emission for zero-density materials and supply
+ * a default name. This fixture exercises BOTH issues:
+ *   #200: MATERIAL_DESIGNATION with empty name
+ *   #310: density value = 0 emitted as a property */
+HEADER;
+FILE_DESCRIPTION(('M048 test case','material with empty name and 0 density'),'2;1');
+FILE_NAME('M048.stp','2026-04-26T00:00:00',(''),(''),'auto-generated','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#11=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#12=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.E-6),#10,'distance_accuracy_value','');
+#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+     GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13))
+     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12))
+     REPRESENTATION_CONTEXT('part','3D'));
+#100=PRODUCT('part','part','',(#110));
+#110=MECHANICAL_CONTEXT('',#1,'mechanical');
+#120=PRODUCT_DEFINITION_FORMATION('','',#100);
+#130=PRODUCT_DEFINITION('design','',#120,#140);
+#140=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#150=PRODUCT_DEFINITION_SHAPE('','',#130);
+/* Defect 1: MATERIAL_DESIGNATION with empty name - some readers
+ * abort. */
+#200=MATERIAL_DESIGNATION('','',#130);
+/* Defect 2: density property with value 0 (kg/m^3). Should not be
+ * emitted at all if zero. */
+#300=PROPERTY_DEFINITION('density','',#150);
+#310=MEASURE_REPRESENTATION_ITEM('density',
+       MASS_DENSITY_MEASURE(0.0),#10);
+#320=REPRESENTATION('density_repr',(#310),#14);
+#330=PROPERTY_DEFINITION_REPRESENTATION(#300,#320);
+ENDSEC;
+END-ISO-10303-21;

@@ -1,0 +1,55 @@
+ISO-10303-21;
+/* Gp007 - Pcurve range incompatible with edge range (CheckPCurveRange)
+ * Defect: the pcurve in 2D is a TRIMMED_CURVE whose trim parameters
+ * are [0.0, 2.5], but the underlying basis B-spline has its natural
+ * domain explicitly declared as [0.0, 1.0]. The trim band [1.0, 2.5]
+ * lies outside the pcurve's basis-curve domain, so evaluation on that
+ * portion is undefined. ShapeAnalysis_Edge::CheckPCurveRange flags it. */
+HEADER;
+FILE_DESCRIPTION(('Gp007 test case','Pcurve range incompatible with edge range'),'2;1');
+FILE_NAME('Gp007.stp','2026-04-27T00:00:00',(''),(''),'auto-generated','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#11=DIRECTION('',(0.0,0.0,1.0));
+#12=DIRECTION('',(1.0,0.0,0.0));
+#13=AXIS2_PLACEMENT_3D('',#10,#11,#12);
+/* Finite planar surface */
+#20=PLANE('',#13);
+/* 3D curve: a finite B-spline whose natural parameter domain is [0,1] */
+#21=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#22=CARTESIAN_POINT('',(1.0,0.0,0.0));
+#23=B_SPLINE_CURVE_WITH_KNOTS('',1,(#21,#22),.POLYLINE_FORM.,.F.,.F.,
+  (2,2),(0.0,1.0),.UNSPECIFIED.);
+#40=VERTEX_POINT('',#21);
+#41=VERTEX_POINT('',#22);
+/* 2D pcurve basis: a degree-1 B-spline in UV with explicit knots [0,1].
+ * Natural parameter domain is therefore [0.0, 1.0]. */
+#71=CARTESIAN_POINT('',(0.0,0.0));
+#72=CARTESIAN_POINT('',(1.0,0.0));
+#73=B_SPLINE_CURVE_WITH_KNOTS('',1,(#71,#72),.POLYLINE_FORM.,.F.,.F.,
+  (2,2),(0.0,1.0),.UNSPECIFIED.);
+/* Defect-bearing entity: TRIMMED_CURVE wraps the pcurve basis with
+ * trim parameters [0.0, 2.5]. trim_2 = 2.5 lies OUTSIDE the basis
+ * domain [0.0, 1.0]; evaluation past parameter 1.0 is undefined. */
+#80=PARAMETER_VALUE(0.0);
+#81=PARAMETER_VALUE(2.5);
+#82=TRIMMED_CURVE('',#73,(#80),(#81),.T.,.PARAMETER.);
+#75=( GEOMETRIC_REPRESENTATION_CONTEXT(2)
+      PARAMETRIC_REPRESENTATION_CONTEXT()
+      REPRESENTATION_CONTEXT('parametric','2D') );
+#70=DEFINITIONAL_REPRESENTATION('',(#82),#75);
+#76=PCURVE('',#20,#70);
+#50=SURFACE_CURVE('',#23,(#76),.PCURVE_S1.);
+/* EDGE_CURVE references the SURFACE_CURVE whose pcurve carries the
+ * out-of-domain trim. CheckPCurveRange must reject [0,2.5] vs [0,1]. */
+#60=EDGE_CURVE('',#40,#41,#50,.T.);
+#61=ORIENTED_EDGE('',*,*,#60,.T.);
+#62=EDGE_LOOP('',(#61));
+#63=FACE_OUTER_BOUND('',#62,.T.);
+#64=ADVANCED_FACE('',(#63),#20,.T.);
+ENDSEC;
+END-ISO-10303-21;

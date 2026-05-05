@@ -1,0 +1,26 @@
+ISO-10303-21;
+/* Ps011 INPUT — pre-void-drop source for Ps011.stp
+ * Sibling input fixture: producer emits a hollow body as BREP_WITH_VOIDS
+ * (outer 10x10x10 cube + inner 4x4x4 cube as a void cavity).
+ * Ps011.stp is the post-export state where the inner shell was dropped
+ * and the body was emitted as a plain MANIFOLD_SOLID_BREP. The volume
+ * computation differs by ~64 mm^3. */
+HEADER;
+FILE_DESCRIPTION(('Ps011.input pre-void-drop source: BREP_WITH_VOIDS'),'2;1');
+FILE_NAME('Ps011.input.stp','2026-05-01T00:00:00',(''),(''),
+  'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#10=CARTESIAN_POINT('outer-min',(0.0,0.0,0.0));
+#11=CARTESIAN_POINT('outer-max',(10.0,10.0,10.0));
+#20=CARTESIAN_POINT('void-min',(3.0,3.0,3.0));
+#21=CARTESIAN_POINT('void-max',(7.0,7.0,7.0));
+/* Outer CLOSED_SHELL would normally list 6 faces; abbreviated for clarity */
+#100=CLOSED_SHELL('outer',());
+#200=CLOSED_SHELL('void',());     /* INNER void shell */
+/* The PRE-EXPORT representation: BREP_WITH_VOIDS */
+#500=BREP_WITH_VOIDS('hollow-body',#100,(#200));
+ENDSEC;
+END-ISO-10303-21;

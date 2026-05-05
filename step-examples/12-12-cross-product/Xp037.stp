@@ -1,0 +1,42 @@
+ISO-10303-21;
+/* Xp037 - Cross-product: Creo Parametric assembly STEP export with
+ *   parts that overlap each other; downstream Creo / Inventor / NX
+ *   refuses to merge them into a manifold solid because the surfaces
+ *   interfere.
+ * Source: PTC community 359011 "STEP file imported into CREO has
+ *   errors- can't fix"; PTC community 785330 "STEP exports from CREO
+ *   Parametric fail to import in other software products".
+ * Defect: two MANIFOLD_SOLID_BREP entities share an interfering region:
+ *   bodies overlap by 1 mm in the +Y direction. Creo's import "Solidify
+ *   closed volumes" option fails because the union has a non-manifold
+ *   region. Receivers either accept as two separate solids (preserving
+ *   the interference) or reject the file. */
+HEADER;
+FILE_DESCRIPTION(('Xp037 cross-product','Creo overlapping bodies fail manifold'),'2;1');
+FILE_NAME('Xp037.stp','2026-05-02T00:00:00',(''),(''),'Creo;Parametric;9','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#11=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#12=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#10,'tol','');
+#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13))GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12))REPRESENTATION_CONTEXT('','3D'));
+#20=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#21=DIRECTION('',(0.0,0.0,1.0));
+#22=DIRECTION('',(1.0,0.0,0.0));
+#23=AXIS2_PLACEMENT_3D('',#20,#21,#22);
+#24=PLANE('',#23);
+/* Body A: cube from y=0 to y=10 */
+#30=ADVANCED_FACE('A_face_in_+y_overlap_zone',(),#24,.T.);
+#31=CLOSED_SHELL('A_shell',(#30));
+#32=MANIFOLD_SOLID_BREP('A_at_y_0_to_10',#31);
+/* Body B: cube from y=9 to y=19 - overlaps A by 1 mm in y */
+#40=ADVANCED_FACE('B_face_in_+y_overlap_zone',(),#24,.T.);
+#41=CLOSED_SHELL('B_shell',(#40));
+#42=MANIFOLD_SOLID_BREP('B_at_y_9_to_19_OVERLAPS_A_by_1mm',#41);
+/* Both bodies in same SHAPE_REPRESENTATION - downstream union fails. */
+#50=SHAPE_REPRESENTATION('overlapping_bodies',(#23),#14);
+ENDSEC;
+END-ISO-10303-21;

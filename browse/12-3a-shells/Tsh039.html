@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Tsh039 — Self-touching boundary cycle (figure-eight wire after triangulation)</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.3a Shells / orientation</a> <span class="sep">/</span> <span class="current">Tsh039</span>
+</nav>
+<header class="title-bar">
+<h1>Tsh039 <span class="sep">—</span> <span class="entry-title">Self-touching boundary cycle (figure-eight wire after triangulation)</span></h1>
+<p class="category">§12.3a shell-orientation</p>
+<p class="severity-badge severity-p1">P1 — silent data loss</p>
+<p class="tag-pills">
+<a class="tag tag-topology" href="../by-tag/topology/index.html">topology</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-3a-shells/Tsh039.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-3a-shells/Tsh039.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>09-healing-menus.md H002 (CGAL stitch_boundary_cycles), H011, H041 (Manifold DedupeEdges)</li>
+<li>15-academic.md L013</li>
+</ul></section>
+<section><h2>Description</h2>
+<p>A face whose boundary loop folds back on itself after triangulation, or &quot;4-manifold edge&quot; (one shared edge has two pairs of triangles).</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>Mesh derived from STEP face whose outer wire pinches; or two solids merged by index union without proper Boolean.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>heal — CGAL `stitch_boundary_cycle`; Manifold&#x27;s `DedupeEdges` splits 4-manifold edges by duplicating endpoint and adding two triangles to separate topology.</p></section>
+<section><h2>Notes</h2>
+<p>**See also**: Gs009. Synonyms: &quot;boundary loop folds back on itself&quot;, &quot;self-touching face perimeter&quot;, &quot;4-manifold edge after triangulation&quot;, &quot;face boundary is a figure-eight&quot;, &quot;two solids merged by index union form pinch&quot;.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>contains(b&#x27;OPEN_SHELL&#x27;)</code></li>
+<li><code>contains(b&#x27;SHELL_BASED_SURFACE_MODEL&#x27;)</code></li>
+<li><code>count_entity_def(b&#x27;ADVANCED_FACE&#x27;) == 1</code></li>
+</ul></section>
+<section><h2>Cross-references</h2>
+<p><a href="../12-2c-surfaces/Gs009.html">Gs009</a></p>
+</section>
+<section><h2>Live oracle output</h2>
+<table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
+<tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>no_shapes_loaded</code></td></tr>
+</tbody></table>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* Tsh039 - Self-touching boundary cycle (figure-eight wire after triangulation)
+<span class="lineno">3</span> * Defect: A face whose boundary loop folds back on itself after
+<span class="lineno">4</span> * triangulation, or &quot;4-manifold edge&quot; (one shared edge has two pairs
+<span class="lineno">5</span> * of triangles). CGAL&#x27;s stitch_boundary_cycles / Manifold&#x27;s
+<span class="lineno">6</span> * DedupeEdges resolve by duplicating endpoints and adding edges to
+<span class="lineno">7</span> * separate the topology.
+<span class="lineno">8</span> *
+<span class="lineno">9</span> * This file demonstrates the figure-eight directly: a face whose
+<span class="lineno">10</span> * single outer wire visits a corner vertex twice -- the wire winds
+<span class="lineno">11</span> * around a left lobe, returns through the central vertex, then
+<span class="lineno">12</span> * winds around the right lobe before closing. Vertex #114 (centre)
+<span class="lineno">13</span> * is the pinch point shared by both lobes.
+<span class="lineno">14</span> *      _______        _______
+<span class="lineno">15</span> *     |       |      |       |
+<span class="lineno">16</span> *     |  L    |  X   |   R   |     X = pinch vertex (#114)
+<span class="lineno">17</span> *     |_______|______|_______|
+<span class="lineno">18</span> * Sources: H002, H011, H041, L013. */
+<span class="lineno">19</span>HEADER;
+<span class="lineno">20</span>FILE_DESCRIPTION((&#x27;Tsh039 test case&#x27;,&#x27;Figure-eight self-touching boundary&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">21</span>FILE_NAME(&#x27;Tsh039.stp&#x27;,&#x27;2026-04-26T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;auto-generated&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">22</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }&#x27;));
+<span class="lineno">23</span>ENDSEC;
+<span class="lineno">24</span>DATA;
+<span class="lineno">25</span>#1=APPLICATION_CONTEXT(&#x27;automotive_design&#x27;);
+<span class="lineno">26</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,&#x27;automotive_design&#x27;,2000,#1);
+<span class="lineno">27</span>/* Vertices for two square lobes joined at a pinch vertex.
+<span class="lineno">28</span>   Left lobe: (-2,-1)-(-2,1)-(0,1)-(0,-1) closed via #114.
+<span class="lineno">29</span>   Right lobe: (0,-1)-(0,1)-(2,1)-(2,-1) closed via #114. */
+<span class="lineno">30</span>#100=CARTESIAN_POINT(&#x27;&#x27;,(-2.0,-1.0,0.0));
+<span class="lineno">31</span>#101=CARTESIAN_POINT(&#x27;&#x27;,(-2.0, 1.0,0.0));
+<span class="lineno">32</span>#102=CARTESIAN_POINT(&#x27;&#x27;,( 0.0, 1.0,0.0));
+<span class="lineno">33</span>#103=CARTESIAN_POINT(&#x27;&#x27;,( 0.0,-1.0,0.0));
+<span class="lineno">34</span>#104=CARTESIAN_POINT(&#x27;pinch&#x27;,(0.0,0.0,0.0));
+<span class="lineno">35</span>#105=CARTESIAN_POINT(&#x27;&#x27;,( 2.0, 1.0,0.0));
+<span class="lineno">36</span>#106=CARTESIAN_POINT(&#x27;&#x27;,( 2.0,-1.0,0.0));
+<span class="lineno">37</span>#110=VERTEX_POINT(&#x27;&#x27;,#100); #111=VERTEX_POINT(&#x27;&#x27;,#101);
+<span class="lineno">38</span>#112=VERTEX_POINT(&#x27;&#x27;,#102); #113=VERTEX_POINT(&#x27;&#x27;,#103);
+<span class="lineno">39</span>#114=VERTEX_POINT(&#x27;pinch_vertex&#x27;,#104);
+<span class="lineno">40</span>#115=VERTEX_POINT(&#x27;&#x27;,#105); #116=VERTEX_POINT(&#x27;&#x27;,#106);
+<span class="lineno">41</span>/* Plane z=0. */
+<span class="lineno">42</span>#200=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0)); #201=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">43</span>#211=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#100,#200,#201); #212=PLANE(&#x27;plane_xy&#x27;,#211);
+<span class="lineno">44</span>/* Edge directions and vectors. */
+<span class="lineno">45</span>#300=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0)); #301=VECTOR(&#x27;&#x27;,#300,1.0);
+<span class="lineno">46</span>#302=DIRECTION(&#x27;&#x27;,(0.0,1.0,0.0)); #303=VECTOR(&#x27;&#x27;,#302,1.0);
+<span class="lineno">47</span>#304=VECTOR(&#x27;&#x27;,#300,2.0);
+<span class="lineno">48</span>#305=VECTOR(&#x27;&#x27;,#302,2.0);
+<span class="lineno">49</span>/* Left-lobe edges. */
+<span class="lineno">50</span>#310=LINE(&#x27;&#x27;,#100,#305); #311=EDGE_CURVE(&#x27;LB_left&#x27;,#110,#101,#310,.T.);
+<span class="lineno">51</span>                        /* (-2,-1) -&gt; (-2,1) */
+<span class="lineno">52</span>#312=LINE(&#x27;&#x27;,#101,#304); #313=EDGE_CURVE(&#x27;LB_top&#x27;,#111,#112,#312,.T.);
+<span class="lineno">53</span>                        /* (-2,1) -&gt; (0,1) */
+<span class="lineno">54</span>#314=DIRECTION(&#x27;&#x27;,(0.0,-1.0,0.0)); #315=VECTOR(&#x27;&#x27;,#314,1.0);
+<span class="lineno">55</span>#316=LINE(&#x27;&#x27;,#102,#315); #317=EDGE_CURVE(&#x27;LB_right_to_pinch&#x27;,#112,#114,#316,.T.);
+<span class="lineno">56</span>                        /* (0,1) -&gt; (0,0) */
+<span class="lineno">57</span>#318=LINE(&#x27;&#x27;,#104,#315); #319=EDGE_CURVE(&#x27;pinch_to_LB_bottom&#x27;,#114,#113,#318,.T.);
+<span class="lineno">58</span>                        /* (0,0) -&gt; (0,-1) */
+<span class="lineno">59</span>#320=DIRECTION(&#x27;&#x27;,(-1.0,0.0,0.0)); #321=VECTOR(&#x27;&#x27;,#320,2.0);
+<span class="lineno">60</span>#322=LINE(&#x27;&#x27;,#103,#321); #323=EDGE_CURVE(&#x27;LB_bottom&#x27;,#113,#110,#322,.T.);
+<span class="lineno">61</span>                        /* (0,-1) -&gt; (-2,-1) */
+<span class="lineno">62</span>/* Right-lobe edges. */
+<span class="lineno">63</span>#330=LINE(&#x27;&#x27;,#104,#315); #331=EDGE_CURVE(&#x27;pinch_to_RB_bottom&#x27;,#114,#106,#330,.T.);
+<span class="lineno">64</span>                        /* The line same as #318 but as a separate curve;
+<span class="lineno">65</span>                           the EDGE_CURVE goes (0,0)-&gt;(2,-1) which is not
+<span class="lineno">66</span>                           collinear -- diagonal. */
+<span class="lineno">67</span>#332=DIRECTION(&#x27;&#x27;,(0.9128709291752769,-0.40824829046386296,0.0)); #333=VECTOR(&#x27;&#x27;,#332,2.236068);
+<span class="lineno">68</span>#334=LINE(&#x27;rb_diag&#x27;,#104,#333);
+<span class="lineno">69</span>#335=EDGE_CURVE(&#x27;pinch_to_RB&#x27;,#114,#116,#334,.T.);
+<span class="lineno">70</span>#336=LINE(&#x27;&#x27;,#106,#305); #337=EDGE_CURVE(&#x27;RB_right&#x27;,#116,#115,#336,.T.);
+<span class="lineno">71</span>#338=LINE(&#x27;&#x27;,#105,#321); #339=EDGE_CURVE(&#x27;RB_top&#x27;,#115,#102,#338,.T.);
+<span class="lineno">72</span>#340=EDGE_CURVE(&#x27;RB_top_to_pinch&#x27;,#102,#114,#316,.T.);
+<span class="lineno">73</span>                        /* re-traverses the LB-&gt;pinch edge in opposite
+<span class="lineno">74</span>                           sense; mathematically the SAME curve so the
+<span class="lineno">75</span>                           wire passes through #114 twice. */
+<span class="lineno">76</span>/* Defect: a single outer EDGE_LOOP that visits the pinch vertex twice.
+<span class="lineno">77</span>   left lobe: 110 -&gt; 101 -&gt; 102 -&gt; 114 -&gt; 113 -&gt; 110
+<span class="lineno">78</span>   then crosses to right lobe at #114
+<span class="lineno">79</span>   right lobe: 114 -&gt; 116 -&gt; 115 -&gt; 102 -&gt; 114
+<span class="lineno">80</span>   Resulting figure-eight wire is geometrically a self-touching cycle. */
+<span class="lineno">81</span>#400=ORIENTED_EDGE(&#x27;&#x27;,*,*,#311,.T.);  /* 110 -&gt; 101 */
+<span class="lineno">82</span>#401=ORIENTED_EDGE(&#x27;&#x27;,*,*,#313,.T.);  /* 101 -&gt; 102 */
+<span class="lineno">83</span>#402=ORIENTED_EDGE(&#x27;&#x27;,*,*,#317,.T.);  /* 102 -&gt; 114 (FIRST visit to pinch) */
+<span class="lineno">84</span>#403=ORIENTED_EDGE(&#x27;&#x27;,*,*,#319,.T.);  /* 114 -&gt; 113 */
+<span class="lineno">85</span>#404=ORIENTED_EDGE(&#x27;&#x27;,*,*,#323,.T.);  /* 113 -&gt; 110 */
+<span class="lineno">86</span>/* Wire returns to start; figure-eight requires the loop to revisit
+<span class="lineno">87</span>   the pinch -- represented here by sequencing right lobe immediately
+<span class="lineno">88</span>   after coming back through #114 a second time. */
+<span class="lineno">89</span>#405=ORIENTED_EDGE(&#x27;&#x27;,*,*,#335,.T.);  /* 114 -&gt; 116 (SECOND visit) */
+<span class="lineno">90</span>#406=ORIENTED_EDGE(&#x27;&#x27;,*,*,#337,.T.);  /* 116 -&gt; 115 */
+<span class="lineno">91</span>#407=ORIENTED_EDGE(&#x27;&#x27;,*,*,#339,.T.);  /* 115 -&gt; 102 */
+<span class="lineno">92</span>#408=ORIENTED_EDGE(&#x27;&#x27;,*,*,#340,.T.);  /* 102 -&gt; 114 (closes via pinch) */
+<span class="lineno">93</span>#410=EDGE_LOOP(&#x27;figure_eight_outer&#x27;,(#400,#401,#402,#403,#404,#405,#406,#407,#408));
+<span class="lineno">94</span>#411=FACE_OUTER_BOUND(&#x27;&#x27;,#410,.T.);
+<span class="lineno">95</span><mark>#412=ADVANCED_FACE(</mark>&#x27;face_with_self_touching_boundary&#x27;,(#411),#212,.T.);
+<span class="lineno">96</span>#500=<mark>OPEN_SHELL</mark>(&#x27;shell_with_figure8&#x27;,(#412));
+<span class="lineno">97</span>#510=<mark>SHELL_BASED_SURFACE_MODEL</mark>(&#x27;container&#x27;,(#500));
+<span class="lineno">98</span>ENDSEC;
+<span class="lineno">99</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Tsh037.html">&larr; Tsh037</a> <a class="up" href="index.html">§12.3a Shells / orientation</a> <a class="next" href="Tsh040.html">Tsh040 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

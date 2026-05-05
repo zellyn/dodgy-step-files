@@ -1,0 +1,33 @@
+ISO-10303-21;
+/* M074 - AP238 wrong-handed axis system on a 5-axis machine.
+ * Defect: a MACHINING_WORKINGSTEP defines its setup with an
+ * AXIS2_PLACEMENT_3D whose ref_direction (X) and axis (Z) yield a
+ * cross-product that points opposite to a right-handed Y, i.e. it
+ * specifies a left-handed coordinate frame. On a 5-axis machine, this
+ * mirrors all rotary motion and produces a part that is the geometric
+ * inversion of the intended one. */
+HEADER;
+FILE_DESCRIPTION(('M074 test case','AP238 left-handed setup csys on 5-axis machine'),'2;1');
+FILE_NAME('M074.stp','2026-04-30T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AP238_STEP_NC_MIM { 1 0 10303 238 1 0 0 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('numerical_control_machining');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
+  'numerical_control_machining',2007,#1);
+#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#11=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11))
+     REPRESENTATION_CONTEXT('setup','3D'));
+#20=CARTESIAN_POINT('setup_origin',(0.0,0.0,0.0));
+/* Defect: Z=(0,0,-1) and X=(1,0,0) - implied Y = Z x X = (0,-1,0).
+ * Combined with the convention that Y must equal Z x X for right-handed
+ * frames, this is left-handed if the consumer interprets axis as +Z. */
+#21=DIRECTION('z_inverted',(0.0,0.0,-1.0));
+#22=DIRECTION('x',(1.0,0.0,0.0));
+#23=AXIS2_PLACEMENT_3D('setup_csys',#20,#21,#22);
+#30=SETUP('part_setup',$,$,$,#23);
+#40=MACHINING_WORKINGSTEP('ws1',$,$,$,#30);
+ENDSEC;
+END-ISO-10303-21;

@@ -1,0 +1,85 @@
+ISO-10303-21;
+/*
+ * P024 — Flattened sub-assembly hierarchy after merge
+ * Defect (FreeCAD #11441; pcb-3d.com / KiCad-adjacent component library
+ *         re-exported through FreeCAD):
+ *   Two STEP assembly files merged in a tree and re-exported emit
+ *   NEXT_ASSEMBLY_USAGE_OCCURRENCE chains that don't preserve the original
+ *   product hierarchy — receiver shows flattened/scrambled tree.
+ * Reproducer: the *original* hierarchy was BOARD -> SUBASSY -> COMPONENT.
+ *   After merge+export the file emits BOARD -> COMPONENT directly, with the
+ *   intermediate SUBASSY product entirely missing — a flattened tree.
+ * Expected kernel: preserve original sub-assembly hierarchy on round-trip.
+ */
+HEADER;
+FILE_DESCRIPTION(('P024 NAUO chain flattened — intermediate SUBASSY product absent'),'2;1');
+FILE_NAME('P024.stp','2026-04-26T00:00:00',('catalog'),('cad'),'manual','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#10 = APPLICATION_CONTEXT('automotive design');
+#11 = APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2001,#10);
+#12 = PRODUCT_CONTEXT('',#10,'mechanical');
+#13 = PRODUCT_DEFINITION_CONTEXT('part definition',#10,'design');
+/* root: BOARD */
+#20 = PRODUCT('BOARD','top-level board','',(#12));
+#21 = PRODUCT_DEFINITION_FORMATION('','',#20);
+#22 = PRODUCT_DEFINITION('design','',#21,#13);
+#23 = PRODUCT_DEFINITION_SHAPE('','',#22);
+/* leaves: COMPONENTS — should have come through SUBASSY but SUBASSY is gone */
+#30 = PRODUCT('TO92_COMP','TO-92 transistor','',(#12));
+#31 = PRODUCT_DEFINITION_FORMATION('','',#30);
+#32 = PRODUCT_DEFINITION('design','',#31,#13);
+#33 = PRODUCT_DEFINITION_SHAPE('','',#32);
+#34 = PRODUCT('LED_COMP','5mm LED','',(#12));
+#35 = PRODUCT_DEFINITION_FORMATION('','',#34);
+#36 = PRODUCT_DEFINITION('design','',#35,#13);
+#37 = PRODUCT_DEFINITION_SHAPE('','',#36);
+/* DEFECT: NAUOs go BOARD -> COMPONENT directly. The original SUBASSY layer
+   ("THROUGH_HOLE_GROUP") would have been a PRODUCT_DEFINITION between #22
+   and #32/#36. It is absent. */
+#40 = NEXT_ASSEMBLY_USAGE_OCCURRENCE('1','TO92_INST','direct (was: through SUBASSY)',
+        #22,#32,$);
+#41 = NEXT_ASSEMBLY_USAGE_OCCURRENCE('2','LED_INST','direct (was: through SUBASSY)',
+        #22,#36,$);
+#50 = ( LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT(.MILLI.,.METRE.) );
+#51 = ( NAMED_UNIT(*) PLANE_ANGLE_UNIT() SI_UNIT($,.RADIAN.) );
+#52 = ( NAMED_UNIT(*) SI_UNIT($,.STERADIAN.) SOLID_ANGLE_UNIT() );
+#53 = UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#50,'distance_accuracy_value','');
+#54 = ( GEOMETRIC_REPRESENTATION_CONTEXT(3) GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#53))
+        GLOBAL_UNIT_ASSIGNED_CONTEXT((#50,#51,#52)) REPRESENTATION_CONTEXT('','3D') );
+#60 = CARTESIAN_POINT('',(0.0,0.0,0.0));
+#61 = DIRECTION('',(0.0,0.0,1.0));
+#62 = DIRECTION('',(1.0,0.0,0.0));
+#63 = AXIS2_PLACEMENT_3D('to92_origin',#60,#61,#62);
+#64 = SHAPE_REPRESENTATION('to92_rep',(#63),#54);
+#65 = SHAPE_DEFINITION_REPRESENTATION(#33,#64);
+#66 = REPRESENTATION_MAP(#63,#64);
+#67 = AXIS2_PLACEMENT_3D('led_origin',#60,#61,#62);
+#68 = SHAPE_REPRESENTATION('led_rep',(#67),#54);
+#69 = SHAPE_DEFINITION_REPRESENTATION(#37,#68);
+#70 = REPRESENTATION_MAP(#67,#68);
+#71 = MAPPED_ITEM('to92_mi',#66,#63);
+#72 = MAPPED_ITEM('led_mi',#70,#67);
+#80 = AXIS2_PLACEMENT_3D('board_origin',#60,#61,#62);
+#81 = SHAPE_REPRESENTATION('board_rep',(#80,#71,#72),#54);
+#82 = SHAPE_DEFINITION_REPRESENTATION(#23,#81);
+/* Extended catalog notes:
+ * This reproducer is a minimal demonstrator of the §12.6 entry
+ * referenced in the /* */ header above. The entity-graph above
+ * is just enough to exercise the defect on a writer or reader
+ * test harness; it is NOT a production-quality assembly.
+ *
+ * License: this file is part of a defect catalog assembled from
+ * publicly described bug reports and recommended-practice notes.
+ * No proprietary geometry or names are reproduced. The entity IDs
+ * and minimal coordinates are author-original.
+ *
+ * Cross-refs: see STEP_PROBLEM_CATALOG.md §12.6 for full entry,
+ * source list, sender attribution and expected kernel behavior.
+ */
+#900 = DESCRIPTIVE_REPRESENTATION_ITEM('catalog_id','P024');
+#901 = DESCRIPTIVE_REPRESENTATION_ITEM('catalog_section','12.6 assembly hierarchy');
+#902 = DESCRIPTIVE_REPRESENTATION_ITEM('catalog_status','pending');
+ENDSEC;
+END-ISO-10303-21;

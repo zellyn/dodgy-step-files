@@ -1,0 +1,24 @@
+/* Wr020 - Re-export drops XCAF labels and names - all name attributes replaced with auto-IDs */
+ISO-10303-21;
+HEADER;
+FILE_DESCRIPTION(('Wr020 - feature names lost on re-export'),'2;1');
+FILE_NAME('Wr020.stp','2026-04-30T00:00:00',(''),(''),
+  'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('');
+#2=PRODUCT_CONTEXT('',#1,'');
+/* Wr020: input had PRODUCT.name = 'left_bracket' and feature labels;
+   writer replaced the name with an auto-generated identifier and
+   stripped face/edge labels */
+#3=PRODUCT('BREP_001','','',(#2));
+#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#11=DIRECTION('',(0.0,0.0,1.0));
+#12=DIRECTION('',(1.0,0.0,0.0));
+#13=AXIS2_PLACEMENT_3D('',#10,#11,#12);
+#14=PLANE('',#13);
+#15=ADVANCED_FACE('',(),#14,.T.);
+#20=(LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT(.MILLI.,.METRE.));
+ENDSEC;
+END-ISO-10303-21;

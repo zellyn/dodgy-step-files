@@ -1,0 +1,59 @@
+ISO-10303-21;
+/* N048 - Walk-line step unrelated to surface tolerance
+ * Defect: two cylindrical surfaces with PERPENDICULAR axes meet at a
+ * non-trivial intersection curve. Declared surface tolerance is
+ * 1.0E-3 mm. The walk-line algorithm should step at ~tolerance,
+ * but in fact uses a fixed internal 1e-7 step, doing 1e4x more
+ * work than necessary and producing pcurves with sub-tolerance
+ * sample density. */
+HEADER;
+FILE_DESCRIPTION(('N048 test case','Walk-line step unrelated to surface tolerance'),'2;1');
+FILE_NAME('N048.stp','2026-04-30T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+#100=CARTESIAN_POINT('origin',(0.0,0.0,0.0));
+/* Cylinder A: axis along +Z */
+#101=DIRECTION('+z',(0.0,0.0,1.0));
+#102=DIRECTION('+x',(1.0,0.0,0.0));
+#103=AXIS2_PLACEMENT_3D('axesA',#100,#101,#102);
+#104=CYLINDRICAL_SURFACE('cyl_a',#103,1.0);
+/* Cylinder B: axis along +X (perpendicular to A) */
+#110=DIRECTION('+xB',(1.0,0.0,0.0));
+#111=DIRECTION('+yB',(0.0,1.0,0.0));
+#112=AXIS2_PLACEMENT_3D('axesB',#100,#110,#111);
+#113=CYLINDRICAL_SURFACE('cyl_b',#112,1.0);
+/* Walk-line tolerance metadata */
+#120=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#121=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#122=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#123=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-3),#120,
+  'distance_accuracy_value','walk_line_tolerance');
+#124=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+      GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#123))
+      GLOBAL_UNIT_ASSIGNED_CONTEXT((#120,#121,#122))
+      REPRESENTATION_CONTEXT('ctx','3D'));
+/* INTERSECTION_CURVE entity binding the two cylinders.
+ * (3D representation: a 2-pcurve SURFACE_CURVE/INTERSECTION_CURVE.) */
+#130=DIRECTION('walk_3d_dir',(0.0,1.0,0.0));
+#131=VECTOR('walk_3d_vec',#130,1.0);
+#132=LINE('walk_3d_curve',#100,#131);
+/* Pcurve A on cyl_a (U is theta, V is z) */
+#140=CARTESIAN_POINT('pcA_start',(0.0,0.0));
+#141=DIRECTION('pcA_dir',(0.0,1.0));
+#142=VECTOR('pcA_vec',#141,1.0);
+#143=LINE('pcA_line',#140,#142);
+#144=DEFINITIONAL_REPRESENTATION('pcA_def',(#143),#103);
+#145=PCURVE('pcA',#104,#144);
+/* Pcurve B on cyl_b */
+#150=CARTESIAN_POINT('pcB_start',(0.0,0.0));
+#151=DIRECTION('pcB_dir',(0.0,1.0));
+#152=VECTOR('pcB_vec',#151,1.0);
+#153=LINE('pcB_line',#150,#152);
+#154=DEFINITIONAL_REPRESENTATION('pcB_def',(#153),#112);
+#155=PCURVE('pcB',#113,#154);
+#160=INTERSECTION_CURVE('cyl_intersect_perp',#132,(#145,#155),.PCURVE_S1.);
+ENDSEC;
+END-ISO-10303-21;

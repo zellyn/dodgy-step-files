@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Os008 — Faces along a shared edge have mixed C0/G1 connectivity (offset cannot decide regularity)</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.8 Mixed (tessellation, validation properties, etc.)</a> <span class="sep">/</span> <span class="current">Os008</span>
+</nav>
+<header class="title-bar">
+<h1>Os008 <span class="sep">—</span> <span class="entry-title">Faces along a shared edge have mixed C0/G1 connectivity (offset cannot decide regularity)</span></h1>
+<p class="category">§12.8 (sub-class: offset connectivity)</p>
+<p class="tag-pills">
+<a class="tag tag-topology" href="../by-tag/topology/index.html">topology</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-8-mixed/Os008.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-8-mixed/Os008.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>OCCT BRepOffset_MakeOffset.cxx:880 (MixedConnectivity) (uncovered class evidence)</li>
+</ul></section>
+<section><h2>Sender</h2>
+<p>deduced — OCCT uncovered-class sweep, Pass C</p></section>
+<section><h2>Description</h2>
+<p>Two faces meet along a shared edge that is C0 (a sharp crease) on part of its length and G1 (smooth) on the rest. Offset must produce different surface types for each subsection. Bug-reporter language: &quot;mixed connectivity offset&quot;, &quot;edge partly smooth partly sharp&quot;.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>Two B-spline faces sharing an edge whose tangent jump is zero on `t∈[0,0.5]` and non-zero on `t∈[0.5,1]`.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>Split the edge at the regularity transition; offset each segment independently.</p></section>
+<section><h2>Notes</h2>
+<p>Synonyms: &quot;C0/G1 split edge&quot;, &quot;mixed connectivity offset&quot;, &quot;edge partly smooth partly sharp&quot;, &quot;offset can&#x27;t decide regularity&quot;, &quot;shared edge has tangent discontinuity&quot;.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=shape(1)/shape(1) gmsh=reject ifc=schema_n/a</code></p></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>n_edges_total &gt;= 4</code></li>
+<li><code>face[0].surface_type == &quot;bspline&quot;</code></li>
+<li><code>face[1].surface_type == &quot;bspline&quot;</code></li>
+</ul></section>
+<section><h2>Live oracle output</h2>
+<table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
+<tr><td><code>occt_heal_on</code></td><td><code>shape(1)</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>shape(1)</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>reject</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>reject</code></td></tr>
+<tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>empty_mesh</code></td></tr>
+</tbody></table>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* Os008 - Mixed C0/G1 connectivity along shared edge.
+<span class="lineno">3</span> * Defect: two B-spline faces share an edge whose tangent jump is zero
+<span class="lineno">4</span> * on t in [0,0.5] (G1, smooth) and non-zero on t in [0.5,1] (C0, kink).
+<span class="lineno">5</span> * Encoded: two B_SPLINE_SURFACE_WITH_KNOTS faces sharing one EDGE_CURVE. */
+<span class="lineno">6</span>HEADER;
+<span class="lineno">7</span>FILE_DESCRIPTION((&#x27;Os008 test case&#x27;,&#x27;Mixed C0/G1 connectivity edge&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">8</span>FILE_NAME(&#x27;Os008.stp&#x27;,&#x27;2026-04-30T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">9</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }&#x27;));
+<span class="lineno">10</span>ENDSEC;
+<span class="lineno">11</span>DATA;
+<span class="lineno">12</span>#1=APPLICATION_CONTEXT(&#x27;automotive_design&#x27;);
+<span class="lineno">13</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,&#x27;automotive_design&#x27;,2000,#1);
+<span class="lineno">14</span>/* Surface A control net (3x2, degree 1 along V, degree 2 along U).
+<span class="lineno">15</span> * Endpoints on shared edge are the two corners of the U boundary at V=0. */
+<span class="lineno">16</span>#10=CARTESIAN_POINT(&#x27;a00&#x27;,(0.0,0.0,0.0));
+<span class="lineno">17</span>#11=CARTESIAN_POINT(&#x27;a10&#x27;,(0.5,0.0,0.0));
+<span class="lineno">18</span>#12=CARTESIAN_POINT(&#x27;a20&#x27;,(1.0,0.0,0.0));
+<span class="lineno">19</span>#13=CARTESIAN_POINT(&#x27;a01&#x27;,(0.0,1.0,0.0));
+<span class="lineno">20</span>#14=CARTESIAN_POINT(&#x27;a11&#x27;,(0.5,1.0,0.0));
+<span class="lineno">21</span>#15=CARTESIAN_POINT(&#x27;a21&#x27;,(1.0,1.0,0.0));
+<span class="lineno">22</span>#20=B_SPLINE_SURFACE_WITH_KNOTS(&#x27;face_a_surface&#x27;,2,1,
+<span class="lineno">23</span>       ((#10,#13),(#11,#14),(#12,#15)),
+<span class="lineno">24</span>       .UNSPECIFIED.,.F.,.F.,.F.,
+<span class="lineno">25</span>       (3,3),(2,2),(0.0,1.0),(0.0,1.0),.UNSPECIFIED.);
+<span class="lineno">26</span>/* Surface B - smooth on first half (matches A&#x27;s tangent), kink on second */
+<span class="lineno">27</span>#30=CARTESIAN_POINT(&#x27;b00&#x27;,(0.0,0.0,0.0));
+<span class="lineno">28</span>#31=CARTESIAN_POINT(&#x27;b10&#x27;,(0.5,0.0,0.0));
+<span class="lineno">29</span>#32=CARTESIAN_POINT(&#x27;b20&#x27;,(1.0,0.0,0.0));
+<span class="lineno">30</span>#33=CARTESIAN_POINT(&#x27;b01&#x27;,(0.0,-1.0,0.0));
+<span class="lineno">31</span>#34=CARTESIAN_POINT(&#x27;b11&#x27;,(0.5,-1.0,0.5));
+<span class="lineno">32</span>#35=CARTESIAN_POINT(&#x27;b21&#x27;,(1.0,-1.5,1.0));
+<span class="lineno">33</span>#40=B_SPLINE_SURFACE_WITH_KNOTS(&#x27;face_b_surface&#x27;,2,1,
+<span class="lineno">34</span>       ((#30,#33),(#31,#34),(#32,#35)),
+<span class="lineno">35</span>       .UNSPECIFIED.,.F.,.F.,.F.,
+<span class="lineno">36</span>       (3,3),(2,2),(0.0,1.0),(0.0,1.0),.UNSPECIFIED.);
+<span class="lineno">37</span>/* Shared edge along V=0 of both surfaces */
+<span class="lineno">38</span>#50=VERTEX_POINT(&#x27;shared_v0&#x27;,#10);
+<span class="lineno">39</span>#51=VERTEX_POINT(&#x27;shared_v1&#x27;,#12);
+<span class="lineno">40</span>#52=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">41</span>#53=VECTOR(&#x27;&#x27;,#52,1.0);
+<span class="lineno">42</span>#54=LINE(&#x27;shared_curve_3d&#x27;,#10,#53);
+<span class="lineno">43</span>#55=EDGE_CURVE(&#x27;shared_edge&#x27;,#50,#51,#54,.T.);
+<span class="lineno">44</span>/* Two ADVANCED_FACEs sharing the edge */
+<span class="lineno">45</span>#60=ORIENTED_EDGE(&#x27;&#x27;,*,*,#55,.T.);
+<span class="lineno">46</span>#61=EDGE_LOOP(&#x27;&#x27;,(#60));
+<span class="lineno">47</span>#62=FACE_OUTER_BOUND(&#x27;&#x27;,#61,.T.);
+<span class="lineno">48</span>#63=ADVANCED_FACE(&#x27;face_a&#x27;,(#62),#20,.T.);
+<span class="lineno">49</span>#64=ADVANCED_FACE(&#x27;face_b&#x27;,(#62),#40,.T.);
+<span class="lineno">50</span>/* Minimal PRODUCT chain so OCCT TransferRoots produces a shape. */
+<span class="lineno">51</span>#9010=PRODUCT_CONTEXT(&#x27;&#x27;,#1,&#x27;mechanical&#x27;);
+<span class="lineno">52</span>#9011=PRODUCT(&#x27;Os008&#x27;,&#x27;Os008&#x27;,&#x27;&#x27;,(#9010));
+<span class="lineno">53</span>#9012=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#9011);
+<span class="lineno">54</span>#9013=PRODUCT_DEFINITION_CONTEXT(&#x27;part definition&#x27;,#1,&#x27;design&#x27;);
+<span class="lineno">55</span>#9014=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,#9012,#9013);
+<span class="lineno">56</span>#9015=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,#9014);
+<span class="lineno">57</span>#9020=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">58</span>#9021=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+<span class="lineno">59</span>#9022=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+<span class="lineno">60</span>#9023=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9020,&#x27;distance_accuracy_value&#x27;,&#x27;&#x27;);
+<span class="lineno">61</span>#9024=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9023))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9020,#9021,#9022))REPRESENTATION_CONTEXT(&#x27;&#x27;,&#x27;3D&#x27;));
+<span class="lineno">62</span>#9030=OPEN_SHELL(&#x27;wrap_shell&#x27;,(#63,#64));
+<span class="lineno">63</span>#9031=SHELL_BASED_SURFACE_MODEL(&#x27;wrap_sbsm&#x27;,(#9030));
+<span class="lineno">64</span>#9050=MANIFOLD_SURFACE_SHAPE_REPRESENTATION(&#x27;&#x27;,(#9031),#9024);
+<span class="lineno">65</span>#9051=SHAPE_DEFINITION_REPRESENTATION(#9015,#9050);
+<span class="lineno">66</span>ENDSEC;
+<span class="lineno">67</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Os007.html">&larr; Os007</a> <a class="up" href="index.html">§12.8 Mixed (tessellation, validation properties, etc.)</a> <a class="next" href="Os009.html">Os009 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

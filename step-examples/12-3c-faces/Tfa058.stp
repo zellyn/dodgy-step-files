@@ -1,0 +1,60 @@
+ISO-10303-21;
+/* Tfa058 - Plane-typed face whose vertices are non-coplanar
+ * Plane z=0 with full FACE_OUTER_BOUND wire of four edges. The 4th vertex
+ * is at (0,1,0.5) -- 0.5mm above the plane. The bounding wire references
+ * this off-plane vertex, exposing the warped-plane defect. */
+HEADER;
+FILE_DESCRIPTION(('Tfa058 test case','Plane-typed face with one off-plane vertex (z=0.5) referenced by wire'),'2;1');
+FILE_NAME('Tfa058.stp','2026-04-30T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+/* Plane z=0 */
+#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#11=DIRECTION('',(0.0,0.0,1.0));
+#12=DIRECTION('',(1.0,0.0,0.0));
+#13=AXIS2_PLACEMENT_3D('',#10,#11,#12);
+#14=PLANE('z_zero_plane',#13);
+/* Four corners -- the fourth is OFF the plane at z=0.5 */
+#20=CARTESIAN_POINT('',(0.0,0.0,0.0));#21=VERTEX_POINT('V1',#20);
+#22=CARTESIAN_POINT('',(1.0,0.0,0.0));#23=VERTEX_POINT('V2',#22);
+#24=CARTESIAN_POINT('',(1.0,1.0,0.0));#25=VERTEX_POINT('V3',#24);
+#26=CARTESIAN_POINT('off_plane_z_0p5',(0.0,1.0,0.5));#27=VERTEX_POINT('V4_off_plane',#26);
+/* Edges */
+#30=DIRECTION('',(1.0,0.0,0.0));#31=VECTOR('',#30,1.0);#32=LINE('',#20,#31);
+#33=EDGE_CURVE('e1',#21,#23,#32,.T.);
+#34=DIRECTION('',(0.0,1.0,0.0));#35=VECTOR('',#34,1.0);#36=LINE('',#22,#35);
+#37=EDGE_CURVE('e2',#23,#25,#36,.T.);
+/* e3 goes off-plane: from V3=(1,1,0) to V4=(0,1,0.5) */
+#38=DIRECTION('',(-0.8944271909999159,0.0,0.4472135954999579));#39=VECTOR('',#38,1.118);#40=LINE('',#24,#39);
+#41=EDGE_CURVE('e3_to_off_plane_vertex',#25,#27,#40,.T.);
+/* e4 goes back: from V4=(0,1,0.5) to V1=(0,0,0) */
+#42=DIRECTION('',(0.0,-0.8944271909999159,-0.4472135954999579));#43=VECTOR('',#42,1.118);#44=LINE('',#26,#43);
+#45=EDGE_CURVE('e4_from_off_plane_vertex',#27,#21,#44,.T.);
+#50=ORIENTED_EDGE('',*,*,#33,.T.);
+#51=ORIENTED_EDGE('',*,*,#37,.T.);
+#52=ORIENTED_EDGE('',*,*,#41,.T.);
+#53=ORIENTED_EDGE('',*,*,#45,.T.);
+#54=EDGE_LOOP('outer_with_offplane_v4',(#50,#51,#52,#53));
+#55=FACE_OUTER_BOUND('',#54,.T.);
+#100=ADVANCED_FACE('non_planar_plane_face',(#55),#14,.T.);
+/* Wrap: minimal PRODUCT chain so OCCT TransferRoots produces a shape. */
+#9000=PRODUCT_CONTEXT('',#1,'mechanical');
+#9001=PRODUCT('Tfa058','Tfa058','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
+#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
+#9020=OPEN_SHELL('wrap_shell',(#100));
+#9021=SHELL_BASED_SURFACE_MODEL('wrap_sbsm',(#9020));
+#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#9010);
+#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+ENDSEC;
+END-ISO-10303-21;

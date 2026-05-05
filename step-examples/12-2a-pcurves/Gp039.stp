@@ -1,0 +1,53 @@
+ISO-10303-21;
+/* Gp039 - Pcurve projection of closed B-spline curve unstable
+ * Defect: a closed (first cp == last cp) cubic B_SPLINE_CURVE_WITH_KNOTS
+ * is projected onto a host plane via a SURFACE_CURVE/PCURVE. At the
+ * seam parameter the projected pcurve's tangent flips, so kernels
+ * relying on monotone parameterisation fail there. */
+HEADER;
+FILE_DESCRIPTION(('Gp039 test case','Pcurve projection of closed B-spline curve unstable'),'2;1');
+FILE_NAME('Gp039.stp','2026-04-30T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+/* Host plane to project onto */
+#10=CARTESIAN_POINT('plane_origin',(0.0,0.0,0.0));
+#11=DIRECTION('z',(0.0,0.0,1.0));
+#12=DIRECTION('x',(1.0,0.0,0.0));
+#13=AXIS2_PLACEMENT_3D('plane_axes',#10,#11,#12);
+#14=PLANE('host',#13);
+/* Closed-curve control polygon: cp1 == cp7 */
+#100=CARTESIAN_POINT('cp_first',(1.0,0.0,0.0));
+#101=CARTESIAN_POINT('cp2',(1.0,1.0,0.0));
+#102=CARTESIAN_POINT('cp3',(0.0,1.0,0.0));
+#103=CARTESIAN_POINT('cp4',(-1.0,0.0,0.0));
+#104=CARTESIAN_POINT('cp5',(0.0,-1.0,0.0));
+#105=CARTESIAN_POINT('cp6',(1.0,-1.0,0.0));
+#106=CARTESIAN_POINT('cp7_eq_first',(1.0,0.0,0.0));
+/* Closed cubic B-spline (degree 3) with periodic knot vector */
+#110=B_SPLINE_CURVE_WITH_KNOTS('closed_3d',3,
+   (#100,#101,#102,#103,#104,#105,#106),
+   .UNSPECIFIED.,.F.,.T.,
+   (4,1,1,1,1,4),(0.0,0.2,0.4,0.6,0.8,1.0),.UNSPECIFIED.);
+/* PCURVE: 2D B-spline over the same parametric path on the plane */
+#120=CARTESIAN_POINT('p_cp1',(1.0,0.0));
+#121=CARTESIAN_POINT('p_cp2',(1.0,1.0));
+#122=CARTESIAN_POINT('p_cp3',(0.0,1.0));
+#123=CARTESIAN_POINT('p_cp4',(-1.0,0.0));
+#124=CARTESIAN_POINT('p_cp5',(0.0,-1.0));
+#125=CARTESIAN_POINT('p_cp6',(1.0,-1.0));
+#126=CARTESIAN_POINT('p_cp7',(1.0,0.0));
+#130=B_SPLINE_CURVE_2D('closed_2d',3,
+   (#120,#121,#122,#123,#124,#125,#126),
+   .UNSPECIFIED.,.F.,.T.,
+   (4,1,1,1,1,4),(0.0,0.2,0.4,0.6,0.8,1.0),.UNSPECIFIED.);
+#140=DEFINITIONAL_REPRESENTATION('pc_def',(#130),#13);
+#141=PCURVE('pc',#14,#140);
+/* Bind the 3D and 2D representations via SURFACE_CURVE */
+#150=SURFACE_CURVE('proj_seam',#110,(#141),.PCURVE_S1.);
+#160=VERTEX_POINT('seam_v',#100);
+#161=EDGE_CURVE('closed_edge',#160,#160,#150,.T.);
+ENDSEC;
+END-ISO-10303-21;

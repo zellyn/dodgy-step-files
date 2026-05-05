@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Tsh042 — `bad vertex`: vertex misplaced relative to incident edges</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.3a Shells / orientation</a> <span class="sep">/</span> <span class="current">Tsh042</span>
+</nav>
+<header class="title-bar">
+<h1>Tsh042 <span class="sep">—</span> <span class="entry-title">`bad vertex`: vertex misplaced relative to incident edges</span></h1>
+<p class="category">§12.3a shell-orientation</p>
+<p class="tag-pills">
+<a class="tag tag-topology" href="../by-tag/topology/index.html">topology</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-3a-shells/Tsh042.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-3a-shells/Tsh042.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>11-translator-vendors.md W012</li>
+</ul></section>
+<section><h2>Sender</h2>
+<p>TransMagic Diagnostic Part 2 doc</p></section>
+<section><h2>Description</h2>
+<p>The `VERTEX_POINT` coordinate does not coincide with the curve evaluation at the edge&#x27;s parameter endpoint(s) — wire orientation/snap defect at corners.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>`EDGE_CURVE` referencing a `LINE` from (0,0,0) to (10,0,0) but with start `VERTEX_POINT` at (0.001, 0.001, 0); offset both ends similarly.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>heal — snap vertex to curve endpoint within tolerance; if outside, mark tolerant edge or reject.</p></section>
+<section><h2>Notes</h2>
+<p>**See also**: Gs030, Tfa019, Twi011. Synonyms: &quot;vertex coordinate doesn&#x27;t match curve endpoint&quot;, &quot;corner snap defect at edge ends&quot;, &quot;vertex offset from line by tolerance&quot;, &quot;wire vertex misplaced relative to underlying line&quot;, &quot;endpoint position disagrees with curve evaluation&quot;.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a</code></p></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>face[0].surface_type == &quot;plane&quot;</code></li>
+<li><code>n_edges_total &gt;= 4</code></li>
+<li><code>n_vertices_total &gt;= 8</code></li>
+<li><code>face[0].sliver_aspect_max_min &gt; 1e6</code></li>
+</ul></section>
+<section><h2>Cross-references</h2>
+<p><a href="../12-2c-surfaces/Gs030.html">Gs030</a>, <a href="../12-3c-faces/Tfa019.html">Tfa019</a>, <a href="../12-3b-wires/Twi011.html">Twi011</a></p>
+</section>
+<section><h2>Live oracle output</h2>
+<table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
+<tr><td><code>occt_heal_on</code></td><td><code>shape(1)</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>shape(1)</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>shape(9)</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>shape(9)</code></td></tr>
+<tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>not_manifold</code></td></tr>
+</tbody></table>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* Tsh042 - Bad vertex: vertex misplaced relative to incident edges
+<span class="lineno">3</span> * Defect: The VERTEX_POINT coordinate does not coincide with the
+<span class="lineno">4</span> * curve evaluation at the edge&#x27;s parameter endpoint(s) -- wire
+<span class="lineno">5</span> * orientation/snap defect at corners. EDGE_CURVE references a LINE
+<span class="lineno">6</span> * from (0,0,0) to (10,0,0) but with start VERTEX_POINT at
+<span class="lineno">7</span> * (0.001, 0.001, 0); offset both ends similarly. Healers snap vertex
+<span class="lineno">8</span> * to curve endpoint within tolerance; if outside, mark tolerant edge
+<span class="lineno">9</span> * or reject.
+<span class="lineno">10</span> *
+<span class="lineno">11</span> * This file: a square plate face whose edges are LINEs whose ideal
+<span class="lineno">12</span> * endpoints sit at the 4 corners (0,0,0), (1,0,0), (1,1,0), (0,1,0),
+<span class="lineno">13</span> * but whose VERTEX_POINTs sit a few microns away. Each VERTEX_POINT
+<span class="lineno">14</span> * is offset by (~1e-3, ~1e-3, 0) so the curve evaluation does not
+<span class="lineno">15</span> * land on the vertex coordinate. Sources: W012 (TransMagic Diagnostic
+<span class="lineno">16</span> * Part 2). */
+<span class="lineno">17</span>HEADER;
+<span class="lineno">18</span>FILE_DESCRIPTION((&#x27;Tsh042 test case&#x27;,&#x27;Vertex misplaced relative to incident curve&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">19</span>FILE_NAME(&#x27;Tsh042.stp&#x27;,&#x27;2026-04-26T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;auto-generated&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">20</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }&#x27;));
+<span class="lineno">21</span>ENDSEC;
+<span class="lineno">22</span>DATA;
+<span class="lineno">23</span>#1=APPLICATION_CONTEXT(&#x27;automotive_design&#x27;);
+<span class="lineno">24</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,&#x27;automotive_design&#x27;,2000,#1);
+<span class="lineno">25</span>/* Vertex coordinates -- DELIBERATELY OFFSET from the corresponding
+<span class="lineno">26</span>   line endpoints by ~1e-3 so vertex != curve(parameter). Healers
+<span class="lineno">27</span>   should snap if within tolerance, else mark tolerant. */
+<span class="lineno">28</span>#100=CARTESIAN_POINT(&#x27;off_corner_00&#x27;,(0.001,0.001,0.0));
+<span class="lineno">29</span>#101=CARTESIAN_POINT(&#x27;off_corner_10&#x27;,(1.001,0.001,0.0));
+<span class="lineno">30</span>#102=CARTESIAN_POINT(&#x27;off_corner_11&#x27;,(1.001,0.999,0.0));
+<span class="lineno">31</span>#103=CARTESIAN_POINT(&#x27;off_corner_01&#x27;,(0.001,0.999,0.0));
+<span class="lineno">32</span>#110=VERTEX_POINT(&#x27;&#x27;,#100); #111=VERTEX_POINT(&#x27;&#x27;,#101);
+<span class="lineno">33</span>#112=VERTEX_POINT(&#x27;&#x27;,#102); #113=VERTEX_POINT(&#x27;&#x27;,#103);
+<span class="lineno">34</span>/* Plane z=0. */
+<span class="lineno">35</span>#200=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0)); #201=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">36</span>#205=CARTESIAN_POINT(&#x27;plane_origin&#x27;,(0.0,0.0,0.0));
+<span class="lineno">37</span>#211=AXIS2_PLACEMENT_3D(&#x27;plane_axes&#x27;,#205,#200,#201);
+<span class="lineno">38</span>#212=PLANE(&#x27;square_plane&#x27;,#211);
+<span class="lineno">39</span>/* Underlying LINE curves: ideal endpoints at the integer corners.
+<span class="lineno">40</span>   The CARTESIAN_POINT used as the LINE.pnt is the IDEAL corner,
+<span class="lineno">41</span>   not the offset vertex coordinate -- this is the defect. */
+<span class="lineno">42</span>#300=CARTESIAN_POINT(&#x27;ideal_00&#x27;,(0.0,0.0,0.0));
+<span class="lineno">43</span>#301=CARTESIAN_POINT(&#x27;ideal_10&#x27;,(1.0,0.0,0.0));
+<span class="lineno">44</span>#302=CARTESIAN_POINT(&#x27;ideal_11&#x27;,(1.0,1.0,0.0));
+<span class="lineno">45</span>#303=CARTESIAN_POINT(&#x27;ideal_01&#x27;,(0.0,1.0,0.0));
+<span class="lineno">46</span>#310=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0)); #311=VECTOR(&#x27;&#x27;,#310,1.0);
+<span class="lineno">47</span>#312=DIRECTION(&#x27;&#x27;,(0.0,1.0,0.0)); #313=VECTOR(&#x27;&#x27;,#312,1.0);
+<span class="lineno">48</span>#320=LINE(&#x27;bottom_line&#x27;,#300,#311); /* (0,0)-&gt;(1,0) */
+<span class="lineno">49</span>#321=EDGE_CURVE(&#x27;bottom_edge&#x27;,#110,#111,#320,.T.);
+<span class="lineno">50</span>#322=LINE(&#x27;right_line&#x27;,#301,#313);  /* (1,0)-&gt;(1,1) */
+<span class="lineno">51</span>#323=EDGE_CURVE(&#x27;right_edge&#x27;,#111,#112,#322,.T.);
+<span class="lineno">52</span>#324=LINE(&#x27;top_line&#x27;,#303,#311);    /* (0,1)-&gt;(1,1) */
+<span class="lineno">53</span>#325=EDGE_CURVE(&#x27;top_edge&#x27;,#113,#112,#324,.T.);
+<span class="lineno">54</span>#326=LINE(&#x27;left_line&#x27;,#300,#313);   /* (0,0)-&gt;(0,1) */
+<span class="lineno">55</span>#327=EDGE_CURVE(&#x27;left_edge&#x27;,#110,#113,#326,.T.);
+<span class="lineno">56</span>/* Outer wire. */
+<span class="lineno">57</span>#400=ORIENTED_EDGE(&#x27;&#x27;,*,*,#321,.T.); #401=ORIENTED_EDGE(&#x27;&#x27;,*,*,#323,.T.);
+<span class="lineno">58</span>#402=ORIENTED_EDGE(&#x27;&#x27;,*,*,#325,.F.); #403=ORIENTED_EDGE(&#x27;&#x27;,*,*,#327,.F.);
+<span class="lineno">59</span>#404=EDGE_LOOP(&#x27;&#x27;,(#400,#401,#402,#403)); #405=FACE_OUTER_BOUND(&#x27;&#x27;,#404,.T.);
+<span class="lineno">60</span>#406=ADVANCED_FACE(&#x27;square_with_offset_vertices&#x27;,(#405),#212,.T.);
+<span class="lineno">61</span>#500=OPEN_SHELL(&#x27;plate_with_bad_vertices&#x27;,(#406));
+<span class="lineno">62</span>#510=SHELL_BASED_SURFACE_MODEL(&#x27;container&#x27;,(#500));
+<span class="lineno">63</span>/* Minimal PRODUCT chain so OCCT TransferRoots produces a shape. */
+<span class="lineno">64</span>#9000=PRODUCT_CONTEXT(&#x27;&#x27;,#1,&#x27;mechanical&#x27;);
+<span class="lineno">65</span>#9001=PRODUCT(&#x27;Tsh042&#x27;,&#x27;Tsh042&#x27;,&#x27;&#x27;,(#9000));
+<span class="lineno">66</span>#9002=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#9001);
+<span class="lineno">67</span>#9003=PRODUCT_DEFINITION_CONTEXT(&#x27;part definition&#x27;,#1,&#x27;design&#x27;);
+<span class="lineno">68</span>#9004=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,#9002,#9003);
+<span class="lineno">69</span>#9005=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,#9004);
+<span class="lineno">70</span>#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">71</span>#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+<span class="lineno">72</span>#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+<span class="lineno">73</span>#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,&#x27;distance_accuracy_value&#x27;,&#x27;&#x27;);
+<span class="lineno">74</span>#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT(&#x27;&#x27;,&#x27;3D&#x27;));
+<span class="lineno">75</span>#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION(&#x27;&#x27;,(#510),#9010);
+<span class="lineno">76</span>#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+<span class="lineno">77</span>ENDSEC;
+<span class="lineno">78</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Tsh041.html">&larr; Tsh041</a> <a class="up" href="index.html">§12.3a Shells / orientation</a> <a class="next" href="Tsh043.html">Tsh043 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

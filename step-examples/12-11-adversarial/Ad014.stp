@@ -1,0 +1,47 @@
+ISO-10303-21;
+/* ============================================================
+   WARNING: THIS FILE IS INTENTIONALLY MALFORMED.
+   It exists ONLY for parser-robustness / fuzz-class testing.
+   DO NOT feed to a production translator without sandboxing.
+
+   Entry  : Ad014
+   Title  : Float literal with extreme exponent (1E999999)
+            propagates as inf/NaN.
+   Defect : strtod returns +inf or 0 for exponents far
+            outside IEEE-754 double range. Downstream code
+            that converts to a fixed-precision tessellation
+            grid index may overflow or produce NaN; NaN then
+            poisons sort comparators in STL containers, which
+            can manifest as use-after-free.
+            Pattern documented by HOOPS Exchange fuzz class
+            (text_rotation_angle = 1.79e308) — never appears
+            in real CAD output.
+   Expected: clamp magnitude; reject non-finite where
+             geometry expects finite; emit E_NUMERIC_OVERFLOW.
+   See also: Ls008.
+   ============================================================ */
+HEADER;
+FILE_DESCRIPTION(('Ad014 extreme float exponent'),'2;1');
+FILE_NAME('Ad014.stp','2026-04-26T00:00:00',('synthetic'),('cad-research'),
+  'none','none','none');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+/* extreme positive exponent: well beyond IEEE-754 double */
+#1=CARTESIAN_POINT('',(1.0E+999999,0.,0.));
+
+/* extreme negative exponent: underflows to subnormal/zero */
+#2=CARTESIAN_POINT('',(1.0E-999999,0.,0.));
+
+/* near-double-max boundary used by HOOPS fuzz */
+#3=CARTESIAN_POINT('',(1.79E+308,0.,0.));
+
+/* literal already at +inf when reparsed */
+#4=CARTESIAN_POINT('',(1.0E+400,0.,0.));
+
+/* angle attribute; produces NaN on cos/sin if not clamped */
+#10=CIRCLE('',#20,1.0E+999999);
+#20=AXIS2_PLACEMENT_3D('',#21,$,$);
+#21=CARTESIAN_POINT('',(0.,0.,0.));
+ENDSEC;
+END-ISO-10303-21;

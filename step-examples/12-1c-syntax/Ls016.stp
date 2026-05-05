@@ -1,0 +1,35 @@
+/* Ls016 - Double comma / empty parameter slot
+   ----------------------------------------------------------------------
+   Catalog section : §12.1c punctuation
+   Sources         : T020, A016
+   Originally also catalogued as: Ad016
+   ----------------------------------------------------------------------
+   Defect
+     (a,,b) leaves an attribute slot empty. Correct null is '$', correct
+     derived is '*'. An empty slot is a generator bug. Parsers that map
+     positional slots without re-checking arity may construct the entity
+     with one fewer attribute, leading to uninitialised fields and later
+     null-deref crashes.
+   Expected behavior
+     Reject with "expected parameter, found ','"; do not silently treat
+     the empty slot as '$'. The error message should report the slot
+     index within the parameter list.
+   ----------------------------------------------------------------------
+*/
+ISO-10303-21;
+HEADER;
+FILE_DESCRIPTION(('Ls016 - double comma leaves empty parameter slot'),'2;1');
+FILE_NAME('Ls016.stp','2026-04-26T00:00:00',('auto-generated'),(''),
+  'auto-generated','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+/* Defect: empty slot in attribute list (the ',,' between '' and $) */
+#10=IFCPERSON($,$,'',,$,$,$,$);
+/* Defect: empty slot inside aggregate (the ',,' between 0.0 and 1.0) */
+#20=CARTESIAN_POINT('',(0.0,,1.0));
+/* Defect: leading empty slot ('(,...)') */
+#21=CARTESIAN_POINT('lead',(,1.0,0.0));
+#30=DIRECTION('x',(1.0,0.0,0.0));
+ENDSEC;
+END-ISO-10303-21;

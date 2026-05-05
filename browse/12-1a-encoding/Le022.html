@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Le022 — Non-ASCII / Japanese / Greek Unicode in PRODUCT.name via `\X2\…\X0\`</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.1a Encoding &amp; string-literal defects</a> <span class="sep">/</span> <span class="current">Le022</span>
+</nav>
+<header class="title-bar">
+<h1>Le022 <span class="sep">—</span> <span class="entry-title">Non-ASCII / Japanese / Greek Unicode in PRODUCT.name via `\X2\…\X0\`</span></h1>
+<p class="category">§12.1a encoding/strings (sub-class: Unicode in PMI/names)</p>
+<p class="severity-badge severity-p1">P1 — silent data loss</p>
+<p class="tag-pills">
+<a class="tag tag-encoding" href="../by-tag/encoding/index.html">encoding</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-1a-encoding/Le022.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-1a-encoding/Le022.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>R052/OCCT bug 25440</li>
+<li>G040/OCCT git log</li>
+<li>S065/sfa-step.tcl:838,1007,1156</li>
+</ul></section>
+<section><h2>Description</h2>
+<p>STEP names and PMI annotation strings carry Unicode using the spec-conformant `\X2\…\X0\` directive. Older OCCT did not decode the directives at all and emitted question-mark replacements. Some downstream tools (Excel, legacy ANSI receivers) cannot render the result because they lack full Unicode font support, but the file itself is conformant.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>`PRODUCT(&#x27;\X2\03B1\X0\&#x27;,&#x27;alpha&#x27;,&#x27;desc&#x27;,..);` (Greek alpha); Japanese characters embedded as `\X2\…\X0\` in `NAME` field.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>Heal and accept: decode all control directives during read; pass through as Unicode; provide `read.step.codepage` for legacy files where the producer used 8-bit code pages instead.</p></section>
+<section><h2>Notes</h2>
+<p>**See also**: Le021, Le036. Synonyms: &quot;Japanese product name in STEP&quot;, &quot;Greek letters in PMI annotation&quot;, &quot;X2 Unicode lost on import&quot;, &quot;non-ASCII PRODUCT name shows as question marks&quot;, &quot;Asian characters dropped on read&quot;.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>contains(b&#x27;\\X2\\03B1\\X0\\&#x27;)</code></li>
+<li><code>count(b&#x27;\\X2\\&#x27;) &gt;= 1</code></li>
+</ul></section>
+<section><h2>Cross-references</h2>
+<p><a href="Le021.html">Le021</a>, <a href="Le036.html">Le036</a></p>
+</section>
+<section><h2>Live oracle output</h2>
+<table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
+<tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>no_shapes_loaded</code></td></tr>
+</tbody></table>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>/* Le022 â Non-ASCII / Japanese / Greek Unicode in PRODUCT.name via <mark>\X2\</mark>..\X0\
+<span class="lineno">2</span>   Defect: a spec-conformant file that uses <mark>\X2\</mark>..\X0\ to carry Unicode in
+<span class="lineno">3</span>   PRODUCT.name and PMI annotation slots. Older parsers that did not decode
+<span class="lineno">4</span>   the directives emitted &#x27;?&#x27; replacements. The file itself is conformant.
+<span class="lineno">5</span>   This file demonstrates Greek alpha (U+03B1), a Japanese hiragana run
+<span class="lineno">6</span>   (U+3042 U+3044), and a degree-sign mixed with ASCII to exercise the
+<span class="lineno">7</span>   recognizer. */
+<span class="lineno">8</span>ISO-10303-21;
+<span class="lineno">9</span>HEADER;
+<span class="lineno">10</span>FILE_DESCRIPTION((&#x27;Le022 - non-ASCII Unicode in PRODUCT.name via X2&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">11</span>FILE_NAME(&#x27;Le022.stp&#x27;,&#x27;2026-04-26T00:00:00&#x27;,(&#x27;auto-generated&#x27;),(&#x27;&#x27;),
+<span class="lineno">12</span>  &#x27;auto-generated&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">13</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
+<span class="lineno">14</span>ENDSEC;
+<span class="lineno">15</span>DATA;
+<span class="lineno">16</span>/* Greek lowercase alpha as PRODUCT.name */
+<span class="lineno">17</span>#10=PRODUCT(&#x27;<mark>\X2\03B1\X0\</mark>&#x27;,&#x27;alpha&#x27;,&#x27;description&#x27;,(#100));
+<span class="lineno">18</span>/* Japanese hiragana &quot;ai&quot; */
+<span class="lineno">19</span>#11=PRODUCT(&#x27;<mark>\X2\</mark>30423044\X0\&#x27;,&#x27;ai&#x27;,&#x27;description&#x27;,(#100));
+<span class="lineno">20</span>/* mixed ASCII + degree sign U+00B0 */
+<span class="lineno">21</span>#12=PRODUCT(&#x27;temp<mark>\X2\</mark>00B0\X0\C&#x27;,&#x27;temp deg C&#x27;,&#x27;description&#x27;,(#100));
+<span class="lineno">22</span>#100=PRODUCT_CONTEXT(&#x27;part definition&#x27;,#101,&#x27;mechanical&#x27;);
+<span class="lineno">23</span>#101=APPLICATION_CONTEXT(&#x27;automotive_design&#x27;);
+<span class="lineno">24</span>#20=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">25</span>#21=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">26</span>#22=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">27</span>#23=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#20,#21,#22);
+<span class="lineno">28</span>ENDSEC;
+<span class="lineno">29</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Le021.html">&larr; Le021</a> <a class="up" href="index.html">§12.1a Encoding &amp; string-literal defects</a> <a class="next" href="Le023.html">Le023 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

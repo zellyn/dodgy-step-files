@@ -1,0 +1,82 @@
+/* Tfa004 - Missing natural bound on sphere / torus face
+ * Defect: a face on a closed/periodic surface (sphere, torus, full
+ * BSpline, surface_of_revolution) is given with only inner wires - or
+ * with a single VERTEX_LOOP - and no FACE_OUTER_BOUND. STEP semantics
+ * permit this ("the entire surface with cutouts"), but kernels that
+ * pre-orient inner wires before adding the natural bound flip the
+ * region.
+ *
+ * Sources cited in catalog: 05-occt-shapefix F023 (ShapeFix_Face::
+ * FixAddNaturalBound); 08-occt-gitlog G007/G021/G056; 04-occt-
+ * translation Q014/Q015 (VertexLoop on sphere/torus); 13-quaoar B016.
+ *
+ * Expected kernel behavior: heal - insert the natural surface boundary
+ * first, then orient inner wires as holes. Do NOT pre-orient inner
+ * wires before natural-bound insertion on closed surfaces.
+ *
+ * Reproducer: ADVANCED_FACE on a SPHERICAL_SURFACE whose only
+ * FACE_BOUND wraps a single inner VERTEX_LOOP at the north pole. No
+ * FACE_OUTER_BOUND is emitted (the receiver must synthesise natural
+ * bounds, NOT pre-orient the inner VERTEX_LOOP).
+ *
+ * For coverage we also emit a torus equivalent (#70) where the inner
+ * wire is a small circular EDGE_LOOP on the toroidal surface.
+ */
+ISO-10303-21;
+HEADER;
+FILE_DESCRIPTION(('Tfa004 missing natural bound'),'2;1');
+FILE_NAME('Tfa004.stp','2026-04-26T00:00:00',(''),(''),
+  'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
+  'automotive_design',2009,#1);
+/* Sphere R=10 centred on origin.                                       */
+#10=CARTESIAN_POINT('center',(0.0,0.0,0.0));
+#11=DIRECTION('z',(0.0,0.0,1.0));
+#12=DIRECTION('x',(1.0,0.0,0.0));
+#13=AXIS2_PLACEMENT_3D('plc_sphere',#10,#11,#12);
+#20=SPHERICAL_SURFACE('sphere_R10',#13,10.0);
+/* Inner-only wire: single VERTEX_LOOP at the north pole (0,0,10).      */
+#30=CARTESIAN_POINT('north_pole',(0.0,0.0,10.0));
+#31=VERTEX_POINT('np',#30);
+#40=VERTEX_LOOP('pole_loop',#31);
+/* Defect site #1: FACE_BOUND used as inner-only; no FACE_OUTER_BOUND.  */
+#50=FACE_BOUND('inner_only_sphere',#40,.T.);
+#60=ADVANCED_FACE('sphere_no_natural_bound',(#50),#20,.T.);
+/* Torus R=20, r=4 - second instance.                                   */
+#70=CARTESIAN_POINT('tor_center',(50.0,0.0,0.0));
+#71=AXIS2_PLACEMENT_3D('plc_torus',#70,#11,#12);
+#72=TOROIDAL_SURFACE('tor_R20_r4',#71,20.0,4.0);
+/* Inner wire on the torus: small circular hole.                        */
+#73=CARTESIAN_POINT('tor_hole_center',(70.0,0.0,0.0));
+#74=AXIS2_PLACEMENT_3D('hole_plc',#73,#11,#12);
+#75=CIRCLE('hole_circle',#74,1.0);
+#76=CARTESIAN_POINT('hole_seam',(71.0,0.0,0.0));
+#77=VERTEX_POINT('hole_seam_v',#76);
+#78=EDGE_CURVE('hole_edge',#77,#77,#75,.T.);
+#79=ORIENTED_EDGE('',*,*,#78,.T.);
+#80=EDGE_LOOP('hole_loop',(#79));
+/* Defect site #2: torus face has only the inner hole wire, no outer.   */
+#81=FACE_BOUND('inner_only_torus',#80,.T.);
+#82=ADVANCED_FACE('torus_no_natural_bound',(#81),#72,.T.);
+#90=OPEN_SHELL('natural_bound_demos',(#60,#82));
+/* Wrap: minimal PRODUCT chain so OCCT TransferRoots produces a shape. */
+#9000=PRODUCT_CONTEXT('',#1,'mechanical');
+#9001=PRODUCT('Tfa004','Tfa004','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
+#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
+#9021=SHELL_BASED_SURFACE_MODEL('wrap_sbsm',(#90));
+#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#9010);
+#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+ENDSEC;
+END-ISO-10303-21;

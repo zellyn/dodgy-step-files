@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Ad119 — &quot;Unknown ENTITY type&quot; warning is not a hard failure (presentation subgraph silently dropped, BRL-CAD step-g)</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.11 Adversarial / parser robustness</a> <span class="sep">/</span> <span class="current">Ad119</span>
+</nav>
+<header class="title-bar">
+<h1>Ad119 <span class="sep">—</span> <span class="entry-title">&quot;Unknown ENTITY type&quot; warning is not a hard failure (presentation subgraph silently dropped, BRL-CAD step-g)</span></h1>
+<p class="category">§12.11 adversarial / parser-robustness (sub-class: warn-without-fail dispatch)</p>
+<p class="severity-badge severity-p2">P2 — spec deviation (no data loss)</p>
+<p class="tag-pills">
+<a class="tag tag-spec-violation" href="../by-tag/spec-violation/index.html">spec-violation</a>
+<a class="tag tag-adversarial" href="../by-tag/adversarial/index.html">adversarial</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-11-adversarial/Ad119.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-11-adversarial/Ad119.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>SourceForge BRL-CAD bug #291 (CATIA V5R19 AP203 — `step-g` printed `Unknown ENTITY type` for nine presentation entities then aborted with `glibc detected *** step-g: malloc(): memory corruption`)</li>
+<li>SourceForge BRL-CAD bug #332 (`mdgpr.step` — eleven unknown entities, geometry imports cleanly, all presentation data lost)</li>
+<li>bug-reporter language: &quot;Unknown ENTITY type STYLED_ITEM&quot;, &quot;Unknown ENTITY type MECHANICAL_DESIGN_GEOMETRIC_PRESENTATION_REPRESENTATION&quot;, &quot;step-g imports geometry but loses all colour and layer info&quot;, &quot;presentation entities silently skipped&quot;.</li>
+</ul></section>
+<section><h2>Sender</h2>
+<p>CATIA V5/V6, NX, and Inventor exports of AP203/AP214 files where the geometric subgraph and the presentation subgraph (STYLED_ITEM, PRESENTATION_STYLE_ASSIGNMENT, SURFACE_STYLE_USAGE, SURFACE_SIDE_STYLE, SURFACE_STYLE_FILL_AREA, FILL_AREA_STYLE, FILL_AREA_STYLE_COLOUR, COLOUR_RGB, PRESENTATION_LAYER_ASSIGNMENT, MECHANICAL_DESIGN_GEOMETRIC_PRESENTATION_REPRESENTATION) coexist.</p></section>
+<section><h2>Description</h2>
+<p>When `step-g` encounters an entity its STEPcode-generated dispatcher does not recognise, it prints `Unknown ENTITY type &lt;name&gt;` once per instance to stderr, marks the instance as load-failed in `entity_status`, and then completes the import — the geometric subgraph is unaffected, but every colour/layer/style assignment is silently discarded. The user only notices the lost appearance after the converted .g file is rendered. In versions ≤ 7.18.4 the same dispatch path additionally tripped a glibc malloc-corruption abort (bug #291) during cleanup of the partially-loaded styled items; the warn-without-fail pattern coexisted with a latent double-free. Distinct from Ad117 (specific crash on dangling STYLED_ITEM ref) by being the umbrella &quot;unknown entity is silently skipped&quot; defect that drops the entire presentation subgraph at once.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>AP203 file containing `MANIFOLD_SOLID_BREP` plus `COLOUR_RGB` → `FILL_AREA_STYLE_COLOUR` → `FILL_AREA_STYLE` → `SURFACE_STYLE_FILL_AREA` → `SURFACE_SIDE_STYLE` → `SURFACE_STYLE_USAGE` → `PRESENTATION_STYLE_ASSIGNMENT` → `STYLED_ITEM` → `PRESENTATION_LAYER_ASSIGNMENT` → `MECHANICAL_DESIGN_GEOMETRIC_PRESENTATION_REPRESENTATION`. step-g prints nine `Unknown ENTITY type` warnings and produces a colourless .g file.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>reject — when an unknown entity type is referenced by a known consumer (e.g. `MECHANICAL_DESIGN_GEOMETRIC_PRESENTATION_REPRESENTATION` references `STYLED_ITEM` references unresolved style), the importer must either (a) implement the presentation subgraph or (b) raise `E_UNKNOWN_PRESENTATION_ENTITY` so the caller knows colour/layer information has been lost.</p></section>
+<section><h2>Notes</h2>
+<p>**See also**: Ad117, M039, A103. Synonyms: &quot;Unknown ENTITY type STYLED_ITEM&quot;, &quot;BRL-CAD step-g warns then drops presentation subgraph&quot;, &quot;MECHANICAL_DESIGN_GEOMETRIC_PRESENTATION_REPRESENTATION skipped silently&quot;, &quot;SourceForge brlcad bug 291 unknown entity type&quot;, &quot;SourceForge brlcad bug 332 mdgpr presentation lost&quot;, &quot;STEPcode dispatcher unknown entity warn-and-skip&quot;.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>contains(b&#x27;STYLED_ITEM&#x27;)</code></li>
+<li><code>contains(b&#x27;MECHANICAL_DESIGN_GEOMETRIC_PRESENTATION_REPRESENTATION&#x27;)</code></li>
+<li><code>contains(b&#x27;PRESENTATION_LAYER_ASSIGNMENT&#x27;)</code></li>
+</ul></section>
+<section><h2>Cross-references</h2>
+<p><a href="Ad117.html">Ad117</a>, <a href="../12-8-mixed/M039.html">M039</a>, <a href="../12-6-assembly/A103.html">A103</a></p>
+</section>
+<section><h2>Live oracle output</h2>
+<table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
+<tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>no_shapes_loaded</code></td></tr>
+</tbody></table>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>/* Ad119 - &quot;Unknown ENTITY type&quot; warning is not a hard failure
+<span class="lineno">2</span>   Defect: BRL-CAD step-g (and several other STEPcode-based readers)
+<span class="lineno">3</span>   when handed a CATIA AP203 file containing presentation entities
+<span class="lineno">4</span>   (<mark>STYLED_ITEM</mark>, PRESENTATION_STYLE_ASSIGNMENT, SURFACE_STYLE_USAGE,
+<span class="lineno">5</span>   SURFACE_SIDE_STYLE, SURFACE_STYLE_FILL_AREA, FILL_AREA_STYLE,
+<span class="lineno">6</span>   FILL_AREA_STYLE_COLOUR, COLOUR_RGB, <mark>PRESENTATION_LAYER_ASSIGNMENT</mark>,
+<span class="lineno">7</span>   <mark>MECHANICAL_DESIGN_GEOMETRIC_PRESENTATION_REPRESENTATION</mark>) prints
+<span class="lineno">8</span>   &quot;Unknown ENTITY type &lt;name&gt;&quot; once per entity to stderr, marks the
+<span class="lineno">9</span>   instances as load-failed, but completes the import.  The geometry
+<span class="lineno">10</span>   imports cleanly; the user only notices the lost colour/layer/style
+<span class="lineno">11</span>   information after the file is converted and rendered.  In versions
+<span class="lineno">12</span>   &lt;= 7.18.4 the same dispatch path additionally tripped a glibc malloc
+<span class="lineno">13</span>   corruption abort during cleanup (sourceforge bug 291) - the
+<span class="lineno">14</span>   warning-without-failure pattern coexisted with a latent
+<span class="lineno">15</span>   double-free.  Distinct from Ad117 (specific crash on dangling
+<span class="lineno">16</span>   <mark>STYLED_ITEM</mark> ref) by being the umbrella &quot;unknown entity is silently
+<span class="lineno">17</span>   skipped&quot; defect that covers the whole presentation subgraph at once.
+<span class="lineno">18</span>   Sources: SourceForge BRL-CAD bug #291 (CATIA V5R19 AP203 file -
+<span class="lineno">19</span>   &quot;Unknown ENTITY type&quot; + glibc malloc corruption) and bug #332
+<span class="lineno">20</span>   (mdgpr.step minimal repro - 11 unknown entities printed, geometry
+<span class="lineno">21</span>   loads cleanly, all presentation data lost). */
+<span class="lineno">22</span>ISO-10303-21;
+<span class="lineno">23</span>HEADER;
+<span class="lineno">24</span>FILE_DESCRIPTION(
+<span class="lineno">25</span>  (&#x27;Ad119 - presentation entities silently dropped with Unknown ENTITY warning&#x27;),
+<span class="lineno">26</span>  &#x27;2;1&#x27;);
+<span class="lineno">27</span>FILE_NAME(&#x27;Ad119.stp&#x27;,&#x27;2026-05-02T00:00:00&#x27;,(&#x27;cad-research-suite&#x27;),(&#x27;&#x27;),
+<span class="lineno">28</span>  &#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">29</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
+<span class="lineno">30</span>ENDSEC;
+<span class="lineno">31</span>DATA;
+<span class="lineno">32</span>/* Minimal MANIFOLD_SOLID_BREP carrier: a single point so the file has
+<span class="lineno">33</span>   *some* geometry to anchor presentation entities to.  Real-world
+<span class="lineno">34</span>   reproducer would be a full cube; the defect class is the same. */
+<span class="lineno">35</span>#10=CARTESIAN_POINT(&#x27;o&#x27;,(0.0,0.0,0.0));
+<span class="lineno">36</span>#11=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">37</span>#12=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">38</span>#13=AXIS2_PLACEMENT_3D(&#x27;axis&#x27;,#10,#12,#11);
+<span class="lineno">39</span>/* Defect: the entire presentation subgraph that step-g warns about then
+<span class="lineno">40</span>   silently drops. */
+<span class="lineno">41</span>#100=COLOUR_RGB(&#x27;red&#x27;,1.0,0.0,0.0);
+<span class="lineno">42</span>#101=FILL_AREA_STYLE_COLOUR(&#x27;&#x27;,#100);
+<span class="lineno">43</span>#102=FILL_AREA_STYLE(&#x27;&#x27;,(#101));
+<span class="lineno">44</span>#103=SURFACE_STYLE_FILL_AREA(#102);
+<span class="lineno">45</span>#104=SURFACE_SIDE_STYLE(&#x27;&#x27;,(#103));
+<span class="lineno">46</span>#105=SURFACE_STYLE_USAGE(.BOTH.,#104);
+<span class="lineno">47</span>#106=PRESENTATION_STYLE_ASSIGNMENT((#105));
+<span class="lineno">48</span>#107=<mark>STYLED_ITEM</mark>(&#x27;&#x27;,(#106),#13);
+<span class="lineno">49</span>#108=<mark>PRESENTATION_LAYER_ASSIGNMENT</mark>(&#x27;layer_red&#x27;,&#x27;&#x27;,(#107));
+<span class="lineno">50</span>#109=<mark>MECHANICAL_DESIGN_GEOMETRIC_PRESENTATION_REPRESENTATION</mark>(
+<span class="lineno">51</span>  &#x27;mdgpr_root&#x27;,(#107),#13);
+<span class="lineno">52</span>ENDSEC;
+<span class="lineno">53</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Ad118.html">&larr; Ad118</a> <a class="up" href="index.html">§12.11 Adversarial / parser robustness</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

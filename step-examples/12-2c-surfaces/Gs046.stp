@@ -1,0 +1,28 @@
+ISO-10303-21;
+/* Gs046 - SURFACE_OF_LINEAR_EXTRUSION whose extrusion vector has
+ * zero magnitude
+ * Defect: A SURFACE_OF_LINEAR_EXTRUSION sweeps a basis curve along
+ * a vector (DIRECTION + magnitude). If the vector magnitude is
+ * 0.0, the surface degenerates to the basis curve. The DIRECTION
+ * is technically still well-formed (any unit vector) but the
+ * VECTOR carries magnitude 0. Distinct from Gs032's parallel-
+ * collinear case: there the direction is non-zero but parallel
+ * to the basis. Here the magnitude itself is zero. */
+HEADER;
+FILE_DESCRIPTION(('Gs046 - SURFACE_OF_LINEAR_EXTRUSION zero-magnitude vector'),'2;1');
+FILE_NAME('Gs046.stp','2026-04-26T00:00:00',(''),(''),
+  'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#10=CARTESIAN_POINT('basis_o',(0.0,0.0,0.0));
+#11=DIRECTION('basis_d',(1.0,0.0,0.0));
+#12=VECTOR('basis_v',#11,5.0);
+#13=LINE('basis',#10,#12);
+#20=DIRECTION('extr_d',(0.0,0.0,1.0));
+/* Defect: extrusion vector magnitude is 0.0 - the sweep collapses */
+#21=VECTOR('extr_v',#20,0.0);
+#22=SURFACE_OF_LINEAR_EXTRUSION('zero_sweep',#13,#21);
+ENDSEC;
+END-ISO-10303-21;

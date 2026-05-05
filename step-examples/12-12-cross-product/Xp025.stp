@@ -1,0 +1,54 @@
+ISO-10303-21;
+/* Xp025 - Cross-product: Onshape STEP export round-tripped to SolidWorks
+ *   loses sub-component placements (parts snap to assembly origin).
+ * Source: forum.kicad.info t/47681 "Wrong parts assignment when opening
+ *   STEP files in Solidworks 2021"; forum.onshape.com discussion 1355
+ *   "Missing parts in STEP file import in OS Assembly".
+ * Defect: ITEM_DEFINED_TRANSFORMATION carries an identity AXIS2_PLACEMENT
+ *   for every NEXT_ASSEMBLY_USAGE_OCCURRENCE link, yet the children share
+ *   distinct geometry. SolidWorks honours the identities and stacks all
+ *   parts at world origin; Onshape's writer apparently embedded the placements
+ *   into the child SHAPE_REPRESENTATION instead of into the relating
+ *   transformation. */
+HEADER;
+FILE_DESCRIPTION(('Xp025 cross-product','Onshape->SolidWorks placements lost'),'2;1');
+FILE_NAME('Xp025.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#11=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#12=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#10,'tol','');
+#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13))GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12))REPRESENTATION_CONTEXT('','3D'));
+/* Top-level assembly product */
+#20=PRODUCT('TopAsm','TopAsm','',(#21));
+#21=PRODUCT_CONTEXT('',#1,'mechanical');
+#22=PRODUCT_DEFINITION_FORMATION('','',#20);
+#23=PRODUCT_DEFINITION('','',#22,#24);
+#24=PRODUCT_DEFINITION_CONTEXT('',#1,'design');
+/* Two child products with non-trivial true positions, but writer used identity */
+#30=PRODUCT('PartA-at-(50,0,0)','PartA','',(#21));
+#31=PRODUCT_DEFINITION_FORMATION('','',#30);
+#32=PRODUCT_DEFINITION('','',#31,#24);
+#40=PRODUCT('PartB-at-(0,75,0)','PartB','',(#21));
+#41=PRODUCT_DEFINITION_FORMATION('','',#40);
+#42=PRODUCT_DEFINITION('','',#41,#24);
+/* Identity placements - bug: should hold (50,0,0) and (0,75,0) */
+#50=CARTESIAN_POINT('origin',(0.0,0.0,0.0));
+#51=DIRECTION('z',(0.0,0.0,1.0));
+#52=DIRECTION('x',(1.0,0.0,0.0));
+#53=AXIS2_PLACEMENT_3D('identity',#50,#51,#52);
+#54=AXIS2_PLACEMENT_3D('identity_again',#50,#51,#52);
+#60=ITEM_DEFINED_TRANSFORMATION('IDT_A_should_be_50_0_0','snapped to origin',#53,#53);
+#61=ITEM_DEFINED_TRANSFORMATION('IDT_B_should_be_0_75_0','snapped to origin',#54,#54);
+/* NEXT_ASSEMBLY_USAGE_OCCURRENCE referencing zero-translation transforms */
+#70=(NEXT_ASSEMBLY_USAGE_OCCURRENCE('a','PartA-at-origin','origin-bug',#23,#32,$)REPRESENTATION_RELATIONSHIP('','',#80,#81)REPRESENTATION_RELATIONSHIP_WITH_TRANSFORMATION(#60)SHAPE_REPRESENTATION_RELATIONSHIP());
+#71=(NEXT_ASSEMBLY_USAGE_OCCURRENCE('b','PartB-at-origin','origin-bug',#23,#42,$)REPRESENTATION_RELATIONSHIP('','',#80,#82)REPRESENTATION_RELATIONSHIP_WITH_TRANSFORMATION(#61)SHAPE_REPRESENTATION_RELATIONSHIP());
+#80=SHAPE_REPRESENTATION('parent',(#53),#14);
+#81=SHAPE_REPRESENTATION('partA',(#53),#14);
+#82=SHAPE_REPRESENTATION('partB',(#54),#14);
+ENDSEC;
+END-ISO-10303-21;

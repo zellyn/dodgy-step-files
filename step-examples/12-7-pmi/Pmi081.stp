@@ -1,0 +1,22 @@
+ISO-10303-21;
+/* Pmi081 - Saved-views label name silently emptied
+ * Defect: two saved-view labels named front and iso; clear-contents pass also empties names */
+HEADER;
+FILE_DESCRIPTION(('Pmi081 test case','Saved-views label name silently emptied'),'2;1');
+FILE_NAME('Pmi081.stp','2026-04-30T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+#100=PRESENTATION_VIEW('front','front view','',(#1),#1);
+#101=PRESENTATION_VIEW('iso','iso view','',(#1),#1);
+/* PMI anchor: minimal ANNOTATION_PLANE so this PMI fixture cites at least one canonical PMI entity. */
+#9100=CARTESIAN_POINT('pmi_o',(0.0,0.0,0.0));
+#9101=DIRECTION('pmi_z',(0.0,0.0,1.0));
+#9102=DIRECTION('pmi_x',(1.0,0.0,0.0));
+#9103=AXIS2_PLACEMENT_3D('pmi_a',#9100,#9101,#9102);
+#9104=PLANE('pmi_anchor_plane',#9103);
+#9105=ANNOTATION_PLANE('pmi_annotation',(),#9104,());
+ENDSEC;
+END-ISO-10303-21;

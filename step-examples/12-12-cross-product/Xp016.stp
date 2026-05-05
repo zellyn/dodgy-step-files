@@ -1,0 +1,22 @@
+ISO-10303-21;
+/* Xp016 - Cross-product: AXIS2_PLACEMENT_3D references a forward entity
+ *   that itself transitively references back (cycle), and a DIRECTION
+ *   has zero magnitude.
+ * Builds on Ls-forward-ref-class + Ad-cyclic-class + Ls-invalid-direction-class. */
+HEADER;
+FILE_DESCRIPTION(('Xp016 cross-product','forward-ref x cycle x zero direction'),'2;1');
+FILE_NAME('Xp016.stp','2026-04-26T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+/* Defect 3: zero-magnitude direction */
+#10=DIRECTION('zero',(0.0,0.0,0.0));
+/* Defect 1+2: AXIS2_PLACEMENT_3D references #999 (forward); #999 cycles
+ *   back to #11. */
+#11=AXIS2_PLACEMENT_3D('',#999,#10,#10);
+#999=AXIS2_PLACEMENT_3D('back',#11,#10,#10);
+#100=PLANE('',#11);
+ENDSEC;
+END-ISO-10303-21;

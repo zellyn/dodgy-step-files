@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Gs044 — `INTERSECTION_CURVE` between two surfaces with multiple disjoint intersection branches, only one represented</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.2c Surface / curve degeneracies</a> <span class="sep">/</span> <span class="current">Gs044</span>
+</nav>
+<header class="title-bar">
+<h1>Gs044 <span class="sep">—</span> <span class="entry-title">`INTERSECTION_CURVE` between two surfaces with multiple disjoint intersection branches, only one represented</span></h1>
+<p class="category">§12.2c surface-degeneracy (sub-class: intersection curve)</p>
+<p class="severity-badge severity-p1">P1 — silent data loss</p>
+<p class="tag-pills">
+<a class="tag tag-silent-loss" href="../by-tag/silent-loss/index.html">silent-loss</a>
+<a class="tag tag-spec-violation" href="../by-tag/spec-violation/index.html">spec-violation</a>
+<a class="tag tag-geometry" href="../by-tag/geometry/index.html">geometry</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-2c-surfaces/Gs044.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-2c-surfaces/Gs044.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>16-iso-spec ISO 10303-42 §INTERSECTION_CURVE</li>
+</ul></section>
+<section><h2>Description</h2>
+<p>An INTERSECTION_CURVE entity holds the curve of intersection between two surfaces. The spec models the intersection as a single CURVE_ON_SURFACE pair, but in general two surfaces (e.g. a plane and a torus, or two non-coaxial cylinders) intersect along *multiple disjoint branches*. A single INTERSECTION_CURVE entity cannot faithfully represent this; the producer chose one branch arbitrarily, silently dropping the others.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>TOROIDAL_SURFACE major=10, minor=3; PLANE z=0. The intersection is two concentric circles at radius 7 and 13. The fixture&#x27;s INTERSECTION_CURVE represents only the outer branch (r=13).</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>detect that the producer&#x27;s basis curve does not cover the full surface intersection and warn; or reject INTERSECTION_CURVE if the kernel expects a single branch and detect-time analysis disagrees.</p></section>
+<section><h2>Notes</h2>
+<p>**See also**: Gp- pcurve entries. Synonyms: &quot;INTERSECTION_CURVE represents only one branch&quot;, &quot;torus-plane intersection has two circles only one stored&quot;, &quot;multiple disjoint intersection branches dropped&quot;, &quot;single CURVE_ON_SURFACE pair cannot represent multi-branch intersection&quot;, &quot;producer chose one branch silently dropping others&quot;.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>contains(b&#x27;INTERSECTION_CURVE(&#x27;)</code></li>
+<li><code>contains(b&#x27;TOROIDAL_SURFACE(&#x27;)</code></li>
+<li><code>contains(b&#x27;CIRCLE(\&#x27;outer_branch\&#x27;&#x27;)</code></li>
+</ul></section>
+<section><h2>Live oracle output</h2>
+<table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
+<tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>no_shapes_loaded</code></td></tr>
+</tbody></table>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* Gs044 - INTERSECTION_CURVE between two surfaces with multiple
+<span class="lineno">3</span> * disjoint intersection branches
+<span class="lineno">4</span> * Defect: An INTERSECTION_CURVE entity holds the curve of
+<span class="lineno">5</span> * intersection between two surfaces. The spec models the
+<span class="lineno">6</span> * intersection as a single CURVE_ON_SURFACE pair, but in general
+<span class="lineno">7</span> * two surfaces (e.g. two intersecting cylinders, or a plane and
+<span class="lineno">8</span> * a torus) can intersect along *multiple disjoint branches*.
+<span class="lineno">9</span> * Here a horizontal plane intersects a torus whose tube radius
+<span class="lineno">10</span> * exceeds the plane offset, yielding two concentric circles
+<span class="lineno">11</span> * (Villarceau-like). A single INTERSECTION_CURVE entity cannot
+<span class="lineno">12</span> * faithfully represent this; the producer chose one branch
+<span class="lineno">13</span> * arbitrarily. */
+<span class="lineno">14</span>HEADER;
+<span class="lineno">15</span>FILE_DESCRIPTION((&#x27;Gs044 - INTERSECTION_CURVE plane vs torus, multi-branch&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">16</span>FILE_NAME(&#x27;Gs044.stp&#x27;,&#x27;2026-04-26T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),
+<span class="lineno">17</span>  &#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">18</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
+<span class="lineno">19</span>ENDSEC;
+<span class="lineno">20</span>DATA;
+<span class="lineno">21</span>#1=APPLICATION_CONTEXT(&#x27;automotive_design&#x27;);
+<span class="lineno">22</span>#10=CARTESIAN_POINT(&#x27;o&#x27;,(0.0,0.0,0.0));
+<span class="lineno">23</span>#11=DIRECTION(&#x27;z&#x27;,(0.0,0.0,1.0));
+<span class="lineno">24</span>#12=DIRECTION(&#x27;x&#x27;,(1.0,0.0,0.0));
+<span class="lineno">25</span>#13=AXIS2_PLACEMENT_3D(&#x27;place&#x27;,#10,#11,#12);
+<span class="lineno">26</span>/* Torus major=10, minor=3 -&gt; intersection with z=0 plane
+<span class="lineno">27</span> * yields two concentric circles at radius 10 +/- 3 */
+<span class="lineno">28</span>#20=<mark>TOROIDAL_SURFACE(</mark>&#x27;t&#x27;,#13,10.0,3.0);
+<span class="lineno">29</span>/* Plane z=0 */
+<span class="lineno">30</span>#21=CARTESIAN_POINT(&#x27;po&#x27;,(0.0,0.0,0.0));
+<span class="lineno">31</span>#22=AXIS2_PLACEMENT_3D(&#x27;placeA&#x27;,#21,#11,#12);
+<span class="lineno">32</span>#23=PLANE(&#x27;plane&#x27;,#22);
+<span class="lineno">33</span>/* Producer chose the outer circle (r=13) as the representative
+<span class="lineno">34</span> * branch; the inner circle (r=7) is silently dropped */
+<span class="lineno">35</span>#30=<mark>CIRCLE(&#x27;outer_branch&#x27;</mark>,#13,13.0);
+<span class="lineno">36</span>#31=PCURVE(&#x27;pc1&#x27;,#20,
+<span class="lineno">37</span>  REPRESENTATION(&#x27;&#x27;,(#30),#13));
+<span class="lineno">38</span>#32=PCURVE(&#x27;pc2&#x27;,#23,
+<span class="lineno">39</span>  REPRESENTATION(&#x27;&#x27;,(#30),#13));
+<span class="lineno">40</span>/* Defect: INTERSECTION_CURVE silently representing only one of
+<span class="lineno">41</span> * two disjoint intersection branches */
+<span class="lineno">42</span>#40=<mark>INTERSECTION_CURVE(</mark>&#x27;plane_torus&#x27;,#30,(#31,#32),.PCURVE_S1.);
+<span class="lineno">43</span>ENDSEC;
+<span class="lineno">44</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Gs043.html">&larr; Gs043</a> <a class="up" href="index.html">§12.2c Surface / curve degeneracies</a> <a class="next" href="Gs045.html">Gs045 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

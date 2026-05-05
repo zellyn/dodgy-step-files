@@ -1,0 +1,32 @@
+ISO-10303-21;
+/* M156 - AP210 power net carries only a mechanical placement
+ * constraint, no electrical constraints.
+ * Defect: a NETWORK named 'PWR_5V' is annotated with
+ * MECHANICAL_PLACEMENT_CONSTRAINT (component-spacing rule) but no
+ * electrical-class constraint (current capacity, impedance, voltage
+ * rating). A power-distribution net needs an electrical attribute
+ * for current-carrying capacity validation; the file is incomplete. */
+HEADER;
+FILE_DESCRIPTION(('M156 test case','AP210 power net mechanical-only constraint'),'2;1');
+FILE_NAME('M156.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('ELECTRONIC_ASSEMBLY_INTERCONNECT_AND_PACKAGING_DESIGN { 1 0 10303 210 3 1 0 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('electronic_assembly_interconnect_and_packaging_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
+  'electronic_assembly_interconnect_and_packaging_design',2014,#1);
+#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10))
+     REPRESENTATION_CONTEXT('pcb','3D'));
+#100=TERMINAL('VR_OUT','5V_rail_source',$);
+#101=TERMINAL('U1_VCC','load_input',$);
+#200=NETWORK_NODE('node_src',#100);
+#201=NETWORK_NODE('node_dst',#101);
+#300=NETWORK('PWR_5V',(#200,#201),(#200));
+/* Defect: only a mechanical constraint; no electrical current/voltage
+ * attribute on a 5V power net. */
+#400=PROPERTY_DEFINITION('mechanical_placement_constraint',
+       '5 mm component-clearance only',#300);
+ENDSEC;
+END-ISO-10303-21;

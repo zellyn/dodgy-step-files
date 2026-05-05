@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>M134 — AP203 two distinct PERSON entities share the same id</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.8 Mixed (tessellation, validation properties, etc.)</a> <span class="sep">/</span> <span class="current">M134</span>
+</nav>
+<header class="title-bar">
+<h1>M134 <span class="sep">—</span> <span class="entry-title">AP203 two distinct PERSON entities share the same id</span></h1>
+<p class="category">§12.8 (sub-class: AP203 identifier collision)</p>
+<p class="severity-badge severity-p1">P1 — silent data loss</p>
+<p class="tag-pills">
+<a class="tag tag-spec-violation" href="../by-tag/spec-violation/index.html">spec-violation</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-8-mixed/M134.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-8-mixed/M134.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>16-iso-spec ISO 10303-41 (person uniqueness in approval)</li>
+<li>bug-reporter language: &quot;AP203 PERSON id collision&quot;, &quot;two people same identifier&quot;, &quot;PDM approver ambiguous&quot;.</li>
+</ul></section>
+<section><h2>Sender</h2>
+<p>deduced — PDM exporter that pulled PERSON records from two source databases without re-mapping identifiers</p></section>
+<section><h2>Description</h2>
+<p>Two `PERSON` instances declare the same identifier (e.g. &#x27;jdoe&#x27;) yet have different last names (&#x27;Doe&#x27; vs &#x27;Doppelganger&#x27;). PERSON.id is intended to uniquely identify the individual across the design pool; this collision makes downstream APPROVAL_PERSON_ORGANIZATION references ambiguous about which individual approved.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>`PERSON(&#x27;jdoe&#x27;,&#x27;Doe&#x27;,&#x27;John&#x27;,..)` and `PERSON(&#x27;jdoe&#x27;,&#x27;Doppelganger&#x27;,&#x27;Jane&#x27;,..)` in the same file.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>detect duplicate PERSON.id; reject or warn. Auto-rename is out of scope.</p></section>
+<section><h2>Notes</h2>
+<p>Synonyms: &quot;AP203 person ID conflict&quot;, &quot;PDM identifier collision&quot;, &quot;approver disambiguation&quot;.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>contains(b&#x27;CONFIG_CONTROL_DESIGN&#x27;)</code></li>
+<li><code>count_entity_def(b&#x27;PERSON&#x27;) &gt;= 2</code></li>
+<li><code>contains(b&quot;PERSON(&#x27;jdoe&#x27;,&quot;)</code></li>
+</ul></section>
+<section><h2>Live oracle output</h2>
+<table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
+<tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>no_shapes_loaded</code></td></tr>
+</tbody></table>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* M134 - AP203 two distinct PERSON entities share the same id.
+<span class="lineno">3</span> * Defect: two PERSON instances declare identifier &#x27;jdoe&#x27; for two
+<span class="lineno">4</span> * different individuals (one with last_name &#x27;Doe&#x27;, another with
+<span class="lineno">5</span> * last_name &#x27;Doppelganger&#x27;). PERSON.id is intended to uniquely
+<span class="lineno">6</span> * identify the person across the design pool; this collision makes
+<span class="lineno">7</span> * downstream APPROVED_BY assignments ambiguous. */
+<span class="lineno">8</span>HEADER;
+<span class="lineno">9</span>FILE_DESCRIPTION((&#x27;M134 test case&#x27;,&#x27;AP203 PERSON id collision&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">10</span>FILE_NAME(&#x27;M134.stp&#x27;,&#x27;2026-05-02T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">11</span>FILE_SCHEMA((&#x27;<mark>CONFIG_CONTROL_DESIGN</mark>&#x27;));
+<span class="lineno">12</span>ENDSEC;
+<span class="lineno">13</span>DATA;
+<span class="lineno">14</span>#1=APPLICATION_CONTEXT(&#x27;configuration controlled 3D design of mechanical parts and assemblies&#x27;);
+<span class="lineno">15</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,&#x27;config_control_design&#x27;,1994,#1);
+<span class="lineno">16</span>/* Defect: two distinct PERSON entities both use id &#x27;jdoe&#x27;. */
+<span class="lineno">17</span><mark>#100=PERSON(&#x27;jdoe&#x27;,</mark>&#x27;Doe&#x27;,&#x27;John&#x27;,(&#x27;A.&#x27;),(&#x27;Mr.&#x27;),(),(),());
+<span class="lineno">18</span><mark>#101=PERSON(&#x27;jdoe&#x27;,</mark>&#x27;Doppelganger&#x27;,&#x27;Jane&#x27;,(&#x27;B.&#x27;),(&#x27;Dr.&#x27;),(),(),());
+<span class="lineno">19</span>#110=ORGANIZATION(&#x27;acme&#x27;,&#x27;Acme Corp&#x27;,&#x27;aerospace supplier&#x27;);
+<span class="lineno">20</span>#120=PERSON_AND_ORGANIZATION(#100,#110);
+<span class="lineno">21</span>#121=PERSON_AND_ORGANIZATION(#101,#110);
+<span class="lineno">22</span>ENDSEC;
+<span class="lineno">23</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="M133.html">&larr; M133</a> <a class="up" href="index.html">§12.8 Mixed (tessellation, validation properties, etc.)</a> <a class="next" href="M135.html">M135 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

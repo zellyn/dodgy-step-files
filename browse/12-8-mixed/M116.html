@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>M116 — AP209 modal extraction count exceeds DOF rank</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.8 Mixed (tessellation, validation properties, etc.)</a> <span class="sep">/</span> <span class="current">M116</span>
+</nav>
+<header class="title-bar">
+<h1>M116 <span class="sep">—</span> <span class="entry-title">AP209 modal extraction count exceeds DOF rank</span></h1>
+<p class="category">§12.8 mixed (sub-class: AP209 modal analysis)</p>
+<p class="severity-badge severity-p1">P1 — silent data loss</p>
+<p class="tag-pills">
+<a class="tag tag-spec-violation" href="../by-tag/spec-violation/index.html">spec-violation</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-8-mixed/M116.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-8-mixed/M116.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>deduced from AP209 §9 eigenvalue_extraction_method requested-mode count vs system DOF</li>
+</ul></section>
+<section><h2>Sender</h2>
+<p>deduced — FEA template requesting fixed mode count regardless of model size</p></section>
+<section><h2>Description</h2>
+<p>A modal-analysis card requests extraction of 50 modes from a model with only 18 active DOFs. The eigensolver either returns 18 real modes plus 32 NaN/garbage entries, or fails outright. Bug-reporter language: &quot;AP209 too many modes requested&quot;, &quot;FEM eigensolver returns NaN modes&quot;, &quot;mode count exceeds DOF&quot;.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>A `FEA_MODEL_3D` with three free nodes (9 DOFs) but a modal extraction parameter requesting 50 modes.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>Heal and accept: coerce the requested mode count to the system rank and warn loudly.</p></section>
+<section><h2>Notes</h2>
+<p>Synonyms: &quot;AP209 mode count too high&quot;, &quot;eigensolver over-request&quot;, &quot;modal extraction count exceeds DOF rank&quot;, &quot;more modes than DOFs&quot;, &quot;AP209 NaN modes returned&quot;.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>contains(b&#x27;STRUCTURAL_ANALYSIS_DESIGN&#x27;)</code></li>
+<li><code>contains(b&#x27;FEA_MODEL&#x27;)</code></li>
+</ul></section>
+<section><h2>Live oracle output</h2>
+<table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
+<tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>no_shapes_loaded</code></td></tr>
+</tbody></table>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* M116 - AP209 modal extraction request exceeds DOF rank.
+<span class="lineno">3</span> * Defect: a <mark>FEA_MODEL</mark>_3D has 3 free nodes (9 active DOFs) but a modal
+<span class="lineno">4</span> * extraction parameter requests 50 modes. The eigensolver either
+<span class="lineno">5</span> * returns 9 real modes plus 41 NaN entries, or fails outright. */
+<span class="lineno">6</span>HEADER;
+<span class="lineno">7</span>FILE_DESCRIPTION((&#x27;M116 test case&#x27;,&#x27;AP209 mode count exceeds DOF rank&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">8</span>FILE_NAME(&#x27;M116.stp&#x27;,&#x27;2026-05-02T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">9</span>FILE_SCHEMA((&#x27;<mark>STRUCTURAL_ANALYSIS_DESIGN</mark> { 1 0 10303 209 1 0 0 }&#x27;));
+<span class="lineno">10</span>ENDSEC;
+<span class="lineno">11</span>DATA;
+<span class="lineno">12</span>#1=APPLICATION_CONTEXT(&#x27;structural_analysis_design&#x27;);
+<span class="lineno">13</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,
+<span class="lineno">14</span>  &#x27;structural_analysis_design&#x27;,2001,#1);
+<span class="lineno">15</span>#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">16</span>#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+<span class="lineno">17</span>     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10))
+<span class="lineno">18</span>     REPRESENTATION_CONTEXT(&#x27;fea&#x27;,&#x27;3D&#x27;));
+<span class="lineno">19</span>#100=CARTESIAN_POINT(&#x27;a&#x27;,(0.0,0.0,0.0));
+<span class="lineno">20</span>#101=CARTESIAN_POINT(&#x27;b&#x27;,(1.0,0.0,0.0));
+<span class="lineno">21</span>#102=CARTESIAN_POINT(&#x27;c&#x27;,(0.0,1.0,0.0));
+<span class="lineno">22</span>#110=NODE(&#x27;n1&#x27;,(#100),$);
+<span class="lineno">23</span>#111=NODE(&#x27;n2&#x27;,(#101),$);
+<span class="lineno">24</span>#112=NODE(&#x27;n3&#x27;,(#102),$);
+<span class="lineno">25</span>#150=NODE_GROUP(&#x27;mesh_nodes&#x27;,(#110,#111,#112),$);
+<span class="lineno">26</span>/* Defect: model has 9 DOFs; modal request asks for 50 modes
+<span class="lineno">27</span>   (encoded in the model&#x27;s description). */
+<span class="lineno">28</span>#200=<mark>FEA_MODEL</mark>_3D(&#x27;modal_test_model_50_modes_requested&#x27;,$,#150,$,$);
+<span class="lineno">29</span>ENDSEC;
+<span class="lineno">30</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="M115.html">&larr; M115</a> <a class="up" href="index.html">§12.8 Mixed (tessellation, validation properties, etc.)</a> <a class="next" href="M117.html">M117 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

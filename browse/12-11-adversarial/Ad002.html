@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Ad002 — Stack overflow via deeply nested aggregate parentheses</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.11 Adversarial / parser robustness</a> <span class="sep">/</span> <span class="current">Ad002</span>
+</nav>
+<header class="title-bar">
+<h1>Ad002 <span class="sep">—</span> <span class="entry-title">Stack overflow via deeply nested aggregate parentheses</span></h1>
+<p class="category">§12.11 (sub-class: stack-overflow / DoS)</p>
+<p class="severity-badge severity-p2">P2 — spec deviation (no data loss)</p>
+<p class="tag-pills">
+<a class="tag tag-adversarial" href="../by-tag/adversarial/index.html">adversarial</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-11-adversarial/Ad002.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-11-adversarial/Ad002.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>12-adversarial.md A002</li>
+<li>03-occt-tests.md R084 (IGES round-trip)</li>
+<li>20-general-forums.md J020</li>
+</ul></section>
+<section><h2>Description</h2>
+<p>Recursive descent over `LIST/SET/BAG` aggregates without depth bound; thousands of nested `(((..)))`.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>`#1=FOO(((((…10⁴ levels…0…)))));`</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>Reject with diagnostic: enforce depth ceiling (e.g. 64); emit `E_AGGREGATE_TOO_DEEP`. Must not crash via stack overflow.</p></section>
+<section><h2>Notes</h2>
+<p>M; trivial DoS even before semantic phase. **See also**: Pf012.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>max_paren_depth &gt;= 50</code></li>
+<li><code>count(b&#x27;((((&#x27;) &gt;= 5</code></li>
+</ul></section>
+<section><h2>Cross-references</h2>
+<p><a href="../12-10-perf/Pf012.html">Pf012</a></p>
+</section>
+<section><h2>Live oracle output</h2>
+<table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
+<tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>no_shapes_loaded</code></td></tr>
+</tbody></table>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* ============================================================
+<span class="lineno">3</span>   WARNING: THIS FILE IS INTENTIONALLY MALFORMED.
+<span class="lineno">4</span>   It exists ONLY for parser-robustness / fuzz-class testing.
+<span class="lineno">5</span>   DO NOT feed to a production translator without sandboxing.
+<span class="lineno">6</span>
+<span class="lineno">7</span>   Entry  : Ad002
+<span class="lineno">8</span>   Title  : Stack overflow via deeply nested aggregate parens
+<span class="lineno">9</span>   Defect : The aggregate value of #1 is wrapped in many
+<span class="lineno">10</span>            thousand layers of &#x27;(&#x27; / &#x27;)&#x27;. Naive recursive
+<span class="lineno">11</span>            descent over LIST/SET/BAG aggregates blows the
+<span class="lineno">12</span>            call stack long before reaching the inner literal.
+<span class="lineno">13</span>   Expected: enforce a depth ceiling (e.g. 64) and emit
+<span class="lineno">14</span>             E_AGGREGATE_TOO_DEEP; iterative parsing preferred.
+<span class="lineno">15</span>   ============================================================ */
+<span class="lineno">16</span>HEADER;
+<span class="lineno">17</span>FILE_DESCRIPTION((&#x27;Ad002 nested aggregate parens&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">18</span>FILE_NAME(&#x27;Ad002.stp&#x27;,&#x27;2026-04-26T00:00:00&#x27;,(&#x27;synthetic&#x27;),(&#x27;cad-research&#x27;),
+<span class="lineno">19</span>  &#x27;none&#x27;,&#x27;none&#x27;,&#x27;none&#x27;);
+<span class="lineno">20</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
+<span class="lineno">21</span>ENDSEC;
+<span class="lineno">22</span>DATA;
+<span class="lineno">23</span>/* For the catalogued fixture only ~80 layers shown; a real
+<span class="lineno">24</span>   fuzz harness should expand this to &gt;=10_000 layers to
+<span class="lineno">25</span>   trigger the stack overflow on default ulimit -s. */
+<span class="lineno">26</span>#1=FOO<mark>((((((((((((((((((((((((((((((((((((((((</mark>
+<span class="lineno">27</span><mark>((((((((((((((((((((((((((((((((((((((((</mark>
+<span class="lineno">28</span><mark>((((((((((((((((((((((((((((((((((((((((</mark>
+<span class="lineno">29</span>0
+<span class="lineno">30</span>))))))))))))))))))))))))))))))))))))))))
+<span class="lineno">31</span>))))))))))))))))))))))))))))))))))))))))
+<span class="lineno">32</span>))))))))))))))))))))))))))))))))))))))));
+<span class="lineno">33</span>ENDSEC;
+<span class="lineno">34</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Ad001.html">&larr; Ad001</a> <a class="up" href="index.html">§12.11 Adversarial / parser robustness</a> <a class="next" href="Ad003.html">Ad003 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

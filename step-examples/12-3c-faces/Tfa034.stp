@@ -1,0 +1,159 @@
+/* Tfa034 - Face orientation flag inconsistent with shell normal (FixFaceOrientation)
+ * Defect: one or more faces in a closed shell have orientation flags
+ * inverted relative to the outward direction. Visualization shows mixed
+ * red/blue normals. Common after Booleans or sloppy hand-built shells;
+ * also from sender mirror-block instances. Healer should propagate
+ * orientation via flood-fill from a known-correct seed; flip face/wire
+ * orientations consistently with face's outward normal; reject if
+ * shell is too disconnected to orient consistently.
+ * Reproducer: a MANIFOLD_SOLID_BREP whose CLOSED_SHELL contains six
+ * faces of a unit-10 box, but ONE face is referenced with .F.
+ * orientation (its normal points inward instead of outward).
+ */
+ISO-10303-21;
+HEADER;
+FILE_DESCRIPTION(('Tfa034 face orientation inverted'),'2;1');
+FILE_NAME('Tfa034.stp','2026-04-26T00:00:00',(''),(''),
+  'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
+  'automotive_design',2009,#1);
+/* Eight cube vertices at (0|10)^3.                                     */
+#10=CARTESIAN_POINT('p000',(0.0,0.0,0.0));
+#11=CARTESIAN_POINT('p100',(10.0,0.0,0.0));
+#12=CARTESIAN_POINT('p110',(10.0,10.0,0.0));
+#13=CARTESIAN_POINT('p010',(0.0,10.0,0.0));
+#14=CARTESIAN_POINT('p001',(0.0,0.0,10.0));
+#15=CARTESIAN_POINT('p101',(10.0,0.0,10.0));
+#16=CARTESIAN_POINT('p111',(10.0,10.0,10.0));
+#17=CARTESIAN_POINT('p011',(0.0,10.0,10.0));
+#20=VERTEX_POINT('',#10);
+#21=VERTEX_POINT('',#11);
+#22=VERTEX_POINT('',#12);
+#23=VERTEX_POINT('',#13);
+#24=VERTEX_POINT('',#14);
+#25=VERTEX_POINT('',#15);
+#26=VERTEX_POINT('',#16);
+#27=VERTEX_POINT('',#17);
+/* Direction unit vectors used by edge LINE entities.                    */
+#30=DIRECTION('+x',(1.0,0.0,0.0));
+#31=DIRECTION('+y',(0.0,1.0,0.0));
+#32=DIRECTION('+z',(0.0,0.0,1.0));
+#33=DIRECTION('-x',(-1.0,0.0,0.0));
+#34=DIRECTION('-y',(0.0,-1.0,0.0));
+#35=DIRECTION('-z',(0.0,0.0,-1.0));
+/* Edge LINE entities, length 10 along the appropriate axis.             */
+#40=VECTOR('',#30,10.0);
+#41=VECTOR('',#31,10.0);
+#42=VECTOR('',#32,10.0);
+#50=LINE('e_p000_p100',#10,#40);
+#51=LINE('e_p100_p110',#11,#41);
+#52=LINE('e_p010_p110',#13,#40);
+#53=LINE('e_p000_p010',#10,#41);
+#54=LINE('e_p001_p101',#14,#40);
+#55=LINE('e_p101_p111',#15,#41);
+#56=LINE('e_p011_p111',#17,#40);
+#57=LINE('e_p001_p011',#14,#41);
+#58=LINE('e_p000_p001',#10,#42);
+#59=LINE('e_p100_p101',#11,#42);
+#60=LINE('e_p110_p111',#12,#42);
+#61=LINE('e_p010_p011',#13,#42);
+/* EDGE_CURVEs around the box (each oriented with its parent LINE).      */
+#70=EDGE_CURVE('e000_100',#20,#21,#50,.T.);
+#71=EDGE_CURVE('e100_110',#21,#22,#51,.T.);
+#72=EDGE_CURVE('e010_110',#23,#22,#52,.T.);
+#73=EDGE_CURVE('e000_010',#20,#23,#53,.T.);
+#74=EDGE_CURVE('e001_101',#24,#25,#54,.T.);
+#75=EDGE_CURVE('e101_111',#25,#26,#55,.T.);
+#76=EDGE_CURVE('e011_111',#27,#26,#56,.T.);
+#77=EDGE_CURVE('e001_011',#24,#27,#57,.T.);
+#78=EDGE_CURVE('e000_001',#20,#24,#58,.T.);
+#79=EDGE_CURVE('e100_101',#21,#25,#59,.T.);
+#80=EDGE_CURVE('e110_111',#22,#26,#60,.T.);
+#81=EDGE_CURVE('e010_011',#23,#27,#61,.T.);
+/* Six face placements.  Each PLANE has its z-axis along the face's
+ * canonical outward normal; wires are wound CCW relative to that.       */
+#100=AXIS2_PLACEMENT_3D('plc_bottom',#10,#35,#30);
+#101=AXIS2_PLACEMENT_3D('plc_top',#14,#32,#30);
+#102=AXIS2_PLACEMENT_3D('plc_front',#10,#34,#30);
+#103=AXIS2_PLACEMENT_3D('plc_back',#13,#31,#30);
+#104=AXIS2_PLACEMENT_3D('plc_left',#10,#33,#31);
+#105=AXIS2_PLACEMENT_3D('plc_right',#11,#30,#31);
+#110=PLANE('plane_bottom',#100);
+#111=PLANE('plane_top',#101);
+#112=PLANE('plane_front',#102);
+#113=PLANE('plane_back',#103);
+#114=PLANE('plane_left',#104);
+#115=PLANE('plane_right',#105);
+/* Bottom face (z=0): wire p000->p010->p110->p100 (CCW seen from -z).    */
+#120=ORIENTED_EDGE('',*,*,#73,.T.);
+#121=ORIENTED_EDGE('',*,*,#72,.T.);
+#122=ORIENTED_EDGE('',*,*,#71,.F.);
+#123=ORIENTED_EDGE('',*,*,#70,.F.);
+#124=EDGE_LOOP('loop_bottom',(#120,#121,#122,#123));
+#125=FACE_OUTER_BOUND('',#124,.T.);
+#126=ADVANCED_FACE('face_bottom',(#125),#110,.T.);
+/* Top face (z=10): wire p001->p101->p111->p011 (CCW seen from +z).      */
+#130=ORIENTED_EDGE('',*,*,#74,.T.);
+#131=ORIENTED_EDGE('',*,*,#75,.T.);
+#132=ORIENTED_EDGE('',*,*,#76,.F.);
+#133=ORIENTED_EDGE('',*,*,#77,.F.);
+#134=EDGE_LOOP('loop_top',(#130,#131,#132,#133));
+#135=FACE_OUTER_BOUND('',#134,.T.);
+#136=ADVANCED_FACE('face_top',(#135),#111,.T.);
+/* Front face (y=0): wire p000->p100->p101->p001 (CCW seen from -y).     */
+#140=ORIENTED_EDGE('',*,*,#70,.T.);
+#141=ORIENTED_EDGE('',*,*,#79,.T.);
+#142=ORIENTED_EDGE('',*,*,#74,.F.);
+#143=ORIENTED_EDGE('',*,*,#78,.F.);
+#144=EDGE_LOOP('loop_front',(#140,#141,#142,#143));
+#145=FACE_OUTER_BOUND('',#144,.T.);
+#146=ADVANCED_FACE('face_front',(#145),#112,.T.);
+/* Back face (y=10): wire p010->p011->p111->p110 (CCW seen from +y).     */
+#150=ORIENTED_EDGE('',*,*,#81,.T.);
+#151=ORIENTED_EDGE('',*,*,#76,.T.);
+#152=ORIENTED_EDGE('',*,*,#80,.F.);
+#153=ORIENTED_EDGE('',*,*,#72,.F.);
+#154=EDGE_LOOP('loop_back',(#150,#151,#152,#153));
+#155=FACE_OUTER_BOUND('',#154,.T.);
+#156=ADVANCED_FACE('face_back',(#155),#113,.T.);
+/* Left face (x=0): wire p000->p001->p011->p010 (CCW seen from -x).      */
+#160=ORIENTED_EDGE('',*,*,#78,.T.);
+#161=ORIENTED_EDGE('',*,*,#77,.T.);
+#162=ORIENTED_EDGE('',*,*,#81,.F.);
+#163=ORIENTED_EDGE('',*,*,#73,.F.);
+#164=EDGE_LOOP('loop_left',(#160,#161,#162,#163));
+#165=FACE_OUTER_BOUND('',#164,.T.);
+#166=ADVANCED_FACE('face_left',(#165),#114,.T.);
+/* Right face (x=10): wire p100->p110->p111->p101 (CCW seen from +x).
+ * Defect site: same_sense flag here is .F. instead of .T., so the
+ * surface's natural outward normal is flipped relative to the shell. */
+#170=ORIENTED_EDGE('',*,*,#71,.T.);
+#171=ORIENTED_EDGE('',*,*,#80,.T.);
+#172=ORIENTED_EDGE('',*,*,#75,.F.);
+#173=ORIENTED_EDGE('',*,*,#79,.F.);
+#174=EDGE_LOOP('loop_right',(#170,#171,#172,#173));
+#175=FACE_OUTER_BOUND('',#174,.T.);
+#176=ADVANCED_FACE('face_right_inverted',(#175),#115,.F.);
+/* Closed shell wraps all six faces; manifold solid wraps the shell.    */
+#200=CLOSED_SHELL('mixed_orientation_shell',(#126,#136,#146,#156,#166,#176));
+#210=MANIFOLD_SOLID_BREP('cube_with_one_inverted_face',#200);
+/* Wrap: minimal PRODUCT chain so OCCT TransferRoots produces a shape. */
+#9000=PRODUCT_CONTEXT('',#1,'mechanical');
+#9001=PRODUCT('Tfa034','Tfa034','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
+#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
+#9022=ADVANCED_BREP_SHAPE_REPRESENTATION('',(#210),#9010);
+#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+ENDSEC;
+END-ISO-10303-21;

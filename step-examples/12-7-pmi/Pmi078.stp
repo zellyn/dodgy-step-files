@@ -1,0 +1,18 @@
+ISO-10303-21;
+/* Pmi078 - PMI text location wrong after import
+ * Defect: annotation text position relative to part frame; reader places relative to world origin */
+HEADER;
+FILE_DESCRIPTION(('Pmi078 test case','PMI text location wrong after import'),'2;1');
+FILE_NAME('Pmi078.stp','2026-04-30T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+#100=CARTESIAN_POINT('part_origin',(100.0,0.0,0.0));
+#101=DIRECTION('',(0.0,0.0,1.0));#102=DIRECTION('',(1.0,0.0,0.0));
+#103=AXIS2_PLACEMENT_3D('part_frame',#100,#101,#102);
+#104=CARTESIAN_POINT('text_pos_local',(5.0,0.0,0.0));
+#105=ANNOTATION_TEXT_OCCURRENCE('label','',(),#104);
+ENDSEC;
+END-ISO-10303-21;

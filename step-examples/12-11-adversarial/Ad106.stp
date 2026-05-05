@@ -1,0 +1,22 @@
+/* Ad106 - EXTERNAL_FILE URI resolves through a symlink (TOCTOU race)
+ * Defect: an Edition-3 REFERENCE section names a path that the receiver
+ * stat()s and then open()s in two filesystem operations. If the path
+ * resolves through a symlink that an attacker swaps between check and
+ * open, the receiver opens a different file than it validated. This
+ * fixture establishes the path-naming side; the demonstration requires
+ * receiver-side filesystem manipulation. Provenance tier: cross-file-state. */
+ISO-10303-21;
+HEADER;
+FILE_DESCRIPTION(('Ad106 - EXTERNAL_FILE TOCTOU symlink-swap witness'),'2;1');
+FILE_NAME('Ad106.stp','2026-04-30T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+REFERENCE;
+/* Path is a symlink target attackable between stat and open. */
+<companion>=<file:/tmp/parts/widget.stp#main_assembly>;
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#10=CARTESIAN_POINT('benign',(0.0,0.0,0.0));
+ENDSEC;
+END-ISO-10303-21;

@@ -1,0 +1,50 @@
+/* N025 - Coincident-but-not-shared vertices/edges (cross-translator round-off)
+ * Defect: Imported B-reps regularly contain pairs of vertices and edges that
+ * the designer intended to be the same but which sit a few microns apart due
+ * to translator round-off. Coordinates agree to 1e-4 but topology stores
+ * them as distinct entities -- a "crack" rather than a "gap".
+ * Reproducer: two faces' shared corner emitted as two VERTEX_POINTs whose
+ * coordinates agree to 1e-4 but are *different objects*; nothing collapses
+ * them.
+ */
+ISO-10303-21;
+HEADER;
+FILE_DESCRIPTION(('N025 coincident-but-not-shared vertices cross-translator round-off'),'2;1');
+FILE_NAME('N025.stp','2026-04-26T00:00:00',(''),(''),
+  'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
+  'automotive_design',2009,#1);
+/* Two CartesianPoints at the "same" corner; coords differ in 5th decimal. */
+#10=CARTESIAN_POINT('corner_face_A',(5.0,5.0,0.0));
+#11=CARTESIAN_POINT('corner_face_B',(5.00005,4.99997,0.0));
+/* Defect site: two distinct VERTEX_POINTs for what should be one shared vertex */
+#20=VERTEX_POINT('vertex_A_corner',#10);
+#21=VERTEX_POINT('vertex_B_corner',#11);
+/* Two short edges emanating from each "duplicate" -- the crack */
+#22=CARTESIAN_POINT('A_other_end',(0.0,5.0,0.0));
+#23=CARTESIAN_POINT('B_other_end',(5.0,0.0,0.0));
+#24=VERTEX_POINT('',#22);
+#25=VERTEX_POINT('',#23);
+#30=DIRECTION('-x',(-1.0,0.0,0.0));
+#31=DIRECTION('-y',(0.0,-1.0,0.0));
+#32=VECTOR('',#30,5.0);
+#33=VECTOR('',#31,5.0);
+#34=LINE('',#10,#32);
+#35=LINE('',#11,#33);
+#40=EDGE_CURVE('edge_face_A',#20,#24,#34,.T.);
+#41=EDGE_CURVE('edge_face_B',#21,#25,#35,.T.);
+#50=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#51=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#52=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#60=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#50,
+  'distance_accuracy_value','translator_drops_below_round_off');
+#70=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#60))
+  GLOBAL_UNIT_ASSIGNED_CONTEXT((#50,#51,#52))
+  REPRESENTATION_CONTEXT('ctx','3D'));
+ENDSEC;
+END-ISO-10303-21;

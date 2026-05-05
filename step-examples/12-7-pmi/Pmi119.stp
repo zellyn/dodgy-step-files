@@ -1,0 +1,78 @@
+/* Pmi119 - PROFILE_FEATURE with non-closed profile (open polyline used as boundary)
+ * Defect: AP242 profile_feature is a 2-D profile that bounds an
+ * extrusion / sweep / revolve. The profile must be a closed loop
+ * (start vertex == end vertex; finite oriented region). A producer
+ * that emits an open polyline (three line segments not forming a
+ * closed loop) leaves a profile that cannot bound a region.
+ * Receivers either close the profile heuristically (silent), reject,
+ * or accept and produce a degenerate sweep. */
+ISO-10303-21;
+HEADER;
+FILE_DESCRIPTION(('Pmi119 - profile_feature open profile'),'2;1');
+FILE_NAME('Pmi119.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AP242_MANAGED_MODEL_BASED_3D_ENGINEERING_MIM_LF { 1 0 10303 442 1 1 4 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('managed model based 3d engineering');
+#2=PRODUCT_CONTEXT('part',#1,'mechanical');
+#3=PRODUCT('Pmi119','profile_open','',(#2));
+#4=PRODUCT_DEFINITION_FORMATION('','',#3);
+#5=PRODUCT_DEFINITION_CONTEXT('',#1,'design');
+#6=PRODUCT_DEFINITION('','',#4,#5);
+#7=PRODUCT_DEFINITION_SHAPE('','',#6);
+#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#11=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#12=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#10,'tol','');
+#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3) GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13)) GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12)) REPRESENTATION_CONTEXT('','3D'));
+/* 50x50 mm planar host face. */
+#100=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#101=CARTESIAN_POINT('',(50.0,0.0,0.0));
+#102=CARTESIAN_POINT('',(50.0,50.0,0.0));
+#103=CARTESIAN_POINT('',(0.0,50.0,0.0));
+#110=VERTEX_POINT('',#100); #111=VERTEX_POINT('',#101);
+#112=VERTEX_POINT('',#102); #113=VERTEX_POINT('',#103);
+#200=DIRECTION('',(0.0,0.0,1.0));
+#201=DIRECTION('',(1.0,0.0,0.0));
+#202=DIRECTION('',(0.0,1.0,0.0));
+#210=AXIS2_PLACEMENT_3D('host_origin',#100,#200,#201);
+#211=PLANE('host_50x50',#210);
+#300=VECTOR('',#201,50.0);
+#301=VECTOR('',#202,50.0);
+#310=LINE('',#100,#300); #311=EDGE_CURVE('',#110,#111,#310,.T.);
+#312=LINE('',#101,#301); #313=EDGE_CURVE('',#111,#112,#312,.T.);
+#314=LINE('',#103,#300); #315=EDGE_CURVE('',#113,#112,#314,.T.);
+#316=LINE('',#100,#301); #317=EDGE_CURVE('',#110,#113,#316,.T.);
+#400=ORIENTED_EDGE('',*,*,#311,.T.); #401=ORIENTED_EDGE('',*,*,#313,.T.);
+#402=ORIENTED_EDGE('',*,*,#315,.F.); #403=ORIENTED_EDGE('',*,*,#317,.F.);
+#404=EDGE_LOOP('',(#400,#401,#402,#403));
+#405=FACE_OUTER_BOUND('',#404,.T.);
+#406=ADVANCED_FACE('host_face',(#405),#211,.T.);
+#500=OPEN_SHELL('host_shell',(#406));
+#501=SHELL_BASED_SURFACE_MODEL('host_model',(#500));
+#502=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('shape',(#501,#210),#14);
+#503=SHAPE_DEFINITION_REPRESENTATION(#7,#502);
+/* Profile feature with open profile (3 segments, not closed). */
+#600=SHAPE_ASPECT('profile_feature','profile for sweep (open -- defect)',#7,.T.);
+#601=GEOMETRIC_ITEM_SPECIFIC_USAGE('GISU',$,#600,#502,#406);
+/* Profile vertices: (5,5), (15,5), (15,15) -- 3 points, not closed. */
+#700=CARTESIAN_POINT('profile_v0',(5.0,5.0,0.0));
+#701=CARTESIAN_POINT('profile_v1',(15.0,5.0,0.0));
+#702=CARTESIAN_POINT('profile_v2',(15.0,15.0,0.0));
+#710=VERTEX_POINT('',#700); #711=VERTEX_POINT('',#701); #712=VERTEX_POINT('',#702);
+#720=VECTOR('',#201,10.0);
+#721=DIRECTION('',(0.0,1.0,0.0));
+#722=VECTOR('',#721,10.0);
+#730=LINE('',#700,#720); #731=EDGE_CURVE('',#710,#711,#730,.T.);
+#732=LINE('',#701,#722); #733=EDGE_CURVE('',#711,#712,#732,.T.);
+/* Defect: only 2 edges, profile is OPEN (no closing edge from #712 back to #710). */
+#740=DESCRIPTIVE_REPRESENTATION_ITEM('profile_closure','OPEN -- 3 vertices, 2 edges, no closing edge');
+#741=PROPERTY_DEFINITION('profile_topology','open vs closed',#600);
+#742=PROPERTY_DEFINITION_REPRESENTATION(#741,#743);
+#743=REPRESENTATION('profile_topology',(#740),#14);
+/* PMI dimensional record for category-lint compliance. */
+#750=DIMENSIONAL_SIZE(#600,'profile_extent');
+#751=MEASURE_REPRESENTATION_ITEM('extent_mm',LENGTH_MEASURE(10.0),#10);
+#752=SHAPE_DIMENSION_REPRESENTATION('',(#751),#14);
+ENDSEC;
+END-ISO-10303-21;

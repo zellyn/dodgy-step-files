@@ -1,0 +1,46 @@
+ISO-10303-21;
+/* M118 - AP209 non-conforming mesh: tet & hex sharing face mismatched.
+ * Defect: a tet element shares its triangular face with a hex element's
+ * quadrilateral face. The hex face has 4 nodes; the tet face has 3
+ * nodes - one hex node is unconstrained at the interface. No MPC ties
+ * the unmatched node. The mesh leaks at the boundary. */
+HEADER;
+FILE_DESCRIPTION(('M118 test case','AP209 tet-hex non-conforming interface'),'2;1');
+FILE_NAME('M118.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('STRUCTURAL_ANALYSIS_DESIGN { 1 0 10303 209 1 0 0 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('structural_analysis_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
+  'structural_analysis_design',2001,#1);
+#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10))
+     REPRESENTATION_CONTEXT('fea','3D'));
+/* Hex element nodes (4 corners on shared face + 4 opposite) */
+#100=CARTESIAN_POINT('h1',(0.0,0.0,0.0));
+#101=CARTESIAN_POINT('h2',(1.0,0.0,0.0));
+#102=CARTESIAN_POINT('h3',(1.0,1.0,0.0));
+#103=CARTESIAN_POINT('h4',(0.0,1.0,0.0));
+#104=CARTESIAN_POINT('h5',(0.0,0.0,-1.0));
+#105=CARTESIAN_POINT('h6',(1.0,0.0,-1.0));
+#106=CARTESIAN_POINT('h7',(1.0,1.0,-1.0));
+#107=CARTESIAN_POINT('h8',(0.0,1.0,-1.0));
+/* Tet element shares the face (h1, h2, h3) - 3 nodes; h4 hangs free. */
+#108=CARTESIAN_POINT('t4',(0.5,0.5,1.0));
+#110=NODE('h1',(#100),$);
+#111=NODE('h2',(#101),$);
+#112=NODE('h3',(#102),$);
+#113=NODE('h4',(#103),$);
+#114=NODE('h5',(#104),$);
+#115=NODE('h6',(#105),$);
+#116=NODE('h7',(#106),$);
+#117=NODE('h8',(#107),$);
+#118=NODE('t4',(#108),$);
+#200=VOLUME_3D_ELEMENT_DESCRIPTOR('hex','linear_hexahedron',
+       (#110,#111,#112,#113,#114,#115,#116,#117));
+/* Defect: tet shares only 3 of 4 nodes on the interface face; #113 (h4) is unconstrained. */
+#201=VOLUME_3D_ELEMENT_DESCRIPTOR('tet_with_hanging_node','linear_tetrahedron',
+       (#110,#111,#112,#118));
+ENDSEC;
+END-ISO-10303-21;

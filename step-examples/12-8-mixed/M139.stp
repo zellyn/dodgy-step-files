@@ -1,0 +1,22 @@
+ISO-10303-21;
+/* M139 - AP203 effectivity start date is AFTER its end date.
+ * Defect: a TIME_INTERVAL_BASED_EFFECTIVITY declares
+ * effectivity_start = 2025-06-01 and effectivity_end = 2024-12-31.
+ * The interval is empty (or, taken literally, runs backward).
+ * No date is ever within the effectivity window. */
+HEADER;
+FILE_DESCRIPTION(('M139 test case','AP203 effectivity start after end'),'2;1');
+FILE_NAME('M139.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('CONFIG_CONTROL_DESIGN'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('configuration controlled 3D design of mechanical parts and assemblies');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','config_control_design',1994,#1);
+#10=PRODUCT('rotor','rotor','rotating element',(#1));
+#20=PRODUCT_DEFINITION_FORMATION('rev_A','released',#10);
+/* Defect: start 2025-06-01 is after end 2024-12-31. */
+#30=DATE_AND_TIME(CALENDAR_DATE(2025,6,1),LOCAL_TIME(0,0,0.0,$));
+#31=DATE_AND_TIME(CALENDAR_DATE(2024,12,31),LOCAL_TIME(23,59,59.0,$));
+#100=TIME_INTERVAL_BASED_EFFECTIVITY('reversed_window',#20,#30,#31);
+ENDSEC;
+END-ISO-10303-21;

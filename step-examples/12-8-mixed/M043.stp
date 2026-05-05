@@ -1,0 +1,35 @@
+ISO-10303-21;
+/* M043 - Layer with empty/duplicate name colliding with another.
+ * Defect: two PRESENTATION_LAYER_ASSIGNMENT entries share the same
+ * (empty) name and reference different items with different visibility
+ * flags. OCCT historically grouped them as one layer (Mantis 32049,
+ * fixed 96049f2). Readers should group by (name, visibility) tuple,
+ * not by name alone. */
+HEADER;
+FILE_DESCRIPTION(('M043 test case','duplicate-named PRESENTATION_LAYER_ASSIGNMENT'),'2;1');
+FILE_NAME('M043.stp','2026-04-26T00:00:00',(''),(''),'auto-generated','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#11=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#12=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.E-6),#10,'distance_accuracy_value','');
+#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+     GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13))
+     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12))
+     REPRESENTATION_CONTEXT('part','3D'));
+#100=CARTESIAN_POINT('a',(0.0,0.0,0.0));
+#101=CARTESIAN_POINT('b',(1.0,0.0,0.0));
+/* Two layers with the same empty name but different visibility flags
+ * (.T. and .F.). */
+#200=PRESENTATION_LAYER_OCCURRENCE_ASSIGNMENT('',(#100),(#100));
+#201=PRESENTATION_LAYER_ASSIGNMENT('','visible_layer',(#100));
+#202=PRESENTATION_LAYER_ASSIGNMENT('','hidden_layer',(#101));
+/* Visibility flags as separate dressed entries. */
+#210=PRESENTATION_LAYER_USAGE(#201,'on');
+#211=PRESENTATION_LAYER_USAGE(#202,'off');
+ENDSEC;
+END-ISO-10303-21;

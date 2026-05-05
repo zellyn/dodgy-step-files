@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Tfa065 — Healed face uses inflated tolerance instead of original (small gap between adjacent EDGE_LOOP vertices, e.g., 1e-3 mm between V3 and next-edge start)</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.3c Faces / sewing / free bound</a> <span class="sep">/</span> <span class="current">Tfa065</span>
+</nav>
+<header class="title-bar">
+<h1>Tfa065 <span class="sep">—</span> <span class="entry-title">Healed face uses inflated tolerance instead of original (small gap between adjacent EDGE_LOOP vertices, e.g., 1e-3 mm between V3 and next-edge start)</span></h1>
+<p class="category">§12.3c faces/sewing</p>
+<p class="tag-pills">
+<a class="tag tag-topology" href="../by-tag/topology/index.html">topology</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-3c-faces/Tfa065.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-3c-faces/Tfa065.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>OCCT MANTIS#0026620</li>
+<li>OCCT MANTIS#0027122 (OCCT MANTIS tracker 502 as of 2026-05-02)</li>
+</ul></section>
+<section><h2>Description</h2>
+<p>A face whose constituent edges have native tolerance ~1e-7 goes through a healing pass that inflates the face-level tolerance to ~1e-1 to absorb a single localised gap. The bloated tolerance then contaminates all downstream operations on the face.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>Rectangular face with three good edges (tolerance 1e-7) and one edge with a 1e-3 gap to its neighbour. After healing the face tolerance is set to 1e-1 (&gt;&gt; the worst gap) rather than 1.5e-3.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>Heal and accept: normalize face / shell tolerance to the maximum measured deviation across constituent edges, not orders of magnitude above; do not inflate tolerance preemptively.</p></section>
+<section><h2>Notes</h2>
+<p>**See also**: Tfa017, N040. Synonyms: &quot;healed face overuses inflated tolerance&quot;, &quot;tolerance inflated even where original gap was tiny&quot;, &quot;healer applies global tolerance bump per-vertex&quot;, &quot;small EDGE_LOOP gap causes whole-face tolerance bloat&quot;.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a</code></p></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>n_edges_total &gt;= 4</code></li>
+<li><code>face[0].surface_type == &quot;plane&quot;</code></li>
+<li><code>n_vertices_total &gt;= 8</code></li>
+</ul></section>
+<section><h2>Cross-references</h2>
+<p><a href="Tfa017.html">Tfa017</a>, <a href="../12-4-tolerance/N040.html">N040</a></p>
+</section>
+<section><h2>Live oracle output</h2>
+<table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
+<tr><td><code>occt_heal_on</code></td><td><code>shape(1)</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>shape(1)</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>shape(9)</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>shape(9)</code></td></tr>
+<tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>not_manifold</code></td></tr>
+</tbody></table>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* Tfa065 - Healed face uses inflated tolerance instead of original
+<span class="lineno">3</span> * Rectangular face with three good edges and one edge whose start vertex is
+<span class="lineno">4</span> * shifted 1e-3 from the previous edge&#x27;s end vertex -- creating a 1e-3 gap.
+<span class="lineno">5</span> * The other three edges are clean (vertex tolerance 1e-7). After healing
+<span class="lineno">6</span> * the face tolerance should be ~1.5e-3, but a defective heal sets it to 1e-1. */
+<span class="lineno">7</span>HEADER;
+<span class="lineno">8</span>FILE_DESCRIPTION((&#x27;Tfa065 test case&#x27;,&#x27;Three clean edges plus one edge with 1e-3 gap to its neighbour&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">9</span>FILE_NAME(&#x27;Tfa065.stp&#x27;,&#x27;2026-04-30T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">10</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }&#x27;));
+<span class="lineno">11</span>ENDSEC;
+<span class="lineno">12</span>DATA;
+<span class="lineno">13</span>#1=APPLICATION_CONTEXT(&#x27;automotive_design&#x27;);
+<span class="lineno">14</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,&#x27;automotive_design&#x27;,2000,#1);
+<span class="lineno">15</span>#10=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">16</span>#11=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">17</span>#12=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">18</span>#13=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#10,#11,#12);
+<span class="lineno">19</span>#14=PLANE(&#x27;&#x27;,#13);
+<span class="lineno">20</span>/* Five vertices: V1, V2, V3 are clean; V3a is the shifted-by-1e-3 start of edge4 */
+<span class="lineno">21</span>#20=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));#21=VERTEX_POINT(&#x27;V1&#x27;,#20);
+<span class="lineno">22</span>#22=CARTESIAN_POINT(&#x27;&#x27;,(1.0,0.0,0.0));#23=VERTEX_POINT(&#x27;V2&#x27;,#22);
+<span class="lineno">23</span>#24=CARTESIAN_POINT(&#x27;&#x27;,(1.0,1.0,0.0));#25=VERTEX_POINT(&#x27;V3_clean&#x27;,#24);
+<span class="lineno">24</span>#26=CARTESIAN_POINT(&#x27;shifted_1e-3&#x27;,(1.001,1.0,0.0));#27=VERTEX_POINT(&#x27;V3a_shifted&#x27;,#26);
+<span class="lineno">25</span>#28=CARTESIAN_POINT(&#x27;&#x27;,(0.0,1.0,0.0));#29=VERTEX_POINT(&#x27;V4&#x27;,#28);
+<span class="lineno">26</span>/* edge1 V1-&gt;V2: clean */
+<span class="lineno">27</span>#30=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));#31=VECTOR(&#x27;&#x27;,#30,1.0);#32=LINE(&#x27;&#x27;,#20,#31);
+<span class="lineno">28</span>#33=EDGE_CURVE(&#x27;e1_clean&#x27;,#21,#23,#32,.T.);
+<span class="lineno">29</span>/* edge2 V2-&gt;V3: clean */
+<span class="lineno">30</span>#34=DIRECTION(&#x27;&#x27;,(0.0,1.0,0.0));#35=VECTOR(&#x27;&#x27;,#34,1.0);#36=LINE(&#x27;&#x27;,#22,#35);
+<span class="lineno">31</span>#37=EDGE_CURVE(&#x27;e2_clean&#x27;,#23,#25,#36,.T.);
+<span class="lineno">32</span>/* edge3 starts at V3a (shifted 1e-3 from V3) -- 1e-3 gap with neighbour edge2 end */
+<span class="lineno">33</span>#38=DIRECTION(&#x27;&#x27;,(-1.0,0.0,0.0));#39=VECTOR(&#x27;&#x27;,#38,1.001);#40=LINE(&#x27;&#x27;,#26,#39);
+<span class="lineno">34</span>#41=EDGE_CURVE(&#x27;e3_with_1e-3_gap&#x27;,#27,#29,#40,.T.);
+<span class="lineno">35</span>/* edge4 V4-&gt;V1: clean */
+<span class="lineno">36</span>#42=DIRECTION(&#x27;&#x27;,(0.0,-1.0,0.0));#43=VECTOR(&#x27;&#x27;,#42,1.0);#44=LINE(&#x27;&#x27;,#28,#43);
+<span class="lineno">37</span>#45=EDGE_CURVE(&#x27;e4_clean&#x27;,#29,#21,#44,.T.);
+<span class="lineno">38</span>#50=ORIENTED_EDGE(&#x27;&#x27;,*,*,#33,.T.);
+<span class="lineno">39</span>#51=ORIENTED_EDGE(&#x27;&#x27;,*,*,#37,.T.);
+<span class="lineno">40</span>#52=ORIENTED_EDGE(&#x27;&#x27;,*,*,#41,.T.);
+<span class="lineno">41</span>#53=ORIENTED_EDGE(&#x27;&#x27;,*,*,#45,.T.);
+<span class="lineno">42</span>#54=EDGE_LOOP(&#x27;three_clean_one_gap&#x27;,(#50,#51,#52,#53));
+<span class="lineno">43</span>#55=FACE_OUTER_BOUND(&#x27;&#x27;,#54,.T.);
+<span class="lineno">44</span>#56=ADVANCED_FACE(&#x27;quad_with_one_1e-3_gap&#x27;,(#55),#14,.T.);
+<span class="lineno">45</span>/* Wrap: minimal PRODUCT chain so OCCT TransferRoots produces a shape. */
+<span class="lineno">46</span>#9000=PRODUCT_CONTEXT(&#x27;&#x27;,#1,&#x27;mechanical&#x27;);
+<span class="lineno">47</span>#9001=PRODUCT(&#x27;Tfa065&#x27;,&#x27;Tfa065&#x27;,&#x27;&#x27;,(#9000));
+<span class="lineno">48</span>#9002=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#9001);
+<span class="lineno">49</span>#9003=PRODUCT_DEFINITION_CONTEXT(&#x27;part definition&#x27;,#1,&#x27;design&#x27;);
+<span class="lineno">50</span>#9004=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,#9002,#9003);
+<span class="lineno">51</span>#9005=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,#9004);
+<span class="lineno">52</span>#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">53</span>#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+<span class="lineno">54</span>#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+<span class="lineno">55</span>#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,&#x27;distance_accuracy_value&#x27;,&#x27;&#x27;);
+<span class="lineno">56</span>#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT(&#x27;&#x27;,&#x27;3D&#x27;));
+<span class="lineno">57</span>#9020=OPEN_SHELL(&#x27;wrap_shell&#x27;,(#56));
+<span class="lineno">58</span>#9021=SHELL_BASED_SURFACE_MODEL(&#x27;wrap_sbsm&#x27;,(#9020));
+<span class="lineno">59</span>#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION(&#x27;&#x27;,(#9021),#9010);
+<span class="lineno">60</span>#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+<span class="lineno">61</span>ENDSEC;
+<span class="lineno">62</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Tfa064.html">&larr; Tfa064</a> <a class="up" href="index.html">§12.3c Faces / sewing / free bound</a> <a class="next" href="Tfa066.html">Tfa066 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

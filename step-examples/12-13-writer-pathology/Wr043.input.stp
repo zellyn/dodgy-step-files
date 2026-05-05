@@ -1,0 +1,20 @@
+ISO-10303-21;
+/* Wr043.input - Pre-export source for Wr043.stp
+ * The producer's in-memory state has 'cafe' (4 chars) plus Tokyo
+ * Japanese characters as proper Unicode strings. Edition-2 mandates
+ * \X\HH or \X2\HHHH\X0\ escapes. Wr043.stp shows what the writer
+ * produces (raw UTF-8 bytes) instead of the spec-required escapes. */
+HEADER;
+FILE_DESCRIPTION(('Wr043.input - pre-export source with proper escapes'),'2;1');
+FILE_NAME('Wr043.input.stp','2026-04-30T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=PRODUCT_CONTEXT('part',#1,'mechanical');
+/* Properly escaped: \X\E9 for e-acute, \X2\HHHH\X0\ for CJK. */
+#3=PRODUCT('caf\X\E9','escaped for Edition-2','',(#2));
+#4=PRODUCT('Tokyo \X2\6771\X0\\X2\4EAC\X0\','escaped CJK','',(#2));
+#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
+ENDSEC;
+END-ISO-10303-21;

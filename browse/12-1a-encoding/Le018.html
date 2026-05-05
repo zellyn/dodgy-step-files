@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Le018 — Inline newline inside an unterminated literal silently concatenated</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.1a Encoding &amp; string-literal defects</a> <span class="sep">/</span> <span class="current">Le018</span>
+</nav>
+<header class="title-bar">
+<h1>Le018 <span class="sep">—</span> <span class="entry-title">Inline newline inside an unterminated literal silently concatenated</span></h1>
+<p class="category">§12.1a encoding/strings (sub-class: control characters / framing)</p>
+<p class="severity-badge severity-p1">P1 — silent data loss</p>
+<p class="tag-pills">
+<a class="tag tag-round-trip" href="../by-tag/round-trip/index.html">round-trip</a>
+<a class="tag tag-encoding" href="../by-tag/encoding/index.html">encoding</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-1a-encoding/Le018.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-1a-encoding/Le018.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>N048/ISO 10303-21 Ed.3 §5.2</li>
+<li>Q072/StepFile/step.lex:109-113</li>
+</ul></section>
+<section><h2>Description</h2>
+<p>Per §5.2, LF and CR are ignored characters even inside string literals, so a literal `&#x27;first line&lt;LF&gt;second line&#x27;` parses to `&#x27;first linesecond line&#x27;`. This produces surprising silent concatenation when round-tripping descriptions written across physical lines.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>`FILE_DESCRIPTION((&#x27;first line&lt;LF&gt;second line&#x27;),&#x27;2;1&#x27;);`</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>Heal and accept per spec (LF ignored, string content becomes concatenated). Tolerant writers should pre-encode `\X\0A` if a real newline was intended; readers should preserve input bytes when echoing diagnostics.</p></section>
+<section><h2>Notes</h2>
+<p>**See also**: Le017. Synonyms: &quot;string spanning multiple lines silently joined&quot;, &quot;newline inside literal eaten&quot;, &quot;two-line description merged into one&quot;, &quot;STEP string joins lines without separator&quot;, &quot;multiline literal becomes single line&quot;.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>matches(rb&quot;FILE_DESCRIPTION\(\(&#x27;first line\nsecond line&#x27;&quot;)</code></li>
+<li><code>matches(rb&quot;PERSON\(\s*&#x27;p1&#x27;,&#x27;para1\s*\n&quot;)</code></li>
+</ul></section>
+<section><h2>Cross-references</h2>
+<p><a href="Le017.html">Le017</a></p>
+</section>
+<section><h2>Live oracle output</h2>
+<table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
+<tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>no_shapes_loaded</code></td></tr>
+</tbody></table>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>/* Le018 â Inline newline inside a string silently concatenated
+<span class="lineno">2</span>   Defect: per Part-21 5.2, LF and CR are ignored characters even inside
+<span class="lineno">3</span>   string literals. So a literal &#x27;first line&lt;LF&gt;second line&#x27; parses to
+<span class="lineno">4</span>   &#x27;first linesecond line&#x27; (silently concatenated). This produces
+<span class="lineno">5</span>   surprising round-trip mismatch when descriptions are written across
+<span class="lineno">6</span>   physical lines. The FILE_DESCRIPTION below contains a raw LF mid-string
+<span class="lineno">7</span>   that a conformant lexer must drop, yielding a single concatenated value. */
+<span class="lineno">8</span>ISO-10303-21;
+<span class="lineno">9</span>HEADER;
+<span class="lineno">10</span><mark>FILE_DESCRIPTION((&#x27;first line</mark>
+<span class="lineno">11</span><mark>second line&#x27;</mark>),&#x27;2;1&#x27;);
+<span class="lineno">12</span>FILE_NAME(&#x27;Le018.stp&#x27;,&#x27;2026-04-26T00:00:00&#x27;,(&#x27;auto-generated&#x27;),(&#x27;&#x27;),
+<span class="lineno">13</span>  &#x27;auto-generated&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">14</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
+<span class="lineno">15</span>ENDSEC;
+<span class="lineno">16</span>DATA;
+<span class="lineno">17</span>#10=<mark>PERSON(&#x27;p1&#x27;,&#x27;para1</mark>
+<span class="lineno">18</span>para2&#x27;,&#x27;given&#x27;,$,$,$,$,$);
+<span class="lineno">19</span>#20=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">20</span>#21=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">21</span>#22=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">22</span>#23=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#20,#21,#22);
+<span class="lineno">23</span>ENDSEC;
+<span class="lineno">24</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Le017.html">&larr; Le017</a> <a class="up" href="index.html">§12.1a Encoding &amp; string-literal defects</a> <a class="next" href="Le020.html">Le020 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

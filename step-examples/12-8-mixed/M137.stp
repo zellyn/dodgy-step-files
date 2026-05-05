@@ -1,0 +1,28 @@
+ISO-10303-21;
+/* M137 - AP203 APPLIED_ACTION_ASSIGNMENT applies to a multi-arity
+ * mixed-class object list.
+ * Defect: an APPLIED_ACTION_ASSIGNMENT distributes a single ACTION
+ * (engineering review) across a list that mixes classes
+ * incompatibly (a PRODUCT_DEFINITION and a DOCUMENT_FILE). The
+ * action's domain semantics are ambiguous - was the review of the
+ * design or of the document? */
+HEADER;
+FILE_DESCRIPTION(('M137 test case','AP203 action assignment ambiguous arity'),'2;1');
+FILE_NAME('M137.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('CONFIG_CONTROL_DESIGN'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('configuration controlled 3D design of mechanical parts and assemblies');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','config_control_design',1994,#1);
+#10=PRODUCT('valve','valve','flow valve',(#1));
+#20=PRODUCT_DEFINITION_FORMATION('rev_A','released',#10);
+#30=PRODUCT_DEFINITION('design','',#20,#1);
+#40=DOCUMENT_TYPE('test_report');
+#41=DOCUMENT_FILE('TR-001','flow_test.pdf','test report',#40);
+#50=ACTION_METHOD('engineering_review','formal review',$);
+#51=ACTION('review_action','periodic review','approved',#50);
+/* Defect: assignment lists both PRODUCT_DEFINITION and DOCUMENT_FILE
+ * as items - mixed-arity domain. */
+#100=APPLIED_ACTION_ASSIGNMENT(#51,(#30,#41));
+ENDSEC;
+END-ISO-10303-21;

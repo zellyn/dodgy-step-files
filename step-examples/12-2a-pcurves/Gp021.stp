@@ -1,0 +1,46 @@
+ISO-10303-21;
+/* Gp021 - 3D-vs-pcurve gap on same edge (CheckCurveGap)
+ * Defect: a single edge has both a 3D LINE from (0,0,0) to (1,0,0)
+ * and a PCURVE that, lifted via the host plane, runs from (0, 0, 0)
+ * to (1, 0.05, 0). The 3D-curve evaluation and pcurve-lifted point
+ * diverge by 0.05 mm even though declared edge tolerance is 1e-6. */
+HEADER;
+FILE_DESCRIPTION(('Gp021 test case','3D-vs-pcurve gap on same edge'),'2;1');
+FILE_NAME('Gp021.stp','2026-04-27T00:00:00',(''),(''),'auto-generated','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#11=DIRECTION('',(0.0,0.0,1.0));
+#12=DIRECTION('',(1.0,0.0,0.0));
+#13=AXIS2_PLACEMENT_3D('',#10,#11,#12);
+#20=PLANE('',#13);
+/* 3D curve: line from (0,0,0) to (1,0,0) */
+#30=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#31=DIRECTION('',(1.0,0.0,0.0));
+#32=VECTOR('',#31,1.0);
+#33=LINE('',#30,#32);
+#40=VERTEX_POINT('',#30);
+#41=CARTESIAN_POINT('',(1.0,0.0,0.0));
+#42=VERTEX_POINT('',#41);
+/* Defect: pcurve runs from (0,0) to (1, 0.05) - lifted endpoint
+ * is (1, 0.05, 0), differing 0.05mm from 3D end (1, 0, 0). */
+#71=CARTESIAN_POINT('',(0.0,0.0));
+#72=DIRECTION('',(0.99875,0.04994));
+#73=VECTOR('',#72,1.0012);
+#74=LINE('',#71,#73);
+#75=( GEOMETRIC_REPRESENTATION_CONTEXT(2)
+      PARAMETRIC_REPRESENTATION_CONTEXT()
+      REPRESENTATION_CONTEXT('parametric','2D') );
+#76=DEFINITIONAL_REPRESENTATION('',(#74),#75);
+#77=PCURVE('',#20,#76);
+#50=SURFACE_CURVE('',#33,(#77),.PCURVE_S1.);
+#60=EDGE_CURVE('',#40,#42,#50,.T.);
+#61=ORIENTED_EDGE('',*,*,#60,.T.);
+#62=EDGE_LOOP('',(#61));
+#63=FACE_OUTER_BOUND('',#62,.T.);
+#64=ADVANCED_FACE('',(#63),#20,.T.);
+ENDSEC;
+END-ISO-10303-21;

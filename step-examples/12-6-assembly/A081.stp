@@ -1,0 +1,23 @@
+ISO-10303-21;
+/* A081 - Material overridden by colour on round-trip
+ * Defect: face has Quantity_Color + Graphic3d_MaterialAspect; round-trip drops the material */
+HEADER;
+FILE_DESCRIPTION(('A081 test case','Material overridden by colour on round-trip'),'2;1');
+FILE_NAME('A081.stp','2026-04-30T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+#10=PRODUCT_CONTEXT('',#1,'mechanical');
+#11=PRODUCT('part1','part1','part1',(#10));
+#12=PRODUCT_DEFINITION_FORMATION('','',#11);
+#13=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#14=PRODUCT_DEFINITION('','',#12,#13);
+#15=PRODUCT_DEFINITION_SHAPE('','',#14);
+#100=COLOUR_RGB('',0.5,0.5,0.5);
+#101=SURFACE_STYLE_REFLECTANCE_AMBIENT(0.3);
+#102=SURFACE_STYLE_USAGE(.BOTH.,#100);
+
+ENDSEC;
+END-ISO-10303-21;

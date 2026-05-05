@@ -1,0 +1,53 @@
+/* Pmi020 - Saved view missing required mapped_item
+   Defect: For Saved Views, the DRAUGHTING_MODEL.items list must include a
+   MAPPED_ITEM linking to the underlying draughting model. Files lacking
+   the mapped_item are interpreted as "all PMI visible" by the SFA
+   validator. This file's saved-view DRAUGHTING_MODEL contains only
+   annotation_occurrences and no mapped_item. */
+ISO-10303-21;
+HEADER;
+FILE_DESCRIPTION(('Pmi020 - saved view missing mapped_item'),'2;1');
+FILE_NAME('Pmi020.stp','2026-04-26T00:00:00',('catalog'),('cad'),
+  'manual','','');
+FILE_SCHEMA(('AP242_MANAGED_MODEL_BASED_3D_ENGINEERING_MIM_LF { 1 0 10303 442 1 1 4 }'));
+ENDSEC;
+DATA;
+#10 = APPLICATION_CONTEXT('managed model based 3d engineering');
+#11 = APPLICATION_PROTOCOL_DEFINITION('international standard',
+  'ap242_managed_model_based_3d_engineering',2020,#10);
+#12 = PRODUCT_CONTEXT('',#10,'mechanical');
+#13 = PRODUCT('Pmi020','MissingMapItemPart','',(#12));
+#14 = PRODUCT_DEFINITION_FORMATION('','',#13);
+#15 = PRODUCT_DEFINITION_CONTEXT('',#10,'design');
+#16 = PRODUCT_DEFINITION('','',#14,#15);
+#17 = PRODUCT_DEFINITION_SHAPE('','',#16);
+#20 = ( LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT(.MILLI.,.METRE.) );
+#22 = ( NAMED_UNIT(*) PLANE_ANGLE_UNIT() SI_UNIT($,.RADIAN.) );
+#23 = ( NAMED_UNIT(*) SI_UNIT($,.STERADIAN.) SOLID_ANGLE_UNIT() );
+#24 = UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#20,
+  'distance_accuracy_value','');
+#25 = ( GEOMETRIC_REPRESENTATION_CONTEXT(3)
+  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#24))
+  GLOBAL_UNIT_ASSIGNED_CONTEXT((#20,#22,#23))
+  REPRESENTATION_CONTEXT('','3D') );
+#30 = CARTESIAN_POINT('o',(0.0,0.0,0.0));
+#31 = DIRECTION('z',(0.0,0.0,1.0));
+#32 = DIRECTION('x',(1.0,0.0,0.0));
+#33 = AXIS2_PLACEMENT_3D('axis',#30,#31,#32);
+#34 = PLANE('plane',#33);
+#35 = NULL_STYLE(.NULL.);
+#40 = CARTESIAN_POINT('p1',(0.0,0.0,0.0));
+#41 = CARTESIAN_POINT('p2',(10.0,0.0,0.0));
+#42 = POLYLINE('annot',(#40,#41));
+#43 = ANNOTATION_CURVE_OCCURRENCE('occ',(#35),#42);
+#44 = ANNOTATION_PLANE('PMI_plane',(),#34,(#43));
+/* Master draughting_model carrying the PMI */
+#50 = DRAUGHTING_MODEL('Master_PMI',(#43),#25);
+/* Defect: SavedView draughting_model contains the annotation but NO
+   mapped_item linking back to #50. Per RP §9.4, items list must
+   contain a mapped_item. */
+#60 = DRAUGHTING_MODEL('SavedView_Front',(#43),#25);
+#70 = SHAPE_REPRESENTATION('',(#33),#25);
+#71 = SHAPE_DEFINITION_REPRESENTATION(#17,#70);
+ENDSEC;
+END-ISO-10303-21;

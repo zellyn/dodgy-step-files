@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Tfa068 — STEP export duplicates surfaces, leading to non-conformal geometry between adjacent faces</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.3c Faces / sewing / free bound</a> <span class="sep">/</span> <span class="current">Tfa068</span>
+</nav>
+<header class="title-bar">
+<h1>Tfa068 <span class="sep">—</span> <span class="entry-title">STEP export duplicates surfaces, leading to non-conformal geometry between adjacent faces</span></h1>
+<p class="category">§12.3c faces / sewing / free bounds (sub-class: writer-side duplicate surfaces)</p>
+<p class="severity-badge severity-p1">P1 — silent data loss</p>
+<p class="tag-pills">
+<a class="tag tag-topology" href="../by-tag/topology/index.html">topology</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-3c-faces/Tfa068.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-3c-faces/Tfa068.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>OCCT MANTIS#0032132</li>
+<li>bug-reporter language: &quot;STEP export duplicates surfaces, leading to non-conformal geometry&quot;, &quot;two adjacent faces emit two distinct surfaces for what should be one&quot;, &quot;writer breaks face-face conformality&quot;. (OCCT MANTIS tracker 502 as of 2026-05-02)</li>
+</ul></section>
+<section><h2>Sender</h2>
+<p>OCCT&#x27;s STEP writer when exporting a sewn shell whose adjacent faces share an underlying analytic surface (e.g., two halves of a cylinder split at the seam).</p></section>
+<section><h2>Description</h2>
+<p>Two faces that share an underlying surface (e.g., two adjacent planar faces co-planar in 3D) are written out with two separate `PLANE` / `CYLINDRICAL_SURFACE` instances rather than one shared instance. On re-import, the receiver computes face-face adjacency from surface-identity and concludes the two faces are not adjacent — the shell has free edges where it should be closed, downstream Booleans fail.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>Two adjacent rectangular faces, both on the plane `z=0`. Writer emits `#10=PLANE(..)` and `#20=PLANE(..)` with identical numerical content rather than sharing one instance. Receiver sees two non-conformal faces.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>heal-and-accept — writer canonicalises analytic surfaces and shares one instance for surface-equal faces; emit one `PLANE`/`CYLINDRICAL_SURFACE`/etc. per equivalence class. Receivers must additionally re-canonicalise on import.</p></section>
+<section><h2>Notes</h2>
+<p>**See also**: Tfa023, A079. Synonyms: &quot;STEP export duplicates surfaces&quot;, &quot;non-conformal faces after STEP round-trip&quot;, &quot;writer emits two surfaces for one shared surface&quot;, &quot;face-face adjacency lost on round-trip&quot;.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>count_entity_def(b&#x27;PLANE&#x27;) &gt;= 2 or count_entity_def(b&#x27;CYLINDRICAL_SURFACE&#x27;) &gt;= 2</code></li>
+<li><code>contains(b&#x27;ADVANCED_FACE&#x27;)</code></li>
+</ul></section>
+<section><h2>Cross-references</h2>
+<p><a href="Tfa023.html">Tfa023</a>, <a href="../12-6-assembly/A079.html">A079</a></p>
+</section>
+<section><h2>Live oracle output</h2>
+<table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
+<tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>no_shapes_loaded</code></td></tr>
+</tbody></table>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* Tfa068 - STEP export duplicates surfaces, leading to non-conformal geometry between adjacent faces
+<span class="lineno">3</span> * Defect: two adjacent faces sharing the same plane (z=0) are emitted with two
+<span class="lineno">4</span> * separate PLANE instances rather than one shared instance. */
+<span class="lineno">5</span>HEADER;
+<span class="lineno">6</span>FILE_DESCRIPTION((&#x27;Tfa068 - duplicated PLANE surfaces break face-face adjacency&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">7</span>FILE_NAME(&#x27;Tfa068.stp&#x27;,&#x27;2026-05-02T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">8</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }&#x27;));
+<span class="lineno">9</span>ENDSEC;
+<span class="lineno">10</span>DATA;
+<span class="lineno">11</span>#1=APPLICATION_CONTEXT(&#x27;automotive_design&#x27;);
+<span class="lineno">12</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,&#x27;automotive_design&#x27;,2000,#1);
+<span class="lineno">13</span>#10=CARTESIAN_POINT(&#x27;origin&#x27;,(0.0,0.0,0.0));
+<span class="lineno">14</span>#11=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">15</span>#12=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">16</span>#13=AXIS2_PLACEMENT_3D(&#x27;placement_A&#x27;,#10,#11,#12);
+<span class="lineno">17</span>#14=AXIS2_PLACEMENT_3D(&#x27;placement_B&#x27;,#10,#11,#12);
+<span class="lineno">18</span>/* Both PLANE instances are numerically identical: same origin, same normal, same x.
+<span class="lineno">19</span> * A canonicalising writer would emit one and share. Here they are duplicated. */
+<span class="lineno">20</span>#20=PLANE(&#x27;plane_A_dup&#x27;,#13);
+<span class="lineno">21</span>#21=PLANE(&#x27;plane_B_dup&#x27;,#14);
+<span class="lineno">22</span>/* Minimal bounding wire for both faces. */
+<span class="lineno">23</span>#22=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">24</span>#23=CARTESIAN_POINT(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">25</span>#24=VERTEX_POINT(&#x27;&#x27;,#22);
+<span class="lineno">26</span>#25=VERTEX_POINT(&#x27;&#x27;,#23);
+<span class="lineno">27</span>#26=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">28</span>#27=VECTOR(&#x27;&#x27;,#26,1.0);
+<span class="lineno">29</span>#28=LINE(&#x27;&#x27;,#22,#27);
+<span class="lineno">30</span>#29=EDGE_CURVE(&#x27;&#x27;,#24,#25,#28,.T.);
+<span class="lineno">31</span>#32=ORIENTED_EDGE(&#x27;&#x27;,*,*,#29,.T.);
+<span class="lineno">32</span>#33=EDGE_LOOP(&#x27;&#x27;,(#32));
+<span class="lineno">33</span>#34=FACE_OUTER_BOUND(&#x27;&#x27;,#33,.T.);
+<span class="lineno">34</span>#30=<mark>ADVANCED_FACE</mark>(&#x27;faceA&#x27;,(#34),#20,.T.);
+<span class="lineno">35</span>#31=<mark>ADVANCED_FACE</mark>(&#x27;faceB&#x27;,(#34),#21,.T.);
+<span class="lineno">36</span>#40=CLOSED_SHELL(&#x27;shell&#x27;,(#30,#31));
+<span class="lineno">37</span>#50=MANIFOLD_SOLID_BREP(&#x27;non_conformal_solid&#x27;,#40);
+<span class="lineno">38</span>ENDSEC;
+<span class="lineno">39</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Tfa067.html">&larr; Tfa067</a> <a class="up" href="index.html">§12.3c Faces / sewing / free bound</a> <a class="next" href="Tfa069.html">Tfa069 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

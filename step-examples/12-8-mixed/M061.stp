@@ -1,0 +1,18 @@
+ISO-10303-21;
+/* M061 - Assembly transformation has scaling factor.
+ * Defect: ITEM_DEFINED_TRANSFORMATION declares non-unit scale axis;
+ * STEP placements canonically have no scale. */
+HEADER;
+FILE_DESCRIPTION(('In005 - scale on assembly placement','Pass C gap-fill'),'2;1');
+FILE_NAME('M061.stp','2026-04-30T00:00:00',(''),(''),'gap-fill C','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+/* AXIS2_PLACEMENT with directions of length != 1 implicitly encodes scale */
+#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#11=DIRECTION('not_unit_length',(2.0,0.0,0.0));
+#12=DIRECTION('not_unit_length_2',(0.0,2.0,0.0));
+#13=AXIS2_PLACEMENT_3D('scale_2x',#10,#11,#12);
+ENDSEC;
+END-ISO-10303-21;

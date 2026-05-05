@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>N041 — Manifold ε-validity contract: cumulative transform error inflates ε beyond input scale</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.4 Tolerance &amp; numerical precision</a> <span class="sep">/</span> <span class="current">N041</span>
+</nav>
+<header class="title-bar">
+<h1>N041 <span class="sep">—</span> <span class="entry-title">Manifold ε-validity contract: cumulative transform error inflates ε beyond input scale</span></h1>
+<p class="category">§12.4 (sub-class: working precision / boolean drift)</p>
+<p class="severity-badge severity-p1">P1 — silent data loss</p>
+<p class="tag-pills">
+<a class="tag tag-units" href="../by-tag/units/index.html">units</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-4-tolerance/N041.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-4-tolerance/N041.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>09-healing-menus H043, H044 (Manifold elalish library)</li>
+</ul></section>
+<section><h2>Description</h2>
+<p>Manifold tracks an ε (the maximum vertex-perturbation that would suffice to make the mesh strictly non-overlapping). Cumulative transform / Boolean error inflates ε beyond the input scale. Subsequent Booleans become unstable. User must either rebuild from cleaner data or call `SetTolerance` to widen and `Simplify`.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>Apply a chain of 50 Boolean operations to a Manifold mesh; query `GetEpsilon()` between operations; observe monotone growth.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>heal — track per-mesh ε explicitly; expose to caller; refuse Boolean when ε exceeds a fraction of model size.</p></section>
+<section><h2>Notes</h2>
+<p>**See also**: Pf021, Pf023. Synonyms: &quot;epsilon grows past input scale&quot;, &quot;Manifold validity epsilon balloons&quot;, &quot;cumulative transform error inflates epsilon&quot;, &quot;boolean unstable after epsilon grew&quot;.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>count_entity_def(b&#x27;EDGE_CURVE&#x27;) == 4</code></li>
+<li><code>contains(b&#x27;1.0E-7&#x27;) and contains(b&#x27;4.2E-3&#x27;)</code></li>
+</ul></section>
+<section><h2>Cross-references</h2>
+<p><a href="../12-10-perf/Pf021.html">Pf021</a>, <a href="../12-10-perf/Pf023.html">Pf023</a></p>
+</section>
+<section><h2>Live oracle output</h2>
+<table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
+<tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>no_shapes_loaded</code></td></tr>
+</tbody></table>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>/* N041 - Manifold epsilon-validity contract: cumulative transform error
+<span class="lineno">2</span> *        inflates epsilon beyond input scale
+<span class="lineno">3</span> * Defect: The Manifold library tracks an epsilon (the maximum vertex
+<span class="lineno">4</span> * perturbation that would suffice to make the mesh strictly non-overlapping).
+<span class="lineno">5</span> * Cumulative transform / Boolean error inflates epsilon beyond the input
+<span class="lineno">6</span> * scale; subsequent Booleans become unstable. User must rebuild from cleaner
+<span class="lineno">7</span> * data or call SetTolerance to widen and Simplify. STEP carrier shows two
+<span class="lineno">8</span> * UNCERTAINTY entries: a clean input epsilon and the inflated epsilon
+<span class="lineno">9</span> * recorded after a Boolean cascade.
+<span class="lineno">10</span> * Reproducer: input mesh epsilon 1.0e-7 m; after a 50-step Boolean cascade
+<span class="lineno">11</span> * the file emerges with epsilon 4.2e-3 m -- four orders of magnitude wider
+<span class="lineno">12</span> * than input scale.
+<span class="lineno">13</span> */
+<span class="lineno">14</span>ISO-10303-21;
+<span class="lineno">15</span>HEADER;
+<span class="lineno">16</span>FILE_DESCRIPTION((&#x27;N041 Manifold epsilon-validity inflated by cumulative Boolean drift&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">17</span>FILE_NAME(&#x27;N041.stp&#x27;,&#x27;2026-04-26T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),
+<span class="lineno">18</span>  &#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">19</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN&#x27;));
+<span class="lineno">20</span>ENDSEC;
+<span class="lineno">21</span>DATA;
+<span class="lineno">22</span>#1=APPLICATION_CONTEXT(&#x27;automotive design&#x27;);
+<span class="lineno">23</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,
+<span class="lineno">24</span>  &#x27;automotive_design&#x27;,2009,#1);
+<span class="lineno">25</span>/* Two cubes the Manifold library would Boolean-fuse; the meaningful
+<span class="lineno">26</span> * carriers are the two GLOBAL_UNCERTAINTY values declaring input vs
+<span class="lineno">27</span> * post-cascade epsilon. */
+<span class="lineno">28</span>#10=CARTESIAN_POINT(&#x27;a0&#x27;,(0.0,0.0,0.0));
+<span class="lineno">29</span>#11=CARTESIAN_POINT(&#x27;a1&#x27;,(10.0,0.0,0.0));
+<span class="lineno">30</span>#12=CARTESIAN_POINT(&#x27;a2&#x27;,(10.0,10.0,0.0));
+<span class="lineno">31</span>#13=CARTESIAN_POINT(&#x27;a3&#x27;,(0.0,10.0,0.0));
+<span class="lineno">32</span>#20=VERTEX_POINT(&#x27;a0&#x27;,#10);
+<span class="lineno">33</span>#21=VERTEX_POINT(&#x27;a1&#x27;,#11);
+<span class="lineno">34</span>#22=VERTEX_POINT(&#x27;a2&#x27;,#12);
+<span class="lineno">35</span>#23=VERTEX_POINT(&#x27;a3&#x27;,#13);
+<span class="lineno">36</span>#30=DIRECTION(&#x27;+x&#x27;,(1.0,0.0,0.0));
+<span class="lineno">37</span>#31=DIRECTION(&#x27;+y&#x27;,(0.0,1.0,0.0));
+<span class="lineno">38</span>#32=DIRECTION(&#x27;-x&#x27;,(-1.0,0.0,0.0));
+<span class="lineno">39</span>#33=DIRECTION(&#x27;-y&#x27;,(0.0,-1.0,0.0));
+<span class="lineno">40</span>#40=VECTOR(&#x27;&#x27;,#30,10.0);
+<span class="lineno">41</span>#41=VECTOR(&#x27;&#x27;,#31,10.0);
+<span class="lineno">42</span>#42=VECTOR(&#x27;&#x27;,#32,10.0);
+<span class="lineno">43</span>#43=VECTOR(&#x27;&#x27;,#33,10.0);
+<span class="lineno">44</span>#50=LINE(&#x27;&#x27;,#10,#40);
+<span class="lineno">45</span>#51=LINE(&#x27;&#x27;,#11,#41);
+<span class="lineno">46</span>#52=LINE(&#x27;&#x27;,#12,#42);
+<span class="lineno">47</span>#53=LINE(&#x27;&#x27;,#13,#43);
+<span class="lineno">48</span><mark>#60=EDGE_CURVE(</mark>&#x27;e0&#x27;,#20,#21,#50,.T.);
+<span class="lineno">49</span><mark>#61=EDGE_CURVE(</mark>&#x27;e1&#x27;,#21,#22,#51,.T.);
+<span class="lineno">50</span><mark>#62=EDGE_CURVE(</mark>&#x27;e2&#x27;,#22,#23,#52,.T.);
+<span class="lineno">51</span><mark>#63=EDGE_CURVE(</mark>&#x27;e3&#x27;,#23,#20,#53,.T.);
+<span class="lineno">52</span>#70=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">53</span>#71=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+<span class="lineno">54</span>#72=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+<span class="lineno">55</span>/* Defect site: epsilon ballooned 4 orders of magnitude across cumulative
+<span class="lineno">56</span> * Boolean operations. Manifold validity contract violated. */
+<span class="lineno">57</span>#80=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#70,
+<span class="lineno">58</span>  &#x27;distance_accuracy_value&#x27;,&#x27;manifold_input_epsilon&#x27;);
+<span class="lineno">59</span>#81=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(4.2E-3),#70,
+<span class="lineno">60</span>  &#x27;distance_accuracy_value&#x27;,&#x27;manifold_epsilon_after_50_boolean_steps&#x27;);
+<span class="lineno">61</span>#90=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+<span class="lineno">62</span>  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#80,#81))
+<span class="lineno">63</span>  GLOBAL_UNIT_ASSIGNED_CONTEXT((#70,#71,#72))
+<span class="lineno">64</span>  REPRESENTATION_CONTEXT(&#x27;ctx_manifold_eps_drift&#x27;,&#x27;3D&#x27;));
+<span class="lineno">65</span>ENDSEC;
+<span class="lineno">66</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="N040.html">&larr; N040</a> <a class="up" href="index.html">§12.4 Tolerance &amp; numerical precision</a> <a class="next" href="N042.html">N042 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

@@ -1,0 +1,76 @@
+ISO-10303-21;
+/* Os006 - Cannot fuse offset corner vertices.
+ * Defect: polyhedral solid with a corner vertex of valence 4. A uniform
+ * outward offset produces four corner-fragments that fail to fuse.
+ * Encoded: corner VERTEX_POINT + four EDGE_CURVEs incident on it +
+ * four ADVANCED_FACEs whose loops include the four edges +
+ * a CLOSED_SHELL. */
+HEADER;
+FILE_DESCRIPTION(('Os006 test case','Cannot fuse offset corner vertices'),'2;1');
+FILE_NAME('Os006.stp','2026-04-30T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+/* The valence-4 corner vertex */
+#10=CARTESIAN_POINT('valence_4_corner',(0.0,0.0,0.0));
+#11=VERTEX_POINT('corner',#10);
+/* Four neighbour vertices */
+#20=CARTESIAN_POINT('',(1.0,0.0,0.0));#21=VERTEX_POINT('',#20);
+#22=CARTESIAN_POINT('',(0.0,1.0,0.0));#23=VERTEX_POINT('',#22);
+#24=CARTESIAN_POINT('',(-1.0,0.0,0.0));#25=VERTEX_POINT('',#24);
+#26=CARTESIAN_POINT('',(0.0,-1.0,0.0));#27=VERTEX_POINT('',#26);
+/* Four lines */
+#30=DIRECTION('',(1.0,0.0,0.0));#31=VECTOR('',#30,1.0);#32=LINE('',#10,#31);
+#33=DIRECTION('',(0.0,1.0,0.0));#34=VECTOR('',#33,1.0);#35=LINE('',#10,#34);
+#36=DIRECTION('',(-1.0,0.0,0.0));#37=VECTOR('',#36,1.0);#38=LINE('',#10,#37);
+#39=DIRECTION('',(0.0,-1.0,0.0));#40=VECTOR('',#39,1.0);#41=LINE('',#10,#40);
+/* Four edges incident on corner */
+#50=EDGE_CURVE('e_e',#11,#21,#32,.T.);
+#51=EDGE_CURVE('e_n',#11,#23,#35,.T.);
+#52=EDGE_CURVE('e_w',#11,#25,#38,.T.);
+#53=EDGE_CURVE('e_s',#11,#27,#41,.T.);
+/* Four enclosing face surfaces */
+#60=DIRECTION('',(0.0,0.0,1.0));
+#61=DIRECTION('',(1.0,0.0,0.0));
+#62=AXIS2_PLACEMENT_3D('',#10,#60,#61);
+#63=PLANE('plane_ne',#62);
+#64=PLANE('plane_nw',#62);
+#65=PLANE('plane_sw',#62);
+#66=PLANE('plane_se',#62);
+/* Loops referencing pairs of edges */
+#70=ORIENTED_EDGE('',*,*,#50,.T.);
+#71=ORIENTED_EDGE('',*,*,#51,.T.);
+#72=ORIENTED_EDGE('',*,*,#52,.T.);
+#73=ORIENTED_EDGE('',*,*,#53,.T.);
+#74=EDGE_LOOP('',(#70,#71));
+#75=EDGE_LOOP('',(#71,#72));
+#76=EDGE_LOOP('',(#72,#73));
+#77=EDGE_LOOP('',(#73,#70));
+#80=FACE_OUTER_BOUND('',#74,.T.);
+#81=FACE_OUTER_BOUND('',#75,.T.);
+#82=FACE_OUTER_BOUND('',#76,.T.);
+#83=FACE_OUTER_BOUND('',#77,.T.);
+#90=ADVANCED_FACE('face_ne',(#80),#63,.T.);
+#91=ADVANCED_FACE('face_nw',(#81),#64,.T.);
+#92=ADVANCED_FACE('face_sw',(#82),#65,.T.);
+#93=ADVANCED_FACE('face_se',(#83),#66,.T.);
+#100=CLOSED_SHELL('shell',(#90,#91,#92,#93));
+/* Minimal PRODUCT chain so OCCT TransferRoots produces a shape. */
+#9010=PRODUCT_CONTEXT('',#1,'mechanical');
+#9011=PRODUCT('Os006','Os006','',(#9010));
+#9012=PRODUCT_DEFINITION_FORMATION('','',#9011);
+#9013=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9014=PRODUCT_DEFINITION('','',#9012,#9013);
+#9015=PRODUCT_DEFINITION_SHAPE('','',#9014);
+#9020=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9021=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9022=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9023=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9020,'distance_accuracy_value','');
+#9024=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9023))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9020,#9021,#9022))REPRESENTATION_CONTEXT('','3D'));
+#9030=MANIFOLD_SOLID_BREP('wrap_msb',#100);
+#9050=ADVANCED_BREP_SHAPE_REPRESENTATION('',(#9030),#9024);
+#9051=SHAPE_DEFINITION_REPRESENTATION(#9015,#9050);
+ENDSEC;
+END-ISO-10303-21;

@@ -1,0 +1,66 @@
+ISO-10303-21;
+/*
+ * A001 — Duplicated component instances collapsed to a single transform on export
+ * Defect (CATIA V5 R22-R26 / Inventor / Fusion 360):
+ *   N NEXT_ASSEMBLY_USAGE_OCCURRENCEs reference one shared PRODUCT, but each
+ *   MAPPED_ITEM ends up sharing a single AXIS2_PLACEMENT_3D rather than carrying
+ *   its own. Receivers see all N component copies stacked at the same coordinate.
+ * Reproducer: build siblings sharing an AXIS2_PLACEMENT_3D in the MAPPED_ITEM /
+ *   ITEM_DEFINED_TRANSFORMATION; verify writer emits N distinct placements.
+ * Expected kernel behavior: every NAUO instance must carry its own placement;
+ *   readers must not deduplicate placements by reference equality.
+ */
+HEADER;
+FILE_DESCRIPTION(('A001 duplicated NAUO instances share one AXIS2_PLACEMENT_3D'),'2;1');
+FILE_NAME('A001.stp','2026-04-26T00:00:00',('catalog'),('cad'),'manual','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#10 = APPLICATION_CONTEXT('automotive design');
+#11 = APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2001,#10);
+#12 = PRODUCT_CONTEXT('',#10,'mechanical');
+#13 = PRODUCT_DEFINITION_CONTEXT('part definition',#10,'design');
+/* Assembly product */
+#20 = PRODUCT('A001_ASSY','A001 Assembly','',(#12));
+#21 = PRODUCT_DEFINITION_FORMATION('','',#20);
+#22 = PRODUCT_DEFINITION('design','',#21,#13);
+#23 = PRODUCT_DEFINITION_SHAPE('','',#22);
+/* Single child product instanced three times */
+#30 = PRODUCT('BOLT','M6 bolt','',(#12));
+#31 = PRODUCT_DEFINITION_FORMATION('','',#30);
+#32 = PRODUCT_DEFINITION('design','',#31,#13);
+#33 = PRODUCT_DEFINITION_SHAPE('','',#32);
+/* Three NAUO rows that should carry distinct placements */
+#40 = NEXT_ASSEMBLY_USAGE_OCCURRENCE('1','BOLT_INSTANCE_A','',#22,#32,$);
+#41 = NEXT_ASSEMBLY_USAGE_OCCURRENCE('2','BOLT_INSTANCE_B','',#22,#32,$);
+#42 = NEXT_ASSEMBLY_USAGE_OCCURRENCE('3','BOLT_INSTANCE_C','',#22,#32,$);
+/* Length unit context (mm) */
+#50 = ( LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT(.MILLI.,.METRE.) );
+#51 = ( NAMED_UNIT(*) PLANE_ANGLE_UNIT() SI_UNIT($,.RADIAN.) );
+#52 = ( NAMED_UNIT(*) SI_UNIT($,.STERADIAN.) SOLID_ANGLE_UNIT() );
+#53 = UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#50,'distance_accuracy_value','');
+#54 = ( GEOMETRIC_REPRESENTATION_CONTEXT(3) GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#53))
+        GLOBAL_UNIT_ASSIGNED_CONTEXT((#50,#51,#52)) REPRESENTATION_CONTEXT('','3D') );
+/* Bolt component representation with its own origin */
+#60 = CARTESIAN_POINT('',(0.0,0.0,0.0));
+#61 = DIRECTION('',(0.0,0.0,1.0));
+#62 = DIRECTION('',(1.0,0.0,0.0));
+#63 = AXIS2_PLACEMENT_3D('bolt_origin',#60,#61,#62);
+#64 = SHAPE_REPRESENTATION('bolt_rep',(#63),#54);
+#65 = SHAPE_DEFINITION_REPRESENTATION(#33,#64);
+#66 = REPRESENTATION_MAP(#63,#64);
+/* DEFECT: all three MAPPED_ITEMs reference the SAME AXIS2_PLACEMENT_3D #71.
+   Properly each instance should reference its own distinct AXIS2_PLACEMENT_3D
+   with a unique location vector. Here the writer collapsed all three. */
+#70 = CARTESIAN_POINT('shared_origin',(0.0,0.0,0.0));
+#71 = AXIS2_PLACEMENT_3D('SHARED_PLACEMENT',#70,#61,#62);
+#72 = MAPPED_ITEM('inst_A',#66,#71);
+#73 = MAPPED_ITEM('inst_B',#66,#71);
+#74 = MAPPED_ITEM('inst_C',#66,#71);
+/* Assembly representation aggregating the three duplicate-placement instances */
+#80 = CARTESIAN_POINT('',(0.0,0.0,0.0));
+#81 = AXIS2_PLACEMENT_3D('assy_origin',#80,#61,#62);
+#82 = SHAPE_REPRESENTATION('assy_rep',(#81,#72,#73,#74),#54);
+#83 = SHAPE_DEFINITION_REPRESENTATION(#23,#82);
+ENDSEC;
+END-ISO-10303-21;

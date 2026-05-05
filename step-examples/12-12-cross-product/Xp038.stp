@@ -1,0 +1,38 @@
+ISO-10303-21;
+/* Xp038 - Cross-product: Onshape STEP / SLDPRT export of a 2-56 (#2-56
+ *   UNC) tapped hole - SolidWorks identifies the imported feature as a
+ *   M1.6 clearance hole (2-56 tap drill diameter is 1.85 mm, very close
+ *   to the M1.6 clearance hole 1.8 mm).
+ * Source: forum.onshape.com discussion 3489 "Export to STEP or SLDPRT,
+ *   thread/hole characteristics wrong"; OS forum 22945 "step file
+ *   export/import (bug?)".
+ * Defect: hole carries diameter 1.85 mm cylinder with no thread metadata.
+ *   SolidWorks's hole-recognition heuristic fits to the nearest standard
+ *   metric clearance and misclassifies. Imperial thread information is
+ *   completely lost; downstream BOM / drawing generation labels the hole
+ *   as M1.6. */
+HEADER;
+FILE_DESCRIPTION(('Xp038 cross-product','Onshape 2-56 tap hole misread as M1.6'),'2;1');
+FILE_NAME('Xp038.stp','2026-05-02T00:00:00',(''),(''),'Onshape;2024','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#11=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#12=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#10,'tol','');
+#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13))GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12))REPRESENTATION_CONTEXT('','3D'));
+/* Hole modelled as a cylinder of radius 0.925 mm (=> dia 1.85, the
+   2-56 UNC tap drill) - within receiver tolerance of the M1.6 clearance
+   hole 1.8 mm so SolidWorks misclassifies. */
+#20=CARTESIAN_POINT('hole_axis',(0.0,0.0,0.0));
+#21=DIRECTION('z',(0.0,0.0,1.0));
+#22=DIRECTION('x',(1.0,0.0,0.0));
+#23=AXIS2_PLACEMENT_3D('',#20,#21,#22);
+#24=CYLINDRICAL_SURFACE('2-56_tap_drill_dia_1p85_misread_as_M1p6',#23,0.925);
+#25=ADVANCED_FACE('imperial_thread_lost_at_export',(),#24,.T.);
+#26=CLOSED_SHELL('hole_shell',(#25));
+#27=MANIFOLD_SOLID_BREP('plate_with_2-56_hole',#26);
+ENDSEC;
+END-ISO-10303-21;

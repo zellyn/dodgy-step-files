@@ -1,0 +1,43 @@
+ISO-10303-21;
+/* M078 - AP209 hexahedron element with wrong node count.
+ * Defect: a VOLUME_3D_ELEMENT_DESCRIPTOR declares quadratic_hexahedron
+ * topology (which requires 20 nodes - 8 corners + 12 mid-edge) but the
+ * descriptor lists only 12 nodes. Schema-strict readers should drop the
+ * element with a warning. */
+HEADER;
+FILE_DESCRIPTION(('M078 test case','AP209 quadratic_hexahedron with 12 nodes'),'2;1');
+FILE_NAME('M078.stp','2026-04-30T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('STRUCTURAL_ANALYSIS_DESIGN { 1 0 10303 209 1 0 0 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('structural_analysis_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
+  'structural_analysis_design',2001,#1);
+#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10))
+     REPRESENTATION_CONTEXT('fea','3D'));
+#100=CARTESIAN_POINT('n1',(0.0,0.0,0.0));
+#101=CARTESIAN_POINT('n2',(1.0,0.0,0.0));
+#102=CARTESIAN_POINT('n3',(1.0,1.0,0.0));
+#103=CARTESIAN_POINT('n4',(0.0,1.0,0.0));
+#104=CARTESIAN_POINT('n5',(0.0,0.0,1.0));
+#105=CARTESIAN_POINT('n6',(1.0,0.0,1.0));
+#106=CARTESIAN_POINT('n7',(1.0,1.0,1.0));
+#107=CARTESIAN_POINT('n8',(0.0,1.0,1.0));
+#108=CARTESIAN_POINT('m1',(0.5,0.0,0.0));
+#109=CARTESIAN_POINT('m2',(1.0,0.5,0.0));
+#110=CARTESIAN_POINT('m3',(0.5,1.0,0.0));
+#111=CARTESIAN_POINT('m4',(0.0,0.5,0.0));
+#120=NODE('n1',(#100),$);#121=NODE('n2',(#101),$);
+#122=NODE('n3',(#102),$);#123=NODE('n4',(#103),$);
+#124=NODE('n5',(#104),$);#125=NODE('n6',(#105),$);
+#126=NODE('n7',(#106),$);#127=NODE('n8',(#107),$);
+#128=NODE('m1',(#108),$);#129=NODE('m2',(#109),$);
+#130=NODE('m3',(#110),$);#131=NODE('m4',(#111),$);
+/* Defect: 20-node hex declared with only 12 nodes. */
+#200=VOLUME_3D_ELEMENT_DESCRIPTOR('quad_hex','quadratic_hexahedron',
+       (#120,#121,#122,#123,#124,#125,#126,#127,
+        #128,#129,#130,#131));
+ENDSEC;
+END-ISO-10303-21;

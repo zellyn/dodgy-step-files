@@ -1,0 +1,28 @@
+/* Gs035 - Composite curve segment with null parent_curve
+ * Defect: COMPOSITE_CURVE_SEGMENT carries a null parent_curve ($).
+ * Translator must drop the null segment with a warning rather than
+ * dereferencing $ as a curve. */
+ISO-10303-21;
+HEADER;
+FILE_DESCRIPTION(('Gs035 - composite curve segment null parent_curve'),'2;1');
+FILE_NAME('Gs035.stp','2026-04-26T00:00:00',(''),(''),'auto-generated','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+/* Bounded basis LINE for the valid second segment */
+#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#11=DIRECTION('',(1.0,0.0,0.0));
+#12=VECTOR('',#11,1.0);
+#13=LINE('',#10,#12);
+#14=PARAMETER_VALUE(0.0);
+#15=PARAMETER_VALUE(10.0);
+#16=TRIMMED_CURVE('',#13,(#14),(#15),.T.,.PARAMETER.);
+/* Defect: COMPOSITE_CURVE_SEGMENT with null parent_curve */
+#20=COMPOSITE_CURVE_SEGMENT(.CONTINUOUS.,.T.,$);
+/* Valid segment for compositional integrity */
+#22=COMPOSITE_CURVE_SEGMENT(.CONTINUOUS.,.T.,#16);
+#30=COMPOSITE_CURVE('',(#20,#22),.F.);
+ENDSEC;
+END-ISO-10303-21;

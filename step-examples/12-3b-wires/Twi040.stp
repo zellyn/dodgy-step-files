@@ -1,0 +1,56 @@
+ISO-10303-21;
+/* Twi040 - 'Could not fix wire in surface' regression after OCCT version bump
+ * Defect: Until gmsh 4.11 a 'Recomputing incorrect OpenCASCADE wire' warning
+ * was logged but the wire was fixed. From 4.12 the same input throws fatal
+ * exceptions on identical surfaces - a ShapeFix tolerance regression. Heal:
+ * degrade to warning + accept the file with a fudged wire when fix fails,
+ * matching pre-4.12 behavior. Source: gmsh #3090. The wire below has its
+ * EDGE_CURVE start/end points disagree by ~Precision::Confusion() from the
+ * surface parametric trace. */
+HEADER;
+FILE_DESCRIPTION(('Twi040 test case','Could not fix wire in surface (gmsh #3090)'),'2;1');
+FILE_NAME('Twi040.stp','2026-04-26T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#11=DIRECTION('',(0.0,0.0,1.0));
+#12=DIRECTION('',(1.0,0.0,0.0));
+#13=AXIS2_PLACEMENT_3D('',#10,#11,#12);
+#20=CYLINDRICAL_SURFACE('',#13,10.0);
+/* Vertex at 3D (10,0,0) but the EDGE_CURVE start is parametrized to land
+ * at (10 + 1e-7, 0, 0) - within Precision::Confusion() of the surface. */
+#30=CARTESIAN_POINT('',(10.0,0.0,0.0));
+#31=VERTEX_POINT('',#30);
+#32=CARTESIAN_POINT('',(10.0,0.0,5.0));
+#33=VERTEX_POINT('',#32);
+/* Defect: 3D curve is parametrized starting 1e-7 off the surface trace */
+#34=CARTESIAN_POINT('',(10.0000001,0.0,0.0));
+#35=DIRECTION('',(0.0,0.0,1.0));
+#36=VECTOR('',#35,1.0);
+#37=LINE('',#34,#36);
+#40=EDGE_CURVE('',#31,#33,#37,.T.);
+#41=ORIENTED_EDGE('',*,*,#40,.T.);
+#62=EDGE_LOOP('',(#41));
+#63=FACE_OUTER_BOUND('',#62,.T.);
+#64=ADVANCED_FACE('',(#63),#20,.T.);
+/* Wrap: minimal PRODUCT chain so OCCT TransferRoots produces a shape. */
+#9000=PRODUCT_CONTEXT('',#1,'mechanical');
+#9001=PRODUCT('Twi040','Twi040','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
+#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
+#9020=OPEN_SHELL('wrap_shell',(#64));
+#9021=SHELL_BASED_SURFACE_MODEL('wrap_sbsm',(#9020));
+#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#9010);
+#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+ENDSEC;
+END-ISO-10303-21;

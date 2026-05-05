@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Twi074 — Notch detection between a single pair of EDGE_CURVEs (e.g., 5-edge rectangle wire with one VERTEX_POINT offset ~1e-3 forming a sub-mm triangular bump)</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.3b Wires / loops / edges</a> <span class="sep">/</span> <span class="current">Twi074</span>
+</nav>
+<header class="title-bar">
+<h1>Twi074 <span class="sep">—</span> <span class="entry-title">Notch detection between a single pair of EDGE_CURVEs (e.g., 5-edge rectangle wire with one VERTEX_POINT offset ~1e-3 forming a sub-mm triangular bump)</span></h1>
+<p class="category">§12.3b wires / loops / edges (sub-class: notch)</p>
+<p class="tag-pills">
+<a class="tag tag-topology" href="../by-tag/topology/index.html">topology</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-3b-wires/Twi074.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-3b-wires/Twi074.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>OCCT `ShapeAnalysis_Wire::CheckNotchedEdges` (`ShapeAnalysis_Wire.hxx:459`)</li>
+</ul></section>
+<section><h2>Description</h2>
+<p>Diagnostic-only counterpart to Twi054. For a specific edge pair `(num-1, num)`, the analyzer determines whether they form a notch and returns the index of the short edge plus the parameter on the long edge at which the long edge could be split to flatten the notch.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>As Twi054, querying the specific notch triplet.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>return short-edge index and split-parameter; do not modify the wire.</p></section>
+<section><h2>Notes</h2>
+<p>Per-pair counterpart to FixNotchedEdges. Synonyms: &quot;single-pair notch detection&quot;, &quot;is this edge pair a notch query&quot;, &quot;diagnose specific triplet for notch shape&quot;, &quot;per-pair notch diagnostic with split parameter&quot;.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=shape(1)/shape(1) gmsh=shape(11) ifc=schema_n/a</code></p></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>n_edges_total &gt;= 5</code></li>
+<li><code>face[0].surface_type == &quot;plane&quot;</code></li>
+<li><code>n_vertices_total &gt;= 8</code></li>
+</ul></section>
+<section><h2>Live oracle output</h2>
+<table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
+<tr><td><code>occt_heal_on</code></td><td><code>shape(1)</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>shape(1)</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>shape(11)</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>shape(11)</code></td></tr>
+<tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>not_manifold</code></td></tr>
+</tbody></table>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* Twi074 - Notch detection between two edges (single-pair query)
+<span class="lineno">3</span> * Defect: wire where one specific pair of consecutive edges forms a
+<span class="lineno">4</span> * notch. The detector returns the index of the short edge and the
+<span class="lineno">5</span> * parameter at which the long edge should be split. */
+<span class="lineno">6</span>HEADER;
+<span class="lineno">7</span>FILE_DESCRIPTION((&#x27;Twi074 test case&#x27;,&#x27;Notch detection between two edges (single-pair query)&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">8</span>FILE_NAME(&#x27;Twi074.stp&#x27;,&#x27;2026-04-26T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">9</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }&#x27;));
+<span class="lineno">10</span>ENDSEC;
+<span class="lineno">11</span>DATA;
+<span class="lineno">12</span>#1=APPLICATION_CONTEXT(&#x27;automotive_design&#x27;);
+<span class="lineno">13</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,&#x27;automotive_design&#x27;,2000,#1);
+<span class="lineno">14</span>/* Wire with a triangular notch: edges 50,51 pass close to each other */
+<span class="lineno">15</span>#10=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">16</span>#11=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">17</span>#12=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">18</span>#13=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#10,#11,#12);
+<span class="lineno">19</span>#14=PLANE(&#x27;&#x27;,#13);
+<span class="lineno">20</span>#20=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">21</span>#21=VERTEX_POINT(&#x27;&#x27;,#20);
+<span class="lineno">22</span>#22=CARTESIAN_POINT(&#x27;&#x27;,(5.0,0.0,0.0));
+<span class="lineno">23</span>#23=VERTEX_POINT(&#x27;&#x27;,#22);
+<span class="lineno">24</span>#24=CARTESIAN_POINT(&#x27;&#x27;,(5.001,0.5,0.0));
+<span class="lineno">25</span>#25=VERTEX_POINT(&#x27;&#x27;,#24);
+<span class="lineno">26</span>#26=CARTESIAN_POINT(&#x27;&#x27;,(5.0,1.0,0.0));
+<span class="lineno">27</span>#27=VERTEX_POINT(&#x27;&#x27;,#26);
+<span class="lineno">28</span>#28=CARTESIAN_POINT(&#x27;&#x27;,(0.0,1.0,0.0));
+<span class="lineno">29</span>#29=VERTEX_POINT(&#x27;&#x27;,#28);
+<span class="lineno">30</span>#30=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">31</span>#31=VECTOR(&#x27;&#x27;,#30,1.0);
+<span class="lineno">32</span>#32=LINE(&#x27;&#x27;,#20,#31);
+<span class="lineno">33</span>#33=DIRECTION(&#x27;&#x27;,(0.0001,1.0,0.0));
+<span class="lineno">34</span>#34=VECTOR(&#x27;&#x27;,#33,1.0);
+<span class="lineno">35</span>#35=LINE(&#x27;&#x27;,#22,#34);
+<span class="lineno">36</span>#36=DIRECTION(&#x27;&#x27;,(-0.0001,1.0,0.0));
+<span class="lineno">37</span>#37=VECTOR(&#x27;&#x27;,#36,1.0);
+<span class="lineno">38</span>#38=LINE(&#x27;&#x27;,#24,#37);
+<span class="lineno">39</span>#39=DIRECTION(&#x27;&#x27;,(-1.0,0.0,0.0));
+<span class="lineno">40</span>#40=VECTOR(&#x27;&#x27;,#39,1.0);
+<span class="lineno">41</span>#41=LINE(&#x27;&#x27;,#26,#40);
+<span class="lineno">42</span>#42=DIRECTION(&#x27;&#x27;,(0.0,-1.0,0.0));
+<span class="lineno">43</span>#43=VECTOR(&#x27;&#x27;,#42,1.0);
+<span class="lineno">44</span>#44=LINE(&#x27;&#x27;,#28,#43);
+<span class="lineno">45</span>#50=EDGE_CURVE(&#x27;&#x27;,#21,#23,#32,.T.);
+<span class="lineno">46</span>#51=EDGE_CURVE(&#x27;&#x27;,#23,#25,#35,.T.);
+<span class="lineno">47</span>#52=EDGE_CURVE(&#x27;&#x27;,#25,#27,#38,.T.);
+<span class="lineno">48</span>#53=EDGE_CURVE(&#x27;&#x27;,#27,#29,#41,.T.);
+<span class="lineno">49</span>#54=EDGE_CURVE(&#x27;&#x27;,#29,#21,#44,.T.);
+<span class="lineno">50</span>#60=ORIENTED_EDGE(&#x27;&#x27;,*,*,#50,.T.);
+<span class="lineno">51</span>#61=ORIENTED_EDGE(&#x27;&#x27;,*,*,#51,.T.);
+<span class="lineno">52</span>#62=ORIENTED_EDGE(&#x27;&#x27;,*,*,#52,.T.);
+<span class="lineno">53</span>#63=ORIENTED_EDGE(&#x27;&#x27;,*,*,#53,.T.);
+<span class="lineno">54</span>#64=ORIENTED_EDGE(&#x27;&#x27;,*,*,#54,.T.);
+<span class="lineno">55</span>#70=EDGE_LOOP(&#x27;&#x27;,(#60,#61,#62,#63,#64));
+<span class="lineno">56</span>#71=FACE_OUTER_BOUND(&#x27;&#x27;,#70,.T.);
+<span class="lineno">57</span>#72=ADVANCED_FACE(&#x27;&#x27;,(#71),#14,.T.);
+<span class="lineno">58</span>/* Wrap: minimal PRODUCT chain so OCCT TransferRoots produces a shape. */
+<span class="lineno">59</span>#9000=PRODUCT_CONTEXT(&#x27;&#x27;,#1,&#x27;mechanical&#x27;);
+<span class="lineno">60</span>#9001=PRODUCT(&#x27;Twi074&#x27;,&#x27;Twi074&#x27;,&#x27;&#x27;,(#9000));
+<span class="lineno">61</span>#9002=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#9001);
+<span class="lineno">62</span>#9003=PRODUCT_DEFINITION_CONTEXT(&#x27;part definition&#x27;,#1,&#x27;design&#x27;);
+<span class="lineno">63</span>#9004=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,#9002,#9003);
+<span class="lineno">64</span>#9005=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,#9004);
+<span class="lineno">65</span>#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">66</span>#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+<span class="lineno">67</span>#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+<span class="lineno">68</span>#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,&#x27;distance_accuracy_value&#x27;,&#x27;&#x27;);
+<span class="lineno">69</span>#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT(&#x27;&#x27;,&#x27;3D&#x27;));
+<span class="lineno">70</span>#9020=OPEN_SHELL(&#x27;wrap_shell&#x27;,(#72));
+<span class="lineno">71</span>#9021=SHELL_BASED_SURFACE_MODEL(&#x27;wrap_sbsm&#x27;,(#9020));
+<span class="lineno">72</span>#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION(&#x27;&#x27;,(#9021),#9010);
+<span class="lineno">73</span>#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+<span class="lineno">74</span>ENDSEC;
+<span class="lineno">75</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Twi073.html">&larr; Twi073</a> <a class="up" href="index.html">§12.3b Wires / loops / edges</a> <a class="next" href="Twi075.html">Twi075 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

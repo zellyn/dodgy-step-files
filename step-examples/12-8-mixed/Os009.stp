@@ -1,0 +1,25 @@
+ISO-10303-21;
+/* Os009 - Loft with mixed open/closed profiles.
+ * Defect: ThruSections receives two profiles - profile 1 is a
+ * closed wire (CIRCLE), profile 2 is an open wire (single LINE). */
+HEADER;
+FILE_DESCRIPTION(('Os009 - loft topology mismatch','Pass C gap-fill'),'2;1');
+FILE_NAME('Os009.stp','2026-04-30T00:00:00',(''),(''),'gap-fill C','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+/* Closed wire (circle at z=0) + open wire (line at z=1) */
+#10=CARTESIAN_POINT('center',(0.0,0.0,0.0));
+#11=DIRECTION('',(0.0,0.0,1.0));
+#12=DIRECTION('',(1.0,0.0,0.0));
+#13=AXIS2_PLACEMENT_3D('',#10,#11,#12);
+#14=CIRCLE('profile1_closed',#13,1.0);
+#20=CARTESIAN_POINT('s',(0.0,0.0,1.0));
+#21=CARTESIAN_POINT('e',(1.0,0.0,1.0));
+#22=DIRECTION('',(1.0,0.0,0.0));
+#23=VECTOR('',#22,1.0);
+#24=LINE('profile2_open',#20,#23);
+ENDSEC;
+END-ISO-10303-21;

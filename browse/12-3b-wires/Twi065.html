@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Twi065 — Wire edge-curves analysis: 3D/2D consistency in one report (EDGE_LOOP with reversed pcurve direction, vertex/3D LINE start mismatch, junction gap, and pcurve/3D length parameter mismatch)</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.3b Wires / loops / edges</a> <span class="sep">/</span> <span class="current">Twi065</span>
+</nav>
+<header class="title-bar">
+<h1>Twi065 <span class="sep">—</span> <span class="entry-title">Wire edge-curves analysis: 3D/2D consistency in one report (EDGE_LOOP with reversed pcurve direction, vertex/3D LINE start mismatch, junction gap, and pcurve/3D length parameter mismatch)</span></h1>
+<p class="category">§12.3b wires / loops / edges (sub-class: analysis-pipeline)</p>
+<p class="tag-pills">
+<a class="tag tag-topology" href="../by-tag/topology/index.html">topology</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-3b-wires/Twi065.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-3b-wires/Twi065.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>OCCT `ShapeAnalysis_Wire::CheckEdgeCurves` (`ShapeAnalysis_Wire.hxx:208`)</li>
+</ul></section>
+<section><h2>Description</h2>
+<p>For a wire (EDGE_LOOP) whose edges variously fail CheckCurve3dWithPCurve, CheckVerticesWithPCurve, CheckVerticesWithCurve3d, CheckSeam, CheckGap3d, CheckGap2d, CheckSameParameter — the analyzer must run all these checks and surface every status flag, even when earlier checks already flagged the wire as defective. Typical fixture: a four-edge EDGE_LOOP combining distinct defects (edge1 with pcurve direction reversed relative to 3D LINE, edge2 with 3D LINE start point disagreeing with VERTEX_POINT, edge3 starting offset from previous endpoint leaving a junction gap, edge4 with pcurve length not matching 3D length — same-parameter violation).</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>A four-edge EDGE_LOOP where each EDGE_CURVE fails a different check (pcurve direction reversed, vertex vs 3D-line start mismatch, 3D junction gap, pcurve/3D length mismatch).</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>Heal and accept: normalize a per-edge, per-check status grid; no early termination.</p></section>
+<section><h2>Notes</h2>
+<p>Sub-pipeline of Twi064. Synonyms: &quot;wire edge curves analysis combined report&quot;, &quot;per-edge per-check status grid for wire&quot;, &quot;edge consistency check across spatial and parametric&quot;, &quot;exhaustive edge curve diagnostics&quot;.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a</code></p></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>n_edges_total &gt;= 4</code></li>
+<li><code>face[0].surface_type == &quot;plane&quot;</code></li>
+<li><code>n_vertices_total &gt;= 8</code></li>
+</ul></section>
+<section><h2>Cross-references</h2>
+<p><a href="Twi064.html">Twi064</a></p>
+</section>
+<section><h2>Live oracle output</h2>
+<table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
+<tr><td><code>occt_heal_on</code></td><td><code>shape(1)</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>shape(1)</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>shape(9)</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>shape(9)</code></td></tr>
+<tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>not_manifold</code></td></tr>
+</tbody></table>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* Twi065 - Wire edge-curves analysis: 3D/2D consistency in one report
+<span class="lineno">3</span> * Four-edge wire on PLANE; each edge fails a different ShapeAnalysis_Wire check:
+<span class="lineno">4</span> *   edge1 - CheckCurve3dWithPCurve (pcurve direction wrong)
+<span class="lineno">5</span> *   edge2 - CheckVerticesWithCurve3d (3D LINE endpoints not on declared vertices)
+<span class="lineno">6</span> *   edge3 - CheckGap3d (start vertex differs from prev edge end vertex)
+<span class="lineno">7</span> *   edge4 - CheckSameParameter (3D length 1.0 but pcurve length 5.0). */
+<span class="lineno">8</span>HEADER;
+<span class="lineno">9</span>FILE_DESCRIPTION((&#x27;Twi065 test case&#x27;,&#x27;Wire edge-curves analysis: each edge fails a different check&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">10</span>FILE_NAME(&#x27;Twi065.stp&#x27;,&#x27;2026-04-30T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">11</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }&#x27;));
+<span class="lineno">12</span>ENDSEC;
+<span class="lineno">13</span>DATA;
+<span class="lineno">14</span>#1=APPLICATION_CONTEXT(&#x27;automotive_design&#x27;);
+<span class="lineno">15</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,&#x27;automotive_design&#x27;,2000,#1);
+<span class="lineno">16</span>#10=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">17</span>#11=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">18</span>#12=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">19</span>#13=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#10,#11,#12);
+<span class="lineno">20</span>#14=PLANE(&#x27;&#x27;,#13);
+<span class="lineno">21</span>/* 4 corners, used for an intended unit square */
+<span class="lineno">22</span>#20=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));#21=VERTEX_POINT(&#x27;V1&#x27;,#20);
+<span class="lineno">23</span>#22=CARTESIAN_POINT(&#x27;&#x27;,(1.0,0.0,0.0));#23=VERTEX_POINT(&#x27;V2&#x27;,#22);
+<span class="lineno">24</span>#24=CARTESIAN_POINT(&#x27;&#x27;,(1.0,1.0,0.0));#25=VERTEX_POINT(&#x27;V3&#x27;,#24);
+<span class="lineno">25</span>#26=CARTESIAN_POINT(&#x27;&#x27;,(0.0,1.0,0.0));#27=VERTEX_POINT(&#x27;V4&#x27;,#26);
+<span class="lineno">26</span>/* edge1: pcurve direction REVERSED relative to 3D LINE direction */
+<span class="lineno">27</span>#30=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));#31=VECTOR(&#x27;&#x27;,#30,1.0);#32=LINE(&#x27;&#x27;,#20,#31);
+<span class="lineno">28</span>#33=CARTESIAN_POINT(&#x27;&#x27;,(1.0,0.0));#34=DIRECTION(&#x27;&#x27;,(-1.0,0.0));
+<span class="lineno">29</span>#35=VECTOR(&#x27;&#x27;,#34,1.0);#36=LINE(&#x27;&#x27;,#33,#35);
+<span class="lineno">30</span>#37=DEFINITIONAL_REPRESENTATION(&#x27;&#x27;,(#36),#13);
+<span class="lineno">31</span>#38=PCURVE(&#x27;&#x27;,#14,#37);
+<span class="lineno">32</span>#39=SURFACE_CURVE(&#x27;&#x27;,#32,(#38),.PCURVE_S1.);
+<span class="lineno">33</span>#40=EDGE_CURVE(&#x27;edge1_pcurve_reversed&#x27;,#21,#23,#39,.T.);
+<span class="lineno">34</span>/* edge2: 3D LINE origin (5,5,0) differs sharply from V2 vertex (1,0,0) -- vertex/curve3d mismatch */
+<span class="lineno">35</span>#50=DIRECTION(&#x27;&#x27;,(0.0,1.0,0.0));#51=VECTOR(&#x27;&#x27;,#50,1.0);
+<span class="lineno">36</span>#52=CARTESIAN_POINT(&#x27;curve3d_origin_off&#x27;,(5.0,5.0,0.0));
+<span class="lineno">37</span>#53=LINE(&#x27;&#x27;,#52,#51);
+<span class="lineno">38</span>#54=EDGE_CURVE(&#x27;edge2_vertex_curve3d_mismatch&#x27;,#23,#25,#53,.T.);
+<span class="lineno">39</span>/* edge3: start vertex is FRESH V3b at (1.5,1.0,0) -- 3D gap 0.5 from previous edge end V3 */
+<span class="lineno">40</span>#60=CARTESIAN_POINT(&#x27;shifted_start&#x27;,(1.5,1.0,0.0));
+<span class="lineno">41</span>#61=VERTEX_POINT(&#x27;V3b_shifted&#x27;,#60);
+<span class="lineno">42</span>#62=DIRECTION(&#x27;&#x27;,(-1.0,0.0,0.0));#63=VECTOR(&#x27;&#x27;,#62,1.0);#64=LINE(&#x27;&#x27;,#60,#63);
+<span class="lineno">43</span>#65=EDGE_CURVE(&#x27;edge3_3d_gap&#x27;,#61,#27,#64,.T.);
+<span class="lineno">44</span>/* edge4: SameParameter violation -- 3D length 1.0, pcurve length 5.0 */
+<span class="lineno">45</span>#70=DIRECTION(&#x27;&#x27;,(0.0,-1.0,0.0));#71=VECTOR(&#x27;&#x27;,#70,1.0);#72=LINE(&#x27;&#x27;,#26,#71);
+<span class="lineno">46</span>#73=CARTESIAN_POINT(&#x27;&#x27;,(0.0,1.0));#74=DIRECTION(&#x27;&#x27;,(0.0,-1.0));
+<span class="lineno">47</span>#75=VECTOR(&#x27;&#x27;,#74,5.0);#76=LINE(&#x27;&#x27;,#73,#75);
+<span class="lineno">48</span>#77=DEFINITIONAL_REPRESENTATION(&#x27;&#x27;,(#76),#13);
+<span class="lineno">49</span>#78=PCURVE(&#x27;&#x27;,#14,#77);
+<span class="lineno">50</span>#79=SURFACE_CURVE(&#x27;&#x27;,#72,(#78),.PCURVE_S1.);
+<span class="lineno">51</span>#80=EDGE_CURVE(&#x27;edge4_sameparam_violation&#x27;,#27,#21,#79,.T.);
+<span class="lineno">52</span>/* assemble four-edge wire */
+<span class="lineno">53</span>#90=ORIENTED_EDGE(&#x27;&#x27;,*,*,#40,.T.);
+<span class="lineno">54</span>#91=ORIENTED_EDGE(&#x27;&#x27;,*,*,#54,.T.);
+<span class="lineno">55</span>#92=ORIENTED_EDGE(&#x27;&#x27;,*,*,#65,.T.);
+<span class="lineno">56</span>#93=ORIENTED_EDGE(&#x27;&#x27;,*,*,#80,.T.);
+<span class="lineno">57</span>#94=EDGE_LOOP(&#x27;four_distinct_defects&#x27;,(#90,#91,#92,#93));
+<span class="lineno">58</span>#95=FACE_OUTER_BOUND(&#x27;&#x27;,#94,.T.);
+<span class="lineno">59</span>#96=ADVANCED_FACE(&#x27;&#x27;,(#95),#14,.T.);
+<span class="lineno">60</span>/* Wrap: minimal PRODUCT chain so OCCT TransferRoots produces a shape. */
+<span class="lineno">61</span>#9000=PRODUCT_CONTEXT(&#x27;&#x27;,#1,&#x27;mechanical&#x27;);
+<span class="lineno">62</span>#9001=PRODUCT(&#x27;Twi065&#x27;,&#x27;Twi065&#x27;,&#x27;&#x27;,(#9000));
+<span class="lineno">63</span>#9002=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#9001);
+<span class="lineno">64</span>#9003=PRODUCT_DEFINITION_CONTEXT(&#x27;part definition&#x27;,#1,&#x27;design&#x27;);
+<span class="lineno">65</span>#9004=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,#9002,#9003);
+<span class="lineno">66</span>#9005=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,#9004);
+<span class="lineno">67</span>#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">68</span>#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+<span class="lineno">69</span>#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+<span class="lineno">70</span>#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,&#x27;distance_accuracy_value&#x27;,&#x27;&#x27;);
+<span class="lineno">71</span>#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT(&#x27;&#x27;,&#x27;3D&#x27;));
+<span class="lineno">72</span>#9020=OPEN_SHELL(&#x27;wrap_shell&#x27;,(#96));
+<span class="lineno">73</span>#9021=SHELL_BASED_SURFACE_MODEL(&#x27;wrap_sbsm&#x27;,(#9020));
+<span class="lineno">74</span>#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION(&#x27;&#x27;,(#9021),#9010);
+<span class="lineno">75</span>#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+<span class="lineno">76</span>ENDSEC;
+<span class="lineno">77</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Twi064.html">&larr; Twi064</a> <a class="up" href="index.html">§12.3b Wires / loops / edges</a> <a class="next" href="Twi066.html">Twi066 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

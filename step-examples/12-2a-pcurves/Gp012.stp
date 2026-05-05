@@ -1,0 +1,43 @@
+ISO-10303-21;
+/* Gp012 - Seam curve with one of two pcurves null (BUC60810)
+ * Defect: the seam edge on a cylindrical face supplies only one of the
+ * two required pcurves; the second slot is the omit marker '$'. The
+ * translator must synthesize the missing one as period-shifted copy. */
+HEADER;
+FILE_DESCRIPTION(('Gp012 test case','Seam curve with one pcurve null'),'2;1');
+FILE_NAME('Gp012.stp','2026-04-27T00:00:00',(''),(''),'auto-generated','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#11=DIRECTION('',(0.0,0.0,1.0));
+#12=DIRECTION('',(1.0,0.0,0.0));
+#13=AXIS2_PLACEMENT_3D('',#10,#11,#12);
+#20=CYLINDRICAL_SURFACE('',#13,10.0);
+#30=CARTESIAN_POINT('',(10.0,0.0,0.0));
+#31=DIRECTION('',(0.0,0.0,1.0));
+#32=VECTOR('',#31,1.0);
+#33=LINE('',#30,#32);
+#40=VERTEX_POINT('',#30);
+#41=CARTESIAN_POINT('',(10.0,0.0,5.0));
+#42=VERTEX_POINT('',#41);
+#71=CARTESIAN_POINT('',(0.0,0.0));
+#72=DIRECTION('',(0.0,1.0));
+#73=VECTOR('',#72,1.0);
+#74=LINE('',#71,#73);
+#75=( GEOMETRIC_REPRESENTATION_CONTEXT(2)
+      PARAMETRIC_REPRESENTATION_CONTEXT()
+      REPRESENTATION_CONTEXT('parametric','2D') );
+#76=DEFINITIONAL_REPRESENTATION('',(#74),#75);
+#77=PCURVE('',#20,#76);
+/* Defect: only one pcurve provided; second associated_geometry slot is $ */
+#50=SEAM_CURVE('',#33,(#77,$),.PCURVE_S1.);
+#60=EDGE_CURVE('',#40,#42,#50,.T.);
+#61=ORIENTED_EDGE('',*,*,#60,.T.);
+#62=EDGE_LOOP('',(#61));
+#63=FACE_OUTER_BOUND('',#62,.T.);
+#64=ADVANCED_FACE('',(#63),#20,.T.);
+ENDSEC;
+END-ISO-10303-21;

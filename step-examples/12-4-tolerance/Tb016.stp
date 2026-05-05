@@ -1,0 +1,68 @@
+/* Tb016 - Cumulative tolerance budget exhausted across long edge chain
+ * Defect: A polyline of 5 short edges (length ~1e-3 mm each); each
+ * adjacent vertex pair is offset by a constant 2.0E-7 mm in +y. Each
+ * individual gap is comfortably sub-tolerance (declared 1.0E-6 mm),
+ * but cumulative drift end-to-end after 5 edges is 1.0E-6 mm = exactly
+ * the declared tolerance budget. Whether the wire closes depends on
+ * whether the kernel sums residuals (end-to-end fails) or only
+ * checks adjacent pairs (always OK). The 5-edge polyline is the
+ * tractable representative; the principle scales to 1000-edge chains
+ * which producers easily emit.
+ */
+ISO-10303-21;
+HEADER;
+FILE_DESCRIPTION(('Tb016 cumulative drift across long edge chain'),'2;1');
+FILE_NAME('Tb016.stp','2026-04-30T00:00:00',(''),(''),
+  'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
+  'automotive_design',2009,#1);
+/* 5 representative edges. Each vertex offset by 2.0E-7 mm in +y;
+ * end-to-end drift after 5 edges = 1.0E-6 mm = declared tolerance. */
+#10=CARTESIAN_POINT('p0',(0.0,0.0,0.0));
+#11=CARTESIAN_POINT('p1',(1.0E-3,2.0E-7,0.0));
+#12=CARTESIAN_POINT('p2',(2.0E-3,4.0E-7,0.0));
+#13=CARTESIAN_POINT('p3',(3.0E-3,6.0E-7,0.0));
+#14=CARTESIAN_POINT('p4',(4.0E-3,8.0E-7,0.0));
+#15=CARTESIAN_POINT('p5_drift_eq_tol',(5.0E-3,1.0E-6,0.0));
+#20=VERTEX_POINT('v0',#10);
+#21=VERTEX_POINT('v1_drift_2e-7',#11);
+#22=VERTEX_POINT('v2_drift_4e-7',#12);
+#23=VERTEX_POINT('v3_drift_6e-7',#13);
+#24=VERTEX_POINT('v4_drift_8e-7',#14);
+#25=VERTEX_POINT('v5_drift_1e-6_cumulative_eq_tol',#15);
+#30=DIRECTION('+x',(1.0,0.0,0.0));
+#31=VECTOR('vx_segment',#30,1.0E-3);
+#32=LINE('l01',#10,#31);
+#33=LINE('l12',#11,#31);
+#34=LINE('l23',#12,#31);
+#35=LINE('l34',#13,#31);
+#36=LINE('l45',#14,#31);
+#40=EDGE_CURVE('e01',#20,#21,#32,.T.);
+#41=EDGE_CURVE('e12',#21,#22,#33,.T.);
+#42=EDGE_CURVE('e23',#22,#23,#34,.T.);
+#43=EDGE_CURVE('e34',#23,#24,#35,.T.);
+#44=EDGE_CURVE('e45',#24,#25,#36,.T.);
+#50=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#51=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#52=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#60=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-6),#50,
+  'distance_accuracy_value','per_pair_tolerance');
+#70=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#60))
+  GLOBAL_UNIT_ASSIGNED_CONTEXT((#50,#51,#52))
+  REPRESENTATION_CONTEXT('ctx','3D'));
+#9000=PRODUCT_CONTEXT('',#1,'mechanical');
+#9001=PRODUCT('Tb016','Tb016','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9020=GEOMETRIC_CURVE_SET('cs',(#40,#41,#42,#43,#44));
+#9021=GEOMETRICALLY_BOUNDED_WIREFRAME_SHAPE_REPRESENTATION('',(#9020),#70);
+#9022=SHAPE_DEFINITION_REPRESENTATION(#9005,#9021);
+ENDSEC;
+END-ISO-10303-21;

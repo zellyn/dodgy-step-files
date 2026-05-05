@@ -1,0 +1,45 @@
+ISO-10303-21;
+/* In002 - Both load-time warning (stray comment after ENDSEC) and a
+ * data-content boundary value (entity at spec edge). */
+HEADER;
+FILE_DESCRIPTION(('In002 - mixed-channel warnings','Pass C gap-fill'),'2;1');
+FILE_NAME('In002.stp','2026-04-30T00:00:00',(''),(''),'gap-fill C','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+/* parser-level event: stray comment between HEADER ENDSEC and DATA */
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+/* Boundary-valued data: B-spline degree at upper limit. */
+#10=B_SPLINE_CURVE_WITH_KNOTS('high_degree',25,
+   (#100,#101,#102,#103,#104,#105,#106,#107,#108,#109,
+    #110,#111,#112,#113,#114,#115,#116,#117,#118,#119,
+    #120,#121,#122,#123,#124,#125),
+   .UNSPECIFIED.,.F.,.F.,(26,26),(0.0,1.0),.UNSPECIFIED.);
+#100=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#101=CARTESIAN_POINT('',(1.0,0.0,0.0));
+#102=CARTESIAN_POINT('',(2.0,0.0,0.0));
+#103=CARTESIAN_POINT('',(3.0,0.0,0.0));
+#104=CARTESIAN_POINT('',(4.0,0.0,0.0));
+#105=CARTESIAN_POINT('',(5.0,0.0,0.0));
+#106=CARTESIAN_POINT('',(6.0,0.0,0.0));
+#107=CARTESIAN_POINT('',(7.0,0.0,0.0));
+#108=CARTESIAN_POINT('',(8.0,0.0,0.0));
+#109=CARTESIAN_POINT('',(9.0,0.0,0.0));
+#110=CARTESIAN_POINT('',(10.0,0.0,0.0));
+#111=CARTESIAN_POINT('',(11.0,0.0,0.0));
+#112=CARTESIAN_POINT('',(12.0,0.0,0.0));
+#113=CARTESIAN_POINT('',(13.0,0.0,0.0));
+#114=CARTESIAN_POINT('',(14.0,0.0,0.0));
+#115=CARTESIAN_POINT('',(15.0,0.0,0.0));
+#116=CARTESIAN_POINT('',(16.0,0.0,0.0));
+#117=CARTESIAN_POINT('',(17.0,0.0,0.0));
+#118=CARTESIAN_POINT('',(18.0,0.0,0.0));
+#119=CARTESIAN_POINT('',(19.0,0.0,0.0));
+#120=CARTESIAN_POINT('',(20.0,0.0,0.0));
+#121=CARTESIAN_POINT('',(21.0,0.0,0.0));
+#122=CARTESIAN_POINT('',(22.0,0.0,0.0));
+#123=CARTESIAN_POINT('',(23.0,0.0,0.0));
+#124=CARTESIAN_POINT('',(24.0,0.0,0.0));
+#125=CARTESIAN_POINT('',(25.0,0.0,0.0));
+ENDSEC;
+END-ISO-10303-21;

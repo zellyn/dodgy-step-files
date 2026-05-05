@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Ad115 — Directory-entry race between `stat()` and `open()` on STEP fixture path</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.11 Adversarial / parser robustness</a> <span class="sep">/</span> <span class="current">Ad115</span>
+</nav>
+<header class="title-bar">
+<h1>Ad115 <span class="sep">—</span> <span class="entry-title">Directory-entry race between `stat()` and `open()` on STEP fixture path</span></h1>
+<p class="category">§12.11 adversarial (sub-class: TOCTOU / directory race)</p>
+<p class="severity-badge severity-p2">P2 — spec deviation (no data loss)</p>
+<p class="tag-pills">
+<a class="tag tag-adversarial" href="../by-tag/adversarial/index.html">adversarial</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-11-adversarial/Ad115.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-11-adversarial/Ad115.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>bug-reporter language: &quot;STEP loader stats and opens different files&quot;, &quot;directory entry swapped during STEP load&quot;</li>
+<li>CWE-367 (TOCTOU)</li>
+<li>CWE-363 (race condition enabling access of resource using expired reference)</li>
+</ul></section>
+<section><h2>Sender</h2>
+<p>deduced — adversarial filesystem context where a directory entry is replaced between two filesystem operations on the same path</p></section>
+<section><h2>Description</h2>
+<p>A receiver that performs a path-based `stat()` on a fixture (to enforce a max-size budget, or a &quot;regular file only&quot; check, or a &quot;this is the file we expected&quot; hash check), then performs a separate path-based `open()`, races against any process that can swap the directory entry between the two syscalls. On a multi-tenant build host, an attacker replaces the directory entry (via `rename()`) so `stat()` sees a small benign file and `open()` returns a file descriptor on a much larger or hostile file. Distinct from Ad113 (sibling-pair race) and Ad114 (symlink-following): this entry is the directory-entry-swap vector even when no symlink is present. Bug-reporter language: &quot;stat-vs-open race in STEP loader&quot;, &quot;directory swap during validation&quot;, &quot;rename() race on fixture path&quot;.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>a STEP fixture lives at a path whose containing directory is writable by an attacker; the attacker `rename()`s a small benign STEP file into place before the receiver&#x27;s `stat()` and a hostile/oversized file into place before the receiver&#x27;s `open()`. The bytes alone cannot demonstrate this; the demonstration requires a concurrent attacker process. The fixture in this catalog documents the scenario in a header comment.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>Heal and accept: open the path once and `fstat()` the resulting file descriptor; never re-resolve the path for any check after the open; treat all path-based file metadata as untrusted. Must not crash on TOCTOU race.</p></section>
+<section><h2>Notes</h2>
+<p>Third TOCTOU vector after Ad113 (sibling-pair race) and Ad114 (symlink-following) — separate axis (directory-swap, not symlink-swap). Provenance tier: cross-file-state — bytes alone cannot demonstrate this defect; the symptom requires a concurrent attacker process. The static fixture is document-only. **See also**: Ad106, Ad113, Ad114.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<section><h2>Provenance tier</h2>
+<p><code>cross-file-state</code> — defect not fully embodied in fixture bytes.</p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>contains(b&#x27;TOCTOU&#x27;) or contains(b&#x27;rename&#x27;) or contains(b&#x27;stat&#x27;)</code></li>
+<li><code>contains(b&#x27;directory&#x27;) or contains(b&#x27;race&#x27;) or contains(b&#x27;fstat&#x27;)</code></li>
+</ul></section>
+<section><h2>Cross-references</h2>
+<p><a href="Ad106.html">Ad106</a>, <a href="Ad113.html">Ad113</a>, <a href="Ad114.html">Ad114</a></p>
+</section>
+<section><h2>Live oracle output</h2>
+<table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
+<tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>no_shapes_loaded</code></td></tr>
+</tbody></table>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>/* Ad115 - Directory-entry race between stat() and open() on STEP fixture path
+<span class="lineno">2</span> * Defect: a receiver that performs a path-based stat() on a fixture
+<span class="lineno">3</span> * (to enforce a max-size budget, or a regular-file-only check, or a
+<span class="lineno">4</span> * &quot;this is the file we expected&quot; hash check), then performs a separate
+<span class="lineno">5</span> * path-based open(), races against any process that can swap the
+<span class="lineno">6</span> * directory entry between the two syscalls. On a multi-tenant build
+<span class="lineno">7</span> * host, an attacker rename()s a small benign file into place before
+<span class="lineno">8</span> * the receiver&#x27;s stat() and a hostile/oversized file into place
+<span class="lineno">9</span> * before the receiver&#x27;s open(). Distinct from Ad113 (sibling-pair
+<span class="lineno">10</span> * race) and Ad114 (symlink-following): this entry is the directory-
+<span class="lineno">11</span> * entry-swap vector even when no symlink is present.
+<span class="lineno">12</span> *
+<span class="lineno">13</span> * IMPORTANT: this fixture documents the scenario in this header
+<span class="lineno">14</span> * comment. The race requires a concurrent attacker process; no
+<span class="lineno">15</span> * filesystem manipulation is performed by this fixture.
+<span class="lineno">16</span> * Provenance tier: cross-file-state. */
+<span class="lineno">17</span>ISO-10303-21;
+<span class="lineno">18</span>HEADER;
+<span class="lineno">19</span>FILE_DESCRIPTION((&#x27;Ad115 - stat-vs-open directory-entry race on STEP path&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">20</span>FILE_NAME(&#x27;Ad115.stp&#x27;,&#x27;2026-05-02T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">21</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }&#x27;));
+<span class="lineno">22</span>ENDSEC;
+<span class="lineno">23</span>DATA;
+<span class="lineno">24</span>/* Witness body: the stat-vs-open TOCTOU defect lives in the receiver-
+<span class="lineno">25</span>   side filesystem and depends on a concurrent attacker process. The
+<span class="lineno">26</span>   bug-reporter searchable terms (TOCTOU, directory, race, rename,
+<span class="lineno">27</span>   stat, fstat) are in this file&#x27;s header and comments.
+<span class="lineno">28</span>
+<span class="lineno">29</span>   The receiver should open the path once and fstat() the resulting
+<span class="lineno">30</span>   file descriptor; never re-resolve the path between two filesystem
+<span class="lineno">31</span>   operations. Path-based file metadata is untrusted on a multi-tenant
+<span class="lineno">32</span>   filesystem. */
+<span class="lineno">33</span>/* directory-entry rename() race between stat() and open() */
+<span class="lineno">34</span>#1=APPLICATION_CONTEXT(&#x27;automotive_design&#x27;);
+<span class="lineno">35</span>#10=CARTESIAN_POINT(&#x27;benign&#x27;,(0.0,0.0,0.0));
+<span class="lineno">36</span>ENDSEC;
+<span class="lineno">37</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Ad114.html">&larr; Ad114</a> <a class="up" href="index.html">§12.11 Adversarial / parser robustness</a> <a class="next" href="Ad116.html">Ad116 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

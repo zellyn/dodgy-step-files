@@ -1,0 +1,36 @@
+/* A098 - Writer-emitted STEP cannot be re-imported by the same writing
+ * process (round-trip refused).
+ * Defect (FreeCAD #11728, #17839): the file is well-formed but the
+ * importer in the same build has a regression in its forward-reference
+ * resolver. SHAPE_REPRESENTATION at #10 references AXIS2_PLACEMENT_3D
+ * at #100, which is defined later in the file. */
+ISO-10303-21;
+HEADER;
+FILE_DESCRIPTION(('A098 - all references are forward-only'),'2;1');
+FILE_NAME('A098.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+/* Defect: SHAPE_REPRESENTATION (#10) references AXIS2_PLACEMENT_3D (#100)
+   which is defined after it. Forward references are spec-legal but some
+   importers regress on them. */
+#10=SHAPE_REPRESENTATION('A098_root',(#100),#200);
+#11=SHAPE_DEFINITION_REPRESENTATION(#300,#10);
+#100=AXIS2_PLACEMENT_3D('forward_referenced',#150,#151,#152);
+#150=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#151=DIRECTION('',(0.0,0.0,1.0));
+#152=DIRECTION('',(1.0,0.0,0.0));
+#200=( GEOMETRIC_REPRESENTATION_CONTEXT(3) GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#201)) GLOBAL_UNIT_ASSIGNED_CONTEXT((#202,#203,#204)) REPRESENTATION_CONTEXT('','3D') );
+#201=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-6),#202,'tol','');
+#202=( LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT(.MILLI.,.METRE.) );
+#203=( NAMED_UNIT(*) PLANE_ANGLE_UNIT() SI_UNIT($,.RADIAN.) );
+#204=( NAMED_UNIT(*) SI_UNIT($,.STERADIAN.) SOLID_ANGLE_UNIT() );
+#300=PRODUCT_DEFINITION_SHAPE('','',#301);
+#301=PRODUCT_DEFINITION('design','',#302,#303);
+#302=PRODUCT_DEFINITION_FORMATION('','',#304);
+#303=PRODUCT_DEFINITION_CONTEXT('part definition',#305,'design');
+#304=PRODUCT('A098_part','round-trip refused','',(#306));
+#305=APPLICATION_CONTEXT('automotive_design');
+#306=PRODUCT_CONTEXT('part',#305,'mechanical');
+ENDSEC;
+END-ISO-10303-21;

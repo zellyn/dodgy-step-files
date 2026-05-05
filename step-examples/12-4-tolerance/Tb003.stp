@@ -1,0 +1,54 @@
+/* Tb003 - Vertex<edge<face hierarchy holds in mm but flips after rescale to m
+ * Defect: Three UNCERTAINTY_MEASURE_WITH_UNIT entries (1e-6, 1e-5, 1e-4)
+ * label vertex/edge/face. The OCCT-style invariant tol(V) <= tol(E) <= tol(F)
+ * holds in declared mm. Receiver that rescales coordinates from mm to m
+ * (factor 1e-3) without atomically rescaling tolerances - or floors them
+ * at a working precision floor (e.g. 1e-9) that flattens the small ones -
+ * inverts the hierarchy. Same input file, two scaling policies, two
+ * post-import topologies of the tolerance hierarchy.
+ */
+ISO-10303-21;
+HEADER;
+FILE_DESCRIPTION(('Tb003 hierarchy holds in mm inverts after rescale to m'),'2;1');
+FILE_NAME('Tb003.stp','2026-04-30T00:00:00',(''),(''),
+  'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
+  'automotive_design',2009,#1);
+/* Simple cube edge for the topology to exist on. */
+#10=CARTESIAN_POINT('p0',(0.0,0.0,0.0));
+#11=CARTESIAN_POINT('p1',(10.0,0.0,0.0));
+#20=VERTEX_POINT('v0',#10);
+#21=VERTEX_POINT('v1',#11);
+#30=DIRECTION('+x',(1.0,0.0,0.0));
+#31=VECTOR('vx10',#30,10.0);
+#32=LINE('l',#10,#31);
+#40=EDGE_CURVE('e',#20,#21,#32,.T.);
+/* Three-tier hierarchy: vertex tol < edge tol < face tol, all in mm. */
+#50=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#51=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#52=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#60=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-6),#50,
+  'distance_accuracy_value','vertex_tol');
+#61=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-5),#50,
+  'distance_accuracy_value','edge_tol');
+#62=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-4),#50,
+  'distance_accuracy_value','face_tol');
+#70=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#60,#61,#62))
+  GLOBAL_UNIT_ASSIGNED_CONTEXT((#50,#51,#52))
+  REPRESENTATION_CONTEXT('ctx_mm','3D'));
+#9000=PRODUCT_CONTEXT('',#1,'mechanical');
+#9001=PRODUCT('Tb003','Tb003','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9020=GEOMETRIC_CURVE_SET('wire_set',(#40));
+#9021=GEOMETRICALLY_BOUNDED_WIREFRAME_SHAPE_REPRESENTATION('',(#9020),#70);
+#9022=SHAPE_DEFINITION_REPRESENTATION(#9005,#9021);
+ENDSEC;
+END-ISO-10303-21;

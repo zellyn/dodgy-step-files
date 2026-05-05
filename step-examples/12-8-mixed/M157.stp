@@ -1,0 +1,34 @@
+ISO-10303-21;
+/* M157 - AP210 solder mask covers a pad it should expose.
+ * Defect: a SOLDER_MASK_LAYER outline encloses a pad that the
+ * placement record (and the net it connects to) requires to be
+ * exposed for soldering. The fabricated board has the pad masked
+ * over - the component cannot be reflowed onto it. */
+HEADER;
+FILE_DESCRIPTION(('M157 test case','AP210 solder mask covers required pad'),'2;1');
+FILE_NAME('M157.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('ELECTRONIC_ASSEMBLY_INTERCONNECT_AND_PACKAGING_DESIGN { 1 0 10303 210 3 1 0 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('electronic_assembly_interconnect_and_packaging_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
+  'electronic_assembly_interconnect_and_packaging_design',2014,#1);
+#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10))
+     REPRESENTATION_CONTEXT('pcb','3D'));
+#100=MATERIAL_DESIGNATION('green_LPI','liquid photoimageable solder mask',(#1));
+/* Pad at (10, 10) needs to be exposed for SMD reflow. */
+#200=CARTESIAN_POINT('pad_center',(10.0,10.0,0.0));
+#201=TERMINAL('U1_p3','SMD reflow pad',#200);
+/* Defect: solder mask polygon (5..15, 5..15) covers the pad at (10,10)
+ * which the placement requires to be exposed. */
+#300=PLY_BOUNDARY_REPRESENTATION('mask_outline',
+       (CARTESIAN_POINT('m_p1',(5.0,5.0,0.0)),
+        CARTESIAN_POINT('m_p2',(15.0,5.0,0.0)),
+        CARTESIAN_POINT('m_p3',(15.0,15.0,0.0)),
+        CARTESIAN_POINT('m_p4',(5.0,15.0,0.0))));
+#301=LAMINATE_OR_PLY_DEFINITION('solder_mask_top',$,#100,#100,
+       LENGTH_MEASURE(0.025));
+ENDSEC;
+END-ISO-10303-21;

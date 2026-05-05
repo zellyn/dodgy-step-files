@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Wr001 — Trailing whitespace on every record line</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.13 Writer pathology</a> <span class="sep">/</span> <span class="current">Wr001</span>
+</nav>
+<header class="title-bar">
+<h1>Wr001 <span class="sep">—</span> <span class="entry-title">Trailing whitespace on every record line</span></h1>
+<p class="category">§12.13 writer-pathology (sub-class: whitespace/line-ending)</p>
+<p class="severity-badge severity-p3">P3 — cosmetic / metadata-only</p>
+<p class="tag-pills">
+<a class="tag tag-writer" href="../by-tag/writer/index.html">writer</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-13-writer-pathology/Wr001.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-13-writer-pathology/Wr001.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>prostep ivip CAx-IF round-trip reports</li>
+<li>FreeCAD #4231 &quot;STEP exporter pads lines with spaces&quot;</li>
+<li>bug-reporter language: &quot;diff between exports is all whitespace&quot;</li>
+</ul></section>
+<section><h2>Sender</h2>
+<p>Older FreeCAD STEP writer (pre-0.20) and some Pro/E export filters</p></section>
+<section><h2>Description</h2>
+<p>Every record line in the DATA section ends with one or more ASCII space (0x20) characters before the line terminator. Spec-conforming parsers accept this (whitespace is insignificant outside string literals), but downstream tools that diff exports for change-detection see noise on every line, version-control systems show every line as modified on every export, and crude line-based regex parsers that anchor on `;$` mis-match. Bug-reporter language: &quot;STEP file has trailing spaces&quot;, &quot;every line ends with whitespace&quot;, &quot;diff is huge but nothing changed&quot;, &quot;git keeps marking the file dirty&quot;.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>minimal Part-21 file where each `#NNN=ENTITY(..);` line ends with ` ` (three spaces) before `\n`.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>read tolerantly — the spec permits insignificant whitespace anywhere outside string literals. Optionally normalise on re-emit. A downstream tool that warns on this is over-strict; a producer that emits this is sloppy but not malformed.</p></section>
+<section><h2>Notes</h2>
+<p>Practically harmless to parse; the cost is to humans who diff exports.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>matches(rb&#x27; +\n&#x27;)</code></li>
+<li><code>count(b&#x27; \n&#x27;) &gt;= 5</code></li>
+</ul></section>
+<section><h2>Live oracle output</h2>
+<table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
+<tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>no_shapes_loaded</code></td></tr>
+</tbody></table>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>/* Wr001 - Trailing whitespace on every record line - producer pads each record line with spaces before the line terminator */
+<span class="lineno">2</span>ISO-10303-21;<mark>   </mark>
+<span class="lineno">3</span>HEADER;<mark>   </mark>
+<span class="lineno">4</span>FILE_DESCRIPTION((&#x27;Wr001 - trailing whitespace on every record&#x27;),&#x27;2;1&#x27;);<mark>   </mark>
+<span class="lineno">5</span>FILE_NAME(&#x27;Wr001.stp&#x27;,&#x27;2026-04-30T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),<mark>   </mark>
+<span class="lineno">6</span>  &#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);<mark>   </mark>
+<span class="lineno">7</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));<mark>   </mark>
+<span class="lineno">8</span>ENDSEC;<mark>   </mark>
+<span class="lineno">9</span>DATA;<mark>   </mark>
+<span class="lineno">10</span>#1=APPLICATION_CONTEXT(&#x27;mechanical design&#x27;);<mark>   </mark>
+<span class="lineno">11</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,<mark>   </mark>
+<span class="lineno">12</span>  &#x27;automotive_design&#x27;,2009,#1);<mark>   </mark>
+<span class="lineno">13</span>#3=PRODUCT_CONTEXT(&#x27;part&#x27;,#1,&#x27;mechanical&#x27;);<mark>   </mark>
+<span class="lineno">14</span>#4=PRODUCT(&#x27;Wr001-part&#x27;,&#x27;Wr001 demo&#x27;,&#x27;&#x27;,(#3));<mark>   </mark>
+<span class="lineno">15</span>#5=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#4);<mark>   </mark>
+<span class="lineno">16</span>#6=PRODUCT_DEFINITION_CONTEXT(&#x27;part definition&#x27;,#1,&#x27;design&#x27;);<mark>   </mark>
+<span class="lineno">17</span>#7=PRODUCT_DEFINITION(&#x27;design&#x27;,&#x27;&#x27;,#5,#6);<mark>   </mark>
+<span class="lineno">18</span>#10=CARTESIAN_POINT(&#x27;origin&#x27;,(0.0,0.0,0.0));<mark>   </mark>
+<span class="lineno">19</span>#11=DIRECTION(&#x27;z&#x27;,(0.0,0.0,1.0));<mark>   </mark>
+<span class="lineno">20</span>#12=DIRECTION(&#x27;x&#x27;,(1.0,0.0,0.0));<mark>   </mark>
+<span class="lineno">21</span>#13=AXIS2_PLACEMENT_3D(&#x27;placement&#x27;,#10,#11,#12);<mark>   </mark>
+<span class="lineno">22</span>#20=(LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT(.MILLI.,.METRE.));<mark>   </mark>
+<span class="lineno">23</span>#21=(NAMED_UNIT(*) PLANE_ANGLE_UNIT() SI_UNIT($,.RADIAN.));<mark>   </mark>
+<span class="lineno">24</span>#22=(NAMED_UNIT(*) SI_UNIT($,.STERADIAN.) SOLID_ANGLE_UNIT());<mark>   </mark>
+<span class="lineno">25</span>#23=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#20,<mark>   </mark>
+<span class="lineno">26</span>  &#x27;distance_accuracy_value&#x27;,&#x27;&#x27;);<mark>   </mark>
+<span class="lineno">27</span>#24=(GEOMETRIC_REPRESENTATION_CONTEXT(3)<mark>   </mark>
+<span class="lineno">28</span>  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#23))<mark>   </mark>
+<span class="lineno">29</span>  GLOBAL_UNIT_ASSIGNED_CONTEXT((#20,#21,#22))<mark>   </mark>
+<span class="lineno">30</span>  REPRESENTATION_CONTEXT(&#x27;Wr001&#x27;,&#x27;3D&#x27;));<mark>   </mark>
+<span class="lineno">31</span>ENDSEC;<mark>   </mark>
+<span class="lineno">32</span>END-ISO-10303-21;<mark>   </mark>
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="up" href="index.html">§12.13 Writer pathology</a> <a class="next" href="Wr002.html">Wr002 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

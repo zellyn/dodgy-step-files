@@ -1,0 +1,37 @@
+/* Ls006 - Numeric literal with embedded underscore digit-grouping
+   ----------------------------------------------------------------------
+   Catalog section : §12.1c numeric-literal grammar
+   Sources         : T045
+   See also        : Ls001
+   ----------------------------------------------------------------------
+   Defect
+     Modern programming languages tolerate digit-group underscores
+     (1_000_000). Some in-house exporters borrow this idiom and emit
+     IFCREAL(1_000.0). ISO 10303-21 disallows underscores inside numeric
+     literals - they are not part of the lexical grammar for REAL or
+     INTEGER.
+   Expected behavior
+     Strict reject with the clear diagnostic "underscore not permitted
+     in numeric literal", naming the attribute slot. Lenient mode may
+     strip underscores but must always warn.
+   ----------------------------------------------------------------------
+*/
+ISO-10303-21;
+HEADER;
+FILE_DESCRIPTION(('Ls006 - underscore digit grouping in numeric literal'),'2;1');
+FILE_NAME('Ls006.stp','2026-04-26T00:00:00',('auto-generated'),(''),
+  'auto-generated','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+#10=CARTESIAN_POINT('origin',(0.0,0.0,0.0));
+/* Defect: underscore digit grouping inside REAL literals */
+#20=CARTESIAN_POINT('big',(1_000.0,1_000_000.0,0.0));
+/* Defect: underscore in the fractional part */
+#21=CARTESIAN_POINT('frac',(0.123_456,0.0,0.0));
+/* Defect: underscore in INTEGER literal */
+#22=POSITIVE_INTEGER_VALUE(1_024);
+#30=DIRECTION('x',(1.0,0.0,0.0));
+#40=AXIS2_PLACEMENT_3D('placement',#10,#30,$);
+ENDSEC;
+END-ISO-10303-21;

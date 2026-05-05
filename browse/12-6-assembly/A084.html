@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>A084 — STEP exporter writes untrimmed curve where trimmed expected</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.6 Assembly hierarchy</a> <span class="sep">/</span> <span class="current">A084</span>
+</nav>
+<header class="title-bar">
+<h1>A084 <span class="sep">—</span> <span class="entry-title">STEP exporter writes untrimmed curve where trimmed expected</span></h1>
+<p class="category">§12.6 assembly</p>
+<p class="severity-badge severity-p1">P1 — silent data loss</p>
+<p class="tag-pills">
+<a class="tag tag-assembly" href="../by-tag/assembly/index.html">assembly</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-6-assembly/A084.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-6-assembly/A084.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>OCCT MANTIS#0032817 (OCCT MANTIS tracker 502 as of 2026-05-02)</li>
+</ul></section>
+<section><h2>Description</h2>
+<p>An edge backed by a trimmed curve (e.g., a half-circle arc) is exported with the full underlying parent curve plus separate trim markers — but the exporter omits the trim markers entirely. The re-imported edge spans the full parent curve, giving wrong arc length.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>Edge on a circle from parameter `t=0` to `t=π`. After export, file emits `CIRCLE` plus `EDGE_CURVE` with full-parameter range `[0, 2π]` instead of `[0, π]`.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>Heal and accept: every edge writes its trim parameters; receivers see the intended sub-arc. Must not silently drop trim parameters.</p></section>
+<section><h2>Notes</h2>
+<p>Provenance tier: writer-side — writer emits untrimmed where trimmed expected.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<section><h2>Provenance tier</h2>
+<p><code>writer-side</code> — defect not fully embodied in fixture bytes.</p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>contains(b&#x27;CIRCLE&#x27;)</code></li>
+<li><code>contains(b&#x27;EDGE_CURVE&#x27;)</code></li>
+<li><code>contains(b&#x27;half_arc_full_curve&#x27;) or contains(b&#x27;parent&#x27;)</code></li>
+</ul></section>
+<section><h2>Live oracle output</h2>
+<table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
+<tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>no_shapes_loaded</code></td></tr>
+</tbody></table>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* A084 - Writer emits untrimmed curve where trimmed expected
+<span class="lineno">3</span> * Defect: edge backed by trimmed curve t=[0,pi]; exporter writes parent <mark>CIRCLE</mark> with full range [0,2pi] */
+<span class="lineno">4</span>HEADER;
+<span class="lineno">5</span>FILE_DESCRIPTION((&#x27;A084 test case&#x27;,&#x27;Writer emits untrimmed curve where trimmed expected&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">6</span>FILE_NAME(&#x27;A084.stp&#x27;,&#x27;2026-04-30T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">7</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }&#x27;));
+<span class="lineno">8</span>ENDSEC;
+<span class="lineno">9</span>DATA;
+<span class="lineno">10</span>#1=APPLICATION_CONTEXT(&#x27;automotive_design&#x27;);
+<span class="lineno">11</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,&#x27;automotive_design&#x27;,2000,#1);
+<span class="lineno">12</span>#10=PRODUCT_CONTEXT(&#x27;&#x27;,#1,&#x27;mechanical&#x27;);
+<span class="lineno">13</span>#11=PRODUCT(&#x27;part1&#x27;,&#x27;part1&#x27;,&#x27;part1&#x27;,(#10));
+<span class="lineno">14</span>#12=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#11);
+<span class="lineno">15</span>#13=PRODUCT_DEFINITION_CONTEXT(&#x27;part definition&#x27;,#1,&#x27;design&#x27;);
+<span class="lineno">16</span>#14=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,#12,#13);
+<span class="lineno">17</span>#15=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,#14);
+<span class="lineno">18</span>#100=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">19</span>#101=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));#102=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">20</span>#103=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#100,#101,#102);
+<span class="lineno">21</span>#104=<mark>CIRCLE</mark>(&#x27;parent&#x27;,#103,1.0);
+<span class="lineno">22</span>#105=CARTESIAN_POINT(&#x27;start&#x27;,(1.0,0.0,0.0));#106=VERTEX_POINT(&#x27;&#x27;,#105);
+<span class="lineno">23</span>#107=CARTESIAN_POINT(&#x27;end&#x27;,(-1.0,0.0,0.0));#108=VERTEX_POINT(&#x27;&#x27;,#107);
+<span class="lineno">24</span>#109=<mark>EDGE_CURVE</mark>(&#x27;half_arc_full_curve&#x27;,#106,#108,#104,.T.);
+<span class="lineno">25</span>
+<span class="lineno">26</span>ENDSEC;
+<span class="lineno">27</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="A083.html">&larr; A083</a> <a class="up" href="index.html">§12.6 Assembly hierarchy</a> <a class="next" href="A085.html">A085 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

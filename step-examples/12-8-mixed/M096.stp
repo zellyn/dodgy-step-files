@@ -1,0 +1,33 @@
+ISO-10303-21;
+/* M096 - AP238 trajectory missing connecting curve between segments.
+ * Defect: a TRAJECTORY's COMPOSITE_CURVE has two segments that don't
+ * connect end-to-end - segment A ends at (10,0,0); segment B starts
+ * at (20,0,0). No third connector segment. The CAM tool intended a
+ * rapid retract/reposition but emitted no explicit move. */
+HEADER;
+FILE_DESCRIPTION(('M096 test case','AP238 trajectory has discontinuous segments'),'2;1');
+FILE_NAME('M096.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AP238_STEP_NC_MIM { 1 0 10303 238 1 0 0 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('numerical_control_machining');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
+  'numerical_control_machining',2007,#1);
+#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10))
+     REPRESENTATION_CONTEXT('nc','3D'));
+/* Segment A: (0,0,0) -> (10,0,0) */
+#100=CARTESIAN_POINT('a0',(0.0,0.0,0.0));
+#101=CARTESIAN_POINT('a1',(10.0,0.0,0.0));
+#102=POLYLINE('seg_a',(#100,#101));
+#110=COMPOSITE_CURVE_SEGMENT(.CONTINUOUS.,.T.,#102);
+/* Segment B: (20,0,0) -> (30,0,0) - GAP between #101 and (20,0,0) */
+#120=CARTESIAN_POINT('b0',(20.0,0.0,0.0));
+#121=CARTESIAN_POINT('b1',(30.0,0.0,0.0));
+#122=POLYLINE('seg_b',(#120,#121));
+#130=COMPOSITE_CURVE_SEGMENT(.CONTINUOUS.,.T.,#122);
+#200=COMPOSITE_CURVE('discontinuous_path',(#110,#130),.F.);
+#300=TRAJECTORY('toolpath_with_gap',$,$,$,#200);
+ENDSEC;
+END-ISO-10303-21;

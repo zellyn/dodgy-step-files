@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>N046 — Default tolerance projection wrong on non-default tolerance shapes (free CARTESIAN_POINT off PLANE within declared tolerance but beyond hard-coded internal tolerance)</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.4 Tolerance &amp; numerical precision</a> <span class="sep">/</span> <span class="current">N046</span>
+</nav>
+<header class="title-bar">
+<h1>N046 <span class="sep">—</span> <span class="entry-title">Default tolerance projection wrong on non-default tolerance shapes (free CARTESIAN_POINT off PLANE within declared tolerance but beyond hard-coded internal tolerance)</span></h1>
+<p class="category">§12.4 tolerance</p>
+<p class="tag-pills">
+<a class="tag tag-units" href="../by-tag/units/index.html">units</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-4-tolerance/N046.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-4-tolerance/N046.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>OCCT MANTIS#0023552</li>
+<li>OCCT MANTIS#0022873</li>
+<li>OCCT MANTIS#0022826 (OCCT MANTIS tracker 502 as of 2026-05-02)</li>
+</ul></section>
+<section><h2>Description</h2>
+<p>A point-projection-onto-surface routine uses a hard-coded tolerance instead of consulting the input shape&#x27;s vertex/edge tolerance or the file&#x27;s declared UNCERTAINTY_MEASURE_WITH_UNIT. When the input context declares tolerance 1e-3, the projection fails because the routine still uses 1e-7. Typical fixture: a free CARTESIAN_POINT at e.g. (0.5, 0.5, 5e-4) sits 5e-4 above a PLANE z=0 — within the declared 1e-3 mm context tolerance, but the kernel can&#x27;t project it.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>PLANE z=0 with file-scope tolerance 1e-3; project a free CARTESIAN_POINT at (0.5, 0.5, 5e-4) onto the surface. Routine reports &quot;no projection found&quot; because internal tolerance is 1e-7.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>Heal and accept: projection routines consume the source shape&#x27;s tolerance; default value is a fallback only when no shape context is available.</p></section>
+<section><h2>Notes</h2>
+<p>**See also**: N039. Synonyms: &quot;projection uses hard-coded internal tolerance&quot;, &quot;free point off plane within file tolerance but rejected by hard internal&quot;, &quot;internal tolerance ignores file uncertainty&quot;, &quot;point projection fails on tolerant face&quot;.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a</code></p></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>n_edges_total &gt;= 4</code></li>
+<li><code>face[0].surface_type == &quot;plane&quot;</code></li>
+<li><code>n_vertices_total &gt;= 8</code></li>
+</ul></section>
+<section><h2>Cross-references</h2>
+<p><a href="N039.html">N039</a></p>
+</section>
+<section><h2>Live oracle output</h2>
+<table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
+<tr><td><code>occt_heal_on</code></td><td><code>shape(1)</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>shape(1)</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>shape(9)</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>shape(9)</code></td></tr>
+<tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>not_manifold</code></td></tr>
+</tbody></table>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* N046 - Default tolerance projection wrong on bloated shape
+<span class="lineno">3</span> * Defect: a planar face is wrapped in a shell whose representation
+<span class="lineno">4</span> * context declares a vertex tolerance of 1.0E-3 mm. A free
+<span class="lineno">5</span> * CARTESIAN_POINT sits at distance 5.0E-4 mm above the plane (z =
+<span class="lineno">6</span> * 0.0005). The projection should declare the point on-surface (since
+<span class="lineno">7</span> * 5e-4 &lt; 1e-3 declared tolerance), but the kernel uses an internal
+<span class="lineno">8</span> * fixed 1e-7 threshold and rejects the projection. */
+<span class="lineno">9</span>HEADER;
+<span class="lineno">10</span>FILE_DESCRIPTION((&#x27;N046 test case&#x27;,&#x27;Default tolerance projection wrong on bloated shape&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">11</span>FILE_NAME(&#x27;N046.stp&#x27;,&#x27;2026-04-30T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">12</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }&#x27;));
+<span class="lineno">13</span>ENDSEC;
+<span class="lineno">14</span>DATA;
+<span class="lineno">15</span>#1=APPLICATION_CONTEXT(&#x27;automotive_design&#x27;);
+<span class="lineno">16</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,&#x27;automotive_design&#x27;,2000,#1);
+<span class="lineno">17</span>/* Host PLANE z=0 */
+<span class="lineno">18</span>#100=CARTESIAN_POINT(&#x27;origin&#x27;,(0.0,0.0,0.0));
+<span class="lineno">19</span>#101=DIRECTION(&#x27;+z&#x27;,(0.0,0.0,1.0));
+<span class="lineno">20</span>#102=DIRECTION(&#x27;+x&#x27;,(1.0,0.0,0.0));
+<span class="lineno">21</span>#103=AXIS2_PLACEMENT_3D(&#x27;axes&#x27;,#100,#101,#102);
+<span class="lineno">22</span>#104=PLANE(&#x27;high_tolerance&#x27;,#103);
+<span class="lineno">23</span>/* Quad face boundary */
+<span class="lineno">24</span>#110=CARTESIAN_POINT(&#x27;v0&#x27;,(0.0,0.0,0.0));
+<span class="lineno">25</span>#111=VERTEX_POINT(&#x27;&#x27;,#110);
+<span class="lineno">26</span>#112=CARTESIAN_POINT(&#x27;v1&#x27;,(1.0,0.0,0.0));
+<span class="lineno">27</span>#113=VERTEX_POINT(&#x27;&#x27;,#112);
+<span class="lineno">28</span>#114=CARTESIAN_POINT(&#x27;v2&#x27;,(1.0,1.0,0.0));
+<span class="lineno">29</span>#115=VERTEX_POINT(&#x27;&#x27;,#114);
+<span class="lineno">30</span>#116=CARTESIAN_POINT(&#x27;v3&#x27;,(0.0,1.0,0.0));
+<span class="lineno">31</span>#117=VERTEX_POINT(&#x27;&#x27;,#116);
+<span class="lineno">32</span>#120=DIRECTION(&#x27;+x&#x27;,(1.0,0.0,0.0));#121=VECTOR(&#x27;&#x27;,#120,1.0);#122=LINE(&#x27;&#x27;,#110,#121);
+<span class="lineno">33</span>#123=EDGE_CURVE(&#x27;&#x27;,#111,#113,#122,.T.);
+<span class="lineno">34</span>#124=DIRECTION(&#x27;+y&#x27;,(0.0,1.0,0.0));#125=VECTOR(&#x27;&#x27;,#124,1.0);#126=LINE(&#x27;&#x27;,#112,#125);
+<span class="lineno">35</span>#127=EDGE_CURVE(&#x27;&#x27;,#113,#115,#126,.T.);
+<span class="lineno">36</span>#128=DIRECTION(&#x27;-x&#x27;,(-1.0,0.0,0.0));#129=VECTOR(&#x27;&#x27;,#128,1.0);#130=LINE(&#x27;&#x27;,#114,#129);
+<span class="lineno">37</span>#131=EDGE_CURVE(&#x27;&#x27;,#115,#117,#130,.T.);
+<span class="lineno">38</span>#132=DIRECTION(&#x27;-y&#x27;,(0.0,-1.0,0.0));#133=VECTOR(&#x27;&#x27;,#132,1.0);#134=LINE(&#x27;&#x27;,#116,#133);
+<span class="lineno">39</span>#135=EDGE_CURVE(&#x27;&#x27;,#117,#111,#134,.T.);
+<span class="lineno">40</span>#140=ORIENTED_EDGE(&#x27;&#x27;,*,*,#123,.T.);
+<span class="lineno">41</span>#141=ORIENTED_EDGE(&#x27;&#x27;,*,*,#127,.T.);
+<span class="lineno">42</span>#142=ORIENTED_EDGE(&#x27;&#x27;,*,*,#131,.T.);
+<span class="lineno">43</span>#143=ORIENTED_EDGE(&#x27;&#x27;,*,*,#135,.T.);
+<span class="lineno">44</span>#144=EDGE_LOOP(&#x27;&#x27;,(#140,#141,#142,#143));
+<span class="lineno">45</span>#145=FACE_OUTER_BOUND(&#x27;&#x27;,#144,.T.);
+<span class="lineno">46</span>#146=ADVANCED_FACE(&#x27;bloated&#x27;,(#145),#104,.T.);
+<span class="lineno">47</span>#147=OPEN_SHELL(&#x27;bloated_shell&#x27;,(#146));
+<span class="lineno">48</span>/* Free point: 5e-4 mm above the plane (closer than declared tol 1e-3). */
+<span class="lineno">49</span>#150=CARTESIAN_POINT(&#x27;test_pt_5e-4_above_plane&#x27;,(0.5,0.5,5.0E-4));
+<span class="lineno">50</span>/* Declared tolerance: 1e-3 mm vertex tolerance */
+<span class="lineno">51</span>#160=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">52</span>#161=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+<span class="lineno">53</span>#162=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+<span class="lineno">54</span>#163=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-3),#160,
+<span class="lineno">55</span>  &#x27;distance_accuracy_value&#x27;,&#x27;bloated_vertex_tolerance&#x27;);
+<span class="lineno">56</span>#164=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+<span class="lineno">57</span>      GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#163))
+<span class="lineno">58</span>      GLOBAL_UNIT_ASSIGNED_CONTEXT((#160,#161,#162))
+<span class="lineno">59</span>      REPRESENTATION_CONTEXT(&#x27;ctx&#x27;,&#x27;3D&#x27;));
+<span class="lineno">60</span>/* Minimal PRODUCT chain so OCCT TransferRoots produces a shape. */
+<span class="lineno">61</span>#9010=PRODUCT_CONTEXT(&#x27;&#x27;,#1,&#x27;mechanical&#x27;);
+<span class="lineno">62</span>#9011=PRODUCT(&#x27;N046&#x27;,&#x27;N046&#x27;,&#x27;&#x27;,(#9010));
+<span class="lineno">63</span>#9012=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#9011);
+<span class="lineno">64</span>#9013=PRODUCT_DEFINITION_CONTEXT(&#x27;part definition&#x27;,#1,&#x27;design&#x27;);
+<span class="lineno">65</span>#9014=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,#9012,#9013);
+<span class="lineno">66</span>#9015=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,#9014);
+<span class="lineno">67</span>#9030=SHELL_BASED_SURFACE_MODEL(&#x27;wrap_sbsm&#x27;,(#147));
+<span class="lineno">68</span>#9050=MANIFOLD_SURFACE_SHAPE_REPRESENTATION(&#x27;&#x27;,(#9030),#164);
+<span class="lineno">69</span>#9051=SHAPE_DEFINITION_REPRESENTATION(#9015,#9050);
+<span class="lineno">70</span>ENDSEC;
+<span class="lineno">71</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="N045.html">&larr; N045</a> <a class="up" href="index.html">§12.4 Tolerance &amp; numerical precision</a> <a class="next" href="N047.html">N047 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

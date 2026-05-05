@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Ad046 — STEP writer crashes on `ADVANCED_FACE` `EDGE_CURVE` with no `SURFACE_CURVE` / pcurve plus empty `APPLIED_GROUP_ASSIGNMENT`</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.11 Adversarial / parser robustness</a> <span class="sep">/</span> <span class="current">Ad046</span>
+</nav>
+<header class="title-bar">
+<h1>Ad046 <span class="sep">—</span> <span class="entry-title">STEP writer crashes on `ADVANCED_FACE` `EDGE_CURVE` with no `SURFACE_CURVE` / pcurve plus empty `APPLIED_GROUP_ASSIGNMENT`</span></h1>
+<p class="category">§12.11 (sub-class: null-deref / DoS)</p>
+<p class="tag-pills">
+<a class="tag tag-crash" href="../by-tag/crash/index.html">crash</a>
+<a class="tag tag-silent-loss" href="../by-tag/silent-loss/index.html">silent-loss</a>
+<a class="tag tag-adversarial" href="../by-tag/adversarial/index.html">adversarial</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-11-adversarial/Ad046.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-11-adversarial/Ad046.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>03-occt-tests.md R050 (empty `APPLIED_GROUP_ASSIGNMENT` write exception), R067 (writer exception)</li>
+<li>19-datasets.md D025 (FreeCAD #5783 STEP-export crash via missing pcurve)</li>
+<li>18-other-issues.md I050 (SolveSpace 0-byte STEP/PDF)</li>
+</ul></section>
+<section><h2>Description</h2>
+<p>Writer-side null-deref when a shape has missing handles or empty group attributes. Common trigger: an `EDGE_CURVE` used on an `ADVANCED_FACE` whose curve is a bare 3D `LINE` (no `SURFACE_CURVE` wrapper, no pcurve), combined with an `APPLIED_GROUP_ASSIGNMENT` whose `items` list is empty — both attributes the writer dereferences without a null check. Producer crashes producing zero-byte output.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>shape with missing 2D-parametric curve fed to STEP writer; or SolveSpace lathe-then-extrusion-difference part.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>detect missing handle, fall back to recompute, or skip with warning; never crash.</p></section>
+<section><h2>Notes</h2>
+<p>**See also**: Ad043. Validation observed: silent-empty rather than the cited crash. The structural attack pattern (e.g., billion-laughs / cyclic-reference / very-large-string) is demonstrated; production-scale exploitation requires inflating the size factor as described. Kernel-mishandling-by-silent-acceptance is itself a defect signal at fixture scale. Provenance tier: runtime-only — bytes alone cannot demonstrate the writer-side crash; the catalogued defect is a writer null-deref, but the fixture is a reader-input file. The crash manifests only when a kernel attempts to re-write a previously-loaded shape that retains the missing-handle precondition in multi-pass kernel state. A behavioral test against the writer is the appropriate venue. **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog&#x27;s allowed set ({warn-and-proceed}). Kernel-bug witnessed: catalog wants a warning to surface; OCC accepts without any diagnostic.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<section><h2>Provenance tier</h2>
+<p><code>runtime-only</code> — defect not fully embodied in fixture bytes.</p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>contains(b&#x27;APPLIED_GROUP_ASSIGNMENT&#x27;)</code></li>
+<li><code>contains(b&#x27;END-ISO-10303-21&#x27;)</code></li>
+</ul></section>
+<section><h2>Cross-references</h2>
+<p><a href="Ad043.html">Ad043</a></p>
+</section>
+<section><h2>Live oracle output</h2>
+<table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
+<tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>no_shapes_loaded</code></td></tr>
+</tbody></table>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>/* Ad046 - STEPCAFControl_Writer / writer crashes on shape
+<span class="lineno">2</span>   ----------------------------------------------------------------------
+<span class="lineno">3</span>   Catalog section : Â§12.11 adversarial (sub-class: null-deref / DoS)
+<span class="lineno">4</span>   Sources         : 03-occt-tests.md R050 (empty <mark>APPLIED_GROUP_ASSIGNMENT</mark>
+<span class="lineno">5</span>                     write exception), R067 (writer exception);
+<span class="lineno">6</span>                     19-datasets.md D025 (FreeCAD #5783 STEP-export crash
+<span class="lineno">7</span>                     via missing pcurve);
+<span class="lineno">8</span>                     18-other-issues.md I050 (SolveSpace 0-byte STEP/PDF)
+<span class="lineno">9</span>   See also        : Ad043
+<span class="lineno">10</span>   ----------------------------------------------------------------------
+<span class="lineno">11</span>   WARNING: This file is INTENTIONALLY MALFORMED for parser-robustness
+<span class="lineno">12</span>   testing on the WRITER side (used as round-trip input). Do NOT use as
+<span class="lineno">13</span>   exchange data.
+<span class="lineno">14</span>   ----------------------------------------------------------------------
+<span class="lineno">15</span>   Defect
+<span class="lineno">16</span>     Writer-side null-deref when shape has missing handles (e.g.
+<span class="lineno">17</span>     missing pcurve), an empty <mark>APPLIED_GROUP_ASSIGNMENT</mark>, or a feature
+<span class="lineno">18</span>     whose translation is incomplete. Producer crashes producing
+<span class="lineno">19</span>     zero-byte output. SolveSpace lathe-then-extrusion-difference and
+<span class="lineno">20</span>     FreeCAD #5783 missing-pcurve are documented incidents.
+<span class="lineno">21</span>   Reproducer recipe
+<span class="lineno">22</span>     <mark>APPLIED_GROUP_ASSIGNMENT</mark> with empty items list (used to crash
+<span class="lineno">23</span>     writer); plus an ADVANCED_FACE missing its pcurve handle.
+<span class="lineno">24</span>   Expected kernel behavior
+<span class="lineno">25</span>     Detect missing handle, fall back to recompute, or skip with
+<span class="lineno">26</span>     warning; never crash. Reject empty group with E_EMPTY_AGGREGATE.
+<span class="lineno">27</span>   ----------------------------------------------------------------------
+<span class="lineno">28</span>*/
+<span class="lineno">29</span>ISO-10303-21;
+<span class="lineno">30</span>HEADER;
+<span class="lineno">31</span>FILE_DESCRIPTION((&#x27;Ad046 - empty <mark>APPLIED_GROUP_ASSIGNMENT</mark> + missing pcurve&#x27;),
+<span class="lineno">32</span>  &#x27;2;1&#x27;);
+<span class="lineno">33</span>FILE_NAME(&#x27;Ad046.stp&#x27;,&#x27;2026-04-26T00:00:00&#x27;,(&#x27;auto-generated&#x27;),(&#x27;&#x27;),
+<span class="lineno">34</span>  &#x27;auto-generated&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">35</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
+<span class="lineno">36</span>ENDSEC;
+<span class="lineno">37</span>DATA;
+<span class="lineno">38</span>#1=GROUP(&#x27;g&#x27;,&#x27;desc&#x27;);
+<span class="lineno">39</span>/* Defect: <mark>APPLIED_GROUP_ASSIGNMENT</mark> with empty items list. */
+<span class="lineno">40</span>#2=<mark>APPLIED_GROUP_ASSIGNMENT</mark>(#1,());
+<span class="lineno">41</span>#10=CARTESIAN_POINT(&#x27;o&#x27;,(0.0,0.0,0.0));
+<span class="lineno">42</span>#11=DIRECTION(&#x27;z&#x27;,(0.0,0.0,1.0));
+<span class="lineno">43</span>#12=DIRECTION(&#x27;x&#x27;,(1.0,0.0,0.0));
+<span class="lineno">44</span>#13=AXIS2_PLACEMENT_3D(&#x27;p&#x27;,#10,#11,#12);
+<span class="lineno">45</span>#14=PLANE(&#x27;plane&#x27;,#13);
+<span class="lineno">46</span>#15=CARTESIAN_POINT(&#x27;a&#x27;,(1.0,0.0,0.0));
+<span class="lineno">47</span>#16=CARTESIAN_POINT(&#x27;b&#x27;,(0.0,1.0,0.0));
+<span class="lineno">48</span>#17=VERTEX_POINT(&#x27;va&#x27;,#15);
+<span class="lineno">49</span>#18=VERTEX_POINT(&#x27;vb&#x27;,#16);
+<span class="lineno">50</span>#19=DIRECTION(&#x27;dx&#x27;,(0.0,1.0,0.0));
+<span class="lineno">51</span>#20=VECTOR(&#x27;v&#x27;,#19,1.0);
+<span class="lineno">52</span>#21=LINE(&#x27;line3d&#x27;,#15,#20);
+<span class="lineno">53</span>/* Note: writer expects pcurve aggregate; here we provide only the 3D
+<span class="lineno">54</span>   curve and no SURFACE_CURVE wrapper, simulating the FreeCAD #5783
+<span class="lineno">55</span>   missing-pcurve crash on export round-trip. */
+<span class="lineno">56</span>#22=EDGE_CURVE(&#x27;e&#x27;,#17,#18,#21,.T.);
+<span class="lineno">57</span>#23=ORIENTED_EDGE(&#x27;oe&#x27;,*,*,#22,.T.);
+<span class="lineno">58</span>#24=EDGE_LOOP(&#x27;el&#x27;,(#23));
+<span class="lineno">59</span>#25=FACE_OUTER_BOUND(&#x27;fob&#x27;,#24,.T.);
+<span class="lineno">60</span>#26=ADVANCED_FACE(&#x27;af&#x27;,(#25),#14,.T.);
+<span class="lineno">61</span>ENDSEC;
+<span class="lineno">62</span><mark>END-ISO-10303-21</mark>;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Ad045.html">&larr; Ad045</a> <a class="up" href="index.html">§12.11 Adversarial / parser robustness</a> <a class="next" href="Ad047.html">Ad047 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

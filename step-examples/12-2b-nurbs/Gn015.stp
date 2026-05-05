@@ -1,0 +1,73 @@
+/* Gn015 - General BSpline that is actually a surface of revolution
+   Defect: a B_SPLINE_SURFACE_WITH_KNOTS is mathematically a surface of
+   revolution about the z-axis.  The control net carries a 3-pole
+   non-rational quadratic profile (radii 2, 4, 2 at z = 0, 5, 10) lifted
+   into a 9-pole rational quadratic full-circle V-arc using the standard
+   four-quarter-arc construction with weights
+     (1, sqrt(2)/2, 1, sqrt(2)/2, 1, sqrt(2)/2, 1, sqrt(2)/2, 1)
+   and knot vector (3,2,2,2,3) over (0, 0.25, 0.5, 0.75, 1.0).
+   Recognition matters for CAM and unfolding.  See R013
+   surface_to_revolution_*.  Compliant healer must detect the rotational
+   symmetry in the control net within tolerance and replace the entity
+   with SURFACE_OF_REVOLUTION (axis + profile curve). */
+ISO-10303-21;
+HEADER;
+FILE_DESCRIPTION(
+  ('Gn015 - revolution surface stored as general rational BSpline'),'2;1');
+FILE_NAME('Gn015.stp','2026-04-26T00:00:00',('auto-generated'),(''),
+  'auto-generated','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+/* 3 (profile, z = 0..10, U) x 9 (full-circle V) net.  V poles for the
+   exact rational quadratic full circle of radius r are
+     (r,0), (r,r), (0,r), (-r,r), (-r,0), (-r,-r), (0,-r), (r,-r), (r,0)
+   so the corner ("midpole") of each quarter arc has weight sqrt(2)/2. */
+/* Row U=0: profile point (r=2, z=0) */
+#10=CARTESIAN_POINT('r0_v0',( 2.0, 0.0, 0.0));
+#11=CARTESIAN_POINT('r0_v1',( 2.0, 2.0, 0.0));
+#12=CARTESIAN_POINT('r0_v2',( 0.0, 2.0, 0.0));
+#13=CARTESIAN_POINT('r0_v3',(-2.0, 2.0, 0.0));
+#14=CARTESIAN_POINT('r0_v4',(-2.0, 0.0, 0.0));
+#15=CARTESIAN_POINT('r0_v5',(-2.0,-2.0, 0.0));
+#16=CARTESIAN_POINT('r0_v6',( 0.0,-2.0, 0.0));
+#17=CARTESIAN_POINT('r0_v7',( 2.0,-2.0, 0.0));
+#18=CARTESIAN_POINT('r0_v8',( 2.0, 0.0, 0.0));
+/* Row U=1: profile point (r=4, z=5) */
+#20=CARTESIAN_POINT('r1_v0',( 4.0, 0.0, 5.0));
+#21=CARTESIAN_POINT('r1_v1',( 4.0, 4.0, 5.0));
+#22=CARTESIAN_POINT('r1_v2',( 0.0, 4.0, 5.0));
+#23=CARTESIAN_POINT('r1_v3',(-4.0, 4.0, 5.0));
+#24=CARTESIAN_POINT('r1_v4',(-4.0, 0.0, 5.0));
+#25=CARTESIAN_POINT('r1_v5',(-4.0,-4.0, 5.0));
+#26=CARTESIAN_POINT('r1_v6',( 0.0,-4.0, 5.0));
+#27=CARTESIAN_POINT('r1_v7',( 4.0,-4.0, 5.0));
+#28=CARTESIAN_POINT('r1_v8',( 4.0, 0.0, 5.0));
+/* Row U=2: profile point (r=2, z=10) */
+#30=CARTESIAN_POINT('r2_v0',( 2.0, 0.0,10.0));
+#31=CARTESIAN_POINT('r2_v1',( 2.0, 2.0,10.0));
+#32=CARTESIAN_POINT('r2_v2',( 0.0, 2.0,10.0));
+#33=CARTESIAN_POINT('r2_v3',(-2.0, 2.0,10.0));
+#34=CARTESIAN_POINT('r2_v4',(-2.0, 0.0,10.0));
+#35=CARTESIAN_POINT('r2_v5',(-2.0,-2.0,10.0));
+#36=CARTESIAN_POINT('r2_v6',( 0.0,-2.0,10.0));
+#37=CARTESIAN_POINT('r2_v7',( 2.0,-2.0,10.0));
+#38=CARTESIAN_POINT('r2_v8',( 2.0, 0.0,10.0));
+/* Defect: surface of revolution emitted as general rational BSpline. */
+#100=(
+  BOUNDED_SURFACE()
+  B_SPLINE_SURFACE(2,2,
+    ((#10,#11,#12,#13,#14,#15,#16,#17,#18),
+     (#20,#21,#22,#23,#24,#25,#26,#27,#28),
+     (#30,#31,#32,#33,#34,#35,#36,#37,#38)),
+    .UNSPECIFIED.,.F.,.F.,.F.)
+  B_SPLINE_SURFACE_WITH_KNOTS((3,3),(3,2,2,2,3),(0.0,1.0),(0.0,0.25,0.5,0.75,1.0),.UNSPECIFIED.)
+  GEOMETRIC_REPRESENTATION_ITEM()
+  RATIONAL_B_SPLINE_SURFACE(
+    ((1.0,0.7071067811865476,1.0,0.7071067811865476,1.0,0.7071067811865476,1.0,0.7071067811865476,1.0),
+     (1.0,0.7071067811865476,1.0,0.7071067811865476,1.0,0.7071067811865476,1.0,0.7071067811865476,1.0),
+     (1.0,0.7071067811865476,1.0,0.7071067811865476,1.0,0.7071067811865476,1.0,0.7071067811865476,1.0)))
+  REPRESENTATION_ITEM('rev_as_general_nurbs')
+  SURFACE());
+ENDSEC;
+END-ISO-10303-21;

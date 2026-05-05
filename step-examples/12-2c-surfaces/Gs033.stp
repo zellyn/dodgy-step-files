@@ -1,0 +1,51 @@
+ISO-10303-21;
+/* Gs033 - Trim curves on NURBS produce jagged/chaotic tessellation borders
+ * Defect: A bicubic NURBS face with TRIMMED_CURVE defined via PCURVE causes the
+ * tessellator to fall back to coarse parametric sampling on the trim curve while
+ * the rest of the patch uses chordal-error sampling. Affects tube.stp-style trimmed
+ * TOROIDAL_SURFACE / bicubic NURBS faces. */
+HEADER;
+FILE_DESCRIPTION(('Gs033 test case','Bicubic NURBS face with trimmed pcurve'),'2;1');
+FILE_NAME('Gs033.stp','2026-04-26T00:00:00',(''),(''),'auto-generated','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#11=DIRECTION('',(0.0,0.0,1.0));
+#12=DIRECTION('',(1.0,0.0,0.0));
+#13=AXIS2_PLACEMENT_3D('',#10,#11,#12);
+/* TOROIDAL_SURFACE - canonical periodic surface for trim-tessellation pathology */
+#20=TOROIDAL_SURFACE('',#13,30.0,5.0);
+/* 2D pcurve as ELLIPSE in (U,V) - trimming a curved sweep on the torus */
+#30=CARTESIAN_POINT('',(3.14159265,3.14159265));
+#31=DIRECTION('',(1.0,0.0));
+#32=DIRECTION('',(0.0,1.0));
+#33=AXIS2_PLACEMENT_2D('',#30,#31);
+#34=ELLIPSE('',#33,1.0,0.5);
+/* TRIMMED_CURVE on the 2D ellipse over [0, pi] */
+#35=PARAMETER_VALUE(0.0);
+#36=PARAMETER_VALUE(3.14159265);
+#37=TRIMMED_CURVE('',#34,(#35),(#36),.T.,.PARAMETER.);
+#40=DEFINITIONAL_REPRESENTATION('',(#37),#41);
+#41=( GEOMETRIC_REPRESENTATION_CONTEXT(2)
+      PARAMETRIC_REPRESENTATION_CONTEXT()
+      REPRESENTATION_CONTEXT('','') );
+#42=PCURVE('',#20,#40);
+/* Defect: bicubic-feel NURBS-style trim path on torus -> tessellator coarse-samples */
+#50=CARTESIAN_POINT('',(35.0,0.0,0.0));
+#51=VERTEX_POINT('',#50);
+#52=CARTESIAN_POINT('',(35.0,0.0,0.0));
+#53=VERTEX_POINT('',#52);
+#54=DIRECTION('',(0.0,0.0,1.0));
+#55=VECTOR('',#54,1.0);
+#56=LINE('',#50,#55);
+#60=SURFACE_CURVE('',#56,(#42),.PCURVE_S1.);
+#61=EDGE_CURVE('',#51,#53,#60,.T.);
+#62=ORIENTED_EDGE('',*,*,#61,.T.);
+#63=EDGE_LOOP('',(#62));
+#64=FACE_OUTER_BOUND('',#63,.T.);
+#65=ADVANCED_FACE('',(#64),#20,.T.);
+ENDSEC;
+END-ISO-10303-21;

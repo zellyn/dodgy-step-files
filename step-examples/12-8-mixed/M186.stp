@@ -1,0 +1,27 @@
+ISO-10303-21;
+/* M186 - AP238 COOLANT_TYPE incompatible with workpiece material.
+ * Defect: a COOLANT_OPERATION declares coolant type WATER on a workpiece
+ * whose material is declared as MAGNESIUM. Water on burning magnesium
+ * accelerates the fire (hydrogen liberation); shop safety codes
+ * prohibit this combination. */
+HEADER;
+FILE_DESCRIPTION(('M186 test case','AP238 coolant type incompatible with material'),'2;1');
+FILE_NAME('M186.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AP238_STEP_NC_MIM { 1 0 10303 238 1 0 0 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('numerical_control_machining');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
+  'numerical_control_machining',2007,#1);
+#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10))
+     REPRESENTATION_CONTEXT('nc','3D'));
+/* Workpiece material: magnesium. */
+#400=MATERIAL('AZ31_magnesium','wrought magnesium alloy');
+#410=WORKPIECE('mg_part',$,$,$,$,$,#400);
+/* Defect: water-based coolant on magnesium - safety hazard. */
+#100=COOLANT_OPERATION('water_flood',.WATER.,$,#410);
+#200=WORKPLAN('main',(#100),$,$,$);
+ENDSEC;
+END-ISO-10303-21;

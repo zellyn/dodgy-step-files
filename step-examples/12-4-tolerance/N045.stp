@@ -1,0 +1,50 @@
+ISO-10303-21;
+/* N045 - Vertex-tolerance under-checked at edge intersection
+ * Defect: two edges meet at a T-junction. Edge A goes from V (origin)
+ * to A_end. Edge B goes from B_start to B_end and PASSES through
+ * V's tolerance ball (perpendicular distance to V = 1e-4 mm < 1e-3 mm
+ * declared vertex tolerance) without ending at V. The intersection
+ * test should declare a near-T-junction but the kernel uses an
+ * internal 1e-7 tolerance and reports no intersection. */
+HEADER;
+FILE_DESCRIPTION(('N045 test case','Vertex-tolerance under-checked at edge intersection'),'2;1');
+FILE_NAME('N045.stp','2026-04-30T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+/* Vertex V at origin and edge A's far end */
+#100=CARTESIAN_POINT('vertex_v',(0.0,0.0,0.0));
+#101=VERTEX_POINT('v',#100);
+#102=CARTESIAN_POINT('end_a',(1.0,0.0,0.0));
+#103=VERTEX_POINT('a_end',#102);
+#104=DIRECTION('+x',(1.0,0.0,0.0));
+#105=VECTOR('vx',#104,1.0);
+#106=LINE('lineA',#100,#105);
+#107=EDGE_CURVE('edgeA',#101,#103,#106,.T.);
+/* Edge B: from (-1, 1e-4, 0) to (-1+2, 1e-4, 0) = (1, 1e-4, 0).
+ * The closest approach of edgeB to vertex V is at parameter t=1
+ * (the midpoint), where the line passes (0, 1e-4, 0). 1e-4 < 1e-3
+ * declared tolerance — the line passes inside V's tolerance ball
+ * but does NOT end at V. */
+#108=CARTESIAN_POINT('b_start',(-1.0,1.0E-4,0.0));
+#109=VERTEX_POINT('b_start',#108);
+#110=CARTESIAN_POINT('b_end',(1.0,1.0E-4,0.0));
+#111=VERTEX_POINT('b_end',#110);
+#112=DIRECTION('+xB',(1.0,0.0,0.0));
+#113=VECTOR('vxB',#112,2.0);
+#114=LINE('lineB_passes_near_V',#108,#113);
+#115=EDGE_CURVE('edgeB_inside_v_tol_ball',#109,#111,#114,.T.);
+/* Declared tolerance 1e-3 mm */
+#120=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#121=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#122=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#123=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-3),#120,
+  'distance_accuracy_value','vertex tolerance');
+#124=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+      GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#123))
+      GLOBAL_UNIT_ASSIGNED_CONTEXT((#120,#121,#122))
+      REPRESENTATION_CONTEXT('ctx','3D'));
+ENDSEC;
+END-ISO-10303-21;

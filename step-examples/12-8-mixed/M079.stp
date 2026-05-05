@@ -1,0 +1,28 @@
+ISO-10303-21;
+/* M079 - AP209 boundary condition without associated geometry.
+ * Defect: a SINGLE_POINT_CONSTRAINT references a constraint freedom and
+ * coefficient pair, but the NODE_GROUP it should be applied to is empty
+ * (or, equivalently, the constrained_node attribute is unresolved). The
+ * BC has no effect because the kernel cannot find the points to fix. */
+HEADER;
+FILE_DESCRIPTION(('M079 test case','AP209 boundary condition no associated geometry'),'2;1');
+FILE_NAME('M079.stp','2026-04-30T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('STRUCTURAL_ANALYSIS_DESIGN { 1 0 10303 209 1 0 0 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('structural_analysis_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
+  'structural_analysis_design',2001,#1);
+#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10))
+     REPRESENTATION_CONTEXT('fea','3D'));
+#100=CARTESIAN_POINT('n1',(0.0,0.0,0.0));
+#110=NODE('n1',(#100),$);
+#120=FREEDOMS_LIST((.X.,.Y.,.Z.));
+#130=FREEDOM_AND_COEFFICIENT(#120,1.0);
+/* Defect: Empty node_group - the constraint applies to nothing. */
+#140=NODE_GROUP('fixed_nodes',(),$);
+#200=SINGLE_POINT_CONSTRAINT($,#130,0.0,#140);
+ENDSEC;
+END-ISO-10303-21;

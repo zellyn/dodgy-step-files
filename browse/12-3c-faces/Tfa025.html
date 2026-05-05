@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Tfa025 — Glue Edges: duplicate `EDGE_CURVE` instances over duplicated `LINE` / `VERTEX_POINT` entities (coincident edges)</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.3c Faces / sewing / free bound</a> <span class="sep">/</span> <span class="current">Tfa025</span>
+</nav>
+<header class="title-bar">
+<h1>Tfa025 <span class="sep">—</span> <span class="entry-title">Glue Edges: duplicate `EDGE_CURVE` instances over duplicated `LINE` / `VERTEX_POINT` entities (coincident edges)</span></h1>
+<p class="category">§12.3c face-sliver-sewing</p>
+<p class="severity-badge severity-p1">P1 — silent data loss</p>
+<p class="tag-pills">
+<a class="tag tag-topology" href="../by-tag/topology/index.html">topology</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-3c-faces/Tfa025.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-3c-faces/Tfa025.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>09-healing-menus H064, H102</li>
+<li>11-vendor W045</li>
+</ul></section>
+<section><h2>Description</h2>
+<p>Edge-level analogue of Glue Faces: a wireframe model (e.g. `GEOMETRIC_CURVE_SET`) or sewing residue carries duplicate `EDGE_CURVE` instances across patches that should be shared. Common signature: four geometrically identical edges in one set — two using the same `VERTEX_POINT`s and `LINE` (true duplicates), one using duplicated `LINE` instance over the same vertices, and one using duplicated `VERTEX_POINT` instances over the same line — all combinations of duplicated underlying entities for the same physical edge.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>Compound where two `EDGE_CURVE`s reference the same `LINE` between identical `VERTEX_POINT`s, but live in different parents.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>heal — merge coincident edges within tolerance; rebind ancestors to the kept edge.</p></section>
+<section><h2>Notes</h2>
+<p>**See also**: Twi033. Synonyms: &quot;duplicate edges over same line and vertices&quot;, &quot;coincident edges in wireframe&quot;, &quot;same edge defined four times with duplicate underlying entities&quot;, &quot;edges sharing geometry but stored separately&quot;, &quot;edge dedup needed across patches&quot;.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>contains(b&#x27;line_shared&#x27;)</code></li>
+<li><code>count_entity_def(b&#x27;EDGE_CURVE&#x27;) &gt;= 2</code></li>
+<li><code>contains(b&#x27;p0&#x27;)</code></li>
+</ul></section>
+<section><h2>Cross-references</h2>
+<p><a href="../12-3b-wires/Twi033.html">Twi033</a></p>
+</section>
+<section><h2>Live oracle output</h2>
+<table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
+<tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>no_shapes_loaded</code></td></tr>
+</tbody></table>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>/* Tfa025 - Glue Edges (coincident edges)
+<span class="lineno">2</span> * Defect: edge-level analogue of Glue Faces - a wireframe model or
+<span class="lineno">3</span> * sewing residue carries duplicate edges across patches that should be
+<span class="lineno">4</span> * shared. Two EDGE_CURVE entities reference the same LINE between
+<span class="lineno">5</span> * identical VERTEX_POINTs but live in different parents.
+<span class="lineno">6</span> *
+<span class="lineno">7</span> * Sources cited in catalog: 09-healing-menus H064, H102; 11-vendor W045.
+<span class="lineno">8</span> *
+<span class="lineno">9</span> * Expected kernel behavior: heal - merge coincident edges within
+<span class="lineno">10</span> * tolerance and rebind ancestors to the kept edge.
+<span class="lineno">11</span> *
+<span class="lineno">12</span> * Reproducer scenarios in this file:
+<span class="lineno">13</span> *  (1) Two EDGE_CURVEs sharing identical LINE and VERTEX_POINTs but
+<span class="lineno">14</span> *      with separate identity - the simplest &quot;glue edge&quot; case.
+<span class="lineno">15</span> *  (2) Two EDGE_CURVEs whose underlying LINEs are different objects
+<span class="lineno">16</span> *      with identical numerical content (same direction, same anchor).
+<span class="lineno">17</span> *  (3) Two EDGE_CURVEs whose VERTEX_POINTs are different objects with
+<span class="lineno">18</span> *      identical coordinates - the duplicate-vertex variant of glue.
+<span class="lineno">19</span> */
+<span class="lineno">20</span>ISO-10303-21;
+<span class="lineno">21</span>HEADER;
+<span class="lineno">22</span>FILE_DESCRIPTION((&#x27;Tfa025 glue edges coincident&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">23</span>FILE_NAME(&#x27;Tfa025.stp&#x27;,&#x27;2026-04-26T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),
+<span class="lineno">24</span>  &#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">25</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN&#x27;));
+<span class="lineno">26</span>ENDSEC;
+<span class="lineno">27</span>DATA;
+<span class="lineno">28</span>#1=APPLICATION_CONTEXT(&#x27;automotive design&#x27;);
+<span class="lineno">29</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,
+<span class="lineno">30</span>  &#x27;automotive_design&#x27;,2009,#1);
+<span class="lineno">31</span>/* Common endpoints for scenario 1.                                     */
+<span class="lineno">32</span>#10=CARTESIAN_POINT(&#x27;<mark>p0</mark>&#x27;,(0.0,0.0,0.0));
+<span class="lineno">33</span>#11=CARTESIAN_POINT(&#x27;p1&#x27;,(10.0,0.0,0.0));
+<span class="lineno">34</span>#20=VERTEX_POINT(&#x27;v0&#x27;,#10);
+<span class="lineno">35</span>#21=VERTEX_POINT(&#x27;v1&#x27;,#11);
+<span class="lineno">36</span>#30=DIRECTION(&#x27;xdir&#x27;,(1.0,0.0,0.0));
+<span class="lineno">37</span>#31=VECTOR(&#x27;xvec_10&#x27;,#30,10.0);
+<span class="lineno">38</span>#40=LINE(&#x27;<mark>line_shared</mark>&#x27;,#10,#31);
+<span class="lineno">39</span>/* Scenario 1 defect: two distinct EDGE_CURVE entities, identical
+<span class="lineno">40</span> * geometry and identical endpoints, in different parent wires.         */
+<span class="lineno">41</span><mark>#50=EDGE_CURVE(</mark>&#x27;edge_copy_1&#x27;,#20,#21,#40,.T.);
+<span class="lineno">42</span><mark>#51=EDGE_CURVE(</mark>&#x27;edge_copy_2&#x27;,#20,#21,#40,.T.);
+<span class="lineno">43</span>/* Scenario 2: two duplicate LINE objects with identical content.       */
+<span class="lineno">44</span>#52=DIRECTION(&#x27;xdir_dup&#x27;,(1.0,0.0,0.0));
+<span class="lineno">45</span>#53=VECTOR(&#x27;xvec_10_dup&#x27;,#52,10.0);
+<span class="lineno">46</span>#54=LINE(&#x27;line_dup&#x27;,#10,#53);
+<span class="lineno">47</span><mark>#55=EDGE_CURVE(</mark>&#x27;edge_dup_line&#x27;,#20,#21,#54,.T.);
+<span class="lineno">48</span>/* Scenario 3: duplicate VERTEX_POINTs at identical coordinates.        */
+<span class="lineno">49</span>#56=CARTESIAN_POINT(&#x27;<mark>p0</mark>_dup&#x27;,(0.0,0.0,0.0));
+<span class="lineno">50</span>#57=CARTESIAN_POINT(&#x27;p1_dup&#x27;,(10.0,0.0,0.0));
+<span class="lineno">51</span>#58=VERTEX_POINT(&#x27;v0_dup&#x27;,#56);
+<span class="lineno">52</span>#59=VERTEX_POINT(&#x27;v1_dup&#x27;,#57);
+<span class="lineno">53</span><mark>#60=EDGE_CURVE(</mark>&#x27;edge_dup_vtx&#x27;,#58,#59,#40,.T.);
+<span class="lineno">54</span>/* Wrap each duplicate edge in its own oriented-edge.                   */
+<span class="lineno">55</span>#70=ORIENTED_EDGE(&#x27;&#x27;,*,*,#50,.T.);
+<span class="lineno">56</span>#71=ORIENTED_EDGE(&#x27;&#x27;,*,*,#51,.T.);
+<span class="lineno">57</span>#72=ORIENTED_EDGE(&#x27;&#x27;,*,*,#55,.T.);
+<span class="lineno">58</span>#73=ORIENTED_EDGE(&#x27;&#x27;,*,*,#60,.T.);
+<span class="lineno">59</span>/* Group all duplicate edges into a wireframe geometric_curve_set so a
+<span class="lineno">60</span> * Glue Edges pass can find and merge them.                             */
+<span class="lineno">61</span>#80=GEOMETRIC_CURVE_SET(&#x27;wireframe_with_duplicates&#x27;,
+<span class="lineno">62</span>  (#50,#51,#55,#60));
+<span class="lineno">63</span>ENDSEC;
+<span class="lineno">64</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Tfa024.html">&larr; Tfa024</a> <a class="up" href="index.html">§12.3c Faces / sewing / free bound</a> <a class="next" href="Tfa026.html">Tfa026 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

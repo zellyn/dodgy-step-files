@@ -1,0 +1,42 @@
+ISO-10303-21;
+/* Twi091 - Inner wire on closed surface lacks natural bound
+ * Defect: ADVANCED_FACE on CYLINDRICAL_SURFACE with one inner wire (window) and no outer bound; reader needs natural surface boundary */
+HEADER;
+FILE_DESCRIPTION(('Twi091 - Inner wire on closed surface lacks natural bound: face read with no boundary','Inner wire on closed surface lacks natural bound'),'2;1');
+FILE_NAME('Twi091.stp','2026-04-30T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#11=DIRECTION('',(0.0,0.0,1.0));
+#12=DIRECTION('',(1.0,0.0,0.0));
+#13=AXIS2_PLACEMENT_3D('',#10,#11,#12);
+#14=CYLINDRICAL_SURFACE('',#13,2.0);
+/* Single inner wire (window cut-out), no FACE_OUTER_BOUND */
+#100=CARTESIAN_POINT('',(2.0,0.0,1.0));#101=VERTEX_POINT('',#100);
+#102=CARTESIAN_POINT('',(2.0,0.0,1.0));#103=AXIS2_PLACEMENT_3D('',#102,#11,#12);
+#104=CIRCLE('',#103,0.3);
+#105=EDGE_CURVE('window',#101,#101,#104,.T.);
+#106=ORIENTED_EDGE('',*,*,#105,.T.);#107=EDGE_LOOP('',(#106,));
+#108=FACE_INNER_BOUND('only_inner',#107,.T.);
+#109=ADVANCED_FACE('no_outer_bound',(#108),#14,.T.);
+/* Wrap: minimal PRODUCT chain so OCCT TransferRoots produces a shape. */
+#9000=PRODUCT_CONTEXT('',#1,'mechanical');
+#9001=PRODUCT('Twi091','Twi091','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
+#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
+#9020=OPEN_SHELL('wrap_shell',(#109));
+#9021=SHELL_BASED_SURFACE_MODEL('wrap_sbsm',(#9020));
+#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#9010);
+#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+ENDSEC;
+END-ISO-10303-21;

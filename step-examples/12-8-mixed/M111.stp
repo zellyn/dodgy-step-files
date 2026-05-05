@@ -1,0 +1,33 @@
+ISO-10303-21;
+/* M111 - AP209 single_point_constraint applied to a node not in the mesh.
+ * Defect: a SINGLE_POINT_CONSTRAINT references node #999, but the FEA
+ * model's its_node_set includes only #110, #111, #112. The constraint
+ * applies to no DOF; the row never enters the stiffness matrix. */
+HEADER;
+FILE_DESCRIPTION(('M111 test case','AP209 SPC on node not in model'),'2;1');
+FILE_NAME('M111.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('STRUCTURAL_ANALYSIS_DESIGN { 1 0 10303 209 1 0 0 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('structural_analysis_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
+  'structural_analysis_design',2001,#1);
+#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10))
+     REPRESENTATION_CONTEXT('fea','3D'));
+#100=CARTESIAN_POINT('n1',(0.0,0.0,0.0));
+#101=CARTESIAN_POINT('n2',(1.0,0.0,0.0));
+#102=CARTESIAN_POINT('n3',(0.0,1.0,0.0));
+#110=NODE('n1',(#100),$);
+#111=NODE('n2',(#101),$);
+#112=NODE('n3',(#102),$);
+#150=NODE_GROUP('mesh_nodes',(#110,#111,#112),$);
+/* The orphan node #999 is referenced but not part of the model node set. */
+#999=CARTESIAN_POINT('orphan',(99.0,99.0,99.0));
+#998=NODE('orphan_node',(#999),$);
+/* Defect: SPC references node #998 which is not in the model node-set #150. */
+#200=SINGLE_POINT_CONSTRAINT('fix_orphan',#998,'XYZ',$);
+#300=FEA_MODEL('model',$,#150,$,$);
+ENDSEC;
+END-ISO-10303-21;

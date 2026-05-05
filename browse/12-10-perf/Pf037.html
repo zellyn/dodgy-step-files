@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Pf037 — Two-pass loader: dangling forward-ref subgraph silently truncated (BRL-CAD step-g)</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.10 Scale &amp; performance</a> <span class="sep">/</span> <span class="current">Pf037</span>
+</nav>
+<header class="title-bar">
+<h1>Pf037 <span class="sep">—</span> <span class="entry-title">Two-pass loader: dangling forward-ref subgraph silently truncated (BRL-CAD step-g)</span></h1>
+<p class="category">§12.10 scale &amp; performance (sub-class: silent partial subgraph elision)</p>
+<p class="severity-badge severity-p2">P2 — spec deviation (no data loss)</p>
+<p class="tag-pills">
+<a class="tag tag-performance" href="../by-tag/performance/index.html">performance</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-10-perf/Pf037.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-10-perf/Pf037.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>BRL-CAD `src/conv/step/STEPWrapper.cpp` `WARNING: &lt;name&gt; is not valid` diagnostic</li>
+<li>`entity_status[id] = STEP_LOAD_ERROR` set during pass-2 but never consulted by shell/solid consumers</li>
+<li>bug-reporter language: &quot;step-g imports a 50 MB STEP file and the resulting .g lacks a subassembly with no obvious error&quot;, &quot;WARNING is not valid scrolled past in the import log&quot;, &quot;step-g entity_status STEP_LOAD_ERROR not propagated&quot;.</li>
+</ul></section>
+<section><h2>Sender</h2>
+<p>Large-assembly STEP files where one entity record is structurally well-formed (so pass-1 instantiates a stub object) but references a downstream entity that itself failed to instantiate (e.g. a malformed complex-entity record). Common in fuzzed inputs and in CAD-system exports that emit forward references the writer never validated.</p></section>
+<section><h2>Description</h2>
+<p>BRL-CAD step-g uses a two-pass loader: pass-1 walks the DATA section and instantiates one C++ object per STEP entity, registering each via id; pass-2 walks the list again, calling `Load()` on each object, which dereferences forward references through the id→object map. When a referenced id was never created in pass-1 (or has `entity_status = STEP_LOAD_ERROR`), pass-2 marks the *referencing* entity also as `STEP_LOAD_ERROR` and emits a single `WARNING: &lt;name&gt; is not valid` to `bu_log`. But the upstream caller does **not** check `entity_status` for the shells/solids it consumes — the shape-definition path completes with whatever fragments it managed to build, and the resulting .g file lacks the entire subgraph that depended on the broken reference. On large assemblies the user only notices the truncation after a multi-minute import; the diagnostic stream is too noisy to spot the specific WARNING line.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>STEP file containing a topology entity that references id `#999` which is never defined. Pass-1 instantiates the entity; pass-2 sets `STEP_LOAD_ERROR`; the parent shape is silently truncated.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>reject — every shell/solid consumer in `LoadONBrep` must consult `entity_status` of every dereferenced child and bubble up `STEP_LOAD_ERROR`; the top-level converter must abort with a non-zero exit code rather than write a partial .g file.</p></section>
+<section><h2>Notes</h2>
+<p>**See also**: Wr013, Ad005, Pf003. Synonyms: &quot;BRL-CAD step-g silent partial subgraph elision&quot;, &quot;STEP_LOAD_ERROR not propagated to caller&quot;, &quot;WARNING is not valid hidden in noise&quot;, &quot;two-pass loader truncates on dangling forward ref&quot;, &quot;step-g writes partial .g without exit code&quot;.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>contains(b&#x27;EDGE_CURVE&#x27;)</code></li>
+<li><code>matches(rb&#x27;EDGE_CURVE\([^)]*#999&#x27;)</code></li>
+</ul></section>
+<section><h2>Cross-references</h2>
+<p><a href="../12-13-writer-pathology/Wr013.html">Wr013</a>, <a href="../12-11-adversarial/Ad005.html">Ad005</a>, <a href="Pf003.html">Pf003</a></p>
+</section>
+<section><h2>Live oracle output</h2>
+<table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
+<tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>reject(E_UNRESOLVED_REFS)</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>no_shapes_loaded</code></td></tr>
+</tbody></table>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>/* Pf037 - Two-pass loader: instantiation succeeds, second-pass Load fails on missing forward ref
+<span class="lineno">2</span>   Defect: BRL-CAD step-g uses a two-pass model: pass 1 instantiates one
+<span class="lineno">3</span>   C++ object per STEP entity, registering each via id; pass 2 walks the
+<span class="lineno">4</span>   list again calling Load() on each, which dereferences forward refs
+<span class="lineno">5</span>   through the id-&gt;object map.  When a referenced id was never created
+<span class="lineno">6</span>   in pass 1 (for instance because its complex-entity record is
+<span class="lineno">7</span>   syntactically malformed and pass 1 silently skipped it), pass 2 sets
+<span class="lineno">8</span>   STEPWrapper.entity_status[id] = STEP_LOAD_ERROR for the *referencing*
+<span class="lineno">9</span>   entity but the upstream caller does not check entity_status for the
+<span class="lineno">10</span>   shells/solids it consumes.  The shape-definition path completes,
+<span class="lineno">11</span>   bu_log emits &quot;WARNING: &lt;name&gt; is not valid&quot; once, and the resulting
+<span class="lineno">12</span>   .g file is missing the entire face/edge/curve subgraph that depended
+<span class="lineno">13</span>   on the broken reference - with no obvious link back to the offending
+<span class="lineno">14</span>   id.  The perf angle: on large assemblies the user only notices the
+<span class="lineno">15</span>   missing geometry after a multi-minute import; the diagnostic stream
+<span class="lineno">16</span>   is too noisy to spot the specific WARNING line.
+<span class="lineno">17</span>   Sources: BRL-CAD src/conv/step/STEPWrapper.cpp - WARNING is not valid
+<span class="lineno">18</span>   message; entity_status[id] = STEP_LOAD_ERROR set but not propagated. */
+<span class="lineno">19</span>ISO-10303-21;
+<span class="lineno">20</span>HEADER;
+<span class="lineno">21</span>FILE_DESCRIPTION(
+<span class="lineno">22</span>  (&#x27;Pf037 - two-pass loader silently elides subgraph rooted at malformed forward ref&#x27;),
+<span class="lineno">23</span>  &#x27;2;1&#x27;);
+<span class="lineno">24</span>FILE_NAME(&#x27;Pf037.stp&#x27;,&#x27;2026-05-02T00:00:00&#x27;,(&#x27;cad-research-suite&#x27;),(&#x27;&#x27;),
+<span class="lineno">25</span>  &#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">26</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
+<span class="lineno">27</span>ENDSEC;
+<span class="lineno">28</span>DATA;
+<span class="lineno">29</span>/* A minimal cube-ish setup; one <mark>EDGE_CURVE</mark> references id #999 which is
+<span class="lineno">30</span>   never defined in this file - pass 1 sees a forward ref, pass 2&#x27;s
+<span class="lineno">31</span>   Load() hits the gap. */
+<span class="lineno">32</span>#10=CARTESIAN_POINT(&#x27;p0&#x27;,(0.0,0.0,0.0));
+<span class="lineno">33</span>#11=CARTESIAN_POINT(&#x27;p1&#x27;,(1.0,0.0,0.0));
+<span class="lineno">34</span>#12=CARTESIAN_POINT(&#x27;p2&#x27;,(1.0,1.0,0.0));
+<span class="lineno">35</span>#13=CARTESIAN_POINT(&#x27;p3&#x27;,(0.0,1.0,0.0));
+<span class="lineno">36</span>#20=VERTEX_POINT(&#x27;&#x27;,#10);
+<span class="lineno">37</span>#21=VERTEX_POINT(&#x27;&#x27;,#11);
+<span class="lineno">38</span>#22=VERTEX_POINT(&#x27;&#x27;,#12);
+<span class="lineno">39</span>#23=VERTEX_POINT(&#x27;&#x27;,#13);
+<span class="lineno">40</span>#30=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">41</span>#31=DIRECTION(&#x27;&#x27;,(0.0,1.0,0.0));
+<span class="lineno">42</span>#32=VECTOR(&#x27;&#x27;,#30,1.0);
+<span class="lineno">43</span>#33=VECTOR(&#x27;&#x27;,#31,1.0);
+<span class="lineno">44</span>#34=LINE(&#x27;&#x27;,#10,#32);
+<span class="lineno">45</span>#35=LINE(&#x27;&#x27;,#11,#33);
+<span class="lineno">46</span>#36=LINE(&#x27;&#x27;,#13,#32);
+<span class="lineno">47</span>#37=LINE(&#x27;&#x27;,#10,#33);
+<span class="lineno">48</span>/* Defect: this <mark>EDGE_CURVE</mark> references basis curve #999 which never appears
+<span class="lineno">49</span>   in the DATA section.  Pass 1 instantiates the <mark>EDGE_CURVE</mark> object; pass 2
+<span class="lineno">50</span>   tries to dereference #999, sets entity_status to STEP_LOAD_ERROR but
+<span class="lineno">51</span>   the parent face/shell consumer never checks. */
+<span class="lineno">52</span>#40=<mark>EDGE_CURVE(&#x27;e_a&#x27;,#20,#21,#999</mark>,.T.);
+<span class="lineno">53</span>#41=<mark>EDGE_CURVE</mark>(&#x27;e_b&#x27;,#21,#22,#35,.T.);
+<span class="lineno">54</span>#42=<mark>EDGE_CURVE</mark>(&#x27;e_c&#x27;,#23,#22,#36,.T.);
+<span class="lineno">55</span>#43=<mark>EDGE_CURVE</mark>(&#x27;e_d&#x27;,#20,#23,#37,.T.);
+<span class="lineno">56</span>ENDSEC;
+<span class="lineno">57</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Pf036.html">&larr; Pf036</a> <a class="up" href="index.html">§12.10 Scale &amp; performance</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

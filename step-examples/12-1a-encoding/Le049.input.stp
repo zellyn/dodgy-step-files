@@ -1,0 +1,21 @@
+ISO-10303-21;
+/* Le049 INPUT — pre-CR-strip source for Le049.stp
+ * Sibling input fixture: the producer emitted this with literal CR (0x0D)
+ * inside a string literal, which the writer's normalizer strips on output.
+ * Diff with Le049.stp to see the CR removed. */
+HEADER;
+FILE_DESCRIPTION(('Le049.input pre-CR-strip source'),'2;1');
+FILE_NAME('Le049.input.stp','2026-05-01T00:00:00',(''),(''),
+  'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
+  'automotive_design',2009,#1);
+/* The next entity carries a literal CR LF inside its description string */
+#10=DESCRIPTIVE_REPRESENTATION_ITEM('multi-line','line1\X\0Dline2');
+#11=PRODUCT('part','part with multi-line description','',(#12));
+#12=PRODUCT_CONTEXT('mech',#1,'mechanical');
+ENDSEC;
+END-ISO-10303-21;

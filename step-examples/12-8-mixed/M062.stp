@@ -1,0 +1,23 @@
+ISO-10303-21;
+/* M062 - SRR reverses NAUO direction.
+ * Defect: NEXT_ASSEMBLY_USAGE_OCCURRENCE says A is parent of B;
+ * a SHAPE_REPRESENTATION_RELATIONSHIP says B is parent of A. */
+HEADER;
+FILE_DESCRIPTION(('In006 - SRR vs NAUO direction conflict','Pass C gap-fill'),'2;1');
+FILE_NAME('M062.stp','2026-04-30T00:00:00',(''),(''),'gap-fill C','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#10=PRODUCT('A','partA','',());
+#11=PRODUCT('B','partB','',());
+#20=PRODUCT_DEFINITION_FORMATION('','',#10);
+#21=PRODUCT_DEFINITION_FORMATION('','',#11);
+#22=PRODUCT_DEFINITION('','',#20,$);
+#23=PRODUCT_DEFINITION('','',#21,$);
+/* NAUO: A is parent of B */
+#30=NEXT_ASSEMBLY_USAGE_OCCURRENCE('','','',#22,#23,$);
+/* SRR claims reversed direction */
+#40=SHAPE_REPRESENTATION_RELATIONSHIP('reversed','',#23,#22);
+ENDSEC;
+END-ISO-10303-21;

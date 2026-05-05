@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>N035 — Default tolerance precision: missing decimal-place qualifier</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.4 Tolerance &amp; numerical precision</a> <span class="sep">/</span> <span class="current">N035</span>
+</nav>
+<header class="title-bar">
+<h1>N035 <span class="sep">—</span> <span class="entry-title">Default tolerance precision: missing decimal-place qualifier</span></h1>
+<p class="category">§12.4 (sub-class: PMI numeric)</p>
+<p class="severity-badge severity-p1">P1 — silent data loss</p>
+<p class="tag-pills">
+<a class="tag tag-pmi" href="../by-tag/pmi/index.html">pmi</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-4-tolerance/N035.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-4-tolerance/N035.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>02-caxif (PMI v4.1 §4.1)</li>
+</ul></section>
+<section><h2>Description</h2>
+<p>Some CAD systems ignore tolerance values that lack an explicit decimal-place qualifier even if a global default precision is set. The fallback hierarchy is: precision at tolerance value → precision at nominal value → global default. Receivers that don&#x27;t walk the chain show wrong-precision tolerance.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>Dimension with nominal value `5.0`, tolerance `+0.01/-0.01`, but no `precision_qualifier` on either the value or the nominal, and no global default.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>accept; fall through the precision hierarchy correctly; emit warning when default is needed.</p></section>
+<section><h2>Notes</h2>
+<p>**See also**: Pmi008. Synonyms: &quot;tolerance ignored without decimal-place qualifier&quot;, &quot;default precision not picked up&quot;, &quot;tolerance value shown wrong precision&quot;, &quot;fallback chain broken for precision qualifier&quot;.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>count_entity_def(b&#x27;PLUS_MINUS_TOLERANCE&#x27;) == 2</code></li>
+<li><code>contains(b&#x27;0.01&#x27;) and contains(b&#x27;-0.01&#x27;)</code></li>
+<li><code>contains(b&#x27;5.0&#x27;)</code></li>
+</ul></section>
+<section><h2>Cross-references</h2>
+<p><a href="../12-7-pmi/Pmi008.html">Pmi008</a></p>
+</section>
+<section><h2>Live oracle output</h2>
+<table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
+<tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>no_shapes_loaded</code></td></tr>
+</tbody></table>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>/* N035 - Default tolerance precision: missing decimal-place qualifier
+<span class="lineno">2</span> * Defect: Some CAD systems ignore tolerance values that lack an explicit
+<span class="lineno">3</span> * decimal-place qualifier even if a global default precision is set. The
+<span class="lineno">4</span> * fallback hierarchy is: precision at tolerance value -&gt; precision at nominal
+<span class="lineno">5</span> * value -&gt; global default. Receivers that don&#x27;t walk the chain show wrong-
+<span class="lineno">6</span> * precision tolerance.
+<span class="lineno">7</span> * Reproducer: dimension with nominal value <mark>5.0</mark>, tolerance +0.01/-0.01 but no
+<span class="lineno">8</span> * precision_qualifier on either the value or the nominal, and no global
+<span class="lineno">9</span> * default for the document.
+<span class="lineno">10</span> */
+<span class="lineno">11</span>ISO-10303-21;
+<span class="lineno">12</span>HEADER;
+<span class="lineno">13</span>FILE_DESCRIPTION((&#x27;N035 default tolerance precision missing decimal-place qualifier&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">14</span>FILE_NAME(&#x27;N035.stp&#x27;,&#x27;2026-04-26T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),
+<span class="lineno">15</span>  &#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">16</span>FILE_SCHEMA((&#x27;AP242_MANAGED_MODEL_BASED_3D_ENGINEERING_MIM_LF&#x27;));
+<span class="lineno">17</span>ENDSEC;
+<span class="lineno">18</span>DATA;
+<span class="lineno">19</span>#1=APPLICATION_CONTEXT(&#x27;managed model-based 3d engineering&#x27;);
+<span class="lineno">20</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,
+<span class="lineno">21</span>  &#x27;ap242_managed_model_based_3d_engineering&#x27;,2014,#1);
+<span class="lineno">22</span>#10=CARTESIAN_POINT(&#x27;p0&#x27;,(0.0,0.0,0.0));
+<span class="lineno">23</span>#11=CARTESIAN_POINT(&#x27;p1&#x27;,(<mark>5.0</mark>,0.0,0.0));
+<span class="lineno">24</span>#20=VERTEX_POINT(&#x27;&#x27;,#10);
+<span class="lineno">25</span>#21=VERTEX_POINT(&#x27;&#x27;,#11);
+<span class="lineno">26</span>#30=DIRECTION(&#x27;+x&#x27;,(1.0,0.0,0.0));
+<span class="lineno">27</span>#31=VECTOR(&#x27;&#x27;,#30,<mark>5.0</mark>);
+<span class="lineno">28</span>#32=LINE(&#x27;&#x27;,#10,#31);
+<span class="lineno">29</span>#40=EDGE_CURVE(&#x27;dim_edge&#x27;,#20,#21,#32,.T.);
+<span class="lineno">30</span>#50=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">31</span>#51=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+<span class="lineno">32</span>#52=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+<span class="lineno">33</span>#60=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-6),#50,
+<span class="lineno">34</span>  &#x27;distance_accuracy_value&#x27;,&#x27;&#x27;);
+<span class="lineno">35</span>#70=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+<span class="lineno">36</span>  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#60))
+<span class="lineno">37</span>  GLOBAL_UNIT_ASSIGNED_CONTEXT((#50,#51,#52))
+<span class="lineno">38</span>  REPRESENTATION_CONTEXT(&#x27;ctx&#x27;,&#x27;3D&#x27;));
+<span class="lineno">39</span>/* Nominal value <mark>5.0</mark>, tolerance +/- 0.01.  Defect site: NO precision_qualifier
+<span class="lineno">40</span> * is associated with either the nominal or the tolerance bounds, and no
+<span class="lineno">41</span> * global default precision representation is provided. Conformant readers
+<span class="lineno">42</span> * walk the precision chain; non-conformant ones discard the tolerance. */
+<span class="lineno">43</span>#80=LENGTH_MEASURE_WITH_UNIT(LENGTH_MEASURE(<mark>5.0</mark>),#50);
+<span class="lineno">44</span>#81=LENGTH_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.01),#50);
+<span class="lineno">45</span>#82=LENGTH_MEASURE_WITH_UNIT(LENGTH_MEASURE(-0.01),#50);
+<span class="lineno">46</span><mark>#83=PLUS_MINUS_TOLERANCE(</mark>#81,&#x27;no_precision&#x27;,&#x27;+/-0.01 no qualifier&#x27;);
+<span class="lineno">47</span><mark>#84=PLUS_MINUS_TOLERANCE(</mark>#82,&#x27;no_precision_low&#x27;,&#x27;-0.01 no qualifier&#x27;);
+<span class="lineno">48</span>ENDSEC;
+<span class="lineno">49</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="N034.html">&larr; N034</a> <a class="up" href="index.html">§12.4 Tolerance &amp; numerical precision</a> <a class="next" href="N036.html">N036 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

@@ -1,0 +1,79 @@
+ISO-10303-21;
+/* Bo022 - Internally disconnected shell.
+ * Defect: CLOSED_SHELL lists faces in two groups that share no edges.
+ * Two separate squares at distant origins - the "shell" is really
+ * two shells crammed into one wrapper. */
+HEADER;
+FILE_DESCRIPTION(('Bo022 - disconnected shell','Pass C gap-fill'),'2;1');
+FILE_NAME('Bo022.stp','2026-04-30T00:00:00',(''),(''),'gap-fill C','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+/* Group 1: unit square in z=0 near origin. */
+#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#11=CARTESIAN_POINT('',(1.0,0.0,0.0));
+#12=CARTESIAN_POINT('',(1.0,1.0,0.0));
+#13=CARTESIAN_POINT('',(0.0,1.0,0.0));
+#20=VERTEX_POINT('',#10);
+#21=VERTEX_POINT('',#11);
+#22=VERTEX_POINT('',#12);
+#23=VERTEX_POINT('',#13);
+#30=DIRECTION('',(1.0,0.0,0.0)); #31=VECTOR('',#30,1.0);
+#32=DIRECTION('',(0.0,1.0,0.0)); #33=VECTOR('',#32,1.0);
+#34=DIRECTION('',(0.0,0.0,1.0));
+#40=LINE('',#10,#31); #41=EDGE_CURVE('',#20,#21,#40,.T.);
+#42=LINE('',#11,#33); #43=EDGE_CURVE('',#21,#22,#42,.T.);
+#44=LINE('',#13,#31); #45=EDGE_CURVE('',#23,#22,#44,.T.);
+#46=LINE('',#10,#33); #47=EDGE_CURVE('',#20,#23,#46,.T.);
+#50=ORIENTED_EDGE('',*,*,#41,.T.);
+#51=ORIENTED_EDGE('',*,*,#43,.T.);
+#52=ORIENTED_EDGE('',*,*,#45,.F.);
+#53=ORIENTED_EDGE('',*,*,#47,.F.);
+#54=EDGE_LOOP('',(#50,#51,#52,#53));
+#55=FACE_OUTER_BOUND('',#54,.T.);
+#60=AXIS2_PLACEMENT_3D('',#10,#34,#30);
+#61=PLANE('p1',#60);
+#100=ADVANCED_FACE('group1_face',(#55),#61,.T.);
+/* Group 2: unit square far away (origin x=100), no shared geometry. */
+#110=CARTESIAN_POINT('',(100.0,0.0,0.0));
+#111=CARTESIAN_POINT('',(101.0,0.0,0.0));
+#112=CARTESIAN_POINT('',(101.0,1.0,0.0));
+#113=CARTESIAN_POINT('',(100.0,1.0,0.0));
+#120=VERTEX_POINT('',#110);
+#121=VERTEX_POINT('',#111);
+#122=VERTEX_POINT('',#112);
+#123=VERTEX_POINT('',#113);
+#140=LINE('',#110,#31); #141=EDGE_CURVE('',#120,#121,#140,.T.);
+#142=LINE('',#111,#33); #143=EDGE_CURVE('',#121,#122,#142,.T.);
+#144=LINE('',#113,#31); #145=EDGE_CURVE('',#123,#122,#144,.T.);
+#146=LINE('',#110,#33); #147=EDGE_CURVE('',#120,#123,#146,.T.);
+#150=ORIENTED_EDGE('',*,*,#141,.T.);
+#151=ORIENTED_EDGE('',*,*,#143,.T.);
+#152=ORIENTED_EDGE('',*,*,#145,.F.);
+#153=ORIENTED_EDGE('',*,*,#147,.F.);
+#154=EDGE_LOOP('',(#150,#151,#152,#153));
+#155=FACE_OUTER_BOUND('',#154,.T.);
+#160=AXIS2_PLACEMENT_3D('',#110,#34,#30);
+#161=PLANE('p2',#160);
+#101=ADVANCED_FACE('group2_face',(#155),#161,.T.);
+/* The defect: two faces sharing no edges, lumped in one shell. */
+#200=CLOSED_SHELL('two_islands',(#100,#101));
+/* PRODUCT chain so OCCT loads the geometry. */
+#9000=PRODUCT_CONTEXT('',#1,'mechanical');
+#9001=PRODUCT('Bo022','Bo022','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
+#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
+#9021=SHELL_BASED_SURFACE_MODEL('wrap_sbsm',(#200));
+#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#9010);
+#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+ENDSEC;
+END-ISO-10303-21;

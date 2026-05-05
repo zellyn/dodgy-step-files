@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Xp007 — Cyclic complex-entity reference × deeply-nested aggregate</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.12 Cross-product</a> <span class="sep">/</span> <span class="current">Xp007</span>
+</nav>
+<header class="title-bar">
+<h1>Xp007 <span class="sep">—</span> <span class="entry-title">Cyclic complex-entity reference × deeply-nested aggregate</span></h1>
+<p class="category">§12.12 cross-product (syntax × adversarial)</p>
+<p class="severity-badge severity-p1">P1 — silent data loss</p>
+<p class="tag-pills">
+<a class="tag tag-interop" href="../by-tag/interop/index.html">interop</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-12-cross-product/Xp007.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-12-cross-product/Xp007.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>synthesized cross-product.</li>
+</ul></section>
+<section><h2>Description</h2>
+<p>An entity `#100` is a complex `(NAMED_UNIT(*) LENGTH_UNIT() SI_UNIT(..))` whose first parameter is a deeply-nested aggregate (50 levels of `((((..))))`). The same entity references `#100` indirectly via a `REPRESENTATION_RELATIONSHIP` chain that cycles back. A naive recursive parser hits both stack overflow (nesting) and infinite loop (cycle).</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>`#100=REPRESENTATION_RELATIONSHIP(&#x27;&#x27;,&#x27;&#x27;,#100,#100);` (self-reference). Plus a long-list aggregate `((((((((((((((((((((((((((((((((((((((((((((((((((1)))))))))))))))))))))))))))))))))))))))))))))))))).` somewhere in scope.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>cycle-detection invariant and bounded-nesting invariant both upheld; reject or load with diagnostics — kernel&#x27;s choice.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>contains(b&#x27;FILE_SCHEMA&#x27;)</code></li>
+</ul></section>
+<section><h2>Live oracle output</h2>
+<table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
+<tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>no_shapes_loaded</code></td></tr>
+</tbody></table>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* Xp007 - Cross-product: cyclic complex-entity reference + deeply-nested
+<span class="lineno">3</span> *   parenthesized aggregate.
+<span class="lineno">4</span> * Builds on Ad-cyclic-class + Ad-deeply-nested-class.
+<span class="lineno">5</span> * Defect 1: SHAPE_REPRESENTATION_RELATIONSHIP self-references (#100 references
+<span class="lineno">6</span> *   #100 in both rep_1 and rep_2 slots).
+<span class="lineno">7</span> * Defect 2: a parameter aggregate carries 50 levels of nested
+<span class="lineno">8</span> *   parentheses â emitted as an actual nested STEP aggregate
+<span class="lineno">9</span> *   parameter (not wrapped in a string). */
+<span class="lineno">10</span>HEADER;
+<span class="lineno">11</span>FILE_DESCRIPTION((&#x27;Xp007 cross-product&#x27;,&#x27;cyclic ref x deeply-nested aggregate&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">12</span>FILE_NAME(&#x27;Xp007.stp&#x27;,&#x27;2026-04-26T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">13</span><mark>FILE_SCHEMA</mark>((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }&#x27;));
+<span class="lineno">14</span>ENDSEC;
+<span class="lineno">15</span>DATA;
+<span class="lineno">16</span>#1=APPLICATION_CONTEXT(&#x27;automotive_design&#x27;);
+<span class="lineno">17</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,&#x27;automotive_design&#x27;,2000,#1);
+<span class="lineno">18</span>#10=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">19</span>#11=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">20</span>#12=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">21</span>#13=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#10,#11,#12);
+<span class="lineno">22</span>/* Defect 1: cyclic reference - SHAPE_REPRESENTATION_RELATIONSHIP cites
+<span class="lineno">23</span> *   itself on both sides */
+<span class="lineno">24</span>#100=SHAPE_REPRESENTATION_RELATIONSHIP(&#x27;cycle&#x27;,&#x27;&#x27;,#100,#100);
+<span class="lineno">25</span>/* Defect 2: actual nested STEP aggregate parameter (not a string).
+<span class="lineno">26</span> *   Most parsers reject this as malformed because EXPRESS aggregates
+<span class="lineno">27</span> *   are flat lists of one element type, not nested parentheses.
+<span class="lineno">28</span> *   The nesting depth is 50.  The CARTESIAN_POINT&#x27;s coords slot
+<span class="lineno">29</span> *   normally takes a list of REALs.  We deliberately overload it
+<span class="lineno">30</span> *   with a nested-list-of-list-of-...-list-of-real. */
+<span class="lineno">31</span>#200=CARTESIAN_POINT(&#x27;nested_aggregate&#x27;,((((((((((((((((((((((((((((((((((((((((((((((((((1.0)))))))))))))))))))))))))))))))))))))))))))))))))));
+<span class="lineno">32</span>ENDSEC;
+<span class="lineno">33</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Xp006.html">&larr; Xp006</a> <a class="up" href="index.html">§12.12 Cross-product</a> <a class="next" href="Xp008.html">Xp008 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>M051 — Bare GEOMETRIC_SET / GEOMETRIC_CURVE_SET with non-geometric children or mesh-as-surfaces</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.8 Mixed (tessellation, validation properties, etc.)</a> <span class="sep">/</span> <span class="current">M051</span>
+</nav>
+<header class="title-bar">
+<h1>M051 <span class="sep">—</span> <span class="entry-title">Bare GEOMETRIC_SET / GEOMETRIC_CURVE_SET with non-geometric children or mesh-as-surfaces</span></h1>
+<p class="category">§12.8 (sub-class: mesh-as-brep / wireframe)</p>
+<p class="tag-pills">
+<a class="tag tag-silent-loss" href="../by-tag/silent-loss/index.html">silent-loss</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-8-mixed/M051.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-8-mixed/M051.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>04-occt-translation.md (Q030)</li>
+<li>08-occt-gitlog.md (G018)</li>
+<li>14-brlcad-rhino.md (K002)</li>
+<li>11-translator-vendors.md (W042)</li>
+<li>20-general-forums.md (J021)</li>
+</ul></section>
+<section><h2>Sender</h2>
+<p>OpenVSP (free-standing surfaces); aero/preliminary-design tools; legacy producers</p></section>
+<section><h2>Description</h2>
+<p>STEP `GEOMETRIC_SET`/`GEOMETRIC_CURVE_SET` may aggregate items beyond curve/surface/point (axis placements, scalar measures), or may contain a free-standing set of bounded surfaces with no shell/face superstructure. Many importers reject as &quot;no solid found&quot; or skip silently. Files containing only wireframe data or only bounded surfaces lose visibility.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>STEP file with only `GEOMETRIC_SET` referring to `B_SPLINE_SURFACE_WITH_KNOTS` instances and no shell/face boundary, or `GEOMETRIC_SET` aggregating `LINE`+`AXIS2_PLACEMENT_3D`+text.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>accept; emit one face/surface object per surface; offer optional stitching pass; preserve as wireframe shape; never silently drop.</p></section>
+<section><h2>Notes</h2>
+<p>Synonyms: &quot;bare GEOMETRIC_SET silent-empty&quot;, &quot;wireframe-only file appears empty&quot;, &quot;GEOMETRIC_CURVE_SET with non-geometric children&quot;, &quot;bare surface set rejected as no solid&quot;. **OCC behavior**: silently produces empty results on bare `GEOMETRIC_SET` / `GEOMETRIC_CURVE_SET` files without surfacing the wireframe-only or surface-only nature of the input; kernel mishandling — the catalog above forbids silent drop.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>contains(b&#x27;GEOMETRIC_SET&#x27;)</code></li>
+<li><code>contains(b&#x27;DESCRIPTIVE_REPRESENTATION_ITEM&#x27;)</code></li>
+</ul></section>
+<section><h2>Live oracle output</h2>
+<table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
+<tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>no_shapes_loaded</code></td></tr>
+</tbody></table>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* M051 - Bare <mark>GEOMETRIC_SET</mark> / GEOMETRIC_CURVE_SET with non-geometric
+<span class="lineno">3</span> * children, or mesh-as-surfaces.
+<span class="lineno">4</span> * Defect: STEP `<mark>GEOMETRIC_SET</mark>`/`GEOMETRIC_CURVE_SET` may aggregate
+<span class="lineno">5</span> * items beyond curve/surface/point - axis placements, scalar measures,
+<span class="lineno">6</span> * descriptive text - or may be populated only with bounded surfaces
+<span class="lineno">7</span> * with no shell/face superstructure. Many importers reject as
+<span class="lineno">8</span> * &quot;no solid found&quot; or skip silently.
+<span class="lineno">9</span> * This fixture aggregates a LINE + AXIS2_PLACEMENT_3D + descriptive
+<span class="lineno">10</span> * text inside one <mark>GEOMETRIC_SET</mark>, plus a free-standing
+<span class="lineno">11</span> * B_SPLINE_SURFACE_WITH_KNOTS in another - neither has any face/shell
+<span class="lineno">12</span> * wrapping. */
+<span class="lineno">13</span>HEADER;
+<span class="lineno">14</span>FILE_DESCRIPTION((&#x27;M051 test case&#x27;,&#x27;<mark>GEOMETRIC_SET</mark> with non-geometric children and free surfaces&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">15</span>FILE_NAME(&#x27;M051.stp&#x27;,&#x27;2026-04-26T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;auto-generated&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">16</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }&#x27;));
+<span class="lineno">17</span>ENDSEC;
+<span class="lineno">18</span>DATA;
+<span class="lineno">19</span>#1=APPLICATION_CONTEXT(&#x27;automotive_design&#x27;);
+<span class="lineno">20</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,&#x27;automotive_design&#x27;,2000,#1);
+<span class="lineno">21</span>#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">22</span>#11=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+<span class="lineno">23</span>#12=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+<span class="lineno">24</span>#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.E-6),#10,&#x27;distance_accuracy_value&#x27;,&#x27;&#x27;);
+<span class="lineno">25</span>#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+<span class="lineno">26</span>     GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13))
+<span class="lineno">27</span>     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12))
+<span class="lineno">28</span>     REPRESENTATION_CONTEXT(&#x27;part&#x27;,&#x27;3D&#x27;));
+<span class="lineno">29</span>/* A line, an axis placement, and a descriptive text. None of these
+<span class="lineno">30</span> * are valid <mark>GEOMETRIC_SET</mark> children except the line. */
+<span class="lineno">31</span>#100=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">32</span>#101=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">33</span>#102=VECTOR(&#x27;&#x27;,#101,1.0);
+<span class="lineno">34</span>#103=LINE(&#x27;a_line&#x27;,#100,#102);
+<span class="lineno">35</span>#104=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">36</span>#105=AXIS2_PLACEMENT_3D(&#x27;axis_at_origin&#x27;,#100,#104,#101);
+<span class="lineno">37</span>#106=<mark>DESCRIPTIVE_REPRESENTATION_ITEM</mark>(&#x27;label&#x27;,&#x27;this is text not geometry&#x27;);
+<span class="lineno">38</span>/* Defect: <mark>GEOMETRIC_SET</mark> aggregates a LINE, an AXIS2_PLACEMENT and a
+<span class="lineno">39</span> * non-geometric <mark>DESCRIPTIVE_REPRESENTATION_ITEM</mark>. */
+<span class="lineno">40</span>#200=<mark>GEOMETRIC_SET</mark>(&#x27;mixed_set&#x27;,(#103,#105,#106));
+<span class="lineno">41</span>/* Free-standing B-spline surface with no face/shell wrapping. */
+<span class="lineno">42</span>#300=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">43</span>#301=CARTESIAN_POINT(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">44</span>#302=CARTESIAN_POINT(&#x27;&#x27;,(0.0,1.0,0.0));
+<span class="lineno">45</span>#303=CARTESIAN_POINT(&#x27;&#x27;,(1.0,1.0,1.0));
+<span class="lineno">46</span>#310=B_SPLINE_SURFACE_WITH_KNOTS(&#x27;free_surface&#x27;,1,1,
+<span class="lineno">47</span>       ((#300,#301),(#302,#303)),
+<span class="lineno">48</span>       .UNSPECIFIED.,.F.,.F.,.F.,
+<span class="lineno">49</span>       (2,2),(2,2),(0.0,1.0),(0.0,1.0),.UNSPECIFIED.);
+<span class="lineno">50</span>#320=<mark>GEOMETRIC_SET</mark>(&#x27;free_surfaces_only&#x27;,(#310));
+<span class="lineno">51</span>ENDSEC;
+<span class="lineno">52</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="M050.html">&larr; M050</a> <a class="up" href="index.html">§12.8 Mixed (tessellation, validation properties, etc.)</a> <a class="next" href="M052.html">M052 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

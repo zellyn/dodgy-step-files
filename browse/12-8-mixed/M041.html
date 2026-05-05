@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>M041 — Surface transparency (SURFACE_STYLE_TRANSPARENT) ignored on import</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.8 Mixed (tessellation, validation properties, etc.)</a> <span class="sep">/</span> <span class="current">M041</span>
+</nav>
+<header class="title-bar">
+<h1>M041 <span class="sep">—</span> <span class="entry-title">Surface transparency (SURFACE_STYLE_TRANSPARENT) ignored on import</span></h1>
+<p class="category">§12.8 (sub-class: transparency + appearance)</p>
+<p class="severity-badge severity-p1">P1 — silent data loss</p>
+<p class="tag-pills">
+<a class="tag tag-geometry" href="../by-tag/geometry/index.html">geometry</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-8-mixed/M041.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-8-mixed/M041.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>08-occt-gitlog.md (G100)</li>
+<li>OCCT 691711c</li>
+<li>Mantis 0031550</li>
+<li>20-general-forums.md (J009 KiCad → SolidWorks transparency loss)</li>
+</ul></section>
+<section><h2>Description</h2>
+<p>STEP `SURFACE_STYLE_TRANSPARENT` field ignored on import. AP203/AP214 has no first-class alpha; transparency is conventionally encoded via `SURFACE_STYLE_TRANSPARENT`. Producers writing only `COLOUR_RGB` lose alpha; receivers reading only `COLOUR_RGB` ignore alpha when present.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>STEP file with `SURFACE_STYLE_TRANSPARENT(0.5)` on a styled face; or STEP omitting `SURFACE_STYLE_TRANSPARENT` while writing `COLOUR_RGB`.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>heal — read optional `SURFACE_STYLE_TRANSPARENT` if present; default α=1; emit on export when source α&lt;1; assign to XCAF visual attribute.</p></section>
+<section><h2>Notes</h2>
+<p>Synonyms: &quot;surface transparency ignored&quot;, &quot;SURFACE_STYLE_TRANSPARENT lost&quot;, &quot;alpha lost on STEP import&quot;, &quot;transparency not applied&quot;. **See also**: P019.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>contains(b&#x27;SURFACE_STYLE_TRANSPARENT&#x27;)</code></li>
+</ul></section>
+<section><h2>Cross-references</h2>
+<p><a href="../12-6-assembly/P019.html">P019</a></p>
+</section>
+<section><h2>Live oracle output</h2>
+<table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
+<tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>no_shapes_loaded</code></td></tr>
+</tbody></table>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* M041 - Surface transparency (<mark>SURFACE_STYLE_TRANSPARENT</mark>) ignored on
+<span class="lineno">3</span> * import / not emitted on export.
+<span class="lineno">4</span> * Defect: AP203/AP214 has no first-class alpha; transparency is
+<span class="lineno">5</span> * conventionally encoded via <mark>SURFACE_STYLE_TRANSPARENT</mark> inside
+<span class="lineno">6</span> * SURFACE_SIDE_STYLE. Producers writing only COLOUR_RGB lose alpha;
+<span class="lineno">7</span> * receivers reading only COLOUR_RGB ignore alpha when present.
+<span class="lineno">8</span> * This fixture writes a face with alpha=0.5 (50% transparent) AND
+<span class="lineno">9</span> * a separate face that has only COLOUR_RGB (no transparency) - the
+<span class="lineno">10</span> * latter is the &quot;lost&quot; path. Additionally, a third face uses an
+<span class="lineno">11</span> * outright invalid transparency=1.0 (fully invisible). */
+<span class="lineno">12</span>HEADER;
+<span class="lineno">13</span>FILE_DESCRIPTION((&#x27;M041 test case&#x27;,&#x27;<mark>SURFACE_STYLE_TRANSPARENT</mark> and missing alpha&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">14</span>FILE_NAME(&#x27;M041.stp&#x27;,&#x27;2026-04-26T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;auto-generated&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">15</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }&#x27;));
+<span class="lineno">16</span>ENDSEC;
+<span class="lineno">17</span>DATA;
+<span class="lineno">18</span>#1=APPLICATION_CONTEXT(&#x27;automotive_design&#x27;);
+<span class="lineno">19</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,&#x27;automotive_design&#x27;,2000,#1);
+<span class="lineno">20</span>#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">21</span>#11=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+<span class="lineno">22</span>#12=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+<span class="lineno">23</span>#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.E-6),#10,&#x27;distance_accuracy_value&#x27;,&#x27;&#x27;);
+<span class="lineno">24</span>#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+<span class="lineno">25</span>     GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13))
+<span class="lineno">26</span>     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12))
+<span class="lineno">27</span>     REPRESENTATION_CONTEXT(&#x27;part&#x27;,&#x27;3D&#x27;));
+<span class="lineno">28</span>/* Three placeholder representation_items as styling targets. */
+<span class="lineno">29</span>#100=CARTESIAN_POINT(&#x27;face1_marker&#x27;,(0.0,0.0,0.0));
+<span class="lineno">30</span>#101=CARTESIAN_POINT(&#x27;face2_marker&#x27;,(1.0,0.0,0.0));
+<span class="lineno">31</span>#102=CARTESIAN_POINT(&#x27;face3_marker&#x27;,(2.0,0.0,0.0));
+<span class="lineno">32</span>/* Face 1: 50% transparent blue (correct usage). */
+<span class="lineno">33</span>#200=COLOUR_RGB(&#x27;blue&#x27;,0.0,0.0,1.0);
+<span class="lineno">34</span>#201=FILL_AREA_STYLE_COLOUR(&#x27;&#x27;,#200);
+<span class="lineno">35</span>#202=FILL_AREA_STYLE(&#x27;&#x27;,(#201));
+<span class="lineno">36</span>#203=SURFACE_STYLE_FILL_AREA(#202);
+<span class="lineno">37</span>#204=<mark>SURFACE_STYLE_TRANSPARENT</mark>(0.5);
+<span class="lineno">38</span>#205=SURFACE_SIDE_STYLE(&#x27;&#x27;,(#203,#204));
+<span class="lineno">39</span>#206=SURFACE_STYLE_USAGE(.BOTH.,#205);
+<span class="lineno">40</span>#207=PRESENTATION_STYLE_ASSIGNMENT((#206));
+<span class="lineno">41</span>#208=STYLED_ITEM(&#x27;blue_50pct&#x27;,(#207),#100);
+<span class="lineno">42</span>/* Face 2: red, NO <mark>SURFACE_STYLE_TRANSPARENT</mark> - the &quot;lost alpha&quot; path. */
+<span class="lineno">43</span>#300=COLOUR_RGB(&#x27;red&#x27;,1.0,0.0,0.0);
+<span class="lineno">44</span>#301=FILL_AREA_STYLE_COLOUR(&#x27;&#x27;,#300);
+<span class="lineno">45</span>#302=FILL_AREA_STYLE(&#x27;&#x27;,(#301));
+<span class="lineno">46</span>#303=SURFACE_STYLE_FILL_AREA(#302);
+<span class="lineno">47</span>#304=SURFACE_SIDE_STYLE(&#x27;&#x27;,(#303));
+<span class="lineno">48</span>#305=SURFACE_STYLE_USAGE(.BOTH.,#304);
+<span class="lineno">49</span>#306=PRESENTATION_STYLE_ASSIGNMENT((#305));
+<span class="lineno">50</span>#307=STYLED_ITEM(&#x27;red_no_alpha&#x27;,(#306),#101);
+<span class="lineno">51</span>/* Face 3: invalid - alpha = 1.0 (totally invisible). */
+<span class="lineno">52</span>#400=COLOUR_RGB(&#x27;green&#x27;,0.0,1.0,0.0);
+<span class="lineno">53</span>#401=FILL_AREA_STYLE_COLOUR(&#x27;&#x27;,#400);
+<span class="lineno">54</span>#402=FILL_AREA_STYLE(&#x27;&#x27;,(#401));
+<span class="lineno">55</span>#403=SURFACE_STYLE_FILL_AREA(#402);
+<span class="lineno">56</span>#404=<mark>SURFACE_STYLE_TRANSPARENT</mark>(1.0);
+<span class="lineno">57</span>#405=SURFACE_SIDE_STYLE(&#x27;&#x27;,(#403,#404));
+<span class="lineno">58</span>#406=SURFACE_STYLE_USAGE(.BOTH.,#405);
+<span class="lineno">59</span>#407=PRESENTATION_STYLE_ASSIGNMENT((#406));
+<span class="lineno">60</span>#408=STYLED_ITEM(&#x27;green_fully_transparent&#x27;,(#407),#102);
+<span class="lineno">61</span>#500=MECHANICAL_DESIGN_GEOMETRIC_PRESENTATION_REPRESENTATION(
+<span class="lineno">62</span>       &#x27;&#x27;,(#208,#307,#408),#14);
+<span class="lineno">63</span>ENDSEC;
+<span class="lineno">64</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="M040.html">&larr; M040</a> <a class="up" href="index.html">§12.8 Mixed (tessellation, validation properties, etc.)</a> <a class="next" href="M042.html">M042 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

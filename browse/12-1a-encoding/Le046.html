@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Le046 — String literal containing every legal printable ASCII character</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.1a Encoding &amp; string-literal defects</a> <span class="sep">/</span> <span class="current">Le046</span>
+</nav>
+<header class="title-bar">
+<h1>Le046 <span class="sep">—</span> <span class="entry-title">String literal containing every legal printable ASCII character</span></h1>
+<p class="category">§12.1a encoding/strings (sub-class: lexer correctness)</p>
+<p class="severity-badge severity-p1">P1 — silent data loss</p>
+<p class="tag-pills">
+<a class="tag tag-encoding" href="../by-tag/encoding/index.html">encoding</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-1a-encoding/Le046.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-1a-encoding/Le046.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>16-iso-spec ISO 10303-21 Ed.3 §6.4.4 (printable-ASCII string body)</li>
+</ul></section>
+<section><h2>Description</h2>
+<p>A kernel that does not handle every printable-ASCII byte (0x20.0x7E) correctly inside a single string literal will mis-parse one of: embedded apostrophe (must be doubled as `&#x27;&#x27;`), backslash (legal literal in Ed.2 but begins a directive in Ed.3), `=` / `#` / `;` (token boundary characters at outer scope but legal in strings).</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>`PRODUCT.name=&#x27; !&quot;#$%&amp;&#x27;&#x27;()*+,-./0123456789:;&lt;=&gt;?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_&#x27;`&lt;..full printable ASCII..&gt;&#x27;` — exactly one occurrence of each printable ASCII byte.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>Heal and accept: round-trip every printable ASCII byte through encode/decode/storage byte-for-byte; in particular preserve doubled apostrophes (`&#x27;&#x27;`) and the literal backslash form per the active edition.</p></section>
+<section><h2>Notes</h2>
+<p>**See also**: Le036. Synonyms: &quot;string with every printable ASCII&quot;, &quot;STEP literal containing all printable bytes&quot;, &quot;embedded apostrophe and backslash and =&quot;, &quot;round-trip every printable ASCII&quot;, &quot;all-ASCII string literal&quot;.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>matches(rb&quot;&#x27;[^&#x27;]* !\&quot;#&quot;)</code></li>
+<li><code>contains(b&quot;#$%&amp;&quot;)</code></li>
+</ul></section>
+<section><h2>Cross-references</h2>
+<p><a href="Le036.html">Le036</a></p>
+</section>
+<section><h2>Live oracle output</h2>
+<table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
+<tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>warn(W_BARE_BACKSLASH)</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>no_shapes_loaded</code></td></tr>
+</tbody></table>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* Le046 - String literal containing every legal printable ASCII
+<span class="lineno">3</span> * character (0x20..0x7E) including &#x27;, \, =, and #
+<span class="lineno">4</span> * Defect: a kernel that does not handle every printable-ASCII byte
+<span class="lineno">5</span> * correctly inside a single string literal will mis-parse one of:
+<span class="lineno">6</span> * embedded apostrophe (must be doubled as &#x27;&#x27;), backslash (legal
+<span class="lineno">7</span> * literal in Ed.2 but begins a directive in Ed.3), &#x27;=&#x27; / &#x27;#&#x27; / &#x27;;&#x27;
+<span class="lineno">8</span> * (token boundary characters at outer scope but legal in strings).
+<span class="lineno">9</span> * This fixture exercises every printable ASCII byte exactly once
+<span class="lineno">10</span> * inside a single PRODUCT.name. */
+<span class="lineno">11</span>HEADER;
+<span class="lineno">12</span>FILE_DESCRIPTION((&#x27;Le046 - all printable ASCII inside one string literal&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">13</span>FILE_NAME(&#x27;Le046.stp&#x27;,&#x27;2026-04-26T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),
+<span class="lineno">14</span>  &#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">15</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
+<span class="lineno">16</span>ENDSEC;
+<span class="lineno">17</span>DATA;
+<span class="lineno">18</span>#1=APPLICATION_CONTEXT(&#x27;automotive_design&#x27;);
+<span class="lineno">19</span>#2=PRODUCT_CONTEXT(&#x27;part&#x27;,#1,&#x27;mechanical&#x27;);
+<span class="lineno">20</span>/* Defect-witness: every printable ASCII 0x20..0x7E. The two
+<span class="lineno">21</span> * apostrophes are doubled per Ed.3 escape; the single backslash
+<span class="lineno">22</span> * is the literal Ed.2 form (would be \\\\ if interpreted as Ed.3
+<span class="lineno">23</span> * directive sentinel). */
+<span class="lineno">24</span>#10=PRODUCT(<mark>&#x27; !&quot;#$%&amp;</mark>&#x27;&#x27;()*+,-./0123456789:;&lt;=&gt;?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~&#x27;,&#x27;all-printable&#x27;,&#x27;&#x27;,(#2));
+<span class="lineno">25</span>ENDSEC;
+<span class="lineno">26</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Le045.html">&larr; Le045</a> <a class="up" href="index.html">§12.1a Encoding &amp; string-literal defects</a> <a class="next" href="Le047.html">Le047 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

@@ -1,0 +1,25 @@
+# §12.6 Assembly — CONCERN Triage
+
+Triage of the 6 CONCERN entries from `12-6-validation.md` against catalog claims, validate2 outputs in `/tmp/cad-v2-out/12-6-assembly/`, and direct inspection of `.stp` sources.
+
+Triage rule: kernel-mishandling IS the defect. Validator empty-result on assembly-graph defects is informative — OCCT will not transfer non-traversable graphs.
+
+| ID | Catalog defect | Validator (occt/gmsh) | Source-file evidence | Verdict |
+|---|---|---|---|---|
+| A009 | NAUO child references PRODUCT_DEFINITION_SHAPE instead of PRODUCT_DEFINITION (schema-strict reject; heal expected) | empty / empty (accept_silent, n_roots=0, no diagnostic) | `#33 = PRODUCT_DEFINITION_SHAPE`; `#40 = NEXT_ASSEMBLY_USAGE_OCCURRENCE('1','BAD','',#22,#33,$)` — NAUO.related is #33 (PDS), not a PD. Defect literally encoded. | **CONFIRMED** — kernel accepts but produces empty shape; assembly graph not traversed because related-PD slot resolves to wrong type. Empty-result is the kernel-mishandling signal. |
+| A014 | Duplicate EXTERNAL_ANCHOR for same target + orphan EXTERNALLY_DEFINED_ITEM (no wrapper EXTERNALLY_DEFINED_REPRESENTATION) | empty / empty + `Incorrect Syntax` diagnostic | ANCHOR section with two anchors targeting #100; `#90 = EXTERNALLY_DEFINED_ITEM('orphan_face','no wrapper')`. Both EER §7.3.1 + §7.3.2 violations encoded. | **CONFIRMED** — OCCT raises Incorrect Syntax on the ANCHOR section, then transfers nothing. Reject + empty = exactly catalog-claimed reject behavior. |
+| P009 | Helical-sweep SWEPT_SURFACE tessellates garbled at seam | empty / empty + `Incorrect Syntax` | No SWEPT_SURFACE entity defined; only `#105 = POLYLINE('helix_dir',...)` as a discrete-point stand-in for the directrix. The pathological surface is described in comments but not realized as a STEP entity. | **CONCERN-RETAINED** — fixture is a structural placeholder for the helical-sweep scenario; without a real SWEPT_SURFACE+TOROIDAL_SURFACE seam, validator empty result reflects a missing-geometry assembly, not the documented tessellation pathology. The kernel is being handed a polyline-only graph; the helix-seam tessellation defect cannot manifest. Defect is real per FreeCAD #18151 but this fixture does not exercise it. |
+| P011 | AP242 PMI / GD&T / kinematic-joint / saved-view annotations silently discarded | occt empty + `Incorrect Syntax`; **gmsh signal(11) (SIGSEGV)** | `#92 = PLUS_MINUS_TOLERANCE`, `#94 = DATUM`, `#97 = GEOMETRIC_TOLERANCE_WITH_DATUM_REFERENCE`, `#99 = KINEMATIC_JOINT('hinge_joint','revolute',...)`. PMI/GD&T/kinematics entities all present. | **CONFIRMED** (upgraded from CONCERN) — gmsh SIGSEGV is hard kernel-mishandling signal. Per triage rule, signal = CONFIRMED. The "syntax-error chatter" noted in 12-6-validation is the kernel choking on AP242-only PMI semantics — exactly the discard pathology the catalog cites. |
+| P012 | STEP-XML (.stpx) and gzip-compressed (.stpz) variants unsupported | empty / empty + `Incorrect Syntax` | `#42 = DOCUMENT_FILE('linked-side-A.stpz',...,'application/x-stepz')`, `#43 = DOCUMENT_FILE('linked-side-B.stpx',...,'application/x-stepx')` — references compressed/XML side-files via APPLIED_DOCUMENT_REFERENCE. The host file is plain ISO-10303-21; the unsupported variants are referenced, not realized. | **CONFIRMED-WEAK** — fixture cannot literally be a gzipped or XML file inside a `.stp` and still be a STEP-21 stream. The DOCUMENT_FILE-reference encoding is the strongest plain-`.stp` reproducer possible: the kernel cannot resolve the `.stpz`/`.stpx` external references. Empty result + reject = kernel-mishandling per triage rule, even though the underlying defect (refusing to decompress/parse XML) is partly outside what a single .stp file can demonstrate. |
+| P026 | Global OCCT unit setting contaminated across in-process clients (×1000 scaling) | empty / empty + `Incorrect Syntax` | Unit context declares `SI_UNIT(.MILLI.,.METRE.)` but DEFECT comment says coordinates are emitted at ×1000 (10 mm cube → 10000 mm). Process-state contamination encoded as constant-multiplied geometry. | **CONCERN-RETAINED** — catalog explicitly says "Not a file defect — but a class of files that came out wrong because of process state". The fixture represents the resulting file faithfully (coordinates ×1000), but the kernel-mishandling under test is process-level state mutation, not single-file parsing. Empty result is accidental (geometry too sparse) rather than diagnostic of the process-state pathology. Defect is real but not falsifiable from one .stp. |
+
+## Summary
+
+| Verdict | Count | IDs |
+|---|---|---|
+| CONFIRMED | 3 | A009, A014, P011 (upgraded from CONCERN via gmsh signal(11)) |
+| CONFIRMED-WEAK | 1 | P012 (defect partly outside single-.stp scope; reproducer is best-effort encoding) |
+| CONCERN-RETAINED | 2 | P009 (fixture lacks SWEPT_SURFACE entity), P026 (process-state defect, not file defect per catalog) |
+| FAIL | 0 | — |
+
+Combined with the 56 CONFIRMED entries from 12-6-validation.md: **§12.6 final = 60 CONFIRMED/CONFIRMED-WEAK, 2 CONCERN-RETAINED, 0 FAIL** out of 62.

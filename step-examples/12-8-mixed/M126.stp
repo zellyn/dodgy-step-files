@@ -1,0 +1,27 @@
+ISO-10303-21;
+/* M126 - AP203 effectivity periods overlap with conflicting product
+ * configurations.
+ * Defect: two TIME_INTERVAL_BASED_EFFECTIVITY entities cover the same
+ * date range while binding contradictory product-configuration items.
+ * A configuration query at any date in the overlap window can return
+ * either configuration depending on which effectivity was scanned
+ * first - the configuration is non-deterministic. */
+HEADER;
+FILE_DESCRIPTION(('M126 test case','AP203 effectivity overlap conflict'),'2;1');
+FILE_NAME('M126.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('CONFIG_CONTROL_DESIGN'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('configuration controlled 3D design of mechanical parts and assemblies');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','config_control_design',1994,#1);
+#10=PRODUCT('valve_block','valve_block','high-pressure manifold',(#1));
+#20=DATE_AND_TIME(CALENDAR_DATE(2024,1,1),LOCAL_TIME(0,0,0.0,$));
+#21=DATE_AND_TIME(CALENDAR_DATE(2024,12,31),LOCAL_TIME(23,59,59.0,$));
+#22=DATE_AND_TIME(CALENDAR_DATE(2024,6,1),LOCAL_TIME(0,0,0.0,$));
+#23=DATE_AND_TIME(CALENDAR_DATE(2025,5,31),LOCAL_TIME(23,59,59.0,$));
+/* Defect: two effectivities overlap from 2024-06-01 to 2024-12-31 yet
+ * bind different configuration codes for the same product. */
+#100=TIME_INTERVAL_BASED_EFFECTIVITY('config_v1','rev_A',#20,#21);
+#101=TIME_INTERVAL_BASED_EFFECTIVITY('config_v2','rev_B',#22,#23);
+ENDSEC;
+END-ISO-10303-21;

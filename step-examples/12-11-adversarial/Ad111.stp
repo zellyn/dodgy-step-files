@@ -1,0 +1,25 @@
+/* Ad111 - ZIP bomb inside a 3MF / IFCZIP container that wraps a STEP body
+ * Defect: 3MF and IFCZIP are STEP-adjacent ZIP-container formats. A
+ * maliciously-crafted ZIP archive carries one entry whose compressed
+ * bytes are tiny but whose uncompressed bytes claim gigabytes - the
+ * textbook ZIP bomb. Distinct from Ad105 (archive header lies about
+ * size) - in this entry the ZIP entry actually decompresses to the
+ * claimed size. Provenance tier: cross-file-state. */
+ISO-10303-21;
+HEADER;
+FILE_DESCRIPTION(('Ad111 - 3MF/IFCZIP ZIP bomb wrapping STEP body (witness only)'),'2;1');
+FILE_NAME('Ad111.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+/* Witness body: the ZIP-wrapper bomb is not present in this Part-21
+   fixture; the bug-reporter searchable terms (3MF, IFCZIP, ZIP, bomb,
+   ratio) are in this file's header and comments. The actual exploit
+   is a 3MF (.3mf) or IFCZIP (.ifczip) ZIP archive containing one
+   entry whose compressed:uncompressed ratio is 1:5000 and whose
+   decompressed body is multi-gigabyte. */
+/* 3MF ZIP bomb / IFCZIP container ratio bomb */
+#1=APPLICATION_CONTEXT('automotive_design');
+#10=CARTESIAN_POINT('benign',(0.0,0.0,0.0));
+ENDSEC;
+END-ISO-10303-21;

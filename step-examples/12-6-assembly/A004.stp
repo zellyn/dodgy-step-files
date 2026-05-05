@@ -1,0 +1,64 @@
+ISO-10303-21;
+/*
+ * A004 — Missing reference / unresolved NAUO target product
+ * Defect (LOTAR / Rhino "successfully read" / Creo Reference / Inventor):
+ *   A NEXT_ASSEMBLY_USAGE_OCCURRENCE whose related_product_definition resolves
+ *   to nothing — the partner per-component file was lost, the path was
+ *   unreachable, or the component was filtered out. Many readers report
+ *   "successfully read" while silently dropping the component.
+ * Reproducer: split a multi-product assembly into per-component STEP files;
+ *   remove one of the partners; reload the parent.
+ * Expected kernel: reject as invalid 10303-21 reference, or accept and emit a
+ *   per-product diagnostic with non-zero skipped-count return.
+ *
+ * NOTE: this file is intentionally INVALID Part-21 (NAUO #41 references
+ *   undefined entity #99999). Catalog use only.
+ */
+HEADER;
+FILE_DESCRIPTION(('A004 NAUO references undefined PRODUCT_DEFINITION'),'2;1');
+FILE_NAME('A004.stp','2026-04-26T00:00:00',('catalog'),('cad'),'manual','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#10 = APPLICATION_CONTEXT('automotive design');
+#11 = APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2001,#10);
+#12 = PRODUCT_CONTEXT('',#10,'mechanical');
+#13 = PRODUCT_DEFINITION_CONTEXT('part definition',#10,'design');
+/* Parent assembly */
+#20 = PRODUCT('A004_ASSY','assembly with broken NAUO','',(#12));
+#21 = PRODUCT_DEFINITION_FORMATION('','',#20);
+#22 = PRODUCT_DEFINITION('design','',#21,#13);
+#23 = PRODUCT_DEFINITION_SHAPE('','',#22);
+/* Resolved child */
+#30 = PRODUCT('GOOD_PART','resolved part','',(#12));
+#31 = PRODUCT_DEFINITION_FORMATION('','',#30);
+#32 = PRODUCT_DEFINITION('design','',#31,#13);
+#33 = PRODUCT_DEFINITION_SHAPE('','',#32);
+/* Good NAUO */
+#40 = NEXT_ASSEMBLY_USAGE_OCCURRENCE('1','OK','',#22,#32,$);
+/* DEFECT: NAUO #41 references #99999 which does NOT exist in the file.
+   Lenient readers report "successfully read" while silently dropping. */
+#41 = NEXT_ASSEMBLY_USAGE_OCCURRENCE('2','MISSING','',#22,#99999,$);
+/* Units */
+#50 = ( LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT(.MILLI.,.METRE.) );
+#51 = ( NAMED_UNIT(*) PLANE_ANGLE_UNIT() SI_UNIT($,.RADIAN.) );
+#52 = ( NAMED_UNIT(*) SI_UNIT($,.STERADIAN.) SOLID_ANGLE_UNIT() );
+#53 = UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#50,'distance_accuracy_value','');
+#54 = ( GEOMETRIC_REPRESENTATION_CONTEXT(3) GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#53))
+        GLOBAL_UNIT_ASSIGNED_CONTEXT((#50,#51,#52)) REPRESENTATION_CONTEXT('','3D') );
+/* Resolved child representation */
+#60 = CARTESIAN_POINT('',(0.0,0.0,0.0));
+#61 = DIRECTION('',(0.0,0.0,1.0));
+#62 = DIRECTION('',(1.0,0.0,0.0));
+#63 = AXIS2_PLACEMENT_3D('good_origin',#60,#61,#62);
+#64 = SHAPE_REPRESENTATION('good_rep',(#63),#54);
+#65 = SHAPE_DEFINITION_REPRESENTATION(#33,#64);
+#66 = REPRESENTATION_MAP(#63,#64);
+#67 = MAPPED_ITEM('good_inst',#66,#63);
+/* Parent aggregator */
+#80 = CARTESIAN_POINT('',(0.0,0.0,0.0));
+#81 = AXIS2_PLACEMENT_3D('assy_origin',#80,#61,#62);
+#82 = SHAPE_REPRESENTATION('assy_rep',(#81,#67),#54);
+#83 = SHAPE_DEFINITION_REPRESENTATION(#23,#82);
+ENDSEC;
+END-ISO-10303-21;

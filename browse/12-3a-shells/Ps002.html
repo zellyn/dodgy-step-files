@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Ps002 — FACE_OUTER_BOUND traversed CW; inner loop traversed CCW</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.3a Shells / orientation</a> <span class="sep">/</span> <span class="current">Ps002</span>
+</nav>
+<header class="title-bar">
+<h1>Ps002 <span class="sep">—</span> <span class="entry-title">FACE_OUTER_BOUND traversed CW; inner loop traversed CCW</span></h1>
+<p class="category">§12.3a shells / orientation (sub-class: pathological-success / loop-orientation)</p>
+<p class="severity-badge severity-p1">P1 — silent data loss</p>
+<p class="tag-pills">
+<a class="tag tag-topology" href="../by-tag/topology/index.html">topology</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-3a-shells/Ps002.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-3a-shells/Ps002.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>deduced from FACE_OUTER_BOUND vs FACE_BOUND semantics</li>
+<li>bug-report patterns &quot;face inside-out&quot;, &quot;hole in plate appears solid and surround appears empty&quot;, &quot;boolean subtraction adds material instead&quot;</li>
+</ul></section>
+<section><h2>Description</h2>
+<p>A planar face with a rectangular hole. The FACE_OUTER_BOUND&#x27;s loop is traversed clockwise (when viewed from the surface&#x27;s positive side), while the inner FACE_BOUND is traversed counter-clockwise. Both loops close, both are simple, but the inside/outside semantics of the face are swapped: the kernel &quot;sees&quot; material where the producer intended a hole, and a hole where the producer intended material. Kernel accepts the file silently; tier-3 introspection (signed area of each loop relative to the face&#x27;s surface normal) reveals outer and inner are reversed.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>Plane at z=0 (10x10 outer rectangle, 4x4 inner hole). Outer loop visits corners CW seen from +Z. Inner loop visits corners CCW. Wrap as ADVANCED_FACE / OPEN_SHELL / SHELL_BASED_SURFACE_MODEL / MANIFOLD_SURFACE_SHAPE_REPRESENTATION.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>Verify loop orientations against the face surface normal — outer loops CCW, inner loops CW (or whatever convention the kernel chooses), and either flip non-conforming loops, reject the face, or report the inversion. Should not silently produce a face whose point-membership predicate is the complement of the producer&#x27;s intent.</p></section>
+<section><h2>Notes</h2>
+<p>Tier-3 metric: signed area of each loop. Outer should have positive signed area; inner negative. This fixture has them reversed. Synonyms: &quot;face inside-out&quot;, &quot;hole in plate appears solid&quot;, &quot;boolean subtraction adds material&quot;, &quot;inner and outer loops swapped&quot;, &quot;hole loop winds same direction as outer&quot;.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=shape(1)/shape(1) gmsh=shape(17) ifc=schema_n/a</code></p></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>n_edges_total &gt;= 8</code></li>
+<li><code>face[0].surface_type == &quot;plane&quot;</code></li>
+<li><code>n_vertices_total &gt;= 16</code></li>
+</ul></section>
+<section><h2>Live oracle output</h2>
+<table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
+<tr><td><code>occt_heal_on</code></td><td><code>shape(1)</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>shape(1)</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>shape(17)</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>shape(17)</code></td></tr>
+<tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>not_manifold</code></td></tr>
+</tbody></table>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>/* Ps002 - FACE_OUTER_BOUND traversed clockwise; inner loop traversed CCW - kernel accepts file silently; tier-3 introspection reveals &quot;inside&quot; and &quot;outside&quot; of the face are swapped */
+<span class="lineno">2</span>ISO-10303-21;
+<span class="lineno">3</span>HEADER;
+<span class="lineno">4</span>FILE_DESCRIPTION((&#x27;Ps002 pathological-success&#x27;,&#x27;Outer/inner loop orientations swapped&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">5</span>FILE_NAME(&#x27;Ps002.stp&#x27;,&#x27;2026-04-26T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;manual&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">6</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }&#x27;));
+<span class="lineno">7</span>ENDSEC;
+<span class="lineno">8</span>DATA;
+<span class="lineno">9</span>#1=APPLICATION_CONTEXT(&#x27;automotive_design&#x27;);
+<span class="lineno">10</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,&#x27;automotive_design&#x27;,2000,#1);
+<span class="lineno">11</span>/* Plate 10x10 in z=0 plane with a 4x4 square hole at center.
+<span class="lineno">12</span>   Plate corners: (0,0), (10,0), (10,10), (0,10).
+<span class="lineno">13</span>   Hole corners:  (3,3), (7,3),  (7,7),  (3,7). */
+<span class="lineno">14</span>#100=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">15</span>#101=CARTESIAN_POINT(&#x27;&#x27;,(10.0,0.0,0.0));
+<span class="lineno">16</span>#102=CARTESIAN_POINT(&#x27;&#x27;,(10.0,10.0,0.0));
+<span class="lineno">17</span>#103=CARTESIAN_POINT(&#x27;&#x27;,(0.0,10.0,0.0));
+<span class="lineno">18</span>#104=CARTESIAN_POINT(&#x27;&#x27;,(3.0,3.0,0.0));
+<span class="lineno">19</span>#105=CARTESIAN_POINT(&#x27;&#x27;,(7.0,3.0,0.0));
+<span class="lineno">20</span>#106=CARTESIAN_POINT(&#x27;&#x27;,(7.0,7.0,0.0));
+<span class="lineno">21</span>#107=CARTESIAN_POINT(&#x27;&#x27;,(3.0,7.0,0.0));
+<span class="lineno">22</span>#110=VERTEX_POINT(&#x27;&#x27;,#100); #111=VERTEX_POINT(&#x27;&#x27;,#101);
+<span class="lineno">23</span>#112=VERTEX_POINT(&#x27;&#x27;,#102); #113=VERTEX_POINT(&#x27;&#x27;,#103);
+<span class="lineno">24</span>#114=VERTEX_POINT(&#x27;&#x27;,#104); #115=VERTEX_POINT(&#x27;&#x27;,#105);
+<span class="lineno">25</span>#116=VERTEX_POINT(&#x27;&#x27;,#106); #117=VERTEX_POINT(&#x27;&#x27;,#107);
+<span class="lineno">26</span>/* Plane normal +Z so CCW = outward-facing; outer loop should be CCW. */
+<span class="lineno">27</span>#200=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">28</span>#201=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">29</span>#210=CARTESIAN_POINT(&#x27;&#x27;,(5.0,5.0,0.0));
+<span class="lineno">30</span>#211=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#210,#200,#201);
+<span class="lineno">31</span>#212=PLANE(&#x27;&#x27;,#211);
+<span class="lineno">32</span>/* Edges - outer rectangle */
+<span class="lineno">33</span>#300=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0)); #301=VECTOR(&#x27;&#x27;,#300,1.0);
+<span class="lineno">34</span>#302=DIRECTION(&#x27;&#x27;,(0.0,1.0,0.0)); #303=VECTOR(&#x27;&#x27;,#302,1.0);
+<span class="lineno">35</span>#310=LINE(&#x27;&#x27;,#100,#301); #311=EDGE_CURVE(&#x27;&#x27;,#110,#111,#310,.T.);
+<span class="lineno">36</span>#312=LINE(&#x27;&#x27;,#101,#303); #313=EDGE_CURVE(&#x27;&#x27;,#111,#112,#312,.T.);
+<span class="lineno">37</span>#314=LINE(&#x27;&#x27;,#103,#301); #315=EDGE_CURVE(&#x27;&#x27;,#113,#112,#314,.T.);
+<span class="lineno">38</span>#316=LINE(&#x27;&#x27;,#100,#303); #317=EDGE_CURVE(&#x27;&#x27;,#110,#113,#316,.T.);
+<span class="lineno">39</span>/* Edges - inner rectangle (hole) */
+<span class="lineno">40</span>#320=LINE(&#x27;&#x27;,#104,#301); #321=EDGE_CURVE(&#x27;&#x27;,#114,#115,#320,.T.);
+<span class="lineno">41</span>#322=LINE(&#x27;&#x27;,#105,#303); #323=EDGE_CURVE(&#x27;&#x27;,#115,#116,#322,.T.);
+<span class="lineno">42</span>#324=LINE(&#x27;&#x27;,#107,#301); #325=EDGE_CURVE(&#x27;&#x27;,#117,#116,#324,.T.);
+<span class="lineno">43</span>#326=LINE(&#x27;&#x27;,#104,#303); #327=EDGE_CURVE(&#x27;&#x27;,#114,#117,#326,.T.);
+<span class="lineno">44</span>/* DEFECT: outer loop traversed clockwise (110-&gt;113-&gt;112-&gt;111-&gt;110)
+<span class="lineno">45</span>   when viewed from +Z; this is opposite to the CCW convention.
+<span class="lineno">46</span>   Inner hole loop traversed CCW (114-&gt;115-&gt;116-&gt;117-&gt;114) -- which is
+<span class="lineno">47</span>   the convention for OUTER loops, not inner. The two are swapped. */
+<span class="lineno">48</span>#400=ORIENTED_EDGE(&#x27;&#x27;,*,*,#317,.T.);
+<span class="lineno">49</span>#401=ORIENTED_EDGE(&#x27;&#x27;,*,*,#315,.T.);
+<span class="lineno">50</span>#402=ORIENTED_EDGE(&#x27;&#x27;,*,*,#313,.F.);
+<span class="lineno">51</span>#403=ORIENTED_EDGE(&#x27;&#x27;,*,*,#311,.F.);
+<span class="lineno">52</span>#404=EDGE_LOOP(&#x27;outer_CW&#x27;,(#400,#401,#402,#403));
+<span class="lineno">53</span>#405=FACE_OUTER_BOUND(&#x27;outer_bound&#x27;,#404,.T.);
+<span class="lineno">54</span>/* Inner hole loop CCW (should be CW when viewed from +Z) */
+<span class="lineno">55</span>#410=ORIENTED_EDGE(&#x27;&#x27;,*,*,#321,.T.);
+<span class="lineno">56</span>#411=ORIENTED_EDGE(&#x27;&#x27;,*,*,#323,.T.);
+<span class="lineno">57</span>#412=ORIENTED_EDGE(&#x27;&#x27;,*,*,#325,.F.);
+<span class="lineno">58</span>#413=ORIENTED_EDGE(&#x27;&#x27;,*,*,#327,.F.);
+<span class="lineno">59</span>#414=EDGE_LOOP(&#x27;inner_CCW&#x27;,(#410,#411,#412,#413));
+<span class="lineno">60</span>#415=FACE_BOUND(&#x27;inner_bound&#x27;,#414,.T.);
+<span class="lineno">61</span>#420=ADVANCED_FACE(&#x27;inverted_loops&#x27;,(#405,#415),#212,.T.);
+<span class="lineno">62</span>/* Wrap as a shell-based surface model so the file loads. */
+<span class="lineno">63</span>#500=OPEN_SHELL(&#x27;plate_shell&#x27;,(#420));
+<span class="lineno">64</span>#510=SHELL_BASED_SURFACE_MODEL(&#x27;plate&#x27;,(#500));
+<span class="lineno">65</span>/* PRODUCT chain so OCCT TransferRoots produces a shape. */
+<span class="lineno">66</span>#9000=PRODUCT_CONTEXT(&#x27;&#x27;,#1,&#x27;mechanical&#x27;);
+<span class="lineno">67</span>#9001=PRODUCT(&#x27;Ps002&#x27;,&#x27;Ps002&#x27;,&#x27;&#x27;,(#9000));
+<span class="lineno">68</span>#9002=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#9001);
+<span class="lineno">69</span>#9003=PRODUCT_DEFINITION_CONTEXT(&#x27;part definition&#x27;,#1,&#x27;design&#x27;);
+<span class="lineno">70</span>#9004=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,#9002,#9003);
+<span class="lineno">71</span>#9005=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,#9004);
+<span class="lineno">72</span>#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">73</span>#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+<span class="lineno">74</span>#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+<span class="lineno">75</span>#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,&#x27;distance_accuracy_value&#x27;,&#x27;&#x27;);
+<span class="lineno">76</span>#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT(&#x27;&#x27;,&#x27;3D&#x27;));
+<span class="lineno">77</span>#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION(&#x27;&#x27;,(#510),#9010);
+<span class="lineno">78</span>#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+<span class="lineno">79</span>ENDSEC;
+<span class="lineno">80</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Ps001.html">&larr; Ps001</a> <a class="up" href="index.html">§12.3a Shells / orientation</a> <a class="next" href="Ps003.html">Ps003 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

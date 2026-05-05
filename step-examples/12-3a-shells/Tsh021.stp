@@ -1,0 +1,65 @@
+ISO-10303-21;
+/* Tsh021 - Non-manifold vertex (bowtie / hourglass / fan-of-fans)
+ * Defect: A vertex whose 1-ring is not a single fan -- touching cones,
+ * bowtie meshes (two fans glued at a single point). Common when two
+ * solids touch at exactly one vertex (hourglass). Sources: H009, H010,
+ * H042 (CGAL/Manifold), L012, L047 (Attene 2013).
+ *
+ * This file: two square plates meeting at exactly one corner vertex
+ *  - Plate A: 0,0,0 1,0,0 1,1,0 0,1,0
+ *  - Plate B: 1,1,0 2,1,0 2,2,0 1,2,0
+ * They share VERTEX_POINT #112 (the (1,1,0) vertex) but no edge -- the
+ * topology forms an "hourglass" / bowtie at that vertex. */
+HEADER;
+FILE_DESCRIPTION(('Tsh021 test case','Non-manifold bowtie vertex'),'2;1');
+FILE_NAME('Tsh021.stp','2026-04-26T00:00:00',(''),(''),'auto-generated','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+/* Plate A vertices */
+#100=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#101=CARTESIAN_POINT('',(1.0,0.0,0.0));
+#102=CARTESIAN_POINT('',(1.0,1.0,0.0));
+#103=CARTESIAN_POINT('',(0.0,1.0,0.0));
+/* Plate B vertices -- shares #102 with plate A */
+#104=CARTESIAN_POINT('',(2.0,1.0,0.0));
+#105=CARTESIAN_POINT('',(2.0,2.0,0.0));
+#106=CARTESIAN_POINT('',(1.0,2.0,0.0));
+#110=VERTEX_POINT('',#100); #111=VERTEX_POINT('',#101);
+/* Single shared bowtie vertex */
+#112=VERTEX_POINT('shared_NM_vertex',#102);
+#113=VERTEX_POINT('',#103);
+#114=VERTEX_POINT('',#104); #115=VERTEX_POINT('',#105);
+#116=VERTEX_POINT('',#106);
+#200=DIRECTION('',(0.0,0.0,1.0)); #201=DIRECTION('',(1.0,0.0,0.0));
+#211=AXIS2_PLACEMENT_3D('',#100,#200,#201); #212=PLANE('plate_A_plane',#211);
+#221=AXIS2_PLACEMENT_3D('',#102,#200,#201); #222=PLANE('plate_B_plane',#221);
+#300=DIRECTION('',(1.0,0.0,0.0)); #301=VECTOR('',#300,1.0);
+#302=DIRECTION('',(0.0,1.0,0.0)); #303=VECTOR('',#302,1.0);
+/* Plate A edges */
+#310=LINE('',#100,#301); #311=EDGE_CURVE('',#110,#111,#310,.T.);
+#312=LINE('',#101,#303); #313=EDGE_CURVE('',#111,#112,#312,.T.);
+#314=LINE('',#103,#301); #315=EDGE_CURVE('',#113,#112,#314,.T.);
+#316=LINE('',#100,#303); #317=EDGE_CURVE('',#110,#113,#316,.T.);
+/* Plate B edges (B does NOT share any edge with A, only vertex #112) */
+#318=LINE('',#102,#301); #319=EDGE_CURVE('',#112,#114,#318,.T.);
+#320=LINE('',#104,#303); #321=EDGE_CURVE('',#114,#115,#320,.T.);
+#322=LINE('',#106,#301); #323=EDGE_CURVE('',#116,#115,#322,.T.);
+#324=LINE('',#102,#303); #325=EDGE_CURVE('',#112,#116,#324,.T.);
+/* Plate A face */
+#400=ORIENTED_EDGE('',*,*,#311,.T.); #401=ORIENTED_EDGE('',*,*,#313,.T.);
+#402=ORIENTED_EDGE('',*,*,#315,.F.); #403=ORIENTED_EDGE('',*,*,#317,.F.);
+#404=EDGE_LOOP('',(#400,#401,#402,#403)); #405=FACE_OUTER_BOUND('',#404,.T.);
+#406=ADVANCED_FACE('plate_A',(#405),#212,.T.);
+/* Plate B face */
+#410=ORIENTED_EDGE('',*,*,#319,.T.); #411=ORIENTED_EDGE('',*,*,#321,.T.);
+#412=ORIENTED_EDGE('',*,*,#323,.F.); #413=ORIENTED_EDGE('',*,*,#325,.F.);
+#414=EDGE_LOOP('',(#410,#411,#412,#413)); #415=FACE_OUTER_BOUND('',#414,.T.);
+#416=ADVANCED_FACE('plate_B',(#415),#222,.T.);
+/* Defect: shell joining two faces that share only a point */
+#500=OPEN_SHELL('bowtie',(#406,#416));
+#510=SHELL_BASED_SURFACE_MODEL('hourglass',(#500));
+ENDSEC;
+END-ISO-10303-21;

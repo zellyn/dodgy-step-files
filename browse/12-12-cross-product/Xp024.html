@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Xp024 — Tessellated topology × shared shell × void containment in one fixture</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.12 Cross-product</a> <span class="sep">/</span> <span class="current">Xp024</span>
+</nav>
+<header class="title-bar">
+<h1>Xp024 <span class="sep">—</span> <span class="entry-title">Tessellated topology × shared shell × void containment in one fixture</span></h1>
+<p class="category">§12.12 cross-product (topology × validation)</p>
+<p class="tag-pills">
+<a class="tag tag-silent-loss" href="../by-tag/silent-loss/index.html">silent-loss</a>
+<a class="tag tag-interop" href="../by-tag/interop/index.html">interop</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-12-cross-product/Xp024.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-12-cross-product/Xp024.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>synthesized cross-product</li>
+</ul></section>
+<section><h2>Description</h2>
+<p>One fixture combines three topology defects across the BREP_WITH_VOIDS / shared-shell / tessellated-topology axes. (1) A `BREP_WITH_VOIDS` carries an inner shell that pokes through the outer shell along Z. (2) The outer shell is referenced from a second `MANIFOLD_SOLID_BREP` in the same SHAPE_REPRESENTATION (shell aliasing). (3) A parallel `TESSELLATED_SHELL_REPRESENTATION` carries faces that mix shell-level and per-face COORDINATES_LIST without consistent connectivity. Receivers diverge on which defect to surface first. Bug-reporter language: &quot;STEP file fails three ways at once&quot;, &quot;void escapes part AND shell shared AND tessellated mismatch&quot;.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>outer cube CLOSED_SHELL `#100` of 10×10×10 mm; inner pin CLOSED_SHELL `#101` of 2×2×15 mm centred on cube centre (pokes ±2.5 mm); BREP_WITH_VOIDS `#200` referencing `#100` and `#101`; a second MANIFOLD_SOLID_BREP `#201` referencing the same outer shell `#100`; alongside, a TESSELLATED_SHELL_REPRESENTATION `#300` with mixed shell-level and per-face node lists.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>each defect surfaced independently; the order of diagnostics is documented; the kernel does not silently accept any one defect because the others are louder.</p></section>
+<section><h2>Notes</h2>
+<p>**See also**: Tsh065, Tsh066, Tsh067. **OCC behavior**: silently accepts (no diagnostic, empty result); catalog disallows silent-accept. Kernel-bug witnessed: receivers enforcing the spec must reject (or surface a diagnostic) — silent acceptance defeats the catalog&#x27;s stated invariant.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>contains(b&#x27;FILE_SCHEMA&#x27;)</code></li>
+<li><code>contains(b&#x27;ADVANCED_FACE&#x27;)</code></li>
+</ul></section>
+<section><h2>Cross-references</h2>
+<p><a href="../12-3a-shells/Tsh065.html">Tsh065</a>, <a href="../12-3a-shells/Tsh066.html">Tsh066</a>, <a href="../12-3a-shells/Tsh067.html">Tsh067</a></p>
+</section>
+<section><h2>Live oracle output</h2>
+<table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
+<tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>no_shapes_loaded</code></td></tr>
+</tbody></table>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>/* Xp024 - Tessellated topology x shared shell x void containment combined
+<span class="lineno">2</span> * Defect: combines Tsh065 (tess shared-node ambiguity), Tsh066 (shell
+<span class="lineno">3</span> * aliased between two solids), Tsh067 (void pokes through outer). Each
+<span class="lineno">4</span> * defect surfaced independently; receiver must not silently accept any
+<span class="lineno">5</span> * one because the others are louder. */
+<span class="lineno">6</span>ISO-10303-21;
+<span class="lineno">7</span>HEADER;
+<span class="lineno">8</span>FILE_DESCRIPTION((&#x27;Xp024 - tessellation x shared shell x void containment&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">9</span>FILE_NAME(&#x27;Xp024.stp&#x27;,&#x27;2026-04-30T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">10</span><mark>FILE_SCHEMA</mark>((&#x27;AP242_MANAGED_MODEL_BASED_3D_ENGINEERING_MIM_LF { 1 0 10303 442 1 1 4 }&#x27;));
+<span class="lineno">11</span>ENDSEC;
+<span class="lineno">12</span>DATA;
+<span class="lineno">13</span>#1=APPLICATION_CONTEXT(&#x27;managed model based 3d engineering&#x27;);
+<span class="lineno">14</span>#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">15</span>#11=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+<span class="lineno">16</span>#12=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+<span class="lineno">17</span>#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#10,&#x27;tol&#x27;,&#x27;&#x27;);
+<span class="lineno">18</span>#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3) GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13)) GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12)) REPRESENTATION_CONTEXT(&#x27;&#x27;,&#x27;3D&#x27;));
+<span class="lineno">19</span>#20=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">20</span>#21=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">21</span>#22=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">22</span>#23=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#20,#21,#22);
+<span class="lineno">23</span>#24=PLANE(&#x27;&#x27;,#23);
+<span class="lineno">24</span>/* Outer cube faces. */
+<span class="lineno">25</span>#30=<mark>ADVANCED_FACE</mark>(&#x27;out_top&#x27;,(),#24,.T.);
+<span class="lineno">26</span>#31=<mark>ADVANCED_FACE</mark>(&#x27;out_bottom&#x27;,(),#24,.T.);
+<span class="lineno">27</span>#32=<mark>ADVANCED_FACE</mark>(&#x27;out_xpos&#x27;,(),#24,.T.);
+<span class="lineno">28</span>#33=<mark>ADVANCED_FACE</mark>(&#x27;out_xneg&#x27;,(),#24,.T.);
+<span class="lineno">29</span>#34=<mark>ADVANCED_FACE</mark>(&#x27;out_ypos&#x27;,(),#24,.T.);
+<span class="lineno">30</span>#35=<mark>ADVANCED_FACE</mark>(&#x27;out_yneg&#x27;,(),#24,.T.);
+<span class="lineno">31</span>#100=CLOSED_SHELL(&#x27;outer_cube&#x27;,(#30,#31,#32,#33,#34,#35));
+<span class="lineno">32</span>/* Inner pin shell pokes through outer. */
+<span class="lineno">33</span>#40=<mark>ADVANCED_FACE</mark>(&#x27;void_top_z+7p5&#x27;,(),#24,.T.);
+<span class="lineno">34</span>#41=<mark>ADVANCED_FACE</mark>(&#x27;void_bottom_z-7p5&#x27;,(),#24,.T.);
+<span class="lineno">35</span>#42=<mark>ADVANCED_FACE</mark>(&#x27;void_xpos&#x27;,(),#24,.T.);
+<span class="lineno">36</span>#43=<mark>ADVANCED_FACE</mark>(&#x27;void_xneg&#x27;,(),#24,.T.);
+<span class="lineno">37</span>#44=<mark>ADVANCED_FACE</mark>(&#x27;void_ypos&#x27;,(),#24,.T.);
+<span class="lineno">38</span>#45=<mark>ADVANCED_FACE</mark>(&#x27;void_yneg&#x27;,(),#24,.T.);
+<span class="lineno">39</span>#101=CLOSED_SHELL(&#x27;void_pin_pokes_through&#x27;,(#40,#41,#42,#43,#44,#45));
+<span class="lineno">40</span>#102=ORIENTED_CLOSED_SHELL(&#x27;&#x27;,#101,.F.);
+<span class="lineno">41</span>/* BREP_WITH_VOIDS uses outer #100 plus inner #102 (poking-through). */
+<span class="lineno">42</span>#200=BREP_WITH_VOIDS(&#x27;block_with_protruding_void&#x27;,#100,(#102));
+<span class="lineno">43</span>/* Second body aliasing the same outer shell #100. */
+<span class="lineno">44</span>#201=MANIFOLD_SOLID_BREP(&#x27;aliased_solid_b&#x27;,#100);
+<span class="lineno">45</span>/* Tessellated shell with mixed shell-level / per-face node lists. */
+<span class="lineno">46</span>#310=COORDINATES_LIST(&#x27;shell_nodes&#x27;,4,((0.0,0.0,0.0),(1.0,0.0,0.0),(1.0,1.0,0.0),(0.0,1.0,0.0)));
+<span class="lineno">47</span>#311=TRIANGULATED_FACE(&#x27;tess_face_A&#x27;,#310,$,$,((1,2,3),(1,3,4)),$);
+<span class="lineno">48</span>#320=COORDINATES_LIST(&#x27;face_B_private&#x27;,4,((1.0,0.0,0.0),(2.0,0.0,0.0),(2.0,1.0,0.0),(1.0,1.0,0.0)));
+<span class="lineno">49</span>#321=TRIANGULATED_FACE(&#x27;tess_face_B&#x27;,#320,$,$,((1,2,3),(1,3,4)),$);
+<span class="lineno">50</span>#300=TESSELLATED_SHELL_REPRESENTATION(&#x27;tess_shell_mixed_nodes&#x27;,(#311,#321),#14);
+<span class="lineno">51</span>ENDSEC;
+<span class="lineno">52</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Xp023.html">&larr; Xp023</a> <a class="up" href="index.html">§12.12 Cross-product</a> <a class="next" href="Xp025.html">Xp025 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

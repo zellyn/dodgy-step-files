@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Gs009 — Self-intersecting / figure-eight `EDGE_LOOP` wire on planar face (non-simple polygon)</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.2c Surface / curve degeneracies</a> <span class="sep">/</span> <span class="current">Gs009</span>
+</nav>
+<header class="title-bar">
+<h1>Gs009 <span class="sep">—</span> <span class="entry-title">Self-intersecting / figure-eight `EDGE_LOOP` wire on planar face (non-simple polygon)</span></h1>
+<p class="category">§12.2c surface-degeneracy</p>
+<p class="severity-badge severity-p1">P1 — silent data loss</p>
+<p class="tag-pills">
+<a class="tag tag-geometry" href="../by-tag/geometry/index.html">geometry</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-2c-surfaces/Gs009.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-2c-surfaces/Gs009.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>F014, F015, F016, F019, F020, R024, R025, G015, G071, J012, W006, X004, L041</li>
+</ul></section>
+<section><h2>Sender</h2>
+<p>SAT-imported faces (G071); various</p></section>
+<section><h2>Description</h2>
+<p>Family of self-intersection defects on a planar `ADVANCED_FACE` outer wire: an `EDGE_LOOP` whose underlying `LINE` segments cross each other (e.g. visiting four corners in the order (0,0)→(10,10)→(10,0)→(0,10)→(0,0), forming a figure-eight / non-simple polygon); a single edge whose 3D curve self-loops; two adjacent edges crossing at a vertex; outer/inner wires that overlap. STEP-imported wires from poor curve discretization or grazing intersections. Healing passes can address each, but tolerance can balloon.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>B-spline edge with control polygon producing a figure-eight inside `[u_first, u_last]`; or wire with two edges whose 3D curves cross at an interior point off any vertex; or wire passing through same vertex twice.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>heal — re-fit/sub-set self-intersecting curves; remove overlap tails on split-at-seam wires; cap tolerance inflation when healing.</p></section>
+<section><h2>Notes</h2>
+<p>**See also**: Gp008, Tsh039, Twi010, Twi039, Twi040. Synonyms: &quot;self-intersecting EDGE_LOOP wire&quot;, &quot;figure-eight outer wire on planar face&quot;, &quot;non-simple polygon wire crosses itself&quot;, &quot;edge loop visits corners in wrong order&quot;, &quot;wire edges cross each other at interior point&quot;.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>contains(b&#x27;EDGE_LOOP(&#x27;)</code></li>
+<li><code>count_entity_def(b&#x27;ORIENTED_EDGE&#x27;) == 4</code></li>
+<li><code>count_entity_def(b&#x27;EDGE_CURVE&#x27;) == 4</code></li>
+</ul></section>
+<section><h2>Cross-references</h2>
+<p><a href="../12-2a-pcurves/Gp008.html">Gp008</a>, <a href="../12-3a-shells/Tsh039.html">Tsh039</a>, <a href="../12-3b-wires/Twi010.html">Twi010</a>, <a href="../12-3b-wires/Twi039.html">Twi039</a>, <a href="../12-3b-wires/Twi040.html">Twi040</a></p>
+</section>
+<section><h2>Live oracle output</h2>
+<table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
+<tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>no_shapes_loaded</code></td></tr>
+</tbody></table>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* Gs009 - Self-intersecting wire / 3D curve loop on planar face
+<span class="lineno">3</span> * Defect: An EDGE_LOOP whose 3D edges cross at an interior point off any vertex,
+<span class="lineno">4</span> * producing a figure-eight wire. ShapeFix_Wire::FixSelfIntersectingEdge /
+<span class="lineno">5</span> * FixIntersectingEdges / FixLoopWire must heal; raw geometry is not Jordan-simple. */
+<span class="lineno">6</span>HEADER;
+<span class="lineno">7</span>FILE_DESCRIPTION((&#x27;Gs009 test case&#x27;,&#x27;Self-intersecting wire on planar face&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">8</span>FILE_NAME(&#x27;Gs009.stp&#x27;,&#x27;2026-04-26T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;auto-generated&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">9</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }&#x27;));
+<span class="lineno">10</span>ENDSEC;
+<span class="lineno">11</span>DATA;
+<span class="lineno">12</span>#1=APPLICATION_CONTEXT(&#x27;automotive_design&#x27;);
+<span class="lineno">13</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,&#x27;automotive_design&#x27;,2000,#1);
+<span class="lineno">14</span>#10=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">15</span>#11=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">16</span>#12=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">17</span>#13=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#10,#11,#12);
+<span class="lineno">18</span>#20=PLANE(&#x27;&#x27;,#13);
+<span class="lineno">19</span>/* Four vertices forming a non-simple bow-tie quadrilateral in the XY plane:
+<span class="lineno">20</span> * (0,0) - (10,10) - (10,0) - (0,10) - back to (0,0).  Diagonals cross at (5,5). */
+<span class="lineno">21</span>#30=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">22</span>#31=VERTEX_POINT(&#x27;&#x27;,#30);
+<span class="lineno">23</span>#32=CARTESIAN_POINT(&#x27;&#x27;,(10.0,10.0,0.0));
+<span class="lineno">24</span>#33=VERTEX_POINT(&#x27;&#x27;,#32);
+<span class="lineno">25</span>#34=CARTESIAN_POINT(&#x27;&#x27;,(10.0,0.0,0.0));
+<span class="lineno">26</span>#35=VERTEX_POINT(&#x27;&#x27;,#34);
+<span class="lineno">27</span>#36=CARTESIAN_POINT(&#x27;&#x27;,(0.0,10.0,0.0));
+<span class="lineno">28</span>#37=VERTEX_POINT(&#x27;&#x27;,#36);
+<span class="lineno">29</span>/* 3D line edges - bow-tie ordering */
+<span class="lineno">30</span>#40=DIRECTION(&#x27;&#x27;,(0.7071067811865476,0.7071067811865476,0.0));
+<span class="lineno">31</span>#41=VECTOR(&#x27;&#x27;,#40,14.142135623730951);
+<span class="lineno">32</span>#42=LINE(&#x27;&#x27;,#30,#41);
+<span class="lineno">33</span>#43=DIRECTION(&#x27;&#x27;,(0.0,-1.0,0.0));
+<span class="lineno">34</span>#44=VECTOR(&#x27;&#x27;,#43,10.0);
+<span class="lineno">35</span>#45=LINE(&#x27;&#x27;,#32,#44);
+<span class="lineno">36</span>#46=DIRECTION(&#x27;&#x27;,(-0.7071067811865476,0.7071067811865476,0.0));
+<span class="lineno">37</span>#47=VECTOR(&#x27;&#x27;,#46,14.142135623730951);
+<span class="lineno">38</span>#48=LINE(&#x27;&#x27;,#34,#47);
+<span class="lineno">39</span>#49=DIRECTION(&#x27;&#x27;,(0.0,-1.0,0.0));
+<span class="lineno">40</span>#50=VECTOR(&#x27;&#x27;,#49,10.0);
+<span class="lineno">41</span>#51=LINE(&#x27;&#x27;,#36,#50);
+<span class="lineno">42</span>/* Edges - the loop crosses itself at (5,5) */
+<span class="lineno">43</span><mark>#60=EDGE_CURVE(</mark>&#x27;&#x27;,#31,#33,#42,.T.);
+<span class="lineno">44</span><mark>#61=EDGE_CURVE(</mark>&#x27;&#x27;,#33,#35,#45,.T.);
+<span class="lineno">45</span><mark>#62=EDGE_CURVE(</mark>&#x27;&#x27;,#35,#37,#48,.T.);
+<span class="lineno">46</span><mark>#63=EDGE_CURVE(</mark>&#x27;&#x27;,#37,#31,#51,.T.);
+<span class="lineno">47</span><mark>#70=ORIENTED_EDGE(</mark>&#x27;&#x27;,*,*,#60,.T.);
+<span class="lineno">48</span><mark>#71=ORIENTED_EDGE(</mark>&#x27;&#x27;,*,*,#61,.T.);
+<span class="lineno">49</span><mark>#72=ORIENTED_EDGE(</mark>&#x27;&#x27;,*,*,#62,.T.);
+<span class="lineno">50</span><mark>#73=ORIENTED_EDGE(</mark>&#x27;&#x27;,*,*,#63,.T.);
+<span class="lineno">51</span>/* Defect: edges cross at interior point - figure-eight wire */
+<span class="lineno">52</span>#80=<mark>EDGE_LOOP(</mark>&#x27;&#x27;,(#70,#71,#72,#73));
+<span class="lineno">53</span>#81=FACE_OUTER_BOUND(&#x27;&#x27;,#80,.T.);
+<span class="lineno">54</span>#82=ADVANCED_FACE(&#x27;&#x27;,(#81),#20,.T.);
+<span class="lineno">55</span>ENDSEC;
+<span class="lineno">56</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Gs007.html">&larr; Gs007</a> <a class="up" href="index.html">§12.2c Surface / curve degeneracies</a> <a class="next" href="Gs010.html">Gs010 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

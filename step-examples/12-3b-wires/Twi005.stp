@@ -1,0 +1,31 @@
+ISO-10303-21;
+/* Twi005 - ORIENTED_EDGE.edge_element references non-EDGE_CURVE
+ * Defect: ORIENTED_EDGE.edge_element resolves to something other than an
+ * EDGE_CURVE (e.g. a VERTEX_POINT, an unrelated geometric_representation_item,
+ * or unresolved id). Dereferencing assumes EDGE_CURVE and crashes the bare
+ * reader. Translator should skip the oriented-edge with warning and continue
+ * translation of remaining edges (StepToTopoDS_TranslateEdgeLoop.cxx:304-310). */
+HEADER;
+FILE_DESCRIPTION(('Twi005 test case','ORIENTED_EDGE.edge_element references non-EDGE_CURVE'),'2;1');
+FILE_NAME('Twi005.stp','2026-04-26T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#11=DIRECTION('',(0.0,0.0,1.0));
+#12=DIRECTION('',(1.0,0.0,0.0));
+#13=AXIS2_PLACEMENT_3D('',#10,#11,#12);
+#20=PLANE('',#13);
+/* A vertex_point that will be (mis)used as an edge_element */
+#30=CARTESIAN_POINT('',(1.0,0.0,0.0));
+#31=VERTEX_POINT('',#30);
+/* Defect: ORIENTED_EDGE.edge_element points at a VERTEX_POINT (#31), not an
+ * EDGE_CURVE - bare dereference would crash assuming EDGE_CURVE layout */
+#40=ORIENTED_EDGE('',*,*,#31,.T.);
+#62=EDGE_LOOP('',(#40));
+#63=FACE_OUTER_BOUND('',#62,.T.);
+#64=ADVANCED_FACE('',(#63),#20,.T.);
+ENDSEC;
+END-ISO-10303-21;

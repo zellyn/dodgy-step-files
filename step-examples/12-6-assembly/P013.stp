@@ -1,0 +1,84 @@
+ISO-10303-21;
+/*
+ * P013 — AP203-claimed file uses AP214/AP242-only entities
+ * Defect (FreeCAD #11765; FreeCAD/OCCT itself, writer):
+ *   AP203 output emits entities SEAM_CURVE, SURFACE_CURVE, PCURVE not in
+ *   AP203's defined entity set. Strict AP203 readers reject. Implementor-
+ *   detail of OCCT's "merged AP" approach.
+ * Reproducer: closed cylinder with seam, exported with AP203 selected,
+ *   contains SEAM_CURVE / PCURVE entities.
+ * Expected kernel: AP203 output validates as AP203 — or explicit warning that
+ *   AUTOMOTIVE_DESIGN is the actual schema.
+ */
+HEADER;
+FILE_DESCRIPTION(('P013 AP203 header but SEAM_CURVE/SURFACE_CURVE/PCURVE in payload'),'2;1');
+FILE_NAME('P013.stp','2026-04-26T00:00:00',('catalog'),('cad'),'manual','','');
+FILE_SCHEMA(('CONFIG_CONTROL_DESIGN'));
+ENDSEC;
+DATA;
+#10 = APPLICATION_CONTEXT('configuration controlled 3D design of mechanical parts and assemblies');
+#11 = APPLICATION_PROTOCOL_DEFINITION('international standard','config_control_design',1994,#10);
+#12 = PRODUCT_CONTEXT('',#10,'mechanical');
+#13 = PRODUCT_DEFINITION_CONTEXT('part definition',#10,'design');
+#20 = PRODUCT('P013_CYLINDER_ASSY','','',(#12));
+#21 = PRODUCT_DEFINITION_FORMATION('','',#20);
+#22 = PRODUCT_DEFINITION('design','',#21,#13);
+#23 = PRODUCT_DEFINITION_SHAPE('','',#22);
+#30 = PRODUCT('CYLINDER','closed cylinder with seam','',(#12));
+#31 = PRODUCT_DEFINITION_FORMATION('','',#30);
+#32 = PRODUCT_DEFINITION('design','',#31,#13);
+#33 = PRODUCT_DEFINITION_SHAPE('','',#32);
+#40 = NEXT_ASSEMBLY_USAGE_OCCURRENCE('1','CYL_INST','',#22,#32,$);
+/* Cylindrical surface + seam */
+#90 = CARTESIAN_POINT('cyl_origin',(0.0,0.0,0.0));
+#91 = DIRECTION('cyl_z',(0.0,0.0,1.0));
+#92 = DIRECTION('cyl_x',(1.0,0.0,0.0));
+#93 = AXIS2_PLACEMENT_3D('cyl_axes',#90,#91,#92);
+#94 = CYLINDRICAL_SURFACE('cyl',#93,5.0);
+/* PCURVEs in 2D parameter space */
+#95 = CARTESIAN_POINT('pc_p',(0.0,0.0));
+#96 = DIRECTION('pc_d',(0.0,1.0));
+#97 = VECTOR('pc_vec',#96,1.0);
+#98 = LINE('pc_line',#95,#97);
+/* DEFECT: PCURVE / SEAM_CURVE / SURFACE_CURVE under AP203 (CCD) header */
+#99 = DEFINITIONAL_REPRESENTATION('seam_pc',(#98),#54);
+#100 = PCURVE('seam_pc_3d',#94,#99);
+#101 = LINE('seam_3d',#90,#97);
+#102 = SURFACE_CURVE('surf_curve',#101,(#100),.PCURVE_S1.);
+#103 = SEAM_CURVE('seam_curve',#101,(#100,#100),.PCURVE_S1.);
+#50 = ( LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT(.MILLI.,.METRE.) );
+#51 = ( NAMED_UNIT(*) PLANE_ANGLE_UNIT() SI_UNIT($,.RADIAN.) );
+#52 = ( NAMED_UNIT(*) SI_UNIT($,.STERADIAN.) SOLID_ANGLE_UNIT() );
+#53 = UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#50,'distance_accuracy_value','');
+#54 = ( GEOMETRIC_REPRESENTATION_CONTEXT(3) GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#53))
+        GLOBAL_UNIT_ASSIGNED_CONTEXT((#50,#51,#52)) REPRESENTATION_CONTEXT('','3D') );
+#60 = CARTESIAN_POINT('',(0.0,0.0,0.0));
+#61 = DIRECTION('',(0.0,0.0,1.0));
+#62 = DIRECTION('',(1.0,0.0,0.0));
+#63 = AXIS2_PLACEMENT_3D('cyl_part_origin',#60,#61,#62);
+#64 = SHAPE_REPRESENTATION('cyl_rep',(#63,#94,#103),#54);
+#65 = SHAPE_DEFINITION_REPRESENTATION(#33,#64);
+#66 = REPRESENTATION_MAP(#63,#64);
+#67 = MAPPED_ITEM('inst',#66,#63);
+#80 = AXIS2_PLACEMENT_3D('assy_origin',#60,#61,#62);
+#81 = SHAPE_REPRESENTATION('assy_rep',(#80,#67),#54);
+#82 = SHAPE_DEFINITION_REPRESENTATION(#23,#81);
+/* Extended catalog notes:
+ * This reproducer is a minimal demonstrator of the §12.6 entry
+ * referenced in the /* */ header above. The entity-graph above
+ * is just enough to exercise the defect on a writer or reader
+ * test harness; it is NOT a production-quality assembly.
+ *
+ * License: this file is part of a defect catalog assembled from
+ * publicly described bug reports and recommended-practice notes.
+ * No proprietary geometry or names are reproduced. The entity IDs
+ * and minimal coordinates are author-original.
+ *
+ * Cross-refs: see STEP_PROBLEM_CATALOG.md §12.6 for full entry,
+ * source list, sender attribution and expected kernel behavior.
+ */
+#900 = DESCRIPTIVE_REPRESENTATION_ITEM('catalog_id','P013');
+#901 = DESCRIPTIVE_REPRESENTATION_ITEM('catalog_section','12.6 assembly hierarchy');
+#902 = DESCRIPTIVE_REPRESENTATION_ITEM('catalog_status','pending');
+ENDSEC;
+END-ISO-10303-21;

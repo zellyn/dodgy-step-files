@@ -1,0 +1,82 @@
+ISO-10303-21;
+/*
+ * P010 — Standalone AXIS2_PLACEMENT_3D entities silently dropped
+ * Defect (FreeCAD #5882; multiple senders):
+ *   Standalone AXIS_PLACEMENT / AXIS2_PLACEMENT_3D entities used as datum or
+ *   feature axes (often referenced from PRESENTATION_LAYER_ASSIGNMENT) are
+ *   silently dropped on import — no warning. Useful design-intent information
+ *   is lost.
+ * Reproducer: STEP file with AXIS2_PLACEMENT_3D('Axis_A', ...) referenced from
+ *   PRESENTATION_LAYER_ASSIGNMENT.
+ * Expected kernel: either ignore-with-warning, or surface as construction
+ *   objects.
+ */
+HEADER;
+FILE_DESCRIPTION(('P010 standalone AXIS2_PLACEMENT_3D referenced from PLA — dropped silently'),'2;1');
+FILE_NAME('P010.stp','2026-04-26T00:00:00',('catalog'),('cad'),'manual','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#10 = APPLICATION_CONTEXT('automotive design');
+#11 = APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2001,#10);
+#12 = PRODUCT_CONTEXT('',#10,'mechanical');
+#13 = PRODUCT_DEFINITION_CONTEXT('part definition',#10,'design');
+#20 = PRODUCT('P010_ASSY','','',(#12));
+#21 = PRODUCT_DEFINITION_FORMATION('','',#20);
+#22 = PRODUCT_DEFINITION('design','',#21,#13);
+#23 = PRODUCT_DEFINITION_SHAPE('','',#22);
+#30 = PRODUCT('LEAF','','',(#12));
+#31 = PRODUCT_DEFINITION_FORMATION('','',#30);
+#32 = PRODUCT_DEFINITION('design','',#31,#13);
+#33 = PRODUCT_DEFINITION_SHAPE('','',#32);
+#40 = NEXT_ASSEMBLY_USAGE_OCCURRENCE('1','LEAF_INST','',#22,#32,$);
+#50 = ( LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT(.MILLI.,.METRE.) );
+#51 = ( NAMED_UNIT(*) PLANE_ANGLE_UNIT() SI_UNIT($,.RADIAN.) );
+#52 = ( NAMED_UNIT(*) SI_UNIT($,.STERADIAN.) SOLID_ANGLE_UNIT() );
+#53 = UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#50,'distance_accuracy_value','');
+#54 = ( GEOMETRIC_REPRESENTATION_CONTEXT(3) GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#53))
+        GLOBAL_UNIT_ASSIGNED_CONTEXT((#50,#51,#52)) REPRESENTATION_CONTEXT('','3D') );
+#60 = CARTESIAN_POINT('',(0.0,0.0,0.0));
+#61 = DIRECTION('',(0.0,0.0,1.0));
+#62 = DIRECTION('',(1.0,0.0,0.0));
+#63 = AXIS2_PLACEMENT_3D('leaf_origin',#60,#61,#62);
+#64 = SHAPE_REPRESENTATION('leaf_rep',(#63),#54);
+#65 = SHAPE_DEFINITION_REPRESENTATION(#33,#64);
+#66 = REPRESENTATION_MAP(#63,#64);
+#67 = MAPPED_ITEM('inst',#66,#63);
+/* DEFECT: standalone "datum axis A", "feature axis B" — referenced ONLY from
+   PRESENTATION_LAYER_ASSIGNMENT, never from a SHAPE_REPRESENTATION. */
+#90 = CARTESIAN_POINT('axis_a_origin',(10.0,0.0,0.0));
+#91 = AXIS2_PLACEMENT_3D('Axis_A',#90,#61,#62);
+#92 = CARTESIAN_POINT('axis_b_origin',(0.0,10.0,0.0));
+#93 = AXIS2_PLACEMENT_3D('Axis_B',#92,#61,#62);
+#94 = PRESENTATION_LAYER_ASSIGNMENT('datum_axes',
+        'design intent — feature reference axes',(#91,#93));
+#80 = AXIS2_PLACEMENT_3D('assy_origin',#60,#61,#62);
+#81 = SHAPE_REPRESENTATION('assy_rep',(#80,#67),#54);
+#82 = SHAPE_DEFINITION_REPRESENTATION(#23,#81);
+/* Extended catalog notes:
+ * This reproducer is a minimal demonstrator of the §12.6 entry
+ * referenced in the /* */ header above. The entity-graph above
+ * is just enough to exercise the defect on a writer or reader
+ * test harness; it is NOT a production-quality assembly.
+ *
+ * License: this file is part of a defect catalog assembled from
+ * publicly described bug reports and recommended-practice notes.
+ * No proprietary geometry or names are reproduced. The entity IDs
+ * and minimal coordinates are author-original.
+ *
+ * Cross-refs: see STEP_PROBLEM_CATALOG.md §12.6 for full entry,
+ * source list, sender attribution and expected kernel behavior.
+ */
+#900 = DESCRIPTIVE_REPRESENTATION_ITEM('catalog_id','P010');
+#901 = DESCRIPTIVE_REPRESENTATION_ITEM('catalog_section','12.6 assembly hierarchy');
+#902 = DESCRIPTIVE_REPRESENTATION_ITEM('catalog_status','pending');
+#903 = DESCRIPTIVE_REPRESENTATION_ITEM('catalog_target_dir','step-examples/12-6-assembly/');
+#904 = DESCRIPTIVE_REPRESENTATION_ITEM('catalog_corpus_origin','phase-04-resume-12-6 gap fill');
+#905 = DESCRIPTIVE_REPRESENTATION_ITEM('catalog_authoring','manual reproducer');
+#906 = DESCRIPTIVE_REPRESENTATION_ITEM('catalog_phase','04 resume 12-6');
+#907 = DESCRIPTIVE_REPRESENTATION_ITEM('catalog_extension','license-clean');
+#908 = DESCRIPTIVE_REPRESENTATION_ITEM('catalog_dataset','step-examples');
+ENDSEC;
+END-ISO-10303-21;

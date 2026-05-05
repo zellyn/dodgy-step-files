@@ -1,0 +1,21 @@
+ISO-10303-21;
+/* Sw005 - Face on an unbounded surface (infinite extent).
+ * Defect: face_geometry is an untrimmed PLANE; fast-sewing
+ * cannot proceed without a bounded UV box. */
+HEADER;
+FILE_DESCRIPTION(('Sw005 - face on infinite surface','Pass C gap-fill'),'2;1');
+FILE_NAME('Sw005.stp','2026-04-30T00:00:00',(''),(''),'gap-fill C','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#11=DIRECTION('',(0.0,0.0,1.0));
+#12=DIRECTION('',(1.0,0.0,0.0));
+#13=AXIS2_PLACEMENT_3D('',#10,#11,#12);
+/* Untrimmed plane - infinite extent */
+#14=PLANE('infinite_plane',#13);
+#100=ADVANCED_FACE('face_on_infinite_plane',(),#14,.T.);
+ENDSEC;
+END-ISO-10303-21;

@@ -1,0 +1,62 @@
+/* Tb012 - Sphere wire near pole singularity at parametric tolerance boundary
+ * Defect: SPHERICAL_SURFACE has parametric pole singularity at V = +/- pi/2.
+ * A wire pcurve at V = pi/2 - 1e-9 is just below the pole. Receiver with
+ * pole-snap tolerance 1e-7 rad does not snap (1e-9 < 1e-7); but a receiver
+ * with pole-snap tolerance 1e-3 rad snaps the wire onto the pole, collapsing
+ * the upper face into a degenerate point. Same wire, different surface
+ * extents at different tolerance policies.
+ */
+ISO-10303-21;
+HEADER;
+FILE_DESCRIPTION(('Tb012 sphere wire near pole at 1e-9 below singularity'),'2;1');
+FILE_NAME('Tb012.stp','2026-04-30T00:00:00',(''),(''),
+  'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
+  'automotive_design',2009,#1);
+#10=CARTESIAN_POINT('o',(0.0,0.0,0.0));
+#11=DIRECTION('+z',(0.0,0.0,1.0));
+#12=DIRECTION('+x',(1.0,0.0,0.0));
+#13=AXIS2_PLACEMENT_3D('plc',#10,#11,#12);
+#14=SPHERICAL_SURFACE('sph',#13,1.0);
+/* Wire on near-pole circle: V = pi/2 - 1e-9, full U sweep. */
+#20=CARTESIAN_POINT('p_near_pole',(1.0E-9,0.0,0.99999999999999955));
+#21=VERTEX_POINT('v_near_pole_seam',#20);
+/* Pcurve: V at constant pi/2 - 1e-9, U from 0 to 2*pi (closed circle). */
+#22=CARTESIAN_POINT('uv0',(0.0,1.5707963257948965));
+#23=DIRECTION('+u',(1.0,0.0));
+#24=VECTOR('uv_vec',#23,6.283185307179586);
+#25=LINE('pcurve_near_pole',#22,#24);
+#26=DEFINITIONAL_REPRESENTATION('pdef',(#25),#80);
+#27=PCURVE('pc',#14,#26);
+/* 3D circle at V = pi/2 - 1e-9, just below north pole. */
+#28=AXIS2_PLACEMENT_3D('circ_axis',#20,#11,#12);
+#29=CIRCLE('circ_near_pole',#28,1.0E-9);
+#30=SURFACE_CURVE('sc',#29,(#27),.PCURVE_S1.);
+#31=EDGE_CURVE('e_at_pole_minus_1e-9',#21,#21,#30,.T.);
+#70=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#71=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#72=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#73=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#70,
+  'distance_accuracy_value','strict_tolerance_no_pole_snap');
+#80=(GEOMETRIC_REPRESENTATION_CONTEXT(2)
+  GLOBAL_UNIT_ASSIGNED_CONTEXT((#70,#71,#72))
+  REPRESENTATION_CONTEXT('uv','2D'));
+#90=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#73))
+  GLOBAL_UNIT_ASSIGNED_CONTEXT((#70,#71,#72))
+  REPRESENTATION_CONTEXT('ctx','3D'));
+#9000=PRODUCT_CONTEXT('',#1,'mechanical');
+#9001=PRODUCT('Tb012','Tb012','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9020=GEOMETRIC_CURVE_SET('cs',(#31,#14));
+#9021=GEOMETRICALLY_BOUNDED_WIREFRAME_SHAPE_REPRESENTATION('',(#9020),#90);
+#9022=SHAPE_DEFINITION_REPRESENTATION(#9005,#9021);
+ENDSEC;
+END-ISO-10303-21;

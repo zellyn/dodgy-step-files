@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>U015 — FreeCAD/OCCT 7.8.1: model in mm but file labelled as inches (re-import 25.4× too large)</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.5 Units &amp; coordinate systems</a> <span class="sep">/</span> <span class="current">U015</span>
+</nav>
+<header class="title-bar">
+<h1>U015 <span class="sep">—</span> <span class="entry-title">FreeCAD/OCCT 7.8.1: model in mm but file labelled as inches (re-import 25.4× too large)</span></h1>
+<p class="category">§12.5 (sub-class: wrong-declaration / writer mislabel)</p>
+<p class="severity-badge severity-p1">P1 — silent data loss</p>
+<p class="tag-pills">
+<a class="tag tag-units" href="../by-tag/units/index.html">units</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-5-units/U015.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-5-units/U015.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>20-general-forums.md J005 (forum.freecad.org viewtopic 94435</li>
+<li>FreeCAD GH#18078</li>
+<li>OCCT #354)</li>
+</ul></section>
+<section><h2>Sender</h2>
+<p>FreeCAD 1.0.x on OCCT 7.8.1</p></section>
+<section><h2>Description</h2>
+<p>User picks &quot;inch&quot; as export unit; OCCT 7.8.1 still writes coordinates in mm but writes `LENGTH_UNIT` as inch. Re-import scales 25.4× too large.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>file declares `(CONVERSION_BASED_UNIT(&#x27;INCH&#x27;,..) NAMED_UNIT(..) LENGTH_UNIT())` but `CARTESIAN_POINT` coordinates are mm-valued.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>Warn and accept: the validator normalizes coordinate magnitudes against declared `UNCERTAINTY_MEASURE_WITH_UNIT` and assembly bounding boxes; emit a warning diagnostic on suspicious 25.4× / 1000× mismatch.</p></section>
+<section><h2>Notes</h2>
+<p>**See also**: U001. Synonyms: &quot;FreeCAD STEP labelled inch but values mm&quot;, &quot;model in mm but file says inches&quot;, &quot;re-import 25.4x too large from FreeCAD STEP&quot;, &quot;mm coords with INCH declaration&quot;, &quot;OCCT 7.8.1 mislabels STEP as inches&quot;.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>contains(b&quot;CONVERSION_BASED_UNIT(&#x27;INCH&#x27;&quot;)</code></li>
+<li><code>matches(rb&quot;&#x27;INCH&#x27;&quot;)</code></li>
+</ul></section>
+<section><h2>Cross-references</h2>
+<p><a href="U001.html">U001</a></p>
+</section>
+<section><h2>Live oracle output</h2>
+<table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
+<tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>warn(W_COMPLEX_ORDER)</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>no_shapes_loaded</code></td></tr>
+</tbody></table>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/*
+<span class="lineno">3</span> * U015 â FreeCAD/OCCT 7.8.1: model in mm but file labelled inches
+<span class="lineno">4</span> * Defect: header declares <mark>CONVERSION_BASED_UNIT(&#x27;INCH&#x27;</mark>,...) but
+<span class="lineno">5</span> *         CARTESIAN_POINT coordinates are mm-valued; re-import 25.4x
+<span class="lineno">6</span> *         too large.
+<span class="lineno">7</span> */
+<span class="lineno">8</span>HEADER;
+<span class="lineno">9</span>FILE_DESCRIPTION((&#x27;U015 file mislabel inch with mm coords&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">10</span>FILE_NAME(&#x27;U015.stp&#x27;,&#x27;2026-04-26T00:00:00&#x27;,(&#x27;catalog&#x27;),(&#x27;cad&#x27;),
+<span class="lineno">11</span>  &#x27;manual&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">12</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN&#x27;));
+<span class="lineno">13</span>ENDSEC;
+<span class="lineno">14</span>DATA;
+<span class="lineno">15</span>#10 = APPLICATION_CONTEXT(&#x27;automotive design&#x27;);
+<span class="lineno">16</span>#11 = APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,
+<span class="lineno">17</span>  &#x27;automotive_design&#x27;,2001,#10);
+<span class="lineno">18</span>#12 = PRODUCT_CONTEXT(&#x27;&#x27;,#10,&#x27;mechanical&#x27;);
+<span class="lineno">19</span>#13 = PRODUCT(&#x27;U015&#x27;,&#x27;U015&#x27;,&#x27;&#x27;,(#12));
+<span class="lineno">20</span>#14 = PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#13);
+<span class="lineno">21</span>#15 = PRODUCT_DEFINITION_CONTEXT(&#x27;&#x27;,#10,&#x27;design&#x27;);
+<span class="lineno">22</span>#16 = PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,#14,#15);
+<span class="lineno">23</span>#17 = PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,#16);
+<span class="lineno">24</span>/* Inch CONVERSION_BASED_UNIT (correct shape) â but kernel forgot to
+<span class="lineno">25</span>   convert mm internals to inches. */
+<span class="lineno">26</span>#20 = ( LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT(.MILLI.,.METRE.) );
+<span class="lineno">27</span>#21 = DIMENSIONAL_EXPONENTS(1.0,0.0,0.0,0.0,0.0,0.0,0.0);
+<span class="lineno">28</span>#22 = LENGTH_MEASURE_WITH_UNIT(LENGTH_MEASURE(25.4),#20);
+<span class="lineno">29</span>#23 = ( <mark>CONVERSION_BASED_UNIT(&#x27;INCH&#x27;</mark>,#22) NAMED_UNIT(#21) LENGTH_UNIT() );
+<span class="lineno">30</span>#26 = ( NAMED_UNIT(*) PLANE_ANGLE_UNIT() SI_UNIT($,.RADIAN.) );
+<span class="lineno">31</span>#27 = ( NAMED_UNIT(*) SI_UNIT($,.STERADIAN.) SOLID_ANGLE_UNIT() );
+<span class="lineno">32</span>#28 = UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.0001),#23,
+<span class="lineno">33</span>  &#x27;distance_accuracy_value&#x27;,&#x27;&#x27;);
+<span class="lineno">34</span>#29 = ( GEOMETRIC_REPRESENTATION_CONTEXT(3)
+<span class="lineno">35</span>  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#28))
+<span class="lineno">36</span>  GLOBAL_UNIT_ASSIGNED_CONTEXT((#23,#26,#27))
+<span class="lineno">37</span>  REPRESENTATION_CONTEXT(&#x27;&#x27;,&#x27;3D&#x27;) );
+<span class="lineno">38</span>/* Coordinates are mm-valued (e.g. 100 mm) but declared unit is INCH.
+<span class="lineno">39</span>   Re-import multiplies by 25.4 -&gt; 2540 mm. */
+<span class="lineno">40</span>#30 = CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">41</span>#31 = CARTESIAN_POINT(&#x27;&#x27;,(100.0,0.0,0.0));
+<span class="lineno">42</span>#32 = CARTESIAN_POINT(&#x27;&#x27;,(100.0,50.0,0.0));
+<span class="lineno">43</span>#33 = DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">44</span>#34 = DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">45</span>#35 = AXIS2_PLACEMENT_3D(&#x27;&#x27;,#30,#33,#34);
+<span class="lineno">46</span>#50 = SHAPE_REPRESENTATION(&#x27;&#x27;,(#35),#29);
+<span class="lineno">47</span>#51 = SHAPE_DEFINITION_REPRESENTATION(#17,#50);
+<span class="lineno">48</span>ENDSEC;
+<span class="lineno">49</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="U014.html">&larr; U014</a> <a class="up" href="index.html">§12.5 Units &amp; coordinate systems</a> <a class="next" href="U016.html">U016 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

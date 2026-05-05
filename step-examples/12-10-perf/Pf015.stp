@@ -1,0 +1,50 @@
+/* Pf015 - Pathological B-rep from mesh conversion: OPEN_SHELL from
+   OpenSCAD/STL -> FreeCAD "Convert to Shape/Solid" -> STEP.
+   Pattern: each input mesh triangle becomes one ADVANCED_FACE in a huge
+   OPEN_SHELL. Sewing fails. Booleans fail with "BRepAlgoAPI_BuilderArgs
+   check failed". Joining > 10k faces takes O(n^2) (Y024, K028).
+   Scaling-up: this fixture has 8 triangle-faces in one OPEN_SHELL.
+   Replicate the triangle ADVANCED_FACE pattern to >10000 to reproduce
+   the production failure mode. The producer's choice of OPEN_SHELL
+   rather than CLOSED_SHELL is deliberate - it advertises the
+   non-watertightness inherited from the mesh. */
+ISO-10303-21;
+HEADER;
+FILE_DESCRIPTION(('Pf015 - mesh->STEP, huge OPEN_SHELL of tiny triangles'),'2;1');
+FILE_NAME('Pf015.stp','2026-04-26T00:00:00',('auto-generated'),(''),
+  'auto-generated','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=DIRECTION('',(0.0,0.0,1.0));
+#3=DIRECTION('',(1.0,0.0,0.0));
+#4=AXIS2_PLACEMENT_3D('',#1,#2,#3);
+#5=PLANE('',#4);
+/* per-triangle vertices */
+#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#11=CARTESIAN_POINT('',(1.0,0.0,0.0));
+#12=CARTESIAN_POINT('',(0.5,1.0,0.0));
+#13=CARTESIAN_POINT('',(1.5,1.0,0.0));
+#14=CARTESIAN_POINT('',(2.0,0.0,0.0));
+#15=CARTESIAN_POINT('',(2.5,1.0,0.0));
+#16=CARTESIAN_POINT('',(3.0,0.0,0.0));
+#17=CARTESIAN_POINT('',(3.5,1.0,0.0));
+/* one degenerate edge loop reused per triangle face (simplified) */
+#20=EDGE_LOOP('',());
+#21=FACE_OUTER_BOUND('',#20,.T.);
+/* eight triangle-faces - each ADVANCED_FACE is one ex-triangle */
+#30=ADVANCED_FACE('tri1',(#21),#5,.T.);
+#31=ADVANCED_FACE('tri2',(#21),#5,.T.);
+#32=ADVANCED_FACE('tri3',(#21),#5,.T.);
+#33=ADVANCED_FACE('tri4',(#21),#5,.T.);
+#34=ADVANCED_FACE('tri5',(#21),#5,.T.);
+#35=ADVANCED_FACE('tri6',(#21),#5,.T.);
+#36=ADVANCED_FACE('tri7',(#21),#5,.T.);
+#37=ADVANCED_FACE('tri8',(#21),#5,.T.);
+/* OPEN_SHELL not CLOSED_SHELL - producer signals non-watertightness */
+#100=OPEN_SHELL('mesh-shell',(#30,#31,#32,#33,#34,#35,#36,#37));
+/* shell-based surface model carries the open shell - replicate to 10k+ */
+#101=SHELL_BASED_SURFACE_MODEL('mesh-model',(#100));
+ENDSEC;
+END-ISO-10303-21;

@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Gs041 — `RECTANGULAR_COMPOSITE_SURFACE` with non-uniform patch grid</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.2c Surface / curve degeneracies</a> <span class="sep">/</span> <span class="current">Gs041</span>
+</nav>
+<header class="title-bar">
+<h1>Gs041 <span class="sep">—</span> <span class="entry-title">`RECTANGULAR_COMPOSITE_SURFACE` with non-uniform patch grid</span></h1>
+<p class="category">§12.2c surface-degeneracy (sub-class: composite surface)</p>
+<p class="severity-badge severity-p1">P1 — silent data loss</p>
+<p class="tag-pills">
+<a class="tag tag-geometry" href="../by-tag/geometry/index.html">geometry</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-2c-surfaces/Gs041.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-2c-surfaces/Gs041.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>16-iso-spec ISO 10303-42 §RECTANGULAR_COMPOSITE_SURFACE</li>
+</ul></section>
+<section><h2>Description</h2>
+<p>A RECTANGULAR_COMPOSITE_SURFACE is parameterised as an MxN grid of SURFACE_PATCH children. The U parameter spans across all M patches; V across all N. The spec permits non-uniform parameter intervals (one patch occupies U=0.0.7, the next U=0.7.1.0). Many receivers assume uniform spacing and either pass through with the wrong global parameterisation or trip an internal assertion.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>2x1 RECTANGULAR_COMPOSITE_SURFACE whose left patch occupies U=[0.0, 0.3] and right patch U=[0.3, 1.0] (non-uniform).</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>Heal and accept: respect each patch&#x27;s individual parameter interval; if the kernel internally re-parameterises to uniform, it must record the original mapping so isoparametric queries on the composite return the correct point.</p></section>
+<section><h2>Notes</h2>
+<p>Distinct from Gp019 (pcurve-on-RECTANGULAR_COMPOSITE_SURFACE) — this entry is about parameter-grid uniformity, independent of bounding wire. Synonyms: &quot;RECTANGULAR_COMPOSITE_SURFACE non-uniform patch grid&quot;, &quot;composite surface patches with unequal U intervals&quot;, &quot;MxN composite surface assumes uniform parameter spacing&quot;, &quot;patch occupies non-uniform U interval&quot;, &quot;isoparametric query on composite surface returns wrong point&quot;.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>contains(b&#x27;RECTANGULAR_COMPOSITE_SURFACE(&#x27;)</code></li>
+<li><code>count_entity_def(b&#x27;SURFACE_PATCH&#x27;) == 2</code></li>
+<li><code>contains(b&#x27;(0.0,0.3)&#x27;)</code></li>
+</ul></section>
+<section><h2>Cross-references</h2>
+<p><a href="../12-2a-pcurves/Gp019.html">Gp019</a></p>
+</section>
+<section><h2>Live oracle output</h2>
+<table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
+<tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>no_shapes_loaded</code></td></tr>
+</tbody></table>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* Gs041 - RECTANGULAR_COMPOSITE_SURFACE with non-uniform patch grid
+<span class="lineno">3</span> * Defect: A RECTANGULAR_COMPOSITE_SURFACE is parameterised as an
+<span class="lineno">4</span> * MxN grid of SURFACE_PATCH children. The U-direction parameter
+<span class="lineno">5</span> * spans across all M patches; the V-direction across all N. The
+<span class="lineno">6</span> * spec permits non-uniform parameter intervals (one patch occupies
+<span class="lineno">7</span> * U=0..0.7, the next U=0.7..1.0). Many receivers assume uniform
+<span class="lineno">8</span> * spacing and either pass through with a wrong global parameterisation
+<span class="lineno">9</span> * or trip an internal assertion. Here a 2x1 composite surface has
+<span class="lineno">10</span> * U-intervals of 0.3 and 0.7. */
+<span class="lineno">11</span>HEADER;
+<span class="lineno">12</span>FILE_DESCRIPTION((&#x27;Gs041 - RECTANGULAR_COMPOSITE_SURFACE non-uniform patch grid&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">13</span>FILE_NAME(&#x27;Gs041.stp&#x27;,&#x27;2026-04-26T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),
+<span class="lineno">14</span>  &#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">15</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
+<span class="lineno">16</span>ENDSEC;
+<span class="lineno">17</span>DATA;
+<span class="lineno">18</span>#1=APPLICATION_CONTEXT(&#x27;automotive_design&#x27;);
+<span class="lineno">19</span>/* Two adjacent planar quad patches sharing an edge along V at U=0.3 */
+<span class="lineno">20</span>#10=CARTESIAN_POINT(&#x27;p00&#x27;,(0.0,0.0,0.0));
+<span class="lineno">21</span>#11=CARTESIAN_POINT(&#x27;p10&#x27;,(3.0,0.0,0.0));
+<span class="lineno">22</span>#12=CARTESIAN_POINT(&#x27;p01&#x27;,(0.0,1.0,0.0));
+<span class="lineno">23</span>#13=CARTESIAN_POINT(&#x27;p11&#x27;,(3.0,1.0,0.0));
+<span class="lineno">24</span>#14=CARTESIAN_POINT(&#x27;p20&#x27;,(10.0,0.0,0.0));
+<span class="lineno">25</span>#15=CARTESIAN_POINT(&#x27;p21&#x27;,(10.0,1.0,0.0));
+<span class="lineno">26</span>/* Bezier patch 1 - U range [0.0, 0.3] */
+<span class="lineno">27</span>#20=B_SPLINE_SURFACE_WITH_KNOTS(&#x27;left_patch&#x27;,1,1,
+<span class="lineno">28</span>  ((#10,#11),(#12,#13)),
+<span class="lineno">29</span>  .UNSPECIFIED.,.F.,.F.,.F.,
+<span class="lineno">30</span>  (2,2),(2,2),<mark>(0.0,0.3)</mark>,(0.0,1.0),
+<span class="lineno">31</span>  .UNSPECIFIED.);
+<span class="lineno">32</span>/* Bezier patch 2 - U range [0.3, 1.0] - non-uniform with patch 1 */
+<span class="lineno">33</span>#21=B_SPLINE_SURFACE_WITH_KNOTS(&#x27;right_patch&#x27;,1,1,
+<span class="lineno">34</span>  ((#11,#14),(#13,#15)),
+<span class="lineno">35</span>  .UNSPECIFIED.,.F.,.F.,.F.,
+<span class="lineno">36</span>  (2,2),(2,2),(0.3,1.0),(0.0,1.0),
+<span class="lineno">37</span>  .UNSPECIFIED.);
+<span class="lineno">38</span>/* Defect: composite surface 2 patches wide, 1 tall, with the
+<span class="lineno">39</span> * left occupying 0..0.3 and the right 0.3..1.0 - non-uniform */
+<span class="lineno">40</span><mark>#30=SURFACE_PATCH(</mark>#20,.U_TYPE_OF_TRANSITION.,.U_TYPE_OF_TRANSITION.,.T.,.T.);
+<span class="lineno">41</span><mark>#31=SURFACE_PATCH(</mark>#21,.U_TYPE_OF_TRANSITION.,.U_TYPE_OF_TRANSITION.,.T.,.T.);
+<span class="lineno">42</span>#40=<mark>RECTANGULAR_COMPOSITE_SURFACE(</mark>&#x27;rcs&#x27;,((#30,#31)));
+<span class="lineno">43</span>ENDSEC;
+<span class="lineno">44</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Gs040.html">&larr; Gs040</a> <a class="up" href="index.html">§12.2c Surface / curve degeneracies</a> <a class="next" href="Gs042.html">Gs042 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

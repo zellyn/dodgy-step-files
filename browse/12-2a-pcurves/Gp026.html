@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Gp026 — `EDGE_LOOP` contour not closed in UV (Jordan-curve violation across periodic-surface seam)</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.2a Pcurve defects</a> <span class="sep">/</span> <span class="current">Gp026</span>
+</nav>
+<header class="title-bar">
+<h1>Gp026 <span class="sep">—</span> <span class="entry-title">`EDGE_LOOP` contour not closed in UV (Jordan-curve violation across periodic-surface seam)</span></h1>
+<p class="category">§12.2a pcurve</p>
+<p class="tag-pills">
+<a class="tag tag-silent-loss" href="../by-tag/silent-loss/index.html">silent-loss</a>
+<a class="tag tag-geometry" href="../by-tag/geometry/index.html">geometry</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-2a-pcurves/Gp026.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-2a-pcurves/Gp026.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>13-quaoar.md B022</li>
+<li>09-healing-menus.md H099, H100</li>
+</ul></section>
+<section><h2>Description</h2>
+<p>In a face&#x27;s parametric (UV) domain, the outer `EDGE_LOOP`&#x27;s start and end vertices do not coincide within face tolerance, so the contour does not partition the plane (Jordan-curve failure). Typical pattern: face on a `CYLINDRICAL_SURFACE` whose seam edges each carry pcurves referenced via separate `DEFINITIONAL_REPRESENTATION`s that do not align — a gap remains at the u=2π vs u=0 seam between consecutive `ORIENTED_EDGE`s. Caused by missed seam edges on periodic surfaces, or by corrupt pcurves with gaps.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>Face on a cylinder, omit the seam edge so the outer wire is open in UV; renderers fall back to isolines instead of triangulating.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>connect the wire endpoints via period-shifting / vertex-merging / seam-insertion as appropriate, or reject as malformed when the gap exceeds the working tolerance budget.</p></section>
+<section><h2>Notes</h2>
+<p>**See also**: Gp020, Gp028, Gs012, Twi020. **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog&#x27;s allowed set ({reject}). Kernel-bug witnessed: receivers must reject this fixture per the catalog&#x27;s stated invariant. Synonyms: &quot;edge_loop not closed in UV&quot;, &quot;Jordan curve violation across periodic seam&quot;, &quot;outer wire fails to close in parametric domain&quot;, &quot;renderer falls back to isolines instead of triangulating&quot;, &quot;face contour open across cylinder seam&quot;.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<section><h2>Cross-references</h2>
+<p><a href="Gp020.html">Gp020</a>, <a href="Gp028.html">Gp028</a>, <a href="../12-2c-surfaces/Gs012.html">Gs012</a>, <a href="../12-3b-wires/Twi020.html">Twi020</a></p>
+</section>
+<section><h2>Live oracle output</h2>
+<table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
+<tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>no_shapes_loaded</code></td></tr>
+</tbody></table>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* Gp026 - Face contour not closed in UV (FixConnected/FixGaps2d)
+<span class="lineno">3</span> * Defect: face on a CYLINDRICAL_SURFACE; the outer wire&#x27;s pcurves
+<span class="lineno">4</span> * trace from UV (0,0) to (2pi-0.1, 0) to (2pi-0.1, 5) to (0, 5) and
+<span class="lineno">5</span> * back to (0,0). The seam edge at U=2pi was omitted, leaving a 0.1
+<span class="lineno">6</span> * unit gap in U at v=0 and v=5 - the contour does not close in UV. */
+<span class="lineno">7</span>HEADER;
+<span class="lineno">8</span>FILE_DESCRIPTION((&#x27;Gp026 test case&#x27;,&#x27;Face contour not closed in UV&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">9</span>FILE_NAME(&#x27;Gp026.stp&#x27;,&#x27;2026-04-27T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;auto-generated&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">10</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }&#x27;));
+<span class="lineno">11</span>ENDSEC;
+<span class="lineno">12</span>DATA;
+<span class="lineno">13</span>#1=APPLICATION_CONTEXT(&#x27;automotive_design&#x27;);
+<span class="lineno">14</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,&#x27;automotive_design&#x27;,2000,#1);
+<span class="lineno">15</span>#10=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">16</span>#11=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">17</span>#12=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">18</span>#13=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#10,#11,#12);
+<span class="lineno">19</span>#20=CYLINDRICAL_SURFACE(&#x27;&#x27;,#13,10.0);
+<span class="lineno">20</span>/* Three vertices around the partial cylinder, NO seam vertex pair */
+<span class="lineno">21</span>#40=CARTESIAN_POINT(&#x27;&#x27;,(10.0,0.0,0.0));
+<span class="lineno">22</span>#41=VERTEX_POINT(&#x27;&#x27;,#40);
+<span class="lineno">23</span>#42=CARTESIAN_POINT(&#x27;&#x27;,(9.95004,0.99833,0.0));   /* angle 0.1 rad */
+<span class="lineno">24</span>#43=VERTEX_POINT(&#x27;&#x27;,#42);
+<span class="lineno">25</span>#44=CARTESIAN_POINT(&#x27;&#x27;,(9.95004,0.99833,5.0));
+<span class="lineno">26</span>#45=VERTEX_POINT(&#x27;&#x27;,#44);
+<span class="lineno">27</span>#46=CARTESIAN_POINT(&#x27;&#x27;,(10.0,0.0,5.0));
+<span class="lineno">28</span>#47=VERTEX_POINT(&#x27;&#x27;,#46);
+<span class="lineno">29</span>/* Three placeholder 3D curves (lines) */
+<span class="lineno">30</span>#30=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">31</span>#31=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">32</span>#33=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#30,#31,#12);
+<span class="lineno">33</span>#34=CIRCLE(&#x27;&#x27;,#33,10.0);
+<span class="lineno">34</span>#35=CIRCLE(&#x27;&#x27;,#33,10.0);
+<span class="lineno">35</span>#36=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">36</span>#37=VECTOR(&#x27;&#x27;,#36,1.0);
+<span class="lineno">37</span>#38=LINE(&#x27;&#x27;,#42,#37);
+<span class="lineno">38</span>#39=LINE(&#x27;&#x27;,#46,#37);
+<span class="lineno">39</span>/* Pcurve A: bottom edge UV (0,0) -&gt; (2pi-0.1, 0) */
+<span class="lineno">40</span>#71=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0));
+<span class="lineno">41</span>#72=DIRECTION(&#x27;&#x27;,(1.0,0.0));
+<span class="lineno">42</span>#73=VECTOR(&#x27;&#x27;,#72,1.0);
+<span class="lineno">43</span>#74=LINE(&#x27;&#x27;,#71,#73);
+<span class="lineno">44</span>#75=( GEOMETRIC_REPRESENTATION_CONTEXT(2)
+<span class="lineno">45</span>      PARAMETRIC_REPRESENTATION_CONTEXT()
+<span class="lineno">46</span>      REPRESENTATION_CONTEXT(&#x27;parametric&#x27;,&#x27;2D&#x27;) );
+<span class="lineno">47</span>#76=DEFINITIONAL_REPRESENTATION(&#x27;&#x27;,(#74),#75);
+<span class="lineno">48</span>#77=PCURVE(&#x27;&#x27;,#20,#76);
+<span class="lineno">49</span>/* Pcurve B: right edge UV (2pi-0.1, 0) -&gt; (2pi-0.1, 5) */
+<span class="lineno">50</span>#81=CARTESIAN_POINT(&#x27;&#x27;,(6.18319,0.0));
+<span class="lineno">51</span>#82=DIRECTION(&#x27;&#x27;,(0.0,1.0));
+<span class="lineno">52</span>#83=VECTOR(&#x27;&#x27;,#82,1.0);
+<span class="lineno">53</span>#84=LINE(&#x27;&#x27;,#81,#83);
+<span class="lineno">54</span>#85=DEFINITIONAL_REPRESENTATION(&#x27;&#x27;,(#84),#75);
+<span class="lineno">55</span>#86=PCURVE(&#x27;&#x27;,#20,#85);
+<span class="lineno">56</span>/* Pcurve C: top edge UV (2pi-0.1, 5) -&gt; (0, 5) */
+<span class="lineno">57</span>#91=CARTESIAN_POINT(&#x27;&#x27;,(6.18319,5.0));
+<span class="lineno">58</span>#92=DIRECTION(&#x27;&#x27;,(-1.0,0.0));
+<span class="lineno">59</span>#93=VECTOR(&#x27;&#x27;,#92,1.0);
+<span class="lineno">60</span>#94=LINE(&#x27;&#x27;,#91,#93);
+<span class="lineno">61</span>#95=DEFINITIONAL_REPRESENTATION(&#x27;&#x27;,(#94),#75);
+<span class="lineno">62</span>#96=PCURVE(&#x27;&#x27;,#20,#95);
+<span class="lineno">63</span>/* Pcurve D: left edge UV (0, 5) -&gt; (0, 0) */
+<span class="lineno">64</span>#101=CARTESIAN_POINT(&#x27;&#x27;,(0.0,5.0));
+<span class="lineno">65</span>#102=DIRECTION(&#x27;&#x27;,(0.0,-1.0));
+<span class="lineno">66</span>#103=VECTOR(&#x27;&#x27;,#102,1.0);
+<span class="lineno">67</span>#104=LINE(&#x27;&#x27;,#101,#103);
+<span class="lineno">68</span>#105=DEFINITIONAL_REPRESENTATION(&#x27;&#x27;,(#104),#75);
+<span class="lineno">69</span>#106=PCURVE(&#x27;&#x27;,#20,#105);
+<span class="lineno">70</span>#50=SURFACE_CURVE(&#x27;&#x27;,#34,(#77),.PCURVE_S1.);
+<span class="lineno">71</span>#150=SURFACE_CURVE(&#x27;&#x27;,#38,(#86),.PCURVE_S1.);
+<span class="lineno">72</span>#250=SURFACE_CURVE(&#x27;&#x27;,#35,(#96),.PCURVE_S1.);
+<span class="lineno">73</span>#350=SURFACE_CURVE(&#x27;&#x27;,#39,(#106),.PCURVE_S1.);
+<span class="lineno">74</span>#60=EDGE_CURVE(&#x27;&#x27;,#41,#43,#50,.T.);
+<span class="lineno">75</span>#160=EDGE_CURVE(&#x27;&#x27;,#43,#45,#150,.T.);
+<span class="lineno">76</span>#260=EDGE_CURVE(&#x27;&#x27;,#45,#47,#250,.T.);
+<span class="lineno">77</span>/* Defect: this last edge connects V47 -&gt; V41 in 3D but in UV it
+<span class="lineno">78</span> * jumps (0, 5) -&gt; (0, 0) - skipping the seam, leaving the wire open
+<span class="lineno">79</span> * across U from (2pi-0.1) to 0 (or 2pi). */
+<span class="lineno">80</span>#360=EDGE_CURVE(&#x27;&#x27;,#47,#41,#350,.T.);
+<span class="lineno">81</span>#61=ORIENTED_EDGE(&#x27;&#x27;,*,*,#60,.T.);
+<span class="lineno">82</span>#161=ORIENTED_EDGE(&#x27;&#x27;,*,*,#160,.T.);
+<span class="lineno">83</span>#261=ORIENTED_EDGE(&#x27;&#x27;,*,*,#260,.T.);
+<span class="lineno">84</span>#361=ORIENTED_EDGE(&#x27;&#x27;,*,*,#360,.T.);
+<span class="lineno">85</span>#62=EDGE_LOOP(&#x27;&#x27;,(#61,#161,#261,#361));
+<span class="lineno">86</span>#63=FACE_OUTER_BOUND(&#x27;&#x27;,#62,.T.);
+<span class="lineno">87</span>#64=ADVANCED_FACE(&#x27;&#x27;,(#63),#20,.T.);
+<span class="lineno">88</span>ENDSEC;
+<span class="lineno">89</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Gp024.html">&larr; Gp024</a> <a class="up" href="index.html">§12.2a Pcurve defects</a> <a class="next" href="Gp027.html">Gp027 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

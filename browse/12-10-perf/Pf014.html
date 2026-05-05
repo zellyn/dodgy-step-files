@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Pf014 — Long helix exported as huge B-spline (millions of poles)</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.10 Scale &amp; performance</a> <span class="sep">/</span> <span class="current">Pf014</span>
+</nav>
+<header class="title-bar">
+<h1>Pf014 <span class="sep">—</span> <span class="entry-title">Long helix exported as huge B-spline (millions of poles)</span></h1>
+<p class="category">§12.10 (sub-class: long-curve)</p>
+<p class="severity-badge severity-p2">P2 — spec deviation (no data loss)</p>
+<p class="tag-pills">
+<a class="tag tag-performance" href="../by-tag/performance/index.html">performance</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-10-perf/Pf014.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-10-perf/Pf014.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>08-occt-gitlog.md G073 (OCCT 02fd709</li>
+<li>Mantis 0026930)</li>
+<li>03-occt-tests.md R027 (bug26943)</li>
+<li>18-other-issues.md I066</li>
+</ul></section>
+<section><h2>Description</h2>
+<p>When a long 3D helix is projected onto its hosting cylinder, OCCT emitted a B-spline approximation rather than the analytic 2D line segment; analogous issue: `sweep(circle, helix(h≥30))` produces missing-faces output sensitive to sub-percent offset (build123d #1064). Parameter-space curve becomes huge B-spline with thousands of knots.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>`EDGE_CURVE` whose 3D curve is a helix on a `CYLINDRICAL_SURFACE` with no pcurve; or sweep a circle along a tall (h ≥ 30) helix and export to STEP.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>Heal and accept: detect the line-on-elementary-surface helix case and coerce export to a compact analytical form rather than a million-pole B-spline.</p></section>
+<section><h2>Notes</h2>
+<p>**See also**: P008, P009.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>count_entity_def(b&#x27;CARTESIAN_POINT&#x27;) &gt;= 32</code></li>
+</ul></section>
+<section><h2>Cross-references</h2>
+<p><a href="../12-6-assembly/P008.html">P008</a>, <a href="../12-6-assembly/P009.html">P009</a></p>
+</section>
+<section><h2>Live oracle output</h2>
+<table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
+<tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>no_shapes_loaded</code></td></tr>
+</tbody></table>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* Pf014 - Long helix exported as huge B-spline (millions of poles)
+<span class="lineno">3</span>   Pattern: when a long 3D helix is projected onto its hosting cylindrical
+<span class="lineno">4</span>   surface, OCCT (and others) emit a B-spline approximation rather than
+<span class="lineno">5</span>   the analytic 2D LINE pcurve. Result: parameter-space curve becomes a
+<span class="lineno">6</span>   B_SPLINE_CURVE_WITH_KNOTS with thousands of knots / poles for a long
+<span class="lineno">7</span>   helix; sweep(circle, helix(h&gt;=30)) produces missing faces sensitive
+<span class="lineno">8</span>   to sub-percent offset (build123d #1064; OCCT 02fd709 / Mantis 26930).
+<span class="lineno">9</span>   Scaling-up: this fixture has 32 control points and a uniform clamped
+<span class="lineno">10</span>   knot vector totalling 36 multiplicities (n + degree + 1 = 32 + 3 + 1).
+<span class="lineno">11</span>   Reproduce by replicating the control-point list to ~50,000 entries
+<span class="lineno">12</span>   and the knot vector to a similar count - the resulting B-spline pcurve
+<span class="lineno">13</span>   stresses memory and projection routines. The kernel should detect
+<span class="lineno">14</span>   line-on-elementary-surface and emit a 2D LINE pcurve instead. */
+<span class="lineno">15</span>HEADER;
+<span class="lineno">16</span>FILE_DESCRIPTION((&#x27;Pf014 - long helix-as-B-spline (huge NbControlPoints)&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">17</span>FILE_NAME(&#x27;Pf014.stp&#x27;,&#x27;2026-04-26T00:00:00&#x27;,(&#x27;auto-generated&#x27;),(&#x27;&#x27;),
+<span class="lineno">18</span>  &#x27;auto-generated&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">19</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
+<span class="lineno">20</span>ENDSEC;
+<span class="lineno">21</span>DATA;
+<span class="lineno">22</span><mark>#1=CARTESIAN_POINT(</mark>&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">23</span>#2=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">24</span>#3=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">25</span>#4=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#1,#2,#3);
+<span class="lineno">26</span>#5=CYLINDRICAL_SURFACE(&#x27;host&#x27;,#4,1.0);
+<span class="lineno">27</span>/* helix sampled as 32 control points (real producer emits millions) */
+<span class="lineno">28</span><mark>#10=CARTESIAN_POINT(</mark>&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">29</span><mark>#11=CARTESIAN_POINT(</mark>&#x27;&#x27;,(0.924,0.383,0.5));
+<span class="lineno">30</span><mark>#12=CARTESIAN_POINT(</mark>&#x27;&#x27;,(0.707,0.707,1.0));
+<span class="lineno">31</span><mark>#13=CARTESIAN_POINT(</mark>&#x27;&#x27;,(0.383,0.924,1.5));
+<span class="lineno">32</span><mark>#14=CARTESIAN_POINT(</mark>&#x27;&#x27;,(0.0,1.0,2.0));
+<span class="lineno">33</span><mark>#15=CARTESIAN_POINT(</mark>&#x27;&#x27;,(-0.383,0.924,2.5));
+<span class="lineno">34</span><mark>#16=CARTESIAN_POINT(</mark>&#x27;&#x27;,(-0.707,0.707,3.0));
+<span class="lineno">35</span><mark>#17=CARTESIAN_POINT(</mark>&#x27;&#x27;,(-0.924,0.383,3.5));
+<span class="lineno">36</span><mark>#18=CARTESIAN_POINT(</mark>&#x27;&#x27;,(-1.0,0.0,4.0));
+<span class="lineno">37</span><mark>#19=CARTESIAN_POINT(</mark>&#x27;&#x27;,(-0.924,-0.383,4.5));
+<span class="lineno">38</span><mark>#20=CARTESIAN_POINT(</mark>&#x27;&#x27;,(-0.707,-0.707,5.0));
+<span class="lineno">39</span><mark>#21=CARTESIAN_POINT(</mark>&#x27;&#x27;,(-0.383,-0.924,5.5));
+<span class="lineno">40</span><mark>#22=CARTESIAN_POINT(</mark>&#x27;&#x27;,(0.0,-1.0,6.0));
+<span class="lineno">41</span><mark>#23=CARTESIAN_POINT(</mark>&#x27;&#x27;,(0.383,-0.924,6.5));
+<span class="lineno">42</span><mark>#24=CARTESIAN_POINT(</mark>&#x27;&#x27;,(0.707,-0.707,7.0));
+<span class="lineno">43</span><mark>#25=CARTESIAN_POINT(</mark>&#x27;&#x27;,(0.924,-0.383,7.5));
+<span class="lineno">44</span><mark>#26=CARTESIAN_POINT(</mark>&#x27;&#x27;,(1.0,0.0,8.0));
+<span class="lineno">45</span><mark>#27=CARTESIAN_POINT(</mark>&#x27;&#x27;,(0.924,0.383,8.5));
+<span class="lineno">46</span><mark>#28=CARTESIAN_POINT(</mark>&#x27;&#x27;,(0.707,0.707,9.0));
+<span class="lineno">47</span><mark>#29=CARTESIAN_POINT(</mark>&#x27;&#x27;,(0.383,0.924,9.5));
+<span class="lineno">48</span><mark>#30=CARTESIAN_POINT(</mark>&#x27;&#x27;,(0.0,1.0,10.0));
+<span class="lineno">49</span><mark>#31=CARTESIAN_POINT(</mark>&#x27;&#x27;,(-0.383,0.924,10.5));
+<span class="lineno">50</span><mark>#32=CARTESIAN_POINT(</mark>&#x27;&#x27;,(-0.707,0.707,11.0));
+<span class="lineno">51</span><mark>#33=CARTESIAN_POINT(</mark>&#x27;&#x27;,(-0.924,0.383,11.5));
+<span class="lineno">52</span><mark>#34=CARTESIAN_POINT(</mark>&#x27;&#x27;,(-1.0,0.0,12.0));
+<span class="lineno">53</span><mark>#35=CARTESIAN_POINT(</mark>&#x27;&#x27;,(-0.924,-0.383,12.5));
+<span class="lineno">54</span><mark>#36=CARTESIAN_POINT(</mark>&#x27;&#x27;,(-0.707,-0.707,13.0));
+<span class="lineno">55</span><mark>#37=CARTESIAN_POINT(</mark>&#x27;&#x27;,(-0.383,-0.924,13.5));
+<span class="lineno">56</span><mark>#38=CARTESIAN_POINT(</mark>&#x27;&#x27;,(0.0,-1.0,14.0));
+<span class="lineno">57</span><mark>#39=CARTESIAN_POINT(</mark>&#x27;&#x27;,(0.383,-0.924,14.5));
+<span class="lineno">58</span><mark>#40=CARTESIAN_POINT(</mark>&#x27;&#x27;,(0.707,-0.707,15.0));
+<span class="lineno">59</span><mark>#41=CARTESIAN_POINT(</mark>&#x27;&#x27;,(0.924,-0.383,15.5));
+<span class="lineno">60</span>/* Uniform clamped knot vector for n=32 poles, degree=3.
+<span class="lineno">61</span>   Required total multiplicity = n + degree + 1 = 36.
+<span class="lineno">62</span>   Layout: 4 (clamped start) + 28 single interior knots + 4 (clamped end)
+<span class="lineno">63</span>   = 36. Distinct knot count = 30. */
+<span class="lineno">64</span>#100=B_SPLINE_CURVE_WITH_KNOTS(&#x27;long-helix-as-bspline&#x27;,3,
+<span class="lineno">65</span>  (#10,#11,#12,#13,#14,#15,#16,#17,#18,#19,#20,#21,
+<span class="lineno">66</span>   #22,#23,#24,#25,#26,#27,#28,#29,#30,#31,#32,#33,
+<span class="lineno">67</span>   #34,#35,#36,#37,#38,#39,#40,#41),
+<span class="lineno">68</span>  .UNSPECIFIED.,.F.,.F.,
+<span class="lineno">69</span>  (4,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,4),
+<span class="lineno">70</span>  (0.0,
+<span class="lineno">71</span>   0.034482758620689655,0.06896551724137931,0.10344827586206896,
+<span class="lineno">72</span>   0.13793103448275862,0.1724137931034483,0.20689655172413793,
+<span class="lineno">73</span>   0.2413793103448276,0.27586206896551724,0.3103448275862069,
+<span class="lineno">74</span>   0.3448275862068966,0.3793103448275862,0.41379310344827586,
+<span class="lineno">75</span>   0.4482758620689655,0.4827586206896552,0.5172413793103449,
+<span class="lineno">76</span>   0.5517241379310345,0.5862068965517241,0.6206896551724138,
+<span class="lineno">77</span>   0.6551724137931034,0.6896551724137931,0.7241379310344828,
+<span class="lineno">78</span>   0.7586206896551724,0.7931034482758621,0.8275862068965517,
+<span class="lineno">79</span>   0.8620689655172413,0.896551724137931,0.9310344827586207,
+<span class="lineno">80</span>   0.9655172413793104,
+<span class="lineno">81</span>   1.0),
+<span class="lineno">82</span>  .UNSPECIFIED.);
+<span class="lineno">83</span>/* edge that places the giant b-spline as the 3D curve of an EDGE_CURVE
+<span class="lineno">84</span>   on the cylinder; pcurve omitted on purpose (drives the regression) */
+<span class="lineno">85</span>#110=VERTEX_POINT(&#x27;&#x27;,#10);
+<span class="lineno">86</span>#111=VERTEX_POINT(&#x27;&#x27;,#41);
+<span class="lineno">87</span>#120=EDGE_CURVE(&#x27;helix-edge&#x27;,#110,#111,#100,.T.);
+<span class="lineno">88</span>ENDSEC;
+<span class="lineno">89</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Pf013.html">&larr; Pf013</a> <a class="up" href="index.html">§12.10 Scale &amp; performance</a> <a class="next" href="Pf015.html">Pf015 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

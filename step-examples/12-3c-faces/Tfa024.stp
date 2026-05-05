@@ -1,0 +1,89 @@
+/* Tfa024 - Glue Faces (coincident faces)
+ * Defect: two ADVANCED_FACEs are geometrically coincident - duplicate
+ * layers on the same underlying surface, often from botched Booleans.
+ * Both attached to the same shell. Healer should keep one face, drop
+ * the duplicate; if coincidence is partial, log; merge results into a
+ * non-manifold-clean compound.
+ * Reproducer: two ADVANCED_FACEs on the same PLANE with identical
+ * outer loops; both attached to the same OPEN_SHELL.
+ */
+ISO-10303-21;
+HEADER;
+FILE_DESCRIPTION(('Tfa024 glue faces coincident'),'2;1');
+FILE_NAME('Tfa024.stp','2026-04-26T00:00:00',(''),(''),
+  'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
+  'automotive_design',2009,#1);
+#10=CARTESIAN_POINT('origin',(0.0,0.0,0.0));
+#11=DIRECTION('z',(0.0,0.0,1.0));
+#12=DIRECTION('x',(1.0,0.0,0.0));
+#13=AXIS2_PLACEMENT_3D('plc',#10,#11,#12);
+#14=PLANE('shared_plane',#13);
+#20=CARTESIAN_POINT('p0',(0.0,0.0,0.0));
+#21=CARTESIAN_POINT('p1',(10.0,0.0,0.0));
+#22=CARTESIAN_POINT('p2',(10.0,10.0,0.0));
+#23=CARTESIAN_POINT('p3',(0.0,10.0,0.0));
+#30=VERTEX_POINT('',#20);
+#31=VERTEX_POINT('',#21);
+#32=VERTEX_POINT('',#22);
+#33=VERTEX_POINT('',#23);
+#40=DIRECTION('',(1.0,0.0,0.0));
+#41=DIRECTION('',(0.0,1.0,0.0));
+#42=DIRECTION('',(-1.0,0.0,0.0));
+#43=DIRECTION('',(0.0,-1.0,0.0));
+#50=VECTOR('',#40,10.0);
+#51=VECTOR('',#41,10.0);
+#52=VECTOR('',#42,10.0);
+#53=VECTOR('',#43,10.0);
+#60=LINE('',#20,#50);
+#61=LINE('',#21,#51);
+#62=LINE('',#22,#52);
+#63=LINE('',#23,#53);
+/* Layer 1 edges.                                                       */
+#70=EDGE_CURVE('',#30,#31,#60,.T.);
+#71=EDGE_CURVE('',#31,#32,#61,.T.);
+#72=EDGE_CURVE('',#32,#33,#62,.T.);
+#73=EDGE_CURVE('',#33,#30,#63,.T.);
+/* Layer 2 - duplicate edges referencing same vertices and lines.       */
+#74=EDGE_CURVE('',#30,#31,#60,.T.);
+#75=EDGE_CURVE('',#31,#32,#61,.T.);
+#76=EDGE_CURVE('',#32,#33,#62,.T.);
+#77=EDGE_CURVE('',#33,#30,#63,.T.);
+#80=ORIENTED_EDGE('',*,*,#70,.T.);
+#81=ORIENTED_EDGE('',*,*,#71,.T.);
+#82=ORIENTED_EDGE('',*,*,#72,.T.);
+#83=ORIENTED_EDGE('',*,*,#73,.T.);
+#84=ORIENTED_EDGE('',*,*,#74,.T.);
+#85=ORIENTED_EDGE('',*,*,#75,.T.);
+#86=ORIENTED_EDGE('',*,*,#76,.T.);
+#87=ORIENTED_EDGE('',*,*,#77,.T.);
+#90=EDGE_LOOP('layer1',(#80,#81,#82,#83));
+#91=EDGE_LOOP('layer2',(#84,#85,#86,#87));
+#100=FACE_OUTER_BOUND('',#90,.T.);
+#101=FACE_OUTER_BOUND('',#91,.T.);
+/* Defect site: two coincident ADVANCED_FACEs on same plane and same
+ * loop coordinates, both attached to the same shell.                   */
+#110=ADVANCED_FACE('layer1_face',(#100),#14,.T.);
+#111=ADVANCED_FACE('layer2_face',(#101),#14,.T.);
+#120=OPEN_SHELL('shell_with_dupe',(#110,#111));
+/* Wrap: minimal PRODUCT chain so OCCT TransferRoots produces a shape. */
+#9000=PRODUCT_CONTEXT('',#1,'mechanical');
+#9001=PRODUCT('Tfa024','Tfa024','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
+#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
+#9021=SHELL_BASED_SURFACE_MODEL('wrap_sbsm',(#120));
+#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#9010);
+#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+ENDSEC;
+END-ISO-10303-21;

@@ -1,0 +1,72 @@
+ISO-10303-21;
+/*
+ * A025 — Names with special / non-ASCII / encoded characters lost or corrupted
+ * Defect (control directives in names, cp1251/GB2312/DOS850, Japanese,
+ *         embedded apostrophes, single space, backslashes, OCCT bug25440/
+ *         bug33815, FreeCAD GH#7987, CAD Exchanger):
+ *   STEP name fields contain ISO 10303-21 control directives, raw 8-bit
+ *   bytes, doubled apostrophes, backslashes, or single-space placeholders;
+ *   receivers either fail to decode, replace with ?, drop the name, or trim
+ *   whitespace too aggressively.
+ * Reproducer recipe: PRODUCT name '\X2\03B1\X0\' (Greek alpha); or
+ *   PRODUCT('O''Brien',...); or PRODUCT(' ',...); or PRODUCT('C:\path\file',...).
+ * Expected kernel: decode all 10303-21 directives; provide read.step.codepage;
+ *   preserve literal backslashes; standard doubled-quote escape parsing.
+ */
+HEADER;
+FILE_DESCRIPTION(('A025 names with X2 escape, doubled apostrophe, backslash, single space'),'2;1');
+FILE_NAME('A025.stp','2026-04-26T00:00:00',('catalog'),('cad'),'manual','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#10 = APPLICATION_CONTEXT('automotive design');
+#11 = APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2001,#10);
+#12 = PRODUCT_CONTEXT('',#10,'mechanical');
+#13 = PRODUCT_DEFINITION_CONTEXT('part definition',#10,'design');
+/* DEFECT 1: X2/X0 Greek alpha escape sequence in a PRODUCT name */
+#20 = PRODUCT('\X2\03B1\X0\','greek alpha','',(#12));
+#21 = PRODUCT_DEFINITION_FORMATION('','',#20);
+#22 = PRODUCT_DEFINITION('design','',#21,#13);
+#23 = PRODUCT_DEFINITION_SHAPE('','',#22);
+/* DEFECT 2: doubled apostrophe (O'Brien) — Part-21 escape for single quote */
+#30 = PRODUCT('O''Brien','irish name','',(#12));
+#31 = PRODUCT_DEFINITION_FORMATION('','',#30);
+#32 = PRODUCT_DEFINITION('design','',#31,#13);
+#33 = PRODUCT_DEFINITION_SHAPE('','',#32);
+/* DEFECT 3: literal Windows path with backslashes — must round-trip as-is */
+#34 = PRODUCT('C:\\path\\file','windows path','',(#12));
+#35 = PRODUCT_DEFINITION_FORMATION('','',#34);
+#36 = PRODUCT_DEFINITION('design','',#35,#13);
+#37 = PRODUCT_DEFINITION_SHAPE('','',#36);
+/* DEFECT 4: single space placeholder — receivers must NOT trim to empty */
+#38 = PRODUCT(' ','single-space placeholder','',(#12));
+#39 = PRODUCT_DEFINITION_FORMATION('','',#38);
+#40 = PRODUCT_DEFINITION('design','',#39,#13);
+#41 = PRODUCT_DEFINITION_SHAPE('','',#40);
+/* Top assembly */
+#42 = PRODUCT('A025_ASSY','','',(#12));
+#43 = PRODUCT_DEFINITION_FORMATION('','',#42);
+#44 = PRODUCT_DEFINITION('design','',#43,#13);
+#45 = PRODUCT_DEFINITION_SHAPE('','',#44);
+#46 = NEXT_ASSEMBLY_USAGE_OCCURRENCE('1','alpha','',#44,#22,$);
+#47 = NEXT_ASSEMBLY_USAGE_OCCURRENCE('2','obrien','',#44,#32,$);
+#48 = NEXT_ASSEMBLY_USAGE_OCCURRENCE('3','winpath','',#44,#36,$);
+#49 = NEXT_ASSEMBLY_USAGE_OCCURRENCE('4','space','',#44,#40,$);
+#50 = ( LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT(.MILLI.,.METRE.) );
+#51 = ( NAMED_UNIT(*) PLANE_ANGLE_UNIT() SI_UNIT($,.RADIAN.) );
+#52 = ( NAMED_UNIT(*) SI_UNIT($,.STERADIAN.) SOLID_ANGLE_UNIT() );
+#53 = UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#50,'distance_accuracy_value','');
+#54 = ( GEOMETRIC_REPRESENTATION_CONTEXT(3) GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#53))
+        GLOBAL_UNIT_ASSIGNED_CONTEXT((#50,#51,#52)) REPRESENTATION_CONTEXT('','3D') );
+#60 = CARTESIAN_POINT('',(0.0,0.0,0.0));
+#61 = DIRECTION('',(0.0,0.0,1.0));
+#62 = DIRECTION('',(1.0,0.0,0.0));
+#63 = AXIS2_PLACEMENT_3D('',#60,#61,#62);
+#64 = SHAPE_REPRESENTATION('',(#63),#54);
+#65 = SHAPE_DEFINITION_REPRESENTATION(#23,#64);
+#66 = SHAPE_DEFINITION_REPRESENTATION(#33,#64);
+#67 = SHAPE_DEFINITION_REPRESENTATION(#37,#64);
+#68 = SHAPE_DEFINITION_REPRESENTATION(#41,#64);
+#69 = SHAPE_DEFINITION_REPRESENTATION(#45,#64);
+ENDSEC;
+END-ISO-10303-21;

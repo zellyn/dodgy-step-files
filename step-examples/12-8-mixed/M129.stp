@@ -1,0 +1,25 @@
+ISO-10303-21;
+/* M129 - AP203 new revision references parent that isn't in the
+ * change-history chain.
+ * Defect: PRODUCT_DEFINITION_FORMATION 'rev_C' lists 'rev_A' as the
+ * basis revision via PRODUCT_DEFINITION_RELATIONSHIP, skipping the
+ * intermediate 'rev_B'. The engineering change history is broken
+ * - rev_C did not derive from rev_B and there is no relationship
+ * accounting for the rev_B work. */
+HEADER;
+FILE_DESCRIPTION(('M129 test case','AP203 ECO chain skip'),'2;1');
+FILE_NAME('M129.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('CONFIG_CONTROL_DESIGN'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('configuration controlled 3D design of mechanical parts and assemblies');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','config_control_design',1994,#1);
+#10=PRODUCT('housing','housing','primary case',(#1));
+#11=PRODUCT_DEFINITION_FORMATION('rev_A','first release',#10);
+#12=PRODUCT_DEFINITION_FORMATION('rev_B','intermediate update',#10);
+#13=PRODUCT_DEFINITION_FORMATION('rev_C','latest revision',#10);
+/* Defect: rev_C declares rev_A as predecessor, skipping rev_B which
+ * exists but has no inbound or outbound relationship. */
+#100=PRODUCT_DEFINITION_RELATIONSHIP('eco_chain','derived_from',#11,#13);
+ENDSEC;
+END-ISO-10303-21;

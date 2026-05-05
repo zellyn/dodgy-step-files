@@ -1,0 +1,70 @@
+ISO-10303-21;
+/* N013 - Boolean cascade vertex deviation (independently computed pairwise intersections)
+ * Defect: When three or more surfaces meet at a single mathematical vertex,
+ * OCCT computes each pairwise edge-edge intersection independently. Floating-
+ * point error makes the three candidate vertex coordinates disagree by
+ * 1e-9 to 1e-5, so the boolean output emits three almost-coincident
+ * vertices and three short edges in place of one shared vertex.
+ *
+ * Reproducer: three vertex candidates forming a near-degenerate triangle
+ * with side lengths ~1e-7. Each EDGE_CURVE's LINE direction & vector
+ * magnitude actually move start_vertex to end_vertex (i.e. the geometry
+ * is self-consistent: line origin == start vertex point, and
+ * start_point + magnitude*direction == end vertex point), unlike the
+ * previous version where the line vectors did not connect their declared
+ * endpoints.
+ */
+HEADER;
+FILE_DESCRIPTION(('N013 Boolean cascade vertex deviation 3 pairwise intersections'),'2;1');
+FILE_NAME('N013.stp','2026-04-26T00:00:00',(''),(''),
+  'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
+  'automotive_design',2009,#1);
+/* Three vertex candidates from independent pairwise intersections of
+ * half-spaces s1/s2, s2/s3, s3/s1; ideal point is (0,0,0). The three
+ * candidates form a near-degenerate triangle with side lengths
+ * approximately 1.414e-7. */
+#10=CARTESIAN_POINT('v_s1s2',(1.0E-7,0.0,0.0));
+#11=CARTESIAN_POINT('v_s2s3',(0.0,1.0E-7,0.0));
+#12=CARTESIAN_POINT('v_s3s1',(0.0,0.0,1.0E-7));
+#20=VERTEX_POINT('v12',#10);
+#21=VERTEX_POINT('v23',#11);
+#22=VERTEX_POINT('v31',#12);
+/* Three short edges. Each edge's LINE has its origin at start_vertex's
+ * point, and direction*magnitude exactly equals (end - start). This
+ * makes the geometry self-consistent so the file is a real reproducer
+ * of "3 vertices and 3 short edges in place of one shared vertex". */
+/* edge_a: v12 (1e-7, 0, 0) -> v23 (0, 1e-7, 0); delta = (-1e-7, 1e-7, 0).
+   length = sqrt(2) * 1e-7; unit dir = (-1/sqrt(2), 1/sqrt(2), 0). */
+#30=DIRECTION('d_a',(-0.7071067811865476,0.7071067811865476,0.0));
+#33=VECTOR('vec_a',#30,1.4142135623730951E-7);
+#40=LINE('e_a',#10,#33);
+#50=EDGE_CURVE('edge_a',#20,#21,#40,.T.);
+/* edge_b: v23 (0, 1e-7, 0) -> v31 (0, 0, 1e-7); delta = (0, -1e-7, 1e-7).
+   length = sqrt(2) * 1e-7; unit dir = (0, -1/sqrt(2), 1/sqrt(2)). */
+#31=DIRECTION('d_b',(0.0,-0.7071067811865476,0.7071067811865476));
+#34=VECTOR('vec_b',#31,1.4142135623730951E-7);
+#41=LINE('e_b',#11,#34);
+#51=EDGE_CURVE('edge_b',#21,#22,#41,.T.);
+/* edge_c: v31 (0, 0, 1e-7) -> v12 (1e-7, 0, 0); delta = (1e-7, 0, -1e-7).
+   length = sqrt(2) * 1e-7; unit dir = (1/sqrt(2), 0, -1/sqrt(2)). */
+#32=DIRECTION('d_c',(0.7071067811865476,0.0,-0.7071067811865476));
+#35=VECTOR('vec_c',#32,1.4142135623730951E-7);
+#42=LINE('e_c',#12,#35);
+#52=EDGE_CURVE('edge_c',#22,#20,#42,.T.);
+/* Units, uncertainty, and representation context */
+#60=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#61=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#62=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#63=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-9),#60,
+  'distance_accuracy_value','model_tol_below_pairwise_drift');
+#70=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#63))
+  GLOBAL_UNIT_ASSIGNED_CONTEXT((#60,#61,#62))
+  REPRESENTATION_CONTEXT('ctx','3D'));
+ENDSEC;
+END-ISO-10303-21;

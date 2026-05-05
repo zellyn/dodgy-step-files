@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Ad083 — Multiple `PRODUCT`s share the same name; only `NEXT_ASSEMBLY_USAGE_OCCURRENCE` id disambiguates (assembly reader flat-load label collision)</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.11 Adversarial / parser robustness</a> <span class="sep">/</span> <span class="current">Ad083</span>
+</nav>
+<header class="title-bar">
+<h1>Ad083 <span class="sep">—</span> <span class="entry-title">Multiple `PRODUCT`s share the same name; only `NEXT_ASSEMBLY_USAGE_OCCURRENCE` id disambiguates (assembly reader flat-load label collision)</span></h1>
+<p class="category">§12.11 (sub-class: schema-validation)</p>
+<p class="severity-badge severity-p2">P2 — spec deviation (no data loss)</p>
+<p class="tag-pills">
+<a class="tag tag-crash" href="../by-tag/crash/index.html">crash</a>
+<a class="tag tag-adversarial" href="../by-tag/adversarial/index.html">adversarial</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-11-adversarial/Ad083.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-11-adversarial/Ad083.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>18-other-issues.md I021 (CadQuery #1962, KiCad), I077</li>
+<li>03-occt-tests.md R057</li>
+</ul></section>
+<section><h2>Description</h2>
+<p>Multiple child `PRODUCT` instances share the same `name` attribute across distinct `PRODUCT_DEFINITION` chains — for example three boards each named &#x27;R0402&#x27; — and only the `NEXT_ASSEMBLY_USAGE_OCCURRENCE` `id` slot (&#x27;R1&#x27;, &#x27;R2&#x27;, &#x27;R3&#x27;) disambiguates them. KiCad-style sources reuse one PRODUCT for many NAUOs; receiver dictionaries keyed on `name` instead of NAUO id collide and drop siblings.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>`cq.Assembly.load(&quot;mobo-3D.step&quot;)`.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>Heal and accept: treat IDs (entity #) as primary keys; disambiguate names; do not fail on duplicates.</p></section>
+<section><h2>Notes</h2>
+<p>**See also**: Ad043. Validation observed: silent-empty rather than the cited crash. The structural attack pattern (e.g., billion-laughs / cyclic-reference / very-large-string) is demonstrated; production-scale exploitation requires inflating the size factor as described. Kernel-mishandling-by-silent-acceptance is itself a defect signal at fixture scale.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>count_entity_def(b&#x27;NEXT_ASSEMBLY_USAGE_OCCURRENCE&#x27;) &gt;= 3</code></li>
+<li><code>count(b&quot;&#x27;R&quot;) &gt;= 3 or count_entity_def(b&#x27;NEXT_ASSEMBLY_USAGE_OCCURRENCE&#x27;) &gt;= 3</code></li>
+</ul></section>
+<section><h2>Cross-references</h2>
+<p><a href="Ad043.html">Ad043</a></p>
+</section>
+<section><h2>Live oracle output</h2>
+<table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
+<tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>no_shapes_loaded</code></td></tr>
+</tbody></table>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>/* Ad083 - duplicate-name children defeat label-keyed flat-load
+<span class="lineno">2</span>   Source: STEP_PROBLEM_CATALOG.md Â§12.11 Ad083;
+<span class="lineno">3</span>           mining 18-other-issues.md I021 (CadQuery #1962, KiCad), I077;
+<span class="lineno">4</span>           03-occt-tests.md R057.
+<span class="lineno">5</span>   Pattern: KiCad reuses one PRODUCT for many NEXT_ASSEMBLY_USAGE_OCCURRENCE
+<span class="lineno">6</span>           instances (e.g., the same resistor footprint placed 50 times).
+<span class="lineno">7</span>           Each NAUO is unique by entity ID, but they all carry the same
+<span class="lineno">8</span>           PRODUCT name &#x27;R0402&#x27;. CadQuery&#x27;s flat-load uses a label-keyed
+<span class="lineno">9</span>           dict and raises ValueError on the first collision.
+<span class="lineno">10</span>   Reproducer recipe (per catalog): cq.Assembly.load(&quot;mobo-3D.step&quot;) on
+<span class="lineno">11</span>           any KiCad-emitted STEP with repeat footprints.
+<span class="lineno">12</span>   Expected kernel behavior: treat IDs (entity #) as primary keys;
+<span class="lineno">13</span>           disambiguate names (e.g., &#x27;R0402#1&#x27;, &#x27;R0402#2&#x27;); never fail
+<span class="lineno">14</span>           on duplicate names.
+<span class="lineno">15</span>   This fixture: one parent assembly, three NAUO children that all
+<span class="lineno">16</span>   share the same PRODUCT name. License-clean: hand-synthesized. */
+<span class="lineno">17</span>ISO-10303-21;
+<span class="lineno">18</span>HEADER;
+<span class="lineno">19</span>FILE_DESCRIPTION(
+<span class="lineno">20</span>  (&#x27;Ad083 - duplicate child names defeat label-keyed assembly loader&#x27;),
+<span class="lineno">21</span>  &#x27;2;1&#x27;);
+<span class="lineno">22</span>FILE_NAME(&#x27;Ad083.stp&#x27;,&#x27;2026-04-26T00:00:00&#x27;,
+<span class="lineno">23</span>  (&#x27;auto-generated&#x27;),(&#x27;&#x27;),&#x27;auto-generated&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">24</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
+<span class="lineno">25</span>ENDSEC;
+<span class="lineno">26</span>DATA;
+<span class="lineno">27</span>#1=APPLICATION_CONTEXT(&#x27;automotive_design&#x27;);
+<span class="lineno">28</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,
+<span class="lineno">29</span>  &#x27;automotive_design&#x27;,2001,#1);
+<span class="lineno">30</span>#3=PRODUCT_CONTEXT(&#x27;&#x27;,#1,&#x27;mechanical&#x27;);
+<span class="lineno">31</span>/* parent. */
+<span class="lineno">32</span>#4=PRODUCT(&#x27;PCB&#x27;,&#x27;main board&#x27;,&#x27;&#x27;,(#3));
+<span class="lineno">33</span>#5=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#4);
+<span class="lineno">34</span>#6=PRODUCT_DEFINITION_CONTEXT(&#x27;&#x27;,#1,&#x27;design&#x27;);
+<span class="lineno">35</span>#7=PRODUCT_DEFINITION(&#x27;design&#x27;,&#x27;&#x27;,#5,#6);
+<span class="lineno">36</span>/* three children that share PRODUCT name &#x27;R0402&#x27; - the duplicate-key
+<span class="lineno">37</span>   trigger. Each child has its own PRODUCT/PDF/PD chain (distinct
+<span class="lineno">38</span>   entity IDs) but identical name string. */
+<span class="lineno">39</span>#10=PRODUCT(&#x27;R0402&#x27;,&#x27;R0402 SMT resistor footprint&#x27;,&#x27;&#x27;,(#3));
+<span class="lineno">40</span>#11=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#10);
+<span class="lineno">41</span>#12=PRODUCT_DEFINITION(&#x27;design&#x27;,&#x27;&#x27;,#11,#6);
+<span class="lineno">42</span>#20=PRODUCT(&#x27;R0402&#x27;,&#x27;R0402 SMT resistor footprint&#x27;,&#x27;&#x27;,(#3));
+<span class="lineno">43</span>#21=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#20);
+<span class="lineno">44</span>#22=PRODUCT_DEFINITION(&#x27;design&#x27;,&#x27;&#x27;,#21,#6);
+<span class="lineno">45</span>#30=PRODUCT(&#x27;R0402&#x27;,&#x27;R0402 SMT resistor footprint&#x27;,&#x27;&#x27;,(#3));
+<span class="lineno">46</span>#31=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#30);
+<span class="lineno">47</span>#32=PRODUCT_DEFINITION(&#x27;design&#x27;,&#x27;&#x27;,#31,#6);
+<span class="lineno">48</span>/* NAUOs. Reference designators encoded in the NAUO id slot (&#x27;R1&#x27;,&#x27;R2&#x27;,&#x27;R3&#x27;)
+<span class="lineno">49</span>   are the only place the loader could disambiguate, but most label-keyed
+<span class="lineno">50</span>   assemblers ignore the NAUO id and key on the child PRODUCT name. */
+<span class="lineno">51</span><mark>#40=NEXT_ASSEMBLY_USAGE_OCCURRENCE(</mark>&#x27;R1&#x27;,&#x27;&#x27;,&#x27;&#x27;,#7,#12,$);
+<span class="lineno">52</span><mark>#41=NEXT_ASSEMBLY_USAGE_OCCURRENCE(</mark>&#x27;R2&#x27;,&#x27;&#x27;,&#x27;&#x27;,#7,#22,$);
+<span class="lineno">53</span><mark>#42=NEXT_ASSEMBLY_USAGE_OCCURRENCE(</mark>&#x27;R3&#x27;,&#x27;&#x27;,&#x27;&#x27;,#7,#32,$);
+<span class="lineno">54</span>ENDSEC;
+<span class="lineno">55</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Ad082.html">&larr; Ad082</a> <a class="up" href="index.html">§12.11 Adversarial / parser robustness</a> <a class="next" href="Ad084.html">Ad084 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

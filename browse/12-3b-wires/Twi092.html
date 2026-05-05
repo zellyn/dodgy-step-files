@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Twi092 — Wire with degenerated edge dropped silently on export</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.3b Wires / loops / edges</a> <span class="sep">/</span> <span class="current">Twi092</span>
+</nav>
+<header class="title-bar">
+<h1>Twi092 <span class="sep">—</span> <span class="entry-title">Wire with degenerated edge dropped silently on export</span></h1>
+<p class="category">§12.3b wires/loops/edges</p>
+<p class="tag-pills">
+<a class="tag tag-round-trip" href="../by-tag/round-trip/index.html">round-trip</a>
+<a class="tag tag-topology" href="../by-tag/topology/index.html">topology</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-3b-wires/Twi092.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-3b-wires/Twi092.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>OCCT MANTIS#0025843 (OCCT MANTIS tracker 502 as of 2026-05-02)</li>
+</ul></section>
+<section><h2>Description</h2>
+<p>A face has a wire containing a degenerate edge (a seam pole on a cone or a degenerate edge at the apex of a sphere wedge). The STEP exporter, given a degenerated edge, drops it from the wire entirely rather than emitting it as `EDGE_CURVE` with a degenerated marker. The re-imported wire is incomplete and the face fails validity.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>Cone face whose apex is reached by a degenerate edge (zero-length segment between two coincident vertex points at the apex). Exporter writes the wire with three edges instead of four.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>Heal and accept: preserve degenerate edges on export, normalized / marked via `EDGE_CURVE` of zero parametric length or via the dedicated degenerated-edge representation.</p></section>
+<section><h2>Notes</h2>
+<p>**See also**: Twi053. Synonyms: &quot;cone apex degenerate edge missing on export&quot;, &quot;STEP writer drops zero-length edge&quot;, &quot;exported wire missing apex bridge&quot;, &quot;round-trip removes degenerate edges&quot;, &quot;writer omits sphere wedge pole edge&quot;.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=shape(1)/shape(1) gmsh=shape(8) ifc=schema_n/a</code></p></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>face[0].surface_type == &quot;cone&quot;</code></li>
+<li><code>n_edges_total &gt;= 4</code></li>
+<li><code>n_vertices_total &gt;= 8</code></li>
+<li><code>face[0].sliver_aspect_max_min &gt; 1e6</code></li>
+</ul></section>
+<section><h2>Cross-references</h2>
+<p><a href="Twi053.html">Twi053</a></p>
+</section>
+<section><h2>Live oracle output</h2>
+<table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
+<tr><td><code>occt_heal_on</code></td><td><code>shape(1)</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>shape(1)</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>shape(8)</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>shape(8)</code></td></tr>
+<tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>empty_mesh</code></td></tr>
+</tbody></table>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* Twi092 - Wire with degenerated edge dropped silently on export
+<span class="lineno">3</span> * Truncated cone wedge: the wire that should have FOUR edges (lateral edge
+<span class="lineno">4</span> * up-the-side, top arc at the apex, lateral edge down, base arc) was
+<span class="lineno">5</span> * exported with only THREE -- the degenerate apex edge (zero-length seam
+<span class="lineno">6</span> * at the cone tip between two coincident apex VERTEX_POINTs) was dropped. */
+<span class="lineno">7</span>HEADER;
+<span class="lineno">8</span>FILE_DESCRIPTION((&#x27;Twi092 test case&#x27;,&#x27;Cone-wedge wire missing the degenerate apex edge -- 3 edges instead of 4&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">9</span>FILE_NAME(&#x27;Twi092.stp&#x27;,&#x27;2026-04-30T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">10</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }&#x27;));
+<span class="lineno">11</span>ENDSEC;
+<span class="lineno">12</span>DATA;
+<span class="lineno">13</span>#1=APPLICATION_CONTEXT(&#x27;automotive_design&#x27;);
+<span class="lineno">14</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,&#x27;automotive_design&#x27;,2000,#1);
+<span class="lineno">15</span>#10=CARTESIAN_POINT(&#x27;cone_origin&#x27;,(0.0,0.0,0.0));
+<span class="lineno">16</span>#11=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">17</span>#12=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">18</span>#13=AXIS2_PLACEMENT_3D(&#x27;cone_axis&#x27;,#10,#11,#12);
+<span class="lineno">19</span>#14=CONICAL_SURFACE(&#x27;host_cone&#x27;,#13,1.0,0.7853981633974483);
+<span class="lineno">20</span>/* Apex at (0,0,0); base at z=-1, radius 1. The wire would visit (in 4-edge form):
+<span class="lineno">21</span> *   V_base_a -&gt; V_base_b (base arc), V_base_b -&gt; V_apex_b (lateral),
+<span class="lineno">22</span> *   V_apex_b -&gt; V_apex_a (degenerate apex edge), V_apex_a -&gt; V_base_a (lateral).
+<span class="lineno">23</span> * Exporter dropped the V_apex_b -&gt; V_apex_a degenerate edge. */
+<span class="lineno">24</span>#20=CARTESIAN_POINT(&#x27;apex_a&#x27;,(0.0,0.0,0.0));#21=VERTEX_POINT(&#x27;V_apex_a&#x27;,#20);
+<span class="lineno">25</span>#22=CARTESIAN_POINT(&#x27;apex_b&#x27;,(0.0,0.0,0.0));#23=VERTEX_POINT(&#x27;V_apex_b&#x27;,#22);
+<span class="lineno">26</span>#24=CARTESIAN_POINT(&#x27;base_a&#x27;,(1.0,0.0,-1.0));#25=VERTEX_POINT(&#x27;V_base_a&#x27;,#24);
+<span class="lineno">27</span>#26=CARTESIAN_POINT(&#x27;base_b&#x27;,(0.0,1.0,-1.0));#27=VERTEX_POINT(&#x27;V_base_b&#x27;,#26);
+<span class="lineno">28</span>/* base arc V_base_a -&gt; V_base_b (quarter circle on z=-1 plane) */
+<span class="lineno">29</span>#30=CARTESIAN_POINT(&#x27;arc_centre&#x27;,(0.0,0.0,-1.0));
+<span class="lineno">30</span>#31=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));#32=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">31</span>#33=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#30,#31,#32);
+<span class="lineno">32</span>#34=CIRCLE(&#x27;base_arc&#x27;,#33,1.0);
+<span class="lineno">33</span>#35=EDGE_CURVE(&#x27;base_arc_edge&#x27;,#25,#27,#34,.T.);
+<span class="lineno">34</span>/* lateral V_base_b -&gt; V_apex_b (line up the cone slant) */
+<span class="lineno">35</span>#40=DIRECTION(&#x27;&#x27;,(0.0,-0.7071067811865475,0.7071067811865475));#41=VECTOR(&#x27;&#x27;,#40,1.4142);
+<span class="lineno">36</span>#42=LINE(&#x27;lateral_up&#x27;,#26,#41);
+<span class="lineno">37</span>#43=EDGE_CURVE(&#x27;lateral_up_edge&#x27;,#27,#23,#42,.T.);
+<span class="lineno">38</span>/* lateral V_apex_a -&gt; V_base_a (line back down the slant) */
+<span class="lineno">39</span>#50=DIRECTION(&#x27;&#x27;,(0.7071067811865475,0.0,-0.7071067811865475));#51=VECTOR(&#x27;&#x27;,#50,1.4142);
+<span class="lineno">40</span>#52=LINE(&#x27;lateral_down&#x27;,#20,#51);
+<span class="lineno">41</span>#53=EDGE_CURVE(&#x27;lateral_down_edge&#x27;,#21,#25,#52,.T.);
+<span class="lineno">42</span>/* DEFECT: the missing degenerate apex edge V_apex_b -&gt; V_apex_a is NOT in the loop */
+<span class="lineno">43</span>#60=ORIENTED_EDGE(&#x27;&#x27;,*,*,#35,.T.);
+<span class="lineno">44</span>#61=ORIENTED_EDGE(&#x27;&#x27;,*,*,#43,.T.);
+<span class="lineno">45</span>#62=ORIENTED_EDGE(&#x27;&#x27;,*,*,#53,.T.);
+<span class="lineno">46</span>/* Three edges only -- apex degenerate edge dropped */
+<span class="lineno">47</span>#63=EDGE_LOOP(&#x27;cone_wedge_missing_apex_edge&#x27;,(#60,#61,#62));
+<span class="lineno">48</span>#64=FACE_OUTER_BOUND(&#x27;&#x27;,#63,.T.);
+<span class="lineno">49</span>#65=ADVANCED_FACE(&#x27;cone_wedge_face&#x27;,(#64),#14,.T.);
+<span class="lineno">50</span>/* Wrap: minimal PRODUCT chain so OCCT TransferRoots produces a shape. */
+<span class="lineno">51</span>#9000=PRODUCT_CONTEXT(&#x27;&#x27;,#1,&#x27;mechanical&#x27;);
+<span class="lineno">52</span>#9001=PRODUCT(&#x27;Twi092&#x27;,&#x27;Twi092&#x27;,&#x27;&#x27;,(#9000));
+<span class="lineno">53</span>#9002=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#9001);
+<span class="lineno">54</span>#9003=PRODUCT_DEFINITION_CONTEXT(&#x27;part definition&#x27;,#1,&#x27;design&#x27;);
+<span class="lineno">55</span>#9004=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,#9002,#9003);
+<span class="lineno">56</span>#9005=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,#9004);
+<span class="lineno">57</span>#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">58</span>#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+<span class="lineno">59</span>#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+<span class="lineno">60</span>#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,&#x27;distance_accuracy_value&#x27;,&#x27;&#x27;);
+<span class="lineno">61</span>#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT(&#x27;&#x27;,&#x27;3D&#x27;));
+<span class="lineno">62</span>#9020=OPEN_SHELL(&#x27;wrap_shell&#x27;,(#65));
+<span class="lineno">63</span>#9021=SHELL_BASED_SURFACE_MODEL(&#x27;wrap_sbsm&#x27;,(#9020));
+<span class="lineno">64</span>#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION(&#x27;&#x27;,(#9021),#9010);
+<span class="lineno">65</span>#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+<span class="lineno">66</span>ENDSEC;
+<span class="lineno">67</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Twi091.html">&larr; Twi091</a> <a class="up" href="index.html">§12.3b Wires / loops / edges</a> <a class="next" href="Twi093.html">Twi093 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

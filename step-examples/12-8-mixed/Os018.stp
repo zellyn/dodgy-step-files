@@ -1,0 +1,43 @@
+ISO-10303-21;
+/* Os018 - N-sided fill with incompatible tangent constraints.
+ * Defect: three EDGE_CURVEs forming a triangular hole boundary, each
+ * carrying a tangent-direction SHAPE_ASPECT at the corners with
+ * mutually inconsistent tangent vectors. */
+HEADER;
+FILE_DESCRIPTION(('Os018 test case','Fill constraint incompatible'),'2;1');
+FILE_NAME('Os018.stp','2026-04-30T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+#10=PRODUCT_CONTEXT('',#1,'mechanical');
+#11=PRODUCT('part1','part1','part1',(#10));
+#12=PRODUCT_DEFINITION_FORMATION('','',#11);
+#13=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#14=PRODUCT_DEFINITION('','',#12,#13);
+#15=PRODUCT_DEFINITION_SHAPE('','',#14);
+/* Triangle corner points */
+#20=CARTESIAN_POINT('a',(0.0,0.0,0.0));
+#21=CARTESIAN_POINT('b',(1.0,0.0,0.0));
+#22=CARTESIAN_POINT('c',(0.5,1.0,0.0));
+#23=VERTEX_POINT('',#20);
+#24=VERTEX_POINT('',#21);
+#25=VERTEX_POINT('',#22);
+/* Three edges of the triangular hole boundary */
+#30=DIRECTION('',(1.0,0.0,0.0));#31=VECTOR('',#30,1.0);#32=LINE('',#20,#31);
+#33=DIRECTION('',(-0.4472135954999579,0.8944271909999159,0.0));#34=VECTOR('',#33,1.118);#35=LINE('',#21,#34);
+#36=DIRECTION('',(-0.4472135954999579,-0.8944271909999159,0.0));#37=VECTOR('',#36,1.118);#38=LINE('',#22,#37);
+#40=EDGE_CURVE('e_ab',#23,#24,#32,.T.);
+#41=EDGE_CURVE('e_bc',#24,#25,#35,.T.);
+#42=EDGE_CURVE('e_ca',#25,#23,#38,.T.);
+/* Tangent directions at the three corners (mutually inconsistent) */
+#50=DIRECTION('tangent_at_a',(0.8944271909999159,0.0,0.4472135954999579));
+#51=DIRECTION('tangent_at_b',(-0.8192319205190405,0.0,0.5734623443633283));
+#52=DIRECTION('tangent_at_c',(0.0,-0.9578262852211513,-0.2873478855663454));
+/* Bind tangent constraints to the corners via SHAPE_ASPECTs */
+#60=SHAPE_ASPECT('tangent_a','G1 tangent at corner a',#15,.T.);
+#61=SHAPE_ASPECT('tangent_b','G1 tangent at corner b',#15,.T.);
+#62=SHAPE_ASPECT('tangent_c','G1 tangent at corner c',#15,.T.);
+ENDSEC;
+END-ISO-10303-21;

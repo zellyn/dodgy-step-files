@@ -1,0 +1,54 @@
+ISO-10303-21;
+/* Twi073 - Per-junction 2D pcurve gap query
+ * Three-edge wire on a CYLINDRICAL_SURFACE. Junction 1 (between edge1 and
+ * edge2): pcurve gap is 0.0 in U. Junction 2 (between edge2 and edge3):
+ * edge2 pcurve ends at U=2.0, edge3 pcurve starts at U=2.5 -- gap 0.5.
+ * Caller queries num=2; analyzer returns the 0.5 unit. */
+HEADER;
+FILE_DESCRIPTION(('Twi073 test case','Per-junction 2D pcurve gap query at junction num=2'),'2;1');
+FILE_NAME('Twi073.stp','2026-04-30T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#11=DIRECTION('',(0.0,0.0,1.0));
+#12=DIRECTION('',(1.0,0.0,0.0));
+#13=AXIS2_PLACEMENT_3D('',#10,#11,#12);
+#14=CYLINDRICAL_SURFACE('',#13,1.0);
+#20=CARTESIAN_POINT('',(1.0,0.0,0.0));#21=VERTEX_POINT('V0',#20);
+#22=CARTESIAN_POINT('',(0.54,0.84,0.0));#23=VERTEX_POINT('V1',#22);
+#24=CARTESIAN_POINT('',(-0.42,0.91,0.0));#25=VERTEX_POINT('V2',#24);
+#26=CARTESIAN_POINT('',(-0.99,0.14,0.0));#27=VERTEX_POINT('V3',#26);
+/* edge1: pcurve U=0.0 -> U=1.0 */
+#30=DIRECTION('',(-0.4803146228655844,0.8770962678415017,0.0));#31=VECTOR('',#30,1.0);#32=LINE('',#20,#31);
+#33=CARTESIAN_POINT('',(0.0,0.0));#34=DIRECTION('',(1.0,0.0));#35=VECTOR('',#34,1.0);
+#36=LINE('e1_pc',#33,#35);
+#37=DEFINITIONAL_REPRESENTATION('',(#36),#13);
+#38=PCURVE('',#14,#37);
+#39=SURFACE_CURVE('',#32,(#38),.PCURVE_S1.);
+#40=EDGE_CURVE('edge1',#21,#23,#39,.T.);
+/* edge2: pcurve U=1.0 -> U=2.0 -- contiguous (junction 1 gap=0) */
+#45=DIRECTION('',(-0.9973521339060821,0.0727235930973185,0.0));#46=VECTOR('',#45,1.0);#47=LINE('',#22,#46);
+#48=CARTESIAN_POINT('',(1.0,0.0));#49=DIRECTION('',(1.0,0.0));#50=VECTOR('',#49,1.0);
+#51=LINE('e2_pc',#48,#50);
+#52=DEFINITIONAL_REPRESENTATION('',(#51),#13);
+#53=PCURVE('',#14,#52);
+#54=SURFACE_CURVE('',#47,(#53),.PCURVE_S1.);
+#55=EDGE_CURVE('edge2',#23,#25,#54,.T.);
+/* edge3: pcurve U=2.5 -> U=3.5 -- 0.5 gap at junction 2 */
+#60=DIRECTION('',(-0.594977892467951,-0.8037420652637233,0.0));#61=VECTOR('',#60,1.0);#62=LINE('',#24,#61);
+#63=CARTESIAN_POINT('junction2_pcurve_gap_0p5',(2.5,0.0));
+#64=DIRECTION('',(1.0,0.0));#65=VECTOR('',#64,1.0);
+#66=LINE('e3_pc_starts_2p5',#63,#65);
+#67=DEFINITIONAL_REPRESENTATION('',(#66),#13);
+#68=PCURVE('',#14,#67);
+#69=SURFACE_CURVE('',#62,(#68),.PCURVE_S1.);
+#70=EDGE_CURVE('edge3',#25,#27,#69,.T.);
+#80=ORIENTED_EDGE('',*,*,#40,.T.);
+#81=ORIENTED_EDGE('',*,*,#55,.T.);
+#82=ORIENTED_EDGE('',*,*,#70,.T.);
+#83=EDGE_LOOP('junction_2_has_2d_gap',(#80,#81,#82));
+ENDSEC;
+END-ISO-10303-21;

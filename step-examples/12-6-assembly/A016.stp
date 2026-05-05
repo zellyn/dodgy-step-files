@@ -1,0 +1,77 @@
+ISO-10303-21;
+/*
+ * A016 — UDA on multi-level reference designator (MLRD) ignored
+ * Defect (CAx-IF UDA §6.2/§8):
+ *   UDAs at the assembly-instance level can be attached to NAUOs or to MLRDs
+ *   (multi-level paths). They must be counted at the product representing
+ *   their context node. Some receivers ignore MLRD-attached UDAs entirely.
+ * Reproducer recipe: AS1 with one UDA on the NAUO from AS1 to L-Bracket-
+ *   Assembly, and one UDA on the MLRD from AS1 to a specific Nut instance.
+ * Expected kernel: walk both NAUO and MLRD attachments when counting per-
+ *   context UDAs.
+ */
+HEADER;
+FILE_DESCRIPTION(('A016 UDA bound to MLRD path AS1->LBR->Nut may be ignored'),'2;1');
+FILE_NAME('A016.stp','2026-04-26T00:00:00',('catalog'),('cad'),'manual','','');
+FILE_SCHEMA(('AP242_MANAGED_MODEL_BASED_3D_ENGINEERING_MIM_LF { 1 0 10303 442 3 0 0 }'));
+ENDSEC;
+DATA;
+#10 = APPLICATION_CONTEXT('managed model based 3d engineering');
+#11 = APPLICATION_PROTOCOL_DEFINITION('international standard','ap242_managed_model_based_3d_engineering',2020,#10);
+#12 = PRODUCT_CONTEXT('',#10,'mechanical');
+#13 = PRODUCT_DEFINITION_CONTEXT('part definition',#10,'design');
+/* AS1 (top) */
+#20 = PRODUCT('AS1','top','',(#12));
+#21 = PRODUCT_DEFINITION_FORMATION('','',#20);
+#22 = PRODUCT_DEFINITION('design','',#21,#13);
+#23 = PRODUCT_DEFINITION_SHAPE('','',#22);
+/* L-Bracket-Assembly */
+#30 = PRODUCT('LBR','L-Bracket-Assembly','',(#12));
+#31 = PRODUCT_DEFINITION_FORMATION('','',#30);
+#32 = PRODUCT_DEFINITION('design','',#31,#13);
+#33 = PRODUCT_DEFINITION_SHAPE('','',#32);
+/* Nut */
+#34 = PRODUCT('NUT','M6 Nut','',(#12));
+#35 = PRODUCT_DEFINITION_FORMATION('','',#34);
+#36 = PRODUCT_DEFINITION('design','',#35,#13);
+#37 = PRODUCT_DEFINITION_SHAPE('','',#36);
+/* NAUOs forming the chain */
+#40 = NEXT_ASSEMBLY_USAGE_OCCURRENCE('1','AS1_TO_LBR','',#22,#32,$);
+#41 = NEXT_ASSEMBLY_USAGE_OCCURRENCE('2','LBR_TO_NUT','',#32,#36,$);
+#50 = ( LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT(.MILLI.,.METRE.) );
+#51 = ( NAMED_UNIT(*) PLANE_ANGLE_UNIT() SI_UNIT($,.RADIAN.) );
+#52 = ( NAMED_UNIT(*) SI_UNIT($,.STERADIAN.) SOLID_ANGLE_UNIT() );
+#53 = UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#50,'distance_accuracy_value','');
+#54 = ( GEOMETRIC_REPRESENTATION_CONTEXT(3) GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#53))
+        GLOBAL_UNIT_ASSIGNED_CONTEXT((#50,#51,#52)) REPRESENTATION_CONTEXT('','3D') );
+#60 = CARTESIAN_POINT('',(0.0,0.0,0.0));
+#61 = DIRECTION('',(0.0,0.0,1.0));
+#62 = DIRECTION('',(1.0,0.0,0.0));
+#63 = AXIS2_PLACEMENT_3D('nut_origin',#60,#61,#62);
+#64 = SHAPE_REPRESENTATION('nut_rep',(#63),#54);
+#65 = SHAPE_DEFINITION_REPRESENTATION(#37,#64);
+#66 = REPRESENTATION_MAP(#63,#64);
+#67 = MAPPED_ITEM('nut_inst',#66,#63);
+#70 = AXIS2_PLACEMENT_3D('lbr_origin',#60,#61,#62);
+#71 = SHAPE_REPRESENTATION('lbr_rep',(#70,#67),#54);
+#72 = SHAPE_DEFINITION_REPRESENTATION(#33,#71);
+#73 = REPRESENTATION_MAP(#70,#71);
+#74 = MAPPED_ITEM('lbr_inst',#73,#70);
+#80 = AXIS2_PLACEMENT_3D('as1_origin',#60,#61,#62);
+#81 = SHAPE_REPRESENTATION('as1_rep',(#80,#74),#54);
+#82 = SHAPE_DEFINITION_REPRESENTATION(#23,#81);
+/* UDA on the NAUO AS1 -> LBR (typical NAUO binding) */
+#90 = DESCRIPTIVE_REPRESENTATION_ITEM('production_lot','LOT-A042');
+#91 = REPRESENTATION('uda_NAUO',(#90),#54);
+#92 = PROPERTY_DEFINITION('user defined attribute','for NAUO',#40);
+#93 = PROPERTY_DEFINITION_REPRESENTATION(#92,#91);
+/* DEFECT: UDA bound to the MULTI-LEVEL REFERENCE DESIGNATOR path
+   AS1 -> LBR -> NUT. Many readers count UDAs only on NAUOs and ignore
+   the MLRD binding even though both should be honored. */
+#94 = ASSEMBLY_COMPONENT_USAGE_SUBSTITUTE('mlrd','AS1_LBR_NUT path',#40,#41);
+#95 = DESCRIPTIVE_REPRESENTATION_ITEM('torque_spec','12 Nm');
+#96 = REPRESENTATION('uda_MLRD',(#95),#54);
+#97 = PROPERTY_DEFINITION('user defined attribute','for MLRD',#94);
+#98 = PROPERTY_DEFINITION_REPRESENTATION(#97,#96);
+ENDSEC;
+END-ISO-10303-21;

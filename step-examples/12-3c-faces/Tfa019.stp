@@ -1,0 +1,103 @@
+/* Tfa019 - FaceConnect: vertices not shared between faces
+ * Defect: two faces are geometrically coincident along an edge but
+ * topologically share no vertex/edge - each owns its own vertex copy.
+ * Distance-only checks pass but the shell has zero-tolerance topological
+ * cracks. Healer must merge coincident vertices/edges within tolerance,
+ * downgrade cracks to gaps then run gap pipeline. After healing, edge
+ * ancestor count should be 2 for shared boundaries.
+ * Reproducer: two ADVANCED_FACE entries sharing an identical line
+ * geometry (same coordinates) along an edge but each referencing its
+ * OWN VERTEX_POINT, EDGE_CURVE, ORIENTED_EDGE records.
+ */
+ISO-10303-21;
+HEADER;
+FILE_DESCRIPTION(('Tfa019 face connect duplicate vertices'),'2;1');
+FILE_NAME('Tfa019.stp','2026-04-26T00:00:00',(''),(''),
+  'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
+  'automotive_design',2009,#1);
+#10=CARTESIAN_POINT('origin',(0.0,0.0,0.0));
+#11=DIRECTION('z',(0.0,0.0,1.0));
+#12=DIRECTION('x',(1.0,0.0,0.0));
+#13=AXIS2_PLACEMENT_3D('plc',#10,#11,#12);
+#14=PLANE('plane_xy',#13);
+/* Face A vertices and face B vertices are at IDENTICAL coordinates
+ * along the shared edge (10,0)-(10,10), but instantiated separately. */
+#20=CARTESIAN_POINT('a0',(0.0,0.0,0.0));
+#21=CARTESIAN_POINT('a1',(10.0,0.0,0.0));
+#22=CARTESIAN_POINT('a2',(10.0,10.0,0.0));
+#23=CARTESIAN_POINT('a3',(0.0,10.0,0.0));
+#24=CARTESIAN_POINT('b0',(10.0,0.0,0.0));
+#25=CARTESIAN_POINT('b1',(20.0,0.0,0.0));
+#26=CARTESIAN_POINT('b2',(20.0,10.0,0.0));
+#27=CARTESIAN_POINT('b3',(10.0,10.0,0.0));
+#30=VERTEX_POINT('av_p1',#21);
+#31=VERTEX_POINT('av_p2',#22);
+#32=VERTEX_POINT('av_p0',#20);
+#33=VERTEX_POINT('av_p3',#23);
+/* Defect site: bv_p0 / bv_p3 are SEPARATE VERTEX_POINTs at identical
+ * coords as av_p1 / av_p2. Faces A and B do not share vertices.       */
+#34=VERTEX_POINT('bv_p0',#24);
+#35=VERTEX_POINT('bv_p1',#25);
+#36=VERTEX_POINT('bv_p2',#26);
+#37=VERTEX_POINT('bv_p3',#27);
+#40=DIRECTION('',(1.0,0.0,0.0));
+#41=DIRECTION('',(0.0,1.0,0.0));
+#42=DIRECTION('',(-1.0,0.0,0.0));
+#43=DIRECTION('',(0.0,-1.0,0.0));
+#50=VECTOR('',#40,10.0);
+#51=VECTOR('',#41,10.0);
+#52=VECTOR('',#42,10.0);
+#53=VECTOR('',#43,10.0);
+#60=LINE('a_bottom',#20,#50);
+#61=LINE('a_right_dup1',#21,#51);
+#62=LINE('a_top',#22,#52);
+#63=LINE('a_left',#23,#53);
+#64=LINE('b_bottom',#24,#50);
+#65=LINE('b_right',#25,#51);
+#66=LINE('b_top',#26,#52);
+#67=LINE('b_left_dup2',#27,#53);
+#70=EDGE_CURVE('A_bot',#32,#30,#60,.T.);
+#71=EDGE_CURVE('A_right',#30,#31,#61,.T.);
+#72=EDGE_CURVE('A_top',#31,#33,#62,.T.);
+#73=EDGE_CURVE('A_left',#33,#32,#63,.T.);
+#74=EDGE_CURVE('B_bot',#34,#35,#64,.T.);
+#75=EDGE_CURVE('B_right',#35,#36,#65,.T.);
+#76=EDGE_CURVE('B_top',#36,#37,#66,.T.);
+#77=EDGE_CURVE('B_left',#37,#34,#67,.T.);
+#80=ORIENTED_EDGE('',*,*,#70,.T.);
+#81=ORIENTED_EDGE('',*,*,#71,.T.);
+#82=ORIENTED_EDGE('',*,*,#72,.T.);
+#83=ORIENTED_EDGE('',*,*,#73,.T.);
+#84=ORIENTED_EDGE('',*,*,#74,.T.);
+#85=ORIENTED_EDGE('',*,*,#75,.T.);
+#86=ORIENTED_EDGE('',*,*,#76,.T.);
+#87=ORIENTED_EDGE('',*,*,#77,.T.);
+#90=EDGE_LOOP('A',(#80,#81,#82,#83));
+#91=EDGE_LOOP('B',(#84,#85,#86,#87));
+#100=FACE_OUTER_BOUND('',#90,.T.);
+#101=FACE_OUTER_BOUND('',#91,.T.);
+#110=ADVANCED_FACE('A_face',(#100),#14,.T.);
+#111=ADVANCED_FACE('B_face',(#101),#14,.T.);
+#120=OPEN_SHELL('two_face_shell',(#110,#111));
+/* Minimal PRODUCT chain so OCCT TransferRoots produces a shape. */
+#9000=PRODUCT_CONTEXT('',#1,'mechanical');
+#9001=PRODUCT('Tfa019','Tfa019','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
+#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
+#9021=SHELL_BASED_SURFACE_MODEL('wrap_sbsm',(#120));
+#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#9010);
+#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+ENDSEC;
+END-ISO-10303-21;

@@ -1,0 +1,52 @@
+ISO-10303-21;
+/* Gs028 - Pseudo-seam edge (looks like seam but isn't periodic)
+ * Defect: An edge appears to be a seam edge - two faces meet along what looks like a
+ * periodic-surface boundary - but the underlying surface is non-periodic.
+ * Healing logic must distinguish true periodic seams from coincidental shared edges. */
+HEADER;
+FILE_DESCRIPTION(('Gs028 test case','Pseudo-seam on non-periodic surface'),'2;1');
+FILE_NAME('Gs028.stp','2026-04-26T00:00:00',(''),(''),'auto-generated','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+/* Non-periodic BSpline surface, 3x2 control net */
+#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#11=CARTESIAN_POINT('',(5.0,0.0,1.0));
+#12=CARTESIAN_POINT('',(10.0,0.0,0.0));
+#13=CARTESIAN_POINT('',(0.0,10.0,0.0));
+#14=CARTESIAN_POINT('',(5.0,10.0,1.0));
+#15=CARTESIAN_POINT('',(10.0,10.0,0.0));
+#20=B_SPLINE_SURFACE_WITH_KNOTS('',2,1,
+  ((#10,#13),(#11,#14),(#12,#15)),
+  .UNSPECIFIED.,.F.,.F.,.F.,
+  (3,3),(2,2),(0.0,1.0),(0.0,1.0),
+  .UNSPECIFIED.);
+/* Two faces share an edge along U=0.5 (mid-surface) - looks like a seam but is not */
+#30=CARTESIAN_POINT('',(5.0,0.0,1.0));
+#31=VERTEX_POINT('',#30);
+#32=CARTESIAN_POINT('',(5.0,10.0,1.0));
+#33=VERTEX_POINT('',#32);
+#34=DIRECTION('',(0.0,1.0,0.0));
+#35=VECTOR('',#34,1.0);
+#36=LINE('',#30,#35);
+/* Two pcurves at U=0.5 - indistinguishable from a true periodic seam pair */
+#40=CARTESIAN_POINT('',(0.5,0.0));
+#41=DIRECTION('',(0.0,1.0));
+#42=VECTOR('',#41,1.0);
+#43=LINE('',#40,#42);
+#44=DEFINITIONAL_REPRESENTATION('',(#43),#45);
+#45=( GEOMETRIC_REPRESENTATION_CONTEXT(2)
+      PARAMETRIC_REPRESENTATION_CONTEXT()
+      REPRESENTATION_CONTEXT('','') );
+#46=PCURVE('',#20,#44);
+/* Defect: surface_curve marked PCURVE_S1 only, but writer treated it as a seam */
+#50=SURFACE_CURVE('',#36,(#46,#46),.PCURVE_S1_AND_S2.);
+#60=EDGE_CURVE('',#31,#33,#50,.T.);
+#61=ORIENTED_EDGE('',*,*,#60,.T.);
+#62=EDGE_LOOP('',(#61));
+#63=FACE_OUTER_BOUND('',#62,.T.);
+#64=ADVANCED_FACE('',(#63),#20,.T.);
+ENDSEC;
+END-ISO-10303-21;

@@ -1,0 +1,22 @@
+ISO-10303-21;
+/* Os014 - Pipe-shell sweep with auxiliary spine too short.
+ * Defect: main spine length 10; auxiliary spine length 5 parallel
+ * offset 2. KeepContact mode requested. */
+HEADER;
+FILE_DESCRIPTION(('Os014 - pipe-shell impossible contact','Pass C gap-fill'),'2;1');
+FILE_NAME('Os014.stp','2026-04-30T00:00:00',(''),(''),'gap-fill C','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+#10=CARTESIAN_POINT('m_start',(0.0,0.0,0.0));
+#11=CARTESIAN_POINT('m_end',(10.0,0.0,0.0));
+#12=CARTESIAN_POINT('a_start',(0.0,2.0,0.0));
+#13=CARTESIAN_POINT('a_end',(5.0,2.0,0.0));
+#20=DIRECTION('',(1.0,0.0,0.0));
+#21=VECTOR('',#20,1.0);
+#22=LINE('main_spine_len_10',#10,#21);
+#23=LINE('aux_spine_len_5',#12,#21);
+ENDSEC;
+END-ISO-10303-21;

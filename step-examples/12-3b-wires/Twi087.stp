@@ -1,0 +1,42 @@
+ISO-10303-21;
+/* Twi087 - Non-manifold wire (Y-shape).
+ * Defect: three edges share a common endpoint vertex, branching
+ * the wire so that the vertex has degree 3 in a "wire" that should
+ * be a manifold linear chain. */
+HEADER;
+FILE_DESCRIPTION(('Twi087 - Wire is non-manifold: a vertex is incident to >2 edges of the wire','Pass C gap-fill'),'2;1');
+FILE_NAME('Twi087.stp','2026-04-30T00:00:00',(''),(''),'gap-fill C','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+/* Hub vertex + three end vertices */
+#10=CARTESIAN_POINT('hub',(0.0,0.0,0.0));
+#11=CARTESIAN_POINT('arm1',(1.0,0.0,0.0));
+#12=CARTESIAN_POINT('arm2',(0.0,1.0,0.0));
+#13=CARTESIAN_POINT('arm3',(0.0,0.0,1.0));
+#20=VERTEX_POINT('',#10);
+#21=VERTEX_POINT('',#11);
+#22=VERTEX_POINT('',#12);
+#23=VERTEX_POINT('',#13);
+/* Three lines from the hub */
+#30=DIRECTION('',(1.0,0.0,0.0));
+#31=DIRECTION('',(0.0,1.0,0.0));
+#32=DIRECTION('',(0.0,0.0,1.0));
+#33=VECTOR('',#30,1.0);
+#34=VECTOR('',#31,1.0);
+#35=VECTOR('',#32,1.0);
+#40=LINE('',#10,#33);
+#41=LINE('',#10,#34);
+#42=LINE('',#10,#35);
+#50=EDGE_CURVE('e1',#20,#21,#40,.T.);
+#51=EDGE_CURVE('e2',#20,#22,#41,.T.);
+#52=EDGE_CURVE('e3',#20,#23,#42,.T.);
+#60=ORIENTED_EDGE('',*,*,#50,.T.);
+#61=ORIENTED_EDGE('',*,*,#51,.T.);
+#62=ORIENTED_EDGE('',*,*,#52,.T.);
+/* Y-shaped "wire" - degree-3 hub vertex */
+#70=EDGE_LOOP('y_wire_branching',(#60,#61,#62));
+ENDSEC;
+END-ISO-10303-21;

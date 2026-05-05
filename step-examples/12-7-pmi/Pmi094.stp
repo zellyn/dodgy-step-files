@@ -1,0 +1,34 @@
+ISO-10303-21;
+/* Pmi094 - XCAF GD&T data does not round-trip to STEP AP242 PMI
+ * On-disk fixture shows the AP242 PMI form that the writer SHOULD emit when an XCAF
+ * document carries a flatness tolerance. The catalog defect is that the writer
+ * currently omits these records on export; this fixture exercises the receive path. */
+HEADER;
+FILE_DESCRIPTION(('Pmi094 - flatness tolerance + datum reference (AP242 PMI)'),'2;1');
+FILE_NAME('Pmi094.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 242 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('AP242_managed_model_based_3d_engineering');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','ap242_mim_lf',2014,#1);
+#3=PRODUCT_CONTEXT('',#1,'mechanical');
+#4=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#5=PRODUCT('Pmi094_part','GDT round-trip','',(#3));
+#6=PRODUCT_DEFINITION_FORMATION('','',#5);
+#7=PRODUCT_DEFINITION('design','',#6,#4);
+#8=PRODUCT_DEFINITION_SHAPE('','',#7);
+#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#11=DIRECTION('',(0.0,0.0,1.0));
+#12=DIRECTION('',(1.0,0.0,0.0));
+#13=AXIS2_PLACEMENT_3D('',#10,#11,#12);
+#20=PLANE('flat_top',#13);
+#30=ADVANCED_FACE('top_face',(),#20,.T.);
+/* AP242 PMI: flatness tolerance attached to top face. */
+#40=LENGTH_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.05),#41);
+#41=(LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT(.MILLI.,.METRE.));
+#50=GEOMETRIC_TOLERANCE('flatness','flatness_tol',$,#7,#40);
+#60=DATUM('A','primary_datum',$,'A');
+#61=DATUM_REFERENCE(1,#60);
+#70=DIMENSIONAL_LOCATION('flat_top_location','',#7,#7);
+ENDSEC;
+END-ISO-10303-21;

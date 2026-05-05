@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Gp007 — Edge parameter range outside the pcurve&#x27;s natural domain</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.2a Pcurve defects</a> <span class="sep">/</span> <span class="current">Gp007</span>
+</nav>
+<header class="title-bar">
+<h1>Gp007 <span class="sep">—</span> <span class="entry-title">Edge parameter range outside the pcurve&#x27;s natural domain</span></h1>
+<p class="category">§12.2a pcurve</p>
+<p class="tag-pills">
+<a class="tag tag-silent-loss" href="../by-tag/silent-loss/index.html">silent-loss</a>
+<a class="tag tag-geometry" href="../by-tag/geometry/index.html">geometry</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-2a-pcurves/Gp007.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-2a-pcurves/Gp007.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>05-occt-shapefix.md F040, F062</li>
+</ul></section>
+<section><h2>Description</h2>
+<p>An edge declares a `[first, last]` parameter range that lies outside the natural domain of its pcurve, or the pcurve&#x27;s active range does not match the 3D-curve range. The receiver evaluating the pcurve at the declared parameter values walks off the end of the curve definition.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>`EDGE_CURVE` with declared parameter `[0, 2.5]` whose pcurve&#x27;s domain is `[0, 1]`, attached to an `ADVANCED_FACE` on a finite surface.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>clamp the edge&#x27;s parameter range to the pcurve&#x27;s natural domain (when the discrepancy is small), or reject as malformed.</p></section>
+<section><h2>Notes</h2>
+<p>**See also**: Gs029. **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog&#x27;s allowed set ({reject}). Kernel-bug witnessed: receivers must reject this fixture per the catalog&#x27;s stated invariant. Synonyms: &quot;edge parameter range exceeds pcurve domain&quot;, &quot;edge first/last parameters outside pcurve definition&quot;, &quot;pcurve evaluated past natural domain&quot;, &quot;edge trim parameters out of bounds for 2D curve&quot;, &quot;pcurve domain too short for declared edge range&quot;.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>contains(b&#x27;SURFACE_CURVE&#x27;)</code></li>
+<li><code>contains(b&#x27;EDGE_CURVE&#x27;)</code></li>
+<li><code>count_entity_def(b&#x27;PCURVE&#x27;) &gt;= 1</code></li>
+</ul></section>
+<section><h2>Cross-references</h2>
+<p><a href="../12-2c-surfaces/Gs029.html">Gs029</a></p>
+</section>
+<section><h2>Live oracle output</h2>
+<table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
+<tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>no_shapes_loaded</code></td></tr>
+</tbody></table>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* Gp007 - Pcurve range incompatible with edge range (CheckPCurveRange)
+<span class="lineno">3</span> * Defect: the pcurve in 2D is a TRIMMED_CURVE whose trim parameters
+<span class="lineno">4</span> * are [0.0, 2.5], but the underlying basis B-spline has its natural
+<span class="lineno">5</span> * domain explicitly declared as [0.0, 1.0]. The trim band [1.0, 2.5]
+<span class="lineno">6</span> * lies outside the pcurve&#x27;s basis-curve domain, so evaluation on that
+<span class="lineno">7</span> * portion is undefined. ShapeAnalysis_Edge::CheckPCurveRange flags it. */
+<span class="lineno">8</span>HEADER;
+<span class="lineno">9</span>FILE_DESCRIPTION((&#x27;Gp007 test case&#x27;,&#x27;Pcurve range incompatible with edge range&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">10</span>FILE_NAME(&#x27;Gp007.stp&#x27;,&#x27;2026-04-27T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;auto-generated&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">11</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }&#x27;));
+<span class="lineno">12</span>ENDSEC;
+<span class="lineno">13</span>DATA;
+<span class="lineno">14</span>#1=APPLICATION_CONTEXT(&#x27;automotive_design&#x27;);
+<span class="lineno">15</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,&#x27;automotive_design&#x27;,2000,#1);
+<span class="lineno">16</span>#10=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">17</span>#11=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">18</span>#12=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">19</span>#13=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#10,#11,#12);
+<span class="lineno">20</span>/* Finite planar surface */
+<span class="lineno">21</span>#20=PLANE(&#x27;&#x27;,#13);
+<span class="lineno">22</span>/* 3D curve: a finite B-spline whose natural parameter domain is [0,1] */
+<span class="lineno">23</span>#21=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">24</span>#22=CARTESIAN_POINT(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">25</span>#23=B_SPLINE_CURVE_WITH_KNOTS(&#x27;&#x27;,1,(#21,#22),.POLYLINE_FORM.,.F.,.F.,
+<span class="lineno">26</span>  (2,2),(0.0,1.0),.UNSPECIFIED.);
+<span class="lineno">27</span>#40=VERTEX_POINT(&#x27;&#x27;,#21);
+<span class="lineno">28</span>#41=VERTEX_POINT(&#x27;&#x27;,#22);
+<span class="lineno">29</span>/* 2D pcurve basis: a degree-1 B-spline in UV with explicit knots [0,1].
+<span class="lineno">30</span> * Natural parameter domain is therefore [0.0, 1.0]. */
+<span class="lineno">31</span>#71=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0));
+<span class="lineno">32</span>#72=CARTESIAN_POINT(&#x27;&#x27;,(1.0,0.0));
+<span class="lineno">33</span>#73=B_SPLINE_CURVE_WITH_KNOTS(&#x27;&#x27;,1,(#71,#72),.POLYLINE_FORM.,.F.,.F.,
+<span class="lineno">34</span>  (2,2),(0.0,1.0),.UNSPECIFIED.);
+<span class="lineno">35</span>/* Defect-bearing entity: TRIMMED_CURVE wraps the pcurve basis with
+<span class="lineno">36</span> * trim parameters [0.0, 2.5]. trim_2 = 2.5 lies OUTSIDE the basis
+<span class="lineno">37</span> * domain [0.0, 1.0]; evaluation past parameter 1.0 is undefined. */
+<span class="lineno">38</span>#80=PARAMETER_VALUE(0.0);
+<span class="lineno">39</span>#81=PARAMETER_VALUE(2.5);
+<span class="lineno">40</span>#82=TRIMMED_CURVE(&#x27;&#x27;,#73,(#80),(#81),.T.,.PARAMETER.);
+<span class="lineno">41</span>#75=( GEOMETRIC_REPRESENTATION_CONTEXT(2)
+<span class="lineno">42</span>      PARAMETRIC_REPRESENTATION_CONTEXT()
+<span class="lineno">43</span>      REPRESENTATION_CONTEXT(&#x27;parametric&#x27;,&#x27;2D&#x27;) );
+<span class="lineno">44</span>#70=DEFINITIONAL_REPRESENTATION(&#x27;&#x27;,(#82),#75);
+<span class="lineno">45</span><mark>#76=PCURVE(</mark>&#x27;&#x27;,#20,#70);
+<span class="lineno">46</span>#50=<mark>SURFACE_CURVE</mark>(&#x27;&#x27;,#23,(#76),.PCURVE_S1.);
+<span class="lineno">47</span>/* <mark>EDGE_CURVE</mark> references the <mark>SURFACE_CURVE</mark> whose pcurve carries the
+<span class="lineno">48</span> * out-of-domain trim. CheckPCurveRange must reject [0,2.5] vs [0,1]. */
+<span class="lineno">49</span>#60=<mark>EDGE_CURVE</mark>(&#x27;&#x27;,#40,#41,#50,.T.);
+<span class="lineno">50</span>#61=ORIENTED_EDGE(&#x27;&#x27;,*,*,#60,.T.);
+<span class="lineno">51</span>#62=EDGE_LOOP(&#x27;&#x27;,(#61));
+<span class="lineno">52</span>#63=FACE_OUTER_BOUND(&#x27;&#x27;,#62,.T.);
+<span class="lineno">53</span>#64=ADVANCED_FACE(&#x27;&#x27;,(#63),#20,.T.);
+<span class="lineno">54</span>ENDSEC;
+<span class="lineno">55</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Gp005.html">&larr; Gp005</a> <a class="up" href="index.html">§12.2a Pcurve defects</a> <a class="next" href="Gp008.html">Gp008 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

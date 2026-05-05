@@ -1,0 +1,28 @@
+ISO-10303-21;
+/* M145 - AP210 fixed-side reference inverts top/bottom semantics.
+ * Defect: a board with stackup top -> top_signal -> ... -> bottom is
+ * exported with PHYSICAL_LAYER 'top_signal' annotated as
+ * fixed_side = 'BOTTOM'. Components placed by the assembly using
+ * 'fixed_side' to disambiguate top/bottom land on the wrong PCB
+ * face. Bug-reporter language: "PCB top side mirrored", "AP210
+ * fixed-side reference inverted". */
+HEADER;
+FILE_DESCRIPTION(('M145 test case','AP210 layer side reference inverted'),'2;1');
+FILE_NAME('M145.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('ELECTRONIC_ASSEMBLY_INTERCONNECT_AND_PACKAGING_DESIGN { 1 0 10303 210 3 1 0 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('electronic_assembly_interconnect_and_packaging_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
+  'electronic_assembly_interconnect_and_packaging_design',2014,#1);
+#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10))
+     REPRESENTATION_CONTEXT('pcb','3D'));
+#100=MATERIAL_DESIGNATION('copper','signal copper',(#1));
+/* Defect: layer name says top_signal but fixed_side claims BOTTOM. */
+#200=LAMINATE_OR_PLY_DEFINITION('top_signal',$,#100,#100,LENGTH_MEASURE(0.035));
+#201=DESCRIPTIVE_REPRESENTATION_ITEM('fixed_side','BOTTOM');
+#202=PROPERTY_DEFINITION('layer_side_reference','side disambiguator',#200);
+ENDSEC;
+END-ISO-10303-21;

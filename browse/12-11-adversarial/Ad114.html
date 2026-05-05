@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Ad114 — STEP fixture path is a symlink to `/etc/passwd` or other privileged file</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.11 Adversarial / parser robustness</a> <span class="sep">/</span> <span class="current">Ad114</span>
+</nav>
+<header class="title-bar">
+<h1>Ad114 <span class="sep">—</span> <span class="entry-title">STEP fixture path is a symlink to `/etc/passwd` or other privileged file</span></h1>
+<p class="category">§12.11 adversarial (sub-class: TOCTOU / symlink-following)</p>
+<p class="tag-pills">
+<a class="tag tag-silent-loss" href="../by-tag/silent-loss/index.html">silent-loss</a>
+<a class="tag tag-adversarial" href="../by-tag/adversarial/index.html">adversarial</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-11-adversarial/Ad114.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-11-adversarial/Ad114.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>bug-reporter language: &quot;STEP loader followed symlink to /etc/passwd&quot;, &quot;fixture path resolves outside research root&quot;</li>
+<li>CWE-59 (symlink following)</li>
+<li>CWE-22 (path traversal)</li>
+</ul></section>
+<section><h2>Sender</h2>
+<p>deduced — adversarial filesystem context where a `.stp` fixture path is a symlink to a file the receiver should not read</p></section>
+<section><h2>Description</h2>
+<p>A receiver that opens a fixture by name without checking whether the path traverses a symlink will follow symlinks transparently. If an attacker can place a symlink at the fixture path (or anywhere along its resolution chain) pointing at a privileged file (`/etc/passwd`, `~/.ssh/id_rsa`, `/proc/self/environ`), the receiver reads the privileged file&#x27;s bytes and feeds them to the Part-21 tokeniser. Most privileged files do not parse as Part-21 and the load fails benignly, but the bytes have already been read into the receiver&#x27;s address space and may appear in error messages, crash dumps, or telemetry. Bug-reporter language: &quot;STEP fixture leaks /etc/passwd&quot;, &quot;symlink in research tree&quot;, &quot;kernel reads non-STEP file as STEP&quot;.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>a `.stp` path in the research tree is a symlink to `/etc/passwd`. The receiver opens the path and reads ~3 KB of `root:x:0:0:..` bytes into its tokeniser. The fixture in this catalog documents the scenario in a header comment but does NOT actually create a symlink in the repo.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>refuse to open paths whose resolved location is outside a configured root; refuse to follow symlinks within the research tree unless explicitly enabled; check `O_NOFOLLOW`-style flags on open; refuse to dump bytes from a non-Part-21 file in error messages or telemetry.</p></section>
+<section><h2>Notes</h2>
+<p>Companion to Ad106 (TOCTOU on EXTERNAL_FILE) and Ad113 (sibling-pair race) — a different angle on the same filesystem-trust defect class. Provenance tier: cross-file-state — bytes alone cannot demonstrate this defect; the symptom requires a symlink in the receiver-side filesystem. The static fixture is document-only: no real symlink is created in the repo (cross-platform-unfriendly). **See also**: Ad106, Ad113, Ad115. **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog&#x27;s allowed set ({reject}). Kernel-bug witnessed: receivers must reject this fixture per the catalog&#x27;s stated invariant.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<section><h2>Provenance tier</h2>
+<p><code>cross-file-state</code> — defect not fully embodied in fixture bytes.</p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>contains(b&#x27;symlink&#x27;) or contains(b&#x27;passwd&#x27;) or contains(b&#x27;/etc/&#x27;)</code></li>
+<li><code>contains(b&#x27;O_NOFOLLOW&#x27;) or contains(b&#x27;symlink&#x27;) or contains(b&#x27;/etc/passwd&#x27;)</code></li>
+</ul></section>
+<section><h2>Cross-references</h2>
+<p><a href="Ad106.html">Ad106</a>, <a href="Ad113.html">Ad113</a>, <a href="Ad115.html">Ad115</a></p>
+</section>
+<section><h2>Live oracle output</h2>
+<table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
+<tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>no_shapes_loaded</code></td></tr>
+</tbody></table>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>/* Ad114 - STEP fixture path is a symlink to /etc/passwd or other
+<span class="lineno">2</span> * privileged file
+<span class="lineno">3</span> * Defect: a receiver that opens a fixture by name without checking
+<span class="lineno">4</span> * whether the path traverses a symlink will follow symlinks
+<span class="lineno">5</span> * transparently. If an attacker can place a symlink at the fixture
+<span class="lineno">6</span> * path (or anywhere along its resolution chain) pointing at a
+<span class="lineno">7</span> * privileged file (/etc/passwd, ~/.ssh/id_rsa, /proc/self/environ),
+<span class="lineno">8</span> * the receiver reads the privileged file&#x27;s bytes and feeds them to
+<span class="lineno">9</span> * the Part-21 tokeniser. Most privileged files do not parse as
+<span class="lineno">10</span> * Part-21 and the load fails benignly, but the bytes have already
+<span class="lineno">11</span> * been read into the receiver&#x27;s address space and may appear in
+<span class="lineno">12</span> * error messages, crash dumps, or telemetry.
+<span class="lineno">13</span> *
+<span class="lineno">14</span> * IMPORTANT: this fixture documents the scenario in this header
+<span class="lineno">15</span> * comment; no real symlink to /etc/passwd is created in the
+<span class="lineno">16</span> * repository. Provenance tier: cross-file-state. */
+<span class="lineno">17</span>ISO-10303-21;
+<span class="lineno">18</span>HEADER;
+<span class="lineno">19</span>FILE_DESCRIPTION((&#x27;Ad114 - .stp fixture path is symlink to /etc/passwd&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">20</span>FILE_NAME(&#x27;Ad114.stp&#x27;,&#x27;2026-05-02T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">21</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }&#x27;));
+<span class="lineno">22</span>ENDSEC;
+<span class="lineno">23</span>DATA;
+<span class="lineno">24</span>/* Witness body: the symlink-following defect lives in the receiver-side
+<span class="lineno">25</span>   filesystem. The bug-reporter searchable terms (symlink, /etc/passwd,
+<span class="lineno">26</span>   /etc/, O_NOFOLLOW) are in this file&#x27;s header and comments. The
+<span class="lineno">27</span>   actual demonstration requires a symlink at the fixture path
+<span class="lineno">28</span>   pointing at /etc/passwd or similar privileged file.
+<span class="lineno">29</span>
+<span class="lineno">30</span>   No real symlink is created in this repo - it would be a clear
+<span class="lineno">31</span>   security smell in source control and cross-platform unfriendly.
+<span class="lineno">32</span>   The receiver should refuse to follow symlinks within the research
+<span class="lineno">33</span>   tree unless explicitly enabled, and should set O_NOFOLLOW on open. */
+<span class="lineno">34</span>/* symlink to /etc/passwd at fixture path - O_NOFOLLOW required */
+<span class="lineno">35</span>#1=APPLICATION_CONTEXT(&#x27;automotive_design&#x27;);
+<span class="lineno">36</span>#10=CARTESIAN_POINT(&#x27;benign&#x27;,(0.0,0.0,0.0));
+<span class="lineno">37</span>ENDSEC;
+<span class="lineno">38</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Ad113.html">&larr; Ad113</a> <a class="up" href="index.html">§12.11 Adversarial / parser robustness</a> <a class="next" href="Ad115.html">Ad115 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

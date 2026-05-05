@@ -1,0 +1,50 @@
+ISO-10303-21;
+/* Twi067 - Lacking edge: 2D gap not absorbable by vertex tolerance
+ * On a CYLINDRICAL_SURFACE, two adjacent edges share a 3D vertex that the
+ * tolerance can cover, but the pcurve endpoints differ in U by 0.5 -- a
+ * 2D gap requiring an inserted connecting edge, not just snapping. */
+HEADER;
+FILE_DESCRIPTION(('Twi067 test case','Lacking edge: 2D pcurve gap exceeds vertex tolerance'),'2;1');
+FILE_NAME('Twi067.stp','2026-04-30T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#11=DIRECTION('',(0.0,0.0,1.0));
+#12=DIRECTION('',(1.0,0.0,0.0));
+#13=AXIS2_PLACEMENT_3D('',#10,#11,#12);
+#14=CYLINDRICAL_SURFACE('',#13,1.0);
+/* shared vertex V_mid: 3D coincident, but pcurve endpoints disagree in U */
+#20=CARTESIAN_POINT('',(0.5,0.866,0.0));
+#21=VERTEX_POINT('V_mid_shared',#20);
+#22=CARTESIAN_POINT('',(1.0,0.0,0.0));
+#23=VERTEX_POINT('V_start',#22);
+#24=CARTESIAN_POINT('',(-1.0,0.0,0.0));
+#25=VERTEX_POINT('V_end',#24);
+/* edge A: 3D + pcurve ending at UV (10.0, 0.0) */
+#30=DIRECTION('',(-0.5,0.866,0.0));#31=VECTOR('',#30,1.0);#32=LINE('A_3d',#22,#31);
+#33=CARTESIAN_POINT('',(0.0,0.0));
+#34=DIRECTION('',(1.0,0.0));
+#35=VECTOR('',#34,1.0);
+#36=LINE('A_pcurve',#33,#35);
+#37=DEFINITIONAL_REPRESENTATION('',(#36),#13);
+#38=PCURVE('A_pc_ends_at_U10',#14,#37);
+#39=SURFACE_CURVE('',#32,(#38),.PCURVE_S1.);
+#40=EDGE_CURVE('edgeA',#23,#21,#39,.T.);
+/* edge B: 3D + pcurve STARTING at UV (10.5, 0.0) -- a 0.5-unit U gap with edgeA */
+#50=DIRECTION('',(-0.8660254037844387,-0.5,0.0));#51=VECTOR('',#50,1.0);#52=LINE('B_3d',#20,#51);
+#53=CARTESIAN_POINT('B_pc_starts_at_U10p5',(10.5,0.0));
+#54=DIRECTION('',(1.0,0.0));
+#55=VECTOR('',#54,1.0);
+#56=LINE('B_pcurve',#53,#55);
+#57=DEFINITIONAL_REPRESENTATION('',(#56),#13);
+#58=PCURVE('B_pc_starts_at_U10p5_pc',#14,#57);
+#59=SURFACE_CURVE('',#52,(#58),.PCURVE_S1.);
+#60=EDGE_CURVE('edgeB',#21,#25,#59,.T.);
+#70=ORIENTED_EDGE('',*,*,#40,.T.);
+#71=ORIENTED_EDGE('',*,*,#60,.T.);
+#72=EDGE_LOOP('lacking_edge_2d_gap',(#70,#71));
+ENDSEC;
+END-ISO-10303-21;

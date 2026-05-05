@@ -1,0 +1,31 @@
+ISO-10303-21;
+/* M175 - AP238 DRILLING_OPERATION with non-vertical tool axis on horizontal feature.
+ * Defect: a DRILLING_OPERATION declares a tool_axis vector tilted 30
+ * degrees from the feature's hole-axis. The controller either drills a
+ * slanted hole (mismatching the design intent) or refuses the operation
+ * because the tool axis isn't normal to the feature face. */
+HEADER;
+FILE_DESCRIPTION(('M175 test case','AP238 drill axis off feature normal'),'2;1');
+FILE_NAME('M175.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AP238_STEP_NC_MIM { 1 0 10303 238 1 0 0 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('numerical_control_machining');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
+  'numerical_control_machining',2007,#1);
+#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10))
+     REPRESENTATION_CONTEXT('nc','3D'));
+/* Feature axis: vertical (+Z). */
+#400=DIRECTION('feature_normal',(0.0,0.0,1.0));
+#410=AXIS2_PLACEMENT_3D('hole_locator',
+  CARTESIAN_POINT('o',(50.0,30.0,0.0)),#400,
+  DIRECTION('x',(1.0,0.0,0.0)));
+#500=ROUND_HOLE('hole1',$,$,$,#410);
+/* Defect: tool_axis tilted 30 deg from feature normal. */
+#90=DIRECTION('tool_axis_tilted',(0.5,0.0,0.866));
+#100=DRILLING_OPERATION('drill_hole1',$,$,$,$,#500,#90);
+#200=WORKPLAN('main',(#100),$,$,$);
+ENDSEC;
+END-ISO-10303-21;

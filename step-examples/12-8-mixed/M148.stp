@@ -1,0 +1,28 @@
+ISO-10303-21;
+/* M148 - AP210 same NETWORK identifier used for two unrelated nets.
+ * Defect: two NETWORK entities both declare the name 'VCC' yet route
+ * different conductors with no common node. A net-by-name lookup
+ * returns one or the other depending on instance ordering, breaking
+ * impedance / continuity tooling. */
+HEADER;
+FILE_DESCRIPTION(('M148 test case','AP210 net name collision'),'2;1');
+FILE_NAME('M148.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('ELECTRONIC_ASSEMBLY_INTERCONNECT_AND_PACKAGING_DESIGN { 1 0 10303 210 3 1 0 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('electronic_assembly_interconnect_and_packaging_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
+  'electronic_assembly_interconnect_and_packaging_design',2014,#1);
+#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10))
+     REPRESENTATION_CONTEXT('pcb','3D'));
+#100=TERMINAL('U1_pin1','VCC_in_a',$);
+#101=TERMINAL('U2_pin1','VCC_in_b',$);
+#200=NETWORK_NODE('node_a',#100);
+#201=NETWORK_NODE('node_b',#101);
+/* Defect: two NETWORK entities both named 'VCC'. */
+#300=NETWORK('VCC',(#200),(#200));
+#301=NETWORK('VCC',(#201),(#201));
+ENDSEC;
+END-ISO-10303-21;

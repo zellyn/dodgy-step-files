@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>U040 — Pressure unit `Pa` built from a derived-unit chain (`kg / (m * s^2)`)</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.5 Units &amp; coordinate systems</a> <span class="sep">/</span> <span class="current">U040</span>
+</nav>
+<header class="title-bar">
+<h1>U040 <span class="sep">—</span> <span class="entry-title">Pressure unit `Pa` built from a derived-unit chain (`kg / (m * s^2)`)</span></h1>
+<p class="category">§12.5 (sub-class: derived-unit composition)</p>
+<p class="severity-badge severity-p1">P1 — silent data loss</p>
+<p class="tag-pills">
+<a class="tag tag-units" href="../by-tag/units/index.html">units</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-5-units/U040.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-5-units/U040.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>16-iso-spec ISO 10303-41 §DERIVED_UNIT + §DERIVED_UNIT_ELEMENT</li>
+<li>bug-reporter language: &quot;STEP pressure unit garbled&quot;, &quot;Pa unit not recognised&quot;</li>
+</ul></section>
+<section><h2>Sender</h2>
+<p>deduced — exporters that emit pressure as a fully-decomposed SI derived unit rather than a CONVERSION_BASED_UNIT(&#x27;Pa&#x27;,..) shorthand</p></section>
+<section><h2>Description</h2>
+<p>Pascal (Pa) is dimensionally `kg·m^(-1)·s^(-2)`. A producer that emits pressure as a `DERIVED_UNIT` composed of three `DERIVED_UNIT_ELEMENT` entries (mass at exponent +1, length at exponent -1, time at exponent -2) is spec-conforming but stresses receivers that pattern-match on a single named pressure unit. Defects: an element exponent is wrong (mass at exponent +2 instead of +1); the element ordering differs across files (some receivers&#x27; lookup is order-sensitive); the underlying base units mix SI prefixes inconsistently (mass in `kg`, length in `mm` — pressure becomes `kg·mm^(-1)·s^(-2)`, off by 1000× from `kg·m^(-1)·s^(-2)`). Bug-reporter language: &quot;STEP pressure unit not recognised&quot;, &quot;Pa from derived units&quot;, &quot;validation property pressure 1000x wrong&quot;.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>`#1=DERIVED_UNIT_ELEMENT(#mass_unit,1.0)`, `#2=DERIVED_UNIT_ELEMENT(#length_unit,-1.0)`, `#3=DERIVED_UNIT_ELEMENT(#time_unit,-2.0)`, `#4=DERIVED_UNIT((#1,#2,#3))`. Variant fixture: length unit is millimetre (`MILLI METRE`), mass unit is kilogram, time unit is second — the composed unit is 1000× off from Pa.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>Heal and accept: detect / normalize the dimensional signature of pressure (mass^1 length^-1 time^-2) and bind to a Pa context regardless of element order; coerce SI prefix mismatches deterministically; warn when the composition does not reduce to a recognised SI unit.</p></section>
+<section><h2>Notes</h2>
+<p>First entry exercising multi-element DERIVED_UNIT composition. **See also**: U021, U026. Synonyms: &quot;STEP pressure Pa garbled&quot;, &quot;Pa unit not recognised from derived chain&quot;, &quot;DERIVED_UNIT pressure 1000x wrong&quot;, &quot;validation pressure derived unit&quot;, &quot;Pa from kg.m^-1.s^-2 not bound&quot;.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>contains(b&#x27;DERIVED_UNIT_ELEMENT&#x27;) and contains(b&#x27;DERIVED_UNIT(&#x27;)</code></li>
+<li><code>count(b&#x27;DERIVED_UNIT_ELEMENT&#x27;) &gt;= 3</code></li>
+</ul></section>
+<section><h2>Cross-references</h2>
+<p><a href="U021.html">U021</a>, <a href="U026.html">U026</a></p>
+</section>
+<section><h2>Live oracle output</h2>
+<table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
+<tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>warn(W_COMPLEX_ORDER)</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>no_shapes_loaded</code></td></tr>
+</tbody></table>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>/* U040 - Pressure unit Pa built from a derived-unit chain (kg / (m * s^2))
+<span class="lineno">2</span> * Defect: a DERIVED_UNIT composed of three <mark>DERIVED_UNIT_ELEMENT</mark> entries
+<span class="lineno">3</span> * representing mass^+1, length^-1, time^-2. Spec-conforming, but
+<span class="lineno">4</span> * receivers that pattern-match on a single named pressure unit need to
+<span class="lineno">5</span> * detect the dimensional signature. This fixture&#x27;s length unit is
+<span class="lineno">6</span> * MILLIMETRE (1000x off from the canonical Pa derivation in metres). */
+<span class="lineno">7</span>ISO-10303-21;
+<span class="lineno">8</span>HEADER;
+<span class="lineno">9</span>FILE_DESCRIPTION((&#x27;U040 - pressure Pa as multi-element derived unit chain&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">10</span>FILE_NAME(&#x27;U040.stp&#x27;,&#x27;2026-04-30T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">11</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }&#x27;));
+<span class="lineno">12</span>ENDSEC;
+<span class="lineno">13</span>DATA;
+<span class="lineno">14</span>#1=APPLICATION_CONTEXT(&#x27;automotive_design&#x27;);
+<span class="lineno">15</span>#3=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">16</span>#4=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+<span class="lineno">17</span>#5=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+<span class="lineno">18</span>#6=(NAMED_UNIT(*)MASS_UNIT()SI_UNIT($,.GRAM.));
+<span class="lineno">19</span>#7=(NAMED_UNIT(*)SI_UNIT($,.SECOND.)TIME_MEASURE_UNIT());
+<span class="lineno">20</span>/* Defect: derived-unit elements with mixed SI prefix (gram for mass,
+<span class="lineno">21</span>   millimetre for length). The composition is Pa-like but the magnitude
+<span class="lineno">22</span>   is off from canonical SI Pa. */
+<span class="lineno">23</span>#10=<mark>DERIVED_UNIT_ELEMENT</mark>(#6,1.0);
+<span class="lineno">24</span>#11=<mark>DERIVED_UNIT_ELEMENT</mark>(#3,-1.0);
+<span class="lineno">25</span>#12=<mark>DERIVED_UNIT_ELEMENT</mark>(#7,-2.0);
+<span class="lineno">26</span>#13=DERIVED_UNIT((#10,#11,#12));
+<span class="lineno">27</span>#20=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#3,
+<span class="lineno">28</span>  &#x27;distance_accuracy_value&#x27;,&#x27;&#x27;);
+<span class="lineno">29</span>#21=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+<span class="lineno">30</span>  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#20))
+<span class="lineno">31</span>  GLOBAL_UNIT_ASSIGNED_CONTEXT((#3,#4,#5))
+<span class="lineno">32</span>  REPRESENTATION_CONTEXT(&#x27;ctx&#x27;,&#x27;3D&#x27;));
+<span class="lineno">33</span>ENDSEC;
+<span class="lineno">34</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="U039.html">&larr; U039</a> <a class="up" href="index.html">§12.5 Units &amp; coordinate systems</a> <a class="next" href="U041.html">U041 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

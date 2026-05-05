@@ -1,0 +1,76 @@
+ISO-10303-21;
+/*
+ * A019 — Per-face vs per-body color lost or normalized to single hue
+ * Defect (CATIA → SolidWorks all white, HOOPS face-level styling, CAx-IF
+ *         styling RP, OCCT bug33317 reference shape color, tessellated face
+ *         style binding, OCCT non-manifold loses attributes):
+ *   Multiple distinct face colors in producer become identical white in
+ *   SolidWorks; DisplayManager lists multiple Color entries but mapping
+ *   fails. Per-face colors via STYLED_ITEM/PRESENTATION_STYLE_ASSIGNMENT/
+ *   SURFACE_STYLE_FILL_AREA/FILL_AREA_STYLE_COLOUR are bound to specific
+ *   faces; after re-tessellation or face-merge healing the binding is lost.
+ * Expected kernel: honor face-bound colour_assignment without normalizing;
+ *   re-bind to surviving merged face when possible.
+ */
+HEADER;
+FILE_DESCRIPTION(('A019 three faces with three distinct colors at risk of merging'),'2;1');
+FILE_NAME('A019.stp','2026-04-26T00:00:00',('catalog'),('cad'),'manual','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#10 = APPLICATION_CONTEXT('automotive design');
+#11 = APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2001,#10);
+#12 = PRODUCT_CONTEXT('',#10,'mechanical');
+#13 = PRODUCT_DEFINITION_CONTEXT('part definition',#10,'design');
+#20 = PRODUCT('A019_PART','three-color part','',(#12));
+#21 = PRODUCT_DEFINITION_FORMATION('','',#20);
+#22 = PRODUCT_DEFINITION('design','',#21,#13);
+#23 = PRODUCT_DEFINITION_SHAPE('','',#22);
+#50 = ( LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT(.MILLI.,.METRE.) );
+#51 = ( NAMED_UNIT(*) PLANE_ANGLE_UNIT() SI_UNIT($,.RADIAN.) );
+#52 = ( NAMED_UNIT(*) SI_UNIT($,.STERADIAN.) SOLID_ANGLE_UNIT() );
+#53 = UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#50,'distance_accuracy_value','');
+#54 = ( GEOMETRIC_REPRESENTATION_CONTEXT(3) GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#53))
+        GLOBAL_UNIT_ASSIGNED_CONTEXT((#50,#51,#52)) REPRESENTATION_CONTEXT('','3D') );
+#60 = CARTESIAN_POINT('',(0.0,0.0,0.0));
+#61 = DIRECTION('',(0.0,0.0,1.0));
+#62 = DIRECTION('',(1.0,0.0,0.0));
+#63 = AXIS2_PLACEMENT_3D('origin',#60,#61,#62);
+#64 = PLANE('',#63);
+#70 = ADVANCED_FACE('face_red',(),#64,.T.);
+#71 = ADVANCED_FACE('face_green',(),#64,.T.);
+#72 = ADVANCED_FACE('face_blue',(),#64,.T.);
+#73 = SHAPE_REPRESENTATION('part_rep',(#63,#70,#71,#72),#54);
+#74 = SHAPE_DEFINITION_REPRESENTATION(#23,#73);
+/* Three distinct per-face colour bindings */
+#80 = COLOUR_RGB('red',0.9,0.1,0.1);
+#81 = FILL_AREA_STYLE_COLOUR('',#80);
+#82 = FILL_AREA_STYLE('',(#81));
+#83 = SURFACE_STYLE_FILL_AREA(#82);
+#84 = SURFACE_SIDE_STYLE('',(#83));
+#85 = SURFACE_STYLE_USAGE(.BOTH.,#84);
+#86 = PRESENTATION_STYLE_ASSIGNMENT((#85));
+#87 = STYLED_ITEM('red_on_red',(#86),#70);
+#88 = COLOUR_RGB('green',0.1,0.9,0.1);
+#89 = FILL_AREA_STYLE_COLOUR('',#88);
+#90 = FILL_AREA_STYLE('',(#89));
+#91 = SURFACE_STYLE_FILL_AREA(#90);
+#92 = SURFACE_SIDE_STYLE('',(#91));
+#93 = SURFACE_STYLE_USAGE(.BOTH.,#92);
+#94 = PRESENTATION_STYLE_ASSIGNMENT((#93));
+#95 = STYLED_ITEM('green_on_green',(#94),#71);
+#96 = COLOUR_RGB('blue',0.1,0.1,0.9);
+#97 = FILL_AREA_STYLE_COLOUR('',#96);
+#98 = FILL_AREA_STYLE('',(#97));
+#99 = SURFACE_STYLE_FILL_AREA(#98);
+#100 = SURFACE_SIDE_STYLE('',(#99));
+#101 = SURFACE_STYLE_USAGE(.BOTH.,#100);
+#102 = PRESENTATION_STYLE_ASSIGNMENT((#101));
+#103 = STYLED_ITEM('blue_on_blue',(#102),#72);
+/* Wrap STYLED_ITEMs in MDGPR (otherwise some readers drop them) */
+#110 = MECHANICAL_DESIGN_GEOMETRIC_PRESENTATION_REPRESENTATION('',(#87,#95,#103),#54);
+/* DEFECT pattern: when receiver flattens or re-tessellates the three faces
+   into a merged surface, all three STYLED_ITEM bindings collapse and the
+   model normalizes to a single (often white) hue. */
+ENDSEC;
+END-ISO-10303-21;

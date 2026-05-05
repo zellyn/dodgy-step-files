@@ -1,0 +1,26 @@
+ISO-10303-21;
+/* Lh036 - SIGNATURE section present without integrity-check tooling
+ * support
+ * Defect: ISO 10303-21 Edition 3 SIGNATURE sections are intended
+ * to carry cryptographic signatures over the file content. The
+ * spec does not mandate a specific algorithm, so producers and
+ * consumers must agree out-of-band. A consumer that does not
+ * implement SIGNATURE must either skip, warn, or reject; what it
+ * must NOT do is parse the signature payload as DATA and fault on
+ * the unknown record format. */
+HEADER;
+FILE_DESCRIPTION(('Lh036 - SIGNATURE section with unknown algorithm'),'2;1');
+FILE_NAME('Lh036.stp','2026-04-26T00:00:00',(''),(''),
+  'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+SIGNATURE;
+/* Defect: signature opaque-blob with no well-known algorithm tag.
+ * Receivers must skip; old readers may attempt to parse. */
+'algo=unknown-future-1; payload=00112233445566778899AABBCCDDEEFF;';
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#10=CARTESIAN_POINT('origin',(0.0,0.0,0.0));
+ENDSEC;
+END-ISO-10303-21;

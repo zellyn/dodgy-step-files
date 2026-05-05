@@ -1,0 +1,44 @@
+ISO-10303-21;
+/*
+ * U005 — Plant 3D STEP length-unit disagrees with authored drawing units
+ * Defect: drawing authored in inches, exporter writes mm length unit
+ *         but coordinates are still raw inch numbers (pre-conversion drift).
+ */
+HEADER;
+FILE_DESCRIPTION(('U005 producer label drift'),'2;1');
+FILE_NAME('U005.stp','2026-04-26T00:00:00',('catalog'),('cad'),
+  'manual','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN'));
+ENDSEC;
+DATA;
+#10 = APPLICATION_CONTEXT('automotive design');
+#11 = APPLICATION_PROTOCOL_DEFINITION('international standard',
+  'automotive_design',2001,#10);
+#12 = PRODUCT_CONTEXT('',#10,'mechanical');
+#13 = PRODUCT('U005','U005','',(#12));
+#14 = PRODUCT_DEFINITION_FORMATION('','',#13);
+#15 = PRODUCT_DEFINITION_CONTEXT('',#10,'design');
+#16 = PRODUCT_DEFINITION('','',#14,#15);
+#17 = PRODUCT_DEFINITION_SHAPE('','',#16);
+/* Producer label says mm, but coordinate magnitudes are inches:
+   a 1-inch wide part is encoded as 1.0 here. Receiver sees 1 mm. */
+#20 = ( LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT(.MILLI.,.METRE.) );
+#22 = ( NAMED_UNIT(*) PLANE_ANGLE_UNIT() SI_UNIT($,.RADIAN.) );
+#23 = ( NAMED_UNIT(*) SI_UNIT($,.STERADIAN.) SOLID_ANGLE_UNIT() );
+#24 = UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#20,
+  'distance_accuracy_value','');
+#25 = ( GEOMETRIC_REPRESENTATION_CONTEXT(3)
+  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#24))
+  GLOBAL_UNIT_ASSIGNED_CONTEXT((#20,#22,#23))
+  REPRESENTATION_CONTEXT('','3D') );
+/* 1.0 = 1 inch in author's mind, but file's declared unit is mm. */
+#30 = CARTESIAN_POINT('',(0.0,0.0,0.0));
+#31 = CARTESIAN_POINT('',(1.0,0.0,0.0));
+#32 = CARTESIAN_POINT('',(1.0,2.5,0.0));
+#33 = DIRECTION('',(0.0,0.0,1.0));
+#34 = DIRECTION('',(1.0,0.0,0.0));
+#35 = AXIS2_PLACEMENT_3D('',#30,#33,#34);
+#50 = SHAPE_REPRESENTATION('',(#35),#25);
+#51 = SHAPE_DEFINITION_REPRESENTATION(#17,#50);
+ENDSEC;
+END-ISO-10303-21;

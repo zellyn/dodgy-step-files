@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Wr013 — Forward references where sequential numbering was expected</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.13 Writer pathology</a> <span class="sep">/</span> <span class="current">Wr013</span>
+</nav>
+<header class="title-bar">
+<h1>Wr013 <span class="sep">—</span> <span class="entry-title">Forward references where sequential numbering was expected</span></h1>
+<p class="category">§12.13 writer-pathology (sub-class: instance numbering)</p>
+<p class="severity-badge severity-p3">P3 — cosmetic / metadata-only</p>
+<p class="tag-pills">
+<a class="tag tag-writer" href="../by-tag/writer/index.html">writer</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-13-writer-pathology/Wr013.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-13-writer-pathology/Wr013.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>OCCT bug &quot;kernel chokes on forward refs&quot;</li>
+<li>bug-reporter language: &quot;ref to undefined #N&quot;, &quot;forward declaration&quot;</li>
+</ul></section>
+<section><h2>Sender</h2>
+<p>Writers that emit entities in topological-construction order without a topological sort; observed in some open-source exporters</p></section>
+<section><h2>Description</h2>
+<p>The producer emits `#5 = ORIENTED_EDGE(..,#10,..)` before `#10` has been defined. Spec-conforming readers must do a two-pass parse (or a deferred-resolution mechanism), but a class of single-pass kernels reports &quot;reference to undefined instance #10&quot; and rejects. Bug-reporter language: &quot;forward references in STEP&quot;, &quot;ref before def&quot;, &quot;kernel doesn&#x27;t support out-of-order STEP&quot;.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>`#5 = CARTESIAN_POINT(&#x27;p&#x27;,(0.,0.,0.));` followed later by `#1 = AXIS2_PLACEMENT_3D(&#x27;a&#x27;,#5,$,$);` — but `#5` appears first; or, more pathologically, `#1 = .. (#5,..);` first, then `#5 = ..;` second (forward).</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>implement two-pass parsing or deferred-resolution; the spec permits forward references. Reject only if a reference remains unresolved after the full file is parsed.</p></section>
+<section><h2>Notes</h2>
+<p>Lh006-class issue but writer-attributable.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>matches(rb&#x27;(?s)#1=AXIS2_PLACEMENT_3D[^;]+#5[^;]+;.*#5=CARTESIAN_POINT&#x27;)</code></li>
+<li><code>matches(rb&#x27;(?s)#1=[^;]+#5&#x27;)</code></li>
+</ul></section>
+<section><h2>Cross-references</h2>
+<p><a href="../12-1b-header/Lh006.html">Lh006</a></p>
+</section>
+<section><h2>Live oracle output</h2>
+<table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
+<tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>no_shapes_loaded</code></td></tr>
+</tbody></table>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>/* Wr013 - Forward references where sequential numbering was expected - definitions appear after their references */
+<span class="lineno">2</span>ISO-10303-21;
+<span class="lineno">3</span>HEADER;
+<span class="lineno">4</span>FILE_DESCRIPTION((&#x27;Wr013 - forward references&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">5</span>FILE_NAME(&#x27;Wr013.stp&#x27;,&#x27;2026-04-30T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),
+<span class="lineno">6</span>  &#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">7</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
+<span class="lineno">8</span>ENDSEC;
+<span class="lineno">9</span>DATA;
+<span class="lineno">10</span>/* Wr013: writer emitted entities in topological-construction order
+<span class="lineno">11</span>   without a topological sort; #1 references #5 before #5 is defined */
+<span class="lineno">12</span><mark>#1=AXIS2_PLACEMENT_3D(&#x27;p&#x27;,#5,#7,#8);</mark>
+<span class="lineno">13</span><mark>#2=APPLICATION_CONTEXT(&#x27;mechanical design&#x27;);</mark>
+<span class="lineno">14</span><mark>#3=PRODUCT_CONTEXT(&#x27;part&#x27;,#2,&#x27;mechanical&#x27;);</mark>
+<span class="lineno">15</span><mark>#4=PRODUCT(&#x27;Wr013-part&#x27;,&#x27;Wr013 demo&#x27;,&#x27;&#x27;,(#3));</mark>
+<span class="lineno">16</span><mark>#5=CARTESIAN_POINT</mark>(&#x27;origin&#x27;,(0.0,0.0,0.0));
+<span class="lineno">17</span>#7=DIRECTION(&#x27;z&#x27;,(0.0,0.0,1.0));
+<span class="lineno">18</span>#8=DIRECTION(&#x27;x&#x27;,(1.0,0.0,0.0));
+<span class="lineno">19</span>#20=(LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">20</span>ENDSEC;
+<span class="lineno">21</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Wr012.html">&larr; Wr012</a> <a class="up" href="index.html">§12.13 Writer pathology</a> <a class="next" href="Wr014.html">Wr014 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

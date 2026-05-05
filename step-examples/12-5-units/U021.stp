@@ -1,0 +1,57 @@
+ISO-10303-21;
+/*
+ * U021 — KILO prefix REQUIRED on mass_unit referenced from a derived SI unit
+ * Defect: Newton (force_unit) defined as kg*m*s^-2 but the mass_unit
+ *         pulled in via DERIVED_UNIT_ELEMENT has no .KILO. prefix —
+ *         making the "Newton" effectively gram*m*s^-2 (off by 1000).
+ */
+HEADER;
+FILE_DESCRIPTION(('U021 missing KILO on mass_unit for Newton'),'2;1');
+FILE_NAME('U021.stp','2026-04-26T00:00:00',('catalog'),('cad'),
+  'manual','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN'));
+ENDSEC;
+DATA;
+#10 = APPLICATION_CONTEXT('automotive design');
+#11 = APPLICATION_PROTOCOL_DEFINITION('international standard',
+  'automotive_design',2001,#10);
+#12 = PRODUCT_CONTEXT('',#10,'mechanical');
+#13 = PRODUCT('U021','U021','',(#12));
+#14 = PRODUCT_DEFINITION_FORMATION('','',#13);
+#15 = PRODUCT_DEFINITION_CONTEXT('',#10,'design');
+#16 = PRODUCT_DEFINITION('','',#14,#15);
+#17 = PRODUCT_DEFINITION_SHAPE('','',#16);
+/* Length unit (metre) and time unit (second) — correctly unprefixed */
+#20 = ( LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT($,.METRE.) );
+#21 = ( NAMED_UNIT(*) SI_UNIT($,.SECOND.) TIME_UNIT() );
+/* DEFECT: mass_unit without .KILO. prefix.
+   Spec requires .KILO. when mass is referenced from a derived SI unit.
+   Below is the canonical SI mass-unit base (gram). */
+#22 = ( MASS_UNIT() NAMED_UNIT(*) SI_UNIT($,.GRAM.) );
+/* Build the "Newton" derived_unit. Per spec, mass component should
+   have been a kilogram (KILO + GRAM). It is not. */
+#23 = DERIVED_UNIT_ELEMENT(#22, 1.0);
+#24 = DERIVED_UNIT_ELEMENT(#20, 1.0);
+#25 = DERIVED_UNIT_ELEMENT(#21,-2.0);
+#26 = DERIVED_UNIT((#23,#24,#25));
+/* Geometry context (correct mm) */
+#30 = ( LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT(.MILLI.,.METRE.) );
+#31 = ( NAMED_UNIT(*) PLANE_ANGLE_UNIT() SI_UNIT($,.RADIAN.) );
+#32 = ( NAMED_UNIT(*) SI_UNIT($,.STERADIAN.) SOLID_ANGLE_UNIT() );
+#33 = UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#30,
+  'distance_accuracy_value','');
+#34 = ( GEOMETRIC_REPRESENTATION_CONTEXT(3)
+  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#33))
+  GLOBAL_UNIT_ASSIGNED_CONTEXT((#30,#31,#32))
+  REPRESENTATION_CONTEXT('','3D') );
+/* A force value that is wrong by 1000x because of the missing prefix */
+#40 = MEASURE_REPRESENTATION_ITEM('reaction_force',
+  CONTEXT_DEPENDENT_MEASURE(9.81),#26);
+#50 = CARTESIAN_POINT('',(0.0,0.0,0.0));
+#51 = DIRECTION('',(0.0,0.0,1.0));
+#52 = DIRECTION('',(1.0,0.0,0.0));
+#53 = AXIS2_PLACEMENT_3D('',#50,#51,#52);
+#54 = SHAPE_REPRESENTATION('',(#53),#34);
+#55 = SHAPE_DEFINITION_REPRESENTATION(#17,#54);
+ENDSEC;
+END-ISO-10303-21;

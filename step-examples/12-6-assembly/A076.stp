@@ -1,0 +1,26 @@
+ISO-10303-21;
+/* A076 - AP242 GENERAL_PROPERTY dropped on import.
+ * Defect: AP242 file with GENERAL_PROPERTY entries attached to a part;
+ * an AP203-configured reader (or AP242 reader with metadata flag off)
+ * silently discards them. Schema is AP242 to provoke that pathway. */
+HEADER;
+FILE_DESCRIPTION(('A076 test case','AP242 GENERAL_PROPERTY dropped on import'),'2;1');
+FILE_NAME('A076.stp','2026-04-30T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AP242_MANAGED_MODEL_BASED_3D_ENGINEERING_MIM_LF { 1 0 10303 442 3 0 0 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('managed model based 3d engineering');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','ap242_managed_model_based_3d_engineering',2020,#1);
+#10=PRODUCT_CONTEXT('',#1,'mechanical');
+#11=PRODUCT('part1','part1','part1',(#10));
+#12=PRODUCT_DEFINITION_FORMATION('','',#11);
+#13=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#14=PRODUCT_DEFINITION('','',#12,#13);
+#15=PRODUCT_DEFINITION_SHAPE('','',#14);
+/* AP242-only generic key/value attachments on the part */
+#100=GENERAL_PROPERTY('density','density','7.85');
+#101=GENERAL_PROPERTY('material','material','STEEL');
+#102=GENERAL_PROPERTY_ASSOCIATION('density_assoc','',#100,#15);
+#103=GENERAL_PROPERTY_ASSOCIATION('material_assoc','',#101,#15);
+ENDSEC;
+END-ISO-10303-21;

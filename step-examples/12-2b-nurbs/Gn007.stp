@@ -1,0 +1,52 @@
+/* Gn007 - Long helical NURBS distortion from relative-accuracy tessellation
+   Defect: long thin parts (e.g. 2.5 m extrusions with sub-mm helical thread
+   features) export as visibly warped helical NURBS because Creo's default
+   relative accuracy tessellates surfaces too coarsely on export. The
+   resulting B_SPLINE_CURVE_WITH_KNOTS represents a helix on a cylinder of
+   radius 5 mm, axial length 2500 mm, pitch 0.5 mm -- but with only
+   ~16 control points so the helix is faceted at sub-mm scale. The defect
+   is in the writer's choice of resolution, not in the entity grammar.
+   See V035; recommended workaround: absolute accuracy 1e-4 + disable
+   surface simplification. */
+ISO-10303-21;
+HEADER;
+FILE_DESCRIPTION(
+  ('Gn007 - helical NURBS distortion from relative-accuracy tessellation'),
+  '2;1');
+FILE_NAME('Gn007.stp','2026-04-26T00:00:00',('auto-generated'),(''),
+  'auto-generated','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+/* 16 control points sampled along a helix of radius 5, pitch 0.5, but the
+   axial extent is 2500 mm.  Spacing between samples ~166 mm of axial
+   travel -> ~330 turns crammed between two adjacent control points. The
+   resulting BSpline cannot reproduce the helix; downstream geometry is
+   visibly warped. */
+#10=CARTESIAN_POINT('h00',(   5.000,   0.000,   0.000));
+#11=CARTESIAN_POINT('h01',(  -4.998,   0.142, 166.667));
+#12=CARTESIAN_POINT('h02',(   4.992,  -0.283, 333.333));
+#13=CARTESIAN_POINT('h03',(  -4.982,   0.425, 500.000));
+#14=CARTESIAN_POINT('h04',(   4.969,  -0.566, 666.667));
+#15=CARTESIAN_POINT('h05',(  -4.952,   0.706, 833.333));
+#16=CARTESIAN_POINT('h06',(   4.931,  -0.844,1000.000));
+#17=CARTESIAN_POINT('h07',(  -4.906,   0.982,1166.667));
+#18=CARTESIAN_POINT('h08',(   4.877,  -1.117,1333.333));
+#19=CARTESIAN_POINT('h09',(  -4.844,   1.250,1500.000));
+#20=CARTESIAN_POINT('h10',(   4.806,  -1.382,1666.667));
+#21=CARTESIAN_POINT('h11',(  -4.764,   1.510,1833.333));
+#22=CARTESIAN_POINT('h12',(   4.717,  -1.636,2000.000));
+#23=CARTESIAN_POINT('h13',(  -4.665,   1.760,2166.667));
+#24=CARTESIAN_POINT('h14',(   4.608,  -1.881,2333.333));
+#25=CARTESIAN_POINT('h15',(  -4.546,   1.999,2500.000));
+/* Defect: undersampled NURBS for a 2.5 m / 0.5 mm-pitch helix.
+   Degree 3, simple uniform knots. The geometry distortion is implicit in
+   the data, not in the entity-level grammar. */
+#100=B_SPLINE_CURVE_WITH_KNOTS('helix_undersampled',3,
+  (#10,#11,#12,#13,#14,#15,#16,#17,#18,#19,#20,#21,#22,#23,#24,#25),
+  .UNSPECIFIED.,.F.,.F.,
+  (4,1,1,1,1,1,1,1,1,1,1,1,1,4),
+  (0.0,1.0,2.0,3.0,4.0,5.0,6.0,7.0,8.0,9.0,10.0,11.0,12.0,13.0),
+  .UNSPECIFIED.);
+ENDSEC;
+END-ISO-10303-21;

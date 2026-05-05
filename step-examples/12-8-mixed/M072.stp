@@ -1,0 +1,39 @@
+ISO-10303-21;
+/* M072 - AP238 toolpath_curve refers to a curve that is open where closed
+ * is required.
+ * Defect: a TOOLPATH (TRAJECTORY-class) declares its basiccurve as a
+ * COMPOSITE_CURVE intended to represent a closed contouring pass, but the
+ * composite_curve.self_intersect flag is .F. while the segments form an
+ * open chain (last endpoint != first start), so the toolpath cannot
+ * actually close. */
+HEADER;
+FILE_DESCRIPTION(('M072 test case','AP238 toolpath_curve open chain claimed closed'),'2;1');
+FILE_NAME('M072.stp','2026-04-30T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AP238_STEP_NC_MIM { 1 0 10303 238 1 0 0 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('numerical_control_machining');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
+  'numerical_control_machining',2007,#1);
+#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#11=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11))
+     REPRESENTATION_CONTEXT('toolpath','3D'));
+/* Three line segments that form an L, not a closed triangle. */
+#20=CARTESIAN_POINT('p1',(0.0,0.0,0.0));
+#21=CARTESIAN_POINT('p2',(10.0,0.0,0.0));
+#22=CARTESIAN_POINT('p3',(10.0,10.0,0.0));
+#23=DIRECTION('d12',(1.0,0.0,0.0));#24=VECTOR('',#23,10.0);
+#25=DIRECTION('d23',(0.0,1.0,0.0));#26=VECTOR('',#25,10.0);
+#30=LINE('seg1',#20,#24);
+#31=LINE('seg2',#21,#26);
+#40=COMPOSITE_CURVE_SEGMENT(.CONTINUOUS.,.T.,#30);
+#41=COMPOSITE_CURVE_SEGMENT(.CONTINUOUS.,.T.,#31);
+/* Defect: composite_curve declares self_intersect=.F. and is referenced as
+ * a closed contour toolpath, but the segments do not chain back to p1. */
+#50=COMPOSITE_CURVE('contour_curve',(#40,#41),.F.);
+#60=CURVE_WITH_SURFACE('toolpath_curve',#50,$);
+#100=TRAJECTORY('contour_pass',$,$,$,$,#50);
+ENDSEC;
+END-ISO-10303-21;

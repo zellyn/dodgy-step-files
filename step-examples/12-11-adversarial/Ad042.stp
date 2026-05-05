@@ -1,0 +1,60 @@
+/* Ad042 - Reference to entity-of-wrong-type in attribute slot
+   ----------------------------------------------------------------------
+   Catalog section : §12.11 adversarial (sub-class: type-confusion / null-deref)
+   Sources         : 06-nist-sfa.md S007;
+                     18-other-issues.md I001 (CATIA V6 SDR with SHAPE_ASPECT
+                       instead of PROPERTY_DEFINITION_SHAPE; null-handle deref);
+                     08-occt-gitlog.md G002 (Datum_System mixed array crash),
+                     G016 (NAUO with PDS instead of PD)
+   See also        : Ad030
+   ----------------------------------------------------------------------
+   WARNING: This file is INTENTIONALLY MALFORMED for parser-robustness
+   testing. Do NOT use as exchange data.
+   ----------------------------------------------------------------------
+   Defect
+     SCHEMA SELECT type validated by structural shape only; the actual
+     attribute type is the wrong subtype. Downstream chained calls of
+     the form x->A()->B() dereference a null handle. The CATIA V6
+     incident: 1088 of 1267 SHAPE_DEFINITION_REPRESENTATION instances
+     in a 430 MB file pointed at SHAPE_ASPECT instead of
+     PROPERTY_DEFINITION_SHAPE.
+   Reproducer recipe
+     #27=SHAPE_DEFINITION_REPRESENTATION(#23,#26) where #23 is a
+     SHAPE_ASPECT (not PROPERTY_DEFINITION_SHAPE).
+   Expected kernel behavior
+     Schema-aware select-narrowing that distinguishes the SELECT branch
+     and emits E_SELECT_BRANCH instead of dereffing a null.
+   ----------------------------------------------------------------------
+*/
+ISO-10303-21;
+HEADER;
+FILE_DESCRIPTION(('Ad042 - SDR points at SHAPE_ASPECT, wrong SELECT branch'),
+  '2;1');
+FILE_NAME('Ad042.stp','2026-04-26T00:00:00',('auto-generated'),(''),
+  'auto-generated','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
+  'automotive_design',2001,#1);
+#3=PRODUCT_CONTEXT('',#1,'mechanical');
+#4=PRODUCT('P','part','',(#3));
+#5=PRODUCT_DEFINITION_FORMATION('','',#4);
+#6=PRODUCT_DEFINITION_CONTEXT('',#1,'design');
+#7=PRODUCT_DEFINITION('design','',#5,#6);
+#8=PRODUCT_DEFINITION_SHAPE('','',#7);
+#10=CARTESIAN_POINT('o',(0.0,0.0,0.0));
+#11=DIRECTION('z',(0.0,0.0,1.0));
+#12=DIRECTION('x',(1.0,0.0,0.0));
+#13=AXIS2_PLACEMENT_3D('p',#10,#11,#12);
+#20=MECHANICAL_CONTEXT('',#1,'mechanical');
+#21=REPRESENTATION_CONTEXT('','3d');
+#26=SHAPE_REPRESENTATION('rep',(#13),#21);
+/* Defect: #23 is SHAPE_ASPECT, not PROPERTY_DEFINITION_SHAPE.
+   The SELECT in SDR's first slot accepts both structurally; downstream
+   code that calls (#23)->property_definition() crashes. */
+#23=SHAPE_ASPECT('aspect','',#8,.T.);
+#27=SHAPE_DEFINITION_REPRESENTATION(#23,#26);
+ENDSEC;
+END-ISO-10303-21;

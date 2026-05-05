@@ -1,0 +1,28 @@
+ISO-10303-21;
+/* M169 - AP238 TURNING_ROUGHING with stepover > tool nose radius.
+ * Defect: a roughing-turning op declares a radial stepover (e.g. 4.0 mm)
+ * larger than the cutting-tool's nose radius (0.8 mm); each successive
+ * pass leaves an unsupported scallop the tool can't reach, producing a
+ * stair-stepped surface and gouging the next pass. */
+HEADER;
+FILE_DESCRIPTION(('M169 test case','AP238 turning stepover exceeds nose radius'),'2;1');
+FILE_NAME('M169.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AP238_STEP_NC_MIM { 1 0 10303 238 1 0 0 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('numerical_control_machining');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
+  'numerical_control_machining',2007,#1);
+#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10))
+     REPRESENTATION_CONTEXT('nc','3D'));
+/* Tool nose radius: 0.8 mm. */
+#80=MEASURE_WITH_UNIT(POSITIVE_LENGTH_MEASURE(0.8),#10);
+#90=TURNING_MACHINING_TOOL('nose_r0p8',$,$,$,#80);
+/* Defect: stepover 4.0 mm >> nose radius 0.8 mm. */
+#95=MEASURE_WITH_UNIT(POSITIVE_LENGTH_MEASURE(4.0),#10);
+#100=TURNING_ROUGHING('rough_pass',$,$,$,$,$,#90,#95);
+#200=WORKPLAN('main',(#100),$,$,$);
+ENDSEC;
+END-ISO-10303-21;

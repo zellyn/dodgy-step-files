@@ -1,0 +1,23 @@
+ISO-10303-21;
+/* Le036 INPUT — round-trip-loss source for Le036.stp
+ * Sibling input fixture: this is what the producer emits.
+ * Le036.stp captures the post-roundtrip state where \X2\ content was lost.
+ * Diff Le036.input.stp vs Le036.stp to see the loss. */
+HEADER;
+FILE_DESCRIPTION(('Le036.input round-trip-loss source'),'2;1');
+FILE_NAME('Le036.input.stp','2026-05-01T00:00:00',(''),(''),
+  'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
+  'automotive_design',2009,#1);
+#10=PRODUCT('part-\X2\6F22\X2\5B57',  /* CJK chars 漢字 in \X2\ escape */
+            'CJK in product name','',(#11));
+#11=PRODUCT_CONTEXT('mech',#1,'mechanical');
+#12=PRODUCT_DEFINITION_FORMATION('','',#10);
+#13=PRODUCT_DEFINITION('design','',#12,#14);
+#14=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+ENDSEC;
+END-ISO-10303-21;

@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Gs012 — Non-simple `EDGE_LOOP` (face boundary self-crosses in UV: bow-tie quadrilateral)</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.2c Surface / curve degeneracies</a> <span class="sep">/</span> <span class="current">Gs012</span>
+</nav>
+<header class="title-bar">
+<h1>Gs012 <span class="sep">—</span> <span class="entry-title">Non-simple `EDGE_LOOP` (face boundary self-crosses in UV: bow-tie quadrilateral)</span></h1>
+<p class="category">§12.2c surface-degeneracy</p>
+<p class="severity-badge severity-p1">P1 — silent data loss</p>
+<p class="tag-pills">
+<a class="tag tag-geometry" href="../by-tag/geometry/index.html">geometry</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-2c-surfaces/Gs012.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-2c-surfaces/Gs012.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>W008, B022</li>
+</ul></section>
+<section><h2>Description</h2>
+<p>A face&#x27;s outer or inner `EDGE_LOOP` has segments that cross each other in surface UV parameter space, even when 3D positions look fine — a bow-tie / self-crossing quadrilateral. Typical shape on a planar face: an `EDGE_LOOP` visiting four vertices where two diagonal `EDGE_CURVE`s ((0,0)→(10,10) and (10,0)→(0,10)) are interleaved with axial edges, producing a bow-tie in the face&#x27;s UV plane. CADfix has a dedicated repair flow; failure in UV closure means the contour does not partition the plane (Jordan-curve violation).</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>`FACE_OUTER_BOUND` with four `ORIENTED_EDGE`s whose 2D pcurves form a bow-tie in the face&#x27;s UV plane.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>reject — boundary cannot be unambiguously interpreted; healers must split the face or report. Do not assume orientation by ad-hoc winding.</p></section>
+<section><h2>Notes</h2>
+<p>**See also**: Gp026. Synonyms: &quot;non-simple EDGE_LOOP self-crosses in UV&quot;, &quot;bow-tie quadrilateral face boundary&quot;, &quot;face wire crosses itself in parameter space&quot;, &quot;Jordan-curve violation in face outer bound&quot;, &quot;edge_loop forms bow-tie in UV plane&quot;.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>contains(b&#x27;EDGE_LOOP(&#x27;)</code></li>
+<li><code>count_entity_def(b&#x27;ORIENTED_EDGE&#x27;) == 4</code></li>
+<li><code>contains(b&#x27;PLANE(&#x27;)</code></li>
+</ul></section>
+<section><h2>Cross-references</h2>
+<p><a href="../12-2a-pcurves/Gp026.html">Gp026</a></p>
+</section>
+<section><h2>Live oracle output</h2>
+<table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
+<tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>no_shapes_loaded</code></td></tr>
+</tbody></table>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* Gs012 - Non-simple parametric loop (face boundary self-crosses in UV)
+<span class="lineno">3</span> * Defect: Face&#x27;s outer EDGE_LOOP has segments that cross each other in surface UV
+<span class="lineno">4</span> * parameter space, even when 3D positions look fine. Jordan-curve violation.
+<span class="lineno">5</span> * Boundary cannot be unambiguously interpreted as inside/outside. */
+<span class="lineno">6</span>HEADER;
+<span class="lineno">7</span>FILE_DESCRIPTION((&#x27;Gs012 test case&#x27;,&#x27;Bow-tie outer wire in UV&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">8</span>FILE_NAME(&#x27;Gs012.stp&#x27;,&#x27;2026-04-26T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;auto-generated&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">9</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }&#x27;));
+<span class="lineno">10</span>ENDSEC;
+<span class="lineno">11</span>DATA;
+<span class="lineno">12</span>#1=APPLICATION_CONTEXT(&#x27;automotive_design&#x27;);
+<span class="lineno">13</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,&#x27;automotive_design&#x27;,2000,#1);
+<span class="lineno">14</span>#10=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">15</span>#11=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">16</span>#12=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">17</span>#13=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#10,#11,#12);
+<span class="lineno">18</span>#20=<mark>PLANE(</mark>&#x27;&#x27;,#13);
+<span class="lineno">19</span>/* Defect: four ORIENTED_EDGEs whose 2D pcurves form a bow-tie in UV. */
+<span class="lineno">20</span>/* Vertices in (intentionally bow-tie) order: A(0,0) - C(10,10) - B(10,0) - D(0,10). */
+<span class="lineno">21</span>#30=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">22</span>#31=VERTEX_POINT(&#x27;&#x27;,#30);
+<span class="lineno">23</span>#32=CARTESIAN_POINT(&#x27;&#x27;,(10.0,10.0,0.0));
+<span class="lineno">24</span>#33=VERTEX_POINT(&#x27;&#x27;,#32);
+<span class="lineno">25</span>#34=CARTESIAN_POINT(&#x27;&#x27;,(10.0,0.0,0.0));
+<span class="lineno">26</span>#35=VERTEX_POINT(&#x27;&#x27;,#34);
+<span class="lineno">27</span>#36=CARTESIAN_POINT(&#x27;&#x27;,(0.0,10.0,0.0));
+<span class="lineno">28</span>#37=VERTEX_POINT(&#x27;&#x27;,#36);
+<span class="lineno">29</span>/* Edges A-&gt;C, C-&gt;B, B-&gt;D, D-&gt;A in 3D. The UV pcurves cross. */
+<span class="lineno">30</span>#40=DIRECTION(&#x27;&#x27;,(0.7071067811865476,0.7071067811865476,0.0));
+<span class="lineno">31</span>#41=VECTOR(&#x27;&#x27;,#40,14.142135623730951);
+<span class="lineno">32</span>#42=LINE(&#x27;&#x27;,#30,#41);
+<span class="lineno">33</span>#43=DIRECTION(&#x27;&#x27;,(0.0,-1.0,0.0));
+<span class="lineno">34</span>#44=VECTOR(&#x27;&#x27;,#43,10.0);
+<span class="lineno">35</span>#45=LINE(&#x27;&#x27;,#32,#44);
+<span class="lineno">36</span>#46=DIRECTION(&#x27;&#x27;,(-0.7071067811865476,0.7071067811865476,0.0));
+<span class="lineno">37</span>#47=VECTOR(&#x27;&#x27;,#46,14.142135623730951);
+<span class="lineno">38</span>#48=LINE(&#x27;&#x27;,#34,#47);
+<span class="lineno">39</span>#49=DIRECTION(&#x27;&#x27;,(0.0,-1.0,0.0));
+<span class="lineno">40</span>#50=VECTOR(&#x27;&#x27;,#49,10.0);
+<span class="lineno">41</span>#51=LINE(&#x27;&#x27;,#36,#50);
+<span class="lineno">42</span>#60=EDGE_CURVE(&#x27;&#x27;,#31,#33,#42,.T.);
+<span class="lineno">43</span>#61=EDGE_CURVE(&#x27;&#x27;,#33,#35,#45,.T.);
+<span class="lineno">44</span>#62=EDGE_CURVE(&#x27;&#x27;,#35,#37,#48,.T.);
+<span class="lineno">45</span>#63=EDGE_CURVE(&#x27;&#x27;,#37,#31,#51,.T.);
+<span class="lineno">46</span><mark>#70=ORIENTED_EDGE(</mark>&#x27;&#x27;,*,*,#60,.T.);
+<span class="lineno">47</span><mark>#71=ORIENTED_EDGE(</mark>&#x27;&#x27;,*,*,#61,.T.);
+<span class="lineno">48</span><mark>#72=ORIENTED_EDGE(</mark>&#x27;&#x27;,*,*,#62,.T.);
+<span class="lineno">49</span><mark>#73=ORIENTED_EDGE(</mark>&#x27;&#x27;,*,*,#63,.T.);
+<span class="lineno">50</span>#80=<mark>EDGE_LOOP(</mark>&#x27;&#x27;,(#70,#71,#72,#73));
+<span class="lineno">51</span>#81=FACE_OUTER_BOUND(&#x27;&#x27;,#80,.T.);
+<span class="lineno">52</span>#82=ADVANCED_FACE(&#x27;&#x27;,(#81),#20,.T.);
+<span class="lineno">53</span>ENDSEC;
+<span class="lineno">54</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Gs011.html">&larr; Gs011</a> <a class="up" href="index.html">§12.2c Surface / curve degeneracies</a> <a class="next" href="Gs014.html">Gs014 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

@@ -1,0 +1,46 @@
+ISO-10303-21;
+/* Xp043 - Cross-product: Inventor STEP import of a CATIA AP242 file
+ *   produces "Step Translator Error" - root cause is an empty
+ *   PRODUCT_DEFINITION with no SHAPE_DEFINITION_REPRESENTATION linking
+ *   to it; CATIA writes the empty top-level container, Inventor refuses
+ *   it as a "structurally invalid" file even though the children are
+ *   fine.
+ * Source: forums.autodesk.com inventor 10994597 "STEP import fails for
+ *   AP242 from PTC Creo".
+ * Defect: top-level PRODUCT_DEFINITION exists but no
+ *   SHAPE_DEFINITION_REPRESENTATION binds it to a SHAPE_REPRESENTATION.
+ *   The child sub-product has its own SDR. Some receivers infer the
+ *   missing top-level binding; Inventor's reader doesn't and aborts
+ *   the entire import. */
+HEADER;
+FILE_DESCRIPTION(('Xp043 cross-product','CATIA AP242 -> Inventor missing root SDR'),'2;1');
+FILE_NAME('Xp043.stp','2026-05-02T00:00:00',(''),(''),'CATIA;V5;AP242','','');
+FILE_SCHEMA(('AP242_MANAGED_MODEL_BASED_3D_ENGINEERING_MIM_LF { 1 0 10303 442 1 4 4 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('managed model based 3d engineering');
+#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#11=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#12=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#10,'tol','');
+#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13))GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12))REPRESENTATION_CONTEXT('','3D'));
+/* Top level PD - no SDR ever references it */
+#20=PRODUCT('TopAsm','TopAsm','no_root_SDR_binding',(#21));
+#21=PRODUCT_CONTEXT('',#1,'mechanical');
+#22=PRODUCT_DEFINITION_FORMATION('','',#20);
+#23=PRODUCT_DEFINITION('top_no_SDR','dangling',#22,#24);
+#24=PRODUCT_DEFINITION_CONTEXT('',#1,'design');
+/* Child PD with proper SDR - import works fine in isolation */
+#30=PRODUCT('Child','Child','',(#21));
+#31=PRODUCT_DEFINITION_FORMATION('','',#30);
+#32=PRODUCT_DEFINITION('','',#31,#24);
+#33=PRODUCT_DEFINITION_SHAPE('','',#32);
+#40=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#41=DIRECTION('',(0.0,0.0,1.0));
+#42=DIRECTION('',(1.0,0.0,0.0));
+#43=AXIS2_PLACEMENT_3D('',#40,#41,#42);
+#44=SHAPE_REPRESENTATION('child',(#43),#14);
+#45=SHAPE_DEFINITION_REPRESENTATION(#33,#44);
+/* Note: no SHAPE_DEFINITION_REPRESENTATION for #23 - Inventor aborts */
+ENDSEC;
+END-ISO-10303-21;

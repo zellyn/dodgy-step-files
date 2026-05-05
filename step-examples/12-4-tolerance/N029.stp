@@ -1,0 +1,42 @@
+/* N029 - Inch-units silent treatment as mm (25.4x scale error)
+ * Defect: A STEP file written in inches is silently treated as millimetres
+ * because the LENGTH_UNIT declaration is parsed inconsistently.
+ * Reproducer: SolidWorks-style file uses CONVERSION_BASED_UNIT('INCH', ...)
+ * wrapping a SI METRE base unit; receiver that ignores the conversion wrapper
+ * sees raw mm coordinates and produces a 25.4x scale error on a 2-inch part.
+ */
+ISO-10303-21;
+HEADER;
+FILE_DESCRIPTION(('N029 inch units silent treatment as mm 25.4x scale error'),'2;1');
+FILE_NAME('N029.stp','2026-04-26T00:00:00',(''),(''),
+  'cad-research-suite','','');
+FILE_SCHEMA(('CONFIG_CONTROL_DESIGN'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('configuration controlled 3d designs of mechanical parts');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
+  'config_control_design',1994,#1);
+/* 2-inch part: 2.0 in = 50.8 mm. Raw value stored: 2.0 (in inches). */
+#10=CARTESIAN_POINT('p0',(0.0,0.0,0.0));
+#11=CARTESIAN_POINT('p1_2_inches',(2.0,0.0,0.0));
+#20=VERTEX_POINT('',#10);
+#21=VERTEX_POINT('',#11);
+#30=DIRECTION('+x',(1.0,0.0,0.0));
+#31=VECTOR('',#30,2.0);
+#32=LINE('',#10,#31);
+#40=EDGE_CURVE('two_inch_edge',#20,#21,#32,.T.);
+/* CONVERSION_BASED_UNIT for inches -- base is SI METRE, factor 0.0254 */
+#50=(NAMED_UNIT(*)LENGTH_UNIT()SI_UNIT($,.METRE.));
+#51=LENGTH_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.0254),#50);
+#52=DIMENSIONAL_EXPONENTS(1.0,0.0,0.0,0.0,0.0,0.0,0.0);
+#53=(CONVERSION_BASED_UNIT('INCH',#51) LENGTH_UNIT() NAMED_UNIT(#52));
+#54=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#55=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#60=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-6),#53,
+  'distance_accuracy_value','inch_precision');
+#70=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#60))
+  GLOBAL_UNIT_ASSIGNED_CONTEXT((#53,#54,#55))
+  REPRESENTATION_CONTEXT('ctx_inch','3D'));
+ENDSEC;
+END-ISO-10303-21;

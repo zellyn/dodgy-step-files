@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Tsh068 — `MANIFOLD_SOLID_BREP` whose outer shell is open (not closed) silently accepted</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.3a Shells / orientation</a> <span class="sep">/</span> <span class="current">Tsh068</span>
+</nav>
+<header class="title-bar">
+<h1>Tsh068 <span class="sep">—</span> <span class="entry-title">`MANIFOLD_SOLID_BREP` whose outer shell is open (not closed) silently accepted</span></h1>
+<p class="category">§12.3a shells / orientation (sub-class: open shell as outer)</p>
+<p class="severity-badge severity-p1">P1 — silent data loss</p>
+<p class="tag-pills">
+<a class="tag tag-topology" href="../by-tag/topology/index.html">topology</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-3a-shells/Tsh068.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-3a-shells/Tsh068.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>OCCT MANTIS#0025169</li>
+<li>bug-reporter language: &quot;STEP Reader allow opened shells to be an outer for ManifoldSolidBrep&quot;, &quot;open shell used as outer of solid&quot;, &quot;manifold solid invariant violated&quot;. (OCCT MANTIS tracker 502 as of 2026-05-02)</li>
+</ul></section>
+<section><h2>Sender</h2>
+<p>Tools that emit a `MANIFOLD_SOLID_BREP` whose `outer` references a `CLOSED_SHELL` but where the shell&#x27;s faces actually leave gaps (free edges) — the schema requires the outer shell to be topologically closed.</p></section>
+<section><h2>Description</h2>
+<p>The schema mandates that the outer shell of a `MANIFOLD_SOLID_BREP` be a watertight `CLOSED_SHELL`. Some producers route an `OPEN_SHELL` through the same slot or emit a `CLOSED_SHELL` whose face/edge graph has free edges. The reader accepts both forms — the resulting &quot;solid&quot; has open boundary, downstream Boolean operations fail with cryptic errors, and the user is never told the file was malformed.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>`#10=OPEN_SHELL(&#x27;&#x27;,(#11,#12));` then `#20=MANIFOLD_SOLID_BREP(&#x27;&#x27;,#10);` — schema requires a `CLOSED_SHELL` here. Reader silently treats as solid.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>reject — verify shell closedness (every edge belongs to exactly two faces of the shell) before promoting to solid; emit `E_OPEN_OUTER_SHELL` when the invariant fails.</p></section>
+<section><h2>Notes</h2>
+<p>**See also**: Tsh021, Tsh041. Synonyms: &quot;STEP Reader allows opened shells as outer&quot;, &quot;MANIFOLD_SOLID_BREP open outer&quot;, &quot;non-closed outer shell accepted as solid&quot;, &quot;STEP solid invariant violated by reader&quot;.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>contains(b&#x27;MANIFOLD_SOLID_BREP&#x27;)</code></li>
+<li><code>contains(b&#x27;OPEN_SHELL&#x27;) or contains(b&#x27;CLOSED_SHELL&#x27;)</code></li>
+</ul></section>
+<section><h2>Cross-references</h2>
+<p><a href="Tsh021.html">Tsh021</a>, <a href="Tsh041.html">Tsh041</a></p>
+</section>
+<section><h2>Live oracle output</h2>
+<table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
+<tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>no_shapes_loaded</code></td></tr>
+</tbody></table>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* Tsh068 - <mark>MANIFOLD_SOLID_BREP</mark> whose outer shell is open (not closed) silently accepted
+<span class="lineno">3</span> * Defect: schema requires CLOSED_SHELL as outer shell of solid; producer here uses
+<span class="lineno">4</span> * OPEN_SHELL whose face/edge graph has free edges. */
+<span class="lineno">5</span>HEADER;
+<span class="lineno">6</span>FILE_DESCRIPTION((&#x27;Tsh068 - OPEN_SHELL used as outer shell of <mark>MANIFOLD_SOLID_BREP</mark>&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">7</span>FILE_NAME(&#x27;Tsh068.stp&#x27;,&#x27;2026-05-02T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">8</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }&#x27;));
+<span class="lineno">9</span>ENDSEC;
+<span class="lineno">10</span>DATA;
+<span class="lineno">11</span>#1=APPLICATION_CONTEXT(&#x27;automotive_design&#x27;);
+<span class="lineno">12</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,&#x27;automotive_design&#x27;,2000,#1);
+<span class="lineno">13</span>#10=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">14</span>#11=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">15</span>#12=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">16</span>#13=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#10,#11,#12);
+<span class="lineno">17</span>#20=PLANE(&#x27;plane_A&#x27;,#13);
+<span class="lineno">18</span>#21=PLANE(&#x27;plane_B&#x27;,#13);
+<span class="lineno">19</span>#30=ADVANCED_FACE(&#x27;faceA&#x27;,(),#20,.T.);
+<span class="lineno">20</span>#31=ADVANCED_FACE(&#x27;faceB&#x27;,(),#21,.T.);
+<span class="lineno">21</span>/* OPEN_SHELL where a CLOSED_SHELL is required. */
+<span class="lineno">22</span>#40=OPEN_SHELL(&#x27;non_closed_outer&#x27;,(#30,#31));
+<span class="lineno">23</span>/* <mark>MANIFOLD_SOLID_BREP</mark> requires its outer shell be CLOSED_SHELL â invariant violated. */
+<span class="lineno">24</span>#50=<mark>MANIFOLD_SOLID_BREP</mark>(&#x27;open_outer_solid&#x27;,#40);
+<span class="lineno">25</span>ENDSEC;
+<span class="lineno">26</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Tsh067.html">&larr; Tsh067</a> <a class="up" href="index.html">§12.3a Shells / orientation</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

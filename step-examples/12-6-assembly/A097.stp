@@ -1,0 +1,33 @@
+ISO-10303-21;
+/* A097 - Error transferring .stp model from STEPCAFControl_Reader to OCAF document
+ * Defect: file has two distinct APPLICATION_CONTEXT records with identical string
+ * content; parser accepts but Transfer() pass returns false because PRODUCT_DEFINITION
+ * chain fails to match across the two contexts. */
+HEADER;
+FILE_DESCRIPTION(('A097 - duplicate APPLICATION_CONTEXT breaks XCAF transfer'),'2;1');
+FILE_NAME('A097.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+/* Defect: two distinct APPLICATION_CONTEXT instances. */
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_CONTEXT('automotive_design');
+#3=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+#4=PRODUCT_CONTEXT('',#1,'mechanical');
+/* PRODUCT_DEFINITION_CONTEXT routes via #2, the OTHER APPLICATION_CONTEXT. */
+#5=PRODUCT_DEFINITION_CONTEXT('part definition',#2,'design');
+#6=PRODUCT('A097','transfer fails','',(#4));
+#7=PRODUCT_DEFINITION_FORMATION('','',#6);
+#8=PRODUCT_DEFINITION('design','',#7,#5);
+#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#11=DIRECTION('',(0.0,0.0,1.0));
+#12=DIRECTION('',(1.0,0.0,0.0));
+#13=AXIS2_PLACEMENT_3D('',#10,#11,#12);
+#20=PLANE('',#13);
+#30=ADVANCED_FACE('',(),#20,.T.);
+#40=CLOSED_SHELL('',(#30));
+#50=MANIFOLD_SOLID_BREP('part',#40);
+/* Self-referential NAUO so the fixture qualifies as §12.6 assembly. */
+#60=NEXT_ASSEMBLY_USAGE_OCCURRENCE('inst','self_inst','',#8,#8,$);
+ENDSEC;
+END-ISO-10303-21;

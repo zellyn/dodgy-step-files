@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>M023 — Mesh-to-NURBS face has inner `FACE_BOUND` extending outside the `FACE_OUTER_BOUND` (self-intersecting STL→STEP face)</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.8 Mixed (tessellation, validation properties, etc.)</a> <span class="sep">/</span> <span class="current">M023</span>
+</nav>
+<header class="title-bar">
+<h1>M023 <span class="sep">—</span> <span class="entry-title">Mesh-to-NURBS face has inner `FACE_BOUND` extending outside the `FACE_OUTER_BOUND` (self-intersecting STL→STEP face)</span></h1>
+<p class="category">§12.8 (sub-class: mesh-as-brep)</p>
+<p class="tag-pills">
+<a class="tag tag-units" href="../by-tag/units/index.html">units</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-8-mixed/M023.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-8-mixed/M023.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>20-general-forums.md (J024)</li>
+<li>FreeCAD `Part / Create shape from mesh`</li>
+</ul></section>
+<section><h2>Description</h2>
+<p>Mesh-to-BRep tools fit `B_SPLINE_SURFACE_WITH_KNOTS` patches per triangle and stitch them; near sharp creases the per-triangle patches&#x27; inner trims cross outside their outer bounds. Common signature: a face whose outer rectangular `FACE_OUTER_BOUND` is a 2×2 square but whose inner triangular `FACE_BOUND` has vertices (e.g. (1,1), (3,1), (2,3)) that extend outside the outer square — a self-intersecting face from mesh-to-NURBS conversion. Output STEP loads but every later Boolean fails.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>STL with creases &gt; ~30°; sew tolerance ≤ 1e-6; resulting `ADVANCED_FACE` contains pcurves that cross.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>heal — STL→STEP path should emit faceted BRep (`FACETED_BREP`/`OPEN_SHELL`) rather than smooth NURBS, or run self-intersection healing as a final step.</p></section>
+<section><h2>Notes</h2>
+<p>Synonyms: &quot;mesh-to-NURBS inner trim outside outer&quot;, &quot;STL-to-STEP face self-intersects&quot;, &quot;FACE_BOUND extends past outer bound&quot;, &quot;self-intersecting reverse-engineered face&quot;. **See also**: Pf015. **OCC behavior**: the validity-checker does not flag inner-trim-outside-outer-bound on the mesh-to-NURBS face; tier-3 valid-flag should be ignored for this entry. The reader most likely silently fixes or ignores the self-intersecting trim on import.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=shape(1)/shape(1) gmsh=shape(21) ifc=schema_n/a</code></p></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>n_edges_total &gt;= 11</code></li>
+<li><code>face[0].surface_type == &quot;plane&quot;</code></li>
+<li><code>n_vertices_total &gt;= 16</code></li>
+</ul></section>
+<section><h2>Cross-references</h2>
+<p><a href="../12-10-perf/Pf015.html">Pf015</a></p>
+</section>
+<section><h2>Live oracle output</h2>
+<table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
+<tr><td><code>occt_heal_on</code></td><td><code>shape(1)</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>shape(1)</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>shape(21)</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>shape(21)</code></td></tr>
+<tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>not_manifold</code></td></tr>
+</tbody></table>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* M023 - STL-&gt;STEP via mesh-to-NURBS produces self-intersecting faces.
+<span class="lineno">3</span> * Defect: a mesh-to-BRep tool fitted a B_SPLINE_SURFACE_WITH_KNOTS to
+<span class="lineno">4</span> * each triangle and stitched. Near a sharp crease the patches&#x27;
+<span class="lineno">5</span> * pcurves cross each other within a face, yielding ADVANCED_FACE
+<span class="lineno">6</span> * entities whose trim curves self-intersect. The file loads but every
+<span class="lineno">7</span> * subsequent boolean operation against this body fails.
+<span class="lineno">8</span> * This fixture deliberately encodes a trivial single ADVANCED_FACE
+<span class="lineno">9</span> * with two FACE_BOUND loops whose pcurves intersect at an interior
+<span class="lineno">10</span> * point - the inner loop crosses the outer. */
+<span class="lineno">11</span>HEADER;
+<span class="lineno">12</span>FILE_DESCRIPTION((&#x27;M023 test case&#x27;,&#x27;self-intersecting face from mesh-to-NURBS&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">13</span>FILE_NAME(&#x27;M023.stp&#x27;,&#x27;2026-04-26T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;auto-generated&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">14</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }&#x27;));
+<span class="lineno">15</span>ENDSEC;
+<span class="lineno">16</span>DATA;
+<span class="lineno">17</span>#1=APPLICATION_CONTEXT(&#x27;automotive_design&#x27;);
+<span class="lineno">18</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,&#x27;automotive_design&#x27;,2000,#1);
+<span class="lineno">19</span>#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">20</span>#11=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+<span class="lineno">21</span>#12=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+<span class="lineno">22</span>#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.E-6),#10,&#x27;distance_accuracy_value&#x27;,&#x27;&#x27;);
+<span class="lineno">23</span>#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+<span class="lineno">24</span>     GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13))
+<span class="lineno">25</span>     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12))
+<span class="lineno">26</span>     REPRESENTATION_CONTEXT(&#x27;part&#x27;,&#x27;3D&#x27;));
+<span class="lineno">27</span>/* Plane in z=0. */
+<span class="lineno">28</span>#100=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">29</span>#101=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">30</span>#102=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">31</span>#103=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#100,#101,#102);
+<span class="lineno">32</span>#104=PLANE(&#x27;mesh_to_nurbs_face&#x27;,#103);
+<span class="lineno">33</span>/* Outer loop: square (0,0)-(2,0)-(2,2)-(0,2). */
+<span class="lineno">34</span>#200=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">35</span>#201=CARTESIAN_POINT(&#x27;&#x27;,(2.0,0.0,0.0));
+<span class="lineno">36</span>#202=CARTESIAN_POINT(&#x27;&#x27;,(2.0,2.0,0.0));
+<span class="lineno">37</span>#203=CARTESIAN_POINT(&#x27;&#x27;,(0.0,2.0,0.0));
+<span class="lineno">38</span>/* Inner loop: triangle (1,1)-(3,1)-(2,3) - crosses the outer square&#x27;s
+<span class="lineno">39</span> * right and top edges. This is the self-intersection. */
+<span class="lineno">40</span>#210=CARTESIAN_POINT(&#x27;&#x27;,(1.0,1.0,0.0));
+<span class="lineno">41</span>#211=CARTESIAN_POINT(&#x27;&#x27;,(3.0,1.0,0.0));
+<span class="lineno">42</span>#212=CARTESIAN_POINT(&#x27;&#x27;,(2.0,3.0,0.0));
+<span class="lineno">43</span>#220=VERTEX_POINT(&#x27;&#x27;,#200);
+<span class="lineno">44</span>#221=VERTEX_POINT(&#x27;&#x27;,#201);
+<span class="lineno">45</span>#222=VERTEX_POINT(&#x27;&#x27;,#202);
+<span class="lineno">46</span>#223=VERTEX_POINT(&#x27;&#x27;,#203);
+<span class="lineno">47</span>#224=VERTEX_POINT(&#x27;&#x27;,#210);
+<span class="lineno">48</span>#225=VERTEX_POINT(&#x27;&#x27;,#211);
+<span class="lineno">49</span>#226=VERTEX_POINT(&#x27;&#x27;,#212);
+<span class="lineno">50</span>#230=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">51</span>#231=DIRECTION(&#x27;&#x27;,(0.0,1.0,0.0));
+<span class="lineno">52</span>#232=VECTOR(&#x27;&#x27;,#230,2.0);
+<span class="lineno">53</span>#233=VECTOR(&#x27;&#x27;,#231,2.0);
+<span class="lineno">54</span>/* Outer loop edges */
+<span class="lineno">55</span>#240=LINE(&#x27;&#x27;,#200,#232); #241=EDGE_CURVE(&#x27;&#x27;,#220,#221,#240,.T.);
+<span class="lineno">56</span>#242=LINE(&#x27;&#x27;,#201,#233); #243=EDGE_CURVE(&#x27;&#x27;,#221,#222,#242,.T.);
+<span class="lineno">57</span>#244=LINE(&#x27;&#x27;,#203,#232); #245=EDGE_CURVE(&#x27;&#x27;,#223,#222,#244,.T.);
+<span class="lineno">58</span>#246=LINE(&#x27;&#x27;,#200,#233); #247=EDGE_CURVE(&#x27;&#x27;,#220,#223,#246,.T.);
+<span class="lineno">59</span>/* Inner loop edges (crossing) */
+<span class="lineno">60</span>#250=LINE(&#x27;&#x27;,#210,#232); #251=EDGE_CURVE(&#x27;&#x27;,#224,#225,#250,.T.);
+<span class="lineno">61</span>#252=DIRECTION(&#x27;&#x27;,(-0.4472,0.8944,0.0));
+<span class="lineno">62</span>#253=VECTOR(&#x27;&#x27;,#252,2.236);
+<span class="lineno">63</span>#254=LINE(&#x27;&#x27;,#211,#253); #255=EDGE_CURVE(&#x27;&#x27;,#225,#226,#254,.T.);
+<span class="lineno">64</span>#256=DIRECTION(&#x27;&#x27;,(-0.4472,-0.8944,0.0));
+<span class="lineno">65</span>#257=VECTOR(&#x27;&#x27;,#256,2.236);
+<span class="lineno">66</span>#258=LINE(&#x27;&#x27;,#212,#257); #259=EDGE_CURVE(&#x27;&#x27;,#226,#224,#258,.T.);
+<span class="lineno">67</span>/* Outer FACE_OUTER_BOUND */
+<span class="lineno">68</span>#260=ORIENTED_EDGE(&#x27;&#x27;,*,*,#241,.T.);
+<span class="lineno">69</span>#261=ORIENTED_EDGE(&#x27;&#x27;,*,*,#243,.T.);
+<span class="lineno">70</span>#262=ORIENTED_EDGE(&#x27;&#x27;,*,*,#245,.F.);
+<span class="lineno">71</span>#263=ORIENTED_EDGE(&#x27;&#x27;,*,*,#247,.F.);
+<span class="lineno">72</span>#264=EDGE_LOOP(&#x27;&#x27;,(#260,#261,#262,#263));
+<span class="lineno">73</span>#265=FACE_OUTER_BOUND(&#x27;&#x27;,#264,.T.);
+<span class="lineno">74</span>/* Inner self-crossing FACE_BOUND */
+<span class="lineno">75</span>#270=ORIENTED_EDGE(&#x27;&#x27;,*,*,#251,.T.);
+<span class="lineno">76</span>#271=ORIENTED_EDGE(&#x27;&#x27;,*,*,#255,.T.);
+<span class="lineno">77</span>#272=ORIENTED_EDGE(&#x27;&#x27;,*,*,#259,.T.);
+<span class="lineno">78</span>#273=EDGE_LOOP(&#x27;&#x27;,(#270,#271,#272));
+<span class="lineno">79</span>#274=FACE_BOUND(&#x27;&#x27;,#273,.T.);
+<span class="lineno">80</span>/* Defect: the two loops cross at the right and top edges. */
+<span class="lineno">81</span>#280=ADVANCED_FACE(&#x27;self_intersecting&#x27;,(#265,#274),#104,.T.);
+<span class="lineno">82</span>/* Minimal PRODUCT chain so OCCT TransferRoots produces a shape. */
+<span class="lineno">83</span>#9010=PRODUCT_CONTEXT(&#x27;&#x27;,#1,&#x27;mechanical&#x27;);
+<span class="lineno">84</span>#9011=PRODUCT(&#x27;M023&#x27;,&#x27;M023&#x27;,&#x27;&#x27;,(#9010));
+<span class="lineno">85</span>#9012=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#9011);
+<span class="lineno">86</span>#9013=PRODUCT_DEFINITION_CONTEXT(&#x27;part definition&#x27;,#1,&#x27;design&#x27;);
+<span class="lineno">87</span>#9014=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,#9012,#9013);
+<span class="lineno">88</span>#9015=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,#9014);
+<span class="lineno">89</span>#9030=OPEN_SHELL(&#x27;wrap_shell&#x27;,(#280));
+<span class="lineno">90</span>#9031=SHELL_BASED_SURFACE_MODEL(&#x27;wrap_sbsm&#x27;,(#9030));
+<span class="lineno">91</span>#9050=MANIFOLD_SURFACE_SHAPE_REPRESENTATION(&#x27;&#x27;,(#9031),#14);
+<span class="lineno">92</span>#9051=SHAPE_DEFINITION_REPRESENTATION(#9015,#9050);
+<span class="lineno">93</span>ENDSEC;
+<span class="lineno">94</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="M022.html">&larr; M022</a> <a class="up" href="index.html">§12.8 Mixed (tessellation, validation properties, etc.)</a> <a class="next" href="M024.html">M024 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

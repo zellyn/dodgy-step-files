@@ -1,0 +1,35 @@
+ISO-10303-21;
+/* M124 - AP209 fea_model element references node outside its node-set.
+ * Defect: a FEA_MODEL_3D declares a 3-node its_node_set, while a
+ * VOLUME_3D_ELEMENT_DESCRIPTOR in the same model references a 4th
+ * node not in the node set. The element implicitly extends the model
+ * with the unlisted node, or solver assembly fails. */
+HEADER;
+FILE_DESCRIPTION(('M124 test case','AP209 element node outside model node-set'),'2;1');
+FILE_NAME('M124.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('STRUCTURAL_ANALYSIS_DESIGN { 1 0 10303 209 1 0 0 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('structural_analysis_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
+  'structural_analysis_design',2001,#1);
+#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10))
+     REPRESENTATION_CONTEXT('fea','3D'));
+#100=CARTESIAN_POINT('a',(0.0,0.0,0.0));
+#101=CARTESIAN_POINT('b',(1.0,0.0,0.0));
+#102=CARTESIAN_POINT('c',(0.5,1.0,0.0));
+#103=CARTESIAN_POINT('d_extra',(0.5,0.5,1.0));
+#110=NODE('n1',(#100),$);
+#111=NODE('n2',(#101),$);
+#112=NODE('n3',(#102),$);
+#113=NODE('n4_outside_model',(#103),$);
+/* Model node-set has only 3 nodes. */
+#150=NODE_GROUP('model_nodes',(#110,#111,#112),$);
+/* Defect: element references 4 nodes; n4 is not in the model node-set. */
+#200=VOLUME_3D_ELEMENT_DESCRIPTOR('tet_with_outsider','linear_tetrahedron',
+       (#110,#111,#112,#113));
+#300=FEA_MODEL_3D('inconsistent_model',$,#150,$,$);
+ENDSEC;
+END-ISO-10303-21;

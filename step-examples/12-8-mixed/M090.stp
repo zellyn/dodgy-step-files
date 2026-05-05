@@ -1,0 +1,29 @@
+ISO-10303-21;
+/* M090 - AP210 BoM line item references no physical part definition.
+ * Defect: a NEXT_ASSEMBLY_USAGE_OCCURRENCE in a PCB BoM lists a child
+ * PRODUCT (e.g. 'R0805_10K') with no PRODUCT_DEFINITION_FORMATION /
+ * PRODUCT_DEFINITION / SHAPE_DEFINITION_REPRESENTATION chain attached.
+ * The BoM has the part name but no geometry, no footprint, no MPN -
+ * the BoM is a list of strings, not a list of parts. */
+HEADER;
+FILE_DESCRIPTION(('M090 test case','AP210 BoM item with no part definition chain'),'2;1');
+FILE_NAME('M090.stp','2026-04-30T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('ELECTRONIC_ASSEMBLY_INTERCONNECT_AND_PACKAGING_DESIGN { 1 0 10303 210 3 1 0 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('electronic_assembly_interconnect_and_packaging_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
+  'electronic_assembly_interconnect_and_packaging_design',2014,#1);
+#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+/* Top-level board */
+#100=PRODUCT('PCB1','main board','PCB top assembly',(#1));
+#101=PRODUCT_DEFINITION_FORMATION('','',#100);
+#102=PRODUCT_DEFINITION('','',#101,#1);
+/* Child resistor PRODUCT - no PDF, no PD, no SDR */
+#200=PRODUCT('R0805_10K','10K 0805 resistor','',(#1));
+/* Defect: NAUO references #200 directly without going through a
+ * PRODUCT_DEFINITION; the placement is geometry-less. */
+#300=NEXT_ASSEMBLY_USAGE_OCCURRENCE('R1','R1','at_corner',
+       #102,#200,$);
+ENDSEC;
+END-ISO-10303-21;

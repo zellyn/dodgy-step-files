@@ -1,0 +1,14 @@
+ISO-10303-21;
+/* Ad087 - Reader crashes on dangling entity reference
+ * Defect: MANIFOLD_SOLID_BREP references undefined entity #999 */
+HEADER;
+FILE_DESCRIPTION(('Ad087 test case','Reader crashes on dangling entity reference'),'2;1');
+FILE_NAME('Ad087.stp','2026-04-30T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+#100=MANIFOLD_SOLID_BREP('dangling_ref',#999);
+ENDSEC;
+END-ISO-10303-21;

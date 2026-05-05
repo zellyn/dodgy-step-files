@@ -1,0 +1,35 @@
+/* Twi101 - POLYLINE used as EDGE_CURVE.curve_geometry silently dropped
+   Defect: BRL-CAD step-g Polyline.cpp implements Load (it parses the
+   list of CARTESIAN_POINTs into the in-memory model) but provides no
+   LoadONBrep override; the call falls through to the BoundedCurve /
+   Curve base-class stub, prints "not implemented for Polyline" and
+   returns false.  An EDGE_CURVE whose curve_geometry is a POLYLINE
+   ends up with no 3D curve in the ON_Brep edge: the underlying segments
+   are dropped, only the start/end vertices remain.  The receiver-side
+   sees a zero-length edge or fails to build the wire at all.
+   Polyline edges are common in old translators that prefer broken-line
+   representations of bevels and chamfers over arc-circle compositions.
+   Sources: BRL-CAD src/conv/step/step-g/Polyline.cpp - Load present,
+   LoadONBrep absent; falls through to Curve.cpp stub. */
+ISO-10303-21;
+HEADER;
+FILE_DESCRIPTION(
+  ('Twi101 - POLYLINE EDGE_CURVE basis dropped by step-g LoadONBrep stub'),
+  '2;1');
+FILE_NAME('Twi101.stp','2026-05-02T00:00:00',('cad-research-suite'),(''),
+  'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+/* Three colinear-ish 3D points giving a 2-segment polyline. */
+#10=CARTESIAN_POINT('p0',(0.0,0.0,0.0));
+#11=CARTESIAN_POINT('p1',(1.0,0.0,0.0));
+#12=CARTESIAN_POINT('p2',(2.0,0.5,0.0));
+/* Defect: POLYLINE used as the underlying curve of an EDGE_CURVE.
+   step-g loads the entity but Polyline has no LoadONBrep override and
+   the inherited stub silently drops the 3D curve geometry. */
+#20=POLYLINE('chamfer_basis',(#10,#11,#12));
+#30=VERTEX_POINT('',#10); #31=VERTEX_POINT('',#12);
+#40=EDGE_CURVE('chamfer_edge',#30,#31,#20,.T.);
+ENDSEC;
+END-ISO-10303-21;

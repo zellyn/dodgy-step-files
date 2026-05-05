@@ -1,0 +1,44 @@
+ISO-10303-21;
+/* M073 - AP238 unit mismatch between part-coordinate and machine-coordinate
+ * representation contexts.
+ * Defect: the workpiece geometry is declared in a representation_context
+ * with mm units; the toolpath is declared in a separate context with inch
+ * units; nothing in the file links the two via a unit conversion or a
+ * common parent context. A direct overlay produces a 25.4x scale error. */
+HEADER;
+FILE_DESCRIPTION(('M073 test case','AP238 part vs machine coordinate unit mismatch'),'2;1');
+FILE_NAME('M073.stp','2026-04-30T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AP238_STEP_NC_MIM { 1 0 10303 238 1 0 0 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('numerical_control_machining');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
+  'numerical_control_machining',2007,#1);
+/* Part-coord context: mm */
+#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#11=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11))
+     REPRESENTATION_CONTEXT('part_mm','3D'));
+/* Machine-coord context: inches */
+#15=DIMENSIONAL_EXPONENTS(1.0,0.0,0.0,0.0,0.0,0.0,0.0);
+#16=(LENGTH_UNIT()NAMED_UNIT(#15)CONVERSION_BASED_UNIT('INCH',#17));
+#17=LENGTH_MEASURE_WITH_UNIT(LENGTH_MEASURE(25.4),#10);
+#18=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+     GLOBAL_UNIT_ASSIGNED_CONTEXT((#16,#11))
+     REPRESENTATION_CONTEXT('machine_inch','3D'));
+/* Workpiece point in mm */
+#20=CARTESIAN_POINT('part_origin',(0.0,0.0,0.0));
+#21=AXIS2_PLACEMENT_3D('part_csys',#20,$,$);
+#22=GEOMETRIC_REPRESENTATION_ITEM('workpiece_geom');
+#30=SHAPE_REPRESENTATION('workpiece',(#21),#14);
+/* Toolpath endpoint in inches - same numeric coordinates */
+#40=CARTESIAN_POINT('tp_start',(0.0,0.0,0.0));
+#41=CARTESIAN_POINT('tp_end',(4.0,0.0,0.0));
+#42=DIRECTION('',(1.0,0.0,0.0));#43=VECTOR('',#42,4.0);
+#44=LINE('tp_line',#40,#43);
+#50=TRAJECTORY('feed_to_x4',$,$,$,$,#44);
+#51=SHAPE_REPRESENTATION('toolpath_rep',(#44),#18);
+/* No SCALAR_TIMES or CONVERSION_BASED unit linking the two contexts. */
+ENDSEC;
+END-ISO-10303-21;

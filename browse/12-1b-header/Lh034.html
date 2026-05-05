@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Lh034 — REFERENCE section pointing at unresolvable external anchor</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.1b Header &amp; instance-numbering</a> <span class="sep">/</span> <span class="current">Lh034</span>
+</nav>
+<header class="title-bar">
+<h1>Lh034 <span class="sep">—</span> <span class="entry-title">REFERENCE section pointing at unresolvable external anchor</span></h1>
+<p class="category">§12.1b header/numbering (sub-class: REFERENCE)</p>
+<p class="severity-badge severity-p1">P1 — silent data loss</p>
+<p class="tag-pills">
+<a class="tag tag-silent-loss" href="../by-tag/silent-loss/index.html">silent-loss</a>
+<a class="tag tag-spec-violation" href="../by-tag/spec-violation/index.html">spec-violation</a>
+<a class="tag tag-syntax" href="../by-tag/syntax/index.html">syntax</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-1b-header/Lh034.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-1b-header/Lh034.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>16-iso-spec ISO 10303-21 Ed.3 §8 (REFERENCE / ANCHOR cross-file linking)</li>
+</ul></section>
+<section><h2>Description</h2>
+<p>Edition-3 ANCHOR / REFERENCE / SIGNATURE sections support cross-file linking. A REFERENCE entry names an external instance via a URI plus `#anchor_name`; the other end (a separate file) must publish that anchor in its ANCHOR section. When the receiver imports a file with REFERENCE to an unresolvable target (companion file missing, anchor name misspelt, URI scheme unsupported), the kernel must decide whether to defer-load, fail-load, or substitute a placeholder.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>REFERENCE section listing `&lt;file:companion-file.stp#missing_anchor&gt;` and `&lt;https://example.invalid/no-such-file.stp#also_missing&gt;`.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>report the unresolvable reference with a precise diagnostic naming the URI and anchor; allow the rest of the file to load with a placeholder if the implementer&#x27;s policy is partial-load, otherwise reject deterministically.</p></section>
+<section><h2>Notes</h2>
+<p>Cross-oracle: pure-Python Part-21 validator rejects (reject(E_UNRESOLVED_REFS)); OCCT silently accepts (load is `empty`). OCC auto-heals a spec-level violation. Synonyms: &quot;REFERENCE section unresolvable anchor&quot;, &quot;external anchor not found&quot;, &quot;STEP REFERENCE points at missing file&quot;, &quot;URI anchor in REFERENCE unresolved&quot;, &quot;broken cross-file STEP link&quot;.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>contains(b&#x27;REFERENCE;&#x27;) and (contains(b&#x27;companion-file.stp#missing_anchor&#x27;) or contains(b&#x27;no-such-file.stp#also_missing&#x27;))</code></li>
+<li><code>contains(b&#x27;companion-file.stp&#x27;) or contains(b&#x27;companion.stp&#x27;) or contains(b&#x27;no-such-file.stp&#x27;)</code></li>
+</ul></section>
+<section><h2>Live oracle output</h2>
+<table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
+<tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>reject(E_UNRESOLVED_REFS)</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>no_shapes_loaded</code></td></tr>
+</tbody></table>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* Lh034 - REFERENCE section listing external instance handles
+<span class="lineno">3</span> * but no matching ANCHOR section in the producing-side companion
+<span class="lineno">4</span> * file
+<span class="lineno">5</span> * Defect: ISO 10303-21 Edition 3 ANCHOR / REFERENCE / SIGNATURE
+<span class="lineno">6</span> * sections exist to support cross-file linking. A REFERENCE entry
+<span class="lineno">7</span> * names an external instance via a URI plus &#x27;#anchor_name&#x27;; the
+<span class="lineno">8</span> * other end (a separate file) must publish that anchor in its
+<span class="lineno">9</span> * ANCHOR section. When the receiver imports a file with REFERENCE
+<span class="lineno">10</span> * to an unresolvable target (companion file missing, anchor name
+<span class="lineno">11</span> * misspelt, URI scheme unsupported), the kernel must decide whether
+<span class="lineno">12</span> * to defer-load, fail-load, or substitute a placeholder. */
+<span class="lineno">13</span>HEADER;
+<span class="lineno">14</span>FILE_DESCRIPTION((&#x27;Lh034 - REFERENCE section to unresolvable external anchor&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">15</span>FILE_NAME(&#x27;Lh034.stp&#x27;,&#x27;2026-04-26T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),
+<span class="lineno">16</span>  &#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">17</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
+<span class="lineno">18</span>ENDSEC;
+<span class="lineno">19</span>REFERENCE;
+<span class="lineno">20</span>/* Defect: external reference to companion-file.stp#missing_anchor
+<span class="lineno">21</span> * which does not exist - URI not resolvable */
+<span class="lineno">22</span>#100=&lt;file:companion-file.stp#missing_anchor&gt;;
+<span class="lineno">23</span>#101=&lt;https://example.invalid/no-such-file.stp#also_missing&gt;;
+<span class="lineno">24</span>ENDSEC;
+<span class="lineno">25</span>DATA;
+<span class="lineno">26</span>#1=APPLICATION_CONTEXT(&#x27;automotive_design&#x27;);
+<span class="lineno">27</span>#2=PRODUCT_CONTEXT(&#x27;part&#x27;,#1,&#x27;mechanical&#x27;);
+<span class="lineno">28</span>/* PRODUCT references #100 - which is unresolvable */
+<span class="lineno">29</span>#10=PRODUCT(&#x27;part-with-broken-ref&#x27;,&#x27;demo&#x27;,&#x27;&#x27;,(#2));
+<span class="lineno">30</span>ENDSEC;
+<span class="lineno">31</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Lh033.html">&larr; Lh033</a> <a class="up" href="index.html">§12.1b Header &amp; instance-numbering</a> <a class="next" href="Lh035.html">Lh035 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

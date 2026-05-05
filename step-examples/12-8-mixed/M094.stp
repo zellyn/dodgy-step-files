@@ -1,0 +1,33 @@
+ISO-10303-21;
+/* M094 - AP238 setup placement inconsistent with workpiece coordinate.
+ * Defect: SETUP origin is at (100, 0, 0) in machine coordinates;
+ * the WORKPIECE's own placement is at (0, 0, 0). No relating entity
+ * reconciles the offset. The toolpath origin is ambiguous. */
+HEADER;
+FILE_DESCRIPTION(('M094 test case','AP238 setup vs workpiece placement mismatch'),'2;1');
+FILE_NAME('M094.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AP238_STEP_NC_MIM { 1 0 10303 238 1 0 0 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('numerical_control_machining');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
+  'numerical_control_machining',2007,#1);
+#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10))
+     REPRESENTATION_CONTEXT('nc','3D'));
+/* Setup origin at (100,0,0) on machine table */
+#50=CARTESIAN_POINT('setup_origin',(100.0,0.0,0.0));
+#51=DIRECTION('z',(0.0,0.0,1.0));
+#52=DIRECTION('x',(1.0,0.0,0.0));
+#53=AXIS2_PLACEMENT_3D('setup_csys',#50,#51,#52);
+#100=SETUP('vise_setup',#53,$,$);
+/* Workpiece origin at (0,0,0) - inconsistent with setup */
+#60=CARTESIAN_POINT('part_origin',(0.0,0.0,0.0));
+#61=DIRECTION('z',(0.0,0.0,1.0));
+#62=DIRECTION('x',(1.0,0.0,0.0));
+#63=AXIS2_PLACEMENT_3D('part_csys',#60,#61,#62);
+#200=MACHINING_OPERATION('drill_a',$,$,$,$,$);
+#300=WORKPLAN('main',(#200),$,$,$);
+ENDSEC;
+END-ISO-10303-21;

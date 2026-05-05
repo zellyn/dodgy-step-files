@@ -1,0 +1,64 @@
+ISO-10303-21;
+/* Gp031 - Cylinder represented twice loses analytic identity
+ * Defect: two distinct CYLINDRICAL_SURFACE entities (#20, #21) share
+ * identical geometry (same axis, same radius). Two faces #64 and #164
+ * each reference one of them. Pcurves on the second copy may disagree
+ * subtly with those on the first. */
+HEADER;
+FILE_DESCRIPTION(('Gp031 test case','Cylinder represented twice loses analytic identity'),'2;1');
+FILE_NAME('Gp031.stp','2026-04-27T00:00:00',(''),(''),'auto-generated','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+/* First cylinder copy */
+#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#11=DIRECTION('',(0.0,0.0,1.0));
+#12=DIRECTION('',(1.0,0.0,0.0));
+#13=AXIS2_PLACEMENT_3D('',#10,#11,#12);
+#20=CYLINDRICAL_SURFACE('',#13,10.0);
+/* Second copy: SAME numbers but distinct entity instance.
+ * Defect: instance identity is lost - importer cannot detect they are
+ * the same analytic surface. */
+#14=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#15=DIRECTION('',(0.0,0.0,1.0));
+#16=DIRECTION('',(1.0,0.0,0.0));
+#17=AXIS2_PLACEMENT_3D('',#14,#15,#16);
+#21=CYLINDRICAL_SURFACE('',#17,10.0);
+/* Two faces share an edge but reference different surface copies */
+#30=CARTESIAN_POINT('',(10.0,0.0,0.0));
+#31=DIRECTION('',(0.0,0.0,1.0));
+#32=VECTOR('',#31,1.0);
+#33=LINE('',#30,#32);
+#40=VERTEX_POINT('',#30);
+#41=CARTESIAN_POINT('',(10.0,0.0,5.0));
+#42=VERTEX_POINT('',#41);
+/* Pcurve A on cylinder copy 1 */
+#71=CARTESIAN_POINT('',(0.0,0.0));
+#72=DIRECTION('',(0.0,1.0));
+#73=VECTOR('',#72,1.0);
+#74=LINE('',#71,#73);
+#75=( GEOMETRIC_REPRESENTATION_CONTEXT(2)
+      PARAMETRIC_REPRESENTATION_CONTEXT()
+      REPRESENTATION_CONTEXT('parametric','2D') );
+#76=DEFINITIONAL_REPRESENTATION('',(#74),#75);
+#77=PCURVE('',#20,#76);
+/* Pcurve B on cylinder copy 2 - same UV but tied to the duplicate */
+#81=CARTESIAN_POINT('',(0.0,0.0));
+#82=DIRECTION('',(0.0,1.0));
+#83=VECTOR('',#82,1.0);
+#84=LINE('',#81,#83);
+#85=DEFINITIONAL_REPRESENTATION('',(#84),#75);
+#86=PCURVE('',#21,#85);
+#50=SURFACE_CURVE('',#33,(#77,#86),.PCURVE_S1.);
+#60=EDGE_CURVE('',#40,#42,#50,.T.);
+#61=ORIENTED_EDGE('',*,*,#60,.T.);
+#62=EDGE_LOOP('',(#61));
+#63=FACE_OUTER_BOUND('',#62,.T.);
+#64=ADVANCED_FACE('',(#63),#20,.T.);
+#162=EDGE_LOOP('',(#61));
+#163=FACE_OUTER_BOUND('',#162,.T.);
+#164=ADVANCED_FACE('',(#163),#21,.T.);
+ENDSEC;
+END-ISO-10303-21;

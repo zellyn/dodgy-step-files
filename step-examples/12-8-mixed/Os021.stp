@@ -1,0 +1,24 @@
+ISO-10303-21;
+/* Os021 - Normal projection: source curve has no projection.
+ * Defect: line at z=10; target sphere radius 1 at origin.
+ * No normal foot from line to sphere. */
+HEADER;
+FILE_DESCRIPTION(('Os021 - no normal projection','Pass C gap-fill'),'2;1');
+FILE_NAME('Os021.stp','2026-04-30T00:00:00',(''),(''),'gap-fill C','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+#10=CARTESIAN_POINT('line_pt',(0.0,0.0,10.0));
+#11=DIRECTION('',(1.0,0.0,0.0));
+#12=VECTOR('',#11,1.0);
+#13=LINE('source_far_above',#10,#12);
+/* Target sphere at origin radius 1 */
+#20=CARTESIAN_POINT('sphere_center',(0.0,0.0,0.0));
+#21=DIRECTION('',(0.0,0.0,1.0));
+#22=DIRECTION('',(1.0,0.0,0.0));
+#23=AXIS2_PLACEMENT_3D('',#20,#21,#22);
+#24=SPHERICAL_SURFACE('target_sphere',#23,1.0);
+ENDSEC;
+END-ISO-10303-21;

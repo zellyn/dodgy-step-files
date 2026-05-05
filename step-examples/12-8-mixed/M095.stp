@@ -1,0 +1,25 @@
+ISO-10303-21;
+/* M095 - AP238 machining_operation declares negative execution time.
+ * Defect: a MEASURE_WITH_UNIT(TIME_MEASURE(-12.5), seconds) is
+ * attached to a MACHINING_OPERATION as its execution duration. Cycle-
+ * time estimators that sum operation times produce nonsense totals. */
+HEADER;
+FILE_DESCRIPTION(('M095 test case','AP238 negative execution time'),'2;1');
+FILE_NAME('M095.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AP238_STEP_NC_MIM { 1 0 10303 238 1 0 0 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('numerical_control_machining');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
+  'numerical_control_machining',2007,#1);
+#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#15=(NAMED_UNIT(*)SI_UNIT($,.SECOND.)TIME_UNIT());
+#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#15))
+     REPRESENTATION_CONTEXT('nc','3D'));
+/* Defect: TIME_MEASURE(-12.5) attached to operation. */
+#80=MEASURE_WITH_UNIT(TIME_MEASURE(-12.5),#15);
+#100=MACHINING_OPERATION('rough_pocket',$,$,$,#80,$);
+#200=WORKPLAN('main',(#100),$,$,$);
+ENDSEC;
+END-ISO-10303-21;

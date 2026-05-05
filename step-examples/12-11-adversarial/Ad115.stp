@@ -1,0 +1,37 @@
+/* Ad115 - Directory-entry race between stat() and open() on STEP fixture path
+ * Defect: a receiver that performs a path-based stat() on a fixture
+ * (to enforce a max-size budget, or a regular-file-only check, or a
+ * "this is the file we expected" hash check), then performs a separate
+ * path-based open(), races against any process that can swap the
+ * directory entry between the two syscalls. On a multi-tenant build
+ * host, an attacker rename()s a small benign file into place before
+ * the receiver's stat() and a hostile/oversized file into place
+ * before the receiver's open(). Distinct from Ad113 (sibling-pair
+ * race) and Ad114 (symlink-following): this entry is the directory-
+ * entry-swap vector even when no symlink is present.
+ *
+ * IMPORTANT: this fixture documents the scenario in this header
+ * comment. The race requires a concurrent attacker process; no
+ * filesystem manipulation is performed by this fixture.
+ * Provenance tier: cross-file-state. */
+ISO-10303-21;
+HEADER;
+FILE_DESCRIPTION(('Ad115 - stat-vs-open directory-entry race on STEP path'),'2;1');
+FILE_NAME('Ad115.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+/* Witness body: the stat-vs-open TOCTOU defect lives in the receiver-
+   side filesystem and depends on a concurrent attacker process. The
+   bug-reporter searchable terms (TOCTOU, directory, race, rename,
+   stat, fstat) are in this file's header and comments.
+
+   The receiver should open the path once and fstat() the resulting
+   file descriptor; never re-resolve the path between two filesystem
+   operations. Path-based file metadata is untrusted on a multi-tenant
+   filesystem. */
+/* directory-entry rename() race between stat() and open() */
+#1=APPLICATION_CONTEXT('automotive_design');
+#10=CARTESIAN_POINT('benign',(0.0,0.0,0.0));
+ENDSEC;
+END-ISO-10303-21;

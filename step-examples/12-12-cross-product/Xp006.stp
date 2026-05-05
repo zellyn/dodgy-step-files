@@ -1,0 +1,35 @@
+ISO-10303-21;
+/* Xp006 - Cross-product: schema declares AP203 but file uses AP242
+ *   tessellated entities, AND a face references undefined entity #999.
+ * Builds on Lh010-class (schema mismatch) + Ls-forward-ref-class +
+ *   Tfa001 (NULL/unresolved face_geometry). */
+HEADER;
+FILE_DESCRIPTION(('Xp006 cross-product','schema mismatch x forward-ref x unresolved'),'2;1');
+FILE_NAME('Xp006.stp','2026-04-26T00:00:00',(''),(''),'cad-research-suite','','');
+/* Defect 1: AP203 schema declared */
+FILE_SCHEMA(('CONFIG_CONTROL_DESIGN { 1 0 10303 203 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('config control design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','config_control_design',1994,#1);
+/* Defect 1 continued: AP242-only entities in body */
+#100=COORDINATES_LIST('',4,((0.0,0.0,0.0),(1.0,0.0,0.0),
+                            (0.5,1.0,0.0),(0.5,0.5,1.0)));
+#110=TRIANGULATED_FACE('',#100,$,$,(),
+       ((1,2,3),(1,2,4),(2,3,4),(3,1,4)));
+/* Plane / face whose face_geometry references undefined #999 - Defect 2+3 */
+#200=CARTESIAN_POINT('a',(0.0,0.0,0.0));
+#201=CARTESIAN_POINT('b',(1.0,0.0,0.0));
+#202=VERTEX_POINT('',#200);
+#203=VERTEX_POINT('',#201);
+#204=DIRECTION('',(1.0,0.0,0.0));
+#205=VECTOR('',#204,1.0);
+#206=LINE('',#200,#205);
+#207=EDGE_CURVE('',#202,#203,#206,.T.);
+#208=ORIENTED_EDGE('',*,*,#207,.T.);
+#209=EDGE_LOOP('',(#208));
+#210=FACE_OUTER_BOUND('',#209,.T.);
+/* Defect 2: face_geometry = #999, not defined anywhere */
+#211=ADVANCED_FACE('',(#210),#999,.T.);
+ENDSEC;
+END-ISO-10303-21;

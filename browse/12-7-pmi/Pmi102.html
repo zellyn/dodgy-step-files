@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Pmi102 — `GROOVE` radial depth exceeds cylindrical host radius (depth wraps past axis)</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.7 PMI / GD&amp;T</a> <span class="sep">/</span> <span class="current">Pmi102</span>
+</nav>
+<header class="title-bar">
+<h1>Pmi102 <span class="sep">—</span> <span class="entry-title">`GROOVE` radial depth exceeds cylindrical host radius (depth wraps past axis)</span></h1>
+<p class="category">§12.7 (sub-class: AP242 feature definition)</p>
+<p class="severity-badge severity-p1">P1 — silent data loss</p>
+<p class="tag-pills">
+<a class="tag tag-spec-violation" href="../by-tag/spec-violation/index.html">spec-violation</a>
+<a class="tag tag-pmi" href="../by-tag/pmi/index.html">pmi</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-7-pmi/Pmi102.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-7-pmi/Pmi102.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>16-iso-spec ISO 10303-242 §feature_definition_schema (groove)</li>
+<li>CAx-IF Feature Information Recommended Practice §groove on cylindrical host</li>
+<li>bug-reporter language: &quot;AP242 groove cuts through cylinder centerline&quot;, &quot;groove depth wraps around axis&quot;, &quot;circumferential groove depth too deep&quot;.</li>
+</ul></section>
+<section><h2>Description</h2>
+<p>AP242 `groove` on a cylindrical host has a radial depth that must be strictly less than the cylinder radius (otherwise the groove cuts through the cylinder centerline and &quot;wraps&quot; past the axis to reappear on the other side, leaving a self-intersecting feature definition). A producer that emits a groove with `radial_depth=15 mm` on a cylinder of radius 10 mm leaves a feature whose constructive evaluation is non-manifold. Receivers diverge: some clamp the depth to the radius, some accept and produce a self-intersecting solid, some reject. Bug-reporter language: &quot;groove depth exceeds host radius&quot;, &quot;GROOVE cuts past cylinder centreline&quot;, &quot;AP242 groove wrap-around&quot;.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>a cylindrical host face with radius 10; a `SHAPE_ASPECT(&#x27;GROOVE&#x27;,..)` with `groove_radial_depth=15.0 mm` and `host_cylinder_radius=10.0 mm`.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>validate radial depth &lt; host radius for circumferential grooves; reject as inconsistent or clamp with a deterministic warning. Never accept silently.</p></section>
+<section><h2>Notes</h2>
+<p>**See also**: Pmi091, Pmi100, Pmi101. Synonyms: &quot;GROOVE depth wrap-around&quot;, &quot;groove cuts through cylinder centerline&quot;, &quot;AP242 circumferential groove too deep&quot;, &quot;radial depth exceeds host radius&quot;.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=shape(1)/shape(1) gmsh=shape(6) ifc=schema_n/a</code></p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>contains(b&#x27;GROOVE&#x27;)</code></li>
+<li><code>contains(b&#x27;CYLINDRICAL_SURFACE&#x27;)</code></li>
+<li><code>contains(b&#x27;depth_DEFECT_exceeds_radius&#x27;)</code></li>
+</ul></section>
+<section><h2>Cross-references</h2>
+<p><a href="Pmi091.html">Pmi091</a>, <a href="Pmi100.html">Pmi100</a>, <a href="Pmi101.html">Pmi101</a></p>
+</section>
+<section><h2>Live oracle output</h2>
+<table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
+<tr><td><code>occt_heal_on</code></td><td><code>shape(1)</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>shape(1)</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>shape(6)</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>shape(6)</code></td></tr>
+<tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>not_manifold</code></td></tr>
+</tbody></table>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>/* Pmi102 - <mark>GROOVE</mark> depth wraps around cylindrical face improperly
+<span class="lineno">2</span> * Defect: a circumferential <mark>GROOVE</mark> on a cylinder with radial depth=15 mm
+<span class="lineno">3</span> * but the host cylinder radius is only 10 mm. The groove cuts through the
+<span class="lineno">4</span> * cylinder&#x27;s centerline -- the depth wraps past the axis and reappears on
+<span class="lineno">5</span> * the other side. Receivers must validate radial depth &lt; host radius
+<span class="lineno">6</span> * for circumferential grooves. */
+<span class="lineno">7</span>ISO-10303-21;
+<span class="lineno">8</span>HEADER;
+<span class="lineno">9</span>FILE_DESCRIPTION((&#x27;Pmi102 - <mark>GROOVE</mark> radial depth exceeds cylinder radius&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">10</span>FILE_NAME(&#x27;Pmi102.stp&#x27;,&#x27;2026-05-02T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">11</span>FILE_SCHEMA((&#x27;AP242_MANAGED_MODEL_BASED_3D_ENGINEERING_MIM_LF { 1 0 10303 442 1 1 4 }&#x27;));
+<span class="lineno">12</span>ENDSEC;
+<span class="lineno">13</span>DATA;
+<span class="lineno">14</span>#1=APPLICATION_CONTEXT(&#x27;managed model based 3d engineering&#x27;);
+<span class="lineno">15</span>#2=PRODUCT_CONTEXT(&#x27;part&#x27;,#1,&#x27;mechanical&#x27;);
+<span class="lineno">16</span>#3=PRODUCT(&#x27;Pmi102&#x27;,&#x27;groove_depth_wraparound&#x27;,&#x27;&#x27;,(#2));
+<span class="lineno">17</span>#4=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#3);
+<span class="lineno">18</span>#5=PRODUCT_DEFINITION_CONTEXT(&#x27;&#x27;,#1,&#x27;design&#x27;);
+<span class="lineno">19</span>#6=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,#4,#5);
+<span class="lineno">20</span>#7=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,#6);
+<span class="lineno">21</span>#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">22</span>#11=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+<span class="lineno">23</span>#12=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+<span class="lineno">24</span>#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#10,&#x27;tol&#x27;,&#x27;&#x27;);
+<span class="lineno">25</span>#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3) GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13)) GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12)) REPRESENTATION_CONTEXT(&#x27;&#x27;,&#x27;3D&#x27;));
+<span class="lineno">26</span>/* Cylindrical host face: radius 10, height 30. Bounded by two circular edges. */
+<span class="lineno">27</span>#100=CARTESIAN_POINT(&#x27;cyl_origin&#x27;,(0.0,0.0,0.0));
+<span class="lineno">28</span>#101=CARTESIAN_POINT(&#x27;cyl_top_centre&#x27;,(0.0,0.0,30.0));
+<span class="lineno">29</span>#200=DIRECTION(&#x27;cyl_axis_z&#x27;,(0.0,0.0,1.0));
+<span class="lineno">30</span>#201=DIRECTION(&#x27;cyl_ref_x&#x27;,(1.0,0.0,0.0));
+<span class="lineno">31</span>#202=DIRECTION(&#x27;cyl_ref_y&#x27;,(0.0,1.0,0.0));
+<span class="lineno">32</span>#210=AXIS2_PLACEMENT_3D(&#x27;cyl_base&#x27;,#100,#200,#201);
+<span class="lineno">33</span>#211=AXIS2_PLACEMENT_3D(&#x27;cyl_top&#x27;,#101,#200,#201);
+<span class="lineno">34</span>#220=<mark>CYLINDRICAL_SURFACE</mark>(&#x27;host_cyl&#x27;,#210,10.0);
+<span class="lineno">35</span>/* Two circular edges (bottom and top) for the cylinder side face. */
+<span class="lineno">36</span>#230=CARTESIAN_POINT(&#x27;seam_bottom&#x27;,(10.0,0.0,0.0));
+<span class="lineno">37</span>#231=CARTESIAN_POINT(&#x27;seam_top&#x27;,(10.0,0.0,30.0));
+<span class="lineno">38</span>#240=VERTEX_POINT(&#x27;vb&#x27;,#230); #241=VERTEX_POINT(&#x27;vt&#x27;,#231);
+<span class="lineno">39</span>#250=CIRCLE(&#x27;bottom_circle&#x27;,#210,10.0);
+<span class="lineno">40</span>#251=CIRCLE(&#x27;top_circle&#x27;,#211,10.0);
+<span class="lineno">41</span>#260=EDGE_CURVE(&#x27;bottom_edge&#x27;,#240,#240,#250,.T.);
+<span class="lineno">42</span>#261=EDGE_CURVE(&#x27;top_edge&#x27;,#241,#241,#251,.T.);
+<span class="lineno">43</span>/* Seam line. */
+<span class="lineno">44</span>#270=VECTOR(&#x27;seam_dir&#x27;,#200,30.0);
+<span class="lineno">45</span>#271=LINE(&#x27;seam&#x27;,#230,#270);
+<span class="lineno">46</span>#272=EDGE_CURVE(&#x27;seam_edge&#x27;,#240,#241,#271,.T.);
+<span class="lineno">47</span>#400=ORIENTED_EDGE(&#x27;&#x27;,*,*,#260,.T.);
+<span class="lineno">48</span>#401=ORIENTED_EDGE(&#x27;&#x27;,*,*,#272,.T.);
+<span class="lineno">49</span>#402=ORIENTED_EDGE(&#x27;&#x27;,*,*,#261,.F.);
+<span class="lineno">50</span>#403=ORIENTED_EDGE(&#x27;&#x27;,*,*,#272,.F.);
+<span class="lineno">51</span>#404=EDGE_LOOP(&#x27;&#x27;,(#400,#401,#402,#403));
+<span class="lineno">52</span>#405=FACE_OUTER_BOUND(&#x27;&#x27;,#404,.T.);
+<span class="lineno">53</span>#406=ADVANCED_FACE(&#x27;host_cyl_face&#x27;,(#405),#220,.T.);
+<span class="lineno">54</span>#500=OPEN_SHELL(&#x27;host_shell&#x27;,(#406));
+<span class="lineno">55</span>#501=SHELL_BASED_SURFACE_MODEL(&#x27;host_model&#x27;,(#500));
+<span class="lineno">56</span>#502=MANIFOLD_SURFACE_SHAPE_REPRESENTATION(&#x27;shape&#x27;,(#501,#210),#14);
+<span class="lineno">57</span>#503=SHAPE_DEFINITION_REPRESENTATION(#7,#502);
+<span class="lineno">58</span>/* <mark>GROOVE</mark>: radial depth=15mm, cylinder radius=10mm. Defect (depth &gt; radius). */
+<span class="lineno">59</span>#600=SHAPE_ASPECT(&#x27;<mark>GROOVE</mark>&#x27;,&#x27;circumferential groove with radial depth &gt; host radius&#x27;,#7,.T.);
+<span class="lineno">60</span>#601=GEOMETRIC_ITEM_SPECIFIC_USAGE(&#x27;GISU&#x27;,$,#600,#502,#406);
+<span class="lineno">61</span>#610=DIMENSIONAL_SIZE(#600,&#x27;groove_width&#x27;);
+<span class="lineno">62</span>#611=MEASURE_REPRESENTATION_ITEM(&#x27;width&#x27;,LENGTH_MEASURE(3.0),#10);
+<span class="lineno">63</span>#612=SHAPE_DIMENSION_REPRESENTATION(&#x27;&#x27;,(#611),#14);
+<span class="lineno">64</span>#620=DIMENSIONAL_SIZE(#600,&#x27;groove_radial_depth&#x27;);
+<span class="lineno">65</span>#621=MEASURE_REPRESENTATION_ITEM(&#x27;<mark>depth_DEFECT_exceeds_radius</mark>&#x27;,LENGTH_MEASURE(15.0),#10);
+<span class="lineno">66</span>#622=SHAPE_DIMENSION_REPRESENTATION(&#x27;&#x27;,(#621),#14);
+<span class="lineno">67</span>#630=DIMENSIONAL_SIZE(#600,&#x27;host_cylinder_radius&#x27;);
+<span class="lineno">68</span>#631=MEASURE_REPRESENTATION_ITEM(&#x27;host_radius&#x27;,LENGTH_MEASURE(10.0),#10);
+<span class="lineno">69</span>#632=SHAPE_DIMENSION_REPRESENTATION(&#x27;&#x27;,(#631),#14);
+<span class="lineno">70</span>ENDSEC;
+<span class="lineno">71</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Pmi101.html">&larr; Pmi101</a> <a class="up" href="index.html">§12.7 PMI / GD&amp;T</a> <a class="next" href="Pmi103.html">Pmi103 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

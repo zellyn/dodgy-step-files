@@ -1,0 +1,29 @@
+ISO-10303-21;
+/* M142 - AP203 CHANGE_REQUEST referencing a release-state revision
+ * that has already been superseded.
+ * Defect: a CHANGE_REQUEST_ITEM points at PRODUCT_DEFINITION_FORMATION
+ * 'rev_A' for which a successor 'rev_B' has already been released
+ * (per CONFIGURATION_DESIGN). Changes targeting an obsolete revision
+ * cannot be applied without re-baselining; the change request is
+ * invalid as written. */
+HEADER;
+FILE_DESCRIPTION(('M142 test case','AP203 change request targets obsolete revision'),'2;1');
+FILE_NAME('M142.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('CONFIG_CONTROL_DESIGN'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('configuration controlled 3D design of mechanical parts and assemblies');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','config_control_design',1994,#1);
+#10=PRODUCT('manifold','manifold','flow distribution',(#1));
+#20=PRODUCT_DEFINITION_FORMATION('rev_A','superseded',#10);
+#21=PRODUCT_DEFINITION_FORMATION('rev_B','current released',#10);
+#30=PRODUCT_DEFINITION('design','',#20,#1);
+#31=PRODUCT_DEFINITION('design','',#21,#1);
+#40=PRODUCT_DEFINITION_RELATIONSHIP('eco_AB','derived_from',#30,#31);
+#50=ACTION_METHOD('change_request','engineering change',$);
+#51=ACTION('CR-9001','update wall thickness','open',#50);
+/* Defect: change request item points to obsolete rev_A (#30) when
+ * rev_B has already been released. */
+#100=APPLIED_ACTION_ASSIGNMENT(#51,(#30));
+ENDSEC;
+END-ISO-10303-21;

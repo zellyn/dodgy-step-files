@@ -1,0 +1,56 @@
+/* N050 - File-supplied UNCERTAINTY_MEASURE_WITH_UNIT loaded but never consumed
+   Defect: BRL-CAD step-g UncertaintyMeasureWithUnit::Load reads the
+   uncertainty value (a LENGTH_MEASURE) into the in-memory model, but
+   no downstream consumer ever queries it - the importer hard-codes
+   AdvancedFace's `m_tolerance` to 1e-3 mm and uses that for every edge
+   and trim regardless of what the file says.  A producer authoring at
+   tighter precision (e.g. an aerospace AP203 file declaring
+   UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1e-6), MM, ...,
+   'distance_accuracy_value', '')) gets its features at 1e-3 tolerance
+   instead.  Distinct from N019 (which is the OFFSET_SURFACE-specific
+   manifestation: tiny offsets get crushed back into the base plane by
+   the same hard-coded constant).  This entry is the umbrella defect:
+   *every* tolerance-sensitive operation in step-g uses the constant.
+   The reverse defect is U033 (kernel default unit silently overriding
+   the file's first unit-record).
+   Sources: BRL-CAD src/conv/step/step-g/UncertaintyMeasureWithUnit.cpp
+   has Load that stores the value, no consumer; AdvancedFace.h holds
+   m_tolerance hard-coded. */
+ISO-10303-21;
+HEADER;
+FILE_DESCRIPTION(
+  ('N050 - file UNCERTAINTY_MEASURE_WITH_UNIT loaded then ignored by step-g'),
+  '2;1');
+FILE_NAME('N050.stp','2026-05-02T00:00:00',('cad-research-suite'),(''),
+  'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('mechanical');
+#2=PRODUCT_CONTEXT('part',#1,'mechanical');
+#3=PRODUCT('precise_part','high_precision_carrier','',(#2));
+#4=PRODUCT_DEFINITION_FORMATION('','',#3);
+#5=PRODUCT_DEFINITION_CONTEXT('',#1,'design');
+#6=PRODUCT_DEFINITION('','',#4,#5);
+#7=PRODUCT_DEFINITION_SHAPE('','',#6);
+#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#11=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#12=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+/* Defect: file declares 1 micrometre tolerance.  step-g loads the value
+   and uses 1e-3 mm anyway. */
+#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-6),#10,
+  'distance_accuracy_value',
+  'producer-supplied tolerance for high-precision aerospace part');
+#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+     GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13))
+     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12))
+     REPRESENTATION_CONTEXT('','3D'));
+/* Minimal anchor geometry. */
+#100=CARTESIAN_POINT('p',(0.0,0.0,0.0));
+#101=DIRECTION('',(0.0,0.0,1.0));
+#102=DIRECTION('',(1.0,0.0,0.0));
+#103=AXIS2_PLACEMENT_3D('o',#100,#101,#102);
+#104=SHAPE_REPRESENTATION('shape',(#103),#14);
+#105=SHAPE_DEFINITION_REPRESENTATION(#7,#104);
+ENDSEC;
+END-ISO-10303-21;

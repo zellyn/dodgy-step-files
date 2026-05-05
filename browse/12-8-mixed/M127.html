@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>M127 — AP203 DOCUMENT_FILE referenced with empty URI / path field</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.8 Mixed (tessellation, validation properties, etc.)</a> <span class="sep">/</span> <span class="current">M127</span>
+</nav>
+<header class="title-bar">
+<h1>M127 <span class="sep">—</span> <span class="entry-title">AP203 DOCUMENT_FILE referenced with empty URI / path field</span></h1>
+<p class="category">§12.8 (sub-class: AP203 document reference completeness)</p>
+<p class="severity-badge severity-p1">P1 — silent data loss</p>
+<p class="tag-pills">
+<a class="tag tag-spec-violation" href="../by-tag/spec-violation/index.html">spec-violation</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-8-mixed/M127.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-8-mixed/M127.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>16-iso-spec ISO 10303-203 §5.4 (document references)</li>
+<li>bug-reporter language: &quot;DOCUMENT_FILE has no URI&quot;, &quot;AP203 document reference is empty&quot;, &quot;spec link points to nothing&quot;.</li>
+</ul></section>
+<section><h2>Sender</h2>
+<p>deduced — PDM exporter that elided the URI when the source document was an internal-only artifact</p></section>
+<section><h2>Description</h2>
+<p>A `DOCUMENT_FILE` is referenced as a specification document but its identifier, name, and description fields are empty strings. Consumers cannot resolve the referenced document to any URI or path; the reference is effectively unreachable.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>`DOCUMENT_FILE(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,doc_type)` referenced via `APPLIED_DOCUMENT_REFERENCE`.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>detect empty document references; warn, drop the reference, or reject as malformed.</p></section>
+<section><h2>Notes</h2>
+<p>Synonyms: &quot;AP203 doc URI missing&quot;, &quot;empty document ref&quot;, &quot;PDM dangling spec link&quot;.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>contains(b&#x27;CONFIG_CONTROL_DESIGN&#x27;)</code></li>
+<li><code>contains(b&#x27;DOCUMENT_FILE&#x27;)</code></li>
+<li><code>contains(b&quot;DOCUMENT_FILE(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,&quot;)</code></li>
+</ul></section>
+<section><h2>Live oracle output</h2>
+<table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
+<tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>no_shapes_loaded</code></td></tr>
+</tbody></table>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* M127 - AP203 <mark>DOCUMENT_FILE</mark> referenced with empty URI/path field.
+<span class="lineno">3</span> * Defect: a <mark>DOCUMENT_FILE</mark> entity declares a referenced specification
+<span class="lineno">4</span> * document but its `name` and `description` strings are empty,
+<span class="lineno">5</span> * leaving consumers with no path or URI to resolve. The document
+<span class="lineno">6</span> * is referenced but unreachable. */
+<span class="lineno">7</span>HEADER;
+<span class="lineno">8</span>FILE_DESCRIPTION((&#x27;M127 test case&#x27;,&#x27;AP203 document_file empty URI&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">9</span>FILE_NAME(&#x27;M127.stp&#x27;,&#x27;2026-05-02T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">10</span>FILE_SCHEMA((&#x27;<mark>CONFIG_CONTROL_DESIGN</mark>&#x27;));
+<span class="lineno">11</span>ENDSEC;
+<span class="lineno">12</span>DATA;
+<span class="lineno">13</span>#1=APPLICATION_CONTEXT(&#x27;configuration controlled 3D design of mechanical parts and assemblies&#x27;);
+<span class="lineno">14</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,&#x27;config_control_design&#x27;,1994,#1);
+<span class="lineno">15</span>#10=PRODUCT(&#x27;part_42&#x27;,&#x27;part_42&#x27;,&#x27;widget&#x27;,(#1));
+<span class="lineno">16</span>#50=DOCUMENT_TYPE(&#x27;design_specification&#x27;);
+<span class="lineno">17</span>/* Defect: <mark>DOCUMENT_FILE</mark> id+name+description all empty - no URI to resolve. */
+<span class="lineno">18</span>#100=<mark>DOCUMENT_FILE(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,</mark>#50);
+<span class="lineno">19</span>#101=APPLIED_DOCUMENT_REFERENCE(#100,&#x27;spec_link&#x27;,(#10));
+<span class="lineno">20</span>ENDSEC;
+<span class="lineno">21</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="M126.html">&larr; M126</a> <a class="up" href="index.html">§12.8 Mixed (tessellation, validation properties, etc.)</a> <a class="next" href="M128.html">M128 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

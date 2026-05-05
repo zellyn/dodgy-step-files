@@ -1,0 +1,31 @@
+ISO-10303-21;
+/* M038 - AP209 freedom_and_coefficient `a` != 1, or
+ * single_point_constraint `b` != 0.
+ * Defect: the AP209 simplifying recommended practice requires a==1
+ * and b==0 in the SPC's coefficient pair. This file emits a=2.0 and
+ * b=0.001, violating both. Readers should warn but honor the values. */
+HEADER;
+FILE_DESCRIPTION(('M038 test case','SPC coefficient violations'),'2;1');
+FILE_NAME('M038.stp','2026-04-26T00:00:00',(''),(''),'auto-generated','','');
+FILE_SCHEMA(('STRUCTURAL_ANALYSIS_DESIGN { 1 0 10303 209 1 0 0 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('structural_analysis_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
+  'structural_analysis_design',2001,#1);
+#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#11=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#12=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.E-6),#10,'distance_accuracy_value','');
+#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+     GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13))
+     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12))
+     REPRESENTATION_CONTEXT('fea','3D'));
+#100=CARTESIAN_POINT('n1',(0.0,0.0,0.0));
+#110=NODE('n1',(#100),$);
+/* Defect: a coefficient is 2.0 instead of required 1.0. */
+#200=FREEDOM_AND_COEFFICIENT('translation_x','U',2.0);
+/* Defect: b (right-hand side) is 0.001 instead of required 0.0. */
+#210=SINGLE_POINT_CONSTRAINT('spc1',#110,(#200),0.001);
+ENDSEC;
+END-ISO-10303-21;

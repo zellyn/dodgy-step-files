@@ -1,0 +1,25 @@
+ISO-10303-21;
+/* M117 - AP209 anisotropic material with missing tensor components.
+ * Defect: an ANISOTROPIC_LINEAR_ELASTICITY card declares 9 of the 21
+ * required tensor components and leaves the rest unspecified ($).
+ * Solver substitutes zeros, yielding a non-positive-definite stiffness. */
+HEADER;
+FILE_DESCRIPTION(('M117 test case','AP209 anisotropic material card incomplete'),'2;1');
+FILE_NAME('M117.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('STRUCTURAL_ANALYSIS_DESIGN { 1 0 10303 209 1 0 0 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('structural_analysis_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
+  'structural_analysis_design',2001,#1);
+#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10))
+     REPRESENTATION_CONTEXT('fea','3D'));
+/* Defect: only 9 tensor entries supplied; rest are $. */
+#100=ANISOTROPIC_LINEAR_ELASTICITY('aniso_card',
+  (200000.0, 80000.0, 70000.0, 200000.0, 65000.0, 180000.0,
+   75000.0, 70000.0, 80000.0,
+   $, $, $, $, $, $, $, $, $, $, $, $));
+ENDSEC;
+END-ISO-10303-21;

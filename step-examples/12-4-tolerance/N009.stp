@@ -1,0 +1,40 @@
+/* N009 - Vertex position dispersion exceeding tolerance (FixVertexPosition)
+ * Defect: A vertex's 3D point is so far from incident edges' curve evaluations
+ * at the parametric endpoint that the would-be tolerance disc spans the entire
+ * local feature. ShapeFix::FixVertexPosition snaps the vertex to the curve
+ * point or grows tolerance to encompass deviation.
+ * Reproducer: EDGE_CURVE with line (0,0,0)->(1,0,0); vertex stored at
+ * (0, 0.001, 0) -- 1e-3 mm off the curve while declared tolerance is 1e-4.
+ */
+ISO-10303-21;
+HEADER;
+FILE_DESCRIPTION(('N009 vertex position dispersion exceeds tolerance'),'2;1');
+FILE_NAME('N009.stp','2026-04-26T00:00:00',(''),(''),
+  'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
+  'automotive_design',2009,#1);
+/* Defect site: vertex stored 1e-3 off the curve while tol is 1e-4 */
+#10=CARTESIAN_POINT('curve_start',(0.0,0.0,0.0));
+#11=CARTESIAN_POINT('vertex_off_axis',(0.0,0.001,0.0));
+#12=CARTESIAN_POINT('curve_end_eval',(1.0,0.0,0.0));
+#20=VERTEX_POINT('v_off_curve',#11);
+#21=VERTEX_POINT('v_end',#12);
+#30=DIRECTION('+x',(1.0,0.0,0.0));
+#31=VECTOR('',#30,1.0);
+#32=LINE('curve',#10,#31);
+#40=EDGE_CURVE('vertex_dispersion',#20,#21,#32,.T.);
+#50=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#51=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#52=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#60=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-4),#50,
+  'distance_accuracy_value','declared_below_observed_dispersion');
+#70=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#60))
+  GLOBAL_UNIT_ASSIGNED_CONTEXT((#50,#51,#52))
+  REPRESENTATION_CONTEXT('ctx','3D'));
+ENDSEC;
+END-ISO-10303-21;

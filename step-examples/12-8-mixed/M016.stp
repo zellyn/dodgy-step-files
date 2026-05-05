@@ -1,0 +1,31 @@
+ISO-10303-21;
+/* M016 - Tessellated curve set missing both coordinates and
+ * line_strips.
+ * Defect: TESSELLATED_CURVE_SET is empty - no coordinates, no
+ * line_strips. Writers sometimes emit empty entities as placeholders.
+ * Readers must drop with a warning, never crash. */
+HEADER;
+FILE_DESCRIPTION(('M016 test case','empty tessellated_curve_set'),'2;1');
+FILE_NAME('M016.stp','2026-04-26T00:00:00',(''),(''),'auto-generated','','');
+FILE_SCHEMA(('AP242_MANAGED_MODEL_BASED_3D_ENGINEERING_MIM_LF { 1 0 10303 442 1 1 4 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('managed model based 3d engineering');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
+  'ap242_managed_model_based_3d_engineering',2014,#1);
+#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#11=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#12=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.E-6),#10,'distance_accuracy_value','');
+#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+     GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13))
+     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12))
+     REPRESENTATION_CONTEXT('part','3D'));
+/* Empty COORDINATES_LIST */
+#100=COORDINATES_LIST('empty_coords',0,());
+/* Defect: TESSELLATED_CURVE_SET with empty line_strips and an empty
+ * coordinates list. */
+#110=TESSELLATED_CURVE_SET('empty_curve_set',#100,());
+#200=TESSELLATED_SHAPE_REPRESENTATION('',(#110),#14);
+ENDSEC;
+END-ISO-10303-21;

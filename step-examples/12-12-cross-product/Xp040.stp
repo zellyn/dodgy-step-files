@@ -1,0 +1,50 @@
+ISO-10303-21;
+/* Xp040 - Cross-product: Solid Edge import of a Creo Elements STEP
+ *   assembly leaves sub-assemblies "stuck" - they cannot be moved or
+ *   constrained because each child PRODUCT_DEFINITION is bound to the
+ *   top-level ITEM_DEFINED_TRANSFORMATION instead of an instance-local
+ *   placement.
+ * Source: community.plm.automation.siemens.com Solid Edge 274875
+ *   "STEP FILE ASSEMBLY ISSUES"; Siemens question 0xgTFSAY "Inserted
+ *   part into assembly is placed way far from origin or other parts".
+ * Defect: NEXT_ASSEMBLY_USAGE_OCCURRENCE links every child to the same
+ *   shared ITEM_DEFINED_TRANSFORMATION, so the receiver cannot identify
+ *   per-instance placement. Solid Edge displays the children but
+ *   prevents UI manipulation because no per-instance frame exists. */
+HEADER;
+FILE_DESCRIPTION(('Xp040 cross-product','Creo Elements -> Solid Edge stuck subassembly'),'2;1');
+FILE_NAME('Xp040.stp','2026-05-02T00:00:00',(''),(''),'CreoElements;2.1','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#11=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#12=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#10,'tol','');
+#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13))GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12))REPRESENTATION_CONTEXT('','3D'));
+#20=PRODUCT('Asm','Asm','top',(#21));
+#21=PRODUCT_CONTEXT('',#1,'mechanical');
+#22=PRODUCT_DEFINITION_FORMATION('','',#20);
+#23=PRODUCT_DEFINITION('','',#22,#24);
+#24=PRODUCT_DEFINITION_CONTEXT('',#1,'design');
+#30=PRODUCT('SubA','SubA','child',(#21));
+#31=PRODUCT_DEFINITION_FORMATION('','',#30);
+#32=PRODUCT_DEFINITION('','',#31,#24);
+#40=PRODUCT('SubB','SubB','child',(#21));
+#41=PRODUCT_DEFINITION_FORMATION('','',#40);
+#42=PRODUCT_DEFINITION('','',#41,#24);
+#50=CARTESIAN_POINT('shared_origin',(0.0,0.0,0.0));
+#51=DIRECTION('z',(0.0,0.0,1.0));
+#52=DIRECTION('x',(1.0,0.0,0.0));
+#53=AXIS2_PLACEMENT_3D('shared',#50,#51,#52);
+/* SHARED IDT - both NAUOs reference it - "stuck" sub-assemblies. */
+#60=ITEM_DEFINED_TRANSFORMATION('SHARED_IDT_BUG','no per-instance frame',#53,#53);
+#70=(NEXT_ASSEMBLY_USAGE_OCCURRENCE('a','SubA','stuck',#23,#32,$)REPRESENTATION_RELATIONSHIP('','',#80,#81)REPRESENTATION_RELATIONSHIP_WITH_TRANSFORMATION(#60)SHAPE_REPRESENTATION_RELATIONSHIP());
+#71=(NEXT_ASSEMBLY_USAGE_OCCURRENCE('b','SubB','stuck',#23,#42,$)REPRESENTATION_RELATIONSHIP('','',#80,#82)REPRESENTATION_RELATIONSHIP_WITH_TRANSFORMATION(#60)SHAPE_REPRESENTATION_RELATIONSHIP());
+#80=SHAPE_REPRESENTATION('top',(#53),#14);
+#81=SHAPE_REPRESENTATION('SubA',(#53),#14);
+#82=SHAPE_REPRESENTATION('SubB',(#53),#14);
+ENDSEC;
+END-ISO-10303-21;

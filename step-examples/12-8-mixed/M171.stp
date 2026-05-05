@@ -1,0 +1,28 @@
+ISO-10303-21;
+/* M171 - AP238 THREAD_TURNING pitch disagrees with thread-spec pitch.
+ * Defect: a thread-turning op declares a lead/pitch of 1.5 mm while the
+ * referenced thread feature's spec is M10x1.0 (pitch 1.0 mm). The
+ * controller cuts a thread of the wrong pitch; the mating part won't
+ * engage. */
+HEADER;
+FILE_DESCRIPTION(('M171 test case','AP238 thread-turning pitch mismatch'),'2;1');
+FILE_NAME('M171.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AP238_STEP_NC_MIM { 1 0 10303 238 1 0 0 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('numerical_control_machining');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
+  'numerical_control_machining',2007,#1);
+#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10))
+     REPRESENTATION_CONTEXT('nc','3D'));
+/* Thread feature: M10x1.0 (pitch 1.0 mm spec). */
+#400=THREAD('M10x1p0_thread',$,$,$,
+  MEASURE_WITH_UNIT(POSITIVE_LENGTH_MEASURE(1.0),#10));
+/* Defect: THREAD_TURNING op pitch (1.5 mm) doesn't match thread spec. */
+#100=THREAD_TURNING('cut_thread',$,$,$,$,$,#400,
+  MEASURE_WITH_UNIT(POSITIVE_LENGTH_MEASURE(1.5),#10));
+#200=WORKPLAN('main',(#100),$,$,$);
+ENDSEC;
+END-ISO-10303-21;

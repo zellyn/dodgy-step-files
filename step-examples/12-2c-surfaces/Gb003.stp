@@ -1,0 +1,23 @@
+ISO-10303-21;
+/* Gb003 - Closed B-spline with reversed end tangent (cusp).
+ * Defect: degree-3 closed B-spline with control points (1,0,0),
+ * (0,1,0), (-1,0,0), (0,-1,0), (1,0,0). The curve closes positionally
+ * but the start and end tangents are perpendicular - cusp. */
+HEADER;
+FILE_DESCRIPTION(('Gb003 - closed bspline reversed tangent','Pass C gap-fill'),'2;1');
+FILE_NAME('Gb003.stp','2026-04-30T00:00:00',(''),(''),'gap-fill C','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#10=CARTESIAN_POINT('',(1.0,0.0,0.0));
+#11=CARTESIAN_POINT('',(0.0,1.0,0.0));
+#12=CARTESIAN_POINT('',(-1.0,0.0,0.0));
+#13=CARTESIAN_POINT('',(0.0,-1.0,0.0));
+#14=CARTESIAN_POINT('',(1.0,0.0,0.0));
+/* Marked closed_curve = .T. but tangent at start (toward Y+) and end
+   (toward X+) differ by 90° - not a smooth closure. */
+#20=B_SPLINE_CURVE_WITH_KNOTS('cusp_at_closure',3,(#10,#11,#12,#13,#14),
+   .UNSPECIFIED.,.T.,.F.,(4,1,4),(0.0,0.5,1.0),.UNSPECIFIED.);
+ENDSEC;
+END-ISO-10303-21;

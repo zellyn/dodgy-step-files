@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>A066 — `UpdateAssemblies` produces wrong compounds for located roots</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.6 Assembly hierarchy</a> <span class="sep">/</span> <span class="current">A066</span>
+</nav>
+<header class="title-bar">
+<h1>A066 <span class="sep">—</span> <span class="entry-title">`UpdateAssemblies` produces wrong compounds for located roots</span></h1>
+<p class="category">§12.6 assembly</p>
+<p class="severity-badge severity-p1">P1 — silent data loss</p>
+<p class="tag-pills">
+<a class="tag tag-assembly" href="../by-tag/assembly/index.html">assembly</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-6-assembly/A066.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-6-assembly/A066.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>OCCT MANTIS#0029282</li>
+<li>OCCT MANTIS#0031517 (OCCT MANTIS tracker 502 as of 2026-05-02)</li>
+</ul></section>
+<section><h2>Description</h2>
+<p>An assembly&#x27;s `UpdateAssemblies` pass rebuilds top-level compounds from current sub-assembly state. When the root assembly itself carries a non-identity location, the rebuild applies the location once at the leaf level and again at the root, producing parts displaced twice from origin.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>Assembly tree where root has a translation `(100,0,0)` and one child has a translation `(50,0,0)`. After `UpdateAssemblies`, the leaf appears at `(200,0,0)` (sum applied at both levels) instead of `(150,0,0)`.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>Heal and accept: location-chain composition follows the hierarchy strictly once; UpdateAssemblies recomputes from leaves up, honouring identity at each level it climbs.</p></section>
+<section><h2>Notes</h2>
+<p>Synonyms: &quot;UpdateAssemblies makes wrong compounds for located roots&quot;, &quot;located root produces incorrect compound after UpdateAssemblies&quot;, &quot;compound wrong after UpdateAssemblies on positioned part&quot;.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>contains(b&#x27;NEXT_ASSEMBLY_USAGE_OCCURRENCE&#x27;)</code></li>
+<li><code>contains(b&#x27;ITEM_DEFINED_TRANSFORMATION&#x27;)</code></li>
+<li><code>contains(b&#x27;root_loc&#x27;) or contains(b&#x27;child_loc&#x27;)</code></li>
+</ul></section>
+<section><h2>Live oracle output</h2>
+<table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
+<tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>no_shapes_loaded</code></td></tr>
+</tbody></table>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* A066 - UpdateAssemblies double-applies root location.
+<span class="lineno">3</span> * Defect: root assembly has translation (100,0,0); child has (50,0,0).
+<span class="lineno">4</span> * Real two-level assembly (NAUO + parent/child SHAPE_REPRESENTATION_RELATIONSHIP).
+<span class="lineno">5</span> * Expected leaf placement (150,0,0); UpdateAssemblies produces (200,0,0). */
+<span class="lineno">6</span>HEADER;
+<span class="lineno">7</span>FILE_DESCRIPTION((&#x27;A066 test case&#x27;,&#x27;UpdateAssemblies double-applies root location&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">8</span>FILE_NAME(&#x27;A066.stp&#x27;,&#x27;2026-04-30T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">9</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }&#x27;));
+<span class="lineno">10</span>ENDSEC;
+<span class="lineno">11</span>DATA;
+<span class="lineno">12</span>#1=APPLICATION_CONTEXT(&#x27;automotive_design&#x27;);
+<span class="lineno">13</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,&#x27;automotive_design&#x27;,2000,#1);
+<span class="lineno">14</span>#10=PRODUCT_CONTEXT(&#x27;&#x27;,#1,&#x27;mechanical&#x27;);
+<span class="lineno">15</span>/* Root product */
+<span class="lineno">16</span>#11=PRODUCT(&#x27;ROOT&#x27;,&#x27;root_assembly&#x27;,&#x27;&#x27;,(#10));
+<span class="lineno">17</span>#12=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#11);
+<span class="lineno">18</span>#13=PRODUCT_DEFINITION_CONTEXT(&#x27;part definition&#x27;,#1,&#x27;design&#x27;);
+<span class="lineno">19</span>#14=PRODUCT_DEFINITION(&#x27;design&#x27;,&#x27;&#x27;,#12,#13);
+<span class="lineno">20</span>#15=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,#14);
+<span class="lineno">21</span>/* Child product */
+<span class="lineno">22</span>#21=PRODUCT(&#x27;CHILD&#x27;,&#x27;child_part&#x27;,&#x27;&#x27;,(#10));
+<span class="lineno">23</span>#22=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#21);
+<span class="lineno">24</span>#24=PRODUCT_DEFINITION(&#x27;design&#x27;,&#x27;&#x27;,#22,#13);
+<span class="lineno">25</span>#25=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,#24);
+<span class="lineno">26</span>/* Identity axis (used by both shape reps) */
+<span class="lineno">27</span>#30=CARTESIAN_POINT(&#x27;origin&#x27;,(0.0,0.0,0.0));
+<span class="lineno">28</span>#31=DIRECTION(&#x27;zdir&#x27;,(0.0,0.0,1.0));
+<span class="lineno">29</span>#32=DIRECTION(&#x27;xdir&#x27;,(1.0,0.0,0.0));
+<span class="lineno">30</span>#33=AXIS2_PLACEMENT_3D(&#x27;identity&#x27;,#30,#31,#32);
+<span class="lineno">31</span>/* Root location at (100,0,0) */
+<span class="lineno">32</span>#40=CARTESIAN_POINT(&#x27;root_origin&#x27;,(100.0,0.0,0.0));
+<span class="lineno">33</span>#41=AXIS2_PLACEMENT_3D(&#x27;root_loc&#x27;,#40,#31,#32);
+<span class="lineno">34</span>/* Child location at (50,0,0), to be composed with root */
+<span class="lineno">35</span>#50=CARTESIAN_POINT(&#x27;child_origin&#x27;,(50.0,0.0,0.0));
+<span class="lineno">36</span>#51=AXIS2_PLACEMENT_3D(&#x27;child_loc&#x27;,#50,#31,#32);
+<span class="lineno">37</span>/* Shape representations for root and child */
+<span class="lineno">38</span>#60=SHAPE_REPRESENTATION(&#x27;root_rep&#x27;,(#41),#1);
+<span class="lineno">39</span>#61=SHAPE_REPRESENTATION(&#x27;child_rep&#x27;,(#51),#1);
+<span class="lineno">40</span>#62=SHAPE_DEFINITION_REPRESENTATION(#15,#60);
+<span class="lineno">41</span>#63=SHAPE_DEFINITION_REPRESENTATION(#25,#61);
+<span class="lineno">42</span>/* NAUO + <mark>ITEM_DEFINED_TRANSFORMATION</mark> + SRR wiring child under root */
+<span class="lineno">43</span>#70=<mark>NEXT_ASSEMBLY_USAGE_OCCURRENCE</mark>(&#x27;1&#x27;,&#x27;child_under_root&#x27;,&#x27;&#x27;,#14,#24,$);
+<span class="lineno">44</span>#71=<mark>ITEM_DEFINED_TRANSFORMATION</mark>(&#x27;child_under_root_xf&#x27;,&#x27;&#x27;,#33,#51);
+<span class="lineno">45</span>#72=( REPRESENTATION_RELATIONSHIP(&#x27;child_in_root&#x27;,&#x27;&#x27;,#60,#61)
+<span class="lineno">46</span>       REPRESENTATION_RELATIONSHIP_WITH_TRANSFORMATION(#71)
+<span class="lineno">47</span>       SHAPE_REPRESENTATION_RELATIONSHIP() );
+<span class="lineno">48</span>#73=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,#70);
+<span class="lineno">49</span>#74=CONTEXT_DEPENDENT_SHAPE_REPRESENTATION(#72,#73);
+<span class="lineno">50</span>ENDSEC;
+<span class="lineno">51</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="A065.html">&larr; A065</a> <a class="up" href="index.html">§12.6 Assembly hierarchy</a> <a class="next" href="A067.html">A067 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

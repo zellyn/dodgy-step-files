@@ -1,0 +1,33 @@
+/* Ls044 - String concatenation across consecutive literals (not allowed)
+   ----------------------------------------------------------------------
+   Catalog section : §12.1c string-quoting (impacts grammar shape)
+   Sources         : N055
+   Originally also catalogued as: Ad068
+   ----------------------------------------------------------------------
+   Defect
+     Unlike C, Part 21 does not concatenate adjacent string literals.
+     'foo' 'bar' is two strings, not one. Generators that line-wrap
+     long strings by writing two consecutive literals corrupt the data
+     when the schema position expects exactly one STRING.
+   Expected behavior
+     When the grammar expects a single STRING, reject. When the position
+     is LIST OF STRING, accept the two literals as two list elements
+     but warn ("two adjacent string literals - likely unintended").
+   ----------------------------------------------------------------------
+*/
+ISO-10303-21;
+HEADER;
+FILE_DESCRIPTION(('first part' ' second part'),'2;1');
+FILE_NAME('Ls044.stp','2026-04-26T00:00:00',('auto-generated'),(''),
+  'auto-generated','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+#10=CARTESIAN_POINT('origin',(0.0,0.0,0.0));
+/* Defect: two consecutive string literals where one STRING attribute is
+   expected (the entity name slot for CARTESIAN_POINT) */
+#20=CARTESIAN_POINT('left half ' 'right half',(1.0,0.0,0.0));
+#30=DIRECTION('x',(1.0,0.0,0.0));
+#40=AXIS2_PLACEMENT_3D('placement',#10,#30,$);
+ENDSEC;
+END-ISO-10303-21;

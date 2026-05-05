@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Bo002 — MANIFOLD_SOLID_BREP with dangling shell reference (outer points to a non-existent entity)</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.3a Shells / orientation</a> <span class="sep">/</span> <span class="current">Bo002</span>
+</nav>
+<header class="title-bar">
+<h1>Bo002 <span class="sep">—</span> <span class="entry-title">MANIFOLD_SOLID_BREP with dangling shell reference (outer points to a non-existent entity)</span></h1>
+<p class="category">§12.3a (sub-class: shell completeness)</p>
+<p class="tag-pills">
+<a class="tag tag-silent-loss" href="../by-tag/silent-loss/index.html">silent-loss</a>
+<a class="tag tag-topology" href="../by-tag/topology/index.html">topology</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-3a-shells/Bo002.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-3a-shells/Bo002.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>OCCT BRepLib_MakeShell error path</li>
+<li>BRepCheck_Shell.cxx:155 (uncovered class evidence)</li>
+</ul></section>
+<section><h2>Sender</h2>
+<p>deduced — OCCT uncovered-class sweep, Pass C</p></section>
+<section><h2>Description</h2>
+<p>A shape representation lists a top-level `MANIFOLD_SOLID_BREP` whose `outer` slot is itself an entity reference to a non-existent or null shell. This is the degenerate edge of &quot;empty shell&quot; — there is not even a wrapper for the boundary.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>`MANIFOLD_SOLID_BREP` whose `outer` reference resolves to nothing in the data section.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>Detect missing shell at parse time; reject the solid.</p></section>
+<section><h2>Notes</h2>
+<p>Cross-oracle: pure-Python Part-21 validator rejects (reject(E_UNRESOLVED_REFS)); OCCT silently accepts (load is `empty`). OCC auto-heals a spec-level violation.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>contains(b&#x27;MANIFOLD_SOLID_BREP&#x27;)</code></li>
+<li><code>contains(b&#x27;#999&#x27;)</code></li>
+<li><code>count_entity_def(b&#x27;CLOSED_SHELL&#x27;) == 0</code></li>
+</ul></section>
+<section><h2>Live oracle output</h2>
+<table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
+<tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>reject(E_UNRESOLVED_REFS)</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>no_shapes_loaded</code></td></tr>
+</tbody></table>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* Bo002 - Solid with no shell at all.
+<span class="lineno">3</span> * Defect: <mark>MANIFOLD_SOLID_BREP</mark> outer reference resolves to nothing
+<span class="lineno">4</span> * (here we use a CLOSED_SHELL entity that has no face list AND no
+<span class="lineno">5</span> * referrers; some readers resolve the missing reference to null). */
+<span class="lineno">6</span>HEADER;
+<span class="lineno">7</span>FILE_DESCRIPTION((&#x27;Bo002 - no shell wrapper&#x27;,&#x27;Pass C gap-fill&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">8</span>FILE_NAME(&#x27;Bo002.stp&#x27;,&#x27;2026-04-30T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;gap-fill C&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">9</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }&#x27;));
+<span class="lineno">10</span>ENDSEC;
+<span class="lineno">11</span>DATA;
+<span class="lineno">12</span>#1=APPLICATION_CONTEXT(&#x27;automotive_design&#x27;);
+<span class="lineno">13</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,&#x27;automotive_design&#x27;,2000,#1);
+<span class="lineno">14</span>/* The <mark>MANIFOLD_SOLID_BREP</mark> references an entity that does not exist
+<span class="lineno">15</span>   in this file (<mark>#999</mark> is undefined). Lenient parsers swallow this;
+<span class="lineno">16</span>   strict ones reject. */
+<span class="lineno">17</span>#101=<mark>MANIFOLD_SOLID_BREP</mark>(&#x27;no_shell_solid&#x27;,<mark>#999</mark>);
+<span class="lineno">18</span>/* PRODUCT chain so OCCT loads the geometry. */
+<span class="lineno">19</span>#9000=PRODUCT_CONTEXT(&#x27;&#x27;,#1,&#x27;mechanical&#x27;);
+<span class="lineno">20</span>#9001=PRODUCT(&#x27;Bo002&#x27;,&#x27;Bo002&#x27;,&#x27;&#x27;,(#9000));
+<span class="lineno">21</span>#9002=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#9001);
+<span class="lineno">22</span>#9003=PRODUCT_DEFINITION_CONTEXT(&#x27;part definition&#x27;,#1,&#x27;design&#x27;);
+<span class="lineno">23</span>#9004=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,#9002,#9003);
+<span class="lineno">24</span>#9005=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,#9004);
+<span class="lineno">25</span>#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">26</span>#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+<span class="lineno">27</span>#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+<span class="lineno">28</span>#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,&#x27;distance_accuracy_value&#x27;,&#x27;&#x27;);
+<span class="lineno">29</span>#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT(&#x27;&#x27;,&#x27;3D&#x27;));
+<span class="lineno">30</span>#9022=ADVANCED_BREP_SHAPE_REPRESENTATION(&#x27;&#x27;,(#101),#9010);
+<span class="lineno">31</span>#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+<span class="lineno">32</span>ENDSEC;
+<span class="lineno">33</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Bo001.html">&larr; Bo001</a> <a class="up" href="index.html">§12.3a Shells / orientation</a> <a class="next" href="Bo003.html">Bo003 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

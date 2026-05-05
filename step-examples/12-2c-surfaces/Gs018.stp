@@ -1,0 +1,57 @@
+ISO-10303-21;
+/* Gs018 - Mismatched orientation of 3D curve and pcurve
+ *
+ * Sources:  F008
+ * Originally also catalogued as: Gp003
+ *
+ * Defect: EDGE_CURVE's 3D curve traces from t=0 to t=1; the surface curve's pcurve
+ *  traces in the OPPOSITE direction (1 -> 0 in surface parameter). Projecting
+ *  3D -> UV (or vice versa) returns wrong-side parameters.
+ *  ShapeFix_Edge::FixReversed2d flips the pcurve sense.
+ *
+ * Reproducer:  EDGE_CURVE with 3D curve from t=0 to t=1; surface curve with
+ *  pcurve traced as 1 -> 0 in surface parameter; both linked to same EDGE_CURVE.
+ *
+ * Expected kernel behavior:
+ *   heal - detect direction mismatch; reverse pcurve to align with 3D curve
+ *   sense. */
+HEADER;
+FILE_DESCRIPTION(('Gs018 test case','Reversed pcurve vs 3D curve'),'2;1');
+FILE_NAME('Gs018.stp','2026-04-26T00:00:00',(''),(''),'auto-generated','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#11=DIRECTION('',(0.0,0.0,1.0));
+#12=DIRECTION('',(1.0,0.0,0.0));
+#13=AXIS2_PLACEMENT_3D('',#10,#11,#12);
+#20=CYLINDRICAL_SURFACE('',#13,10.0);
+/* 3D curve goes UP (+Z), from z=0 to z=5 */
+#30=CARTESIAN_POINT('',(10.0,0.0,0.0));
+#31=VERTEX_POINT('',#30);
+#32=CARTESIAN_POINT('',(10.0,0.0,5.0));
+#33=VERTEX_POINT('',#32);
+#34=DIRECTION('',(0.0,0.0,1.0));
+#35=VECTOR('',#34,1.0);
+#36=LINE('',#30,#35);
+/* 2D pcurve in UV traces in REVERSED V direction, from V=5 to V=0 */
+#40=CARTESIAN_POINT('',(0.0,5.0));
+#41=DIRECTION('',(0.0,-1.0));
+#42=VECTOR('',#41,1.0);
+#43=LINE('',#40,#42);
+#44=DEFINITIONAL_REPRESENTATION('',(#43),#45);
+#45=( GEOMETRIC_REPRESENTATION_CONTEXT(2)
+      PARAMETRIC_REPRESENTATION_CONTEXT()
+      REPRESENTATION_CONTEXT('','') );
+#46=PCURVE('',#20,#44);
+/* Defect: surface_curve associates a 3D LINE rising +Z with a 2D LINE descending -V */
+#50=SURFACE_CURVE('',#36,(#46),.PCURVE_S1.);
+#60=EDGE_CURVE('',#31,#33,#50,.T.);
+#61=ORIENTED_EDGE('',*,*,#60,.T.);
+#62=EDGE_LOOP('',(#61));
+#63=FACE_OUTER_BOUND('',#62,.T.);
+#64=ADVANCED_FACE('',(#63),#20,.T.);
+ENDSEC;
+END-ISO-10303-21;

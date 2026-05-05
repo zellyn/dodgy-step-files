@@ -1,0 +1,61 @@
+/* Pmi004 - Non-coplanar leader collapsed onto annotation plane loses attachment
+   Defect: NX permits an annotation whose leader is not in the same plane as
+   the text. Polyline graphic presentation requires all geometry of an
+   ANNOTATION_OCCURRENCE to be coplanar. The writer projects the leader onto
+   the annotation plane (z=10), but the projection no longer touches the
+   feature it was attached to (originally at z=0). Required handling is to
+   split into multiple annotation_occurrences (one per coplanar subset)
+   under one DRAUGHTING_CALLOUT, with the first as principal. */
+ISO-10303-21;
+HEADER;
+FILE_DESCRIPTION(('Pmi004 - non-coplanar leader projection loses attachment'),'2;1');
+FILE_NAME('Pmi004.stp','2026-04-26T00:00:00',('catalog'),('cad'),
+  'manual','','');
+FILE_SCHEMA(('AP242_MANAGED_MODEL_BASED_3D_ENGINEERING_MIM_LF { 1 0 10303 442 1 1 4 }'));
+ENDSEC;
+DATA;
+#10 = APPLICATION_CONTEXT('managed model based 3d engineering');
+#11 = APPLICATION_PROTOCOL_DEFINITION('international standard',
+  'ap242_managed_model_based_3d_engineering',2020,#10);
+#12 = PRODUCT_CONTEXT('',#10,'mechanical');
+#13 = PRODUCT('Pmi004','PartWith3DLeader','',(#12));
+#14 = PRODUCT_DEFINITION_FORMATION('','',#13);
+#15 = PRODUCT_DEFINITION_CONTEXT('',#10,'design');
+#16 = PRODUCT_DEFINITION('','',#14,#15);
+#17 = PRODUCT_DEFINITION_SHAPE('','',#16);
+#20 = ( LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT(.MILLI.,.METRE.) );
+#22 = ( NAMED_UNIT(*) PLANE_ANGLE_UNIT() SI_UNIT($,.RADIAN.) );
+#23 = ( NAMED_UNIT(*) SI_UNIT($,.STERADIAN.) SOLID_ANGLE_UNIT() );
+#24 = UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#20,
+  'distance_accuracy_value','');
+#25 = ( GEOMETRIC_REPRESENTATION_CONTEXT(3)
+  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#24))
+  GLOBAL_UNIT_ASSIGNED_CONTEXT((#20,#22,#23))
+  REPRESENTATION_CONTEXT('','3D') );
+/* Annotation plane at z=10. */
+#30 = CARTESIAN_POINT('plane_origin',(0.0,0.0,10.0));
+#31 = DIRECTION('plane_normal',(0.0,0.0,1.0));
+#32 = DIRECTION('plane_x',(1.0,0.0,0.0));
+#33 = AXIS2_PLACEMENT_3D('annotation_axis',#30,#31,#32);
+#34 = PLANE('annotation_plane_def',#33);
+/* Original leader endpoints: (0,0,0) and (0,0,5) — both NOT in plane z=10.
+   Defect: writer projected both onto z=10, so both are at z=10, but the
+   feature attachment originally at z=0 has been lost. */
+#40 = CARTESIAN_POINT('leader_start_projected',(0.0,0.0,10.0));
+#41 = CARTESIAN_POINT('leader_end_projected',(0.0,0.0,10.0));
+#42 = POLYLINE('leader',(#40,#41));
+#43 = ANNOTATION_CURVE_OCCURRENCE('leader_occ',(#44),#42);
+#44 = NULL_STYLE(.NULL.);
+/* Text geometry coplanar with z=10 */
+#50 = CARTESIAN_POINT('txt1',(20.0,10.0,10.0));
+#51 = CARTESIAN_POINT('txt2',(40.0,10.0,10.0));
+#52 = POLYLINE('text_box',(#50,#51));
+#53 = ANNOTATION_CURVE_OCCURRENCE('text_occ',(#44),#52);
+/* Single annotation_occurrence groups both - per spec must be split */
+#60 = DRAUGHTING_CALLOUT('callout',(#43,#53));
+#61 = ANNOTATION_PLANE('PMI',(),#34,(#60));
+#70 = DRAUGHTING_MODEL('Default',(#43,#53),#25);
+#80 = SHAPE_REPRESENTATION('',(#33),#25);
+#81 = SHAPE_DEFINITION_REPRESENTATION(#17,#80);
+ENDSEC;
+END-ISO-10303-21;

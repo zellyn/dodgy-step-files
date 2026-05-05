@@ -1,0 +1,83 @@
+ISO-10303-21;
+/* Tsh040 - OPEN_SHELLs with shared interior edge mis-classified as non-manifold by slicer
+ * Defect: Two adjacent OPEN_SHELLs share an edge in a perfectly
+ * manifold T-junction, but slicer mesher classifies the shared edge
+ * as non-manifold because each shell is OPEN_SHELL and the shared
+ * edge has 3+ face references in the joined compound.
+ *
+ * This file: two OPEN_SHELLs joined into a single
+ * SHELL_BASED_SURFACE_MODEL. Shell A is two faces meeting at an edge
+ * (a "fold"); shell B is one face that abuts the same edge from a
+ * third direction. The shared EDGE_CURVE #311 is referenced by all
+ * three faces -- legal in STEP for an open-shell aggregation, but
+ * fatal once a slicer flatlines the model into a single mesh.
+ * Sources: J015. */
+HEADER;
+FILE_DESCRIPTION(('Tsh040 test case','Two OPEN_SHELLs sharing one edge'),'2;1');
+FILE_NAME('Tsh040.stp','2026-04-26T00:00:00',(''),(''),'auto-generated','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+/* Shared edge: from (0,0,0) to (1,0,0). */
+#100=CARTESIAN_POINT('A',(0.0,0.0,0.0));
+#101=CARTESIAN_POINT('B',(1.0,0.0,0.0));
+#102=CARTESIAN_POINT('C',(1.0,1.0,0.0)); /* face1 corner */
+#103=CARTESIAN_POINT('D',(0.0,1.0,0.0)); /* face1 corner */
+#104=CARTESIAN_POINT('E',(1.0,0.0,1.0)); /* face2 corner */
+#105=CARTESIAN_POINT('F',(0.0,0.0,1.0)); /* face2 corner */
+#106=CARTESIAN_POINT('G',(1.0,0.7071,0.7071)); /* face3 corner */
+#107=CARTESIAN_POINT('H',(0.0,0.7071,0.7071)); /* face3 corner */
+#110=VERTEX_POINT('',#100); #111=VERTEX_POINT('',#101);
+#112=VERTEX_POINT('',#102); #113=VERTEX_POINT('',#103);
+#114=VERTEX_POINT('',#104); #115=VERTEX_POINT('',#105);
+#116=VERTEX_POINT('',#106); #117=VERTEX_POINT('',#107);
+/* Three planes meeting at the X axis. */
+#200=DIRECTION('+Z',(0.0,0.0,1.0)); #201=DIRECTION('+X',(1.0,0.0,0.0));
+#211=AXIS2_PLACEMENT_3D('p1',#100,#200,#201); #212=PLANE('xy_plane',#211);
+#220=DIRECTION('+Y',(0.0,1.0,0.0));
+#221=AXIS2_PLACEMENT_3D('p2',#100,#220,#201); #222=PLANE('xz_plane',#221);
+#230=DIRECTION('45deg',(0.0,-0.7071,0.7071));
+#231=AXIS2_PLACEMENT_3D('p3',#100,#230,#201); #232=PLANE('diag_plane',#231);
+/* Edges. The shared edge along +X axis is #311. */
+#300=DIRECTION('',(1.0,0.0,0.0)); #301=VECTOR('',#300,1.0);
+#302=DIRECTION('',(0.0,1.0,0.0)); #303=VECTOR('',#302,1.0);
+#304=DIRECTION('',(0.0,0.0,1.0)); #305=VECTOR('',#304,1.0);
+#306=DIRECTION('',(0.0,0.7071,0.7071)); #307=VECTOR('',#306,1.0);
+#310=LINE('shared_axis_line',#100,#301);
+#311=EDGE_CURVE('shared_edge',#110,#111,#310,.T.); /* shared by 3 faces */
+/* Face 1 edges (xy plane, square 0..1 x 0..1). */
+#320=LINE('',#101,#303); #321=EDGE_CURVE('',#111,#112,#320,.T.);
+#322=LINE('',#103,#301); #323=EDGE_CURVE('',#113,#112,#322,.T.);
+#324=LINE('',#100,#303); #325=EDGE_CURVE('',#110,#113,#324,.T.);
+/* Face 2 edges (xz plane, square 0..1 x 0..1 in z). */
+#330=LINE('',#101,#305); #331=EDGE_CURVE('',#111,#114,#330,.T.);
+#332=LINE('',#105,#301); #333=EDGE_CURVE('',#115,#114,#332,.T.);
+#334=LINE('',#100,#305); #335=EDGE_CURVE('',#110,#115,#334,.T.);
+/* Face 3 edges (diagonal plane). */
+#340=LINE('',#101,#307); #341=EDGE_CURVE('',#111,#116,#340,.T.);
+#342=LINE('',#107,#301); #343=EDGE_CURVE('',#117,#116,#342,.T.);
+#344=LINE('',#100,#307); #345=EDGE_CURVE('',#110,#117,#344,.T.);
+/* Face 1: xy plane, uses shared edge #311. */
+#400=ORIENTED_EDGE('',*,*,#311,.T.); #401=ORIENTED_EDGE('',*,*,#321,.T.);
+#402=ORIENTED_EDGE('',*,*,#323,.F.); #403=ORIENTED_EDGE('',*,*,#325,.F.);
+#404=EDGE_LOOP('',(#400,#401,#402,#403)); #405=FACE_OUTER_BOUND('',#404,.T.);
+#406=ADVANCED_FACE('face_xy',(#405),#212,.T.);
+/* Face 2: xz plane, uses shared edge #311. */
+#410=ORIENTED_EDGE('',*,*,#311,.T.); #411=ORIENTED_EDGE('',*,*,#331,.T.);
+#412=ORIENTED_EDGE('',*,*,#333,.F.); #413=ORIENTED_EDGE('',*,*,#335,.F.);
+#414=EDGE_LOOP('',(#410,#411,#412,#413)); #415=FACE_OUTER_BOUND('',#414,.T.);
+#416=ADVANCED_FACE('face_xz',(#415),#222,.T.);
+/* Face 3: diagonal plane, uses shared edge #311. */
+#420=ORIENTED_EDGE('',*,*,#311,.T.); #421=ORIENTED_EDGE('',*,*,#341,.T.);
+#422=ORIENTED_EDGE('',*,*,#343,.F.); #423=ORIENTED_EDGE('',*,*,#345,.F.);
+#424=EDGE_LOOP('',(#420,#421,#422,#423)); #425=FACE_OUTER_BOUND('',#424,.T.);
+#426=ADVANCED_FACE('face_diag',(#425),#232,.T.);
+/* Two open shells -- one carries face1+face2 (the "fold"); the other
+   carries face3 alone -- but the SBSM aggregates them, sharing #311. */
+#500=OPEN_SHELL('fold_shell',(#406,#416));
+#510=OPEN_SHELL('extra_face_shell',(#426));
+#520=SHELL_BASED_SURFACE_MODEL('two_shells_one_edge',(#500,#510));
+ENDSEC;
+END-ISO-10303-21;

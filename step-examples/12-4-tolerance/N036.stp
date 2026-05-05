@@ -1,0 +1,45 @@
+/* N036 - Centroid validation breaks down when relative threshold goes below modeling tolerance
+ * Defect: The relative centroid threshold (deviation / model size) breaks
+ * down when the bounding-box space diagonal is below ~20 mm at 0.02 mm
+ * model accuracy: a 0.1% threshold becomes smaller than the modeling
+ * tolerance, so even valid round-trips fail validation.
+ * Reproducer: tiny part with bounding-box space diagonal ~5 mm; uncertainty
+ * 2e-2 mm; centroid value provided as a GVP -- relative 0.1% threshold
+ * is 5e-3 mm, well below the 2e-2 modeling tolerance.
+ */
+ISO-10303-21;
+HEADER;
+FILE_DESCRIPTION(('N036 centroid validation relative threshold below modeling tolerance'),'2;1');
+FILE_NAME('N036.stp','2026-04-26T00:00:00',(''),(''),
+  'cad-research-suite','','');
+FILE_SCHEMA(('AP242_MANAGED_MODEL_BASED_3D_ENGINEERING_MIM_LF'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('managed model-based 3d engineering');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
+  'ap242_managed_model_based_3d_engineering',2014,#1);
+/* Tiny part: bounding diagonal sqrt(3*3+2*2+2*2) ~= 4.1 mm */
+#10=CARTESIAN_POINT('lo',(0.0,0.0,0.0));
+#11=CARTESIAN_POINT('hi',(3.0,2.0,2.0));
+#12=CARTESIAN_POINT('centroid_GVP',(1.5,1.0,1.0));
+#20=VERTEX_POINT('',#10);
+#21=VERTEX_POINT('',#11);
+#30=DIRECTION('diag',(0.7276068751089989,0.4850712500726659,0.4850712500726659));
+#31=VECTOR('',#30,4.1);
+#32=LINE('',#10,#31);
+#40=EDGE_CURVE('tiny_part_diag',#20,#21,#32,.T.);
+#50=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#51=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#52=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+/* Modeling tolerance 0.02 mm; relative 0.1% on 5 mm diagonal => 5e-3 < 2e-2 */
+#60=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(2.0E-2),#50,
+  'distance_accuracy_value','modeling_tol_above_relative_threshold');
+#70=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#60))
+  GLOBAL_UNIT_ASSIGNED_CONTEXT((#50,#51,#52))
+  REPRESENTATION_CONTEXT('ctx','3D'));
+/* Geometric Validation Property: centroid value */
+#80=GEOMETRIC_REPRESENTATION_ITEM('centroid_validation_value');
+#81=CARTESIAN_POINT('centroid_value',(1.5,1.0,1.0));
+ENDSEC;
+END-ISO-10303-21;

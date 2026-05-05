@@ -1,0 +1,88 @@
+ISO-10303-21;
+/*
+ * A005 — Lost assembly hierarchy on round-trip (flatten to single CATPart)
+ * Defect (CATIA→Inventor / Inventor multi-body / CATIA / Rhino blocks):
+ *   A multi-level NAUO graph imports as a single flat part with N solid
+ *   bodies, losing PRODUCT_DEFINITION nesting. CATIA needs "One CATProduct
+ *   per product" option; Rhino has block vs nested-layer choice. Key
+ *   signature: every leaf body shares one PRODUCT_DEFINITION_FORMATION.
+ * Reproducer: STEP with ≥3 levels of NAUO + MAPPED_ITEM referencing shared
+ *   REPRESENTATION_MAP; import to CATIA V5 with default options.
+ * Expected kernel: configurable mapping (block / nested-layer / flatten) with
+ *   default that preserves hierarchy.
+ */
+HEADER;
+FILE_DESCRIPTION(('A005 three-level NAUO chain at risk of flattening'),'2;1');
+FILE_NAME('A005.stp','2026-04-26T00:00:00',('catalog'),('cad'),'manual','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#10 = APPLICATION_CONTEXT('automotive design');
+#11 = APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2001,#10);
+#12 = PRODUCT_CONTEXT('',#10,'mechanical');
+#13 = PRODUCT_DEFINITION_CONTEXT('part definition',#10,'design');
+/* Level 0 — Top assembly */
+#20 = PRODUCT('TOP','Top assembly','',(#12));
+#21 = PRODUCT_DEFINITION_FORMATION('','',#20);
+#22 = PRODUCT_DEFINITION('design','',#21,#13);
+#23 = PRODUCT_DEFINITION_SHAPE('','',#22);
+/* Level 1 — Sub-assembly */
+#30 = PRODUCT('SUB','Sub assembly','',(#12));
+#31 = PRODUCT_DEFINITION_FORMATION('','',#30);
+#32 = PRODUCT_DEFINITION('design','',#31,#13);
+#33 = PRODUCT_DEFINITION_SHAPE('','',#32);
+/* Level 2 — Sub-sub-assembly */
+#34 = PRODUCT('SUBSUB','Sub-sub assembly','',(#12));
+#35 = PRODUCT_DEFINITION_FORMATION('','',#34);
+#36 = PRODUCT_DEFINITION('design','',#35,#13);
+#37 = PRODUCT_DEFINITION_SHAPE('','',#36);
+/* Level 3 — Leaf */
+#38 = PRODUCT('LEAF','Leaf part','',(#12));
+#39 = PRODUCT_DEFINITION_FORMATION('','',#38);
+#40 = PRODUCT_DEFINITION('design','',#39,#13);
+#41 = PRODUCT_DEFINITION_SHAPE('','',#40);
+/* NAUO chain Top->Sub->SubSub->Leaf */
+#42 = NEXT_ASSEMBLY_USAGE_OCCURRENCE('1','TOP_SUB','',#22,#32,$);
+#43 = NEXT_ASSEMBLY_USAGE_OCCURRENCE('2','SUB_SUBSUB','',#32,#36,$);
+#44 = NEXT_ASSEMBLY_USAGE_OCCURRENCE('3','SUBSUB_LEAF','',#36,#40,$);
+/* Units */
+#50 = ( LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT(.MILLI.,.METRE.) );
+#51 = ( NAMED_UNIT(*) PLANE_ANGLE_UNIT() SI_UNIT($,.RADIAN.) );
+#52 = ( NAMED_UNIT(*) SI_UNIT($,.STERADIAN.) SOLID_ANGLE_UNIT() );
+#53 = UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#50,'distance_accuracy_value','');
+#54 = ( GEOMETRIC_REPRESENTATION_CONTEXT(3) GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#53))
+        GLOBAL_UNIT_ASSIGNED_CONTEXT((#50,#51,#52)) REPRESENTATION_CONTEXT('','3D') );
+/* Leaf representation + REPRESENTATION_MAP shared by every level — the
+   "key signature" CAT5 flattening watches for. */
+#60 = CARTESIAN_POINT('',(0.0,0.0,0.0));
+#61 = DIRECTION('',(0.0,0.0,1.0));
+#62 = DIRECTION('',(1.0,0.0,0.0));
+#63 = AXIS2_PLACEMENT_3D('leaf_origin',#60,#61,#62);
+#64 = SHAPE_REPRESENTATION('leaf_rep',(#63),#54);
+#65 = SHAPE_DEFINITION_REPRESENTATION(#41,#64);
+#66 = REPRESENTATION_MAP(#63,#64);
+/* Subsub places leaf */
+#70 = CARTESIAN_POINT('',(10.0,0.0,0.0));
+#71 = AXIS2_PLACEMENT_3D('subsub_to_leaf',#70,#61,#62);
+#72 = MAPPED_ITEM('leaf_in_subsub',#66,#71);
+#73 = AXIS2_PLACEMENT_3D('subsub_origin',#60,#61,#62);
+#74 = SHAPE_REPRESENTATION('subsub_rep',(#73,#72),#54);
+#75 = SHAPE_DEFINITION_REPRESENTATION(#37,#74);
+#76 = REPRESENTATION_MAP(#73,#74);
+/* Sub places subsub */
+#80 = CARTESIAN_POINT('',(0.0,20.0,0.0));
+#81 = AXIS2_PLACEMENT_3D('sub_to_subsub',#80,#61,#62);
+#82 = MAPPED_ITEM('subsub_in_sub',#76,#81);
+#83 = AXIS2_PLACEMENT_3D('sub_origin',#60,#61,#62);
+#84 = SHAPE_REPRESENTATION('sub_rep',(#83,#82),#54);
+#85 = SHAPE_DEFINITION_REPRESENTATION(#33,#84);
+#86 = REPRESENTATION_MAP(#83,#84);
+/* Top places sub */
+#90 = CARTESIAN_POINT('',(0.0,0.0,30.0));
+#91 = AXIS2_PLACEMENT_3D('top_to_sub',#90,#61,#62);
+#92 = MAPPED_ITEM('sub_in_top',#86,#91);
+#93 = AXIS2_PLACEMENT_3D('top_origin',#60,#61,#62);
+#94 = SHAPE_REPRESENTATION('top_rep',(#93,#92),#54);
+#95 = SHAPE_DEFINITION_REPRESENTATION(#23,#94);
+ENDSEC;
+END-ISO-10303-21;

@@ -1,0 +1,47 @@
+ISO-10303-21;
+/* Gs001 - TOROIDAL_SURFACE with negative MajorRadius (SolidWorks/Pro-E orientation marker)
+ *
+ * Sources:           R001 (OCCT bug11857), Q012, Q058, G004, W019, J010
+ * Originally:        Tsh034
+ * Senders observed:  SolidWorks 2014 (and earlier), Pro/E Wildfire 5.0
+ *
+ * Defect: Some vendors encode reversed face orientation by emitting a TOROIDAL_SURFACE
+ *  with negative major_radius (and/or negative minor_radius, or minor > major).
+ *  Translators that take the radius value at face value compute the wrong geometry;
+ *  translators that only check sign produce partially wrong shapes.
+ *
+ * Reproducer: TOROIDAL_SURFACE('',axis2, major:=-50.0, minor:=10.0) referenced by an
+ *  ADVANCED_FACE; major_radius negative and SameSense interpreted by writer as flip.
+ *
+ * Expected kernel behavior:
+ *   heal - interpret negative-radius torus as orientation flip;
+ *   reject only when the absolute dimensions are physically impossible. */
+HEADER;
+FILE_DESCRIPTION(('Gs001 test case','Negative MajorRadius torus orientation marker'),'2;1');
+FILE_NAME('Gs001.stp','2026-04-26T00:00:00',(''),(''),'auto-generated','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+/* Axis placement at origin */
+#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#11=DIRECTION('',(0.0,0.0,1.0));
+#12=DIRECTION('',(1.0,0.0,0.0));
+#13=AXIS2_PLACEMENT_3D('',#10,#11,#12);
+/* Defect: TOROIDAL_SURFACE with negative MajorRadius (-50.0) */
+/* Reader must interpret as orientation flip, not literal negative radius. */
+#20=TOROIDAL_SURFACE('',#13,-50.0,10.0);
+/* Outer-bound vertex on the natural torus (using |major|+minor = 60.0) */
+#30=CARTESIAN_POINT('',(60.0,0.0,0.0));
+#31=VERTEX_POINT('',#30);
+/* Single VERTEX_LOOP describing the natural full-torus boundary */
+#32=VERTEX_LOOP('',#31);
+#33=FACE_OUTER_BOUND('',#32,.T.);
+/* ADVANCED_FACE references the negative-radius torus surface */
+#34=ADVANCED_FACE('',(#33),#20,.T.);
+/* Wrap the face into a simple shell so consumers attempting to compute volume
+ * trip the radius-sign pathology rather than just the surface evaluation. */
+#40=OPEN_SHELL('',(#34));
+ENDSEC;
+END-ISO-10303-21;

@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Twi068 — Wire 3D-gap analysis must enumerate all gaps (EDGE_LOOP with multiple junctions where consecutive ORIENTED_EDGEs have mismatched VERTEX_POINTs, e.g., 0.05-0.07 mm gaps)</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.3b Wires / loops / edges</a> <span class="sep">/</span> <span class="current">Twi068</span>
+</nav>
+<header class="title-bar">
+<h1>Twi068 <span class="sep">—</span> <span class="entry-title">Wire 3D-gap analysis must enumerate all gaps (EDGE_LOOP with multiple junctions where consecutive ORIENTED_EDGEs have mismatched VERTEX_POINTs, e.g., 0.05-0.07 mm gaps)</span></h1>
+<p class="category">§12.3b wires / loops / edges (sub-class: gap-analysis)</p>
+<p class="severity-badge severity-p1">P1 — silent data loss</p>
+<p class="tag-pills">
+<a class="tag tag-topology" href="../by-tag/topology/index.html">topology</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-3b-wires/Twi068.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-3b-wires/Twi068.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>OCCT `ShapeAnalysis_Wire::CheckGaps3d` (`ShapeAnalysis_Wire.hxx:238`)</li>
+</ul></section>
+<section><h2>Description</h2>
+<p>The wire-wide 3D gap analyzer must visit every consecutive-edge junction and report each gap individually. A wire with multiple defective junctions should not be reported as &quot;broken at junction 1&quot; when it also breaks at junctions 3 and 5.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>A four-edge wire where the gaps between edge-pairs (1,2), (2,3), and (3,4) are each above tolerance.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>Heal and accept: normalize a per-junction list of (junction_index, 3D_gap_distance); enables downstream batch repair / healing.</p></section>
+<section><h2>Notes</h2>
+<p>Per-wire counterpart to Twi072 (single-junction). Synonyms: &quot;wire has multiple gap junctions&quot;, &quot;all junction gaps must be enumerated&quot;, &quot;list every gap location in wire&quot;, &quot;per-junction 3D gap report for whole wire&quot;.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>contains(b&#x27;(1.05,0.0,0.0)&#x27;)</code></li>
+<li><code>contains(b&#x27;(2.07,0.0,0.0)&#x27;)</code></li>
+<li><code>contains(b&#x27;(2.0,1.06,0.0)&#x27;)</code></li>
+</ul></section>
+<section><h2>Cross-references</h2>
+<p><a href="Twi072.html">Twi072</a></p>
+</section>
+<section><h2>Live oracle output</h2>
+<table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
+<tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>no_shapes_loaded</code></td></tr>
+</tbody></table>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* Twi068 - Wire 3D-gap analysis must enumerate all gaps, not just the first
+<span class="lineno">3</span> * Four-edge open polyline wire. Junction (1,2): edge1 ends at (1.0,0,0), edge2
+<span class="lineno">4</span> * starts at (1.05,0,0) -- gap 0.05. Junction (2,3): edge2 ends at (2.0,0.0,0),
+<span class="lineno">5</span> * edge3 starts at (2.07,0.0,0) -- gap 0.07. Junction (3,4): edge3 ends at
+<span class="lineno">6</span> * (2.0,1.0,0), edge4 starts at (2.0,1.06,0) -- gap 0.06. All gaps are above
+<span class="lineno">7</span> * a typical 1e-2 tolerance and each must be reported. */
+<span class="lineno">8</span>HEADER;
+<span class="lineno">9</span>FILE_DESCRIPTION((&#x27;Twi068 test case&#x27;,&#x27;Wire with multiple 3D gaps -- analyzer must enumerate every gap&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">10</span>FILE_NAME(&#x27;Twi068.stp&#x27;,&#x27;2026-04-30T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">11</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }&#x27;));
+<span class="lineno">12</span>ENDSEC;
+<span class="lineno">13</span>DATA;
+<span class="lineno">14</span>#1=APPLICATION_CONTEXT(&#x27;automotive_design&#x27;);
+<span class="lineno">15</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,&#x27;automotive_design&#x27;,2000,#1);
+<span class="lineno">16</span>/* Eight distinct vertex points -- 4 edges, each with its own start/end vertex,
+<span class="lineno">17</span> * so the head-tail mismatches at junctions become 3D gaps. */
+<span class="lineno">18</span>#10=CARTESIAN_POINT(&#x27;e1_start&#x27;,(0.0,0.0,0.0));#11=VERTEX_POINT(&#x27;&#x27;,#10);
+<span class="lineno">19</span>#12=CARTESIAN_POINT(&#x27;e1_end&#x27;,(1.0,0.0,0.0));#13=VERTEX_POINT(&#x27;&#x27;,#12);
+<span class="lineno">20</span>#14=CARTESIAN_POINT(&#x27;e2_start_gap_005&#x27;,<mark>(1.05,0.0,0.0)</mark>);#15=VERTEX_POINT(&#x27;&#x27;,#14);
+<span class="lineno">21</span>#16=CARTESIAN_POINT(&#x27;e2_end&#x27;,(2.0,0.0,0.0));#17=VERTEX_POINT(&#x27;&#x27;,#16);
+<span class="lineno">22</span>#18=CARTESIAN_POINT(&#x27;e3_start_gap_007&#x27;,<mark>(2.07,0.0,0.0)</mark>);#19=VERTEX_POINT(&#x27;&#x27;,#18);
+<span class="lineno">23</span>#20=CARTESIAN_POINT(&#x27;e3_end&#x27;,(2.0,1.0,0.0));#21=VERTEX_POINT(&#x27;&#x27;,#20);
+<span class="lineno">24</span>#22=CARTESIAN_POINT(&#x27;e4_start_gap_006&#x27;,<mark>(2.0,1.06,0.0)</mark>);#23=VERTEX_POINT(&#x27;&#x27;,#22);
+<span class="lineno">25</span>#24=CARTESIAN_POINT(&#x27;e4_end&#x27;,(2.0,2.0,0.0));#25=VERTEX_POINT(&#x27;&#x27;,#24);
+<span class="lineno">26</span>#30=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));#31=VECTOR(&#x27;&#x27;,#30,1.0);#32=LINE(&#x27;&#x27;,#10,#31);
+<span class="lineno">27</span>#33=EDGE_CURVE(&#x27;edge1&#x27;,#11,#13,#32,.T.);
+<span class="lineno">28</span>#34=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));#35=VECTOR(&#x27;&#x27;,#34,1.0);#36=LINE(&#x27;&#x27;,#14,#35);
+<span class="lineno">29</span>#37=EDGE_CURVE(&#x27;edge2&#x27;,#15,#17,#36,.T.);
+<span class="lineno">30</span>#38=DIRECTION(&#x27;&#x27;,(0.0,1.0,0.0));#39=VECTOR(&#x27;&#x27;,#38,1.0);#40=LINE(&#x27;&#x27;,#18,#39);
+<span class="lineno">31</span>#41=EDGE_CURVE(&#x27;edge3&#x27;,#19,#21,#40,.T.);
+<span class="lineno">32</span>#42=DIRECTION(&#x27;&#x27;,(0.0,1.0,0.0));#43=VECTOR(&#x27;&#x27;,#42,1.0);#44=LINE(&#x27;&#x27;,#22,#43);
+<span class="lineno">33</span>#45=EDGE_CURVE(&#x27;edge4&#x27;,#23,#25,#44,.T.);
+<span class="lineno">34</span>#50=ORIENTED_EDGE(&#x27;&#x27;,*,*,#33,.T.);
+<span class="lineno">35</span>#51=ORIENTED_EDGE(&#x27;&#x27;,*,*,#37,.T.);
+<span class="lineno">36</span>#52=ORIENTED_EDGE(&#x27;&#x27;,*,*,#41,.T.);
+<span class="lineno">37</span>#53=ORIENTED_EDGE(&#x27;&#x27;,*,*,#45,.T.);
+<span class="lineno">38</span>#54=EDGE_LOOP(&#x27;multi_gap_wire&#x27;,(#50,#51,#52,#53));
+<span class="lineno">39</span>ENDSEC;
+<span class="lineno">40</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Twi067.html">&larr; Twi067</a> <a class="up" href="index.html">§12.3b Wires / loops / edges</a> <a class="next" href="Twi069.html">Twi069 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

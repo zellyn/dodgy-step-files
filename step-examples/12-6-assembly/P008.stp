@@ -1,0 +1,87 @@
+ISO-10303-21;
+/*
+ * P008 — Long helix represented as huge B-spline causes catastrophic import
+ *        time
+ * Defect (FreeCAD #18735, #18151; SolidWorks EixoY.STEP and thread-profile
+ *         tools):
+ *   A single long thread/helix represented as a B_SPLINE_CURVE_WITH_KNOTS
+ *   with thousands of control points (e.g. M10x300 thread) takes >1 hour in
+ *   FreeCAD vs <1 minute in SolidWorks/VariCAD. The helix dominates cost;
+ *   rest of model is fast.
+ * Reproducer (mini, scaled down): a single helix curve as a degree-3
+ *   B_SPLINE_CURVE_WITH_KNOTS with 24 control points (real defect: 5000+).
+ *   Demonstrator only — not enough to actually trigger the timing bug.
+ * Expected kernel: linear scaling with face count, not catastrophic.
+ */
+HEADER;
+FILE_DESCRIPTION(('P008 long helix as B-spline curve — scaled-down demonstrator'),'2;1');
+FILE_NAME('P008.stp','2026-04-26T00:00:00',('catalog'),('cad'),'manual','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#10 = APPLICATION_CONTEXT('automotive design');
+#11 = APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2001,#10);
+#12 = PRODUCT_CONTEXT('',#10,'mechanical');
+#13 = PRODUCT_DEFINITION_CONTEXT('part definition',#10,'design');
+#20 = PRODUCT('P008_ASSY','','',(#12));
+#21 = PRODUCT_DEFINITION_FORMATION('','',#20);
+#22 = PRODUCT_DEFINITION('design','',#21,#13);
+#23 = PRODUCT_DEFINITION_SHAPE('','',#22);
+#30 = PRODUCT('M10X300_THREAD','long thread, B-spline-only','',(#12));
+#31 = PRODUCT_DEFINITION_FORMATION('','',#30);
+#32 = PRODUCT_DEFINITION('design','',#31,#13);
+#33 = PRODUCT_DEFINITION_SHAPE('','',#32);
+#40 = NEXT_ASSEMBLY_USAGE_OCCURRENCE('1','THREAD_INST','',#22,#32,$);
+/* 24 control points spiralling around z, three turns */
+#200 = CARTESIAN_POINT('h00',(5.0,0.0,0.0));
+#201 = CARTESIAN_POINT('h01',(0.0,5.0,5.0));
+#202 = CARTESIAN_POINT('h02',(-5.0,0.0,10.0));
+#203 = CARTESIAN_POINT('h03',(0.0,-5.0,15.0));
+#204 = CARTESIAN_POINT('h04',(5.0,0.0,20.0));
+#205 = CARTESIAN_POINT('h05',(0.0,5.0,25.0));
+#206 = CARTESIAN_POINT('h06',(-5.0,0.0,30.0));
+#207 = CARTESIAN_POINT('h07',(0.0,-5.0,35.0));
+#208 = CARTESIAN_POINT('h08',(5.0,0.0,40.0));
+#209 = CARTESIAN_POINT('h09',(0.0,5.0,45.0));
+#210 = CARTESIAN_POINT('h10',(-5.0,0.0,50.0));
+#211 = CARTESIAN_POINT('h11',(0.0,-5.0,55.0));
+#212 = CARTESIAN_POINT('h12',(5.0,0.0,60.0));
+#213 = CARTESIAN_POINT('h13',(0.0,5.0,65.0));
+#214 = CARTESIAN_POINT('h14',(-5.0,0.0,70.0));
+#215 = CARTESIAN_POINT('h15',(0.0,-5.0,75.0));
+#216 = CARTESIAN_POINT('h16',(5.0,0.0,80.0));
+#217 = CARTESIAN_POINT('h17',(0.0,5.0,85.0));
+#218 = CARTESIAN_POINT('h18',(-5.0,0.0,90.0));
+#219 = CARTESIAN_POINT('h19',(0.0,-5.0,95.0));
+#220 = CARTESIAN_POINT('h20',(5.0,0.0,100.0));
+#221 = CARTESIAN_POINT('h21',(0.0,5.0,105.0));
+#222 = CARTESIAN_POINT('h22',(-5.0,0.0,110.0));
+#223 = CARTESIAN_POINT('h23',(0.0,-5.0,115.0));
+/* DEFECT: a real exporter would emit 5000+ control points. */
+#250 = B_SPLINE_CURVE_WITH_KNOTS('helix_bspline',3,
+         (#200,#201,#202,#203,#204,#205,#206,#207,#208,#209,#210,#211,
+          #212,#213,#214,#215,#216,#217,#218,#219,#220,#221,#222,#223),
+         .UNSPECIFIED.,.F.,.F.,
+         (4,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,4),
+         (0.0,1.0,2.0,3.0,4.0,5.0,6.0,7.0,8.0,9.0,10.0,11.0,12.0,13.0,
+          14.0,15.0,16.0,17.0,18.0,19.0,20.0,21.0,22.0),
+         .UNSPECIFIED.);
+#50 = ( LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT(.MILLI.,.METRE.) );
+#51 = ( NAMED_UNIT(*) PLANE_ANGLE_UNIT() SI_UNIT($,.RADIAN.) );
+#52 = ( NAMED_UNIT(*) SI_UNIT($,.STERADIAN.) SOLID_ANGLE_UNIT() );
+#53 = UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#50,'distance_accuracy_value','');
+#54 = ( GEOMETRIC_REPRESENTATION_CONTEXT(3) GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#53))
+        GLOBAL_UNIT_ASSIGNED_CONTEXT((#50,#51,#52)) REPRESENTATION_CONTEXT('','3D') );
+#60 = CARTESIAN_POINT('',(0.0,0.0,0.0));
+#61 = DIRECTION('',(0.0,0.0,1.0));
+#62 = DIRECTION('',(1.0,0.0,0.0));
+#63 = AXIS2_PLACEMENT_3D('part_origin',#60,#61,#62);
+#64 = SHAPE_REPRESENTATION('part_rep',(#63,#250),#54);
+#65 = SHAPE_DEFINITION_REPRESENTATION(#33,#64);
+#66 = REPRESENTATION_MAP(#63,#64);
+#67 = MAPPED_ITEM('inst',#66,#63);
+#80 = AXIS2_PLACEMENT_3D('assy_origin',#60,#61,#62);
+#81 = SHAPE_REPRESENTATION('assy_rep',(#80,#67),#54);
+#82 = SHAPE_DEFINITION_REPRESENTATION(#23,#81);
+ENDSEC;
+END-ISO-10303-21;

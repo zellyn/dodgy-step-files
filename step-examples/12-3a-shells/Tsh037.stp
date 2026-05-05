@@ -1,0 +1,48 @@
+ISO-10303-21;
+/* Tsh037 - Free wires/edges in compound (Q029, F080 -- no faces, INTERNAL orientation)
+ * Defect: ShapeFix_Shape DONE1/DONE2 marks free wires/edges in compound
+ * (no faces). Also EDGE_BASED_WIREFRAME_MODEL / FACE_BASED_SURFACE_MODEL
+ * with empty content. The receiver should accept the wireframe and not
+ * synthesize fictitious faces.
+ *
+ * This file: a GEOMETRIC_CURVE_SET aggregating two unrelated edges
+ * (a line and a circle) plus an EDGE_BASED_WIREFRAME_MODEL whose
+ * connected_edge_set has just one CONNECTED_EDGE_SET grouping the
+ * same edges. There are no parent faces, so the file is a pure
+ * wireframe representation. A reader that synthesizes faces would
+ * be wrong; a reader that rejects "wireframe-only" would lose data.
+ * Sources: F080, Q028, Q029. */
+HEADER;
+FILE_DESCRIPTION(('Tsh037 test case','Free wires/edges in compound, no faces'),'2;1');
+FILE_NAME('Tsh037.stp','2026-04-26T00:00:00',(''),(''),'auto-generated','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+/* Free line edge from (0,0,0) to (1,0,0). */
+#100=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#101=CARTESIAN_POINT('',(1.0,0.0,0.0));
+#110=VERTEX_POINT('',#100); #111=VERTEX_POINT('',#101);
+#120=DIRECTION('',(1.0,0.0,0.0)); #121=VECTOR('',#120,1.0);
+#122=LINE('free_line',#100,#121);
+#123=EDGE_CURVE('free_edge_line',#110,#111,#122,.T.);
+/* Free circular edge centred at (5,0,0), radius 1, in XY plane. */
+#200=CARTESIAN_POINT('circle_centre',(5.0,0.0,0.0));
+#201=DIRECTION('',(0.0,0.0,1.0));
+#202=DIRECTION('',(1.0,0.0,0.0));
+#203=AXIS2_PLACEMENT_3D('circle_axes',#200,#201,#202);
+#204=CIRCLE('free_circle',#203,1.0);
+#205=CARTESIAN_POINT('',(6.0,0.0,0.0));
+#206=VERTEX_POINT('',#205);
+#207=EDGE_CURVE('free_edge_circle',#206,#206,#204,.T.);
+/* Container 1: GEOMETRIC_CURVE_SET aggregating two free edges with no
+   parent face. */
+#300=GEOMETRIC_CURVE_SET('free_curves_no_face',(#123,#207));
+/* Container 2: EDGE_BASED_WIREFRAME_MODEL with one CONNECTED_EDGE_SET. */
+#310=ORIENTED_EDGE('',*,*,#123,.T.);
+#311=ORIENTED_EDGE('',*,*,#207,.T.);
+#320=CONNECTED_EDGE_SET('lone_ces',(#310,#311));
+#330=EDGE_BASED_WIREFRAME_MODEL('wireframe_only',(#320));
+ENDSEC;
+END-ISO-10303-21;

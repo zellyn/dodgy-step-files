@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Wr039 — Re-export re-orders attributes within complex (subtype-stack) records</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.13 Writer pathology</a> <span class="sep">/</span> <span class="current">Wr039</span>
+</nav>
+<header class="title-bar">
+<h1>Wr039 <span class="sep">—</span> <span class="entry-title">Re-export re-orders attributes within complex (subtype-stack) records</span></h1>
+<p class="category">§12.13 writer-pathology (sub-class: instance numbering / canonical form)</p>
+<p class="severity-badge severity-p3">P3 — cosmetic / metadata-only</p>
+<p class="tag-pills">
+<a class="tag tag-round-trip" href="../by-tag/round-trip/index.html">round-trip</a>
+<a class="tag tag-writer" href="../by-tag/writer/index.html">writer</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-13-writer-pathology/Wr039.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-13-writer-pathology/Wr039.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>OCCT forum &quot;complex entity attribute order changed&quot;</li>
+<li>bug-reporter language: &quot;round-trip reorders attributes in compound entity&quot;</li>
+</ul></section>
+<section><h2>Sender</h2>
+<p>Writers that build complex records by iterating an unordered set of supertype names</p></section>
+<section><h2>Description</h2>
+<p>A complex (subtype-stack) record like `(LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT(.MILLI.,.METRE.))` is re-emitted on round-trip as `(SI_UNIT(.MILLI.,.METRE.) NAMED_UNIT(*) LENGTH_UNIT())` — the same complex entity but with the supertype list reordered. Spec-conforming (the order within `(... ..)` is supertype-significant per ISO 10303-21 §11 but only by inheritance hierarchy, not by emission order); receivers that build canonical hash strings see the file as different. Bug-reporter language: &quot;subtype-stack reordered&quot;, &quot;complex entity attribute order changed&quot;, &quot;STEP round-trip permutes inheritance order&quot;.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>`#20=(SI_UNIT(.MILLI.,.METRE.) NAMED_UNIT(*) LENGTH_UNIT());` (canonical ordering would be `LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT(..)`).</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>Heal and accept: normalize / emit complex-record supertype lists in a canonical order (e.g., alphabetic or schema-declaration-order) deterministically.</p></section>
+<section><h2>Notes</h2>
+<p>Subtle: parsers handle either order, but file-equivalence tests fail.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>matches(rb&#x27;\(\s*SI_UNIT\([^)]+\)\s+NAMED_UNIT\(\*\)\s+LENGTH_UNIT\(\)\s*\)&#x27;)</code></li>
+<li><code>matches(rb&#x27;\(\s*SI_UNIT\(&#x27;)</code></li>
+</ul></section>
+<section><h2>Live oracle output</h2>
+<table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
+<tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>warn(W_COMPLEX_ORDER)</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>no_shapes_loaded</code></td></tr>
+</tbody></table>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>/* Wr039 - Re-export re-orders attributes within complex (subtype-stack) records */
+<span class="lineno">2</span>ISO-10303-21;
+<span class="lineno">3</span>HEADER;
+<span class="lineno">4</span>FILE_DESCRIPTION((&#x27;Wr039 - subtype-stack reordering on re-export&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">5</span>FILE_NAME(&#x27;Wr039.stp&#x27;,&#x27;2026-04-30T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),
+<span class="lineno">6</span>  &#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">7</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
+<span class="lineno">8</span>ENDSEC;
+<span class="lineno">9</span>DATA;
+<span class="lineno">10</span>#1=APPLICATION_CONTEXT(&#x27;mechanical design&#x27;);
+<span class="lineno">11</span>#10=CARTESIAN_POINT(&#x27;origin&#x27;,(0.0,0.0,0.0));
+<span class="lineno">12</span>#11=DIRECTION(&#x27;z&#x27;,(0.0,0.0,1.0));
+<span class="lineno">13</span>#12=DIRECTION(&#x27;x&#x27;,(1.0,0.0,0.0));
+<span class="lineno">14</span>#13=AXIS2_PLACEMENT_3D(&#x27;placement&#x27;,#10,#11,#12);
+<span class="lineno">15</span>/* Wr039: canonical ordering of LENGTH_UNIT/NAMED_UNIT/SI_UNIT in
+<span class="lineno">16</span>   complex records varies by writer. Receivers building canonical hash
+<span class="lineno">17</span>   strings see this as a different file than the input */
+<span class="lineno">18</span>#20=<mark>(SI_UNIT(.MILLI.,.METRE.) NAMED_UNIT(*) LENGTH_UNIT())</mark>;
+<span class="lineno">19</span>#21=<mark>(SI_UNIT(</mark>$,.RADIAN.) PLANE_ANGLE_UNIT() NAMED_UNIT(*));
+<span class="lineno">20</span>#22=(SOLID_ANGLE_UNIT() SI_UNIT($,.STERADIAN.) NAMED_UNIT(*));
+<span class="lineno">21</span>ENDSEC;
+<span class="lineno">22</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Wr038.html">&larr; Wr038</a> <a class="up" href="index.html">§12.13 Writer pathology</a> <a class="next" href="Wr040.html">Wr040 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

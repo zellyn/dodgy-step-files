@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Ad107 — STEP-XML wrapper carries a billion-laughs entity-expansion bomb</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.11 Adversarial / parser robustness</a> <span class="sep">/</span> <span class="current">Ad107</span>
+</nav>
+<header class="title-bar">
+<h1>Ad107 <span class="sep">—</span> <span class="entry-title">STEP-XML wrapper carries a billion-laughs entity-expansion bomb</span></h1>
+<p class="category">§12.11 adversarial (sub-class: XXE injection / entity-expansion DoS)</p>
+<p class="tag-pills">
+<a class="tag tag-silent-loss" href="../by-tag/silent-loss/index.html">silent-loss</a>
+<a class="tag tag-spec-violation" href="../by-tag/spec-violation/index.html">spec-violation</a>
+<a class="tag tag-adversarial" href="../by-tag/adversarial/index.html">adversarial</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-11-adversarial/Ad107.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-11-adversarial/Ad107.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>bug-reporter language: &quot;STEP-XML hangs the loader&quot;, &quot;DTD entity expansion blows up memory&quot;</li>
+<li>CWE-776 (improper restriction of recursive entity references)</li>
+<li>ISO 10303-28 STEP-XML transfer</li>
+</ul></section>
+<section><h2>Sender</h2>
+<p>deduced — adversarial input that exercises the XML-1.0 entity-expansion path with recursively-defined internal entities</p></section>
+<section><h2>Description</h2>
+<p>ISO 10303-28 specifies an XML transfer of STEP data. A STEP-XML file may include an internal DTD; XML 1.0 permits an internal DTD to declare named entities that reference other named entities. The classic billion-laughs construction declares `&amp;lol;` as ten `&amp;lol1;` references, `&amp;lol1;` as ten `&amp;lol2;` references, and so on; expansion produces 10^N copies of the leaf string from N+1 entity declarations. A receiver whose XML parser does not cap entity-expansion depth or expanded-text size allocates gigabytes from a one-kilobyte input. Bug-reporter language: &quot;STEP-XML billion laughs&quot;, &quot;entity expansion DoS&quot;, &quot;recursive XML entities in STEP&quot;.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>a `.stpx` (STEP-XML) file with an internal DTD declaring `&lt;!ENTITY lol &quot;lol&quot;&gt;` then `&lt;!ENTITY lol1 &quot;&amp;lol;&amp;lol;&amp;lol;&amp;lol;&amp;lol;&amp;lol;&amp;lol;&amp;lol;&amp;lol;&amp;lol;&quot;&gt;` repeated through `&amp;lol9;`, with the document body referencing `&amp;lol9;` inside an attribute value.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>cap entity-expansion depth and expanded-text size in the XML parser used to load STEP-XML; reject documents that exceed the cap with a precise diagnostic; treat as adversarial.</p></section>
+<section><h2>Notes</h2>
+<p>Sibling of Ad104 (XXE via SYSTEM URI); both attack the STEP-XML wrapper. Synonyms: &quot;billion laughs in STEP&quot;, &quot;XML entity bomb in STEP-XML&quot;, &quot;exponential entity expansion&quot;. Provenance tier: cross-file-state — defect is in the .stpx wrapper&#x27;s DTD layer, not in the .stp body; bytes-level demonstration is the XML prologue. **See also**: Ad104, Ad108, Ad109. **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog&#x27;s allowed set ({reject}). Kernel-bug witnessed: receivers must reject this fixture per the catalog&#x27;s stated invariant.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<section><h2>Provenance tier</h2>
+<p><code>cross-file-state</code> — defect not fully embodied in fixture bytes.</p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>contains(b&#x27;&lt;!DOCTYPE&#x27;) and contains(b&#x27;&lt;!ENTITY&#x27;)</code></li>
+<li><code>contains(b&#x27;&amp;lol&#x27;) or contains(b&#x27;lol9&#x27;)</code></li>
+</ul></section>
+<section><h2>Cross-references</h2>
+<p><a href="Ad104.html">Ad104</a>, <a href="Ad108.html">Ad108</a>, <a href="Ad109.html">Ad109</a></p>
+</section>
+<section><h2>Live oracle output</h2>
+<table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
+<tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>no_shapes_loaded</code></td></tr>
+</tbody></table>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>/* Ad107 - STEP-XML wrapper carries a billion-laughs entity-expansion bomb
+<span class="lineno">2</span> * Defect: a STEP-XML (.stpx) file with an internal DTD declaring named
+<span class="lineno">3</span> * entities that recursively reference other named entities. Expansion
+<span class="lineno">4</span> * produces 10^N copies of the leaf string from N+1 entity declarations.
+<span class="lineno">5</span> * This fixture is shown in .stp form for cataloguing; the actual attack
+<span class="lineno">6</span> * surface is .stpx. Provenance tier: cross-file-state. */
+<span class="lineno">7</span>ISO-10303-21;
+<span class="lineno">8</span>HEADER;
+<span class="lineno">9</span>FILE_DESCRIPTION((&#x27;Ad107 - STEP-XML wrapper carries billion-laughs entity bomb&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">10</span>FILE_NAME(&#x27;Ad107.stp&#x27;,&#x27;2026-05-02T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">11</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }&#x27;));
+<span class="lineno">12</span>ENDSEC;
+<span class="lineno">13</span>DATA;
+<span class="lineno">14</span>/* Witness fixture: the .stp body is benign. The defect lives in the
+<span class="lineno">15</span>   .stpx XML prologue:
+<span class="lineno">16</span>     &lt;?xml version=&quot;1.0&quot;?&gt;
+<span class="lineno">17</span>     &lt;!DOCTYPE step [
+<span class="lineno">18</span>       &lt;!ENTITY lol &quot;lol&quot;&gt;
+<span class="lineno">19</span>       &lt;!ENTITY lol1 &quot;&amp;lol;&amp;lol;&amp;lol;&amp;lol;&amp;lol;&amp;lol;&amp;lol;&amp;lol;&amp;lol;&amp;lol;&quot;&gt;
+<span class="lineno">20</span>       &lt;!ENTITY lol2 &quot;&amp;lol1;&amp;lol1;&amp;lol1;&amp;lol1;&amp;lol1;&amp;lol1;&amp;lol1;&amp;lol1;&amp;lol1;&amp;lol1;&quot;&gt;
+<span class="lineno">21</span>       ...
+<span class="lineno">22</span>       &lt;!ENTITY lol9 &quot;&amp;lol8;&amp;lol8;&amp;lol8;&amp;lol8;&amp;lol8;&amp;lol8;&amp;lol8;&amp;lol8;&amp;lol8;&amp;lol8;&quot;&gt;
+<span class="lineno">23</span>     ]&gt;
+<span class="lineno">24</span>     &lt;step&gt;&lt;name&gt;&amp;lol9;&lt;/name&gt;&lt;/step&gt;
+<span class="lineno">25</span>   The DTD declarations are not legal inside Part-21; they are shown here
+<span class="lineno">26</span>   inside a comment so receivers can grep for the marker even though the
+<span class="lineno">27</span>   actual exploit lives in the XML wrapper. */
+<span class="lineno">28</span>/* &lt;!DOCTYPE step [&lt;!ENTITY lol &quot;lol&quot;&gt;&lt;!ENTITY lol9 &quot;&amp;lol8;...&quot;&gt;]&gt; */
+<span class="lineno">29</span>/* &amp;lol9; expands to 10^9 copies of &quot;lol&quot; - a billion laughs */
+<span class="lineno">30</span>#1=APPLICATION_CONTEXT(&#x27;automotive_design&#x27;);
+<span class="lineno">31</span>#10=CARTESIAN_POINT(&#x27;benign&#x27;,(0.0,0.0,0.0));
+<span class="lineno">32</span>ENDSEC;
+<span class="lineno">33</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Ad106.html">&larr; Ad106</a> <a class="up" href="index.html">§12.11 Adversarial / parser robustness</a> <a class="next" href="Ad108.html">Ad108 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

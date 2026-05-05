@@ -1,0 +1,60 @@
+/* Ad081 - Rhino-6 STEP triggers Standard_OutOfRange in TransferRoot
+   Source: STEP_PROBLEM_CATALOG.md §12.11 Ad081;
+           mining 18-other-issues.md I044 (pythonocc-core #702).
+   Pattern: ReadFile() succeeds, but TransferRoot() raises
+           Standard_OutOfRange and aborts the process. The classic
+           OCCT manifestation involves a SHAPE_DEFINITION_REPRESENTATION
+           whose `definition` slot references a PRODUCT_DEFINITION that
+           lacks a downstream STYLED_ITEM mapping; the indexed lookup
+           in MapOfShape misses and OCCT raises.
+   Reproducer recipe (per catalog): any Rhino-6-emitted STEP via
+           STEPControl_Reader.TransferRoot.
+   Expected kernel behavior: bound-check the index in the transfer
+           map; surface a recoverable exception (return TP_FAIL),
+           never abort the process.
+   This fixture mimics the structural shape Rhino-6 emits: a
+   PRODUCT_DEFINITION with no SHAPE_REPRESENTATION counterpart, but
+   the SDR points at it anyway. License-clean: hand-synthesized. */
+ISO-10303-21;
+HEADER;
+FILE_DESCRIPTION(
+  ('Ad081 - Rhino-6-shaped SDR with missing rep mapping'),
+  '2;1');
+FILE_NAME('Ad081.stp','2026-04-26T00:00:00',
+  ('auto-generated'),(''),'auto-generated','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
+  'automotive_design',2001,#1);
+#3=PRODUCT_CONTEXT('',#1,'mechanical');
+#4=PRODUCT('Rhino6Part','rhino-6 shape','',(#3));
+#5=PRODUCT_DEFINITION_FORMATION('','',#4);
+#6=PRODUCT_DEFINITION_CONTEXT('',#1,'design');
+#7=PRODUCT_DEFINITION('design','',#5,#6);
+#8=PRODUCT_DEFINITION_SHAPE('','',#7);
+/* shape representation that the SDR points at:
+   intentionally devoid of any geometric items - the shape items
+   list is empty, so OCCT's MapOfShape index lookup misses. */
+#10=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+     GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#11))
+     GLOBAL_UNIT_ASSIGNED_CONTEXT((#12,#13,#14))
+     REPRESENTATION_CONTEXT('','3D'));
+#11=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.E-7),#12,
+  'distance_accuracy_value','');
+#12=(LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT(.MILLI.,.METRE.));
+#13=(NAMED_UNIT(*) PLANE_ANGLE_UNIT() SI_UNIT($,.RADIAN.));
+#14=(NAMED_UNIT(*) SI_UNIT($,.STERADIAN.) SOLID_ANGLE_UNIT());
+/* SHAPE_REPRESENTATION with empty items list - the OOB trigger. */
+#20=SHAPE_REPRESENTATION('Rhino6Part',(),#10);
+/* SDR -> empty SR. TransferRoot will index into the empty map. */
+#21=SHAPE_DEFINITION_REPRESENTATION(#8,#20);
+/* second SDR pointing at a non-existent rep id (#999) -
+   another path that triggers Standard_OutOfRange in resolution. */
+#22=PRODUCT('Rhino6Dangling','dangling','',(#3));
+#23=PRODUCT_DEFINITION_FORMATION('','',#22);
+#24=PRODUCT_DEFINITION('design','',#23,#6);
+#25=PRODUCT_DEFINITION_SHAPE('','',#24);
+ENDSEC;
+END-ISO-10303-21;

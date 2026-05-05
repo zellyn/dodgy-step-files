@@ -1,0 +1,68 @@
+ISO-10303-21;
+/* Hea011 - Shape-healing driver: run a runtime-configured sequence of operators
+ * Multi-defect compound on which the driver is intended to run a sequence
+ * "fix-shape, same-parameter, remove-small-edges". Compound contains:
+ *   (a) a sub-tolerance edge (1e-7 long) -- target of remove-small-edges;
+ *   (b) an open shell (one face, hole in the topology) -- target of fix-shape;
+ *   (c) an edge whose 3D vs pcurve same-parameter is violated -- target of same-parameter.
+ * The operator-list itself is API-level (not encoded in STEP bytes). */
+HEADER;
+FILE_DESCRIPTION(('Hea011 test case','Multi-defect compound for fix-shape/same-parameter/remove-small-edges driver'),'2;1');
+FILE_NAME('Hea011.stp','2026-04-30T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#11=DIRECTION('',(0.0,0.0,1.0));#12=DIRECTION('',(1.0,0.0,0.0));
+#13=AXIS2_PLACEMENT_3D('',#10,#11,#12);#14=PLANE('',#13);
+/* (a) Sub-tolerance edge between two near-coincident vertex points (1e-7 apart). */
+#20=CARTESIAN_POINT('',(0.0,0.0,0.0));#21=VERTEX_POINT('Va',#20);
+#22=CARTESIAN_POINT('subtol',(1.0E-7,0.0,0.0));#23=VERTEX_POINT('Vb_subtol',#22);
+#24=DIRECTION('',(1.0,0.0,0.0));#25=VECTOR('',#24,1.0);#26=LINE('',#20,#25);
+#27=EDGE_CURVE('part_a_subtol_edge',#21,#23,#26,.T.);
+/* (b) Open shell: one face but with NO closing wire on the back side */
+#30=CARTESIAN_POINT('',(2.0,0.0,0.0));#31=VERTEX_POINT('Vc1',#30);
+#32=CARTESIAN_POINT('',(3.0,0.0,0.0));#33=VERTEX_POINT('Vc2',#32);
+#34=CARTESIAN_POINT('',(3.0,1.0,0.0));#35=VERTEX_POINT('Vc3',#34);
+#36=CARTESIAN_POINT('',(2.0,1.0,0.0));#37=VERTEX_POINT('Vc4',#36);
+#40=DIRECTION('',(1.0,0.0,0.0));#41=VECTOR('',#40,1.0);#42=LINE('',#30,#41);#43=EDGE_CURVE('',#31,#33,#42,.T.);
+#44=DIRECTION('',(0.0,1.0,0.0));#45=VECTOR('',#44,1.0);#46=LINE('',#32,#45);#47=EDGE_CURVE('',#33,#35,#46,.T.);
+#48=DIRECTION('',(-1.0,0.0,0.0));#49=VECTOR('',#48,1.0);#50=LINE('',#34,#49);#51=EDGE_CURVE('',#35,#37,#50,.T.);
+#52=DIRECTION('',(0.0,-1.0,0.0));#53=VECTOR('',#52,1.0);#54=LINE('',#36,#53);#55=EDGE_CURVE('',#37,#31,#54,.T.);
+#56=ORIENTED_EDGE('',*,*,#43,.T.);#57=ORIENTED_EDGE('',*,*,#47,.T.);
+#58=ORIENTED_EDGE('',*,*,#51,.T.);#59=ORIENTED_EDGE('',*,*,#55,.T.);
+#60=EDGE_LOOP('part_b_face_loop',(#56,#57,#58,#59));
+#61=FACE_OUTER_BOUND('',#60,.T.);
+#62=ADVANCED_FACE('part_b_face',(#61),#14,.T.);
+#63=OPEN_SHELL('part_b_open_shell',(#62));
+/* (c) Same-parameter violation: 3D LINE length 1.0; pcurve length 5.0 */
+#70=CARTESIAN_POINT('',(5.0,0.0,0.0));#71=VERTEX_POINT('Vd1',#70);
+#72=CARTESIAN_POINT('',(6.0,0.0,0.0));#73=VERTEX_POINT('Vd2',#72);
+#74=DIRECTION('',(1.0,0.0,0.0));#75=VECTOR('',#74,1.0);#76=LINE('part_c_3d_len1',#70,#75);
+#77=CARTESIAN_POINT('',(0.0,0.0));#78=DIRECTION('',(1.0,0.0));#79=VECTOR('',#78,5.0);
+#80=LINE('part_c_pcurve_len5',#77,#79);
+#81=DEFINITIONAL_REPRESENTATION('',(#80),#13);
+#82=PCURVE('',#14,#81);
+#83=SURFACE_CURVE('',#76,(#82),.PCURVE_S1.);
+#84=EDGE_CURVE('part_c_sameparam_violation',#71,#73,#83,.T.);
+/* Compound */
+#100=GEOMETRIC_SET('multi_defect_compound',(#27,#63,#84));
+/* Wrap: minimal PRODUCT chain so OCCT TransferRoots produces a shape. */
+#9000=PRODUCT_CONTEXT('',#1,'mechanical');
+#9001=PRODUCT('Hea011','Hea011','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
+#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
+#9021=SHELL_BASED_SURFACE_MODEL('wrap_sbsm',(#63));
+#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#9010);
+#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+ENDSEC;
+END-ISO-10303-21;

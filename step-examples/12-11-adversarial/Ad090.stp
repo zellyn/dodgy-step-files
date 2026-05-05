@@ -1,0 +1,14 @@
+ISO-10303-21;
+/* Ad090 - Lower-case end marker rejected by strict reader
+ * Defect: STEP file ends with end-iso-10303-21; (lower-case) instead of standard form */
+HEADER;
+FILE_DESCRIPTION(('Ad090 test case','Lower-case end marker rejected by strict reader'),'2;1');
+FILE_NAME('Ad090.stp','2026-04-30T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+#100=CARTESIAN_POINT('',(0.0,0.0,0.0));
+ENDSEC;
+end-iso-10303-21;

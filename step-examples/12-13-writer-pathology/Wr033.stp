@@ -1,0 +1,20 @@
+/* Wr033 - FILE_SCHEMA declares schema version that does not exist - implausible version tuple */
+ISO-10303-21;
+HEADER;
+FILE_DESCRIPTION(('Wr033 - implausible schema version tuple'),'2;1');
+FILE_NAME('Wr033.stp','2026-04-30T00:00:00',(''),(''),
+  'cad-research-suite','','');
+/* Wr033: writer hard-coded a schema-id with year tuple 99 - implausible.
+   Receivers either reject or ignore the version and load under last-known
+   compatible schema */
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 99 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('mechanical design');
+#10=CARTESIAN_POINT('origin',(0.0,0.0,0.0));
+#11=DIRECTION('z',(0.0,0.0,1.0));
+#12=DIRECTION('x',(1.0,0.0,0.0));
+#13=AXIS2_PLACEMENT_3D('placement',#10,#11,#12);
+#20=(LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT(.MILLI.,.METRE.));
+ENDSEC;
+END-ISO-10303-21;

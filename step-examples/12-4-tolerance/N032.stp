@@ -1,0 +1,48 @@
+/* N032 - Tolerance type entity coverage: AP242 tolerance entities dropped on import
+ * Defect: STEP file uses an AP242 tolerance entity (e.g.
+ * RUNOUT_TOLERANCE_WITH_VALUES, UNEQUALLY_DISPOSED_GEOMETRIC_TOLERANCE,
+ * RUNOUT_ZONE_DEFINITION with RUNOUT_ZONE_ORIENTATION_REFERENCE_DIRECTION)
+ * that the importer drops because it isn't in its parser.
+ * Reproducer: file references an AP242 RUNOUT_TOLERANCE entity tied to a
+ * face -- AP214-only importers drop it silently.
+ */
+ISO-10303-21;
+HEADER;
+FILE_DESCRIPTION(('N032 AP242 RUNOUT_TOLERANCE_WITH_VALUES dropped on import'),'2;1');
+FILE_NAME('N032.stp','2026-04-26T00:00:00',(''),(''),
+  'cad-research-suite','','');
+FILE_SCHEMA(('AP242_MANAGED_MODEL_BASED_3D_ENGINEERING_MIM_LF'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('managed model-based 3d engineering');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
+  'ap242_managed_model_based_3d_engineering',2014,#1);
+#10=CARTESIAN_POINT('p0',(0.0,0.0,0.0));
+#11=CARTESIAN_POINT('p1',(20.0,0.0,0.0));
+#20=VERTEX_POINT('',#10);
+#21=VERTEX_POINT('',#11);
+#30=DIRECTION('+x',(1.0,0.0,0.0));
+#31=VECTOR('',#30,20.0);
+#32=LINE('',#10,#31);
+#40=EDGE_CURVE('shaft_edge',#20,#21,#32,.T.);
+#50=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#51=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#52=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#60=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-6),#50,
+  'distance_accuracy_value','');
+#70=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#60))
+  GLOBAL_UNIT_ASSIGNED_CONTEXT((#50,#51,#52))
+  REPRESENTATION_CONTEXT('ctx','3D'));
+/* AP242 tolerance entities likely-dropped by AP214-only readers: */
+#80=LENGTH_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.05),#50);
+#81=PLUS_MINUS_TOLERANCE(#80,'runout_tol','total runout');
+#82=DIRECTION('runout_zone_axis',(1.0,0.0,0.0));
+/* Defect site: AP242-specific RUNOUT_TOLERANCE_WITH_VALUES + zone definition
+ * which AP214 importers do not recognize. */
+#83=RUNOUT_TOLERANCE_WITH_VALUES('total_runout','AP242 runout',$,$,$,
+  #80,'circular_runout');
+#84=RUNOUT_ZONE_DEFINITION(#83,$,1);
+#85=RUNOUT_ZONE_ORIENTATION_REFERENCE_DIRECTION(#84,#82);
+ENDSEC;
+END-ISO-10303-21;

@@ -1,0 +1,61 @@
+ISO-10303-21;
+/* Gs051 - Sphere/cylinder cut wrong pcurves on second seam
+ * Defect: Boolean cut of sphere by cylinder produces two seam edges.
+ * The first seam's PCURVE on the sphere correctly references U=0;
+ * the SECOND seam's PCURVE incorrectly references U=pi rather than
+ * U=2*pi (off by half a domain), so the seam wraps the sphere on
+ * the wrong half. */
+HEADER;
+FILE_DESCRIPTION(('Gs051 test case','Sphere/cylinder cut wrong pcurves on second seam'),'2;1');
+FILE_NAME('Gs051.stp','2026-04-30T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+/* Sphere radius 5, cylinder radius 2 share the same axes -> cut */
+#100=CARTESIAN_POINT('origin',(0.0,0.0,0.0));
+#101=DIRECTION('z',(0.0,0.0,1.0));
+#102=DIRECTION('x',(1.0,0.0,0.0));
+#103=AXIS2_PLACEMENT_3D('axes',#100,#101,#102);
+#104=SPHERICAL_SURFACE('sphere',#103,5.0);
+#110=CYLINDRICAL_SURFACE('cutter',#103,2.0);
+/* Boolean cut: BOOLEAN_RESULT requires manifold solid operands; the
+ * key load-bearing structure here is the seam edges + pcurves whose
+ * U-parameters disagree, so we encode the seam directly via SURFACE_CURVE
+ * entities binding 3D circles to two pcurves on the sphere. */
+/* Two intersection circles (top and bottom cap of cylinder) */
+#120=CARTESIAN_POINT('top_center',(0.0,0.0,4.582575694955840)); /* sqrt(5^2 - 2^2) */
+#121=AXIS2_PLACEMENT_3D('top_axes',#120,#101,#102);
+#122=CIRCLE('seam1_3d',#121,2.0);
+#130=CARTESIAN_POINT('bot_center',(0.0,0.0,-4.582575694955840));
+#131=AXIS2_PLACEMENT_3D('bot_axes',#130,#101,#102);
+#132=CIRCLE('seam2_3d',#131,2.0);
+/* PCURVE for seam 1: 2D circle in (U,V) of sphere parameter domain
+ * The pcurve correctly references U=0 (a horizontal line in (U,V)). */
+#140=CARTESIAN_POINT('seam1_uv0',(0.0,1.156)); /* V = asin(4.5826/5) ~ 1.156 */
+#141=DIRECTION('uvdir',(1.0,0.0));
+#142=VECTOR('uvvec',#141,6.283185307179586);
+#143=LINE('seam1_pc',#140,#142); /* spans U=0..2pi at V=+1.156 */
+#144=DEFINITIONAL_REPRESENTATION('seam1_def',(#143),#103);
+#145=PCURVE('seam1_pc',#104,#144);
+#146=SURFACE_CURVE('seam1_sc',#122,(#145),.PCURVE_S1.);
+/* PCURVE for seam 2: WRONG U start. Should be U=0..2pi but writer
+ * emitted U=pi..3pi (i.e. shifted by half a period) — references
+ * the wrong half of the parameter domain. */
+#150=CARTESIAN_POINT('seam2_uv0_BAD',(3.141592653589793,-1.156));
+#151=DIRECTION('uvdir2',(1.0,0.0));
+#152=VECTOR('uvvec2',#151,6.283185307179586);
+#153=LINE('seam2_pc_BAD',#150,#152);
+#154=DEFINITIONAL_REPRESENTATION('seam2_def',(#153),#103);
+#155=PCURVE('seam2_pc_BAD',#104,#154);
+#156=SURFACE_CURVE('seam2_sc',#132,(#155),.PCURVE_S1.);
+/* Seam edges */
+#160=CARTESIAN_POINT('seam1_pt',(2.0,0.0,4.582575694955840));
+#161=VERTEX_POINT('',#160);
+#162=EDGE_CURVE('seam1',#161,#161,#146,.T.);
+#170=CARTESIAN_POINT('seam2_pt',(2.0,0.0,-4.582575694955840));
+#171=VERTEX_POINT('',#170);
+#172=EDGE_CURVE('seam2_wrong_pcurve_U',#171,#171,#156,.T.);
+ENDSEC;
+END-ISO-10303-21;

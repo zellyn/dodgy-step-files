@@ -1,0 +1,39 @@
+/* Wr024 - NAUO assembly-tree flattened on re-export - subassembly grouping lost */
+ISO-10303-21;
+HEADER;
+FILE_DESCRIPTION(('Wr024 - NAUO chain flattened'),'2;1');
+FILE_NAME('Wr024.stp','2026-04-30T00:00:00',(''),(''),
+  'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('mechanical design');
+#2=PRODUCT_CONTEXT('part',#1,'mechanical');
+/* Wr024: input had a two-level assembly hierarchy:
+   top -> subassembly_A -> part_1, part_2
+   top -> subassembly_B -> part_3, part_4
+   Writer flattened to one level. The two named subassemblies are gone;
+   all four parts are now direct children of top */
+#10=PRODUCT('top','top assembly','',(#2));
+#11=PRODUCT('part_1','part 1','',(#2));
+#12=PRODUCT('part_2','part 2','',(#2));
+#13=PRODUCT('part_3','part 3','',(#2));
+#14=PRODUCT('part_4','part 4','',(#2));
+#20=PRODUCT_DEFINITION_FORMATION('','',#10);
+#21=PRODUCT_DEFINITION_FORMATION('','',#11);
+#22=PRODUCT_DEFINITION_FORMATION('','',#12);
+#23=PRODUCT_DEFINITION_FORMATION('','',#13);
+#24=PRODUCT_DEFINITION_FORMATION('','',#14);
+#30=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#31=PRODUCT_DEFINITION('design','',#20,#30);
+#32=PRODUCT_DEFINITION('design','',#21,#30);
+#33=PRODUCT_DEFINITION('design','',#22,#30);
+#34=PRODUCT_DEFINITION('design','',#23,#30);
+#35=PRODUCT_DEFINITION('design','',#24,#30);
+#40=NEXT_ASSEMBLY_USAGE_OCCURRENCE('1','top->p1','',#31,#32,$);
+#41=NEXT_ASSEMBLY_USAGE_OCCURRENCE('2','top->p2','',#31,#33,$);
+#42=NEXT_ASSEMBLY_USAGE_OCCURRENCE('3','top->p3','',#31,#34,$);
+#43=NEXT_ASSEMBLY_USAGE_OCCURRENCE('4','top->p4','',#31,#35,$);
+#50=(LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT(.MILLI.,.METRE.));
+ENDSEC;
+END-ISO-10303-21;

@@ -1,0 +1,61 @@
+ISO-10303-21;
+/* Tsh011 - FACE_OUTER_BOUND orientation flag inconsistent with winding
+ * Defect: An EDGE_LOOP's ORIENTED_EDGE.orientation flags are
+ * inconsistent with the geometric winding required by the face's
+ * outward normal -- outer wire reversed, or holes oriented as outer.
+ * ShapeFix_Face::FixOrientation flips inner/outer bound classification.
+ *
+ * This file: a single face on a PLANE whose outer wire winds CW (rather
+ * than CCW for an outward +Z normal). To make the defect prominent we
+ * also include a properly-oriented inner hole loop -- so the file has
+ * both: outer reversed, inner hole loop correct. ShapeFix would either
+ * swap inner/outer classification or flip the outer ORIENTED_EDGE flags. */
+HEADER;
+FILE_DESCRIPTION(('Tsh011 test case','FACE_OUTER_BOUND orientation reversed'),'2;1');
+FILE_NAME('Tsh011.stp','2026-04-26T00:00:00',(''),(''),'auto-generated','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+/* Square outer 0..1 with circular hole at center radius 0.2 */
+#100=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#101=CARTESIAN_POINT('',(1.0,0.0,0.0));
+#102=CARTESIAN_POINT('',(1.0,1.0,0.0));
+#103=CARTESIAN_POINT('',(0.0,1.0,0.0));
+#110=VERTEX_POINT('',#100); #111=VERTEX_POINT('',#101);
+#112=VERTEX_POINT('',#102); #113=VERTEX_POINT('',#103);
+/* Hole start vertex */
+#120=CARTESIAN_POINT('',(0.7,0.5,0.0));
+#121=VERTEX_POINT('',#120);
+/* Plane surface */
+#200=DIRECTION('',(0.0,0.0,1.0)); #201=DIRECTION('',(1.0,0.0,0.0));
+#211=AXIS2_PLACEMENT_3D('',#100,#200,#201); #212=PLANE('',#211);
+/* Hole circle */
+#220=CARTESIAN_POINT('',(0.5,0.5,0.0));
+#221=AXIS2_PLACEMENT_3D('',#220,#200,#201);
+#222=CIRCLE('',#221,0.2);
+/* Outer edges */
+#300=DIRECTION('',(1.0,0.0,0.0)); #301=VECTOR('',#300,1.0);
+#302=DIRECTION('',(0.0,1.0,0.0)); #303=VECTOR('',#302,1.0);
+#310=LINE('',#100,#301); #311=EDGE_CURVE('',#110,#111,#310,.T.);
+#312=LINE('',#101,#303); #313=EDGE_CURVE('',#111,#112,#312,.T.);
+#314=LINE('',#103,#301); #315=EDGE_CURVE('',#113,#112,#314,.T.);
+#316=LINE('',#100,#303); #317=EDGE_CURVE('',#110,#113,#316,.T.);
+/* Hole edge: full circle from #121 back to #121 */
+#318=EDGE_CURVE('hole_edge',#121,#121,#222,.T.);
+/* Outer wire reversed: walks CW around the +Z face normal */
+#400=ORIENTED_EDGE('',*,*,#317,.T.);
+#401=ORIENTED_EDGE('',*,*,#315,.T.);
+#402=ORIENTED_EDGE('',*,*,#313,.F.);
+#403=ORIENTED_EDGE('',*,*,#311,.F.);
+#404=EDGE_LOOP('',(#400,#401,#402,#403));
+/* Defect: declared FACE_OUTER_BOUND but loop winds CW relative to face normal */
+#405=FACE_OUTER_BOUND('reversed_outer',#404,.T.);
+/* Hole wire correct (CW for hole, i.e. opposite to outer) */
+#410=ORIENTED_EDGE('',*,*,#318,.F.);
+#411=EDGE_LOOP('',(#410));
+#412=FACE_BOUND('hole',#411,.T.);
+#420=ADVANCED_FACE('reversed_winding',(#405,#412),#212,.T.);
+ENDSEC;
+END-ISO-10303-21;

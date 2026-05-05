@@ -1,0 +1,69 @@
+ISO-10303-21;
+/* Gs034 - Twisted face / pinched face / face-split-by-vertices (Mobius-cell pathology)
+ * Defect: A planar face whose outer wire visits the same vertex twice (figure-eight
+ * pinch). ShapeAnalysis_CheckSmallFace::CheckTwisted/CheckSplittingVertices detects;
+ * ShapeFix_Face::FixWiresTwoCoincEdges/FixSplitFace heals by splitting at the pinch. */
+HEADER;
+FILE_DESCRIPTION(('Gs034 test case','Pinched face, figure-eight outer wire'),'2;1');
+FILE_NAME('Gs034.stp','2026-04-26T00:00:00',(''),(''),'auto-generated','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#11=DIRECTION('',(0.0,0.0,1.0));
+#12=DIRECTION('',(1.0,0.0,0.0));
+#13=AXIS2_PLACEMENT_3D('',#10,#11,#12);
+#20=PLANE('',#13);
+/* Two square lobes meeting at a single shared pinch vertex P=(5,5):
+ * Lobe 1: P -> (10,0) -> (10,10) -> P
+ * Lobe 2: P -> (0,10) -> (0,0)   -> P
+ * P is visited twice in the same outer wire -> figure-eight pinch. */
+#30=CARTESIAN_POINT('',(5.0,5.0,0.0));
+#31=VERTEX_POINT('',#30);
+#32=CARTESIAN_POINT('',(10.0,0.0,0.0));
+#33=VERTEX_POINT('',#32);
+#34=CARTESIAN_POINT('',(10.0,10.0,0.0));
+#35=VERTEX_POINT('',#34);
+#36=CARTESIAN_POINT('',(0.0,10.0,0.0));
+#37=VERTEX_POINT('',#36);
+#38=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#39=VERTEX_POINT('',#38);
+/* Six edges to trace the figure-eight */
+#40=DIRECTION('',(0.7071067811865476,-0.7071067811865476,0.0));
+#41=VECTOR('',#40,7.0710678118654755);
+#42=LINE('',#30,#41);
+#43=DIRECTION('',(0.0,1.0,0.0));
+#44=VECTOR('',#43,10.0);
+#45=LINE('',#32,#44);
+#46=DIRECTION('',(-0.7071067811865476,-0.7071067811865476,0.0));
+#47=VECTOR('',#46,7.0710678118654755);
+#48=LINE('',#34,#47);
+#49=DIRECTION('',(-0.7071067811865476,0.7071067811865476,0.0));
+#50=VECTOR('',#49,7.0710678118654755);
+#51=LINE('',#30,#50);
+#52=DIRECTION('',(0.0,-1.0,0.0));
+#53=VECTOR('',#52,10.0);
+#54=LINE('',#36,#53);
+#55=DIRECTION('',(0.7071067811865476,0.7071067811865476,0.0));
+#56=VECTOR('',#55,7.0710678118654755);
+#57=LINE('',#38,#56);
+#60=EDGE_CURVE('',#31,#33,#42,.T.);
+#61=EDGE_CURVE('',#33,#35,#45,.T.);
+#62=EDGE_CURVE('',#35,#31,#48,.T.);
+#63=EDGE_CURVE('',#31,#37,#51,.T.);
+#64=EDGE_CURVE('',#37,#39,#54,.T.);
+#65=EDGE_CURVE('',#39,#31,#57,.T.);
+#70=ORIENTED_EDGE('',*,*,#60,.T.);
+#71=ORIENTED_EDGE('',*,*,#61,.T.);
+#72=ORIENTED_EDGE('',*,*,#62,.T.);
+#73=ORIENTED_EDGE('',*,*,#63,.T.);
+#74=ORIENTED_EDGE('',*,*,#64,.T.);
+#75=ORIENTED_EDGE('',*,*,#65,.T.);
+/* Defect: outer wire visits #31 twice (single shared pinch) */
+#80=EDGE_LOOP('',(#70,#71,#72,#73,#74,#75));
+#81=FACE_OUTER_BOUND('',#80,.T.);
+#82=ADVANCED_FACE('',(#81),#20,.T.);
+ENDSEC;
+END-ISO-10303-21;

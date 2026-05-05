@@ -1,0 +1,53 @@
+/* Tb021 - Multiple unlabelled UNCERTAINTY values in one context
+ * Defect: GEOMETRIC_REPRESENTATION_CONTEXT lists three
+ * UNCERTAINTY_MEASURE_WITH_UNIT entries with values 1e-3, 1e-6, 1e-9 and
+ * no distinguishing name. Receiver-A picks min (1e-9 -- strict).
+ * Receiver-B picks max (1e-3 -- lax). Receiver-C picks first (1e-3).
+ * Receiver-D picks last (1e-9). Same file, four working tolerances.
+ * All other tolerance-boundary defects in this section amplify under
+ * this ambiguity.
+ */
+ISO-10303-21;
+HEADER;
+FILE_DESCRIPTION(('Tb021 multiple unlabelled uncertainty values'),'2;1');
+FILE_NAME('Tb021.stp','2026-04-30T00:00:00',(''),(''),
+  'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
+  'automotive_design',2009,#1);
+#10=CARTESIAN_POINT('p0',(0.0,0.0,0.0));
+#11=CARTESIAN_POINT('p1',(1.0,0.0,0.0));
+#20=VERTEX_POINT('v0',#10);
+#21=VERTEX_POINT('v1',#11);
+#30=DIRECTION('+x',(1.0,0.0,0.0));
+#31=VECTOR('vx',#30,1.0);
+#32=LINE('l',#10,#31);
+#40=EDGE_CURVE('e',#20,#21,#32,.T.);
+#50=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#51=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#52=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+/* Three unlabelled uncertainties spanning six orders of magnitude. */
+#60=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-3),#50,
+  '','');
+#61=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-6),#50,
+  '','');
+#62=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-9),#50,
+  '','');
+#70=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#60,#61,#62))
+  GLOBAL_UNIT_ASSIGNED_CONTEXT((#50,#51,#52))
+  REPRESENTATION_CONTEXT('ctx','3D'));
+#9000=PRODUCT_CONTEXT('',#1,'mechanical');
+#9001=PRODUCT('Tb021','Tb021','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9020=GEOMETRIC_CURVE_SET('cs',(#40));
+#9021=GEOMETRICALLY_BOUNDED_WIREFRAME_SHAPE_REPRESENTATION('',(#9020),#70);
+#9022=SHAPE_DEFINITION_REPRESENTATION(#9005,#9021);
+ENDSEC;
+END-ISO-10303-21;

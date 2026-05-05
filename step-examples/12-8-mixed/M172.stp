@@ -1,0 +1,26 @@
+ISO-10303-21;
+/* M172 - AP238 TURNING_OPERATION on workpiece with no rotation axis declared.
+ * Defect: a TURNING_OPERATION targets a WORKPIECE that lacks any
+ * rotational-axis declaration (no spindle_axis, no axis_of_revolution
+ * placement). The controller has no axis to spin the stock around;
+ * turning is meaningless on a non-rotating workpiece. */
+HEADER;
+FILE_DESCRIPTION(('M172 test case','AP238 turning on workpiece without rotation axis'),'2;1');
+FILE_NAME('M172.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AP238_STEP_NC_MIM { 1 0 10303 238 1 0 0 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('numerical_control_machining');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
+  'numerical_control_machining',2007,#1);
+#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10))
+     REPRESENTATION_CONTEXT('nc','3D'));
+/* Defect: WORKPIECE has no axis_of_revolution / spindle_axis declared. */
+#400=WORKPIECE('block_stock_no_axis',$,$,$,$,$,$);
+#100=TURNING_OPERATION('turn_a_block',$,$,$,$,$,$,$);
+#300=MACHINING_WORKINGSTEP('ws1',$,#100,#400);
+#200=WORKPLAN('main',(#300),$,$,$);
+ENDSEC;
+END-ISO-10303-21;

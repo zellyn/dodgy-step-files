@@ -1,0 +1,73 @@
+/* Ad084 - XCAFDoc_ShapeTool::FindSubShape crash building XCAF tree
+   Source: STEP_PROBLEM_CATALOG.md §12.11 Ad084;
+           mining 18-other-issues.md I003 (OCCT #1200, propeller.zip).
+   Pattern: STEP read crashes inside FindSubShape while building the
+           XCAF (eXtended CAD Application Framework) document tree on
+           an otherwise well-formed file. Root cause is a NULL TopoDS
+           shape returned by the indexed sub-shape map - the lookup
+           hits a slot that was inserted but never populated, and a
+           null-deref follows when XCAFDoc walks the children.
+   Reproducer recipe (per catalog): ReadFile + Transfer on shipped
+           propeller.stp.
+   Expected kernel behavior: reject or heal without crashing - any
+           null sub-shape must be a recoverable diagnostic, never a
+           crash.
+   STEP analogue: a STYLED_ITEM whose `item` slot points at a
+   SHAPE_REPRESENTATION that owns an empty (non-null but contentless)
+   ADVANCED_FACE; the XCAF tree builder walks the face's bounds list
+   and dereferences a null inner shell. License-clean: synthesized. */
+ISO-10303-21;
+HEADER;
+FILE_DESCRIPTION(
+  ('Ad084 - XCAF FindSubShape null-deref probe'),
+  '2;1');
+FILE_NAME('Ad084.stp','2026-04-26T00:00:00',
+  ('auto-generated'),(''),'auto-generated','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
+  'automotive_design',2001,#1);
+#3=PRODUCT_CONTEXT('',#1,'mechanical');
+#4=PRODUCT('Propeller','XCAF probe','',(#3));
+#5=PRODUCT_DEFINITION_FORMATION('','',#4);
+#6=PRODUCT_DEFINITION_CONTEXT('',#1,'design');
+#7=PRODUCT_DEFINITION('design','',#5,#6);
+#8=PRODUCT_DEFINITION_SHAPE('','',#7);
+#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#11=DIRECTION('',(0.0,0.0,1.0));
+#12=DIRECTION('',(1.0,0.0,0.0));
+#13=AXIS2_PLACEMENT_3D('',#10,#11,#12);
+#14=PLANE('',#13);
+#15=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+     GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#16))
+     GLOBAL_UNIT_ASSIGNED_CONTEXT((#17,#18,#19))
+     REPRESENTATION_CONTEXT('','3D'));
+#16=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.E-7),#17,
+  'distance_accuracy_value','');
+#17=(LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT(.MILLI.,.METRE.));
+#18=(NAMED_UNIT(*) PLANE_ANGLE_UNIT() SI_UNIT($,.RADIAN.));
+#19=(NAMED_UNIT(*) SI_UNIT($,.STERADIAN.) SOLID_ANGLE_UNIT());
+/* face with a bounds entry pointing at a non-existent edge_loop slot.
+   the XCAF tree builder enumerates face bounds and dereferences. */
+#20=FACE_OUTER_BOUND('',#21,.T.);
+#21=EDGE_LOOP('',());
+#22=ADVANCED_FACE('faceA',(#20),#14,.T.);
+#23=OPEN_SHELL('shellA',(#22));
+#24=SHELL_BASED_SURFACE_MODEL('Propeller',(#23));
+#30=SHAPE_REPRESENTATION('Propeller',(#13,#24),#15);
+#31=SHAPE_DEFINITION_REPRESENTATION(#8,#30);
+/* STYLED_ITEM into the empty face - XCAF visits the styled item,
+   crawls down to the face's bounds, and finds an empty edge loop
+   exactly where FindSubShape expects an indexable child. */
+#40=COLOUR_RGB('red',1.0,0.0,0.0);
+#41=FILL_AREA_STYLE_COLOUR('',#40);
+#42=FILL_AREA_STYLE('',(#41));
+#43=SURFACE_STYLE_FILL_AREA(#42);
+#44=SURFACE_SIDE_STYLE('',(#43));
+#45=SURFACE_STYLE_USAGE(.BOTH.,#44);
+#46=PRESENTATION_STYLE_ASSIGNMENT((#45));
+#47=STYLED_ITEM('',(#46),#22);
+ENDSEC;
+END-ISO-10303-21;

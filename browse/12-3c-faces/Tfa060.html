@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Tfa060 — Shell parametric coverage exceeds host surface bounds</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.3c Faces / sewing / free bound</a> <span class="sep">/</span> <span class="current">Tfa060</span>
+</nav>
+<header class="title-bar">
+<h1>Tfa060 <span class="sep">—</span> <span class="entry-title">Shell parametric coverage exceeds host surface bounds</span></h1>
+<p class="category">§12.3a (sub-class: shell parameter coverage)</p>
+<p class="severity-badge severity-p1">P1 — silent data loss</p>
+<p class="tag-pills">
+<a class="tag tag-topology" href="../by-tag/topology/index.html">topology</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-3c-faces/Tfa060.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-3c-faces/Tfa060.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>OCCT BRepLib_MakeShell ShellError.ShellParametersOutOfRange (uncovered class evidence)</li>
+</ul></section>
+<section><h2>Sender</h2>
+<p>deduced — OCCT uncovered-class sweep, Pass C</p></section>
+<section><h2>Description</h2>
+<p>A face within a shell has a bounding wire whose pcurve excursion in UV exceeds the `u_min.u_max`/`v_min.v_max` of the underlying surface. The face &quot;wraps around&quot; or &quot;overshoots&quot; the surface. Bug-reporter language: &quot;face parameters out of range&quot;, &quot;wire goes off surface&quot;.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>An `ADVANCED_FACE` on a `RECTANGULAR_TRIMMED_SURFACE` with `u1=0, u2=1`. The bounding wire&#x27;s pcurve runs from `u=0` to `u=1.5`.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>Clamp pcurve to surface domain, or extend the surface trim, or reject.</p></section>
+<section><h2>Notes</h2>
+<p>Synonyms: &quot;uv parameters too wide&quot;, &quot;face overshoots surface&quot;, &quot;face wraps around surface bounds&quot;, &quot;wire goes off surface&quot;, &quot;pcurve excursion beyond u_min.u_max&quot;.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a</code></p></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>brepcheck.valid == False</code></li>
+</ul></section>
+<section><h2>Live oracle output</h2>
+<table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
+<tr><td><code>occt_heal_on</code></td><td><code>shape(1)</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>shape(1)</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>empty_mesh</code></td></tr>
+</tbody></table>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* Tfa060 - Shell parametric coverage exceeds host surface bounds
+<span class="lineno">3</span> * Face on a RECTANGULAR_TRIMMED_SURFACE with u1=0, u2=1, v1=0, v2=1.
+<span class="lineno">4</span> * The bounding wire has a pcurve whose U-parameter range overshoots to
+<span class="lineno">5</span> * U=1.5 -- 0.5 unit beyond the trimmed surface domain. */
+<span class="lineno">6</span>HEADER;
+<span class="lineno">7</span>FILE_DESCRIPTION((&#x27;Tfa060 test case&#x27;,&#x27;Face on RECTANGULAR_TRIMMED_SURFACE u in[0,1] with pcurve to U=1.5&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">8</span>FILE_NAME(&#x27;Tfa060.stp&#x27;,&#x27;2026-04-30T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">9</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }&#x27;));
+<span class="lineno">10</span>ENDSEC;
+<span class="lineno">11</span>DATA;
+<span class="lineno">12</span>#1=APPLICATION_CONTEXT(&#x27;automotive_design&#x27;);
+<span class="lineno">13</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,&#x27;automotive_design&#x27;,2000,#1);
+<span class="lineno">14</span>#10=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">15</span>#11=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">16</span>#12=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">17</span>#13=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#10,#11,#12);
+<span class="lineno">18</span>#14=PLANE(&#x27;base_plane&#x27;,#13);
+<span class="lineno">19</span>/* Trimmed to u in [0,1], v in [0,1] */
+<span class="lineno">20</span>#15=RECTANGULAR_TRIMMED_SURFACE(&#x27;trimmed_unit&#x27;,#14,0.0,0.0,1.0,1.0,.T.,.T.);
+<span class="lineno">21</span>/* 4 vertex corners; right edge runs out to U=1.5, V=0..1. */
+<span class="lineno">22</span>#20=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));#21=VERTEX_POINT(&#x27;V1&#x27;,#20);
+<span class="lineno">23</span>#22=CARTESIAN_POINT(&#x27;&#x27;,(1.5,0.0,0.0));#23=VERTEX_POINT(&#x27;V2_at_U1p5&#x27;,#22);
+<span class="lineno">24</span>#24=CARTESIAN_POINT(&#x27;&#x27;,(1.5,1.0,0.0));#25=VERTEX_POINT(&#x27;V3_at_U1p5&#x27;,#24);
+<span class="lineno">25</span>#26=CARTESIAN_POINT(&#x27;&#x27;,(0.0,1.0,0.0));#27=VERTEX_POINT(&#x27;V4&#x27;,#26);
+<span class="lineno">26</span>/* edge1: V1-&gt;V2 -- pcurve runs U=0 to U=1.5, OVERSHOOTING the surface trim. */
+<span class="lineno">27</span>#30=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));#31=VECTOR(&#x27;&#x27;,#30,1.0);#32=LINE(&#x27;&#x27;,#20,#31);
+<span class="lineno">28</span>#33=CARTESIAN_POINT(&#x27;uv_start&#x27;,(0.0,0.0));
+<span class="lineno">29</span>#34=DIRECTION(&#x27;&#x27;,(1.0,0.0));#35=VECTOR(&#x27;&#x27;,#34,1.5);
+<span class="lineno">30</span>#36=LINE(&#x27;pcurve_overshoots_to_U1p5&#x27;,#33,#35);
+<span class="lineno">31</span>#37=DEFINITIONAL_REPRESENTATION(&#x27;&#x27;,(#36),#13);
+<span class="lineno">32</span>#38=PCURVE(&#x27;pcurve_U_0_to_1p5&#x27;,#15,#37);
+<span class="lineno">33</span>#39=SURFACE_CURVE(&#x27;overshoot&#x27;,#32,(#38),.PCURVE_S1.);
+<span class="lineno">34</span>#40=EDGE_CURVE(&#x27;e1_overshoot_pcurve&#x27;,#21,#23,#39,.T.);
+<span class="lineno">35</span>#41=DIRECTION(&#x27;&#x27;,(0.0,1.0,0.0));#42=VECTOR(&#x27;&#x27;,#41,1.0);#43=LINE(&#x27;&#x27;,#22,#42);
+<span class="lineno">36</span>#44=EDGE_CURVE(&#x27;e2&#x27;,#23,#25,#43,.T.);
+<span class="lineno">37</span>#45=DIRECTION(&#x27;&#x27;,(-1.0,0.0,0.0));#46=VECTOR(&#x27;&#x27;,#45,1.5);#47=LINE(&#x27;&#x27;,#24,#46);
+<span class="lineno">38</span>#48=EDGE_CURVE(&#x27;e3&#x27;,#25,#27,#47,.T.);
+<span class="lineno">39</span>#49=DIRECTION(&#x27;&#x27;,(0.0,-1.0,0.0));#50=VECTOR(&#x27;&#x27;,#49,1.0);#51=LINE(&#x27;&#x27;,#26,#50);
+<span class="lineno">40</span>#52=EDGE_CURVE(&#x27;e4&#x27;,#27,#21,#51,.T.);
+<span class="lineno">41</span>#60=ORIENTED_EDGE(&#x27;&#x27;,*,*,#40,.T.);
+<span class="lineno">42</span>#61=ORIENTED_EDGE(&#x27;&#x27;,*,*,#44,.T.);
+<span class="lineno">43</span>#62=ORIENTED_EDGE(&#x27;&#x27;,*,*,#48,.T.);
+<span class="lineno">44</span>#63=ORIENTED_EDGE(&#x27;&#x27;,*,*,#52,.T.);
+<span class="lineno">45</span>#64=EDGE_LOOP(&#x27;outer_overshoots_trim&#x27;,(#60,#61,#62,#63));
+<span class="lineno">46</span>#65=FACE_OUTER_BOUND(&#x27;&#x27;,#64,.T.);
+<span class="lineno">47</span>#100=ADVANCED_FACE(&#x27;wire_overflows_trim&#x27;,(#65),#15,.T.);
+<span class="lineno">48</span>/* Wrap: minimal PRODUCT chain so OCCT TransferRoots produces a shape. */
+<span class="lineno">49</span>#9000=PRODUCT_CONTEXT(&#x27;&#x27;,#1,&#x27;mechanical&#x27;);
+<span class="lineno">50</span>#9001=PRODUCT(&#x27;Tfa060&#x27;,&#x27;Tfa060&#x27;,&#x27;&#x27;,(#9000));
+<span class="lineno">51</span>#9002=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#9001);
+<span class="lineno">52</span>#9003=PRODUCT_DEFINITION_CONTEXT(&#x27;part definition&#x27;,#1,&#x27;design&#x27;);
+<span class="lineno">53</span>#9004=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,#9002,#9003);
+<span class="lineno">54</span>#9005=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,#9004);
+<span class="lineno">55</span>#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">56</span>#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+<span class="lineno">57</span>#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+<span class="lineno">58</span>#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,&#x27;distance_accuracy_value&#x27;,&#x27;&#x27;);
+<span class="lineno">59</span>#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT(&#x27;&#x27;,&#x27;3D&#x27;));
+<span class="lineno">60</span>#9020=OPEN_SHELL(&#x27;wrap_shell&#x27;,(#100));
+<span class="lineno">61</span>#9021=SHELL_BASED_SURFACE_MODEL(&#x27;wrap_sbsm&#x27;,(#9020));
+<span class="lineno">62</span>#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION(&#x27;&#x27;,(#9021),#9010);
+<span class="lineno">63</span>#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+<span class="lineno">64</span>ENDSEC;
+<span class="lineno">65</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Tfa059.html">&larr; Tfa059</a> <a class="up" href="index.html">§12.3c Faces / sewing / free bound</a> <a class="next" href="Tfa061.html">Tfa061 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

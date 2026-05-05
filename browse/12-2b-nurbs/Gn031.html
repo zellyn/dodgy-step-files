@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Gn031 — `EDGE_CURVE` periodic-to-non-periodic conversion on small-edge export (swapped start/end vertices on tiny-radius rational B-spline arc)</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.2b NURBS / B-spline</a> <span class="sep">/</span> <span class="current">Gn031</span>
+</nav>
+<header class="title-bar">
+<h1>Gn031 <span class="sep">—</span> <span class="entry-title">`EDGE_CURVE` periodic-to-non-periodic conversion on small-edge export (swapped start/end vertices on tiny-radius rational B-spline arc)</span></h1>
+<p class="category">§12.2b NURBS/knots</p>
+<p class="severity-badge severity-p1">P1 — silent data loss</p>
+<p class="tag-pills">
+<a class="tag tag-geometry" href="../by-tag/geometry/index.html">geometry</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-2b-nurbs/Gn031.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-2b-nurbs/Gn031.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>08-occt-gitlog.md (G067 — Mantis 0031301, OCCT 7ef1f9b)</li>
+</ul></section>
+<section><h2>Description</h2>
+<p>For small edges fully covered by vertex tolerances (typical shape: a degree-2 rational `B_SPLINE_CURVE_WITH_KNOTS` quarter-arc with three control points at sub-mm radii like 0.001), the OCCT writer converts periodic BSplines to non-periodic by cutting a segment but doesn&#x27;t permute the closed-curve vertices. The result is an `EDGE_CURVE` whose start/end vertices are swapped relative to the curve parameterisation — an inverted edge over a tiny-radius arc — producing invalid edge range on read-back.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>Small closed-curve edge (periodic BSpline whose 3D length is &lt; vertex tol) round-tripped through STEP.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>Heal and accept: when converting a closed/periodic BSpline edge to non-periodic, permute vertices so the resulting edge range is consistent.</p></section>
+<section><h2>Notes</h2>
+<p>**See also**: Gs019. Synonyms: &quot;small-edge B-spline arc has swapped vertices&quot;, &quot;tiny radius rational B-spline arc inverted&quot;, &quot;EDGE_CURVE periodic-to-non-periodic conversion bug&quot;, &quot;OCCT writer doesn permute closed-curve vertices&quot;, &quot;small B-spline edge inverted on round-trip&quot;.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>contains(b&#x27;B_SPLINE_CURVE&#x27;)</code></li>
+</ul></section>
+<section><h2>Cross-references</h2>
+<p><a href="../12-2c-surfaces/Gs019.html">Gs019</a></p>
+</section>
+<section><h2>Live oracle output</h2>
+<table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
+<tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>no_shapes_loaded</code></td></tr>
+</tbody></table>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>/* Gn031 - EDGE_CURVE periodic-to-non-periodic conversion on small-edge export
+<span class="lineno">2</span>   Defect: for small edges fully covered by vertex tolerances, the OCCT
+<span class="lineno">3</span>   writer converted a periodic BSpline to non-periodic by cutting a
+<span class="lineno">4</span>   segment, but didn&#x27;t permute closed-curve vertices, producing an
+<span class="lineno">5</span>   invalid edge range on read-back.  In the source the closed BSpline
+<span class="lineno">6</span>   curve C(u) had C(0) == C(1), but after the writer chops off [u1, 1]
+<span class="lineno">7</span>   and re-stitches, the vertex it stored as v_start may correspond to
+<span class="lineno">8</span>   parameter u=u1 while the stored end vertex still corresponds to u=0,
+<span class="lineno">9</span>   giving a backwards edge interval.
+<span class="lineno">10</span>   This file emits the post-bug artifact: a non-periodic
+<span class="lineno">11</span>   <mark>B_SPLINE_CURVE</mark>_WITH_KNOTS plus an EDGE_CURVE whose start/end vertices
+<span class="lineno">12</span>   straddle the wrap-around in a way that yields an empty / inverted range.
+<span class="lineno">13</span>   Sources: Mantis 0031301, OCCT 7ef1f9b. */
+<span class="lineno">14</span>ISO-10303-21;
+<span class="lineno">15</span>HEADER;
+<span class="lineno">16</span>FILE_DESCRIPTION(
+<span class="lineno">17</span>  (&#x27;Gn031 - EDGE_CURVE with inverted range from periodic-to-non-periodic&#x27;),
+<span class="lineno">18</span>  &#x27;2;1&#x27;);
+<span class="lineno">19</span>FILE_NAME(&#x27;Gn031.stp&#x27;,&#x27;2026-04-26T00:00:00&#x27;,(&#x27;auto-generated&#x27;),(&#x27;&#x27;),
+<span class="lineno">20</span>  &#x27;auto-generated&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">21</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
+<span class="lineno">22</span>ENDSEC;
+<span class="lineno">23</span>DATA;
+<span class="lineno">24</span>/* Small closed curve approximated as a degree-2 rational BSpline (3
+<span class="lineno">25</span>   poles, weights for a circular arc).  Originally periodic; after the
+<span class="lineno">26</span>   buggy chop, declared non-periodic. */
+<span class="lineno">27</span>#10=CARTESIAN_POINT(&#x27;arc0&#x27;,( 0.0010, 0.0000, 0.0));
+<span class="lineno">28</span>#11=CARTESIAN_POINT(&#x27;arc1&#x27;,( 0.0010, 0.0010, 0.0));
+<span class="lineno">29</span>#12=CARTESIAN_POINT(&#x27;arc2&#x27;,( 0.0000, 0.0010, 0.0));
+<span class="lineno">30</span>#100=(
+<span class="lineno">31</span>  BOUNDED_CURVE()
+<span class="lineno">32</span>  <mark>B_SPLINE_CURVE</mark>(2,(#10,#11,#12),.UNSPECIFIED.,.F.,.F.)
+<span class="lineno">33</span>  <mark>B_SPLINE_CURVE</mark>_WITH_KNOTS((3,3),(0.0,1.0),.UNSPECIFIED.)
+<span class="lineno">34</span>  CURVE()
+<span class="lineno">35</span>  GEOMETRIC_REPRESENTATION_ITEM()
+<span class="lineno">36</span>  RATIONAL_<mark>B_SPLINE_CURVE</mark>((1.0,0.7071067811865476,1.0))
+<span class="lineno">37</span>  REPRESENTATION_ITEM(&#x27;chopped_was_periodic&#x27;));
+<span class="lineno">38</span>/* Defect: vertices kept from the original periodic curve are NOT
+<span class="lineno">39</span>   permuted to match the new non-periodic parametrization.  Resulting
+<span class="lineno">40</span>   EDGE_CURVE range is inconsistent: stored as start=#12-vertex,
+<span class="lineno">41</span>   end=#10-vertex while the curve actually runs from #10 -&gt; #12. */
+<span class="lineno">42</span>#200=VERTEX_POINT(&#x27;v_at_arc2&#x27;,#12);
+<span class="lineno">43</span>#201=VERTEX_POINT(&#x27;v_at_arc0&#x27;,#10);
+<span class="lineno">44</span>#300=EDGE_CURVE(&#x27;inverted_edge&#x27;,#200,#201,#100,.T.);
+<span class="lineno">45</span>ENDSEC;
+<span class="lineno">46</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Gn030.html">&larr; Gn030</a> <a class="up" href="index.html">§12.2b NURBS / B-spline</a> <a class="next" href="Gn032.html">Gn032 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

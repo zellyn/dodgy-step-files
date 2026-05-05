@@ -1,0 +1,35 @@
+/* Ls017 - Trailing comma at end of aggregate
+   ----------------------------------------------------------------------
+   Catalog section : §12.1c punctuation
+   Sources         : A017, N051
+   Originally also catalogued as: Ad017
+   ----------------------------------------------------------------------
+   Defect
+     Aggregates do not permit trailing commas in ISO 10303-21. JS- or
+     Python-influenced generators routinely emit (1.,2.,3.,). Recursive-
+     descent grammars that silently accept the trailing comma may append
+     a default-constructed element, mismatching the schema-declared
+     element count and propagating uninitialised data downstream.
+   Expected behavior
+     Strict reject; lenient mode strip and warn. Never expand the trailing
+     comma into an extra element.
+   ----------------------------------------------------------------------
+*/
+ISO-10303-21;
+HEADER;
+FILE_DESCRIPTION(('Ls017 - trailing comma at end of aggregate'),'2;1');
+FILE_NAME('Ls017.stp','2026-04-26T00:00:00',('auto-generated'),(''),
+  'auto-generated','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+#10=CARTESIAN_POINT('origin',(0.0,0.0,0.0));
+/* Defect: trailing comma after the last element of the coordinate list */
+#20=DIRECTION('x',(1.0,0.0,0.0,));
+/* Defect: trailing comma after the last attribute of the entity record */
+#30=DIRECTION('z',(0.0,0.0,1.0),);
+/* Defect: trailing comma in a reference list */
+#31=POLYLINE('seq',(#10,#20,#30,));
+#40=AXIS2_PLACEMENT_3D('placement',#10,#20,$);
+ENDSEC;
+END-ISO-10303-21;

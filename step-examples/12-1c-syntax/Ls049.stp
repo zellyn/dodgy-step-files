@@ -1,0 +1,34 @@
+/* Ls049 - Boolean attribute given bare TRUE (no dots)
+   ----------------------------------------------------------------------
+   Catalog section : §12.1c enumeration token form
+   Sources         : Q053, G028
+   See also        : Ls034, Ls035, Ls050
+   ----------------------------------------------------------------------
+   Defect
+     EDGE_CURVE.same_sense is a BOOLEAN encoded as the dotted enum .T.
+     or .F.. A writer that emits the bare keyword TRUE (no dots) drops
+     the enum-token framing required by ISO 10303-21. Distinct from
+     Ls034 in that the BOOLEAN slot of an EDGE_CURVE is the canonical
+     same_sense kernel surface, where the kernel may default to true on
+     read failure rather than rejecting.
+   Expected behavior
+     Strict reject; lenient mode may default to .T. with a warning.
+   ----------------------------------------------------------------------
+*/
+ISO-10303-21;
+HEADER;
+FILE_DESCRIPTION(('Ls049 - BOOLEAN given bare TRUE'),'2;1');
+FILE_NAME('Ls049.stp','2026-04-26T00:00:00',('auto-generated'),(''),
+  'auto-generated','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+#10=CARTESIAN_POINT('a',(0.0,0.0,0.0));
+#11=CARTESIAN_POINT('b',(1.0,0.0,0.0));
+#12=VERTEX_POINT('',#10);
+#13=VERTEX_POINT('',#11);
+#14=LINE('',#10,$);
+/* Defect: same_sense given as bare TRUE (no dots) */
+#21=EDGE_CURVE('',#12,#13,#14,TRUE);
+ENDSEC;
+END-ISO-10303-21;

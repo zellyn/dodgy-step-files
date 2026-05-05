@@ -1,0 +1,26 @@
+ISO-10303-21;
+/* M125 - AP209 node_group declares the same node id twice.
+ * Defect: a NODE_GROUP lists the same NODE reference twice. Loads or
+ * BCs applied to the group act twice on the duplicate. The set
+ * semantics of the group are violated. */
+HEADER;
+FILE_DESCRIPTION(('M125 test case','AP209 NODE_GROUP duplicate member'),'2;1');
+FILE_NAME('M125.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('STRUCTURAL_ANALYSIS_DESIGN { 1 0 10303 209 1 0 0 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('structural_analysis_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
+  'structural_analysis_design',2001,#1);
+#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10))
+     REPRESENTATION_CONTEXT('fea','3D'));
+#100=CARTESIAN_POINT('a',(0.0,0.0,0.0));
+#101=CARTESIAN_POINT('b',(1.0,0.0,0.0));
+#110=NODE('n1',(#100),$);
+#111=NODE('n2',(#101),$);
+/* Defect: #110 appears twice in the group's node list. */
+#200=NODE_GROUP('fixed_nodes',(#110,#111,#110),$);
+ENDSEC;
+END-ISO-10303-21;

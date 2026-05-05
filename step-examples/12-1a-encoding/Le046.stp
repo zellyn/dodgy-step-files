@@ -1,0 +1,26 @@
+ISO-10303-21;
+/* Le046 - String literal containing every legal printable ASCII
+ * character (0x20..0x7E) including ', \, =, and #
+ * Defect: a kernel that does not handle every printable-ASCII byte
+ * correctly inside a single string literal will mis-parse one of:
+ * embedded apostrophe (must be doubled as ''), backslash (legal
+ * literal in Ed.2 but begins a directive in Ed.3), '=' / '#' / ';'
+ * (token boundary characters at outer scope but legal in strings).
+ * This fixture exercises every printable ASCII byte exactly once
+ * inside a single PRODUCT.name. */
+HEADER;
+FILE_DESCRIPTION(('Le046 - all printable ASCII inside one string literal'),'2;1');
+FILE_NAME('Le046.stp','2026-04-26T00:00:00',(''),(''),
+  'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=PRODUCT_CONTEXT('part',#1,'mechanical');
+/* Defect-witness: every printable ASCII 0x20..0x7E. The two
+ * apostrophes are doubled per Ed.3 escape; the single backslash
+ * is the literal Ed.2 form (would be \\\\ if interpreted as Ed.3
+ * directive sentinel). */
+#10=PRODUCT(' !"#$%&''()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~','all-printable','',(#2));
+ENDSEC;
+END-ISO-10303-21;

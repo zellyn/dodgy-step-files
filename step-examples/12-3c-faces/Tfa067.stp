@@ -1,0 +1,105 @@
+ISO-10303-21;
+/* Tfa067 - Top face missing after STEP import
+ * Six-face unit cube. Top face's wire has one edge with an explicit PCURVE
+ * whose 2D path disagrees with the 3D LINE by 0.1 mm at mid-span (pcurve
+ * UV runs through (0.5, -0.1) instead of (0.5, 0)). A reader that bails on
+ * 3D-curve/pcurve mismatch beyond tolerance will silently drop the top face. */
+HEADER;
+FILE_DESCRIPTION(('Tfa067 test case','Six-face cube; top-face edge has 3D/pcurve mismatch of 0.1mm'),'2;1');
+FILE_NAME('Tfa067.stp','2026-04-30T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+/* 8 cube vertices */
+#10=CARTESIAN_POINT('',(0.0,0.0,0.0));#11=VERTEX_POINT('V0',#10);
+#12=CARTESIAN_POINT('',(1.0,0.0,0.0));#13=VERTEX_POINT('V1',#12);
+#14=CARTESIAN_POINT('',(1.0,1.0,0.0));#15=VERTEX_POINT('V2',#14);
+#16=CARTESIAN_POINT('',(0.0,1.0,0.0));#17=VERTEX_POINT('V3',#16);
+#18=CARTESIAN_POINT('',(0.0,0.0,1.0));#19=VERTEX_POINT('V4',#18);
+#20=CARTESIAN_POINT('',(1.0,0.0,1.0));#21=VERTEX_POINT('V5',#20);
+#22=CARTESIAN_POINT('',(1.0,1.0,1.0));#23=VERTEX_POINT('V6',#22);
+#24=CARTESIAN_POINT('',(0.0,1.0,1.0));#25=VERTEX_POINT('V7',#24);
+/* 12 cube edges -- all straight LINEs. */
+#30=DIRECTION('',(1.0,0.0,0.0));#31=VECTOR('',#30,1.0);#32=LINE('',#10,#31);#33=EDGE_CURVE('e_V0_V1',#11,#13,#32,.T.);
+#34=DIRECTION('',(0.0,1.0,0.0));#35=VECTOR('',#34,1.0);#36=LINE('',#12,#35);#37=EDGE_CURVE('e_V1_V2',#13,#15,#36,.T.);
+#38=DIRECTION('',(-1.0,0.0,0.0));#39=VECTOR('',#38,1.0);#40=LINE('',#14,#39);#41=EDGE_CURVE('e_V2_V3',#15,#17,#40,.T.);
+#42=DIRECTION('',(0.0,-1.0,0.0));#43=VECTOR('',#42,1.0);#44=LINE('',#16,#43);#45=EDGE_CURVE('e_V3_V0',#17,#11,#44,.T.);
+#46=DIRECTION('',(0.0,0.0,1.0));#47=VECTOR('',#46,1.0);#48=LINE('',#10,#47);#49=EDGE_CURVE('e_V0_V4',#11,#19,#48,.T.);
+#50=DIRECTION('',(0.0,0.0,1.0));#51=VECTOR('',#50,1.0);#52=LINE('',#12,#51);#53=EDGE_CURVE('e_V1_V5',#13,#21,#52,.T.);
+#54=DIRECTION('',(0.0,0.0,1.0));#55=VECTOR('',#54,1.0);#56=LINE('',#14,#55);#57=EDGE_CURVE('e_V2_V6',#15,#23,#56,.T.);
+#58=DIRECTION('',(0.0,0.0,1.0));#59=VECTOR('',#58,1.0);#60=LINE('',#16,#59);#61=EDGE_CURVE('e_V3_V7',#17,#25,#60,.T.);
+/* TOP edge V4 -> V5: 3D LINE is straight along +X. PCURVE UV bows by 0.1mm. */
+#62=DIRECTION('',(1.0,0.0,0.0));#63=VECTOR('',#62,1.0);#64=LINE('top_3d_V4_V5',#18,#63);
+#65=CARTESIAN_POINT('uv_a',(0.0,0.0));
+#66=CARTESIAN_POINT('uv_mid_off_0p1',(0.5,-0.1));
+#67=CARTESIAN_POINT('uv_b',(1.0,0.0));
+#68=B_SPLINE_CURVE_WITH_KNOTS('top_pcurve_off_by_0p1',2,(#65,#66,#67),.UNSPECIFIED.,.F.,.F.,(3,3),(0.0,1.0),.UNSPECIFIED.);
+/* placeholder definitional repr; this top face's plane is z=1 */
+#69=CARTESIAN_POINT('',(0.0,0.0,1.0));#70=DIRECTION('',(0.0,0.0,1.0));#71=DIRECTION('',(1.0,0.0,0.0));
+#72=AXIS2_PLACEMENT_3D('',#69,#70,#71);#73=PLANE('top_plane',#72);
+#74=DEFINITIONAL_REPRESENTATION('',(#68),#72);
+#75=PCURVE('top_pcurve_mismatch_0p1mm',#73,#74);
+#76=SURFACE_CURVE('top_3d_with_offset_pcurve',#64,(#75),.PCURVE_S1.);
+#77=EDGE_CURVE('top_edge_V4_V5_3D_pc_mismatch',#19,#21,#76,.T.);
+#78=DIRECTION('',(0.0,1.0,0.0));#79=VECTOR('',#78,1.0);#80=LINE('',#20,#79);#81=EDGE_CURVE('e_V5_V6',#21,#23,#80,.T.);
+#82=DIRECTION('',(-1.0,0.0,0.0));#83=VECTOR('',#82,1.0);#84=LINE('',#22,#83);#85=EDGE_CURVE('e_V6_V7',#23,#25,#84,.T.);
+#86=DIRECTION('',(0.0,-1.0,0.0));#87=VECTOR('',#86,1.0);#88=LINE('',#24,#87);#89=EDGE_CURVE('e_V7_V4',#25,#19,#88,.T.);
+/* Six face planes */
+#100=CARTESIAN_POINT('',(0.0,0.0,0.0));#101=DIRECTION('',(0.0,0.0,-1.0));#102=DIRECTION('',(1.0,0.0,0.0));
+#103=AXIS2_PLACEMENT_3D('',#100,#101,#102);#104=PLANE('bottom',#103);
+#110=CARTESIAN_POINT('',(0.0,0.0,0.0));#111=DIRECTION('',(0.0,-1.0,0.0));#112=DIRECTION('',(1.0,0.0,0.0));
+#113=AXIS2_PLACEMENT_3D('',#110,#111,#112);#114=PLANE('front',#113);
+#120=CARTESIAN_POINT('',(1.0,0.0,0.0));#121=DIRECTION('',(1.0,0.0,0.0));#122=DIRECTION('',(0.0,1.0,0.0));
+#123=AXIS2_PLACEMENT_3D('',#120,#121,#122);#124=PLANE('right',#123);
+#130=CARTESIAN_POINT('',(0.0,1.0,0.0));#131=DIRECTION('',(0.0,1.0,0.0));#132=DIRECTION('',(-1.0,0.0,0.0));
+#133=AXIS2_PLACEMENT_3D('',#130,#131,#132);#134=PLANE('back',#133);
+#140=CARTESIAN_POINT('',(0.0,0.0,0.0));#141=DIRECTION('',(-1.0,0.0,0.0));#142=DIRECTION('',(0.0,0.0,1.0));
+#143=AXIS2_PLACEMENT_3D('',#140,#141,#142);#144=PLANE('left',#143);
+/* Top plane is #73. */
+/* Six faces */
+#200=ORIENTED_EDGE('',*,*,#33,.F.);#201=ORIENTED_EDGE('',*,*,#45,.F.);
+#202=ORIENTED_EDGE('',*,*,#41,.F.);#203=ORIENTED_EDGE('',*,*,#37,.F.);
+#204=EDGE_LOOP('bottom_loop',(#200,#201,#202,#203));
+#205=FACE_OUTER_BOUND('',#204,.T.);#206=ADVANCED_FACE('bottom_face',(#205),#104,.T.);
+#210=ORIENTED_EDGE('',*,*,#33,.T.);#211=ORIENTED_EDGE('',*,*,#53,.T.);
+#212=ORIENTED_EDGE('',*,*,#77,.F.);#213=ORIENTED_EDGE('',*,*,#49,.F.);
+#214=EDGE_LOOP('front_loop',(#210,#211,#212,#213));
+#215=FACE_OUTER_BOUND('',#214,.T.);#216=ADVANCED_FACE('front_face',(#215),#114,.T.);
+#220=ORIENTED_EDGE('',*,*,#37,.T.);#221=ORIENTED_EDGE('',*,*,#57,.T.);
+#222=ORIENTED_EDGE('',*,*,#81,.F.);#223=ORIENTED_EDGE('',*,*,#53,.F.);
+#224=EDGE_LOOP('right_loop',(#220,#221,#222,#223));
+#225=FACE_OUTER_BOUND('',#224,.T.);#226=ADVANCED_FACE('right_face',(#225),#124,.T.);
+#230=ORIENTED_EDGE('',*,*,#41,.T.);#231=ORIENTED_EDGE('',*,*,#61,.T.);
+#232=ORIENTED_EDGE('',*,*,#85,.F.);#233=ORIENTED_EDGE('',*,*,#57,.F.);
+#234=EDGE_LOOP('back_loop',(#230,#231,#232,#233));
+#235=FACE_OUTER_BOUND('',#234,.T.);#236=ADVANCED_FACE('back_face',(#235),#134,.T.);
+#240=ORIENTED_EDGE('',*,*,#45,.T.);#241=ORIENTED_EDGE('',*,*,#49,.T.);
+#242=ORIENTED_EDGE('',*,*,#89,.F.);#243=ORIENTED_EDGE('',*,*,#61,.F.);
+#244=EDGE_LOOP('left_loop',(#240,#241,#242,#243));
+#245=FACE_OUTER_BOUND('',#244,.T.);#246=ADVANCED_FACE('left_face',(#245),#144,.T.);
+/* TOP face -- this is the one a defective reader silently drops. */
+#250=ORIENTED_EDGE('',*,*,#77,.T.);#251=ORIENTED_EDGE('',*,*,#81,.T.);
+#252=ORIENTED_EDGE('',*,*,#85,.T.);#253=ORIENTED_EDGE('',*,*,#89,.T.);
+#254=EDGE_LOOP('top_loop_with_mismatch_edge',(#250,#251,#252,#253));
+#255=FACE_OUTER_BOUND('',#254,.T.);
+#256=ADVANCED_FACE('top_face_with_pcurve_3d_mismatch',(#255),#73,.T.);
+#260=CLOSED_SHELL('cube_with_defective_top',(#206,#216,#226,#236,#246,#256));
+/* Wrap: minimal PRODUCT chain so OCCT TransferRoots produces a shape. */
+#9000=PRODUCT_CONTEXT('',#1,'mechanical');
+#9001=PRODUCT('Tfa067','Tfa067','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
+#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
+#9020=MANIFOLD_SOLID_BREP('wrap_msb',#260);
+#9022=ADVANCED_BREP_SHAPE_REPRESENTATION('',(#9020),#9010);
+#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+ENDSEC;
+END-ISO-10303-21;

@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>In003 — A &quot;Mend&quot; demotes a Fail to a Warning, hiding the original failure (e.g., B_SPLINE_CURVE_WITH_KNOTS with wrong knot count auto-fixed)</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.1c Part-21 grammar</a> <span class="sep">/</span> <span class="current">In003</span>
+</nav>
+<header class="title-bar">
+<h1>In003 <span class="sep">—</span> <span class="entry-title">A &quot;Mend&quot; demotes a Fail to a Warning, hiding the original failure (e.g., B_SPLINE_CURVE_WITH_KNOTS with wrong knot count auto-fixed)</span></h1>
+<p class="category">§12.1c (sub-class: check downgrade)</p>
+<p class="severity-badge severity-p1">P1 — silent data loss</p>
+<p class="tag-pills">
+<a class="tag tag-syntax" href="../by-tag/syntax/index.html">syntax</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-1c-syntax/In003.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-1c-syntax/In003.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>OCCT Interface_Check.hxx:97 (Mend method) (uncovered class evidence)</li>
+</ul></section>
+<section><h2>Sender</h2>
+<p>deduced — OCCT uncovered-class sweep, Pass C</p></section>
+<section><h2>Description</h2>
+<p>A reader&#x27;s `Mend()` step takes a Fail-class diagnostic and downgrades it to a Warning if the kernel &quot;fixed&quot; the underlying problem. A consumer relying on the original Fail to gate further processing now misses it. Typical fixture: a B_SPLINE_CURVE_WITH_KNOTS whose knot multiplicities don&#x27;t match the required count (e.g., degree 2 with 3 control points needs 6 knots, but the multiplicities sum to 7) — a Fail-class condition that gets auto-mended and silently demoted. Bug-reporter language: &quot;kernel hid an error&quot;, &quot;fail downgraded to warning silently&quot;, &quot;wrong knot count not reported&quot;.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>An entity that triggers a Fail-class check (e.g., a `B_SPLINE_CURVE_WITH_KNOTS` whose knot count is off-by-one — degree 2 with 3 control points but knot_multiplicities sum to 7 instead of the expected 6) but is then auto-fixed by the reader.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>Warn and accept: always preserve the original severity; record the Mend as a separate &quot;auto-corrected&quot; event. Must not silently downgrade Fail to Warning.</p></section>
+<section><h2>Notes</h2>
+<p>Synonyms: &quot;silent error fix&quot;, &quot;fail demoted&quot;. Provenance tier: runtime-only — bytes alone cannot demonstrate this defect; the symptom is a runtime mutation of the diagnostic-severity record (Fail demoted to Warning) inside the kernel&#x27;s check object. The static fixture only encodes the input precondition; observing the demotion requires a kernel runtime trace. Synonyms: &quot;STEP Mend demotes Fail to Warning&quot;, &quot;auto-fix hides original failure&quot;, &quot;kernel mend hides bad knot count&quot;, &quot;B_SPLINE knot defect silently fixed&quot;, &quot;Fail downgraded to Warning by kernel&quot;.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<section><h2>Provenance tier</h2>
+<p><code>runtime-only</code> — defect not fully embodied in fixture bytes.</p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>contains(b&#x27;DATA;&#x27;)</code></li>
+<li><code>contains(b&#x27;HEADER;&#x27;)</code></li>
+<li><code>count(b&#x27;ENDSEC;&#x27;) &gt;= 2</code></li>
+</ul></section>
+<section><h2>Live oracle output</h2>
+<table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
+<tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>no_shapes_loaded</code></td></tr>
+</tbody></table>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* In003 - B-spline knot count off-by-one, auto-fixed by reader.
+<span class="lineno">3</span> * Defect: a Fail-class diagnostic (knot count wrong) is downgraded
+<span class="lineno">4</span> * to a Warning by the reader&#x27;s Mend pass. */
+<span class="lineno">5</span><mark>HEADER;</mark>
+<span class="lineno">6</span>FILE_DESCRIPTION((&#x27;In003 - mend demotes fail to warning&#x27;,&#x27;Pass C gap-fill&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">7</span>FILE_NAME(&#x27;In003.stp&#x27;,&#x27;2026-04-30T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;gap-fill C&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">8</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }&#x27;));
+<span class="lineno">9</span><mark>ENDSEC;</mark>
+<span class="lineno">10</span><mark>DATA;</mark>
+<span class="lineno">11</span>#1=APPLICATION_CONTEXT(&#x27;automotive_design&#x27;);
+<span class="lineno">12</span>#10=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">13</span>#11=CARTESIAN_POINT(&#x27;&#x27;,(1.0,1.0,0.0));
+<span class="lineno">14</span>#12=CARTESIAN_POINT(&#x27;&#x27;,(2.0,0.0,0.0));
+<span class="lineno">15</span>/* Defect: B-spline degree 2 needs n+degree+1 = 3+2+1 = 6 knots; here 7. */
+<span class="lineno">16</span>#20=B_SPLINE_CURVE_WITH_KNOTS(&#x27;extra_knot&#x27;,2,(#10,#11,#12),.UNSPECIFIED.,
+<span class="lineno">17</span>   .F.,.F.,(3,1,3),(0.0,0.5,1.0),.UNSPECIFIED.);
+<span class="lineno">18</span><mark>ENDSEC;</mark>
+<span class="lineno">19</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="In002.html">&larr; In002</a> <a class="up" href="index.html">§12.1c Part-21 grammar</a> <a class="next" href="In011.html">In011 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

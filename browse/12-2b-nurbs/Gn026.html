@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Gn026 — High-degree clamped `B_SPLINE_CURVE_WITH_KNOTS` requiring degree-restriction with continuity guarantee</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.2b NURBS / B-spline</a> <span class="sep">/</span> <span class="current">Gn026</span>
+</nav>
+<header class="title-bar">
+<h1>Gn026 <span class="sep">—</span> <span class="entry-title">High-degree clamped `B_SPLINE_CURVE_WITH_KNOTS` requiring degree-restriction with continuity guarantee</span></h1>
+<p class="category">§12.2b NURBS/knots</p>
+<p class="severity-badge severity-p1">P1 — silent data loss</p>
+<p class="tag-pills">
+<a class="tag tag-geometry" href="../by-tag/geometry/index.html">geometry</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-2b-nurbs/Gn026.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-2b-nurbs/Gn026.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>03-occt-tests.md (R081 bug23944)</li>
+</ul></section>
+<section><h2>Description</h2>
+<p>A high-degree (e.g. degree-9) univariate `B_SPLINE_CURVE_WITH_KNOTS` with ~10 clamped control points (knot vector with multiplicities (10,10) — a full-degree Bezier-ish curve) that downstream tooling must reduce/restrict in degree. A historical typo in the restriction parameters produced surfaces that did not achieve the requested continuity even though the API reported success. Direct hazard: kernels that trust the restriction output ship sub-spec geometry downstream.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>Pass a degree-9 BSpline through `ShapeCustom_BSplineRestriction` requesting C2 continuity at degree 3; verify resulting surface continuity.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>Reject when continuity not achievable: BSpline restriction must achieve the requested continuity exactly or fail loudly; never silently accept sub-spec output.</p></section>
+<section><h2>Notes</h2>
+<p>Synonyms: &quot;high-degree clamped B-spline degree restriction&quot;, &quot;BSpline restriction silently fails to achieve requested continuity&quot;, &quot;degree-9 reduction does not honor C2 request&quot;, &quot;BSpline degree-restriction post-condition not met&quot;, &quot;degree restriction returns sub-spec curve&quot;.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>contains(b&#x27;B_SPLINE_CURVE&#x27;)</code></li>
+</ul></section>
+<section><h2>Live oracle output</h2>
+<table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
+<tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>no_shapes_loaded</code></td></tr>
+</tbody></table>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>/* Gn026 - BSpline-restriction approximation correctness (typo bug)
+<span class="lineno">2</span>   Defect (input side): a high-degree BSpline that, when passed through
+<span class="lineno">3</span>   ShapeCustom_BSplineRestriction targeting degree 3 with C2 continuity,
+<span class="lineno">4</span>   may NOT actually achieve C2 due to a historical typo in
+<span class="lineno">5</span>   ShapeCustom_RestrictionParameters.  Direct hazard: kernels that trust
+<span class="lineno">6</span>   the restriction output ship sub-spec geometry downstream.
+<span class="lineno">7</span>   This file is the input: degree-9 single Bezier-style <mark>B_SPLINE_CURVE</mark>_WITH_KNOTS
+<span class="lineno">8</span>   with a bend.  Verifier should compare requested-vs-achieved continuity
+<span class="lineno">9</span>   on the restriction output. */
+<span class="lineno">10</span>ISO-10303-21;
+<span class="lineno">11</span>HEADER;
+<span class="lineno">12</span>FILE_DESCRIPTION(
+<span class="lineno">13</span>  (&#x27;Gn026 - degree-9 BSpline input for restriction continuity check&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">14</span>FILE_NAME(&#x27;Gn026.stp&#x27;,&#x27;2026-04-26T00:00:00&#x27;,(&#x27;auto-generated&#x27;),(&#x27;&#x27;),
+<span class="lineno">15</span>  &#x27;auto-generated&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">16</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
+<span class="lineno">17</span>ENDSEC;
+<span class="lineno">18</span>DATA;
+<span class="lineno">19</span>/* 10 control points -&gt; degree-9 single Bezier-style segment with
+<span class="lineno">20</span>   non-trivial curvature variation. */
+<span class="lineno">21</span>#10=CARTESIAN_POINT(&#x27;p0&#x27;,( 0.0, 0.0, 0.0));
+<span class="lineno">22</span>#11=CARTESIAN_POINT(&#x27;p1&#x27;,( 1.0, 1.0, 0.0));
+<span class="lineno">23</span>#12=CARTESIAN_POINT(&#x27;p2&#x27;,( 2.0, 2.5, 0.0));
+<span class="lineno">24</span>#13=CARTESIAN_POINT(&#x27;p3&#x27;,( 3.0, 3.0, 0.0));
+<span class="lineno">25</span>#14=CARTESIAN_POINT(&#x27;p4&#x27;,( 4.0, 2.5, 0.0));
+<span class="lineno">26</span>#15=CARTESIAN_POINT(&#x27;p5&#x27;,( 5.0, 1.0, 0.0));
+<span class="lineno">27</span>#16=CARTESIAN_POINT(&#x27;p6&#x27;,( 6.0,-0.5, 0.0));
+<span class="lineno">28</span>#17=CARTESIAN_POINT(&#x27;p7&#x27;,( 7.0,-1.0, 0.0));
+<span class="lineno">29</span>#18=CARTESIAN_POINT(&#x27;p8&#x27;,( 8.0,-0.5, 0.0));
+<span class="lineno">30</span>#19=CARTESIAN_POINT(&#x27;p9&#x27;,( 9.0, 0.0, 0.0));
+<span class="lineno">31</span>#100=<mark>B_SPLINE_CURVE</mark>_WITH_KNOTS(&#x27;deg9_for_restrict&#x27;,9,
+<span class="lineno">32</span>  (#10,#11,#12,#13,#14,#15,#16,#17,#18,#19),
+<span class="lineno">33</span>  .UNSPECIFIED.,.F.,.F.,
+<span class="lineno">34</span>  (10,10),
+<span class="lineno">35</span>  (0.0,1.0),
+<span class="lineno">36</span>  .UNSPECIFIED.);
+<span class="lineno">37</span>ENDSEC;
+<span class="lineno">38</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Gn025.html">&larr; Gn025</a> <a class="up" href="index.html">§12.2b NURBS / B-spline</a> <a class="next" href="Gn030.html">Gn030 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

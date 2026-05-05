@@ -1,0 +1,25 @@
+ISO-10303-21;
+/* Xp019 - Cross-product: two DATA sections in one file, both defining #10
+ *   with different bodies, and one entity that references @s2#10 (cross-
+ *   section reference syntax).
+ * Builds on Ad-multi-data-class + Ls-duplicate-id-class + Ad-cross-section-ref. */
+HEADER;
+FILE_DESCRIPTION(('Xp019 cross-product','multi-DATA x duplicate id x cross-section ref'),'2;1');
+FILE_NAME('Xp019.stp','2026-04-26T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+/* Defect 1+2: #10 defined here */
+#10=CARTESIAN_POINT('first',(0.0,0.0,0.0));
+/* Defect 3: a DIRECTION whose origin is referenced from another data section */
+#11=DIRECTION('',(1.0,0.0,0.0));
+#12=AXIS2_PLACEMENT_3D('',@s2#10,#11,#11);
+ENDSEC;
+DATA;
+/* Second DATA section: #10 redefined with different body */
+#10=CARTESIAN_POINT('second',(5.0,5.0,5.0));
+#20=CARTESIAN_POINT('also_in_s2',(1.0,1.0,1.0));
+ENDSEC;
+END-ISO-10303-21;

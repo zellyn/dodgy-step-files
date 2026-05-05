@@ -1,0 +1,48 @@
+ISO-10303-21;
+/*
+ * U025 — LENGTH_UNIT returned wrong from STEPControl_Reader.FileUnits()
+ * Defect: file has multiple LENGTH_UNIT records — two unrelated
+ *         length contexts in the unit list — so an API that returns
+ *         the first match disagrees with the active unit context.
+ */
+HEADER;
+FILE_DESCRIPTION(('U025 multiple LENGTH_UNITs in one file'),'2;1');
+FILE_NAME('U025.stp','2026-04-26T00:00:00',('catalog'),('cad'),
+  'manual','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN'));
+ENDSEC;
+DATA;
+#10 = APPLICATION_CONTEXT('automotive design');
+#11 = APPLICATION_PROTOCOL_DEFINITION('international standard',
+  'automotive_design',2001,#10);
+#12 = PRODUCT_CONTEXT('',#10,'mechanical');
+#13 = PRODUCT('U025','U025','',(#12));
+#14 = PRODUCT_DEFINITION_FORMATION('','',#13);
+#15 = PRODUCT_DEFINITION_CONTEXT('',#10,'design');
+#16 = PRODUCT_DEFINITION('','',#14,#15);
+#17 = PRODUCT_DEFINITION_SHAPE('','',#16);
+/* TWO length units in the file — one mm, one inch — both bound
+   into the same GLOBAL_UNIT_ASSIGNED_CONTEXT as a degenerate complex
+   record. FileUnits() may return either depending on iteration order. */
+#20 = ( LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT(.MILLI.,.METRE.) );
+#21 = DIMENSIONAL_EXPONENTS(1.0,0.0,0.0,0.0,0.0,0.0,0.0);
+#22 = LENGTH_MEASURE_WITH_UNIT(LENGTH_MEASURE(25.4),#20);
+#23 = ( CONVERSION_BASED_UNIT('INCH',#22) NAMED_UNIT(#21) LENGTH_UNIT() );
+#26 = ( NAMED_UNIT(*) PLANE_ANGLE_UNIT() SI_UNIT($,.RADIAN.) );
+#27 = ( NAMED_UNIT(*) SI_UNIT($,.STERADIAN.) SOLID_ANGLE_UNIT() );
+#28 = UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#20,
+  'distance_accuracy_value','');
+/* DEFECT: GLOBAL_UNIT_ASSIGNED_CONTEXT lists BOTH length units. */
+#29 = ( GEOMETRIC_REPRESENTATION_CONTEXT(3)
+  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#28))
+  GLOBAL_UNIT_ASSIGNED_CONTEXT((#20,#23,#26,#27))
+  REPRESENTATION_CONTEXT('','3D') );
+#30 = CARTESIAN_POINT('',(0.0,0.0,0.0));
+#31 = CARTESIAN_POINT('',(100.0,0.0,0.0));
+#32 = DIRECTION('',(0.0,0.0,1.0));
+#33 = DIRECTION('',(1.0,0.0,0.0));
+#34 = AXIS2_PLACEMENT_3D('',#30,#32,#33);
+#50 = SHAPE_REPRESENTATION('',(#34),#29);
+#51 = SHAPE_DEFINITION_REPRESENTATION(#17,#50);
+ENDSEC;
+END-ISO-10303-21;

@@ -1,0 +1,42 @@
+/* Wr016 - Re-output of intermediate construction entities (orphan geometry) - many unreferenced primitives */
+ISO-10303-21;
+HEADER;
+FILE_DESCRIPTION(('Wr016 - orphan construction-history geometry'),'2;1');
+FILE_NAME('Wr016.stp','2026-04-30T00:00:00',(''),(''),
+  'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('mechanical design');
+#2=PRODUCT_CONTEXT('part',#1,'mechanical');
+#3=PRODUCT('Wr016-part','Wr016 demo','',(#2));
+#10=CARTESIAN_POINT('origin',(0.0,0.0,0.0));
+#11=DIRECTION('z',(0.0,0.0,1.0));
+#12=DIRECTION('x',(1.0,0.0,0.0));
+#13=AXIS2_PLACEMENT_3D('placement',#10,#11,#12);
+#20=(LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT(.MILLI.,.METRE.));
+/* Wr016: the following 30 entities are not referenced by anything;
+   they are scratch geometry from interactive sketches the writer
+   should have pruned */
+#100=CARTESIAN_POINT('scratch1',(1.0,2.0,3.0));
+#101=CARTESIAN_POINT('scratch2',(2.0,3.0,4.0));
+#102=CARTESIAN_POINT('scratch3',(3.0,4.0,5.0));
+#103=CARTESIAN_POINT('scratch4',(4.0,5.0,6.0));
+#104=CARTESIAN_POINT('scratch5',(5.0,6.0,7.0));
+#105=CARTESIAN_POINT('scratch6',(6.0,7.0,8.0));
+#106=CARTESIAN_POINT('scratch7',(7.0,8.0,9.0));
+#107=CARTESIAN_POINT('scratch8',(8.0,9.0,10.0));
+#108=DIRECTION('scratch_d1',(1.0,0.0,0.0));
+#109=DIRECTION('scratch_d2',(0.0,1.0,0.0));
+#110=DIRECTION('scratch_d3',(0.0,0.0,1.0));
+#111=VECTOR('scratch_v1',#108,1.0);
+#112=VECTOR('scratch_v2',#109,2.0);
+#113=VECTOR('scratch_v3',#110,3.0);
+#114=LINE('scratch_l1',#100,#111);
+#115=LINE('scratch_l2',#101,#112);
+#116=LINE('scratch_l3',#102,#113);
+#117=CIRCLE('scratch_c1',#13,5.0);
+#118=CIRCLE('scratch_c2',#13,7.0);
+#119=CIRCLE('scratch_c3',#13,9.0);
+ENDSEC;
+END-ISO-10303-21;

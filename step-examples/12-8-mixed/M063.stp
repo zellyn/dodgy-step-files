@@ -1,0 +1,16 @@
+ISO-10303-21;
+/* M063 - Entity with no unit context.
+ * Defect: SHAPE_REPRESENTATION's context lacks a LENGTH_UNIT. */
+HEADER;
+FILE_DESCRIPTION(('In007 - no unit context','Pass C gap-fill'),'2;1');
+FILE_NAME('M063.stp','2026-04-30T00:00:00',(''),(''),'gap-fill C','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+/* GEOMETRIC_REPRESENTATION_CONTEXT with empty units list */
+#10=GEOMETRIC_REPRESENTATION_CONTEXT('no_units',$,3);
+#20=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#30=SHAPE_REPRESENTATION('shape_no_units',(#20),#10);
+ENDSEC;
+END-ISO-10303-21;

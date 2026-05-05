@@ -1,0 +1,43 @@
+ISO-10303-21;
+/* Bo027 - Per-vertex normals inconsistent across smooth edge.
+ * Defect: two adjacent COMPLEX_TRIANGULATED_FACEs share node index 1.
+ * Face A supplies a per-node normal of (0,0,1) at that node;
+ * Face B supplies (0.7071, 0, 0.7071) at the SAME shared node.
+ * Across a supposedly smooth edge the normals disagree, so a
+ * shading pass must average (or worse: dispatch to default).
+ * (AP242 ed.2 entity scaffold.) */
+HEADER;
+FILE_DESCRIPTION(('Bo027 - normal mismatch across smooth edge','Pass C gap-fill'),'2;1');
+FILE_NAME('Bo027.stp','2026-04-30T00:00:00',(''),(''),'gap-fill C','','');
+FILE_SCHEMA(('AP242_MANAGED_MODEL_BASED_3D_ENGINEERING_MIM_LF { 1 0 10303 442 1 1 4 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('managed model based 3d engineering');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','ap242_managed_model_based_3d_engineering',2020,#1);
+/* Shared coordinate list (4 vertices: shared_node at index 1) */
+#10=COORDINATES_LIST('mesh_coords',4,(
+  (1.0,0.0,0.0),
+  (1.0,1.0,0.0),
+  (0.0,1.0,0.0),
+  (1.0,0.0,1.0)));
+/* Face A normals: at shared node (index 1) the normal is +Z */
+#20=COMPLEX_TRIANGULATED_FACE('faceA_smooth_disagree',#10,$,
+  ((0.0,0.0,1.0),
+   (0.0,0.0,1.0),
+   (0.0,0.0,1.0)),
+  ((1,2,3)),
+  ((1,2,3)),
+  $);
+/* Face B normals: at shared node (also index 1) the normal is
+ * (0.7071, 0, 0.7071) — disagrees with face A by 45 degrees. */
+#21=COMPLEX_TRIANGULATED_FACE('faceB_smooth_disagree',#10,$,
+  ((0.7071,0.0,0.7071),
+   (0.0,0.0,1.0),
+   (0.7071,0.0,0.7071)),
+  ((1,2,4)),
+  ((1,2,3)),
+  $);
+/* Tessellated shell wrapping the two faces */
+#30=TESSELLATED_SHELL_REPRESENTATION('mismatch_shell',(#20,#21),$);
+ENDSEC;
+END-ISO-10303-21;

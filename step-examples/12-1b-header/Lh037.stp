@@ -1,0 +1,26 @@
+ISO-10303-21;
+/* Lh037 - User-defined HEADER entity (!FOO) preceding the standard
+ * three required header records
+ * Defect: ISO 10303-21 Edition 3 permits user-defined header
+ * entities, syntactically prefixed with '!' (e.g. !COMPANY_INFO).
+ * The order, duplication, and unknown-record rules are weakly
+ * specified. Producers occasionally place !FOO before
+ * FILE_DESCRIPTION (the spec mandates FILE_DESCRIPTION first), or
+ * use !FOO names that collide with EXPRESS schema entity names. */
+HEADER;
+/* Defect: user-defined header entity emitted *before* the required
+ * FILE_DESCRIPTION/FILE_NAME/FILE_SCHEMA records */
+!COMPANY_INFO('ACME','release-2026','','','','','');
+FILE_DESCRIPTION(('Lh037 - user-defined header entity before required records'),'2;1');
+FILE_NAME('Lh037.stp','2026-04-26T00:00:00',(''),(''),
+  'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+/* Defect: user-defined header record AFTER the required ones,
+ * in a position where order is even less defined */
+!INTERNAL_ROUTING_TAG('release/qa/region=eu','rev1');
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#10=CARTESIAN_POINT('origin',(0.0,0.0,0.0));
+ENDSEC;
+END-ISO-10303-21;

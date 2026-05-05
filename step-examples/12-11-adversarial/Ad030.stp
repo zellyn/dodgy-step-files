@@ -1,0 +1,59 @@
+ISO-10303-21;
+/* ============================================================
+   WARNING: THIS FILE IS INTENTIONALLY MALFORMED.
+   It exists ONLY for parser-robustness / fuzz-class testing.
+   DO NOT feed to a production translator without sandboxing.
+
+   Entry  : Ad030
+   Title  : Type-confusion via mis-typed reference
+            (CARTESIAN_POINT used as DIRECTION).
+   Defect : Schema-driven late binding lifts an entity from
+            the instance table and casts to the slot's
+            declared type without a dynamic-type check. If
+            an earlier parse error caused the type-validation
+            pass to be skipped, downstream geometry code
+            dereferences via the wrong-type vtable.
+
+            This fixture declares #10 as CARTESIAN_POINT but
+            references it in slots demanding:
+              - DIRECTION         (axis2_placement.axis)
+              - DIRECTION         (axis2_placement.ref_dir)
+              - VECTOR            (line.dir)
+            and similarly references #20 as DIRECTION where
+            CARTESIAN_POINT is required (line.pnt).
+
+            Primary RCE class for STEP/STP CVEs in 2024-2026
+            advisories (ZDI-25-615 / CVE-2025-9450).
+   Expected: every attribute bind must check dynamic type vs
+             schema; reject with E_TYPE_MISMATCH.
+   See also: Ad042, Ad078.
+   ============================================================ */
+HEADER;
+FILE_DESCRIPTION(('Ad030 type confusion CARTESIAN_POINT vs DIRECTION'),'2;1');
+FILE_NAME('Ad030.stp','2026-04-26T00:00:00',('synthetic'),('cad-research'),
+  'none','none','none');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+/* #10 is a CARTESIAN_POINT (truthful declaration). */
+#10=CARTESIAN_POINT('',(0.,0.,1.));
+
+/* #20 is a DIRECTION (truthful declaration). */
+#20=DIRECTION('',(1.,0.,0.));
+
+/* AXIS2_PLACEMENT_3D expects:
+     location  : CARTESIAN_POINT
+     axis      : DIRECTION   <- but we pass #10 (POINT)
+     ref_dir   : DIRECTION   <- but we pass #10 (POINT) */
+#30=AXIS2_PLACEMENT_3D('',#10,#10,#10);
+
+/* LINE expects:
+     pnt : CARTESIAN_POINT  <- but we pass #20 (DIRECTION)
+     dir : VECTOR           <- but we pass #10 (POINT) */
+#40=LINE('',#20,#10);
+
+/* Place the bad references behind one valid construct so
+   readers that bail early may still report success. */
+#50=PLANE('',#30);
+ENDSEC;
+END-ISO-10303-21;

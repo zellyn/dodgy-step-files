@@ -1,0 +1,17 @@
+ISO-10303-21;
+/* Gs050 - Toroidal major/minor radii swapped
+ * Defect: TOROIDAL_SURFACE emitted with major and minor radii in reversed order */
+HEADER;
+FILE_DESCRIPTION(('Gs050 test case','Toroidal major/minor radii swapped'),'2;1');
+FILE_NAME('Gs050.stp','2026-04-30T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+#100=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#101=DIRECTION('',(0.0,0.0,1.0));#102=DIRECTION('',(1.0,0.0,0.0));
+#103=AXIS2_PLACEMENT_3D('',#100,#101,#102);
+#104=TOROIDAL_SURFACE('swapped_radii',#103,0.5,5.0);
+ENDSEC;
+END-ISO-10303-21;

@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>M096 — AP238 trajectory missing connecting curves between adjacent segments</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.8 Mixed (tessellation, validation properties, etc.)</a> <span class="sep">/</span> <span class="current">M096</span>
+</nav>
+<header class="title-bar">
+<h1>M096 <span class="sep">—</span> <span class="entry-title">AP238 trajectory missing connecting curves between adjacent segments</span></h1>
+<p class="category">§12.8 mixed (sub-class: AP238 trajectory continuity)</p>
+<p class="severity-badge severity-p1">P1 — silent data loss</p>
+<p class="tag-pills">
+<a class="tag tag-spec-violation" href="../by-tag/spec-violation/index.html">spec-violation</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-8-mixed/M096.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-8-mixed/M096.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>deduced from ISO 10303-238 §6.2 trajectory G0/G1 continuity rules</li>
+</ul></section>
+<section><h2>Sender</h2>
+<p>deduced — CAM post-processor emitting tool-up moves implicitly</p></section>
+<section><h2>Description</h2>
+<p>A `TRAJECTORY` consists of two `COMPOSITE_CURVE_SEGMENT`s whose endpoints don&#x27;t coincide — segment A ends at `(10,0,0)` and segment B starts at `(20,0,0)`, with no connecting `CURVE` between them. The CAM tool presumably intended a rapid-traverse retract / reposition, but emitted no explicit connector. The controller either fails to plan motion or executes a feed-rate move through the workpiece. Bug-reporter language: &quot;AP238 toolpath has gap&quot;, &quot;STEP-NC missing rapid move&quot;, &quot;trajectory segments don&#x27;t connect&quot;.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>`COMPOSITE_CURVE` with two segments `(0,0,0)→(10,0,0)` and `(20,0,0)→(30,0,0)`, with no third connecting segment, used as a `TRAJECTORY` basis curve.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>validate adjacent-segment continuity; insert a rapid-traverse connector and warn, or reject as discontinuous.</p></section>
+<section><h2>Notes</h2>
+<p>Synonyms: &quot;AP238 trajectory gap&quot;, &quot;missing rapid retract&quot;, &quot;trajectory segments don&#x27;t connect&quot;, &quot;STEP-NC composite curve not chained&quot;, &quot;toolpath has unconnected segments&quot;.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>contains(b&#x27;AP238_STEP_NC_MIM&#x27;)</code></li>
+<li><code>contains(b&#x27;TRAJECTORY&#x27;)</code></li>
+<li><code>contains(b&#x27;COMPOSITE_CURVE_SEGMENT&#x27;)</code></li>
+</ul></section>
+<section><h2>Live oracle output</h2>
+<table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
+<tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>no_shapes_loaded</code></td></tr>
+</tbody></table>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* M096 - AP238 trajectory missing connecting curve between segments.
+<span class="lineno">3</span> * Defect: a <mark>TRAJECTORY</mark>&#x27;s COMPOSITE_CURVE has two segments that don&#x27;t
+<span class="lineno">4</span> * connect end-to-end - segment A ends at (10,0,0); segment B starts
+<span class="lineno">5</span> * at (20,0,0). No third connector segment. The CAM tool intended a
+<span class="lineno">6</span> * rapid retract/reposition but emitted no explicit move. */
+<span class="lineno">7</span>HEADER;
+<span class="lineno">8</span>FILE_DESCRIPTION((&#x27;M096 test case&#x27;,&#x27;AP238 trajectory has discontinuous segments&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">9</span>FILE_NAME(&#x27;M096.stp&#x27;,&#x27;2026-05-02T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">10</span>FILE_SCHEMA((&#x27;<mark>AP238_STEP_NC_MIM</mark> { 1 0 10303 238 1 0 0 1 }&#x27;));
+<span class="lineno">11</span>ENDSEC;
+<span class="lineno">12</span>DATA;
+<span class="lineno">13</span>#1=APPLICATION_CONTEXT(&#x27;numerical_control_machining&#x27;);
+<span class="lineno">14</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,
+<span class="lineno">15</span>  &#x27;numerical_control_machining&#x27;,2007,#1);
+<span class="lineno">16</span>#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">17</span>#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+<span class="lineno">18</span>     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10))
+<span class="lineno">19</span>     REPRESENTATION_CONTEXT(&#x27;nc&#x27;,&#x27;3D&#x27;));
+<span class="lineno">20</span>/* Segment A: (0,0,0) -&gt; (10,0,0) */
+<span class="lineno">21</span>#100=CARTESIAN_POINT(&#x27;a0&#x27;,(0.0,0.0,0.0));
+<span class="lineno">22</span>#101=CARTESIAN_POINT(&#x27;a1&#x27;,(10.0,0.0,0.0));
+<span class="lineno">23</span>#102=POLYLINE(&#x27;seg_a&#x27;,(#100,#101));
+<span class="lineno">24</span>#110=<mark>COMPOSITE_CURVE_SEGMENT</mark>(.CONTINUOUS.,.T.,#102);
+<span class="lineno">25</span>/* Segment B: (20,0,0) -&gt; (30,0,0) - GAP between #101 and (20,0,0) */
+<span class="lineno">26</span>#120=CARTESIAN_POINT(&#x27;b0&#x27;,(20.0,0.0,0.0));
+<span class="lineno">27</span>#121=CARTESIAN_POINT(&#x27;b1&#x27;,(30.0,0.0,0.0));
+<span class="lineno">28</span>#122=POLYLINE(&#x27;seg_b&#x27;,(#120,#121));
+<span class="lineno">29</span>#130=<mark>COMPOSITE_CURVE_SEGMENT</mark>(.CONTINUOUS.,.T.,#122);
+<span class="lineno">30</span>#200=COMPOSITE_CURVE(&#x27;discontinuous_path&#x27;,(#110,#130),.F.);
+<span class="lineno">31</span>#300=<mark>TRAJECTORY</mark>(&#x27;toolpath_with_gap&#x27;,$,$,$,#200);
+<span class="lineno">32</span>ENDSEC;
+<span class="lineno">33</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="M095.html">&larr; M095</a> <a class="up" href="index.html">§12.8 Mixed (tessellation, validation properties, etc.)</a> <a class="next" href="M097.html">M097 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

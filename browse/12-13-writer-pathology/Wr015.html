@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Wr015 — Duplicate `#N` instance numbers in the same DATA section</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.13 Writer pathology</a> <span class="sep">/</span> <span class="current">Wr015</span>
+</nav>
+<header class="title-bar">
+<h1>Wr015 <span class="sep">—</span> <span class="entry-title">Duplicate `#N` instance numbers in the same DATA section</span></h1>
+<p class="category">§12.13 writer-pathology (sub-class: instance numbering)</p>
+<p class="severity-badge severity-p2">P2 — spec deviation (no data loss)</p>
+<p class="tag-pills">
+<a class="tag tag-writer" href="../by-tag/writer/index.html">writer</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-13-writer-pathology/Wr015.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-13-writer-pathology/Wr015.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>OCCT MANTIS#0028xxx-class</li>
+<li>bug-reporter language: &quot;duplicate instance number&quot;, &quot;two entities with same #N&quot; (OCCT MANTIS tracker 502 as of 2026-05-02)</li>
+</ul></section>
+<section><h2>Sender</h2>
+<p>Writers with broken counter logic when emitting multi-section or multi-pass files (collision between sections or passes)</p></section>
+<section><h2>Description</h2>
+<p>Two entities in the same DATA section share the same `#N`. Spec violation. Receivers diverge: first-wins, last-wins, both-loaded-and-randomly-resolved, reject. Bug-reporter language: &quot;duplicate #5&quot;, &quot;same instance number twice&quot;, &quot;STEP file has collision&quot;.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>`#10 = CARTESIAN_POINT(&#x27;a&#x27;,(0.,0.,0.));` and later `#10 = CARTESIAN_POINT(&#x27;b&#x27;,(1.,1.,1.));` in the same DATA section.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>reject as malformed; spec mandates unique instance numbers per DATA section. Document the resolution policy if the kernel chooses tolerant first-wins / last-wins.</p></section>
+<section><h2>Notes</h2>
+<p>Lh010-class.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>matches(rb&#x27;(?s)#10\s*=\s*CARTESIAN_POINT.*#10\s*=\s*CARTESIAN_POINT&#x27;)</code></li>
+<li><code>count(b&#x27;#10=&#x27;) &gt;= 2</code></li>
+</ul></section>
+<section><h2>Cross-references</h2>
+<p><a href="../12-1b-header/Lh010.html">Lh010</a></p>
+</section>
+<section><h2>Live oracle output</h2>
+<table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
+<tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>warn(W_DUP_REF)</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>no_shapes_loaded</code></td></tr>
+</tbody></table>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>/* Wr015 - Duplicate #N instance numbers in the same DATA section - two CARTESIAN_POINT records share #10 */
+<span class="lineno">2</span>ISO-10303-21;
+<span class="lineno">3</span>HEADER;
+<span class="lineno">4</span>FILE_DESCRIPTION((&#x27;Wr015 - duplicate instance number&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">5</span>FILE_NAME(&#x27;Wr015.stp&#x27;,&#x27;2026-04-30T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),
+<span class="lineno">6</span>  &#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">7</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
+<span class="lineno">8</span>ENDSEC;
+<span class="lineno">9</span>DATA;
+<span class="lineno">10</span>#1=APPLICATION_CONTEXT(&#x27;mechanical design&#x27;);
+<span class="lineno">11</span><mark>#10=CARTESIAN_POINT(&#x27;a&#x27;,(0.0,0.0,0.0));</mark>
+<span class="lineno">12</span><mark>#11=DIRECTION(&#x27;z&#x27;,(0.0,0.0,1.0));</mark>
+<span class="lineno">13</span><mark>#12=DIRECTION(&#x27;x&#x27;,(1.0,0.0,0.0));</mark>
+<span class="lineno">14</span><mark>#13=AXIS2_PLACEMENT_3D(&#x27;p&#x27;,#10,#11,#12);</mark>
+<span class="lineno">15</span><mark>/* Wr015: counter collision in writer; #10 is reused for a second</mark>
+<span class="lineno">16</span><mark>   CARTESIAN_POINT later in the section */</mark>
+<span class="lineno">17</span><mark>#10=CARTESIAN_POINT</mark>(&#x27;b&#x27;,(1.0,1.0,1.0));
+<span class="lineno">18</span>#20=(LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">19</span>ENDSEC;
+<span class="lineno">20</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Wr014.html">&larr; Wr014</a> <a class="up" href="index.html">§12.13 Writer pathology</a> <a class="next" href="Wr016.html">Wr016 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

@@ -1,0 +1,38 @@
+ISO-10303-21;
+/* M031 - Validation property: missing unit_component.
+ * Defect: a geometric/validation property has a numeric value but no
+ * unit reference. The MEASURE_REPRESENTATION_ITEM here uses
+ * LENGTH_MEASURE without an associated unit_component, so the value
+ * is unitless. Strict tools must reject. */
+HEADER;
+FILE_DESCRIPTION(('M031 test case','GVP missing unit_component'),'2;1');
+FILE_NAME('M031.stp','2026-04-26T00:00:00',(''),(''),'auto-generated','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#11=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#12=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.E-6),#10,'distance_accuracy_value','');
+#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+     GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13))
+     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12))
+     REPRESENTATION_CONTEXT('part','3D'));
+#300=PRODUCT('part','part','',(#310));
+#310=MECHANICAL_CONTEXT('',#1,'mechanical');
+#320=PRODUCT_DEFINITION_FORMATION('','',#300);
+#330=PRODUCT_DEFINITION('design','',#320,#340);
+#340=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#350=PRODUCT_DEFINITION_SHAPE('','',#330);
+/* GVP for some length measure - DEFECT: no unit_component supplied,
+ * so the trailing slot is $ instead of #10 (mm). */
+#400=PROPERTY_DEFINITION('geometric validation property',
+       'maximum length',#350);
+#410=MEASURE_REPRESENTATION_ITEM('maximum length',
+       LENGTH_MEASURE(123.45),$);
+#420=REPRESENTATION('',(#410),#14);
+#430=PROPERTY_DEFINITION_REPRESENTATION(#400,#420);
+ENDSEC;
+END-ISO-10303-21;

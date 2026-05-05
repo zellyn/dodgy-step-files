@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>A080 — Hierarchy &amp; colours lost on partial-document IGES/STEP write</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.6 Assembly hierarchy</a> <span class="sep">/</span> <span class="current">A080</span>
+</nav>
+<header class="title-bar">
+<h1>A080 <span class="sep">—</span> <span class="entry-title">Hierarchy &amp; colours lost on partial-document IGES/STEP write</span></h1>
+<p class="category">§12.6 assembly</p>
+<p class="severity-badge severity-p1">P1 — silent data loss</p>
+<p class="tag-pills">
+<a class="tag tag-assembly" href="../by-tag/assembly/index.html">assembly</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-6-assembly/A080.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-6-assembly/A080.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>OCCT MANTIS#0026657</li>
+<li>OCCT MANTIS#0026500 (OCCT MANTIS tracker 502 as of 2026-05-02)</li>
+</ul></section>
+<section><h2>Description</h2>
+<p>Writing only a subset of an XCAF document (e.g., one branch) flattens the assembly tree and drops per-branch colours. The exported file contains only the selected geometry, no hierarchy, no styles — even though the source document has all three.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>Two-branch assembly; write only branch B. Branch B in source has colour and hierarchy; branch B in output has neither.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>Heal and accept: partial-write preserves the structure of the written subtree fully; only contents *outside* the subtree are excluded. Must not silently lose colours/hierarchy.</p></section>
+<section><h2>Notes</h2>
+<p>**See also**: A077, A068. Synonyms: &quot;partial-document IGES/STEP write loses hierarchy and colours&quot;, &quot;exporting subset of XCAF doc strips colors&quot;, &quot;selective export drops assembly tree&quot;.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>count_entity_def(b&#x27;NEXT_ASSEMBLY_USAGE_OCCURRENCE&#x27;) == 2</code></li>
+<li><code>count_entity_def(b&#x27;STYLED_ITEM&#x27;) &gt;= 2</code></li>
+<li><code>count_entity_def(b&#x27;COLOUR_RGB&#x27;) &gt;= 2</code></li>
+</ul></section>
+<section><h2>Cross-references</h2>
+<p><a href="A077.html">A077</a>, <a href="A068.html">A068</a></p>
+</section>
+<section><h2>Live oracle output</h2>
+<table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
+<tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>no_shapes_loaded</code></td></tr>
+</tbody></table>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* A080 - Hierarchy &amp; colours lost on partial-document write.
+<span class="lineno">3</span> * Defect: two-branch assembly under one root; each branch has a
+<span class="lineno">4</span> * STYLED_ITEM-bound colour. Writing only branch B produces a flat
+<span class="lineno">5</span> * file with no hierarchy and no colour. */
+<span class="lineno">6</span>HEADER;
+<span class="lineno">7</span>FILE_DESCRIPTION((&#x27;A080 test case&#x27;,&#x27;Hierarchy and colours lost on partial-document write&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">8</span>FILE_NAME(&#x27;A080.stp&#x27;,&#x27;2026-04-30T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">9</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }&#x27;));
+<span class="lineno">10</span>ENDSEC;
+<span class="lineno">11</span>DATA;
+<span class="lineno">12</span>#1=APPLICATION_CONTEXT(&#x27;automotive_design&#x27;);
+<span class="lineno">13</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,&#x27;automotive_design&#x27;,2000,#1);
+<span class="lineno">14</span>#10=PRODUCT_CONTEXT(&#x27;&#x27;,#1,&#x27;mechanical&#x27;);
+<span class="lineno">15</span>#13=PRODUCT_DEFINITION_CONTEXT(&#x27;part definition&#x27;,#1,&#x27;design&#x27;);
+<span class="lineno">16</span>/* Root */
+<span class="lineno">17</span>#20=PRODUCT(&#x27;ROOT&#x27;,&#x27;root_assembly&#x27;,&#x27;&#x27;,(#10));
+<span class="lineno">18</span>#21=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#20);
+<span class="lineno">19</span>#22=PRODUCT_DEFINITION(&#x27;design&#x27;,&#x27;&#x27;,#21,#13);
+<span class="lineno">20</span>#23=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,#22);
+<span class="lineno">21</span>/* Branch A */
+<span class="lineno">22</span>#30=PRODUCT(&#x27;branch_a&#x27;,&#x27;a&#x27;,&#x27;&#x27;,(#10));
+<span class="lineno">23</span>#31=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#30);
+<span class="lineno">24</span>#32=PRODUCT_DEFINITION(&#x27;design&#x27;,&#x27;&#x27;,#31,#13);
+<span class="lineno">25</span>#33=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,#32);
+<span class="lineno">26</span>/* Branch B */
+<span class="lineno">27</span>#40=PRODUCT(&#x27;branch_b&#x27;,&#x27;b&#x27;,&#x27;&#x27;,(#10));
+<span class="lineno">28</span>#41=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#40);
+<span class="lineno">29</span>#42=PRODUCT_DEFINITION(&#x27;design&#x27;,&#x27;&#x27;,#41,#13);
+<span class="lineno">30</span>#43=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,#42);
+<span class="lineno">31</span>/* NAUO wires both branches under the root */
+<span class="lineno">32</span><mark>#50=NEXT_ASSEMBLY_USAGE_OCCURRENCE(</mark>&#x27;a&#x27;,&#x27;branch_a_under_root&#x27;,&#x27;&#x27;,#22,#32,$);
+<span class="lineno">33</span><mark>#51=NEXT_ASSEMBLY_USAGE_OCCURRENCE(</mark>&#x27;b&#x27;,&#x27;branch_b_under_root&#x27;,&#x27;&#x27;,#22,#42,$);
+<span class="lineno">34</span>/* One face per branch (geometry placeholder) */
+<span class="lineno">35</span>#60=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">36</span>#61=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">37</span>#62=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">38</span>#63=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#60,#61,#62);
+<span class="lineno">39</span>#64=PLANE(&#x27;&#x27;,#63);
+<span class="lineno">40</span>#65=ADVANCED_FACE(&#x27;a_face&#x27;,(),#64,.T.);
+<span class="lineno">41</span>#66=ADVANCED_FACE(&#x27;b_face&#x27;,(),#64,.T.);
+<span class="lineno">42</span>/* Per-branch colour binding via STYLED_ITEM */
+<span class="lineno">43</span><mark>#70=COLOUR_RGB(</mark>&#x27;a_red&#x27;,1.0,0.0,0.0);
+<span class="lineno">44</span>#71=FILL_AREA_STYLE_COLOUR(&#x27;&#x27;,#70);
+<span class="lineno">45</span>#72=FILL_AREA_STYLE(&#x27;&#x27;,(#71));
+<span class="lineno">46</span>#73=SURFACE_STYLE_FILL_AREA(#72);
+<span class="lineno">47</span>#74=SURFACE_SIDE_STYLE(&#x27;&#x27;,(#73));
+<span class="lineno">48</span>#75=SURFACE_STYLE_USAGE(.BOTH.,#74);
+<span class="lineno">49</span>#76=PRESENTATION_STYLE_ASSIGNMENT((#75));
+<span class="lineno">50</span><mark>#77=STYLED_ITEM(</mark>&#x27;branch_a_colour&#x27;,(#76),#65);
+<span class="lineno">51</span><mark>#80=COLOUR_RGB(</mark>&#x27;b_blue&#x27;,0.0,0.0,1.0);
+<span class="lineno">52</span>#81=FILL_AREA_STYLE_COLOUR(&#x27;&#x27;,#80);
+<span class="lineno">53</span>#82=FILL_AREA_STYLE(&#x27;&#x27;,(#81));
+<span class="lineno">54</span>#83=SURFACE_STYLE_FILL_AREA(#82);
+<span class="lineno">55</span>#84=SURFACE_SIDE_STYLE(&#x27;&#x27;,(#83));
+<span class="lineno">56</span>#85=SURFACE_STYLE_USAGE(.BOTH.,#84);
+<span class="lineno">57</span>#86=PRESENTATION_STYLE_ASSIGNMENT((#85));
+<span class="lineno">58</span><mark>#87=STYLED_ITEM(</mark>&#x27;branch_b_colour&#x27;,(#86),#66);
+<span class="lineno">59</span>ENDSEC;
+<span class="lineno">60</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="A079.html">&larr; A079</a> <a class="up" href="index.html">§12.6 Assembly hierarchy</a> <a class="next" href="A081.html">A081 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

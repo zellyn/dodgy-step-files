@@ -1,0 +1,24 @@
+ISO-10303-21;
+/* Xp017 - Cross-product: empty GEOMETRIC_SET, extreme-magnitude
+ *   coordinates, and a CARTESIAN_POINT carrying NaN.
+ * Builds on Ad-empty-set-class + Ad-extreme-coords-class + Gn010
+ *   (NaN/out-of-range values).
+ * Defect 3 note: the literal `NaN` is itself non-conforming for
+ *   ISO-10303-21 REAL grammar - that's part of the test. */
+HEADER;
+FILE_DESCRIPTION(('Xp017 cross-product','empty set x extreme coords x NaN'),'2;1');
+FILE_NAME('Xp017.stp','2026-04-26T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+/* Defect 1: empty GEOMETRIC_SET items */
+#10=GEOMETRIC_SET('empty',());
+/* Defect 2: extreme-magnitude coordinate */
+#11=CARTESIAN_POINT('huge',(1.0E308,0.0,0.0));
+/* Defect 3: NaN literal (deliberately non-conforming) */
+#12=CARTESIAN_POINT('nan',(NaN,0.0,0.0));
+#13=GEOMETRIC_SET('with_anomalies',(#11,#12));
+ENDSEC;
+END-ISO-10303-21;

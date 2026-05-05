@@ -1,0 +1,36 @@
+ISO-10303-21;
+/* M158 - AP210 assembly footprint conflicts with component-library
+ * footprint.
+ * Defect: an assembly's local PRODUCT_DEFINITION declares an SOIC-8
+ * footprint with 1.27 mm pitch but the component library's
+ * PRODUCT_DEFINITION for the same MPN declares 0.65 mm pitch
+ * (effectively SSOP). The assembly's pads will not align with the
+ * component pins. */
+HEADER;
+FILE_DESCRIPTION(('M158 test case','AP210 footprint pitch override conflict'),'2;1');
+FILE_NAME('M158.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('ELECTRONIC_ASSEMBLY_INTERCONNECT_AND_PACKAGING_DESIGN { 1 0 10303 210 3 1 0 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('electronic_assembly_interconnect_and_packaging_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
+  'electronic_assembly_interconnect_and_packaging_design',2014,#1);
+#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10))
+     REPRESENTATION_CONTEXT('pcb','3D'));
+/* Library entry for the component. */
+#100=PRODUCT('LM358','LM358','dual op-amp library entry',(#1));
+#101=PRODUCT_DEFINITION_FORMATION('lib_v1','library',#100);
+#102=PRODUCT_DEFINITION('library_def','SSOP-8 0.65mm pitch',#101,#1);
+#110=DESCRIPTIVE_REPRESENTATION_ITEM('library_pin_pitch_mm','0.65');
+/* Assembly entry for the same MPN. */
+#200=PRODUCT('LM358','LM358','assembly placement record',(#1));
+#201=PRODUCT_DEFINITION_FORMATION('asm_v1','assembly',#200);
+#202=PRODUCT_DEFINITION('assembly_def','SOIC-8 1.27mm pitch',#201,#1);
+/* Defect: assembly pitch (1.27) doesn't match library pitch (0.65). */
+#210=DESCRIPTIVE_REPRESENTATION_ITEM('assembly_pin_pitch_mm','1.27');
+#300=NEXT_ASSEMBLY_USAGE_OCCURRENCE('U2','U2','SOIC-8 footprint placement',
+       #102,#202,$);
+ENDSEC;
+END-ISO-10303-21;

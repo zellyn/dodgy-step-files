@@ -1,0 +1,22 @@
+ISO-10303-21;
+/* Lh042 - SIGNATURE section appearing BEFORE the DATA section it
+ * is supposedly signing (order ambiguity)
+ * Defect: Edition-3 places SIGNATURE near end-of-file by convention
+ * (so the signed content is fully known at signature time). A
+ * producer placing SIGNATURE before DATA either signed an empty
+ * file or computed the signature over content not yet emitted.
+ * Receivers must reject as inconsistent or warn. */
+HEADER;
+FILE_DESCRIPTION(('Lh042 - SIGNATURE before DATA'),'2;1');
+FILE_NAME('Lh042.stp','2026-04-26T00:00:00',(''),(''),
+  'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+SIGNATURE;
+'algo=sha-256; payload=DEADBEEF00000000000000000000000000000000000000000000000000000000;';
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#10=CARTESIAN_POINT('origin',(0.0,0.0,0.0));
+ENDSEC;
+END-ISO-10303-21;

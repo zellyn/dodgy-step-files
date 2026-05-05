@@ -1,0 +1,59 @@
+ISO-10303-21;
+/* Tsh024 - CONNECTED_FACE_SET containing non-face entities
+ * Defect: When sub-shapes are enabled, a CONNECTED_FACE_SET may contain
+ * VERTEX_POINT entries; OCCT's ExpandShell assumed all children were
+ * faces. Source: G034 (Mantis 29784).
+ *
+ * This file: a CONNECTED_FACE_SET (parent class of OPEN_SHELL) whose
+ * cfs_faces aggregate contains 2 ADVANCED_FACE instances + 1 stray
+ * VERTEX_POINT reference. ExpandShell should filter children to faces
+ * and warn on the rest. */
+HEADER;
+FILE_DESCRIPTION(('Tsh024 test case','CONNECTED_FACE_SET with VERTEX_POINT'),'2;1');
+FILE_NAME('Tsh024.stp','2026-04-26T00:00:00',(''),(''),'auto-generated','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+/* Two adjacent square plates forming an L */
+#100=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#101=CARTESIAN_POINT('',(1.0,0.0,0.0));
+#102=CARTESIAN_POINT('',(1.0,1.0,0.0));
+#103=CARTESIAN_POINT('',(0.0,1.0,0.0));
+#104=CARTESIAN_POINT('',(1.0,0.0,1.0));
+#105=CARTESIAN_POINT('',(1.0,1.0,1.0));
+#106=CARTESIAN_POINT('stray_point',(2.5,2.5,2.5));
+#110=VERTEX_POINT('',#100); #111=VERTEX_POINT('',#101);
+#112=VERTEX_POINT('',#102); #113=VERTEX_POINT('',#103);
+#114=VERTEX_POINT('',#104); #115=VERTEX_POINT('',#105);
+/* Stray vertex point that should NOT be in the CFS */
+#116=VERTEX_POINT('stray_vertex',#106);
+#200=DIRECTION('',(0.0,0.0,1.0)); #201=DIRECTION('',(1.0,0.0,0.0));
+#211=AXIS2_PLACEMENT_3D('',#100,#200,#201); #212=PLANE('xy',#211);
+#220=DIRECTION('',(1.0,0.0,0.0)); #221=AXIS2_PLACEMENT_3D('',#101,#220,#200); #222=PLANE('yz',#221);
+#300=DIRECTION('',(1.0,0.0,0.0)); #301=VECTOR('',#300,1.0);
+#302=DIRECTION('',(0.0,1.0,0.0)); #303=VECTOR('',#302,1.0);
+#304=DIRECTION('',(0.0,0.0,1.0)); #305=VECTOR('',#304,1.0);
+#310=LINE('',#100,#301); #311=EDGE_CURVE('',#110,#111,#310,.T.);
+#312=LINE('',#101,#303); #313=EDGE_CURVE('shared',#111,#112,#312,.T.);
+#314=LINE('',#103,#301); #315=EDGE_CURVE('',#113,#112,#314,.T.);
+#316=LINE('',#100,#303); #317=EDGE_CURVE('',#110,#113,#316,.T.);
+#318=LINE('',#101,#305); #319=EDGE_CURVE('',#111,#114,#318,.T.);
+#320=LINE('',#104,#303); #321=EDGE_CURVE('',#114,#115,#320,.T.);
+#322=LINE('',#102,#305); #323=EDGE_CURVE('',#112,#115,#322,.T.);
+#400=ORIENTED_EDGE('',*,*,#311,.T.); #401=ORIENTED_EDGE('',*,*,#313,.T.);
+#402=ORIENTED_EDGE('',*,*,#315,.F.); #403=ORIENTED_EDGE('',*,*,#317,.F.);
+#404=EDGE_LOOP('',(#400,#401,#402,#403)); #405=FACE_OUTER_BOUND('',#404,.T.);
+#406=ADVANCED_FACE('face1',(#405),#212,.T.);
+#410=ORIENTED_EDGE('',*,*,#313,.T.); #411=ORIENTED_EDGE('',*,*,#323,.T.);
+#412=ORIENTED_EDGE('',*,*,#321,.F.); #413=ORIENTED_EDGE('',*,*,#319,.F.);
+#414=EDGE_LOOP('',(#410,#411,#412,#413)); #415=FACE_OUTER_BOUND('',#414,.T.);
+#416=ADVANCED_FACE('face2',(#415),#222,.T.);
+/* Defect: CONNECTED_FACE_SET (here as OPEN_SHELL) contains a
+   VERTEX_POINT alongside the legitimate ADVANCED_FACE entries.
+   Schema permits only FACE-typed children; reader must filter. */
+#500=OPEN_SHELL('cfs_with_stray_vertex',(#406,#416,#116));
+#510=SHELL_BASED_SURFACE_MODEL('container',(#500));
+ENDSEC;
+END-ISO-10303-21;

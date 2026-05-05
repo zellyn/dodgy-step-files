@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Tsh001 — ManifoldSolidBrep.outer references OPEN_SHELL</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.3a Shells / orientation</a> <span class="sep">/</span> <span class="current">Tsh001</span>
+</nav>
+<header class="title-bar">
+<h1>Tsh001 <span class="sep">—</span> <span class="entry-title">ManifoldSolidBrep.outer references OPEN_SHELL</span></h1>
+<p class="category">§12.3a shell-orientation</p>
+<p class="severity-badge severity-p1">P1 — silent data loss</p>
+<p class="tag-pills">
+<a class="tag tag-topology" href="../by-tag/topology/index.html">topology</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-3a-shells/Tsh001.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-3a-shells/Tsh001.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>03-occt-tests.md R046</li>
+<li>08-occt-gitlog.md G017</li>
+</ul></section>
+<section><h2>Sender</h2>
+<p>unspecified producers; pattern attested in OCCT bug 25169</p></section>
+<section><h2>Description</h2>
+<p>STEP files emit a `MANIFOLD_SOLID_BREP` whose `outer` shell is an `OPEN_SHELL`, contradicting the schema&#x27;s requirement that the outer shell be a `CLOSED_SHELL`.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>`#N=MANIFOLD_SOLID_BREP(&#x27;&#x27;,#M);` where `#M=OPEN_SHELL(&#x27;&#x27;,(..));`.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>heal — accept with warning; if topology demonstrably closes, promote to closed shell; otherwise treat as compound of faces.</p></section>
+<section><h2>Notes</h2>
+<p>**See also**: N026, Tsh002, Tsh003, Tsh004, Tsh005, Tsh006. Synonyms: &quot;solid built from open shell instead of closed&quot;, &quot;manifold solid wrapping non-manifold geometry&quot;, &quot;solid body has leaks&quot;, &quot;outer boundary of solid is not watertight&quot;, &quot;schema says closed but file says open&quot;.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>contains(b&#x27;OPEN_SHELL&#x27;)</code></li>
+<li><code>contains(b&#x27;MANIFOLD_SOLID_BREP&#x27;)</code></li>
+<li><code>count_entity_def(b&#x27;ADVANCED_FACE&#x27;) == 6</code></li>
+</ul></section>
+<section><h2>Cross-references</h2>
+<p><a href="../12-4-tolerance/N026.html">N026</a>, <a href="Tsh002.html">Tsh002</a>, <a href="Tsh003.html">Tsh003</a>, <a href="Tsh004.html">Tsh004</a>, <a href="Tsh005.html">Tsh005</a>, <a href="Tsh006.html">Tsh006</a></p>
+</section>
+<section><h2>Live oracle output</h2>
+<table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
+<tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>no_shapes_loaded</code></td></tr>
+</tbody></table>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* Tsh001 - ManifoldSolidBrep.outer references <mark>OPEN_SHELL</mark>
+<span class="lineno">3</span> * Defect: <mark>MANIFOLD_SOLID_BREP</mark> requires its outer shell to be CLOSED_SHELL,
+<span class="lineno">4</span> * but this file emits <mark>OPEN_SHELL</mark> instead. OCCT bug 25169 attests this
+<span class="lineno">5</span> * pattern from real producers. The 6 faces of a unit cube would form a
+<span class="lineno">6</span> * closed shell, but the entity type lies and claims it is open.
+<span class="lineno">7</span> * Schema-strict readers must reject; healers may promote when topology
+<span class="lineno">8</span> * actually closes. */
+<span class="lineno">9</span>HEADER;
+<span class="lineno">10</span>FILE_DESCRIPTION((&#x27;Tsh001 test case&#x27;,&#x27;<mark>MANIFOLD_SOLID_BREP</mark> outer is <mark>OPEN_SHELL</mark>&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">11</span>FILE_NAME(&#x27;Tsh001.stp&#x27;,&#x27;2026-04-26T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;auto-generated&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">12</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }&#x27;));
+<span class="lineno">13</span>ENDSEC;
+<span class="lineno">14</span>DATA;
+<span class="lineno">15</span>#1=APPLICATION_CONTEXT(&#x27;automotive_design&#x27;);
+<span class="lineno">16</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,&#x27;automotive_design&#x27;,2000,#1);
+<span class="lineno">17</span>/* Cube vertices at (0|1, 0|1, 0|1) */
+<span class="lineno">18</span>#100=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">19</span>#101=CARTESIAN_POINT(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">20</span>#102=CARTESIAN_POINT(&#x27;&#x27;,(1.0,1.0,0.0));
+<span class="lineno">21</span>#103=CARTESIAN_POINT(&#x27;&#x27;,(0.0,1.0,0.0));
+<span class="lineno">22</span>#104=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">23</span>#105=CARTESIAN_POINT(&#x27;&#x27;,(1.0,0.0,1.0));
+<span class="lineno">24</span>#106=CARTESIAN_POINT(&#x27;&#x27;,(1.0,1.0,1.0));
+<span class="lineno">25</span>#107=CARTESIAN_POINT(&#x27;&#x27;,(0.0,1.0,1.0));
+<span class="lineno">26</span>#110=VERTEX_POINT(&#x27;&#x27;,#100);
+<span class="lineno">27</span>#111=VERTEX_POINT(&#x27;&#x27;,#101);
+<span class="lineno">28</span>#112=VERTEX_POINT(&#x27;&#x27;,#102);
+<span class="lineno">29</span>#113=VERTEX_POINT(&#x27;&#x27;,#103);
+<span class="lineno">30</span>#114=VERTEX_POINT(&#x27;&#x27;,#104);
+<span class="lineno">31</span>#115=VERTEX_POINT(&#x27;&#x27;,#105);
+<span class="lineno">32</span>#116=VERTEX_POINT(&#x27;&#x27;,#106);
+<span class="lineno">33</span>#117=VERTEX_POINT(&#x27;&#x27;,#107);
+<span class="lineno">34</span>/* 6 plane surfaces, axis placements at face centers (one per face) */
+<span class="lineno">35</span>#200=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">36</span>#201=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">37</span>#210=CARTESIAN_POINT(&#x27;&#x27;,(0.5,0.5,0.0));
+<span class="lineno">38</span>#211=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#210,#200,#201);
+<span class="lineno">39</span>#212=PLANE(&#x27;&#x27;,#211);
+<span class="lineno">40</span>#220=CARTESIAN_POINT(&#x27;&#x27;,(0.5,0.5,1.0));
+<span class="lineno">41</span>#221=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#220,#200,#201);
+<span class="lineno">42</span>#222=PLANE(&#x27;&#x27;,#221);
+<span class="lineno">43</span>#230=CARTESIAN_POINT(&#x27;&#x27;,(0.5,0.0,0.5));
+<span class="lineno">44</span>#231=DIRECTION(&#x27;&#x27;,(0.0,-1.0,0.0));
+<span class="lineno">45</span>#232=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#230,#231,#201);
+<span class="lineno">46</span>#233=PLANE(&#x27;&#x27;,#232);
+<span class="lineno">47</span>#240=CARTESIAN_POINT(&#x27;&#x27;,(0.5,1.0,0.5));
+<span class="lineno">48</span>#241=DIRECTION(&#x27;&#x27;,(0.0,1.0,0.0));
+<span class="lineno">49</span>#242=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#240,#241,#201);
+<span class="lineno">50</span>#243=PLANE(&#x27;&#x27;,#242);
+<span class="lineno">51</span>#250=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.5,0.5));
+<span class="lineno">52</span>#251=DIRECTION(&#x27;&#x27;,(-1.0,0.0,0.0));
+<span class="lineno">53</span>#252=DIRECTION(&#x27;&#x27;,(0.0,1.0,0.0));
+<span class="lineno">54</span>#253=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#250,#251,#252);
+<span class="lineno">55</span>#254=PLANE(&#x27;&#x27;,#253);
+<span class="lineno">56</span>#260=CARTESIAN_POINT(&#x27;&#x27;,(1.0,0.5,0.5));
+<span class="lineno">57</span>#261=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">58</span>#262=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#260,#261,#252);
+<span class="lineno">59</span>#263=PLANE(&#x27;&#x27;,#262);
+<span class="lineno">60</span>/* 12 edges (lines) */
+<span class="lineno">61</span>#300=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">62</span>#301=VECTOR(&#x27;&#x27;,#300,1.0);
+<span class="lineno">63</span>#302=DIRECTION(&#x27;&#x27;,(0.0,1.0,0.0));
+<span class="lineno">64</span>#303=VECTOR(&#x27;&#x27;,#302,1.0);
+<span class="lineno">65</span>#304=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">66</span>#305=VECTOR(&#x27;&#x27;,#304,1.0);
+<span class="lineno">67</span>#310=LINE(&#x27;&#x27;,#100,#301); #311=EDGE_CURVE(&#x27;&#x27;,#110,#111,#310,.T.);
+<span class="lineno">68</span>#312=LINE(&#x27;&#x27;,#101,#303); #313=EDGE_CURVE(&#x27;&#x27;,#111,#112,#312,.T.);
+<span class="lineno">69</span>#314=LINE(&#x27;&#x27;,#103,#301); #315=EDGE_CURVE(&#x27;&#x27;,#113,#112,#314,.T.);
+<span class="lineno">70</span>#316=LINE(&#x27;&#x27;,#100,#303); #317=EDGE_CURVE(&#x27;&#x27;,#110,#113,#316,.T.);
+<span class="lineno">71</span>#318=LINE(&#x27;&#x27;,#104,#301); #319=EDGE_CURVE(&#x27;&#x27;,#114,#115,#318,.T.);
+<span class="lineno">72</span>#320=LINE(&#x27;&#x27;,#105,#303); #321=EDGE_CURVE(&#x27;&#x27;,#115,#116,#320,.T.);
+<span class="lineno">73</span>#322=LINE(&#x27;&#x27;,#107,#301); #323=EDGE_CURVE(&#x27;&#x27;,#117,#116,#322,.T.);
+<span class="lineno">74</span>#324=LINE(&#x27;&#x27;,#104,#303); #325=EDGE_CURVE(&#x27;&#x27;,#114,#117,#324,.T.);
+<span class="lineno">75</span>#326=LINE(&#x27;&#x27;,#100,#305); #327=EDGE_CURVE(&#x27;&#x27;,#110,#114,#326,.T.);
+<span class="lineno">76</span>#328=LINE(&#x27;&#x27;,#101,#305); #329=EDGE_CURVE(&#x27;&#x27;,#111,#115,#328,.T.);
+<span class="lineno">77</span>#330=LINE(&#x27;&#x27;,#102,#305); #331=EDGE_CURVE(&#x27;&#x27;,#112,#116,#330,.T.);
+<span class="lineno">78</span>#332=LINE(&#x27;&#x27;,#103,#305); #333=EDGE_CURVE(&#x27;&#x27;,#113,#117,#332,.T.);
+<span class="lineno">79</span>/* Bottom face (z=0): 110-&gt;111-&gt;112-&gt;113 reversed for outward -z */
+<span class="lineno">80</span>#400=ORIENTED_EDGE(&#x27;&#x27;,*,*,#311,.F.);
+<span class="lineno">81</span>#401=ORIENTED_EDGE(&#x27;&#x27;,*,*,#317,.T.);
+<span class="lineno">82</span>#402=ORIENTED_EDGE(&#x27;&#x27;,*,*,#315,.F.);
+<span class="lineno">83</span>#403=ORIENTED_EDGE(&#x27;&#x27;,*,*,#313,.F.);
+<span class="lineno">84</span>#404=EDGE_LOOP(&#x27;&#x27;,(#400,#401,#402,#403));
+<span class="lineno">85</span>#405=FACE_OUTER_BOUND(&#x27;&#x27;,#404,.T.);
+<span class="lineno">86</span><mark>#406=ADVANCED_FACE(</mark>&#x27;&#x27;,(#405),#212,.T.);
+<span class="lineno">87</span>/* Top face (z=1) */
+<span class="lineno">88</span>#410=ORIENTED_EDGE(&#x27;&#x27;,*,*,#319,.T.);
+<span class="lineno">89</span>#411=ORIENTED_EDGE(&#x27;&#x27;,*,*,#321,.T.);
+<span class="lineno">90</span>#412=ORIENTED_EDGE(&#x27;&#x27;,*,*,#323,.F.);
+<span class="lineno">91</span>#413=ORIENTED_EDGE(&#x27;&#x27;,*,*,#325,.F.);
+<span class="lineno">92</span>#414=EDGE_LOOP(&#x27;&#x27;,(#410,#411,#412,#413));
+<span class="lineno">93</span>#415=FACE_OUTER_BOUND(&#x27;&#x27;,#414,.T.);
+<span class="lineno">94</span><mark>#416=ADVANCED_FACE(</mark>&#x27;&#x27;,(#415),#222,.T.);
+<span class="lineno">95</span>/* Front face (y=0) */
+<span class="lineno">96</span>#420=ORIENTED_EDGE(&#x27;&#x27;,*,*,#311,.T.);
+<span class="lineno">97</span>#421=ORIENTED_EDGE(&#x27;&#x27;,*,*,#329,.T.);
+<span class="lineno">98</span>#422=ORIENTED_EDGE(&#x27;&#x27;,*,*,#319,.F.);
+<span class="lineno">99</span>#423=ORIENTED_EDGE(&#x27;&#x27;,*,*,#327,.F.);
+<span class="lineno">100</span>#424=EDGE_LOOP(&#x27;&#x27;,(#420,#421,#422,#423));
+<span class="lineno">101</span>#425=FACE_OUTER_BOUND(&#x27;&#x27;,#424,.T.);
+<span class="lineno">102</span><mark>#426=ADVANCED_FACE(</mark>&#x27;&#x27;,(#425),#233,.T.);
+<span class="lineno">103</span>/* Back face (y=1) */
+<span class="lineno">104</span>#430=ORIENTED_EDGE(&#x27;&#x27;,*,*,#315,.T.);
+<span class="lineno">105</span>#431=ORIENTED_EDGE(&#x27;&#x27;,*,*,#331,.T.);
+<span class="lineno">106</span>#432=ORIENTED_EDGE(&#x27;&#x27;,*,*,#323,.F.);
+<span class="lineno">107</span>#433=ORIENTED_EDGE(&#x27;&#x27;,*,*,#333,.F.);
+<span class="lineno">108</span>#434=EDGE_LOOP(&#x27;&#x27;,(#430,#431,#432,#433));
+<span class="lineno">109</span>#435=FACE_OUTER_BOUND(&#x27;&#x27;,#434,.T.);
+<span class="lineno">110</span><mark>#436=ADVANCED_FACE(</mark>&#x27;&#x27;,(#435),#243,.T.);
+<span class="lineno">111</span>/* Left face (x=0) */
+<span class="lineno">112</span>#440=ORIENTED_EDGE(&#x27;&#x27;,*,*,#317,.T.);
+<span class="lineno">113</span>#441=ORIENTED_EDGE(&#x27;&#x27;,*,*,#333,.T.);
+<span class="lineno">114</span>#442=ORIENTED_EDGE(&#x27;&#x27;,*,*,#325,.F.);
+<span class="lineno">115</span>#443=ORIENTED_EDGE(&#x27;&#x27;,*,*,#327,.F.);
+<span class="lineno">116</span>#444=EDGE_LOOP(&#x27;&#x27;,(#440,#441,#442,#443));
+<span class="lineno">117</span>#445=FACE_OUTER_BOUND(&#x27;&#x27;,#444,.T.);
+<span class="lineno">118</span><mark>#446=ADVANCED_FACE(</mark>&#x27;&#x27;,(#445),#254,.T.);
+<span class="lineno">119</span>/* Right face (x=1) */
+<span class="lineno">120</span>#450=ORIENTED_EDGE(&#x27;&#x27;,*,*,#313,.T.);
+<span class="lineno">121</span>#451=ORIENTED_EDGE(&#x27;&#x27;,*,*,#331,.T.);
+<span class="lineno">122</span>#452=ORIENTED_EDGE(&#x27;&#x27;,*,*,#321,.F.);
+<span class="lineno">123</span>#453=ORIENTED_EDGE(&#x27;&#x27;,*,*,#329,.F.);
+<span class="lineno">124</span>#454=EDGE_LOOP(&#x27;&#x27;,(#450,#451,#452,#453));
+<span class="lineno">125</span>#455=FACE_OUTER_BOUND(&#x27;&#x27;,#454,.T.);
+<span class="lineno">126</span><mark>#456=ADVANCED_FACE(</mark>&#x27;&#x27;,(#455),#263,.T.);
+<span class="lineno">127</span>/* Defect: <mark>OPEN_SHELL</mark> referenced as outer of <mark>MANIFOLD_SOLID_BREP</mark>.
+<span class="lineno">128</span>   Schema requires CLOSED_SHELL here. Despite the 6 faces topologically
+<span class="lineno">129</span>   closing the cube, the entity type lies. */
+<span class="lineno">130</span>#500=<mark>OPEN_SHELL</mark>(&#x27;cube_pretending_to_be_open&#x27;,(#406,#416,#426,#436,#446,#456));
+<span class="lineno">131</span>#600=<mark>MANIFOLD_SOLID_BREP</mark>(&#x27;illegal_outer&#x27;,#500);
+<span class="lineno">132</span>ENDSEC;
+<span class="lineno">133</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Sw009.html">&larr; Sw009</a> <a class="up" href="index.html">§12.3a Shells / orientation</a> <a class="next" href="Tsh002.html">Tsh002 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

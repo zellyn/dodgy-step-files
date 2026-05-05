@@ -1,0 +1,91 @@
+ISO-10303-21;
+/*
+ * P023 — Mixed FACE_OUTER_BOUND orientation flag (negative-volume pocket)
+ * Defect (FreeCAD #10736; FreeCAD):
+ *   A MANIFOLD_SOLID_BREP where some FACE_OUTER_BOUND is .F. (orientation
+ *   false) on a small subset of faces while surface normals are otherwise
+ *   consistent — reader interprets as inverted pocket (negative volume).
+ * Reproducer: solid with mixed .T. / .F. orientation flags on a subset of
+ *   faces.
+ * Expected kernel: correct interpretation of mixed-orientation face flags,
+ *   or reject with clear diagnostic.
+ */
+HEADER;
+FILE_DESCRIPTION(('P023 mixed FACE_OUTER_BOUND .T./.F. — negative-volume pocket'),'2;1');
+FILE_NAME('P023.stp','2026-04-26T00:00:00',('catalog'),('cad'),'manual','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#10 = APPLICATION_CONTEXT('automotive design');
+#11 = APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2001,#10);
+#12 = PRODUCT_CONTEXT('',#10,'mechanical');
+#13 = PRODUCT_DEFINITION_CONTEXT('part definition',#10,'design');
+#20 = PRODUCT('P023_ASSY','','',(#12));
+#21 = PRODUCT_DEFINITION_FORMATION('','',#20);
+#22 = PRODUCT_DEFINITION('design','',#21,#13);
+#23 = PRODUCT_DEFINITION_SHAPE('','',#22);
+#30 = PRODUCT('MIXED_ORIENT_BREP','','',(#12));
+#31 = PRODUCT_DEFINITION_FORMATION('','',#30);
+#32 = PRODUCT_DEFINITION('design','',#31,#13);
+#33 = PRODUCT_DEFINITION_SHAPE('','',#32);
+#40 = NEXT_ASSEMBLY_USAGE_OCCURRENCE('1','MOB_INST','',#22,#32,$);
+/* shared geometry for two faces */
+#90 = CARTESIAN_POINT('p0',(0.0,0.0,0.0));
+#91 = DIRECTION('z',(0.0,0.0,1.0));
+#92 = DIRECTION('x',(1.0,0.0,0.0));
+#93 = AXIS2_PLACEMENT_3D('plane1_axes',#90,#91,#92);
+#94 = PLANE('plane1',#93);
+#95 = CARTESIAN_POINT('p1',(0.0,0.0,10.0));
+#96 = AXIS2_PLACEMENT_3D('plane2_axes',#95,#91,#92);
+#97 = PLANE('plane2',#96);
+/* placeholder loops referencing degenerate single-edge */
+#98 = VERTEX_POINT('v0',#90);
+#99 = VECTOR('vx',#92,1.0);
+#100 = LINE('l1',#90,#99);
+#101 = EDGE_CURVE('e1',#98,#98,#100,.T.);
+#102 = ORIENTED_EDGE('oe1',*,*,#101,.T.);
+#103 = EDGE_LOOP('loop1',(#102));
+#104 = EDGE_LOOP('loop2',(#102));
+/* DEFECT: face1 outer-bound .T., face2 outer-bound .F. — mixed flags */
+#105 = FACE_OUTER_BOUND('fb1_T',#103,.T.);
+#106 = FACE_OUTER_BOUND('fb2_F',#104,.F.);
+#107 = ADVANCED_FACE('face_T',(#105),#94,.T.);
+#108 = ADVANCED_FACE('face_F',(#106),#97,.T.);
+#109 = CLOSED_SHELL('mixed_shell',(#107,#108));
+#110 = MANIFOLD_SOLID_BREP('mixed_solid',#109);
+#50 = ( LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT(.MILLI.,.METRE.) );
+#51 = ( NAMED_UNIT(*) PLANE_ANGLE_UNIT() SI_UNIT($,.RADIAN.) );
+#52 = ( NAMED_UNIT(*) SI_UNIT($,.STERADIAN.) SOLID_ANGLE_UNIT() );
+#53 = UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#50,'distance_accuracy_value','');
+#54 = ( GEOMETRIC_REPRESENTATION_CONTEXT(3) GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#53))
+        GLOBAL_UNIT_ASSIGNED_CONTEXT((#50,#51,#52)) REPRESENTATION_CONTEXT('','3D') );
+#60 = CARTESIAN_POINT('',(0.0,0.0,0.0));
+#61 = DIRECTION('',(0.0,0.0,1.0));
+#62 = DIRECTION('',(1.0,0.0,0.0));
+#63 = AXIS2_PLACEMENT_3D('part_origin',#60,#61,#62);
+#64 = ADVANCED_BREP_SHAPE_REPRESENTATION('part_rep',(#63,#110),#54);
+#65 = SHAPE_DEFINITION_REPRESENTATION(#33,#64);
+#66 = REPRESENTATION_MAP(#63,#64);
+#67 = MAPPED_ITEM('inst',#66,#63);
+#80 = AXIS2_PLACEMENT_3D('assy_origin',#60,#61,#62);
+#81 = SHAPE_REPRESENTATION('assy_rep',(#80,#67),#54);
+#82 = SHAPE_DEFINITION_REPRESENTATION(#23,#81);
+/* Extended catalog notes:
+ * This reproducer is a minimal demonstrator of the §12.6 entry
+ * referenced in the /* */ header above. The entity-graph above
+ * is just enough to exercise the defect on a writer or reader
+ * test harness; it is NOT a production-quality assembly.
+ *
+ * License: this file is part of a defect catalog assembled from
+ * publicly described bug reports and recommended-practice notes.
+ * No proprietary geometry or names are reproduced. The entity IDs
+ * and minimal coordinates are author-original.
+ *
+ * Cross-refs: see STEP_PROBLEM_CATALOG.md §12.6 for full entry,
+ * source list, sender attribution and expected kernel behavior.
+ */
+#900 = DESCRIPTIVE_REPRESENTATION_ITEM('catalog_id','P023');
+#901 = DESCRIPTIVE_REPRESENTATION_ITEM('catalog_section','12.6 assembly hierarchy');
+#902 = DESCRIPTIVE_REPRESENTATION_ITEM('catalog_status','pending');
+ENDSEC;
+END-ISO-10303-21;

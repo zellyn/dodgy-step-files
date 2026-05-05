@@ -1,0 +1,21 @@
+ISO-10303-21;
+/* Xp011 - Cross-product: REAL slot filled with integer literal (no
+ *   decimal point) AND empty FILE_NAME author/organisation fields.
+ * Builds on Ls001 (REAL missing decimal) + Lh-empty-author-class. */
+HEADER;
+FILE_DESCRIPTION(('Xp011 cross-product','integer-in-REAL x empty author fields'),'2;1');
+/* Defect 2: author=(''), organisation=(''), originating_system='', authorization='' */
+FILE_NAME('Xp011.stp','2026-04-26T00:00:00',(''),(''),'','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
+/* Defect 1: integer literals (1,0,0) inside the REAL aggregate of a DIRECTION */
+#11=DIRECTION('',(1,0,0));
+#12=DIRECTION('',(0,0,1));
+#13=AXIS2_PLACEMENT_3D('',#10,#12,#11);
+#14=PLANE('',#13);
+ENDSEC;
+END-ISO-10303-21;

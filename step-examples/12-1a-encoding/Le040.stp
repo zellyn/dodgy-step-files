@@ -1,0 +1,24 @@
+ISO-10303-21;
+/* Le040 - \Q\ numeric-character-reference with code point at upper
+ * boundary (U+10FFFF, last legal Unicode scalar)
+ * Defect: ISO 10303-21 Edition 3 \Q\xxxx\Q\ encodes a character by
+ * its decimal Unicode scalar value between the bracketing \Q\ pairs
+ * (named in the spec the "numeric character reference"). Many
+ * implementations either ignore \Q\ entirely (passing the digits
+ * through verbatim) or accept only values up to 0xFFFF (BMP). The
+ * largest legal Unicode scalar value is 0x10FFFF (decimal 1114111);
+ * a kernel claiming Ed.3 conformance should be able to decode this
+ * upper boundary. */
+HEADER;
+FILE_DESCRIPTION(('Le040 - \Q\ numeric ref at U+10FFFF (decimal 1114111)'),'2;1');
+FILE_NAME('Le040.stp','2026-04-26T00:00:00',(''),(''),
+  'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=PRODUCT_CONTEXT('part',#1,'mechanical');
+/* Defect: \Q\1114111\Q\ encodes U+10FFFF, the topmost legal scalar */
+#10=PRODUCT('top=\Q\1114111\Q\','top-codepoint','',(#2));
+ENDSEC;
+END-ISO-10303-21;

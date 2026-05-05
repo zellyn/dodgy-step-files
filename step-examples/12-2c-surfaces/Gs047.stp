@@ -1,0 +1,50 @@
+ISO-10303-21;
+/* Gs047 - BLENDED_EDGE_SURFACE (AP242 fillet representation) with
+ * inconsistent radii at the two end faces.
+ * Defect: AP242 introduces BLENDED_EDGE_SURFACE to represent an
+ * edge fillet between two adjacent faces. A producer that supports
+ * variable-radius fillets but exports a constant-radius schema may
+ * emit two BLENDED_EDGE_SURFACE instances for adjacent edges with
+ * mismatched radii at their shared vertex; the receiver sees a
+ * 0-thickness gap where they meet. */
+HEADER;
+FILE_DESCRIPTION(('Gs047 - BLENDED_EDGE_SURFACE radii mismatch at shared vertex'),'2;1');
+FILE_NAME('Gs047.stp','2026-04-30T00:00:00',(''),(''),
+  'cad-research-suite','','');
+FILE_SCHEMA(('AP242_MANAGED_MODEL_BASED_3D_ENGINEERING_MIM_LF { 1 0 10303 442 1 1 4 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('managed model based 3d engineering');
+/* Common vertex shared between the two blends */
+#10=CARTESIAN_POINT('shared_vert',(0.0,0.0,0.0));
+#11=VERTEX_POINT('shared_vp',#10);
+/* Two flanking faces (planes representing the box walls) */
+#12=DIRECTION('zA',(0.0,0.0,1.0));
+#13=DIRECTION('xA',(1.0,0.0,0.0));
+#14=AXIS2_PLACEMENT_3D('axesA',#10,#12,#13);
+#15=PLANE('faceA_surface',#14);
+#16=DIRECTION('zB',(1.0,0.0,0.0));
+#17=DIRECTION('xB',(0.0,0.0,1.0));
+#18=AXIS2_PLACEMENT_3D('axesB',#10,#16,#17);
+#19=PLANE('faceB_surface',#18);
+/* The two edges to be blended share #11 */
+#20=CARTESIAN_POINT('eA_far',(0.0,1.0,0.0));
+#21=VERTEX_POINT('vA_far',#20);
+#22=DIRECTION('+y',(0.0,1.0,0.0));
+#23=VECTOR('vyA',#22,1.0);
+#24=LINE('eA_3d',#10,#23);
+#25=EDGE_CURVE('eA',#11,#21,#24,.T.);
+#26=CARTESIAN_POINT('eB_far',(0.0,0.0,1.0));
+#27=VERTEX_POINT('vB_far',#26);
+#28=DIRECTION('+zB',(0.0,0.0,1.0));
+#29=VECTOR('vzB',#28,1.0);
+#30=LINE('eB_3d',#10,#29);
+#31=EDGE_CURVE('eB',#11,#27,#30,.T.);
+/* Two BLENDED_EDGE_SURFACE instances. AP242 ed.2 entity has the
+ * shape: BLENDED_EDGE_SURFACE(name, edge_curve, fillet_radius). The
+ * defect: blendA carries radius 1.0; blendB carries radius 2.0;
+ * both incident on shared vertex #11. */
+#40=BLENDED_EDGE_SURFACE('blendA_radius_1',#25,1.0);
+#41=BLENDED_EDGE_SURFACE('blendB_radius_2',#31,2.0);
+ENDSEC;
+END-ISO-10303-21;

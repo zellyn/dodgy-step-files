@@ -1,0 +1,33 @@
+ISO-10303-21;
+/* M083 - AP209 load applied to nodes not present in the model.
+ * Defect: a NODE_WITH_FORCE entity references a node by id, but the
+ * referenced #200 node is not part of any FEA_MODEL_3D's its_node_set;
+ * the load floats free of the discretized model. */
+HEADER;
+FILE_DESCRIPTION(('M083 test case','AP209 load on unowned node'),'2;1');
+FILE_NAME('M083.stp','2026-04-30T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('STRUCTURAL_ANALYSIS_DESIGN { 1 0 10303 209 1 0 0 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('structural_analysis_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
+  'structural_analysis_design',2001,#1);
+#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10))
+     REPRESENTATION_CONTEXT('fea','3D'));
+/* Two model nodes */
+#100=CARTESIAN_POINT('n1',(0.0,0.0,0.0));
+#101=CARTESIAN_POINT('n2',(1.0,0.0,0.0));
+#110=NODE('n1',(#100),$);
+#111=NODE('n2',(#101),$);
+/* A free-floating node that is NOT in the model node set. */
+#200=CARTESIAN_POINT('orphan',(5.0,5.0,5.0));
+#210=NODE('orphan_node',(#200),$);
+/* Model contains only #110 and #111. */
+#300=NODE_GROUP('model_nodes',(#110,#111),$);
+#310=FEA_MODEL('beam_model',$,'',#300,(),());
+/* Defect: force applied to #210 which is not in #300 / #310. */
+#400=NODE_WITH_FORCE(#210,((1000.0,0.0,0.0)),'pull_x');
+ENDSEC;
+END-ISO-10303-21;

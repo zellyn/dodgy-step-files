@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Tfa057 — Face wire&#x27;s orientation contradicts the outer/inner role</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.3c Faces / sewing / free bound</a> <span class="sep">/</span> <span class="current">Tfa057</span>
+</nav>
+<header class="title-bar">
+<h1>Tfa057 <span class="sep">—</span> <span class="entry-title">Face wire&#x27;s orientation contradicts the outer/inner role</span></h1>
+<p class="category">§12.3c (sub-class: orientation of subshape)</p>
+<p class="severity-badge severity-p1">P1 — silent data loss</p>
+<p class="tag-pills">
+<a class="tag tag-topology" href="../by-tag/topology/index.html">topology</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-3c-faces/Tfa057.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-3c-faces/Tfa057.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>OCCT BRepCheck_Face.cxx:519, 540 (BadOrientationOfSubshape) (uncovered class evidence)</li>
+</ul></section>
+<section><h2>Sender</h2>
+<p>deduced — OCCT uncovered-class sweep, Pass C</p></section>
+<section><h2>Description</h2>
+<p>An `ADVANCED_FACE` has its outer wire wound clockwise (when the surface normal is taken as outward) and its inner wires wound counter-clockwise — i.e., the orientations are swapped relative to the convention. Bug-reporter language: &quot;wire winds wrong way&quot;, &quot;outer loop reversed&quot;, &quot;hole oriented as outer&quot;.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>`ADVANCED_FACE` whose outer `EDGE_LOOP` traces vertices in the wrong direction relative to the surface normal.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>Detect via signed-area in UV; flip the offending loop, or reject the face.</p></section>
+<section><h2>Notes</h2>
+<p>Distinct from Tsh010 (face same_sense flipped) — this is wire-loop winding direction. Synonyms: &quot;wire winds wrong way&quot;, &quot;outer loop reversed&quot;, &quot;hole oriented as outer&quot;, &quot;inner wire winds same direction as outer&quot;.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=shape(1)/shape(1) gmsh=shape(17) ifc=schema_n/a</code></p></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>n_faces_total == 1</code></li>
+<li><code>face[0].surface_type == &quot;plane&quot;</code></li>
+<li><code>face[0].edge_count == 8</code></li>
+<li><code>face[0].area &gt; 9500</code></li>
+<li><code>face[0].area &lt; 9700</code></li>
+</ul></section>
+<section><h2>Cross-references</h2>
+<p><a href="../12-3a-shells/Tsh010.html">Tsh010</a></p>
+</section>
+<section><h2>Live oracle output</h2>
+<table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
+<tr><td><code>occt_heal_on</code></td><td><code>shape(1)</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>shape(1)</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>shape(17)</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>shape(17)</code></td></tr>
+<tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>not_manifold</code></td></tr>
+</tbody></table>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* Tfa057 - Face wire&#x27;s orientation contradicts the outer/inner role.
+<span class="lineno">3</span> * Defect: planar ADVANCED_FACE on Z=0 plane (normal +Z) whose outer
+<span class="lineno">4</span> * EDGE_LOOP traces vertices clockwise (when viewed from +Z) and whose
+<span class="lineno">5</span> * inner EDGE_LOOP traces counter-clockwise. The orientation conventions
+<span class="lineno">6</span> * are swapped relative to the standard (outer should be CCW, inner CW
+<span class="lineno">7</span> * for an outward +Z normal). */
+<span class="lineno">8</span>HEADER;
+<span class="lineno">9</span>FILE_DESCRIPTION((&#x27;Tfa057 - Face wire&#x27;&#x27;s orientation contradicts the outer/inner role&#x27;,&#x27;Pass C gap-fill&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">10</span>FILE_NAME(&#x27;Tfa057.stp&#x27;,&#x27;2026-05-02T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;gap-fill C&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">11</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }&#x27;));
+<span class="lineno">12</span>ENDSEC;
+<span class="lineno">13</span>DATA;
+<span class="lineno">14</span>#1=APPLICATION_CONTEXT(&#x27;automotive_design&#x27;);
+<span class="lineno">15</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,&#x27;automotive_design&#x27;,2000,#1);
+<span class="lineno">16</span>#10=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">17</span>#11=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">18</span>#12=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">19</span>#13=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#10,#11,#12);
+<span class="lineno">20</span>#14=PLANE(&#x27;plane_xy&#x27;,#13);
+<span class="lineno">21</span>/* Outer 100x100 square at (0,0)-(100,100). Vertices visited CW from +Z. */
+<span class="lineno">22</span>#20=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">23</span>#21=CARTESIAN_POINT(&#x27;&#x27;,(100.0,0.0,0.0));
+<span class="lineno">24</span>#22=CARTESIAN_POINT(&#x27;&#x27;,(100.0,100.0,0.0));
+<span class="lineno">25</span>#23=CARTESIAN_POINT(&#x27;&#x27;,(0.0,100.0,0.0));
+<span class="lineno">26</span>#30=VERTEX_POINT(&#x27;&#x27;,#20); #31=VERTEX_POINT(&#x27;&#x27;,#21);
+<span class="lineno">27</span>#32=VERTEX_POINT(&#x27;&#x27;,#22); #33=VERTEX_POINT(&#x27;&#x27;,#23);
+<span class="lineno">28</span>/* Inner 20x20 hole centered at (50,50): (40,40)-(60,60). Wound CCW. */
+<span class="lineno">29</span>#40=CARTESIAN_POINT(&#x27;&#x27;,(40.0,40.0,0.0));
+<span class="lineno">30</span>#41=CARTESIAN_POINT(&#x27;&#x27;,(60.0,40.0,0.0));
+<span class="lineno">31</span>#42=CARTESIAN_POINT(&#x27;&#x27;,(60.0,60.0,0.0));
+<span class="lineno">32</span>#43=CARTESIAN_POINT(&#x27;&#x27;,(40.0,60.0,0.0));
+<span class="lineno">33</span>#50=VERTEX_POINT(&#x27;&#x27;,#40); #51=VERTEX_POINT(&#x27;&#x27;,#41);
+<span class="lineno">34</span>#52=VERTEX_POINT(&#x27;&#x27;,#42); #53=VERTEX_POINT(&#x27;&#x27;,#43);
+<span class="lineno">35</span>/* Direction/vector basis */
+<span class="lineno">36</span>#60=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0)); #61=VECTOR(&#x27;&#x27;,#60,100.0);
+<span class="lineno">37</span>#62=DIRECTION(&#x27;&#x27;,(0.0,1.0,0.0)); #63=VECTOR(&#x27;&#x27;,#62,100.0);
+<span class="lineno">38</span>#64=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0)); #65=VECTOR(&#x27;&#x27;,#64,20.0);
+<span class="lineno">39</span>#66=DIRECTION(&#x27;&#x27;,(0.0,1.0,0.0)); #67=VECTOR(&#x27;&#x27;,#66,20.0);
+<span class="lineno">40</span>/* Outer edges */
+<span class="lineno">41</span>#70=LINE(&#x27;&#x27;,#20,#61); #71=EDGE_CURVE(&#x27;&#x27;,#30,#31,#70,.T.);
+<span class="lineno">42</span>#72=LINE(&#x27;&#x27;,#21,#63); #73=EDGE_CURVE(&#x27;&#x27;,#31,#32,#72,.T.);
+<span class="lineno">43</span>#74=LINE(&#x27;&#x27;,#23,#61); #75=EDGE_CURVE(&#x27;&#x27;,#33,#32,#74,.T.);
+<span class="lineno">44</span>#76=LINE(&#x27;&#x27;,#20,#63); #77=EDGE_CURVE(&#x27;&#x27;,#30,#33,#76,.T.);
+<span class="lineno">45</span>/* Inner edges */
+<span class="lineno">46</span>#80=LINE(&#x27;&#x27;,#40,#65); #81=EDGE_CURVE(&#x27;&#x27;,#50,#51,#80,.T.);
+<span class="lineno">47</span>#82=LINE(&#x27;&#x27;,#41,#67); #83=EDGE_CURVE(&#x27;&#x27;,#51,#52,#82,.T.);
+<span class="lineno">48</span>#84=LINE(&#x27;&#x27;,#43,#65); #85=EDGE_CURVE(&#x27;&#x27;,#53,#52,#84,.T.);
+<span class="lineno">49</span>#86=LINE(&#x27;&#x27;,#40,#67); #87=EDGE_CURVE(&#x27;&#x27;,#50,#53,#86,.T.);
+<span class="lineno">50</span>/* Outer loop wound CW from +Z: (0,0) -&gt; (0,100) -&gt; (100,100) -&gt; (100,0) -&gt; (0,0). */
+<span class="lineno">51</span>#90=ORIENTED_EDGE(&#x27;&#x27;,*,*,#77,.T.);
+<span class="lineno">52</span>#91=ORIENTED_EDGE(&#x27;&#x27;,*,*,#75,.T.);
+<span class="lineno">53</span>#92=ORIENTED_EDGE(&#x27;&#x27;,*,*,#73,.F.);
+<span class="lineno">54</span>#93=ORIENTED_EDGE(&#x27;&#x27;,*,*,#71,.F.);
+<span class="lineno">55</span>#100=EDGE_LOOP(&#x27;clockwise_outer&#x27;,(#90,#91,#92,#93));
+<span class="lineno">56</span>/* Inner loop wound CCW from +Z (wrong winding for a hole). */
+<span class="lineno">57</span>#94=ORIENTED_EDGE(&#x27;&#x27;,*,*,#81,.T.);
+<span class="lineno">58</span>#95=ORIENTED_EDGE(&#x27;&#x27;,*,*,#83,.T.);
+<span class="lineno">59</span>#96=ORIENTED_EDGE(&#x27;&#x27;,*,*,#85,.F.);
+<span class="lineno">60</span>#97=ORIENTED_EDGE(&#x27;&#x27;,*,*,#87,.F.);
+<span class="lineno">61</span>#101=EDGE_LOOP(&#x27;ccw_inner&#x27;,(#94,#95,#96,#97));
+<span class="lineno">62</span>#110=FACE_OUTER_BOUND(&#x27;&#x27;,#100,.T.);
+<span class="lineno">63</span>#111=FACE_BOUND(&#x27;&#x27;,#101,.T.);
+<span class="lineno">64</span>#200=ADVANCED_FACE(&#x27;wrong_winding_face&#x27;,(#110,#111),#14,.T.);
+<span class="lineno">65</span>/* Wrap: minimal PRODUCT chain so OCCT TransferRoots produces a shape. */
+<span class="lineno">66</span>#9000=PRODUCT_CONTEXT(&#x27;&#x27;,#1,&#x27;mechanical&#x27;);
+<span class="lineno">67</span>#9001=PRODUCT(&#x27;Tfa057&#x27;,&#x27;Tfa057&#x27;,&#x27;&#x27;,(#9000));
+<span class="lineno">68</span>#9002=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#9001);
+<span class="lineno">69</span>#9003=PRODUCT_DEFINITION_CONTEXT(&#x27;part definition&#x27;,#1,&#x27;design&#x27;);
+<span class="lineno">70</span>#9004=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,#9002,#9003);
+<span class="lineno">71</span>#9005=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,#9004);
+<span class="lineno">72</span>#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">73</span>#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+<span class="lineno">74</span>#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+<span class="lineno">75</span>#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,&#x27;distance_accuracy_value&#x27;,&#x27;&#x27;);
+<span class="lineno">76</span>#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT(&#x27;&#x27;,&#x27;3D&#x27;));
+<span class="lineno">77</span>#9020=OPEN_SHELL(&#x27;wrap_shell&#x27;,(#200));
+<span class="lineno">78</span>#9021=SHELL_BASED_SURFACE_MODEL(&#x27;wrap_sbsm&#x27;,(#9020));
+<span class="lineno">79</span>#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION(&#x27;&#x27;,(#9021),#9010);
+<span class="lineno">80</span>#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+<span class="lineno">81</span>ENDSEC;
+<span class="lineno">82</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Tfa056.html">&larr; Tfa056</a> <a class="up" href="index.html">§12.3c Faces / sewing / free bound</a> <a class="next" href="Tfa058.html">Tfa058 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Ps001 — Negative-volume cube: every face normal points inward</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.3a Shells / orientation</a> <span class="sep">/</span> <span class="current">Ps001</span>
+</nav>
+<header class="title-bar">
+<h1>Ps001 <span class="sep">—</span> <span class="entry-title">Negative-volume cube: every face normal points inward</span></h1>
+<p class="category">§12.3a shells / orientation (sub-class: pathological-success / signed-volume)</p>
+<p class="severity-badge severity-p1">P1 — silent data loss</p>
+<p class="tag-pills">
+<a class="tag tag-topology" href="../by-tag/topology/index.html">topology</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-3a-shells/Ps001.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-3a-shells/Ps001.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>deduced from MANIFOLD_SOLID_BREP semantics</li>
+<li>bug-report patterns &quot;STEP file has negative volume&quot;, &quot;model imports with reversed normals&quot;, &quot;mass-properties says volume = -1000mm^3&quot;</li>
+</ul></section>
+<section><h2>Sender</h2>
+<p>not sender-specific; observed when a writer normalizes faces using a wrong convention or after an in-place &quot;flip-all-normals&quot; debug op leaks into a release.</p></section>
+<section><h2>Description</h2>
+<p>A topologically closed CLOSED_SHELL whose every constituent face has its supporting surface&#x27;s stored normal pointing into the volume rather than out. Loop orientations are internally consistent with the flipped surface frames, so edge-degree-2 and orientation-coherence checks pass. Kernel accepts the file silently; tier-3 introspection (signed volume integral, ray-cast-from-far-away parity) reveals signed volume is negative — i.e., the &quot;solid&quot; is actually the complement of the intended cube.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>A unit cube with 8 vertices, 12 line edges, 6 PLANE surfaces. Each PLANE&#x27;s AXIS2_PLACEMENT_3D.axis points toward the cube center rather than away. Each face&#x27;s edge-loop is consistent with that flipped axis. Wrap as MANIFOLD_SOLID_BREP and reference from ADVANCED_BREP_SHAPE_REPRESENTATION.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>Compute signed volume (or equivalent enclosure parity) and detect negative orientation. Either flip all face normals to restore positive volume, reject as malformed, or expose the signed-volume measurement so downstream code can decide. Should not silently report a positive mass or a positive enclosed volume.</p></section>
+<section><h2>Notes</h2>
+<p>Tier-3 metric: signed-volume integral over the closed shell. A clean unit cube returns +1.0; this fixture returns -1.0. Synonyms: &quot;STEP file has negative volume&quot;, &quot;model imports with reversed normals&quot;, &quot;mass-properties says volume is negative&quot;, &quot;all face normals point inward&quot;, &quot;cube comes in as its complement&quot;.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=shape(1)/shape(1) gmsh=shape(27) ifc=schema_n/a</code></p></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>n_edges_total &gt;= 24</code></li>
+<li><code>brepcheck.valid == true</code></li>
+<li><code>face[0].surface_type == &quot;plane&quot;</code></li>
+<li><code>face[5].surface_type == &quot;plane&quot;</code></li>
+</ul></section>
+<section><h2>Live oracle output</h2>
+<table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
+<tr><td><code>occt_heal_on</code></td><td><code>shape(1)</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>shape(1)</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>shape(27)</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>shape(27)</code></td></tr>
+<tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>not_manifold</code></td></tr>
+</tbody></table>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>/* Ps001 - Negative volume cube: all face normals inverted - kernel accepts file silently; tier-3 introspection reveals signed volume is negative */
+<span class="lineno">2</span>ISO-10303-21;
+<span class="lineno">3</span>HEADER;
+<span class="lineno">4</span>FILE_DESCRIPTION((&#x27;Ps001 pathological-success&#x27;,&#x27;Inverted face normals yield negative volume&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">5</span>FILE_NAME(&#x27;Ps001.stp&#x27;,&#x27;2026-04-26T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;manual&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">6</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }&#x27;));
+<span class="lineno">7</span>ENDSEC;
+<span class="lineno">8</span>DATA;
+<span class="lineno">9</span>#1=APPLICATION_CONTEXT(&#x27;automotive_design&#x27;);
+<span class="lineno">10</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,&#x27;automotive_design&#x27;,2000,#1);
+<span class="lineno">11</span>/* Cube vertices */
+<span class="lineno">12</span>#100=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">13</span>#101=CARTESIAN_POINT(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">14</span>#102=CARTESIAN_POINT(&#x27;&#x27;,(1.0,1.0,0.0));
+<span class="lineno">15</span>#103=CARTESIAN_POINT(&#x27;&#x27;,(0.0,1.0,0.0));
+<span class="lineno">16</span>#104=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">17</span>#105=CARTESIAN_POINT(&#x27;&#x27;,(1.0,0.0,1.0));
+<span class="lineno">18</span>#106=CARTESIAN_POINT(&#x27;&#x27;,(1.0,1.0,1.0));
+<span class="lineno">19</span>#107=CARTESIAN_POINT(&#x27;&#x27;,(0.0,1.0,1.0));
+<span class="lineno">20</span>#110=VERTEX_POINT(&#x27;&#x27;,#100); #111=VERTEX_POINT(&#x27;&#x27;,#101);
+<span class="lineno">21</span>#112=VERTEX_POINT(&#x27;&#x27;,#102); #113=VERTEX_POINT(&#x27;&#x27;,#103);
+<span class="lineno">22</span>#114=VERTEX_POINT(&#x27;&#x27;,#104); #115=VERTEX_POINT(&#x27;&#x27;,#105);
+<span class="lineno">23</span>#116=VERTEX_POINT(&#x27;&#x27;,#106); #117=VERTEX_POINT(&#x27;&#x27;,#107);
+<span class="lineno">24</span>/* Surface normals point INWARD (toward cube center) on every face --
+<span class="lineno">25</span>   each face center is at the cube&#x27;s half-edge in the OUTWARD direction,
+<span class="lineno">26</span>   but the surface-axis direction is intentionally negated. */
+<span class="lineno">27</span>#200=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0)); #201=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">28</span>#202=DIRECTION(&#x27;&#x27;,(0.0,0.0,-1.0)); /* inverted z+ */
+<span class="lineno">29</span>#203=DIRECTION(&#x27;&#x27;,(0.0,1.0,0.0)); /* inverted -y */
+<span class="lineno">30</span>#204=DIRECTION(&#x27;&#x27;,(0.0,-1.0,0.0)); /* inverted +y */
+<span class="lineno">31</span>#205=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0)); /* inverted -x */
+<span class="lineno">32</span>#206=DIRECTION(&#x27;&#x27;,(-1.0,0.0,0.0)); /* inverted +x */
+<span class="lineno">33</span>/* Bottom face (z=0): outward should be -z, but we set +z */
+<span class="lineno">34</span>#210=CARTESIAN_POINT(&#x27;&#x27;,(0.5,0.5,0.0));
+<span class="lineno">35</span>#211=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#210,#200,#201); #212=PLANE(&#x27;&#x27;,#211);
+<span class="lineno">36</span>/* Top face (z=1): outward should be +z, but we set -z */
+<span class="lineno">37</span>#220=CARTESIAN_POINT(&#x27;&#x27;,(0.5,0.5,1.0));
+<span class="lineno">38</span>#221=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#220,#202,#201); #222=PLANE(&#x27;&#x27;,#221);
+<span class="lineno">39</span>/* Front face (y=0): outward should be -y, but we set +y */
+<span class="lineno">40</span>#230=CARTESIAN_POINT(&#x27;&#x27;,(0.5,0.0,0.5));
+<span class="lineno">41</span>#231=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#230,#203,#201); #232=PLANE(&#x27;&#x27;,#231);
+<span class="lineno">42</span>/* Back face (y=1): outward should be +y, but we set -y */
+<span class="lineno">43</span>#240=CARTESIAN_POINT(&#x27;&#x27;,(0.5,1.0,0.5));
+<span class="lineno">44</span>#241=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#240,#204,#201); #242=PLANE(&#x27;&#x27;,#241);
+<span class="lineno">45</span>/* Left face (x=0): outward should be -x, but we set +x */
+<span class="lineno">46</span>#250=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.5,0.5));
+<span class="lineno">47</span>#251=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#250,#205,#203); #252=PLANE(&#x27;&#x27;,#251);
+<span class="lineno">48</span>/* Right face (x=1): outward should be +x, but we set -x */
+<span class="lineno">49</span>#260=CARTESIAN_POINT(&#x27;&#x27;,(1.0,0.5,0.5));
+<span class="lineno">50</span>#261=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#260,#206,#203); #262=PLANE(&#x27;&#x27;,#261);
+<span class="lineno">51</span>/* Edges (12 lines) */
+<span class="lineno">52</span>#300=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0)); #301=VECTOR(&#x27;&#x27;,#300,1.0);
+<span class="lineno">53</span>#302=DIRECTION(&#x27;&#x27;,(0.0,1.0,0.0)); #303=VECTOR(&#x27;&#x27;,#302,1.0);
+<span class="lineno">54</span>#304=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0)); #305=VECTOR(&#x27;&#x27;,#304,1.0);
+<span class="lineno">55</span>#310=LINE(&#x27;&#x27;,#100,#301); #311=EDGE_CURVE(&#x27;&#x27;,#110,#111,#310,.T.);
+<span class="lineno">56</span>#312=LINE(&#x27;&#x27;,#101,#303); #313=EDGE_CURVE(&#x27;&#x27;,#111,#112,#312,.T.);
+<span class="lineno">57</span>#314=LINE(&#x27;&#x27;,#103,#301); #315=EDGE_CURVE(&#x27;&#x27;,#113,#112,#314,.T.);
+<span class="lineno">58</span>#316=LINE(&#x27;&#x27;,#100,#303); #317=EDGE_CURVE(&#x27;&#x27;,#110,#113,#316,.T.);
+<span class="lineno">59</span>#318=LINE(&#x27;&#x27;,#104,#301); #319=EDGE_CURVE(&#x27;&#x27;,#114,#115,#318,.T.);
+<span class="lineno">60</span>#320=LINE(&#x27;&#x27;,#105,#303); #321=EDGE_CURVE(&#x27;&#x27;,#115,#116,#320,.T.);
+<span class="lineno">61</span>#322=LINE(&#x27;&#x27;,#107,#301); #323=EDGE_CURVE(&#x27;&#x27;,#117,#116,#322,.T.);
+<span class="lineno">62</span>#324=LINE(&#x27;&#x27;,#104,#303); #325=EDGE_CURVE(&#x27;&#x27;,#114,#117,#324,.T.);
+<span class="lineno">63</span>#326=LINE(&#x27;&#x27;,#100,#305); #327=EDGE_CURVE(&#x27;&#x27;,#110,#114,#326,.T.);
+<span class="lineno">64</span>#328=LINE(&#x27;&#x27;,#101,#305); #329=EDGE_CURVE(&#x27;&#x27;,#111,#115,#328,.T.);
+<span class="lineno">65</span>#330=LINE(&#x27;&#x27;,#102,#305); #331=EDGE_CURVE(&#x27;&#x27;,#112,#116,#330,.T.);
+<span class="lineno">66</span>#332=LINE(&#x27;&#x27;,#103,#305); #333=EDGE_CURVE(&#x27;&#x27;,#113,#117,#332,.T.);
+<span class="lineno">67</span>/* Bottom face loops in CCW seen from -z (which is the kernel&#x27;s reading
+<span class="lineno">68</span>   given the inverted surface). Topology is consistent with the
+<span class="lineno">69</span>   inverted surface convention -- the file SAYS &quot;the outward normal
+<span class="lineno">70</span>   points inward&quot; with full structural integrity. */
+<span class="lineno">71</span>#400=ORIENTED_EDGE(&#x27;&#x27;,*,*,#311,.T.); #401=ORIENTED_EDGE(&#x27;&#x27;,*,*,#313,.T.);
+<span class="lineno">72</span>#402=ORIENTED_EDGE(&#x27;&#x27;,*,*,#315,.F.); #403=ORIENTED_EDGE(&#x27;&#x27;,*,*,#317,.F.);
+<span class="lineno">73</span>#404=EDGE_LOOP(&#x27;&#x27;,(#400,#401,#402,#403)); #405=FACE_OUTER_BOUND(&#x27;&#x27;,#404,.T.);
+<span class="lineno">74</span>#406=ADVANCED_FACE(&#x27;&#x27;,(#405),#212,.T.);
+<span class="lineno">75</span>#410=ORIENTED_EDGE(&#x27;&#x27;,*,*,#319,.F.); #411=ORIENTED_EDGE(&#x27;&#x27;,*,*,#325,.T.);
+<span class="lineno">76</span>#412=ORIENTED_EDGE(&#x27;&#x27;,*,*,#323,.T.); #413=ORIENTED_EDGE(&#x27;&#x27;,*,*,#321,.F.);
+<span class="lineno">77</span>#414=EDGE_LOOP(&#x27;&#x27;,(#410,#411,#412,#413)); #415=FACE_OUTER_BOUND(&#x27;&#x27;,#414,.T.);
+<span class="lineno">78</span>#416=ADVANCED_FACE(&#x27;&#x27;,(#415),#222,.T.);
+<span class="lineno">79</span>#420=ORIENTED_EDGE(&#x27;&#x27;,*,*,#311,.F.); #421=ORIENTED_EDGE(&#x27;&#x27;,*,*,#327,.T.);
+<span class="lineno">80</span>#422=ORIENTED_EDGE(&#x27;&#x27;,*,*,#319,.T.); #423=ORIENTED_EDGE(&#x27;&#x27;,*,*,#329,.F.);
+<span class="lineno">81</span>#424=EDGE_LOOP(&#x27;&#x27;,(#420,#421,#422,#423)); #425=FACE_OUTER_BOUND(&#x27;&#x27;,#424,.T.);
+<span class="lineno">82</span>#426=ADVANCED_FACE(&#x27;&#x27;,(#425),#232,.T.);
+<span class="lineno">83</span>#430=ORIENTED_EDGE(&#x27;&#x27;,*,*,#315,.F.); #431=ORIENTED_EDGE(&#x27;&#x27;,*,*,#329,.F.); /* placeholder */
+<span class="lineno">84</span>#432=ORIENTED_EDGE(&#x27;&#x27;,*,*,#323,.F.); #433=ORIENTED_EDGE(&#x27;&#x27;,*,*,#331,.T.);
+<span class="lineno">85</span>/* Use proper back-face loop: edges #315(b-bf),#331(rb-rt),#323(t-bf rev),#333(lb-lt rev) */
+<span class="lineno">86</span>#434=ORIENTED_EDGE(&#x27;&#x27;,*,*,#315,.T.); #435=ORIENTED_EDGE(&#x27;&#x27;,*,*,#331,.T.);
+<span class="lineno">87</span>#436=ORIENTED_EDGE(&#x27;&#x27;,*,*,#323,.F.); #437=ORIENTED_EDGE(&#x27;&#x27;,*,*,#333,.F.);
+<span class="lineno">88</span>#438=EDGE_LOOP(&#x27;&#x27;,(#434,#435,#436,#437)); #439=FACE_OUTER_BOUND(&#x27;&#x27;,#438,.T.);
+<span class="lineno">89</span>#440=ADVANCED_FACE(&#x27;&#x27;,(#439),#242,.T.);
+<span class="lineno">90</span>#450=ORIENTED_EDGE(&#x27;&#x27;,*,*,#317,.T.); #451=ORIENTED_EDGE(&#x27;&#x27;,*,*,#333,.T.);
+<span class="lineno">91</span>#452=ORIENTED_EDGE(&#x27;&#x27;,*,*,#325,.F.); #453=ORIENTED_EDGE(&#x27;&#x27;,*,*,#327,.F.);
+<span class="lineno">92</span>#454=EDGE_LOOP(&#x27;&#x27;,(#450,#451,#452,#453)); #455=FACE_OUTER_BOUND(&#x27;&#x27;,#454,.T.);
+<span class="lineno">93</span>#456=ADVANCED_FACE(&#x27;&#x27;,(#455),#252,.T.);
+<span class="lineno">94</span>#460=ORIENTED_EDGE(&#x27;&#x27;,*,*,#313,.T.); #461=ORIENTED_EDGE(&#x27;&#x27;,*,*,#331,.T.);
+<span class="lineno">95</span>#462=ORIENTED_EDGE(&#x27;&#x27;,*,*,#321,.F.); #463=ORIENTED_EDGE(&#x27;&#x27;,*,*,#329,.F.);
+<span class="lineno">96</span>#464=EDGE_LOOP(&#x27;&#x27;,(#460,#461,#462,#463)); #465=FACE_OUTER_BOUND(&#x27;&#x27;,#464,.T.);
+<span class="lineno">97</span>#466=ADVANCED_FACE(&#x27;&#x27;,(#465),#262,.T.);
+<span class="lineno">98</span>/* CLOSED_SHELL with all face normals inverted: closes topologically,
+<span class="lineno">99</span>   but every face&#x27;s surface normal points into the interior of the cube.
+<span class="lineno">100</span>   Net signed volume is -1 (a &quot;negative cube&quot;). */
+<span class="lineno">101</span>#500=CLOSED_SHELL(&#x27;inverted_skin&#x27;,(#406,#416,#426,#440,#456,#466));
+<span class="lineno">102</span>#510=MANIFOLD_SOLID_BREP(&#x27;negative_volume_solid&#x27;,#500);
+<span class="lineno">103</span>/* PRODUCT chain so OCCT loads the geometry */
+<span class="lineno">104</span>#9000=PRODUCT_CONTEXT(&#x27;&#x27;,#1,&#x27;mechanical&#x27;);
+<span class="lineno">105</span>#9001=PRODUCT(&#x27;Ps001&#x27;,&#x27;Ps001&#x27;,&#x27;&#x27;,(#9000));
+<span class="lineno">106</span>#9002=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#9001);
+<span class="lineno">107</span>#9003=PRODUCT_DEFINITION_CONTEXT(&#x27;part definition&#x27;,#1,&#x27;design&#x27;);
+<span class="lineno">108</span>#9004=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,#9002,#9003);
+<span class="lineno">109</span>#9005=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,#9004);
+<span class="lineno">110</span>#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">111</span>#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+<span class="lineno">112</span>#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+<span class="lineno">113</span>#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,&#x27;distance_accuracy_value&#x27;,&#x27;&#x27;);
+<span class="lineno">114</span>#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT(&#x27;&#x27;,&#x27;3D&#x27;));
+<span class="lineno">115</span>#9022=ADVANCED_BREP_SHAPE_REPRESENTATION(&#x27;&#x27;,(#510),#9010);
+<span class="lineno">116</span>#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+<span class="lineno">117</span>ENDSEC;
+<span class="lineno">118</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Bo030.html">&larr; Bo030</a> <a class="up" href="index.html">§12.3a Shells / orientation</a> <a class="next" href="Ps002.html">Ps002 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

@@ -1,0 +1,36 @@
+ISO-10303-21;
+/* Gs045 - SURFACE_OF_REVOLUTION with revolution axis intersecting
+ * the basis curve at an interior (non-endpoint) point
+ * Defect: A SURFACE_OF_REVOLUTION sweeps a basis curve about an
+ * axis. If the axis crosses the basis curve at an interior point,
+ * one side of the curve is swept "inward" while the other is swept
+ * "outward", producing a self-intersecting surface that folds
+ * through itself near the axis. Distinct from existing entries
+ * about co-axial / parallel sweeps - this is the *crossing*
+ * pathological case. */
+HEADER;
+FILE_DESCRIPTION(('Gs045 - SURFACE_OF_REVOLUTION axis crosses basis interior'),'2;1');
+FILE_NAME('Gs045.stp','2026-04-26T00:00:00',(''),(''),
+  'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+/* Basis curve: a horizontal line passing through y=0 from x=-2
+ * to x=+2 - so the line crosses the Y axis at (0,0) interior. */
+#10=CARTESIAN_POINT('basis_pt',(-2.0,0.0,0.0));
+#11=DIRECTION('basis_dir',(1.0,0.0,0.0));
+#12=VECTOR('basis_v',#11,4.0);
+#13=LINE('basis',#10,#12);
+/* Revolution axis: vertical Y-axis (DIRECTION (0,1,0) at origin) */
+#20=CARTESIAN_POINT('ax_pt',(0.0,0.0,0.0));
+#21=DIRECTION('ax_dir',(0.0,1.0,0.0));
+#22=AXIS1_PLACEMENT('axis',#20,#21);
+/* Defect: the basis line crosses the revolution axis at (0,0,0),
+ * which lies in the *interior* of the basis (parameter range
+ * (-2,2) crosses through 0). Sweeping yields a self-intersecting
+ * surface: positive-x sweep makes one cone, negative-x sweep the
+ * mirror, and they share the apex at (0,0,0). */
+#30=SURFACE_OF_REVOLUTION('rev',#13,#22);
+ENDSEC;
+END-ISO-10303-21;

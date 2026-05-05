@@ -1,0 +1,25 @@
+ISO-10303-21;
+/* M093 - AP238 machining_operation references a tool with no geometry.
+ * Defect: the tool entity is a bare MACHINING_TOOL stub with no
+ * associated cutting-tool body / dimension / edge geometry. The
+ * controller has no diameter, no flute count, nothing to plan motion
+ * with. */
+HEADER;
+FILE_DESCRIPTION(('M093 test case','AP238 tool geometry empty'),'2;1');
+FILE_NAME('M093.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AP238_STEP_NC_MIM { 1 0 10303 238 1 0 0 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('numerical_control_machining');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
+  'numerical_control_machining',2007,#1);
+#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10))
+     REPRESENTATION_CONTEXT('nc','3D'));
+/* Defect: tool stub - no cutting-tool body, no diameter, no edges. */
+#150=MACHINING_TOOL('end_mill_10mm',$,$,$);
+#100=MACHINING_OPERATION('rough_pocket',$,$,#150,$,$);
+#200=WORKPLAN('main',(#100),$,$,$);
+ENDSEC;
+END-ISO-10303-21;

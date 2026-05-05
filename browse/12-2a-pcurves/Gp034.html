@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Gp034 — Composite curve segments do not meet within connectivity tolerance</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.2a Pcurve defects</a> <span class="sep">/</span> <span class="current">Gp034</span>
+</nav>
+<header class="title-bar">
+<h1>Gp034 <span class="sep">—</span> <span class="entry-title">Composite curve segments do not meet within connectivity tolerance</span></h1>
+<p class="category">§12.2a pcurves/curves (sub-class: continuity)</p>
+<p class="tag-pills">
+<a class="tag tag-silent-loss" href="../by-tag/silent-loss/index.html">silent-loss</a>
+<a class="tag tag-geometry" href="../by-tag/geometry/index.html">geometry</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-2a-pcurves/Gp034.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-2a-pcurves/Gp034.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>OCCT `ShapeExtend_ComplexCurve::CheckConnectivity` (`ShapeExtend_ComplexCurve.hxx:88`)</li>
+</ul></section>
+<section><h2>Description</h2>
+<p>A `COMPOSITE_CURVE` lists multiple segments that are intended to form a single continuous curve. Segment N&#x27;s last 3D point sits at a distance of several millimetres from segment N+1&#x27;s first 3D point — far beyond any reasonable connectivity tolerance. The composite curve is not actually connected; treating it as one curve produces invalid downstream geometry.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>Two LINE-based EDGE_CURVEs whose vertices are at `(5,0,0)` and `(5.005,0,0)` respectively. Both edges share a wire but the kernel must report a 5e-3 disconnect.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>report the connectivity defect with the offending segment indices and 3D gap; either bridge the segments by inserting a connecting curve, snap endpoints, or refuse to treat the aggregate as a single curve.</p></section>
+<section><h2>Notes</h2>
+<p>Similar defect class to `Twi-` wire connectivity but at the curve-aggregate level. **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog&#x27;s allowed set ({heal, reject}). Kernel-bug witnessed: catalog allows either heal or reject; OCC silently accepts the bad input without doing either. Synonyms: &quot;composite curve segments don&#x27;t meet&quot;, &quot;gap between consecutive composite curve segments&quot;, &quot;composite_curve has disconnected segments&quot;, &quot;segment N+1 starts far from segment N&#x27;s end&quot;, &quot;composite curve connectivity check fails&quot;.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>contains(b&#x27;EDGE_CURVE&#x27;)</code></li>
+</ul></section>
+<section><h2>Live oracle output</h2>
+<table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
+<tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>no_shapes_loaded</code></td></tr>
+</tbody></table>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* Gp034 - Composite/complex curve segments not connected
+<span class="lineno">3</span> * Defect: a COMPOSITE_CURVE made of multiple segments has a 3D gap
+<span class="lineno">4</span> * between segment N&#x27;s end and segment N+1&#x27;s start, exceeding the
+<span class="lineno">5</span> * caller&#x27;s connectivity precision. */
+<span class="lineno">6</span>HEADER;
+<span class="lineno">7</span>FILE_DESCRIPTION((&#x27;Gp034 test case&#x27;,&#x27;Composite/complex curve segments not connected&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">8</span>FILE_NAME(&#x27;Gp034.stp&#x27;,&#x27;2026-04-26T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">9</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }&#x27;));
+<span class="lineno">10</span>ENDSEC;
+<span class="lineno">11</span>DATA;
+<span class="lineno">12</span>#1=APPLICATION_CONTEXT(&#x27;automotive_design&#x27;);
+<span class="lineno">13</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,&#x27;automotive_design&#x27;,2000,#1);
+<span class="lineno">14</span>/* COMPOSITE_CURVE with two segments separated by 5e-3 in 3D */
+<span class="lineno">15</span>#10=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">16</span>#11=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">17</span>#12=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">18</span>#13=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#10,#11,#12);
+<span class="lineno">19</span>#14=PLANE(&#x27;&#x27;,#13);
+<span class="lineno">20</span>#20=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">21</span>#21=VERTEX_POINT(&#x27;&#x27;,#20);
+<span class="lineno">22</span>#22=CARTESIAN_POINT(&#x27;&#x27;,(5.0,0.0,0.0));
+<span class="lineno">23</span>#23=VERTEX_POINT(&#x27;&#x27;,#22);
+<span class="lineno">24</span>#24=CARTESIAN_POINT(&#x27;&#x27;,(5.005,0.0,0.0));
+<span class="lineno">25</span>#25=VERTEX_POINT(&#x27;&#x27;,#24);
+<span class="lineno">26</span>#26=CARTESIAN_POINT(&#x27;&#x27;,(10.0,0.0,0.0));
+<span class="lineno">27</span>#27=VERTEX_POINT(&#x27;&#x27;,#26);
+<span class="lineno">28</span>#30=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">29</span>#31=VECTOR(&#x27;&#x27;,#30,1.0);
+<span class="lineno">30</span>#32=LINE(&#x27;&#x27;,#20,#31);
+<span class="lineno">31</span>#33=LINE(&#x27;&#x27;,#24,#31);
+<span class="lineno">32</span>#50=<mark>EDGE_CURVE</mark>(&#x27;&#x27;,#21,#23,#32,.T.);
+<span class="lineno">33</span>#51=<mark>EDGE_CURVE</mark>(&#x27;&#x27;,#25,#27,#33,.T.);
+<span class="lineno">34</span>#60=ORIENTED_EDGE(&#x27;&#x27;,*,*,#50,.T.);
+<span class="lineno">35</span>#61=ORIENTED_EDGE(&#x27;&#x27;,*,*,#51,.T.);
+<span class="lineno">36</span>#70=EDGE_LOOP(&#x27;&#x27;,(#60,#61));
+<span class="lineno">37</span>#71=FACE_OUTER_BOUND(&#x27;&#x27;,#70,.T.);
+<span class="lineno">38</span>#72=ADVANCED_FACE(&#x27;&#x27;,(#71),#14,.T.);
+<span class="lineno">39</span>ENDSEC;
+<span class="lineno">40</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Gp033.html">&larr; Gp033</a> <a class="up" href="index.html">§12.2a Pcurve defects</a> <a class="next" href="Gp035.html">Gp035 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

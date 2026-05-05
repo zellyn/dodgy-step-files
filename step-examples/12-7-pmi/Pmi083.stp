@@ -1,0 +1,46 @@
+ISO-10303-21;
+/* Pmi083 - Annotation plane orientation flipped.
+ * Defect: an ADVANCED_FACE has same_sense = .F. (face flipped relative
+ * to its underlying surface). A GD&T ANNOTATION_PLANE shares the same
+ * surface; reader copies the surface normal but ignores the face's
+ * .F. orientation, so the annotation plane points the wrong way. */
+HEADER;
+FILE_DESCRIPTION(('Pmi083 test case','Annotation plane orientation flipped'),'2;1');
+FILE_NAME('Pmi083.stp','2026-04-30T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AP242_MANAGED_MODEL_BASED_3D_ENGINEERING_MIM_LF { 1 0 10303 442 3 0 0 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('managed model based 3d engineering');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','ap242_managed_model_based_3d_engineering',2020,#1);
+#10=PRODUCT_CONTEXT('',#1,'mechanical');
+#11=PRODUCT('part1','part1','part1',(#10));
+#12=PRODUCT_DEFINITION_FORMATION('','',#11);
+#13=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#14=PRODUCT_DEFINITION('','',#12,#13);
+#15=PRODUCT_DEFINITION_SHAPE('','',#14);
+/* Shared planar surface */
+#100=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#101=DIRECTION('z_normal',(0.0,0.0,1.0));
+#102=DIRECTION('x_ref',(1.0,0.0,0.0));
+#103=AXIS2_PLACEMENT_3D('',#100,#101,#102);
+#104=PLANE('shared_surface',#103);
+/* Reversed face: same_sense = .F. - this is the load-bearing flag */
+#105=EDGE_LOOP('',());
+#106=FACE_OUTER_BOUND('',#105,.T.);
+#107=ADVANCED_FACE('reversed_face',(#106),#104,.F.);
+/* Annotation plane sharing the same surface placement.
+ * Reader will copy #103's normal (+Z) but the face's .F. flag means
+ * the outward face normal is -Z; mismatch flips the annotation. */
+#110=ANNOTATION_PLANE('flipped_normal','',(),#103);
+/* Add SDR linking PRODUCT to existing geometry. */
+#9000=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9001=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9002=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9003=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9000,'distance_accuracy_value','');
+#9004=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9003))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9000,#9001,#9002))REPRESENTATION_CONTEXT('','3D'));
+#9010=OPEN_SHELL('wrap_shell',(#107));
+#9011=SHELL_BASED_SURFACE_MODEL('wrap_sbsm',(#9010));
+#9020=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9011),#9004);
+#9021=SHAPE_DEFINITION_REPRESENTATION(#15,#9020);
+ENDSEC;
+END-ISO-10303-21;

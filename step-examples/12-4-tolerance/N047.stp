@@ -1,0 +1,79 @@
+ISO-10303-21;
+/* N047 - UnifySameDomain tolerances not user-specifiable
+ * Defect: two coplanar ADVANCED_FACEs share a common EDGE_CURVE.
+ * The declared vertex tolerance is 0.1 mm. UnifySameDomain (or its
+ * equivalent) should treat the two faces as a single face since
+ * their planes coincide within 0.1 mm. The defect: the algorithm
+ * uses a fixed internal 1e-7 mm threshold and refuses to merge. */
+HEADER;
+FILE_DESCRIPTION(('N047 test case','UnifySameDomain tolerances not user-specifiable'),'2;1');
+FILE_NAME('N047.stp','2026-04-30T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+/* Single PLANE shared by both faces */
+#100=CARTESIAN_POINT('origin',(0.0,0.0,0.0));
+#101=DIRECTION('+z',(0.0,0.0,1.0));
+#102=DIRECTION('+x',(1.0,0.0,0.0));
+#103=AXIS2_PLACEMENT_3D('axes',#100,#101,#102);
+#104=PLANE('coarse',#103);
+/* Vertices: A=(0,0,0), B=(1,0,0), C=(1,1,0), D=(0,1,0), E=(2,0,0), F=(2,1,0) */
+#110=CARTESIAN_POINT('A',(0.0,0.0,0.0));#111=VERTEX_POINT('A',#110);
+#112=CARTESIAN_POINT('B',(1.0,0.0,0.0));#113=VERTEX_POINT('B',#112);
+#114=CARTESIAN_POINT('C',(1.0,1.0,0.0));#115=VERTEX_POINT('C',#114);
+#116=CARTESIAN_POINT('D',(0.0,1.0,0.0));#117=VERTEX_POINT('D',#116);
+#118=CARTESIAN_POINT('E',(2.0,0.0,0.0));#119=VERTEX_POINT('E',#118);
+#120=CARTESIAN_POINT('F',(2.0,1.0,0.0));#121=VERTEX_POINT('F',#120);
+/* Edges */
+#130=DIRECTION('+x',(1.0,0.0,0.0));#131=VECTOR('vx',#130,1.0);
+#132=LINE('AB',#110,#131);#133=EDGE_CURVE('AB',#111,#113,#132,.T.);
+#134=DIRECTION('+y',(0.0,1.0,0.0));#135=VECTOR('vy',#134,1.0);
+#136=LINE('BC',#112,#135);#137=EDGE_CURVE('BC_shared',#113,#115,#136,.T.);
+#138=DIRECTION('-x',(-1.0,0.0,0.0));#139=VECTOR('vmx',#138,1.0);
+#140=LINE('CD',#114,#139);#141=EDGE_CURVE('CD',#115,#117,#140,.T.);
+#142=DIRECTION('-y',(0.0,-1.0,0.0));#143=VECTOR('vmy',#142,1.0);
+#144=LINE('DA',#116,#143);#145=EDGE_CURVE('DA',#117,#111,#144,.T.);
+#146=LINE('BE',#112,#131);#147=EDGE_CURVE('BE',#113,#119,#146,.T.);
+#148=LINE('EF',#118,#135);#149=EDGE_CURVE('EF',#119,#121,#148,.T.);
+#150=LINE('FC',#120,#139);#151=EDGE_CURVE('FC',#121,#115,#150,.T.);
+/* Face 1: A->B->C->D->A */
+#160=ORIENTED_EDGE('',*,*,#133,.T.);
+#161=ORIENTED_EDGE('',*,*,#137,.T.); /* BC shared edge */
+#162=ORIENTED_EDGE('',*,*,#141,.T.);
+#163=ORIENTED_EDGE('',*,*,#145,.T.);
+#164=EDGE_LOOP('',(#160,#161,#162,#163));
+#165=FACE_OUTER_BOUND('',#164,.T.);
+#166=ADVANCED_FACE('left_face',(#165),#104,.T.);
+/* Face 2: B->E->F->C->B (shares edge BC with face 1, reversed) */
+#170=ORIENTED_EDGE('',*,*,#147,.T.);
+#171=ORIENTED_EDGE('',*,*,#149,.T.);
+#172=ORIENTED_EDGE('',*,*,#151,.T.);
+#173=ORIENTED_EDGE('',*,*,#137,.F.); /* shared BC reversed */
+#174=EDGE_LOOP('',(#170,#171,#172,#173));
+#175=FACE_OUTER_BOUND('',#174,.T.);
+#176=ADVANCED_FACE('right_face',(#175),#104,.T.);
+/* Coarse vertex tolerance 0.1 mm */
+#180=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#181=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#182=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#183=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.1),#180,
+  'distance_accuracy_value','coarse_unify_threshold');
+#184=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+      GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#183))
+      GLOBAL_UNIT_ASSIGNED_CONTEXT((#180,#181,#182))
+      REPRESENTATION_CONTEXT('ctx','3D'));
+/* Minimal PRODUCT chain so OCCT TransferRoots produces a shape. */
+#9010=PRODUCT_CONTEXT('',#1,'mechanical');
+#9011=PRODUCT('N047','N047','',(#9010));
+#9012=PRODUCT_DEFINITION_FORMATION('','',#9011);
+#9013=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9014=PRODUCT_DEFINITION('','',#9012,#9013);
+#9015=PRODUCT_DEFINITION_SHAPE('','',#9014);
+#9030=OPEN_SHELL('wrap_shell',(#166,#176));
+#9031=SHELL_BASED_SURFACE_MODEL('wrap_sbsm',(#9030));
+#9050=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9031),#184);
+#9051=SHAPE_DEFINITION_REPRESENTATION(#9015,#9050);
+ENDSEC;
+END-ISO-10303-21;

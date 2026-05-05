@@ -1,0 +1,43 @@
+ISO-10303-21;
+/* M019 - TRIANGLE_STRIP / TRIANGLE_FAN in COMPLEX_TRIANGULATED_FACE
+ * mis-decoded.
+ * Defect: AP242e2 COMPLEX_TRIANGULATED_FACE encodes triangles using a
+ * mix of strip, fan and plain triangle topology. OCCT (Mantis 33491,
+ * fixed in 588ee92) misaligned indices when unfolding. This file
+ * exercises the mixed encoding: one triangle strip, one triangle fan,
+ * plus one plain triangle list, all in the same face. */
+HEADER;
+FILE_DESCRIPTION(('M019 test case','complex_triangulated_face mixed strip+fan+pnpoly'),'2;1');
+FILE_NAME('M019.stp','2026-04-26T00:00:00',(''),(''),'auto-generated','','');
+FILE_SCHEMA(('AP242_MANAGED_MODEL_BASED_3D_ENGINEERING_MIM_LF { 1 0 10303 442 1 1 4 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('managed model based 3d engineering');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
+  'ap242_managed_model_based_3d_engineering',2014,#1);
+#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#11=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#12=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.E-6),#10,'distance_accuracy_value','');
+#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+     GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13))
+     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12))
+     REPRESENTATION_CONTEXT('part','3D'));
+/* Eight points - a small grid */
+#100=COORDINATES_LIST('',8,
+  ((0.0,0.0,0.0),(1.0,0.0,0.0),(2.0,0.0,0.0),(3.0,0.0,0.0),
+   (0.0,1.0,0.0),(1.0,1.0,0.0),(2.0,1.0,0.0),(3.0,1.0,0.0)));
+/* COMPLEX_TRIANGULATED_FACE arguments (per AP242 Ed.2):
+ *   coordinates, pnindex, normals, triangle_strips, triangle_fans, triangles
+ * Strip:  vertices 1,5,2,6,3,7,4,8  -> 6 strip triangles
+ * Fan:    apex=6, perimeter=2,3,7   -> 2 fan triangles
+ * Triangles: (1,5,6) plain          -> 1 triangle */
+#110=COMPLEX_TRIANGULATED_FACE(
+       'mixed_strip_fan_tri', #100, (),
+       ((1,5,2,6,3,7,4,8)),
+       ((6,2,3,7)),
+       ((1,5,6)));
+#120=TESSELLATED_SOLID('mixed_solid',(#110),$);
+#200=TESSELLATED_SHAPE_REPRESENTATION('',(#120),#14);
+ENDSEC;
+END-ISO-10303-21;

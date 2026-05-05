@@ -1,0 +1,48 @@
+ISO-10303-21;
+/* Fi006 - Fillet at 4-edge corner (terminating-at).
+ * Defect: spine terminates at a corner vertex incident to four edges;
+ * algorithm only supports up to three. Encoded: corner VERTEX_POINT +
+ * four EDGE_CURVEs all referencing it as one endpoint. */
+HEADER;
+FILE_DESCRIPTION(('Fi006 test case','Fillet at 4-edge corner'),'2;1');
+FILE_NAME('Fi006.stp','2026-04-30T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+/* The valence-4 corner */
+#10=CARTESIAN_POINT('valence_4_corner',(0.0,0.0,0.0));
+#11=VERTEX_POINT('corner',#10);
+/* Four neighbour vertices */
+#20=CARTESIAN_POINT('',(1.0,0.0,0.0));#21=VERTEX_POINT('',#20);
+#22=CARTESIAN_POINT('',(0.0,1.0,0.0));#23=VERTEX_POINT('',#22);
+#24=CARTESIAN_POINT('',(0.0,0.0,1.0));#25=VERTEX_POINT('',#24);
+#26=CARTESIAN_POINT('',(-1.0,-1.0,-1.0));#27=VERTEX_POINT('',#26);
+/* Four directions / lines */
+#30=DIRECTION('',(1.0,0.0,0.0));#31=VECTOR('',#30,1.0);#32=LINE('',#10,#31);
+#33=DIRECTION('',(0.0,1.0,0.0));#34=VECTOR('',#33,1.0);#35=LINE('',#10,#34);
+#36=DIRECTION('',(0.0,0.0,1.0));#37=VECTOR('',#36,1.0);#38=LINE('',#10,#37);
+#39=DIRECTION('',(-0.577,-0.577,-0.577));#40=VECTOR('',#39,1.732);#41=LINE('',#10,#40);
+/* Four EDGE_CURVEs all terminating at corner vertex #11 */
+#50=EDGE_CURVE('e1',#11,#21,#32,.T.);
+#51=EDGE_CURVE('e2',#11,#23,#35,.T.);
+#52=EDGE_CURVE('e3_spine',#11,#25,#38,.T.);
+#53=EDGE_CURVE('e4',#11,#27,#41,.T.);
+/* PRODUCT chain so OCCT loads the geometry. */
+#9000=PRODUCT_CONTEXT('',#1,'mechanical');
+#9001=PRODUCT('Fi006','Fi006','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
+#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
+#9020=GEOMETRIC_CURVE_SET('wire_set',(#50,#51,#52,#53));
+#9021=GEOMETRICALLY_BOUNDED_WIREFRAME_SHAPE_REPRESENTATION('',(#9020),#9010);
+#9022=SHAPE_DEFINITION_REPRESENTATION(#9005,#9021);
+ENDSEC;
+END-ISO-10303-21;

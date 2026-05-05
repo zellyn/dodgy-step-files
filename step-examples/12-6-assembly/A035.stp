@@ -1,0 +1,87 @@
+ISO-10303-21;
+/*
+ * A035 — Product with both sub-assemblies and direct shape
+ * Defect (OCCT STEPControl_ActorRead.cxx:735-736):
+ *   A PRODUCT simultaneously has both sub-assemblies (NAUO children) AND a
+ *   direct geometric SHAPE_REPRESENTATION of its own. Strict assembly-vs-leaf
+ *   classifiers misroute one or the other.
+ * Reproducer: a PRODUCT_DEFINITION referenced by both NEXT_ASSEMBLY_USAGE_OCCURRENCE
+ *   (as parent) AND a SHAPE_DEFINITION_REPRESENTATION carrying its own
+ *   faces/solids.
+ * Expected kernel: accept hybrid; treat as both parent and leaf; emit both
+ *   sub-assembly tree and direct geometry.
+ */
+HEADER;
+FILE_DESCRIPTION(('A035 hybrid PRODUCT both has sub-assemblies and direct shape geometry'),'2;1');
+FILE_NAME('A035.stp','2026-04-26T00:00:00',('catalog'),('cad'),'manual','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#10 = APPLICATION_CONTEXT('automotive design');
+#11 = APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2001,#10);
+#12 = PRODUCT_CONTEXT('',#10,'mechanical');
+#13 = PRODUCT_DEFINITION_CONTEXT('part definition',#10,'design');
+/* HYBRID PRODUCT: has children NAUOs *and* its own shape representation */
+#20 = PRODUCT('A035_HYBRID','assembly with own geometry','',(#12));
+#21 = PRODUCT_DEFINITION_FORMATION('','',#20);
+#22 = PRODUCT_DEFINITION('design','',#21,#13);
+#23 = PRODUCT_DEFINITION_SHAPE('','',#22);
+/* Child product 1 */
+#30 = PRODUCT('CHILD_A','','',(#12));
+#31 = PRODUCT_DEFINITION_FORMATION('','',#30);
+#32 = PRODUCT_DEFINITION('design','',#31,#13);
+#33 = PRODUCT_DEFINITION_SHAPE('','',#32);
+/* Child product 2 */
+#34 = PRODUCT('CHILD_B','','',(#12));
+#35 = PRODUCT_DEFINITION_FORMATION('','',#34);
+#36 = PRODUCT_DEFINITION('design','',#35,#13);
+#37 = PRODUCT_DEFINITION_SHAPE('','',#36);
+/* NAUO children: makes #22 an "assembly" */
+#40 = NEXT_ASSEMBLY_USAGE_OCCURRENCE('1','CHILD_A_INST','',#22,#32,$);
+#41 = NEXT_ASSEMBLY_USAGE_OCCURRENCE('2','CHILD_B_INST','',#22,#36,$);
+/* Units */
+#50 = ( LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT(.MILLI.,.METRE.) );
+#51 = ( NAMED_UNIT(*) PLANE_ANGLE_UNIT() SI_UNIT($,.RADIAN.) );
+#52 = ( NAMED_UNIT(*) SI_UNIT($,.STERADIAN.) SOLID_ANGLE_UNIT() );
+#53 = UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#50,'distance_accuracy_value','');
+#54 = ( GEOMETRIC_REPRESENTATION_CONTEXT(3) GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#53))
+        GLOBAL_UNIT_ASSIGNED_CONTEXT((#50,#51,#52)) REPRESENTATION_CONTEXT('','3D') );
+#60 = CARTESIAN_POINT('',(0.0,0.0,0.0));
+#61 = DIRECTION('',(0.0,0.0,1.0));
+#62 = DIRECTION('',(1.0,0.0,0.0));
+/* Per-child rep maps */
+#63 = AXIS2_PLACEMENT_3D('a_origin',#60,#61,#62);
+#64 = SHAPE_REPRESENTATION('a_rep',(#63),#54);
+#65 = SHAPE_DEFINITION_REPRESENTATION(#33,#64);
+#66 = REPRESENTATION_MAP(#63,#64);
+#67 = MAPPED_ITEM('a_inst',#66,#63);
+#70 = AXIS2_PLACEMENT_3D('b_origin',#60,#61,#62);
+#71 = SHAPE_REPRESENTATION('b_rep',(#70),#54);
+#72 = SHAPE_DEFINITION_REPRESENTATION(#37,#71);
+#73 = REPRESENTATION_MAP(#70,#71);
+#74 = MAPPED_ITEM('b_inst',#73,#70);
+/* DEFECT — hybrid: #22 also carries its OWN faces/solid via direct
+   ADVANCED_BREP_SHAPE_REPRESENTATION, in addition to being the NAUO parent. */
+#80 = AXIS2_PLACEMENT_3D('hybrid_origin',#60,#61,#62);
+#81 = ADVANCED_BREP_SHAPE_REPRESENTATION('hybrid_own_geom',
+        (#80,#67,#74),#54);
+#82 = SHAPE_DEFINITION_REPRESENTATION(#23,#81);
+/* Extended catalog notes:
+ * This reproducer is a minimal demonstrator of the §12.6 entry
+ * referenced in the /* */ header above. The entity-graph above
+ * is just enough to exercise the defect on a writer or reader
+ * test harness; it is NOT a production-quality assembly.
+ *
+ * License: this file is part of a defect catalog assembled from
+ * publicly described bug reports and recommended-practice notes.
+ * No proprietary geometry or names are reproduced. The entity IDs
+ * and minimal coordinates are author-original.
+ *
+ * Cross-refs: see STEP_PROBLEM_CATALOG.md §12.6 for full entry,
+ * source list, sender attribution and expected kernel behavior.
+ */
+#900 = DESCRIPTIVE_REPRESENTATION_ITEM('catalog_id','A035');
+#901 = DESCRIPTIVE_REPRESENTATION_ITEM('catalog_section','12.6 assembly hierarchy');
+#902 = DESCRIPTIVE_REPRESENTATION_ITEM('catalog_status','pending');
+ENDSEC;
+END-ISO-10303-21;

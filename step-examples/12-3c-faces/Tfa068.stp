@@ -1,0 +1,39 @@
+ISO-10303-21;
+/* Tfa068 - STEP export duplicates surfaces, leading to non-conformal geometry between adjacent faces
+ * Defect: two adjacent faces sharing the same plane (z=0) are emitted with two
+ * separate PLANE instances rather than one shared instance. */
+HEADER;
+FILE_DESCRIPTION(('Tfa068 - duplicated PLANE surfaces break face-face adjacency'),'2;1');
+FILE_NAME('Tfa068.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+#10=CARTESIAN_POINT('origin',(0.0,0.0,0.0));
+#11=DIRECTION('',(0.0,0.0,1.0));
+#12=DIRECTION('',(1.0,0.0,0.0));
+#13=AXIS2_PLACEMENT_3D('placement_A',#10,#11,#12);
+#14=AXIS2_PLACEMENT_3D('placement_B',#10,#11,#12);
+/* Both PLANE instances are numerically identical: same origin, same normal, same x.
+ * A canonicalising writer would emit one and share. Here they are duplicated. */
+#20=PLANE('plane_A_dup',#13);
+#21=PLANE('plane_B_dup',#14);
+/* Minimal bounding wire for both faces. */
+#22=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#23=CARTESIAN_POINT('',(1.0,0.0,0.0));
+#24=VERTEX_POINT('',#22);
+#25=VERTEX_POINT('',#23);
+#26=DIRECTION('',(1.0,0.0,0.0));
+#27=VECTOR('',#26,1.0);
+#28=LINE('',#22,#27);
+#29=EDGE_CURVE('',#24,#25,#28,.T.);
+#32=ORIENTED_EDGE('',*,*,#29,.T.);
+#33=EDGE_LOOP('',(#32));
+#34=FACE_OUTER_BOUND('',#33,.T.);
+#30=ADVANCED_FACE('faceA',(#34),#20,.T.);
+#31=ADVANCED_FACE('faceB',(#34),#21,.T.);
+#40=CLOSED_SHELL('shell',(#30,#31));
+#50=MANIFOLD_SOLID_BREP('non_conformal_solid',#40);
+ENDSEC;
+END-ISO-10303-21;

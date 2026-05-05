@@ -1,0 +1,26 @@
+ISO-10303-21;
+/* M120 - AP209 symmetry plane not perpendicular to a coordinate axis.
+ * Defect: a symmetry constraint is encoded as "U_x = 0" (X-DOF
+ * restricted) but the symmetry plane normal is (0.5, 0.5, 0.707) -
+ * non-axis-aligned. The constraint frame is wrong; the actual
+ * symmetry physics is not enforced. */
+HEADER;
+FILE_DESCRIPTION(('M120 test case','AP209 skew symmetry plane'),'2;1');
+FILE_NAME('M120.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('STRUCTURAL_ANALYSIS_DESIGN { 1 0 10303 209 1 0 0 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('structural_analysis_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
+  'structural_analysis_design',2001,#1);
+#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10))
+     REPRESENTATION_CONTEXT('fea','3D'));
+#100=CARTESIAN_POINT('a',(0.0,0.0,0.0));
+#110=NODE('n1',(#100),$);
+/* Defect: symmetry plane normal is non-axis-aligned. */
+#150=DIRECTION('skew_symmetry_normal',(0.5,0.5,0.707));
+#200=SINGLE_POINT_CONSTRAINT('skew_sym',#110,'X',$);
+ENDSEC;
+END-ISO-10303-21;

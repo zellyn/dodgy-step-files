@@ -1,0 +1,40 @@
+ISO-10303-21;
+/* Twi075 - Connect-shape diagnostic: how does a foreign edge attach?
+ * Open three-edge wire from (0,0,0) -> (1,0,0) -> (2,0,0) -> (3,0,0), plus
+ * a separate foreign EDGE not in the wire, going (3.001, 0, 0) -> (4.0, 0, 0).
+ * Connect-shape must enumerate four orientations -- foreign-direct-after,
+ * foreign-reversed-after, foreign-direct-before, foreign-reversed-before -- with
+ * residual gaps; in this layout the smallest gap (0.001) is at the wire tail. */
+HEADER;
+FILE_DESCRIPTION(('Twi075 test case','Open wire plus separate foreign edge for connect-shape diagnostic'),'2;1');
+FILE_NAME('Twi075.stp','2026-04-30T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+/* Wire vertices */
+#10=CARTESIAN_POINT('',(0.0,0.0,0.0));#11=VERTEX_POINT('Wstart',#10);
+#12=CARTESIAN_POINT('',(1.0,0.0,0.0));#13=VERTEX_POINT('W1',#12);
+#14=CARTESIAN_POINT('',(2.0,0.0,0.0));#15=VERTEX_POINT('W2',#14);
+#16=CARTESIAN_POINT('',(3.0,0.0,0.0));#17=VERTEX_POINT('Wend',#16);
+/* Foreign edge vertices (separate -- not part of wire) */
+#18=CARTESIAN_POINT('foreign_start',(3.001,0.0,0.0));#19=VERTEX_POINT('Fstart',#18);
+#20=CARTESIAN_POINT('foreign_end',(4.0,0.0,0.0));#21=VERTEX_POINT('Fend',#20);
+/* Three wire edges */
+#30=DIRECTION('',(1.0,0.0,0.0));#31=VECTOR('',#30,1.0);#32=LINE('',#10,#31);
+#33=EDGE_CURVE('e1',#11,#13,#32,.T.);
+#34=DIRECTION('',(1.0,0.0,0.0));#35=VECTOR('',#34,1.0);#36=LINE('',#12,#35);
+#37=EDGE_CURVE('e2',#13,#15,#36,.T.);
+#38=DIRECTION('',(1.0,0.0,0.0));#39=VECTOR('',#38,1.0);#40=LINE('',#14,#39);
+#41=EDGE_CURVE('e3',#15,#17,#40,.T.);
+#50=ORIENTED_EDGE('',*,*,#33,.T.);
+#51=ORIENTED_EDGE('',*,*,#37,.T.);
+#52=ORIENTED_EDGE('',*,*,#41,.T.);
+#53=EDGE_LOOP('open_three_edge_wire',(#50,#51,#52));
+/* Foreign single edge -- candidate for connection */
+#60=DIRECTION('',(1.0,0.0,0.0));#61=VECTOR('',#60,1.0);#62=LINE('',#18,#61);
+#63=EDGE_CURVE('foreign_edge',#19,#21,#62,.T.);
+#64=ORIENTED_EDGE('foreign_oriented',*,*,#63,.T.);
+ENDSEC;
+END-ISO-10303-21;

@@ -1,0 +1,44 @@
+ISO-10303-21;
+/* ============================================================
+   WARNING: THIS FILE IS INTENTIONALLY MALFORMED.
+   It exists ONLY for parser-robustness / fuzz-class testing.
+   DO NOT feed to a production translator without sandboxing.
+
+   Entry  : Ad003
+   Title  : Negative/huge integer count drives malloc size
+            confusion (sign-extension to 0xFFFFFFFF; count-1
+            underflow on zero).
+   Defect : Two patterns are exercised in this fixture:
+              (a) #10 declares an aggregate whose nominal
+                  count is -1; on a uint32 cast this becomes
+                  0xFFFFFFFF, often multiplied by a stride to
+                  call malloc() with a wraparound.
+              (b) #20 declares an aggregate count of 0 and
+                  is referenced by code that pre-decrements
+                  the count, producing (size_t)-1.
+   Expected: validate counts against schema bounds BEFORE
+             allocation; reject with E_AGGREGATE_BOUNDS.
+            CWE-191 (sign-confusion).
+   See also: Ad015, Ad077.
+   ============================================================ */
+HEADER;
+FILE_DESCRIPTION(('Ad003 sign-confused aggregate count'),'2;1');
+FILE_NAME('Ad003.stp','2026-04-26T00:00:00',('synthetic'),('cad-research'),
+  'none','none','none');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+/* Pattern (a): count expressed as a negative integer literal
+   in a position the schema requires INTEGER >= 0. */
+#10=BSPLINE_CURVE_WITH_KNOTS('',-1,(#100,#101),.UNSPECIFIED.,.F.,.F.,
+  (-1,-1),(0.,1.),.UNSPECIFIED.);
+
+/* Pattern (b): zero-length where schema mandates >=1. The
+   downstream binder is expected to dereference element [0]. */
+#20=BSPLINE_SURFACE_WITH_KNOTS('',0,0,((#100)),.UNSPECIFIED.,.F.,.F.,.F.,
+  (),(),(),(),.UNSPECIFIED.);
+
+#100=CARTESIAN_POINT('',(0.,0.,0.));
+#101=CARTESIAN_POINT('',(1.,0.,0.));
+ENDSEC;
+END-ISO-10303-21;

@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Tb014 — Sliver triangle whose smallest internal angle is at the hardcoded trigger</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.4 Tolerance &amp; numerical precision</a> <span class="sep">/</span> <span class="current">Tb014</span>
+</nav>
+<header class="title-bar">
+<h1>Tb014 <span class="sep">—</span> <span class="entry-title">Sliver triangle whose smallest internal angle is at the hardcoded trigger</span></h1>
+<p class="category">§12.4 (sub-class: sliver-detection threshold)</p>
+<p class="tag-pills">
+<a class="tag tag-spec-violation" href="../by-tag/spec-violation/index.html">spec-violation</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-4-tolerance/Tb014.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-4-tolerance/Tb014.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>synthesized time-bomb.</li>
+</ul></section>
+<section><h2>Description</h2>
+<p>A planar triangular face has internal angles of 89.9999°, 89.9999°, and 0.0002°. The 0.0002° angle equals 3.49e-6 rad. Many sliver detectors trigger at &quot;internal angle &lt; 1e-5 rad&quot; (Pro/E vintage policy); some at &quot;1e-7 rad&quot; (precise sliver only); some at &quot;1e-3 rad&quot; (aggressive sliver removal). The triangle is alive in one regime and dead in another.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>Triangle with vertices at `(0,0,0)`, `(1,0,0)`, `(1, 3.49e-6, 0)` — angle at vertex 1 is 3.49e-6 rad. Wrap in PRODUCT chain.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>sliver threshold must be a documented invariant; consistency across kernel versions and configuration; never silently drop a face.</p></section>
+<section><h2>Notes</h2>
+<p>Searchable as &quot;thin sliver triangle&quot;, &quot;face removed by ShapeFix&quot;,. Synonyms: &quot;sliver triangle exactly at angle threshold&quot;, &quot;internal angle 0.0001 degrees at trigger&quot;, &quot;sliver detector boundary case&quot;, &quot;near-degenerate triangle at hardcoded angle limit&quot;. &quot;long skinny face missing&quot;.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=shape(1)/shape(1) gmsh=shape(7) ifc=schema_n/a</code></p></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>face[0].area &lt; 1e-3</code></li>
+<li><code>n_edges_total &gt;= 3</code></li>
+<li><code>face[0].surface_type == &quot;plane&quot;</code></li>
+<li><code>n_vertices_total &gt;= 6</code></li>
+</ul></section>
+<section><h2>Live oracle output</h2>
+<table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
+<tr><td><code>occt_heal_on</code></td><td><code>shape(1)</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>shape(1)</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>shape(7)</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>shape(7)</code></td></tr>
+<tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>not_manifold</code></td></tr>
+</tbody></table>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>/* Tb014 - Sliver triangle with smallest internal angle at hardcoded trigger
+<span class="lineno">2</span> * Defect: Triangle has internal angles 89.9999, 89.9999, 0.0002 deg
+<span class="lineno">3</span> * (= 3.49e-6 rad). Different sliver detectors use thresholds 1e-7, 1e-5,
+<span class="lineno">4</span> * 1e-3 rad. The triangle is alive in some regimes and silently dropped
+<span class="lineno">5</span> * in others. &quot;Long skinny face missing&quot;, &quot;thin sliver triangle removed
+<span class="lineno">6</span> * by ShapeFix&quot; -- same input, different verdicts.
+<span class="lineno">7</span> */
+<span class="lineno">8</span>ISO-10303-21;
+<span class="lineno">9</span>HEADER;
+<span class="lineno">10</span>FILE_DESCRIPTION((&#x27;Tb014 sliver triangle at sliver-detection threshold&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">11</span>FILE_NAME(&#x27;Tb014.stp&#x27;,&#x27;2026-04-30T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),
+<span class="lineno">12</span>  &#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">13</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }&#x27;));
+<span class="lineno">14</span>ENDSEC;
+<span class="lineno">15</span>DATA;
+<span class="lineno">16</span>#1=APPLICATION_CONTEXT(&#x27;automotive_design&#x27;);
+<span class="lineno">17</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,
+<span class="lineno">18</span>  &#x27;automotive_design&#x27;,2009,#1);
+<span class="lineno">19</span>#10=CARTESIAN_POINT(&#x27;o&#x27;,(0.0,0.0,0.0));
+<span class="lineno">20</span>#11=DIRECTION(&#x27;+z&#x27;,(0.0,0.0,1.0));
+<span class="lineno">21</span>#12=DIRECTION(&#x27;+x&#x27;,(1.0,0.0,0.0));
+<span class="lineno">22</span>#13=AXIS2_PLACEMENT_3D(&#x27;plc&#x27;,#10,#11,#12);
+<span class="lineno">23</span>#14=PLANE(&#x27;pl&#x27;,#13);
+<span class="lineno">24</span>/* Sliver triangle: smallest angle 3.49e-6 rad. */
+<span class="lineno">25</span>#20=CARTESIAN_POINT(&#x27;A&#x27;,(0.0,0.0,0.0));
+<span class="lineno">26</span>#21=CARTESIAN_POINT(&#x27;B&#x27;,(1.0,0.0,0.0));
+<span class="lineno">27</span>#22=CARTESIAN_POINT(&#x27;C&#x27;,(1.0,3.49E-6,0.0));
+<span class="lineno">28</span>#30=VERTEX_POINT(&#x27;vA&#x27;,#20);
+<span class="lineno">29</span>#31=VERTEX_POINT(&#x27;vB&#x27;,#21);
+<span class="lineno">30</span>#32=VERTEX_POINT(&#x27;vC_sliver_3.49e-6_above_B&#x27;,#22);
+<span class="lineno">31</span>#40=DIRECTION(&#x27;AB&#x27;,(1.0,0.0,0.0));
+<span class="lineno">32</span>#41=VECTOR(&#x27;vAB&#x27;,#40,1.0);
+<span class="lineno">33</span>#42=LINE(&#x27;lAB&#x27;,#20,#41);
+<span class="lineno">34</span>#43=DIRECTION(&#x27;BC&#x27;,(0.0,1.0,0.0));
+<span class="lineno">35</span>#44=VECTOR(&#x27;vBC&#x27;,#43,3.49E-6);
+<span class="lineno">36</span>#45=LINE(&#x27;lBC&#x27;,#21,#44);
+<span class="lineno">37</span>/* C-&gt;A long hypotenuse. */
+<span class="lineno">38</span>#46=DIRECTION(&#x27;CA&#x27;,(-1.0,-3.49E-6,0.0));
+<span class="lineno">39</span>#47=VECTOR(&#x27;vCA&#x27;,#46,1.0);
+<span class="lineno">40</span>#48=LINE(&#x27;lCA&#x27;,#22,#47);
+<span class="lineno">41</span>#50=EDGE_CURVE(&#x27;eAB&#x27;,#30,#31,#42,.T.);
+<span class="lineno">42</span>#51=EDGE_CURVE(&#x27;eBC_short&#x27;,#31,#32,#45,.T.);
+<span class="lineno">43</span>#52=EDGE_CURVE(&#x27;eCA_hypot&#x27;,#32,#30,#48,.T.);
+<span class="lineno">44</span>#60=ORIENTED_EDGE(&#x27;&#x27;,*,*,#50,.T.);
+<span class="lineno">45</span>#61=ORIENTED_EDGE(&#x27;&#x27;,*,*,#51,.T.);
+<span class="lineno">46</span>#62=ORIENTED_EDGE(&#x27;&#x27;,*,*,#52,.T.);
+<span class="lineno">47</span>#63=EDGE_LOOP(&#x27;&#x27;,(#60,#61,#62));
+<span class="lineno">48</span>#64=RECTANGULAR_TRIMMED_SURFACE(&#x27;trim&#x27;,#14,0.0,1.0,0.0,3.49E-6,.T.,.T.);
+<span class="lineno">49</span>#65=FACE_OUTER_BOUND(&#x27;&#x27;,#63,.T.);
+<span class="lineno">50</span>#66=ADVANCED_FACE(&#x27;sliver&#x27;,(#65),#64,.T.);
+<span class="lineno">51</span>#70=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">52</span>#71=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+<span class="lineno">53</span>#72=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+<span class="lineno">54</span>#73=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#70,
+<span class="lineno">55</span>  &#x27;distance_accuracy_value&#x27;,&#x27;default_tolerance&#x27;);
+<span class="lineno">56</span>#80=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+<span class="lineno">57</span>  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#73))
+<span class="lineno">58</span>  GLOBAL_UNIT_ASSIGNED_CONTEXT((#70,#71,#72))
+<span class="lineno">59</span>  REPRESENTATION_CONTEXT(&#x27;ctx&#x27;,&#x27;3D&#x27;));
+<span class="lineno">60</span>#9000=PRODUCT_CONTEXT(&#x27;&#x27;,#1,&#x27;mechanical&#x27;);
+<span class="lineno">61</span>#9001=PRODUCT(&#x27;Tb014&#x27;,&#x27;Tb014&#x27;,&#x27;&#x27;,(#9000));
+<span class="lineno">62</span>#9002=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#9001);
+<span class="lineno">63</span>#9003=PRODUCT_DEFINITION_CONTEXT(&#x27;part definition&#x27;,#1,&#x27;design&#x27;);
+<span class="lineno">64</span>#9004=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,#9002,#9003);
+<span class="lineno">65</span>#9005=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,#9004);
+<span class="lineno">66</span>#9020=OPEN_SHELL(&#x27;shell&#x27;,(#66));
+<span class="lineno">67</span>#9021=SHELL_BASED_SURFACE_MODEL(&#x27;sbsm&#x27;,(#9020));
+<span class="lineno">68</span>#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION(&#x27;&#x27;,(#9021),#80);
+<span class="lineno">69</span>#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+<span class="lineno">70</span>ENDSEC;
+<span class="lineno">71</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Tb013.html">&larr; Tb013</a> <a class="up" href="index.html">§12.4 Tolerance &amp; numerical precision</a> <a class="next" href="Tb015.html">Tb015 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

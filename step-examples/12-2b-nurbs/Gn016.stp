@@ -1,0 +1,49 @@
+/* Gn016 - Surface-of-revolution on ellipse: basis curve corruption on round-trip
+   Defect: writing a Geom_SurfaceOfRevolution built on an ellipse to STEP
+   and reading back yields a TRIMMED_CURVE basis instead of the original
+   ELLIPSE, plus axis-vector drift.  The analytic identity is lost.
+   This file emits the post-round-trip artifact: the basis curve is a
+   TRIMMED_CURVE wrapping a B_SPLINE_CURVE_WITH_KNOTS approximation of the
+   ellipse, instead of an ELLIPSE entity, and the SURFACE_OF_REVOLUTION
+   axis differs slightly from the canonical (1,0,0) by 5e-5 radians.
+   Sources: bug23203 / R002 / G107. */
+ISO-10303-21;
+HEADER;
+FILE_DESCRIPTION(
+  ('Gn016 - surface of revolution on ellipse, round-trip corruption'),'2;1');
+FILE_NAME('Gn016.stp','2026-04-26T00:00:00',('auto-generated'),(''),
+  'auto-generated','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+/* 3-pole rational BSpline approximation of the upper half of an ellipse
+   with a=10, b=5 (centred at origin, in xz-plane). */
+#10=CARTESIAN_POINT('e0',(10.0,0.0, 0.0));
+#11=CARTESIAN_POINT('e1',( 0.0,0.0, 5.0));
+#12=CARTESIAN_POINT('e2',(-10.0,0.0, 0.0));
+#20=(
+  BOUNDED_CURVE()
+  B_SPLINE_CURVE(2,(#10,#11,#12),.UNSPECIFIED.,.F.,.F.)
+  B_SPLINE_CURVE_WITH_KNOTS((3,3),(0.0,1.0),.UNSPECIFIED.)
+  CURVE()
+  GEOMETRIC_REPRESENTATION_ITEM()
+  RATIONAL_B_SPLINE_CURVE((1.0,0.7071067811865476,1.0))
+  REPRESENTATION_ITEM('ellipse_as_rational_bspline'));
+/* Defect: basis curve is TRIMMED_CURVE wrapping the BSpline approximation
+   instead of the original ELLIPSE entity.  Trimmed parameters are over
+   the BSpline's [0,1] range. */
+#30=CARTESIAN_POINT('t_start',(10.0,0.0,0.0));
+#31=CARTESIAN_POINT('t_end',(-10.0,0.0,0.0));
+#40=TRIMMED_CURVE('basis_was_ellipse',#20,
+  (PARAMETER_VALUE(0.0),#30),
+  (PARAMETER_VALUE(1.0),#31),
+  .T.,.PARAMETER.);
+/* Axis-of-revolution: x-axis with a tiny y-drift (5e-5 rad). */
+#50=CARTESIAN_POINT('axis_origin',(0.0,0.0,0.0));
+#51=DIRECTION('axis_dir_drifted',(0.99999999875,0.00005,0.0));
+#52=AXIS1_PLACEMENT('rev_axis',#50,#51);
+/* Defect: SURFACE_OF_REVOLUTION whose basis is a Trimmed wrapper rather
+   than an ELLIPSE; axis direction has tiny drift from canonical. */
+#100=SURFACE_OF_REVOLUTION('rev_corrupted',#40,#52);
+ENDSEC;
+END-ISO-10303-21;

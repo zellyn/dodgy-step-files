@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Twi070 — Curve gap within a single edge: 3D curve and pcurve drift mid-edge</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.3b Wires / loops / edges</a> <span class="sep">/</span> <span class="current">Twi070</span>
+</nav>
+<header class="title-bar">
+<h1>Twi070 <span class="sep">—</span> <span class="entry-title">Curve gap within a single edge: 3D curve and pcurve drift mid-edge</span></h1>
+<p class="category">§12.3b wires / loops / edges (sub-class: per-edge gap)</p>
+<p class="severity-badge severity-p1">P1 — silent data loss</p>
+<p class="tag-pills">
+<a class="tag tag-topology" href="../by-tag/topology/index.html">topology</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-3b-wires/Twi070.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-3b-wires/Twi070.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>OCCT `ShapeAnalysis_Wire::CheckCurveGaps` (`ShapeAnalysis_Wire.hxx:242`)</li>
+</ul></section>
+<section><h2>Description</h2>
+<p>Along the interior of one edge, the 3D curve and the lifted pcurve diverge by more than tolerance even though the endpoints agree. Senders that store both representations and recompute one without re-projecting introduce this. The defect is invisible at endpoints; only mid-curve sampling reveals it.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>Edge whose 3D LINE goes from `(0,0,0)→(10,0,0)` straight, but whose pcurve traces a slight arc through `(5, 0.01)` in UV — endpoints match, mid-edge does not.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>per-edge sample-and-compare; report max divergence and parameter where it occurs. Reproject one representation onto the other or reject.</p></section>
+<section><h2>Notes</h2>
+<p>Search terms: &quot;pcurve drift&quot;, &quot;curve sag&quot;, &quot;mid-edge mismatch&quot;. Synonyms: &quot;edge representations drift in middle&quot;, &quot;endpoints match but interior diverges&quot;, &quot;mid-edge sample shows mismatch&quot;, &quot;spatial and parametric sag mid-edge&quot;.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>contains(b&#x27;(5.0,0.01)&#x27;)</code></li>
+<li><code>contains(b&#x27;B_SPLINE_CURVE_WITH_KNOTS(&#x27;)</code></li>
+<li><code>contains(b&#x27;PCURVE(&#x27;)</code></li>
+</ul></section>
+<section><h2>Live oracle output</h2>
+<table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
+<tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>no_shapes_loaded</code></td></tr>
+</tbody></table>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* Twi070 - Curve gap within a single edge: 3D curve and pcurve drift mid-edge
+<span class="lineno">3</span> * Single edge from (0,0,0) -&gt; (10,0,0) on a PLANE. 3D curve is a straight LINE.
+<span class="lineno">4</span> * The pcurve is a quadratic B_SPLINE_CURVE that bows up to (5, 0.01) in UV
+<span class="lineno">5</span> * mid-span, then returns to the same endpoints. Endpoints agree but mid-edge
+<span class="lineno">6</span> * sample disagrees with the lifted 3D curve point. */
+<span class="lineno">7</span>HEADER;
+<span class="lineno">8</span>FILE_DESCRIPTION((&#x27;Twi070 test case&#x27;,&#x27;3D LINE vs pcurve B-spline drift mid-edge&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">9</span>FILE_NAME(&#x27;Twi070.stp&#x27;,&#x27;2026-04-30T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">10</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }&#x27;));
+<span class="lineno">11</span>ENDSEC;
+<span class="lineno">12</span>DATA;
+<span class="lineno">13</span>#1=APPLICATION_CONTEXT(&#x27;automotive_design&#x27;);
+<span class="lineno">14</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,&#x27;automotive_design&#x27;,2000,#1);
+<span class="lineno">15</span>#10=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">16</span>#11=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">17</span>#12=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">18</span>#13=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#10,#11,#12);
+<span class="lineno">19</span>#14=PLANE(&#x27;&#x27;,#13);
+<span class="lineno">20</span>#20=CARTESIAN_POINT(&#x27;start&#x27;,(0.0,0.0,0.0));#21=VERTEX_POINT(&#x27;&#x27;,#20);
+<span class="lineno">21</span>#22=CARTESIAN_POINT(&#x27;end&#x27;,(10.0,0.0,0.0));#23=VERTEX_POINT(&#x27;&#x27;,#22);
+<span class="lineno">22</span>/* 3D LINE straight along +X */
+<span class="lineno">23</span>#30=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));#31=VECTOR(&#x27;&#x27;,#30,1.0);#32=LINE(&#x27;straight_3d&#x27;,#20,#31);
+<span class="lineno">24</span>/* 2D pcurve: quadratic B-spline through (0,0),(5,0.01),(10,0) -- bows by 0.01 */
+<span class="lineno">25</span>#40=CARTESIAN_POINT(&#x27;uv_start&#x27;,(0.0,0.0));
+<span class="lineno">26</span>#41=CARTESIAN_POINT(&#x27;uv_mid_arc&#x27;,<mark>(5.0,0.01)</mark>);
+<span class="lineno">27</span>#42=CARTESIAN_POINT(&#x27;uv_end&#x27;,(10.0,0.0));
+<span class="lineno">28</span>#43=<mark>B_SPLINE_CURVE_WITH_KNOTS(</mark>&#x27;pcurve_arc&#x27;,2,(#40,#41,#42),.UNSPECIFIED.,.F.,.F.,(3,3),(0.0,1.0),.UNSPECIFIED.);
+<span class="lineno">29</span>#44=DEFINITIONAL_REPRESENTATION(&#x27;&#x27;,(#43),#13);
+<span class="lineno">30</span>#45=<mark>PCURVE(</mark>&#x27;pcurve_drift_mid_edge&#x27;,#14,#44);
+<span class="lineno">31</span>#46=SURFACE_CURVE(&#x27;mid_edge_drift&#x27;,#32,(#45),.PCURVE_S1.);
+<span class="lineno">32</span>#50=EDGE_CURVE(&#x27;drifting_edge&#x27;,#21,#23,#46,.T.);
+<span class="lineno">33</span>#51=ORIENTED_EDGE(&#x27;&#x27;,*,*,#50,.T.);
+<span class="lineno">34</span>#52=EDGE_LOOP(&#x27;one_drifting_edge&#x27;,(#51));
+<span class="lineno">35</span>ENDSEC;
+<span class="lineno">36</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Twi069.html">&larr; Twi069</a> <a class="up" href="index.html">§12.3b Wires / loops / edges</a> <a class="next" href="Twi071.html">Twi071 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

@@ -1,0 +1,20 @@
+ISO-10303-21;
+/* Os007 - Cannot extend offset edge.
+ * Defect: face has a trimmed B-spline boundary edge with no
+ * extension available beyond the trim. Offset needs extension. */
+HEADER;
+FILE_DESCRIPTION(('Os007 - cannot extend offset edge','Pass C gap-fill'),'2;1');
+FILE_NAME('Os007.stp','2026-04-30T00:00:00',(''),(''),'gap-fill C','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#11=CARTESIAN_POINT('',(1.0,1.0,0.0));
+#12=CARTESIAN_POINT('',(2.0,0.0,0.0));
+/* Trimmed B-spline curve - extension not available */
+#20=B_SPLINE_CURVE_WITH_KNOTS('trimmed_bspline',2,(#10,#11,#12),
+   .UNSPECIFIED.,.F.,.F.,(3,3),(0.0,1.0),.UNSPECIFIED.);
+ENDSEC;
+END-ISO-10303-21;

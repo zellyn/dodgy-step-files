@@ -1,0 +1,83 @@
+ISO-10303-21;
+/* Tfa055 - Two distinct wires of one face cross each other in UV.
+ * Defect: planar ADVANCED_FACE with an outer wire (100x100 mm square on Z=0)
+ * AND an inner wire (40x40 mm square partly outside the outer square so the
+ * two boundaries cross in the surface's UV parameter space). The inner
+ * "hole" pokes through the outer boundary; outer + inner share UV space
+ * they shouldn't. */
+HEADER;
+FILE_DESCRIPTION(('Tfa055 - Two distinct wires of one face cross each other in UV','Pass C gap-fill'),'2;1');
+FILE_NAME('Tfa055.stp','2026-05-02T00:00:00',(''),(''),'gap-fill C','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+/* Plane z=0 */
+#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#11=DIRECTION('',(0.0,0.0,1.0));
+#12=DIRECTION('',(1.0,0.0,0.0));
+#13=AXIS2_PLACEMENT_3D('',#10,#11,#12);
+#14=PLANE('plane_xy',#13);
+/* Outer wire: 100x100 square (0,0)-(100,100). */
+#20=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#21=CARTESIAN_POINT('',(100.0,0.0,0.0));
+#22=CARTESIAN_POINT('',(100.0,100.0,0.0));
+#23=CARTESIAN_POINT('',(0.0,100.0,0.0));
+#30=VERTEX_POINT('',#20); #31=VERTEX_POINT('',#21);
+#32=VERTEX_POINT('',#22); #33=VERTEX_POINT('',#23);
+/* Inner wire: 40x40 square centered at (95,50): spans U=75..115, crosses U=100. */
+#40=CARTESIAN_POINT('',(75.0,30.0,0.0));
+#41=CARTESIAN_POINT('',(115.0,30.0,0.0));
+#42=CARTESIAN_POINT('',(115.0,70.0,0.0));
+#43=CARTESIAN_POINT('',(75.0,70.0,0.0));
+#50=VERTEX_POINT('',#40); #51=VERTEX_POINT('',#41);
+#52=VERTEX_POINT('',#42); #53=VERTEX_POINT('',#43);
+/* Direction/vector basis for edge curves */
+#60=DIRECTION('',(1.0,0.0,0.0)); #61=VECTOR('',#60,100.0);
+#62=DIRECTION('',(0.0,1.0,0.0)); #63=VECTOR('',#62,100.0);
+#64=DIRECTION('',(1.0,0.0,0.0)); #65=VECTOR('',#64,40.0);
+#66=DIRECTION('',(0.0,1.0,0.0)); #67=VECTOR('',#66,40.0);
+/* Outer edges (CCW) */
+#70=LINE('',#20,#61); #71=EDGE_CURVE('',#30,#31,#70,.T.);
+#72=LINE('',#21,#63); #73=EDGE_CURVE('',#31,#32,#72,.T.);
+#74=LINE('',#23,#61); #75=EDGE_CURVE('',#33,#32,#74,.T.);
+#76=LINE('',#20,#63); #77=EDGE_CURVE('',#30,#33,#76,.T.);
+/* Inner edges */
+#80=LINE('',#40,#65); #81=EDGE_CURVE('',#50,#51,#80,.T.);
+#82=LINE('',#41,#67); #83=EDGE_CURVE('',#51,#52,#82,.T.);
+#84=LINE('',#43,#65); #85=EDGE_CURVE('',#53,#52,#84,.T.);
+#86=LINE('',#40,#67); #87=EDGE_CURVE('',#50,#53,#86,.T.);
+/* Outer loop (CCW with +Z normal) */
+#90=ORIENTED_EDGE('',*,*,#71,.T.);
+#91=ORIENTED_EDGE('',*,*,#73,.T.);
+#92=ORIENTED_EDGE('',*,*,#75,.F.);
+#93=ORIENTED_EDGE('',*,*,#77,.F.);
+#100=EDGE_LOOP('outer_100',(#90,#91,#92,#93));
+/* Inner loop (CW relative to +Z so it's a hole; partly outside outer). */
+#94=ORIENTED_EDGE('',*,*,#81,.F.);
+#95=ORIENTED_EDGE('',*,*,#87,.T.);
+#96=ORIENTED_EDGE('',*,*,#85,.F.);
+#97=ORIENTED_EDGE('',*,*,#83,.F.);
+#101=EDGE_LOOP('inner_40_overlapping',(#94,#95,#96,#97));
+#110=FACE_OUTER_BOUND('',#100,.T.);
+#111=FACE_BOUND('',#101,.T.);
+#200=ADVANCED_FACE('intersecting_wires_face',(#110,#111),#14,.T.);
+/* Wrap: minimal PRODUCT chain so OCCT TransferRoots produces a shape. */
+#9000=PRODUCT_CONTEXT('',#1,'mechanical');
+#9001=PRODUCT('Tfa055','Tfa055','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
+#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
+#9020=OPEN_SHELL('wrap_shell',(#200));
+#9021=SHELL_BASED_SURFACE_MODEL('wrap_sbsm',(#9020));
+#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#9010);
+#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+ENDSEC;
+END-ISO-10303-21;

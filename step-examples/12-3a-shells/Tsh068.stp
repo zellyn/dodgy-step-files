@@ -1,0 +1,26 @@
+ISO-10303-21;
+/* Tsh068 - MANIFOLD_SOLID_BREP whose outer shell is open (not closed) silently accepted
+ * Defect: schema requires CLOSED_SHELL as outer shell of solid; producer here uses
+ * OPEN_SHELL whose face/edge graph has free edges. */
+HEADER;
+FILE_DESCRIPTION(('Tsh068 - OPEN_SHELL used as outer shell of MANIFOLD_SOLID_BREP'),'2;1');
+FILE_NAME('Tsh068.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#11=DIRECTION('',(0.0,0.0,1.0));
+#12=DIRECTION('',(1.0,0.0,0.0));
+#13=AXIS2_PLACEMENT_3D('',#10,#11,#12);
+#20=PLANE('plane_A',#13);
+#21=PLANE('plane_B',#13);
+#30=ADVANCED_FACE('faceA',(),#20,.T.);
+#31=ADVANCED_FACE('faceB',(),#21,.T.);
+/* OPEN_SHELL where a CLOSED_SHELL is required. */
+#40=OPEN_SHELL('non_closed_outer',(#30,#31));
+/* MANIFOLD_SOLID_BREP requires its outer shell be CLOSED_SHELL — invariant violated. */
+#50=MANIFOLD_SOLID_BREP('open_outer_solid',#40);
+ENDSEC;
+END-ISO-10303-21;

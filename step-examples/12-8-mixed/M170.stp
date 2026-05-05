@@ -1,0 +1,28 @@
+ISO-10303-21;
+/* M170 - AP238 TURNING_FEED_DIRECTION ambiguous (radial vs axial conflict).
+ * Defect: a turning op declares two feed-direction attributes that
+ * disagree - one says feed is radial (.X.) while another says axial
+ * (.Z.). The controller has no way to decide whether to perform a face-
+ * turning or a longitudinal-turning move; some emit one, some the other,
+ * some refuse the operation. */
+HEADER;
+FILE_DESCRIPTION(('M170 test case','AP238 turning feed-direction radial/axial conflict'),'2;1');
+FILE_NAME('M170.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AP238_STEP_NC_MIM { 1 0 10303 238 1 0 0 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('numerical_control_machining');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
+  'numerical_control_machining',2007,#1);
+#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10))
+     REPRESENTATION_CONTEXT('nc','3D'));
+/* Defect: TURNING_FEED_DIRECTION declared as both .RADIAL. and .AXIAL.
+   in the same operation via two contradictory attributes. */
+#50=DIRECTION('radial_feed',(1.0,0.0,0.0));
+#51=DIRECTION('axial_feed',(0.0,0.0,1.0));
+#100=TURNING_OPERATION('ambiguous_feed_op',$,$,$,$,#50,#51,$);
+#200=WORKPLAN('main',(#100),$,$,$);
+ENDSEC;
+END-ISO-10303-21;

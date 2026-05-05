@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Gp033 — B-spline curve has C0 internal break that downstream tools cannot ingest</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.2a Pcurve defects</a> <span class="sep">/</span> <span class="current">Gp033</span>
+</nav>
+<header class="title-bar">
+<h1>Gp033 <span class="sep">—</span> <span class="entry-title">B-spline curve has C0 internal break that downstream tools cannot ingest</span></h1>
+<p class="category">§12.2a pcurves/curves (sub-class: continuity)</p>
+<p class="tag-pills">
+<a class="tag tag-silent-loss" href="../by-tag/silent-loss/index.html">silent-loss</a>
+<a class="tag tag-geometry" href="../by-tag/geometry/index.html">geometry</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-2a-pcurves/Gp033.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-2a-pcurves/Gp033.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>OCCT `ShapeUpgrade_SplitCurve::Perform` (`src/ModelingAlgorithms/TKShHealing/ShapeUpgrade/ShapeUpgrade_SplitCurve.hxx:65`)</li>
+</ul></section>
+<section><h2>Description</h2>
+<p>A B_SPLINE_CURVE_WITH_KNOTS has an internal knot whose multiplicity equals the degree, producing only C0 continuity at that parameter. Downstream meshers, fillet/chamfer engines, and IGES exporters that assume at least C1 mis-handle the discontinuity and emit kinks where the source intended a smooth join.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>Degree-2 B-spline whose knot vector is `(0,0,0, 0.5,0.5,0.5, 1,1,1)` — multiplicity 3 at u=0.5 forces C0; control polygon does not have collinear neighbors at the breakpoint.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>detect the C0 break and either split the curve into two C∞-internal pieces, raise the knot multiplicity to enforce a true G1+ join, or report the discontinuity as a quality metric so downstream tools can handle it explicitly.</p></section>
+<section><h2>Notes</h2>
+<p>Same defect applies to pcurve splitting on host surfaces. **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog&#x27;s allowed set ({heal}). Kernel-bug witnessed: catalog asks for healing; OCC neither heals nor rejects — the input is dropped on the floor without diagnostic. Synonyms: &quot;B-spline curve has C0 internal break&quot;, &quot;interior knot multiplicity equals degree creates kink&quot;, &quot;downstream tools cannot ingest C0 spline&quot;, &quot;knot multiplicity=degree produces visible cusp&quot;, &quot;B-spline kink at interior knot&quot;.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>contains(b&#x27;EDGE_CURVE&#x27;)</code></li>
+</ul></section>
+<section><h2>Live oracle output</h2>
+<table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
+<tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>no_shapes_loaded</code></td></tr>
+</tbody></table>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* Gp033 - Curve splitting at C0 knots / large parameter span
+<span class="lineno">3</span> * Defect: a B-spline curve has a C0 internal knot where downstream
+<span class="lineno">4</span> * meshing needs at least C1; the curve must be split at the C0 break. */
+<span class="lineno">5</span>HEADER;
+<span class="lineno">6</span>FILE_DESCRIPTION((&#x27;Gp033 test case&#x27;,&#x27;Curve splitting at C0 knots / large parameter span&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">7</span>FILE_NAME(&#x27;Gp033.stp&#x27;,&#x27;2026-04-26T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">8</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }&#x27;));
+<span class="lineno">9</span>ENDSEC;
+<span class="lineno">10</span>DATA;
+<span class="lineno">11</span>#1=APPLICATION_CONTEXT(&#x27;automotive_design&#x27;);
+<span class="lineno">12</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,&#x27;automotive_design&#x27;,2000,#1);
+<span class="lineno">13</span>/* B-spline curve with internal C0 knot at u=0.5 */
+<span class="lineno">14</span>#10=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">15</span>#11=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">16</span>#12=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">17</span>#13=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#10,#11,#12);
+<span class="lineno">18</span>#14=PLANE(&#x27;&#x27;,#13);
+<span class="lineno">19</span>#20=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">20</span>#21=VERTEX_POINT(&#x27;&#x27;,#20);
+<span class="lineno">21</span>#22=CARTESIAN_POINT(&#x27;&#x27;,(10.0,0.0,0.0));
+<span class="lineno">22</span>#23=VERTEX_POINT(&#x27;&#x27;,#22);
+<span class="lineno">23</span>#24=CARTESIAN_POINT(&#x27;&#x27;,(2.5,0.5,0.0));
+<span class="lineno">24</span>#25=CARTESIAN_POINT(&#x27;&#x27;,(5.0,1.0,0.0));
+<span class="lineno">25</span>#26=CARTESIAN_POINT(&#x27;&#x27;,(5.0,0.5,0.0));
+<span class="lineno">26</span>#27=CARTESIAN_POINT(&#x27;&#x27;,(7.5,0.5,0.0));
+<span class="lineno">27</span>/* Mult 3 at interior knot u=0.5 (= degree+1 for degree-2 curve, but
+<span class="lineno">28</span> * note that mult=degree=2 yields C0; mult=degree+1=3 here makes the
+<span class="lineno">29</span> * curve discontinuous in position at u=0.5 since both poles on either
+<span class="lineno">30</span> * side coincide, an extreme C-1 break). 6 control points satisfies
+<span class="lineno">31</span> * n_cps = sum(mults) - degree - 1 = 9 - 2 - 1 = 6. */
+<span class="lineno">32</span>#30=B_SPLINE_CURVE_WITH_KNOTS(&#x27;&#x27;,2,(#20,#24,#25,#26,#27,#22),.UNSPECIFIED.,
+<span class="lineno">33</span>  .F.,.F.,(3,3,3),(0.0,0.5,1.0),.UNSPECIFIED.);
+<span class="lineno">34</span>#50=<mark>EDGE_CURVE</mark>(&#x27;&#x27;,#21,#23,#30,.T.);
+<span class="lineno">35</span>#60=ORIENTED_EDGE(&#x27;&#x27;,*,*,#50,.T.);
+<span class="lineno">36</span>#70=EDGE_LOOP(&#x27;&#x27;,(#60));
+<span class="lineno">37</span>#71=FACE_OUTER_BOUND(&#x27;&#x27;,#70,.T.);
+<span class="lineno">38</span>#72=ADVANCED_FACE(&#x27;&#x27;,(#71),#14,.T.);
+<span class="lineno">39</span>ENDSEC;
+<span class="lineno">40</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Gp031.html">&larr; Gp031</a> <a class="up" href="index.html">§12.2a Pcurve defects</a> <a class="next" href="Gp034.html">Gp034 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

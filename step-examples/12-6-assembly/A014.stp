@@ -1,0 +1,64 @@
+ISO-10303-21;
+/*
+ * A014 — EXTERNAL_ANCHOR uniqueness violated; orphan EER source
+ * Defect (CAx-IF EER §7.3.1, §7.3.2, §6.4):
+ *   For each entity instance there must be at most one EXTERNAL_ANCHOR;
+ *   every EXTERNAL_ANCHOR must reference exactly one data-section entity.
+ *   Writers that copy anchors duplicate them. Source files containing
+ *   externally_defined_representation_item must wrap them in a placeholder
+ *   externally_defined_representation. When the assembly tree is split
+ *   per-level, the same leaf part may be referenced from multiple
+ *   sub-assembly files with divergent product.id.
+ * This example uses Edition-3 anchor section syntax via comments and shows
+ *   the AAA/BBB duplicate plus orphan EDRI pattern.
+ * Expected kernel: reject duplicate anchors; reject orphan externally-
+ *   defined items; surface PDM mismatch when same product diverges.
+ */
+HEADER;
+FILE_DESCRIPTION(('A014 duplicate EXTERNAL_ANCHOR + orphan externally_defined_representation_item'),'2;1');
+FILE_NAME('A014.stp','2026-04-26T00:00:00',('catalog'),('cad'),'manual','','');
+FILE_SCHEMA(('AP242_MANAGED_MODEL_BASED_3D_ENGINEERING_MIM_LF { 1 0 10303 442 3 0 0 }'));
+ENDSEC;
+DATA;
+#10 = APPLICATION_CONTEXT('managed model based 3d engineering');
+#11 = APPLICATION_PROTOCOL_DEFINITION('international standard','ap242_managed_model_based_3d_engineering',2020,#10);
+#12 = PRODUCT_CONTEXT('',#10,'mechanical');
+#13 = PRODUCT_DEFINITION_CONTEXT('part definition',#10,'design');
+#20 = PRODUCT('A014_ASSY','EER source','',(#12));
+#21 = PRODUCT_DEFINITION_FORMATION('','',#20);
+#22 = PRODUCT_DEFINITION('design','',#21,#13);
+#23 = PRODUCT_DEFINITION_SHAPE('','',#22);
+#30 = PRODUCT('LEAF','referenceable leaf','',(#12));
+#31 = PRODUCT_DEFINITION_FORMATION('','',#30);
+#32 = PRODUCT_DEFINITION('design','',#31,#13);
+#33 = PRODUCT_DEFINITION_SHAPE('','',#32);
+#40 = NEXT_ASSEMBLY_USAGE_OCCURRENCE('1','LEAF_INST','',#22,#32,$);
+#50 = ( LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT(.MILLI.,.METRE.) );
+#51 = ( NAMED_UNIT(*) PLANE_ANGLE_UNIT() SI_UNIT($,.RADIAN.) );
+#52 = ( NAMED_UNIT(*) SI_UNIT($,.STERADIAN.) SOLID_ANGLE_UNIT() );
+#53 = UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#50,'distance_accuracy_value','');
+#54 = ( GEOMETRIC_REPRESENTATION_CONTEXT(3) GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#53))
+        GLOBAL_UNIT_ASSIGNED_CONTEXT((#50,#51,#52)) REPRESENTATION_CONTEXT('','3D') );
+#60 = CARTESIAN_POINT('',(0.0,0.0,0.0));
+#61 = DIRECTION('',(0.0,0.0,1.0));
+#62 = DIRECTION('',(1.0,0.0,0.0));
+#63 = AXIS2_PLACEMENT_3D('leaf_origin',#60,#61,#62);
+#64 = SHAPE_REPRESENTATION('leaf_rep',(#63),#54);
+#65 = SHAPE_DEFINITION_REPRESENTATION(#33,#64);
+#66 = REPRESENTATION_MAP(#63,#64);
+#67 = MAPPED_ITEM('inst',#66,#63);
+#80 = AXIS2_PLACEMENT_3D('assy_origin',#60,#61,#62);
+#81 = SHAPE_REPRESENTATION('assy_rep',(#80,#67),#54);
+#82 = SHAPE_DEFINITION_REPRESENTATION(#23,#81);
+/* DEFECT 1 (orphan): externally_defined_representation_item with no
+   wrapping externally_defined_representation. Per CAx-IF EER §7.3.2 the
+   source file MUST wrap such items in a placeholder rep. */
+#90 = EXTERNALLY_DEFINED_ITEM('orphan_face','no wrapper');
+ENDSEC;
+/* DEFECT 2 (anchor uniqueness): two anchors AAA and BBB both reference the
+   SAME entity #100 (=#63). Per EER §7.3.1 at most one anchor per entity. */
+ANCHOR;
+< AAA > = #63 ;
+< BBB > = #63 ;
+ENDSEC;
+END-ISO-10303-21;

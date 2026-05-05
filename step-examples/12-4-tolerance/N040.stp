@@ -1,0 +1,51 @@
+/* N040 - Limit Tolerance resets shape to user value (Salome) -- destructive
+ *        when bloated tolerances hide gaps
+ * Defect: Salome's "Limit Tolerance" forces the tolerance of a shape's
+ * vertices/edges/faces to a user-given value. When tolerances were inflated
+ * by upstream tools to hide real gaps, clamping back down can re-expose
+ * those gaps as topology defects (now-disconnected vertices, open wires).
+ * Reproducer: file carries inflated 1e-3 tolerance hiding a 5e-4 gap;
+ * an UNCERTAINTY entry tagged "limit_tolerance_post_clamp" records the
+ * destructive reset to the file's original 1e-6.
+ */
+ISO-10303-21;
+HEADER;
+FILE_DESCRIPTION(('N040 Salome Limit Tolerance destructive reset re-exposes gaps'),'2;1');
+FILE_NAME('N040.stp','2026-04-26T00:00:00',(''),(''),
+  'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
+  'automotive_design',2009,#1);
+/* Two adjacent edges with a 5e-4 mm gap masked by 1e-3 tolerance balls. */
+#10=CARTESIAN_POINT('a0',(0.0,0.0,0.0));
+#11=CARTESIAN_POINT('a1_end',(10.0,0.0,0.0));
+#12=CARTESIAN_POINT('b0_off_5e-4',(10.0005,0.0,0.0));
+#13=CARTESIAN_POINT('b1',(20.0005,0.0,0.0));
+#20=VERTEX_POINT('a0',#10);
+#21=VERTEX_POINT('a1',#11);
+#22=VERTEX_POINT('b0',#12);
+#23=VERTEX_POINT('b1',#13);
+#30=DIRECTION('+x',(1.0,0.0,0.0));
+#31=VECTOR('',#30,10.0);
+#32=LINE('',#10,#31);
+#33=LINE('',#12,#31);
+#40=EDGE_CURVE('A',#20,#21,#32,.T.);
+#41=EDGE_CURVE('B',#22,#23,#33,.T.);
+#50=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#51=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#52=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+/* History: bloated tolerance hid the gap; Limit Tolerance clamped back to
+ * native -- gap is re-exposed but topology remains as wire-with-gap. */
+#60=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-3),#50,
+  'distance_accuracy_value','bloated_tol_pre_LimitTolerance');
+#61=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-6),#50,
+  'distance_accuracy_value','limit_tolerance_post_clamp_reexposes_5e-4_gap');
+#70=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#60,#61))
+  GLOBAL_UNIT_ASSIGNED_CONTEXT((#50,#51,#52))
+  REPRESENTATION_CONTEXT('ctx','3D'));
+ENDSEC;
+END-ISO-10303-21;

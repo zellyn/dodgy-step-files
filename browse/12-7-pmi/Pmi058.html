@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Pmi058 — PMI visibility / configuration loss across saved views</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.7 PMI / GD&amp;T</a> <span class="sep">/</span> <span class="current">Pmi058</span>
+</nav>
+<header class="title-bar">
+<h1>Pmi058 <span class="sep">—</span> <span class="entry-title">PMI visibility / configuration loss across saved views</span></h1>
+<p class="category">§12.7 (sub-class: saved-view)</p>
+<p class="severity-badge severity-p1">P1 — silent data loss</p>
+<p class="tag-pills">
+<a class="tag tag-pmi" href="../by-tag/pmi/index.html">pmi</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-7-pmi/Pmi058.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-7-pmi/Pmi058.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>11-translator-vendors (W027 SDHE-21917, SDHE-21787)</li>
+</ul></section>
+<section><h2>Description</h2>
+<p>PMI annotations defined in one configuration become invisible (or universally visible) when exported, because the configuration-association is dropped.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>STEP file with `draughting_pre_defined_colour` and `annotation_plane` linked to a representation referenced from one of two `configuration_item`s.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>Heal and accept: preserve configuration scope across round-trip; if unsupported, warn and accept rather than silently universalize visibility.</p></section>
+<section><h2>Notes</h2>
+<p>**See also**: A002. Synonyms: &quot;PMI visibility lost across saved views&quot;, &quot;saved-view PMI configuration missing&quot;, &quot;annotation visibility per-view not preserved&quot;.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>count_entity_def(b&#x27;DRAUGHTING_MODEL&#x27;) == 2</code></li>
+<li><code>contains(b&#x27;CONFIGURATION_DESIGN&#x27;)</code></li>
+<li><code>count_entity_def(b&#x27;CONFIGURATION_ITEM&#x27;) == 2</code></li>
+</ul></section>
+<section><h2>Cross-references</h2>
+<p><a href="../12-6-assembly/A002.html">A002</a></p>
+</section>
+<section><h2>Live oracle output</h2>
+<table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
+<tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>no_shapes_loaded</code></td></tr>
+</tbody></table>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>/* Pmi058 - PMI visibility / configuration loss across saved views
+<span class="lineno">2</span>   Defect: PMI annotations defined in one configuration become
+<span class="lineno">3</span>   universally visible after STEP round-trip because the
+<span class="lineno">4</span>   configuration-association is dropped. Two CONFIGURATION_ITEMs are
+<span class="lineno">5</span>   declared (cfgA, cfgB), but the ANNOTATION_PLANE is shared between
+<span class="lineno">6</span>   the saved views and there is no PROPERTY_DEFINITION linking
+<span class="lineno">7</span>   visibility to configuration. (W027 SDHE-21917, SDHE-21787). */
+<span class="lineno">8</span>ISO-10303-21;
+<span class="lineno">9</span>HEADER;
+<span class="lineno">10</span>FILE_DESCRIPTION((&#x27;Pmi058 - PMI visibility lost across configurations&#x27;,
+<span class="lineno">11</span>  &#x27;CAx-IF Rec.Pracs.---PMI Rep &amp; Pres---v4.1&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">12</span>FILE_NAME(&#x27;Pmi058.stp&#x27;,&#x27;2026-04-26T00:00:00&#x27;,(&#x27;catalog&#x27;),(&#x27;cad&#x27;),
+<span class="lineno">13</span>  &#x27;manual&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">14</span>FILE_SCHEMA((&#x27;AP242_MANAGED_MODEL_BASED_3D_ENGINEERING_MIM_LF { 1 0 10303 442 1 1 4 }&#x27;));
+<span class="lineno">15</span>ENDSEC;
+<span class="lineno">16</span>DATA;
+<span class="lineno">17</span>#10 = APPLICATION_CONTEXT(&#x27;managed model based 3d engineering&#x27;);
+<span class="lineno">18</span>#11 = APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,
+<span class="lineno">19</span>  &#x27;ap242_managed_model_based_3d_engineering&#x27;,2020,#10);
+<span class="lineno">20</span>#12 = PRODUCT_CONTEXT(&#x27;&#x27;,#10,&#x27;mechanical&#x27;);
+<span class="lineno">21</span>#13 = PRODUCT(&#x27;Pmi058&#x27;,&#x27;VisibilityLossPart&#x27;,&#x27;&#x27;,(#12));
+<span class="lineno">22</span>#14 = PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#13);
+<span class="lineno">23</span>#15 = PRODUCT_DEFINITION_CONTEXT(&#x27;&#x27;,#10,&#x27;design&#x27;);
+<span class="lineno">24</span>#16 = PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,#14,#15);
+<span class="lineno">25</span>#17 = PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,#16);
+<span class="lineno">26</span>#20 = ( LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT(.MILLI.,.METRE.) );
+<span class="lineno">27</span>#22 = ( NAMED_UNIT(*) PLANE_ANGLE_UNIT() SI_UNIT($,.RADIAN.) );
+<span class="lineno">28</span>#23 = ( NAMED_UNIT(*) SI_UNIT($,.STERADIAN.) SOLID_ANGLE_UNIT() );
+<span class="lineno">29</span>#24 = UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#20,
+<span class="lineno">30</span>  &#x27;distance_accuracy_value&#x27;,&#x27;&#x27;);
+<span class="lineno">31</span>#25 = ( GEOMETRIC_REPRESENTATION_CONTEXT(3)
+<span class="lineno">32</span>  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#24))
+<span class="lineno">33</span>  GLOBAL_UNIT_ASSIGNED_CONTEXT((#20,#22,#23))
+<span class="lineno">34</span>  REPRESENTATION_CONTEXT(&#x27;&#x27;,&#x27;3D&#x27;) );
+<span class="lineno">35</span>#30 = CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">36</span>#31 = DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">37</span>#32 = DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">38</span>#33 = AXIS2_PLACEMENT_3D(&#x27;&#x27;,#30,#31,#32);
+<span class="lineno">39</span>/* Two configuration items - originally pmi_visible only in cfgA */
+<span class="lineno">40</span>#40 = PRODUCT_CONCEPT(&#x27;cfg_concept&#x27;,&#x27;&#x27;,#41);
+<span class="lineno">41</span>#41 = PRODUCT_CONCEPT_CONTEXT(&#x27;&#x27;,#10,&#x27;configuration&#x27;);
+<span class="lineno">42</span>#42 = <mark>CONFIGURATION_DESIGN</mark>(#43,#16);
+<span class="lineno">43</span><mark>#43 = CONFIGURATION_ITEM(</mark>&#x27;cfgA&#x27;,&#x27;default-config&#x27;,&#x27;&#x27;,#40,$);
+<span class="lineno">44</span><mark>#44 = CONFIGURATION_ITEM(</mark>&#x27;cfgB&#x27;,&#x27;alternate-config&#x27;,&#x27;&#x27;,#40,$);
+<span class="lineno">45</span>/* Annotation plane and graphic */
+<span class="lineno">46</span>#50 = CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">47</span>#51 = CARTESIAN_POINT(&#x27;&#x27;,(10.0,0.0,0.0));
+<span class="lineno">48</span>#52 = POLYLINE(&#x27;p&#x27;,(#50,#51));
+<span class="lineno">49</span>#53 = COLOUR_RGB(&#x27;&#x27;,1.0,0.0,0.0);
+<span class="lineno">50</span>#54 = DRAUGHTING_PRE_DEFINED_CURVE_FONT(&#x27;continuous&#x27;);
+<span class="lineno">51</span>#55 = CURVE_STYLE(&#x27;&#x27;,#54,POSITIVE_LENGTH_MEASURE(0.18),#53);
+<span class="lineno">52</span>#56 = PRESENTATION_STYLE_ASSIGNMENT((#55));
+<span class="lineno">53</span>#57 = ANNOTATION_CURVE_OCCURRENCE(&#x27;cfg_callout&#x27;,(#56),#52);
+<span class="lineno">54</span>/* Defect: no PROPERTY_DEFINITION ties #57 to either #43 or #44.
+<span class="lineno">55</span>   Both saved views below show the same annotation - visibility
+<span class="lineno">56</span>   universalised after round-trip. */
+<span class="lineno">57</span><mark>#60 = DRAUGHTING_MODEL(</mark>&#x27;view_A&#x27;,(#57),#25);
+<span class="lineno">58</span><mark>#61 = DRAUGHTING_MODEL(</mark>&#x27;view_B&#x27;,(#57),#25);
+<span class="lineno">59</span>#62 = PLANE(&#x27;ann_plane&#x27;,#33);
+<span class="lineno">60</span>#63 = ANNOTATION_PLANE(&#x27;PMI&#x27;,(#57),#62,());
+<span class="lineno">61</span>#90 = SHAPE_REPRESENTATION(&#x27;&#x27;,(#33),#25);
+<span class="lineno">62</span>#91 = SHAPE_DEFINITION_REPRESENTATION(#17,#90);
+<span class="lineno">63</span>ENDSEC;
+<span class="lineno">64</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Pmi057.html">&larr; Pmi057</a> <a class="up" href="index.html">§12.7 PMI / GD&amp;T</a> <a class="next" href="Pmi059.html">Pmi059 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

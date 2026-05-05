@@ -1,0 +1,90 @@
+ISO-10303-21;
+/* Twi050 - Two distinct wires share a VERTEX_POINT instance that needs to be split
+ * Two ADVANCED_FACEs, each with its own outer wire, each loop endpoint at
+ * (0,0,0) referencing the SAME VERTEX_POINT instance #16. The healer must
+ * recognize the over-shared vertex and split it into two independent copies. */
+HEADER;
+FILE_DESCRIPTION(('Twi050 test case','Two wires share VERTEX_POINT instance that needs splitting'),'2;1');
+FILE_NAME('Twi050.stp','2026-04-30T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+/* Shared origin vertex referenced by both wires */
+#15=CARTESIAN_POINT('shared_origin',(0.0,0.0,0.0));
+#16=VERTEX_POINT('shared',#15);
+/* --- Face A: triangle in +X half-plane --- */
+#20=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#21=DIRECTION('',(0.0,0.0,1.0));
+#22=DIRECTION('',(1.0,0.0,0.0));
+#23=AXIS2_PLACEMENT_3D('',#20,#21,#22);
+#24=PLANE('',#23);
+#25=CARTESIAN_POINT('',(10.0,0.0,0.0));
+#26=VERTEX_POINT('',#25);
+#27=CARTESIAN_POINT('',(5.0,5.0,0.0));
+#28=VERTEX_POINT('',#27);
+#29=DIRECTION('',(1.0,0.0,0.0));
+#30=VECTOR('',#29,1.0);
+#31=LINE('',#15,#30);
+#32=EDGE_CURVE('',#16,#26,#31,.T.);
+#33=DIRECTION('',(-0.7071067811865475,0.7071067811865475,0.0));
+#34=VECTOR('',#33,1.0);
+#35=LINE('',#25,#34);
+#36=EDGE_CURVE('',#26,#28,#35,.T.);
+#37=DIRECTION('',(-0.7071067811865475,-0.7071067811865475,0.0));
+#38=VECTOR('',#37,1.0);
+#39=LINE('',#27,#38);
+#40=EDGE_CURVE('',#28,#16,#39,.T.);
+#41=ORIENTED_EDGE('',*,*,#32,.T.);
+#42=ORIENTED_EDGE('',*,*,#36,.T.);
+#43=ORIENTED_EDGE('',*,*,#40,.T.);
+#44=EDGE_LOOP('',(#41,#42,#43));
+#45=FACE_OUTER_BOUND('',#44,.T.);
+#46=ADVANCED_FACE('faceA',(#45),#24,.T.);
+/* --- Face B: triangle in -X half-plane, sharing VERTEX_POINT #16 --- */
+#60=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#61=DIRECTION('',(0.0,0.0,1.0));
+#62=DIRECTION('',(1.0,0.0,0.0));
+#63=AXIS2_PLACEMENT_3D('',#60,#61,#62);
+#64=PLANE('',#63);
+#65=CARTESIAN_POINT('',(-10.0,0.0,0.0));
+#66=VERTEX_POINT('',#65);
+#67=CARTESIAN_POINT('',(-5.0,-5.0,0.0));
+#68=VERTEX_POINT('',#67);
+#69=DIRECTION('',(-1.0,0.0,0.0));
+#70=VECTOR('',#69,1.0);
+#71=LINE('',#15,#70);
+#72=EDGE_CURVE('',#16,#66,#71,.T.);
+#73=DIRECTION('',(0.7071067811865475,-0.7071067811865475,0.0));
+#74=VECTOR('',#73,1.0);
+#75=LINE('',#65,#74);
+#76=EDGE_CURVE('',#66,#68,#75,.T.);
+#77=DIRECTION('',(0.7071067811865475,0.7071067811865475,0.0));
+#78=VECTOR('',#77,1.0);
+#79=LINE('',#67,#78);
+#80=EDGE_CURVE('',#68,#16,#79,.T.);
+#81=ORIENTED_EDGE('',*,*,#72,.T.);
+#82=ORIENTED_EDGE('',*,*,#76,.T.);
+#83=ORIENTED_EDGE('',*,*,#80,.T.);
+#84=EDGE_LOOP('',(#81,#82,#83));
+#85=FACE_OUTER_BOUND('',#84,.T.);
+#86=ADVANCED_FACE('faceB',(#85),#64,.T.);
+#90=OPEN_SHELL('',(#46,#86));
+/* Wrap: minimal PRODUCT chain so OCCT TransferRoots produces a shape. */
+#9000=PRODUCT_CONTEXT('',#1,'mechanical');
+#9001=PRODUCT('Twi050','Twi050','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
+#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
+#9021=SHELL_BASED_SURFACE_MODEL('wrap_sbsm',(#90));
+#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#9010);
+#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+ENDSEC;
+END-ISO-10303-21;

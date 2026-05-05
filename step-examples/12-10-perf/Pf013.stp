@@ -1,0 +1,51 @@
+/* Pf013 - Entity-count amplification: tiny file, many GB resident
+   Pattern A: many tiny entities each holding O(N) references; parser
+              builds an O(N) instance pointer table AND an O(N^2) reverse-
+              reference map. 50 MB of input -> 40+ GB resident.
+   Pattern B (hub-style): millions of tiny entities all pointing at one
+              HUB entity; contiguous-vector reverse-reference reallocation
+              thrashes (A027, A040).
+   Scaling-up: this stub illustrates the structure with ~20 points each
+   referencing several neighbours, plus one HUB referenced by all. Scale
+   to 5M points referencing 100 neighbours, or 10M tiny entities pointing
+   at one hub, to trigger the reported 40 GB peak resident. */
+ISO-10303-21;
+HEADER;
+FILE_DESCRIPTION(('Pf013 - entity-count amplification, fan-in to hub'),'2;1');
+FILE_NAME('Pf013.stp','2026-04-26T00:00:00',('auto-generated'),(''),
+  'auto-generated','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+/* HUB - all back-references point here, exposing fan-in pathology */
+#1=CARTESIAN_POINT('HUB',(0.0,0.0,0.0));
+/* tiny entities that reference the hub plus several neighbours
+   (replicate the GEOMETRIC_SET membership pattern to millions to scale) */
+#10=CARTESIAN_POINT('',(1.0,0.0,0.0));
+#11=CARTESIAN_POINT('',(2.0,0.0,0.0));
+#12=CARTESIAN_POINT('',(3.0,0.0,0.0));
+#13=CARTESIAN_POINT('',(4.0,0.0,0.0));
+#14=CARTESIAN_POINT('',(5.0,0.0,0.0));
+#15=CARTESIAN_POINT('',(6.0,0.0,0.0));
+#16=CARTESIAN_POINT('',(7.0,0.0,0.0));
+#17=CARTESIAN_POINT('',(8.0,0.0,0.0));
+#18=CARTESIAN_POINT('',(9.0,0.0,0.0));
+#19=CARTESIAN_POINT('',(10.0,0.0,0.0));
+/* GEOMETRIC_SETs that aggregate the points and the hub - 100s of refs */
+#100=GEOMETRIC_SET('s1',(#1,#10,#11,#12,#13,#14,#15,#16,#17,#18,#19));
+#101=GEOMETRIC_SET('s2',(#1,#10,#11,#12,#13,#14,#15,#16,#17,#18,#19));
+#102=GEOMETRIC_SET('s3',(#1,#10,#11,#12,#13,#14,#15,#16,#17,#18,#19));
+#103=GEOMETRIC_SET('s4',(#1,#10,#11,#12,#13,#14,#15,#16,#17,#18,#19));
+#104=GEOMETRIC_SET('s5',(#1,#10,#11,#12,#13,#14,#15,#16,#17,#18,#19));
+#105=GEOMETRIC_SET('s6',(#1,#10,#11,#12,#13,#14,#15,#16,#17,#18,#19));
+#106=GEOMETRIC_SET('s7',(#1,#10,#11,#12,#13,#14,#15,#16,#17,#18,#19));
+#107=GEOMETRIC_SET('s8',(#1,#10,#11,#12,#13,#14,#15,#16,#17,#18,#19));
+#108=GEOMETRIC_SET('s9',(#1,#10,#11,#12,#13,#14,#15,#16,#17,#18,#19));
+#109=GEOMETRIC_SET('s10',(#1,#10,#11,#12,#13,#14,#15,#16,#17,#18,#19));
+#110=GEOMETRIC_SET('s11',(#1,#10,#11,#12,#13,#14,#15,#16,#17,#18,#19));
+#111=GEOMETRIC_SET('s12',(#1,#10,#11,#12,#13,#14,#15,#16,#17,#18,#19));
+#112=GEOMETRIC_SET('s13',(#1,#10,#11,#12,#13,#14,#15,#16,#17,#18,#19));
+#113=GEOMETRIC_SET('s14',(#1,#10,#11,#12,#13,#14,#15,#16,#17,#18,#19));
+#114=GEOMETRIC_SET('s15',(#1,#10,#11,#12,#13,#14,#15,#16,#17,#18,#19));
+ENDSEC;
+END-ISO-10303-21;

@@ -1,0 +1,83 @@
+ISO-10303-21;
+/*
+ * P002 — Non-UTF-8 (GB18030 / locale code page) in string literals
+ * Defect (FreeCAD #7987, #22123; SolidWorks Chinese-locale install or any
+ *         non-Western Windows export):
+ *   STEP-21 lines like SHAPE_REPRESENTATION ('hai-mian-2', ...) appear in
+ *   files encoded as GB18030 / Shift-JIS / CP1252 because exporters write the
+ *   OS code page directly. Readers that assume UTF-8 produce mojibake.
+ * Reproducer: STEP file with PRODUCT / SHAPE_REPRESENTATION name strings
+ *   carrying high-bit bytes interpretable as GB18030, alongside the standard
+ *   \X2\…\X0\ Unicode escape for the same word.
+ * Expected kernel: auto-detect or honor STEP-21 \X2\ / \X4\ escape sequences;
+ *   per-file encoding override; warn if bytes don't decode as declared.
+ *
+ * NOTE: To keep this catalog file 7-bit clean and license-pure, we encode the
+ *   non-ASCII glyphs ONLY via the proper \X2\ Unicode escape (the *correct*
+ *   form). The defect is that real-world senders ship the raw GB18030 bytes
+ *   instead. The names below show what the *correct* encoding looks like; a
+ *   defective reproducer would have the same names emitted as raw 0xBA 0xA3
+ *   0xC3 0xE0 0x32 (GB18030 for U+6D77 U+7EF5 + ASCII '2').
+ */
+HEADER;
+FILE_DESCRIPTION(('P002 non-UTF-8 in name strings — escape variant shown, raw GB18030 noted'),'2;1');
+FILE_NAME('P002.stp','2026-04-26T00:00:00',('catalog'),('cad'),'manual','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#10 = APPLICATION_CONTEXT('automotive design');
+#11 = APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2001,#10);
+#12 = PRODUCT_CONTEXT('',#10,'mechanical');
+#13 = PRODUCT_DEFINITION_CONTEXT('part definition',#10,'design');
+/* Correct encoding: \X2\ uses 4-hex-digit BMP code points. \X0\ ends. */
+#20 = PRODUCT('\X2\6D777EF5\X0\2','sponge 2 (Chinese)','',(#12));
+#21 = PRODUCT_DEFINITION_FORMATION('','',#20);
+#22 = PRODUCT_DEFINITION('design','',#21,#13);
+#23 = PRODUCT_DEFINITION_SHAPE('','',#22);
+#30 = PRODUCT('\X2\30663099\X0\','spring 1 (Japanese)','',(#12));
+#31 = PRODUCT_DEFINITION_FORMATION('','',#30);
+#32 = PRODUCT_DEFINITION('design','',#31,#13);
+#33 = PRODUCT_DEFINITION_SHAPE('','',#32);
+#40 = NEXT_ASSEMBLY_USAGE_OCCURRENCE('1','\X2\90E8540130001\X0\','',#22,#32,$);
+#50 = ( LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT(.MILLI.,.METRE.) );
+#51 = ( NAMED_UNIT(*) PLANE_ANGLE_UNIT() SI_UNIT($,.RADIAN.) );
+#52 = ( NAMED_UNIT(*) SI_UNIT($,.STERADIAN.) SOLID_ANGLE_UNIT() );
+#53 = UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#50,'distance_accuracy_value','');
+#54 = ( GEOMETRIC_REPRESENTATION_CONTEXT(3) GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#53))
+        GLOBAL_UNIT_ASSIGNED_CONTEXT((#50,#51,#52)) REPRESENTATION_CONTEXT('','3D') );
+#60 = CARTESIAN_POINT('',(0.0,0.0,0.0));
+#61 = DIRECTION('',(0.0,0.0,1.0));
+#62 = DIRECTION('',(1.0,0.0,0.0));
+#63 = AXIS2_PLACEMENT_3D('\X2\539F70B9\X0\',#60,#61,#62);
+#64 = SHAPE_REPRESENTATION('\X2\88C5914D4F53\X0\',(#63),#54);
+#65 = SHAPE_DEFINITION_REPRESENTATION(#33,#64);
+#66 = REPRESENTATION_MAP(#63,#64);
+#67 = MAPPED_ITEM('inst',#66,#63);
+#80 = AXIS2_PLACEMENT_3D('assy_origin',#60,#61,#62);
+#81 = SHAPE_REPRESENTATION('assy_rep',(#80,#67),#54);
+#82 = SHAPE_DEFINITION_REPRESENTATION(#23,#81);
+/* Extended catalog notes:
+ * This reproducer is a minimal demonstrator of the §12.6 entry
+ * referenced in the /* */ header above. The entity-graph above
+ * is just enough to exercise the defect on a writer or reader
+ * test harness; it is NOT a production-quality assembly.
+ *
+ * License: this file is part of a defect catalog assembled from
+ * publicly described bug reports and recommended-practice notes.
+ * No proprietary geometry or names are reproduced. The entity IDs
+ * and minimal coordinates are author-original.
+ *
+ * Cross-refs: see STEP_PROBLEM_CATALOG.md §12.6 for full entry,
+ * source list, sender attribution and expected kernel behavior.
+ */
+#900 = DESCRIPTIVE_REPRESENTATION_ITEM('catalog_id','P002');
+#901 = DESCRIPTIVE_REPRESENTATION_ITEM('catalog_section','12.6 assembly hierarchy');
+#902 = DESCRIPTIVE_REPRESENTATION_ITEM('catalog_status','pending');
+#903 = DESCRIPTIVE_REPRESENTATION_ITEM('catalog_target_dir','step-examples/12-6-assembly/');
+#904 = DESCRIPTIVE_REPRESENTATION_ITEM('catalog_corpus_origin','phase-04-resume-12-6 gap fill');
+#905 = DESCRIPTIVE_REPRESENTATION_ITEM('catalog_authoring','manual reproducer');
+#906 = DESCRIPTIVE_REPRESENTATION_ITEM('catalog_phase','04 resume 12-6');
+#907 = DESCRIPTIVE_REPRESENTATION_ITEM('catalog_extension','license-clean');
+#908 = DESCRIPTIVE_REPRESENTATION_ITEM('catalog_dataset','step-examples');
+ENDSEC;
+END-ISO-10303-21;

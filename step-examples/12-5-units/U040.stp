@@ -1,0 +1,34 @@
+/* U040 - Pressure unit Pa built from a derived-unit chain (kg / (m * s^2))
+ * Defect: a DERIVED_UNIT composed of three DERIVED_UNIT_ELEMENT entries
+ * representing mass^+1, length^-1, time^-2. Spec-conforming, but
+ * receivers that pattern-match on a single named pressure unit need to
+ * detect the dimensional signature. This fixture's length unit is
+ * MILLIMETRE (1000x off from the canonical Pa derivation in metres). */
+ISO-10303-21;
+HEADER;
+FILE_DESCRIPTION(('U040 - pressure Pa as multi-element derived unit chain'),'2;1');
+FILE_NAME('U040.stp','2026-04-30T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#3=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#4=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#5=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#6=(NAMED_UNIT(*)MASS_UNIT()SI_UNIT($,.GRAM.));
+#7=(NAMED_UNIT(*)SI_UNIT($,.SECOND.)TIME_MEASURE_UNIT());
+/* Defect: derived-unit elements with mixed SI prefix (gram for mass,
+   millimetre for length). The composition is Pa-like but the magnitude
+   is off from canonical SI Pa. */
+#10=DERIVED_UNIT_ELEMENT(#6,1.0);
+#11=DERIVED_UNIT_ELEMENT(#3,-1.0);
+#12=DERIVED_UNIT_ELEMENT(#7,-2.0);
+#13=DERIVED_UNIT((#10,#11,#12));
+#20=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#3,
+  'distance_accuracy_value','');
+#21=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#20))
+  GLOBAL_UNIT_ASSIGNED_CONTEXT((#3,#4,#5))
+  REPRESENTATION_CONTEXT('ctx','3D'));
+ENDSEC;
+END-ISO-10303-21;

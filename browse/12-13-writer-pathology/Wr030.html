@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Wr030 — `FILE_SCHEMA` listing schemas the file does not actually use</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.13 Writer pathology</a> <span class="sep">/</span> <span class="current">Wr030</span>
+</nav>
+<header class="title-bar">
+<h1>Wr030 <span class="sep">—</span> <span class="entry-title">`FILE_SCHEMA` listing schemas the file does not actually use</span></h1>
+<p class="category">§12.13 writer-pathology (sub-class: header / vendor metadata)</p>
+<p class="severity-badge severity-p2">P2 — spec deviation (no data loss)</p>
+<p class="tag-pills">
+<a class="tag tag-writer" href="../by-tag/writer/index.html">writer</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-13-writer-pathology/Wr030.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-13-writer-pathology/Wr030.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>OCCT MANTIS#0029xxx-class</li>
+<li>bug-reporter language: &quot;STEP claims AP242 but uses AP203 only&quot; (OCCT MANTIS tracker 502 as of 2026-05-02)</li>
+</ul></section>
+<section><h2>Sender</h2>
+<p>Writers that hard-code a schema list rather than computing the minimal set actually referenced</p></section>
+<section><h2>Description</h2>
+<p>`FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN&#x27;,&#x27;CONFIG_CONTROL_DESIGN&#x27;,&#x27;AP242_MANAGED_MODEL_BASED_3D_ENGINEERING&#x27;))` — three schemas declared, but the DATA section uses only AP203 entities. The receiver may load the file under whichever schema it understands, and any AP242-specific validation passes vacuously because the AP242 entities aren&#x27;t there. Bug-reporter language: &quot;STEP claims multiple schemas&quot;, &quot;FILE_SCHEMA over-declared&quot;, &quot;AP242 listed but not used&quot;.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>standard AP203 entity body with `FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;,&#x27;AP242_MANAGED_MODEL_BASED_3D_ENGINEERING&#x27;))`.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>Warn and accept: normalize / validate against any one of the declared schemas under which the DATA-section entities are well-formed; emit a warning on over-declaration.</p></section>
+<section><h2>Notes</h2>
+<p>Cousin of Wr031 in the opposite direction.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>matches(rb&quot;FILE_SCHEMA\(\(\s*&#x27;[^&#x27;]+&#x27;\s*,\s*&#x27;[^&#x27;]+&#x27;&quot;)</code></li>
+<li><code>count(b&quot;&#x27;,&#x27;&quot;) &gt;= 2</code></li>
+</ul></section>
+<section><h2>Cross-references</h2>
+<p><a href="Wr031.html">Wr031</a></p>
+</section>
+<section><h2>Live oracle output</h2>
+<table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
+<tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>no_shapes_loaded</code></td></tr>
+</tbody></table>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>/* Wr030 - FILE_SCHEMA listing schemas the file does not actually use */
+<span class="lineno">2</span>ISO-10303-21;
+<span class="lineno">3</span>HEADER;
+<span class="lineno">4</span>FILE_DESCRIPTION((&#x27;Wr030 - over-declared FILE_SCHEMA&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">5</span>FILE_NAME(&#x27;Wr030.stp<mark>&#x27;,&#x27;</mark>2026-04-30T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),
+<span class="lineno">6</span>  &#x27;cad-research-suite<mark>&#x27;,&#x27;&#x27;,&#x27;</mark>&#x27;);
+<span class="lineno">7</span>/* Wr030: writer hard-codes a list of schemas; file actually uses only
+<span class="lineno">8</span>   AP203 entities, but FILE_SCHEMA declares three schemas including AP242 */
+<span class="lineno">9</span><mark>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;,</mark>
+<span class="lineno">10</span><mark>  &#x27;CONFIG_CONTROL_DESIGN&#x27;</mark>,
+<span class="lineno">11</span>  &#x27;AP242_MANAGED_MODEL_BASED_3D_ENGINEERING { 1 0 10303 442 1 1 4 }&#x27;));
+<span class="lineno">12</span>ENDSEC;
+<span class="lineno">13</span>DATA;
+<span class="lineno">14</span>#1=APPLICATION_CONTEXT(&#x27;mechanical design&#x27;);
+<span class="lineno">15</span>#10=CARTESIAN_POINT(&#x27;origin&#x27;,(0.0,0.0,0.0));
+<span class="lineno">16</span>#11=DIRECTION(&#x27;z&#x27;,(0.0,0.0,1.0));
+<span class="lineno">17</span>#12=DIRECTION(&#x27;x&#x27;,(1.0,0.0,0.0));
+<span class="lineno">18</span>#13=AXIS2_PLACEMENT_3D(&#x27;placement&#x27;,#10,#11,#12);
+<span class="lineno">19</span>#20=(LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">20</span>ENDSEC;
+<span class="lineno">21</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Wr029.html">&larr; Wr029</a> <a class="up" href="index.html">§12.13 Writer pathology</a> <a class="next" href="Wr031.html">Wr031 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

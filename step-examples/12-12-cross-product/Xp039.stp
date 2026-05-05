@@ -1,0 +1,41 @@
+ISO-10303-21;
+/* Xp039 - Cross-product: Inventor "STEP Export from Simplified Part
+ *   Loses Appearance in Customer CAD Systems" - the simplification
+ *   feature removes per-face appearance overrides but retains the
+ *   underlying STYLED_ITEM->SURFACE_STYLE_USAGE binding without an
+ *   active colour, so receivers see a default-coloured (gray / yellow)
+ *   part where the source had an applied appearance.
+ * Source: forums.autodesk.com inventor 14091673 "Inventor 2025 STEP
+ *   Export from Simplified Part Loses Appearance in Customer CAD
+ *   Systems"; Inventor forum 7292244 "Inventor 2018: STEP import face
+ *   appearance issue".
+ * Defect: STYLED_ITEM references a PRESENTATION_STYLE_ASSIGNMENT whose
+ *   inner SURFACE_STYLE_USAGE has no SURFACE_SIDE_STYLE - the binding
+ *   chain has been retained but the colour leaf was pruned during
+ *   simplification. Receivers see "styled but unstyled" faces. */
+HEADER;
+FILE_DESCRIPTION(('Xp039 cross-product','Inventor simplified part loses appearance'),'2;1');
+FILE_NAME('Xp039.stp','2026-05-02T00:00:00',(''),(''),'Inventor;2025;Simplify','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#11=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#12=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#10,'tol','');
+#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13))GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12))REPRESENTATION_CONTEXT('','3D'));
+#20=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#21=DIRECTION('',(0.0,0.0,1.0));
+#22=DIRECTION('',(1.0,0.0,0.0));
+#23=AXIS2_PLACEMENT_3D('',#20,#21,#22);
+#24=PLANE('',#23);
+#25=ADVANCED_FACE('simplified_face_was_red',(),#24,.T.);
+/* Empty SURFACE_SIDE_STYLE - the styles list is () - simplifier pruned
+   the colour leaf but retained the chain. */
+#30=SURFACE_SIDE_STYLE('appearance_pruned_during_simplify',());
+#31=SURFACE_STYLE_USAGE(.BOTH.,#30);
+#32=PRESENTATION_STYLE_ASSIGNMENT((#31));
+#33=STYLED_ITEM('styled_but_default_color',(#32),#25);
+ENDSEC;
+END-ISO-10303-21;

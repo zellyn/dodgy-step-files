@@ -1,0 +1,74 @@
+ISO-10303-21;
+/* Twi052 - Wire whose edges accumulate several pcurve / 3D-curve defects at once
+ * Four-edge wire on a CYLINDRICAL_SURFACE: edge1 has explicit pcurve with
+ * REVERSED orientation flag relative to its 3D direction; edge2 has
+ * edge_geometry=$ (no 3D curve); edge3 sits at the cylinder seam shifted
+ * by 2*PI in U; edge4 has 2D/3D parameter ranges that disagree. */
+HEADER;
+FILE_DESCRIPTION(('Twi052 test case','Wire edges accumulate multiple pcurve/3D-curve defects at once'),'2;1');
+FILE_NAME('Twi052.stp','2026-04-30T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#11=DIRECTION('',(0.0,0.0,1.0));
+#12=DIRECTION('',(1.0,0.0,0.0));
+#13=AXIS2_PLACEMENT_3D('cyl_axis',#10,#11,#12);
+#14=CYLINDRICAL_SURFACE('host',#13,1.0);
+/* Four vertex points on the cylinder surface */
+#20=CARTESIAN_POINT('',(1.0,0.0,0.0));
+#21=VERTEX_POINT('',#20);
+#22=CARTESIAN_POINT('',(0.0,1.0,0.0));
+#23=VERTEX_POINT('',#22);
+#24=CARTESIAN_POINT('',(-1.0,0.0,0.0));
+#25=VERTEX_POINT('',#24);
+#26=CARTESIAN_POINT('',(0.0,-1.0,0.0));
+#27=VERTEX_POINT('',#26);
+/* edge1: 3D arc-style LINE from V1->V2 but its pcurve is declared REVERSED */
+#30=DIRECTION('',(-0.7071067811865475,0.7071067811865475,0.0));
+#31=VECTOR('',#30,1.4142);
+#32=LINE('e1_3d',#20,#31);
+#33=CARTESIAN_POINT('',(0.0,0.0));
+#34=DIRECTION('',(1.0,0.0));
+#35=VECTOR('',#34,1.0);
+#36=LINE('e1_pcurve',#33,#35);
+#37=DEFINITIONAL_REPRESENTATION('',(#36),#13);
+#38=PCURVE('e1_pcurve_reversed',#14,#37);
+#39=SURFACE_CURVE('e1_surface',#32,(#38),.PCURVE_S1.);
+#40=EDGE_CURVE('edge1_reversed_pcurve',#21,#23,#39,.F.);
+#41=ORIENTED_EDGE('',*,*,#40,.T.);
+/* edge2: edge_geometry=$ (no 3D curve) */
+#45=EDGE_CURVE('edge2_no_3d',#23,#25,$,.T.);
+#46=ORIENTED_EDGE('',*,*,#45,.T.);
+/* edge3: seam edge whose pcurve U is shifted by 2*PI */
+#50=DIRECTION('',(-0.7071067811865475,-0.7071067811865475,0.0));
+#51=VECTOR('',#50,1.4142);
+#52=LINE('e3_3d',#24,#51);
+#53=CARTESIAN_POINT('e3_uv_shifted_2pi',(6.2831853,0.0));
+#54=DIRECTION('',(1.0,0.0));
+#55=VECTOR('',#54,1.0);
+#56=LINE('e3_pcurve',#53,#55);
+#57=DEFINITIONAL_REPRESENTATION('',(#56),#13);
+#58=PCURVE('e3_seam_2pi_shift',#14,#57);
+#59=SURFACE_CURVE('e3_surface',#52,(#58),.PCURVE_S1.);
+#60=EDGE_CURVE('edge3_seam_period_shift',#25,#27,#59,.T.);
+#61=ORIENTED_EDGE('',*,*,#60,.T.);
+/* edge4: 3D LINE param length 2.0; pcurve param length 5.0 — same-parameter violation */
+#65=DIRECTION('',(0.7071067811865475,0.7071067811865475,0.0));
+#66=VECTOR('',#65,2.0);
+#67=LINE('e4_3d_len2',#26,#66);
+#68=CARTESIAN_POINT('',(3.0,0.0));
+#69=DIRECTION('',(1.0,0.0));
+#70=VECTOR('',#69,5.0);
+#71=LINE('e4_pcurve_len5',#68,#70);
+#72=DEFINITIONAL_REPRESENTATION('',(#71),#13);
+#73=PCURVE('e4_param_mismatch',#14,#72);
+#74=SURFACE_CURVE('e4_surface',#67,(#73),.PCURVE_S1.);
+#75=EDGE_CURVE('edge4_sameparam_violation',#27,#21,#74,.T.);
+#76=ORIENTED_EDGE('',*,*,#75,.T.);
+/* Wire pulling all four together */
+#80=EDGE_LOOP('multi_defect_wire',(#41,#46,#61,#76));
+ENDSEC;
+END-ISO-10303-21;

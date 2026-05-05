@@ -1,0 +1,27 @@
+ISO-10303-21;
+/* Twi085 - Edge endpoint vertex disagrees with curve evaluation at
+ * the boundary parameter.
+ * Defect: vertex coordinates suggest curve parameter t=5, but the
+ * edge's declared start parameter is t=2. */
+HEADER;
+FILE_DESCRIPTION(('Twi085 - Edge endpoint vertex''s 3D point disagrees with curve evaluation at the boundary parameter','Pass C gap-fill'),'2;1');
+FILE_NAME('Twi085.stp','2026-04-30T00:00:00',(''),(''),'gap-fill C','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+/* Line origin (0,0,0) along +X. Vertex at (5,0,0) → curve param t=5. */
+#10=CARTESIAN_POINT('origin',(0.0,0.0,0.0));
+#11=CARTESIAN_POINT('vertex_at_t5',(5.0,0.0,0.0));
+#12=CARTESIAN_POINT('end_at_t8',(8.0,0.0,0.0));
+#13=VERTEX_POINT('',#11);
+#14=VERTEX_POINT('',#12);
+#20=DIRECTION('',(1.0,0.0,0.0));
+#21=VECTOR('',#20,1.0);
+#22=LINE('',#10,#21);
+/* The edge's declared parameter range (encoded indirectly via
+   surface curve / pcurve) is t∈[2,8], but the start vertex is at t=5. */
+#30=EDGE_CURVE('point_param_mismatch',#13,#14,#22,.T.);
+ENDSEC;
+END-ISO-10303-21;

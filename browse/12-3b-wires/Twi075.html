@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Twi075 — Connect-shape diagnostic: how does a foreign ORIENTED_EDGE attach to an EDGE_LOOP wire (e.g., open 3-edge wire plus a free edge near its tail with a sub-mm gap)?</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.3b Wires / loops / edges</a> <span class="sep">/</span> <span class="current">Twi075</span>
+</nav>
+<header class="title-bar">
+<h1>Twi075 <span class="sep">—</span> <span class="entry-title">Connect-shape diagnostic: how does a foreign ORIENTED_EDGE attach to an EDGE_LOOP wire (e.g., open 3-edge wire plus a free edge near its tail with a sub-mm gap)?</span></h1>
+<p class="category">§12.3b wires / loops / edges (sub-class: wire-grow)</p>
+<p class="severity-badge severity-p1">P1 — silent data loss</p>
+<p class="tag-pills">
+<a class="tag tag-topology" href="../by-tag/topology/index.html">topology</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-3b-wires/Twi075.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-3b-wires/Twi075.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>OCCT `ShapeAnalysis_Wire::CheckShapeConnect` (`ShapeAnalysis_Wire.hxx:496`)</li>
+</ul></section>
+<section><h2>Description</h2>
+<p>Given an existing wire and a foreign edge or wire, the analyzer reports four possible connection outcomes: foreign-follows-wire-direct, foreign-follows-wire-reversed, foreign-precedes-wire-direct, foreign-precedes-wire-reversed. Plus the smallest gap distance and whether tail vs head attachment is closer.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>An open three-edge wire and a separate single edge whose endpoints could plausibly attach in any of four ways with different residual gaps.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>Heal and accept: normalize / enumerate the four orientations and report distances; let the caller pick.</p></section>
+<section><h2>Notes</h2>
+<p>Combinatorial geometric search; used by interactive wire-grow tools. Synonyms: &quot;how does foreign edge attach to existing wire&quot;, &quot;four orientations check for edge attachment&quot;, &quot;wire-grow connection diagnostic&quot;, &quot;edge attaches to wire head or tail forward or reversed&quot;.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>contains(b&#x27;(3.001,0.0,0.0)&#x27;)</code></li>
+<li><code>contains(b&#x27;foreign_edge&#x27;)</code></li>
+<li><code>contains(b&#x27;open_three_edge_wire&#x27;)</code></li>
+</ul></section>
+<section><h2>Live oracle output</h2>
+<table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
+<tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>no_shapes_loaded</code></td></tr>
+</tbody></table>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* Twi075 - Connect-shape diagnostic: how does a foreign edge attach?
+<span class="lineno">3</span> * Open three-edge wire from (0,0,0) -&gt; (1,0,0) -&gt; (2,0,0) -&gt; (3,0,0), plus
+<span class="lineno">4</span> * a separate foreign EDGE not in the wire, going (3.001, 0, 0) -&gt; (4.0, 0, 0).
+<span class="lineno">5</span> * Connect-shape must enumerate four orientations -- foreign-direct-after,
+<span class="lineno">6</span> * foreign-reversed-after, foreign-direct-before, foreign-reversed-before -- with
+<span class="lineno">7</span> * residual gaps; in this layout the smallest gap (0.001) is at the wire tail. */
+<span class="lineno">8</span>HEADER;
+<span class="lineno">9</span>FILE_DESCRIPTION((&#x27;Twi075 test case&#x27;,&#x27;Open wire plus separate foreign edge for connect-shape diagnostic&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">10</span>FILE_NAME(&#x27;Twi075.stp&#x27;,&#x27;2026-04-30T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">11</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }&#x27;));
+<span class="lineno">12</span>ENDSEC;
+<span class="lineno">13</span>DATA;
+<span class="lineno">14</span>#1=APPLICATION_CONTEXT(&#x27;automotive_design&#x27;);
+<span class="lineno">15</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,&#x27;automotive_design&#x27;,2000,#1);
+<span class="lineno">16</span>/* Wire vertices */
+<span class="lineno">17</span>#10=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));#11=VERTEX_POINT(&#x27;Wstart&#x27;,#10);
+<span class="lineno">18</span>#12=CARTESIAN_POINT(&#x27;&#x27;,(1.0,0.0,0.0));#13=VERTEX_POINT(&#x27;W1&#x27;,#12);
+<span class="lineno">19</span>#14=CARTESIAN_POINT(&#x27;&#x27;,(2.0,0.0,0.0));#15=VERTEX_POINT(&#x27;W2&#x27;,#14);
+<span class="lineno">20</span>#16=CARTESIAN_POINT(&#x27;&#x27;,(3.0,0.0,0.0));#17=VERTEX_POINT(&#x27;Wend&#x27;,#16);
+<span class="lineno">21</span>/* Foreign edge vertices (separate -- not part of wire) */
+<span class="lineno">22</span>#18=CARTESIAN_POINT(&#x27;foreign_start&#x27;,<mark>(3.001,0.0,0.0)</mark>);#19=VERTEX_POINT(&#x27;Fstart&#x27;,#18);
+<span class="lineno">23</span>#20=CARTESIAN_POINT(&#x27;foreign_end&#x27;,(4.0,0.0,0.0));#21=VERTEX_POINT(&#x27;Fend&#x27;,#20);
+<span class="lineno">24</span>/* Three wire edges */
+<span class="lineno">25</span>#30=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));#31=VECTOR(&#x27;&#x27;,#30,1.0);#32=LINE(&#x27;&#x27;,#10,#31);
+<span class="lineno">26</span>#33=EDGE_CURVE(&#x27;e1&#x27;,#11,#13,#32,.T.);
+<span class="lineno">27</span>#34=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));#35=VECTOR(&#x27;&#x27;,#34,1.0);#36=LINE(&#x27;&#x27;,#12,#35);
+<span class="lineno">28</span>#37=EDGE_CURVE(&#x27;e2&#x27;,#13,#15,#36,.T.);
+<span class="lineno">29</span>#38=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));#39=VECTOR(&#x27;&#x27;,#38,1.0);#40=LINE(&#x27;&#x27;,#14,#39);
+<span class="lineno">30</span>#41=EDGE_CURVE(&#x27;e3&#x27;,#15,#17,#40,.T.);
+<span class="lineno">31</span>#50=ORIENTED_EDGE(&#x27;&#x27;,*,*,#33,.T.);
+<span class="lineno">32</span>#51=ORIENTED_EDGE(&#x27;&#x27;,*,*,#37,.T.);
+<span class="lineno">33</span>#52=ORIENTED_EDGE(&#x27;&#x27;,*,*,#41,.T.);
+<span class="lineno">34</span>#53=EDGE_LOOP(&#x27;<mark>open_three_edge_wire</mark>&#x27;,(#50,#51,#52));
+<span class="lineno">35</span>/* Foreign single edge -- candidate for connection */
+<span class="lineno">36</span>#60=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));#61=VECTOR(&#x27;&#x27;,#60,1.0);#62=LINE(&#x27;&#x27;,#18,#61);
+<span class="lineno">37</span>#63=EDGE_CURVE(&#x27;<mark>foreign_edge</mark>&#x27;,#19,#21,#62,.T.);
+<span class="lineno">38</span>#64=ORIENTED_EDGE(&#x27;foreign_oriented&#x27;,*,*,#63,.T.);
+<span class="lineno">39</span>ENDSEC;
+<span class="lineno">40</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Twi074.html">&larr; Twi074</a> <a class="up" href="index.html">§12.3b Wires / loops / edges</a> <a class="next" href="Twi076.html">Twi076 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

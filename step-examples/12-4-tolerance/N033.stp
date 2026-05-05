@@ -1,0 +1,52 @@
+/* N033 - Tolerance value polymorphic encoding (MeasureRepresentationItem vs plain measure)
+ * Defect: STEP_SHAPE_TOLERANCE_VALUE lower/upper bounds may be encoded via
+ * plain length_measure_with_unit, via StepRepr_ReprItemAndMeasureWithUnit,
+ * or via the AP242 complex form (LENGTH_MEASURE_WITH_UNIT() MEASURE_REPRESENTATION_ITEM()
+ * MEASURE_WITH_UNIT(...) REPRESENTATION_ITEM('')). Readers that hard-code
+ * a single subtype fail; OCCT had 21 reader classes affected.
+ * Reproducer: tolerance bounds emitted via the AP242 complex form
+ * (LENGTH_MEASURE_WITH_UNIT MEASURE_REPRESENTATION_ITEM MEASURE_WITH_UNIT
+ * REPRESENTATION_ITEM) -- a hard-coded reader misses it.
+ */
+ISO-10303-21;
+HEADER;
+FILE_DESCRIPTION(('N033 polymorphic tolerance value MeasureRepresentationItem'),'2;1');
+FILE_NAME('N033.stp','2026-04-26T00:00:00',(''),(''),
+  'cad-research-suite','','');
+FILE_SCHEMA(('AP242_MANAGED_MODEL_BASED_3D_ENGINEERING_MIM_LF'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('managed model-based 3d engineering');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
+  'ap242_managed_model_based_3d_engineering',2014,#1);
+#10=CARTESIAN_POINT('p0',(0.0,0.0,0.0));
+#11=CARTESIAN_POINT('p1',(10.0,0.0,0.0));
+#20=VERTEX_POINT('',#10);
+#21=VERTEX_POINT('',#11);
+#30=DIRECTION('+x',(1.0,0.0,0.0));
+#31=VECTOR('',#30,10.0);
+#32=LINE('',#10,#31);
+#40=EDGE_CURVE('feature_edge',#20,#21,#32,.T.);
+#50=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#51=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#52=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#60=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-6),#50,
+  'distance_accuracy_value','');
+#70=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#60))
+  GLOBAL_UNIT_ASSIGNED_CONTEXT((#50,#51,#52))
+  REPRESENTATION_CONTEXT('ctx','3D'));
+/* Three polymorphic encodings of the same +0.005 tolerance value: */
+/* (1) Plain length_measure_with_unit -- legacy form */
+#80=LENGTH_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.005),#50);
+/* (2) Repr-item-and-measure-with-unit -- StepRepr style */
+#81=(LENGTH_MEASURE_WITH_UNIT() MEASURE_REPRESENTATION_ITEM()
+  MEASURE_WITH_UNIT(LENGTH_MEASURE(0.005),#50)
+  REPRESENTATION_ITEM('repr_and_measure_form'));
+/* Defect site: AP242 complex form with empty REPRESENTATION_ITEM('') --
+ * readers hard-coding subtype miss it. */
+#82=(LENGTH_MEASURE_WITH_UNIT() MEASURE_REPRESENTATION_ITEM()
+  MEASURE_WITH_UNIT(LENGTH_MEASURE(0.005),#50)
+  REPRESENTATION_ITEM(''));
+ENDSEC;
+END-ISO-10303-21;

@@ -1,0 +1,49 @@
+ISO-10303-21;
+/* Gp022 - SameParameter violation on edge (FixSameParameter)
+ * Defect: edge marked SameParameter=.T. (via .T. flag in EDGE_CURVE)
+ * but 3D curve and pcurve disagree in parameterization. Here the 3D
+ * line is parameterized linearly on [0,1] but the pcurve is a
+ * quadratic Bezier whose midpoint at t=0.5 maps to a different
+ * 3D location, breaking shared parameterization. */
+HEADER;
+FILE_DESCRIPTION(('Gp022 test case','SameParameter violation on edge'),'2;1');
+FILE_NAME('Gp022.stp','2026-04-27T00:00:00',(''),(''),'auto-generated','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#11=DIRECTION('',(0.0,0.0,1.0));
+#12=DIRECTION('',(1.0,0.0,0.0));
+#13=AXIS2_PLACEMENT_3D('',#10,#11,#12);
+#20=PLANE('',#13);
+/* 3D curve: line, linearly parameterized */
+#30=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#31=DIRECTION('',(1.0,0.0,0.0));
+#32=VECTOR('',#31,1.0);
+#33=LINE('',#30,#32);
+#40=VERTEX_POINT('',#30);
+#41=CARTESIAN_POINT('',(1.0,0.0,0.0));
+#42=VERTEX_POINT('',#41);
+/* Defect: pcurve as a degree-2 B-spline whose middle CP is offset
+ * from the linear parameterization, creating non-uniform velocity. */
+#71=CARTESIAN_POINT('',(0.0,0.0));
+#72=CARTESIAN_POINT('',(0.8,0.0));
+#73=CARTESIAN_POINT('',(1.0,0.0));
+#74=B_SPLINE_CURVE_WITH_KNOTS('',2,(#71,#72,#73),.UNSPECIFIED.,.F.,.F.,
+  (3,3),(0.0,1.0),.UNSPECIFIED.);
+#75=( GEOMETRIC_REPRESENTATION_CONTEXT(2)
+      PARAMETRIC_REPRESENTATION_CONTEXT()
+      REPRESENTATION_CONTEXT('parametric','2D') );
+#76=DEFINITIONAL_REPRESENTATION('',(#74),#75);
+#77=PCURVE('',#20,#76);
+#50=SURFACE_CURVE('',#33,(#77),.PCURVE_S1.);
+/* SameParameter flag is .T. but the parameterizations disagree */
+#60=EDGE_CURVE('',#40,#42,#50,.T.);
+#61=ORIENTED_EDGE('',*,*,#60,.T.);
+#62=EDGE_LOOP('',(#61));
+#63=FACE_OUTER_BOUND('',#62,.T.);
+#64=ADVANCED_FACE('',(#63),#20,.T.);
+ENDSEC;
+END-ISO-10303-21;

@@ -1,0 +1,31 @@
+ISO-10303-21;
+/* M150 - AP210 differential-pair traces have > 5 % length difference.
+ * Defect: a paired-trace net (e.g. USB_DP / USB_DM) declares one
+ * conductor of length 50.0 mm and the other of length 56.0 mm
+ * (12 % skew). High-speed differential signaling tolerates only a
+ * small fraction (typically < 5 %) of length mismatch. The pair
+ * fails timing closure. */
+HEADER;
+FILE_DESCRIPTION(('M150 test case','AP210 differential pair length mismatch'),'2;1');
+FILE_NAME('M150.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('ELECTRONIC_ASSEMBLY_INTERCONNECT_AND_PACKAGING_DESIGN { 1 0 10303 210 3 1 0 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('electronic_assembly_interconnect_and_packaging_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
+  'electronic_assembly_interconnect_and_packaging_design',2014,#1);
+#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10))
+     REPRESENTATION_CONTEXT('pcb','3D'));
+/* Differential-pair conductors with declared lengths. */
+#100=CONDUCTOR_TRACK_PROFILE('USB_DP_trace',LENGTH_MEASURE(50.0));
+#101=CONDUCTOR_TRACK_PROFILE('USB_DM_trace',LENGTH_MEASURE(56.0));
+/* Defect: NETWORK names them as a diff pair but length skew is 12 %. */
+#200=TERMINAL('term_dp','USB_DP_terminal',$);
+#201=TERMINAL('term_dm','USB_DM_terminal',$);
+#210=NETWORK_NODE('USB_DP_node',#200);
+#211=NETWORK_NODE('USB_DM_node',#201);
+#300=NETWORK('USB_diff_pair',(#210,#211),(#210));
+ENDSEC;
+END-ISO-10303-21;

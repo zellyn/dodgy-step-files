@@ -1,0 +1,25 @@
+ISO-10303-21;
+/* M110 - AP209 ply orientation vector not normalized.
+ * Defect: a DIRECTION used as a ply fiber orientation has magnitude
+ * 2.0 instead of unit length. Consumers using the ratios directly for
+ * stiffness-matrix transformation compute doubled effective fiber
+ * weight. */
+HEADER;
+FILE_DESCRIPTION(('M110 test case','AP209 ply DIRECTION not unit length'),'2;1');
+FILE_NAME('M110.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('STRUCTURAL_ANALYSIS_DESIGN { 1 0 10303 209 1 0 0 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('structural_analysis_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
+  'structural_analysis_design',2001,#1);
+#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10))
+     REPRESENTATION_CONTEXT('fea','3D'));
+/* Defect: DIRECTION ratios magnitude = 2.0 instead of 1.0. */
+#100=DIRECTION('ply_0deg_unnormalized',(2.0,0.0,0.0));
+/* Reference from a laminate so the direction has functional weight. */
+#200=LAMINATE_TABLE('skin',(#100),$);
+ENDSEC;
+END-ISO-10303-21;

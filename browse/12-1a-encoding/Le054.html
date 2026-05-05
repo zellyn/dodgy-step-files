@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Le054 — High-bit byte ambiguous between Windows-1252 and ISO-8859-1</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.1a Encoding &amp; string-literal defects</a> <span class="sep">/</span> <span class="current">Le054</span>
+</nav>
+<header class="title-bar">
+<h1>Le054 <span class="sep">—</span> <span class="entry-title">High-bit byte ambiguous between Windows-1252 and ISO-8859-1</span></h1>
+<p class="category">§12.1a encoding/strings (sub-class: 8-bit page selection)</p>
+<p class="severity-badge severity-p1">P1 — silent data loss</p>
+<p class="tag-pills">
+<a class="tag tag-silent-loss" href="../by-tag/silent-loss/index.html">silent-loss</a>
+<a class="tag tag-encoding" href="../by-tag/encoding/index.html">encoding</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-1a-encoding/Le054.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-1a-encoding/Le054.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>bug-reporter language: &quot;Word-quotes garbage in STEP&quot;, &quot;smart-quote in STEP file&quot;</li>
+<li>deduced from Edition-2 §6.4.3.5 + Windows-CAD vendor practice</li>
+</ul></section>
+<section><h2>Sender</h2>
+<p>Windows-hosted writers that paste user-input text through a Win32 ANSI codepage without converting to ISO-8859-1</p></section>
+<section><h2>Description</h2>
+<p>Edition-2 declares ISO-8859-1 as the default 8-bit page. Bytes `0x80.0x9F` in ISO-8859-1 are control characters (C1 controls, no glyphs); in Windows-1252 the same range carries glyphs (Euro sign at 0x80, smart-quotes at 0x91-0x94, em-dash at 0x97, etc.). When a writer copies user-input strings (from a Windows clipboard, a smart-quote-rewriting word processor, or a CAD note containing the Euro sign) it emits raw bytes in 0x80.0x9F into a string literal. Strict Edition-2 readers see C1 control bytes in a string body and either reject, emit `?`, or pass garbage downstream. Tolerant readers heuristically reinterpret as Windows-1252 and recover the intended glyphs but disagree on which receiver is right. Bug-reporter language: &quot;Word smart-quote shows as box character&quot;, &quot;Euro sign garbled in STEP&quot;, &quot;string contains 0x91 byte and parser reports control char in literal&quot;.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>a `PRODUCT.name` whose body contains the bytes `\X\91`, `\X\92`, `\X\80`, `\X\97` — left/right single-quote, Euro, em-dash in Windows-1252; or as raw bytes `0x91 0x92 0x80 0x97` inside an Ed.2-declared file.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>surface the ambiguity to the user — name the byte and the page-selection policy. A receiver may treat 0x80.0x9F as Windows-1252 if it documents the policy; or reject on encountering C1 control bytes inside a string body. Silent reinterpretation across vendor policies hides the disagreement.</p></section>
+<section><h2>Notes</h2>
+<p>Synonyms: &quot;smart-quote in STEP&quot;, &quot;cp1252 high-bit&quot;, &quot;C1 control byte in string&quot;. **See also**: Le002, Le009. Validation observed: silent acceptance — kernel-mishandling-by-silent-page-reinterpretation demonstrates the defect class.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>contains(b&#x27;\\X\\91&#x27;) or contains(b&#x27;\\X\\92&#x27;) or contains(b&#x27;\\X\\80&#x27;) or contains(b&#x27;\\X\\97&#x27;)</code></li>
+<li><code>matches(rb&#x27;\\X\\(80|91|92|93|94|97|99)&#x27;)</code></li>
+</ul></section>
+<section><h2>Cross-references</h2>
+<p><a href="Le002.html">Le002</a>, <a href="Le009.html">Le009</a></p>
+</section>
+<section><h2>Live oracle output</h2>
+<table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
+<tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>no_shapes_loaded</code></td></tr>
+</tbody></table>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>/* Le054 - cp1252 vs ISO-8859-1 high-bit confusion in 0x80..0x9F range
+<span class="lineno">2</span> * Defect: bytes <mark>\X\91</mark>, <mark>\X\92</mark>, <mark>\X\80</mark>, <mark>\X\97</mark> are C1 control bytes in
+<span class="lineno">3</span> * ISO-8859-1 (the Edition-2 default page) but carry glyphs in
+<span class="lineno">4</span> * Windows-1252 (left/right single quote, Euro sign, em-dash).
+<span class="lineno">5</span> * Receivers disagree on which page is in effect; tolerant readers
+<span class="lineno">6</span> * silently re-interpret the byte run as cp1252 to recover smart
+<span class="lineno">7</span> * quotes and the Euro sign, hiding a producer-side defect. */
+<span class="lineno">8</span>ISO-10303-21;
+<span class="lineno">9</span>HEADER;
+<span class="lineno">10</span>FILE_DESCRIPTION((&#x27;Le054 - high-bit ambiguous between cp1252 and ISO-8859-1&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">11</span>FILE_NAME(&#x27;Le054.stp&#x27;,&#x27;2026-04-30T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">12</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }&#x27;));
+<span class="lineno">13</span>ENDSEC;
+<span class="lineno">14</span>DATA;
+<span class="lineno">15</span>#1=APPLICATION_CONTEXT(&#x27;automotive_design&#x27;);
+<span class="lineno">16</span>#2=PRODUCT_CONTEXT(&#x27;part&#x27;,#1,&#x27;mechanical&#x27;);
+<span class="lineno">17</span>/* Bytes 0x91..0x94 are smart-quotes in cp1252, C1 controls in ISO-8859-1.
+<span class="lineno">18</span>   0x80 is Euro in cp1252; 0x97 is em-dash. */
+<span class="lineno">19</span>#10=PRODUCT(&#x27;part <mark>\X\91</mark>A<mark>\X\92</mark>&#x27;,&#x27;smart-quote name&#x27;,&#x27;&#x27;,(#2));
+<span class="lineno">20</span>#11=PRODUCT(&#x27;cost <mark>\X\80</mark>100&#x27;,&#x27;euro sign in name&#x27;,&#x27;&#x27;,(#2));
+<span class="lineno">21</span>#12=PRODUCT(&#x27;span <mark>\X\97</mark>&#x27;,&#x27;em-dash separator&#x27;,&#x27;&#x27;,(#2));
+<span class="lineno">22</span>#13=PRODUCT(&#x27;also <mark>\X\99</mark>&#x27;,&#x27;trademark glyph in cp1252&#x27;,&#x27;&#x27;,(#2));
+<span class="lineno">23</span>#20=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">24</span>ENDSEC;
+<span class="lineno">25</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Le053.html">&larr; Le053</a> <a class="up" href="index.html">§12.1a Encoding &amp; string-literal defects</a> <a class="next" href="Le055.html">Le055 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

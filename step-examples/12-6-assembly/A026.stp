@@ -1,0 +1,75 @@
+ISO-10303-21;
+/*
+ * A026 — Quadratic-time assembly graph traversal during read
+ * Defect (OCCT 63cdf48 / Mantis 0029830, Creo → Inventor OOM, Revit-derived
+ *         data, 440MB STEP entity-name map O(n²), 20MB STEP 50s):
+ *   STEPCAFControl_Reader performance degrades quadratically with assembly
+ *   size; entity-name map lookup is O(n²) and building name→shape map for
+ *   10k faces takes ~45 minutes vs ~2 min for the read itself. Hangs at
+ *   high % indefinitely. FixShellOrientationMode cost is also a multiplier.
+ * This is a SHRUNKEN demonstrator: 24 NAUOs of one shared product. The
+ *   shape of the defect is N siblings on a hot-spot in the writer's
+ *   entity-name map.
+ * Expected kernel: index entity IDs once at parse; bound healing loops by
+ *   entity count; use indexed lookup, not nested scan.
+ */
+HEADER;
+FILE_DESCRIPTION(('A026 24 sibling NAUOs sharing one product (O(n^2) trap)'),'2;1');
+FILE_NAME('A026.stp','2026-04-26T00:00:00',('catalog'),('cad'),'manual','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#10 = APPLICATION_CONTEXT('automotive design');
+#11 = APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2001,#10);
+#12 = PRODUCT_CONTEXT('',#10,'mechanical');
+#13 = PRODUCT_DEFINITION_CONTEXT('part definition',#10,'design');
+#20 = PRODUCT('A026_ASSY','wide assembly','',(#12));
+#21 = PRODUCT_DEFINITION_FORMATION('','',#20);
+#22 = PRODUCT_DEFINITION('design','',#21,#13);
+#23 = PRODUCT_DEFINITION_SHAPE('','',#22);
+#30 = PRODUCT('LEAF','tiny leaf','',(#12));
+#31 = PRODUCT_DEFINITION_FORMATION('','',#30);
+#32 = PRODUCT_DEFINITION('design','',#31,#13);
+#33 = PRODUCT_DEFINITION_SHAPE('','',#32);
+/* 24 sibling NAUOs */
+#100 = NEXT_ASSEMBLY_USAGE_OCCURRENCE('1','I_01','',#22,#32,$);
+#101 = NEXT_ASSEMBLY_USAGE_OCCURRENCE('2','I_02','',#22,#32,$);
+#102 = NEXT_ASSEMBLY_USAGE_OCCURRENCE('3','I_03','',#22,#32,$);
+#103 = NEXT_ASSEMBLY_USAGE_OCCURRENCE('4','I_04','',#22,#32,$);
+#104 = NEXT_ASSEMBLY_USAGE_OCCURRENCE('5','I_05','',#22,#32,$);
+#105 = NEXT_ASSEMBLY_USAGE_OCCURRENCE('6','I_06','',#22,#32,$);
+#106 = NEXT_ASSEMBLY_USAGE_OCCURRENCE('7','I_07','',#22,#32,$);
+#107 = NEXT_ASSEMBLY_USAGE_OCCURRENCE('8','I_08','',#22,#32,$);
+#108 = NEXT_ASSEMBLY_USAGE_OCCURRENCE('9','I_09','',#22,#32,$);
+#109 = NEXT_ASSEMBLY_USAGE_OCCURRENCE('10','I_10','',#22,#32,$);
+#110 = NEXT_ASSEMBLY_USAGE_OCCURRENCE('11','I_11','',#22,#32,$);
+#111 = NEXT_ASSEMBLY_USAGE_OCCURRENCE('12','I_12','',#22,#32,$);
+#112 = NEXT_ASSEMBLY_USAGE_OCCURRENCE('13','I_13','',#22,#32,$);
+#113 = NEXT_ASSEMBLY_USAGE_OCCURRENCE('14','I_14','',#22,#32,$);
+#114 = NEXT_ASSEMBLY_USAGE_OCCURRENCE('15','I_15','',#22,#32,$);
+#115 = NEXT_ASSEMBLY_USAGE_OCCURRENCE('16','I_16','',#22,#32,$);
+#116 = NEXT_ASSEMBLY_USAGE_OCCURRENCE('17','I_17','',#22,#32,$);
+#117 = NEXT_ASSEMBLY_USAGE_OCCURRENCE('18','I_18','',#22,#32,$);
+#118 = NEXT_ASSEMBLY_USAGE_OCCURRENCE('19','I_19','',#22,#32,$);
+#119 = NEXT_ASSEMBLY_USAGE_OCCURRENCE('20','I_20','',#22,#32,$);
+#120 = NEXT_ASSEMBLY_USAGE_OCCURRENCE('21','I_21','',#22,#32,$);
+#121 = NEXT_ASSEMBLY_USAGE_OCCURRENCE('22','I_22','',#22,#32,$);
+#122 = NEXT_ASSEMBLY_USAGE_OCCURRENCE('23','I_23','',#22,#32,$);
+#123 = NEXT_ASSEMBLY_USAGE_OCCURRENCE('24','I_24','',#22,#32,$);
+#50 = ( LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT(.MILLI.,.METRE.) );
+#51 = ( NAMED_UNIT(*) PLANE_ANGLE_UNIT() SI_UNIT($,.RADIAN.) );
+#52 = ( NAMED_UNIT(*) SI_UNIT($,.STERADIAN.) SOLID_ANGLE_UNIT() );
+#53 = UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#50,'distance_accuracy_value','');
+#54 = ( GEOMETRIC_REPRESENTATION_CONTEXT(3) GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#53))
+        GLOBAL_UNIT_ASSIGNED_CONTEXT((#50,#51,#52)) REPRESENTATION_CONTEXT('','3D') );
+#60 = CARTESIAN_POINT('',(0.0,0.0,0.0));
+#61 = DIRECTION('',(0.0,0.0,1.0));
+#62 = DIRECTION('',(1.0,0.0,0.0));
+#63 = AXIS2_PLACEMENT_3D('leaf_origin',#60,#61,#62);
+#64 = SHAPE_REPRESENTATION('leaf_rep',(#63),#54);
+#65 = SHAPE_DEFINITION_REPRESENTATION(#33,#64);
+#80 = AXIS2_PLACEMENT_3D('assy_origin',#60,#61,#62);
+#81 = SHAPE_REPRESENTATION('assy_rep',(#80),#54);
+#82 = SHAPE_DEFINITION_REPRESENTATION(#23,#81);
+ENDSEC;
+END-ISO-10303-21;

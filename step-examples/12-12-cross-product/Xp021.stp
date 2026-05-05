@@ -1,0 +1,52 @@
+ISO-10303-21;
+/* Xp021 - Cross-product: face on closed cylindrical surface with a
+ *   disconnected EDGE_LOOP (head-to-tail violated), missing pcurves, and
+ *   a wire whose 3D U-extent exceeds 2pi (one full period).
+ * Builds on Twi003 (head-to-tail) + Gp001 (missing pcurve) +
+ *   Twi-seam-class (period spanning). */
+HEADER;
+FILE_DESCRIPTION(('Xp021 cross-product','disconnected loop x missing pcurve x period spanning'),'2;1');
+FILE_NAME('Xp021.stp','2026-04-26T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#11=DIRECTION('',(0.0,0.0,1.0));
+#12=DIRECTION('',(1.0,0.0,0.0));
+#13=AXIS2_PLACEMENT_3D('',#10,#11,#12);
+#14=CYLINDRICAL_SURFACE('',#13,1.0);
+/* Vertices: a, b, c with deliberately non-consecutive c->a */
+#20=CARTESIAN_POINT('a',(1.0,0.0,0.0));
+#21=CARTESIAN_POINT('b',(-1.0,0.0,1.0));
+/* Defect 1: edge[1].end (-1,0,1) != edge[2].start (-0.5,0.5,0.5) */
+#22=CARTESIAN_POINT('c',(-0.5,0.5,0.5));
+#23=CARTESIAN_POINT('c2',(0.5,-0.5,0.5));
+#30=VERTEX_POINT('',#20);
+#31=VERTEX_POINT('',#21);
+#32=VERTEX_POINT('',#22);
+#33=VERTEX_POINT('',#23);
+#40=DIRECTION('',(-0.7071,0.0,0.7071));
+#41=VECTOR('',#40,2.828);
+#42=LINE('',#20,#41);
+#43=DIRECTION('',(0.5773502691896258,0.5773502691896258,-0.5773502691896258));
+#44=VECTOR('',#43,1.732);
+#45=LINE('',#22,#44);
+#46=DIRECTION('',(0.5773502691896258,-0.5773502691896258,-0.5773502691896258));
+#47=VECTOR('',#46,1.732);
+#48=LINE('',#23,#47);
+#60=EDGE_CURVE('',#30,#31,#42,.T.);
+#61=EDGE_CURVE('',#32,#33,#45,.T.);
+#62=EDGE_CURVE('',#33,#30,#48,.T.);
+/* Defect 2: SURFACE_CURVE.associated_geometry empty (no PCURVE) */
+/* (Lines used directly as 3D curves; pcurves never authored.) */
+#70=ORIENTED_EDGE('',*,*,#60,.T.);
+#71=ORIENTED_EDGE('',*,*,#61,.T.);
+#72=ORIENTED_EDGE('',*,*,#62,.T.);
+/* Defect 3: wire wraps > one full period in U (path 0 -> pi -> >2pi) */
+#80=EDGE_LOOP('disconnected_period_span',(#70,#71,#72));
+#81=FACE_OUTER_BOUND('',#80,.T.);
+#82=ADVANCED_FACE('cyl_face',(#81),#14,.T.);
+ENDSEC;
+END-ISO-10303-21;

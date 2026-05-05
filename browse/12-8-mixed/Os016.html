@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Os016 — Draft modification fails to recompute an edge</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.8 Mixed (tessellation, validation properties, etc.)</a> <span class="sep">/</span> <span class="current">Os016</span>
+</nav>
+<header class="title-bar">
+<h1>Os016 <span class="sep">—</span> <span class="entry-title">Draft modification fails to recompute an edge</span></h1>
+<p class="category">§12.8 (sub-class: draft edge recomputation)</p>
+<p class="severity-badge severity-p1">P1 — silent data loss</p>
+<p class="tag-pills">
+<a class="tag tag-topology" href="../by-tag/topology/index.html">topology</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-8-mixed/Os016.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-8-mixed/Os016.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>OCCT Draft_Modification_1.cxx:312, 350, 363, 373 (Draft_EdgeRecomputation) (uncovered class evidence)</li>
+</ul></section>
+<section><h2>Sender</h2>
+<p>deduced — OCCT uncovered-class sweep, Pass C</p></section>
+<section><h2>Description</h2>
+<p>After drafting adjacent faces, the shared edge needs new geometry — the intersection of the two new (drafted) surfaces — but the intersection algorithm fails or yields a multi-component curve. Bug-reporter language: &quot;draft edge fails&quot;, &quot;draft edge multi-curve&quot;.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>Two adjacent faces with very different draft angles; their drafted versions intersect along a non-simple curve.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>Pick the closest-to-original branch; or reject with diagnostic.</p></section>
+<section><h2>Notes</h2>
+<p>Synonyms: &quot;draft edge fails&quot;, &quot;draft edge multi-curve&quot;, &quot;drafted edge intersection fails&quot;, &quot;drafted face intersection multi-component&quot;. **See also**: Os015, Os017.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=shape(1)/shape(1) gmsh=shape(4) ifc=schema_n/a</code></p></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>n_edges_total &gt;= 2</code></li>
+<li><code>face[0].surface_type == &quot;plane&quot;</code></li>
+<li><code>face[1].surface_type == &quot;plane&quot;</code></li>
+</ul></section>
+<section><h2>Cross-references</h2>
+<p><a href="Os015.html">Os015</a>, <a href="Os017.html">Os017</a></p>
+</section>
+<section><h2>Live oracle output</h2>
+<table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
+<tr><td><code>occt_heal_on</code></td><td><code>shape(1)</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>shape(1)</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>shape(4)</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>shape(4)</code></td></tr>
+<tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>empty_mesh</code></td></tr>
+</tbody></table>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* Os016 - Draft edge recomputation produces multi-component intersection.
+<span class="lineno">3</span> * Defect: two ADVANCED_FACEs sharing one EDGE_CURVE, with different
+<span class="lineno">4</span> * draft-angle SHAPE_ASPECTs. After drafting, the new surfaces&#x27; intersection
+<span class="lineno">5</span> * is non-simple; the kernel cannot pick a unique edge curve. */
+<span class="lineno">6</span>HEADER;
+<span class="lineno">7</span>FILE_DESCRIPTION((&#x27;Os016 test case&#x27;,&#x27;Draft edge multi-component intersection&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">8</span>FILE_NAME(&#x27;Os016.stp&#x27;,&#x27;2026-04-30T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">9</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }&#x27;));
+<span class="lineno">10</span>ENDSEC;
+<span class="lineno">11</span>DATA;
+<span class="lineno">12</span>#1=APPLICATION_CONTEXT(&#x27;automotive_design&#x27;);
+<span class="lineno">13</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,&#x27;automotive_design&#x27;,2000,#1);
+<span class="lineno">14</span>#10=PRODUCT_CONTEXT(&#x27;&#x27;,#1,&#x27;mechanical&#x27;);
+<span class="lineno">15</span>#11=PRODUCT(&#x27;part1&#x27;,&#x27;part1&#x27;,&#x27;part1&#x27;,(#10));
+<span class="lineno">16</span>#12=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#11);
+<span class="lineno">17</span>#13=PRODUCT_DEFINITION_CONTEXT(&#x27;part definition&#x27;,#1,&#x27;design&#x27;);
+<span class="lineno">18</span>#14=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,#12,#13);
+<span class="lineno">19</span>#15=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,#14);
+<span class="lineno">20</span>/* Shared edge endpoints */
+<span class="lineno">21</span>#20=CARTESIAN_POINT(&#x27;shared_edge_v1&#x27;,(0.0,0.0,0.0));
+<span class="lineno">22</span>#21=CARTESIAN_POINT(&#x27;shared_edge_v2&#x27;,(1.0,0.0,0.0));
+<span class="lineno">23</span>#22=VERTEX_POINT(&#x27;&#x27;,#20);
+<span class="lineno">24</span>#23=VERTEX_POINT(&#x27;&#x27;,#21);
+<span class="lineno">25</span>/* Shared edge */
+<span class="lineno">26</span>#24=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">27</span>#25=VECTOR(&#x27;&#x27;,#24,1.0);
+<span class="lineno">28</span>#26=LINE(&#x27;shared_line&#x27;,#20,#25);
+<span class="lineno">29</span>#27=EDGE_CURVE(&#x27;shared_edge&#x27;,#22,#23,#26,.T.);
+<span class="lineno">30</span>/* Two surfaces meeting along the shared edge */
+<span class="lineno">31</span>#30=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">32</span>#31=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">33</span>#32=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#20,#30,#31);
+<span class="lineno">34</span>#33=PLANE(&#x27;face_a_plane&#x27;,#32);
+<span class="lineno">35</span>#34=DIRECTION(&#x27;&#x27;,(0.0,1.0,0.0));
+<span class="lineno">36</span>#35=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#20,#34,#31);
+<span class="lineno">37</span>#36=PLANE(&#x27;face_b_plane&#x27;,#35);
+<span class="lineno">38</span>/* Two ADVANCED_FACEs sharing the edge */
+<span class="lineno">39</span>#40=ORIENTED_EDGE(&#x27;&#x27;,*,*,#27,.T.);
+<span class="lineno">40</span>#41=EDGE_LOOP(&#x27;&#x27;,(#40));
+<span class="lineno">41</span>#42=FACE_OUTER_BOUND(&#x27;&#x27;,#41,.T.);
+<span class="lineno">42</span>#43=ADVANCED_FACE(&#x27;face_a&#x27;,(#42),#33,.T.);
+<span class="lineno">43</span>#44=ADVANCED_FACE(&#x27;face_b&#x27;,(#42),#36,.T.);
+<span class="lineno">44</span>/* Per-face draft-angle SHAPE_ASPECTs (very different angles) */
+<span class="lineno">45</span>#50=SHAPE_ASPECT(&#x27;draft_a&#x27;,&#x27;draft 5 deg&#x27;,#15,.T.);
+<span class="lineno">46</span>#51=SHAPE_ASPECT(&#x27;draft_b&#x27;,&#x27;draft 60 deg&#x27;,#15,.T.);
+<span class="lineno">47</span>/* Add SDR linking PRODUCT to existing geometry. */
+<span class="lineno">48</span>#9000=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">49</span>#9001=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+<span class="lineno">50</span>#9002=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+<span class="lineno">51</span>#9003=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9000,&#x27;distance_accuracy_value&#x27;,&#x27;&#x27;);
+<span class="lineno">52</span>#9004=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9003))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9000,#9001,#9002))REPRESENTATION_CONTEXT(&#x27;&#x27;,&#x27;3D&#x27;));
+<span class="lineno">53</span>#9010=OPEN_SHELL(&#x27;wrap_shell&#x27;,(#43,#44));
+<span class="lineno">54</span>#9011=SHELL_BASED_SURFACE_MODEL(&#x27;wrap_sbsm&#x27;,(#9010));
+<span class="lineno">55</span>#9020=MANIFOLD_SURFACE_SHAPE_REPRESENTATION(&#x27;&#x27;,(#9011),#9004);
+<span class="lineno">56</span>#9021=SHAPE_DEFINITION_REPRESENTATION(#15,#9020);
+<span class="lineno">57</span>ENDSEC;
+<span class="lineno">58</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Os015.html">&larr; Os015</a> <a class="up" href="index.html">§12.8 Mixed (tessellation, validation properties, etc.)</a> <a class="next" href="Os017.html">Os017 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

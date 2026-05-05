@@ -1,0 +1,55 @@
+ISO-10303-21;
+/* Xp012 - Cross-product: cube CLOSED_SHELL with three coexisting defects:
+ *   reversed face normal, duplicate edge in one wire, and a 1e-3 gap
+ *   between two faces that should share an edge.
+ * Builds on Tsh010 (reversed normal) + Twi-duplicate-class (duplicate
+ *   edge) + Tsh-watertight-class (sub-feature gap). */
+HEADER;
+FILE_DESCRIPTION(('Xp012 cross-product','reversed normal x duplicate edge x gap'),'2;1');
+FILE_NAME('Xp012.stp','2026-04-26T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+/* Cube vertices */
+#10=CARTESIAN_POINT('v0',(0.0,0.0,0.0));
+#11=CARTESIAN_POINT('v1',(1.0,0.0,0.0));
+#12=CARTESIAN_POINT('v2',(1.0,1.0,0.0));
+#13=CARTESIAN_POINT('v3',(0.0,1.0,0.0));
+#14=CARTESIAN_POINT('v4',(0.0,0.0,1.0));
+/* Defect 3: gap - face 5 ends at z=0.999 instead of 1.0 */
+#15=CARTESIAN_POINT('v5_gap',(1.0,0.0,0.999));
+#20=VERTEX_POINT('',#10);
+#21=VERTEX_POINT('',#11);
+#22=VERTEX_POINT('',#12);
+#23=VERTEX_POINT('',#13);
+#24=VERTEX_POINT('',#14);
+#25=VERTEX_POINT('',#15);
+#30=DIRECTION('',(0.0,0.0,1.0));
+#31=DIRECTION('',(1.0,0.0,0.0));
+#32=AXIS2_PLACEMENT_3D('',#10,#30,#31);
+#33=PLANE('',#32);
+#34=DIRECTION('',(1.0,0.0,0.0));
+#35=VECTOR('',#34,1.0);
+#36=LINE('',#10,#35);
+#40=EDGE_CURVE('',#20,#21,#36,.T.);
+#41=ORIENTED_EDGE('',*,*,#40,.T.);
+/* Defect 2: same edge listed twice in one EDGE_LOOP */
+#42=ORIENTED_EDGE('',*,*,#40,.F.);
+#50=EDGE_LOOP('dup',(#41,#42,#41));
+#51=FACE_OUTER_BOUND('',#50,.T.);
+#52=ADVANCED_FACE('face_dup',(#51),#33,.T.);
+/* Defect 1: same_sense flag = .F. on a face that should face outward */
+#60=ADVANCED_FACE('face_reversed',(#51),#33,.F.);
+/* Defect 3: two faces meeting along a line that has a 1e-3 gap */
+#70=LINE('',#15,VECTOR('',#34,1.0));
+#71=EDGE_CURVE('',#25,#21,#70,.T.);
+#72=ORIENTED_EDGE('',*,*,#71,.T.);
+#73=EDGE_LOOP('gap',(#72));
+#74=FACE_OUTER_BOUND('',#73,.T.);
+#75=ADVANCED_FACE('face_gap',(#74),#33,.T.);
+#100=CLOSED_SHELL('',(#52,#60,#75));
+#200=MANIFOLD_SOLID_BREP('cube_with_defects',#100);
+ENDSEC;
+END-ISO-10303-21;

@@ -1,0 +1,28 @@
+/* Ls048 - Complex / multiple-inheritance entity: ancestor leaf omitted
+   ----------------------------------------------------------------------
+   Catalog section : §12.1c complex entity instances
+   ----------------------------------------------------------------------
+   Defect
+     The external mapping of a multiple-inheritance entity must list ALL
+     ancestor leaves, not only the most-specific subtypes. A writer that
+     elides an ancestor (here NAMED_UNIT) produces a record that resolves
+     ambiguously on dispatch.
+   Expected behavior
+     Reject the record (or accept-with-warning and synthesise the
+     missing ancestor) — never silently bind to an arbitrary subset of
+     the type lattice.
+   ----------------------------------------------------------------------
+*/
+ISO-10303-21;
+HEADER;
+FILE_DESCRIPTION(('Ls048 - complex entity ancestor leaf omitted'),'2;1');
+FILE_NAME('Ls048.stp','2026-04-26T00:00:00',('auto-generated'),(''),
+  'auto-generated','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+#9=DIMENSIONAL_EXPONENTS(0.0,0.0,0.0,0.0,0.0,0.0,0.0);
+/* Defect: ancestor leaf NAMED_UNIT omitted from external mapping */
+#40=( CONVERSION_BASED_UNIT('DEG',#9) PLANE_ANGLE_UNIT() );
+ENDSEC;
+END-ISO-10303-21;

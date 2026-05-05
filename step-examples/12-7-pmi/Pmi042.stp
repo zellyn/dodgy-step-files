@@ -1,0 +1,65 @@
+/* Pmi042 - Empty semantic-text string in PMI
+   Defect: A descriptive_representation_item carries name='semantic text'
+   with an empty string ''. NIST SFA report S069 flags producers that
+   emit empty semantic_text instances attached to a tolerance. They
+   inflate PMI counts but provide no information. Receivers should warn
+   and ignore, never reject. This file attaches an empty semantic_text
+   to a perpendicularity tolerance. */
+ISO-10303-21;
+HEADER;
+FILE_DESCRIPTION(('Pmi042 - empty semantic_text string',
+  'CAx-IF Rec.Pracs.---PMI Rep & Pres---v4.1'),'2;1');
+FILE_NAME('Pmi042.stp','2026-04-26T00:00:00',('catalog'),('cad'),
+  'manual','','');
+FILE_SCHEMA(('AP242_MANAGED_MODEL_BASED_3D_ENGINEERING_MIM_LF { 1 0 10303 442 1 1 4 }'));
+ENDSEC;
+DATA;
+#10 = APPLICATION_CONTEXT('managed model based 3d engineering');
+#11 = APPLICATION_PROTOCOL_DEFINITION('international standard',
+  'ap242_managed_model_based_3d_engineering',2020,#10);
+#12 = PRODUCT_CONTEXT('',#10,'mechanical');
+#13 = PRODUCT('Pmi042','EmptySemTextPart','',(#12));
+#14 = PRODUCT_DEFINITION_FORMATION('','',#13);
+#15 = PRODUCT_DEFINITION_CONTEXT('',#10,'design');
+#16 = PRODUCT_DEFINITION('','',#14,#15);
+#17 = PRODUCT_DEFINITION_SHAPE('','',#16);
+#20 = ( LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT(.MILLI.,.METRE.) );
+#22 = ( NAMED_UNIT(*) PLANE_ANGLE_UNIT() SI_UNIT($,.RADIAN.) );
+#23 = ( NAMED_UNIT(*) SI_UNIT($,.STERADIAN.) SOLID_ANGLE_UNIT() );
+#24 = UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#20,
+  'distance_accuracy_value','');
+#25 = ( GEOMETRIC_REPRESENTATION_CONTEXT(3)
+  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#24))
+  GLOBAL_UNIT_ASSIGNED_CONTEXT((#20,#22,#23))
+  REPRESENTATION_CONTEXT('','3D') );
+#30 = CARTESIAN_POINT('',(0.0,0.0,0.0));
+#31 = DIRECTION('',(0.0,0.0,1.0));
+#32 = DIRECTION('',(1.0,0.0,0.0));
+#33 = AXIS2_PLACEMENT_3D('',#30,#31,#32);
+#40 = DATUM('A','primary datum',#17,.T.,'A');
+#41 = DATUM_REFERENCE_ELEMENT('',$,#40);
+#42 = DATUM_REFERENCE_COMPARTMENT('',$,#41);
+#43 = DATUM_SYSTEM('A','',#17,.T.,(#42));
+#50 = SHAPE_ASPECT('face','toleranced face',#17,.T.);
+#51 = DIMENSIONAL_SIZE(#50,'distance');
+#52 = MEASURE_REPRESENTATION_ITEM('nom',LENGTH_MEASURE(20.0),#20);
+#53 = SHAPE_DIMENSION_REPRESENTATION('',(#52),#25);
+/* Geometric tolerance whose semantic_text is empty (defect) */
+#60 = LENGTH_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.05),#20);
+#61 = PERPENDICULARITY_TOLERANCE('perp','',#60,#50,#43);
+/* Defect: empty 'semantic text' descriptive_representation_item */
+#62 = DESCRIPTIVE_REPRESENTATION_ITEM('semantic text','');
+#63 = REPRESENTATION('semantic_text_rep',(#62),#25);
+#64 = PROPERTY_DEFINITION('semantic text','',#50);
+#65 = PROPERTY_DEFINITION_REPRESENTATION(#64,#63);
+#70 = PLUS_MINUS_TOLERANCE(#71,#51);
+#71 = TOLERANCE_VALUE(#72,#73);
+#72 = LENGTH_MEASURE_WITH_UNIT(LENGTH_MEASURE(-0.05),#20);
+#73 = LENGTH_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.05),#20);
+#80 = DRAUGHTING_MODEL('Default',(),#25);
+#81 = PLANE('ann_plane',#33);
+#82 = ANNOTATION_PLANE('PMI',(),#81,(#61));
+#90 = SHAPE_REPRESENTATION('',(#33),#25);
+#91 = SHAPE_DEFINITION_REPRESENTATION(#17,#90);
+ENDSEC;
+END-ISO-10303-21;

@@ -1,0 +1,28 @@
+ISO-10303-21;
+/* M182 - AP238 SETUP_INSTRUCTION sequence with non-monotonic time stamps.
+ * Defect: a sequence of SETUP_INSTRUCTION entities (mount fixture,
+ * locate workpiece, tighten clamps) carries time_stamps in non-monotonic
+ * order: instruction A at 09:00, instruction B at 08:30, instruction C
+ * at 09:15. Either the publisher copied stamps from a different job or
+ * the operator instructions were re-ordered without updating times. */
+HEADER;
+FILE_DESCRIPTION(('M182 test case','AP238 setup-instruction timestamps non-monotonic'),'2;1');
+FILE_NAME('M182.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AP238_STEP_NC_MIM { 1 0 10303 238 1 0 0 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('numerical_control_machining');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
+  'numerical_control_machining',2007,#1);
+#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10))
+     REPRESENTATION_CONTEXT('nc','3D'));
+/* Defect: time stamps go 09:00 -> 08:30 -> 09:15 (non-monotonic). */
+#100=SETUP_INSTRUCTION('mount_vise','2026-05-02T09:00:00');
+#101=SETUP_INSTRUCTION('locate_workpiece','2026-05-02T08:30:00');
+#102=SETUP_INSTRUCTION('tighten_clamps','2026-05-02T09:15:00');
+#150=SETUP('vise_setup',$,$,(#100,#101,#102));
+#200=WORKPLAN('main',(),$,$,$);
+ENDSEC;
+END-ISO-10303-21;

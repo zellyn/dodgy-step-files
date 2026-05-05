@@ -1,0 +1,64 @@
+ISO-10303-21;
+/* Gs053 - Scaled sphere export breaks parameter range
+ * Defect: a scaled sphere is exported as a B_SPLINE_SURFACE_WITH_KNOTS.
+ * The MAPPED_ITEM target carries a parameter range declared as
+ * [0,1]x[0,1] (via BOUNDED_SURFACE wrapper / explicit ranges), but
+ * the underlying knot vectors actually span [0,2*pi]x[0,pi]. The
+ * mismatch between declared parameter range and knot extents is the
+ * defect. */
+HEADER;
+FILE_DESCRIPTION(('Gs053 test case','Scaled sphere export breaks parameter range'),'2;1');
+FILE_NAME('Gs053.stp','2026-04-30T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+#100=CARTESIAN_POINT('origin',(0.0,0.0,0.0));
+#101=DIRECTION('z',(0.0,0.0,1.0));
+#102=DIRECTION('x',(1.0,0.0,0.0));
+#103=AXIS2_PLACEMENT_3D('axes',#100,#101,#102);
+/* Source SPHERICAL_SURFACE inside the mapping source (radius 1.0) */
+#104=SPHERICAL_SURFACE('source_sphere',#103,1.0);
+/* Geometric context for the source representation */
+#105=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#106=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#107=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#108=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+      GLOBAL_UNIT_ASSIGNED_CONTEXT((#105,#106,#107))
+      REPRESENTATION_CONTEXT('source_ctx','3D'));
+/* B-spline approximation of sphere. Sparse 3x3 control net is
+ * sufficient to anchor the knot-vs-parameter mismatch; degree=2 in
+ * both directions. KNOT VECTORS span [0, 2*pi] in U and [0, pi] in V. */
+#110=CARTESIAN_POINT('s00',(1.0,0.0,0.0));
+#111=CARTESIAN_POINT('s01',(0.0,0.0,1.0));
+#112=CARTESIAN_POINT('s02',(-1.0,0.0,0.0));
+#113=CARTESIAN_POINT('s10',(0.0,1.0,0.0));
+#114=CARTESIAN_POINT('s11',(0.0,0.0,1.0));
+#115=CARTESIAN_POINT('s12',(0.0,-1.0,0.0));
+#116=CARTESIAN_POINT('s20',(-1.0,0.0,0.0));
+#117=CARTESIAN_POINT('s21',(0.0,0.0,-1.0));
+#118=CARTESIAN_POINT('s22',(1.0,0.0,0.0));
+#120=B_SPLINE_SURFACE_WITH_KNOTS('sphere_as_bspline',2,2,
+  ((#110,#111,#112),(#113,#114,#115),(#116,#117,#118)),
+  .UNSPECIFIED.,.F.,.F.,.F.,
+  (3,3),(3,3),(0.0,6.283185307179586),(0.0,3.141592653589793),
+  .UNSPECIFIED.);
+/* Defect: BOUNDED_SURFACE wrapper that purports the parameter range
+ * is [0,1]x[0,1] even though the underlying knots above span
+ * [0,2*pi]x[0,pi]. The receiving kernel sees U_max=1, V_max=1 and
+ * scales U values by 1/(2*pi), V by 1/pi; result is wildly wrong. */
+#125=RECTANGULAR_TRIMMED_SURFACE('declared_range_0_1',#120,
+  0.0,0.0,1.0,1.0,.T.,.T.);
+/* Source SHAPE_REPRESENTATION holding the bspline */
+#130=SHAPE_REPRESENTATION('source_rep',(#103,#125),#108);
+#131=REPRESENTATION_MAP(#103,#130);
+/* MAPPED_ITEM scaling the source — defect surfaces here */
+#140=CARTESIAN_POINT('target_origin',(0.0,0.0,0.0));
+#141=DIRECTION('+z',(0.0,0.0,1.0));
+#142=DIRECTION('+x',(2.0,0.0,0.0));
+#143=AXIS2_PLACEMENT_3D('scale_target',#140,#141,#142);
+#144=MAPPED_ITEM('scaled_sphere_param_range_mismatch',#131,#143);
+#150=SHAPE_REPRESENTATION('target_rep',(#143,#144),#108);
+ENDSEC;
+END-ISO-10303-21;

@@ -1,0 +1,939 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>STEP Defect Catalog — Defect class definitions</title>
+  <link rel="stylesheet" href="../assets/style.css">
+  <style>
+    main h2 { margin-top: 2.0em; }
+    main h3 { margin-top: 1.5em; }
+    main p { margin: 0.4em 0; }
+    main ul { margin: 0.4em 0 0.8em 1.2em; }
+    main code { background: #f4f4f4; padding: 0 0.25em; border-radius: 3px; }
+  </style>
+</head>
+<body class="defect-classes">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">Browse</a> <span class="sep">/</span> <span class="current">Defect class definitions</span>
+</nav>
+<main>
+<h1>Defect Class Definitions</h1>
+<p>
+Formal definitions for each defect class in the STEP-Defect Catalog.
+Each definition is 1–3 lines describing the necessary-and-sufficient
+mathematical, structural, or syntactic condition for a fixture to
+exhibit that class.
+</p>
+<p>
+These definitions enable: (a) mechanical detection of unflagged
+instances in the wild; (b) fuzz-input generation that violates the
+definition; (c) precise entry-class taxonomy bookkeeping.
+</p>
+<p>
+For each class:
+</p>
+<ul>
+<li><strong>Definition</strong> — the necessary-and-sufficient condition for the defect.</li>
+<li><strong>Mechanical witness</strong> — how to detect it from a single STEP fixture</li>
+</ul>
+<p>
+  (regex, byte assertion, oracle output, tier-3 measurement).
+</p>
+<ul>
+<li><strong>Spec reference</strong> — when applicable, the ISO 10303 clause that the</li>
+</ul>
+<p>
+  defect violates.
+</p>
+<p>
+Conventions: byte-assertion regexes use Python <code>rb'…'</code> syntax; "oracle
+output" refers to validate2's per-fixture summary fields
+(<code>occt_heal_off</code>, <code>occt_heal_on</code>, <code>gmsh</code>, <code>ifc</code>, <code>diagnostics</code>).
+</p>
+<hr>
+<h2>Top-level taxonomy (15 cross-cutting tags)</h2>
+<p>
+The 15 tags are defined in <code>validation/src/step_corpus/_taxonomy.py</code>.
+Each catalog entry receives 1–3 tags.
+</p>
+<h3>crash</h3>
+<p>
+<strong>Definition</strong>: A fixture causes the consuming kernel to terminate by
+fault (signal-segfault, abort/runtime-error, infinite loop, runaway
+memory) before producing either a parsed shape or a clean rejection
+diagnostic.
+<strong>Mechanical witness</strong>: validate2's <code>occt_heal_off</code> or <code>occt_heal_on</code>
+field contains <code>signal(N)</code> (any N), <code>process_signal</code>, <code>runtime_error</code>,
+or a <code>timeout</code> longer than the kernel's read budget.
+<strong>Spec reference</strong>: not a spec violation per se; a kernel implementation
+defect — but typically <em>triggered</em> by a fixture that violates Part-21
+or Part-42.
+</p>
+<h3>silent-loss</h3>
+<p>
+<strong>Definition</strong>: Loading the fixture produces a model missing one or
+more data elements that exist in the producer's intent (faces, colors,
+labels, transforms, sub-shapes, attribute values, PMI), with <strong>no</strong>
+kernel diagnostic naming the loss.
+<strong>Mechanical witness</strong>: validate2 reports a non-empty <code>shape_count</code> or
+<code>face_count</code> strictly less than the catalog entry's
+<code>expected_shape_count</code> / face count derivable from the fixture's
+explicit entity list, <strong>and</strong> no <code>diagnostics</code> field captures the loss
+(empty diagnostics with reduced shape).
+</p>
+<h3>round-trip</h3>
+<p>
+<strong>Definition</strong>: Defect is invisible on the first load but appears after
+a save → reload cycle through the same kernel; the second-pass model
+differs from the first by added, dropped, or mutated entities.
+<strong>Mechanical witness</strong>: <code>validate2 --save-reload</code> shows
+<code>shape_count_first ≠ shape_count_reload</code> or any structural diff under
+<code>diff_summary</code>. Catalog title contains "round-trip" / "re-export" /
+"after save".
+</p>
+<h3>spec-violation</h3>
+<p>
+<strong>Definition</strong>: The fixture, considered as bytes alone, contradicts a
+normative clause of ISO 10303-21 (Part 21), -42 (geometry / topology),
+-238 (machining), -242 (PMI / AP242 multidisciplinary), or another
+referenced AP. Conformant kernels MUST reject (or heal-with-diagnostic).
+<strong>Mechanical witness</strong>: catalog <code>expected_kernel_behavior</code> contains
+"reject" and <code>sources</code> cites an ISO 10303 / AP203 / AP214 / AP238 /
+AP242 / Part-21 clause; verifiable independently by running an EXPRESS
+schema validator (e.g., stepcode <code>check_express</code>).
+</p>
+<h3>interop</h3>
+<p>
+<strong>Definition</strong>: A fixture that two distinct conformant readers (across
+vendor-A and vendor-B) handle differently — one accepts, one rejects;
+or both accept but produce semantically different models — without the
+fixture itself being unambiguously spec-illegal.
+<strong>Mechanical witness</strong>: validate2 oracle disagreement, e.g.
+<code>occt=accept</code> and <code>gmsh=reject</code>, or `occt.shape_count ≠
+gmsh.shape_count<code>, on a fixture whose </code>expected_validation` line
+encodes this disagreement.
+</p>
+<h3>performance</h3>
+<p>
+<strong>Definition</strong>: The fixture, while semantically modest, drives the
+reader/writer into super-linear (typically Θ(n²) or worse) wall-clock,
+memory, or recursion-depth consumption against an attacker-controlled
+input dimension.
+<strong>Mechanical witness</strong>: validate2 wall-clock or RSS exceeds a
+calibrated baseline (e.g., 10× the same fixture with a smaller <code>n</code>),
+or catalog <code>expected_validation</code> declares a <code>slow=</code> / <code>oom=</code> measure.
+</p>
+<h3>adversarial</h3>
+<p>
+<strong>Definition</strong>: The fixture is intentionally engineered to attack the
+parser, lexer, allocator, or file-system surface (rather than to
+exercise legitimate CAD modelling) — e.g. zip-bomb expansion,
+out-of-bounds index, type confusion, lone surrogate, path traversal in
+external file references.
+<strong>Mechanical witness</strong>: catalog <code>section_dir == "12-11-adversarial"</code>,
+or sub-class is one of `{cyclic-reference / dos, resource-exhaustion /
+dos, type-confusion, null-deref, heap-overflow / fuzz-class}`.
+</p>
+<h3>geometry</h3>
+<p>
+<strong>Definition</strong>: The defect lives in the parametric description of a
+curve, surface, or B-rep face — wrong knot vector, ill-defined NURBS
+basis, missing pcurve, surface-of-revolution with degenerate axis,
+offset curve through a singularity, etc. — without (necessarily)
+breaking topology.
+<strong>Mechanical witness</strong>: catalog `section_dir ∈ {12-2a-pcurves,
+12-2b-nurbs, 12-2c-surfaces}`, or entry references one of the
+parametric-geometry entity types: <code>B_SPLINE_<em></code>, <code>RATIONAL_B_SPLINE_</em></code>,
+<code>OFFSET_CURVE_<em></code>, <code>SURFACE_OF_REVOLUTION</code>, <code></em>_PCURVE</code>.
+</p>
+<h3>topology</h3>
+<p>
+<strong>Definition</strong>: The defect lives in the incidence / orientation /
+connectivity structure of shells, wires, faces, edges, or vertices —
+empty edge loops, dangling edge curves, non-closed manifold solids,
+mis-oriented shell normals, vertex-tolerance budget violations.
+<strong>Mechanical witness</strong>: catalog `section_dir ∈ {12-3a-shells,
+12-3b-wires, 12-3c-faces}<code>, or entry references </code>EDGE_LOOP`,
+<code>ORIENTED_EDGE</code>, <code>FACE_BOUND</code>, <code>VERTEX_LOOP</code>, <code>OPEN_SHELL</code>,
+<code>CLOSED_SHELL</code>, or <code>MANIFOLD_SOLID_BREP</code>.
+</p>
+<h3>pmi</h3>
+<p>
+<strong>Definition</strong>: The defect lives in product manufacturing information —
+GD&amp;T tolerance frames, datum references, dimensions, annotations, saved
+views, AP242 hole / profile / sheet-metal feature definitions — and is
+distinct from the underlying B-rep correctness.
+<strong>Mechanical witness</strong>: catalog <code>section_dir == "12-7-pmi"</code>, or entry
+references <code>DIMENSIONAL_<em></code>, <code>GEOMETRIC_TOLERANCE_</em></code>, <code>DATUM*</code>,
+<code>ANNOTATION_PLANE</code>, <code>*_FEATURE</code> (AP242 hole / counterbore / round /
+slot / pocket), or PMI presentation entities.
+</p>
+<h3>assembly</h3>
+<p>
+<strong>Definition</strong>: The defect lives in the product-assembly graph — the
+NAUO / mapped-item / placement / hierarchy structure that arranges
+sub-products — and would not surface on a single-part fixture.
+<strong>Mechanical witness</strong>: catalog <code>section_dir == "12-6-assembly"</code>, or
+entry references <code>NEXT_ASSEMBLY_USAGE_OCCURRENCE</code>,
+<code>PRODUCT_DEFINITION</code>, <code>SHAPE_REPRESENTATION_RELATIONSHIP</code>,
+<code>ITEM_DEFINED_TRANSFORMATION</code>, <code>CONTEXT_DEPENDENT_SHAPE_REPRESENTATION</code>,
+<code>MAPPED_ITEM</code>.
+</p>
+<h3>encoding</h3>
+<p>
+<strong>Definition</strong>: The defect lives in the byte-level character encoding,
+BOM handling, character-set escape directive (<code>\X\</code>, <code>\X2\</code>, <code>\X4\</code>,
+<code>\PE\</code>, <code>\Q\</code>), or string-literal lexeme — orthogonal to Part-21
+grammar.
+<strong>Mechanical witness</strong>: catalog <code>section_dir == "12-1a-encoding"</code>, or
+fixture begins with a BOM byte (<code>EF BB BF</code>, <code>FE FF</code>, <code>FF FE</code>,
+<code>00 00 FE FF</code>, <code>FF FE 00 00</code>), or contains an <code>\X*\</code> escape directive.
+</p>
+<h3>syntax</h3>
+<p>
+<strong>Definition</strong>: The defect lives in Part-21 grammar / framing /
+tokenisation / instance-numbering — broken <code>ISO-10303-21;</code> magic, malformed
+<code>HEADER</code>/<code>DATA</code>/<code>ENDSEC</code> framing, non-monotonic <code>#NNN</code>, illegal lexemes
+(<code>.TRUE.</code> instead of <code>.T.</code>).
+<strong>Mechanical witness</strong>: catalog `section_dir ∈ {12-1b-header,
+12-1c-syntax}<code>; or a Part-21 grammar parser (e.g., stepcode </code>lazy_step`)
+reports a parse error not attributable to encoding.
+<strong>Spec reference</strong>: ISO 10303-21 §6 (lexical), §7 (data exchange
+structure).
+</p>
+<h3>units</h3>
+<p>
+<strong>Definition</strong>: The defect lives in unit declaration, conversion, or
+context — wrong <code>LENGTH_UNIT</code>, missing <code>CONVERSION_BASED_UNIT</code> mapping,
+coordinate scale mismatch (mm vs inch), derived-unit composition error,
+inconsistent <code>UNCERTAINTY_MEASURE_WITH_UNIT</code>.
+<strong>Mechanical witness</strong>: catalog <code>section_dir == "12-5-units"</code>, or entry
+references <code>*_UNIT</code>, <code>UNCERTAINTY_MEASURE_WITH_UNIT</code>,
+<code>CONVERSION_BASED_UNIT</code>, <code>DIMENSIONAL_EXPONENTS</code>,
+<code>GLOBAL_UNIT_ASSIGNED_CONTEXT</code>.
+</p>
+<h3>writer</h3>
+<p>
+<strong>Definition</strong>: The defect originates on the producer side — at export
+time — independent of any input file: numeric-format inconsistency,
+spurious <code>$</code>/<code>*</code>, schema downgrade on export, dropped colour on
+re-export, instance-numbering chaos.
+<strong>Mechanical witness</strong>: catalog <code>section_dir == "12-13-writer-pathology"</code>,
+or catalog title begins with <code>Re-export …</code>, <code>Writer emits …</code>,
+<code>Producer …</code>.
+</p>
+<hr>
+<h2>Sub-classes</h2>
+<p>
+Sub-classes are declared in each entry's <code>category</code> field as
+<code>§12.x.y (sub-class: &lt;name&gt;)</code>. The catalog has 562 distinct sub-class
+strings across 1282 entries; what follows defines the most frequent
+cross-prefix sub-classes plus one representative sub-class per
+named-prefix group (Le, Lh, Ls, Gp, Gn, Gs, Tsh, Twi, Tfa, N, U, A,
+Pmi, M, Pf, Ad, Hea, Bo, Sw, Fi, Os, In, Gb, Tb, Ps, Xp, Wr).
+</p>
+<h3>sub-class: ap242 feature definition  (count: 31, prefix Pmi)</h3>
+<p>
+<strong>Definition</strong>: An AP242 feature-template entity (<code>ROUND_HOLE</code>,
+<code>COUNTERBORE_HOLE</code>, <code>COUNTERSUNK_HOLE</code>, <code>SLOT</code>, <code>POCKET</code>, <code>RIB</code>, <code>BOSS</code>,
+<code>CHAMFER</code>, <code>EDGE_ROUND</code>, <code>THREAD</code>, …) whose feature parameters are
+absent, malformed, geometrically inconsistent with the host face/solid,
+or contradict the underlying B-rep.
+<strong>Mechanical witness</strong>: regex
+<code>matches(rb'(?:ROUND_HOLE|COUNTERBORE_HOLE|COUNTERSUNK_HOLE|SLOT|POCKET|RIB|BOSS|CHAMFER|EDGE_ROUND|THREAD)\s*\(')</code>
+plus a parameter-vs-geometry oracle (tier-3) that compares feature
+diameter / depth / location to the host shell extents.
+<strong>Spec reference</strong>: ISO 10303-242:2014 §6.
+</p>
+<h3>sub-class: ap238 deep machining  (count: 23, prefix M)</h3>
+<p>
+<strong>Definition</strong>: An AP238 STEP-NC machining feature
+(<code>MACHINING_OPERATION</code>, <code>MILLING_<em></code>, <code>TURNING_</em></code>, <code>DRILLING_*</code>,
+toolpath, workpiece-setup) with missing or geometrically inconsistent
+parameters — cut depth exceeding workpiece, inverted feed direction,
+toolpath escaping the bounding workpiece, missing fixture/setup.
+<strong>Mechanical witness</strong>: regex
+<code>matches(rb'(?:MACHINING_OPERATION|MILLING_|TURNING_|DRILLING_|TOOLPATH)')</code>
+plus tier-3 toolpath/workpiece consistency check.
+<strong>Spec reference</strong>: ISO 10303-238.
+</p>
+<h3>sub-class: semantic-vs-graphic  (count: 20, prefix Pmi)</h3>
+<p>
+<strong>Definition</strong>: PMI is exported in graphic-only form (just polylines or
+tessellation) when AP242 mandates a <em>semantic</em> representation
+(<code>DRAUGHTING_<em></code> with backing <code>SHAPE_ASPECT</code> / <code>DIMENSIONAL_</em></code>), or vice
+versa, leaving the dimension or tolerance machine-unreadable.
+<strong>Mechanical witness</strong>: presence of <code>ANNOTATION_OCCURRENCE</code> /
+polyline-only PMI without a paired
+<code>DIMENSIONAL_LOCATION</code>/<code>DIMENSIONAL_SIZE</code> linking
+<code>SHAPE_ASPECT</code> to geometry.
+</p>
+<h3>sub-class: shape-healing  (count: 13, prefix Hea)</h3>
+<p>
+<strong>Definition</strong>: A fixture intentionally exercising a healing pipeline
+(ShapeFix tools: <code>Solid</code>, <code>Shell</code>, <code>Wire</code>, <code>Edge</code>, <code>Face</code>,
+<code>SameParameter</code>, <code>FixSmallSolid</code>, …); the defect requires the healer to
+converge on a multi-defect input or to refuse a degenerate one.
+<strong>Mechanical witness</strong>: catalog <code>category</code> references <code>Hea*</code>; entry
+title contains <code>healing</code> / <code>ShapeFix</code> / <code>heal-pipeline</code>.
+</p>
+<h3>sub-class: round-trip data loss  (count: 9, prefix Wr)</h3>
+<p>
+<strong>Definition</strong>: On <code>save → reload</code> cycling through the same kernel,
+specific data classes silently disappear: face/solid colours, feature
+labels, product names, persistent ids, supplemental geometry, PMI.
+<strong>Mechanical witness</strong>: validate2 reload-diff shows
+<code>{colors,labels,names,…}</code> cardinality strictly decreasing across the
+round-trip.
+</p>
+<h3>sub-class: tessellation  (count: 9, prefix M)</h3>
+<p>
+<strong>Definition</strong>: An entity from the AP242 tessellation hierarchy
+(<code>TESSELLATED_SOLID</code>, <code>TRIANGULATED_FACE</code>,
+<code>TESSELLATED_SHAPE_REPRESENTATION</code>,
+<code>TESSELLATED_CONNECTING_EDGE</code>) with structurally-illegal contents —
+free-edge stand-alone tessellation, illegal <code>axis2_placement_3d</code> in
+representation, wrong-edition entity use.
+<strong>Mechanical witness</strong>: regex
+<code>matches(rb'(?:TESSELLATED_|TRIANGULATED_|COMPLEX_TRIANGULATED_)')</code>
+plus a tessellation-schema check.
+</p>
+<h3>sub-class: header / vendor metadata  (count: 6, prefix Wr)</h3>
+<p>
+<strong>Definition</strong>: A <code>FILE_DESCRIPTION</code> / <code>FILE_NAME</code> / <code>FILE_SCHEMA</code> /
+<code>HEADER</code> field carries vendor-private encoding, conflicts with
+<code>DATA</code>-section content (e.g., schema declared in HEADER but used as
+something else), or leaks producer-only metadata that downstream readers
+special-case.
+<strong>Mechanical witness</strong>: byte-region scan within <code>ISO-10303-21;</code>
+header section (between <code>HEADER;</code> and <code>ENDSEC;</code>).
+</p>
+<h3>sub-class: <code>\x2\</code> directive  (count: 6, prefix Le)</h3>
+<p>
+<strong>Definition</strong>: A string literal containing a malformed <code>\X2\…\X0\</code>
+(UCS-2) escape — wrong number of hex digits per code point, lone
+surrogate, endianness confusion, or missing terminator.
+<strong>Mechanical witness</strong>: regex
+<code>matches(rb"\\X2\\(?:(?![0-9A-F]{4}).{0,3}\\X0\\|[0-9A-F]{0,3}(?:\\X0\\|$)|[0-9A-F]+\\X0\\)")</code>
+or a stricter check that each block between <code>\X2\</code> and <code>\X0\</code> has a
+length divisible by 4.
+<strong>Spec reference</strong>: ISO 10303-21 §6.4.4.
+</p>
+<h3>sub-class: saved-view  (count: 6, prefix Pmi)</h3>
+<p>
+<strong>Definition</strong>: PMI entities whose visibility / locator (<code>MDGPR</code>,
+<code>DRAUGHTING_MODEL</code>, <code>CAMERA_MODEL_D3</code>, <code>MODEL_GEOMETRIC_VIEW</code>,
+supplemental-geometry split) is ambiguous, missing, or split across
+multiple representations.
+<strong>Mechanical witness</strong>: presence of <code>MDGPR</code>, <code>DRAUGHTING_MODEL</code>, or
+<code>CAMERA_MODEL_D3</code> plus a multi-anchor scan.
+</p>
+<h3>sub-class: persistent-id  (count: 6, prefix Pmi)</h3>
+<p>
+<strong>Definition</strong>: An <code>id_attribute</code> value (UUID-like) is shared across
+mutually-exclusive <code>SHAPE_ASPECT</code> / <code>DIMENSIONAL_LOCATION</code> /
+<code>DIMENSIONAL_SIZE</code> instances, or is duplicated across distinct
+<code>identified_item</code>s — breaking the contract that a persistent id
+uniquely names one logical artefact.
+<strong>Mechanical witness</strong>: aggregate scan: count occurrences of each
+distinct <code>id_attribute</code> string; any value with cardinality &gt; 1 across
+non-aliased entities is the witness.
+</p>
+<h3>sub-class: datum-frame  (count: 6, prefix Pmi)</h3>
+<p>
+<strong>Definition</strong>: A datum-reference frame contains identical or
+non-unique datum letters within a product, or references datums that do
+not exist, breaking the GD&amp;T datum-frame uniqueness invariant.
+<strong>Mechanical witness</strong>: parse <code>DATUM_REFERENCE</code> chains; assert
+distinct datum-letter set per <code>GEOMETRIC_TOLERANCE</code> instance.
+<strong>Spec reference</strong>: ASME Y14.5 / ISO 1101.
+</p>
+<h3>sub-class: validation-property  (count: 6, prefix M)</h3>
+<p>
+<strong>Definition</strong>: A <code>GEOMETRIC_VALIDATION_PROPERTY</code> (volume, surface
+area, centroid) is declared but its claimed value disagrees with a
+direct measurement of the underlying geometry (or is attached at the
+wrong representation level — e.g. geometry-only, invisible to
+PDM-readers).
+<strong>Mechanical witness</strong>: tier-3 measure: compute volume / surface-area
+on the loaded shape; compare to declared <code>volume_measure</code> /
+<code>area_measure</code> to within ε.
+</p>
+<h3>sub-class: appearance  (count: 6, prefix M)</h3>
+<p>
+<strong>Definition</strong>: A <code>STYLED_ITEM</code> entity is unparented under
+<code>MECHANICAL_DESIGN_GEOMETRIC_PRESENTATION_REPRESENTATION</code> (MDGPR) or
+<code>DRAUGHTING_MODEL</code>, its <code>item</code> slot is <code>$</code> / dangling, or the styling
+chain (<code>SURFACE_STYLE_USAGE</code>, <code>FILL_AREA_STYLE_COLOUR</code>) is broken.
+<strong>Mechanical witness</strong>: regex <code>matches(rb'STYLED_ITEM\(')</code> plus
+parent-context check.
+</p>
+<h3>sub-class: dependency-depth  (count: 5, prefix Pf)</h3>
+<p>
+<strong>Definition</strong>: A fixture whose entity-reference graph has worst-case
+chain depth far exceeding typical production files (e.g., 200+
+sequential entity hops for `ADVANCED_FACE → FACE_BOUND → EDGE_LOOP →
+ORIENTED_EDGE → EDGE_CURVE → …`), driving recursive readers into
+quadratic or stack-blowing behaviour.
+<strong>Mechanical witness</strong>: tier-3 entity-graph: longest simple path from
+top-level shape to a leaf (<code>CARTESIAN_POINT</code>, <code>DIRECTION</code>) exceeds
+threshold (e.g., &gt; 64).
+</p>
+<h3>sub-class: whitespace/line-ending  (count: 5, prefix Wr)</h3>
+<p>
+<strong>Definition</strong>: Anomalous whitespace / line-ending in the file body —
+trailing spaces on every record, mixed CRLF/LF, multiple consecutive
+blank lines, missing final newline, or stray NUL bytes.
+<strong>Mechanical witness</strong>: byte scan: <code>matches(rb'[ \t]+\r?\n')</code> for
+trailing whitespace; <code>matches(rb'\r\n')</code> AND <code>matches(rb'(?&lt;!\r)\n')</code>
+within one file for mixed line endings.
+</p>
+<h3>sub-class: instance numbering  (count: 5, prefix Wr)</h3>
+<p>
+<strong>Definition</strong>: <code>#NNN</code> instance numbers are non-monotonic, contain
+gaps, are randomly shuffled, or use forward references where the
+producer convention guarantees sequential definition before use.
+<strong>Mechanical witness</strong>: parse all <code>#N=</code> definitions; assert N is
+strictly increasing or that the first reference to <code>#N</code> does not
+precede its <code>#N=</code> definition (where the section's convention demands
+backward references).
+</p>
+<h3>sub-class: ap242 feature definition / sheet-metal  (count: 5, prefix Pmi)</h3>
+<p>
+<strong>Definition</strong>: <code>FLAT_PATTERN</code>, <code>BEND</code>, <code>LOUVER</code>, sheet-metal feature
+whose parameters violate physical constraints — bend angle ≥ 180°,
+bend radius &lt; material thickness, hem-fold inside-out.
+<strong>Mechanical witness</strong>: parameter-vs-thickness consistency check.
+<strong>Spec reference</strong>: ISO 10303-242 sheet-metal application objects.
+</p>
+<h3>sub-class: ap242 feature definition / profile  (count: 5, prefix Pmi)</h3>
+<p>
+<strong>Definition</strong>: A <code>PROFILE_FEATURE</code> whose <code>PROFILE_FLOOR</code> is non-closed
+(open polyline used as boundary), self-intersecting (figure-eight loop),
+or has wrong-orientation outer-vs-inner profile.
+<strong>Mechanical witness</strong>: <code>matches(rb'PROFILE_FEATURE\(')</code> plus
+2D-loop closure &amp; self-intersection check.
+</p>
+<h3>sub-class: supplemental  (count: 5, prefix M)</h3>
+<p>
+<strong>Definition</strong>: Supplemental geometry (bound vs unbound planes / lines
+for PMI anchors, saved-view supplemental sets) split across multiple
+CGRs or attached at a level invisible to one class of reader.
+<strong>Mechanical witness</strong>: scan <code>SUPPLEMENTAL_GEOMETRY_*</code> references;
+verify all are anchored under a single CGR per saved view.
+</p>
+<h3>sub-class: mesh-as-brep  (count: 5, prefix M)</h3>
+<p>
+<strong>Definition</strong>: An STL-derived <code>TESSELLATED_SOLID</code> /
+<code>TRIANGULATED_FACE</code> is exported as if it were a B-rep, or a
+mesh-to-NURBS face has inner <code>FACE_BOUND</code> extending outside its
+<code>FACE_OUTER_BOUND</code>.
+<strong>Mechanical witness</strong>: regex <code>matches(rb'TESSELLATED_SOLID')</code> AND
+<code>matches(rb'MANIFOLD_SOLID_BREP')</code> in the same file, OR inner-bound /
+outer-bound containment failure.
+</p>
+<h3>sub-class: schema-validation  (count: 4, prefix Ad)</h3>
+<p>
+<strong>Definition</strong>: An entity violates an EXPRESS schema constraint — wrong
+attribute count, wrong attribute type, illegal enumeration value,
+illegal <code>WHERE</code>-rule outcome — that an EXPRESS-aware reader should
+catch.
+<strong>Mechanical witness</strong>: stepcode <code>check_express</code> reports a non-zero
+violation count.
+<strong>Spec reference</strong>: ISO 10303-11 (EXPRESS).
+</p>
+<h3>sub-class: numeric formatting  (count: 4, prefix Wr)</h3>
+<p>
+<strong>Definition</strong>: Floating-point literals within one file are formatted
+inconsistently (mixing scientific and fixed, varying precision, <code>1.</code>
+vs <code>1.0</code>, <code>+0.0</code> vs <code>0.0</code>) or lose precision after round-trip.
+<strong>Mechanical witness</strong>: byte scan of all <code>[+-]?\d+\.\d*(?:[eE][+-]?\d+)?</code>
+matches; assert single canonical formatting style.
+</p>
+<h3>sub-class: lesser-known directives  (count: 4, prefix Le)</h3>
+<p>
+<strong>Definition</strong>: A string literal uses a rarely-supported escape
+directive (<code>\PE\</code> page-shift, <code>\Q\x</code> quote, <code>\F\</code> font-shift,
+<code>\N\</code> line-break, <code>\T\</code> tab, <code>\S\</code> capital, <code>\Pn\</code> ISO-8859-n) that many
+readers fall through with no warning.
+<strong>Mechanical witness</strong>: regex
+<code>matches(rb"\\(?:PE|Pn|Q[A-F0-9]|F|N|T|S)\\")</code> (note: must
+distinguish from in-string literal <code>\\</code>).
+<strong>Spec reference</strong>: ISO 10303-21 §6.4.
+</p>
+<h3>sub-class: multi-section  (count: 4, prefix Lh)</h3>
+<p>
+<strong>Definition</strong>: A multi-DATA-section Part-21 file with cross-section
+references via <code>@section_name#NNN</code>, ambiguous local <code>#NNN</code> reuse, or a
+section name that fails the lexical conformance rules.
+<strong>Mechanical witness</strong>: <code>matches(rb'DATA;')</code> with cardinality &gt; 1 plus
+<code>matches(rb'@\w+#\d+')</code>.
+</p>
+<h3>sub-class: gap-analysis  (count: 4, prefix Twi)</h3>
+<p>
+<strong>Definition</strong>: A wire / loop with multiple junction gaps that a
+gap-analysis must enumerate exhaustively (3D between successive edges,
+or 2D between successive pcurves).
+<strong>Mechanical witness</strong>: tier-3 gap-enumeration over all consecutive
+<code>ORIENTED_EDGE</code> pairs in each <code>EDGE_LOOP</code>; expected count &gt; 1.
+</p>
+<h3>sub-class: annotation-plane  (count: 4, prefix Pmi)</h3>
+<p>
+<strong>Definition</strong>: An <code>ANNOTATION_PLANE</code> is ambiguous (<code>plane</code> vs
+<code>planar_box</code>), the annotation geometry sits non-parallel to the declared
+plane (offset &gt; ε), or the plane is misaligned to the annotated face.
+<strong>Mechanical witness</strong>: tier-3 normal-vs-annotation-vector check.
+</p>
+<h3>sub-class: multi-pass-healing  (count: 3, prefix Pf)</h3>
+<p>
+<strong>Definition</strong>: Iterative <code>ShapeFix</code> passes expose a new defect each
+pass without converging — unbounded healing — or trigger an infinite
+loop on self-intersection healing of a crossed <code>EDGE_LOOP</code>.
+<strong>Mechanical witness</strong>: instrumented healer pass count exceeds
+threshold (e.g., &gt; 8) or the fix-defect count is non-decreasing across
+two consecutive passes.
+</p>
+<h3>sub-class: cyclic-reference / dos  (count: 3, prefix Ad)</h3>
+<p>
+<strong>Definition</strong>: Entity references form a cycle (<code>#A → #B → #A</code>,
+direct or transitive) that drives a naive recursive reader into
+infinite recursion; or a STEP file whose <code>EXTERNAL_FILE</code> reference
+points back to itself.
+<strong>Mechanical witness</strong>: build the entity-reference DAG; report any
+strongly-connected component of size ≥ 2.
+</p>
+<h3>sub-class: optional-parameter abuse  (count: 3, prefix Wr)</h3>
+<p>
+<strong>Definition</strong>: A spurious <code>$</code> (NULL) appears where the schema requires
+a value (omitted required parameter) or <code>*</code> (overridden) appears where
+the schema does not allow it.
+<strong>Mechanical witness</strong>: per-entity: parse the parameter list and
+compare against schema arity / OPTIONAL flags; flag any required slot
+matching <code>\$</code> or any non-OPTIONAL slot matching <code>\*</code>.
+<strong>Spec reference</strong>: ISO 10303-21 §11.2.
+</p>
+<h3>sub-class: lexeme conformance  (count: 3, prefix Le/Wr)</h3>
+<p>
+<strong>Definition</strong>: A lexeme is in non-canonical form — <code>.TRUE.</code> / <code>.FALSE.</code>
+instead of <code>.T.</code> / <code>.F.</code>, lowercase enumeration, leading-zero integer
+where the spec mandates none.
+<strong>Mechanical witness</strong>: byte-regex <code>matches(rb'\.TRUE\.|\.FALSE\.')</code>
+or <code>matches(rb'\.[a-z][a-z_]*\.')</code>.
+<strong>Spec reference</strong>: ISO 10303-21 §6.4.
+</p>
+<h3>sub-class: units / coordinate scale  (count: 3, prefix Wr)</h3>
+<p>
+<strong>Definition</strong>: Inch unit is declared in <code>LENGTH_UNIT</code> context but
+coordinates are emitted in millimetres (or vice versa); or the unit
+name was changed without rescaling coordinate values.
+<strong>Mechanical witness</strong>: tier-3 measure: compare bounding-box scale
+against declared unit's nominal magnitude. Mismatch ≥ 25× is a strong
+witness for inch-vs-mm.
+</p>
+<h3>sub-class: numeric character reference  (count: 3, prefix Le)</h3>
+<p>
+<strong>Definition</strong>: A <code>\Q\</code> numeric-character-reference encodes a code
+point outside U+0000–U+10FFFF, inside the UTF-16 surrogate range
+(U+D800–U+DFFF), or with malformed hex (non-hex digits, missing
+terminator).
+<strong>Mechanical witness</strong>: regex <code>matches(rb"\\Q\\([0-9A-Fa-f]+)")</code>
+followed by code-point-range check.
+<strong>Spec reference</strong>: ISO 10303-21 §6.4.4.
+</p>
+<h3>sub-class: continuity  (count: 3, prefixes Gp, Gs)</h3>
+<p>
+<strong>Definition</strong>: A composite curve / B-spline has a C0 internal break
+that downstream tools cannot ingest, or composite-curve segments do
+not meet within <code>connectivity_tolerance</code>.
+<strong>Mechanical witness</strong>: tier-3 derivative-evaluation: compute left/right
+tangent at every internal join; flag pairs with tangent angle &gt; θ_C¹.
+</p>
+<h3>sub-class: pipeline  (count: 3, prefixes Tsh, Twi, Tfa)</h3>
+<p>
+<strong>Definition</strong>: A multi-defect topology fixture that requires an
+<em>ordered</em> sequence of healing operations (e.g.,
+reorder → connect → close, or face-by-face heal → shell-wide heal); any
+out-of-order pipeline produces a worse model.
+<strong>Mechanical witness</strong>: catalog notes describe the required ordering;
+permuting healer phases changes the result.
+</p>
+<h3>sub-class: tolerance ballooning by healing  (count: 3, prefix N)</h3>
+<p>
+<strong>Definition</strong>: A wireframe gap-fix or face-merge inflates the
+shared-vertex tolerance to the worst input value, in lieu of bridging
+the actual geometric gap — the model is "valid" only by virtue of an
+inflated tolerance.
+<strong>Mechanical witness</strong>: post-heal <code>vertex_tolerance</code> strictly larger
+than the pre-heal max input tolerance, on a fixture whose intent is to
+force this.
+</p>
+<h3>sub-class: sameparameter  (count: 3, prefix N)</h3>
+<p>
+<strong>Definition</strong>: An edge has its <code>same_parameter</code> flag asserted, yet its
+3D curve and any of its pcurves disagree at sampled parameters by more
+than ε; or splitting a closed periodic face leaves new edges with
+reversed pcurve vs 3D-curve sense.
+<strong>Mechanical witness</strong>: tier-3 sampling: at N parameter values, evaluate
+3D curve and pcurve-on-surface; flag deviations &gt; ε.
+</p>
+<h3>sub-class: derived-unit composition  (count: 3, prefix U)</h3>
+<p>
+<strong>Definition</strong>: A derived unit (<code>Pa</code> = <code>kg·m⁻¹·s⁻²</code>, <code>Pa·s</code>,
+<code>N·m</code>, …) is built from an explicit <code>DERIVED_UNIT</code> /
+<code>DERIVED_UNIT_ELEMENT</code> chain that does not balance to the claimed
+unit's <code>DIMENSIONAL_EXPONENTS</code>.
+<strong>Mechanical witness</strong>: parse <code>DERIVED_UNIT_ELEMENT</code> exponent vector;
+compare to declared unit's <code>DIMENSIONAL_EXPONENTS</code>.
+<strong>Spec reference</strong>: ISO 10303-41.
+</p>
+<h3>sub-class: hole-feature  (count: 3, prefix Pmi)</h3>
+<p>
+<strong>Definition</strong>: A hole feature (counterbore / countersink) is emitted
+as separate uncombined dimensions with no compound-feature link, or an
+AP242 <code>*_HOLE</code> feature is missing required attributes.
+<strong>Mechanical witness</strong>: scan for <code>COUNTERBORE_HOLE</code> / <code>COUNTERSUNK_HOLE</code>
+without backing <code>COMPOUND_FEATURE</code> / <code>*_HOLE</code> group.
+</p>
+<h3>sub-class: datum-targets  (count: 3, prefix Pmi)</h3>
+<p>
+<strong>Definition</strong>: A <code>placed_datum_target_feature</code> has a target dimension
+of zero, has a shape that mismatches the datum-target type (e.g., area
+target with a point shape), or its placement falls outside the host
+face.
+<strong>Mechanical witness</strong>: parse <code>DATUM_TARGET</code> dimension/shape; assert
+non-zero and type-consistent.
+</p>
+<h3>sub-class: validation property  (count: 3, prefix Pmi)</h3>
+<p>
+<strong>Definition</strong>: A <code>GEOMETRIC_VALIDATION_PROPERTY</code> claims a volume,
+surface area, or centroid that disagrees with a tier-3 measurement
+of the loaded shape — the <em>self-check</em> validation property is wrong.
+<strong>Mechanical witness</strong>: tier-3 measurement of volume/area/centroid;
+compare against declared value to within ε.
+</p>
+<h3>sub-class: file-size / oom  (count: 2, prefix Pf)</h3>
+<p>
+<strong>Definition</strong>: A multi-GB STEP file (or a small file with massive
+entity-count amplification) drives the receiver into unbounded resident
+memory.
+<strong>Mechanical witness</strong>: validate2 RSS or wall-clock ≥ catalog-declared
+threshold; or <code>entity_count : file_size</code> ratio &gt; 10⁵.
+</p>
+<h3>sub-class: schema-validation / null-deref  (count: 2, prefix Ad)</h3>
+<p>
+<strong>Definition</strong>: An empty aggregate appears where the schema requires
+≥ 1 element (<code>EDGE_LOOP(())</code>, empty wire, empty entity-iterator) and a
+naive reader dereferences the (non-existent) first element.
+<strong>Mechanical witness</strong>: regex
+<code>matches(rb'EDGE_LOOP\s<em>\(\s</em>\x27[^\x27]<em>\x27\s</em>,\s<em>\(\s</em>\)\s*\)')</code>,
+or analogous for other aggregates.
+<strong>Spec reference</strong>: ISO 10303-42 §EDGE_LOOP <code>WHERE</code> rule
+(<code>SIZEOF(edge_list) &gt; 0</code>).
+</p>
+<h3>sub-class: resource-exhaustion / dos  (count: 2, prefix Ad)</h3>
+<p>
+<strong>Definition</strong>: A "STEP zip-bomb" style file — small bytes-on-disk but
+10⁶+ tiny entities or schema-EXPRESS rule recursion that exhausts
+memory or stack.
+<strong>Mechanical witness</strong>: entity count divided by file-size byte-count
+exceeds threshold (e.g., &gt; 10⁴ entities/MB).
+</p>
+<h3>sub-class: type-confusion  (count: 2, prefix Ad)</h3>
+<p>
+<strong>Definition</strong>: An entity reference has the right syntactic form but
+the wrong dynamic type — a <code>CARTESIAN_POINT</code> reference used where a
+<code>DIRECTION</code> is required, or a <code>NEXT_ASSEMBLY_USAGE_OCCURRENCE</code> slotted
+where a <code>PRODUCT_DEFINITION_SHAPE</code> is required.
+<strong>Mechanical witness</strong>: per-attribute: resolve target entity, compare
+its keyword against the schema's declared type for that attribute slot.
+</p>
+<h3>sub-class: null-deref  (count: 2+, prefix Ad)</h3>
+<p>
+<strong>Definition</strong>: A reference to a non-existent entity number (negative,
+out-of-range, or unallocated) that a naive reader dereferences;
+or a <code>$</code> slot in a position where the reader does not check before
+dereferencing.
+<strong>Mechanical witness</strong>: build the <code>#N</code> definition set; report any
+reference whose target is not in the set.
+</p>
+<h3>sub-class: construction-residue  (count: 2, prefix Wr)</h3>
+<p>
+<strong>Definition</strong>: Re-output of intermediate construction entities
+(orphan geometry, <code>SHAPE_DEFINITION_REPRESENTATION</code> chains with no
+backing geometry, scratch lines/points left over from CSG modelling).
+<strong>Mechanical witness</strong>: graph reachability: count entities not
+reachable from any top-level <code>*_REPRESENTATION</code>.
+</p>
+<h3>sub-class: schema downgrade  (count: 2, prefix Wr)</h3>
+<p>
+<strong>Definition</strong>: An AP242 input is exported as AP203 (or similar
+schema downgrade), losing entities not representable in the target
+schema; or <code>FILE_SCHEMA</code> declares a non-existent schema version.
+<strong>Mechanical witness</strong>: compare <code>FILE_SCHEMA</code> against producer's
+declared origin schema; entity-loss diff against original.
+</p>
+<h3>sub-class: unit / coordinate  (count: 2, prefix Wr)</h3>
+<p>
+<strong>Definition</strong>: Coordinate-system axis swap (Y-up vs Z-up) is applied
+without notification, or a coordinate scale-factor is applied twice
+(model 1000× larger or smaller than expected).
+<strong>Mechanical witness</strong>: bounding-box / orientation comparison against
+declared <code>axis2_placement_3d</code> triad.
+</p>
+<h3>sub-class: bom  (count: 2, prefix Le)</h3>
+<p>
+<strong>Definition</strong>: A UTF-16 / UTF-32 BOM (<code>FE FF</code>, <code>FF FE</code>,
+<code>00 00 FE FF</code>, <code>FF FE 00 00</code>) appears at file start, where a UTF-8 BOM
+(<code>EF BB BF</code>) is occasionally tolerated but multi-byte BOMs are spec-illegal.
+<strong>Mechanical witness</strong>: <code>bytes_starts_with</code> one of the listed BOM byte
+sequences.
+<strong>Spec reference</strong>: ISO 10303-21 §6.1, §6.4.4.
+</p>
+<h3>sub-class: control characters / framing  (count: 2, prefix Le)</h3>
+<p>
+<strong>Definition</strong>: Inline control characters — newline inside an
+unterminated literal, NUL bytes, DOS <code>\r\n</code> mixed with Unix <code>\n</code> — that
+naïvely-tokenising parsers either silently concatenate across or fault on.
+<strong>Mechanical witness</strong>: scan tokenised string-literal byte-spans for
+<code>\x00</code>, <code>\n</code>, <code>\r</code> not at literal-end.
+</p>
+<h3>sub-class: numeric literal  (count: 2, prefix Le)</h3>
+<p>
+<strong>Definition</strong>: A REAL literal lies at IEEE-754 subnormal /
+minimum-normal / maximum boundaries, or exceeds the double range
+(overflow → <code>+Inf</code> / underflow → <code>0.0</code>).
+<strong>Mechanical witness</strong>: tokenize each REAL literal; flag values
+≤ 2.2250738585072014e-308 (denormal boundary) or
+≥ 1.7976931348623157e+308 (max normal).
+</p>
+<h3>sub-class: reference  (count: 2, prefix Lh)</h3>
+<p>
+<strong>Definition</strong>: A <code>REFERENCE</code> section points at an unresolvable
+external anchor, or contains URIs of mixed schemes including
+unsupported ones (e.g., <code>gopher://</code>, <code>data:</code> with executable content).
+<strong>Mechanical witness</strong>: parse <code>REFERENCE</code> section; resolve each URI;
+flag failed resolutions or scheme not in <code>{file, http, https}</code>.
+</p>
+<h3>sub-class: signature  (count: 2, prefix Lh)</h3>
+<p>
+<strong>Definition</strong>: The <code>SIGNATURE</code> section is positioned before any
+<code>DATA;</code> (signature-over-empty-content), or names an unknown signature
+algorithm, or fails verification.
+<strong>Mechanical witness</strong>: section-order scan; algorithm whitelist check.
+</p>
+<h3>sub-class: offset curve  (count: 2, prefix Gs)</h3>
+<p>
+<strong>Definition</strong>: An <code>OFFSET_CURVE_3D</code> / <code>OFFSET_CURVE_2D</code> has
+<code>ref_distance</code> equal to the basis curve's local radius of curvature
+(producing a singularity), or a sign of <code>ref_distance</code> flipping
+mid-composite-curve chain.
+<strong>Mechanical witness</strong>: tier-3: at sampled t, compute <code>1/κ(t)</code> and
+compare to <code>ref_distance</code>; flag |1/κ - d| &lt; ε.
+<strong>Spec reference</strong>: ISO 10303-42 <code>OFFSET_CURVE_3D</code>.
+</p>
+<h3>sub-class: shell completeness  (count: 2, prefix Bo)</h3>
+<p>
+<strong>Definition</strong>: The outer shell of a <code>MANIFOLD_SOLID_BREP</code> is empty
+(zero faces), or the <code>outer</code> reference dangles to a non-existent
+<code>*_SHELL</code> entity.
+<strong>Mechanical witness</strong>: regex
+<code>matches(rb'MANIFOLD_SOLID_BREP\s<em>\(\s</em>\x27[^\x27]<em>\x27\s</em>,\s<em>#\d+\s</em>\)')</code>
+plus resolve target shell — assert face count &gt; 0.
+<strong>Spec reference</strong>: ISO 10303-42 <code>MANIFOLD_SOLID_BREP</code> <code>WHERE</code> rules.
+</p>
+<h3>sub-class: fast-sewing prerequisite  (count: 2, prefix Sw)</h3>
+<p>
+<strong>Definition</strong>: A "fast-sewing" face has a NULL surface reference, or
+its host surface has infinite extent — both prerequisites for the fast
+sewing path must hold for the operation to be safe.
+<strong>Mechanical witness</strong>: scan <code>ADVANCED_FACE.face_geometry</code>; flag <code>$</code> or
+unbounded surface (e.g., <code>PLANE</code> without bounding curves).
+</p>
+<h3>sub-class: edge consistency  (count: 2, prefix Twi)</h3>
+<p>
+<strong>Definition</strong>: An <code>EDGE_CURVE</code>'s 3D curve evaluation does not match
+its declared end vertices (<code>edge_start</code> / <code>edge_end</code>) within ε, or it
+has only a pcurve and no 3D space curve.
+<strong>Mechanical witness</strong>: tier-3: evaluate <code>EDGE_CURVE.edge_geometry</code> at
+its parameter endpoints, compare to <code>edge_start.vertex_geometry</code> and
+<code>edge_end.vertex_geometry</code>.
+</p>
+<h3>sub-class: tolerance budget  (count: 2, prefix Twi)</h3>
+<p>
+<strong>Definition</strong>: A vertex tolerance is smaller than the largest
+endpoint-discrepancy among edges meeting at that vertex — the budget is
+under-allocated and a tolerant kernel must inflate or refuse.
+<strong>Mechanical witness</strong>: per-vertex: compute max distance from each
+incident edge's endpoint to the shared vertex point; assert ≤ vertex
+tolerance.
+</p>
+<h3>sub-class: knot vector  (count: 1, prefix Gn)</h3>
+<p>
+<strong>Definition</strong>: A B-spline curve / surface has a knot vector violating
+the non-decreasing rule, with the wrong cumulative multiplicity for the
+declared degree, or with a clamping mismatch between knots and
+multiplicities arrays.
+<strong>Mechanical witness</strong>: parse <code>B_SPLINE_*.knots</code> and <code>knot_multiplicities</code>;
+verify <code>len(knots) == len(multiplicities)</code>, <code>sum(mults) == n + degree + 1</code>,
+and strict non-decrease.
+<strong>Spec reference</strong>: ISO 10303-42 <code>B_SPLINE_CURVE</code>.
+</p>
+<h3>sub-class: missing pcurve  (count: 1, prefix Gp)</h3>
+<p>
+<strong>Definition</strong>: A <code>SURFACE_CURVE</code> lacks an <code>associated_geometry</code>
+pcurve on a face that requires it, or all listed pcurves disagree
+with the 3D curve at sampled parameters.
+<strong>Mechanical witness</strong>: scan <code>SURFACE_CURVE.associated_geometry</code>;
+require <code>≥ 1</code> <code>PCURVE</code> per surface that the curve lies on.
+</p>
+<h3>sub-class: pathological-success / signed-volume  (count: 1, prefix Ps)</h3>
+<p>
+<strong>Definition</strong>: A solid that passes structural validation but whose
+signed volume (oriented integral of outward normal) is negative or
+zero — the solid is inverted or void-collapsed but reports as valid.
+<strong>Mechanical witness</strong>: tier-3: compute signed volume via divergence
+theorem on the loaded shape; flag <code>≤ 0</code>.
+</p>
+<h3>sub-class: interface state-unloaded  (count: 1, prefix In)</h3>
+<p>
+<strong>Definition</strong>: The OCCT <code>IFSelect</code> interface remains in its <code>unloaded</code>
+state after a load attempt, indicating the kernel produced no model
+and silently returned without surfacing the failure.
+<strong>Mechanical witness</strong>: validate2 <code>interface_state == "unloaded"</code> field.
+</p>
+<h3>sub-class: fillet contour concavity  (count: 1, prefix Fi)</h3>
+<p>
+<strong>Definition</strong>: A <code>BLENDED_EDGE</code> (fillet/round) walks a contour whose
+curvature inverts mid-traversal; the fillet-walk algorithm fails to
+produce a continuous blend surface.
+<strong>Mechanical witness</strong>: tier-3: along the edge, compute signed
+curvature; flag a sign change.
+</p>
+<h3>sub-class: approximation failure  (count: 1, prefix Gb)</h3>
+<p>
+<strong>Definition</strong>: An entity that requires a numerical approximation
+(parameter inversion, intersection, projection) cannot converge within
+the kernel's iteration / residual budget on this fixture.
+<strong>Mechanical witness</strong>: kernel-side: iteration count &gt; threshold or
+residual &gt; ε at termination.
+</p>
+<h3>sub-class: offset prerequisite  (count: 2, prefix Os)</h3>
+<p>
+<strong>Definition</strong>: An offset operation (offset shape / offset curve) is
+applied to a base whose properties violate prerequisites — non-closed
+shell offset, degenerate offset distance, reversed orientation.
+<strong>Mechanical witness</strong>: pre-condition check on the base shape's
+closedness / orientation / distance sign.
+</p>
+<h3>sub-class: hierarchy × unit-scaling  (count: 2, prefix Tb)</h3>
+<p>
+<strong>Definition</strong>: A multi-level assembly hierarchy with per-level unit
+scaling produces a tolerance-boundary corner case where rounding at
+each level accumulates beyond the declared global tolerance.
+<strong>Mechanical witness</strong>: tier-3: traverse the assembly tree; for each
+nested <code>ITEM_DEFINED_TRANSFORMATION</code>, accumulate scale; compare final
+coordinate magnitudes against declared <code>UNCERTAINTY_MEASURE_WITH_UNIT</code>.
+</p>
+<h3>sub-class: composite-surface  (count: 2, prefix Tfa)</h3>
+<p>
+<strong>Definition</strong>: A face is hosted on a composite / curve-bounded /
+intersection-defined surface, and the composition's seams or defining
+curves are inconsistent with the face's declared <code>face_bounds</code>.
+<strong>Mechanical witness</strong>: parse composite-surface segments; verify each
+boundary curve lies on its segment within tolerance.
+</p>
+<h3>sub-class: edge sharing  (count: 1, prefix Tsh)</h3>
+<p>
+<strong>Definition</strong>: A shell has edges that should be shared between
+neighbouring faces but are duplicated as separate <code>EDGE_CURVE</code>
+instances — breaking sewing's edge-table identification.
+<strong>Mechanical witness</strong>: tier-3: cluster edges by 3D-curve geometry +
+endpoint within ε; flag clusters where face-side incidences ≠ shared
+edge multiplicity.
+</p>
+<h3>sub-class: instance-multiplication / placement  (count: 1, prefix A)</h3>
+<p>
+<strong>Definition</strong>: An assembly's instance-multiplication mechanism
+(<code>MAPPED_ITEM</code> or <code>NAUO</code> with multiple placements) produces a placement
+graph that double-applies a transform or omits a transform on one
+branch.
+<strong>Mechanical witness</strong>: tier-3: enumerate all leaf placements; verify
+unique transform-chain per leaf.
+</p>
+<h3>sub-class: subtype unimplemented  (count: 1, prefix Gn)</h3>
+<p>
+<strong>Definition</strong>: An entity uses a complex-instance subtype combination
+(<code>B_SPLINE_CURVE</code> + <code>BEZIER_CURVE</code>, etc.) that the consuming kernel
+recognizes by keyword but lacks a code path for.
+<strong>Mechanical witness</strong>: complex-instance <code>&amp;SCOPE</code> chain enumerates a
+combination not in the kernel's dispatch table.
+</p>
+<h3>sub-class: cross-product (umbrella, prefix Xp; covers §12.12)</h3>
+<p>
+<strong>Definition</strong>: A fixture whose defect is the <em>combination</em> of two or
+more single-feature defects from other sub-classes — e.g., malformed
+<code>\X2\</code> PRODUCT.name × self-intersecting wire — exercising the
+disagreement surface between vendor pipelines.
+<strong>Mechanical witness</strong>: catalog <code>category</code> lists ≥ 2 single-feature
+defect references joined by <code>×</code>.
+</p>
+<h3>sub-class: out-of-range tolerance declaration  (count: 2, prefix Tb)</h3>
+<p>
+<strong>Definition</strong>: An <code>UNCERTAINTY_MEASURE_WITH_UNIT</code> declares a value
+outside a sensible operating range for the unit (e.g., 1 m on an
+mm-scale model, 1e-30 m on a dm-scale model).
+<strong>Mechanical witness</strong>: compare declared uncertainty against bounding-box
+dimension order of magnitude.
+<strong>Spec reference</strong>: ISO 10303-41 <code>UNCERTAINTY_MEASURE_WITH_UNIT</code>.
+</p>
+<h3>sub-class: dimensional-exponents  (count: 2, prefix U)</h3>
+<p>
+<strong>Definition</strong>: A <code>DIMENSIONAL_EXPONENTS</code> 7-tuple does not match the
+unit it is attached to (e.g., declaring <code>(1, 0, 0, 0, 0, 0, 0)</code> for a
+plane angle, where it should be <code>(0, 0, 0, 0, 0, 0, 0)</code>).
+<strong>Mechanical witness</strong>: parse <code>*_UNIT.dimensions</code> reference; compare
+exponent vector against unit-class table.
+<strong>Spec reference</strong>: ISO 10303-41.
+</p>
+<hr>
+<h2>Coverage notes</h2>
+<ul>
+<li>15 top-level tag definitions (one per <code>TAG_VOCABULARY</code> entry).</li>
+<li>73 sub-class definitions covering:</li>
+</ul>
+<p>
+  - The top ~50 cross-prefix sub-classes by frequency (every sub-class
+    with count ≥ 2, plus several count-1 entries for prefix coverage).
+  - One representative sub-class per named prefix from the catalog
+    header legend (Le, Lh, Ls, Gp, Gn, Gs, Tsh, Twi, Tfa, N, U, A,
+    Pmi, M, Pf, Ad, Hea, Bo, Sw, Fi, Os, In, Gb, Tb, Ps, Xp, Wr).
+</p>
+<ul>
+<li>The remaining ~489 long-tail sub-classes are catalog-local</li>
+</ul>
+<p>
+  disambiguators within a prefix; they fall under the parent
+  prefix's umbrella definition above. (562 distinct sub-class
+  strings appear across 1282 entries.)
+</p>
+<h2>How to use these definitions</h2>
+<p>
+1. <strong>Mechanical detection</strong>: each definition's <em>witness</em> is concrete
+   enough to encode as a checker. Many witnesses are pure byte-regex
+   assertions (already encoded in catalog <code>Byte assertion</code> lines);
+   others are tier-3 measurements (see
+   <code>validation/src/step_corpus/_tier3.py</code> for the existing tier-3
+   harness).
+2. <strong>Fuzz-input generation</strong>: invert the witness — generate a fixture
+   that <em>positively</em> matches the regex / structure / measurement, then
+   verify validate2 surfaces the expected behaviour from the entry's
+   <code>expected_validation</code> line.
+3. <strong>Entry-class taxonomy bookkeeping</strong>: when adding a new catalog
+   entry, choose its sub-class string from this document (or extend
+   this document with a new sub-class definition before the catalog
+   merge).
+</p>
+</main>
+</body>
+</html>

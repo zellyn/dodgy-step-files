@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Gn016 — `SURFACE_OF_REVOLUTION` on `ELLIPSE`: basis curve becomes `TRIMMED_CURVE` over rational B-spline plus non-unit axis `DIRECTION` after round-trip</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.2b NURBS / B-spline</a> <span class="sep">/</span> <span class="current">Gn016</span>
+</nav>
+<header class="title-bar">
+<h1>Gn016 <span class="sep">—</span> <span class="entry-title">`SURFACE_OF_REVOLUTION` on `ELLIPSE`: basis curve becomes `TRIMMED_CURVE` over rational B-spline plus non-unit axis `DIRECTION` after round-trip</span></h1>
+<p class="category">§12.2b NURBS/knots</p>
+<p class="tag-pills">
+<a class="tag tag-silent-loss" href="../by-tag/silent-loss/index.html">silent-loss</a>
+<a class="tag tag-round-trip" href="../by-tag/round-trip/index.html">round-trip</a>
+<a class="tag tag-geometry" href="../by-tag/geometry/index.html">geometry</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-2b-nurbs/Gn016.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-2b-nurbs/Gn016.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>03-occt-tests.md (R002, bug23203)</li>
+<li>08-occt-gitlog.md (G107)</li>
+</ul></section>
+<section><h2>Description</h2>
+<p>Writing a `SURFACE_OF_REVOLUTION` built on an `ELLIPSE` to STEP and reading back yields a `TRIMMED_CURVE` wrapping a degree-2 rational `B_SPLINE_CURVE_WITH_KNOTS` ellipse-equivalent instead of the original analytic `ELLIPSE`, plus drift in the revolved-axis `DIRECTION` away from unit norm (e.g. (0.99999999875, 0.00005, 0.0)). Analytic identity lost.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>`SURFACE_OF_REVOLUTION` whose basis curve is an `ELLIPSE`; round-trip through STEP.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>heal — preserve analytic basis curve (no Trimmed wrapper); reset orthonormal X/Y axes within 1e-6.</p></section>
+<section><h2>Notes</h2>
+<p>**OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog&#x27;s allowed set ({heal}). Kernel-bug witnessed: catalog asks for healing; OCC neither heals nor rejects — the input is dropped on the floor without diagnostic. Synonyms: &quot;ELLIPSE basis curve becomes TRIMMED_CURVE on round-trip&quot;, &quot;surface_of_revolution loses analytic ellipse basis&quot;, &quot;non-unit axis direction after BSpline round-trip&quot;, &quot;rational B-spline approximation of ellipse replaces analytic curve&quot;, &quot;ellipse swept basis turns into NURBS after STEP read-back&quot;.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>contains(b&#x27;B_SPLINE_CURVE&#x27;)</code></li>
+</ul></section>
+<section><h2>Live oracle output</h2>
+<table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
+<tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>no_shapes_loaded</code></td></tr>
+</tbody></table>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>/* Gn016 - Surface-of-revolution on ellipse: basis curve corruption on round-trip
+<span class="lineno">2</span>   Defect: writing a Geom_SurfaceOfRevolution built on an ellipse to STEP
+<span class="lineno">3</span>   and reading back yields a TRIMMED_CURVE basis instead of the original
+<span class="lineno">4</span>   ELLIPSE, plus axis-vector drift.  The analytic identity is lost.
+<span class="lineno">5</span>   This file emits the post-round-trip artifact: the basis curve is a
+<span class="lineno">6</span>   TRIMMED_CURVE wrapping a <mark>B_SPLINE_CURVE</mark>_WITH_KNOTS approximation of the
+<span class="lineno">7</span>   ellipse, instead of an ELLIPSE entity, and the SURFACE_OF_REVOLUTION
+<span class="lineno">8</span>   axis differs slightly from the canonical (1,0,0) by 5e-5 radians.
+<span class="lineno">9</span>   Sources: bug23203 / R002 / G107. */
+<span class="lineno">10</span>ISO-10303-21;
+<span class="lineno">11</span>HEADER;
+<span class="lineno">12</span>FILE_DESCRIPTION(
+<span class="lineno">13</span>  (&#x27;Gn016 - surface of revolution on ellipse, round-trip corruption&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">14</span>FILE_NAME(&#x27;Gn016.stp&#x27;,&#x27;2026-04-26T00:00:00&#x27;,(&#x27;auto-generated&#x27;),(&#x27;&#x27;),
+<span class="lineno">15</span>  &#x27;auto-generated&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">16</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
+<span class="lineno">17</span>ENDSEC;
+<span class="lineno">18</span>DATA;
+<span class="lineno">19</span>/* 3-pole rational BSpline approximation of the upper half of an ellipse
+<span class="lineno">20</span>   with a=10, b=5 (centred at origin, in xz-plane). */
+<span class="lineno">21</span>#10=CARTESIAN_POINT(&#x27;e0&#x27;,(10.0,0.0, 0.0));
+<span class="lineno">22</span>#11=CARTESIAN_POINT(&#x27;e1&#x27;,( 0.0,0.0, 5.0));
+<span class="lineno">23</span>#12=CARTESIAN_POINT(&#x27;e2&#x27;,(-10.0,0.0, 0.0));
+<span class="lineno">24</span>#20=(
+<span class="lineno">25</span>  BOUNDED_CURVE()
+<span class="lineno">26</span>  <mark>B_SPLINE_CURVE</mark>(2,(#10,#11,#12),.UNSPECIFIED.,.F.,.F.)
+<span class="lineno">27</span>  <mark>B_SPLINE_CURVE</mark>_WITH_KNOTS((3,3),(0.0,1.0),.UNSPECIFIED.)
+<span class="lineno">28</span>  CURVE()
+<span class="lineno">29</span>  GEOMETRIC_REPRESENTATION_ITEM()
+<span class="lineno">30</span>  RATIONAL_<mark>B_SPLINE_CURVE</mark>((1.0,0.7071067811865476,1.0))
+<span class="lineno">31</span>  REPRESENTATION_ITEM(&#x27;ellipse_as_rational_bspline&#x27;));
+<span class="lineno">32</span>/* Defect: basis curve is TRIMMED_CURVE wrapping the BSpline approximation
+<span class="lineno">33</span>   instead of the original ELLIPSE entity.  Trimmed parameters are over
+<span class="lineno">34</span>   the BSpline&#x27;s [0,1] range. */
+<span class="lineno">35</span>#30=CARTESIAN_POINT(&#x27;t_start&#x27;,(10.0,0.0,0.0));
+<span class="lineno">36</span>#31=CARTESIAN_POINT(&#x27;t_end&#x27;,(-10.0,0.0,0.0));
+<span class="lineno">37</span>#40=TRIMMED_CURVE(&#x27;basis_was_ellipse&#x27;,#20,
+<span class="lineno">38</span>  (PARAMETER_VALUE(0.0),#30),
+<span class="lineno">39</span>  (PARAMETER_VALUE(1.0),#31),
+<span class="lineno">40</span>  .T.,.PARAMETER.);
+<span class="lineno">41</span>/* Axis-of-revolution: x-axis with a tiny y-drift (5e-5 rad). */
+<span class="lineno">42</span>#50=CARTESIAN_POINT(&#x27;axis_origin&#x27;,(0.0,0.0,0.0));
+<span class="lineno">43</span>#51=DIRECTION(&#x27;axis_dir_drifted&#x27;,(0.99999999875,0.00005,0.0));
+<span class="lineno">44</span>#52=AXIS1_PLACEMENT(&#x27;rev_axis&#x27;,#50,#51);
+<span class="lineno">45</span>/* Defect: SURFACE_OF_REVOLUTION whose basis is a Trimmed wrapper rather
+<span class="lineno">46</span>   than an ELLIPSE; axis direction has tiny drift from canonical. */
+<span class="lineno">47</span>#100=SURFACE_OF_REVOLUTION(&#x27;rev_corrupted&#x27;,#40,#52);
+<span class="lineno">48</span>ENDSEC;
+<span class="lineno">49</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Gn015.html">&larr; Gn015</a> <a class="up" href="index.html">§12.2b NURBS / B-spline</a> <a class="next" href="Gn017.html">Gn017 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

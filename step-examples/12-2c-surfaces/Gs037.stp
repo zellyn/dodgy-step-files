@@ -1,0 +1,34 @@
+ISO-10303-21;
+/* Gs037 - Surface offset of linear extrusion fails iso evaluation
+ * Defect: Composite surface chain OFFSET_SURFACE -> SURFACE_OF_LINEAR_EXTRUSION
+ * raises an exception during UIso/VIso evaluation. Iso evaluation must descend
+ * through the offset/extrusion wrappers and fall through to basis evaluation. */
+HEADER;
+FILE_DESCRIPTION(('Gs037 test case','OffsetSurface over LinearExtrusion'),'2;1');
+FILE_NAME('Gs037.stp','2026-04-26T00:00:00',(''),(''),'auto-generated','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+/* Basis curve: an arc circle for the extrusion */
+#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#11=DIRECTION('',(0.0,0.0,1.0));
+#12=DIRECTION('',(1.0,0.0,0.0));
+#13=AXIS2_PLACEMENT_3D('',#10,#11,#12);
+#14=CIRCLE('',#13,5.0);
+/* Linear extrusion of the circle along +Z (a cylindrical strip) */
+#20=DIRECTION('',(0.0,0.0,1.0));
+#21=VECTOR('',#20,10.0);
+#22=SURFACE_OF_LINEAR_EXTRUSION('',#14,#21);
+/* Defect: OFFSET_SURFACE wrapping the SURFACE_OF_LINEAR_EXTRUSION
+ * - iso evaluation chain misbehaves */
+#30=OFFSET_SURFACE(#22,2.0,.T.);
+/* Reference offset surface from a face */
+#40=CARTESIAN_POINT('',(7.0,0.0,0.0));
+#41=VERTEX_POINT('',#40);
+#42=VERTEX_LOOP('',#41);
+#43=FACE_OUTER_BOUND('',#42,.T.);
+#44=ADVANCED_FACE('',(#43),#30,.T.);
+ENDSEC;
+END-ISO-10303-21;

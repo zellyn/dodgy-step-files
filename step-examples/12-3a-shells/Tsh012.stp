@@ -1,0 +1,55 @@
+ISO-10303-21;
+/* Tsh012 - Mixed .T./.F. flags on ORIENTED_EDGE mismatched against
+ *          parameter direction
+ * Defect: EDGE_CURVE.same_sense boolean missing or illegal-formatted
+ * leaves an uninitialized bool; OCCT generic boolean enum parsing
+ * defaults to true if value is not .T. or .F.. Sources: Mantis 29944
+ * (G028) and Q053.
+ *
+ * This file demonstrates several anti-patterns:
+ *   - one EDGE_CURVE with .U. (UNKNOWN) -- not a legal STEP boolean
+ *   - one EDGE_CURVE with omitted same_sense (parser substitutes default)
+ *   - one ORIENTED_EDGE with .T. while underlying EDGE_CURVE has .F.,
+ *     producing a mismatch */
+HEADER;
+FILE_DESCRIPTION(('Tsh012 test case','ORIENTED_EDGE same_sense malformed'),'2;1');
+FILE_NAME('Tsh012.stp','2026-04-26T00:00:00',(''),(''),'auto-generated','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+/* Square face on z=0 */
+#100=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#101=CARTESIAN_POINT('',(1.0,0.0,0.0));
+#102=CARTESIAN_POINT('',(1.0,1.0,0.0));
+#103=CARTESIAN_POINT('',(0.0,1.0,0.0));
+#110=VERTEX_POINT('',#100); #111=VERTEX_POINT('',#101);
+#112=VERTEX_POINT('',#102); #113=VERTEX_POINT('',#103);
+#200=DIRECTION('',(0.0,0.0,1.0)); #201=DIRECTION('',(1.0,0.0,0.0));
+#211=AXIS2_PLACEMENT_3D('',#100,#200,#201); #212=PLANE('',#211);
+#300=DIRECTION('',(1.0,0.0,0.0)); #301=VECTOR('',#300,1.0);
+#302=DIRECTION('',(0.0,1.0,0.0)); #303=VECTOR('',#302,1.0);
+#310=LINE('',#100,#301);
+#312=LINE('',#101,#303);
+#314=LINE('',#103,#301);
+#316=LINE('',#100,#303);
+/* Edge 1: legal .T. */
+#320=EDGE_CURVE('e1',#110,#111,#310,.T.);
+/* Defect A: same_sense token .U. (UNKNOWN) -- not a legal STEP boolean */
+#321=EDGE_CURVE('e2_unknown',#111,#112,#312,.U.);
+/* Defect B: same_sense omitted by stripped Boolean (replaced with $) */
+#322=EDGE_CURVE('e3_missing',#113,#112,#314,$);
+/* Edge 4: same_sense .F. -- but the next ORIENTED_EDGE will use .T.
+   creating a mismatch with the curve direction */
+#323=EDGE_CURVE('e4_F',#110,#113,#316,.F.);
+#400=ORIENTED_EDGE('',*,*,#320,.T.);
+#401=ORIENTED_EDGE('',*,*,#321,.T.);
+#402=ORIENTED_EDGE('',*,*,#322,.F.);
+/* Defect C: ORIENTED_EDGE .T. on top of EDGE_CURVE same_sense .F. */
+#403=ORIENTED_EDGE('mismatch',*,*,#323,.T.);
+#404=EDGE_LOOP('',(#400,#401,#402,#403));
+#405=FACE_OUTER_BOUND('',#404,.T.);
+#406=ADVANCED_FACE('mixed_orientation',(#405),#212,.T.);
+ENDSEC;
+END-ISO-10303-21;

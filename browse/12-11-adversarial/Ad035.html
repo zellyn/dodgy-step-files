@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Ad035 — IGES-style 80-column padding sensitivity (shared translator code paths)</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.11 Adversarial / parser robustness</a> <span class="sep">/</span> <span class="current">Ad035</span>
+</nav>
+<header class="title-bar">
+<h1>Ad035 <span class="sep">—</span> <span class="entry-title">IGES-style 80-column padding sensitivity (shared translator code paths)</span></h1>
+<p class="category">§12.11 (sub-class: framing / OOB-read)</p>
+<p class="severity-badge severity-p2">P2 — spec deviation (no data loss)</p>
+<p class="tag-pills">
+<a class="tag tag-crash" href="../by-tag/crash/index.html">crash</a>
+<a class="tag tag-adversarial" href="../by-tag/adversarial/index.html">adversarial</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-11-adversarial/Ad035.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-11-adversarial/Ad035.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>12-adversarial.md A039</li>
+</ul></section>
+<section><h2>Description</h2>
+<p>IGES Directory-Entry uses fixed 80-column records; record with non-space padding or off-by-one length crashes when directory parser indexes column 73.80 unconditionally. Relevant because translators commonly share code paths with STEP.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>IGES file whose terminator section reports record count one greater than physically present.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>Heal and accept: bound all column indexes against actual line length. Must not crash on column-out-of-range.</p></section>
+<section><h2>Notes</h2>
+<p>Validation observed: silent-empty rather than the cited crash. The structural attack pattern (e.g., billion-laughs / cyclic-reference / very-large-string) is demonstrated; production-scale exploitation requires inflating the size factor as described. Kernel-mishandling-by-silent-acceptance is itself a defect signal at fixture scale.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>matches(rb&#x27;.{75,}\n&#x27;)</code></li>
+<li><code>matches(rb&#x27;.{72,}&#x27;)</code></li>
+</ul></section>
+<section><h2>Live oracle output</h2>
+<table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
+<tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>no_shapes_loaded</code></td></tr>
+</tbody></table>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span><mark>/* Ad035 - IGES-style 80-column padding sensitivity (shared translator paths)</mark>
+<span class="lineno">2</span><mark>   ----------------------------------------------------------------------</mark>
+<span class="lineno">3</span><mark>   Catalog section : Â§12.11 adversarial (sub-class: framing / OOB-read)</mark>
+<span class="lineno">4</span><mark>   Sources         : 12-adversarial.md A039</mark>
+<span class="lineno">5</span><mark>   Severity        : Medium</mark>
+<span class="lineno">6</span><mark>   ----------------------------------------------------------------------</mark>
+<span class="lineno">7</span><mark>   WARNING: This file is INTENTIONALLY MALFORMED for parser-robustness</mark>
+<span class="lineno">8</span><mark>   testing. It mixes IGES-style fixed-column padding and an off-by-one</mark>
+<span class="lineno">9</span><mark>   record count to exercise the shared IGES/STEP translator code path.</mark>
+<span class="lineno">10</span><mark>   Do NOT use as exchange data.</mark>
+<span class="lineno">11</span><mark>   ----------------------------------------------------------------------</mark>
+<span class="lineno">12</span><mark>   Defect</mark>
+<span class="lineno">13</span><mark>     IGES Directory-Entry uses fixed 80-column records; a record with</mark>
+<span class="lineno">14</span><mark>     non-space padding or off-by-one record count crashes parsers that</mark>
+<span class="lineno">15</span><mark>     index columns 73..80 unconditionally. This matters in STEP because</mark>
+<span class="lineno">16</span><mark>     translators (e.g. ASMIMPORT, IfcOpenShell IGES path) commonly share</mark>
+<span class="lineno">17</span><mark>     code paths between IGES and STEP framing. STEP files placed in</mark>
+<span class="lineno">18</span><mark>     pipelines that try IGES first can trigger the IGES OOB path.</mark>
+<span class="lineno">19</span><mark>   Reproducer recipe</mark>
+<span class="lineno">20</span><mark>     STEP file whose first non-comment line is shorter than 80 columns</mark>
+<span class="lineno">21</span><mark>     yet declares an IGES-style record count one greater than the</mark>
+<span class="lineno">22</span><mark>     physical line count. Below: a comment block masquerading as IGES</mark>
+<span class="lineno">23</span><mark>     directory padding that mis-reports its terminator count.</mark>
+<span class="lineno">24</span><mark>   Expected kernel behavior</mark>
+<span class="lineno">25</span><mark>     Bound all column indexes against actual line length. Do not blindly</mark>
+<span class="lineno">26</span><mark>     read 80 columns. Detect ISO-10303-21 magic before any IGES probe.</mark>
+<span class="lineno">27</span><mark>   ----------------------------------------------------------------------</mark>
+<span class="lineno">28</span><mark>*/</mark>
+<span class="lineno">29</span><mark>/*S0000001                                                                S0000001*/</mark>
+<span class="lineno">30</span><mark>/*G0000002                                                                G0000002*/</mark>
+<span class="lineno">31</span><mark>/*D0000003                                                                D0000004*/</mark>
+<span class="lineno">32</span><mark>/*P0000005                                                                P0000005*/</mark>
+<span class="lineno">33</span><mark>/*T0000099S0000001G0000001D0000002P0000001                                T0000001*/</mark>
+<span class="lineno">34</span><mark>ISO-10303-21;</mark>
+<span class="lineno">35</span><mark>HEADER;</mark>
+<span class="lineno">36</span><mark>FILE_DESCRIPTION((&#x27;Ad035 - IGES 80-col padding fronting STEP body&#x27;),&#x27;2;1&#x27;);</mark>
+<span class="lineno">37</span><mark>FILE_NAME(&#x27;Ad035.stp&#x27;,&#x27;2026-04-26T00:00:00&#x27;,(&#x27;auto-generated&#x27;),(&#x27;&#x27;),</mark>
+<span class="lineno">38</span><mark>  &#x27;auto-generated&#x27;,&#x27;&#x27;,&#x27;&#x27;);</mark>
+<span class="lineno">39</span><mark>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));</mark>
+<span class="lineno">40</span><mark>ENDSEC;</mark>
+<span class="lineno">41</span><mark>DATA;</mark>
+<span class="lineno">42</span><mark>#10=CARTESIAN_POINT(&#x27;origin&#x27;,(0.0,0.0,0.0));</mark>
+<span class="lineno">43</span><mark>#20=DIRECTION(&#x27;z&#x27;,(0.0,0.0,1.0));</mark>
+<span class="lineno">44</span><mark>#30=DIRECTION(&#x27;x&#x27;,(1.0,0.0,0.0));</mark>
+<span class="lineno">45</span><mark>#40=AXIS2_PLACEMENT_3D(&#x27;placement&#x27;,#10,#20,#30);</mark>
+<span class="lineno">46</span><mark>ENDSEC;</mark>
+<span class="lineno">47</span><mark>END-ISO-10303-21;</mark>
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Ad033.html">&larr; Ad033</a> <a class="up" href="index.html">§12.11 Adversarial / parser robustness</a> <a class="next" href="Ad038.html">Ad038 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

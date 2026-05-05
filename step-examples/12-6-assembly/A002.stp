@@ -1,0 +1,68 @@
+ISO-10303-21;
+/*
+ * A002 — Hidden / suppressed bodies leak into export, or are dropped silently
+ * Defect: Symmetric pair across vendors —
+ *   (a) writer serializes hidden bodies as full geometry without an
+ *       INVISIBILITY / presentation flag (Creo / HOOPS Exchange);
+ *   (b) writer drops hidden bodies, leaving NAUOs whose target product has
+ *       an empty SHAPE_DEFINITION_REPRESENTATION (Fusion 360).
+ * This example shows variant (b): NAUO present, child product has no shape.
+ * Reproducer: hide one body in producer; export STEP. Inspect for NAUO whose
+ *   target product has no SDR or has STYLED_ITEM with no INVISIBILITY flag.
+ * Expected kernel: warn at write-time when hidden bodies are dropped; on read
+ *   surface dangling NAUOs and treat INVISIBILITY as presentation, not gating.
+ */
+HEADER;
+FILE_DESCRIPTION(('A002 hidden body dropped on export leaves dangling NAUO'),'2;1');
+FILE_NAME('A002.stp','2026-04-26T00:00:00',('catalog'),('cad'),'manual','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#10 = APPLICATION_CONTEXT('automotive design');
+#11 = APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2001,#10);
+#12 = PRODUCT_CONTEXT('',#10,'mechanical');
+#13 = PRODUCT_DEFINITION_CONTEXT('part definition',#10,'design');
+/* Top assembly */
+#20 = PRODUCT('A002_ASSY','Assembly with hidden child','',(#12));
+#21 = PRODUCT_DEFINITION_FORMATION('','',#20);
+#22 = PRODUCT_DEFINITION('design','',#21,#13);
+#23 = PRODUCT_DEFINITION_SHAPE('','',#22);
+/* Visible child */
+#30 = PRODUCT('VIS_PART','Visible part','',(#12));
+#31 = PRODUCT_DEFINITION_FORMATION('','',#30);
+#32 = PRODUCT_DEFINITION('design','',#31,#13);
+#33 = PRODUCT_DEFINITION_SHAPE('','',#32);
+/* Hidden child — body was suppressed in source; writer emitted PD chain but
+   not the geometry. Receivers see NAUO -> empty SDR. */
+#34 = PRODUCT('HIDDEN_PART','Hidden body','',(#12));
+#35 = PRODUCT_DEFINITION_FORMATION('','',#34);
+#36 = PRODUCT_DEFINITION('design','',#35,#13);
+#37 = PRODUCT_DEFINITION_SHAPE('','',#36);
+/* NAUOs: visible and dangling-hidden */
+#40 = NEXT_ASSEMBLY_USAGE_OCCURRENCE('1','VIS','',#22,#32,$);
+#41 = NEXT_ASSEMBLY_USAGE_OCCURRENCE('2','HIDDEN','',#22,#36,$);
+/* Units */
+#50 = ( LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT(.MILLI.,.METRE.) );
+#51 = ( NAMED_UNIT(*) PLANE_ANGLE_UNIT() SI_UNIT($,.RADIAN.) );
+#52 = ( NAMED_UNIT(*) SI_UNIT($,.STERADIAN.) SOLID_ANGLE_UNIT() );
+#53 = UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#50,'distance_accuracy_value','');
+#54 = ( GEOMETRIC_REPRESENTATION_CONTEXT(3) GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#53))
+        GLOBAL_UNIT_ASSIGNED_CONTEXT((#50,#51,#52)) REPRESENTATION_CONTEXT('','3D') );
+/* Visible part has a real representation */
+#60 = CARTESIAN_POINT('',(0.0,0.0,0.0));
+#61 = DIRECTION('',(0.0,0.0,1.0));
+#62 = DIRECTION('',(1.0,0.0,0.0));
+#63 = AXIS2_PLACEMENT_3D('vis_origin',#60,#61,#62);
+#64 = SHAPE_REPRESENTATION('vis_rep',(#63),#54);
+#65 = SHAPE_DEFINITION_REPRESENTATION(#33,#64);
+#66 = REPRESENTATION_MAP(#63,#64);
+#67 = MAPPED_ITEM('vis_inst',#66,#63);
+/* DEFECT: hidden child has NO SHAPE_DEFINITION_REPRESENTATION at all.
+   The NAUO #41 above points into a void. */
+/* Assembly aggregator */
+#80 = CARTESIAN_POINT('',(0.0,0.0,0.0));
+#81 = AXIS2_PLACEMENT_3D('assy_origin',#80,#61,#62);
+#82 = SHAPE_REPRESENTATION('assy_rep',(#81,#67),#54);
+#83 = SHAPE_DEFINITION_REPRESENTATION(#23,#82);
+ENDSEC;
+END-ISO-10303-21;

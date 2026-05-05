@@ -1,0 +1,37 @@
+/* Ls009 - Integer literal with hex/octal forms
+   ----------------------------------------------------------------------
+   Catalog section : §12.1c numeric-literal grammar
+   Sources         : N017
+   See also        : Ls001
+   ----------------------------------------------------------------------
+   Defect
+     ISO 10303-21 INTEGER permits leading zeros and a leading sign but
+     forbids 0x hex notation and does NOT interpret a leading-zero token
+     as octal. Some tools emit 0x10 (intending decimal 16) or rely on
+     C-style octal interpretation of 010 (intending decimal 8 versus
+     decimal 10).
+   Expected behavior
+     Reject hex and octal forms. Accept leading '+' and leading zeros
+     per spec - leading zeros are literal decimal, never octal.
+   ----------------------------------------------------------------------
+*/
+ISO-10303-21;
+HEADER;
+FILE_DESCRIPTION(('Ls009 - hex / octal integer literal'),'2;1');
+FILE_NAME('Ls009.stp','2026-04-26T00:00:00',('auto-generated'),(''),
+  'auto-generated','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+#10=CARTESIAN_POINT('origin',(0.0,0.0,0.0));
+/* Defect: hex literal 0x10 in an INTEGER attribute slot */
+#20=POSITIVE_INTEGER_VALUE(0x10);
+/* Defect: leading-zero literal that some C-influenced tools mis-read
+   as octal-8 rather than decimal-10 */
+#30=POSITIVE_INTEGER_VALUE(010);
+/* Defect: uppercase-X hex form */
+#31=POSITIVE_INTEGER_VALUE(0X10);
+#40=DIRECTION('x',(1.0,0.0,0.0));
+#50=AXIS2_PLACEMENT_3D('placement',#10,#40,$);
+ENDSEC;
+END-ISO-10303-21;

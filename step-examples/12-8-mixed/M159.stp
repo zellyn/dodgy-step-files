@@ -1,0 +1,32 @@
+ISO-10303-21;
+/* M159 - AP210 connector keying / polarization missing on a multi-pin
+ * connector.
+ * Defect: a CONNECTOR PRODUCT (e.g. 4-pin power harness) has no
+ * polarization or keying property and no DESCRIPTIVE_REPRESENTATION_ITEM
+ * indicating shell orientation. The component can be inserted
+ * rotated 180 deg, swapping VCC and GND. The defect is a missing
+ * required attribute, not a conflict. */
+HEADER;
+FILE_DESCRIPTION(('M159 test case','AP210 connector keying missing'),'2;1');
+FILE_NAME('M159.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('ELECTRONIC_ASSEMBLY_INTERCONNECT_AND_PACKAGING_DESIGN { 1 0 10303 210 3 1 0 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('electronic_assembly_interconnect_and_packaging_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
+  'electronic_assembly_interconnect_and_packaging_design',2014,#1);
+#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10))
+     REPRESENTATION_CONTEXT('pcb','3D'));
+#100=PRODUCT('PWR_HDR_4','PWR_HDR_4','4-pin power header',(#1));
+#101=PRODUCT_DEFINITION_FORMATION('rev_A','released',#100);
+#102=PRODUCT_DEFINITION('design','no polarization key declared',#101,#1);
+/* Defect: connector has VCC and GND on outer pins but no keying or
+ * polarization attribute - rotation by 180 deg is not prevented. */
+#200=TERMINAL('VCC','VCC pin',$);
+#201=TERMINAL('SIG','signal pin',$);
+#202=TERMINAL('SIG2','second signal pin',$);
+#203=TERMINAL('GND','GND pin',$);
+ENDSEC;
+END-ISO-10303-21;

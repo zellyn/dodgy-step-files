@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Pmi073 — Compound feature with self-referential pattern membership</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.7 PMI / GD&amp;T</a> <span class="sep">/</span> <span class="current">Pmi073</span>
+</nav>
+<header class="title-bar">
+<h1>Pmi073 <span class="sep">—</span> <span class="entry-title">Compound feature with self-referential pattern membership</span></h1>
+<p class="category">§12.7 (sub-class: compound feature)</p>
+<p class="severity-badge severity-p1">P1 — silent data loss</p>
+<p class="tag-pills">
+<a class="tag tag-spec-violation" href="../by-tag/spec-violation/index.html">spec-violation</a>
+<a class="tag tag-pmi" href="../by-tag/pmi/index.html">pmi</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-7-pmi/Pmi073.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-7-pmi/Pmi073.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>16-iso-spec AP242 ED4 §COMPOUND_FEATURE</li>
+</ul></section>
+<section><h2>Description</h2>
+<p>AP242 Edition 4 introduces COMPOUND_FEATURE as a grouping of feature definitions (e.g. a &quot;hole pattern&quot; of N counterbore holes treated as one PMI target). The spec does not explicitly forbid a compound feature including itself as one of its components; a programmatic exporter that builds compound features by recursive descent and forgets the recursion guard emits a cycle.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>SHAPE_ASPECT `&#x27;compound_pattern&#x27;` linked via SHAPE_ASPECT_RELATIONSHIP `&#x27;part_of&#x27;` to itself, alongside SHAPE_ASPECT_RELATIONSHIP linking two member features `&#x27;hole1&#x27;` and `&#x27;hole2&#x27;` to the same pattern.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>detect cycles in the part-of graph and reject; or treat the self-loop as a no-op (the pattern is &quot;part of&quot; itself trivially) with a warning.</p></section>
+<section><h2>Notes</h2>
+<p>**See also**: Pmi070. Synonyms: &quot;compound feature with self-referential pattern membership&quot;, &quot;hole pattern includes itself&quot;, &quot;self-loop in pattern membership&quot;.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>count_entity_def(b&#x27;SHAPE_ASPECT&#x27;) == 3</code></li>
+<li><code>count_entity_def(b&#x27;SHAPE_ASPECT_RELATIONSHIP&#x27;) == 3</code></li>
+</ul></section>
+<section><h2>Cross-references</h2>
+<p><a href="Pmi070.html">Pmi070</a></p>
+</section>
+<section><h2>Live oracle output</h2>
+<table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
+<tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>no_shapes_loaded</code></td></tr>
+</tbody></table>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* Pmi073 - COMPOUND_FEATURE (AP242 ED4) self-reference
+<span class="lineno">3</span> * Defect: AP242 Edition 4 introduces COMPOUND_FEATURE as a
+<span class="lineno">4</span> * grouping of feature definitions (e.g. a &quot;hole pattern&quot; of N
+<span class="lineno">5</span> * counterbore holes treated as one PMI target). The spec does
+<span class="lineno">6</span> * not explicitly forbid a compound feature including itself as
+<span class="lineno">7</span> * one of its components - a programmatic exporter that builds
+<span class="lineno">8</span> * compound features by recursive descent and forgets the
+<span class="lineno">9</span> * recursion guard emits a cycle. */
+<span class="lineno">10</span>HEADER;
+<span class="lineno">11</span>FILE_DESCRIPTION((&#x27;Pmi073 - COMPOUND_FEATURE self-reference cycle&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">12</span>FILE_NAME(&#x27;Pmi073.stp&#x27;,&#x27;2026-04-26T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),
+<span class="lineno">13</span>  &#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">14</span>FILE_SCHEMA((&#x27;AP242_MANAGED_MODEL_BASED_3D_ENGINEERING_MIM_LF { 1 0 10303 442 1 1 4 }&#x27;));
+<span class="lineno">15</span>ENDSEC;
+<span class="lineno">16</span>DATA;
+<span class="lineno">17</span>#1=APPLICATION_CONTEXT(&#x27;managed model based 3d engineering&#x27;);
+<span class="lineno">18</span>#2=PRODUCT_CONTEXT(&#x27;&#x27;,#1,&#x27;mechanical&#x27;);
+<span class="lineno">19</span>#3=PRODUCT(&#x27;Pmi073&#x27;,&#x27;CompoundCyclePart&#x27;,&#x27;&#x27;,(#2));
+<span class="lineno">20</span>#4=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#3);
+<span class="lineno">21</span>#5=PRODUCT_DEFINITION_CONTEXT(&#x27;&#x27;,#1,&#x27;design&#x27;);
+<span class="lineno">22</span>#6=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,#4,#5);
+<span class="lineno">23</span>#7=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,#6);
+<span class="lineno">24</span>#20=( LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT(.MILLI.,.METRE.) );
+<span class="lineno">25</span>#22=( NAMED_UNIT(*) PLANE_ANGLE_UNIT() SI_UNIT($,.RADIAN.) );
+<span class="lineno">26</span>#23=( NAMED_UNIT(*) SI_UNIT($,.STERADIAN.) SOLID_ANGLE_UNIT() );
+<span class="lineno">27</span>#24=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#20,
+<span class="lineno">28</span>  &#x27;distance_accuracy_value&#x27;,&#x27;&#x27;);
+<span class="lineno">29</span>#25=( GEOMETRIC_REPRESENTATION_CONTEXT(3)
+<span class="lineno">30</span>  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#24))
+<span class="lineno">31</span>  GLOBAL_UNIT_ASSIGNED_CONTEXT((#20,#22,#23))
+<span class="lineno">32</span>  REPRESENTATION_CONTEXT(&#x27;&#x27;,&#x27;3D&#x27;) );
+<span class="lineno">33</span><mark>#40=SHAPE_ASPECT(</mark>&#x27;hole1&#x27;,&#x27;&#x27;,#7,.T.);
+<span class="lineno">34</span><mark>#41=SHAPE_ASPECT(</mark>&#x27;hole2&#x27;,&#x27;&#x27;,#7,.T.);
+<span class="lineno">35</span>/* Defect: compound feature whose components include itself.
+<span class="lineno">36</span> * Modeled as SHAPE_ASPECT_RELATIONSHIP cycles since
+<span class="lineno">37</span> * COMPOUND_FEATURE entity name may not be in the schema. */
+<span class="lineno">38</span><mark>#50=SHAPE_ASPECT(</mark>&#x27;compound_pattern&#x27;,&#x27;&#x27;,#7,.T.);
+<span class="lineno">39</span><mark>#51=SHAPE_ASPECT_RELATIONSHIP(</mark>&#x27;part_of&#x27;,&#x27;hole1 part of pattern&#x27;,#40,#50);
+<span class="lineno">40</span><mark>#52=SHAPE_ASPECT_RELATIONSHIP(</mark>&#x27;part_of&#x27;,&#x27;hole2 part of pattern&#x27;,#41,#50);
+<span class="lineno">41</span>/* Defect: pattern is also &quot;part of&quot; itself */
+<span class="lineno">42</span><mark>#53=SHAPE_ASPECT_RELATIONSHIP(</mark>&#x27;part_of&#x27;,&#x27;pattern part of pattern&#x27;,#50,#50);
+<span class="lineno">43</span>#90=SHAPE_REPRESENTATION(&#x27;&#x27;,(),#25);
+<span class="lineno">44</span>#91=SHAPE_DEFINITION_REPRESENTATION(#7,#90);
+<span class="lineno">45</span>/* PMI anchor: minimal ANNOTATION_PLANE so this PMI fixture cites at least one canonical PMI entity. */
+<span class="lineno">46</span>#9100=CARTESIAN_POINT(&#x27;pmi_o&#x27;,(0.0,0.0,0.0));
+<span class="lineno">47</span>#9101=DIRECTION(&#x27;pmi_z&#x27;,(0.0,0.0,1.0));
+<span class="lineno">48</span>#9102=DIRECTION(&#x27;pmi_x&#x27;,(1.0,0.0,0.0));
+<span class="lineno">49</span>#9103=AXIS2_PLACEMENT_3D(&#x27;pmi_a&#x27;,#9100,#9101,#9102);
+<span class="lineno">50</span>#9104=PLANE(&#x27;pmi_anchor_plane&#x27;,#9103);
+<span class="lineno">51</span>#9105=ANNOTATION_PLANE(&#x27;pmi_annotation&#x27;,(),#9104,());
+<span class="lineno">52</span>ENDSEC;
+<span class="lineno">53</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Pmi072.html">&larr; Pmi072</a> <a class="up" href="index.html">§12.7 PMI / GD&amp;T</a> <a class="next" href="Pmi074.html">Pmi074 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

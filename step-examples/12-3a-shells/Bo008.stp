@@ -1,0 +1,41 @@
+ISO-10303-21;
+/* Bo008 - Vertex doesn't lie on its declared edge curve.
+ * Defect: EDGE_CURVE.edge_start references a VERTEX_POINT whose 3D
+ * coordinates are 1.0 distant from the LINE the edge geometry uses. */
+HEADER;
+FILE_DESCRIPTION(('Bo008 - vertex off-curve','Pass C gap-fill'),'2;1');
+FILE_NAME('Bo008.stp','2026-04-30T00:00:00',(''),(''),'gap-fill C','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+/* The line is from origin along +X. Vertex #21 at (0,1,0) is *not* on the line. */
+#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#11=CARTESIAN_POINT('',(0.0,1.0,0.0));
+#12=CARTESIAN_POINT('',(2.0,0.0,0.0));
+#20=VERTEX_POINT('',#10);
+#21=VERTEX_POINT('off_curve',#11);
+#22=VERTEX_POINT('',#12);
+#30=DIRECTION('',(1.0,0.0,0.0));
+#31=VECTOR('',#30,1.0);
+#32=LINE('',#10,#31);
+/* Defect: edge_start = #21 not on the line */
+#40=EDGE_CURVE('vertex_off_edge',#21,#22,#32,.T.);
+/* PRODUCT chain so OCCT loads the geometry. */
+#9000=PRODUCT_CONTEXT('',#1,'mechanical');
+#9001=PRODUCT('Bo008','Bo008','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
+#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
+#9020=GEOMETRIC_CURVE_SET('wire_set',(#40));
+#9021=GEOMETRICALLY_BOUNDED_WIREFRAME_SHAPE_REPRESENTATION('',(#9020),#9010);
+#9022=SHAPE_DEFINITION_REPRESENTATION(#9005,#9021);
+ENDSEC;
+END-ISO-10303-21;

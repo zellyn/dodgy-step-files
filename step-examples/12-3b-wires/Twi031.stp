@@ -1,0 +1,67 @@
+ISO-10303-21;
+/* Twi031 - Degenerate edges duplicated at apex (Pro/E)
+ * Defect: Some Pro/E exports emit two degenerate edges where one is sufficient
+ * at a cone/sphere apex. Causes downstream wire reorder confusion. Reader
+ * should detect and dedupe; preserve a single canonical apex bridge.
+ * Source: Pro/E PRO7226.stp #489490; ShapeFix F083. */
+HEADER;
+FILE_DESCRIPTION(('Twi031 test case','Degenerate edges duplicated at apex (Pro/E)'),'2;1');
+FILE_NAME('Twi031.stp','2026-04-26T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#11=DIRECTION('',(0.0,0.0,1.0));
+#12=DIRECTION('',(1.0,0.0,0.0));
+#13=AXIS2_PLACEMENT_3D('',#10,#11,#12);
+#20=CONICAL_SURFACE('',#13,5.0,0.5235988);
+/* Apex */
+#21=CARTESIAN_POINT('',(0.0,0.0,8.660254));
+#22=VERTEX_POINT('',#21);
+/* Base rim */
+#30=CARTESIAN_POINT('',(5.0,0.0,0.0));
+#31=VERTEX_POINT('',#30);
+#32=AXIS2_PLACEMENT_3D('',#10,#11,#12);
+#33=CIRCLE('',#32,5.0);
+#34=EDGE_CURVE('',#31,#31,#33,.T.);
+/* Meridian to apex */
+#40=DIRECTION('',(-0.5,0.0,0.8660254));
+#41=VECTOR('',#40,1.0);
+#42=LINE('',#30,#41);
+#43=EDGE_CURVE('',#31,#22,#42,.T.);
+/* TWO zero-length apex-bridge degenerate edges (only one is needed) */
+#50=DIRECTION('',(1.0,0.0,0.0));
+#51=VECTOR('',#50,1.0E-12);
+#52=LINE('',#21,#51);
+#53=EDGE_CURVE('',#22,#22,#52,.T.);
+#54=EDGE_CURVE('',#22,#22,#52,.T.);
+/* Defect: two degenerate ORIENTED_EDGEs in the same wire (#61, #62) at the
+ * same apex - one is canonical, the other should be deduped. */
+#60=ORIENTED_EDGE('',*,*,#34,.T.);
+#61=ORIENTED_EDGE('',*,*,#43,.T.);
+#62=ORIENTED_EDGE('',*,*,#53,.T.);
+#63=ORIENTED_EDGE('',*,*,#54,.T.);
+#64=ORIENTED_EDGE('',*,*,#43,.F.);
+#70=EDGE_LOOP('',(#60,#61,#62,#63,#64));
+#71=FACE_OUTER_BOUND('',#70,.T.);
+#72=ADVANCED_FACE('',(#71),#20,.T.);
+/* Wrap: minimal PRODUCT chain so OCCT TransferRoots produces a shape. */
+#9000=PRODUCT_CONTEXT('',#1,'mechanical');
+#9001=PRODUCT('Twi031','Twi031','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
+#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
+#9020=OPEN_SHELL('wrap_shell',(#72));
+#9021=SHELL_BASED_SURFACE_MODEL('wrap_sbsm',(#9020));
+#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#9010);
+#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+ENDSEC;
+END-ISO-10303-21;

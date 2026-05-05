@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Tsh018 — Volume orientation mismatch between `LastShape()` and parent solid</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.3a Shells / orientation</a> <span class="sep">/</span> <span class="current">Tsh018</span>
+</nav>
+<header class="title-bar">
+<h1>Tsh018 <span class="sep">—</span> <span class="entry-title">Volume orientation mismatch between `LastShape()` and parent solid</span></h1>
+<p class="category">§12.3a shell-orientation</p>
+<p class="severity-badge severity-p1">P1 — silent data loss</p>
+<p class="tag-pills">
+<a class="tag tag-topology" href="../by-tag/topology/index.html">topology</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-3a-shells/Tsh018.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-3a-shells/Tsh018.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>13-quaoar.md B006 (BRepPrimAPI_MakeRevol::LastShape)</li>
+</ul></section>
+<section><h2>Description</h2>
+<p>Constructor returns the closing face oriented FORWARD via `LastShape()`, but the same face inside the resulting solid is REVERSED. Code using `LastShape()` to drive a follow-up operation sees an inconsistent normal direction.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>After `BRepPrimAPI_MakeRevol`, compare orientation of `LastShape()` with orientation of the equivalent face found via `TopExp_Explorer(solid, TopAbs_FACE)`.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>heal — `LastShape()` (and `FirstShape`/`Generated`/`Modified`) should report a face with the same orientation it carries inside the parent solid.</p></section>
+<section><h2>Notes</h2>
+<p>**See also**: Tfa034, Tsh009. Synonyms: &quot;face orientation different inside vs outside parent&quot;, &quot;child face flipped relative to its solid&quot;, &quot;follow-up operation sees wrong face normal direction&quot;, &quot;API returns inconsistent orientation after revolve&quot;, &quot;first-or-last shape disagrees with explorer&quot;.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>contains(b&#x27;CLOSED_SHELL&#x27;)</code></li>
+<li><code>contains(b&#x27;MANIFOLD_SOLID_BREP&#x27;)</code></li>
+<li><code>count_entity_def(b&#x27;ADVANCED_FACE&#x27;) == 3</code></li>
+</ul></section>
+<section><h2>Cross-references</h2>
+<p><a href="../12-3c-faces/Tfa034.html">Tfa034</a>, <a href="Tsh009.html">Tsh009</a></p>
+</section>
+<section><h2>Live oracle output</h2>
+<table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
+<tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>no_shapes_loaded</code></td></tr>
+</tbody></table>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* Tsh018 - Volume orientation mismatch between LastShape() and parent
+<span class="lineno">3</span> *          solid
+<span class="lineno">4</span> * Defect: BRepPrimAPI_MakeRevol::LastShape returns the closing face
+<span class="lineno">5</span> * oriented FORWARD, but the same face inside the resulting solid is
+<span class="lineno">6</span> * REVERSED. Code using LastShape() to drive a follow-up operation sees
+<span class="lineno">7</span> * an inconsistent normal direction. Source: B006 (Quaoar).
+<span class="lineno">8</span> *
+<span class="lineno">9</span> * This file mimics the corollary: a SURFACE_OF_REVOLUTION solid where
+<span class="lineno">10</span> * the closing planar end face is referenced both inside the solid&#x27;s
+<span class="lineno">11</span> * <mark>CLOSED_SHELL</mark> with same_sense=.F. (correct outward orientation) AND
+<span class="lineno">12</span> * by a STYLED_ITEM/external reference with same_sense=.T. (the shape
+<span class="lineno">13</span> * MakeRevol::LastShape would have reported). Healers must report both
+<span class="lineno">14</span> * orientations consistently. */
+<span class="lineno">15</span>HEADER;
+<span class="lineno">16</span>FILE_DESCRIPTION((&#x27;Tsh018 test case&#x27;,&#x27;LastShape orientation mismatch&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">17</span>FILE_NAME(&#x27;Tsh018.stp&#x27;,&#x27;2026-04-26T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;auto-generated&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">18</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }&#x27;));
+<span class="lineno">19</span>ENDSEC;
+<span class="lineno">20</span>DATA;
+<span class="lineno">21</span>#1=APPLICATION_CONTEXT(&#x27;automotive_design&#x27;);
+<span class="lineno">22</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,&#x27;automotive_design&#x27;,2000,#1);
+<span class="lineno">23</span>/* Cylinder by revolving a vertical line around z-axis: r=1, h=2 */
+<span class="lineno">24</span>#100=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">25</span>#101=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,2.0));
+<span class="lineno">26</span>#200=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0)); #201=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">27</span>#210=AXIS2_PLACEMENT_3D(&#x27;axis&#x27;,#100,#200,#201);
+<span class="lineno">28</span>/* Cylindrical lateral surface r=1 */
+<span class="lineno">29</span>#220=CYLINDRICAL_SURFACE(&#x27;lateral&#x27;,#210,1.0);
+<span class="lineno">30</span>/* Top and bottom planes */
+<span class="lineno">31</span>#221=AXIS2_PLACEMENT_3D(&#x27;bottom&#x27;,#100,#200,#201);
+<span class="lineno">32</span>#222=PLANE(&#x27;bottom_plane&#x27;,#221);
+<span class="lineno">33</span>#223=AXIS2_PLACEMENT_3D(&#x27;top&#x27;,#101,#200,#201);
+<span class="lineno">34</span>#224=PLANE(&#x27;top_plane&#x27;,#223);
+<span class="lineno">35</span>/* Vertices on top and bottom rims */
+<span class="lineno">36</span>#230=CARTESIAN_POINT(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">37</span>#231=VERTEX_POINT(&#x27;&#x27;,#230);
+<span class="lineno">38</span>#232=CARTESIAN_POINT(&#x27;&#x27;,(1.0,0.0,2.0));
+<span class="lineno">39</span>#233=VERTEX_POINT(&#x27;&#x27;,#232);
+<span class="lineno">40</span>/* Bottom and top circles */
+<span class="lineno">41</span>#240=CIRCLE(&#x27;&#x27;,#221,1.0);
+<span class="lineno">42</span>#241=CIRCLE(&#x27;&#x27;,#223,1.0);
+<span class="lineno">43</span>/* Bottom edge: full circle from #231 back to #231 */
+<span class="lineno">44</span>#250=EDGE_CURVE(&#x27;bottom_circle&#x27;,#231,#231,#240,.T.);
+<span class="lineno">45</span>/* Top edge: full circle from #233 back to #233 */
+<span class="lineno">46</span>#251=EDGE_CURVE(&#x27;top_circle&#x27;,#233,#233,#241,.T.);
+<span class="lineno">47</span>/* Vertical seam edge from bottom rim to top rim */
+<span class="lineno">48</span>#260=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0)); #261=VECTOR(&#x27;&#x27;,#260,2.0);
+<span class="lineno">49</span>#262=LINE(&#x27;&#x27;,#230,#261);
+<span class="lineno">50</span>#263=EDGE_CURVE(&#x27;seam&#x27;,#231,#233,#262,.T.);
+<span class="lineno">51</span>/* Lateral face -- one degenerate seam loop */
+<span class="lineno">52</span>#400=ORIENTED_EDGE(&#x27;&#x27;,*,*,#250,.T.);
+<span class="lineno">53</span>#401=ORIENTED_EDGE(&#x27;&#x27;,*,*,#263,.T.);
+<span class="lineno">54</span>#402=ORIENTED_EDGE(&#x27;&#x27;,*,*,#251,.F.);
+<span class="lineno">55</span>#403=ORIENTED_EDGE(&#x27;&#x27;,*,*,#263,.F.);
+<span class="lineno">56</span>#404=EDGE_LOOP(&#x27;&#x27;,(#400,#401,#402,#403));
+<span class="lineno">57</span>#405=FACE_OUTER_BOUND(&#x27;lateral_loop&#x27;,#404,.T.);
+<span class="lineno">58</span><mark>#406=ADVANCED_FACE(</mark>&#x27;lateral&#x27;,(#405),#220,.T.);
+<span class="lineno">59</span>/* Bottom face */
+<span class="lineno">60</span>#410=ORIENTED_EDGE(&#x27;&#x27;,*,*,#250,.F.);
+<span class="lineno">61</span>#411=EDGE_LOOP(&#x27;&#x27;,(#410));
+<span class="lineno">62</span>#412=FACE_OUTER_BOUND(&#x27;bottom_loop&#x27;,#411,.T.);
+<span class="lineno">63</span><mark>#413=ADVANCED_FACE(</mark>&#x27;bottom&#x27;,(#412),#222,.F.);
+<span class="lineno">64</span>/* Top face -- this is the &quot;LastShape&quot; face */
+<span class="lineno">65</span>#420=ORIENTED_EDGE(&#x27;&#x27;,*,*,#251,.T.);
+<span class="lineno">66</span>#421=EDGE_LOOP(&#x27;&#x27;,(#420));
+<span class="lineno">67</span>#422=FACE_OUTER_BOUND(&#x27;top_loop&#x27;,#421,.T.);
+<span class="lineno">68</span><mark>#423=ADVANCED_FACE(</mark>&#x27;top_lastshape&#x27;,(#422),#224,.T.);
+<span class="lineno">69</span>#500=<mark>CLOSED_SHELL</mark>(&#x27;cyl_shell&#x27;,(#406,#413,#423));
+<span class="lineno">70</span>#510=<mark>MANIFOLD_SOLID_BREP</mark>(&#x27;cyl_solid&#x27;,#500);
+<span class="lineno">71</span>/* Defect: external reference to the same face #423 with the orientation
+<span class="lineno">72</span>   that LastShape() would report -- mismatching the orientation it has
+<span class="lineno">73</span>   inside #500. The receiver must reconcile these two views. */
+<span class="lineno">74</span>#600=ORIENTED_FACE(&#x27;lastshape_view&#x27;,*,#423,.T.);
+<span class="lineno">75</span>ENDSEC;
+<span class="lineno">76</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Tsh015.html">&larr; Tsh015</a> <a class="up" href="index.html">§12.3a Shells / orientation</a> <a class="next" href="Tsh019.html">Tsh019 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

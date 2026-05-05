@@ -1,0 +1,22 @@
+/* Gn003 - BSpline curve with empty control_points_list / empty knots
+   Defect: ISO 10303-42 requires a B_SPLINE_CURVE_WITH_KNOTS to carry at
+   least (degree+1) control points and a knot vector with at least two
+   distinct values. This curve has empty control_points_list, empty
+   knots, and empty knot_multiplicities. Compliant readers should
+   reject with a precise diagnostic and continue translating the
+   remainder of the file. (OCCT historically threw from
+   RWStepGeom_RWBSplineCurveWithKnots; see Mantis 0027575.) */
+ISO-10303-21;
+HEADER;
+FILE_DESCRIPTION(
+  ('Gn003 - BSpline curve empty control_points_list'),'2;1');
+FILE_NAME('Gn003.stp','2026-04-26T00:00:00',('auto-generated'),(''),
+  'auto-generated','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+/* Defect: empty control points, empty knots, empty multiplicities. */
+#10=B_SPLINE_CURVE_WITH_KNOTS('empty',3,(),.UNSPECIFIED.,.F.,.F.,
+  (),(),.UNSPECIFIED.);
+ENDSEC;
+END-ISO-10303-21;

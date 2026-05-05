@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Lh035 — ANCHOR section publishing the same anchor name twice</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.1b Header &amp; instance-numbering</a> <span class="sep">/</span> <span class="current">Lh035</span>
+</nav>
+<header class="title-bar">
+<h1>Lh035 <span class="sep">—</span> <span class="entry-title">ANCHOR section publishing the same anchor name twice</span></h1>
+<p class="category">§12.1b header/numbering (sub-class: ANCHOR)</p>
+<p class="severity-badge severity-p1">P1 — silent data loss</p>
+<p class="tag-pills">
+<a class="tag tag-spec-violation" href="../by-tag/spec-violation/index.html">spec-violation</a>
+<a class="tag tag-syntax" href="../by-tag/syntax/index.html">syntax</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-1b-header/Lh035.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-1b-header/Lh035.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>16-iso-spec ISO 10303-21 Ed.3 §8 (ANCHOR mapping name→instance)</li>
+</ul></section>
+<section><h2>Description</h2>
+<p>Edition-3 ANCHOR sections publish a mapping from anchor-name (a string) to instance handle. The spec is silent on whether duplicate names are permitted; a strict implementation rejects, a lenient one takes first-wins or last-wins (divergent across implementations). A REFERENCE in another file pointing at the duplicated name resolves nondeterministically.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>`&lt;origin&gt;=#10;` and `&lt;origin&gt;=#11;` in the ANCHOR section, with `#10` and `#11` distinct CARTESIAN_POINTs.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>reject duplicate anchor names with a diagnostic; or, if a tolerant policy is chosen, document the deterministic disambiguation rule (first-wins / last-wins) and warn.</p></section>
+<section><h2>Notes</h2>
+<p>**See also**: Lh026. Synonyms: &quot;duplicate anchor name in ANCHOR section&quot;, &quot;two anchors with same name&quot;, &quot;ANCHOR name collision&quot;, &quot;anchor name published twice&quot;, &quot;ambiguous anchor in STEP&quot;.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>contains(b&#x27;ANCHOR;&#x27;)</code></li>
+<li><code>matches(rb&#x27;(?s)&lt;origin&gt;=#10;.*&lt;origin&gt;=#11;&#x27;)</code></li>
+</ul></section>
+<section><h2>Cross-references</h2>
+<p><a href="Lh026.html">Lh026</a></p>
+</section>
+<section><h2>Live oracle output</h2>
+<table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
+<tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>no_shapes_loaded</code></td></tr>
+</tbody></table>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* Lh035 - ANCHOR section publishing the same anchor name twice
+<span class="lineno">3</span> * Defect: ISO 10303-21 Edition 3 ANCHOR sections publish a mapping
+<span class="lineno">4</span> * from anchor-name (a string) to instance handle. The spec is silent
+<span class="lineno">5</span> * on whether duplicate names are permitted; a strict implementation
+<span class="lineno">6</span> * rejects, a lenient one takes first-wins or last-wins (divergent).
+<span class="lineno">7</span> * A REFERENCE section in another file pointing at the duplicated
+<span class="lineno">8</span> * anchor name resolves nondeterministically. */
+<span class="lineno">9</span>HEADER;
+<span class="lineno">10</span>FILE_DESCRIPTION((&#x27;Lh035 - ANCHOR section duplicate anchor name&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">11</span>FILE_NAME(&#x27;Lh035.stp&#x27;,&#x27;2026-04-26T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),
+<span class="lineno">12</span>  &#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">13</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
+<span class="lineno">14</span>ENDSEC;
+<span class="lineno">15</span><mark>ANCHOR;</mark>
+<span class="lineno">16</span>/* Defect: anchor name &#x27;origin&#x27; published twice for two different
+<span class="lineno">17</span> * instances - which one wins on cross-file resolution? */
+<span class="lineno">18</span><mark>&lt;origin&gt;=#10;</mark>
+<span class="lineno">19</span><mark>&lt;origin&gt;=#11;</mark>
+<span class="lineno">20</span>ENDSEC;
+<span class="lineno">21</span>DATA;
+<span class="lineno">22</span>#10=CARTESIAN_POINT(&#x27;first-origin&#x27;,(0.0,0.0,0.0));
+<span class="lineno">23</span>#11=CARTESIAN_POINT(&#x27;second-origin&#x27;,(1.0,1.0,1.0));
+<span class="lineno">24</span>#20=DIRECTION(&#x27;z&#x27;,(0.0,0.0,1.0));
+<span class="lineno">25</span>#21=DIRECTION(&#x27;x&#x27;,(1.0,0.0,0.0));
+<span class="lineno">26</span>#22=AXIS2_PLACEMENT_3D(&#x27;placement&#x27;,#10,#20,#21);
+<span class="lineno">27</span>ENDSEC;
+<span class="lineno">28</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Lh034.html">&larr; Lh034</a> <a class="up" href="index.html">§12.1b Header &amp; instance-numbering</a> <a class="next" href="Lh036.html">Lh036 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

@@ -1,0 +1,50 @@
+ISO-10303-21;
+/* Gp028 - Cyclic seam edge crossing in ShapeFix_ComposeShell
+ * Defect: outer wire of a CYLINDRICAL_SURFACE face crosses the U=0/U=2pi
+ * seam direction without an explicit seam edge. ShapeFix_ComposeShell
+ * sees an open contour in UV. The wire must be augmented with the
+ * seam edge to close the contour. */
+HEADER;
+FILE_DESCRIPTION(('Gp028 test case','Cyclic seam edge crossing in ComposeShell'),'2;1');
+FILE_NAME('Gp028.stp','2026-04-27T00:00:00',(''),(''),'auto-generated','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#11=DIRECTION('',(0.0,0.0,1.0));
+#12=DIRECTION('',(1.0,0.0,0.0));
+#13=AXIS2_PLACEMENT_3D('',#10,#11,#12);
+#20=CYLINDRICAL_SURFACE('',#13,10.0);
+/* Two vertices placed on opposite sides of the seam.
+ * V0 at angle 5.5 (just before 2pi); V1 at angle 0.5 (just after 0) */
+#40=CARTESIAN_POINT('',(7.08670,-7.05540,0.0));
+#41=VERTEX_POINT('',#40);
+#42=CARTESIAN_POINT('',(8.77583,4.79426,0.0));
+#43=VERTEX_POINT('',#42);
+/* 3D curve: shorter geodesic arc that passes across the seam (U=0/2pi) */
+#30=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#31=DIRECTION('',(0.0,0.0,1.0));
+#33=AXIS2_PLACEMENT_3D('',#30,#31,#12);
+#34=CIRCLE('',#33,10.0);
+/* Pcurve runs from U=5.5 to U=6.78 (=2pi+0.5) - crosses U=2pi
+ * without any seam edge inserted at U=2pi/U=0. */
+#71=CARTESIAN_POINT('',(5.5,0.0));
+#72=DIRECTION('',(1.0,0.0));
+#73=VECTOR('',#72,1.28319);
+#74=LINE('',#71,#73);
+#75=( GEOMETRIC_REPRESENTATION_CONTEXT(2)
+      PARAMETRIC_REPRESENTATION_CONTEXT()
+      REPRESENTATION_CONTEXT('parametric','2D') );
+#76=DEFINITIONAL_REPRESENTATION('',(#74),#75);
+#77=PCURVE('',#20,#76);
+#50=SURFACE_CURVE('',#34,(#77),.PCURVE_S1.);
+#60=EDGE_CURVE('',#41,#43,#50,.T.);
+#61=ORIENTED_EDGE('',*,*,#60,.T.);
+/* Defect: only this single crossing edge in the loop - no seam edge */
+#62=EDGE_LOOP('',(#61));
+#63=FACE_OUTER_BOUND('',#62,.T.);
+#64=ADVANCED_FACE('',(#63),#20,.T.);
+ENDSEC;
+END-ISO-10303-21;

@@ -1,0 +1,32 @@
+ISO-10303-21;
+/* A074 INPUT — pre-XBF-roundtrip source for A074.stp
+ * Sibling input fixture: producer emits a STEP file with a textured face
+ * via STYLED_ITEM + SURFACE_STYLE_USAGE + IMAGE_TEXTURE_BINDING.
+ * A074.stp is the post-XBF-roundtrip state where the texture binding
+ * was lost — face has no IMAGE_TEXTURE_BINDING after reload. */
+HEADER;
+FILE_DESCRIPTION(('A074.input pre-XBF-roundtrip source: textured face'),'2;1');
+FILE_NAME('A074.input.stp','2026-05-01T00:00:00',(''),(''),
+  'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#11=DIRECTION('',(0.0,0.0,1.0));
+#12=DIRECTION('',(1.0,0.0,0.0));
+#13=AXIS2_PLACEMENT_3D('plc',#10,#11,#12);
+#14=PLANE('p',#13);
+#20=ADVANCED_FACE('textured',(),#14,.T.);
+/* Texture binding: image attached to face #20 */
+#30=PRESENTATION_LAYER_ASSIGNMENT('textures','texture-bearing layer',(#20));
+#40=COLOUR_RGB('',1.0,1.0,1.0);
+#41=FILL_AREA_STYLE_COLOUR('',#40);
+#42=FILL_AREA_STYLE('',(#41));
+#43=SURFACE_STYLE_FILL_AREA(#42);
+#44=SURFACE_SIDE_STYLE('',(#43));
+#45=SURFACE_STYLE_USAGE(.BOTH.,#44);
+#46=PRESENTATION_STYLE_ASSIGNMENT((#45));
+#47=STYLED_ITEM('textured-style',(#46),#20);
+ENDSEC;
+END-ISO-10303-21;

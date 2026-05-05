@@ -1,0 +1,28 @@
+ISO-10303-21;
+/* Sw008 - Fast-sewing edge match fails: same endpoints, different curve types.
+ * Defect: two faces declare a shared edge between the same vertices,
+ * but one uses LINE geometry and the other a degree-1 B_SPLINE_CURVE
+ * with the same knots. Hash mismatch. */
+HEADER;
+FILE_DESCRIPTION(('Sw008 - fast sewing edge match failure','Pass C gap-fill'),'2;1');
+FILE_NAME('Sw008.stp','2026-04-30T00:00:00',(''),(''),'gap-fill C','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#11=CARTESIAN_POINT('',(1.0,0.0,0.0));
+#12=VERTEX_POINT('',#10);
+#13=VERTEX_POINT('',#11);
+/* Curve A: LINE */
+#20=DIRECTION('',(1.0,0.0,0.0));
+#21=VECTOR('',#20,1.0);
+#22=LINE('lineA',#10,#21);
+/* Curve B: degree-1 B-spline through (0,0,0) and (1,0,0) */
+#30=B_SPLINE_CURVE_WITH_KNOTS('bsplineB',1,(#10,#11),.UNSPECIFIED.,.F.,.F.,
+    (2,2),(0.0,1.0),.UNSPECIFIED.);
+#40=EDGE_CURVE('eA',#12,#13,#22,.T.);
+#41=EDGE_CURVE('eB',#12,#13,#30,.T.);
+ENDSEC;
+END-ISO-10303-21;

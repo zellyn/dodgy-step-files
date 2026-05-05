@@ -1,0 +1,34 @@
+ISO-10303-21;
+/* M101 - AP238 two5d_milling_operation applied to a 3D-only feature.
+ * Defect: a TWO5D_MILLING_OPERATION (Z-constant contour pass) is
+ * applied to a freeform-surface feature whose toolpath topology is
+ * intrinsically 3D. The 2.5D Z-step semantics cannot represent the
+ * surface; either gouges the design or leaves un-cut stock. */
+HEADER;
+FILE_DESCRIPTION(('M101 test case','AP238 2.5D op on freeform surface feature'),'2;1');
+FILE_NAME('M101.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AP238_STEP_NC_MIM { 1 0 10303 238 1 0 0 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('numerical_control_machining');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
+  'numerical_control_machining',2007,#1);
+#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10))
+     REPRESENTATION_CONTEXT('nc','3D'));
+/* The "feature" is a sculpted freeform surface (NURBS, locally non-planar) */
+#400=CARTESIAN_POINT('p1',(0.0,0.0,0.0));
+#401=CARTESIAN_POINT('p2',(10.0,0.0,5.0));
+#402=CARTESIAN_POINT('p3',(20.0,0.0,3.0));
+#403=CARTESIAN_POINT('p4',(0.0,10.0,2.0));
+#404=CARTESIAN_POINT('p5',(10.0,10.0,8.0));
+#405=CARTESIAN_POINT('p6',(20.0,10.0,4.0));
+#410=B_SPLINE_SURFACE_WITH_KNOTS('freeform_surf',2,1,
+  ((#400,#401,#402),(#403,#404,#405)),
+  .UNSPECIFIED.,.F.,.F.,.F.,(3,3),(2,2),(0.0,1.0),(0.0,1.0),.UNSPECIFIED.);
+/* Defect: a 2.5D op applied to the freeform surface feature. */
+#100=TWO5D_MILLING_OPERATION('contour_pass',$,$,$,$,#410);
+#200=WORKPLAN('main',(#100),$,$,$);
+ENDSEC;
+END-ISO-10303-21;

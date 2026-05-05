@@ -1,0 +1,24 @@
+ISO-10303-21;
+/* Le044 - \X2\ payload containing an apparent UTF-16 surrogate half
+ * (technically illegal but observed in Java-vintage exporters)
+ * Defect: \X2\..\X0\ wraps 4-hex-digit groups each denoting one UCS-2
+ * (BMP) scalar. Surrogate halves U+D800..U+DFFF are not BMP
+ * characters - they exist only as paired surrogates of UTF-16. A
+ * Java-vintage exporter that internally holds Java char[] (allowing
+ * lone surrogates) and writes them out one-by-one as \X2\DXXX\X0\
+ * produces a malformed but parseable token. */
+HEADER;
+FILE_DESCRIPTION(('Le044 - \X2\ with lone surrogate half'),'2;1');
+FILE_NAME('Le044.stp','2026-04-26T00:00:00',(''),(''),
+  'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=PRODUCT_CONTEXT('part',#1,'mechanical');
+/* Defect: D801 is a high-surrogate, illegal as a UCS-2 scalar */
+#10=PRODUCT('lone=\X2\D801\X0\','lone-high-surrogate','',(#2));
+/* Defect: unpaired high+low (CESU-8-like, encoded as \X2\) */
+#11=PRODUCT('pair=\X2\D801DC37\X0\','cesu-pair','',(#2));
+ENDSEC;
+END-ISO-10303-21;

@@ -1,0 +1,56 @@
+/* Pf011 - StepData_EntityCluster pathological deep / cyclic chain
+   Pattern: OCCT's internal StepData_EntityCluster chain allows cyclic
+   next-pointer links and recursion in Value/SetValue/Append. Pathological
+   inputs crash via stack overflow and leak memory through a missing
+   destructor (Mantis 0031435; OCCT e00b8ed).
+   The chain is normally invisible to the file format - it is the OCCT
+   in-memory shape of complex / multi-inheritance entities. We expose
+   the pattern here as a deeply nested complex-record entity whose part
+   list is recursively self-referencing through a long chain.
+   Scaling-up: replicate the deeply-nested complex record below to depth
+   10000+ to trigger the entity-cluster recursion. */
+ISO-10303-21;
+HEADER;
+FILE_DESCRIPTION(('Pf011 - StepData_EntityCluster cyclic deep chain'),'2;1');
+FILE_NAME('Pf011.stp','2026-04-26T00:00:00',('auto-generated'),(''),
+  'auto-generated','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+/* deeply-chained complex record family - each cluster references the
+   next; the last loops back to the first to expose missing destructor +
+   cycle handling in StepData_EntityCluster::Value/SetValue/Append. */
+#1=DIMENSIONAL_EXPONENTS(1.0,0.0,0.0,0.0,0.0,0.0,0.0);
+#10=( NAMED_UNIT(*) SI_UNIT(.MILLI.,.METRE.) LENGTH_UNIT() );
+#11=( NAMED_UNIT(*) SI_UNIT($,.METRE.) LENGTH_UNIT() );
+#12=( NAMED_UNIT(*) SI_UNIT(.MILLI.,.METRE.) LENGTH_UNIT() );
+#13=( NAMED_UNIT(*) SI_UNIT($,.METRE.) LENGTH_UNIT() );
+#14=( NAMED_UNIT(*) SI_UNIT(.MILLI.,.METRE.) LENGTH_UNIT() );
+#15=( NAMED_UNIT(*) SI_UNIT($,.METRE.) LENGTH_UNIT() );
+/* derived-unit chain (cluster of CLUSTERs) */
+#20=DERIVED_UNIT_ELEMENT(#10,1.0);
+#21=DERIVED_UNIT_ELEMENT(#11,1.0);
+#22=DERIVED_UNIT_ELEMENT(#12,1.0);
+#23=DERIVED_UNIT_ELEMENT(#13,1.0);
+#24=DERIVED_UNIT_ELEMENT(#14,1.0);
+#25=DERIVED_UNIT_ELEMENT(#15,1.0);
+/* derived-unit aggregating chain - in OCCT this becomes a linked
+   EntityCluster chain. Replicate to depth 10000+ to trigger recursion. */
+#30=DERIVED_UNIT((#20));
+#31=DERIVED_UNIT((#20,#21));
+#32=DERIVED_UNIT((#20,#21,#22));
+#33=DERIVED_UNIT((#20,#21,#22,#23));
+#34=DERIVED_UNIT((#20,#21,#22,#23,#24));
+#35=DERIVED_UNIT((#20,#21,#22,#23,#24,#25));
+/* cluster cycle via measure_with_unit:
+   the measures #40..#45 each reference the next derived unit, and the
+   final back-reference completes the cycle. Naive cluster traversal
+   without cycle detection will recurse indefinitely. */
+#40=MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0),#30);
+#41=MEASURE_WITH_UNIT(LENGTH_MEASURE(2.0),#31);
+#42=MEASURE_WITH_UNIT(LENGTH_MEASURE(3.0),#32);
+#43=MEASURE_WITH_UNIT(LENGTH_MEASURE(4.0),#33);
+#44=MEASURE_WITH_UNIT(LENGTH_MEASURE(5.0),#34);
+#45=MEASURE_WITH_UNIT(LENGTH_MEASURE(6.0),#35);
+ENDSEC;
+END-ISO-10303-21;

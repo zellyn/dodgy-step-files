@@ -1,0 +1,31 @@
+ISO-10303-21;
+/* M174 - AP238 MILLING_FEED_RATE varies along path with no F-code transition.
+ * Defect: a milling toolpath references two MILLING_FEED_RATE entities
+ * with different magnitudes (300 mm/min and 1200 mm/min) along
+ * consecutive segments, but no F-code transition / acceleration profile
+ * is declared. Controllers either snap discontinuously (over-shooting
+ * the corner) or silently use one rate for the entire path. */
+HEADER;
+FILE_DESCRIPTION(('M174 test case','AP238 feedrate jump without transition'),'2;1');
+FILE_NAME('M174.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AP238_STEP_NC_MIM { 1 0 10303 238 1 0 0 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('numerical_control_machining');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
+  'numerical_control_machining',2007,#1);
+#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#11=(NAMED_UNIT(*)SI_UNIT($,.SECOND.)TIME_UNIT());
+#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10))
+     REPRESENTATION_CONTEXT('nc','3D'));
+/* Defect: two feedrates assigned to consecutive segments, no transition. */
+#80=MILLING_FEED_RATE('slow_feed',
+  MEASURE_WITH_UNIT(POSITIVE_RATIO_MEASURE(300.0),#10));
+#81=MILLING_FEED_RATE('fast_feed',
+  MEASURE_WITH_UNIT(POSITIVE_RATIO_MEASURE(1200.0),#10));
+#100=MILLING_OPERATION('seg1',$,$,$,$,#80);
+#101=MILLING_OPERATION('seg2',$,$,$,$,#81);
+#200=WORKPLAN('main',(#100,#101),$,$,$);
+ENDSEC;
+END-ISO-10303-21;

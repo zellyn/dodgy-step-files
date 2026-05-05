@@ -1,0 +1,31 @@
+ISO-10303-21;
+/* M115 - AP209 nodal force distribution with negative weights.
+ * Defect: three NODE_WITH_FORCE entries distribute a load across three
+ * nodes with weights (0.6, 0.6, -0.2). The third node receives a
+ * pulling contribution rather than the intended pushing force; the
+ * resultant is preserved but local stress concentrations are unphysical. */
+HEADER;
+FILE_DESCRIPTION(('M115 test case','AP209 negative load distribution weight'),'2;1');
+FILE_NAME('M115.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('STRUCTURAL_ANALYSIS_DESIGN { 1 0 10303 209 1 0 0 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('structural_analysis_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
+  'structural_analysis_design',2001,#1);
+#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10))
+     REPRESENTATION_CONTEXT('fea','3D'));
+#100=CARTESIAN_POINT('a',(0.0,0.0,0.0));
+#101=CARTESIAN_POINT('b',(1.0,0.0,0.0));
+#102=CARTESIAN_POINT('c',(2.0,0.0,0.0));
+#110=NODE('n1',(#100),$);
+#111=NODE('n2',(#101),$);
+#112=NODE('n3',(#102),$);
+/* Defect: third weight is negative. Total resultant = 100*(0.6+0.6-0.2) = 100. */
+#200=NODE_WITH_FORCE('load_a',#110,(60.0,0.0,0.0));
+#201=NODE_WITH_FORCE('load_b',#111,(60.0,0.0,0.0));
+#202=NODE_WITH_FORCE('load_c_negative_weight',#112,(-20.0,0.0,0.0));
+ENDSEC;
+END-ISO-10303-21;

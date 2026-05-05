@@ -1,0 +1,34 @@
+/* Ls002 - REAL literal with no digit before the decimal point
+   ----------------------------------------------------------------------
+   Catalog section : §12.1c numeric-literal grammar
+   Sources         : N016
+   See also        : Ls001
+   ----------------------------------------------------------------------
+   Defect
+     The grammar requires at least one digit before the dot. Bare ".5"
+     is not legal; "0.5" is. C and Python %g formatters frequently emit
+     ".5" instead of "0.5" when a value is in (-1, 1). The DIRECTION
+     coordinates and CARTESIAN_POINT below use the illegal leading-dot
+     form (.0, .5).
+   Expected behavior
+     Strict mode  : reject with "leading digit required before '.'".
+     Lenient mode : commonly accept implicit zero with a warning.
+   ----------------------------------------------------------------------
+*/
+ISO-10303-21;
+HEADER;
+FILE_DESCRIPTION(('Ls002 - REAL literal missing leading digit'),'2;1');
+FILE_NAME('Ls002.stp','2026-04-26T00:00:00',('auto-generated'),(''),
+  'auto-generated','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+#10=CARTESIAN_POINT('origin',(0.0,0.0,0.0));
+/* Defect: leading-dot REAL forms (.0, .5) where 0.0 / 0.5 is required */
+#20=DIRECTION('z',(.0,.0,1.0));
+#30=CARTESIAN_POINT('half',(.5,.5,.5));
+/* Defect: leading-dot mixed with canonical 0.x form on same instance */
+#31=CARTESIAN_POINT('mix',(.25,0.5,.75));
+#40=AXIS2_PLACEMENT_3D('placement',#10,#20,$);
+ENDSEC;
+END-ISO-10303-21;

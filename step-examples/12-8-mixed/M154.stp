@@ -1,0 +1,33 @@
+ISO-10303-21;
+/* M154 - AP210 placement footprint conflicts with library footprint.
+ * Defect: a NEXT_ASSEMBLY_USAGE_OCCURRENCE places component U1 with
+ * a 4-pin layout, but the referenced PRODUCT 'BGA_84' has 84 pins
+ * in its package model. The placement footprint and the
+ * component-library footprint disagree on pin count. */
+HEADER;
+FILE_DESCRIPTION(('M154 test case','AP210 footprint package mismatch'),'2;1');
+FILE_NAME('M154.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('ELECTRONIC_ASSEMBLY_INTERCONNECT_AND_PACKAGING_DESIGN { 1 0 10303 210 3 1 0 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('electronic_assembly_interconnect_and_packaging_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
+  'electronic_assembly_interconnect_and_packaging_design',2014,#1);
+#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10))
+     REPRESENTATION_CONTEXT('pcb','3D'));
+/* Library declares BGA_84 with 84 pin package. */
+#100=PRODUCT('BGA_84','BGA_84','84-pin package',(#1));
+#101=DESCRIPTIVE_REPRESENTATION_ITEM('library_pin_count','84');
+/* Defect: placement only references 4 terminals - 80 pins are missing. */
+#200=TERMINAL('U1_pin1','U1_pin1',$);
+#201=TERMINAL('U1_pin2','U1_pin2',$);
+#202=TERMINAL('U1_pin3','U1_pin3',$);
+#203=TERMINAL('U1_pin4','U1_pin4',$);
+#300=PRODUCT_DEFINITION_FORMATION('rev_A','released',#100);
+#301=PRODUCT_DEFINITION('design','',#300,#1);
+#400=NEXT_ASSEMBLY_USAGE_OCCURRENCE('U1','U1','4-pin placement footprint',
+       #301,#301,$);
+ENDSEC;
+END-ISO-10303-21;

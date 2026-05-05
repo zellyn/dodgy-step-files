@@ -1,0 +1,26 @@
+/* Ad110 - .stpz gzip wrapper expands ratio 1:10000 into multi-gigabyte body
+ * Defect: a .stpz file (gzip-wrapped Part-21) whose payload is highly
+ * compressible. Gzip ratios approaching 1:1024 per DEFLATE block chain
+ * to aggregate ratios of 1:10000+. A ~3 KB .stpz can decompress to
+ * gigabytes. Distinct from Ad027 / Pf030 (instance-count bombs at the
+ * parser layer) - the bomb here is at the gzip layer and triggers
+ * before any Part-21 token is seen. Distinct from Ad105 (header lies
+ * about size) - this gzip stream actually produces the bytes when
+ * decoded. Provenance tier: cross-file-state. */
+ISO-10303-21;
+HEADER;
+FILE_DESCRIPTION(('Ad110 - .stpz gzip ratio bomb (witness only - bomb in wrapper)'),'2;1');
+FILE_NAME('Ad110.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+/* Witness body: the gzip-wrapper bomb is not present in this Part-21
+   fixture; the bug-reporter searchable terms (gzip, .stpz, decompression,
+   ratio, bomb) are in this file's header and comments. The actual
+   exploit is a gzip stream with ratio 1:10000+ that decodes to
+   gigabytes of repeated whitespace before any Part-21 token is seen. */
+/* gzip ratio 1:10000 .stpz decompression bomb */
+#1=APPLICATION_CONTEXT('automotive_design');
+#10=CARTESIAN_POINT('benign',(0.0,0.0,0.0));
+ENDSEC;
+END-ISO-10303-21;

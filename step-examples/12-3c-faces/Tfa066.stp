@@ -1,0 +1,69 @@
+ISO-10303-21;
+/* Tfa066 - Pipe-like face with seam edge wrongly removed as "small"
+ * CYLINDRICAL_SURFACE radius 0.05 mm; ADVANCED_FACE bounded by two CIRCLE
+ * arcs (top and bottom caps at z=0 and z=100) plus two seam LINE edges
+ * along the cylinder axis -- 100 mm long. Bounding-box width is 0.1 mm
+ * (=2*radius), well below a small-face detector's 0.5 mm threshold, but
+ * the area (2*PI*0.05*100 ~= 31.4 mm^2) is non-trivial. */
+HEADER;
+FILE_DESCRIPTION(('Tfa066 test case','Cylindrical face length 100mm radius 0.05mm with seam edges -- bbox width 0.1mm'),'2;1');
+FILE_NAME('Tfa066.stp','2026-04-30T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#11=DIRECTION('',(0.0,0.0,1.0));#12=DIRECTION('',(1.0,0.0,0.0));
+#13=AXIS2_PLACEMENT_3D('',#10,#11,#12);
+#14=CYLINDRICAL_SURFACE('thin_long',#13,0.05);
+/* 4 vertices around the cyl boundary: bottom & top caps at U=0 and U=2*PI seam */
+#20=CARTESIAN_POINT('',(0.05,0.0,0.0));#21=VERTEX_POINT('Vb1',#20);
+#22=CARTESIAN_POINT('',(0.05,0.0,0.0));#23=VERTEX_POINT('Vb2',#22);
+#24=CARTESIAN_POINT('',(0.05,0.0,100.0));#25=VERTEX_POINT('Vt1',#24);
+#26=CARTESIAN_POINT('',(0.05,0.0,100.0));#27=VERTEX_POINT('Vt2',#26);
+/* bottom CIRCLE arc Vb1 -> Vb2 (full circle) */
+#30=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#31=DIRECTION('',(0.0,0.0,1.0));#32=DIRECTION('',(1.0,0.0,0.0));
+#33=AXIS2_PLACEMENT_3D('bottom_axis',#30,#31,#32);
+#34=CIRCLE('bottom_cap',#33,0.05);
+#35=EDGE_CURVE('bottom_arc',#21,#23,#34,.T.);
+/* seam line (V=0..100 at U=2*PI) Vb2 -> Vt2 */
+#40=DIRECTION('',(0.0,0.0,1.0));#41=VECTOR('',#40,1.0);
+#42=LINE('seam_line_at_2pi',#22,#41);
+#43=EDGE_CURVE('seam_right',#23,#27,#42,.T.);
+/* top CIRCLE arc Vt2 -> Vt1 (reversed direction) */
+#50=CARTESIAN_POINT('',(0.0,0.0,100.0));
+#51=DIRECTION('',(0.0,0.0,1.0));#52=DIRECTION('',(1.0,0.0,0.0));
+#53=AXIS2_PLACEMENT_3D('top_axis',#50,#51,#52);
+#54=CIRCLE('top_cap',#53,0.05);
+#55=EDGE_CURVE('top_arc',#27,#25,#54,.T.);
+/* seam line back Vt1 -> Vb1 */
+#60=DIRECTION('',(0.0,0.0,-1.0));#61=VECTOR('',#60,1.0);
+#62=LINE('seam_line_at_0',#24,#61);
+#63=EDGE_CURVE('seam_left',#25,#21,#62,.T.);
+#70=ORIENTED_EDGE('',*,*,#35,.T.);
+#71=ORIENTED_EDGE('',*,*,#43,.T.);
+#72=ORIENTED_EDGE('',*,*,#55,.T.);
+#73=ORIENTED_EDGE('',*,*,#63,.T.);
+#74=EDGE_LOOP('thin_pipe_loop',(#70,#71,#72,#73));
+#75=FACE_OUTER_BOUND('',#74,.T.);
+#76=ADVANCED_FACE('pipe_face_long_thin',(#75),#14,.T.);
+/* Wrap: minimal PRODUCT chain so OCCT TransferRoots produces a shape. */
+#9000=PRODUCT_CONTEXT('',#1,'mechanical');
+#9001=PRODUCT('Tfa066','Tfa066','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
+#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
+#9020=OPEN_SHELL('wrap_shell',(#76));
+#9021=SHELL_BASED_SURFACE_MODEL('wrap_sbsm',(#9020));
+#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#9010);
+#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+ENDSEC;
+END-ISO-10303-21;

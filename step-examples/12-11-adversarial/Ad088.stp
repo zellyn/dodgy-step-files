@@ -1,0 +1,15 @@
+ISO-10303-21;
+/* Ad088 - Crash on malformed numeric parameter
+ * Defect: CARTESIAN_POINT with empty middle parameter and extra trailing value */
+HEADER;
+FILE_DESCRIPTION(('Ad088 test case','Crash on malformed numeric parameter'),'2;1');
+FILE_NAME('Ad088.stp','2026-04-30T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+#100=CARTESIAN_POINT('empty_middle',(1.0, , 3.0));
+#101=CARTESIAN_POINT('extra_value',(1.0,2.0,3.0,4.0));
+ENDSEC;
+END-ISO-10303-21;

@@ -1,0 +1,44 @@
+[project]
+name = "step-corpus-validation"
+version = "0.2.0"
+description = "Multi-tier validators for the STEP-defect corpus at ../step-examples/"
+requires-python = ">=3.11,<3.13"
+license = { text = "MIT" }
+authors = [
+    { name = "Zellyn Hunter", email = "zellyn@gmail.com" },
+]
+dependencies = [
+    # Tier 1: strict Part-21 parser (no healing)
+    "ifcopenshell>=0.7",
+    # Tier 2-3: OCCT bindings via cadquery/build123d (uses OCP)
+    "build123d>=0.7",
+    "cadquery-ocp>=7.7",
+    # Tier 2 alternative: gmsh's Python bindings (independent OCC build with healing knobs)
+    "gmsh>=4.13",
+    # Misc
+    "pyyaml>=6.0",
+    "click>=8.1",
+    "rich>=13.0",
+    "manifold3d>=3.4.1",
+    # Catalog-schema validation
+    "jsonschema>=4.21",
+]
+
+[tool.uv]
+managed = true
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[dependency-groups]
+dev = [
+    "pytest>=9.0.3",
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/step_corpus"]
+
+[project.scripts]
+step-corpus = "step_corpus.cli:main"
+step-corpus-search = "step_corpus._bug_search:main"

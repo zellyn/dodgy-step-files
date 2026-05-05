@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>P002 — Non-UTF-8 (GB18030 / locale code page) in string literals</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.6 Assembly hierarchy</a> <span class="sep">/</span> <span class="current">P002</span>
+</nav>
+<header class="title-bar">
+<h1>P002 <span class="sep">—</span> <span class="entry-title">Non-UTF-8 (GB18030 / locale code page) in string literals</span></h1>
+<p class="category">§12.1 encoding</p>
+<p class="severity-badge severity-p1">P1 — silent data loss</p>
+<p class="tag-pills">
+<a class="tag tag-round-trip" href="../by-tag/round-trip/index.html">round-trip</a>
+<a class="tag tag-assembly" href="../by-tag/assembly/index.html">assembly</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-6-assembly/P002.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-6-assembly/P002.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>FreeCAD #7987, #22123</li>
+</ul></section>
+<section><h2>Sender</h2>
+<p>SolidWorks (Chinese-locale install) and any non-Western Windows export</p></section>
+<section><h2>Description</h2>
+<p>STEP-21 lines like `SHAPE_REPRESENTATION (&#x27;海绵2&#x27;, ..)` appear in files encoded as GB18030 / Shift-JIS / CP1252 because exporters write the OS code page directly. Readers that assume UTF-8 produce mojibake in object labels and attributes; round-tripping then corrupts the saved project document.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>Generate a STEP file containing `PRODUCT`/`SHAPE_REPRESENTATION` name strings with high-bit bytes interpretable in GB18030 but not UTF-8 (or with the standard `\X2\…\X0\` Unicode escape sequences that exporters rarely emit).</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>Heal and accept: auto-detect or honor STEP-21 `\X2\` / `\X4\` escape sequences; expose a per-file encoding override; warn if bytes don&#x27;t decode as declared encoding.</p></section>
+<section><h2>Notes</h2>
+<p>Synonyms: &quot;GB18030 encoded part names corrupt after read&quot;, &quot;non-UTF-8 string literals in STEP&quot;, &quot;Chinese locale code page in name strings&quot;, &quot;encoding mismatch garbles labels&quot;.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>contains(b&#x27;\\X2\\&#x27;) or matches(rb&quot;[\x80-\xff]&quot;)</code></li>
+</ul></section>
+<section><h2>Live oracle output</h2>
+<table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
+<tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>reject(E_X2_NO_TERM)</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>no_shapes_loaded</code></td></tr>
+</tbody></table>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/*
+<span class="lineno">3</span> * P002 â Non-UTF-8 (GB18030 / locale code page) in string literals
+<span class="lineno">4</span> * Defect (FreeCAD #7987, #22123; SolidWorks Chinese-locale install or any
+<span class="lineno">5</span> *         non-Western Windows export):
+<span class="lineno">6</span> *   STEP-21 lines like SHAPE_REPRESENTATION (&#x27;hai-mian-2&#x27;, ...) appear in
+<span class="lineno">7</span> *   files encoded as GB18030 / Shift-JIS / CP1252 because exporters write the
+<span class="lineno">8</span> *   OS code page directly. Readers that assume UTF-8 produce mojibake.
+<span class="lineno">9</span> * Reproducer: STEP file with PRODUCT / SHAPE_REPRESENTATION name strings
+<span class="lineno">10</span> *   carrying high-bit bytes interpretable as GB18030, alongside the standard
+<span class="lineno">11</span> *   \X2\â¦\X0\ Unicode escape for the same word.
+<span class="lineno">12</span> * Expected kernel: auto-detect or honor STEP-21 \X2\ / \X4\ escape sequences;
+<span class="lineno">13</span> *   per-file encoding override; warn if bytes don&#x27;t decode as declared.
+<span class="lineno">14</span> *
+<span class="lineno">15</span> * NOTE: To keep this catalog file 7-bit clean and license-pure, we encode the
+<span class="lineno">16</span> *   non-ASCII glyphs ONLY via the proper \X2\ Unicode escape (the *correct*
+<span class="lineno">17</span> *   form). The defect is that real-world senders ship the raw GB18030 bytes
+<span class="lineno">18</span> *   instead. The names below show what the *correct* encoding looks like; a
+<span class="lineno">19</span> *   defective reproducer would have the same names emitted as raw 0xBA 0xA3
+<span class="lineno">20</span> *   0xC3 0xE0 0x32 (GB18030 for U+6D77 U+7EF5 + ASCII &#x27;2&#x27;).
+<span class="lineno">21</span> */
+<span class="lineno">22</span>HEADER;
+<span class="lineno">23</span>FILE_DESCRIPTION((&#x27;P002 non-UTF-8 in name strings â escape variant shown, raw GB18030 noted&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">24</span>FILE_NAME(&#x27;P002.stp&#x27;,&#x27;2026-04-26T00:00:00&#x27;,(&#x27;catalog&#x27;),(&#x27;cad&#x27;),&#x27;manual&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">25</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }&#x27;));
+<span class="lineno">26</span>ENDSEC;
+<span class="lineno">27</span>DATA;
+<span class="lineno">28</span>#10 = APPLICATION_CONTEXT(&#x27;automotive design&#x27;);
+<span class="lineno">29</span>#11 = APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,&#x27;automotive_design&#x27;,2001,#10);
+<span class="lineno">30</span>#12 = PRODUCT_CONTEXT(&#x27;&#x27;,#10,&#x27;mechanical&#x27;);
+<span class="lineno">31</span>#13 = PRODUCT_DEFINITION_CONTEXT(&#x27;part definition&#x27;,#10,&#x27;design&#x27;);
+<span class="lineno">32</span>/* Correct encoding: \X2\ uses 4-hex-digit BMP code points. \X0\ ends. */
+<span class="lineno">33</span>#20 = PRODUCT(&#x27;\X2\6D777EF5\X0\2&#x27;,&#x27;sponge 2 (Chinese)&#x27;,&#x27;&#x27;,(#12));
+<span class="lineno">34</span>#21 = PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#20);
+<span class="lineno">35</span>#22 = PRODUCT_DEFINITION(&#x27;design&#x27;,&#x27;&#x27;,#21,#13);
+<span class="lineno">36</span>#23 = PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,#22);
+<span class="lineno">37</span>#30 = PRODUCT(&#x27;\X2\30663099\X0\&#x27;,&#x27;spring 1 (Japanese)&#x27;,&#x27;&#x27;,(#12));
+<span class="lineno">38</span>#31 = PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#30);
+<span class="lineno">39</span>#32 = PRODUCT_DEFINITION(&#x27;design&#x27;,&#x27;&#x27;,#31,#13);
+<span class="lineno">40</span>#33 = PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,#32);
+<span class="lineno">41</span>#40 = NEXT_ASSEMBLY_USAGE_OCCURRENCE(&#x27;1&#x27;,&#x27;\X2\90E8540130001\X0\&#x27;,&#x27;&#x27;,#22,#32,$);
+<span class="lineno">42</span>#50 = ( LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT(.MILLI.,.METRE.) );
+<span class="lineno">43</span>#51 = ( NAMED_UNIT(*) PLANE_ANGLE_UNIT() SI_UNIT($,.RADIAN.) );
+<span class="lineno">44</span>#52 = ( NAMED_UNIT(*) SI_UNIT($,.STERADIAN.) SOLID_ANGLE_UNIT() );
+<span class="lineno">45</span>#53 = UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#50,&#x27;distance_accuracy_value&#x27;,&#x27;&#x27;);
+<span class="lineno">46</span>#54 = ( GEOMETRIC_REPRESENTATION_CONTEXT(3) GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#53))
+<span class="lineno">47</span>        GLOBAL_UNIT_ASSIGNED_CONTEXT((#50,#51,#52)) REPRESENTATION_CONTEXT(&#x27;&#x27;,&#x27;3D&#x27;) );
+<span class="lineno">48</span>#60 = CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">49</span>#61 = DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">50</span>#62 = DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">51</span>#63 = AXIS2_PLACEMENT_3D(&#x27;\X2\539F70B9\X0\&#x27;,#60,#61,#62);
+<span class="lineno">52</span>#64 = SHAPE_REPRESENTATION(&#x27;\X2\88C5914D4F53\X0\&#x27;,(#63),#54);
+<span class="lineno">53</span>#65 = SHAPE_DEFINITION_REPRESENTATION(#33,#64);
+<span class="lineno">54</span>#66 = REPRESENTATION_MAP(#63,#64);
+<span class="lineno">55</span>#67 = MAPPED_ITEM(&#x27;inst&#x27;,#66,#63);
+<span class="lineno">56</span>#80 = AXIS2_PLACEMENT_3D(&#x27;assy_origin&#x27;,#60,#61,#62);
+<span class="lineno">57</span>#81 = SHAPE_REPRESENTATION(&#x27;assy_rep&#x27;,(#80,#67),#54);
+<span class="lineno">58</span>#82 = SHAPE_DEFINITION_REPRESENTATION(#23,#81);
+<span class="lineno">59</span>/* Extended catalog notes:
+<span class="lineno">60</span> * This reproducer is a minimal demonstrator of the Â§12.6 entry
+<span class="lineno">61</span> * referenced in the /* */ header above. The entity-graph above
+<span class="lineno">62</span> * is just enough to exercise the defect on a writer or reader
+<span class="lineno">63</span> * test harness; it is NOT a production-quality assembly.
+<span class="lineno">64</span> *
+<span class="lineno">65</span> * License: this file is part of a defect catalog assembled from
+<span class="lineno">66</span> * publicly described bug reports and recommended-practice notes.
+<span class="lineno">67</span> * No proprietary geometry or names are reproduced. The entity IDs
+<span class="lineno">68</span> * and minimal coordinates are author-original.
+<span class="lineno">69</span> *
+<span class="lineno">70</span> * Cross-refs: see STEP_PROBLEM_CATALOG.md Â§12.6 for full entry,
+<span class="lineno">71</span> * source list, sender attribution and expected kernel behavior.
+<span class="lineno">72</span> */
+<span class="lineno">73</span>#900 = DESCRIPTIVE_REPRESENTATION_ITEM(&#x27;catalog_id&#x27;,&#x27;P002&#x27;);
+<span class="lineno">74</span>#901 = DESCRIPTIVE_REPRESENTATION_ITEM(&#x27;catalog_section&#x27;,&#x27;12.6 assembly hierarchy&#x27;);
+<span class="lineno">75</span>#902 = DESCRIPTIVE_REPRESENTATION_ITEM(&#x27;catalog_status&#x27;,&#x27;pending&#x27;);
+<span class="lineno">76</span>#903 = DESCRIPTIVE_REPRESENTATION_ITEM(&#x27;catalog_target_dir&#x27;,&#x27;step-examples/12-6-assembly/&#x27;);
+<span class="lineno">77</span>#904 = DESCRIPTIVE_REPRESENTATION_ITEM(&#x27;catalog_corpus_origin&#x27;,&#x27;phase-04-resume-12-6 gap fill&#x27;);
+<span class="lineno">78</span>#905 = DESCRIPTIVE_REPRESENTATION_ITEM(&#x27;catalog_authoring&#x27;,&#x27;manual reproducer&#x27;);
+<span class="lineno">79</span>#906 = DESCRIPTIVE_REPRESENTATION_ITEM(&#x27;catalog_phase&#x27;,&#x27;04 resume 12-6&#x27;);
+<span class="lineno">80</span>#907 = DESCRIPTIVE_REPRESENTATION_ITEM(&#x27;catalog_extension&#x27;,&#x27;license-clean&#x27;);
+<span class="lineno">81</span>#908 = DESCRIPTIVE_REPRESENTATION_ITEM(&#x27;catalog_dataset&#x27;,&#x27;step-examples&#x27;);
+<span class="lineno">82</span>ENDSEC;
+<span class="lineno">83</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="P001.html">&larr; P001</a> <a class="up" href="index.html">§12.6 Assembly hierarchy</a> <a class="next" href="P003.html">P003 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Os003 — Inward offset by a distance greater than a cylinder&#x27;s radius (face inverts)</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.8 Mixed (tessellation, validation properties, etc.)</a> <span class="sep">/</span> <span class="current">Os003</span>
+</nav>
+<header class="title-bar">
+<h1>Os003 <span class="sep">—</span> <span class="entry-title">Inward offset by a distance greater than a cylinder&#x27;s radius (face inverts)</span></h1>
+<p class="category">§12.8 (sub-class: offset reversed)</p>
+<p class="severity-badge severity-p1">P1 — silent data loss</p>
+<p class="tag-pills">
+<a class="tag tag-geometry" href="../by-tag/geometry/index.html">geometry</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-8-mixed/Os003.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-8-mixed/Os003.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>OCCT BRepOffset_Status.Reversed (uncovered class evidence)</li>
+</ul></section>
+<section><h2>Sender</h2>
+<p>deduced — OCCT uncovered-class sweep, Pass C</p></section>
+<section><h2>Description</h2>
+<p>A cylindrical face of radius R is offset inward by R + δ (δ &gt; 0). The offset surface is on the opposite side of the axis from the original — the face has effectively been turned inside out. Bug-reporter language: &quot;offset reversed&quot;, &quot;offset inside-out&quot;, &quot;offset distance &gt; radius&quot;.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>A cylinder of radius 5 mm. Request inward offset of 6 mm.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>Reject as physically impossible, or accept and tag as reversed for the consumer to handle.</p></section>
+<section><h2>Notes</h2>
+<p>Synonyms: &quot;negative offset&quot;, &quot;flipped offset face&quot;, &quot;offset reversed&quot;, &quot;offset inside-out&quot;, &quot;offset distance greater than radius&quot;. **See also**: Os002.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>contains(b&#x27;CYLINDRICAL_SURFACE&#x27;)</code></li>
+<li><code>matches(rb&#x27;CYLINDRICAL_SURFACE\(\&#x27;cyl_r5\&#x27;,#13,5\.0\)&#x27;)</code></li>
+</ul></section>
+<section><h2>Cross-references</h2>
+<p><a href="Os002.html">Os002</a></p>
+</section>
+<section><h2>Live oracle output</h2>
+<table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
+<tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>no_shapes_loaded</code></td></tr>
+</tbody></table>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* Os003 - Inward offset &gt; cylinder radius: face inverts.
+<span class="lineno">3</span> * Defect: cylinder r=5, offset distance -6 inward. Offset face
+<span class="lineno">4</span> * appears on the wrong side of the axis. */
+<span class="lineno">5</span>HEADER;
+<span class="lineno">6</span>FILE_DESCRIPTION((&#x27;Os003 - reversed offset&#x27;,&#x27;Pass C gap-fill&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">7</span>FILE_NAME(&#x27;Os003.stp&#x27;,&#x27;2026-04-30T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;gap-fill C&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">8</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }&#x27;));
+<span class="lineno">9</span>ENDSEC;
+<span class="lineno">10</span>DATA;
+<span class="lineno">11</span>#1=APPLICATION_CONTEXT(&#x27;automotive_design&#x27;);
+<span class="lineno">12</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,&#x27;automotive_design&#x27;,2000,#1);
+<span class="lineno">13</span>#10=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">14</span>#11=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">15</span>#12=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">16</span>#13=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#10,#11,#12);
+<span class="lineno">17</span>#14=<mark>CYLINDRICAL_SURFACE(&#x27;cyl_r5&#x27;,#13,5.0)</mark>;
+<span class="lineno">18</span>/* Inward offset 6 - reverses the surface. */
+<span class="lineno">19</span>ENDSEC;
+<span class="lineno">20</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Os002.html">&larr; Os002</a> <a class="up" href="index.html">§12.8 Mixed (tessellation, validation properties, etc.)</a> <a class="next" href="Os004.html">Os004 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

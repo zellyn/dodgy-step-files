@@ -1,0 +1,68 @@
+ISO-10303-21;
+/* Tsh022 - Non-manifold STEP loses XCAF attributes (color/PMI) on read
+ * Defect: STEP reader's non-manifold path skipped XCAF attribute
+ * application; STEP export in non-manifold mode lost all but one face /
+ * some compound parts. Sources: G098, G099 (Mantis 31485, 32914).
+ *
+ * This file: a NON_MANIFOLD_SURFACE_SHAPE_REPRESENTATION carrying a
+ * STYLED_ITEM that binds a colour to one of the faces. Round-trip via
+ * a non-manifold-aware reader currently drops the colour binding. */
+HEADER;
+FILE_DESCRIPTION(('Tsh022 test case','Non-manifold STEP loses XCAF colour'),'2;1');
+FILE_NAME('Tsh022.stp','2026-04-26T00:00:00',(''),(''),'auto-generated','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+/* Two adjacent square plates sharing one edge */
+#100=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#101=CARTESIAN_POINT('',(1.0,0.0,0.0));
+#102=CARTESIAN_POINT('',(1.0,1.0,0.0));
+#103=CARTESIAN_POINT('',(0.0,1.0,0.0));
+#104=CARTESIAN_POINT('',(1.0,0.0,1.0));
+#105=CARTESIAN_POINT('',(1.0,1.0,1.0));
+#110=VERTEX_POINT('',#100); #111=VERTEX_POINT('',#101);
+#112=VERTEX_POINT('',#102); #113=VERTEX_POINT('',#103);
+#114=VERTEX_POINT('',#104); #115=VERTEX_POINT('',#105);
+#200=DIRECTION('',(0.0,0.0,1.0)); #201=DIRECTION('',(1.0,0.0,0.0));
+#211=AXIS2_PLACEMENT_3D('',#100,#200,#201); #212=PLANE('xy',#211);
+#220=DIRECTION('',(1.0,0.0,0.0)); #221=AXIS2_PLACEMENT_3D('',#101,#220,#200); #222=PLANE('yz',#221);
+#300=DIRECTION('',(1.0,0.0,0.0)); #301=VECTOR('',#300,1.0);
+#302=DIRECTION('',(0.0,1.0,0.0)); #303=VECTOR('',#302,1.0);
+#304=DIRECTION('',(0.0,0.0,1.0)); #305=VECTOR('',#304,1.0);
+#310=LINE('',#100,#301); #311=EDGE_CURVE('',#110,#111,#310,.T.);
+#312=LINE('',#101,#303); #313=EDGE_CURVE('shared',#111,#112,#312,.T.);
+#314=LINE('',#103,#301); #315=EDGE_CURVE('',#113,#112,#314,.T.);
+#316=LINE('',#100,#303); #317=EDGE_CURVE('',#110,#113,#316,.T.);
+#318=LINE('',#101,#305); #319=EDGE_CURVE('',#111,#114,#318,.T.);
+#320=LINE('',#104,#303); #321=EDGE_CURVE('',#114,#115,#320,.T.);
+#322=LINE('',#102,#305); #323=EDGE_CURVE('',#112,#115,#322,.T.);
+#400=ORIENTED_EDGE('',*,*,#311,.T.); #401=ORIENTED_EDGE('',*,*,#313,.T.);
+#402=ORIENTED_EDGE('',*,*,#315,.F.); #403=ORIENTED_EDGE('',*,*,#317,.F.);
+#404=EDGE_LOOP('',(#400,#401,#402,#403)); #405=FACE_OUTER_BOUND('',#404,.T.);
+#406=ADVANCED_FACE('horizontal_plate',(#405),#212,.T.);
+#410=ORIENTED_EDGE('',*,*,#313,.T.); #411=ORIENTED_EDGE('',*,*,#323,.T.);
+#412=ORIENTED_EDGE('',*,*,#321,.F.); #413=ORIENTED_EDGE('',*,*,#319,.F.);
+#414=EDGE_LOOP('',(#410,#411,#412,#413)); #415=FACE_OUTER_BOUND('',#414,.T.);
+#416=ADVANCED_FACE('vertical_plate',(#415),#222,.T.);
+/* Open shell of two faces (NM along shared edge -- L-shape) */
+#500=OPEN_SHELL('L_shape',(#406,#416));
+/* Defect: NON_MANIFOLD_SURFACE_SHAPE_REPRESENTATION wrapper carrying
+   STYLED_ITEM colour binding which non-manifold reader drops */
+#510=COLOUR_RGB('red',1.0,0.0,0.0);
+#520=FILL_AREA_STYLE_COLOUR('',#510);
+#521=FILL_AREA_STYLE('',(#520));
+#522=SURFACE_STYLE_FILL_AREA(#521);
+#523=SURFACE_SIDE_STYLE('',(#522));
+#524=SURFACE_STYLE_USAGE(.BOTH.,#523);
+#525=PRESENTATION_STYLE_ASSIGNMENT((#524));
+#526=STYLED_ITEM('horizontal_plate_red',(#525),#406);
+#530=AXIS2_PLACEMENT_3D('',#100,#200,#201);
+#540=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+      GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT(())
+      GLOBAL_UNIT_ASSIGNED_CONTEXT(())
+      REPRESENTATION_CONTEXT('NM','3D'));
+#550=NON_MANIFOLD_SURFACE_SHAPE_REPRESENTATION('NM_repr',(#500,#530),#540);
+ENDSEC;
+END-ISO-10303-21;

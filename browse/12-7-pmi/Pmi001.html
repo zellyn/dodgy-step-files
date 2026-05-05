@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Pmi001 — Hole emitted as two half-cylinders breaks PMI feature association</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.7 PMI / GD&amp;T</a> <span class="sep">/</span> <span class="current">Pmi001</span>
+</nav>
+<header class="title-bar">
+<h1>Pmi001 <span class="sep">—</span> <span class="entry-title">Hole emitted as two half-cylinders breaks PMI feature association</span></h1>
+<p class="category">§12.7 (sub-class: persistent-id / semantic-vs-graphic)</p>
+<p class="tag-pills">
+<a class="tag tag-pmi" href="../by-tag/pmi/index.html">pmi</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-7-pmi/Pmi001.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-7-pmi/Pmi001.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>02-caxif (PMI v4.1 §5.1, Fig.5</li>
+<li>§10.1.3.1), 02-caxif (CAx-IF Round 56J §2.6.4.3 PDC, §2.7 PDI)</li>
+</ul></section>
+<section><h2>Sender</h2>
+<p>any writer that emits cylindrical holes as two `advanced_face` halves</p></section>
+<section><h2>Description</h2>
+<p>A through-hole exported as two `advanced_face` instances backed by halves of a `cylindrical_surface`. PMI (diameter dimensions, position tolerances, datums) targeting the whole hole must reach both halves through a shared `shape_aspect` plus multiple `geometric_item_specific_usage`. Persistent UUIDs must be assigned to the pair as a `uuid_set_items` group, not one per half. Receivers that expect one face per cylindrical feature drop or duplicate the PMI link.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>Block with one through-hole; emit two half-`advanced_face`s sharing the same `cylindrical_surface` axis with opposite parameter ranges; attach diameter `dimensional_size` and a position `geometric_tolerance` whose `shape_aspect` is referenced by two GISUs; bind a single `v5_uuid_attribute` via `uuid_set_items` to both halves.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>heal — recognize the two halves as one cylindrical feature (or honor multi-GISU on the shared `shape_aspect`); merge by `uuid_set_items` membership before reporting feature counts.</p></section>
+<section><h2>Notes</h2>
+<p>**See also**: N044. Synonyms: &quot;hole emitted as two half-cylinders&quot;, &quot;PMI feature association broken because hole is split&quot;, &quot;split-cylinder hole loses dimension link&quot;, &quot;diameter callout doesn&#x27;t bind to hole&quot;.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=shape(1)/shape(1) gmsh=shape(39) ifc=schema_n/a</code></p></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>n_faces_total == 8</code></li>
+<li><code>face[6].surface_type == &quot;cylinder&quot;</code></li>
+<li><code>face[7].surface_type == &quot;cylinder&quot;</code></li>
+<li><code>face[6].area &gt; 311</code></li>
+<li><code>face[6].area &lt; 317</code></li>
+<li><code>brepcheck.valid == True</code></li>
+</ul></section>
+<section><h2>Cross-references</h2>
+<p><a href="../12-4-tolerance/N044.html">N044</a></p>
+</section>
+<section><h2>Live oracle output</h2>
+<table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
+<tr><td><code>occt_heal_on</code></td><td><code>shape(1)</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>shape(1)</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>shape(39)</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>shape(39)</code></td></tr>
+<tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>not_manifold</code></td></tr>
+</tbody></table>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>/* Pmi001 - Hole emitted as two half-cylinders breaks PMI feature association.
+<span class="lineno">2</span> * Defect: a 50x50x20 mm plate with a 10 mm-diameter through-hole. The hole
+<span class="lineno">3</span> * wall is emitted as TWO ADVANCED_FACEs that share ONE CYLINDRICAL_SURFACE
+<span class="lineno">4</span> * - the first face spans theta=0..pi, the second spans theta=pi..2*pi. The
+<span class="lineno">5</span> * seam edges are shared between them. PMI feature association needs to
+<span class="lineno">6</span> * traverse both halves: a SHAPE_ASPECT &#x27;hole_feature&#x27; references both
+<span class="lineno">7</span> * halves through two GEOMETRIC_ITEM_SPECIFIC_USAGE entries (instead of a
+<span class="lineno">8</span> * single feature face). Receivers that expect one face per cylindrical
+<span class="lineno">9</span> * feature drop or duplicate the PMI link. */
+<span class="lineno">10</span>ISO-10303-21;
+<span class="lineno">11</span>HEADER;
+<span class="lineno">12</span>FILE_DESCRIPTION((&#x27;Pmi001 - half-cylinders break PMI association&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">13</span>FILE_NAME(&#x27;Pmi001.stp&#x27;,&#x27;2026-05-02T00:00:00&#x27;,(&#x27;catalog&#x27;),(&#x27;cad&#x27;),
+<span class="lineno">14</span>  &#x27;manual&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">15</span>FILE_SCHEMA((&#x27;AP242_MANAGED_MODEL_BASED_3D_ENGINEERING_MIM_LF { 1 0 10303 442 1 1 4 }&#x27;));
+<span class="lineno">16</span>ENDSEC;
+<span class="lineno">17</span>DATA;
+<span class="lineno">18</span>#10 = APPLICATION_CONTEXT(&#x27;managed model based 3d engineering&#x27;);
+<span class="lineno">19</span>#11 = APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,
+<span class="lineno">20</span>  &#x27;ap242_managed_model_based_3d_engineering&#x27;,2020,#10);
+<span class="lineno">21</span>#12 = PRODUCT_CONTEXT(&#x27;&#x27;,#10,&#x27;mechanical&#x27;);
+<span class="lineno">22</span>#13 = PRODUCT(&#x27;Pmi001&#x27;,&#x27;BlockWithHole&#x27;,&#x27;&#x27;,(#12));
+<span class="lineno">23</span>#14 = PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#13);
+<span class="lineno">24</span>#15 = PRODUCT_DEFINITION_CONTEXT(&#x27;&#x27;,#10,&#x27;design&#x27;);
+<span class="lineno">25</span>#16 = PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,#14,#15);
+<span class="lineno">26</span>#17 = PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,#16);
+<span class="lineno">27</span>#20 = ( LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT(.MILLI.,.METRE.) );
+<span class="lineno">28</span>#22 = ( NAMED_UNIT(*) PLANE_ANGLE_UNIT() SI_UNIT($,.RADIAN.) );
+<span class="lineno">29</span>#23 = ( NAMED_UNIT(*) SI_UNIT($,.STERADIAN.) SOLID_ANGLE_UNIT() );
+<span class="lineno">30</span>#24 = UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#20,
+<span class="lineno">31</span>  &#x27;distance_accuracy_value&#x27;,&#x27;&#x27;);
+<span class="lineno">32</span>#25 = ( GEOMETRIC_REPRESENTATION_CONTEXT(3)
+<span class="lineno">33</span>  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#24))
+<span class="lineno">34</span>  GLOBAL_UNIT_ASSIGNED_CONTEXT((#20,#22,#23))
+<span class="lineno">35</span>  REPRESENTATION_CONTEXT(&#x27;&#x27;,&#x27;3D&#x27;) );
+<span class="lineno">36</span>/* Plate corners: 50x50x20 with a 10mm-dia hole centered at (25,25). */
+<span class="lineno">37</span>#100=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">38</span>#101=CARTESIAN_POINT(&#x27;&#x27;,(50.0,0.0,0.0));
+<span class="lineno">39</span>#102=CARTESIAN_POINT(&#x27;&#x27;,(50.0,50.0,0.0));
+<span class="lineno">40</span>#103=CARTESIAN_POINT(&#x27;&#x27;,(0.0,50.0,0.0));
+<span class="lineno">41</span>#104=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,20.0));
+<span class="lineno">42</span>#105=CARTESIAN_POINT(&#x27;&#x27;,(50.0,0.0,20.0));
+<span class="lineno">43</span>#106=CARTESIAN_POINT(&#x27;&#x27;,(50.0,50.0,20.0));
+<span class="lineno">44</span>#107=CARTESIAN_POINT(&#x27;&#x27;,(0.0,50.0,20.0));
+<span class="lineno">45</span>#110=VERTEX_POINT(&#x27;&#x27;,#100); #111=VERTEX_POINT(&#x27;&#x27;,#101);
+<span class="lineno">46</span>#112=VERTEX_POINT(&#x27;&#x27;,#102); #113=VERTEX_POINT(&#x27;&#x27;,#103);
+<span class="lineno">47</span>#114=VERTEX_POINT(&#x27;&#x27;,#104); #115=VERTEX_POINT(&#x27;&#x27;,#105);
+<span class="lineno">48</span>#116=VERTEX_POINT(&#x27;&#x27;,#106); #117=VERTEX_POINT(&#x27;&#x27;,#107);
+<span class="lineno">49</span>/* Hole: cylindrical_surface, axis along +Z at (25,25,0), radius 5. */
+<span class="lineno">50</span>#120=CARTESIAN_POINT(&#x27;hole_center&#x27;,(25.0,25.0,0.0));
+<span class="lineno">51</span>#121=DIRECTION(&#x27;hole_axis&#x27;,(0.0,0.0,1.0));
+<span class="lineno">52</span>#122=DIRECTION(&#x27;hole_ref&#x27;,(1.0,0.0,0.0));
+<span class="lineno">53</span>#123=AXIS2_PLACEMENT_3D(&#x27;hole_origin&#x27;,#120,#121,#122);
+<span class="lineno">54</span>#124=CYLINDRICAL_SURFACE(&#x27;hole_surface&#x27;,#123,5.0);
+<span class="lineno">55</span>/* Hole seam vertices on bottom (z=0) and top (z=20). */
+<span class="lineno">56</span>#130=CARTESIAN_POINT(&#x27;&#x27;,(30.0,25.0,0.0));   /* theta=0  bot */
+<span class="lineno">57</span>#131=CARTESIAN_POINT(&#x27;&#x27;,(20.0,25.0,0.0));   /* theta=pi bot */
+<span class="lineno">58</span>#132=CARTESIAN_POINT(&#x27;&#x27;,(30.0,25.0,20.0));  /* theta=0  top */
+<span class="lineno">59</span>#133=CARTESIAN_POINT(&#x27;&#x27;,(20.0,25.0,20.0));  /* theta=pi top */
+<span class="lineno">60</span>#140=VERTEX_POINT(&#x27;&#x27;,#130); #141=VERTEX_POINT(&#x27;&#x27;,#131);
+<span class="lineno">61</span>#142=VERTEX_POINT(&#x27;&#x27;,#132); #143=VERTEX_POINT(&#x27;&#x27;,#133);
+<span class="lineno">62</span>/* Top circle (z=20) and bottom circle (z=0) supporting curves. */
+<span class="lineno">63</span>#150=CARTESIAN_POINT(&#x27;hole_top_center&#x27;,(25.0,25.0,20.0));
+<span class="lineno">64</span>#151=AXIS2_PLACEMENT_3D(&#x27;top_circle_axis&#x27;,#150,#121,#122);
+<span class="lineno">65</span>#152=CIRCLE(&#x27;hole_top_circle&#x27;,#151,5.0);
+<span class="lineno">66</span>#153=AXIS2_PLACEMENT_3D(&#x27;bot_circle_axis&#x27;,#120,#121,#122);
+<span class="lineno">67</span>#154=CIRCLE(&#x27;hole_bot_circle&#x27;,#153,5.0);
+<span class="lineno">68</span>/* Half-circle edges. Bottom: A from theta=0..pi; B from theta=pi..2pi. */
+<span class="lineno">69</span>#160=EDGE_CURVE(&#x27;&#x27;,#140,#141,#154,.T.);  /* bot half A */
+<span class="lineno">70</span>#161=EDGE_CURVE(&#x27;&#x27;,#141,#140,#154,.T.);  /* bot half B */
+<span class="lineno">71</span>#162=EDGE_CURVE(&#x27;&#x27;,#142,#143,#152,.T.);  /* top half A */
+<span class="lineno">72</span>#163=EDGE_CURVE(&#x27;&#x27;,#143,#142,#152,.T.);  /* top half B */
+<span class="lineno">73</span>/* Vertical seam edges shared by the two half-cylinders. */
+<span class="lineno">74</span>#170=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0)); #171=VECTOR(&#x27;&#x27;,#170,20.0);
+<span class="lineno">75</span>#172=LINE(&#x27;&#x27;,#130,#171); #173=EDGE_CURVE(&#x27;seam0&#x27;,#140,#142,#172,.T.);
+<span class="lineno">76</span>#174=LINE(&#x27;&#x27;,#131,#171); #175=EDGE_CURVE(&#x27;seam_pi&#x27;,#141,#143,#174,.T.);
+<span class="lineno">77</span>/* Outer plate edge curves (perimeter &amp; verticals). */
+<span class="lineno">78</span>#200=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0)); #201=VECTOR(&#x27;&#x27;,#200,50.0);
+<span class="lineno">79</span>#202=DIRECTION(&#x27;&#x27;,(0.0,1.0,0.0)); #203=VECTOR(&#x27;&#x27;,#202,50.0);
+<span class="lineno">80</span>#204=VECTOR(&#x27;&#x27;,#170,20.0);
+<span class="lineno">81</span>#210=LINE(&#x27;&#x27;,#100,#201); #211=EDGE_CURVE(&#x27;&#x27;,#110,#111,#210,.T.);
+<span class="lineno">82</span>#212=LINE(&#x27;&#x27;,#101,#203); #213=EDGE_CURVE(&#x27;&#x27;,#111,#112,#212,.T.);
+<span class="lineno">83</span>#214=LINE(&#x27;&#x27;,#103,#201); #215=EDGE_CURVE(&#x27;&#x27;,#113,#112,#214,.T.);
+<span class="lineno">84</span>#216=LINE(&#x27;&#x27;,#100,#203); #217=EDGE_CURVE(&#x27;&#x27;,#110,#113,#216,.T.);
+<span class="lineno">85</span>#218=LINE(&#x27;&#x27;,#104,#201); #219=EDGE_CURVE(&#x27;&#x27;,#114,#115,#218,.T.);
+<span class="lineno">86</span>#220=LINE(&#x27;&#x27;,#105,#203); #221=EDGE_CURVE(&#x27;&#x27;,#115,#116,#220,.T.);
+<span class="lineno">87</span>#222=LINE(&#x27;&#x27;,#107,#201); #223=EDGE_CURVE(&#x27;&#x27;,#117,#116,#222,.T.);
+<span class="lineno">88</span>#224=LINE(&#x27;&#x27;,#104,#203); #225=EDGE_CURVE(&#x27;&#x27;,#114,#117,#224,.T.);
+<span class="lineno">89</span>#226=LINE(&#x27;&#x27;,#100,#204); #227=EDGE_CURVE(&#x27;&#x27;,#110,#114,#226,.T.);
+<span class="lineno">90</span>#228=LINE(&#x27;&#x27;,#101,#204); #229=EDGE_CURVE(&#x27;&#x27;,#111,#115,#228,.T.);
+<span class="lineno">91</span>#230=LINE(&#x27;&#x27;,#102,#204); #231=EDGE_CURVE(&#x27;&#x27;,#112,#116,#230,.T.);
+<span class="lineno">92</span>#232=LINE(&#x27;&#x27;,#103,#204); #233=EDGE_CURVE(&#x27;&#x27;,#113,#117,#232,.T.);
+<span class="lineno">93</span>/* Plate face planes. */
+<span class="lineno">94</span>#250=CARTESIAN_POINT(&#x27;&#x27;,(25.0,25.0,0.0));
+<span class="lineno">95</span>#251=DIRECTION(&#x27;&#x27;,(0.0,0.0,-1.0));
+<span class="lineno">96</span>#252=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#250,#251,#200); #253=PLANE(&#x27;&#x27;,#252);
+<span class="lineno">97</span>#254=CARTESIAN_POINT(&#x27;&#x27;,(25.0,25.0,20.0));
+<span class="lineno">98</span>#255=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#254,#170,#200); #256=PLANE(&#x27;&#x27;,#255);
+<span class="lineno">99</span>#260=CARTESIAN_POINT(&#x27;&#x27;,(25.0,0.0,10.0));
+<span class="lineno">100</span>#261=DIRECTION(&#x27;&#x27;,(0.0,-1.0,0.0));
+<span class="lineno">101</span>#262=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#260,#261,#200); #263=PLANE(&#x27;&#x27;,#262);
+<span class="lineno">102</span>#264=CARTESIAN_POINT(&#x27;&#x27;,(25.0,50.0,10.0));
+<span class="lineno">103</span>#265=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#264,#202,#200); #266=PLANE(&#x27;&#x27;,#265);
+<span class="lineno">104</span>#270=CARTESIAN_POINT(&#x27;&#x27;,(0.0,25.0,10.0));
+<span class="lineno">105</span>#271=DIRECTION(&#x27;&#x27;,(-1.0,0.0,0.0));
+<span class="lineno">106</span>#272=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#270,#271,#202); #273=PLANE(&#x27;&#x27;,#272);
+<span class="lineno">107</span>#274=CARTESIAN_POINT(&#x27;&#x27;,(50.0,25.0,10.0));
+<span class="lineno">108</span>#275=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#274,#200,#202); #276=PLANE(&#x27;&#x27;,#275);
+<span class="lineno">109</span>/* Bottom face (z=0): outer wire + inner hole wire (both halves). */
+<span class="lineno">110</span>#300=ORIENTED_EDGE(&#x27;&#x27;,*,*,#211,.T.); #301=ORIENTED_EDGE(&#x27;&#x27;,*,*,#213,.T.);
+<span class="lineno">111</span>#302=ORIENTED_EDGE(&#x27;&#x27;,*,*,#215,.F.); #303=ORIENTED_EDGE(&#x27;&#x27;,*,*,#217,.F.);
+<span class="lineno">112</span>#304=EDGE_LOOP(&#x27;bot_outer&#x27;,(#300,#301,#302,#303));
+<span class="lineno">113</span>#305=FACE_OUTER_BOUND(&#x27;&#x27;,#304,.T.);
+<span class="lineno">114</span>/* Bottom hole loop: bot half A then bot half B (CW so it&#x27;s a hole when
+<span class="lineno">115</span>   bottom face normal is -Z). */
+<span class="lineno">116</span>#306=ORIENTED_EDGE(&#x27;&#x27;,*,*,#160,.T.);
+<span class="lineno">117</span>#307=ORIENTED_EDGE(&#x27;&#x27;,*,*,#161,.T.);
+<span class="lineno">118</span>#308=EDGE_LOOP(&#x27;bot_hole&#x27;,(#306,#307));
+<span class="lineno">119</span>#309=FACE_BOUND(&#x27;&#x27;,#308,.T.);
+<span class="lineno">120</span>#310=ADVANCED_FACE(&#x27;plate_bot&#x27;,(#305,#309),#253,.T.);
+<span class="lineno">121</span>/* Top face (z=20): outer wire + inner hole wire. */
+<span class="lineno">122</span>#320=ORIENTED_EDGE(&#x27;&#x27;,*,*,#219,.T.); #321=ORIENTED_EDGE(&#x27;&#x27;,*,*,#221,.T.);
+<span class="lineno">123</span>#322=ORIENTED_EDGE(&#x27;&#x27;,*,*,#223,.F.); #323=ORIENTED_EDGE(&#x27;&#x27;,*,*,#225,.F.);
+<span class="lineno">124</span>#324=EDGE_LOOP(&#x27;top_outer&#x27;,(#320,#321,#322,#323));
+<span class="lineno">125</span>#325=FACE_OUTER_BOUND(&#x27;&#x27;,#324,.T.);
+<span class="lineno">126</span>/* Top hole loop: traverse the hole edges in opposite order so it&#x27;s CW
+<span class="lineno">127</span>   when viewed from +Z (the top face&#x27;s normal). */
+<span class="lineno">128</span>#326=ORIENTED_EDGE(&#x27;&#x27;,*,*,#163,.F.);
+<span class="lineno">129</span>#327=ORIENTED_EDGE(&#x27;&#x27;,*,*,#162,.F.);
+<span class="lineno">130</span>#328=EDGE_LOOP(&#x27;top_hole&#x27;,(#326,#327));
+<span class="lineno">131</span>#329=FACE_BOUND(&#x27;&#x27;,#328,.T.);
+<span class="lineno">132</span>#330=ADVANCED_FACE(&#x27;plate_top&#x27;,(#325,#329),#256,.T.);
+<span class="lineno">133</span>/* Plate side faces. */
+<span class="lineno">134</span>#340=ORIENTED_EDGE(&#x27;&#x27;,*,*,#211,.T.); #341=ORIENTED_EDGE(&#x27;&#x27;,*,*,#229,.T.);
+<span class="lineno">135</span>#342=ORIENTED_EDGE(&#x27;&#x27;,*,*,#219,.F.); #343=ORIENTED_EDGE(&#x27;&#x27;,*,*,#227,.F.);
+<span class="lineno">136</span>#344=EDGE_LOOP(&#x27;&#x27;,(#340,#341,#342,#343));
+<span class="lineno">137</span>#345=FACE_OUTER_BOUND(&#x27;&#x27;,#344,.T.);
+<span class="lineno">138</span>#346=ADVANCED_FACE(&#x27;plate_front&#x27;,(#345),#263,.T.);
+<span class="lineno">139</span>#350=ORIENTED_EDGE(&#x27;&#x27;,*,*,#215,.T.); #351=ORIENTED_EDGE(&#x27;&#x27;,*,*,#231,.T.);
+<span class="lineno">140</span>#352=ORIENTED_EDGE(&#x27;&#x27;,*,*,#223,.F.); #353=ORIENTED_EDGE(&#x27;&#x27;,*,*,#233,.F.);
+<span class="lineno">141</span>#354=EDGE_LOOP(&#x27;&#x27;,(#350,#351,#352,#353));
+<span class="lineno">142</span>#355=FACE_OUTER_BOUND(&#x27;&#x27;,#354,.T.);
+<span class="lineno">143</span>#356=ADVANCED_FACE(&#x27;plate_back&#x27;,(#355),#266,.T.);
+<span class="lineno">144</span>#360=ORIENTED_EDGE(&#x27;&#x27;,*,*,#217,.T.); #361=ORIENTED_EDGE(&#x27;&#x27;,*,*,#233,.T.);
+<span class="lineno">145</span>#362=ORIENTED_EDGE(&#x27;&#x27;,*,*,#225,.F.); #363=ORIENTED_EDGE(&#x27;&#x27;,*,*,#227,.F.);
+<span class="lineno">146</span>#364=EDGE_LOOP(&#x27;&#x27;,(#360,#361,#362,#363));
+<span class="lineno">147</span>#365=FACE_OUTER_BOUND(&#x27;&#x27;,#364,.T.);
+<span class="lineno">148</span>#366=ADVANCED_FACE(&#x27;plate_left&#x27;,(#365),#273,.T.);
+<span class="lineno">149</span>#370=ORIENTED_EDGE(&#x27;&#x27;,*,*,#213,.T.); #371=ORIENTED_EDGE(&#x27;&#x27;,*,*,#231,.T.);
+<span class="lineno">150</span>#372=ORIENTED_EDGE(&#x27;&#x27;,*,*,#221,.F.); #373=ORIENTED_EDGE(&#x27;&#x27;,*,*,#229,.F.);
+<span class="lineno">151</span>#374=EDGE_LOOP(&#x27;&#x27;,(#370,#371,#372,#373));
+<span class="lineno">152</span>#375=FACE_OUTER_BOUND(&#x27;&#x27;,#374,.T.);
+<span class="lineno">153</span>#376=ADVANCED_FACE(&#x27;plate_right&#x27;,(#375),#276,.T.);
+<span class="lineno">154</span>/* Half-cylinder hole walls A and B. Both share #124 cylindrical_surface. */
+<span class="lineno">155</span>#380=ORIENTED_EDGE(&#x27;&#x27;,*,*,#160,.F.);   /* bot half A reversed */
+<span class="lineno">156</span>#381=ORIENTED_EDGE(&#x27;&#x27;,*,*,#173,.T.);   /* seam0 up */
+<span class="lineno">157</span>#382=ORIENTED_EDGE(&#x27;&#x27;,*,*,#162,.T.);   /* top half A */
+<span class="lineno">158</span>#383=ORIENTED_EDGE(&#x27;&#x27;,*,*,#175,.F.);   /* seam_pi down */
+<span class="lineno">159</span>#384=EDGE_LOOP(&#x27;hole_wall_A&#x27;,(#380,#381,#382,#383));
+<span class="lineno">160</span>#385=FACE_OUTER_BOUND(&#x27;&#x27;,#384,.T.);
+<span class="lineno">161</span>#386=ADVANCED_FACE(&#x27;hole_half_A&#x27;,(#385),#124,.T.);
+<span class="lineno">162</span>#390=ORIENTED_EDGE(&#x27;&#x27;,*,*,#161,.F.);   /* bot half B reversed */
+<span class="lineno">163</span>#391=ORIENTED_EDGE(&#x27;&#x27;,*,*,#175,.T.);   /* seam_pi up */
+<span class="lineno">164</span>#392=ORIENTED_EDGE(&#x27;&#x27;,*,*,#163,.T.);   /* top half B */
+<span class="lineno">165</span>#393=ORIENTED_EDGE(&#x27;&#x27;,*,*,#173,.F.);   /* seam0 down */
+<span class="lineno">166</span>#394=EDGE_LOOP(&#x27;hole_wall_B&#x27;,(#390,#391,#392,#393));
+<span class="lineno">167</span>#395=FACE_OUTER_BOUND(&#x27;&#x27;,#394,.T.);
+<span class="lineno">168</span>#396=ADVANCED_FACE(&#x27;hole_half_B&#x27;,(#395),#124,.T.);
+<span class="lineno">169</span>/* Closed shell + solid for the plate-with-hole. */
+<span class="lineno">170</span>#400=CLOSED_SHELL(&#x27;plate_shell&#x27;,(#310,#330,#346,#356,#366,#376,#386,#396));
+<span class="lineno">171</span>#401=MANIFOLD_SOLID_BREP(&#x27;plate_body&#x27;,#400);
+<span class="lineno">172</span>#402=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#100,#121,#122);
+<span class="lineno">173</span>#410=ADVANCED_BREP_SHAPE_REPRESENTATION(&#x27;shape&#x27;,(#401,#402),#25);
+<span class="lineno">174</span>#411=SHAPE_DEFINITION_REPRESENTATION(#17,#410);
+<span class="lineno">175</span>/* SHAPE_ASPECT &#x27;hole&#x27; linked to BOTH half-faces via two GISUs. */
+<span class="lineno">176</span>#500=SHAPE_ASPECT(&#x27;hole_feature&#x27;,&#x27;through hole (two-half feature)&#x27;,#17,.T.);
+<span class="lineno">177</span>#501=GEOMETRIC_ITEM_SPECIFIC_USAGE(&#x27;GISU_A&#x27;,$,#500,#410,#386);
+<span class="lineno">178</span>#502=GEOMETRIC_ITEM_SPECIFIC_USAGE(&#x27;GISU_B&#x27;,$,#500,#410,#396);
+<span class="lineno">179</span>/* Diameter PMI on the shape_aspect. */
+<span class="lineno">180</span>#510=DIMENSIONAL_SIZE(#500,&#x27;diameter&#x27;);
+<span class="lineno">181</span>#511=MEASURE_REPRESENTATION_ITEM(&#x27;nominal&#x27;,LENGTH_MEASURE(10.0),#20);
+<span class="lineno">182</span>#512=SHAPE_DIMENSION_REPRESENTATION(&#x27;&#x27;,(#511),#25);
+<span class="lineno">183</span>ENDSEC;
+<span class="lineno">184</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="up" href="index.html">§12.7 PMI / GD&amp;T</a> <a class="next" href="Pmi002.html">Pmi002 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

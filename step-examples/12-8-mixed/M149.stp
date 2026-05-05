@@ -1,0 +1,33 @@
+ISO-10303-21;
+/* M149 - AP210 component pin numbering doesn't match physical pin
+ * sequence (CW vs CCW mismatch).
+ * Defect: a 4-pin SOT-23 package declares pins 1, 2, 3, 4 around the
+ * package perimeter but the geometric order of the TERMINAL
+ * placements walks counterclockwise (1, 4, 3, 2) instead of the
+ * package datasheet's clockwise order. Soldering follows the geometric
+ * placement; the netlist's pin assignment is rotated 180 deg. */
+HEADER;
+FILE_DESCRIPTION(('M149 test case','AP210 component pin order mismatch'),'2;1');
+FILE_NAME('M149.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('ELECTRONIC_ASSEMBLY_INTERCONNECT_AND_PACKAGING_DESIGN { 1 0 10303 210 3 1 0 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('electronic_assembly_interconnect_and_packaging_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
+  'electronic_assembly_interconnect_and_packaging_design',2014,#1);
+#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10))
+     REPRESENTATION_CONTEXT('pcb','3D'));
+/* Pin coordinates - clockwise order: pin1=(0,0), pin2=(1,0), pin3=(1,1), pin4=(0,1).
+ * Defect: TERMINAL ids name pins 1,4,3,2 - skipping CW order. */
+#100=CARTESIAN_POINT('p1',(0.0,0.0,0.0));
+#101=CARTESIAN_POINT('p2',(1.0,0.0,0.0));
+#102=CARTESIAN_POINT('p3',(1.0,1.0,0.0));
+#103=CARTESIAN_POINT('p4',(0.0,1.0,0.0));
+#200=TERMINAL('pin1','SOT23_pin1',#100);
+#201=TERMINAL('pin4','SOT23_pin4',#101);
+#202=TERMINAL('pin3','SOT23_pin3',#102);
+#203=TERMINAL('pin2','SOT23_pin2',#103);
+ENDSEC;
+END-ISO-10303-21;

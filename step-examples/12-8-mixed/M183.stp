@@ -1,0 +1,30 @@
+ISO-10303-21;
+/* M183 - AP238 WORKPIECE_SETUP coordinate system not aligned with machine axes.
+ * Defect: a WORKPIECE_SETUP's placement axes are rotated 17.3 degrees
+ * about the machine Z-axis with no rotational fixturing declared. The
+ * machine cannot drive its X/Y stages along the workpiece's local axes;
+ * every toolpath issues compound moves that exceed acceleration limits. */
+HEADER;
+FILE_DESCRIPTION(('M183 test case','AP238 workpiece-setup axes off machine axes'),'2;1');
+FILE_NAME('M183.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AP238_STEP_NC_MIM { 1 0 10303 238 1 0 0 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('numerical_control_machining');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
+  'numerical_control_machining',2007,#1);
+#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10))
+     REPRESENTATION_CONTEXT('nc','3D'));
+/* Defect: workpiece-setup axis rotated 17.3 deg from machine X (cos = 0.9550,
+   sin = 0.2974). No rotary fixturing declared. */
+#50=DIRECTION('z',(0.0,0.0,1.0));
+#51=DIRECTION('x_off_axis',(0.9550,0.2974,0.0));
+#100=AXIS2_PLACEMENT_3D('workpiece_csys_rotated',
+  CARTESIAN_POINT('o',(0.0,0.0,0.0)),#50,#51);
+#400=WORKPIECE('part_a',$,$,$,$,$,$);
+#150=WORKPIECE_SETUP('vise_misaligned',#100,$,#400,$);
+#200=WORKPLAN('main',(),$,$,$);
+ENDSEC;
+END-ISO-10303-21;

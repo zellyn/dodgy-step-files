@@ -1,0 +1,16 @@
+ISO-10303-21;
+/* Lh047 - Lower-case section keywords (data; instead of DATA;)
+ * Defect: ISO 10303-21 spells framing keywords in upper case.
+ * This fixture uses lower-case 'header;', 'data;', 'endsec;'.
+ * Strict readers reject at the first mis-cased keyword; lenient
+ * readers fold case and silently accept. */
+header;
+FILE_DESCRIPTION(('Lh047 - lower-case section keywords'),'2;1');
+FILE_NAME('Lh047.stp','2026-04-30T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+endsec;
+data;
+#1=APPLICATION_CONTEXT('automotive_design');
+#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
+endsec;
+END-ISO-10303-21;

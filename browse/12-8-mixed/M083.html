@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>M083 — AP209 nodal load applied to a node not in the model node set</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.8 Mixed (tessellation, validation properties, etc.)</a> <span class="sep">/</span> <span class="current">M083</span>
+</nav>
+<header class="title-bar">
+<h1>M083 <span class="sep">—</span> <span class="entry-title">AP209 nodal load applied to a node not in the model node set</span></h1>
+<p class="category">§12.8 mixed (sub-class: AP209 load attachment)</p>
+<p class="severity-badge severity-p1">P1 — silent data loss</p>
+<p class="tag-pills">
+<a class="tag tag-spec-violation" href="../by-tag/spec-violation/index.html">spec-violation</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-8-mixed/M083.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-8-mixed/M083.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>deduced from AP209 §7 fea_model node-set invariants</li>
+</ul></section>
+<section><h2>Sender</h2>
+<p>deduced — FEA exporter that pruned mesh but not loads</p></section>
+<section><h2>Description</h2>
+<p>A `NODE_WITH_FORCE` references a `NODE` by id, but that node is not part of any `FEA_MODEL_3D`&#x27;s `its_node_set`. The load floats free of the discretized model and contributes nothing to the assembled load vector. Bug-reporter language: &quot;FEM load not applied&quot;, &quot;AP209 force on orphan node&quot;, &quot;load went to nothing&quot;.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>`FEA_MODEL` whose `its_node_set` excludes `#210`, combined with `NODE_WITH_FORCE(#210, ..)`.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>Warn and accept: warn on loads attached to nodes outside the active model; either heal (snap the load to the nearest model node) or drop it.</p></section>
+<section><h2>Notes</h2>
+<p>Synonyms: &quot;orphan node load&quot;, &quot;FEM load lost on import&quot;, &quot;AP209 force on phantom node&quot;, &quot;load applied to node not in model&quot;, &quot;nodal load floats free&quot;.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>contains(b&#x27;STRUCTURAL_ANALYSIS_DESIGN&#x27;)</code></li>
+<li><code>contains(b&#x27;NODE_WITH_FORCE&#x27;)</code></li>
+<li><code>contains(b&#x27;FEA_MODEL&#x27;)</code></li>
+</ul></section>
+<section><h2>Live oracle output</h2>
+<table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
+<tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>no_shapes_loaded</code></td></tr>
+</tbody></table>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* M083 - AP209 load applied to nodes not present in the model.
+<span class="lineno">3</span> * Defect: a <mark>NODE_WITH_FORCE</mark> entity references a node by id, but the
+<span class="lineno">4</span> * referenced #200 node is not part of any <mark>FEA_MODEL</mark>_3D&#x27;s its_node_set;
+<span class="lineno">5</span> * the load floats free of the discretized model. */
+<span class="lineno">6</span>HEADER;
+<span class="lineno">7</span>FILE_DESCRIPTION((&#x27;M083 test case&#x27;,&#x27;AP209 load on unowned node&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">8</span>FILE_NAME(&#x27;M083.stp&#x27;,&#x27;2026-04-30T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">9</span>FILE_SCHEMA((&#x27;<mark>STRUCTURAL_ANALYSIS_DESIGN</mark> { 1 0 10303 209 1 0 0 }&#x27;));
+<span class="lineno">10</span>ENDSEC;
+<span class="lineno">11</span>DATA;
+<span class="lineno">12</span>#1=APPLICATION_CONTEXT(&#x27;structural_analysis_design&#x27;);
+<span class="lineno">13</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,
+<span class="lineno">14</span>  &#x27;structural_analysis_design&#x27;,2001,#1);
+<span class="lineno">15</span>#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">16</span>#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+<span class="lineno">17</span>     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10))
+<span class="lineno">18</span>     REPRESENTATION_CONTEXT(&#x27;fea&#x27;,&#x27;3D&#x27;));
+<span class="lineno">19</span>/* Two model nodes */
+<span class="lineno">20</span>#100=CARTESIAN_POINT(&#x27;n1&#x27;,(0.0,0.0,0.0));
+<span class="lineno">21</span>#101=CARTESIAN_POINT(&#x27;n2&#x27;,(1.0,0.0,0.0));
+<span class="lineno">22</span>#110=NODE(&#x27;n1&#x27;,(#100),$);
+<span class="lineno">23</span>#111=NODE(&#x27;n2&#x27;,(#101),$);
+<span class="lineno">24</span>/* A free-floating node that is NOT in the model node set. */
+<span class="lineno">25</span>#200=CARTESIAN_POINT(&#x27;orphan&#x27;,(5.0,5.0,5.0));
+<span class="lineno">26</span>#210=NODE(&#x27;orphan_node&#x27;,(#200),$);
+<span class="lineno">27</span>/* Model contains only #110 and #111. */
+<span class="lineno">28</span>#300=NODE_GROUP(&#x27;model_nodes&#x27;,(#110,#111),$);
+<span class="lineno">29</span>#310=<mark>FEA_MODEL</mark>(&#x27;beam_model&#x27;,$,&#x27;&#x27;,#300,(),());
+<span class="lineno">30</span>/* Defect: force applied to #210 which is not in #300 / #310. */
+<span class="lineno">31</span>#400=<mark>NODE_WITH_FORCE</mark>(#210,((1000.0,0.0,0.0)),&#x27;pull_x&#x27;);
+<span class="lineno">32</span>ENDSEC;
+<span class="lineno">33</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="M082.html">&larr; M082</a> <a class="up" href="index.html">§12.8 Mixed (tessellation, validation properties, etc.)</a> <a class="next" href="M084.html">M084 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

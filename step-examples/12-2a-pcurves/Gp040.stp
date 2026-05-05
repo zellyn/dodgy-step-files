@@ -1,0 +1,33 @@
+ISO-10303-21;
+/* Gp040 - Pcurves emitted by default duplicate / contradict the surface 3D curve
+ * Defect: SURFACE_CURVE carries both a 3D curve and a PCURVE; the 2D parametric
+ * curve evaluates ~ε off the 3D curve when projected onto the surface. */
+HEADER;
+FILE_DESCRIPTION(('Gp040 - writer-emitted PCURVE disagrees with 3D curve'),'2;1');
+FILE_NAME('Gp040.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#11=DIRECTION('',(0.0,0.0,1.0));
+#12=DIRECTION('',(1.0,0.0,0.0));
+#13=AXIS2_PLACEMENT_3D('',#10,#11,#12);
+#20=PLANE('host_surface',#13);
+/* 3D curve along x-axis */
+#30=DIRECTION('',(1.0,0.0,0.0));
+#31=VECTOR('',#30,1.0);
+#32=LINE('curve3d',#10,#31);
+/* 2D pcurve in surface UV — note offset 0.000001 in V coordinate which makes
+ * the projection back to 3D differ from #32 by exactly that tolerance. */
+#40=CARTESIAN_POINT('',(0.0,0.000001));
+#41=DIRECTION('',(1.0,0.0));
+#42=VECTOR('',#41,1.0);
+#43=LINE('curve2d_drift',#40,#42);
+#44=DEFINITIONAL_REPRESENTATION('',(#43),#13);
+#45=PCURVE('drifted_pcurve',#20,#44);
+/* SURFACE_CURVE wires both — receivers see the disagreement at edge tolerance. */
+#50=SURFACE_CURVE('disagreeing',#32,(#45),.PCURVE_S1.);
+ENDSEC;
+END-ISO-10303-21;

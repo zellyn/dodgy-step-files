@@ -1,0 +1,21 @@
+/* Wr030 - FILE_SCHEMA listing schemas the file does not actually use */
+ISO-10303-21;
+HEADER;
+FILE_DESCRIPTION(('Wr030 - over-declared FILE_SCHEMA'),'2;1');
+FILE_NAME('Wr030.stp','2026-04-30T00:00:00',(''),(''),
+  'cad-research-suite','','');
+/* Wr030: writer hard-codes a list of schemas; file actually uses only
+   AP203 entities, but FILE_SCHEMA declares three schemas including AP242 */
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }',
+  'CONFIG_CONTROL_DESIGN',
+  'AP242_MANAGED_MODEL_BASED_3D_ENGINEERING { 1 0 10303 442 1 1 4 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('mechanical design');
+#10=CARTESIAN_POINT('origin',(0.0,0.0,0.0));
+#11=DIRECTION('z',(0.0,0.0,1.0));
+#12=DIRECTION('x',(1.0,0.0,0.0));
+#13=AXIS2_PLACEMENT_3D('placement',#10,#11,#12);
+#20=(LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT(.MILLI.,.METRE.));
+ENDSEC;
+END-ISO-10303-21;

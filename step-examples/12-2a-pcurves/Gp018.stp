@@ -1,0 +1,75 @@
+ISO-10303-21;
+/* Gp018 - Pcurve gaps near periodic boundary after NurbsConvert
+ * Defect: the original face was on a CYLINDRICAL_SURFACE; after
+ * BRepBuilderAPI_NurbsConvert it sits on a B_SPLINE_SURFACE_WITH_KNOTS
+ * whose U domain is [0, 1] (not the original 2pi). The seam pcurve
+ * endpoints are at U=0 and U=0.999 instead of U=0 and U=1, leaving a
+ * tiny gap at the wrap-around boundary. */
+HEADER;
+FILE_DESCRIPTION(('Gp018 test case','Pcurve gaps near periodic boundary after NurbsConvert'),'2;1');
+FILE_NAME('Gp018.stp','2026-04-27T00:00:00',(''),(''),'auto-generated','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+/* B-spline surface that is the result of NurbsConvert on a cylinder.
+ * U spans [0, 1] with 9 control points approximating a circle of r=10. */
+#100=CARTESIAN_POINT('',(10.0,0.0,0.0));
+#101=CARTESIAN_POINT('',(10.0,5.7735,0.0));
+#102=CARTESIAN_POINT('',(5.0,8.6602,0.0));
+#103=CARTESIAN_POINT('',(0.0,11.547,0.0));
+#104=CARTESIAN_POINT('',(-10.0,5.7735,0.0));
+#105=CARTESIAN_POINT('',(-10.0,-5.7735,0.0));
+#106=CARTESIAN_POINT('',(0.0,-11.547,0.0));
+#107=CARTESIAN_POINT('',(5.0,-8.6602,0.0));
+#108=CARTESIAN_POINT('',(10.0,0.0,0.0));
+#110=CARTESIAN_POINT('',(10.0,0.0,5.0));
+#111=CARTESIAN_POINT('',(10.0,5.7735,5.0));
+#112=CARTESIAN_POINT('',(5.0,8.6602,5.0));
+#113=CARTESIAN_POINT('',(0.0,11.547,5.0));
+#114=CARTESIAN_POINT('',(-10.0,5.7735,5.0));
+#115=CARTESIAN_POINT('',(-10.0,-5.7735,5.0));
+#116=CARTESIAN_POINT('',(0.0,-11.547,5.0));
+#117=CARTESIAN_POINT('',(5.0,-8.6602,5.0));
+#118=CARTESIAN_POINT('',(10.0,0.0,5.0));
+#20=B_SPLINE_SURFACE_WITH_KNOTS('',3,1,
+  ((#100,#110),(#101,#111),(#102,#112),(#103,#113),(#104,#114),
+   (#105,#115),(#106,#116),(#107,#117),(#108,#118)),
+  .UNSPECIFIED.,.F.,.F.,.F.,
+  (4,1,1,1,1,1,4),(2,2),
+  (0.0,0.166667,0.333333,0.5,0.666667,0.833333,1.0),(0.0,1.0),
+  .UNSPECIFIED.);
+/* Seam edge along the U=0 / U=1 join */
+#30=CARTESIAN_POINT('',(10.0,0.0,0.0));
+#31=DIRECTION('',(0.0,0.0,1.0));
+#32=VECTOR('',#31,1.0);
+#33=LINE('',#30,#32);
+#40=VERTEX_POINT('',#30);
+#41=CARTESIAN_POINT('',(10.0,0.0,5.0));
+#42=VERTEX_POINT('',#41);
+/* Pcurve at U=0 OK */
+#71=CARTESIAN_POINT('',(0.0,0.0));
+#72=DIRECTION('',(0.0,1.0));
+#73=VECTOR('',#72,1.0);
+#74=LINE('',#71,#73);
+#75=( GEOMETRIC_REPRESENTATION_CONTEXT(2)
+      PARAMETRIC_REPRESENTATION_CONTEXT()
+      REPRESENTATION_CONTEXT('parametric','2D') );
+#76=DEFINITIONAL_REPRESENTATION('',(#74),#75);
+#77=PCURVE('',#20,#76);
+/* Defect: second pcurve at U=0.999 instead of U=1.0 - small gap */
+#81=CARTESIAN_POINT('',(0.999,0.0));
+#82=DIRECTION('',(0.0,1.0));
+#83=VECTOR('',#82,1.0);
+#84=LINE('',#81,#83);
+#86=DEFINITIONAL_REPRESENTATION('',(#84),#75);
+#87=PCURVE('',#20,#86);
+#50=SURFACE_CURVE('',#33,(#77,#87),.PCURVE_S1.);
+#60=EDGE_CURVE('',#40,#42,#50,.T.);
+#61=ORIENTED_EDGE('',*,*,#60,.T.);
+#62=EDGE_LOOP('',(#61));
+#63=FACE_OUTER_BOUND('',#62,.T.);
+#64=ADVANCED_FACE('',(#63),#20,.T.);
+ENDSEC;
+END-ISO-10303-21;

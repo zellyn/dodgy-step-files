@@ -1,0 +1,28 @@
+ISO-10303-21;
+/* M177 - AP238 COOLANT_OPERATION on tool with no internal-cooling declared.
+ * Defect: a COOLANT_OPERATION specifies through-spindle / through-tool
+ * coolant delivery, but the referenced milling tool has no internal-
+ * cooling channel attribute. Activating through-tool flood on a solid-
+ * shank tool either floods the spindle bearings or stalls the coolant
+ * pump. */
+HEADER;
+FILE_DESCRIPTION(('M177 test case','AP238 through-tool coolant on non-coolant tool'),'2;1');
+FILE_NAME('M177.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AP238_STEP_NC_MIM { 1 0 10303 238 1 0 0 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('numerical_control_machining');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
+  'numerical_control_machining',2007,#1);
+#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10))
+     REPRESENTATION_CONTEXT('nc','3D'));
+/* Tool: no internal_cooling attribute declared. */
+#90=MILLING_CUTTING_TOOL('solid_endmill',$,$,$,$);
+/* Defect: COOLANT_OPERATION asks for THROUGH_TOOL on a tool with no
+   internal_cooling channel. */
+#100=COOLANT_OPERATION('through_tool_coolant',.THROUGH_TOOL.,#90);
+#200=WORKPLAN('main',(#100),$,$,$);
+ENDSEC;
+END-ISO-10303-21;

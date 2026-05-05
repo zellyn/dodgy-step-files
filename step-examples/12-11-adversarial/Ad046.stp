@@ -1,0 +1,62 @@
+/* Ad046 - STEPCAFControl_Writer / writer crashes on shape
+   ----------------------------------------------------------------------
+   Catalog section : §12.11 adversarial (sub-class: null-deref / DoS)
+   Sources         : 03-occt-tests.md R050 (empty APPLIED_GROUP_ASSIGNMENT
+                     write exception), R067 (writer exception);
+                     19-datasets.md D025 (FreeCAD #5783 STEP-export crash
+                     via missing pcurve);
+                     18-other-issues.md I050 (SolveSpace 0-byte STEP/PDF)
+   See also        : Ad043
+   ----------------------------------------------------------------------
+   WARNING: This file is INTENTIONALLY MALFORMED for parser-robustness
+   testing on the WRITER side (used as round-trip input). Do NOT use as
+   exchange data.
+   ----------------------------------------------------------------------
+   Defect
+     Writer-side null-deref when shape has missing handles (e.g.
+     missing pcurve), an empty APPLIED_GROUP_ASSIGNMENT, or a feature
+     whose translation is incomplete. Producer crashes producing
+     zero-byte output. SolveSpace lathe-then-extrusion-difference and
+     FreeCAD #5783 missing-pcurve are documented incidents.
+   Reproducer recipe
+     APPLIED_GROUP_ASSIGNMENT with empty items list (used to crash
+     writer); plus an ADVANCED_FACE missing its pcurve handle.
+   Expected kernel behavior
+     Detect missing handle, fall back to recompute, or skip with
+     warning; never crash. Reject empty group with E_EMPTY_AGGREGATE.
+   ----------------------------------------------------------------------
+*/
+ISO-10303-21;
+HEADER;
+FILE_DESCRIPTION(('Ad046 - empty APPLIED_GROUP_ASSIGNMENT + missing pcurve'),
+  '2;1');
+FILE_NAME('Ad046.stp','2026-04-26T00:00:00',('auto-generated'),(''),
+  'auto-generated','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+#1=GROUP('g','desc');
+/* Defect: APPLIED_GROUP_ASSIGNMENT with empty items list. */
+#2=APPLIED_GROUP_ASSIGNMENT(#1,());
+#10=CARTESIAN_POINT('o',(0.0,0.0,0.0));
+#11=DIRECTION('z',(0.0,0.0,1.0));
+#12=DIRECTION('x',(1.0,0.0,0.0));
+#13=AXIS2_PLACEMENT_3D('p',#10,#11,#12);
+#14=PLANE('plane',#13);
+#15=CARTESIAN_POINT('a',(1.0,0.0,0.0));
+#16=CARTESIAN_POINT('b',(0.0,1.0,0.0));
+#17=VERTEX_POINT('va',#15);
+#18=VERTEX_POINT('vb',#16);
+#19=DIRECTION('dx',(0.0,1.0,0.0));
+#20=VECTOR('v',#19,1.0);
+#21=LINE('line3d',#15,#20);
+/* Note: writer expects pcurve aggregate; here we provide only the 3D
+   curve and no SURFACE_CURVE wrapper, simulating the FreeCAD #5783
+   missing-pcurve crash on export round-trip. */
+#22=EDGE_CURVE('e',#17,#18,#21,.T.);
+#23=ORIENTED_EDGE('oe',*,*,#22,.T.);
+#24=EDGE_LOOP('el',(#23));
+#25=FACE_OUTER_BOUND('fob',#24,.T.);
+#26=ADVANCED_FACE('af',(#25),#14,.T.);
+ENDSEC;
+END-ISO-10303-21;

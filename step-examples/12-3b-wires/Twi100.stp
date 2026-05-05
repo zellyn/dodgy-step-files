@@ -1,0 +1,56 @@
+/* Twi100 - COMPOSITE_CURVE_ON_SURFACE used as edge basis silently dropped
+   Defect: BRL-CAD step-g CompositeCurveOnSurface::LoadONBrep is a stub
+   that prints "::LoadONBrep(...) not implemented for <entity>" and
+   returns false; CompositeCurve and CompositeCurveOnSurface also stub
+   PointAtStart() / PointAtEnd() so the trim-end vertex resolution is
+   broken too.  An EDGE_CURVE whose curve_geometry is a
+   COMPOSITE_CURVE_ON_SURFACE (a chain of segments laid out on a single
+   host surface, each segment with its own transition_code) loses both
+   the geometry and the endpoints - the ON_Brep ends up with a
+   zero-length trim, the wire is rejected as malformed, and the face is
+   silently dropped.
+   Sources: BRL-CAD src/conv/step/step-g/CompositeCurveOnSurface.cpp
+   LoadONBrep stub; CompositeCurve.cpp PointAtStart/PointAtEnd stubs. */
+ISO-10303-21;
+HEADER;
+FILE_DESCRIPTION(
+  ('Twi100 - COMPOSITE_CURVE_ON_SURFACE edge basis dropped by step-g'),
+  '2;1');
+FILE_NAME('Twi100.stp','2026-05-02T00:00:00',('cad-research-suite'),(''),
+  'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+/* Host plane. */
+#10=CARTESIAN_POINT('o',(0.0,0.0,0.0));
+#11=DIRECTION('z',(0.0,0.0,1.0));
+#12=DIRECTION('x',(1.0,0.0,0.0));
+#13=AXIS2_PLACEMENT_3D('pl',#10,#11,#12);
+#14=PLANE('host',#13);
+/* 2D parameter context. */
+#20=(GEOMETRIC_REPRESENTATION_CONTEXT(2)
+     PARAMETRIC_REPRESENTATION_CONTEXT()
+     REPRESENTATION_CONTEXT('uv','2D'));
+/* Two pcurve segments in (u,v): (0,0)->(1,0) and (1,0)->(1,1). */
+#30=CARTESIAN_POINT('uvA',(0.0,0.0));
+#31=CARTESIAN_POINT('uvB',(1.0,0.0));
+#32=CARTESIAN_POINT('uvC',(1.0,1.0));
+#40=POLYLINE('seg_a',(#30,#31));
+#41=POLYLINE('seg_b',(#31,#32));
+#50=DEFINITIONAL_REPRESENTATION('seg_a_def',(#40),#20);
+#51=DEFINITIONAL_REPRESENTATION('seg_b_def',(#41),#20);
+#60=PCURVE('pcurve_a',#14,#50);
+#61=PCURVE('pcurve_b',#14,#51);
+/* Composite curve segments. */
+#70=COMPOSITE_CURVE_SEGMENT(.CONTINUOUS.,.T.,#60);
+#71=COMPOSITE_CURVE_SEGMENT(.CONTINUOUS.,.T.,#61);
+/* Defect: COMPOSITE_CURVE_ON_SURFACE - step-g LoadONBrep stub drops it.
+   The edge below loses both its geometry and endpoint resolution. */
+#80=COMPOSITE_CURVE_ON_SURFACE('chain',(#70,#71),.U.);
+/* 3D vertices for the EDGE_CURVE start/end. */
+#90=CARTESIAN_POINT('v0',(0.0,0.0,0.0));
+#91=CARTESIAN_POINT('v1',(1.0,1.0,0.0));
+#92=VERTEX_POINT('',#90); #93=VERTEX_POINT('',#91);
+#100=EDGE_CURVE('cc_edge',#92,#93,#80,.T.);
+ENDSEC;
+END-ISO-10303-21;

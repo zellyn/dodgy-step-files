@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Tfa016 — Adjacent faces share same supporting surface (redundant internal edge)</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.3c Faces / sewing / free bound</a> <span class="sep">/</span> <span class="current">Tfa016</span>
+</nav>
+<header class="title-bar">
+<h1>Tfa016 <span class="sep">—</span> <span class="entry-title">Adjacent faces share same supporting surface (redundant internal edge)</span></h1>
+<p class="category">§12.3c face-sliver-sewing</p>
+<p class="tag-pills">
+<a class="tag tag-topology" href="../by-tag/topology/index.html">topology</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-3c-faces/Tfa016.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-3c-faces/Tfa016.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>03-occt-tests R019 (bug28228), R033 (UnifySameDomain stability), R074 (bopcheck after USD)</li>
+<li>05-occt-shapefix F055</li>
+<li>08-occt-gitlog G068, G103</li>
+<li>09-healing-menus H071, H087</li>
+<li>13-quaoar B024 (maximize-faces)</li>
+<li>18-other-issues I040, I052</li>
+</ul></section>
+<section><h2>Description</h2>
+<p>Two or more coplanar (or co-cylindrical, co-conical, co-spherical, co-toroidal) faces from a Boolean union remain separate even though they share one underlying surface, joined by an artificial internal edge that does not separate distinct geometry. Feature recognition and CAM/FEA pipelines see redundant topology where the input was a single feature.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>Boolean-fuse two boxes sharing a face; result has two coplanar faces on the shared plane separated by a useless internal edge.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>merge adjacent faces that share one underlying surface and have collinear shared edges, leaving the topology with one face per geometric region. The merge must respect periodic directions — do not merge across a cylinder/torus seam.</p></section>
+<section><h2>Notes</h2>
+<p>**See also**: Tfa017, Tfa018, Tfa032. Synonyms: &quot;coplanar faces left as separate entities&quot;, &quot;two faces on same plane joined by fake edge&quot;, &quot;redundant internal edge between coplanar faces&quot;, &quot;feature recognition sees split where input was one face&quot;, &quot;boolean union didn&#x27;t merge coplanar pair&quot;.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=shape(1)/shape(1) gmsh=shape(15) ifc=schema_n/a</code></p></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>face[0].surface_type == &quot;plane&quot;</code></li>
+<li><code>n_edges_total &gt;= 8</code></li>
+<li><code>face[1].surface_type == &quot;plane&quot;</code></li>
+<li><code>n_vertices_total &gt;= 16</code></li>
+</ul></section>
+<section><h2>Cross-references</h2>
+<p><a href="Tfa017.html">Tfa017</a>, <a href="Tfa018.html">Tfa018</a>, <a href="Tfa032.html">Tfa032</a></p>
+</section>
+<section><h2>Live oracle output</h2>
+<table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
+<tr><td><code>occt_heal_on</code></td><td><code>shape(1)</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>shape(1)</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>shape(15)</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>shape(15)</code></td></tr>
+<tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>not_manifold</code></td></tr>
+</tbody></table>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>/* Tfa016 - Faces share same supporting surface - UnifySameDomain
+<span class="lineno">2</span> * Defect: multiple coplanar faces from a Boolean union remain separate,
+<span class="lineno">3</span> * joined by an artificial internal edge. Feature recognition and CAM/FEA
+<span class="lineno">4</span> * pipelines see redundant topology. Healer should run
+<span class="lineno">5</span> * ShapeUpgrade_UnifySameDomain to merge adjacent faces sharing one
+<span class="lineno">6</span> * underlying surface and colinear edges. After USD bopcheck must be
+<span class="lineno">7</span> * clean. Detect periodic direction and do NOT merge across cylinder/
+<span class="lineno">8</span> * torus seam.
+<span class="lineno">9</span> * Reproducer: two coplanar ADVANCED_FACE entries sharing one PLANE.
+<span class="lineno">10</span> * Both reference the same internal edge between them.
+<span class="lineno">11</span> */
+<span class="lineno">12</span>ISO-10303-21;
+<span class="lineno">13</span>HEADER;
+<span class="lineno">14</span>FILE_DESCRIPTION((&#x27;Tfa016 same domain faces unifiable&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">15</span>FILE_NAME(&#x27;Tfa016.stp&#x27;,&#x27;2026-04-26T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),
+<span class="lineno">16</span>  &#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">17</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN&#x27;));
+<span class="lineno">18</span>ENDSEC;
+<span class="lineno">19</span>DATA;
+<span class="lineno">20</span>#1=APPLICATION_CONTEXT(&#x27;automotive design&#x27;);
+<span class="lineno">21</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,
+<span class="lineno">22</span>  &#x27;automotive_design&#x27;,2009,#1);
+<span class="lineno">23</span>#10=CARTESIAN_POINT(&#x27;origin&#x27;,(0.0,0.0,0.0));
+<span class="lineno">24</span>#11=DIRECTION(&#x27;z&#x27;,(0.0,0.0,1.0));
+<span class="lineno">25</span>#12=DIRECTION(&#x27;x&#x27;,(1.0,0.0,0.0));
+<span class="lineno">26</span>#13=AXIS2_PLACEMENT_3D(&#x27;plc&#x27;,#10,#11,#12);
+<span class="lineno">27</span>/* One shared PLANE across both faces (same supporting surface).        */
+<span class="lineno">28</span>#20=PLANE(&#x27;shared_plane&#x27;,#13);
+<span class="lineno">29</span>/* Six vertices: two squares sharing the middle edge from (10,0) to
+<span class="lineno">30</span> * (10,10).                                                             */
+<span class="lineno">31</span>#21=CARTESIAN_POINT(&#x27;p0&#x27;,(0.0,0.0,0.0));
+<span class="lineno">32</span>#22=CARTESIAN_POINT(&#x27;p1&#x27;,(10.0,0.0,0.0));
+<span class="lineno">33</span>#23=CARTESIAN_POINT(&#x27;p2&#x27;,(10.0,10.0,0.0));
+<span class="lineno">34</span>#24=CARTESIAN_POINT(&#x27;p3&#x27;,(0.0,10.0,0.0));
+<span class="lineno">35</span>#25=CARTESIAN_POINT(&#x27;p4&#x27;,(20.0,0.0,0.0));
+<span class="lineno">36</span>#26=CARTESIAN_POINT(&#x27;p5&#x27;,(20.0,10.0,0.0));
+<span class="lineno">37</span>#30=VERTEX_POINT(&#x27;&#x27;,#21);
+<span class="lineno">38</span>#31=VERTEX_POINT(&#x27;&#x27;,#22);
+<span class="lineno">39</span>#32=VERTEX_POINT(&#x27;&#x27;,#23);
+<span class="lineno">40</span>#33=VERTEX_POINT(&#x27;&#x27;,#24);
+<span class="lineno">41</span>#34=VERTEX_POINT(&#x27;&#x27;,#25);
+<span class="lineno">42</span>#35=VERTEX_POINT(&#x27;&#x27;,#26);
+<span class="lineno">43</span>#40=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">44</span>#41=DIRECTION(&#x27;&#x27;,(0.0,1.0,0.0));
+<span class="lineno">45</span>#42=DIRECTION(&#x27;&#x27;,(-1.0,0.0,0.0));
+<span class="lineno">46</span>#43=DIRECTION(&#x27;&#x27;,(0.0,-1.0,0.0));
+<span class="lineno">47</span>#50=VECTOR(&#x27;&#x27;,#40,10.0);
+<span class="lineno">48</span>#51=VECTOR(&#x27;&#x27;,#41,10.0);
+<span class="lineno">49</span>#52=VECTOR(&#x27;&#x27;,#42,10.0);
+<span class="lineno">50</span>#53=VECTOR(&#x27;&#x27;,#43,10.0);
+<span class="lineno">51</span>#60=LINE(&#x27;&#x27;,#21,#50);
+<span class="lineno">52</span>#61=LINE(&#x27;&#x27;,#22,#51);
+<span class="lineno">53</span>#62=LINE(&#x27;&#x27;,#23,#52);
+<span class="lineno">54</span>#63=LINE(&#x27;&#x27;,#24,#53);
+<span class="lineno">55</span>#64=LINE(&#x27;&#x27;,#22,#50);
+<span class="lineno">56</span>#65=LINE(&#x27;&#x27;,#25,#51);
+<span class="lineno">57</span>#66=LINE(&#x27;&#x27;,#26,#52);
+<span class="lineno">58</span>#70=EDGE_CURVE(&#x27;a_bottom&#x27;,#30,#31,#60,.T.);
+<span class="lineno">59</span>#71=EDGE_CURVE(&#x27;shared_mid&#x27;,#31,#32,#61,.T.);
+<span class="lineno">60</span>#72=EDGE_CURVE(&#x27;a_top&#x27;,#32,#33,#62,.T.);
+<span class="lineno">61</span>#73=EDGE_CURVE(&#x27;a_left&#x27;,#33,#30,#63,.T.);
+<span class="lineno">62</span>#74=EDGE_CURVE(&#x27;b_bottom&#x27;,#31,#34,#64,.T.);
+<span class="lineno">63</span>#75=EDGE_CURVE(&#x27;b_right&#x27;,#34,#35,#65,.T.);
+<span class="lineno">64</span>#76=EDGE_CURVE(&#x27;b_top&#x27;,#35,#32,#66,.T.);
+<span class="lineno">65</span>/* Both faces share edge #71 (artificial internal edge after USD).      */
+<span class="lineno">66</span>#80=ORIENTED_EDGE(&#x27;&#x27;,*,*,#70,.T.);
+<span class="lineno">67</span>#81=ORIENTED_EDGE(&#x27;&#x27;,*,*,#71,.T.);
+<span class="lineno">68</span>#82=ORIENTED_EDGE(&#x27;&#x27;,*,*,#72,.T.);
+<span class="lineno">69</span>#83=ORIENTED_EDGE(&#x27;&#x27;,*,*,#73,.T.);
+<span class="lineno">70</span>#84=ORIENTED_EDGE(&#x27;&#x27;,*,*,#74,.T.);
+<span class="lineno">71</span>#85=ORIENTED_EDGE(&#x27;&#x27;,*,*,#75,.T.);
+<span class="lineno">72</span>#86=ORIENTED_EDGE(&#x27;&#x27;,*,*,#76,.T.);
+<span class="lineno">73</span>#87=ORIENTED_EDGE(&#x27;&#x27;,*,*,#71,.F.);
+<span class="lineno">74</span>#90=EDGE_LOOP(&#x27;A&#x27;,(#80,#81,#82,#83));
+<span class="lineno">75</span>#91=EDGE_LOOP(&#x27;B&#x27;,(#84,#85,#86,#87));
+<span class="lineno">76</span>#100=FACE_OUTER_BOUND(&#x27;outer_A&#x27;,#90,.T.);
+<span class="lineno">77</span>#101=FACE_OUTER_BOUND(&#x27;outer_B&#x27;,#91,.T.);
+<span class="lineno">78</span>/* Defect site: two adjacent coplanar faces sharing supporting surface
+<span class="lineno">79</span> * #20 and joined by internal shared edge #71.                          */
+<span class="lineno">80</span>#110=ADVANCED_FACE(&#x27;coplanar_A&#x27;,(#100),#20,.T.);
+<span class="lineno">81</span>#111=ADVANCED_FACE(&#x27;coplanar_B&#x27;,(#101),#20,.T.);
+<span class="lineno">82</span>/* Wrap: minimal PRODUCT chain so OCCT TransferRoots produces a shape. */
+<span class="lineno">83</span>#9000=PRODUCT_CONTEXT(&#x27;&#x27;,#1,&#x27;mechanical&#x27;);
+<span class="lineno">84</span>#9001=PRODUCT(&#x27;Tfa016&#x27;,&#x27;Tfa016&#x27;,&#x27;&#x27;,(#9000));
+<span class="lineno">85</span>#9002=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#9001);
+<span class="lineno">86</span>#9003=PRODUCT_DEFINITION_CONTEXT(&#x27;part definition&#x27;,#1,&#x27;design&#x27;);
+<span class="lineno">87</span>#9004=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,#9002,#9003);
+<span class="lineno">88</span>#9005=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,#9004);
+<span class="lineno">89</span>#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">90</span>#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+<span class="lineno">91</span>#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+<span class="lineno">92</span>#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,&#x27;distance_accuracy_value&#x27;,&#x27;&#x27;);
+<span class="lineno">93</span>#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT(&#x27;&#x27;,&#x27;3D&#x27;));
+<span class="lineno">94</span>#9020=OPEN_SHELL(&#x27;wrap_shell&#x27;,(#110,#111));
+<span class="lineno">95</span>#9021=SHELL_BASED_SURFACE_MODEL(&#x27;wrap_sbsm&#x27;,(#9020));
+<span class="lineno">96</span>#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION(&#x27;&#x27;,(#9021),#9010);
+<span class="lineno">97</span>#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+<span class="lineno">98</span>ENDSEC;
+<span class="lineno">99</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Tfa015.html">&larr; Tfa015</a> <a class="up" href="index.html">§12.3c Faces / sewing / free bound</a> <a class="next" href="Tfa017.html">Tfa017 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

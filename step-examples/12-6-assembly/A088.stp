@@ -1,0 +1,21 @@
+ISO-10303-21;
+/* A088 - Empty assembly causes writer to throw
+ * Defect: XCAF document with one empty assembly label, no shape attached */
+HEADER;
+FILE_DESCRIPTION(('A088 test case','Empty assembly causes writer to throw'),'2;1');
+FILE_NAME('A088.stp','2026-04-30T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+#10=PRODUCT_CONTEXT('',#1,'mechanical');
+#11=PRODUCT('part1','part1','part1',(#10));
+#12=PRODUCT_DEFINITION_FORMATION('','',#11);
+#13=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#14=PRODUCT_DEFINITION('','',#12,#13);
+#15=PRODUCT_DEFINITION_SHAPE('','',#14);
+#100=PRODUCT('empty_assy','empty','',(#10));
+
+ENDSEC;
+END-ISO-10303-21;

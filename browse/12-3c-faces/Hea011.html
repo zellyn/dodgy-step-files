@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Hea011 — Shape-healing driver runs a runtime-configured operator sequence over a GEOMETRIC_SET with sub-tolerance EDGE_CURVE, OPEN_SHELL, and same-parameter violation</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.3c Faces / sewing / free bound</a> <span class="sep">/</span> <span class="current">Hea011</span>
+</nav>
+<header class="title-bar">
+<h1>Hea011 <span class="sep">—</span> <span class="entry-title">Shape-healing driver runs a runtime-configured operator sequence over a GEOMETRIC_SET with sub-tolerance EDGE_CURVE, OPEN_SHELL, and same-parameter violation</span></h1>
+<p class="category">§12.3 (sub-class: shape-healing) — driver</p>
+<p class="tag-pills">
+<a class="tag tag-topology" href="../by-tag/topology/index.html">topology</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-3c-faces/Hea011.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-3c-faces/Hea011.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>OCCT `ShapeProcess::Perform` (`ShapeProcess.hxx:87`)</li>
+</ul></section>
+<section><h2>Description</h2>
+<p>A top-level driver runs a sequence of named healing operators (&quot;fix-shape, split-closed-faces, ..&quot;). The sequence is configured at runtime; operator parameters come from a context resource. Errors at any step must be aggregated; the driver must not silently skip failed operators. Typical fixture: a GEOMETRIC_SET with multiple defect classes — a sub-tolerance EDGE_CURVE (length ~1e-7 between near-coincident VERTEX_POINTs), a rectangular shell, and an EDGE_CURVE whose 3D length disagrees with its pcurve length (same-parameter violation).</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>A multi-defect GEOMETRIC_SET compound (sub-tolerance edge, rectangular shell, same-parameter pcurve mismatch); driver invoked with operator list &quot;fix-shape, same-parameter, remove-small-edges&quot;.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>run operators in declared order; collect per-operator status; abort on operator-not-found, otherwise continue. Configuration parameters are pulled from the context.</p></section>
+<section><h2>Notes</h2>
+<p>Provides the runtime extension point for the healing pipeline. Defect manifests at runtime (operator-list invocation is API-level); fixture establishes the input precondition (a multi-defect compound mixing sub-tolerance edge, open shell, and same-parameter violation). Synonyms: &quot;runtime-configured healing operator sequence&quot;, &quot;named healing operators chained at runtime&quot;, &quot;sub-tolerance edge plus open shell plus same-param violation&quot;, &quot;healing driver aggregates errors from each operator&quot;.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a</code></p></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>n_edges_total &gt;= 4</code></li>
+<li><code>face[0].surface_type == &quot;plane&quot;</code></li>
+<li><code>n_vertices_total &gt;= 8</code></li>
+</ul></section>
+<section><h2>Live oracle output</h2>
+<table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
+<tr><td><code>occt_heal_on</code></td><td><code>shape(1)</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>shape(1)</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>shape(9)</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>shape(9)</code></td></tr>
+<tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>not_manifold</code></td></tr>
+</tbody></table>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* Hea011 - Shape-healing driver: run a runtime-configured sequence of operators
+<span class="lineno">3</span> * Multi-defect compound on which the driver is intended to run a sequence
+<span class="lineno">4</span> * &quot;fix-shape, same-parameter, remove-small-edges&quot;. Compound contains:
+<span class="lineno">5</span> *   (a) a sub-tolerance edge (1e-7 long) -- target of remove-small-edges;
+<span class="lineno">6</span> *   (b) an open shell (one face, hole in the topology) -- target of fix-shape;
+<span class="lineno">7</span> *   (c) an edge whose 3D vs pcurve same-parameter is violated -- target of same-parameter.
+<span class="lineno">8</span> * The operator-list itself is API-level (not encoded in STEP bytes). */
+<span class="lineno">9</span>HEADER;
+<span class="lineno">10</span>FILE_DESCRIPTION((&#x27;Hea011 test case&#x27;,&#x27;Multi-defect compound for fix-shape/same-parameter/remove-small-edges driver&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">11</span>FILE_NAME(&#x27;Hea011.stp&#x27;,&#x27;2026-04-30T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">12</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }&#x27;));
+<span class="lineno">13</span>ENDSEC;
+<span class="lineno">14</span>DATA;
+<span class="lineno">15</span>#1=APPLICATION_CONTEXT(&#x27;automotive_design&#x27;);
+<span class="lineno">16</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,&#x27;automotive_design&#x27;,2000,#1);
+<span class="lineno">17</span>#10=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">18</span>#11=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));#12=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">19</span>#13=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#10,#11,#12);#14=PLANE(&#x27;&#x27;,#13);
+<span class="lineno">20</span>/* (a) Sub-tolerance edge between two near-coincident vertex points (1e-7 apart). */
+<span class="lineno">21</span>#20=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));#21=VERTEX_POINT(&#x27;Va&#x27;,#20);
+<span class="lineno">22</span>#22=CARTESIAN_POINT(&#x27;subtol&#x27;,(1.0E-7,0.0,0.0));#23=VERTEX_POINT(&#x27;Vb_subtol&#x27;,#22);
+<span class="lineno">23</span>#24=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));#25=VECTOR(&#x27;&#x27;,#24,1.0);#26=LINE(&#x27;&#x27;,#20,#25);
+<span class="lineno">24</span>#27=EDGE_CURVE(&#x27;part_a_subtol_edge&#x27;,#21,#23,#26,.T.);
+<span class="lineno">25</span>/* (b) Open shell: one face but with NO closing wire on the back side */
+<span class="lineno">26</span>#30=CARTESIAN_POINT(&#x27;&#x27;,(2.0,0.0,0.0));#31=VERTEX_POINT(&#x27;Vc1&#x27;,#30);
+<span class="lineno">27</span>#32=CARTESIAN_POINT(&#x27;&#x27;,(3.0,0.0,0.0));#33=VERTEX_POINT(&#x27;Vc2&#x27;,#32);
+<span class="lineno">28</span>#34=CARTESIAN_POINT(&#x27;&#x27;,(3.0,1.0,0.0));#35=VERTEX_POINT(&#x27;Vc3&#x27;,#34);
+<span class="lineno">29</span>#36=CARTESIAN_POINT(&#x27;&#x27;,(2.0,1.0,0.0));#37=VERTEX_POINT(&#x27;Vc4&#x27;,#36);
+<span class="lineno">30</span>#40=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));#41=VECTOR(&#x27;&#x27;,#40,1.0);#42=LINE(&#x27;&#x27;,#30,#41);#43=EDGE_CURVE(&#x27;&#x27;,#31,#33,#42,.T.);
+<span class="lineno">31</span>#44=DIRECTION(&#x27;&#x27;,(0.0,1.0,0.0));#45=VECTOR(&#x27;&#x27;,#44,1.0);#46=LINE(&#x27;&#x27;,#32,#45);#47=EDGE_CURVE(&#x27;&#x27;,#33,#35,#46,.T.);
+<span class="lineno">32</span>#48=DIRECTION(&#x27;&#x27;,(-1.0,0.0,0.0));#49=VECTOR(&#x27;&#x27;,#48,1.0);#50=LINE(&#x27;&#x27;,#34,#49);#51=EDGE_CURVE(&#x27;&#x27;,#35,#37,#50,.T.);
+<span class="lineno">33</span>#52=DIRECTION(&#x27;&#x27;,(0.0,-1.0,0.0));#53=VECTOR(&#x27;&#x27;,#52,1.0);#54=LINE(&#x27;&#x27;,#36,#53);#55=EDGE_CURVE(&#x27;&#x27;,#37,#31,#54,.T.);
+<span class="lineno">34</span>#56=ORIENTED_EDGE(&#x27;&#x27;,*,*,#43,.T.);#57=ORIENTED_EDGE(&#x27;&#x27;,*,*,#47,.T.);
+<span class="lineno">35</span>#58=ORIENTED_EDGE(&#x27;&#x27;,*,*,#51,.T.);#59=ORIENTED_EDGE(&#x27;&#x27;,*,*,#55,.T.);
+<span class="lineno">36</span>#60=EDGE_LOOP(&#x27;part_b_face_loop&#x27;,(#56,#57,#58,#59));
+<span class="lineno">37</span>#61=FACE_OUTER_BOUND(&#x27;&#x27;,#60,.T.);
+<span class="lineno">38</span>#62=ADVANCED_FACE(&#x27;part_b_face&#x27;,(#61),#14,.T.);
+<span class="lineno">39</span>#63=OPEN_SHELL(&#x27;part_b_open_shell&#x27;,(#62));
+<span class="lineno">40</span>/* (c) Same-parameter violation: 3D LINE length 1.0; pcurve length 5.0 */
+<span class="lineno">41</span>#70=CARTESIAN_POINT(&#x27;&#x27;,(5.0,0.0,0.0));#71=VERTEX_POINT(&#x27;Vd1&#x27;,#70);
+<span class="lineno">42</span>#72=CARTESIAN_POINT(&#x27;&#x27;,(6.0,0.0,0.0));#73=VERTEX_POINT(&#x27;Vd2&#x27;,#72);
+<span class="lineno">43</span>#74=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));#75=VECTOR(&#x27;&#x27;,#74,1.0);#76=LINE(&#x27;part_c_3d_len1&#x27;,#70,#75);
+<span class="lineno">44</span>#77=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0));#78=DIRECTION(&#x27;&#x27;,(1.0,0.0));#79=VECTOR(&#x27;&#x27;,#78,5.0);
+<span class="lineno">45</span>#80=LINE(&#x27;part_c_pcurve_len5&#x27;,#77,#79);
+<span class="lineno">46</span>#81=DEFINITIONAL_REPRESENTATION(&#x27;&#x27;,(#80),#13);
+<span class="lineno">47</span>#82=PCURVE(&#x27;&#x27;,#14,#81);
+<span class="lineno">48</span>#83=SURFACE_CURVE(&#x27;&#x27;,#76,(#82),.PCURVE_S1.);
+<span class="lineno">49</span>#84=EDGE_CURVE(&#x27;part_c_sameparam_violation&#x27;,#71,#73,#83,.T.);
+<span class="lineno">50</span>/* Compound */
+<span class="lineno">51</span>#100=GEOMETRIC_SET(&#x27;multi_defect_compound&#x27;,(#27,#63,#84));
+<span class="lineno">52</span>/* Wrap: minimal PRODUCT chain so OCCT TransferRoots produces a shape. */
+<span class="lineno">53</span>#9000=PRODUCT_CONTEXT(&#x27;&#x27;,#1,&#x27;mechanical&#x27;);
+<span class="lineno">54</span>#9001=PRODUCT(&#x27;Hea011&#x27;,&#x27;Hea011&#x27;,&#x27;&#x27;,(#9000));
+<span class="lineno">55</span>#9002=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#9001);
+<span class="lineno">56</span>#9003=PRODUCT_DEFINITION_CONTEXT(&#x27;part definition&#x27;,#1,&#x27;design&#x27;);
+<span class="lineno">57</span>#9004=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,#9002,#9003);
+<span class="lineno">58</span>#9005=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,#9004);
+<span class="lineno">59</span>#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">60</span>#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+<span class="lineno">61</span>#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+<span class="lineno">62</span>#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,&#x27;distance_accuracy_value&#x27;,&#x27;&#x27;);
+<span class="lineno">63</span>#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT(&#x27;&#x27;,&#x27;3D&#x27;));
+<span class="lineno">64</span>#9021=SHELL_BASED_SURFACE_MODEL(&#x27;wrap_sbsm&#x27;,(#63));
+<span class="lineno">65</span>#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION(&#x27;&#x27;,(#9021),#9010);
+<span class="lineno">66</span>#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+<span class="lineno">67</span>ENDSEC;
+<span class="lineno">68</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Hea010.html">&larr; Hea010</a> <a class="up" href="index.html">§12.3c Faces / sewing / free bound</a> <a class="next" href="Hea012.html">Hea012 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

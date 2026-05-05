@@ -1,0 +1,98 @@
+ISO-10303-21;
+/* Tsh019 - Non-manifold edge (>=3 incident faces) in shell or solid
+ * Defect: An edge shared by three or more faces -- surface is not
+ * locally homeomorphic to a disk along the edge. Two cubes sharing
+ * one common edge (4 faces meet at one edge) emitted as one
+ * MANIFOLD_SOLID_BREP is the canonical case. Sources: F034 HasBadEdges,
+ * B020 Quaoar, W011, Q064, L013/L026.
+ *
+ * This file: a "T-junction" topology -- three quadrilateral panels
+ * (XY plane, XZ plane, X-(-Z) plane) all sharing the same edge along
+ * the X axis from (0,0,0) to (1,0,0). The shared EDGE_CURVE #311 is
+ * referenced as ORIENTED_EDGE in 3 separate FACE_BOUND chains, making
+ * this topology non-manifold. */
+HEADER;
+FILE_DESCRIPTION(('Tsh019 test case','Non-manifold edge with 3+ incident faces'),'2;1');
+FILE_NAME('Tsh019.stp','2026-04-26T00:00:00',(''),(''),'auto-generated','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+/* Vertices for three panels sharing edge #110-#111 along x-axis */
+#100=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#101=CARTESIAN_POINT('',(1.0,0.0,0.0));
+#102=CARTESIAN_POINT('',(1.0,1.0,0.0));
+#103=CARTESIAN_POINT('',(0.0,1.0,0.0));
+#104=CARTESIAN_POINT('',(1.0,0.0,1.0));
+#105=CARTESIAN_POINT('',(0.0,0.0,1.0));
+#106=CARTESIAN_POINT('',(1.0,0.0,-1.0));
+#107=CARTESIAN_POINT('',(0.0,0.0,-1.0));
+#110=VERTEX_POINT('',#100); #111=VERTEX_POINT('',#101);
+#112=VERTEX_POINT('',#102); #113=VERTEX_POINT('',#103);
+#114=VERTEX_POINT('',#104); #115=VERTEX_POINT('',#105);
+#116=VERTEX_POINT('',#106); #117=VERTEX_POINT('',#107);
+/* Three planes: XY (panel A), XZ (panel B), X-(-Z) (panel C) */
+#200=DIRECTION('',(0.0,0.0,1.0)); #201=DIRECTION('',(1.0,0.0,0.0));
+#211=AXIS2_PLACEMENT_3D('xy',#100,#200,#201); #212=PLANE('xy_plane',#211);
+#220=DIRECTION('',(0.0,1.0,0.0)); #221=AXIS2_PLACEMENT_3D('xz',#100,#220,#201); #222=PLANE('xz_plane',#221);
+#230=DIRECTION('',(0.0,-1.0,0.0)); #231=AXIS2_PLACEMENT_3D('xnegz',#100,#230,#201); #232=PLANE('xnz_plane',#231);
+/* Edges */
+#300=DIRECTION('',(1.0,0.0,0.0)); #301=VECTOR('',#300,1.0);
+#302=DIRECTION('',(0.0,1.0,0.0)); #303=VECTOR('',#302,1.0);
+#304=DIRECTION('',(0.0,0.0,1.0)); #305=VECTOR('',#304,1.0);
+#306=DIRECTION('',(0.0,0.0,-1.0)); #307=VECTOR('',#306,1.0);
+/* Shared edge along x from (0,0,0)->(1,0,0) -- this is the NM edge */
+#310=LINE('',#100,#301); #311=EDGE_CURVE('shared_NM_edge',#110,#111,#310,.T.);
+/* Panel A boundary edges */
+#312=LINE('',#101,#303); #313=EDGE_CURVE('',#111,#112,#312,.T.);
+#314=LINE('',#103,#301); #315=EDGE_CURVE('',#113,#112,#314,.T.);
+#316=LINE('',#100,#303); #317=EDGE_CURVE('',#110,#113,#316,.T.);
+/* Panel B boundary edges */
+#318=LINE('',#101,#305); #319=EDGE_CURVE('',#111,#114,#318,.T.);
+#320=LINE('',#105,#301); #321=EDGE_CURVE('',#115,#114,#320,.T.);
+#322=LINE('',#100,#305); #323=EDGE_CURVE('',#110,#115,#322,.T.);
+/* Panel C boundary edges */
+#324=LINE('',#101,#307); #325=EDGE_CURVE('',#111,#116,#324,.T.);
+#326=LINE('',#107,#301); #327=EDGE_CURVE('',#117,#116,#326,.T.);
+#328=LINE('',#100,#307); #329=EDGE_CURVE('',#110,#117,#328,.T.);
+/* Panel A (XY) -- references shared edge */
+#400=ORIENTED_EDGE('A_shared',*,*,#311,.T.);
+#401=ORIENTED_EDGE('',*,*,#313,.T.);
+#402=ORIENTED_EDGE('',*,*,#315,.F.);
+#403=ORIENTED_EDGE('',*,*,#317,.F.);
+#404=EDGE_LOOP('',(#400,#401,#402,#403)); #405=FACE_OUTER_BOUND('',#404,.T.);
+#406=ADVANCED_FACE('panel_xy',(#405),#212,.T.);
+/* Panel B (XZ) -- references shared edge again */
+#410=ORIENTED_EDGE('B_shared',*,*,#311,.T.);
+#411=ORIENTED_EDGE('',*,*,#319,.T.);
+#412=ORIENTED_EDGE('',*,*,#321,.F.);
+#413=ORIENTED_EDGE('',*,*,#323,.F.);
+#414=EDGE_LOOP('',(#410,#411,#412,#413)); #415=FACE_OUTER_BOUND('',#414,.T.);
+#416=ADVANCED_FACE('panel_xz',(#415),#222,.T.);
+/* Panel C (X-(-Z)) -- references shared edge a third time (NM!) */
+#420=ORIENTED_EDGE('C_shared',*,*,#311,.T.);
+#421=ORIENTED_EDGE('',*,*,#325,.T.);
+#422=ORIENTED_EDGE('',*,*,#327,.F.);
+#423=ORIENTED_EDGE('',*,*,#329,.F.);
+#424=EDGE_LOOP('',(#420,#421,#422,#423)); #425=FACE_OUTER_BOUND('',#424,.T.);
+#426=ADVANCED_FACE('panel_xnz',(#425),#232,.T.);
+/* Defect: shell whose edge #311 is shared by 3 faces (NM edge) */
+#500=OPEN_SHELL('NM_T_junction',(#406,#416,#426));
+#510=SHELL_BASED_SURFACE_MODEL('non_manifold',(#500));
+/* Minimal PRODUCT chain so OCCT TransferRoots produces a shape. */
+#9000=PRODUCT_CONTEXT('',#1,'mechanical');
+#9001=PRODUCT('Tsh019','Tsh019','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
+#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
+#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#510),#9010);
+#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+ENDSEC;
+END-ISO-10303-21;

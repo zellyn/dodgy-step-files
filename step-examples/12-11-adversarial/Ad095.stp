@@ -1,0 +1,38 @@
+ISO-10303-21;
+/* Ad095 - Pro/E vintage file with positional argument swap
+ * Defect: STYLED_ITEM with definition parameter in non-spec order.
+ * Pro/Engineer v2001 emitted STYLED_ITEM with the (item, styles) slots
+ * accidentally swapped. The vendor signature is in FILE_NAME's
+ * originating_system slot ('Pro/Engineer 2001'); a vendor-aware
+ * post-processor must detect this and reorder. */
+HEADER;
+FILE_DESCRIPTION(('Ad095 test case','Pro/E vintage file with positional argument swap'),'2;1');
+FILE_NAME('Ad095.stp','2026-04-30T00:00:00',(''),(''),
+  'Pro/Engineer 2001','PTC ProductView 2001','vendor-positional-swap');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+/* A geometric_representation_item to be styled */
+#10=CARTESIAN_POINT('item_pt',(0.0,0.0,0.0));
+#11=DIRECTION('',(0.0,0.0,1.0));#12=DIRECTION('',(1.0,0.0,0.0));
+#13=AXIS2_PLACEMENT_3D('item_axes',#10,#11,#12);
+/* Style chain */
+#100=COLOUR_RGB('red',1.0,0.0,0.0);
+#101=FILL_AREA_STYLE_COLOUR('',#100);
+#102=FILL_AREA_STYLE('',(#101));
+#103=SURFACE_STYLE_FILL_AREA(#102);
+#104=SURFACE_SIDE_STYLE('',(#103));
+#105=SURFACE_STYLE_USAGE(.BOTH.,#104);
+#106=PRESENTATION_STYLE_ASSIGNMENT((#105));
+/* Defect: STYLED_ITEM in spec is STYLED_ITEM(name,(styles),item).
+ * The Pro/E vintage writer swapped the (styles) and (item) slots.
+ * Here we encode the BUGGY emission - second slot is the geometric
+ * item (#13), third slot is the (single-element list of) styles
+ * (#106) wrapped as an aggregate. A spec-conformant parser will
+ * either reject (entity-attribute type mismatch on slot 2) or
+ * silently mis-interpret the geometry as a style. */
+#107=STYLED_ITEM('proe_swapped_args',#13,(#106));
+ENDSEC;
+END-ISO-10303-21;

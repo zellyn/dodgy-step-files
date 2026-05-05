@@ -1,0 +1,34 @@
+/* Ls043 - Excessively long entity name / hyphen in identifier
+   ----------------------------------------------------------------------
+   Catalog section : §12.1c lexical / identifier limits
+   Sources         : A021, S002
+   Originally also catalogued as: Ad021
+   ----------------------------------------------------------------------
+   Defect
+     A parser that copies the entity name into a fixed-size identifier
+     buffer is a classic strcpy overflow. ISO conformance class permits
+     long names but not unbounded. Embedded '-' in identifiers is also
+     disallowed (e.g. BS7752-1) - hyphen is not a legal identifier
+     character in EXPRESS.
+   Expected behavior
+     Cap identifier length per ISO conformance class (e.g. 256 chars);
+     reject overflow before allocation. Reject '-' in identifiers;
+     lenient mode may map '-' to '_' but must always warn.
+   ----------------------------------------------------------------------
+*/
+ISO-10303-21;
+HEADER;
+FILE_DESCRIPTION(('Ls043 - long entity name / hyphen in identifier'),'2;1');
+FILE_NAME('Ls043.stp','2026-04-26T00:00:00',('auto-generated'),(''),
+  'auto-generated','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+#10=CARTESIAN_POINT('origin',(0.0,0.0,0.0));
+/* Defect: hyphen inside an entity name (identifiers may not contain '-') */
+#20=BS7752-1(#10);
+/* Defect: an entity name longer than typical conformance caps; replicate
+   the AAAA token in stress fixtures to exceed 256 / 4096 / 64 K thresholds */
+#30=AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA(#10);
+ENDSEC;
+END-ISO-10303-21;

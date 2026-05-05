@@ -1,0 +1,32 @@
+/* U042 - Specific-heat-capacity J/(kg.K) as derived-unit chain (m^2 / (s^2 * K))
+ * Defect: a DERIVED_UNIT composed of length^+2, time^-2, temperature^-1.
+ * The kg cancels in the underlying SI derivation. Receivers must detect
+ * the dimensional signature; both the kg-cancelled form (m^2 s^-2 K^-1)
+ * and the kg-explicit form (J kg^-1 K^-1) should bind to the same
+ * specific-heat-capacity unit. */
+ISO-10303-21;
+HEADER;
+FILE_DESCRIPTION(('U042 - specific heat capacity J/(kg.K) as derived unit chain'),'2;1');
+FILE_NAME('U042.stp','2026-04-30T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#3=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT($,.METRE.));
+#4=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#5=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#6=(NAMED_UNIT(*)SI_UNIT($,.SECOND.)TIME_MEASURE_UNIT());
+#7=(NAMED_UNIT(*)SI_UNIT($,.KELVIN.)THERMODYNAMIC_TEMPERATURE_UNIT());
+/* J/(kg.K) = m^+2 s^-2 K^-1 (kg cancels) */
+#10=DERIVED_UNIT_ELEMENT(#3,2.0);
+#11=DERIVED_UNIT_ELEMENT(#6,-2.0);
+#12=DERIVED_UNIT_ELEMENT(#7,-1.0);
+#13=DERIVED_UNIT((#10,#11,#12));
+#20=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#3,
+  'distance_accuracy_value','');
+#21=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#20))
+  GLOBAL_UNIT_ASSIGNED_CONTEXT((#3,#4,#5))
+  REPRESENTATION_CONTEXT('ctx','3D'));
+ENDSEC;
+END-ISO-10303-21;

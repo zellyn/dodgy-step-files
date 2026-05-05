@@ -1,0 +1,25 @@
+/* Le055 - Boolean lexeme written as .TRUE./.FALSE. instead of canonical .T./.F.
+ * Defect: ISO 10303-21 spells boolean values .T. and .F. (single letter,
+ * dot-bracketed). This fixture emits .TRUE. / .FALSE. throughout. Strict
+ * lexers reject; heuristic lexers accept and hide the defect. */
+ISO-10303-21;
+HEADER;
+FILE_DESCRIPTION(('Le055 - boolean lexeme uses long-form .TRUE./.FALSE.'),'2;1');
+FILE_NAME('Le055.stp','2026-04-30T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#11=CARTESIAN_POINT('',(1.0,0.0,0.0));
+#12=VERTEX_POINT('',#10);
+#13=VERTEX_POINT('',#11);
+#14=DIRECTION('',(1.0,0.0,0.0));
+#15=VECTOR('',#14,1.0);
+#16=LINE('',#10,#15);
+/* Defect: same_sense uses .TRUE. instead of .T. */
+#17=EDGE_CURVE('',#12,#13,#16,.TRUE.);
+#18=ORIENTED_EDGE('',*,*,#17,.FALSE.);
+#19=EDGE_LOOP('',(#18));
+ENDSEC;
+END-ISO-10303-21;

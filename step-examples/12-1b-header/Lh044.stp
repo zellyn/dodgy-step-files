@@ -1,0 +1,27 @@
+ISO-10303-21;
+/* Lh044 - Cross-section reference resolves through a chain
+ * Defect: section 'derived' defines #10 as @foundation#20; section
+ * 'topology' references @derived#10 which is itself a cross-section
+ * pointer. Receivers diverge on whether to eagerly resolve transitively
+ * or present a placeholder handle that points at another reference. */
+HEADER;
+FILE_DESCRIPTION(('Lh044 - chained cross-section reference'),'2;1');
+FILE_NAME('Lh044.stp','2026-04-30T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA('foundation');
+#1=APPLICATION_CONTEXT('automotive_design');
+#20=CARTESIAN_POINT('origin',(0.0,0.0,0.0));
+#21=DIRECTION('z',(0.0,0.0,1.0));
+#22=DIRECTION('x',(1.0,0.0,0.0));
+ENDSEC;
+DATA('derived');
+/* Defect: derived#10 is itself a cross-section ref, not a concrete
+   instance. */
+#10=@foundation#20;
+ENDSEC;
+DATA('topology');
+/* Defect: this AXIS2_PLACEMENT_3D points at the indirect handle. */
+#5=AXIS2_PLACEMENT_3D('p',@derived#10,@foundation#21,@foundation#22);
+ENDSEC;
+END-ISO-10303-21;

@@ -1,0 +1,36 @@
+ISO-10303-21;
+/* Twi070 - Curve gap within a single edge: 3D curve and pcurve drift mid-edge
+ * Single edge from (0,0,0) -> (10,0,0) on a PLANE. 3D curve is a straight LINE.
+ * The pcurve is a quadratic B_SPLINE_CURVE that bows up to (5, 0.01) in UV
+ * mid-span, then returns to the same endpoints. Endpoints agree but mid-edge
+ * sample disagrees with the lifted 3D curve point. */
+HEADER;
+FILE_DESCRIPTION(('Twi070 test case','3D LINE vs pcurve B-spline drift mid-edge'),'2;1');
+FILE_NAME('Twi070.stp','2026-04-30T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#11=DIRECTION('',(0.0,0.0,1.0));
+#12=DIRECTION('',(1.0,0.0,0.0));
+#13=AXIS2_PLACEMENT_3D('',#10,#11,#12);
+#14=PLANE('',#13);
+#20=CARTESIAN_POINT('start',(0.0,0.0,0.0));#21=VERTEX_POINT('',#20);
+#22=CARTESIAN_POINT('end',(10.0,0.0,0.0));#23=VERTEX_POINT('',#22);
+/* 3D LINE straight along +X */
+#30=DIRECTION('',(1.0,0.0,0.0));#31=VECTOR('',#30,1.0);#32=LINE('straight_3d',#20,#31);
+/* 2D pcurve: quadratic B-spline through (0,0),(5,0.01),(10,0) -- bows by 0.01 */
+#40=CARTESIAN_POINT('uv_start',(0.0,0.0));
+#41=CARTESIAN_POINT('uv_mid_arc',(5.0,0.01));
+#42=CARTESIAN_POINT('uv_end',(10.0,0.0));
+#43=B_SPLINE_CURVE_WITH_KNOTS('pcurve_arc',2,(#40,#41,#42),.UNSPECIFIED.,.F.,.F.,(3,3),(0.0,1.0),.UNSPECIFIED.);
+#44=DEFINITIONAL_REPRESENTATION('',(#43),#13);
+#45=PCURVE('pcurve_drift_mid_edge',#14,#44);
+#46=SURFACE_CURVE('mid_edge_drift',#32,(#45),.PCURVE_S1.);
+#50=EDGE_CURVE('drifting_edge',#21,#23,#46,.T.);
+#51=ORIENTED_EDGE('',*,*,#50,.T.);
+#52=EDGE_LOOP('one_drifting_edge',(#51));
+ENDSEC;
+END-ISO-10303-21;

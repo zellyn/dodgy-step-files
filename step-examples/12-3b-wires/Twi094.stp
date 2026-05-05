@@ -1,0 +1,44 @@
+ISO-10303-21;
+/* Twi094 - Wire endpoints first/last edge skipped during wire build
+ * Five-edge open polyline intended: V0->V1->V2->V3->V4->V5. The buggy build
+ * pipeline assumed the wire was closed and applied wraparound logic, which
+ * dropped the FIRST edge. The fixture encodes the buggy output: a 4-edge
+ * wire (V1->V2->V3->V4->V5) which leaves V0 dangling and unreferenced
+ * by any ORIENTED_EDGE in the loop. */
+HEADER;
+FILE_DESCRIPTION(('Twi094 test case','Five-edge open wire missing the first edge -- 4 edges in loop, V0 orphan'),'2;1');
+FILE_NAME('Twi094.stp','2026-04-30T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+/* Six vertices for the intended 5-edge polyline */
+#10=CARTESIAN_POINT('V0_dropped_endpoint',(0.0,0.0,0.0));#11=VERTEX_POINT('V0',#10);
+#12=CARTESIAN_POINT('',(1.0,0.0,0.0));#13=VERTEX_POINT('V1',#12);
+#14=CARTESIAN_POINT('',(2.0,0.0,0.0));#15=VERTEX_POINT('V2',#14);
+#16=CARTESIAN_POINT('',(2.0,1.0,0.0));#17=VERTEX_POINT('V3',#16);
+#18=CARTESIAN_POINT('',(1.0,1.0,0.0));#19=VERTEX_POINT('V4',#18);
+#20=CARTESIAN_POINT('',(0.0,1.0,0.0));#21=VERTEX_POINT('V5',#20);
+/* The intended first edge V0->V1 is INTENTIONALLY ABSENT -- the buggy build
+ * dropped it and never emitted an EDGE_CURVE for it. */
+/* edge2 V1->V2 */
+#30=DIRECTION('',(1.0,0.0,0.0));#31=VECTOR('',#30,1.0);#32=LINE('',#12,#31);
+#33=EDGE_CURVE('e2',#13,#15,#32,.T.);
+/* edge3 V2->V3 */
+#34=DIRECTION('',(0.0,1.0,0.0));#35=VECTOR('',#34,1.0);#36=LINE('',#14,#35);
+#37=EDGE_CURVE('e3',#15,#17,#36,.T.);
+/* edge4 V3->V4 */
+#38=DIRECTION('',(-1.0,0.0,0.0));#39=VECTOR('',#38,1.0);#40=LINE('',#16,#39);
+#41=EDGE_CURVE('e4',#17,#19,#40,.T.);
+/* edge5 V4->V5 */
+#42=DIRECTION('',(-1.0,0.0,0.0));#43=VECTOR('',#42,1.0);#44=LINE('',#18,#43);
+#45=EDGE_CURVE('e5',#19,#21,#44,.T.);
+/* Wire emits only 4 ORIENTED_EDGEs (e2..e5); V0 is orphan */
+#50=ORIENTED_EDGE('',*,*,#33,.T.);
+#51=ORIENTED_EDGE('',*,*,#37,.T.);
+#52=ORIENTED_EDGE('',*,*,#41,.T.);
+#53=ORIENTED_EDGE('',*,*,#45,.T.);
+#54=EDGE_LOOP('four_edges_first_dropped',(#50,#51,#52,#53));
+ENDSEC;
+END-ISO-10303-21;

@@ -1,0 +1,31 @@
+ISO-10303-21;
+/* M143 - AP210 vias declared with stack-up positions out of board-layer
+ * order.
+ * Defect: a LAMINATE_TABLE declares plies in physical order top->bottom,
+ * but VIA_DEFINITION entries name terminating layers in reversed order
+ * (bottom layer cited as the start, top as the end). A stackup-aware
+ * layer router walks the via stack and visits layers in inverted Z
+ * sequence, generating bogus drill ordering for the manufacturer. */
+HEADER;
+FILE_DESCRIPTION(('M143 test case','AP210 via stackup ordering inverted'),'2;1');
+FILE_NAME('M143.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('ELECTRONIC_ASSEMBLY_INTERCONNECT_AND_PACKAGING_DESIGN { 1 0 10303 210 3 1 0 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('electronic_assembly_interconnect_and_packaging_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
+  'electronic_assembly_interconnect_and_packaging_design',2014,#1);
+#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10))
+     REPRESENTATION_CONTEXT('pcb','3D'));
+#100=MATERIAL_DESIGNATION('FR4','glass-epoxy laminate',(#1));
+#200=LAMINATE_OR_PLY_DEFINITION('top_ply',$,#100,#100,LENGTH_MEASURE(0.1));
+#201=LAMINATE_OR_PLY_DEFINITION('mid_ply',$,#100,#100,LENGTH_MEASURE(0.4));
+#202=LAMINATE_OR_PLY_DEFINITION('bot_ply',$,#100,#100,LENGTH_MEASURE(0.1));
+#210=LAMINATE_TABLE('stackup',(#200,#201,#202));
+/* Defect: via terminates at bot_ply (#202) -> top_ply (#200) listed in
+ * reverse stackup order. */
+#300=VIA_DEFINITION('inverted_via',$,(#202,#200));
+ENDSEC;
+END-ISO-10303-21;

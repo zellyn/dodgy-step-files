@@ -1,0 +1,40 @@
+/* N023 - EDGE_CURVE based on LINE displaced from true vertex position
+ * Defect: STEP files emit an EDGE_CURVE whose underlying LINE is parallel-
+ * displaced from the line that actually passes through both vertex points.
+ * Direction is correct; position is offset.
+ * Reproducer: VERTEX_POINT A at (0,0,0), B at (10,0,0); LINE pnt is at
+ * (0, 0.001, 0) (offset 1e-3 mm from the true line through both vertices).
+ */
+ISO-10303-21;
+HEADER;
+FILE_DESCRIPTION(('N023 EDGE_CURVE LINE parallel-displaced from vertices'),'2;1');
+FILE_NAME('N023.stp','2026-04-26T00:00:00',(''),(''),
+  'cad-research-suite','','');
+FILE_SCHEMA(('CONFIG_CONTROL_DESIGN'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('configuration controlled 3d designs of mechanical parts');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
+  'config_control_design',1994,#1);
+#10=CARTESIAN_POINT('vertex_A',(0.0,0.0,0.0));
+#11=CARTESIAN_POINT('vertex_B',(10.0,0.0,0.0));
+/* Defect: line origin point is offset 1e-3 in y; direction correct */
+#12=CARTESIAN_POINT('LINE_pnt_offset_1e-3',(0.0,0.001,0.0));
+#20=VERTEX_POINT('A',#10);
+#21=VERTEX_POINT('B',#11);
+#30=DIRECTION('+x_correct',(1.0,0.0,0.0));
+#31=VECTOR('',#30,10.0);
+/* LINE.pnt is offset 1e-3 from where it should be -- parallel-displaced */
+#32=LINE('parallel_displaced',#12,#31);
+#40=EDGE_CURVE('fpx_expert_edge',#20,#21,#32,.T.);
+#50=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#51=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#52=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#60=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-6),#50,
+  'distance_accuracy_value','declared_tight');
+#70=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#60))
+  GLOBAL_UNIT_ASSIGNED_CONTEXT((#50,#51,#52))
+  REPRESENTATION_CONTEXT('ctx','3D'));
+ENDSEC;
+END-ISO-10303-21;

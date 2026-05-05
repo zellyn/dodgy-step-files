@@ -1,0 +1,82 @@
+/* Tb011 - Periodic surface seam matching needs period-relative tolerance
+ * Defect: CYLINDRICAL_SURFACE radius 1e6 mm has period 2*pi*R ~= 6.28e6.
+ * A wire's pcurve U-coordinates differ by 2*pi + 1e-3 between adjacent
+ * edges. Receiver using fixed parametric tolerance (1e-7 rad) sees
+ * 2*pi + 1e-3 != 0 and rejects seam. Receiver using fmod(diff, 2*pi)
+ * sees 1e-3 << period and accepts seam. Same wire, two outcomes.
+ */
+ISO-10303-21;
+HEADER;
+FILE_DESCRIPTION(('Tb011 cylinder seam needs period-relative tolerance'),'2;1');
+FILE_NAME('Tb011.stp','2026-04-30T00:00:00',(''),(''),
+  'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
+  'automotive_design',2009,#1);
+/* Cylinder of huge radius. */
+#10=CARTESIAN_POINT('axis_origin',(0.0,0.0,0.0));
+#11=DIRECTION('+z',(0.0,0.0,1.0));
+#12=DIRECTION('+x',(1.0,0.0,0.0));
+#13=AXIS2_PLACEMENT_3D('axis',#10,#11,#12);
+#14=CYLINDRICAL_SURFACE('huge_cyl',#13,1.0E6);
+/* Two edges on the cylinder, pcurve U difference = 2*pi + 1e-3.
+ * 3D points constructed at corresponding angles on cylinder of R=1e6. */
+#20=CARTESIAN_POINT('p0_at_u0',(1.0E6,0.0,0.0));
+#21=CARTESIAN_POINT('p1_at_u_2pi_plus_1e-3',(1.0E6,1.0E3,0.0));
+#22=CARTESIAN_POINT('p2_continuation',(1.0E6,0.0,1000.0));
+#30=VERTEX_POINT('v0',#20);
+#31=VERTEX_POINT('v1_seam_drift',#21);
+#32=VERTEX_POINT('v2',#22);
+/* 3D curves: helical-ish (use lines as placeholders -- the time bomb is in
+ * the pcurve U-coordinates). */
+#40=DIRECTION('d01',(0.0,1.0,0.0));
+#41=VECTOR('vec01',#40,1.0E3);
+#42=LINE('l01',#20,#41);
+#43=DIRECTION('d12',(0.0,-1.0,0.0));
+#44=VECTOR('vec12',#43,1.0);
+#45=LINE('l12',#21,#44);
+/* PCURVE 1: U from 0 to 2*pi + 1e-3 (one full period plus 1e-3 drift). */
+#50=CARTESIAN_POINT('uv0',(0.0,0.0));
+#51=DIRECTION('uv_dir',(1.0,0.0));
+#52=VECTOR('uv_vec',#51,6.283185307179586+1.0E-3);
+#53=LINE('uv_line1',#50,#52);
+#54=DEFINITIONAL_REPRESENTATION('def1',(#53),#80);
+#55=PCURVE('pc1',#14,#54);
+#56=SURFACE_CURVE('sc1',#42,(#55),.PCURVE_S1.);
+#60=EDGE_CURVE('e_period_plus_1e-3',#30,#31,#56,.T.);
+/* PCURVE 2: U from 2*pi + 1e-3 to 1e-3 (back to "start" minus 1e-3). */
+#61=CARTESIAN_POINT('uv1',(6.283185307179586+1.0E-3,0.0));
+#62=DIRECTION('uv_dir2',(-1.0,0.0));
+#63=VECTOR('uv_vec2',#62,6.283185307179586);
+#64=LINE('uv_line2',#61,#63);
+#65=DEFINITIONAL_REPRESENTATION('def2',(#64),#80);
+#66=PCURVE('pc2',#14,#65);
+#67=SURFACE_CURVE('sc2',#45,(#66),.PCURVE_S1.);
+#68=EDGE_CURVE('e_back_to_seam',#31,#32,#67,.T.);
+/* Units & context. */
+#70=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#71=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#72=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#73=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-3),#70,
+  'distance_accuracy_value','tol_below_seam_drift');
+#80=(GEOMETRIC_REPRESENTATION_CONTEXT(2)
+  GLOBAL_UNIT_ASSIGNED_CONTEXT((#70,#71,#72))
+  REPRESENTATION_CONTEXT('uv_ctx','2D'));
+#90=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#73))
+  GLOBAL_UNIT_ASSIGNED_CONTEXT((#70,#71,#72))
+  REPRESENTATION_CONTEXT('ctx_3d','3D'));
+#9000=PRODUCT_CONTEXT('',#1,'mechanical');
+#9001=PRODUCT('Tb011','Tb011','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9020=GEOMETRIC_CURVE_SET('cs',(#60,#68,#14));
+#9021=GEOMETRICALLY_BOUNDED_WIREFRAME_SHAPE_REPRESENTATION('',(#9020),#90);
+#9022=SHAPE_DEFINITION_REPRESENTATION(#9005,#9021);
+ENDSEC;
+END-ISO-10303-21;

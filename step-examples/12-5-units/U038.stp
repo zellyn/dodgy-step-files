@@ -1,0 +1,47 @@
+ISO-10303-21;
+/* U038 - STEP read produces enormous scaling
+ * Defect: STEP file declares MM unit at the root context, but a
+ * MAPPED_ITEM points to a source representation declared in metres.
+ * A naive reader composes both unit conversions multiplicatively
+ * (1000x via mm, 1000x via metres, ...) instead of selecting one,
+ * producing geometry scaled enormously off. */
+HEADER;
+FILE_DESCRIPTION(('U038 test case','STEP read produces enormous scaling'),'2;1');
+FILE_NAME('U038.stp','2026-04-30T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+/* Root (target) representation declared in MILLI/METRE = mm */
+#100=(LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT(.MILLI.,.METRE.));
+#101=(NAMED_UNIT(*) PLANE_ANGLE_UNIT() SI_UNIT($,.RADIAN.));
+#102=(NAMED_UNIT(*) SI_UNIT($,.STERADIAN.) SOLID_ANGLE_UNIT());
+#103=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+      GLOBAL_UNIT_ASSIGNED_CONTEXT((#100,#101,#102))
+      REPRESENTATION_CONTEXT('mm_ctx','3D'));
+/* Source (mapping) representation declared in METRE */
+#110=(LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT($,.METRE.));
+#111=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+      GLOBAL_UNIT_ASSIGNED_CONTEXT((#110,#101,#102))
+      REPRESENTATION_CONTEXT('metre_ctx','3D'));
+/* Geometry inside the metre context */
+#120=CARTESIAN_POINT('source_origin',(0.0,0.0,0.0));
+#121=DIRECTION('+z',(0.0,0.0,1.0));
+#122=DIRECTION('+x',(1.0,0.0,0.0));
+#123=AXIS2_PLACEMENT_3D('source_axes',#120,#121,#122);
+#124=CARTESIAN_POINT('source_pt',(1.0,0.0,0.0));
+/* Source representation in metres */
+#130=SHAPE_REPRESENTATION('source_rep_in_metres',(#123,#124),#111);
+#131=REPRESENTATION_MAP(#123,#130);
+/* MAPPED_ITEM: target placement in mm context, source in metres */
+#140=CARTESIAN_POINT('target_origin',(0.0,0.0,0.0));
+#141=AXIS2_PLACEMENT_3D('target_axes',#140,#121,#122);
+#142=MAPPED_ITEM('mapped_unit_compose',#131,#141);
+#150=SHAPE_REPRESENTATION('target_rep_in_mm',(#141,#142),#103);
+/* SHAPE_REPRESENTATION_RELATIONSHIP making the cross-context unit
+ * composition explicit */
+#160=SHAPE_REPRESENTATION_RELATIONSHIP('cross_unit_composition','',
+  #150,#130);
+ENDSEC;
+END-ISO-10303-21;

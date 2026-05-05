@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Pmi084 — Coordinate-system connection points for dimensions missing</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.7 PMI / GD&amp;T</a> <span class="sep">/</span> <span class="current">Pmi084</span>
+</nav>
+<header class="title-bar">
+<h1>Pmi084 <span class="sep">—</span> <span class="entry-title">Coordinate-system connection points for dimensions missing</span></h1>
+<p class="category">§12.7 PMI/GD&amp;T</p>
+<p class="severity-badge severity-p1">P1 — silent data loss</p>
+<p class="tag-pills">
+<a class="tag tag-pmi" href="../by-tag/pmi/index.html">pmi</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-7-pmi/Pmi084.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-7-pmi/Pmi084.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>OCCT GitHub#779</li>
+</ul></section>
+<section><h2>Description</h2>
+<p>AP242 dimensions reference coordinate-system connection points (`PRESENTED_ITEM` chains pointing to `AXIS2_PLACEMENT_3D` anchors). Older readers ignore the chain; the dimension&#x27;s anchor falls back to the part origin, which displaces text away from the dimensioned feature.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>PMI dimension with explicit connection-point chain through three intermediate placements. Reader resolves only the leaf and ignores the chain.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>Heal and accept: walk the entire connection-point chain composing transforms; respect every intermediate placement.</p></section>
+<section><h2>Notes</h2>
+<p>**See also**: A073. Synonyms: &quot;coordinate-system connection points for dimensions missing&quot;, &quot;dimension attachment points lost&quot;, &quot;PMI connection points absent&quot;.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>count_entity_def(b&#x27;AXIS2_PLACEMENT_3D&#x27;) == 3</code></li>
+<li><code>contains(b&#x27;DIMENSIONAL_LOCATION&#x27;)</code></li>
+<li><code>contains(b&#x27;PRESENTED_ITEM_REPRESENTATION&#x27;)</code></li>
+</ul></section>
+<section><h2>Cross-references</h2>
+<p><a href="../12-6-assembly/A073.html">A073</a></p>
+</section>
+<section><h2>Live oracle output</h2>
+<table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
+<tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>no_shapes_loaded</code></td></tr>
+</tbody></table>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* Pmi084 - Coordinate-system connection points missing.
+<span class="lineno">3</span> * Defect: AP242 dimension references a chain of three intermediate
+<span class="lineno">4</span> * AXIS2_PLACEMENT_3D anchors via PRESENTED_ITEM. Older readers walk
+<span class="lineno">5</span> * only the leaf placement and ignore the intermediate transforms,
+<span class="lineno">6</span> * so the dimension text falls back to the part origin. */
+<span class="lineno">7</span>HEADER;
+<span class="lineno">8</span>FILE_DESCRIPTION((&#x27;Pmi084 test case&#x27;,&#x27;Connection-point chain ignored on read&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">9</span>FILE_NAME(&#x27;Pmi084.stp&#x27;,&#x27;2026-04-30T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">10</span>FILE_SCHEMA((&#x27;AP242_MANAGED_MODEL_BASED_3D_ENGINEERING_MIM_LF { 1 0 10303 442 3 0 0 }&#x27;));
+<span class="lineno">11</span>ENDSEC;
+<span class="lineno">12</span>DATA;
+<span class="lineno">13</span>#1=APPLICATION_CONTEXT(&#x27;managed model based 3d engineering&#x27;);
+<span class="lineno">14</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,&#x27;ap242_managed_model_based_3d_engineering&#x27;,2020,#1);
+<span class="lineno">15</span>#10=PRODUCT_CONTEXT(&#x27;&#x27;,#1,&#x27;mechanical&#x27;);
+<span class="lineno">16</span>#11=PRODUCT(&#x27;part1&#x27;,&#x27;part1&#x27;,&#x27;part1&#x27;,(#10));
+<span class="lineno">17</span>#12=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#11);
+<span class="lineno">18</span>#13=PRODUCT_DEFINITION_CONTEXT(&#x27;part definition&#x27;,#1,&#x27;design&#x27;);
+<span class="lineno">19</span>#14=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,#12,#13);
+<span class="lineno">20</span>#15=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,#14);
+<span class="lineno">21</span>/* Three-step connection-point chain */
+<span class="lineno">22</span>#100=CARTESIAN_POINT(&#x27;p_inter1&#x27;,(10.0,0.0,0.0));
+<span class="lineno">23</span>#101=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">24</span>#102=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">25</span><mark>#103=AXIS2_PLACEMENT_3D(</mark>&#x27;inter1&#x27;,#100,#101,#102);
+<span class="lineno">26</span>#104=CARTESIAN_POINT(&#x27;p_inter2&#x27;,(20.0,0.0,0.0));
+<span class="lineno">27</span><mark>#105=AXIS2_PLACEMENT_3D(</mark>&#x27;inter2&#x27;,#104,#101,#102);
+<span class="lineno">28</span>#106=CARTESIAN_POINT(&#x27;p_leaf&#x27;,(30.0,0.0,0.0));
+<span class="lineno">29</span><mark>#107=AXIS2_PLACEMENT_3D(</mark>&#x27;leaf&#x27;,#106,#101,#102);
+<span class="lineno">30</span>/* SHAPE_ASPECT for the dimensioned feature */
+<span class="lineno">31</span>#110=SHAPE_ASPECT(&#x27;hole&#x27;,&#x27;dimensioned hole&#x27;,#15,.T.);
+<span class="lineno">32</span>/* <mark>DIMENSIONAL_LOCATION</mark> attached to the chain */
+<span class="lineno">33</span>#111=<mark>DIMENSIONAL_LOCATION</mark>(&#x27;dim_through_chain&#x27;,&#x27;&#x27;,#110,#110);
+<span class="lineno">34</span>/* <mark>PRESENTED_ITEM_REPRESENTATION</mark> linking dimension to all three
+<span class="lineno">35</span> * intermediate placements as connection-point chain anchors */
+<span class="lineno">36</span>#112=DRAUGHTING_CALLOUT(&#x27;chain_callout&#x27;,());
+<span class="lineno">37</span>#113=PRESENTATION_REPRESENTATION(&#x27;chain_rep&#x27;,(#103,#105,#107,#112),#1);
+<span class="lineno">38</span>#114=<mark>PRESENTED_ITEM_REPRESENTATION</mark>(#112,#113);
+<span class="lineno">39</span>ENDSEC;
+<span class="lineno">40</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Pmi083.html">&larr; Pmi083</a> <a class="up" href="index.html">§12.7 PMI / GD&amp;T</a> <a class="next" href="Pmi085.html">Pmi085 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

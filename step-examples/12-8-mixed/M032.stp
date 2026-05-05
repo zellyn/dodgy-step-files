@@ -1,0 +1,43 @@
+ISO-10303-21;
+/* M032 - Validation property name not in CAx-IF list / mismatches
+ * associated general_property name.
+ * Defect: PROPERTY_DEFINITION.name is 'volume mm3' instead of one of
+ * the recognized CAx-IF keywords ('volume', 'surface area', 'centroid',
+ * etc.). Additionally, a USER_DEFINED_ATTRIBUTE / general_property
+ * pairing here uses 'Volume' (mixed case) on the GENERAL_PROPERTY but
+ * 'volume mm3' on the PROPERTY_DEFINITION. Tools that case-fold for
+ * matching will diverge. */
+HEADER;
+FILE_DESCRIPTION(('M032 test case','GVP name not in CAx-IF list / mismatched general_property'),'2;1');
+FILE_NAME('M032.stp','2026-04-26T00:00:00',(''),(''),'auto-generated','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#11=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#12=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.E-6),#10,'distance_accuracy_value','');
+#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+     GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13))
+     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12))
+     REPRESENTATION_CONTEXT('part','3D'));
+#300=PRODUCT('part','part','',(#310));
+#310=MECHANICAL_CONTEXT('',#1,'mechanical');
+#320=PRODUCT_DEFINITION_FORMATION('','',#300);
+#330=PRODUCT_DEFINITION('design','',#320,#340);
+#340=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#350=PRODUCT_DEFINITION_SHAPE('','',#330);
+/* Defect 1: 'volume mm3' is not a CAx-IF keyword (should be 'volume'). */
+#400=PROPERTY_DEFINITION('geometric validation property',
+       'volume mm3',#350);
+#410=MEASURE_REPRESENTATION_ITEM('volume mm3',VOLUME_MEASURE(1000.0),#10);
+#420=REPRESENTATION('',(#410),#14);
+#430=PROPERTY_DEFINITION_REPRESENTATION(#400,#420);
+/* Defect 2: GENERAL_PROPERTY links a UDA whose name 'Volume' does not
+ * match the PROPERTY_DEFINITION.name 'volume mm3'. */
+#500=GENERAL_PROPERTY('UDA-Volume','Volume',$);
+#510=PROPERTY_DEFINITION_RELATIONSHIP('','',#500,#400);
+ENDSEC;
+END-ISO-10303-21;

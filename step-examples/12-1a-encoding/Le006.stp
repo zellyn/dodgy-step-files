@@ -1,0 +1,26 @@
+/* Le006 — \X4\...\X0\ (UCS-4) escape with hex run not divisible by 8 or surrogate code points
+   Defect: \X4\ groups must be 8 hex digits per code point. This file emits:
+     - 4-digit group (not divisible by 8)
+     - lone UTF-16 surrogate as UCS-4 value (illegal: 0x0000D83D)
+     - value above U+10FFFF (0x00110000)
+   A tolerant reader must reject surrogate codepoints and out-of-range values. */
+ISO-10303-21;
+HEADER;
+FILE_DESCRIPTION(('Le006 - malformed X4 UCS-4 directive'),'2;1');
+FILE_NAME('Le006.stp','2026-04-26T00:00:00',('auto-generated'),(''),
+  'auto-generated','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+/* only 4 digits, not 8 */
+#10=PERSON('p1','pi=\X4\03C0\X0\','given',$,$,$,$,$);
+/* lone surrogate codepoint */
+#11=PERSON('p2','oops=\X4\0000D83D\X0\','given',$,$,$,$,$);
+/* above U+10FFFF */
+#12=PERSON('p3','too-high=\X4\00110000\X0\','given',$,$,$,$,$);
+#20=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#21=DIRECTION('',(0.0,0.0,1.0));
+#22=DIRECTION('',(1.0,0.0,0.0));
+#23=AXIS2_PLACEMENT_3D('',#20,#21,#22);
+ENDSEC;
+END-ISO-10303-21;

@@ -1,0 +1,20 @@
+ISO-10303-21;
+/* Os012 - Loft result has edges with no 3D curve attached.
+ * Defect: longitudinal edges between profile vertices have only
+ * pcurve representations. (Output-side defect.) */
+HEADER;
+FILE_DESCRIPTION(('Os012 - loft edge has null 3d curve','Pass C gap-fill'),'2;1');
+FILE_NAME('Os012.stp','2026-04-30T00:00:00',(''),(''),'gap-fill C','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#11=CARTESIAN_POINT('',(1.0,0.0,1.0));
+#12=VERTEX_POINT('',#10);
+#13=VERTEX_POINT('',#11);
+/* edge_geometry = $ - longitudinal loft edge has no 3D curve */
+#30=EDGE_CURVE('loft_edge_no_3d',#12,#13,$,.T.);
+ENDSEC;
+END-ISO-10303-21;

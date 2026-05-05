@@ -1,0 +1,56 @@
+ISO-10303-21;
+/*
+ * A003 — Empty / phantom assembly nodes (PRODUCT_DEFINITION with no shape)
+ * Defect (LOTAR / SpaceClaim 2025R2 / Rhino):
+ *   A NAUO references a PRODUCT_DEFINITION whose SDR is empty (no faces, no
+ *   axes), or whose MANIFOLD_SURFACE_SHAPE_REPRESENTATION is degenerate.
+ *   Common after suppressed components, "Reference vs Convert" mismatches, or
+ *   configuration filters that produced nothing.
+ * Reproducer: NAUO referencing PD whose SDR points to an empty MSSR.
+ * Expected kernel: accept; warn loudly; LOTAR-archive systems must reject;
+ *   per-product status must be reported.
+ */
+HEADER;
+FILE_DESCRIPTION(('A003 phantom assembly node with empty MSSR'),'2;1');
+FILE_NAME('A003.stp','2026-04-26T00:00:00',('catalog'),('cad'),'manual','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#10 = APPLICATION_CONTEXT('automotive design');
+#11 = APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2001,#10);
+#12 = PRODUCT_CONTEXT('',#10,'mechanical');
+#13 = PRODUCT_DEFINITION_CONTEXT('part definition',#10,'design');
+/* Parent assembly */
+#20 = PRODUCT('A003_ASSY','assembly','',(#12));
+#21 = PRODUCT_DEFINITION_FORMATION('','',#20);
+#22 = PRODUCT_DEFINITION('design','',#21,#13);
+#23 = PRODUCT_DEFINITION_SHAPE('','',#22);
+/* Phantom child: configuration filter produced nothing */
+#30 = PRODUCT('PHANTOM','Phantom (filtered out)','',(#12));
+#31 = PRODUCT_DEFINITION_FORMATION('','',#30);
+#32 = PRODUCT_DEFINITION('design','',#31,#13);
+#33 = PRODUCT_DEFINITION_SHAPE('','',#32);
+/* NAUO refers to phantom child */
+#40 = NEXT_ASSEMBLY_USAGE_OCCURRENCE('1','PHANTOM_INSTANCE','',#22,#32,$);
+/* Units */
+#50 = ( LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT(.MILLI.,.METRE.) );
+#51 = ( NAMED_UNIT(*) PLANE_ANGLE_UNIT() SI_UNIT($,.RADIAN.) );
+#52 = ( NAMED_UNIT(*) SI_UNIT($,.STERADIAN.) SOLID_ANGLE_UNIT() );
+#53 = UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#50,'distance_accuracy_value','');
+#54 = ( GEOMETRIC_REPRESENTATION_CONTEXT(3) GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#53))
+        GLOBAL_UNIT_ASSIGNED_CONTEXT((#50,#51,#52)) REPRESENTATION_CONTEXT('','3D') );
+/* DEFECT: empty MANIFOLD_SURFACE_SHAPE_REPRESENTATION — items list contains
+   only a placement axis, no face or shell. SDR points to it. */
+#60 = CARTESIAN_POINT('',(0.0,0.0,0.0));
+#61 = DIRECTION('',(0.0,0.0,1.0));
+#62 = DIRECTION('',(1.0,0.0,0.0));
+#63 = AXIS2_PLACEMENT_3D('phantom_origin',#60,#61,#62);
+#64 = MANIFOLD_SURFACE_SHAPE_REPRESENTATION('empty_phantom',(#63),#54);
+#65 = SHAPE_DEFINITION_REPRESENTATION(#33,#64);
+/* Parent assembly aggregator */
+#80 = CARTESIAN_POINT('',(0.0,0.0,0.0));
+#81 = AXIS2_PLACEMENT_3D('assy_origin',#80,#61,#62);
+#82 = SHAPE_REPRESENTATION('assy_rep',(#81),#54);
+#83 = SHAPE_DEFINITION_REPRESENTATION(#23,#82);
+ENDSEC;
+END-ISO-10303-21;

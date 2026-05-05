@@ -1,0 +1,74 @@
+/* Tfa018 - UnifySameDomain SIGSEGV / invalid result on ReconstructMissedSeam
+ * Defect: when unifying same-domain faces across a periodic seam, USD's
+ * seam reconstruction crashes (release-mode invalid result; debug-mode
+ * crash; or incomplete union). Multiple long-running OCCT bugs (Mantis
+ * 0033193, 0032581, 0032623, 0032715). Healer should copy existing
+ * pcurve when reconstructing seam, correctly identify periodicity, and
+ * for closed-but-not-periodic surfaces modify underlying surface to be
+ * periodic before merging.
+ * Reproducer: compound of co-cylindrical faces with implicit seam
+ * between them (each face occupies half of the cylinder).
+ */
+ISO-10303-21;
+HEADER;
+FILE_DESCRIPTION(('Tfa018 USD seam reconstruction crash'),'2;1');
+FILE_NAME('Tfa018.stp','2026-04-26T00:00:00',(''),(''),
+  'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
+  'automotive_design',2009,#1);
+#10=CARTESIAN_POINT('axis_origin',(0.0,0.0,0.0));
+#11=DIRECTION('z',(0.0,0.0,1.0));
+#12=DIRECTION('x',(1.0,0.0,0.0));
+#13=AXIS2_PLACEMENT_3D('cyl_plc',#10,#11,#12);
+/* Shared cylinder R=10.                                                */
+#20=CYLINDRICAL_SURFACE('cyl',#13,10.0);
+/* Vertices: two top points + two bottom points at angles 0 and pi.
+ * Implicit seam at angle 0 separates the two halves.                   */
+#30=CARTESIAN_POINT('a_bot',(10.0,0.0,0.0));
+#31=CARTESIAN_POINT('a_top',(10.0,0.0,5.0));
+#32=CARTESIAN_POINT('b_bot',(-10.0,0.0,0.0));
+#33=CARTESIAN_POINT('b_top',(-10.0,0.0,5.0));
+#40=VERTEX_POINT('',#30);
+#41=VERTEX_POINT('',#31);
+#42=VERTEX_POINT('',#32);
+#43=VERTEX_POINT('',#33);
+/* Half-circles at z=0 and z=5 (each spans 180 deg around axis).        */
+#50=AXIS2_PLACEMENT_3D('c0',#10,#11,#12);
+#51=CARTESIAN_POINT('c1_org',(0.0,0.0,5.0));
+#52=AXIS2_PLACEMENT_3D('c1',#51,#11,#12);
+#60=CIRCLE('full_bot',#50,10.0);
+#61=CIRCLE('full_top',#52,10.0);
+#62=DIRECTION('',(0.0,0.0,1.0));
+#63=VECTOR('',#62,5.0);
+#64=LINE('seam_a',#30,#63);
+#65=LINE('seam_b',#32,#63);
+/* Two halves: each face uses half the circle for top/bottom plus
+ * vertical seam edges.                                                 */
+#70=EDGE_CURVE('half_bot_A',#30,#32,#60,.T.);
+#71=EDGE_CURVE('half_bot_B',#32,#30,#60,.T.);
+#72=EDGE_CURVE('half_top_A',#31,#33,#61,.T.);
+#73=EDGE_CURVE('half_top_B',#33,#31,#61,.T.);
+#74=EDGE_CURVE('seam_a',#30,#31,#64,.T.);
+#75=EDGE_CURVE('seam_b',#32,#33,#65,.T.);
+#80=ORIENTED_EDGE('',*,*,#70,.T.);
+#81=ORIENTED_EDGE('',*,*,#75,.T.);
+#82=ORIENTED_EDGE('',*,*,#72,.F.);
+#83=ORIENTED_EDGE('',*,*,#74,.F.);
+#84=ORIENTED_EDGE('',*,*,#71,.T.);
+#85=ORIENTED_EDGE('',*,*,#74,.T.);
+#86=ORIENTED_EDGE('',*,*,#73,.F.);
+#87=ORIENTED_EDGE('',*,*,#75,.F.);
+#90=EDGE_LOOP('A',(#80,#81,#82,#83));
+#91=EDGE_LOOP('B',(#84,#85,#86,#87));
+#100=FACE_OUTER_BOUND('',#90,.T.);
+#101=FACE_OUTER_BOUND('',#91,.T.);
+/* Defect site: two co-cylindrical faces meeting at an implicit seam.
+ * USD's ReconstructMissedSeam crashes on this configuration.           */
+#110=ADVANCED_FACE('cyl_half_A',(#100),#20,.T.);
+#111=ADVANCED_FACE('cyl_half_B',(#101),#20,.T.);
+ENDSEC;
+END-ISO-10303-21;

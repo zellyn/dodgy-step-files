@@ -1,0 +1,38 @@
+ISO-10303-21;
+/* M036 - Datum target axes nearly identical (degenerate frame).
+ * Defect: two direction vectors used to define a datum-target frame
+ * have a cross-product norm <= 0.05 - too close to parallel for an
+ * orthonormal basis. Here, axis = (0,0,1) and ref_dir = (0.001, 0, 1)
+ * which differ in only one millidegree, so cross norm ~ 0.001.
+ * Kernels should warn or substitute an orthonormalized frame. */
+HEADER;
+FILE_DESCRIPTION(('M036 test case','near-parallel datum target axes'),'2;1');
+FILE_NAME('M036.stp','2026-04-26T00:00:00',(''),(''),'auto-generated','','');
+FILE_SCHEMA(('AP242_MANAGED_MODEL_BASED_3D_ENGINEERING_MIM_LF { 1 0 10303 442 1 1 4 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('managed model based 3d engineering');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
+  'ap242_managed_model_based_3d_engineering',2014,#1);
+#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#11=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#12=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.E-6),#10,'distance_accuracy_value','');
+#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+     GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13))
+     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12))
+     REPRESENTATION_CONTEXT('part','3D'));
+/* Datum-target placement with degenerate axis frame. */
+#100=CARTESIAN_POINT('datum_target_origin',(0.0,0.0,0.0));
+/* z direction */
+#101=DIRECTION('z_axis',(0.0,0.0,1.0));
+/* "x" reference direction - but only 0.001 off the z axis. */
+#102=DIRECTION('ref_dir_nearly_parallel',(0.001,0.0,1.0));
+/* axis cross ref_dir = (0, 0.001, 0) -> norm = 0.001 << 0.05 */
+#103=AXIS2_PLACEMENT_3D('degenerate_frame',#100,#101,#102);
+#104=PLANE('datum_target_plane',#103);
+/* Wrap in a CGR for completeness. */
+#200=CONSTRUCTIVE_GEOMETRY_REPRESENTATION('degenerate_supp',
+       (#104),#14);
+ENDSEC;
+END-ISO-10303-21;

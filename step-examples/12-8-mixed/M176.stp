@@ -1,0 +1,30 @@
+ISO-10303-21;
+/* M176 - AP238 BORING with tool diameter > start-hole diameter.
+ * Defect: a BORING_OPERATION declares a boring-bar tool diameter (15 mm)
+ * larger than the pre-drilled start-hole diameter (10 mm). The boring
+ * bar physically cannot enter the hole - the operation is impossible.
+ * The controller either crashes the tool against the workpiece face or
+ * refuses to plunge. */
+HEADER;
+FILE_DESCRIPTION(('M176 test case','AP238 boring tool larger than start hole'),'2;1');
+FILE_NAME('M176.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AP238_STEP_NC_MIM { 1 0 10303 238 1 0 0 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('numerical_control_machining');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
+  'numerical_control_machining',2007,#1);
+#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10))
+     REPRESENTATION_CONTEXT('nc','3D'));
+/* Pre-drilled hole diameter: 10.0 mm. */
+#400=ROUND_HOLE('start_hole',$,$,$,
+  MEASURE_WITH_UNIT(POSITIVE_LENGTH_MEASURE(10.0),#10));
+/* Defect: boring tool diameter 15.0 mm > start hole 10.0 mm. */
+#90=BORING_TOOL('bar_15mm',$,$,$,
+  MEASURE_WITH_UNIT(POSITIVE_LENGTH_MEASURE(15.0),#10));
+#100=BORING_OPERATION('bore_op',$,$,$,$,#400,#90);
+#200=WORKPLAN('main',(#100),$,$,$);
+ENDSEC;
+END-ISO-10303-21;

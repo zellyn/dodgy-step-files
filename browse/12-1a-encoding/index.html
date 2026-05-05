@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>§12.1a Encoding &amp; string-literal defects</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="section">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <span class="current">§12.1a Encoding &amp; string-literal defects</span>
+</nav>
+<header class="title-bar">
+<h1>§12.1a Encoding &amp; string-literal defects</h1>
+<p class="blurb">Encoding pathologies in STEP files: BOMs, lone CR / NUL bytes, high-bit characters, half-escaped strings, and other lexical hazards that production parsers grow tolerance for over time.</p>
+<p class="meta">54 entries</p>
+</header>
+<main>
+<table class="entries"><thead><tr><th>ID</th><th>Title</th><th>Provenance</th><th>Expected validation</th></tr></thead><tbody>
+<tr><td><a href="Le001.html"><code>Le001</code></a></td><td>UTF-8 BOM at start of `ISO-10303-21;`</td><td><code>bytes-sufficient</code></td><td><code>occt=reject/reject gmsh=reject ifc=reject</code></td></tr>
+<tr><td><a href="Le002.html"><code>Le002</code></a></td><td>Edition-default encoding mismatch (Ed.2 ISO-8859-1 vs Ed.3 UTF-8)</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Le004.html"><code>Le004</code></a></td><td>`\X\` (single-byte ISO-8859) escape with bad hex digit count or non-hex input</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=process_signal</code></td></tr>
+<tr><td><a href="Le005.html"><code>Le005</code></a></td><td>`\X2\…\X0\` (UCS-2) escape: 3 hex digits in one group</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Le006.html"><code>Le006</code></a></td><td>`\X4\…\X0\` (UCS-4) escape with hex run not divisible by 8 or containing surrogate code points</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Le007.html"><code>Le007</code></a></td><td>`\X2\` endianness confusion / lone-surrogate handling</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Le008.html"><code>Le008</code></a></td><td>`\S\X` (8-bit shift) directive: misuse, chaining, or apostrophe-after-`\S\`</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Le009.html"><code>Le009</code></a></td><td>`\P{X}\` page-shift directive: bad selector / state-machine omission</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Le010.html"><code>Le010</code></a></td><td>`\F\` font-shift directive consumed wrongly</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Le011.html"><code>Le011</code></a></td><td>`\N\` notation directive misused as C-style newline escape</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Le012.html"><code>Le012</code></a></td><td>Unrecognised backslash control directive in a string</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Le013.html"><code>Le013</code></a></td><td>Apostrophe-doubling escape `&#x27;&#x27;` confused with string terminator</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Le014.html"><code>Le014</code></a></td><td>Apostrophe inside a `\X2\…\X0\` block decoded as string close</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Le015.html"><code>Le015</code></a></td><td>Unterminated string literal</td><td><code>bytes-sufficient</code></td><td><code>occt=reject/reject gmsh=reject ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Le016.html"><code>Le016</code></a></td><td>Single backslash inside a string literal (Windows path)</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Le017.html"><code>Le017</code></a></td><td>Raw control character (U+0000.U+001F) in string body</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Le018.html"><code>Le018</code></a></td><td>Inline newline inside an unterminated literal silently concatenated</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Le020.html"><code>Le020</code></a></td><td>String literal exceeds Ed.3 32 769-octet limit</td><td><code>bytes-sufficient</code></td><td><code>occt=reject/reject gmsh=reject ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Le021.html"><code>Le021</code></a></td><td>Component name in non-UTF-8 locale encoding (GB18030 / Shift-JIS / cp1251 / DOS850)</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Le022.html"><code>Le022</code></a></td><td>Non-ASCII / Japanese / Greek Unicode in PRODUCT.name via `\X2\…\X0\`</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Le023.html"><code>Le023</code></a></td><td>Locale-dependent decimal separator inside numeric attribute</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Le025.html"><code>Le025</code></a></td><td>Empty / blank / single-space NAME silently emptied</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Le026.html"><code>Le026</code></a></td><td>`\X0\` end-marker missing — remainder treated as encoded content</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Le027.html"><code>Le027</code></a></td><td>8-bit characters and case-insensitive keyword tolerance in lexer</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=reject</code></td></tr>
+<tr><td><a href="Le028.html"><code>Le028</code></a></td><td>Stray NUL bytes / DOS `\r\n` line endings inside the file</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=reject</code></td></tr>
+<tr><td><a href="Le029.html"><code>Le029</code></a></td><td>Header `FILE_DESCRIPTION` strings containing commas or parentheses (regex-split bug)</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Le030.html"><code>Le030</code></a></td><td>`\PE\` selector and `\Q\x` directive support</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Le031.html"><code>Le031</code></a></td><td>UTF-16 / UTF-32 BOM mistaken for an ASCII file</td><td><code>bytes-sufficient</code></td><td><code>occt=reject/reject gmsh=reject ifc=reject</code></td></tr>
+<tr><td><a href="Le032.html"><code>Le032</code></a></td><td>`\X2\…\X0\` or `\N\` escape spanning a physical line break</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Le035.html"><code>Le035</code></a></td><td>Encoding directives emitted in Ed.3 UTF-8 file unnecessarily</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Le036.html"><code>Le036</code></a></td><td>Round-trip loss of `\X2\` content through XML / DB layer</td><td><code>requires-sibling-pair</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Le037.html"><code>Le037</code></a></td><td>`\PE\` alphabet-extension directive switching to a non-Latin code page mid-string</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Le038.html"><code>Le038</code></a></td><td>Bare `\PE\` directive at end-of-string with no operand letter</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Le039.html"><code>Le039</code></a></td><td>`\PE\` selector letter outside the legal A.I range</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Le040.html"><code>Le040</code></a></td><td>`\Q\` numeric-character-reference at the upper Unicode boundary (U+10FFFF)</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=process_signal</code></td></tr>
+<tr><td><a href="Le041.html"><code>Le041</code></a></td><td>`\Q\` encoding a code point in the UTF-16 surrogate range (U+D800.U+DFFF)</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=process_signal</code></td></tr>
+<tr><td><a href="Le042.html"><code>Le042</code></a></td><td>`\Q\` payload contains non-decimal characters</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=process_signal</code></td></tr>
+<tr><td><a href="Le043.html"><code>Le043</code></a></td><td>`\X4\` with a valid supplementary-plane code point followed by a short trailing hex run</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=process_signal</code></td></tr>
+<tr><td><a href="Le044.html"><code>Le044</code></a></td><td>`\X2\` payload containing UTF-16 surrogate halves</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=process_signal</code></td></tr>
+<tr><td><a href="Le045.html"><code>Le045</code></a></td><td>String literal at the Edition-3 length limit (32768 characters)</td><td><code>bytes-sufficient</code></td><td><code>occt=reject/reject gmsh=reject ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Le046.html"><code>Le046</code></a></td><td>String literal containing every legal printable ASCII character</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Le047.html"><code>Le047</code></a></td><td>REAL literal at IEEE-754 subnormal / minimum-normal / maximum boundaries</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Le048.html"><code>Le048</code></a></td><td>REAL literal exceeding double range (overflow → +Inf / underflow → 0)</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Le049.html"><code>Le049</code></a></td><td>Carriage-return stripping during STEP file write</td><td><code>requires-sibling-pair</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Le050.html"><code>Le050</code></a></td><td>Unicode characters in STEP export silently dropped</td><td><code>requires-sibling-pair</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Le051.html"><code>Le051</code></a></td><td>`\X2\…\X0\` (UCS-2) escape: missing `\X0\` terminator</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Le052.html"><code>Le052</code></a></td><td>`\X2\…\X0\` (UCS-2) escape: whitespace splits the hex run</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Le053.html"><code>Le053</code></a></td><td>`\X2\…\X0\` (UCS-2) escape: nested `\X2\` opened without closing the prior</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Le054.html"><code>Le054</code></a></td><td>High-bit byte ambiguous between Windows-1252 and ISO-8859-1</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Le055.html"><code>Le055</code></a></td><td>Boolean lexeme written as `.TRUE.` / `.FALSE.` instead of canonical `.T.` / `.F.`</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Le056.html"><code>Le056</code></a></td><td>Mixed `.T.` and `.TRUE.` boolean lexemes within one file</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Le057.html"><code>Le057</code></a></td><td>Records terminated with `;\n` plus extra blank lines between records</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Le058.html"><code>Le058</code></a></td><td>Final record before `ENDSEC;` lacks trailing newline at EOF</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Le059.html"><code>Le059</code></a></td><td>German umlauts in `PRODUCT.name` mis-decoded by reader (Latin-1/UTF-8 confusion)</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+</tbody></table>
+</main>
+<footer>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

@@ -1,0 +1,20 @@
+/* Wr026 - Vendor-specific FILE_DESCRIPTION strings that downstream readers special-case */
+ISO-10303-21;
+HEADER;
+FILE_DESCRIPTION(('CAD-System-X version 12.4.1 build 2026-04-15'),'2;1');
+FILE_NAME('Wr026.stp','2026-04-30T00:00:00',('user'),('ACME'),
+  'CAD-System-X v12.4.1 build 2026-04-15','CAD-System-X','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('mechanical design');
+#10=CARTESIAN_POINT('origin',(0.0,0.0,0.0));
+#11=DIRECTION('z',(0.0,0.0,1.0));
+#12=DIRECTION('x',(1.0,0.0,0.0));
+#13=AXIS2_PLACEMENT_3D('placement',#10,#11,#12);
+/* Wr026: receivers that special-case the FILE_DESCRIPTION string
+   'CAD-System-X version' apply a fix-up filter. A minor wording change
+   in the producer disables the fix-up silently */
+#20=(LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT(.MILLI.,.METRE.));
+ENDSEC;
+END-ISO-10303-21;

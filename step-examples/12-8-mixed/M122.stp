@@ -1,0 +1,29 @@
+ISO-10303-21;
+/* M122 - AP209 ply orientation expressed in wrong reference frame.
+ * Defect: a composite-laminate ply orientation references a global
+ * AXIS2_PLACEMENT_3D rather than an element-local material frame. On
+ * a curved shell, global-X wraps around the surface and rotates
+ * relative to the laminate; some elements end up with fibers
+ * crosswise instead of along the intended path. */
+HEADER;
+FILE_DESCRIPTION(('M122 test case','AP209 ply orientation in global frame'),'2;1');
+FILE_NAME('M122.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('STRUCTURAL_ANALYSIS_DESIGN { 1 0 10303 209 1 0 0 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('structural_analysis_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
+  'structural_analysis_design',2001,#1);
+#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10))
+     REPRESENTATION_CONTEXT('fea','3D'));
+/* Global frame */
+#100=CARTESIAN_POINT('o',(0.0,0.0,0.0));
+#101=DIRECTION('global_z',(0.0,0.0,1.0));
+#102=DIRECTION('global_x',(1.0,0.0,0.0));
+#150=AXIS2_PLACEMENT_3D('global_csys_used_as_material_frame',#100,#101,#102);
+/* Defect: ply orientation in global frame for curved shell. */
+#200=LAMINATE_TABLE('curved_shell_skin_global_frame',(#150),$);
+ENDSEC;
+END-ISO-10303-21;

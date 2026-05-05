@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>N047 — Linear and angular tolerance for same-surface face merging not user-specifiable</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.4 Tolerance &amp; numerical precision</a> <span class="sep">/</span> <span class="current">N047</span>
+</nav>
+<header class="title-bar">
+<h1>N047 <span class="sep">—</span> <span class="entry-title">Linear and angular tolerance for same-surface face merging not user-specifiable</span></h1>
+<p class="category">§12.4 tolerance</p>
+<p class="tag-pills">
+<a class="tag tag-geometry" href="../by-tag/geometry/index.html">geometry</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-4-tolerance/N047.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-4-tolerance/N047.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>OCCT MANTIS#0027729 (OCCT MANTIS tracker 502 as of 2026-05-02)</li>
+</ul></section>
+<section><h2>Description</h2>
+<p>Same-domain face-merge logic uses fixed linear and angular tolerances. For a coarse-mesh-derived shape (linear tolerance ~0.1 mm), the fixed thresholds are too tight and merges fail; for a high-precision shape they are too loose and over-merge.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>Two coplanar faces with native vertex tolerance ~0.1 mm, sharing a common edge. Algorithm uses fixed 1e-7 threshold and refuses to merge.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>Heal and accept: tolerance-using algorithms accept caller-supplied tolerances or read them from the input shape; never hard-code.</p></section>
+<section><h2>Notes</h2>
+<p>**See also**: N039, Tfa017. Synonyms: &quot;two coplanar faces share an edge but are not unified&quot;, &quot;same-plane faces fail to merge&quot;, &quot;face merge fails on shared edge&quot;, &quot;coplanar adjacent faces left separate&quot;, &quot;fixed merge threshold rejects coplanar faces&quot;, &quot;merge tolerance not user-specifiable&quot;.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=shape(1)/shape(1) gmsh=shape(15) ifc=schema_n/a</code></p></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>face[0].surface_type == &quot;plane&quot;</code></li>
+<li><code>n_edges_total &gt;= 8</code></li>
+<li><code>face[1].surface_type == &quot;plane&quot;</code></li>
+<li><code>n_vertices_total &gt;= 16</code></li>
+</ul></section>
+<section><h2>Cross-references</h2>
+<p><a href="N039.html">N039</a>, <a href="../12-3c-faces/Tfa017.html">Tfa017</a></p>
+</section>
+<section><h2>Live oracle output</h2>
+<table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
+<tr><td><code>occt_heal_on</code></td><td><code>shape(1)</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>shape(1)</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>shape(15)</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>shape(15)</code></td></tr>
+<tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>not_manifold</code></td></tr>
+</tbody></table>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* N047 - UnifySameDomain tolerances not user-specifiable
+<span class="lineno">3</span> * Defect: two coplanar ADVANCED_FACEs share a common EDGE_CURVE.
+<span class="lineno">4</span> * The declared vertex tolerance is 0.1 mm. UnifySameDomain (or its
+<span class="lineno">5</span> * equivalent) should treat the two faces as a single face since
+<span class="lineno">6</span> * their planes coincide within 0.1 mm. The defect: the algorithm
+<span class="lineno">7</span> * uses a fixed internal 1e-7 mm threshold and refuses to merge. */
+<span class="lineno">8</span>HEADER;
+<span class="lineno">9</span>FILE_DESCRIPTION((&#x27;N047 test case&#x27;,&#x27;UnifySameDomain tolerances not user-specifiable&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">10</span>FILE_NAME(&#x27;N047.stp&#x27;,&#x27;2026-04-30T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">11</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }&#x27;));
+<span class="lineno">12</span>ENDSEC;
+<span class="lineno">13</span>DATA;
+<span class="lineno">14</span>#1=APPLICATION_CONTEXT(&#x27;automotive_design&#x27;);
+<span class="lineno">15</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,&#x27;automotive_design&#x27;,2000,#1);
+<span class="lineno">16</span>/* Single PLANE shared by both faces */
+<span class="lineno">17</span>#100=CARTESIAN_POINT(&#x27;origin&#x27;,(0.0,0.0,0.0));
+<span class="lineno">18</span>#101=DIRECTION(&#x27;+z&#x27;,(0.0,0.0,1.0));
+<span class="lineno">19</span>#102=DIRECTION(&#x27;+x&#x27;,(1.0,0.0,0.0));
+<span class="lineno">20</span>#103=AXIS2_PLACEMENT_3D(&#x27;axes&#x27;,#100,#101,#102);
+<span class="lineno">21</span>#104=PLANE(&#x27;coarse&#x27;,#103);
+<span class="lineno">22</span>/* Vertices: A=(0,0,0), B=(1,0,0), C=(1,1,0), D=(0,1,0), E=(2,0,0), F=(2,1,0) */
+<span class="lineno">23</span>#110=CARTESIAN_POINT(&#x27;A&#x27;,(0.0,0.0,0.0));#111=VERTEX_POINT(&#x27;A&#x27;,#110);
+<span class="lineno">24</span>#112=CARTESIAN_POINT(&#x27;B&#x27;,(1.0,0.0,0.0));#113=VERTEX_POINT(&#x27;B&#x27;,#112);
+<span class="lineno">25</span>#114=CARTESIAN_POINT(&#x27;C&#x27;,(1.0,1.0,0.0));#115=VERTEX_POINT(&#x27;C&#x27;,#114);
+<span class="lineno">26</span>#116=CARTESIAN_POINT(&#x27;D&#x27;,(0.0,1.0,0.0));#117=VERTEX_POINT(&#x27;D&#x27;,#116);
+<span class="lineno">27</span>#118=CARTESIAN_POINT(&#x27;E&#x27;,(2.0,0.0,0.0));#119=VERTEX_POINT(&#x27;E&#x27;,#118);
+<span class="lineno">28</span>#120=CARTESIAN_POINT(&#x27;F&#x27;,(2.0,1.0,0.0));#121=VERTEX_POINT(&#x27;F&#x27;,#120);
+<span class="lineno">29</span>/* Edges */
+<span class="lineno">30</span>#130=DIRECTION(&#x27;+x&#x27;,(1.0,0.0,0.0));#131=VECTOR(&#x27;vx&#x27;,#130,1.0);
+<span class="lineno">31</span>#132=LINE(&#x27;AB&#x27;,#110,#131);#133=EDGE_CURVE(&#x27;AB&#x27;,#111,#113,#132,.T.);
+<span class="lineno">32</span>#134=DIRECTION(&#x27;+y&#x27;,(0.0,1.0,0.0));#135=VECTOR(&#x27;vy&#x27;,#134,1.0);
+<span class="lineno">33</span>#136=LINE(&#x27;BC&#x27;,#112,#135);#137=EDGE_CURVE(&#x27;BC_shared&#x27;,#113,#115,#136,.T.);
+<span class="lineno">34</span>#138=DIRECTION(&#x27;-x&#x27;,(-1.0,0.0,0.0));#139=VECTOR(&#x27;vmx&#x27;,#138,1.0);
+<span class="lineno">35</span>#140=LINE(&#x27;CD&#x27;,#114,#139);#141=EDGE_CURVE(&#x27;CD&#x27;,#115,#117,#140,.T.);
+<span class="lineno">36</span>#142=DIRECTION(&#x27;-y&#x27;,(0.0,-1.0,0.0));#143=VECTOR(&#x27;vmy&#x27;,#142,1.0);
+<span class="lineno">37</span>#144=LINE(&#x27;DA&#x27;,#116,#143);#145=EDGE_CURVE(&#x27;DA&#x27;,#117,#111,#144,.T.);
+<span class="lineno">38</span>#146=LINE(&#x27;BE&#x27;,#112,#131);#147=EDGE_CURVE(&#x27;BE&#x27;,#113,#119,#146,.T.);
+<span class="lineno">39</span>#148=LINE(&#x27;EF&#x27;,#118,#135);#149=EDGE_CURVE(&#x27;EF&#x27;,#119,#121,#148,.T.);
+<span class="lineno">40</span>#150=LINE(&#x27;FC&#x27;,#120,#139);#151=EDGE_CURVE(&#x27;FC&#x27;,#121,#115,#150,.T.);
+<span class="lineno">41</span>/* Face 1: A-&gt;B-&gt;C-&gt;D-&gt;A */
+<span class="lineno">42</span>#160=ORIENTED_EDGE(&#x27;&#x27;,*,*,#133,.T.);
+<span class="lineno">43</span>#161=ORIENTED_EDGE(&#x27;&#x27;,*,*,#137,.T.); /* BC shared edge */
+<span class="lineno">44</span>#162=ORIENTED_EDGE(&#x27;&#x27;,*,*,#141,.T.);
+<span class="lineno">45</span>#163=ORIENTED_EDGE(&#x27;&#x27;,*,*,#145,.T.);
+<span class="lineno">46</span>#164=EDGE_LOOP(&#x27;&#x27;,(#160,#161,#162,#163));
+<span class="lineno">47</span>#165=FACE_OUTER_BOUND(&#x27;&#x27;,#164,.T.);
+<span class="lineno">48</span>#166=ADVANCED_FACE(&#x27;left_face&#x27;,(#165),#104,.T.);
+<span class="lineno">49</span>/* Face 2: B-&gt;E-&gt;F-&gt;C-&gt;B (shares edge BC with face 1, reversed) */
+<span class="lineno">50</span>#170=ORIENTED_EDGE(&#x27;&#x27;,*,*,#147,.T.);
+<span class="lineno">51</span>#171=ORIENTED_EDGE(&#x27;&#x27;,*,*,#149,.T.);
+<span class="lineno">52</span>#172=ORIENTED_EDGE(&#x27;&#x27;,*,*,#151,.T.);
+<span class="lineno">53</span>#173=ORIENTED_EDGE(&#x27;&#x27;,*,*,#137,.F.); /* shared BC reversed */
+<span class="lineno">54</span>#174=EDGE_LOOP(&#x27;&#x27;,(#170,#171,#172,#173));
+<span class="lineno">55</span>#175=FACE_OUTER_BOUND(&#x27;&#x27;,#174,.T.);
+<span class="lineno">56</span>#176=ADVANCED_FACE(&#x27;right_face&#x27;,(#175),#104,.T.);
+<span class="lineno">57</span>/* Coarse vertex tolerance 0.1 mm */
+<span class="lineno">58</span>#180=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">59</span>#181=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+<span class="lineno">60</span>#182=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+<span class="lineno">61</span>#183=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.1),#180,
+<span class="lineno">62</span>  &#x27;distance_accuracy_value&#x27;,&#x27;coarse_unify_threshold&#x27;);
+<span class="lineno">63</span>#184=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+<span class="lineno">64</span>      GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#183))
+<span class="lineno">65</span>      GLOBAL_UNIT_ASSIGNED_CONTEXT((#180,#181,#182))
+<span class="lineno">66</span>      REPRESENTATION_CONTEXT(&#x27;ctx&#x27;,&#x27;3D&#x27;));
+<span class="lineno">67</span>/* Minimal PRODUCT chain so OCCT TransferRoots produces a shape. */
+<span class="lineno">68</span>#9010=PRODUCT_CONTEXT(&#x27;&#x27;,#1,&#x27;mechanical&#x27;);
+<span class="lineno">69</span>#9011=PRODUCT(&#x27;N047&#x27;,&#x27;N047&#x27;,&#x27;&#x27;,(#9010));
+<span class="lineno">70</span>#9012=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#9011);
+<span class="lineno">71</span>#9013=PRODUCT_DEFINITION_CONTEXT(&#x27;part definition&#x27;,#1,&#x27;design&#x27;);
+<span class="lineno">72</span>#9014=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,#9012,#9013);
+<span class="lineno">73</span>#9015=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,#9014);
+<span class="lineno">74</span>#9030=OPEN_SHELL(&#x27;wrap_shell&#x27;,(#166,#176));
+<span class="lineno">75</span>#9031=SHELL_BASED_SURFACE_MODEL(&#x27;wrap_sbsm&#x27;,(#9030));
+<span class="lineno">76</span>#9050=MANIFOLD_SURFACE_SHAPE_REPRESENTATION(&#x27;&#x27;,(#9031),#184);
+<span class="lineno">77</span>#9051=SHAPE_DEFINITION_REPRESENTATION(#9015,#9050);
+<span class="lineno">78</span>ENDSEC;
+<span class="lineno">79</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="N046.html">&larr; N046</a> <a class="up" href="index.html">§12.4 Tolerance &amp; numerical precision</a> <a class="next" href="N048.html">N048 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

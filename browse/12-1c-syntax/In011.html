@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>In011 — Reader exception swallowed (entity bound to null) when B_SPLINE control points use extreme-magnitude or subnormal coordinates (1.0E+308 / 5.0E-324)</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.1c Part-21 grammar</a> <span class="sep">/</span> <span class="current">In011</span>
+</nav>
+<header class="title-bar">
+<h1>In011 <span class="sep">—</span> <span class="entry-title">Reader exception swallowed (entity bound to null) when B_SPLINE control points use extreme-magnitude or subnormal coordinates (1.0E+308 / 5.0E-324)</span></h1>
+<p class="category">§12.1c (sub-class: transfer exception)</p>
+<p class="severity-badge severity-p1">P1 — silent data loss</p>
+<p class="tag-pills">
+<a class="tag tag-syntax" href="../by-tag/syntax/index.html">syntax</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-1c-syntax/In011.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-1c-syntax/In011.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>OCCT Transfer_TransferOutput.cxx:67 (Transfer_TransferFailure raise</li>
+<li>binding null) (uncovered class evidence)</li>
+</ul></section>
+<section><h2>Sender</h2>
+<p>deduced — OCCT uncovered-class sweep, Pass C</p></section>
+<section><h2>Description</h2>
+<p>A C++ exception is thrown during the transfer of a single entity; the transfer record is &quot;bound&quot; but the bound result is null. Downstream consumers see &quot;Done&quot; status with no shape attached. Typical fixture: a B_SPLINE_CURVE_WITH_KNOTS whose CARTESIAN_POINT control points use extreme-magnitude IEEE-754 values (e.g., 1.0E+308 near the ceiling, or a subnormal like 5.0E-324) that overflow during arithmetic. Bug-reporter language: &quot;kernel says done but produced nothing&quot;, &quot;transfer succeeded with empty result&quot;, &quot;extreme-magnitude coordinates overflow&quot;.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>An entity that triggers a transfer-time exception (e.g., a `B_SPLINE_CURVE_WITH_KNOTS` with NaN-valued, near-IEEE-ceiling (1.0E+308), or subnormal (5.0E-324) control point coordinates).</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>Reject and emit the underlying exception text: mark the transfer as Error, not Done; must not silently swallow exceptions.</p></section>
+<section><h2>Notes</h2>
+<p>Synonyms: &quot;silent transfer failure&quot;. Provenance tier: runtime-only — bytes alone cannot demonstrate this defect; the symptom is a transfer-time C++ exception silently swallowed and replaced with a null binding plus a &quot;Done&quot; status. The static fixture only carries the trigger geometry; demonstrating the swallowed exception requires a kernel runtime trace. Synonyms: &quot;STEP entity bound to null after exception&quot;, &quot;B-spline with extreme coords gives null&quot;, &quot;1.0E+308 control point swallows exception&quot;, &quot;STEP transfer Done but shape null&quot;, &quot;exception swallowed during STEP transfer&quot;.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<section><h2>Provenance tier</h2>
+<p><code>runtime-only</code> — defect not fully embodied in fixture bytes.</p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>contains(b&#x27;DATA;&#x27;)</code></li>
+<li><code>contains(b&#x27;HEADER;&#x27;)</code></li>
+<li><code>count(b&#x27;ENDSEC;&#x27;) &gt;= 2</code></li>
+</ul></section>
+<section><h2>Live oracle output</h2>
+<table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
+<tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>no_shapes_loaded</code></td></tr>
+</tbody></table>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* In011 - Entity transfer raises exception; binding yields null.
+<span class="lineno">3</span> * Defect: B-spline whose control-point coordinates have extreme magnitudes
+<span class="lineno">4</span> * close to the 64-bit float upper edge. NaN is not lexically representable
+<span class="lineno">5</span> * in Part-21, so we use 1.0E+308 (max-binade) values plus dependent geometry
+<span class="lineno">6</span> * that multiplies them, so naive transfer-time arithmetic overflows to Inf.
+<span class="lineno">7</span> * The exception path is exercised; the binding is left null. */
+<span class="lineno">8</span><mark>HEADER;</mark>
+<span class="lineno">9</span>FILE_DESCRIPTION((&#x27;In011 - exception bound to null&#x27;,&#x27;Pass C gap-fill&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">10</span>FILE_NAME(&#x27;In011.stp&#x27;,&#x27;2026-04-30T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;gap-fill C&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">11</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }&#x27;));
+<span class="lineno">12</span><mark>ENDSEC;</mark>
+<span class="lineno">13</span><mark>DATA;</mark>
+<span class="lineno">14</span>#1=APPLICATION_CONTEXT(&#x27;automotive_design&#x27;);
+<span class="lineno">15</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,&#x27;automotive_design&#x27;,2000,#1);
+<span class="lineno">16</span>/* Control points with extreme-magnitude coordinates near the 64-bit float
+<span class="lineno">17</span>   ceiling. Any pairwise multiplication during length / norm evaluation
+<span class="lineno">18</span>   overflows to +Inf, and the resulting non-finite triggers the
+<span class="lineno">19</span>   transfer exception. */
+<span class="lineno">20</span>#10=CARTESIAN_POINT(&#x27;cp_extreme_a&#x27;,(1.0E+308,0.0,0.0));
+<span class="lineno">21</span>#11=CARTESIAN_POINT(&#x27;cp_extreme_b&#x27;,(1.0E+308,1.0E+308,0.0));
+<span class="lineno">22</span>#12=CARTESIAN_POINT(&#x27;cp_extreme_c&#x27;,(1.0E+308,1.0E+308,1.0E+308));
+<span class="lineno">23</span>/* Subnormal value (smallest positive double, ~5e-324) for a separate
+<span class="lineno">24</span>   precision-loss path on dependent geometry */
+<span class="lineno">25</span>#13=CARTESIAN_POINT(&#x27;cp_subnormal&#x27;,(5.0E-324,0.0,0.0));
+<span class="lineno">26</span>#20=B_SPLINE_CURVE_WITH_KNOTS(&#x27;exception_trigger&#x27;,2,(#10,#11,#12),
+<span class="lineno">27</span>   .UNSPECIFIED.,.F.,.F.,(3,3),(0.0,1.0),.UNSPECIFIED.);
+<span class="lineno">28</span>/* Dependent VECTOR/LINE that, when normalised, multiplies cp_extreme
+<span class="lineno">29</span>   coordinates and drives the result to +Inf */
+<span class="lineno">30</span>#30=DIRECTION(&#x27;overflow_dir&#x27;,(1.0E+308,1.0E+308,0.0));
+<span class="lineno">31</span>#31=VECTOR(&#x27;overflow_vec&#x27;,#30,1.0E+154);
+<span class="lineno">32</span>#32=LINE(&#x27;overflow_line&#x27;,#10,#31);
+<span class="lineno">33</span><mark>ENDSEC;</mark>
+<span class="lineno">34</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="In003.html">&larr; In003</a> <a class="up" href="index.html">§12.1c Part-21 grammar</a> <a class="next" href="In012.html">In012 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

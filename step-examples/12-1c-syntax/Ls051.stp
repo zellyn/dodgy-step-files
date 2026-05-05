@@ -1,0 +1,30 @@
+/* Ls051 - Instance ID with 22 digits (overflows uint64_t accumulator)
+   ----------------------------------------------------------------------
+   Catalog section : §12.1c instance-namespace
+   Sources         : T016, T017, A022
+   See also        : Ls038, Ls052
+   ----------------------------------------------------------------------
+   Defect
+     A 22-digit instance ID overflows a uint64_t accumulator during
+     digit-by-digit parsing. stepcode historically skips an entire
+     section when an ID width exceeds its allocator's digits10 + 1.
+   Expected behavior
+     Detect overflow during digit accumulation and reject with
+     E_INSTANCE_ID_RANGE; if width must be capped, emit a precise per-
+     instance diagnostic and continue parsing the remainder of the
+     section rather than skipping it.
+   ----------------------------------------------------------------------
+*/
+ISO-10303-21;
+HEADER;
+FILE_DESCRIPTION(('Ls051 - 22-digit instance ID overflows uint64_t'),'2;1');
+FILE_NAME('Ls051.stp','2026-04-26T00:00:00',('auto-generated'),(''),
+  'auto-generated','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+/* Defect: 22-digit ID overflows uint64_t */
+#9999999999999999999999=CARTESIAN_POINT('huge',(0.0,0.0,0.0));
+#10=CARTESIAN_POINT('origin',(0.0,0.0,0.0));
+ENDSEC;
+END-ISO-10303-21;

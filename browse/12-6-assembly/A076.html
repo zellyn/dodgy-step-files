@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>A076 — General attributes (AP242 GENERAL_PROPERTY) dropped on import</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.6 Assembly hierarchy</a> <span class="sep">/</span> <span class="current">A076</span>
+</nav>
+<header class="title-bar">
+<h1>A076 <span class="sep">—</span> <span class="entry-title">General attributes (AP242 GENERAL_PROPERTY) dropped on import</span></h1>
+<p class="category">§12.6 assembly</p>
+<p class="severity-badge severity-p1">P1 — silent data loss</p>
+<p class="tag-pills">
+<a class="tag tag-assembly" href="../by-tag/assembly/index.html">assembly</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-6-assembly/A076.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-6-assembly/A076.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>OCCT MANTIS#0033530</li>
+<li>OCCT MANTIS#0033641 (OCCT MANTIS tracker 502 as of 2026-05-02)</li>
+</ul></section>
+<section><h2>Description</h2>
+<p>AP242 introduces `GENERAL_PROPERTY` as a generic attribute mechanism — arbitrary key/value pairs attached to products. A STEP reader configured for AP203 silently discards these; even an AP242-aware reader may discard them if its metadata flag is off by default.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>AP242 STEP file with `GENERAL_PROPERTY(&#x27;density&#x27;, &#x27;7.85&#x27;)` and `GENERAL_PROPERTY(&#x27;material&#x27;, &#x27;STEEL&#x27;)` attached to one part. Read with default config.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>Heal and accept: AP242 reader populates document-level property table from `GENERAL_PROPERTY` entities; default config preserves metadata. Must not silently drop properties.</p></section>
+<section><h2>Notes</h2>
+<p>Provenance tier: runtime-only — kernel drops GENERAL_PROPERTY on import; defect is reader behavior.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<section><h2>Provenance tier</h2>
+<p><code>runtime-only</code> — defect not fully embodied in fixture bytes.</p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>count_entity_def(b&#x27;GENERAL_PROPERTY&#x27;) &gt;= 2</code></li>
+<li><code>contains(b&#x27;GENERAL_PROPERTY_ASSOCIATION&#x27;)</code></li>
+<li><code>declared_schema.startswith(b&#x27;AP242&#x27;)</code></li>
+</ul></section>
+<section><h2>Live oracle output</h2>
+<table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
+<tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>no_shapes_loaded</code></td></tr>
+</tbody></table>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* A076 - AP242 GENERAL_PROPERTY dropped on import.
+<span class="lineno">3</span> * Defect: AP242 file with GENERAL_PROPERTY entries attached to a part;
+<span class="lineno">4</span> * an AP203-configured reader (or AP242 reader with metadata flag off)
+<span class="lineno">5</span> * silently discards them. Schema is AP242 to provoke that pathway. */
+<span class="lineno">6</span>HEADER;
+<span class="lineno">7</span>FILE_DESCRIPTION((&#x27;A076 test case&#x27;,&#x27;AP242 GENERAL_PROPERTY dropped on import&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">8</span>FILE_NAME(&#x27;A076.stp&#x27;,&#x27;2026-04-30T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">9</span>FILE_SCHEMA((&#x27;AP242_MANAGED_MODEL_BASED_3D_ENGINEERING_MIM_LF { 1 0 10303 442 3 0 0 }&#x27;));
+<span class="lineno">10</span>ENDSEC;
+<span class="lineno">11</span>DATA;
+<span class="lineno">12</span>#1=APPLICATION_CONTEXT(&#x27;managed model based 3d engineering&#x27;);
+<span class="lineno">13</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,&#x27;ap242_managed_model_based_3d_engineering&#x27;,2020,#1);
+<span class="lineno">14</span>#10=PRODUCT_CONTEXT(&#x27;&#x27;,#1,&#x27;mechanical&#x27;);
+<span class="lineno">15</span>#11=PRODUCT(&#x27;part1&#x27;,&#x27;part1&#x27;,&#x27;part1&#x27;,(#10));
+<span class="lineno">16</span>#12=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#11);
+<span class="lineno">17</span>#13=PRODUCT_DEFINITION_CONTEXT(&#x27;part definition&#x27;,#1,&#x27;design&#x27;);
+<span class="lineno">18</span>#14=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,#12,#13);
+<span class="lineno">19</span>#15=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,#14);
+<span class="lineno">20</span>/* AP242-only generic key/value attachments on the part */
+<span class="lineno">21</span><mark>#100=GENERAL_PROPERTY(</mark>&#x27;density&#x27;,&#x27;density&#x27;,&#x27;7.85&#x27;);
+<span class="lineno">22</span><mark>#101=GENERAL_PROPERTY(</mark>&#x27;material&#x27;,&#x27;material&#x27;,&#x27;STEEL&#x27;);
+<span class="lineno">23</span>#102=<mark>GENERAL_PROPERTY_ASSOCIATION</mark>(&#x27;density_assoc&#x27;,&#x27;&#x27;,#100,#15);
+<span class="lineno">24</span>#103=<mark>GENERAL_PROPERTY_ASSOCIATION</mark>(&#x27;material_assoc&#x27;,&#x27;&#x27;,#101,#15);
+<span class="lineno">25</span>ENDSEC;
+<span class="lineno">26</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="A075.html">&larr; A075</a> <a class="up" href="index.html">§12.6 Assembly hierarchy</a> <a class="next" href="A077.html">A077 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

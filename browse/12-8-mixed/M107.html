@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>M107 — AP238 cutting tool diameter declared as zero or negative</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.8 Mixed (tessellation, validation properties, etc.)</a> <span class="sep">/</span> <span class="current">M107</span>
+</nav>
+<header class="title-bar">
+<h1>M107 <span class="sep">—</span> <span class="entry-title">AP238 cutting tool diameter declared as zero or negative</span></h1>
+<p class="category">§12.8 mixed (sub-class: AP238 tool dimension)</p>
+<p class="severity-badge severity-p1">P1 — silent data loss</p>
+<p class="tag-pills">
+<a class="tag tag-spec-violation" href="../by-tag/spec-violation/index.html">spec-violation</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-8-mixed/M107.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-8-mixed/M107.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>deduced from ISO 10303-238 §5.7 cutting_tool_dimension positivity</li>
+</ul></section>
+<section><h2>Sender</h2>
+<p>deduced — STEP-NC publisher emitting tool template with default zero values</p></section>
+<section><h2>Description</h2>
+<p>A milling tool&#x27;s diameter `MEASURE_WITH_UNIT` carries the numeric value `0.0` (or worse, a negative). The controller either rejects the file or generates a toolpath with zero radial offset, producing contour-on-contour passes with no material removal. Bug-reporter language: &quot;AP238 tool zero diameter&quot;, &quot;STEP-NC milling tool size missing&quot;, &quot;zero diameter cutter&quot;.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>`MEASURE_WITH_UNIT(POSITIVE_LENGTH_MEASURE(0.0), mm_unit)` attached as the diameter of a milling tool referenced by a `MACHINING_OPERATION`.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>reject zero/negative tool diameters as malformed; or warn loudly.</p></section>
+<section><h2>Notes</h2>
+<p>Synonyms: &quot;zero-diameter tool&quot;, &quot;AP238 tool dimension missing&quot;, &quot;milling tool diameter is zero or negative&quot;, &quot;STEP-NC bad tool size&quot;, &quot;cutting tool has no radial offset&quot;.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>contains(b&#x27;AP238_STEP_NC_MIM&#x27;)</code></li>
+<li><code>contains(b&#x27;POSITIVE_LENGTH_MEASURE(0.0)&#x27;)</code></li>
+</ul></section>
+<section><h2>Live oracle output</h2>
+<table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
+<tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>no_shapes_loaded</code></td></tr>
+</tbody></table>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* M107 - AP238 cutting tool diameter declared as zero.
+<span class="lineno">3</span> * Defect: a milling tool&#x27;s diameter MEASURE_WITH_UNIT carries the
+<span class="lineno">4</span> * value 0.0 mm. Toolpaths computed against this tool have zero radial
+<span class="lineno">5</span> * offset; passes overlap themselves with no material removal. */
+<span class="lineno">6</span>HEADER;
+<span class="lineno">7</span>FILE_DESCRIPTION((&#x27;M107 test case&#x27;,&#x27;AP238 tool zero diameter&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">8</span>FILE_NAME(&#x27;M107.stp&#x27;,&#x27;2026-05-02T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">9</span>FILE_SCHEMA((&#x27;<mark>AP238_STEP_NC_MIM</mark> { 1 0 10303 238 1 0 0 1 }&#x27;));
+<span class="lineno">10</span>ENDSEC;
+<span class="lineno">11</span>DATA;
+<span class="lineno">12</span>#1=APPLICATION_CONTEXT(&#x27;numerical_control_machining&#x27;);
+<span class="lineno">13</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,
+<span class="lineno">14</span>  &#x27;numerical_control_machining&#x27;,2007,#1);
+<span class="lineno">15</span>#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">16</span>#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+<span class="lineno">17</span>     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10))
+<span class="lineno">18</span>     REPRESENTATION_CONTEXT(&#x27;nc&#x27;,&#x27;3D&#x27;));
+<span class="lineno">19</span>/* Defect: tool diameter declared 0.0 (POSITIVE_LENGTH_MEASURE
+<span class="lineno">20</span>   schema-illegally allows it through producer mis-implementation). */
+<span class="lineno">21</span>#80=MEASURE_WITH_UNIT(<mark>POSITIVE_LENGTH_MEASURE(0.0)</mark>,#10);
+<span class="lineno">22</span>#150=MACHINING_TOOL(&#x27;zero_diameter_endmill&#x27;,$,$,#80);
+<span class="lineno">23</span>#100=MACHINING_OPERATION(&#x27;rough&#x27;,$,$,#150,$,$);
+<span class="lineno">24</span>#200=WORKPLAN(&#x27;main&#x27;,(#100),$,$,$);
+<span class="lineno">25</span>ENDSEC;
+<span class="lineno">26</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="M106.html">&larr; M106</a> <a class="up" href="index.html">§12.8 Mixed (tessellation, validation properties, etc.)</a> <a class="next" href="M108.html">M108 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

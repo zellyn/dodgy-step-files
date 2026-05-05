@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Gn038 — `BOUNDED_PCURVE` LoadONBrep stub (BRL-CAD step-g)</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.2b NURBS / B-spline</a> <span class="sep">/</span> <span class="current">Gn038</span>
+</nav>
+<header class="title-bar">
+<h1>Gn038 <span class="sep">—</span> <span class="entry-title">`BOUNDED_PCURVE` LoadONBrep stub (BRL-CAD step-g)</span></h1>
+<p class="category">§12.2b NURBS/knots (sub-class: subtype unimplemented)</p>
+<p class="severity-badge severity-p1">P1 — silent data loss</p>
+<p class="tag-pills">
+<a class="tag tag-geometry" href="../by-tag/geometry/index.html">geometry</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-2b-nurbs/Gn038.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-2b-nurbs/Gn038.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>BRL-CAD `src/conv/step/step-g/Curve.cpp` `LoadONBrep` base stub `&quot;::LoadONBrep(..) not implemented for &lt;entity&gt;&quot;`</li>
+<li>`BoundedPCurve` is a non-overriding subclass that inherits the stub</li>
+<li>bug-reporter language: &quot;BOUNDED_PCURVE dropped on import&quot;, &quot;step-g subtype unsupported&quot;, &quot;BOUNDED_PCURVE falls through to base-class stub&quot;.</li>
+</ul></section>
+<section><h2>Sender</h2>
+<p>Producers that emit a bounded re-parametrisation of an otherwise infinite parametric basis curve.</p></section>
+<section><h2>Description</h2>
+<p>`BOUNDED_PCURVE` is a degenerate subclass whose role is to give a bounded version of an otherwise infinite parametric basis curve. step-g loads the entity into the in-memory model fine, but the LoadONBrep path falls through to the base-class stub which prints `&quot;not implemented for BoundedPCurve&quot;` and returns false. Trims referencing a `BOUNDED_PCURVE` in their `associated_geometry` list lose the parametric curve in the ON_Brep representation, so the trim becomes 3D-only and is later re-projected numerically (introducing drift). Distinct from Gn019 (coincident-control-point degeneracy): this is a *type-dispatch* defect rather than a degeneracy.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>`#41=BOUNDED_PCURVE(&#x27;bp_on_plane&#x27;, #14, #40);` referenced from a `SURFACE_CURVE.associated_geometry`. step-g loads the entity; LoadONBrep stub returns false.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>heal-and-accept — `BoundedPCurve::LoadONBrep` must defer to its underlying definitional basis curve and reparameterise to the bounded subrange; if unhandled, emit `W_BOUNDED_PCURVE_FALLBACK` and project from 3D.</p></section>
+<section><h2>Notes</h2>
+<p>**See also**: Gn019, Twi100, Twi101. Synonyms: &quot;BOUNDED_PCURVE LoadONBrep stub&quot;, &quot;step-g BOUNDED_PCURVE drop&quot;, &quot;BOUNDED_PCURVE subtype unimplemented&quot;.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>contains(b&#x27;BOUNDED_PCURVE&#x27;)</code></li>
+</ul></section>
+<section><h2>Cross-references</h2>
+<p><a href="Gn019.html">Gn019</a>, <a href="../12-3b-wires/Twi100.html">Twi100</a>, <a href="../12-3b-wires/Twi101.html">Twi101</a></p>
+</section>
+<section><h2>Live oracle output</h2>
+<table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
+<tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>no_shapes_loaded</code></td></tr>
+</tbody></table>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>/* Gn038 - <mark>BOUNDED_PCURVE</mark> silently dropped (LoadONBrep stub)
+<span class="lineno">2</span>   Defect: BRL-CAD step-g (and several other readers) implement
+<span class="lineno">3</span>   BoundedPCurve as a degenerate subclass of PCurve - the entity loads
+<span class="lineno">4</span>   into the in-memory model fine, but the LoadONBrep path falls through
+<span class="lineno">5</span>   to the PCurve / Curve base-class stub which prints &quot;not implemented
+<span class="lineno">6</span>   for &lt;entity&gt;&quot; and returns false.  Edges referencing a <mark>BOUNDED_PCURVE</mark>
+<span class="lineno">7</span>   in their associated_geometry list end up with no pcurve at all in the
+<span class="lineno">8</span>   ON_Brep, so the trim becomes 3D-only and is later re-projected
+<span class="lineno">9</span>   numerically (introducing drift).
+<span class="lineno">10</span>   Sources: BRL-CAD src/conv/step/step-g/Curve.cpp LoadONBrep stub
+<span class="lineno">11</span>   inherited via Pcurve / BoundedPCurve. */
+<span class="lineno">12</span>ISO-10303-21;
+<span class="lineno">13</span>HEADER;
+<span class="lineno">14</span>FILE_DESCRIPTION(
+<span class="lineno">15</span>  (&#x27;Gn038 - <mark>BOUNDED_PCURVE</mark> LoadONBrep stub silently drops pcurve&#x27;),
+<span class="lineno">16</span>  &#x27;2;1&#x27;);
+<span class="lineno">17</span>FILE_NAME(&#x27;Gn038.stp&#x27;,&#x27;2026-05-02T00:00:00&#x27;,(&#x27;cad-research-suite&#x27;),(&#x27;&#x27;),
+<span class="lineno">18</span>  &#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">19</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
+<span class="lineno">20</span>ENDSEC;
+<span class="lineno">21</span>DATA;
+<span class="lineno">22</span>/* Host plane parameterised at z=0. */
+<span class="lineno">23</span>#10=CARTESIAN_POINT(&#x27;o&#x27;,(0.0,0.0,0.0));
+<span class="lineno">24</span>#11=DIRECTION(&#x27;z&#x27;,(0.0,0.0,1.0));
+<span class="lineno">25</span>#12=DIRECTION(&#x27;x&#x27;,(1.0,0.0,0.0));
+<span class="lineno">26</span>#13=AXIS2_PLACEMENT_3D(&#x27;plane_pl&#x27;,#10,#11,#12);
+<span class="lineno">27</span>#14=PLANE(&#x27;host_plane&#x27;,#13);
+<span class="lineno">28</span>/* 2D parameter context. */
+<span class="lineno">29</span>#20=(GEOMETRIC_REPRESENTATION_CONTEXT(2)
+<span class="lineno">30</span>     PARAMETRIC_REPRESENTATION_CONTEXT()
+<span class="lineno">31</span>     REPRESENTATION_CONTEXT(&#x27;uv&#x27;,&#x27;2D&#x27;));
+<span class="lineno">32</span>/* Underlying unbounded 2D line in (u,v): origin (0,0), direction +u. */
+<span class="lineno">33</span>#30=CARTESIAN_POINT(&#x27;uv0&#x27;,(0.0,0.0));
+<span class="lineno">34</span>#31=DIRECTION(&#x27;uv_du&#x27;,(1.0,0.0));
+<span class="lineno">35</span>#32=VECTOR(&#x27;uv_vec&#x27;,#31,1.0);
+<span class="lineno">36</span>#33=LINE(&#x27;uv_inf_line&#x27;,#30,#32);
+<span class="lineno">37</span>/* Defect: <mark>BOUNDED_PCURVE</mark> wrapping the unbounded LINE - an entity that
+<span class="lineno">38</span>   exists precisely to give a bounded reparametrisation of an otherwise
+<span class="lineno">39</span>   infinite parametric curve. step-g loads the entity but its LoadONBrep
+<span class="lineno">40</span>   falls through to Curve::LoadONBrep stub and the pcurve never reaches
+<span class="lineno">41</span>   the ON_Brep trim. */
+<span class="lineno">42</span>#40=DEFINITIONAL_REPRESENTATION(&#x27;bp_def&#x27;,(#33),#20);
+<span class="lineno">43</span>#41=<mark>BOUNDED_PCURVE</mark>(&#x27;bp_on_plane&#x27;,#14,#40);
+<span class="lineno">44</span>ENDSEC;
+<span class="lineno">45</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Gn037.html">&larr; Gn037</a> <a class="up" href="index.html">§12.2b NURBS / B-spline</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>M090 — AP210 BoM line item with no PRODUCT_DEFINITION chain</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.8 Mixed (tessellation, validation properties, etc.)</a> <span class="sep">/</span> <span class="current">M090</span>
+</nav>
+<header class="title-bar">
+<h1>M090 <span class="sep">—</span> <span class="entry-title">AP210 BoM line item with no PRODUCT_DEFINITION chain</span></h1>
+<p class="category">§12.8 mixed (sub-class: AP210 BoM completeness)</p>
+<p class="severity-badge severity-p1">P1 — silent data loss</p>
+<p class="tag-pills">
+<a class="tag tag-spec-violation" href="../by-tag/spec-violation/index.html">spec-violation</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-8-mixed/M090.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-8-mixed/M090.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>deduced from AP210 BoM completeness rules / AP242 PDM conventions</li>
+</ul></section>
+<section><h2>Sender</h2>
+<p>deduced — ECAD exporter writing component refdes-only listings</p></section>
+<section><h2>Description</h2>
+<p>A `NEXT_ASSEMBLY_USAGE_OCCURRENCE` in a PCB BoM names a child `PRODUCT` (e.g. `R0805_10K`) but the child has no `PRODUCT_DEFINITION_FORMATION` / `PRODUCT_DEFINITION` / `SHAPE_DEFINITION_REPRESENTATION` chain. The BoM contains only a name — no geometry, no MPN association, no footprint reference. Bug-reporter language: &quot;PCB BoM has refdes but no part&quot;, &quot;AP210 component without geometry&quot;, &quot;BoM strings only&quot;.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>`NAUO(&#x27;R1&#x27;,&#x27;R1&#x27;,&#x27;at_corner&#x27;, parent_PD, child_PRODUCT, $)` where the child PRODUCT has no PD.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>detect missing PD chain; either synthesize a placeholder PD, drop the line item, or reject the BoM.</p></section>
+<section><h2>Notes</h2>
+<p>Synonyms: &quot;BoM stub&quot;, &quot;PCB part definition missing&quot;, &quot;AP210 NAUO has no PRODUCT_DEFINITION chain&quot;, &quot;BoM line item is name-only&quot;, &quot;PDM child has no geometry&quot;.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>contains(b&#x27;ELECTRONIC_ASSEMBLY_INTERCONNECT_AND_PACKAGING_DESIGN&#x27;)</code></li>
+<li><code>contains(b&#x27;NEXT_ASSEMBLY_USAGE_OCCURRENCE&#x27;)</code></li>
+</ul></section>
+<section><h2>Live oracle output</h2>
+<table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
+<tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>no_shapes_loaded</code></td></tr>
+</tbody></table>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* M090 - AP210 BoM line item references no physical part definition.
+<span class="lineno">3</span> * Defect: a <mark>NEXT_ASSEMBLY_USAGE_OCCURRENCE</mark> in a PCB BoM lists a child
+<span class="lineno">4</span> * PRODUCT (e.g. &#x27;R0805_10K&#x27;) with no PRODUCT_DEFINITION_FORMATION /
+<span class="lineno">5</span> * PRODUCT_DEFINITION / SHAPE_DEFINITION_REPRESENTATION chain attached.
+<span class="lineno">6</span> * The BoM has the part name but no geometry, no footprint, no MPN -
+<span class="lineno">7</span> * the BoM is a list of strings, not a list of parts. */
+<span class="lineno">8</span>HEADER;
+<span class="lineno">9</span>FILE_DESCRIPTION((&#x27;M090 test case&#x27;,&#x27;AP210 BoM item with no part definition chain&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">10</span>FILE_NAME(&#x27;M090.stp&#x27;,&#x27;2026-04-30T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">11</span>FILE_SCHEMA((&#x27;<mark>ELECTRONIC_ASSEMBLY_INTERCONNECT_AND_PACKAGING_DESIGN</mark> { 1 0 10303 210 3 1 0 }&#x27;));
+<span class="lineno">12</span>ENDSEC;
+<span class="lineno">13</span>DATA;
+<span class="lineno">14</span>#1=APPLICATION_CONTEXT(&#x27;electronic_assembly_interconnect_and_packaging_design&#x27;);
+<span class="lineno">15</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,
+<span class="lineno">16</span>  &#x27;electronic_assembly_interconnect_and_packaging_design&#x27;,2014,#1);
+<span class="lineno">17</span>#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">18</span>/* Top-level board */
+<span class="lineno">19</span>#100=PRODUCT(&#x27;PCB1&#x27;,&#x27;main board&#x27;,&#x27;PCB top assembly&#x27;,(#1));
+<span class="lineno">20</span>#101=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#100);
+<span class="lineno">21</span>#102=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,#101,#1);
+<span class="lineno">22</span>/* Child resistor PRODUCT - no PDF, no PD, no SDR */
+<span class="lineno">23</span>#200=PRODUCT(&#x27;R0805_10K&#x27;,&#x27;10K 0805 resistor&#x27;,&#x27;&#x27;,(#1));
+<span class="lineno">24</span>/* Defect: NAUO references #200 directly without going through a
+<span class="lineno">25</span> * PRODUCT_DEFINITION; the placement is geometry-less. */
+<span class="lineno">26</span>#300=<mark>NEXT_ASSEMBLY_USAGE_OCCURRENCE</mark>(&#x27;R1&#x27;,&#x27;R1&#x27;,&#x27;at_corner&#x27;,
+<span class="lineno">27</span>       #102,#200,$);
+<span class="lineno">28</span>ENDSEC;
+<span class="lineno">29</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="M089.html">&larr; M089</a> <a class="up" href="index.html">§12.8 Mixed (tessellation, validation properties, etc.)</a> <a class="next" href="M091.html">M091 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

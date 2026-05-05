@@ -1,0 +1,21 @@
+ISO-10303-21;
+/* Lh045 - Cross-section reference to an undefined section name
+ * Defect: section 'pmi' references @geomtry#10 (typo) when only
+ * 'geometry' exists. Strict readers reject; lenient ones silently
+ * substitute null or bind to a wrong same-named instance. */
+HEADER;
+FILE_DESCRIPTION(('Lh045 - cross-section ref to undefined section name'),'2;1');
+FILE_NAME('Lh045.stp','2026-04-30T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA('geometry');
+#1=APPLICATION_CONTEXT('automotive_design');
+#10=CARTESIAN_POINT('p',(0.0,0.0,0.0));
+#11=DIRECTION('z',(0.0,0.0,1.0));
+#12=DIRECTION('x',(1.0,0.0,0.0));
+ENDSEC;
+DATA('pmi');
+/* Defect: section 'geomtry' (typo) does not exist anywhere. */
+#5=AXIS2_PLACEMENT_3D('p',@geomtry#10,@geometry#11,@geometry#12);
+ENDSEC;
+END-ISO-10303-21;

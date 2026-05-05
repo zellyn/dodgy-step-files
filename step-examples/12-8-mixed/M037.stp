@@ -1,0 +1,49 @@
+ISO-10303-21;
+/* M037 - AP209 FEM element with wrong node count.
+ * Defect: a CURVE_3D_ELEMENT_DESCRIPTOR declares quadratic_tetrahedron
+ * topology (which requires 10 nodes) but the actual element_descriptor
+ * lists only 8 nodes. Schema readers should drop the element with a
+ * warning. */
+HEADER;
+FILE_DESCRIPTION(('M037 test case','AP209 quadratic_tetrahedron with 8 nodes'),'2;1');
+FILE_NAME('M037.stp','2026-04-26T00:00:00',(''),(''),'auto-generated','','');
+FILE_SCHEMA(('STRUCTURAL_ANALYSIS_DESIGN { 1 0 10303 209 1 0 0 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('structural_analysis_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
+  'structural_analysis_design',2001,#1);
+#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#11=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#12=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.E-6),#10,'distance_accuracy_value','');
+#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+     GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13))
+     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12))
+     REPRESENTATION_CONTEXT('fea','3D'));
+/* Eight FEA nodes - corner nodes of a tet plus four extras. A
+ * conformant quadratic_tetrahedron requires TEN nodes (4 corners +
+ * 6 mid-edge); here we provide 8, so the element is malformed. */
+#100=CARTESIAN_POINT('n1',(0.0,0.0,0.0));
+#101=CARTESIAN_POINT('n2',(1.0,0.0,0.0));
+#102=CARTESIAN_POINT('n3',(0.5,1.0,0.0));
+#103=CARTESIAN_POINT('n4',(0.5,0.5,1.0));
+#104=CARTESIAN_POINT('n5',(0.5,0.0,0.0));
+#105=CARTESIAN_POINT('n6',(0.75,0.5,0.0));
+#106=CARTESIAN_POINT('n7',(0.25,0.5,0.0));
+#107=CARTESIAN_POINT('n8',(0.25,0.25,0.5));
+#110=NODE('n1',(#100),$);
+#111=NODE('n2',(#101),$);
+#112=NODE('n3',(#102),$);
+#113=NODE('n4',(#103),$);
+#114=NODE('n5',(#104),$);
+#115=NODE('n6',(#105),$);
+#116=NODE('n7',(#106),$);
+#117=NODE('n8',(#107),$);
+/* Defect: descriptor declares quadratic_tetrahedron but lists only 8
+ * nodes (should be 10). AP209 uses VOLUME_3D_ELEMENT_DESCRIPTOR for tets;
+ * CURVE_3D_ELEMENT_DESCRIPTOR is for 1D elements. */
+#200=VOLUME_3D_ELEMENT_DESCRIPTOR('quad_tet','quadratic_tetrahedron',
+       (#110,#111,#112,#113,#114,#115,#116,#117));
+ENDSEC;
+END-ISO-10303-21;

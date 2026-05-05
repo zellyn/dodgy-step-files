@@ -1,0 +1,25 @@
+/* Le008 — \S\X (8-bit shift) directive: misuse, chaining, or apostrophe-after-\S\
+   Defect: \S\x is a one-character operator that adds 0x80 to the next byte.
+   This file emits two pathological patterns:
+     - byte after \S\ is an apostrophe: 'abc\S\'def' — naive parsers close
+       the string early instead of taking the apostrophe as the operand.
+     - illegal chaining 'caf\S\\S\i' — ambiguous, must not recurse into
+       further directive parsing. */
+ISO-10303-21;
+HEADER;
+FILE_DESCRIPTION(('Le008 - S directive misuse / apostrophe-after-S'),'2;1');
+FILE_NAME('Le008.stp','2026-04-26T00:00:00',('auto-generated'),(''),
+  'auto-generated','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+/* apostrophe is the operand of \S\ — string is seven characters long */
+#10=PERSON('p1','abc\S\'def','given',$,$,$,$,$);
+/* illegal chaining: \S\\S\i */
+#11=PERSON('p2','caf\S\\S\i','given',$,$,$,$,$);
+#20=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#21=DIRECTION('',(0.0,0.0,1.0));
+#22=DIRECTION('',(1.0,0.0,0.0));
+#23=AXIS2_PLACEMENT_3D('',#20,#21,#22);
+ENDSEC;
+END-ISO-10303-21;

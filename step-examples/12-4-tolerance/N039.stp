@@ -1,0 +1,46 @@
+/* N039 - ShapeFix_Shape increases tolerance of valid sub-shapes (over-eager bump)
+ * Defect: ShapeFix_Shape historically inflated edge/vertex tolerances even
+ * when the existing tolerance covered the actual deviation. The fix routine
+ * touched every sub-shape, even ones that did not need it. Combined with
+ * SafeInputMode=false, this also mutated the input shape.
+ * Reproducer: shape whose declared tolerance 1e-6 already covers all
+ * deviations; ShapeFix bumps every edge/vertex tolerance to 1e-3 anyway.
+ */
+ISO-10303-21;
+HEADER;
+FILE_DESCRIPTION(('N039 ShapeFix_Shape over-eager tolerance bump on valid sub-shapes'),'2;1');
+FILE_NAME('N039.stp','2026-04-26T00:00:00',(''),(''),
+  'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
+  'automotive_design',2009,#1);
+#10=CARTESIAN_POINT('p0',(0.0,0.0,0.0));
+#11=CARTESIAN_POINT('p1',(10.0,0.0,0.0));
+#12=CARTESIAN_POINT('p2',(20.0,0.0,0.0));
+#20=VERTEX_POINT('precise_v0',#10);
+#21=VERTEX_POINT('precise_v1',#11);
+#22=VERTEX_POINT('precise_v2',#12);
+#30=DIRECTION('+x',(1.0,0.0,0.0));
+#31=VECTOR('',#30,10.0);
+#32=LINE('',#10,#31);
+#33=LINE('',#11,#31);
+#40=EDGE_CURVE('precise_edge_a',#20,#21,#32,.T.);
+#41=EDGE_CURVE('precise_edge_b',#21,#22,#33,.T.);
+#50=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#51=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#52=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+/* Native precision is 1e-6; ShapeFix bumped tol to 1e-3 across the board
+ * even though deviations all fit comfortably under 1e-6. */
+#60=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-6),#50,
+  'distance_accuracy_value','native_precision');
+#61=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-3),#50,
+  'distance_accuracy_value','tol_post_ShapeFix_overbumped');
+#70=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#60,#61))
+  GLOBAL_UNIT_ASSIGNED_CONTEXT((#50,#51,#52))
+  REPRESENTATION_CONTEXT('ctx','3D'));
+ENDSEC;
+END-ISO-10303-21;

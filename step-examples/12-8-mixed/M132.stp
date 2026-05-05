@@ -1,0 +1,24 @@
+ISO-10303-21;
+/* M132 - AP203 material-class APPLIED_GROUP_ASSIGNMENT without a
+ * material reference.
+ * Defect: an APPLIED_GROUP_ASSIGNMENT classifies a part as belonging
+ * to a 'material' group but the GROUP carries no MATERIAL_DESIGNATION
+ * or specification reference. The part is tagged as having a material
+ * but with no actual material identified. */
+HEADER;
+FILE_DESCRIPTION(('M132 test case','AP203 material group missing designation'),'2;1');
+FILE_NAME('M132.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('CONFIG_CONTROL_DESIGN'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('configuration controlled 3D design of mechanical parts and assemblies');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','config_control_design',1994,#1);
+#10=PRODUCT('shaft','shaft','rotating shaft',(#1));
+#20=PRODUCT_DEFINITION_FORMATION('rev_A','released',#10);
+#30=PRODUCT_DEFINITION('design','',#20,#1);
+/* Defect: GROUP claims to identify a material but has no
+ * MATERIAL_DESIGNATION linked. */
+#100=GROUP('material_class','steel category - unspecified grade');
+#101=APPLIED_GROUP_ASSIGNMENT(#100,(#30));
+ENDSEC;
+END-ISO-10303-21;

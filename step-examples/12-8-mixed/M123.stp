@@ -1,0 +1,30 @@
+ISO-10303-21;
+/* M123 - AP209 element references the same node twice.
+ * Defect: a VOLUME_3D_ELEMENT_DESCRIPTOR for a linear_tetrahedron
+ * (4 distinct corner nodes mandated) lists nodes (n1, n2, n3, n2) -
+ * node 2 appears twice. The element collapses to a triangle of
+ * zero volume. */
+HEADER;
+FILE_DESCRIPTION(('M123 test case','AP209 element with duplicate node reference'),'2;1');
+FILE_NAME('M123.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('STRUCTURAL_ANALYSIS_DESIGN { 1 0 10303 209 1 0 0 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('structural_analysis_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
+  'structural_analysis_design',2001,#1);
+#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10))
+     REPRESENTATION_CONTEXT('fea','3D'));
+#100=CARTESIAN_POINT('p1',(0.0,0.0,0.0));
+#101=CARTESIAN_POINT('p2',(1.0,0.0,0.0));
+#102=CARTESIAN_POINT('p3',(0.5,1.0,0.0));
+#110=NODE('n1',(#100),$);
+#111=NODE('n2',(#101),$);
+#112=NODE('n3',(#102),$);
+/* Defect: tet has only 3 unique node references; n2 is repeated. */
+#200=VOLUME_3D_ELEMENT_DESCRIPTOR('degenerate_tet','linear_tetrahedron',
+       (#110,#111,#112,#111));
+ENDSEC;
+END-ISO-10303-21;

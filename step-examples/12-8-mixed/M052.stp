@@ -1,0 +1,71 @@
+ISO-10303-21;
+/* M052 - Open shell where closed solid expected (sheet-vs-solid
+ * demotion).
+ * Defect: a topologically closed solid is emitted as OPEN_SHELL
+ * inside SHELL_BASED_SURFACE_MODEL instead of MANIFOLD_SOLID_BREP.
+ * Round-trip through OCCT writer can demote `closed_shell` to
+ * `open_shell`; FEA/CFD pipelines reject the body for meshing.
+ * This fixture: the cube's six faces topologically close, but the
+ * root entity in the ABSR is OPEN_SHELL inside a
+ * SHELL_BASED_SURFACE_MODEL - not MANIFOLD_SOLID_BREP. */
+HEADER;
+FILE_DESCRIPTION(('M052 test case','closed cube emitted as OPEN_SHELL'),'2;1');
+FILE_NAME('M052.stp','2026-04-26T00:00:00',(''),(''),'auto-generated','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#11=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#12=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.E-6),#10,'distance_accuracy_value','');
+#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+     GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13))
+     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12))
+     REPRESENTATION_CONTEXT('part','3D'));
+/* Cube topology is elided; the structural defect is the OPEN_SHELL
+ * at the root of the SBSM. */
+/* --- single triangular face placeholder for OPEN_SHELL --- */
+#5700=CARTESIAN_POINT('p0',(0.0,0.0,0.0));
+#5701=CARTESIAN_POINT('p1',(1.0,0.0,0.0));
+#5702=CARTESIAN_POINT('p2',(0.0,1.0,0.0));
+#5710=VERTEX_POINT('',#5700);
+#5711=VERTEX_POINT('',#5701);
+#5712=VERTEX_POINT('',#5702);
+#5720=DIRECTION('dx',(1.0,0.0,0.0));
+#5721=DIRECTION('dy',(0.0,1.0,0.0));
+#5722=DIRECTION('dz',(0.0,0.0,1.0));
+#5730=VECTOR('vx',#5720,1.0);
+#5731=VECTOR('vy',#5721,1.0);
+#5732=VECTOR('vd',#5720,1.0);
+#5740=LINE('',#5700,#5730);
+#5741=DIRECTION('dxy',(-0.7071067811865476,0.7071067811865476,0.0));
+#5742=VECTOR('vxy',#5741,1.4142135623730951);
+#5743=LINE('',#5701,#5742);
+#5744=LINE('',#5700,#5731);
+#5760=EDGE_CURVE('',#5710,#5711,#5740,.T.);
+#5761=EDGE_CURVE('',#5711,#5712,#5743,.T.);
+#5762=EDGE_CURVE('',#5710,#5712,#5744,.T.);
+#5780=AXIS2_PLACEMENT_3D('',#5700,#5722,#5720);
+#5790=PLANE('',#5780);
+#5800=ORIENTED_EDGE('',*,*,#5760,.T.);
+#5801=ORIENTED_EDGE('',*,*,#5761,.T.);
+#5802=ORIENTED_EDGE('',*,*,#5762,.F.);
+#5830=EDGE_LOOP('',(#5800,#5801,#5802));
+#5840=FACE_OUTER_BOUND('',#5830,.T.);
+#5850=ADVANCED_FACE('placeholder',(#5840),#5790,.T.);
+/* OPEN_SHELL replacing empty () body */
+#100=OPEN_SHELL('topologically_closed_but_open',(#5850));
+#110=SHELL_BASED_SURFACE_MODEL('demoted_cube',(#100));
+#120=ADVANCED_BREP_SHAPE_REPRESENTATION('cube_as_sheet',(#110),#14);
+/* Minimal PRODUCT chain so OCCT TransferRoots produces a shape. */
+#9010=PRODUCT_CONTEXT('',#1,'mechanical');
+#9011=PRODUCT('M052','M052','',(#9010));
+#9012=PRODUCT_DEFINITION_FORMATION('','',#9011);
+#9013=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9014=PRODUCT_DEFINITION('','',#9012,#9013);
+#9015=PRODUCT_DEFINITION_SHAPE('','',#9014);
+#9051=SHAPE_DEFINITION_REPRESENTATION(#9015,#120);
+ENDSEC;
+END-ISO-10303-21;

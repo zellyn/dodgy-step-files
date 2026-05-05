@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>§12.2a Pcurve defects</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="section">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <span class="current">§12.2a Pcurve defects</span>
+</nav>
+<header class="title-bar">
+<h1>§12.2a Pcurve defects</h1>
+<p class="blurb">Pcurve / parametric-curve defects: near-period mismatches, out-of-bounds parameters, degenerate or seam pcurves.</p>
+<p class="meta">33 entries</p>
+</header>
+<main>
+<table class="entries"><thead><tr><th>ID</th><th>Title</th><th>Provenance</th><th>Expected validation</th></tr></thead><tbody>
+<tr><td><a href="Gp001.html"><code>Gp001</code></a></td><td>Missing pcurve on edge — only the 3D curve representation is present</td><td><code>bytes-sufficient</code></td><td><code>occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Gp002.html"><code>Gp002</code></a></td><td>Pcurve endpoints disagree with edge vertex 3D positions</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Gp005.html"><code>Gp005</code></a></td><td>Pcurve with single-pole apex on sphere/cone (singularity)</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Gp007.html"><code>Gp007</code></a></td><td>Edge parameter range outside the pcurve&#x27;s natural domain</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Gp008.html"><code>Gp008</code></a></td><td>Pcurve oscillations producing wire-intersector corruption</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Gp010.html"><code>Gp010</code></a></td><td>Surface_curve.associated_geometry contains a 3D curve in lieu of pcurve</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Gp011.html"><code>Gp011</code></a></td><td>Seam curve with same pcurve referenced twice</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Gp012.html"><code>Gp012</code></a></td><td>`SURFACE_CURVE` / seam-curve `associated_geometry` list contains a null `$` entry</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Gp013.html"><code>Gp013</code></a></td><td>CATIA &quot;like-seam&quot;: two pcurves on same near-closed `B_SPLINE_SURFACE_WITH_KNOTS`</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Gp014.html"><code>Gp014</code></a></td><td>Shared pcurve across multiple edges (SYRKO)</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Gp015.html"><code>Gp015</code></a></td><td>Pcurve/3D-curve trimming failure (&quot;Trimming of 2D curve failed&quot;)</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Gp016.html"><code>Gp016</code></a></td><td>Pcurve in shifted/transformed UV frame relative to host surface</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Gp018.html"><code>Gp018</code></a></td><td>Pcurve gaps / nearly-duplicate pcurves near periodic boundary after `B_SPLINE_SURFACE` conversion</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Gp019.html"><code>Gp019</code></a></td><td>Edge on a composite-surface face is missing per-patch pcurve</td><td><code>bytes-sufficient</code></td><td><code>occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Gp020.html"><code>Gp020</code></a></td><td>2D gap between adjacent edges in wire — pcurves disagree in UV</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Gp021.html"><code>Gp021</code></a></td><td>3D curve and pcurve on same edge disagree about edge location (skewed/off-unit pcurve `LINE`)</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Gp022.html"><code>Gp022</code></a></td><td>`EDGE_CURVE` `SameParameter=.T.` asserted but 3D curve and pcurve use different parameterisations (degenerate B-spline pcurve)</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Gp023.html"><code>Gp023</code></a></td><td>Point-projection onto trimmed periodic `CYLINDRICAL_SURFACE` returns UV outside trimmed band (pcurve start parameter shifted by period)</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Gp024.html"><code>Gp024</code></a></td><td>Pcurve refit after non-uniform scale produces large errors</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Gp026.html"><code>Gp026</code></a></td><td>`EDGE_LOOP` contour not closed in UV (Jordan-curve violation across periodic-surface seam)</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Gp027.html"><code>Gp027</code></a></td><td>Closed-face splitter leaves new pcurves out of sync with 3D curves on `CYLINDRICAL_SURFACE`</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Gp028.html"><code>Gp028</code></a></td><td>Wire crosses periodic-surface seam without an explicit seam edge (pcurve trim range vs vertex angular position mismatch)</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Gp029.html"><code>Gp029</code></a></td><td>Period-shift fix on revolved face leaves wire in inconsistent UV band, blocks meshing</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Gp030.html"><code>Gp030</code></a></td><td>Bent / polyline-form `B_SPLINE` pcurve from PRO/E IGES requires protective handling</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Gp031.html"><code>Gp031</code></a></td><td>Cylinder represented twice as duplicate `CYLINDRICAL_SURFACE` instances loses analytic identity</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Gp033.html"><code>Gp033</code></a></td><td>B-spline curve has C0 internal break that downstream tools cannot ingest</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Gp034.html"><code>Gp034</code></a></td><td>Composite curve segments do not meet within connectivity tolerance</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Gp035.html"><code>Gp035</code></a></td><td>Edge has 3D curve but no pcurve, requiring projection onto host surface</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Gp036.html"><code>Gp036</code></a></td><td>Pcurve shifting on non-periodic surface produces wrong result</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Gp037.html"><code>Gp037</code></a></td><td>Pcurve projection produces infinite line instead of bounded</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Gp038.html"><code>Gp038</code></a></td><td>Vertex 3D point and pcurve do not match within tolerance</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Gp039.html"><code>Gp039</code></a></td><td>Pcurve projection unstable on closed B-spline curve</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Gp040.html"><code>Gp040</code></a></td><td>Pcurves emitted by default duplicate / contradict the surface 3D curve</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+</tbody></table>
+</main>
+<footer>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

@@ -1,0 +1,67 @@
+ISO-10303-21;
+/*
+ * A013 — STEPCAFControl_Reader::Transfer returns true even when external
+ *        files are missing
+ * Defect (OCCT 3b7f55e / Mantis 0029873, Datakit AP242 federation, DDP
+ *         cross-file refs):
+ *   APPLIED_EXTERNAL_IDENTIFICATION_ASSIGNMENT paths don't exist; OCCT
+ *   silently fails resolution but Transfer() returns success. AP242 also
+ *   supports referencing a face/edge in a separate Part 21 file via DDP /
+ *   External Element Reference. When the package is repacked or split, the
+ *   references break.
+ * Expected kernel: try alternate paths from DOCUMENT_FILE; report failure
+ *   honestly; archive-stable requires DDP integrity check; reject if
+ *   cross-file refs do not resolve.
+ */
+HEADER;
+FILE_DESCRIPTION(('A013 external file reference to part_3.stp does not exist'),'2;1');
+FILE_NAME('A013.stp','2026-04-26T00:00:00',('catalog'),('cad'),'manual','','');
+FILE_SCHEMA(('AP242_MANAGED_MODEL_BASED_3D_ENGINEERING_MIM_LF { 1 0 10303 442 3 0 0 }'));
+ENDSEC;
+DATA;
+#10 = APPLICATION_CONTEXT('managed model based 3d engineering');
+#11 = APPLICATION_PROTOCOL_DEFINITION('international standard','ap242_managed_model_based_3d_engineering',2020,#10);
+#12 = PRODUCT_CONTEXT('',#10,'mechanical');
+#13 = PRODUCT_DEFINITION_CONTEXT('part definition',#10,'design');
+#20 = PRODUCT('A013_ASSY','federation parent','',(#12));
+#21 = PRODUCT_DEFINITION_FORMATION('','',#20);
+#22 = PRODUCT_DEFINITION('design','',#21,#13);
+#23 = PRODUCT_DEFINITION_SHAPE('','',#22);
+/* Local visible child */
+#30 = PRODUCT('LOCAL_PART','present locally','',(#12));
+#31 = PRODUCT_DEFINITION_FORMATION('','',#30);
+#32 = PRODUCT_DEFINITION('design','',#31,#13);
+#33 = PRODUCT_DEFINITION_SHAPE('','',#32);
+/* Remote external child whose payload is in another file (missing) */
+#34 = PRODUCT('REMOTE_PART','externally defined','',(#12));
+#35 = PRODUCT_DEFINITION_FORMATION('','',#34);
+#36 = PRODUCT_DEFINITION('design','',#35,#13);
+#37 = PRODUCT_DEFINITION_SHAPE('','',#36);
+#40 = NEXT_ASSEMBLY_USAGE_OCCURRENCE('1','LOCAL','',#22,#32,$);
+#41 = NEXT_ASSEMBLY_USAGE_OCCURRENCE('2','REMOTE','',#22,#36,$);
+#50 = ( LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT(.MILLI.,.METRE.) );
+#51 = ( NAMED_UNIT(*) PLANE_ANGLE_UNIT() SI_UNIT($,.RADIAN.) );
+#52 = ( NAMED_UNIT(*) SI_UNIT($,.STERADIAN.) SOLID_ANGLE_UNIT() );
+#53 = UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#50,'distance_accuracy_value','');
+#54 = ( GEOMETRIC_REPRESENTATION_CONTEXT(3) GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#53))
+        GLOBAL_UNIT_ASSIGNED_CONTEXT((#50,#51,#52)) REPRESENTATION_CONTEXT('','3D') );
+#60 = CARTESIAN_POINT('',(0.0,0.0,0.0));
+#61 = DIRECTION('',(0.0,0.0,1.0));
+#62 = DIRECTION('',(1.0,0.0,0.0));
+#63 = AXIS2_PLACEMENT_3D('local_origin',#60,#61,#62);
+#64 = SHAPE_REPRESENTATION('local_rep',(#63),#54);
+#65 = SHAPE_DEFINITION_REPRESENTATION(#33,#64);
+#66 = REPRESENTATION_MAP(#63,#64);
+#67 = MAPPED_ITEM('local_inst',#66,#63);
+#80 = AXIS2_PLACEMENT_3D('assy_origin',#60,#61,#62);
+#81 = SHAPE_REPRESENTATION('assy_rep',(#80,#67),#54);
+#82 = SHAPE_DEFINITION_REPRESENTATION(#23,#81);
+/* DEFECT: assignment claims part_3.stp contains the geometry of REMOTE_PART,
+   but on real disks the file is missing. OCCT Transfer() returns true. */
+#90 = DOCUMENT_TYPE('digital');
+#91 = PRODUCT_DEFINITION_OR_PRODUCT_DEFINITION_RELATIONSHIP_OR_BREAKDOWN_TYPE('part_3 reference');
+#92 = DOCUMENT('part_3','external part','part_3.stp',#90);
+#93 = APPLIED_EXTERNAL_IDENTIFICATION_ASSIGNMENT('part_3.stp','document_id',
+        IDENTIFICATION_ROLE('document','',$),#36,EXTERNAL_SOURCE('part_3.stp'));
+ENDSEC;
+END-ISO-10303-21;

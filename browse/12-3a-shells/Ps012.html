@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Ps012 — Sweep silently truncated to a CONICAL_SURFACE</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.3a Shells / orientation</a> <span class="sep">/</span> <span class="current">Ps012</span>
+</nav>
+<header class="title-bar">
+<h1>Ps012 <span class="sep">—</span> <span class="entry-title">Sweep silently truncated to a CONICAL_SURFACE</span></h1>
+<p class="category">§12.3a shells / orientation (sub-class: pathological-success / surface-simplification)</p>
+<p class="severity-badge severity-p1">P1 — silent data loss</p>
+<p class="tag-pills">
+<a class="tag tag-topology" href="../by-tag/topology/index.html">topology</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-3a-shells/Ps012.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-3a-shells/Ps012.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>deduced from CONICAL_SURFACE vs SURFACE_OF_REVOLUTION semantics</li>
+<li>bug-report patterns &quot;swept profile lost&quot;, &quot;vase imported as cone&quot;, &quot;B-spline simplified during export&quot;</li>
+</ul></section>
+<section><h2>Description</h2>
+<p>A producer modelled a &quot;vase&quot; — a closed solid of revolution whose generatrix is a B-spline curve that bulges outward at mid-height. The export pipeline simplified the generatrix to a single straight line, yielding a CONICAL_SURFACE. The resulting solid is a perfectly valid frustum-like cone; the producer thought it was a curved vase. The file is clean and topologically sound.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>A frustum of revolution: cone apex on Z-axis, half-angle small enough that radius goes from 5 at z=0 to 2 at z=10. Top and bottom planar disk faces, side cone face. CLOSED_SHELL, MANIFOLD_SOLID_BREP.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>Warn and accept: a kernel cannot detect this from the file alone, but it normalizes and exposes the surface type (CONICAL_SURFACE, SURFACE_OF_REVOLUTION, B_SPLINE_SURFACE, ..) and the actual generatrix curve so downstream tools or DRC checks can compare against the producer&#x27;s intent if it&#x27;s known. A &quot;surface-type histogram&quot; output is a common kernel feature for this purpose.</p></section>
+<section><h2>Notes</h2>
+<p>Tier-3 metric: count of CONICAL_SURFACE / CYLINDRICAL_SURFACE / B_SPLINE_SURFACE per representation; cross-check against expected counts from metadata. Real-vs-intended-curvature deviation can be computed from sample points if the original generatrix is available. Synonyms: &quot;swept profile lost&quot;, &quot;vase imported as cone&quot;, &quot;B-spline simplified during export&quot;, &quot;curved generatrix replaced by straight line&quot;, &quot;complex revolution simplified to frustum&quot;.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a</code></p></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>face[0].surface_type == &quot;cone&quot;</code></li>
+<li><code>face[1].surface_type == &quot;plane&quot;</code></li>
+<li><code>face[2].surface_type == &quot;plane&quot;</code></li>
+<li><code>n_edges_total &gt;= 4</code></li>
+</ul></section>
+<section><h2>Live oracle output</h2>
+<table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
+<tr><td><code>occt_heal_on</code></td><td><code>shape(1)</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>shape(1)</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>shape(9)</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>shape(9)</code></td></tr>
+<tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>not_manifold</code></td></tr>
+</tbody></table>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>/* Ps012 - Swept solid silently truncated to a simple cone - kernel accepts file silently; tier-3 introspection reveals intended swept profile became a straight CONICAL_SURFACE */
+<span class="lineno">2</span>ISO-10303-21;
+<span class="lineno">3</span>HEADER;
+<span class="lineno">4</span>FILE_DESCRIPTION((&#x27;Ps012 pathological-success&#x27;,&#x27;Sweep collapsed to a cone&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">5</span>FILE_NAME(&#x27;Ps012.stp&#x27;,&#x27;2026-04-26T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;manual&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">6</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }&#x27;));
+<span class="lineno">7</span>ENDSEC;
+<span class="lineno">8</span>DATA;
+<span class="lineno">9</span>#1=APPLICATION_CONTEXT(&#x27;automotive_design&#x27;);
+<span class="lineno">10</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,&#x27;automotive_design&#x27;,2000,#1);
+<span class="lineno">11</span>/* Producer&#x27;s part: a &quot;vase&quot; -- a closed solid of revolution whose
+<span class="lineno">12</span>   profile is a B-spline curve that bulges outward at mid-height and
+<span class="lineno">13</span>   pinches at top. The export pipeline simplified the swept profile
+<span class="lineno">14</span>   to a single straight line, yielding a CONICAL_SURFACE. The kernel
+<span class="lineno">15</span>   gets a perfectly valid frustum-like solid; the producer thought it
+<span class="lineno">16</span>   was a curved vase. The shape is wrong but the file is clean. */
+<span class="lineno">17</span>/* Cone parameters: base radius 5 at z=0, apex angle so radius is 2 at z=10 */
+<span class="lineno">18</span>#100=CARTESIAN_POINT(&#x27;cone_apex&#x27;,(0.0,0.0,16.666666666666668));
+<span class="lineno">19</span>#101=DIRECTION(&#x27;cone_axis&#x27;,(0.0,0.0,-1.0));
+<span class="lineno">20</span>#102=DIRECTION(&#x27;cone_ref&#x27;,(1.0,0.0,0.0));
+<span class="lineno">21</span>#103=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#100,#101,#102);
+<span class="lineno">22</span>#104=CONICAL_SURFACE(&#x27;truncated_vase&#x27;,#103,0.0,0.16514867741462683);
+<span class="lineno">23</span>/* Top and bottom circular boundaries */
+<span class="lineno">24</span>#110=CARTESIAN_POINT(&#x27;center_bot&#x27;,(0.0,0.0,0.0));
+<span class="lineno">25</span>#111=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#110,#101,#102);
+<span class="lineno">26</span>#112=CIRCLE(&#x27;bot_circle&#x27;,#111,5.0);
+<span class="lineno">27</span>#120=CARTESIAN_POINT(&#x27;center_top&#x27;,(0.0,0.0,10.0));
+<span class="lineno">28</span>#121=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#120,#101,#102);
+<span class="lineno">29</span>#122=CIRCLE(&#x27;top_circle&#x27;,#121,2.0);
+<span class="lineno">30</span>/* Vertices on each circle (seam vertex) */
+<span class="lineno">31</span>#130=CARTESIAN_POINT(&#x27;seam_bot&#x27;,(5.0,0.0,0.0));
+<span class="lineno">32</span>#131=CARTESIAN_POINT(&#x27;seam_top&#x27;,(2.0,0.0,10.0));
+<span class="lineno">33</span>#132=VERTEX_POINT(&#x27;&#x27;,#130);
+<span class="lineno">34</span>#133=VERTEX_POINT(&#x27;&#x27;,#131);
+<span class="lineno">35</span>/* Seam line on the cone */
+<span class="lineno">36</span>#140=DIRECTION(&#x27;seam_dir&#x27;,(-0.2873478855663453,0.0,0.9578262852211513));
+<span class="lineno">37</span>#141=VECTOR(&#x27;seam_vec&#x27;,#140,10.44030650891055);
+<span class="lineno">38</span>#142=LINE(&#x27;seam_line&#x27;,#130,#141);
+<span class="lineno">39</span>#143=EDGE_CURVE(&#x27;seam&#x27;,#132,#133,#142,.T.);
+<span class="lineno">40</span>/* Bottom and top edges (full circles starting/ending at seam vertex) */
+<span class="lineno">41</span>#150=EDGE_CURVE(&#x27;bot_edge&#x27;,#132,#132,#112,.T.);
+<span class="lineno">42</span>#151=EDGE_CURVE(&#x27;top_edge&#x27;,#133,#133,#122,.T.);
+<span class="lineno">43</span>/* Side face: cone strip bounded by [seam, top_circle, seam_rev, bot_circle] */
+<span class="lineno">44</span>#200=ORIENTED_EDGE(&#x27;&#x27;,*,*,#143,.T.);
+<span class="lineno">45</span>#201=ORIENTED_EDGE(&#x27;&#x27;,*,*,#151,.T.);
+<span class="lineno">46</span>#202=ORIENTED_EDGE(&#x27;&#x27;,*,*,#143,.F.);
+<span class="lineno">47</span>#203=ORIENTED_EDGE(&#x27;&#x27;,*,*,#150,.F.);
+<span class="lineno">48</span>#204=EDGE_LOOP(&#x27;&#x27;,(#200,#201,#202,#203));
+<span class="lineno">49</span>#205=FACE_OUTER_BOUND(&#x27;&#x27;,#204,.T.);
+<span class="lineno">50</span>#206=ADVANCED_FACE(&#x27;cone_side&#x27;,(#205),#104,.T.);
+<span class="lineno">51</span>/* Bottom planar disk (z=0, normal -Z) */
+<span class="lineno">52</span>#210=DIRECTION(&#x27;&#x27;,(0.0,0.0,-1.0));
+<span class="lineno">53</span>#211=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#110,#210,#102);
+<span class="lineno">54</span>#212=PLANE(&#x27;bot_disk&#x27;,#211);
+<span class="lineno">55</span>#213=ORIENTED_EDGE(&#x27;&#x27;,*,*,#150,.F.);
+<span class="lineno">56</span>#214=EDGE_LOOP(&#x27;&#x27;,(#213));
+<span class="lineno">57</span>#215=FACE_OUTER_BOUND(&#x27;&#x27;,#214,.T.);
+<span class="lineno">58</span>#216=ADVANCED_FACE(&#x27;bottom&#x27;,(#215),#212,.F.);
+<span class="lineno">59</span>/* Top planar disk (z=10, normal +Z) */
+<span class="lineno">60</span>#220=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">61</span>#221=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#120,#220,#102);
+<span class="lineno">62</span>#222=PLANE(&#x27;top_disk&#x27;,#221);
+<span class="lineno">63</span>#223=ORIENTED_EDGE(&#x27;&#x27;,*,*,#151,.T.);
+<span class="lineno">64</span>#224=EDGE_LOOP(&#x27;&#x27;,(#223));
+<span class="lineno">65</span>#225=FACE_OUTER_BOUND(&#x27;&#x27;,#224,.T.);
+<span class="lineno">66</span>#226=ADVANCED_FACE(&#x27;top&#x27;,(#225),#222,.T.);
+<span class="lineno">67</span>#500=CLOSED_SHELL(&#x27;cone_shell&#x27;,(#206,#216,#226));
+<span class="lineno">68</span>#510=MANIFOLD_SOLID_BREP(&#x27;faux_vase&#x27;,#500);
+<span class="lineno">69</span>#9000=PRODUCT_CONTEXT(&#x27;&#x27;,#1,&#x27;mechanical&#x27;);
+<span class="lineno">70</span>#9001=PRODUCT(&#x27;Ps012&#x27;,&#x27;Ps012&#x27;,&#x27;&#x27;,(#9000));
+<span class="lineno">71</span>#9002=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#9001);
+<span class="lineno">72</span>#9003=PRODUCT_DEFINITION_CONTEXT(&#x27;part definition&#x27;,#1,&#x27;design&#x27;);
+<span class="lineno">73</span>#9004=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,#9002,#9003);
+<span class="lineno">74</span>#9005=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,#9004);
+<span class="lineno">75</span>#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">76</span>#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+<span class="lineno">77</span>#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+<span class="lineno">78</span>#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,&#x27;distance_accuracy_value&#x27;,&#x27;&#x27;);
+<span class="lineno">79</span>#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT(&#x27;&#x27;,&#x27;3D&#x27;));
+<span class="lineno">80</span>#9022=ADVANCED_BREP_SHAPE_REPRESENTATION(&#x27;&#x27;,(#510),#9010);
+<span class="lineno">81</span>#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+<span class="lineno">82</span>ENDSEC;
+<span class="lineno">83</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Ps011.html">&larr; Ps011</a> <a class="up" href="index.html">§12.3a Shells / orientation</a> <a class="next" href="Ps013.html">Ps013 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

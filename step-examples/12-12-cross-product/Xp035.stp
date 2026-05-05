@@ -1,0 +1,59 @@
+ISO-10303-21;
+/* Xp035 - Cross-product: CadQuery STEP writer emits a fresh COLOUR_RGB
+ *   instance for every (object, color) pair, even when many pairs share
+ *   the same RGB tuple - the result is hundreds of redundant
+ *   COLOUR_RGB(0.5,0.5,0.5) entities and a bloated file.
+ * Source: github.com/CadQuery/cadquery issue #1689 "Exporting STEP with
+ *   colors doesn't de-duplicate as expected with different, but
+ *   same-valued Colors".
+ * Defect: three COLOUR_RGB entities (#30, #31, #32) all carry identical
+ *   (0.5,0.5,0.5) values but bind to three different STYLED_ITEMs that
+ *   reference the same face. A spec-correct writer would emit one shared
+ *   COLOUR_RGB and reuse its identity. Receivers that try to colour-pool
+ *   on import end up with three "different" colours that happen to have
+ *   the same RGB. */
+HEADER;
+FILE_DESCRIPTION(('Xp035 cross-product','CadQuery RGB de-dup miss'),'2;1');
+FILE_NAME('Xp035.stp','2026-05-02T00:00:00',(''),(''),'CadQuery;2.4','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#11=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#12=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#10,'tol','');
+#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13))GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12))REPRESENTATION_CONTEXT('','3D'));
+#20=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#21=DIRECTION('',(0.0,0.0,1.0));
+#22=DIRECTION('',(1.0,0.0,0.0));
+#23=AXIS2_PLACEMENT_3D('',#20,#21,#22);
+#24=PLANE('',#23);
+#25=ADVANCED_FACE('shared_face',(),#24,.T.);
+/* Three identical RGB tuples, three separate COLOUR_RGB entities */
+#30=COLOUR_RGB('grey_dup_1_of_3',0.5,0.5,0.5);
+#31=COLOUR_RGB('grey_dup_2_of_3',0.5,0.5,0.5);
+#32=COLOUR_RGB('grey_dup_3_of_3',0.5,0.5,0.5);
+#40=FILL_AREA_STYLE_COLOUR('',#30);
+#41=FILL_AREA_STYLE_COLOUR('',#31);
+#42=FILL_AREA_STYLE_COLOUR('',#32);
+#50=FILL_AREA_STYLE('',(#40));
+#51=FILL_AREA_STYLE('',(#41));
+#52=FILL_AREA_STYLE('',(#42));
+#60=SURFACE_STYLE_FILL_AREA(#50);
+#61=SURFACE_STYLE_FILL_AREA(#51);
+#62=SURFACE_STYLE_FILL_AREA(#52);
+#70=SURFACE_SIDE_STYLE('a',(#60));
+#71=SURFACE_SIDE_STYLE('b',(#61));
+#72=SURFACE_SIDE_STYLE('c',(#62));
+#80=SURFACE_STYLE_USAGE(.BOTH.,#70);
+#81=SURFACE_STYLE_USAGE(.BOTH.,#71);
+#82=SURFACE_STYLE_USAGE(.BOTH.,#72);
+#90=PRESENTATION_STYLE_ASSIGNMENT((#80));
+#91=PRESENTATION_STYLE_ASSIGNMENT((#81));
+#92=PRESENTATION_STYLE_ASSIGNMENT((#82));
+#100=STYLED_ITEM('',(#90),#25);
+#101=STYLED_ITEM('',(#91),#25);
+#102=STYLED_ITEM('',(#92),#25);
+ENDSEC;
+END-ISO-10303-21;

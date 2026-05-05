@@ -1,0 +1,64 @@
+ISO-10303-21;
+/* M056 - Tessellation export missing or conflicting with B-rep
+ * representation.
+ * Defect: for some assemblies tessellation data is omitted on save
+ * (downstream tools relying on AP242 graphical_pmi tessellated
+ * representation see no preview mesh). Conversely, files providing
+ * only tessellation when a B-rep consumer expects B-rep appear empty.
+ * Mixing tessellated_annotation_occurrence with curve-style
+ * annotation occurrences for the same callout is not interoperable.
+ * This fixture: an AP242 part with a TESSELLATED_SOLID and *no*
+ * MANIFOLD_SOLID_BREP. A B-rep-only consumer sees an empty body. The
+ * draughting model also mixes a tessellated annotation occurrence
+ * with a curve-based ANNOTATION_CURVE_OCCURRENCE for the same
+ * dimension callout. */
+HEADER;
+FILE_DESCRIPTION(('M056 test case','tessellation only / mixed annotation styles'),'2;1');
+FILE_NAME('M056.stp','2026-04-26T00:00:00',(''),(''),'auto-generated','','');
+FILE_SCHEMA(('AP242_MANAGED_MODEL_BASED_3D_ENGINEERING_MIM_LF { 1 0 10303 442 1 1 4 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('managed model based 3d engineering');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
+     'ap242_managed_model_based_3d_engineering',2020,#1);
+#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#11=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#12=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.E-6),#10,'distance_accuracy_value','');
+#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+     GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13))
+     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12))
+     REPRESENTATION_CONTEXT('part','3D'));
+/* Tessellated solid only - no MANIFOLD_SOLID_BREP companion. A B-rep
+ * consumer scanning for ADVANCED_BREP_SHAPE_REPRESENTATION will find
+ * the part body empty even though the tessellated mesh is present. */
+#100=CARTESIAN_POINT('tess_origin',(0.0,0.0,0.0));
+#101=COORDINATES_LIST('mesh_pts',4,
+       ((0.0,0.0,0.0),(10.0,0.0,0.0),(10.0,10.0,0.0),(0.0,10.0,0.0)));
+#110=TRIANGULATED_FACE('mesh_face',#101,$,$,
+       ((1,2,3),(1,3,4)),$);
+#120=TESSELLATED_SHELL('mesh_shell',(#110),$);
+#130=TESSELLATED_SOLID('mesh_solid',(#110),$);
+#140=TESSELLATED_SHAPE_REPRESENTATION('tess_only_body',(#130),#14);
+/* Draughting model mixes tessellated and curve-based annotation
+ * occurrences for one callout: a downstream PMI consumer seeing both
+ * for the same dimension will double-render or pick the wrong
+ * variant. */
+#200=CARTESIAN_POINT('anno_pt',(0.0,0.0,0.0));
+#201=DIRECTION('anno_z',(0.0,0.0,1.0));
+#202=DIRECTION('anno_x',(1.0,0.0,0.0));
+#203=AXIS2_PLACEMENT_3D('',#200,#201,#202);
+#204=PLANE('anno_plane',#203);
+#210=CARTESIAN_POINT('seg_a',(0.0,0.0,0.0));
+#211=CARTESIAN_POINT('seg_b',(10.0,0.0,0.0));
+#212=POLYLINE('curve_anno_polyline',(#210,#211));
+#213=GEOMETRIC_CURVE_SET('curve_anno_set',(#212));
+#214=ANNOTATION_CURVE_OCCURRENCE('dim_callout_curve_form',(),#213);
+/* Tessellated form for the *same* callout - duplicate presentation. */
+#220=COORDINATES_LIST('tess_anno_pts',2,((0.0,0.0,0.0),(10.0,0.0,0.0)));
+#221=TESSELLATED_CURVE_SET('tess_anno_curveset',#220,((1,2)));
+#222=TESSELLATED_ANNOTATION_OCCURRENCE('dim_callout_tess_form',
+       (),#221);
+#230=DRAUGHTING_MODEL('mixed_pmi_model',(#214,#222),#14);
+ENDSEC;
+END-ISO-10303-21;

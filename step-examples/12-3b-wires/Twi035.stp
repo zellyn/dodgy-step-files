@@ -1,0 +1,58 @@
+ISO-10303-21;
+/* Twi035 - Sphere given by two meridians (special wire shape)
+ * Defect: A sphere is encoded by a face whose outer wire consists of two
+ * meridian edges plus pole degenerate edges (north pole / south pole). Special
+ * case for FixShifted: must recognize the meridian-pair pattern; do not try to
+ * shift pcurves; insert pole degenerate edges if missing
+ * (ShapeFix F073 - FixShifted note). */
+HEADER;
+FILE_DESCRIPTION(('Twi035 test case','Sphere by two meridians (special wire shape)'),'2;1');
+FILE_NAME('Twi035.stp','2026-04-26T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#11=DIRECTION('',(0.0,0.0,1.0));
+#12=DIRECTION('',(1.0,0.0,0.0));
+#13=AXIS2_PLACEMENT_3D('',#10,#11,#12);
+#20=SPHERICAL_SURFACE('',#13,10.0);
+/* North and south pole vertices */
+#21=CARTESIAN_POINT('',(0.0,0.0,10.0));
+#22=VERTEX_POINT('',#21);
+#23=CARTESIAN_POINT('',(0.0,0.0,-10.0));
+#24=VERTEX_POINT('',#23);
+/* Two meridian arcs from south pole to north pole */
+#30=AXIS2_PLACEMENT_3D('',#10,#12,#11);
+#31=CIRCLE('',#30,10.0);
+#32=AXIS2_PLACEMENT_3D('',#10,#11,#12);
+#33=CIRCLE('',#32,10.0);
+/* Defect: this face is the entire sphere encoded as outer wire = two
+ * meridians + pole degenerate edges. Some senders OMIT the pole degenerate
+ * edges - leaving the wire as just two meridians sharing endpoints. */
+#40=EDGE_CURVE('',#24,#22,#31,.T.);
+#41=EDGE_CURVE('',#22,#24,#33,.T.);
+#50=ORIENTED_EDGE('',*,*,#40,.T.);
+#51=ORIENTED_EDGE('',*,*,#41,.T.);
+#60=EDGE_LOOP('',(#50,#51));
+#61=FACE_OUTER_BOUND('',#60,.T.);
+#62=ADVANCED_FACE('',(#61),#20,.T.);
+/* Wrap: minimal PRODUCT chain so OCCT TransferRoots produces a shape. */
+#9000=PRODUCT_CONTEXT('',#1,'mechanical');
+#9001=PRODUCT('Twi035','Twi035','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
+#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
+#9020=OPEN_SHELL('wrap_shell',(#62));
+#9021=SHELL_BASED_SURFACE_MODEL('wrap_sbsm',(#9020));
+#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#9010);
+#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+ENDSEC;
+END-ISO-10303-21;

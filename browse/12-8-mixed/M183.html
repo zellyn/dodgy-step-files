@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>M183 — AP238 workpiece_setup coordinate system not aligned with machine axes</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.8 Mixed (tessellation, validation properties, etc.)</a> <span class="sep">/</span> <span class="current">M183</span>
+</nav>
+<header class="title-bar">
+<h1>M183 <span class="sep">—</span> <span class="entry-title">AP238 workpiece_setup coordinate system not aligned with machine axes</span></h1>
+<p class="category">§12.8 mixed (sub-class: AP238 deep machining)</p>
+<p class="tag-pills">
+<a class="tag tag-spec-violation" href="../by-tag/spec-violation/index.html">spec-violation</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-8-mixed/M183.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-8-mixed/M183.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>16-iso-spec ISO 10303-238 §5.4 workpiece_setup machine-axis-alignment guidance</li>
+<li>bug-reporter language: &quot;AP238 workpiece setup rotated&quot;, &quot;STEP-NC setup not square to machine&quot;, &quot;fixture skew without rotary axis&quot;.</li>
+</ul></section>
+<section><h2>Description</h2>
+<p>A `WORKPIECE_SETUP`&#x27;s placement axes are rotated 17.3 degrees about the machine Z-axis with no rotational fixturing declared. The machine cannot drive its X/Y stages along the workpiece&#x27;s local axes; every toolpath issues compound moves that exceed acceleration limits. Bug-reporter language: &quot;AP238 workpiece-setup rotation without rotary axis&quot;, &quot;STEP-NC setup not aligned to machine&quot;, &quot;workpiece coords skewed&quot;.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>`WORKPIECE_SETUP` whose `AXIS2_PLACEMENT_3D` x-axis is `DIRECTION((0.9550, 0.2974, 0.0))` (17.3 deg rotation), with no rotary fixturing referenced.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>validate workpiece-setup orientation against machine axes when no rotary stage is declared; warn or reject.</p></section>
+<section><h2>Notes</h2>
+<p>Synonyms: &quot;AP238 workpiece-setup rotated&quot;, &quot;STEP-NC fixture not square&quot;, &quot;setup CS skew without rotary stage&quot;, &quot;workpiece coords misaligned&quot;.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>contains(b&#x27;AP238_STEP_NC_MIM&#x27;)</code></li>
+<li><code>contains(b&#x27;WORKPIECE_SETUP&#x27;)</code></li>
+<li><code>contains(b&#x27;workpiece_csys_rotated&#x27;)</code></li>
+</ul></section>
+<section><h2>Live oracle output</h2>
+<table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
+<tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>no_shapes_loaded</code></td></tr>
+</tbody></table>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* M183 - AP238 <mark>WORKPIECE_SETUP</mark> coordinate system not aligned with machine axes.
+<span class="lineno">3</span> * Defect: a <mark>WORKPIECE_SETUP</mark>&#x27;s placement axes are rotated 17.3 degrees
+<span class="lineno">4</span> * about the machine Z-axis with no rotational fixturing declared. The
+<span class="lineno">5</span> * machine cannot drive its X/Y stages along the workpiece&#x27;s local axes;
+<span class="lineno">6</span> * every toolpath issues compound moves that exceed acceleration limits. */
+<span class="lineno">7</span>HEADER;
+<span class="lineno">8</span>FILE_DESCRIPTION((&#x27;M183 test case&#x27;,&#x27;AP238 workpiece-setup axes off machine axes&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">9</span>FILE_NAME(&#x27;M183.stp&#x27;,&#x27;2026-05-02T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">10</span>FILE_SCHEMA((&#x27;<mark>AP238_STEP_NC_MIM</mark> { 1 0 10303 238 1 0 0 1 }&#x27;));
+<span class="lineno">11</span>ENDSEC;
+<span class="lineno">12</span>DATA;
+<span class="lineno">13</span>#1=APPLICATION_CONTEXT(&#x27;numerical_control_machining&#x27;);
+<span class="lineno">14</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,
+<span class="lineno">15</span>  &#x27;numerical_control_machining&#x27;,2007,#1);
+<span class="lineno">16</span>#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">17</span>#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+<span class="lineno">18</span>     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10))
+<span class="lineno">19</span>     REPRESENTATION_CONTEXT(&#x27;nc&#x27;,&#x27;3D&#x27;));
+<span class="lineno">20</span>/* Defect: workpiece-setup axis rotated 17.3 deg from machine X (cos = 0.9550,
+<span class="lineno">21</span>   sin = 0.2974). No rotary fixturing declared. */
+<span class="lineno">22</span>#50=DIRECTION(&#x27;z&#x27;,(0.0,0.0,1.0));
+<span class="lineno">23</span>#51=DIRECTION(&#x27;x_off_axis&#x27;,(0.9550,0.2974,0.0));
+<span class="lineno">24</span>#100=AXIS2_PLACEMENT_3D(&#x27;<mark>workpiece_csys_rotated</mark>&#x27;,
+<span class="lineno">25</span>  CARTESIAN_POINT(&#x27;o&#x27;,(0.0,0.0,0.0)),#50,#51);
+<span class="lineno">26</span>#400=WORKPIECE(&#x27;part_a&#x27;,$,$,$,$,$,$);
+<span class="lineno">27</span>#150=<mark>WORKPIECE_SETUP</mark>(&#x27;vise_misaligned&#x27;,#100,$,#400,$);
+<span class="lineno">28</span>#200=WORKPLAN(&#x27;main&#x27;,(),$,$,$);
+<span class="lineno">29</span>ENDSEC;
+<span class="lineno">30</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="M182.html">&larr; M182</a> <a class="up" href="index.html">§12.8 Mixed (tessellation, validation properties, etc.)</a> <a class="next" href="M184.html">M184 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Gp023 — Point-projection onto trimmed periodic `CYLINDRICAL_SURFACE` returns UV outside trimmed band (pcurve start parameter shifted by period)</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.2a Pcurve defects</a> <span class="sep">/</span> <span class="current">Gp023</span>
+</nav>
+<header class="title-bar">
+<h1>Gp023 <span class="sep">—</span> <span class="entry-title">Point-projection onto trimmed periodic `CYLINDRICAL_SURFACE` returns UV outside trimmed band (pcurve start parameter shifted by period)</span></h1>
+<p class="category">§12.2a pcurve</p>
+<p class="severity-badge severity-p1">P1 — silent data loss</p>
+<p class="tag-pills">
+<a class="tag tag-geometry" href="../by-tag/geometry/index.html">geometry</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-2a-pcurves/Gp023.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-2a-pcurves/Gp023.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>13-quaoar.md B012</li>
+</ul></section>
+<section><h2>Description</h2>
+<p>A face on a periodic surface (full `CYLINDRICAL_SURFACE`, `TOROIDAL_SURFACE`, etc.) is trimmed to a sub-band of U (e.g. U in [π, 2π]). Pcurve parameterisations for edges following a `CIRCLE` start at the wrong angle relative to the trimmed band — e.g. a pcurve `LINE` starts at u=π instead of u=0, off by π from the circle start angle. Equivalently, projecting a 3D point onto the trimmed periodic surface returns a UV pair outside the face&#x27;s actual `[UMin,UMax]/[VMin,VMax]` band, even though a valid in-range pre-image exists in another period. Mesh-node reprojection during sheet-metal unfolding lands in the wrong period.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>Face on full cylinder trimmed to U in `[π,2π]`; pick a 3D point above the face; project; observe returned U near 0.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>Heal and accept: a point-projection onto a trimmed periodic surface must return a UV that lies inside the face&#x27;s actual parameter band when an in-range pre-image exists (re-shifting by full periods as required). Must not silently return out-of-band UV.</p></section>
+<section><h2>Notes</h2>
+<p>**See also**: Gs019. Synonyms: &quot;point projection onto trimmed cylinder returns out-of-band UV&quot;, &quot;projected UV outside trimmed face parameter range&quot;, &quot;pcurve start parameter shifted by full period&quot;, &quot;projection onto periodic surface returns wrong period&quot;, &quot;sheet metal mesh node lands in wrong period band&quot;.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>contains(b&#x27;SURFACE_CURVE&#x27;)</code></li>
+<li><code>contains(b&#x27;EDGE_CURVE&#x27;)</code></li>
+<li><code>count_entity_def(b&#x27;PCURVE&#x27;) &gt;= 1</code></li>
+</ul></section>
+<section><h2>Cross-references</h2>
+<p><a href="../12-2c-surfaces/Gs019.html">Gs019</a></p>
+</section>
+<section><h2>Live oracle output</h2>
+<table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
+<tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>no_shapes_loaded</code></td></tr>
+</tbody></table>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* Gp023 - ValueOfUV returns UV outside trimmed face range
+<span class="lineno">3</span> * Defect: a face on a CYLINDRICAL_SURFACE (full periodic) is trimmed
+<span class="lineno">4</span> * to U in [pi, 2pi] only. A 3D point above the face has two valid
+<span class="lineno">5</span> * pre-images (one near U=0, one near U=2pi); naive projection returns
+<span class="lineno">6</span> * U=0.001 - outside the trimmed range, even though U=2*pi-0.001 is in.
+<span class="lineno">7</span> *
+<span class="lineno">8</span> * Fix vs prior: pcurve LINE direction-vector magnitude was 1.0 which
+<span class="lineno">9</span> * only covered [pi, pi+1]. We now wrap the pcurve LINE in a
+<span class="lineno">10</span> * TRIMMED_CURVE with explicit trim parameters [0.0, pi] so the U-band
+<span class="lineno">11</span> * the edge sweeps in 2D is exactly [pi, 2pi]. */
+<span class="lineno">12</span>HEADER;
+<span class="lineno">13</span>FILE_DESCRIPTION((&#x27;Gp023 test case&#x27;,&#x27;ValueOfUV returns UV outside trimmed range&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">14</span>FILE_NAME(&#x27;Gp023.stp&#x27;,&#x27;2026-04-27T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;auto-generated&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">15</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }&#x27;));
+<span class="lineno">16</span>ENDSEC;
+<span class="lineno">17</span>DATA;
+<span class="lineno">18</span>#1=APPLICATION_CONTEXT(&#x27;automotive_design&#x27;);
+<span class="lineno">19</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,&#x27;automotive_design&#x27;,2000,#1);
+<span class="lineno">20</span>#10=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">21</span>#11=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">22</span>#12=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">23</span>#13=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#10,#11,#12);
+<span class="lineno">24</span>#20=CYLINDRICAL_SURFACE(&#x27;&#x27;,#13,10.0);
+<span class="lineno">25</span>/* Outer wire vertices: two on the bottom (V=0), two on the top (V=5) */
+<span class="lineno">26</span>#40=CARTESIAN_POINT(&#x27;&#x27;,(-10.0,0.0,0.0));
+<span class="lineno">27</span>#41=VERTEX_POINT(&#x27;&#x27;,#40);
+<span class="lineno">28</span>#42=CARTESIAN_POINT(&#x27;&#x27;,(10.0,0.0,0.0));
+<span class="lineno">29</span>#43=VERTEX_POINT(&#x27;&#x27;,#42);
+<span class="lineno">30</span>#44=CARTESIAN_POINT(&#x27;&#x27;,(-10.0,0.0,5.0));
+<span class="lineno">31</span>#45=VERTEX_POINT(&#x27;&#x27;,#44);
+<span class="lineno">32</span>#46=CARTESIAN_POINT(&#x27;&#x27;,(10.0,0.0,5.0));
+<span class="lineno">33</span>#47=VERTEX_POINT(&#x27;&#x27;,#46);
+<span class="lineno">34</span>/* 3D circle for the bottom edge, used as the <mark>SURFACE_CURVE</mark> 3D-curve */
+<span class="lineno">35</span>#30=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">36</span>#31=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">37</span>#32=DIRECTION(&#x27;&#x27;,(-1.0,0.0,0.0));
+<span class="lineno">38</span>#33=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#30,#31,#32);
+<span class="lineno">39</span>#34=CIRCLE(&#x27;&#x27;,#33,10.0);
+<span class="lineno">40</span>/* 2D pcurve: a LINE through (pi, 0) along +U.
+<span class="lineno">41</span> * Direction vector magnitude was 1.0 (defect) â corrected to PI so
+<span class="lineno">42</span> * the LINE&#x27;s natural parametric extent over [0,1] would still be 1
+<span class="lineno">43</span> * unit; we therefore additionally wrap in a TRIMMED_CURVE with
+<span class="lineno">44</span> * trim parameters [0.0, PI] giving an explicit 2D-domain U sweep
+<span class="lineno">45</span> * of length PI starting at U=PI (i.e. covering [pi, 2pi]). */
+<span class="lineno">46</span>#71=CARTESIAN_POINT(&#x27;&#x27;,(3.14159265358979,0.0));
+<span class="lineno">47</span>#72=DIRECTION(&#x27;&#x27;,(1.0,0.0));
+<span class="lineno">48</span>#73=VECTOR(&#x27;&#x27;,#72,3.14159265358979);
+<span class="lineno">49</span>#74=LINE(&#x27;&#x27;,#71,#73);
+<span class="lineno">50</span>#78=PARAMETER_VALUE(0.0);
+<span class="lineno">51</span>#79=PARAMETER_VALUE(3.14159265358979);
+<span class="lineno">52</span>#84=TRIMMED_CURVE(&#x27;&#x27;,#74,(#78),(#79),.T.,.PARAMETER.);
+<span class="lineno">53</span>#75=( GEOMETRIC_REPRESENTATION_CONTEXT(2)
+<span class="lineno">54</span>      PARAMETRIC_REPRESENTATION_CONTEXT()
+<span class="lineno">55</span>      REPRESENTATION_CONTEXT(&#x27;parametric&#x27;,&#x27;2D&#x27;) );
+<span class="lineno">56</span>#76=DEFINITIONAL_REPRESENTATION(&#x27;&#x27;,(#84),#75);
+<span class="lineno">57</span><mark>#77=PCURVE(</mark>&#x27;&#x27;,#20,#76);
+<span class="lineno">58</span>#50=<mark>SURFACE_CURVE</mark>(&#x27;&#x27;,#34,(#77),.PCURVE_S1.);
+<span class="lineno">59</span>#60=<mark>EDGE_CURVE</mark>(&#x27;&#x27;,#41,#43,#50,.T.);
+<span class="lineno">60</span>/* For brevity only the bottom edge is fully built. The face&#x27;s UV
+<span class="lineno">61</span> * range is pinned by the pcurve TRIMMED_CURVE domain [pi, 2pi].
+<span class="lineno">62</span> * ValueOfUV must respect this when projecting 3D points. */
+<span class="lineno">63</span>#61=ORIENTED_EDGE(&#x27;&#x27;,*,*,#60,.T.);
+<span class="lineno">64</span>#62=EDGE_LOOP(&#x27;&#x27;,(#61));
+<span class="lineno">65</span>#63=FACE_OUTER_BOUND(&#x27;&#x27;,#62,.T.);
+<span class="lineno">66</span>#64=ADVANCED_FACE(&#x27;&#x27;,(#63),#20,.T.);
+<span class="lineno">67</span>ENDSEC;
+<span class="lineno">68</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Gp022.html">&larr; Gp022</a> <a class="up" href="index.html">§12.2a Pcurve defects</a> <a class="next" href="Gp024.html">Gp024 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

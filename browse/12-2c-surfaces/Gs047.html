@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Gs047 — `BLENDED_EDGE_SURFACE` with mismatched fillet radii at a shared vertex</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.2c Surface / curve degeneracies</a> <span class="sep">/</span> <span class="current">Gs047</span>
+</nav>
+<header class="title-bar">
+<h1>Gs047 <span class="sep">—</span> <span class="entry-title">`BLENDED_EDGE_SURFACE` with mismatched fillet radii at a shared vertex</span></h1>
+<p class="category">§12.2c surface-degeneracy (sub-class: AP242 fillet surface)</p>
+<p class="severity-badge severity-p1">P1 — silent data loss</p>
+<p class="tag-pills">
+<a class="tag tag-spec-violation" href="../by-tag/spec-violation/index.html">spec-violation</a>
+<a class="tag tag-geometry" href="../by-tag/geometry/index.html">geometry</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-2c-surfaces/Gs047.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-2c-surfaces/Gs047.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>16-iso-spec AP242 §BLENDED_EDGE_SURFACE</li>
+</ul></section>
+<section><h2>Description</h2>
+<p>AP242 introduces BLENDED_EDGE_SURFACE to represent an edge fillet between two adjacent faces. The blend&#x27;s radius (or radius profile) is one of the entity&#x27;s defining attributes. A producer that supports variable-radius fillets but exports through a constant-radius schema may emit two BLENDED_EDGE_SURFACE instances for adjacent edges with mismatched radii at their shared vertex; the receiver sees a 0-thickness gap where they meet.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>two CYLINDRICAL_SURFACE blends meeting at the origin: blend A radius 1.0, blend B radius 2.0. At the shared vertex the two fillet surfaces cannot meet smoothly.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>reconcile the radii by transitioning between them through a third spherical / variable-radius patch, or reject as inconsistent.</p></section>
+<section><h2>Notes</h2>
+<p>First entry exercising AP242 BLENDED_EDGE_SURFACE. Synonyms: &quot;BLENDED_EDGE_SURFACE mismatched fillet radii at shared vertex&quot;, &quot;two AP242 fillets meet with different radii&quot;, &quot;0-thickness gap where blends meet&quot;, &quot;blend A radius 1 blend B radius 2 conflict&quot;, &quot;constant-radius export of variable-radius fillet creates discontinuity&quot;.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>count_entity_def(b&#x27;BLENDED_EDGE_SURFACE&#x27;) == 2</code></li>
+<li><code>contains(b&quot;BLENDED_EDGE_SURFACE(&#x27;blendA_radius_1&#x27;,#25,1.0)&quot;)</code></li>
+<li><code>contains(b&quot;BLENDED_EDGE_SURFACE(&#x27;blendB_radius_2&#x27;,#31,2.0)&quot;)</code></li>
+</ul></section>
+<section><h2>Live oracle output</h2>
+<table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
+<tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>no_shapes_loaded</code></td></tr>
+</tbody></table>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* Gs047 - BLENDED_EDGE_SURFACE (AP242 fillet representation) with
+<span class="lineno">3</span> * inconsistent radii at the two end faces.
+<span class="lineno">4</span> * Defect: AP242 introduces BLENDED_EDGE_SURFACE to represent an
+<span class="lineno">5</span> * edge fillet between two adjacent faces. A producer that supports
+<span class="lineno">6</span> * variable-radius fillets but exports a constant-radius schema may
+<span class="lineno">7</span> * emit two BLENDED_EDGE_SURFACE instances for adjacent edges with
+<span class="lineno">8</span> * mismatched radii at their shared vertex; the receiver sees a
+<span class="lineno">9</span> * 0-thickness gap where they meet. */
+<span class="lineno">10</span>HEADER;
+<span class="lineno">11</span>FILE_DESCRIPTION((&#x27;Gs047 - BLENDED_EDGE_SURFACE radii mismatch at shared vertex&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">12</span>FILE_NAME(&#x27;Gs047.stp&#x27;,&#x27;2026-04-30T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),
+<span class="lineno">13</span>  &#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">14</span>FILE_SCHEMA((&#x27;AP242_MANAGED_MODEL_BASED_3D_ENGINEERING_MIM_LF { 1 0 10303 442 1 1 4 }&#x27;));
+<span class="lineno">15</span>ENDSEC;
+<span class="lineno">16</span>DATA;
+<span class="lineno">17</span>#1=APPLICATION_CONTEXT(&#x27;managed model based 3d engineering&#x27;);
+<span class="lineno">18</span>/* Common vertex shared between the two blends */
+<span class="lineno">19</span>#10=CARTESIAN_POINT(&#x27;shared_vert&#x27;,(0.0,0.0,0.0));
+<span class="lineno">20</span>#11=VERTEX_POINT(&#x27;shared_vp&#x27;,#10);
+<span class="lineno">21</span>/* Two flanking faces (planes representing the box walls) */
+<span class="lineno">22</span>#12=DIRECTION(&#x27;zA&#x27;,(0.0,0.0,1.0));
+<span class="lineno">23</span>#13=DIRECTION(&#x27;xA&#x27;,(1.0,0.0,0.0));
+<span class="lineno">24</span>#14=AXIS2_PLACEMENT_3D(&#x27;axesA&#x27;,#10,#12,#13);
+<span class="lineno">25</span>#15=PLANE(&#x27;faceA_surface&#x27;,#14);
+<span class="lineno">26</span>#16=DIRECTION(&#x27;zB&#x27;,(1.0,0.0,0.0));
+<span class="lineno">27</span>#17=DIRECTION(&#x27;xB&#x27;,(0.0,0.0,1.0));
+<span class="lineno">28</span>#18=AXIS2_PLACEMENT_3D(&#x27;axesB&#x27;,#10,#16,#17);
+<span class="lineno">29</span>#19=PLANE(&#x27;faceB_surface&#x27;,#18);
+<span class="lineno">30</span>/* The two edges to be blended share #11 */
+<span class="lineno">31</span>#20=CARTESIAN_POINT(&#x27;eA_far&#x27;,(0.0,1.0,0.0));
+<span class="lineno">32</span>#21=VERTEX_POINT(&#x27;vA_far&#x27;,#20);
+<span class="lineno">33</span>#22=DIRECTION(&#x27;+y&#x27;,(0.0,1.0,0.0));
+<span class="lineno">34</span>#23=VECTOR(&#x27;vyA&#x27;,#22,1.0);
+<span class="lineno">35</span>#24=LINE(&#x27;eA_3d&#x27;,#10,#23);
+<span class="lineno">36</span>#25=EDGE_CURVE(&#x27;eA&#x27;,#11,#21,#24,.T.);
+<span class="lineno">37</span>#26=CARTESIAN_POINT(&#x27;eB_far&#x27;,(0.0,0.0,1.0));
+<span class="lineno">38</span>#27=VERTEX_POINT(&#x27;vB_far&#x27;,#26);
+<span class="lineno">39</span>#28=DIRECTION(&#x27;+zB&#x27;,(0.0,0.0,1.0));
+<span class="lineno">40</span>#29=VECTOR(&#x27;vzB&#x27;,#28,1.0);
+<span class="lineno">41</span>#30=LINE(&#x27;eB_3d&#x27;,#10,#29);
+<span class="lineno">42</span>#31=EDGE_CURVE(&#x27;eB&#x27;,#11,#27,#30,.T.);
+<span class="lineno">43</span>/* Two BLENDED_EDGE_SURFACE instances. AP242 ed.2 entity has the
+<span class="lineno">44</span> * shape: BLENDED_EDGE_SURFACE(name, edge_curve, fillet_radius). The
+<span class="lineno">45</span> * defect: blendA carries radius 1.0; blendB carries radius 2.0;
+<span class="lineno">46</span> * both incident on shared vertex #11. */
+<span class="lineno">47</span><mark>#40=BLENDED_EDGE_SURFACE(&#x27;blendA_radius_1&#x27;,#25,1.0)</mark>;
+<span class="lineno">48</span><mark>#41=BLENDED_EDGE_SURFACE(&#x27;blendB_radius_2&#x27;,#31,2.0)</mark>;
+<span class="lineno">49</span>ENDSEC;
+<span class="lineno">50</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Gs046.html">&larr; Gs046</a> <a class="up" href="index.html">§12.2c Surface / curve degeneracies</a> <a class="next" href="Gs048.html">Gs048 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

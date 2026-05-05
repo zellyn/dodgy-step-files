@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Xp006 — Schema-mismatch × forward-reference × unresolved entity</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.12 Cross-product</a> <span class="sep">/</span> <span class="current">Xp006</span>
+</nav>
+<header class="title-bar">
+<h1>Xp006 <span class="sep">—</span> <span class="entry-title">Schema-mismatch × forward-reference × unresolved entity</span></h1>
+<p class="category">§12.12 cross-product (header × syntax × references)</p>
+<p class="severity-badge severity-p1">P1 — silent data loss</p>
+<p class="tag-pills">
+<a class="tag tag-silent-loss" href="../by-tag/silent-loss/index.html">silent-loss</a>
+<a class="tag tag-interop" href="../by-tag/interop/index.html">interop</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-12-cross-product/Xp006.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-12-cross-product/Xp006.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>synthesized cross-product.</li>
+</ul></section>
+<section><h2>Description</h2>
+<p>`FILE_SCHEMA` declares `CONFIG_CONTROL_DESIGN { 1 0 10303 203 1 1 1 1 }` (AP203). The DATA section contains AP242-only entities (`TESSELLATED_FACE`, `COMPLEX_TRIANGULATED_ SURFACE_SET`). One `ADVANCED_FACE` references `#999` for its `face_geometry` — but `#999` is never defined in the file (forward reference that never resolves). All three are independent failures of the reference-/schema-consistency invariant.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>AP203 schema in header; DATA contains a `TRIANGULATED_FACE`, an `ADVANCED_FACE` whose `face_geometry` slot is `#999`, and no `#999` definition. Other entities resolve normally.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>schema/entity-set mismatch detected and resolved (load anyway, reject, warn); unresolved `#999` flagged or the containing face dropped.</p></section>
+<section><h2>Notes</h2>
+<p>Cross-oracle: pure-Python Part-21 validator rejects (reject(E_UNRESOLVED_REFS)); OCCT silently accepts (load is `empty`). OCC auto-heals a spec-level violation.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>contains(b&#x27;FILE_SCHEMA&#x27;)</code></li>
+<li><code>contains(b&#x27;EDGE_CURVE&#x27;)</code></li>
+<li><code>contains(b&#x27;ADVANCED_FACE&#x27;)</code></li>
+</ul></section>
+<section><h2>Live oracle output</h2>
+<table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
+<tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>reject(E_UNRESOLVED_REFS)</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>no_shapes_loaded</code></td></tr>
+</tbody></table>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* Xp006 - Cross-product: schema declares AP203 but file uses AP242
+<span class="lineno">3</span> *   tessellated entities, AND a face references undefined entity #999.
+<span class="lineno">4</span> * Builds on Lh010-class (schema mismatch) + Ls-forward-ref-class +
+<span class="lineno">5</span> *   Tfa001 (NULL/unresolved face_geometry). */
+<span class="lineno">6</span>HEADER;
+<span class="lineno">7</span>FILE_DESCRIPTION((&#x27;Xp006 cross-product&#x27;,&#x27;schema mismatch x forward-ref x unresolved&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">8</span>FILE_NAME(&#x27;Xp006.stp&#x27;,&#x27;2026-04-26T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">9</span>/* Defect 1: AP203 schema declared */
+<span class="lineno">10</span><mark>FILE_SCHEMA</mark>((&#x27;CONFIG_CONTROL_DESIGN { 1 0 10303 203 1 1 1 1 }&#x27;));
+<span class="lineno">11</span>ENDSEC;
+<span class="lineno">12</span>DATA;
+<span class="lineno">13</span>#1=APPLICATION_CONTEXT(&#x27;config control design&#x27;);
+<span class="lineno">14</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,&#x27;config_control_design&#x27;,1994,#1);
+<span class="lineno">15</span>/* Defect 1 continued: AP242-only entities in body */
+<span class="lineno">16</span>#100=COORDINATES_LIST(&#x27;&#x27;,4,((0.0,0.0,0.0),(1.0,0.0,0.0),
+<span class="lineno">17</span>                            (0.5,1.0,0.0),(0.5,0.5,1.0)));
+<span class="lineno">18</span>#110=TRIANGULATED_FACE(&#x27;&#x27;,#100,$,$,(),
+<span class="lineno">19</span>       ((1,2,3),(1,2,4),(2,3,4),(3,1,4)));
+<span class="lineno">20</span>/* Plane / face whose face_geometry references undefined #999 - Defect 2+3 */
+<span class="lineno">21</span>#200=CARTESIAN_POINT(&#x27;a&#x27;,(0.0,0.0,0.0));
+<span class="lineno">22</span>#201=CARTESIAN_POINT(&#x27;b&#x27;,(1.0,0.0,0.0));
+<span class="lineno">23</span>#202=VERTEX_POINT(&#x27;&#x27;,#200);
+<span class="lineno">24</span>#203=VERTEX_POINT(&#x27;&#x27;,#201);
+<span class="lineno">25</span>#204=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">26</span>#205=VECTOR(&#x27;&#x27;,#204,1.0);
+<span class="lineno">27</span>#206=LINE(&#x27;&#x27;,#200,#205);
+<span class="lineno">28</span>#207=<mark>EDGE_CURVE</mark>(&#x27;&#x27;,#202,#203,#206,.T.);
+<span class="lineno">29</span>#208=ORIENTED_EDGE(&#x27;&#x27;,*,*,#207,.T.);
+<span class="lineno">30</span>#209=EDGE_LOOP(&#x27;&#x27;,(#208));
+<span class="lineno">31</span>#210=FACE_OUTER_BOUND(&#x27;&#x27;,#209,.T.);
+<span class="lineno">32</span>/* Defect 2: face_geometry = #999, not defined anywhere */
+<span class="lineno">33</span>#211=<mark>ADVANCED_FACE</mark>(&#x27;&#x27;,(#210),#999,.T.);
+<span class="lineno">34</span>ENDSEC;
+<span class="lineno">35</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Xp005.html">&larr; Xp005</a> <a class="up" href="index.html">§12.12 Cross-product</a> <a class="next" href="Xp007.html">Xp007 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

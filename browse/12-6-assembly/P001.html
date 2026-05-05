@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>P001 — Schema variant: CONFIG_CONTROL_DESIGN with no PRODUCT entity</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.6 Assembly hierarchy</a> <span class="sep">/</span> <span class="current">P001</span>
+</nav>
+<header class="title-bar">
+<h1>P001 <span class="sep">—</span> <span class="entry-title">Schema variant: CONFIG_CONTROL_DESIGN with no PRODUCT entity</span></h1>
+<p class="category">§12.1 file-format/schema-variant</p>
+<p class="severity-badge severity-p1">P1 — silent data loss</p>
+<p class="tag-pills">
+<a class="tag tag-round-trip" href="../by-tag/round-trip/index.html">round-trip</a>
+<a class="tag tag-assembly" href="../by-tag/assembly/index.html">assembly</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-6-assembly/P001.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-6-assembly/P001.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>FreeCAD #15685</li>
+</ul></section>
+<section><h2>Sender</h2>
+<p>re-export from unspecified application (original was AUTOMOTIVE_DESIGN)</p></section>
+<section><h2>Description</h2>
+<p>A re-exported file using the older `CONFIG_CONTROL_DESIGN` schema (rather than `AUTOMOTIVE_DESIGN`) and lacking a `PRODUCT` entity at the protocol layer is silently dropped by OCCT&#x27;s reader: import returns success with zero objects, no message in console or report panel. Other readers (e.g., Rhino) accept it.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>Author a STEP-AP203 file whose HEADER declares `CONFIG_CONTROL_DESIGN`, omit the `PRODUCT`/`PRODUCT_DEFINITION` chain that AUTOMOTIVE_DESIGN tooling expects, but keep a normal `MANIFOLD_SOLID_BREP` payload.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>Reject with explicit diagnostic identifying the missing `PRODUCT` parent, or accept successfully. Silent empty result (silent-accept) is the bug — must not silently accept.</p></section>
+<section><h2>Notes</h2>
+<p>Synonyms: &quot;CONFIG_CONTROL_DESIGN file with no PRODUCT entity&quot;, &quot;schema variant missing required PRODUCT&quot;, &quot;CCD-only STEP file rejected by readers&quot;.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>contains(b&#x27;CONFIG_CONTROL_DESIGN&#x27;)</code></li>
+<li><code>declared_schema == b&#x27;CONFIG_CONTROL_DESIGN&#x27;</code></li>
+<li><code>count_entity_def(b&#x27;PRODUCT&#x27;) == 0</code></li>
+</ul></section>
+<section><h2>Live oracle output</h2>
+<table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
+<tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>no_shapes_loaded</code></td></tr>
+</tbody></table>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/*
+<span class="lineno">3</span> * P001 â Schema variant: <mark>CONFIG_CONTROL_DESIGN</mark> with no PRODUCT entity
+<span class="lineno">4</span> * Defect (FreeCAD #15685; re-export from unspecified application,
+<span class="lineno">5</span> *         original was AUTOMOTIVE_DESIGN):
+<span class="lineno">6</span> *   A re-exported file using the older <mark>CONFIG_CONTROL_DESIGN</mark> schema (rather
+<span class="lineno">7</span> *   than AUTOMOTIVE_DESIGN) and lacking a PRODUCT entity at the protocol
+<span class="lineno">8</span> *   layer is silently dropped by OCCT&#x27;s reader: import returns success with
+<span class="lineno">9</span> *   zero objects, no message in console or report panel. Other readers
+<span class="lineno">10</span> *   (e.g. Rhino) accept it.
+<span class="lineno">11</span> * Reproducer: STEP-AP203 file whose HEADER declares <mark>CONFIG_CONTROL_DESIGN</mark>,
+<span class="lineno">12</span> *   omit the PRODUCT/PRODUCT_DEFINITION chain, but keep a normal
+<span class="lineno">13</span> *   MANIFOLD_SOLID_BREP payload.
+<span class="lineno">14</span> * Expected kernel: either successful import, or explicit diagnostic
+<span class="lineno">15</span> *   identifying the missing PRODUCT parent. Silent empty result is the bug.
+<span class="lineno">16</span> *
+<span class="lineno">17</span> * NOTE: this file intentionally has NO PRODUCT entity, only protocol scaffolding
+<span class="lineno">18</span> *   plus a tiny representation. Catalog use only.
+<span class="lineno">19</span> */
+<span class="lineno">20</span>HEADER;
+<span class="lineno">21</span>FILE_DESCRIPTION((&#x27;P001 <mark>CONFIG_CONTROL_DESIGN</mark> with no PRODUCT entity&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">22</span>FILE_NAME(&#x27;P001.stp&#x27;,&#x27;2026-04-26T00:00:00&#x27;,(&#x27;catalog&#x27;),(&#x27;cad&#x27;),&#x27;manual&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">23</span>FILE_SCHEMA((&#x27;<mark>CONFIG_CONTROL_DESIGN</mark>&#x27;));
+<span class="lineno">24</span>ENDSEC;
+<span class="lineno">25</span>DATA;
+<span class="lineno">26</span>#10 = APPLICATION_CONTEXT(&#x27;configuration controlled 3D design of mechanical parts and assemblies&#x27;);
+<span class="lineno">27</span>#11 = APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,&#x27;config_control_design&#x27;,1994,#10);
+<span class="lineno">28</span>/* DEFECT: NO PRODUCT, NO PRODUCT_DEFINITION, NO NAUO at the protocol layer.
+<span class="lineno">29</span>   AUTOMOTIVE_DESIGN-strict readers expect to find at least one PRODUCT and
+<span class="lineno">30</span>   silently return zero objects when none is present. */
+<span class="lineno">31</span>#50 = ( LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT(.MILLI.,.METRE.) );
+<span class="lineno">32</span>#51 = ( NAMED_UNIT(*) PLANE_ANGLE_UNIT() SI_UNIT($,.RADIAN.) );
+<span class="lineno">33</span>#52 = ( NAMED_UNIT(*) SI_UNIT($,.STERADIAN.) SOLID_ANGLE_UNIT() );
+<span class="lineno">34</span>#53 = UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#50,&#x27;distance_accuracy_value&#x27;,&#x27;&#x27;);
+<span class="lineno">35</span>#54 = ( GEOMETRIC_REPRESENTATION_CONTEXT(3) GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#53))
+<span class="lineno">36</span>        GLOBAL_UNIT_ASSIGNED_CONTEXT((#50,#51,#52)) REPRESENTATION_CONTEXT(&#x27;&#x27;,&#x27;3D&#x27;) );
+<span class="lineno">37</span>/* a MANIFOLD_SOLID_BREP placeholder â geometry-only payload */
+<span class="lineno">38</span>#60 = CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">39</span>#61 = DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">40</span>#62 = DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">41</span>#63 = AXIS2_PLACEMENT_3D(&#x27;orphan_origin&#x27;,#60,#61,#62);
+<span class="lineno">42</span>#65 = CARTESIAN_POINT(&#x27;p0&#x27;,(0.0,0.0,0.0));
+<span class="lineno">43</span>#66 = CARTESIAN_POINT(&#x27;p1&#x27;,(1.0,0.0,0.0));
+<span class="lineno">44</span>#67 = VERTEX_POINT(&#x27;v0&#x27;,#65);
+<span class="lineno">45</span>#68 = VERTEX_POINT(&#x27;v1&#x27;,#66);
+<span class="lineno">46</span>#69 = VECTOR(&#x27;vx&#x27;,#62,1.0);
+<span class="lineno">47</span>#70 = LINE(&#x27;e0_line&#x27;,#65,#69);
+<span class="lineno">48</span>#71 = EDGE_CURVE(&#x27;e0&#x27;,#67,#68,#70,.T.);
+<span class="lineno">49</span>#72 = ORIENTED_EDGE(&#x27;oe0&#x27;,*,*,#71,.T.);
+<span class="lineno">50</span>#73 = EDGE_LOOP(&#x27;loop0&#x27;,(#72));
+<span class="lineno">51</span>#74 = FACE_OUTER_BOUND(&#x27;fb0&#x27;,#73,.T.);
+<span class="lineno">52</span>#75 = PLANE(&#x27;p_z0&#x27;,#63);
+<span class="lineno">53</span>#76 = ADVANCED_FACE(&#x27;f0&#x27;,(#74),#75,.T.);
+<span class="lineno">54</span>#77 = CLOSED_SHELL(&#x27;shell0&#x27;,(#76));
+<span class="lineno">55</span>#78 = MANIFOLD_SOLID_BREP(&#x27;payload_solid&#x27;,#77);
+<span class="lineno">56</span>#64 = ADVANCED_BREP_SHAPE_REPRESENTATION(&#x27;orphan_payload&#x27;,(#63,#78),#54);
+<span class="lineno">57</span>/* Extended catalog notes:
+<span class="lineno">58</span> * This reproducer is a minimal demonstrator of the Â§12.6 entry
+<span class="lineno">59</span> * referenced in the /* */ header above. The entity-graph above
+<span class="lineno">60</span> * is just enough to exercise the defect on a writer or reader
+<span class="lineno">61</span> * test harness; it is NOT a production-quality assembly.
+<span class="lineno">62</span> *
+<span class="lineno">63</span> * License: this file is part of a defect catalog assembled from
+<span class="lineno">64</span> * publicly described bug reports and recommended-practice notes.
+<span class="lineno">65</span> * No proprietary geometry or names are reproduced. The entity IDs
+<span class="lineno">66</span> * and minimal coordinates are author-original.
+<span class="lineno">67</span> *
+<span class="lineno">68</span> * Cross-refs: see STEP_PROBLEM_CATALOG.md Â§12.6 for full entry,
+<span class="lineno">69</span> * source list, sender attribution and expected kernel behavior.
+<span class="lineno">70</span> */
+<span class="lineno">71</span>#900 = DESCRIPTIVE_REPRESENTATION_ITEM(&#x27;catalog_id&#x27;,&#x27;P001&#x27;);
+<span class="lineno">72</span>#901 = DESCRIPTIVE_REPRESENTATION_ITEM(&#x27;catalog_section&#x27;,&#x27;12.6 assembly hierarchy&#x27;);
+<span class="lineno">73</span>#902 = DESCRIPTIVE_REPRESENTATION_ITEM(&#x27;catalog_status&#x27;,&#x27;pending&#x27;);
+<span class="lineno">74</span>#903 = DESCRIPTIVE_REPRESENTATION_ITEM(&#x27;catalog_target_dir&#x27;,&#x27;step-examples/12-6-assembly/&#x27;);
+<span class="lineno">75</span>#904 = DESCRIPTIVE_REPRESENTATION_ITEM(&#x27;catalog_corpus_origin&#x27;,&#x27;phase-04-resume-12-6 gap fill&#x27;);
+<span class="lineno">76</span>#905 = DESCRIPTIVE_REPRESENTATION_ITEM(&#x27;catalog_authoring&#x27;,&#x27;manual reproducer&#x27;);
+<span class="lineno">77</span>#906 = DESCRIPTIVE_REPRESENTATION_ITEM(&#x27;catalog_phase&#x27;,&#x27;04 resume 12-6&#x27;);
+<span class="lineno">78</span>#907 = DESCRIPTIVE_REPRESENTATION_ITEM(&#x27;catalog_extension&#x27;,&#x27;license-clean&#x27;);
+<span class="lineno">79</span>#908 = DESCRIPTIVE_REPRESENTATION_ITEM(&#x27;catalog_dataset&#x27;,&#x27;step-examples&#x27;);
+<span class="lineno">80</span>ENDSEC;
+<span class="lineno">81</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="A107.html">&larr; A107</a> <a class="up" href="index.html">§12.6 Assembly hierarchy</a> <a class="next" href="P002.html">P002 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

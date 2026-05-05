@@ -1,0 +1,62 @@
+/* Pf008 - Stack overflow on huge faces-per-shell counts
+   Pattern: a single CLOSED_SHELL with very many ADVANCED_FACE children,
+   all referencing the same surface. Recursive traversal during topology
+   assembly overflows the default Windows C-stack. Parse phase succeeds;
+   topology assembly crashes (J020, OCCT G031, R084).
+   Scaling-up: this fixture has ~30 faces in one shell. Replicate the
+   ADVANCED_FACE block to >80,000 children of the single CLOSED_SHELL to
+   reproduce the production crash. */
+ISO-10303-21;
+HEADER;
+FILE_DESCRIPTION(('Pf008 - huge faces-per-shell, stack-overflow stub'),'2;1');
+FILE_NAME('Pf008.stp','2026-04-26T00:00:00',('auto-generated'),(''),
+  'auto-generated','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=DIRECTION('',(0.0,0.0,1.0));
+#3=DIRECTION('',(1.0,0.0,0.0));
+#4=AXIS2_PLACEMENT_3D('',#1,#2,#3);
+#5=PLANE('',#4);
+/* one degenerate edge loop reused across all faces */
+#6=EDGE_LOOP('',());
+#7=FACE_OUTER_BOUND('',#6,.T.);
+/* many faces, all on one shared plane and bound */
+#10=ADVANCED_FACE('',(#7),#5,.T.);
+#11=ADVANCED_FACE('',(#7),#5,.T.);
+#12=ADVANCED_FACE('',(#7),#5,.T.);
+#13=ADVANCED_FACE('',(#7),#5,.T.);
+#14=ADVANCED_FACE('',(#7),#5,.T.);
+#15=ADVANCED_FACE('',(#7),#5,.T.);
+#16=ADVANCED_FACE('',(#7),#5,.T.);
+#17=ADVANCED_FACE('',(#7),#5,.T.);
+#18=ADVANCED_FACE('',(#7),#5,.T.);
+#19=ADVANCED_FACE('',(#7),#5,.T.);
+#20=ADVANCED_FACE('',(#7),#5,.T.);
+#21=ADVANCED_FACE('',(#7),#5,.T.);
+#22=ADVANCED_FACE('',(#7),#5,.T.);
+#23=ADVANCED_FACE('',(#7),#5,.T.);
+#24=ADVANCED_FACE('',(#7),#5,.T.);
+#25=ADVANCED_FACE('',(#7),#5,.T.);
+#26=ADVANCED_FACE('',(#7),#5,.T.);
+#27=ADVANCED_FACE('',(#7),#5,.T.);
+#28=ADVANCED_FACE('',(#7),#5,.T.);
+#29=ADVANCED_FACE('',(#7),#5,.T.);
+#30=ADVANCED_FACE('',(#7),#5,.T.);
+#31=ADVANCED_FACE('',(#7),#5,.T.);
+#32=ADVANCED_FACE('',(#7),#5,.T.);
+#33=ADVANCED_FACE('',(#7),#5,.T.);
+#34=ADVANCED_FACE('',(#7),#5,.T.);
+#35=ADVANCED_FACE('',(#7),#5,.T.);
+#36=ADVANCED_FACE('',(#7),#5,.T.);
+#37=ADVANCED_FACE('',(#7),#5,.T.);
+#38=ADVANCED_FACE('',(#7),#5,.T.);
+#39=ADVANCED_FACE('',(#7),#5,.T.);
+/* single CLOSED_SHELL holding all faces - replicate face list to >80k */
+#100=CLOSED_SHELL('huge',(#10,#11,#12,#13,#14,#15,#16,#17,#18,#19,
+   #20,#21,#22,#23,#24,#25,#26,#27,#28,#29,
+   #30,#31,#32,#33,#34,#35,#36,#37,#38,#39));
+#200=MANIFOLD_SOLID_BREP('huge_solid',#100);
+ENDSEC;
+END-ISO-10303-21;

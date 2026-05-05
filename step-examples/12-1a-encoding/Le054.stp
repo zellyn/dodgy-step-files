@@ -1,0 +1,25 @@
+/* Le054 - cp1252 vs ISO-8859-1 high-bit confusion in 0x80..0x9F range
+ * Defect: bytes \X\91, \X\92, \X\80, \X\97 are C1 control bytes in
+ * ISO-8859-1 (the Edition-2 default page) but carry glyphs in
+ * Windows-1252 (left/right single quote, Euro sign, em-dash).
+ * Receivers disagree on which page is in effect; tolerant readers
+ * silently re-interpret the byte run as cp1252 to recover smart
+ * quotes and the Euro sign, hiding a producer-side defect. */
+ISO-10303-21;
+HEADER;
+FILE_DESCRIPTION(('Le054 - high-bit ambiguous between cp1252 and ISO-8859-1'),'2;1');
+FILE_NAME('Le054.stp','2026-04-30T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=PRODUCT_CONTEXT('part',#1,'mechanical');
+/* Bytes 0x91..0x94 are smart-quotes in cp1252, C1 controls in ISO-8859-1.
+   0x80 is Euro in cp1252; 0x97 is em-dash. */
+#10=PRODUCT('part \X\91A\X\92','smart-quote name','',(#2));
+#11=PRODUCT('cost \X\80100','euro sign in name','',(#2));
+#12=PRODUCT('span \X\97','em-dash separator','',(#2));
+#13=PRODUCT('also \X\99','trademark glyph in cp1252','',(#2));
+#20=CARTESIAN_POINT('',(0.0,0.0,0.0));
+ENDSEC;
+END-ISO-10303-21;

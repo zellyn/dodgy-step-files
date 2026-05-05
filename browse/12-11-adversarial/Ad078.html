@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Ad078 — `NEXT_ASSEMBLY_USAGE_OCCURRENCE` child as PRODUCT_DEFINITION_SHAPE (mis-typed select)</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.11 Adversarial / parser robustness</a> <span class="sep">/</span> <span class="current">Ad078</span>
+</nav>
+<header class="title-bar">
+<h1>Ad078 <span class="sep">—</span> <span class="entry-title">`NEXT_ASSEMBLY_USAGE_OCCURRENCE` child as PRODUCT_DEFINITION_SHAPE (mis-typed select)</span></h1>
+<p class="category">§12.11 (sub-class: type-confusion)</p>
+<p class="severity-badge severity-p2">P2 — spec deviation (no data loss)</p>
+<p class="tag-pills">
+<a class="tag tag-adversarial" href="../by-tag/adversarial/index.html">adversarial</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-11-adversarial/Ad078.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-11-adversarial/Ad078.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>08-occt-gitlog.md G016 (Mantis 0025167)</li>
+<li>03-occt-tests.md R049</li>
+</ul></section>
+<section><h2>Description</h2>
+<p>NAUO can refer to either `PRODUCT_DEFINITION` or `PRODUCT_DEFINITION_SHAPE`; schema-strict reader rejected the latter, while permissive reader cast across vtables.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>NAUO referencing PDS instead of PD.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>Warn and accept PDS child; resolve PDS→PD silently with warn. Do not reject.</p></section>
+<section><h2>Notes</h2>
+<p>**See also**: Ad030.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>count_entity_def(b&#x27;NEXT_ASSEMBLY_USAGE_OCCURRENCE&#x27;) &gt;= 1 and contains(b&#x27;PRODUCT_DEFINITION_SHAPE&#x27;)</code></li>
+<li><code>contains(b&#x27;NEXT_ASSEMBLY_USAGE_OCCURRENCE&#x27;)</code></li>
+</ul></section>
+<section><h2>Cross-references</h2>
+<p><a href="Ad030.html">Ad030</a></p>
+</section>
+<section><h2>Live oracle output</h2>
+<table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
+<tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>no_shapes_loaded</code></td></tr>
+</tbody></table>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>/* Ad078 - <mark>NEXT_ASSEMBLY_USAGE_OCCURRENCE</mark> child as PRODUCT_DEFINITION_SHAPE
+<span class="lineno">2</span>   Source: STEP_PROBLEM_CATALOG.md Â§12.11 Ad078;
+<span class="lineno">3</span>           mining 08-occt-gitlog.md G016 (Mantis 0025167);
+<span class="lineno">4</span>           03-occt-tests.md R049.
+<span class="lineno">5</span>   Pattern: in AP214/AP203, NAUO&#x27;s relating/related slots are typed as a
+<span class="lineno">6</span>           SELECT that admits both PRODUCT_DEFINITION and
+<span class="lineno">7</span>           PRODUCT_DEFINITION_SHAPE. A schema-strict reader rejects PDS
+<span class="lineno">8</span>           (treating only PD as legal); a permissive reader cast across
+<span class="lineno">9</span>           vtables and produced silently corrupt assembly trees.
+<span class="lineno">10</span>   Reproducer recipe: NAUO whose `related_product_definition` slot
+<span class="lineno">11</span>           references PDS (#9) instead of PD (#7).
+<span class="lineno">12</span>   Expected kernel behavior: accept PDS child; resolve PDS-&gt;PD silently
+<span class="lineno">13</span>           with a warning; emit hard error if neither type matches.
+<span class="lineno">14</span>   This file mixes one valid NAUO (PD-&gt;PD) with one adversarial NAUO
+<span class="lineno">15</span>   (PD-&gt;PDS) so a fuzzer can test both paths in a single fixture.
+<span class="lineno">16</span>   License-clean: synthesized minimal assembly. */
+<span class="lineno">17</span>ISO-10303-21;
+<span class="lineno">18</span>HEADER;
+<span class="lineno">19</span>FILE_DESCRIPTION(
+<span class="lineno">20</span>  (&#x27;Ad078 - NAUO child mistyped as PRODUCT_DEFINITION_SHAPE&#x27;),
+<span class="lineno">21</span>  &#x27;2;1&#x27;);
+<span class="lineno">22</span>FILE_NAME(&#x27;Ad078.stp&#x27;,&#x27;2026-04-26T00:00:00&#x27;,
+<span class="lineno">23</span>  (&#x27;auto-generated&#x27;),(&#x27;&#x27;),&#x27;auto-generated&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">24</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
+<span class="lineno">25</span>ENDSEC;
+<span class="lineno">26</span>DATA;
+<span class="lineno">27</span>#1=APPLICATION_CONTEXT(&#x27;automotive_design&#x27;);
+<span class="lineno">28</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,
+<span class="lineno">29</span>  &#x27;automotive_design&#x27;,2001,#1);
+<span class="lineno">30</span>#3=PRODUCT_CONTEXT(&#x27;&#x27;,#1,&#x27;mechanical&#x27;);
+<span class="lineno">31</span>#4=PRODUCT(&#x27;PARENT&#x27;,&#x27;parent assembly&#x27;,&#x27;&#x27;,(#3));
+<span class="lineno">32</span>#5=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#4);
+<span class="lineno">33</span>#6=PRODUCT_DEFINITION_CONTEXT(&#x27;&#x27;,#1,&#x27;design&#x27;);
+<span class="lineno">34</span>#7=PRODUCT_DEFINITION(&#x27;design&#x27;,&#x27;&#x27;,#5,#6);
+<span class="lineno">35</span>#8=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,#7);
+<span class="lineno">36</span>#10=PRODUCT(&#x27;CHILD-A&#x27;,&#x27;child A&#x27;,&#x27;&#x27;,(#3));
+<span class="lineno">37</span>#11=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#10);
+<span class="lineno">38</span>#12=PRODUCT_DEFINITION(&#x27;design&#x27;,&#x27;&#x27;,#11,#6);
+<span class="lineno">39</span>#13=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,#12);
+<span class="lineno">40</span>#20=PRODUCT(&#x27;CHILD-B&#x27;,&#x27;child B&#x27;,&#x27;&#x27;,(#3));
+<span class="lineno">41</span>#21=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#20);
+<span class="lineno">42</span>#22=PRODUCT_DEFINITION(&#x27;design&#x27;,&#x27;&#x27;,#21,#6);
+<span class="lineno">43</span>#23=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,#22);
+<span class="lineno">44</span>/* well-typed NAUO: PD parent (#7) -&gt; PD child (#12). */
+<span class="lineno">45</span>#30=<mark>NEXT_ASSEMBLY_USAGE_OCCURRENCE</mark>(&#x27;1&#x27;,&#x27;wellTyped&#x27;,&#x27;&#x27;,#7,#12,$);
+<span class="lineno">46</span>/* ADVERSARIAL NAUO: PD parent (#7) -&gt; PDS child (#23) instead of PD.
+<span class="lineno">47</span>   Schema-strict readers raise; permissive readers vtable-cast and
+<span class="lineno">48</span>   may corrupt the assembly tree. Robust readers should resolve
+<span class="lineno">49</span>   PDS-&gt;PD via the represented_product_definition link with a warn. */
+<span class="lineno">50</span>#31=<mark>NEXT_ASSEMBLY_USAGE_OCCURRENCE</mark>(&#x27;2&#x27;,&#x27;misTyped&#x27;,&#x27;&#x27;,#7,#23,$);
+<span class="lineno">51</span>/* triple-mistype: parent and child both PDS (some legacy emitters). */
+<span class="lineno">52</span>#32=<mark>NEXT_ASSEMBLY_USAGE_OCCURRENCE</mark>(&#x27;3&#x27;,&#x27;bothMisTyped&#x27;,&#x27;&#x27;,#8,#13,$);
+<span class="lineno">53</span>ENDSEC;
+<span class="lineno">54</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Ad077.html">&larr; Ad077</a> <a class="up" href="index.html">§12.11 Adversarial / parser robustness</a> <a class="next" href="Ad080.html">Ad080 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

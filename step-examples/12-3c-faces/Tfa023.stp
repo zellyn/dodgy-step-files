@@ -1,0 +1,98 @@
+/* Tfa023 - ShellSewing - disconnected adjacent faces (sewing wrapper)
+ * Defect: multi-face STEP exported as disjoint faces (no CLOSED_SHELL
+ * or MANIFOLD_SOLID_BREP). Downstream consumer needs a sewn shell
+ * (Salome "Sewing", gmsh Geometry.OCCSewFaces, Netgen sewfaces). Healer
+ * should run BRepBuilderAPI_Sewing with configurable tolerance, produce
+ * one or more sewn shells, and report per-face diagnostics for unsewn
+ * boundaries.
+ * Reproducer: STEP file containing N ADVANCED_FACEs with no CLOSED_SHELL
+ * or OPEN_SHELL - only top-level SHELL_BASED_SURFACE_MODEL listing each
+ * face individually wrapped in OPEN_SHELL of size 1.
+ */
+ISO-10303-21;
+HEADER;
+FILE_DESCRIPTION(('Tfa023 ShellSewing disconnected faces'),'2;1');
+FILE_NAME('Tfa023.stp','2026-04-26T00:00:00',(''),(''),
+  'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
+  'automotive_design',2009,#1);
+#10=CARTESIAN_POINT('origin',(0.0,0.0,0.0));
+#11=DIRECTION('z',(0.0,0.0,1.0));
+#12=DIRECTION('x',(1.0,0.0,0.0));
+#13=AXIS2_PLACEMENT_3D('plc',#10,#11,#12);
+#14=PLANE('plane_xy',#13);
+/* Two adjacent square faces, sharing edge geometrically.               */
+#20=CARTESIAN_POINT('a0',(0.0,0.0,0.0));
+#21=CARTESIAN_POINT('a1',(10.0,0.0,0.0));
+#22=CARTESIAN_POINT('a2',(10.0,10.0,0.0));
+#23=CARTESIAN_POINT('a3',(0.0,10.0,0.0));
+#24=CARTESIAN_POINT('b1',(20.0,0.0,0.0));
+#25=CARTESIAN_POINT('b2',(20.0,10.0,0.0));
+#30=VERTEX_POINT('',#20);
+#31=VERTEX_POINT('',#21);
+#32=VERTEX_POINT('',#22);
+#33=VERTEX_POINT('',#23);
+#34=VERTEX_POINT('b1',#24);
+#35=VERTEX_POINT('b2',#25);
+#40=DIRECTION('',(1.0,0.0,0.0));
+#41=DIRECTION('',(0.0,1.0,0.0));
+#42=DIRECTION('',(-1.0,0.0,0.0));
+#43=DIRECTION('',(0.0,-1.0,0.0));
+#50=VECTOR('',#40,10.0);
+#51=VECTOR('',#41,10.0);
+#52=VECTOR('',#42,10.0);
+#53=VECTOR('',#43,10.0);
+#60=LINE('',#20,#50);
+#61=LINE('',#21,#51);
+#62=LINE('',#22,#52);
+#63=LINE('',#23,#53);
+#64=LINE('',#21,#50);
+#65=LINE('',#24,#51);
+#66=LINE('',#25,#52);
+#70=EDGE_CURVE('',#30,#31,#60,.T.);
+#71=EDGE_CURVE('',#31,#32,#61,.T.);
+#72=EDGE_CURVE('',#32,#33,#62,.T.);
+#73=EDGE_CURVE('',#33,#30,#63,.T.);
+#74=EDGE_CURVE('',#31,#34,#64,.T.);
+#75=EDGE_CURVE('',#34,#35,#65,.T.);
+#76=EDGE_CURVE('',#35,#32,#66,.T.);
+#80=ORIENTED_EDGE('',*,*,#70,.T.);
+#81=ORIENTED_EDGE('',*,*,#71,.T.);
+#82=ORIENTED_EDGE('',*,*,#72,.T.);
+#83=ORIENTED_EDGE('',*,*,#73,.T.);
+#84=ORIENTED_EDGE('',*,*,#74,.T.);
+#85=ORIENTED_EDGE('',*,*,#75,.T.);
+#86=ORIENTED_EDGE('',*,*,#76,.T.);
+#87=ORIENTED_EDGE('',*,*,#71,.F.);
+#90=EDGE_LOOP('A',(#80,#81,#82,#83));
+#91=EDGE_LOOP('B',(#84,#85,#86,#87));
+#100=FACE_OUTER_BOUND('',#90,.T.);
+#101=FACE_OUTER_BOUND('',#91,.T.);
+#110=ADVANCED_FACE('A',(#100),#14,.T.);
+#111=ADVANCED_FACE('B',(#101),#14,.T.);
+/* Defect site: each face wrapped in its own OPEN_SHELL of size 1, not
+ * sewn into a single shell.                                            */
+#120=OPEN_SHELL('shell_A',(#110));
+#121=OPEN_SHELL('shell_B',(#111));
+#130=SHELL_BASED_SURFACE_MODEL('disjoint_faces',(#120,#121));
+/* Wrap: minimal PRODUCT chain so OCCT TransferRoots produces a shape. */
+#9000=PRODUCT_CONTEXT('',#1,'mechanical');
+#9001=PRODUCT('Tfa023','Tfa023','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
+#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
+#9021=SHELL_BASED_SURFACE_MODEL('wrap_sbsm',(#120,#121));
+#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#9010);
+#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+ENDSEC;
+END-ISO-10303-21;

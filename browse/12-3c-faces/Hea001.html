@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Hea001 — Top-level shape-healing pipeline must converge over multi-defect GEOMETRIC_SET (mixed defective ADVANCED_FACE, OPEN_SHELL, free EDGE_LOOP wire)</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.3c Faces / sewing / free bound</a> <span class="sep">/</span> <span class="current">Hea001</span>
+</nav>
+<header class="title-bar">
+<h1>Hea001 <span class="sep">—</span> <span class="entry-title">Top-level shape-healing pipeline must converge over multi-defect GEOMETRIC_SET (mixed defective ADVANCED_FACE, OPEN_SHELL, free EDGE_LOOP wire)</span></h1>
+<p class="category">§12.3 (sub-class: shape-healing) — pipeline</p>
+<p class="tag-pills">
+<a class="tag tag-topology" href="../by-tag/topology/index.html">topology</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-3c-faces/Hea001.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-3c-faces/Hea001.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>OCCT `ShapeFix_Shape::Perform` (`ShapeFix_Shape.hxx:58`)</li>
+</ul></section>
+<section><h2>Description</h2>
+<p>A top-level shape (GEOMETRIC_SET compound, solid, shell, or single face) has multiple defects whose fix order matters — fixing wires before faces vs. after produces different end-states. The shape-level orchestrator iterates over sub-shapes and invokes the appropriate sub-fixer; the orchestrator must converge on a stable result and not loop indefinitely. Typical fixture: a GEOMETRIC_SET mixing an ADVANCED_FACE with a scrambled inner triangular hole EDGE_LOOP, an OPEN_SHELL whose face has a flipped same_sense, and a free EDGE_LOOP wire whose ORIENTED_EDGEs are listed out of head-to-tail order.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>A GEOMETRIC_SET compound that mixes a defective face (Tfa037-style), a defective shell (Tsh043-style), and a free wire (Twi051-style); the orchestrator must dispatch to each sub-fixer.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>Heal and accept via a top-level driver that walks the shape hierarchy, dispatches to per-shape fixers, and either converges or rejects with a fixed-point failure listing the offending sub-shape.</p></section>
+<section><h2>Notes</h2>
+<p>Umbrella over all sub-shape Perform() methods. Synonyms: &quot;multi-defect shape needs pipeline convergence&quot;, &quot;fix order changes end state&quot;, &quot;shape orchestrator must converge not loop&quot;, &quot;compound with mixed defects healing&quot;.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=shape(1)/shape(1) gmsh=shape(15) ifc=schema_n/a</code></p></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>n_edges_total &gt;= 8</code></li>
+<li><code>face[0].surface_type == &quot;plane&quot;</code></li>
+<li><code>face[1].surface_type == &quot;plane&quot;</code></li>
+</ul></section>
+<section><h2>Live oracle output</h2>
+<table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
+<tr><td><code>occt_heal_on</code></td><td><code>shape(1)</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>shape(1)</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>shape(15)</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>shape(15)</code></td></tr>
+<tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>not_manifold</code></td></tr>
+</tbody></table>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* Hea001 - Top-level shape-healing pipeline must converge over multi-defect input
+<span class="lineno">3</span> * Compound bundling THREE distinct defective sub-shapes:
+<span class="lineno">4</span> *   (a) Tfa037-style square face wrapping a defective inner wire (scrambled,
+<span class="lineno">5</span> *       sub-tolerance, wrong orientation) -- exercises face-level fixers;
+<span class="lineno">6</span> *   (b) Tsh043-style two-face open shell with one face&#x27;s same_sense flipped
+<span class="lineno">7</span> *       and a shared edge re-used in opposite orientation -- exercises shell-level fixers;
+<span class="lineno">8</span> *   (c) Twi051-style 3-edge scrambled-order free wire -- exercises wire-level fixers.
+<span class="lineno">9</span> * Wrapped in a SHAPE_REPRESENTATION with a GEOMETRIC_SET of all three. */
+<span class="lineno">10</span>HEADER;
+<span class="lineno">11</span>FILE_DESCRIPTION((&#x27;Hea001 test case&#x27;,&#x27;Compound mixing defective face + defective shell + free wire&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">12</span>FILE_NAME(&#x27;Hea001.stp&#x27;,&#x27;2026-04-30T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">13</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }&#x27;));
+<span class="lineno">14</span>ENDSEC;
+<span class="lineno">15</span>DATA;
+<span class="lineno">16</span>#1=APPLICATION_CONTEXT(&#x27;automotive_design&#x27;);
+<span class="lineno">17</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,&#x27;automotive_design&#x27;,2000,#1);
+<span class="lineno">18</span>/* === (a) Defective face: square outer + defective inner wire === */
+<span class="lineno">19</span>#10=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">20</span>#11=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));#12=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">21</span>#13=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#10,#11,#12);#14=PLANE(&#x27;faceA_plane&#x27;,#13);
+<span class="lineno">22</span>#20=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));#21=VERTEX_POINT(&#x27;&#x27;,#20);
+<span class="lineno">23</span>#22=CARTESIAN_POINT(&#x27;&#x27;,(10.0,0.0,0.0));#23=VERTEX_POINT(&#x27;&#x27;,#22);
+<span class="lineno">24</span>#24=CARTESIAN_POINT(&#x27;&#x27;,(10.0,10.0,0.0));#25=VERTEX_POINT(&#x27;&#x27;,#24);
+<span class="lineno">25</span>#26=CARTESIAN_POINT(&#x27;&#x27;,(0.0,10.0,0.0));#27=VERTEX_POINT(&#x27;&#x27;,#26);
+<span class="lineno">26</span>#30=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));#31=VECTOR(&#x27;&#x27;,#30,1.0);#32=LINE(&#x27;&#x27;,#20,#31);
+<span class="lineno">27</span>#33=EDGE_CURVE(&#x27;&#x27;,#21,#23,#32,.T.);
+<span class="lineno">28</span>#34=DIRECTION(&#x27;&#x27;,(0.0,1.0,0.0));#35=VECTOR(&#x27;&#x27;,#34,1.0);#36=LINE(&#x27;&#x27;,#22,#35);
+<span class="lineno">29</span>#37=EDGE_CURVE(&#x27;&#x27;,#23,#25,#36,.T.);
+<span class="lineno">30</span>#38=DIRECTION(&#x27;&#x27;,(-1.0,0.0,0.0));#39=VECTOR(&#x27;&#x27;,#38,1.0);#40=LINE(&#x27;&#x27;,#24,#39);
+<span class="lineno">31</span>#41=EDGE_CURVE(&#x27;&#x27;,#25,#27,#40,.T.);
+<span class="lineno">32</span>#42=DIRECTION(&#x27;&#x27;,(0.0,-1.0,0.0));#43=VECTOR(&#x27;&#x27;,#42,1.0);#44=LINE(&#x27;&#x27;,#26,#43);
+<span class="lineno">33</span>#45=EDGE_CURVE(&#x27;&#x27;,#27,#21,#44,.T.);
+<span class="lineno">34</span>#46=ORIENTED_EDGE(&#x27;&#x27;,*,*,#33,.T.);#47=ORIENTED_EDGE(&#x27;&#x27;,*,*,#37,.T.);
+<span class="lineno">35</span>#48=ORIENTED_EDGE(&#x27;&#x27;,*,*,#41,.T.);#49=ORIENTED_EDGE(&#x27;&#x27;,*,*,#45,.T.);
+<span class="lineno">36</span>#50=EDGE_LOOP(&#x27;outer_A&#x27;,(#46,#47,#48,#49));
+<span class="lineno">37</span>#51=FACE_OUTER_BOUND(&#x27;&#x27;,#50,.T.);
+<span class="lineno">38</span>/* defective inner wire: tiny, scrambled, wrong-orientation flag */
+<span class="lineno">39</span>#60=CARTESIAN_POINT(&#x27;&#x27;,(5.0,5.0,0.0));#61=VERTEX_POINT(&#x27;&#x27;,#60);
+<span class="lineno">40</span>#62=CARTESIAN_POINT(&#x27;&#x27;,(5.001,5.0,0.0));#63=VERTEX_POINT(&#x27;&#x27;,#62);
+<span class="lineno">41</span>#64=CARTESIAN_POINT(&#x27;&#x27;,(5.0,5.001,0.0));#65=VERTEX_POINT(&#x27;&#x27;,#64);
+<span class="lineno">42</span>#66=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));#67=VECTOR(&#x27;&#x27;,#66,1.0);#68=LINE(&#x27;&#x27;,#60,#67);
+<span class="lineno">43</span>#69=EDGE_CURVE(&#x27;inner_e1&#x27;,#61,#63,#68,.T.);
+<span class="lineno">44</span>#70=DIRECTION(&#x27;&#x27;,(-0.7071067811865475,0.7071067811865475,0.0));#71=VECTOR(&#x27;&#x27;,#70,1.4142);#72=LINE(&#x27;&#x27;,#62,#71);
+<span class="lineno">45</span>#73=EDGE_CURVE(&#x27;inner_e2&#x27;,#63,#65,#72,.T.);
+<span class="lineno">46</span>#74=DIRECTION(&#x27;&#x27;,(0.0,-1.0,0.0));#75=VECTOR(&#x27;&#x27;,#74,1.0);#76=LINE(&#x27;&#x27;,#64,#75);
+<span class="lineno">47</span>#77=EDGE_CURVE(&#x27;inner_e3&#x27;,#65,#61,#76,.T.);
+<span class="lineno">48</span>#78=ORIENTED_EDGE(&#x27;inner_oe_e3&#x27;,*,*,#77,.T.);
+<span class="lineno">49</span>#79=ORIENTED_EDGE(&#x27;inner_oe_e1&#x27;,*,*,#69,.T.);
+<span class="lineno">50</span>#80=ORIENTED_EDGE(&#x27;inner_oe_e2&#x27;,*,*,#73,.T.);
+<span class="lineno">51</span>#81=EDGE_LOOP(&#x27;inner_scrambled&#x27;,(#78,#79,#80));
+<span class="lineno">52</span>#82=FACE_INNER_BOUND(&#x27;inner_wrong_orientation&#x27;,#81,.T.);
+<span class="lineno">53</span>#90=ADVANCED_FACE(&#x27;part_a_defective_face&#x27;,(#51,#82),#14,.T.);
+<span class="lineno">54</span>/* === (b) Defective shell: two faces sharing an edge, second face flipped === */
+<span class="lineno">55</span>#100=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,5.0));#101=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#100,#11,#12);
+<span class="lineno">56</span>#102=PLANE(&#x27;shell_planeA&#x27;,#101);
+<span class="lineno">57</span>#103=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,5.0));#104=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#103,#11,#12);
+<span class="lineno">58</span>#105=PLANE(&#x27;shell_planeB&#x27;,#104);
+<span class="lineno">59</span>#110=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,5.0));#111=VERTEX_POINT(&#x27;Sa&#x27;,#110);
+<span class="lineno">60</span>#112=CARTESIAN_POINT(&#x27;&#x27;,(2.0,0.0,5.0));#113=VERTEX_POINT(&#x27;Ss0&#x27;,#112);
+<span class="lineno">61</span>#114=CARTESIAN_POINT(&#x27;&#x27;,(2.0,2.0,5.0));#115=VERTEX_POINT(&#x27;Ss1&#x27;,#114);
+<span class="lineno">62</span>#116=CARTESIAN_POINT(&#x27;&#x27;,(0.0,2.0,5.0));#117=VERTEX_POINT(&#x27;Sb&#x27;,#116);
+<span class="lineno">63</span>#118=CARTESIAN_POINT(&#x27;&#x27;,(4.0,0.0,5.0));#119=VERTEX_POINT(&#x27;Sc&#x27;,#118);
+<span class="lineno">64</span>#120=CARTESIAN_POINT(&#x27;&#x27;,(4.0,2.0,5.0));#121=VERTEX_POINT(&#x27;Sd&#x27;,#120);
+<span class="lineno">65</span>#125=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));#126=VECTOR(&#x27;&#x27;,#125,1.0);#127=LINE(&#x27;&#x27;,#110,#126);
+<span class="lineno">66</span>#128=EDGE_CURVE(&#x27;shell_A_bottom&#x27;,#111,#113,#127,.T.);
+<span class="lineno">67</span>#129=DIRECTION(&#x27;&#x27;,(0.0,1.0,0.0));#130=VECTOR(&#x27;&#x27;,#129,1.0);#131=LINE(&#x27;&#x27;,#112,#130);
+<span class="lineno">68</span>#132=EDGE_CURVE(&#x27;shell_shared&#x27;,#113,#115,#131,.T.);
+<span class="lineno">69</span>#133=DIRECTION(&#x27;&#x27;,(-1.0,0.0,0.0));#134=VECTOR(&#x27;&#x27;,#133,1.0);#135=LINE(&#x27;&#x27;,#114,#134);
+<span class="lineno">70</span>#136=EDGE_CURVE(&#x27;shell_A_top&#x27;,#115,#117,#135,.T.);
+<span class="lineno">71</span>#137=DIRECTION(&#x27;&#x27;,(0.0,-1.0,0.0));#138=VECTOR(&#x27;&#x27;,#137,1.0);#139=LINE(&#x27;&#x27;,#116,#138);
+<span class="lineno">72</span>#140=EDGE_CURVE(&#x27;shell_A_left&#x27;,#117,#111,#139,.T.);
+<span class="lineno">73</span>#141=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));#142=VECTOR(&#x27;&#x27;,#141,1.0);#143=LINE(&#x27;&#x27;,#112,#142);
+<span class="lineno">74</span>#144=EDGE_CURVE(&#x27;shell_B_bottom&#x27;,#113,#119,#143,.T.);
+<span class="lineno">75</span>#145=DIRECTION(&#x27;&#x27;,(0.0,1.0,0.0));#146=VECTOR(&#x27;&#x27;,#145,1.0);#147=LINE(&#x27;&#x27;,#118,#146);
+<span class="lineno">76</span>#148=EDGE_CURVE(&#x27;shell_B_right&#x27;,#119,#121,#147,.T.);
+<span class="lineno">77</span>#149=DIRECTION(&#x27;&#x27;,(-1.0,0.0,0.0));#150=VECTOR(&#x27;&#x27;,#149,1.0);#151=LINE(&#x27;&#x27;,#120,#150);
+<span class="lineno">78</span>#152=EDGE_CURVE(&#x27;shell_B_top&#x27;,#121,#115,#151,.T.);
+<span class="lineno">79</span>#160=ORIENTED_EDGE(&#x27;&#x27;,*,*,#128,.T.);#161=ORIENTED_EDGE(&#x27;&#x27;,*,*,#132,.T.);
+<span class="lineno">80</span>#162=ORIENTED_EDGE(&#x27;&#x27;,*,*,#136,.T.);#163=ORIENTED_EDGE(&#x27;&#x27;,*,*,#140,.T.);
+<span class="lineno">81</span>#164=EDGE_LOOP(&#x27;shellA_outer&#x27;,(#160,#161,#162,#163));
+<span class="lineno">82</span>#165=FACE_OUTER_BOUND(&#x27;&#x27;,#164,.T.);
+<span class="lineno">83</span>#166=ADVANCED_FACE(&#x27;shell_faceA&#x27;,(#165),#102,.T.);
+<span class="lineno">84</span>#170=ORIENTED_EDGE(&#x27;&#x27;,*,*,#144,.T.);#171=ORIENTED_EDGE(&#x27;&#x27;,*,*,#148,.T.);
+<span class="lineno">85</span>#172=ORIENTED_EDGE(&#x27;&#x27;,*,*,#152,.T.);#173=ORIENTED_EDGE(&#x27;&#x27;,*,*,#132,.F.);
+<span class="lineno">86</span>#174=EDGE_LOOP(&#x27;shellB_outer&#x27;,(#170,#171,#172,#173));
+<span class="lineno">87</span>#175=FACE_OUTER_BOUND(&#x27;&#x27;,#174,.T.);
+<span class="lineno">88</span>/* DEFECT: face B same_sense .F. -- shell orientation flipped on this face. */
+<span class="lineno">89</span>#176=ADVANCED_FACE(&#x27;shell_faceB_flipped&#x27;,(#175),#105,.F.);
+<span class="lineno">90</span>#180=OPEN_SHELL(&#x27;part_b_defective_shell&#x27;,(#166,#176));
+<span class="lineno">91</span>/* === (c) Free wire: 3-edge scrambled-order triangle === */
+<span class="lineno">92</span>#200=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,10.0));#201=VERTEX_POINT(&#x27;Wa&#x27;,#200);
+<span class="lineno">93</span>#202=CARTESIAN_POINT(&#x27;&#x27;,(1.0,0.0,10.0));#203=VERTEX_POINT(&#x27;Wb&#x27;,#202);
+<span class="lineno">94</span>#204=CARTESIAN_POINT(&#x27;&#x27;,(0.5,0.866,10.0));#205=VERTEX_POINT(&#x27;Wc&#x27;,#204);
+<span class="lineno">95</span>#206=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));#207=VECTOR(&#x27;&#x27;,#206,1.0);#208=LINE(&#x27;&#x27;,#200,#207);
+<span class="lineno">96</span>#209=EDGE_CURVE(&#x27;wire_e1&#x27;,#201,#203,#208,.T.);
+<span class="lineno">97</span>#210=DIRECTION(&#x27;&#x27;,(-0.5,0.866,0.0));#211=VECTOR(&#x27;&#x27;,#210,1.0);#212=LINE(&#x27;&#x27;,#202,#211);
+<span class="lineno">98</span>#213=EDGE_CURVE(&#x27;wire_e2&#x27;,#203,#205,#212,.T.);
+<span class="lineno">99</span>#214=DIRECTION(&#x27;&#x27;,(-0.5,-0.866,0.0));#215=VECTOR(&#x27;&#x27;,#214,1.0);#216=LINE(&#x27;&#x27;,#204,#215);
+<span class="lineno">100</span>#217=EDGE_CURVE(&#x27;wire_e3&#x27;,#205,#201,#216,.T.);
+<span class="lineno">101</span>#218=ORIENTED_EDGE(&#x27;w_oe_e3&#x27;,*,*,#217,.T.);
+<span class="lineno">102</span>#219=ORIENTED_EDGE(&#x27;w_oe_e1&#x27;,*,*,#209,.T.);
+<span class="lineno">103</span>#220=ORIENTED_EDGE(&#x27;w_oe_e2&#x27;,*,*,#213,.T.);
+<span class="lineno">104</span>#221=EDGE_LOOP(&#x27;part_c_free_wire_scrambled&#x27;,(#218,#219,#220));
+<span class="lineno">105</span>/* Wrap all three in a compound (geometric set) under SHAPE_REPRESENTATION */
+<span class="lineno">106</span>#300=GEOMETRIC_SET(&#x27;compound_three_defects&#x27;,(#90,#180,#221));
+<span class="lineno">107</span>#310=GEOMETRIC_REPRESENTATION_CONTEXT(&#x27;shape_repr&#x27;,(#13),3);
+<span class="lineno">108</span>#311=SHAPE_REPRESENTATION(&#x27;multi_defect_shape&#x27;,(#300),#310);
+<span class="lineno">109</span>/* Wrap: minimal PRODUCT chain so OCCT TransferRoots produces a shape. */
+<span class="lineno">110</span>#9000=PRODUCT_CONTEXT(&#x27;&#x27;,#1,&#x27;mechanical&#x27;);
+<span class="lineno">111</span>#9001=PRODUCT(&#x27;Hea001&#x27;,&#x27;Hea001&#x27;,&#x27;&#x27;,(#9000));
+<span class="lineno">112</span>#9002=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#9001);
+<span class="lineno">113</span>#9003=PRODUCT_DEFINITION_CONTEXT(&#x27;part definition&#x27;,#1,&#x27;design&#x27;);
+<span class="lineno">114</span>#9004=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,#9002,#9003);
+<span class="lineno">115</span>#9005=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,#9004);
+<span class="lineno">116</span>#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">117</span>#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+<span class="lineno">118</span>#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+<span class="lineno">119</span>#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,&#x27;distance_accuracy_value&#x27;,&#x27;&#x27;);
+<span class="lineno">120</span>#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT(&#x27;&#x27;,&#x27;3D&#x27;));
+<span class="lineno">121</span>#9021=SHELL_BASED_SURFACE_MODEL(&#x27;wrap_sbsm&#x27;,(#180));
+<span class="lineno">122</span>#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION(&#x27;&#x27;,(#9021),#9010);
+<span class="lineno">123</span>#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+<span class="lineno">124</span>ENDSEC;
+<span class="lineno">125</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="up" href="index.html">§12.3c Faces / sewing / free bound</a> <a class="next" href="Hea002.html">Hea002 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

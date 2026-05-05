@@ -1,0 +1,50 @@
+/* Pf024 - ShapeFix_IntersectionTool infinite loop
+   Pattern: intersection-healing algorithm could infinite-loop on certain
+   edges because a split-index range check was missing (Mantis 0029695;
+   OCCT ea1114e).  Trigger: a face whose intersection-tool produces a
+   split index out of the wire's current edge range, and whose iterative
+   re-split reproduces the same condition.
+   Scaling-up: the same single-face fixture below is enough; just run
+   ShapeFix_IntersectionTool against the face. The pre-fix code spins
+   forever on this shape. */
+ISO-10303-21;
+HEADER;
+FILE_DESCRIPTION(('Pf024 - ShapeFix_IntersectionTool infinite loop trigger'),'2;1');
+FILE_NAME('Pf024.stp','2026-04-26T00:00:00',('auto-generated'),(''),
+  'auto-generated','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=DIRECTION('',(0.0,0.0,1.0));
+#3=DIRECTION('',(1.0,0.0,0.0));
+#4=AXIS2_PLACEMENT_3D('',#1,#2,#3);
+#5=PLANE('',#4);
+/* two edges that cross at a non-endpoint, plus a shared closing edge */
+#10=CARTESIAN_POINT('a',(0.0,0.0,0.0));
+#11=CARTESIAN_POINT('b',(2.0,0.0,0.0));
+#12=CARTESIAN_POINT('c',(2.0,2.0,0.0));
+#13=CARTESIAN_POINT('d',(0.0,2.0,0.0));
+/* crossing pair: AC and BD intersect inside the rectangle */
+#14=CARTESIAN_POINT('mid-cross',(1.0,1.0,0.0));
+#20=VERTEX_POINT('vA',#10);
+#21=VERTEX_POINT('vB',#11);
+#22=VERTEX_POINT('vC',#12);
+#23=VERTEX_POINT('vD',#13);
+#24=VERTEX_POINT('vM',#14);
+#30=VECTOR('',#3,1.0);
+#31=LINE('',#10,#30);
+#40=EDGE_CURVE('A-to-C',#20,#22,#31,.T.);
+#41=EDGE_CURVE('B-to-D',#21,#23,#31,.T.);
+#42=EDGE_CURVE('A-to-B',#20,#21,#31,.T.);
+#43=EDGE_CURVE('C-to-D',#22,#23,#31,.T.);
+#50=ORIENTED_EDGE('',*,*,#40,.T.);
+#51=ORIENTED_EDGE('',*,*,#41,.T.);
+#52=ORIENTED_EDGE('',*,*,#42,.T.);
+#53=ORIENTED_EDGE('',*,*,#43,.T.);
+/* loop with crossing pair - intersection tool tries to split */
+#60=EDGE_LOOP('cross-loop',(#52,#50,#53,#51));
+#70=FACE_OUTER_BOUND('',#60,.T.);
+#100=ADVANCED_FACE('intersect-target',(#70),#5,.T.);
+ENDSEC;
+END-ISO-10303-21;

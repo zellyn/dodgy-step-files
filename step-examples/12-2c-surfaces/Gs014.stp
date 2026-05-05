@@ -1,0 +1,57 @@
+ISO-10303-21;
+/* Gs014 - Zero-area / degenerate face (sliver, spot, strip, pin)
+ * Defect: 4-edge ADVANCED_FACE whose two long sides are 100mm and two short sides
+ * are 1e-7 mm, producing a sliver/strip face with effectively zero area but
+ * non-trivial perimeter. Underlying surface is well-defined; trim collapses area. */
+HEADER;
+FILE_DESCRIPTION(('Gs014 test case','Zero-area degenerate strip face'),'2;1');
+FILE_NAME('Gs014.stp','2026-04-26T00:00:00',(''),(''),'auto-generated','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#11=DIRECTION('',(0.0,0.0,1.0));
+#12=DIRECTION('',(1.0,0.0,0.0));
+#13=AXIS2_PLACEMENT_3D('',#10,#11,#12);
+#20=PLANE('',#13);
+/* Four corners: (0,0), (100,0), (100,1e-7), (0,1e-7) - long thin strip */
+#30=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#31=VERTEX_POINT('',#30);
+#32=CARTESIAN_POINT('',(100.0,0.0,0.0));
+#33=VERTEX_POINT('',#32);
+#34=CARTESIAN_POINT('',(100.0,1.0E-7,0.0));
+#35=VERTEX_POINT('',#34);
+#36=CARTESIAN_POINT('',(0.0,1.0E-7,0.0));
+#37=VERTEX_POINT('',#36);
+/* Edge 1: (0,0)->(100,0) length 100 */
+#40=DIRECTION('',(1.0,0.0,0.0));
+#41=VECTOR('',#40,100.0);
+#42=LINE('',#30,#41);
+/* Edge 2: (100,0)->(100,1e-7) length 1e-7 - degenerately short */
+#43=DIRECTION('',(0.0,1.0,0.0));
+#44=VECTOR('',#43,1.0E-7);
+#45=LINE('',#32,#44);
+/* Edge 3: (100,1e-7)->(0,1e-7) length 100, reverse */
+#46=DIRECTION('',(-1.0,0.0,0.0));
+#47=VECTOR('',#46,100.0);
+#48=LINE('',#34,#47);
+/* Edge 4: (0,1e-7)->(0,0) length 1e-7 - degenerately short */
+#49=DIRECTION('',(0.0,-1.0,0.0));
+#50=VECTOR('',#49,1.0E-7);
+#51=LINE('',#36,#50);
+#60=EDGE_CURVE('',#31,#33,#42,.T.);
+#61=EDGE_CURVE('',#33,#35,#45,.T.);
+#62=EDGE_CURVE('',#35,#37,#48,.T.);
+#63=EDGE_CURVE('',#37,#31,#51,.T.);
+#70=ORIENTED_EDGE('',*,*,#60,.T.);
+#71=ORIENTED_EDGE('',*,*,#61,.T.);
+#72=ORIENTED_EDGE('',*,*,#62,.T.);
+#73=ORIENTED_EDGE('',*,*,#63,.T.);
+/* Defect: face has effectively zero area (1e-5 mm^2), trim collapses */
+#80=EDGE_LOOP('',(#70,#71,#72,#73));
+#81=FACE_OUTER_BOUND('',#80,.T.);
+#82=ADVANCED_FACE('',(#81),#20,.T.);
+ENDSEC;
+END-ISO-10303-21;

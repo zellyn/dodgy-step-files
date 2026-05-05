@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Ls043 — Excessively long entity name</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.1c Part-21 grammar</a> <span class="sep">/</span> <span class="current">Ls043</span>
+</nav>
+<header class="title-bar">
+<h1>Ls043 <span class="sep">—</span> <span class="entry-title">Excessively long entity name</span></h1>
+<p class="category">§12.1c lexical / identifier limits</p>
+<p class="severity-badge severity-p1">P1 — silent data loss</p>
+<p class="tag-pills">
+<a class="tag tag-syntax" href="../by-tag/syntax/index.html">syntax</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-1c-syntax/Ls043.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-1c-syntax/Ls043.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>A021, S002</li>
+</ul></section>
+<section><h2>Description</h2>
+<p>Parser copies entity name into a fixed-size identifier buffer — classic strcpy overflow. ISO conformance class permits long names but not unbounded. Embedded `-` (hyphen) in identifiers is also disallowed (`BS7752-1`).</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>`#1=AAAA…(64 KiB)…(..);` and `#2=BS7752-1(..)`.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>Maximum identifier length per ISO conformance class (e.g. 256 chars); reject overflow before allocation. Reject `-` in identifiers; lenient mode may map to `_`.</p></section>
+<section><h2>Notes</h2>
+<p>Synonyms: &quot;very long STEP entity name&quot;, &quot;fixed-buffer overflow on long name&quot;, &quot;hyphen in STEP identifier&quot;, &quot;BS7752-1 entity name rejected&quot;, &quot;STEP entity name with dash&quot;.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>matches(rb&#x27;#\d+\s*=\s*A{50,}\(&#x27;) or matches(rb&#x27;#\d+\s*=\s*[A-Z]+-\d+\(&#x27;)</code></li>
+<li><code>matches(rb&#x27;A{50,}|BS7752-1&#x27;)</code></li>
+</ul></section>
+<section><h2>Live oracle output</h2>
+<table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
+<tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>no_shapes_loaded</code></td></tr>
+</tbody></table>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>/* Ls043 - Excessively long entity name / hyphen in identifier
+<span class="lineno">2</span>   ----------------------------------------------------------------------
+<span class="lineno">3</span>   Catalog section : Â§12.1c lexical / identifier limits
+<span class="lineno">4</span>   Sources         : A021, S002
+<span class="lineno">5</span>   Originally also catalogued as: Ad021
+<span class="lineno">6</span>   ----------------------------------------------------------------------
+<span class="lineno">7</span>   Defect
+<span class="lineno">8</span>     A parser that copies the entity name into a fixed-size identifier
+<span class="lineno">9</span>     buffer is a classic strcpy overflow. ISO conformance class permits
+<span class="lineno">10</span>     long names but not unbounded. Embedded &#x27;-&#x27; in identifiers is also
+<span class="lineno">11</span>     disallowed (e.g. <mark>BS7752-1</mark>) - hyphen is not a legal identifier
+<span class="lineno">12</span>     character in EXPRESS.
+<span class="lineno">13</span>   Expected behavior
+<span class="lineno">14</span>     Cap identifier length per ISO conformance class (e.g. 256 chars);
+<span class="lineno">15</span>     reject overflow before allocation. Reject &#x27;-&#x27; in identifiers;
+<span class="lineno">16</span>     lenient mode may map &#x27;-&#x27; to &#x27;_&#x27; but must always warn.
+<span class="lineno">17</span>   ----------------------------------------------------------------------
+<span class="lineno">18</span>*/
+<span class="lineno">19</span>ISO-10303-21;
+<span class="lineno">20</span>HEADER;
+<span class="lineno">21</span>FILE_DESCRIPTION((&#x27;Ls043 - long entity name / hyphen in identifier&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">22</span>FILE_NAME(&#x27;Ls043.stp&#x27;,&#x27;2026-04-26T00:00:00&#x27;,(&#x27;auto-generated&#x27;),(&#x27;&#x27;),
+<span class="lineno">23</span>  &#x27;auto-generated&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">24</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
+<span class="lineno">25</span>ENDSEC;
+<span class="lineno">26</span>DATA;
+<span class="lineno">27</span>#10=CARTESIAN_POINT(&#x27;origin&#x27;,(0.0,0.0,0.0));
+<span class="lineno">28</span>/* Defect: hyphen inside an entity name (identifiers may not contain &#x27;-&#x27;) */
+<span class="lineno">29</span>#20=<mark>BS7752-1</mark>(#10);
+<span class="lineno">30</span>/* Defect: an entity name longer than typical conformance caps; replicate
+<span class="lineno">31</span>   the AAAA token in stress fixtures to exceed 256 / 4096 / 64 K thresholds */
+<span class="lineno">32</span>#30=<mark>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA</mark>(#10);
+<span class="lineno">33</span>ENDSEC;
+<span class="lineno">34</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Ls038.html">&larr; Ls038</a> <a class="up" href="index.html">§12.1c Part-21 grammar</a> <a class="next" href="Ls044.html">Ls044 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

@@ -1,0 +1,61 @@
+/* Pmi067 - 'INCH' named differently on conversion_based_unit
+   Defect: The conventional name for inches in PMI dimensional
+   measurements is 'INCH'; this producer wrote 'inches' on the
+   CONVERSION_BASED_UNIT, plus another instance with 'IN'. PMI value
+   display breaks on case-sensitive readers that match 'INCH' literally.
+   NIST SFA S032. Receivers should case-insensitively match and warn. */
+ISO-10303-21;
+HEADER;
+FILE_DESCRIPTION(('Pmi067 - inch unit names not normalized to INCH',
+  'CAx-IF Rec.Pracs.---PMI Rep & Pres---v4.1'),'2;1');
+FILE_NAME('Pmi067.stp','2026-04-26T00:00:00',('catalog'),('cad'),
+  'manual','','');
+FILE_SCHEMA(('AP242_MANAGED_MODEL_BASED_3D_ENGINEERING_MIM_LF { 1 0 10303 442 1 1 4 }'));
+ENDSEC;
+DATA;
+#10 = APPLICATION_CONTEXT('managed model based 3d engineering');
+#11 = APPLICATION_PROTOCOL_DEFINITION('international standard',
+  'ap242_managed_model_based_3d_engineering',2020,#10);
+#12 = PRODUCT_CONTEXT('',#10,'mechanical');
+#13 = PRODUCT('Pmi067','InchAliasPart','',(#12));
+#14 = PRODUCT_DEFINITION_FORMATION('','',#13);
+#15 = PRODUCT_DEFINITION_CONTEXT('',#10,'design');
+#16 = PRODUCT_DEFINITION('','',#14,#15);
+#17 = PRODUCT_DEFINITION_SHAPE('','',#16);
+#20 = ( LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT(.MILLI.,.METRE.) );
+#21 = DIMENSIONAL_EXPONENTS(1.0,0.0,0.0,0.0,0.0,0.0,0.0);
+#22 = LENGTH_MEASURE_WITH_UNIT(LENGTH_MEASURE(25.4),#20);
+/* Defect: the conventional canonical name is 'INCH' (uppercase).
+   This producer used 'inches'. */
+#23 = ( CONVERSION_BASED_UNIT('inches',#22) LENGTH_UNIT() NAMED_UNIT(#21) );
+/* Sibling defect: a second variant 'IN' attached to a different
+   conversion_based_unit. */
+#24 = LENGTH_MEASURE_WITH_UNIT(LENGTH_MEASURE(25.4),#20);
+#25 = ( CONVERSION_BASED_UNIT('IN',#24) LENGTH_UNIT() NAMED_UNIT(#21) );
+#26 = ( NAMED_UNIT(*) PLANE_ANGLE_UNIT() SI_UNIT($,.RADIAN.) );
+#27 = ( NAMED_UNIT(*) SI_UNIT($,.STERADIAN.) SOLID_ANGLE_UNIT() );
+#28 = UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#23,
+  'distance_accuracy_value','');
+#29 = ( GEOMETRIC_REPRESENTATION_CONTEXT(3)
+  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#28))
+  GLOBAL_UNIT_ASSIGNED_CONTEXT((#23,#26,#27))
+  REPRESENTATION_CONTEXT('','3D') );
+#30 = CARTESIAN_POINT('',(0.0,0.0,0.0));
+#31 = DIRECTION('',(0.0,0.0,1.0));
+#32 = DIRECTION('',(1.0,0.0,0.0));
+#33 = AXIS2_PLACEMENT_3D('',#30,#31,#32);
+#40 = SHAPE_ASPECT('feature','',#17,.T.);
+#50 = DIMENSIONAL_SIZE(#40,'distance');
+#51 = MEASURE_REPRESENTATION_ITEM('nom',LENGTH_MEASURE(2.5),#23);
+#52 = SHAPE_DIMENSION_REPRESENTATION('',(#51),#29);
+#60 = PLUS_MINUS_TOLERANCE(#61,#50);
+#61 = TOLERANCE_VALUE(#62,#63);
+#62 = LENGTH_MEASURE_WITH_UNIT(LENGTH_MEASURE(-0.001),#23);
+#63 = LENGTH_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#23);
+#80 = DRAUGHTING_MODEL('Default',(),#29);
+#81 = PLANE('ann_plane',#33);
+#82 = ANNOTATION_PLANE('PMI',(),#81,());
+#90 = SHAPE_REPRESENTATION('',(#33),#29);
+#91 = SHAPE_DEFINITION_REPRESENTATION(#17,#90);
+ENDSEC;
+END-ISO-10303-21;

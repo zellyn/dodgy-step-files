@@ -1,0 +1,31 @@
+ISO-10303-21;
+/* M180 - AP238 INSPECTION_RESULT measurement uncertainty larger than feature tolerance.
+ * Defect: an INSPECTION_RESULT records a measurement_uncertainty of
+ * 0.05 mm against a feature whose design tolerance is +/-0.02 mm. The
+ * measurement is statistically incapable of confirming or denying
+ * conformance - it tells you nothing. Reporting it as "in spec" or
+ * "out of spec" is misleading. */
+HEADER;
+FILE_DESCRIPTION(('M180 test case','AP238 inspection uncertainty exceeds feature tolerance'),'2;1');
+FILE_NAME('M180.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AP238_STEP_NC_MIM { 1 0 10303 238 1 0 0 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('numerical_control_machining');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
+  'numerical_control_machining',2007,#1);
+#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10))
+     REPRESENTATION_CONTEXT('nc','3D'));
+/* Feature design tolerance: +/-0.02 mm. */
+#400=ROUND_HOLE('precision_hole',$,$,$,$);
+#410=PLUS_MINUS_TOLERANCE('hole_tol',
+  MEASURE_WITH_UNIT(LENGTH_MEASURE(0.02),#10),
+  MEASURE_WITH_UNIT(LENGTH_MEASURE(-0.02),#10),#400);
+/* Defect: measurement uncertainty 0.05 mm > tolerance 0.02 mm. */
+#80=MEASURE_WITH_UNIT(POSITIVE_LENGTH_MEASURE(0.05),#10);
+#100=INSPECTION_RESULT('result_hole1',$,#400,$,#80);
+#200=WORKPLAN('main',(),$,$,$);
+ENDSEC;
+END-ISO-10303-21;

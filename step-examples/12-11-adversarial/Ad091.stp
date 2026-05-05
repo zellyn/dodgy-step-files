@@ -1,0 +1,14 @@
+ISO-10303-21;
+/* Ad091 - Crash on STEP with comma decimal separator
+ * Defect: CARTESIAN_POINT with comma decimal: (1,5,2,5,3,5) intended as (1.5,2.5,3.5) */
+HEADER;
+FILE_DESCRIPTION(('Ad091 test case','Crash on STEP with comma decimal separator'),'2;1');
+FILE_NAME('Ad091.stp','2026-04-30T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+#100=CARTESIAN_POINT('locale_comma_decimal',(1,5,2,5,3,5));
+ENDSEC;
+END-ISO-10303-21;

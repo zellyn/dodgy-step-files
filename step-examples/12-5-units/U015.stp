@@ -1,0 +1,49 @@
+ISO-10303-21;
+/*
+ * U015 — FreeCAD/OCCT 7.8.1: model in mm but file labelled inches
+ * Defect: header declares CONVERSION_BASED_UNIT('INCH',...) but
+ *         CARTESIAN_POINT coordinates are mm-valued; re-import 25.4x
+ *         too large.
+ */
+HEADER;
+FILE_DESCRIPTION(('U015 file mislabel inch with mm coords'),'2;1');
+FILE_NAME('U015.stp','2026-04-26T00:00:00',('catalog'),('cad'),
+  'manual','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN'));
+ENDSEC;
+DATA;
+#10 = APPLICATION_CONTEXT('automotive design');
+#11 = APPLICATION_PROTOCOL_DEFINITION('international standard',
+  'automotive_design',2001,#10);
+#12 = PRODUCT_CONTEXT('',#10,'mechanical');
+#13 = PRODUCT('U015','U015','',(#12));
+#14 = PRODUCT_DEFINITION_FORMATION('','',#13);
+#15 = PRODUCT_DEFINITION_CONTEXT('',#10,'design');
+#16 = PRODUCT_DEFINITION('','',#14,#15);
+#17 = PRODUCT_DEFINITION_SHAPE('','',#16);
+/* Inch CONVERSION_BASED_UNIT (correct shape) — but kernel forgot to
+   convert mm internals to inches. */
+#20 = ( LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT(.MILLI.,.METRE.) );
+#21 = DIMENSIONAL_EXPONENTS(1.0,0.0,0.0,0.0,0.0,0.0,0.0);
+#22 = LENGTH_MEASURE_WITH_UNIT(LENGTH_MEASURE(25.4),#20);
+#23 = ( CONVERSION_BASED_UNIT('INCH',#22) NAMED_UNIT(#21) LENGTH_UNIT() );
+#26 = ( NAMED_UNIT(*) PLANE_ANGLE_UNIT() SI_UNIT($,.RADIAN.) );
+#27 = ( NAMED_UNIT(*) SI_UNIT($,.STERADIAN.) SOLID_ANGLE_UNIT() );
+#28 = UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.0001),#23,
+  'distance_accuracy_value','');
+#29 = ( GEOMETRIC_REPRESENTATION_CONTEXT(3)
+  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#28))
+  GLOBAL_UNIT_ASSIGNED_CONTEXT((#23,#26,#27))
+  REPRESENTATION_CONTEXT('','3D') );
+/* Coordinates are mm-valued (e.g. 100 mm) but declared unit is INCH.
+   Re-import multiplies by 25.4 -> 2540 mm. */
+#30 = CARTESIAN_POINT('',(0.0,0.0,0.0));
+#31 = CARTESIAN_POINT('',(100.0,0.0,0.0));
+#32 = CARTESIAN_POINT('',(100.0,50.0,0.0));
+#33 = DIRECTION('',(0.0,0.0,1.0));
+#34 = DIRECTION('',(1.0,0.0,0.0));
+#35 = AXIS2_PLACEMENT_3D('',#30,#33,#34);
+#50 = SHAPE_REPRESENTATION('',(#35),#29);
+#51 = SHAPE_DEFINITION_REPRESENTATION(#17,#50);
+ENDSEC;
+END-ISO-10303-21;

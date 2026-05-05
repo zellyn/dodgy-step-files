@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>M087 — AP210 signal net node references unresolved terminal</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.8 Mixed (tessellation, validation properties, etc.)</a> <span class="sep">/</span> <span class="current">M087</span>
+</nav>
+<header class="title-bar">
+<h1>M087 <span class="sep">—</span> <span class="entry-title">AP210 signal net node references unresolved terminal</span></h1>
+<p class="category">§12.8 mixed (sub-class: AP210 connectivity)</p>
+<p class="tag-pills">
+<a class="tag tag-spec-violation" href="../by-tag/spec-violation/index.html">spec-violation</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-8-mixed/M087.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-8-mixed/M087.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>deduced from AP210 §7 network connectivity invariants</li>
+</ul></section>
+<section><h2>Sender</h2>
+<p>deduced — ECAD exporter dropping terminal definitions</p></section>
+<section><h2>Description</h2>
+<p>A `NETWORK` (signal net) lists `NETWORK_NODE`s, one of which references a `TERMINAL` by id that isn&#x27;t declared in the file. The net is dangling at one end. A connectivity-check downstream reports the net as having one endpoint instead of two. Bug-reporter language: &quot;AP210 net has missing terminal&quot;, &quot;PCB net dangling reference&quot;, &quot;signal connects to nothing&quot;.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>`NETWORK_NODE(&#x27;CLK_net_node_b&#x27;, #999)` where `#999` is undeclared.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>detect unresolved references; warn and drop the node, or reject the net.</p></section>
+<section><h2>Notes</h2>
+<p>Synonyms: &quot;PCB net dangling&quot;, &quot;unresolved terminal&quot;, &quot;AP210 net references missing TERMINAL&quot;, &quot;signal net node has no endpoint&quot;, &quot;network has dangling node&quot;.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>contains(b&#x27;ELECTRONIC_ASSEMBLY_INTERCONNECT_AND_PACKAGING_DESIGN&#x27;)</code></li>
+<li><code>contains(b&#x27;TERMINAL&#x27;)</code></li>
+<li><code>contains(b&#x27;NETWORK&#x27;)</code></li>
+</ul></section>
+<section><h2>Live oracle output</h2>
+<table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
+<tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>reject(E_UNRESOLVED_REFS)</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>no_shapes_loaded</code></td></tr>
+</tbody></table>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* M087 - AP210 signal-net references nonexistent terminal.
+<span class="lineno">3</span> * Defect: an INTERCONNECT_MODULE_<mark>TERMINAL</mark>_END references a <mark>TERMINAL</mark> by
+<span class="lineno">4</span> * id, but the cited <mark>TERMINAL</mark> is not declared in the file. The net is
+<span class="lineno">5</span> * left dangling at one end - a downstream connectivity check reports a
+<span class="lineno">6</span> * net with one terminal connection instead of two. */
+<span class="lineno">7</span>HEADER;
+<span class="lineno">8</span>FILE_DESCRIPTION((&#x27;M087 test case&#x27;,&#x27;AP210 signal net references missing terminal&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">9</span>FILE_NAME(&#x27;M087.stp&#x27;,&#x27;2026-04-30T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">10</span>FILE_SCHEMA((&#x27;<mark>ELECTRONIC_ASSEMBLY_INTERCONNECT_AND_PACKAGING_DESIGN</mark> { 1 0 10303 210 3 1 0 }&#x27;));
+<span class="lineno">11</span>ENDSEC;
+<span class="lineno">12</span>DATA;
+<span class="lineno">13</span>#1=APPLICATION_CONTEXT(&#x27;electronic_assembly_interconnect_and_packaging_design&#x27;);
+<span class="lineno">14</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,
+<span class="lineno">15</span>  &#x27;electronic_assembly_interconnect_and_packaging_design&#x27;,2014,#1);
+<span class="lineno">16</span>#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">17</span>#100=PRODUCT(&#x27;U1&#x27;,&#x27;MCU&#x27;,&#x27;MCU package&#x27;,(#1));
+<span class="lineno">18</span>#101=PRODUCT(&#x27;U2&#x27;,&#x27;SRAM&#x27;,&#x27;SRAM package&#x27;,(#1));
+<span class="lineno">19</span>#110=<mark>TERMINAL</mark>(&#x27;U1.PA0&#x27;,$,$);
+<span class="lineno">20</span>/* Defect: U2.PA0 declared on the net side as #999, never given a
+<span class="lineno">21</span> * <mark>TERMINAL</mark> definition. */
+<span class="lineno">22</span>#200=<mark>NETWORK</mark>_NODE(&#x27;CLK_net_node_a&#x27;,#110);
+<span class="lineno">23</span>#201=<mark>NETWORK</mark>_NODE(&#x27;CLK_net_node_b&#x27;,#999);
+<span class="lineno">24</span>#300=<mark>NETWORK</mark>(&#x27;CLK_net&#x27;,(#200,#201),$);
+<span class="lineno">25</span>ENDSEC;
+<span class="lineno">26</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="M086.html">&larr; M086</a> <a class="up" href="index.html">§12.8 Mixed (tessellation, validation properties, etc.)</a> <a class="next" href="M088.html">M088 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

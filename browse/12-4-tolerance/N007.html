@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>N007 — Vertex tolerance bump factor hard-coded `1.000001 *` on disagreement</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.4 Tolerance &amp; numerical precision</a> <span class="sep">/</span> <span class="current">N007</span>
+</nav>
+<header class="title-bar">
+<h1>N007 <span class="sep">—</span> <span class="entry-title">Vertex tolerance bump factor hard-coded `1.000001 *` on disagreement</span></h1>
+<p class="category">§12.4 (sub-class: vertex tolerance bumps)</p>
+<p class="severity-badge severity-p1">P1 — silent data loss</p>
+<p class="tag-pills">
+<a class="tag tag-topology" href="../by-tag/topology/index.html">topology</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-4-tolerance/N007.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-4-tolerance/N007.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>04-occt-translation Q010 (PRO8845)</li>
+</ul></section>
+<section><h2>Sender</h2>
+<p>Pro/E PRO8845</p></section>
+<section><h2>Description</h2>
+<p>When the imported edge&#x27;s 3D curve and its endpoint vertices disagree beyond a precision threshold, the translator bumps the vertex tolerance by a constant multiplier (slightly above 1.0×) of the deviation, just enough to make the edge pass invariants. Repeated reads through the same path accumulate the multiplier and bloat tolerance without anchoring it against the file-level uncertainty.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>AP203 file where a `VERTEX_POINT.cartesian_point` lies 1e-3 from the curve evaluation at the edge&#x27;s parametric endpoint, on a model with 1e-6 declared uncertainty.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>cap vertex-tolerance bumps against a multiple of the model&#x27;s `uncertainty_measure_with_unit`, warn when the bump exceeds that threshold, or reject as malformed.</p></section>
+<section><h2>Notes</h2>
+<p>**See also**: N025. Synonyms: &quot;vertex tolerance bumped by tiny constant multiplier&quot;, &quot;translator multiplies tolerance by 1.000001&quot;, &quot;tolerance creeps up across repeated reads&quot;, &quot;constant multiplier applied to vertex tolerance&quot;.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>contains(b&#x27;1.0E-6&#x27;) and contains(b&#x27;EDGE_CURVE&#x27;)</code></li>
+<li><code>count_entity_def(b&#x27;VERTEX_POINT&#x27;) == 2</code></li>
+</ul></section>
+<section><h2>Cross-references</h2>
+<p><a href="N025.html">N025</a></p>
+</section>
+<section><h2>Live oracle output</h2>
+<table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
+<tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>no_shapes_loaded</code></td></tr>
+</tbody></table>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>/* N007 - Vertex tolerance bump factor hard-coded 1.000001 * on disagreement
+<span class="lineno">2</span> * Defect: StepToTopoDS_TranslateEdge -- when imported edge&#x27;s 3D curve and
+<span class="lineno">3</span> * vertex points disagree beyond preci, OCCT bumps vertex tolerance by
+<span class="lineno">4</span> * 1.000001 * (deviation) to make the edge pass invariants. Repeated reads
+<span class="lineno">5</span> * accumulate the factor.
+<span class="lineno">6</span> * Reproducer: VERTEX_POINT.cartesian_point lies 1e-3 from the curve evaluation
+<span class="lineno">7</span> * at the edge&#x27;s parametric endpoint; declared uncertainty is 1e-6.
+<span class="lineno">8</span> */
+<span class="lineno">9</span>ISO-10303-21;
+<span class="lineno">10</span>HEADER;
+<span class="lineno">11</span>FILE_DESCRIPTION((&#x27;N007 vertex tolerance bump factor 1.000001 hard-coded&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">12</span>FILE_NAME(&#x27;N007.stp&#x27;,&#x27;2026-04-26T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),
+<span class="lineno">13</span>  &#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">14</span>FILE_SCHEMA((&#x27;CONFIG_CONTROL_DESIGN&#x27;));
+<span class="lineno">15</span>ENDSEC;
+<span class="lineno">16</span>DATA;
+<span class="lineno">17</span>#1=APPLICATION_CONTEXT(&#x27;configuration controlled 3d designs of mechanical parts&#x27;);
+<span class="lineno">18</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,
+<span class="lineno">19</span>  &#x27;config_control_design&#x27;,1994,#1);
+<span class="lineno">20</span>/* Curve evaluates to (10.0, 0, 0) at t=10; vertex stored at (10.0, 0.001, 0)
+<span class="lineno">21</span> * -- 1e-3 mm off the curve. */
+<span class="lineno">22</span>#10=CARTESIAN_POINT(&#x27;curve_start&#x27;,(0.0,0.0,0.0));
+<span class="lineno">23</span>#11=CARTESIAN_POINT(&#x27;vertex_off_curve&#x27;,(10.0,0.001,0.0));
+<span class="lineno">24</span><mark>#12=VERTEX_POINT(</mark>&#x27;v_start&#x27;,#10);
+<span class="lineno">25</span>/* Defect site: vertex_off_curve will trigger 1.000001 * 1e-3 vertex-tol bump */
+<span class="lineno">26</span><mark>#13=VERTEX_POINT(</mark>&#x27;v_end_offcurve&#x27;,#11);
+<span class="lineno">27</span>#20=DIRECTION(&#x27;+x&#x27;,(1.0,0.0,0.0));
+<span class="lineno">28</span>#21=VECTOR(&#x27;&#x27;,#20,10.0);
+<span class="lineno">29</span>#22=LINE(&#x27;edge_3d&#x27;,#10,#21);
+<span class="lineno">30</span>#30=EDGE_CURVE(&#x27;edge_pro8845&#x27;,#12,#13,#22,.T.);
+<span class="lineno">31</span>#40=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">32</span>#41=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+<span class="lineno">33</span>#42=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+<span class="lineno">34</span>#43=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-6),#40,
+<span class="lineno">35</span>  &#x27;distance_accuracy_value&#x27;,&#x27;declared&#x27;);
+<span class="lineno">36</span>#50=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+<span class="lineno">37</span>  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#43))
+<span class="lineno">38</span>  GLOBAL_UNIT_ASSIGNED_CONTEXT((#40,#41,#42))
+<span class="lineno">39</span>  REPRESENTATION_CONTEXT(&#x27;ctx&#x27;,&#x27;3D&#x27;));
+<span class="lineno">40</span>ENDSEC;
+<span class="lineno">41</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="N006.html">&larr; N006</a> <a class="up" href="index.html">§12.4 Tolerance &amp; numerical precision</a> <a class="next" href="N008.html">N008 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

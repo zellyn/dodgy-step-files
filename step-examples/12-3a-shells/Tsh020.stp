@@ -1,0 +1,88 @@
+ISO-10303-21;
+/* Tsh020 - Edge appearing only once or more than twice on faces
+ *          (Q064 non-2-manifold)
+ * Defect: Schema-level check: edge incidence count per face must equal 2
+ * for a manifold solid; OCCT's RWStepShape_RWEdgeCurve.cxx:240-242 flags
+ * edges with only one or 3+ incidences. Source: Q064 (RWEdgeCurve,
+ * RWFaceBound).
+ *
+ * This file: declares MANIFOLD_SOLID_BREP/CLOSED_SHELL but contains both
+ *   - one edge referenced by exactly one face (degree 1 -- naked)
+ *   - one edge referenced by three faces (degree 3 -- T-junction-like)
+ * MakeShape promotion to a solid must be rejected. */
+HEADER;
+FILE_DESCRIPTION(('Tsh020 test case','Edge incidence not equal to 2'),'2;1');
+FILE_NAME('Tsh020.stp','2026-04-26T00:00:00',(''),(''),'auto-generated','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+/* Vertices: an L-shape of three quads sharing one edge */
+#100=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#101=CARTESIAN_POINT('',(1.0,0.0,0.0));
+#102=CARTESIAN_POINT('',(1.0,1.0,0.0));
+#103=CARTESIAN_POINT('',(0.0,1.0,0.0));
+#104=CARTESIAN_POINT('',(1.0,0.0,1.0));
+#105=CARTESIAN_POINT('',(0.0,0.0,1.0));
+#106=CARTESIAN_POINT('',(2.0,0.0,0.0));
+#107=CARTESIAN_POINT('',(2.0,1.0,0.0));
+#110=VERTEX_POINT('',#100); #111=VERTEX_POINT('',#101);
+#112=VERTEX_POINT('',#102); #113=VERTEX_POINT('',#103);
+#114=VERTEX_POINT('',#104); #115=VERTEX_POINT('',#105);
+#116=VERTEX_POINT('',#106); #117=VERTEX_POINT('',#107);
+#200=DIRECTION('',(0.0,0.0,1.0)); #201=DIRECTION('',(1.0,0.0,0.0));
+#211=AXIS2_PLACEMENT_3D('p1',#100,#200,#201); #212=PLANE('xy',#211);
+#220=DIRECTION('',(0.0,1.0,0.0)); #221=AXIS2_PLACEMENT_3D('p2',#100,#220,#201); #222=PLANE('xz',#221);
+#230=AXIS2_PLACEMENT_3D('p3',#101,#200,#201); #232=PLANE('xy_ext',#230);
+#300=DIRECTION('',(1.0,0.0,0.0)); #301=VECTOR('',#300,1.0);
+#302=DIRECTION('',(0.0,1.0,0.0)); #303=VECTOR('',#302,1.0);
+#304=DIRECTION('',(0.0,0.0,1.0)); #305=VECTOR('',#304,1.0);
+/* The shared edge along x */
+#310=LINE('',#100,#301); #311=EDGE_CURVE('shared',#110,#111,#310,.T.);
+/* Face 1 boundary */
+#312=LINE('',#101,#303); #313=EDGE_CURVE('',#111,#112,#312,.T.);
+#314=LINE('',#103,#301); #315=EDGE_CURVE('',#113,#112,#314,.T.);
+#316=LINE('',#100,#303); #317=EDGE_CURVE('',#110,#113,#316,.T.);
+/* Face 2 boundary (panel B) */
+#318=LINE('',#101,#305); #319=EDGE_CURVE('',#111,#114,#318,.T.);
+#320=LINE('',#105,#301); #321=EDGE_CURVE('',#115,#114,#320,.T.);
+#322=LINE('',#100,#305); #323=EDGE_CURVE('',#110,#115,#322,.T.);
+/* Face 3 boundary (extension) */
+#324=LINE('',#101,#301); #325=EDGE_CURVE('',#111,#116,#324,.T.);
+#326=LINE('',#106,#303); #327=EDGE_CURVE('',#116,#107,#326,.T.);
+#328=LINE('',#102,#301); #329=EDGE_CURVE('',#112,#117,#328,.T.);
+/* The "naked degree-1" edge */
+#340=DIRECTION('',(0.0,0.0,1.0)); #341=VECTOR('',#340,1.0);
+#342=LINE('',#102,#341);
+#343=CARTESIAN_POINT('',(1.0,1.0,1.0));
+#344=VERTEX_POINT('',#343);
+#345=EDGE_CURVE('naked',#112,#344,#342,.T.);
+/* Face 1 references shared edge (1st incidence) */
+#400=ORIENTED_EDGE('A_shared',*,*,#311,.T.);
+#401=ORIENTED_EDGE('',*,*,#313,.T.);
+#402=ORIENTED_EDGE('',*,*,#315,.F.);
+#403=ORIENTED_EDGE('',*,*,#317,.F.);
+#404=EDGE_LOOP('',(#400,#401,#402,#403)); #405=FACE_OUTER_BOUND('',#404,.T.);
+#406=ADVANCED_FACE('face1',(#405),#212,.T.);
+/* Face 2 references shared edge (2nd incidence) plus naked edge from #345 */
+#410=ORIENTED_EDGE('B_shared',*,*,#311,.T.);
+#411=ORIENTED_EDGE('',*,*,#319,.T.);
+#412=ORIENTED_EDGE('',*,*,#321,.F.);
+#413=ORIENTED_EDGE('',*,*,#323,.F.);
+#414=EDGE_LOOP('',(#410,#411,#412,#413)); #415=FACE_OUTER_BOUND('',#414,.T.);
+#416=ADVANCED_FACE('face2',(#415),#222,.T.);
+/* Face 3 references shared edge (3rd incidence -- NM!) */
+#420=ORIENTED_EDGE('C_shared',*,*,#311,.T.);
+#421=ORIENTED_EDGE('',*,*,#325,.T.);
+#422=ORIENTED_EDGE('',*,*,#327,.T.);
+#423=ORIENTED_EDGE('',*,*,#329,.F.);
+#424=ORIENTED_EDGE('',*,*,#313,.F.);
+#425=EDGE_LOOP('',(#420,#421,#422,#423,#424)); #426=FACE_OUTER_BOUND('',#425,.T.);
+#427=ADVANCED_FACE('face3',(#426),#232,.T.);
+/* Edge #345 (naked) is referenced nowhere -- degree 0 (also illegal),
+   showing in the file but not on any face boundary */
+#500=OPEN_SHELL('not_2_manifold',(#406,#416,#427));
+#510=SHELL_BASED_SURFACE_MODEL('Q064_pattern',(#500));
+ENDSEC;
+END-ISO-10303-21;

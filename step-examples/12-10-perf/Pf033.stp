@@ -1,0 +1,41 @@
+/* Pf033 - Long-running mesh on STEP load.
+ * Pattern: 5,000 small ADVANCED_FACEs sharing one shell; auto-mesh has
+ * worst-case quadratic behaviour and runs for minutes.
+ * Notes: scaled-down representative - this fixture has ~12 small
+ * ADVANCED_FACEs sharing a CLOSED_SHELL to make the many-small-faces
+ * pattern recognisable. Replicate the face block to ~5000 to reproduce
+ * the production-scale auto-mesh hang. */
+ISO-10303-21;
+HEADER;
+FILE_DESCRIPTION(('Pf033 test case','Long-running mesh on STEP load'),'2;1');
+FILE_NAME('Pf033.stp','2026-04-30T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#11=DIRECTION('',(0.0,0.0,1.0));
+#12=DIRECTION('',(1.0,0.0,0.0));
+#13=AXIS2_PLACEMENT_3D('',#10,#11,#12);
+#14=PLANE('shared_plane',#13);
+/* Empty loops/face-bounds to keep faces minimal but well-formed */
+#20=EDGE_LOOP('',());
+#21=FACE_OUTER_BOUND('',#20,.T.);
+/* ~12 small ADVANCED_FACEs (scaled representative of 5000) */
+#30=ADVANCED_FACE('f01',(#21),#14,.T.);
+#31=ADVANCED_FACE('f02',(#21),#14,.T.);
+#32=ADVANCED_FACE('f03',(#21),#14,.T.);
+#33=ADVANCED_FACE('f04',(#21),#14,.T.);
+#34=ADVANCED_FACE('f05',(#21),#14,.T.);
+#35=ADVANCED_FACE('f06',(#21),#14,.T.);
+#36=ADVANCED_FACE('f07',(#21),#14,.T.);
+#37=ADVANCED_FACE('f08',(#21),#14,.T.);
+#38=ADVANCED_FACE('f09',(#21),#14,.T.);
+#39=ADVANCED_FACE('f10',(#21),#14,.T.);
+#40=ADVANCED_FACE('f11',(#21),#14,.T.);
+#41=ADVANCED_FACE('f12',(#21),#14,.T.);
+#50=CLOSED_SHELL('many_face_shell',(#30,#31,#32,#33,#34,#35,#36,#37,#38,#39,#40,#41));
+#51=MANIFOLD_SOLID_BREP('many_face_solid',#50);
+ENDSEC;
+END-ISO-10303-21;

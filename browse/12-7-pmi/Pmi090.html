@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Pmi090 — Persistent UUID lost on round-trip (PMI association breaks)</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.7 PMI / GD&amp;T</a> <span class="sep">/</span> <span class="current">Pmi090</span>
+</nav>
+<header class="title-bar">
+<h1>Pmi090 <span class="sep">—</span> <span class="entry-title">Persistent UUID lost on round-trip (PMI association breaks)</span></h1>
+<p class="category">§12.7 (sub-class: persistent-id)</p>
+<p class="severity-badge severity-p1">P1 — silent data loss</p>
+<p class="tag-pills">
+<a class="tag tag-round-trip" href="../by-tag/round-trip/index.html">round-trip</a>
+<a class="tag tag-pmi" href="../by-tag/pmi/index.html">pmi</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-7-pmi/Pmi090.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-7-pmi/Pmi090.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>02-caxif (External Reference v3.1 §7 — persistent-UUID identification)</li>
+<li>17-standards-bodies (M030)</li>
+<li>bug-reporter language: &quot;STEP UUID changes on round-trip&quot;, &quot;PMI link breaks after re-export&quot;</li>
+</ul></section>
+<section><h2>Sender</h2>
+<p>deduced — receivers that regenerate UUIDs on import rather than honouring the producer-emitted `APPLIED_IDENTIFICATION_ASSIGNMENT(&#x27;uuid&#x27;,..)`</p></section>
+<section><h2>Description</h2>
+<p>AP242 supports persistent UUID-based identification of features via `APPLIED_IDENTIFICATION_ASSIGNMENT` with `IDENTIFICATION_ROLE(&#x27;uuid&#x27;,&#x27;&#x27;)` and a UUID string item. A receiver that imports the file, manipulates the model, and re-exports must preserve every input UUID on every entity that survives — that is the entire point of the persistent-id mechanism. A receiver that regenerates UUIDs on import / on export silently breaks PMI links from external files (DDP-style cross-file references resolve via UUID). The first round-trip is the discovery moment: a downstream tool that loads the original file plus the re-exported one cannot reconcile their feature lists. Bug-reporter language: &quot;STEP UUID changes on round-trip&quot;, &quot;PMI link breaks after re-export&quot;, &quot;DDP cross-file ref resolves to wrong feature after round-trip&quot;.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>an `ADVANCED_FACE` `#35` carries an `APPLIED_IDENTIFICATION_ASSIGNMENT(&#x27;4ce0acf8-1a2b-4c3d-9e8f-7a6b5c4d3e2f&#x27;, IDENTIFICATION_ROLE(&#x27;uuid&#x27;,&#x27;&#x27;), (#35))`. A receiver-side round-trip that emits a new UUID for the same face is the defect; the input fixture establishes the original UUID. Provenance tier: requires-sibling-pair — bytes alone (the input fixture) cannot demonstrate the round-trip drift; the defect lives in the differential between the input file&#x27;s UUID assignment and the re-exported file&#x27;s.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>preserve every persistent UUID on every entity that survives a round-trip; emit a new UUID only for entities that did not exist in input. Reject the import if a UUID format is invalid; never silently overwrite a producer-emitted UUID with a fresh one.</p></section>
+<section><h2>Notes</h2>
+<p>**See also**: Pmi001, Pmi065. Provenance tier: requires-sibling-pair — the defect is the differential between the input UUID and the re-exported UUID; demonstrating it requires both an input fixture and the corrupted output a receiver produces. Synonyms: &quot;persistent UUID lost on round-trip&quot;, &quot;PMI association breaks because UUID changed&quot;, &quot;UUID regenerated, link broken&quot;.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<section><h2>Provenance tier</h2>
+<p><code>requires-sibling-pair</code> — defect not fully embodied in fixture bytes.</p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>contains(b&#x27;APPLIED_IDENTIFICATION_ASSIGNMENT&#x27;)</code></li>
+<li><code>contains(b&#x27;IDENTIFICATION_ROLE&#x27;)</code></li>
+<li><code>contains(b&#x27;DATUM_FEATURE&#x27;)</code></li>
+</ul></section>
+<section><h2>Cross-references</h2>
+<p><a href="Pmi001.html">Pmi001</a>, <a href="Pmi065.html">Pmi065</a></p>
+</section>
+<section><h2>Live oracle output</h2>
+<table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
+<tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>no_shapes_loaded</code></td></tr>
+</tbody></table>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>/* Pmi090 - Persistent UUID lost on round-trip (PMI association breaks)
+<span class="lineno">2</span> * Defect: a face #35 carries a persistent UUID via
+<span class="lineno">3</span> *   <mark>APPLIED_IDENTIFICATION_ASSIGNMENT</mark>(&#x27;4ce0acf8-...&#x27;,&#x27;uuid&#x27;,(#35)).
+<span class="lineno">4</span> * A receiver that regenerates UUIDs on import / re-export silently
+<span class="lineno">5</span> * breaks PMI links from external files (DDP-style cross-file refs
+<span class="lineno">6</span> * resolve via UUID). The fixture establishes the pre-round-trip
+<span class="lineno">7</span> * state. The defect lives in the differential between this file and
+<span class="lineno">8</span> * the receiver&#x27;s re-export.
+<span class="lineno">9</span> * Provenance tier: requires-sibling-pair. */
+<span class="lineno">10</span>ISO-10303-21;
+<span class="lineno">11</span>HEADER;
+<span class="lineno">12</span>FILE_DESCRIPTION((&#x27;Pmi090 - persistent UUID round-trip stability witness&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">13</span>FILE_NAME(&#x27;Pmi090.stp&#x27;,&#x27;2026-04-30T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">14</span>FILE_SCHEMA((&#x27;AP242_MANAGED_MODEL_BASED_3D_ENGINEERING_MIM_LF { 1 0 10303 442 1 1 4 }&#x27;));
+<span class="lineno">15</span>ENDSEC;
+<span class="lineno">16</span>DATA;
+<span class="lineno">17</span>#1=APPLICATION_CONTEXT(&#x27;managed model based 3d engineering&#x27;);
+<span class="lineno">18</span>#2=PRODUCT_CONTEXT(&#x27;part&#x27;,#1,&#x27;mechanical&#x27;);
+<span class="lineno">19</span>#3=PRODUCT(&#x27;Pmi090&#x27;,&#x27;witness_uuid&#x27;,&#x27;&#x27;,(#2));
+<span class="lineno">20</span>#4=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#3);
+<span class="lineno">21</span>#5=PRODUCT_DEFINITION_CONTEXT(&#x27;&#x27;,#1,&#x27;design&#x27;);
+<span class="lineno">22</span>#6=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,#4,#5);
+<span class="lineno">23</span>#7=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,#6);
+<span class="lineno">24</span>#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">25</span>#11=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+<span class="lineno">26</span>#12=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+<span class="lineno">27</span>#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#10,&#x27;tol&#x27;,&#x27;&#x27;);
+<span class="lineno">28</span>#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3) GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13)) GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12)) REPRESENTATION_CONTEXT(&#x27;&#x27;,&#x27;3D&#x27;));
+<span class="lineno">29</span>#20=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">30</span>#21=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">31</span>#22=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">32</span>#23=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#20,#21,#22);
+<span class="lineno">33</span>#24=PLANE(&#x27;&#x27;,#23);
+<span class="lineno">34</span>#35=ADVANCED_FACE(&#x27;uuid_bearing_face&#x27;,(),#24,.T.);
+<span class="lineno">35</span>/* Persistent UUID -- must survive any round-trip. */
+<span class="lineno">36</span>#80=<mark>IDENTIFICATION_ROLE</mark>(&#x27;uuid&#x27;,&#x27;persistent feature identifier&#x27;);
+<span class="lineno">37</span>#81=<mark>APPLIED_IDENTIFICATION_ASSIGNMENT</mark>(&#x27;4ce0acf8-1a2b-4c3d-9e8f-7a6b5c4d3e2f&#x27;,#80,(#35));
+<span class="lineno">38</span>/* PMI link that depends on the persistent UUID surviving round-trip. */
+<span class="lineno">39</span>#90=DATUM(&#x27;A&#x27;,&#x27;primary datum on uuid-bearing face&#x27;,#7,.T.,&#x27;A&#x27;);
+<span class="lineno">40</span>#91=<mark>DATUM_FEATURE</mark>(&#x27;feature_A&#x27;,&#x27;feature linked via UUID&#x27;,#7,.T.);
+<span class="lineno">41</span>#92=SHAPE_ASPECT_RELATIONSHIP(&#x27;&#x27;,&#x27;&#x27;,#90,#91);
+<span class="lineno">42</span>ENDSEC;
+<span class="lineno">43</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Pmi089.html">&larr; Pmi089</a> <a class="up" href="index.html">§12.7 PMI / GD&amp;T</a> <a class="next" href="Pmi091.html">Pmi091 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

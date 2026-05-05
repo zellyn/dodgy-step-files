@@ -1,0 +1,24 @@
+ISO-10303-21;
+/* M140 - AP203 PRODUCT_DEFINITION_FORMATION declares a make_or_buy
+ * field that doesn't match the supplier role.
+ * Defect: a part with PRODUCT_DEFINITION_FORMATION_WITH_SPECIFIED_SOURCE
+ * declares source = .MADE. (made in-house) but a
+ * SUPPLIED_PART_RELATIONSHIP designates an external supplier for the
+ * same part. The make-or-buy declaration contradicts the supplier
+ * record. */
+HEADER;
+FILE_DESCRIPTION(('M140 test case','AP203 make-or-buy contradicts supplier'),'2;1');
+FILE_NAME('M140.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('CONFIG_CONTROL_DESIGN'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('configuration controlled 3D design of mechanical parts and assemblies');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','config_control_design',1994,#1);
+#10=PRODUCT('fastener_set','fastener_set','M6 bolts',(#1));
+/* Defect: source declared MADE but external supplier follows. */
+#20=PRODUCT_DEFINITION_FORMATION_WITH_SPECIFIED_SOURCE('rev_A','in-house only',#10,.MADE.);
+#30=PRODUCT_DEFINITION('design','',#20,#1);
+#40=ORGANIZATION('extco','External Co','third-party supplier');
+#50=APPLIED_ORGANIZATION_ASSIGNMENT(#40,'supplier',(#30));
+ENDSEC;
+END-ISO-10303-21;

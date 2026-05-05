@@ -1,0 +1,16 @@
+ISO-10303-21;
+/* Lh046 - HEADER contains only comments, no required records
+ * Defect: ISO 10303-21 mandates the three header records inside
+ * HEADER. This fixture's HEADER contains only block comments;
+ * receivers must reject for missing required records. Lenient
+ * receivers may invent default metadata. */
+HEADER;
+/* exported by build pipeline */
+/* metadata source unavailable at export time */
+/* placeholder header - file may not be valid */
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
+ENDSEC;
+END-ISO-10303-21;

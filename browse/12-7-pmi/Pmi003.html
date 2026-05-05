@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Pmi003 — Stacked vs composite tolerance frames mis-tagged</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.7 PMI / GD&amp;T</a> <span class="sep">/</span> <span class="current">Pmi003</span>
+</nav>
+<header class="title-bar">
+<h1>Pmi003 <span class="sep">—</span> <span class="entry-title">Stacked vs composite tolerance frames mis-tagged</span></h1>
+<p class="category">§12.7 (sub-class: composite-tolerance)</p>
+<p class="severity-badge severity-p1">P1 — silent data loss</p>
+<p class="tag-pills">
+<a class="tag tag-round-trip" href="../by-tag/round-trip/index.html">round-trip</a>
+<a class="tag tag-pmi" href="../by-tag/pmi/index.html">pmi</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-7-pmi/Pmi003.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-7-pmi/Pmi003.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>02-caxif (PMI v4.1 §10.1.1.2 Fig 108), 11-translator-vendors (W026)</li>
+</ul></section>
+<section><h2>Description</h2>
+<p>Multiple `geometric_tolerance` rows grouped only for visual presentation (&quot;stacked&quot;) are semantically independent. True &quot;composite&quot; tolerances must be linked by a `geometric_tolerance_relationship` whose `name` is `&#x27;composite&#x27;`. Writers that always emit `geometric_tolerance_relationship` with `name=&#x27;composite&#x27;` (or who flatten composite frames into independent tolerances on export) inflate or destroy composite counts.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>Two parallelism tolerances drawn one above the other in the same FCF, written with `geometric_tolerance_relationship(&#x27;composite&#x27;, t1, t2)` even though they are merely stacked. Conversely, a true composite position tolerance written as two unrelated `position_tolerance` instances.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>Heal and accept: use the `name=&#x27;composite&#x27;` relationship strictly for true composite tolerances; preserve composite frame structure across round-trip.</p></section>
+<section><h2>Notes</h2>
+<p>Synonyms: &quot;stacked tolerance frame mistagged as composite&quot;, &quot;GD&amp;T frames merged when they should be stacked&quot;, &quot;tolerance frame stack/composite distinction lost&quot;.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>count_entity_def(b&#x27;PARALLELISM_TOLERANCE&#x27;) == 2</code></li>
+<li><code>contains(b&#x27;GEOMETRIC_TOLERANCE_RELATIONSHIP&#x27;)</code></li>
+<li><code>contains(b&#x27;composite&#x27;) or contains(b&#x27;stacked&#x27;)</code></li>
+</ul></section>
+<section><h2>Live oracle output</h2>
+<table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
+<tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>no_shapes_loaded</code></td></tr>
+</tbody></table>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>/* Pmi003 - Stacked vs composite tolerance frames mis-tagged
+<span class="lineno">2</span>   Defect: Two parallelism tolerances drawn one above the other in the same
+<span class="lineno">3</span>   FCF are merely &quot;stacked&quot; (semantically independent), but the writer emits
+<span class="lineno">4</span>   a <mark>GEOMETRIC_TOLERANCE_RELATIONSHIP</mark> with name=&#x27;composite&#x27;. True composite
+<span class="lineno">5</span>   tolerances must use the &#x27;composite&#x27; relationship; stacked tolerances must
+<span class="lineno">6</span>   not. Receivers that count composite frames will inflate their count, and
+<span class="lineno">7</span>   downstream tools may treat the two rows as a single coupled tolerance. */
+<span class="lineno">8</span>ISO-10303-21;
+<span class="lineno">9</span>HEADER;
+<span class="lineno">10</span>FILE_DESCRIPTION((&#x27;Pmi003 - stacked tolerances mis-tagged as composite&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">11</span>FILE_NAME(&#x27;Pmi003.stp&#x27;,&#x27;2026-04-26T00:00:00&#x27;,(&#x27;catalog&#x27;),(&#x27;cad&#x27;),
+<span class="lineno">12</span>  &#x27;manual&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">13</span>FILE_SCHEMA((&#x27;AP242_MANAGED_MODEL_BASED_3D_ENGINEERING_MIM_LF { 1 0 10303 442 1 1 4 }&#x27;));
+<span class="lineno">14</span>ENDSEC;
+<span class="lineno">15</span>DATA;
+<span class="lineno">16</span>#10 = APPLICATION_CONTEXT(&#x27;managed model based 3d engineering&#x27;);
+<span class="lineno">17</span>#11 = APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,
+<span class="lineno">18</span>  &#x27;ap242_managed_model_based_3d_engineering&#x27;,2020,#10);
+<span class="lineno">19</span>#12 = PRODUCT_CONTEXT(&#x27;&#x27;,#10,&#x27;mechanical&#x27;);
+<span class="lineno">20</span>#13 = PRODUCT(&#x27;Pmi003&#x27;,&#x27;StackedTolPart&#x27;,&#x27;&#x27;,(#12));
+<span class="lineno">21</span>#14 = PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#13);
+<span class="lineno">22</span>#15 = PRODUCT_DEFINITION_CONTEXT(&#x27;&#x27;,#10,&#x27;design&#x27;);
+<span class="lineno">23</span>#16 = PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,#14,#15);
+<span class="lineno">24</span>#17 = PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,#16);
+<span class="lineno">25</span>#20 = ( LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT(.MILLI.,.METRE.) );
+<span class="lineno">26</span>#22 = ( NAMED_UNIT(*) PLANE_ANGLE_UNIT() SI_UNIT($,.RADIAN.) );
+<span class="lineno">27</span>#23 = ( NAMED_UNIT(*) SI_UNIT($,.STERADIAN.) SOLID_ANGLE_UNIT() );
+<span class="lineno">28</span>#24 = UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#20,
+<span class="lineno">29</span>  &#x27;distance_accuracy_value&#x27;,&#x27;&#x27;);
+<span class="lineno">30</span>#25 = ( GEOMETRIC_REPRESENTATION_CONTEXT(3)
+<span class="lineno">31</span>  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#24))
+<span class="lineno">32</span>  GLOBAL_UNIT_ASSIGNED_CONTEXT((#20,#22,#23))
+<span class="lineno">33</span>  REPRESENTATION_CONTEXT(&#x27;&#x27;,&#x27;3D&#x27;) );
+<span class="lineno">34</span>#30 = CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">35</span>#31 = DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">36</span>#32 = DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">37</span>#33 = AXIS2_PLACEMENT_3D(&#x27;&#x27;,#30,#31,#32);
+<span class="lineno">38</span>#40 = SHAPE_REPRESENTATION(&#x27;&#x27;,(#33),#25);
+<span class="lineno">39</span>#41 = SHAPE_DEFINITION_REPRESENTATION(#17,#40);
+<span class="lineno">40</span>/* Two faces under tolerance */
+<span class="lineno">41</span>#50 = SHAPE_ASPECT(&#x27;top_face&#x27;,&#x27;&#x27;,#17,.T.);
+<span class="lineno">42</span>#51 = SHAPE_ASPECT(&#x27;side_face&#x27;,&#x27;&#x27;,#17,.T.);
+<span class="lineno">43</span>/* Datum A */
+<span class="lineno">44</span>#60 = DATUM(&#x27;A&#x27;,&#x27;primary&#x27;,#17,.T.,&#x27;A&#x27;);
+<span class="lineno">45</span>#61 = DATUM_REFERENCE_COMPARTMENT(&#x27;&#x27;,$,#62);
+<span class="lineno">46</span>#62 = DATUM_REFERENCE_ELEMENT(&#x27;&#x27;,$,#60);
+<span class="lineno">47</span>#63 = DATUM_SYSTEM(&#x27;A&#x27;,&#x27;&#x27;,#17,.T.,(#61));
+<span class="lineno">48</span>/* Two parallelism tolerances, semantically independent */
+<span class="lineno">49</span>#70 = LENGTH_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.05),#20);
+<span class="lineno">50</span><mark>#71 = PARALLELISM_TOLERANCE(</mark>&#x27;par1&#x27;,$,#70,#50,#63);
+<span class="lineno">51</span>#72 = LENGTH_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.10),#20);
+<span class="lineno">52</span><mark>#73 = PARALLELISM_TOLERANCE(</mark>&#x27;par2&#x27;,$,#72,#51,#63);
+<span class="lineno">53</span>/* Defect: stacked tolerances mis-tagged as &#x27;composite&#x27; */
+<span class="lineno">54</span>#80 = <mark>GEOMETRIC_TOLERANCE_RELATIONSHIP</mark>(&#x27;composite&#x27;,
+<span class="lineno">55</span>  &#x27;stacked frames mis-tagged as composite&#x27;,#71,#73);
+<span class="lineno">56</span>#90 = DRAUGHTING_MODEL(&#x27;Default&#x27;,(),#25);
+<span class="lineno">57</span>#91 = PLANE(&#x27;&#x27;,#33);
+<span class="lineno">58</span>#92 = ANNOTATION_PLANE(&#x27;PMI&#x27;,(),#91,(#71,#73));
+<span class="lineno">59</span>ENDSEC;
+<span class="lineno">60</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Pmi002.html">&larr; Pmi002</a> <a class="up" href="index.html">§12.7 PMI / GD&amp;T</a> <a class="next" href="Pmi004.html">Pmi004 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>U043 — Slicer-side unit-context inversion: STEP says mm, slicer reads as inches</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.5 Units &amp; coordinate systems</a> <span class="sep">/</span> <span class="current">U043</span>
+</nav>
+<header class="title-bar">
+<h1>U043 <span class="sep">—</span> <span class="entry-title">Slicer-side unit-context inversion: STEP says mm, slicer reads as inches</span></h1>
+<p class="category">§12.5 units &amp; coordinate systems</p>
+<p class="severity-badge severity-p1">P1 — silent data loss</p>
+<p class="tag-pills">
+<a class="tag tag-units" href="../by-tag/units/index.html">units</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-5-units/U043.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-5-units/U043.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>FreeCAD #18078 (related)</li>
+<li>bug-reporter language: &quot;STEP file marked inch but the model scales up in size&quot;, &quot;model is 25.4× too big after import&quot;, &quot;unit declaration inverted on receiver side&quot;.</li>
+</ul></section>
+<section><h2>Sender</h2>
+<p>STEP-receiving slicers that auto-detect unit by comparing `LENGTH_UNIT` declaration against a hard-coded &quot;expected mm&quot; assumption and silently flip when the file has an explicit `INCH` declaration.</p></section>
+<section><h2>Description</h2>
+<p>A producer-side STEP correctly declares `INCH` units with inch-scale numerical values. A receiver that hard-codes &quot;STEP files are mm&quot; silently treats the inch values as mm — yielding a 25.4× too-small model. Mirror image of Wr044. The on-disk file is well-formed; the bug is that some slicer lineage assumes mm regardless of the declared unit context.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>STEP file with `LENGTH_UNIT` complex record `(LENGTH_UNIT() NAMED_UNIT(*) CONVERSION_BASED_UNIT(&#x27;INCH&#x27;, ..))` and `CARTESIAN_POINT` corner coordinates `(1.0, 1.0, 1.0)` (one inch — should appear as 25.4 mm to a correct receiver).</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>Heal and accept: receivers MUST honour the declared `LENGTH_UNIT` context, normalize coordinate values into the kernel&#x27;s canonical unit, and never assume mm without inspecting it. Reject with E_UNIT_CONTEXT_IGNORED if the unit declaration cannot be parsed; treating inch-tagged data as millimetres without diagnostic is a coverage gap.</p></section>
+<section><h2>Notes</h2>
+<p>**See also**: U015, Wr044. Synonyms: &quot;slicer ignores STEP unit declaration&quot;, &quot;INCH unit silently treated as mm by receiver&quot;, &quot;unit-context inversion on receiver side&quot;.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>contains(b&#x27;INCH&#x27;)</code></li>
+<li><code>contains(b&#x27;CONVERSION_BASED_UNIT&#x27;)</code></li>
+</ul></section>
+<section><h2>Cross-references</h2>
+<p><a href="U015.html">U015</a>, <a href="../12-13-writer-pathology/Wr044.html">Wr044</a></p>
+</section>
+<section><h2>Live oracle output</h2>
+<table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
+<tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>warn(W_COMPLEX_ORDER)</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>no_shapes_loaded</code></td></tr>
+</tbody></table>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>/* U043 - Slicer-side unit-context inversion: STEP says inch, slicer
+<span class="lineno">2</span> * reads as mm.
+<span class="lineno">3</span> * Defect: a producer correctly emits an inch-unit context with inch-
+<span class="lineno">4</span> * scale coordinates. A receiver that hard-codes &quot;mm&quot; assumes the
+<span class="lineno">5</span> * numbers are mm and produces a 25.4x too-small model. Mirror image
+<span class="lineno">6</span> * of Wr044. */
+<span class="lineno">7</span>ISO-10303-21;
+<span class="lineno">8</span>HEADER;
+<span class="lineno">9</span>FILE_DESCRIPTION((&#x27;U043 - <mark>INCH</mark> unit context with inch-scale coordinates&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">10</span>FILE_NAME(&#x27;U043.stp&#x27;,&#x27;2026-05-02T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">11</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }&#x27;));
+<span class="lineno">12</span>ENDSEC;
+<span class="lineno">13</span>DATA;
+<span class="lineno">14</span>#1=APPLICATION_CONTEXT(&#x27;automotive_design&#x27;);
+<span class="lineno">15</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,&#x27;automotive_design&#x27;,2001,#1);
+<span class="lineno">16</span>#3=PRODUCT_CONTEXT(&#x27;part&#x27;,#1,&#x27;mechanical&#x27;);
+<span class="lineno">17</span>#4=PRODUCT_DEFINITION_CONTEXT(&#x27;part definition&#x27;,#1,&#x27;design&#x27;);
+<span class="lineno">18</span>#5=PRODUCT(&#x27;U043_inchcube&#x27;,&#x27;inch context, inch values&#x27;,&#x27;&#x27;,(#3));
+<span class="lineno">19</span>#6=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#5);
+<span class="lineno">20</span>#7=PRODUCT_DEFINITION(&#x27;design&#x27;,&#x27;&#x27;,#6,#4);
+<span class="lineno">21</span>#8=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,#7);
+<span class="lineno">22</span>/* Inch unit context, declared via <mark>CONVERSION_BASED_UNIT</mark>. */
+<span class="lineno">23</span>#10=( LENGTH_UNIT() NAMED_UNIT(*) <mark>CONVERSION_BASED_UNIT</mark>(&#x27;<mark>INCH</mark>&#x27;,#11) );
+<span class="lineno">24</span>#11=LENGTH_MEASURE_WITH_UNIT(LENGTH_MEASURE(25.4),#12);
+<span class="lineno">25</span>#12=( LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT(.MILLI.,.METRE.) );
+<span class="lineno">26</span>#13=( NAMED_UNIT(*) PLANE_ANGLE_UNIT() SI_UNIT($,.RADIAN.) );
+<span class="lineno">27</span>#14=( NAMED_UNIT(*) SI_UNIT($,.STERADIAN.) SOLID_ANGLE_UNIT() );
+<span class="lineno">28</span>#15=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-6),#10,&#x27;tol&#x27;,&#x27;&#x27;);
+<span class="lineno">29</span>#16=( GEOMETRIC_REPRESENTATION_CONTEXT(3) GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#15)) GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#13,#14)) REPRESENTATION_CONTEXT(&#x27;&#x27;,&#x27;3D&#x27;) );
+<span class="lineno">30</span>/* Inch-scale corner coordinates -- a unit cube measured in inches. */
+<span class="lineno">31</span>#20=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">32</span>#21=CARTESIAN_POINT(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">33</span>#22=CARTESIAN_POINT(&#x27;&#x27;,(1.0,1.0,0.0));
+<span class="lineno">34</span>#23=CARTESIAN_POINT(&#x27;&#x27;,(0.0,1.0,0.0));
+<span class="lineno">35</span>#24=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">36</span>#25=CARTESIAN_POINT(&#x27;&#x27;,(1.0,0.0,1.0));
+<span class="lineno">37</span>#26=CARTESIAN_POINT(&#x27;&#x27;,(1.0,1.0,1.0));
+<span class="lineno">38</span>#27=CARTESIAN_POINT(&#x27;&#x27;,(0.0,1.0,1.0));
+<span class="lineno">39</span>#30=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">40</span>#31=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">41</span>#32=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#20,#30,#31);
+<span class="lineno">42</span>#33=SHAPE_REPRESENTATION(&#x27;U043_inchcube&#x27;,(#32),#16);
+<span class="lineno">43</span>#34=SHAPE_DEFINITION_REPRESENTATION(#8,#33);
+<span class="lineno">44</span>ENDSEC;
+<span class="lineno">45</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="U042.html">&larr; U042</a> <a class="up" href="index.html">§12.5 Units &amp; coordinate systems</a> <a class="next" href="U044.html">U044 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

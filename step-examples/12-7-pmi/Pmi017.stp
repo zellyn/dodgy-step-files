@@ -1,0 +1,66 @@
+/* Pmi017 - Saved-view supplemental geometry split via "supplemental geometry subset"
+   Defect: A part may have many supplemental elements but only some belong
+   in a particular Saved View. The recommended pattern is one global
+   shape_representation (CGR) carrying ALL supplemental items, plus
+   additional SHAPE_REPRESENTATION instances tagged with
+   description_attribute = 'supplemental geometry subset' that pick the
+   per-view subset. This file shows the magic-description tag on two
+   subset SHAPE_REPRESENTATIONs that pull from the global supplemental CGR. */
+ISO-10303-21;
+HEADER;
+FILE_DESCRIPTION(('Pmi017 - supplemental geometry subset per saved view'),'2;1');
+FILE_NAME('Pmi017.stp','2026-04-26T00:00:00',('catalog'),('cad'),
+  'manual','','');
+FILE_SCHEMA(('AP242_MANAGED_MODEL_BASED_3D_ENGINEERING_MIM_LF { 1 0 10303 442 1 1 4 }'));
+ENDSEC;
+DATA;
+#10 = APPLICATION_CONTEXT('managed model based 3d engineering');
+#11 = APPLICATION_PROTOCOL_DEFINITION('international standard',
+  'ap242_managed_model_based_3d_engineering',2020,#10);
+#12 = PRODUCT_CONTEXT('',#10,'mechanical');
+#13 = PRODUCT('Pmi017','SuppGeomSubsetPart','',(#12));
+#14 = PRODUCT_DEFINITION_FORMATION('','',#13);
+#15 = PRODUCT_DEFINITION_CONTEXT('',#10,'design');
+#16 = PRODUCT_DEFINITION('','',#14,#15);
+#17 = PRODUCT_DEFINITION_SHAPE('','',#16);
+#20 = ( LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT(.MILLI.,.METRE.) );
+#22 = ( NAMED_UNIT(*) PLANE_ANGLE_UNIT() SI_UNIT($,.RADIAN.) );
+#23 = ( NAMED_UNIT(*) SI_UNIT($,.STERADIAN.) SOLID_ANGLE_UNIT() );
+#24 = UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#20,
+  'distance_accuracy_value','');
+#25 = ( GEOMETRIC_REPRESENTATION_CONTEXT(3)
+  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#24))
+  GLOBAL_UNIT_ASSIGNED_CONTEXT((#20,#22,#23))
+  REPRESENTATION_CONTEXT('','3D') );
+/* Global supplemental CGR with TEN supplemental planes */
+#30 = CARTESIAN_POINT('o1',(0.0,0.0,0.0));
+#31 = DIRECTION('zd',(0.0,0.0,1.0));
+#32 = DIRECTION('xd',(1.0,0.0,0.0));
+#33 = AXIS2_PLACEMENT_3D('a1',#30,#31,#32);
+#40 = PLANE('sp1',#33);
+#41 = CARTESIAN_POINT('o2',(10.0,0.0,0.0));
+#42 = AXIS2_PLACEMENT_3D('a2',#41,#31,#32);
+#43 = PLANE('sp2',#42);
+#44 = CARTESIAN_POINT('o3',(20.0,0.0,0.0));
+#45 = AXIS2_PLACEMENT_3D('a3',#44,#31,#32);
+#46 = PLANE('sp3',#45);
+#47 = CARTESIAN_POINT('o4',(30.0,0.0,0.0));
+#48 = AXIS2_PLACEMENT_3D('a4',#47,#31,#32);
+#49 = PLANE('sp4',#48);
+/* Global supplemental shape_representation (the "CGR") */
+#60 = SHAPE_REPRESENTATION('All_Supplemental_Geometry',
+  (#33,#40,#42,#43,#45,#46,#48,#49),#25);
+#61 = SHAPE_DEFINITION_REPRESENTATION(#17,#60);
+/* Two saved-view subsets: each names a different selection */
+#70 = SHAPE_REPRESENTATION('SavedView1_subset',(#40,#43),#25);
+#71 = DESCRIPTION_ATTRIBUTE('supplemental geometry subset',#70);
+#80 = SHAPE_REPRESENTATION('SavedView2_subset',(#43,#46,#49),#25);
+#81 = DESCRIPTION_ATTRIBUTE('supplemental geometry subset',#80);
+/* Two saved-view draughting_models, one mapped_item per */
+#90 = DRAUGHTING_MODEL('SavedView1',(),#25);
+#91 = DRAUGHTING_MODEL('SavedView2',(),#25);
+/* PMI anchor: minimal ANNOTATION_PLANE so this PMI fixture cites at least one canonical PMI entity. */
+#9100=PLANE('pmi_anchor_plane',#33);
+#9101=ANNOTATION_PLANE('pmi_annotation',(),#9100,());
+ENDSEC;
+END-ISO-10303-21;

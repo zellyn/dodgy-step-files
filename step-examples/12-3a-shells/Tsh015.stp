@@ -1,0 +1,154 @@
+ISO-10303-21;
+/* Tsh015 - Brep_with_voids: void shell oriented .T. instead of .F.
+ *          (ProSTEP TR9)
+ * Defect: Per AP214, voids in a BREP_WITH_VOIDS must be REVERSED
+ * orientation relative to the outer shell; some files emit them with
+ * .T. so the void is mis-classified as a positive volume. Sources:
+ * Q027 (ProSTEP TR9, RWStepShape_RWBrepWithVoids).
+ *
+ * This file: an outer cube (1.0^3) with an inner cube void (0.4^3
+ * centered at (0.5, 0.5, 0.5)). The void's ORIENTED_CLOSED_SHELL
+ * orientation flag is .T. (defect) instead of .F. (correct). Void
+ * inner cube faces have outward-pointing normals -- a healer detecting
+ * mis-oriented voids by signed-volume sign would auto-reverse with a
+ * warning. We share the outer cube edge structure with other Tsh files
+ * but include the inner-shell scaffolding too. */
+HEADER;
+FILE_DESCRIPTION(('Tsh015 test case','BREP_WITH_VOIDS void shell .T.'),'2;1');
+FILE_NAME('Tsh015.stp','2026-04-26T00:00:00',(''),(''),'auto-generated','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+/* === Outer cube vertices === */
+#100=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#101=CARTESIAN_POINT('',(1.0,0.0,0.0));
+#102=CARTESIAN_POINT('',(1.0,1.0,0.0));
+#103=CARTESIAN_POINT('',(0.0,1.0,0.0));
+#104=CARTESIAN_POINT('',(0.0,0.0,1.0));
+#105=CARTESIAN_POINT('',(1.0,0.0,1.0));
+#106=CARTESIAN_POINT('',(1.0,1.0,1.0));
+#107=CARTESIAN_POINT('',(0.0,1.0,1.0));
+#110=VERTEX_POINT('',#100); #111=VERTEX_POINT('',#101);
+#112=VERTEX_POINT('',#102); #113=VERTEX_POINT('',#103);
+#114=VERTEX_POINT('',#104); #115=VERTEX_POINT('',#105);
+#116=VERTEX_POINT('',#106); #117=VERTEX_POINT('',#107);
+/* === Inner cube vertices (void) at 0.3..0.7 each axis === */
+#150=CARTESIAN_POINT('',(0.3,0.3,0.3));
+#151=CARTESIAN_POINT('',(0.7,0.3,0.3));
+#152=CARTESIAN_POINT('',(0.7,0.7,0.3));
+#153=CARTESIAN_POINT('',(0.3,0.7,0.3));
+#154=CARTESIAN_POINT('',(0.3,0.3,0.7));
+#155=CARTESIAN_POINT('',(0.7,0.3,0.7));
+#156=CARTESIAN_POINT('',(0.7,0.7,0.7));
+#157=CARTESIAN_POINT('',(0.3,0.7,0.7));
+#160=VERTEX_POINT('',#150); #161=VERTEX_POINT('',#151);
+#162=VERTEX_POINT('',#152); #163=VERTEX_POINT('',#153);
+#164=VERTEX_POINT('',#154); #165=VERTEX_POINT('',#155);
+#166=VERTEX_POINT('',#156); #167=VERTEX_POINT('',#157);
+/* Surfaces (outer cube) */
+#200=DIRECTION('',(0.0,0.0,1.0)); #201=DIRECTION('',(1.0,0.0,0.0));
+#211=AXIS2_PLACEMENT_3D('',#100,#200,#201); #212=PLANE('',#211);
+#221=AXIS2_PLACEMENT_3D('',#104,#200,#201); #222=PLANE('',#221);
+#231=DIRECTION('',(0.0,1.0,0.0)); #232=AXIS2_PLACEMENT_3D('',#100,#231,#201); #233=PLANE('',#232);
+#242=AXIS2_PLACEMENT_3D('',#103,#231,#201); #243=PLANE('',#242);
+#252=DIRECTION('',(1.0,0.0,0.0)); #253=AXIS2_PLACEMENT_3D('',#100,#252,#231); #254=PLANE('',#253);
+#262=AXIS2_PLACEMENT_3D('',#101,#252,#231); #263=PLANE('',#262);
+/* Surfaces (inner cube void) */
+#270=AXIS2_PLACEMENT_3D('',#150,#200,#201); #271=PLANE('',#270);
+#272=AXIS2_PLACEMENT_3D('',#154,#200,#201); #273=PLANE('',#272);
+#274=AXIS2_PLACEMENT_3D('',#150,#231,#201); #275=PLANE('',#274);
+#276=AXIS2_PLACEMENT_3D('',#153,#231,#201); #277=PLANE('',#276);
+#278=AXIS2_PLACEMENT_3D('',#150,#252,#231); #279=PLANE('',#278);
+#280=AXIS2_PLACEMENT_3D('',#151,#252,#231); #281=PLANE('',#280);
+/* Outer edges */
+#300=DIRECTION('',(1.0,0.0,0.0)); #301=VECTOR('',#300,1.0);
+#302=DIRECTION('',(0.0,1.0,0.0)); #303=VECTOR('',#302,1.0);
+#304=DIRECTION('',(0.0,0.0,1.0)); #305=VECTOR('',#304,1.0);
+#306=VECTOR('',#300,0.4); #307=VECTOR('',#302,0.4); #308=VECTOR('',#304,0.4);
+#310=LINE('',#100,#301); #311=EDGE_CURVE('',#110,#111,#310,.T.);
+#312=LINE('',#101,#303); #313=EDGE_CURVE('',#111,#112,#312,.T.);
+#314=LINE('',#103,#301); #315=EDGE_CURVE('',#113,#112,#314,.T.);
+#316=LINE('',#100,#303); #317=EDGE_CURVE('',#110,#113,#316,.T.);
+#318=LINE('',#104,#301); #319=EDGE_CURVE('',#114,#115,#318,.T.);
+#320=LINE('',#105,#303); #321=EDGE_CURVE('',#115,#116,#320,.T.);
+#322=LINE('',#107,#301); #323=EDGE_CURVE('',#117,#116,#322,.T.);
+#324=LINE('',#104,#303); #325=EDGE_CURVE('',#114,#117,#324,.T.);
+#326=LINE('',#100,#305); #327=EDGE_CURVE('',#110,#114,#326,.T.);
+#328=LINE('',#101,#305); #329=EDGE_CURVE('',#111,#115,#328,.T.);
+#330=LINE('',#102,#305); #331=EDGE_CURVE('',#112,#116,#330,.T.);
+#332=LINE('',#103,#305); #333=EDGE_CURVE('',#113,#117,#332,.T.);
+/* Inner cube edges */
+#340=LINE('',#150,#306); #341=EDGE_CURVE('',#160,#161,#340,.T.);
+#342=LINE('',#151,#307); #343=EDGE_CURVE('',#161,#162,#342,.T.);
+#344=LINE('',#153,#306); #345=EDGE_CURVE('',#163,#162,#344,.T.);
+#346=LINE('',#150,#307); #347=EDGE_CURVE('',#160,#163,#346,.T.);
+#348=LINE('',#154,#306); #349=EDGE_CURVE('',#164,#165,#348,.T.);
+#350=LINE('',#155,#307); #351=EDGE_CURVE('',#165,#166,#350,.T.);
+#352=LINE('',#157,#306); #353=EDGE_CURVE('',#167,#166,#352,.T.);
+#354=LINE('',#154,#307); #355=EDGE_CURVE('',#164,#167,#354,.T.);
+#356=LINE('',#150,#308); #357=EDGE_CURVE('',#160,#164,#356,.T.);
+#358=LINE('',#151,#308); #359=EDGE_CURVE('',#161,#165,#358,.T.);
+#360=LINE('',#152,#308); #361=EDGE_CURVE('',#162,#166,#360,.T.);
+#362=LINE('',#153,#308); #363=EDGE_CURVE('',#163,#167,#362,.T.);
+/* Outer cube faces (consistent outward normals) */
+#400=ORIENTED_EDGE('',*,*,#311,.F.); #401=ORIENTED_EDGE('',*,*,#317,.T.);
+#402=ORIENTED_EDGE('',*,*,#315,.F.); #403=ORIENTED_EDGE('',*,*,#313,.F.);
+#404=EDGE_LOOP('',(#400,#401,#402,#403)); #405=FACE_OUTER_BOUND('',#404,.T.);
+#406=ADVANCED_FACE('',(#405),#212,.F.);
+#410=ORIENTED_EDGE('',*,*,#319,.T.); #411=ORIENTED_EDGE('',*,*,#321,.T.);
+#412=ORIENTED_EDGE('',*,*,#323,.F.); #413=ORIENTED_EDGE('',*,*,#325,.F.);
+#414=EDGE_LOOP('',(#410,#411,#412,#413)); #415=FACE_OUTER_BOUND('',#414,.T.);
+#416=ADVANCED_FACE('',(#415),#222,.T.);
+#420=ORIENTED_EDGE('',*,*,#311,.T.); #421=ORIENTED_EDGE('',*,*,#329,.T.);
+#422=ORIENTED_EDGE('',*,*,#319,.F.); #423=ORIENTED_EDGE('',*,*,#327,.F.);
+#424=EDGE_LOOP('',(#420,#421,#422,#423)); #425=FACE_OUTER_BOUND('',#424,.T.);
+#426=ADVANCED_FACE('',(#425),#233,.F.);
+#430=ORIENTED_EDGE('',*,*,#315,.T.); #431=ORIENTED_EDGE('',*,*,#331,.T.);
+#432=ORIENTED_EDGE('',*,*,#323,.F.); #433=ORIENTED_EDGE('',*,*,#333,.F.);
+#434=EDGE_LOOP('',(#430,#431,#432,#433)); #435=FACE_OUTER_BOUND('',#434,.T.);
+#436=ADVANCED_FACE('',(#435),#243,.T.);
+#440=ORIENTED_EDGE('',*,*,#317,.T.); #441=ORIENTED_EDGE('',*,*,#333,.T.);
+#442=ORIENTED_EDGE('',*,*,#325,.F.); #443=ORIENTED_EDGE('',*,*,#327,.F.);
+#444=EDGE_LOOP('',(#440,#441,#442,#443)); #445=FACE_OUTER_BOUND('',#444,.T.);
+#446=ADVANCED_FACE('',(#445),#254,.F.);
+#450=ORIENTED_EDGE('',*,*,#313,.T.); #451=ORIENTED_EDGE('',*,*,#331,.T.);
+#452=ORIENTED_EDGE('',*,*,#321,.F.); #453=ORIENTED_EDGE('',*,*,#329,.F.);
+#454=EDGE_LOOP('',(#450,#451,#452,#453)); #455=FACE_OUTER_BOUND('',#454,.T.);
+#456=ADVANCED_FACE('',(#455),#263,.T.);
+/* Inner cube faces (outward-from-cube normals -- the void's natural
+   outward orientation; the void shell needs reversed orientation in
+   the BREP_WITH_VOIDS tuple to count as a hole) */
+#460=ORIENTED_EDGE('',*,*,#341,.F.); #461=ORIENTED_EDGE('',*,*,#347,.T.);
+#462=ORIENTED_EDGE('',*,*,#345,.F.); #463=ORIENTED_EDGE('',*,*,#343,.F.);
+#464=EDGE_LOOP('',(#460,#461,#462,#463)); #465=FACE_OUTER_BOUND('',#464,.T.);
+#466=ADVANCED_FACE('',(#465),#271,.F.);
+#470=ORIENTED_EDGE('',*,*,#349,.T.); #471=ORIENTED_EDGE('',*,*,#351,.T.);
+#472=ORIENTED_EDGE('',*,*,#353,.F.); #473=ORIENTED_EDGE('',*,*,#355,.F.);
+#474=EDGE_LOOP('',(#470,#471,#472,#473)); #475=FACE_OUTER_BOUND('',#474,.T.);
+#476=ADVANCED_FACE('',(#475),#273,.T.);
+#480=ORIENTED_EDGE('',*,*,#341,.T.); #481=ORIENTED_EDGE('',*,*,#359,.T.);
+#482=ORIENTED_EDGE('',*,*,#349,.F.); #483=ORIENTED_EDGE('',*,*,#357,.F.);
+#484=EDGE_LOOP('',(#480,#481,#482,#483)); #485=FACE_OUTER_BOUND('',#484,.T.);
+#486=ADVANCED_FACE('',(#485),#275,.F.);
+#490=ORIENTED_EDGE('',*,*,#345,.T.); #491=ORIENTED_EDGE('',*,*,#361,.T.);
+#492=ORIENTED_EDGE('',*,*,#353,.F.); #493=ORIENTED_EDGE('',*,*,#363,.F.);
+#494=EDGE_LOOP('',(#490,#491,#492,#493)); #495=FACE_OUTER_BOUND('',#494,.T.);
+#496=ADVANCED_FACE('',(#495),#277,.T.);
+#500=ORIENTED_EDGE('',*,*,#347,.T.); #501=ORIENTED_EDGE('',*,*,#363,.T.);
+#502=ORIENTED_EDGE('',*,*,#355,.F.); #503=ORIENTED_EDGE('',*,*,#357,.F.);
+#504=EDGE_LOOP('',(#500,#501,#502,#503)); #505=FACE_OUTER_BOUND('',#504,.T.);
+#506=ADVANCED_FACE('',(#505),#279,.F.);
+#510=ORIENTED_EDGE('',*,*,#343,.T.); #511=ORIENTED_EDGE('',*,*,#361,.T.);
+#512=ORIENTED_EDGE('',*,*,#351,.F.); #513=ORIENTED_EDGE('',*,*,#359,.F.);
+#514=EDGE_LOOP('',(#510,#511,#512,#513)); #515=FACE_OUTER_BOUND('',#514,.T.);
+#516=ADVANCED_FACE('',(#515),#281,.T.);
+/* Outer + void shells */
+#600=CLOSED_SHELL('outer',(#406,#416,#426,#436,#446,#456));
+#610=CLOSED_SHELL('void',(#466,#476,#486,#496,#506,#516));
+/* Defect: void shell orientation .T. instead of .F. */
+#620=ORIENTED_CLOSED_SHELL('void_wrong_orient',*,#610,.T.);
+#700=BREP_WITH_VOIDS('cube_with_void_misoriented',#600,(#620));
+ENDSEC;
+END-ISO-10303-21;

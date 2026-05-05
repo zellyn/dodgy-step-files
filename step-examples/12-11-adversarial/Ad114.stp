@@ -1,0 +1,38 @@
+/* Ad114 - STEP fixture path is a symlink to /etc/passwd or other
+ * privileged file
+ * Defect: a receiver that opens a fixture by name without checking
+ * whether the path traverses a symlink will follow symlinks
+ * transparently. If an attacker can place a symlink at the fixture
+ * path (or anywhere along its resolution chain) pointing at a
+ * privileged file (/etc/passwd, ~/.ssh/id_rsa, /proc/self/environ),
+ * the receiver reads the privileged file's bytes and feeds them to
+ * the Part-21 tokeniser. Most privileged files do not parse as
+ * Part-21 and the load fails benignly, but the bytes have already
+ * been read into the receiver's address space and may appear in
+ * error messages, crash dumps, or telemetry.
+ *
+ * IMPORTANT: this fixture documents the scenario in this header
+ * comment; no real symlink to /etc/passwd is created in the
+ * repository. Provenance tier: cross-file-state. */
+ISO-10303-21;
+HEADER;
+FILE_DESCRIPTION(('Ad114 - .stp fixture path is symlink to /etc/passwd'),'2;1');
+FILE_NAME('Ad114.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+/* Witness body: the symlink-following defect lives in the receiver-side
+   filesystem. The bug-reporter searchable terms (symlink, /etc/passwd,
+   /etc/, O_NOFOLLOW) are in this file's header and comments. The
+   actual demonstration requires a symlink at the fixture path
+   pointing at /etc/passwd or similar privileged file.
+
+   No real symlink is created in this repo - it would be a clear
+   security smell in source control and cross-platform unfriendly.
+   The receiver should refuse to follow symlinks within the research
+   tree unless explicitly enabled, and should set O_NOFOLLOW on open. */
+/* symlink to /etc/passwd at fixture path - O_NOFOLLOW required */
+#1=APPLICATION_CONTEXT('automotive_design');
+#10=CARTESIAN_POINT('benign',(0.0,0.0,0.0));
+ENDSEC;
+END-ISO-10303-21;

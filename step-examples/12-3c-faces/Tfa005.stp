@@ -1,0 +1,83 @@
+/* Tfa005 - Periodic face given by single belt wire (degenerate pole case)
+ * Defect: a periodic surface (sphere, cone, toroidal pole) is bounded
+ * by a single closed wire that wraps once around the periodic
+ * direction. The face has a degenerate pole and the wire crosses (or
+ * skirts) the apex/pole. No degenerate edge has been inserted at the
+ * pole, so the face's UV rectangle is incomplete.
+ *
+ * Sources cited in catalog: 05-occt-shapefix F032
+ * (ShapeFix_Face::FixPeriodicDegenerated).
+ *
+ * Expected kernel behavior: heal - detect single-belt periodic
+ * configuration; insert the implicit degenerate edge at the pole;
+ * reorient the wire so it traces the UV rectangle correctly.
+ *
+ * Reproducer: cone face whose only outer wire is a circular belt at
+ * z=10 (radius 10), no degenerate edge inserted at the cone apex.
+ * For coverage we also include a sphere face bounded by a single
+ * equatorial belt - same pole-pair degeneracy, two natural poles.
+ */
+ISO-10303-21;
+HEADER;
+FILE_DESCRIPTION(('Tfa005 periodic single belt wire'),'2;1');
+FILE_NAME('Tfa005.stp','2026-04-26T00:00:00',(''),(''),
+  'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
+  'automotive_design',2009,#1);
+#10=CARTESIAN_POINT('apex',(0.0,0.0,0.0));
+#11=DIRECTION('z',(0.0,0.0,1.0));
+#12=DIRECTION('x',(1.0,0.0,0.0));
+#13=AXIS2_PLACEMENT_3D('cone_plc',#10,#11,#12);
+/* Cone with half-angle 45 deg, radius 0 at apex.                       */
+#20=CONICAL_SURFACE('cone',#13,0.0,0.785398163397448);
+/* Single belt at z=10, radius 10.                                      */
+#30=CARTESIAN_POINT('belt_center',(0.0,0.0,10.0));
+#31=AXIS2_PLACEMENT_3D('belt_plc',#30,#11,#12);
+#32=CIRCLE('cone_belt',#31,10.0);
+#33=CARTESIAN_POINT('belt_seam_pt',(10.0,0.0,10.0));
+#34=VERTEX_POINT('belt_seam',#33);
+/* Defect site #1: closed edge curve with same vertex on both ends; no
+ * degenerate edge at the apex paired with this belt.                   */
+#40=EDGE_CURVE('cone_belt_edge',#34,#34,#32,.T.);
+#41=ORIENTED_EDGE('',*,*,#40,.T.);
+#50=EDGE_LOOP('cone_belt_loop',(#41));
+#60=FACE_OUTER_BOUND('cone_belt_outer',#50,.T.);
+#70=ADVANCED_FACE('cone_belt_no_apex',(#60),#20,.T.);
+/* Sphere R=10 with single equatorial belt (latitudinal circle).        */
+#80=CARTESIAN_POINT('sph_center',(50.0,0.0,0.0));
+#81=AXIS2_PLACEMENT_3D('sph_plc',#80,#11,#12);
+#82=SPHERICAL_SURFACE('sph_R10',#81,10.0);
+#83=CARTESIAN_POINT('sph_belt_center',(50.0,0.0,0.0));
+#84=AXIS2_PLACEMENT_3D('sph_belt_plc',#83,#11,#12);
+#85=CIRCLE('sph_equator',#84,10.0);
+#86=CARTESIAN_POINT('sph_belt_seam',(60.0,0.0,0.0));
+#87=VERTEX_POINT('sph_belt_seam_v',#86);
+/* Defect site #2: equatorial belt without degenerate edges at either
+ * pole - sphere has TWO degenerate edges to insert.                    */
+#90=EDGE_CURVE('sph_equator_edge',#87,#87,#85,.T.);
+#91=ORIENTED_EDGE('',*,*,#90,.T.);
+#100=EDGE_LOOP('sph_equator_loop',(#91));
+#101=FACE_OUTER_BOUND('sph_equator_outer',#100,.T.);
+#110=ADVANCED_FACE('sphere_belt_no_poles',(#101),#82,.T.);
+#120=OPEN_SHELL('belt_faces',(#70,#110));
+/* Wrap: minimal PRODUCT chain so OCCT TransferRoots produces a shape. */
+#9000=PRODUCT_CONTEXT('',#1,'mechanical');
+#9001=PRODUCT('Tfa005','Tfa005','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
+#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
+#9021=SHELL_BASED_SURFACE_MODEL('wrap_sbsm',(#120));
+#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#9010);
+#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+ENDSEC;
+END-ISO-10303-21;

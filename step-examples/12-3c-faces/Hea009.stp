@@ -1,0 +1,36 @@
+ISO-10303-21;
+/* Hea009 - Convert all curves and surfaces of a shape to Bezier
+ * Defect: shape whose surfaces and curves are mixed analytic + B-spline;
+ * the convert-to-Bezier pipeline must handle each kind, splitting at
+ * non-Bezier breaks where needed. */
+HEADER;
+FILE_DESCRIPTION(('Hea009 test case','Convert all curves and surfaces of a shape to Bezier'),'2;1');
+FILE_NAME('Hea009.stp','2026-04-26T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+/* B-spline curve with internal C0 knot at u=0.5 */
+#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#11=DIRECTION('',(0.0,0.0,1.0));
+#12=DIRECTION('',(1.0,0.0,0.0));
+#13=AXIS2_PLACEMENT_3D('',#10,#11,#12);
+#14=PLANE('',#13);
+#20=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#21=VERTEX_POINT('',#20);
+#22=CARTESIAN_POINT('',(10.0,0.0,0.0));
+#23=VERTEX_POINT('',#22);
+#24=CARTESIAN_POINT('',(2.5,0.5,0.0));
+#25=CARTESIAN_POINT('',(5.0,1.0,0.0));
+#26=CARTESIAN_POINT('',(7.5,0.5,0.0));
+/* Multiplicity 3 = degree gives C0 at u=0.5 */
+#30=B_SPLINE_CURVE_WITH_KNOTS('',2,(#20,#24,#25,#26,#22),.UNSPECIFIED.,
+  .F.,.F.,(3,3,3),(0.0,0.5,1.0),.UNSPECIFIED.);
+#50=EDGE_CURVE('',#21,#23,#30,.T.);
+#60=ORIENTED_EDGE('',*,*,#50,.T.);
+#70=EDGE_LOOP('',(#60));
+#71=FACE_OUTER_BOUND('',#70,.T.);
+#72=ADVANCED_FACE('',(#71),#14,.T.);
+ENDSEC;
+END-ISO-10303-21;

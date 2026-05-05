@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>M049 — Schema migration: 53 retired kinematics entities (AP242 Ed.1)</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.8 Mixed (tessellation, validation properties, etc.)</a> <span class="sep">/</span> <span class="current">M049</span>
+</nav>
+<header class="title-bar">
+<h1>M049 <span class="sep">—</span> <span class="entry-title">Schema migration: 53 retired kinematics entities (AP242 Ed.1)</span></h1>
+<p class="category">§12.8 (sub-class: kinematics)</p>
+<p class="severity-badge severity-p1">P1 — silent data loss</p>
+<p class="tag-pills">
+<a class="tag tag-spec-violation" href="../by-tag/spec-violation/index.html">spec-violation</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-8-mixed/M049.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-8-mixed/M049.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>17-standards-bodies.md (M016)</li>
+<li>STEP Tools &quot;AP242 First Edition Notes&quot;</li>
+<li>AFNeT/Atlas AP242 Ed.4</li>
+</ul></section>
+<section><h2>Description</h2>
+<p>AP242 Ed.1 retired ~53 AP214/AP203 entities — `kinematic_structure`, `mechanism`, `kinematic_property_definition`, `cylindrical_pair_range` and many more. An archived AP214 file containing them cannot be re-validated against the AP242 schema.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>An AP214 Part 21 file using `kinematic_link_representation_relation` re-headered as AP242.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>archive-stable in original AP214 form; on migration to AP242 either drop entities (recorded loss-of-fidelity note) or refuse migration.</p></section>
+<section><h2>Notes</h2>
+<p>Synonyms: &quot;AP242 retired kinematics entities&quot;, &quot;schema-version vs entity-vocabulary disagreement&quot;, &quot;kinematic_structure entity gone&quot;, &quot;AP214 kinematics not in AP242 Ed.1&quot;. **See also**: A031.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>contains(b&#x27;KINEMATIC_LINK_REPRESENTATION_RELATION&#x27;)</code></li>
+<li><code>contains(b&#x27;CYLINDRICAL_PAIR_RANGE&#x27;)</code></li>
+<li><code>contains(b&#x27;MECHANISM&#x27;)</code></li>
+</ul></section>
+<section><h2>Cross-references</h2>
+<p><a href="../12-6-assembly/A031.html">A031</a></p>
+</section>
+<section><h2>Live oracle output</h2>
+<table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
+<tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>no_shapes_loaded</code></td></tr>
+</tbody></table>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* M049 - Schema migration: 53 retired kinematics entities (AP242
+<span class="lineno">3</span> * Ed.1).
+<span class="lineno">4</span> * Defect: AP242 Ed.1 retired ~53 AP214/AP203 kinematics entities such
+<span class="lineno">5</span> * as <mark>KINEMATIC_LINK_REPRESENTATION_RELATION</mark>, <mark>MECHANISM</mark>,
+<span class="lineno">6</span> * KINEMATIC_PROPERTY_DEFINITION, <mark>CYLINDRICAL_PAIR_RANGE</mark> etc. An
+<span class="lineno">7</span> * archived AP214 file containing them cannot be re-validated against
+<span class="lineno">8</span> * the AP242 schema after a header swap.
+<span class="lineno">9</span> * This fixture: an AP214 file using KINEMATIC_LINK_REPRESENTATION_
+<span class="lineno">10</span> * RELATION re-headered as AP242 (the schema in the header is AP242
+<span class="lineno">11</span> * but the data uses retired entities). */
+<span class="lineno">12</span>HEADER;
+<span class="lineno">13</span>FILE_DESCRIPTION((&#x27;M049 test case&#x27;,&#x27;retired kinematics entities under AP242 header&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">14</span>FILE_NAME(&#x27;M049.stp&#x27;,&#x27;2026-04-26T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;auto-generated&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">15</span>FILE_SCHEMA((&#x27;AP242_MANAGED_MODEL_BASED_3D_ENGINEERING_MIM_LF { 1 0 10303 442 1 1 4 }&#x27;));
+<span class="lineno">16</span>ENDSEC;
+<span class="lineno">17</span>DATA;
+<span class="lineno">18</span>#1=APPLICATION_CONTEXT(&#x27;managed model based 3d engineering&#x27;);
+<span class="lineno">19</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,
+<span class="lineno">20</span>  &#x27;ap242_managed_model_based_3d_engineering&#x27;,2014,#1);
+<span class="lineno">21</span>#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">22</span>#11=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+<span class="lineno">23</span>#12=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+<span class="lineno">24</span>#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.E-6),#10,&#x27;distance_accuracy_value&#x27;,&#x27;&#x27;);
+<span class="lineno">25</span>#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+<span class="lineno">26</span>     GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13))
+<span class="lineno">27</span>     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12))
+<span class="lineno">28</span>     REPRESENTATION_CONTEXT(&#x27;mechanism&#x27;,&#x27;3D&#x27;));
+<span class="lineno">29</span>/* Two link placements (positions of two parts). */
+<span class="lineno">30</span>#100=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">31</span>#101=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">32</span>#102=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">33</span>#103=AXIS2_PLACEMENT_3D(&#x27;link_a_origin&#x27;,#100,#101,#102);
+<span class="lineno">34</span>#110=CARTESIAN_POINT(&#x27;&#x27;,(10.0,0.0,0.0));
+<span class="lineno">35</span>#111=AXIS2_PLACEMENT_3D(&#x27;link_b_origin&#x27;,#110,#101,#102);
+<span class="lineno">36</span>/* Defect: <mark>KINEMATIC_LINK_REPRESENTATION_RELATION</mark> is in the retired
+<span class="lineno">37</span> * set under AP242 Ed.1. */
+<span class="lineno">38</span>#200=<mark>KINEMATIC_LINK_REPRESENTATION_RELATION</mark>(&#x27;A_to_B&#x27;,&#x27;&#x27;,#103,#111);
+<span class="lineno">39</span>/* Other retired entities likely paired with it. */
+<span class="lineno">40</span>#210=<mark>MECHANISM</mark>(&#x27;one_revolute_joint&#x27;,&#x27;&#x27;,(#200));
+<span class="lineno">41</span>#220=KINEMATIC_PROPERTY_DEFINITION(&#x27;joint_range&#x27;,&#x27;&#x27;,$);
+<span class="lineno">42</span>#230=<mark>CYLINDRICAL_PAIR_RANGE</mark>(&#x27;range_q&#x27;,&#x27;&#x27;,$,
+<span class="lineno">43</span>       PLANE_ANGLE_MEASURE(-1.5708),
+<span class="lineno">44</span>       PLANE_ANGLE_MEASURE( 1.5708),$,$);
+<span class="lineno">45</span>ENDSEC;
+<span class="lineno">46</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="M048.html">&larr; M048</a> <a class="up" href="index.html">§12.8 Mixed (tessellation, validation properties, etc.)</a> <a class="next" href="M050.html">M050 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

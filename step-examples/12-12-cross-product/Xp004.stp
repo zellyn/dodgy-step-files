@@ -1,0 +1,56 @@
+ISO-10303-21;
+/* Xp004 - Cross-product: PMI annotation spans tessellated_face and
+ *   advanced_face; saved-view mapped_item is missing.
+ * Builds on Pmi001 (PMI across BRep+tess) + M002 (mixed items in
+ *   tessellated_shape_representation) + Pmi020 (saved view missing
+ *   mapped_item). */
+HEADER;
+FILE_DESCRIPTION(('Xp004 cross-product','PMI x tess+brep mix x missing mapped_item'),'2;1');
+FILE_NAME('Xp004.stp','2026-04-26T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AP242_MANAGED_MODEL_BASED_3D_ENGINEERING_MIM_LF { 1 0 10303 442 1 1 4 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('managed model based 3d engineering');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
+  'ap242_managed_model_based_3d_engineering',2014,#1);
+#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#11=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#12=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.E-6),#10,'distance_accuracy_value','');
+#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+     GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13))
+     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12))
+     REPRESENTATION_CONTEXT('part','3D'));
+/* Tessellated face */
+#100=COORDINATES_LIST('',4,((0.0,0.0,0.0),(1.0,0.0,0.0),
+                            (0.5,1.0,0.0),(0.5,0.5,1.0)));
+#110=TRIANGULATED_FACE('',#100,$,$,(),
+       ((1,2,3),(1,2,4),(2,3,4),(3,1,4)));
+/* BRep face (illegal mix in Ed.1) */
+#120=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#121=DIRECTION('',(0.0,0.0,1.0));
+#122=DIRECTION('',(1.0,0.0,0.0));
+#123=AXIS2_PLACEMENT_3D('',#120,#121,#122);
+#124=PLANE('',#123);
+#125=CARTESIAN_POINT('a',(0.0,0.0,0.0));
+#126=CARTESIAN_POINT('b',(1.0,0.0,0.0));
+#127=VERTEX_POINT('',#125);
+#128=VERTEX_POINT('',#126);
+#129=LINE('',#125,VECTOR('',#122,1.0));
+#130=EDGE_CURVE('',#127,#128,#129,.T.);
+#131=ORIENTED_EDGE('',*,*,#130,.T.);
+#132=EDGE_LOOP('',(#131));
+#133=FACE_OUTER_BOUND('',#132,.T.);
+#134=ADVANCED_FACE('brep_half',(#133),#124,.T.);
+/* Defect 1+2: tessellated_shape_representation with mixed items */
+#140=TESSELLATED_SHAPE_REPRESENTATION('mixed',(#110,#134,#123),#14);
+/* PMI: dimensional_size cites a shape_aspect bound to BOTH halves */
+#200=PRODUCT_DEFINITION_SHAPE('','',$);
+#201=SHAPE_ASPECT('hole','through-hole',#200,.T.);
+#210=GEOMETRIC_ITEM_SPECIFIC_USAGE('','',#201,$,#134);
+#211=GEOMETRIC_ITEM_SPECIFIC_USAGE('','',#201,$,#110);
+#220=DIMENSIONAL_SIZE(#201,'hole_diameter');
+/* Defect 3: saved view but draughting_model items list lacks mapped_item */
+#300=DRAUGHTING_MODEL('saved_view',(#220),#14);
+ENDSEC;
+END-ISO-10303-21;

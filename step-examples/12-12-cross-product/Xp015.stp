@@ -1,0 +1,55 @@
+ISO-10303-21;
+/* Xp015 - Cross-product: face on a closed cylindrical surface whose wire
+ *   self-intersects in UV near the seam (u=0 / u=2pi), with no seam edge
+ *   listed and the self-intersection at the parametric ambiguity itself.
+ * Builds on Twi045 (self-intersection) + Twi-seam-class (UV-period shift) +
+ *   Gp005 (parametric singularity). */
+HEADER;
+FILE_DESCRIPTION(('Xp015 cross-product','self-intersecting wire x missing seam x parametric ambiguity'),'2;1');
+FILE_NAME('Xp015.stp','2026-04-26T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#11=DIRECTION('',(0.0,0.0,1.0));
+#12=DIRECTION('',(1.0,0.0,0.0));
+#13=AXIS2_PLACEMENT_3D('',#10,#11,#12);
+#14=CYLINDRICAL_SURFACE('',#13,1.0);
+/* Vertices on the cylinder near the seam */
+#20=CARTESIAN_POINT('a',(1.0,0.0,0.0));
+#21=CARTESIAN_POINT('b',(1.0,0.0,1.0));
+/* Slightly past seam (small negative angle) */
+#22=CARTESIAN_POINT('c',(0.9999,-0.0001,1.0));
+#23=CARTESIAN_POINT('d',(0.9999,-0.0001,0.0));
+#30=VERTEX_POINT('',#20);
+#31=VERTEX_POINT('',#21);
+#32=VERTEX_POINT('',#22);
+#33=VERTEX_POINT('',#23);
+/* Four 3D curves whose UV pcurves cross near u=2pi - self-intersection. */
+#40=DIRECTION('',(0.0,0.0,1.0));
+#41=VECTOR('',#40,1.0);
+#42=LINE('',#20,#41);
+#43=DIRECTION('',(-0.7071067811865475,-0.7071067811865475,0.0));
+#44=VECTOR('',#43,0.000141);
+#45=LINE('',#21,#44);
+#46=VECTOR('',#40,-1.0);
+#47=LINE('',#22,#46);
+#48=DIRECTION('',(0.7071067811865475,0.7071067811865475,0.0));
+#49=VECTOR('',#48,0.000141);
+#50=LINE('',#23,#49);
+#60=EDGE_CURVE('',#30,#31,#42,.T.);
+#61=EDGE_CURVE('',#31,#32,#45,.T.);
+#62=EDGE_CURVE('',#32,#33,#47,.T.);
+#63=EDGE_CURVE('',#33,#30,#50,.T.);
+/* Defect: no seam edge listed; wire crosses seam without one */
+#70=ORIENTED_EDGE('',*,*,#60,.T.);
+#71=ORIENTED_EDGE('',*,*,#61,.T.);
+#72=ORIENTED_EDGE('',*,*,#62,.T.);
+#73=ORIENTED_EDGE('',*,*,#63,.T.);
+#80=EDGE_LOOP('seam_cross',(#70,#71,#72,#73));
+#81=FACE_OUTER_BOUND('',#80,.T.);
+#82=ADVANCED_FACE('cyl_face_seam',(#81),#14,.T.);
+ENDSEC;
+END-ISO-10303-21;

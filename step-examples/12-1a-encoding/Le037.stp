@@ -1,0 +1,30 @@
+ISO-10303-21;
+/* Le037 - \PE\ alphabet-extension directive switching to a non-Latin
+ * page mid-string
+ * Defect: Edition-3 ISO 10303-21 defines \PE\ as a single-letter
+ * alphabet selector that switches the active 96-glyph code page for
+ * subsequent characters until another \PA\..\PI\ or \PE\ directive
+ * resets it. A parser that recognises only the common \PA\..\PI\
+ * single-byte selectors and ignores \PE\ altogether will drop the
+ * page-switch and decode all bytes against the wrong table.
+ * Here the literal \PE\F\S\ swaps to ISO-8859-7 (Greek) for two
+ * 0xE6 bytes which should decode as the Greek small alpha. After
+ * \PI\ the page resets to default Latin-1.
+ * Note: this is a deduced spec corner; few real producers emit \PE\
+ * but a kernel claiming Ed.3 conformance must consume the directive
+ * without lexer desynchronisation. */
+HEADER;
+FILE_DESCRIPTION(('Le037 - \PE\ alphabet-extension to Greek mid-string'),'2;1');
+FILE_NAME('Le037.stp','2026-04-26T00:00:00',(''),(''),
+  'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=PRODUCT_CONTEXT('part',#1,'mechanical');
+/* Defect: PRODUCT.name uses \PE\F\S\ to switch to ISO-8859-7
+ * (Greek) for the next byte run, then \PI\ to reset. */
+#10=PRODUCT('greek=\PE\F\S\\S\xx-greek\PI\-end','greek-page','',(#2));
+#11=PRODUCT('reset=\PE\A\S\Hello\PI\','reset-default','',(#2));
+ENDSEC;
+END-ISO-10303-21;

@@ -1,0 +1,42 @@
+/* Ad050 - Empty EDGE_LOOP / empty wire / empty entity iterator crashes reader
+   ----------------------------------------------------------------------
+   Catalog section : §12.11 adversarial (sub-class: schema-validation / null-deref)
+   Sources         : 03-occt-tests.md R045 (bug33307), R037 (bug25014);
+                     08-occt-gitlog.md G035;
+                     18-other-issues.md I004 (TESSELLATED_SHELL((), $))
+   See also        : Ad043
+   ----------------------------------------------------------------------
+   WARNING: This file is INTENTIONALLY MALFORMED for parser-robustness
+   testing. Do NOT use as exchange data.
+   ----------------------------------------------------------------------
+   Defect
+     Schema requires non-empty list (EDGE_LOOP.edge_list size >= 1);
+     producer emits (). Reader's iterator-step crashes on the empty
+     aggregate because the first dereference assumes at least one
+     element. Same family: empty TESSELLATED_SHELL, empty wire.
+   Reproducer recipe
+     #1=EDGE_LOOP('',()) referenced from a FACE_BOUND.
+   Expected kernel behavior
+     Defensive iterator guard; reject malformed entity with
+     E_EMPTY_AGGREGATE; continue translation of remaining entities.
+   ----------------------------------------------------------------------
+*/
+ISO-10303-21;
+HEADER;
+FILE_DESCRIPTION(('Ad050 - empty EDGE_LOOP triggers iterator crash'),'2;1');
+FILE_NAME('Ad050.stp','2026-04-26T00:00:00',('auto-generated'),(''),
+  'auto-generated','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+#1=CARTESIAN_POINT('o',(0.0,0.0,0.0));
+#2=DIRECTION('z',(0.0,0.0,1.0));
+#3=DIRECTION('x',(1.0,0.0,0.0));
+#4=AXIS2_PLACEMENT_3D('p',#1,#2,#3);
+#5=PLANE('plane',#4);
+/* Defect: EDGE_LOOP with empty edge_list */
+#10=EDGE_LOOP('empty_loop',());
+#11=FACE_OUTER_BOUND('fob_empty',#10,.T.);
+#12=ADVANCED_FACE('af_empty',(#11),#5,.T.);
+ENDSEC;
+END-ISO-10303-21;

@@ -1,0 +1,28 @@
+ISO-10303-21;
+/* M152 - AP210 microvia depth exceeds substrate thickness.
+ * Defect: a VIA_DEFINITION has stackup_depth = 0.5 mm but the
+ * laminate's total stackup thickness is 0.4 mm. The drilled microvia
+ * is deeper than the board itself; the drill exits through the back
+ * of the board. */
+HEADER;
+FILE_DESCRIPTION(('M152 test case','AP210 microvia depth exceeds stackup'),'2;1');
+FILE_NAME('M152.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('ELECTRONIC_ASSEMBLY_INTERCONNECT_AND_PACKAGING_DESIGN { 1 0 10303 210 3 1 0 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('electronic_assembly_interconnect_and_packaging_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
+  'electronic_assembly_interconnect_and_packaging_design',2014,#1);
+#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10))
+     REPRESENTATION_CONTEXT('pcb','3D'));
+#100=MATERIAL_DESIGNATION('FR4','glass-epoxy laminate',(#1));
+/* Stackup total = 0.2 + 0.2 = 0.4 mm. */
+#200=LAMINATE_OR_PLY_DEFINITION('top_ply',$,#100,#100,LENGTH_MEASURE(0.2));
+#201=LAMINATE_OR_PLY_DEFINITION('bot_ply',$,#100,#100,LENGTH_MEASURE(0.2));
+#210=LAMINATE_TABLE('thin_stackup',(#200,#201));
+/* Defect: via depth 0.5 mm > stackup thickness 0.4 mm. */
+#300=VIA_DEFINITION('overrun_microvia',LENGTH_MEASURE(0.5),(#200,#201));
+ENDSEC;
+END-ISO-10303-21;

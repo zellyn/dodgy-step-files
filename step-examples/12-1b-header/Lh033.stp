@@ -1,0 +1,33 @@
+ISO-10303-21;
+/* Lh033 - Multi-DATA-section file with cross-section reference
+ * via @section_name#NNN
+ * Defect: ISO 10303-21 Edition 3 introduces named DATA sections
+ * (DATA('section_name')) and cross-section references of the form
+ * @section_name#NNN to refer to instance NNN inside a different
+ * section. Edition-2 readers (the majority) recognise only DATA;
+ * (no name) and a single anonymous data section. Such readers
+ * either ignore the section name (collapsing all instances into
+ * one global pool, where #NNN may collide between sections) or
+ * choke on the @ syntax. This fixture has two named sections
+ * 'geometry' and 'pmi' and a forward reference @geometry#10 from
+ * inside 'pmi'. */
+HEADER;
+FILE_DESCRIPTION(('Lh033 - multi-DATA-section file with cross-section ref'),'2;1');
+FILE_NAME('Lh033.stp','2026-04-26T00:00:00',(''),(''),
+  'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA('geometry');
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=PRODUCT_CONTEXT('part',#1,'mechanical');
+#10=CARTESIAN_POINT('origin',(0.0,0.0,0.0));
+#11=DIRECTION('z',(0.0,0.0,1.0));
+#12=DIRECTION('x',(1.0,0.0,0.0));
+#13=AXIS2_PLACEMENT_3D('placement',#10,#11,#12);
+ENDSEC;
+DATA('pmi');
+/* Defect: @geometry#10 refers across the section boundary */
+#10=PRODUCT('cross-ref','witness','',(@geometry#2));
+#20=CARTESIAN_POINT('local',(1.0,0.0,0.0));
+ENDSEC;
+END-ISO-10303-21;

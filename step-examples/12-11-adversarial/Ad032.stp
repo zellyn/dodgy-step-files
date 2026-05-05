@@ -1,0 +1,62 @@
+/* Ad032 - Schema-EXPRESS rule recursion bomb
+   ----------------------------------------------------------------------
+   Catalog section : §12.11 adversarial (sub-class: resource-exhaustion / DoS)
+   Sources         : 12-adversarial.md A032
+   See also        : Ad027, Ad054, Ad055, Pf030
+   Severity        : M (DoS)
+   ----------------------------------------------------------------------
+   WARNING: This file is INTENTIONALLY MALFORMED for parser-robustness
+   testing. Do NOT use as exchange data.
+   ----------------------------------------------------------------------
+   Defect
+     EXPRESS WHERE rules invoke functions transitively. An attacker
+     references entities such that rule evaluation walks the entity
+     graph repeatedly. With a star topology, an O(n^2) evaluation with
+     cycle re-entry is weaponisable: rule re-checks fan out across every
+     EDGE_CURVE -> VERTEX_POINT pair, then back-link.
+   Reproducer recipe (scaled-down 16-edge star here; production size 10^4)
+     Sixteen EDGE_CURVE entities each referencing the same two
+     VERTEX_POINTs in a star topology. WHERE rules on edge curves and
+     vertices repeatedly traverse this set on every binding.
+   Expected kernel behavior
+     Per-file rule-evaluation budget; abort with E_RULE_BUDGET when
+     budget exceeded. Memoise WHERE-rule results per entity; never
+     re-evaluate beyond a bounded depth.
+   ----------------------------------------------------------------------
+*/
+ISO-10303-21;
+HEADER;
+FILE_DESCRIPTION(('Ad032 - WHERE-rule recursion bomb via star topology'),'2;1');
+FILE_NAME('Ad032.stp','2026-04-26T00:00:00',('auto-generated'),(''),
+  'auto-generated','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+#1=CARTESIAN_POINT('a',(0.0,0.0,0.0));
+#2=CARTESIAN_POINT('b',(1.0,0.0,0.0));
+#3=VERTEX_POINT('va',#1);
+#4=VERTEX_POINT('vb',#2);
+#5=DIRECTION('z',(0.0,0.0,1.0));
+#6=DIRECTION('x',(1.0,0.0,0.0));
+#7=AXIS2_PLACEMENT_3D('ap',#1,#5,#6);
+#8=LINE('l',#1,#9);
+#9=VECTOR('v',#6,1.0);
+/* Sixteen edges sharing the same two vertices -> WHERE-rule fan-out */
+#100=EDGE_CURVE('e0',#3,#4,#8,.T.);
+#101=EDGE_CURVE('e1',#3,#4,#8,.T.);
+#102=EDGE_CURVE('e2',#3,#4,#8,.T.);
+#103=EDGE_CURVE('e3',#3,#4,#8,.T.);
+#104=EDGE_CURVE('e4',#3,#4,#8,.T.);
+#105=EDGE_CURVE('e5',#3,#4,#8,.T.);
+#106=EDGE_CURVE('e6',#3,#4,#8,.T.);
+#107=EDGE_CURVE('e7',#3,#4,#8,.T.);
+#108=EDGE_CURVE('e8',#3,#4,#8,.T.);
+#109=EDGE_CURVE('e9',#3,#4,#8,.T.);
+#110=EDGE_CURVE('e10',#3,#4,#8,.T.);
+#111=EDGE_CURVE('e11',#3,#4,#8,.T.);
+#112=EDGE_CURVE('e12',#3,#4,#8,.T.);
+#113=EDGE_CURVE('e13',#3,#4,#8,.T.);
+#114=EDGE_CURVE('e14',#3,#4,#8,.T.);
+#115=EDGE_CURVE('e15',#3,#4,#8,.T.);
+ENDSEC;
+END-ISO-10303-21;

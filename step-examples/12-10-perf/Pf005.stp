@@ -1,0 +1,53 @@
+/* Pf005 - Slow STEP import on geometric-set-heavy file
+   Pattern: GEOMETRIC_SET aggregating thousands of points / lines /
+   B-spline curves. OCCT matches geometric items via linear scan, giving
+   O(N^2) import time on heavy GEOMETRIC_SETs (Mantis 0024024).
+   Scaling-up: this fixture wraps ~24 elements in one GEOMETRIC_SET.
+   Replicate to ~10000 CARTESIAN_POINT + ~5000 LINE + ~1000 B_SPLINE_CURVE
+   members to trigger the OCCT 1ee621b regression and a multi-minute
+   import time. */
+ISO-10303-21;
+HEADER;
+FILE_DESCRIPTION(('Pf005 - geometric-set heavy import: linear-scan match'),'2;1');
+FILE_NAME('Pf005.stp','2026-04-26T00:00:00',('auto-generated'),(''),
+  'auto-generated','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+#1=DIRECTION('',(1.0,0.0,0.0));
+/* points */
+#10=CARTESIAN_POINT('p1',(0.0,0.0,0.0));
+#11=CARTESIAN_POINT('p2',(1.0,0.0,0.0));
+#12=CARTESIAN_POINT('p3',(2.0,0.0,0.0));
+#13=CARTESIAN_POINT('p4',(3.0,0.0,0.0));
+#14=CARTESIAN_POINT('p5',(4.0,0.0,0.0));
+#15=CARTESIAN_POINT('p6',(5.0,0.0,0.0));
+#16=CARTESIAN_POINT('p7',(6.0,0.0,0.0));
+#17=CARTESIAN_POINT('p8',(7.0,0.0,0.0));
+#18=CARTESIAN_POINT('p9',(8.0,0.0,0.0));
+#19=CARTESIAN_POINT('p10',(9.0,0.0,0.0));
+/* lines (vector reused) */
+#20=VECTOR('',#1,1.0);
+#21=LINE('',#10,#20);
+#22=LINE('',#11,#20);
+#23=LINE('',#12,#20);
+#24=LINE('',#13,#20);
+#25=LINE('',#14,#20);
+#26=LINE('',#15,#20);
+#27=LINE('',#16,#20);
+#28=LINE('',#17,#20);
+/* B-spline curves */
+#30=B_SPLINE_CURVE_WITH_KNOTS('',2,(#10,#11,#12),.UNSPECIFIED.,.F.,.F.,
+   (3,3),(0.0,1.0),.UNSPECIFIED.);
+#31=B_SPLINE_CURVE_WITH_KNOTS('',2,(#11,#12,#13),.UNSPECIFIED.,.F.,.F.,
+   (3,3),(0.0,1.0),.UNSPECIFIED.);
+#32=B_SPLINE_CURVE_WITH_KNOTS('',2,(#12,#13,#14),.UNSPECIFIED.,.F.,.F.,
+   (3,3),(0.0,1.0),.UNSPECIFIED.);
+#33=B_SPLINE_CURVE_WITH_KNOTS('',2,(#13,#14,#15),.UNSPECIFIED.,.F.,.F.,
+   (3,3),(0.0,1.0),.UNSPECIFIED.);
+/* one giant GEOMETRIC_SET aggregating everything (linear-scan target) */
+#100=GEOMETRIC_SET('heavy',(#10,#11,#12,#13,#14,#15,#16,#17,#18,#19,
+   #21,#22,#23,#24,#25,#26,#27,#28,
+   #30,#31,#32,#33));
+ENDSEC;
+END-ISO-10303-21;

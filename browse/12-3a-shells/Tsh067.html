@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Tsh067 — Inner void shell extends beyond outer shell extent (void poking through)</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.3a Shells / orientation</a> <span class="sep">/</span> <span class="current">Tsh067</span>
+</nav>
+<header class="title-bar">
+<h1>Tsh067 <span class="sep">—</span> <span class="entry-title">Inner void shell extends beyond outer shell extent (void poking through)</span></h1>
+<p class="category">§12.3a shells/orientation (sub-class: BREP_WITH_VOIDS containment)</p>
+<p class="severity-badge severity-p1">P1 — silent data loss</p>
+<p class="tag-pills">
+<a class="tag tag-spec-violation" href="../by-tag/spec-violation/index.html">spec-violation</a>
+<a class="tag tag-topology" href="../by-tag/topology/index.html">topology</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-3a-shells/Tsh067.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-3a-shells/Tsh067.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>16-iso-spec ISO 10303-42 §BREP_WITH_VOIDS (the void-shells must be entirely contained inside the outer shell)</li>
+<li>bug-reporter language: &quot;STEP void escapes the part&quot;, &quot;inner shell pokes out&quot;</li>
+</ul></section>
+<section><h2>Sender</h2>
+<p>deduced — Boolean-cut exporters that emit a BREP_WITH_VOIDS where the cut tool&#x27;s bounding shell extends past one face of the host part</p></section>
+<section><h2>Description</h2>
+<p>BREP_WITH_VOIDS expresses a solid with internal cavities: an outer CLOSED_SHELL plus one or more inner CLOSED_SHELLs (the voids). The spec implicitly requires each inner shell to be entirely inside the outer shell — a void cannot exit the part. A producer that boolean-subtracts a long pin-shaped tool whose extent exceeds the host part along one axis, and emits the result as BREP_WITH_VOIDS without trimming the tool&#x27;s shell, leaves a void shell whose extent pokes through one face of the outer shell. Topology is inconsistent: at the face where the void pokes out, the outer face has a hole the void enters but the void&#x27;s exit through that face is unmodelled (or modelled as a separate face that contradicts the outer-shell closure). Bug-reporter language: &quot;inner shell escapes the outer&quot;, &quot;void pokes through face&quot;, &quot;BREP_WITH_VOIDS not contained&quot;.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>outer CLOSED_SHELL is a 10x10x10 mm cube. Inner CLOSED_SHELL is a 2x2x15 mm tall pin shell aligned along Z, centred at the cube&#x27;s centre — the pin extends 2.5 mm above and below the cube&#x27;s top and bottom faces. Both shells reference the same Z-axis. A BREP_WITH_VOIDS entity wraps both.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>validate that each void shell is geometrically contained in the outer shell; reject when a void shell pokes through. Tolerance handling: if the void&#x27;s protrusion is below the working precision, heal by trimming the void to the outer-shell boundary; if measurable, reject and name the offending face.</p></section>
+<section><h2>Notes</h2>
+<p>Synonyms: &quot;void escapes part&quot;, &quot;BREP_WITH_VOIDS protrusion&quot;, &quot;inner shell exceeds outer&quot;.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>contains(b&#x27;BREP_WITH_VOIDS&#x27;)</code></li>
+<li><code>contains(b&#x27;ORIENTED_CLOSED_SHELL&#x27;)</code></li>
+<li><code>count_entity_def(b&#x27;CLOSED_SHELL&#x27;) == 2</code></li>
+</ul></section>
+<section><h2>Live oracle output</h2>
+<table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
+<tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>no_shapes_loaded</code></td></tr>
+</tbody></table>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* Tsh067 - Inner void shell extends beyond outer shell extent
+<span class="lineno">3</span> * Defect: <mark>BREP_WITH_VOIDS</mark> with an outer 10x10x10 mm cube and an inner
+<span class="lineno">4</span> * 2x2x15 mm pin shell, both centred on the cube centre. The pin sticks
+<span class="lineno">5</span> * 2.5 mm above and below the cube faces. The void is not contained in
+<span class="lineno">6</span> * the outer shell. */
+<span class="lineno">7</span>HEADER;
+<span class="lineno">8</span>FILE_DESCRIPTION((&#x27;Tsh067 - <mark>BREP_WITH_VOIDS</mark> inner shell pokes through outer&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">9</span>FILE_NAME(&#x27;Tsh067.stp&#x27;,&#x27;2026-04-30T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">10</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }&#x27;));
+<span class="lineno">11</span>ENDSEC;
+<span class="lineno">12</span>DATA;
+<span class="lineno">13</span>#1=APPLICATION_CONTEXT(&#x27;automotive_design&#x27;);
+<span class="lineno">14</span>#10=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">15</span>#11=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">16</span>#12=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">17</span>#13=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#10,#11,#12);
+<span class="lineno">18</span>#14=PLANE(&#x27;&#x27;,#13);
+<span class="lineno">19</span>/* Outer cube - six placeholder faces wrapping a 10x10x10 mm box. */
+<span class="lineno">20</span>#20=ADVANCED_FACE(&#x27;out_top&#x27;,(),#14,.T.);
+<span class="lineno">21</span>#21=ADVANCED_FACE(&#x27;out_bottom&#x27;,(),#14,.T.);
+<span class="lineno">22</span>#22=ADVANCED_FACE(&#x27;out_xpos&#x27;,(),#14,.T.);
+<span class="lineno">23</span>#23=ADVANCED_FACE(&#x27;out_xneg&#x27;,(),#14,.T.);
+<span class="lineno">24</span>#24=ADVANCED_FACE(&#x27;out_ypos&#x27;,(),#14,.T.);
+<span class="lineno">25</span>#25=ADVANCED_FACE(&#x27;out_yneg&#x27;,(),#14,.T.);
+<span class="lineno">26</span><mark>#100=CLOSED_SHELL(</mark>&#x27;outer_cube_10x10x10&#x27;,(#20,#21,#22,#23,#24,#25));
+<span class="lineno">27</span>/* Inner pin: a 2x2x15 mm shell along Z. Its endpoints at z=-7.5 and
+<span class="lineno">28</span>   z=+7.5 sit 2.5 mm outside the cube (cube extends z in [-5,+5]). */
+<span class="lineno">29</span>#30=ADVANCED_FACE(&#x27;void_top_at_z+7p5&#x27;,(),#14,.T.);
+<span class="lineno">30</span>#31=ADVANCED_FACE(&#x27;void_bottom_at_z-7p5&#x27;,(),#14,.T.);
+<span class="lineno">31</span>#32=ADVANCED_FACE(&#x27;void_xpos&#x27;,(),#14,.T.);
+<span class="lineno">32</span>#33=ADVANCED_FACE(&#x27;void_xneg&#x27;,(),#14,.T.);
+<span class="lineno">33</span>#34=ADVANCED_FACE(&#x27;void_ypos&#x27;,(),#14,.T.);
+<span class="lineno">34</span>#35=ADVANCED_FACE(&#x27;void_yneg&#x27;,(),#14,.T.);
+<span class="lineno">35</span><mark>#101=CLOSED_SHELL(</mark>&#x27;void_pin_2x2x15&#x27;,(#30,#31,#32,#33,#34,#35));
+<span class="lineno">36</span>#102=<mark>ORIENTED_CLOSED_SHELL</mark>(&#x27;&#x27;,#101,.F.);
+<span class="lineno">37</span>/* Defect: the void shell extends beyond the outer shell along Z. */
+<span class="lineno">38</span>#200=<mark>BREP_WITH_VOIDS</mark>(&#x27;block_with_protruding_void&#x27;,#100,(#102));
+<span class="lineno">39</span>ENDSEC;
+<span class="lineno">40</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Tsh066.html">&larr; Tsh066</a> <a class="up" href="index.html">§12.3a Shells / orientation</a> <a class="next" href="Tsh068.html">Tsh068 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

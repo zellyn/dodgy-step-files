@@ -1,0 +1,48 @@
+ISO-10303-21;
+/* Xp010 - Cross-product: TOROIDAL_SURFACE with negative major_radius,
+ *   pcurve and 3D curve disagreeing for the same edge, sub-tolerance edge.
+ * Builds on Gs001 (negative torus radius) + Gp-disagree-class (pcurve vs
+ *   3D mismatch) + N010 (edge shorter than vertex tolerance). */
+HEADER;
+FILE_DESCRIPTION(('Xp010 cross-product','negative torus x pcurve disagreement x tiny edge'),'2;1');
+FILE_NAME('Xp010.stp','2026-04-26T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+/* Defect 1: negative major_radius */
+#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#11=DIRECTION('',(0.0,0.0,1.0));
+#12=DIRECTION('',(1.0,0.0,0.0));
+#13=AXIS2_PLACEMENT_3D('',#10,#11,#12);
+#14=TOROIDAL_SURFACE('',#13,-10.0,2.0);
+/* Defect 3: edge with 3D length < 1e-9 */
+#20=CARTESIAN_POINT('p1',(10.0,0.0,2.0));
+#21=CARTESIAN_POINT('p2',(10.0,1.0E-10,2.0));
+#22=VERTEX_POINT('',#20);
+#23=VERTEX_POINT('',#21);
+#24=DIRECTION('',(0.0,1.0,0.0));
+#25=VECTOR('',#24,1.0E-10);
+#26=LINE('',#20,#25);
+/* Defect 2: pcurve runs (u=0,v=0) -> (u=0.001,v=0.001) - NOT consistent
+ *   with the near-zero 3D extent. The DEFINITIONAL_REPRESENTATION captures
+ *   the inconsistent UV path. */
+#30=CARTESIAN_POINT('puv1',(0.0,0.0));
+#31=CARTESIAN_POINT('puv2',(0.001,0.001));
+#32=DIRECTION('',(0.7071,0.7071));
+#33=VECTOR('',#32,0.001414);
+#34=LINE('',#30,#33);
+#35=DEFINITIONAL_REPRESENTATION('',(#34),#100);
+#100=( GEOMETRIC_REPRESENTATION_CONTEXT(2)
+       PARAMETRIC_REPRESENTATION_CONTEXT()
+       REPRESENTATION_CONTEXT('','') );
+#40=PCURVE('',#14,#35);
+#50=SURFACE_CURVE('',#26,(#40),.PCURVE_S1.);
+#60=EDGE_CURVE('',#22,#23,#50,.T.);
+#61=ORIENTED_EDGE('',*,*,#60,.T.);
+#62=EDGE_LOOP('',(#61));
+#63=FACE_OUTER_BOUND('',#62,.T.);
+#64=ADVANCED_FACE('torus_face',(#63),#14,.T.);
+ENDSEC;
+END-ISO-10303-21;

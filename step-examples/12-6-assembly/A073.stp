@@ -1,0 +1,41 @@
+ISO-10303-21;
+/* A073 - Expand Compounds loses sub-shape locations.
+ * Defect: compound containing two MAPPED_ITEM instances of one solid
+ * at distinct AXIS2_PLACEMENT_3D positions. The expand-compounds pass
+ * flattens the compound and discards the per-instance locations. */
+HEADER;
+FILE_DESCRIPTION(('A073 test case','Expand Compounds loses sub-shape locations'),'2;1');
+FILE_NAME('A073.stp','2026-04-30T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+#10=PRODUCT_CONTEXT('',#1,'mechanical');
+#11=PRODUCT('part1','part1','part1',(#10));
+#12=PRODUCT_DEFINITION_FORMATION('','',#11);
+#13=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#14=PRODUCT_DEFINITION('','',#12,#13);
+#15=PRODUCT_DEFINITION_SHAPE('','',#14);
+/* The shared sub-shape with its own (identity) source axis */
+#20=CARTESIAN_POINT('shared_origin',(0.0,0.0,0.0));
+#21=DIRECTION('',(0.0,0.0,1.0));
+#22=DIRECTION('',(1.0,0.0,0.0));
+#23=AXIS2_PLACEMENT_3D('shared_axis',#20,#21,#22);
+#24=PLANE('shared_face_plane',#23);
+#25=ADVANCED_FACE('shared_face',(),#24,.T.);
+#26=SHAPE_REPRESENTATION('shared_rep',(#23,#25),#1);
+#27=REPRESENTATION_MAP(#23,#26);
+/* Two distinct instance placements */
+#30=CARTESIAN_POINT('p_a',(10.0,0.0,0.0));
+#31=AXIS2_PLACEMENT_3D('inst_a_loc',#30,#21,#22);
+#32=CARTESIAN_POINT('p_b',(20.0,0.0,0.0));
+#33=AXIS2_PLACEMENT_3D('inst_b_loc',#32,#21,#22);
+/* Two MAPPED_ITEMs of the same source at the two locations */
+#40=MAPPED_ITEM('inst_a',#27,#31);
+#41=MAPPED_ITEM('inst_b',#27,#33);
+/* Compound shape representation containing both mapped items */
+#50=SHAPE_REPRESENTATION('compound',(#40,#41),#1);
+#51=SHAPE_DEFINITION_REPRESENTATION(#15,#50);
+ENDSEC;
+END-ISO-10303-21;

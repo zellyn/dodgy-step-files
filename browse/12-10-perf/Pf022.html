@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Pf022 — Non-deterministic empty-export from in-memory state leakage</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.10 Scale &amp; performance</a> <span class="sep">/</span> <span class="current">Pf022</span>
+</nav>
+<header class="title-bar">
+<h1>Pf022 <span class="sep">—</span> <span class="entry-title">Non-deterministic empty-export from in-memory state leakage</span></h1>
+<p class="category">§12.10 (sub-class: non-deterministic)</p>
+<p class="tag-pills">
+<a class="tag tag-round-trip" href="../by-tag/round-trip/index.html">round-trip</a>
+<a class="tag tag-performance" href="../by-tag/performance/index.html">performance</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-10-perf/Pf022.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-10-perf/Pf022.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>22-niche-forums.md Y020 (gmsh #3332)</li>
+<li>13-quaoar.md B011</li>
+</ul></section>
+<section><h2>Sender</h2>
+<p>gmsh writing STEP from a once-populated, now-cleared model; OCCT Draw `stepread` followed by `stepwrite`</p></section>
+<section><h2>Description</h2>
+<p>After import-then-partial-clear, the writer emits &quot;No suitable CAD data found&quot; non-deterministically — depends on past actions, not on whether the document currently contains shapes. In OCCT Draw, a `stepread` populates a transient model that the next `stepwrite` re-uses, doubling the output and producing a file twice the expected size.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>import STEP, `gmsh.model.remove()` some entities, then `gmsh.write(&quot;out.step&quot;)`; or `stepread file.stp sh *` followed by `stepwrite a sh_1 file.stp`.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>Heal and accept: writer state must be a pure function of input; normalize global state per call.</p></section>
+<section><h2>Notes</h2>
+<p>**See also**: U014.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=shape(1)/shape(1) gmsh=shape(3) ifc=schema_n/a</code></p></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>load == &quot;ok&quot;</code></li>
+<li><code>n_edges_total &gt;= 1</code></li>
+<li><code>n_vertices_total &gt;= 2</code></li>
+<li><code>brepcheck.valid == True</code></li>
+</ul></section>
+<section><h2>Cross-references</h2>
+<p><a href="../12-5-units/U014.html">U014</a></p>
+</section>
+<section><h2>Live oracle output</h2>
+<table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
+<tr><td><code>occt_heal_on</code></td><td><code>shape(1)</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>shape(1)</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>shape(3)</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>shape(3)</code></td></tr>
+<tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>warn(W_COMPLEX_ORDER)</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>empty_mesh</code></td></tr>
+</tbody></table>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>/* Pf022 - Non-deterministic empty-export from in-memory state leakage
+<span class="lineno">2</span>   (gmsh #3332; quaoar B011).
+<span class="lineno">3</span>   Pattern A (gmsh): import a STEP, gmsh.model.remove() some entities,
+<span class="lineno">4</span>   then gmsh.write(&quot;out.step&quot;) - writer emits &quot;No suitable CAD data
+<span class="lineno">5</span>   found&quot; non-deterministically depending on past actions, not on
+<span class="lineno">6</span>   current document content.
+<span class="lineno">7</span>   Pattern B (OCCT Draw): `stepread file.stp sh *` populates a transient
+<span class="lineno">8</span>   model that the next `stepwrite` re-uses, doubling the output and
+<span class="lineno">9</span>   producing a file twice the expected size.
+<span class="lineno">10</span>   The fixture is a benign valid STEP that drives the round-trip. We
+<span class="lineno">11</span>   include several distinct shapes so that selective `gmsh.model.remove`
+<span class="lineno">12</span>   calls leave varying mixes of populated / cleared state across runs.
+<span class="lineno">13</span>   Scaling-up: run import-then-clear cycle in a loop and observe that
+<span class="lineno">14</span>   the writer&#x27;s output depends on prior calls, not on current state. */
+<span class="lineno">15</span>ISO-10303-21;
+<span class="lineno">16</span>HEADER;
+<span class="lineno">17</span>FILE_DESCRIPTION((&#x27;Pf022 - non-deterministic empty-export round-trip target&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">18</span>FILE_NAME(&#x27;Pf022.stp&#x27;,&#x27;2026-04-26T00:00:00&#x27;,(&#x27;auto-generated&#x27;),(&#x27;&#x27;),
+<span class="lineno">19</span>  &#x27;auto-generated&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">20</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
+<span class="lineno">21</span>ENDSEC;
+<span class="lineno">22</span>DATA;
+<span class="lineno">23</span>#1=APPLICATION_CONTEXT(&#x27;automotive_design&#x27;);
+<span class="lineno">24</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,
+<span class="lineno">25</span>  &#x27;automotive_design&#x27;,2001,#1);
+<span class="lineno">26</span>#3=PRODUCT_CONTEXT(&#x27;&#x27;,#1,&#x27;mechanical&#x27;);
+<span class="lineno">27</span>#4=PRODUCT(&#x27;ROUNDTRIP&#x27;,&#x27;&#x27;,&#x27;&#x27;,(#3));
+<span class="lineno">28</span>#5=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#4);
+<span class="lineno">29</span>#6=PRODUCT_DEFINITION_CONTEXT(&#x27;&#x27;,#1,&#x27;design&#x27;);
+<span class="lineno">30</span>#7=PRODUCT_DEFINITION(&#x27;design&#x27;,&#x27;&#x27;,#5,#6);
+<span class="lineno">31</span>#8=( NAMED_UNIT(*) SI_UNIT(.MILLI.,.METRE.) LENGTH_UNIT() );
+<span class="lineno">32</span>#9=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-6),#8,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">33</span>#10=( GEOMETRIC_REPRESENTATION_CONTEXT(3) GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT
+<span class="lineno">34</span>  ((#9)) GLOBAL_UNIT_ASSIGNED_CONTEXT((#8)) REPRESENTATION_CONTEXT(&#x27;&#x27;,&#x27;3D&#x27;) );
+<span class="lineno">35</span>/* placements for several distinct shapes - each becomes a &quot;removable&quot;
+<span class="lineno">36</span>   entity in a gmsh.model context, so partial-clear scenarios produce
+<span class="lineno">37</span>   varying writer output. */
+<span class="lineno">38</span>#20=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">39</span>#21=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">40</span>#22=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">41</span>#23=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#20,#21,#22);
+<span class="lineno">42</span>#24=CARTESIAN_POINT(&#x27;&#x27;,(10.0,0.0,0.0));
+<span class="lineno">43</span>#25=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#24,#21,#22);
+<span class="lineno">44</span>#26=CARTESIAN_POINT(&#x27;&#x27;,(20.0,0.0,0.0));
+<span class="lineno">45</span>#27=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#26,#21,#22);
+<span class="lineno">46</span>#28=CARTESIAN_POINT(&#x27;&#x27;,(30.0,0.0,0.0));
+<span class="lineno">47</span>#29=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#28,#21,#22);
+<span class="lineno">48</span>/* shape representations, each a candidate for selective clear */
+<span class="lineno">49</span>#30=SHAPE_REPRESENTATION(&#x27;shape-1&#x27;,(#23),#10);
+<span class="lineno">50</span>#31=SHAPE_REPRESENTATION(&#x27;shape-2&#x27;,(#25),#10);
+<span class="lineno">51</span>#32=SHAPE_REPRESENTATION(&#x27;shape-3&#x27;,(#27),#10);
+<span class="lineno">52</span>#33=SHAPE_REPRESENTATION(&#x27;shape-4&#x27;,(#29),#10);
+<span class="lineno">53</span>/* wire to populate one rep with data so .clear() vs .remove() differ */
+<span class="lineno">54</span>#40=POLYLINE(&#x27;&#x27;,(#20,#24));
+<span class="lineno">55</span>#41=GEOMETRIC_CURVE_SET(&#x27;curves&#x27;,(#40));
+<span class="lineno">56</span>#42=SHAPE_REPRESENTATION(&#x27;curves-rep&#x27;,(#41),#10);
+<span class="lineno">57</span>/* product-definition-shape and shape-definition-representation links
+<span class="lineno">58</span>   exercise OCCT Draw&#x27;s stepread session-state retention. */
+<span class="lineno">59</span>#50=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,#7);
+<span class="lineno">60</span>#51=SHAPE_DEFINITION_REPRESENTATION(#50,#30);
+<span class="lineno">61</span>#52=SHAPE_DEFINITION_REPRESENTATION(#50,#31);
+<span class="lineno">62</span>#53=SHAPE_DEFINITION_REPRESENTATION(#50,#32);
+<span class="lineno">63</span>#54=SHAPE_DEFINITION_REPRESENTATION(#50,#33);
+<span class="lineno">64</span>#55=SHAPE_DEFINITION_REPRESENTATION(#50,#42);
+<span class="lineno">65</span>ENDSEC;
+<span class="lineno">66</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Pf021.html">&larr; Pf021</a> <a class="up" href="index.html">§12.10 Scale &amp; performance</a> <a class="next" href="Pf023.html">Pf023 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

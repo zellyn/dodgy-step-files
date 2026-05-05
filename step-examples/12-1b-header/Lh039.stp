@@ -1,0 +1,30 @@
+ISO-10303-21;
+/* Lh039 - DATA section names colliding across sections with shared
+ * #NNN re-use plus a reference that does not specify the section
+ * Defect: ISO 10303-21 Edition 3 multi-DATA-section files may reuse
+ * #NNN in different sections; intra-section references default to
+ * the local section. A producer may emit a bare #NNN inside one
+ * section that should be resolved against another section (intent
+ * unclear), or copy/paste a reference from a different section
+ * forgetting the @name prefix. The receiver resolves to the wrong
+ * instance silently. */
+HEADER;
+FILE_DESCRIPTION(('Lh039 - multi-DATA section #NNN reuse with ambiguous local ref'),'2;1');
+FILE_NAME('Lh039.stp','2026-04-26T00:00:00',(''),(''),
+  'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA('geom');
+#1=CARTESIAN_POINT('geom-origin',(0.0,0.0,0.0));
+#2=DIRECTION('z',(0.0,0.0,1.0));
+ENDSEC;
+DATA('pmi');
+/* #1 here refers to the local 'pmi' section but the producer may
+ * have intended @geom#1 - kernel cannot tell. */
+#1=CARTESIAN_POINT('pmi-origin',(5.0,5.0,5.0));
+#2=DIRECTION('z2',(0.0,1.0,0.0));
+/* Local placement - which #1 wins? Same-section local wins per
+ * spec; the cross-reference must be explicit @geom#1. */
+#10=AXIS2_PLACEMENT_3D('placement',#1,#2,@geom#2);
+ENDSEC;
+END-ISO-10303-21;

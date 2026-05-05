@@ -1,0 +1,38 @@
+ISO-10303-21;
+/* Xp029 - Cross-product: Onshape STEP export drops cosmetic threads -
+ *   tapped holes appear as smooth cylinders downstream.
+ * Source: forum.onshape.com discussion 3489 "Export to STEP or SLDPRT,
+ *   thread/hole characteristics wrong"; discussion 6463 "STL export -
+ *   tapped hole threads not showing up in 3d print slicer".
+ * Defect: a HOLE has a SHAPE_ASPECT named "M3x0.5_thread" with no
+ *   helical THREADED_FASTENER_CONNECTOR or paramterised geometry.
+ *   Receivers see only the tap-drill diameter cylinder; the M3x0.5
+ *   metadata (pitch, depth, fit class) is encoded as a comment-only
+ *   PROPERTY_DEFINITION with no semantic binding.  STEP AP242 has
+ *   thread_specification but Onshape's writer doesn't emit it. */
+HEADER;
+FILE_DESCRIPTION(('Xp029 cross-product','Onshape thread metadata dropped'),'2;1');
+FILE_NAME('Xp029.stp','2026-05-02T00:00:00',(''),(''),'Onshape;writer','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#11=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#12=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#10,'tol','');
+#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13))GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12))REPRESENTATION_CONTEXT('','3D'));
+/* Hole geometry: tap-drill cylinder of M3x0.5 (drill = 2.5 mm). */
+#20=CARTESIAN_POINT('hole_axis',(0.0,0.0,0.0));
+#21=DIRECTION('z',(0.0,0.0,1.0));
+#22=DIRECTION('x',(1.0,0.0,0.0));
+#23=AXIS2_PLACEMENT_3D('',#20,#21,#22);
+#24=CYLINDRICAL_SURFACE('tap_drill_dia_2p5_should_be_M3x0p5',#23,1.25);
+#25=ADVANCED_FACE('hole_inner_face',(),#24,.T.);
+/* SHAPE_ASPECT named for thread but no thread spec attached */
+#30=PRODUCT_DEFINITION_SHAPE('','',$);
+#31=SHAPE_ASPECT('M3x0p5_thread','cosmetic-only',#30,.T.);
+/* Property-only annotation - receiver sees a string, not parametric thread */
+#32=PROPERTY_DEFINITION('thread_label','M3x0.5 - 6H - 8 mm depth (text only)',#31);
+ENDSEC;
+END-ISO-10303-21;

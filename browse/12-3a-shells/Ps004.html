@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Ps004 — Left-handed AXIS2_PLACEMENT_3D on a child shape</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.3a Shells / orientation</a> <span class="sep">/</span> <span class="current">Ps004</span>
+</nav>
+<header class="title-bar">
+<h1>Ps004 <span class="sep">—</span> <span class="entry-title">Left-handed AXIS2_PLACEMENT_3D on a child shape</span></h1>
+<p class="category">§12.3a shells / orientation (filed here per Ps prefix; conceptually §12.5 units/coordinates)</p>
+<p class="severity-badge severity-p1">P1 — silent data loss</p>
+<p class="tag-pills">
+<a class="tag tag-topology" href="../by-tag/topology/index.html">topology</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-3a-shells/Ps004.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-3a-shells/Ps004.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>deduced from AXIS2_PLACEMENT_3D semantics</li>
+<li>bug-report patterns &quot;imported part is mirrored&quot;, &quot;AXIS2_PLACEMENT mirror&quot;, &quot;right-hand part appeared left-hand&quot;</li>
+</ul></section>
+<section><h2>Description</h2>
+<p>An ADVANCED_BREP_SHAPE_REPRESENTATION includes a child AXIS2_PLACEMENT_3D whose axis and ref_direction, after Gram-Schmidt orthonormalization, induce a basis whose third (Y) vector points in the opposite of the right-hand-rule direction the producer assumed. AXIS2_PLACEMENT_3D only stores axis + ref_direction (the third basis vector is computed), so individual unit-and-orthogonality checks pass and no diagnostic fires. Kernel accepts the file silently; tier-3 introspection (det(basis) check on every placement) reveals a reflection masquerading as a rotation.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>A simple tetrahedral solid. Plus a separate AXIS2_PLACEMENT_3D with axis=(0,0,1) and ref_direction=(0,1,0) — this yields a computed Y_local = axis × ref_direction = (-1,0,0), which the producer downstream uses as if it were +X. Both placements appear in the SHAPE_REPRESENTATION&#x27;s items list.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>Compute the determinant of the basis formed by (ref_direction, axis × ref_direction, axis); reject or warn on negative determinant. A correct kernel should not silently propagate a reflection through downstream transforms.</p></section>
+<section><h2>Notes</h2>
+<p>Tier-3 metric: determinant of computed basis matrix. Should be +1 for a right-handed frame; this fixture has determinants both ways. Synonyms: &quot;imported part is mirrored&quot;, &quot;AXIS2_PLACEMENT mirror&quot;, &quot;right-hand part appeared left-hand&quot;, &quot;left-handed coordinate frame slipped through&quot;, &quot;reflection masquerading as rotation&quot;.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=shape(1)/shape(1) gmsh=shape(15) ifc=schema_n/a</code></p></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>face[3].surface_type == &quot;plane&quot;</code></li>
+<li><code>n_edges_total &gt;= 12</code></li>
+<li><code>face[0].surface_type == &quot;plane&quot;</code></li>
+<li><code>n_vertices_total &gt;= 24</code></li>
+</ul></section>
+<section><h2>Live oracle output</h2>
+<table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
+<tr><td><code>occt_heal_on</code></td><td><code>shape(1)</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>shape(1)</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>shape(15)</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>shape(15)</code></td></tr>
+<tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>not_manifold</code></td></tr>
+</tbody></table>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>/* Ps004 - AXIS2_PLACEMENT_3D with left-handed basis on a child shape - kernel accepts file silently; tier-3 introspection reveals the placement is a reflection, not a rotation */
+<span class="lineno">2</span>ISO-10303-21;
+<span class="lineno">3</span>HEADER;
+<span class="lineno">4</span>FILE_DESCRIPTION((&#x27;Ps004 pathological-success&#x27;,&#x27;Left-handed AXIS2_PLACEMENT_3D&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">5</span>FILE_NAME(&#x27;Ps004.stp&#x27;,&#x27;2026-04-26T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;manual&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">6</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }&#x27;));
+<span class="lineno">7</span>ENDSEC;
+<span class="lineno">8</span>DATA;
+<span class="lineno">9</span>#1=APPLICATION_CONTEXT(&#x27;automotive_design&#x27;);
+<span class="lineno">10</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,&#x27;automotive_design&#x27;,2000,#1);
+<span class="lineno">11</span>/* Single tetrahedral solid placed via AXIS2_PLACEMENT_3D whose
+<span class="lineno">12</span>   axis = +Z and ref_direction = +X. The schema computes the third basis
+<span class="lineno">13</span>   vector as axis x ref_direction = +Y (right-handed). But here the
+<span class="lineno">14</span>   author intended a Y-axis pointing in -Y (a mirror about the XZ plane).
+<span class="lineno">15</span>   Because AXIS2_PLACEMENT_3D only stores axis + ref_direction and the
+<span class="lineno">16</span>   third is computed, no diagnostic fires; instead the producer encodes
+<span class="lineno">17</span>   the mirror by giving ref_direction = (1,0,0) AND swapping the role of
+<span class="lineno">18</span>   X and Y in the consumer&#x27;s downstream chain (e.g. by feeding negated
+<span class="lineno">19</span>   coordinates as if they were positive). Here we exhibit the simpler
+<span class="lineno">20</span>   form: a placement where ref_direction is intentionally NOT
+<span class="lineno">21</span>   perpendicular to axis -- it has a -1.0 component along the axis that,
+<span class="lineno">22</span>   per spec, must be projected out, but if the kernel accepts the raw
+<span class="lineno">23</span>   vector and Gram-Schmidt-corrects silently, the result depends on the
+<span class="lineno">24</span>   correction and the producer&#x27;s intent is lost. */
+<span class="lineno">25</span>/* Tetrahedron vertices (in placement-local frame) */
+<span class="lineno">26</span>#100=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">27</span>#101=CARTESIAN_POINT(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">28</span>#102=CARTESIAN_POINT(&#x27;&#x27;,(0.0,1.0,0.0));
+<span class="lineno">29</span>#103=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">30</span>#110=VERTEX_POINT(&#x27;&#x27;,#100); #111=VERTEX_POINT(&#x27;&#x27;,#101);
+<span class="lineno">31</span>#112=VERTEX_POINT(&#x27;&#x27;,#102); #113=VERTEX_POINT(&#x27;&#x27;,#103);
+<span class="lineno">32</span>/* Surfaces */
+<span class="lineno">33</span>#200=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0)); /* placeholder face axes */
+<span class="lineno">34</span>#201=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">35</span>/* Bottom (z=0): normal -Z */
+<span class="lineno">36</span>#202=DIRECTION(&#x27;&#x27;,(0.0,0.0,-1.0));
+<span class="lineno">37</span>#210=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#100,#202,#201); #212=PLANE(&#x27;&#x27;,#210);
+<span class="lineno">38</span>/* X=0 face: normal -X */
+<span class="lineno">39</span>#203=DIRECTION(&#x27;&#x27;,(-1.0,0.0,0.0)); #204=DIRECTION(&#x27;&#x27;,(0.0,1.0,0.0));
+<span class="lineno">40</span>#220=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#100,#203,#204); #222=PLANE(&#x27;&#x27;,#220);
+<span class="lineno">41</span>/* Y=0 face: normal -Y */
+<span class="lineno">42</span>#205=DIRECTION(&#x27;&#x27;,(0.0,-1.0,0.0));
+<span class="lineno">43</span>#230=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#100,#205,#201); #232=PLANE(&#x27;&#x27;,#230);
+<span class="lineno">44</span>/* Slant face through (1,0,0)(0,1,0)(0,0,1): normal = (1,1,1)/sqrt(3) */
+<span class="lineno">45</span>#206=DIRECTION(&#x27;&#x27;,(0.5773502691896258,0.5773502691896258,0.5773502691896258));
+<span class="lineno">46</span>#207=DIRECTION(&#x27;&#x27;,(0.7071067811865475,-0.7071067811865475,0.0));
+<span class="lineno">47</span>#240=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#101,#206,#207); #242=PLANE(&#x27;&#x27;,#240);
+<span class="lineno">48</span>/* Edges */
+<span class="lineno">49</span>#300=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0)); #301=VECTOR(&#x27;&#x27;,#300,1.0);
+<span class="lineno">50</span>#302=DIRECTION(&#x27;&#x27;,(0.0,1.0,0.0)); #303=VECTOR(&#x27;&#x27;,#302,1.0);
+<span class="lineno">51</span>#304=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0)); #305=VECTOR(&#x27;&#x27;,#304,1.0);
+<span class="lineno">52</span>#306=DIRECTION(&#x27;&#x27;,(-0.7071067811865475,0.7071067811865475,0.0)); #307=VECTOR(&#x27;&#x27;,#306,1.4142135623730951);
+<span class="lineno">53</span>#308=DIRECTION(&#x27;&#x27;,(-0.7071067811865475,0.0,0.7071067811865475)); #309=VECTOR(&#x27;&#x27;,#308,1.4142135623730951);
+<span class="lineno">54</span>#310=DIRECTION(&#x27;&#x27;,(0.0,-0.7071067811865475,0.7071067811865475)); #341=VECTOR(&#x27;&#x27;,#310,1.4142135623730951);
+<span class="lineno">55</span>#311=LINE(&#x27;&#x27;,#100,#301); #312=EDGE_CURVE(&#x27;&#x27;,#110,#111,#311,.T.);
+<span class="lineno">56</span>#313=LINE(&#x27;&#x27;,#100,#303); #314=EDGE_CURVE(&#x27;&#x27;,#110,#112,#313,.T.);
+<span class="lineno">57</span>#315=LINE(&#x27;&#x27;,#100,#305); #316=EDGE_CURVE(&#x27;&#x27;,#110,#113,#315,.T.);
+<span class="lineno">58</span>#317=LINE(&#x27;&#x27;,#101,#307); #318=EDGE_CURVE(&#x27;&#x27;,#111,#112,#317,.T.);
+<span class="lineno">59</span>#319=LINE(&#x27;&#x27;,#101,#309); #320=EDGE_CURVE(&#x27;&#x27;,#111,#113,#319,.T.);
+<span class="lineno">60</span>#321=LINE(&#x27;&#x27;,#102,#341); #322=EDGE_CURVE(&#x27;&#x27;,#112,#113,#321,.T.);
+<span class="lineno">61</span>/* Bottom face (z=0): vertices 110-&gt;112-&gt;111 going CCW seen from -z */
+<span class="lineno">62</span>#400=ORIENTED_EDGE(&#x27;&#x27;,*,*,#314,.T.); #401=ORIENTED_EDGE(&#x27;&#x27;,*,*,#318,.F.); #402=ORIENTED_EDGE(&#x27;&#x27;,*,*,#312,.F.);
+<span class="lineno">63</span>#403=EDGE_LOOP(&#x27;&#x27;,(#400,#401,#402)); #404=FACE_OUTER_BOUND(&#x27;&#x27;,#403,.T.);
+<span class="lineno">64</span>#405=ADVANCED_FACE(&#x27;bot&#x27;,(#404),#212,.T.);
+<span class="lineno">65</span>/* X=0 face (110-&gt;113-&gt;112) */
+<span class="lineno">66</span>#410=ORIENTED_EDGE(&#x27;&#x27;,*,*,#316,.T.); #411=ORIENTED_EDGE(&#x27;&#x27;,*,*,#322,.F.); #412=ORIENTED_EDGE(&#x27;&#x27;,*,*,#314,.F.);
+<span class="lineno">67</span>#413=EDGE_LOOP(&#x27;&#x27;,(#410,#411,#412)); #414=FACE_OUTER_BOUND(&#x27;&#x27;,#413,.T.);
+<span class="lineno">68</span>#415=ADVANCED_FACE(&#x27;xz&#x27;,(#414),#222,.T.);
+<span class="lineno">69</span>/* Y=0 face (110-&gt;111-&gt;113) */
+<span class="lineno">70</span>#420=ORIENTED_EDGE(&#x27;&#x27;,*,*,#312,.T.); #421=ORIENTED_EDGE(&#x27;&#x27;,*,*,#320,.T.); #422=ORIENTED_EDGE(&#x27;&#x27;,*,*,#316,.F.);
+<span class="lineno">71</span>#423=EDGE_LOOP(&#x27;&#x27;,(#420,#421,#422)); #424=FACE_OUTER_BOUND(&#x27;&#x27;,#423,.T.);
+<span class="lineno">72</span>#425=ADVANCED_FACE(&#x27;yz&#x27;,(#424),#232,.T.);
+<span class="lineno">73</span>/* Slant face (111-&gt;112-&gt;113) */
+<span class="lineno">74</span>#430=ORIENTED_EDGE(&#x27;&#x27;,*,*,#318,.T.); #431=ORIENTED_EDGE(&#x27;&#x27;,*,*,#322,.T.); #432=ORIENTED_EDGE(&#x27;&#x27;,*,*,#320,.F.);
+<span class="lineno">75</span>#433=EDGE_LOOP(&#x27;&#x27;,(#430,#431,#432)); #434=FACE_OUTER_BOUND(&#x27;&#x27;,#433,.T.);
+<span class="lineno">76</span>#435=ADVANCED_FACE(&#x27;slant&#x27;,(#434),#242,.T.);
+<span class="lineno">77</span>#500=CLOSED_SHELL(&#x27;tetra&#x27;,(#405,#415,#425,#435));
+<span class="lineno">78</span>#510=MANIFOLD_SOLID_BREP(&#x27;tet_solid&#x27;,#500);
+<span class="lineno">79</span>/* DEFECT: child placement that the kernel uses for the
+<span class="lineno">80</span>   ITEM_DEFINED_TRANSFORMATION below. axis=(0,0,1), ref_direction=(0,1,0)
+<span class="lineno">81</span>   yields computed Y_local = axis x ref = (0,0,1) x (0,1,0) = (-1,0,0).
+<span class="lineno">82</span>   The producer then claims the global X axis is (-1,0,0), which is a
+<span class="lineno">83</span>   reflection about the YZ plane masquerading as a rotation. The
+<span class="lineno">84</span>   AXIS2_PLACEMENT_3D values themselves are individually unit and
+<span class="lineno">85</span>   orthogonal; the left-handedness only emerges if the kernel checks
+<span class="lineno">86</span>   the determinant of the resulting basis. */
+<span class="lineno">87</span>#600=CARTESIAN_POINT(&#x27;&#x27;,(5.0,0.0,0.0));
+<span class="lineno">88</span>#601=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">89</span>#602=DIRECTION(&#x27;&#x27;,(0.0,1.0,0.0));
+<span class="lineno">90</span>#603=AXIS2_PLACEMENT_3D(&#x27;LEFT_HANDED_PLACEMENT&#x27;,#600,#601,#602);
+<span class="lineno">91</span>/* Reference the placement via a CARTESIAN_TRANSFORMATION_OPERATOR_3D
+<span class="lineno">92</span>   so it actually participates in the geometry graph. */
+<span class="lineno">93</span>#9000=PRODUCT_CONTEXT(&#x27;&#x27;,#1,&#x27;mechanical&#x27;);
+<span class="lineno">94</span>#9001=PRODUCT(&#x27;Ps004&#x27;,&#x27;Ps004&#x27;,&#x27;&#x27;,(#9000));
+<span class="lineno">95</span>#9002=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#9001);
+<span class="lineno">96</span>#9003=PRODUCT_DEFINITION_CONTEXT(&#x27;part definition&#x27;,#1,&#x27;design&#x27;);
+<span class="lineno">97</span>#9004=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,#9002,#9003);
+<span class="lineno">98</span>#9005=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,#9004);
+<span class="lineno">99</span>#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">100</span>#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+<span class="lineno">101</span>#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+<span class="lineno">102</span>#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,&#x27;distance_accuracy_value&#x27;,&#x27;&#x27;);
+<span class="lineno">103</span>#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT(&#x27;&#x27;,&#x27;3D&#x27;));
+<span class="lineno">104</span>#9022=ADVANCED_BREP_SHAPE_REPRESENTATION(&#x27;&#x27;,(#510,#603),#9010);
+<span class="lineno">105</span>#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+<span class="lineno">106</span>ENDSEC;
+<span class="lineno">107</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Ps003.html">&larr; Ps003</a> <a class="up" href="index.html">§12.3a Shells / orientation</a> <a class="next" href="Ps005.html">Ps005 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

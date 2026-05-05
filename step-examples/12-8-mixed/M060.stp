@@ -1,0 +1,16 @@
+ISO-10303-21;
+/* M060 - External reference points back at the same file.
+ * Defect: a DOCUMENT_FILE whose filename argument equals the main
+ * file's own filename - reader recurses into itself. */
+HEADER;
+FILE_DESCRIPTION(('M060 test case','Self-referential external reference'),'2;1');
+FILE_NAME('M060.stp','2026-04-30T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+/* Self-referential external link - DOCUMENT_FILE id matches this file's name */
+#10=DOCUMENT_FILE('M060','self-reference','M060.stp');
+ENDSEC;
+END-ISO-10303-21;

@@ -1,0 +1,33 @@
+ISO-10303-21;
+/* Xp007 - Cross-product: cyclic complex-entity reference + deeply-nested
+ *   parenthesized aggregate.
+ * Builds on Ad-cyclic-class + Ad-deeply-nested-class.
+ * Defect 1: SHAPE_REPRESENTATION_RELATIONSHIP self-references (#100 references
+ *   #100 in both rep_1 and rep_2 slots).
+ * Defect 2: a parameter aggregate carries 50 levels of nested
+ *   parentheses — emitted as an actual nested STEP aggregate
+ *   parameter (not wrapped in a string). */
+HEADER;
+FILE_DESCRIPTION(('Xp007 cross-product','cyclic ref x deeply-nested aggregate'),'2;1');
+FILE_NAME('Xp007.stp','2026-04-26T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#11=DIRECTION('',(0.0,0.0,1.0));
+#12=DIRECTION('',(1.0,0.0,0.0));
+#13=AXIS2_PLACEMENT_3D('',#10,#11,#12);
+/* Defect 1: cyclic reference - SHAPE_REPRESENTATION_RELATIONSHIP cites
+ *   itself on both sides */
+#100=SHAPE_REPRESENTATION_RELATIONSHIP('cycle','',#100,#100);
+/* Defect 2: actual nested STEP aggregate parameter (not a string).
+ *   Most parsers reject this as malformed because EXPRESS aggregates
+ *   are flat lists of one element type, not nested parentheses.
+ *   The nesting depth is 50.  The CARTESIAN_POINT's coords slot
+ *   normally takes a list of REALs.  We deliberately overload it
+ *   with a nested-list-of-list-of-...-list-of-real. */
+#200=CARTESIAN_POINT('nested_aggregate',((((((((((((((((((((((((((((((((((((((((((((((((((1.0)))))))))))))))))))))))))))))))))))))))))))))))))));
+ENDSEC;
+END-ISO-10303-21;

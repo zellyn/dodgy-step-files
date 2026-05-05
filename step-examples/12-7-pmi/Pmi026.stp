@@ -1,0 +1,51 @@
+/* Pmi026 - Datum letters not unique within product
+   Defect: Two DATUM entities both carry identification='A' inside the
+   same product_definition_shape. Semantically a single product must
+   not have two datums labelled 'A'; receivers should reject as
+   semantically invalid. */
+ISO-10303-21;
+HEADER;
+FILE_DESCRIPTION(('Pmi026 - datum letter A duplicated in one product'),'2;1');
+FILE_NAME('Pmi026.stp','2026-04-26T00:00:00',('catalog'),('cad'),
+  'manual','','');
+FILE_SCHEMA(('AP242_MANAGED_MODEL_BASED_3D_ENGINEERING_MIM_LF { 1 0 10303 442 1 1 4 }'));
+ENDSEC;
+DATA;
+#10 = APPLICATION_CONTEXT('managed model based 3d engineering');
+#11 = APPLICATION_PROTOCOL_DEFINITION('international standard',
+  'ap242_managed_model_based_3d_engineering',2020,#10);
+#12 = PRODUCT_CONTEXT('',#10,'mechanical');
+#13 = PRODUCT('Pmi026','DupDatumLetterPart','',(#12));
+#14 = PRODUCT_DEFINITION_FORMATION('','',#13);
+#15 = PRODUCT_DEFINITION_CONTEXT('',#10,'design');
+#16 = PRODUCT_DEFINITION('','',#14,#15);
+#17 = PRODUCT_DEFINITION_SHAPE('','',#16);
+#20 = ( LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT(.MILLI.,.METRE.) );
+#22 = ( NAMED_UNIT(*) PLANE_ANGLE_UNIT() SI_UNIT($,.RADIAN.) );
+#23 = ( NAMED_UNIT(*) SI_UNIT($,.STERADIAN.) SOLID_ANGLE_UNIT() );
+#24 = UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#20,
+  'distance_accuracy_value','');
+#25 = ( GEOMETRIC_REPRESENTATION_CONTEXT(3)
+  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#24))
+  GLOBAL_UNIT_ASSIGNED_CONTEXT((#20,#22,#23))
+  REPRESENTATION_CONTEXT('','3D') );
+#30 = CARTESIAN_POINT('',(0.0,0.0,0.0));
+#31 = DIRECTION('',(0.0,0.0,1.0));
+#32 = DIRECTION('',(1.0,0.0,0.0));
+#33 = AXIS2_PLACEMENT_3D('',#30,#31,#32);
+/* Defect: two datums in the SAME product_definition_shape with
+   identification 'A'. */
+#40 = DATUM('A','first A datum',#17,.T.,'A');
+#41 = DATUM('A','second A datum (same letter!)',#17,.T.,'A');
+#42 = DATUM('B','',#17,.T.,'B');
+#50 = DATUM_REFERENCE_COMPARTMENT('',$,#51);
+#51 = DATUM_REFERENCE_ELEMENT('',$,#40);
+#52 = DATUM_SYSTEM('A','',#17,.T.,(#50));
+#60 = SHAPE_ASPECT('feature','',#17,.T.);
+#61 = LENGTH_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.05),#20);
+#62 = POSITION_TOLERANCE('pos',$,#61,#60,#52);
+#70 = DRAUGHTING_MODEL('Default',(),#25);
+#80 = SHAPE_REPRESENTATION('',(#33),#25);
+#81 = SHAPE_DEFINITION_REPRESENTATION(#17,#80);
+ENDSEC;
+END-ISO-10303-21;

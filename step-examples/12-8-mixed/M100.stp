@@ -1,0 +1,24 @@
+ISO-10303-21;
+/* M100 - AP238 spindle-on issued after first tool-workpiece contact.
+ * Defect: WORKPLAN's first operation is a DRILLING_OPERATION (tool
+ * descends into workpiece) followed by a SPINDLE_SPEED setting. The
+ * first contact occurs with the spindle stopped; tool snaps. */
+HEADER;
+FILE_DESCRIPTION(('M100 test case','AP238 cut starts before spindle on'),'2;1');
+FILE_NAME('M100.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AP238_STEP_NC_MIM { 1 0 10303 238 1 0 0 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('numerical_control_machining');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
+  'numerical_control_machining',2007,#1);
+#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10))
+     REPRESENTATION_CONTEXT('nc','3D'));
+/* Defect: drilling first, then spindle command. */
+#100=DRILLING_OPERATION('drill_a',$,$,$,$,$);
+#101=MACHINING_OPERATION('start_spindle',$,$,$,$,$);
+#200=WORKPLAN('main',(#100,#101),$,$,$);
+ENDSEC;
+END-ISO-10303-21;

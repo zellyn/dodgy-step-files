@@ -1,0 +1,27 @@
+/* Le058 - Final record before ENDSEC; lacks trailing newline at EOF
+ * Defect: the file's byte stream ends with the last DATA-section
+ * record glued directly to ENDSEC; and END-ISO-10303-21; with no
+ * intervening newlines and no trailing newline at EOF. ISO 10303-21
+ * 6.2 records are terminated by `;` alone, and the spec is silent
+ * on whether trailing newlines are required, so this is technically
+ * conformant. But POSIX line-buffered tokenisers drop the last line
+ * if it lacks a `\n` - the final record (or the END-ISO-10303-21;
+ * terminator) is silently lost. */
+ISO-10303-21;
+HEADER;
+FILE_DESCRIPTION(('Le058 - last record glued to ENDSEC and no trailing newline at EOF'),'2;1');
+FILE_NAME('Le058.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#11=CARTESIAN_POINT('',(1.0,0.0,0.0));
+#12=VERTEX_POINT('',#10);
+#13=VERTEX_POINT('',#11);
+#14=DIRECTION('',(1.0,0.0,0.0));
+#15=VECTOR('',#14,1.0);
+#16=LINE('',#10,#15);
+#17=EDGE_CURVE('',#12,#13,#16,.T.);
+#18=ORIENTED_EDGE('',*,*,#17,.T.);
+#19=EDGE_LOOP('',(#18));ENDSEC;END-ISO-10303-21;

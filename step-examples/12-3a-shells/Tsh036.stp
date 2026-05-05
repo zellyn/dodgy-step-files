@@ -1,0 +1,66 @@
+ISO-10303-21;
+/* Tsh036 - Revolved shape imported with complementary (reversed) angle
+ * Defect: A revolved shape comes out with the complementary (reversed)
+ * angular sweep -- e.g. a 270 deg sweep where 90 deg was intended, or
+ * vice versa. The receiver misinterprets the axis orientation and
+ * produces the angular complement. Visible in standard XDE display.
+ *
+ * This file: a SURFACE_OF_REVOLUTION on a 90-degree arc-of-circle
+ * profile around an axis whose direction is encoded as -Z (i.e. the
+ * `axis` field's DIRECTION points DOWN). The profile is bounded by an
+ * EDGE_LOOP that nominally sweeps from u=0 to u=pi/2. A reader that
+ * honours direction encoding gets the right 90 deg face; a reader that
+ * silently flips the axis to +Z while keeping the parameter range
+ * produces the complementary 270 deg sweep.
+ * Sources: I012 (OCCT #378). */
+HEADER;
+FILE_DESCRIPTION(('Tsh036 test case','Revolution with complementary angle ambiguity'),'2;1');
+FILE_NAME('Tsh036.stp','2026-04-26T00:00:00',(''),(''),'auto-generated','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+/* Profile: a vertical line segment from (1, 0, 0) to (1, 0, 1) -- the
+   generatrix to be revolved about the Z axis. */
+#100=CARTESIAN_POINT('',(1.0,0.0,0.0));
+#101=CARTESIAN_POINT('',(1.0,0.0,1.0));
+#110=VERTEX_POINT('',#100); #111=VERTEX_POINT('',#101);
+#120=DIRECTION('',(0.0,0.0,1.0)); #121=VECTOR('',#120,1.0);
+#122=LINE('generatrix',#100,#121);
+#123=EDGE_CURVE('',#110,#111,#122,.T.);
+/* Defect: axis encoded as -Z. AXIS1_PLACEMENT puts the rotation axis
+   at the origin pointing DOWN. Receivers that honour this produce a
+   sweep in the opposite hand from receivers that ignore the sign. */
+#200=CARTESIAN_POINT('axis_origin',(0.0,0.0,0.0));
+#201=DIRECTION('axis_pointing_down',(0.0,0.0,-1.0));
+#202=AXIS1_PLACEMENT('reversed_axis',#200,#201);
+#203=SURFACE_OF_REVOLUTION('rev_with_reversed_axis',#122,#202);
+/* End-cap circles at z=0 and z=1, only swept through 90 degrees of u.
+   On the surface (u,v): u maps to revolution angle, v maps to height. */
+#300=CARTESIAN_POINT('',(0.0,1.0,0.0)); /* image of (1,0,0) at u=pi/2 */
+#301=CARTESIAN_POINT('',(0.0,1.0,1.0)); /* image of (1,0,1) at u=pi/2 */
+#310=VERTEX_POINT('',#300); #311=VERTEX_POINT('',#301);
+#308=DIRECTION('cap_x',(1.0,0.0,0.0));
+#312=AXIS2_PLACEMENT_3D('cap0_axes',#200,#120,#308);
+#313=CIRCLE('cap_at_z0',#312,1.0);
+#314=EDGE_CURVE('quarter_at_z0',#110,#310,#313,.T.);
+#320=CARTESIAN_POINT('cap1_origin',(0.0,0.0,1.0));
+#322=AXIS2_PLACEMENT_3D('cap1_axes',#320,#120,#308);
+#323=CIRCLE('cap_at_z1',#322,1.0);
+#324=EDGE_CURVE('quarter_at_z1',#111,#311,#323,.T.);
+/* Image of generatrix at u=pi/2 (i.e. on the +y meridian). */
+#330=LINE('generatrix_image',#300,#121);
+#331=EDGE_CURVE('',#310,#311,#330,.T.);
+/* Outer wire on the revolved face. */
+#400=ORIENTED_EDGE('',*,*,#123,.T.);
+#401=ORIENTED_EDGE('',*,*,#324,.T.);
+#402=ORIENTED_EDGE('',*,*,#331,.F.);
+#403=ORIENTED_EDGE('',*,*,#314,.F.);
+#404=EDGE_LOOP('quarter_face_loop',(#400,#401,#402,#403));
+#405=FACE_OUTER_BOUND('',#404,.T.);
+#406=ADVANCED_FACE('quarter_revolution_face',(#405),#203,.T.);
+#500=OPEN_SHELL('quarter_shell',(#406));
+#510=SHELL_BASED_SURFACE_MODEL('container',(#500));
+ENDSEC;
+END-ISO-10303-21;

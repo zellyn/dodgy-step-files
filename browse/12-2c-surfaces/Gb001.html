@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Gb001 — Curve approximation cannot meet the requested tolerance</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.2c Surface / curve degeneracies</a> <span class="sep">/</span> <span class="current">Gb001</span>
+</nav>
+<header class="title-bar">
+<h1>Gb001 <span class="sep">—</span> <span class="entry-title">Curve approximation cannot meet the requested tolerance</span></h1>
+<p class="category">§12.2c (sub-class: approximation failure)</p>
+<p class="tag-pills">
+<a class="tag tag-silent-loss" href="../by-tag/silent-loss/index.html">silent-loss</a>
+<a class="tag tag-geometry" href="../by-tag/geometry/index.html">geometry</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-2c-surfaces/Gb001.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-2c-surfaces/Gb001.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>OCCT Approx_Status.NoApproximation (uncovered class evidence)</li>
+</ul></section>
+<section><h2>Sender</h2>
+<p>deduced — OCCT uncovered-class sweep, Pass C</p></section>
+<section><h2>Description</h2>
+<p>A user requests a B-spline approximation of a non-rational curve (e.g., a polynomial of high degree) within tolerance ε. The approximation algorithm does not converge — the residual remains above ε after the maximum number of refinement iterations. Bug-reporter language: &quot;approximation didn&#x27;t converge&quot;, &quot;B-spline fit failed&quot;, &quot;tolerance too tight for fit&quot;.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>A `LINE` evaluated at densely-sampled points; request a B-spline approximation through these points within tolerance below the kernel&#x27;s working precision.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>Return the partial result with the achieved residual reported; or reject.</p></section>
+<section><h2>Notes</h2>
+<p>Synonyms: &quot;fit didn&#x27;t converge&quot;. Bytes alone are insufficient to demonstrate this defect — needs sibling input fixture. Tagged provenance_tier: runtime-only. **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog&#x27;s allowed set ({reject}). Kernel-bug witnessed: receivers must reject this fixture per the catalog&#x27;s stated invariant.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>contains(b&#x27;LINE(&#x27;)</code></li>
+<li><code>count_entity_def(b&#x27;CARTESIAN_POINT&#x27;) &gt;= 5</code></li>
+</ul></section>
+<section><h2>Live oracle output</h2>
+<table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
+<tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>no_shapes_loaded</code></td></tr>
+</tbody></table>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* Gb001 - Curve approximation does not converge.
+<span class="lineno">3</span> * Defect: B-spline approximation of a sampled curve is requested
+<span class="lineno">4</span> * within tolerance below the kernel&#x27;s working precision; algorithm
+<span class="lineno">5</span> * cannot converge. */
+<span class="lineno">6</span>HEADER;
+<span class="lineno">7</span>FILE_DESCRIPTION((&#x27;Gb001 - approximation no convergence&#x27;,&#x27;Pass C gap-fill&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">8</span>FILE_NAME(&#x27;Gb001.stp&#x27;,&#x27;2026-04-30T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;gap-fill C&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">9</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }&#x27;));
+<span class="lineno">10</span>ENDSEC;
+<span class="lineno">11</span>DATA;
+<span class="lineno">12</span>#1=APPLICATION_CONTEXT(&#x27;automotive_design&#x27;);
+<span class="lineno">13</span>/* Densely sampled line */
+<span class="lineno">14</span><mark>#10=CARTESIAN_POINT(</mark>&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">15</span><mark>#11=CARTESIAN_POINT(</mark>&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">16</span><mark>#12=CARTESIAN_POINT(</mark>&#x27;&#x27;,(2.0,0.0,0.0));
+<span class="lineno">17</span><mark>#13=CARTESIAN_POINT(</mark>&#x27;&#x27;,(3.0,0.0,0.0));
+<span class="lineno">18</span><mark>#14=CARTESIAN_POINT(</mark>&#x27;&#x27;,(4.0,0.0,0.0));
+<span class="lineno">19</span>/* Source line */
+<span class="lineno">20</span>#20=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">21</span>#21=VECTOR(&#x27;&#x27;,#20,1.0);
+<span class="lineno">22</span>#22=<mark>LINE(</mark>&#x27;source_line&#x27;,#10,#21);
+<span class="lineno">23</span>ENDSEC;
+<span class="lineno">24</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="up" href="index.html">§12.2c Surface / curve degeneracies</a> <a class="next" href="Gb002.html">Gb002 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

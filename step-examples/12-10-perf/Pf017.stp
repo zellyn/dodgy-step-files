@@ -1,0 +1,61 @@
+/* Pf017 - ShapeFix_Shape hang on huge single-shell input (multi-pass
+   healing).  STEP importer hangs and consumes huge memory during
+   import-time ShapeFix_Shape::Perform on one big shell - each pass
+   exposes another defect that requires further iteration; the loop is
+   unbounded (OCCT #417 / Mantis 32127).
+   Pattern: a single CLOSED_SHELL with many faces, all carrying small
+   defects (gap, sliver, micro self-intersection) that healing fixes
+   serially - fixing pass 1 exposes a defect that pass 2 then fixes,
+   ad infinitum.
+   Scaling-up: this fixture has ~16 faces in a single CLOSED_SHELL with
+   intentionally gap-prone vertex coords. Replicate to thousands of
+   slightly-tolerance-mismatched faces to trigger the hang. */
+ISO-10303-21;
+HEADER;
+FILE_DESCRIPTION(('Pf017 - huge single-shell ShapeFix multi-pass hang'),'2;1');
+FILE_NAME('Pf017.stp','2026-04-26T00:00:00',('auto-generated'),(''),
+  'auto-generated','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=DIRECTION('',(0.0,0.0,1.0));
+#3=DIRECTION('',(1.0,0.0,0.0));
+#4=AXIS2_PLACEMENT_3D('',#1,#2,#3);
+#5=PLANE('',#4);
+/* gap-prone vertex coords - each pair differs by ~1e-7, just under
+   typical 1e-6 tolerance; healing's gap-closing then uncovers a
+   different mismatch elsewhere. */
+#10=CARTESIAN_POINT('a',(0.0,0.0,0.0));
+#11=CARTESIAN_POINT('a-near',(1e-7,0.0,0.0));
+#12=CARTESIAN_POINT('b',(1.0,0.0,0.0));
+#13=CARTESIAN_POINT('b-near',(1.0+1e-7,0.0,0.0));
+#14=CARTESIAN_POINT('c',(1.0,1.0,0.0));
+#15=CARTESIAN_POINT('c-near',(1.0,1.0+1e-7,0.0));
+#16=CARTESIAN_POINT('d',(0.0,1.0,0.0));
+#17=CARTESIAN_POINT('d-near',(0.0,1.0+1e-7,0.0));
+/* sixteen faces, each sharing a degenerate loop, are all attached to
+   the single CLOSED_SHELL #100 - this is the huge single-shell pattern */
+#20=EDGE_LOOP('',());
+#21=FACE_OUTER_BOUND('',#20,.T.);
+#30=ADVANCED_FACE('f1',(#21),#5,.T.);
+#31=ADVANCED_FACE('f2',(#21),#5,.T.);
+#32=ADVANCED_FACE('f3',(#21),#5,.T.);
+#33=ADVANCED_FACE('f4',(#21),#5,.T.);
+#34=ADVANCED_FACE('f5',(#21),#5,.T.);
+#35=ADVANCED_FACE('f6',(#21),#5,.T.);
+#36=ADVANCED_FACE('f7',(#21),#5,.T.);
+#37=ADVANCED_FACE('f8',(#21),#5,.T.);
+#38=ADVANCED_FACE('f9',(#21),#5,.T.);
+#39=ADVANCED_FACE('f10',(#21),#5,.T.);
+#40=ADVANCED_FACE('f11',(#21),#5,.T.);
+#41=ADVANCED_FACE('f12',(#21),#5,.T.);
+#42=ADVANCED_FACE('f13',(#21),#5,.T.);
+#43=ADVANCED_FACE('f14',(#21),#5,.T.);
+#44=ADVANCED_FACE('f15',(#21),#5,.T.);
+#45=ADVANCED_FACE('f16',(#21),#5,.T.);
+#100=CLOSED_SHELL('huge-single-shell',(#30,#31,#32,#33,#34,#35,#36,#37,
+   #38,#39,#40,#41,#42,#43,#44,#45));
+#200=MANIFOLD_SOLID_BREP('healing-target',#100);
+ENDSEC;
+END-ISO-10303-21;

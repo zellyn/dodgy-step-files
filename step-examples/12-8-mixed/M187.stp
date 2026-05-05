@@ -1,0 +1,28 @@
+ISO-10303-21;
+/* M187 - AP238 KNURLING_OPERATION with knurl-pitch finer than tool resolution.
+ * Defect: a KNURLING_OPERATION declares a knurl pitch of 0.05 mm while
+ * the knurling tool's tooth spacing (resolution) is 0.5 mm. The tool
+ * physically cannot impress a finer pattern than its own teeth - the
+ * declared pitch is unattainable. */
+HEADER;
+FILE_DESCRIPTION(('M187 test case','AP238 knurl pitch finer than tool teeth'),'2;1');
+FILE_NAME('M187.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AP238_STEP_NC_MIM { 1 0 10303 238 1 0 0 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('numerical_control_machining');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
+  'numerical_control_machining',2007,#1);
+#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10))
+     REPRESENTATION_CONTEXT('nc','3D'));
+/* Knurling tool tooth spacing: 0.5 mm. */
+#90=KNURLING_TOOL('diamond_knurler_0p5',$,$,$,
+  MEASURE_WITH_UNIT(POSITIVE_LENGTH_MEASURE(0.5),#10));
+/* Defect: requested pitch 0.05 mm < tool tooth spacing 0.5 mm. */
+#80=MEASURE_WITH_UNIT(POSITIVE_LENGTH_MEASURE(0.05),#10);
+#100=KNURLING_OPERATION('fine_knurl',$,$,$,$,#90,#80);
+#200=WORKPLAN('main',(#100),$,$,$);
+ENDSEC;
+END-ISO-10303-21;

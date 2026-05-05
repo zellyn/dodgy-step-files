@@ -1,0 +1,24 @@
+ISO-10303-21;
+/* Twi099 - EDGE_CURVE whose start and end vertex resolve to the same VERTEX_POINT
+ * Defect: degenerate self-loop edge written into a STEP file (same vertex on both sides). */
+HEADER;
+FILE_DESCRIPTION(('Twi099 - EDGE_CURVE with identical start and end vertex'),'2;1');
+FILE_NAME('Twi099.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+#5=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#6=CARTESIAN_POINT('',(1.0,0.0,0.0));
+#7=DIRECTION('',(1.0,0.0,0.0));
+#8=DIRECTION('',(0.0,0.0,1.0));
+#9=DIRECTION('',(0.0,1.0,0.0));
+#10=VERTEX_POINT('',#5);
+#11=AXIS2_PLACEMENT_3D('',#5,#8,#7);
+#15=LINE('',#5,#16);
+#16=VECTOR('',#7,1.0);
+/* Defect: EDGE_CURVE references vertex #10 as both start and end vertex. */
+#20=EDGE_CURVE('self_loop_edge',#10,#10,#15,.T.);
+ENDSEC;
+END-ISO-10303-21;

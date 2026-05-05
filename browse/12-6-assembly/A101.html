@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>A101 — SubShapeBinder-derived Boolean Cut crashes downstream slicers and re-import</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.6 Assembly hierarchy</a> <span class="sep">/</span> <span class="current">A101</span>
+</nav>
+<header class="title-bar">
+<h1>A101 <span class="sep">—</span> <span class="entry-title">SubShapeBinder-derived Boolean Cut crashes downstream slicers and re-import</span></h1>
+<p class="category">§12.6 assembly hierarchy</p>
+<p class="severity-badge severity-p0">P0 — receiver crash / hang / OOM</p>
+<p class="tag-pills">
+<a class="tag tag-crash" href="../by-tag/crash/index.html">crash</a>
+<a class="tag tag-assembly" href="../by-tag/assembly/index.html">assembly</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-6-assembly/A101.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-6-assembly/A101.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>FreeCAD #26994</li>
+<li>bug-reporter language: &quot;Export of PartDesign body containing Boolean Cut with SubShapeBinder is broken&quot;, &quot;PrusaSlicer just crashes for STEP&quot;, &quot;the very STEP exported by FreeCAD makes it crash on re-import&quot;.</li>
+</ul></section>
+<section><h2>Sender</h2>
+<p>FreeCAD PartDesign body whose history includes a Boolean Cut whose tool comes from a SubShapeBinder cross-document reference.</p></section>
+<section><h2>Description</h2>
+<p>A body authored as `BasePad → BooleanCut(tool=SubShapeBinder(&#x27;Other_Body.Face&#x27;))` exports a STEP whose `MANIFOLD_SOLID_BREP` contains `ADVANCED_FACE`s with `EDGE_CURVE` references that point to entity numbers existing in the file but whose `EDGE_LOOP` contains an `ORIENTED_EDGE` whose `edge_element` is `*` (asterisk-implicit) without the matching parent definition — in other words, `*`-oriented edges escape into the file body. The receiver attempts to dereference and crashes (PrusaSlicer) or yields empty (FreeCAD self-import).</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>STEP body where one `EDGE_LOOP` contains an `ORIENTED_EDGE(&#x27;&#x27;,*,*,#99,.T.)` referencing `#99` whose `edge_element` is itself `*`.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>writer materialises every `*`-implicit reference before emission; receivers reject `*` `edge_element` with a precise diagnostic.</p></section>
+<section><h2>Notes</h2>
+<p>**See also**: A018. Synonyms: &quot;SubShapeBinder Boolean Cut crashes slicer&quot;, &quot;asterisk edge element escapes file body&quot;, &quot;STEP makes PrusaSlicer crash on import&quot;, &quot;boolean from SubShapeBinder broken on export&quot;.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=shape(1)/shape(1) gmsh=reject ifc=schema_n/a</code></p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>matches(rb&#x27;ORIENTED_EDGE\s*\([^)]*,\*,\*&#x27;)</code></li>
+<li><code>contains(b&#x27;EDGE_LOOP&#x27;)</code></li>
+</ul></section>
+<section><h2>Cross-references</h2>
+<p><a href="A018.html">A018</a></p>
+</section>
+<section><h2>Live oracle output</h2>
+<table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
+<tr><td><code>occt_heal_on</code></td><td><code>shape(1)</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>shape(1)</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>reject</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>reject</code></td></tr>
+<tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>empty_mesh</code></td></tr>
+</tbody></table>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>/* A101 - SubShapeBinder-derived Boolean Cut crashes downstream slicers
+<span class="lineno">2</span> * and re-import.
+<span class="lineno">3</span> * Defect (FreeCAD #26994): asterisk-implicit ORIENTED_EDGE references
+<span class="lineno">4</span> * escape into the file body. The receiver tries to materialise them
+<span class="lineno">5</span> * and crashes (PrusaSlicer) or yields empty (FreeCAD self-import). */
+<span class="lineno">6</span>ISO-10303-21;
+<span class="lineno">7</span>HEADER;
+<span class="lineno">8</span>FILE_DESCRIPTION((&#x27;A101 - asterisk edge_element escapes into file body&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">9</span>FILE_NAME(&#x27;A101.stp&#x27;,&#x27;2026-05-02T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">10</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }&#x27;));
+<span class="lineno">11</span>ENDSEC;
+<span class="lineno">12</span>DATA;
+<span class="lineno">13</span>#1=APPLICATION_CONTEXT(&#x27;automotive_design&#x27;);
+<span class="lineno">14</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,&#x27;automotive_design&#x27;,2001,#1);
+<span class="lineno">15</span>#3=PRODUCT_CONTEXT(&#x27;part&#x27;,#1,&#x27;mechanical&#x27;);
+<span class="lineno">16</span>#4=PRODUCT_DEFINITION_CONTEXT(&#x27;part definition&#x27;,#1,&#x27;design&#x27;);
+<span class="lineno">17</span>#5=PRODUCT(&#x27;A101_subshape&#x27;,&#x27;subshape-binder boolean&#x27;,&#x27;&#x27;,(#3));
+<span class="lineno">18</span>#6=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#5);
+<span class="lineno">19</span>#7=PRODUCT_DEFINITION(&#x27;design&#x27;,&#x27;&#x27;,#6,#4);
+<span class="lineno">20</span>#8=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,#7);
+<span class="lineno">21</span>#10=( LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT(.MILLI.,.METRE.) );
+<span class="lineno">22</span>#11=( NAMED_UNIT(*) PLANE_ANGLE_UNIT() SI_UNIT($,.RADIAN.) );
+<span class="lineno">23</span>#12=( NAMED_UNIT(*) SI_UNIT($,.STERADIAN.) SOLID_ANGLE_UNIT() );
+<span class="lineno">24</span>#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-6),#10,&#x27;tol&#x27;,&#x27;&#x27;);
+<span class="lineno">25</span>#14=( GEOMETRIC_REPRESENTATION_CONTEXT(3) GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13)) GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12)) REPRESENTATION_CONTEXT(&#x27;&#x27;,&#x27;3D&#x27;) );
+<span class="lineno">26</span>#20=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">27</span>#21=CARTESIAN_POINT(&#x27;&#x27;,(10.0,0.0,0.0));
+<span class="lineno">28</span>#22=VERTEX_POINT(&#x27;&#x27;,#20);
+<span class="lineno">29</span>#23=VERTEX_POINT(&#x27;&#x27;,#21);
+<span class="lineno">30</span>#24=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">31</span>#25=VECTOR(&#x27;&#x27;,#24,10.0);
+<span class="lineno">32</span>#26=LINE(&#x27;&#x27;,#20,#25);
+<span class="lineno">33</span>#27=EDGE_CURVE(&#x27;&#x27;,#22,#23,#26,.T.);
+<span class="lineno">34</span>/* Defect: ORIENTED_EDGE has both edge_start (* asterisk) and edge_end
+<span class="lineno">35</span>   (* asterisk) AND its edge_element points at #99 -- which itself is an
+<span class="lineno">36</span>   ORIENTED_EDGE whose own edge_element is *. The receiver dereferences
+<span class="lineno">37</span>   into nothing. */
+<span class="lineno">38</span>#28=<mark>ORIENTED_EDGE(&#x27;outer_oedge&#x27;,*,*</mark>,#99,.T.);
+<span class="lineno">39</span>#29=<mark>ORIENTED_EDGE(&#x27;&#x27;,*,*</mark>,#27,.T.);
+<span class="lineno">40</span>#99=<mark>ORIENTED_EDGE(&#x27;asterisk_edge_element&#x27;,*,*,*</mark>,.T.);
+<span class="lineno">41</span>#30=<mark>EDGE_LOOP</mark>(&#x27;&#x27;,(#28,#29));
+<span class="lineno">42</span>#31=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">43</span>#32=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">44</span>#33=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#20,#31,#32);
+<span class="lineno">45</span>#34=PLANE(&#x27;&#x27;,#33);
+<span class="lineno">46</span>#35=FACE_OUTER_BOUND(&#x27;&#x27;,#30,.T.);
+<span class="lineno">47</span>#36=ADVANCED_FACE(&#x27;&#x27;,(#35),#34,.T.);
+<span class="lineno">48</span>#37=CLOSED_SHELL(&#x27;&#x27;,(#36));
+<span class="lineno">49</span>#38=MANIFOLD_SOLID_BREP(&#x27;A101_body&#x27;,#37);
+<span class="lineno">50</span>#40=SHAPE_REPRESENTATION(&#x27;A101_repr&#x27;,(#33,#38),#14);
+<span class="lineno">51</span>#41=SHAPE_DEFINITION_REPRESENTATION(#8,#40);
+<span class="lineno">52</span>ENDSEC;
+<span class="lineno">53</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="A100.html">&larr; A100</a> <a class="up" href="index.html">§12.6 Assembly hierarchy</a> <a class="next" href="A102.html">A102 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Wr034 — Coordinate-system axis swap without notification (Y-up vs Z-up)</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.13 Writer pathology</a> <span class="sep">/</span> <span class="current">Wr034</span>
+</nav>
+<header class="title-bar">
+<h1>Wr034 <span class="sep">—</span> <span class="entry-title">Coordinate-system axis swap without notification (Y-up vs Z-up)</span></h1>
+<p class="category">§12.13 writer-pathology (sub-class: unit / coordinate)</p>
+<p class="severity-badge severity-p2">P2 — spec deviation (no data loss)</p>
+<p class="tag-pills">
+<a class="tag tag-writer" href="../by-tag/writer/index.html">writer</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-13-writer-pathology/Wr034.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-13-writer-pathology/Wr034.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>OCCT forum &quot;STEP from web-CAD has wrong axis&quot;</li>
+<li>bug-reporter language: &quot;model is on its side after import&quot;, &quot;Y up vs Z up confusion&quot;</li>
+</ul></section>
+<section><h2>Sender</h2>
+<p>Web-CAD and game-engine-derived writers whose internal convention is Y-up, exporting to STEP without applying the Z-up transform</p></section>
+<section><h2>Description</h2>
+<p>The geometry coordinates were authored in a Y-up coordinate system (the engine convention), but the writer emitted them as-is into STEP without applying the rotation that makes Z the up-axis (STEP / CAD convention). The receiver loads the geometry rotated 90° around X. Bug-reporter language: &quot;model lying on its side&quot;, &quot;Y-up vs Z-up&quot;, &quot;STEP imported sideways&quot;, &quot;coordinate axes swapped&quot;.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>a `MANIFOLD_SOLID_BREP` whose vertices imply a vertical extent along Y rather than Z, with a comment noting the input was authored Y-up and emitted without rotation.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>Warn and accept: normalize by trusting the file&#x27;s coordinate system (DATA-section AXIS2_PLACEMENT_3D); if the application expects Z-up, emit a &quot;model appears Y-up&quot; diagnostic when the geometry&#x27;s bounding box has inverted aspect.</p></section>
+<section><h2>Notes</h2>
+<p>Symptom-match search-term: &quot;STEP imported on its side&quot;.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>contains(b&#x27;Y-up&#x27;) or contains(b&#x27;Z-up&#x27;)</code></li>
+<li><code>contains(b&#x27;Y-up&#x27;)</code></li>
+</ul></section>
+<section><h2>Live oracle output</h2>
+<table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
+<tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>no_shapes_loaded</code></td></tr>
+</tbody></table>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>/* Wr034 - Coordinate-system axis swap without notification - <mark>Y-up</mark> source emitted as if Z-up */
+<span class="lineno">2</span>ISO-10303-21;
+<span class="lineno">3</span>HEADER;
+<span class="lineno">4</span>FILE_DESCRIPTION((&#x27;Wr034 - <mark>Y-up</mark> coordinates emitted without rotation&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">5</span>FILE_NAME(&#x27;Wr034.stp&#x27;,&#x27;2026-04-30T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),
+<span class="lineno">6</span>  &#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">7</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
+<span class="lineno">8</span>ENDSEC;
+<span class="lineno">9</span>DATA;
+<span class="lineno">10</span>#1=APPLICATION_CONTEXT(&#x27;mechanical design&#x27;);
+<span class="lineno">11</span>/* Wr034: input was a column 1m wide, 1m deep, 10m tall in a <mark>Y-up</mark> system.
+<span class="lineno">12</span>   Writer emitted coords directly without applying the 90-degree rotation
+<span class="lineno">13</span>   to convert to Z-up. The vertical extent is now along Y; the model
+<span class="lineno">14</span>   imports lying on its side */
+<span class="lineno">15</span>#10=CARTESIAN_POINT(&#x27;p1&#x27;,(0.0,0.0,0.0));
+<span class="lineno">16</span>#11=CARTESIAN_POINT(&#x27;p2&#x27;,(1.0,10.0,0.0));
+<span class="lineno">17</span>#12=CARTESIAN_POINT(&#x27;p3&#x27;,(1.0,10.0,1.0));
+<span class="lineno">18</span>#13=CARTESIAN_POINT(&#x27;p4&#x27;,(0.0,10.0,1.0));
+<span class="lineno">19</span>#14=CARTESIAN_POINT(&#x27;p5&#x27;,(0.0,0.0,1.0));
+<span class="lineno">20</span>#15=CARTESIAN_POINT(&#x27;p6&#x27;,(1.0,0.0,1.0));
+<span class="lineno">21</span>#16=DIRECTION(&#x27;z&#x27;,(0.0,0.0,1.0));
+<span class="lineno">22</span>#17=DIRECTION(&#x27;x&#x27;,(1.0,0.0,0.0));
+<span class="lineno">23</span>#18=AXIS2_PLACEMENT_3D(&#x27;placement&#x27;,#10,#16,#17);
+<span class="lineno">24</span>#20=(LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">25</span>ENDSEC;
+<span class="lineno">26</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Wr033.html">&larr; Wr033</a> <a class="up" href="index.html">§12.13 Writer pathology</a> <a class="next" href="Wr035.html">Wr035 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

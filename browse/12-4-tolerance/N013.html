@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>N013 — Boolean cascade vertex deviation (independently computed pairwise intersections)</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.4 Tolerance &amp; numerical precision</a> <span class="sep">/</span> <span class="current">N013</span>
+</nav>
+<header class="title-bar">
+<h1>N013 <span class="sep">—</span> <span class="entry-title">Boolean cascade vertex deviation (independently computed pairwise intersections)</span></h1>
+<p class="category">§12.4 (sub-class: boolean-drift / floating-point accumulation)</p>
+<p class="severity-badge severity-p1">P1 — silent data loss</p>
+<p class="tag-pills">
+<a class="tag tag-topology" href="../by-tag/topology/index.html">topology</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-4-tolerance/N013.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-4-tolerance/N013.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>15-academic L029, L030, L031 (arXiv 2310.10351)</li>
+<li>21-patents X010 (EP 0690416 A2 Computervision)</li>
+</ul></section>
+<section><h2>Description</h2>
+<p>When three or more surfaces meet at a single mathematical vertex, OCCT computes each pairwise edge-edge intersection independently. Floating-point error makes the three candidate vertex coordinates disagree by 1e-9 to 1e-5, so the boolean output emits three almost-coincident vertices and three short edges (or a tiny triangle face) in place of one shared vertex.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>Boolean-intersect three half-spaces meeting in one vertex with rotated frames so each pairwise intersection suffers small numerical perturbation.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>heal — compute the desired vertex by edge-face intersection (one dimension lower) and snap candidate vertices to it; carry an accumulated-error tolerance budget per topological entity.</p></section>
+<section><h2>Notes</h2>
+<p>Synonyms: &quot;three-surface meet point splits into three vertices&quot;, &quot;pairwise intersections disagree by 1e-9&quot;, &quot;boolean cascade introduces vertex jitter&quot;, &quot;single mathematical vertex becomes three near-coincident vertices&quot;, &quot;tiny triangle face appears where one vertex should be&quot;.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>count_entity_def(b&#x27;EDGE_CURVE&#x27;) == 3</code></li>
+<li><code>count_entity_def(b&#x27;VERTEX_POINT&#x27;) == 3</code></li>
+<li><code>contains(b&#x27;1.0E-9&#x27;)</code></li>
+</ul></section>
+<section><h2>Live oracle output</h2>
+<table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
+<tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>no_shapes_loaded</code></td></tr>
+</tbody></table>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* N013 - Boolean cascade vertex deviation (independently computed pairwise intersections)
+<span class="lineno">3</span> * Defect: When three or more surfaces meet at a single mathematical vertex,
+<span class="lineno">4</span> * OCCT computes each pairwise edge-edge intersection independently. Floating-
+<span class="lineno">5</span> * point error makes the three candidate vertex coordinates disagree by
+<span class="lineno">6</span> * 1e-9 to 1e-5, so the boolean output emits three almost-coincident
+<span class="lineno">7</span> * vertices and three short edges in place of one shared vertex.
+<span class="lineno">8</span> *
+<span class="lineno">9</span> * Reproducer: three vertex candidates forming a near-degenerate triangle
+<span class="lineno">10</span> * with side lengths ~1e-7. Each EDGE_CURVE&#x27;s LINE direction &amp; vector
+<span class="lineno">11</span> * magnitude actually move start_vertex to end_vertex (i.e. the geometry
+<span class="lineno">12</span> * is self-consistent: line origin == start vertex point, and
+<span class="lineno">13</span> * start_point + magnitude*direction == end vertex point), unlike the
+<span class="lineno">14</span> * previous version where the line vectors did not connect their declared
+<span class="lineno">15</span> * endpoints.
+<span class="lineno">16</span> */
+<span class="lineno">17</span>HEADER;
+<span class="lineno">18</span>FILE_DESCRIPTION((&#x27;N013 Boolean cascade vertex deviation 3 pairwise intersections&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">19</span>FILE_NAME(&#x27;N013.stp&#x27;,&#x27;2026-04-26T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),
+<span class="lineno">20</span>  &#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">21</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN&#x27;));
+<span class="lineno">22</span>ENDSEC;
+<span class="lineno">23</span>DATA;
+<span class="lineno">24</span>#1=APPLICATION_CONTEXT(&#x27;automotive design&#x27;);
+<span class="lineno">25</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,
+<span class="lineno">26</span>  &#x27;automotive_design&#x27;,2009,#1);
+<span class="lineno">27</span>/* Three vertex candidates from independent pairwise intersections of
+<span class="lineno">28</span> * half-spaces s1/s2, s2/s3, s3/s1; ideal point is (0,0,0). The three
+<span class="lineno">29</span> * candidates form a near-degenerate triangle with side lengths
+<span class="lineno">30</span> * approximately 1.414e-7. */
+<span class="lineno">31</span>#10=CARTESIAN_POINT(&#x27;v_s1s2&#x27;,(1.0E-7,0.0,0.0));
+<span class="lineno">32</span>#11=CARTESIAN_POINT(&#x27;v_s2s3&#x27;,(0.0,1.0E-7,0.0));
+<span class="lineno">33</span>#12=CARTESIAN_POINT(&#x27;v_s3s1&#x27;,(0.0,0.0,1.0E-7));
+<span class="lineno">34</span><mark>#20=VERTEX_POINT(</mark>&#x27;v12&#x27;,#10);
+<span class="lineno">35</span><mark>#21=VERTEX_POINT(</mark>&#x27;v23&#x27;,#11);
+<span class="lineno">36</span><mark>#22=VERTEX_POINT(</mark>&#x27;v31&#x27;,#12);
+<span class="lineno">37</span>/* Three short edges. Each edge&#x27;s LINE has its origin at start_vertex&#x27;s
+<span class="lineno">38</span> * point, and direction*magnitude exactly equals (end - start). This
+<span class="lineno">39</span> * makes the geometry self-consistent so the file is a real reproducer
+<span class="lineno">40</span> * of &quot;3 vertices and 3 short edges in place of one shared vertex&quot;. */
+<span class="lineno">41</span>/* edge_a: v12 (1e-7, 0, 0) -&gt; v23 (0, 1e-7, 0); delta = (-1e-7, 1e-7, 0).
+<span class="lineno">42</span>   length = sqrt(2) * 1e-7; unit dir = (-1/sqrt(2), 1/sqrt(2), 0). */
+<span class="lineno">43</span>#30=DIRECTION(&#x27;d_a&#x27;,(-0.7071067811865476,0.7071067811865476,0.0));
+<span class="lineno">44</span>#33=VECTOR(&#x27;vec_a&#x27;,#30,1.4142135623730951E-7);
+<span class="lineno">45</span>#40=LINE(&#x27;e_a&#x27;,#10,#33);
+<span class="lineno">46</span><mark>#50=EDGE_CURVE(</mark>&#x27;edge_a&#x27;,#20,#21,#40,.T.);
+<span class="lineno">47</span>/* edge_b: v23 (0, 1e-7, 0) -&gt; v31 (0, 0, 1e-7); delta = (0, -1e-7, 1e-7).
+<span class="lineno">48</span>   length = sqrt(2) * 1e-7; unit dir = (0, -1/sqrt(2), 1/sqrt(2)). */
+<span class="lineno">49</span>#31=DIRECTION(&#x27;d_b&#x27;,(0.0,-0.7071067811865476,0.7071067811865476));
+<span class="lineno">50</span>#34=VECTOR(&#x27;vec_b&#x27;,#31,1.4142135623730951E-7);
+<span class="lineno">51</span>#41=LINE(&#x27;e_b&#x27;,#11,#34);
+<span class="lineno">52</span><mark>#51=EDGE_CURVE(</mark>&#x27;edge_b&#x27;,#21,#22,#41,.T.);
+<span class="lineno">53</span>/* edge_c: v31 (0, 0, 1e-7) -&gt; v12 (1e-7, 0, 0); delta = (1e-7, 0, -1e-7).
+<span class="lineno">54</span>   length = sqrt(2) * 1e-7; unit dir = (1/sqrt(2), 0, -1/sqrt(2)). */
+<span class="lineno">55</span>#32=DIRECTION(&#x27;d_c&#x27;,(0.7071067811865476,0.0,-0.7071067811865476));
+<span class="lineno">56</span>#35=VECTOR(&#x27;vec_c&#x27;,#32,1.4142135623730951E-7);
+<span class="lineno">57</span>#42=LINE(&#x27;e_c&#x27;,#12,#35);
+<span class="lineno">58</span><mark>#52=EDGE_CURVE(</mark>&#x27;edge_c&#x27;,#22,#20,#42,.T.);
+<span class="lineno">59</span>/* Units, uncertainty, and representation context */
+<span class="lineno">60</span>#60=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">61</span>#61=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+<span class="lineno">62</span>#62=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+<span class="lineno">63</span>#63=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(<mark>1.0E-9</mark>),#60,
+<span class="lineno">64</span>  &#x27;distance_accuracy_value&#x27;,&#x27;model_tol_below_pairwise_drift&#x27;);
+<span class="lineno">65</span>#70=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+<span class="lineno">66</span>  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#63))
+<span class="lineno">67</span>  GLOBAL_UNIT_ASSIGNED_CONTEXT((#60,#61,#62))
+<span class="lineno">68</span>  REPRESENTATION_CONTEXT(&#x27;ctx&#x27;,&#x27;3D&#x27;));
+<span class="lineno">69</span>ENDSEC;
+<span class="lineno">70</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="N012.html">&larr; N012</a> <a class="up" href="index.html">§12.4 Tolerance &amp; numerical precision</a> <a class="next" href="N014.html">N014 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

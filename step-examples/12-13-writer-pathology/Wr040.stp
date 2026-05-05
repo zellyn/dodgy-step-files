@@ -1,0 +1,26 @@
+/* Wr040 - Empty name strings on every entity - writer pre-fills '' instead of carrying input names */
+ISO-10303-21;
+HEADER;
+FILE_DESCRIPTION(('Wr040 - every entity name is empty string'),'2;1');
+FILE_NAME('Wr040.stp','2026-04-30T00:00:00',(''),(''),
+  'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+/* Wr040: input had named entities ('left_face', 'top_edge', etc.).
+   Writer always emits '' for the name attribute. Schema requires the
+   attribute to be present, so empty string is well-formed; but every
+   label is gone */
+#1=APPLICATION_CONTEXT('');
+#2=PRODUCT_CONTEXT('',#1,'');
+#3=PRODUCT('','','',(#2));
+#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#11=DIRECTION('',(0.0,0.0,1.0));
+#12=DIRECTION('',(1.0,0.0,0.0));
+#13=AXIS2_PLACEMENT_3D('',#10,#11,#12);
+#14=PLANE('',#13);
+#15=ADVANCED_FACE('',(),#14,.T.);
+#16=OPEN_SHELL('',(#15));
+#20=(LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT(.MILLI.,.METRE.));
+ENDSEC;
+END-ISO-10303-21;

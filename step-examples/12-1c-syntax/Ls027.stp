@@ -1,0 +1,36 @@
+/* Ls027 - Legacy SCOPE/ENDSCOPE blocks (Edition 1) and EXPORT lists
+   ----------------------------------------------------------------------
+   Catalog section : §12.1c legacy structure
+   Sources         : Q073, N043 (Implementors Issues 001 / 002)
+   Originally also catalogued as: Ad060
+   ----------------------------------------------------------------------
+   Defect
+     Edition 1 of ISO 10303-21 had inline SCOPE / ENDSCOPE delimiters;
+     Editions 2 and 3 removed them, but legacy translators continue to
+     emit them. EXPORT lists also appeared inside ENDSCOPE in Edition 1.
+     Implementors Issues 001 and 002 record the disagreement on whether
+     modern processors must parse SCOPE blocks.
+   Expected behavior
+     Strict Ed.2 / Ed.3 reject. Lenient mode skip-to-matching-ENDSCOPE
+     without aborting; emit a single informational warning per file
+     identifying the SCOPE-block start.
+   ----------------------------------------------------------------------
+*/
+ISO-10303-21;
+HEADER;
+FILE_DESCRIPTION(('Ls027 - legacy SCOPE / ENDSCOPE blocks'),'2;1');
+FILE_NAME('Ls027.stp','2026-04-26T00:00:00',('auto-generated'),(''),
+  'auto-generated','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+#10=CARTESIAN_POINT('origin',(0.0,0.0,0.0));
+#11=PRODUCT('outer','outer','',(#10));
+/* Defect: Edition-1 SCOPE block embedded in DATA */
+SCOPE
+  #20=CARTESIAN_POINT('inner',(1.0,1.0,1.0));
+  #21=DIRECTION('x',(1.0,0.0,0.0));
+ENDSCOPE EXPORT(#20,#21);
+#30=AXIS2_PLACEMENT_3D('placement',#10,$,$);
+ENDSEC;
+END-ISO-10303-21;

@@ -1,0 +1,35 @@
+ISO-10303-21;
+/* Xp026 - Cross-product: Fusion 360 emits AP242 STEP file, NX 12 (which
+ *   never shipped AP242 import) fails to load entirely.
+ * Source: Autodesk KB "STEP files exported from Fusion do not import in
+ *   NX12 software"; Onshape forum 22915 "Importing STEP files from
+ *   Fusion 360".
+ * Defect: FILE_SCHEMA cites AP242_MANAGED_MODEL_BASED_3D_ENGINEERING_MIM_LF
+ *   exclusively, with no fallback AP203 or AP214 schema. Older receivers
+ *   that key off the schema header reject the file before parsing the data
+ *   section. Mitigation requires the writer to emit an AP203/214-compatible
+ *   profile or for receivers to schema-fold to a known superset. */
+HEADER;
+FILE_DESCRIPTION(('Xp026 cross-product','Fusion AP242 -> NX12 schema reject'),'2;1');
+FILE_NAME('Xp026.stp','2026-05-02T00:00:00',(''),(''),'Fusion;V.2.0','','');
+FILE_SCHEMA(('AP242_MANAGED_MODEL_BASED_3D_ENGINEERING_MIM_LF { 1 0 10303 442 1 4 4 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('managed model based 3d engineering');
+#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#11=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#12=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#10,'tol','');
+#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13))GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12))REPRESENTATION_CONTEXT('','3D'));
+/* AP242-only entity that an AP203/214 receiver would not know:
+   characterized_data_object reference (representative AP242 add-on). */
+#20=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#21=DIRECTION('',(0.0,0.0,1.0));
+#22=DIRECTION('',(1.0,0.0,0.0));
+#23=AXIS2_PLACEMENT_3D('',#20,#21,#22);
+#24=PLANE('',#23);
+#25=ADVANCED_FACE('',(),#24,.T.);
+#26=CLOSED_SHELL('',(#25));
+#27=MANIFOLD_SOLID_BREP('AP242_only',#26);
+ENDSEC;
+END-ISO-10303-21;

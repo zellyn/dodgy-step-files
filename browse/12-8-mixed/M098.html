@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>M098 — AP238 tool feedrate exceeds manufacturer rated maximum</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.8 Mixed (tessellation, validation properties, etc.)</a> <span class="sep">/</span> <span class="current">M098</span>
+</nav>
+<header class="title-bar">
+<h1>M098 <span class="sep">—</span> <span class="entry-title">AP238 tool feedrate exceeds manufacturer rated maximum</span></h1>
+<p class="category">§12.8 mixed (sub-class: AP238 tool feedrate)</p>
+<p class="severity-badge severity-p1">P1 — silent data loss</p>
+<p class="tag-pills">
+<a class="tag tag-spec-violation" href="../by-tag/spec-violation/index.html">spec-violation</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-8-mixed/M098.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-8-mixed/M098.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>deduced from ISO 10303-238 §5.8 machining_tool_feedspeed bounds</li>
+</ul></section>
+<section><h2>Sender</h2>
+<p>deduced — CAM post-processor copying feedrate from a different tool family</p></section>
+<section><h2>Description</h2>
+<p>A `MACHINING_TOOL_FEEDSPEED` declares a feed-rate of e.g. `50000.0 mm/min` for a 6mm carbide end-mill whose rated maximum is roughly 3000 mm/min. The controller either clips at machine maximum (silently changing the program) or attempts the rate and breaks the tool. Bug-reporter language: &quot;AP238 feedrate insanely high&quot;, &quot;STEP-NC tool runs too fast&quot;, &quot;feedspeed exceeds tool limit&quot;.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>`MACHINING_TOOL_FEEDSPEED($, MEASURE_WITH_UNIT( POSITIVE_RATIO_MEASURE(50000.0), mm_per_min_unit), $)` on a 6mm end-mill.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>range-check feedrate against tool family expected envelope; warn loudly on out-of-envelope values, reject if catastrophic.</p></section>
+<section><h2>Notes</h2>
+<p>Synonyms: &quot;feedrate too high&quot;, &quot;STEP-NC unrealistic feedspeed&quot;, &quot;tool will break&quot;.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>contains(b&#x27;AP238_STEP_NC_MIM&#x27;)</code></li>
+<li><code>contains(b&#x27;MACHINING_TOOL_FEEDSPEED&#x27;)</code></li>
+<li><code>contains(b&#x27;50000.0&#x27;)</code></li>
+</ul></section>
+<section><h2>Live oracle output</h2>
+<table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
+<tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>no_shapes_loaded</code></td></tr>
+</tbody></table>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* M098 - AP238 tool feedrate exceeds manufacturer rated maximum.
+<span class="lineno">3</span> * Defect: a <mark>MACHINING_TOOL_FEEDSPEED</mark> declares <mark>50000.0</mark> mm/min for a
+<span class="lineno">4</span> * 6mm carbide end-mill (rated maximum ~3000 mm/min). The controller
+<span class="lineno">5</span> * either clips silently or runs the tool until it breaks. */
+<span class="lineno">6</span>HEADER;
+<span class="lineno">7</span>FILE_DESCRIPTION((&#x27;M098 test case&#x27;,&#x27;AP238 feedrate above tool envelope&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">8</span>FILE_NAME(&#x27;M098.stp&#x27;,&#x27;2026-05-02T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">9</span>FILE_SCHEMA((&#x27;<mark>AP238_STEP_NC_MIM</mark> { 1 0 10303 238 1 0 0 1 }&#x27;));
+<span class="lineno">10</span>ENDSEC;
+<span class="lineno">11</span>DATA;
+<span class="lineno">12</span>#1=APPLICATION_CONTEXT(&#x27;numerical_control_machining&#x27;);
+<span class="lineno">13</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,
+<span class="lineno">14</span>  &#x27;numerical_control_machining&#x27;,2007,#1);
+<span class="lineno">15</span>#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">16</span>#15=(NAMED_UNIT(*)SI_UNIT($,.SECOND.)TIME_UNIT());
+<span class="lineno">17</span>#16=(DERIVED_UNIT_ELEMENT(#10,1.0));
+<span class="lineno">18</span>#17=(DERIVED_UNIT_ELEMENT(#15,-1.0));
+<span class="lineno">19</span>#18=DERIVED_UNIT((#16,#17));
+<span class="lineno">20</span>#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+<span class="lineno">21</span>     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#15))
+<span class="lineno">22</span>     REPRESENTATION_CONTEXT(&#x27;nc&#x27;,&#x27;3D&#x27;));
+<span class="lineno">23</span>/* Defect: 50000 mm/min on a small end-mill - way past envelope. */
+<span class="lineno">24</span>#80=MEASURE_WITH_UNIT(POSITIVE_RATIO_MEASURE(<mark>50000.0</mark>),#18);
+<span class="lineno">25</span>#90=<mark>MACHINING_TOOL_FEEDSPEED</mark>($,#80,$);
+<span class="lineno">26</span>#100=MACHINING_OPERATION(&#x27;rough_pocket&#x27;,$,$,$,$,$);
+<span class="lineno">27</span>#200=WORKPLAN(&#x27;main&#x27;,(#100),$,$,$);
+<span class="lineno">28</span>ENDSEC;
+<span class="lineno">29</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="M097.html">&larr; M097</a> <a class="up" href="index.html">§12.8 Mixed (tessellation, validation properties, etc.)</a> <a class="next" href="M099.html">M099 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

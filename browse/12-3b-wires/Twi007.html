@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Twi007 — Disordered edges in wire — listed out of traversal order but reorderable</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.3b Wires / loops / edges</a> <span class="sep">/</span> <span class="current">Twi007</span>
+</nav>
+<header class="title-bar">
+<h1>Twi007 <span class="sep">—</span> <span class="entry-title">Disordered edges in wire — listed out of traversal order but reorderable</span></h1>
+<p class="category">§12.3b wire-loop</p>
+<p class="tag-pills">
+<a class="tag tag-topology" href="../by-tag/topology/index.html">topology</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-3b-wires/Twi007.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-3b-wires/Twi007.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>05-occt-shapefix.md F001 (FixReorder)</li>
+<li>04-occt-translation.md Q024 (composite-curve r0301_db.stp)</li>
+<li>08-occt-gitlog.md G080/G104 (bug 0021317, torus)</li>
+<li>09-healing-menus.md</li>
+</ul></section>
+<section><h2>Description</h2>
+<p>The edges in an `EDGE_LOOP` are emitted in arbitrary order — the head/tail vertices of consecutive entries do not match, but the edges as a set can be reordered into a valid head-to-tail traversal. Common with Pro/E composite-curve segments where the exporter writes edges in arbitrary slot order.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>STEP face whose `EDGE_LOOP` lists edges in non-traversal order; vertices common but not adjacent.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>reorder the edges by vertex matching to recover a head-to-tail traversal; if no consistent ordering exists (some edges need flipping or no permutation works), reject as malformed.</p></section>
+<section><h2>Notes</h2>
+<p>For STEP-disordered loops where reordering alone is insufficient and orientation flipping is also required, see Twi038. **See also**: Twi003. Synonyms: &quot;edges out of order in wire&quot;, &quot;wire edges in random sequence&quot;, &quot;Pro/E composite curve in wrong slot order&quot;, &quot;edges shuffled in EDGE_LOOP&quot;, &quot;reorderable but not head-to-tail&quot;.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a</code></p></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>n_edges_total &gt;= 4</code></li>
+<li><code>face[0].surface_type == &quot;plane&quot;</code></li>
+<li><code>n_vertices_total &gt;= 8</code></li>
+</ul></section>
+<section><h2>Cross-references</h2>
+<p><a href="Twi003.html">Twi003</a>, <a href="Twi038.html">Twi038</a></p>
+</section>
+<section><h2>Live oracle output</h2>
+<table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
+<tr><td><code>occt_heal_on</code></td><td><code>shape(1)</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>shape(1)</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>shape(9)</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>shape(9)</code></td></tr>
+<tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>not_manifold</code></td></tr>
+</tbody></table>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* Twi007 - Disordered edges in wire (head-to-tail breakage solvable by reorder)
+<span class="lineno">3</span> * Defect: Edges of the loop emitted in arbitrary order or inconsistent
+<span class="lineno">4</span> * orientations; each pair shares vertices but they are not adjacent in the
+<span class="lineno">5</span> * EDGE_LOOP list. ShapeFix_Wire::FixReorder / ShapeAnalysis_WireOrder
+<span class="lineno">6</span> * reconstructs head-to-tail order from 3D and 2D info. Common with Pro/E
+<span class="lineno">7</span> * composite-curve segments. Replace face with reordered wire even if no other
+<span class="lineno">8</span> * fix needed (G080/G104 fix). */
+<span class="lineno">9</span>HEADER;
+<span class="lineno">10</span>FILE_DESCRIPTION((&#x27;Twi007 test case&#x27;,&#x27;Disordered edges in wire (FixReorder)&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">11</span>FILE_NAME(&#x27;Twi007.stp&#x27;,&#x27;2026-04-26T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">12</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }&#x27;));
+<span class="lineno">13</span>ENDSEC;
+<span class="lineno">14</span>DATA;
+<span class="lineno">15</span>#1=APPLICATION_CONTEXT(&#x27;automotive_design&#x27;);
+<span class="lineno">16</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,&#x27;automotive_design&#x27;,2000,#1);
+<span class="lineno">17</span>#10=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">18</span>#11=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">19</span>#12=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">20</span>#13=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#10,#11,#12);
+<span class="lineno">21</span>#20=PLANE(&#x27;&#x27;,#13);
+<span class="lineno">22</span>/* Square corners */
+<span class="lineno">23</span>#30=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">24</span>#31=VERTEX_POINT(&#x27;&#x27;,#30);
+<span class="lineno">25</span>#32=CARTESIAN_POINT(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">26</span>#33=VERTEX_POINT(&#x27;&#x27;,#32);
+<span class="lineno">27</span>#34=CARTESIAN_POINT(&#x27;&#x27;,(1.0,1.0,0.0));
+<span class="lineno">28</span>#35=VERTEX_POINT(&#x27;&#x27;,#34);
+<span class="lineno">29</span>#36=CARTESIAN_POINT(&#x27;&#x27;,(0.0,1.0,0.0));
+<span class="lineno">30</span>#37=VERTEX_POINT(&#x27;&#x27;,#36);
+<span class="lineno">31</span>/* Curves */
+<span class="lineno">32</span>#40=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">33</span>#41=VECTOR(&#x27;&#x27;,#40,1.0);
+<span class="lineno">34</span>#42=LINE(&#x27;&#x27;,#30,#41);
+<span class="lineno">35</span>#43=DIRECTION(&#x27;&#x27;,(0.0,1.0,0.0));
+<span class="lineno">36</span>#44=VECTOR(&#x27;&#x27;,#43,1.0);
+<span class="lineno">37</span>#45=LINE(&#x27;&#x27;,#32,#44);
+<span class="lineno">38</span>#46=DIRECTION(&#x27;&#x27;,(-1.0,0.0,0.0));
+<span class="lineno">39</span>#47=VECTOR(&#x27;&#x27;,#46,1.0);
+<span class="lineno">40</span>#48=LINE(&#x27;&#x27;,#34,#47);
+<span class="lineno">41</span>#49=DIRECTION(&#x27;&#x27;,(0.0,-1.0,0.0));
+<span class="lineno">42</span>#50=VECTOR(&#x27;&#x27;,#49,1.0);
+<span class="lineno">43</span>#51=LINE(&#x27;&#x27;,#36,#50);
+<span class="lineno">44</span>#60=EDGE_CURVE(&#x27;&#x27;,#31,#33,#42,.T.);
+<span class="lineno">45</span>#61=EDGE_CURVE(&#x27;&#x27;,#33,#35,#45,.T.);
+<span class="lineno">46</span>#62=EDGE_CURVE(&#x27;&#x27;,#35,#37,#48,.T.);
+<span class="lineno">47</span>#63=EDGE_CURVE(&#x27;&#x27;,#37,#31,#51,.T.);
+<span class="lineno">48</span>#70=ORIENTED_EDGE(&#x27;&#x27;,*,*,#60,.T.);
+<span class="lineno">49</span>#71=ORIENTED_EDGE(&#x27;&#x27;,*,*,#61,.T.);
+<span class="lineno">50</span>#72=ORIENTED_EDGE(&#x27;&#x27;,*,*,#62,.T.);
+<span class="lineno">51</span>#73=ORIENTED_EDGE(&#x27;&#x27;,*,*,#63,.T.);
+<span class="lineno">52</span>/* Defect: edge order is scrambled - listed (e1, e3, e2, e4) instead of
+<span class="lineno">53</span> * (e1, e2, e3, e4). FixReorder must restore head-to-tail traversal. */
+<span class="lineno">54</span>#80=EDGE_LOOP(&#x27;&#x27;,(#70,#72,#71,#73));
+<span class="lineno">55</span>#81=FACE_OUTER_BOUND(&#x27;&#x27;,#80,.T.);
+<span class="lineno">56</span>#82=ADVANCED_FACE(&#x27;&#x27;,(#81),#20,.T.);
+<span class="lineno">57</span>/* Wrap: minimal PRODUCT chain so OCCT TransferRoots produces a shape. */
+<span class="lineno">58</span>#9000=PRODUCT_CONTEXT(&#x27;&#x27;,#1,&#x27;mechanical&#x27;);
+<span class="lineno">59</span>#9001=PRODUCT(&#x27;Twi007&#x27;,&#x27;Twi007&#x27;,&#x27;&#x27;,(#9000));
+<span class="lineno">60</span>#9002=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#9001);
+<span class="lineno">61</span>#9003=PRODUCT_DEFINITION_CONTEXT(&#x27;part definition&#x27;,#1,&#x27;design&#x27;);
+<span class="lineno">62</span>#9004=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,#9002,#9003);
+<span class="lineno">63</span>#9005=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,#9004);
+<span class="lineno">64</span>#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">65</span>#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+<span class="lineno">66</span>#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+<span class="lineno">67</span>#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,&#x27;distance_accuracy_value&#x27;,&#x27;&#x27;);
+<span class="lineno">68</span>#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT(&#x27;&#x27;,&#x27;3D&#x27;));
+<span class="lineno">69</span>#9020=OPEN_SHELL(&#x27;wrap_shell&#x27;,(#82));
+<span class="lineno">70</span>#9021=SHELL_BASED_SURFACE_MODEL(&#x27;wrap_sbsm&#x27;,(#9020));
+<span class="lineno">71</span>#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION(&#x27;&#x27;,(#9021),#9010);
+<span class="lineno">72</span>#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+<span class="lineno">73</span>ENDSEC;
+<span class="lineno">74</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Twi006.html">&larr; Twi006</a> <a class="up" href="index.html">§12.3b Wires / loops / edges</a> <a class="next" href="Twi008.html">Twi008 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

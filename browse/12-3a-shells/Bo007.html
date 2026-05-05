@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Bo007 — A face appears twice in the same shell</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.3a Shells / orientation</a> <span class="sep">/</span> <span class="current">Bo007</span>
+</nav>
+<header class="title-bar">
+<h1>Bo007 <span class="sep">—</span> <span class="entry-title">A face appears twice in the same shell</span></h1>
+<p class="category">§12.3a (sub-class: duplicate sub-shape)</p>
+<p class="tag-pills">
+<a class="tag tag-topology" href="../by-tag/topology/index.html">topology</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-3a-shells/Bo007.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-3a-shells/Bo007.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>OCCT BRepCheck_Shell.cxx:212 (SubshapeNotInShape / duplicate-face path) (uncovered class evidence)</li>
+</ul></section>
+<section><h2>Sender</h2>
+<p>deduced — OCCT uncovered-class sweep, Pass C</p></section>
+<section><h2>Description</h2>
+<p>A `CLOSED_SHELL` references the same `ADVANCED_FACE` entity in its face list twice (or two `ADVANCED_FACE`s sharing identical geometry and orientation). The shell topology is therefore over-counted: the same surface region is listed as belonging to the boundary twice. Bug-reporter language: &quot;duplicate face in shell&quot;, &quot;face listed twice&quot;, &quot;same face appears multiple times&quot;.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>A `CLOSED_SHELL` whose `cfs_faces` list contains the same `ADVANCED_FACE` entity reference twice.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>Detect duplicate references; heal by merging duplicates silently or reject with a diagnostic naming the offending face.</p></section>
+<section><h2>Notes</h2>
+<p>Validation observed in OCCT: BRepCheck flags `SubshapeNotInShape` after dedup. Synonyms: &quot;duplicate face in shell&quot;, &quot;face listed twice&quot;, &quot;same face appears multiple times&quot;, &quot;shell has redundant face entry&quot;, &quot;over-counted face in face list&quot;.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a</code></p></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>face[0].surface_type == &quot;plane&quot;</code></li>
+<li><code>n_edges_total &gt;= 4</code></li>
+</ul></section>
+<section><h2>Live oracle output</h2>
+<table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
+<tr><td><code>occt_heal_on</code></td><td><code>shape(1)</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>shape(1)</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>shape(9)</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>shape(9)</code></td></tr>
+<tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>not_manifold</code></td></tr>
+</tbody></table>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* Bo007 - Same face referenced twice in a shell.
+<span class="lineno">3</span> * Defect: CLOSED_SHELL.cfs_faces contains the same ADVANCED_FACE
+<span class="lineno">4</span> * entity reference twice. The shell over-counts the same surface
+<span class="lineno">5</span> * region as belonging to the boundary twice. */
+<span class="lineno">6</span>HEADER;
+<span class="lineno">7</span>FILE_DESCRIPTION((&#x27;Bo007 - duplicate face in shell&#x27;,&#x27;Pass C gap-fill&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">8</span>FILE_NAME(&#x27;Bo007.stp&#x27;,&#x27;2026-04-30T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;gap-fill C&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">9</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }&#x27;));
+<span class="lineno">10</span>ENDSEC;
+<span class="lineno">11</span>DATA;
+<span class="lineno">12</span>#1=APPLICATION_CONTEXT(&#x27;automotive_design&#x27;);
+<span class="lineno">13</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,&#x27;automotive_design&#x27;,2000,#1);
+<span class="lineno">14</span>/* Four corner points of a unit square in the z=0 plane. */
+<span class="lineno">15</span>#10=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">16</span>#11=CARTESIAN_POINT(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">17</span>#12=CARTESIAN_POINT(&#x27;&#x27;,(1.0,1.0,0.0));
+<span class="lineno">18</span>#13=CARTESIAN_POINT(&#x27;&#x27;,(0.0,1.0,0.0));
+<span class="lineno">19</span>#20=VERTEX_POINT(&#x27;&#x27;,#10);
+<span class="lineno">20</span>#21=VERTEX_POINT(&#x27;&#x27;,#11);
+<span class="lineno">21</span>#22=VERTEX_POINT(&#x27;&#x27;,#12);
+<span class="lineno">22</span>#23=VERTEX_POINT(&#x27;&#x27;,#13);
+<span class="lineno">23</span>/* Edges */
+<span class="lineno">24</span>#30=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">25</span>#31=VECTOR(&#x27;&#x27;,#30,1.0);
+<span class="lineno">26</span>#32=DIRECTION(&#x27;&#x27;,(0.0,1.0,0.0));
+<span class="lineno">27</span>#33=VECTOR(&#x27;&#x27;,#32,1.0);
+<span class="lineno">28</span>#40=LINE(&#x27;&#x27;,#10,#31); #41=EDGE_CURVE(&#x27;&#x27;,#20,#21,#40,.T.);
+<span class="lineno">29</span>#42=LINE(&#x27;&#x27;,#11,#33); #43=EDGE_CURVE(&#x27;&#x27;,#21,#22,#42,.T.);
+<span class="lineno">30</span>#44=LINE(&#x27;&#x27;,#13,#31); #45=EDGE_CURVE(&#x27;&#x27;,#23,#22,#44,.T.);
+<span class="lineno">31</span>#46=LINE(&#x27;&#x27;,#10,#33); #47=EDGE_CURVE(&#x27;&#x27;,#20,#23,#46,.T.);
+<span class="lineno">32</span>#50=ORIENTED_EDGE(&#x27;&#x27;,*,*,#41,.T.);
+<span class="lineno">33</span>#51=ORIENTED_EDGE(&#x27;&#x27;,*,*,#43,.T.);
+<span class="lineno">34</span>#52=ORIENTED_EDGE(&#x27;&#x27;,*,*,#45,.F.);
+<span class="lineno">35</span>#53=ORIENTED_EDGE(&#x27;&#x27;,*,*,#47,.F.);
+<span class="lineno">36</span>#60=EDGE_LOOP(&#x27;&#x27;,(#50,#51,#52,#53));
+<span class="lineno">37</span>#61=FACE_OUTER_BOUND(&#x27;&#x27;,#60,.T.);
+<span class="lineno">38</span>#70=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">39</span>#71=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">40</span>#72=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#10,#70,#71);
+<span class="lineno">41</span>#73=PLANE(&#x27;p&#x27;,#72);
+<span class="lineno">42</span>#100=ADVANCED_FACE(&#x27;the_face&#x27;,(#61),#73,.T.);
+<span class="lineno">43</span>/* Defect: face #100 listed twice in the shell face list. */
+<span class="lineno">44</span>#200=CLOSED_SHELL(&#x27;shell_with_duplicate_face&#x27;,(#100,#100));
+<span class="lineno">45</span>/* PRODUCT chain so OCCT loads the shell. */
+<span class="lineno">46</span>#9000=PRODUCT_CONTEXT(&#x27;&#x27;,#1,&#x27;mechanical&#x27;);
+<span class="lineno">47</span>#9001=PRODUCT(&#x27;Bo007&#x27;,&#x27;Bo007&#x27;,&#x27;&#x27;,(#9000));
+<span class="lineno">48</span>#9002=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#9001);
+<span class="lineno">49</span>#9003=PRODUCT_DEFINITION_CONTEXT(&#x27;part definition&#x27;,#1,&#x27;design&#x27;);
+<span class="lineno">50</span>#9004=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,#9002,#9003);
+<span class="lineno">51</span>#9005=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,#9004);
+<span class="lineno">52</span>#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">53</span>#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+<span class="lineno">54</span>#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+<span class="lineno">55</span>#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,&#x27;distance_accuracy_value&#x27;,&#x27;&#x27;);
+<span class="lineno">56</span>#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT(&#x27;&#x27;,&#x27;3D&#x27;));
+<span class="lineno">57</span>#9021=SHELL_BASED_SURFACE_MODEL(&#x27;wrap_sbsm&#x27;,(#200));
+<span class="lineno">58</span>#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION(&#x27;&#x27;,(#9021),#9010);
+<span class="lineno">59</span>#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+<span class="lineno">60</span>ENDSEC;
+<span class="lineno">61</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Bo006.html">&larr; Bo006</a> <a class="up" href="index.html">§12.3a Shells / orientation</a> <a class="next" href="Bo008.html">Bo008 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

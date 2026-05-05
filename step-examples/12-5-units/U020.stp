@@ -1,0 +1,53 @@
+ISO-10303-21;
+/*
+ * U020 — Validation properties (mass/area/volume) with units mismatched to GRC
+ * Defect: GRC is mm but a volume MEASURE_REPRESENTATION_ITEM is in
+ *         metre^3; another MEASURE_REPRESENTATION_ITEM has no
+ *         unit_component reference at all.
+ */
+HEADER;
+FILE_DESCRIPTION(('U020 validation prop unit mismatch'),'2;1');
+FILE_NAME('U020.stp','2026-04-26T00:00:00',('catalog'),('cad'),
+  'manual','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN'));
+ENDSEC;
+DATA;
+#10 = APPLICATION_CONTEXT('automotive design');
+#11 = APPLICATION_PROTOCOL_DEFINITION('international standard',
+  'automotive_design',2001,#10);
+#12 = PRODUCT_CONTEXT('',#10,'mechanical');
+#13 = PRODUCT('U020','U020','',(#12));
+#14 = PRODUCT_DEFINITION_FORMATION('','',#13);
+#15 = PRODUCT_DEFINITION_CONTEXT('',#10,'design');
+#16 = PRODUCT_DEFINITION('','',#14,#15);
+#17 = PRODUCT_DEFINITION_SHAPE('','',#16);
+/* Geometry context: mm */
+#20 = ( LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT(.MILLI.,.METRE.) );
+/* Volume unit derived from metre cubed (NOT mm^3) — mismatched */
+#21 = ( LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT($,.METRE.) );
+#22 = DIMENSIONAL_EXPONENTS(3.0,0.0,0.0,0.0,0.0,0.0,0.0);
+#23 = DERIVED_UNIT_ELEMENT(#21,3.0);
+#24 = DERIVED_UNIT((#23));
+#25 = ( NAMED_UNIT(*) PLANE_ANGLE_UNIT() SI_UNIT($,.RADIAN.) );
+#26 = ( NAMED_UNIT(*) SI_UNIT($,.STERADIAN.) SOLID_ANGLE_UNIT() );
+#27 = UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#20,
+  'distance_accuracy_value','');
+#28 = ( GEOMETRIC_REPRESENTATION_CONTEXT(3)
+  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#27))
+  GLOBAL_UNIT_ASSIGNED_CONTEXT((#20,#25,#26))
+  REPRESENTATION_CONTEXT('','3D') );
+#30 = CARTESIAN_POINT('',(0.0,0.0,0.0));
+#31 = DIRECTION('',(0.0,0.0,1.0));
+#32 = DIRECTION('',(1.0,0.0,0.0));
+#33 = AXIS2_PLACEMENT_3D('',#30,#31,#32);
+#34 = SHAPE_REPRESENTATION('',(#33),#28);
+#35 = SHAPE_DEFINITION_REPRESENTATION(#17,#34);
+/* Volume validation property in metre^3, while geometry is mm */
+#40 = MEASURE_WITH_UNIT(VOLUME_MEASURE(1.0E-6),#24);
+#41 = MEASURE_REPRESENTATION_ITEM('volume',VOLUME_MEASURE(1.0E-6),#24);
+/* Surface area MEASURE_REPRESENTATION_ITEM with no unit_component
+   (passed as $ — a hand-written defect)  */
+#42 = MEASURE_REPRESENTATION_ITEM('surface_area',AREA_MEASURE(150.0),$);
+#43 = REPRESENTATION('valprop',(#41,#42),#28);
+ENDSEC;
+END-ISO-10303-21;

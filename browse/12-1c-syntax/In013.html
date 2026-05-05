@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>In013 — Transfer Status remains Void after Defined was expected: unknown entity type in DATA section silently skipped (e.g., made-up future-schema entity)</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.1c Part-21 grammar</a> <span class="sep">/</span> <span class="current">In013</span>
+</nav>
+<header class="title-bar">
+<h1>In013 <span class="sep">—</span> <span class="entry-title">Transfer Status remains Void after Defined was expected: unknown entity type in DATA section silently skipped (e.g., made-up future-schema entity)</span></h1>
+<p class="category">§12.1c (sub-class: transfer silent partial)</p>
+<p class="severity-badge severity-p1">P1 — silent data loss</p>
+<p class="tag-pills">
+<a class="tag tag-syntax" href="../by-tag/syntax/index.html">syntax</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-1c-syntax/In013.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-1c-syntax/In013.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>OCCT Transfer_StatusResult Void/Defined transitions (uncovered class evidence)</li>
+</ul></section>
+<section><h2>Sender</h2>
+<p>deduced — OCCT uncovered-class sweep, Pass C</p></section>
+<section><h2>Description</h2>
+<p>A transfer process expected to produce a Defined result for an entity, but the result remains Void because no actor handled the entity type. The transfer log doesn&#x27;t flag the void as an error. Typical fixture: the DATA section contains an entity of a made-up or future type (e.g., `HYPOTHETICAL_AP242_ED2_FUTURE_ENTITY`) that no standard schema defines and no kernel actor recognizes — the reader silently skips it. Bug-reporter language: &quot;entity type not transferred&quot;, &quot;kernel skipped entity silently&quot;, &quot;unknown entity type ignored&quot;.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>An entity of a type the actor pool doesn&#x27;t recognize (e.g., a made-up `HYPOTHETICAL_AP242_ED2_FUTURE_ENTITY` or an AP242 ed.2 entity that the reader wasn&#x27;t compiled with).</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>Emit &quot;no actor for entity type X&quot; warning; track unrecognized types in a per-file summary.</p></section>
+<section><h2>Notes</h2>
+<p>Synonyms: &quot;STEP entity skipped&quot;. Provenance tier: runtime-only — bytes alone cannot demonstrate this defect; the symptom is the transfer-status field staying Void with no diagnostic emitted. The static fixture encodes only the trigger (an unknown entity type); observing the silent-Void requires a kernel runtime trace. Synonyms: &quot;unknown entity type silently skipped&quot;, &quot;made-up STEP entity not transferred&quot;, &quot;future-schema entity Void after transfer&quot;, &quot;STEP entity skipped without warning&quot;, &quot;transfer Status remains Void&quot;.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<section><h2>Provenance tier</h2>
+<p><code>runtime-only</code> — defect not fully embodied in fixture bytes.</p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>contains(b&#x27;DATA;&#x27;)</code></li>
+<li><code>contains(b&#x27;HEADER;&#x27;)</code></li>
+<li><code>count(b&#x27;ENDSEC;&#x27;) &gt;= 2</code></li>
+</ul></section>
+<section><h2>Live oracle output</h2>
+<table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
+<tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>no_shapes_loaded</code></td></tr>
+</tbody></table>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* In013 - Entity type unrecognized; transfer status remains Void.
+<span class="lineno">3</span> * Defect: a hypothetical AP242 ed.2 entity that the reader&#x27;s actor
+<span class="lineno">4</span> * pool doesn&#x27;t know about. */
+<span class="lineno">5</span><mark>HEADER;</mark>
+<span class="lineno">6</span>FILE_DESCRIPTION((&#x27;In013 - unrecognised entity type&#x27;,&#x27;Pass C gap-fill&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">7</span>FILE_NAME(&#x27;In013.stp&#x27;,&#x27;2026-04-30T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;gap-fill C&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">8</span>FILE_SCHEMA((&#x27;AP242_MANAGED_MODEL_BASED_3D_ENGINEERING_MIM_LF { 1 0 10303 442 1 1 4 }&#x27;));
+<span class="lineno">9</span><mark>ENDSEC;</mark>
+<span class="lineno">10</span><mark>DATA;</mark>
+<span class="lineno">11</span>#1=APPLICATION_CONTEXT(&#x27;automotive_design&#x27;);
+<span class="lineno">12</span>/* Made-up entity type that no actor recognises */
+<span class="lineno">13</span>#10=HYPOTHETICAL_AP242_ED2_FUTURE_ENTITY(&#x27;unknown_type&#x27;,&#x27;params&#x27;,1.0);
+<span class="lineno">14</span><mark>ENDSEC;</mark>
+<span class="lineno">15</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="In012.html">&larr; In012</a> <a class="up" href="index.html">§12.1c Part-21 grammar</a> <a class="next" href="In014.html">In014 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

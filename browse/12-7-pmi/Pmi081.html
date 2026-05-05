@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Pmi081 — GD&amp;T saved-views label name silently emptied</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.7 PMI / GD&amp;T</a> <span class="sep">/</span> <span class="current">Pmi081</span>
+</nav>
+<header class="title-bar">
+<h1>Pmi081 <span class="sep">—</span> <span class="entry-title">GD&amp;T saved-views label name silently emptied</span></h1>
+<p class="category">§12.7 PMI/GD&amp;T</p>
+<p class="severity-badge severity-p1">P1 — silent data loss</p>
+<p class="tag-pills">
+<a class="tag tag-pmi" href="../by-tag/pmi/index.html">pmi</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-7-pmi/Pmi081.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-7-pmi/Pmi081.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>OCCT MANTIS#0029854 (OCCT MANTIS tracker 502 as of 2026-05-02)</li>
+</ul></section>
+<section><h2>Description</h2>
+<p>A document has reserved labels (saved-view labels) that must be cleared but not deleted. A &quot;clear contents&quot; pass empties their *children* but also empties the label name itself, producing nameless reserved labels that downstream PMI tools cannot find.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>Document with two saved-view labels named &quot;front&quot; and &quot;iso&quot;. Run &quot;clear contents&quot;. Names become empty.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>Heal and accept: clear-contents preserves the label name attribute and only normalizes (zaps) non-name child attributes.</p></section>
+<section><h2>Notes</h2>
+<p>**See also**: Pmi078. Synonyms: &quot;GD&amp;T saved-views label name silently emptied&quot;, &quot;saved view label blank after export&quot;, &quot;GD&amp;T view name dropped silently&quot;.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>count_entity_def(b&#x27;PRESENTATION_VIEW&#x27;) == 2</code></li>
+<li><code>contains(b&#x27;ANNOTATION_PLANE&#x27;)</code></li>
+</ul></section>
+<section><h2>Cross-references</h2>
+<p><a href="Pmi078.html">Pmi078</a></p>
+</section>
+<section><h2>Live oracle output</h2>
+<table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
+<tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>no_shapes_loaded</code></td></tr>
+</tbody></table>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* Pmi081 - Saved-views label name silently emptied
+<span class="lineno">3</span> * Defect: two saved-view labels named front and iso; clear-contents pass also empties names */
+<span class="lineno">4</span>HEADER;
+<span class="lineno">5</span>FILE_DESCRIPTION((&#x27;Pmi081 test case&#x27;,&#x27;Saved-views label name silently emptied&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">6</span>FILE_NAME(&#x27;Pmi081.stp&#x27;,&#x27;2026-04-30T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">7</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }&#x27;));
+<span class="lineno">8</span>ENDSEC;
+<span class="lineno">9</span>DATA;
+<span class="lineno">10</span>#1=APPLICATION_CONTEXT(&#x27;automotive_design&#x27;);
+<span class="lineno">11</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,&#x27;automotive_design&#x27;,2000,#1);
+<span class="lineno">12</span><mark>#100=PRESENTATION_VIEW(</mark>&#x27;front&#x27;,&#x27;front view&#x27;,&#x27;&#x27;,(#1),#1);
+<span class="lineno">13</span><mark>#101=PRESENTATION_VIEW(</mark>&#x27;iso&#x27;,&#x27;iso view&#x27;,&#x27;&#x27;,(#1),#1);
+<span class="lineno">14</span>/* PMI anchor: minimal <mark>ANNOTATION_PLANE</mark> so this PMI fixture cites at least one canonical PMI entity. */
+<span class="lineno">15</span>#9100=CARTESIAN_POINT(&#x27;pmi_o&#x27;,(0.0,0.0,0.0));
+<span class="lineno">16</span>#9101=DIRECTION(&#x27;pmi_z&#x27;,(0.0,0.0,1.0));
+<span class="lineno">17</span>#9102=DIRECTION(&#x27;pmi_x&#x27;,(1.0,0.0,0.0));
+<span class="lineno">18</span>#9103=AXIS2_PLACEMENT_3D(&#x27;pmi_a&#x27;,#9100,#9101,#9102);
+<span class="lineno">19</span>#9104=PLANE(&#x27;pmi_anchor_plane&#x27;,#9103);
+<span class="lineno">20</span>#9105=<mark>ANNOTATION_PLANE</mark>(&#x27;pmi_annotation&#x27;,(),#9104,());
+<span class="lineno">21</span>ENDSEC;
+<span class="lineno">22</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Pmi080.html">&larr; Pmi080</a> <a class="up" href="index.html">§12.7 PMI / GD&amp;T</a> <a class="next" href="Pmi082.html">Pmi082 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

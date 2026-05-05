@@ -1,0 +1,89 @@
+ISO-10303-21;
+/*
+ * P014 — PCURVE 2D parametric trace lies off surface beyond tolerance
+ * Defect (FreeCAD #21216; FreeCAD post-Boolean):
+ *   Faces emitted after a complex Boolean cut carry SURFACE_CURVE whose
+ *   PCURVE lies slightly off the surface domain — beyond geometric tolerance.
+ *   Source TopoDS_Shape validates clean but on STEP re-import every
+ *   face/edge is flagged "Invalid curve on surface."
+ * Reproducer (mini): one face's SURFACE_CURVE has both 3D CURVE and 2D PCURVE
+ *   whose pcurve drift exceeds tolerance — encoded by giving the pcurve a
+ *   line in 2D that does NOT match the 3D line projected to surface uv.
+ * Expected kernel: auto-project pcurve back to surface (within tolerance);
+ *   or warn and accept.
+ */
+HEADER;
+FILE_DESCRIPTION(('P014 PCURVE drift beyond tolerance on post-Boolean face'),'2;1');
+FILE_NAME('P014.stp','2026-04-26T00:00:00',('catalog'),('cad'),'manual','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#10 = APPLICATION_CONTEXT('automotive design');
+#11 = APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2001,#10);
+#12 = PRODUCT_CONTEXT('',#10,'mechanical');
+#13 = PRODUCT_DEFINITION_CONTEXT('part definition',#10,'design');
+#20 = PRODUCT('P014_ASSY','','',(#12));
+#21 = PRODUCT_DEFINITION_FORMATION('','',#20);
+#22 = PRODUCT_DEFINITION('design','',#21,#13);
+#23 = PRODUCT_DEFINITION_SHAPE('','',#22);
+#30 = PRODUCT('BOOLEAN_RESULT','post-cut body','',(#12));
+#31 = PRODUCT_DEFINITION_FORMATION('','',#30);
+#32 = PRODUCT_DEFINITION('design','',#31,#13);
+#33 = PRODUCT_DEFINITION_SHAPE('','',#32);
+#40 = NEXT_ASSEMBLY_USAGE_OCCURRENCE('1','RESULT_INST','',#22,#32,$);
+/* Plane surface */
+#90 = CARTESIAN_POINT('plane_origin',(0.0,0.0,0.0));
+#91 = DIRECTION('plane_z',(0.0,0.0,1.0));
+#92 = DIRECTION('plane_x',(1.0,0.0,0.0));
+#93 = AXIS2_PLACEMENT_3D('plane_axes',#90,#91,#92);
+#94 = PLANE('flat',#93);
+/* 3D edge line on the plane: from (0,0,0) along +x */
+#95 = CARTESIAN_POINT('e3d_p',(0.0,0.0,0.0));
+#96 = DIRECTION('e3d_d',(1.0,0.0,0.0));
+#97 = VECTOR('e3d_v',#96,1.0);
+#98 = LINE('edge_line_3d',#95,#97);
+/* PCURVE: SHOULD be uv from (0,0) along +u, but emits with a 0.5 mm drift in
+   v that exceeds ANGSTROM-scale tolerance. */
+#99 = CARTESIAN_POINT('pc_p',(0.0,0.5));
+#100 = DIRECTION('pc_d',(1.0,0.0));
+#101 = VECTOR('pc_v',#100,1.0);
+#102 = LINE('pc_line_drifted',#99,#101);
+#103 = DEFINITIONAL_REPRESENTATION('drifted_pc_def',(#102),#54);
+#104 = PCURVE('drifted_pcurve',#94,#103);
+#105 = SURFACE_CURVE('drifted_surf_curve',#98,(#104),.PCURVE_S1.);
+#50 = ( LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT(.MILLI.,.METRE.) );
+#51 = ( NAMED_UNIT(*) PLANE_ANGLE_UNIT() SI_UNIT($,.RADIAN.) );
+#52 = ( NAMED_UNIT(*) SI_UNIT($,.STERADIAN.) SOLID_ANGLE_UNIT() );
+#53 = UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#50,'distance_accuracy_value','');
+#54 = ( GEOMETRIC_REPRESENTATION_CONTEXT(3) GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#53))
+        GLOBAL_UNIT_ASSIGNED_CONTEXT((#50,#51,#52)) REPRESENTATION_CONTEXT('','3D') );
+#60 = CARTESIAN_POINT('',(0.0,0.0,0.0));
+#61 = DIRECTION('',(0.0,0.0,1.0));
+#62 = DIRECTION('',(1.0,0.0,0.0));
+#63 = AXIS2_PLACEMENT_3D('part_origin',#60,#61,#62);
+#64 = SHAPE_REPRESENTATION('part_rep',(#63,#94,#105),#54);
+#65 = SHAPE_DEFINITION_REPRESENTATION(#33,#64);
+#66 = REPRESENTATION_MAP(#63,#64);
+#67 = MAPPED_ITEM('inst',#66,#63);
+#80 = AXIS2_PLACEMENT_3D('assy_origin',#60,#61,#62);
+#81 = SHAPE_REPRESENTATION('assy_rep',(#80,#67),#54);
+#82 = SHAPE_DEFINITION_REPRESENTATION(#23,#81);
+/* Extended catalog notes:
+ * This reproducer is a minimal demonstrator of the §12.6 entry
+ * referenced in the /* */ header above. The entity-graph above
+ * is just enough to exercise the defect on a writer or reader
+ * test harness; it is NOT a production-quality assembly.
+ *
+ * License: this file is part of a defect catalog assembled from
+ * publicly described bug reports and recommended-practice notes.
+ * No proprietary geometry or names are reproduced. The entity IDs
+ * and minimal coordinates are author-original.
+ *
+ * Cross-refs: see STEP_PROBLEM_CATALOG.md §12.6 for full entry,
+ * source list, sender attribution and expected kernel behavior.
+ */
+#900 = DESCRIPTIVE_REPRESENTATION_ITEM('catalog_id','P014');
+#901 = DESCRIPTIVE_REPRESENTATION_ITEM('catalog_section','12.6 assembly hierarchy');
+#902 = DESCRIPTIVE_REPRESENTATION_ITEM('catalog_status','pending');
+ENDSEC;
+END-ISO-10303-21;

@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>U014 — `LENGTH_UNIT` is bare `SI_UNIT(METRE)` but coordinates are mm-sized (`STEP Export` ignores `write.units` since OCCT 7.8 regression)</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.5 Units &amp; coordinate systems</a> <span class="sep">/</span> <span class="current">U014</span>
+</nav>
+<header class="title-bar">
+<h1>U014 <span class="sep">—</span> <span class="entry-title">`LENGTH_UNIT` is bare `SI_UNIT(METRE)` but coordinates are mm-sized (`STEP Export` ignores `write.units` since OCCT 7.8 regression)</span></h1>
+<p class="category">§12.5 (sub-class: global-state / writer)</p>
+<p class="severity-badge severity-p1">P1 — silent data loss</p>
+<p class="tag-pills">
+<a class="tag tag-silent-loss" href="../by-tag/silent-loss/index.html">silent-loss</a>
+<a class="tag tag-units" href="../by-tag/units/index.html">units</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-5-units/U014.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-5-units/U014.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>18-other-issues.md I015 (OCCT issue #354)</li>
+<li>04-occt-translation.md Q083 (`write.step.unit` parameter incorrect)</li>
+</ul></section>
+<section><h2>Sender</h2>
+<p>OCCT `STEPControl_Writer`</p></section>
+<section><h2>Description</h2>
+<p>After OCCT 7.8 the `write.units` / `DESTEP_Parameters` write-unit setting is no longer applied: output coordinates are not scaled to the requested unit. Common signature: `LENGTH_UNIT` declared as bare `SI_UNIT(METRE)` (no `.MILLI.` prefix) but coordinate values are sized as if mm (e.g. 100, 50, 25.4), so a literal interpretation produces a 100 m × 50 m oversized part.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>`xstep.cascade.unit MM` and `write.step.unit M`, write a 1-unit vertex; file is still in mm.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>Heal and accept: normalize / honour the configured target unit on write; coerce / apply scale during transfer.</p></section>
+<section><h2>Notes</h2>
+<p>**See also**: Pf022. Synonyms: &quot;OCCT 7.8 ignores write.units setting&quot;, &quot;STEP exports as METRE despite mm setting&quot;, &quot;write.step.unit silently ignored&quot;, &quot;OCCT regression on STEP write unit&quot;, &quot;100m oversized part from STEP write&quot;.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>matches(rb&#x27;SI_UNIT\(\s*\$\s*,\s*\.METRE\.\)&#x27;) or contains(b&#x27;SI_UNIT($,.METRE.)&#x27;)</code></li>
+<li><code>contains(b&#x27;.METRE.&#x27;)</code></li>
+</ul></section>
+<section><h2>Cross-references</h2>
+<p><a href="../12-10-perf/Pf022.html">Pf022</a></p>
+</section>
+<section><h2>Live oracle output</h2>
+<table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
+<tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>no_shapes_loaded</code></td></tr>
+</tbody></table>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/*
+<span class="lineno">3</span> * U014 â STEP Export ignores write.units since OCCT 7.8 (regression)
+<span class="lineno">4</span> * Defect: writer was asked to emit metres; declares METRE in unit
+<span class="lineno">5</span> *         context but coordinates are still in mm (raw kernel state).
+<span class="lineno">6</span> */
+<span class="lineno">7</span>HEADER;
+<span class="lineno">8</span>FILE_DESCRIPTION((&#x27;U014 write.units regression&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">9</span>FILE_NAME(&#x27;U014.stp&#x27;,&#x27;2026-04-26T00:00:00&#x27;,(&#x27;catalog&#x27;),(&#x27;cad&#x27;),
+<span class="lineno">10</span>  &#x27;manual&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">11</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN&#x27;));
+<span class="lineno">12</span>ENDSEC;
+<span class="lineno">13</span>DATA;
+<span class="lineno">14</span>#10 = APPLICATION_CONTEXT(&#x27;automotive design&#x27;);
+<span class="lineno">15</span>#11 = APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,
+<span class="lineno">16</span>  &#x27;automotive_design&#x27;,2001,#10);
+<span class="lineno">17</span>#12 = PRODUCT_CONTEXT(&#x27;&#x27;,#10,&#x27;mechanical&#x27;);
+<span class="lineno">18</span>#13 = PRODUCT(&#x27;U014&#x27;,&#x27;U014&#x27;,&#x27;&#x27;,(#12));
+<span class="lineno">19</span>#14 = PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#13);
+<span class="lineno">20</span>#15 = PRODUCT_DEFINITION_CONTEXT(&#x27;&#x27;,#10,&#x27;design&#x27;);
+<span class="lineno">21</span>#16 = PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,#14,#15);
+<span class="lineno">22</span>#17 = PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,#16);
+<span class="lineno">23</span>/* User asked the writer for METRE; writer obediently labels metre,
+<span class="lineno">24</span>   but did not multiply the kernel-internal mm by 1e-3.
+<span class="lineno">25</span>   File ends up labelled metre with mm-magnitude coordinates. */
+<span class="lineno">26</span>#20 = ( LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT($,<mark>.METRE.</mark>) );
+<span class="lineno">27</span>#22 = ( NAMED_UNIT(*) PLANE_ANGLE_UNIT() SI_UNIT($,.RADIAN.) );
+<span class="lineno">28</span>#23 = ( NAMED_UNIT(*) SI_UNIT($,.STERADIAN.) SOLID_ANGLE_UNIT() );
+<span class="lineno">29</span>#24 = UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-6),#20,
+<span class="lineno">30</span>  &#x27;distance_accuracy_value&#x27;,&#x27;&#x27;);
+<span class="lineno">31</span>#25 = ( GEOMETRIC_REPRESENTATION_CONTEXT(3)
+<span class="lineno">32</span>  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#24))
+<span class="lineno">33</span>  GLOBAL_UNIT_ASSIGNED_CONTEXT((#20,#22,#23))
+<span class="lineno">34</span>  REPRESENTATION_CONTEXT(&#x27;&#x27;,&#x27;3D&#x27;) );
+<span class="lineno">35</span>/* 100.0 here means &quot;100 metres&quot; per the declared unit, but
+<span class="lineno">36</span>   producer kernel state was mm â so a 100 mm part is now claimed
+<span class="lineno">37</span>   to be 100 m: 1000x oversized at re-import. */
+<span class="lineno">38</span>#30 = CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">39</span>#31 = CARTESIAN_POINT(&#x27;&#x27;,(100.0,0.0,0.0));
+<span class="lineno">40</span>#32 = CARTESIAN_POINT(&#x27;&#x27;,(100.0,50.0,0.0));
+<span class="lineno">41</span>#33 = DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">42</span>#34 = DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">43</span>#35 = AXIS2_PLACEMENT_3D(&#x27;&#x27;,#30,#33,#34);
+<span class="lineno">44</span>#50 = SHAPE_REPRESENTATION(&#x27;&#x27;,(#35),#25);
+<span class="lineno">45</span>#51 = SHAPE_DEFINITION_REPRESENTATION(#17,#50);
+<span class="lineno">46</span>ENDSEC;
+<span class="lineno">47</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="U009.html">&larr; U009</a> <a class="up" href="index.html">§12.5 Units &amp; coordinate systems</a> <a class="next" href="U015.html">U015 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

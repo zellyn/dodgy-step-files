@@ -1,0 +1,24 @@
+ISO-10303-21;
+/* Le043 - \X4\ encoding a valid supplementary-plane (above BMP) code
+ * point with a non-multiple-of-eight hex run
+ * Defect: \X4\..\X0\ wraps a sequence of 8-hex-digit groups, each
+ * encoding one UCS-4 (32-bit) scalar. A producer concatenating
+ * variable-length output may emit a hex run not divisible by 8
+ * (e.g. 4 or 7 digits) which is malformed. Distinct from Le006 in
+ * that the *valid* leading group is in the supplementary plane
+ * (U+1F600 Grinning Face) and only the trailing group is short,
+ * so a tolerant parser may accept the first character and drop the
+ * second silently. */
+HEADER;
+FILE_DESCRIPTION(('Le043 - \X4\ valid SMP point + short trailing run'),'2;1');
+FILE_NAME('Le043.stp','2026-04-26T00:00:00',(''),(''),
+  'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=PRODUCT_CONTEXT('part',#1,'mechanical');
+/* Defect: 8 hex (valid SMP U+1F600) + 4 hex (short - illegal) */
+#10=PRODUCT('mix=\X4\0001F60000041\X0\','mixed-SMP-short','',(#2));
+ENDSEC;
+END-ISO-10303-21;

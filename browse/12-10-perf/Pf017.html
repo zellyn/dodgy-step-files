@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Pf017 — Healing pipeline hangs on huge single-shell input (multi-pass divergence)</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.10 Scale &amp; performance</a> <span class="sep">/</span> <span class="current">Pf017</span>
+</nav>
+<header class="title-bar">
+<h1>Pf017 <span class="sep">—</span> <span class="entry-title">Healing pipeline hangs on huge single-shell input (multi-pass divergence)</span></h1>
+<p class="category">§12.10 (sub-class: multi-pass-healing / OOM)</p>
+<p class="severity-badge severity-p2">P2 — spec deviation (no data loss)</p>
+<p class="tag-pills">
+<a class="tag tag-silent-loss" href="../by-tag/silent-loss/index.html">silent-loss</a>
+<a class="tag tag-performance" href="../by-tag/performance/index.html">performance</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-10-perf/Pf017.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-10-perf/Pf017.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>18-other-issues.md I017 (OCCT #417 / Mantis 32127)</li>
+</ul></section>
+<section><h2>Sender</h2>
+<p>large single-shell STEP</p></section>
+<section><h2>Description</h2>
+<p>STEP importer hangs and consumes huge memory during the import-time healing pass on one big shell — each pass exposes another defect, requiring further iteration; the iteration loop is unbounded and does not converge.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>Any large single-`CLOSED_SHELL` STEP that triggers a full healing pass during import.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>Heal and accept: size-aware healing logic that bypasses or chunks the multi-pass step on huge single-shell input. Must not hang.</p></section>
+<section><h2>Notes</h2>
+<p>Cross-oracle: pure-Python Part-21 validator rejects (reject(E_REAL_NO_DOT)); OCCT silently accepts (load is `empty`). OCC auto-heals a spec-level violation.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>count_entity_def(b&#x27;CARTESIAN_POINT&#x27;) &gt;= 8</code></li>
+<li><code>contains(b&#x27;MANIFOLD_SOLID_BREP&#x27;)</code></li>
+</ul></section>
+<section><h2>Live oracle output</h2>
+<table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
+<tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>reject(E_REAL_NO_DOT)</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>no_shapes_loaded</code></td></tr>
+</tbody></table>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>/* Pf017 - ShapeFix_Shape hang on huge single-shell input (multi-pass
+<span class="lineno">2</span>   healing).  STEP importer hangs and consumes huge memory during
+<span class="lineno">3</span>   import-time ShapeFix_Shape::Perform on one big shell - each pass
+<span class="lineno">4</span>   exposes another defect that requires further iteration; the loop is
+<span class="lineno">5</span>   unbounded (OCCT #417 / Mantis 32127).
+<span class="lineno">6</span>   Pattern: a single CLOSED_SHELL with many faces, all carrying small
+<span class="lineno">7</span>   defects (gap, sliver, micro self-intersection) that healing fixes
+<span class="lineno">8</span>   serially - fixing pass 1 exposes a defect that pass 2 then fixes,
+<span class="lineno">9</span>   ad infinitum.
+<span class="lineno">10</span>   Scaling-up: this fixture has ~16 faces in a single CLOSED_SHELL with
+<span class="lineno">11</span>   intentionally gap-prone vertex coords. Replicate to thousands of
+<span class="lineno">12</span>   slightly-tolerance-mismatched faces to trigger the hang. */
+<span class="lineno">13</span>ISO-10303-21;
+<span class="lineno">14</span>HEADER;
+<span class="lineno">15</span>FILE_DESCRIPTION((&#x27;Pf017 - huge single-shell ShapeFix multi-pass hang&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">16</span>FILE_NAME(&#x27;Pf017.stp&#x27;,&#x27;2026-04-26T00:00:00&#x27;,(&#x27;auto-generated&#x27;),(&#x27;&#x27;),
+<span class="lineno">17</span>  &#x27;auto-generated&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">18</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
+<span class="lineno">19</span>ENDSEC;
+<span class="lineno">20</span>DATA;
+<span class="lineno">21</span><mark>#1=CARTESIAN_POINT(</mark>&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">22</span>#2=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">23</span>#3=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">24</span>#4=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#1,#2,#3);
+<span class="lineno">25</span>#5=PLANE(&#x27;&#x27;,#4);
+<span class="lineno">26</span>/* gap-prone vertex coords - each pair differs by ~1e-7, just under
+<span class="lineno">27</span>   typical 1e-6 tolerance; healing&#x27;s gap-closing then uncovers a
+<span class="lineno">28</span>   different mismatch elsewhere. */
+<span class="lineno">29</span><mark>#10=CARTESIAN_POINT(</mark>&#x27;a&#x27;,(0.0,0.0,0.0));
+<span class="lineno">30</span><mark>#11=CARTESIAN_POINT(</mark>&#x27;a-near&#x27;,(1e-7,0.0,0.0));
+<span class="lineno">31</span><mark>#12=CARTESIAN_POINT(</mark>&#x27;b&#x27;,(1.0,0.0,0.0));
+<span class="lineno">32</span><mark>#13=CARTESIAN_POINT(</mark>&#x27;b-near&#x27;,(1.0+1e-7,0.0,0.0));
+<span class="lineno">33</span><mark>#14=CARTESIAN_POINT(</mark>&#x27;c&#x27;,(1.0,1.0,0.0));
+<span class="lineno">34</span><mark>#15=CARTESIAN_POINT(</mark>&#x27;c-near&#x27;,(1.0,1.0+1e-7,0.0));
+<span class="lineno">35</span><mark>#16=CARTESIAN_POINT(</mark>&#x27;d&#x27;,(0.0,1.0,0.0));
+<span class="lineno">36</span><mark>#17=CARTESIAN_POINT(</mark>&#x27;d-near&#x27;,(0.0,1.0+1e-7,0.0));
+<span class="lineno">37</span>/* sixteen faces, each sharing a degenerate loop, are all attached to
+<span class="lineno">38</span>   the single CLOSED_SHELL #100 - this is the huge single-shell pattern */
+<span class="lineno">39</span>#20=EDGE_LOOP(&#x27;&#x27;,());
+<span class="lineno">40</span>#21=FACE_OUTER_BOUND(&#x27;&#x27;,#20,.T.);
+<span class="lineno">41</span>#30=ADVANCED_FACE(&#x27;f1&#x27;,(#21),#5,.T.);
+<span class="lineno">42</span>#31=ADVANCED_FACE(&#x27;f2&#x27;,(#21),#5,.T.);
+<span class="lineno">43</span>#32=ADVANCED_FACE(&#x27;f3&#x27;,(#21),#5,.T.);
+<span class="lineno">44</span>#33=ADVANCED_FACE(&#x27;f4&#x27;,(#21),#5,.T.);
+<span class="lineno">45</span>#34=ADVANCED_FACE(&#x27;f5&#x27;,(#21),#5,.T.);
+<span class="lineno">46</span>#35=ADVANCED_FACE(&#x27;f6&#x27;,(#21),#5,.T.);
+<span class="lineno">47</span>#36=ADVANCED_FACE(&#x27;f7&#x27;,(#21),#5,.T.);
+<span class="lineno">48</span>#37=ADVANCED_FACE(&#x27;f8&#x27;,(#21),#5,.T.);
+<span class="lineno">49</span>#38=ADVANCED_FACE(&#x27;f9&#x27;,(#21),#5,.T.);
+<span class="lineno">50</span>#39=ADVANCED_FACE(&#x27;f10&#x27;,(#21),#5,.T.);
+<span class="lineno">51</span>#40=ADVANCED_FACE(&#x27;f11&#x27;,(#21),#5,.T.);
+<span class="lineno">52</span>#41=ADVANCED_FACE(&#x27;f12&#x27;,(#21),#5,.T.);
+<span class="lineno">53</span>#42=ADVANCED_FACE(&#x27;f13&#x27;,(#21),#5,.T.);
+<span class="lineno">54</span>#43=ADVANCED_FACE(&#x27;f14&#x27;,(#21),#5,.T.);
+<span class="lineno">55</span>#44=ADVANCED_FACE(&#x27;f15&#x27;,(#21),#5,.T.);
+<span class="lineno">56</span>#45=ADVANCED_FACE(&#x27;f16&#x27;,(#21),#5,.T.);
+<span class="lineno">57</span>#100=CLOSED_SHELL(&#x27;huge-single-shell&#x27;,(#30,#31,#32,#33,#34,#35,#36,#37,
+<span class="lineno">58</span>   #38,#39,#40,#41,#42,#43,#44,#45));
+<span class="lineno">59</span>#200=<mark>MANIFOLD_SOLID_BREP</mark>(&#x27;healing-target&#x27;,#100);
+<span class="lineno">60</span>ENDSEC;
+<span class="lineno">61</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Pf016.html">&larr; Pf016</a> <a class="up" href="index.html">§12.10 Scale &amp; performance</a> <a class="next" href="Pf018.html">Pf018 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

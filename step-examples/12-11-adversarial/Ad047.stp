@@ -1,0 +1,69 @@
+/* Ad047 - Negative or invalid face area after fixshape
+   ----------------------------------------------------------------------
+   Catalog section : §12.11 adversarial (sub-class: schema-validation)
+   Sources         : 03-occt-tests.md R075 (bug28523)
+   See also        : Ad043
+   ----------------------------------------------------------------------
+   WARNING: This file is INTENTIONALLY MALFORMED for parser-robustness
+   testing. Do NOT use as exchange data.
+   ----------------------------------------------------------------------
+   Defect
+     fixshape reverses face orientation, producing a negative computed
+     area downstream. Trigger: input file has one face whose outer-bound
+     orientation flag (.T./.F.) disagrees with the underlying surface
+     normal direction; ShapeFix flips orientation idempotently-incorrectly
+     and the area integral comes out negative.
+   Reproducer recipe
+     ADVANCED_FACE whose orientation flag is .F. while its
+     FACE_OUTER_BOUND.orientation is .T. and the surface normal points
+     +Z; ShapeFix flips and the recomputed area is negative.
+   Expected kernel behavior
+     Post-fix invariant check: area must be > 0. If negative, flip
+     once more or emit E_FIXSHAPE_NEGATIVE_AREA. Idempotency is required.
+   ----------------------------------------------------------------------
+*/
+ISO-10303-21;
+HEADER;
+FILE_DESCRIPTION(('Ad047 - face orientation flag inverse of surface normal'),
+  '2;1');
+FILE_NAME('Ad047.stp','2026-04-26T00:00:00',('auto-generated'),(''),
+  'auto-generated','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+#1=CARTESIAN_POINT('o',(0.0,0.0,0.0));
+#2=DIRECTION('+z',(0.0,0.0,1.0));
+#3=DIRECTION('+x',(1.0,0.0,0.0));
+#4=AXIS2_PLACEMENT_3D('p',#1,#2,#3);
+#5=PLANE('plane_normal_+z',#4);
+#10=CARTESIAN_POINT('p0',(0.0,0.0,0.0));
+#11=CARTESIAN_POINT('p1',(1.0,0.0,0.0));
+#12=CARTESIAN_POINT('p2',(1.0,1.0,0.0));
+#13=CARTESIAN_POINT('p3',(0.0,1.0,0.0));
+#14=VERTEX_POINT('v0',#10);
+#15=VERTEX_POINT('v1',#11);
+#16=VERTEX_POINT('v2',#12);
+#17=VERTEX_POINT('v3',#13);
+#20=DIRECTION('dx',(1.0,0.0,0.0));
+#21=DIRECTION('dy',(0.0,1.0,0.0));
+#22=VECTOR('vx',#20,1.0);
+#23=VECTOR('vy',#21,1.0);
+#24=LINE('lx',#10,#22);
+#25=LINE('ly',#11,#23);
+#26=LINE('lx2',#13,#22);
+#27=LINE('ly2',#10,#23);
+#30=EDGE_CURVE('e0',#14,#15,#24,.T.);
+#31=EDGE_CURVE('e1',#15,#16,#25,.T.);
+#32=EDGE_CURVE('e2',#16,#17,#26,.F.);
+#33=EDGE_CURVE('e3',#17,#14,#27,.F.);
+#40=ORIENTED_EDGE('oe0',*,*,#30,.T.);
+#41=ORIENTED_EDGE('oe1',*,*,#31,.T.);
+#42=ORIENTED_EDGE('oe2',*,*,#32,.T.);
+#43=ORIENTED_EDGE('oe3',*,*,#33,.T.);
+#50=EDGE_LOOP('el',(#40,#41,#42,#43));
+#51=FACE_OUTER_BOUND('fob',#50,.T.);
+/* Defect: face orientation .F. inverts surface; fixshape flips it,
+   computed area downstream is negative. */
+#60=ADVANCED_FACE('af',(#51),#5,.F.);
+ENDSEC;
+END-ISO-10303-21;

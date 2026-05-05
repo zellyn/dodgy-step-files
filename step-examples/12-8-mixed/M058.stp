@@ -1,0 +1,27 @@
+ISO-10303-21;
+/* M058 - File mixing AP203 and AP214 entities in the same DATA
+ * section
+ * Defect: ISO 10303-21 FILE_SCHEMA declares one (or more) active
+ * schemas. When a single FILE_SCHEMA names AP203 only but the
+ * DATA section contains entities defined only in AP214 (e.g.
+ * SOLID_ANGLE_UNIT with the AP214-specific 'name' attribute, or
+ * AP214's MEASURE_REPRESENTATION_ITEM extension), strict AP203
+ * readers either reject the unknown entity or attempt to parse
+ * it under AP203 with possibly wrong attribute interpretation. */
+HEADER;
+FILE_DESCRIPTION(('M058 - AP203 schema with AP214-only entity in DATA'),'2;1');
+FILE_NAME('M058.stp','2026-04-26T00:00:00',(''),(''),
+  'cad-research-suite','','');
+FILE_SCHEMA(('CONFIG_CONTROL_DESIGN'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('config_control_design');
+#2=PRODUCT_CONTEXT('part',#1,'mechanical');
+#10=PRODUCT('hybrid','part','',(#2));
+/* AP214-only entity: APPLIED_GROUP_ASSIGNMENT does not exist in
+ * AP203. */
+#20=GROUP('group','sample group','',$);
+#21=APPLIED_GROUP_ASSIGNMENT(#20,(#10));
+#30=CARTESIAN_POINT('',(0.0,0.0,0.0));
+ENDSEC;
+END-ISO-10303-21;

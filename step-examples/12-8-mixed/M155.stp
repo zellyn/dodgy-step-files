@@ -1,0 +1,26 @@
+ISO-10303-21;
+/* M155 - AP210 net connection ends at a non-pin element.
+ * Defect: a NETWORK_NODE references an element that is not a TERMINAL
+ * - it points to a CARTESIAN_POINT instead. The trace ends in the
+ * middle of nothing - there is no electrical pin at the endpoint. */
+HEADER;
+FILE_DESCRIPTION(('M155 test case','AP210 net connects to non-pin'),'2;1');
+FILE_NAME('M155.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('ELECTRONIC_ASSEMBLY_INTERCONNECT_AND_PACKAGING_DESIGN { 1 0 10303 210 3 1 0 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('electronic_assembly_interconnect_and_packaging_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
+  'electronic_assembly_interconnect_and_packaging_design',2014,#1);
+#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10))
+     REPRESENTATION_CONTEXT('pcb','3D'));
+#100=TERMINAL('U1_p1','signal_input',$);
+/* Defect: NETWORK_NODE #201 references CARTESIAN_POINT, not a TERMINAL. */
+#150=CARTESIAN_POINT('floating_endpoint',(20.0,15.0,0.0));
+#200=NETWORK_NODE('node_a',#100);
+#201=NETWORK_NODE('node_floating',#150);
+#300=NETWORK('SIG_1',(#200,#201),(#200));
+ENDSEC;
+END-ISO-10303-21;

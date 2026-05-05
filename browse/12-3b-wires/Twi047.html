@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Twi047 — EDGE_CURVE has only a pcurve, no 3D space curve (orphan EDGE_CURVE missing PCURVE / SURFACE_CURVE wrapping)</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.3b Wires / loops / edges</a> <span class="sep">/</span> <span class="current">Twi047</span>
+</nav>
+<header class="title-bar">
+<h1>Twi047 <span class="sep">—</span> <span class="entry-title">EDGE_CURVE has only a pcurve, no 3D space curve (orphan EDGE_CURVE missing PCURVE / SURFACE_CURVE wrapping)</span></h1>
+<p class="category">§12.3b wires / loops / edges (sub-class: edge consistency)</p>
+<p class="tag-pills">
+<a class="tag tag-topology" href="../by-tag/topology/index.html">topology</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-3b-wires/Twi047.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-3b-wires/Twi047.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>OCCT `ShapeFix_Edge::FixAddCurve3d` (`ShapeFix_Edge.hxx:129`)</li>
+</ul></section>
+<section><h2>Description</h2>
+<p>An EDGE_CURVE on a face references a SURFACE_CURVE whose representations list contains only a 2D pcurve and lacks the 3D space curve. Length, sampling, sewing across faces, and Boolean operations all need a 3D curve; without one, the edge cannot participate in cross-face topology checks.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>An edge of a face whose curve is a PCURVE on the face&#x27;s surface, with no `Geom_Curve` 3D representation listed.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>synthesize the 3D curve by lifting the pcurve through the host surface, verify that the result is same-parameter, and re-validate vertex coincidence; or reject the edge as malformed.</p></section>
+<section><h2>Notes</h2>
+<p>Existing entry Gp001 covers the converse (no pcurve, only 3D). This is the symmetric variant. Synonyms: &quot;orphan parametric curve without spatial trace&quot;, &quot;kernel cannot run cross-face checks without 3D trace&quot;, &quot;edge stored as UV trace only&quot;, &quot;implicit edge from surface trim only&quot;.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a</code></p></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>n_edges_total &gt;= 4</code></li>
+<li><code>face[0].surface_type == &quot;plane&quot;</code></li>
+<li><code>n_vertices_total &gt;= 8</code></li>
+</ul></section>
+<section><h2>Cross-references</h2>
+<p><a href="../12-2a-pcurves/Gp001.html">Gp001</a></p>
+</section>
+<section><h2>Live oracle output</h2>
+<table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
+<tr><td><code>occt_heal_on</code></td><td><code>shape(1)</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>shape(1)</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>shape(9)</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>shape(9)</code></td></tr>
+<tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>not_manifold</code></td></tr>
+</tbody></table>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* Twi047 - Edge has only a pcurve, no 3D curve
+<span class="lineno">3</span> * Defect: EDGE_CURVE built from a SURFACE_CURVE whose representations list
+<span class="lineno">4</span> * contains only a 2D pcurve and lacks the 3D space curve.
+<span class="lineno">5</span> * Many downstream operations (length, sampling, sewing across faces)
+<span class="lineno">6</span> * require the 3D curve; the kernel must synthesize one or refuse. */
+<span class="lineno">7</span>HEADER;
+<span class="lineno">8</span>FILE_DESCRIPTION((&#x27;Twi047 test case&#x27;,&#x27;Edge has only a pcurve, no 3D curve&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">9</span>FILE_NAME(&#x27;Twi047.stp&#x27;,&#x27;2026-04-26T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">10</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }&#x27;));
+<span class="lineno">11</span>ENDSEC;
+<span class="lineno">12</span>DATA;
+<span class="lineno">13</span>#1=APPLICATION_CONTEXT(&#x27;automotive_design&#x27;);
+<span class="lineno">14</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,&#x27;automotive_design&#x27;,2000,#1);
+<span class="lineno">15</span>#10=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">16</span>#11=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">17</span>#12=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">18</span>#13=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#10,#11,#12);
+<span class="lineno">19</span>#14=PLANE(&#x27;&#x27;,#13);
+<span class="lineno">20</span>#15=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">21</span>#16=VERTEX_POINT(&#x27;&#x27;,#15);
+<span class="lineno">22</span>#17=CARTESIAN_POINT(&#x27;&#x27;,(10.0,0.0,0.0));
+<span class="lineno">23</span>#18=VERTEX_POINT(&#x27;&#x27;,#17);
+<span class="lineno">24</span>#19=CARTESIAN_POINT(&#x27;&#x27;,(10.0,10.0,0.0));
+<span class="lineno">25</span>#20=VERTEX_POINT(&#x27;&#x27;,#19);
+<span class="lineno">26</span>#21=CARTESIAN_POINT(&#x27;&#x27;,(0.0,10.0,0.0));
+<span class="lineno">27</span>#22=VERTEX_POINT(&#x27;&#x27;,#21);
+<span class="lineno">28</span>#23=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">29</span>#24=VECTOR(&#x27;&#x27;,#23,1.0);
+<span class="lineno">30</span>#25=LINE(&#x27;&#x27;,#15,#24);
+<span class="lineno">31</span>#26=EDGE_CURVE(&#x27;&#x27;,#16,#18,#25,.T.);
+<span class="lineno">32</span>#27=ORIENTED_EDGE(&#x27;&#x27;,*,*,#26,.T.);
+<span class="lineno">33</span>#28=DIRECTION(&#x27;&#x27;,(0.0,1.0,0.0));
+<span class="lineno">34</span>#29=VECTOR(&#x27;&#x27;,#28,1.0);
+<span class="lineno">35</span>#30=LINE(&#x27;&#x27;,#17,#29);
+<span class="lineno">36</span>#31=EDGE_CURVE(&#x27;&#x27;,#18,#20,#30,.T.);
+<span class="lineno">37</span>#32=ORIENTED_EDGE(&#x27;&#x27;,*,*,#31,.T.);
+<span class="lineno">38</span>#33=DIRECTION(&#x27;&#x27;,(-1.0,0.0,0.0));
+<span class="lineno">39</span>#34=VECTOR(&#x27;&#x27;,#33,1.0);
+<span class="lineno">40</span>#35=LINE(&#x27;&#x27;,#19,#34);
+<span class="lineno">41</span>#36=EDGE_CURVE(&#x27;&#x27;,#20,#22,#35,.T.);
+<span class="lineno">42</span>#37=ORIENTED_EDGE(&#x27;&#x27;,*,*,#36,.T.);
+<span class="lineno">43</span>#38=DIRECTION(&#x27;&#x27;,(0.0,-1.0,0.0));
+<span class="lineno">44</span>#39=VECTOR(&#x27;&#x27;,#38,1.0);
+<span class="lineno">45</span>#40=LINE(&#x27;&#x27;,#21,#39);
+<span class="lineno">46</span>#41=EDGE_CURVE(&#x27;&#x27;,#22,#16,#40,.T.);
+<span class="lineno">47</span>#42=ORIENTED_EDGE(&#x27;&#x27;,*,*,#41,.T.);
+<span class="lineno">48</span>#43=EDGE_LOOP(&#x27;&#x27;,(#27,#32,#37,#42));
+<span class="lineno">49</span>#44=FACE_OUTER_BOUND(&#x27;&#x27;,#43,.T.);
+<span class="lineno">50</span>#45=ADVANCED_FACE(&#x27;&#x27;,(#44),#14,.T.);
+<span class="lineno">51</span>/* Defect: extra SURFACE_CURVE that lists only a pcurve, no 3d */
+<span class="lineno">52</span>#200=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">53</span>#201=VERTEX_POINT(&#x27;&#x27;,#200);
+<span class="lineno">54</span>#202=CARTESIAN_POINT(&#x27;&#x27;,(1.0,1.0,0.0));
+<span class="lineno">55</span>#203=VERTEX_POINT(&#x27;&#x27;,#202);
+<span class="lineno">56</span>#204=DIRECTION(&#x27;&#x27;,(0.7071067811865475,0.7071067811865475,0.0));
+<span class="lineno">57</span>#205=VECTOR(&#x27;&#x27;,#204,1.4142136);
+<span class="lineno">58</span>#206=LINE(&#x27;&#x27;,#200,#205);
+<span class="lineno">59</span>/* No 3D component; intentionally malformed orphan curve. */
+<span class="lineno">60</span>#207=EDGE_CURVE(&#x27;&#x27;,#201,#203,#206,.T.);
+<span class="lineno">61</span>/* Wrap: minimal PRODUCT chain so OCCT TransferRoots produces a shape. */
+<span class="lineno">62</span>#9000=PRODUCT_CONTEXT(&#x27;&#x27;,#1,&#x27;mechanical&#x27;);
+<span class="lineno">63</span>#9001=PRODUCT(&#x27;Twi047&#x27;,&#x27;Twi047&#x27;,&#x27;&#x27;,(#9000));
+<span class="lineno">64</span>#9002=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#9001);
+<span class="lineno">65</span>#9003=PRODUCT_DEFINITION_CONTEXT(&#x27;part definition&#x27;,#1,&#x27;design&#x27;);
+<span class="lineno">66</span>#9004=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,#9002,#9003);
+<span class="lineno">67</span>#9005=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,#9004);
+<span class="lineno">68</span>#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">69</span>#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+<span class="lineno">70</span>#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+<span class="lineno">71</span>#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,&#x27;distance_accuracy_value&#x27;,&#x27;&#x27;);
+<span class="lineno">72</span>#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT(&#x27;&#x27;,&#x27;3D&#x27;));
+<span class="lineno">73</span>#9020=OPEN_SHELL(&#x27;wrap_shell&#x27;,(#45));
+<span class="lineno">74</span>#9021=SHELL_BASED_SURFACE_MODEL(&#x27;wrap_sbsm&#x27;,(#9020));
+<span class="lineno">75</span>#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION(&#x27;&#x27;,(#9021),#9010);
+<span class="lineno">76</span>#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+<span class="lineno">77</span>ENDSEC;
+<span class="lineno">78</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Twi046.html">&larr; Twi046</a> <a class="up" href="index.html">§12.3b Wires / loops / edges</a> <a class="next" href="Twi048.html">Twi048 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

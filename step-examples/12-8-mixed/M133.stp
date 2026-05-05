@@ -1,0 +1,26 @@
+ISO-10303-21;
+/* M133 - AP203 inconsistent ISO 8601 date formats within the same file.
+ * Defect: one DATE_AND_TIME captures local time without a timezone
+ * offset while another in the same file embeds an explicit UTC offset.
+ * Comparing the two requires assuming a timezone for the naive value.
+ * Bug-reporter language: "STEP dates inconsistent timezone", "AP203
+ * mixed date format", "naive timestamp". */
+HEADER;
+FILE_DESCRIPTION(('M133 test case','AP203 mixed ISO 8601 date format'),'2;1');
+FILE_NAME('M133.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('CONFIG_CONTROL_DESIGN'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('configuration controlled 3D design of mechanical parts and assemblies');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','config_control_design',1994,#1);
+#10=PRODUCT('part_a','part_a','widget',(#1));
+#20=PRODUCT_DEFINITION_FORMATION('rev_A','released',#10);
+#30=PRODUCT_DEFINITION('design','',#20,#1);
+/* Defect: #100 has no timezone offset; #101 has explicit +00:00 offset. */
+#100=DATE_AND_TIME(CALENDAR_DATE(2024,3,1),LOCAL_TIME(14,30,0.0,$));
+#101=DATE_AND_TIME(CALENDAR_DATE(2024,3,1),LOCAL_TIME(14,30,0.0,
+       COORDINATED_UNIVERSAL_TIME_OFFSET(0,0,.AHEAD.)));
+#110=APPLIED_DATE_TIME_ASSIGNMENT(#100,'creation',(#30));
+#111=APPLIED_DATE_TIME_ASSIGNMENT(#101,'release',(#30));
+ENDSEC;
+END-ISO-10303-21;

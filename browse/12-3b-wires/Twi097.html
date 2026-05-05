@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Twi097 — Edge-projection-aux range computation loses precision on periodic curves</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.3b Wires / loops / edges</a> <span class="sep">/</span> <span class="current">Twi097</span>
+</nav>
+<header class="title-bar">
+<h1>Twi097 <span class="sep">—</span> <span class="entry-title">Edge-projection-aux range computation loses precision on periodic curves</span></h1>
+<p class="category">§12.3b wires/loops/edges</p>
+<p class="severity-badge severity-p1">P1 — silent data loss</p>
+<p class="tag-pills">
+<a class="tag tag-topology" href="../by-tag/topology/index.html">topology</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-3b-wires/Twi097.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-3b-wires/Twi097.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>OCCT MANTIS#0024370</li>
+<li>OCCT MANTIS#0024921 (OCCT MANTIS tracker 502 as of 2026-05-02)</li>
+</ul></section>
+<section><h2>Description</h2>
+<p>An edge whose host curve is periodic (circle, ellipse, closed B-spline) reports a parameter range that traverses the period seam. A range-validation step adjusts the range, but on periodic curves a naive range adjustment that wraps to `[0, 2π)` loses the original sense (going the long way vs the short way around). The healed edge then represents a different arc than the original.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>Edge on a circle from parameter `t=5.5` to `t=1.0` (i.e., the long way around through `t=2π` then to `t=1.0`). After range validation the edge becomes `[1.0, 5.5]` (short way), reversing the arc.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>Heal and accept: range-validation on periodic curves normalizes while preserving the original arc-traversal direction; never flip orientation as a side effect of range normalisation.</p></section>
+<section><h2>Notes</h2>
+<p>**See also**: Twi062. Synonyms: &quot;edge takes long way around but healed to short way&quot;, &quot;periodic curve range normalisation reverses arc&quot;, &quot;circle edge direction flipped after range fix&quot;, &quot;arc traversal reversed by range adjustment&quot;, &quot;long-arc edge becomes short arc&quot;.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>contains(b&#x27;long_way_around&#x27;)</code></li>
+<li><code>contains(b&#x27;CIRCLE(&#x27;)</code></li>
+<li><code>contains(b&#x27;(0.7080734182735711,-0.7061278960829493,0.0)&#x27;)</code></li>
+</ul></section>
+<section><h2>Cross-references</h2>
+<p><a href="Twi062.html">Twi062</a></p>
+</section>
+<section><h2>Live oracle output</h2>
+<table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
+<tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>no_shapes_loaded</code></td></tr>
+</tbody></table>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* Twi097 - Periodic-curve range adjustment loses arc orientation
+<span class="lineno">3</span> * Defect: edge on a circle with parameter range t=5.5 to t=1.0 (long way around); range-validation flips arc */
+<span class="lineno">4</span>HEADER;
+<span class="lineno">5</span>FILE_DESCRIPTION((&#x27;Twi097 - Edge-projection-aux range computation loses precision on periodic curves&#x27;,&#x27;Periodic-curve range adjustment loses arc orientation&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">6</span>FILE_NAME(&#x27;Twi097.stp&#x27;,&#x27;2026-04-30T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">7</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }&#x27;));
+<span class="lineno">8</span>ENDSEC;
+<span class="lineno">9</span>DATA;
+<span class="lineno">10</span>#1=APPLICATION_CONTEXT(&#x27;automotive_design&#x27;);
+<span class="lineno">11</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,&#x27;automotive_design&#x27;,2000,#1);
+<span class="lineno">12</span>#10=CARTESIAN_POINT(&#x27;center&#x27;,(0.0,0.0,0.0));
+<span class="lineno">13</span>#11=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));#12=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">14</span>#13=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#10,#11,#12);
+<span class="lineno">15</span>#14=<mark>CIRCLE(</mark>&#x27;&#x27;,#13,1.0);
+<span class="lineno">16</span>#15=CARTESIAN_POINT(&#x27;start&#x27;,<mark>(0.7080734182735711,-0.7061278960829493,0.0)</mark>);
+<span class="lineno">17</span>#16=VERTEX_POINT(&#x27;&#x27;,#15);
+<span class="lineno">18</span>#17=CARTESIAN_POINT(&#x27;end&#x27;,(0.5403023058681398,0.8414709848078965,0.0));
+<span class="lineno">19</span>#18=VERTEX_POINT(&#x27;&#x27;,#17);
+<span class="lineno">20</span>#19=EDGE_CURVE(&#x27;<mark>long_way_around</mark>&#x27;,#16,#18,#14,.T.);
+<span class="lineno">21</span>ENDSEC;
+<span class="lineno">22</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Twi096.html">&larr; Twi096</a> <a class="up" href="index.html">§12.3b Wires / loops / edges</a> <a class="next" href="Twi098.html">Twi098 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

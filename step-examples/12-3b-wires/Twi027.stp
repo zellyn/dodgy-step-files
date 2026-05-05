@@ -1,0 +1,39 @@
+ISO-10303-21;
+/* Twi027 - ConnectEdgesToWires fails on INTERNAL-only edges / non-determinism
+ * Defect: ShapeAnalysis_FreeBounds::ConnectEdgesToWires throws on a compound
+ * that contains only INTERNAL-oriented edges (no wires/faces). Separately,
+ * with normal input it can return wires marked Closed when not, or yield
+ * non-deterministic ordering across runs. Reader should detect non-manifold
+ * input; bypass connection or warn; produce deterministic output
+ * (Mantis 0024807; bug25068/bug25333; bug22924). */
+HEADER;
+FILE_DESCRIPTION(('Twi027 test case','ConnectEdgesToWires INTERNAL-only edges'),'2;1');
+FILE_NAME('Twi027.stp','2026-04-26T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+/* Three free-floating edges with no enclosing wire/face context - they will
+ * read as INTERNAL-only when passed through ShapeAnalysis_FreeBounds */
+#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#11=VERTEX_POINT('',#10);
+#12=CARTESIAN_POINT('',(1.0,0.0,0.0));
+#13=VERTEX_POINT('',#12);
+#14=CARTESIAN_POINT('',(2.0,0.0,0.0));
+#15=VERTEX_POINT('',#14);
+#16=CARTESIAN_POINT('',(3.0,0.0,0.0));
+#17=VERTEX_POINT('',#16);
+#20=DIRECTION('',(1.0,0.0,0.0));
+#21=VECTOR('',#20,1.0);
+#22=LINE('',#10,#21);
+#23=LINE('',#12,#21);
+#24=LINE('',#14,#21);
+#30=EDGE_CURVE('',#11,#13,#22,.T.);
+#31=EDGE_CURVE('',#13,#15,#23,.T.);
+#32=EDGE_CURVE('',#15,#17,#24,.T.);
+/* Defect: this is a GEOMETRIC_CURVE_SET of edges with no parent face/shell.
+ * ShapeAnalysis_FreeBounds::ConnectEdgesToWires once threw on this input. */
+#40=GEOMETRIC_CURVE_SET('',(#30,#31,#32));
+ENDSEC;
+END-ISO-10303-21;

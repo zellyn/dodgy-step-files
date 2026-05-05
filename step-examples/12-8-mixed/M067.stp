@@ -1,0 +1,18 @@
+ISO-10303-21;
+/* M067 - Transformation creation fails; placement falls back to identity.
+ * Defect: ITEM_DEFINED_TRANSFORMATION references AXIS2_PLACEMENT
+ * with zero-vector directions. */
+HEADER;
+FILE_DESCRIPTION(('In014 - transformation creation fails','Pass C gap-fill'),'2;1');
+FILE_NAME('M067.stp','2026-04-30T00:00:00',(''),(''),'gap-fill C','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#11=DIRECTION('zero_vec',(0.0,0.0,0.0));
+#12=DIRECTION('zero_vec_2',(0.0,0.0,0.0));
+#13=AXIS2_PLACEMENT_3D('bad_placement',#10,#11,#12);
+#20=ITEM_DEFINED_TRANSFORMATION('failed','',#13,#13);
+ENDSEC;
+END-ISO-10303-21;

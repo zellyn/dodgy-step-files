@@ -1,0 +1,64 @@
+ISO-10303-21;
+/*
+ * A007 — SHAPE_REPRESENTATION_RELATIONSHIP swapped/mixed rep_1/rep_2 axes
+ * Defect (OCCT 06a505b/Mantis 0030087, OCCT NAUO/SRR direction conflict,
+ *         TEST_MCI_2.step swapped axes in ITEM_DEFINED_TRANSFORMATION):
+ *   SRR with swapped axis-placements where one is shared between assembly
+ *   and component representation causes wrong assembly transform.
+ *   Variant: ITEM_DEFINED_TRANSFORMATION's source/target axes exchanged.
+ *   NAUO direction conflicts with SRR direction; receiver must pick one.
+ * Expected kernel: detect swap pattern and recover the correct transform;
+ *   resolve transitively; cap recursion depth; let NAUO direction win.
+ */
+HEADER;
+FILE_DESCRIPTION(('A007 SRRWT with swapped IDT axes'),'2;1');
+FILE_NAME('A007.stp','2026-04-26T00:00:00',('catalog'),('cad'),'manual','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#10 = APPLICATION_CONTEXT('automotive design');
+#11 = APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2001,#10);
+#12 = PRODUCT_CONTEXT('',#10,'mechanical');
+#13 = PRODUCT_DEFINITION_CONTEXT('part definition',#10,'design');
+#20 = PRODUCT('A007_ASSY','','',(#12));
+#21 = PRODUCT_DEFINITION_FORMATION('','',#20);
+#22 = PRODUCT_DEFINITION('design','',#21,#13);
+#23 = PRODUCT_DEFINITION_SHAPE('','',#22);
+#30 = PRODUCT('CHILD','','',(#12));
+#31 = PRODUCT_DEFINITION_FORMATION('','',#30);
+#32 = PRODUCT_DEFINITION('design','',#31,#13);
+#33 = PRODUCT_DEFINITION_SHAPE('','',#32);
+/* NAUO with PDS attached via PRODUCT_DEFINITION_RELATIONSHIP-like pattern */
+#40 = NEXT_ASSEMBLY_USAGE_OCCURRENCE('1','CHILD_INST','',#22,#32,$);
+#41 = PRODUCT_DEFINITION_SHAPE('placement','',#40);
+/* Units */
+#50 = ( LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT(.MILLI.,.METRE.) );
+#51 = ( NAMED_UNIT(*) PLANE_ANGLE_UNIT() SI_UNIT($,.RADIAN.) );
+#52 = ( NAMED_UNIT(*) SI_UNIT($,.STERADIAN.) SOLID_ANGLE_UNIT() );
+#53 = UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#50,'distance_accuracy_value','');
+#54 = ( GEOMETRIC_REPRESENTATION_CONTEXT(3) GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#53))
+        GLOBAL_UNIT_ASSIGNED_CONTEXT((#50,#51,#52)) REPRESENTATION_CONTEXT('','3D') );
+/* Child rep — placement at (0,0,0) */
+#60 = CARTESIAN_POINT('',(0.0,0.0,0.0));
+#61 = DIRECTION('',(0.0,0.0,1.0));
+#62 = DIRECTION('',(1.0,0.0,0.0));
+#63 = AXIS2_PLACEMENT_3D('child_origin',#60,#61,#62);
+#64 = SHAPE_REPRESENTATION('child_rep',(#63),#54);
+#65 = SHAPE_DEFINITION_REPRESENTATION(#33,#64);
+/* Assembly rep — placement at (0,0,0) */
+#70 = AXIS2_PLACEMENT_3D('assy_origin',#60,#61,#62);
+#71 = SHAPE_REPRESENTATION('assy_rep',(#70),#54);
+#72 = SHAPE_DEFINITION_REPRESENTATION(#23,#71);
+/* DEFECT: ITEM_DEFINED_TRANSFORMATION with source / target axes SHARED.
+   The same AXIS2_PLACEMENT_3D #63 appears as both transform_item_1 and as
+   the child placement. Worse, the SRRWT below puts the child rep on rep_1
+   and the assembly rep on rep_2 — opposite of OCCT convention. */
+#80 = ITEM_DEFINED_TRANSFORMATION('idt','swapped',#63,#70);
+/* Note: rep_1/rep_2 swapped relative to NAUO direction (assembly→child).
+   Direct dotted form: ( REPRESENTATION_RELATIONSHIP(...) ITEM_DEFINED... ) */
+#81 = ( REPRESENTATION_RELATIONSHIP('srr','axis swap',#64,#71)
+        REPRESENTATION_RELATIONSHIP_WITH_TRANSFORMATION(#80)
+        SHAPE_REPRESENTATION_RELATIONSHIP() );
+#82 = CONTEXT_DEPENDENT_SHAPE_REPRESENTATION(#81,#41);
+ENDSEC;
+END-ISO-10303-21;

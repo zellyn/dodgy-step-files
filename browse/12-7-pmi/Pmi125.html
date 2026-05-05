@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Pmi125 — `LOCATING_FEATURE` referencing a non-existent shape aspect (dangling target)</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.7 PMI / GD&amp;T</a> <span class="sep">/</span> <span class="current">Pmi125</span>
+</nav>
+<header class="title-bar">
+<h1>Pmi125 <span class="sep">—</span> <span class="entry-title">`LOCATING_FEATURE` referencing a non-existent shape aspect (dangling target)</span></h1>
+<p class="category">§12.7 (sub-class: AP242 feature definition)</p>
+<p class="severity-badge severity-p1">P1 — silent data loss</p>
+<p class="tag-pills">
+<a class="tag tag-spec-violation" href="../by-tag/spec-violation/index.html">spec-violation</a>
+<a class="tag tag-pmi" href="../by-tag/pmi/index.html">pmi</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-7-pmi/Pmi125.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-7-pmi/Pmi125.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>16-iso-spec AP242 §locating_feature</li>
+<li>CAx-IF Inspection Recommended Practices §datum-target identification</li>
+</ul></section>
+<section><h2>Description</h2>
+<p>AP242 `locating_feature` (datum-target / inspection locator) is a `SHAPE_ASPECT` whose `DIMENSIONAL_LOCATION` (or equivalent) carries a pointer to a second `SHAPE_ASPECT` that names what the locator is measured against. A producer that emits a locator whose target is a forward-declared entity reference that is never actually instantiated (e.g. `#9999` in a file whose highest entity is `#612`) leaves a feature definition with a dangling pointer. Receivers either silently resolve to NULL (drop the locator), accept the reference and crash later when downstream code dereferences it, or reject the file. Bug-reporter language: &quot;locating_feature references missing shape aspect&quot;, &quot;AP242 locator points to entity that doesn&#x27;t exist&quot;, &quot;datum target reference unresolved&quot;.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>a `SHAPE_ASPECT(&#x27;locating_feature&#x27;,..)`; a `DIMENSIONAL_LOCATION` whose `relating_shape_aspect` is the locator and whose `related_shape_aspect` is `#9999` (an entity reference that is never declared anywhere in the file).</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>reject as malformed; never silently drop the locator. If the kernel reads-and-heals, every dropped locator must be reported by id.</p></section>
+<section><h2>Notes</h2>
+<p>First catalog entry for AP242 `locating_feature` references. **See also**: Pmi091, Pmi126. Synonyms: &quot;LOCATING_FEATURE references nonexistent shape aspect&quot;, &quot;AP242 datum target points to undeclared entity&quot;, &quot;locator shape aspect not found&quot;.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a</code></p></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>n_faces_total == 1</code></li>
+<li><code>face[0].surface_type == &quot;plane&quot;</code></li>
+<li><code>face[0].edge_count == 4</code></li>
+<li><code>face[0].area &gt; 899</code></li>
+<li><code>face[0].area &lt; 901</code></li>
+</ul></section>
+<section><h2>Cross-references</h2>
+<p><a href="Pmi091.html">Pmi091</a>, <a href="Pmi126.html">Pmi126</a></p>
+</section>
+<section><h2>Live oracle output</h2>
+<table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
+<tr><td><code>occt_heal_on</code></td><td><code>shape(1)</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>shape(1)</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>shape(9)</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>shape(9)</code></td></tr>
+<tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>reject(E_UNRESOLVED_REFS)</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>not_manifold</code></td></tr>
+</tbody></table>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>/* Pmi125 - LOCATING_FEATURE referencing non-existent shape aspect
+<span class="lineno">2</span> * Defect: an AP242 locating-feature SHAPE_ASPECT carries a
+<span class="lineno">3</span> * GEOMETRIC_ITEM_SPECIFIC_USAGE pointer to an entity reference (#9999)
+<span class="lineno">4</span> * that is not declared anywhere in the file. Receivers may resolve to
+<span class="lineno">5</span> * NULL, drop the locator, or accept the reference and crash later. */
+<span class="lineno">6</span>ISO-10303-21;
+<span class="lineno">7</span>HEADER;
+<span class="lineno">8</span>FILE_DESCRIPTION((&#x27;Pmi125 - LOCATING_FEATURE references missing shape aspect&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">9</span>FILE_NAME(&#x27;Pmi125.stp&#x27;,&#x27;2026-05-02T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">10</span>FILE_SCHEMA((&#x27;AP242_MANAGED_MODEL_BASED_3D_ENGINEERING_MIM_LF { 1 0 10303 442 1 1 4 }&#x27;));
+<span class="lineno">11</span>ENDSEC;
+<span class="lineno">12</span>DATA;
+<span class="lineno">13</span>#1=APPLICATION_CONTEXT(&#x27;managed model based 3d engineering&#x27;);
+<span class="lineno">14</span>#2=PRODUCT_CONTEXT(&#x27;part&#x27;,#1,&#x27;mechanical&#x27;);
+<span class="lineno">15</span>#3=PRODUCT(&#x27;Pmi125&#x27;,&#x27;locator_with_dangling_ref&#x27;,&#x27;&#x27;,(#2));
+<span class="lineno">16</span>#4=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#3);
+<span class="lineno">17</span>#5=PRODUCT_DEFINITION_CONTEXT(&#x27;&#x27;,#1,&#x27;design&#x27;);
+<span class="lineno">18</span>#6=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,#4,#5);
+<span class="lineno">19</span>#7=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,#6);
+<span class="lineno">20</span>#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">21</span>#11=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+<span class="lineno">22</span>#12=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+<span class="lineno">23</span>#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#10,&#x27;tol&#x27;,&#x27;&#x27;);
+<span class="lineno">24</span>#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3) GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13)) GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12)) REPRESENTATION_CONTEXT(&#x27;&#x27;,&#x27;3D&#x27;));
+<span class="lineno">25</span>/* 30x30 mm planar host face -- bounded by 4-vertex EDGE_LOOP. */
+<span class="lineno">26</span>#100=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">27</span>#101=CARTESIAN_POINT(&#x27;&#x27;,(30.0,0.0,0.0));
+<span class="lineno">28</span>#102=CARTESIAN_POINT(&#x27;&#x27;,(30.0,30.0,0.0));
+<span class="lineno">29</span>#103=CARTESIAN_POINT(&#x27;&#x27;,(0.0,30.0,0.0));
+<span class="lineno">30</span>#110=VERTEX_POINT(&#x27;&#x27;,#100); #111=VERTEX_POINT(&#x27;&#x27;,#101);
+<span class="lineno">31</span>#112=VERTEX_POINT(&#x27;&#x27;,#102); #113=VERTEX_POINT(&#x27;&#x27;,#103);
+<span class="lineno">32</span>#200=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">33</span>#201=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">34</span>#202=DIRECTION(&#x27;&#x27;,(0.0,1.0,0.0));
+<span class="lineno">35</span>#210=AXIS2_PLACEMENT_3D(&#x27;plate_origin&#x27;,#100,#200,#201);
+<span class="lineno">36</span>#211=PLANE(&#x27;host_face_30x30&#x27;,#210);
+<span class="lineno">37</span>#300=VECTOR(&#x27;&#x27;,#201,30.0);
+<span class="lineno">38</span>#301=VECTOR(&#x27;&#x27;,#202,30.0);
+<span class="lineno">39</span>#310=LINE(&#x27;&#x27;,#100,#300); #311=EDGE_CURVE(&#x27;&#x27;,#110,#111,#310,.T.);
+<span class="lineno">40</span>#312=LINE(&#x27;&#x27;,#101,#301); #313=EDGE_CURVE(&#x27;&#x27;,#111,#112,#312,.T.);
+<span class="lineno">41</span>#314=LINE(&#x27;&#x27;,#103,#300); #315=EDGE_CURVE(&#x27;&#x27;,#113,#112,#314,.T.);
+<span class="lineno">42</span>#316=LINE(&#x27;&#x27;,#100,#301); #317=EDGE_CURVE(&#x27;&#x27;,#110,#113,#316,.T.);
+<span class="lineno">43</span>#400=ORIENTED_EDGE(&#x27;&#x27;,*,*,#311,.T.); #401=ORIENTED_EDGE(&#x27;&#x27;,*,*,#313,.T.);
+<span class="lineno">44</span>#402=ORIENTED_EDGE(&#x27;&#x27;,*,*,#315,.F.); #403=ORIENTED_EDGE(&#x27;&#x27;,*,*,#317,.F.);
+<span class="lineno">45</span>#404=EDGE_LOOP(&#x27;&#x27;,(#400,#401,#402,#403));
+<span class="lineno">46</span>#405=FACE_OUTER_BOUND(&#x27;&#x27;,#404,.T.);
+<span class="lineno">47</span>#406=ADVANCED_FACE(&#x27;plate_face&#x27;,(#405),#211,.T.);
+<span class="lineno">48</span>#500=OPEN_SHELL(&#x27;plate_shell&#x27;,(#406));
+<span class="lineno">49</span>#501=SHELL_BASED_SURFACE_MODEL(&#x27;plate_model&#x27;,(#500));
+<span class="lineno">50</span>#502=MANIFOLD_SURFACE_SHAPE_REPRESENTATION(&#x27;shape&#x27;,(#501,#210),#14);
+<span class="lineno">51</span>#503=SHAPE_DEFINITION_REPRESENTATION(#7,#502);
+<span class="lineno">52</span>/* Locating feature: locator targets a SHAPE_ASPECT (#9999) that does not exist.
+<span class="lineno">53</span>   Defect: dangling reference. */
+<span class="lineno">54</span>#600=SHAPE_ASPECT(&#x27;locating_feature&#x27;,&#x27;datum-target locator with missing target&#x27;,#7,.T.);
+<span class="lineno">55</span>#601=GEOMETRIC_ITEM_SPECIFIC_USAGE(&#x27;GISU&#x27;,$,#600,#502,#406);
+<span class="lineno">56</span>#610=DIMENSIONAL_LOCATION(&#x27;locator_to_target&#x27;,&#x27;locator references nonexistent shape aspect&#x27;,#600,#9999);
+<span class="lineno">57</span>#611=MEASURE_REPRESENTATION_ITEM(&#x27;locator_offset&#x27;,LENGTH_MEASURE(0.0),#10);
+<span class="lineno">58</span>#612=SHAPE_DIMENSION_REPRESENTATION(&#x27;&#x27;,(#611),#14);
+<span class="lineno">59</span>ENDSEC;
+<span class="lineno">60</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Pmi123.html">&larr; Pmi123</a> <a class="up" href="index.html">§12.7 PMI / GD&amp;T</a> <a class="next" href="Pmi126.html">Pmi126 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

@@ -1,0 +1,64 @@
+/* Pmi129 - MARKING multi-line text with no line-spacing attribute
+ * Defect: a marking SHAPE_ASPECT carries text containing two newline-
+ * separated lines but no line_spacing dimensional attribute. Receivers
+ * either default to 1.0x font size, collapse the lines, or render them
+ * overlapping. The producer's spacing intent is ambiguous. */
+ISO-10303-21;
+HEADER;
+FILE_DESCRIPTION(('Pmi129 - MARKING multi-line text without line spacing'),'2;1');
+FILE_NAME('Pmi129.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AP242_MANAGED_MODEL_BASED_3D_ENGINEERING_MIM_LF { 1 0 10303 442 1 1 4 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('managed model based 3d engineering');
+#2=PRODUCT_CONTEXT('part',#1,'mechanical');
+#3=PRODUCT('Pmi129','marking_multi_line_no_spacing','',(#2));
+#4=PRODUCT_DEFINITION_FORMATION('','',#3);
+#5=PRODUCT_DEFINITION_CONTEXT('',#1,'design');
+#6=PRODUCT_DEFINITION('','',#4,#5);
+#7=PRODUCT_DEFINITION_SHAPE('','',#6);
+#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#11=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#12=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#10,'tol','');
+#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3) GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13)) GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12)) REPRESENTATION_CONTEXT('','3D'));
+/* 30x30 mm planar host face. */
+#100=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#101=CARTESIAN_POINT('',(30.0,0.0,0.0));
+#102=CARTESIAN_POINT('',(30.0,30.0,0.0));
+#103=CARTESIAN_POINT('',(0.0,30.0,0.0));
+#110=VERTEX_POINT('',#100); #111=VERTEX_POINT('',#101);
+#112=VERTEX_POINT('',#102); #113=VERTEX_POINT('',#103);
+#200=DIRECTION('',(0.0,0.0,1.0));
+#201=DIRECTION('',(1.0,0.0,0.0));
+#202=DIRECTION('',(0.0,1.0,0.0));
+#210=AXIS2_PLACEMENT_3D('plate_origin',#100,#200,#201);
+#211=PLANE('host_face_30x30',#210);
+#300=VECTOR('',#201,30.0);
+#301=VECTOR('',#202,30.0);
+#310=LINE('',#100,#300); #311=EDGE_CURVE('',#110,#111,#310,.T.);
+#312=LINE('',#101,#301); #313=EDGE_CURVE('',#111,#112,#312,.T.);
+#314=LINE('',#103,#300); #315=EDGE_CURVE('',#113,#112,#314,.T.);
+#316=LINE('',#100,#301); #317=EDGE_CURVE('',#110,#113,#316,.T.);
+#400=ORIENTED_EDGE('',*,*,#311,.T.); #401=ORIENTED_EDGE('',*,*,#313,.T.);
+#402=ORIENTED_EDGE('',*,*,#315,.F.); #403=ORIENTED_EDGE('',*,*,#317,.F.);
+#404=EDGE_LOOP('',(#400,#401,#402,#403));
+#405=FACE_OUTER_BOUND('',#404,.T.);
+#406=ADVANCED_FACE('plate_face',(#405),#211,.T.);
+#500=OPEN_SHELL('plate_shell',(#406));
+#501=SHELL_BASED_SURFACE_MODEL('plate_model',(#500));
+#502=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('shape',(#501,#210),#14);
+#503=SHAPE_DEFINITION_REPRESENTATION(#7,#502);
+/* Marking with multi-line text but NO line_spacing dimensional attribute. */
+#600=SHAPE_ASPECT('marking','engraved label, two lines, no line spacing',#7,.T.);
+#601=GEOMETRIC_ITEM_SPECIFIC_USAGE('GISU',$,#600,#502,#406);
+/* Two-line text with embedded \X\0A escape -- no companion line_spacing. */
+#605=DESCRIPTIVE_REPRESENTATION_ITEM('marking_text','LINE_ONE\X\0ALINE_TWO');
+#606=PROPERTY_DEFINITION('marking_text','inscribed text multi-line',#600);
+#607=PROPERTY_DEFINITION_REPRESENTATION(#606,#608);
+#608=REPRESENTATION('marking_text_rep',(#605),#14);
+#610=DIMENSIONAL_SIZE(#600,'font_size');
+#611=MEASURE_REPRESENTATION_ITEM('font_size',LENGTH_MEASURE(4.0),#10);
+#612=SHAPE_DIMENSION_REPRESENTATION('',(#611),#14);
+ENDSEC;
+END-ISO-10303-21;

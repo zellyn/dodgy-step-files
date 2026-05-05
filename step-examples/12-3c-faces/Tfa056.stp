@@ -1,0 +1,103 @@
+ISO-10303-21;
+/* Tfa056 - Redundant inner wire (hole inside hole).
+ * Defect: planar ADVANCED_FACE has FACE_OUTER_BOUND (100x100 square) plus
+ * two FACE_BOUNDs - inner-1 = 30x30 centered at (50,50) and inner-2 =
+ * 10x10 also centered at (50,50). Inner-2 is geometrically nested inside
+ * inner-1 (a "hole inside a hole") - that region was already excluded by
+ * inner-1 so the second wire is redundant. */
+HEADER;
+FILE_DESCRIPTION(('Tfa056 - Face has a redundant wire (wire fully inside another wire of same face)','Pass C gap-fill'),'2;1');
+FILE_NAME('Tfa056.stp','2026-05-02T00:00:00',(''),(''),'gap-fill C','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#11=DIRECTION('',(0.0,0.0,1.0));
+#12=DIRECTION('',(1.0,0.0,0.0));
+#13=AXIS2_PLACEMENT_3D('',#10,#11,#12);
+#14=PLANE('plane_xy',#13);
+/* Outer 100x100 square at (0,0)-(100,100). */
+#20=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#21=CARTESIAN_POINT('',(100.0,0.0,0.0));
+#22=CARTESIAN_POINT('',(100.0,100.0,0.0));
+#23=CARTESIAN_POINT('',(0.0,100.0,0.0));
+#30=VERTEX_POINT('',#20); #31=VERTEX_POINT('',#21);
+#32=VERTEX_POINT('',#22); #33=VERTEX_POINT('',#23);
+/* Inner-1: 30x30 centered at (50,50): (35,35)-(65,65). */
+#40=CARTESIAN_POINT('',(35.0,35.0,0.0));
+#41=CARTESIAN_POINT('',(65.0,35.0,0.0));
+#42=CARTESIAN_POINT('',(65.0,65.0,0.0));
+#43=CARTESIAN_POINT('',(35.0,65.0,0.0));
+#50=VERTEX_POINT('',#40); #51=VERTEX_POINT('',#41);
+#52=VERTEX_POINT('',#42); #53=VERTEX_POINT('',#43);
+/* Inner-2: 10x10 centered at (50,50): (45,45)-(55,55) - nested inside inner-1. */
+#54=CARTESIAN_POINT('',(45.0,45.0,0.0));
+#55=CARTESIAN_POINT('',(55.0,45.0,0.0));
+#56=CARTESIAN_POINT('',(55.0,55.0,0.0));
+#57=CARTESIAN_POINT('',(45.0,55.0,0.0));
+#58=VERTEX_POINT('',#54); #59=VERTEX_POINT('',#55);
+#60=VERTEX_POINT('',#56); #61=VERTEX_POINT('',#57);
+/* Direction/vector basis */
+#62=DIRECTION('',(1.0,0.0,0.0)); #63=VECTOR('',#62,100.0);
+#64=DIRECTION('',(0.0,1.0,0.0)); #65=VECTOR('',#64,100.0);
+#66=DIRECTION('',(1.0,0.0,0.0)); #67=VECTOR('',#66,30.0);
+#68=DIRECTION('',(0.0,1.0,0.0)); #69=VECTOR('',#68,30.0);
+#70=DIRECTION('',(1.0,0.0,0.0)); #71=VECTOR('',#70,10.0);
+#72=DIRECTION('',(0.0,1.0,0.0)); #73=VECTOR('',#72,10.0);
+/* Outer edges */
+#80=LINE('',#20,#63); #81=EDGE_CURVE('',#30,#31,#80,.T.);
+#82=LINE('',#21,#65); #83=EDGE_CURVE('',#31,#32,#82,.T.);
+#84=LINE('',#23,#63); #85=EDGE_CURVE('',#33,#32,#84,.T.);
+#86=LINE('',#20,#65); #87=EDGE_CURVE('',#30,#33,#86,.T.);
+/* Inner-1 edges */
+#90=LINE('',#40,#67); #91=EDGE_CURVE('',#50,#51,#90,.T.);
+#92=LINE('',#41,#69); #93=EDGE_CURVE('',#51,#52,#92,.T.);
+#94=LINE('',#43,#67); #95=EDGE_CURVE('',#53,#52,#94,.T.);
+#96=LINE('',#40,#69); #97=EDGE_CURVE('',#50,#53,#96,.T.);
+/* Inner-2 edges */
+#98=LINE('',#54,#71); #99=EDGE_CURVE('',#58,#59,#98,.T.);
+#120=LINE('',#55,#73); #121=EDGE_CURVE('',#59,#60,#120,.T.);
+#122=LINE('',#57,#71); #123=EDGE_CURVE('',#61,#60,#122,.T.);
+#124=LINE('',#54,#73); #125=EDGE_CURVE('',#58,#61,#124,.T.);
+/* Outer loop CCW */
+#130=ORIENTED_EDGE('',*,*,#81,.T.);
+#131=ORIENTED_EDGE('',*,*,#83,.T.);
+#132=ORIENTED_EDGE('',*,*,#85,.F.);
+#133=ORIENTED_EDGE('',*,*,#87,.F.);
+#140=EDGE_LOOP('outer_100',(#130,#131,#132,#133));
+/* Inner-1 loop CW (hole) */
+#134=ORIENTED_EDGE('',*,*,#91,.F.);
+#135=ORIENTED_EDGE('',*,*,#97,.T.);
+#136=ORIENTED_EDGE('',*,*,#95,.F.);
+#137=ORIENTED_EDGE('',*,*,#93,.F.);
+#141=EDGE_LOOP('hole_30',(#134,#135,#136,#137));
+/* Inner-2 loop CW (redundant nested hole) */
+#138=ORIENTED_EDGE('',*,*,#99,.F.);
+#139=ORIENTED_EDGE('',*,*,#125,.T.);
+#150=ORIENTED_EDGE('',*,*,#123,.F.);
+#151=ORIENTED_EDGE('',*,*,#121,.F.);
+#142=EDGE_LOOP('redundant_10_inside_hole',(#138,#139,#150,#151));
+#160=FACE_OUTER_BOUND('',#140,.T.);
+#161=FACE_BOUND('',#141,.T.);
+#162=FACE_BOUND('',#142,.T.);
+#200=ADVANCED_FACE('redundant_wire_face',(#160,#161,#162),#14,.T.);
+/* Wrap: minimal PRODUCT chain so OCCT TransferRoots produces a shape. */
+#9000=PRODUCT_CONTEXT('',#1,'mechanical');
+#9001=PRODUCT('Tfa056','Tfa056','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
+#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
+#9020=OPEN_SHELL('wrap_shell',(#200));
+#9021=SHELL_BASED_SURFACE_MODEL('wrap_sbsm',(#9020));
+#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#9010);
+#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+ENDSEC;
+END-ISO-10303-21;

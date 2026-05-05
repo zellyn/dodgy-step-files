@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Twi013 — Small / sliver / zero-length edges in wire (endpoints near-coincident)</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.3b Wires / loops / edges</a> <span class="sep">/</span> <span class="current">Twi013</span>
+</nav>
+<header class="title-bar">
+<h1>Twi013 <span class="sep">—</span> <span class="entry-title">Small / sliver / zero-length edges in wire (endpoints near-coincident)</span></h1>
+<p class="category">§12.3b wire-loop</p>
+<p class="tag-pills">
+<a class="tag tag-topology" href="../by-tag/topology/index.html">topology</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-3b-wires/Twi013.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-3b-wires/Twi013.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>05-occt-shapefix.md F002 (FixSmall)</li>
+<li>03-occt-tests.md R008 (drop_small_edges, OCC394, OCC482)</li>
+<li>09-healing-menus.md H037/H050 (CollapseShortEdges, DropSmallEdges)</li>
+<li>11-translator-vendors.md W005</li>
+<li>15-academic.md L010 (isolated short edge / spike)</li>
+<li>22-niche-forums.md</li>
+</ul></section>
+<section><h2>Description</h2>
+<p>An `EDGE_CURVE` whose 3D length is below the kernel&#x27;s working tolerance — both endpoint vertices are nearly coincident. Often the remnant of a translated tangency or an over-trimmed edge. The edge contributes nothing to the topology but its presence in the host wire confuses traversal-order and self-intersection logic.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>`EDGE_CURVE` whose two `VERTEX_POINT` `CARTESIAN_POINT`s differ by 1e-9 m on a 1 m part; underlying `LINE` of nominally that length.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>drop the sliver edge and merge its endpoints; rebuild any adjacent wires; or reject as malformed. The fix must not let the sliver propagate into a face outer bound.</p></section>
+<section><h2>Notes</h2>
+<p>**See also**: Twi011. Synonyms: &quot;edge has zero length&quot;, &quot;wire has tiny sliver edge&quot;, &quot;endpoints near-coincident on edge&quot;, &quot;nano-meter scale edge&quot;, &quot;over-trimmed edge in wire&quot;.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=shape(1)/shape(1) gmsh=shape(7) ifc=schema_n/a</code></p></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>face[0].sliver_aspect_max_min &gt; 1e6</code></li>
+<li><code>face[0].surface_type == &quot;plane&quot;</code></li>
+<li><code>n_edges_total &gt;= 3</code></li>
+</ul></section>
+<section><h2>Cross-references</h2>
+<p><a href="Twi011.html">Twi011</a></p>
+</section>
+<section><h2>Live oracle output</h2>
+<table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
+<tr><td><code>occt_heal_on</code></td><td><code>shape(1)</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>shape(1)</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>shape(7)</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>shape(7)</code></td></tr>
+<tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>not_manifold</code></td></tr>
+</tbody></table>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* Twi013 - Small / sliver / zero-length edges (FixSmall)
+<span class="lineno">3</span> * Defect: An EDGE_CURVE whose 3D length is below tolerance; both vertices
+<span class="lineno">4</span> * nearly coincident. Often remnant of translated tangency or over-trimmed edge.
+<span class="lineno">5</span> * Here e2 has length ~1e-9 m on a 1 m part. Must be removed without
+<span class="lineno">6</span> * invalidating its host wire. Heal by replacing with tolerant_vertex / merging
+<span class="lineno">7</span> * endpoints; remove edge; rebuild adjacent wire(s)
+<span class="lineno">8</span> * (ShapeFix_Wire::FixSmall, ShapeAnalysis_Wire::CheckSmall,
+<span class="lineno">9</span> * ShapeFix_Wireframe::FixSmallEdges). Subsumes Twi014. */
+<span class="lineno">10</span>HEADER;
+<span class="lineno">11</span>FILE_DESCRIPTION((&#x27;Twi013 test case&#x27;,&#x27;Small / sliver / zero-length edges (FixSmall)&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">12</span>FILE_NAME(&#x27;Twi013.stp&#x27;,&#x27;2026-04-26T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">13</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }&#x27;));
+<span class="lineno">14</span>ENDSEC;
+<span class="lineno">15</span>DATA;
+<span class="lineno">16</span>#1=APPLICATION_CONTEXT(&#x27;automotive_design&#x27;);
+<span class="lineno">17</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,&#x27;automotive_design&#x27;,2000,#1);
+<span class="lineno">18</span>#10=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">19</span>#11=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">20</span>#12=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">21</span>#13=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#10,#11,#12);
+<span class="lineno">22</span>#20=PLANE(&#x27;&#x27;,#13);
+<span class="lineno">23</span>/* Wrap-shape trim: bound the carrier PLANE so tier3_geometric can compute
+<span class="lineno">24</span> * a finite face area (covers the unit-square triangle region). The wire
+<span class="lineno">25</span> * defect (sliver edge) is preserved in the EDGE_LOOP below. */
+<span class="lineno">26</span>#21=RECTANGULAR_TRIMMED_SURFACE(&#x27;wrap_trim&#x27;,#20,0.0,1.0,0.0,1.0,.T.,.T.);
+<span class="lineno">27</span>/* Vertices for a triangle. The two near-coincident vertices A and A&#x27; differ
+<span class="lineno">28</span> * by 1e-9, well below the natural part scale of 1 m. */
+<span class="lineno">29</span>#30=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">30</span>#31=VERTEX_POINT(&#x27;&#x27;,#30);
+<span class="lineno">31</span>#32=CARTESIAN_POINT(&#x27;&#x27;,(1.0E-9,0.0,0.0));
+<span class="lineno">32</span>#33=VERTEX_POINT(&#x27;&#x27;,#32);
+<span class="lineno">33</span>#34=CARTESIAN_POINT(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">34</span>#35=VERTEX_POINT(&#x27;&#x27;,#34);
+<span class="lineno">35</span>#36=CARTESIAN_POINT(&#x27;&#x27;,(0.0,1.0,0.0));
+<span class="lineno">36</span>#37=VERTEX_POINT(&#x27;&#x27;,#36);
+<span class="lineno">37</span>/* Curves */
+<span class="lineno">38</span>#40=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">39</span>/* Use unit vector magnitude so OCCT can build Geom_Line; the sliver
+<span class="lineno">40</span> * defect is preserved by the vertex coordinates separated by 1e-9. */
+<span class="lineno">41</span>#41=VECTOR(&#x27;&#x27;,#40,1.0);
+<span class="lineno">42</span>#42=LINE(&#x27;&#x27;,#30,#41);
+<span class="lineno">43</span>#43=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">44</span>#44=VECTOR(&#x27;&#x27;,#43,1.0);
+<span class="lineno">45</span>#45=LINE(&#x27;&#x27;,#32,#44);
+<span class="lineno">46</span>#46=DIRECTION(&#x27;&#x27;,(-0.7071067811865475,0.7071067811865475,0.0));
+<span class="lineno">47</span>#47=VECTOR(&#x27;&#x27;,#46,1.0);
+<span class="lineno">48</span>#48=LINE(&#x27;&#x27;,#34,#47);
+<span class="lineno">49</span>#49=DIRECTION(&#x27;&#x27;,(0.0,-1.0,0.0));
+<span class="lineno">50</span>#50=VECTOR(&#x27;&#x27;,#49,1.0);
+<span class="lineno">51</span>#51=LINE(&#x27;&#x27;,#36,#50);
+<span class="lineno">52</span>/* Defect: e1 is a sliver edge of length 1e-9 connecting the two near-coincident
+<span class="lineno">53</span> * vertices A and A&#x27;. */
+<span class="lineno">54</span>#60=EDGE_CURVE(&#x27;&#x27;,#31,#33,#42,.T.);
+<span class="lineno">55</span>#61=EDGE_CURVE(&#x27;&#x27;,#33,#35,#45,.T.);
+<span class="lineno">56</span>#62=EDGE_CURVE(&#x27;&#x27;,#35,#37,#48,.T.);
+<span class="lineno">57</span>#63=EDGE_CURVE(&#x27;&#x27;,#37,#31,#51,.T.);
+<span class="lineno">58</span>#70=ORIENTED_EDGE(&#x27;&#x27;,*,*,#60,.T.);
+<span class="lineno">59</span>#71=ORIENTED_EDGE(&#x27;&#x27;,*,*,#61,.T.);
+<span class="lineno">60</span>#72=ORIENTED_EDGE(&#x27;&#x27;,*,*,#62,.T.);
+<span class="lineno">61</span>#73=ORIENTED_EDGE(&#x27;&#x27;,*,*,#63,.T.);
+<span class="lineno">62</span>#80=EDGE_LOOP(&#x27;&#x27;,(#70,#71,#72,#73));
+<span class="lineno">63</span>#81=FACE_OUTER_BOUND(&#x27;&#x27;,#80,.T.);
+<span class="lineno">64</span>#82=ADVANCED_FACE(&#x27;&#x27;,(#81),#21,.T.);
+<span class="lineno">65</span>/* Minimal PRODUCT chain so OCCT TransferRoots produces a shape. */
+<span class="lineno">66</span>#9000=PRODUCT_CONTEXT(&#x27;&#x27;,#1,&#x27;mechanical&#x27;);
+<span class="lineno">67</span>#9001=PRODUCT(&#x27;Twi013&#x27;,&#x27;Twi013&#x27;,&#x27;&#x27;,(#9000));
+<span class="lineno">68</span>#9002=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#9001);
+<span class="lineno">69</span>#9003=PRODUCT_DEFINITION_CONTEXT(&#x27;part definition&#x27;,#1,&#x27;design&#x27;);
+<span class="lineno">70</span>#9004=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,#9002,#9003);
+<span class="lineno">71</span>#9005=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,#9004);
+<span class="lineno">72</span>#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">73</span>#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+<span class="lineno">74</span>#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+<span class="lineno">75</span>#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,&#x27;distance_accuracy_value&#x27;,&#x27;&#x27;);
+<span class="lineno">76</span>#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT(&#x27;&#x27;,&#x27;3D&#x27;));
+<span class="lineno">77</span>#9020=OPEN_SHELL(&#x27;wrap_shell&#x27;,(#82));
+<span class="lineno">78</span>#9021=SHELL_BASED_SURFACE_MODEL(&#x27;wrap_sbsm&#x27;,(#9020));
+<span class="lineno">79</span>#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION(&#x27;&#x27;,(#9021),#9010);
+<span class="lineno">80</span>#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+<span class="lineno">81</span>ENDSEC;
+<span class="lineno">82</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Twi011.html">&larr; Twi011</a> <a class="up" href="index.html">§12.3b Wires / loops / edges</a> <a class="next" href="Twi017.html">Twi017 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

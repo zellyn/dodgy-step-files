@@ -1,0 +1,32 @@
+ISO-10303-21;
+/* M173 - AP238 MILLING_TOOLPATH consecutive points beyond tool diameter.
+ * Defect: successive points along a milling toolpath are spaced 12 mm
+ * apart while the tool diameter is 6 mm. Linear interpolation between
+ * those samples leaves stock between passes and the toolpath has no
+ * implicit guarantee of contiguous engagement; the controller either
+ * over-feeds or leaves uncut islands. */
+HEADER;
+FILE_DESCRIPTION(('M173 test case','AP238 milling-toolpath sampling exceeds tool diameter'),'2;1');
+FILE_NAME('M173.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AP238_STEP_NC_MIM { 1 0 10303 238 1 0 0 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('numerical_control_machining');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
+  'numerical_control_machining',2007,#1);
+#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10))
+     REPRESENTATION_CONTEXT('nc','3D'));
+/* Tool diameter 6 mm. */
+#90=MILLING_CUTTING_TOOL('endmill_6mm',$,$,$,
+  MEASURE_WITH_UNIT(POSITIVE_LENGTH_MEASURE(6.0),#10));
+/* Defect: toolpath samples 12 mm apart - twice the tool diameter. */
+#50=CARTESIAN_POINT('p0',(0.0,0.0,0.0));
+#51=CARTESIAN_POINT('p1',(12.0,0.0,0.0));
+#52=CARTESIAN_POINT('p2',(24.0,0.0,0.0));
+#60=POLYLINE('jumpy_path',(#50,#51,#52));
+#100=MILLING_TOOLPATH('coarse_path',$,$,$,$,#60,#90);
+#200=WORKPLAN('main',(#100),$,$,$);
+ENDSEC;
+END-ISO-10303-21;

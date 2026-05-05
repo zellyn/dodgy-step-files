@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Ps010 — ORIENTED_EDGE.orientation=.F. on every half-edge of a wire</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.3a Shells / orientation</a> <span class="sep">/</span> <span class="current">Ps010</span>
+</nav>
+<header class="title-bar">
+<h1>Ps010 <span class="sep">—</span> <span class="entry-title">ORIENTED_EDGE.orientation=.F. on every half-edge of a wire</span></h1>
+<p class="category">§12.3a shells / orientation (sub-class: pathological-success / half-edge-flip)</p>
+<p class="severity-badge severity-p1">P1 — silent data loss</p>
+<p class="tag-pills">
+<a class="tag tag-topology" href="../by-tag/topology/index.html">topology</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-3a-shells/Ps010.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-3a-shells/Ps010.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>deduced from ORIENTED_EDGE semantics</li>
+<li>bug-report patterns &quot;wire goes the wrong way&quot;, &quot;loop traversed backwards&quot;, &quot;edge orientation flag inverted&quot;</li>
+</ul></section>
+<section><h2>Description</h2>
+<p>A planar face with a square outer loop. Each underlying EDGE_CURVE is constructed so its 3D direction matches the intended CCW traversal — but every ORIENTED_EDGE on that loop has orientation=.F., reversing each one. Adjacent endpoints still match (the loop closes), every edge has degree 2, kernel accepts the file silently. Tier-3 introspection (signed-area of the loop in the face&#x27;s parametric domain vs. surface normal) reveals the loop traverses CW where CCW was intended.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>Square face at z=0 with vertices at (0,0), (1,0), (1,1), (0,1). Four EDGE_CURVEs whose underlying LINE direction vectors trace the CCW path. Four ORIENTED_EDGEs each with orientation=.F. EDGE_LOOP composed of those four.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>Reject with E_WIRE_ORIENTATION_INCONSISTENT diagnostic, or warn and accept: verify the wire-orientation invariant (chained start/end matching modulo orientation flag) AND signed-area consistency with the face surface normal. A clean wire passes both; this fixture passes the first but fails the second.</p></section>
+<section><h2>Notes</h2>
+<p>Tier-3 metric: signed area of the loop in face UV space. Differs from the area whose absolute value the kernel reports if the signed-area check is not run. Synonyms: &quot;wire goes the wrong way&quot;, &quot;loop traversed backwards&quot;, &quot;edge orientation flag inverted&quot;, &quot;every half-edge of wire flipped&quot;, &quot;loop traverses CW where CCW expected&quot;.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a</code></p></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>face[0].surface_type == &quot;plane&quot;</code></li>
+<li><code>n_edges_total &gt;= 4</code></li>
+<li><code>n_vertices_total &gt;= 8</code></li>
+<li><code>face[0].sliver_aspect_max_min &gt; 1e6</code></li>
+</ul></section>
+<section><h2>Live oracle output</h2>
+<table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
+<tr><td><code>occt_heal_on</code></td><td><code>shape(1)</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>shape(1)</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>shape(9)</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>shape(9)</code></td></tr>
+<tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>not_manifold</code></td></tr>
+</tbody></table>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>/* Ps010 - ORIENTED_EDGE.orientation=.F. on edges already directed correctly - kernel accepts file silently; tier-3 introspection reveals loop traversal goes backwards */
+<span class="lineno">2</span>ISO-10303-21;
+<span class="lineno">3</span>HEADER;
+<span class="lineno">4</span>FILE_DESCRIPTION((&#x27;Ps010 pathological-success&#x27;,&#x27;Inverted half-edge traversal on closed wire&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">5</span>FILE_NAME(&#x27;Ps010.stp&#x27;,&#x27;2026-04-26T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;manual&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">6</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }&#x27;));
+<span class="lineno">7</span>ENDSEC;
+<span class="lineno">8</span>DATA;
+<span class="lineno">9</span>#1=APPLICATION_CONTEXT(&#x27;automotive_design&#x27;);
+<span class="lineno">10</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,&#x27;automotive_design&#x27;,2000,#1);
+<span class="lineno">11</span>/* Single planar face (z=0) bounded by a square loop. Each edge&#x27;s
+<span class="lineno">12</span>   underlying EDGE_CURVE points &quot;the right way&quot; for a CCW traversal,
+<span class="lineno">13</span>   but every ORIENTED_EDGE has orientation=.F., reversing each one.
+<span class="lineno">14</span>   Net effect: the wire still closes, but the loop traverses CW when
+<span class="lineno">15</span>   it should be CCW. The face&#x27;s boundary is therefore semantically
+<span class="lineno">16</span>   inverted, swapping inside/outside. The kernel&#x27;s edge-closure check
+<span class="lineno">17</span>   still passes because adjacent endpoints match. */
+<span class="lineno">18</span>#100=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">19</span>#101=CARTESIAN_POINT(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">20</span>#102=CARTESIAN_POINT(&#x27;&#x27;,(1.0,1.0,0.0));
+<span class="lineno">21</span>#103=CARTESIAN_POINT(&#x27;&#x27;,(0.0,1.0,0.0));
+<span class="lineno">22</span>#110=VERTEX_POINT(&#x27;&#x27;,#100); #111=VERTEX_POINT(&#x27;&#x27;,#101);
+<span class="lineno">23</span>#112=VERTEX_POINT(&#x27;&#x27;,#102); #113=VERTEX_POINT(&#x27;&#x27;,#103);
+<span class="lineno">24</span>#200=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0)); #201=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">25</span>#210=CARTESIAN_POINT(&#x27;&#x27;,(0.5,0.5,0.0));
+<span class="lineno">26</span>#211=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#210,#200,#201);
+<span class="lineno">27</span>#212=PLANE(&#x27;&#x27;,#211);
+<span class="lineno">28</span>/* Edges: each EDGE_CURVE is built so that its 3D direction matches the
+<span class="lineno">29</span>   intended CCW traversal (110-&gt;111, 111-&gt;112, 112-&gt;113, 113-&gt;110). */
+<span class="lineno">30</span>#300=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0)); #301=VECTOR(&#x27;&#x27;,#300,1.0);
+<span class="lineno">31</span>#302=DIRECTION(&#x27;&#x27;,(0.0,1.0,0.0)); #303=VECTOR(&#x27;&#x27;,#302,1.0);
+<span class="lineno">32</span>#304=DIRECTION(&#x27;&#x27;,(-1.0,0.0,0.0)); #305=VECTOR(&#x27;&#x27;,#304,1.0);
+<span class="lineno">33</span>#306=DIRECTION(&#x27;&#x27;,(0.0,-1.0,0.0)); #307=VECTOR(&#x27;&#x27;,#306,1.0);
+<span class="lineno">34</span>#310=LINE(&#x27;&#x27;,#100,#301); #311=EDGE_CURVE(&#x27;e_bot&#x27;,#110,#111,#310,.T.);
+<span class="lineno">35</span>#312=LINE(&#x27;&#x27;,#101,#303); #313=EDGE_CURVE(&#x27;e_right&#x27;,#111,#112,#312,.T.);
+<span class="lineno">36</span>#314=LINE(&#x27;&#x27;,#102,#305); #315=EDGE_CURVE(&#x27;e_top&#x27;,#112,#113,#314,.T.);
+<span class="lineno">37</span>#316=LINE(&#x27;&#x27;,#103,#307); #317=EDGE_CURVE(&#x27;e_left&#x27;,#113,#110,#316,.T.);
+<span class="lineno">38</span>/* DEFECT: every ORIENTED_EDGE flagged orientation=.F. so the loop
+<span class="lineno">39</span>   visits 110-&gt;113-&gt;112-&gt;111-&gt;110 -- CW instead of CCW. */
+<span class="lineno">40</span>#400=ORIENTED_EDGE(&#x27;&#x27;,*,*,#311,.F.);
+<span class="lineno">41</span>#401=ORIENTED_EDGE(&#x27;&#x27;,*,*,#313,.F.);
+<span class="lineno">42</span>#402=ORIENTED_EDGE(&#x27;&#x27;,*,*,#315,.F.);
+<span class="lineno">43</span>#403=ORIENTED_EDGE(&#x27;&#x27;,*,*,#317,.F.);
+<span class="lineno">44</span>#404=EDGE_LOOP(&#x27;all_inverted&#x27;,(#400,#401,#402,#403));
+<span class="lineno">45</span>#405=FACE_OUTER_BOUND(&#x27;&#x27;,#404,.T.);
+<span class="lineno">46</span>#406=ADVANCED_FACE(&#x27;inverted_traversal&#x27;,(#405),#212,.T.);
+<span class="lineno">47</span>#500=OPEN_SHELL(&#x27;one_face&#x27;,(#406));
+<span class="lineno">48</span>#510=SHELL_BASED_SURFACE_MODEL(&#x27;plate&#x27;,(#500));
+<span class="lineno">49</span>#9000=PRODUCT_CONTEXT(&#x27;&#x27;,#1,&#x27;mechanical&#x27;);
+<span class="lineno">50</span>#9001=PRODUCT(&#x27;Ps010&#x27;,&#x27;Ps010&#x27;,&#x27;&#x27;,(#9000));
+<span class="lineno">51</span>#9002=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#9001);
+<span class="lineno">52</span>#9003=PRODUCT_DEFINITION_CONTEXT(&#x27;part definition&#x27;,#1,&#x27;design&#x27;);
+<span class="lineno">53</span>#9004=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,#9002,#9003);
+<span class="lineno">54</span>#9005=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,#9004);
+<span class="lineno">55</span>#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">56</span>#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+<span class="lineno">57</span>#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+<span class="lineno">58</span>#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,&#x27;distance_accuracy_value&#x27;,&#x27;&#x27;);
+<span class="lineno">59</span>#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT(&#x27;&#x27;,&#x27;3D&#x27;));
+<span class="lineno">60</span>#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION(&#x27;&#x27;,(#510),#9010);
+<span class="lineno">61</span>#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+<span class="lineno">62</span>ENDSEC;
+<span class="lineno">63</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Ps009.html">&larr; Ps009</a> <a class="up" href="index.html">§12.3a Shells / orientation</a> <a class="next" href="Ps011.html">Ps011 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

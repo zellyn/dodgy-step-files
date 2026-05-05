@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>§12.4 Tolerance &amp; numerical precision</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="section">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <span class="current">§12.4 Tolerance &amp; numerical precision</span>
+</nav>
+<header class="title-bar">
+<h1>§12.4 Tolerance &amp; numerical precision</h1>
+<p class="blurb">Tolerance and numerical-precision defects: vertex tolerances exceeding edge length, near-coincident loops.</p>
+<p class="meta">72 entries</p>
+</header>
+<main>
+<table class="entries"><thead><tr><th>ID</th><th>Title</th><th>Provenance</th><th>Expected validation</th></tr></thead><tbody>
+<tr><td><a href="N001.html"><code>N001</code></a></td><td>Vertex `UNCERTAINTY_MEASURE_WITH_UNIT` larger than edge / face value (tolerance hierarchy violation)</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="N002.html"><code>N002</code></a></td><td>Wireframe gap-fix inflates tolerance instead of bridging the gap</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="N003.html"><code>N003</code></a></td><td>Same-domain face merge inflates shared-vertex tolerance to worst input</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="N004.html"><code>N004</code></a></td><td>Edge same-parameter flag asserted but 3D curve and pcurve disagree at sampled parameters (`SameParameter=.T.` lie)</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="N005.html"><code>N005</code></a></td><td>Splitting a closed periodic face leaves new edges with reversed pcurve vs 3D curve parameterisation</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="N006.html"><code>N006</code></a></td><td>Pcurve drifts out of sync with 3D-curve parameterisation (geometric flavour)</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="N007.html"><code>N007</code></a></td><td>Vertex tolerance bump factor hard-coded `1.000001 *` on disagreement</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="N008.html"><code>N008</code></a></td><td>Vertex tolerance inflation by repeated self-intersection healing cascades</td><td><code>bytes-sufficient</code></td><td><code>occt=shape(1)/shape(1) gmsh=shape(32) ifc=schema_n/a</code></td></tr>
+<tr><td><a href="N009.html"><code>N009</code></a></td><td>Vertex 3D point lies far from incident-edge curve endpoints (dispersion exceeds tolerance)</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="N010.html"><code>N010</code></a></td><td>`EDGE_CURVE` shorter than vertex tolerance (tiny edge covered by vertices, `distance_accuracy` exceeds edge length)</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="N011.html"><code>N011</code></a></td><td>Seam edge inserted inside an existing vertex tolerance ball produces zero-length edge</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="N012.html"><code>N012</code></a></td><td>Setting face tolerance to a tiny value then ShapeFix produces vertex/vertex intersections</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="N013.html"><code>N013</code></a></td><td>Boolean cascade vertex deviation (independently computed pairwise intersections)</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="N014.html"><code>N014</code></a></td><td>Spurious tiny `EDGE_CURVE` that should have collapsed: vertex separation below declared tolerance</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="N015.html"><code>N015</code></a></td><td>`xstep.cascade.unit M` meters setting inflates tolerance and corrupts geometry</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="N016.html"><code>N016</code></a></td><td>Edge tolerance 2-3 orders of magnitude &gt; file tolerance (CATIA per-edge precision)</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="N017.html"><code>N017</code></a></td><td>`UNCERTAINTY_MEASURE_WITH_UNIT` populated with a fixed field-default value (untrustworthy)</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="N018.html"><code>N018</code></a></td><td>`GEOMETRIC_REPRESENTATION_CONTEXT` missing `GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT` leaf → fall back to read.precision</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="N019.html"><code>N019</code></a></td><td>`OFFSET_SURFACE` with sub-tolerance offset (fixed-tolerance importer hard-codes 1e-3)</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="N020.html"><code>N020</code></a></td><td>Coordinate-system origin offset: hard-coded BOARD_OFFSET 0.05mm in PCB→MCAD pipeline</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="N021.html"><code>N021</code></a></td><td>VRML/STEP origin convention mismatch within same producer</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="N023.html"><code>N023</code></a></td><td>`EDGE_CURVE` based on `LINE` displaced from true vertex position</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="N024.html"><code>N024</code></a></td><td>`EDGE_CURVE` 3D `LINE` stale relative to translated host `PLANE` (rebuild-edge case)</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="N025.html"><code>N025</code></a></td><td>Coincident-but-not-shared vertices/edges (cross-translator round-off)</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="N026.html"><code>N026</code></a></td><td>Cross-kernel topology rejection: source-valid, target-invalid by tolerance bookkeeping</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="N027.html"><code>N027</code></a></td><td>Small-mm `CYLINDRICAL_SURFACE` with target-unit mismatch (gmsh `OCCTargetUnit` silently ignored on `importShapesNativePointer` path)</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="N028.html"><code>N028</code></a></td><td>`GEOMETRIC_REPRESENTATION_CONTEXT` missing `LENGTH_UNIT` (only angle units present) → user-configured cascade.unit ignored</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="N029.html"><code>N029</code></a></td><td>Inch-units silent treatment as mm (25.4× scale error)</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="N030.html"><code>N030</code></a></td><td>Quarter `CYLINDRICAL_SURFACE` stored as `B_SPLINE_SURFACE_WITH_KNOTS` (canonical recognition tolerance budget)</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="N031.html"><code>N031</code></a></td><td>Surface discontinuities introduced by translation (G0/G1/G2 break at shared edges)</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="N032.html"><code>N032</code></a></td><td>Tolerance type entity coverage: AP242 tolerance entities dropped on import</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="N033.html"><code>N033</code></a></td><td>Tolerance value polymorphic encoding (`MeasureRepresentationItem` vs plain measure)</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="N034.html"><code>N034</code></a></td><td>`+/-` tolerance bounds inverted, equal, or wrong measure type</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="N035.html"><code>N035</code></a></td><td>Default tolerance precision: missing decimal-place qualifier</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="N036.html"><code>N036</code></a></td><td>Centroid validation breaks down when relative threshold goes below modeling tolerance</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="N037.html"><code>N037</code></a></td><td>Curve gaps between adjacent segments after format conversion (LOTAR exchange defect)</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="N038.html"><code>N038</code></a></td><td>Patrikalakis interval-solid violation: face-pair gap exceeds bound</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="N039.html"><code>N039</code></a></td><td>Healing pass over-eagerly inflates tolerances 1000× on sub-shapes that needed no fix (post-fix `UNCERTAINTY_MEASURE_WITH_UNIT` bloat)</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="N040.html"><code>N040</code></a></td><td>`Limit Tolerance` clamp re-exposes gaps that bloated tolerances were hiding (Salome)</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="N041.html"><code>N041</code></a></td><td>Manifold ε-validity contract: cumulative transform error inflates ε beyond input scale</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="N042.html"><code>N042</code></a></td><td>Self-intersecting wire from coarse-discretization bbox check (sample-count too small)</td><td><code>bytes-sufficient</code></td><td><code>occt=shape(1)/shape(1) gmsh=shape(5) ifc=schema_n/a</code></td></tr>
+<tr><td><a href="N043.html"><code>N043</code></a></td><td>Shape-to-shape distance reports nonzero gap for clearly intersecting parts</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="N044.html"><code>N044</code></a></td><td>Persistent IDs lost across editing/translation breaks PMI tolerance attachment</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="N045.html"><code>N045</code></a></td><td>Vertex tolerance under-checked: edge-internal intersection ignored</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="N046.html"><code>N046</code></a></td><td>Default tolerance projection wrong on non-default tolerance shapes (free CARTESIAN_POINT off PLANE within declared tolerance but beyond hard-coded internal tolerance)</td><td><code>bytes-sufficient</code></td><td><code>occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a</code></td></tr>
+<tr><td><a href="N047.html"><code>N047</code></a></td><td>Linear and angular tolerance for same-surface face merging not user-specifiable</td><td><code>bytes-sufficient</code></td><td><code>occt=shape(1)/shape(1) gmsh=shape(15) ifc=schema_n/a</code></td></tr>
+<tr><td><a href="N048.html"><code>N048</code></a></td><td>Walk-line initial step unrelated to tolerance during surface intersection</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="N049.html"><code>N049</code></a></td><td>Reading a structurally valid STEP file produces an invalid `TopoDS_Shape`</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="N050.html"><code>N050</code></a></td><td>File-supplied `UNCERTAINTY_MEASURE_WITH_UNIT` parsed but never consumed (BRL-CAD step-g)</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Tb001.html"><code>Tb001</code></a></td><td>Sub-tolerance vertex gap that closes at 1e-3 but yawns open at 1e-7</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Tb002.html"><code>Tb002</code></a></td><td>Sub-tolerance vertex gap that closes at 1e-7 but inflates at 1e-3</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Tb003.html"><code>Tb003</code></a></td><td>Vertex-edge-face tolerance hierarchy holds in mm but inverts in m</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Tb004.html"><code>Tb004</code></a></td><td>Vertex-edge-face hierarchy holds in mm but inverts when scaled to inches</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Tb005.html"><code>Tb005</code></a></td><td>Face area sub-tolerance squared (`tol*tol` threshold defect)</td><td><code>bytes-sufficient</code></td><td><code>occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Tb006.html"><code>Tb006</code></a></td><td>Edge length sub-tolerance squared in 2D pcurve length</td><td><code>bytes-sufficient</code></td><td><code>occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Tb007.html"><code>Tb007</code></a></td><td>NURBS knot-difference quantum below tolerance: knot collapses or doesn&#x27;t</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Tb008.html"><code>Tb008</code></a></td><td>NURBS knot-difference quantum scaled by parametric range</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Tb009.html"><code>Tb009</code></a></td><td>Self-intersection visible at full precision but rounded out at receiver tolerance</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Tb010.html"><code>Tb010</code></a></td><td>Self-intersection that vanishes when round-tripped through float32</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Tb011.html"><code>Tb011</code></a></td><td>Periodic-surface seam matching requires period-relative tolerance</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Tb012.html"><code>Tb012</code></a></td><td>Sphere seam matching across pole singularity</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Tb013.html"><code>Tb013</code></a></td><td>Coordinate at 1e-300 tests as &quot;near zero&quot; only under denormalized math</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Tb014.html"><code>Tb014</code></a></td><td>Sliver triangle whose smallest internal angle is at the hardcoded trigger</td><td><code>bytes-sufficient</code></td><td><code>occt=shape(1)/shape(1) gmsh=shape(7) ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Tb015.html"><code>Tb015</code></a></td><td>Sliver edge length at sqrt(tol) — under squared comparison or linear?</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Tb016.html"><code>Tb016</code></a></td><td>Tolerance budget exhausted by accumulation across long edge chain</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Tb017.html"><code>Tb017</code></a></td><td>Two coincident faces at distance equal to declared tolerance</td><td><code>bytes-sufficient</code></td><td><code>occt=shape(1)/shape(1) gmsh=shape(18) ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Tb018.html"><code>Tb018</code></a></td><td>UNCERTAINTY value of exactly zero — no fuzzy compare</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Tb019.html"><code>Tb019</code></a></td><td>UNCERTAINTY value of `1.0E-30` — below any sane working precision</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Tb020.html"><code>Tb020</code></a></td><td>UNCERTAINTY value of `1.0E+30` — astronomically loose</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Tb021.html"><code>Tb021</code></a></td><td>Multiple UNCERTAINTY entries with conflicting values, no labels</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Tb022.html"><code>Tb022</code></a></td><td>Tolerance declared in different units than coordinates</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Tb023.html"><code>Tb023</code></a></td><td>Coordinates near 1e15 where float64 ULP exceeds declared tolerance</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+</tbody></table>
+</main>
+<footer>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

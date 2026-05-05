@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Ad111 — ZIP bomb inside a 3MF / IFCZIP container that wraps a STEP body</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.11 Adversarial / parser robustness</a> <span class="sep">/</span> <span class="current">Ad111</span>
+</nav>
+<header class="title-bar">
+<h1>Ad111 <span class="sep">—</span> <span class="entry-title">ZIP bomb inside a 3MF / IFCZIP container that wraps a STEP body</span></h1>
+<p class="category">§12.11 adversarial (sub-class: decompression bomb / ZIP container)</p>
+<p class="tag-pills">
+<a class="tag tag-silent-loss" href="../by-tag/silent-loss/index.html">silent-loss</a>
+<a class="tag tag-adversarial" href="../by-tag/adversarial/index.html">adversarial</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-11-adversarial/Ad111.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-11-adversarial/Ad111.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>bug-reporter language: &quot;3MF zip bomb&quot;, &quot;IFCZIP allocates gigs&quot;</li>
+<li>CWE-409</li>
+<li>3MF spec §3 (ZIP container)</li>
+<li>ISO 10303-21 (STEP body inside an IFCZIP-style wrapper)</li>
+</ul></section>
+<section><h2>Sender</h2>
+<p>deduced — adversarial input that exercises the ZIP-container decompression path used by 3MF / IFCZIP / similar STEP-adjacent wrappers</p></section>
+<section><h2>Description</h2>
+<p>3MF and IFCZIP are STEP-adjacent container formats: a ZIP archive whose entries include a Part-21 body (or an XML-encoded equivalent) plus auxiliary metadata. A maliciously-crafted ZIP archive carries one entry whose compressed bytes are tiny but whose uncompressed bytes claim gigabytes — the textbook ZIP bomb (`42.zip`-style nested archives, or a single highly-redundant entry). A receiver that extracts entries to a tempdir before parsing exhausts disk; one that decompresses to memory exhausts RAM. Distinct from Ad105 (archive-header lie): in this entry, the ZIP entry actually decompresses to the claimed size. Bug-reporter language: &quot;3MF bomb&quot;, &quot;IFCZIP decompression OOM&quot;, &quot;ZIP entry blows up CAD loader&quot;.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>a 3MF file (ZIP archive) containing a single entry `3D/3dmodel.model` whose compressed-vs-uncompressed ratio is 1:5000; the entry is valid 3MF XML when decompressed but ~2 GB long. Cannot be embodied as a Part-21 fixture; the defect lives in the ZIP wrapper.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>cap the per-entry decompression budget and abort with a precise diagnostic when exceeded; cap the per-archive total budget; refuse archives with implausible entry-count / total-size combinations; treat the container layer as adversarial.</p></section>
+<section><h2>Notes</h2>
+<p>Companion to Ad110 (gzip wrapper) — different container, same defect class. Distinct from Ad105 (archive *header* lies; this entry&#x27;s bomb actually decompresses). **See also**: Ad027, Ad105, Ad110, Ad112, Pf030. Provenance tier: cross-file-state — bytes alone (a Part-21 body) cannot demonstrate this defect; the bomb is in the ZIP wrapper. **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog&#x27;s allowed set ({reject}). Kernel-bug witnessed: receivers must reject this fixture per the catalog&#x27;s stated invariant.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<section><h2>Provenance tier</h2>
+<p><code>cross-file-state</code> — defect not fully embodied in fixture bytes.</p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>contains(b&#x27;3MF&#x27;) or contains(b&#x27;IFCZIP&#x27;) or contains(b&#x27;ZIP&#x27;)</code></li>
+<li><code>contains(b&#x27;bomb&#x27;) or contains(b&#x27;ratio&#x27;)</code></li>
+</ul></section>
+<section><h2>Cross-references</h2>
+<p><a href="Ad027.html">Ad027</a>, <a href="Ad105.html">Ad105</a>, <a href="Ad110.html">Ad110</a>, <a href="Ad112.html">Ad112</a>, <a href="../12-10-perf/Pf030.html">Pf030</a></p>
+</section>
+<section><h2>Live oracle output</h2>
+<table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
+<tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>no_shapes_loaded</code></td></tr>
+</tbody></table>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>/* Ad111 - ZIP bomb inside a 3MF / IFCZIP container that wraps a STEP body
+<span class="lineno">2</span> * Defect: 3MF and IFCZIP are STEP-adjacent ZIP-container formats. A
+<span class="lineno">3</span> * maliciously-crafted ZIP archive carries one entry whose compressed
+<span class="lineno">4</span> * bytes are tiny but whose uncompressed bytes claim gigabytes - the
+<span class="lineno">5</span> * textbook ZIP bomb. Distinct from Ad105 (archive header lies about
+<span class="lineno">6</span> * size) - in this entry the ZIP entry actually decompresses to the
+<span class="lineno">7</span> * claimed size. Provenance tier: cross-file-state. */
+<span class="lineno">8</span>ISO-10303-21;
+<span class="lineno">9</span>HEADER;
+<span class="lineno">10</span>FILE_DESCRIPTION((&#x27;Ad111 - 3MF/IFCZIP ZIP bomb wrapping STEP body (witness only)&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">11</span>FILE_NAME(&#x27;Ad111.stp&#x27;,&#x27;2026-05-02T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">12</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }&#x27;));
+<span class="lineno">13</span>ENDSEC;
+<span class="lineno">14</span>DATA;
+<span class="lineno">15</span>/* Witness body: the ZIP-wrapper bomb is not present in this Part-21
+<span class="lineno">16</span>   fixture; the bug-reporter searchable terms (3MF, IFCZIP, ZIP, bomb,
+<span class="lineno">17</span>   ratio) are in this file&#x27;s header and comments. The actual exploit
+<span class="lineno">18</span>   is a 3MF (.3mf) or IFCZIP (.ifczip) ZIP archive containing one
+<span class="lineno">19</span>   entry whose compressed:uncompressed ratio is 1:5000 and whose
+<span class="lineno">20</span>   decompressed body is multi-gigabyte. */
+<span class="lineno">21</span>/* 3MF ZIP bomb / IFCZIP container ratio bomb */
+<span class="lineno">22</span>#1=APPLICATION_CONTEXT(&#x27;automotive_design&#x27;);
+<span class="lineno">23</span>#10=CARTESIAN_POINT(&#x27;benign&#x27;,(0.0,0.0,0.0));
+<span class="lineno">24</span>ENDSEC;
+<span class="lineno">25</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Ad110.html">&larr; Ad110</a> <a class="up" href="index.html">§12.11 Adversarial / parser robustness</a> <a class="next" href="Ad112.html">Ad112 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

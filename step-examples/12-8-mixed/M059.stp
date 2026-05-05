@@ -1,0 +1,42 @@
+ISO-10303-21;
+/* M059 - File using an AP242 ED2 'tolerance_zone_form' value
+ * within an AP242 ED1 schema declaration
+ * Defect: AP242 ED2 added enumeration values to existing
+ * tolerance entities (e.g. tolerance_zone_form gained
+ * '.WITHIN_A_SPHERE.', '.NON_UNIFORM.', etc.). A producer
+ * upgraded to ED2 but emitting the older ED1 schema string in
+ * FILE_SCHEMA writes ED2-only enumeration values that an ED1-
+ * conformant parser rejects as invalid enumeration. */
+HEADER;
+FILE_DESCRIPTION(('M059 - AP242 ED1 schema tag with ED2-only enum value'),'2;1');
+FILE_NAME('M059.stp','2026-04-26T00:00:00',(''),(''),
+  'cad-research-suite','','');
+/* Defect: ED1 schema string */
+FILE_SCHEMA(('AP242_MANAGED_MODEL_BASED_3D_ENGINEERING_MIM_LF { 1 0 10303 442 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('managed model based 3d engineering');
+#2=PRODUCT_CONTEXT('',#1,'mechanical');
+#3=PRODUCT('M059','tolED2InED1Part','',(#2));
+#4=PRODUCT_DEFINITION_FORMATION('','',#3);
+#5=PRODUCT_DEFINITION_CONTEXT('',#1,'design');
+#6=PRODUCT_DEFINITION('','',#4,#5);
+#7=PRODUCT_DEFINITION_SHAPE('','',#6);
+#20=( LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT(.MILLI.,.METRE.) );
+#22=( NAMED_UNIT(*) PLANE_ANGLE_UNIT() SI_UNIT($,.RADIAN.) );
+#23=( NAMED_UNIT(*) SI_UNIT($,.STERADIAN.) SOLID_ANGLE_UNIT() );
+#24=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#20,
+  'distance_accuracy_value','');
+#25=( GEOMETRIC_REPRESENTATION_CONTEXT(3)
+  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#24))
+  GLOBAL_UNIT_ASSIGNED_CONTEXT((#20,#22,#23))
+  REPRESENTATION_CONTEXT('','3D') );
+#40=SHAPE_ASPECT('toleranced','',#7,.T.);
+#50=LENGTH_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.05),#20);
+/* Defect: tolerance_zone_form '.WITHIN_A_SPHERE.' is an ED2 value
+ * unknown in ED1 */
+#60=TOLERANCE_ZONE_FORM(.WITHIN_A_SPHERE.);
+#90=SHAPE_REPRESENTATION('',(),#25);
+#91=SHAPE_DEFINITION_REPRESENTATION(#7,#90);
+ENDSEC;
+END-ISO-10303-21;

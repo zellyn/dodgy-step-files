@@ -1,0 +1,57 @@
+ISO-10303-21;
+/* ============================================================
+   WARNING: THIS FILE IS INTENTIONALLY MALFORMED.
+   It exists ONLY for parser-robustness / fuzz-class testing.
+   DO NOT feed to a production translator without sandboxing.
+
+   Entry  : Ad027
+   Title  : STEP "zip bomb" — many tiny instances exhaust
+            memory through O(N) instance tables and O(N x K)
+            reverse-reference maps.
+   Defect : This catalogued fixture declares a relatively
+            modest run of CARTESIAN_POINT instances. A real
+            fuzz fixture would include 10^6 - 10^7 such
+            instances; even a 50 MB file with 5M tiny entity
+            declarations holding 100 references each can
+            expand to ~40 GB resident in many readers.
+            Pattern documented in CAD Exchanger floating-
+            crash class (#A027/A040).
+   Expected: streaming-friendly architecture; configurable
+             max_instances; abort with E_INSTANCE_LIMIT.
+   See also: Ad032, Ad057.
+   ============================================================ */
+HEADER;
+FILE_DESCRIPTION(('Ad027 instance-count zip bomb'),'2;1');
+FILE_NAME('Ad027.stp','2026-04-26T00:00:00',('synthetic'),('cad-research'),
+  'none','none','none');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+/* truncated bomb: catalogued fixture shows only the pattern;
+   a real fuzz fixture inflates these to millions of rows. */
+#1=CARTESIAN_POINT('',(0.,0.,0.));
+#2=CARTESIAN_POINT('',(0.,0.,0.));
+#3=CARTESIAN_POINT('',(0.,0.,0.));
+#4=CARTESIAN_POINT('',(0.,0.,0.));
+#5=CARTESIAN_POINT('',(0.,0.,0.));
+#6=CARTESIAN_POINT('',(0.,0.,0.));
+#7=CARTESIAN_POINT('',(0.,0.,0.));
+#8=CARTESIAN_POINT('',(0.,0.,0.));
+#9=CARTESIAN_POINT('',(0.,0.,0.));
+#10=CARTESIAN_POINT('',(0.,0.,0.));
+#11=CARTESIAN_POINT('',(0.,0.,0.));
+#12=CARTESIAN_POINT('',(0.,0.,0.));
+#13=CARTESIAN_POINT('',(0.,0.,0.));
+#14=CARTESIAN_POINT('',(0.,0.,0.));
+#15=CARTESIAN_POINT('',(0.,0.,0.));
+#16=CARTESIAN_POINT('',(0.,0.,0.));
+#17=CARTESIAN_POINT('',(0.,0.,0.));
+#18=CARTESIAN_POINT('',(0.,0.,0.));
+#19=CARTESIAN_POINT('',(0.,0.,0.));
+#20=CARTESIAN_POINT('',(0.,0.,0.));
+/* ... real bomb continues to 10^7 lines, each of similar
+       shape, with 100 cross-references back-and-forth. */
+#100=GROUP_ASSIGNMENT(#1,#2,#3,#4,#5,#6,#7,#8,#9,#10,
+  #11,#12,#13,#14,#15,#16,#17,#18,#19,#20);
+ENDSEC;
+END-ISO-10303-21;

@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Lh046 — HEADER section contains only `/* */` comments and no required records</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.1b Header &amp; instance-numbering</a> <span class="sep">/</span> <span class="current">Lh046</span>
+</nav>
+<header class="title-bar">
+<h1>Lh046 <span class="sep">—</span> <span class="entry-title">HEADER section contains only `/* */` comments and no required records</span></h1>
+<p class="category">§12.1b header/numbering (sub-class: required HEADER records)</p>
+<p class="tag-pills">
+<a class="tag tag-spec-violation" href="../by-tag/spec-violation/index.html">spec-violation</a>
+<a class="tag tag-syntax" href="../by-tag/syntax/index.html">syntax</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-1b-header/Lh046.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-1b-header/Lh046.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>16-iso-spec ISO 10303-21 §6.2 (required HEADER records: FILE_DESCRIPTION, FILE_NAME, FILE_SCHEMA)</li>
+<li>bug-reporter language: &quot;STEP file has empty header&quot;</li>
+</ul></section>
+<section><h2>Sender</h2>
+<p>deduced — writer pipelines that compose the HEADER section as a comment-only placeholder during a partial export or when the metadata source is unavailable</p></section>
+<section><h2>Description</h2>
+<p>ISO 10303-21 mandates that HEADER contain at minimum FILE_DESCRIPTION, FILE_NAME, and FILE_SCHEMA records (in that order). A pathological writer emits a HEADER section consisting of only `/* */` block comments — the required records are absent. Spec-conforming readers cannot determine the file&#x27;s edition, encoding declaration, or schema name; they must reject. Lenient readers may invent default metadata (assume Edition-2, ISO-8859-1, AP203) and proceed, hiding the producer-side failure. Bug-reporter language: &quot;STEP file has empty header&quot;, &quot;no FILE_SCHEMA in file&quot;, &quot;header is just comments&quot;, &quot;schema unknown&quot;.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>a Part-21 file whose HEADER section is `HEADER; /* exported by build pipeline */ /* metadata unavailable */ ENDSEC;` (no FILE_DESCRIPTION / FILE_NAME / FILE_SCHEMA), followed by a normal DATA section.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>reject the file with a diagnostic naming each missing required record; do not invent default metadata to allow downstream import.</p></section>
+<section><h2>Notes</h2>
+<p>Distinguishable from Lh043 (comments-inside-string). **See also**: Lh037, Lh042. Synonyms: &quot;HEADER contains only comments&quot;, &quot;STEP header missing required records&quot;, &quot;FILE_DESCRIPTION absent from header&quot;, &quot;comment-only HEADER section&quot;, &quot;empty HEADER with /* */ only&quot;.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=empty/empty gmsh=empty ifc=reject</code></p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>contains(b&#x27;HEADER;&#x27;) and contains(b&#x27;ENDSEC;&#x27;) and not_contains(b&#x27;FILE_DESCRIPTION(&#x27;)</code></li>
+<li><code>not_contains(b&#x27;FILE_NAME(&#x27;) and not_contains(b&#x27;FILE_SCHEMA(&#x27;)</code></li>
+</ul></section>
+<section><h2>Cross-references</h2>
+<p><a href="Lh037.html">Lh037</a>, <a href="Lh042.html">Lh042</a>, <a href="Lh043.html">Lh043</a></p>
+</section>
+<section><h2>Live oracle output</h2>
+<table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
+<tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>ifcopenshell</code></td><td><code>reject</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>no_shapes_loaded</code></td></tr>
+</tbody></table>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* Lh046 - HEADER contains only comments, no required records
+<span class="lineno">3</span> * Defect: ISO 10303-21 mandates the three header records inside
+<span class="lineno">4</span> * HEADER. This fixture&#x27;s HEADER contains only block comments;
+<span class="lineno">5</span> * receivers must reject for missing required records. Lenient
+<span class="lineno">6</span> * receivers may invent default metadata. */
+<span class="lineno">7</span>HEADER;
+<span class="lineno">8</span>/* exported by build pipeline */
+<span class="lineno">9</span>/* metadata source unavailable at export time */
+<span class="lineno">10</span>/* placeholder header - file may not be valid */
+<span class="lineno">11</span>ENDSEC;
+<span class="lineno">12</span>DATA;
+<span class="lineno">13</span>#1=APPLICATION_CONTEXT(&#x27;automotive_design&#x27;);
+<span class="lineno">14</span>#10=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">15</span>ENDSEC;
+<span class="lineno">16</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Lh045.html">&larr; Lh045</a> <a class="up" href="index.html">§12.1b Header &amp; instance-numbering</a> <a class="next" href="Lh047.html">Lh047 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

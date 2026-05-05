@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>M129 — AP203 new revision references parent not in change-history chain</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.8 Mixed (tessellation, validation properties, etc.)</a> <span class="sep">/</span> <span class="current">M129</span>
+</nav>
+<header class="title-bar">
+<h1>M129 <span class="sep">—</span> <span class="entry-title">AP203 new revision references parent not in change-history chain</span></h1>
+<p class="category">§12.8 (sub-class: AP203 ECO chain / revision history)</p>
+<p class="severity-badge severity-p1">P1 — silent data loss</p>
+<p class="tag-pills">
+<a class="tag tag-spec-violation" href="../by-tag/spec-violation/index.html">spec-violation</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-8-mixed/M129.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-8-mixed/M129.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>16-iso-spec ISO 10303-203 §4.3 (product revision relationships)</li>
+<li>bug-reporter language: &quot;AP203 ECO skips a revision&quot;, &quot;engineering change chain broken&quot;, &quot;revision derived from wrong parent&quot;.</li>
+</ul></section>
+<section><h2>Sender</h2>
+<p>deduced — PDM exporter that lost the intermediate `PRODUCT_DEFINITION_RELATIONSHIP` during an out-of-order release</p></section>
+<section><h2>Description</h2>
+<p>A `PRODUCT_DEFINITION_FORMATION` (e.g. rev_C) is linked to a parent (rev_A) via `PRODUCT_DEFINITION_RELATIONSHIP`, but an intermediate revision (rev_B) exists in the file with no inbound or outbound relationship. The engineering-change-history chain skips a revision. Bug-reporter language: &quot;PDM revision history has a gap&quot;, &quot;AP203 ECO chain incomplete&quot;.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>three `PRODUCT_DEFINITION_FORMATION`s rev_A, rev_B, rev_C; one `PRODUCT_DEFINITION_RELATIONSHIP` linking rev_C to rev_A; rev_B unreferenced.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>detect orphan revisions in the change history; warn or reject if a revision is unreachable from the change-history graph.</p></section>
+<section><h2>Notes</h2>
+<p>Synonyms: &quot;ECO chain skip&quot;, &quot;PDM revision orphan&quot;, &quot;AP203 change history gap&quot;.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>contains(b&#x27;CONFIG_CONTROL_DESIGN&#x27;)</code></li>
+<li><code>count_entity_def(b&#x27;PRODUCT_DEFINITION_FORMATION&#x27;) &gt;= 3</code></li>
+<li><code>contains(b&#x27;PRODUCT_DEFINITION_RELATIONSHIP&#x27;)</code></li>
+</ul></section>
+<section><h2>Live oracle output</h2>
+<table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
+<tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>no_shapes_loaded</code></td></tr>
+</tbody></table>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* M129 - AP203 new revision references parent that isn&#x27;t in the
+<span class="lineno">3</span> * change-history chain.
+<span class="lineno">4</span> * Defect: PRODUCT_DEFINITION_FORMATION &#x27;rev_C&#x27; lists &#x27;rev_A&#x27; as the
+<span class="lineno">5</span> * basis revision via <mark>PRODUCT_DEFINITION_RELATIONSHIP</mark>, skipping the
+<span class="lineno">6</span> * intermediate &#x27;rev_B&#x27;. The engineering change history is broken
+<span class="lineno">7</span> * - rev_C did not derive from rev_B and there is no relationship
+<span class="lineno">8</span> * accounting for the rev_B work. */
+<span class="lineno">9</span>HEADER;
+<span class="lineno">10</span>FILE_DESCRIPTION((&#x27;M129 test case&#x27;,&#x27;AP203 ECO chain skip&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">11</span>FILE_NAME(&#x27;M129.stp&#x27;,&#x27;2026-05-02T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">12</span>FILE_SCHEMA((&#x27;<mark>CONFIG_CONTROL_DESIGN</mark>&#x27;));
+<span class="lineno">13</span>ENDSEC;
+<span class="lineno">14</span>DATA;
+<span class="lineno">15</span>#1=APPLICATION_CONTEXT(&#x27;configuration controlled 3D design of mechanical parts and assemblies&#x27;);
+<span class="lineno">16</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,&#x27;config_control_design&#x27;,1994,#1);
+<span class="lineno">17</span>#10=PRODUCT(&#x27;housing&#x27;,&#x27;housing&#x27;,&#x27;primary case&#x27;,(#1));
+<span class="lineno">18</span><mark>#11=PRODUCT_DEFINITION_FORMATION(</mark>&#x27;rev_A&#x27;,&#x27;first release&#x27;,#10);
+<span class="lineno">19</span><mark>#12=PRODUCT_DEFINITION_FORMATION(</mark>&#x27;rev_B&#x27;,&#x27;intermediate update&#x27;,#10);
+<span class="lineno">20</span><mark>#13=PRODUCT_DEFINITION_FORMATION(</mark>&#x27;rev_C&#x27;,&#x27;latest revision&#x27;,#10);
+<span class="lineno">21</span>/* Defect: rev_C declares rev_A as predecessor, skipping rev_B which
+<span class="lineno">22</span> * exists but has no inbound or outbound relationship. */
+<span class="lineno">23</span>#100=<mark>PRODUCT_DEFINITION_RELATIONSHIP</mark>(&#x27;eco_chain&#x27;,&#x27;derived_from&#x27;,#11,#13);
+<span class="lineno">24</span>ENDSEC;
+<span class="lineno">25</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="M128.html">&larr; M128</a> <a class="up" href="index.html">§12.8 Mixed (tessellation, validation properties, etc.)</a> <a class="next" href="M130.html">M130 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

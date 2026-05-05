@@ -1,0 +1,26 @@
+ISO-10303-21;
+/* M075 - AP238 NC program selective_executable references missing branch.
+ * Defect: a SELECTIVE (a control-flow construct that picks one of N child
+ * executables based on a condition) lists three branch executables in its
+ * its_elements attribute, but two of those references are unresolved. */
+HEADER;
+FILE_DESCRIPTION(('M075 test case','AP238 selective branch reference unresolved'),'2;1');
+FILE_NAME('M075.stp','2026-04-30T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AP238_STEP_NC_MIM { 1 0 10303 238 1 0 0 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('numerical_control_machining');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
+  'numerical_control_machining',2007,#1);
+#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10))
+     REPRESENTATION_CONTEXT('nc','3D'));
+/* Two real branch executables */
+#100=MACHINING_OPERATION('roughing',$,$,$,$,$);
+#101=MACHINING_OPERATION('finishing',$,$,$,$,$);
+/* Defect: SELECTIVE references #999 and #998 which are not declared. */
+#200=SELECTIVE('material_branch',(#100,#999,#101,#998),$);
+#300=WORKPLAN('top',(#200),$,$,$);
+ENDSEC;
+END-ISO-10303-21;

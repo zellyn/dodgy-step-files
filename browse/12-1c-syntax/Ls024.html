@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Ls024 — Tail garbage after end marker</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.1c Part-21 grammar</a> <span class="sep">/</span> <span class="current">Ls024</span>
+</nav>
+<header class="title-bar">
+<h1>Ls024 <span class="sep">—</span> <span class="entry-title">Tail garbage after end marker</span></h1>
+<p class="category">§12.1c structural / framing</p>
+<p class="severity-badge severity-p1">P1 — silent data loss</p>
+<p class="tag-pills">
+<a class="tag tag-silent-loss" href="../by-tag/silent-loss/index.html">silent-loss</a>
+<a class="tag tag-syntax" href="../by-tag/syntax/index.html">syntax</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-1c-syntax/Ls024.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-1c-syntax/Ls024.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>A025, N002 (notes)</li>
+</ul></section>
+<section><h2>Description</h2>
+<p>Material appearing after `END-ISO-10303-21;` — appended log lines, multiple concatenated files, or stray `DATA;ENDSEC;` blocks. Greedy regex parsers may match across boundaries.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>`END-ISO-10303-21;\n&lt;garbage bytes&gt;` or `..ENDSEC;DATA;ENDSEC;DATA;..END-ISO-10303-21;`</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>Stop reading at the first end marker; treat trailing bytes as warning and discard. Reject second `DATA` at top level.</p></section>
+<section><h2>Notes</h2>
+<p>Cross-oracle: pure-Python Part-21 validator rejects (reject(E_NO_CLOSE)); OCCT silently accepts (load is `empty`). OCC auto-heals a spec-level violation. Synonyms: &quot;garbage after STEP end marker&quot;, &quot;log lines after END-ISO-10303-21&quot;, &quot;concatenated STEP files&quot;, &quot;data after STEP terminator&quot;, &quot;stray DATA after end marker&quot;.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>matches(rb&#x27;(?s)END-ISO-10303-21;.+\S&#x27;)</code></li>
+</ul></section>
+<section><h2>Live oracle output</h2>
+<table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
+<tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>reject(E_NO_CLOSE)</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>no_shapes_loaded</code></td></tr>
+</tbody></table>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>/* Ls024 - Tail garbage after end marker
+<span class="lineno">2</span>   ----------------------------------------------------------------------
+<span class="lineno">3</span>   Catalog section : Â§12.1c structural / framing
+<span class="lineno">4</span>   Sources         : A025, N002 (notes)
+<span class="lineno">5</span>   Originally also catalogued as: Ad037
+<span class="lineno">6</span>   See also        : Ad080
+<span class="lineno">7</span>   ----------------------------------------------------------------------
+<span class="lineno">8</span>   Defect
+<span class="lineno">9</span>     Material appearing after <mark>END-ISO-10303-21; - appended log lines,</mark>
+<span class="lineno">10</span><mark>     multiple concatenated files, or stray DATA;ENDSEC; blocks. Greedy</mark>
+<span class="lineno">11</span><mark>     regex parsers may match across boundaries and pick up entities from</mark>
+<span class="lineno">12</span><mark>     the trailing garbage as if they were part of the file.</mark>
+<span class="lineno">13</span><mark>   Expected behavior</mark>
+<span class="lineno">14</span><mark>     Stop reading at the first end marker; treat trailing bytes as a</mark>
+<span class="lineno">15</span><mark>     warning and discard. Reject a second &#x27;DATA;&#x27; at top level (after</mark>
+<span class="lineno">16</span><mark>     the proper end marker has already terminated the file).</mark>
+<span class="lineno">17</span><mark>   ----------------------------------------------------------------------</mark>
+<span class="lineno">18</span><mark>   This file appends a log banner and a stray DATA;ENDSEC; pair.</mark>
+<span class="lineno">19</span><mark>*/</mark>
+<span class="lineno">20</span><mark>ISO-10303-21;</mark>
+<span class="lineno">21</span><mark>HEADER;</mark>
+<span class="lineno">22</span><mark>FILE_DESCRIPTION((&#x27;Ls024 - tail garbage after END-ISO-10303-21;&#x27;),&#x27;2;1&#x27;);</mark>
+<span class="lineno">23</span><mark>FILE_NAME(&#x27;Ls024.stp&#x27;,&#x27;2026-04-26T00:00:00&#x27;,(&#x27;auto-generated&#x27;),(&#x27;&#x27;),</mark>
+<span class="lineno">24</span><mark>  &#x27;auto-generated&#x27;,&#x27;&#x27;,&#x27;&#x27;);</mark>
+<span class="lineno">25</span><mark>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));</mark>
+<span class="lineno">26</span><mark>ENDSEC;</mark>
+<span class="lineno">27</span><mark>DATA;</mark>
+<span class="lineno">28</span><mark>#10=CARTESIAN_POINT(&#x27;origin&#x27;,(0.0,0.0,0.0));</mark>
+<span class="lineno">29</span><mark>#20=DIRECTION(&#x27;x&#x27;,(1.0,0.0,0.0));</mark>
+<span class="lineno">30</span><mark>#30=AXIS2_PLACEMENT_3D(&#x27;placement&#x27;,#10,#20,$);</mark>
+<span class="lineno">31</span><mark>ENDSEC;</mark>
+<span class="lineno">32</span><mark>END-ISO-10303-21;</mark>
+<span class="lineno">33</span><mark>**** export complete: 2026-04-26T00:00:00 / writer v1.2.3 / 3 entities ****</mark>
+<span class="lineno">34</span><mark>DATA;</mark>
+<span class="lineno">35</span><mark>#99=CARTESIAN_POINT(&#x27;stray&#x27;,(9.0,9.0,9.0));</mark>
+<span class="lineno">36</span><mark>ENDSEC;</mark>
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Ls023.html">&larr; Ls023</a> <a class="up" href="index.html">§12.1c Part-21 grammar</a> <a class="next" href="Ls027.html">Ls027 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

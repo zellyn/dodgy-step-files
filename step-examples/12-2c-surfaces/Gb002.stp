@@ -1,0 +1,18 @@
+ISO-10303-21;
+/* Gb002 - Surface tangent undefined at a pole.
+ * Defect: SPHERICAL_SURFACE; query at v=π/2 (the pole) - U-tangent is zero. */
+HEADER;
+FILE_DESCRIPTION(('Gb002 - surface tangent undefined at pole','Pass C gap-fill'),'2;1');
+FILE_NAME('Gb002.stp','2026-04-30T00:00:00',(''),(''),'gap-fill C','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#11=DIRECTION('',(0.0,0.0,1.0));
+#12=DIRECTION('',(1.0,0.0,0.0));
+#13=AXIS2_PLACEMENT_3D('',#10,#11,#12);
+#14=SPHERICAL_SURFACE('sphere',#13,1.0);
+/* Pole at v=π/2 - U-tangent is zero. */
+ENDSEC;
+END-ISO-10303-21;

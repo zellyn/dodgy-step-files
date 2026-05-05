@@ -1,0 +1,46 @@
+/* Ad044 - EDGE_CURVE.same_sense boolean read uninitialised
+   ----------------------------------------------------------------------
+   Catalog section : §12.11 adversarial (sub-class: uninit / encoding)
+   Sources         : 08-occt-gitlog.md G028 (Mantis 0029944, GCC 4.9
+                     regression)
+   See also        : Ls035
+   Severity        : M (CWE-457)
+   ----------------------------------------------------------------------
+   WARNING: This file is INTENTIONALLY MALFORMED for parser-robustness
+   testing. Do NOT use as exchange data.
+   ----------------------------------------------------------------------
+   Defect
+     STEP files where same_sense BOOLEAN is missing or illegally
+     formatted leave a C++ bool uninitialised, producing
+     non-deterministic edge direction. The trigger: writer emits
+     `.U.` (an invalid LOGICAL value, never legal for BOOLEAN), or
+     leaves the slot empty. Original GCC 4.9 regression in OCCT
+     surfaced because the field initialisation moved to a hot path.
+   Reproducer recipe
+     EDGE_CURVE with `.U.` (illegal in a BOOLEAN slot) for same_sense.
+   Expected kernel behavior
+     Reject `.U.` in BOOLEAN; treat missing as default `.T.` and warn;
+     never read an uninitialised bool. Initialise default at struct
+     declaration, not in setter.
+   ----------------------------------------------------------------------
+*/
+ISO-10303-21;
+HEADER;
+FILE_DESCRIPTION(('Ad044 - EDGE_CURVE.same_sense uses .U. (illegal BOOLEAN)'),
+  '2;1');
+FILE_NAME('Ad044.stp','2026-04-26T00:00:00',('auto-generated'),(''),
+  'auto-generated','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+#1=CARTESIAN_POINT('a',(0.0,0.0,0.0));
+#2=CARTESIAN_POINT('b',(1.0,0.0,0.0));
+#3=VERTEX_POINT('va',#1);
+#4=VERTEX_POINT('vb',#2);
+#5=DIRECTION('x',(1.0,0.0,0.0));
+#6=VECTOR('v',#5,1.0);
+#7=LINE('l',#1,#6);
+/* Defect: same_sense slot uses .U. which is LOGICAL not BOOLEAN. */
+#10=EDGE_CURVE('e',#3,#4,#7,.U.);
+ENDSEC;
+END-ISO-10303-21;

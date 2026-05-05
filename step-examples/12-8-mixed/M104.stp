@@ -1,0 +1,32 @@
+ISO-10303-21;
+/* M104 - AP238 producer emits SETUP where WORKPIECE_SETUP is required.
+ * Defect: AP238 distinguishes SETUP (machine fixture configuration) from
+ * WORKPIECE_SETUP (workpiece-on-fixture clamping). A MACHINING_WORKINGSTEP
+ * here references a SETUP via its_setup, but per AP238 schema the role
+ * expects a WORKPIECE_SETUP. Consumers conflate them and lose either the
+ * fixture geometry or the workpiece clamp data. */
+HEADER;
+FILE_DESCRIPTION(('M104 test case','AP238 SETUP used where WORKPIECE_SETUP required'),'2;1');
+FILE_NAME('M104.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AP238_STEP_NC_MIM { 1 0 10303 238 1 0 0 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('numerical_control_machining');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
+  'numerical_control_machining',2007,#1);
+#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10))
+     REPRESENTATION_CONTEXT('nc','3D'));
+/* SETUP - machine fixture only, no workpiece clamping data */
+#100=AXIS2_PLACEMENT_3D('csys',
+  CARTESIAN_POINT('o',(0.0,0.0,0.0)),
+  DIRECTION('z',(0.0,0.0,1.0)),
+  DIRECTION('x',(1.0,0.0,0.0)));
+#150=SETUP('vise_only',#100,$,$);
+/* Defect: workingstep references a SETUP but role expects WORKPIECE_SETUP. */
+#200=MACHINING_OPERATION('rough',$,$,$,$,$);
+#300=MACHINING_WORKINGSTEP('ws',#150,#200,$);
+#400=WORKPLAN('main',(#300),$,$,$);
+ENDSEC;
+END-ISO-10303-21;

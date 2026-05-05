@@ -1,0 +1,89 @@
+ISO-10303-21;
+/* Gp026 - Face contour not closed in UV (FixConnected/FixGaps2d)
+ * Defect: face on a CYLINDRICAL_SURFACE; the outer wire's pcurves
+ * trace from UV (0,0) to (2pi-0.1, 0) to (2pi-0.1, 5) to (0, 5) and
+ * back to (0,0). The seam edge at U=2pi was omitted, leaving a 0.1
+ * unit gap in U at v=0 and v=5 - the contour does not close in UV. */
+HEADER;
+FILE_DESCRIPTION(('Gp026 test case','Face contour not closed in UV'),'2;1');
+FILE_NAME('Gp026.stp','2026-04-27T00:00:00',(''),(''),'auto-generated','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#11=DIRECTION('',(0.0,0.0,1.0));
+#12=DIRECTION('',(1.0,0.0,0.0));
+#13=AXIS2_PLACEMENT_3D('',#10,#11,#12);
+#20=CYLINDRICAL_SURFACE('',#13,10.0);
+/* Three vertices around the partial cylinder, NO seam vertex pair */
+#40=CARTESIAN_POINT('',(10.0,0.0,0.0));
+#41=VERTEX_POINT('',#40);
+#42=CARTESIAN_POINT('',(9.95004,0.99833,0.0));   /* angle 0.1 rad */
+#43=VERTEX_POINT('',#42);
+#44=CARTESIAN_POINT('',(9.95004,0.99833,5.0));
+#45=VERTEX_POINT('',#44);
+#46=CARTESIAN_POINT('',(10.0,0.0,5.0));
+#47=VERTEX_POINT('',#46);
+/* Three placeholder 3D curves (lines) */
+#30=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#31=DIRECTION('',(0.0,0.0,1.0));
+#33=AXIS2_PLACEMENT_3D('',#30,#31,#12);
+#34=CIRCLE('',#33,10.0);
+#35=CIRCLE('',#33,10.0);
+#36=DIRECTION('',(0.0,0.0,1.0));
+#37=VECTOR('',#36,1.0);
+#38=LINE('',#42,#37);
+#39=LINE('',#46,#37);
+/* Pcurve A: bottom edge UV (0,0) -> (2pi-0.1, 0) */
+#71=CARTESIAN_POINT('',(0.0,0.0));
+#72=DIRECTION('',(1.0,0.0));
+#73=VECTOR('',#72,1.0);
+#74=LINE('',#71,#73);
+#75=( GEOMETRIC_REPRESENTATION_CONTEXT(2)
+      PARAMETRIC_REPRESENTATION_CONTEXT()
+      REPRESENTATION_CONTEXT('parametric','2D') );
+#76=DEFINITIONAL_REPRESENTATION('',(#74),#75);
+#77=PCURVE('',#20,#76);
+/* Pcurve B: right edge UV (2pi-0.1, 0) -> (2pi-0.1, 5) */
+#81=CARTESIAN_POINT('',(6.18319,0.0));
+#82=DIRECTION('',(0.0,1.0));
+#83=VECTOR('',#82,1.0);
+#84=LINE('',#81,#83);
+#85=DEFINITIONAL_REPRESENTATION('',(#84),#75);
+#86=PCURVE('',#20,#85);
+/* Pcurve C: top edge UV (2pi-0.1, 5) -> (0, 5) */
+#91=CARTESIAN_POINT('',(6.18319,5.0));
+#92=DIRECTION('',(-1.0,0.0));
+#93=VECTOR('',#92,1.0);
+#94=LINE('',#91,#93);
+#95=DEFINITIONAL_REPRESENTATION('',(#94),#75);
+#96=PCURVE('',#20,#95);
+/* Pcurve D: left edge UV (0, 5) -> (0, 0) */
+#101=CARTESIAN_POINT('',(0.0,5.0));
+#102=DIRECTION('',(0.0,-1.0));
+#103=VECTOR('',#102,1.0);
+#104=LINE('',#101,#103);
+#105=DEFINITIONAL_REPRESENTATION('',(#104),#75);
+#106=PCURVE('',#20,#105);
+#50=SURFACE_CURVE('',#34,(#77),.PCURVE_S1.);
+#150=SURFACE_CURVE('',#38,(#86),.PCURVE_S1.);
+#250=SURFACE_CURVE('',#35,(#96),.PCURVE_S1.);
+#350=SURFACE_CURVE('',#39,(#106),.PCURVE_S1.);
+#60=EDGE_CURVE('',#41,#43,#50,.T.);
+#160=EDGE_CURVE('',#43,#45,#150,.T.);
+#260=EDGE_CURVE('',#45,#47,#250,.T.);
+/* Defect: this last edge connects V47 -> V41 in 3D but in UV it
+ * jumps (0, 5) -> (0, 0) - skipping the seam, leaving the wire open
+ * across U from (2pi-0.1) to 0 (or 2pi). */
+#360=EDGE_CURVE('',#47,#41,#350,.T.);
+#61=ORIENTED_EDGE('',*,*,#60,.T.);
+#161=ORIENTED_EDGE('',*,*,#160,.T.);
+#261=ORIENTED_EDGE('',*,*,#260,.T.);
+#361=ORIENTED_EDGE('',*,*,#360,.T.);
+#62=EDGE_LOOP('',(#61,#161,#261,#361));
+#63=FACE_OUTER_BOUND('',#62,.T.);
+#64=ADVANCED_FACE('',(#63),#20,.T.);
+ENDSEC;
+END-ISO-10303-21;

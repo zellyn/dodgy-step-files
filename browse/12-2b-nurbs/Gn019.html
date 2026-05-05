@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Gn019 — Degenerate zero-length `B_SPLINE` pcurve (coincident control points / sample count &lt;2)</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.2b NURBS / B-spline</a> <span class="sep">/</span> <span class="current">Gn019</span>
+</nav>
+<header class="title-bar">
+<h1>Gn019 <span class="sep">—</span> <span class="entry-title">Degenerate zero-length `B_SPLINE` pcurve (coincident control points / sample count &lt;2)</span></h1>
+<p class="category">§12.2b NURBS/knots</p>
+<p class="severity-badge severity-p1">P1 — silent data loss</p>
+<p class="tag-pills">
+<a class="tag tag-geometry" href="../by-tag/geometry/index.html">geometry</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-2b-nurbs/Gn019.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-2b-nurbs/Gn019.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>14-brlcad-rhino.md (K007, `OpenNurbsInterfaces.cpp:1596`)</li>
+</ul></section>
+<section><h2>Description</h2>
+<p>A pcurve on a `CYLINDRICAL_SURFACE` (or other periodic surface) is a degenerate `B_SPLINE_CURVE_WITH_KNOTS` of degree 1 whose two control points are both at the same UV (e.g. both (0,0)) — a zero-length pcurve typically representing a seam. When sampling such a pcurve for an `ON_BrepTrim`, step-g gets fewer than 2 distinct sample points, yielding a degenerate trim. Likely from `seam_curve` or near-singular pcurve evaluation on closed surfaces.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>cylinder/cone with seam edge whose `pcurve_or_surface.pcurve` evaluates to a single point at the apex/seam.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>Heal and accept: enforce minimum sample count &gt;= 2; fall back to endpoint+midpoint+endpoint and refine adaptively.</p></section>
+<section><h2>Notes</h2>
+<p>Synonyms: &quot;zero-length B-spline pcurve from coincident control points&quot;, &quot;degenerate degree-1 BSpline pcurve&quot;, &quot;pcurve evaluates to single point at seam&quot;, &quot;pcurve sample count below 2&quot;, &quot;B-spline pcurve collapsed to one point at apex&quot;.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>contains(b&#x27;B_SPLINE_CURVE&#x27;)</code></li>
+</ul></section>
+<section><h2>Live oracle output</h2>
+<table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
+<tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>no_shapes_loaded</code></td></tr>
+</tbody></table>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>/* Gn019 - Sample count &lt;2 in pcurve approximation
+<span class="lineno">2</span>   Defect: when sampling a pcurve for openNURBS ON_BrepTrim, step-g
+<span class="lineno">3</span>   sometimes gets fewer than 2 sample points, yielding a degenerate trim.
+<span class="lineno">4</span>   Likely from the seam_curve or near-singular pcurve evaluation on a
+<span class="lineno">5</span>   closed surface (cylinder/cone) at the apex/seam.
+<span class="lineno">6</span>   This file emits a CYLINDRICAL_SURFACE plus a SURFACE_CURVE whose
+<span class="lineno">7</span>   pcurve is a degree-1 BSpline whose two control points coincide -- so
+<span class="lineno">8</span>   any naive evaluator counts it as a single sample point.  The healer
+<span class="lineno">9</span>   should enforce &gt;= 2 samples and fall back to endpoint+midpoint+endpoint
+<span class="lineno">10</span>   adaptive refinement. */
+<span class="lineno">11</span>ISO-10303-21;
+<span class="lineno">12</span>HEADER;
+<span class="lineno">13</span>FILE_DESCRIPTION(
+<span class="lineno">14</span>  (&#x27;Gn019 - degenerate pcurve with &lt;2 distinct samples on cylinder seam&#x27;),
+<span class="lineno">15</span>  &#x27;2;1&#x27;);
+<span class="lineno">16</span>FILE_NAME(&#x27;Gn019.stp&#x27;,&#x27;2026-04-26T00:00:00&#x27;,(&#x27;auto-generated&#x27;),(&#x27;&#x27;),
+<span class="lineno">17</span>  &#x27;auto-generated&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">18</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
+<span class="lineno">19</span>ENDSEC;
+<span class="lineno">20</span>DATA;
+<span class="lineno">21</span>/* Host cylinder, axis = +z, radius = 5. */
+<span class="lineno">22</span>#10=CARTESIAN_POINT(&#x27;axis_o&#x27;,(0.0,0.0,0.0));
+<span class="lineno">23</span>#11=DIRECTION(&#x27;axis_z&#x27;,(0.0,0.0,1.0));
+<span class="lineno">24</span>#12=DIRECTION(&#x27;ref_x&#x27;,(1.0,0.0,0.0));
+<span class="lineno">25</span>#13=AXIS2_PLACEMENT_3D(&#x27;cyl_pl&#x27;,#10,#11,#12);
+<span class="lineno">26</span>#20=CYLINDRICAL_SURFACE(&#x27;cyl&#x27;,#13,5.0);
+<span class="lineno">27</span>/* Defect: pcurve is a degree-1 <mark>B_SPLINE_CURVE</mark>_WITH_KNOTS in the (u,v)
+<span class="lineno">28</span>   parameter plane whose two control points coincide -- gives 1 distinct
+<span class="lineno">29</span>   sample point. */
+<span class="lineno">30</span>#30=CARTESIAN_POINT(&#x27;uv0&#x27;,(0.0,0.0));
+<span class="lineno">31</span>#31=CARTESIAN_POINT(&#x27;uv1&#x27;,(0.0,0.0));
+<span class="lineno">32</span>#40=<mark>B_SPLINE_CURVE</mark>_WITH_KNOTS(&#x27;degenerate_pcurve&#x27;,1,(#30,#31),
+<span class="lineno">33</span>  .UNSPECIFIED.,.F.,.F.,(2,2),(0.0,1.0),.UNSPECIFIED.);
+<span class="lineno">34</span>#50=DEFINITIONAL_REPRESENTATION(&#x27;&#x27;,(#40),#60);
+<span class="lineno">35</span>/* Parameter space (u,v in 2D) for the cylinder. */
+<span class="lineno">36</span>#60=(
+<span class="lineno">37</span>  GEOMETRIC_REPRESENTATION_CONTEXT(2)
+<span class="lineno">38</span>  PARAMETRIC_REPRESENTATION_CONTEXT()
+<span class="lineno">39</span>  REPRESENTATION_CONTEXT(&#x27;cyl_param&#x27;,&#x27;2D&#x27;));
+<span class="lineno">40</span>/* PCURVE wrapping the degenerate definitional representation. */
+<span class="lineno">41</span>#70=PCURVE(&#x27;seam_pcurve&#x27;,#20,#50);
+<span class="lineno">42</span>/* The 3D seam line on the cylinder is a meridian at u=0. */
+<span class="lineno">43</span>#80=CARTESIAN_POINT(&#x27;seam_a&#x27;,(5.0,0.0,0.0));
+<span class="lineno">44</span>#81=CARTESIAN_POINT(&#x27;seam_b&#x27;,(5.0,0.0,1.0));
+<span class="lineno">45</span>#82=DIRECTION(&#x27;seam_dir&#x27;,(0.0,0.0,1.0));
+<span class="lineno">46</span>#83=VECTOR(&#x27;seam_vec&#x27;,#82,1.0);
+<span class="lineno">47</span>#84=LINE(&#x27;seam_line&#x27;,#80,#83);
+<span class="lineno">48</span>#85=SURFACE_CURVE(&#x27;seam&#x27;,#84,(#70),.PCURVE_S1.);
+<span class="lineno">49</span>ENDSEC;
+<span class="lineno">50</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Gn018.html">&larr; Gn018</a> <a class="up" href="index.html">§12.2b NURBS / B-spline</a> <a class="next" href="Gn020.html">Gn020 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

@@ -1,0 +1,86 @@
+/* Pmi120 - PROFILE_FEATURE with self-intersecting profile (figure-eight loop)
+ * Defect: a profile_feature emits a closed loop that crosses itself
+ * (figure-eight). The orientation is ambiguous and the bounded region
+ * is multi-valued -- a sweep of this profile produces a self-intersecting
+ * solid. Receivers either reject (non-simple curve), split into two
+ * loops heuristically, or accept and produce a kernel-specific solid. */
+ISO-10303-21;
+HEADER;
+FILE_DESCRIPTION(('Pmi120 - profile_feature self-intersecting figure-eight'),'2;1');
+FILE_NAME('Pmi120.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AP242_MANAGED_MODEL_BASED_3D_ENGINEERING_MIM_LF { 1 0 10303 442 1 1 4 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('managed model based 3d engineering');
+#2=PRODUCT_CONTEXT('part',#1,'mechanical');
+#3=PRODUCT('Pmi120','profile_figure_eight','',(#2));
+#4=PRODUCT_DEFINITION_FORMATION('','',#3);
+#5=PRODUCT_DEFINITION_CONTEXT('',#1,'design');
+#6=PRODUCT_DEFINITION('','',#4,#5);
+#7=PRODUCT_DEFINITION_SHAPE('','',#6);
+#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#11=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#12=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#10,'tol','');
+#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3) GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13)) GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12)) REPRESENTATION_CONTEXT('','3D'));
+/* 50x50 mm planar host face. */
+#100=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#101=CARTESIAN_POINT('',(50.0,0.0,0.0));
+#102=CARTESIAN_POINT('',(50.0,50.0,0.0));
+#103=CARTESIAN_POINT('',(0.0,50.0,0.0));
+#110=VERTEX_POINT('',#100); #111=VERTEX_POINT('',#101);
+#112=VERTEX_POINT('',#102); #113=VERTEX_POINT('',#103);
+#200=DIRECTION('',(0.0,0.0,1.0));
+#201=DIRECTION('',(1.0,0.0,0.0));
+#202=DIRECTION('',(0.0,1.0,0.0));
+#210=AXIS2_PLACEMENT_3D('host_origin',#100,#200,#201);
+#211=PLANE('host_50x50',#210);
+#300=VECTOR('',#201,50.0);
+#301=VECTOR('',#202,50.0);
+#310=LINE('',#100,#300); #311=EDGE_CURVE('',#110,#111,#310,.T.);
+#312=LINE('',#101,#301); #313=EDGE_CURVE('',#111,#112,#312,.T.);
+#314=LINE('',#103,#300); #315=EDGE_CURVE('',#113,#112,#314,.T.);
+#316=LINE('',#100,#301); #317=EDGE_CURVE('',#110,#113,#316,.T.);
+#400=ORIENTED_EDGE('',*,*,#311,.T.); #401=ORIENTED_EDGE('',*,*,#313,.T.);
+#402=ORIENTED_EDGE('',*,*,#315,.F.); #403=ORIENTED_EDGE('',*,*,#317,.F.);
+#404=EDGE_LOOP('',(#400,#401,#402,#403));
+#405=FACE_OUTER_BOUND('',#404,.T.);
+#406=ADVANCED_FACE('host_face',(#405),#211,.T.);
+#500=OPEN_SHELL('host_shell',(#406));
+#501=SHELL_BASED_SURFACE_MODEL('host_model',(#500));
+#502=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('shape',(#501,#210),#14);
+#503=SHAPE_DEFINITION_REPRESENTATION(#7,#502);
+/* Figure-eight profile: 4 vertices forming "X" crossing at midpoint. */
+#600=SHAPE_ASPECT('profile_feature','figure-eight self-intersecting profile',#7,.T.);
+#601=GEOMETRIC_ITEM_SPECIFIC_USAGE('GISU',$,#600,#502,#406);
+/* Profile vertices: (5,5), (15,15), (5,15), (15,5). Closed loop crosses
+ * itself at (10,10) -- figure-eight. */
+#700=CARTESIAN_POINT('p0',(5.0,5.0,0.0));
+#701=CARTESIAN_POINT('p1',(15.0,15.0,0.0));
+#702=CARTESIAN_POINT('p2',(5.0,15.0,0.0));
+#703=CARTESIAN_POINT('p3',(15.0,5.0,0.0));
+#710=VERTEX_POINT('',#700); #711=VERTEX_POINT('',#701);
+#712=VERTEX_POINT('',#702); #713=VERTEX_POINT('',#703);
+#720=DIRECTION('d_pp',(0.7071,0.7071,0.0));
+#721=VECTOR('v01',#720,14.142);
+#722=DIRECTION('d_left',(-1.0,0.0,0.0));
+#723=VECTOR('v12',#722,10.0);
+#724=DIRECTION('d_pn',(0.7071,-0.7071,0.0));
+#725=VECTOR('v23',#724,14.142);
+#726=DIRECTION('d_left2',(-1.0,0.0,0.0));
+#727=VECTOR('v30',#726,10.0);
+#730=LINE('',#700,#721); #731=EDGE_CURVE('',#710,#711,#730,.T.);
+#732=LINE('',#701,#723); #733=EDGE_CURVE('',#711,#712,#732,.T.);
+#734=LINE('',#702,#725); #735=EDGE_CURVE('',#712,#713,#734,.T.);
+#736=LINE('',#703,#727); #737=EDGE_CURVE('',#713,#710,#736,.T.);
+/* The two diagonals (#731, #735) cross each other at (10,10) -- self-intersect. */
+#740=DESCRIPTIVE_REPRESENTATION_ITEM('profile_topology','self-intersecting figure-eight at (10,10)');
+#741=PROPERTY_DEFINITION('profile_self_intersect','geometric crossing',#600);
+#742=PROPERTY_DEFINITION_REPRESENTATION(#741,#743);
+#743=REPRESENTATION('profile_self_intersect',(#740),#14);
+/* PMI dimensional record for category-lint compliance. */
+#750=DIMENSIONAL_SIZE(#600,'profile_extent');
+#751=MEASURE_REPRESENTATION_ITEM('extent_mm',LENGTH_MEASURE(10.0),#10);
+#752=SHAPE_DIMENSION_REPRESENTATION('',(#751),#14);
+ENDSEC;
+END-ISO-10303-21;

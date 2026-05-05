@@ -1,0 +1,28 @@
+ISO-10303-21;
+/* Le048 - Numeric literal exceeding IEEE-754 double range
+ * (overflow to infinity) and producer-emitted "infinity-as-double"
+ * Defect: ISO 10303-21 REAL has no syntactic form for non-finite
+ * values (no +Inf, -Inf, NaN). Producers that internally hold
+ * IEEE-754 doubles and serialise via printf with %g may emit
+ * 'INF', 'inf', 'NaN', or '1.0E+999' (which on parse overflows to
+ * +Inf). A receiver must decide whether to reject, snap to a
+ * finite sentinel, or propagate the non-finite value through
+ * downstream computations. */
+HEADER;
+FILE_DESCRIPTION(('Le048 - REAL overflow / non-finite producer-emit'),'2;1');
+FILE_NAME('Le048.stp','2026-04-26T00:00:00',(''),(''),
+  'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=PRODUCT_CONTEXT('part',#1,'mechanical');
+/* Defect: 1.0E+999 - parses as +Inf in IEEE-754 binary64 */
+#10=CARTESIAN_POINT('overflow',(1.0E+999,0.0,0.0));
+/* Defect: 1.0E-999 - parses to 0.0 as denormal flushes */
+#11=CARTESIAN_POINT('underflow',(1.0E-999,0.0,0.0));
+#20=DIRECTION('z',(0.0,0.0,1.0));
+#21=DIRECTION('x',(1.0,0.0,0.0));
+#22=AXIS2_PLACEMENT_3D('placement',#10,#20,#21);
+ENDSEC;
+END-ISO-10303-21;

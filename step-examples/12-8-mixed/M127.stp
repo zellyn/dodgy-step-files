@@ -1,0 +1,21 @@
+ISO-10303-21;
+/* M127 - AP203 DOCUMENT_FILE referenced with empty URI/path field.
+ * Defect: a DOCUMENT_FILE entity declares a referenced specification
+ * document but its `name` and `description` strings are empty,
+ * leaving consumers with no path or URI to resolve. The document
+ * is referenced but unreachable. */
+HEADER;
+FILE_DESCRIPTION(('M127 test case','AP203 document_file empty URI'),'2;1');
+FILE_NAME('M127.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('CONFIG_CONTROL_DESIGN'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('configuration controlled 3D design of mechanical parts and assemblies');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','config_control_design',1994,#1);
+#10=PRODUCT('part_42','part_42','widget',(#1));
+#50=DOCUMENT_TYPE('design_specification');
+/* Defect: DOCUMENT_FILE id+name+description all empty - no URI to resolve. */
+#100=DOCUMENT_FILE('','','',#50);
+#101=APPLIED_DOCUMENT_REFERENCE(#100,'spec_link',(#10));
+ENDSEC;
+END-ISO-10303-21;

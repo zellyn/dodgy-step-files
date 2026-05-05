@@ -1,0 +1,48 @@
+/* Gn020 - Spline approximation of analytic primitive (sender philosophy)
+   Defect: a face that started as analytic in the source kernel is
+   exported as a B_SPLINE_SURFACE_WITH_KNOTS because the source kernel /
+   exporter doesn't preserve the analytic form (especially via IGES).
+   The file below carries one QUARTER of a cylinder of radius 25 mm
+   encoded as a degree-(2,1) rational BSpline.  3 poles in U with
+   weights (1, 1/sqrt(2), 1) encode the 90-degree arc; 2 poles in V
+   encode the linear extrusion.  No CYLINDRICAL_SURFACE appears
+   anywhere in the file.  This breaks feature recognition, Booleans,
+   and mass properties; healers must do canonical recognition.
+   Note: a TRUE half-cylinder NURBS needs 5 poles (two quarter-arc
+   pieces joined at the shoulder); the canonical 3-pole rational
+   quadratic only spans up to a quarter.  The catalog text (originally
+   citing "half cylinder") is loose; this fixture encodes a quarter,
+   which is what 3 control poles can mathematically represent. */
+ISO-10303-21;
+HEADER;
+FILE_DESCRIPTION(
+  ('Gn020 - cylinder R=25 emitted as degree-(2,1) rational BSpline'),'2;1');
+FILE_NAME('Gn020.stp','2026-04-26T00:00:00',('auto-generated'),(''),
+  'auto-generated','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+/* Cylinder R=25, axis = +z, quarter (theta = 0 .. pi/2), height = 100.
+   3 poles in U for the rational quadratic 90-degree arc; 2 poles in V
+   for the linear extrusion.  Canonical poles (r,0), (r,r), (0,r) with
+   middle weight 1/sqrt(2) trace an exact circular arc on x^2+y^2=r^2. */
+#10=CARTESIAN_POINT('s00',(25.0,  0.0,  0.0));
+#11=CARTESIAN_POINT('s01',(25.0,  0.0,100.0));
+#12=CARTESIAN_POINT('s10',(25.0, 25.0,  0.0));
+#13=CARTESIAN_POINT('s11',(25.0, 25.0,100.0));
+#14=CARTESIAN_POINT('s20',( 0.0, 25.0,  0.0));
+#15=CARTESIAN_POINT('s21',( 0.0, 25.0,100.0));
+/* Defect: cylinder R=25 emitted as rational BSpline; no CYLINDRICAL_SURFACE. */
+#100=(
+  BOUNDED_SURFACE()
+  B_SPLINE_SURFACE(2,1,
+    ((#10,#11),(#12,#13),(#14,#15)),
+    .UNSPECIFIED.,.F.,.F.,.F.)
+  B_SPLINE_SURFACE_WITH_KNOTS((3,3),(2,2),(0.0,1.0),(0.0,1.0),.UNSPECIFIED.)
+  GEOMETRIC_REPRESENTATION_ITEM()
+  RATIONAL_B_SPLINE_SURFACE(
+    ((1.0,1.0),(0.7071067811865476,0.7071067811865476),(1.0,1.0)))
+  REPRESENTATION_ITEM('cyl25_as_rational_bspline')
+  SURFACE());
+ENDSEC;
+END-ISO-10303-21;

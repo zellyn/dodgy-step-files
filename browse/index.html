@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>STEP Defect Catalog — Browse</title>
+  <link rel="stylesheet" href="assets/style.css">
+</head>
+
+<body class="browse">
+<nav class="topnav">
+<a href="../index.html">Home</a> <span class="sep">/</span> <span class="current">Browse</span>
+</nav>
+<header class="title-bar"><h1>Browse the STEP Defect Catalog</h1>
+<p class="meta">1282 entries across 18 sections</p>
+</header>
+<main>
+<section class="by-tag-cta">
+<h2>Browse by defect class</h2>
+<p>Every entry also carries 1–3 cross-cutting tags (crash, silent-loss, spec-violation, …) describing the <em>kind</em> of defect, independent of where it lives in the catalog.</p>
+<p><a class="big-link" href="by-tag/index.html">Browse all 15 defect classes &rarr;</a></p>
+<p><a class="big-link" href="defect-classes/index.html">Read the formal defect-class definitions &rarr;</a></p>
+</section>
+<h2>Browse by section</h2>
+<div class="section-grid">
+<div class="section-card">
+<h2><a href="12-10-perf/index.html">§12.10 Scale &amp; performance</a></h2>
+<p class="meta">35 entries</p>
+<ul class="samples">
+<li>Multi-GB Creo AP242 assemblies trigger unbounded receiver memory</li>
+<li>Quadratic-cost STEP write on dense forward-reference `VERTEX_POINT` / `EDGE_CURVE` / `ADVANCED_FACE` web (200k-entity scale)</li>
+<li>50-second read on a 20 MB STEP: forward-reference DATA section forces multi-pass resolution (single-threaded)</li>
+</ul></div>
+<div class="section-card">
+<h2><a href="12-11-adversarial/index.html">§12.11 Adversarial / parser robustness</a></h2>
+<p class="meta">74 entries</p>
+<ul class="samples">
+<li>Heap buffer overflow on overlong `&#x27;…&#x27;` string literal</li>
+<li>Stack overflow via deeply nested aggregate parentheses</li>
+<li>Negative / zero `B_SPLINE` degree or empty knot/multiplicity lists drive `malloc` size confusion</li>
+</ul></div>
+<div class="section-card">
+<h2><a href="12-12-cross-product/index.html">§12.12 Cross-product</a></h2>
+<p class="meta">44 entries</p>
+<ul class="samples">
+<li>Malformed `\X2\` escape in PRODUCT.name AND self-intersecting wire</li>
+<li>Periodic-surface seam gap × pcurve missing × unit-context mismatch</li>
+<li>Sliver face × non-manifold edge (3 faces share one edge)</li>
+</ul></div>
+<div class="section-card">
+<h2><a href="12-13-writer-pathology/index.html">§12.13 Writer pathology</a></h2>
+<p class="meta">51 entries</p>
+<ul class="samples">
+<li>Trailing whitespace on every record line</li>
+<li>Mixed CRLF and LF line endings within one file</li>
+<li>Final `END-ISO-10303-21;` without trailing newline</li>
+</ul></div>
+<div class="section-card">
+<h2><a href="12-1a-encoding/index.html">§12.1a Encoding &amp; string-literal defects</a></h2>
+<p class="meta">54 entries</p>
+<ul class="samples">
+<li>UTF-8 BOM at start of `ISO-10303-21;`</li>
+<li>Edition-default encoding mismatch (Ed.2 ISO-8859-1 vs Ed.3 UTF-8)</li>
+<li>`\X\` (single-byte ISO-8859) escape with bad hex digit count or non-hex input</li>
+</ul></div>
+<div class="section-card">
+<h2><a href="12-1b-header/index.html">§12.1b Header &amp; instance-numbering</a></h2>
+<p class="meta">44 entries</p>
+<ul class="samples">
+<li>Missing or malformed closing marker `END-ISO-10303-21;`</li>
+<li>Missing `ENDSEC;` between sections</li>
+<li>HEADER section missing one of the three required entities (FILE_DESCRIPTION / FILE_NAME / FILE_SCHEMA), wrong order, or duplicated</li>
+</ul></div>
+<div class="section-card">
+<h2><a href="12-1c-syntax/index.html">§12.1c Part-21 grammar</a></h2>
+<p class="meta">46 entries</p>
+<ul class="samples">
+<li>Model marked Loaded without entities; load skipped silently</li>
+<li>Load-time warning vs data-content warning: severity confusion</li>
+<li>A &quot;Mend&quot; demotes a Fail to a Warning, hiding the original failure (e.g., B_SPLINE_CURVE_WITH_KNOTS with wrong knot count auto-fixed)</li>
+</ul></div>
+<div class="section-card">
+<h2><a href="12-2a-pcurves/index.html">§12.2a Pcurve defects</a></h2>
+<p class="meta">33 entries</p>
+<ul class="samples">
+<li>Missing pcurve on edge — only the 3D curve representation is present</li>
+<li>Pcurve endpoints disagree with edge vertex 3D positions</li>
+<li>Pcurve with single-pole apex on sphere/cone (singularity)</li>
+</ul></div>
+<div class="section-card">
+<h2><a href="12-2b-nurbs/index.html">§12.2b NURBS / B-spline</a></h2>
+<p class="meta">32 entries</p>
+<ul class="samples">
+<li>`B_SPLINE_SURFACE_WITH_KNOTS` U knots duplicated without justifying multiplicity</li>
+<li>RATIONAL_BSPLINE_CURVE / SURFACE with `NbWeights ≠ NbControlPoints`</li>
+<li>BSpline curve with empty `control_points_list`</li>
+</ul></div>
+<div class="section-card">
+<h2><a href="12-2c-surfaces/index.html">§12.2c Surface / curve degeneracies</a></h2>
+<p class="meta">52 entries</p>
+<ul class="samples">
+<li>Curve approximation cannot meet the requested tolerance</li>
+<li>Surface tangent / normal undefined at a parameter (LProp_Status.Undefined)</li>
+<li>Closed B-spline curve has reversed end-tangent</li>
+</ul></div>
+<div class="section-card">
+<h2><a href="12-3a-shells/index.html">§12.3a Shells / orientation</a></h2>
+<p class="meta">99 entries</p>
+<ul class="samples">
+<li>Outer shell of a solid is empty (zero faces)</li>
+<li>MANIFOLD_SOLID_BREP with dangling shell reference (outer points to a non-existent entity)</li>
+<li>Two void shells of one solid are nested inside each other</li>
+</ul></div>
+<div class="section-card">
+<h2><a href="12-3b-wires/index.html">§12.3b Wires / loops / edges</a></h2>
+<p class="meta">93 entries</p>
+<ul class="samples">
+<li>Empty edge_list in EDGE_LOOP</li>
+<li>Single-edge EDGE_LOOP with non-coincident start/end vertex</li>
+<li>EDGE_LOOP edges not head-to-tail — adjacent edges&#x27; shared vertices don&#x27;t coincide</li>
+</ul></div>
+<div class="section-card">
+<h2><a href="12-3c-faces/index.html">§12.3c Faces / sewing / free bound</a></h2>
+<p class="meta">81 entries</p>
+<ul class="samples">
+<li>Top-level shape-healing pipeline must converge over multi-defect GEOMETRIC_SET (mixed defective ADVANCED_FACE, OPEN_SHELL, free EDGE_LOOP wire)</li>
+<li>Solid-level healing on MANIFOLD_SOLID_BREP wrapping an OPEN_SHELL (instead of CLOSED_SHELL): iterate shell fixes and re-evaluate closure</li>
+<li>Free-bound properties pipeline computes area/perimeter/notches together</li>
+</ul></div>
+<div class="section-card">
+<h2><a href="12-4-tolerance/index.html">§12.4 Tolerance &amp; numerical precision</a></h2>
+<p class="meta">72 entries</p>
+<ul class="samples">
+<li>Vertex `UNCERTAINTY_MEASURE_WITH_UNIT` larger than edge / face value (tolerance hierarchy violation)</li>
+<li>Wireframe gap-fix inflates tolerance instead of bridging the gap</li>
+<li>Same-domain face merge inflates shared-vertex tolerance to worst input</li>
+</ul></div>
+<div class="section-card">
+<h2><a href="12-5-units/index.html">§12.5 Units &amp; coordinate systems</a></h2>
+<p class="meta">34 entries</p>
+<ul class="samples">
+<li>Solid Edge mm exported STEP read as meters by Inventor (imported part 1000 times bigger than expected)</li>
+<li>Onshape always emits METRE; NX rescales as if mm (1000× too small)</li>
+<li>Onshape inch workspace exports metric STEP (inch-shaped coordinates in mm `LENGTH_UNIT` context)</li>
+</ul></div>
+<div class="section-card">
+<h2><a href="12-6-assembly/index.html">§12.6 Assembly hierarchy</a></h2>
+<p class="meta">101 entries</p>
+<ul class="samples">
+<li>Duplicated component instances collapsed to a single transform on export</li>
+<li>Hidden / suppressed bodies leak into export, or are dropped silently</li>
+<li>Empty / phantom assembly nodes (PRODUCT_DEFINITION with no shape)</li>
+</ul></div>
+<div class="section-card">
+<h2><a href="12-7-pmi/index.html">§12.7 PMI / GD&amp;T</a></h2>
+<p class="meta">121 entries</p>
+<ul class="samples">
+<li>Hole emitted as two half-cylinders breaks PMI feature association</li>
+<li>Blank/hidden dimensions exported as semantic dimensions</li>
+<li>Stacked vs composite tolerance frames mis-tagged</li>
+</ul></div>
+<div class="section-card">
+<h2><a href="12-8-mixed/index.html">§12.8 Mixed (tessellation, validation properties, etc.)</a></h2>
+<p class="meta">216 entries</p>
+<ul class="samples">
+<li>Fillet on a contour where concavity flips along the spine</li>
+<li>Fillet contour walks into a high-valence vertex (&gt; 3 incident edges)</li>
+<li>Fillet radius exceeds local curvature radius along the spine</li>
+</ul></div>
+</div>
+</main>
+<footer>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

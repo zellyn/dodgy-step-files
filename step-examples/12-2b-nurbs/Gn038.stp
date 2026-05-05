@@ -1,0 +1,45 @@
+/* Gn038 - BOUNDED_PCURVE silently dropped (LoadONBrep stub)
+   Defect: BRL-CAD step-g (and several other readers) implement
+   BoundedPCurve as a degenerate subclass of PCurve - the entity loads
+   into the in-memory model fine, but the LoadONBrep path falls through
+   to the PCurve / Curve base-class stub which prints "not implemented
+   for <entity>" and returns false.  Edges referencing a BOUNDED_PCURVE
+   in their associated_geometry list end up with no pcurve at all in the
+   ON_Brep, so the trim becomes 3D-only and is later re-projected
+   numerically (introducing drift).
+   Sources: BRL-CAD src/conv/step/step-g/Curve.cpp LoadONBrep stub
+   inherited via Pcurve / BoundedPCurve. */
+ISO-10303-21;
+HEADER;
+FILE_DESCRIPTION(
+  ('Gn038 - BOUNDED_PCURVE LoadONBrep stub silently drops pcurve'),
+  '2;1');
+FILE_NAME('Gn038.stp','2026-05-02T00:00:00',('cad-research-suite'),(''),
+  'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+/* Host plane parameterised at z=0. */
+#10=CARTESIAN_POINT('o',(0.0,0.0,0.0));
+#11=DIRECTION('z',(0.0,0.0,1.0));
+#12=DIRECTION('x',(1.0,0.0,0.0));
+#13=AXIS2_PLACEMENT_3D('plane_pl',#10,#11,#12);
+#14=PLANE('host_plane',#13);
+/* 2D parameter context. */
+#20=(GEOMETRIC_REPRESENTATION_CONTEXT(2)
+     PARAMETRIC_REPRESENTATION_CONTEXT()
+     REPRESENTATION_CONTEXT('uv','2D'));
+/* Underlying unbounded 2D line in (u,v): origin (0,0), direction +u. */
+#30=CARTESIAN_POINT('uv0',(0.0,0.0));
+#31=DIRECTION('uv_du',(1.0,0.0));
+#32=VECTOR('uv_vec',#31,1.0);
+#33=LINE('uv_inf_line',#30,#32);
+/* Defect: BOUNDED_PCURVE wrapping the unbounded LINE - an entity that
+   exists precisely to give a bounded reparametrisation of an otherwise
+   infinite parametric curve. step-g loads the entity but its LoadONBrep
+   falls through to Curve::LoadONBrep stub and the pcurve never reaches
+   the ON_Brep trim. */
+#40=DEFINITIONAL_REPRESENTATION('bp_def',(#33),#20);
+#41=BOUNDED_PCURVE('bp_on_plane',#14,#40);
+ENDSEC;
+END-ISO-10303-21;

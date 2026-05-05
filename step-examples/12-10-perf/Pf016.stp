@@ -1,0 +1,58 @@
+/* Pf016 - STEPCAFControl_Reader::Transfer hangs indefinitely on Catia/NX
+   file (OCCT 7.9, file 250709r8000_asm-all). The file parses cleanly with
+   IFSelect_RetDone, but the post-parse Transfer phase enters a
+   pathological loop documented in OCCT #712. Distinct from #417
+   (huge-shell ShapeFix slowness) per the issue notes.
+   Pattern (best-known reconstruction): nested SHAPE_REPRESENTATION_
+   RELATIONSHIP web combined with REPRESENTATION_RELATIONSHIP_WITH_TRANS
+   FORMATION instances forms a graph that the Transfer-phase walker
+   visits exponentially when assembly contexts overlap.
+   Scaling-up: this fixture shows the relationship-web shape with 8
+   shape-reps and 8 cross-relations. Replicate to thousands of mutually
+   connected SHAPE_REPRESENTATIONs to reproduce the hang. */
+ISO-10303-21;
+HEADER;
+FILE_DESCRIPTION(('Pf016 - STEPCAFControl_Reader::Transfer hang stub'),'2;1');
+FILE_NAME('Pf016.stp','2026-04-26T00:00:00',('auto-generated'),(''),
+  'auto-generated','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=DIRECTION('',(0.0,0.0,1.0));
+#3=DIRECTION('',(1.0,0.0,0.0));
+#4=AXIS2_PLACEMENT_3D('',#1,#2,#3);
+#5=( GEOMETRIC_REPRESENTATION_CONTEXT(3) GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT
+  ((#6)) GLOBAL_UNIT_ASSIGNED_CONTEXT((#7)) REPRESENTATION_CONTEXT('','3D') );
+#6=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-6),#7,'','');
+#7=( NAMED_UNIT(*) SI_UNIT(.MILLI.,.METRE.) LENGTH_UNIT() );
+/* eight shape-reps to cross-link */
+#10=SHAPE_REPRESENTATION('R1',(#4),#5);
+#11=SHAPE_REPRESENTATION('R2',(#4),#5);
+#12=SHAPE_REPRESENTATION('R3',(#4),#5);
+#13=SHAPE_REPRESENTATION('R4',(#4),#5);
+#14=SHAPE_REPRESENTATION('R5',(#4),#5);
+#15=SHAPE_REPRESENTATION('R6',(#4),#5);
+#16=SHAPE_REPRESENTATION('R7',(#4),#5);
+#17=SHAPE_REPRESENTATION('R8',(#4),#5);
+/* cross-relation web - each rep relates to its neighbours forming
+   a strongly-connected component the Transfer walker must enumerate */
+#20=SHAPE_REPRESENTATION_RELATIONSHIP('','',#10,#11);
+#21=SHAPE_REPRESENTATION_RELATIONSHIP('','',#11,#12);
+#22=SHAPE_REPRESENTATION_RELATIONSHIP('','',#12,#13);
+#23=SHAPE_REPRESENTATION_RELATIONSHIP('','',#13,#14);
+#24=SHAPE_REPRESENTATION_RELATIONSHIP('','',#14,#15);
+#25=SHAPE_REPRESENTATION_RELATIONSHIP('','',#15,#16);
+#26=SHAPE_REPRESENTATION_RELATIONSHIP('','',#16,#17);
+#27=SHAPE_REPRESENTATION_RELATIONSHIP('','',#17,#10);
+/* additional cross-edges form the dense web that hangs Transfer */
+#30=SHAPE_REPRESENTATION_RELATIONSHIP('','',#10,#13);
+#31=SHAPE_REPRESENTATION_RELATIONSHIP('','',#11,#15);
+#32=SHAPE_REPRESENTATION_RELATIONSHIP('','',#12,#16);
+#33=SHAPE_REPRESENTATION_RELATIONSHIP('','',#14,#17);
+#34=SHAPE_REPRESENTATION_RELATIONSHIP('','',#10,#15);
+#35=SHAPE_REPRESENTATION_RELATIONSHIP('','',#11,#17);
+#36=SHAPE_REPRESENTATION_RELATIONSHIP('','',#12,#14);
+#37=SHAPE_REPRESENTATION_RELATIONSHIP('','',#13,#16);
+ENDSEC;
+END-ISO-10303-21;

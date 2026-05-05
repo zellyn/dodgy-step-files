@@ -1,0 +1,28 @@
+ISO-10303-21;
+/* M167 - AP238 TURNING_OPERATION with cut depth exceeding workpiece radius.
+ * Defect: a TURNING_OPERATION declares a depth-of-cut whose absolute value
+ * exceeds the stock cylinder radius; the tool would pass through the
+ * spindle axis and out the far side, parting the workpiece in a single
+ * pass with no support. */
+HEADER;
+FILE_DESCRIPTION(('M167 test case','AP238 turning depth exceeds stock radius'),'2;1');
+FILE_NAME('M167.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AP238_STEP_NC_MIM { 1 0 10303 238 1 0 0 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('numerical_control_machining');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
+  'numerical_control_machining',2007,#1);
+#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10))
+     REPRESENTATION_CONTEXT('nc','3D'));
+/* Workpiece is a 25 mm diameter bar (radius 12.5 mm). */
+#400=WORKPIECE('bar_stock',$,$,$,$,$,$);
+/* Defect: TURNING_OPERATION declares 30 mm radial cut depth on a 12.5 mm
+   radius bar. */
+#100=TURNING_OPERATION('rough_cut',$,$,$,$,$,$,
+  MEASURE_WITH_UNIT(POSITIVE_LENGTH_MEASURE(30.0),#10));
+#200=WORKPLAN('main',(#100),$,$,$);
+ENDSEC;
+END-ISO-10303-21;

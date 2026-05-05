@@ -1,0 +1,61 @@
+/* Ad057 - Memory leak / unbounded RSS after STEPCAFControl_Reader
+   ----------------------------------------------------------------------
+   Catalog section : §12.11 adversarial (sub-class: resource-exhaustion)
+   Sources         : 18-other-issues.md I017 (ShapeFix_Shape huge memory),
+                     I018 (Linux/Docker RSS),
+                     I019 (LSAN reports STEPControl_Controller::Init enum
+                           allocations leaked)
+   See also        : Ad027
+   ----------------------------------------------------------------------
+   WARNING: This file is INTENTIONALLY MALFORMED for parser-robustness
+   testing. Do NOT use as exchange data.
+   ----------------------------------------------------------------------
+   Defect
+     After read of a moderate STEP file, RSS does not return to baseline
+     (e.g. ~900 MB held after a 142 MB file on glibc); ShapeFix on huge
+     shells hangs and consumes huge memory. LSAN reports leaks from
+     STEPControl_Controller::Init enum tables that are never freed.
+   Reproducer recipe
+     File with many enum-typed slots that flood the typed-value tables
+     (here: many BOOLEAN/LOGICAL slots), exercising leak in the
+     enum-table allocator.
+   Expected kernel behavior
+     Bypass/chunk shell-fix at large counts; release working set on
+     destruction; free typed-value tables on shutdown.
+   ----------------------------------------------------------------------
+*/
+ISO-10303-21;
+HEADER;
+FILE_DESCRIPTION(('Ad057 - many enum slots stress typed-value table'),'2;1');
+FILE_NAME('Ad057.stp','2026-04-26T00:00:00',('auto-generated'),(''),
+  'auto-generated','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+#1=CARTESIAN_POINT('o',(0.0,0.0,0.0));
+#2=CARTESIAN_POINT('a',(1.0,0.0,0.0));
+#3=VERTEX_POINT('va',#1);
+#4=VERTEX_POINT('vb',#2);
+#5=DIRECTION('x',(1.0,0.0,0.0));
+#6=VECTOR('v',#5,1.0);
+#7=LINE('l',#1,#6);
+/* 16 EDGE_CURVE entries, each carrying a BOOLEAN slot the typed-value
+   table caches; enough to demonstrate the leak class with LSAN. */
+#100=EDGE_CURVE('e0',#3,#4,#7,.T.);
+#101=EDGE_CURVE('e1',#3,#4,#7,.F.);
+#102=EDGE_CURVE('e2',#3,#4,#7,.T.);
+#103=EDGE_CURVE('e3',#3,#4,#7,.F.);
+#104=EDGE_CURVE('e4',#3,#4,#7,.T.);
+#105=EDGE_CURVE('e5',#3,#4,#7,.F.);
+#106=EDGE_CURVE('e6',#3,#4,#7,.T.);
+#107=EDGE_CURVE('e7',#3,#4,#7,.F.);
+#108=EDGE_CURVE('e8',#3,#4,#7,.T.);
+#109=EDGE_CURVE('e9',#3,#4,#7,.F.);
+#110=EDGE_CURVE('e10',#3,#4,#7,.T.);
+#111=EDGE_CURVE('e11',#3,#4,#7,.F.);
+#112=EDGE_CURVE('e12',#3,#4,#7,.T.);
+#113=EDGE_CURVE('e13',#3,#4,#7,.F.);
+#114=EDGE_CURVE('e14',#3,#4,#7,.T.);
+#115=EDGE_CURVE('e15',#3,#4,#7,.F.);
+ENDSEC;
+END-ISO-10303-21;

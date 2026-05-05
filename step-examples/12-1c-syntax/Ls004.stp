@@ -1,0 +1,33 @@
+/* Ls004 - Fortran-style "D" exponent (1.0D5)
+   ----------------------------------------------------------------------
+   Catalog section : §12.1c numeric-literal grammar
+   Sources         : T023
+   See also        : Ls001
+   ----------------------------------------------------------------------
+   Defect
+     Some legacy Fortran-fronted exporters (older I-DEAS, CADAM converters)
+     emit 1.0D5 instead of 1.0E5. ISO 10303-21 only allows 'E' (or, in
+     practice, 'e') in the exponent. The DIRECTION and CARTESIAN_POINT
+     literals below carry the Fortran-style 'D' exponent.
+   Expected behavior
+     Reject with diagnostic "exponent must be 'E', got 'D'". Lenient
+     mode may treat 'D' as 'E' but should always emit a warning.
+   ----------------------------------------------------------------------
+*/
+ISO-10303-21;
+HEADER;
+FILE_DESCRIPTION(('Ls004 - Fortran D exponent on REAL'),'2;1');
+FILE_NAME('Ls004.stp','2026-04-26T00:00:00',('auto-generated'),(''),
+  'auto-generated','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+#10=CARTESIAN_POINT('origin',(0.0,0.0,0.0));
+/* Defect: Fortran-style 'D' exponent in REAL literals */
+#20=DIRECTION('z',(1.0D5,0.0,0.0));
+#30=CARTESIAN_POINT('p',(1.5D-3,2.0D+2,3.0D0));
+/* Defect: lower-case 'd' Fortran exponent */
+#31=CARTESIAN_POINT('q',(1.5d-3,2.0d+2,3.0d0));
+#40=AXIS2_PLACEMENT_3D('placement',#10,#20,$);
+ENDSEC;
+END-ISO-10303-21;

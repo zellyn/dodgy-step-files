@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>U037 — `RescaleGeometry` does not rescale triangulations</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.5 Units &amp; coordinate systems</a> <span class="sep">/</span> <span class="current">U037</span>
+</nav>
+<header class="title-bar">
+<h1>U037 <span class="sep">—</span> <span class="entry-title">`RescaleGeometry` does not rescale triangulations</span></h1>
+<p class="category">§12.5 units</p>
+<p class="severity-badge severity-p1">P1 — silent data loss</p>
+<p class="tag-pills">
+<a class="tag tag-units" href="../by-tag/units/index.html">units</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-5-units/U037.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-5-units/U037.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>OCCT MANTIS#0033100 (OCCT MANTIS tracker 502 as of 2026-05-02)</li>
+</ul></section>
+<section><h2>Description</h2>
+<p>A part with both B-rep and triangulated representation is rescaled (e.g., from inches to millimetres). The rescale operates on the B-rep but skips the attached triangulation, producing a part whose mesh is at the wrong scale.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>Cube with `LENGTH_UNIT = INCH`, attached triangulation matching the inch-scale geometry. Rescale to millimetres. B-rep edges are 25.4 mm; triangulation vertices are 1.0 mm.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>Heal and accept: normalize / rescale walks every representation form attached to a part — B-rep, mesh, polyline, point cloud — and applies the factor consistently.</p></section>
+<section><h2>Notes</h2>
+<p>**See also**: M046. Synonyms: &quot;RescaleGeometry skips triangulation&quot;, &quot;B-rep rescaled but mesh not&quot;, &quot;triangulation at wrong scale after rescale&quot;, &quot;OCCT rescale partial across representations&quot;, &quot;mesh scale wrong after unit conversion&quot;.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>contains(b&#x27;TRIANGULATED_FACE&#x27;)</code></li>
+<li><code>contains(b&#x27;INCH&#x27;)</code></li>
+</ul></section>
+<section><h2>Cross-references</h2>
+<p><a href="../12-8-mixed/M046.html">M046</a></p>
+</section>
+<section><h2>Live oracle output</h2>
+<table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
+<tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>warn(W_COMPLEX_ORDER)</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>no_shapes_loaded</code></td></tr>
+</tbody></table>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* U037 - RescaleGeometry does not rescale triangulations
+<span class="lineno">3</span> * Defect: a small unit cube authored with <mark>INCH</mark> unit, plus an attached
+<span class="lineno">4</span> * tessellated <mark>TRIANGULATED_FACE</mark> set at the same inch-scale coordinates.
+<span class="lineno">5</span> * RescaleGeometry should multiply geometry by 25.4 to convert to mm,
+<span class="lineno">6</span> * but the triangulation arm of the visitor never visits TESSELLATED_*
+<span class="lineno">7</span> * entities, so the mesh stays at inch scale while the BRep is rescaled. */
+<span class="lineno">8</span>HEADER;
+<span class="lineno">9</span>FILE_DESCRIPTION((&#x27;U037 test case&#x27;,&#x27;RescaleGeometry does not rescale triangulations&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">10</span>FILE_NAME(&#x27;U037.stp&#x27;,&#x27;2026-04-30T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">11</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }&#x27;));
+<span class="lineno">12</span>ENDSEC;
+<span class="lineno">13</span>DATA;
+<span class="lineno">14</span>#1=APPLICATION_CONTEXT(&#x27;automotive_design&#x27;);
+<span class="lineno">15</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,&#x27;automotive_design&#x27;,2000,#1);
+<span class="lineno">16</span>/* Unit declarations: <mark>INCH</mark> (defined as 25.4 mm) */
+<span class="lineno">17</span>#100=(LENGTH_UNIT() NAMED_UNIT(*) CONVERSION_BASED_UNIT(&#x27;<mark>INCH</mark>&#x27;,#101));
+<span class="lineno">18</span>#101=LENGTH_MEASURE_WITH_UNIT(LENGTH_MEASURE(25.4),#102);
+<span class="lineno">19</span>#102=(LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">20</span>#103=(NAMED_UNIT(*) PLANE_ANGLE_UNIT() SI_UNIT($,.RADIAN.));
+<span class="lineno">21</span>#104=(NAMED_UNIT(*) SI_UNIT($,.STERADIAN.) SOLID_ANGLE_UNIT());
+<span class="lineno">22</span>#105=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+<span class="lineno">23</span>      GLOBAL_UNIT_ASSIGNED_CONTEXT((#100,#103,#104))
+<span class="lineno">24</span>      REPRESENTATION_CONTEXT(&#x27;inch_ctx&#x27;,&#x27;3D&#x27;));
+<span class="lineno">25</span>/* Cube at inch scale (vertices 0..1 inch) -- BRep representation */
+<span class="lineno">26</span>#110=CARTESIAN_POINT(&#x27;v0&#x27;,(0.0,0.0,0.0));#111=VERTEX_POINT(&#x27;&#x27;,#110);
+<span class="lineno">27</span>#112=CARTESIAN_POINT(&#x27;v1&#x27;,(1.0,0.0,0.0));#113=VERTEX_POINT(&#x27;&#x27;,#112);
+<span class="lineno">28</span>#114=CARTESIAN_POINT(&#x27;v2&#x27;,(1.0,1.0,0.0));#115=VERTEX_POINT(&#x27;&#x27;,#114);
+<span class="lineno">29</span>#116=CARTESIAN_POINT(&#x27;v3&#x27;,(0.0,1.0,0.0));#117=VERTEX_POINT(&#x27;&#x27;,#116);
+<span class="lineno">30</span>#118=DIRECTION(&#x27;+x&#x27;,(1.0,0.0,0.0));
+<span class="lineno">31</span>#119=DIRECTION(&#x27;+y&#x27;,(0.0,1.0,0.0));
+<span class="lineno">32</span>#120=DIRECTION(&#x27;+z&#x27;,(0.0,0.0,1.0));
+<span class="lineno">33</span>#121=AXIS2_PLACEMENT_3D(&#x27;bot&#x27;,#110,#120,#118);
+<span class="lineno">34</span>#122=PLANE(&#x27;bot_plane&#x27;,#121);
+<span class="lineno">35</span>#123=VECTOR(&#x27;vx&#x27;,#118,1.0);
+<span class="lineno">36</span>#124=VECTOR(&#x27;vy&#x27;,#119,1.0);
+<span class="lineno">37</span>#125=LINE(&#x27;e0&#x27;,#110,#123);#126=EDGE_CURVE(&#x27;&#x27;,#111,#113,#125,.T.);
+<span class="lineno">38</span>#127=LINE(&#x27;e1&#x27;,#112,#124);#128=EDGE_CURVE(&#x27;&#x27;,#113,#115,#127,.T.);
+<span class="lineno">39</span>#129=DIRECTION(&#x27;-x&#x27;,(-1.0,0.0,0.0));#130=VECTOR(&#x27;vmx&#x27;,#129,1.0);
+<span class="lineno">40</span>#131=LINE(&#x27;e2&#x27;,#114,#130);#132=EDGE_CURVE(&#x27;&#x27;,#115,#117,#131,.T.);
+<span class="lineno">41</span>#133=DIRECTION(&#x27;-y&#x27;,(0.0,-1.0,0.0));#134=VECTOR(&#x27;vmy&#x27;,#133,1.0);
+<span class="lineno">42</span>#135=LINE(&#x27;e3&#x27;,#116,#134);#136=EDGE_CURVE(&#x27;&#x27;,#117,#111,#135,.T.);
+<span class="lineno">43</span>#140=ORIENTED_EDGE(&#x27;&#x27;,*,*,#126,.T.);
+<span class="lineno">44</span>#141=ORIENTED_EDGE(&#x27;&#x27;,*,*,#128,.T.);
+<span class="lineno">45</span>#142=ORIENTED_EDGE(&#x27;&#x27;,*,*,#132,.T.);
+<span class="lineno">46</span>#143=ORIENTED_EDGE(&#x27;&#x27;,*,*,#135,.T.);
+<span class="lineno">47</span>#144=EDGE_LOOP(&#x27;&#x27;,(#140,#141,#142,#143));
+<span class="lineno">48</span>#145=FACE_OUTER_BOUND(&#x27;&#x27;,#144,.T.);
+<span class="lineno">49</span>#146=ADVANCED_FACE(&#x27;cube_face_z=0&#x27;,(#145),#122,.T.);
+<span class="lineno">50</span>#147=OPEN_SHELL(&#x27;cube_partial&#x27;,(#146));
+<span class="lineno">51</span>#148=MANIFOLD_SOLID_BREP(&#x27;inch_cube&#x27;,#147);
+<span class="lineno">52</span>/* Attached triangulation at the SAME inch coordinates */
+<span class="lineno">53</span>#160=COORDINATES_LIST(&#x27;mesh_coords&#x27;,8,(
+<span class="lineno">54</span>  (0.0,0.0,0.0),(1.0,0.0,0.0),(1.0,1.0,0.0),(0.0,1.0,0.0),
+<span class="lineno">55</span>  (0.0,0.0,1.0),(1.0,0.0,1.0),(1.0,1.0,1.0),(0.0,1.0,1.0)));
+<span class="lineno">56</span>#161=<mark>TRIANGULATED_FACE</mark>(&#x27;tri_bot&#x27;,#160,$,$,
+<span class="lineno">57</span>  ((1,2,3),(1,3,4)),$);
+<span class="lineno">58</span>#162=<mark>TRIANGULATED_FACE</mark>(&#x27;tri_top&#x27;,#160,$,$,
+<span class="lineno">59</span>  ((5,6,7),(5,7,8)),$);
+<span class="lineno">60</span>#163=TESSELLATED_SHELL(&#x27;tessellated_shell&#x27;,(#161,#162),#147);
+<span class="lineno">61</span>#170=SHAPE_REPRESENTATION(&#x27;inch_rep&#x27;,(#148,#163),#105);
+<span class="lineno">62</span>ENDSEC;
+<span class="lineno">63</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="U036.html">&larr; U036</a> <a class="up" href="index.html">§12.5 Units &amp; coordinate systems</a> <a class="next" href="U038.html">U038 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

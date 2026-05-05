@@ -1,0 +1,22 @@
+ISO-10303-21;
+/* M141 - AP203 PRODUCT_CATEGORY hierarchy contains a cycle.
+ * Defect: PRODUCT_CATEGORY_RELATIONSHIP entries form a cycle:
+ * 'electronics' is a sub-category of 'mechanical_assembly' which is
+ * a sub-category of 'electronics'. Walking the category tree to
+ * discover a part's parent class loops indefinitely. */
+HEADER;
+FILE_DESCRIPTION(('M141 test case','AP203 product category cycle'),'2;1');
+FILE_NAME('M141.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('CONFIG_CONTROL_DESIGN'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('configuration controlled 3D design of mechanical parts and assemblies');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','config_control_design',1994,#1);
+#100=PRODUCT_CATEGORY('electronics','EE assemblies');
+#101=PRODUCT_CATEGORY('mechanical_assembly','ME assemblies');
+/* Defect: category hierarchy forms a cycle:
+ * electronics -> mech_assembly -> electronics. */
+#110=PRODUCT_CATEGORY_RELATIONSHIP('parent_a','sub_of',#100,#101);
+#111=PRODUCT_CATEGORY_RELATIONSHIP('parent_b','sub_of',#101,#100);
+ENDSEC;
+END-ISO-10303-21;

@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>A024 — `MAPPED_ITEM` `AXIS2_PLACEMENT_3D` with left-handed (mirrored, negative-determinant) frame</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.6 Assembly hierarchy</a> <span class="sep">/</span> <span class="current">A024</span>
+</nav>
+<header class="title-bar">
+<h1>A024 <span class="sep">—</span> <span class="entry-title">`MAPPED_ITEM` `AXIS2_PLACEMENT_3D` with left-handed (mirrored, negative-determinant) frame</span></h1>
+<p class="category">§12.6 (sub-class: assembly placement transform / mirror handling)</p>
+<p class="tag-pills">
+<a class="tag tag-silent-loss" href="../by-tag/silent-loss/index.html">silent-loss</a>
+<a class="tag tag-assembly" href="../by-tag/assembly/index.html">assembly</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-6-assembly/A024.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-6-assembly/A024.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>G061 (OCCT 9592ae2 / Mantis 0027457 — BRepTools_PurgeLocations), W039 (HOOPS Exchange Parasolid mirrored MAPPED_ITEM), K017 (Rhino mirrored block + pcurve flip), J006 (Onshape post-rotation disintegration).</li>
+</ul></section>
+<section><h2>Description</h2>
+<p>A `MAPPED_ITEM`&#x27;s target `AXIS2_PLACEMENT_3D` uses `DIRECTION` axes that form a left-handed (mirrored) frame — for example Z=(0,0,1) and X=(-1,0,0), so the implicit Y=Z×X=(0,-1,0) gives a negative-determinant placement. Shape locations containing scale or mirror are sources of invalid STEP/IGES output: the mirrored instance is exported with a copy whose orientation is silently corrected, flipping handedness. When &quot;Export parameter space curves&quot; is enabled and the block instance has negative-determinant transform, surfaces import with reversed normals.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>Shape with `gp_Trsf` containing scale or mirror; export. Or Rhino model with block instance scaled `(-1,1,1)` exported with pcurves on.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>bake the scale/mirror into geometry changes before STEP write (purging the negative-determinant placement) rather than emitting it as a transform STEP cannot losslessly carry; preserve handedness by flipping face normals coherently; flip pcurve orientation when emitting from a mirrored instance. Or reject the input as un-exportable.</p></section>
+<section><h2>Notes</h2>
+<p>**See also**: A017, Pmi068, Tsh033. **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog&#x27;s allowed set ({reject}). Kernel-bug witnessed: receivers must reject this fixture per the catalog&#x27;s stated invariant. Synonyms: &quot;MAPPED_ITEM transform has negative determinant&quot;, &quot;left-handed frame in component placement&quot;, &quot;mirrored axis placement in MAPPED_ITEM&quot;, &quot;improper rotation on assembly transform&quot;.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>contains(b&#x27;MAPPED_ITEM&#x27;)</code></li>
+<li><code>contains(b&#x27;MIRROR&#x27;)</code></li>
+</ul></section>
+<section><h2>Cross-references</h2>
+<p><a href="A017.html">A017</a>, <a href="../12-7-pmi/Pmi068.html">Pmi068</a>, <a href="../12-3a-shells/Tsh033.html">Tsh033</a></p>
+</section>
+<section><h2>Live oracle output</h2>
+<table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
+<tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>no_shapes_loaded</code></td></tr>
+</tbody></table>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/*
+<span class="lineno">3</span> * A024 â Mirrored / scaled TopLoc transforms forbidden in STEP/IGES export
+<span class="lineno">4</span> * Defect (OCCT 9592ae2 / Mantis 0027457 BRepTools_PurgeLocations,
+<span class="lineno">5</span> *         HOOPS Exchange Parasolid mirrored <mark>MAPPED_ITEM</mark>, Rhino mirrored
+<span class="lineno">6</span> *         block + pcurve flip, Onshape post-rotation disintegration):
+<span class="lineno">7</span> *   Shape locations containing scale or mirror (negative-determinant) are
+<span class="lineno">8</span> *   sources of invalid STEP/IGES output. <mark>MAPPED_ITEM</mark> with mirroring axis is
+<span class="lineno">9</span> *   exported with a copy whose orientation is silently corrected, flipping
+<span class="lineno">10</span> *   handedness. When &quot;Export parameter space curves&quot; is enabled and the
+<span class="lineno">11</span> *   block instance has negative-determinant transform, surfaces import with
+<span class="lineno">12</span> *   reversed normals.
+<span class="lineno">13</span> * This example: <mark>MAPPED_ITEM</mark> whose target placement encodes a left-handed
+<span class="lineno">14</span> *   frame (improper rotation) â an invalid mirror transform.
+<span class="lineno">15</span> * Expected kernel: pre-process shape via BRepTools_PurgeLocations to bake
+<span class="lineno">16</span> *   scale/mirror as geometry change; preserve handedness by flipping face
+<span class="lineno">17</span> *   normals coherently.
+<span class="lineno">18</span> */
+<span class="lineno">19</span>HEADER;
+<span class="lineno">20</span>FILE_DESCRIPTION((&#x27;A024 <mark>MAPPED_ITEM</mark> target axis is left-handed (mirrored)&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">21</span>FILE_NAME(&#x27;A024.stp&#x27;,&#x27;2026-04-26T00:00:00&#x27;,(&#x27;catalog&#x27;),(&#x27;cad&#x27;),&#x27;manual&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">22</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }&#x27;));
+<span class="lineno">23</span>ENDSEC;
+<span class="lineno">24</span>DATA;
+<span class="lineno">25</span>#10 = APPLICATION_CONTEXT(&#x27;automotive design&#x27;);
+<span class="lineno">26</span>#11 = APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,&#x27;automotive_design&#x27;,2001,#10);
+<span class="lineno">27</span>#12 = PRODUCT_CONTEXT(&#x27;&#x27;,#10,&#x27;mechanical&#x27;);
+<span class="lineno">28</span>#13 = PRODUCT_DEFINITION_CONTEXT(&#x27;part definition&#x27;,#10,&#x27;design&#x27;);
+<span class="lineno">29</span>#20 = PRODUCT(&#x27;A024_ASSY&#x27;,&#x27;&#x27;,&#x27;&#x27;,(#12));
+<span class="lineno">30</span>#21 = PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#20);
+<span class="lineno">31</span>#22 = PRODUCT_DEFINITION(&#x27;design&#x27;,&#x27;&#x27;,#21,#13);
+<span class="lineno">32</span>#23 = PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,#22);
+<span class="lineno">33</span>#30 = PRODUCT(&#x27;LEAF&#x27;,&#x27;&#x27;,&#x27;&#x27;,(#12));
+<span class="lineno">34</span>#31 = PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#30);
+<span class="lineno">35</span>#32 = PRODUCT_DEFINITION(&#x27;design&#x27;,&#x27;&#x27;,#31,#13);
+<span class="lineno">36</span>#33 = PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,#32);
+<span class="lineno">37</span>#40 = NEXT_ASSEMBLY_USAGE_OCCURRENCE(&#x27;1&#x27;,&#x27;<mark>MIRROR</mark>_INST&#x27;,&#x27;&#x27;,#22,#32,$);
+<span class="lineno">38</span>#50 = ( LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT(.MILLI.,.METRE.) );
+<span class="lineno">39</span>#51 = ( NAMED_UNIT(*) PLANE_ANGLE_UNIT() SI_UNIT($,.RADIAN.) );
+<span class="lineno">40</span>#52 = ( NAMED_UNIT(*) SI_UNIT($,.STERADIAN.) SOLID_ANGLE_UNIT() );
+<span class="lineno">41</span>#53 = UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#50,&#x27;distance_accuracy_value&#x27;,&#x27;&#x27;);
+<span class="lineno">42</span>#54 = ( GEOMETRIC_REPRESENTATION_CONTEXT(3) GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#53))
+<span class="lineno">43</span>        GLOBAL_UNIT_ASSIGNED_CONTEXT((#50,#51,#52)) REPRESENTATION_CONTEXT(&#x27;&#x27;,&#x27;3D&#x27;) );
+<span class="lineno">44</span>#60 = CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">45</span>#61 = DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">46</span>#62 = DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">47</span>#63 = AXIS2_PLACEMENT_3D(&#x27;leaf_origin&#x27;,#60,#61,#62);
+<span class="lineno">48</span>#64 = SHAPE_REPRESENTATION(&#x27;leaf_rep&#x27;,(#63),#54);
+<span class="lineno">49</span>#65 = SHAPE_DEFINITION_REPRESENTATION(#33,#64);
+<span class="lineno">50</span>#66 = REPRESENTATION_MAP(#63,#64);
+<span class="lineno">51</span>/* DEFECT: target placement encodes a left-handed (negative-determinant)
+<span class="lineno">52</span> * frame via an explicit CARTESIAN_TRANSFORMATION_OPERATOR_3D whose axis1
+<span class="lineno">53</span> * (X), axis2 (Y), and axis3 (Z) are X=(1,0,0), Y=(0,1,0), Z=(0,0,-1).
+<span class="lineno">54</span> * det([X|Y|Z]) = -1: this is a mirror about the XY plane and is forbidden
+<span class="lineno">55</span> * for STEP/IGES export. Producers that export a mirrored <mark>MAPPED_ITEM</mark>
+<span class="lineno">56</span> * silently get the orientation &#x27;corrected&#x27;, flipping handedness. */
+<span class="lineno">57</span>#70 = CARTESIAN_POINT(&#x27;mirror_loc&#x27;,(0.0,0.0,0.0));
+<span class="lineno">58</span>#71 = DIRECTION(&#x27;mx&#x27;,(1.0,0.0,0.0));
+<span class="lineno">59</span>#72 = DIRECTION(&#x27;my&#x27;,(0.0,1.0,0.0));
+<span class="lineno">60</span>#7220 = DIRECTION(&#x27;mz_neg&#x27;,(0.0,0.0,-1.0));
+<span class="lineno">61</span>#73 = CARTESIAN_TRANSFORMATION_OPERATOR_3D(&#x27;LEFT_HANDED_TARGET&#x27;,#71,#72,#70,1.0,#7220);
+<span class="lineno">62</span>#74 = <mark>MAPPED_ITEM</mark>(&#x27;mirror_inst&#x27;,#66,#73);
+<span class="lineno">63</span>#80 = AXIS2_PLACEMENT_3D(&#x27;assy_origin&#x27;,#60,#61,#62);
+<span class="lineno">64</span>#81 = SHAPE_REPRESENTATION(&#x27;assy_rep&#x27;,(#80,#74),#54);
+<span class="lineno">65</span>#82 = SHAPE_DEFINITION_REPRESENTATION(#23,#81);
+<span class="lineno">66</span>ENDSEC;
+<span class="lineno">67</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="A023.html">&larr; A023</a> <a class="up" href="index.html">§12.6 Assembly hierarchy</a> <a class="next" href="A025.html">A025 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

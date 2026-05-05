@@ -1,0 +1,86 @@
+/* Tfa026 - OFFSET_SURFACE used (out of AP214 scope)
+ * Defect: an ADVANCED_FACE references an OFFSET_SURFACE whose basis is
+ * itself a complex aggregate (e.g., a B_SPLINE_SURFACE) or a
+ * SURFACE_OF_LINEAR_EXTRUSION. Translator emits warning; iso evaluation
+ * through the offset+extrusion chain raises an exception. I010 reports
+ * failure when OFFSET_SURFACE wraps a complex base, succeeding when
+ * the base is referenced directly.
+ *
+ * Sources cited in catalog: 04-occt-translation Q017
+ * (StepToTopoDS_TranslateFace.cxx:538-541); 08-occt-gitlog G065/G106;
+ * 18-other-issues I010.
+ *
+ * Expected kernel behavior: accept - UIso/VIso evaluation must descend
+ * through offset/extrusion wrappers; emit warning that offset surface
+ * is out of AP214 strict scope; do not crash on indirect chain.
+ *
+ * Reproducer: OFFSET_SURFACE with offset_distance = 20.0 on the linear
+ * extrusion of a B-spline curve. To document the boundary of the
+ * defect this file also emits a second OFFSET_SURFACE built directly
+ * on a PLANE - that simpler form is reported to translate without
+ * issue, while the chained form below triggers the bug.
+ */
+ISO-10303-21;
+HEADER;
+FILE_DESCRIPTION(('Tfa026 OFFSET_SURFACE out of AP214 scope'),'2;1');
+FILE_NAME('Tfa026.stp','2026-04-26T00:00:00',(''),(''),
+  'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
+  'automotive_design',2009,#1);
+/* Basis curve: degree-2 B-spline through three control points.         */
+#10=CARTESIAN_POINT('cp0',(0.0,0.0,0.0));
+#11=CARTESIAN_POINT('cp1',(5.0,5.0,0.0));
+#12=CARTESIAN_POINT('cp2',(10.0,0.0,0.0));
+#20=B_SPLINE_CURVE_WITH_KNOTS('basis_curve',2,(#10,#11,#12),
+  .UNSPECIFIED.,.F.,.F.,(3,3),(0.0,1.0),.UNSPECIFIED.);
+/* Linear extrusion of the spline curve in +Z by 10.                    */
+#30=DIRECTION('extrude_dir',(0.0,0.0,1.0));
+#31=VECTOR('extrude_vec',#30,10.0);
+#40=SURFACE_OF_LINEAR_EXTRUSION('extruded_basis',#20,#31);
+/* Defect site #1: OFFSET_SURFACE wrapping the extrusion - chain of
+ * indirect surfaces that AP214 does not formally support.              */
+#50=OFFSET_SURFACE('offset_complex',#40,20.0,.F.);
+/* Degenerate VERTEX_LOOP outer bound - sufficient to make the face
+ * a real BREP entity that OCCT will load and process; the defect is
+ * exercised on surface evaluation, not edge-loop topology.            */
+#52=CARTESIAN_POINT('seed_complex',(0.0,0.0,0.0));
+#53=VERTEX_POINT('',#52);
+#54=VERTEX_LOOP('',#53);
+#55=FACE_OUTER_BOUND('',#54,.T.);
+#51=ADVANCED_FACE('offset_complex_face',(#55),#50,.T.);
+/* Comparison case: simple OFFSET_SURFACE on a PLANE (this case is
+ * reported to translate successfully).                                 */
+#60=CARTESIAN_POINT('plane_origin',(50.0,0.0,0.0));
+#61=DIRECTION('z',(0.0,0.0,1.0));
+#62=DIRECTION('x',(1.0,0.0,0.0));
+#63=AXIS2_PLACEMENT_3D('plane_plc',#60,#61,#62);
+#64=PLANE('plane_xy',#63);
+#65=OFFSET_SURFACE('offset_simple',#64,20.0,.F.);
+#67=CARTESIAN_POINT('seed_simple',(50.0,0.0,0.0));
+#68=VERTEX_POINT('',#67);
+#69=VERTEX_LOOP('',#68);
+#71=FACE_OUTER_BOUND('',#69,.T.);
+#66=ADVANCED_FACE('offset_simple_face',(#71),#65,.T.);
+/* Container shell.                                                     */
+#70=OPEN_SHELL('offset_demo_shell',(#51,#66));
+/* Wrap: minimal PRODUCT chain so OCCT TransferRoots produces a shape. */
+#9000=PRODUCT_CONTEXT('',#1,'mechanical');
+#9001=PRODUCT('Tfa026','Tfa026','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
+#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
+#9021=SHELL_BASED_SURFACE_MODEL('wrap_sbsm',(#70));
+#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#9010);
+#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+ENDSEC;
+END-ISO-10303-21;

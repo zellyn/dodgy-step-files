@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Tsh046 — Adjacent same-domain faces fail to merge across linear-edge chain</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.3a Shells / orientation</a> <span class="sep">/</span> <span class="current">Tsh046</span>
+</nav>
+<header class="title-bar">
+<h1>Tsh046 <span class="sep">—</span> <span class="entry-title">Adjacent same-domain faces fail to merge across linear-edge chain</span></h1>
+<p class="category">§12.3a shells/orientation</p>
+<p class="severity-badge severity-p1">P1 — silent data loss</p>
+<p class="tag-pills">
+<a class="tag tag-topology" href="../by-tag/topology/index.html">topology</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-3a-shells/Tsh046.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-3a-shells/Tsh046.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>OCCT MANTIS#0029544</li>
+<li>OCCT MANTIS#0028681</li>
+<li>OCCT MANTIS#0028207 (OCCT MANTIS tracker 502 as of 2026-05-02)</li>
+</ul></section>
+<section><h2>Description</h2>
+<p>A flat face has been split along a chain of small, near-collinear edges (a &quot;stitched&quot; boundary from sliver-face removal). After a face-unification step, the chain is still present: the merge skipped these edges because the per-edge angle test was satisfied but the chain&#x27;s *cumulative* deviation was not considered. The shell still has dozens of redundant tiny faces.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>Single rectangular face whose right-hand boundary is composed of 8 short LINE edges, each turning by 0.5 degrees from the previous, so that the cumulative deviation across the chain is 4 degrees. A neighbour face shares the same chain of edges. Expected to unify into one face after cleanup, but the per-edge angle threshold of 1 degree marks each pair as non-collinear.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>when merging same-domain faces, accumulate angular deviation across consecutive collinear-tested edges and report a single merge decision for the entire chain, not per-edge.</p></section>
+<section><h2>Notes</h2>
+<p>**See also**: Tfa016, Tsh047. Synonyms: &quot;tiny stitched edges not merged&quot;, &quot;near-collinear edge chain not unified&quot;, &quot;cumulative angle deviation across edges&quot;, &quot;redundant slivers left after healing&quot;, &quot;per-edge angle threshold misses chain&quot;.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>contains(b&#x27;OPEN_SHELL&#x27;)</code></li>
+<li><code>count_entity_def(b&#x27;ADVANCED_FACE&#x27;) == 2</code></li>
+</ul></section>
+<section><h2>Cross-references</h2>
+<p><a href="../12-3c-faces/Tfa016.html">Tfa016</a>, <a href="Tsh047.html">Tsh047</a></p>
+</section>
+<section><h2>Live oracle output</h2>
+<table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
+<tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>no_shapes_loaded</code></td></tr>
+</tbody></table>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* Tsh046 - Adjacent same-domain faces fail to merge across linear-edge chain
+<span class="lineno">3</span> * Two coplanar rectangular faces. Their shared boundary is split into a chain
+<span class="lineno">4</span> * of 8 short LINE edges, each turning by 0.5 degrees from the previous (so
+<span class="lineno">5</span> * each per-edge angle is below the merge threshold but the cumulative
+<span class="lineno">6</span> * 4-degree deviation is above). The 8-edge chain is the right boundary of
+<span class="lineno">7</span> * face A and the left boundary of face B (with reversed orientation). */
+<span class="lineno">8</span>HEADER;
+<span class="lineno">9</span>FILE_DESCRIPTION((&#x27;Tsh046 test case&#x27;,&#x27;Two coplanar faces sharing an 8-edge chain (each ~0.5deg, cumulative 4deg)&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">10</span>FILE_NAME(&#x27;Tsh046.stp&#x27;,&#x27;2026-04-30T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">11</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }&#x27;));
+<span class="lineno">12</span>ENDSEC;
+<span class="lineno">13</span>DATA;
+<span class="lineno">14</span>#1=APPLICATION_CONTEXT(&#x27;automotive_design&#x27;);
+<span class="lineno">15</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,&#x27;automotive_design&#x27;,2000,#1);
+<span class="lineno">16</span>#10=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">17</span>#11=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">18</span>#12=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">19</span>#13=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#10,#11,#12);
+<span class="lineno">20</span>#14=PLANE(&#x27;&#x27;,#13);
+<span class="lineno">21</span>/* face A outer corners (V_A0..V_A3); face B outer corners (V_B1..V_B3 plus shared chain) */
+<span class="lineno">22</span>#20=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));#21=VERTEX_POINT(&#x27;V_A0&#x27;,#20);
+<span class="lineno">23</span>#22=CARTESIAN_POINT(&#x27;&#x27;,(0.0,8.0,0.0));#23=VERTEX_POINT(&#x27;V_A1&#x27;,#22);
+<span class="lineno">24</span>#24=CARTESIAN_POINT(&#x27;&#x27;,(20.0,8.0,0.0));#25=VERTEX_POINT(&#x27;V_B1&#x27;,#24);
+<span class="lineno">25</span>#26=CARTESIAN_POINT(&#x27;&#x27;,(20.0,0.0,0.0));#27=VERTEX_POINT(&#x27;V_B0&#x27;,#26);
+<span class="lineno">26</span>/* 9 chain vertices V_C0..V_C8 along the right boundary of A.
+<span class="lineno">27</span> * Geometry: each segment has dx=1.0; dy curves slightly. */
+<span class="lineno">28</span>#30=CARTESIAN_POINT(&#x27;chain_C0&#x27;,(8.0,0.0,0.0));#31=VERTEX_POINT(&#x27;Vc0&#x27;,#30);
+<span class="lineno">29</span>#32=CARTESIAN_POINT(&#x27;chain_C1&#x27;,(9.0,0.07,0.0));#33=VERTEX_POINT(&#x27;Vc1&#x27;,#32);
+<span class="lineno">30</span>#34=CARTESIAN_POINT(&#x27;chain_C2&#x27;,(10.0,0.21,0.0));#35=VERTEX_POINT(&#x27;Vc2&#x27;,#34);
+<span class="lineno">31</span>#36=CARTESIAN_POINT(&#x27;chain_C3&#x27;,(11.0,0.42,0.0));#37=VERTEX_POINT(&#x27;Vc3&#x27;,#36);
+<span class="lineno">32</span>#38=CARTESIAN_POINT(&#x27;chain_C4&#x27;,(12.0,0.71,0.0));#39=VERTEX_POINT(&#x27;Vc4&#x27;,#38);
+<span class="lineno">33</span>#40=CARTESIAN_POINT(&#x27;chain_C5&#x27;,(13.0,1.07,0.0));#41=VERTEX_POINT(&#x27;Vc5&#x27;,#40);
+<span class="lineno">34</span>#42=CARTESIAN_POINT(&#x27;chain_C6&#x27;,(14.0,1.50,0.0));#43=VERTEX_POINT(&#x27;Vc6&#x27;,#42);
+<span class="lineno">35</span>#44=CARTESIAN_POINT(&#x27;chain_C7&#x27;,(15.0,2.00,0.0));#45=VERTEX_POINT(&#x27;Vc7&#x27;,#44);
+<span class="lineno">36</span>#46=CARTESIAN_POINT(&#x27;chain_C8&#x27;,(16.0,2.57,0.0));#47=VERTEX_POINT(&#x27;Vc8&#x27;,#46);
+<span class="lineno">37</span>/* 8 chain edges, each with progressively rotating direction (~0.5 deg/edge) */
+<span class="lineno">38</span>#50=DIRECTION(&#x27;&#x27;,(1.0,0.07,0.0));#51=VECTOR(&#x27;&#x27;,#50,1.002);#52=LINE(&#x27;&#x27;,#30,#51);#53=EDGE_CURVE(&#x27;chain_e1&#x27;,#31,#33,#52,.T.);
+<span class="lineno">39</span>#54=DIRECTION(&#x27;&#x27;,(1.0,0.14,0.0));#55=VECTOR(&#x27;&#x27;,#54,1.010);#56=LINE(&#x27;&#x27;,#32,#55);#57=EDGE_CURVE(&#x27;chain_e2&#x27;,#33,#35,#56,.T.);
+<span class="lineno">40</span>#58=DIRECTION(&#x27;&#x27;,(0.9786534966019705,0.2055172342864138,0.0));#59=VECTOR(&#x27;&#x27;,#58,1.022);#60=LINE(&#x27;&#x27;,#34,#59);#61=EDGE_CURVE(&#x27;chain_e3&#x27;,#35,#37,#60,.T.);
+<span class="lineno">41</span>#62=DIRECTION(&#x27;&#x27;,(0.9604291387787319,0.2785244502458322,0.0));#63=VECTOR(&#x27;&#x27;,#62,1.040);#64=LINE(&#x27;&#x27;,#36,#63);#65=EDGE_CURVE(&#x27;chain_e4&#x27;,#37,#39,#64,.T.);
+<span class="lineno">42</span>#66=DIRECTION(&#x27;&#x27;,(0.9408874118687268,0.3387194682727416,0.0));#67=VECTOR(&#x27;&#x27;,#66,1.063);#68=LINE(&#x27;&#x27;,#38,#67);#69=EDGE_CURVE(&#x27;chain_e5&#x27;,#39,#41,#68,.T.);
+<span class="lineno">43</span>#70=DIRECTION(&#x27;&#x27;,(0.9186691875800356,0.3950277506594153,0.0));#71=VECTOR(&#x27;&#x27;,#70,1.090);#72=LINE(&#x27;&#x27;,#40,#71);#73=EDGE_CURVE(&#x27;chain_e6&#x27;,#41,#43,#72,.T.);
+<span class="lineno">44</span>#74=DIRECTION(&#x27;&#x27;,(0.8944271909999159,0.4472135954999579,0.0));#75=VECTOR(&#x27;&#x27;,#74,1.118);#76=LINE(&#x27;&#x27;,#42,#75);#77=EDGE_CURVE(&#x27;chain_e7&#x27;,#43,#45,#76,.T.);
+<span class="lineno">45</span>#78=DIRECTION(&#x27;&#x27;,(0.8687772701926608,0.4952030440098166,0.0));#79=VECTOR(&#x27;&#x27;,#78,1.151);#80=LINE(&#x27;&#x27;,#44,#79);#81=EDGE_CURVE(&#x27;chain_e8&#x27;,#45,#47,#80,.T.);
+<span class="lineno">46</span>/* face A outer ring: V_A0 -&gt; Vc0 (bottom-A) -&gt; [Vc0..Vc8 chain] -&gt; V_A1 -&gt; V_A0 */
+<span class="lineno">47</span>#90=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));#91=VECTOR(&#x27;&#x27;,#90,1.0);#92=LINE(&#x27;&#x27;,#20,#91);#93=EDGE_CURVE(&#x27;A_bottom&#x27;,#21,#31,#92,.T.);
+<span class="lineno">48</span>#94=DIRECTION(&#x27;&#x27;,(-0.732271658149322,0.6810126420788696,0.0));#95=VECTOR(&#x27;&#x27;,#94,1.366);#96=LINE(&#x27;&#x27;,#46,#95);
+<span class="lineno">49</span>#97=EDGE_CURVE(&#x27;A_top_back_to_corner&#x27;,#47,#23,#96,.T.);
+<span class="lineno">50</span>#98=DIRECTION(&#x27;&#x27;,(0.0,-1.0,0.0));#99=VECTOR(&#x27;&#x27;,#98,1.0);#100=LINE(&#x27;&#x27;,#22,#99);#101=EDGE_CURVE(&#x27;A_left&#x27;,#23,#21,#100,.T.);
+<span class="lineno">51</span>#110=ORIENTED_EDGE(&#x27;&#x27;,*,*,#93,.T.);
+<span class="lineno">52</span>#111=ORIENTED_EDGE(&#x27;&#x27;,*,*,#53,.T.);#112=ORIENTED_EDGE(&#x27;&#x27;,*,*,#57,.T.);
+<span class="lineno">53</span>#113=ORIENTED_EDGE(&#x27;&#x27;,*,*,#61,.T.);#114=ORIENTED_EDGE(&#x27;&#x27;,*,*,#65,.T.);
+<span class="lineno">54</span>#115=ORIENTED_EDGE(&#x27;&#x27;,*,*,#69,.T.);#116=ORIENTED_EDGE(&#x27;&#x27;,*,*,#73,.T.);
+<span class="lineno">55</span>#117=ORIENTED_EDGE(&#x27;&#x27;,*,*,#77,.T.);#118=ORIENTED_EDGE(&#x27;&#x27;,*,*,#81,.T.);
+<span class="lineno">56</span>#119=ORIENTED_EDGE(&#x27;&#x27;,*,*,#97,.T.);#120=ORIENTED_EDGE(&#x27;&#x27;,*,*,#101,.T.);
+<span class="lineno">57</span>#121=EDGE_LOOP(&#x27;A_outer&#x27;,(#110,#111,#112,#113,#114,#115,#116,#117,#118,#119,#120));
+<span class="lineno">58</span>#122=FACE_OUTER_BOUND(&#x27;&#x27;,#121,.T.);
+<span class="lineno">59</span><mark>#123=ADVANCED_FACE(</mark>&#x27;faceA_with_chain_right&#x27;,(#122),#14,.T.);
+<span class="lineno">60</span>/* face B outer ring: shared chain reversed + perimeter of B */
+<span class="lineno">61</span>#130=DIRECTION(&#x27;&#x27;,(0.732271658149322,-0.6810126420788696,0.0));#131=VECTOR(&#x27;&#x27;,#130,1.366);#132=LINE(&#x27;&#x27;,#22,#131);
+<span class="lineno">62</span>#133=EDGE_CURVE(&#x27;B_top_from_corner&#x27;,#23,#47,#132,.T.);
+<span class="lineno">63</span>#134=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));#135=VECTOR(&#x27;&#x27;,#134,1.0);#136=LINE(&#x27;&#x27;,#26,#135);
+<span class="lineno">64</span>#137=EDGE_CURVE(&#x27;B_bottom&#x27;,#27,#31,#136,.T.);
+<span class="lineno">65</span>#138=DIRECTION(&#x27;&#x27;,(0.0,1.0,0.0));#139=VECTOR(&#x27;&#x27;,#138,1.0);#140=LINE(&#x27;&#x27;,#24,#139);#141=EDGE_CURVE(&#x27;B_right&#x27;,#25,#27,#140,.T.);
+<span class="lineno">66</span>#142=DIRECTION(&#x27;&#x27;,(-1.0,0.0,0.0));#143=VECTOR(&#x27;&#x27;,#142,1.0);#144=LINE(&#x27;&#x27;,#26,#143);#145=EDGE_CURVE(&#x27;B_top_seg&#x27;,#23,#25,#144,.T.);
+<span class="lineno">67</span>/* B&#x27;s shared boundary uses the same EDGE_CURVEs in REVERSED orientation. */
+<span class="lineno">68</span>#150=ORIENTED_EDGE(&#x27;&#x27;,*,*,#133,.T.);
+<span class="lineno">69</span>#151=ORIENTED_EDGE(&#x27;&#x27;,*,*,#145,.T.);
+<span class="lineno">70</span>#152=ORIENTED_EDGE(&#x27;&#x27;,*,*,#141,.T.);
+<span class="lineno">71</span>#153=ORIENTED_EDGE(&#x27;&#x27;,*,*,#137,.F.);
+<span class="lineno">72</span>#154=ORIENTED_EDGE(&#x27;&#x27;,*,*,#81,.F.);#155=ORIENTED_EDGE(&#x27;&#x27;,*,*,#77,.F.);
+<span class="lineno">73</span>#156=ORIENTED_EDGE(&#x27;&#x27;,*,*,#73,.F.);#157=ORIENTED_EDGE(&#x27;&#x27;,*,*,#69,.F.);
+<span class="lineno">74</span>#158=ORIENTED_EDGE(&#x27;&#x27;,*,*,#65,.F.);#159=ORIENTED_EDGE(&#x27;&#x27;,*,*,#61,.F.);
+<span class="lineno">75</span>#160=ORIENTED_EDGE(&#x27;&#x27;,*,*,#57,.F.);#161=ORIENTED_EDGE(&#x27;&#x27;,*,*,#53,.F.);
+<span class="lineno">76</span>#162=EDGE_LOOP(&#x27;B_outer_with_shared_chain&#x27;,(#150,#151,#152,#153,#161,#160,#159,#158,#157,#156,#155,#154));
+<span class="lineno">77</span>#163=FACE_OUTER_BOUND(&#x27;&#x27;,#162,.T.);
+<span class="lineno">78</span><mark>#164=ADVANCED_FACE(</mark>&#x27;faceB_with_chain_left&#x27;,(#163),#14,.T.);
+<span class="lineno">79</span>#170=<mark>OPEN_SHELL</mark>(&#x27;two_coplanar_faces_chain_boundary&#x27;,(#123,#164));
+<span class="lineno">80</span>ENDSEC;
+<span class="lineno">81</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Tsh045.html">&larr; Tsh045</a> <a class="up" href="index.html">§12.3a Shells / orientation</a> <a class="next" href="Tsh047.html">Tsh047 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

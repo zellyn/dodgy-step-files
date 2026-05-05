@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>U023 — Conversion factor for `&#x27;INCH&#x27;` is wrong / omitted</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.5 Units &amp; coordinate systems</a> <span class="sep">/</span> <span class="current">U023</span>
+</nav>
+<header class="title-bar">
+<h1>U023 <span class="sep">—</span> <span class="entry-title">Conversion factor for `&#x27;INCH&#x27;` is wrong / omitted</span></h1>
+<p class="category">§12.5 (sub-class: inch-conversion / value)</p>
+<p class="severity-badge severity-p1">P1 — silent data loss</p>
+<p class="tag-pills">
+<a class="tag tag-units" href="../by-tag/units/index.html">units</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-5-units/U023.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-5-units/U023.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>02-caxif.md &quot;Conversion-based unit value mismatch&quot; (UDA v1.8 Annex C, §7.3)</li>
+</ul></section>
+<section><h2>Description</h2>
+<p>A `CONVERSION_BASED_UNIT(&#x27;INCH&#x27;,..)` must reference a `LENGTH_MEASURE_WITH_UNIT(LENGTH_MEASURE(25.4), &lt;millimeter&gt;)`. Writers that emit a wrong factor (e.g. `2.54E1` against a model whose values are mm; or `25.4` against a metre-based reference) or omit the conversion entirely break unit interpretation.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>`LENGTH_MEASURE_WITH_UNIT(LENGTH_MEASURE(2.54E1), #mm); CONVERSION_BASED_UNIT(&#x27;INCH&#x27;, #lmwu)` paired with a model whose values are actually in mm.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>verify conversion-based-unit factors against known SI conversions; reject / warn if `name` and numeric factor are inconsistent.</p></section>
+<section><h2>Notes</h2>
+<p>**See also**: U006. Synonyms: &quot;wrong inch conversion factor in STEP&quot;, &quot;INCH factor not 25.4&quot;, &quot;missing LENGTH_MEASURE_WITH_UNIT for inch&quot;, &quot;STEP inch factor 2.54 instead of 25.4&quot;, &quot;inch conversion factor mismatched&quot;.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>matches(rb&#x27;LENGTH_MEASURE\(2\.54[Ee]?\d*\)&#x27;) or matches(rb&#x27;LENGTH_MEASURE\(2\.54\)&#x27;)</code></li>
+<li><code>contains(b&#x27;2.54&#x27;) or contains(b&#x27;2.54E1&#x27;)</code></li>
+</ul></section>
+<section><h2>Cross-references</h2>
+<p><a href="U006.html">U006</a></p>
+</section>
+<section><h2>Live oracle output</h2>
+<table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
+<tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>warn(W_COMPLEX_ORDER)</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>no_shapes_loaded</code></td></tr>
+</tbody></table>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/*
+<span class="lineno">3</span> * U023 â Conversion factor for &#x27;INCH&#x27; is wrong / omitted
+<span class="lineno">4</span> * Defect: CONVERSION_BASED_UNIT(&#x27;INCH&#x27;,...) references a
+<span class="lineno">5</span> *         LENGTH_MEASURE_WITH_UNIT whose factor is 2.54 (rather than 25.4)
+<span class="lineno">6</span> *         against a millimetre reference â i.e. labelling 1 inch = 2.54 mm.
+<span class="lineno">7</span> */
+<span class="lineno">8</span>HEADER;
+<span class="lineno">9</span>FILE_DESCRIPTION((&#x27;U023 wrong inch conversion factor&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">10</span>FILE_NAME(&#x27;U023.stp&#x27;,&#x27;2026-04-26T00:00:00&#x27;,(&#x27;catalog&#x27;),(&#x27;cad&#x27;),
+<span class="lineno">11</span>  &#x27;manual&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">12</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN&#x27;));
+<span class="lineno">13</span>ENDSEC;
+<span class="lineno">14</span>DATA;
+<span class="lineno">15</span>#10 = APPLICATION_CONTEXT(&#x27;automotive design&#x27;);
+<span class="lineno">16</span>#11 = APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,
+<span class="lineno">17</span>  &#x27;automotive_design&#x27;,2001,#10);
+<span class="lineno">18</span>#12 = PRODUCT_CONTEXT(&#x27;&#x27;,#10,&#x27;mechanical&#x27;);
+<span class="lineno">19</span>#13 = PRODUCT(&#x27;U023&#x27;,&#x27;U023&#x27;,&#x27;&#x27;,(#12));
+<span class="lineno">20</span>#14 = PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#13);
+<span class="lineno">21</span>#15 = PRODUCT_DEFINITION_CONTEXT(&#x27;&#x27;,#10,&#x27;design&#x27;);
+<span class="lineno">22</span>#16 = PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,#14,#15);
+<span class="lineno">23</span>#17 = PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,#16);
+<span class="lineno">24</span>#20 = ( LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT(.MILLI.,.METRE.) );
+<span class="lineno">25</span>#21 = DIMENSIONAL_EXPONENTS(1.0,0.0,0.0,0.0,0.0,0.0,0.0);
+<span class="lineno">26</span>/* DEFECT: 2.54 mm per inch (off by 10x). Should be 25.4. */
+<span class="lineno">27</span>#22 = LENGTH_MEASURE_WITH_UNIT(LENGTH_MEASURE(2.54),#20);
+<span class="lineno">28</span>#23 = ( CONVERSION_BASED_UNIT(&#x27;INCH&#x27;,#22) NAMED_UNIT(#21) LENGTH_UNIT() );
+<span class="lineno">29</span>#26 = ( NAMED_UNIT(*) PLANE_ANGLE_UNIT() SI_UNIT($,.RADIAN.) );
+<span class="lineno">30</span>#27 = ( NAMED_UNIT(*) SI_UNIT($,.STERADIAN.) SOLID_ANGLE_UNIT() );
+<span class="lineno">31</span>#28 = UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.0001),#23,
+<span class="lineno">32</span>  &#x27;distance_accuracy_value&#x27;,&#x27;&#x27;);
+<span class="lineno">33</span>#29 = ( GEOMETRIC_REPRESENTATION_CONTEXT(3)
+<span class="lineno">34</span>  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#28))
+<span class="lineno">35</span>  GLOBAL_UNIT_ASSIGNED_CONTEXT((#23,#26,#27))
+<span class="lineno">36</span>  REPRESENTATION_CONTEXT(&#x27;&#x27;,&#x27;3D&#x27;) );
+<span class="lineno">37</span>#30 = CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">38</span>#31 = CARTESIAN_POINT(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">39</span>#32 = CARTESIAN_POINT(&#x27;&#x27;,(1.0,2.0,0.0));
+<span class="lineno">40</span>#33 = DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">41</span>#34 = DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">42</span>#35 = AXIS2_PLACEMENT_3D(&#x27;&#x27;,#30,#33,#34);
+<span class="lineno">43</span>#50 = SHAPE_REPRESENTATION(&#x27;&#x27;,(#35),#29);
+<span class="lineno">44</span>#51 = SHAPE_DEFINITION_REPRESENTATION(#17,#50);
+<span class="lineno">45</span>ENDSEC;
+<span class="lineno">46</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="U022.html">&larr; U022</a> <a class="up" href="index.html">§12.5 Units &amp; coordinate systems</a> <a class="next" href="U024.html">U024 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

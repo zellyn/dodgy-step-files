@@ -1,0 +1,82 @@
+ISO-10303-21;
+/* Tsh028 - STYLED_ITEM lost / mis-bound after sliver-face removal or shell merge
+ * Defect: Per-face STYLED_ITEM / PRESENTATION_STYLE_ASSIGNMENT references
+ * break when the referenced face is dropped by sliver-face removal
+ * (ShapeFix_Face::FixSmallAreaWire) or merged with neighbours during
+ * orientation healing.
+ *
+ * This file: a square plate plus a tiny sliver-face (~1e-9 area) that
+ * a healer would drop. A STYLED_ITEM (#900) is bound to the sliver
+ * face #466 -- when the healer drops #466 the style binding becomes
+ * a dangling reference. A second STYLED_ITEM (#910) targets the main
+ * face #406 to demonstrate the surviving-binding contrast.
+ * Sources: M032, Y004. */
+HEADER;
+FILE_DESCRIPTION(('Tsh028 test case','STYLED_ITEM bound to sliver face'),'2;1');
+FILE_NAME('Tsh028.stp','2026-04-26T00:00:00',(''),(''),'auto-generated','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+/* Square plate corners */
+#100=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#101=CARTESIAN_POINT('',(1.0,0.0,0.0));
+#102=CARTESIAN_POINT('',(1.0,1.0,0.0));
+#103=CARTESIAN_POINT('',(0.0,1.0,0.0));
+#110=VERTEX_POINT('',#100); #111=VERTEX_POINT('',#101);
+#112=VERTEX_POINT('',#102); #113=VERTEX_POINT('',#103);
+/* Sliver triangle: extra vertex at (1, 1e-9, 0) -- a tiny triangle
+   between #111 and #112 with a near-zero area. */
+#120=CARTESIAN_POINT('',(1.0,0.000000001,0.0));
+#121=VERTEX_POINT('',#120);
+#200=DIRECTION('',(0.0,0.0,1.0)); #201=DIRECTION('',(1.0,0.0,0.0));
+#211=AXIS2_PLACEMENT_3D('',#100,#200,#201); #212=PLANE('main_plane',#211);
+#220=AXIS2_PLACEMENT_3D('',#101,#200,#201); #222=PLANE('sliver_plane',#220);
+#300=DIRECTION('',(1.0,0.0,0.0)); #301=VECTOR('',#300,1.0);
+#302=DIRECTION('',(0.0,1.0,0.0)); #303=VECTOR('',#302,1.0);
+#310=LINE('',#100,#301); #311=EDGE_CURVE('',#110,#111,#310,.T.);
+#312=LINE('',#101,#303); #313=EDGE_CURVE('',#111,#112,#312,.T.);
+#314=LINE('',#103,#301); #315=EDGE_CURVE('',#113,#112,#314,.T.);
+#316=LINE('',#100,#303); #317=EDGE_CURVE('',#110,#113,#316,.T.);
+/* Sliver triangle edges: #111->#121->#112 */
+#320=DIRECTION('',(0.0,1.0,0.0)); #321=VECTOR('',#320,0.000000001);
+#322=LINE('',#101,#321); #323=EDGE_CURVE('',#111,#121,#322,.T.);
+#324=DIRECTION('',(0.0,1.0,0.0)); #325=VECTOR('',#324,0.999999999);
+#326=LINE('',#120,#325); #327=EDGE_CURVE('',#121,#112,#326,.T.);
+/* Main face */
+#400=ORIENTED_EDGE('',*,*,#311,.T.); #401=ORIENTED_EDGE('',*,*,#313,.T.);
+#402=ORIENTED_EDGE('',*,*,#315,.F.); #403=ORIENTED_EDGE('',*,*,#317,.F.);
+#404=EDGE_LOOP('',(#400,#401,#402,#403)); #405=FACE_OUTER_BOUND('',#404,.T.);
+#406=ADVANCED_FACE('main_face',(#405),#212,.T.);
+/* Sliver face: degenerate triangle with two effectively coincident
+   sides. Healers drop this face. */
+#460=ORIENTED_EDGE('',*,*,#323,.T.); #461=ORIENTED_EDGE('',*,*,#327,.T.);
+#462=ORIENTED_EDGE('',*,*,#313,.F.);
+#464=EDGE_LOOP('',(#460,#461,#462)); #465=FACE_OUTER_BOUND('',#464,.T.);
+#466=ADVANCED_FACE('sliver_face_to_be_removed',(#465),#222,.T.);
+/* Open shell aggregating both. */
+#500=OPEN_SHELL('plate_with_sliver',(#406,#466));
+#510=SHELL_BASED_SURFACE_MODEL('container',(#500));
+/* Color/style assignments. #800 is the geometric_representation_context. */
+#700=COLOUR_RGB('',0.8,0.2,0.2);
+#701=FILL_AREA_STYLE_COLOUR('',#700);
+#702=FILL_AREA_STYLE('',(#701));
+#703=SURFACE_STYLE_FILL_AREA(#702);
+#704=SURFACE_SIDE_STYLE('',(#703));
+#705=SURFACE_STYLE_USAGE(.BOTH.,#704);
+#706=PRESENTATION_STYLE_ASSIGNMENT((#705));
+#710=COLOUR_RGB('',0.2,0.8,0.2);
+#711=FILL_AREA_STYLE_COLOUR('',#710);
+#712=FILL_AREA_STYLE('',(#711));
+#713=SURFACE_STYLE_FILL_AREA(#712);
+#714=SURFACE_SIDE_STYLE('',(#713));
+#715=SURFACE_STYLE_USAGE(.BOTH.,#714);
+#716=PRESENTATION_STYLE_ASSIGNMENT((#715));
+/* Defect: STYLED_ITEM bound to the sliver face #466 -- this binding
+   will dangle once healers drop the sliver face. */
+#900=STYLED_ITEM('style_on_sliver',(#706),#466);
+/* Surviving binding for contrast: style on main face. */
+#910=STYLED_ITEM('style_on_main',(#716),#406);
+ENDSEC;
+END-ISO-10303-21;

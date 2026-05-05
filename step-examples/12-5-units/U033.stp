@@ -1,0 +1,16 @@
+ISO-10303-21;
+/* U033 - Unit-default flag overridden silently
+ * Defect: STEP file with explicit LENGTH_UNIT inches; reader configured with default MM */
+HEADER;
+FILE_DESCRIPTION(('U033 test case','Unit-default flag overridden silently'),'2;1');
+FILE_NAME('U033.stp','2026-04-30T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+#100=(LENGTH_UNIT() NAMED_UNIT(*) CONVERSION_BASED_UNIT('INCH',#101));
+#101=LENGTH_MEASURE_WITH_UNIT(LENGTH_MEASURE(25.4),#102);
+#102=(LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT(.MILLI.,.METRE.));
+ENDSEC;
+END-ISO-10303-21;

@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Tsh011 — `FACE_OUTER_BOUND` orientation flag inconsistent with required winding</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.3a Shells / orientation</a> <span class="sep">/</span> <span class="current">Tsh011</span>
+</nav>
+<header class="title-bar">
+<h1>Tsh011 <span class="sep">—</span> <span class="entry-title">`FACE_OUTER_BOUND` orientation flag inconsistent with required winding</span></h1>
+<p class="category">§12.3a shell-orientation</p>
+<p class="severity-badge severity-p1">P1 — silent data loss</p>
+<p class="tag-pills">
+<a class="tag tag-topology" href="../by-tag/topology/index.html">topology</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-3a-shells/Tsh011.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-3a-shells/Tsh011.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>11-translator-vendors.md W043 (loop direction)</li>
+<li>05-occt-shapefix.md F022 (FixOrientation)</li>
+</ul></section>
+<section><h2>Description</h2>
+<p>An `EDGE_LOOP`&#x27;s `ORIENTED_EDGE.orientation` flags are inconsistent with the geometric winding required by the face&#x27;s outward normal — the outer wire winds the wrong way, or a hole is oriented as if it were the outer bound.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>`FACE_OUTER_BOUND` with three edges, one `ORIENTED_EDGE` having `.F.` when geometrically `.T.` is required for outward winding.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>propagate orientation from the face normal and flip wire-direction flags / inner-vs-outer classification accordingly; reject only if the loop is geometrically inconsistent (not just flag-wrong).</p></section>
+<section><h2>Notes</h2>
+<p>**See also**: Twi024. Synonyms: &quot;outer wire winds the wrong direction&quot;, &quot;hole loop oriented as outer boundary&quot;, &quot;loop direction inconsistent with face normal&quot;, &quot;face boundary winds backwards&quot;, &quot;wire orientation opposite of expected&quot;.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>contains(b&#x27;FACE_OUTER_BOUND&#x27;)</code></li>
+<li><code>contains(b&#x27;FACE_BOUND&#x27;)</code></li>
+<li><code>count_entity_def(b&#x27;ADVANCED_FACE&#x27;) == 1</code></li>
+</ul></section>
+<section><h2>Cross-references</h2>
+<p><a href="../12-3b-wires/Twi024.html">Twi024</a></p>
+</section>
+<section><h2>Live oracle output</h2>
+<table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
+<tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>no_shapes_loaded</code></td></tr>
+</tbody></table>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* Tsh011 - <mark>FACE_OUTER_BOUND</mark> orientation flag inconsistent with winding
+<span class="lineno">3</span> * Defect: An EDGE_LOOP&#x27;s ORIENTED_EDGE.orientation flags are
+<span class="lineno">4</span> * inconsistent with the geometric winding required by the face&#x27;s
+<span class="lineno">5</span> * outward normal -- outer wire reversed, or holes oriented as outer.
+<span class="lineno">6</span> * ShapeFix_Face::FixOrientation flips inner/outer bound classification.
+<span class="lineno">7</span> *
+<span class="lineno">8</span> * This file: a single face on a PLANE whose outer wire winds CW (rather
+<span class="lineno">9</span> * than CCW for an outward +Z normal). To make the defect prominent we
+<span class="lineno">10</span> * also include a properly-oriented inner hole loop -- so the file has
+<span class="lineno">11</span> * both: outer reversed, inner hole loop correct. ShapeFix would either
+<span class="lineno">12</span> * swap inner/outer classification or flip the outer ORIENTED_EDGE flags. */
+<span class="lineno">13</span>HEADER;
+<span class="lineno">14</span>FILE_DESCRIPTION((&#x27;Tsh011 test case&#x27;,&#x27;<mark>FACE_OUTER_BOUND</mark> orientation reversed&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">15</span>FILE_NAME(&#x27;Tsh011.stp&#x27;,&#x27;2026-04-26T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;auto-generated&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">16</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }&#x27;));
+<span class="lineno">17</span>ENDSEC;
+<span class="lineno">18</span>DATA;
+<span class="lineno">19</span>#1=APPLICATION_CONTEXT(&#x27;automotive_design&#x27;);
+<span class="lineno">20</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,&#x27;automotive_design&#x27;,2000,#1);
+<span class="lineno">21</span>/* Square outer 0..1 with circular hole at center radius 0.2 */
+<span class="lineno">22</span>#100=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">23</span>#101=CARTESIAN_POINT(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">24</span>#102=CARTESIAN_POINT(&#x27;&#x27;,(1.0,1.0,0.0));
+<span class="lineno">25</span>#103=CARTESIAN_POINT(&#x27;&#x27;,(0.0,1.0,0.0));
+<span class="lineno">26</span>#110=VERTEX_POINT(&#x27;&#x27;,#100); #111=VERTEX_POINT(&#x27;&#x27;,#101);
+<span class="lineno">27</span>#112=VERTEX_POINT(&#x27;&#x27;,#102); #113=VERTEX_POINT(&#x27;&#x27;,#103);
+<span class="lineno">28</span>/* Hole start vertex */
+<span class="lineno">29</span>#120=CARTESIAN_POINT(&#x27;&#x27;,(0.7,0.5,0.0));
+<span class="lineno">30</span>#121=VERTEX_POINT(&#x27;&#x27;,#120);
+<span class="lineno">31</span>/* Plane surface */
+<span class="lineno">32</span>#200=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0)); #201=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">33</span>#211=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#100,#200,#201); #212=PLANE(&#x27;&#x27;,#211);
+<span class="lineno">34</span>/* Hole circle */
+<span class="lineno">35</span>#220=CARTESIAN_POINT(&#x27;&#x27;,(0.5,0.5,0.0));
+<span class="lineno">36</span>#221=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#220,#200,#201);
+<span class="lineno">37</span>#222=CIRCLE(&#x27;&#x27;,#221,0.2);
+<span class="lineno">38</span>/* Outer edges */
+<span class="lineno">39</span>#300=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0)); #301=VECTOR(&#x27;&#x27;,#300,1.0);
+<span class="lineno">40</span>#302=DIRECTION(&#x27;&#x27;,(0.0,1.0,0.0)); #303=VECTOR(&#x27;&#x27;,#302,1.0);
+<span class="lineno">41</span>#310=LINE(&#x27;&#x27;,#100,#301); #311=EDGE_CURVE(&#x27;&#x27;,#110,#111,#310,.T.);
+<span class="lineno">42</span>#312=LINE(&#x27;&#x27;,#101,#303); #313=EDGE_CURVE(&#x27;&#x27;,#111,#112,#312,.T.);
+<span class="lineno">43</span>#314=LINE(&#x27;&#x27;,#103,#301); #315=EDGE_CURVE(&#x27;&#x27;,#113,#112,#314,.T.);
+<span class="lineno">44</span>#316=LINE(&#x27;&#x27;,#100,#303); #317=EDGE_CURVE(&#x27;&#x27;,#110,#113,#316,.T.);
+<span class="lineno">45</span>/* Hole edge: full circle from #121 back to #121 */
+<span class="lineno">46</span>#318=EDGE_CURVE(&#x27;hole_edge&#x27;,#121,#121,#222,.T.);
+<span class="lineno">47</span>/* Outer wire reversed: walks CW around the +Z face normal */
+<span class="lineno">48</span>#400=ORIENTED_EDGE(&#x27;&#x27;,*,*,#317,.T.);
+<span class="lineno">49</span>#401=ORIENTED_EDGE(&#x27;&#x27;,*,*,#315,.T.);
+<span class="lineno">50</span>#402=ORIENTED_EDGE(&#x27;&#x27;,*,*,#313,.F.);
+<span class="lineno">51</span>#403=ORIENTED_EDGE(&#x27;&#x27;,*,*,#311,.F.);
+<span class="lineno">52</span>#404=EDGE_LOOP(&#x27;&#x27;,(#400,#401,#402,#403));
+<span class="lineno">53</span>/* Defect: declared <mark>FACE_OUTER_BOUND</mark> but loop winds CW relative to face normal */
+<span class="lineno">54</span>#405=<mark>FACE_OUTER_BOUND</mark>(&#x27;reversed_outer&#x27;,#404,.T.);
+<span class="lineno">55</span>/* Hole wire correct (CW for hole, i.e. opposite to outer) */
+<span class="lineno">56</span>#410=ORIENTED_EDGE(&#x27;&#x27;,*,*,#318,.F.);
+<span class="lineno">57</span>#411=EDGE_LOOP(&#x27;&#x27;,(#410));
+<span class="lineno">58</span>#412=<mark>FACE_BOUND</mark>(&#x27;hole&#x27;,#411,.T.);
+<span class="lineno">59</span><mark>#420=ADVANCED_FACE(</mark>&#x27;reversed_winding&#x27;,(#405,#412),#212,.T.);
+<span class="lineno">60</span>ENDSEC;
+<span class="lineno">61</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Tsh010.html">&larr; Tsh010</a> <a class="up" href="index.html">§12.3a Shells / orientation</a> <a class="next" href="Tsh012.html">Tsh012 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

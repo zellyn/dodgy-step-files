@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>M076 — AP238 cutting-tool feedrate stated in wrong dimensional unit</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.8 Mixed (tessellation, validation properties, etc.)</a> <span class="sep">/</span> <span class="current">M076</span>
+</nav>
+<header class="title-bar">
+<h1>M076 <span class="sep">—</span> <span class="entry-title">AP238 cutting-tool feedrate stated in wrong dimensional unit</span></h1>
+<p class="category">§12.8 mixed (sub-class: AP238 unit dimensionality)</p>
+<p class="severity-badge severity-p1">P1 — silent data loss</p>
+<p class="tag-pills">
+<a class="tag tag-spec-violation" href="../by-tag/spec-violation/index.html">spec-violation</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-8-mixed/M076.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-8-mixed/M076.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>deduced from ISO 10303-41 dimensional_exponents</li>
+</ul></section>
+<section><h2>Sender</h2>
+<p>deduced — STEP-NC publisher confusing velocity and acceleration units</p></section>
+<section><h2>Description</h2>
+<p>A `MACHINING_TOOL_FEEDSPEED`&#x27;s feedrate is given as a `MEASURE_WITH_UNIT` whose unit&#x27;s `DIMENSIONAL_EXPONENTS` are `(1, 0, -2, ..)` (length/time^2 — acceleration) instead of `(1, 0, -1, ..)` (length/time — velocity). A consumer mapping the value to the machine&#x27;s feed register either silently scales by an unintended factor or rejects. Bug-reporter language: &quot;STEP-NC feedrate has wrong units&quot;, &quot;AP238 measure is acceleration not velocity&quot;, &quot;feedspeed import scales weirdly&quot;.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>`DERIVED_UNIT` composed of `LENGTH^1` and `SECOND^-2`, used as the unit on a `MEASURE_WITH_UNIT(LENGTH_MEASURE(500.0), ..)` for feed.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>validate dimensional_exponents against the expected dimension class for the property; reject as malformed or warn and refuse to scale.</p></section>
+<section><h2>Notes</h2>
+<p>Synonyms: &quot;feedrate dimensional exponent wrong&quot;, &quot;wrong physical unit on toolpath&quot;, &quot;AP238 feedrate is acceleration unit&quot;, &quot;feedrate units mismatch length/time&quot;. Synonyms: &quot;feedrate dimensional exponent wrong&quot;, &quot;wrong physical unit on toolpath&quot;.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>contains(b&#x27;AP238_STEP_NC_MIM&#x27;)</code></li>
+<li><code>contains(b&#x27;CUTTING_TOOL&#x27;)</code></li>
+<li><code>contains(b&#x27;MACHINING_TOOL_FEEDSPEED&#x27;)</code></li>
+</ul></section>
+<section><h2>Live oracle output</h2>
+<table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
+<tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>warn(W_COMPLEX_ORDER)</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>no_shapes_loaded</code></td></tr>
+</tbody></table>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* M076 - AP238 cutting_tool feed/speed measurement uses wrong unit class.
+<span class="lineno">3</span> * Defect: a <mark>CUTTING_TOOL</mark> has a feedrate stated in a unit-measure whose
+<span class="lineno">4</span> * dimensional_exponents are length/time^2 (acceleration) instead of
+<span class="lineno">5</span> * length/time (velocity). A consumer mapping feed onto an actual machine
+<span class="lineno">6</span> * would either scale by an unintended factor or reject the value. */
+<span class="lineno">7</span>HEADER;
+<span class="lineno">8</span>FILE_DESCRIPTION((&#x27;M076 test case&#x27;,&#x27;AP238 feedrate unit dimension wrong&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">9</span>FILE_NAME(&#x27;M076.stp&#x27;,&#x27;2026-04-30T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">10</span>FILE_SCHEMA((&#x27;<mark>AP238_STEP_NC_MIM</mark> { 1 0 10303 238 1 0 0 1 }&#x27;));
+<span class="lineno">11</span>ENDSEC;
+<span class="lineno">12</span>DATA;
+<span class="lineno">13</span>#1=APPLICATION_CONTEXT(&#x27;numerical_control_machining&#x27;);
+<span class="lineno">14</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,
+<span class="lineno">15</span>  &#x27;numerical_control_machining&#x27;,2007,#1);
+<span class="lineno">16</span>#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">17</span>#11=(NAMED_UNIT(*)TIME_UNIT()SI_UNIT($,.SECOND.));
+<span class="lineno">18</span>/* Defect: dimensional_exponents (1, 0, -2, ...) is acceleration. A
+<span class="lineno">19</span> * feedrate is length/time, exponents (1, 0, -1, ...). */
+<span class="lineno">20</span>#12=DIMENSIONAL_EXPONENTS(1.0,0.0,-2.0,0.0,0.0,0.0,0.0);
+<span class="lineno">21</span>#13=DERIVED_UNIT_ELEMENT(#10,1.0);
+<span class="lineno">22</span>#14=DERIVED_UNIT_ELEMENT(#11,-2.0);
+<span class="lineno">23</span>#15=DERIVED_UNIT((#13,#14));
+<span class="lineno">24</span>#20=MEASURE_WITH_UNIT(LENGTH_MEASURE(500.0),#15);
+<span class="lineno">25</span>#100=<mark>CUTTING_TOOL</mark>(&#x27;endmill_6mm&#x27;,$,$,$);
+<span class="lineno">26</span>#101=<mark>MACHINING_TOOL_FEEDSPEED</mark>(&#x27;feed500_per_s2&#x27;,#20,$);
+<span class="lineno">27</span>ENDSEC;
+<span class="lineno">28</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="M075.html">&larr; M075</a> <a class="up" href="index.html">§12.8 Mixed (tessellation, validation properties, etc.)</a> <a class="next" href="M077.html">M077 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

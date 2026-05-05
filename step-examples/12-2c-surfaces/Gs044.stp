@@ -1,0 +1,44 @@
+ISO-10303-21;
+/* Gs044 - INTERSECTION_CURVE between two surfaces with multiple
+ * disjoint intersection branches
+ * Defect: An INTERSECTION_CURVE entity holds the curve of
+ * intersection between two surfaces. The spec models the
+ * intersection as a single CURVE_ON_SURFACE pair, but in general
+ * two surfaces (e.g. two intersecting cylinders, or a plane and
+ * a torus) can intersect along *multiple disjoint branches*.
+ * Here a horizontal plane intersects a torus whose tube radius
+ * exceeds the plane offset, yielding two concentric circles
+ * (Villarceau-like). A single INTERSECTION_CURVE entity cannot
+ * faithfully represent this; the producer chose one branch
+ * arbitrarily. */
+HEADER;
+FILE_DESCRIPTION(('Gs044 - INTERSECTION_CURVE plane vs torus, multi-branch'),'2;1');
+FILE_NAME('Gs044.stp','2026-04-26T00:00:00',(''),(''),
+  'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#10=CARTESIAN_POINT('o',(0.0,0.0,0.0));
+#11=DIRECTION('z',(0.0,0.0,1.0));
+#12=DIRECTION('x',(1.0,0.0,0.0));
+#13=AXIS2_PLACEMENT_3D('place',#10,#11,#12);
+/* Torus major=10, minor=3 -> intersection with z=0 plane
+ * yields two concentric circles at radius 10 +/- 3 */
+#20=TOROIDAL_SURFACE('t',#13,10.0,3.0);
+/* Plane z=0 */
+#21=CARTESIAN_POINT('po',(0.0,0.0,0.0));
+#22=AXIS2_PLACEMENT_3D('placeA',#21,#11,#12);
+#23=PLANE('plane',#22);
+/* Producer chose the outer circle (r=13) as the representative
+ * branch; the inner circle (r=7) is silently dropped */
+#30=CIRCLE('outer_branch',#13,13.0);
+#31=PCURVE('pc1',#20,
+  REPRESENTATION('',(#30),#13));
+#32=PCURVE('pc2',#23,
+  REPRESENTATION('',(#30),#13));
+/* Defect: INTERSECTION_CURVE silently representing only one of
+ * two disjoint intersection branches */
+#40=INTERSECTION_CURVE('plane_torus',#30,(#31,#32),.PCURVE_S1.);
+ENDSEC;
+END-ISO-10303-21;

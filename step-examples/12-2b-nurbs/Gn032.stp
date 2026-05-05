@@ -1,0 +1,53 @@
+/* Gn032 - Pro/E non-uniform parameter scaling on 2D Geom2dAPI_Interpolate curves
+   Defect: Pro/E emits 2D interpolation curves whose points have
+   non-uniform parameter scaling (per-segment chord-length parameterization
+   with explicit scaling tags).  OCCT's reader didn't replicate the
+   scaling and produced a different 2D curve from the source.
+   This file emits a 2D B_SPLINE_CURVE_WITH_KNOTS in (u, v) on a host
+   plane, with knot vector (0, 0, 0, 0, 0.05, 0.92, 1, 1, 1, 1) -- the
+   Pro/E-style chord-length parametrization where the 5th knot is at
+   0.05 (very short first internal segment) and the 6th at 0.92 (very
+   short last internal segment).  A reader that re-uniformizes will
+   produce a different curve.
+   Sources: Mantis 0028594, OCCT 353e6fa. */
+ISO-10303-21;
+HEADER;
+FILE_DESCRIPTION(
+  ('Gn032 - 2D BSpline pcurve with chord-length-style non-uniform knots'),
+  '2;1');
+FILE_NAME('Gn032.stp','2026-04-26T00:00:00',('auto-generated'),(''),
+  'auto-generated','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+/* Host plane (the surface this 2D curve lives on). */
+#10=CARTESIAN_POINT('plane_o',(0.0,0.0,0.0));
+#11=DIRECTION('plane_z',(0.0,0.0,1.0));
+#12=DIRECTION('plane_x',(1.0,0.0,0.0));
+#13=AXIS2_PLACEMENT_3D('plane_pl',#10,#11,#12);
+#20=PLANE('host_plane',#13);
+/* 6 2D control points (u, v). */
+#30=CARTESIAN_POINT('uv0',(0.0,0.0));
+#31=CARTESIAN_POINT('uv1',(0.1,0.5));
+#32=CARTESIAN_POINT('uv2',(0.5,1.0));
+#33=CARTESIAN_POINT('uv3',(1.0,1.0));
+#34=CARTESIAN_POINT('uv4',(1.5,0.5));
+#35=CARTESIAN_POINT('uv5',(2.0,0.0));
+/* Defect: knot vector is non-uniform with very short first and last
+   internal segments (chord-length-derived).  A reader re-uniformizing
+   the knots produces a substantially different 2D curve. */
+#40=B_SPLINE_CURVE_WITH_KNOTS('proE_chord_length',3,
+  (#30,#31,#32,#33,#34,#35),
+  .UNSPECIFIED.,.F.,.F.,
+  (4,1,1,4),
+  (0.0,0.05,0.92,1.0),
+  .UNSPECIFIED.);
+/* PCURVE wrapping the 2D BSpline as a parameter curve on the plane. */
+#50=DEFINITIONAL_REPRESENTATION('',(#40),#60);
+#60=(
+  GEOMETRIC_REPRESENTATION_CONTEXT(2)
+  PARAMETRIC_REPRESENTATION_CONTEXT()
+  REPRESENTATION_CONTEXT('plane_param','2D'));
+#70=PCURVE('proE_pcurve',#20,#50);
+ENDSEC;
+END-ISO-10303-21;

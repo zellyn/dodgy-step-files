@@ -1,0 +1,53 @@
+/* Pmi010 - Tolerance zone form name from AP242 Ed.2 used in Ed.1 file
+   Defect: AP242 Ed.2 added several TOLERANCE_ZONE_FORM.name values
+   ('within a sphere', 'within a cone', 'within a single complex surface').
+   This file's FILE_SCHEMA declares AP242 Ed.1 (CC1 MIM_LF, version 1) but
+   contains a TOLERANCE_ZONE_FORM('within a cone'). Strict Ed.1 conformance
+   readers raise a WHERE-rule violation; lenient readers warn. */
+ISO-10303-21;
+HEADER;
+FILE_DESCRIPTION(('Pmi010 - Ed.2 zone form name in Ed.1 file'),'2;1');
+FILE_NAME('Pmi010.stp','2026-04-26T00:00:00',('catalog'),('cad'),
+  'manual','','');
+/* Defect: schema declares Ed.1 explicitly */
+FILE_SCHEMA(('AP242_MANAGED_MODEL_BASED_3D_ENGINEERING_MIM_LF { 1 0 10303 442 1 1 1 }'));
+ENDSEC;
+DATA;
+#10 = APPLICATION_CONTEXT('managed model based 3d engineering');
+#11 = APPLICATION_PROTOCOL_DEFINITION('international standard',
+  'ap242_managed_model_based_3d_engineering',2014,#10);
+#12 = PRODUCT_CONTEXT('',#10,'mechanical');
+#13 = PRODUCT('Pmi010','ConeZonePart','',(#12));
+#14 = PRODUCT_DEFINITION_FORMATION('','',#13);
+#15 = PRODUCT_DEFINITION_CONTEXT('',#10,'design');
+#16 = PRODUCT_DEFINITION('','',#14,#15);
+#17 = PRODUCT_DEFINITION_SHAPE('','',#16);
+#20 = ( LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT(.MILLI.,.METRE.) );
+#22 = ( NAMED_UNIT(*) PLANE_ANGLE_UNIT() SI_UNIT($,.RADIAN.) );
+#23 = ( NAMED_UNIT(*) SI_UNIT($,.STERADIAN.) SOLID_ANGLE_UNIT() );
+#24 = UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#20,
+  'distance_accuracy_value','');
+#25 = ( GEOMETRIC_REPRESENTATION_CONTEXT(3)
+  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#24))
+  GLOBAL_UNIT_ASSIGNED_CONTEXT((#20,#22,#23))
+  REPRESENTATION_CONTEXT('','3D') );
+#30 = CARTESIAN_POINT('',(0.0,0.0,0.0));
+#31 = DIRECTION('',(0.0,0.0,1.0));
+#32 = DIRECTION('',(1.0,0.0,0.0));
+#33 = AXIS2_PLACEMENT_3D('',#30,#31,#32);
+#40 = SHAPE_ASPECT('hole_axis','',#17,.T.);
+#41 = DATUM('A','',#17,.T.,'A');
+#42 = DATUM_REFERENCE_COMPARTMENT('',$,#43);
+#43 = DATUM_REFERENCE_ELEMENT('',$,#41);
+#44 = DATUM_SYSTEM('A','',#17,.T.,(#42));
+#50 = LENGTH_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.05),#20);
+#51 = POSITION_TOLERANCE('pos',$,#50,#40,#44);
+/* Defect: 'within a cone' is an Ed.2 zone form; Ed.1 only allowed
+   'cylindrical', 'spherical', 'between two parallel planes', etc. */
+#60 = TOLERANCE_ZONE_FORM('within a cone');
+#61 = TOLERANCE_ZONE('cone_zone','',(#51),#60);
+#70 = DRAUGHTING_MODEL('Default',(),#25);
+#80 = SHAPE_REPRESENTATION('',(#33),#25);
+#81 = SHAPE_DEFINITION_REPRESENTATION(#17,#80);
+ENDSEC;
+END-ISO-10303-21;

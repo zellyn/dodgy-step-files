@@ -1,0 +1,41 @@
+ISO-10303-21;
+/* M021 - Tessellated GD&T (annotation) entities not imported.
+ * Defect: TESSELLATED_ANNOTATION_OCCURRENCE entities encode PMI/GD&T
+ * presentation as a triangulated mesh. OCCT historically did not
+ * recognize them (Mantis 33661, fixed in b78ccf1). Files using them
+ * lose all PMI on import. This fixture exercises the entity. */
+HEADER;
+FILE_DESCRIPTION(('M021 test case','tessellated_annotation_occurrence for PMI'),'2;1');
+FILE_NAME('M021.stp','2026-04-26T00:00:00',(''),(''),'auto-generated','','');
+FILE_SCHEMA(('AP242_MANAGED_MODEL_BASED_3D_ENGINEERING_MIM_LF { 1 0 10303 442 1 1 4 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('managed model based 3d engineering');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
+  'ap242_managed_model_based_3d_engineering',2014,#1);
+#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#11=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#12=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.E-6),#10,'distance_accuracy_value','');
+#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+     GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13))
+     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12))
+     REPRESENTATION_CONTEXT('part','3D'));
+/* Tessellated text outline (squiggly approximating digits "10.0").
+ * For this test fixture we just emit a small mesh stand-in. */
+#100=COORDINATES_LIST('',5,((0.0,0.0,0.0),(2.0,0.0,0.0),
+                            (2.0,0.5,0.0),(0.0,0.5,0.0),
+                            (1.0,0.25,0.0)));
+#110=TESSELLATED_CURVE_SET('annotation_strokes',#100,
+       ((1,2,3,4,1),(5,5)));
+#120=TESSELLATED_GEOMETRIC_SET('annotation_geom',(#110));
+/* Style for the annotation text (black) */
+#200=COLOUR_RGB('black',0.0,0.0,0.0);
+#201=CURVE_STYLE('',$,POSITIVE_LENGTH_MEASURE(0.1),#200);
+#202=PRESENTATION_STYLE_ASSIGNMENT((#201));
+/* Tessellated annotation occurrence */
+#300=TESSELLATED_ANNOTATION_OCCURRENCE('size_callout',
+       (#202),#120);
+#310=DRAUGHTING_MODEL('',(#300),#14);
+ENDSEC;
+END-ISO-10303-21;

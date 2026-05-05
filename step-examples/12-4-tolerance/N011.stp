@@ -1,0 +1,45 @@
+/* N011 - FixMissingSeam adds degenerate edge inside vertex tolerance ball
+ * Defect: When the seam edge to be inserted on a periodic face would lie
+ * entirely within an existing vertex tolerance ball, FixMissingSeam still
+ * inserts a degenerated edge, violating tolerance invariants (vertex
+ * tolerance now covers a "real" edge of length zero).
+ * Reproducer: cylindrical face whose seam line is at length zero (degenerate)
+ * with vertex tolerance ball that fully covers the seam location.
+ */
+ISO-10303-21;
+HEADER;
+FILE_DESCRIPTION(('N011 FixMissingSeam degenerate edge inside vertex tol ball'),'2;1');
+FILE_NAME('N011.stp','2026-04-26T00:00:00',(''),(''),
+  'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
+  'automotive_design',2009,#1);
+#10=CARTESIAN_POINT('axis_o',(0.0,0.0,0.0));
+#11=DIRECTION('z',(0.0,0.0,1.0));
+#12=DIRECTION('x',(1.0,0.0,0.0));
+#13=AXIS2_PLACEMENT_3D('cyl_axis',#10,#11,#12);
+#14=CYLINDRICAL_SURFACE('cyl',#13,5.0);
+/* Both vertices share the same point on the seam ring; "seam" is degenerate */
+#20=CARTESIAN_POINT('seam_pt',(5.0,0.0,0.0));
+#21=VERTEX_POINT('seam_v_a_tol1e-3',#20);
+#22=VERTEX_POINT('seam_v_b_tol1e-3',#20);
+/* 3D curve of zero geometric range -- degenerate */
+#30=DIRECTION('+z',(0.0,0.0,1.0));
+#31=VECTOR('',#30,0.0);
+#32=LINE('degenerate_seam',#20,#31);
+/* Defect site: degenerate seam edge inserted inside vertex tolerance ball */
+#40=EDGE_CURVE('degenerate_seam_edge',#21,#22,#32,.T.);
+#50=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#51=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#52=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#60=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-3),#50,
+  'distance_accuracy_value','vertex_tol_covers_inserted_seam');
+#70=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#60))
+  GLOBAL_UNIT_ASSIGNED_CONTEXT((#50,#51,#52))
+  REPRESENTATION_CONTEXT('ctx','3D'));
+ENDSEC;
+END-ISO-10303-21;

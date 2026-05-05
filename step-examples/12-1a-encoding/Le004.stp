@@ -1,0 +1,29 @@
+/* Le004 — \X\ (single-byte ISO-8859) escape with bad hex digit count or non-hex input
+   Defect: \X\ must consume exactly two upper-case hex digits. This file emits
+   four malformed forms in different name slots:
+     - lowercase hex digits     (\X\e9)
+     - one digit instead of two (\X\F)
+     - three digits             (\X\009)
+     - whitespace inside        (\X\E9 9)
+   A loose parser may walk past the directive boundary or accept malformed values. */
+ISO-10303-21;
+HEADER;
+FILE_DESCRIPTION(('Le004 - bad \X\ hex digit count or non-hex input'),'2;1');
+FILE_NAME('Le004.stp','2026-04-26T00:00:00',('auto-generated'),(''),
+  'auto-generated','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+/* lowercase hex digits */
+#10=CARTESIAN_POINT('caf\X\e9',(0.0,0.0,0.0));
+/* one hex digit only */
+#20=CARTESIAN_POINT('caf\X\F',(1.0,0.0,0.0));
+/* three hex digits (boundary slips) */
+#30=CARTESIAN_POINT('caf\X\009',(2.0,0.0,0.0));
+/* whitespace inside the directive */
+#40=CARTESIAN_POINT('caf\X\E9 9',(3.0,0.0,0.0));
+#50=DIRECTION('',(0.0,0.0,1.0));
+#60=DIRECTION('',(1.0,0.0,0.0));
+#70=AXIS2_PLACEMENT_3D('',#10,#50,#60);
+ENDSEC;
+END-ISO-10303-21;

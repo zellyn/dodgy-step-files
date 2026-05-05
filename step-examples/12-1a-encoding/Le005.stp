@@ -1,0 +1,20 @@
+/* Le005 - \X2\ UCS-2 escape with 3 hex digits in one group
+   Defect: \X2\..\X0\ wraps 4-hex-digit code units; a 3-digit run is malformed.
+   A non-validating parser may produce wrong code points or crash a downstream
+   UTF-8 encoder fed a half-formed group. */
+ISO-10303-21;
+HEADER;
+FILE_DESCRIPTION(('Le005 - X2 group has 3 hex digits'),'2;1');
+FILE_NAME('Le005.stp','2026-04-26T00:00:00',('auto-generated'),(''),
+  'auto-generated','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+/* Defect: 3 hex digits in the X2 group instead of 4 */
+#10=PERSON('p1','\X2\03B\X0\','given',$,$,$,$,$);
+#20=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#21=DIRECTION('',(0.0,0.0,1.0));
+#22=DIRECTION('',(1.0,0.0,0.0));
+#23=AXIS2_PLACEMENT_3D('',#20,#21,#22);
+ENDSEC;
+END-ISO-10303-21;

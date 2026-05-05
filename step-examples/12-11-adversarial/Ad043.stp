@@ -1,0 +1,52 @@
+/* Ad043 - STEP read raises uncaught exception (null/invalid entity catch-all)
+   ----------------------------------------------------------------------
+   Catalog section : §12.11 adversarial (sub-class: null-deref / DoS)
+   Sources         : 03-occt-tests.md R043 (bug22871, bug16351, bug23157,
+                     bug24383, bug25912, bug133_2/3/9), R057 (bug23251),
+                     R045 (bug33307), R067 (bug24990);
+                     04-occt-translation.md Q078;
+                     08-occt-gitlog.md G027 (STYLED_ITEM.item NULL),
+                     G029 (NULL vertex name/id), G034, G035, G050, G063,
+                     G083, G085, G086, G109 (GD&T null-deref family);
+                     18-other-issues.md I001, I003, I004, I044
+   See also        : Ad045, Ad046, Ad047, Ad050, Ad081, Ad082, Ad083, Ad086
+   ----------------------------------------------------------------------
+   WARNING: This file is INTENTIONALLY MALFORMED for parser-robustness
+   testing. Do NOT use as exchange data.
+   ----------------------------------------------------------------------
+   Defect
+     Reader paths assume non-null entity references and throw
+     Standard_Failure (e.g. OSD_Exception_ACCESS_VIOLATION),
+     Standard_OutOfRange, or similar when a STEP file references a
+     non-existent entity. Canonical example: STYLED_ITEM with NULL item.
+   Reproducer recipe
+     STYLED_ITEM('',(...),#999) where #999 is unresolved.
+   Expected kernel behavior
+     Comprehensive null-checking on every reader path; warn-and-skip;
+     never abort. Emit E_NULL_REFERENCE with entity-id context.
+   ----------------------------------------------------------------------
+*/
+ISO-10303-21;
+HEADER;
+FILE_DESCRIPTION(('Ad043 - STYLED_ITEM points at unresolved entity'),'2;1');
+FILE_NAME('Ad043.stp','2026-04-26T00:00:00',('auto-generated'),(''),
+  'auto-generated','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#10=CARTESIAN_POINT('o',(0.0,0.0,0.0));
+#11=DIRECTION('z',(0.0,0.0,1.0));
+#12=DIRECTION('x',(1.0,0.0,0.0));
+#13=AXIS2_PLACEMENT_3D('p',#10,#11,#12);
+#20=COLOUR_RGB('red',1.0,0.0,0.0);
+#21=FILL_AREA_STYLE_COLOUR('',#20);
+#22=FILL_AREA_STYLE('',(#21));
+#23=SURFACE_STYLE_FILL_AREA(#22);
+#24=SURFACE_SIDE_STYLE('',(#23));
+#25=SURFACE_STYLE_USAGE(.BOTH.,#24);
+#26=PRESENTATION_STYLE_ASSIGNMENT((#25));
+/* Defect: STYLED_ITEM references #999, which is never declared. */
+#27=STYLED_ITEM('',(#26),#999);
+ENDSEC;
+END-ISO-10303-21;

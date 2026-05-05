@@ -1,0 +1,55 @@
+/* Pf025 - ShapeAnalysis::OuterWire() infinite loop on IFC-derived face
+   (Mantis 0031144 / 0031926; OCCT G069/G102).
+   Pattern: a face whose sub-shape list contains a vertex with INTERNAL
+   orientation (common in IFC slab/wall models converted to STEP). The
+   pre-fix OuterWire() iterator does not skip internal sub-shapes and
+   spins indefinitely.
+   Scaling-up: the single face below is enough; iterating OuterWire()
+   on this face triggers the infinite loop. The trigger is the
+   INTERNAL-orientation vertex inside the face bounds, not the geometry
+   complexity. */
+ISO-10303-21;
+HEADER;
+FILE_DESCRIPTION(('Pf025 - ShapeAnalysis::OuterWire() spin on internal vertex'),'2;1');
+FILE_NAME('Pf025.stp','2026-04-26T00:00:00',('auto-generated'),(''),
+  'auto-generated','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=DIRECTION('',(0.0,0.0,1.0));
+#3=DIRECTION('',(1.0,0.0,0.0));
+#4=AXIS2_PLACEMENT_3D('',#1,#2,#3);
+#5=PLANE('',#4);
+/* outer wire vertices */
+#10=CARTESIAN_POINT('A',(0.0,0.0,0.0));
+#11=CARTESIAN_POINT('B',(1.0,0.0,0.0));
+#12=CARTESIAN_POINT('C',(1.0,1.0,0.0));
+#13=CARTESIAN_POINT('D',(0.0,1.0,0.0));
+/* internal-orientation vertex inside face (IFC pattern) */
+#14=CARTESIAN_POINT('internal',(0.5,0.5,0.0));
+#20=VERTEX_POINT('vA',#10);
+#21=VERTEX_POINT('vB',#11);
+#22=VERTEX_POINT('vC',#12);
+#23=VERTEX_POINT('vD',#13);
+#24=VERTEX_POINT('vINT',#14);
+#30=VECTOR('',#3,1.0);
+#31=LINE('',#10,#30);
+#40=EDGE_CURVE('AB',#20,#21,#31,.T.);
+#41=EDGE_CURVE('BC',#21,#22,#31,.T.);
+#42=EDGE_CURVE('CD',#22,#23,#31,.T.);
+#43=EDGE_CURVE('DA',#23,#20,#31,.T.);
+#50=ORIENTED_EDGE('',*,*,#40,.T.);
+#51=ORIENTED_EDGE('',*,*,#41,.T.);
+#52=ORIENTED_EDGE('',*,*,#42,.T.);
+#53=ORIENTED_EDGE('',*,*,#43,.T.);
+#60=EDGE_LOOP('outer',(#50,#51,#52,#53));
+#70=FACE_OUTER_BOUND('',#60,.T.);
+/* internal-orientation vertex appears as additional FACE_BOUND on the
+   face's bounds list - this is the IFC-converted shape that pre-fix
+   OuterWire() iterator does not skip */
+#80=VERTEX_LOOP('internal-vertex-loop',#24);
+#81=FACE_BOUND('internal-bound',#80,.U.);
+#100=ADVANCED_FACE('ifc-target',(#70,#81),#5,.T.);
+ENDSEC;
+END-ISO-10303-21;

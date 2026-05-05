@@ -1,0 +1,32 @@
+/* Le021 β€” Component name in non-UTF-8 locale encoding (GB18030 / Shift-JIS / cp1251 / DOS850)
+   Defect: producer writes raw multi-byte octets of a non-UTF-8 codepage
+   directly into PRODUCT.name and similar string slots, neither escaping
+   them via \X2\..\X0\ nor declaring an encoding. Ed.1/Ed.2 mandate \X2\
+   escapes; Ed.3 added UTF-8 only. This file embeds:
+     - raw GB18030 bytes for a Chinese character (0xE6 0xA0 0xB8)
+     - raw cp1251 bytes for Russian "Detal" (0xC4 0xE5 0xF2 0xE0 0xEB 0xFC)
+     - raw Shift-JIS bytes for Japanese "a" katakana (0x82 0xA0)
+     - raw UTF-8 multi-byte for "cafe" with e-acute (0xC3 0xA9)
+       (Ed.2 violation per the merged-in Le003 description)
+   These bytes are illegal under Ed.2 and require explicit codepage handling
+   under Ed.3. */
+ISO-10303-21;
+HEADER;
+FILE_DESCRIPTION(('Le021 - raw non-UTF-8 locale bytes in PRODUCT.name'),'2;1');
+FILE_NAME('Le021.stp','2026-04-26T00:00:00',('auto-generated'),(''),
+  'auto-generated','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+#10=PRODUCT('FOO','ζ Έ','description',(#100));
+#11=PRODUCT('DETAL','Δεςΰλό','description',(#100));
+#12=PRODUCT('KATAKANA-A','‚ ','description',(#100));
+#13=PRODUCT('CAFE','cafΓ©','description',(#100));
+#100=PRODUCT_CONTEXT('part definition',#101,'mechanical');
+#101=APPLICATION_CONTEXT('automotive_design');
+#20=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#21=DIRECTION('',(0.0,0.0,1.0));
+#22=DIRECTION('',(1.0,0.0,0.0));
+#23=AXIS2_PLACEMENT_3D('',#20,#21,#22);
+ENDSEC;
+END-ISO-10303-21;

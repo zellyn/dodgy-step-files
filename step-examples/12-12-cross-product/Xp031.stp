@@ -1,0 +1,43 @@
+ISO-10303-21;
+/* Xp031 - Cross-product: KiCad-emitted STEP file imports cleanly into
+ *   FreeCAD but corrupts in SolidWorks 2021 - several footprint instances
+ *   are rotated and replaced by other components in the assembly.
+ * Source: forum.kicad.info t/47681 "Wrong parts assignment when opening
+ *   STEP files in Solidworks 2021"; forum.kicad.info t/46359 "STEP file
+ *   corrupting on import to Solidworks (but not freecad)".
+ * Defect: two PRODUCT_DEFINITIONs share the exact same PRODUCT.name and
+ *   PRODUCT_CONTEXT (both labelled 'R0805'). KiCad assigns each footprint
+ *   instance a unique IDT; FreeCAD honours the IDT. SolidWorks de-dups by
+ *   PRODUCT.name and re-uses the first occurrence's geometry for all
+ *   instances - effectively swapping the part that should be in slot B
+ *   with the one in slot A. */
+HEADER;
+FILE_DESCRIPTION(('Xp031 cross-product','KiCad->Solidworks duplicate name'),'2;1');
+FILE_NAME('Xp031.stp','2026-05-02T00:00:00',(''),(''),'KiCad;StepWriter','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#11=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#12=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#10,'tol','');
+#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13))GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12))REPRESENTATION_CONTEXT('','3D'));
+/* Two identically-named PRODUCTs intended as distinct instances. */
+#20=PRODUCT('R0805','R0805','distinct-instance-A',(#21));
+#21=PRODUCT_CONTEXT('',#1,'mechanical');
+#22=PRODUCT_DEFINITION_FORMATION('','',#20);
+#23=PRODUCT_DEFINITION('R0805','first-instance',#22,#24);
+#24=PRODUCT_DEFINITION_CONTEXT('',#1,'design');
+#30=PRODUCT('R0805','R0805','distinct-instance-B',(#21));
+#31=PRODUCT_DEFINITION_FORMATION('','',#30);
+#32=PRODUCT_DEFINITION('R0805','second-instance-collides',#31,#24);
+/* SolidWorks de-dup heuristic conflates #23 and #32, swapping geometry. */
+#40=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#41=DIRECTION('',(0.0,0.0,1.0));
+#42=DIRECTION('',(1.0,0.0,0.0));
+#43=AXIS2_PLACEMENT_3D('',#40,#41,#42);
+#44=PLANE('',#43);
+#45=ADVANCED_FACE('shared_geometry_swapped_in_swx',(),#44,.T.);
+ENDSEC;
+END-ISO-10303-21;

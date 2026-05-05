@@ -1,0 +1,25 @@
+ISO-10303-21;
+/* Le042 - \Q\ with non-decimal characters between the bracketing
+ * \Q\ delimiters
+ * Defect: \Q\NNN\Q\ requires the bracketed payload to be a decimal
+ * integer. Producers occasionally emit hex (\Q\1F600\Q\), an
+ * 0x prefix (\Q\0x1F600\Q\), or whitespace around the number
+ * (\Q\ 65 \Q\). A strict parser rejects; lenient parsers may
+ * silently coerce, producing the wrong character. */
+HEADER;
+FILE_DESCRIPTION(('Le042 - \Q\ with hex digits / 0x prefix / whitespace'),'2;1');
+FILE_NAME('Le042.stp','2026-04-26T00:00:00',(''),(''),
+  'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=PRODUCT_CONTEXT('part',#1,'mechanical');
+/* Defect: hex-looking value F60 inside \Q\..\Q\ - illegal */
+#10=PRODUCT('hex=\Q\F60\Q\','hex-payload','',(#2));
+/* Defect: 0x prefix inside payload */
+#11=PRODUCT('px=\Q\0x41\Q\','prefixed-payload','',(#2));
+/* Defect: whitespace inside payload */
+#12=PRODUCT('ws=\Q\ 65 \Q\','whitespace-payload','',(#2));
+ENDSEC;
+END-ISO-10303-21;

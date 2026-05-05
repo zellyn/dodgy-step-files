@@ -1,0 +1,47 @@
+ISO-10303-21;
+/* Gp030 - FixIE bend pcurves protective handling (PRO/E IGES)
+ * Defect: PRO/E-style file in which a face has a pcurve with a sharp
+ * deliberate bend (corner vertex). Generic FixIntersectingEdges would
+ * try to "smooth" the bend, corrupting the geometry. The exporter is
+ * marked PRO/E in the FILE_NAME originating system. */
+HEADER;
+FILE_DESCRIPTION(('Gp030 test case','FixIE bend pcurves PRO/E IGES'),'2;1');
+FILE_NAME('Gp030.stp','2026-04-27T00:00:00',(''),(''),'auto-generated','PRO/Engineer 2001','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#11=DIRECTION('',(0.0,0.0,1.0));
+#12=DIRECTION('',(1.0,0.0,0.0));
+#13=AXIS2_PLACEMENT_3D('',#10,#11,#12);
+#20=PLANE('',#13);
+/* 3D curve: 2-piece polyline forming an L shape (the bend in 3D) */
+#30=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#31=CARTESIAN_POINT('',(1.0,0.0,0.0));
+#32=CARTESIAN_POINT('',(1.0,1.0,0.0));
+#33=B_SPLINE_CURVE_WITH_KNOTS('',1,(#30,#31,#32),.POLYLINE_FORM.,.F.,.F.,
+  (2,1,2),(0.0,0.5,1.0),.UNSPECIFIED.);
+#40=VERTEX_POINT('',#30);
+#42=VERTEX_POINT('',#32);
+/* Defect: pcurve has a sharp bend at parameter t=0.5
+ * Knot multiplicity 1 at the interior preserves only C0 continuity. */
+#71=CARTESIAN_POINT('',(0.0,0.0));
+#72=CARTESIAN_POINT('',(1.0,0.0));
+#73=CARTESIAN_POINT('',(1.0,1.0));
+#74=B_SPLINE_CURVE_WITH_KNOTS('',1,(#71,#72,#73),.POLYLINE_FORM.,.F.,.F.,
+  (2,1,2),(0.0,0.5,1.0),.UNSPECIFIED.);
+#75=( GEOMETRIC_REPRESENTATION_CONTEXT(2)
+      PARAMETRIC_REPRESENTATION_CONTEXT()
+      REPRESENTATION_CONTEXT('parametric','2D') );
+#76=DEFINITIONAL_REPRESENTATION('',(#74),#75);
+#77=PCURVE('',#20,#76);
+#50=SURFACE_CURVE('',#33,(#77),.PCURVE_S1.);
+#60=EDGE_CURVE('',#40,#42,#50,.T.);
+#61=ORIENTED_EDGE('',*,*,#60,.T.);
+#62=EDGE_LOOP('',(#61));
+#63=FACE_OUTER_BOUND('',#62,.T.);
+#64=ADVANCED_FACE('',(#63),#20,.T.);
+ENDSEC;
+END-ISO-10303-21;

@@ -1,0 +1,75 @@
+/* Tfa013 - Face area exceeds limit (needs split)
+ * Defect: one face dominates the model's area budget (e.g., a single huge
+ * skin face on a long thin part). Downstream meshers produce uneven
+ * element sizes; analyses degrade. Healer should accept but offer
+ * ShapeUpgrade_ShapeDivideArea to subdivide along iso-curves so each
+ * child face stays under a configured area threshold.
+ * Reproducer: ADVANCED_FACE on PLANE covering a 10000x10000 mm patch
+ * (1.0e8 mm^2) - dominates a model with otherwise sub-mm features.
+ */
+ISO-10303-21;
+HEADER;
+FILE_DESCRIPTION(('Tfa013 face area exceeds limit'),'2;1');
+FILE_NAME('Tfa013.stp','2026-04-26T00:00:00',(''),(''),
+  'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
+  'automotive_design',2009,#1);
+#10=CARTESIAN_POINT('origin',(0.0,0.0,0.0));
+#11=DIRECTION('z',(0.0,0.0,1.0));
+#12=DIRECTION('x',(1.0,0.0,0.0));
+#13=AXIS2_PLACEMENT_3D('plc',#10,#11,#12);
+#20=PLANE('huge',#13);
+/* Single 10 km x 10 km patch.                                          */
+#21=CARTESIAN_POINT('p0',(0.0,0.0,0.0));
+#22=CARTESIAN_POINT('p1',(10000.0,0.0,0.0));
+#23=CARTESIAN_POINT('p2',(10000.0,10000.0,0.0));
+#24=CARTESIAN_POINT('p3',(0.0,10000.0,0.0));
+#30=VERTEX_POINT('',#21);
+#31=VERTEX_POINT('',#22);
+#32=VERTEX_POINT('',#23);
+#33=VERTEX_POINT('',#24);
+#40=DIRECTION('',(1.0,0.0,0.0));
+#41=DIRECTION('',(0.0,1.0,0.0));
+#42=DIRECTION('',(-1.0,0.0,0.0));
+#43=DIRECTION('',(0.0,-1.0,0.0));
+#50=VECTOR('',#40,10000.0);
+#51=VECTOR('',#41,10000.0);
+#52=VECTOR('',#42,10000.0);
+#53=VECTOR('',#43,10000.0);
+#60=LINE('',#21,#50);
+#61=LINE('',#22,#51);
+#62=LINE('',#23,#52);
+#63=LINE('',#24,#53);
+#70=EDGE_CURVE('',#30,#31,#60,.T.);
+#71=EDGE_CURVE('',#31,#32,#61,.T.);
+#72=EDGE_CURVE('',#32,#33,#62,.T.);
+#73=EDGE_CURVE('',#33,#30,#63,.T.);
+#80=ORIENTED_EDGE('',*,*,#70,.T.);
+#81=ORIENTED_EDGE('',*,*,#71,.T.);
+#82=ORIENTED_EDGE('',*,*,#72,.T.);
+#83=ORIENTED_EDGE('',*,*,#73,.T.);
+#90=EDGE_LOOP('',(#80,#81,#82,#83));
+#100=FACE_OUTER_BOUND('',#90,.T.);
+#110=ADVANCED_FACE('huge_face_1e8',(#100),#20,.T.);
+/* Minimal PRODUCT chain so OCCT TransferRoots produces a shape. */
+#9000=PRODUCT_CONTEXT('',#1,'mechanical');
+#9001=PRODUCT('Tfa013','Tfa013','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
+#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
+#9020=OPEN_SHELL('wrap_shell',(#110));
+#9021=SHELL_BASED_SURFACE_MODEL('wrap_sbsm',(#9020));
+#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#9010);
+#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+ENDSEC;
+END-ISO-10303-21;

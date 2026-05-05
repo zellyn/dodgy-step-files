@@ -1,0 +1,28 @@
+ISO-10303-21;
+/* M076 - AP238 cutting_tool feed/speed measurement uses wrong unit class.
+ * Defect: a CUTTING_TOOL has a feedrate stated in a unit-measure whose
+ * dimensional_exponents are length/time^2 (acceleration) instead of
+ * length/time (velocity). A consumer mapping feed onto an actual machine
+ * would either scale by an unintended factor or reject the value. */
+HEADER;
+FILE_DESCRIPTION(('M076 test case','AP238 feedrate unit dimension wrong'),'2;1');
+FILE_NAME('M076.stp','2026-04-30T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AP238_STEP_NC_MIM { 1 0 10303 238 1 0 0 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('numerical_control_machining');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
+  'numerical_control_machining',2007,#1);
+#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#11=(NAMED_UNIT(*)TIME_UNIT()SI_UNIT($,.SECOND.));
+/* Defect: dimensional_exponents (1, 0, -2, ...) is acceleration. A
+ * feedrate is length/time, exponents (1, 0, -1, ...). */
+#12=DIMENSIONAL_EXPONENTS(1.0,0.0,-2.0,0.0,0.0,0.0,0.0);
+#13=DERIVED_UNIT_ELEMENT(#10,1.0);
+#14=DERIVED_UNIT_ELEMENT(#11,-2.0);
+#15=DERIVED_UNIT((#13,#14));
+#20=MEASURE_WITH_UNIT(LENGTH_MEASURE(500.0),#15);
+#100=CUTTING_TOOL('endmill_6mm',$,$,$);
+#101=MACHINING_TOOL_FEEDSPEED('feed500_per_s2',#20,$);
+ENDSEC;
+END-ISO-10303-21;

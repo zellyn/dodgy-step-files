@@ -1,0 +1,27 @@
+ISO-10303-21;
+/* M146 - AP210 drill diameter exceeds pad diameter (annular ring
+ * inverted).
+ * Defect: a VIA_DEFINITION declares a drill_diameter of 0.5 mm but
+ * the pad diameter is 0.3 mm. The drilled hole is wider than the
+ * copper pad - there is no annular ring of copper around the drill.
+ * The via cannot be electrically connected. */
+HEADER;
+FILE_DESCRIPTION(('M146 test case','AP210 drill > pad annular ring'),'2;1');
+FILE_NAME('M146.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('ELECTRONIC_ASSEMBLY_INTERCONNECT_AND_PACKAGING_DESIGN { 1 0 10303 210 3 1 0 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('electronic_assembly_interconnect_and_packaging_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
+  'electronic_assembly_interconnect_and_packaging_design',2014,#1);
+#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10))
+     REPRESENTATION_CONTEXT('pcb','3D'));
+/* Defect: drill_diameter (0.5) > pad_diameter (0.3). */
+#100=VIA_DEFINITION('inverted_ring_via',LENGTH_MEASURE(0.5),(#10));
+#101=PROPERTY_DEFINITION('pad_diameter','0.3 mm pad',#100);
+#102=DESCRIPTIVE_REPRESENTATION_ITEM('drill_diameter_mm','0.5');
+#103=DESCRIPTIVE_REPRESENTATION_ITEM('pad_diameter_mm','0.3');
+ENDSEC;
+END-ISO-10303-21;

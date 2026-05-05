@@ -1,0 +1,43 @@
+/* N015 - xstep.cascade.unit M meters setting inflates tolerance and corrupts geometry
+ * Defect: Setting OCCT's cascade unit to meters during STEP/IGES read inflates
+ * max-tolerance >0.001 (some files balloon AABB to +/-1e+100). With unit=M,
+ * too-small distances are not detected during edge reordering and BSpline
+ * segments are missed.
+ * Reproducer: file declared in METRE units (instead of mm) plus tight
+ * uncertainty 1e-7 in metre context. Reader's cascade.unit M scaling
+ * produces tolerance 1e-7 m = 0.1 mm, far above true model precision.
+ */
+ISO-10303-21;
+HEADER;
+FILE_DESCRIPTION(('N015 cascade.unit M inflates tolerance corrupts geometry'),'2;1');
+FILE_NAME('N015.stp','2026-04-26T00:00:00',(''),(''),
+  'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
+  'automotive_design',2009,#1);
+/* All coordinates declared in METRE; tiny part is 0.001 m on a side. */
+#10=CARTESIAN_POINT('p0_m',(0.0,0.0,0.0));
+#11=CARTESIAN_POINT('p1_m',(0.001,0.0,0.0));
+#20=VERTEX_POINT('v0',#10);
+#21=VERTEX_POINT('v1',#11);
+#30=DIRECTION('+x',(1.0,0.0,0.0));
+#31=VECTOR('',#30,0.001);
+#32=LINE('e',#10,#31);
+#40=EDGE_CURVE('cascade_m_edge',#20,#21,#32,.T.);
+/* LENGTH_UNIT defined in metres -- when reader maps via xstep.cascade.unit=M,
+ * the working tolerance is interpreted as 1e-7 m == 1e-4 mm, way above
+ * native precision. */
+#50=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT($,.METRE.));
+#51=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#52=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#60=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#50,
+  'distance_accuracy_value','tol_in_metres_inflates_under_cascade_M');
+#70=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#60))
+  GLOBAL_UNIT_ASSIGNED_CONTEXT((#50,#51,#52))
+  REPRESENTATION_CONTEXT('ctx_m','3D'));
+ENDSEC;
+END-ISO-10303-21;

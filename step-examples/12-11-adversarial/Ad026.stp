@@ -1,0 +1,43 @@
+ISO-10303-21;
+/* ============================================================
+   WARNING: THIS FILE IS INTENTIONALLY MALFORMED.
+   It exists ONLY for parser-robustness / fuzz-class testing.
+   DO NOT feed to a production translator without sandboxing.
+
+   Entry  : Ad026
+   Title  : Self-referencing complex-entity instance during
+            construction (UAF on half-initialised vtable).
+   Defect : Each complex entity below contains a sub-entity
+            slot whose value is the outer instance ID itself.
+            A two-phase build that dereferences #self while
+            the C++ object is still under construction may
+            invoke methods through a not-yet-installed vtable
+            (use-after-free in practice on most C++ ABIs).
+            Variant Q023 (composite curve self-cyclic) and
+            Ad004 share this root cause.
+   Expected: build attribute graph in two passes — allocate
+             placeholder shells first, bind references after.
+             Constructors must NEVER walk inbound references.
+   See also: Ad004.
+   ============================================================ */
+HEADER;
+FILE_DESCRIPTION(('Ad026 self-ref complex entity'),'2;1');
+FILE_NAME('Ad026.stp','2026-04-26T00:00:00',('synthetic'),('cad-research'),
+  'none','none','none');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+/* Pattern A: simple self-reference inside complex */
+#1=(NAMED_UNIT(*) DERIVED_UNIT_ELEMENT(#1, 1.0));
+
+/* Pattern B: self-reference via composite_curve_segment list,
+   modelled on OCCT Q023 (composite curve self-cyclic). */
+#2=COMPOSITE_CURVE('',(#3),.F.);
+#3=COMPOSITE_CURVE_SEGMENT(.CONTINUOUS.,.T.,#2);
+
+/* Pattern C: complex with self in BOTH sub-entities */
+#4=(GEOMETRIC_REPRESENTATION_ITEM()
+    REPRESENTATION_ITEM('self')
+    STYLED_ITEM('',(#4),#4));
+ENDSEC;
+END-ISO-10303-21;

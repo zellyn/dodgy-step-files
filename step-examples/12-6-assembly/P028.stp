@@ -1,0 +1,83 @@
+ISO-10303-21;
+/*
+ * P028 — Empty/null shape entries in OCAF document corrupt writer
+ * Defect (FreeCAD #18056, #18096, #14567, #17677; FreeCAD itself):
+ *   When OCAF document has labels with null TopoDS_Shape (Joints, Variables,
+ *   Constraints, Configurations, LinkGroup), STEPCAFControl_Writer::writeColors
+ *   segfaults; output STEP (if any) is partial.
+ * Reproducer (mini): assembly with NAUO children whose related
+ *   PRODUCT_DEFINITION has NO SHAPE_DEFINITION_REPRESENTATION, and whose name
+ *   indicates non-shape OCAF labels (Joint, Variable, Constraint, Config,
+ *   LinkGroup). On the writer side these become null TopoDS_Shape entries.
+ * Expected kernel: skip null-shape labels with warning rather than crash.
+ *
+ * NOTE: file is well-formed but DELIBERATELY OMITS the SDR for the non-shape
+ *   labels — that's the mini-reproducer of "shape is null".
+ */
+HEADER;
+FILE_DESCRIPTION(('P028 NAUO children for non-shape labels (Joint/Variable/Constraint/Config/LinkGroup)'),'2;1');
+FILE_NAME('P028.stp','2026-04-26T00:00:00',('catalog'),('cad'),'manual','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#10 = APPLICATION_CONTEXT('automotive design');
+#11 = APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2001,#10);
+#12 = PRODUCT_CONTEXT('',#10,'mechanical');
+#13 = PRODUCT_DEFINITION_CONTEXT('part definition',#10,'design');
+#20 = PRODUCT('P028_ASSY','OCAF doc with null-shape labels','',(#12));
+#21 = PRODUCT_DEFINITION_FORMATION('','',#20);
+#22 = PRODUCT_DEFINITION('design','',#21,#13);
+#23 = PRODUCT_DEFINITION_SHAPE('','',#22);
+/* normal shape child */
+#30 = PRODUCT('REAL_BODY','has geometry','',(#12));
+#31 = PRODUCT_DEFINITION_FORMATION('','',#30);
+#32 = PRODUCT_DEFINITION('design','',#31,#13);
+#33 = PRODUCT_DEFINITION_SHAPE('','',#32);
+/* DEFECT family: products that exist in OCAF as labels but have no
+   TopoDS_Shape — emitted as PRODUCT/PD without SDR. */
+#34 = PRODUCT('Joint_Hinge1','OCAF label: Joint','',(#12));
+#35 = PRODUCT_DEFINITION_FORMATION('','',#34);
+#36 = PRODUCT_DEFINITION('design','',#35,#13);
+#37 = PRODUCT_DEFINITION_SHAPE('','',#36);
+#38 = PRODUCT('Variable_Length','OCAF label: Variable','',(#12));
+#39 = PRODUCT_DEFINITION_FORMATION('','',#38);
+#41 = PRODUCT_DEFINITION('design','',#39,#13);
+#42 = PRODUCT_DEFINITION_SHAPE('','',#41);
+#43 = PRODUCT('Constraint_Mate1','OCAF label: Constraint','',(#12));
+#44 = PRODUCT_DEFINITION_FORMATION('','',#43);
+#45 = PRODUCT_DEFINITION('design','',#44,#13);
+#46 = PRODUCT_DEFINITION_SHAPE('','',#45);
+#47 = PRODUCT('Configuration_Default','OCAF label: Config','',(#12));
+#48 = PRODUCT_DEFINITION_FORMATION('','',#47);
+#49 = PRODUCT_DEFINITION('design','',#48,#13);
+#90 = PRODUCT_DEFINITION_SHAPE('','',#49);
+#91 = PRODUCT('LinkGroup_LG01','OCAF label: LinkGroup','',(#12));
+#92 = PRODUCT_DEFINITION_FORMATION('','',#91);
+#93 = PRODUCT_DEFINITION('design','',#92,#13);
+#94 = PRODUCT_DEFINITION_SHAPE('','',#93);
+#100 = NEXT_ASSEMBLY_USAGE_OCCURRENCE('1','REAL_BODY_INST','',#22,#32,$);
+#101 = NEXT_ASSEMBLY_USAGE_OCCURRENCE('2','Joint_Hinge1_INST','',#22,#36,$);
+#102 = NEXT_ASSEMBLY_USAGE_OCCURRENCE('3','Variable_Length_INST','',#22,#41,$);
+#103 = NEXT_ASSEMBLY_USAGE_OCCURRENCE('4','Constraint_Mate1_INST','',#22,#45,$);
+#104 = NEXT_ASSEMBLY_USAGE_OCCURRENCE('5','Configuration_Default_INST','',#22,#49,$);
+#105 = NEXT_ASSEMBLY_USAGE_OCCURRENCE('6','LinkGroup_LG01_INST','',#22,#93,$);
+#50 = ( LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT(.MILLI.,.METRE.) );
+#51 = ( NAMED_UNIT(*) PLANE_ANGLE_UNIT() SI_UNIT($,.RADIAN.) );
+#52 = ( NAMED_UNIT(*) SI_UNIT($,.STERADIAN.) SOLID_ANGLE_UNIT() );
+#53 = UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#50,'distance_accuracy_value','');
+#54 = ( GEOMETRIC_REPRESENTATION_CONTEXT(3) GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#53))
+        GLOBAL_UNIT_ASSIGNED_CONTEXT((#50,#51,#52)) REPRESENTATION_CONTEXT('','3D') );
+/* SDR exists ONLY for the real body — others have null TopoDS_Shape */
+#60 = CARTESIAN_POINT('',(0.0,0.0,0.0));
+#61 = DIRECTION('',(0.0,0.0,1.0));
+#62 = DIRECTION('',(1.0,0.0,0.0));
+#63 = AXIS2_PLACEMENT_3D('real_origin',#60,#61,#62);
+#64 = SHAPE_REPRESENTATION('real_rep',(#63),#54);
+#65 = SHAPE_DEFINITION_REPRESENTATION(#33,#64);
+#66 = REPRESENTATION_MAP(#63,#64);
+#67 = MAPPED_ITEM('real_inst',#66,#63);
+#80 = AXIS2_PLACEMENT_3D('assy_origin',#60,#61,#62);
+#81 = SHAPE_REPRESENTATION('assy_rep',(#80,#67),#54);
+#82 = SHAPE_DEFINITION_REPRESENTATION(#23,#81);
+ENDSEC;
+END-ISO-10303-21;

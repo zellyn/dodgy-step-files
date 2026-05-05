@@ -1,0 +1,25 @@
+ISO-10303-21;
+/* M181 - AP238 WORKPIECE_COMPLETE_FOR_NC missing required clamping references.
+ * Defect: a WORKPIECE_COMPLETE_FOR_NC entity is declared with no
+ * clamping_position references. AP238 requires that workpieces be tied
+ * to their fixturing for collision-checking; an unfixed workpiece
+ * cannot be safely machined. The controller has nothing to enforce
+ * keep-out zones against. */
+HEADER;
+FILE_DESCRIPTION(('M181 test case','AP238 workpiece-complete missing clamping refs'),'2;1');
+FILE_NAME('M181.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AP238_STEP_NC_MIM { 1 0 10303 238 1 0 0 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('numerical_control_machining');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
+  'numerical_control_machining',2007,#1);
+#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10))
+     REPRESENTATION_CONTEXT('nc','3D'));
+/* Defect: WORKPIECE_COMPLETE_FOR_NC declared with empty clamping list. */
+#400=WORKPIECE_COMPLETE_FOR_NC('finished_part',$,$,$,$,$,$,(),$);
+#200=WORKPLAN('main',(),$,$,$);
+ENDSEC;
+END-ISO-10303-21;

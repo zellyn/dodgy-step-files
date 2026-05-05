@@ -1,0 +1,29 @@
+ISO-10303-21;
+/* M179 - AP238 TOUCH_PROBING tolerance smaller than probe-stylus diameter.
+ * Defect: a TOUCH_PROBING op declares a measurement tolerance of 0.005
+ * mm while the touch probe's stylus tip ball diameter is 4.0 mm. The
+ * stylus radius compensation cannot resolve features below the tip
+ * radius - the declared tolerance is fundamentally unattainable with
+ * this probe. */
+HEADER;
+FILE_DESCRIPTION(('M179 test case','AP238 touch probing tolerance below stylus radius'),'2;1');
+FILE_NAME('M179.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AP238_STEP_NC_MIM { 1 0 10303 238 1 0 0 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('numerical_control_machining');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
+  'numerical_control_machining',2007,#1);
+#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10))
+     REPRESENTATION_CONTEXT('nc','3D'));
+/* Probe stylus tip ball diameter: 4.0 mm. */
+#90=TOUCH_PROBE('renishaw_4mm',$,$,$,
+  MEASURE_WITH_UNIT(POSITIVE_LENGTH_MEASURE(4.0),#10));
+/* Defect: tolerance 0.005 mm << stylus radius 2.0 mm. */
+#80=MEASURE_WITH_UNIT(POSITIVE_LENGTH_MEASURE(0.005),#10);
+#100=TOUCH_PROBING('precise_probe_op',$,$,$,$,#90,#80);
+#200=WORKPLAN('main',(#100),$,$,$);
+ENDSEC;
+END-ISO-10303-21;

@@ -1,0 +1,24 @@
+ISO-10303-21;
+/* Ad117 - STEP reader crashes on STYLED_ITEM with dangling style reference
+ * Defect: STYLED_ITEM references entity #999 which is not defined in the data section. */
+HEADER;
+FILE_DESCRIPTION(('Ad117 - STYLED_ITEM with dangling style reference'),'2;1');
+FILE_NAME('Ad117.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#11=DIRECTION('',(0.0,0.0,1.0));
+#12=DIRECTION('',(1.0,0.0,0.0));
+#13=AXIS2_PLACEMENT_3D('',#10,#11,#12);
+#20=VERTEX_POINT('',#10);
+#30=CLOSED_SHELL('shell',(#40));
+#40=ADVANCED_FACE('face',(),#41,.T.);
+#41=PLANE('',#13);
+#50=MANIFOLD_SOLID_BREP('solid',#30);
+/* Defect: STYLED_ITEM references undefined entity #999. */
+#100=STYLED_ITEM('dangling_style',(#999),#50);
+ENDSEC;
+END-ISO-10303-21;

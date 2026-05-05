@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Lh045 — Cross-section reference to undefined section name</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.1b Header &amp; instance-numbering</a> <span class="sep">/</span> <span class="current">Lh045</span>
+</nav>
+<header class="title-bar">
+<h1>Lh045 <span class="sep">—</span> <span class="entry-title">Cross-section reference to undefined section name</span></h1>
+<p class="category">§12.1b header/numbering (sub-class: multi-section)</p>
+<p class="tag-pills">
+<a class="tag tag-spec-violation" href="../by-tag/spec-violation/index.html">spec-violation</a>
+<a class="tag tag-syntax" href="../by-tag/syntax/index.html">syntax</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-1b-header/Lh045.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-1b-header/Lh045.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>16-iso-spec ISO 10303-21 Ed.3 §7 (cross-section reference resolution)</li>
+</ul></section>
+<section><h2>Description</h2>
+<p>Edition-3 cross-section references `@name#NNN` resolve against the section whose `DATA(&#x27;name&#x27;)` declaration matches `name`. A producer that misspells the section name in a cross-reference (`@geomtry#5` for `@geometry#5`), or refers to a section that was renamed during refactoring, or copies records from another file without updating the section name, leaves a dangling reference. Receivers diverge: strict ones reject, lenient ones substitute null and load the rest, some search alternative sections in declaration order and silently bind to a wrong instance.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>DATA section `&#x27;geometry&#x27;` defines `#10=CARTESIAN_POINT(&#x27;p&#x27;,(0.0,0.0,0.0))`; DATA section `&#x27;pmi&#x27;` defines an `AXIS2_PLACEMENT_3D` whose location is `@geomtry#10` (typo) — section `&#x27;geomtry&#x27;` does not exist.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>reject the unresolved cross-reference with a precise diagnostic naming the missing section and the referencing instance; never silently bind to a same-named instance in a different section.</p></section>
+<section><h2>Notes</h2>
+<p>**See also**: Lh033, Lh039. Synonyms: &quot;misspelled section name in cross-reference&quot;, &quot;@geomtry instead of @geometry&quot;, &quot;STEP @section name typo&quot;, &quot;renamed section reference broken&quot;, &quot;cross-reference to non-existent section&quot;.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=reject/reject gmsh=reject ifc=schema_n/a</code></p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>contains(b&quot;DATA(&#x27;geometry&#x27;&quot;) and contains(b&quot;DATA(&#x27;pmi&#x27;&quot;) and contains(b&#x27;@geomtry#&#x27;)</code></li>
+<li><code>contains(b&#x27;@geomtry&#x27;)</code></li>
+</ul></section>
+<section><h2>Cross-references</h2>
+<p><a href="Lh033.html">Lh033</a>, <a href="Lh039.html">Lh039</a></p>
+</section>
+<section><h2>Live oracle output</h2>
+<table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
+<tr><td><code>occt_heal_on</code></td><td><code>reject</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>reject</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>reject</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>reject</code></td></tr>
+<tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>reject(E_NO_DATA)</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>step_read_failed</code></td></tr>
+</tbody></table>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* Lh045 - Cross-section reference to an undefined section name
+<span class="lineno">3</span> * Defect: section &#x27;pmi&#x27; references <mark>@geomtry</mark>#10 (typo) when only
+<span class="lineno">4</span> * &#x27;geometry&#x27; exists. Strict readers reject; lenient ones silently
+<span class="lineno">5</span> * substitute null or bind to a wrong same-named instance. */
+<span class="lineno">6</span>HEADER;
+<span class="lineno">7</span>FILE_DESCRIPTION((&#x27;Lh045 - cross-section ref to undefined section name&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">8</span>FILE_NAME(&#x27;Lh045.stp&#x27;,&#x27;2026-04-30T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">9</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
+<span class="lineno">10</span>ENDSEC;
+<span class="lineno">11</span>DATA(&#x27;geometry&#x27;);
+<span class="lineno">12</span>#1=APPLICATION_CONTEXT(&#x27;automotive_design&#x27;);
+<span class="lineno">13</span>#10=CARTESIAN_POINT(&#x27;p&#x27;,(0.0,0.0,0.0));
+<span class="lineno">14</span>#11=DIRECTION(&#x27;z&#x27;,(0.0,0.0,1.0));
+<span class="lineno">15</span>#12=DIRECTION(&#x27;x&#x27;,(1.0,0.0,0.0));
+<span class="lineno">16</span>ENDSEC;
+<span class="lineno">17</span>DATA(&#x27;pmi&#x27;);
+<span class="lineno">18</span>/* Defect: section &#x27;geomtry&#x27; (typo) does not exist anywhere. */
+<span class="lineno">19</span>#5=AXIS2_PLACEMENT_3D(&#x27;p&#x27;,<mark>@geomtry</mark>#10,@geometry#11,@geometry#12);
+<span class="lineno">20</span>ENDSEC;
+<span class="lineno">21</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Lh044.html">&larr; Lh044</a> <a class="up" href="index.html">§12.1b Header &amp; instance-numbering</a> <a class="next" href="Lh046.html">Lh046 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

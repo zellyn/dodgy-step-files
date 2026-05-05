@@ -1,0 +1,43 @@
+ISO-10303-21;
+/* ============================================================
+   WARNING: THIS FILE IS INTENTIONALLY MALFORMED.
+   It exists ONLY for parser-robustness / fuzz-class testing.
+   DO NOT feed to a production translator without sandboxing.
+
+   Entry  : Ad004
+   Title  : Cyclic complex-entity reference graph causes
+            infinite recursion / stack exhaustion DoS.
+   Defect : Three cycle patterns are present in this fixture:
+              (1) Self-cycle: #1 references itself directly
+                  inside a complex (NAMED_UNIT / DERIVED_UNIT
+                  pattern matching OCCT G031).
+              (2) Two-node cycle: #2 -> #3 -> #2.
+              (3) Three-node cycle through SHAPE_REPRESENTATION
+                  / REPRESENTATION_RELATIONSHIP (G033 SRR).
+   Expected: Tarjan-style cycle detection during graph
+             traversal; iterative resolver; bounded recursion.
+   See also: Ad026, Ad052, Ad053, Ad085.
+   ============================================================ */
+HEADER;
+FILE_DESCRIPTION(('Ad004 cyclic complex-entity graph'),'2;1');
+FILE_NAME('Ad004.stp','2026-04-26T00:00:00',('synthetic'),('cad-research'),
+  'none','none','none');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+/* (1) self-cycle complex entity */
+#1=(NAMED_UNIT(*) DERIVED_UNIT_ELEMENT(#1, 1.0));
+
+/* (2) two-node cycle */
+#2=GROUP_ASSIGNMENT(#3);
+#3=GROUP_ASSIGNMENT(#2);
+
+/* (3) three-node cycle via representation_relationship */
+#10=REPRESENTATION_RELATIONSHIP('','',#11,#12);
+#11=SHAPE_REPRESENTATION('a',(#13),#20);
+#12=SHAPE_REPRESENTATION('b',(#13),#20);
+#13=REPRESENTATION_RELATIONSHIP('','',#11,#12);
+#20=AXIS2_PLACEMENT_3D('',#21,$,$);
+#21=CARTESIAN_POINT('',(0.,0.,0.));
+ENDSEC;
+END-ISO-10303-21;

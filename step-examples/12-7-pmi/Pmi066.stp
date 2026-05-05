@@ -1,0 +1,72 @@
+/* Pmi066 - Compound-feature semantics (HTC counterbore/countersink/counterdrill) per Hole RP
+   Defect: A counterbore hole - which the draft Hole Information
+   Recommended Practice would model as a single compound-hole feature
+   - is here emitted as multiple independent DIMENSIONAL_SIZE entries
+   with no compound-hole entity tying them together. The reader cannot
+   reconstruct the compound feature from the RP-prescribed entity
+   (an AP242e2+ explicit hole feature). The simplified form (stacked
+   dimensions) is used everywhere. (CAx-IF Round 56J §2.3.4.2;
+   PMI v4.1 §5.1.9). */
+ISO-10303-21;
+HEADER;
+FILE_DESCRIPTION(('Pmi066 - compound hole as stacked dims, no HTC entity',
+  'CAx-IF Rec.Pracs.---PMI Rep & Pres---v4.1'),'2;1');
+FILE_NAME('Pmi066.stp','2026-04-26T00:00:00',('catalog'),('cad'),
+  'manual','','');
+FILE_SCHEMA(('AP242_MANAGED_MODEL_BASED_3D_ENGINEERING_MIM_LF { 1 0 10303 442 1 1 4 }'));
+ENDSEC;
+DATA;
+#10 = APPLICATION_CONTEXT('managed model based 3d engineering');
+#11 = APPLICATION_PROTOCOL_DEFINITION('international standard',
+  'ap242_managed_model_based_3d_engineering',2020,#10);
+#12 = PRODUCT_CONTEXT('',#10,'mechanical');
+#13 = PRODUCT('Pmi066','HtcStackedDimsPart','',(#12));
+#14 = PRODUCT_DEFINITION_FORMATION('','',#13);
+#15 = PRODUCT_DEFINITION_CONTEXT('',#10,'design');
+#16 = PRODUCT_DEFINITION('','',#14,#15);
+#17 = PRODUCT_DEFINITION_SHAPE('','',#16);
+#20 = ( LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT(.MILLI.,.METRE.) );
+#22 = ( NAMED_UNIT(*) PLANE_ANGLE_UNIT() SI_UNIT($,.RADIAN.) );
+#23 = ( NAMED_UNIT(*) SI_UNIT($,.STERADIAN.) SOLID_ANGLE_UNIT() );
+#24 = UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#20,
+  'distance_accuracy_value','');
+#25 = ( GEOMETRIC_REPRESENTATION_CONTEXT(3)
+  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#24))
+  GLOBAL_UNIT_ASSIGNED_CONTEXT((#20,#22,#23))
+  REPRESENTATION_CONTEXT('','3D') );
+#30 = CARTESIAN_POINT('',(0.0,0.0,0.0));
+#31 = DIRECTION('',(0.0,0.0,1.0));
+#32 = DIRECTION('',(1.0,0.0,0.0));
+#33 = AXIS2_PLACEMENT_3D('',#30,#31,#32);
+/* Counterdrill simplified form: drill, counterbore, countersink, depth
+   - four separate dimensional_sizes, no compound-feature entity. */
+#40 = SHAPE_ASPECT('drill','drill segment',#17,.T.);
+#41 = SHAPE_ASPECT('cbore','counterbore segment',#17,.T.);
+#42 = SHAPE_ASPECT('csink','countersink segment',#17,.T.);
+#43 = SHAPE_ASPECT('drill_depth','drill depth',#17,.T.);
+#50 = DIMENSIONAL_SIZE(#40,'diameter');
+#51 = MEASURE_REPRESENTATION_ITEM('drill_dia',LENGTH_MEASURE(5.0),#20);
+#52 = SHAPE_DIMENSION_REPRESENTATION('',(#51),#25);
+#53 = DIMENSIONAL_SIZE(#41,'diameter');
+#54 = MEASURE_REPRESENTATION_ITEM('cbore_dia',LENGTH_MEASURE(10.0),#20);
+#55 = SHAPE_DIMENSION_REPRESENTATION('',(#54),#25);
+#56 = DIMENSIONAL_SIZE(#42,'angle');
+#57 = MEASURE_REPRESENTATION_ITEM('csink_angle',PLANE_ANGLE_MEASURE(1.5708),#22);
+#58 = SHAPE_DIMENSION_REPRESENTATION('',(#57),#25);
+#59 = DIMENSIONAL_SIZE(#43,'distance');
+#60 = MEASURE_REPRESENTATION_ITEM('drill_depth',LENGTH_MEASURE(20.0),#20);
+#61 = SHAPE_DIMENSION_REPRESENTATION('',(#60),#25);
+/* Defect: no AP242e2+ compound-hole entity (e.g. ROUND_HOLE_FEATURE
+   with counterbore_data) and no SHAPE_ASPECT_RELATIONSHIP linking
+   #40, #41, #42, #43 as one compound feature. */
+#70 = PLUS_MINUS_TOLERANCE(#71,#50);
+#71 = TOLERANCE_VALUE(#72,#73);
+#72 = LENGTH_MEASURE_WITH_UNIT(LENGTH_MEASURE(-0.05),#20);
+#73 = LENGTH_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.05),#20);
+#80 = DRAUGHTING_MODEL('Default',(),#25);
+#81 = PLANE('ann_plane',#33);
+#82 = ANNOTATION_PLANE('PMI',(),#81,());
+#90 = SHAPE_REPRESENTATION('',(#33),#25);
+#91 = SHAPE_DEFINITION_REPRESENTATION(#17,#90);
+ENDSEC;
+END-ISO-10303-21;

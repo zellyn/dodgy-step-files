@@ -1,0 +1,22 @@
+ISO-10303-21;
+/* Twi097 - Periodic-curve range adjustment loses arc orientation
+ * Defect: edge on a circle with parameter range t=5.5 to t=1.0 (long way around); range-validation flips arc */
+HEADER;
+FILE_DESCRIPTION(('Twi097 - Edge-projection-aux range computation loses precision on periodic curves','Periodic-curve range adjustment loses arc orientation'),'2;1');
+FILE_NAME('Twi097.stp','2026-04-30T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+#10=CARTESIAN_POINT('center',(0.0,0.0,0.0));
+#11=DIRECTION('',(0.0,0.0,1.0));#12=DIRECTION('',(1.0,0.0,0.0));
+#13=AXIS2_PLACEMENT_3D('',#10,#11,#12);
+#14=CIRCLE('',#13,1.0);
+#15=CARTESIAN_POINT('start',(0.7080734182735711,-0.7061278960829493,0.0));
+#16=VERTEX_POINT('',#15);
+#17=CARTESIAN_POINT('end',(0.5403023058681398,0.8414709848078965,0.0));
+#18=VERTEX_POINT('',#17);
+#19=EDGE_CURVE('long_way_around',#16,#18,#14,.T.);
+ENDSEC;
+END-ISO-10303-21;

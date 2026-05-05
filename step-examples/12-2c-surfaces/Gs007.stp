@@ -1,0 +1,48 @@
+ISO-10303-21;
+/* Gs007 - Spatially-shifted contour on periodic surface (whole wire off by period)
+ * Defect: All pcurves on a periodic surface are shifted by integer multiples of the
+ * surface period. UV image is correctly shaped but offset by 2*pi in U from where it
+ * should be. ShapeFix_Wire::FixShifted is required to re-align. */
+HEADER;
+FILE_DESCRIPTION(('Gs007 test case','Whole wire shifted by surface period'),'2;1');
+FILE_NAME('Gs007.stp','2026-04-26T00:00:00',(''),(''),'auto-generated','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#11=DIRECTION('',(0.0,0.0,1.0));
+#12=DIRECTION('',(1.0,0.0,0.0));
+#13=AXIS2_PLACEMENT_3D('',#10,#11,#12);
+/* Cylinder, period 2*pi in U */
+#20=CYLINDRICAL_SURFACE('',#13,5.0);
+/* 3D vertex points - canonical position on cylinder */
+#30=CARTESIAN_POINT('',(5.0,0.0,0.0));
+#31=VERTEX_POINT('',#30);
+#32=CARTESIAN_POINT('',(5.0,0.0,10.0));
+#33=VERTEX_POINT('',#32);
+/* 3D curve along generator */
+#34=DIRECTION('',(0.0,0.0,1.0));
+#35=VECTOR('',#34,1.0);
+#36=LINE('',#30,#35);
+/* Defect: pcurve placed at U=4*pi, V=0..10 instead of canonical U=0, V=0..10 */
+/* (parameter-space line in (U,V) plane — using LINE in 2D space) */
+#40=CARTESIAN_POINT('',(12.5663706144,0.0));
+#41=DIRECTION('',(0.0,1.0));
+#42=VECTOR('',#41,1.0);
+#43=LINE('',#40,#42);
+/* PCURVE wraps the 2D line tied to the surface */
+#44=DEFINITIONAL_REPRESENTATION('',(#43),#45);
+#45=( GEOMETRIC_REPRESENTATION_CONTEXT(2)
+      PARAMETRIC_REPRESENTATION_CONTEXT()
+      REPRESENTATION_CONTEXT('','') );
+#46=PCURVE('',#20,#44);
+#50=SURFACE_CURVE('',#36,(#46),.PCURVE_S1.);
+#60=EDGE_CURVE('',#31,#33,#50,.T.);
+#61=ORIENTED_EDGE('',*,*,#60,.T.);
+#62=EDGE_LOOP('',(#61));
+#63=FACE_OUTER_BOUND('',#62,.T.);
+#64=ADVANCED_FACE('',(#63),#20,.T.);
+ENDSEC;
+END-ISO-10303-21;

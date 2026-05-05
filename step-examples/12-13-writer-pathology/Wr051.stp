@@ -1,0 +1,54 @@
+/* Wr051 - step-g BRep imports cleanly but g-stl tessellation produces zero triangles silently
+   Defect: a STEP file imports cleanly via BRL-CAD step-g (the .g file
+   contains a Brep_2.s solid), but the downstream g-stl tessellator
+   prints "ERROR(Brep_2.s): tessellation failure" and writes "0 triangles
+   written" - the resulting .stl file is empty. The two halves of the
+   pipeline disagree on whether the model is "good": step-g believes it
+   converted the geometry; g-stl cannot triangulate it. The user-facing
+   symptom is an empty .stl with no diagnostic at the file-format
+   interface; the failure happens deep in PullbackCurve / SurfaceTree.
+   Reproduce with a file featuring a sliver face on a B-spline (a face
+   whose pcurves and 3D curves agree at the vertices but drift to ~1e-3
+   in the interior - the BRL-CAD m_tolerance threshold) - step-g
+   accepts it, g-stl drops it.
+   Sources: BRL-CAD users mailing list 2017 (Filip Binkiewicz):
+   "ERROR(Brep_2.s): tessellation failure" + "0 triangles written";
+   step-g side accepts the same file. */
+ISO-10303-21;
+HEADER;
+FILE_DESCRIPTION(
+  ('Wr051 - sliver-face BRep tessellates to zero triangles silently'),
+  '2;1');
+FILE_NAME('Wr051.stp','2026-05-02T00:00:00',('cad-research-suite'),(''),
+  'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+/* A sliver Bezier patch: 4-corner control net but two sides collapse to
+   near-coincident points; the patch has positive area at the 4 corners
+   but interior degenerate parameterisation. step-g loads it; g-stl's
+   PullbackCurve fails to sample it and emits 0 triangles. */
+#10=CARTESIAN_POINT('p00',(0.0,0.0,0.0));
+#11=CARTESIAN_POINT('p01',(0.0,0.000001,0.0));
+#12=CARTESIAN_POINT('p02',(0.0,0.000002,0.0));
+#13=CARTESIAN_POINT('p03',(0.0,0.000003,0.0));
+#20=CARTESIAN_POINT('p10',(0.333,0.0,0.0));
+#21=CARTESIAN_POINT('p11',(0.333,0.000001,0.0));
+#22=CARTESIAN_POINT('p12',(0.333,0.000002,0.0));
+#23=CARTESIAN_POINT('p13',(0.333,0.000003,0.0));
+#30=CARTESIAN_POINT('p20',(0.667,0.0,0.0));
+#31=CARTESIAN_POINT('p21',(0.667,0.000001,0.0));
+#32=CARTESIAN_POINT('p22',(0.667,0.000002,0.0));
+#33=CARTESIAN_POINT('p23',(0.667,0.000003,0.0));
+#40=CARTESIAN_POINT('p30',(1.0,0.0,0.0));
+#41=CARTESIAN_POINT('p31',(1.0,0.000001,0.0));
+#42=CARTESIAN_POINT('p32',(1.0,0.000002,0.0));
+#43=CARTESIAN_POINT('p33',(1.0,0.000003,0.0));
+/* Defect: 4x4 Bezier with a v-extent of 3 micrometres - well below
+   step-g's hard-coded 1e-3 tolerance.  Loaded as a face, tessellated
+   to zero triangles by g-stl. */
+#100=BEZIER_SURFACE('sliver',3,3,
+  ((#10,#11,#12,#13),(#20,#21,#22,#23),(#30,#31,#32,#33),(#40,#41,#42,#43)),
+  .UNSPECIFIED.,.F.,.F.,.F.);
+ENDSEC;
+END-ISO-10303-21;

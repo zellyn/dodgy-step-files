@@ -1,0 +1,33 @@
+ISO-10303-21;
+/* M103 - AP238 trajectory passes through workpiece body before the cut.
+ * Defect: the first segment of a TRAJECTORY runs from the tool-change
+ * height (0,0,200) straight to the feature start (50,30,-5), passing
+ * through the workpiece body which occupies (0..100,0..100,0..50).
+ * The implicit retract was omitted. */
+HEADER;
+FILE_DESCRIPTION(('M103 test case','AP238 approach path collides with workpiece'),'2;1');
+FILE_NAME('M103.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AP238_STEP_NC_MIM { 1 0 10303 238 1 0 0 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('numerical_control_machining');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
+  'numerical_control_machining',2007,#1);
+#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10))
+     REPRESENTATION_CONTEXT('nc','3D'));
+/* Workpiece envelope (0..100, 0..100, 0..50) - represented schematically */
+#400=CARTESIAN_POINT('wp_min',(0.0,0.0,0.0));
+#401=CARTESIAN_POINT('wp_max',(100.0,100.0,50.0));
+/* Defect: tool-change point (0,0,200) -> feature start (50,30,-5).
+   The straight line passes through (50,30,~0) which is inside the
+   workpiece. */
+#500=CARTESIAN_POINT('toolchange',(0.0,0.0,200.0));
+#501=CARTESIAN_POINT('feature_start',(50.0,30.0,-5.0));
+#502=POLYLINE('approach',(#500,#501));
+#510=COMPOSITE_CURVE_SEGMENT(.CONTINUOUS.,.T.,#502);
+#520=COMPOSITE_CURVE('approach_path',(#510),.F.);
+#600=TRAJECTORY('approach_through_part',$,$,$,#520);
+ENDSEC;
+END-ISO-10303-21;

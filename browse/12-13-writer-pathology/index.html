@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>§12.13 Writer pathology</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="section">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <span class="current">§12.13 Writer pathology</span>
+</nav>
+<header class="title-bar">
+<h1>§12.13 Writer pathology</h1>
+<p class="blurb">Writer-pathology defects: kernel STEP-writer round-trip failures, malformed output, and schema-non-conformance on emit.</p>
+<p class="meta">51 entries</p>
+</header>
+<main>
+<table class="entries"><thead><tr><th>ID</th><th>Title</th><th>Provenance</th><th>Expected validation</th></tr></thead><tbody>
+<tr><td><a href="Wr001.html"><code>Wr001</code></a></td><td>Trailing whitespace on every record line</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Wr002.html"><code>Wr002</code></a></td><td>Mixed CRLF and LF line endings within one file</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Wr003.html"><code>Wr003</code></a></td><td>Final `END-ISO-10303-21;` without trailing newline</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Wr004.html"><code>Wr004</code></a></td><td>Tab characters used for line continuation indentation inconsistently</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Wr005.html"><code>Wr005</code></a></td><td>Floating-point format inconsistency within one file</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Wr006.html"><code>Wr006</code></a></td><td>Floating-point precision degradation on round-trip</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Wr007.html"><code>Wr007</code></a></td><td>Locale-sensitive decimal separator emitted (comma instead of period)</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Wr008.html"><code>Wr008</code></a></td><td>Excessive trailing zeros in numeric output</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Wr009.html"><code>Wr009</code></a></td><td>Spurious `$` for required parameter (writer omits required value)</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Wr010.html"><code>Wr010</code></a></td><td>Re-emitted `*` (overridden) where schema does not allow it</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Wr011.html"><code>Wr011</code></a></td><td>Empty parameter list `()` where the schema requires at least one element</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Wr012.html"><code>Wr012</code></a></td><td>Random `#N` numbering with no monotonic structure</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Wr013.html"><code>Wr013</code></a></td><td>Forward references where sequential numbering was expected</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Wr014.html"><code>Wr014</code></a></td><td>Sparse instance numbering with huge gaps</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Wr015.html"><code>Wr015</code></a></td><td>Duplicate `#N` instance numbers in the same DATA section</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Wr016.html"><code>Wr016</code></a></td><td>Re-output of intermediate construction entities (orphan geometry)</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Wr017.html"><code>Wr017</code></a></td><td>Tessellation re-emitted from B-rep input (silent precision loss)</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Wr018.html"><code>Wr018</code></a></td><td>Empty `SHAPE_DEFINITION_REPRESENTATION` chain (placeholder structure with no geometry)</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Wr019.html"><code>Wr019</code></a></td><td>Re-export drops face and solid colour assignments</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Wr020.html"><code>Wr020</code></a></td><td>Re-export drops feature labels and product names</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Wr021.html"><code>Wr021</code></a></td><td>PMI annotations dropped on re-export</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Wr022.html"><code>Wr022</code></a></td><td>Saved-view / camera metadata lost on re-export</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Wr023.html"><code>Wr023</code></a></td><td>Validation properties (volume/area/centroid) dropped on re-export</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Wr024.html"><code>Wr024</code></a></td><td>NAUO assembly-tree flattened on re-export</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Wr025.html"><code>Wr025</code></a></td><td>NAUO chain re-rooted incorrectly (component becomes top)</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Wr026.html"><code>Wr026</code></a></td><td>Vendor-specific FILE_DESCRIPTION strings that downstream readers special-case</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Wr027.html"><code>Wr027</code></a></td><td>Unit context emitted twice with different units (HEADER vs DATA mismatch)</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Wr028.html"><code>Wr028</code></a></td><td>`FILE_NAME.author` and `originating_system` fields blank or auto-filled with placeholder</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Wr029.html"><code>Wr029</code></a></td><td>`FILE_DESCRIPTION` strings containing newlines or unescaped control characters</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Wr030.html"><code>Wr030</code></a></td><td>`FILE_SCHEMA` listing schemas the file does not actually use</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Wr031.html"><code>Wr031</code></a></td><td>Schema downgrade on export (AP242 input emitted as AP203, entities lost)</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Wr032.html"><code>Wr032</code></a></td><td>Schema upgrade on export (AP203 input emitted as AP242 with synthesised stubs)</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Wr033.html"><code>Wr033</code></a></td><td>`FILE_SCHEMA` declares schema version that does not exist</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Wr034.html"><code>Wr034</code></a></td><td>Coordinate-system axis swap without notification (Y-up vs Z-up)</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Wr035.html"><code>Wr035</code></a></td><td>Coordinate scale-factor applied twice (model 1000× larger or smaller than expected)</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Wr036.html"><code>Wr036</code></a></td><td>Re-export inverts solid orientation (inside becomes outside)</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Wr037.html"><code>Wr037</code></a></td><td>Loss of seam-edge marking on closed surfaces (cylinder seam emitted as ordinary edge)</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Wr038.html"><code>Wr038</code></a></td><td>Re-emitted file uses entity-numbering pattern that breaks round-trip equivalence</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Wr039.html"><code>Wr039</code></a></td><td>Re-export re-orders attributes within complex (subtype-stack) records</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Wr040.html"><code>Wr040</code></a></td><td>Empty `name` strings on every entity (writer pre-fills `&#x27;&#x27;` instead of omitting)</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Wr041.html"><code>Wr041</code></a></td><td>Writer emits `.TRUE.` / `.FALSE.` instead of canonical `.T.` / `.F.`</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Wr042.html"><code>Wr042</code></a></td><td>Inconsistent end-of-record terminator: `;\n` and `;\r\n` mixed in same file</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=process_signal</code></td></tr>
+<tr><td><a href="Wr043.html"><code>Wr043</code></a></td><td>Writer emits raw UTF-8 bytes in string literal where Ed.2 mandates `\X\` / `\X2\` escape</td><td><code>requires-sibling-pair</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Wr044.html"><code>Wr044</code></a></td><td>Inch unit declared in `LENGTH_UNIT` context but coordinates emitted in millimetres (no conversion)</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Wr045.html"><code>Wr045</code></a></td><td>Unit name in `LENGTH_UNIT` changed without rescaling coordinate values</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Wr046.html"><code>Wr046</code></a></td><td>Body Placement (rotation/translation) not applied during STEP export of a single part</td><td><code>bytes-sufficient</code></td><td><code>occt=shape(1)/shape(1) gmsh=shape(2) ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Wr047.html"><code>Wr047</code></a></td><td>STEP import regressed by `BOPAlog_AlertBadPositioning` warnings (writer emits CSG-residual positions)</td><td><code>bytes-sufficient</code></td><td><code>occt=shape(1)/shape(1) gmsh=shape(4) ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Wr048.html"><code>Wr048</code></a></td><td>Boolean-result body crashes STEP writer in `libTKXDESTEP` color-attribution pass</td><td><code>bytes-sufficient</code></td><td><code>occt=shape(1)/shape(1) gmsh=shape(2) ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Wr049.html"><code>Wr049</code></a></td><td>Subtractive pipe at right-angle joints emits hidden sphere of material in joint</td><td><code>bytes-sufficient</code></td><td><code>occt=shape(1)/shape(1) gmsh=shape(8) ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Wr050.html"><code>Wr050</code></a></td><td>Geometry coordinate values doubled on export (writer applies scale and unit-conversion both)</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Wr051.html"><code>Wr051</code></a></td><td>step-g imports cleanly but downstream `g-stl` tessellator silently writes zero triangles</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+</tbody></table>
+</main>
+<footer>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

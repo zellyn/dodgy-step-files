@@ -1,0 +1,40 @@
+ISO-10303-21;
+/* Gp034 - Composite/complex curve segments not connected
+ * Defect: a COMPOSITE_CURVE made of multiple segments has a 3D gap
+ * between segment N's end and segment N+1's start, exceeding the
+ * caller's connectivity precision. */
+HEADER;
+FILE_DESCRIPTION(('Gp034 test case','Composite/complex curve segments not connected'),'2;1');
+FILE_NAME('Gp034.stp','2026-04-26T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+/* COMPOSITE_CURVE with two segments separated by 5e-3 in 3D */
+#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#11=DIRECTION('',(0.0,0.0,1.0));
+#12=DIRECTION('',(1.0,0.0,0.0));
+#13=AXIS2_PLACEMENT_3D('',#10,#11,#12);
+#14=PLANE('',#13);
+#20=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#21=VERTEX_POINT('',#20);
+#22=CARTESIAN_POINT('',(5.0,0.0,0.0));
+#23=VERTEX_POINT('',#22);
+#24=CARTESIAN_POINT('',(5.005,0.0,0.0));
+#25=VERTEX_POINT('',#24);
+#26=CARTESIAN_POINT('',(10.0,0.0,0.0));
+#27=VERTEX_POINT('',#26);
+#30=DIRECTION('',(1.0,0.0,0.0));
+#31=VECTOR('',#30,1.0);
+#32=LINE('',#20,#31);
+#33=LINE('',#24,#31);
+#50=EDGE_CURVE('',#21,#23,#32,.T.);
+#51=EDGE_CURVE('',#25,#27,#33,.T.);
+#60=ORIENTED_EDGE('',*,*,#50,.T.);
+#61=ORIENTED_EDGE('',*,*,#51,.T.);
+#70=EDGE_LOOP('',(#60,#61));
+#71=FACE_OUTER_BOUND('',#70,.T.);
+#72=ADVANCED_FACE('',(#71),#14,.T.);
+ENDSEC;
+END-ISO-10303-21;

@@ -1,0 +1,46 @@
+ISO-10303-21;
+/* Pmi071 - PROJECTED_ZONE_DEFINITION with zero offset
+ * Defect: A PROJECTED_ZONE_DEFINITION on a tolerance frame
+ * carries 'projection_length' (positive offset above the
+ * surface). Edition-2 / AP242 ED2 examples use values like
+ * 12mm. A zero offset is geometrically degenerate (the projected
+ * zone collapses onto the original feature, identical to having
+ * no projected zone at all). Distinct from Pmi030 (negative)
+ * and Pmi031 (non-plane projection_end). */
+HEADER;
+FILE_DESCRIPTION(('Pmi071 - PROJECTED_ZONE_DEFINITION zero offset'),'2;1');
+FILE_NAME('Pmi071.stp','2026-04-26T00:00:00',(''),(''),
+  'cad-research-suite','','');
+FILE_SCHEMA(('AP242_MANAGED_MODEL_BASED_3D_ENGINEERING_MIM_LF { 1 0 10303 442 1 1 4 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('managed model based 3d engineering');
+#2=PRODUCT_CONTEXT('',#1,'mechanical');
+#3=PRODUCT('Pmi071','ProjZeroPart','',(#2));
+#4=PRODUCT_DEFINITION_FORMATION('','',#3);
+#5=PRODUCT_DEFINITION_CONTEXT('',#1,'design');
+#6=PRODUCT_DEFINITION('','',#4,#5);
+#7=PRODUCT_DEFINITION_SHAPE('','',#6);
+#20=( LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT(.MILLI.,.METRE.) );
+#22=( NAMED_UNIT(*) PLANE_ANGLE_UNIT() SI_UNIT($,.RADIAN.) );
+#23=( NAMED_UNIT(*) SI_UNIT($,.STERADIAN.) SOLID_ANGLE_UNIT() );
+#24=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#20,
+  'distance_accuracy_value','');
+#25=( GEOMETRIC_REPRESENTATION_CONTEXT(3)
+  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#24))
+  GLOBAL_UNIT_ASSIGNED_CONTEXT((#20,#22,#23))
+  REPRESENTATION_CONTEXT('','3D') );
+#30=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#31=DIRECTION('',(0.0,0.0,1.0));
+#32=DIRECTION('',(1.0,0.0,0.0));
+#33=AXIS2_PLACEMENT_3D('',#30,#31,#32);
+#34=PLANE('proj_end',#33);
+#40=SHAPE_ASPECT('faceA','',#7,.T.);
+#50=LENGTH_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.05),#20);
+#60=GEOMETRIC_TOLERANCE_WITH_DEFINED_UNIT('','',#50,#40,#50);
+/* Defect: projection_length = 0.0 (zero offset) */
+#70=PROJECTED_ZONE_DEFINITION(#60,#34,LENGTH_MEASURE(0.0));
+#90=SHAPE_REPRESENTATION('',(#33),#25);
+#91=SHAPE_DEFINITION_REPRESENTATION(#7,#90);
+ENDSEC;
+END-ISO-10303-21;

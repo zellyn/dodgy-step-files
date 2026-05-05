@@ -1,0 +1,26 @@
+/* Wr035 - Coordinate scale-factor applied twice - model 1000x larger or smaller than expected */
+ISO-10303-21;
+HEADER;
+FILE_DESCRIPTION(('Wr035 - double-applied unit conversion'),'2;1');
+FILE_NAME('Wr035.stp','2026-04-30T00:00:00',(''),(''),
+  'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('mechanical design');
+/* Wr035: input was a 1.0-metre cube. Writer multiplied coordinates by
+   1000 (m -> mm) AND declared the unit as MILLI METRE. Result: 1000mm
+   coordinates declared as mm, plus the receiver's own m -> mm scaling.
+   The cube imports as 1km on a side */
+#10=CARTESIAN_POINT('p1',(0.0,0.0,0.0));
+#11=CARTESIAN_POINT('p2',(1000.0,0.0,0.0));
+#12=CARTESIAN_POINT('p3',(1000.0,1000.0,0.0));
+#13=CARTESIAN_POINT('p4',(0.0,1000.0,0.0));
+#14=CARTESIAN_POINT('p5',(0.0,0.0,1000.0));
+#15=CARTESIAN_POINT('p6',(1000.0,0.0,1000.0));
+#16=DIRECTION('z',(0.0,0.0,1.0));
+#17=DIRECTION('x',(1.0,0.0,0.0));
+#18=AXIS2_PLACEMENT_3D('placement',#10,#16,#17);
+#20=(LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT(.MILLI.,.METRE.));
+ENDSEC;
+END-ISO-10303-21;

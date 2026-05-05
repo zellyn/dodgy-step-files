@@ -1,0 +1,34 @@
+/* Gn014 - BSpline that fits a plane/cylinder/cone/sphere/torus
+   Defect: a face stored as B_SPLINE_SURFACE_WITH_KNOTS is mathematically a
+   plane -- four corner control points all on z=0 with linear blending.
+   Feature recognition (hole detection, axis derivation), unfolding, CAM
+   tool-axis derivation and DXF/SVG export degrade silently because the
+   surface answers Type() == BSpline rather than Plane.  Healer
+   ShapeAnalysis_CanonicalRecognition (F076) should fit a candidate
+   primitive within tolerance and replace the surface.
+   IGES round-trip is the canonical lossy path producing this artifact. */
+ISO-10303-21;
+HEADER;
+FILE_DESCRIPTION(('Gn014 - planar surface stored as BSpline of degree 1'),
+  '2;1');
+FILE_NAME('Gn014.stp','2026-04-26T00:00:00',('auto-generated'),(''),
+  'auto-generated','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+/* Four corners of a planar 10x10 patch on z=0. */
+#10=CARTESIAN_POINT('p00',( 0.0, 0.0, 0.0));
+#11=CARTESIAN_POINT('p01',( 0.0,10.0, 0.0));
+#12=CARTESIAN_POINT('p10',(10.0, 0.0, 0.0));
+#13=CARTESIAN_POINT('p11',(10.0,10.0, 0.0));
+/* Defect: a flat patch encoded as B_SPLINE_SURFACE_WITH_KNOTS of
+   degree (1,1) instead of as PLANE.  Mathematically equivalent;
+   semantically degraded. */
+#100=B_SPLINE_SURFACE_WITH_KNOTS('flat_as_bspline',
+  1,1,
+  ((#10,#11),(#12,#13)),
+  .UNSPECIFIED.,.F.,.F.,.F.,
+  (2,2),(2,2),(0.0,1.0),(0.0,1.0),
+  .UNSPECIFIED.);
+ENDSEC;
+END-ISO-10303-21;

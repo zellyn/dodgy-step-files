@@ -1,0 +1,31 @@
+/* U041 - Dynamic-viscosity Pa.s as derived-unit chain (kg / (m * s))
+ * Defect: a DERIVED_UNIT composed of mass^+1, length^-1, time^-1.
+ * Receivers that flatten time exponent into a length-time-mass dictionary
+ * lookup may drop the redundant time and read the unit as Pa instead of
+ * Pa.s. */
+ISO-10303-21;
+HEADER;
+FILE_DESCRIPTION(('U041 - dynamic viscosity Pa.s as derived unit chain'),'2;1');
+FILE_NAME('U041.stp','2026-04-30T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#3=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT($,.METRE.));
+#4=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#5=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#6=(NAMED_UNIT(*)MASS_UNIT()SI_UNIT(.KILO.,.GRAM.));
+#7=(NAMED_UNIT(*)SI_UNIT($,.SECOND.)TIME_MEASURE_UNIT());
+/* Pa.s = kg^+1 m^-1 s^-1 */
+#10=DERIVED_UNIT_ELEMENT(#6,1.0);
+#11=DERIVED_UNIT_ELEMENT(#3,-1.0);
+#12=DERIVED_UNIT_ELEMENT(#7,-1.0);
+#13=DERIVED_UNIT((#10,#11,#12));
+#20=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#3,
+  'distance_accuracy_value','');
+#21=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#20))
+  GLOBAL_UNIT_ASSIGNED_CONTEXT((#3,#4,#5))
+  REPRESENTATION_CONTEXT('ctx','3D'));
+ENDSEC;
+END-ISO-10303-21;

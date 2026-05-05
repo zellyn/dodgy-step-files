@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Le043 — `\X4\` with a valid supplementary-plane code point followed by a short trailing hex run</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.1a Encoding &amp; string-literal defects</a> <span class="sep">/</span> <span class="current">Le043</span>
+</nav>
+<header class="title-bar">
+<h1>Le043 <span class="sep">—</span> <span class="entry-title">`\X4\` with a valid supplementary-plane code point followed by a short trailing hex run</span></h1>
+<p class="category">§12.1a encoding/strings (sub-class: UCS-4)</p>
+<p class="tag-pills">
+<a class="tag tag-crash" href="../by-tag/crash/index.html">crash</a>
+<a class="tag tag-silent-loss" href="../by-tag/silent-loss/index.html">silent-loss</a>
+<a class="tag tag-encoding" href="../by-tag/encoding/index.html">encoding</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-1a-encoding/Le043.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-1a-encoding/Le043.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>16-iso-spec ISO 10303-21 Ed.3 §6.4.3 (`\X4\.\X0\` 8-hex groups)</li>
+</ul></section>
+<section><h2>Description</h2>
+<p>`\X4\.\X0\` wraps a sequence of 8-hex-digit groups, each encoding one UCS-4 (32-bit) scalar. A producer concatenating variable-length output may emit a hex run not divisible by 8 (e.g. 4 or 7 digits), which is malformed. Distinct from Le006 in that the *valid* leading group is a supplementary-plane scalar (U+1F600 Grinning Face) and only the trailing group is short, so a tolerant parser may accept the first character and silently drop the second.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>`PRODUCT.name=&#x27;mix=\X4\0001F60000041\X0\&#x27;` — 8 hex digits (U+1F600, valid SMP) followed by 4 hex digits (short, illegal).</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>reject the whole `\X4\.\X0\` block as malformed, or reject only the trailing short group with a diagnostic; never silently truncate.</p></section>
+<section><h2>Notes</h2>
+<p>**See also**: Le006. **OCC behavior**: silently accepts the malformed `\X4\.\X0\` block and either truncates the trailing short group or interprets it incorrectly; kernel mishandling — the catalog above forbids silent truncation. Synonyms: &quot;X4 with valid plus short trailing run&quot;, &quot;supplementary char then partial X4 group&quot;, &quot;X4 mixed valid and malformed&quot;, &quot;X4 valid leader with truncated tail&quot;, &quot;X4 followed by short hex run&quot;.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=empty/empty gmsh=empty ifc=process_signal</code></p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>contains(b&#x27;\\X4\\0001F60000041\\X0\\&#x27;)</code></li>
+</ul></section>
+<section><h2>Cross-references</h2>
+<p><a href="Le006.html">Le006</a></p>
+</section>
+<section><h2>Live oracle output</h2>
+<table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
+<tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>ifcopenshell</code></td><td><code>process_signal</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>reject(E_X4_NO_TERM)</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>no_shapes_loaded</code></td></tr>
+</tbody></table>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* Le043 - \X4\ encoding a valid supplementary-plane (above BMP) code
+<span class="lineno">3</span> * point with a non-multiple-of-eight hex run
+<span class="lineno">4</span> * Defect: \X4\..\X0\ wraps a sequence of 8-hex-digit groups, each
+<span class="lineno">5</span> * encoding one UCS-4 (32-bit) scalar. A producer concatenating
+<span class="lineno">6</span> * variable-length output may emit a hex run not divisible by 8
+<span class="lineno">7</span> * (e.g. 4 or 7 digits) which is malformed. Distinct from Le006 in
+<span class="lineno">8</span> * that the *valid* leading group is in the supplementary plane
+<span class="lineno">9</span> * (U+1F600 Grinning Face) and only the trailing group is short,
+<span class="lineno">10</span> * so a tolerant parser may accept the first character and drop the
+<span class="lineno">11</span> * second silently. */
+<span class="lineno">12</span>HEADER;
+<span class="lineno">13</span>FILE_DESCRIPTION((&#x27;Le043 - \X4\ valid SMP point + short trailing run&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">14</span>FILE_NAME(&#x27;Le043.stp&#x27;,&#x27;2026-04-26T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),
+<span class="lineno">15</span>  &#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">16</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
+<span class="lineno">17</span>ENDSEC;
+<span class="lineno">18</span>DATA;
+<span class="lineno">19</span>#1=APPLICATION_CONTEXT(&#x27;automotive_design&#x27;);
+<span class="lineno">20</span>#2=PRODUCT_CONTEXT(&#x27;part&#x27;,#1,&#x27;mechanical&#x27;);
+<span class="lineno">21</span>/* Defect: 8 hex (valid SMP U+1F600) + 4 hex (short - illegal) */
+<span class="lineno">22</span>#10=PRODUCT(&#x27;mix=<mark>\X4\0001F60000041\X0\</mark>&#x27;,&#x27;mixed-SMP-short&#x27;,&#x27;&#x27;,(#2));
+<span class="lineno">23</span>ENDSEC;
+<span class="lineno">24</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Le042.html">&larr; Le042</a> <a class="up" href="index.html">§12.1a Encoding &amp; string-literal defects</a> <a class="next" href="Le044.html">Le044 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

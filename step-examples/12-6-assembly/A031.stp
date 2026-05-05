@@ -1,0 +1,87 @@
+ISO-10303-21;
+/*
+ * A031 — Schema migration: retired AP214/AP203 kinematics entities
+ * Defect (STEP Tools AP242 Ed.1/Ed.3 retirement notes):
+ *   AP242 Ed.1 retired ~53 AP214/AP203 entities (kinematic_structure,
+ *   mechanism, kinematic_property_definition, ...). Ed.3 retired three Ed.2
+ *   entities (connected_edge_with_length_set_representation, edge_with_length,
+ *   vertex_on_edge). Archived files using them cannot be re-validated against
+ *   the newer schema.
+ * Reproducer: AP214-style assembly with KINEMATIC_LINK_REPRESENTATION_RELATION
+ *   re-headered as AP242 — entities exist as text but no kernel binding.
+ * Expected kernel: archive-stable in original schema form; on migration drop
+ *   entities (with recorded loss-of-fidelity) or refuse migration.
+ */
+HEADER;
+FILE_DESCRIPTION(('A031 retired AP214 kinematics entities under AP242 header'),'2;1');
+FILE_NAME('A031.stp','2026-04-26T00:00:00',('catalog'),('cad'),'manual','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#10 = APPLICATION_CONTEXT('automotive design');
+#11 = APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2001,#10);
+#12 = PRODUCT_CONTEXT('',#10,'mechanical');
+#13 = PRODUCT_DEFINITION_CONTEXT('part definition',#10,'design');
+#20 = PRODUCT('A031_MECHANISM','retired-kinematics test','',(#12));
+#21 = PRODUCT_DEFINITION_FORMATION('','',#20);
+#22 = PRODUCT_DEFINITION('design','',#21,#13);
+#23 = PRODUCT_DEFINITION_SHAPE('','',#22);
+#30 = PRODUCT('LINK_A','','',(#12));
+#31 = PRODUCT_DEFINITION_FORMATION('','',#30);
+#32 = PRODUCT_DEFINITION('design','',#31,#13);
+#33 = PRODUCT_DEFINITION_SHAPE('','',#32);
+#34 = PRODUCT('LINK_B','','',(#12));
+#35 = PRODUCT_DEFINITION_FORMATION('','',#34);
+#36 = PRODUCT_DEFINITION('design','',#35,#13);
+#37 = PRODUCT_DEFINITION_SHAPE('','',#36);
+#40 = NEXT_ASSEMBLY_USAGE_OCCURRENCE('1','LINK_A_INST','',#22,#32,$);
+#41 = NEXT_ASSEMBLY_USAGE_OCCURRENCE('2','LINK_B_INST','',#22,#36,$);
+/* DEFECT: AP214 KINEMATIC_LINK_REPRESENTATION_RELATION emitted under AP242
+   header. AP242 Ed.1 retired this entity; readers see unknown text. */
+#90 = MECHANISM('hinge_mechanism','single revolute joint',#22);
+#91 = KINEMATIC_LINK_REPRESENTATION('link_a_kin','',#33);
+#92 = KINEMATIC_LINK_REPRESENTATION('link_b_kin','',#37);
+#93 = KINEMATIC_LINK_REPRESENTATION_RELATION('hinge_pair','revolute',#91,#92);
+#94 = KINEMATIC_PROPERTY_DEFINITION('axis_angle','radians',#90);
+/* Units */
+#50 = ( LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT(.MILLI.,.METRE.) );
+#51 = ( NAMED_UNIT(*) PLANE_ANGLE_UNIT() SI_UNIT($,.RADIAN.) );
+#52 = ( NAMED_UNIT(*) SI_UNIT($,.STERADIAN.) SOLID_ANGLE_UNIT() );
+#53 = UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#50,'distance_accuracy_value','');
+#54 = ( GEOMETRIC_REPRESENTATION_CONTEXT(3) GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#53))
+        GLOBAL_UNIT_ASSIGNED_CONTEXT((#50,#51,#52)) REPRESENTATION_CONTEXT('','3D') );
+#60 = CARTESIAN_POINT('',(0.0,0.0,0.0));
+#61 = DIRECTION('',(0.0,0.0,1.0));
+#62 = DIRECTION('',(1.0,0.0,0.0));
+#63 = AXIS2_PLACEMENT_3D('a_origin',#60,#61,#62);
+#64 = SHAPE_REPRESENTATION('a_rep',(#63),#54);
+#65 = SHAPE_DEFINITION_REPRESENTATION(#33,#64);
+#66 = REPRESENTATION_MAP(#63,#64);
+#70 = AXIS2_PLACEMENT_3D('b_origin',#60,#61,#62);
+#71 = SHAPE_REPRESENTATION('b_rep',(#70),#54);
+#72 = SHAPE_DEFINITION_REPRESENTATION(#37,#71);
+#73 = REPRESENTATION_MAP(#70,#71);
+#74 = MAPPED_ITEM('a_inst',#66,#63);
+#75 = MAPPED_ITEM('b_inst',#73,#70);
+#80 = AXIS2_PLACEMENT_3D('assy_origin',#60,#61,#62);
+#81 = SHAPE_REPRESENTATION('assy_rep',(#80,#74,#75),#54);
+#82 = SHAPE_DEFINITION_REPRESENTATION(#23,#81);
+/* Extended catalog notes:
+ * This reproducer is a minimal demonstrator of the §12.6 entry
+ * referenced in the /* */ header above. The entity-graph above
+ * is just enough to exercise the defect on a writer or reader
+ * test harness; it is NOT a production-quality assembly.
+ *
+ * License: this file is part of a defect catalog assembled from
+ * publicly described bug reports and recommended-practice notes.
+ * No proprietary geometry or names are reproduced. The entity IDs
+ * and minimal coordinates are author-original.
+ *
+ * Cross-refs: see STEP_PROBLEM_CATALOG.md §12.6 for full entry,
+ * source list, sender attribution and expected kernel behavior.
+ */
+#900 = DESCRIPTIVE_REPRESENTATION_ITEM('catalog_id','A031');
+#901 = DESCRIPTIVE_REPRESENTATION_ITEM('catalog_section','12.6 assembly hierarchy');
+#902 = DESCRIPTIVE_REPRESENTATION_ITEM('catalog_status','pending');
+ENDSEC;
+END-ISO-10303-21;

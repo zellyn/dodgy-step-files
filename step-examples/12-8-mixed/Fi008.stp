@@ -1,0 +1,110 @@
+ISO-10303-21;
+/* Fi008 - Fillet completes partially: HasResult but BadShape.
+ * Defect: solid where the fillet's rolling ball intersects a non-adjacent
+ * third face mid-spine, requiring an unmodelled patch. Encoded: spine
+ * EDGE_CURVE between two faces, plus a third "interfering" face
+ * positioned where the rolling ball would graze. */
+HEADER;
+FILE_DESCRIPTION(('Fi008 test case','Partial fillet result with bad shape'),'2;1');
+FILE_NAME('Fi008.stp','2026-04-30T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+/* Spine vertices */
+#10=CARTESIAN_POINT('v_start',(0.0,0.0,0.0));
+#11=CARTESIAN_POINT('v_end',(2.0,0.0,0.0));
+#12=VERTEX_POINT('spine_start',#10);
+#13=VERTEX_POINT('spine_end',#11);
+/* Spine edge */
+#20=DIRECTION('',(1.0,0.0,0.0));
+#21=VECTOR('',#20,2.0);
+#22=LINE('spine_line',#10,#21);
+#23=EDGE_CURVE('spine_edge',#12,#13,#22,.T.);
+/* Two adjacent surfaces sharing the spine */
+#30=DIRECTION('',(0.0,0.0,1.0));
+#31=DIRECTION('',(1.0,0.0,0.0));
+#32=AXIS2_PLACEMENT_3D('',#10,#30,#31);
+#33=PLANE('face_a_surface',#32);
+#34=DIRECTION('',(0.0,1.0,0.0));
+#35=AXIS2_PLACEMENT_3D('',#10,#34,#31);
+#36=PLANE('face_b_surface',#35);
+/* Third "interfering" face placed at the rolling-ball reach */
+#40=CARTESIAN_POINT('interfere_origin',(1.0,0.5,0.5));
+#41=DIRECTION('',(0.0,-1.0,0.0));
+#42=AXIS2_PLACEMENT_3D('interfere_axis',#40,#41,#31);
+#43=PLANE('interfering_face_surface',#42);
+/* ADVANCED_FACEs - close the edge loops with three additional edges so
+ * each EDGE_LOOP encloses a planar quad (4 oriented edges). The shared
+ * spine loop returns from (2,0,0) -> (2,1,0) -> (0,1,0) -> back via
+ * three new edges. The interfering face gets its own closed loop. */
+#70=CARTESIAN_POINT('p2y',(2.0,1.0,0.0));
+#71=CARTESIAN_POINT('p0y',(0.0,1.0,0.0));
+#72=VERTEX_POINT('',#70);
+#73=VERTEX_POINT('',#71);
+#74=DIRECTION('dy',(0.0,1.0,0.0));
+#75=VECTOR('',#74,1.0);
+#76=LINE('',#11,#75);
+#77=DIRECTION('dxn',(-1.0,0.0,0.0));
+#78=VECTOR('',#77,2.0);
+#79=LINE('',#70,#78);
+#80=DIRECTION('dyn',(0.0,-1.0,0.0));
+#81=VECTOR('',#80,1.0);
+#82=LINE('',#71,#81);
+#83=EDGE_CURVE('',#13,#72,#76,.T.);
+#84=EDGE_CURVE('',#72,#73,#79,.T.);
+#85=EDGE_CURVE('',#73,#12,#82,.T.);
+#50=ORIENTED_EDGE('',*,*,#23,.T.);
+#86=ORIENTED_EDGE('',*,*,#83,.T.);
+#87=ORIENTED_EDGE('',*,*,#84,.T.);
+#88=ORIENTED_EDGE('',*,*,#85,.T.);
+#51=EDGE_LOOP('',(#50,#86,#87,#88));
+#52=FACE_OUTER_BOUND('',#51,.T.);
+#53=ADVANCED_FACE('face_a',(#52),#33,.T.);
+#54=ADVANCED_FACE('face_b',(#52),#36,.T.);
+/* Interfering face: triangle around (1,0.5,0.5). Three vertices:
+ * (0.5,0.5,0.5), (1.5,0.5,0.5), (1.0,0.5,1.0). */
+#90=CARTESIAN_POINT('q0',(0.5,0.5,0.5));
+#91=CARTESIAN_POINT('q1',(1.5,0.5,0.5));
+#92=CARTESIAN_POINT('q2',(1.0,0.5,1.0));
+#93=VERTEX_POINT('',#90);
+#94=VERTEX_POINT('',#91);
+#95=VERTEX_POINT('',#92);
+#96=DIRECTION('dq01',(1.0,0.0,0.0));
+#97=VECTOR('',#96,1.0);
+#98=LINE('',#90,#97);
+#99=DIRECTION('dq12',(-0.4472135954999579,0.0,0.8944271909999159));
+#101=VECTOR('',#99,1.118033988749895);
+#102=LINE('',#91,#101);
+#103=DIRECTION('dq20',(-0.4472135954999579,0.0,-0.8944271909999159));
+#104=VECTOR('',#103,1.118033988749895);
+#105=LINE('',#92,#104);
+#106=EDGE_CURVE('',#93,#94,#98,.T.);
+#107=EDGE_CURVE('',#94,#95,#102,.T.);
+#108=EDGE_CURVE('',#95,#93,#105,.T.);
+#109=ORIENTED_EDGE('',*,*,#106,.T.);
+#110=ORIENTED_EDGE('',*,*,#107,.T.);
+#111=ORIENTED_EDGE('',*,*,#108,.T.);
+#55=EDGE_LOOP('',(#109,#110,#111));
+#56=FACE_OUTER_BOUND('',#55,.T.);
+#57=ADVANCED_FACE('interfering_face',(#56),#43,.T.);
+/* Closed shell */
+#60=CLOSED_SHELL('shell',(#53,#54,#57));
+#61=MANIFOLD_SOLID_BREP('solid',#60);
+/* Minimal PRODUCT chain so OCCT TransferRoots produces a shape. */
+#9010=PRODUCT_CONTEXT('',#1,'mechanical');
+#9011=PRODUCT('Fi008','Fi008','',(#9010));
+#9012=PRODUCT_DEFINITION_FORMATION('','',#9011);
+#9013=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9014=PRODUCT_DEFINITION('','',#9012,#9013);
+#9015=PRODUCT_DEFINITION_SHAPE('','',#9014);
+#9020=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9021=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9022=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9023=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9020,'distance_accuracy_value','');
+#9024=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9023))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9020,#9021,#9022))REPRESENTATION_CONTEXT('','3D'));
+#9050=ADVANCED_BREP_SHAPE_REPRESENTATION('',(#61),#9024);
+#9051=SHAPE_DEFINITION_REPRESENTATION(#9015,#9050);
+ENDSEC;
+END-ISO-10303-21;

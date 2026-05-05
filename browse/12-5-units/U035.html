@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>U035 — Exporting ellipse with non-mm unit corrupts geometry</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.5 Units &amp; coordinate systems</a> <span class="sep">/</span> <span class="current">U035</span>
+</nav>
+<header class="title-bar">
+<h1>U035 <span class="sep">—</span> <span class="entry-title">Exporting ellipse with non-mm unit corrupts geometry</span></h1>
+<p class="category">§12.5 units</p>
+<p class="severity-badge severity-p1">P1 — silent data loss</p>
+<p class="tag-pills">
+<a class="tag tag-units" href="../by-tag/units/index.html">units</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-5-units/U035.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-5-units/U035.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>OCCT MANTIS#0023597 (OCCT MANTIS tracker 502 as of 2026-05-02)</li>
+</ul></section>
+<section><h2>Description</h2>
+<p>A document with `LENGTH_UNIT = INCH` containing an ellipse is exported. The exporter emits the ellipse&#x27;s semi-axes in millimetres (the internal representation unit) but the file&#x27;s declared unit is inches — re-import scales the values by 25.4× incorrectly.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>Ellipse with semi-axes `a=2.0`, `b=1.0` in inches. Exporter writes `a=2.0`, `b=1.0` in a file declaring `INCH` but the internal representation was in millimetres.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>Heal and accept: normalize / coerce every numeric attribute emitted to the declared file unit; never mix internal and declared units.</p></section>
+<section><h2>Notes</h2>
+<p>**See also**: U034. Synonyms: &quot;ellipse semi-axes in mm but STEP declares inch&quot;, &quot;ellipse exports with mismatched unit&quot;, &quot;STEP ellipse re-import 25.4x off&quot;, &quot;non-mm unit corrupts ellipse export&quot;, &quot;ELLIPSE coords wrong unit&quot;.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>contains(b&#x27;ELLIPSE&#x27;)</code></li>
+</ul></section>
+<section><h2>Cross-references</h2>
+<p><a href="U034.html">U034</a></p>
+</section>
+<section><h2>Live oracle output</h2>
+<table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
+<tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>warn(W_COMPLEX_ORDER)</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>no_shapes_loaded</code></td></tr>
+</tbody></table>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* U035 - Ellipse exported with mm values in inch-declared file
+<span class="lineno">3</span> * Defect: document with LENGTH_UNIT INCH; ellipse semi-axes emitted in mm internal representation */
+<span class="lineno">4</span>HEADER;
+<span class="lineno">5</span>FILE_DESCRIPTION((&#x27;U035 test case&#x27;,&#x27;Ellipse exported with mm values in inch-declared file&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">6</span>FILE_NAME(&#x27;U035.stp&#x27;,&#x27;2026-04-30T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">7</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }&#x27;));
+<span class="lineno">8</span>ENDSEC;
+<span class="lineno">9</span>DATA;
+<span class="lineno">10</span>#1=APPLICATION_CONTEXT(&#x27;automotive_design&#x27;);
+<span class="lineno">11</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,&#x27;automotive_design&#x27;,2000,#1);
+<span class="lineno">12</span>#100=(LENGTH_UNIT() NAMED_UNIT(*) CONVERSION_BASED_UNIT(&#x27;INCH&#x27;,#101));
+<span class="lineno">13</span>#101=LENGTH_MEASURE_WITH_UNIT(LENGTH_MEASURE(25.4),#102);
+<span class="lineno">14</span>#102=(LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">15</span>#110=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">16</span>#111=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));#112=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">17</span>#113=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#110,#111,#112);
+<span class="lineno">18</span>#114=<mark>ELLIPSE</mark>(&#x27;mm_in_inch_file&#x27;,#113,2.0,1.0);
+<span class="lineno">19</span>ENDSEC;
+<span class="lineno">20</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="U034.html">&larr; U034</a> <a class="up" href="index.html">§12.5 Units &amp; coordinate systems</a> <a class="next" href="U036.html">U036 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

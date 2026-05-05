@@ -1,0 +1,64 @@
+/* Pmi041 - dimensional_size vs dimensional_location confusion
+   Defect: Hole-diameter PMI is encoded as DIMENSIONAL_LOCATION (used for
+   curved-distance / center-to-center) instead of DIMENSIONAL_SIZE.
+   Additionally the dimensional_size.name='curved_distance' string is
+   used for what is conceptually a flat diameter, deviating from the
+   AP242 RP table. The result: downstream MBD pipelines mis-classify
+   the dimension. NIST SFA reports S061 and S039 capture this. */
+ISO-10303-21;
+HEADER;
+FILE_DESCRIPTION(('Pmi041 - dimensional_size vs location confusion',
+  'CAx-IF Rec.Pracs.---PMI Rep & Pres---v4.1'),'2;1');
+FILE_NAME('Pmi041.stp','2026-04-26T00:00:00',('catalog'),('cad'),
+  'manual','','');
+FILE_SCHEMA(('AP242_MANAGED_MODEL_BASED_3D_ENGINEERING_MIM_LF { 1 0 10303 442 1 1 4 }'));
+ENDSEC;
+DATA;
+#10 = APPLICATION_CONTEXT('managed model based 3d engineering');
+#11 = APPLICATION_PROTOCOL_DEFINITION('international standard',
+  'ap242_managed_model_based_3d_engineering',2020,#10);
+#12 = PRODUCT_CONTEXT('',#10,'mechanical');
+#13 = PRODUCT('Pmi041','SizeLocConfusionPart','',(#12));
+#14 = PRODUCT_DEFINITION_FORMATION('','',#13);
+#15 = PRODUCT_DEFINITION_CONTEXT('',#10,'design');
+#16 = PRODUCT_DEFINITION('','',#14,#15);
+#17 = PRODUCT_DEFINITION_SHAPE('','',#16);
+#20 = ( LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT(.MILLI.,.METRE.) );
+#22 = ( NAMED_UNIT(*) PLANE_ANGLE_UNIT() SI_UNIT($,.RADIAN.) );
+#23 = ( NAMED_UNIT(*) SI_UNIT($,.STERADIAN.) SOLID_ANGLE_UNIT() );
+#24 = UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#20,
+  'distance_accuracy_value','');
+#25 = ( GEOMETRIC_REPRESENTATION_CONTEXT(3)
+  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#24))
+  GLOBAL_UNIT_ASSIGNED_CONTEXT((#20,#22,#23))
+  REPRESENTATION_CONTEXT('','3D') );
+#30 = CARTESIAN_POINT('hole_center',(0.0,0.0,0.0));
+#31 = DIRECTION('',(0.0,0.0,1.0));
+#32 = DIRECTION('',(1.0,0.0,0.0));
+#33 = AXIS2_PLACEMENT_3D('',#30,#31,#32);
+#34 = CYLINDRICAL_SURFACE('hole',#33,4.0);
+#35 = ADVANCED_FACE('hole_face',(),#34,.T.);
+#40 = SHAPE_ASPECT('hole','through hole',#17,.T.);
+#41 = SHAPE_ASPECT('hole_b','through hole 2',#17,.T.);
+/* Defect 1: hole DIAMETER encoded as DIMENSIONAL_LOCATION (a relative
+   distance between two features), not DIMENSIONAL_SIZE. */
+#50 = DIMENSIONAL_LOCATION('hole_diameter_misencoded',#40,#41);
+#51 = MEASURE_REPRESENTATION_ITEM('value',LENGTH_MEASURE(8.0),#20);
+#52 = SHAPE_DIMENSION_REPRESENTATION('',(#51),#25);
+/* Defect 2: a flat diameter dimensional_size.name uses 'curved_distance'
+   from the AP242 RP §6.4 table even though the feature is a straight
+   diameter. Receivers should warn loudly. */
+#60 = DIMENSIONAL_SIZE(#40,'curved_distance');
+#61 = MEASURE_REPRESENTATION_ITEM('odd_name',LENGTH_MEASURE(8.0),#20);
+#62 = SHAPE_DIMENSION_REPRESENTATION('',(#61),#25);
+#70 = PLUS_MINUS_TOLERANCE(#71,#60);
+#71 = TOLERANCE_VALUE(#72,#73);
+#72 = LENGTH_MEASURE_WITH_UNIT(LENGTH_MEASURE(-0.05),#20);
+#73 = LENGTH_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.05),#20);
+#80 = DRAUGHTING_MODEL('Default',(),#25);
+#81 = PLANE('ann_plane',#33);
+#82 = ANNOTATION_PLANE('PMI',(),#81,());
+#90 = SHAPE_REPRESENTATION('',(#33,#35),#25);
+#91 = SHAPE_DEFINITION_REPRESENTATION(#17,#90);
+ENDSEC;
+END-ISO-10303-21;

@@ -1,0 +1,72 @@
+ISO-10303-21;
+/*
+ * A010 — NAUO instance name lost on round-trip / re-export
+ * Defect (OCCT 87b7b49 / Mantis 0032679, OCCT bug32679,
+ *         PRODUCT_DEFINITION_WITH_ASSOCIATED_DOCUMENTS,
+ *         SolidWorks → Rhino name slot mismatch):
+ *   STEP writer drops instance-level names when assembly itself has no name.
+ *   Or PD_WITH_ASSOCIATED_DOCUMENTS carries its own name that the reader
+ *   doesn't pick up. Or SolidWorks writes the name in PRODUCT.name while
+ *   Rhino looks at MANIFOLD_SOLID_BREP.name. STEP has multiple name slots
+ *   (product.name, product_definition_formation.id,
+ *   next_assembly_usage_occurrence.name, manifold_solid_brep.name,
+ *   representation.name); vendors disagree which is canonical.
+ * Expected kernel: emit instance name regardless of parent name; on read,
+ *   composite name = product.name with explicit fallback chain.
+ */
+HEADER;
+FILE_DESCRIPTION(('A010 NAUO names present, parent unnamed (slot disagreement)'),'2;1');
+FILE_NAME('A010.stp','2026-04-26T00:00:00',('catalog'),('cad'),'manual','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#10 = APPLICATION_CONTEXT('automotive design');
+#11 = APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2001,#10);
+#12 = PRODUCT_CONTEXT('',#10,'mechanical');
+#13 = PRODUCT_DEFINITION_CONTEXT('part definition',#10,'design');
+/* DEFECT 1: parent product has empty name; some writers drop NAUO names too. */
+#20 = PRODUCT('','','',(#12));
+#21 = PRODUCT_DEFINITION_FORMATION('','',#20);
+#22 = PRODUCT_DEFINITION('design','',#21,#13);
+#23 = PRODUCT_DEFINITION_SHAPE('','',#22);
+/* Children with names */
+#30 = PRODUCT('LEAF_A','LeafA','',(#12));
+#31 = PRODUCT_DEFINITION_FORMATION('','',#30);
+#32 = PRODUCT_DEFINITION('design','',#31,#13);
+#33 = PRODUCT_DEFINITION_SHAPE('','',#32);
+#34 = PRODUCT('LEAF_B','LeafB','',(#12));
+#35 = PRODUCT_DEFINITION_FORMATION('','',#34);
+#36 = PRODUCT_DEFINITION('design','',#35,#13);
+#37 = PRODUCT_DEFINITION_SHAPE('','',#36);
+/* Distinct NAUO instance names (slot 3 = name) */
+#40 = NEXT_ASSEMBLY_USAGE_OCCURRENCE('1','LEFT_LEAF_INSTANCE','left',#22,#32,$);
+#41 = NEXT_ASSEMBLY_USAGE_OCCURRENCE('2','RIGHT_LEAF_INSTANCE','right',#22,#36,$);
+/* Units */
+#50 = ( LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT(.MILLI.,.METRE.) );
+#51 = ( NAMED_UNIT(*) PLANE_ANGLE_UNIT() SI_UNIT($,.RADIAN.) );
+#52 = ( NAMED_UNIT(*) SI_UNIT($,.STERADIAN.) SOLID_ANGLE_UNIT() );
+#53 = UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#50,'distance_accuracy_value','');
+#54 = ( GEOMETRIC_REPRESENTATION_CONTEXT(3) GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#53))
+        GLOBAL_UNIT_ASSIGNED_CONTEXT((#50,#51,#52)) REPRESENTATION_CONTEXT('','3D') );
+#60 = CARTESIAN_POINT('',(0.0,0.0,0.0));
+#61 = DIRECTION('',(0.0,0.0,1.0));
+#62 = DIRECTION('',(1.0,0.0,0.0));
+#63 = AXIS2_PLACEMENT_3D('A_origin',#60,#61,#62);
+#64 = SHAPE_REPRESENTATION('A_rep',(#63),#54);
+#65 = SHAPE_DEFINITION_REPRESENTATION(#33,#64);
+#66 = REPRESENTATION_MAP(#63,#64);
+#70 = AXIS2_PLACEMENT_3D('B_origin',#60,#61,#62);
+#71 = SHAPE_REPRESENTATION('B_rep',(#70),#54);
+#72 = SHAPE_DEFINITION_REPRESENTATION(#37,#71);
+#73 = REPRESENTATION_MAP(#70,#71);
+#74 = CARTESIAN_POINT('',(-50.0,0.0,0.0));
+#75 = AXIS2_PLACEMENT_3D('left_place',#74,#61,#62);
+#76 = MAPPED_ITEM('LEFT',#66,#75);
+#77 = CARTESIAN_POINT('',(50.0,0.0,0.0));
+#78 = AXIS2_PLACEMENT_3D('right_place',#77,#61,#62);
+#79 = MAPPED_ITEM('RIGHT',#73,#78);
+#80 = AXIS2_PLACEMENT_3D('assy_origin',#60,#61,#62);
+#81 = SHAPE_REPRESENTATION('',(#80,#76,#79),#54);
+#82 = SHAPE_DEFINITION_REPRESENTATION(#23,#81);
+ENDSEC;
+END-ISO-10303-21;

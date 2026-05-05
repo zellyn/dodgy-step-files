@@ -1,0 +1,60 @@
+ISO-10303-21;
+/* A080 - Hierarchy & colours lost on partial-document write.
+ * Defect: two-branch assembly under one root; each branch has a
+ * STYLED_ITEM-bound colour. Writing only branch B produces a flat
+ * file with no hierarchy and no colour. */
+HEADER;
+FILE_DESCRIPTION(('A080 test case','Hierarchy and colours lost on partial-document write'),'2;1');
+FILE_NAME('A080.stp','2026-04-30T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+#10=PRODUCT_CONTEXT('',#1,'mechanical');
+#13=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+/* Root */
+#20=PRODUCT('ROOT','root_assembly','',(#10));
+#21=PRODUCT_DEFINITION_FORMATION('','',#20);
+#22=PRODUCT_DEFINITION('design','',#21,#13);
+#23=PRODUCT_DEFINITION_SHAPE('','',#22);
+/* Branch A */
+#30=PRODUCT('branch_a','a','',(#10));
+#31=PRODUCT_DEFINITION_FORMATION('','',#30);
+#32=PRODUCT_DEFINITION('design','',#31,#13);
+#33=PRODUCT_DEFINITION_SHAPE('','',#32);
+/* Branch B */
+#40=PRODUCT('branch_b','b','',(#10));
+#41=PRODUCT_DEFINITION_FORMATION('','',#40);
+#42=PRODUCT_DEFINITION('design','',#41,#13);
+#43=PRODUCT_DEFINITION_SHAPE('','',#42);
+/* NAUO wires both branches under the root */
+#50=NEXT_ASSEMBLY_USAGE_OCCURRENCE('a','branch_a_under_root','',#22,#32,$);
+#51=NEXT_ASSEMBLY_USAGE_OCCURRENCE('b','branch_b_under_root','',#22,#42,$);
+/* One face per branch (geometry placeholder) */
+#60=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#61=DIRECTION('',(0.0,0.0,1.0));
+#62=DIRECTION('',(1.0,0.0,0.0));
+#63=AXIS2_PLACEMENT_3D('',#60,#61,#62);
+#64=PLANE('',#63);
+#65=ADVANCED_FACE('a_face',(),#64,.T.);
+#66=ADVANCED_FACE('b_face',(),#64,.T.);
+/* Per-branch colour binding via STYLED_ITEM */
+#70=COLOUR_RGB('a_red',1.0,0.0,0.0);
+#71=FILL_AREA_STYLE_COLOUR('',#70);
+#72=FILL_AREA_STYLE('',(#71));
+#73=SURFACE_STYLE_FILL_AREA(#72);
+#74=SURFACE_SIDE_STYLE('',(#73));
+#75=SURFACE_STYLE_USAGE(.BOTH.,#74);
+#76=PRESENTATION_STYLE_ASSIGNMENT((#75));
+#77=STYLED_ITEM('branch_a_colour',(#76),#65);
+#80=COLOUR_RGB('b_blue',0.0,0.0,1.0);
+#81=FILL_AREA_STYLE_COLOUR('',#80);
+#82=FILL_AREA_STYLE('',(#81));
+#83=SURFACE_STYLE_FILL_AREA(#82);
+#84=SURFACE_SIDE_STYLE('',(#83));
+#85=SURFACE_STYLE_USAGE(.BOTH.,#84);
+#86=PRESENTATION_STYLE_ASSIGNMENT((#85));
+#87=STYLED_ITEM('branch_b_colour',(#86),#66);
+ENDSEC;
+END-ISO-10303-21;

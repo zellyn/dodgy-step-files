@@ -1,0 +1,45 @@
+/* Ad053 - Reference-to-reference chain in shape representation
+   ----------------------------------------------------------------------
+   Catalog section : §12.11 adversarial (sub-class: cyclic-reference / DoS)
+   Sources         : 08-occt-gitlog.md G033 (Mantis 0031568)
+   See also        : Ad004
+   ----------------------------------------------------------------------
+   WARNING: This file is INTENTIONALLY MALFORMED for parser-robustness
+   testing. Do NOT use as exchange data.
+   ----------------------------------------------------------------------
+   Defect
+     A SHAPE_REPRESENTATION_RELATIONSHIP (SRR) used as the right-hand
+     side of another SRR ("reference to reference") produces an invalid
+     model. Deeper chains can be quadratic or cyclic; reader recursion
+     follows them blindly.
+   Reproducer recipe
+     #100 SRR whose rep_2 is itself an SRR (#101); #101's rep_2 is
+     another SRR (#102); #102's rep_2 is again #100, closing the cycle.
+   Expected kernel behavior
+     Resolve transitively; cap recursion depth; detect cycles via
+     coloring (white/gray/black) DFS and emit E_SRR_CYCLE.
+   ----------------------------------------------------------------------
+*/
+ISO-10303-21;
+HEADER;
+FILE_DESCRIPTION(('Ad053 - SRR chain forms a 3-cycle'),'2;1');
+FILE_NAME('Ad053.stp','2026-04-26T00:00:00',('auto-generated'),(''),
+  'auto-generated','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+#1=CARTESIAN_POINT('o',(0.0,0.0,0.0));
+#2=DIRECTION('z',(0.0,0.0,1.0));
+#3=DIRECTION('x',(1.0,0.0,0.0));
+#4=AXIS2_PLACEMENT_3D('p',#1,#2,#3);
+#5=REPRESENTATION_CONTEXT('','3d');
+#10=SHAPE_REPRESENTATION('repA',(#4),#5);
+#11=SHAPE_REPRESENTATION('repB',(#4),#5);
+#12=SHAPE_REPRESENTATION('repC',(#4),#5);
+/* Defect: SRR chain that closes a 3-cycle by passing SRR entities
+   into rep_2 slots (which schema treats as SHAPE_REPRESENTATION). */
+#100=SHAPE_REPRESENTATION_RELATIONSHIP('a','',#10,#101);
+#101=SHAPE_REPRESENTATION_RELATIONSHIP('b','',#11,#102);
+#102=SHAPE_REPRESENTATION_RELATIONSHIP('c','',#12,#100);
+ENDSEC;
+END-ISO-10303-21;

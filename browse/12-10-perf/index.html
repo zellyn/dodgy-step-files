@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>§12.10 Scale &amp; performance</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="section">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <span class="current">§12.10 Scale &amp; performance</span>
+</nav>
+<header class="title-bar">
+<h1>§12.10 Scale &amp; performance</h1>
+<p class="blurb">Scale and performance pathologies: large files, dependency depth, quadratic resolution paths, multi-pass healing.</p>
+<p class="meta">35 entries</p>
+</header>
+<main>
+<table class="entries"><thead><tr><th>ID</th><th>Title</th><th>Provenance</th><th>Expected validation</th></tr></thead><tbody>
+<tr><td><a href="Pf001.html"><code>Pf001</code></a></td><td>Multi-GB Creo AP242 assemblies trigger unbounded receiver memory</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Pf002.html"><code>Pf002</code></a></td><td>Quadratic-cost STEP write on dense forward-reference `VERTEX_POINT` / `EDGE_CURVE` / `ADVANCED_FACE` web (200k-entity scale)</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Pf003.html"><code>Pf003</code></a></td><td>50-second read on a 20 MB STEP: forward-reference DATA section forces multi-pass resolution (single-threaded)</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Pf005.html"><code>Pf005</code></a></td><td>Slow STEP import on geometric-set-heavy file</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Pf006.html"><code>Pf006</code></a></td><td>Quadratic self-intersection check dominates STEP read on perforated sheets</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Pf007.html"><code>Pf007</code></a></td><td>`ADVANCED_FACE` with many circular inner `FACE_BOUND` holes triggers eager UV-bounds wire-walk on every type-only surface query</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Pf008.html"><code>Pf008</code></a></td><td>Stack overflow on huge faces-per-shell counts</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Pf009.html"><code>Pf009</code></a></td><td>Stack overflow when meshing with TBB pool from STEP import</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Pf010.html"><code>Pf010</code></a></td><td>Cyclic / self-referential reference graph causes infinite recursion</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Pf011.html"><code>Pf011</code></a></td><td>`EntityCluster` infinite recursion / leak on pathological deep chain</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Pf012.html"><code>Pf012</code></a></td><td>Stack overflow via deeply nested aggregate parens</td><td><code>bytes-sufficient</code></td><td><code>occt=reject/reject gmsh=reject ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Pf013.html"><code>Pf013</code></a></td><td>Entity-count amplification: tiny file, many GB resident</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Pf014.html"><code>Pf014</code></a></td><td>Long helix exported as huge B-spline (millions of poles)</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Pf015.html"><code>Pf015</code></a></td><td>Pathological B-rep from mesh conversion: `OPEN_SHELL` from OpenSCAD/STL→STEP</td><td><code>runtime-only</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Pf016.html"><code>Pf016</code></a></td><td>STEP assembly reader hangs in Transfer on cyclic `SHAPE_REPRESENTATION_RELATIONSHIP` web (Catia/NX-emitted file, OCCT 7.9)</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Pf017.html"><code>Pf017</code></a></td><td>Healing pipeline hangs on huge single-shell input (multi-pass divergence)</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Pf018.html"><code>Pf018</code></a></td><td>Memory not released after STEP assembly read (Linux / Docker)</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Pf019.html"><code>Pf019</code></a></td><td>Memory leaks in STEP/IGES controller initialisation enum tables</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Pf020.html"><code>Pf020</code></a></td><td>OCAF modification-delta leak on long-running healing test suites</td><td><code>cross-file-state</code></td><td><code>occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Pf021.html"><code>Pf021</code></a></td><td>Floating / non-deterministic crash in shape healing on near-apex `CONICAL_SURFACE` edge</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Pf022.html"><code>Pf022</code></a></td><td>Non-deterministic empty-export from in-memory state leakage</td><td><code>bytes-sufficient</code></td><td><code>occt=shape(1)/shape(1) gmsh=shape(3) ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Pf023.html"><code>Pf023</code></a></td><td>Iterative ShapeFix exposes new defect every pass (unbounded)</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Pf024.html"><code>Pf024</code></a></td><td>Self-intersection-healing tool enters infinite loop on `EDGE_LOOP` with crossed diagonals (out-of-range split index)</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Pf025.html"><code>Pf025</code></a></td><td>`ADVANCED_FACE` with internal-vertex `VERTEX_LOOP` `FACE_BOUND` (`.U.`) causes outer-wire-detection infinite loop (IFC-derived)</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Pf027.html"><code>Pf027</code></a></td><td>Mixed-scale features produce millions of tiny faces post-tessellation</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Pf028.html"><code>Pf028</code></a></td><td>Rhino joins &gt; 10k face polysurfaces in O(n²)</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Pf029.html"><code>Pf029</code></a></td><td>`TDocStd_Document` creation aborts process under VSCode server runtime</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Pf030.html"><code>Pf030</code></a></td><td>Schema-EXPRESS WHERE-rule evaluation bomb (billion-laughs analogue)</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Pf031.html"><code>Pf031</code></a></td><td>STEP read parsing slow due to single-pass tokenisation</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Pf032.html"><code>Pf032</code></a></td><td>Reader hangs during XCAF tree build on deep assembly</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Pf033.html"><code>Pf033</code></a></td><td>Long-running mesh on STEP file load</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Pf034.html"><code>Pf034</code></a></td><td>Shape-divide pass raises end-of-iteration on large shape</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Pf035.html"><code>Pf035</code></a></td><td>Large assembly STEP loads at 100% CPU with unbounded memory growth until OOM</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Pf036.html"><code>Pf036</code></a></td><td>`STEPCAFControl_Reader` hangs in infinite loop on cyclic `MAPPED_ITEM` reference</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Pf037.html"><code>Pf037</code></a></td><td>Two-pass loader: dangling forward-ref subgraph silently truncated (BRL-CAD step-g)</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+</tbody></table>
+</main>
+<footer>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

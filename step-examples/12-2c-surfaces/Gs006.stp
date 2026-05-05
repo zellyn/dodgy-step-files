@@ -1,0 +1,50 @@
+ISO-10303-21;
+/* Gs006 - Surface singularities (degenerate poles) not in declared form
+ *
+ * Sources:  F070, W018 (Tech Soft 3D, HOOPS Exchange 2025.3.0), K010
+ * Senders:  Pro/E PRO9234, PRO18206, PRO7226
+ *
+ * Defect: Surface has a degenerate row in the UV grid (cone apex, sphere pole,
+ *  collapsed BSpline row) but the file does not flag the degeneracy. Surface-
+ *  surface intersection algorithms and pcurve projection misbehave near these
+ *  parametric singularities. Tech Soft 3D fixed singularity handling at
+ *  intersections in HOOPS Exchange 2025.3.0.
+ *
+ * Reproducer:  BSpline surface whose first U row collapses to a single 3D point
+ *  (a cone-apex pole), with no declared periodicity or pole flag.
+ *
+ * Expected kernel behavior:
+ *   accept; intersection / projection routines must handle the singularity
+ *   (insert degenerate edge, handle U/V wrap). */
+HEADER;
+FILE_DESCRIPTION(('Gs006 test case','Undeclared BSpline pole row'),'2;1');
+FILE_NAME('Gs006.stp','2026-04-26T00:00:00',(''),(''),'auto-generated','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+/* All three control points of the V=0 row collapse to the same point (apex pole) */
+#10=CARTESIAN_POINT('',(0.0,0.0,10.0));
+#11=CARTESIAN_POINT('',(0.0,0.0,10.0));
+#12=CARTESIAN_POINT('',(0.0,0.0,10.0));
+/* V=1 row spreads out — cone-like patch */
+#13=CARTESIAN_POINT('',(5.0,0.0,0.0));
+#14=CARTESIAN_POINT('',(0.0,5.0,0.0));
+#15=CARTESIAN_POINT('',(-5.0,0.0,0.0));
+/* Defect: parametric singularity at V=0 (degenerate row), no declaration */
+#20=B_SPLINE_SURFACE_WITH_KNOTS('',2,1,
+  ((#10,#13),(#11,#14),(#12,#15)),
+  .UNSPECIFIED.,.F.,.F.,.F.,
+  (3,3),(2,2),(0.0,1.0),(0.0,1.0),
+  .UNSPECIFIED.);
+#30=CARTESIAN_POINT('',(0.0,0.0,10.0));
+#31=VERTEX_POINT('',#30);
+#32=VERTEX_LOOP('',#31);
+#33=FACE_OUTER_BOUND('',#32,.T.);
+#34=ADVANCED_FACE('',(#33),#20,.T.);
+/* Wrap face in a shell so consumers attempt area / volume integration over the
+ * degenerate row and trip the singularity rather than silently skipping. */
+#40=OPEN_SHELL('',(#34));
+ENDSEC;
+END-ISO-10303-21;

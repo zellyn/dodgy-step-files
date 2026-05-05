@@ -1,0 +1,138 @@
+ISO-10303-21;
+/* Tsh041 - Shell extrusion with shared edges yields CompSolid with duplicated internal faces
+ * Defect: Per-face extrusion of a connected Shell creates one Solid per
+ * face with coincident-but-duplicated internal faces. Boolean ops on
+ * the result fail. The expected behavior is side faces only on
+ * perimeter edges; one solid for connected input.
+ *
+ * This file: a two-triangle Shell sharing one edge (the "input" to the
+ * extrusion). The two triangles meet along EDGE_CURVE #311. Two
+ * extruded MANIFOLD_SOLID_BREPs are produced -- one per triangle --
+ * each with its own copy of the side face along the shared edge.
+ * The two duplicate side faces (#440 and #480) are coincident but
+ * not shared, simulating the build123d / OCCT bug 945 outcome.
+ * Sources: I057 (OCCT #945). */
+HEADER;
+FILE_DESCRIPTION(('Tsh041 test case','Per-face extrusion duplicates internal face'),'2;1');
+FILE_NAME('Tsh041.stp','2026-04-26T00:00:00',(''),(''),'auto-generated','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+/* Two triangles in z=0 sharing edge from #100 to #101.
+   T1 = (0,0,0), (1,0,0), (0,1,0)
+   T2 = (0,0,0), (1,0,0), (1,-1,0) */
+#100=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#101=CARTESIAN_POINT('',(1.0,0.0,0.0));
+#102=CARTESIAN_POINT('',(0.0,1.0,0.0));
+#103=CARTESIAN_POINT('',(1.0,-1.0,0.0));
+/* Extruded counterparts at z=-1 */
+#104=CARTESIAN_POINT('',(0.0,0.0,-1.0));
+#105=CARTESIAN_POINT('',(1.0,0.0,-1.0));
+#106=CARTESIAN_POINT('',(0.0,1.0,-1.0));
+#107=CARTESIAN_POINT('',(1.0,-1.0,-1.0));
+/* Two distinct copies of (0,0,-1)/(1,0,-1) for solid 2 -- THIS is the
+   duplication: solid 2 does NOT reuse #104/#105 from solid 1. */
+#108=CARTESIAN_POINT('dup_for_T2',(0.0,0.0,-1.0));
+#109=CARTESIAN_POINT('dup_for_T2',(1.0,0.0,-1.0));
+#110=VERTEX_POINT('',#100); #111=VERTEX_POINT('',#101);
+#112=VERTEX_POINT('',#102); #113=VERTEX_POINT('',#103);
+#114=VERTEX_POINT('',#104); #115=VERTEX_POINT('',#105);
+#116=VERTEX_POINT('',#106); #117=VERTEX_POINT('',#107);
+#118=VERTEX_POINT('dup',#108); #119=VERTEX_POINT('dup',#109);
+/* Planes. */
+#200=DIRECTION('+Z',(0.0,0.0,1.0)); #201=DIRECTION('+X',(1.0,0.0,0.0));
+#202=DIRECTION('-Z',(0.0,0.0,-1.0));
+#211=AXIS2_PLACEMENT_3D('top_axes',#100,#200,#201); #212=PLANE('top_z0',#211);
+#213=AXIS2_PLACEMENT_3D('bot_axes',#104,#202,#201); #214=PLANE('bot_zm1',#213);
+#220=DIRECTION('+Y',(0.0,1.0,0.0));
+#221=AXIS2_PLACEMENT_3D('shared_face_axes',#100,#220,#201);
+#222=PLANE('shared_face_plane',#221); /* y=0 */
+/* Edge directions. */
+#300=DIRECTION('',(1.0,0.0,0.0)); #301=VECTOR('',#300,1.0);
+#302=DIRECTION('',(0.0,1.0,0.0)); #303=VECTOR('',#302,1.0);
+#304=DIRECTION('',(0.0,0.0,-1.0)); #305=VECTOR('',#304,1.0);
+#306=DIRECTION('',(-0.7071067811865475,0.7071067811865475,0.0)); #307=VECTOR('',#306,1.4142136);
+#308=DIRECTION('',(-0.7071067811865475,-0.7071067811865475,0.0)); #309=VECTOR('',#308,1.4142136);
+#310=LINE('shared_top_edge',#100,#301);
+#311=EDGE_CURVE('SHARED',#110,#111,#310,.T.);
+/* T1 specific edges (top). */
+#320=LINE('',#100,#303); #321=EDGE_CURVE('T1_left',#110,#112,#320,.T.);
+#322=LINE('',#101,#307); #323=EDGE_CURVE('T1_hyp',#111,#112,#322,.T.);
+/* T2 specific edges (top). */
+#324=LINE('',#101,#309); #325=EDGE_CURVE('T2_hyp',#111,#103,#324,.T.);
+#326=DIRECTION('',(0.0,-1.0,0.0)); #327=VECTOR('',#326,1.0);
+#328=LINE('',#103,#327); #329=EDGE_CURVE('T2_back',#103,#100,#328,.T.);
+/* Vertical edges (extrusions). For solid 1 we use #114/#115; for solid 2
+   we use the DUPLICATE vertices #118/#119 along the shared edge. */
+#330=LINE('',#100,#305); #331=EDGE_CURVE('vert_A_S1',#110,#114,#330,.T.);
+#332=LINE('',#101,#305); #333=EDGE_CURVE('vert_B_S1',#111,#115,#332,.T.);
+#334=LINE('',#102,#305); #335=EDGE_CURVE('vert_C',#112,#116,#334,.T.);
+/* DUPLICATED vertical edges along the shared face (solid 2 copy). */
+#336=LINE('dup',#100,#305); #337=EDGE_CURVE('vert_A_S2_dup',#110,#118,#336,.T.);
+#338=LINE('dup',#101,#305); #339=EDGE_CURVE('vert_B_S2_dup',#111,#119,#338,.T.);
+#340=LINE('',#103,#305); #341=EDGE_CURVE('vert_D',#113,#117,#340,.T.);
+/* Bottom edges T1. */
+#342=LINE('',#104,#301); #343=EDGE_CURVE('B1_shared',#114,#115,#342,.T.);
+#344=LINE('',#104,#303); #345=EDGE_CURVE('',#114,#116,#344,.T.);
+#346=LINE('',#105,#307); #347=EDGE_CURVE('',#115,#116,#346,.T.);
+/* DUPLICATED bottom shared edge (solid 2 copy). */
+#348=LINE('dup',#108,#301); #349=EDGE_CURVE('B2_shared_dup',#118,#119,#348,.T.);
+#350=LINE('',#109,#309); #351=EDGE_CURVE('',#119,#117,#350,.T.);
+#352=LINE('',#107,#327); #353=EDGE_CURVE('',#117,#118,#352,.T.);
+/* ===== Solid 1: triangular prism over T1 ===== */
+/* Top T1 face. */
+#400=ORIENTED_EDGE('',*,*,#311,.T.); #401=ORIENTED_EDGE('',*,*,#323,.T.);
+#402=ORIENTED_EDGE('',*,*,#321,.F.);
+#404=EDGE_LOOP('',(#400,#401,#402)); #405=FACE_OUTER_BOUND('',#404,.T.);
+#406=ADVANCED_FACE('S1_top',(#405),#212,.T.);
+/* Bottom T1 face. */
+#410=ORIENTED_EDGE('',*,*,#343,.F.); #411=ORIENTED_EDGE('',*,*,#345,.T.);
+#412=ORIENTED_EDGE('',*,*,#347,.F.);
+#414=EDGE_LOOP('',(#410,#411,#412)); #415=FACE_OUTER_BOUND('',#414,.T.);
+#416=ADVANCED_FACE('S1_bot',(#415),#214,.T.);
+/* Side face along shared edge (will be duplicated by solid 2). */
+#420=ORIENTED_EDGE('',*,*,#311,.T.); #421=ORIENTED_EDGE('',*,*,#333,.T.);
+#422=ORIENTED_EDGE('',*,*,#343,.F.); #423=ORIENTED_EDGE('',*,*,#331,.F.);
+#424=EDGE_LOOP('',(#420,#421,#422,#423)); #425=FACE_OUTER_BOUND('',#424,.T.);
+#426=ADVANCED_FACE('S1_side_at_y0_DUPLICATED',(#425),#222,.T.);
+/* Other two sides of S1. */
+#430=ORIENTED_EDGE('',*,*,#321,.T.); #431=ORIENTED_EDGE('',*,*,#335,.T.);
+#432=ORIENTED_EDGE('',*,*,#345,.F.); #433=ORIENTED_EDGE('',*,*,#331,.F.);
+#434=EDGE_LOOP('',(#430,#431,#432,#433)); #435=FACE_OUTER_BOUND('',#434,.T.);
+#436=ADVANCED_FACE('S1_left_side',(#435),#212,.T.);
+#440=ORIENTED_EDGE('',*,*,#323,.F.); #441=ORIENTED_EDGE('',*,*,#333,.T.);
+#442=ORIENTED_EDGE('',*,*,#347,.F.); #443=ORIENTED_EDGE('',*,*,#335,.F.);
+#444=EDGE_LOOP('',(#440,#441,#442,#443)); #445=FACE_OUTER_BOUND('',#444,.T.);
+#446=ADVANCED_FACE('S1_hyp_side',(#445),#212,.T.);
+#500=CLOSED_SHELL('S1_shell',(#406,#416,#426,#436,#446));
+#510=MANIFOLD_SOLID_BREP('S1_solid',#500);
+/* ===== Solid 2: triangular prism over T2 ===== */
+#600=ORIENTED_EDGE('',*,*,#311,.T.); #601=ORIENTED_EDGE('',*,*,#325,.T.);
+#602=ORIENTED_EDGE('',*,*,#329,.T.);
+#604=EDGE_LOOP('',(#600,#601,#602)); #605=FACE_OUTER_BOUND('',#604,.T.);
+#606=ADVANCED_FACE('S2_top',(#605),#212,.T.);
+#610=ORIENTED_EDGE('',*,*,#349,.F.); #611=ORIENTED_EDGE('',*,*,#351,.T.);
+#612=ORIENTED_EDGE('',*,*,#353,.T.);
+#614=EDGE_LOOP('',(#610,#611,#612)); #615=FACE_OUTER_BOUND('',#614,.T.);
+#616=ADVANCED_FACE('S2_bot',(#615),#214,.T.);
+/* Defect: side face along the SAME shared edge -- coincident with #426
+   but built from #337/#339 (duplicate verticals) and the duplicate
+   bottom edge #349. */
+#620=ORIENTED_EDGE('',*,*,#311,.T.); #621=ORIENTED_EDGE('',*,*,#339,.T.);
+#622=ORIENTED_EDGE('',*,*,#349,.F.); #623=ORIENTED_EDGE('',*,*,#337,.F.);
+#624=EDGE_LOOP('',(#620,#621,#622,#623)); #625=FACE_OUTER_BOUND('',#624,.T.);
+#626=ADVANCED_FACE('S2_side_at_y0_DUPLICATED',(#625),#222,.T.);
+#630=ORIENTED_EDGE('',*,*,#325,.T.); #631=ORIENTED_EDGE('',*,*,#341,.T.);
+#632=ORIENTED_EDGE('',*,*,#351,.F.); #633=ORIENTED_EDGE('',*,*,#339,.F.);
+#634=EDGE_LOOP('',(#630,#631,#632,#633)); #635=FACE_OUTER_BOUND('',#634,.T.);
+#636=ADVANCED_FACE('S2_hyp_side',(#635),#212,.T.);
+#640=ORIENTED_EDGE('',*,*,#329,.T.); #641=ORIENTED_EDGE('',*,*,#337,.T.);
+#642=ORIENTED_EDGE('',*,*,#353,.F.); #643=ORIENTED_EDGE('',*,*,#341,.F.);
+#644=EDGE_LOOP('',(#640,#641,#642,#643)); #645=FACE_OUTER_BOUND('',#644,.T.);
+#646=ADVANCED_FACE('S2_back_side',(#645),#212,.T.);
+#700=CLOSED_SHELL('S2_shell',(#606,#616,#626,#636,#646));
+#710=MANIFOLD_SOLID_BREP('S2_solid',#700);
+ENDSEC;
+END-ISO-10303-21;

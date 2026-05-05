@@ -1,0 +1,49 @@
+/* Ad033 - Translator OOB write copying parsed string into packed C struct
+   ----------------------------------------------------------------------
+   Catalog section : §12.11 adversarial (sub-class: heap-overflow / OOB-write)
+   Sources         : 12-adversarial.md A033;
+                     CVE-2024-23120 (Autodesk ASMIMPORT*.dll on STP/STEP)
+   Severity        : C (Critical)
+   ----------------------------------------------------------------------
+   WARNING: This file is INTENTIONALLY MALFORMED for parser-robustness
+   testing. Do NOT use as exchange data.
+   ----------------------------------------------------------------------
+   Defect
+     A vendor-specific translator copies parsed Part-21 strings directly
+     into a packed C struct buffer; per-attribute lengths from the input
+     are not bounds-checked against the destination slot size. Result:
+     heap or stack OOB write controlled by attacker-supplied string
+     length. CVE-2024-23120 documents this in Autodesk ASMIMPORT*.dll.
+   Reproducer recipe
+     PRODUCT entity whose 'name' string greatly exceeds the destination
+     struct field width (typically 256 or 512 bytes). The string below
+     is ~720 chars, far longer than typical fixed-width slots.
+   Expected kernel behavior
+     Validate per-attribute string lengths against destination size
+     before any copy; truncate-and-warn or reject with E_STRING_OVERFLOW.
+     Never use unchecked strcpy/memcpy on parser output.
+   ----------------------------------------------------------------------
+*/
+ISO-10303-21;
+HEADER;
+FILE_DESCRIPTION(('Ad033 - oversized PRODUCT name overflows packed struct'),
+  '2;1');
+FILE_NAME('Ad033.stp','2026-04-26T00:00:00',('auto-generated'),(''),
+  'auto-generated','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
+  'automotive_design',2001,#1);
+#3=PRODUCT_CONTEXT('',#1,'mechanical');
+/* Defect: PRODUCT 'name' attribute is ~720 chars, overflows fixed
+   destination buffer in vulnerable translators. */
+#4=PRODUCT(
+  'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA',
+  'long_id','description',(#3));
+#5=PRODUCT_DEFINITION_FORMATION('','',#4);
+#6=PRODUCT_DEFINITION_CONTEXT('',#1,'design');
+#7=PRODUCT_DEFINITION('design','',#5,#6);
+ENDSEC;
+END-ISO-10303-21;

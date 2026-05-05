@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>N017 — `UNCERTAINTY_MEASURE_WITH_UNIT` populated with a fixed field-default value (untrustworthy)</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.4 Tolerance &amp; numerical precision</a> <span class="sep">/</span> <span class="current">N017</span>
+</nav>
+<header class="title-bar">
+<h1>N017 <span class="sep">—</span> <span class="entry-title">`UNCERTAINTY_MEASURE_WITH_UNIT` populated with a fixed field-default value (untrustworthy)</span></h1>
+<p class="category">§12.4 (sub-class: uncertainty context)</p>
+<p class="severity-badge severity-p1">P1 — silent data loss</p>
+<p class="tag-pills">
+<a class="tag tag-units" href="../by-tag/units/index.html">units</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-4-tolerance/N017.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-4-tolerance/N017.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>14-brlcad-rhino K020 (McNeel forum)</li>
+<li>17-standards-bodies M020</li>
+<li>04-occt-translation Q044</li>
+</ul></section>
+<section><h2>Description</h2>
+<p>Many STEP exporters emit `UNCERTAINTY_MEASURE_WITH_UNIT` with a constant field-default value (e.g. 0.027352…) rather than a true measure of producer-side precision. Receivers that take this value as document tolerance get bad joins and false gaps when the real geometry is accurate to 1e-6.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>STEP with `UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.027352…), …, &#x27;distance_accuracy_value&#x27;, &#x27;&#x27;)` on geometry actually accurate to 1e-6.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>heal — cap reported tolerance against geometric tightness measured from the actual model; offer override; default to `read.precision.val` parameter when uncertainty is missing or implausible.</p></section>
+<section><h2>Notes</h2>
+<p>**See also**: N019. Synonyms: &quot;uncertainty value looks like template default&quot;, &quot;constant 0.027352 tolerance from exporter&quot;, &quot;uncertainty is fixed default not real precision&quot;, &quot;writer emits placeholder tolerance value&quot;.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>matches(rb&#x27;LENGTH_MEASURE\(\s*0\.027352&#x27;)</code></li>
+<li><code>count_entity_def(b&#x27;UNCERTAINTY_MEASURE_WITH_UNIT&#x27;) == 1</code></li>
+</ul></section>
+<section><h2>Cross-references</h2>
+<p><a href="N019.html">N019</a></p>
+</section>
+<section><h2>Live oracle output</h2>
+<table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
+<tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>no_shapes_loaded</code></td></tr>
+</tbody></table>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>/* N017 - UNCERTAINTY_MEASURE_WITH_UNIT populated with a fixed field-default value (untrustworthy)
+<span class="lineno">2</span> * Defect: Many STEP exporters emit UNCERTAINTY_MEASURE_WITH_UNIT with a
+<span class="lineno">3</span> * constant field-default value (e.g. 0.027352...) rather than a true measure
+<span class="lineno">4</span> * of producer-side precision. Receivers that take this value as document
+<span class="lineno">5</span> * tolerance get bad joins and false gaps when the real geometry is accurate
+<span class="lineno">6</span> * to 1e-6.
+<span class="lineno">7</span> * Reproducer: file emits the constant 0.027352 as distance_accuracy_value
+<span class="lineno">8</span> * while real geometry is accurate to 1e-6.
+<span class="lineno">9</span> */
+<span class="lineno">10</span>ISO-10303-21;
+<span class="lineno">11</span>HEADER;
+<span class="lineno">12</span>FILE_DESCRIPTION((&#x27;N017 UNCERTAINTY field-default 0.027352 untrustworthy&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">13</span>FILE_NAME(&#x27;N017.stp&#x27;,&#x27;2026-04-26T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),
+<span class="lineno">14</span>  &#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">15</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN&#x27;));
+<span class="lineno">16</span>ENDSEC;
+<span class="lineno">17</span>DATA;
+<span class="lineno">18</span>#1=APPLICATION_CONTEXT(&#x27;automotive design&#x27;);
+<span class="lineno">19</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,
+<span class="lineno">20</span>  &#x27;automotive_design&#x27;,2009,#1);
+<span class="lineno">21</span>#10=CARTESIAN_POINT(&#x27;p0&#x27;,(0.0,0.0,0.0));
+<span class="lineno">22</span>#11=CARTESIAN_POINT(&#x27;p1&#x27;,(50.0,0.0,0.0));
+<span class="lineno">23</span>#20=VERTEX_POINT(&#x27;&#x27;,#10);
+<span class="lineno">24</span>#21=VERTEX_POINT(&#x27;&#x27;,#11);
+<span class="lineno">25</span>#30=DIRECTION(&#x27;+x&#x27;,(1.0,0.0,0.0));
+<span class="lineno">26</span>#31=VECTOR(&#x27;&#x27;,#30,50.0);
+<span class="lineno">27</span>#32=LINE(&#x27;&#x27;,#10,#31);
+<span class="lineno">28</span>#40=EDGE_CURVE(&#x27;edge_w_field_default_tol&#x27;,#20,#21,#32,.T.);
+<span class="lineno">29</span>#50=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">30</span>#51=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+<span class="lineno">31</span>#52=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+<span class="lineno">32</span>/* Defect site: 0.027352... is an exporter field-default constant, NOT a real
+<span class="lineno">33</span> * measure of producer precision. Real geometry is accurate to 1e-6 mm. */
+<span class="lineno">34</span><mark>#60=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.027352</mark>),#50,
+<span class="lineno">35</span>  &#x27;distance_accuracy_value&#x27;,&#x27;confusion accuracy&#x27;);
+<span class="lineno">36</span>#70=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+<span class="lineno">37</span>  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#60))
+<span class="lineno">38</span>  GLOBAL_UNIT_ASSIGNED_CONTEXT((#50,#51,#52))
+<span class="lineno">39</span>  REPRESENTATION_CONTEXT(&#x27;ctx&#x27;,&#x27;3D&#x27;));
+<span class="lineno">40</span>ENDSEC;
+<span class="lineno">41</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="N016.html">&larr; N016</a> <a class="up" href="index.html">§12.4 Tolerance &amp; numerical precision</a> <a class="next" href="N018.html">N018 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

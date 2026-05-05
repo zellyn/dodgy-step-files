@@ -1,0 +1,34 @@
+ISO-10303-21;
+/* ============================================================
+   WARNING: THIS FILE IS INTENTIONALLY MALFORMED.
+   It exists ONLY for parser-robustness / fuzz-class testing.
+   DO NOT feed to a production translator without sandboxing.
+
+   Entry  : Ad002
+   Title  : Stack overflow via deeply nested aggregate parens
+   Defect : The aggregate value of #1 is wrapped in many
+            thousand layers of '(' / ')'. Naive recursive
+            descent over LIST/SET/BAG aggregates blows the
+            call stack long before reaching the inner literal.
+   Expected: enforce a depth ceiling (e.g. 64) and emit
+             E_AGGREGATE_TOO_DEEP; iterative parsing preferred.
+   ============================================================ */
+HEADER;
+FILE_DESCRIPTION(('Ad002 nested aggregate parens'),'2;1');
+FILE_NAME('Ad002.stp','2026-04-26T00:00:00',('synthetic'),('cad-research'),
+  'none','none','none');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+/* For the catalogued fixture only ~80 layers shown; a real
+   fuzz harness should expand this to >=10_000 layers to
+   trigger the stack overflow on default ulimit -s. */
+#1=FOO((((((((((((((((((((((((((((((((((((((((
+((((((((((((((((((((((((((((((((((((((((
+((((((((((((((((((((((((((((((((((((((((
+0
+))))))))))))))))))))))))))))))))))))))))
+))))))))))))))))))))))))))))))))))))))))
+))))))))))))))))))))))))))))))))))))))));
+ENDSEC;
+END-ISO-10303-21;

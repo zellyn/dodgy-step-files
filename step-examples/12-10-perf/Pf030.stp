@@ -1,0 +1,56 @@
+/* Pf030 - Schema-EXPRESS WHERE-rule evaluation bomb (billion-laughs analog)
+   Pattern: ISO 10303-11 EXPRESS WHERE-rule evaluation can be combinatorially
+   explosive on hand-crafted entity graphs that force re-evaluation across
+   thousands of cross-referenced instances - analogous to XML billion-laughs.
+   Each level expands to N peer instances; total work is N^depth.
+   The fixture below uses GEOMETRIC_SETs whose membership recursively
+   references peers at the next level - any WHERE rule that walks
+   transitively through the geometry / shape-rep web (e.g. dimensional
+   exponents consistency, unit consistency, coordinate-system uniqueness)
+   re-evaluates O(N^depth) times.
+   Scaling-up: this fixture has 4 levels of width 4 = 4^4 = 256 visits.
+   Replicate to width 10, depth 10 = 10^10 = 10 billion to fully expose
+   the WHERE-rule evaluation bomb. */
+ISO-10303-21;
+HEADER;
+FILE_DESCRIPTION(('Pf030 - WHERE-rule combinatorial blowup (billion-laughs)'),'2;1');
+FILE_NAME('Pf030.stp','2026-04-26T00:00:00',('auto-generated'),(''),
+  'auto-generated','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+/* base atoms - level 0 */
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=CARTESIAN_POINT('',(1.0,0.0,0.0));
+#3=CARTESIAN_POINT('',(2.0,0.0,0.0));
+#4=CARTESIAN_POINT('',(3.0,0.0,0.0));
+/* level 1: each set of 4 points */
+#10=GEOMETRIC_SET('L1a',(#1,#2,#3,#4));
+#11=GEOMETRIC_SET('L1b',(#1,#2,#3,#4));
+#12=GEOMETRIC_SET('L1c',(#1,#2,#3,#4));
+#13=GEOMETRIC_SET('L1d',(#1,#2,#3,#4));
+/* level 2: each set aggregates 4 level-1 sets via shape relationships
+   - this re-cross-references all level-1 atoms transitively, so a
+   WHERE rule walking transitively visits 4*4 = 16 atom evaluations
+   per level-2 set. */
+#20=GEOMETRIC_SET('L2a',(#10,#11,#12,#13));
+#21=GEOMETRIC_SET('L2b',(#10,#11,#12,#13));
+#22=GEOMETRIC_SET('L2c',(#10,#11,#12,#13));
+#23=GEOMETRIC_SET('L2d',(#10,#11,#12,#13));
+/* level 3: aggregates level-2 - 4*4*4 = 64 atom evaluations per L3 set */
+#30=GEOMETRIC_SET('L3a',(#20,#21,#22,#23));
+#31=GEOMETRIC_SET('L3b',(#20,#21,#22,#23));
+#32=GEOMETRIC_SET('L3c',(#20,#21,#22,#23));
+#33=GEOMETRIC_SET('L3d',(#20,#21,#22,#23));
+/* level 4: aggregates level-3 - 4*4*4*4 = 256 atom evaluations per L4
+   set. With 4 such sets, total = 1024 evaluations triggered by any
+   transitive WHERE rule with no memoization. */
+#40=GEOMETRIC_SET('L4a',(#30,#31,#32,#33));
+#41=GEOMETRIC_SET('L4b',(#30,#31,#32,#33));
+#42=GEOMETRIC_SET('L4c',(#30,#31,#32,#33));
+#43=GEOMETRIC_SET('L4d',(#30,#31,#32,#33));
+/* root composite that includes all level-4 sets - at scale this is the
+   one entity validators visit and re-walk exponentially */
+#100=GEOMETRIC_SET('root-bomb',(#40,#41,#42,#43));
+ENDSEC;
+END-ISO-10303-21;

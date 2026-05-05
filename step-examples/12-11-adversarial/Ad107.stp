@@ -1,0 +1,33 @@
+/* Ad107 - STEP-XML wrapper carries a billion-laughs entity-expansion bomb
+ * Defect: a STEP-XML (.stpx) file with an internal DTD declaring named
+ * entities that recursively reference other named entities. Expansion
+ * produces 10^N copies of the leaf string from N+1 entity declarations.
+ * This fixture is shown in .stp form for cataloguing; the actual attack
+ * surface is .stpx. Provenance tier: cross-file-state. */
+ISO-10303-21;
+HEADER;
+FILE_DESCRIPTION(('Ad107 - STEP-XML wrapper carries billion-laughs entity bomb'),'2;1');
+FILE_NAME('Ad107.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+/* Witness fixture: the .stp body is benign. The defect lives in the
+   .stpx XML prologue:
+     <?xml version="1.0"?>
+     <!DOCTYPE step [
+       <!ENTITY lol "lol">
+       <!ENTITY lol1 "&lol;&lol;&lol;&lol;&lol;&lol;&lol;&lol;&lol;&lol;">
+       <!ENTITY lol2 "&lol1;&lol1;&lol1;&lol1;&lol1;&lol1;&lol1;&lol1;&lol1;&lol1;">
+       ...
+       <!ENTITY lol9 "&lol8;&lol8;&lol8;&lol8;&lol8;&lol8;&lol8;&lol8;&lol8;&lol8;">
+     ]>
+     <step><name>&lol9;</name></step>
+   The DTD declarations are not legal inside Part-21; they are shown here
+   inside a comment so receivers can grep for the marker even though the
+   actual exploit lives in the XML wrapper. */
+/* <!DOCTYPE step [<!ENTITY lol "lol"><!ENTITY lol9 "&lol8;...">]> */
+/* &lol9; expands to 10^9 copies of "lol" - a billion laughs */
+#1=APPLICATION_CONTEXT('automotive_design');
+#10=CARTESIAN_POINT('benign',(0.0,0.0,0.0));
+ENDSEC;
+END-ISO-10303-21;

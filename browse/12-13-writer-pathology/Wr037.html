@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Wr037 — Loss of seam-edge marking on closed surfaces (cylinder seam emitted as ordinary edge)</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.13 Writer pathology</a> <span class="sep">/</span> <span class="current">Wr037</span>
+</nav>
+<header class="title-bar">
+<h1>Wr037 <span class="sep">—</span> <span class="entry-title">Loss of seam-edge marking on closed surfaces (cylinder seam emitted as ordinary edge)</span></h1>
+<p class="category">§12.13 writer-pathology (sub-class: round-trip data loss)</p>
+<p class="severity-badge severity-p1">P1 — silent data loss</p>
+<p class="tag-pills">
+<a class="tag tag-round-trip" href="../by-tag/round-trip/index.html">round-trip</a>
+<a class="tag tag-writer" href="../by-tag/writer/index.html">writer</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-13-writer-pathology/Wr037.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-13-writer-pathology/Wr037.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>OCCT MANTIS#0027xxx-class</li>
+<li>bug-reporter language: &quot;STEP cylinder split at seam after re-export&quot; (OCCT MANTIS tracker 502 as of 2026-05-02)</li>
+</ul></section>
+<section><h2>Sender</h2>
+<p>Writers that linearise a kernel&#x27;s &quot;seam edge&quot; annotation into two ordinary edges with a duplicate vertex</p></section>
+<section><h2>Description</h2>
+<p>The input had a `CYLINDRICAL_SURFACE` face whose UV-seam edge was marked (the wire crosses the U=0/U=2π identification), so the receiver knows the surface is closed at that edge. The re-emitted file contains two ordinary edges with duplicate vertices at the seam, no `seam` flag — the receiver sees an open shell where the original was closed. Bug-reporter language: &quot;cylinder seam lost on re-export&quot;, &quot;shell became non-watertight after round-trip&quot;, &quot;duplicate vertices at seam&quot;.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>a cylindrical face whose `FACE_OUTER_BOUND` is composed of four ordinary `EDGE_CURVE` entries (top, bottom, side-A, side-B), where side-A and side-B share endpoints in 3D but at distinct VERTEX_POINT entities at U=0 and U=2π.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>detect duplicate-coincident vertices at the U-seam of a closed surface; merge and re-mark the edge as a seam.</p></section>
+<section><h2>Notes</h2>
+<p>Twi-class read-side; Wr037 attributes to writer.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>count_entity_def(b&#x27;VERTEX_POINT&#x27;) &gt;= 4</code></li>
+<li><code>count(b&#x27;VERTEX_POINT&#x27;) &gt;= 4</code></li>
+</ul></section>
+<section><h2>Live oracle output</h2>
+<table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
+<tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>no_shapes_loaded</code></td></tr>
+</tbody></table>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>/* Wr037 - Loss of seam-edge marking on closed surfaces - cylinder seam emitted as ordinary edge with duplicate vertex */
+<span class="lineno">2</span>ISO-10303-21;
+<span class="lineno">3</span>HEADER;
+<span class="lineno">4</span>FILE_DESCRIPTION((&#x27;Wr037 - cylinder seam lost on re-export&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">5</span>FILE_NAME(&#x27;Wr037.stp&#x27;,&#x27;2026-04-30T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),
+<span class="lineno">6</span>  &#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">7</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
+<span class="lineno">8</span>ENDSEC;
+<span class="lineno">9</span>DATA;
+<span class="lineno">10</span>#1=APPLICATION_CONTEXT(&#x27;mechanical design&#x27;);
+<span class="lineno">11</span>#10=CARTESIAN_POINT(&#x27;origin&#x27;,(0.0,0.0,0.0));
+<span class="lineno">12</span>#11=DIRECTION(&#x27;z&#x27;,(0.0,0.0,1.0));
+<span class="lineno">13</span>#12=DIRECTION(&#x27;x&#x27;,(1.0,0.0,0.0));
+<span class="lineno">14</span>#13=AXIS2_PLACEMENT_3D(&#x27;placement&#x27;,#10,#11,#12);
+<span class="lineno">15</span>#14=CYLINDRICAL_SURFACE(&#x27;cyl&#x27;,#13,1.0);
+<span class="lineno">16</span>/* Wr037: original had seam-marked edge at U=0 / U=2pi identification.
+<span class="lineno">17</span>   Writer linearised it to two ordinary edges sharing duplicate
+<span class="lineno">18</span>   coincident <mark>VERTEX_POINT</mark>s. Receiver sees two vertices at the same
+<span class="lineno">19</span>   3D location and reports a non-watertight shell */
+<span class="lineno">20</span>#20=CARTESIAN_POINT(&#x27;seamA_top&#x27;,(1.0,0.0,1.0));
+<span class="lineno">21</span>#21=CARTESIAN_POINT(&#x27;seamA_bot&#x27;,(1.0,0.0,0.0));
+<span class="lineno">22</span>#22=CARTESIAN_POINT(&#x27;seamB_top&#x27;,(1.0,0.0,1.0));
+<span class="lineno">23</span>#23=CARTESIAN_POINT(&#x27;seamB_bot&#x27;,(1.0,0.0,0.0));
+<span class="lineno">24</span><mark>#30=VERTEX_POINT(</mark>&#x27;vA_top&#x27;,#20);
+<span class="lineno">25</span><mark>#31=VERTEX_POINT(</mark>&#x27;vA_bot&#x27;,#21);
+<span class="lineno">26</span><mark>#32=VERTEX_POINT(</mark>&#x27;vB_top&#x27;,#22);
+<span class="lineno">27</span><mark>#33=VERTEX_POINT(</mark>&#x27;vB_bot&#x27;,#23);
+<span class="lineno">28</span>#40=(LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">29</span>ENDSEC;
+<span class="lineno">30</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Wr036.html">&larr; Wr036</a> <a class="up" href="index.html">§12.13 Writer pathology</a> <a class="next" href="Wr038.html">Wr038 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

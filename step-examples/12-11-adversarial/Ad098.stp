@@ -1,0 +1,91 @@
+ISO-10303-21;
+/* Ad098 - Infinite recursion during ShapeFix after Boolean
+ * Defect: Boolean-cut result with three nested sliver faces. Each
+ * removal exposes the next sliver, so ShapeFix's "remove all slivers"
+ * pass recurses until stack overflow. The three slivers are encoded
+ * as three increasingly thin ADVANCED_FACEs sharing a common edge. */
+HEADER;
+FILE_DESCRIPTION(('Ad098 test case','Infinite recursion during ShapeFix after Boolean'),'2;1');
+FILE_NAME('Ad098.stp','2026-04-30T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+#10=CARTESIAN_POINT('origin',(0.0,0.0,0.0));
+#11=DIRECTION('+z',(0.0,0.0,1.0));
+#12=DIRECTION('+x',(1.0,0.0,0.0));
+#13=AXIS2_PLACEMENT_3D('axes',#10,#11,#12);
+#14=PLANE('host',#13);
+/* Quad face (the underlying surface that the slivers sit on) */
+#20=CARTESIAN_POINT('',(0.0,0.0,0.0));#21=VERTEX_POINT('',#20);
+#22=CARTESIAN_POINT('',(1.0,0.0,0.0));#23=VERTEX_POINT('',#22);
+#24=CARTESIAN_POINT('',(1.0,1.0,0.0));#25=VERTEX_POINT('',#24);
+#26=CARTESIAN_POINT('',(0.0,1.0,0.0));#27=VERTEX_POINT('',#26);
+#30=DIRECTION('',(1.0,0.0,0.0));#31=VECTOR('',#30,1.0);#32=LINE('',#20,#31);
+#33=EDGE_CURVE('shared',#21,#23,#32,.T.);
+#34=DIRECTION('',(0.0,1.0,0.0));#35=VECTOR('',#34,1.0);#36=LINE('',#22,#35);
+#37=EDGE_CURVE('',#23,#25,#36,.T.);
+#38=DIRECTION('',(-1.0,0.0,0.0));#39=VECTOR('',#38,1.0);#40=LINE('',#24,#39);
+#41=EDGE_CURVE('',#25,#27,#40,.T.);
+#42=DIRECTION('',(0.0,-1.0,0.0));#43=VECTOR('',#42,1.0);#44=LINE('',#26,#43);
+#45=EDGE_CURVE('',#27,#21,#44,.T.);
+#50=ORIENTED_EDGE('',*,*,#33,.T.);#51=ORIENTED_EDGE('',*,*,#37,.T.);
+#52=ORIENTED_EDGE('',*,*,#41,.T.);#53=ORIENTED_EDGE('',*,*,#45,.T.);
+#54=EDGE_LOOP('',(#50,#51,#52,#53));
+#55=FACE_OUTER_BOUND('',#54,.T.);
+#56=ADVANCED_FACE('quad',(#55),#14,.T.);
+/* Three nested sliver faces of decreasing width.
+ * Each shares edge #33 (the bottom edge) with the quad. */
+/* Sliver 1: width 1e-3 */
+#60=CARTESIAN_POINT('s1_a',(0.0,1.0E-3,0.0));#61=VERTEX_POINT('',#60);
+#62=CARTESIAN_POINT('s1_b',(1.0,1.0E-3,0.0));#63=VERTEX_POINT('',#62);
+#64=DIRECTION('',(1.0,0.0,0.0));#65=VECTOR('',#64,1.0);#66=LINE('',#60,#65);
+#67=EDGE_CURVE('s1_top',#61,#63,#66,.T.);
+#68=DIRECTION('',(0.0,1.0,0.0));#69=VECTOR('',#68,1.0E-3);#70=LINE('',#22,#69);
+#71=EDGE_CURVE('s1_right',#23,#63,#70,.T.);
+#72=DIRECTION('',(0.0,1.0,0.0));#73=VECTOR('',#72,1.0E-3);#74=LINE('',#20,#73);
+#75=EDGE_CURVE('s1_left',#21,#61,#74,.T.);
+#76=ORIENTED_EDGE('',*,*,#33,.T.);
+#77=ORIENTED_EDGE('',*,*,#71,.T.);
+#78=ORIENTED_EDGE('',*,*,#67,.F.);
+#79=ORIENTED_EDGE('',*,*,#75,.F.);
+#80=EDGE_LOOP('s1',(#76,#77,#78,#79));
+#81=FACE_OUTER_BOUND('',#80,.T.);
+#82=ADVANCED_FACE('sliver_1_thick_1e-3',(#81),#14,.T.);
+/* Sliver 2: nested above sliver 1, width 1e-5 above (between sliver 1 top and y=1.001e-3) */
+#90=CARTESIAN_POINT('s2_a',(0.0,1.01E-3,0.0));#91=VERTEX_POINT('',#90);
+#92=CARTESIAN_POINT('s2_b',(1.0,1.01E-3,0.0));#93=VERTEX_POINT('',#92);
+#94=LINE('',#90,#65);
+#95=EDGE_CURVE('s2_top',#91,#93,#94,.T.);
+#96=VECTOR('',#68,1.0E-5);#97=LINE('',#62,#96);
+#98=EDGE_CURVE('s2_right',#63,#93,#97,.T.);
+#99=LINE('',#60,#96);
+#100=EDGE_CURVE('s2_left',#61,#91,#99,.T.);
+#101=ORIENTED_EDGE('',*,*,#67,.T.);
+#102=ORIENTED_EDGE('',*,*,#98,.T.);
+#103=ORIENTED_EDGE('',*,*,#95,.F.);
+#104=ORIENTED_EDGE('',*,*,#100,.F.);
+#105=EDGE_LOOP('s2',(#101,#102,#103,#104));
+#106=FACE_OUTER_BOUND('',#105,.T.);
+#107=ADVANCED_FACE('sliver_2_thick_1e-5',(#106),#14,.T.);
+/* Sliver 3: nested above sliver 2, width 1e-7 */
+#110=CARTESIAN_POINT('s3_a',(0.0,1.0100001E-3,0.0));#111=VERTEX_POINT('',#110);
+#112=CARTESIAN_POINT('s3_b',(1.0,1.0100001E-3,0.0));#113=VERTEX_POINT('',#112);
+#114=LINE('',#110,#65);
+#115=EDGE_CURVE('s3_top',#111,#113,#114,.T.);
+#116=VECTOR('',#68,1.0E-7);#117=LINE('',#92,#116);
+#118=EDGE_CURVE('s3_right',#93,#113,#117,.T.);
+#119=LINE('',#90,#116);
+#120=EDGE_CURVE('s3_left',#91,#111,#119,.T.);
+#121=ORIENTED_EDGE('',*,*,#95,.T.);
+#122=ORIENTED_EDGE('',*,*,#118,.T.);
+#123=ORIENTED_EDGE('',*,*,#115,.F.);
+#124=ORIENTED_EDGE('',*,*,#120,.F.);
+#125=EDGE_LOOP('s3',(#121,#122,#123,#124));
+#126=FACE_OUTER_BOUND('',#125,.T.);
+#127=ADVANCED_FACE('sliver_3_thick_1e-7',(#126),#14,.T.);
+/* Bool-cut result shell holding all four faces */
+#130=OPEN_SHELL('boolean_result',(#56,#82,#107,#127));
+ENDSEC;
+END-ISO-10303-21;

@@ -1,0 +1,38 @@
+/* U039 - Plane-angle unit declared as DEGREE but values stored as radians
+ * Defect: a PLANE_ANGLE_UNIT context is declared via
+ *   CONVERSION_BASED_UNIT('DEGREE',#7) with factor pi/180 (=0.017453293).
+ * A MEASURE_REPRESENTATION_ITEM stores PLANE_ANGLE_MEASURE(1.5708) -- the
+ * author intended 90 degrees but emitted the radian value. Receivers
+ * that take the unit declaration at face value read 1.5708 degrees;
+ * receivers that hard-assume radians produce the right number for the
+ * wrong reason. The angular twin of U001 (mm vs inches). */
+ISO-10303-21;
+HEADER;
+FILE_DESCRIPTION(('U039 - DEGREE unit declared but value stored in radians'),'2;1');
+FILE_NAME('U039.stp','2026-04-30T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=DIMENSIONAL_EXPONENTS(0.0,0.0,0.0,0.0,0.0,0.0,0.0);
+#3=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#4=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#5=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#6=PLANE_ANGLE_MEASURE_WITH_UNIT(PLANE_ANGLE_MEASURE(0.017453293),#4);
+/* Defect: unit named DEGREE, conversion factor pi/180 (correct), but
+   the value referencing this unit is stored in radians. */
+#7=(CONVERSION_BASED_UNIT('DEGREE',#6) NAMED_UNIT(#2) PLANE_ANGLE_UNIT());
+#10=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#3,
+  'distance_accuracy_value','');
+#11=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#10))
+  GLOBAL_UNIT_ASSIGNED_CONTEXT((#3,#7,#5))
+  REPRESENTATION_CONTEXT('ctx','3D'));
+/* Defect: PLANE_ANGLE_MEASURE(1.5708) -- the author intended 90 degrees
+   but emitted the radian value of 90 degrees. A radian-assuming reader
+   will read this as ~90; a degree-assuming reader will read 1.5708. */
+#20=MEASURE_REPRESENTATION_ITEM('rotation_intended_90deg',
+  PLANE_ANGLE_MEASURE(1.5708),#7);
+#21=REPRESENTATION('rep',(#20),#11);
+ENDSEC;
+END-ISO-10303-21;

@@ -1,0 +1,54 @@
+/* Ad045 - FixShape raises exception on real input ("must not throw")
+   ----------------------------------------------------------------------
+   Catalog section : §12.11 adversarial (sub-class: null-deref / fuzz-class)
+   Sources         : 03-occt-tests.md R083 (bug24126, bug24249_*, bug24934,
+                     bug7570), R038, R075, R078, R079;
+                     22-niche-forums.md Y017 (gmsh >=4.12 fatal regression
+                     "Could not fix wire")
+   See also        : Ad043
+   ----------------------------------------------------------------------
+   WARNING: This file is INTENTIONALLY MALFORMED for parser-robustness
+   testing. Do NOT use as exchange data.
+   ----------------------------------------------------------------------
+   Defect
+     ShapeFix pipeline must not throw exceptions on real input. OCCT CI
+     pins this guarantee. Real-world failures: Standard_RangeError in
+     ShapeAnalysis_WireOrder, Geom_OffsetSurface exception, fix-shape
+     negative-area, ShapeFix_Wire fatal regression after OCC 4.12.
+     Common trigger: a wire whose EDGE_CURVE start/end disagree by
+     ~Precision::Confusion() from the surface trace, exercising the
+     numerical-path branch that ShapeFix_Wire previously tolerated.
+   Reproducer recipe
+     EDGE_CURVE start/end vertices offset from line by ~1e-7 (just
+     below typical Confusion threshold) so wire-order analysis
+     numerical compare flips.
+   Expected kernel behavior
+     Degrade to warning; accept the file with healed geometry; never
+     throw across an ABI boundary. Wrap fix path in try/catch shim and
+     return E_FIX_FAILED.
+   ----------------------------------------------------------------------
+*/
+ISO-10303-21;
+HEADER;
+FILE_DESCRIPTION(('Ad045 - wire with sub-Confusion vertex/curve mismatch'),
+  '2;1');
+FILE_NAME('Ad045.stp','2026-04-26T00:00:00',('auto-generated'),(''),
+  'auto-generated','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+/* Line is exactly the X axis (0,0,0)+t*(1,0,0). Vertices intentionally
+   sit ~1e-7 off the line, just under typical Precision::Confusion. */
+#1=CARTESIAN_POINT('a',(0.0,0.0000001,0.0));
+#2=CARTESIAN_POINT('b',(1.0,-0.0000001,0.0));
+#3=VERTEX_POINT('va',#1);
+#4=VERTEX_POINT('vb',#2);
+#5=CARTESIAN_POINT('o',(0.0,0.0,0.0));
+#6=DIRECTION('x',(1.0,0.0,0.0));
+#7=VECTOR('vx',#6,1.0);
+#8=LINE('l',#5,#7);
+#10=EDGE_CURVE('e',#3,#4,#8,.T.);
+#11=ORIENTED_EDGE('oe',*,*,#10,.T.);
+#12=EDGE_LOOP('el',(#11));
+ENDSEC;
+END-ISO-10303-21;

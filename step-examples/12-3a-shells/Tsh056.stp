@@ -1,0 +1,43 @@
+ISO-10303-21;
+/* Tsh056 - Merging adjacent same-surface faces hangs on a figure-of-eight wire
+ * Single ADVANCED_FACE whose FACE_OUTER_BOUND is a 6-edge wire forming a
+ * figure-eight at vertex B (1,1,0). Wire visits A->B->C->D->B->E->A.
+ * B has FOUR incident edges in the loop -- the wire is non-simple. */
+HEADER;
+FILE_DESCRIPTION(('Tsh056 test case','Single face with 6-edge figure-of-eight wire (vertex B has 4 incident edges)'),'2;1');
+FILE_NAME('Tsh056.stp','2026-04-30T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#11=DIRECTION('',(0.0,0.0,1.0));
+#12=DIRECTION('',(1.0,0.0,0.0));
+#13=AXIS2_PLACEMENT_3D('',#10,#11,#12);
+#14=PLANE('',#13);
+/* Vertices */
+#20=CARTESIAN_POINT('A',(0.0,0.0,0.0));#21=VERTEX_POINT('A',#20);
+#22=CARTESIAN_POINT('B_apex',(1.0,1.0,0.0));#23=VERTEX_POINT('B_4_incident',#22);
+#24=CARTESIAN_POINT('C',(2.0,0.0,0.0));#25=VERTEX_POINT('C',#24);
+#26=CARTESIAN_POINT('D',(2.0,2.0,0.0));#27=VERTEX_POINT('D',#26);
+#28=CARTESIAN_POINT('E',(0.0,2.0,0.0));#29=VERTEX_POINT('E',#28);
+/* Six edges making the figure-eight outline */
+#30=DIRECTION('',(0.7071067811865475,0.7071067811865475,0.0));#31=VECTOR('',#30,1.4142);#32=LINE('',#20,#31);#33=EDGE_CURVE('e_A_B',#21,#23,#32,.T.);
+#34=DIRECTION('',(0.7071067811865475,-0.7071067811865475,0.0));#35=VECTOR('',#34,1.4142);#36=LINE('',#22,#35);#37=EDGE_CURVE('e_B_C',#23,#25,#36,.T.);
+#38=DIRECTION('',(0.0,1.0,0.0));#39=VECTOR('',#38,1.0);#40=LINE('',#24,#39);#41=EDGE_CURVE('e_C_D',#25,#27,#40,.T.);
+#42=DIRECTION('',(-0.7071067811865475,-0.7071067811865475,0.0));#43=VECTOR('',#42,1.4142);#44=LINE('',#26,#43);#45=EDGE_CURVE('e_D_B',#27,#23,#44,.T.);
+#46=DIRECTION('',(-0.7071067811865475,0.7071067811865475,0.0));#47=VECTOR('',#46,1.4142);#48=LINE('',#22,#47);#49=EDGE_CURVE('e_B_E',#23,#29,#48,.T.);
+#50=DIRECTION('',(0.0,-1.0,0.0));#51=VECTOR('',#50,1.0);#52=LINE('',#28,#51);#53=EDGE_CURVE('e_E_A',#29,#21,#52,.T.);
+/* ORIENTED_EDGEs in figure-eight visit order */
+#60=ORIENTED_EDGE('',*,*,#33,.T.);
+#61=ORIENTED_EDGE('',*,*,#37,.T.);
+#62=ORIENTED_EDGE('',*,*,#41,.T.);
+#63=ORIENTED_EDGE('',*,*,#45,.T.);
+#64=ORIENTED_EDGE('',*,*,#49,.T.);
+#65=ORIENTED_EDGE('',*,*,#53,.T.);
+#66=EDGE_LOOP('figure_eight_via_B',(#60,#61,#62,#63,#64,#65));
+#67=FACE_OUTER_BOUND('',#66,.T.);
+#68=ADVANCED_FACE('figure_eight_face',(#67),#14,.T.);
+ENDSEC;
+END-ISO-10303-21;

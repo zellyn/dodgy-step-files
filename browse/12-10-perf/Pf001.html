@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Pf001 — Multi-GB Creo AP242 assemblies trigger unbounded receiver memory</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.10 Scale &amp; performance</a> <span class="sep">/</span> <span class="current">Pf001</span>
+</nav>
+<header class="title-bar">
+<h1>Pf001 <span class="sep">—</span> <span class="entry-title">Multi-GB Creo AP242 assemblies trigger unbounded receiver memory</span></h1>
+<p class="category">§12.10 (sub-class: file-size / OOM)</p>
+<p class="tag-pills">
+<a class="tag tag-performance" href="../by-tag/performance/index.html">performance</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-10-perf/Pf001.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-10-perf/Pf001.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>10-vendor-kbs.md V017</li>
+<li>11-translator-vendors.md (W044 family)</li>
+<li>18-other-issues.md I017</li>
+</ul></section>
+<section><h2>Sender</h2>
+<p>PTC Creo (large 1+ GB AP242 assemblies)</p></section>
+<section><h2>Description</h2>
+<p>STEP files exceeding 1 GB cause downstream consumers (Inventor, AutoCAD, Navisworks) to allocate memory unboundedly until OOM even on hosts with 96 GB RAM. The producing kernel re-imports the same file successfully, so the file is not corrupt — the receiver simply cannot scale.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>AP242 STEP with thousands of `MANIFOLD_SOLID_BREP`s in nested `NEXT_ASSEMBLY_USAGE_OCCURRENCE` chains, total size &gt; 1 GB.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>streaming/lazy reader with bounded peak memory; partial-load via configurable `max_instances`; abort with `E_INSTANCE_LIMIT` rather than thrash.</p></section>
+<section><h2>Notes</h2>
+<p>PTC community thread documents the symptom; Mantis 32127 / **See also**: Pf013, Pf017.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>count_entity_def(b&#x27;CARTESIAN_POINT&#x27;) &gt;= 1</code></li>
+<li><code>contains(b&#x27;NEXT_ASSEMBLY_USAGE_OCCURRENCE&#x27;)</code></li>
+<li><code>contains(b&#x27;MANIFOLD_SOLID_BREP&#x27;)</code></li>
+</ul></section>
+<section><h2>Cross-references</h2>
+<p><a href="Pf013.html">Pf013</a>, <a href="Pf017.html">Pf017</a></p>
+</section>
+<section><h2>Live oracle output</h2>
+<table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
+<tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>no_shapes_loaded</code></td></tr>
+</tbody></table>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>/* Pf001 - Multi-GB Creo AP242 assembly: unbounded receiver memory growth
+<span class="lineno">2</span>   Pattern: nested <mark>NEXT_ASSEMBLY_USAGE_OCCURRENCE</mark> chains with thousands of
+<span class="lineno">3</span>   <mark>MANIFOLD_SOLID_BREP</mark> children. The producing kernel re-imports the same
+<span class="lineno">4</span>   file successfully, but receiver-side allocators (Inventor, AutoCAD,
+<span class="lineno">5</span>   Navisworks) grow unbounded and OOM on 96 GB hosts.
+<span class="lineno">6</span>   Scaling-up: this fixture has ~12 NAUO chain links and ~8 manifold-solid
+<span class="lineno">7</span>   stubs. Replicate the chain to depth ~10000 and emit ~10^5 solids per
+<span class="lineno">8</span>   level to trigger the production-scale 1+ GB memory footprint described
+<span class="lineno">9</span>   in PTC community / Mantis 32127 / OCCT #417 reports. */
+<span class="lineno">10</span>ISO-10303-21;
+<span class="lineno">11</span>HEADER;
+<span class="lineno">12</span>FILE_DESCRIPTION((&#x27;Pf001 - multi-GB AP242 assembly nested NAUO + brep stubs&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">13</span>FILE_NAME(&#x27;Pf001.stp&#x27;,&#x27;2026-04-26T00:00:00&#x27;,(&#x27;auto-generated&#x27;),(&#x27;&#x27;),
+<span class="lineno">14</span>  &#x27;auto-generated&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">15</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 442 1 1 4 }&#x27;));
+<span class="lineno">16</span>ENDSEC;
+<span class="lineno">17</span>DATA;
+<span class="lineno">18</span>/* root product */
+<span class="lineno">19</span>#1=APPLICATION_CONTEXT(&#x27;automotive_design&#x27;);
+<span class="lineno">20</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,
+<span class="lineno">21</span>  &#x27;automotive_design&#x27;,2001,#1);
+<span class="lineno">22</span>#3=PRODUCT_CONTEXT(&#x27;&#x27;,#1,&#x27;mechanical&#x27;);
+<span class="lineno">23</span>#4=PRODUCT(&#x27;ROOT&#x27;,&#x27;root assembly&#x27;,&#x27;&#x27;,(#3));
+<span class="lineno">24</span>#5=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#4);
+<span class="lineno">25</span>#6=PRODUCT_DEFINITION_CONTEXT(&#x27;&#x27;,#1,&#x27;design&#x27;);
+<span class="lineno">26</span>#7=PRODUCT_DEFINITION(&#x27;design&#x27;,&#x27;&#x27;,#5,#6);
+<span class="lineno">27</span>/* deep NAUO chain - in production this chain is thousands long */
+<span class="lineno">28</span>#10=PRODUCT(&#x27;SUB1&#x27;,&#x27;&#x27;,&#x27; &#x27;,(#3));
+<span class="lineno">29</span>#11=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#10);
+<span class="lineno">30</span>#12=PRODUCT_DEFINITION(&#x27;design&#x27;,&#x27;&#x27;,#11,#6);
+<span class="lineno">31</span>#13=<mark>NEXT_ASSEMBLY_USAGE_OCCURRENCE</mark>(&#x27;1&#x27;,&#x27;&#x27;,&#x27;&#x27;,#7,#12,$);
+<span class="lineno">32</span>#20=PRODUCT(&#x27;SUB2&#x27;,&#x27;&#x27;,&#x27; &#x27;,(#3));
+<span class="lineno">33</span>#21=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#20);
+<span class="lineno">34</span>#22=PRODUCT_DEFINITION(&#x27;design&#x27;,&#x27;&#x27;,#21,#6);
+<span class="lineno">35</span>#23=<mark>NEXT_ASSEMBLY_USAGE_OCCURRENCE</mark>(&#x27;2&#x27;,&#x27;&#x27;,&#x27;&#x27;,#12,#22,$);
+<span class="lineno">36</span>#30=PRODUCT(&#x27;SUB3&#x27;,&#x27;&#x27;,&#x27; &#x27;,(#3));
+<span class="lineno">37</span>#31=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#30);
+<span class="lineno">38</span>#32=PRODUCT_DEFINITION(&#x27;design&#x27;,&#x27;&#x27;,#31,#6);
+<span class="lineno">39</span>#33=<mark>NEXT_ASSEMBLY_USAGE_OCCURRENCE</mark>(&#x27;3&#x27;,&#x27;&#x27;,&#x27;&#x27;,#22,#32,$);
+<span class="lineno">40</span>#40=PRODUCT(&#x27;SUB4&#x27;,&#x27;&#x27;,&#x27; &#x27;,(#3));
+<span class="lineno">41</span>#41=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#40);
+<span class="lineno">42</span>#42=PRODUCT_DEFINITION(&#x27;design&#x27;,&#x27;&#x27;,#41,#6);
+<span class="lineno">43</span>#43=<mark>NEXT_ASSEMBLY_USAGE_OCCURRENCE</mark>(&#x27;4&#x27;,&#x27;&#x27;,&#x27;&#x27;,#32,#42,$);
+<span class="lineno">44</span>#50=PRODUCT(&#x27;SUB5&#x27;,&#x27;&#x27;,&#x27; &#x27;,(#3));
+<span class="lineno">45</span>#51=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#50);
+<span class="lineno">46</span>#52=PRODUCT_DEFINITION(&#x27;design&#x27;,&#x27;&#x27;,#51,#6);
+<span class="lineno">47</span>#53=<mark>NEXT_ASSEMBLY_USAGE_OCCURRENCE</mark>(&#x27;5&#x27;,&#x27;&#x27;,&#x27;&#x27;,#42,#52,$);
+<span class="lineno">48</span>#60=PRODUCT(&#x27;SUB6&#x27;,&#x27;&#x27;,&#x27; &#x27;,(#3));
+<span class="lineno">49</span>#61=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#60);
+<span class="lineno">50</span>#62=PRODUCT_DEFINITION(&#x27;design&#x27;,&#x27;&#x27;,#61,#6);
+<span class="lineno">51</span>#63=<mark>NEXT_ASSEMBLY_USAGE_OCCURRENCE</mark>(&#x27;6&#x27;,&#x27;&#x27;,&#x27;&#x27;,#52,#62,$);
+<span class="lineno">52</span>#70=PRODUCT(&#x27;SUB7&#x27;,&#x27;&#x27;,&#x27; &#x27;,(#3));
+<span class="lineno">53</span>#71=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#70);
+<span class="lineno">54</span>#72=PRODUCT_DEFINITION(&#x27;design&#x27;,&#x27;&#x27;,#71,#6);
+<span class="lineno">55</span>#73=<mark>NEXT_ASSEMBLY_USAGE_OCCURRENCE</mark>(&#x27;7&#x27;,&#x27;&#x27;,&#x27;&#x27;,#62,#72,$);
+<span class="lineno">56</span>#80=PRODUCT(&#x27;SUB8&#x27;,&#x27;&#x27;,&#x27; &#x27;,(#3));
+<span class="lineno">57</span>#81=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#80);
+<span class="lineno">58</span>#82=PRODUCT_DEFINITION(&#x27;design&#x27;,&#x27;&#x27;,#81,#6);
+<span class="lineno">59</span>#83=<mark>NEXT_ASSEMBLY_USAGE_OCCURRENCE</mark>(&#x27;8&#x27;,&#x27;&#x27;,&#x27;&#x27;,#72,#82,$);
+<span class="lineno">60</span>#90=PRODUCT(&#x27;SUB9&#x27;,&#x27;&#x27;,&#x27; &#x27;,(#3));
+<span class="lineno">61</span>#91=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#90);
+<span class="lineno">62</span>#92=PRODUCT_DEFINITION(&#x27;design&#x27;,&#x27;&#x27;,#91,#6);
+<span class="lineno">63</span>#93=<mark>NEXT_ASSEMBLY_USAGE_OCCURRENCE</mark>(&#x27;9&#x27;,&#x27;&#x27;,&#x27;&#x27;,#82,#92,$);
+<span class="lineno">64</span>#100=PRODUCT(&#x27;SUB10&#x27;,&#x27;&#x27;,&#x27; &#x27;,(#3));
+<span class="lineno">65</span>#101=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#100);
+<span class="lineno">66</span>#102=PRODUCT_DEFINITION(&#x27;design&#x27;,&#x27;&#x27;,#101,#6);
+<span class="lineno">67</span>#103=<mark>NEXT_ASSEMBLY_USAGE_OCCURRENCE</mark>(&#x27;10&#x27;,&#x27;&#x27;,&#x27;&#x27;,#92,#102,$);
+<span class="lineno">68</span>#110=PRODUCT(&#x27;SUB11&#x27;,&#x27;&#x27;,&#x27; &#x27;,(#3));
+<span class="lineno">69</span>#111=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#110);
+<span class="lineno">70</span>#112=PRODUCT_DEFINITION(&#x27;design&#x27;,&#x27;&#x27;,#111,#6);
+<span class="lineno">71</span>#113=<mark>NEXT_ASSEMBLY_USAGE_OCCURRENCE</mark>(&#x27;11&#x27;,&#x27;&#x27;,&#x27;&#x27;,#102,#112,$);
+<span class="lineno">72</span>#120=PRODUCT(&#x27;SUB12&#x27;,&#x27;&#x27;,&#x27; &#x27;,(#3));
+<span class="lineno">73</span>#121=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#120);
+<span class="lineno">74</span>#122=PRODUCT_DEFINITION(&#x27;design&#x27;,&#x27;&#x27;,#121,#6);
+<span class="lineno">75</span>#123=<mark>NEXT_ASSEMBLY_USAGE_OCCURRENCE</mark>(&#x27;12&#x27;,&#x27;&#x27;,&#x27;&#x27;,#112,#122,$);
+<span class="lineno">76</span>/* manifold solid stubs - in production each level holds thousands */
+<span class="lineno">77</span><mark>#200=CARTESIAN_POINT(</mark>&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">78</span>#201=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">79</span>#202=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">80</span>#203=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#200,#201,#202);
+<span class="lineno">81</span>#210=<mark>MANIFOLD_SOLID_BREP</mark>(&#x27;s1&#x27;,#300);
+<span class="lineno">82</span>#211=<mark>MANIFOLD_SOLID_BREP</mark>(&#x27;s2&#x27;,#300);
+<span class="lineno">83</span>#212=<mark>MANIFOLD_SOLID_BREP</mark>(&#x27;s3&#x27;,#300);
+<span class="lineno">84</span>#213=<mark>MANIFOLD_SOLID_BREP</mark>(&#x27;s4&#x27;,#300);
+<span class="lineno">85</span>#214=<mark>MANIFOLD_SOLID_BREP</mark>(&#x27;s5&#x27;,#300);
+<span class="lineno">86</span>#215=<mark>MANIFOLD_SOLID_BREP</mark>(&#x27;s6&#x27;,#300);
+<span class="lineno">87</span>#216=<mark>MANIFOLD_SOLID_BREP</mark>(&#x27;s7&#x27;,#300);
+<span class="lineno">88</span>#217=<mark>MANIFOLD_SOLID_BREP</mark>(&#x27;s8&#x27;,#300);
+<span class="lineno">89</span>/* placeholder closed shell referenced by the stubs (degenerate, simplified) */
+<span class="lineno">90</span>#300=CLOSED_SHELL(&#x27;&#x27;,(#310));
+<span class="lineno">91</span>#310=ADVANCED_FACE(&#x27;&#x27;,(#320),#330,.T.);
+<span class="lineno">92</span>#320=FACE_OUTER_BOUND(&#x27;&#x27;,#340,.T.);
+<span class="lineno">93</span>#330=PLANE(&#x27;&#x27;,#203);
+<span class="lineno">94</span>#340=EDGE_LOOP(&#x27;&#x27;,());
+<span class="lineno">95</span>ENDSEC;
+<span class="lineno">96</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="up" href="index.html">§12.10 Scale &amp; performance</a> <a class="next" href="Pf002.html">Pf002 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

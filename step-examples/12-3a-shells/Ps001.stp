@@ -1,0 +1,118 @@
+/* Ps001 - Negative volume cube: all face normals inverted - kernel accepts file silently; tier-3 introspection reveals signed volume is negative */
+ISO-10303-21;
+HEADER;
+FILE_DESCRIPTION(('Ps001 pathological-success','Inverted face normals yield negative volume'),'2;1');
+FILE_NAME('Ps001.stp','2026-04-26T00:00:00',(''),(''),'manual','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+/* Cube vertices */
+#100=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#101=CARTESIAN_POINT('',(1.0,0.0,0.0));
+#102=CARTESIAN_POINT('',(1.0,1.0,0.0));
+#103=CARTESIAN_POINT('',(0.0,1.0,0.0));
+#104=CARTESIAN_POINT('',(0.0,0.0,1.0));
+#105=CARTESIAN_POINT('',(1.0,0.0,1.0));
+#106=CARTESIAN_POINT('',(1.0,1.0,1.0));
+#107=CARTESIAN_POINT('',(0.0,1.0,1.0));
+#110=VERTEX_POINT('',#100); #111=VERTEX_POINT('',#101);
+#112=VERTEX_POINT('',#102); #113=VERTEX_POINT('',#103);
+#114=VERTEX_POINT('',#104); #115=VERTEX_POINT('',#105);
+#116=VERTEX_POINT('',#106); #117=VERTEX_POINT('',#107);
+/* Surface normals point INWARD (toward cube center) on every face --
+   each face center is at the cube's half-edge in the OUTWARD direction,
+   but the surface-axis direction is intentionally negated. */
+#200=DIRECTION('',(0.0,0.0,1.0)); #201=DIRECTION('',(1.0,0.0,0.0));
+#202=DIRECTION('',(0.0,0.0,-1.0)); /* inverted z+ */
+#203=DIRECTION('',(0.0,1.0,0.0)); /* inverted -y */
+#204=DIRECTION('',(0.0,-1.0,0.0)); /* inverted +y */
+#205=DIRECTION('',(1.0,0.0,0.0)); /* inverted -x */
+#206=DIRECTION('',(-1.0,0.0,0.0)); /* inverted +x */
+/* Bottom face (z=0): outward should be -z, but we set +z */
+#210=CARTESIAN_POINT('',(0.5,0.5,0.0));
+#211=AXIS2_PLACEMENT_3D('',#210,#200,#201); #212=PLANE('',#211);
+/* Top face (z=1): outward should be +z, but we set -z */
+#220=CARTESIAN_POINT('',(0.5,0.5,1.0));
+#221=AXIS2_PLACEMENT_3D('',#220,#202,#201); #222=PLANE('',#221);
+/* Front face (y=0): outward should be -y, but we set +y */
+#230=CARTESIAN_POINT('',(0.5,0.0,0.5));
+#231=AXIS2_PLACEMENT_3D('',#230,#203,#201); #232=PLANE('',#231);
+/* Back face (y=1): outward should be +y, but we set -y */
+#240=CARTESIAN_POINT('',(0.5,1.0,0.5));
+#241=AXIS2_PLACEMENT_3D('',#240,#204,#201); #242=PLANE('',#241);
+/* Left face (x=0): outward should be -x, but we set +x */
+#250=CARTESIAN_POINT('',(0.0,0.5,0.5));
+#251=AXIS2_PLACEMENT_3D('',#250,#205,#203); #252=PLANE('',#251);
+/* Right face (x=1): outward should be +x, but we set -x */
+#260=CARTESIAN_POINT('',(1.0,0.5,0.5));
+#261=AXIS2_PLACEMENT_3D('',#260,#206,#203); #262=PLANE('',#261);
+/* Edges (12 lines) */
+#300=DIRECTION('',(1.0,0.0,0.0)); #301=VECTOR('',#300,1.0);
+#302=DIRECTION('',(0.0,1.0,0.0)); #303=VECTOR('',#302,1.0);
+#304=DIRECTION('',(0.0,0.0,1.0)); #305=VECTOR('',#304,1.0);
+#310=LINE('',#100,#301); #311=EDGE_CURVE('',#110,#111,#310,.T.);
+#312=LINE('',#101,#303); #313=EDGE_CURVE('',#111,#112,#312,.T.);
+#314=LINE('',#103,#301); #315=EDGE_CURVE('',#113,#112,#314,.T.);
+#316=LINE('',#100,#303); #317=EDGE_CURVE('',#110,#113,#316,.T.);
+#318=LINE('',#104,#301); #319=EDGE_CURVE('',#114,#115,#318,.T.);
+#320=LINE('',#105,#303); #321=EDGE_CURVE('',#115,#116,#320,.T.);
+#322=LINE('',#107,#301); #323=EDGE_CURVE('',#117,#116,#322,.T.);
+#324=LINE('',#104,#303); #325=EDGE_CURVE('',#114,#117,#324,.T.);
+#326=LINE('',#100,#305); #327=EDGE_CURVE('',#110,#114,#326,.T.);
+#328=LINE('',#101,#305); #329=EDGE_CURVE('',#111,#115,#328,.T.);
+#330=LINE('',#102,#305); #331=EDGE_CURVE('',#112,#116,#330,.T.);
+#332=LINE('',#103,#305); #333=EDGE_CURVE('',#113,#117,#332,.T.);
+/* Bottom face loops in CCW seen from -z (which is the kernel's reading
+   given the inverted surface). Topology is consistent with the
+   inverted surface convention -- the file SAYS "the outward normal
+   points inward" with full structural integrity. */
+#400=ORIENTED_EDGE('',*,*,#311,.T.); #401=ORIENTED_EDGE('',*,*,#313,.T.);
+#402=ORIENTED_EDGE('',*,*,#315,.F.); #403=ORIENTED_EDGE('',*,*,#317,.F.);
+#404=EDGE_LOOP('',(#400,#401,#402,#403)); #405=FACE_OUTER_BOUND('',#404,.T.);
+#406=ADVANCED_FACE('',(#405),#212,.T.);
+#410=ORIENTED_EDGE('',*,*,#319,.F.); #411=ORIENTED_EDGE('',*,*,#325,.T.);
+#412=ORIENTED_EDGE('',*,*,#323,.T.); #413=ORIENTED_EDGE('',*,*,#321,.F.);
+#414=EDGE_LOOP('',(#410,#411,#412,#413)); #415=FACE_OUTER_BOUND('',#414,.T.);
+#416=ADVANCED_FACE('',(#415),#222,.T.);
+#420=ORIENTED_EDGE('',*,*,#311,.F.); #421=ORIENTED_EDGE('',*,*,#327,.T.);
+#422=ORIENTED_EDGE('',*,*,#319,.T.); #423=ORIENTED_EDGE('',*,*,#329,.F.);
+#424=EDGE_LOOP('',(#420,#421,#422,#423)); #425=FACE_OUTER_BOUND('',#424,.T.);
+#426=ADVANCED_FACE('',(#425),#232,.T.);
+#430=ORIENTED_EDGE('',*,*,#315,.F.); #431=ORIENTED_EDGE('',*,*,#329,.F.); /* placeholder */
+#432=ORIENTED_EDGE('',*,*,#323,.F.); #433=ORIENTED_EDGE('',*,*,#331,.T.);
+/* Use proper back-face loop: edges #315(b-bf),#331(rb-rt),#323(t-bf rev),#333(lb-lt rev) */
+#434=ORIENTED_EDGE('',*,*,#315,.T.); #435=ORIENTED_EDGE('',*,*,#331,.T.);
+#436=ORIENTED_EDGE('',*,*,#323,.F.); #437=ORIENTED_EDGE('',*,*,#333,.F.);
+#438=EDGE_LOOP('',(#434,#435,#436,#437)); #439=FACE_OUTER_BOUND('',#438,.T.);
+#440=ADVANCED_FACE('',(#439),#242,.T.);
+#450=ORIENTED_EDGE('',*,*,#317,.T.); #451=ORIENTED_EDGE('',*,*,#333,.T.);
+#452=ORIENTED_EDGE('',*,*,#325,.F.); #453=ORIENTED_EDGE('',*,*,#327,.F.);
+#454=EDGE_LOOP('',(#450,#451,#452,#453)); #455=FACE_OUTER_BOUND('',#454,.T.);
+#456=ADVANCED_FACE('',(#455),#252,.T.);
+#460=ORIENTED_EDGE('',*,*,#313,.T.); #461=ORIENTED_EDGE('',*,*,#331,.T.);
+#462=ORIENTED_EDGE('',*,*,#321,.F.); #463=ORIENTED_EDGE('',*,*,#329,.F.);
+#464=EDGE_LOOP('',(#460,#461,#462,#463)); #465=FACE_OUTER_BOUND('',#464,.T.);
+#466=ADVANCED_FACE('',(#465),#262,.T.);
+/* CLOSED_SHELL with all face normals inverted: closes topologically,
+   but every face's surface normal points into the interior of the cube.
+   Net signed volume is -1 (a "negative cube"). */
+#500=CLOSED_SHELL('inverted_skin',(#406,#416,#426,#440,#456,#466));
+#510=MANIFOLD_SOLID_BREP('negative_volume_solid',#500);
+/* PRODUCT chain so OCCT loads the geometry */
+#9000=PRODUCT_CONTEXT('',#1,'mechanical');
+#9001=PRODUCT('Ps001','Ps001','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
+#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
+#9022=ADVANCED_BREP_SHAPE_REPRESENTATION('',(#510),#9010);
+#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+ENDSEC;
+END-ISO-10303-21;

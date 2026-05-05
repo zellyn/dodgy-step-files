@@ -1,0 +1,58 @@
+ISO-10303-21;
+/* Fi007 - Fillet leaks off the boundary of a face.
+ * Defect: a small face (UV in [0,0.5]x[0,0.5]) is adjacent to the spine.
+ * The rolling-ball trace exits the face's parametric domain before
+ * the spine ends. Encoded: spine EDGE_CURVE on the boundary between
+ * a small face and a larger neighbour face. */
+HEADER;
+FILE_DESCRIPTION(('Fi007 test case','Fillet leaks off face'),'2;1');
+FILE_NAME('Fi007.stp','2026-04-30T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+/* Spine vertices */
+#10=CARTESIAN_POINT('v_start',(0.0,0.0,0.0));
+#11=CARTESIAN_POINT('v_end',(1.0,0.0,0.0));
+#12=VERTEX_POINT('',#10);
+#13=VERTEX_POINT('',#11);
+/* Spine edge */
+#20=DIRECTION('',(1.0,0.0,0.0));
+#21=VECTOR('',#20,1.0);
+#22=LINE('',#10,#21);
+#23=EDGE_CURVE('spine_edge',#12,#13,#22,.T.);
+/* Underlying surfaces */
+#30=DIRECTION('',(0.0,0.0,1.0));
+#31=DIRECTION('',(1.0,0.0,0.0));
+#32=AXIS2_PLACEMENT_3D('',#10,#30,#31);
+#33=PLANE('big_face_surface',#32);
+#34=DIRECTION('',(0.0,0.0,-1.0));
+#35=AXIS2_PLACEMENT_3D('',#10,#34,#31);
+#36=PLANE('small_face_surface',#35);
+/* Small face: UV box only [0,0.5]x[0,0.5] - too small for the rolling ball */
+#37=RECTANGULAR_TRIMMED_SURFACE('small_face',#36,0.0,0.0,0.5,0.5,.T.,.T.);
+/* Both faces share the spine edge */
+#40=ORIENTED_EDGE('',*,*,#23,.T.);
+#41=EDGE_LOOP('',(#40));
+#42=FACE_OUTER_BOUND('',#41,.T.);
+#43=ADVANCED_FACE('big_face',(#42),#33,.T.);
+#44=ADVANCED_FACE('small_face_adjacent',(#42),#37,.T.);
+/* Minimal PRODUCT chain so OCCT TransferRoots produces a shape. */
+#9010=PRODUCT_CONTEXT('',#1,'mechanical');
+#9011=PRODUCT('Fi007','Fi007','',(#9010));
+#9012=PRODUCT_DEFINITION_FORMATION('','',#9011);
+#9013=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9014=PRODUCT_DEFINITION('','',#9012,#9013);
+#9015=PRODUCT_DEFINITION_SHAPE('','',#9014);
+#9020=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9021=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9022=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9023=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9020,'distance_accuracy_value','');
+#9024=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9023))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9020,#9021,#9022))REPRESENTATION_CONTEXT('','3D'));
+#9030=OPEN_SHELL('wrap_shell',(#43,#44));
+#9031=SHELL_BASED_SURFACE_MODEL('wrap_sbsm',(#9030));
+#9050=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9031),#9024);
+#9051=SHAPE_DEFINITION_REPRESENTATION(#9015,#9050);
+ENDSEC;
+END-ISO-10303-21;

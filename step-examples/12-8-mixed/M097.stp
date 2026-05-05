@@ -1,0 +1,37 @@
+ISO-10303-21;
+/* M097 - AP238 workingstep references a feature not on the workpiece.
+ * Defect: a MACHINING_WORKINGSTEP's setup mounts WORKPIECE A, but the
+ * cited feature (#510) is associated with WORKPIECE B. The toolpath
+ * computed against feature #510's placement is in the wrong frame -
+ * tool crashes against workpiece A. */
+HEADER;
+FILE_DESCRIPTION(('M097 test case','AP238 workingstep cites feature on wrong workpiece'),'2;1');
+FILE_NAME('M097.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AP238_STEP_NC_MIM { 1 0 10303 238 1 0 0 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('numerical_control_machining');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
+  'numerical_control_machining',2007,#1);
+#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10))
+     REPRESENTATION_CONTEXT('nc','3D'));
+/* Two workpieces */
+#400=WORKPIECE('part_A',$,$,$,$,$,$);
+#401=WORKPIECE('part_B',$,$,$,$,$,$);
+/* Features - #500 belongs to A, #510 belongs to B */
+#500=CARTESIAN_POINT('feature_on_A',(10.0,10.0,0.0));
+#510=CARTESIAN_POINT('feature_on_B',(50.0,50.0,0.0));
+/* Setup A is mounting workpiece A */
+#100=AXIS2_PLACEMENT_3D('setup_csys',
+  CARTESIAN_POINT('o',(0.0,0.0,0.0)),
+  DIRECTION('z',(0.0,0.0,1.0)),
+  DIRECTION('x',(1.0,0.0,0.0)));
+#150=SETUP('setup_a',#100,$,$);
+/* Defect: workingstep mounts setup_a (workpiece A) but cites #510 (on B). */
+#200=MACHINING_OPERATION('drill_wrong_feature',$,$,$,$,#510);
+#300=MACHINING_WORKINGSTEP('ws1',#150,#200,$);
+#600=WORKPLAN('main',(#300),$,$,$);
+ENDSEC;
+END-ISO-10303-21;

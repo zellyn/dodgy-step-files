@@ -1,0 +1,48 @@
+/* N003 - UnifySameDomain inflates vertex tolerance by orders of magnitude on merge
+ * Defect: When ShapeUpgrade_UnifySameDomain merges adjacent same-domain faces,
+ * the resulting shared vertex receives an aggregate tolerance equal to the
+ * worst-case vertex among merged inputs (~1e-1 instead of preserving native
+ * 2e-7). Downstream algorithms then treat coincident points as fuzzy-equal
+ * where they were previously precise.
+ * Reproducer: two coplanar faces with vertex tolerance 2e-7 each plus one
+ * vertex with tolerance 1e-1 (legacy from prior healing); the post-merge
+ * vertex carries 1e-1.
+ */
+ISO-10303-21;
+HEADER;
+FILE_DESCRIPTION(('N003 UnifySameDomain inflates merged-vertex tolerance'),'2;1');
+FILE_NAME('N003.stp','2026-04-26T00:00:00',(''),(''),
+  'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
+  'automotive_design',2009,#1);
+#10=CARTESIAN_POINT('shared_corner',(5.0,0.0,0.0));
+#11=CARTESIAN_POINT('a',(0.0,0.0,0.0));
+#12=CARTESIAN_POINT('b',(10.0,0.0,0.0));
+#20=VERTEX_POINT('precise_a',#11);
+#21=VERTEX_POINT('precise_b',#12);
+/* Defect site: shared vertex inherited 1e-1 from worst input */
+#22=VERTEX_POINT('merged_shared_bloated',#10);
+#30=DIRECTION('+x',(1.0,0.0,0.0));
+#31=VECTOR('',#30,5.0);
+#32=LINE('',#11,#31);
+#33=LINE('',#10,#31);
+#40=EDGE_CURVE('left_face_edge',#20,#22,#32,.T.);
+#41=EDGE_CURVE('right_face_edge',#22,#21,#33,.T.);
+#50=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#51=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#52=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#60=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(2.0E-7),#50,
+  'distance_accuracy_value','native_vertex_precision');
+/* Defect: aggregate took max not recomputed deviation */
+#61=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-1),#50,
+  'distance_accuracy_value','merged_vertex_tolerance_inflated');
+#70=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#60,#61))
+  GLOBAL_UNIT_ASSIGNED_CONTEXT((#50,#51,#52))
+  REPRESENTATION_CONTEXT('ctx','3D'));
+ENDSEC;
+END-ISO-10303-21;

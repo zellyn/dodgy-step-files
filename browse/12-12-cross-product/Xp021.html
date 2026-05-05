@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Xp021 — Disconnected EDGE_LOOP × pcurve missing × wire bypassing seam</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.12 Cross-product</a> <span class="sep">/</span> <span class="current">Xp021</span>
+</nav>
+<header class="title-bar">
+<h1>Xp021 <span class="sep">—</span> <span class="entry-title">Disconnected EDGE_LOOP × pcurve missing × wire bypassing seam</span></h1>
+<p class="category">§12.12 cross-product (wires × pcurves × surfaces)</p>
+<p class="severity-badge severity-p1">P1 — silent data loss</p>
+<p class="tag-pills">
+<a class="tag tag-interop" href="../by-tag/interop/index.html">interop</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-12-cross-product/Xp021.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-12-cross-product/Xp021.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>synthesized cross-product.</li>
+</ul></section>
+<section><h2>Description</h2>
+<p>A face on a closed `CYLINDRICAL_SURFACE` is bounded by three edges. Edge[1].end ≠ Edge[2].start (gap of 0.5 in 3D — far above any reasonable tolerance). The pcurves are absent. The wire&#x27;s 3D path also wraps around the cylinder (covers &gt; one period in U). All three classes interact on the same wire.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>cylinder; face wire with three open edges, gaps, no pcurves, total U-extent &gt; 2π.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>Heal and accept, or reject with E_CONNECTEDNESS / E_MISSING_PCURVE diagnostic: connectedness invariant, pcurve-existence invariant, and period-spanning invariant each addressed — repair where possible, otherwise reject.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>contains(b&#x27;FILE_SCHEMA&#x27;)</code></li>
+<li><code>contains(b&#x27;EDGE_CURVE&#x27;)</code></li>
+<li><code>contains(b&#x27;ADVANCED_FACE&#x27;)</code></li>
+</ul></section>
+<section><h2>Live oracle output</h2>
+<table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
+<tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>no_shapes_loaded</code></td></tr>
+</tbody></table>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* Xp021 - Cross-product: face on closed cylindrical surface with a
+<span class="lineno">3</span> *   disconnected EDGE_LOOP (head-to-tail violated), missing pcurves, and
+<span class="lineno">4</span> *   a wire whose 3D U-extent exceeds 2pi (one full period).
+<span class="lineno">5</span> * Builds on Twi003 (head-to-tail) + Gp001 (missing pcurve) +
+<span class="lineno">6</span> *   Twi-seam-class (period spanning). */
+<span class="lineno">7</span>HEADER;
+<span class="lineno">8</span>FILE_DESCRIPTION((&#x27;Xp021 cross-product&#x27;,&#x27;disconnected loop x missing pcurve x period spanning&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">9</span>FILE_NAME(&#x27;Xp021.stp&#x27;,&#x27;2026-04-26T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">10</span><mark>FILE_SCHEMA</mark>((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }&#x27;));
+<span class="lineno">11</span>ENDSEC;
+<span class="lineno">12</span>DATA;
+<span class="lineno">13</span>#1=APPLICATION_CONTEXT(&#x27;automotive_design&#x27;);
+<span class="lineno">14</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,&#x27;automotive_design&#x27;,2000,#1);
+<span class="lineno">15</span>#10=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">16</span>#11=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">17</span>#12=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">18</span>#13=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#10,#11,#12);
+<span class="lineno">19</span>#14=CYLINDRICAL_SURFACE(&#x27;&#x27;,#13,1.0);
+<span class="lineno">20</span>/* Vertices: a, b, c with deliberately non-consecutive c-&gt;a */
+<span class="lineno">21</span>#20=CARTESIAN_POINT(&#x27;a&#x27;,(1.0,0.0,0.0));
+<span class="lineno">22</span>#21=CARTESIAN_POINT(&#x27;b&#x27;,(-1.0,0.0,1.0));
+<span class="lineno">23</span>/* Defect 1: edge[1].end (-1,0,1) != edge[2].start (-0.5,0.5,0.5) */
+<span class="lineno">24</span>#22=CARTESIAN_POINT(&#x27;c&#x27;,(-0.5,0.5,0.5));
+<span class="lineno">25</span>#23=CARTESIAN_POINT(&#x27;c2&#x27;,(0.5,-0.5,0.5));
+<span class="lineno">26</span>#30=VERTEX_POINT(&#x27;&#x27;,#20);
+<span class="lineno">27</span>#31=VERTEX_POINT(&#x27;&#x27;,#21);
+<span class="lineno">28</span>#32=VERTEX_POINT(&#x27;&#x27;,#22);
+<span class="lineno">29</span>#33=VERTEX_POINT(&#x27;&#x27;,#23);
+<span class="lineno">30</span>#40=DIRECTION(&#x27;&#x27;,(-0.7071,0.0,0.7071));
+<span class="lineno">31</span>#41=VECTOR(&#x27;&#x27;,#40,2.828);
+<span class="lineno">32</span>#42=LINE(&#x27;&#x27;,#20,#41);
+<span class="lineno">33</span>#43=DIRECTION(&#x27;&#x27;,(0.5773502691896258,0.5773502691896258,-0.5773502691896258));
+<span class="lineno">34</span>#44=VECTOR(&#x27;&#x27;,#43,1.732);
+<span class="lineno">35</span>#45=LINE(&#x27;&#x27;,#22,#44);
+<span class="lineno">36</span>#46=DIRECTION(&#x27;&#x27;,(0.5773502691896258,-0.5773502691896258,-0.5773502691896258));
+<span class="lineno">37</span>#47=VECTOR(&#x27;&#x27;,#46,1.732);
+<span class="lineno">38</span>#48=LINE(&#x27;&#x27;,#23,#47);
+<span class="lineno">39</span>#60=<mark>EDGE_CURVE</mark>(&#x27;&#x27;,#30,#31,#42,.T.);
+<span class="lineno">40</span>#61=<mark>EDGE_CURVE</mark>(&#x27;&#x27;,#32,#33,#45,.T.);
+<span class="lineno">41</span>#62=<mark>EDGE_CURVE</mark>(&#x27;&#x27;,#33,#30,#48,.T.);
+<span class="lineno">42</span>/* Defect 2: SURFACE_CURVE.associated_geometry empty (no PCURVE) */
+<span class="lineno">43</span>/* (Lines used directly as 3D curves; pcurves never authored.) */
+<span class="lineno">44</span>#70=ORIENTED_EDGE(&#x27;&#x27;,*,*,#60,.T.);
+<span class="lineno">45</span>#71=ORIENTED_EDGE(&#x27;&#x27;,*,*,#61,.T.);
+<span class="lineno">46</span>#72=ORIENTED_EDGE(&#x27;&#x27;,*,*,#62,.T.);
+<span class="lineno">47</span>/* Defect 3: wire wraps &gt; one full period in U (path 0 -&gt; pi -&gt; &gt;2pi) */
+<span class="lineno">48</span>#80=EDGE_LOOP(&#x27;disconnected_period_span&#x27;,(#70,#71,#72));
+<span class="lineno">49</span>#81=FACE_OUTER_BOUND(&#x27;&#x27;,#80,.T.);
+<span class="lineno">50</span>#82=<mark>ADVANCED_FACE</mark>(&#x27;cyl_face&#x27;,(#81),#14,.T.);
+<span class="lineno">51</span>ENDSEC;
+<span class="lineno">52</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Xp020.html">&larr; Xp020</a> <a class="up" href="index.html">§12.12 Cross-product</a> <a class="next" href="Xp022.html">Xp022 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

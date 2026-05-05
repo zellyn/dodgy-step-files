@@ -1,0 +1,56 @@
+/* Gn013 - Convert elementary <-> BSpline (round-trip degradation)
+   Defect: the producer represented a unit-radius cylindrical surface as a
+   rational B_SPLINE_SURFACE_WITH_KNOTS of degree (2,1), even though a
+   CYLINDRICAL_SURFACE is the natural form.  This is the canonical
+   "convert elementary to BSpline" round-trip: every face becomes NURBS,
+   so feature recognition / hole detection / CAM tool axis derivation
+   degrade silently because the surface no longer answers Type() ==
+   Cylinder.  Healer ShapeCustom_ConvertTo* / canonical recognition is
+   needed to recover the analytic primitive on read.
+
+   The U-direction is a half-circle (theta in [0, pi]) built as TWO
+   exact rational quadratic quarter arcs joined at theta = pi/2:
+     poles  : ( 1,  0), ( 1,  1), ( 0,  1), (-1,  1), (-1,  0)
+     weights:    1,    sqrt(2)/2,    1,    sqrt(2)/2,    1
+     knots  : (3, 2, 3) over (0.0, 0.5, 1.0)  -- C1 quarter-arc join.
+   The V-direction is degree 1 (linear extrusion +z by 1.0).  This is
+   the standard exact NURBS half-cylinder. */
+ISO-10303-21;
+HEADER;
+FILE_DESCRIPTION(
+  ('Gn013 - cylinder represented as rational BSpline (NURBS-everywhere)'),
+  '2;1');
+FILE_NAME('Gn013.stp','2026-04-26T00:00:00',('auto-generated'),(''),
+  'auto-generated','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+/* Half-cylinder (theta in [0, pi]) of radius 1 around z-axis, height 1.
+   5 poles per row (two quarter-arcs); 2 rows (linear extrusion). */
+/* z = 0 row */
+#10=CARTESIAN_POINT('s00',( 1.0, 0.0, 0.0));
+#11=CARTESIAN_POINT('s01',( 1.0, 1.0, 0.0));
+#12=CARTESIAN_POINT('s02',( 0.0, 1.0, 0.0));
+#13=CARTESIAN_POINT('s03',(-1.0, 1.0, 0.0));
+#14=CARTESIAN_POINT('s04',(-1.0, 0.0, 0.0));
+/* z = 1 row (same poles, +z) */
+#20=CARTESIAN_POINT('s10',( 1.0, 0.0, 1.0));
+#21=CARTESIAN_POINT('s11',( 1.0, 1.0, 1.0));
+#22=CARTESIAN_POINT('s12',( 0.0, 1.0, 1.0));
+#23=CARTESIAN_POINT('s13',(-1.0, 1.0, 1.0));
+#24=CARTESIAN_POINT('s14',(-1.0, 0.0, 1.0));
+/* Defect: cylinder encoded as rational NURBS surface; no CYLINDRICAL_SURFACE
+   anywhere in the file.  Weights (1, sqrt(2)/2, 1, sqrt(2)/2, 1) in U
+   give the EXACT rational quadratic half-circle. */
+#100=(
+  BOUNDED_SURFACE()
+  B_SPLINE_SURFACE(2,1,
+    ((#10,#20),(#11,#21),(#12,#22),(#13,#23),(#14,#24)),
+    .UNSPECIFIED.,.F.,.F.,.F.)
+  B_SPLINE_SURFACE_WITH_KNOTS((3,2,3),(2,2),(0.0,0.5,1.0),(0.0,1.0),.UNSPECIFIED.)
+  GEOMETRIC_REPRESENTATION_ITEM()
+  RATIONAL_B_SPLINE_SURFACE(((1.0,1.0),(0.7071067811865476,0.7071067811865476),(1.0,1.0),(0.7071067811865476,0.7071067811865476),(1.0,1.0)))
+  REPRESENTATION_ITEM('cyl_as_nurbs')
+  SURFACE());
+ENDSEC;
+END-ISO-10303-21;

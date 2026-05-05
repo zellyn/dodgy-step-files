@@ -1,0 +1,66 @@
+/* Ad064 - underscore inside quoted name truncated by name-parsing consumer
+   Source: STEP_PROBLEM_CATALOG.md §12.11 Ad064; mining 22-niche-forums.md
+           Y013 (gmsh #3325, CST Microwave Studio export).
+   Pattern: a downstream consumer (gmsh) treats `_` as a field delimiter
+           on the *quoted* string content of MANIFOLD_SURFACE_SHAPE_REPRESENTATION;
+           everything after the first `_` is silently lost. The producing
+           kernel (CST Microwave Studio) emits perfectly conformant STEP
+           per ISO-10303-21 §6.4.3.4 string literal grammar.
+   Adversarial property: the file is fully spec-conformant. The bug lives
+           in any consumer that post-processes the quoted name as if it
+           were structured. A robust kernel never modifies quoted-string
+           contents and never imposes a `_`-delimited substructure on
+           caller-supplied names.
+   Expected kernel behavior: surface the full string `component1_1|dipole1`
+           verbatim through the public name accessor; reject any internal
+           code path that splits on `_`.
+   This file is INTENTIONALLY a stress-fixture for name-handling code paths;
+   the STEP itself is well-formed. License-clean: synthesized minimal
+   AP203 fragment, no third-party content reused. */
+ISO-10303-21;
+HEADER;
+FILE_DESCRIPTION(
+  ('Ad064 - underscore in quoted name truncated by consumer'),
+  '2;1');
+FILE_NAME('Ad064.stp','2026-04-26T00:00:00',
+  ('auto-generated'),(''),'auto-generated','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
+  'automotive_design',2001,#1);
+#3=PRODUCT_CONTEXT('',#1,'mechanical');
+#4=PRODUCT('component1_1|dipole1','component1_1|dipole1','',(#3));
+#5=PRODUCT_DEFINITION_FORMATION('','',#4);
+#6=PRODUCT_DEFINITION_CONTEXT('',#1,'design');
+#7=PRODUCT_DEFINITION('design','',#5,#6);
+#8=PRODUCT_DEFINITION_SHAPE('','',#7);
+/* the adversarial token: the quoted name contains an underscore
+   which non-conformant consumers split on, dropping everything after it. */
+#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#11=DIRECTION('',(0.0,0.0,1.0));
+#12=DIRECTION('',(1.0,0.0,0.0));
+#13=AXIS2_PLACEMENT_3D('',#10,#11,#12);
+#20=PLANE('',#13);
+#21=FACE_OUTER_BOUND('',#30,.T.);
+#22=ADVANCED_FACE('component1_1|dipole1',(#21),#20,.T.);
+#23=OPEN_SHELL('component1_1|dipole1',(#22));
+#24=SHELL_BASED_SURFACE_MODEL('',(#23));
+#30=EDGE_LOOP('',());
+/* MANIFOLD_SURFACE_SHAPE_REPRESENTATION uses the same name pattern
+   that triggered the original gmsh #3325 truncation. */
+#40=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+     GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#41))
+     GLOBAL_UNIT_ASSIGNED_CONTEXT((#42,#43,#44))
+     REPRESENTATION_CONTEXT('','3D'));
+#41=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.E-7),#42,
+  'distance_accuracy_value','');
+#42=(LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT(.MILLI.,.METRE.));
+#43=(NAMED_UNIT(*) PLANE_ANGLE_UNIT() SI_UNIT($,.RADIAN.));
+#44=(NAMED_UNIT(*) SI_UNIT($,.STERADIAN.) SOLID_ANGLE_UNIT());
+#50=MANIFOLD_SURFACE_SHAPE_REPRESENTATION(
+  'component1_1|dipole1',(#13,#24),#40);
+#51=SHAPE_DEFINITION_REPRESENTATION(#8,#50);
+ENDSEC;
+END-ISO-10303-21;

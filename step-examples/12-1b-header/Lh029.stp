@@ -1,0 +1,40 @@
+/* Lh029 — Schema name in FILE_SCHEMA has whitespace, comments, or
+ *         vendor extensions inside the list
+ * Defect: multi-schema FILE_SCHEMA with embedded Part-21 comments
+ * inside the schema-name list confuses naive header parsers that
+ * fall back to byte-level regex. Per spec, FILE_SCHEMA must parse
+ * via the same robust string-literal tokenizer as DATA — the
+ * embedded comment is well-formed Part-21 and must be skipped, not
+ * folded into the schema-name string. */
+ISO-10303-21;
+HEADER;
+FILE_DESCRIPTION((''),'2;1');
+FILE_NAME('Lh029.stp','2026-04-26T00:00:00',(''),(''),
+  'cad-research-suite','','');
+FILE_SCHEMA(('CONFIG_CONTROL_DESIGN' /* legacy */,
+  'AUTOMOTIVE_DESIGN'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
+  'automotive_design',2009,#1);
+#3=PRODUCT_CONTEXT('part',#1,'mechanical');
+#4=PRODUCT('Lh029-part','Lh029 demo','',(#3));
+#5=PRODUCT_DEFINITION_FORMATION('','',#4);
+#6=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#7=PRODUCT_DEFINITION('design','',#5,#6);
+#10=CARTESIAN_POINT('origin',(0.0,0.0,0.0));
+#11=DIRECTION('z',(0.0,0.0,1.0));
+#12=DIRECTION('x',(1.0,0.0,0.0));
+#13=AXIS2_PLACEMENT_3D('placement',#10,#11,#12);
+#20=(LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT(.MILLI.,.METRE.));
+#21=(NAMED_UNIT(*) PLANE_ANGLE_UNIT() SI_UNIT($,.RADIAN.));
+#22=(NAMED_UNIT(*) SI_UNIT($,.STERADIAN.) SOLID_ANGLE_UNIT());
+#23=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#20,
+  'distance_accuracy_value','');
+#24=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#23))
+  GLOBAL_UNIT_ASSIGNED_CONTEXT((#20,#21,#22))
+  REPRESENTATION_CONTEXT('Lh029','3D'));
+ENDSEC;
+END-ISO-10303-21;

@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>A001 — Duplicated component instances collapsed to a single transform on export</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.6 Assembly hierarchy</a> <span class="sep">/</span> <span class="current">A001</span>
+</nav>
+<header class="title-bar">
+<h1>A001 <span class="sep">—</span> <span class="entry-title">Duplicated component instances collapsed to a single transform on export</span></h1>
+<p class="category">§12.6 (sub-class: instance-multiplication / placement)</p>
+<p class="tag-pills">
+<a class="tag tag-silent-loss" href="../by-tag/silent-loss/index.html">silent-loss</a>
+<a class="tag tag-round-trip" href="../by-tag/round-trip/index.html">round-trip</a>
+<a class="tag tag-assembly" href="../by-tag/assembly/index.html">assembly</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-6-assembly/A001.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-6-assembly/A001.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>V027 (Inventor), V028 (CATIA V5 R25/R26), J018 (cross-vendor), Y027 (CATIA V5 export), Y003 (Fusion 360 → KiCad).</li>
+</ul></section>
+<section><h2>Sender</h2>
+<p>Autodesk Inventor; CATIA V5 R22–R26; Fusion 360 (linked components).</p></section>
+<section><h2>Description</h2>
+<p>When the same component appears multiple times under an assembly with different placements, the writer either (a) emits only one instance (Inventor V027), (b) emits all instances at the same coordinate (CATIA V28), or (c) collapses many `MAPPED_ITEM` references of the same product into one — losing distinct transforms. Frequently caused by sharing a single `AXIS2_PLACEMENT_3D` rather than giving each instance its own.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>Build an assembly with N siblings instancing the same `PRODUCT_DEFINITION` via N `NEXT_ASSEMBLY_USAGE_OCCURRENCE` rows; for each, attach a distinct `MAPPED_ITEM` whose `mapping_target` is a unique `AXIS2_PLACEMENT_3D`. Verify the writer emits N distinct placements, not a single shared one.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>heal/accept — every NAUO instance must carry its own placement; readers must not deduplicate placements by reference equality.</p></section>
+<section><h2>Notes</h2>
+<p>One of the two &quot;CATIA bug&quot; canonical patterns referenced in the task description. **See also**: Pf013. **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog&#x27;s allowed set ({heal}). Kernel-bug witnessed: catalog asks for healing; OCC neither heals nor rejects — the input is dropped on the floor without diagnostic. Synonyms: &quot;duplicate part instances merged into one on export&quot;, &quot;multiple component copies show up at the same coordinate&quot;, &quot;writer drops repeated subassembly placements&quot;, &quot;N copies of same component become one in STEP&quot;, &quot;MAPPED_ITEM placements deduplicated by mistake&quot;.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>count_entity_def(b&#x27;NEXT_ASSEMBLY_USAGE_OCCURRENCE&#x27;) == 3</code></li>
+<li><code>count_entity_def(b&#x27;MAPPED_ITEM&#x27;) == 3</code></li>
+<li><code>contains(b&quot;AXIS2_PLACEMENT_3D(&#x27;SHARED_PLACEMENT&#x27;&quot;)</code></li>
+</ul></section>
+<section><h2>Cross-references</h2>
+<p><a href="../12-10-perf/Pf013.html">Pf013</a></p>
+</section>
+<section><h2>Live oracle output</h2>
+<table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
+<tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>no_shapes_loaded</code></td></tr>
+</tbody></table>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/*
+<span class="lineno">3</span> * A001 â Duplicated component instances collapsed to a single transform on export
+<span class="lineno">4</span> * Defect (CATIA V5 R22-R26 / Inventor / Fusion 360):
+<span class="lineno">5</span> *   N NEXT_ASSEMBLY_USAGE_OCCURRENCEs reference one shared PRODUCT, but each
+<span class="lineno">6</span> *   MAPPED_ITEM ends up sharing a single AXIS2_PLACEMENT_3D rather than carrying
+<span class="lineno">7</span> *   its own. Receivers see all N component copies stacked at the same coordinate.
+<span class="lineno">8</span> * Reproducer: build siblings sharing an AXIS2_PLACEMENT_3D in the MAPPED_ITEM /
+<span class="lineno">9</span> *   ITEM_DEFINED_TRANSFORMATION; verify writer emits N distinct placements.
+<span class="lineno">10</span> * Expected kernel behavior: every NAUO instance must carry its own placement;
+<span class="lineno">11</span> *   readers must not deduplicate placements by reference equality.
+<span class="lineno">12</span> */
+<span class="lineno">13</span>HEADER;
+<span class="lineno">14</span>FILE_DESCRIPTION((&#x27;A001 duplicated NAUO instances share one AXIS2_PLACEMENT_3D&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">15</span>FILE_NAME(&#x27;A001.stp&#x27;,&#x27;2026-04-26T00:00:00&#x27;,(&#x27;catalog&#x27;),(&#x27;cad&#x27;),&#x27;manual&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">16</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }&#x27;));
+<span class="lineno">17</span>ENDSEC;
+<span class="lineno">18</span>DATA;
+<span class="lineno">19</span>#10 = APPLICATION_CONTEXT(&#x27;automotive design&#x27;);
+<span class="lineno">20</span>#11 = APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,&#x27;automotive_design&#x27;,2001,#10);
+<span class="lineno">21</span>#12 = PRODUCT_CONTEXT(&#x27;&#x27;,#10,&#x27;mechanical&#x27;);
+<span class="lineno">22</span>#13 = PRODUCT_DEFINITION_CONTEXT(&#x27;part definition&#x27;,#10,&#x27;design&#x27;);
+<span class="lineno">23</span>/* Assembly product */
+<span class="lineno">24</span>#20 = PRODUCT(&#x27;A001_ASSY&#x27;,&#x27;A001 Assembly&#x27;,&#x27;&#x27;,(#12));
+<span class="lineno">25</span>#21 = PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#20);
+<span class="lineno">26</span>#22 = PRODUCT_DEFINITION(&#x27;design&#x27;,&#x27;&#x27;,#21,#13);
+<span class="lineno">27</span>#23 = PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,#22);
+<span class="lineno">28</span>/* Single child product instanced three times */
+<span class="lineno">29</span>#30 = PRODUCT(&#x27;BOLT&#x27;,&#x27;M6 bolt&#x27;,&#x27;&#x27;,(#12));
+<span class="lineno">30</span>#31 = PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#30);
+<span class="lineno">31</span>#32 = PRODUCT_DEFINITION(&#x27;design&#x27;,&#x27;&#x27;,#31,#13);
+<span class="lineno">32</span>#33 = PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,#32);
+<span class="lineno">33</span>/* Three NAUO rows that should carry distinct placements */
+<span class="lineno">34</span><mark>#40 = NEXT_ASSEMBLY_USAGE_OCCURRENCE(</mark>&#x27;1&#x27;,&#x27;BOLT_INSTANCE_A&#x27;,&#x27;&#x27;,#22,#32,$);
+<span class="lineno">35</span><mark>#41 = NEXT_ASSEMBLY_USAGE_OCCURRENCE(</mark>&#x27;2&#x27;,&#x27;BOLT_INSTANCE_B&#x27;,&#x27;&#x27;,#22,#32,$);
+<span class="lineno">36</span><mark>#42 = NEXT_ASSEMBLY_USAGE_OCCURRENCE(</mark>&#x27;3&#x27;,&#x27;BOLT_INSTANCE_C&#x27;,&#x27;&#x27;,#22,#32,$);
+<span class="lineno">37</span>/* Length unit context (mm) */
+<span class="lineno">38</span>#50 = ( LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT(.MILLI.,.METRE.) );
+<span class="lineno">39</span>#51 = ( NAMED_UNIT(*) PLANE_ANGLE_UNIT() SI_UNIT($,.RADIAN.) );
+<span class="lineno">40</span>#52 = ( NAMED_UNIT(*) SI_UNIT($,.STERADIAN.) SOLID_ANGLE_UNIT() );
+<span class="lineno">41</span>#53 = UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#50,&#x27;distance_accuracy_value&#x27;,&#x27;&#x27;);
+<span class="lineno">42</span>#54 = ( GEOMETRIC_REPRESENTATION_CONTEXT(3) GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#53))
+<span class="lineno">43</span>        GLOBAL_UNIT_ASSIGNED_CONTEXT((#50,#51,#52)) REPRESENTATION_CONTEXT(&#x27;&#x27;,&#x27;3D&#x27;) );
+<span class="lineno">44</span>/* Bolt component representation with its own origin */
+<span class="lineno">45</span>#60 = CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">46</span>#61 = DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">47</span>#62 = DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">48</span>#63 = AXIS2_PLACEMENT_3D(&#x27;bolt_origin&#x27;,#60,#61,#62);
+<span class="lineno">49</span>#64 = SHAPE_REPRESENTATION(&#x27;bolt_rep&#x27;,(#63),#54);
+<span class="lineno">50</span>#65 = SHAPE_DEFINITION_REPRESENTATION(#33,#64);
+<span class="lineno">51</span>#66 = REPRESENTATION_MAP(#63,#64);
+<span class="lineno">52</span>/* DEFECT: all three MAPPED_ITEMs reference the SAME AXIS2_PLACEMENT_3D #71.
+<span class="lineno">53</span>   Properly each instance should reference its own distinct AXIS2_PLACEMENT_3D
+<span class="lineno">54</span>   with a unique location vector. Here the writer collapsed all three. */
+<span class="lineno">55</span>#70 = CARTESIAN_POINT(&#x27;shared_origin&#x27;,(0.0,0.0,0.0));
+<span class="lineno">56</span>#71 = <mark>AXIS2_PLACEMENT_3D(&#x27;SHARED_PLACEMENT&#x27;</mark>,#70,#61,#62);
+<span class="lineno">57</span><mark>#72 = MAPPED_ITEM(</mark>&#x27;inst_A&#x27;,#66,#71);
+<span class="lineno">58</span><mark>#73 = MAPPED_ITEM(</mark>&#x27;inst_B&#x27;,#66,#71);
+<span class="lineno">59</span><mark>#74 = MAPPED_ITEM(</mark>&#x27;inst_C&#x27;,#66,#71);
+<span class="lineno">60</span>/* Assembly representation aggregating the three duplicate-placement instances */
+<span class="lineno">61</span>#80 = CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">62</span>#81 = AXIS2_PLACEMENT_3D(&#x27;assy_origin&#x27;,#80,#61,#62);
+<span class="lineno">63</span>#82 = SHAPE_REPRESENTATION(&#x27;assy_rep&#x27;,(#81,#72,#73,#74),#54);
+<span class="lineno">64</span>#83 = SHAPE_DEFINITION_REPRESENTATION(#23,#82);
+<span class="lineno">65</span>ENDSEC;
+<span class="lineno">66</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="up" href="index.html">§12.6 Assembly hierarchy</a> <a class="next" href="A002.html">A002 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

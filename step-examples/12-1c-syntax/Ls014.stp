@@ -1,0 +1,40 @@
+/* Ls014 - Untyped (*) attribute used where derived not declared,
+            or '$' confused with '*'
+   ----------------------------------------------------------------------
+   Catalog section : §12.1c parameter tokens
+   Sources         : T024, Q087, N022, N046
+   Originally also catalogued as: Ad069
+   ----------------------------------------------------------------------
+   Defect
+     '*' denotes a derived/inherited attribute; '$' denotes a null
+     OPTIONAL value. Generators substitute one for the other. Inside
+     aggregate elements only '$' is permitted as a "no value" placeholder;
+     '*' is an attribute-level marker only. Some senders also emit a real
+     value for a derived slot instead of '*'.
+   Expected behavior
+     Schema-aware kernel cross-checks '*' / '$' against the attribute
+     kind in the EXPRESS schema; reject '*' inside list elements; emit
+     "expected '*' (derived)" rather than a generic type error when the
+     position is a derived attribute carrying a value.
+   ----------------------------------------------------------------------
+*/
+ISO-10303-21;
+HEADER;
+FILE_DESCRIPTION(('Ls014 - star/dollar misuse in attribute slots'),'2;1');
+FILE_NAME('Ls014.stp','2026-04-26T00:00:00',('auto-generated'),(''),
+  'auto-generated','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+#10=CARTESIAN_POINT('p',(0.0,0.0,0.0));
+#11=CARTESIAN_POINT('q',(1.0,0.0,0.0));
+/* Defect: '*' put in slot 3 where '$' (null OPTIONAL) is expected */
+#20=SI_ENERGY_UNIT((#10),*,$,.JOULE.);
+/* Defect: '*' inside an aggregate element (only '$' may placeholder there) */
+#30=POLYLINE('',(*,#10,#11));
+/* Defect: a value supplied where the derived attribute should be '*' */
+#40=DIMENSIONAL_EXPONENTS(0.0,0.0,0.0,0.0,0.0,0.0,42.0);
+/* Defect: '$' placed in a derived attribute position (should be '*') */
+#41=NAMED_UNIT($);
+ENDSEC;
+END-ISO-10303-21;

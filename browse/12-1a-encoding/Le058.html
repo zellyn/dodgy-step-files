@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Le058 — Final record before `ENDSEC;` lacks trailing newline at EOF</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.1a Encoding &amp; string-literal defects</a> <span class="sep">/</span> <span class="current">Le058</span>
+</nav>
+<header class="title-bar">
+<h1>Le058 <span class="sep">—</span> <span class="entry-title">Final record before `ENDSEC;` lacks trailing newline at EOF</span></h1>
+<p class="category">§12.1a encoding/strings (sub-class: end-of-record / EOF framing)</p>
+<p class="severity-badge severity-p1">P1 — silent data loss</p>
+<p class="tag-pills">
+<a class="tag tag-spec-violation" href="../by-tag/spec-violation/index.html">spec-violation</a>
+<a class="tag tag-encoding" href="../by-tag/encoding/index.html">encoding</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-1a-encoding/Le058.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-1a-encoding/Le058.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>ISO 10303-21 §6.2 (record terminator is `</li>
+<li>`)</li>
+<li>ISO 10303-21 §5 (file framing — `END-ISO-10303-21</li>
+<li>` is the file terminator)</li>
+<li>bug-reporter language: &quot;STEP file missing newline before ENDSEC&quot;, &quot;no trailing newline at EOF&quot;</li>
+</ul></section>
+<section><h2>Sender</h2>
+<p>deduced — producers that write the file body byte-for-byte without an explicit final newline; some streaming writers that flush before the trailing `\n` is queued</p></section>
+<section><h2>Description</h2>
+<p>ISO 10303-21 §6.2 specifies that a record is terminated by `;`; the spec is silent on whether a trailing newline is required after the final `;` of the file. A producer may emit `..);ENDSEC;END-ISO-10303-21;` with no newline anywhere, or with the final newline omitted. POSIX tools that read line-by-line (and strict line-buffered tokenisers) drop the last line if it lacks a `\n` — the final record (or the `END-ISO-10303-21;` terminator) is silently lost, and the receiver reports a file that is structurally short by one record. The cousin defect is a missing newline between the last DATA-section record and `ENDSEC;` — `..);ENDSEC;` with no separator at all is allowed by the grammar but trips lexers that scan to end-of-line for an `ENDSEC` keyword. Bug-reporter language: &quot;STEP file missing trailing newline&quot;, &quot;last record dropped on load&quot;, &quot;ENDSEC on same line as last record&quot;.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>a file whose byte stream ends `..#19=EDGE_LOOP(&#x27;&#x27;,(#18));ENDSEC;END-ISO-10303-21;` with NO trailing `\n` and NO newline between the last record and `ENDSEC;`. The fixture is byte-exact at EOF.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>Heal and accept: tokenise on `;` alone; treat EOF as a valid record-and-section terminator if the preceding `;`-terminated record has been seen. Never require a trailing newline. Lexers that scan line-by-line should be replaced or wrapped with a `;`-aware preprocessor. Do not reject missing-trailing-newline files.</p></section>
+<section><h2>Notes</h2>
+<p>Companion to Le056 / Le057 (other EOR variants). **See also**: Le054, Le056, Le057. Synonyms: &quot;no newline at EOF in STEP&quot;, &quot;ENDSEC without preceding newline&quot;, &quot;POSIX-incomplete final line in Part-21&quot;.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>matches(rb&#x27;\);ENDSEC;END-ISO-10303-21;\Z&#x27;) or matches(rb&#x27;\);ENDSEC;&#x27;)</code></li>
+<li><code>not_contains(b&#x27;ENDSEC;\nEND-ISO-10303-21;\n&#x27;) or contains(b&#x27;;ENDSEC;END-ISO-10303-21;&#x27;)</code></li>
+</ul></section>
+<section><h2>Cross-references</h2>
+<p><a href="Le054.html">Le054</a>, <a href="Le056.html">Le056</a>, <a href="Le057.html">Le057</a></p>
+</section>
+<section><h2>Live oracle output</h2>
+<table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
+<tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>warn(W_BARE_BACKSLASH)</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>no_shapes_loaded</code></td></tr>
+</tbody></table>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>/* Le058 - Final record before ENDSEC; lacks trailing newline at EOF
+<span class="lineno">2</span> * Defect: the file&#x27;s byte stream ends with the last DATA-section
+<span class="lineno">3</span> * record glued directly to ENDSEC; and END-ISO-10303-21; with no
+<span class="lineno">4</span> * intervening newlines and no trailing newline at EOF. ISO 10303-21
+<span class="lineno">5</span> * 6.2 records are terminated by `;` alone, and the spec is silent
+<span class="lineno">6</span> * on whether trailing newlines are required, so this is technically
+<span class="lineno">7</span> * conformant. But POSIX line-buffered tokenisers drop the last line
+<span class="lineno">8</span> * if it lacks a `\n` - the final record (or the END-ISO-10303-21;
+<span class="lineno">9</span> * terminator) is silently lost. */
+<span class="lineno">10</span>ISO-10303-21;
+<span class="lineno">11</span>HEADER;
+<span class="lineno">12</span>FILE_DESCRIPTION((&#x27;Le058 - last record glued to ENDSEC and no trailing newline at EOF&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">13</span>FILE_NAME(&#x27;Le058.stp&#x27;,&#x27;2026-05-02T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">14</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }&#x27;));
+<span class="lineno">15</span>ENDSEC;
+<span class="lineno">16</span>DATA;
+<span class="lineno">17</span>#1=APPLICATION_CONTEXT(&#x27;automotive_design&#x27;);
+<span class="lineno">18</span>#10=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">19</span>#11=CARTESIAN_POINT(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">20</span>#12=VERTEX_POINT(&#x27;&#x27;,#10);
+<span class="lineno">21</span>#13=VERTEX_POINT(&#x27;&#x27;,#11);
+<span class="lineno">22</span>#14=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">23</span>#15=VECTOR(&#x27;&#x27;,#14,1.0);
+<span class="lineno">24</span>#16=LINE(&#x27;&#x27;,#10,#15);
+<span class="lineno">25</span>#17=EDGE_CURVE(&#x27;&#x27;,#12,#13,#16,.T.);
+<span class="lineno">26</span>#18=ORIENTED_EDGE(&#x27;&#x27;,*,*,#17,.T.);
+<span class="lineno">27</span>#19=EDGE_LOOP(&#x27;&#x27;,(#18));ENDSEC;END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Le057.html">&larr; Le057</a> <a class="up" href="index.html">§12.1a Encoding &amp; string-literal defects</a> <a class="next" href="Le059.html">Le059 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

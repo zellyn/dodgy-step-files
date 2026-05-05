@@ -1,0 +1,35 @@
+/* Ls003 - Lower-case "e" exponent or whitespace around exponent
+   ----------------------------------------------------------------------
+   Catalog section : §12.1c numeric-literal grammar
+   Sources         : T022, N018, stepcode #244 #291
+   See also        : Ls001
+   ----------------------------------------------------------------------
+   Defect
+     ISO 10303-21 specifies upper-case 'E' for the REAL exponent.
+     Lower-case 'e', embedded whitespace ("1.5 E+3"), and unusual sign
+     placement all appear from locale-aware printers and ad-hoc tools.
+     The literals below use lower-case-e exponents.
+   Expected behavior
+     Lex [+-]?\d+(\.\d*)?([eE][+-]?\d+)? permissively but emit a warning
+     for non-canonical subsets. Reject embedded whitespace inside the
+     exponent because that breaks token boundaries.
+   ----------------------------------------------------------------------
+*/
+ISO-10303-21;
+HEADER;
+FILE_DESCRIPTION(('Ls003 - lower-case e exponent on REAL'),'2;1');
+FILE_NAME('Ls003.stp','2026-04-26T00:00:00',('auto-generated'),(''),
+  'auto-generated','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+#10=CARTESIAN_POINT('origin',(0.0,0.0,0.0));
+/* Defect: lower-case 'e' exponent in REAL literals */
+#20=DIRECTION('z',(1.5e+3,0.,0.));
+#30=CARTESIAN_POINT('scaled',(1.0e-6,2.5e+0,3.14e+2));
+/* Defect: bare 'e' (no sign on exponent) - permitted by some grammars but
+   non-canonical when read as Part-21 */
+#31=CARTESIAN_POINT('bare',(1.0e3,2.5e0,3.14e2));
+#40=AXIS2_PLACEMENT_3D('placement',#10,#20,$);
+ENDSEC;
+END-ISO-10303-21;

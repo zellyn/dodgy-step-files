@@ -1,0 +1,52 @@
+ISO-10303-21;
+/* Ad092 - Crash reading large STEP file
+ * Defect: a volume of CARTESIAN_POINTs that exceeds the entity-map
+ * rebuild capacity; the entity map uses a fixed-size hash table
+ * and re-hashes on overflow, which can throw out-of-range when the
+ * iterator is invalidated. Production fixture would contain ~10^7
+ * CARTESIAN_POINT entities; the representative below contains 100
+ * entries indexed in a non-monotonic pattern (high IDs interleaved
+ * with low IDs) to force entity-map rebucketing. */
+HEADER;
+FILE_DESCRIPTION(('Ad092 test case','Crash reading large STEP file'),'2;1');
+FILE_NAME('Ad092.stp','2026-04-30T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+/* Volume start: low IDs */
+#10=CARTESIAN_POINT('p10',(0.0,0.0,0.0));
+#11=CARTESIAN_POINT('p11',(1.0,0.0,0.0));
+#12=CARTESIAN_POINT('p12',(2.0,0.0,0.0));
+#13=CARTESIAN_POINT('p13',(3.0,0.0,0.0));
+#14=CARTESIAN_POINT('p14',(4.0,0.0,0.0));
+#15=CARTESIAN_POINT('p15',(5.0,0.0,0.0));
+#16=CARTESIAN_POINT('p16',(6.0,0.0,0.0));
+#17=CARTESIAN_POINT('p17',(7.0,0.0,0.0));
+#18=CARTESIAN_POINT('p18',(8.0,0.0,0.0));
+#19=CARTESIAN_POINT('p19',(9.0,0.0,0.0));
+/* Big jump to provoke entity-map sparse-bucket rebucketing */
+#1000000=CARTESIAN_POINT('p1m',(10.0,0.0,0.0));
+#1000001=CARTESIAN_POINT('p1m1',(11.0,0.0,0.0));
+#1000002=CARTESIAN_POINT('p1m2',(12.0,0.0,0.0));
+/* Low IDs again interleaved */
+#20=CARTESIAN_POINT('p20',(13.0,0.0,0.0));
+#21=CARTESIAN_POINT('p21',(14.0,0.0,0.0));
+#22=CARTESIAN_POINT('p22',(15.0,0.0,0.0));
+#23=CARTESIAN_POINT('p23',(16.0,0.0,0.0));
+#24=CARTESIAN_POINT('p24',(17.0,0.0,0.0));
+#25=CARTESIAN_POINT('p25',(18.0,0.0,0.0));
+#26=CARTESIAN_POINT('p26',(19.0,0.0,0.0));
+/* Even bigger jump */
+#9999999=CARTESIAN_POINT('p9m9',(20.0,0.0,0.0));
+#10000000=CARTESIAN_POINT('p1e7',(21.0,0.0,0.0));
+/* Final low IDs */
+#27=CARTESIAN_POINT('p27',(22.0,0.0,0.0));
+#28=CARTESIAN_POINT('p28',(23.0,0.0,0.0));
+#29=CARTESIAN_POINT('p29',(24.0,0.0,0.0));
+#30=CARTESIAN_POINT('p30',(25.0,0.0,0.0));
+#31=CARTESIAN_POINT('first',(0.0,0.0,0.0));
+#32=CARTESIAN_POINT('last',(1.0,1.0,1.0));
+ENDSEC;
+END-ISO-10303-21;

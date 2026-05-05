@@ -1,0 +1,39 @@
+ISO-10303-21;
+/* M113 - AP209 hex element with collapsed corner (degenerate jacobian).
+ * Defect: a VOLUME_3D_ELEMENT_DESCRIPTOR for a linear_hexahedron lists
+ * 8 nodes, but two of the corner nodes (n7, n8) are at the same XYZ.
+ * The jacobian determinant is zero at the collapsed corner. */
+HEADER;
+FILE_DESCRIPTION(('M113 test case','AP209 collapsed-corner hex element'),'2;1');
+FILE_NAME('M113.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('STRUCTURAL_ANALYSIS_DESIGN { 1 0 10303 209 1 0 0 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('structural_analysis_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
+  'structural_analysis_design',2001,#1);
+#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10))
+     REPRESENTATION_CONTEXT('fea','3D'));
+#100=CARTESIAN_POINT('p1',(0.0,0.0,0.0));
+#101=CARTESIAN_POINT('p2',(1.0,0.0,0.0));
+#102=CARTESIAN_POINT('p3',(1.0,1.0,0.0));
+#103=CARTESIAN_POINT('p4',(0.0,1.0,0.0));
+#104=CARTESIAN_POINT('p5',(0.0,0.0,1.0));
+#105=CARTESIAN_POINT('p6',(1.0,0.0,1.0));
+/* Defect: p7 and p8 are at the same point (collapsed corner). */
+#106=CARTESIAN_POINT('p7_collapsed',(0.5,0.5,1.0));
+#107=CARTESIAN_POINT('p8_collapsed',(0.5,0.5,1.0));
+#110=NODE('n1',(#100),$);
+#111=NODE('n2',(#101),$);
+#112=NODE('n3',(#102),$);
+#113=NODE('n4',(#103),$);
+#114=NODE('n5',(#104),$);
+#115=NODE('n6',(#105),$);
+#116=NODE('n7',(#106),$);
+#117=NODE('n8',(#107),$);
+#200=VOLUME_3D_ELEMENT_DESCRIPTOR('collapsed_hex','linear_hexahedron',
+       (#110,#111,#112,#113,#114,#115,#116,#117));
+ENDSEC;
+END-ISO-10303-21;

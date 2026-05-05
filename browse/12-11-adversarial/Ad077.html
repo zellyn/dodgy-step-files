@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Ad077 — Zero-length aggregates trigger `count-1` underflow / 4 GB loop walk (signed-integer attribute used as unsigned)</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.11 Adversarial / parser robustness</a> <span class="sep">/</span> <span class="current">Ad077</span>
+</nav>
+<header class="title-bar">
+<h1>Ad077 <span class="sep">—</span> <span class="entry-title">Zero-length aggregates trigger `count-1` underflow / 4 GB loop walk (signed-integer attribute used as unsigned)</span></h1>
+<p class="category">§12.11 (sub-class: malformed-numeric / DoS)</p>
+<p class="severity-badge severity-p0">P0 — receiver crash / hang / OOM</p>
+<p class="tag-pills">
+<a class="tag tag-crash" href="../by-tag/crash/index.html">crash</a>
+<a class="tag tag-adversarial" href="../by-tag/adversarial/index.html">adversarial</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-11-adversarial/Ad077.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-11-adversarial/Ad077.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>CVE-2024-23133 (Autodesk ASMDATAX228A.dll on STP)</li>
+</ul></section>
+<section><h2>Description</h2>
+<p>A signed integer aggregate-count attribute drives `for(i=0; i&lt;n; i++)` where `n = parsed_count - 1`; if `parsed_count==0`, the unsigned interpretation walks 4 GB before wrap. Common attack shape: multiple zero-length aggregates in one file — `COMPOSITE_CURVE` with empty segment list, `B_SPLINE_CURVE_WITH_KNOTS` with empty knot/multiplicity lists, `ADVANCED_FACE` with empty bounds list, `CLOSED_SHELL` with empty face list — each individually exposes the underflow.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>zero-length aggregate where downstream code expects ≥1.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>Reject with diagnostic: pre-validate count &gt; 0 before computing `count-1`. Must not infinite loop or crash.</p></section>
+<section><h2>Notes</h2>
+<p>Cross-oracle: pure-Python Part-21 validator accepts (`accept`); OCCT crashes (`signal(11)`). The crash is on the kernel side — the file is spec-conformant Part-21.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a</code></p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>matches(rb&#x27;\([^()]*\(\)\)&#x27;) or matches(rb&quot;CLOSED_SHELL\(&#x27;[^&#x27;]*&#x27;,\(\)\)&quot;)</code></li>
+<li><code>matches(rb&#x27;,\(\)&#x27;) or matches(rb&#x27;\(\)\)&#x27;)</code></li>
+</ul></section>
+<section><h2>Live oracle output</h2>
+<table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
+<tr><td><code>occt_heal_on</code></td><td><code>signal(11)</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>signal(11)</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>signal(11)</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>signal(11)</code></td></tr>
+<tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>process_signal</code></td></tr>
+</tbody></table>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>/* Ad077 - signed-integer attribute used as unsigned causes 4 GB loop walk
+<span class="lineno">2</span>   Source: STEP_PROBLEM_CATALOG.md Â§12.11 Ad077; CVE-2024-23133
+<span class="lineno">3</span>           (Autodesk ASMDATAX228A.dll on .stp).
+<span class="lineno">4</span>   Pattern: the consumer reads a count attribute and computes
+<span class="lineno">5</span>           `for(i = 0; i &lt; n - 1; i++)` over an aggregate. When the
+<span class="lineno">6</span>           aggregate is empty (n == 0) and `n` is unsigned (or treated
+<span class="lineno">7</span>           as unsigned), `n - 1` underflows to 0xFFFFFFFF and the loop
+<span class="lineno">8</span>           walks 4 GB of memory before wrapping. CWE-191 (integer
+<span class="lineno">9</span>           underflow) confirmed in the CVE.
+<span class="lineno">10</span>   Reproducer recipe (per catalog): zero-length aggregate where
+<span class="lineno">11</span>           downstream code expects &gt;= 1.
+<span class="lineno">12</span>   Expected kernel behavior: pre-validate count &gt; 0 before any
+<span class="lineno">13</span>           `count - 1` arithmetic; treat empty aggregates as a no-op
+<span class="lineno">14</span>           rather than a wrap-around walk.
+<span class="lineno">15</span>   The trigger here is COMPOSITE_CURVE with an empty segment list and
+<span class="lineno">16</span>   B_SPLINE_CURVE_WITH_KNOTS with an empty knot multiplicity vector;
+<span class="lineno">17</span>   either path tickles the off-by-one downstream of the count read.
+<span class="lineno">18</span>   File is INTENTIONALLY adversarial. License-clean: hand-synthesized. */
+<span class="lineno">19</span>ISO-10303-21;
+<span class="lineno">20</span>HEADER;
+<span class="lineno">21</span>FILE_DESCRIPTION(
+<span class="lineno">22</span>  (&#x27;Ad077 - empty aggregate triggers count-1 underflow&#x27;),
+<span class="lineno">23</span>  &#x27;2;1&#x27;);
+<span class="lineno">24</span>FILE_NAME(&#x27;Ad077.stp&#x27;,&#x27;2026-04-26T00:00:00&#x27;,
+<span class="lineno">25</span>  (&#x27;auto-generated&#x27;),(&#x27;&#x27;),&#x27;auto-generated&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">26</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
+<span class="lineno">27</span>ENDSEC;
+<span class="lineno">28</span>DATA;
+<span class="lineno">29</span>#1=APPLICATION_CONTEXT(&#x27;automotive_design&#x27;);
+<span class="lineno">30</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,
+<span class="lineno">31</span>  &#x27;automotive_design&#x27;,2001,#1);
+<span class="lineno">32</span>#3=PRODUCT_CONTEXT(&#x27;&#x27;,#1,&#x27;mechanical&#x27;);
+<span class="lineno">33</span>#4=PRODUCT(&#x27;Ad077&#x27;,&#x27;underflow probe&#x27;,&#x27;&#x27;,(#3));
+<span class="lineno">34</span>#5=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#4);
+<span class="lineno">35</span>#6=PRODUCT_DEFINITION_CONTEXT(&#x27;&#x27;,#1,&#x27;design&#x27;);
+<span class="lineno">36</span>#7=PRODUCT_DEFINITION(&#x27;design&#x27;,&#x27;&#x27;,#5,#6);
+<span class="lineno">37</span>/* zero-length aggregate #1: empty composite curve segment list.
+<span class="lineno">38</span>   downstream loop computes seg_count - 1 -&gt; wraps to UINT32_MAX. */
+<span class="lineno">39</span>#10=COMPOSITE_CURVE(&#x27;Ad077-empty-segs&#x27;,(),.T.);
+<span class="lineno">40</span>/* zero-length aggregate #2: B-spline knots/multiplicities/control
+<span class="lineno">41</span>   points all empty. downstream loop computes knots-1 -&gt; wraps. */
+<span class="lineno">42</span>#20=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">43</span>#21=B_SPLINE_CURVE_WITH_KNOTS(&#x27;Ad077-empty-knots&#x27;,
+<span class="lineno">44</span>  3,(#20),.UNSPECIFIED.,.F.,.F.,(),(),.UNSPECIFIED.);
+<span class="lineno">45</span>/* zero-length aggregate #3: face_bound list empty on advanced face.
+<span class="lineno">46</span>   downstream loop computes bounds-1 -&gt; wraps. */
+<span class="lineno">47</span>#30=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">48</span>#31=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">49</span>#32=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#20,#30,#31);
+<span class="lineno">50</span>#33=PLANE(&#x27;&#x27;,#32);
+<span class="lineno">51</span>#34=ADVANCED_FACE(&#x27;Ad077-empty-bounds&#x27;,(),#33,.T.);
+<span class="lineno">52</span>/* zero-length aggregate #4: closed shell with no faces. */
+<span class="lineno">53</span>#40=CLOSED_SHELL(&#x27;Ad077-empty-shell&#x27;,());
+<span class="lineno">54</span>#41=MANIFOLD_SOLID_BREP(&#x27;Ad077-empty-brep&#x27;,#40);
+<span class="lineno">55</span>ENDSEC;
+<span class="lineno">56</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Ad064.html">&larr; Ad064</a> <a class="up" href="index.html">§12.11 Adversarial / parser robustness</a> <a class="next" href="Ad078.html">Ad078 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

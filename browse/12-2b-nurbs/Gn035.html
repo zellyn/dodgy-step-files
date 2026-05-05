@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Gn035 — Circle translated to NURBS form with rational weights but missing weight metadata</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.2b NURBS / B-spline</a> <span class="sep">/</span> <span class="current">Gn035</span>
+</nav>
+<header class="title-bar">
+<h1>Gn035 <span class="sep">—</span> <span class="entry-title">Circle translated to NURBS form with rational weights but missing weight metadata</span></h1>
+<p class="category">§12.2b NURBS / B-spline</p>
+<p class="severity-badge severity-p1">P1 — silent data loss</p>
+<p class="tag-pills">
+<a class="tag tag-geometry" href="../by-tag/geometry/index.html">geometry</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-2b-nurbs/Gn035.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-2b-nurbs/Gn035.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>OCCT MANTIS#0006542 (OCCT MANTIS tracker 502 as of 2026-05-02)</li>
+</ul></section>
+<section><h2>Description</h2>
+<p>A circle is converted to a NURBS representation when exporting to a format that does not natively support analytic curves. The NURBS expression of a circle requires rational weights (control-point weights of `(1, 1/√2, 1, 1/√2, 1, ..)`); writer emits weights but forgets to mark the curve `RATIONAL_B_SPLINE_CURVE`. Reader treats it as uniform-weight, producing a polygonal approximation instead of an exact circle.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>B-spline curve, degree 2, 9 control points, knots `(0,0,0, 0.25,0.25, 0.5,0.5, 0.75,0.75, 1,1,1)`, weights `(1, √2/2, 1, √2/2, 1, √2/2, 1, √2/2, 1)`. Missing `RATIONAL_B_SPLINE_CURVE` complex-entity marker.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>Reject untagged rationals: every B-spline with non-uniform weights must be tagged `RATIONAL_B_SPLINE_CURVE` (complex entity); receivers check the tag before applying weights. Must not silently accept missing tag.</p></section>
+<section><h2>Notes</h2>
+<p>**See also**: Gn014. Synonyms: &quot;rational B-spline missing RATIONAL flag&quot;, &quot;circle as NURBS without rational marker&quot;, &quot;weights present but RATIONAL_B_SPLINE_CURVE entity tag missing&quot;, &quot;untagged rational B-spline imports as polygonal&quot;, &quot;circle exact-NURBS form misses rational complex entity&quot;.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>contains(b&#x27;B_SPLINE_CURVE&#x27;)</code></li>
+</ul></section>
+<section><h2>Cross-references</h2>
+<p><a href="Gn014.html">Gn014</a></p>
+</section>
+<section><h2>Live oracle output</h2>
+<table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
+<tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>no_shapes_loaded</code></td></tr>
+</tbody></table>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* Gn035 - Circle-as-NURBS missing rational marker
+<span class="lineno">3</span> * Defect: producer emitted a circle approximation as a degree-2 B-spline
+<span class="lineno">4</span> * with the canonical 9-control-point knot vector for an exact-circle
+<span class="lineno">5</span> * NURBS (mults 3,2,2,2,2,2,2,2,3 over 0,0.25,0.5,0.75,1.0). The
+<span class="lineno">6</span> * complex AND-form below intentionally OMITS the
+<span class="lineno">7</span> * RATIONAL_<mark>B_SPLINE_CURVE</mark>((weights_data)) half of the AND, which a
+<span class="lineno">8</span> * correct circle-NURBS would have carried with weights
+<span class="lineno">9</span> * (1, sqrt(2)/2, 1, sqrt(2)/2, 1, sqrt(2)/2, 1, sqrt(2)/2, 1).
+<span class="lineno">10</span> * Without the rational marker, parsers dispatch to the non-rational
+<span class="lineno">11</span> * fallback and silently treat all weights as 1.0 - so the curve
+<span class="lineno">12</span> * follows the polygon corners instead of the inscribed circle. */
+<span class="lineno">13</span>/* Intended weights (NOT present in bytes; this is the defect):
+<span class="lineno">14</span> *   (1.0, 0.7071067811865476, 1.0, 0.7071067811865476,
+<span class="lineno">15</span> *    1.0, 0.7071067811865476, 1.0, 0.7071067811865476, 1.0) */
+<span class="lineno">16</span>HEADER;
+<span class="lineno">17</span>FILE_DESCRIPTION((&#x27;Gn035 test case&#x27;,&#x27;Circle-as-NURBS missing rational marker&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">18</span>FILE_NAME(&#x27;Gn035.stp&#x27;,&#x27;2026-04-30T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">19</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }&#x27;));
+<span class="lineno">20</span>ENDSEC;
+<span class="lineno">21</span>DATA;
+<span class="lineno">22</span>#1=APPLICATION_CONTEXT(&#x27;automotive_design&#x27;);
+<span class="lineno">23</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,&#x27;automotive_design&#x27;,2000,#1);
+<span class="lineno">24</span>#100=CARTESIAN_POINT(&#x27;cp1&#x27;,(1.0,0.0,0.0));
+<span class="lineno">25</span>#101=CARTESIAN_POINT(&#x27;cp2&#x27;,(1.0,1.0,0.0));
+<span class="lineno">26</span>#102=CARTESIAN_POINT(&#x27;cp3&#x27;,(0.0,1.0,0.0));
+<span class="lineno">27</span>#103=CARTESIAN_POINT(&#x27;cp4&#x27;,(-1.0,1.0,0.0));
+<span class="lineno">28</span>#104=CARTESIAN_POINT(&#x27;cp5&#x27;,(-1.0,0.0,0.0));
+<span class="lineno">29</span>#105=CARTESIAN_POINT(&#x27;cp6&#x27;,(-1.0,-1.0,0.0));
+<span class="lineno">30</span>#106=CARTESIAN_POINT(&#x27;cp7&#x27;,(0.0,-1.0,0.0));
+<span class="lineno">31</span>#107=CARTESIAN_POINT(&#x27;cp8&#x27;,(1.0,-1.0,0.0));
+<span class="lineno">32</span>#108=CARTESIAN_POINT(&#x27;cp9&#x27;,(1.0,0.0,0.0));
+<span class="lineno">33</span>/* Defect: complex/AND-form B-spline carries weights data but the
+<span class="lineno">34</span> * RATIONAL_<mark>B_SPLINE_CURVE</mark> entity-type token is missing from the
+<span class="lineno">35</span> * AND-list. The weights appear at the end as a bare aggregate
+<span class="lineno">36</span> * literal (1.0, 0.7071, 1.0, 0.7071, ...). Strict parsers then
+<span class="lineno">37</span> * dispatch on (<mark>B_SPLINE_CURVE</mark>, <mark>B_SPLINE_CURVE</mark>_WITH_KNOTS) only and
+<span class="lineno">38</span> * silently drop the weights. */
+<span class="lineno">39</span>#110=(BOUNDED_CURVE() <mark>B_SPLINE_CURVE</mark>(2,(#100,#101,#102,#103,#104,#105,#106,#107,#108),.UNSPECIFIED.,.F.,.F.) <mark>B_SPLINE_CURVE</mark>_WITH_KNOTS((3,2,2,2,2,2,2,2,3),(0.0,0.125,0.25,0.375,0.5,0.625,0.75,0.875,1.0),.UNSPECIFIED.) CURVE() GEOMETRIC_REPRESENTATION_ITEM() REPRESENTATION_ITEM(&#x27;circle_as_nurbs_no_rational_marker&#x27;));
+<span class="lineno">40</span>ENDSEC;
+<span class="lineno">41</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Gn034.html">&larr; Gn034</a> <a class="up" href="index.html">§12.2b NURBS / B-spline</a> <a class="next" href="Gn036.html">Gn036 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

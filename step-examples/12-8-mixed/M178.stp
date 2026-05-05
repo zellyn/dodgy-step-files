@@ -1,0 +1,31 @@
+ISO-10303-21;
+/* M178 - AP238 INSPECTION_PROBING with probe path through workpiece.
+ * Defect: an INSPECTION_PROBING op's approach segment runs from the
+ * probe-storage position straight through the workpiece body to reach
+ * the touch point. The probe stylus shears or breaks. Bug-reporter
+ * language: "probe path collides with part", "AP238 inspection crashes
+ * stylus". */
+HEADER;
+FILE_DESCRIPTION(('M178 test case','AP238 probe path collision with workpiece'),'2;1');
+FILE_NAME('M178.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AP238_STEP_NC_MIM { 1 0 10303 238 1 0 0 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('numerical_control_machining');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
+  'numerical_control_machining',2007,#1);
+#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10))
+     REPRESENTATION_CONTEXT('nc','3D'));
+/* Workpiece occupies (0..100, 0..100, 0..50). */
+#400=WORKPIECE('block_100x100x50',$,$,$,$,$,$);
+/* Defect: probe approach line from (50,50,200) to (50,50,-5) - passes
+   straight through the block body. */
+#50=CARTESIAN_POINT('probe_start',(50.0,50.0,200.0));
+#51=CARTESIAN_POINT('probe_target',(50.0,50.0,-5.0));
+#60=POLYLINE('probe_path_through_part',(#50,#51));
+#100=INSPECTION_PROBING('measure_z',$,$,$,$,#60,#400);
+#200=WORKPLAN('main',(#100),$,$,$);
+ENDSEC;
+END-ISO-10303-21;

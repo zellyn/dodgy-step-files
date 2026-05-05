@@ -1,0 +1,27 @@
+ISO-10303-21;
+/* M153 - AP210 buried via has only one terminating layer reference.
+ * Defect: a buried VIA_DEFINITION is declared with a single
+ * terminating LAMINATE_OR_PLY_DEFINITION. A buried via must terminate
+ * at two distinct internal plies; with only one termination, the via
+ * is dangling - it begins at one layer and goes nowhere. */
+HEADER;
+FILE_DESCRIPTION(('M153 test case','AP210 buried via single termination'),'2;1');
+FILE_NAME('M153.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('ELECTRONIC_ASSEMBLY_INTERCONNECT_AND_PACKAGING_DESIGN { 1 0 10303 210 3 1 0 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('electronic_assembly_interconnect_and_packaging_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
+  'electronic_assembly_interconnect_and_packaging_design',2014,#1);
+#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10))
+     REPRESENTATION_CONTEXT('pcb','3D'));
+#100=MATERIAL_DESIGNATION('copper','signal layer',(#1));
+#200=LAMINATE_OR_PLY_DEFINITION('inner_2',$,#100,#100,LENGTH_MEASURE(0.035));
+/* Defect: terminating-plies list has only one entry; buried via must
+ * have two endpoint plies. */
+#300=VIA_DEFINITION('dangling_buried_via',LENGTH_MEASURE(0.1),(#200));
+#301=DESCRIPTIVE_REPRESENTATION_ITEM('via_kind','BURIED');
+ENDSEC;
+END-ISO-10303-21;

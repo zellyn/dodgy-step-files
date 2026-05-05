@@ -1,0 +1,17 @@
+ISO-10303-21;
+/* Ad102 - Crash transferring HLR shapes via STEP writer
+ * Defect: compound of EDGE_CURVEs with no incident face; writer expects every edge to belong to a face */
+HEADER;
+FILE_DESCRIPTION(('Ad102 test case','Crash transferring HLR shapes via STEP writer'),'2;1');
+FILE_NAME('Ad102.stp','2026-04-30T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+#100=CARTESIAN_POINT('',(0.0,0.0,0.0));#101=VERTEX_POINT('',#100);
+#102=CARTESIAN_POINT('',(1.0,0.0,0.0));#103=VERTEX_POINT('',#102);
+#104=DIRECTION('',(1.0,0.0,0.0));#105=VECTOR('',#104,1.0);
+#106=LINE('',#100,#105);#107=EDGE_CURVE('hlr_bare_edge',#101,#103,#106,.T.);
+ENDSEC;
+END-ISO-10303-21;

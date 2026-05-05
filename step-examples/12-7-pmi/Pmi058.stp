@@ -1,0 +1,64 @@
+/* Pmi058 - PMI visibility / configuration loss across saved views
+   Defect: PMI annotations defined in one configuration become
+   universally visible after STEP round-trip because the
+   configuration-association is dropped. Two CONFIGURATION_ITEMs are
+   declared (cfgA, cfgB), but the ANNOTATION_PLANE is shared between
+   the saved views and there is no PROPERTY_DEFINITION linking
+   visibility to configuration. (W027 SDHE-21917, SDHE-21787). */
+ISO-10303-21;
+HEADER;
+FILE_DESCRIPTION(('Pmi058 - PMI visibility lost across configurations',
+  'CAx-IF Rec.Pracs.---PMI Rep & Pres---v4.1'),'2;1');
+FILE_NAME('Pmi058.stp','2026-04-26T00:00:00',('catalog'),('cad'),
+  'manual','','');
+FILE_SCHEMA(('AP242_MANAGED_MODEL_BASED_3D_ENGINEERING_MIM_LF { 1 0 10303 442 1 1 4 }'));
+ENDSEC;
+DATA;
+#10 = APPLICATION_CONTEXT('managed model based 3d engineering');
+#11 = APPLICATION_PROTOCOL_DEFINITION('international standard',
+  'ap242_managed_model_based_3d_engineering',2020,#10);
+#12 = PRODUCT_CONTEXT('',#10,'mechanical');
+#13 = PRODUCT('Pmi058','VisibilityLossPart','',(#12));
+#14 = PRODUCT_DEFINITION_FORMATION('','',#13);
+#15 = PRODUCT_DEFINITION_CONTEXT('',#10,'design');
+#16 = PRODUCT_DEFINITION('','',#14,#15);
+#17 = PRODUCT_DEFINITION_SHAPE('','',#16);
+#20 = ( LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT(.MILLI.,.METRE.) );
+#22 = ( NAMED_UNIT(*) PLANE_ANGLE_UNIT() SI_UNIT($,.RADIAN.) );
+#23 = ( NAMED_UNIT(*) SI_UNIT($,.STERADIAN.) SOLID_ANGLE_UNIT() );
+#24 = UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#20,
+  'distance_accuracy_value','');
+#25 = ( GEOMETRIC_REPRESENTATION_CONTEXT(3)
+  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#24))
+  GLOBAL_UNIT_ASSIGNED_CONTEXT((#20,#22,#23))
+  REPRESENTATION_CONTEXT('','3D') );
+#30 = CARTESIAN_POINT('',(0.0,0.0,0.0));
+#31 = DIRECTION('',(0.0,0.0,1.0));
+#32 = DIRECTION('',(1.0,0.0,0.0));
+#33 = AXIS2_PLACEMENT_3D('',#30,#31,#32);
+/* Two configuration items - originally pmi_visible only in cfgA */
+#40 = PRODUCT_CONCEPT('cfg_concept','',#41);
+#41 = PRODUCT_CONCEPT_CONTEXT('',#10,'configuration');
+#42 = CONFIGURATION_DESIGN(#43,#16);
+#43 = CONFIGURATION_ITEM('cfgA','default-config','',#40,$);
+#44 = CONFIGURATION_ITEM('cfgB','alternate-config','',#40,$);
+/* Annotation plane and graphic */
+#50 = CARTESIAN_POINT('',(0.0,0.0,0.0));
+#51 = CARTESIAN_POINT('',(10.0,0.0,0.0));
+#52 = POLYLINE('p',(#50,#51));
+#53 = COLOUR_RGB('',1.0,0.0,0.0);
+#54 = DRAUGHTING_PRE_DEFINED_CURVE_FONT('continuous');
+#55 = CURVE_STYLE('',#54,POSITIVE_LENGTH_MEASURE(0.18),#53);
+#56 = PRESENTATION_STYLE_ASSIGNMENT((#55));
+#57 = ANNOTATION_CURVE_OCCURRENCE('cfg_callout',(#56),#52);
+/* Defect: no PROPERTY_DEFINITION ties #57 to either #43 or #44.
+   Both saved views below show the same annotation - visibility
+   universalised after round-trip. */
+#60 = DRAUGHTING_MODEL('view_A',(#57),#25);
+#61 = DRAUGHTING_MODEL('view_B',(#57),#25);
+#62 = PLANE('ann_plane',#33);
+#63 = ANNOTATION_PLANE('PMI',(#57),#62,());
+#90 = SHAPE_REPRESENTATION('',(#33),#25);
+#91 = SHAPE_DEFINITION_REPRESENTATION(#17,#90);
+ENDSEC;
+END-ISO-10303-21;

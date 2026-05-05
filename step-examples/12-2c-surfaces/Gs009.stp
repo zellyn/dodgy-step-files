@@ -1,0 +1,56 @@
+ISO-10303-21;
+/* Gs009 - Self-intersecting wire / 3D curve loop on planar face
+ * Defect: An EDGE_LOOP whose 3D edges cross at an interior point off any vertex,
+ * producing a figure-eight wire. ShapeFix_Wire::FixSelfIntersectingEdge /
+ * FixIntersectingEdges / FixLoopWire must heal; raw geometry is not Jordan-simple. */
+HEADER;
+FILE_DESCRIPTION(('Gs009 test case','Self-intersecting wire on planar face'),'2;1');
+FILE_NAME('Gs009.stp','2026-04-26T00:00:00',(''),(''),'auto-generated','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#11=DIRECTION('',(0.0,0.0,1.0));
+#12=DIRECTION('',(1.0,0.0,0.0));
+#13=AXIS2_PLACEMENT_3D('',#10,#11,#12);
+#20=PLANE('',#13);
+/* Four vertices forming a non-simple bow-tie quadrilateral in the XY plane:
+ * (0,0) - (10,10) - (10,0) - (0,10) - back to (0,0).  Diagonals cross at (5,5). */
+#30=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#31=VERTEX_POINT('',#30);
+#32=CARTESIAN_POINT('',(10.0,10.0,0.0));
+#33=VERTEX_POINT('',#32);
+#34=CARTESIAN_POINT('',(10.0,0.0,0.0));
+#35=VERTEX_POINT('',#34);
+#36=CARTESIAN_POINT('',(0.0,10.0,0.0));
+#37=VERTEX_POINT('',#36);
+/* 3D line edges - bow-tie ordering */
+#40=DIRECTION('',(0.7071067811865476,0.7071067811865476,0.0));
+#41=VECTOR('',#40,14.142135623730951);
+#42=LINE('',#30,#41);
+#43=DIRECTION('',(0.0,-1.0,0.0));
+#44=VECTOR('',#43,10.0);
+#45=LINE('',#32,#44);
+#46=DIRECTION('',(-0.7071067811865476,0.7071067811865476,0.0));
+#47=VECTOR('',#46,14.142135623730951);
+#48=LINE('',#34,#47);
+#49=DIRECTION('',(0.0,-1.0,0.0));
+#50=VECTOR('',#49,10.0);
+#51=LINE('',#36,#50);
+/* Edges - the loop crosses itself at (5,5) */
+#60=EDGE_CURVE('',#31,#33,#42,.T.);
+#61=EDGE_CURVE('',#33,#35,#45,.T.);
+#62=EDGE_CURVE('',#35,#37,#48,.T.);
+#63=EDGE_CURVE('',#37,#31,#51,.T.);
+#70=ORIENTED_EDGE('',*,*,#60,.T.);
+#71=ORIENTED_EDGE('',*,*,#61,.T.);
+#72=ORIENTED_EDGE('',*,*,#62,.T.);
+#73=ORIENTED_EDGE('',*,*,#63,.T.);
+/* Defect: edges cross at interior point - figure-eight wire */
+#80=EDGE_LOOP('',(#70,#71,#72,#73));
+#81=FACE_OUTER_BOUND('',#80,.T.);
+#82=ADVANCED_FACE('',(#81),#20,.T.);
+ENDSEC;
+END-ISO-10303-21;

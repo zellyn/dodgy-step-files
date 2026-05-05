@@ -1,0 +1,47 @@
+ISO-10303-21;
+/* Gs042 - CURVE_BOUNDED_SURFACE with self-intersecting boundary
+ * Defect: A CURVE_BOUNDED_SURFACE is a (basis surface, set of
+ * boundary curves) where boundary curves are pcurves on the basis.
+ * The spec requires the boundary to be a non-self-intersecting
+ * loop in parameter space. Producers occasionally emit a boundary
+ * whose two segments cross at an interior point (figure-eight),
+ * yielding two regions where the trim "inside" is ambiguous.
+ * Here the basis is an unbounded plane and the trim curve is a
+ * COMPOSITE_CURVE forming a self-intersecting bowtie. */
+HEADER;
+FILE_DESCRIPTION(('Gs042 - CURVE_BOUNDED_SURFACE self-intersecting boundary'),'2;1');
+FILE_NAME('Gs042.stp','2026-04-26T00:00:00',(''),(''),
+  'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#10=CARTESIAN_POINT('origin',(0.0,0.0,0.0));
+#11=DIRECTION('z',(0.0,0.0,1.0));
+#12=DIRECTION('x',(1.0,0.0,0.0));
+#13=AXIS2_PLACEMENT_3D('plane_axis',#10,#11,#12);
+#14=PLANE('basis',#13);
+/* Bowtie corners (a,b,c,d) plotted in 2D parametric space,
+ * extruded to 3D for the basis curves */
+#20=CARTESIAN_POINT('a',(0.0,0.0,0.0));
+#21=CARTESIAN_POINT('b',(1.0,1.0,0.0));
+#22=CARTESIAN_POINT('c',(1.0,0.0,0.0));
+#23=CARTESIAN_POINT('d',(0.0,1.0,0.0));
+/* Two crossing diagonals + two horizontals - a self-intersecting
+ * polygon in the parametric plane */
+#30=POLYLINE('seg1',(#20,#21));
+#31=POLYLINE('seg2',(#21,#22));
+#32=POLYLINE('seg3',(#22,#23));
+#33=POLYLINE('seg4',(#23,#20));
+#40=COMPOSITE_CURVE_SEGMENT(.CONTINUOUS.,.T.,#30);
+#41=COMPOSITE_CURVE_SEGMENT(.CONTINUOUS.,.T.,#31);
+#42=COMPOSITE_CURVE_SEGMENT(.CONTINUOUS.,.T.,#32);
+#43=COMPOSITE_CURVE_SEGMENT(.CONTINUOUS.,.T.,#33);
+#50=COMPOSITE_CURVE('bowtie',(#40,#41,#42,#43),.F.);
+#60=BOUNDARY_CURVE('bnd',(#50),#14,.T.);
+/* Defect: the BOUNDARY_CURVE traces a bowtie - it self-intersects
+ * at the midpoint (0.5,0.5) where segment a->b (#30 from (0,0)->(1,1))
+ * and segment c->d (#32 from (1,0)->(0,1)) cross. */
+#70=CURVE_BOUNDED_SURFACE(#14,(#60),.T.);
+ENDSEC;
+END-ISO-10303-21;

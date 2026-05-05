@@ -1,0 +1,21 @@
+/* Le051 - \X2\ UCS-2 escape missing the closing \X0\ terminator
+   Defect: \X2\..\X0\ groups MUST close with \X0\; folding the run into the
+   string close (apostrophe) leaves the directive unterminated. A non-
+   validating parser may consume past the apostrophe or emit a half-formed
+   code point to its downstream UTF-8 encoder. */
+ISO-10303-21;
+HEADER;
+FILE_DESCRIPTION(('Le051 - X2 missing X0 terminator'),'2;1');
+FILE_NAME('Le051.stp','2026-04-26T00:00:00',('auto-generated'),(''),
+  'auto-generated','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+/* Defect: no \X0\ terminator before the closing apostrophe */
+#10=PERSON('p2','name=\X2\30A2','given',$,$,$,$,$);
+#20=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#21=DIRECTION('',(0.0,0.0,1.0));
+#22=DIRECTION('',(1.0,0.0,0.0));
+#23=AXIS2_PLACEMENT_3D('',#20,#21,#22);
+ENDSEC;
+END-ISO-10303-21;

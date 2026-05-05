@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>M119 — AP209 shell element with zero plate thickness</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.8 Mixed (tessellation, validation properties, etc.)</a> <span class="sep">/</span> <span class="current">M119</span>
+</nav>
+<header class="title-bar">
+<h1>M119 <span class="sep">—</span> <span class="entry-title">AP209 shell element with zero plate thickness</span></h1>
+<p class="category">§12.8 mixed (sub-class: AP209 shell-thickness)</p>
+<p class="severity-badge severity-p1">P1 — silent data loss</p>
+<p class="tag-pills">
+<a class="tag tag-topology" href="../by-tag/topology/index.html">topology</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-8-mixed/M119.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-8-mixed/M119.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>deduced from AP209 §6 surface_3d_element_descriptor thickness positivity</li>
+</ul></section>
+<section><h2>Sender</h2>
+<p>deduced — FEA exporter omitting / zeroing thickness on a default shell template</p></section>
+<section><h2>Description</h2>
+<p>A `SURFACE_3D_ELEMENT_DESCRIPTOR` for a `linear_quadrilateral` shell carries an associated thickness measure of `0.0`. Bending stiffness K = E*t³/12(1-v²) collapses to zero. Out-of-plane deflections diverge. Bug-reporter language: &quot;AP209 shell zero thickness&quot;, &quot;FEM plate has no bending stiffness&quot;, &quot;shell thickness missing&quot;.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>A surface element descriptor whose thickness `MEASURE_WITH_UNIT` carries `POSITIVE_LENGTH_MEASURE(0.0)` (which is itself schema-illegal — POSITIVE means &gt; 0).</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>reject zero thickness; or warn and substitute a default minimum thickness.</p></section>
+<section><h2>Notes</h2>
+<p>Synonyms: &quot;zero-thickness shell&quot;, &quot;AP209 plate degenerate&quot;, &quot;shell element zero thickness&quot;, &quot;FEM plate has no bending stiffness&quot;, &quot;shell thickness measure is 0&quot;.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>contains(b&#x27;STRUCTURAL_ANALYSIS_DESIGN&#x27;)</code></li>
+<li><code>contains(b&#x27;SURFACE_3D_ELEMENT_DESCRIPTOR&#x27;)</code></li>
+<li><code>contains(b&#x27;POSITIVE_LENGTH_MEASURE(0.0)&#x27;)</code></li>
+</ul></section>
+<section><h2>Live oracle output</h2>
+<table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
+<tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>no_shapes_loaded</code></td></tr>
+</tbody></table>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* M119 - AP209 shell element with zero plate thickness.
+<span class="lineno">3</span> * Defect: a <mark>SURFACE_3D_ELEMENT_DESCRIPTOR</mark> for a linear_quadrilateral
+<span class="lineno">4</span> * shell carries an associated <mark>POSITIVE_LENGTH_MEASURE(0.0)</mark> thickness.
+<span class="lineno">5</span> * Bending stiffness collapses to zero. */
+<span class="lineno">6</span>HEADER;
+<span class="lineno">7</span>FILE_DESCRIPTION((&#x27;M119 test case&#x27;,&#x27;AP209 zero-thickness shell element&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">8</span>FILE_NAME(&#x27;M119.stp&#x27;,&#x27;2026-05-02T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">9</span>FILE_SCHEMA((&#x27;<mark>STRUCTURAL_ANALYSIS_DESIGN</mark> { 1 0 10303 209 1 0 0 }&#x27;));
+<span class="lineno">10</span>ENDSEC;
+<span class="lineno">11</span>DATA;
+<span class="lineno">12</span>#1=APPLICATION_CONTEXT(&#x27;structural_analysis_design&#x27;);
+<span class="lineno">13</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,
+<span class="lineno">14</span>  &#x27;structural_analysis_design&#x27;,2001,#1);
+<span class="lineno">15</span>#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">16</span>#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+<span class="lineno">17</span>     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10))
+<span class="lineno">18</span>     REPRESENTATION_CONTEXT(&#x27;fea&#x27;,&#x27;3D&#x27;));
+<span class="lineno">19</span>#100=CARTESIAN_POINT(&#x27;p1&#x27;,(0.0,0.0,0.0));
+<span class="lineno">20</span>#101=CARTESIAN_POINT(&#x27;p2&#x27;,(1.0,0.0,0.0));
+<span class="lineno">21</span>#102=CARTESIAN_POINT(&#x27;p3&#x27;,(1.0,1.0,0.0));
+<span class="lineno">22</span>#103=CARTESIAN_POINT(&#x27;p4&#x27;,(0.0,1.0,0.0));
+<span class="lineno">23</span>#110=NODE(&#x27;n1&#x27;,(#100),$);
+<span class="lineno">24</span>#111=NODE(&#x27;n2&#x27;,(#101),$);
+<span class="lineno">25</span>#112=NODE(&#x27;n3&#x27;,(#102),$);
+<span class="lineno">26</span>#113=NODE(&#x27;n4&#x27;,(#103),$);
+<span class="lineno">27</span>/* Defect: thickness measure carries 0.0. */
+<span class="lineno">28</span>#150=MEASURE_WITH_UNIT(<mark>POSITIVE_LENGTH_MEASURE(0.0)</mark>,#10);
+<span class="lineno">29</span>#200=<mark>SURFACE_3D_ELEMENT_DESCRIPTOR</mark>(&#x27;zero_thickness_shell&#x27;,&#x27;linear_quadrilateral&#x27;,
+<span class="lineno">30</span>       (#110,#111,#112,#113));
+<span class="lineno">31</span>ENDSEC;
+<span class="lineno">32</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="M118.html">&larr; M118</a> <a class="up" href="index.html">§12.8 Mixed (tessellation, validation properties, etc.)</a> <a class="next" href="M120.html">M120 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

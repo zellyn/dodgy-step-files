@@ -1,0 +1,111 @@
+ISO-10303-21;
+/*
+ * P009 — Helical sweep tessellates with garbled facets at seam
+ * Defect (FreeCAD #18151; Autodesk Inventor):
+ *   A spring (helical sweep solid) renders as garbled facets in OCCT due to
+ *   pathological chord-deviation tessellation at the helix seam, but renders
+ *   correctly in Inventor.
+ * Reproducer (mini): a SWEPT_SURFACE whose directrix is a parametric helix,
+ *   wrapped under a leaf product. Realised here as
+ *   SURFACE_CURVE_SWEPT_SURFACE (an AP242 SWEPT_SURFACE subtype) whose
+ *   directrix is the polyline-helix #105 and whose swept_curve is the
+ *   circular cross-section #110. The surface is wired into an ADVANCED_FACE
+ *   so the kernel sees a real swept-surface face, not just a free-floating
+ *   surface entity.
+ * Expected kernel: smooth tessellation matching producer.
+ */
+HEADER;
+FILE_DESCRIPTION(('P009 helical sweep — seam tessellation regression'),'2;1');
+FILE_NAME('P009.stp','2026-04-26T00:00:00',('catalog'),('cad'),'manual','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#10 = APPLICATION_CONTEXT('automotive design');
+#11 = APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2001,#10);
+#12 = PRODUCT_CONTEXT('',#10,'mechanical');
+#13 = PRODUCT_DEFINITION_CONTEXT('part definition',#10,'design');
+#20 = PRODUCT('P009_ASSY','','',(#12));
+#21 = PRODUCT_DEFINITION_FORMATION('','',#20);
+#22 = PRODUCT_DEFINITION('design','',#21,#13);
+#23 = PRODUCT_DEFINITION_SHAPE('','',#22);
+#30 = PRODUCT('SPRING','helical sweep solid','',(#12));
+#31 = PRODUCT_DEFINITION_FORMATION('','',#30);
+#32 = PRODUCT_DEFINITION('design','',#31,#13);
+#33 = PRODUCT_DEFINITION_SHAPE('','',#32);
+#40 = NEXT_ASSEMBLY_USAGE_OCCURRENCE('1','SPRING_INST','',#22,#32,$);
+/* helix directrix expressed as polyline (small for catalog; real exporter
+   would use a long B-spline). Sampled from r=5, pitch=10, single turn. */
+#100 = CARTESIAN_POINT('p0',(5.0,0.0,0.0));
+#101 = CARTESIAN_POINT('p1',(0.0,5.0,2.5));
+#102 = CARTESIAN_POINT('p2',(-5.0,0.0,5.0));
+#103 = CARTESIAN_POINT('p3',(0.0,-5.0,7.5));
+#104 = CARTESIAN_POINT('p4',(5.0,0.0,10.0));
+#105 = POLYLINE('helix_dir',(#100,#101,#102,#103,#104));
+/* circular sweep cross-section (profile) at the helix start point */
+#106 = CARTESIAN_POINT('cs_center',(5.0,0.0,0.0));
+#107 = DIRECTION('cs_z',(1.0,0.0,0.0));
+#108 = DIRECTION('cs_x',(0.0,0.0,1.0));
+#109 = AXIS2_PLACEMENT_3D('cs_axes',#106,#107,#108);
+#110 = CIRCLE('section',#109,1.0);
+/* DEFECT-shape: SWEPT_SURFACE with helix directrix yields garbled facets at
+   the seam during downstream tessellation. SURFACE_CURVE_SWEPT_SURFACE is
+   the AP242 SWEPT_SURFACE subtype that takes a directrix curve and a
+   reference frame; #105 (polyline-helix) is the directrix, #110 (circle) is
+   the swept_curve / profile. The reference-surface attribute is held on a
+   minimal placeholder PLANE so the entity is structurally well-formed. */
+#120 = CARTESIAN_POINT('ref_origin',(0.0,0.0,0.0));
+#121 = DIRECTION('ref_z',(0.0,0.0,1.0));
+#122 = DIRECTION('ref_x',(1.0,0.0,0.0));
+#123 = AXIS2_PLACEMENT_3D('ref_axes',#120,#121,#122);
+#124 = PLANE('sweep_ref_plane',#123);
+#111 = SURFACE_CURVE_SWEPT_SURFACE('sweep_surf',#110,#105,
+        PARAMETER_VALUE(0.0),PARAMETER_VALUE(1.0),
+        #124,.PCURVE_S1.);
+/* Wire the swept surface into an ADVANCED_FACE so the kernel sees a real
+   swept-surface face. Bound by a single edge loop traced along the seam. */
+#130 = VERTEX_POINT('v_start',#100);
+#131 = VERTEX_POINT('v_end',#104);
+#132 = LINE('seam_line',#100,#133);
+#133 = VECTOR('seam_dir',#134,10.0);
+#134 = DIRECTION('seam_dz',(0.0,0.0,1.0));
+#135 = EDGE_CURVE('seam_edge',#130,#131,#132,.T.);
+#136 = ORIENTED_EDGE('',*,*,#135,.T.);
+#137 = EDGE_LOOP('seam_loop',(#136));
+#138 = FACE_OUTER_BOUND('seam_bound',#137,.T.);
+#139 = ADVANCED_FACE('sweep_face',(#138),#111,.T.);
+#50 = ( LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT(.MILLI.,.METRE.) );
+#51 = ( NAMED_UNIT(*) PLANE_ANGLE_UNIT() SI_UNIT($,.RADIAN.) );
+#52 = ( NAMED_UNIT(*) SI_UNIT($,.STERADIAN.) SOLID_ANGLE_UNIT() );
+#53 = UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#50,'distance_accuracy_value','');
+#54 = ( GEOMETRIC_REPRESENTATION_CONTEXT(3) GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#53))
+        GLOBAL_UNIT_ASSIGNED_CONTEXT((#50,#51,#52)) REPRESENTATION_CONTEXT('','3D') );
+#60 = CARTESIAN_POINT('',(0.0,0.0,0.0));
+#61 = DIRECTION('',(0.0,0.0,1.0));
+#62 = DIRECTION('',(1.0,0.0,0.0));
+#63 = AXIS2_PLACEMENT_3D('spring_origin',#60,#61,#62);
+#64 = SHAPE_REPRESENTATION('spring_rep',(#63,#111,#139),#54);
+#65 = SHAPE_DEFINITION_REPRESENTATION(#33,#64);
+#66 = REPRESENTATION_MAP(#63,#64);
+#67 = MAPPED_ITEM('inst',#66,#63);
+#80 = AXIS2_PLACEMENT_3D('assy_origin',#60,#61,#62);
+#81 = SHAPE_REPRESENTATION('assy_rep',(#80,#67),#54);
+#82 = SHAPE_DEFINITION_REPRESENTATION(#23,#81);
+/* Extended catalog notes:
+ * This reproducer is a minimal demonstrator of the §12.6 entry
+ * referenced in the /* */ header above. The entity-graph above
+ * is just enough to exercise the defect on a writer or reader
+ * test harness; it is NOT a production-quality assembly.
+ *
+ * License: this file is part of a defect catalog assembled from
+ * publicly described bug reports and recommended-practice notes.
+ * No proprietary geometry or names are reproduced. The entity IDs
+ * and minimal coordinates are author-original.
+ *
+ * Cross-refs: see STEP_PROBLEM_CATALOG.md §12.6 for full entry,
+ * source list, sender attribution and expected kernel behavior.
+ */
+#900 = DESCRIPTIVE_REPRESENTATION_ITEM('catalog_id','P009');
+#901 = DESCRIPTIVE_REPRESENTATION_ITEM('catalog_section','12.6 assembly hierarchy');
+#902 = DESCRIPTIVE_REPRESENTATION_ITEM('catalog_status','pending');
+ENDSEC;
+END-ISO-10303-21;

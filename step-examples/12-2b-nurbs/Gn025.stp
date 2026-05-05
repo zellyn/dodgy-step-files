@@ -1,0 +1,56 @@
+/* Gn025 - Folded / non-injective BSpline surface (Jacobian flip)
+   Defect: a B_SPLINE_SURFACE_WITH_KNOTS whose control net has interior
+   rows that swap order, producing a fold where the Jacobian flips sign
+   within the parameter range.  Surface is non-injective.  Common output
+   of poor surface re-fitting in CAM / translator pipelines.
+   Net: 5 rows of 4 columns, degree (3,3).  Rows 0,1,4 increase in x as
+   expected (x = 0, 1, 4); rows 2 and 3 swap (x = 3 and 2 instead of
+   2 and 3) -- so the Jacobian flips sign in the (u,v) interior.
+   Healer: reject with "non-injective surface parametrization"; or
+   re-fit. */
+ISO-10303-21;
+HEADER;
+FILE_DESCRIPTION(
+  ('Gn025 - folded BSpline surface with swapped interior rows'),'2;1');
+FILE_NAME('Gn025.stp','2026-04-26T00:00:00',('auto-generated'),(''),
+  'auto-generated','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+/* Row 0: x=0. */
+#10=CARTESIAN_POINT('p00',(0.0,0.0,0.0));
+#11=CARTESIAN_POINT('p01',(0.0,1.0,0.0));
+#12=CARTESIAN_POINT('p02',(0.0,2.0,0.0));
+#13=CARTESIAN_POINT('p03',(0.0,3.0,0.0));
+/* Row 1: x=1. */
+#20=CARTESIAN_POINT('p10',(1.0,0.0,0.0));
+#21=CARTESIAN_POINT('p11',(1.0,1.0,0.5));
+#22=CARTESIAN_POINT('p12',(1.0,2.0,0.5));
+#23=CARTESIAN_POINT('p13',(1.0,3.0,0.0));
+/* Defect: row 2 should be x=2 but is x=3 (row 3 swap). */
+#30=CARTESIAN_POINT('p20_swapped',(3.0,0.0,0.5));
+#31=CARTESIAN_POINT('p21_swapped',(3.0,1.0,1.0));
+#32=CARTESIAN_POINT('p22_swapped',(3.0,2.0,1.0));
+#33=CARTESIAN_POINT('p23_swapped',(3.0,3.0,0.5));
+/* Defect: row 3 should be x=3 but is x=2. */
+#40=CARTESIAN_POINT('p30_swapped',(2.0,0.0,0.5));
+#41=CARTESIAN_POINT('p31_swapped',(2.0,1.0,1.0));
+#42=CARTESIAN_POINT('p32_swapped',(2.0,2.0,1.0));
+#43=CARTESIAN_POINT('p33_swapped',(2.0,3.0,0.5));
+/* Row 4: x=4. */
+#50=CARTESIAN_POINT('p40',(4.0,0.0,0.0));
+#51=CARTESIAN_POINT('p41',(4.0,1.0,0.0));
+#52=CARTESIAN_POINT('p42',(4.0,2.0,0.0));
+#53=CARTESIAN_POINT('p43',(4.0,3.0,0.0));
+/* Resulting BSpline surface: degree (3,3); Jacobian flips sign in U
+   between rows 2 and 3 (Jacobian's xu < 0). */
+#100=B_SPLINE_SURFACE_WITH_KNOTS('folded_jflip',
+  3,3,
+  ((#10,#11,#12,#13),(#20,#21,#22,#23),(#30,#31,#32,#33),
+   (#40,#41,#42,#43),(#50,#51,#52,#53)),
+  .UNSPECIFIED.,.F.,.F.,.F.,
+  (4,1,4),(4,4),
+  (0.0,0.5,1.0),(0.0,1.0),
+  .UNSPECIFIED.);
+ENDSEC;
+END-ISO-10303-21;

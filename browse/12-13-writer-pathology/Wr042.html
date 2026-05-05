@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Wr042 — Inconsistent end-of-record terminator: `;\n` and `;\r\n` mixed in same file</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.13 Writer pathology</a> <span class="sep">/</span> <span class="current">Wr042</span>
+</nav>
+<header class="title-bar">
+<h1>Wr042 <span class="sep">—</span> <span class="entry-title">Inconsistent end-of-record terminator: `;\n` and `;\r\n` mixed in same file</span></h1>
+<p class="category">§12.13 writer-pathology (sub-class: whitespace/line-ending)</p>
+<p class="severity-badge severity-p3">P3 — cosmetic / metadata-only</p>
+<p class="tag-pills">
+<a class="tag tag-crash" href="../by-tag/crash/index.html">crash</a>
+<a class="tag tag-writer" href="../by-tag/writer/index.html">writer</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-13-writer-pathology/Wr042.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-13-writer-pathology/Wr042.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>bug-reporter language: &quot;STEP file mixed newlines per record&quot;, &quot;writer outputs CRLF then LF inconsistently&quot;</li>
+</ul></section>
+<section><h2>Sender</h2>
+<p>Multi-pass writers where one pass appends records via a buffered text stream (LF) and a separate pass appends records via a Windows-line-ending logger (CRLF), interleaved within the same DATA section</p></section>
+<section><h2>Description</h2>
+<p>Records inside a single DATA section terminate with mixed `;\n` and `;\r\n` line endings. The spec is silent on line-ending conformance — whitespace is whitespace — but tools that line-count for diagnostics report inconsistent line numbers, content-hash caches see the file as different on each export, and editors display the file as binary. Cousin of Wr002 (HEADER vs DATA section uses different line ending) but at the per-record granularity. Bug-reporter language: &quot;STEP file mixed newlines per record&quot;, &quot;diff of exports is full of line-ending changes&quot;.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>a DATA section where alternate records terminate with `;\n` and `;\r\n` — for example `#1=APPLICATION_CONTEXT(&#x27;automotive_design&#x27;);\n` followed by `#2=PRODUCT_CONTEXT(&#x27;part&#x27;,#1,&#x27;mechanical&#x27;);\r\n`.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>parsers must accept (whitespace tolerance); writers should be deterministic per-file. A normaliser is the simplest fix.</p></section>
+<section><h2>Notes</h2>
+<p>**See also**: Wr002, Le028.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=empty/empty gmsh=empty ifc=process_signal</code></p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>contains(b&#x27;;\r\n&#x27;) and contains(b&#x27;;\n&#x27;)</code></li>
+<li><code>count(b&#x27;\r\n&#x27;) &gt;= 1 and count(b&#x27;\n&#x27;) &gt;= 5</code></li>
+</ul></section>
+<section><h2>Cross-references</h2>
+<p><a href="Wr002.html">Wr002</a>, <a href="../12-1a-encoding/Le028.html">Le028</a></p>
+</section>
+<section><h2>Live oracle output</h2>
+<table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
+<tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>ifcopenshell</code></td><td><code>process_signal</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>warn(W_BARE_BACKSLASH)</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>no_shapes_loaded</code></td></tr>
+</tbody></table>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>/* Wr042 - Inconsistent end-of-record terminator: ;\n and ;\r\n mixed in same file
+<span class="lineno">2</span> * Defect: alternate records use bare LF and CRLF terminators within
+<span class="lineno">3</span> * the same DATA section. Whitespace-tolerant parsers accept; tools
+<span class="lineno">4</span> * line-counting for diagnostics report inconsistent line numbers. */
+<span class="lineno">5</span>ISO-10303-21;
+<span class="lineno">6</span>HEADER;
+<span class="lineno">7</span>FILE_DESCRIPTION((&#x27;Wr042 - mixed ;\n and ;\r\n line endings&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">8</span>FILE_NAME(&#x27;Wr042.stp&#x27;,&#x27;2026-04-30T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">9</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }&#x27;));
+<span class="lineno">10</span>ENDSEC;
+<span class="lineno">11</span>DATA;
+<span class="lineno">12</span>#1=APPLICATION_CONTEXT(&#x27;automotive_design&#x27;);
+<span class="lineno">13</span>#2=PRODUCT_CONTEXT(&#x27;part&#x27;,#1,&#x27;mechanical&#x27;);
+<span class="lineno">14</span>#3=PRODUCT(&#x27;Wr042&#x27;,&#x27;mixed_line_endings&#x27;,&#x27;&#x27;,(#2));
+<span class="lineno">15</span>#4=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#3);
+<span class="lineno">16</span>#10=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">17</span>#11=CARTESIAN_POINT(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">18</span>#12=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">19</span>#13=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#10,#12,#12);
+<span class="lineno">20</span>ENDSEC;
+<span class="lineno">21</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Wr041.html">&larr; Wr041</a> <a class="up" href="index.html">§12.13 Writer pathology</a> <a class="next" href="Wr043.html">Wr043 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

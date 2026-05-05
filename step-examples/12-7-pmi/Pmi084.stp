@@ -1,0 +1,40 @@
+ISO-10303-21;
+/* Pmi084 - Coordinate-system connection points missing.
+ * Defect: AP242 dimension references a chain of three intermediate
+ * AXIS2_PLACEMENT_3D anchors via PRESENTED_ITEM. Older readers walk
+ * only the leaf placement and ignore the intermediate transforms,
+ * so the dimension text falls back to the part origin. */
+HEADER;
+FILE_DESCRIPTION(('Pmi084 test case','Connection-point chain ignored on read'),'2;1');
+FILE_NAME('Pmi084.stp','2026-04-30T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AP242_MANAGED_MODEL_BASED_3D_ENGINEERING_MIM_LF { 1 0 10303 442 3 0 0 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('managed model based 3d engineering');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','ap242_managed_model_based_3d_engineering',2020,#1);
+#10=PRODUCT_CONTEXT('',#1,'mechanical');
+#11=PRODUCT('part1','part1','part1',(#10));
+#12=PRODUCT_DEFINITION_FORMATION('','',#11);
+#13=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#14=PRODUCT_DEFINITION('','',#12,#13);
+#15=PRODUCT_DEFINITION_SHAPE('','',#14);
+/* Three-step connection-point chain */
+#100=CARTESIAN_POINT('p_inter1',(10.0,0.0,0.0));
+#101=DIRECTION('',(0.0,0.0,1.0));
+#102=DIRECTION('',(1.0,0.0,0.0));
+#103=AXIS2_PLACEMENT_3D('inter1',#100,#101,#102);
+#104=CARTESIAN_POINT('p_inter2',(20.0,0.0,0.0));
+#105=AXIS2_PLACEMENT_3D('inter2',#104,#101,#102);
+#106=CARTESIAN_POINT('p_leaf',(30.0,0.0,0.0));
+#107=AXIS2_PLACEMENT_3D('leaf',#106,#101,#102);
+/* SHAPE_ASPECT for the dimensioned feature */
+#110=SHAPE_ASPECT('hole','dimensioned hole',#15,.T.);
+/* DIMENSIONAL_LOCATION attached to the chain */
+#111=DIMENSIONAL_LOCATION('dim_through_chain','',#110,#110);
+/* PRESENTED_ITEM_REPRESENTATION linking dimension to all three
+ * intermediate placements as connection-point chain anchors */
+#112=DRAUGHTING_CALLOUT('chain_callout',());
+#113=PRESENTATION_REPRESENTATION('chain_rep',(#103,#105,#107,#112),#1);
+#114=PRESENTED_ITEM_REPRESENTATION(#112,#113);
+ENDSEC;
+END-ISO-10303-21;

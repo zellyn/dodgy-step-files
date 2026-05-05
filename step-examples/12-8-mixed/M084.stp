@@ -1,0 +1,28 @@
+ISO-10303-21;
+/* M084 - AP209 composite ply stacking sequence is empty or single-ply.
+ * Defect: a LAMINATE_TABLE intended to describe a multi-ply composite
+ * has its plies attribute as either an empty list or a single-ply list
+ * with no actual layered ELEMENT_MATERIAL coupling. Computed bending
+ * stiffness depends on having multiple plies; an empty stack produces
+ * zero stiffness, a single-ply stack collapses to isotropic. */
+HEADER;
+FILE_DESCRIPTION(('M084 test case','AP209 empty composite laminate ply list'),'2;1');
+FILE_NAME('M084.stp','2026-04-30T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('STRUCTURAL_ANALYSIS_DESIGN { 1 0 10303 209 1 0 0 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('structural_analysis_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
+  'structural_analysis_design',2001,#1);
+#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10))
+     REPRESENTATION_CONTEXT('composite','3D'));
+/* A single ply (placeholder material) */
+#100=PROPERTY_DEFINITION('cfrp','carbon-epoxy ply',$);
+#110=PLY_ANGLE_REPRESENTATION(0.0);
+#120=LAYERED_2D_ELEMENT_COORDINATE_SYSTEM($);
+/* Defect: laminate_table.plies = empty - no plies in the stack. */
+#200=LAMINATE_TABLE('skin',(),#120);
+ENDSEC;
+END-ISO-10303-21;

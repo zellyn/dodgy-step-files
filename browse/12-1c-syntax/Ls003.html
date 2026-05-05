@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Ls003 — Lower-case `e` exponent or whitespace around exponent</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.1c Part-21 grammar</a> <span class="sep">/</span> <span class="current">Ls003</span>
+</nav>
+<header class="title-bar">
+<h1>Ls003 <span class="sep">—</span> <span class="entry-title">Lower-case `e` exponent or whitespace around exponent</span></h1>
+<p class="category">§12.1c numeric-literal grammar</p>
+<p class="severity-badge severity-p1">P1 — silent data loss</p>
+<p class="tag-pills">
+<a class="tag tag-syntax" href="../by-tag/syntax/index.html">syntax</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-1c-syntax/Ls003.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-1c-syntax/Ls003.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>T022, N018, stepcode #244 #291</li>
+</ul></section>
+<section><h2>Description</h2>
+<p>ISO 10303-21 specifies upper-case `E` for the REAL exponent; lower-case `e`, embedded whitespace (`1.5 E+3`), or `+` sign in the exponent (`1e+18`) are non-conforming. Locale-aware printers also produce these.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>`(1.5e+3,0.,0.)`, `(1.5 E+3,0.,0.)`, `1.E+18`.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>Lex `[+-]?\d+(\.\d*)?([eE][+-]?\d+)?` permissively; emit warning for non-canonical subsets.</p></section>
+<section><h2>Notes</h2>
+<p>**See also**: Ls001. Synonyms: &quot;lowercase e in REAL exponent&quot;, &quot;1e+18 instead of 1E+18&quot;, &quot;whitespace in REAL exponent&quot;, &quot;STEP exponent has plus sign&quot;, &quot;non-standard exponent in STEP&quot;.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>matches(rb&#x27;\d[eE]\+?\d&#x27;) and (matches(rb&#x27;\d e\d&#x27;) or matches(rb&#x27;\d\.?e[+-]?\d&#x27;))</code></li>
+<li><code>matches(rb&#x27;\d[Ee][+-]?\d&#x27;)</code></li>
+</ul></section>
+<section><h2>Cross-references</h2>
+<p><a href="Ls001.html">Ls001</a></p>
+</section>
+<section><h2>Live oracle output</h2>
+<table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
+<tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>no_shapes_loaded</code></td></tr>
+</tbody></table>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>/* Ls003 - Lower-case &quot;e&quot; exponent or whitespace around exponent
+<span class="lineno">2</span>   ----------------------------------------------------------------------
+<span class="lineno">3</span>   Catalog section : Â§12.1c numeric-literal grammar
+<span class="lineno">4</span>   Sources         : T022, N018, stepcode #244 #291
+<span class="lineno">5</span>   See also        : Ls001
+<span class="lineno">6</span>   ----------------------------------------------------------------------
+<span class="lineno">7</span>   Defect
+<span class="lineno">8</span>     ISO 10303-21 specifies upper-case &#x27;E&#x27; for the REAL exponent.
+<span class="lineno">9</span>     Lower-case &#x27;e&#x27;, embedded whitespace (&quot;1.5 E+3&quot;), and unusual sign
+<span class="lineno">10</span>     placement all appear from locale-aware printers and ad-hoc tools.
+<span class="lineno">11</span>     The literals below use lower-case-e exponents.
+<span class="lineno">12</span>   Expected behavior
+<span class="lineno">13</span>     Lex [+-]?\d+(\.\d*)?([eE][+-]?\d+)? permissively but emit a warning
+<span class="lineno">14</span>     for non-canonical subsets. Reject embedded whitespace inside the
+<span class="lineno">15</span>     exponent because that breaks token boundaries.
+<span class="lineno">16</span>   ----------------------------------------------------------------------
+<span class="lineno">17</span>*/
+<span class="lineno">18</span>ISO-10303-21;
+<span class="lineno">19</span>HEADER;
+<span class="lineno">20</span>FILE_DESCRIPTION((&#x27;Ls003 - lower-case e exponent on REAL&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">21</span>FILE_NAME(&#x27;Ls003.stp&#x27;,&#x27;2026-04-26T00:00:00&#x27;,(&#x27;auto-generated&#x27;),(&#x27;&#x27;),
+<span class="lineno">22</span>  &#x27;auto-generated&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">23</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
+<span class="lineno">24</span>ENDSEC;
+<span class="lineno">25</span>DATA;
+<span class="lineno">26</span>#10=CARTESIAN_POINT(&#x27;origin&#x27;,(0.0,0.0,0.0));
+<span class="lineno">27</span>/* Defect: lower-case &#x27;e&#x27; exponent in REAL literals */
+<span class="lineno">28</span>#20=DIRECTION(&#x27;z&#x27;,(1.<mark>5e+3</mark>,0.,0.));
+<span class="lineno">29</span>#30=CARTESIAN_POINT(&#x27;scaled&#x27;,(1.<mark>0e-6</mark>,2.<mark>5e+0</mark>,3.1<mark>4e+2</mark>));
+<span class="lineno">30</span>/* Defect: bare &#x27;e&#x27; (no sign on exponent) - permitted by some grammars but
+<span class="lineno">31</span>   non-canonical when read as Part-21 */
+<span class="lineno">32</span>#31=CARTESIAN_POINT(&#x27;bare&#x27;,(1.<mark>0e3</mark>,2.<mark>5e0</mark>,3.1<mark>4e2</mark>));
+<span class="lineno">33</span>#40=AXIS2_PLACEMENT_3D(&#x27;placement&#x27;,#10,#20,$);
+<span class="lineno">34</span>ENDSEC;
+<span class="lineno">35</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Ls002.html">&larr; Ls002</a> <a class="up" href="index.html">§12.1c Part-21 grammar</a> <a class="next" href="Ls004.html">Ls004 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

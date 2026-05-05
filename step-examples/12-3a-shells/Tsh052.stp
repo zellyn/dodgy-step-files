@@ -1,0 +1,24 @@
+ISO-10303-21;
+/* Tsh052 - Revolved shape imported with reversed normals
+ * Defect: half-circle profile revolved about Z axis to form a sphere; normals point inward depending on revolution-direction convention */
+HEADER;
+FILE_DESCRIPTION(('Tsh052 test case','Revolved shape imported with reversed normals'),'2;1');
+FILE_NAME('Tsh052.stp','2026-04-30T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+#10=CARTESIAN_POINT('axis_origin',(0.0,0.0,0.0));
+#11=DIRECTION('axis_dir',(0.0,0.0,1.0));
+#12=AXIS1_PLACEMENT('rev_axis',#10,#11);
+/* Profile is a half-circle in XZ plane */
+#20=CARTESIAN_POINT('profile_top',(0.0,0.0,1.0));
+#21=CARTESIAN_POINT('profile_bot',(0.0,0.0,-1.0));
+#22=CIRCLE('profile_half',#13,1.0);
+#13=CARTESIAN_POINT('arc_center',(0.0,0.0,0.0));
+#14=DIRECTION('',(0.0,-1.0,0.0));#15=DIRECTION('',(1.0,0.0,0.0));
+#16=AXIS2_PLACEMENT_3D('',#13,#14,#15);
+#23=SURFACE_OF_REVOLUTION('sphere_via_revolution',#22,#12);
+ENDSEC;
+END-ISO-10303-21;

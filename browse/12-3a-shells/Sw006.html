@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sw006 — Fast-sewing face whose parametric bounds are tighter than surface natural bounds</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.3a Shells / orientation</a> <span class="sep">/</span> <span class="current">Sw006</span>
+</nav>
+<header class="title-bar">
+<h1>Sw006 <span class="sep">—</span> <span class="entry-title">Fast-sewing face whose parametric bounds are tighter than surface natural bounds</span></h1>
+<p class="category">§12.3a (sub-class: fast-sewing parameter mismatch)</p>
+<p class="severity-badge severity-p1">P1 — silent data loss</p>
+<p class="tag-pills">
+<a class="tag tag-topology" href="../by-tag/topology/index.html">topology</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-3a-shells/Sw006.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-3a-shells/Sw006.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>OCCT BRepBuilderAPI_FastSewing.cxx:189, 226 (FS_NotNaturalBoundsFace) (uncovered class evidence)</li>
+</ul></section>
+<section><h2>Sender</h2>
+<p>deduced — OCCT uncovered-class sweep, Pass C</p></section>
+<section><h2>Description</h2>
+<p>A face&#x27;s wire pcurve excursion in UV is strictly smaller than the surface&#x27;s natural parameter range, but the fast-sewing path expects natural-bounds equality. Bug-reporter language: &quot;trimmed face fails fast sewing&quot;, &quot;non-natural bounds&quot;.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>A `RECTANGULAR_TRIMMED_SURFACE` of a `PLANE` with `u1=0.2, u2=0.8` while the face wire visits only `u∈[0.3,0.7]`.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>Heal and accept: refit (repair) the surface to the wire&#x27;s actual extent, or fall back to the slow-sewing path.</p></section>
+<section><h2>Notes</h2>
+<p>Bug-reporter synonyms: &quot;wire doesn&#x27;t fill face&quot;, &quot;loose pcurve bounds&quot;, &quot;trimmed face fails fast sewing&quot;, &quot;non-natural bounds reject fast sew&quot;, &quot;wire excursion smaller than surface trim range&quot;.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>contains(b&#x27;RECTANGULAR_TRIMMED_SURFACE&#x27;)</code></li>
+<li><code>count_entity_def(b&#x27;ADVANCED_FACE&#x27;) == 1</code></li>
+</ul></section>
+<section><h2>Live oracle output</h2>
+<table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
+<tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>no_shapes_loaded</code></td></tr>
+</tbody></table>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* Sw006 - Face wire pcurve excursion smaller than surface natural bounds.
+<span class="lineno">3</span> * Defect: surface trimmed to u in [0.2,0.8] but the wire visits only
+<span class="lineno">4</span> * u in [0.3,0.7] - fast-sewing&#x27;s &quot;natural bounds&quot; check fails. */
+<span class="lineno">5</span>HEADER;
+<span class="lineno">6</span>FILE_DESCRIPTION((&#x27;Sw006 - non-natural-bounds face&#x27;,&#x27;Pass C gap-fill&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">7</span>FILE_NAME(&#x27;Sw006.stp&#x27;,&#x27;2026-04-30T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;gap-fill C&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">8</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }&#x27;));
+<span class="lineno">9</span>ENDSEC;
+<span class="lineno">10</span>DATA;
+<span class="lineno">11</span>#1=APPLICATION_CONTEXT(&#x27;automotive_design&#x27;);
+<span class="lineno">12</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,&#x27;automotive_design&#x27;,2000,#1);
+<span class="lineno">13</span>#10=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">14</span>#11=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">15</span>#12=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">16</span>#13=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#10,#11,#12);
+<span class="lineno">17</span>#14=PLANE(&#x27;&#x27;,#13);
+<span class="lineno">18</span>#15=<mark>RECTANGULAR_TRIMMED_SURFACE</mark>(&#x27;trim_02_to_08&#x27;,#14,0.2,0.2,0.8,0.8,.T.,.T.);
+<span class="lineno">19</span>/* Wire visits only u in [0.3,0.7] */
+<span class="lineno">20</span><mark>#100=ADVANCED_FACE(</mark>&#x27;non_natural_bounds_face&#x27;,(),#15,.T.);
+<span class="lineno">21</span>ENDSEC;
+<span class="lineno">22</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Sw005.html">&larr; Sw005</a> <a class="up" href="index.html">§12.3a Shells / orientation</a> <a class="next" href="Sw007.html">Sw007 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

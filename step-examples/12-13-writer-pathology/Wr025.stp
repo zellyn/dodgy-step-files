@@ -1,0 +1,25 @@
+/* Wr025 - NAUO chain re-rooted incorrectly - component became top */
+ISO-10303-21;
+HEADER;
+FILE_DESCRIPTION(('Wr025 - NAUO chain re-rooted'),'2;1');
+FILE_NAME('Wr025.stp','2026-04-30T00:00:00',(''),(''),
+  'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('mechanical design');
+#2=PRODUCT_CONTEXT('part',#1,'mechanical');
+/* Wr025: input was rooted on 'plate' with 'screw' as a component.
+   Writer re-rooted on 'screw'; now 'plate' is a child of 'screw'.
+   The semantic owner of the assembly is wrong */
+#10=PRODUCT('screw','screw component','',(#2));
+#11=PRODUCT('plate','plate component','',(#2));
+#20=PRODUCT_DEFINITION_FORMATION('','',#10);
+#21=PRODUCT_DEFINITION_FORMATION('','',#11);
+#30=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#31=PRODUCT_DEFINITION('design','',#20,#30);
+#32=PRODUCT_DEFINITION('design','',#21,#30);
+#40=NEXT_ASSEMBLY_USAGE_OCCURRENCE('1','screw->plate','',#31,#32,$);
+#50=(LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT(.MILLI.,.METRE.));
+ENDSEC;
+END-ISO-10303-21;

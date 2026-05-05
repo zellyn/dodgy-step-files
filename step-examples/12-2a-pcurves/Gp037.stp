@@ -1,0 +1,41 @@
+ISO-10303-21;
+/* Gp037 - Pcurve projection produces infinite line
+ * Defect: bounded 3D LINE [0,1] gets projected onto a host plane and the
+ * resulting PCURVE/SURFACE_CURVE has parametric extents [-1.0E+38, +1.0E+38]
+ * (i.e. effectively infinite for all kernel arithmetic). The mismatch
+ * between the bounded 3D parameter range and the unbounded 2D parameter
+ * range is the defect. */
+HEADER;
+FILE_DESCRIPTION(('Gp037 test case','Pcurve projection produces infinite line'),'2;1');
+FILE_NAME('Gp037.stp','2026-04-30T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+/* Host plane for the projection */
+#100=CARTESIAN_POINT('origin',(0.0,0.0,0.0));
+#101=DIRECTION('z',(0.0,0.0,1.0));
+#102=DIRECTION('x',(1.0,0.0,0.0));
+#103=AXIS2_PLACEMENT_3D('',#100,#101,#102);
+#104=PLANE('host',#103);
+/* Bounded 3D LINE on z=0; parameter range [0,1] */
+#105=DIRECTION('lx',(1.0,0.0,0.0));
+#106=VECTOR('lvec',#105,1.0);
+#107=LINE('bounded_3d',#100,#106);
+#108=CARTESIAN_POINT('end',(1.0,0.0,0.0));
+#109=VERTEX_POINT('v0',#100);
+#110=VERTEX_POINT('v1',#108);
+/* PCURVE 2D LINE running from -1e38 to +1e38 in U
+ * The projection inflates the parametric extents to effectively infinite. */
+#120=CARTESIAN_POINT('puv_origin',(-1.0E+38,0.0));
+#121=DIRECTION('puv_dir',(1.0,0.0));
+#122=VECTOR('puv_vec',#121,2.0E+38);
+#123=LINE('infinite_pcurve',#120,#122);
+#124=DEFINITIONAL_REPRESENTATION('pcurve_def',(#123),#103);
+#125=PCURVE('pcurve_inf',#104,#124);
+/* SURFACE_CURVE binding the bounded 3D curve to the unbounded 2D pcurve */
+#130=SURFACE_CURVE('proj',#107,(#125),.PCURVE_S1.);
+#140=EDGE_CURVE('inf_param_edge',#109,#110,#130,.T.);
+ENDSEC;
+END-ISO-10303-21;

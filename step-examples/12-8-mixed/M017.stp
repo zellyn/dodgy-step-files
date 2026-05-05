@@ -1,0 +1,32 @@
+ISO-10303-21;
+/* M017 - Tessellated geometry without a STYLED_ITEM (no color).
+ * Defect: a TESSELLATED_SOLID exists with no STYLED_ITEM referencing
+ * it, so no color/style information is set. Receivers must default to
+ * a neutral material; well-behaved kernels should warn. */
+HEADER;
+FILE_DESCRIPTION(('M017 test case','tessellated solid with no styled_item'),'2;1');
+FILE_NAME('M017.stp','2026-04-26T00:00:00',(''),(''),'auto-generated','','');
+FILE_SCHEMA(('AP242_MANAGED_MODEL_BASED_3D_ENGINEERING_MIM_LF { 1 0 10303 442 1 1 4 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('managed model based 3d engineering');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
+  'ap242_managed_model_based_3d_engineering',2014,#1);
+#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#11=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#12=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.E-6),#10,'distance_accuracy_value','');
+#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+     GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13))
+     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12))
+     REPRESENTATION_CONTEXT('part','3D'));
+/* Tessellated tetrahedron */
+#100=COORDINATES_LIST('',4,((0.0,0.0,0.0),(1.0,0.0,0.0),
+                            (0.5,1.0,0.0),(0.5,0.5,1.0)));
+#110=TRIANGULATED_FACE('tet_face',#100,$,$,(),
+       ((1,2,3),(1,2,4),(2,3,4),(3,1,4)));
+#120=TESSELLATED_SOLID('tet_no_style',(#110),$);
+#200=TESSELLATED_SHAPE_REPRESENTATION('',(#120),#14);
+/* Defect: NO STYLED_ITEM, no PSA, no MDGPR. */
+ENDSEC;
+END-ISO-10303-21;

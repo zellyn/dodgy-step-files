@@ -1,0 +1,99 @@
+ISO-10303-21;
+/* Tsh039 - Self-touching boundary cycle (figure-eight wire after triangulation)
+ * Defect: A face whose boundary loop folds back on itself after
+ * triangulation, or "4-manifold edge" (one shared edge has two pairs
+ * of triangles). CGAL's stitch_boundary_cycles / Manifold's
+ * DedupeEdges resolve by duplicating endpoints and adding edges to
+ * separate the topology.
+ *
+ * This file demonstrates the figure-eight directly: a face whose
+ * single outer wire visits a corner vertex twice -- the wire winds
+ * around a left lobe, returns through the central vertex, then
+ * winds around the right lobe before closing. Vertex #114 (centre)
+ * is the pinch point shared by both lobes.
+ *      _______        _______
+ *     |       |      |       |
+ *     |  L    |  X   |   R   |     X = pinch vertex (#114)
+ *     |_______|______|_______|
+ * Sources: H002, H011, H041, L013. */
+HEADER;
+FILE_DESCRIPTION(('Tsh039 test case','Figure-eight self-touching boundary'),'2;1');
+FILE_NAME('Tsh039.stp','2026-04-26T00:00:00',(''),(''),'auto-generated','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+/* Vertices for two square lobes joined at a pinch vertex.
+   Left lobe: (-2,-1)-(-2,1)-(0,1)-(0,-1) closed via #114.
+   Right lobe: (0,-1)-(0,1)-(2,1)-(2,-1) closed via #114. */
+#100=CARTESIAN_POINT('',(-2.0,-1.0,0.0));
+#101=CARTESIAN_POINT('',(-2.0, 1.0,0.0));
+#102=CARTESIAN_POINT('',( 0.0, 1.0,0.0));
+#103=CARTESIAN_POINT('',( 0.0,-1.0,0.0));
+#104=CARTESIAN_POINT('pinch',(0.0,0.0,0.0));
+#105=CARTESIAN_POINT('',( 2.0, 1.0,0.0));
+#106=CARTESIAN_POINT('',( 2.0,-1.0,0.0));
+#110=VERTEX_POINT('',#100); #111=VERTEX_POINT('',#101);
+#112=VERTEX_POINT('',#102); #113=VERTEX_POINT('',#103);
+#114=VERTEX_POINT('pinch_vertex',#104);
+#115=VERTEX_POINT('',#105); #116=VERTEX_POINT('',#106);
+/* Plane z=0. */
+#200=DIRECTION('',(0.0,0.0,1.0)); #201=DIRECTION('',(1.0,0.0,0.0));
+#211=AXIS2_PLACEMENT_3D('',#100,#200,#201); #212=PLANE('plane_xy',#211);
+/* Edge directions and vectors. */
+#300=DIRECTION('',(1.0,0.0,0.0)); #301=VECTOR('',#300,1.0);
+#302=DIRECTION('',(0.0,1.0,0.0)); #303=VECTOR('',#302,1.0);
+#304=VECTOR('',#300,2.0);
+#305=VECTOR('',#302,2.0);
+/* Left-lobe edges. */
+#310=LINE('',#100,#305); #311=EDGE_CURVE('LB_left',#110,#101,#310,.T.);
+                        /* (-2,-1) -> (-2,1) */
+#312=LINE('',#101,#304); #313=EDGE_CURVE('LB_top',#111,#112,#312,.T.);
+                        /* (-2,1) -> (0,1) */
+#314=DIRECTION('',(0.0,-1.0,0.0)); #315=VECTOR('',#314,1.0);
+#316=LINE('',#102,#315); #317=EDGE_CURVE('LB_right_to_pinch',#112,#114,#316,.T.);
+                        /* (0,1) -> (0,0) */
+#318=LINE('',#104,#315); #319=EDGE_CURVE('pinch_to_LB_bottom',#114,#113,#318,.T.);
+                        /* (0,0) -> (0,-1) */
+#320=DIRECTION('',(-1.0,0.0,0.0)); #321=VECTOR('',#320,2.0);
+#322=LINE('',#103,#321); #323=EDGE_CURVE('LB_bottom',#113,#110,#322,.T.);
+                        /* (0,-1) -> (-2,-1) */
+/* Right-lobe edges. */
+#330=LINE('',#104,#315); #331=EDGE_CURVE('pinch_to_RB_bottom',#114,#106,#330,.T.);
+                        /* The line same as #318 but as a separate curve;
+                           the EDGE_CURVE goes (0,0)->(2,-1) which is not
+                           collinear -- diagonal. */
+#332=DIRECTION('',(0.9128709291752769,-0.40824829046386296,0.0)); #333=VECTOR('',#332,2.236068);
+#334=LINE('rb_diag',#104,#333);
+#335=EDGE_CURVE('pinch_to_RB',#114,#116,#334,.T.);
+#336=LINE('',#106,#305); #337=EDGE_CURVE('RB_right',#116,#115,#336,.T.);
+#338=LINE('',#105,#321); #339=EDGE_CURVE('RB_top',#115,#102,#338,.T.);
+#340=EDGE_CURVE('RB_top_to_pinch',#102,#114,#316,.T.);
+                        /* re-traverses the LB->pinch edge in opposite
+                           sense; mathematically the SAME curve so the
+                           wire passes through #114 twice. */
+/* Defect: a single outer EDGE_LOOP that visits the pinch vertex twice.
+   left lobe: 110 -> 101 -> 102 -> 114 -> 113 -> 110
+   then crosses to right lobe at #114
+   right lobe: 114 -> 116 -> 115 -> 102 -> 114
+   Resulting figure-eight wire is geometrically a self-touching cycle. */
+#400=ORIENTED_EDGE('',*,*,#311,.T.);  /* 110 -> 101 */
+#401=ORIENTED_EDGE('',*,*,#313,.T.);  /* 101 -> 102 */
+#402=ORIENTED_EDGE('',*,*,#317,.T.);  /* 102 -> 114 (FIRST visit to pinch) */
+#403=ORIENTED_EDGE('',*,*,#319,.T.);  /* 114 -> 113 */
+#404=ORIENTED_EDGE('',*,*,#323,.T.);  /* 113 -> 110 */
+/* Wire returns to start; figure-eight requires the loop to revisit
+   the pinch -- represented here by sequencing right lobe immediately
+   after coming back through #114 a second time. */
+#405=ORIENTED_EDGE('',*,*,#335,.T.);  /* 114 -> 116 (SECOND visit) */
+#406=ORIENTED_EDGE('',*,*,#337,.T.);  /* 116 -> 115 */
+#407=ORIENTED_EDGE('',*,*,#339,.T.);  /* 115 -> 102 */
+#408=ORIENTED_EDGE('',*,*,#340,.T.);  /* 102 -> 114 (closes via pinch) */
+#410=EDGE_LOOP('figure_eight_outer',(#400,#401,#402,#403,#404,#405,#406,#407,#408));
+#411=FACE_OUTER_BOUND('',#410,.T.);
+#412=ADVANCED_FACE('face_with_self_touching_boundary',(#411),#212,.T.);
+#500=OPEN_SHELL('shell_with_figure8',(#412));
+#510=SHELL_BASED_SURFACE_MODEL('container',(#500));
+ENDSEC;
+END-ISO-10303-21;

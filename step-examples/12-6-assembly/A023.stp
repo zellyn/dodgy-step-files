@@ -1,0 +1,55 @@
+ISO-10303-21;
+/*
+ * A023 — Mapped_item / representation_map identity transform requirement
+ * Defect (CAx-IF PMI v4.1 §9.4.2.1, MAPPED_ITEM unrecognized location,
+ *         mapped_item with scaling):
+ *   To include part geometry in a Saved View's draughting_model, a
+ *   mapped_item plus a representation_map must be used. The
+ *   axis2_placement_3d referenced as mapping_source / mapping_origin MUST
+ *   be a unit identity transform. Files that put a non-identity transform
+ *   inadvertently move the geometry only in that view.
+ *   Variants: MAPPED_ITEM with unrecognized location (location dropped);
+ *   writer skips MAPPED_ITEM with non-rigid (scaling) transform.
+ * Expected kernel: validate identity transforms on saved-view mapped items;
+ *   reject scaling on assembly mapped items.
+ */
+HEADER;
+FILE_DESCRIPTION(('A023 saved-view mapped_item with non-identity mapping_source'),'2;1');
+FILE_NAME('A023.stp','2026-04-26T00:00:00',('catalog'),('cad'),'manual','','');
+FILE_SCHEMA(('AP242_MANAGED_MODEL_BASED_3D_ENGINEERING_MIM_LF { 1 0 10303 442 3 0 0 }'));
+ENDSEC;
+DATA;
+#10 = APPLICATION_CONTEXT('managed model based 3d engineering');
+#11 = APPLICATION_PROTOCOL_DEFINITION('international standard','ap242_managed_model_based_3d_engineering',2020,#10);
+#12 = PRODUCT_CONTEXT('',#10,'mechanical');
+#13 = PRODUCT_DEFINITION_CONTEXT('part definition',#10,'design');
+#20 = PRODUCT('A023_PART','part with saved view','',(#12));
+#21 = PRODUCT_DEFINITION_FORMATION('','',#20);
+#22 = PRODUCT_DEFINITION('design','',#21,#13);
+#23 = PRODUCT_DEFINITION_SHAPE('','',#22);
+#50 = ( LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT(.MILLI.,.METRE.) );
+#51 = ( NAMED_UNIT(*) PLANE_ANGLE_UNIT() SI_UNIT($,.RADIAN.) );
+#52 = ( NAMED_UNIT(*) SI_UNIT($,.STERADIAN.) SOLID_ANGLE_UNIT() );
+#53 = UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#50,'distance_accuracy_value','');
+#54 = ( GEOMETRIC_REPRESENTATION_CONTEXT(3) GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#53))
+        GLOBAL_UNIT_ASSIGNED_CONTEXT((#50,#51,#52)) REPRESENTATION_CONTEXT('','3D') );
+#60 = CARTESIAN_POINT('',(0.0,0.0,0.0));
+#61 = DIRECTION('',(0.0,0.0,1.0));
+#62 = DIRECTION('',(1.0,0.0,0.0));
+#63 = AXIS2_PLACEMENT_3D('identity',#60,#61,#62);
+#64 = PLANE('',#63);
+#65 = ADVANCED_FACE('face',(),#64,.T.);
+#66 = SHAPE_REPRESENTATION('part_rep',(#63,#65),#54);
+#67 = SHAPE_DEFINITION_REPRESENTATION(#23,#66);
+/* DEFECT: mapping_source axis is NOT identity — origin offset (10,0,0).
+   Per CAx-IF PMI §9.4.2.1, the mapping_source axis2_placement of a
+   saved-view mapped_item MUST be a unit identity transform. The geometry
+   will appear shifted only in the saved view. */
+#70 = CARTESIAN_POINT('non_identity_origin',(10.0,0.0,0.0));
+#71 = AXIS2_PLACEMENT_3D('non_identity',#70,#61,#62);
+#72 = REPRESENTATION_MAP(#71,#66);
+#73 = MAPPED_ITEM('saved_view_inst',#72,#63);
+/* Saved view draughting_model that uses the bad mapped_item */
+#80 = DRAUGHTING_MODEL('SavedView_iso',(#73),#54);
+ENDSEC;
+END-ISO-10303-21;

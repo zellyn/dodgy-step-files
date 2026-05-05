@@ -1,0 +1,76 @@
+ISO-10303-21;
+/* Twi095 - Touching wires on a face form a tangential contact at single vertex
+ * Square outer wire 4x4. The top edge is split at midpoint (2,4,0) into two
+ * sub-edges so that a SHARED VERTEX_POINT exists at that midpoint. An inner
+ * triangle wire's apex references the SAME VERTEX_POINT instance -- the
+ * outer wire and the inner wire touch at exactly one vertex. */
+HEADER;
+FILE_DESCRIPTION(('Twi095 test case','Square outer + inner triangle whose apex IS the shared midpoint vertex'),'2;1');
+FILE_NAME('Twi095.stp','2026-04-30T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#11=DIRECTION('',(0.0,0.0,1.0));
+#12=DIRECTION('',(1.0,0.0,0.0));
+#13=AXIS2_PLACEMENT_3D('',#10,#11,#12);
+#14=PLANE('',#13);
+/* Square corners */
+#20=CARTESIAN_POINT('',(0.0,0.0,0.0));#21=VERTEX_POINT('V1',#20);
+#22=CARTESIAN_POINT('',(4.0,0.0,0.0));#23=VERTEX_POINT('V2',#22);
+#24=CARTESIAN_POINT('',(4.0,4.0,0.0));#25=VERTEX_POINT('V3',#24);
+#26=CARTESIAN_POINT('shared_top_midpoint',(2.0,4.0,0.0));#27=VERTEX_POINT('V_shared',#26);
+#28=CARTESIAN_POINT('',(0.0,4.0,0.0));#29=VERTEX_POINT('V4',#28);
+/* Outer wire: 5 edges (top split into two sub-edges around V_shared) */
+#30=DIRECTION('',(1.0,0.0,0.0));#31=VECTOR('',#30,1.0);#32=LINE('',#20,#31);
+#33=EDGE_CURVE('bottom',#21,#23,#32,.T.);
+#34=DIRECTION('',(0.0,1.0,0.0));#35=VECTOR('',#34,1.0);#36=LINE('',#22,#35);
+#37=EDGE_CURVE('right',#23,#25,#36,.T.);
+#38=DIRECTION('',(-1.0,0.0,0.0));#39=VECTOR('',#38,1.0);#40=LINE('',#24,#39);
+#41=EDGE_CURVE('top_right_subedge',#25,#27,#40,.T.);
+#42=DIRECTION('',(-1.0,0.0,0.0));#43=VECTOR('',#42,1.0);#44=LINE('',#26,#43);
+#45=EDGE_CURVE('top_left_subedge',#27,#29,#44,.T.);
+#46=DIRECTION('',(0.0,-1.0,0.0));#47=VECTOR('',#46,1.0);#48=LINE('',#28,#47);
+#49=EDGE_CURVE('left',#29,#21,#48,.T.);
+#50=ORIENTED_EDGE('',*,*,#33,.T.);
+#51=ORIENTED_EDGE('',*,*,#37,.T.);
+#52=ORIENTED_EDGE('',*,*,#41,.T.);
+#53=ORIENTED_EDGE('',*,*,#45,.T.);
+#54=ORIENTED_EDGE('',*,*,#49,.T.);
+#55=EDGE_LOOP('outer_5_edges_split_top',(#50,#51,#52,#53,#54));
+#56=FACE_OUTER_BOUND('outer',#55,.T.);
+/* Inner triangle wire: apex shares V_shared (#27) with outer wire */
+#60=CARTESIAN_POINT('',(1.5,3.0,0.0));#61=VERTEX_POINT('Ileft',#60);
+#62=CARTESIAN_POINT('',(2.5,3.0,0.0));#63=VERTEX_POINT('Iright',#62);
+#64=DIRECTION('',(1.0,0.0,0.0));#65=VECTOR('',#64,1.0);#66=LINE('',#60,#65);
+#67=EDGE_CURVE('inner_base',#61,#63,#66,.T.);
+#68=DIRECTION('',(-0.4472135954999579,0.8944271909999159,0.0));#69=VECTOR('',#68,2.236);#70=LINE('',#62,#69);
+#71=EDGE_CURVE('inner_right_to_apex',#63,#27,#70,.T.);
+#72=DIRECTION('',(-0.4472135954999579,-0.8944271909999159,0.0));#73=VECTOR('',#72,2.236);#74=LINE('',#26,#73);
+#75=EDGE_CURVE('inner_apex_to_left',#27,#61,#74,.T.);
+#80=ORIENTED_EDGE('',*,*,#67,.T.);
+#81=ORIENTED_EDGE('',*,*,#71,.T.);
+#82=ORIENTED_EDGE('',*,*,#75,.T.);
+#83=EDGE_LOOP('inner_triangle_apex_at_V_shared',(#80,#81,#82));
+#84=FACE_INNER_BOUND('inner',#83,.T.);
+#90=ADVANCED_FACE('square_with_apex_touching_inner_tri',(#56,#84),#14,.T.);
+/* Wrap: minimal PRODUCT chain so OCCT TransferRoots produces a shape. */
+#9000=PRODUCT_CONTEXT('',#1,'mechanical');
+#9001=PRODUCT('Twi095','Twi095','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
+#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
+#9020=OPEN_SHELL('wrap_shell',(#90));
+#9021=SHELL_BASED_SURFACE_MODEL('wrap_sbsm',(#9020));
+#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#9010);
+#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+ENDSEC;
+END-ISO-10303-21;

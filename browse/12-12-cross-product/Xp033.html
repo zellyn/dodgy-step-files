@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Xp033 — NX-emitted cylinder split into two ADVANCED_FACE halves at the seam</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.12 Cross-product</a> <span class="sep">/</span> <span class="current">Xp033</span>
+</nav>
+<header class="title-bar">
+<h1>Xp033 <span class="sep">—</span> <span class="entry-title">NX-emitted cylinder split into two ADVANCED_FACE halves at the seam</span></h1>
+<p class="category">§12.12 cross-product (face merging × receiver heal)</p>
+<p class="severity-badge severity-p1">P1 — silent data loss</p>
+<p class="tag-pills">
+<a class="tag tag-interop" href="../by-tag/interop/index.html">interop</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-12-cross-product/Xp033.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-12-cross-product/Xp033.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>PTC community 977634 &quot;Import STEP created by NX 11&quot;</li>
+<li>engineersrule.com &quot;Import Diagnostic Tool&quot; guide</li>
+<li>eng-tips.com 440625 &quot;Problem importing STEPs from CATIA&quot;</li>
+<li>bug-reporter language: &quot;cylindrical surface split by seam&quot;, &quot;feature recognition fails because the cylinder is two faces&quot;.</li>
+</ul></section>
+<section><h2>Sender</h2>
+<p>Siemens NX (default writer behaviour for closed cylinders)</p></section>
+<section><h2>Description</h2>
+<p>A 360-degree cylindrical face is emitted as two 180-degree ADVANCED_FACE entries sharing a seam edge, each backed by its own CYLINDRICAL_SURFACE entity (same axis, same radius, complementary parameter ranges). Receivers expecting one periodic face emit &quot;non-merged cylinder&quot; warnings; downstream feature recognition fails to identify the holes / shafts as parametric features. Users mitigate with Creo&#x27;s &quot;Optimize Face&quot; or SolidWorks&#x27;s &quot;Combine faces&quot;.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>two CYLINDRICAL_SURFACE entities with identical AXIS2_PLACEMENT_3D and radius 5.0; two ADVANCED_FACE entries (one per half) with empty bound lists; CLOSED_SHELL referencing both halves.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>detect equivalent CYLINDRICAL_SURFACE entries (same axis, same radius) and merge their hosted faces into a single periodic face; emit &quot;merged split cylinder&quot; diagnostic; leaving the split unresolved breaks feature recognition downstream.</p></section>
+<section><h2>Notes</h2>
+<p>Synonyms: &quot;split cylinder face on seam&quot;, &quot;NX writes cylinder as two halves&quot;, &quot;feature recognition fails on split surface&quot;, &quot;non-merged periodic face&quot;, &quot;Optimize Face needed after import&quot;.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>count(b&#x27;CYLINDRICAL_SURFACE&#x27;) &gt;= 2</code></li>
+</ul></section>
+<section><h2>Live oracle output</h2>
+<table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
+<tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>no_shapes_loaded</code></td></tr>
+</tbody></table>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* Xp033 - Cross-product: NX-emitted STEP file represents a cylindrical
+<span class="lineno">3</span> *   face as multiple ADVANCED_FACE entries split along the seam; CATIA
+<span class="lineno">4</span> *   and SolidWorks complain that the face has been &quot;split&quot; and require
+<span class="lineno">5</span> *   manual &quot;Optimize Face&quot; / heal to merge.
+<span class="lineno">6</span> * Source: PTC Community 977634 &quot;Import STEP created by NX 11&quot;; Engineers
+<span class="lineno">7</span> *   Rule &quot;Import Diagnostic Tool&quot; guide; Eng-Tips 440625 &quot;Problem
+<span class="lineno">8</span> *   importing STEPs from CATIA&quot;.
+<span class="lineno">9</span> * Defect: a single 360-degree cylinder is split into two 180-degree
+<span class="lineno">10</span> *   ADVANCED_FACE halves sharing a seam edge. The two halves each have
+<span class="lineno">11</span> *   independent <mark>CYLINDRICAL_SURFACE</mark> entities with the same axis but
+<span class="lineno">12</span> *   different parameter ranges. Receivers expecting a single periodic
+<span class="lineno">13</span> *   face emit &quot;non-merged cylinder&quot; diagnostics or generate downstream
+<span class="lineno">14</span> *   feature recognition failures (the cylinder no longer reads as a
+<span class="lineno">15</span> *   &quot;hole&quot;). */
+<span class="lineno">16</span>HEADER;
+<span class="lineno">17</span>FILE_DESCRIPTION((&#x27;Xp033 cross-product&#x27;,&#x27;NX split-cylinder split-face seam&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">18</span>FILE_NAME(&#x27;Xp033.stp&#x27;,&#x27;2026-05-02T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;NX;1980-EXPORT&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">19</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }&#x27;));
+<span class="lineno">20</span>ENDSEC;
+<span class="lineno">21</span>DATA;
+<span class="lineno">22</span>#1=APPLICATION_CONTEXT(&#x27;automotive_design&#x27;);
+<span class="lineno">23</span>#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">24</span>#11=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+<span class="lineno">25</span>#12=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+<span class="lineno">26</span>#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#10,&#x27;tol&#x27;,&#x27;&#x27;);
+<span class="lineno">27</span>#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13))GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12))REPRESENTATION_CONTEXT(&#x27;&#x27;,&#x27;3D&#x27;));
+<span class="lineno">28</span>/* Same axis used twice */
+<span class="lineno">29</span>#20=CARTESIAN_POINT(&#x27;axis_origin&#x27;,(0.0,0.0,0.0));
+<span class="lineno">30</span>#21=DIRECTION(&#x27;z&#x27;,(0.0,0.0,1.0));
+<span class="lineno">31</span>#22=DIRECTION(&#x27;x&#x27;,(1.0,0.0,0.0));
+<span class="lineno">32</span>#23=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#20,#21,#22);
+<span class="lineno">33</span>/* Two cylindrical surfaces, identical axes and radii. NX writes them as
+<span class="lineno">34</span>   two distinct entities even though they describe the same surface. */
+<span class="lineno">35</span>#30=<mark>CYLINDRICAL_SURFACE</mark>(&#x27;cyl_half_A&#x27;,#23,5.0);
+<span class="lineno">36</span>#31=<mark>CYLINDRICAL_SURFACE</mark>(&#x27;cyl_half_B_split&#x27;,#23,5.0);
+<span class="lineno">37</span>/* Two ADVANCED_FACE halves split along U=0/PI seam; receiver must heal */
+<span class="lineno">38</span>#40=ADVANCED_FACE(&#x27;cyl_+u_half&#x27;,(),#30,.T.);
+<span class="lineno">39</span>#41=ADVANCED_FACE(&#x27;cyl_-u_half_split_face&#x27;,(),#31,.T.);
+<span class="lineno">40</span>#50=CLOSED_SHELL(&#x27;split_cyl_should_be_one_face&#x27;,(#40,#41));
+<span class="lineno">41</span>ENDSEC;
+<span class="lineno">42</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Xp032.html">&larr; Xp032</a> <a class="up" href="index.html">§12.12 Cross-product</a> <a class="next" href="Xp034.html">Xp034 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

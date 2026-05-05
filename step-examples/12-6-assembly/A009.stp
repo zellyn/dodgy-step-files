@@ -1,0 +1,55 @@
+ISO-10303-21;
+/*
+ * A009 — NAUO references PRODUCT_DEFINITION_SHAPE instead of PRODUCT_DEFINITION
+ * Defect (OCCT bedd79c / Mantis 0025167):
+ *   Schema requires NAUO children to be PRODUCT_DEFINITION, but some files
+ *   supply PRODUCT_DEFINITION_SHAPE. Schema-strict reader rejects.
+ * Reproducer:
+ *   #N = NEXT_ASSEMBLY_USAGE_OCCURRENCE(... #PDS_id ...) where #PDS_id is a
+ *   PDS, not a PD.
+ * Expected kernel: heal — accept PDS child; resolve PDS → PD silently.
+ *
+ * NOTE: this file is SCHEMA-INVALID — NAUO's related/relating slots are
+ *   typed PRODUCT_DEFINITION but here reference PRODUCT_DEFINITION_SHAPE.
+ *   Catalog use only.
+ */
+HEADER;
+FILE_DESCRIPTION(('A009 NAUO target is PRODUCT_DEFINITION_SHAPE (schema invalid)'),'2;1');
+FILE_NAME('A009.stp','2026-04-26T00:00:00',('catalog'),('cad'),'manual','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#10 = APPLICATION_CONTEXT('automotive design');
+#11 = APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2001,#10);
+#12 = PRODUCT_CONTEXT('',#10,'mechanical');
+#13 = PRODUCT_DEFINITION_CONTEXT('part definition',#10,'design');
+#20 = PRODUCT('A009_ASSY','','',(#12));
+#21 = PRODUCT_DEFINITION_FORMATION('','',#20);
+#22 = PRODUCT_DEFINITION('design','',#21,#13);
+#23 = PRODUCT_DEFINITION_SHAPE('','',#22);
+#30 = PRODUCT('LEAF','','',(#12));
+#31 = PRODUCT_DEFINITION_FORMATION('','',#30);
+#32 = PRODUCT_DEFINITION('design','',#31,#13);
+#33 = PRODUCT_DEFINITION_SHAPE('','',#32);
+/* DEFECT: NAUO.related is #33, a PRODUCT_DEFINITION_SHAPE, not a PD. */
+#40 = NEXT_ASSEMBLY_USAGE_OCCURRENCE('1','BAD','',#22,#33,$);
+/* Units */
+#50 = ( LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT(.MILLI.,.METRE.) );
+#51 = ( NAMED_UNIT(*) PLANE_ANGLE_UNIT() SI_UNIT($,.RADIAN.) );
+#52 = ( NAMED_UNIT(*) SI_UNIT($,.STERADIAN.) SOLID_ANGLE_UNIT() );
+#53 = UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#50,'distance_accuracy_value','');
+#54 = ( GEOMETRIC_REPRESENTATION_CONTEXT(3) GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#53))
+        GLOBAL_UNIT_ASSIGNED_CONTEXT((#50,#51,#52)) REPRESENTATION_CONTEXT('','3D') );
+#60 = CARTESIAN_POINT('',(0.0,0.0,0.0));
+#61 = DIRECTION('',(0.0,0.0,1.0));
+#62 = DIRECTION('',(1.0,0.0,0.0));
+#63 = AXIS2_PLACEMENT_3D('leaf_origin',#60,#61,#62);
+#64 = SHAPE_REPRESENTATION('leaf_rep',(#63),#54);
+#65 = SHAPE_DEFINITION_REPRESENTATION(#33,#64);
+#66 = REPRESENTATION_MAP(#63,#64);
+#67 = MAPPED_ITEM('inst',#66,#63);
+#80 = AXIS2_PLACEMENT_3D('assy_origin',#60,#61,#62);
+#81 = SHAPE_REPRESENTATION('assy_rep',(#80,#67),#54);
+#82 = SHAPE_DEFINITION_REPRESENTATION(#23,#81);
+ENDSEC;
+END-ISO-10303-21;

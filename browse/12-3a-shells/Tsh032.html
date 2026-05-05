@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Tsh032 — Single `ADVANCED_FACE` with `same_sense=.F.` flipped inward in `CLOSED_SHELL` (Thingi10K cluster)</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.3a Shells / orientation</a> <span class="sep">/</span> <span class="current">Tsh032</span>
+</nav>
+<header class="title-bar">
+<h1>Tsh032 <span class="sep">—</span> <span class="entry-title">Single `ADVANCED_FACE` with `same_sense=.F.` flipped inward in `CLOSED_SHELL` (Thingi10K cluster)</span></h1>
+<p class="category">§12.3a shell-orientation</p>
+<p class="severity-badge severity-p1">P1 — silent data loss</p>
+<p class="tag-pills">
+<a class="tag tag-topology" href="../by-tag/topology/index.html">topology</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-3a-shells/Tsh032.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-3a-shells/Tsh032.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>19-datasets.md D013 (~3% Thingi10K), D016 (non-PWN ~45-50%)</li>
+<li>09-healing-menus.md H024, H025 (orient_polygon_soup, orient_to_bound_a_volume)</li>
+</ul></section>
+<section><h2>Description</h2>
+<p>Adjacent faces with opposite outward normals — one or more faces in a `CLOSED_SHELL` carry `same_sense=.F.` while their neighbours carry `.T.`, producing a face flipped inward. Common signature: a six-face cube `CLOSED_SHELL` where five faces have orientation `.T.` and exactly one face (e.g. the +Y wall) is `.F.`, breaking normal coherence. Aggregates with open-shell and non-manifold defects into the umbrella &quot;non-PWN / non-solid&quot; class (~50% of Thingi10K).</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>Two adjacent quad faces sharing an edge but with `same_sense=.T.` mismatch on the shared edge.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>flood-fill orientation propagation from a known-correct seed, flipping mis-oriented neighbours, and warn; or reject as non-orientable.</p></section>
+<section><h2>Notes</h2>
+<p>**See also**: Tsh009. Synonyms: &quot;single face flipped on cube&quot;, &quot;one wall of box has wrong normal&quot;, &quot;non-PWN solid in dataset&quot;, &quot;face same-sense flag mismatched with neighbours&quot;, &quot;non-orientable body imported from Thingi10K&quot;.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>contains(b&#x27;CLOSED_SHELL&#x27;)</code></li>
+<li><code>contains(b&#x27;MANIFOLD_SOLID_BREP&#x27;)</code></li>
+<li><code>count_entity_def(b&#x27;ADVANCED_FACE&#x27;) == 6</code></li>
+</ul></section>
+<section><h2>Cross-references</h2>
+<p><a href="Tsh009.html">Tsh009</a></p>
+</section>
+<section><h2>Live oracle output</h2>
+<table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
+<tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>no_shapes_loaded</code></td></tr>
+</tbody></table>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* Tsh032 - Inconsistent face orientation in mesh-derived BREP (Thingi10K cluster)
+<span class="lineno">3</span> * Defect: Adjacent faces with opposite outward normals -- flipping one
+<span class="lineno">4</span> * would heal, but the file ships inconsistent. The classic mesh-derived
+<span class="lineno">5</span> * BREP signature: one or more faces in an otherwise closed shell have
+<span class="lineno">6</span> * the wrong same_sense, breaking inside/outside classification along
+<span class="lineno">7</span> * shared edges. ~3% of Thingi10K (D013); aggregates to non-PWN/non-solid
+<span class="lineno">8</span> * ~50% (D016).
+<span class="lineno">9</span> *
+<span class="lineno">10</span> * This file: cube where the +y (BACK) face has its same_sense flipped.
+<span class="lineno">11</span> * The five other faces share consistent outward normals; the back face
+<span class="lineno">12</span> * normal points inward. orient_to_bound_a_volume / FixFaceOrientation
+<span class="lineno">13</span> * would propagate orientation from a known-correct seed and flip the
+<span class="lineno">14</span> * back face. Sources: D013, D016, H024, H025. */
+<span class="lineno">15</span>HEADER;
+<span class="lineno">16</span>FILE_DESCRIPTION((&#x27;Tsh032 test case&#x27;,&#x27;One mis-oriented face in otherwise closed shell&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">17</span>FILE_NAME(&#x27;Tsh032.stp&#x27;,&#x27;2026-04-26T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;auto-generated&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">18</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }&#x27;));
+<span class="lineno">19</span>ENDSEC;
+<span class="lineno">20</span>DATA;
+<span class="lineno">21</span>#1=APPLICATION_CONTEXT(&#x27;automotive_design&#x27;);
+<span class="lineno">22</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,&#x27;automotive_design&#x27;,2000,#1);
+<span class="lineno">23</span>#100=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">24</span>#101=CARTESIAN_POINT(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">25</span>#102=CARTESIAN_POINT(&#x27;&#x27;,(1.0,1.0,0.0));
+<span class="lineno">26</span>#103=CARTESIAN_POINT(&#x27;&#x27;,(0.0,1.0,0.0));
+<span class="lineno">27</span>#104=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">28</span>#105=CARTESIAN_POINT(&#x27;&#x27;,(1.0,0.0,1.0));
+<span class="lineno">29</span>#106=CARTESIAN_POINT(&#x27;&#x27;,(1.0,1.0,1.0));
+<span class="lineno">30</span>#107=CARTESIAN_POINT(&#x27;&#x27;,(0.0,1.0,1.0));
+<span class="lineno">31</span>#110=VERTEX_POINT(&#x27;&#x27;,#100); #111=VERTEX_POINT(&#x27;&#x27;,#101);
+<span class="lineno">32</span>#112=VERTEX_POINT(&#x27;&#x27;,#102); #113=VERTEX_POINT(&#x27;&#x27;,#103);
+<span class="lineno">33</span>#114=VERTEX_POINT(&#x27;&#x27;,#104); #115=VERTEX_POINT(&#x27;&#x27;,#105);
+<span class="lineno">34</span>#116=VERTEX_POINT(&#x27;&#x27;,#106); #117=VERTEX_POINT(&#x27;&#x27;,#107);
+<span class="lineno">35</span>#200=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0)); #201=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">36</span>#211=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#100,#200,#201); #212=PLANE(&#x27;z0&#x27;,#211);
+<span class="lineno">37</span>#221=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#104,#200,#201); #222=PLANE(&#x27;z1&#x27;,#221);
+<span class="lineno">38</span>#231=DIRECTION(&#x27;&#x27;,(0.0,1.0,0.0));
+<span class="lineno">39</span>#232=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#100,#231,#201); #233=PLANE(&#x27;y0&#x27;,#232);
+<span class="lineno">40</span>#242=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#103,#231,#201); #243=PLANE(&#x27;y1&#x27;,#242);
+<span class="lineno">41</span>#252=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">42</span>#253=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#100,#252,#231); #254=PLANE(&#x27;x0&#x27;,#253);
+<span class="lineno">43</span>#262=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#101,#252,#231); #263=PLANE(&#x27;x1&#x27;,#262);
+<span class="lineno">44</span>#300=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0)); #301=VECTOR(&#x27;&#x27;,#300,1.0);
+<span class="lineno">45</span>#302=DIRECTION(&#x27;&#x27;,(0.0,1.0,0.0)); #303=VECTOR(&#x27;&#x27;,#302,1.0);
+<span class="lineno">46</span>#304=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0)); #305=VECTOR(&#x27;&#x27;,#304,1.0);
+<span class="lineno">47</span>#310=LINE(&#x27;&#x27;,#100,#301); #311=EDGE_CURVE(&#x27;&#x27;,#110,#111,#310,.T.);
+<span class="lineno">48</span>#312=LINE(&#x27;&#x27;,#101,#303); #313=EDGE_CURVE(&#x27;&#x27;,#111,#112,#312,.T.);
+<span class="lineno">49</span>#314=LINE(&#x27;&#x27;,#103,#301); #315=EDGE_CURVE(&#x27;&#x27;,#113,#112,#314,.T.);
+<span class="lineno">50</span>#316=LINE(&#x27;&#x27;,#100,#303); #317=EDGE_CURVE(&#x27;&#x27;,#110,#113,#316,.T.);
+<span class="lineno">51</span>#318=LINE(&#x27;&#x27;,#104,#301); #319=EDGE_CURVE(&#x27;&#x27;,#114,#115,#318,.T.);
+<span class="lineno">52</span>#320=LINE(&#x27;&#x27;,#105,#303); #321=EDGE_CURVE(&#x27;&#x27;,#115,#116,#320,.T.);
+<span class="lineno">53</span>#322=LINE(&#x27;&#x27;,#107,#301); #323=EDGE_CURVE(&#x27;&#x27;,#117,#116,#322,.T.);
+<span class="lineno">54</span>#324=LINE(&#x27;&#x27;,#104,#303); #325=EDGE_CURVE(&#x27;&#x27;,#114,#117,#324,.T.);
+<span class="lineno">55</span>#326=LINE(&#x27;&#x27;,#100,#305); #327=EDGE_CURVE(&#x27;&#x27;,#110,#114,#326,.T.);
+<span class="lineno">56</span>#328=LINE(&#x27;&#x27;,#101,#305); #329=EDGE_CURVE(&#x27;&#x27;,#111,#115,#328,.T.);
+<span class="lineno">57</span>#330=LINE(&#x27;&#x27;,#102,#305); #331=EDGE_CURVE(&#x27;&#x27;,#112,#116,#330,.T.);
+<span class="lineno">58</span>#332=LINE(&#x27;&#x27;,#103,#305); #333=EDGE_CURVE(&#x27;&#x27;,#113,#117,#332,.T.);
+<span class="lineno">59</span>/* Five correctly oriented faces (all outward). */
+<span class="lineno">60</span>#400=ORIENTED_EDGE(&#x27;&#x27;,*,*,#311,.F.); #401=ORIENTED_EDGE(&#x27;&#x27;,*,*,#317,.T.);
+<span class="lineno">61</span>#402=ORIENTED_EDGE(&#x27;&#x27;,*,*,#315,.F.); #403=ORIENTED_EDGE(&#x27;&#x27;,*,*,#313,.F.);
+<span class="lineno">62</span>#404=EDGE_LOOP(&#x27;&#x27;,(#400,#401,#402,#403)); #405=FACE_OUTER_BOUND(&#x27;&#x27;,#404,.T.);
+<span class="lineno">63</span><mark>#406=ADVANCED_FACE(</mark>&#x27;z0_outward&#x27;,(#405),#212,.T.);
+<span class="lineno">64</span>#410=ORIENTED_EDGE(&#x27;&#x27;,*,*,#319,.T.); #411=ORIENTED_EDGE(&#x27;&#x27;,*,*,#321,.T.);
+<span class="lineno">65</span>#412=ORIENTED_EDGE(&#x27;&#x27;,*,*,#323,.F.); #413=ORIENTED_EDGE(&#x27;&#x27;,*,*,#325,.F.);
+<span class="lineno">66</span>#414=EDGE_LOOP(&#x27;&#x27;,(#410,#411,#412,#413)); #415=FACE_OUTER_BOUND(&#x27;&#x27;,#414,.T.);
+<span class="lineno">67</span><mark>#416=ADVANCED_FACE(</mark>&#x27;z1_outward&#x27;,(#415),#222,.T.);
+<span class="lineno">68</span>#420=ORIENTED_EDGE(&#x27;&#x27;,*,*,#311,.T.); #421=ORIENTED_EDGE(&#x27;&#x27;,*,*,#329,.T.);
+<span class="lineno">69</span>#422=ORIENTED_EDGE(&#x27;&#x27;,*,*,#319,.F.); #423=ORIENTED_EDGE(&#x27;&#x27;,*,*,#327,.F.);
+<span class="lineno">70</span>#424=EDGE_LOOP(&#x27;&#x27;,(#420,#421,#422,#423)); #425=FACE_OUTER_BOUND(&#x27;&#x27;,#424,.T.);
+<span class="lineno">71</span><mark>#426=ADVANCED_FACE(</mark>&#x27;y0_outward&#x27;,(#425),#233,.T.);
+<span class="lineno">72</span>/* Defect: y1 face same_sense flipped from .T. to .F. -- normal points
+<span class="lineno">73</span>   inward where its neighbours all point outward. */
+<span class="lineno">74</span>#430=ORIENTED_EDGE(&#x27;&#x27;,*,*,#315,.T.); #431=ORIENTED_EDGE(&#x27;&#x27;,*,*,#331,.T.);
+<span class="lineno">75</span>#432=ORIENTED_EDGE(&#x27;&#x27;,*,*,#323,.F.); #433=ORIENTED_EDGE(&#x27;&#x27;,*,*,#333,.F.);
+<span class="lineno">76</span>#434=EDGE_LOOP(&#x27;&#x27;,(#430,#431,#432,#433)); #435=FACE_OUTER_BOUND(&#x27;&#x27;,#434,.T.);
+<span class="lineno">77</span><mark>#436=ADVANCED_FACE(</mark>&#x27;y1_FLIPPED&#x27;,(#435),#243,.F.);
+<span class="lineno">78</span>#440=ORIENTED_EDGE(&#x27;&#x27;,*,*,#317,.T.); #441=ORIENTED_EDGE(&#x27;&#x27;,*,*,#333,.T.);
+<span class="lineno">79</span>#442=ORIENTED_EDGE(&#x27;&#x27;,*,*,#325,.F.); #443=ORIENTED_EDGE(&#x27;&#x27;,*,*,#327,.F.);
+<span class="lineno">80</span>#444=EDGE_LOOP(&#x27;&#x27;,(#440,#441,#442,#443)); #445=FACE_OUTER_BOUND(&#x27;&#x27;,#444,.T.);
+<span class="lineno">81</span><mark>#446=ADVANCED_FACE(</mark>&#x27;x0_outward&#x27;,(#445),#254,.T.);
+<span class="lineno">82</span>#450=ORIENTED_EDGE(&#x27;&#x27;,*,*,#313,.T.); #451=ORIENTED_EDGE(&#x27;&#x27;,*,*,#331,.T.);
+<span class="lineno">83</span>#452=ORIENTED_EDGE(&#x27;&#x27;,*,*,#321,.F.); #453=ORIENTED_EDGE(&#x27;&#x27;,*,*,#329,.F.);
+<span class="lineno">84</span>#454=EDGE_LOOP(&#x27;&#x27;,(#450,#451,#452,#453)); #455=FACE_OUTER_BOUND(&#x27;&#x27;,#454,.T.);
+<span class="lineno">85</span><mark>#456=ADVANCED_FACE(</mark>&#x27;x1_outward&#x27;,(#455),#263,.T.);
+<span class="lineno">86</span>#500=<mark>CLOSED_SHELL</mark>(&#x27;one_inward_face&#x27;,(#406,#416,#426,#436,#446,#456));
+<span class="lineno">87</span>#510=<mark>MANIFOLD_SOLID_BREP</mark>(&#x27;cube_with_inconsistent_orientation&#x27;,#500);
+<span class="lineno">88</span>ENDSEC;
+<span class="lineno">89</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Tsh030.html">&larr; Tsh030</a> <a class="up" href="index.html">§12.3a Shells / orientation</a> <a class="next" href="Tsh033.html">Tsh033 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

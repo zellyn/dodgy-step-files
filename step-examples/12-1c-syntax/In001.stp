@@ -1,0 +1,13 @@
+ISO-10303-21;
+/* In001 - Empty DATA section after valid HEADER.
+ * Defect: HEADER is well-formed; DATA contains only a comment, no
+ * entities. Reader's data state ends as "Unloaded" silently. */
+HEADER;
+FILE_DESCRIPTION(('In001 - empty data section','Pass C gap-fill'),'2;1');
+FILE_NAME('In001.stp','2026-04-30T00:00:00',(''),(''),'gap-fill C','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+/* This DATA section is intentionally empty of entities. */
+ENDSEC;
+END-ISO-10303-21;

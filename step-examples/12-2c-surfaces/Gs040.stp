@@ -1,0 +1,34 @@
+ISO-10303-21;
+/* Gs040 - High-curvature curve / cusp from NURBS knot insertion
+ * Defect: B_SPLINE_CURVE with multi-knots near full-degree multiplicity producing a
+ * cusp; downstream meshers over-resolve or fail. Here: cubic curve with internal knot
+ * at 0.5 of multiplicity 3 (== degree, just one short of full); coupled with a
+ * control polygon that pinches to produce a near-cusp. */
+HEADER;
+FILE_DESCRIPTION(('Gs040 test case','High-curvature cusp from NURBS knot insertion'),'2;1');
+FILE_NAME('Gs040.stp','2026-04-26T00:00:00',(''),(''),'auto-generated','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+/* Control polygon pinches sharply at the cusp around (3,0) */
+#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#11=CARTESIAN_POINT('',(1.0,5.0,0.0));
+#12=CARTESIAN_POINT('',(2.5,0.5,0.0));
+#13=CARTESIAN_POINT('',(3.0,0.0,0.0));
+#14=CARTESIAN_POINT('',(3.5,-0.5,0.0));
+#15=CARTESIAN_POINT('',(5.0,-5.0,0.0));
+#16=CARTESIAN_POINT('',(6.0,0.0,0.0));
+/* Defect: degree=3 BSpline with internal knot at 0.5 of multiplicity 3 ->
+ * curvature spikes at t=0.5; near-cusp at the matching control point. */
+#20=B_SPLINE_CURVE_WITH_KNOTS('',3,
+  (#10,#11,#12,#13,#14,#15,#16),
+  .UNSPECIFIED.,.F.,.F.,
+  (4,3,4),(0.0,0.5,1.0),
+  .UNSPECIFIED.);
+#30=VERTEX_POINT('',#10);
+#31=VERTEX_POINT('',#16);
+#40=EDGE_CURVE('',#30,#31,#20,.T.);
+ENDSEC;
+END-ISO-10303-21;

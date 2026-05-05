@@ -1,0 +1,23 @@
+/* Le011 — \N\ notation directive misused as C-style newline escape
+   Defect: \N\ toggles a notation context per Part-21; it is NOT a C-style
+   newline escape. A real LF must be encoded as \X\0A. This file embeds
+   'line1\N\line2' as written by a generator that assumed \N\ == LF. The
+   reader must not crash and must warn that \N\ is not a newline. */
+ISO-10303-21;
+HEADER;
+FILE_DESCRIPTION(('Le011 - N directive misused as newline escape'),'2;1');
+FILE_NAME('Le011.stp','2026-04-26T00:00:00',('auto-generated'),(''),
+  'auto-generated','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+/* \N\ misused as newline escape */
+#10=PERSON('p1','line1\N\line2','given',$,$,$,$,$);
+/* multiple \N\ in a row */
+#11=PERSON('p2','a\N\b\N\c','given',$,$,$,$,$);
+#20=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#21=DIRECTION('',(0.0,0.0,1.0));
+#22=DIRECTION('',(1.0,0.0,0.0));
+#23=AXIS2_PLACEMENT_3D('',#20,#21,#22);
+ENDSEC;
+END-ISO-10303-21;

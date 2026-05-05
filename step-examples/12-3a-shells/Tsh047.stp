@@ -1,0 +1,30 @@
+ISO-10303-21;
+/* Tsh047 - Face merge crosses cylinder seam
+ * Defect: two half-cylinder faces sharing a seam edge are merged but the seam is reused as interior edge, producing non-manifold result */
+HEADER;
+FILE_DESCRIPTION(('Tsh047 test case','Face merge crosses cylinder seam'),'2;1');
+FILE_NAME('Tsh047.stp','2026-04-30T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#11=DIRECTION('',(0.0,0.0,1.0));
+#12=DIRECTION('',(1.0,0.0,0.0));
+#13=AXIS2_PLACEMENT_3D('',#10,#11,#12);
+#14=CYLINDRICAL_SURFACE('',#13,5.0);
+/* Two ADVANCED_FACEs on the same CYLINDRICAL_SURFACE,
+   parameter ranges U=[0,pi] and U=[pi,2pi], sharing seam edges. */
+#100=CARTESIAN_POINT('',(5.0,0.0,0.0));#101=VERTEX_POINT('',#100);
+#102=CARTESIAN_POINT('',(5.0,0.0,1.0));#103=VERTEX_POINT('',#102);
+#104=CARTESIAN_POINT('',(-5.0,0.0,0.0));#105=VERTEX_POINT('',#104);
+#106=CARTESIAN_POINT('',(-5.0,0.0,1.0));#107=VERTEX_POINT('',#106);
+#110=DIRECTION('',(0.0,0.0,1.0));#111=VECTOR('',#110,1.0);
+#112=LINE('',#100,#111);#113=EDGE_CURVE('seam_at_u0',#101,#103,#112,.T.);
+#114=LINE('',#104,#111);#115=EDGE_CURVE('seam_at_upi',#105,#107,#114,.T.);
+#120=ADVANCED_FACE('half_cylinder',(),#14,.T.);
+#121=ADVANCED_FACE('other_half',(),#14,.T.);
+#200=OPEN_SHELL('cyl_split_for_merge',(#120,#121));
+ENDSEC;
+END-ISO-10303-21;

@@ -1,0 +1,43 @@
+ISO-10303-21;
+/* Gp019 - Edge on supporting face has no pcurve in compose-shell
+ * Defect: a face on a RECTANGULAR_COMPOSITE_SURFACE has an edge whose
+ * SURFACE_CURVE.associated_geometry is empty for the relevant sub-patch.
+ * ShapeFix_ComposeShell needs per-patch pcurves and cannot proceed. */
+HEADER;
+FILE_DESCRIPTION(('Gp019 test case','Edge has no pcurve in compose-shell'),'2;1');
+FILE_NAME('Gp019.stp','2026-04-27T00:00:00',(''),(''),'auto-generated','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#11=DIRECTION('',(0.0,0.0,1.0));
+#12=DIRECTION('',(1.0,0.0,0.0));
+#13=AXIS2_PLACEMENT_3D('',#10,#11,#12);
+/* Two co-planar sub-patches forming a 2x1 composite */
+#20=PLANE('',#13);
+#14=CARTESIAN_POINT('',(1.0,0.0,0.0));
+#15=AXIS2_PLACEMENT_3D('',#14,#11,#12);
+#21=PLANE('',#15);
+/* Patch transitions */
+#22=SURFACE_PATCH(#20,.U_BOTH.,.U_BOTH.,.F.,.F.);
+#23=SURFACE_PATCH(#21,.U_BOTH.,.U_BOTH.,.F.,.F.);
+#24=RECTANGULAR_COMPOSITE_SURFACE('',((#22,#23)));
+/* Edge spanning across the patch boundary */
+#30=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#31=DIRECTION('',(1.0,0.0,0.0));
+#32=VECTOR('',#31,1.0);
+#33=LINE('',#30,#32);
+#40=VERTEX_POINT('',#30);
+#41=CARTESIAN_POINT('',(2.0,0.0,0.0));
+#42=VERTEX_POINT('',#41);
+/* Defect: empty associated_geometry - no pcurve provided for either patch */
+#50=SURFACE_CURVE('',#33,(),.PCURVE_S1.);
+#60=EDGE_CURVE('',#40,#42,#50,.T.);
+#61=ORIENTED_EDGE('',*,*,#60,.T.);
+#62=EDGE_LOOP('',(#61));
+#63=FACE_OUTER_BOUND('',#62,.T.);
+#64=ADVANCED_FACE('',(#63),#24,.T.);
+ENDSEC;
+END-ISO-10303-21;

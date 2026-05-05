@@ -1,0 +1,25 @@
+ISO-10303-21;
+/* Le038 - \PE\ at end-of-string with no following character
+ * Defect: ISO 10303-21 Ed.3 \PE\ requires a single ASCII letter (the
+ * page selector A..I) immediately following the slashes. A producer
+ * truncating a string at the directive boundary or copy/pasting
+ * incorrectly emits a bare \PE\ with no follow byte before the
+ * closing apostrophe. A naive parser may consume the closing ' as
+ * the page operand and lose string termination, walking off into
+ * the rest of the entity. */
+HEADER;
+FILE_DESCRIPTION(('Le038 - bare \PE\ at end-of-string'),'2;1');
+FILE_NAME('Le038.stp','2026-04-26T00:00:00',(''),(''),
+  'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=PRODUCT_CONTEXT('part',#1,'mechanical');
+/* Defect: \PE\ with no operand letter; closing apostrophe immediately
+ * follows. Strict parsers should reject; lenient parsers must NOT
+ * eat the apostrophe. */
+#10=PRODUCT('text\PE\','dangling-PE','',(#2));
+#11=PRODUCT('after-pe-still-here','witness','',(#2));
+ENDSEC;
+END-ISO-10303-21;

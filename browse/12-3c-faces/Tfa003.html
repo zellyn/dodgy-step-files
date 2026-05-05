@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Tfa003 — FaceOuterBound translation failed (face incomplete without outer wire)</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.3c Faces / sewing / free bound</a> <span class="sep">/</span> <span class="current">Tfa003</span>
+</nav>
+<header class="title-bar">
+<h1>Tfa003 <span class="sep">—</span> <span class="entry-title">FaceOuterBound translation failed (face incomplete without outer wire)</span></h1>
+<p class="category">§12.3c face-sliver-sewing</p>
+<p class="severity-badge severity-p1">P1 — silent data loss</p>
+<p class="tag-pills">
+<a class="tag tag-topology" href="../by-tag/topology/index.html">topology</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-3c-faces/Tfa003.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-3c-faces/Tfa003.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>04-occt-translation Q019 (StepToTopoDS_TranslateFace.cxx:725-737)</li>
+</ul></section>
+<section><h2>Description</h2>
+<p>The bound entity referenced from `FACE_OUTER_BOUND.bound` failed translation (e.g., empty `EDGE_LOOP`, all edges dropped). Without an outer bound the face is incomplete.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>`FACE_OUTER_BOUND` whose `bound` is an `EDGE_LOOP` with all `ORIENTED_EDGE`s referencing edges that themselves had null curves (Q006).</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>Warn and accept: drop the offending face; emit &quot;TP fail: outer bound translation&quot; diagnostic; coerce the shell to continue.</p></section>
+<section><h2>Notes</h2>
+<p>**See also**: Gp001, Tfa001. Synonyms: &quot;outer boundary failed to translate&quot;, &quot;face dropped because its outer wire was empty&quot;, &quot;all edges in outer loop went missing&quot;, &quot;face has no usable outer boundary after import&quot;.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>contains(b&#x27;FACE_OUTER_BOUND(&#x27;)</code></li>
+<li><code>count_entity_def(b&#x27;EDGE_LOOP&#x27;) &gt;= 2</code></li>
+<li><code>count_entity_def(b&#x27;ADVANCED_FACE&#x27;) &gt;= 1</code></li>
+</ul></section>
+<section><h2>Cross-references</h2>
+<p><a href="../12-2a-pcurves/Gp001.html">Gp001</a>, <a href="Tfa001.html">Tfa001</a></p>
+</section>
+<section><h2>Live oracle output</h2>
+<table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
+<tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>no_shapes_loaded</code></td></tr>
+</tbody></table>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>/* Tfa003 - FaceOuterBound translation failed (face incomplete without outer wire)
+<span class="lineno">2</span> * Defect: the bound entity referenced from FACE_OUTER_BOUND.bound failed
+<span class="lineno">3</span> * translation - typically because the EDGE_LOOP was empty or every
+<span class="lineno">4</span> * ORIENTED_EDGE referenced an EDGE_CURVE with null edge_geometry. After
+<span class="lineno">5</span> * all edges drop, the outer bound is empty and the face is incomplete.
+<span class="lineno">6</span> *
+<span class="lineno">7</span> * Sources cited in catalog: 04-occt-translation Q019
+<span class="lineno">8</span> * (StepToTopoDS_TranslateFace.cxx:725-737).
+<span class="lineno">9</span> *
+<span class="lineno">10</span> * Expected kernel behavior: drop the face; emit &quot;TP fail: outer bound
+<span class="lineno">11</span> * translation&quot; diagnostic; continue translating the surrounding shell.
+<span class="lineno">12</span> *
+<span class="lineno">13</span> * Reproducer: ADVANCED_FACE on a PLANE whose FACE_OUTER_BOUND
+<span class="lineno">14</span> * references an EDGE_LOOP (#60 below) every member of which has
+<span class="lineno">15</span> * null edge_geometry (#40-#43). The face cannot be constructed.
+<span class="lineno">16</span> *
+<span class="lineno">17</span> * For coverage this file also emits a second face (#110) where the
+<span class="lineno">18</span> * EDGE_LOOP itself is empty (no oriented edges at all) - same defect
+<span class="lineno">19</span> * via a different path. Both are anchored on the same shared plane so
+<span class="lineno">20</span> * the receiver sees a shell whose outer-bound translations have all
+<span class="lineno">21</span> * failed.
+<span class="lineno">22</span> */
+<span class="lineno">23</span>ISO-10303-21;
+<span class="lineno">24</span>HEADER;
+<span class="lineno">25</span>FILE_DESCRIPTION((&#x27;Tfa003 face outer bound translation failed&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">26</span>FILE_NAME(&#x27;Tfa003.stp&#x27;,&#x27;2026-04-26T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),
+<span class="lineno">27</span>  &#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">28</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN&#x27;));
+<span class="lineno">29</span>ENDSEC;
+<span class="lineno">30</span>DATA;
+<span class="lineno">31</span>#1=APPLICATION_CONTEXT(&#x27;automotive design&#x27;);
+<span class="lineno">32</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,
+<span class="lineno">33</span>  &#x27;automotive_design&#x27;,2009,#1);
+<span class="lineno">34</span>#10=CARTESIAN_POINT(&#x27;origin&#x27;,(0.0,0.0,0.0));
+<span class="lineno">35</span>#11=DIRECTION(&#x27;z&#x27;,(0.0,0.0,1.0));
+<span class="lineno">36</span>#12=DIRECTION(&#x27;x&#x27;,(1.0,0.0,0.0));
+<span class="lineno">37</span>#13=AXIS2_PLACEMENT_3D(&#x27;plc&#x27;,#10,#11,#12);
+<span class="lineno">38</span>#20=PLANE(&#x27;plane_xy&#x27;,#13);
+<span class="lineno">39</span>#21=CARTESIAN_POINT(&#x27;p0&#x27;,(0.0,0.0,0.0));
+<span class="lineno">40</span>#22=CARTESIAN_POINT(&#x27;p1&#x27;,(10.0,0.0,0.0));
+<span class="lineno">41</span>#23=CARTESIAN_POINT(&#x27;p2&#x27;,(10.0,10.0,0.0));
+<span class="lineno">42</span>#24=CARTESIAN_POINT(&#x27;p3&#x27;,(0.0,10.0,0.0));
+<span class="lineno">43</span>#30=VERTEX_POINT(&#x27;&#x27;,#21);
+<span class="lineno">44</span>#31=VERTEX_POINT(&#x27;&#x27;,#22);
+<span class="lineno">45</span>#32=VERTEX_POINT(&#x27;&#x27;,#23);
+<span class="lineno">46</span>#33=VERTEX_POINT(&#x27;&#x27;,#24);
+<span class="lineno">47</span>/* Defect site #1: every edge_curve has null edge_geometry, so all four
+<span class="lineno">48</span> * edges fail translation and the outer bound becomes empty.            */
+<span class="lineno">49</span>#40=EDGE_CURVE(&#x27;null_edge_0&#x27;,#30,#31,$,.T.);
+<span class="lineno">50</span>#41=EDGE_CURVE(&#x27;null_edge_1&#x27;,#31,#32,$,.T.);
+<span class="lineno">51</span>#42=EDGE_CURVE(&#x27;null_edge_2&#x27;,#32,#33,$,.T.);
+<span class="lineno">52</span>#43=EDGE_CURVE(&#x27;null_edge_3&#x27;,#33,#30,$,.T.);
+<span class="lineno">53</span>#50=ORIENTED_EDGE(&#x27;&#x27;,*,*,#40,.T.);
+<span class="lineno">54</span>#51=ORIENTED_EDGE(&#x27;&#x27;,*,*,#41,.T.);
+<span class="lineno">55</span>#52=ORIENTED_EDGE(&#x27;&#x27;,*,*,#42,.T.);
+<span class="lineno">56</span>#53=ORIENTED_EDGE(&#x27;&#x27;,*,*,#43,.T.);
+<span class="lineno">57</span><mark>#60=EDGE_LOOP(</mark>&#x27;outer_with_null_edges&#x27;,(#50,#51,#52,#53));
+<span class="lineno">58</span>#70=<mark>FACE_OUTER_BOUND(</mark>&#x27;outer_bound_to_fail&#x27;,#60,.T.);
+<span class="lineno">59</span><mark>#80=ADVANCED_FACE(</mark>&#x27;face_with_null_edges&#x27;,(#70),#20,.T.);
+<span class="lineno">60</span>/* Defect site #2: the EDGE_LOOP itself is empty.                       */
+<span class="lineno">61</span><mark>#90=EDGE_LOOP(</mark>&#x27;empty_loop&#x27;,());
+<span class="lineno">62</span>#100=<mark>FACE_OUTER_BOUND(</mark>&#x27;outer_bound_empty_loop&#x27;,#90,.T.);
+<span class="lineno">63</span><mark>#110=ADVANCED_FACE(</mark>&#x27;face_with_empty_loop&#x27;,(#100),#20,.T.);
+<span class="lineno">64</span>#120=OPEN_SHELL(&#x27;failed_outer_bounds&#x27;,(#80,#110));
+<span class="lineno">65</span>ENDSEC;
+<span class="lineno">66</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Tfa002.html">&larr; Tfa002</a> <a class="up" href="index.html">§12.3c Faces / sewing / free bound</a> <a class="next" href="Tfa004.html">Tfa004 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

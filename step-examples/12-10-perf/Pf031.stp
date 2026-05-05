@@ -1,0 +1,51 @@
+/* Pf031 - STEP read parsing slow due to single-pass tokenisation.
+ * Pattern: 100 MB STEP files with millions of small entities; the parser
+ * issues one read syscall per character. Production scale: ~10^7
+ * CARTESIAN_POINTs.
+ * Notes: scaled-down representative - this fixture has ~30
+ * CARTESIAN_POINTs to make the small-entity-density pattern recognisable
+ * to a static scanner; replicate the block to ~10^6 to reproduce the
+ * production-scale 100 MB I/O-dominated parse. */
+ISO-10303-21;
+HEADER;
+FILE_DESCRIPTION(('Pf031 test case','Slow STEP read due to single-byte tokenisation'),'2;1');
+FILE_NAME('Pf031.stp','2026-04-30T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+/* ~30 small CARTESIAN_POINTs - the scaled representative of the
+ * "millions of small entities" pattern. */
+#100=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#101=CARTESIAN_POINT('',(1.0,0.0,0.0));
+#102=CARTESIAN_POINT('',(2.0,0.0,0.0));
+#103=CARTESIAN_POINT('',(3.0,0.0,0.0));
+#104=CARTESIAN_POINT('',(4.0,0.0,0.0));
+#105=CARTESIAN_POINT('',(5.0,0.0,0.0));
+#106=CARTESIAN_POINT('',(6.0,0.0,0.0));
+#107=CARTESIAN_POINT('',(7.0,0.0,0.0));
+#108=CARTESIAN_POINT('',(8.0,0.0,0.0));
+#109=CARTESIAN_POINT('',(9.0,0.0,0.0));
+#110=CARTESIAN_POINT('',(0.0,1.0,0.0));
+#111=CARTESIAN_POINT('',(1.0,1.0,0.0));
+#112=CARTESIAN_POINT('',(2.0,1.0,0.0));
+#113=CARTESIAN_POINT('',(3.0,1.0,0.0));
+#114=CARTESIAN_POINT('',(4.0,1.0,0.0));
+#115=CARTESIAN_POINT('',(5.0,1.0,0.0));
+#116=CARTESIAN_POINT('',(6.0,1.0,0.0));
+#117=CARTESIAN_POINT('',(7.0,1.0,0.0));
+#118=CARTESIAN_POINT('',(8.0,1.0,0.0));
+#119=CARTESIAN_POINT('',(9.0,1.0,0.0));
+#120=CARTESIAN_POINT('',(0.0,2.0,0.0));
+#121=CARTESIAN_POINT('',(1.0,2.0,0.0));
+#122=CARTESIAN_POINT('',(2.0,2.0,0.0));
+#123=CARTESIAN_POINT('',(3.0,2.0,0.0));
+#124=CARTESIAN_POINT('',(4.0,2.0,0.0));
+#125=CARTESIAN_POINT('',(5.0,2.0,0.0));
+#126=CARTESIAN_POINT('',(6.0,2.0,0.0));
+#127=CARTESIAN_POINT('',(7.0,2.0,0.0));
+#128=CARTESIAN_POINT('',(8.0,2.0,0.0));
+#129=CARTESIAN_POINT('',(9.0,2.0,0.0));
+ENDSEC;
+END-ISO-10303-21;

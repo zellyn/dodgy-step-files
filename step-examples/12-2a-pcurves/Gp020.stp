@@ -1,0 +1,60 @@
+ISO-10303-21;
+/* Gp020 - 2D gap between adjacent edges in wire (FixGap2d)
+ * Defect: two consecutive edges share a VERTEX_POINT (#41) so the 3D
+ * topology is fine, but their pcurves end / start at distinct UV
+ * coordinates differing by (dU, dV) ~ (0.05, 0.05). FixGap2d must
+ * snap pcurve endpoints together. */
+HEADER;
+FILE_DESCRIPTION(('Gp020 test case','2D gap between adjacent edges in wire'),'2;1');
+FILE_NAME('Gp020.stp','2026-04-27T00:00:00',(''),(''),'auto-generated','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#11=DIRECTION('',(0.0,0.0,1.0));
+#12=DIRECTION('',(1.0,0.0,0.0));
+#13=AXIS2_PLACEMENT_3D('',#10,#11,#12);
+#20=PLANE('',#13);
+/* Vertices: V0(0,0,0), V1(1,0,0), V2(2,0,0) */
+#30=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#40=VERTEX_POINT('',#30);
+#31=CARTESIAN_POINT('',(1.0,0.0,0.0));
+#41=VERTEX_POINT('',#31);
+#32=CARTESIAN_POINT('',(2.0,0.0,0.0));
+#42=VERTEX_POINT('',#32);
+/* 3D edges */
+#33=DIRECTION('',(1.0,0.0,0.0));
+#34=VECTOR('',#33,1.0);
+#35=LINE('',#30,#34);
+#36=LINE('',#31,#34);
+/* Pcurve A: ends at UV (1.0, 0.0) - exact on V1 in plane */
+#71=CARTESIAN_POINT('',(0.0,0.0));
+#72=DIRECTION('',(1.0,0.0));
+#73=VECTOR('',#72,1.0);
+#74=LINE('',#71,#73);
+#75=( GEOMETRIC_REPRESENTATION_CONTEXT(2)
+      PARAMETRIC_REPRESENTATION_CONTEXT()
+      REPRESENTATION_CONTEXT('parametric','2D') );
+#76=DEFINITIONAL_REPRESENTATION('',(#74),#75);
+#77=PCURVE('',#20,#76);
+/* Pcurve B: starts at UV (1.05, 0.05) - DOES NOT meet pcurve A's end
+ * even though both share the 3D vertex V1 (#41). 2D gap = (0.05, 0.05) */
+#81=CARTESIAN_POINT('',(1.05,0.05));
+#82=DIRECTION('',(1.0,0.0));
+#83=VECTOR('',#82,1.0);
+#84=LINE('',#81,#83);
+#86=DEFINITIONAL_REPRESENTATION('',(#84),#75);
+#87=PCURVE('',#20,#86);
+#50=SURFACE_CURVE('',#35,(#77),.PCURVE_S1.);
+#150=SURFACE_CURVE('',#36,(#87),.PCURVE_S1.);
+#60=EDGE_CURVE('',#40,#41,#50,.T.);
+#160=EDGE_CURVE('',#41,#42,#150,.T.);
+#61=ORIENTED_EDGE('',*,*,#60,.T.);
+#161=ORIENTED_EDGE('',*,*,#160,.T.);
+#62=EDGE_LOOP('',(#61,#161));
+#63=FACE_OUTER_BOUND('',#62,.T.);
+#64=ADVANCED_FACE('',(#63),#20,.T.);
+ENDSEC;
+END-ISO-10303-21;

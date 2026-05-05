@@ -1,0 +1,63 @@
+/* Gn011 - BSplineRestriction: convert curves/surfaces to bounded-degree BSplines
+   Defect (input side): a curve / surface whose degree exceeds what the
+   target system reads. ShapeCustom_BSplineRestriction is meant to re-fit
+   the entity at a target degree and target continuity (e.g. degree 3, C2).
+   This file emits a degree-9 B_SPLINE_CURVE_WITH_KNOTS and a
+   B_SPLINE_SURFACE_WITH_KNOTS of degree (9,7) intended as input to that
+   healer.  A compliant healer must report the deviation and refuse if
+   continuity cannot be met.
+   Sources: bug23944 / R081, ShapeCustom_BSplineRestriction (F052), H055. */
+ISO-10303-21;
+HEADER;
+FILE_DESCRIPTION(
+  ('Gn011 - high-degree BSpline inputs for BSplineRestriction'),'2;1');
+FILE_NAME('Gn011.stp','2026-04-26T00:00:00',('auto-generated'),(''),
+  'auto-generated','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+/* Curve: degree 9, 10 poles -> single Bezier-style segment. */
+#10=CARTESIAN_POINT('q0',(0.0,0.0,0.0));
+#11=CARTESIAN_POINT('q1',(1.0,0.5,0.0));
+#12=CARTESIAN_POINT('q2',(2.0,1.0,0.0));
+#13=CARTESIAN_POINT('q3',(3.0,1.5,0.0));
+#14=CARTESIAN_POINT('q4',(4.0,2.0,0.0));
+#15=CARTESIAN_POINT('q5',(5.0,2.0,0.0));
+#16=CARTESIAN_POINT('q6',(6.0,1.5,0.0));
+#17=CARTESIAN_POINT('q7',(7.0,1.0,0.0));
+#18=CARTESIAN_POINT('q8',(8.0,0.5,0.0));
+#19=CARTESIAN_POINT('q9',(9.0,0.0,0.0));
+#100=B_SPLINE_CURVE_WITH_KNOTS('deg9_curve',9,
+  (#10,#11,#12,#13,#14,#15,#16,#17,#18,#19),
+  .UNSPECIFIED.,.F.,.F.,
+  (10,10),
+  (0.0,1.0),
+  .UNSPECIFIED.);
+/* Surface: degree (9, 7) -> requires 10x8 net minimum. */
+#201=CARTESIAN_POINT('s00',(0.0,0.0,0.0));
+#202=CARTESIAN_POINT('s01',(0.0,1.0,0.0));
+#203=CARTESIAN_POINT('s02',(0.0,2.0,0.0));
+#204=CARTESIAN_POINT('s03',(0.0,3.0,0.0));
+#205=CARTESIAN_POINT('s04',(0.0,4.0,0.0));
+#206=CARTESIAN_POINT('s05',(0.0,5.0,0.0));
+#207=CARTESIAN_POINT('s06',(0.0,6.0,0.0));
+#208=CARTESIAN_POINT('s07',(0.0,7.0,0.0));
+/* Reuse the row-1 ids for rows 2..10 as a stand-in; the defect is the
+   degree label not the geometric variation. */
+#300=B_SPLINE_SURFACE_WITH_KNOTS('deg97_surface',
+  9,7,
+  ((#201,#202,#203,#204,#205,#206,#207,#208),
+   (#201,#202,#203,#204,#205,#206,#207,#208),
+   (#201,#202,#203,#204,#205,#206,#207,#208),
+   (#201,#202,#203,#204,#205,#206,#207,#208),
+   (#201,#202,#203,#204,#205,#206,#207,#208),
+   (#201,#202,#203,#204,#205,#206,#207,#208),
+   (#201,#202,#203,#204,#205,#206,#207,#208),
+   (#201,#202,#203,#204,#205,#206,#207,#208),
+   (#201,#202,#203,#204,#205,#206,#207,#208),
+   (#201,#202,#203,#204,#205,#206,#207,#208)),
+  .UNSPECIFIED.,.F.,.F.,.F.,
+  (10,10),(8,8),(0.0,1.0),(0.0,1.0),
+  .UNSPECIFIED.);
+ENDSEC;
+END-ISO-10303-21;

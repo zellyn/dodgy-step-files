@@ -1,0 +1,29 @@
+ISO-10303-21;
+/* M085 - AP210 laminate_or_ply_definition with mismatched material at
+ * top and bottom of the same ply.
+ * Defect: a LAMINATE_OR_PLY_DEFINITION (a single layer in a PCB stackup)
+ * is expected to consist of one homogeneous material, but its top and
+ * bottom material references point to different MATERIAL_DESIGNATIONs
+ * (e.g. FR4 top, polyimide bottom) - which is physically meaningful
+ * only as a transition film, not a single ply. */
+HEADER;
+FILE_DESCRIPTION(('M085 test case','AP210 laminate_or_ply mismatched top/bottom material'),'2;1');
+FILE_NAME('M085.stp','2026-04-30T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('ELECTRONIC_ASSEMBLY_INTERCONNECT_AND_PACKAGING_DESIGN { 1 0 10303 210 3 1 0 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('electronic_assembly_interconnect_and_packaging_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
+  'electronic_assembly_interconnect_and_packaging_design',2014,#1);
+#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10))
+     REPRESENTATION_CONTEXT('pcb','3D'));
+#100=MATERIAL_DESIGNATION('FR4','glass-epoxy laminate',(#1));
+#101=MATERIAL_DESIGNATION('polyimide','polyimide film',(#1));
+/* Defect: top_material = FR4, bottom_material = polyimide - inconsistent
+ * for a single ply. */
+#200=LAMINATE_OR_PLY_DEFINITION('core_ply',$,#100,#101,
+       LENGTH_MEASURE(0.2));
+ENDSEC;
+END-ISO-10303-21;

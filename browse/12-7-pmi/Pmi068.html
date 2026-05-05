@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Pmi068 — Annotation_plane orientation flipped on import (mirror determinant)</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.7 PMI / GD&amp;T</a> <span class="sep">/</span> <span class="current">Pmi068</span>
+</nav>
+<header class="title-bar">
+<h1>Pmi068 <span class="sep">—</span> <span class="entry-title">Annotation_plane orientation flipped on import (mirror determinant)</span></h1>
+<p class="category">§12.7 (sub-class: annotation-plane)</p>
+<p class="tag-pills">
+<a class="tag tag-pmi" href="../by-tag/pmi/index.html">pmi</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-7-pmi/Pmi068.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-7-pmi/Pmi068.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>11-translator-vendors (W039 SDHE-22078)</li>
+</ul></section>
+<section><h2>Description</h2>
+<p>An `annotation_plane` whose underlying `axis2_placement_3d` carries a left-handed (mirrored, negative-determinant) frame is exported with the orientation silently corrected to right-handed, flipping the normal direction. Annotations then read back facing the wrong way.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>`annotation_plane` with `axis2_placement_3d` whose `axis` and `ref_direction` produce a left-handed frame.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>Preserve handedness; flip face normals coherently to maintain solidness; do not silently right-handize annotation planes.</p></section>
+<section><h2>Notes</h2>
+<p>**See also**: A024. **OCC behavior**: silently right-handizes the left-handed annotation plane frame on import without diagnostic, flipping the annotation normal; kernel mishandling — the catalog above forbids silent right-handization. Synonyms: &quot;annotation_plane orientation flipped on import&quot;, &quot;PMI plane mirror determinant&quot;, &quot;GD&amp;T text faces wrong way&quot;, &quot;annotation reads backward on import&quot;.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>contains(b&#x27;CARTESIAN_TRANSFORMATION_OPERATOR_3D&#x27;)</code></li>
+<li><code>contains(b&#x27;ITEM_DEFINED_TRANSFORMATION&#x27;)</code></li>
+<li><code>count_entity_def(b&#x27;PLANE&#x27;) == 2</code></li>
+</ul></section>
+<section><h2>Cross-references</h2>
+<p><a href="../12-6-assembly/A024.html">A024</a></p>
+</section>
+<section><h2>Live oracle output</h2>
+<table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
+<tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>no_shapes_loaded</code></td></tr>
+</tbody></table>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* Pmi068 - Annotation_plane orientation flipped on import (mirror determinant)
+<span class="lineno">3</span>   Defect: An annotation_plane&#x27;s underlying frame should be a true
+<span class="lineno">4</span>   reflection of the right-handed reference (det = -1). AXIS2_PLACEMENT_3D
+<span class="lineno">5</span>   alone cannot encode a reflection -- ref_direction sign does not flip
+<span class="lineno">6</span>   handedness because the implementation always recomputes the third
+<span class="lineno">7</span>   axis as axis x ref so the resulting triad is right-handed regardless.
+<span class="lineno">8</span>   To produce a real left-handed (mirror) frame we use
+<span class="lineno">9</span>   <mark>CARTESIAN_TRANSFORMATION_OPERATOR_3D</mark> with scale = -1.0, attached via
+<span class="lineno">10</span>   a REPRESENTATION_RELATIONSHIP between the annotation&#x27;s representation
+<span class="lineno">11</span>   and the parent draughting_model.
+<span class="lineno">12</span>   On round-trip many translators silently right-handize such frames,
+<span class="lineno">13</span>   flipping the normal direction; annotations then read back facing the
+<span class="lineno">14</span>   wrong way. Sources: W039 SDHE-22078; A024. */
+<span class="lineno">15</span>HEADER;
+<span class="lineno">16</span>FILE_DESCRIPTION((&#x27;Pmi068 - mirror-determinant annotation_plane frame&#x27;,
+<span class="lineno">17</span>  &#x27;CAx-IF Rec.Pracs.---PMI Rep &amp; Pres---v4.1&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">18</span>FILE_NAME(&#x27;Pmi068.stp&#x27;,&#x27;2026-04-26T00:00:00&#x27;,(&#x27;catalog&#x27;),(&#x27;cad&#x27;),
+<span class="lineno">19</span>  &#x27;manual&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">20</span>FILE_SCHEMA((&#x27;AP242_MANAGED_MODEL_BASED_3D_ENGINEERING_MIM_LF { 1 0 10303 442 1 1 4 }&#x27;));
+<span class="lineno">21</span>ENDSEC;
+<span class="lineno">22</span>DATA;
+<span class="lineno">23</span>#10 = APPLICATION_CONTEXT(&#x27;managed model based 3d engineering&#x27;);
+<span class="lineno">24</span>#11 = APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,
+<span class="lineno">25</span>  &#x27;ap242_managed_model_based_3d_engineering&#x27;,2020,#10);
+<span class="lineno">26</span>#12 = PRODUCT_CONTEXT(&#x27;&#x27;,#10,&#x27;mechanical&#x27;);
+<span class="lineno">27</span>#13 = PRODUCT(&#x27;Pmi068&#x27;,&#x27;MirrorAnnPlanePart&#x27;,&#x27;&#x27;,(#12));
+<span class="lineno">28</span>#14 = PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#13);
+<span class="lineno">29</span>#15 = PRODUCT_DEFINITION_CONTEXT(&#x27;&#x27;,#10,&#x27;design&#x27;);
+<span class="lineno">30</span>#16 = PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,#14,#15);
+<span class="lineno">31</span>#17 = PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,#16);
+<span class="lineno">32</span>#20 = ( LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT(.MILLI.,.METRE.) );
+<span class="lineno">33</span>#22 = ( NAMED_UNIT(*) PLANE_ANGLE_UNIT() SI_UNIT($,.RADIAN.) );
+<span class="lineno">34</span>#23 = ( NAMED_UNIT(*) SI_UNIT($,.STERADIAN.) SOLID_ANGLE_UNIT() );
+<span class="lineno">35</span>#24 = UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#20,
+<span class="lineno">36</span>  &#x27;distance_accuracy_value&#x27;,&#x27;&#x27;);
+<span class="lineno">37</span>#25 = ( GEOMETRIC_REPRESENTATION_CONTEXT(3)
+<span class="lineno">38</span>  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#24))
+<span class="lineno">39</span>  GLOBAL_UNIT_ASSIGNED_CONTEXT((#20,#22,#23))
+<span class="lineno">40</span>  REPRESENTATION_CONTEXT(&#x27;&#x27;,&#x27;3D&#x27;) );
+<span class="lineno">41</span>#30 = CARTESIAN_POINT(&#x27;origin&#x27;,(0.0,0.0,0.0));
+<span class="lineno">42</span>/* Right-handed reference frame for comparison */
+<span class="lineno">43</span>#31 = DIRECTION(&#x27;rh_axis&#x27;,(0.0,0.0,1.0));
+<span class="lineno">44</span>#32 = DIRECTION(&#x27;rh_ref&#x27;,(1.0,0.0,0.0));
+<span class="lineno">45</span>#33 = AXIS2_PLACEMENT_3D(&#x27;rh_frame&#x27;,#30,#31,#32);
+<span class="lineno">46</span><mark>#34 = PLANE(</mark>&#x27;rh_plane&#x27;,#33);
+<span class="lineno">47</span>/* The annotation_plane is anchored on this proper right-handed
+<span class="lineno">48</span>   AXIS2_PLACEMENT_3D... */
+<span class="lineno">49</span>#40 = AXIS2_PLACEMENT_3D(&#x27;anno_frame&#x27;,#30,#31,#32);
+<span class="lineno">50</span><mark>#41 = PLANE(</mark>&#x27;anno_plane&#x27;,#40);
+<span class="lineno">51</span>/* ...but a <mark>CARTESIAN_TRANSFORMATION_OPERATOR_3D</mark> with scale = -1.0
+<span class="lineno">52</span>   applied through <mark>ITEM_DEFINED_TRANSFORMATION</mark> reflects the annotation
+<span class="lineno">53</span>   into a mirrored coordinate system. This is a true negative-determinant
+<span class="lineno">54</span>   transform (det = -1) -- the kind of frame that gets silently right-
+<span class="lineno">55</span>   handized on round-trip. */
+<span class="lineno">56</span>#42 = DIRECTION(&#x27;mx_x&#x27;,(1.0,0.0,0.0));
+<span class="lineno">57</span>#43 = DIRECTION(&#x27;mx_y&#x27;,(0.0,1.0,0.0));
+<span class="lineno">58</span>#44 = DIRECTION(&#x27;mx_z&#x27;,(0.0,0.0,1.0));
+<span class="lineno">59</span>#45 = <mark>CARTESIAN_TRANSFORMATION_OPERATOR_3D</mark>(&#x27;mirror_xform&#x27;,#42,#43,#30,-1.0,#44);
+<span class="lineno">60</span>/* Annotation content placed in the mirrored plane */
+<span class="lineno">61</span>#50 = CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">62</span>#51 = CARTESIAN_POINT(&#x27;&#x27;,(10.0,0.0,0.0));
+<span class="lineno">63</span>#52 = POLYLINE(&#x27;p&#x27;,(#50,#51));
+<span class="lineno">64</span>#53 = COLOUR_RGB(&#x27;&#x27;,0.0,0.0,0.0);
+<span class="lineno">65</span>#54 = DRAUGHTING_PRE_DEFINED_CURVE_FONT(&#x27;continuous&#x27;);
+<span class="lineno">66</span>#55 = CURVE_STYLE(&#x27;&#x27;,#54,POSITIVE_LENGTH_MEASURE(0.18),#53);
+<span class="lineno">67</span>#56 = PRESENTATION_STYLE_ASSIGNMENT((#55));
+<span class="lineno">68</span>#57 = ANNOTATION_CURVE_OCCURRENCE(&#x27;mirror_anno&#x27;,(#56),#52);
+<span class="lineno">69</span>/* The annotation_plane references the proper plane #41; the mirror
+<span class="lineno">70</span>   transform #45 is what the consumer is expected to apply when
+<span class="lineno">71</span>   resolving the annotation&#x27;s world-space frame. */
+<span class="lineno">72</span>#60 = ANNOTATION_PLANE(&#x27;mirror_PMI&#x27;,(#57),#41,());
+<span class="lineno">73</span>#70 = DRAUGHTING_MODEL(&#x27;Default&#x27;,(#57),#25);
+<span class="lineno">74</span>#80 = <mark>ITEM_DEFINED_TRANSFORMATION</mark>(&#x27;mirror_attach&#x27;,&#x27;reflect_to_world&#x27;,#40,#45);
+<span class="lineno">75</span>#90 = SHAPE_REPRESENTATION(&#x27;&#x27;,(#33,#40),#25);
+<span class="lineno">76</span>#91 = SHAPE_DEFINITION_REPRESENTATION(#17,#90);
+<span class="lineno">77</span>ENDSEC;
+<span class="lineno">78</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Pmi067.html">&larr; Pmi067</a> <a class="up" href="index.html">§12.7 PMI / GD&amp;T</a> <a class="next" href="Pmi069.html">Pmi069 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

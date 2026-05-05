@@ -1,0 +1,55 @@
+/* Pmi012 - Identical id_attribute reused across shape_aspect / dimensional_location
+   / dimensional_size / shape_aspect_relationship
+   Defect: AP242 imposes a global uniqueness rule on the derived 'id'
+   attribute across SHAPE_ASPECT, DIMENSIONAL_LOCATION, DIMENSIONAL_SIZE,
+   and SHAPE_ASPECT_RELATIONSHIP. This file uses 'A1' both on a
+   SHAPE_ASPECT and on a DIMENSIONAL_LOCATION via ID_ATTRIBUTE — the
+   classic per-entity-type ID allocator bug producing colliding IDs. */
+ISO-10303-21;
+HEADER;
+FILE_DESCRIPTION(('Pmi012 - id_attribute collisions across subtype namespaces'),'2;1');
+FILE_NAME('Pmi012.stp','2026-04-26T00:00:00',('catalog'),('cad'),
+  'manual','','');
+FILE_SCHEMA(('AP242_MANAGED_MODEL_BASED_3D_ENGINEERING_MIM_LF { 1 0 10303 442 1 1 4 }'));
+ENDSEC;
+DATA;
+#10 = APPLICATION_CONTEXT('managed model based 3d engineering');
+#11 = APPLICATION_PROTOCOL_DEFINITION('international standard',
+  'ap242_managed_model_based_3d_engineering',2020,#10);
+#12 = PRODUCT_CONTEXT('',#10,'mechanical');
+#13 = PRODUCT('Pmi012','IdCollidePart','',(#12));
+#14 = PRODUCT_DEFINITION_FORMATION('','',#13);
+#15 = PRODUCT_DEFINITION_CONTEXT('',#10,'design');
+#16 = PRODUCT_DEFINITION('','',#14,#15);
+#17 = PRODUCT_DEFINITION_SHAPE('','',#16);
+#20 = ( LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT(.MILLI.,.METRE.) );
+#22 = ( NAMED_UNIT(*) PLANE_ANGLE_UNIT() SI_UNIT($,.RADIAN.) );
+#23 = ( NAMED_UNIT(*) SI_UNIT($,.STERADIAN.) SOLID_ANGLE_UNIT() );
+#24 = UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#20,
+  'distance_accuracy_value','');
+#25 = ( GEOMETRIC_REPRESENTATION_CONTEXT(3)
+  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#24))
+  GLOBAL_UNIT_ASSIGNED_CONTEXT((#20,#22,#23))
+  REPRESENTATION_CONTEXT('','3D') );
+#30 = CARTESIAN_POINT('',(0.0,0.0,0.0));
+#31 = DIRECTION('',(0.0,0.0,1.0));
+#32 = DIRECTION('',(1.0,0.0,0.0));
+#33 = AXIS2_PLACEMENT_3D('',#30,#31,#32);
+#40 = SHAPE_ASPECT('hole_face','',#17,.T.);
+#41 = SHAPE_ASPECT('reference_edge','',#17,.T.);
+/* Defect: id_attribute 'A1' applied to a shape_aspect ... */
+#50 = ID_ATTRIBUTE('A1',#40);
+/* ... and again to a dimensional_location — same ID across subtypes.
+   AP242 uniqueness rule (across the four subtypes) is violated. */
+#60 = DIMENSIONAL_LOCATION('distance',$,#40,#41);
+#61 = ID_ATTRIBUTE('A1',#60);
+/* Plus a dimensional_size also using 'A1' for good measure */
+#70 = DIMENSIONAL_SIZE(#40,'diameter');
+#71 = ID_ATTRIBUTE('A1',#70);
+#80 = MEASURE_REPRESENTATION_ITEM('nom',LENGTH_MEASURE(10.0),#20);
+#81 = SHAPE_DIMENSION_REPRESENTATION('',(#80),#25);
+#90 = DRAUGHTING_MODEL('Default',(),#25);
+#100 = SHAPE_REPRESENTATION('',(#33),#25);
+#101 = SHAPE_DEFINITION_REPRESENTATION(#17,#100);
+ENDSEC;
+END-ISO-10303-21;

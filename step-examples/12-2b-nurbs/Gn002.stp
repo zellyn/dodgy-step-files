@@ -1,0 +1,62 @@
+/* Gn002 - RATIONAL_BSPLINE_CURVE / SURFACE with NbWeights != NbControlPoints
+   Defect: a RATIONAL_B_SPLINE_CURVE bears a weights array whose length does
+   NOT match the control-point list length. STEP semantics require strict
+   equality. Below the curve carries 4 control points but only 3 weights;
+   the surface variant carries a 4x4 control net but a 4x3 weights grid
+   (one missing per row).
+   References: RWStepGeom_RWRationalBSplineCurve.cxx:193-199; OCCT git G024;
+   Mantis 0030921 (writer historically also emitted mismatched lengths). */
+ISO-10303-21;
+HEADER;
+FILE_DESCRIPTION(('Gn002 - rational BSpline weight count mismatch'),'2;1');
+FILE_NAME('Gn002.stp','2026-04-26T00:00:00',('auto-generated'),(''),
+  'auto-generated','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+/* Rational BSpline curve - 4 poles, but only 3 weights. */
+#10=CARTESIAN_POINT('c0',(0.0,0.0,0.0));
+#11=CARTESIAN_POINT('c1',(1.0,1.0,0.0));
+#12=CARTESIAN_POINT('c2',(2.0,1.0,0.0));
+#13=CARTESIAN_POINT('c3',(3.0,0.0,0.0));
+/* Defect: weights list length 3 != poles list length 4. */
+#20=(
+  BOUNDED_CURVE()
+  B_SPLINE_CURVE(3,(#10,#11,#12,#13),.UNSPECIFIED.,.F.,.F.)
+  B_SPLINE_CURVE_WITH_KNOTS((4,4),(0.0,1.0),.UNSPECIFIED.)
+  CURVE()
+  GEOMETRIC_REPRESENTATION_ITEM()
+  RATIONAL_B_SPLINE_CURVE((1.0,2.0,1.0))
+  REPRESENTATION_ITEM('rcurve_bad_weights'));
+/* Rational BSpline surface 4x4 net but weights grid is 4x3 (column missing). */
+#100=CARTESIAN_POINT('s00',(0.0,0.0,0.0));
+#101=CARTESIAN_POINT('s01',(0.0,1.0,0.0));
+#102=CARTESIAN_POINT('s02',(0.0,2.0,0.0));
+#103=CARTESIAN_POINT('s03',(0.0,3.0,0.0));
+#110=CARTESIAN_POINT('s10',(1.0,0.0,0.0));
+#111=CARTESIAN_POINT('s11',(1.0,1.0,0.5));
+#112=CARTESIAN_POINT('s12',(1.0,2.0,0.5));
+#113=CARTESIAN_POINT('s13',(1.0,3.0,0.0));
+#120=CARTESIAN_POINT('s20',(2.0,0.0,0.0));
+#121=CARTESIAN_POINT('s21',(2.0,1.0,0.5));
+#122=CARTESIAN_POINT('s22',(2.0,2.0,0.5));
+#123=CARTESIAN_POINT('s23',(2.0,3.0,0.0));
+#130=CARTESIAN_POINT('s30',(3.0,0.0,0.0));
+#131=CARTESIAN_POINT('s31',(3.0,1.0,0.0));
+#132=CARTESIAN_POINT('s32',(3.0,2.0,0.0));
+#133=CARTESIAN_POINT('s33',(3.0,3.0,0.0));
+/* Defect: weights grid is 4 rows of 3 (should be 4 rows of 4). */
+#200=(
+  BOUNDED_SURFACE()
+  B_SPLINE_SURFACE(3,3,
+    ((#100,#101,#102,#103),(#110,#111,#112,#113),
+     (#120,#121,#122,#123),(#130,#131,#132,#133)),
+    .UNSPECIFIED.,.F.,.F.,.F.)
+  B_SPLINE_SURFACE_WITH_KNOTS((4,4),(4,4),(0.0,1.0),(0.0,1.0),.UNSPECIFIED.)
+  GEOMETRIC_REPRESENTATION_ITEM()
+  RATIONAL_B_SPLINE_SURFACE(
+    ((1.0,1.0,1.0),(1.0,2.0,1.0),(1.0,2.0,1.0),(1.0,1.0,1.0)))
+  REPRESENTATION_ITEM('rsurf_bad_weights')
+  SURFACE());
+ENDSEC;
+END-ISO-10303-21;

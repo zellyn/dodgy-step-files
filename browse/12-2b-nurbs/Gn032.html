@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Gn032 — Pro/E non-uniform parameter scaling on 2D Geom2dAPI_Interpolate curves</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.2b NURBS / B-spline</a> <span class="sep">/</span> <span class="current">Gn032</span>
+</nav>
+<header class="title-bar">
+<h1>Gn032 <span class="sep">—</span> <span class="entry-title">Pro/E non-uniform parameter scaling on 2D Geom2dAPI_Interpolate curves</span></h1>
+<p class="category">§12.2b NURBS/knots</p>
+<p class="severity-badge severity-p1">P1 — silent data loss</p>
+<p class="tag-pills">
+<a class="tag tag-geometry" href="../by-tag/geometry/index.html">geometry</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-2b-nurbs/Gn032.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-2b-nurbs/Gn032.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>08-occt-gitlog.md (G005 — Mantis 0028594, OCCT 353e6fa)</li>
+</ul></section>
+<section><h2>Sender</h2>
+<p>Pro/Engineer</p></section>
+<section><h2>Description</h2>
+<p>Pro/E emits 2D interpolation curves whose points have non-uniform parameter scaling (per-segment chord-length parameterization with explicit scaling tags). OCCT&#x27;s reader didn&#x27;t replicate the scaling and produced a different 2D curve from the source.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>Pro/E-style 2D BSpline interpolation with per-segment parameter scaling tags.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>Heal and accept: honor scale parameters when reconstructing 2D BSpline interpolation curves.</p></section>
+<section><h2>Notes</h2>
+<p>**See also**: Gp024. Synonyms: &quot;Pro/E non-uniform parameter scaling on 2D curves&quot;, &quot;Geom2dAPI_Interpolate scaling tags ignored&quot;, &quot;PRO/Engineer 2D BSpline interpolation scaling lost&quot;, &quot;per-segment chord-length parameterisation not honored&quot;, &quot;Pro/E 2D curve scale parameters dropped&quot;.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>contains(b&#x27;B_SPLINE_CURVE&#x27;)</code></li>
+</ul></section>
+<section><h2>Cross-references</h2>
+<p><a href="../12-2a-pcurves/Gp024.html">Gp024</a></p>
+</section>
+<section><h2>Live oracle output</h2>
+<table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
+<tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>no_shapes_loaded</code></td></tr>
+</tbody></table>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>/* Gn032 - Pro/E non-uniform parameter scaling on 2D Geom2dAPI_Interpolate curves
+<span class="lineno">2</span>   Defect: Pro/E emits 2D interpolation curves whose points have
+<span class="lineno">3</span>   non-uniform parameter scaling (per-segment chord-length parameterization
+<span class="lineno">4</span>   with explicit scaling tags).  OCCT&#x27;s reader didn&#x27;t replicate the
+<span class="lineno">5</span>   scaling and produced a different 2D curve from the source.
+<span class="lineno">6</span>   This file emits a 2D <mark>B_SPLINE_CURVE</mark>_WITH_KNOTS in (u, v) on a host
+<span class="lineno">7</span>   plane, with knot vector (0, 0, 0, 0, 0.05, 0.92, 1, 1, 1, 1) -- the
+<span class="lineno">8</span>   Pro/E-style chord-length parametrization where the 5th knot is at
+<span class="lineno">9</span>   0.05 (very short first internal segment) and the 6th at 0.92 (very
+<span class="lineno">10</span>   short last internal segment).  A reader that re-uniformizes will
+<span class="lineno">11</span>   produce a different curve.
+<span class="lineno">12</span>   Sources: Mantis 0028594, OCCT 353e6fa. */
+<span class="lineno">13</span>ISO-10303-21;
+<span class="lineno">14</span>HEADER;
+<span class="lineno">15</span>FILE_DESCRIPTION(
+<span class="lineno">16</span>  (&#x27;Gn032 - 2D BSpline pcurve with chord-length-style non-uniform knots&#x27;),
+<span class="lineno">17</span>  &#x27;2;1&#x27;);
+<span class="lineno">18</span>FILE_NAME(&#x27;Gn032.stp&#x27;,&#x27;2026-04-26T00:00:00&#x27;,(&#x27;auto-generated&#x27;),(&#x27;&#x27;),
+<span class="lineno">19</span>  &#x27;auto-generated&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">20</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
+<span class="lineno">21</span>ENDSEC;
+<span class="lineno">22</span>DATA;
+<span class="lineno">23</span>/* Host plane (the surface this 2D curve lives on). */
+<span class="lineno">24</span>#10=CARTESIAN_POINT(&#x27;plane_o&#x27;,(0.0,0.0,0.0));
+<span class="lineno">25</span>#11=DIRECTION(&#x27;plane_z&#x27;,(0.0,0.0,1.0));
+<span class="lineno">26</span>#12=DIRECTION(&#x27;plane_x&#x27;,(1.0,0.0,0.0));
+<span class="lineno">27</span>#13=AXIS2_PLACEMENT_3D(&#x27;plane_pl&#x27;,#10,#11,#12);
+<span class="lineno">28</span>#20=PLANE(&#x27;host_plane&#x27;,#13);
+<span class="lineno">29</span>/* 6 2D control points (u, v). */
+<span class="lineno">30</span>#30=CARTESIAN_POINT(&#x27;uv0&#x27;,(0.0,0.0));
+<span class="lineno">31</span>#31=CARTESIAN_POINT(&#x27;uv1&#x27;,(0.1,0.5));
+<span class="lineno">32</span>#32=CARTESIAN_POINT(&#x27;uv2&#x27;,(0.5,1.0));
+<span class="lineno">33</span>#33=CARTESIAN_POINT(&#x27;uv3&#x27;,(1.0,1.0));
+<span class="lineno">34</span>#34=CARTESIAN_POINT(&#x27;uv4&#x27;,(1.5,0.5));
+<span class="lineno">35</span>#35=CARTESIAN_POINT(&#x27;uv5&#x27;,(2.0,0.0));
+<span class="lineno">36</span>/* Defect: knot vector is non-uniform with very short first and last
+<span class="lineno">37</span>   internal segments (chord-length-derived).  A reader re-uniformizing
+<span class="lineno">38</span>   the knots produces a substantially different 2D curve. */
+<span class="lineno">39</span>#40=<mark>B_SPLINE_CURVE</mark>_WITH_KNOTS(&#x27;proE_chord_length&#x27;,3,
+<span class="lineno">40</span>  (#30,#31,#32,#33,#34,#35),
+<span class="lineno">41</span>  .UNSPECIFIED.,.F.,.F.,
+<span class="lineno">42</span>  (4,1,1,4),
+<span class="lineno">43</span>  (0.0,0.05,0.92,1.0),
+<span class="lineno">44</span>  .UNSPECIFIED.);
+<span class="lineno">45</span>/* PCURVE wrapping the 2D BSpline as a parameter curve on the plane. */
+<span class="lineno">46</span>#50=DEFINITIONAL_REPRESENTATION(&#x27;&#x27;,(#40),#60);
+<span class="lineno">47</span>#60=(
+<span class="lineno">48</span>  GEOMETRIC_REPRESENTATION_CONTEXT(2)
+<span class="lineno">49</span>  PARAMETRIC_REPRESENTATION_CONTEXT()
+<span class="lineno">50</span>  REPRESENTATION_CONTEXT(&#x27;plane_param&#x27;,&#x27;2D&#x27;));
+<span class="lineno">51</span>#70=PCURVE(&#x27;proE_pcurve&#x27;,#20,#50);
+<span class="lineno">52</span>ENDSEC;
+<span class="lineno">53</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Gn031.html">&larr; Gn031</a> <a class="up" href="index.html">§12.2b NURBS / B-spline</a> <a class="next" href="Gn033.html">Gn033 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

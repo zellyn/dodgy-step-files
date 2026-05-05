@@ -1,0 +1,39 @@
+ISO-10303-21;
+/* Gs005 - Surface periodicity not declared but actually closed
+ * Defect: B_SPLINE_SURFACE_WITH_KNOTS whose first and last U control rows coincide
+ * is geometrically closed, yet u_closed flag is .F.. Translator does not recognize
+ * closure; seam insertion / PCurve continuity logic falls back to incorrect cases. */
+HEADER;
+FILE_DESCRIPTION(('Gs005 test case','Undeclared periodic BSpline surface'),'2;1');
+FILE_NAME('Gs005.stp','2026-04-26T00:00:00',(''),(''),'auto-generated','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+/* 4x2 control net traces a closed loop (first row equals last row) along U */
+#10=CARTESIAN_POINT('',(10.0,0.0,0.0));
+#11=CARTESIAN_POINT('',(0.0,10.0,0.0));
+#12=CARTESIAN_POINT('',(-10.0,0.0,0.0));
+#13=CARTESIAN_POINT('',(0.0,-10.0,0.0));
+#14=CARTESIAN_POINT('',(10.0,0.0,0.0));
+/* Second V row at z=5; first==last for U closure */
+#15=CARTESIAN_POINT('',(10.0,0.0,5.0));
+#16=CARTESIAN_POINT('',(0.0,10.0,5.0));
+#17=CARTESIAN_POINT('',(-10.0,0.0,5.0));
+#18=CARTESIAN_POINT('',(0.0,-10.0,5.0));
+#19=CARTESIAN_POINT('',(10.0,0.0,5.0));
+/* Defect: u_closed=.F. yet rows[i,0] == rows[i,4] within 1e-7 -> de-facto closed */
+#20=B_SPLINE_SURFACE_WITH_KNOTS('',2,1,
+  ((#10,#15),(#11,#16),(#12,#17),(#13,#18),(#14,#19)),
+  .UNSPECIFIED.,.F.,.F.,.F.,
+  (3,1,1,3),(2,2),(0.0,0.25,0.75,1.0),(0.0,1.0),
+  .UNSPECIFIED.);
+/* Minimal face referencing the un-flagged-closed surface */
+#30=CARTESIAN_POINT('',(10.0,0.0,0.0));
+#31=VERTEX_POINT('',#30);
+#32=VERTEX_LOOP('',#31);
+#33=FACE_OUTER_BOUND('',#32,.T.);
+#34=ADVANCED_FACE('',(#33),#20,.T.);
+ENDSEC;
+END-ISO-10303-21;

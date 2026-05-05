@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Pf010 — Cyclic / self-referential reference graph causes infinite recursion</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.10 Scale &amp; performance</a> <span class="sep">/</span> <span class="current">Pf010</span>
+</nav>
+<header class="title-bar">
+<h1>Pf010 <span class="sep">—</span> <span class="entry-title">Cyclic / self-referential reference graph causes infinite recursion</span></h1>
+<p class="category">§12.10 (sub-class: cyclic)</p>
+<p class="severity-badge severity-p2">P2 — spec deviation (no data loss)</p>
+<p class="tag-pills">
+<a class="tag tag-spec-violation" href="../by-tag/spec-violation/index.html">spec-violation</a>
+<a class="tag tag-performance" href="../by-tag/performance/index.html">performance</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-10-perf/Pf010.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-10-perf/Pf010.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>12-adversarial.md A004</li>
+<li>08-occt-gitlog.md G031, G032, G033</li>
+<li>04-occt-translation.md Q023</li>
+<li>16-iso-spec.md (cycle handling)</li>
+</ul></section>
+<section><h2>Description</h2>
+<p>A complex entity references itself, an `EXTERNAL_FILE` resolves to the same file under translation, an `SHAPE_REPRESENTATION_RELATIONSHIP` whose `rep_2` is itself, or a composite curve segment cycles. Reference resolver loops forever or stack-overflows.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>- `#1=(NAMED_UNIT(*) SI_UNIT(..) DERIVED_UNIT_ELEMENT(#1, 1.0));`
+- `APPLIED_EXTERNAL_IDENTIFICATION_ASSIGNMENT` to same `.step` file path
+- `SHAPE_REPRESENTATION_RELATIONSHIP` whose `rep_2` is itself
+- `COMPOSITE_CURVE_SEGMENT` whose parent_curve is the composite</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>Tarjan SCC during bind; reject with</p></section>
+<section><h2>Notes</h2>
+<p>**See also**: A012, Pf011, Pf030, Ad085.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>count_entity_def(b&#x27;CARTESIAN_POINT&#x27;) &gt;= 2</code></li>
+</ul></section>
+<section><h2>Cross-references</h2>
+<p><a href="../12-6-assembly/A012.html">A012</a>, <a href="Pf011.html">Pf011</a>, <a href="Pf030.html">Pf030</a>, <a href="../12-11-adversarial/Ad085.html">Ad085</a></p>
+</section>
+<section><h2>Live oracle output</h2>
+<table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
+<tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>warn(W_COMPLEX_ORDER)</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>no_shapes_loaded</code></td></tr>
+</tbody></table>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>/* Pf010 - Cyclic / self-referential reference graph causes infinite
+<span class="lineno">2</span>   recursion. Reference resolver loops forever or stack-overflows.
+<span class="lineno">3</span>   This fixture exercises four canonical cycle shapes documented in
+<span class="lineno">4</span>   A004, OCCT G031/G032/G033, Q023 and ISO-10303-21 Â§11.5:
+<span class="lineno">5</span>     #10  - DERIVED_UNIT element referencing its own host (self-loop)
+<span class="lineno">6</span>     #20  - APPLIED_EXTERNAL_IDENTIFICATION_ASSIGNMENT pointing at this
+<span class="lineno">7</span>            same file (cyclic external file reference)
+<span class="lineno">8</span>     #30  - SHAPE_REPRESENTATION_RELATIONSHIP whose rep_2 == rep_1
+<span class="lineno">9</span>     #40  - COMPOSITE_CURVE_SEGMENT whose parent_curve is the composite
+<span class="lineno">10</span>   Scaling-up: any one cycle hangs naive resolvers; combining several in
+<span class="lineno">11</span>   one file (as here) defeats single-pattern guards. */
+<span class="lineno">12</span>ISO-10303-21;
+<span class="lineno">13</span>HEADER;
+<span class="lineno">14</span>FILE_DESCRIPTION((&#x27;Pf010 - cyclic / self-referential reference graphs&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">15</span>FILE_NAME(&#x27;Pf010.stp&#x27;,&#x27;2026-04-26T00:00:00&#x27;,(&#x27;auto-generated&#x27;),(&#x27;&#x27;),
+<span class="lineno">16</span>  &#x27;auto-generated&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">17</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
+<span class="lineno">18</span>ENDSEC;
+<span class="lineno">19</span>DATA;
+<span class="lineno">20</span>/* (1) complex unit entity with derived-unit element pointing at itself */
+<span class="lineno">21</span>#9=DIMENSIONAL_EXPONENTS(1.0,0.0,0.0,0.0,0.0,0.0,0.0);
+<span class="lineno">22</span>#10=( NAMED_UNIT(*) SI_UNIT(.MILLI.,.METRE.) LENGTH_UNIT() );
+<span class="lineno">23</span>/* Pf010-A: derived unit element references its own parent unit */
+<span class="lineno">24</span>#11=DERIVED_UNIT_ELEMENT(#10,1.0);
+<span class="lineno">25</span>#12=DERIVED_UNIT((#11));
+<span class="lineno">26</span>/* (2) external file reference resolves to this same file path */
+<span class="lineno">27</span>#20=EXTERNAL_SOURCE(&#x27;Pf010.stp&#x27;);
+<span class="lineno">28</span>#21=APPLIED_EXTERNAL_IDENTIFICATION_ASSIGNMENT(&#x27;id&#x27;,&#x27;same-file&#x27;,#20,#22);
+<span class="lineno">29</span>/* victim that is in the same file - cycle on resolution */
+<span class="lineno">30</span>#22=PRODUCT(&#x27;SELF&#x27;,&#x27;self&#x27;,&#x27;&#x27;,(#23));
+<span class="lineno">31</span>#23=PRODUCT_CONTEXT(&#x27;&#x27;,#100,&#x27;mechanical&#x27;);
+<span class="lineno">32</span>/* (3) shape rep relationship whose rep_2 is itself (rep_1 == rep_2) */
+<span class="lineno">33</span>#30=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#31,#32,#33);
+<span class="lineno">34</span><mark>#31=CARTESIAN_POINT(</mark>&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">35</span>#32=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">36</span>#33=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">37</span>#34=( GEOMETRIC_REPRESENTATION_CONTEXT(3) GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT
+<span class="lineno">38</span>   ((#35)) GLOBAL_UNIT_ASSIGNED_CONTEXT((#10)) REPRESENTATION_CONTEXT(&#x27;&#x27;,&#x27;3D&#x27;) );
+<span class="lineno">39</span>/* simplified context node */
+<span class="lineno">40</span>#35=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-6),#10,&#x27;&#x27;,
+<span class="lineno">41</span>   &#x27;&#x27;);
+<span class="lineno">42</span>#36=SHAPE_REPRESENTATION(&#x27;R&#x27;,(#30),#34);
+<span class="lineno">43</span>/* Pf010-C: rep_2 == rep_1 makes resolver loop */
+<span class="lineno">44</span>#37=SHAPE_REPRESENTATION_RELATIONSHIP(&#x27;&#x27;,&#x27;&#x27;,#36,#36);
+<span class="lineno">45</span>/* (4) composite curve whose only segment&#x27;s parent_curve points back
+<span class="lineno">46</span>   at the composite itself */
+<span class="lineno">47</span><mark>#40=CARTESIAN_POINT(</mark>&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">48</span><mark>#41=CARTESIAN_POINT(</mark>&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">49</span>#42=POLYLINE(&#x27;&#x27;,(#40,#41));
+<span class="lineno">50</span>/* COMPOSITE_CURVE_SEGMENT (transition, sense, parent_curve)
+<span class="lineno">51</span>   parent_curve below points at the composite #44 to form a cycle */
+<span class="lineno">52</span>#43=COMPOSITE_CURVE_SEGMENT(.CONTINUOUS.,.T.,#44);
+<span class="lineno">53</span>#44=COMPOSITE_CURVE(&#x27;cycle&#x27;,(#43),.F.);
+<span class="lineno">54</span>/* application context boilerplate */
+<span class="lineno">55</span>#100=APPLICATION_CONTEXT(&#x27;automotive_design&#x27;);
+<span class="lineno">56</span>#101=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,
+<span class="lineno">57</span>  &#x27;automotive_design&#x27;,2001,#100);
+<span class="lineno">58</span>ENDSEC;
+<span class="lineno">59</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Pf009.html">&larr; Pf009</a> <a class="up" href="index.html">§12.10 Scale &amp; performance</a> <a class="next" href="Pf011.html">Pf011 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

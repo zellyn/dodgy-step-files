@@ -1,0 +1,63 @@
+ISO-10303-21;
+/* Xp001 - Cross-product: malformed \X2\ escape in PRODUCT.name AND
+ * self-intersecting wire on a planar face.
+ * Builds on Le005 (encoding) + Twi045 (self-intersecting wire).
+ * Defect 1: PRODUCT.name string contains \X2\30A2 30A4 (a 4-hex group
+ *   then a 4-hex group) but never closes with \X0\ before the apostrophe.
+ *   The Edition-3 control-directive grammar is violated.
+ * Defect 2: the planar face's outer wire traces a figure-eight (two
+ *   diagonals crossing at the origin) - it is not a simple polygon. */
+HEADER;
+FILE_DESCRIPTION(('Xp001 cross-product','encoding x wire self-intersection'),'2;1');
+FILE_NAME('Xp001.stp','2026-04-26T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+/* Defect 1 - malformed \X2\ in PRODUCT.name (no \X0\ close) */
+#3=PRODUCT('part-\X2\30A2 30A4','desc-\X2\30A2 30A4','',(#4));
+#4=PRODUCT_CONTEXT('',#1,'mechanical');
+/* Geometry: planar surface */
+#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#11=DIRECTION('',(0.0,0.0,1.0));
+#12=DIRECTION('',(1.0,0.0,0.0));
+#13=AXIS2_PLACEMENT_3D('',#10,#11,#12);
+#14=PLANE('',#13);
+/* Vertices for figure-eight wire */
+#20=CARTESIAN_POINT('A',(-1.0,-1.0,0.0));
+#21=CARTESIAN_POINT('B',( 1.0, 1.0,0.0));
+#22=CARTESIAN_POINT('C',(-1.0, 1.0,0.0));
+#23=CARTESIAN_POINT('D',( 1.0,-1.0,0.0));
+#30=VERTEX_POINT('',#20);
+#31=VERTEX_POINT('',#21);
+#32=VERTEX_POINT('',#22);
+#33=VERTEX_POINT('',#23);
+/* Lines */
+#40=DIRECTION('',(0.7071,0.7071,0.0));
+#41=VECTOR('',#40,2.828);
+#42=LINE('',#20,#41);
+#43=DIRECTION('',(0.7071,-0.7071,0.0));
+#44=VECTOR('',#43,2.828);
+#45=LINE('',#22,#44);
+#46=DIRECTION('',(-0.7071,-0.7071,0.0));
+#47=VECTOR('',#46,2.828);
+#48=LINE('',#21,#47);
+#49=DIRECTION('',(-0.7071,0.7071,0.0));
+#50=VECTOR('',#49,2.828);
+#51=LINE('',#23,#50);
+/* Edge curves: A-B, B-C (via diagonal), C-D, D-A - the wire crosses itself */
+#60=EDGE_CURVE('',#30,#31,#42,.T.);
+#61=EDGE_CURVE('',#31,#32,#48,.T.);
+#62=EDGE_CURVE('',#32,#33,#45,.T.);
+#63=EDGE_CURVE('',#33,#30,#51,.T.);
+/* Defect 2: figure-eight oriented edges - diagonals cross at origin */
+#70=ORIENTED_EDGE('',*,*,#60,.T.);
+#71=ORIENTED_EDGE('',*,*,#61,.T.);
+#72=ORIENTED_EDGE('',*,*,#62,.T.);
+#73=ORIENTED_EDGE('',*,*,#63,.T.);
+#80=EDGE_LOOP('',(#70,#71,#72,#73));
+#81=FACE_OUTER_BOUND('',#80,.T.);
+#82=ADVANCED_FACE('',(#81),#14,.T.);
+ENDSEC;
+END-ISO-10303-21;

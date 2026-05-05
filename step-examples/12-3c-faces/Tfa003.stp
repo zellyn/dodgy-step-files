@@ -1,0 +1,66 @@
+/* Tfa003 - FaceOuterBound translation failed (face incomplete without outer wire)
+ * Defect: the bound entity referenced from FACE_OUTER_BOUND.bound failed
+ * translation - typically because the EDGE_LOOP was empty or every
+ * ORIENTED_EDGE referenced an EDGE_CURVE with null edge_geometry. After
+ * all edges drop, the outer bound is empty and the face is incomplete.
+ *
+ * Sources cited in catalog: 04-occt-translation Q019
+ * (StepToTopoDS_TranslateFace.cxx:725-737).
+ *
+ * Expected kernel behavior: drop the face; emit "TP fail: outer bound
+ * translation" diagnostic; continue translating the surrounding shell.
+ *
+ * Reproducer: ADVANCED_FACE on a PLANE whose FACE_OUTER_BOUND
+ * references an EDGE_LOOP (#60 below) every member of which has
+ * null edge_geometry (#40-#43). The face cannot be constructed.
+ *
+ * For coverage this file also emits a second face (#110) where the
+ * EDGE_LOOP itself is empty (no oriented edges at all) - same defect
+ * via a different path. Both are anchored on the same shared plane so
+ * the receiver sees a shell whose outer-bound translations have all
+ * failed.
+ */
+ISO-10303-21;
+HEADER;
+FILE_DESCRIPTION(('Tfa003 face outer bound translation failed'),'2;1');
+FILE_NAME('Tfa003.stp','2026-04-26T00:00:00',(''),(''),
+  'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
+  'automotive_design',2009,#1);
+#10=CARTESIAN_POINT('origin',(0.0,0.0,0.0));
+#11=DIRECTION('z',(0.0,0.0,1.0));
+#12=DIRECTION('x',(1.0,0.0,0.0));
+#13=AXIS2_PLACEMENT_3D('plc',#10,#11,#12);
+#20=PLANE('plane_xy',#13);
+#21=CARTESIAN_POINT('p0',(0.0,0.0,0.0));
+#22=CARTESIAN_POINT('p1',(10.0,0.0,0.0));
+#23=CARTESIAN_POINT('p2',(10.0,10.0,0.0));
+#24=CARTESIAN_POINT('p3',(0.0,10.0,0.0));
+#30=VERTEX_POINT('',#21);
+#31=VERTEX_POINT('',#22);
+#32=VERTEX_POINT('',#23);
+#33=VERTEX_POINT('',#24);
+/* Defect site #1: every edge_curve has null edge_geometry, so all four
+ * edges fail translation and the outer bound becomes empty.            */
+#40=EDGE_CURVE('null_edge_0',#30,#31,$,.T.);
+#41=EDGE_CURVE('null_edge_1',#31,#32,$,.T.);
+#42=EDGE_CURVE('null_edge_2',#32,#33,$,.T.);
+#43=EDGE_CURVE('null_edge_3',#33,#30,$,.T.);
+#50=ORIENTED_EDGE('',*,*,#40,.T.);
+#51=ORIENTED_EDGE('',*,*,#41,.T.);
+#52=ORIENTED_EDGE('',*,*,#42,.T.);
+#53=ORIENTED_EDGE('',*,*,#43,.T.);
+#60=EDGE_LOOP('outer_with_null_edges',(#50,#51,#52,#53));
+#70=FACE_OUTER_BOUND('outer_bound_to_fail',#60,.T.);
+#80=ADVANCED_FACE('face_with_null_edges',(#70),#20,.T.);
+/* Defect site #2: the EDGE_LOOP itself is empty.                       */
+#90=EDGE_LOOP('empty_loop',());
+#100=FACE_OUTER_BOUND('outer_bound_empty_loop',#90,.T.);
+#110=ADVANCED_FACE('face_with_empty_loop',(#100),#20,.T.);
+#120=OPEN_SHELL('failed_outer_bounds',(#80,#110));
+ENDSEC;
+END-ISO-10303-21;

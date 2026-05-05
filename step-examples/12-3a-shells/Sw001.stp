@@ -1,0 +1,31 @@
+ISO-10303-21;
+/* Sw001 - Three faces share an edge after sewing (multiple edge).
+ * Defect: three planar faces meet along the same 3D line, forming
+ * a T-junction. Sewer accepts and produces a non-manifold result
+ * with no diagnostic. */
+HEADER;
+FILE_DESCRIPTION(('Sw001 - sewing produces multiple edge','Pass C gap-fill'),'2;1');
+FILE_NAME('Sw001.stp','2026-04-30T00:00:00',(''),(''),'gap-fill C','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+/* Three faces meeting at the X axis line. */
+#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#11=DIRECTION('z',(0.0,0.0,1.0));
+#12=DIRECTION('x',(1.0,0.0,0.0));
+#13=DIRECTION('y',(0.0,1.0,0.0));
+#14=AXIS2_PLACEMENT_3D('',#10,#11,#12);
+#15=PLANE('horizontal',#14);
+#16=AXIS2_PLACEMENT_3D('',#10,#13,#12);
+#17=PLANE('vertical_xz',#16);
+#18=AXIS2_PLACEMENT_3D('',#10,#13,#11);
+#19=PLANE('vertical_yz',#18);
+#100=ADVANCED_FACE('horiz',(),#15,.T.);
+#101=ADVANCED_FACE('vert_xz',(),#17,.T.);
+#102=ADVANCED_FACE('vert_yz',(),#19,.T.);
+/* Three faces fed to a sewer would produce an X-axis edge with
+   multiplicity 3 - non-manifold. */
+ENDSEC;
+END-ISO-10303-21;

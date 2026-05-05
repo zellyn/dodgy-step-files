@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Pmi087 — `GEOMETRIC_VALIDATION_PROPERTY` claimed volume disagrees with geometry</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.7 PMI / GD&amp;T</a> <span class="sep">/</span> <span class="current">Pmi087</span>
+</nav>
+<header class="title-bar">
+<h1>Pmi087 <span class="sep">—</span> <span class="entry-title">`GEOMETRIC_VALIDATION_PROPERTY` claimed volume disagrees with geometry</span></h1>
+<p class="category">§12.7 (sub-class: validation property)</p>
+<p class="tag-pills">
+<a class="tag tag-round-trip" href="../by-tag/round-trip/index.html">round-trip</a>
+<a class="tag tag-pmi" href="../by-tag/pmi/index.html">pmi</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-7-pmi/Pmi087.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-7-pmi/Pmi087.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>02-caxif (Validation Properties Recommended Practice §6.2 — volume / area / centroid for downstream verification)</li>
+<li>bug-reporter language: &quot;STEP validation volume wrong&quot;, &quot;claimed volume disagrees with computed&quot;</li>
+</ul></section>
+<section><h2>Sender</h2>
+<p>deduced — exporters that emit validation properties from a stale cache or from a different revision of the geometry than what the file body contains</p></section>
+<section><h2>Description</h2>
+<p>AP242 supports `GEOMETRIC_VALIDATION_PROPERTY` entries: a producer asserts the volume / surface-area / centroid of a body so a receiver can verify the geometry round-tripped without distortion. A producer that emits the validation property from a stale cache (last computed before a final scaling/translation step) leaves a volume claim that disagrees with the geometry the receiver computes. The disagreement is the diagnostic: receivers must surface it. Silent acceptance hides the round-trip distortion the validation property exists to detect. Bug-reporter language: &quot;STEP validation property volume wrong&quot;, &quot;claimed volume different from computed&quot;, &quot;validation property fails round-trip&quot;.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>a `MANIFOLD_SOLID_BREP` representing a 10x10x10 mm cube (volume 1000 mm³); a `GEOMETRIC_VALIDATION_PROPERTY` with `VOLUME_MEASURE(500.0)` claiming half the actual volume.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>compute the validation property at load time and compare to the claimed value; surface the disagreement with both numbers and the offending body. The validation property&#x27;s purpose is exactly this discrepancy — silent acceptance defeats it.</p></section>
+<section><h2>Notes</h2>
+<p>First entry exercising GEOMETRIC_VALIDATION_PROPERTY for the volume metric. **See also**: Pmi088, Pmi089, M029. Synonyms: &quot;STEP validation volume mismatch&quot;, &quot;round-trip volume drift&quot;, &quot;GEOMETRIC_VALIDATION_PROPERTY claimed volume disagrees with geometry&quot;, &quot;volume validation property mismatch&quot;, &quot;claimed solid volume wrong&quot;.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=shape(1)/shape(1) gmsh=shape(27) ifc=schema_n/a</code></p></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>n_faces_total == 6</code></li>
+<li><code>face[0].surface_type == &quot;plane&quot;</code></li>
+<li><code>face[0].edge_count == 4</code></li>
+<li><code>face[0].area &gt; 99</code></li>
+<li><code>face[0].area &lt; 101</code></li>
+<li><code>face[5].edge_count == 4</code></li>
+<li><code>face[5].area &gt; 99</code></li>
+<li><code>face[5].area &lt; 101</code></li>
+<li><code>n_edges_total &gt;= 24</code></li>
+</ul></section>
+<section><h2>Cross-references</h2>
+<p><a href="Pmi088.html">Pmi088</a>, <a href="Pmi089.html">Pmi089</a>, <a href="../12-8-mixed/M029.html">M029</a></p>
+</section>
+<section><h2>Live oracle output</h2>
+<table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
+<tr><td><code>occt_heal_on</code></td><td><code>shape(1)</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>shape(1)</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>shape(27)</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>shape(27)</code></td></tr>
+<tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>not_manifold</code></td></tr>
+</tbody></table>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>/* Pmi087 - GEOMETRIC_VALIDATION_PROPERTY claimed volume disagrees with geometry
+<span class="lineno">2</span> * Defect: a 10x10x10 mm cube has actual volume 1000 mm^3. The fixture
+<span class="lineno">3</span> * emits a validation property claiming VOLUME_MEASURE(500.0) -- half the
+<span class="lineno">4</span> * computed value. The validation property exists exactly to detect this
+<span class="lineno">5</span> * round-trip drift; receivers must surface the disagreement. */
+<span class="lineno">6</span>ISO-10303-21;
+<span class="lineno">7</span>HEADER;
+<span class="lineno">8</span>FILE_DESCRIPTION((&#x27;Pmi087 - validation property volume mismatch&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">9</span>FILE_NAME(&#x27;Pmi087.stp&#x27;,&#x27;2026-04-30T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">10</span>FILE_SCHEMA((&#x27;AP242_MANAGED_MODEL_BASED_3D_ENGINEERING_MIM_LF { 1 0 10303 442 1 1 4 }&#x27;));
+<span class="lineno">11</span>ENDSEC;
+<span class="lineno">12</span>DATA;
+<span class="lineno">13</span>#1=APPLICATION_CONTEXT(&#x27;managed model based 3d engineering&#x27;);
+<span class="lineno">14</span>#2=PRODUCT_CONTEXT(&#x27;part&#x27;,#1,&#x27;mechanical&#x27;);
+<span class="lineno">15</span>#3=PRODUCT(&#x27;Pmi087&#x27;,&#x27;cube_with_wrong_volume&#x27;,&#x27;&#x27;,(#2));
+<span class="lineno">16</span>#4=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#3);
+<span class="lineno">17</span>#5=PRODUCT_DEFINITION_CONTEXT(&#x27;&#x27;,#1,&#x27;design&#x27;);
+<span class="lineno">18</span>#6=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,#4,#5);
+<span class="lineno">19</span>#7=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,#6);
+<span class="lineno">20</span>#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">21</span>#11=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+<span class="lineno">22</span>#12=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+<span class="lineno">23</span>#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#10,&#x27;tol&#x27;,&#x27;&#x27;);
+<span class="lineno">24</span>#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3) GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13)) GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12)) REPRESENTATION_CONTEXT(&#x27;&#x27;,&#x27;3D&#x27;));
+<span class="lineno">25</span>/* Real 10x10x10 mm cube: 8 vertices, 12 edges, 6 planar faces. */
+<span class="lineno">26</span>#100=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">27</span>#101=CARTESIAN_POINT(&#x27;&#x27;,(10.0,0.0,0.0));
+<span class="lineno">28</span>#102=CARTESIAN_POINT(&#x27;&#x27;,(10.0,10.0,0.0));
+<span class="lineno">29</span>#103=CARTESIAN_POINT(&#x27;&#x27;,(0.0,10.0,0.0));
+<span class="lineno">30</span>#104=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,10.0));
+<span class="lineno">31</span>#105=CARTESIAN_POINT(&#x27;&#x27;,(10.0,0.0,10.0));
+<span class="lineno">32</span>#106=CARTESIAN_POINT(&#x27;&#x27;,(10.0,10.0,10.0));
+<span class="lineno">33</span>#107=CARTESIAN_POINT(&#x27;&#x27;,(0.0,10.0,10.0));
+<span class="lineno">34</span>#110=VERTEX_POINT(&#x27;&#x27;,#100); #111=VERTEX_POINT(&#x27;&#x27;,#101);
+<span class="lineno">35</span>#112=VERTEX_POINT(&#x27;&#x27;,#102); #113=VERTEX_POINT(&#x27;&#x27;,#103);
+<span class="lineno">36</span>#114=VERTEX_POINT(&#x27;&#x27;,#104); #115=VERTEX_POINT(&#x27;&#x27;,#105);
+<span class="lineno">37</span>#116=VERTEX_POINT(&#x27;&#x27;,#106); #117=VERTEX_POINT(&#x27;&#x27;,#107);
+<span class="lineno">38</span>#200=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0)); #201=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">39</span>#202=DIRECTION(&#x27;&#x27;,(0.0,0.0,-1.0));
+<span class="lineno">40</span>#203=DIRECTION(&#x27;&#x27;,(0.0,-1.0,0.0)); #204=DIRECTION(&#x27;&#x27;,(0.0,1.0,0.0));
+<span class="lineno">41</span>#205=DIRECTION(&#x27;&#x27;,(-1.0,0.0,0.0)); #206=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">42</span>#210=CARTESIAN_POINT(&#x27;&#x27;,(5.0,5.0,0.0));
+<span class="lineno">43</span>#211=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#210,#202,#201); #212=PLANE(&#x27;&#x27;,#211);
+<span class="lineno">44</span>#220=CARTESIAN_POINT(&#x27;&#x27;,(5.0,5.0,10.0));
+<span class="lineno">45</span>#221=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#220,#200,#201); #222=PLANE(&#x27;&#x27;,#221);
+<span class="lineno">46</span>#230=CARTESIAN_POINT(&#x27;&#x27;,(5.0,0.0,5.0));
+<span class="lineno">47</span>#231=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#230,#203,#201); #232=PLANE(&#x27;&#x27;,#231);
+<span class="lineno">48</span>#240=CARTESIAN_POINT(&#x27;&#x27;,(5.0,10.0,5.0));
+<span class="lineno">49</span>#241=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#240,#204,#201); #242=PLANE(&#x27;&#x27;,#241);
+<span class="lineno">50</span>#250=CARTESIAN_POINT(&#x27;&#x27;,(0.0,5.0,5.0));
+<span class="lineno">51</span>#251=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#250,#205,#204); #252=PLANE(&#x27;&#x27;,#251);
+<span class="lineno">52</span>#260=CARTESIAN_POINT(&#x27;&#x27;,(10.0,5.0,5.0));
+<span class="lineno">53</span>#261=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#260,#206,#204); #262=PLANE(&#x27;&#x27;,#261);
+<span class="lineno">54</span>#300=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0)); #301=VECTOR(&#x27;&#x27;,#300,10.0);
+<span class="lineno">55</span>#302=DIRECTION(&#x27;&#x27;,(0.0,1.0,0.0)); #303=VECTOR(&#x27;&#x27;,#302,10.0);
+<span class="lineno">56</span>#304=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0)); #305=VECTOR(&#x27;&#x27;,#304,10.0);
+<span class="lineno">57</span>#310=LINE(&#x27;&#x27;,#100,#301); #311=EDGE_CURVE(&#x27;&#x27;,#110,#111,#310,.T.);
+<span class="lineno">58</span>#312=LINE(&#x27;&#x27;,#101,#303); #313=EDGE_CURVE(&#x27;&#x27;,#111,#112,#312,.T.);
+<span class="lineno">59</span>#314=LINE(&#x27;&#x27;,#103,#301); #315=EDGE_CURVE(&#x27;&#x27;,#113,#112,#314,.T.);
+<span class="lineno">60</span>#316=LINE(&#x27;&#x27;,#100,#303); #317=EDGE_CURVE(&#x27;&#x27;,#110,#113,#316,.T.);
+<span class="lineno">61</span>#318=LINE(&#x27;&#x27;,#104,#301); #319=EDGE_CURVE(&#x27;&#x27;,#114,#115,#318,.T.);
+<span class="lineno">62</span>#320=LINE(&#x27;&#x27;,#105,#303); #321=EDGE_CURVE(&#x27;&#x27;,#115,#116,#320,.T.);
+<span class="lineno">63</span>#322=LINE(&#x27;&#x27;,#107,#301); #323=EDGE_CURVE(&#x27;&#x27;,#117,#116,#322,.T.);
+<span class="lineno">64</span>#324=LINE(&#x27;&#x27;,#104,#303); #325=EDGE_CURVE(&#x27;&#x27;,#114,#117,#324,.T.);
+<span class="lineno">65</span>#326=LINE(&#x27;&#x27;,#100,#305); #327=EDGE_CURVE(&#x27;&#x27;,#110,#114,#326,.T.);
+<span class="lineno">66</span>#328=LINE(&#x27;&#x27;,#101,#305); #329=EDGE_CURVE(&#x27;&#x27;,#111,#115,#328,.T.);
+<span class="lineno">67</span>#330=LINE(&#x27;&#x27;,#102,#305); #331=EDGE_CURVE(&#x27;&#x27;,#112,#116,#330,.T.);
+<span class="lineno">68</span>#332=LINE(&#x27;&#x27;,#103,#305); #333=EDGE_CURVE(&#x27;&#x27;,#113,#117,#332,.T.);
+<span class="lineno">69</span>#400=ORIENTED_EDGE(&#x27;&#x27;,*,*,#311,.T.); #401=ORIENTED_EDGE(&#x27;&#x27;,*,*,#313,.T.);
+<span class="lineno">70</span>#402=ORIENTED_EDGE(&#x27;&#x27;,*,*,#315,.F.); #403=ORIENTED_EDGE(&#x27;&#x27;,*,*,#317,.F.);
+<span class="lineno">71</span>#404=EDGE_LOOP(&#x27;&#x27;,(#400,#401,#402,#403));
+<span class="lineno">72</span>#405=FACE_OUTER_BOUND(&#x27;&#x27;,#404,.T.);
+<span class="lineno">73</span>#406=ADVANCED_FACE(&#x27;bot&#x27;,(#405),#212,.T.);
+<span class="lineno">74</span>#410=ORIENTED_EDGE(&#x27;&#x27;,*,*,#319,.T.); #411=ORIENTED_EDGE(&#x27;&#x27;,*,*,#321,.T.);
+<span class="lineno">75</span>#412=ORIENTED_EDGE(&#x27;&#x27;,*,*,#323,.F.); #413=ORIENTED_EDGE(&#x27;&#x27;,*,*,#325,.F.);
+<span class="lineno">76</span>#414=EDGE_LOOP(&#x27;&#x27;,(#410,#411,#412,#413));
+<span class="lineno">77</span>#415=FACE_OUTER_BOUND(&#x27;&#x27;,#414,.T.);
+<span class="lineno">78</span>#416=ADVANCED_FACE(&#x27;top&#x27;,(#415),#222,.T.);
+<span class="lineno">79</span>#420=ORIENTED_EDGE(&#x27;&#x27;,*,*,#311,.T.); #421=ORIENTED_EDGE(&#x27;&#x27;,*,*,#329,.T.);
+<span class="lineno">80</span>#422=ORIENTED_EDGE(&#x27;&#x27;,*,*,#319,.F.); #423=ORIENTED_EDGE(&#x27;&#x27;,*,*,#327,.F.);
+<span class="lineno">81</span>#424=EDGE_LOOP(&#x27;&#x27;,(#420,#421,#422,#423));
+<span class="lineno">82</span>#425=FACE_OUTER_BOUND(&#x27;&#x27;,#424,.T.);
+<span class="lineno">83</span>#426=ADVANCED_FACE(&#x27;front&#x27;,(#425),#232,.T.);
+<span class="lineno">84</span>#430=ORIENTED_EDGE(&#x27;&#x27;,*,*,#315,.T.); #431=ORIENTED_EDGE(&#x27;&#x27;,*,*,#331,.T.);
+<span class="lineno">85</span>#432=ORIENTED_EDGE(&#x27;&#x27;,*,*,#323,.F.); #433=ORIENTED_EDGE(&#x27;&#x27;,*,*,#333,.F.);
+<span class="lineno">86</span>#434=EDGE_LOOP(&#x27;&#x27;,(#430,#431,#432,#433));
+<span class="lineno">87</span>#435=FACE_OUTER_BOUND(&#x27;&#x27;,#434,.T.);
+<span class="lineno">88</span>#436=ADVANCED_FACE(&#x27;back&#x27;,(#435),#242,.T.);
+<span class="lineno">89</span>#440=ORIENTED_EDGE(&#x27;&#x27;,*,*,#317,.T.); #441=ORIENTED_EDGE(&#x27;&#x27;,*,*,#333,.T.);
+<span class="lineno">90</span>#442=ORIENTED_EDGE(&#x27;&#x27;,*,*,#325,.F.); #443=ORIENTED_EDGE(&#x27;&#x27;,*,*,#327,.F.);
+<span class="lineno">91</span>#444=EDGE_LOOP(&#x27;&#x27;,(#440,#441,#442,#443));
+<span class="lineno">92</span>#445=FACE_OUTER_BOUND(&#x27;&#x27;,#444,.T.);
+<span class="lineno">93</span>#446=ADVANCED_FACE(&#x27;left&#x27;,(#445),#252,.T.);
+<span class="lineno">94</span>#450=ORIENTED_EDGE(&#x27;&#x27;,*,*,#313,.T.); #451=ORIENTED_EDGE(&#x27;&#x27;,*,*,#331,.T.);
+<span class="lineno">95</span>#452=ORIENTED_EDGE(&#x27;&#x27;,*,*,#321,.F.); #453=ORIENTED_EDGE(&#x27;&#x27;,*,*,#329,.F.);
+<span class="lineno">96</span>#454=EDGE_LOOP(&#x27;&#x27;,(#450,#451,#452,#453));
+<span class="lineno">97</span>#455=FACE_OUTER_BOUND(&#x27;&#x27;,#454,.T.);
+<span class="lineno">98</span>#456=ADVANCED_FACE(&#x27;right&#x27;,(#455),#262,.T.);
+<span class="lineno">99</span>#500=CLOSED_SHELL(&#x27;cube_skin&#x27;,(#406,#416,#426,#436,#446,#456));
+<span class="lineno">100</span>#501=MANIFOLD_SOLID_BREP(&#x27;cube_body&#x27;,#500);
+<span class="lineno">101</span>#502=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#100,#200,#201);
+<span class="lineno">102</span>#503=ADVANCED_BREP_SHAPE_REPRESENTATION(&#x27;shape&#x27;,(#501,#502),#14);
+<span class="lineno">103</span>#504=SHAPE_DEFINITION_REPRESENTATION(#7,#503);
+<span class="lineno">104</span>/* Defect: claimed volume 500 mm^3, actual cube volume 1000 mm^3. */
+<span class="lineno">105</span>#600=PROPERTY_DEFINITION(&#x27;geometric_validation&#x27;,&#x27;volume_validation&#x27;,#7);
+<span class="lineno">106</span>#601=MEASURE_REPRESENTATION_ITEM(&#x27;volume&#x27;,VOLUME_MEASURE(500.0),#10);
+<span class="lineno">107</span>#602=REPRESENTATION(&#x27;claimed_volume&#x27;,(#601),#14);
+<span class="lineno">108</span>#603=PROPERTY_DEFINITION_REPRESENTATION(#600,#602);
+<span class="lineno">109</span>/* Anchor a SHAPE_ASPECT to the solid so the fixture is recognised
+<span class="lineno">110</span>   as carrying PMI metadata. */
+<span class="lineno">111</span>#610=SHAPE_ASPECT(&#x27;whole_body&#x27;,&#x27;validation property scope&#x27;,#7,.T.);
+<span class="lineno">112</span>#611=GEOMETRIC_ITEM_SPECIFIC_USAGE(&#x27;GISU&#x27;,$,#610,#503,#501);
+<span class="lineno">113</span>#612=DIMENSIONAL_SIZE(#610,&#x27;reference_volume&#x27;);
+<span class="lineno">114</span>ENDSEC;
+<span class="lineno">115</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Pmi086.html">&larr; Pmi086</a> <a class="up" href="index.html">§12.7 PMI / GD&amp;T</a> <a class="next" href="Pmi088.html">Pmi088 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

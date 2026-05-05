@@ -1,0 +1,77 @@
+ISO-10303-21;
+/* Twi065 - Wire edge-curves analysis: 3D/2D consistency in one report
+ * Four-edge wire on PLANE; each edge fails a different ShapeAnalysis_Wire check:
+ *   edge1 - CheckCurve3dWithPCurve (pcurve direction wrong)
+ *   edge2 - CheckVerticesWithCurve3d (3D LINE endpoints not on declared vertices)
+ *   edge3 - CheckGap3d (start vertex differs from prev edge end vertex)
+ *   edge4 - CheckSameParameter (3D length 1.0 but pcurve length 5.0). */
+HEADER;
+FILE_DESCRIPTION(('Twi065 test case','Wire edge-curves analysis: each edge fails a different check'),'2;1');
+FILE_NAME('Twi065.stp','2026-04-30T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#11=DIRECTION('',(0.0,0.0,1.0));
+#12=DIRECTION('',(1.0,0.0,0.0));
+#13=AXIS2_PLACEMENT_3D('',#10,#11,#12);
+#14=PLANE('',#13);
+/* 4 corners, used for an intended unit square */
+#20=CARTESIAN_POINT('',(0.0,0.0,0.0));#21=VERTEX_POINT('V1',#20);
+#22=CARTESIAN_POINT('',(1.0,0.0,0.0));#23=VERTEX_POINT('V2',#22);
+#24=CARTESIAN_POINT('',(1.0,1.0,0.0));#25=VERTEX_POINT('V3',#24);
+#26=CARTESIAN_POINT('',(0.0,1.0,0.0));#27=VERTEX_POINT('V4',#26);
+/* edge1: pcurve direction REVERSED relative to 3D LINE direction */
+#30=DIRECTION('',(1.0,0.0,0.0));#31=VECTOR('',#30,1.0);#32=LINE('',#20,#31);
+#33=CARTESIAN_POINT('',(1.0,0.0));#34=DIRECTION('',(-1.0,0.0));
+#35=VECTOR('',#34,1.0);#36=LINE('',#33,#35);
+#37=DEFINITIONAL_REPRESENTATION('',(#36),#13);
+#38=PCURVE('',#14,#37);
+#39=SURFACE_CURVE('',#32,(#38),.PCURVE_S1.);
+#40=EDGE_CURVE('edge1_pcurve_reversed',#21,#23,#39,.T.);
+/* edge2: 3D LINE origin (5,5,0) differs sharply from V2 vertex (1,0,0) -- vertex/curve3d mismatch */
+#50=DIRECTION('',(0.0,1.0,0.0));#51=VECTOR('',#50,1.0);
+#52=CARTESIAN_POINT('curve3d_origin_off',(5.0,5.0,0.0));
+#53=LINE('',#52,#51);
+#54=EDGE_CURVE('edge2_vertex_curve3d_mismatch',#23,#25,#53,.T.);
+/* edge3: start vertex is FRESH V3b at (1.5,1.0,0) -- 3D gap 0.5 from previous edge end V3 */
+#60=CARTESIAN_POINT('shifted_start',(1.5,1.0,0.0));
+#61=VERTEX_POINT('V3b_shifted',#60);
+#62=DIRECTION('',(-1.0,0.0,0.0));#63=VECTOR('',#62,1.0);#64=LINE('',#60,#63);
+#65=EDGE_CURVE('edge3_3d_gap',#61,#27,#64,.T.);
+/* edge4: SameParameter violation -- 3D length 1.0, pcurve length 5.0 */
+#70=DIRECTION('',(0.0,-1.0,0.0));#71=VECTOR('',#70,1.0);#72=LINE('',#26,#71);
+#73=CARTESIAN_POINT('',(0.0,1.0));#74=DIRECTION('',(0.0,-1.0));
+#75=VECTOR('',#74,5.0);#76=LINE('',#73,#75);
+#77=DEFINITIONAL_REPRESENTATION('',(#76),#13);
+#78=PCURVE('',#14,#77);
+#79=SURFACE_CURVE('',#72,(#78),.PCURVE_S1.);
+#80=EDGE_CURVE('edge4_sameparam_violation',#27,#21,#79,.T.);
+/* assemble four-edge wire */
+#90=ORIENTED_EDGE('',*,*,#40,.T.);
+#91=ORIENTED_EDGE('',*,*,#54,.T.);
+#92=ORIENTED_EDGE('',*,*,#65,.T.);
+#93=ORIENTED_EDGE('',*,*,#80,.T.);
+#94=EDGE_LOOP('four_distinct_defects',(#90,#91,#92,#93));
+#95=FACE_OUTER_BOUND('',#94,.T.);
+#96=ADVANCED_FACE('',(#95),#14,.T.);
+/* Wrap: minimal PRODUCT chain so OCCT TransferRoots produces a shape. */
+#9000=PRODUCT_CONTEXT('',#1,'mechanical');
+#9001=PRODUCT('Twi065','Twi065','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
+#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
+#9020=OPEN_SHELL('wrap_shell',(#96));
+#9021=SHELL_BASED_SURFACE_MODEL('wrap_sbsm',(#9020));
+#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#9010);
+#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+ENDSEC;
+END-ISO-10303-21;

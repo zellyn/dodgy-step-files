@@ -1,0 +1,62 @@
+ISO-10303-21;
+/* Tfa065 - Healed face uses inflated tolerance instead of original
+ * Rectangular face with three good edges and one edge whose start vertex is
+ * shifted 1e-3 from the previous edge's end vertex -- creating a 1e-3 gap.
+ * The other three edges are clean (vertex tolerance 1e-7). After healing
+ * the face tolerance should be ~1.5e-3, but a defective heal sets it to 1e-1. */
+HEADER;
+FILE_DESCRIPTION(('Tfa065 test case','Three clean edges plus one edge with 1e-3 gap to its neighbour'),'2;1');
+FILE_NAME('Tfa065.stp','2026-04-30T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#11=DIRECTION('',(0.0,0.0,1.0));
+#12=DIRECTION('',(1.0,0.0,0.0));
+#13=AXIS2_PLACEMENT_3D('',#10,#11,#12);
+#14=PLANE('',#13);
+/* Five vertices: V1, V2, V3 are clean; V3a is the shifted-by-1e-3 start of edge4 */
+#20=CARTESIAN_POINT('',(0.0,0.0,0.0));#21=VERTEX_POINT('V1',#20);
+#22=CARTESIAN_POINT('',(1.0,0.0,0.0));#23=VERTEX_POINT('V2',#22);
+#24=CARTESIAN_POINT('',(1.0,1.0,0.0));#25=VERTEX_POINT('V3_clean',#24);
+#26=CARTESIAN_POINT('shifted_1e-3',(1.001,1.0,0.0));#27=VERTEX_POINT('V3a_shifted',#26);
+#28=CARTESIAN_POINT('',(0.0,1.0,0.0));#29=VERTEX_POINT('V4',#28);
+/* edge1 V1->V2: clean */
+#30=DIRECTION('',(1.0,0.0,0.0));#31=VECTOR('',#30,1.0);#32=LINE('',#20,#31);
+#33=EDGE_CURVE('e1_clean',#21,#23,#32,.T.);
+/* edge2 V2->V3: clean */
+#34=DIRECTION('',(0.0,1.0,0.0));#35=VECTOR('',#34,1.0);#36=LINE('',#22,#35);
+#37=EDGE_CURVE('e2_clean',#23,#25,#36,.T.);
+/* edge3 starts at V3a (shifted 1e-3 from V3) -- 1e-3 gap with neighbour edge2 end */
+#38=DIRECTION('',(-1.0,0.0,0.0));#39=VECTOR('',#38,1.001);#40=LINE('',#26,#39);
+#41=EDGE_CURVE('e3_with_1e-3_gap',#27,#29,#40,.T.);
+/* edge4 V4->V1: clean */
+#42=DIRECTION('',(0.0,-1.0,0.0));#43=VECTOR('',#42,1.0);#44=LINE('',#28,#43);
+#45=EDGE_CURVE('e4_clean',#29,#21,#44,.T.);
+#50=ORIENTED_EDGE('',*,*,#33,.T.);
+#51=ORIENTED_EDGE('',*,*,#37,.T.);
+#52=ORIENTED_EDGE('',*,*,#41,.T.);
+#53=ORIENTED_EDGE('',*,*,#45,.T.);
+#54=EDGE_LOOP('three_clean_one_gap',(#50,#51,#52,#53));
+#55=FACE_OUTER_BOUND('',#54,.T.);
+#56=ADVANCED_FACE('quad_with_one_1e-3_gap',(#55),#14,.T.);
+/* Wrap: minimal PRODUCT chain so OCCT TransferRoots produces a shape. */
+#9000=PRODUCT_CONTEXT('',#1,'mechanical');
+#9001=PRODUCT('Tfa065','Tfa065','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
+#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
+#9020=OPEN_SHELL('wrap_shell',(#56));
+#9021=SHELL_BASED_SURFACE_MODEL('wrap_sbsm',(#9020));
+#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#9010);
+#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+ENDSEC;
+END-ISO-10303-21;

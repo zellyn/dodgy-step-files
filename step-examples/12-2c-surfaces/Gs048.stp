@@ -1,0 +1,30 @@
+ISO-10303-21;
+/* Gs048 - OFFSET_CURVE_2D with ref_distance varying sign across
+ * a single composite_curve chain
+ * Defect: ISO 10303-42 OFFSET_CURVE_2D carries ref_distance
+ * (a signed real - sign determines side). When a producer chains
+ * OFFSET_CURVE_2D segments around a composite curve and switches
+ * sign mid-chain (perhaps to "fix" inside/outside on a concave
+ * region), the resulting offset is non-continuous - successive
+ * segments do not meet at a shared point. */
+HEADER;
+FILE_DESCRIPTION(('Gs048 - OFFSET_CURVE_2D sign flip mid composite chain'),'2;1');
+FILE_NAME('Gs048.stp','2026-04-26T00:00:00',(''),(''),
+  'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#10=CARTESIAN_POINT('p0',(0.0,0.0,0.0));
+#11=CARTESIAN_POINT('p1',(5.0,0.0,0.0));
+#12=CARTESIAN_POINT('p2',(5.0,5.0,0.0));
+#20=POLYLINE('seg1',(#10,#11));
+#21=POLYLINE('seg2',(#11,#12));
+/* Defect: sign of ref_distance flips between adjacent segments */
+#30=OFFSET_CURVE_2D('off1',#20,1.0,.T.);
+#31=OFFSET_CURVE_2D('off2',#21,-1.0,.T.);
+#40=COMPOSITE_CURVE_SEGMENT(.CONTINUOUS.,.T.,#30);
+#41=COMPOSITE_CURVE_SEGMENT(.CONTINUOUS.,.T.,#31);
+#50=COMPOSITE_CURVE('chain',(#40,#41),.F.);
+ENDSEC;
+END-ISO-10303-21;

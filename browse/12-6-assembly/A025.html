@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>A025 — Names with special / non-ASCII / encoded characters lost or corrupted</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.6 Assembly hierarchy</a> <span class="sep">/</span> <span class="current">A025</span>
+</nav>
+<header class="title-bar">
+<h1>A025 <span class="sep">—</span> <span class="entry-title">Names with special / non-ASCII / encoded characters lost or corrupted</span></h1>
+<p class="category">§12.6 (sub-class: characters in names)</p>
+<p class="severity-badge severity-p1">P1 — silent data loss</p>
+<p class="tag-pills">
+<a class="tag tag-assembly" href="../by-tag/assembly/index.html">assembly</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-6-assembly/A025.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-6-assembly/A025.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>G040 (control directives in names), G041 (cp1251/GB2312/DOS850), G042 (Japanese), G043 (embedded apostrophes), G044 (single space), G045 (backslashes), R052/R053 (OCCT bug25440/bug33815), J004 (FreeCAD GH#7987), W031 (CAD Exchanger).</li>
+</ul></section>
+<section><h2>Sender</h2>
+<p>SolidWorks (Chinese/Japanese locales); Inventor (locale-dependent codepages); Pro/E and Inventor with control-directive names.</p></section>
+<section><h2>Description</h2>
+<p>STEP `name` fields contain ISO 10303-21 control directives, raw 8-bit Cyrillic/CJK/CP850 bytes, doubled apostrophes (`&#x27;&#x27;` for &quot;O&#x27;Brien&quot;), backslashes (Windows paths), or single-space placeholders; receivers either fail to decode, replace with `?`, drop the name, or trim whitespace too aggressively.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>PRODUCT name `&#x27;\X2\03B1\X0\&#x27;` (Greek alpha); or `PRODUCT(&#x27;O&#x27;&#x27;Brien&#x27;,..)`; or `PRODUCT(&#x27; &#x27;,..)`; or `PRODUCT(&#x27;C:\path\file&#x27;,..)`.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>Heal and accept: decode all 10303-21 directives; provide `read.step.codepage` parameter; preserve literal backslashes through encode/decode; standard doubled-quote escape parsing; trim whitespace before assigning names but preserve the original. Must not silently corrupt names.</p></section>
+<section><h2>Notes</h2>
+<p>**See also**: A010, U016. Synonyms: &quot;non-ASCII component name garbled on import&quot;, &quot;Unicode characters in part name corrupted&quot;, &quot;Part 21 backslash-X encoding not decoded&quot;, &quot;special characters in NAUO instance name lost&quot;, &quot;Chinese / Japanese / German labels broken on round-trip&quot;.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>count_entity_def(b&#x27;NEXT_ASSEMBLY_USAGE_OCCURRENCE&#x27;) == 4</code></li>
+<li><code>contains(b&#x27;PRODUCT&#x27;)</code></li>
+</ul></section>
+<section><h2>Cross-references</h2>
+<p><a href="A010.html">A010</a>, <a href="../12-5-units/U016.html">U016</a></p>
+</section>
+<section><h2>Live oracle output</h2>
+<table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
+<tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>warn(W_BARE_BACKSLASH)</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>no_shapes_loaded</code></td></tr>
+</tbody></table>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/*
+<span class="lineno">3</span> * A025 â Names with special / non-ASCII / encoded characters lost or corrupted
+<span class="lineno">4</span> * Defect (control directives in names, cp1251/GB2312/DOS850, Japanese,
+<span class="lineno">5</span> *         embedded apostrophes, single space, backslashes, OCCT bug25440/
+<span class="lineno">6</span> *         bug33815, FreeCAD GH#7987, CAD Exchanger):
+<span class="lineno">7</span> *   STEP name fields contain ISO 10303-21 control directives, raw 8-bit
+<span class="lineno">8</span> *   bytes, doubled apostrophes, backslashes, or single-space placeholders;
+<span class="lineno">9</span> *   receivers either fail to decode, replace with ?, drop the name, or trim
+<span class="lineno">10</span> *   whitespace too aggressively.
+<span class="lineno">11</span> * Reproducer recipe: <mark>PRODUCT</mark> name &#x27;\X2\03B1\X0\&#x27; (Greek alpha); or
+<span class="lineno">12</span> *   <mark>PRODUCT</mark>(&#x27;O&#x27;&#x27;Brien&#x27;,...); or <mark>PRODUCT</mark>(&#x27; &#x27;,...); or <mark>PRODUCT</mark>(&#x27;C:\path\file&#x27;,...).
+<span class="lineno">13</span> * Expected kernel: decode all 10303-21 directives; provide read.step.codepage;
+<span class="lineno">14</span> *   preserve literal backslashes; standard doubled-quote escape parsing.
+<span class="lineno">15</span> */
+<span class="lineno">16</span>HEADER;
+<span class="lineno">17</span>FILE_DESCRIPTION((&#x27;A025 names with X2 escape, doubled apostrophe, backslash, single space&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">18</span>FILE_NAME(&#x27;A025.stp&#x27;,&#x27;2026-04-26T00:00:00&#x27;,(&#x27;catalog&#x27;),(&#x27;cad&#x27;),&#x27;manual&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">19</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }&#x27;));
+<span class="lineno">20</span>ENDSEC;
+<span class="lineno">21</span>DATA;
+<span class="lineno">22</span>#10 = APPLICATION_CONTEXT(&#x27;automotive design&#x27;);
+<span class="lineno">23</span>#11 = APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,&#x27;automotive_design&#x27;,2001,#10);
+<span class="lineno">24</span>#12 = <mark>PRODUCT</mark>_CONTEXT(&#x27;&#x27;,#10,&#x27;mechanical&#x27;);
+<span class="lineno">25</span>#13 = <mark>PRODUCT</mark>_DEFINITION_CONTEXT(&#x27;part definition&#x27;,#10,&#x27;design&#x27;);
+<span class="lineno">26</span>/* DEFECT 1: X2/X0 Greek alpha escape sequence in a <mark>PRODUCT</mark> name */
+<span class="lineno">27</span>#20 = <mark>PRODUCT</mark>(&#x27;\X2\03B1\X0\&#x27;,&#x27;greek alpha&#x27;,&#x27;&#x27;,(#12));
+<span class="lineno">28</span>#21 = <mark>PRODUCT</mark>_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#20);
+<span class="lineno">29</span>#22 = <mark>PRODUCT</mark>_DEFINITION(&#x27;design&#x27;,&#x27;&#x27;,#21,#13);
+<span class="lineno">30</span>#23 = <mark>PRODUCT</mark>_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,#22);
+<span class="lineno">31</span>/* DEFECT 2: doubled apostrophe (O&#x27;Brien) â Part-21 escape for single quote */
+<span class="lineno">32</span>#30 = <mark>PRODUCT</mark>(&#x27;O&#x27;&#x27;Brien&#x27;,&#x27;irish name&#x27;,&#x27;&#x27;,(#12));
+<span class="lineno">33</span>#31 = <mark>PRODUCT</mark>_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#30);
+<span class="lineno">34</span>#32 = <mark>PRODUCT</mark>_DEFINITION(&#x27;design&#x27;,&#x27;&#x27;,#31,#13);
+<span class="lineno">35</span>#33 = <mark>PRODUCT</mark>_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,#32);
+<span class="lineno">36</span>/* DEFECT 3: literal Windows path with backslashes â must round-trip as-is */
+<span class="lineno">37</span>#34 = <mark>PRODUCT</mark>(&#x27;C:\\path\\file&#x27;,&#x27;windows path&#x27;,&#x27;&#x27;,(#12));
+<span class="lineno">38</span>#35 = <mark>PRODUCT</mark>_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#34);
+<span class="lineno">39</span>#36 = <mark>PRODUCT</mark>_DEFINITION(&#x27;design&#x27;,&#x27;&#x27;,#35,#13);
+<span class="lineno">40</span>#37 = <mark>PRODUCT</mark>_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,#36);
+<span class="lineno">41</span>/* DEFECT 4: single space placeholder â receivers must NOT trim to empty */
+<span class="lineno">42</span>#38 = <mark>PRODUCT</mark>(&#x27; &#x27;,&#x27;single-space placeholder&#x27;,&#x27;&#x27;,(#12));
+<span class="lineno">43</span>#39 = <mark>PRODUCT</mark>_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#38);
+<span class="lineno">44</span>#40 = <mark>PRODUCT</mark>_DEFINITION(&#x27;design&#x27;,&#x27;&#x27;,#39,#13);
+<span class="lineno">45</span>#41 = <mark>PRODUCT</mark>_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,#40);
+<span class="lineno">46</span>/* Top assembly */
+<span class="lineno">47</span>#42 = <mark>PRODUCT</mark>(&#x27;A025_ASSY&#x27;,&#x27;&#x27;,&#x27;&#x27;,(#12));
+<span class="lineno">48</span>#43 = <mark>PRODUCT</mark>_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#42);
+<span class="lineno">49</span>#44 = <mark>PRODUCT</mark>_DEFINITION(&#x27;design&#x27;,&#x27;&#x27;,#43,#13);
+<span class="lineno">50</span>#45 = <mark>PRODUCT</mark>_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,#44);
+<span class="lineno">51</span><mark>#46 = NEXT_ASSEMBLY_USAGE_OCCURRENCE(</mark>&#x27;1&#x27;,&#x27;alpha&#x27;,&#x27;&#x27;,#44,#22,$);
+<span class="lineno">52</span><mark>#47 = NEXT_ASSEMBLY_USAGE_OCCURRENCE(</mark>&#x27;2&#x27;,&#x27;obrien&#x27;,&#x27;&#x27;,#44,#32,$);
+<span class="lineno">53</span><mark>#48 = NEXT_ASSEMBLY_USAGE_OCCURRENCE(</mark>&#x27;3&#x27;,&#x27;winpath&#x27;,&#x27;&#x27;,#44,#36,$);
+<span class="lineno">54</span><mark>#49 = NEXT_ASSEMBLY_USAGE_OCCURRENCE(</mark>&#x27;4&#x27;,&#x27;space&#x27;,&#x27;&#x27;,#44,#40,$);
+<span class="lineno">55</span>#50 = ( LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT(.MILLI.,.METRE.) );
+<span class="lineno">56</span>#51 = ( NAMED_UNIT(*) PLANE_ANGLE_UNIT() SI_UNIT($,.RADIAN.) );
+<span class="lineno">57</span>#52 = ( NAMED_UNIT(*) SI_UNIT($,.STERADIAN.) SOLID_ANGLE_UNIT() );
+<span class="lineno">58</span>#53 = UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#50,&#x27;distance_accuracy_value&#x27;,&#x27;&#x27;);
+<span class="lineno">59</span>#54 = ( GEOMETRIC_REPRESENTATION_CONTEXT(3) GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#53))
+<span class="lineno">60</span>        GLOBAL_UNIT_ASSIGNED_CONTEXT((#50,#51,#52)) REPRESENTATION_CONTEXT(&#x27;&#x27;,&#x27;3D&#x27;) );
+<span class="lineno">61</span>#60 = CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">62</span>#61 = DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">63</span>#62 = DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">64</span>#63 = AXIS2_PLACEMENT_3D(&#x27;&#x27;,#60,#61,#62);
+<span class="lineno">65</span>#64 = SHAPE_REPRESENTATION(&#x27;&#x27;,(#63),#54);
+<span class="lineno">66</span>#65 = SHAPE_DEFINITION_REPRESENTATION(#23,#64);
+<span class="lineno">67</span>#66 = SHAPE_DEFINITION_REPRESENTATION(#33,#64);
+<span class="lineno">68</span>#67 = SHAPE_DEFINITION_REPRESENTATION(#37,#64);
+<span class="lineno">69</span>#68 = SHAPE_DEFINITION_REPRESENTATION(#41,#64);
+<span class="lineno">70</span>#69 = SHAPE_DEFINITION_REPRESENTATION(#45,#64);
+<span class="lineno">71</span>ENDSEC;
+<span class="lineno">72</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="A024.html">&larr; A024</a> <a class="up" href="index.html">§12.6 Assembly hierarchy</a> <a class="next" href="A026.html">A026 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

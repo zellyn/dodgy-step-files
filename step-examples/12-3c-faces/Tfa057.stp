@@ -1,0 +1,82 @@
+ISO-10303-21;
+/* Tfa057 - Face wire's orientation contradicts the outer/inner role.
+ * Defect: planar ADVANCED_FACE on Z=0 plane (normal +Z) whose outer
+ * EDGE_LOOP traces vertices clockwise (when viewed from +Z) and whose
+ * inner EDGE_LOOP traces counter-clockwise. The orientation conventions
+ * are swapped relative to the standard (outer should be CCW, inner CW
+ * for an outward +Z normal). */
+HEADER;
+FILE_DESCRIPTION(('Tfa057 - Face wire''s orientation contradicts the outer/inner role','Pass C gap-fill'),'2;1');
+FILE_NAME('Tfa057.stp','2026-05-02T00:00:00',(''),(''),'gap-fill C','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#11=DIRECTION('',(0.0,0.0,1.0));
+#12=DIRECTION('',(1.0,0.0,0.0));
+#13=AXIS2_PLACEMENT_3D('',#10,#11,#12);
+#14=PLANE('plane_xy',#13);
+/* Outer 100x100 square at (0,0)-(100,100). Vertices visited CW from +Z. */
+#20=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#21=CARTESIAN_POINT('',(100.0,0.0,0.0));
+#22=CARTESIAN_POINT('',(100.0,100.0,0.0));
+#23=CARTESIAN_POINT('',(0.0,100.0,0.0));
+#30=VERTEX_POINT('',#20); #31=VERTEX_POINT('',#21);
+#32=VERTEX_POINT('',#22); #33=VERTEX_POINT('',#23);
+/* Inner 20x20 hole centered at (50,50): (40,40)-(60,60). Wound CCW. */
+#40=CARTESIAN_POINT('',(40.0,40.0,0.0));
+#41=CARTESIAN_POINT('',(60.0,40.0,0.0));
+#42=CARTESIAN_POINT('',(60.0,60.0,0.0));
+#43=CARTESIAN_POINT('',(40.0,60.0,0.0));
+#50=VERTEX_POINT('',#40); #51=VERTEX_POINT('',#41);
+#52=VERTEX_POINT('',#42); #53=VERTEX_POINT('',#43);
+/* Direction/vector basis */
+#60=DIRECTION('',(1.0,0.0,0.0)); #61=VECTOR('',#60,100.0);
+#62=DIRECTION('',(0.0,1.0,0.0)); #63=VECTOR('',#62,100.0);
+#64=DIRECTION('',(1.0,0.0,0.0)); #65=VECTOR('',#64,20.0);
+#66=DIRECTION('',(0.0,1.0,0.0)); #67=VECTOR('',#66,20.0);
+/* Outer edges */
+#70=LINE('',#20,#61); #71=EDGE_CURVE('',#30,#31,#70,.T.);
+#72=LINE('',#21,#63); #73=EDGE_CURVE('',#31,#32,#72,.T.);
+#74=LINE('',#23,#61); #75=EDGE_CURVE('',#33,#32,#74,.T.);
+#76=LINE('',#20,#63); #77=EDGE_CURVE('',#30,#33,#76,.T.);
+/* Inner edges */
+#80=LINE('',#40,#65); #81=EDGE_CURVE('',#50,#51,#80,.T.);
+#82=LINE('',#41,#67); #83=EDGE_CURVE('',#51,#52,#82,.T.);
+#84=LINE('',#43,#65); #85=EDGE_CURVE('',#53,#52,#84,.T.);
+#86=LINE('',#40,#67); #87=EDGE_CURVE('',#50,#53,#86,.T.);
+/* Outer loop wound CW from +Z: (0,0) -> (0,100) -> (100,100) -> (100,0) -> (0,0). */
+#90=ORIENTED_EDGE('',*,*,#77,.T.);
+#91=ORIENTED_EDGE('',*,*,#75,.T.);
+#92=ORIENTED_EDGE('',*,*,#73,.F.);
+#93=ORIENTED_EDGE('',*,*,#71,.F.);
+#100=EDGE_LOOP('clockwise_outer',(#90,#91,#92,#93));
+/* Inner loop wound CCW from +Z (wrong winding for a hole). */
+#94=ORIENTED_EDGE('',*,*,#81,.T.);
+#95=ORIENTED_EDGE('',*,*,#83,.T.);
+#96=ORIENTED_EDGE('',*,*,#85,.F.);
+#97=ORIENTED_EDGE('',*,*,#87,.F.);
+#101=EDGE_LOOP('ccw_inner',(#94,#95,#96,#97));
+#110=FACE_OUTER_BOUND('',#100,.T.);
+#111=FACE_BOUND('',#101,.T.);
+#200=ADVANCED_FACE('wrong_winding_face',(#110,#111),#14,.T.);
+/* Wrap: minimal PRODUCT chain so OCCT TransferRoots produces a shape. */
+#9000=PRODUCT_CONTEXT('',#1,'mechanical');
+#9001=PRODUCT('Tfa057','Tfa057','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
+#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
+#9020=OPEN_SHELL('wrap_shell',(#200));
+#9021=SHELL_BASED_SURFACE_MODEL('wrap_sbsm',(#9020));
+#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#9010);
+#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+ENDSEC;
+END-ISO-10303-21;

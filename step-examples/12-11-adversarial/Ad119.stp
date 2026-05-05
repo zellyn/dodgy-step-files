@@ -1,0 +1,53 @@
+/* Ad119 - "Unknown ENTITY type" warning is not a hard failure
+   Defect: BRL-CAD step-g (and several other STEPcode-based readers)
+   when handed a CATIA AP203 file containing presentation entities
+   (STYLED_ITEM, PRESENTATION_STYLE_ASSIGNMENT, SURFACE_STYLE_USAGE,
+   SURFACE_SIDE_STYLE, SURFACE_STYLE_FILL_AREA, FILL_AREA_STYLE,
+   FILL_AREA_STYLE_COLOUR, COLOUR_RGB, PRESENTATION_LAYER_ASSIGNMENT,
+   MECHANICAL_DESIGN_GEOMETRIC_PRESENTATION_REPRESENTATION) prints
+   "Unknown ENTITY type <name>" once per entity to stderr, marks the
+   instances as load-failed, but completes the import.  The geometry
+   imports cleanly; the user only notices the lost colour/layer/style
+   information after the file is converted and rendered.  In versions
+   <= 7.18.4 the same dispatch path additionally tripped a glibc malloc
+   corruption abort during cleanup (sourceforge bug 291) - the
+   warning-without-failure pattern coexisted with a latent
+   double-free.  Distinct from Ad117 (specific crash on dangling
+   STYLED_ITEM ref) by being the umbrella "unknown entity is silently
+   skipped" defect that covers the whole presentation subgraph at once.
+   Sources: SourceForge BRL-CAD bug #291 (CATIA V5R19 AP203 file -
+   "Unknown ENTITY type" + glibc malloc corruption) and bug #332
+   (mdgpr.step minimal repro - 11 unknown entities printed, geometry
+   loads cleanly, all presentation data lost). */
+ISO-10303-21;
+HEADER;
+FILE_DESCRIPTION(
+  ('Ad119 - presentation entities silently dropped with Unknown ENTITY warning'),
+  '2;1');
+FILE_NAME('Ad119.stp','2026-05-02T00:00:00',('cad-research-suite'),(''),
+  'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+/* Minimal MANIFOLD_SOLID_BREP carrier: a single point so the file has
+   *some* geometry to anchor presentation entities to.  Real-world
+   reproducer would be a full cube; the defect class is the same. */
+#10=CARTESIAN_POINT('o',(0.0,0.0,0.0));
+#11=DIRECTION('',(1.0,0.0,0.0));
+#12=DIRECTION('',(0.0,0.0,1.0));
+#13=AXIS2_PLACEMENT_3D('axis',#10,#12,#11);
+/* Defect: the entire presentation subgraph that step-g warns about then
+   silently drops. */
+#100=COLOUR_RGB('red',1.0,0.0,0.0);
+#101=FILL_AREA_STYLE_COLOUR('',#100);
+#102=FILL_AREA_STYLE('',(#101));
+#103=SURFACE_STYLE_FILL_AREA(#102);
+#104=SURFACE_SIDE_STYLE('',(#103));
+#105=SURFACE_STYLE_USAGE(.BOTH.,#104);
+#106=PRESENTATION_STYLE_ASSIGNMENT((#105));
+#107=STYLED_ITEM('',(#106),#13);
+#108=PRESENTATION_LAYER_ASSIGNMENT('layer_red','',(#107));
+#109=MECHANICAL_DESIGN_GEOMETRIC_PRESENTATION_REPRESENTATION(
+  'mdgpr_root',(#107),#13);
+ENDSEC;
+END-ISO-10303-21;

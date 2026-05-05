@@ -1,0 +1,53 @@
+/* Ad059 - Mismatched weight / pole counts in BSpline (writer-emitted)
+   ----------------------------------------------------------------------
+   Catalog section : §12.11 adversarial (sub-class: schema-validation / OOB-read)
+   Sources         : 08-occt-gitlog.md G024 (Mantis 0030921),
+                     G023 (zero-poles)
+   See also        : Gn002
+   ----------------------------------------------------------------------
+   WARNING: This file is INTENTIONALLY MALFORMED for parser-robustness
+   testing. Do NOT use as exchange data.
+   ----------------------------------------------------------------------
+   Defect
+     STEP RATIONAL_B_SPLINE_CURVE with weights array length != poles
+     array length; reader walks past the end of the weights vector.
+     Documented in OCCT Mantis 0030921. Companion bug G023: zero
+     poles silently accepted, leading to division-by-zero downstream.
+   Reproducer recipe
+     RATIONAL_B_SPLINE_CURVE complex entity with 4 control points
+     (poles) but only 3 weights. The schema is the typical AP242
+     complex-record layout combining BOUNDED_CURVE / B_SPLINE_CURVE /
+     B_SPLINE_CURVE_WITH_KNOTS / RATIONAL_B_SPLINE_CURVE.
+   Expected kernel behavior
+     Validate equality: weights.length == poles.length. Pad/truncate
+     with E_BSPLINE_WEIGHT_MISMATCH warning; never read past either
+     array.
+   ----------------------------------------------------------------------
+*/
+ISO-10303-21;
+HEADER;
+FILE_DESCRIPTION(('Ad059 - rational BSpline with weight/pole count mismatch'),
+  '2;1');
+FILE_NAME('Ad059.stp','2026-04-26T00:00:00',('auto-generated'),(''),
+  'auto-generated','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+#1=CARTESIAN_POINT('p0',(0.0,0.0,0.0));
+#2=CARTESIAN_POINT('p1',(1.0,0.0,0.0));
+#3=CARTESIAN_POINT('p2',(2.0,0.0,0.0));
+#4=CARTESIAN_POINT('p3',(3.0,0.0,0.0));
+/* Defect: complex-record rational BSpline with 4 poles but only 3
+   weights. The RATIONAL_B_SPLINE_CURVE.weights_data list length
+   disagrees with the B_SPLINE_CURVE control_points_list length. */
+#100=(
+  BOUNDED_CURVE()
+  B_SPLINE_CURVE(2,(#1,#2,#3,#4),.UNSPECIFIED.,.F.,.F.)
+  B_SPLINE_CURVE_WITH_KNOTS((3,3),(0.0,1.0),.UNSPECIFIED.)
+  CURVE()
+  GEOMETRIC_REPRESENTATION_ITEM()
+  RATIONAL_B_SPLINE_CURVE((1.0,1.0,1.0))
+  REPRESENTATION_ITEM('rbsc_bad')
+);
+ENDSEC;
+END-ISO-10303-21;

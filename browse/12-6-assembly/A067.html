@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>A067 — Baking placements into geometry breaks shared-subshape sharing</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.6 Assembly hierarchy</a> <span class="sep">/</span> <span class="current">A067</span>
+</nav>
+<header class="title-bar">
+<h1>A067 <span class="sep">—</span> <span class="entry-title">Baking placements into geometry breaks shared-subshape sharing</span></h1>
+<p class="category">§12.6 assembly</p>
+<p class="tag-pills">
+<a class="tag tag-assembly" href="../by-tag/assembly/index.html">assembly</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-6-assembly/A067.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-6-assembly/A067.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>OCCT MANTIS#0028471 (OCCT MANTIS tracker 502 as of 2026-05-02)</li>
+</ul></section>
+<section><h2>Description</h2>
+<p>A compound containing several instances of the same shape via different `AXIS2_PLACEMENT_3D`s is processed by a pass that bakes locations into geometry. Each instance is duplicated with its own geometry — shared topology between instances is lost. Memory blows up and downstream feature recognition treats every instance as independent.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>Compound of 10 `MAPPED_ITEM`s of one prismatic shape at 10 different translations. After RemoveLocations, geometry is duplicated 10 times.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>Heal and accept: when baking locations, retain shape sharing for instances at identical post-location geometry; or prefer not to bake at all if downstream tooling is location-aware.</p></section>
+<section><h2>Notes</h2>
+<p>**See also**: A035, Tsh051. Synonyms: &quot;baking placements into geometry breaks instance sharing&quot;, &quot;transformed instances duplicate geometry&quot;, &quot;shared subshapes lost when location is baked in&quot;.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=shape(1)/shape(1) gmsh=shape(81) ifc=schema_n/a</code></p></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>n_faces_total == 18</code></li>
+<li><code>face[0].surface_type == &quot;plane&quot;</code></li>
+<li><code>face[6].surface_type == &quot;plane&quot;</code></li>
+<li><code>face[12].surface_type == &quot;plane&quot;</code></li>
+<li><code>face[0].edge_count == 4</code></li>
+<li><code>face[0].area &gt; 99</code></li>
+<li><code>face[0].area &lt; 101</code></li>
+</ul></section>
+<section><h2>Cross-references</h2>
+<p><a href="A035.html">A035</a>, <a href="../12-3a-shells/Tsh051.html">Tsh051</a></p>
+</section>
+<section><h2>Live oracle output</h2>
+<table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
+<tr><td><code>occt_heal_on</code></td><td><code>shape(1)</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>shape(1)</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>shape(81)</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>shape(81)</code></td></tr>
+<tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>not_manifold</code></td></tr>
+</tbody></table>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* A067 - Baking placements into geometry breaks shared-subshape sharing.
+<span class="lineno">3</span> * Defect: a compound contains 3 instances of the SAME 10x10x10 cube
+<span class="lineno">4</span> * MANIFOLD_SOLID_BREP via 3 distinct AXIS2_PLACEMENT_3D translations
+<span class="lineno">5</span> * (origin (0,0,0), (20,0,0), (40,0,0)) using REPRESENTATION_MAP /
+<span class="lineno">6</span> * MAPPED_ITEM. The shared sub-shape exists exactly once in the file;
+<span class="lineno">7</span> * a &quot;baking&quot; pass that flattens placements would duplicate the cube
+<span class="lineno">8</span> * three times, losing topology sharing and inflating the model. */
+<span class="lineno">9</span>HEADER;
+<span class="lineno">10</span>FILE_DESCRIPTION((&#x27;A067 test case&#x27;,&#x27;RemoveLocations duplicates shared geometry&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">11</span>FILE_NAME(&#x27;A067.stp&#x27;,&#x27;2026-05-02T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">12</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }&#x27;));
+<span class="lineno">13</span>ENDSEC;
+<span class="lineno">14</span>DATA;
+<span class="lineno">15</span>#1=APPLICATION_CONTEXT(&#x27;automotive_design&#x27;);
+<span class="lineno">16</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,&#x27;automotive_design&#x27;,2000,#1);
+<span class="lineno">17</span>#10=PRODUCT_CONTEXT(&#x27;&#x27;,#1,&#x27;mechanical&#x27;);
+<span class="lineno">18</span>#11=PRODUCT(&#x27;A067&#x27;,&#x27;A067&#x27;,&#x27;shared_cube_part&#x27;,(#10));
+<span class="lineno">19</span>#12=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#11);
+<span class="lineno">20</span>#13=PRODUCT_DEFINITION_CONTEXT(&#x27;part definition&#x27;,#1,&#x27;design&#x27;);
+<span class="lineno">21</span>#14=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,#12,#13);
+<span class="lineno">22</span>#15=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,#14);
+<span class="lineno">23</span>#16=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">24</span>#17=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+<span class="lineno">25</span>#18=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+<span class="lineno">26</span>#19=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#16,&#x27;distance_accuracy_value&#x27;,&#x27;&#x27;);
+<span class="lineno">27</span>#20=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#19))GLOBAL_UNIT_ASSIGNED_CONTEXT((#16,#17,#18))REPRESENTATION_CONTEXT(&#x27;&#x27;,&#x27;3D&#x27;));
+<span class="lineno">28</span>/* Single shared 10x10x10 cube body. */
+<span class="lineno">29</span>#100=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">30</span>#101=CARTESIAN_POINT(&#x27;&#x27;,(10.0,0.0,0.0));
+<span class="lineno">31</span>#102=CARTESIAN_POINT(&#x27;&#x27;,(10.0,10.0,0.0));
+<span class="lineno">32</span>#103=CARTESIAN_POINT(&#x27;&#x27;,(0.0,10.0,0.0));
+<span class="lineno">33</span>#104=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,10.0));
+<span class="lineno">34</span>#105=CARTESIAN_POINT(&#x27;&#x27;,(10.0,0.0,10.0));
+<span class="lineno">35</span>#106=CARTESIAN_POINT(&#x27;&#x27;,(10.0,10.0,10.0));
+<span class="lineno">36</span>#107=CARTESIAN_POINT(&#x27;&#x27;,(0.0,10.0,10.0));
+<span class="lineno">37</span>#110=VERTEX_POINT(&#x27;&#x27;,#100); #111=VERTEX_POINT(&#x27;&#x27;,#101);
+<span class="lineno">38</span>#112=VERTEX_POINT(&#x27;&#x27;,#102); #113=VERTEX_POINT(&#x27;&#x27;,#103);
+<span class="lineno">39</span>#114=VERTEX_POINT(&#x27;&#x27;,#104); #115=VERTEX_POINT(&#x27;&#x27;,#105);
+<span class="lineno">40</span>#116=VERTEX_POINT(&#x27;&#x27;,#106); #117=VERTEX_POINT(&#x27;&#x27;,#107);
+<span class="lineno">41</span>#200=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0)); #201=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">42</span>#202=DIRECTION(&#x27;&#x27;,(0.0,0.0,-1.0));
+<span class="lineno">43</span>#203=DIRECTION(&#x27;&#x27;,(0.0,-1.0,0.0)); #204=DIRECTION(&#x27;&#x27;,(0.0,1.0,0.0));
+<span class="lineno">44</span>#205=DIRECTION(&#x27;&#x27;,(-1.0,0.0,0.0)); #206=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">45</span>#210=CARTESIAN_POINT(&#x27;&#x27;,(5.0,5.0,0.0));
+<span class="lineno">46</span>#211=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#210,#202,#201); #212=PLANE(&#x27;&#x27;,#211);
+<span class="lineno">47</span>#220=CARTESIAN_POINT(&#x27;&#x27;,(5.0,5.0,10.0));
+<span class="lineno">48</span>#221=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#220,#200,#201); #222=PLANE(&#x27;&#x27;,#221);
+<span class="lineno">49</span>#230=CARTESIAN_POINT(&#x27;&#x27;,(5.0,0.0,5.0));
+<span class="lineno">50</span>#231=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#230,#203,#201); #232=PLANE(&#x27;&#x27;,#231);
+<span class="lineno">51</span>#240=CARTESIAN_POINT(&#x27;&#x27;,(5.0,10.0,5.0));
+<span class="lineno">52</span>#241=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#240,#204,#201); #242=PLANE(&#x27;&#x27;,#241);
+<span class="lineno">53</span>#250=CARTESIAN_POINT(&#x27;&#x27;,(0.0,5.0,5.0));
+<span class="lineno">54</span>#251=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#250,#205,#204); #252=PLANE(&#x27;&#x27;,#251);
+<span class="lineno">55</span>#260=CARTESIAN_POINT(&#x27;&#x27;,(10.0,5.0,5.0));
+<span class="lineno">56</span>#261=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#260,#206,#204); #262=PLANE(&#x27;&#x27;,#261);
+<span class="lineno">57</span>#300=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0)); #301=VECTOR(&#x27;&#x27;,#300,10.0);
+<span class="lineno">58</span>#302=DIRECTION(&#x27;&#x27;,(0.0,1.0,0.0)); #303=VECTOR(&#x27;&#x27;,#302,10.0);
+<span class="lineno">59</span>#304=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0)); #305=VECTOR(&#x27;&#x27;,#304,10.0);
+<span class="lineno">60</span>#310=LINE(&#x27;&#x27;,#100,#301); #311=EDGE_CURVE(&#x27;&#x27;,#110,#111,#310,.T.);
+<span class="lineno">61</span>#312=LINE(&#x27;&#x27;,#101,#303); #313=EDGE_CURVE(&#x27;&#x27;,#111,#112,#312,.T.);
+<span class="lineno">62</span>#314=LINE(&#x27;&#x27;,#103,#301); #315=EDGE_CURVE(&#x27;&#x27;,#113,#112,#314,.T.);
+<span class="lineno">63</span>#316=LINE(&#x27;&#x27;,#100,#303); #317=EDGE_CURVE(&#x27;&#x27;,#110,#113,#316,.T.);
+<span class="lineno">64</span>#318=LINE(&#x27;&#x27;,#104,#301); #319=EDGE_CURVE(&#x27;&#x27;,#114,#115,#318,.T.);
+<span class="lineno">65</span>#320=LINE(&#x27;&#x27;,#105,#303); #321=EDGE_CURVE(&#x27;&#x27;,#115,#116,#320,.T.);
+<span class="lineno">66</span>#322=LINE(&#x27;&#x27;,#107,#301); #323=EDGE_CURVE(&#x27;&#x27;,#117,#116,#322,.T.);
+<span class="lineno">67</span>#324=LINE(&#x27;&#x27;,#104,#303); #325=EDGE_CURVE(&#x27;&#x27;,#114,#117,#324,.T.);
+<span class="lineno">68</span>#326=LINE(&#x27;&#x27;,#100,#305); #327=EDGE_CURVE(&#x27;&#x27;,#110,#114,#326,.T.);
+<span class="lineno">69</span>#328=LINE(&#x27;&#x27;,#101,#305); #329=EDGE_CURVE(&#x27;&#x27;,#111,#115,#328,.T.);
+<span class="lineno">70</span>#330=LINE(&#x27;&#x27;,#102,#305); #331=EDGE_CURVE(&#x27;&#x27;,#112,#116,#330,.T.);
+<span class="lineno">71</span>#332=LINE(&#x27;&#x27;,#103,#305); #333=EDGE_CURVE(&#x27;&#x27;,#113,#117,#332,.T.);
+<span class="lineno">72</span>#400=ORIENTED_EDGE(&#x27;&#x27;,*,*,#311,.T.); #401=ORIENTED_EDGE(&#x27;&#x27;,*,*,#313,.T.);
+<span class="lineno">73</span>#402=ORIENTED_EDGE(&#x27;&#x27;,*,*,#315,.F.); #403=ORIENTED_EDGE(&#x27;&#x27;,*,*,#317,.F.);
+<span class="lineno">74</span>#404=EDGE_LOOP(&#x27;&#x27;,(#400,#401,#402,#403));
+<span class="lineno">75</span>#405=FACE_OUTER_BOUND(&#x27;&#x27;,#404,.T.);
+<span class="lineno">76</span>#406=ADVANCED_FACE(&#x27;bot&#x27;,(#405),#212,.T.);
+<span class="lineno">77</span>#410=ORIENTED_EDGE(&#x27;&#x27;,*,*,#319,.T.); #411=ORIENTED_EDGE(&#x27;&#x27;,*,*,#321,.T.);
+<span class="lineno">78</span>#412=ORIENTED_EDGE(&#x27;&#x27;,*,*,#323,.F.); #413=ORIENTED_EDGE(&#x27;&#x27;,*,*,#325,.F.);
+<span class="lineno">79</span>#414=EDGE_LOOP(&#x27;&#x27;,(#410,#411,#412,#413));
+<span class="lineno">80</span>#415=FACE_OUTER_BOUND(&#x27;&#x27;,#414,.T.);
+<span class="lineno">81</span>#416=ADVANCED_FACE(&#x27;top&#x27;,(#415),#222,.T.);
+<span class="lineno">82</span>#420=ORIENTED_EDGE(&#x27;&#x27;,*,*,#311,.T.); #421=ORIENTED_EDGE(&#x27;&#x27;,*,*,#329,.T.);
+<span class="lineno">83</span>#422=ORIENTED_EDGE(&#x27;&#x27;,*,*,#319,.F.); #423=ORIENTED_EDGE(&#x27;&#x27;,*,*,#327,.F.);
+<span class="lineno">84</span>#424=EDGE_LOOP(&#x27;&#x27;,(#420,#421,#422,#423));
+<span class="lineno">85</span>#425=FACE_OUTER_BOUND(&#x27;&#x27;,#424,.T.);
+<span class="lineno">86</span>#426=ADVANCED_FACE(&#x27;front&#x27;,(#425),#232,.T.);
+<span class="lineno">87</span>#430=ORIENTED_EDGE(&#x27;&#x27;,*,*,#315,.T.); #431=ORIENTED_EDGE(&#x27;&#x27;,*,*,#331,.T.);
+<span class="lineno">88</span>#432=ORIENTED_EDGE(&#x27;&#x27;,*,*,#323,.F.); #433=ORIENTED_EDGE(&#x27;&#x27;,*,*,#333,.F.);
+<span class="lineno">89</span>#434=EDGE_LOOP(&#x27;&#x27;,(#430,#431,#432,#433));
+<span class="lineno">90</span>#435=FACE_OUTER_BOUND(&#x27;&#x27;,#434,.T.);
+<span class="lineno">91</span>#436=ADVANCED_FACE(&#x27;back&#x27;,(#435),#242,.T.);
+<span class="lineno">92</span>#440=ORIENTED_EDGE(&#x27;&#x27;,*,*,#317,.T.); #441=ORIENTED_EDGE(&#x27;&#x27;,*,*,#333,.T.);
+<span class="lineno">93</span>#442=ORIENTED_EDGE(&#x27;&#x27;,*,*,#325,.F.); #443=ORIENTED_EDGE(&#x27;&#x27;,*,*,#327,.F.);
+<span class="lineno">94</span>#444=EDGE_LOOP(&#x27;&#x27;,(#440,#441,#442,#443));
+<span class="lineno">95</span>#445=FACE_OUTER_BOUND(&#x27;&#x27;,#444,.T.);
+<span class="lineno">96</span>#446=ADVANCED_FACE(&#x27;left&#x27;,(#445),#252,.T.);
+<span class="lineno">97</span>#450=ORIENTED_EDGE(&#x27;&#x27;,*,*,#313,.T.); #451=ORIENTED_EDGE(&#x27;&#x27;,*,*,#331,.T.);
+<span class="lineno">98</span>#452=ORIENTED_EDGE(&#x27;&#x27;,*,*,#321,.F.); #453=ORIENTED_EDGE(&#x27;&#x27;,*,*,#329,.F.);
+<span class="lineno">99</span>#454=EDGE_LOOP(&#x27;&#x27;,(#450,#451,#452,#453));
+<span class="lineno">100</span>#455=FACE_OUTER_BOUND(&#x27;&#x27;,#454,.T.);
+<span class="lineno">101</span>#456=ADVANCED_FACE(&#x27;right&#x27;,(#455),#262,.T.);
+<span class="lineno">102</span>#500=CLOSED_SHELL(&#x27;cube_skin&#x27;,(#406,#416,#426,#436,#446,#456));
+<span class="lineno">103</span>#501=MANIFOLD_SOLID_BREP(&#x27;shared_cube_body&#x27;,#500);
+<span class="lineno">104</span>/* Local origin used by REPRESENTATION_MAP. */
+<span class="lineno">105</span>#502=CARTESIAN_POINT(&#x27;local_origin&#x27;,(0.0,0.0,0.0));
+<span class="lineno">106</span>#503=AXIS2_PLACEMENT_3D(&#x27;local_axis&#x27;,#502,#200,#201);
+<span class="lineno">107</span>/* SHAPE_REPRESENTATION holding the canonical cube body. */
+<span class="lineno">108</span>#510=SHAPE_REPRESENTATION(&#x27;shared_cube_rep&#x27;,(#503,#501),#20);
+<span class="lineno">109</span>#520=REPRESENTATION_MAP(#503,#510);
+<span class="lineno">110</span>/* 3 distinct placements for 3 instances. */
+<span class="lineno">111</span>#600=CARTESIAN_POINT(&#x27;p1&#x27;,(0.0,0.0,0.0));
+<span class="lineno">112</span>#601=AXIS2_PLACEMENT_3D(&#x27;inst1_axis&#x27;,#600,#200,#201);
+<span class="lineno">113</span>#610=CARTESIAN_POINT(&#x27;p2&#x27;,(20.0,0.0,0.0));
+<span class="lineno">114</span>#611=AXIS2_PLACEMENT_3D(&#x27;inst2_axis&#x27;,#610,#200,#201);
+<span class="lineno">115</span>#620=CARTESIAN_POINT(&#x27;p3&#x27;,(40.0,0.0,0.0));
+<span class="lineno">116</span>#621=AXIS2_PLACEMENT_3D(&#x27;inst3_axis&#x27;,#620,#200,#201);
+<span class="lineno">117</span>/* 3 MAPPED_ITEMs â all reference the SAME REPRESENTATION_MAP / cube body. */
+<span class="lineno">118</span>#700=MAPPED_ITEM(&#x27;inst1&#x27;,#520,#601);
+<span class="lineno">119</span>#701=MAPPED_ITEM(&#x27;inst2&#x27;,#520,#611);
+<span class="lineno">120</span>#702=MAPPED_ITEM(&#x27;inst3&#x27;,#520,#621);
+<span class="lineno">121</span>#800=AXIS2_PLACEMENT_3D(&#x27;top_axis&#x27;,#600,#200,#201);
+<span class="lineno">122</span>#801=SHAPE_REPRESENTATION(&#x27;compound_rep&#x27;,(#800,#700,#701,#702),#20);
+<span class="lineno">123</span>#802=SHAPE_DEFINITION_REPRESENTATION(#15,#801);
+<span class="lineno">124</span>ENDSEC;
+<span class="lineno">125</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="A066.html">&larr; A066</a> <a class="up" href="index.html">§12.6 Assembly hierarchy</a> <a class="next" href="A068.html">A068 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

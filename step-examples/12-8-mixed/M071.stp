@@ -1,0 +1,32 @@
+ISO-10303-21;
+/* M071 - AP238 machining_process_executable references nonexistent process_aspect.
+ * Defect: a MACHINING_PROCESS_EXECUTABLE_LINK is supposed to reference a
+ * PROCESS_ASPECT subtype that names which feature of the workpiece the
+ * operation acts on, but the cited reference is absent from the file. */
+HEADER;
+FILE_DESCRIPTION(('M071 test case','AP238 process_aspect dangling reference'),'2;1');
+FILE_NAME('M071.stp','2026-04-30T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AP238_STEP_NC_MIM { 1 0 10303 238 1 0 0 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('numerical_control_machining');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
+  'numerical_control_machining',2007,#1);
+/* Units */
+#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#11=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#12=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.E-6),#10,'distance_accuracy_value','');
+#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+     GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13))
+     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12))
+     REPRESENTATION_CONTEXT('nc_program','3D'));
+/* A workplan with a single executable - a drilling operation. */
+#100=WORKPLAN('main_plan',(#110),$,$,$);
+/* Defect: the machining_operation_link's its_process attribute names a
+ * process_aspect by ID, but no entity at that ID is a PROCESS_ASPECT.
+ * #200 is referenced but defined as a CARTESIAN_POINT instead. */
+#110=MACHINING_OPERATION('drill_hole_a',$,$,$,$,#200);
+#200=CARTESIAN_POINT('not_a_process_aspect',(0.0,0.0,0.0));
+ENDSEC;
+END-ISO-10303-21;

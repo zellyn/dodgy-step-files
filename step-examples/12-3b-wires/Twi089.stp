@@ -1,0 +1,30 @@
+ISO-10303-21;
+/* Twi089 - Two collinear edges meet at a non-essential degree-2 vertex.
+ * Defect: a wire chains two LINE edges (0,0,0)→(1,0,0) and
+ * (1,0,0)→(2,0,0) at vertex #V(1,0,0); #V is used by no other wire,
+ * so the edges should be fused into one. */
+HEADER;
+FILE_DESCRIPTION(('Twi089 - Two collinear edges meeting at a degree-2 vertex should be fused into one edge','Pass C gap-fill'),'2;1');
+FILE_NAME('Twi089.stp','2026-04-30T00:00:00',(''),(''),'gap-fill C','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#11=CARTESIAN_POINT('mid_unused',(1.0,0.0,0.0));
+#12=CARTESIAN_POINT('',(2.0,0.0,0.0));
+#20=VERTEX_POINT('',#10);
+#21=VERTEX_POINT('mid',#11);
+#22=VERTEX_POINT('',#12);
+#30=DIRECTION('',(1.0,0.0,0.0));
+#31=VECTOR('',#30,1.0);
+#32=LINE('',#10,#31);
+#33=LINE('',#11,#31);
+#40=EDGE_CURVE('e1',#20,#21,#32,.T.);
+#41=EDGE_CURVE('e2',#21,#22,#33,.T.);
+#50=ORIENTED_EDGE('',*,*,#40,.T.);
+#51=ORIENTED_EDGE('',*,*,#41,.T.);
+#60=EDGE_LOOP('over_split_chain',(#50,#51));
+ENDSEC;
+END-ISO-10303-21;

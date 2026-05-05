@@ -1,0 +1,30 @@
+ISO-10303-21;
+/* M112 - AP209 multi_point_constraint chain forms a dependency cycle.
+ * Defect: three MULTI_POINT_CONSTRAINTs make A slave of B, B slave of
+ * C, and C slave of A - a closed master-slave cycle. Solver assembly
+ * cannot reduce the system. */
+HEADER;
+FILE_DESCRIPTION(('M112 test case','AP209 MPC chain forms cycle'),'2;1');
+FILE_NAME('M112.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('STRUCTURAL_ANALYSIS_DESIGN { 1 0 10303 209 1 0 0 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('structural_analysis_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
+  'structural_analysis_design',2001,#1);
+#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10))
+     REPRESENTATION_CONTEXT('fea','3D'));
+#100=CARTESIAN_POINT('a',(0.0,0.0,0.0));
+#101=CARTESIAN_POINT('b',(1.0,0.0,0.0));
+#102=CARTESIAN_POINT('c',(0.0,1.0,0.0));
+#110=NODE('A',(#100),$);
+#111=NODE('B',(#101),$);
+#112=NODE('C',(#102),$);
+/* Defect: A->B, B->C, C->A is a cycle */
+#200=MULTI_POINT_CONSTRAINT('A_slave_of_B',#110,#111,'XYZ');
+#201=MULTI_POINT_CONSTRAINT('B_slave_of_C',#111,#112,'XYZ');
+#202=MULTI_POINT_CONSTRAINT('C_slave_of_A',#112,#110,'XYZ');
+ENDSEC;
+END-ISO-10303-21;

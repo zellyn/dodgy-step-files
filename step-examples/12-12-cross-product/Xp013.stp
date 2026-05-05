@@ -1,0 +1,97 @@
+ISO-10303-21;
+/* Xp013 - Cross-product: cone apex pcurve singularity, folded B-spline
+ *   surface, non-manifold vertex shared across components.
+ * Builds on Gp005 (pcurve singularity through cone apex) + Gs010 (folded
+ *   B-spline surface) + Tsh-nonmanifold-vertex-class.
+ * Non-manifold encoding: TWO disjoint shells share the apex VERTEX,
+ *   so the apex vertex is referenced from edges in both shells —
+ *   the vertex's link is non-manifold (more than two faces incident). */
+HEADER;
+FILE_DESCRIPTION(('Xp013 cross-product','cone apex x folded surface x non-manifold vertex'),'2;1');
+FILE_NAME('Xp013.stp','2026-04-30T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+/* Defect 1: cone with apex at origin */
+#10=CARTESIAN_POINT('apex',(0.0,0.0,0.0));
+#11=DIRECTION('',(0.0,0.0,1.0));
+#12=DIRECTION('',(1.0,0.0,0.0));
+#13=AXIS2_PLACEMENT_3D('',#10,#11,#12);
+#14=CONICAL_SURFACE('cone',#13,1.0,0.7853981633974483);
+/* Apex vertex - shared by edges across two SEPARATE shells */
+#20=VERTEX_POINT('apex_shared',#10);
+/* === Component A: shell of two faces meeting at apex === */
+#30=CARTESIAN_POINT('A_p1',(1.0,0.0,1.0));
+#31=VERTEX_POINT('',#30);
+#32=DIRECTION('',(0.7071,0.0,0.7071));
+#33=VECTOR('',#32,1.4142);
+#34=LINE('',#10,#33);
+#35=EDGE_CURVE('eA1',#20,#31,#34,.T.);
+#40=CARTESIAN_POINT('A_p2',(0.0,1.0,1.0));
+#41=VERTEX_POINT('',#40);
+#42=DIRECTION('',(0.0,0.7071,0.7071));
+#43=VECTOR('',#42,1.4142);
+#44=LINE('',#10,#43);
+#45=EDGE_CURVE('eA2',#20,#41,#44,.T.);
+/* third edge between the two far ends to close the loop */
+#46=DIRECTION('',(-0.7071,0.7071,0.0));
+#47=VECTOR('',#46,1.4142);
+#48=LINE('',#30,#47);
+#49=EDGE_CURVE('eA_close',#31,#41,#48,.T.);
+#50=ORIENTED_EDGE('',*,*,#35,.T.);
+#51=ORIENTED_EDGE('',*,*,#49,.T.);
+#52=ORIENTED_EDGE('',*,*,#45,.F.);
+#53=EDGE_LOOP('A_loop',(#50,#51,#52));
+#54=FACE_OUTER_BOUND('',#53,.T.);
+#55=ADVANCED_FACE('A_face',(#54),#14,.T.);
+#56=OPEN_SHELL('A_shell',(#55));
+/* === Component B: shell of one face also meeting at apex === */
+#60=CARTESIAN_POINT('B_p1',(0.0,0.0,-1.0));
+#61=VERTEX_POINT('',#60);
+#62=DIRECTION('',(0.0,0.0,-1.0));
+#63=VECTOR('',#62,1.0);
+#64=LINE('',#10,#63);
+#65=EDGE_CURVE('eB1',#20,#61,#64,.T.);
+#66=CARTESIAN_POINT('B_p2',(0.7071,0.7071,0.0));
+#67=VERTEX_POINT('',#66);
+#68=DIRECTION('',(0.7071,0.7071,0.0));
+#69=VECTOR('',#68,1.0);
+#70=LINE('',#10,#69);
+#71=EDGE_CURVE('eB2',#20,#67,#70,.T.);
+#72=DIRECTION('',(0.5774,0.5774,-0.5774));
+#73=VECTOR('',#72,1.7320);
+#74=LINE('',#60,#73);
+#75=EDGE_CURVE('eB_close',#61,#67,#74,.T.);
+#76=ORIENTED_EDGE('',*,*,#65,.T.);
+#77=ORIENTED_EDGE('',*,*,#75,.T.);
+#78=ORIENTED_EDGE('',*,*,#71,.F.);
+#79=EDGE_LOOP('B_loop',(#76,#77,#78));
+#80=FACE_OUTER_BOUND('',#79,.T.);
+#81=ADVANCED_FACE('B_face',(#80),#14,.T.);
+#82=OPEN_SHELL('B_shell',(#81));
+/* === Defect 3: SHELL_BASED_SURFACE_MODEL holding two shells that
+ *   share a non-manifold vertex (#20) === */
+#90=SHELL_BASED_SURFACE_MODEL('non_manifold_apex_two_shells',(#56,#82));
+/* Defect 2: B-spline surface with control net that folds (interior
+ *   row reverses U order) */
+#100=CARTESIAN_POINT('',(0.0,0.0,2.0));
+#101=CARTESIAN_POINT('',(1.0,0.0,2.0));
+#102=CARTESIAN_POINT('',(2.0,0.0,2.0));
+#103=CARTESIAN_POINT('',(3.0,0.0,2.0));
+/* Folded row: u-order swapped */
+#104=CARTESIAN_POINT('',(2.0,1.0,2.0));
+#105=CARTESIAN_POINT('',(3.0,1.0,2.0));
+#106=CARTESIAN_POINT('',(0.0,1.0,2.0));
+#107=CARTESIAN_POINT('',(1.0,1.0,2.0));
+#108=CARTESIAN_POINT('',(0.0,2.0,2.0));
+#109=CARTESIAN_POINT('',(1.0,2.0,2.0));
+#110=CARTESIAN_POINT('',(2.0,2.0,2.0));
+#111=CARTESIAN_POINT('',(3.0,2.0,2.0));
+#120=B_SPLINE_SURFACE_WITH_KNOTS('folded',3,2,
+  ((#100,#101,#102,#103),(#104,#105,#106,#107),(#108,#109,#110,#111)),
+  .UNSPECIFIED.,.F.,.F.,.F.,
+  (4,4),(3,3),(0.0,1.0),(0.0,1.0),.UNSPECIFIED.);
+ENDSEC;
+END-ISO-10303-21;

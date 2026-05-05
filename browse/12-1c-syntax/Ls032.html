@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Ls032 — Comment longer than implementation buffer</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.1c Part-21 grammar</a> <span class="sep">/</span> <span class="current">Ls032</span>
+</nav>
+<header class="title-bar">
+<h1>Ls032 <span class="sep">—</span> <span class="entry-title">Comment longer than implementation buffer</span></h1>
+<p class="category">§12.1c comments</p>
+<p class="tag-pills">
+<a class="tag tag-syntax" href="../by-tag/syntax/index.html">syntax</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-1c-syntax/Ls032.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-1c-syntax/Ls032.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>T004 (`MAX_COMMENT_LENGTH 8192`)</li>
+</ul></section>
+<section><h2>Description</h2>
+<p>stepcode hardcodes an 8 KiB ceiling on comment body length. Files with multi-page log banners exceed this and trip rejection.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>Single `/* .. */` containing &gt;8192 characters before first `DATA;` instance.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>Comment length unbounded (memory-bound only); never silently truncate.</p></section>
+<section><h2>Notes</h2>
+<p>Synonyms: &quot;STEP comment exceeds buffer&quot;, &quot;8KB comment limit&quot;, &quot;multi-page log banner in STEP&quot;, &quot;long comment rejected by stepcode&quot;, &quot;huge STEP comment overflows buffer&quot;.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=reject/reject gmsh=reject ifc=reject</code></p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>length &gt; 8192</code></li>
+<li><code>length &gt; 8000</code></li>
+</ul></section>
+<section><h2>Live oracle output</h2>
+<table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
+<tr><td><code>occt_heal_on</code></td><td><code>reject</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>reject</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>reject</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>reject</code></td></tr>
+<tr><td><code>ifcopenshell</code></td><td><code>reject</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>reject(E_NO_MAGIC)</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>step_read_failed</code></td></tr>
+</tbody></table>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>/* Ls032 - Comment longer than implementation buffer
+<span class="lineno">2</span>   ----------------------------------------------------------------------
+<span class="lineno">3</span>   Catalog section : Â§12.1c comments
+<span class="lineno">4</span>   Sources         : T004 (MAX_COMMENT_LENGTH 8192)
+<span class="lineno">5</span>   ----------------------------------------------------------------------
+<span class="lineno">6</span>   Defect
+<span class="lineno">7</span>     stepcode hardcodes an 8 KiB ceiling on comment body length. Files
+<span class="lineno">8</span>     with multi-page log banners exceed this and trip rejection. The
+<span class="lineno">9</span>     limit is a buffer-sizing concession, not a grammar requirement.
+<span class="lineno">10</span>   Expected behavior
+<span class="lineno">11</span>     Comment length unbounded (memory-bound only); never silently
+<span class="lineno">12</span>     truncate. If a hard cap is required (e.g. 1 MiB), emit a precise
+<span class="lineno">13</span>     diagnostic naming the cap and fail the parse rather than mutating
+<span class="lineno">14</span>     the file.
+<span class="lineno">15</span>   ----------------------------------------------------------------------
+<span class="lineno">16</span>   This fixture deliberately includes a single comment whose body
+<span class="lineno">17</span>   exceeds the 8 KiB stepcode cap so that strict readers exercise the
+<span class="lineno">18</span>   overflow path. The padding banner below is one /* ... */ comment.
+<span class="lineno">19</span>*/
+<span class="lineno">20</span>ISO-10303-21;
+<span class="lineno">21</span>HEADER;
+<span class="lineno">22</span>FILE_DESCRIPTION((&#x27;Ls032 - long comment exceeds 8 KiB implementation buffer&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">23</span>FILE_NAME(&#x27;Ls032.stp&#x27;,&#x27;2026-04-26T00:00:00&#x27;,(&#x27;auto-generated&#x27;),(&#x27;&#x27;),
+<span class="lineno">24</span>  &#x27;auto-generated&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">25</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
+<span class="lineno">26</span>ENDSEC;
+<span class="lineno">27</span>/* PAD-START -- the banner block below intentionally exceeds 8 KiB so a
+<span class="lineno">28</span> * fixed-width comment buffer (8192 bytes in stepcode T004) clips it.
+<span class="lineno">29</span> * Tools relying on MAX_COMMENT_LENGTH 8192 must surface a diagnostic
+<span class="lineno">30</span> * rather than silently truncate. Each &quot;pad&quot; line below is 70 chars; we
+<span class="lineno">31</span> * include enough lines so the comment body alone passes 9000 chars.
+<span class="lineno">32</span> * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 001
+<span class="lineno">33</span> * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 002
+<span class="lineno">34</span> * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 003
+<span class="lineno">35</span> * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 004
+<span class="lineno">36</span> * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 005
+<span class="lineno">37</span> * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 006
+<span class="lineno">38</span> * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 007
+<span class="lineno">39</span> * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 008
+<span class="lineno">40</span> * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 009
+<span class="lineno">41</span> * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 010
+<span class="lineno">42</span> * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 011
+<span class="lineno">43</span> * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 012
+<span class="lineno">44</span> * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 013
+<span class="lineno">45</span> * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 014
+<span class="lineno">46</span> * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 015
+<span class="lineno">47</span> * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 016
+<span class="lineno">48</span> * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 017
+<span class="lineno">49</span> * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 018
+<span class="lineno">50</span> * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 019
+<span class="lineno">51</span> * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 020
+<span class="lineno">52</span> * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 021
+<span class="lineno">53</span> * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 022
+<span class="lineno">54</span> * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 023
+<span class="lineno">55</span> * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 024
+<span class="lineno">56</span> * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 025
+<span class="lineno">57</span> * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 026
+<span class="lineno">58</span> * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 027
+<span class="lineno">59</span> * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 028
+<span class="lineno">60</span> * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 029
+<span class="lineno">61</span> * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 030
+<span class="lineno">62</span> * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 031
+<span class="lineno">63</span> * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 032
+<span class="lineno">64</span> * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 033
+<span class="lineno">65</span> * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 034
+<span class="lineno">66</span> * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 035
+<span class="lineno">67</span> * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 036
+<span class="lineno">68</span> * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 037
+<span class="lineno">69</span> * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 038
+<span class="lineno">70</span> * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 039
+<span class="lineno">71</span> * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 040
+<span class="lineno">72</span> * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 041
+<span class="lineno">73</span> * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 042
+<span class="lineno">74</span> * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 043
+<span class="lineno">75</span> * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 044
+<span class="lineno">76</span> * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 045
+<span class="lineno">77</span> * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 046
+<span class="lineno">78</span> * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 047
+<span class="lineno">79</span> * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 048
+<span class="lineno">80</span> * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 049
+<span class="lineno">81</span> * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 050
+<span class="lineno">82</span> * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 051
+<span class="lineno">83</span> * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 052
+<span class="lineno">84</span> * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 053
+<span class="lineno">85</span> * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 054
+<span class="lineno">86</span> * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 055
+<span class="lineno">87</span> * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 056
+<span class="lineno">88</span> * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 057
+<span class="lineno">89</span> * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 058
+<span class="lineno">90</span> * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 059
+<span class="lineno">91</span> * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 060
+<span class="lineno">92</span> * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 061
+<span class="lineno">93</span> * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 062
+<span class="lineno">94</span> * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 063
+<span class="lineno">95</span> * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 064
+<span class="lineno">96</span> * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 065
+<span class="lineno">97</span> * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 066
+<span class="lineno">98</span> * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 067
+<span class="lineno">99</span> * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 068
+<span class="lineno">100</span> * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 069
+<span class="lineno">101</span> * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 070
+<span class="lineno">102</span> * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 071
+<span class="lineno">103</span> * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 072
+<span class="lineno">104</span> * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 073
+<span class="lineno">105</span> * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 074
+<span class="lineno">106</span> * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 075
+<span class="lineno">107</span> * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 076
+<span class="lineno">108</span> * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 077
+<span class="lineno">109</span> * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 078
+<span class="lineno">110</span> * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 079
+<span class="lineno">111</span> * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 080
+<span class="lineno">112</span> * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 081
+<span class="lineno">113</span> * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 082
+<span class="lineno">114</span> * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 083
+<span class="lineno">115</span> * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 084
+<span class="lineno">116</span> * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 085
+<span class="lineno">117</span> * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 086
+<span class="lineno">118</span> * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 087
+<span class="lineno">119</span> * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 088
+<span class="lineno">120</span> * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 089
+<span class="lineno">121</span> * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 090
+<span class="lineno">122</span> * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 091
+<span class="lineno">123</span> * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 092
+<span class="lineno">124</span> * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 093
+<span class="lineno">125</span> * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 094
+<span class="lineno">126</span> * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 095
+<span class="lineno">127</span> * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 096
+<span class="lineno">128</span> * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 097
+<span class="lineno">129</span> * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 098
+<span class="lineno">130</span> * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 099
+<span class="lineno">131</span> * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 100
+<span class="lineno">132</span> * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 101
+<span class="lineno">133</span> * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 102
+<span class="lineno">134</span> * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 103
+<span class="lineno">135</span> * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 104
+<span class="lineno">136</span> * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 105
+<span class="lineno">137</span> * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 106
+<span class="lineno">138</span> * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 107
+<span class="lineno">139</span> * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 108
+<span class="lineno">140</span> * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 109
+<span class="lineno">141</span> * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 110
+<span class="lineno">142</span> * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 111
+<span class="lineno">143</span> * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 112
+<span class="lineno">144</span> * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 113
+<span class="lineno">145</span> * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 114
+<span class="lineno">146</span> * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 115
+<span class="lineno">147</span> * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 116
+<span class="lineno">148</span> * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 117
+<span class="lineno">149</span> * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 118
+<span class="lineno">150</span> * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 119
+<span class="lineno">151</span> * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 120
+<span class="lineno">152</span> * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 121
+<span class="lineno">153</span> * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 122
+<span class="lineno">154</span> * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 123
+<span class="lineno">155</span> * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 124
+<span class="lineno">156</span> * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 125
+<span class="lineno">157</span> * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 126
+<span class="lineno">158</span> * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 127
+<span class="lineno">159</span> * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 128
+<span class="lineno">160</span> * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 129
+<span class="lineno">161</span> * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 130
+<span class="lineno">162</span> * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 131
+<span class="lineno">163</span> * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 132
+<span class="lineno">164</span> * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 133
+<span class="lineno">165</span> * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 134
+<span class="lineno">166</span> * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 135
+<span class="lineno">167</span> * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 136
+<span class="lineno">168</span> * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 137
+<span class="lineno">169</span> * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 138
+<span class="lineno">170</span> * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 139
+<span class="lineno">171</span> * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 140
+<span class="lineno">172</span> * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 141
+<span class="lineno">173</span> * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 142
+<span class="lineno">174</span> * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 143
+<span class="lineno">175</span> * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 144
+<span class="lineno">176</span> * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 145
+<span class="lineno">177</span> * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 146
+<span class="lineno">178</span> * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 147
+<span class="lineno">179</span> * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 148
+<span class="lineno">180</span> * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 149
+<span class="lineno">181</span> * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 150
+<span class="lineno">182</span> * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 151
+<span class="lineno">183</span> * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 152
+<span class="lineno">184</span> * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 153
+<span class="lineno">185</span> * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 154
+<span class="lineno">186</span> * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 155
+<span class="lineno">187</span> * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 156
+<span class="lineno">188</span> * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 157
+<span class="lineno">189</span> * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 158
+<span class="lineno">190</span> * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 159
+<span class="lineno">191</span> * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 160
+<span class="lineno">192</span> * PAD-END */
+<span class="lineno">193</span>DATA;
+<span class="lineno">194</span>#10=CARTESIAN_POINT(&#x27;origin&#x27;,(0.0,0.0,0.0));
+<span class="lineno">195</span>#20=DIRECTION(&#x27;x&#x27;,(1.0,0.0,0.0));
+<span class="lineno">196</span>#30=AXIS2_PLACEMENT_3D(&#x27;placement&#x27;,#10,#20,$);
+<span class="lineno">197</span>ENDSEC;
+<span class="lineno">198</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Ls031.html">&larr; Ls031</a> <a class="up" href="index.html">§12.1c Part-21 grammar</a> <a class="next" href="Ls033.html">Ls033 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

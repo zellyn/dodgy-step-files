@@ -1,0 +1,33 @@
+ISO-10303-21;
+/* M102 - AP238 drilling sequence with coincident hole positions.
+ * Defect: two DRILLING_OPERATIONs target features whose locator
+ * placements are identical. The second drill enters an already-drilled
+ * hole; either zero-load entry breaks the tool or cycle time is wasted. */
+HEADER;
+FILE_DESCRIPTION(('M102 test case','AP238 duplicate drill positions'),'2;1');
+FILE_NAME('M102.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AP238_STEP_NC_MIM { 1 0 10303 238 1 0 0 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('numerical_control_machining');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
+  'numerical_control_machining',2007,#1);
+#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10))
+     REPRESENTATION_CONTEXT('nc','3D'));
+/* Two identical AXIS2_PLACEMENT_3D origins for two drilling features. */
+#500=CARTESIAN_POINT('p1',(50.0,30.0,0.0));
+#501=DIRECTION('zA',(0.0,0.0,1.0));
+#502=DIRECTION('xA',(1.0,0.0,0.0));
+#503=AXIS2_PLACEMENT_3D('locA',#500,#501,#502);
+#510=CARTESIAN_POINT('p2',(50.0,30.0,0.0));
+#511=DIRECTION('zB',(0.0,0.0,1.0));
+#512=DIRECTION('xB',(1.0,0.0,0.0));
+#513=AXIS2_PLACEMENT_3D('locB',#510,#511,#512);
+/* Defect: two drill ops at the same coordinate. */
+#100=DRILLING_OPERATION('drill_first',$,$,$,$,#503);
+#101=DRILLING_OPERATION('drill_second',$,$,$,$,#513);
+#200=WORKPLAN('main',(#100,#101),$,$,$);
+ENDSEC;
+END-ISO-10303-21;

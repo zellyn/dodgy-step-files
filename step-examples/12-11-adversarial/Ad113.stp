@@ -1,0 +1,36 @@
+/* Ad113 - Symlink swap between read of .input.stp and read of .stp
+ * (sibling-pair TOCTOU)
+ * Defect: the cad/research validator pairs each .stp fixture with an
+ * optional .input.stp sibling capturing the producer-side input. A
+ * receiver that reads .input.stp first (to populate its expected-input
+ * oracle) and then reads .stp (the actual fixture) performs at least
+ * two independent path resolutions. If either path is a symlink that
+ * an attacker swaps between the two reads, the receiver sees a
+ * .input.stp that does not match the .stp it ultimately processes -
+ * the textbook TOCTOU race applied to the sibling-pair convention.
+ *
+ * IMPORTANT: this fixture documents the scenario in this header
+ * comment; no real symlink is created in the repository (cross-platform
+ * unfriendly). Provenance tier: cross-file-state. */
+ISO-10303-21;
+HEADER;
+FILE_DESCRIPTION(('Ad113 - sibling-pair TOCTOU race symlink swap .input.stp vs .stp'),'2;1');
+FILE_NAME('Ad113.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+/* Witness body: the TOCTOU race lives in the receiver-side filesystem
+   between the .input.stp read and the .stp read. The bug-reporter
+   searchable terms (TOCTOU, symlink, sibling, .input.stp, race) are
+   in this file's header and comments. The actual demonstration
+   requires a concurrent attacker process that swaps a symlink target
+   between the receiver's two reads.
+
+   No real symlink is created in this repo - cross-platform support
+   for symlinks in source control is poor (Windows + WSL + git config
+   each treat them differently). */
+/* sibling-pair race: .input.stp symlink swapped before .stp open */
+#1=APPLICATION_CONTEXT('automotive_design');
+#10=CARTESIAN_POINT('benign',(0.0,0.0,0.0));
+ENDSEC;
+END-ISO-10303-21;

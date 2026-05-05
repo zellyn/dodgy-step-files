@@ -1,0 +1,24 @@
+/* Le014 — Apostrophe inside a \X\..\X0\ block decoded as string close
+   Defect: a scanner that counts apostrophe parity but does not first
+   recognise hex-escape blocks may treat the byte sequence \X\27 (where 27
+   is the ASCII code for apostrophe) as a closing quote. This file embeds
+   'pre\X\27post' which the recognizer must leave as the literal string
+   pre'post (apostrophe encoded via \X\27), not pre + post. */
+ISO-10303-21;
+HEADER;
+FILE_DESCRIPTION(('Le014 - apostrophe inside X-escape misread as string close'),'2;1');
+FILE_NAME('Le014.stp','2026-04-26T00:00:00',('auto-generated'),(''),
+  'auto-generated','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+/* apostrophe encoded as \X\27 inside an otherwise valid string */
+#10=PERSON('p1','pre\X\27post','given',$,$,$,$,$);
+/* multiple encoded apostrophes */
+#11=PERSON('p2','a\X\27b\X\27c','given',$,$,$,$,$);
+#20=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#21=DIRECTION('',(0.0,0.0,1.0));
+#22=DIRECTION('',(1.0,0.0,0.0));
+#23=AXIS2_PLACEMENT_3D('',#20,#21,#22);
+ENDSEC;
+END-ISO-10303-21;

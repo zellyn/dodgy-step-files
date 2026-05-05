@@ -1,0 +1,57 @@
+ISO-10303-21;
+/* M055 - POLY_LOOP on non-planar surface inside FACETED_BREP.
+ * Defect: FACETED_BREP requires planar faces; POLY_LOOP placed on a
+ * non-planar surface (here a CYLINDRICAL_SURFACE) violates the
+ * schema. OCCT StepToTopoDS_TranslatePolyLoop.cxx:88-91 rejects the
+ * face in this configuration.
+ * This fixture: a CLOSED_SHELL containing one ADVANCED_FACE whose
+ * surface is a CYLINDRICAL_SURFACE and whose outer bound is a
+ * POLY_LOOP. The POLY_LOOP/non-planar-surface combination is the
+ * defect; the rest of the shell is elided. */
+HEADER;
+FILE_DESCRIPTION(('M055 test case','POLY_LOOP on cylindrical surface'),'2;1');
+FILE_NAME('M055.stp','2026-04-26T00:00:00',(''),(''),'auto-generated','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#11=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#12=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.E-6),#10,'distance_accuracy_value','');
+#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+     GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13))
+     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12))
+     REPRESENTATION_CONTEXT('part','3D'));
+/* Cylinder placement and surface. */
+#100=CARTESIAN_POINT('cyl_origin',(0.0,0.0,0.0));
+#101=DIRECTION('cyl_axis',(0.0,0.0,1.0));
+#102=DIRECTION('cyl_ref',(1.0,0.0,0.0));
+#103=AXIS2_PLACEMENT_3D('',#100,#101,#102);
+#104=CYLINDRICAL_SURFACE('side_wall',#103,5.0);
+/* POLY_LOOP vertices - sampled points on the cylinder; not coplanar. */
+#110=CARTESIAN_POINT('p0',(5.0,0.0,0.0));
+#111=CARTESIAN_POINT('p1',(0.0,5.0,0.0));
+#112=CARTESIAN_POINT('p2',(0.0,5.0,4.0));
+#113=CARTESIAN_POINT('p3',(5.0,0.0,4.0));
+#120=POLY_LOOP('non_planar_loop',(#110,#111,#112,#113));
+#130=FACE_OUTER_BOUND('',#120,.T.);
+#140=ADVANCED_FACE('cyl_face_with_poly_loop',(#130),#104,.T.);
+/* CLOSED_SHELL is the legal outer for FACETED_BREP, but the face
+ * carried by the shell uses POLY_LOOP on a non-planar surface, which
+ * is the schema violation. */
+#200=CLOSED_SHELL('shell_with_illegal_face',(#140));
+#210=FACETED_BREP('faceted_brep_with_curved_face',#200);
+#220=ADVANCED_BREP_SHAPE_REPRESENTATION('poly_loop_on_cylinder',
+       (#210),#14);
+/* Minimal PRODUCT chain so OCCT TransferRoots produces a shape. */
+#9010=PRODUCT_CONTEXT('',#1,'mechanical');
+#9011=PRODUCT('M055','M055','',(#9010));
+#9012=PRODUCT_DEFINITION_FORMATION('','',#9011);
+#9013=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9014=PRODUCT_DEFINITION('','',#9012,#9013);
+#9015=PRODUCT_DEFINITION_SHAPE('','',#9014);
+#9051=SHAPE_DEFINITION_REPRESENTATION(#9015,#220);
+ENDSEC;
+END-ISO-10303-21;

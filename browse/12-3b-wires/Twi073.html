@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Twi073 — Per-junction 2D pcurve gap query</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.3b Wires / loops / edges</a> <span class="sep">/</span> <span class="current">Twi073</span>
+</nav>
+<header class="title-bar">
+<h1>Twi073 <span class="sep">—</span> <span class="entry-title">Per-junction 2D pcurve gap query</span></h1>
+<p class="category">§12.3b wires / loops / edges (sub-class: gap-analysis)</p>
+<p class="severity-badge severity-p1">P1 — silent data loss</p>
+<p class="tag-pills">
+<a class="tag tag-topology" href="../by-tag/topology/index.html">topology</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-3b-wires/Twi073.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-3b-wires/Twi073.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>OCCT `ShapeAnalysis_Wire::CheckGap2d` (`ShapeAnalysis_Wire.hxx:352`)</li>
+</ul></section>
+<section><h2>Description</h2>
+<p>Pcurve-space analogue of Twi072. Targeted single-junction query that returns whether the pcurve endpoints at junction `num` disagree in UV.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>A face with a wire whose junction 2 has a 0.5-unit pcurve gap; caller queries `num=2`.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>Heal and accept: normalize an O(1) check returning OK/DONE/FAIL plus the 2D gap.</p></section>
+<section><h2>Notes</h2>
+<p>Per-junction counterpart to Twi069. Synonyms: &quot;single-junction parametric gap query&quot;, &quot;specific UV gap location query&quot;, &quot;ask about one specific junction in wire UV&quot;, &quot;per-index 2D gap diagnostic&quot;.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>contains(b&#x27;CYLINDRICAL_SURFACE(&#x27;)</code></li>
+<li><code>contains(b&#x27;junction2_pcurve_gap_0p5&#x27;)</code></li>
+<li><code>contains(b&#x27;(2.5,0.0)&#x27;)</code></li>
+</ul></section>
+<section><h2>Cross-references</h2>
+<p><a href="Twi069.html">Twi069</a></p>
+</section>
+<section><h2>Live oracle output</h2>
+<table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
+<tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>no_shapes_loaded</code></td></tr>
+</tbody></table>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* Twi073 - Per-junction 2D pcurve gap query
+<span class="lineno">3</span> * Three-edge wire on a CYLINDRICAL_SURFACE. Junction 1 (between edge1 and
+<span class="lineno">4</span> * edge2): pcurve gap is 0.0 in U. Junction 2 (between edge2 and edge3):
+<span class="lineno">5</span> * edge2 pcurve ends at U=2.0, edge3 pcurve starts at U=2.5 -- gap 0.5.
+<span class="lineno">6</span> * Caller queries num=2; analyzer returns the 0.5 unit. */
+<span class="lineno">7</span>HEADER;
+<span class="lineno">8</span>FILE_DESCRIPTION((&#x27;Twi073 test case&#x27;,&#x27;Per-junction 2D pcurve gap query at junction num=2&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">9</span>FILE_NAME(&#x27;Twi073.stp&#x27;,&#x27;2026-04-30T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">10</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }&#x27;));
+<span class="lineno">11</span>ENDSEC;
+<span class="lineno">12</span>DATA;
+<span class="lineno">13</span>#1=APPLICATION_CONTEXT(&#x27;automotive_design&#x27;);
+<span class="lineno">14</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,&#x27;automotive_design&#x27;,2000,#1);
+<span class="lineno">15</span>#10=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">16</span>#11=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">17</span>#12=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">18</span>#13=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#10,#11,#12);
+<span class="lineno">19</span>#14=<mark>CYLINDRICAL_SURFACE(</mark>&#x27;&#x27;,#13,1.0);
+<span class="lineno">20</span>#20=CARTESIAN_POINT(&#x27;&#x27;,(1.0,0.0,0.0));#21=VERTEX_POINT(&#x27;V0&#x27;,#20);
+<span class="lineno">21</span>#22=CARTESIAN_POINT(&#x27;&#x27;,(0.54,0.84,0.0));#23=VERTEX_POINT(&#x27;V1&#x27;,#22);
+<span class="lineno">22</span>#24=CARTESIAN_POINT(&#x27;&#x27;,(-0.42,0.91,0.0));#25=VERTEX_POINT(&#x27;V2&#x27;,#24);
+<span class="lineno">23</span>#26=CARTESIAN_POINT(&#x27;&#x27;,(-0.99,0.14,0.0));#27=VERTEX_POINT(&#x27;V3&#x27;,#26);
+<span class="lineno">24</span>/* edge1: pcurve U=0.0 -&gt; U=1.0 */
+<span class="lineno">25</span>#30=DIRECTION(&#x27;&#x27;,(-0.4803146228655844,0.8770962678415017,0.0));#31=VECTOR(&#x27;&#x27;,#30,1.0);#32=LINE(&#x27;&#x27;,#20,#31);
+<span class="lineno">26</span>#33=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0));#34=DIRECTION(&#x27;&#x27;,(1.0,0.0));#35=VECTOR(&#x27;&#x27;,#34,1.0);
+<span class="lineno">27</span>#36=LINE(&#x27;e1_pc&#x27;,#33,#35);
+<span class="lineno">28</span>#37=DEFINITIONAL_REPRESENTATION(&#x27;&#x27;,(#36),#13);
+<span class="lineno">29</span>#38=PCURVE(&#x27;&#x27;,#14,#37);
+<span class="lineno">30</span>#39=SURFACE_CURVE(&#x27;&#x27;,#32,(#38),.PCURVE_S1.);
+<span class="lineno">31</span>#40=EDGE_CURVE(&#x27;edge1&#x27;,#21,#23,#39,.T.);
+<span class="lineno">32</span>/* edge2: pcurve U=1.0 -&gt; U=2.0 -- contiguous (junction 1 gap=0) */
+<span class="lineno">33</span>#45=DIRECTION(&#x27;&#x27;,(-0.9973521339060821,0.0727235930973185,0.0));#46=VECTOR(&#x27;&#x27;,#45,1.0);#47=LINE(&#x27;&#x27;,#22,#46);
+<span class="lineno">34</span>#48=CARTESIAN_POINT(&#x27;&#x27;,(1.0,0.0));#49=DIRECTION(&#x27;&#x27;,(1.0,0.0));#50=VECTOR(&#x27;&#x27;,#49,1.0);
+<span class="lineno">35</span>#51=LINE(&#x27;e2_pc&#x27;,#48,#50);
+<span class="lineno">36</span>#52=DEFINITIONAL_REPRESENTATION(&#x27;&#x27;,(#51),#13);
+<span class="lineno">37</span>#53=PCURVE(&#x27;&#x27;,#14,#52);
+<span class="lineno">38</span>#54=SURFACE_CURVE(&#x27;&#x27;,#47,(#53),.PCURVE_S1.);
+<span class="lineno">39</span>#55=EDGE_CURVE(&#x27;edge2&#x27;,#23,#25,#54,.T.);
+<span class="lineno">40</span>/* edge3: pcurve U=2.5 -&gt; U=3.5 -- 0.5 gap at junction 2 */
+<span class="lineno">41</span>#60=DIRECTION(&#x27;&#x27;,(-0.594977892467951,-0.8037420652637233,0.0));#61=VECTOR(&#x27;&#x27;,#60,1.0);#62=LINE(&#x27;&#x27;,#24,#61);
+<span class="lineno">42</span>#63=CARTESIAN_POINT(&#x27;<mark>junction2_pcurve_gap_0p5</mark>&#x27;,<mark>(2.5,0.0)</mark>);
+<span class="lineno">43</span>#64=DIRECTION(&#x27;&#x27;,(1.0,0.0));#65=VECTOR(&#x27;&#x27;,#64,1.0);
+<span class="lineno">44</span>#66=LINE(&#x27;e3_pc_starts_2p5&#x27;,#63,#65);
+<span class="lineno">45</span>#67=DEFINITIONAL_REPRESENTATION(&#x27;&#x27;,(#66),#13);
+<span class="lineno">46</span>#68=PCURVE(&#x27;&#x27;,#14,#67);
+<span class="lineno">47</span>#69=SURFACE_CURVE(&#x27;&#x27;,#62,(#68),.PCURVE_S1.);
+<span class="lineno">48</span>#70=EDGE_CURVE(&#x27;edge3&#x27;,#25,#27,#69,.T.);
+<span class="lineno">49</span>#80=ORIENTED_EDGE(&#x27;&#x27;,*,*,#40,.T.);
+<span class="lineno">50</span>#81=ORIENTED_EDGE(&#x27;&#x27;,*,*,#55,.T.);
+<span class="lineno">51</span>#82=ORIENTED_EDGE(&#x27;&#x27;,*,*,#70,.T.);
+<span class="lineno">52</span>#83=EDGE_LOOP(&#x27;junction_2_has_2d_gap&#x27;,(#80,#81,#82));
+<span class="lineno">53</span>ENDSEC;
+<span class="lineno">54</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Twi072.html">&larr; Twi072</a> <a class="up" href="index.html">§12.3b Wires / loops / edges</a> <a class="next" href="Twi074.html">Twi074 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

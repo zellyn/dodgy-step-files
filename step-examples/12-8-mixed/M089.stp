@@ -1,0 +1,31 @@
+ISO-10303-21;
+/* M089 - AP210 stackup ply z-positions overlap.
+ * Defect: two LAMINATE_OR_PLY_DEFINITIONs in the same stackup occupy
+ * overlapping Z ranges - ply A from z=0.0 to z=0.2 and ply B from
+ * z=0.15 to z=0.35. The stackup is physically impossible (two solid
+ * dielectrics in the same volume). */
+HEADER;
+FILE_DESCRIPTION(('M089 test case','AP210 stackup plies overlap in Z'),'2;1');
+FILE_NAME('M089.stp','2026-04-30T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('ELECTRONIC_ASSEMBLY_INTERCONNECT_AND_PACKAGING_DESIGN { 1 0 10303 210 3 1 0 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('electronic_assembly_interconnect_and_packaging_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
+  'electronic_assembly_interconnect_and_packaging_design',2014,#1);
+#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10))
+     REPRESENTATION_CONTEXT('pcb','3D'));
+/* Two plies with overlapping z extents */
+#20=CARTESIAN_POINT('a_bottom',(0.0,0.0,0.0));
+#21=AXIS2_PLACEMENT_3D('a_pos',#20,$,$);
+#22=CARTESIAN_POINT('b_bottom',(0.0,0.0,0.15));
+#23=AXIS2_PLACEMENT_3D('b_pos',#22,$,$);
+#100=LAMINATE_OR_PLY_DEFINITION('ply_A',$,$,$,LENGTH_MEASURE(0.2));
+#101=LAMINATE_OR_PLY_DEFINITION('ply_B',$,$,$,LENGTH_MEASURE(0.2));
+/* Defect: ply A occupies z=0..0.2; ply B occupies z=0.15..0.35; they
+ * overlap from 0.15 to 0.2. */
+#200=LAMINATE_TABLE('overlapping_stack',(#100,#101),$);
+ENDSEC;
+END-ISO-10303-21;

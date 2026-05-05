@@ -1,0 +1,20 @@
+/* Wr015 - Duplicate #N instance numbers in the same DATA section - two CARTESIAN_POINT records share #10 */
+ISO-10303-21;
+HEADER;
+FILE_DESCRIPTION(('Wr015 - duplicate instance number'),'2;1');
+FILE_NAME('Wr015.stp','2026-04-30T00:00:00',(''),(''),
+  'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('mechanical design');
+#10=CARTESIAN_POINT('a',(0.0,0.0,0.0));
+#11=DIRECTION('z',(0.0,0.0,1.0));
+#12=DIRECTION('x',(1.0,0.0,0.0));
+#13=AXIS2_PLACEMENT_3D('p',#10,#11,#12);
+/* Wr015: counter collision in writer; #10 is reused for a second
+   CARTESIAN_POINT later in the section */
+#10=CARTESIAN_POINT('b',(1.0,1.0,1.0));
+#20=(LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT(.MILLI.,.METRE.));
+ENDSEC;
+END-ISO-10303-21;

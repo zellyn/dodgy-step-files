@@ -1,0 +1,45 @@
+ISO-10303-21;
+/* Twi071 - Seam edge has its two pcurves swapped
+ * A seam edge of a CYLINDRICAL_SURFACE face. The seam carries two pcurves --
+ * one declared for the FORWARD side, one for the REVERSED side. Their U
+ * targets are swapped: forward pcurve sits at U=2*PI when it should be at
+ * U=0, and the reversed pcurve sits at U=0 when it should be at U=2*PI. */
+HEADER;
+FILE_DESCRIPTION(('Twi071 test case','Seam edge with two pcurves whose U targets are swapped'),'2;1');
+FILE_NAME('Twi071.stp','2026-04-30T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#11=DIRECTION('',(0.0,0.0,1.0));
+#12=DIRECTION('',(1.0,0.0,0.0));
+#13=AXIS2_PLACEMENT_3D('cyl_axis',#10,#11,#12);
+#14=CYLINDRICAL_SURFACE('host_cyl',#13,1.0);
+/* Seam edge endpoints: (1,0,0) -> (1,0,5) -- vertical along +Z at U=0 (and U=2*PI) */
+#20=CARTESIAN_POINT('seam_bottom',(1.0,0.0,0.0));#21=VERTEX_POINT('Vb',#20);
+#22=CARTESIAN_POINT('seam_top',(1.0,0.0,5.0));#23=VERTEX_POINT('Vt',#22);
+/* 3D curve along the seam */
+#30=DIRECTION('',(0.0,0.0,1.0));#31=VECTOR('',#30,5.0);#32=LINE('seam_3d',#20,#31);
+/* PCURVE A: declared for the FORWARD side of the seam, sits at U=2*PI (wrong --
+ * should be at U=0 for forward). */
+#40=CARTESIAN_POINT('forward_at_U_2pi',(6.2831853,0.0));
+#41=DIRECTION('',(0.0,1.0));#42=VECTOR('',#41,5.0);
+#43=LINE('',#40,#42);
+#44=DEFINITIONAL_REPRESENTATION('',(#43),#13);
+#45=PCURVE('forward_pcurve_swapped',#14,#44);
+/* PCURVE B: declared for the REVERSED side, sits at U=0 (wrong -- should be at U=2*PI). */
+#50=CARTESIAN_POINT('reversed_at_U_0',(0.0,0.0));
+#51=DIRECTION('',(0.0,1.0));#52=VECTOR('',#51,5.0);
+#53=LINE('',#50,#52);
+#54=DEFINITIONAL_REPRESENTATION('',(#53),#13);
+#55=PCURVE('reversed_pcurve_swapped',#14,#54);
+/* SURFACE_CURVE carrying both pcurves -- PCURVE_S1_AND_S2 indicates a seam */
+#60=SURFACE_CURVE('seam_two_pcurves',#32,(#45,#55),.PCURVE_S1_AND_S2.);
+#61=EDGE_CURVE('seam_edge_swapped',#21,#23,#60,.T.);
+#62=ORIENTED_EDGE('seam_fwd',*,*,#61,.T.);
+#63=ORIENTED_EDGE('seam_rev',*,*,#61,.F.);
+#64=EDGE_LOOP('seam_with_swapped_pcurves',(#62,#63));
+ENDSEC;
+END-ISO-10303-21;

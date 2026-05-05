@@ -1,0 +1,71 @@
+/* Pmi057 - PMI semantic vs presentation associativity lost on round-trip
+   Defect: A semantic GEOMETRIC_TOLERANCE (perpendicularity) loses its
+   associativity link with the toleranced ADVANCED_FACE: the
+   GEOMETRIC_ITEM_SPECIFIC_USAGE that should bind the SHAPE_ASPECT to
+   the face is missing. The presentation DRAUGHTING_CALLOUT is also
+   not linked back to the semantic tolerance via SEMANTIC_DESIGNATION.
+   Multi-surface GTOL refs lose entries on AP242 round-trip; Creo MBD
+   notes/symbols partially-write semantic_designation links.
+   (W026, M008, V012, V014). */
+ISO-10303-21;
+HEADER;
+FILE_DESCRIPTION(('Pmi057 - tolerance associativity lost on round-trip',
+  'CAx-IF Rec.Pracs.---PMI Rep & Pres---v4.1'),'2;1');
+FILE_NAME('Pmi057.stp','2026-04-26T00:00:00',('catalog'),('cad'),
+  'manual','','');
+FILE_SCHEMA(('AP242_MANAGED_MODEL_BASED_3D_ENGINEERING_MIM_LF { 1 0 10303 442 1 1 4 }'));
+ENDSEC;
+DATA;
+#10 = APPLICATION_CONTEXT('managed model based 3d engineering');
+#11 = APPLICATION_PROTOCOL_DEFINITION('international standard',
+  'ap242_managed_model_based_3d_engineering',2020,#10);
+#12 = PRODUCT_CONTEXT('',#10,'mechanical');
+#13 = PRODUCT('Pmi057','LostAssociativityPart','',(#12));
+#14 = PRODUCT_DEFINITION_FORMATION('','',#13);
+#15 = PRODUCT_DEFINITION_CONTEXT('',#10,'design');
+#16 = PRODUCT_DEFINITION('','',#14,#15);
+#17 = PRODUCT_DEFINITION_SHAPE('','',#16);
+#20 = ( LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT(.MILLI.,.METRE.) );
+#22 = ( NAMED_UNIT(*) PLANE_ANGLE_UNIT() SI_UNIT($,.RADIAN.) );
+#23 = ( NAMED_UNIT(*) SI_UNIT($,.STERADIAN.) SOLID_ANGLE_UNIT() );
+#24 = UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#20,
+  'distance_accuracy_value','');
+#25 = ( GEOMETRIC_REPRESENTATION_CONTEXT(3)
+  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#24))
+  GLOBAL_UNIT_ASSIGNED_CONTEXT((#20,#22,#23))
+  REPRESENTATION_CONTEXT('','3D') );
+#30 = CARTESIAN_POINT('',(0.0,0.0,0.0));
+#31 = DIRECTION('',(0.0,0.0,1.0));
+#32 = DIRECTION('',(1.0,0.0,0.0));
+#33 = AXIS2_PLACEMENT_3D('',#30,#31,#32);
+#34 = PLANE('toleranced',#33);
+#35 = ADVANCED_FACE('top_face',(),#34,.T.);
+#40 = SHAPE_ASPECT('top_face_sa','toleranced face',#17,.T.);
+/* Defect: NO geometric_item_specific_usage(#40, #35) so the SHAPE_ASPECT
+   is not associated with the actual ADVANCED_FACE. Round-trip writers
+   that do not synthesize the link drop the toleranced face. */
+#50 = DATUM('A','primary',#17,.T.,'A');
+#51 = DATUM_REFERENCE_ELEMENT('',$,#50);
+#52 = DATUM_REFERENCE_COMPARTMENT('',$,#51);
+#53 = DATUM_SYSTEM('A','',#17,.T.,(#52));
+#60 = LENGTH_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.05),#20);
+#61 = PERPENDICULARITY_TOLERANCE('perp','',#60,#40,#53);
+/* Presentation: a draughting_callout exists but has no
+   SEMANTIC_DESIGNATION linking it back to #61 (also a defect). */
+#70 = CARTESIAN_POINT('',(0.0,0.0,5.0));
+#71 = CARTESIAN_POINT('',(10.0,0.0,5.0));
+#72 = POLYLINE('frame',(#70,#71));
+#73 = COLOUR_RGB('',0.0,0.0,0.0);
+#74 = CURVE_STYLE('',#75,POSITIVE_LENGTH_MEASURE(0.18),#73);
+#75 = DRAUGHTING_PRE_DEFINED_CURVE_FONT('continuous');
+#76 = PRESENTATION_STYLE_ASSIGNMENT((#74));
+#77 = ANNOTATION_CURVE_OCCURRENCE('frame_graphic',(#76),#72);
+#78 = DRAUGHTING_CALLOUT('perp_callout',(#77));
+/* No SEMANTIC_DESIGNATION links #78 back to #61. */
+#80 = DRAUGHTING_MODEL('Default',(#77),#25);
+#81 = PLANE('ann_plane',#33);
+#82 = ANNOTATION_PLANE('PMI',(#77),#81,(#61));
+#90 = SHAPE_REPRESENTATION('',(#33,#35),#25);
+#91 = SHAPE_DEFINITION_REPRESENTATION(#17,#90);
+ENDSEC;
+END-ISO-10303-21;

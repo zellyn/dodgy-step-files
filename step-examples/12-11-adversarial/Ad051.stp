@@ -1,0 +1,43 @@
+/* Ad051 - Reference to non-existent entity number (negative or out-of-range)
+   ----------------------------------------------------------------------
+   Catalog section : §12.11 adversarial (sub-class: null-deref)
+   Sources         : 08-occt-gitlog.md G030 (Mantis 0031292)
+   See also        : Ad005
+   ----------------------------------------------------------------------
+   WARNING: This file is INTENTIONALLY MALFORMED for parser-robustness
+   testing. Do NOT use as exchange data.
+   ----------------------------------------------------------------------
+   Defect
+     References to entity numbers beyond the DATA section's max_id, or
+     legacy negative numbers, yield literal NULL via lookup. Older
+     OCCT segfaulted on these. Negative entity numbers are a legacy
+     quirk and need pass-correction.
+   Reproducer recipe
+     ADVANCED_FACE referencing #99999 (above max_id) and a separate
+     instance referencing #-1 (legacy negative).
+   Expected kernel behavior
+     Treat as literal NULL; substitute defaults; do not segfault.
+     Emit E_DANGLING_REFERENCE per occurrence with id context.
+     Negative ids: pass-correct or reject with E_NEGATIVE_ID.
+   ----------------------------------------------------------------------
+*/
+ISO-10303-21;
+HEADER;
+FILE_DESCRIPTION(('Ad051 - dangling and negative entity references'),'2;1');
+FILE_NAME('Ad051.stp','2026-04-26T00:00:00',('auto-generated'),(''),
+  'auto-generated','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+#1=CARTESIAN_POINT('o',(0.0,0.0,0.0));
+#2=DIRECTION('z',(0.0,0.0,1.0));
+#3=DIRECTION('x',(1.0,0.0,0.0));
+#4=AXIS2_PLACEMENT_3D('p',#1,#2,#3);
+/* Defect: PLANE references #99999 (out of range; max_id in this file is #50) */
+#10=PLANE('plane_dangling',#99999);
+/* Defect: ADVANCED_FACE references #-1 (legacy negative id) */
+#20=ADVANCED_FACE('af_neg',(#30),#10,.T.);
+#30=FACE_OUTER_BOUND('fob',#-1,.T.);
+#50=AXIS2_PLACEMENT_3D('marker',#1,#2,#3);
+ENDSEC;
+END-ISO-10303-21;

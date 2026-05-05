@@ -1,0 +1,67 @@
+ISO-10303-21;
+/*
+ * A024 — Mirrored / scaled TopLoc transforms forbidden in STEP/IGES export
+ * Defect (OCCT 9592ae2 / Mantis 0027457 BRepTools_PurgeLocations,
+ *         HOOPS Exchange Parasolid mirrored MAPPED_ITEM, Rhino mirrored
+ *         block + pcurve flip, Onshape post-rotation disintegration):
+ *   Shape locations containing scale or mirror (negative-determinant) are
+ *   sources of invalid STEP/IGES output. MAPPED_ITEM with mirroring axis is
+ *   exported with a copy whose orientation is silently corrected, flipping
+ *   handedness. When "Export parameter space curves" is enabled and the
+ *   block instance has negative-determinant transform, surfaces import with
+ *   reversed normals.
+ * This example: MAPPED_ITEM whose target placement encodes a left-handed
+ *   frame (improper rotation) — an invalid mirror transform.
+ * Expected kernel: pre-process shape via BRepTools_PurgeLocations to bake
+ *   scale/mirror as geometry change; preserve handedness by flipping face
+ *   normals coherently.
+ */
+HEADER;
+FILE_DESCRIPTION(('A024 MAPPED_ITEM target axis is left-handed (mirrored)'),'2;1');
+FILE_NAME('A024.stp','2026-04-26T00:00:00',('catalog'),('cad'),'manual','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#10 = APPLICATION_CONTEXT('automotive design');
+#11 = APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2001,#10);
+#12 = PRODUCT_CONTEXT('',#10,'mechanical');
+#13 = PRODUCT_DEFINITION_CONTEXT('part definition',#10,'design');
+#20 = PRODUCT('A024_ASSY','','',(#12));
+#21 = PRODUCT_DEFINITION_FORMATION('','',#20);
+#22 = PRODUCT_DEFINITION('design','',#21,#13);
+#23 = PRODUCT_DEFINITION_SHAPE('','',#22);
+#30 = PRODUCT('LEAF','','',(#12));
+#31 = PRODUCT_DEFINITION_FORMATION('','',#30);
+#32 = PRODUCT_DEFINITION('design','',#31,#13);
+#33 = PRODUCT_DEFINITION_SHAPE('','',#32);
+#40 = NEXT_ASSEMBLY_USAGE_OCCURRENCE('1','MIRROR_INST','',#22,#32,$);
+#50 = ( LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT(.MILLI.,.METRE.) );
+#51 = ( NAMED_UNIT(*) PLANE_ANGLE_UNIT() SI_UNIT($,.RADIAN.) );
+#52 = ( NAMED_UNIT(*) SI_UNIT($,.STERADIAN.) SOLID_ANGLE_UNIT() );
+#53 = UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#50,'distance_accuracy_value','');
+#54 = ( GEOMETRIC_REPRESENTATION_CONTEXT(3) GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#53))
+        GLOBAL_UNIT_ASSIGNED_CONTEXT((#50,#51,#52)) REPRESENTATION_CONTEXT('','3D') );
+#60 = CARTESIAN_POINT('',(0.0,0.0,0.0));
+#61 = DIRECTION('',(0.0,0.0,1.0));
+#62 = DIRECTION('',(1.0,0.0,0.0));
+#63 = AXIS2_PLACEMENT_3D('leaf_origin',#60,#61,#62);
+#64 = SHAPE_REPRESENTATION('leaf_rep',(#63),#54);
+#65 = SHAPE_DEFINITION_REPRESENTATION(#33,#64);
+#66 = REPRESENTATION_MAP(#63,#64);
+/* DEFECT: target placement encodes a left-handed (negative-determinant)
+ * frame via an explicit CARTESIAN_TRANSFORMATION_OPERATOR_3D whose axis1
+ * (X), axis2 (Y), and axis3 (Z) are X=(1,0,0), Y=(0,1,0), Z=(0,0,-1).
+ * det([X|Y|Z]) = -1: this is a mirror about the XY plane and is forbidden
+ * for STEP/IGES export. Producers that export a mirrored MAPPED_ITEM
+ * silently get the orientation 'corrected', flipping handedness. */
+#70 = CARTESIAN_POINT('mirror_loc',(0.0,0.0,0.0));
+#71 = DIRECTION('mx',(1.0,0.0,0.0));
+#72 = DIRECTION('my',(0.0,1.0,0.0));
+#7220 = DIRECTION('mz_neg',(0.0,0.0,-1.0));
+#73 = CARTESIAN_TRANSFORMATION_OPERATOR_3D('LEFT_HANDED_TARGET',#71,#72,#70,1.0,#7220);
+#74 = MAPPED_ITEM('mirror_inst',#66,#73);
+#80 = AXIS2_PLACEMENT_3D('assy_origin',#60,#61,#62);
+#81 = SHAPE_REPRESENTATION('assy_rep',(#80,#74),#54);
+#82 = SHAPE_DEFINITION_REPRESENTATION(#23,#81);
+ENDSEC;
+END-ISO-10303-21;

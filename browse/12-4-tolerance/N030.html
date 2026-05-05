@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>N030 — Quarter `CYLINDRICAL_SURFACE` stored as `B_SPLINE_SURFACE_WITH_KNOTS` (canonical recognition tolerance budget)</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.4 Tolerance &amp; numerical precision</a> <span class="sep">/</span> <span class="current">N030</span>
+</nav>
+<header class="title-bar">
+<h1>N030 <span class="sep">—</span> <span class="entry-title">Quarter `CYLINDRICAL_SURFACE` stored as `B_SPLINE_SURFACE_WITH_KNOTS` (canonical recognition tolerance budget)</span></h1>
+<p class="category">§12.4 (sub-class: canonical recognition tolerance)</p>
+<p class="severity-badge severity-p1">P1 — silent data loss</p>
+<p class="tag-pills">
+<a class="tag tag-pmi" href="../by-tag/pmi/index.html">pmi</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-4-tolerance/N030.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-4-tolerance/N030.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>05-occt-shapefix F076</li>
+<li>13-quaoar B030</li>
+<li>21-patents X025</li>
+<li>11-translator-vendors W015</li>
+</ul></section>
+<section><h2>Description</h2>
+<p>A surface that mathematically is a `PLANE` / `CYLINDRICAL_SURFACE` / `CONICAL_SURFACE` / `SPHERICAL_SURFACE` / `TOROIDAL_SURFACE` / `SURFACE_OF_LINEAR_EXTRUSION` is stored as a generic `B_SPLINE_SURFACE_WITH_KNOTS`. Common shape: a quarter cylinder modelled as a degree-2-by-1 B-spline with a 3×2 control net plus a small declared canonicalisation tolerance (e.g. 1e-6). Feature recognition (hole/shaft detection), unfolding, CAM tool-axis derivation, DXF/SVG export, and GD&amp;T tools all degrade silently because they cannot ask the surface for its radius or axis. Canonical-recognition tolerance (how tightly the BSpline must fit the analytic form) is rarely exposed.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>Import a STEP from a system that always writes NURBS; query a &quot;cylindrical&quot; face&#x27;s `BRepAdaptor_Surface::GetType()` — returns `GeomAbs_BSplineSurface` instead of `GeomAbs_Cylinder`.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>heal — `convert-to-canonical` / `ShapeCustom_BSplineRestriction` with a tolerance recovers the analytic form; reject canonicalization if recovered surface deviates beyond user-supplied tolerance, since otherwise watertightness is lost.</p></section>
+<section><h2>Notes</h2>
+<p>**See also**: Pmi041, Gn014. Synonyms: &quot;cylinder stored as B-spline instead of analytic&quot;, &quot;feature recognition can&#x27;t find hole as B-spline&quot;, &quot;analytic surface lost as NURBS&quot;, &quot;kernel doesn&#x27;t recognize quarter cylinder&quot;, &quot;B-spline that should be cylinder or plane&quot;.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>contains(b&#x27;B_SPLINE_SURFACE_WITH_KNOTS&#x27;)</code></li>
+<li><code>count_entity_def(b&#x27;CARTESIAN_POINT&#x27;) == 8</code></li>
+<li><code>contains(b&#x27;1.0E-6&#x27;)</code></li>
+</ul></section>
+<section><h2>Cross-references</h2>
+<p><a href="../12-7-pmi/Pmi041.html">Pmi041</a>, <a href="../12-2b-nurbs/Gn014.html">Gn014</a></p>
+</section>
+<section><h2>Live oracle output</h2>
+<table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
+<tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>no_shapes_loaded</code></td></tr>
+</tbody></table>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>/* N030 - Non-canonical surface where canonical is expected (canonical recognition tolerance)
+<span class="lineno">2</span> * Defect: A surface that mathematically is a plane / cylinder / cone / sphere /
+<span class="lineno">3</span> * torus / linear extrusion is stored as a generic Geom_BSplineSurface.
+<span class="lineno">4</span> * Feature recognition (hole/shaft detection), unfolding, CAM tool-axis
+<span class="lineno">5</span> * derivation, DXF/SVG export, and GD&amp;T tools all degrade silently because
+<span class="lineno">6</span> * they cannot ask the surface for its radius or axis.
+<span class="lineno">7</span> * Reproducer: a &quot;cylinder&quot; emitted as a <mark>B_SPLINE_SURFACE_WITH_KNOTS</mark> rather
+<span class="lineno">8</span> * than CYLINDRICAL_SURFACE -- canonical recognition tolerance is needed
+<span class="lineno">9</span> * to recover the analytic form.
+<span class="lineno">10</span> */
+<span class="lineno">11</span>ISO-10303-21;
+<span class="lineno">12</span>HEADER;
+<span class="lineno">13</span>FILE_DESCRIPTION((&#x27;N030 non-canonical BSpline surface where cylinder expected&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">14</span>FILE_NAME(&#x27;N030.stp&#x27;,&#x27;2026-04-26T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),
+<span class="lineno">15</span>  &#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">16</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN&#x27;));
+<span class="lineno">17</span>ENDSEC;
+<span class="lineno">18</span>DATA;
+<span class="lineno">19</span>#1=APPLICATION_CONTEXT(&#x27;automotive design&#x27;);
+<span class="lineno">20</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,
+<span class="lineno">21</span>  &#x27;automotive_design&#x27;,2009,#1);
+<span class="lineno">22</span>/* 9 control points approximating a 90-degree arc cylinder swept along z;
+<span class="lineno">23</span> * mathematically it is a CYLINDRICAL_SURFACE. */
+<span class="lineno">24</span><mark>#10=CARTESIAN_POINT(</mark>&#x27;cp00&#x27;,(5.0,0.0,0.0));
+<span class="lineno">25</span><mark>#11=CARTESIAN_POINT(</mark>&#x27;cp01&#x27;,(5.0,5.0,0.0));
+<span class="lineno">26</span><mark>#12=CARTESIAN_POINT(</mark>&#x27;cp02&#x27;,(0.0,5.0,0.0));
+<span class="lineno">27</span><mark>#13=CARTESIAN_POINT(</mark>&#x27;cp10&#x27;,(5.0,0.0,10.0));
+<span class="lineno">28</span><mark>#14=CARTESIAN_POINT(</mark>&#x27;cp11&#x27;,(5.0,5.0,10.0));
+<span class="lineno">29</span><mark>#15=CARTESIAN_POINT(</mark>&#x27;cp12&#x27;,(0.0,5.0,10.0));
+<span class="lineno">30</span>/* Defect site: surface emitted as generic B-spline; analytic cylinder lost. */
+<span class="lineno">31</span>#20=<mark>B_SPLINE_SURFACE_WITH_KNOTS</mark>(&#x27;quarter_cyl_as_bspline&#x27;,
+<span class="lineno">32</span>  2,1,((#10,#11,#12),(#13,#14,#15)),.UNSPECIFIED.,.F.,.F.,.F.,
+<span class="lineno">33</span>  (3,3),(2,2),(0.0,1.0),(0.0,1.0),.UNSPECIFIED.);
+<span class="lineno">34</span><mark>#30=CARTESIAN_POINT(</mark>&#x27;rim&#x27;,(5.0,0.0,0.0));
+<span class="lineno">35</span><mark>#31=CARTESIAN_POINT(</mark>&#x27;rim_top&#x27;,(5.0,0.0,10.0));
+<span class="lineno">36</span>#40=VERTEX_POINT(&#x27;&#x27;,#30);
+<span class="lineno">37</span>#41=VERTEX_POINT(&#x27;&#x27;,#31);
+<span class="lineno">38</span>#50=DIRECTION(&#x27;+z&#x27;,(0.0,0.0,1.0));
+<span class="lineno">39</span>#51=VECTOR(&#x27;&#x27;,#50,10.0);
+<span class="lineno">40</span>#52=LINE(&#x27;seam&#x27;,#30,#51);
+<span class="lineno">41</span>#60=EDGE_CURVE(&#x27;seam_edge&#x27;,#40,#41,#52,.T.);
+<span class="lineno">42</span>#70=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">43</span>#71=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+<span class="lineno">44</span>#72=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+<span class="lineno">45</span>#73=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(<mark>1.0E-6</mark>),#70,
+<span class="lineno">46</span>  &#x27;distance_accuracy_value&#x27;,&#x27;canonical_recognition_budget&#x27;);
+<span class="lineno">47</span>#80=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+<span class="lineno">48</span>  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#73))
+<span class="lineno">49</span>  GLOBAL_UNIT_ASSIGNED_CONTEXT((#70,#71,#72))
+<span class="lineno">50</span>  REPRESENTATION_CONTEXT(&#x27;ctx&#x27;,&#x27;3D&#x27;));
+<span class="lineno">51</span>ENDSEC;
+<span class="lineno">52</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="N029.html">&larr; N029</a> <a class="up" href="index.html">§12.4 Tolerance &amp; numerical precision</a> <a class="next" href="N031.html">N031 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

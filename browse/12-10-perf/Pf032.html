@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Pf032 — Reader hangs during XCAF tree build on deep assembly</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.10 Scale &amp; performance</a> <span class="sep">/</span> <span class="current">Pf032</span>
+</nav>
+<header class="title-bar">
+<h1>Pf032 <span class="sep">—</span> <span class="entry-title">Reader hangs during XCAF tree build on deep assembly</span></h1>
+<p class="category">§12.10 performance</p>
+<p class="severity-badge severity-p2">P2 — spec deviation (no data loss)</p>
+<p class="tag-pills">
+<a class="tag tag-performance" href="../by-tag/performance/index.html">performance</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-10-perf/Pf032.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-10-perf/Pf032.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>OCCT GitHub#733</li>
+<li>OCCT MANTIS#0026871</li>
+<li>OCCT MANTIS#0026627 (OCCT MANTIS tracker 502 as of 2026-05-02)</li>
+</ul></section>
+<section><h2>Description</h2>
+<p>An XCAF document is built from a large STEP file with a deep assembly tree. The XCAF builder iterates assembly nodes recursively; for an N-level tree with M instances per level, it visits every instance N times — exponential. Apparent hang on files with deep assemblies.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>STEP file with 8-level deep assembly, 10 instances per level (10⁸ visits). Build XCAF tree.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>Heal and accept: XCAF tree build memoises visited nodes; coerce visit count to linear in distinct nodes, not in instance paths. Must not hang on deep instance trees.</p></section>
+<section><h2>Notes</h2>
+<p>**See also**: A067.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>contains(b&#x27;NEXT_ASSEMBLY_USAGE_OCCURRENCE&#x27;)</code></li>
+</ul></section>
+<section><h2>Cross-references</h2>
+<p><a href="../12-6-assembly/A067.html">A067</a></p>
+</section>
+<section><h2>Live oracle output</h2>
+<table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
+<tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>no_shapes_loaded</code></td></tr>
+</tbody></table>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>/* Pf032 - Reader hangs during XCAF tree build on deep assembly.
+<span class="lineno">2</span> * Pattern: 8-level deep assembly with 10 instances per level (10^8
+<span class="lineno">3</span> * visits without memoisation). Production scale: 8 levels x 10
+<span class="lineno">4</span> * children = exponential XCAF tree-build.
+<span class="lineno">5</span> * Notes: scaled-down representative - this fixture has 3 levels x 2
+<span class="lineno">6</span> * instances (8 NAUO chain links). Replicate to depth 8 with branching
+<span class="lineno">7</span> * 10 to reproduce the production hang. */
+<span class="lineno">8</span>ISO-10303-21;
+<span class="lineno">9</span>HEADER;
+<span class="lineno">10</span>FILE_DESCRIPTION((&#x27;Pf032 test case&#x27;,&#x27;Hang during XCAF tree build on deep assembly&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">11</span>FILE_NAME(&#x27;Pf032.stp&#x27;,&#x27;2026-04-30T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">12</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }&#x27;));
+<span class="lineno">13</span>ENDSEC;
+<span class="lineno">14</span>DATA;
+<span class="lineno">15</span>#1=APPLICATION_CONTEXT(&#x27;automotive_design&#x27;);
+<span class="lineno">16</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,&#x27;automotive_design&#x27;,2000,#1);
+<span class="lineno">17</span>#10=PRODUCT_CONTEXT(&#x27;&#x27;,#1,&#x27;mechanical&#x27;);
+<span class="lineno">18</span>#13=PRODUCT_DEFINITION_CONTEXT(&#x27;part definition&#x27;,#1,&#x27;design&#x27;);
+<span class="lineno">19</span>/* Level 0 root */
+<span class="lineno">20</span>#20=PRODUCT(&#x27;ROOT&#x27;,&#x27;root&#x27;,&#x27;&#x27;,(#10));
+<span class="lineno">21</span>#21=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#20);
+<span class="lineno">22</span>#22=PRODUCT_DEFINITION(&#x27;design&#x27;,&#x27;&#x27;,#21,#13);
+<span class="lineno">23</span>/* Level 1: two children */
+<span class="lineno">24</span>#30=PRODUCT(&#x27;L1A&#x27;,&#x27;l1a&#x27;,&#x27;&#x27;,(#10));
+<span class="lineno">25</span>#31=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#30);
+<span class="lineno">26</span>#32=PRODUCT_DEFINITION(&#x27;design&#x27;,&#x27;&#x27;,#31,#13);
+<span class="lineno">27</span>#33=PRODUCT(&#x27;L1B&#x27;,&#x27;l1b&#x27;,&#x27;&#x27;,(#10));
+<span class="lineno">28</span>#34=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#33);
+<span class="lineno">29</span>#35=PRODUCT_DEFINITION(&#x27;design&#x27;,&#x27;&#x27;,#34,#13);
+<span class="lineno">30</span>#40=<mark>NEXT_ASSEMBLY_USAGE_OCCURRENCE</mark>(&#x27;1a&#x27;,&#x27;&#x27;,&#x27;&#x27;,#22,#32,$);
+<span class="lineno">31</span>#41=<mark>NEXT_ASSEMBLY_USAGE_OCCURRENCE</mark>(&#x27;1b&#x27;,&#x27;&#x27;,&#x27;&#x27;,#22,#35,$);
+<span class="lineno">32</span>/* Level 2: two children under each L1 */
+<span class="lineno">33</span>#50=PRODUCT(&#x27;L2AA&#x27;,&#x27;l2aa&#x27;,&#x27;&#x27;,(#10));
+<span class="lineno">34</span>#51=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#50);
+<span class="lineno">35</span>#52=PRODUCT_DEFINITION(&#x27;design&#x27;,&#x27;&#x27;,#51,#13);
+<span class="lineno">36</span>#53=PRODUCT(&#x27;L2AB&#x27;,&#x27;l2ab&#x27;,&#x27;&#x27;,(#10));
+<span class="lineno">37</span>#54=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#53);
+<span class="lineno">38</span>#55=PRODUCT_DEFINITION(&#x27;design&#x27;,&#x27;&#x27;,#54,#13);
+<span class="lineno">39</span>#60=PRODUCT(&#x27;L2BA&#x27;,&#x27;l2ba&#x27;,&#x27;&#x27;,(#10));
+<span class="lineno">40</span>#61=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#60);
+<span class="lineno">41</span>#62=PRODUCT_DEFINITION(&#x27;design&#x27;,&#x27;&#x27;,#61,#13);
+<span class="lineno">42</span>#63=PRODUCT(&#x27;L2BB&#x27;,&#x27;l2bb&#x27;,&#x27;&#x27;,(#10));
+<span class="lineno">43</span>#64=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#63);
+<span class="lineno">44</span>#65=PRODUCT_DEFINITION(&#x27;design&#x27;,&#x27;&#x27;,#64,#13);
+<span class="lineno">45</span>#70=<mark>NEXT_ASSEMBLY_USAGE_OCCURRENCE</mark>(&#x27;2aa&#x27;,&#x27;&#x27;,&#x27;&#x27;,#32,#52,$);
+<span class="lineno">46</span>#71=<mark>NEXT_ASSEMBLY_USAGE_OCCURRENCE</mark>(&#x27;2ab&#x27;,&#x27;&#x27;,&#x27;&#x27;,#32,#55,$);
+<span class="lineno">47</span>#72=<mark>NEXT_ASSEMBLY_USAGE_OCCURRENCE</mark>(&#x27;2ba&#x27;,&#x27;&#x27;,&#x27;&#x27;,#35,#62,$);
+<span class="lineno">48</span>#73=<mark>NEXT_ASSEMBLY_USAGE_OCCURRENCE</mark>(&#x27;2bb&#x27;,&#x27;&#x27;,&#x27;&#x27;,#35,#65,$);
+<span class="lineno">49</span>/* Level 3 leaves under each L2 */
+<span class="lineno">50</span>#80=PRODUCT(&#x27;L3&#x27;,&#x27;l3_leaf&#x27;,&#x27;&#x27;,(#10));
+<span class="lineno">51</span>#81=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#80);
+<span class="lineno">52</span>#82=PRODUCT_DEFINITION(&#x27;design&#x27;,&#x27;&#x27;,#81,#13);
+<span class="lineno">53</span>#90=<mark>NEXT_ASSEMBLY_USAGE_OCCURRENCE</mark>(&#x27;3aa&#x27;,&#x27;&#x27;,&#x27;&#x27;,#52,#82,$);
+<span class="lineno">54</span>#91=<mark>NEXT_ASSEMBLY_USAGE_OCCURRENCE</mark>(&#x27;3ab&#x27;,&#x27;&#x27;,&#x27;&#x27;,#55,#82,$);
+<span class="lineno">55</span>#92=<mark>NEXT_ASSEMBLY_USAGE_OCCURRENCE</mark>(&#x27;3ba&#x27;,&#x27;&#x27;,&#x27;&#x27;,#62,#82,$);
+<span class="lineno">56</span>#93=<mark>NEXT_ASSEMBLY_USAGE_OCCURRENCE</mark>(&#x27;3bb&#x27;,&#x27;&#x27;,&#x27;&#x27;,#65,#82,$);
+<span class="lineno">57</span>ENDSEC;
+<span class="lineno">58</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Pf031.html">&larr; Pf031</a> <a class="up" href="index.html">§12.10 Scale &amp; performance</a> <a class="next" href="Pf033.html">Pf033 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

@@ -1,0 +1,83 @@
+/* Ps012 - Swept solid silently truncated to a simple cone - kernel accepts file silently; tier-3 introspection reveals intended swept profile became a straight CONICAL_SURFACE */
+ISO-10303-21;
+HEADER;
+FILE_DESCRIPTION(('Ps012 pathological-success','Sweep collapsed to a cone'),'2;1');
+FILE_NAME('Ps012.stp','2026-04-26T00:00:00',(''),(''),'manual','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+/* Producer's part: a "vase" -- a closed solid of revolution whose
+   profile is a B-spline curve that bulges outward at mid-height and
+   pinches at top. The export pipeline simplified the swept profile
+   to a single straight line, yielding a CONICAL_SURFACE. The kernel
+   gets a perfectly valid frustum-like solid; the producer thought it
+   was a curved vase. The shape is wrong but the file is clean. */
+/* Cone parameters: base radius 5 at z=0, apex angle so radius is 2 at z=10 */
+#100=CARTESIAN_POINT('cone_apex',(0.0,0.0,16.666666666666668));
+#101=DIRECTION('cone_axis',(0.0,0.0,-1.0));
+#102=DIRECTION('cone_ref',(1.0,0.0,0.0));
+#103=AXIS2_PLACEMENT_3D('',#100,#101,#102);
+#104=CONICAL_SURFACE('truncated_vase',#103,0.0,0.16514867741462683);
+/* Top and bottom circular boundaries */
+#110=CARTESIAN_POINT('center_bot',(0.0,0.0,0.0));
+#111=AXIS2_PLACEMENT_3D('',#110,#101,#102);
+#112=CIRCLE('bot_circle',#111,5.0);
+#120=CARTESIAN_POINT('center_top',(0.0,0.0,10.0));
+#121=AXIS2_PLACEMENT_3D('',#120,#101,#102);
+#122=CIRCLE('top_circle',#121,2.0);
+/* Vertices on each circle (seam vertex) */
+#130=CARTESIAN_POINT('seam_bot',(5.0,0.0,0.0));
+#131=CARTESIAN_POINT('seam_top',(2.0,0.0,10.0));
+#132=VERTEX_POINT('',#130);
+#133=VERTEX_POINT('',#131);
+/* Seam line on the cone */
+#140=DIRECTION('seam_dir',(-0.2873478855663453,0.0,0.9578262852211513));
+#141=VECTOR('seam_vec',#140,10.44030650891055);
+#142=LINE('seam_line',#130,#141);
+#143=EDGE_CURVE('seam',#132,#133,#142,.T.);
+/* Bottom and top edges (full circles starting/ending at seam vertex) */
+#150=EDGE_CURVE('bot_edge',#132,#132,#112,.T.);
+#151=EDGE_CURVE('top_edge',#133,#133,#122,.T.);
+/* Side face: cone strip bounded by [seam, top_circle, seam_rev, bot_circle] */
+#200=ORIENTED_EDGE('',*,*,#143,.T.);
+#201=ORIENTED_EDGE('',*,*,#151,.T.);
+#202=ORIENTED_EDGE('',*,*,#143,.F.);
+#203=ORIENTED_EDGE('',*,*,#150,.F.);
+#204=EDGE_LOOP('',(#200,#201,#202,#203));
+#205=FACE_OUTER_BOUND('',#204,.T.);
+#206=ADVANCED_FACE('cone_side',(#205),#104,.T.);
+/* Bottom planar disk (z=0, normal -Z) */
+#210=DIRECTION('',(0.0,0.0,-1.0));
+#211=AXIS2_PLACEMENT_3D('',#110,#210,#102);
+#212=PLANE('bot_disk',#211);
+#213=ORIENTED_EDGE('',*,*,#150,.F.);
+#214=EDGE_LOOP('',(#213));
+#215=FACE_OUTER_BOUND('',#214,.T.);
+#216=ADVANCED_FACE('bottom',(#215),#212,.F.);
+/* Top planar disk (z=10, normal +Z) */
+#220=DIRECTION('',(0.0,0.0,1.0));
+#221=AXIS2_PLACEMENT_3D('',#120,#220,#102);
+#222=PLANE('top_disk',#221);
+#223=ORIENTED_EDGE('',*,*,#151,.T.);
+#224=EDGE_LOOP('',(#223));
+#225=FACE_OUTER_BOUND('',#224,.T.);
+#226=ADVANCED_FACE('top',(#225),#222,.T.);
+#500=CLOSED_SHELL('cone_shell',(#206,#216,#226));
+#510=MANIFOLD_SOLID_BREP('faux_vase',#500);
+#9000=PRODUCT_CONTEXT('',#1,'mechanical');
+#9001=PRODUCT('Ps012','Ps012','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
+#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
+#9022=ADVANCED_BREP_SHAPE_REPRESENTATION('',(#510),#9010);
+#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+ENDSEC;
+END-ISO-10303-21;

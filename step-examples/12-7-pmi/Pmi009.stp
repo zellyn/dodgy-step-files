@@ -1,0 +1,59 @@
+/* Pmi009 - Rounding mode unspecified (ASME banker's vs ISO half-up)
+   Defect: For nominal 0.5625 inch displayed at 3 decimals, ASME banker's
+   rounding yields 0.562 while ISO half-up yields 0.563. STEP carries no
+   flag indicating which rule applied. This file declares INCH units and
+   nominal 0.5625; receivers cannot determine whether 0.562 or 0.563 is
+   the canonical display value, so round-trip comparisons can flag false
+   diffs depending on rounding rule used. */
+ISO-10303-21;
+HEADER;
+FILE_DESCRIPTION(('Pmi009 - rounding mode (ASME vs ISO) unspecified'),'2;1');
+FILE_NAME('Pmi009.stp','2026-04-26T00:00:00',('catalog'),('cad'),
+  'manual','','');
+FILE_SCHEMA(('AP242_MANAGED_MODEL_BASED_3D_ENGINEERING_MIM_LF { 1 0 10303 442 1 1 4 }'));
+ENDSEC;
+DATA;
+#10 = APPLICATION_CONTEXT('managed model based 3d engineering');
+#11 = APPLICATION_PROTOCOL_DEFINITION('international standard',
+  'ap242_managed_model_based_3d_engineering',2020,#10);
+#12 = PRODUCT_CONTEXT('',#10,'mechanical');
+#13 = PRODUCT('Pmi009','InchPart','',(#12));
+#14 = PRODUCT_DEFINITION_FORMATION('','',#13);
+#15 = PRODUCT_DEFINITION_CONTEXT('',#10,'design');
+#16 = PRODUCT_DEFINITION('','',#14,#15);
+#17 = PRODUCT_DEFINITION_SHAPE('','',#16);
+/* Inch declared as conversion-based unit (25.4 mm) */
+#20 = ( LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT(.MILLI.,.METRE.) );
+#21 = LENGTH_MEASURE_WITH_UNIT(LENGTH_MEASURE(25.4),#20);
+#22 = DIMENSIONAL_EXPONENTS(1.0,0.0,0.0,0.0,0.0,0.0,0.0);
+#23 = ( CONVERSION_BASED_UNIT('INCH',#21) NAMED_UNIT(#22) LENGTH_UNIT() );
+#24 = ( NAMED_UNIT(*) PLANE_ANGLE_UNIT() SI_UNIT($,.RADIAN.) );
+#26 = ( NAMED_UNIT(*) SI_UNIT($,.STERADIAN.) SOLID_ANGLE_UNIT() );
+#27 = UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.0001),#23,
+  'distance_accuracy_value','');
+#28 = ( GEOMETRIC_REPRESENTATION_CONTEXT(3)
+  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#27))
+  GLOBAL_UNIT_ASSIGNED_CONTEXT((#23,#24,#26))
+  REPRESENTATION_CONTEXT('','3D') );
+#30 = CARTESIAN_POINT('',(0.0,0.0,0.0));
+#31 = DIRECTION('',(0.0,0.0,1.0));
+#32 = DIRECTION('',(1.0,0.0,0.0));
+#33 = AXIS2_PLACEMENT_3D('',#30,#31,#32);
+/* Nominal 0.5625 inch displayed at 3 decimals.
+   ASME bank: 0.562; ISO half-up: 0.563. No flag distinguishes. */
+#40 = SHAPE_ASPECT('width','',#17,.T.);
+#41 = DIMENSIONAL_SIZE(#40,'width');
+#42 = MEASURE_REPRESENTATION_ITEM('nom',LENGTH_MEASURE(0.5625),#23);
+#43 = SHAPE_DIMENSION_REPRESENTATION('rep',(#42),#28);
+/* Plus-minus tolerance also at sub-half-LSB; rounding rule ambiguous */
+#50 = PLUS_MINUS_TOLERANCE(#51,#41);
+#51 = TOLERANCE_VALUE(#52,#53);
+#52 = LENGTH_MEASURE_WITH_UNIT(LENGTH_MEASURE(-0.0005),#23);
+#53 = LENGTH_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.0005),#23);
+/* Precision qualifier 3 decimals — display is unambiguous; rounding rule is not */
+#60 = VALUE_FORMAT_TYPE_QUALIFIER('NR2 1.3');
+#70 = DRAUGHTING_MODEL('Default',(),#28);
+#80 = SHAPE_REPRESENTATION('',(#33),#28);
+#81 = SHAPE_DEFINITION_REPRESENTATION(#17,#80);
+ENDSEC;
+END-ISO-10303-21;

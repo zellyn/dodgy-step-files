@@ -1,0 +1,28 @@
+ISO-10303-21;
+/* M185 - AP238 MACHINING_TOOL_FEEDSPEED feed-per-tooth x spindle speed exceeds tool max.
+ * Defect: a MACHINING_TOOL_FEEDSPEED declares spindle 12000 rpm and
+ * feed-per-tooth 0.10 mm with a 4-flute end-mill, giving an effective
+ * feed of 12000 x 4 x 0.10 = 4800 mm/min. Tool manufacturer's rated
+ * maximum chip-load for a 6 mm carbide cutter is closer to 0.04 mm
+ * per tooth at this RPM; the tool will fracture. */
+HEADER;
+FILE_DESCRIPTION(('M185 test case','AP238 feedspeed product exceeds tool envelope'),'2;1');
+FILE_NAME('M185.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AP238_STEP_NC_MIM { 1 0 10303 238 1 0 0 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('numerical_control_machining');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
+  'numerical_control_machining',2007,#1);
+#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10))
+     REPRESENTATION_CONTEXT('nc','3D'));
+/* Defect: feed-per-tooth 0.10 mm x 4 flutes x 12000 rpm = 4800 mm/min,
+   well above tool envelope. */
+#80=MEASURE_WITH_UNIT(POSITIVE_RATIO_MEASURE(12000.0),#10);
+#81=MEASURE_WITH_UNIT(POSITIVE_LENGTH_MEASURE(0.10),#10);
+#100=MACHINING_TOOL_FEEDSPEED('aggressive_chipload',#80,#81,$);
+#200=WORKPLAN('main',(),$,$,$);
+ENDSEC;
+END-ISO-10303-21;

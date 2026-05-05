@@ -1,0 +1,52 @@
+ISO-10303-21;
+/* Pmi072 - DIMENSION_PAIR with mismatched units between the two
+ * paired DIMENSIONAL_SIZE / DIMENSIONAL_LOCATION instances
+ * Defect: AP242 DIMENSION_PAIR couples two dimensions that are
+ * conceptually the same measurement (often one is a primary, the
+ * other a secondary or check) so that downstream tolerance
+ * stack-up consumes them as a unit. The spec does not forbid
+ * mismatched units between the two halves; a producer that
+ * sources one half from an inch-based legacy CAD library and the
+ * other from a millimetre-based current export emits the pair
+ * with mixed units. The pair is mathematically inconsistent
+ * unless the receiver normalises units before comparing. */
+HEADER;
+FILE_DESCRIPTION(('Pmi072 - DIMENSION_PAIR mismatched units'),'2;1');
+FILE_NAME('Pmi072.stp','2026-04-26T00:00:00',(''),(''),
+  'cad-research-suite','','');
+FILE_SCHEMA(('AP242_MANAGED_MODEL_BASED_3D_ENGINEERING_MIM_LF { 1 0 10303 442 1 1 4 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('managed model based 3d engineering');
+#2=PRODUCT_CONTEXT('',#1,'mechanical');
+#3=PRODUCT('Pmi072','DimPairUnitsPart','',(#2));
+#4=PRODUCT_DEFINITION_FORMATION('','',#3);
+#5=PRODUCT_DEFINITION_CONTEXT('',#1,'design');
+#6=PRODUCT_DEFINITION('','',#4,#5);
+#7=PRODUCT_DEFINITION_SHAPE('','',#6);
+#20=( LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT(.MILLI.,.METRE.) );
+#21=( CONVERSION_BASED_UNIT('INCH',#26) LENGTH_UNIT() NAMED_UNIT(#27) );
+#22=( NAMED_UNIT(*) PLANE_ANGLE_UNIT() SI_UNIT($,.RADIAN.) );
+#23=( NAMED_UNIT(*) SI_UNIT($,.STERADIAN.) SOLID_ANGLE_UNIT() );
+#24=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#20,
+  'distance_accuracy_value','');
+#25=( GEOMETRIC_REPRESENTATION_CONTEXT(3)
+  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#24))
+  GLOBAL_UNIT_ASSIGNED_CONTEXT((#20,#22,#23))
+  REPRESENTATION_CONTEXT('','3D') );
+#26=LENGTH_MEASURE_WITH_UNIT(LENGTH_MEASURE(25.4),#20);
+#27=DIMENSIONAL_EXPONENTS(1.0,0.0,0.0,0.0,0.0,0.0,0.0);
+#40=SHAPE_ASPECT('width','',#7,.T.);
+#41=SHAPE_ASPECT('height','',#7,.T.);
+#50=DIMENSIONAL_SIZE(#40,'distance');
+#51=DIMENSIONAL_SIZE(#41,'distance');
+/* Defect: pair members carry different units */
+#60=MEASURE_REPRESENTATION_ITEM('mm',LENGTH_MEASURE(50.0),#20);
+#61=MEASURE_REPRESENTATION_ITEM('inch',LENGTH_MEASURE(2.0),#21);
+#62=SHAPE_DIMENSION_REPRESENTATION('',(#60),#25);
+#63=SHAPE_DIMENSION_REPRESENTATION('',(#61),#25);
+#70=DIMENSION_PAIR('paired',#50,#51);
+#90=SHAPE_REPRESENTATION('',(),#25);
+#91=SHAPE_DEFINITION_REPRESENTATION(#7,#90);
+ENDSEC;
+END-ISO-10303-21;

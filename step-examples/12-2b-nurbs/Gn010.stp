@@ -1,0 +1,45 @@
+/* Gn010 - Out-of-range / NaN NURBS control points
+   Defect: a B_SPLINE_SURFACE_WITH_KNOTS otherwise looks fine -- 4x4
+   net, degree (3,3), Bezier-style knots -- but one interior control
+   point is at (1.0e+100, 1.0e+100, 1.0e+100), far outside any
+   reasonable bounding box.  Often produced by botched rational arithmetic
+   or integer overflow on weight normalization.  Compliant readers should
+   reject the surface and refuse to materialize, or at minimum refuse to
+   use it for projection or intersection.  Validate magnitudes against
+   bounding-box envelope.  Note: STEP REAL grammar does not admit NaN, so
+   the textual artifact uses 1e+100 as the largest finite proxy.
+   Source: HOOPS Exchange SDHE-22166 (W017). */
+ISO-10303-21;
+HEADER;
+FILE_DESCRIPTION(('Gn010 - NURBS surface with out-of-range control point'),
+  '2;1');
+FILE_NAME('Gn010.stp','2026-04-26T00:00:00',('auto-generated'),(''),
+  'auto-generated','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+#10=CARTESIAN_POINT('p00',(0.0,0.0,0.0));
+#11=CARTESIAN_POINT('p01',(0.0,1.0,0.0));
+#12=CARTESIAN_POINT('p02',(0.0,2.0,0.0));
+#13=CARTESIAN_POINT('p03',(0.0,3.0,0.0));
+#20=CARTESIAN_POINT('p10',(1.0,0.0,0.0));
+/* Defect: interior control point at 1e100 in every coordinate. */
+#21=CARTESIAN_POINT('p11_bad',(1.0E+100,1.0E+100,1.0E+100));
+#22=CARTESIAN_POINT('p12',(1.0,2.0,0.5));
+#23=CARTESIAN_POINT('p13',(1.0,3.0,0.0));
+#30=CARTESIAN_POINT('p20',(2.0,0.0,0.0));
+#31=CARTESIAN_POINT('p21',(2.0,1.0,0.5));
+#32=CARTESIAN_POINT('p22',(2.0,2.0,0.5));
+#33=CARTESIAN_POINT('p23',(2.0,3.0,0.0));
+#40=CARTESIAN_POINT('p30',(3.0,0.0,0.0));
+#41=CARTESIAN_POINT('p31',(3.0,1.0,0.0));
+#42=CARTESIAN_POINT('p32',(3.0,2.0,0.0));
+#43=CARTESIAN_POINT('p33',(3.0,3.0,0.0));
+#100=B_SPLINE_SURFACE_WITH_KNOTS('out_of_range_pole',
+  3,3,
+  ((#10,#11,#12,#13),(#20,#21,#22,#23),(#30,#31,#32,#33),(#40,#41,#42,#43)),
+  .UNSPECIFIED.,.F.,.F.,.F.,
+  (4,4),(4,4),(0.0,1.0),(0.0,1.0),
+  .UNSPECIFIED.);
+ENDSEC;
+END-ISO-10303-21;

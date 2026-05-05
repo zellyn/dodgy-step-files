@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Ad106 — `EXTERNAL_FILE` URI resolves through a symlink (TOCTOU race)</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.11 Adversarial / parser robustness</a> <span class="sep">/</span> <span class="current">Ad106</span>
+</nav>
+<header class="title-bar">
+<h1>Ad106 <span class="sep">—</span> <span class="entry-title">`EXTERNAL_FILE` URI resolves through a symlink (TOCTOU race)</span></h1>
+<p class="category">§12.11 adversarial (sub-class: TOCTOU)</p>
+<p class="tag-pills">
+<a class="tag tag-spec-violation" href="../by-tag/spec-violation/index.html">spec-violation</a>
+<a class="tag tag-adversarial" href="../by-tag/adversarial/index.html">adversarial</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-11-adversarial/Ad106.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-11-adversarial/Ad106.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>bug-reporter language: &quot;STEP external-file resolves to wrong path&quot;, &quot;symlink race on STEP load&quot;</li>
+<li>CWE-367 (TOCTOU)</li>
+<li>16-iso-spec ISO 10303-21 Ed.3 §8 (REFERENCE / EXTERNAL_FILE)</li>
+</ul></section>
+<section><h2>Sender</h2>
+<p>deduced — adversarial filesystem context, or a multi-process pipeline where one process writes a file and another renames the path between check and open</p></section>
+<section><h2>Description</h2>
+<p>An EXTERNAL_FILE entry references a sibling Part-21 file via a path. A receiver that follows the path performs at minimum two filesystem operations: a stat / access check (to verify the file exists, is the right type, fits a size budget) and an open (to read the bytes). On systems where the path resolves through a symlink, the symlink target may change between the check and the open — the classic TOCTOU race. A receiver that validates the stat result then opens the path can read a different file than it validated. Bug-reporter language: &quot;STEP file follows symlink&quot;, &quot;external-file resolves to wrong path&quot;, &quot;TOCTOU race in STEP load&quot;.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>a STEP file whose REFERENCE / EXTERNAL_FILE clause names a path `/tmp/parts/widget.stp`; the receiver-side filesystem is set up so `/tmp/parts/widget.stp` is a symlink that the attacker can swap between the check and the open. The STEP body alone establishes only the path-naming side; the demonstration requires the receiver-side filesystem manipulation.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>open the path once and stat the resulting file descriptor; never re-resolve the path between check and open. Refuse to follow symlinks unless explicitly enabled. Reject EXTERNAL_FILE paths that resolve outside a configured root directory.</p></section>
+<section><h2>Notes</h2>
+<p>Provenance tier: cross-file-state — bytes alone cannot demonstrate this defect; the symptom is a filesystem-race between path-resolution operations on the receiver side. The static fixture encodes only the path-naming precondition; the symlink-swap requires receiver-side filesystem manipulation. **OCC behavior**: emits a diagnostic but produces no shape (warn-and-proceed by oracle, but result is empty); outside catalog&#x27;s allowed set ({reject}). Kernel-bug witnessed: receivers must reject this fixture per the catalog&#x27;s stated invariant.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<section><h2>Provenance tier</h2>
+<p><code>cross-file-state</code> — defect not fully embodied in fixture bytes.</p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>contains(b&#x27;REFERENCE;&#x27;) or contains(b&#x27;EXTERNAL_FILE&#x27;) or contains(b&#x27;/tmp/&#x27;)</code></li>
+<li><code>contains(b&#x27;companion&#x27;) or contains(b&#x27;/tmp/parts/&#x27;) or contains(b&#x27;widget.stp&#x27;)</code></li>
+</ul></section>
+<section><h2>Live oracle output</h2>
+<table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
+<tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>no_shapes_loaded</code></td></tr>
+</tbody></table>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>/* Ad106 - EXTERNAL_FILE URI resolves through a symlink (TOCTOU race)
+<span class="lineno">2</span> * Defect: an Edition-3 REFERENCE section names a path that the receiver
+<span class="lineno">3</span> * stat()s and then open()s in two filesystem operations. If the path
+<span class="lineno">4</span> * resolves through a symlink that an attacker swaps between check and
+<span class="lineno">5</span> * open, the receiver opens a different file than it validated. This
+<span class="lineno">6</span> * fixture establishes the path-naming side; the demonstration requires
+<span class="lineno">7</span> * receiver-side filesystem manipulation. Provenance tier: cross-file-state. */
+<span class="lineno">8</span>ISO-10303-21;
+<span class="lineno">9</span>HEADER;
+<span class="lineno">10</span>FILE_DESCRIPTION((&#x27;Ad106 - EXTERNAL_FILE TOCTOU symlink-swap witness&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">11</span>FILE_NAME(&#x27;Ad106.stp&#x27;,&#x27;2026-04-30T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">12</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
+<span class="lineno">13</span>ENDSEC;
+<span class="lineno">14</span>REFERENCE;
+<span class="lineno">15</span>/* Path is a symlink target attackable between stat and open. */
+<span class="lineno">16</span>&lt;companion&gt;=&lt;file:/tmp/parts/widget.stp#main_assembly&gt;;
+<span class="lineno">17</span>ENDSEC;
+<span class="lineno">18</span>DATA;
+<span class="lineno">19</span>#1=APPLICATION_CONTEXT(&#x27;automotive_design&#x27;);
+<span class="lineno">20</span>#10=CARTESIAN_POINT(&#x27;benign&#x27;,(0.0,0.0,0.0));
+<span class="lineno">21</span>ENDSEC;
+<span class="lineno">22</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Ad105.html">&larr; Ad105</a> <a class="up" href="index.html">§12.11 Adversarial / parser robustness</a> <a class="next" href="Ad107.html">Ad107 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

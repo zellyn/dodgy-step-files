@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Tfa058 — Plane-typed face whose vertices are non-coplanar</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.3c Faces / sewing / free bound</a> <span class="sep">/</span> <span class="current">Tfa058</span>
+</nav>
+<header class="title-bar">
+<h1>Tfa058 <span class="sep">—</span> <span class="entry-title">Plane-typed face whose vertices are non-coplanar</span></h1>
+<p class="category">§12.3c (sub-class: face-geometry mismatch)</p>
+<p class="severity-badge severity-p1">P1 — silent data loss</p>
+<p class="tag-pills">
+<a class="tag tag-topology" href="../by-tag/topology/index.html">topology</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-3c-faces/Tfa058.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-3c-faces/Tfa058.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>OCCT BRepLib_MakeFace FaceError.NotPlanar (uncovered class evidence)</li>
+</ul></section>
+<section><h2>Sender</h2>
+<p>deduced — OCCT uncovered-class sweep, Pass C</p></section>
+<section><h2>Description</h2>
+<p>An `ADVANCED_FACE` declares its surface as a `PLANE`, but the bounding wire visits 3D vertices that don&#x27;t lie on that plane (the largest deviation exceeds any plausible tolerance). Bug-reporter language: &quot;face not planar&quot;, &quot;vertices not on plane&quot;, &quot;non-flat plane face&quot;.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>`ADVANCED_FACE` with `face_geometry = #PLANE` (z=0 plane). The four corner vertices of the bounding rectangle: (0,0,0), (1,0,0), (1,1,0), (0,1,0.5) — fourth vertex 0.5 above the plane.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>Reproject vertices, refit a non-planar surface, or reject as malformed.</p></section>
+<section><h2>Notes</h2>
+<p>Synonyms: &quot;warped &#x27;plane&#x27;&quot;, &quot;non-coplanar quad&quot;, &quot;face declared planar but vertices not flat&quot;, &quot;vertices off declared PLANE surface&quot;, &quot;non-coplanar plane face&quot;.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a</code></p></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>face[0].surface_type == &quot;plane&quot;</code></li>
+<li><code>n_edges_total &gt;= 4</code></li>
+<li><code>n_vertices_total &gt;= 8</code></li>
+<li><code>brepcheck.valid == True</code></li>
+</ul></section>
+<section><h2>Live oracle output</h2>
+<table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
+<tr><td><code>occt_heal_on</code></td><td><code>shape(1)</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>shape(1)</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>shape(9)</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>shape(9)</code></td></tr>
+<tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>not_manifold</code></td></tr>
+</tbody></table>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* Tfa058 - Plane-typed face whose vertices are non-coplanar
+<span class="lineno">3</span> * Plane z=0 with full FACE_OUTER_BOUND wire of four edges. The 4th vertex
+<span class="lineno">4</span> * is at (0,1,0.5) -- 0.5mm above the plane. The bounding wire references
+<span class="lineno">5</span> * this off-plane vertex, exposing the warped-plane defect. */
+<span class="lineno">6</span>HEADER;
+<span class="lineno">7</span>FILE_DESCRIPTION((&#x27;Tfa058 test case&#x27;,&#x27;Plane-typed face with one off-plane vertex (z=0.5) referenced by wire&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">8</span>FILE_NAME(&#x27;Tfa058.stp&#x27;,&#x27;2026-04-30T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">9</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }&#x27;));
+<span class="lineno">10</span>ENDSEC;
+<span class="lineno">11</span>DATA;
+<span class="lineno">12</span>#1=APPLICATION_CONTEXT(&#x27;automotive_design&#x27;);
+<span class="lineno">13</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,&#x27;automotive_design&#x27;,2000,#1);
+<span class="lineno">14</span>/* Plane z=0 */
+<span class="lineno">15</span>#10=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">16</span>#11=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">17</span>#12=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">18</span>#13=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#10,#11,#12);
+<span class="lineno">19</span>#14=PLANE(&#x27;z_zero_plane&#x27;,#13);
+<span class="lineno">20</span>/* Four corners -- the fourth is OFF the plane at z=0.5 */
+<span class="lineno">21</span>#20=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));#21=VERTEX_POINT(&#x27;V1&#x27;,#20);
+<span class="lineno">22</span>#22=CARTESIAN_POINT(&#x27;&#x27;,(1.0,0.0,0.0));#23=VERTEX_POINT(&#x27;V2&#x27;,#22);
+<span class="lineno">23</span>#24=CARTESIAN_POINT(&#x27;&#x27;,(1.0,1.0,0.0));#25=VERTEX_POINT(&#x27;V3&#x27;,#24);
+<span class="lineno">24</span>#26=CARTESIAN_POINT(&#x27;off_plane_z_0p5&#x27;,(0.0,1.0,0.5));#27=VERTEX_POINT(&#x27;V4_off_plane&#x27;,#26);
+<span class="lineno">25</span>/* Edges */
+<span class="lineno">26</span>#30=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));#31=VECTOR(&#x27;&#x27;,#30,1.0);#32=LINE(&#x27;&#x27;,#20,#31);
+<span class="lineno">27</span>#33=EDGE_CURVE(&#x27;e1&#x27;,#21,#23,#32,.T.);
+<span class="lineno">28</span>#34=DIRECTION(&#x27;&#x27;,(0.0,1.0,0.0));#35=VECTOR(&#x27;&#x27;,#34,1.0);#36=LINE(&#x27;&#x27;,#22,#35);
+<span class="lineno">29</span>#37=EDGE_CURVE(&#x27;e2&#x27;,#23,#25,#36,.T.);
+<span class="lineno">30</span>/* e3 goes off-plane: from V3=(1,1,0) to V4=(0,1,0.5) */
+<span class="lineno">31</span>#38=DIRECTION(&#x27;&#x27;,(-0.8944271909999159,0.0,0.4472135954999579));#39=VECTOR(&#x27;&#x27;,#38,1.118);#40=LINE(&#x27;&#x27;,#24,#39);
+<span class="lineno">32</span>#41=EDGE_CURVE(&#x27;e3_to_off_plane_vertex&#x27;,#25,#27,#40,.T.);
+<span class="lineno">33</span>/* e4 goes back: from V4=(0,1,0.5) to V1=(0,0,0) */
+<span class="lineno">34</span>#42=DIRECTION(&#x27;&#x27;,(0.0,-0.8944271909999159,-0.4472135954999579));#43=VECTOR(&#x27;&#x27;,#42,1.118);#44=LINE(&#x27;&#x27;,#26,#43);
+<span class="lineno">35</span>#45=EDGE_CURVE(&#x27;e4_from_off_plane_vertex&#x27;,#27,#21,#44,.T.);
+<span class="lineno">36</span>#50=ORIENTED_EDGE(&#x27;&#x27;,*,*,#33,.T.);
+<span class="lineno">37</span>#51=ORIENTED_EDGE(&#x27;&#x27;,*,*,#37,.T.);
+<span class="lineno">38</span>#52=ORIENTED_EDGE(&#x27;&#x27;,*,*,#41,.T.);
+<span class="lineno">39</span>#53=ORIENTED_EDGE(&#x27;&#x27;,*,*,#45,.T.);
+<span class="lineno">40</span>#54=EDGE_LOOP(&#x27;outer_with_offplane_v4&#x27;,(#50,#51,#52,#53));
+<span class="lineno">41</span>#55=FACE_OUTER_BOUND(&#x27;&#x27;,#54,.T.);
+<span class="lineno">42</span>#100=ADVANCED_FACE(&#x27;non_planar_plane_face&#x27;,(#55),#14,.T.);
+<span class="lineno">43</span>/* Wrap: minimal PRODUCT chain so OCCT TransferRoots produces a shape. */
+<span class="lineno">44</span>#9000=PRODUCT_CONTEXT(&#x27;&#x27;,#1,&#x27;mechanical&#x27;);
+<span class="lineno">45</span>#9001=PRODUCT(&#x27;Tfa058&#x27;,&#x27;Tfa058&#x27;,&#x27;&#x27;,(#9000));
+<span class="lineno">46</span>#9002=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#9001);
+<span class="lineno">47</span>#9003=PRODUCT_DEFINITION_CONTEXT(&#x27;part definition&#x27;,#1,&#x27;design&#x27;);
+<span class="lineno">48</span>#9004=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,#9002,#9003);
+<span class="lineno">49</span>#9005=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,#9004);
+<span class="lineno">50</span>#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">51</span>#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+<span class="lineno">52</span>#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+<span class="lineno">53</span>#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,&#x27;distance_accuracy_value&#x27;,&#x27;&#x27;);
+<span class="lineno">54</span>#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT(&#x27;&#x27;,&#x27;3D&#x27;));
+<span class="lineno">55</span>#9020=OPEN_SHELL(&#x27;wrap_shell&#x27;,(#100));
+<span class="lineno">56</span>#9021=SHELL_BASED_SURFACE_MODEL(&#x27;wrap_sbsm&#x27;,(#9020));
+<span class="lineno">57</span>#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION(&#x27;&#x27;,(#9021),#9010);
+<span class="lineno">58</span>#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+<span class="lineno">59</span>ENDSEC;
+<span class="lineno">60</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Tfa057.html">&larr; Tfa057</a> <a class="up" href="index.html">§12.3c Faces / sewing / free bound</a> <a class="next" href="Tfa059.html">Tfa059 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Le049 — Carriage-return stripping during STEP file write</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.1a Encoding &amp; string-literal defects</a> <span class="sep">/</span> <span class="current">Le049</span>
+</nav>
+<header class="title-bar">
+<h1>Le049 <span class="sep">—</span> <span class="entry-title">Carriage-return stripping during STEP file write</span></h1>
+<p class="category">§12.1a encoding/strings</p>
+<p class="severity-badge severity-p1">P1 — silent data loss</p>
+<p class="tag-pills">
+<a class="tag tag-encoding" href="../by-tag/encoding/index.html">encoding</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-1a-encoding/Le049.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-1a-encoding/Le049.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>OCCT MANTIS#0033602</li>
+<li>OCCT MANTIS#0028454 (OCCT MANTIS tracker 502 as of 2026-05-02)</li>
+</ul></section>
+<section><h2>Description</h2>
+<p>A STEP writer normalises line endings by stripping all `\r` characters. When a string literal contains a literal carriage return (e.g., a multi-line description in a `DESCRIPTION` field), the stripping also applies inside string contexts — corrupting embedded text.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>STEP record `DESCRIPTION_ATTRIBUTE(&#x27;line1\r\nline2&#x27;,&#x27;desc&#x27;)` where the `\r` is intentional. Writer strips, output reads `line1\nline2`.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>Heal and accept: line-ending normalisation only outside string literals; preserve string contents byte-for-byte (with proper escaping via `\X\` if needed). Must not silently strip CR.</p></section>
+<section><h2>Notes</h2>
+<p>**See also**: Le017, Le028. Provenance tier: requires-sibling-pair — bytes alone cannot demonstrate the writer-side stripping; the defect is the differential between the writer&#x27;s input (string containing `\r`) and its output (string without `\r`). Demonstrating this requires both an input fixture and the corrupted output it produces, exercised through a STEP writer. Synonyms: &quot;STEP writer strips carriage return&quot;, &quot;CR removed during STEP write&quot;, &quot;line endings normalised by writer&quot;, &quot;STEP export drops CR&quot;, &quot;writer rewrites CRLF to LF&quot;.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<section><h2>Provenance tier</h2>
+<p><code>requires-sibling-pair</code> — defect not fully embodied in fixture bytes.</p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>contains(b&#x27;ISO-10303-21&#x27;)</code></li>
+</ul></section>
+<section><h2>Cross-references</h2>
+<p><a href="Le017.html">Le017</a>, <a href="Le028.html">Le028</a></p>
+</section>
+<section><h2>Live oracle output</h2>
+<table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
+<tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>no_shapes_loaded</code></td></tr>
+</tbody></table>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span><mark>ISO-10303-21</mark>;
+<span class="lineno">2</span>/* Le049 - Carriage-return strip corrupts string content
+<span class="lineno">3</span> * Defect: DESCRIPTION_ATTRIBUTE with literal CR (0x0D) byte inside string;
+<span class="lineno">4</span> * writer normalises line endings inside string body, dropping the embedded 0x0D 0x0A. */
+<span class="lineno">5</span>HEADER;
+<span class="lineno">6</span>FILE_DESCRIPTION((&#x27;Le049 test case&#x27;,&#x27;Carriage-return strip corrupts string content&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">7</span>FILE_NAME(&#x27;Le049.stp&#x27;,&#x27;2026-04-30T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">8</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }&#x27;));
+<span class="lineno">9</span>ENDSEC;
+<span class="lineno">10</span>DATA;
+<span class="lineno">11</span>#1=APPLICATION_CONTEXT(&#x27;automotive_design&#x27;);
+<span class="lineno">12</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,&#x27;automotive_design&#x27;,2000,#1);
+<span class="lineno">13</span>#100=DESCRIPTION_ATTRIBUTE(&#x27;multi_line_with_cr&#x27;,&#x27;line1
+<span class="lineno">14</span>line2&#x27;);
+<span class="lineno">15</span>ENDSEC;
+<span class="lineno">16</span>END-<mark>ISO-10303-21</mark>;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Le048.html">&larr; Le048</a> <a class="up" href="index.html">§12.1a Encoding &amp; string-literal defects</a> <a class="next" href="Le050.html">Le050 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

@@ -1,0 +1,42 @@
+/* Ad052 - STEP file referencing itself as external file (infinite loop)
+   ----------------------------------------------------------------------
+   Catalog section : §12.11 adversarial (sub-class: cyclic-reference / DoS)
+   Sources         : 08-occt-gitlog.md G032 (Mantis 0031711)
+   See also        : Ad004
+   ----------------------------------------------------------------------
+   WARNING: This file is INTENTIONALLY MALFORMED for parser-robustness
+   testing. Do NOT use as exchange data.
+   ----------------------------------------------------------------------
+   Defect
+     External-file-assignment whose target path resolves to the main
+     file under translation; reader loops forever, re-opening and
+     re-translating the same bytes.
+   Reproducer recipe
+     APPLIED_EXTERNAL_IDENTIFICATION_ASSIGNMENT whose external source
+     names the same file path as the file containing it ('Ad052.stp').
+   Expected kernel behavior
+     Detect identity by canonical absolute path; skip self-reference;
+     emit E_SELF_EXTERNAL_REFERENCE.
+   ----------------------------------------------------------------------
+*/
+ISO-10303-21;
+HEADER;
+FILE_DESCRIPTION(('Ad052 - external assignment cycles back to this file'),'2;1');
+FILE_NAME('Ad052.stp','2026-04-26T00:00:00',('auto-generated'),(''),
+  'auto-generated','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=PRODUCT_CONTEXT('',#1,'mechanical');
+#3=PRODUCT('P','part','',(#2));
+#4=PRODUCT_DEFINITION_FORMATION('','',#3);
+#5=PRODUCT_DEFINITION_CONTEXT('',#1,'design');
+#6=PRODUCT_DEFINITION('design','',#4,#5);
+#7=IDENTIFICATION_ROLE('external_link','');
+#8=EXTERNAL_SOURCE('Ad052.stp');
+/* Defect: APPLIED_EXTERNAL_IDENTIFICATION_ASSIGNMENT references the same
+   file as the one containing this entity. */
+#9=APPLIED_EXTERNAL_IDENTIFICATION_ASSIGNMENT('id-001',#7,(#6),#8);
+ENDSEC;
+END-ISO-10303-21;

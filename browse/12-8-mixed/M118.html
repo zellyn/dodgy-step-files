@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>M118 — AP209 non-conforming mesh: tet and hex sharing a face with mismatched node counts</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.8 Mixed (tessellation, validation properties, etc.)</a> <span class="sep">/</span> <span class="current">M118</span>
+</nav>
+<header class="title-bar">
+<h1>M118 <span class="sep">—</span> <span class="entry-title">AP209 non-conforming mesh: tet and hex sharing a face with mismatched node counts</span></h1>
+<p class="category">§12.8 mixed (sub-class: AP209 mesh continuity)</p>
+<p class="severity-badge severity-p1">P1 — silent data loss</p>
+<p class="tag-pills">
+<a class="tag tag-spec-violation" href="../by-tag/spec-violation/index.html">spec-violation</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-8-mixed/M118.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-8-mixed/M118.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>deduced from AP209 §6 mesh-conformity invariants</li>
+</ul></section>
+<section><h2>Sender</h2>
+<p>deduced — multi-mesher pipeline that didn&#x27;t insert MPC tying at the tet-hex interface</p></section>
+<section><h2>Description</h2>
+<p>A linear tet (3 nodes per face) and a linear hex (4 nodes per face) share the same geometric face. The tet face has 3 nodes; the hex face has 4 nodes. There is no `MULTI_POINT_CONSTRAINT` tying the fourth-node displacement to the tet&#x27;s three nodes. The interface is geometrically continuous but kinematically free — the solver computes separation across the face. Bug-reporter language: &quot;AP209 non-conforming mesh&quot;, &quot;FEM tet-hex interface ungated&quot;, &quot;mesh leaks at element boundary&quot;.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>A `VOLUME_3D_ELEMENT_DESCRIPTOR` for a tet sharing one face geometrically with another `VOLUME_3D_ELEMENT_DESCRIPTOR` hex; no MPCs tying the extra hex node.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>detect non-conforming interfaces; warn, generate the necessary MPCs, or reject.</p></section>
+<section><h2>Notes</h2>
+<p>Synonyms: &quot;AP209 hanging node&quot;, &quot;non-conforming interface&quot;, &quot;mesh discontinuity&quot;.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>contains(b&#x27;STRUCTURAL_ANALYSIS_DESIGN&#x27;)</code></li>
+<li><code>count_entity_def(b&#x27;VOLUME_3D_ELEMENT_DESCRIPTOR&#x27;) &gt;= 2</code></li>
+</ul></section>
+<section><h2>Live oracle output</h2>
+<table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
+<tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>no_shapes_loaded</code></td></tr>
+</tbody></table>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* M118 - AP209 non-conforming mesh: tet &amp; hex sharing face mismatched.
+<span class="lineno">3</span> * Defect: a tet element shares its triangular face with a hex element&#x27;s
+<span class="lineno">4</span> * quadrilateral face. The hex face has 4 nodes; the tet face has 3
+<span class="lineno">5</span> * nodes - one hex node is unconstrained at the interface. No MPC ties
+<span class="lineno">6</span> * the unmatched node. The mesh leaks at the boundary. */
+<span class="lineno">7</span>HEADER;
+<span class="lineno">8</span>FILE_DESCRIPTION((&#x27;M118 test case&#x27;,&#x27;AP209 tet-hex non-conforming interface&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">9</span>FILE_NAME(&#x27;M118.stp&#x27;,&#x27;2026-05-02T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">10</span>FILE_SCHEMA((&#x27;<mark>STRUCTURAL_ANALYSIS_DESIGN</mark> { 1 0 10303 209 1 0 0 }&#x27;));
+<span class="lineno">11</span>ENDSEC;
+<span class="lineno">12</span>DATA;
+<span class="lineno">13</span>#1=APPLICATION_CONTEXT(&#x27;structural_analysis_design&#x27;);
+<span class="lineno">14</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,
+<span class="lineno">15</span>  &#x27;structural_analysis_design&#x27;,2001,#1);
+<span class="lineno">16</span>#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">17</span>#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+<span class="lineno">18</span>     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10))
+<span class="lineno">19</span>     REPRESENTATION_CONTEXT(&#x27;fea&#x27;,&#x27;3D&#x27;));
+<span class="lineno">20</span>/* Hex element nodes (4 corners on shared face + 4 opposite) */
+<span class="lineno">21</span>#100=CARTESIAN_POINT(&#x27;h1&#x27;,(0.0,0.0,0.0));
+<span class="lineno">22</span>#101=CARTESIAN_POINT(&#x27;h2&#x27;,(1.0,0.0,0.0));
+<span class="lineno">23</span>#102=CARTESIAN_POINT(&#x27;h3&#x27;,(1.0,1.0,0.0));
+<span class="lineno">24</span>#103=CARTESIAN_POINT(&#x27;h4&#x27;,(0.0,1.0,0.0));
+<span class="lineno">25</span>#104=CARTESIAN_POINT(&#x27;h5&#x27;,(0.0,0.0,-1.0));
+<span class="lineno">26</span>#105=CARTESIAN_POINT(&#x27;h6&#x27;,(1.0,0.0,-1.0));
+<span class="lineno">27</span>#106=CARTESIAN_POINT(&#x27;h7&#x27;,(1.0,1.0,-1.0));
+<span class="lineno">28</span>#107=CARTESIAN_POINT(&#x27;h8&#x27;,(0.0,1.0,-1.0));
+<span class="lineno">29</span>/* Tet element shares the face (h1, h2, h3) - 3 nodes; h4 hangs free. */
+<span class="lineno">30</span>#108=CARTESIAN_POINT(&#x27;t4&#x27;,(0.5,0.5,1.0));
+<span class="lineno">31</span>#110=NODE(&#x27;h1&#x27;,(#100),$);
+<span class="lineno">32</span>#111=NODE(&#x27;h2&#x27;,(#101),$);
+<span class="lineno">33</span>#112=NODE(&#x27;h3&#x27;,(#102),$);
+<span class="lineno">34</span>#113=NODE(&#x27;h4&#x27;,(#103),$);
+<span class="lineno">35</span>#114=NODE(&#x27;h5&#x27;,(#104),$);
+<span class="lineno">36</span>#115=NODE(&#x27;h6&#x27;,(#105),$);
+<span class="lineno">37</span>#116=NODE(&#x27;h7&#x27;,(#106),$);
+<span class="lineno">38</span>#117=NODE(&#x27;h8&#x27;,(#107),$);
+<span class="lineno">39</span>#118=NODE(&#x27;t4&#x27;,(#108),$);
+<span class="lineno">40</span><mark>#200=VOLUME_3D_ELEMENT_DESCRIPTOR(</mark>&#x27;hex&#x27;,&#x27;linear_hexahedron&#x27;,
+<span class="lineno">41</span>       (#110,#111,#112,#113,#114,#115,#116,#117));
+<span class="lineno">42</span>/* Defect: tet shares only 3 of 4 nodes on the interface face; #113 (h4) is unconstrained. */
+<span class="lineno">43</span><mark>#201=VOLUME_3D_ELEMENT_DESCRIPTOR(</mark>&#x27;tet_with_hanging_node&#x27;,&#x27;linear_tetrahedron&#x27;,
+<span class="lineno">44</span>       (#110,#111,#112,#118));
+<span class="lineno">45</span>ENDSEC;
+<span class="lineno">46</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="M117.html">&larr; M117</a> <a class="up" href="index.html">§12.8 Mixed (tessellation, validation properties, etc.)</a> <a class="next" href="M119.html">M119 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

@@ -1,0 +1,40 @@
+/* Ls036 - Binary literal "..." malformed (bit-count nibble or hex case)
+   ----------------------------------------------------------------------
+   Catalog section : §12.1c binary-literal grammar
+   Sources         : T036, A024, N020
+   Originally also catalogued as: Ad024
+   ----------------------------------------------------------------------
+   Defect
+     ISO 10303-21 BINARY syntax is "<n><hex>*" where <n> is 0..3
+     indicating unused bits in the final hex digit; hex digits are
+     uppercase, even-count is required after the nibble. Defects:
+       - lower-case hex ("0dead")
+       - leading nibble outside 0..3 ("4DEAD")
+       - missing leading nibble entirely ("FF")
+       - odd hex-digit count after the nibble ("3DEAD")
+   Expected behavior
+     Strict reject malformed forms; in particular enforce leading nibble
+     in 0..3 and even hex-digit count after the nibble. Lenient mode may
+     accept lowercase but must always warn.
+   ----------------------------------------------------------------------
+*/
+ISO-10303-21;
+HEADER;
+FILE_DESCRIPTION(('Ls036 - malformed binary literal forms'),'2;1');
+FILE_NAME('Ls036.stp','2026-04-26T00:00:00',('auto-generated'),(''),
+  'auto-generated','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+/* Well-formed reference: leading nibble 0, uppercase hex, even count */
+#10=BINARY_VALUE("0DEAD");
+/* Defect: lower-case hex digits */
+#20=BINARY_VALUE("0dead");
+/* Defect: leading nibble outside 0..3 */
+#30=BINARY_VALUE("4DEAD");
+/* Defect: missing leading nibble entirely */
+#40=BINARY_VALUE("FF");
+/* Defect: odd hex-digit count after the nibble */
+#50=BINARY_VALUE("3DEAD");
+ENDSEC;
+END-ISO-10303-21;

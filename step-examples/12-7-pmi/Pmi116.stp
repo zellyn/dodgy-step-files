@@ -1,0 +1,72 @@
+/* Pmi116 - FLAT_PATTERN with disjoint sub-features (no connecting bend line)
+ * Defect: a flat_pattern groups multiple sheet-metal panels but no bend
+ * line connects them. The flat layout cannot be folded back into a
+ * single 3-D part -- the panels are physically separate. Producers
+ * sometimes emit this when nesting multiple parts on a single sheet
+ * but mistakenly group them as one flat_pattern. Receivers either
+ * reject (multi-part flat invalid), heuristically split into separate
+ * patterns, or silently accept. */
+ISO-10303-21;
+HEADER;
+FILE_DESCRIPTION(('Pmi116 - flat_pattern disjoint panels (no bend line)'),'2;1');
+FILE_NAME('Pmi116.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AP242_MANAGED_MODEL_BASED_3D_ENGINEERING_MIM_LF { 1 0 10303 442 1 1 4 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('managed model based 3d engineering');
+#2=PRODUCT_CONTEXT('part',#1,'mechanical');
+#3=PRODUCT('Pmi116','flat_pattern_disjoint','',(#2));
+#4=PRODUCT_DEFINITION_FORMATION('','',#3);
+#5=PRODUCT_DEFINITION_CONTEXT('',#1,'design');
+#6=PRODUCT_DEFINITION('','',#4,#5);
+#7=PRODUCT_DEFINITION_SHAPE('','',#6);
+#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#11=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#12=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#10,'tol','');
+#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3) GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13)) GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12)) REPRESENTATION_CONTEXT('','3D'));
+/* 50x50 mm planar host face (sheet-metal sheet). */
+#100=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#101=CARTESIAN_POINT('',(50.0,0.0,0.0));
+#102=CARTESIAN_POINT('',(50.0,50.0,0.0));
+#103=CARTESIAN_POINT('',(0.0,50.0,0.0));
+#110=VERTEX_POINT('',#100); #111=VERTEX_POINT('',#101);
+#112=VERTEX_POINT('',#102); #113=VERTEX_POINT('',#103);
+#200=DIRECTION('',(0.0,0.0,1.0));
+#201=DIRECTION('',(1.0,0.0,0.0));
+#202=DIRECTION('',(0.0,1.0,0.0));
+#210=AXIS2_PLACEMENT_3D('sheet_origin',#100,#200,#201);
+#211=PLANE('sheet_50x50',#210);
+#300=VECTOR('',#201,50.0);
+#301=VECTOR('',#202,50.0);
+#310=LINE('',#100,#300); #311=EDGE_CURVE('',#110,#111,#310,.T.);
+#312=LINE('',#101,#301); #313=EDGE_CURVE('',#111,#112,#312,.T.);
+#314=LINE('',#103,#300); #315=EDGE_CURVE('',#113,#112,#314,.T.);
+#316=LINE('',#100,#301); #317=EDGE_CURVE('',#110,#113,#316,.T.);
+#400=ORIENTED_EDGE('',*,*,#311,.T.); #401=ORIENTED_EDGE('',*,*,#313,.T.);
+#402=ORIENTED_EDGE('',*,*,#315,.F.); #403=ORIENTED_EDGE('',*,*,#317,.F.);
+#404=EDGE_LOOP('',(#400,#401,#402,#403));
+#405=FACE_OUTER_BOUND('',#404,.T.);
+#406=ADVANCED_FACE('sheet_face',(#405),#211,.T.);
+#500=OPEN_SHELL('sheet_shell',(#406));
+#501=SHELL_BASED_SURFACE_MODEL('sheet_model',(#500));
+#502=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('shape',(#501,#210),#14);
+#503=SHAPE_DEFINITION_REPRESENTATION(#7,#502);
+/* Two disjoint panels grouped as flat_pattern, NO bend line between them. */
+#600=SHAPE_ASPECT('flat_pattern','flat layout with disjoint panels',#7,.T.);
+#601=SHAPE_ASPECT('panel_A','left panel',#7,.T.);
+#602=SHAPE_ASPECT('panel_B','right panel (no bend connecting)',#7,.T.);
+#603=GEOMETRIC_ITEM_SPECIFIC_USAGE('GISU',$,#600,#502,#406);
+#610=SHAPE_ASPECT_RELATIONSHIP('panel_member','panel_A in flat pattern',#600,#601);
+#611=SHAPE_ASPECT_RELATIONSHIP('panel_member','panel_B in flat pattern',#600,#602);
+/* Defect tag: NO bend_line shape_aspect, no connection between A and B. */
+#620=DESCRIPTIVE_REPRESENTATION_ITEM('flat_pattern_bend_lines','0 -- panels disjoint');
+#621=PROPERTY_DEFINITION('bend_line_count','number of bends connecting panels',#600);
+#622=PROPERTY_DEFINITION_REPRESENTATION(#621,#623);
+#623=REPRESENTATION('bend_count',(#620),#14);
+/* PMI dimensional record for category-lint compliance. */
+#630=DIMENSIONAL_SIZE(#600,'flat_pattern_extent_x');
+#631=MEASURE_REPRESENTATION_ITEM('extent_mm',LENGTH_MEASURE(50.0),#10);
+#632=SHAPE_DIMENSION_REPRESENTATION('',(#631),#14);
+ENDSEC;
+END-ISO-10303-21;

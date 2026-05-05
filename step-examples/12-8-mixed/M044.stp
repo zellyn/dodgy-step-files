@@ -1,0 +1,28 @@
+ISO-10303-21;
+/* M044 - Empty DRAUGHTING_MODEL / PRESENTATION_LAYER_ASSIGNMENT.
+ * Defect: a PRESENTATION_LAYER_ASSIGNMENT with an empty `assigned_items`
+ * list, and a DRAUGHTING_MODEL with an empty items list. Some readers
+ * crashed on these (Mantis 30870, fixed 9063f1e). They should be
+ * accepted and emitted as empty layers/models. */
+HEADER;
+FILE_DESCRIPTION(('M044 test case','empty PLA and DRAUGHTING_MODEL'),'2;1');
+FILE_NAME('M044.stp','2026-04-26T00:00:00',(''),(''),'auto-generated','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#11=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#12=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.E-6),#10,'distance_accuracy_value','');
+#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+     GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13))
+     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12))
+     REPRESENTATION_CONTEXT('part','3D'));
+/* Defect 1: PRESENTATION_LAYER_ASSIGNMENT with empty assigned_items. */
+#200=PRESENTATION_LAYER_ASSIGNMENT('layer1','empty',());
+/* Defect 2: DRAUGHTING_MODEL with empty items list. */
+#210=DRAUGHTING_MODEL('empty_drawing',(),#14);
+ENDSEC;
+END-ISO-10303-21;

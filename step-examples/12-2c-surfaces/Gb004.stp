@@ -1,0 +1,56 @@
+ISO-10303-21;
+/* Gb004 - Pcurve and 3D curve disagree by a measurable distance.
+ * Defect: an EDGE_CURVE binds a 3D LINE from (0,0,0) to (1,0,0) on a
+ * host PLANE z=0 to a PCURVE consisting of a B_SPLINE_CURVE_2D that
+ * traces a slight bow (v=0.01 at u=0.5). When evaluated on the host
+ * surface the pcurve deviates 0.01 mm from the LINE at midpoint. */
+HEADER;
+FILE_DESCRIPTION(('Gb004 - pcurve vs 3d curve gap','Pass C gap-fill'),'2;1');
+FILE_NAME('Gb004.stp','2026-04-30T00:00:00',(''),(''),'gap-fill C','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+/* 3D LINE from (0,0,0) to (1,0,0) on plane z=0 */
+#10=CARTESIAN_POINT('start',(0.0,0.0,0.0));
+#11=CARTESIAN_POINT('end',(1.0,0.0,0.0));
+#12=DIRECTION('+x',(1.0,0.0,0.0));
+#13=VECTOR('vx',#12,1.0);
+#14=LINE('3d_line',#10,#13);
+/* Plane host surface */
+#20=DIRECTION('+z',(0.0,0.0,1.0));
+#21=AXIS2_PLACEMENT_3D('plane_axes',#10,#20,#12);
+#22=PLANE('host',#21);
+/* Pcurve traces a slight bow - parametric (u, v(u)) where v != 0 mid-span */
+#30=CARTESIAN_POINT('p_start',(0.0,0.0));
+#31=CARTESIAN_POINT('p_mid_off',(0.5,0.01));
+#32=CARTESIAN_POINT('p_end',(1.0,0.0));
+#33=B_SPLINE_CURVE_2D('pcurve_drift',2,(#30,#31,#32),
+   .UNSPECIFIED.,.F.,.F.,(3,3),(0.0,1.0),.UNSPECIFIED.);
+/* PCURVE wrapping the 2D B-spline on host plane */
+#40=DEFINITIONAL_REPRESENTATION('pcurve_def',(#33),#21);
+#41=PCURVE('pc_drift',#22,#40);
+/* SURFACE_CURVE binds the 3D LINE and the 2D pcurve */
+#50=SURFACE_CURVE('sc_drift',#14,(#41),.PCURVE_S1.);
+/* Edge endpoints */
+#60=VERTEX_POINT('v0',#10);
+#61=VERTEX_POINT('v1',#11);
+/* EDGE_CURVE referencing both 3D LINE (via SURFACE_CURVE) and the pcurve */
+#70=EDGE_CURVE('drift_edge',#60,#61,#50,.T.);
+/* PRODUCT chain so OCCT loads the geometry. */
+#9000=PRODUCT_CONTEXT('',#1,'mechanical');
+#9001=PRODUCT('Gb004','Gb004','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
+#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
+#9020=GEOMETRIC_CURVE_SET('wire_set',(#70));
+#9021=GEOMETRICALLY_BOUNDED_WIREFRAME_SHAPE_REPRESENTATION('',(#9020),#9010);
+#9022=SHAPE_DEFINITION_REPRESENTATION(#9005,#9021);
+ENDSEC;
+END-ISO-10303-21;

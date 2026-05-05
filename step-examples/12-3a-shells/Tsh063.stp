@@ -1,0 +1,60 @@
+ISO-10303-21;
+/* Tsh063 - Adjacent toroidal faces with identical parameters not detected as same-surface
+ * Two TOROIDAL_SURFACE entities with identical major/minor radii (5.0/1.0)
+ * and identical placement, each carrying its own ADVANCED_FACE. They share
+ * the meridian (V=0..2*PI) at U=0 but reference DISTINCT TOROIDAL_SURFACE
+ * instances -- a pointer-equality based merge skips them. */
+HEADER;
+FILE_DESCRIPTION(('Tsh063 test case','Two ADVANCED_FACEs on two distinct TOROIDAL_SURFACEs with identical parameters'),'2;1');
+FILE_NAME('Tsh063.stp','2026-04-30T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+#100=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#101=DIRECTION('',(0.0,0.0,1.0));#102=DIRECTION('',(1.0,0.0,0.0));
+#103=AXIS2_PLACEMENT_3D('',#100,#101,#102);
+#104=TOROIDAL_SURFACE('torus_a',#103,5.0,1.0);
+#105=AXIS2_PLACEMENT_3D('',#100,#101,#102);
+#106=TOROIDAL_SURFACE('torus_b_identical_params_distinct_entity',#105,5.0,1.0);
+/* Vertices on the shared meridian (U=0) and a half-meridian (U=PI) */
+#110=CARTESIAN_POINT('',(6.0,0.0,0.0));#111=VERTEX_POINT('Vstart',#110);
+#112=CARTESIAN_POINT('',(-6.0,0.0,0.0));#113=VERTEX_POINT('Vmid',#112);
+/* halfA U=0..PI on torus_a */
+#120=AXIS2_PLACEMENT_3D('',#100,#101,#102);
+#121=CIRCLE('halfA_outer',#120,6.0);
+#122=EDGE_CURVE('halfA_outer_circle',#111,#113,#121,.T.);
+#123=AXIS2_PLACEMENT_3D('',#100,#101,#102);
+#124=CIRCLE('halfA_inner',#123,4.0);
+#125=CARTESIAN_POINT('',(4.0,0.0,0.0));#126=VERTEX_POINT('VinnerA',#125);
+#127=CARTESIAN_POINT('',(-4.0,0.0,0.0));#128=VERTEX_POINT('VinnerB',#127);
+#129=EDGE_CURVE('halfA_inner_circle',#126,#128,#124,.T.);
+#130=DIRECTION('',(-1.0,0.0,0.0));#131=VECTOR('',#130,2.0);#132=LINE('',#110,#131);
+#133=EDGE_CURVE('startA',#111,#126,#132,.T.);
+#134=DIRECTION('',(1.0,0.0,0.0));#135=VECTOR('',#134,2.0);#136=LINE('',#127,#135);
+#137=EDGE_CURVE('endA',#128,#113,#136,.T.);
+#140=ORIENTED_EDGE('',*,*,#122,.T.);
+#141=ORIENTED_EDGE('',*,*,#137,.F.);
+#142=ORIENTED_EDGE('',*,*,#129,.F.);
+#143=ORIENTED_EDGE('',*,*,#133,.F.);
+#144=EDGE_LOOP('halfA_loop',(#140,#141,#142,#143));
+#145=FACE_OUTER_BOUND('',#144,.T.);
+#146=ADVANCED_FACE('faceA_on_torus_a',(#145),#104,.T.);
+/* halfB on torus_b: U=PI..2*PI -- shares the meridian boundary at U=0 (=2*PI) */
+#150=AXIS2_PLACEMENT_3D('',#100,#101,#102);
+#151=CIRCLE('halfB_outer',#150,6.0);
+#152=EDGE_CURVE('halfB_outer_circle',#113,#111,#151,.T.);
+#153=AXIS2_PLACEMENT_3D('',#100,#101,#102);
+#154=CIRCLE('halfB_inner',#153,4.0);
+#155=EDGE_CURVE('halfB_inner_circle',#128,#126,#154,.T.);
+#160=ORIENTED_EDGE('',*,*,#152,.T.);
+#161=ORIENTED_EDGE('',*,*,#133,.T.);
+#162=ORIENTED_EDGE('',*,*,#155,.F.);
+#163=ORIENTED_EDGE('',*,*,#137,.T.);
+#164=EDGE_LOOP('halfB_loop',(#160,#163,#162,#161));
+#165=FACE_OUTER_BOUND('',#164,.T.);
+#166=ADVANCED_FACE('faceB_on_torus_b',(#165),#106,.T.);
+#170=OPEN_SHELL('two_torus_halves_distinct_entities',(#146,#166));
+ENDSEC;
+END-ISO-10303-21;

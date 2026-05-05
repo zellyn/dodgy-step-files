@@ -1,0 +1,30 @@
+ISO-10303-21;
+/* M144 - AP210 NETWORK_NODE chain forms a cycle (signal feedback
+ * path).
+ * Defect: NETWORK_NODE entries link node A -> node B -> node C ->
+ * node A. A connectivity walk of the net never terminates. The net
+ * is also electrically nonsensical for a non-feedback signal
+ * (e.g. a clock distribution net is short-circuited to itself). */
+HEADER;
+FILE_DESCRIPTION(('M144 test case','AP210 net connectivity cycle'),'2;1');
+FILE_NAME('M144.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('ELECTRONIC_ASSEMBLY_INTERCONNECT_AND_PACKAGING_DESIGN { 1 0 10303 210 3 1 0 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('electronic_assembly_interconnect_and_packaging_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
+  'electronic_assembly_interconnect_and_packaging_design',2014,#1);
+#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10))
+     REPRESENTATION_CONTEXT('pcb','3D'));
+#100=TERMINAL('term_a','TERM_A',$);
+#101=TERMINAL('term_b','TERM_B',$);
+#102=TERMINAL('term_c','TERM_C',$);
+/* Defect: each node points to the next in a 3-cycle a->b->c->a. */
+#200=NETWORK_NODE('node_a',#100);
+#201=NETWORK_NODE('node_b',#101);
+#202=NETWORK_NODE('node_c',#102);
+#300=NETWORK('CLK_loop',(#200,#201,#202),(#200));
+ENDSEC;
+END-ISO-10303-21;

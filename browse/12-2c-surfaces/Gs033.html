@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Gs033 — Trim curves on `TOROIDAL_SURFACE` / NURBS produce jagged tessellation borders (`TRIMMED_CURVE` on `ELLIPSE` pcurve)</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.2c Surface / curve degeneracies</a> <span class="sep">/</span> <span class="current">Gs033</span>
+</nav>
+<header class="title-bar">
+<h1>Gs033 <span class="sep">—</span> <span class="entry-title">Trim curves on `TOROIDAL_SURFACE` / NURBS produce jagged tessellation borders (`TRIMMED_CURVE` on `ELLIPSE` pcurve)</span></h1>
+<p class="category">§12.2c surface-degeneracy</p>
+<p class="severity-badge severity-p1">P1 — silent data loss</p>
+<p class="tag-pills">
+<a class="tag tag-geometry" href="../by-tag/geometry/index.html">geometry</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-2c-surfaces/Gs033.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-2c-surfaces/Gs033.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>Y020</li>
+</ul></section>
+<section><h2>Description</h2>
+<p>Trim curves on `TOROIDAL_SURFACE` and NURBS surfaces produce sharp, chaotic border meshes while the interior of the patch is regular. Typical signature: a pcurve on a `TOROIDAL_SURFACE` is a `TRIMMED_CURVE` over an `ELLIPSE` in (u,v) parametric space. Tessellator falls back to coarse parametric sampling on the trim curve while the rest of the patch uses chordal-error sampling. Affects tube.stp and similar trimmed `TOROIDAL_SURFACE` / bicubic NURBS faces with `TRIMMED_CURVE` defined via `PCURVE`.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>STEP `TOROIDAL_SURFACE` or bicubic NURBS face plus `TRIMMED_CURVE` defined via `PCURVE`; tessellate with default size factor.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>heal — apply chordal-error refinement to trim curves consistently with surface refinement.</p></section>
+<section><h2>Notes</h2>
+<p>Synonyms: &quot;trim curves on torus produce jagged tessellation borders&quot;, &quot;TRIMMED_CURVE on ELLIPSE pcurve&quot;, &quot;border mesh chaotic on TOROIDAL_SURFACE&quot;, &quot;tessellator falls back to coarse parametric sampling on trim&quot;, &quot;tube.stp jagged trim curve mesh&quot;.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>contains(b&#x27;TOROIDAL_SURFACE(&#x27;)</code></li>
+<li><code>contains(b&#x27;TRIMMED_CURVE(&#x27;)</code></li>
+<li><code>contains(b&#x27;ELLIPSE(&#x27;)</code></li>
+</ul></section>
+<section><h2>Live oracle output</h2>
+<table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
+<tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>no_shapes_loaded</code></td></tr>
+</tbody></table>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* Gs033 - Trim curves on NURBS produce jagged/chaotic tessellation borders
+<span class="lineno">3</span> * Defect: A bicubic NURBS face with TRIMMED_CURVE defined via PCURVE causes the
+<span class="lineno">4</span> * tessellator to fall back to coarse parametric sampling on the trim curve while
+<span class="lineno">5</span> * the rest of the patch uses chordal-error sampling. Affects tube.stp-style trimmed
+<span class="lineno">6</span> * TOROIDAL_SURFACE / bicubic NURBS faces. */
+<span class="lineno">7</span>HEADER;
+<span class="lineno">8</span>FILE_DESCRIPTION((&#x27;Gs033 test case&#x27;,&#x27;Bicubic NURBS face with trimmed pcurve&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">9</span>FILE_NAME(&#x27;Gs033.stp&#x27;,&#x27;2026-04-26T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;auto-generated&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">10</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }&#x27;));
+<span class="lineno">11</span>ENDSEC;
+<span class="lineno">12</span>DATA;
+<span class="lineno">13</span>#1=APPLICATION_CONTEXT(&#x27;automotive_design&#x27;);
+<span class="lineno">14</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,&#x27;automotive_design&#x27;,2000,#1);
+<span class="lineno">15</span>#10=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">16</span>#11=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">17</span>#12=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">18</span>#13=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#10,#11,#12);
+<span class="lineno">19</span>/* TOROIDAL_SURFACE - canonical periodic surface for trim-tessellation pathology */
+<span class="lineno">20</span>#20=<mark>TOROIDAL_SURFACE(</mark>&#x27;&#x27;,#13,30.0,5.0);
+<span class="lineno">21</span>/* 2D pcurve as ELLIPSE in (U,V) - trimming a curved sweep on the torus */
+<span class="lineno">22</span>#30=CARTESIAN_POINT(&#x27;&#x27;,(3.14159265,3.14159265));
+<span class="lineno">23</span>#31=DIRECTION(&#x27;&#x27;,(1.0,0.0));
+<span class="lineno">24</span>#32=DIRECTION(&#x27;&#x27;,(0.0,1.0));
+<span class="lineno">25</span>#33=AXIS2_PLACEMENT_2D(&#x27;&#x27;,#30,#31);
+<span class="lineno">26</span>#34=<mark>ELLIPSE(</mark>&#x27;&#x27;,#33,1.0,0.5);
+<span class="lineno">27</span>/* TRIMMED_CURVE on the 2D ellipse over [0, pi] */
+<span class="lineno">28</span>#35=PARAMETER_VALUE(0.0);
+<span class="lineno">29</span>#36=PARAMETER_VALUE(3.14159265);
+<span class="lineno">30</span>#37=<mark>TRIMMED_CURVE(</mark>&#x27;&#x27;,#34,(#35),(#36),.T.,.PARAMETER.);
+<span class="lineno">31</span>#40=DEFINITIONAL_REPRESENTATION(&#x27;&#x27;,(#37),#41);
+<span class="lineno">32</span>#41=( GEOMETRIC_REPRESENTATION_CONTEXT(2)
+<span class="lineno">33</span>      PARAMETRIC_REPRESENTATION_CONTEXT()
+<span class="lineno">34</span>      REPRESENTATION_CONTEXT(&#x27;&#x27;,&#x27;&#x27;) );
+<span class="lineno">35</span>#42=PCURVE(&#x27;&#x27;,#20,#40);
+<span class="lineno">36</span>/* Defect: bicubic-feel NURBS-style trim path on torus -&gt; tessellator coarse-samples */
+<span class="lineno">37</span>#50=CARTESIAN_POINT(&#x27;&#x27;,(35.0,0.0,0.0));
+<span class="lineno">38</span>#51=VERTEX_POINT(&#x27;&#x27;,#50);
+<span class="lineno">39</span>#52=CARTESIAN_POINT(&#x27;&#x27;,(35.0,0.0,0.0));
+<span class="lineno">40</span>#53=VERTEX_POINT(&#x27;&#x27;,#52);
+<span class="lineno">41</span>#54=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">42</span>#55=VECTOR(&#x27;&#x27;,#54,1.0);
+<span class="lineno">43</span>#56=LINE(&#x27;&#x27;,#50,#55);
+<span class="lineno">44</span>#60=SURFACE_CURVE(&#x27;&#x27;,#56,(#42),.PCURVE_S1.);
+<span class="lineno">45</span>#61=EDGE_CURVE(&#x27;&#x27;,#51,#53,#60,.T.);
+<span class="lineno">46</span>#62=ORIENTED_EDGE(&#x27;&#x27;,*,*,#61,.T.);
+<span class="lineno">47</span>#63=EDGE_LOOP(&#x27;&#x27;,(#62));
+<span class="lineno">48</span>#64=FACE_OUTER_BOUND(&#x27;&#x27;,#63,.T.);
+<span class="lineno">49</span>#65=ADVANCED_FACE(&#x27;&#x27;,(#64),#20,.T.);
+<span class="lineno">50</span>ENDSEC;
+<span class="lineno">51</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Gs032.html">&larr; Gs032</a> <a class="up" href="index.html">§12.2c Surface / curve degeneracies</a> <a class="next" href="Gs034.html">Gs034 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

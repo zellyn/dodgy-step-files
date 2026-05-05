@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Twi003 — EDGE_LOOP edges not head-to-tail — adjacent edges&#x27; shared vertices don&#x27;t coincide</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.3b Wires / loops / edges</a> <span class="sep">/</span> <span class="current">Twi003</span>
+</nav>
+<header class="title-bar">
+<h1>Twi003 <span class="sep">—</span> <span class="entry-title">EDGE_LOOP edges not head-to-tail — adjacent edges&#x27; shared vertices don&#x27;t coincide</span></h1>
+<p class="category">§12.3b wire-loop</p>
+<p class="tag-pills">
+<a class="tag tag-topology" href="../by-tag/topology/index.html">topology</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-3b-wires/Twi003.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-3b-wires/Twi003.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>04-occt-translation.md Q003</li>
+<li>05-occt-shapefix.md F003 (FixConnected)</li>
+<li>15-academic.md L028 (DTGBrepGen C3)</li>
+<li>19-datasets.md D004 (ABC dataset)</li>
+</ul></section>
+<section><h2>Description</h2>
+<p>Edge n&#x27;s end vertex is not edge n+1&#x27;s start vertex — they are positioned at distinct `VERTEX_POINT`s separated by more than the kernel&#x27;s vertex-equality tolerance. The edges are listed in traversal order but the wire is broken: there is a 3D gap between consecutive edges. Affects ~5% of &quot;imperfect&quot; Onshape STEP exports per ABC paper.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>STEP face whose `EDGE_LOOP` enumerates `ORIENTED_EDGE`s in topological order but with vertex `VERTEX_POINT`s separated by a small but &gt;tolerance gap.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>merge near-coincident vertices within the kernel&#x27;s vertex-equality tolerance to close the gap, or reject as malformed if the gap exceeds the working tolerance budget.</p></section>
+<section><h2>Notes</h2>
+<p>Translation reads the `EDGE_LOOP` end-to-start expecting matching vertices; otherwise the wire transfer fails. **See also**: Gp020, Twi007, Twi034, Twi038. Synonyms: &quot;small gap between consecutive edges&quot;, &quot;edges not connected head to tail&quot;, &quot;wire has 3D gap between vertices&quot;, &quot;Onshape export has disconnected edges&quot;, &quot;vertices nearby but not coincident in wire&quot;.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a</code></p></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>n_edges_total &gt;= 4</code></li>
+<li><code>face[0].surface_type == &quot;plane&quot;</code></li>
+<li><code>n_vertices_total &gt;= 8</code></li>
+</ul></section>
+<section><h2>Cross-references</h2>
+<p><a href="../12-2a-pcurves/Gp020.html">Gp020</a>, <a href="Twi007.html">Twi007</a>, <a href="Twi034.html">Twi034</a>, <a href="Twi038.html">Twi038</a></p>
+</section>
+<section><h2>Live oracle output</h2>
+<table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
+<tr><td><code>occt_heal_on</code></td><td><code>shape(1)</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>shape(1)</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>shape(9)</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>shape(9)</code></td></tr>
+<tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>not_manifold</code></td></tr>
+</tbody></table>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* Twi003 - EDGE_LOOP edges not head-to-tail (disconnected adjacent edges)
+<span class="lineno">3</span> * Defect: Edge n&#x27;s end vertex is not edge n+1&#x27;s start vertex within preci.
+<span class="lineno">4</span> * Here the four edges of a square loop have a small (~5e-5) gap between edge 1
+<span class="lineno">5</span> * end vertex and edge 2 start vertex - vertices are nearly coincident but
+<span class="lineno">6</span> * exceed default Confusion. Heal by ShapeFix_Wire::FixConnected / vertex merge
+<span class="lineno">7</span> * within tolerance; reject if gap exceeds budget
+<span class="lineno">8</span> * (StepToTopoDS_TranslateEdgeLoop.cxx:412-453; ShapeFix_EdgeConnect). */
+<span class="lineno">9</span>HEADER;
+<span class="lineno">10</span>FILE_DESCRIPTION((&#x27;Twi003 test case&#x27;,&#x27;EDGE_LOOP edges not head-to-tail&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">11</span>FILE_NAME(&#x27;Twi003.stp&#x27;,&#x27;2026-04-26T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">12</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }&#x27;));
+<span class="lineno">13</span>ENDSEC;
+<span class="lineno">14</span>DATA;
+<span class="lineno">15</span>#1=APPLICATION_CONTEXT(&#x27;automotive_design&#x27;);
+<span class="lineno">16</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,&#x27;automotive_design&#x27;,2000,#1);
+<span class="lineno">17</span>#10=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">18</span>#11=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">19</span>#12=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">20</span>#13=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#10,#11,#12);
+<span class="lineno">21</span>#20=PLANE(&#x27;&#x27;,#13);
+<span class="lineno">22</span>/* Four corners of a unit square - corner C1 and C1&#x27; nearly coincide */
+<span class="lineno">23</span>#30=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">24</span>#31=VERTEX_POINT(&#x27;&#x27;,#30);
+<span class="lineno">25</span>#32=CARTESIAN_POINT(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">26</span>#33=VERTEX_POINT(&#x27;&#x27;,#32);
+<span class="lineno">27</span>/* Defect: corner at (1,0,0) is duplicated as a slightly-off (1.00005,0,0) */
+<span class="lineno">28</span>#34=CARTESIAN_POINT(&#x27;&#x27;,(1.00005,0.0,0.0));
+<span class="lineno">29</span>#35=VERTEX_POINT(&#x27;&#x27;,#34);
+<span class="lineno">30</span>#36=CARTESIAN_POINT(&#x27;&#x27;,(1.0,1.0,0.0));
+<span class="lineno">31</span>#37=VERTEX_POINT(&#x27;&#x27;,#36);
+<span class="lineno">32</span>#38=CARTESIAN_POINT(&#x27;&#x27;,(0.0,1.0,0.0));
+<span class="lineno">33</span>#39=VERTEX_POINT(&#x27;&#x27;,#38);
+<span class="lineno">34</span>/* Curves */
+<span class="lineno">35</span>#50=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">36</span>#51=VECTOR(&#x27;&#x27;,#50,1.0);
+<span class="lineno">37</span>#52=LINE(&#x27;&#x27;,#30,#51);
+<span class="lineno">38</span>#53=DIRECTION(&#x27;&#x27;,(0.0,1.0,0.0));
+<span class="lineno">39</span>#54=VECTOR(&#x27;&#x27;,#53,1.0);
+<span class="lineno">40</span>#55=LINE(&#x27;&#x27;,#32,#54);
+<span class="lineno">41</span>#56=DIRECTION(&#x27;&#x27;,(-1.0,0.0,0.0));
+<span class="lineno">42</span>#57=VECTOR(&#x27;&#x27;,#56,1.0);
+<span class="lineno">43</span>#58=LINE(&#x27;&#x27;,#36,#57);
+<span class="lineno">44</span>#59=DIRECTION(&#x27;&#x27;,(0.0,-1.0,0.0));
+<span class="lineno">45</span>#60=VECTOR(&#x27;&#x27;,#59,1.0);
+<span class="lineno">46</span>#61=LINE(&#x27;&#x27;,#38,#60);
+<span class="lineno">47</span>/* Edges: e1 ends at #33 (1,0,0), but e2 starts at #35 (1.00005,0,0) - gap */
+<span class="lineno">48</span>#70=EDGE_CURVE(&#x27;&#x27;,#31,#33,#52,.T.);
+<span class="lineno">49</span>#71=EDGE_CURVE(&#x27;&#x27;,#35,#37,#55,.T.);
+<span class="lineno">50</span>#72=EDGE_CURVE(&#x27;&#x27;,#37,#39,#58,.T.);
+<span class="lineno">51</span>#73=EDGE_CURVE(&#x27;&#x27;,#39,#31,#61,.T.);
+<span class="lineno">52</span>#80=ORIENTED_EDGE(&#x27;&#x27;,*,*,#70,.T.);
+<span class="lineno">53</span>#81=ORIENTED_EDGE(&#x27;&#x27;,*,*,#71,.T.);
+<span class="lineno">54</span>#82=ORIENTED_EDGE(&#x27;&#x27;,*,*,#72,.T.);
+<span class="lineno">55</span>#83=ORIENTED_EDGE(&#x27;&#x27;,*,*,#73,.T.);
+<span class="lineno">56</span>#90=EDGE_LOOP(&#x27;&#x27;,(#80,#81,#82,#83));
+<span class="lineno">57</span>#91=FACE_OUTER_BOUND(&#x27;&#x27;,#90,.T.);
+<span class="lineno">58</span>#92=ADVANCED_FACE(&#x27;&#x27;,(#91),#20,.T.);
+<span class="lineno">59</span>/* Wrap: minimal PRODUCT chain so OCCT TransferRoots produces a shape. */
+<span class="lineno">60</span>#9000=PRODUCT_CONTEXT(&#x27;&#x27;,#1,&#x27;mechanical&#x27;);
+<span class="lineno">61</span>#9001=PRODUCT(&#x27;Twi003&#x27;,&#x27;Twi003&#x27;,&#x27;&#x27;,(#9000));
+<span class="lineno">62</span>#9002=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#9001);
+<span class="lineno">63</span>#9003=PRODUCT_DEFINITION_CONTEXT(&#x27;part definition&#x27;,#1,&#x27;design&#x27;);
+<span class="lineno">64</span>#9004=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,#9002,#9003);
+<span class="lineno">65</span>#9005=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,#9004);
+<span class="lineno">66</span>#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">67</span>#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+<span class="lineno">68</span>#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+<span class="lineno">69</span>#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,&#x27;distance_accuracy_value&#x27;,&#x27;&#x27;);
+<span class="lineno">70</span>#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT(&#x27;&#x27;,&#x27;3D&#x27;));
+<span class="lineno">71</span>#9020=OPEN_SHELL(&#x27;wrap_shell&#x27;,(#92));
+<span class="lineno">72</span>#9021=SHELL_BASED_SURFACE_MODEL(&#x27;wrap_sbsm&#x27;,(#9020));
+<span class="lineno">73</span>#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION(&#x27;&#x27;,(#9021),#9010);
+<span class="lineno">74</span>#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+<span class="lineno">75</span>ENDSEC;
+<span class="lineno">76</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Twi002.html">&larr; Twi002</a> <a class="up" href="index.html">§12.3b Wires / loops / edges</a> <a class="next" href="Twi004.html">Twi004 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

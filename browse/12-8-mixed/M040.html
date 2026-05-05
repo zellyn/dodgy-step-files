@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>M040 — STYLED_ITEM.item is NULL or unresolved</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.8 Mixed (tessellation, validation properties, etc.)</a> <span class="sep">/</span> <span class="current">M040</span>
+</nav>
+<header class="title-bar">
+<h1>M040 <span class="sep">—</span> <span class="entry-title">STYLED_ITEM.item is NULL or unresolved</span></h1>
+<p class="category">§12.8 (sub-class: appearance)</p>
+<p class="severity-badge severity-p1">P1 — silent data loss</p>
+<p class="tag-pills">
+<a class="tag tag-spec-violation" href="../by-tag/spec-violation/index.html">spec-violation</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-8-mixed/M040.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-8-mixed/M040.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>08-occt-gitlog.md (G027, G063)</li>
+<li>OCCT aff1875, b80d766, f0bef12</li>
+<li>Mantis 0028147, 0028797, 0029633</li>
+</ul></section>
+<section><h2>Description</h2>
+<p>STEP file has `STYLED_ITEM` with NULL `item` reference, or `PRESENTATION_STYLE_ASSIGNMENT` with NULL elements in its `styles` set; OCCT&#x27;s IsKind() call dereferenced NULL.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>`STYLED_ITEM(name,(..),#null)` or PSA with unresolved style reference.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>Heal and accept: null-check and skip styling for that item.</p></section>
+<section><h2>Notes</h2>
+<p>Synonyms: &quot;STYLED_ITEM null item&quot;, &quot;presentation_style_assignment null element&quot;, &quot;OCCT NULL deref on STYLED_ITEM&quot;, &quot;null reference in style chain&quot;. **See also**: A018, A020.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>contains(b&#x27;STYLED_ITEM&#x27;)</code></li>
+<li><code>contains(b&quot;STYLED_ITEM(&#x27;null_item_style&#x27;,(#606),$)&quot;)</code></li>
+</ul></section>
+<section><h2>Cross-references</h2>
+<p><a href="../12-6-assembly/A018.html">A018</a>, <a href="../12-6-assembly/A020.html">A020</a></p>
+</section>
+<section><h2>Live oracle output</h2>
+<table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
+<tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>no_shapes_loaded</code></td></tr>
+</tbody></table>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* M040 - <mark>STYLED_ITEM</mark>.item is NULL or unresolved.
+<span class="lineno">3</span> * Defect: <mark>STYLED_ITEM</mark> entity has its `item` slot set to NULL ($).
+<span class="lineno">4</span> * OCCT historically dereferenced the slot via IsKind(), causing a
+<span class="lineno">5</span> * crash (Mantis 28147, 28797, 29633). Readers must null-check and
+<span class="lineno">6</span> * skip styling for that item. */
+<span class="lineno">7</span>HEADER;
+<span class="lineno">8</span>FILE_DESCRIPTION((&#x27;M040 test case&#x27;,&#x27;<mark>STYLED_ITEM</mark> with NULL item&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">9</span>FILE_NAME(&#x27;M040.stp&#x27;,&#x27;2026-04-26T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;auto-generated&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">10</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }&#x27;));
+<span class="lineno">11</span>ENDSEC;
+<span class="lineno">12</span>DATA;
+<span class="lineno">13</span>#1=APPLICATION_CONTEXT(&#x27;automotive_design&#x27;);
+<span class="lineno">14</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,&#x27;automotive_design&#x27;,2000,#1);
+<span class="lineno">15</span>#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">16</span>#11=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+<span class="lineno">17</span>#12=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+<span class="lineno">18</span>#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.E-6),#10,&#x27;distance_accuracy_value&#x27;,&#x27;&#x27;);
+<span class="lineno">19</span>#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+<span class="lineno">20</span>     GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13))
+<span class="lineno">21</span>     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12))
+<span class="lineno">22</span>     REPRESENTATION_CONTEXT(&#x27;part&#x27;,&#x27;3D&#x27;));
+<span class="lineno">23</span>/* Color and style */
+<span class="lineno">24</span>#600=COLOUR_RGB(&#x27;green&#x27;,0.0,1.0,0.0);
+<span class="lineno">25</span>#601=FILL_AREA_STYLE_COLOUR(&#x27;&#x27;,#600);
+<span class="lineno">26</span>#602=FILL_AREA_STYLE(&#x27;&#x27;,(#601));
+<span class="lineno">27</span>#603=SURFACE_STYLE_FILL_AREA(#602);
+<span class="lineno">28</span>#604=SURFACE_SIDE_STYLE(&#x27;&#x27;,(#603));
+<span class="lineno">29</span>#605=SURFACE_STYLE_USAGE(.BOTH.,#604);
+<span class="lineno">30</span>#606=PRESENTATION_STYLE_ASSIGNMENT((#605));
+<span class="lineno">31</span>/* Defect: <mark>STYLED_ITEM</mark>.item is NULL ($). */
+<span class="lineno">32</span>#610=<mark>STYLED_ITEM(&#x27;null_item_style&#x27;,(#606),$)</mark>;
+<span class="lineno">33</span>#620=MECHANICAL_DESIGN_GEOMETRIC_PRESENTATION_REPRESENTATION(
+<span class="lineno">34</span>       &#x27;&#x27;,(#610),#14);
+<span class="lineno">35</span>ENDSEC;
+<span class="lineno">36</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="M039.html">&larr; M039</a> <a class="up" href="index.html">§12.8 Mixed (tessellation, validation properties, etc.)</a> <a class="next" href="M041.html">M041 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

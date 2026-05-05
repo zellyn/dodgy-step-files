@@ -1,0 +1,31 @@
+ISO-10303-21;
+/* Lh034 - REFERENCE section listing external instance handles
+ * but no matching ANCHOR section in the producing-side companion
+ * file
+ * Defect: ISO 10303-21 Edition 3 ANCHOR / REFERENCE / SIGNATURE
+ * sections exist to support cross-file linking. A REFERENCE entry
+ * names an external instance via a URI plus '#anchor_name'; the
+ * other end (a separate file) must publish that anchor in its
+ * ANCHOR section. When the receiver imports a file with REFERENCE
+ * to an unresolvable target (companion file missing, anchor name
+ * misspelt, URI scheme unsupported), the kernel must decide whether
+ * to defer-load, fail-load, or substitute a placeholder. */
+HEADER;
+FILE_DESCRIPTION(('Lh034 - REFERENCE section to unresolvable external anchor'),'2;1');
+FILE_NAME('Lh034.stp','2026-04-26T00:00:00',(''),(''),
+  'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+REFERENCE;
+/* Defect: external reference to companion-file.stp#missing_anchor
+ * which does not exist - URI not resolvable */
+#100=<file:companion-file.stp#missing_anchor>;
+#101=<https://example.invalid/no-such-file.stp#also_missing>;
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=PRODUCT_CONTEXT('part',#1,'mechanical');
+/* PRODUCT references #100 - which is unresolvable */
+#10=PRODUCT('part-with-broken-ref','demo','',(#2));
+ENDSEC;
+END-ISO-10303-21;

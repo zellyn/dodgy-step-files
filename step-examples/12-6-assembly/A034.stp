@@ -1,0 +1,81 @@
+ISO-10303-21;
+/*
+ * A034 — CheckSRRReversesNAUO segfault on SDR with SHAPE_ASPECT instead of
+ *        PROPERTY_DEFINITION
+ * Defect (OCCT issue #1202; CATIA V6 "Fast Export STEP AP214 Mapper",
+ *         1088/1267 SDRs in a real 430MB file used the SHAPE_ASPECT variant):
+ *   SHAPE_DEFINITION_REPRESENTATION whose `definition` member of the
+ *   represented_definition SELECT is a SHAPE_ASPECT rather than the usual
+ *   PROPERTY_DEFINITION. OCCT's unguarded chain
+ *   `SDR->Definition().PropertyDefinition()->Definition().ProductDefinition()`
+ *   returns null on the SHAPE_ASPECT branch and crashes.
+ * Reproducer: SDR(#X, #shape_rep) with #X a SHAPE_ASPECT.
+ * Expected kernel: heal — skip SDRs whose Definition is not PropertyDefinition
+ *   or PropertyDefinitionShape; emit warning; never deref blindly.
+ *
+ * NOTE: schema-mismatched on purpose (SDR's first slot is selectively typed).
+ */
+HEADER;
+FILE_DESCRIPTION(('A034 SDR.represented_definition is SHAPE_ASPECT — null deref reproducer'),'2;1');
+FILE_NAME('A034.stp','2026-04-26T00:00:00',('catalog'),('cad'),'manual','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#10 = APPLICATION_CONTEXT('automotive design');
+#11 = APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2001,#10);
+#12 = PRODUCT_CONTEXT('',#10,'mechanical');
+#13 = PRODUCT_DEFINITION_CONTEXT('part definition',#10,'design');
+#20 = PRODUCT('A034_ASSY','','',(#12));
+#21 = PRODUCT_DEFINITION_FORMATION('','',#20);
+#22 = PRODUCT_DEFINITION('design','',#21,#13);
+#23 = PRODUCT_DEFINITION_SHAPE('','',#22);
+#30 = PRODUCT('CATIA_PART','','',(#12));
+#31 = PRODUCT_DEFINITION_FORMATION('','',#30);
+#32 = PRODUCT_DEFINITION('design','',#31,#13);
+#33 = PRODUCT_DEFINITION_SHAPE('','',#32);
+#40 = NEXT_ASSEMBLY_USAGE_OCCURRENCE('1','PART_INST','',#22,#32,$);
+/* DEFECT: an SDR is created from a SHAPE_ASPECT, not PROPERTY_DEFINITION_SHAPE.
+   In strict typing the represented_definition is a SELECT type that DOES NOT
+   include SHAPE_ASPECT — so this is intentionally schema-invalid. */
+#90 = SHAPE_ASPECT('catia_aspect','from CATIA Fast Export AP214 Mapper',#33,.T.);
+/* Units */
+#50 = ( LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT(.MILLI.,.METRE.) );
+#51 = ( NAMED_UNIT(*) PLANE_ANGLE_UNIT() SI_UNIT($,.RADIAN.) );
+#52 = ( NAMED_UNIT(*) SI_UNIT($,.STERADIAN.) SOLID_ANGLE_UNIT() );
+#53 = UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#50,'distance_accuracy_value','');
+#54 = ( GEOMETRIC_REPRESENTATION_CONTEXT(3) GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#53))
+        GLOBAL_UNIT_ASSIGNED_CONTEXT((#50,#51,#52)) REPRESENTATION_CONTEXT('','3D') );
+#60 = CARTESIAN_POINT('',(0.0,0.0,0.0));
+#61 = DIRECTION('',(0.0,0.0,1.0));
+#62 = DIRECTION('',(1.0,0.0,0.0));
+#63 = AXIS2_PLACEMENT_3D('part_origin',#60,#61,#62);
+#64 = SHAPE_REPRESENTATION('part_rep',(#63),#54);
+/* DEFECT line: #65 is SDR(SHAPE_ASPECT, SHAPE_REPRESENTATION) */
+#65 = SHAPE_DEFINITION_REPRESENTATION(#90,#64);
+#66 = REPRESENTATION_MAP(#63,#64);
+#67 = MAPPED_ITEM('inst',#66,#63);
+#80 = AXIS2_PLACEMENT_3D('assy_origin',#60,#61,#62);
+#81 = SHAPE_REPRESENTATION('assy_rep',(#80,#67),#54);
+#82 = SHAPE_DEFINITION_REPRESENTATION(#23,#81);
+/* Extended catalog notes:
+ * This reproducer is a minimal demonstrator of the §12.6 entry
+ * referenced in the /* */ header above. The entity-graph above
+ * is just enough to exercise the defect on a writer or reader
+ * test harness; it is NOT a production-quality assembly.
+ *
+ * License: this file is part of a defect catalog assembled from
+ * publicly described bug reports and recommended-practice notes.
+ * No proprietary geometry or names are reproduced. The entity IDs
+ * and minimal coordinates are author-original.
+ *
+ * Cross-refs: see STEP_PROBLEM_CATALOG.md §12.6 for full entry,
+ * source list, sender attribution and expected kernel behavior.
+ */
+#900 = DESCRIPTIVE_REPRESENTATION_ITEM('catalog_id','A034');
+#901 = DESCRIPTIVE_REPRESENTATION_ITEM('catalog_section','12.6 assembly hierarchy');
+#902 = DESCRIPTIVE_REPRESENTATION_ITEM('catalog_status','pending');
+#903 = DESCRIPTIVE_REPRESENTATION_ITEM('catalog_target_dir','step-examples/12-6-assembly/');
+#904 = DESCRIPTIVE_REPRESENTATION_ITEM('catalog_corpus_origin','phase-04-resume-12-6 gap fill');
+#905 = DESCRIPTIVE_REPRESENTATION_ITEM('catalog_authoring','manual reproducer');
+ENDSEC;
+END-ISO-10303-21;

@@ -1,0 +1,93 @@
+ISO-10303-21;
+/* Twi037 - Free bounds need joining (sewing) - open wire treated as wire instead of free edge
+ * Defect: After Boolean / translation, edges are left dangling because adjacent
+ * faces don't share them. Free-bounds traversal returns these as wire candidates;
+ * consumers must join them by sewing. Two faces share a coincident edge
+ * geometry but reference separate EDGE_CURVE instances. Heal by
+ * ShapeFix_FreeBounds::ConnectEdgesToWires then ShapeUpgrade_ShellSewing. */
+HEADER;
+FILE_DESCRIPTION(('Twi037 test case','Free bounds need joining (sewing)'),'2;1');
+FILE_NAME('Twi037.stp','2026-04-26T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#11=DIRECTION('',(0.0,0.0,1.0));
+#12=DIRECTION('',(1.0,0.0,0.0));
+#13=AXIS2_PLACEMENT_3D('',#10,#11,#12);
+#20=PLANE('',#13);
+/* Two square faces meeting along x=5: left and right halves of a 10x10 panel */
+#30=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#31=VERTEX_POINT('',#30);
+#32=CARTESIAN_POINT('',(5.0,0.0,0.0));
+#33=VERTEX_POINT('',#32);
+#34=CARTESIAN_POINT('',(5.0,10.0,0.0));
+#35=VERTEX_POINT('',#34);
+#36=CARTESIAN_POINT('',(0.0,10.0,0.0));
+#37=VERTEX_POINT('',#36);
+/* Defect: separate VERTEX_POINTs for the same 3D position on the right face */
+#38=CARTESIAN_POINT('',(5.0,0.0,0.0));
+#39=VERTEX_POINT('',#38);
+#40=CARTESIAN_POINT('',(5.0,10.0,0.0));
+#41=VERTEX_POINT('',#40);
+#42=CARTESIAN_POINT('',(10.0,0.0,0.0));
+#43=VERTEX_POINT('',#42);
+#44=CARTESIAN_POINT('',(10.0,10.0,0.0));
+#45=VERTEX_POINT('',#44);
+/* Curves and edges (left face) */
+#50=DIRECTION('',(1.0,0.0,0.0));
+#51=VECTOR('',#50,1.0);
+#52=DIRECTION('',(0.0,1.0,0.0));
+#53=VECTOR('',#52,1.0);
+#54=LINE('',#30,#51);
+#55=LINE('',#32,#53);
+#56=LINE('',#34,#51);
+#57=LINE('',#36,#53);
+#60=EDGE_CURVE('',#31,#33,#54,.T.);
+#61=EDGE_CURVE('',#33,#35,#55,.T.);
+#62=EDGE_CURVE('',#35,#37,#56,.F.);
+#63=EDGE_CURVE('',#37,#31,#57,.F.);
+#70=ORIENTED_EDGE('',*,*,#60,.T.);
+#71=ORIENTED_EDGE('',*,*,#61,.T.);
+#72=ORIENTED_EDGE('',*,*,#62,.T.);
+#73=ORIENTED_EDGE('',*,*,#63,.T.);
+#80=EDGE_LOOP('',(#70,#71,#72,#73));
+#81=FACE_OUTER_BOUND('',#80,.T.);
+#82=ADVANCED_FACE('',(#81),#20,.T.);
+/* Right face - shares the inner edge GEOMETRICALLY but has DISTINCT
+ * EDGE_CURVE / VERTEX_POINT instances. Sewing needed to join. */
+#90=LINE('',#38,#53);
+#91=LINE('',#42,#53);
+#92=LINE('',#38,#51);
+#93=LINE('',#40,#51);
+#100=EDGE_CURVE('',#39,#41,#90,.T.);
+#101=EDGE_CURVE('',#43,#45,#91,.T.);
+#102=EDGE_CURVE('',#39,#43,#92,.T.);
+#103=EDGE_CURVE('',#41,#45,#93,.T.);
+#110=ORIENTED_EDGE('',*,*,#102,.T.);
+#111=ORIENTED_EDGE('',*,*,#101,.T.);
+#112=ORIENTED_EDGE('',*,*,#103,.F.);
+#113=ORIENTED_EDGE('',*,*,#100,.F.);
+#114=EDGE_LOOP('',(#110,#111,#112,#113));
+#115=FACE_OUTER_BOUND('',#114,.T.);
+#116=ADVANCED_FACE('',(#115),#20,.T.);
+#120=OPEN_SHELL('',(#82,#116));
+/* Wrap: minimal PRODUCT chain so OCCT TransferRoots produces a shape. */
+#9000=PRODUCT_CONTEXT('',#1,'mechanical');
+#9001=PRODUCT('Twi037','Twi037','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
+#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
+#9021=SHELL_BASED_SURFACE_MODEL('wrap_sbsm',(#120));
+#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#9010);
+#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+ENDSEC;
+END-ISO-10303-21;

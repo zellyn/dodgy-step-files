@@ -1,0 +1,21 @@
+ISO-10303-21;
+/* Twi086 - Zero-length line edge.
+ * Defect: EDGE_CURVE has edge_start = edge_end and edge_geometry
+ * is a LINE; the edge collapses to a point but is typed as a line edge. */
+HEADER;
+FILE_DESCRIPTION(('Twi086 - Edge geometry is a line through two coincident points (zero-length line edge)','Pass C gap-fill'),'2;1');
+FILE_NAME('Twi086.stp','2026-04-30T00:00:00',(''),(''),'gap-fill C','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+#10=CARTESIAN_POINT('the_point',(0.0,0.0,0.0));
+#11=VERTEX_POINT('',#10);
+#20=DIRECTION('',(1.0,0.0,0.0));
+#21=VECTOR('',#20,1.0);
+#22=LINE('non_degenerate_line',#10,#21);
+/* edge_start = edge_end - zero-length but typed as line */
+#30=EDGE_CURVE('collapsed_line_edge',#11,#11,#22,.T.);
+ENDSEC;
+END-ISO-10303-21;

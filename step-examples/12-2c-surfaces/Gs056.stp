@@ -1,0 +1,23 @@
+ISO-10303-21;
+/* Gs056 - SURFACE_OF_REVOLUTION of an ellipse around an axis through its centre
+ * Defect: revolution axis passes through the ellipse centre, producing a degenerate surface
+ * with zero-radius poles where the generatrix meets the axis. */
+HEADER;
+FILE_DESCRIPTION(('Gs056 - Ellipse revolution around its own centre'),'2;1');
+FILE_NAME('Gs056.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#11=DIRECTION('',(0.0,0.0,1.0));
+#12=DIRECTION('',(1.0,0.0,0.0));
+#13=AXIS2_PLACEMENT_3D('',#10,#11,#12);
+/* Ellipse centred at origin in the XZ plane, semi-axes 1.0 (X) and 0.5 (Z). */
+#20=ELLIPSE('generatrix',#13,1.0,0.5);
+/* Revolution axis passes through ellipse centre (#10) along Z (#11). */
+#30=AXIS1_PLACEMENT('axis_through_centre',#10,#11);
+#40=SURFACE_OF_REVOLUTION('ellipse_revol_degenerate',#30,#20);
+ENDSEC;
+END-ISO-10303-21;

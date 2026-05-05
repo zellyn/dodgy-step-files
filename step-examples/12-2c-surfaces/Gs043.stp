@@ -1,0 +1,31 @@
+ISO-10303-21;
+/* Gs043 - OFFSET_CURVE_3D with ref_distance equal to the curve's
+ * radius of curvature (cusp-on-offset)
+ * Defect: An OFFSET_CURVE_3D with ref_distance equal to the local
+ * radius of curvature creates a cusp at every point of that
+ * curvature. The mathematical offset is undefined at such points
+ * (the offset point coincides with the curve's center of curvature
+ * and 0/0 arises in the offset's first derivative). For a circular
+ * basis curve of radius R, an offset of -R collapses the entire
+ * offset to the center; an offset of +R produces a circle of zero
+ * radius at the symmetric center. */
+HEADER;
+FILE_DESCRIPTION(('Gs043 - OFFSET_CURVE_3D with ref_distance = -R (collapse)'),'2;1');
+FILE_NAME('Gs043.stp','2026-04-26T00:00:00',(''),(''),
+  'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+/* Circle of radius 5.0 centered at origin in the XY plane */
+#10=CARTESIAN_POINT('center',(0.0,0.0,0.0));
+#11=DIRECTION('z',(0.0,0.0,1.0));
+#12=DIRECTION('x',(1.0,0.0,0.0));
+#13=AXIS2_PLACEMENT_3D('placement',#10,#11,#12);
+#14=CIRCLE('basis',#13,5.0);
+#20=DIRECTION('ref_dir',(0.0,0.0,1.0));
+/* Defect: ref_distance = -5.0 (negative R) - offset collapses
+ * all points to a single point (the center) */
+#21=OFFSET_CURVE_3D('collapse',#14,-5.0,.T.,#20);
+ENDSEC;
+END-ISO-10303-21;

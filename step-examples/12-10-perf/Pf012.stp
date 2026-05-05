@@ -1,0 +1,81 @@
+/* Pf012 - Stack overflow via deeply nested aggregate parens
+   Pattern: a Part-21 LIST/SET/BAG aggregate whose elements are themselves
+   aggregates, recursively. A recursive-descent parser without a depth
+   ceiling stack-overflows when handed thousands of nested parens (A002).
+   The examples below use 25-50 nesting levels - well under the Windows
+   default stack but adequate to demonstrate the pattern. Several depths
+   are included so that a reader fixed at depth N still encounters depth
+   N+1 in a later instance.
+   Scaling-up: replicate the inner aggregate to ~10,000 levels deep to
+   trigger E_AGGREGATE_TOO_DEEP / segfault on naive parsers; this same
+   pattern repeats many times in a single file so single-instance guards
+   don't help. */
+ISO-10303-21;
+HEADER;
+FILE_DESCRIPTION(('Pf012 - deeply nested aggregate parens'),'2;1');
+FILE_NAME('Pf012.stp','2026-04-26T00:00:00',('auto-generated'),(''),
+  'auto-generated','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+/* unrelated point so the file is well-formed even if parser stops here */
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=CARTESIAN_POINT('',(1.0,0.0,0.0));
+#3=CARTESIAN_POINT('',(2.0,0.0,0.0));
+#4=CARTESIAN_POINT('',(3.0,0.0,0.0));
+/* GEOMETRIC_SET takes a SET of geometric_representation_item; we abuse
+   the LIST attribute by handing a deeply nested aggregate. The parens
+   are syntactically inside the single attribute - most readers will
+   recurse into them. Replicate to ~10000 levels to crash. */
+/* depth 25 */
+#10=GEOMETRIC_SET('deep-25',
+((((((((((((((((((((((((( #1 ))))))))))))))))))))))))));
+/* Pf012-B variant: nested LIST inside a single attribute's value
+   (some readers special-case nested LISTs at any depth). */
+/* depth 22 */
+#20=GEOMETRIC_SET('deep-22',
+(((((((((((((((((((((( #1 ))))))))))))))))))))))));
+/* Pf012-C variant: doubly-nested chains in one file - some healers
+   recover after the first then crash on the second. */
+/* depth 27 */
+#30=GEOMETRIC_SET('deep-27',
+((((((((((((((((((((((((((( #1 ))))))))))))))))))))))))))));
+/* depth 30 - exceeds many default ceilings */
+#40=GEOMETRIC_SET('deep-30',
+(((((((((((((((((((((((((((((( #1 ))))))))))))))))))))))))))))));
+/* depth 35 - common test threshold */
+#50=GEOMETRIC_SET('deep-35',
+(((((((((((((((((((((((((((((((((( #2 ))))))))))))))))))))))))))))))))));
+/* depth 40 - exceeds typical recursive-descent budgets */
+#60=GEOMETRIC_SET('deep-40',
+(((((((((((((((((((((((((((((((((((((((( #3 ))))))))))))))))))))))))))))))))))))))));
+/* depth 45 - guaranteed overflow on small-stack runtimes */
+#70=GEOMETRIC_SET('deep-45',
+((((((((((((((((((((((((((((((((((((((((((((( #4 )))))))))))))))))))))))))))))))))))))))))))));
+/* depth 50 */
+#80=GEOMETRIC_SET('deep-50',
+(((((((((((((((((((((((((((((((((((((((((((((((((( #1 ))))))))))))))))))))))))))))))))))))))))))))))))));
+/* multiple deep aggregates back-to-back stress per-instance recursion
+   counters that reset between instances but share total budget */
+#90=GEOMETRIC_SET('deep-back-to-back-1',
+(((((((((((((((((((((((((((((( #1 ))))))))))))))))))))))))))))));
+#91=GEOMETRIC_SET('deep-back-to-back-2',
+(((((((((((((((((((((((((((((( #2 ))))))))))))))))))))))))))))));
+#92=GEOMETRIC_SET('deep-back-to-back-3',
+(((((((((((((((((((((((((((((( #3 ))))))))))))))))))))))))))))));
+#93=GEOMETRIC_SET('deep-back-to-back-4',
+(((((((((((((((((((((((((((((( #4 ))))))))))))))))))))))))))))));
+#94=GEOMETRIC_SET('deep-back-to-back-5',
+(((((((((((((((((((((((((((((( #1 ))))))))))))))))))))))))))))));
+#95=GEOMETRIC_SET('deep-back-to-back-6',
+(((((((((((((((((((((((((((((( #2 ))))))))))))))))))))))))))))));
+#96=GEOMETRIC_SET('deep-back-to-back-7',
+(((((((((((((((((((((((((((((( #3 ))))))))))))))))))))))))))))));
+#97=GEOMETRIC_SET('deep-back-to-back-8',
+(((((((((((((((((((((((((((((( #4 ))))))))))))))))))))))))))))));
+#98=GEOMETRIC_SET('deep-back-to-back-9',
+(((((((((((((((((((((((((((((( #1 ))))))))))))))))))))))))))))));
+#99=GEOMETRIC_SET('deep-back-to-back-10',
+(((((((((((((((((((((((((((((( #2 ))))))))))))))))))))))))))))));
+ENDSEC;
+END-ISO-10303-21;

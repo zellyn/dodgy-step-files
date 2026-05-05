@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Tsh003 — Closed solid round-trips as SHELL_BASED_SURFACE_MODEL/OPEN_SHELL (SpaceClaim regression)</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.3a Shells / orientation</a> <span class="sep">/</span> <span class="current">Tsh003</span>
+</nav>
+<header class="title-bar">
+<h1>Tsh003 <span class="sep">—</span> <span class="entry-title">Closed solid round-trips as SHELL_BASED_SURFACE_MODEL/OPEN_SHELL (SpaceClaim regression)</span></h1>
+<p class="category">§12.3a shell-orientation</p>
+<p class="severity-badge severity-p1">P1 — silent data loss</p>
+<p class="tag-pills">
+<a class="tag tag-round-trip" href="../by-tag/round-trip/index.html">round-trip</a>
+<a class="tag tag-topology" href="../by-tag/topology/index.html">topology</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-3a-shells/Tsh003.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-3a-shells/Tsh003.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>11-translator-vendors.md W021</li>
+</ul></section>
+<section><h2>Sender</h2>
+<p>Ansys SpaceClaim 2025R2 / HOOPS Exchange 24.6–25.2 (regression)</p></section>
+<section><h2>Description</h2>
+<p>A topologically closed solid is emitted as `SHELL_BASED_SURFACE_MODEL → OPEN_SHELL` inside `ADVANCED_BREP_SHAPE_REPRESENTATION` instead of `MANIFOLD_SOLID_BREP → CLOSED_SHELL`. Downstream tools (Bambu Studio etc.) refuse to import as solid.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>Topologically closed face-set whose root entity is `SHELL_BASED_SURFACE_MODEL → OPEN_SHELL`, no `MANIFOLD_SOLID_BREP`.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>heal — promote to closed shell when topology proves closure; do not classify &quot;solid vs surface&quot; purely by entity type.</p></section>
+<section><h2>Notes</h2>
+<p>**See also**: Tsh001. Synonyms: &quot;closed solid round-trips as open surface model&quot;, &quot;solid downgrades to surface body after re-export&quot;, &quot;downstream tool refuses solid because writer emitted shell&quot;, &quot;Bambu Studio rejects solid&quot;, &quot;SpaceClaim regression demotes solid to surfaces&quot;.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>contains(b&#x27;OPEN_SHELL&#x27;)</code></li>
+<li><code>contains(b&#x27;SHELL_BASED_SURFACE_MODEL&#x27;)</code></li>
+<li><code>count_entity_def(b&#x27;MANIFOLD_SOLID_BREP&#x27;) == 0</code></li>
+</ul></section>
+<section><h2>Cross-references</h2>
+<p><a href="Tsh001.html">Tsh001</a></p>
+</section>
+<section><h2>Live oracle output</h2>
+<table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
+<tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>no_shapes_loaded</code></td></tr>
+</tbody></table>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* Tsh003 - Closed solid round-trips as <mark>SHELL_BASED_SURFACE_MODEL</mark>/<mark>OPEN_SHELL</mark>
+<span class="lineno">3</span> * Defect: A topologically closed solid is emitted as
+<span class="lineno">4</span> *   <mark>SHELL_BASED_SURFACE_MODEL</mark> -&gt; <mark>OPEN_SHELL</mark> inside
+<span class="lineno">5</span> *   ADVANCED_BREP_SHAPE_REPRESENTATION
+<span class="lineno">6</span> * instead of MANIFOLD_SOLID_BREP -&gt; CLOSED_SHELL. Downstream tools that
+<span class="lineno">7</span> * require closed-solid classification (Bambu Studio, FEA pipelines)
+<span class="lineno">8</span> * refuse to import it as a solid. Source: SpaceClaim 2025R2 / HOOPS
+<span class="lineno">9</span> * Exchange 24.6-25.2 regression. */
+<span class="lineno">10</span>HEADER;
+<span class="lineno">11</span>FILE_DESCRIPTION((&#x27;Tsh003 test case&#x27;,&#x27;Closed solid emitted as <mark>SHELL_BASED_SURFACE_MODEL</mark>&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">12</span>FILE_NAME(&#x27;Tsh003.stp&#x27;,&#x27;2026-04-26T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;auto-generated&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">13</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }&#x27;));
+<span class="lineno">14</span>ENDSEC;
+<span class="lineno">15</span>DATA;
+<span class="lineno">16</span>#1=APPLICATION_CONTEXT(&#x27;automotive_design&#x27;);
+<span class="lineno">17</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,&#x27;automotive_design&#x27;,2000,#1);
+<span class="lineno">18</span>/* Tetrahedron (4 vertices forming a closed shell of 4 triangular faces) */
+<span class="lineno">19</span>#100=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">20</span>#101=CARTESIAN_POINT(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">21</span>#102=CARTESIAN_POINT(&#x27;&#x27;,(0.0,1.0,0.0));
+<span class="lineno">22</span>#103=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">23</span>#110=VERTEX_POINT(&#x27;&#x27;,#100); #111=VERTEX_POINT(&#x27;&#x27;,#101);
+<span class="lineno">24</span>#112=VERTEX_POINT(&#x27;&#x27;,#102); #113=VERTEX_POINT(&#x27;&#x27;,#103);
+<span class="lineno">25</span>/* Plane surfaces for the four triangle faces */
+<span class="lineno">26</span>#120=DIRECTION(&#x27;&#x27;,(0.0,0.0,-1.0)); #121=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">27</span>#122=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#100,#120,#121); #123=PLANE(&#x27;&#x27;,#122);
+<span class="lineno">28</span>#130=DIRECTION(&#x27;&#x27;,(0.0,-1.0,0.0)); #131=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">29</span>#132=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#100,#130,#131); #133=PLANE(&#x27;&#x27;,#132);
+<span class="lineno">30</span>#140=DIRECTION(&#x27;&#x27;,(-1.0,0.0,0.0)); #141=DIRECTION(&#x27;&#x27;,(0.0,1.0,0.0));
+<span class="lineno">31</span>#142=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#100,#140,#141); #143=PLANE(&#x27;&#x27;,#142);
+<span class="lineno">32</span>/* Slanted face normal proportional to (1,1,1)/sqrt(3) */
+<span class="lineno">33</span>#150=DIRECTION(&#x27;&#x27;,(0.5773502691896258,0.5773502691896258,0.5773502691896258));
+<span class="lineno">34</span>#151=DIRECTION(&#x27;&#x27;,(0.7071067811865476,-0.7071067811865476,0.0));
+<span class="lineno">35</span>#152=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#101,#150,#151); #153=PLANE(&#x27;&#x27;,#152);
+<span class="lineno">36</span>/* Edges */
+<span class="lineno">37</span>#200=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0)); #201=VECTOR(&#x27;&#x27;,#200,1.0);
+<span class="lineno">38</span>#202=DIRECTION(&#x27;&#x27;,(0.0,1.0,0.0)); #203=VECTOR(&#x27;&#x27;,#202,1.0);
+<span class="lineno">39</span>#204=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0)); #205=VECTOR(&#x27;&#x27;,#204,1.0);
+<span class="lineno">40</span>#206=DIRECTION(&#x27;&#x27;,(-0.7071067811865476,0.7071067811865476,0.0)); #207=VECTOR(&#x27;&#x27;,#206,1.4142135623730951);
+<span class="lineno">41</span>#208=DIRECTION(&#x27;&#x27;,(-0.7071067811865476,0.0,0.7071067811865476)); #209=VECTOR(&#x27;&#x27;,#208,1.4142135623730951);
+<span class="lineno">42</span>#210=DIRECTION(&#x27;&#x27;,(0.0,-0.7071067811865476,0.7071067811865476)); #211=VECTOR(&#x27;&#x27;,#210,1.4142135623730951);
+<span class="lineno">43</span>#220=LINE(&#x27;&#x27;,#100,#201); #221=EDGE_CURVE(&#x27;&#x27;,#110,#111,#220,.T.);
+<span class="lineno">44</span>#222=LINE(&#x27;&#x27;,#100,#203); #223=EDGE_CURVE(&#x27;&#x27;,#110,#112,#222,.T.);
+<span class="lineno">45</span>#224=LINE(&#x27;&#x27;,#100,#205); #225=EDGE_CURVE(&#x27;&#x27;,#110,#113,#224,.T.);
+<span class="lineno">46</span>#226=LINE(&#x27;&#x27;,#101,#207); #227=EDGE_CURVE(&#x27;&#x27;,#111,#112,#226,.T.);
+<span class="lineno">47</span>#228=LINE(&#x27;&#x27;,#101,#209); #229=EDGE_CURVE(&#x27;&#x27;,#111,#113,#228,.T.);
+<span class="lineno">48</span>#230=LINE(&#x27;&#x27;,#102,#211); #231=EDGE_CURVE(&#x27;&#x27;,#112,#113,#230,.T.);
+<span class="lineno">49</span>/* Four faces with consistent outward orientation */
+<span class="lineno">50</span>#300=ORIENTED_EDGE(&#x27;&#x27;,*,*,#221,.T.); #301=ORIENTED_EDGE(&#x27;&#x27;,*,*,#227,.T.);
+<span class="lineno">51</span>#302=ORIENTED_EDGE(&#x27;&#x27;,*,*,#223,.F.);
+<span class="lineno">52</span>#303=EDGE_LOOP(&#x27;&#x27;,(#300,#301,#302)); #304=FACE_OUTER_BOUND(&#x27;&#x27;,#303,.T.);
+<span class="lineno">53</span>#305=ADVANCED_FACE(&#x27;&#x27;,(#304),#123,.F.);
+<span class="lineno">54</span>#310=ORIENTED_EDGE(&#x27;&#x27;,*,*,#221,.T.); #311=ORIENTED_EDGE(&#x27;&#x27;,*,*,#229,.T.);
+<span class="lineno">55</span>#312=ORIENTED_EDGE(&#x27;&#x27;,*,*,#225,.F.);
+<span class="lineno">56</span>#313=EDGE_LOOP(&#x27;&#x27;,(#310,#311,#312)); #314=FACE_OUTER_BOUND(&#x27;&#x27;,#313,.T.);
+<span class="lineno">57</span>#315=ADVANCED_FACE(&#x27;&#x27;,(#314),#133,.F.);
+<span class="lineno">58</span>#320=ORIENTED_EDGE(&#x27;&#x27;,*,*,#225,.T.); #321=ORIENTED_EDGE(&#x27;&#x27;,*,*,#231,.F.);
+<span class="lineno">59</span>#322=ORIENTED_EDGE(&#x27;&#x27;,*,*,#223,.F.);
+<span class="lineno">60</span>#323=EDGE_LOOP(&#x27;&#x27;,(#320,#321,#322)); #324=FACE_OUTER_BOUND(&#x27;&#x27;,#323,.T.);
+<span class="lineno">61</span>#325=ADVANCED_FACE(&#x27;&#x27;,(#324),#143,.F.);
+<span class="lineno">62</span>#330=ORIENTED_EDGE(&#x27;&#x27;,*,*,#227,.T.); #331=ORIENTED_EDGE(&#x27;&#x27;,*,*,#231,.T.);
+<span class="lineno">63</span>#332=ORIENTED_EDGE(&#x27;&#x27;,*,*,#229,.F.);
+<span class="lineno">64</span>#333=EDGE_LOOP(&#x27;&#x27;,(#330,#331,#332)); #334=FACE_OUTER_BOUND(&#x27;&#x27;,#333,.T.);
+<span class="lineno">65</span>#335=ADVANCED_FACE(&#x27;&#x27;,(#334),#153,.T.);
+<span class="lineno">66</span>/* Defect: topology closes (4 faces, every edge shared by 2 faces) but
+<span class="lineno">67</span>   the producer wraps the face set in <mark>OPEN_SHELL</mark> + <mark>SHELL_BASED_SURFACE_MODEL</mark>
+<span class="lineno">68</span>   instead of CLOSED_SHELL + MANIFOLD_SOLID_BREP. */
+<span class="lineno">69</span>#400=<mark>OPEN_SHELL</mark>(&#x27;actually_closed_tetrahedron&#x27;,(#305,#315,#325,#335));
+<span class="lineno">70</span>#410=<mark>SHELL_BASED_SURFACE_MODEL</mark>(&#x27;regression&#x27;,(#400));
+<span class="lineno">71</span>/* Wrapped in a representation reminiscent of SpaceClaim/HOOPS output */
+<span class="lineno">72</span>#420=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#100,#204,#200);
+<span class="lineno">73</span>#430=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+<span class="lineno">74</span>      GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT(())
+<span class="lineno">75</span>      GLOBAL_UNIT_ASSIGNED_CONTEXT(())
+<span class="lineno">76</span>      REPRESENTATION_CONTEXT(&#x27;Context&#x27;,&#x27;3D&#x27;));
+<span class="lineno">77</span>#440=ADVANCED_BREP_SHAPE_REPRESENTATION(&#x27;regressed&#x27;,(#410,#420),#430);
+<span class="lineno">78</span>ENDSEC;
+<span class="lineno">79</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Tsh002.html">&larr; Tsh002</a> <a class="up" href="index.html">§12.3a Shells / orientation</a> <a class="next" href="Tsh004.html">Tsh004 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

@@ -1,0 +1,33 @@
+ISO-10303-21;
+/* M147 - AP210 surface-mount component oriented on the wrong board
+ * side.
+ * Defect: a component placement transform on the bottom side
+ * (z=0, normal = -Z) is applied to a part declared as a
+ * 'top-only' SMD package (BGA). The footprint nodes resolve below
+ * the board surface and the placement is fundamentally invalid -
+ * the BGA balls are on the wrong face. */
+HEADER;
+FILE_DESCRIPTION(('M147 test case','AP210 SMD wrong-side placement'),'2;1');
+FILE_NAME('M147.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('ELECTRONIC_ASSEMBLY_INTERCONNECT_AND_PACKAGING_DESIGN { 1 0 10303 210 3 1 0 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('electronic_assembly_interconnect_and_packaging_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
+  'electronic_assembly_interconnect_and_packaging_design',2014,#1);
+#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10))
+     REPRESENTATION_CONTEXT('pcb','3D'));
+/* Defect: BGA_84 declared as top-only SMD but placed on bottom side. */
+#100=PRODUCT('BGA_84','BGA_84','top-mount BGA package',(#1));
+#110=DESCRIPTIVE_REPRESENTATION_ITEM('mount_constraint','TOP_ONLY');
+#200=CARTESIAN_POINT('origin',(50.0,40.0,0.0));
+/* Normal -Z indicates bottom side mount. */
+#201=DIRECTION('placement_normal',(0.0,0.0,-1.0));
+#202=DIRECTION('placement_x',(1.0,0.0,0.0));
+#203=AXIS2_PLACEMENT_3D('U1_placement',#200,#201,#202);
+#300=NEXT_ASSEMBLY_USAGE_OCCURRENCE('U1','U1','BGA mounted bottom side',
+       #100,#100,$);
+ENDSEC;
+END-ISO-10303-21;

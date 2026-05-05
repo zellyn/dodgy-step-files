@@ -1,0 +1,54 @@
+ISO-10303-21;
+/* Pmi075 - KINEMATIC_JOINT topology inconsistent with the link
+ * pair it joins (joint references one rigid body but the other
+ * end is unconnected)
+ * Defect: AP242 kinematic representation models a mechanism as
+ * a graph: KINEMATIC_LINK nodes joined by KINEMATIC_JOINT edges.
+ * A joint should reference exactly two links (one per end). A
+ * producer that omits one end (referencing the same link twice,
+ * or pointing the second end to a deleted link) yields an
+ * inconsistent kinematic graph that cannot be simulated. */
+HEADER;
+FILE_DESCRIPTION(('Pmi075 - KINEMATIC_JOINT references a single link twice'),'2;1');
+FILE_NAME('Pmi075.stp','2026-04-26T00:00:00',(''),(''),
+  'cad-research-suite','','');
+FILE_SCHEMA(('AP242_MANAGED_MODEL_BASED_3D_ENGINEERING_MIM_LF { 1 0 10303 442 1 1 4 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('managed model based 3d engineering');
+#2=PRODUCT_CONTEXT('',#1,'mechanical');
+#3=PRODUCT('Pmi075','KinJointPart','',(#2));
+#4=PRODUCT_DEFINITION_FORMATION('','',#3);
+#5=PRODUCT_DEFINITION_CONTEXT('',#1,'design');
+#6=PRODUCT_DEFINITION('','',#4,#5);
+#7=PRODUCT_DEFINITION_SHAPE('','',#6);
+#20=( LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT(.MILLI.,.METRE.) );
+#22=( NAMED_UNIT(*) PLANE_ANGLE_UNIT() SI_UNIT($,.RADIAN.) );
+#23=( NAMED_UNIT(*) SI_UNIT($,.STERADIAN.) SOLID_ANGLE_UNIT() );
+#24=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#20,
+  'distance_accuracy_value','');
+#25=( GEOMETRIC_REPRESENTATION_CONTEXT(3)
+  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#24))
+  GLOBAL_UNIT_ASSIGNED_CONTEXT((#20,#22,#23))
+  REPRESENTATION_CONTEXT('','3D') );
+#30=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#31=DIRECTION('z',(0.0,0.0,1.0));
+#32=DIRECTION('x',(1.0,0.0,0.0));
+#33=AXIS2_PLACEMENT_3D('',#30,#31,#32);
+/* Single rigid body / link */
+#40=PRODUCT('Link_A','',$,(#2));
+#41=PRODUCT_DEFINITION_FORMATION('','',#40);
+#42=PRODUCT_DEFINITION('','',#41,#5);
+#43=NEXT_ASSEMBLY_USAGE_OCCURRENCE('','','self',#6,#42,$);
+/* Defect: a "joint" that references the same link as both ends.
+ * Modeled here as a NEXT_ASSEMBLY_USAGE_OCCURRENCE pointing the
+ * relating and related to the same definition - in the kinematic
+ * domain this would be a self-loop joint, simulation-undefined. */
+#44=NEXT_ASSEMBLY_USAGE_OCCURRENCE('','','self_joint',#42,#42,$);
+#90=SHAPE_REPRESENTATION('',(#33),#25);
+#91=SHAPE_DEFINITION_REPRESENTATION(#7,#90);
+/* PMI anchor: minimal ANNOTATION_PLANE so this PMI fixture cites at least one canonical PMI entity. */
+#9100=PLANE('pmi_anchor_plane',#33);
+#9101=ANNOTATION_PLANE('pmi_annotation',(),#9100,());
+ENDSEC;
+END-ISO-10303-21;

@@ -1,0 +1,55 @@
+ISO-10303-21;
+/* M005 - "Number of facets" validation property includes degenerate
+ * triangles that some receivers strip on import.
+ * Defect: the validation property says 4 facets. The TRIANGULATED_FACE
+ * actually emits 4 triangles, but two of them are degenerate (zero
+ * area / collinear vertices). Receivers that drop degenerate triangles
+ * before counting will report 2, not 4, and flag the file as failing
+ * its own GVP. Per the recommended practice the count must include the
+ * dropped triangles. */
+HEADER;
+FILE_DESCRIPTION(('M005 test case','number of facets includes degenerates'),'2;1');
+FILE_NAME('M005.stp','2026-04-26T00:00:00',(''),(''),'auto-generated','','');
+FILE_SCHEMA(('AP242_MANAGED_MODEL_BASED_3D_ENGINEERING_MIM_LF { 1 0 10303 442 1 1 4 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('managed model based 3d engineering');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
+  'ap242_managed_model_based_3d_engineering',2014,#1);
+#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#11=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#12=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.E-6),#10,'distance_accuracy_value','');
+#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+     GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13))
+     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12))
+     REPRESENTATION_CONTEXT('part','3D'));
+/* Coordinates: vertices 1-4 form one square; vertex 5 collinear with 1-2 */
+#100=COORDINATES_LIST('',5,((0.0,0.0,0.0),(2.0,0.0,0.0),
+                            (2.0,2.0,0.0),(0.0,2.0,0.0),
+                            (1.0,0.0,0.0)));
+/* 4 triangles - last two are degenerate.
+ *  (1,2,3)   ok
+ *  (1,3,4)   ok
+ *  (1,5,2)   collinear (zero area)  - degenerate
+ *  (3,3,4)   repeated index         - degenerate */
+#110=TRIANGULATED_FACE('flat',#100,$,$,(),
+       ((1,2,3),(1,3,4),(1,5,2),(3,3,4)));
+#120=TESSELLATED_SOLID('square_with_degens',(#110),$);
+#200=TESSELLATED_SHAPE_REPRESENTATION('',(#120),#14);
+/* Validation property: number of facets. Emit 4 (writer-faithful)
+ * even though two are degenerate. */
+#300=PRODUCT('part1','part1','',(#310));
+#310=MECHANICAL_CONTEXT('',#1,'mechanical');
+#320=PRODUCT_DEFINITION_FORMATION('','',#300);
+#330=PRODUCT_DEFINITION('design','',#320,#340);
+#340=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#350=PRODUCT_DEFINITION_SHAPE('','',#330);
+#360=SHAPE_DEFINITION_REPRESENTATION(#350,#200);
+#400=PROPERTY_DEFINITION('geometric validation property',
+       'number of facets',#350);
+#410=INTEGER_REPRESENTATION_ITEM('number of facets',4);
+#420=REPRESENTATION('',(#410),#14);
+#430=PROPERTY_DEFINITION_REPRESENTATION(#400,#420);
+ENDSEC;
+END-ISO-10303-21;

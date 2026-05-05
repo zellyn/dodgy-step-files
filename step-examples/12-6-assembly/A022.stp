@@ -1,0 +1,55 @@
+ISO-10303-21;
+/*
+ * A022 — PRESENTATION_LAYER_ASSIGNMENT collisions / namespace abuse
+ * Defect (OCCT 96049f2 / Mantis 0032049 layers with empty/identical names,
+ *         empty PLA, CST Microwave Studio uses PLA for materials, layer
+ *         count mis-read):
+ *   Multiple PRESENTATION_LAYER_ASSIGNMENT instances with identical names
+ *   but different visibility flags collide; OCCT did not differentiate.
+ *   Empty PLA caused exception. Some producers (CST) use PLA to encode
+ *   physical-group / material semantics rather than visibility, which OCCT
+ *   XCAF only honors for visibility, silently dropping material data.
+ * Expected kernel: group layers by (name, visibility) tuple; surface PLA
+ *   names as queryable group attributes; accept empty PLA.
+ */
+HEADER;
+FILE_DESCRIPTION(('A022 colliding PLA names + empty PLA + material-as-layer'),'2;1');
+FILE_NAME('A022.stp','2026-04-26T00:00:00',('catalog'),('cad'),'manual','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#10 = APPLICATION_CONTEXT('automotive design');
+#11 = APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2001,#10);
+#12 = PRODUCT_CONTEXT('',#10,'mechanical');
+#13 = PRODUCT_DEFINITION_CONTEXT('part definition',#10,'design');
+#20 = PRODUCT('A022_PART','PCB shell','',(#12));
+#21 = PRODUCT_DEFINITION_FORMATION('','',#20);
+#22 = PRODUCT_DEFINITION('design','',#21,#13);
+#23 = PRODUCT_DEFINITION_SHAPE('','',#22);
+#50 = ( LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT(.MILLI.,.METRE.) );
+#51 = ( NAMED_UNIT(*) PLANE_ANGLE_UNIT() SI_UNIT($,.RADIAN.) );
+#52 = ( NAMED_UNIT(*) SI_UNIT($,.STERADIAN.) SOLID_ANGLE_UNIT() );
+#53 = UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#50,'distance_accuracy_value','');
+#54 = ( GEOMETRIC_REPRESENTATION_CONTEXT(3) GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#53))
+        GLOBAL_UNIT_ASSIGNED_CONTEXT((#50,#51,#52)) REPRESENTATION_CONTEXT('','3D') );
+#60 = CARTESIAN_POINT('',(0.0,0.0,0.0));
+#61 = DIRECTION('',(0.0,0.0,1.0));
+#62 = DIRECTION('',(1.0,0.0,0.0));
+#63 = AXIS2_PLACEMENT_3D('part_origin',#60,#61,#62);
+#64 = PLANE('',#63);
+#65 = ADVANCED_FACE('face_a',(),#64,.T.);
+#66 = ADVANCED_FACE('face_b',(),#64,.T.);
+#67 = SHAPE_REPRESENTATION('part_rep',(#63,#65,#66),#54);
+#68 = SHAPE_DEFINITION_REPRESENTATION(#23,#67);
+/* DEFECT 1: two PLAs share the SAME name 'Layer1' but differ in visibility.
+   OCCT pre-32049 conflates them. */
+#70 = PRE_DEFINED_TERMINATOR_SYMBOL('visible');
+#71 = PRESENTATION_LAYER_ASSIGNMENT('Layer1','visible',(#65));
+#72 = PRESENTATION_LAYER_ASSIGNMENT('Layer1','hidden',(#66));
+/* DEFECT 2: empty PLA — items list is empty; older OCCT threw an exception. */
+#73 = PRESENTATION_LAYER_ASSIGNMENT('Empty','',());
+/* DEFECT 3: CST-style PLA encoding a material/group rather than visibility. */
+#74 = PRESENTATION_LAYER_ASSIGNMENT('Copper','meshable',(#65));
+#75 = PRESENTATION_LAYER_ASSIGNMENT('Copper','meshable',(#66));
+ENDSEC;
+END-ISO-10303-21;

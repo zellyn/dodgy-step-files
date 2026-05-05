@@ -1,0 +1,65 @@
+ISO-10303-21;
+/*
+ * A008 — AP242 Ed.2 widened SELECT for product_definition_relationship
+ * Defect (STEP Tools Ed.1 notes / STEP Tools AP242 e2 SELECT):
+ *   AP242e2 changed representation_relationship.rep_1/rep_2 and
+ *   product_definition_relationship.related/relating from direct references
+ *   to SELECT types. Code doing direct dot-access
+ *   (pdr->related()->product()) crashes against an Ed.2 file whose related
+ *   is a SELECT case wrapping a product_definition_occurrence.
+ * Expected kernel: heal — accept both forms via stix_get_related_pdef-style
+ *   helper; never assume direct.
+ *
+ * NOTE: this file declares the AP242 Ed.2 schema. The "PDR widening" effect
+ *   is a code-path issue more than a Part-21 syntax issue; we model it via a
+ *   PRODUCT_DEFINITION_OCCURRENCE that an Ed.1 reader will misuse when it
+ *   does a direct .product() dot-access on the NAUO target.
+ */
+HEADER;
+FILE_DESCRIPTION(('A008 AP242e2 PDR.related is SELECT-widened (PD_OCCURRENCE)'),'2;1');
+FILE_NAME('A008.stp','2026-04-26T00:00:00',('catalog'),('cad'),'manual','','');
+FILE_SCHEMA(('AP242_MANAGED_MODEL_BASED_3D_ENGINEERING_MIM_LF { 1 0 10303 442 3 0 0 }'));
+ENDSEC;
+DATA;
+#10 = APPLICATION_CONTEXT('managed model based 3d engineering');
+#11 = APPLICATION_PROTOCOL_DEFINITION('international standard','ap242_managed_model_based_3d_engineering',2020,#10);
+#12 = PRODUCT_CONTEXT('',#10,'mechanical');
+#13 = PRODUCT_DEFINITION_CONTEXT('part definition',#10,'design');
+/* Parent assembly */
+#20 = PRODUCT('A008_ASSY','','',(#12));
+#21 = PRODUCT_DEFINITION_FORMATION('','',#20);
+#22 = PRODUCT_DEFINITION('design','',#21,#13);
+#23 = PRODUCT_DEFINITION_SHAPE('','',#22);
+/* Child product + PD */
+#30 = PRODUCT('LEAF','','',(#12));
+#31 = PRODUCT_DEFINITION_FORMATION('','',#30);
+#32 = PRODUCT_DEFINITION('design','',#31,#13);
+#33 = PRODUCT_DEFINITION_SHAPE('','',#32);
+/* AP242e2 widened form: an occurrence wrapping the PD.
+   Some Ed.1 readers cast PD_OCCURRENCE.related directly to PD and segfault. */
+#34 = PRODUCT_DEFINITION_OCCURRENCE('occ','use-site occurrence','',#31,#13);
+/* DEFECT: NAUO.related points at PD_OCCURRENCE rather than PRODUCT_DEFINITION;
+   AP242e2 tools accept this; AP203/AP242e1-only readers bus-fault on
+   pdr->related()->product(). */
+#40 = NEXT_ASSEMBLY_USAGE_OCCURRENCE('1','LEAF_INST','',#22,#34,$);
+/* Units */
+#50 = ( LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT(.MILLI.,.METRE.) );
+#51 = ( NAMED_UNIT(*) PLANE_ANGLE_UNIT() SI_UNIT($,.RADIAN.) );
+#52 = ( NAMED_UNIT(*) SI_UNIT($,.STERADIAN.) SOLID_ANGLE_UNIT() );
+#53 = UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#50,'distance_accuracy_value','');
+#54 = ( GEOMETRIC_REPRESENTATION_CONTEXT(3) GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#53))
+        GLOBAL_UNIT_ASSIGNED_CONTEXT((#50,#51,#52)) REPRESENTATION_CONTEXT('','3D') );
+/* Geometry */
+#60 = CARTESIAN_POINT('',(0.0,0.0,0.0));
+#61 = DIRECTION('',(0.0,0.0,1.0));
+#62 = DIRECTION('',(1.0,0.0,0.0));
+#63 = AXIS2_PLACEMENT_3D('leaf_origin',#60,#61,#62);
+#64 = SHAPE_REPRESENTATION('leaf_rep',(#63),#54);
+#65 = SHAPE_DEFINITION_REPRESENTATION(#33,#64);
+#66 = REPRESENTATION_MAP(#63,#64);
+#67 = MAPPED_ITEM('inst',#66,#63);
+#80 = AXIS2_PLACEMENT_3D('assy_origin',#60,#61,#62);
+#81 = SHAPE_REPRESENTATION('assy_rep',(#80,#67),#54);
+#82 = SHAPE_DEFINITION_REPRESENTATION(#23,#81);
+ENDSEC;
+END-ISO-10303-21;

@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>N020 — Coordinate-system origin offset: hard-coded BOARD_OFFSET 0.05mm in PCB→MCAD pipeline</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.4 Tolerance &amp; numerical precision</a> <span class="sep">/</span> <span class="current">N020</span>
+</nav>
+<header class="title-bar">
+<h1>N020 <span class="sep">—</span> <span class="entry-title">Coordinate-system origin offset: hard-coded BOARD_OFFSET 0.05mm in PCB→MCAD pipeline</span></h1>
+<p class="category">§12.4 (sub-class: origin-offset / working precision)</p>
+<p class="severity-badge severity-p1">P1 — silent data loss</p>
+<p class="tag-pills">
+<a class="tag tag-assembly" href="../by-tag/assembly/index.html">assembly</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-4-tolerance/N020.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-4-tolerance/N020.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>22-niche-forums Y001 (KiCad #21127)</li>
+</ul></section>
+<section><h2>Sender</h2>
+<p>KiCad pcbnew STEP exporter</p></section>
+<section><h2>Description</h2>
+<p>KiCad hard-codes a `BOARD_OFFSET = 0.05 mm` constant on every component&#x27;s `AXIS2_PLACEMENT_3D`, floating components above the board surface to avoid Z-fighting in viewers. Downstream MCAD tools that build enclosure geometry against the PCB top face see consistent 0.05 mm misalignment that doesn&#x27;t correspond to any physical clearance.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>Export any KiCad PCB to STEP. Inspect the `MAPPED_ITEM` for any footprint-attached 3D model: its `AXIS2_PLACEMENT_3D` location&#x27;s Z is shifted 0.05 mm relative to the board top face.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>accept; surface a flag warning &quot;consumer-applied placement offset detected&quot; when small uniform Z offsets across many child instances are present.</p></section>
+<section><h2>Notes</h2>
+<p>Synonyms: &quot;KiCad PCB components float 0.05 mm above board&quot;, &quot;hard-coded board offset misaligns components&quot;, &quot;PCB to MCAD pipeline shifts parts by 0.05 mm&quot;, &quot;every component placed slightly above PCB top&quot;.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>count_entity_def(b&#x27;AXIS2_PLACEMENT_3D&#x27;) == 3</code></li>
+<li><code>matches(rb&#x27;0\.05&#x27;)</code></li>
+<li><code>not_contains(b&#x27;EDGE_CURVE&#x27;)</code></li>
+</ul></section>
+<section><h2>Live oracle output</h2>
+<table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
+<tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>no_shapes_loaded</code></td></tr>
+</tbody></table>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>/* N020 - Coordinate-system origin offset: hard-coded BOARD_OFFSET <mark>0.05</mark>mm in PCB-&gt;MCAD pipeline
+<span class="lineno">2</span> * Defect: KiCad hard-codes a BOARD_OFFSET = <mark>0.05</mark> mm constant on every
+<span class="lineno">3</span> * component&#x27;s AXIS2_PLACEMENT_3D, floating components above the board surface
+<span class="lineno">4</span> * to avoid Z-fighting in viewers. Downstream MCAD tools that build enclosure
+<span class="lineno">5</span> * geometry against the PCB top face see consistent <mark>0.05</mark> mm misalignment.
+<span class="lineno">6</span> * Reproducer: every component placement carries Z=<mark>0.05</mark> in its location
+<span class="lineno">7</span> * cartesian_point, with no physical clearance to justify it.
+<span class="lineno">8</span> */
+<span class="lineno">9</span>ISO-10303-21;
+<span class="lineno">10</span>HEADER;
+<span class="lineno">11</span>FILE_DESCRIPTION((&#x27;N020 KiCad hard-coded BOARD_OFFSET <mark>0.05</mark>mm Z-fight avoidance&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">12</span>FILE_NAME(&#x27;N020.stp&#x27;,&#x27;2026-04-26T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),
+<span class="lineno">13</span>  &#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">14</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN&#x27;));
+<span class="lineno">15</span>ENDSEC;
+<span class="lineno">16</span>DATA;
+<span class="lineno">17</span>#1=APPLICATION_CONTEXT(&#x27;automotive design&#x27;);
+<span class="lineno">18</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,
+<span class="lineno">19</span>  &#x27;automotive_design&#x27;,2009,#1);
+<span class="lineno">20</span>/* All component placements use Z=<mark>0.05</mark> (BOARD_OFFSET), no physical reason */
+<span class="lineno">21</span>#10=CARTESIAN_POINT(&#x27;comp1_loc&#x27;,(10.0,10.0,<mark>0.05</mark>));
+<span class="lineno">22</span>#11=CARTESIAN_POINT(&#x27;comp2_loc&#x27;,(20.0,15.0,<mark>0.05</mark>));
+<span class="lineno">23</span>#12=CARTESIAN_POINT(&#x27;comp3_loc&#x27;,(30.0,12.0,<mark>0.05</mark>));
+<span class="lineno">24</span>#20=DIRECTION(&#x27;z&#x27;,(0.0,0.0,1.0));
+<span class="lineno">25</span>#21=DIRECTION(&#x27;x&#x27;,(1.0,0.0,0.0));
+<span class="lineno">26</span>/* Defect site: every footprint instance gets the same hard-coded <mark>0.05</mark> offset */
+<span class="lineno">27</span><mark>#30=AXIS2_PLACEMENT_3D(</mark>&#x27;comp1_BOARD_OFFSET&#x27;,#10,#20,#21);
+<span class="lineno">28</span><mark>#31=AXIS2_PLACEMENT_3D(</mark>&#x27;comp2_BOARD_OFFSET&#x27;,#11,#20,#21);
+<span class="lineno">29</span><mark>#32=AXIS2_PLACEMENT_3D(</mark>&#x27;comp3_BOARD_OFFSET&#x27;,#12,#20,#21);
+<span class="lineno">30</span>#40=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">31</span>#41=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+<span class="lineno">32</span>#42=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+<span class="lineno">33</span>#50=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-5),#40,
+<span class="lineno">34</span>  &#x27;distance_accuracy_value&#x27;,&#x27;board_modeling_tol&#x27;);
+<span class="lineno">35</span>#60=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+<span class="lineno">36</span>  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#50))
+<span class="lineno">37</span>  GLOBAL_UNIT_ASSIGNED_CONTEXT((#40,#41,#42))
+<span class="lineno">38</span>  REPRESENTATION_CONTEXT(&#x27;pcb_ctx&#x27;,&#x27;3D&#x27;));
+<span class="lineno">39</span>ENDSEC;
+<span class="lineno">40</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="N019.html">&larr; N019</a> <a class="up" href="index.html">§12.4 Tolerance &amp; numerical precision</a> <a class="next" href="N021.html">N021 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

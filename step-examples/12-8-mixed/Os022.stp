@@ -1,0 +1,22 @@
+ISO-10303-21;
+/* Os022 - Contiguous-edge pair has unequal parameter lengths.
+ * Defect: two free edges with same 3D extent (between (0,0,0) and
+ * (1,0,0)) but parameterized differently (param length 1 vs 2). */
+HEADER;
+FILE_DESCRIPTION(('Os022 - contiguous edges param length mismatch','Pass C gap-fill'),'2;1');
+FILE_NAME('Os022.stp','2026-04-30T00:00:00',(''),(''),'gap-fill C','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#11=CARTESIAN_POINT('',(1.0,0.0,0.0));
+#20=DIRECTION('unit_length',(1.0,0.0,0.0));
+#21=DIRECTION('half_length',(0.5,0.0,0.0));
+#22=VECTOR('',#20,1.0);
+#23=VECTOR('',#21,1.0);
+#30=LINE('lineA_param_length_1',#10,#22);
+#31=LINE('lineB_param_length_2',#10,#23);
+ENDSEC;
+END-ISO-10303-21;

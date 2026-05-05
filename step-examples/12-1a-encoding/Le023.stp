@@ -1,0 +1,27 @@
+/* Le023 — Locale-dependent decimal separator inside numeric attribute
+   Defect: the Part-21 REAL grammar uses '.' only. A producer using
+   locale-aware printf on a de_DE/fr_FR locale emits 1,5 for one-and-a-half.
+   A reader using strtod without setlocale("C") on the same locale silently
+   accepts these values. This file emits CARTESIAN_POINTs whose coordinates
+   contain commas instead of dots inside the REAL fields, breaking the LIST
+   structure (the comma is also the list separator!) and producing extra
+   tokens. A correct parser uses strtod_l with the "C" locale and rejects. */
+ISO-10303-21;
+HEADER;
+FILE_DESCRIPTION(('Le023 - locale-dependent decimal separator in REAL attribute'),'2;1');
+FILE_NAME('Le023.stp','2026-04-26T00:00:00',('auto-generated'),(''),
+  'auto-generated','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+/* comma instead of dot in REAL: parser may parse 1,5 as two tokens */
+#10=CARTESIAN_POINT('',(1,5,0.,0.));
+/* mixed: some coords use dot, others use comma */
+#11=CARTESIAN_POINT('',(2.5,3,7,4,0));
+/* single coord with European decimal */
+#12=CARTESIAN_POINT('',(0,0,0,0,0));
+#21=DIRECTION('',(0.0,0.0,1.0));
+#22=DIRECTION('',(1.0,0.0,0.0));
+#23=AXIS2_PLACEMENT_3D('',#10,#21,#22);
+ENDSEC;
+END-ISO-10303-21;

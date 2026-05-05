@@ -1,0 +1,52 @@
+ISO-10303-21;
+/* ============================================================
+   WARNING: THIS FILE IS INTENTIONALLY MALFORMED.
+   It exists ONLY for parser-robustness / fuzz-class testing.
+   DO NOT feed to a production translator without sandboxing.
+
+   Entry  : Ad015
+   Title  : Empty aggregate where schema requires at least
+            one element (LIST [1:?] violation).
+   Defect : Multiple attribute slots are populated with the
+            empty aggregate '()' even though the schema
+            mandates a lower bound of 1. Downstream code
+            that accesses list[0] without first checking
+            length will dereference past the end.
+              - #1 ADVANCED_FACE: empty bound list
+              - #2 TESSELLATED_SHELL: empty face list
+              - #3 EDGE_LOOP: empty edge list
+              - #4 BSPLINE_CURVE: zero poles
+              - #5 APPLIED_GROUP_ASSIGNMENT: empty group
+   Expected: validate LIST bounds against schema lower bound
+             at parse time; reject with E_AGGREGATE_BOUNDS.
+   See also: Ad003, Ls013.
+   ============================================================ */
+HEADER;
+FILE_DESCRIPTION(('Ad015 empty aggregate'),'2;1');
+FILE_NAME('Ad015.stp','2026-04-26T00:00:00',('synthetic'),('cad-research'),
+  'none','none','none');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+/* empty bound list violates LIST [1:?] */
+#1=ADVANCED_FACE('',(),#42,.T.);
+
+/* empty tessellated face list */
+#2=TESSELLATED_SHELL('',(),$);
+
+/* empty edge_loop */
+#3=EDGE_LOOP('',());
+
+/* zero-pole bspline (also exercises Ad003 bounds confusion) */
+#4=BSPLINE_CURVE_WITH_KNOTS('',3,(),.UNSPECIFIED.,.F.,.F.,
+  (),(),.UNSPECIFIED.);
+
+/* empty group assignment */
+#5=APPLIED_GROUP_ASSIGNMENT(#6,());
+#6=GROUP('','',$);
+
+#42=PLANE('',#43);
+#43=AXIS2_PLACEMENT_3D('',#44,$,$);
+#44=CARTESIAN_POINT('',(0.,0.,0.));
+ENDSEC;
+END-ISO-10303-21;

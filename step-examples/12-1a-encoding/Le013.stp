@@ -1,0 +1,32 @@
+/* Le013 — Apostrophe-doubling escape '' confused with string terminator
+   Defect: a literal apostrophe is escaped by doubling: 'It''s' decodes to
+   It's. Naive scanners read the doubled '' as end-of-string + start-of-next,
+   misaligning the token stream. This file emits multiple parity cases:
+     'O''Brien'   -> O'Brien (one literal apostrophe)
+     'a''b'       -> a'b
+     ''''         -> '' (two literal apostrophes inside a 4-quote field)
+     'foo''bar''' -> foo'bar' (trailing escape)
+   A correct parser must track parity of consecutive apostrophes; only an
+   odd count terminates the string. */
+ISO-10303-21;
+HEADER;
+FILE_DESCRIPTION(('Le013 - doubled apostrophe escape, e.g. O''Brien'),'2;1');
+FILE_NAME('Le013.stp','2026-04-26T00:00:00',('auto-generated'),(''),
+  'auto-generated','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+/* canonical case */
+#10=PERSON('p1','O''Brien','given',$,$,$,$,$);
+/* short doubling */
+#11=PERSON('p2','a''b','given',$,$,$,$,$);
+/* four apostrophes -> two literal apostrophes */
+#12=PERSON('p3','''''','given',$,$,$,$,$);
+/* trailing escape */
+#13=PERSON('p4','foo''bar''','given',$,$,$,$,$);
+#20=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#21=DIRECTION('',(0.0,0.0,1.0));
+#22=DIRECTION('',(1.0,0.0,0.0));
+#23=AXIS2_PLACEMENT_3D('',#20,#21,#22);
+ENDSEC;
+END-ISO-10303-21;

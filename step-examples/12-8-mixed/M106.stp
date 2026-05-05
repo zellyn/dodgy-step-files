@@ -1,0 +1,25 @@
+ISO-10303-21;
+/* M106 - AP238 single MACHINING_OPERATION declares 50-hour cycle.
+ * Defect: a MACHINING_OPERATION carries an EXECUTION_TIME of 180000
+ * seconds (50 hours) - well past any reasonable shift length. Indicates
+ * an upstream feedrate or unit-confusion bug. */
+HEADER;
+FILE_DESCRIPTION(('M106 test case','AP238 unrealistic 50-hour cycle time'),'2;1');
+FILE_NAME('M106.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AP238_STEP_NC_MIM { 1 0 10303 238 1 0 0 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('numerical_control_machining');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
+  'numerical_control_machining',2007,#1);
+#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#15=(NAMED_UNIT(*)SI_UNIT($,.SECOND.)TIME_UNIT());
+#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#15))
+     REPRESENTATION_CONTEXT('nc','3D'));
+/* Defect: 180000 seconds = 50 hours of continuous machining. */
+#80=MEASURE_WITH_UNIT(TIME_MEASURE(180000.0),#15);
+#100=MACHINING_OPERATION('marathon_cut',$,$,$,#80,$);
+#200=WORKPLAN('main',(#100),$,$,$);
+ENDSEC;
+END-ISO-10303-21;

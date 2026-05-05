@@ -1,0 +1,29 @@
+ISO-10303-21;
+/* M188 - AP238 DEBURRING_OPERATION on edge that doesn't exist in workpiece geometry.
+ * Defect: a DEBURRING_OPERATION references an edge feature (#510) that
+ * isn't part of the WORKPIECE's geometry. The deburring path is
+ * computed against a phantom edge; the tool either swings into empty
+ * space or contacts the workpiece in an unintended location. */
+HEADER;
+FILE_DESCRIPTION(('M188 test case','AP238 deburring of nonexistent edge'),'2;1');
+FILE_NAME('M188.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AP238_STEP_NC_MIM { 1 0 10303 238 1 0 0 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('numerical_control_machining');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
+  'numerical_control_machining',2007,#1);
+#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10))
+     REPRESENTATION_CONTEXT('nc','3D'));
+/* Workpiece has only edges #500 and #501. */
+#500=EDGE_CURVE('edge_top_a',$,$,$,.T.);
+#501=EDGE_CURVE('edge_top_b',$,$,$,.T.);
+#400=WORKPIECE('part_with_two_edges',$,$,$,$,$,$);
+/* Defect: deburring op references edge #510 which isn't on the workpiece. */
+#510=EDGE_CURVE('phantom_edge_NOT_ON_PART',$,$,$,.T.);
+#100=DEBURRING_OPERATION('deburr_phantom',$,$,$,$,#510,#400);
+#200=WORKPLAN('main',(#100),$,$,$);
+ENDSEC;
+END-ISO-10303-21;

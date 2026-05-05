@@ -1,0 +1,24 @@
+ISO-10303-21;
+/* Gb001 - Curve approximation does not converge.
+ * Defect: B-spline approximation of a sampled curve is requested
+ * within tolerance below the kernel's working precision; algorithm
+ * cannot converge. */
+HEADER;
+FILE_DESCRIPTION(('Gb001 - approximation no convergence','Pass C gap-fill'),'2;1');
+FILE_NAME('Gb001.stp','2026-04-30T00:00:00',(''),(''),'gap-fill C','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+/* Densely sampled line */
+#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#11=CARTESIAN_POINT('',(1.0,0.0,0.0));
+#12=CARTESIAN_POINT('',(2.0,0.0,0.0));
+#13=CARTESIAN_POINT('',(3.0,0.0,0.0));
+#14=CARTESIAN_POINT('',(4.0,0.0,0.0));
+/* Source line */
+#20=DIRECTION('',(1.0,0.0,0.0));
+#21=VECTOR('',#20,1.0);
+#22=LINE('source_line',#10,#21);
+ENDSEC;
+END-ISO-10303-21;

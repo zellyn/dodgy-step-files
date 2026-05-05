@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Tsh044 — Free edges in OPEN_SHELL distinguished from non-watertight defects (e.g., two adjacent ADVANCED_FACEs each define their own EDGE_CURVE on a common boundary instead of sharing one)</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.3a Shells / orientation</a> <span class="sep">/</span> <span class="current">Tsh044</span>
+</nav>
+<header class="title-bar">
+<h1>Tsh044 <span class="sep">—</span> <span class="entry-title">Free edges in OPEN_SHELL distinguished from non-watertight defects (e.g., two adjacent ADVANCED_FACEs each define their own EDGE_CURVE on a common boundary instead of sharing one)</span></h1>
+<p class="category">§12.3a shells / orientation (sub-class: edge sharing)</p>
+<p class="severity-badge severity-p1">P1 — silent data loss</p>
+<p class="tag-pills">
+<a class="tag tag-topology" href="../by-tag/topology/index.html">topology</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-3a-shells/Tsh044.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-3a-shells/Tsh044.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>OCCT `ShapeAnalysis_Shell::CheckOrientedShells` (`ShapeAnalysis_Shell.hxx:52`)</li>
+</ul></section>
+<section><h2>Description</h2>
+<p>A shell-orientation analyzer checks that each edge appears either once (free edge — legal in an open shell) or twice with opposite FORWARD/REVERSED orientations (legal for a connected pair). Edges appearing twice with the same orientation, or three or more times, are defects. The diagnostic must distinguish a true non-watertight (&quot;naked&quot;, &quot;leaky&quot;) defect from a legitimately open free boundary.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>An OPEN_SHELL of two squares sharing no common edge — every edge appears exactly once. The &quot;shell&quot; is two disjoint plates; orientation analysis must label every edge as a free edge (legal) and flag the absence of any sharing as informational.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>a per-edge tally with three buckets — shared-with-opposite-orientation (good), free (legal in open shells, optionally reported), and pathological (same-orientation pair, or count&gt;2). Kernels intending to build a closed solid must reject the second bucket; kernels handling open shells may accept it.</p></section>
+<section><h2>Notes</h2>
+<p>Free edges are also called &quot;naked edges&quot; in some kernels; both terms in scope. Synonyms: &quot;naked edges versus duplicate edges&quot;, &quot;open shell free boundary classification&quot;, &quot;edge appears once is legal but twice with same orientation isn&#x27;t&quot;, &quot;shell analyzer must distinguish leak from intentional opening&quot;, &quot;non-watertight defect versus open boundary&quot;.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>contains(b&#x27;OPEN_SHELL&#x27;)</code></li>
+<li><code>count_entity_def(b&#x27;ADVANCED_FACE&#x27;) == 2</code></li>
+</ul></section>
+<section><h2>Live oracle output</h2>
+<table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
+<tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>no_shapes_loaded</code></td></tr>
+</tbody></table>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* Tsh044 - Shell edge appears once but should appear twice (free edge)
+<span class="lineno">3</span> * Defect: shell-orientation check must distinguish free edges (legal
+<span class="lineno">4</span> * boundary of an open shell) from edges that should be shared but are
+<span class="lineno">5</span> * not (genuine non-watertight defect). Each edge appears exactly once
+<span class="lineno">6</span> * in this fixture. */
+<span class="lineno">7</span>HEADER;
+<span class="lineno">8</span>FILE_DESCRIPTION((&#x27;Tsh044 test case&#x27;,&#x27;Shell edge appears once but should appear twice (free edge)&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">9</span>FILE_NAME(&#x27;Tsh044.stp&#x27;,&#x27;2026-04-26T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">10</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }&#x27;));
+<span class="lineno">11</span>ENDSEC;
+<span class="lineno">12</span>DATA;
+<span class="lineno">13</span>#1=APPLICATION_CONTEXT(&#x27;automotive_design&#x27;);
+<span class="lineno">14</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,&#x27;automotive_design&#x27;,2000,#1);
+<span class="lineno">15</span>#10=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">16</span>#11=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">17</span>#12=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">18</span>#13=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#10,#11,#12);
+<span class="lineno">19</span>#14=PLANE(&#x27;&#x27;,#13);
+<span class="lineno">20</span>#15=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">21</span>#16=VERTEX_POINT(&#x27;&#x27;,#15);
+<span class="lineno">22</span>#17=CARTESIAN_POINT(&#x27;&#x27;,(10.0,0.0,0.0));
+<span class="lineno">23</span>#18=VERTEX_POINT(&#x27;&#x27;,#17);
+<span class="lineno">24</span>#19=CARTESIAN_POINT(&#x27;&#x27;,(10.0,10.0,0.0));
+<span class="lineno">25</span>#20=VERTEX_POINT(&#x27;&#x27;,#19);
+<span class="lineno">26</span>#21=CARTESIAN_POINT(&#x27;&#x27;,(0.0,10.0,0.0));
+<span class="lineno">27</span>#22=VERTEX_POINT(&#x27;&#x27;,#21);
+<span class="lineno">28</span>#23=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">29</span>#24=VECTOR(&#x27;&#x27;,#23,1.0);
+<span class="lineno">30</span>#25=LINE(&#x27;&#x27;,#15,#24);
+<span class="lineno">31</span>#26=EDGE_CURVE(&#x27;&#x27;,#16,#18,#25,.T.);
+<span class="lineno">32</span>#27=ORIENTED_EDGE(&#x27;&#x27;,*,*,#26,.T.);
+<span class="lineno">33</span>#28=DIRECTION(&#x27;&#x27;,(0.0,1.0,0.0));
+<span class="lineno">34</span>#29=VECTOR(&#x27;&#x27;,#28,1.0);
+<span class="lineno">35</span>#30=LINE(&#x27;&#x27;,#17,#29);
+<span class="lineno">36</span>#31=EDGE_CURVE(&#x27;&#x27;,#18,#20,#30,.T.);
+<span class="lineno">37</span>#32=ORIENTED_EDGE(&#x27;&#x27;,*,*,#31,.T.);
+<span class="lineno">38</span>#33=DIRECTION(&#x27;&#x27;,(-1.0,0.0,0.0));
+<span class="lineno">39</span>#34=VECTOR(&#x27;&#x27;,#33,1.0);
+<span class="lineno">40</span>#35=LINE(&#x27;&#x27;,#19,#34);
+<span class="lineno">41</span>#36=EDGE_CURVE(&#x27;&#x27;,#20,#22,#35,.T.);
+<span class="lineno">42</span>#37=ORIENTED_EDGE(&#x27;&#x27;,*,*,#36,.T.);
+<span class="lineno">43</span>#38=DIRECTION(&#x27;&#x27;,(0.0,-1.0,0.0));
+<span class="lineno">44</span>#39=VECTOR(&#x27;&#x27;,#38,1.0);
+<span class="lineno">45</span>#40=LINE(&#x27;&#x27;,#21,#39);
+<span class="lineno">46</span>#41=EDGE_CURVE(&#x27;&#x27;,#22,#16,#40,.T.);
+<span class="lineno">47</span>#42=ORIENTED_EDGE(&#x27;&#x27;,*,*,#41,.T.);
+<span class="lineno">48</span>#43=EDGE_LOOP(&#x27;&#x27;,(#27,#32,#37,#42));
+<span class="lineno">49</span>#44=FACE_OUTER_BOUND(&#x27;&#x27;,#43,.T.);
+<span class="lineno">50</span><mark>#45=ADVANCED_FACE(</mark>&#x27;&#x27;,(#44),#14,.T.);
+<span class="lineno">51</span>#46=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">52</span>#47=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">53</span>#48=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">54</span>#49=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#46,#47,#48);
+<span class="lineno">55</span>#50=PLANE(&#x27;&#x27;,#49);
+<span class="lineno">56</span>#51=CARTESIAN_POINT(&#x27;&#x27;,(10.0,0.0,0.0));
+<span class="lineno">57</span>#52=VERTEX_POINT(&#x27;&#x27;,#51);
+<span class="lineno">58</span>#53=CARTESIAN_POINT(&#x27;&#x27;,(20.0,0.0,0.0));
+<span class="lineno">59</span>#54=VERTEX_POINT(&#x27;&#x27;,#53);
+<span class="lineno">60</span>#55=CARTESIAN_POINT(&#x27;&#x27;,(20.0,10.0,0.0));
+<span class="lineno">61</span>#56=VERTEX_POINT(&#x27;&#x27;,#55);
+<span class="lineno">62</span>#57=CARTESIAN_POINT(&#x27;&#x27;,(10.0,10.0,0.0));
+<span class="lineno">63</span>#58=VERTEX_POINT(&#x27;&#x27;,#57);
+<span class="lineno">64</span>#59=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">65</span>#60=VECTOR(&#x27;&#x27;,#59,1.0);
+<span class="lineno">66</span>#61=LINE(&#x27;&#x27;,#51,#60);
+<span class="lineno">67</span>#62=EDGE_CURVE(&#x27;&#x27;,#52,#54,#61,.T.);
+<span class="lineno">68</span>#63=ORIENTED_EDGE(&#x27;&#x27;,*,*,#62,.T.);
+<span class="lineno">69</span>#64=DIRECTION(&#x27;&#x27;,(0.0,1.0,0.0));
+<span class="lineno">70</span>#65=VECTOR(&#x27;&#x27;,#64,1.0);
+<span class="lineno">71</span>#66=LINE(&#x27;&#x27;,#53,#65);
+<span class="lineno">72</span>#67=EDGE_CURVE(&#x27;&#x27;,#54,#56,#66,.T.);
+<span class="lineno">73</span>#68=ORIENTED_EDGE(&#x27;&#x27;,*,*,#67,.T.);
+<span class="lineno">74</span>#69=DIRECTION(&#x27;&#x27;,(-1.0,0.0,0.0));
+<span class="lineno">75</span>#70=VECTOR(&#x27;&#x27;,#69,1.0);
+<span class="lineno">76</span>#71=LINE(&#x27;&#x27;,#55,#70);
+<span class="lineno">77</span>#72=EDGE_CURVE(&#x27;&#x27;,#56,#58,#71,.T.);
+<span class="lineno">78</span>#73=ORIENTED_EDGE(&#x27;&#x27;,*,*,#72,.T.);
+<span class="lineno">79</span>#74=DIRECTION(&#x27;&#x27;,(0.0,-1.0,0.0));
+<span class="lineno">80</span>#75=VECTOR(&#x27;&#x27;,#74,1.0);
+<span class="lineno">81</span>#76=LINE(&#x27;&#x27;,#57,#75);
+<span class="lineno">82</span>#77=EDGE_CURVE(&#x27;&#x27;,#58,#52,#76,.T.);
+<span class="lineno">83</span>#78=ORIENTED_EDGE(&#x27;&#x27;,*,*,#77,.T.);
+<span class="lineno">84</span>#79=EDGE_LOOP(&#x27;&#x27;,(#63,#68,#73,#78));
+<span class="lineno">85</span>#80=FACE_OUTER_BOUND(&#x27;&#x27;,#79,.T.);
+<span class="lineno">86</span><mark>#81=ADVANCED_FACE(</mark>&#x27;&#x27;,(#80),#50,.T.);
+<span class="lineno">87</span>#82=<mark>OPEN_SHELL</mark>(&#x27;&#x27;,(#45,#81));
+<span class="lineno">88</span>ENDSEC;
+<span class="lineno">89</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Tsh043.html">&larr; Tsh043</a> <a class="up" href="index.html">§12.3a Shells / orientation</a> <a class="next" href="Tsh045.html">Tsh045 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

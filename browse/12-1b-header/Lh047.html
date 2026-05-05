@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Lh047 — Lower-case section keywords (`data;` instead of `DATA;`)</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.1b Header &amp; instance-numbering</a> <span class="sep">/</span> <span class="current">Lh047</span>
+</nav>
+<header class="title-bar">
+<h1>Lh047 <span class="sep">—</span> <span class="entry-title">Lower-case section keywords (`data;` instead of `DATA;`)</span></h1>
+<p class="category">§12.1b header/numbering (sub-class: keyword case)</p>
+<p class="tag-pills">
+<a class="tag tag-spec-violation" href="../by-tag/spec-violation/index.html">spec-violation</a>
+<a class="tag tag-syntax" href="../by-tag/syntax/index.html">syntax</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-1b-header/Lh047.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-1b-header/Lh047.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>16-iso-spec ISO 10303-21 §6.2 (keywords ISO-10303-21, HEADER, DATA, ENDSEC, END-ISO-10303-21 are upper-case)</li>
+<li>bug-reporter language: &quot;STEP keywords lower-case&quot;</li>
+</ul></section>
+<section><h2>Sender</h2>
+<p>deduced — writers built from a generic EXPRESS-instance serialiser that lower-cases all identifiers, or hand-rolled writers that confuse the EXPRESS reserved-word case-insensitivity rule with Part-21 keyword case</p></section>
+<section><h2>Description</h2>
+<p>ISO 10303-21 spells the framing keywords `ISO-10303-21`, `HEADER`, `DATA`, `ENDSEC`, and `END-ISO-10303-21` exclusively in upper case. A producer that emits any of these in lower or mixed case (`header;`, `data;`, `endsec;`) violates the framing grammar. Strict parsers reject at the first mis-cased keyword; lenient parsers fold case and proceed. The lenient reading hides the producer defect and allows nonconforming files to circulate. Bug-reporter language: &quot;STEP keywords lower-case&quot;, &quot;data; not DATA;&quot;, &quot;lower-case ISO-10303-21&quot;.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>a Part-21 file with `header;`, `data;`, `endsec;` instead of `HEADER;`, `DATA;`, `ENDSEC;`.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>reject; framing keywords are case-sensitive in the spec text. A tolerant case-fold may be offered as an opt-in compatibility mode.</p></section>
+<section><h2>Notes</h2>
+<p>Distinct from Le027 (8-bit / case-insensitive lexer) — Le027 is lexer-side tolerance for entity-type keywords; Lh047 is the framing keywords specifically. Synonyms: &quot;lowercase data; instead of DATA;&quot;, &quot;lowercase STEP framing keywords&quot;, &quot;header; in STEP file&quot;, &quot;endsec; lowercase&quot;, &quot;STEP framing keyword case wrong&quot;.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=empty/empty gmsh=empty ifc=reject</code></p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>contains(b&#x27;header;&#x27;) or contains(b&#x27;data;&#x27;) or contains(b&#x27;endsec;&#x27;)</code></li>
+<li><code>contains(b&#x27;data;&#x27;)</code></li>
+</ul></section>
+<section><h2>Cross-references</h2>
+<p><a href="../12-1a-encoding/Le027.html">Le027</a></p>
+</section>
+<section><h2>Live oracle output</h2>
+<table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
+<tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>ifcopenshell</code></td><td><code>reject</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>reject(E_NO_HEADER)</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>no_shapes_loaded</code></td></tr>
+</tbody></table>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* Lh047 - Lower-case section keywords (<mark>data;</mark> instead of DATA;)
+<span class="lineno">3</span> * Defect: ISO 10303-21 spells framing keywords in upper case.
+<span class="lineno">4</span> * This fixture uses lower-case &#x27;header;&#x27;, &#x27;<mark>data;</mark>&#x27;, &#x27;endsec;&#x27;.
+<span class="lineno">5</span> * Strict readers reject at the first mis-cased keyword; lenient
+<span class="lineno">6</span> * readers fold case and silently accept. */
+<span class="lineno">7</span>header;
+<span class="lineno">8</span>FILE_DESCRIPTION((&#x27;Lh047 - lower-case section keywords&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">9</span>FILE_NAME(&#x27;Lh047.stp&#x27;,&#x27;2026-04-30T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">10</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }&#x27;));
+<span class="lineno">11</span>endsec;
+<span class="lineno">12</span><mark>data;</mark>
+<span class="lineno">13</span>#1=APPLICATION_CONTEXT(&#x27;automotive_design&#x27;);
+<span class="lineno">14</span>#10=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">15</span>endsec;
+<span class="lineno">16</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Lh046.html">&larr; Lh046</a> <a class="up" href="index.html">§12.1b Header &amp; instance-numbering</a> <a class="next" href="Lh048.html">Lh048 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

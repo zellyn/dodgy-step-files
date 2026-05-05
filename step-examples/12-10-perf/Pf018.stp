@@ -1,0 +1,49 @@
+/* Pf018 - Memory not released after STEPCAFControl_Reader (Linux/Docker)
+   Pattern: a moderately large STEP (~142 MB) read by STEPCAFControl_
+   Reader leaves ~900 MB resident on glibc even after the destructor runs;
+   the same code under Windows VS allocator releases cleanly. Indicates
+   allocator-arena fragmentation, not a true leak (OCCT #534).
+   The file shape that triggers this is incidental - any large STEP with
+   many heterogeneous-size allocations through the reader will do.
+   Scaling-up: this fixture mixes small and large entities to trigger the
+   typical small/large allocation interleave; replicate the pattern up
+   to ~142 MB total to reproduce. */
+ISO-10303-21;
+HEADER;
+FILE_DESCRIPTION(('Pf018 - reader memory-arena retention pattern'),'2;1');
+FILE_NAME('Pf018.stp','2026-04-26T00:00:00',('auto-generated'),(''),
+  'auto-generated','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=DIRECTION('',(0.0,0.0,1.0));
+#3=DIRECTION('',(1.0,0.0,0.0));
+#4=AXIS2_PLACEMENT_3D('',#1,#2,#3);
+/* small allocations (typical allocator small-bin) */
+#10=CARTESIAN_POINT('',(1.0,2.0,3.0));
+#11=CARTESIAN_POINT('',(2.0,3.0,4.0));
+#12=CARTESIAN_POINT('',(3.0,4.0,5.0));
+#13=CARTESIAN_POINT('',(4.0,5.0,6.0));
+#14=CARTESIAN_POINT('',(5.0,6.0,7.0));
+/* large allocations (large-arena allocations interleaved) */
+#100=B_SPLINE_CURVE_WITH_KNOTS('big1',3,(#10,#11,#12,#13,#14),
+   .UNSPECIFIED.,.F.,.F.,(4,1,4),(0.0,0.5,1.0),.UNSPECIFIED.);
+#101=B_SPLINE_CURVE_WITH_KNOTS('big2',3,(#10,#11,#12,#13,#14),
+   .UNSPECIFIED.,.F.,.F.,(4,1,4),(0.0,0.5,1.0),.UNSPECIFIED.);
+#102=B_SPLINE_CURVE_WITH_KNOTS('big3',3,(#10,#11,#12,#13,#14),
+   .UNSPECIFIED.,.F.,.F.,(4,1,4),(0.0,0.5,1.0),.UNSPECIFIED.);
+#103=B_SPLINE_CURVE_WITH_KNOTS('big4',3,(#10,#11,#12,#13,#14),
+   .UNSPECIFIED.,.F.,.F.,(4,1,4),(0.0,0.5,1.0),.UNSPECIFIED.);
+/* short-lived per-entity strings (tiny-string churn into glibc arenas) */
+#200=PROPERTY_DEFINITION('attribute1','desc-which-is-discarded',#4);
+#201=PROPERTY_DEFINITION('attribute2','desc-which-is-discarded',#4);
+#202=PROPERTY_DEFINITION('attribute3','desc-which-is-discarded',#4);
+#203=PROPERTY_DEFINITION('attribute4','desc-which-is-discarded',#4);
+#204=PROPERTY_DEFINITION('attribute5','desc-which-is-discarded',#4);
+#205=PROPERTY_DEFINITION('attribute6','desc-which-is-discarded',#4);
+#206=PROPERTY_DEFINITION('attribute7','desc-which-is-discarded',#4);
+#207=PROPERTY_DEFINITION('attribute8','desc-which-is-discarded',#4);
+#208=PROPERTY_DEFINITION('attribute9','desc-which-is-discarded',#4);
+ENDSEC;
+END-ISO-10303-21;

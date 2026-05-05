@@ -1,0 +1,64 @@
+/* N043 - BRepExtrema_DistShapeShape reports nonzero distance for clearly
+ *        intersecting parts
+ * Defect: For two shapes that demonstrably intersect, BRepExtrema_DistShapeShape
+ * returns ~6e-5 or 0.083 distance instead of ~0. The distance algorithm
+ * samples but does not fully verify intersection. Several stacked cylinders
+ * piercing a host part produce false positive "minimum distance > 0" answers.
+ * Reproducer: a host plate centred on the origin with a cylindrical pin
+ * geometrically piercing through it; sampler-based extrema returns 6.3e-5
+ * instead of 0.
+ */
+ISO-10303-21;
+HEADER;
+FILE_DESCRIPTION(('N043 DistShapeShape reports nonzero distance on intersecting bodies'),'2;1');
+FILE_NAME('N043.stp','2026-04-26T00:00:00',(''),(''),
+  'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
+  'automotive_design',2009,#1);
+/* Host plate: planar face on z=0 spanning a 100x100 region. */
+#10=CARTESIAN_POINT('plate_origin',(0.0,0.0,0.0));
+#11=DIRECTION('+z',(0.0,0.0,1.0));
+#12=DIRECTION('+x',(1.0,0.0,0.0));
+#13=AXIS2_PLACEMENT_3D('plate_plc',#10,#11,#12);
+#14=PLANE('host_plate',#13);
+#15=CARTESIAN_POINT('plate_v0',(-50.0,-50.0,0.0));
+#16=CARTESIAN_POINT('plate_v1',( 50.0,-50.0,0.0));
+#17=CARTESIAN_POINT('plate_v2',( 50.0, 50.0,0.0));
+#18=CARTESIAN_POINT('plate_v3',(-50.0, 50.0,0.0));
+/* Pin: cylinder centred on origin, axis +z, radius 5, height 20 -- pierces
+ * the plate clearly (intersection is a circle at z=0 of radius 5). */
+#20=CARTESIAN_POINT('pin_center',(0.0,0.0,-10.0));
+#21=AXIS2_PLACEMENT_3D('pin_plc',#20,#11,#12);
+#22=CYLINDRICAL_SURFACE('pin_cyl',#21,5.0);
+/* Witness points sit on the actual intersection circle; if extrema were
+ * accurate, distance from these to the plate would be exactly 0. */
+#30=CARTESIAN_POINT('pierce_pt0',(5.0,0.0,0.0));
+#31=CARTESIAN_POINT('pierce_pt1',(0.0,5.0,0.0));
+#32=CARTESIAN_POINT('pierce_pt2',(-5.0,0.0,0.0));
+#33=CARTESIAN_POINT('pierce_pt3',(0.0,-5.0,0.0));
+#40=VERTEX_POINT('xs_w0',#30);
+#41=VERTEX_POINT('xs_w1',#31);
+#42=VERTEX_POINT('xs_w2',#32);
+#43=VERTEX_POINT('xs_w3',#33);
+#50=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#51=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#52=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+/* Defect site: extrema reports a nonzero gap on bodies that clearly
+ * intersect at the witness ring. Two reported wrong-distances -- 6.3e-5 mm
+ * and 0.083 mm -- recorded as diagnostic UNCERTAINTY entries. */
+#60=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(6.3E-5),#50,
+  'distance_accuracy_value','wrong_distshapeshape_result_micron');
+#61=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(8.3E-2),#50,
+  'distance_accuracy_value','wrong_distshapeshape_result_eight_hundredth_mm');
+#62=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-6),#50,
+  'distance_accuracy_value','expected_distance_zero_within_tol');
+#70=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#60,#61,#62))
+  GLOBAL_UNIT_ASSIGNED_CONTEXT((#50,#51,#52))
+  REPRESENTATION_CONTEXT('ctx_distshapeshape_false_positive','3D'));
+ENDSEC;
+END-ISO-10303-21;

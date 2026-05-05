@@ -1,0 +1,21 @@
+ISO-10303-21;
+/* Le039 - \PE\ selector letter outside the legal A..I range
+ * Defect: ISO 10303-21 defines code pages A through I (nine pages)
+ * for \PA\..\PI\ alphabet selectors and \PE\ as the alphabet-extend
+ * directive whose follow byte denotes one of the same nine pages.
+ * Here the operand is 'Z' which does not name any defined page.
+ * A parser must decide between rejecting, falling back to the
+ * default page, or treating 'Z' as a literal and resyncing. */
+HEADER;
+FILE_DESCRIPTION(('Le039 - \PE\Z out-of-range page'),'2;1');
+FILE_NAME('Le039.stp','2026-04-26T00:00:00',(''),(''),
+  'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=PRODUCT_CONTEXT('part',#1,'mechanical');
+/* Defect: page selector Z is not in A..I */
+#10=PRODUCT('bad=\PE\Z\S\xx','page-Z','',(#2));
+ENDSEC;
+END-ISO-10303-21;

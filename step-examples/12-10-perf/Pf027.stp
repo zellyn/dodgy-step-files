@@ -1,0 +1,53 @@
+/* Pf027 - Mixed-scale features produce millions of tiny faces post-tess
+   (M023, D020). Geometrically valid mixed length scales (1500 mm shaft
+   with 0.05 mm fillets, gear teeth with 0.01 mm chamfers) tessellate
+   into tiny faces, edges shorter than mesher tolerance, and degenerate
+   Jacobians. Fusion 360 Gallery filtered out 7232 of 42912 (~17%) STEP
+   set entries as "could not be meshed at ~2500 edges" - largest single
+   rejection bucket measured.
+   Pattern: long large-scale primary surface (here a 1500 mm cylindrical
+   sleeve) interrupted by sub-mm fillet faces.
+   Scaling-up: the fixture has 4 fillet faces against a 1500 mm shaft
+   surface. Replicate the fillet pattern to thousands of mixed-scale
+   features per part to reproduce the tessellation budget exhaustion. */
+ISO-10303-21;
+HEADER;
+FILE_DESCRIPTION(('Pf027 - mixed-scale shaft with sub-mm fillets'),'2;1');
+FILE_NAME('Pf027.stp','2026-04-26T00:00:00',('auto-generated'),(''),
+  'auto-generated','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=DIRECTION('',(0.0,0.0,1.0));
+#3=DIRECTION('',(1.0,0.0,0.0));
+#4=AXIS2_PLACEMENT_3D('',#1,#2,#3);
+/* 1500 mm shaft - the large-scale primary surface */
+#10=CYLINDRICAL_SURFACE('shaft-1500mm',#4,15.0);
+/* tiny-fillet axis placements at intervals along the shaft */
+#20=CARTESIAN_POINT('',(0.0,0.0,100.0));
+#21=AXIS2_PLACEMENT_3D('',#20,#2,#3);
+#22=CARTESIAN_POINT('',(0.0,0.0,500.0));
+#23=AXIS2_PLACEMENT_3D('',#22,#2,#3);
+#24=CARTESIAN_POINT('',(0.0,0.0,1000.0));
+#25=AXIS2_PLACEMENT_3D('',#24,#2,#3);
+#26=CARTESIAN_POINT('',(0.0,0.0,1450.0));
+#27=AXIS2_PLACEMENT_3D('',#26,#2,#3);
+/* sub-mm fillet surfaces (toroidal, minor radius 0.05) */
+#30=TOROIDAL_SURFACE('fillet1',#21,15.0,0.05);
+#31=TOROIDAL_SURFACE('fillet2',#23,15.0,0.05);
+#32=TOROIDAL_SURFACE('fillet3',#25,15.0,0.05);
+#33=TOROIDAL_SURFACE('fillet4',#27,15.0,0.05);
+/* degenerate placeholders for the topology of each surface */
+#40=EDGE_LOOP('',());
+#41=FACE_OUTER_BOUND('',#40,.T.);
+/* fillet faces - tiny tessellation cells per face */
+#50=ADVANCED_FACE('shaft',(#41),#10,.T.);
+#51=ADVANCED_FACE('fil1',(#41),#30,.T.);
+#52=ADVANCED_FACE('fil2',(#41),#31,.T.);
+#53=ADVANCED_FACE('fil3',(#41),#32,.T.);
+#54=ADVANCED_FACE('fil4',(#41),#33,.T.);
+#100=CLOSED_SHELL('shaft-with-fillets',(#50,#51,#52,#53,#54));
+#200=MANIFOLD_SOLID_BREP('mixed-scale-shaft',#100);
+ENDSEC;
+END-ISO-10303-21;

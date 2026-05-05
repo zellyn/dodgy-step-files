@@ -1,0 +1,46 @@
+/* N021 - VRML/STEP origin convention mismatch within same producer
+ * Defect: KiCad VRML export places Z=0 at the board *center*; STEP export
+ * places Z=0 at the board *bottom*. Downstream tools mixing the two formats
+ * see components shifted by half-board-thickness, even though both come
+ * from the same producer.
+ * Reproducer: 1.6 mm board exported via STEP -- root assembly placement
+ * sits at z=0 (board bottom) while the same producer's VRML would have
+ * placed origin at z=0.8 (board middle).
+ */
+ISO-10303-21;
+HEADER;
+FILE_DESCRIPTION(('N021 KiCad VRML/STEP origin convention mismatch'),'2;1');
+FILE_NAME('N021.stp','2026-04-26T00:00:00',(''),(''),
+  'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
+  'automotive_design',2009,#1);
+/* Board is 1.6 mm thick. STEP origin placed at board bottom (z=0). */
+#10=CARTESIAN_POINT('step_origin_at_board_bottom',(0.0,0.0,0.0));
+#11=DIRECTION('z',(0.0,0.0,1.0));
+#12=DIRECTION('x',(1.0,0.0,0.0));
+#13=AXIS2_PLACEMENT_3D('step_root',#10,#11,#12);
+/* Note: VRML export from the same project would have placed origin at
+ * (0,0,0.8) (board middle). Mixing the two formats yields a 0.8 mm shift. */
+#20=CARTESIAN_POINT('top_face',(50.0,50.0,1.6));
+#21=CARTESIAN_POINT('bot_face',(50.0,50.0,0.0));
+#22=VERTEX_POINT('top_corner',#20);
+#23=VERTEX_POINT('bot_corner',#21);
+#30=DIRECTION('+z',(0.0,0.0,1.0));
+#31=VECTOR('',#30,1.6);
+#32=LINE('',#21,#31);
+#40=EDGE_CURVE('thru_thickness',#23,#22,#32,.T.);
+#50=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#51=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#52=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#60=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-5),#50,
+  'distance_accuracy_value','board_modeling_tol');
+#70=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#60))
+  GLOBAL_UNIT_ASSIGNED_CONTEXT((#50,#51,#52))
+  REPRESENTATION_CONTEXT('kicad_step_ctx','3D'));
+ENDSEC;
+END-ISO-10303-21;

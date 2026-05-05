@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>A103 — Geometry imports correctly but every face arrives with no colour assigned</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.6 Assembly hierarchy</a> <span class="sep">/</span> <span class="current">A103</span>
+</nav>
+<header class="title-bar">
+<h1>A103 <span class="sep">—</span> <span class="entry-title">Geometry imports correctly but every face arrives with no colour assigned</span></h1>
+<p class="category">§12.6 assembly hierarchy (sub-class: appearance dropped on import)</p>
+<p class="severity-badge severity-p1">P1 — silent data loss</p>
+<p class="tag-pills">
+<a class="tag tag-assembly" href="../by-tag/assembly/index.html">assembly</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-6-assembly/A103.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-6-assembly/A103.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>OCCT MANTIS#0032728</li>
+<li>bug-reporter language: &quot;STEP model is imported with no colours&quot;, &quot;all faces appear default grey&quot;, &quot;colours present in file are not picked up by reader&quot;. (OCCT MANTIS tracker 502 as of 2026-05-02)</li>
+</ul></section>
+<section><h2>Sender</h2>
+<p>Authoring tools that emit `STYLED_ITEM` colour assignments at the assembly-occurrence level rather than per-face, or that route colour through `MECHANICAL_DESIGN_PRESENTATION_REPRESENTATION_WITH_DRAUGHTING` which the reader&#x27;s first pass may skip.</p></section>
+<section><h2>Description</h2>
+<p>A STEP file has well-formed `COLOUR_RGB` records and `PRESENTATION_STYLE_ASSIGNMENT`s wired to faces, but the reader&#x27;s `XCAFDoc_ColorTool::SetColor` does not pick them up. The geometry imports cleanly, but the resulting `XCAFDoc_DocumentTool` has no colour assignments at all — every face is the default grey. The producer&#x27;s intent (red shaft, blue housing) is silently lost.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>STEP solid with `STYLED_ITEM` referring to `PRESENTATION_STYLE_ASSIGNMENT` containing `SURFACE_STYLE_USAGE` with `SURFACE_SIDE_STYLE` and `SURFACE_STYLE_FILL_AREA` plus `FILL_AREA_STYLE_COLOUR` pointing at `COLOUR_RGB`. Reader imports geometry but no colour reaches XCAF.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>heal-and-accept — every `STYLED_ITEM` whose target resolves to a known shape contributes a colour assignment to XCAF; unresolved styles emit `W_UNREACHED_STYLE` but never silently disappear.</p></section>
+<section><h2>Notes</h2>
+<p>**See also**: A105, A081. Synonyms: &quot;STEP model imported with no colours&quot;, &quot;colours present in file lost on import&quot;, &quot;STYLED_ITEM not reaching XCAFDoc_ColorTool&quot;, &quot;appearance dropped during STEP read&quot;.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>contains(b&#x27;STYLED_ITEM&#x27;)</code></li>
+<li><code>contains(b&#x27;COLOUR_RGB&#x27;)</code></li>
+</ul></section>
+<section><h2>Cross-references</h2>
+<p><a href="A105.html">A105</a>, <a href="A081.html">A081</a></p>
+</section>
+<section><h2>Live oracle output</h2>
+<table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
+<tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>no_shapes_loaded</code></td></tr>
+</tbody></table>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* A103 - Geometry imports correctly but every face arrives with no colour assigned
+<span class="lineno">3</span> * Defect: <mark>STYLED_ITEM</mark>/<mark>COLOUR_RGB</mark> present in file but reader&#x27;s XCAFDoc_ColorTool
+<span class="lineno">4</span> * does not pick them up; geometry imports cleanly, all faces default grey. */
+<span class="lineno">5</span>HEADER;
+<span class="lineno">6</span>FILE_DESCRIPTION((&#x27;A103 - STEP model imported with no colours despite well-formed <mark>STYLED_ITEM</mark>&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">7</span>FILE_NAME(&#x27;A103.stp&#x27;,&#x27;2026-05-02T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">8</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }&#x27;));
+<span class="lineno">9</span>ENDSEC;
+<span class="lineno">10</span>DATA;
+<span class="lineno">11</span>#1=APPLICATION_CONTEXT(&#x27;automotive_design&#x27;);
+<span class="lineno">12</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,&#x27;automotive_design&#x27;,2000,#1);
+<span class="lineno">13</span>#10=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">14</span>#11=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">15</span>#12=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">16</span>#13=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#10,#11,#12);
+<span class="lineno">17</span>#20=PLANE(&#x27;&#x27;,#13);
+<span class="lineno">18</span>#30=ADVANCED_FACE(&#x27;face&#x27;,(),#20,.T.);
+<span class="lineno">19</span>#40=<mark>COLOUR_RGB</mark>(&#x27;red&#x27;,1.0,0.0,0.0);
+<span class="lineno">20</span>#41=FILL_AREA_STYLE_COLOUR(&#x27;&#x27;,#40);
+<span class="lineno">21</span>#42=FILL_AREA_STYLE(&#x27;&#x27;,(#41));
+<span class="lineno">22</span>#43=SURFACE_STYLE_FILL_AREA(#42);
+<span class="lineno">23</span>#44=SURFACE_SIDE_STYLE(&#x27;&#x27;,(#43));
+<span class="lineno">24</span>#45=SURFACE_STYLE_USAGE(.BOTH.,#44);
+<span class="lineno">25</span>#46=PRESENTATION_STYLE_ASSIGNMENT((#45));
+<span class="lineno">26</span>/* <mark>STYLED_ITEM</mark> is well-formed but reader&#x27;s per-face colour pipeline misses it. */
+<span class="lineno">27</span>#50=<mark>STYLED_ITEM</mark>(&#x27;per_face_style&#x27;,(#46),#30);
+<span class="lineno">28</span>ENDSEC;
+<span class="lineno">29</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="A102.html">&larr; A102</a> <a class="up" href="index.html">§12.6 Assembly hierarchy</a> <a class="next" href="A104.html">A104 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

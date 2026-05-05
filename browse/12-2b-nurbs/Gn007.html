@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Gn007 — Under-sampled `B_SPLINE_CURVE_WITH_KNOTS` for long helical thread (Creo relative-accuracy tessellation)</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.2b NURBS / B-spline</a> <span class="sep">/</span> <span class="current">Gn007</span>
+</nav>
+<header class="title-bar">
+<h1>Gn007 <span class="sep">—</span> <span class="entry-title">Under-sampled `B_SPLINE_CURVE_WITH_KNOTS` for long helical thread (Creo relative-accuracy tessellation)</span></h1>
+<p class="category">§12.2b NURBS/knots</p>
+<p class="severity-badge severity-p1">P1 — silent data loss</p>
+<p class="tag-pills">
+<a class="tag tag-round-trip" href="../by-tag/round-trip/index.html">round-trip</a>
+<a class="tag tag-geometry" href="../by-tag/geometry/index.html">geometry</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-2b-nurbs/Gn007.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-2b-nurbs/Gn007.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>10-vendor-kbs.md (V035)</li>
+</ul></section>
+<section><h2>Sender</h2>
+<p>PTC Creo with default relative accuracy</p></section>
+<section><h2>Description</h2>
+<p>Long thin parts (e.g. 2.5 m extrusion with sub-mm helical features) export with visibly warped helical `B_SPLINE_CURVE_WITH_KNOTS` because Creo&#x27;s relative accuracy tessellates surfaces too coarsely on export. Typical signature: a B-spline approximating a tall helix carries only ~16 control points across z=0.2500, the poles zig-zag in x sign and barely move radially — severe under-sampling, far fewer poles per turn than a faithful helix needs. Recommended workaround is absolute accuracy 1e-4 + disable surface simplification.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>Author a 2500 mm shaft with a 0.5 mm-pitch helical thread feature in Creo at default (relative) accuracy; export to STEP.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>Heal and accept: writers should preserve authored B-spline degree/knot structure exactly; never resample/refit during export; consumers should warn-and-accept (report tessellation-induced distortion via `geometric_validation_property` mismatch).</p></section>
+<section><h2>Notes</h2>
+<p>Synonyms: &quot;Creo helical thread under-sampled in STEP export&quot;, &quot;B-spline approximation of helix has too few control points&quot;, &quot;helix BSpline zigzags from coarse tessellation&quot;, &quot;Creo relative-accuracy export warps long helix&quot;, &quot;tall helical thread visibly distorted in STEP&quot;.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>contains(b&#x27;B_SPLINE_CURVE&#x27;)</code></li>
+</ul></section>
+<section><h2>Live oracle output</h2>
+<table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
+<tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>no_shapes_loaded</code></td></tr>
+</tbody></table>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>/* Gn007 - Long helical NURBS distortion from relative-accuracy tessellation
+<span class="lineno">2</span>   Defect: long thin parts (e.g. 2.5 m extrusions with sub-mm helical thread
+<span class="lineno">3</span>   features) export as visibly warped helical NURBS because Creo&#x27;s default
+<span class="lineno">4</span>   relative accuracy tessellates surfaces too coarsely on export. The
+<span class="lineno">5</span>   resulting <mark>B_SPLINE_CURVE</mark>_WITH_KNOTS represents a helix on a cylinder of
+<span class="lineno">6</span>   radius 5 mm, axial length 2500 mm, pitch 0.5 mm -- but with only
+<span class="lineno">7</span>   ~16 control points so the helix is faceted at sub-mm scale. The defect
+<span class="lineno">8</span>   is in the writer&#x27;s choice of resolution, not in the entity grammar.
+<span class="lineno">9</span>   See V035; recommended workaround: absolute accuracy 1e-4 + disable
+<span class="lineno">10</span>   surface simplification. */
+<span class="lineno">11</span>ISO-10303-21;
+<span class="lineno">12</span>HEADER;
+<span class="lineno">13</span>FILE_DESCRIPTION(
+<span class="lineno">14</span>  (&#x27;Gn007 - helical NURBS distortion from relative-accuracy tessellation&#x27;),
+<span class="lineno">15</span>  &#x27;2;1&#x27;);
+<span class="lineno">16</span>FILE_NAME(&#x27;Gn007.stp&#x27;,&#x27;2026-04-26T00:00:00&#x27;,(&#x27;auto-generated&#x27;),(&#x27;&#x27;),
+<span class="lineno">17</span>  &#x27;auto-generated&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">18</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
+<span class="lineno">19</span>ENDSEC;
+<span class="lineno">20</span>DATA;
+<span class="lineno">21</span>/* 16 control points sampled along a helix of radius 5, pitch 0.5, but the
+<span class="lineno">22</span>   axial extent is 2500 mm.  Spacing between samples ~166 mm of axial
+<span class="lineno">23</span>   travel -&gt; ~330 turns crammed between two adjacent control points. The
+<span class="lineno">24</span>   resulting BSpline cannot reproduce the helix; downstream geometry is
+<span class="lineno">25</span>   visibly warped. */
+<span class="lineno">26</span>#10=CARTESIAN_POINT(&#x27;h00&#x27;,(   5.000,   0.000,   0.000));
+<span class="lineno">27</span>#11=CARTESIAN_POINT(&#x27;h01&#x27;,(  -4.998,   0.142, 166.667));
+<span class="lineno">28</span>#12=CARTESIAN_POINT(&#x27;h02&#x27;,(   4.992,  -0.283, 333.333));
+<span class="lineno">29</span>#13=CARTESIAN_POINT(&#x27;h03&#x27;,(  -4.982,   0.425, 500.000));
+<span class="lineno">30</span>#14=CARTESIAN_POINT(&#x27;h04&#x27;,(   4.969,  -0.566, 666.667));
+<span class="lineno">31</span>#15=CARTESIAN_POINT(&#x27;h05&#x27;,(  -4.952,   0.706, 833.333));
+<span class="lineno">32</span>#16=CARTESIAN_POINT(&#x27;h06&#x27;,(   4.931,  -0.844,1000.000));
+<span class="lineno">33</span>#17=CARTESIAN_POINT(&#x27;h07&#x27;,(  -4.906,   0.982,1166.667));
+<span class="lineno">34</span>#18=CARTESIAN_POINT(&#x27;h08&#x27;,(   4.877,  -1.117,1333.333));
+<span class="lineno">35</span>#19=CARTESIAN_POINT(&#x27;h09&#x27;,(  -4.844,   1.250,1500.000));
+<span class="lineno">36</span>#20=CARTESIAN_POINT(&#x27;h10&#x27;,(   4.806,  -1.382,1666.667));
+<span class="lineno">37</span>#21=CARTESIAN_POINT(&#x27;h11&#x27;,(  -4.764,   1.510,1833.333));
+<span class="lineno">38</span>#22=CARTESIAN_POINT(&#x27;h12&#x27;,(   4.717,  -1.636,2000.000));
+<span class="lineno">39</span>#23=CARTESIAN_POINT(&#x27;h13&#x27;,(  -4.665,   1.760,2166.667));
+<span class="lineno">40</span>#24=CARTESIAN_POINT(&#x27;h14&#x27;,(   4.608,  -1.881,2333.333));
+<span class="lineno">41</span>#25=CARTESIAN_POINT(&#x27;h15&#x27;,(  -4.546,   1.999,2500.000));
+<span class="lineno">42</span>/* Defect: undersampled NURBS for a 2.5 m / 0.5 mm-pitch helix.
+<span class="lineno">43</span>   Degree 3, simple uniform knots. The geometry distortion is implicit in
+<span class="lineno">44</span>   the data, not in the entity-level grammar. */
+<span class="lineno">45</span>#100=<mark>B_SPLINE_CURVE</mark>_WITH_KNOTS(&#x27;helix_undersampled&#x27;,3,
+<span class="lineno">46</span>  (#10,#11,#12,#13,#14,#15,#16,#17,#18,#19,#20,#21,#22,#23,#24,#25),
+<span class="lineno">47</span>  .UNSPECIFIED.,.F.,.F.,
+<span class="lineno">48</span>  (4,1,1,1,1,1,1,1,1,1,1,1,1,4),
+<span class="lineno">49</span>  (0.0,1.0,2.0,3.0,4.0,5.0,6.0,7.0,8.0,9.0,10.0,11.0,12.0,13.0),
+<span class="lineno">50</span>  .UNSPECIFIED.);
+<span class="lineno">51</span>ENDSEC;
+<span class="lineno">52</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Gn004.html">&larr; Gn004</a> <a class="up" href="index.html">§12.2b NURBS / B-spline</a> <a class="next" href="Gn008.html">Gn008 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

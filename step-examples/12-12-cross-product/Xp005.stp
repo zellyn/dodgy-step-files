@@ -1,0 +1,35 @@
+ISO-10303-21;
+/* Xp005 - Cross-product: rational B-spline curve with knot-vector
+ *   inconsistency, zero weight, and tolerance-boundary cusp.
+ * Builds on Gn001 (knot/multiplicity) + Gn010 (out-of-range weight) +
+ *   N001 (tolerance-boundary geometry).
+ * Defect 1: u_knots = (0,0,0,0,0.5,0.5,1,1,1,1) - inner pair duplicated
+ *   without justification by multiplicity list (which says 1,1).
+ * Defect 2: weights = (1.0, 0.0, 1.0, 1.0, 1.0) - one weight is zero.
+ * Defect 3: control points (0,0,0) and (1e-7,0,0) - cusp at OCCT's
+ *   default Confusion boundary. */
+HEADER;
+FILE_DESCRIPTION(('Xp005 cross-product','NURBS knots x weight x tolerance cusp'),'2;1');
+FILE_NAME('Xp005.stp','2026-04-26T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+#10=CARTESIAN_POINT('p1',(0.0,0.0,0.0));
+#11=CARTESIAN_POINT('p2',(1.0E-7,0.0,0.0));
+#12=CARTESIAN_POINT('p3',(1.0,0.0,0.0));
+#13=CARTESIAN_POINT('p4',(2.0,1.0,0.0));
+#14=CARTESIAN_POINT('p5',(3.0,0.0,0.0));
+/* Defect 1+2+3 in the rational B-spline definition */
+#20=(BOUNDED_CURVE()
+     B_SPLINE_CURVE(3,(#10,#11,#12,#13,#14),.UNSPECIFIED.,.F.,.F.)
+     B_SPLINE_CURVE_WITH_KNOTS((4,1,1,4),(0.0,0.5,0.5,1.0),.UNSPECIFIED.)
+     CURVE()
+     GEOMETRIC_REPRESENTATION_ITEM()
+     RATIONAL_B_SPLINE_CURVE((1.0,0.0,1.0,1.0,1.0))
+     REPRESENTATION_ITEM(''));
+/* Anchor the curve into a representation so it is exercised */
+#30=GEOMETRIC_CURVE_SET('curve_set',(#20));
+ENDSEC;
+END-ISO-10303-21;

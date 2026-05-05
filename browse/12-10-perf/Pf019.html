@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Pf019 — Memory leaks in STEP/IGES controller initialisation enum tables</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.10 Scale &amp; performance</a> <span class="sep">/</span> <span class="current">Pf019</span>
+</nav>
+<header class="title-bar">
+<h1>Pf019 <span class="sep">—</span> <span class="entry-title">Memory leaks in STEP/IGES controller initialisation enum tables</span></h1>
+<p class="category">§12.10 (sub-class: leak)</p>
+<p class="severity-badge severity-p2">P2 — spec deviation (no data loss)</p>
+<p class="tag-pills">
+<a class="tag tag-performance" href="../by-tag/performance/index.html">performance</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-10-perf/Pf019.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-10-perf/Pf019.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>18-other-issues.md I019 (OCCT #1024)</li>
+</ul></section>
+<section><h2>Description</h2>
+<p>LeakSanitizer flags allocations originating from the static enum-table initialisation triggered by the STEP/IGES controller constructor — static singletons are retained on shutdown rather than freed at exit.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>Build with LeakSanitizer, initialise the STEP controller, exit cleanly. Observe leak reports for the static enum tables.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>Heal and accept: free typed-value tables on library teardown; coerce to bounded resident memory.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>count_entity_def(b&#x27;CARTESIAN_POINT&#x27;) &gt;= 1</code></li>
+</ul></section>
+<section><h2>Live oracle output</h2>
+<table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
+<tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>warn(W_COMPLEX_ORDER)</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>no_shapes_loaded</code></td></tr>
+</tbody></table>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>/* Pf019 - Memory leaks in STEPControl_Controller::Init() enum tables
+<span class="lineno">2</span>   Pattern: not file-driven. LeakSanitizer flags allocations from
+<span class="lineno">3</span>   Interface_Static::Init -&gt; AddEnum triggered by the controller
+<span class="lineno">4</span>   constructor; same pattern for IGES.  Static singletons retained on
+<span class="lineno">5</span>   shutdown (OCCT #1024).
+<span class="lineno">6</span>   The trigger is `STEPControl_Controller::Init();` followed by exit -
+<span class="lineno">7</span>   any STEP file (or none) reproduces. We provide a representative
+<span class="lineno">8</span>   small-but-complete file so the leak path is exercised through actual
+<span class="lineno">9</span>   reader usage, ensuring the controller is initialised. The leak is in
+<span class="lineno">10</span>   the kernel, not in the file. We exercise multiple enum-bound static
+<span class="lineno">11</span>   tables (units, length, plane-angle, solid-angle, time, mass, error
+<span class="lineno">12</span>   tolerance, surface-tolerance) so every Init/AddEnum site fires. */
+<span class="lineno">13</span>ISO-10303-21;
+<span class="lineno">14</span>HEADER;
+<span class="lineno">15</span>FILE_DESCRIPTION((&#x27;Pf019 - controller enum-table leak; minimal trigger file&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">16</span>FILE_NAME(&#x27;Pf019.stp&#x27;,&#x27;2026-04-26T00:00:00&#x27;,(&#x27;auto-generated&#x27;),(&#x27;&#x27;),
+<span class="lineno">17</span>  &#x27;auto-generated&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">18</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
+<span class="lineno">19</span>ENDSEC;
+<span class="lineno">20</span>DATA;
+<span class="lineno">21</span>#1=APPLICATION_CONTEXT(&#x27;automotive_design&#x27;);
+<span class="lineno">22</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,
+<span class="lineno">23</span>  &#x27;automotive_design&#x27;,2001,#1);
+<span class="lineno">24</span>#3=PRODUCT_CONTEXT(&#x27;&#x27;,#1,&#x27;mechanical&#x27;);
+<span class="lineno">25</span>#4=PRODUCT(&#x27;TINY&#x27;,&#x27;tiny&#x27;,&#x27;&#x27;,(#3));
+<span class="lineno">26</span>#5=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#4);
+<span class="lineno">27</span>#6=PRODUCT_DEFINITION_CONTEXT(&#x27;&#x27;,#1,&#x27;design&#x27;);
+<span class="lineno">28</span>#7=PRODUCT_DEFINITION(&#x27;design&#x27;,&#x27;&#x27;,#5,#6);
+<span class="lineno">29</span>/* unit definitions - each kind lives in a separate static enum table */
+<span class="lineno">30</span>#8=( NAMED_UNIT(*) SI_UNIT(.MILLI.,.METRE.) LENGTH_UNIT() );
+<span class="lineno">31</span>#9=( NAMED_UNIT(*) PLANE_ANGLE_UNIT() SI_UNIT($,.RADIAN.) );
+<span class="lineno">32</span>#10=( NAMED_UNIT(*) SOLID_ANGLE_UNIT() SI_UNIT($,.STERADIAN.) );
+<span class="lineno">33</span>#11=( NAMED_UNIT(*) MASS_UNIT() SI_UNIT(.KILO.,.GRAM.) );
+<span class="lineno">34</span>#12=( NAMED_UNIT(*) SI_UNIT($,.SECOND.) TIME_UNIT() );
+<span class="lineno">35</span>/* uncertainty measures - each type triggers separate AddEnum lookup */
+<span class="lineno">36</span>#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-6),#8,&#x27;distance&#x27;,
+<span class="lineno">37</span>   &#x27;distance accuracy&#x27;);
+<span class="lineno">38</span>#14=UNCERTAINTY_MEASURE_WITH_UNIT(PLANE_ANGLE_MEASURE(1.0E-6),#9,&#x27;angle&#x27;,
+<span class="lineno">39</span>   &#x27;angle accuracy&#x27;);
+<span class="lineno">40</span>/* representation context aggregates the unit set */
+<span class="lineno">41</span>#15=( GEOMETRIC_REPRESENTATION_CONTEXT(3) GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT
+<span class="lineno">42</span>  ((#13,#14)) GLOBAL_UNIT_ASSIGNED_CONTEXT((#8,#9,#10,#11,#12))
+<span class="lineno">43</span>  REPRESENTATION_CONTEXT(&#x27;&#x27;,&#x27;3D&#x27;) );
+<span class="lineno">44</span>/* basic placement geometry */
+<span class="lineno">45</span><mark>#20=CARTESIAN_POINT(</mark>&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">46</span>#21=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">47</span>#22=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">48</span>#23=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#20,#21,#22);
+<span class="lineno">49</span>/* shape representation web */
+<span class="lineno">50</span>#30=SHAPE_REPRESENTATION(&#x27;&#x27;,(#23),#15);
+<span class="lineno">51</span>#31=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,#7);
+<span class="lineno">52</span>#32=SHAPE_DEFINITION_REPRESENTATION(#31,#30);
+<span class="lineno">53</span>/* extra entities that exercise more enum-bound static lookups */
+<span class="lineno">54</span>#40=PROPERTY_DEFINITION(&#x27;density&#x27;,&#x27;material density&#x27;,#7);
+<span class="lineno">55</span>#41=PROPERTY_DEFINITION(&#x27;mass&#x27;,&#x27;part mass&#x27;,#7);
+<span class="lineno">56</span>#42=PROPERTY_DEFINITION(&#x27;cog&#x27;,&#x27;centre of gravity&#x27;,#7);
+<span class="lineno">57</span>#43=PROPERTY_DEFINITION(&#x27;inertia&#x27;,&#x27;principal inertia&#x27;,#7);
+<span class="lineno">58</span>#50=DESCRIPTIVE_REPRESENTATION_ITEM(&#x27;material&#x27;,&#x27;steel&#x27;);
+<span class="lineno">59</span>#51=DESCRIPTIVE_REPRESENTATION_ITEM(&#x27;finish&#x27;,&#x27;machined&#x27;);
+<span class="lineno">60</span>#52=DESCRIPTIVE_REPRESENTATION_ITEM(&#x27;treatment&#x27;,&#x27;none&#x27;);
+<span class="lineno">61</span>#53=DESCRIPTIVE_REPRESENTATION_ITEM(&#x27;class&#x27;,&#x27;primary&#x27;);
+<span class="lineno">62</span>#60=REPRESENTATION(&#x27;properties&#x27;,(#50,#51,#52,#53),#15);
+<span class="lineno">63</span>#61=PROPERTY_DEFINITION_REPRESENTATION(#40,#60);
+<span class="lineno">64</span>#62=PROPERTY_DEFINITION_REPRESENTATION(#41,#60);
+<span class="lineno">65</span>#63=PROPERTY_DEFINITION_REPRESENTATION(#42,#60);
+<span class="lineno">66</span>#64=PROPERTY_DEFINITION_REPRESENTATION(#43,#60);
+<span class="lineno">67</span>ENDSEC;
+<span class="lineno">68</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Pf018.html">&larr; Pf018</a> <a class="up" href="index.html">§12.10 Scale &amp; performance</a> <a class="next" href="Pf020.html">Pf020 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

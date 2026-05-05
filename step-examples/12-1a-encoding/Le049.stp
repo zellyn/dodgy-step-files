@@ -1,0 +1,16 @@
+ISO-10303-21;
+/* Le049 - Carriage-return strip corrupts string content
+ * Defect: DESCRIPTION_ATTRIBUTE with literal CR (0x0D) byte inside string;
+ * writer normalises line endings inside string body, dropping the embedded 0x0D 0x0A. */
+HEADER;
+FILE_DESCRIPTION(('Le049 test case','Carriage-return strip corrupts string content'),'2;1');
+FILE_NAME('Le049.stp','2026-04-30T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+#100=DESCRIPTION_ATTRIBUTE('multi_line_with_cr','line1
+line2');
+ENDSEC;
+END-ISO-10303-21;

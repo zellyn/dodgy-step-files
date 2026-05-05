@@ -1,0 +1,29 @@
+ISO-10303-21;
+/* M151 - AP210 declared trace impedance contradicts stackup geometry.
+ * Defect: an electrical PROPERTY_DEFINITION on a CONDUCTOR_TRACK_PROFILE
+ * declares characteristic_impedance = 50 ohm, but the actual stackup
+ * (15 um copper, 0.2 mm dielectric, 4 mm trace width with FR4 Er=4.4)
+ * gives ~ 22 ohm by standard microstrip calculation. The declared
+ * impedance and the geometry-derived impedance disagree by > 50 %. */
+HEADER;
+FILE_DESCRIPTION(('M151 test case','AP210 stackup impedance contradiction'),'2;1');
+FILE_NAME('M151.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('ELECTRONIC_ASSEMBLY_INTERCONNECT_AND_PACKAGING_DESIGN { 1 0 10303 210 3 1 0 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('electronic_assembly_interconnect_and_packaging_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
+  'electronic_assembly_interconnect_and_packaging_design',2014,#1);
+#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10))
+     REPRESENTATION_CONTEXT('pcb','3D'));
+#100=MATERIAL_DESIGNATION('FR4_Er44','glass-epoxy Er=4.4',(#1));
+#200=LAMINATE_OR_PLY_DEFINITION('dielectric',$,#100,#100,LENGTH_MEASURE(0.2));
+/* Trace 4 mm wide on 0.2 mm FR4 - far too wide for 50 ohm. */
+#300=CONDUCTOR_TRACK_PROFILE('signal_trace',LENGTH_MEASURE(4.0));
+/* Defect: declares 50 ohm; geometry yields ~22 ohm. */
+#400=DESCRIPTIVE_REPRESENTATION_ITEM('characteristic_impedance_ohm','50.0');
+#401=PROPERTY_DEFINITION('electrical_impedance','declared 50R',#300);
+ENDSEC;
+END-ISO-10303-21;

@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Ad059 — Mismatched weight / pole counts in BSpline (writer-emitted)</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.11 Adversarial / parser robustness</a> <span class="sep">/</span> <span class="current">Ad059</span>
+</nav>
+<header class="title-bar">
+<h1>Ad059 <span class="sep">—</span> <span class="entry-title">Mismatched weight / pole counts in BSpline (writer-emitted)</span></h1>
+<p class="category">§12.11 (sub-class: schema-validation / OOB-read)</p>
+<p class="tag-pills">
+<a class="tag tag-silent-loss" href="../by-tag/silent-loss/index.html">silent-loss</a>
+<a class="tag tag-adversarial" href="../by-tag/adversarial/index.html">adversarial</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-11-adversarial/Ad059.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-11-adversarial/Ad059.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>08-occt-gitlog.md G024 (Mantis 0030921), G023 (zero-poles)</li>
+</ul></section>
+<section><h2>Description</h2>
+<p>STEP `RATIONAL_BSPLINE_CURVE` with weights array length ≠ poles array length; reader walks past end of weights vector.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>`RATIONAL_BSPLINE_CURVE` with weights `(1.,1.,1.)` and poles `(#1,#2,#3,#4)`.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>validate equality; pad/truncate with warning; never read past either array.</p></section>
+<section><h2>Notes</h2>
+<p>**See also**: Gn002. **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog&#x27;s allowed set ({warn-and-proceed}). Kernel-bug witnessed: catalog wants a warning to surface; OCC accepts without any diagnostic.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>contains(b&#x27;RATIONAL_B_SPLINE_CURVE&#x27;) or matches(rb&#x27;RATIONAL_BSPLINE_CURVE\(\([^)]+\)\)&#x27;)</code></li>
+<li><code>contains(b&#x27;B_SPLINE_CURVE_WITH_KNOTS&#x27;) or contains(b&#x27;BSPLINE&#x27;) or contains(b&#x27;RATIONAL_B_SPLINE_CURVE&#x27;)</code></li>
+</ul></section>
+<section><h2>Cross-references</h2>
+<p><a href="../12-2b-nurbs/Gn002.html">Gn002</a></p>
+</section>
+<section><h2>Live oracle output</h2>
+<table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
+<tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>no_shapes_loaded</code></td></tr>
+</tbody></table>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>/* Ad059 - Mismatched weight / pole counts in BSpline (writer-emitted)
+<span class="lineno">2</span>   ----------------------------------------------------------------------
+<span class="lineno">3</span>   Catalog section : Â§12.11 adversarial (sub-class: schema-validation / OOB-read)
+<span class="lineno">4</span>   Sources         : 08-occt-gitlog.md G024 (Mantis 0030921),
+<span class="lineno">5</span>                     G023 (zero-poles)
+<span class="lineno">6</span>   See also        : Gn002
+<span class="lineno">7</span>   ----------------------------------------------------------------------
+<span class="lineno">8</span>   WARNING: This file is INTENTIONALLY MALFORMED for parser-robustness
+<span class="lineno">9</span>   testing. Do NOT use as exchange data.
+<span class="lineno">10</span>   ----------------------------------------------------------------------
+<span class="lineno">11</span>   Defect
+<span class="lineno">12</span>     STEP RATIONAL_B_SPLINE_CURVE with weights array length != poles
+<span class="lineno">13</span>     array length; reader walks past the end of the weights vector.
+<span class="lineno">14</span>     Documented in OCCT Mantis 0030921. Companion bug G023: zero
+<span class="lineno">15</span>     poles silently accepted, leading to division-by-zero downstream.
+<span class="lineno">16</span>   Reproducer recipe
+<span class="lineno">17</span>     RATIONAL_B_SPLINE_CURVE complex entity with 4 control points
+<span class="lineno">18</span>     (poles) but only 3 weights. The schema is the typical AP242
+<span class="lineno">19</span>     complex-record layout combining BOUNDED_CURVE / B_SPLINE_CURVE /
+<span class="lineno">20</span>     B_SPLINE_CURVE_WITH_KNOTS / RATIONAL_B_SPLINE_CURVE.
+<span class="lineno">21</span>   Expected kernel behavior
+<span class="lineno">22</span>     Validate equality: weights.length == poles.length. Pad/truncate
+<span class="lineno">23</span>     with E_BSPLINE_WEIGHT_MISMATCH warning; never read past either
+<span class="lineno">24</span>     array.
+<span class="lineno">25</span>   ----------------------------------------------------------------------
+<span class="lineno">26</span>*/
+<span class="lineno">27</span>ISO-10303-21;
+<span class="lineno">28</span>HEADER;
+<span class="lineno">29</span>FILE_DESCRIPTION((&#x27;Ad059 - rational BSpline with weight/pole count mismatch&#x27;),
+<span class="lineno">30</span>  &#x27;2;1&#x27;);
+<span class="lineno">31</span>FILE_NAME(&#x27;Ad059.stp&#x27;,&#x27;2026-04-26T00:00:00&#x27;,(&#x27;auto-generated&#x27;),(&#x27;&#x27;),
+<span class="lineno">32</span>  &#x27;auto-generated&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">33</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
+<span class="lineno">34</span>ENDSEC;
+<span class="lineno">35</span>DATA;
+<span class="lineno">36</span>#1=CARTESIAN_POINT(&#x27;p0&#x27;,(0.0,0.0,0.0));
+<span class="lineno">37</span>#2=CARTESIAN_POINT(&#x27;p1&#x27;,(1.0,0.0,0.0));
+<span class="lineno">38</span>#3=CARTESIAN_POINT(&#x27;p2&#x27;,(2.0,0.0,0.0));
+<span class="lineno">39</span>#4=CARTESIAN_POINT(&#x27;p3&#x27;,(3.0,0.0,0.0));
+<span class="lineno">40</span>/* Defect: complex-record rational BSpline with 4 poles but only 3
+<span class="lineno">41</span>   weights. The RATIONAL_B_SPLINE_CURVE.weights_data list length
+<span class="lineno">42</span>   disagrees with the B_SPLINE_CURVE control_points_list length. */
+<span class="lineno">43</span>#100=(
+<span class="lineno">44</span>  BOUNDED_CURVE()
+<span class="lineno">45</span>  B_SPLINE_CURVE(2,(#1,#2,#3,#4),.UNSPECIFIED.,.F.,.F.)
+<span class="lineno">46</span>  B_SPLINE_CURVE_WITH_KNOTS((3,3),(0.0,1.0),.UNSPECIFIED.)
+<span class="lineno">47</span>  CURVE()
+<span class="lineno">48</span>  GEOMETRIC_REPRESENTATION_ITEM()
+<span class="lineno">49</span>  RATIONAL_B_SPLINE_CURVE((1.0,1.0,1.0))
+<span class="lineno">50</span>  REPRESENTATION_ITEM(&#x27;rbsc_bad&#x27;)
+<span class="lineno">51</span>);
+<span class="lineno">52</span>ENDSEC;
+<span class="lineno">53</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Ad057.html">&larr; Ad057</a> <a class="up" href="index.html">§12.11 Adversarial / parser robustness</a> <a class="next" href="Ad064.html">Ad064 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

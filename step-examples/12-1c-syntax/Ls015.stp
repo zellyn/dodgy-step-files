@@ -1,0 +1,35 @@
+/* Ls015 - Missing comma between attribute values
+   ----------------------------------------------------------------------
+   Catalog section : §12.1c punctuation
+   Sources         : S006
+   ----------------------------------------------------------------------
+   Defect
+     A list of attributes lacks a comma separator. SFA reports
+     "Expecting ',', found _3DV instead." This commonly arises when
+     a generator forgets a trailing comma after a string literal that
+     immediately precedes an aggregate.
+   Expected behavior
+     Strict reject with precise location diagnostic; never silently
+     insert a synthetic comma. The error message should name the offset
+     of the missing separator within the parameter list.
+   ----------------------------------------------------------------------
+   Reproducer
+     #1=CARTESIAN_POINT('p' (0.,0.,0.));   <- missing ',' after 'p'
+   ----------------------------------------------------------------------
+*/
+ISO-10303-21;
+HEADER;
+FILE_DESCRIPTION(('Ls015 - missing comma between attribute values'),'2;1');
+FILE_NAME('Ls015.stp','2026-04-26T00:00:00',('auto-generated'),(''),
+  'auto-generated','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+/* Defect: missing comma between the 'p' label string and the coord aggregate */
+#10=CARTESIAN_POINT('p' (0.0,0.0,0.0));
+/* Defect: missing comma between two scalar attributes */
+#11=DIRECTION('x' (1.0,0.0,0.0));
+#20=DIRECTION('x',(1.0,0.0,0.0));
+#30=AXIS2_PLACEMENT_3D('placement',#10,#20,$);
+ENDSEC;
+END-ISO-10303-21;

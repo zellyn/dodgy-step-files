@@ -1,0 +1,21 @@
+/* Wr013 - Forward references where sequential numbering was expected - definitions appear after their references */
+ISO-10303-21;
+HEADER;
+FILE_DESCRIPTION(('Wr013 - forward references'),'2;1');
+FILE_NAME('Wr013.stp','2026-04-30T00:00:00',(''),(''),
+  'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+/* Wr013: writer emitted entities in topological-construction order
+   without a topological sort; #1 references #5 before #5 is defined */
+#1=AXIS2_PLACEMENT_3D('p',#5,#7,#8);
+#2=APPLICATION_CONTEXT('mechanical design');
+#3=PRODUCT_CONTEXT('part',#2,'mechanical');
+#4=PRODUCT('Wr013-part','Wr013 demo','',(#3));
+#5=CARTESIAN_POINT('origin',(0.0,0.0,0.0));
+#7=DIRECTION('z',(0.0,0.0,1.0));
+#8=DIRECTION('x',(1.0,0.0,0.0));
+#20=(LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT(.MILLI.,.METRE.));
+ENDSEC;
+END-ISO-10303-21;

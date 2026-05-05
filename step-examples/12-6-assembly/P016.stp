@@ -1,0 +1,89 @@
+ISO-10303-21;
+/*
+ * P016 — Pre-Boolean operands shipped alongside result solid
+ * Defect (FreeCAD #8476; FreeCAD with OpenSCAD workbench):
+ *   An OpenSCAD-produced model with `difference(){ outer; inner; }` exports
+ *   STEP containing the difference RESULT plus the original argument
+ *   cylinders as separate solids. On re-import the user sees the union of the
+ *   operands instead of the hollow.
+ * Reproducer: assembly with three sibling NAUOs — RESULT, OPERAND_OUTER,
+ *   OPERAND_INNER — emitted at the same level. Receivers see all three.
+ * Expected kernel: producers should emit only the final result solid;
+ *   receivers can't fix this without provenance hints.
+ */
+HEADER;
+FILE_DESCRIPTION(('P016 pre-Boolean operands shipped alongside result solid'),'2;1');
+FILE_NAME('P016.stp','2026-04-26T00:00:00',('catalog'),('cad'),'manual','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#10 = APPLICATION_CONTEXT('automotive design');
+#11 = APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2001,#10);
+#12 = PRODUCT_CONTEXT('',#10,'mechanical');
+#13 = PRODUCT_DEFINITION_CONTEXT('part definition',#10,'design');
+#20 = PRODUCT('P016_ASSY','difference(outer, inner)','',(#12));
+#21 = PRODUCT_DEFINITION_FORMATION('','',#20);
+#22 = PRODUCT_DEFINITION('design','',#21,#13);
+#23 = PRODUCT_DEFINITION_SHAPE('','',#22);
+#30 = PRODUCT('RESULT','difference result','',(#12));
+#31 = PRODUCT_DEFINITION_FORMATION('','',#30);
+#32 = PRODUCT_DEFINITION('design','',#31,#13);
+#33 = PRODUCT_DEFINITION_SHAPE('','',#32);
+#34 = PRODUCT('OPERAND_OUTER','outer cylinder, pre-Boolean','',(#12));
+#35 = PRODUCT_DEFINITION_FORMATION('','',#34);
+#36 = PRODUCT_DEFINITION('design','',#35,#13);
+#37 = PRODUCT_DEFINITION_SHAPE('','',#36);
+#38 = PRODUCT('OPERAND_INNER','inner cylinder, pre-Boolean','',(#12));
+#39 = PRODUCT_DEFINITION_FORMATION('','',#38);
+#41 = PRODUCT_DEFINITION('design','',#39,#13);
+#42 = PRODUCT_DEFINITION_SHAPE('','',#41);
+/* DEFECT: all three siblings present at top level. */
+#43 = NEXT_ASSEMBLY_USAGE_OCCURRENCE('1','RESULT_INST','',#22,#32,$);
+#44 = NEXT_ASSEMBLY_USAGE_OCCURRENCE('2','OUTER_INST','',#22,#36,$);
+#45 = NEXT_ASSEMBLY_USAGE_OCCURRENCE('3','INNER_INST','',#22,#41,$);
+#50 = ( LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT(.MILLI.,.METRE.) );
+#51 = ( NAMED_UNIT(*) PLANE_ANGLE_UNIT() SI_UNIT($,.RADIAN.) );
+#52 = ( NAMED_UNIT(*) SI_UNIT($,.STERADIAN.) SOLID_ANGLE_UNIT() );
+#53 = UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#50,'distance_accuracy_value','');
+#54 = ( GEOMETRIC_REPRESENTATION_CONTEXT(3) GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#53))
+        GLOBAL_UNIT_ASSIGNED_CONTEXT((#50,#51,#52)) REPRESENTATION_CONTEXT('','3D') );
+#60 = CARTESIAN_POINT('',(0.0,0.0,0.0));
+#61 = DIRECTION('',(0.0,0.0,1.0));
+#62 = DIRECTION('',(1.0,0.0,0.0));
+#63 = AXIS2_PLACEMENT_3D('result_origin',#60,#61,#62);
+#64 = SHAPE_REPRESENTATION('result_rep',(#63),#54);
+#65 = SHAPE_DEFINITION_REPRESENTATION(#33,#64);
+#66 = REPRESENTATION_MAP(#63,#64);
+#67 = AXIS2_PLACEMENT_3D('outer_origin',#60,#61,#62);
+#68 = SHAPE_REPRESENTATION('outer_rep',(#67),#54);
+#69 = SHAPE_DEFINITION_REPRESENTATION(#37,#68);
+#70 = REPRESENTATION_MAP(#67,#68);
+#71 = AXIS2_PLACEMENT_3D('inner_origin',#60,#61,#62);
+#72 = SHAPE_REPRESENTATION('inner_rep',(#71),#54);
+#73 = SHAPE_DEFINITION_REPRESENTATION(#42,#72);
+#74 = REPRESENTATION_MAP(#71,#72);
+#75 = MAPPED_ITEM('result_inst',#66,#63);
+#76 = MAPPED_ITEM('outer_inst',#70,#67);
+#77 = MAPPED_ITEM('inner_inst',#74,#71);
+#80 = AXIS2_PLACEMENT_3D('assy_origin',#60,#61,#62);
+#81 = SHAPE_REPRESENTATION('assy_rep',(#80,#75,#76,#77),#54);
+#82 = SHAPE_DEFINITION_REPRESENTATION(#23,#81);
+/* Extended catalog notes:
+ * This reproducer is a minimal demonstrator of the §12.6 entry
+ * referenced in the /* */ header above. The entity-graph above
+ * is just enough to exercise the defect on a writer or reader
+ * test harness; it is NOT a production-quality assembly.
+ *
+ * License: this file is part of a defect catalog assembled from
+ * publicly described bug reports and recommended-practice notes.
+ * No proprietary geometry or names are reproduced. The entity IDs
+ * and minimal coordinates are author-original.
+ *
+ * Cross-refs: see STEP_PROBLEM_CATALOG.md §12.6 for full entry,
+ * source list, sender attribution and expected kernel behavior.
+ */
+#900 = DESCRIPTIVE_REPRESENTATION_ITEM('catalog_id','P016');
+#901 = DESCRIPTIVE_REPRESENTATION_ITEM('catalog_section','12.6 assembly hierarchy');
+#902 = DESCRIPTIVE_REPRESENTATION_ITEM('catalog_status','pending');
+ENDSEC;
+END-ISO-10303-21;

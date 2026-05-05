@@ -1,0 +1,46 @@
+/* Gn031 - EDGE_CURVE periodic-to-non-periodic conversion on small-edge export
+   Defect: for small edges fully covered by vertex tolerances, the OCCT
+   writer converted a periodic BSpline to non-periodic by cutting a
+   segment, but didn't permute closed-curve vertices, producing an
+   invalid edge range on read-back.  In the source the closed BSpline
+   curve C(u) had C(0) == C(1), but after the writer chops off [u1, 1]
+   and re-stitches, the vertex it stored as v_start may correspond to
+   parameter u=u1 while the stored end vertex still corresponds to u=0,
+   giving a backwards edge interval.
+   This file emits the post-bug artifact: a non-periodic
+   B_SPLINE_CURVE_WITH_KNOTS plus an EDGE_CURVE whose start/end vertices
+   straddle the wrap-around in a way that yields an empty / inverted range.
+   Sources: Mantis 0031301, OCCT 7ef1f9b. */
+ISO-10303-21;
+HEADER;
+FILE_DESCRIPTION(
+  ('Gn031 - EDGE_CURVE with inverted range from periodic-to-non-periodic'),
+  '2;1');
+FILE_NAME('Gn031.stp','2026-04-26T00:00:00',('auto-generated'),(''),
+  'auto-generated','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+/* Small closed curve approximated as a degree-2 rational BSpline (3
+   poles, weights for a circular arc).  Originally periodic; after the
+   buggy chop, declared non-periodic. */
+#10=CARTESIAN_POINT('arc0',( 0.0010, 0.0000, 0.0));
+#11=CARTESIAN_POINT('arc1',( 0.0010, 0.0010, 0.0));
+#12=CARTESIAN_POINT('arc2',( 0.0000, 0.0010, 0.0));
+#100=(
+  BOUNDED_CURVE()
+  B_SPLINE_CURVE(2,(#10,#11,#12),.UNSPECIFIED.,.F.,.F.)
+  B_SPLINE_CURVE_WITH_KNOTS((3,3),(0.0,1.0),.UNSPECIFIED.)
+  CURVE()
+  GEOMETRIC_REPRESENTATION_ITEM()
+  RATIONAL_B_SPLINE_CURVE((1.0,0.7071067811865476,1.0))
+  REPRESENTATION_ITEM('chopped_was_periodic'));
+/* Defect: vertices kept from the original periodic curve are NOT
+   permuted to match the new non-periodic parametrization.  Resulting
+   EDGE_CURVE range is inconsistent: stored as start=#12-vertex,
+   end=#10-vertex while the curve actually runs from #10 -> #12. */
+#200=VERTEX_POINT('v_at_arc2',#12);
+#201=VERTEX_POINT('v_at_arc0',#10);
+#300=EDGE_CURVE('inverted_edge',#200,#201,#100,.T.);
+ENDSEC;
+END-ISO-10303-21;

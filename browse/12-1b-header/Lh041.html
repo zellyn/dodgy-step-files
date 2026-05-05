@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Lh041 — REFERENCE section with mixed URI schemes including unsupported schemes</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.1b Header &amp; instance-numbering</a> <span class="sep">/</span> <span class="current">Lh041</span>
+</nav>
+<header class="title-bar">
+<h1>Lh041 <span class="sep">—</span> <span class="entry-title">REFERENCE section with mixed URI schemes including unsupported schemes</span></h1>
+<p class="category">§12.1b header/numbering (sub-class: REFERENCE)</p>
+<p class="severity-badge severity-p1">P1 — silent data loss</p>
+<p class="tag-pills">
+<a class="tag tag-silent-loss" href="../by-tag/silent-loss/index.html">silent-loss</a>
+<a class="tag tag-spec-violation" href="../by-tag/spec-violation/index.html">spec-violation</a>
+<a class="tag tag-syntax" href="../by-tag/syntax/index.html">syntax</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-1b-header/Lh041.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-1b-header/Lh041.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>16-iso-spec ISO 10303-21 Ed.3 §8 (URI in REFERENCE)</li>
+</ul></section>
+<section><h2>Description</h2>
+<p>Edition-3 REFERENCE entries carry URIs to external resources. The spec does not constrain the URI scheme. Receivers implement `file://` and possibly `http(s)://`; uncommon schemes (`urn:`, `ftp:`, custom org-specific) are typically unsupported. A REFERENCE section mixing several schemes — some supported, some not — tests the consistency of the decision.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>REFERENCE section with `&lt;file:companion.stp#part_a&gt;`, `&lt;https://example.invalid/companion.stp#part_b&gt;`, `&lt;urn:plm:org-acme:doc:12345#assembly&gt;`, `&lt;plmlink:vault://acme/parts/12345#main&gt;`.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>classify each URI scheme as supported / unsupported and report unsupported entries deterministically; do not abort the whole file load on the first unsupported scheme unless the policy is strict-reject.</p></section>
+<section><h2>Notes</h2>
+<p>Cross-oracle: pure-Python Part-21 validator rejects (reject(E_UNRESOLVED_REFS)); OCCT silently accepts (load is `empty`). OCC auto-heals a spec-level violation. Synonyms: &quot;REFERENCE section mixed URI schemes&quot;, &quot;urn: scheme in STEP REFERENCE unsupported&quot;, &quot;STEP REFERENCE includes ftp:&quot;, &quot;unknown URI scheme in REFERENCE&quot;, &quot;REFERENCE custom-scheme URI&quot;.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>contains(b&#x27;REFERENCE;&#x27;)</code></li>
+<li><code>contains(b&#x27;urn:&#x27;) or contains(b&#x27;plmlink:&#x27;)</code></li>
+<li><code>contains(b&#x27;file:&#x27;) or contains(b&#x27;https://&#x27;)</code></li>
+</ul></section>
+<section><h2>Live oracle output</h2>
+<table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
+<tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>reject(E_UNRESOLVED_REFS)</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>no_shapes_loaded</code></td></tr>
+</tbody></table>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* Lh041 - REFERENCE section published with multiple URI schemes
+<span class="lineno">3</span> * (file:, https:, urn:) including unsupported schemes
+<span class="lineno">4</span> * Defect: Edition-3 REFERENCE entries carry URIs to external
+<span class="lineno">5</span> * resources. The spec does not constrain the URI scheme. Receivers
+<span class="lineno">6</span> * implement file:// and possibly http(s)://; uncommon schemes
+<span class="lineno">7</span> * (urn:, ftp:, custom org-specific) are typically unsupported.
+<span class="lineno">8</span> * The kernel must decide whether unsupported schemes mean reject,
+<span class="lineno">9</span> * skip, or attempt fallback. Mixed schemes in a single REFERENCE
+<span class="lineno">10</span> * section test the consistency of that decision. */
+<span class="lineno">11</span>HEADER;
+<span class="lineno">12</span>FILE_DESCRIPTION((&#x27;Lh041 - REFERENCE with mixed URI schemes incl. urn:&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">13</span>FILE_NAME(&#x27;Lh041.stp&#x27;,&#x27;2026-04-26T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),
+<span class="lineno">14</span>  &#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">15</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
+<span class="lineno">16</span>ENDSEC;
+<span class="lineno">17</span><mark>REFERENCE;</mark>
+<span class="lineno">18</span>#100=&lt;file:companion.stp#part_a&gt;;
+<span class="lineno">19</span>#101=&lt;https://example.invalid/companion.stp#part_b&gt;;
+<span class="lineno">20</span>/* Defect: urn: scheme - typically unsupported */
+<span class="lineno">21</span>#102=&lt;urn:plm:org-acme:doc:12345#assembly&gt;;
+<span class="lineno">22</span>/* Defect: custom scheme - definitely unsupported */
+<span class="lineno">23</span>#103=&lt;plmlink:vault://acme/parts/12345#main&gt;;
+<span class="lineno">24</span>ENDSEC;
+<span class="lineno">25</span>DATA;
+<span class="lineno">26</span>#1=APPLICATION_CONTEXT(&#x27;automotive_design&#x27;);
+<span class="lineno">27</span>#10=CARTESIAN_POINT(&#x27;origin&#x27;,(0.0,0.0,0.0));
+<span class="lineno">28</span>ENDSEC;
+<span class="lineno">29</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Lh040.html">&larr; Lh040</a> <a class="up" href="index.html">§12.1b Header &amp; instance-numbering</a> <a class="next" href="Lh042.html">Lh042 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

@@ -1,0 +1,41 @@
+ISO-10303-21;
+/* ============================================================
+   WARNING: THIS FILE IS INTENTIONALLY MALFORMED.
+   It exists ONLY for parser-robustness / fuzz-class testing.
+   DO NOT feed to a production translator without sandboxing.
+
+   Entry  : Ad005
+   Title  : Dangling forward reference to undefined #NNN.
+   Defect : Several attribute slots reference instance IDs
+            that are never declared anywhere in DATA. Naive
+            single-pass resolvers dereference a NULL slot
+            from the instance lookup table.
+              - #1 references #42, #43 (undefined)
+              - #2 references #999999999 (very large unused ID)
+              - #3 references #100 (negative-of-positive: ID
+                value within plausible range yet unbound)
+   Expected: two-pass parse (declare-all, then resolve);
+             emit E_UNDEFINED_REF; treat as literal NULL with
+             warning for legacy compatibility.
+   See also: Ad051, Ad084.
+   ============================================================ */
+HEADER;
+FILE_DESCRIPTION(('Ad005 dangling forward reference'),'2;1');
+FILE_NAME('Ad005.stp','2026-04-26T00:00:00',('synthetic'),('cad-research'),
+  'none','none','none');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+/* #42 and #43 referenced but never declared */
+#1=ADVANCED_FACE('',(#42),#43,.T.);
+
+/* extreme-magnitude undefined ID */
+#2=MANIFOLD_SOLID_BREP('',#999999999);
+
+/* plausible-range undefined ID */
+#3=SHAPE_REPRESENTATION('s',(#100),#5);
+
+#5=AXIS2_PLACEMENT_3D('',#6,$,$);
+#6=CARTESIAN_POINT('',(0.,0.,0.));
+ENDSEC;
+END-ISO-10303-21;

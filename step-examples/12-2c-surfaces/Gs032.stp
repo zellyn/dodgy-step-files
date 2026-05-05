@@ -1,0 +1,42 @@
+ISO-10303-21;
+/* Gs032 - Surface-of-linear-extrusion whose direction is parallel to its basis line
+ *
+ * Sources:  G019
+ *
+ * Defect: A SURFACE_OF_LINEAR_EXTRUSION whose basis curve is a LINE collinear
+ *  with the extrusion direction is degenerate - it collapses to a 1D line and
+ *  is not a surface at all.
+ *
+ * Reproducer:  SURFACE_OF_LINEAR_EXTRUSION with basis LINE and extrusion_axis
+ *  direction parallel to LINE.dir.
+ *
+ * Expected kernel behavior:
+ *   reject this surface; emit warning; carry on with face omission. */
+HEADER;
+FILE_DESCRIPTION(('Gs032 test case','Collinear extrusion collapses to line'),'2;1');
+FILE_NAME('Gs032.stp','2026-04-26T00:00:00',(''),(''),'auto-generated','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+/* Basis LINE in +X direction at origin */
+#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#11=DIRECTION('',(1.0,0.0,0.0));
+#12=VECTOR('',#11,1.0);
+#13=LINE('',#10,#12);
+/* Defect: extrusion direction is also +X, parallel to the basis LINE.dir */
+#20=DIRECTION('',(1.0,0.0,0.0));
+#21=VECTOR('',#20,10.0);
+#22=SURFACE_OF_LINEAR_EXTRUSION('',#13,#21);
+/* Reference from a face - reader should reject this surface as degenerate */
+#30=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#31=VERTEX_POINT('',#30);
+#32=VERTEX_LOOP('',#31);
+#33=FACE_OUTER_BOUND('',#32,.T.);
+#34=ADVANCED_FACE('',(#33),#22,.T.);
+/* Wrap face in shell - any tessellation / volume integration over the
+ * degenerate extrusion will then trip the parallel-direction guard. */
+#40=OPEN_SHELL('',(#34));
+ENDSEC;
+END-ISO-10303-21;

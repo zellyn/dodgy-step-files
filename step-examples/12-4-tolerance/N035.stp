@@ -1,0 +1,49 @@
+/* N035 - Default tolerance precision: missing decimal-place qualifier
+ * Defect: Some CAD systems ignore tolerance values that lack an explicit
+ * decimal-place qualifier even if a global default precision is set. The
+ * fallback hierarchy is: precision at tolerance value -> precision at nominal
+ * value -> global default. Receivers that don't walk the chain show wrong-
+ * precision tolerance.
+ * Reproducer: dimension with nominal value 5.0, tolerance +0.01/-0.01 but no
+ * precision_qualifier on either the value or the nominal, and no global
+ * default for the document.
+ */
+ISO-10303-21;
+HEADER;
+FILE_DESCRIPTION(('N035 default tolerance precision missing decimal-place qualifier'),'2;1');
+FILE_NAME('N035.stp','2026-04-26T00:00:00',(''),(''),
+  'cad-research-suite','','');
+FILE_SCHEMA(('AP242_MANAGED_MODEL_BASED_3D_ENGINEERING_MIM_LF'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('managed model-based 3d engineering');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
+  'ap242_managed_model_based_3d_engineering',2014,#1);
+#10=CARTESIAN_POINT('p0',(0.0,0.0,0.0));
+#11=CARTESIAN_POINT('p1',(5.0,0.0,0.0));
+#20=VERTEX_POINT('',#10);
+#21=VERTEX_POINT('',#11);
+#30=DIRECTION('+x',(1.0,0.0,0.0));
+#31=VECTOR('',#30,5.0);
+#32=LINE('',#10,#31);
+#40=EDGE_CURVE('dim_edge',#20,#21,#32,.T.);
+#50=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#51=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#52=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#60=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-6),#50,
+  'distance_accuracy_value','');
+#70=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#60))
+  GLOBAL_UNIT_ASSIGNED_CONTEXT((#50,#51,#52))
+  REPRESENTATION_CONTEXT('ctx','3D'));
+/* Nominal value 5.0, tolerance +/- 0.01.  Defect site: NO precision_qualifier
+ * is associated with either the nominal or the tolerance bounds, and no
+ * global default precision representation is provided. Conformant readers
+ * walk the precision chain; non-conformant ones discard the tolerance. */
+#80=LENGTH_MEASURE_WITH_UNIT(LENGTH_MEASURE(5.0),#50);
+#81=LENGTH_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.01),#50);
+#82=LENGTH_MEASURE_WITH_UNIT(LENGTH_MEASURE(-0.01),#50);
+#83=PLUS_MINUS_TOLERANCE(#81,'no_precision','+/-0.01 no qualifier');
+#84=PLUS_MINUS_TOLERANCE(#82,'no_precision_low','-0.01 no qualifier');
+ENDSEC;
+END-ISO-10303-21;

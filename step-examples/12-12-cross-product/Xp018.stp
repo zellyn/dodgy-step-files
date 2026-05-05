@@ -1,0 +1,35 @@
+ISO-10303-21;
+/* Xp018 - Cross-product: PMI geometric_tolerance forward-references its
+ *   shape_aspect; saved-view draughting_model lacks mapped_item; and
+ *   PMI text values were authored in inches but unit context says mm.
+ * Builds on Pmi020 (saved view missing mapped_item) + U001 (units) +
+ *   Ls-forward-ref-class. */
+HEADER;
+FILE_DESCRIPTION(('Xp018 cross-product','PMI x units x forward-ref'),'2;1');
+FILE_NAME('Xp018.stp','2026-04-26T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AP242_MANAGED_MODEL_BASED_3D_ENGINEERING_MIM_LF { 1 0 10303 442 1 1 4 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('managed model based 3d engineering');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
+  'ap242_managed_model_based_3d_engineering',2014,#1);
+/* Defect 3: declared mm */
+#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#11=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#12=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.E-6),#10,'distance_accuracy_value','');
+#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+     GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13))
+     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12))
+     REPRESENTATION_CONTEXT('part','3D'));
+#100=PRODUCT_DEFINITION_SHAPE('','',$);
+/* Defect 2: geometric_tolerance forward-references #500 (shape_aspect) */
+#200=GEOMETRIC_TOLERANCE('flatness','GD&T',$,#500,
+  LENGTH_MEASURE(0.05));
+/* Defect 3: PMI value 0.05 makes sense in inches not mm */
+/* shape_aspect defined later (forward) */
+#500=SHAPE_ASPECT('feature','flatness target',#100,.T.);
+/* Defect 1: saved-view draughting_model with NO mapped_item in items */
+#600=DRAUGHTING_MODEL('saved_view',(#200),#14);
+ENDSEC;
+END-ISO-10303-21;

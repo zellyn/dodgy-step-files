@@ -1,0 +1,52 @@
+/* Pmi014 - annotation_plane: plane vs planar_box ambiguity
+   Defect: ANNOTATION_PLANE may be defined either by an unbounded PLANE or
+   by a PLANAR_BOX (axis placement + sizes). Receivers that support only
+   one form lose the bounded-rectangle hint when reading planar_box, or
+   fail to import unbounded annotation planes when expecting planar_box.
+   This file emits TWO annotation planes: one as PLANE, one as PLANAR_BOX,
+   for the same logical PMI scope. */
+ISO-10303-21;
+HEADER;
+FILE_DESCRIPTION(('Pmi014 - plane vs planar_box ambiguity'),'2;1');
+FILE_NAME('Pmi014.stp','2026-04-26T00:00:00',('catalog'),('cad'),
+  'manual','','');
+FILE_SCHEMA(('AP242_MANAGED_MODEL_BASED_3D_ENGINEERING_MIM_LF { 1 0 10303 442 1 1 4 }'));
+ENDSEC;
+DATA;
+#10 = APPLICATION_CONTEXT('managed model based 3d engineering');
+#11 = APPLICATION_PROTOCOL_DEFINITION('international standard',
+  'ap242_managed_model_based_3d_engineering',2020,#10);
+#12 = PRODUCT_CONTEXT('',#10,'mechanical');
+#13 = PRODUCT('Pmi014','PlaneBoxPart','',(#12));
+#14 = PRODUCT_DEFINITION_FORMATION('','',#13);
+#15 = PRODUCT_DEFINITION_CONTEXT('',#10,'design');
+#16 = PRODUCT_DEFINITION('','',#14,#15);
+#17 = PRODUCT_DEFINITION_SHAPE('','',#16);
+#20 = ( LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT(.MILLI.,.METRE.) );
+#22 = ( NAMED_UNIT(*) PLANE_ANGLE_UNIT() SI_UNIT($,.RADIAN.) );
+#23 = ( NAMED_UNIT(*) SI_UNIT($,.STERADIAN.) SOLID_ANGLE_UNIT() );
+#24 = UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#20,
+  'distance_accuracy_value','');
+#25 = ( GEOMETRIC_REPRESENTATION_CONTEXT(3)
+  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#24))
+  GLOBAL_UNIT_ASSIGNED_CONTEXT((#20,#22,#23))
+  REPRESENTATION_CONTEXT('','3D') );
+#30 = CARTESIAN_POINT('p1',(0.0,0.0,0.0));
+#31 = DIRECTION('z',(0.0,0.0,1.0));
+#32 = DIRECTION('x',(1.0,0.0,0.0));
+#33 = AXIS2_PLACEMENT_3D('axis_unbounded',#30,#31,#32);
+#34 = CARTESIAN_POINT('p2',(50.0,0.0,0.0));
+#35 = AXIS2_PLACEMENT_3D('axis_box',#34,#31,#32);
+/* Form 1: unbounded PLANE */
+#40 = PLANE('plane_unbounded',#33);
+#41 = ANNOTATION_PLANE('PMI_zone_unbounded',(),#40,());
+/* Form 2: PLANAR_BOX (axis placement + sizes) */
+#50 = PLANAR_BOX(100.0,50.0,#35);
+#51 = ANNOTATION_PLANE('PMI_zone_bounded',(),#50,());
+/* Both annotation planes appear in the draughting model — readers that
+   support only one form lose information about the other. */
+#60 = DRAUGHTING_MODEL('Default',(),#25);
+#70 = SHAPE_REPRESENTATION('',(#33,#35),#25);
+#71 = SHAPE_DEFINITION_REPRESENTATION(#17,#70);
+ENDSEC;
+END-ISO-10303-21;

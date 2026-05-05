@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Tfa067 — Top face dropped after STEP import (CLOSED_SHELL cube whose top FACE_OUTER_BOUND edge has 3D LINE vs B_SPLINE_CURVE_WITH_KNOTS pcurve mismatch)</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.3c Faces / sewing / free bound</a> <span class="sep">/</span> <span class="current">Tfa067</span>
+</nav>
+<header class="title-bar">
+<h1>Tfa067 <span class="sep">—</span> <span class="entry-title">Top face dropped after STEP import (CLOSED_SHELL cube whose top FACE_OUTER_BOUND edge has 3D LINE vs B_SPLINE_CURVE_WITH_KNOTS pcurve mismatch)</span></h1>
+<p class="category">§12.3c faces/sewing</p>
+<p class="tag-pills">
+<a class="tag tag-topology" href="../by-tag/topology/index.html">topology</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-3c-faces/Tfa067.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-3c-faces/Tfa067.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>OCCT MANTIS#0023473</li>
+<li>OCCT MANTIS#0024595</li>
+<li>OCCT MANTIS#0030052</li>
+<li>OCCT MANTIS#0029415</li>
+<li>OCCT MANTIS#0025045 (OCCT MANTIS tracker 502 as of 2026-05-02)</li>
+</ul></section>
+<section><h2>Description</h2>
+<p>A solid imported from STEP loses one or more faces during translation. Common cause: the face&#x27;s `FACE_OUTER_BOUND` references an EDGE_LOOP whose edge translation fails silently — e.g., a 3D LINE going one way while the associated PCURVE is a degree-2 B_SPLINE_CURVE_WITH_KNOTS with control points that dip in V, producing a 3D-curve / pcurve mismatch beyond tolerance — so the entire face is dropped. Visible in viewers as a hole in the otherwise-solid part.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>A CLOSED_SHELL six-face cube where the top face&#x27;s EDGE_LOOP has one edge whose 3D LINE (e.g., (0,0,1)-&gt;(1,0,1)) and PCURVE (a B_SPLINE_CURVE_WITH_KNOTS in UV with a 0.1 dip in V) disagree by ~0.1 mm. STEP reader silently drops the top face; resulting shell has 5 faces.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>face-translation failures must be reported as diagnostics (not silently dropped); if all bounds cannot be resolved, mark the face as invalid but preserve it in the topology so downstream code can heal or report.</p></section>
+<section><h2>Notes</h2>
+<p>**See also**: Tsh001, Tsh044. Synonyms: &quot;top face missing after STEP import&quot;, &quot;cube imported missing one face&quot;, &quot;FACE_OUTER_BOUND has 3D LINE but pcurve B-spline mismatch&quot;, &quot;import drops face due to curve type mismatch&quot;.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=shape(1)/shape(1) gmsh=shape(27) ifc=schema_n/a</code></p></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>n_edges_total &gt;= 24</code></li>
+<li><code>face[0].surface_type == &quot;plane&quot;</code></li>
+<li><code>face[5].surface_type == &quot;plane&quot;</code></li>
+</ul></section>
+<section><h2>Cross-references</h2>
+<p><a href="../12-3a-shells/Tsh001.html">Tsh001</a>, <a href="../12-3a-shells/Tsh044.html">Tsh044</a></p>
+</section>
+<section><h2>Live oracle output</h2>
+<table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
+<tr><td><code>occt_heal_on</code></td><td><code>shape(1)</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>shape(1)</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>shape(27)</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>shape(27)</code></td></tr>
+<tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>not_manifold</code></td></tr>
+</tbody></table>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* Tfa067 - Top face missing after STEP import
+<span class="lineno">3</span> * Six-face unit cube. Top face&#x27;s wire has one edge with an explicit PCURVE
+<span class="lineno">4</span> * whose 2D path disagrees with the 3D LINE by 0.1 mm at mid-span (pcurve
+<span class="lineno">5</span> * UV runs through (0.5, -0.1) instead of (0.5, 0)). A reader that bails on
+<span class="lineno">6</span> * 3D-curve/pcurve mismatch beyond tolerance will silently drop the top face. */
+<span class="lineno">7</span>HEADER;
+<span class="lineno">8</span>FILE_DESCRIPTION((&#x27;Tfa067 test case&#x27;,&#x27;Six-face cube; top-face edge has 3D/pcurve mismatch of 0.1mm&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">9</span>FILE_NAME(&#x27;Tfa067.stp&#x27;,&#x27;2026-04-30T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">10</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }&#x27;));
+<span class="lineno">11</span>ENDSEC;
+<span class="lineno">12</span>DATA;
+<span class="lineno">13</span>#1=APPLICATION_CONTEXT(&#x27;automotive_design&#x27;);
+<span class="lineno">14</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,&#x27;automotive_design&#x27;,2000,#1);
+<span class="lineno">15</span>/* 8 cube vertices */
+<span class="lineno">16</span>#10=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));#11=VERTEX_POINT(&#x27;V0&#x27;,#10);
+<span class="lineno">17</span>#12=CARTESIAN_POINT(&#x27;&#x27;,(1.0,0.0,0.0));#13=VERTEX_POINT(&#x27;V1&#x27;,#12);
+<span class="lineno">18</span>#14=CARTESIAN_POINT(&#x27;&#x27;,(1.0,1.0,0.0));#15=VERTEX_POINT(&#x27;V2&#x27;,#14);
+<span class="lineno">19</span>#16=CARTESIAN_POINT(&#x27;&#x27;,(0.0,1.0,0.0));#17=VERTEX_POINT(&#x27;V3&#x27;,#16);
+<span class="lineno">20</span>#18=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,1.0));#19=VERTEX_POINT(&#x27;V4&#x27;,#18);
+<span class="lineno">21</span>#20=CARTESIAN_POINT(&#x27;&#x27;,(1.0,0.0,1.0));#21=VERTEX_POINT(&#x27;V5&#x27;,#20);
+<span class="lineno">22</span>#22=CARTESIAN_POINT(&#x27;&#x27;,(1.0,1.0,1.0));#23=VERTEX_POINT(&#x27;V6&#x27;,#22);
+<span class="lineno">23</span>#24=CARTESIAN_POINT(&#x27;&#x27;,(0.0,1.0,1.0));#25=VERTEX_POINT(&#x27;V7&#x27;,#24);
+<span class="lineno">24</span>/* 12 cube edges -- all straight LINEs. */
+<span class="lineno">25</span>#30=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));#31=VECTOR(&#x27;&#x27;,#30,1.0);#32=LINE(&#x27;&#x27;,#10,#31);#33=EDGE_CURVE(&#x27;e_V0_V1&#x27;,#11,#13,#32,.T.);
+<span class="lineno">26</span>#34=DIRECTION(&#x27;&#x27;,(0.0,1.0,0.0));#35=VECTOR(&#x27;&#x27;,#34,1.0);#36=LINE(&#x27;&#x27;,#12,#35);#37=EDGE_CURVE(&#x27;e_V1_V2&#x27;,#13,#15,#36,.T.);
+<span class="lineno">27</span>#38=DIRECTION(&#x27;&#x27;,(-1.0,0.0,0.0));#39=VECTOR(&#x27;&#x27;,#38,1.0);#40=LINE(&#x27;&#x27;,#14,#39);#41=EDGE_CURVE(&#x27;e_V2_V3&#x27;,#15,#17,#40,.T.);
+<span class="lineno">28</span>#42=DIRECTION(&#x27;&#x27;,(0.0,-1.0,0.0));#43=VECTOR(&#x27;&#x27;,#42,1.0);#44=LINE(&#x27;&#x27;,#16,#43);#45=EDGE_CURVE(&#x27;e_V3_V0&#x27;,#17,#11,#44,.T.);
+<span class="lineno">29</span>#46=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));#47=VECTOR(&#x27;&#x27;,#46,1.0);#48=LINE(&#x27;&#x27;,#10,#47);#49=EDGE_CURVE(&#x27;e_V0_V4&#x27;,#11,#19,#48,.T.);
+<span class="lineno">30</span>#50=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));#51=VECTOR(&#x27;&#x27;,#50,1.0);#52=LINE(&#x27;&#x27;,#12,#51);#53=EDGE_CURVE(&#x27;e_V1_V5&#x27;,#13,#21,#52,.T.);
+<span class="lineno">31</span>#54=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));#55=VECTOR(&#x27;&#x27;,#54,1.0);#56=LINE(&#x27;&#x27;,#14,#55);#57=EDGE_CURVE(&#x27;e_V2_V6&#x27;,#15,#23,#56,.T.);
+<span class="lineno">32</span>#58=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));#59=VECTOR(&#x27;&#x27;,#58,1.0);#60=LINE(&#x27;&#x27;,#16,#59);#61=EDGE_CURVE(&#x27;e_V3_V7&#x27;,#17,#25,#60,.T.);
+<span class="lineno">33</span>/* TOP edge V4 -&gt; V5: 3D LINE is straight along +X. PCURVE UV bows by 0.1mm. */
+<span class="lineno">34</span>#62=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));#63=VECTOR(&#x27;&#x27;,#62,1.0);#64=LINE(&#x27;top_3d_V4_V5&#x27;,#18,#63);
+<span class="lineno">35</span>#65=CARTESIAN_POINT(&#x27;uv_a&#x27;,(0.0,0.0));
+<span class="lineno">36</span>#66=CARTESIAN_POINT(&#x27;uv_mid_off_0p1&#x27;,(0.5,-0.1));
+<span class="lineno">37</span>#67=CARTESIAN_POINT(&#x27;uv_b&#x27;,(1.0,0.0));
+<span class="lineno">38</span>#68=B_SPLINE_CURVE_WITH_KNOTS(&#x27;top_pcurve_off_by_0p1&#x27;,2,(#65,#66,#67),.UNSPECIFIED.,.F.,.F.,(3,3),(0.0,1.0),.UNSPECIFIED.);
+<span class="lineno">39</span>/* placeholder definitional repr; this top face&#x27;s plane is z=1 */
+<span class="lineno">40</span>#69=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,1.0));#70=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));#71=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">41</span>#72=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#69,#70,#71);#73=PLANE(&#x27;top_plane&#x27;,#72);
+<span class="lineno">42</span>#74=DEFINITIONAL_REPRESENTATION(&#x27;&#x27;,(#68),#72);
+<span class="lineno">43</span>#75=PCURVE(&#x27;top_pcurve_mismatch_0p1mm&#x27;,#73,#74);
+<span class="lineno">44</span>#76=SURFACE_CURVE(&#x27;top_3d_with_offset_pcurve&#x27;,#64,(#75),.PCURVE_S1.);
+<span class="lineno">45</span>#77=EDGE_CURVE(&#x27;top_edge_V4_V5_3D_pc_mismatch&#x27;,#19,#21,#76,.T.);
+<span class="lineno">46</span>#78=DIRECTION(&#x27;&#x27;,(0.0,1.0,0.0));#79=VECTOR(&#x27;&#x27;,#78,1.0);#80=LINE(&#x27;&#x27;,#20,#79);#81=EDGE_CURVE(&#x27;e_V5_V6&#x27;,#21,#23,#80,.T.);
+<span class="lineno">47</span>#82=DIRECTION(&#x27;&#x27;,(-1.0,0.0,0.0));#83=VECTOR(&#x27;&#x27;,#82,1.0);#84=LINE(&#x27;&#x27;,#22,#83);#85=EDGE_CURVE(&#x27;e_V6_V7&#x27;,#23,#25,#84,.T.);
+<span class="lineno">48</span>#86=DIRECTION(&#x27;&#x27;,(0.0,-1.0,0.0));#87=VECTOR(&#x27;&#x27;,#86,1.0);#88=LINE(&#x27;&#x27;,#24,#87);#89=EDGE_CURVE(&#x27;e_V7_V4&#x27;,#25,#19,#88,.T.);
+<span class="lineno">49</span>/* Six face planes */
+<span class="lineno">50</span>#100=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));#101=DIRECTION(&#x27;&#x27;,(0.0,0.0,-1.0));#102=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">51</span>#103=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#100,#101,#102);#104=PLANE(&#x27;bottom&#x27;,#103);
+<span class="lineno">52</span>#110=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));#111=DIRECTION(&#x27;&#x27;,(0.0,-1.0,0.0));#112=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">53</span>#113=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#110,#111,#112);#114=PLANE(&#x27;front&#x27;,#113);
+<span class="lineno">54</span>#120=CARTESIAN_POINT(&#x27;&#x27;,(1.0,0.0,0.0));#121=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));#122=DIRECTION(&#x27;&#x27;,(0.0,1.0,0.0));
+<span class="lineno">55</span>#123=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#120,#121,#122);#124=PLANE(&#x27;right&#x27;,#123);
+<span class="lineno">56</span>#130=CARTESIAN_POINT(&#x27;&#x27;,(0.0,1.0,0.0));#131=DIRECTION(&#x27;&#x27;,(0.0,1.0,0.0));#132=DIRECTION(&#x27;&#x27;,(-1.0,0.0,0.0));
+<span class="lineno">57</span>#133=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#130,#131,#132);#134=PLANE(&#x27;back&#x27;,#133);
+<span class="lineno">58</span>#140=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));#141=DIRECTION(&#x27;&#x27;,(-1.0,0.0,0.0));#142=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">59</span>#143=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#140,#141,#142);#144=PLANE(&#x27;left&#x27;,#143);
+<span class="lineno">60</span>/* Top plane is #73. */
+<span class="lineno">61</span>/* Six faces */
+<span class="lineno">62</span>#200=ORIENTED_EDGE(&#x27;&#x27;,*,*,#33,.F.);#201=ORIENTED_EDGE(&#x27;&#x27;,*,*,#45,.F.);
+<span class="lineno">63</span>#202=ORIENTED_EDGE(&#x27;&#x27;,*,*,#41,.F.);#203=ORIENTED_EDGE(&#x27;&#x27;,*,*,#37,.F.);
+<span class="lineno">64</span>#204=EDGE_LOOP(&#x27;bottom_loop&#x27;,(#200,#201,#202,#203));
+<span class="lineno">65</span>#205=FACE_OUTER_BOUND(&#x27;&#x27;,#204,.T.);#206=ADVANCED_FACE(&#x27;bottom_face&#x27;,(#205),#104,.T.);
+<span class="lineno">66</span>#210=ORIENTED_EDGE(&#x27;&#x27;,*,*,#33,.T.);#211=ORIENTED_EDGE(&#x27;&#x27;,*,*,#53,.T.);
+<span class="lineno">67</span>#212=ORIENTED_EDGE(&#x27;&#x27;,*,*,#77,.F.);#213=ORIENTED_EDGE(&#x27;&#x27;,*,*,#49,.F.);
+<span class="lineno">68</span>#214=EDGE_LOOP(&#x27;front_loop&#x27;,(#210,#211,#212,#213));
+<span class="lineno">69</span>#215=FACE_OUTER_BOUND(&#x27;&#x27;,#214,.T.);#216=ADVANCED_FACE(&#x27;front_face&#x27;,(#215),#114,.T.);
+<span class="lineno">70</span>#220=ORIENTED_EDGE(&#x27;&#x27;,*,*,#37,.T.);#221=ORIENTED_EDGE(&#x27;&#x27;,*,*,#57,.T.);
+<span class="lineno">71</span>#222=ORIENTED_EDGE(&#x27;&#x27;,*,*,#81,.F.);#223=ORIENTED_EDGE(&#x27;&#x27;,*,*,#53,.F.);
+<span class="lineno">72</span>#224=EDGE_LOOP(&#x27;right_loop&#x27;,(#220,#221,#222,#223));
+<span class="lineno">73</span>#225=FACE_OUTER_BOUND(&#x27;&#x27;,#224,.T.);#226=ADVANCED_FACE(&#x27;right_face&#x27;,(#225),#124,.T.);
+<span class="lineno">74</span>#230=ORIENTED_EDGE(&#x27;&#x27;,*,*,#41,.T.);#231=ORIENTED_EDGE(&#x27;&#x27;,*,*,#61,.T.);
+<span class="lineno">75</span>#232=ORIENTED_EDGE(&#x27;&#x27;,*,*,#85,.F.);#233=ORIENTED_EDGE(&#x27;&#x27;,*,*,#57,.F.);
+<span class="lineno">76</span>#234=EDGE_LOOP(&#x27;back_loop&#x27;,(#230,#231,#232,#233));
+<span class="lineno">77</span>#235=FACE_OUTER_BOUND(&#x27;&#x27;,#234,.T.);#236=ADVANCED_FACE(&#x27;back_face&#x27;,(#235),#134,.T.);
+<span class="lineno">78</span>#240=ORIENTED_EDGE(&#x27;&#x27;,*,*,#45,.T.);#241=ORIENTED_EDGE(&#x27;&#x27;,*,*,#49,.T.);
+<span class="lineno">79</span>#242=ORIENTED_EDGE(&#x27;&#x27;,*,*,#89,.F.);#243=ORIENTED_EDGE(&#x27;&#x27;,*,*,#61,.F.);
+<span class="lineno">80</span>#244=EDGE_LOOP(&#x27;left_loop&#x27;,(#240,#241,#242,#243));
+<span class="lineno">81</span>#245=FACE_OUTER_BOUND(&#x27;&#x27;,#244,.T.);#246=ADVANCED_FACE(&#x27;left_face&#x27;,(#245),#144,.T.);
+<span class="lineno">82</span>/* TOP face -- this is the one a defective reader silently drops. */
+<span class="lineno">83</span>#250=ORIENTED_EDGE(&#x27;&#x27;,*,*,#77,.T.);#251=ORIENTED_EDGE(&#x27;&#x27;,*,*,#81,.T.);
+<span class="lineno">84</span>#252=ORIENTED_EDGE(&#x27;&#x27;,*,*,#85,.T.);#253=ORIENTED_EDGE(&#x27;&#x27;,*,*,#89,.T.);
+<span class="lineno">85</span>#254=EDGE_LOOP(&#x27;top_loop_with_mismatch_edge&#x27;,(#250,#251,#252,#253));
+<span class="lineno">86</span>#255=FACE_OUTER_BOUND(&#x27;&#x27;,#254,.T.);
+<span class="lineno">87</span>#256=ADVANCED_FACE(&#x27;top_face_with_pcurve_3d_mismatch&#x27;,(#255),#73,.T.);
+<span class="lineno">88</span>#260=CLOSED_SHELL(&#x27;cube_with_defective_top&#x27;,(#206,#216,#226,#236,#246,#256));
+<span class="lineno">89</span>/* Wrap: minimal PRODUCT chain so OCCT TransferRoots produces a shape. */
+<span class="lineno">90</span>#9000=PRODUCT_CONTEXT(&#x27;&#x27;,#1,&#x27;mechanical&#x27;);
+<span class="lineno">91</span>#9001=PRODUCT(&#x27;Tfa067&#x27;,&#x27;Tfa067&#x27;,&#x27;&#x27;,(#9000));
+<span class="lineno">92</span>#9002=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#9001);
+<span class="lineno">93</span>#9003=PRODUCT_DEFINITION_CONTEXT(&#x27;part definition&#x27;,#1,&#x27;design&#x27;);
+<span class="lineno">94</span>#9004=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,#9002,#9003);
+<span class="lineno">95</span>#9005=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,#9004);
+<span class="lineno">96</span>#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">97</span>#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+<span class="lineno">98</span>#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+<span class="lineno">99</span>#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,&#x27;distance_accuracy_value&#x27;,&#x27;&#x27;);
+<span class="lineno">100</span>#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT(&#x27;&#x27;,&#x27;3D&#x27;));
+<span class="lineno">101</span>#9020=MANIFOLD_SOLID_BREP(&#x27;wrap_msb&#x27;,#260);
+<span class="lineno">102</span>#9022=ADVANCED_BREP_SHAPE_REPRESENTATION(&#x27;&#x27;,(#9020),#9010);
+<span class="lineno">103</span>#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+<span class="lineno">104</span>ENDSEC;
+<span class="lineno">105</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Tfa066.html">&larr; Tfa066</a> <a class="up" href="index.html">§12.3c Faces / sewing / free bound</a> <a class="next" href="Tfa068.html">Tfa068 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

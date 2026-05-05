@@ -1,0 +1,23 @@
+ISO-10303-21;
+/* Ad118 - Forward-compat: legacy CONFIG_CONTROL_DESIGN schema rejected by newer reader
+ * Defect: file declares older AP203 schema string CONFIG_CONTROL_DESIGN; newer kernel
+ * builds reject the schema even when the entities themselves are recognisable. */
+HEADER;
+FILE_DESCRIPTION(('Ad118 - legacy CONFIG_CONTROL_DESIGN schema rejected'),'2;1');
+FILE_NAME('Ad118.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');
+/* Older AP203 schema name; current readers may refuse this identifier. */
+FILE_SCHEMA(('CONFIG_CONTROL_DESIGN'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('configuration controlled 3d designs of mechanical parts and assemblies');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','config_control_design',1994,#1);
+#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#11=DIRECTION('',(0.0,0.0,1.0));
+#12=DIRECTION('',(1.0,0.0,0.0));
+#13=AXIS2_PLACEMENT_3D('',#10,#11,#12);
+#20=PLANE('',#13);
+#30=ADVANCED_FACE('',(),#20,.T.);
+#40=CLOSED_SHELL('',(#30));
+#50=MANIFOLD_SOLID_BREP('legacy_part',#40);
+ENDSEC;
+END-ISO-10303-21;

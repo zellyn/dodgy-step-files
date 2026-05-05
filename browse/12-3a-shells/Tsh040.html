@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Tsh040 — `EDGE_CURVE` shared across two `OPEN_SHELL`s in one `SHELL_BASED_SURFACE_MODEL` (T-junction mis-classified as non-manifold by slicer)</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.3a Shells / orientation</a> <span class="sep">/</span> <span class="current">Tsh040</span>
+</nav>
+<header class="title-bar">
+<h1>Tsh040 <span class="sep">—</span> <span class="entry-title">`EDGE_CURVE` shared across two `OPEN_SHELL`s in one `SHELL_BASED_SURFACE_MODEL` (T-junction mis-classified as non-manifold by slicer)</span></h1>
+<p class="category">§12.3a shell-orientation</p>
+<p class="severity-badge severity-p1">P1 — silent data loss</p>
+<p class="tag-pills">
+<a class="tag tag-topology" href="../by-tag/topology/index.html">topology</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-3a-shells/Tsh040.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-3a-shells/Tsh040.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>20-general-forums.md J015</li>
+</ul></section>
+<section><h2>Sender</h2>
+<p>Fusion 360</p></section>
+<section><h2>Description</h2>
+<p>Two adjacent `OPEN_SHELL`s inside one `SHELL_BASED_SURFACE_MODEL` share an `EDGE_CURVE` along a perfectly manifold T-junction (the same edge is referenced by faces in both shells). A slicer mesher classifies the shared edge as non-manifold because the edge has 3+ face references once the shells are joined. STEP allows the edge to bridge two open shells; the receiver collapses both shells into one compound and trips its non-manifold check.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>Two `OPEN_SHELL`s with one shared `EDGE_CURVE` (legal in STEP) collapsed by receiver into a single mesh.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>when joining open shells, recognize &quot;interior&quot; shared edges as non-manifold by design and either keep them shelled or reject with a clear message.</p></section>
+<section><h2>Notes</h2>
+<p>**See also**: Tsh019, M053. Synonyms: &quot;shared edge bridging two open shells&quot;, &quot;T-junction edge across shell boundary&quot;, &quot;slicer flags imported geometry as non-manifold&quot;, &quot;Bambu Studio classifies STEP as non-manifold mesh&quot;, &quot;edge appears in two shell groups&quot;.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>count_entity_def(b&#x27;OPEN_SHELL&#x27;) == 2</code></li>
+<li><code>contains(b&#x27;SHELL_BASED_SURFACE_MODEL&#x27;)</code></li>
+<li><code>count_entity_def(b&#x27;ADVANCED_FACE&#x27;) == 3</code></li>
+</ul></section>
+<section><h2>Cross-references</h2>
+<p><a href="Tsh019.html">Tsh019</a>, <a href="../12-8-mixed/M053.html">M053</a></p>
+</section>
+<section><h2>Live oracle output</h2>
+<table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
+<tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>no_shapes_loaded</code></td></tr>
+</tbody></table>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* Tsh040 - OPEN_SHELLs with shared interior edge mis-classified as non-manifold by slicer
+<span class="lineno">3</span> * Defect: Two adjacent OPEN_SHELLs share an edge in a perfectly
+<span class="lineno">4</span> * manifold T-junction, but slicer mesher classifies the shared edge
+<span class="lineno">5</span> * as non-manifold because each shell is OPEN_SHELL and the shared
+<span class="lineno">6</span> * edge has 3+ face references in the joined compound.
+<span class="lineno">7</span> *
+<span class="lineno">8</span> * This file: two OPEN_SHELLs joined into a single
+<span class="lineno">9</span> * <mark>SHELL_BASED_SURFACE_MODEL</mark>. Shell A is two faces meeting at an edge
+<span class="lineno">10</span> * (a &quot;fold&quot;); shell B is one face that abuts the same edge from a
+<span class="lineno">11</span> * third direction. The shared EDGE_CURVE #311 is referenced by all
+<span class="lineno">12</span> * three faces -- legal in STEP for an open-shell aggregation, but
+<span class="lineno">13</span> * fatal once a slicer flatlines the model into a single mesh.
+<span class="lineno">14</span> * Sources: J015. */
+<span class="lineno">15</span>HEADER;
+<span class="lineno">16</span>FILE_DESCRIPTION((&#x27;Tsh040 test case&#x27;,&#x27;Two OPEN_SHELLs sharing one edge&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">17</span>FILE_NAME(&#x27;Tsh040.stp&#x27;,&#x27;2026-04-26T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;auto-generated&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">18</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }&#x27;));
+<span class="lineno">19</span>ENDSEC;
+<span class="lineno">20</span>DATA;
+<span class="lineno">21</span>#1=APPLICATION_CONTEXT(&#x27;automotive_design&#x27;);
+<span class="lineno">22</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,&#x27;automotive_design&#x27;,2000,#1);
+<span class="lineno">23</span>/* Shared edge: from (0,0,0) to (1,0,0). */
+<span class="lineno">24</span>#100=CARTESIAN_POINT(&#x27;A&#x27;,(0.0,0.0,0.0));
+<span class="lineno">25</span>#101=CARTESIAN_POINT(&#x27;B&#x27;,(1.0,0.0,0.0));
+<span class="lineno">26</span>#102=CARTESIAN_POINT(&#x27;C&#x27;,(1.0,1.0,0.0)); /* face1 corner */
+<span class="lineno">27</span>#103=CARTESIAN_POINT(&#x27;D&#x27;,(0.0,1.0,0.0)); /* face1 corner */
+<span class="lineno">28</span>#104=CARTESIAN_POINT(&#x27;E&#x27;,(1.0,0.0,1.0)); /* face2 corner */
+<span class="lineno">29</span>#105=CARTESIAN_POINT(&#x27;F&#x27;,(0.0,0.0,1.0)); /* face2 corner */
+<span class="lineno">30</span>#106=CARTESIAN_POINT(&#x27;G&#x27;,(1.0,0.7071,0.7071)); /* face3 corner */
+<span class="lineno">31</span>#107=CARTESIAN_POINT(&#x27;H&#x27;,(0.0,0.7071,0.7071)); /* face3 corner */
+<span class="lineno">32</span>#110=VERTEX_POINT(&#x27;&#x27;,#100); #111=VERTEX_POINT(&#x27;&#x27;,#101);
+<span class="lineno">33</span>#112=VERTEX_POINT(&#x27;&#x27;,#102); #113=VERTEX_POINT(&#x27;&#x27;,#103);
+<span class="lineno">34</span>#114=VERTEX_POINT(&#x27;&#x27;,#104); #115=VERTEX_POINT(&#x27;&#x27;,#105);
+<span class="lineno">35</span>#116=VERTEX_POINT(&#x27;&#x27;,#106); #117=VERTEX_POINT(&#x27;&#x27;,#107);
+<span class="lineno">36</span>/* Three planes meeting at the X axis. */
+<span class="lineno">37</span>#200=DIRECTION(&#x27;+Z&#x27;,(0.0,0.0,1.0)); #201=DIRECTION(&#x27;+X&#x27;,(1.0,0.0,0.0));
+<span class="lineno">38</span>#211=AXIS2_PLACEMENT_3D(&#x27;p1&#x27;,#100,#200,#201); #212=PLANE(&#x27;xy_plane&#x27;,#211);
+<span class="lineno">39</span>#220=DIRECTION(&#x27;+Y&#x27;,(0.0,1.0,0.0));
+<span class="lineno">40</span>#221=AXIS2_PLACEMENT_3D(&#x27;p2&#x27;,#100,#220,#201); #222=PLANE(&#x27;xz_plane&#x27;,#221);
+<span class="lineno">41</span>#230=DIRECTION(&#x27;45deg&#x27;,(0.0,-0.7071,0.7071));
+<span class="lineno">42</span>#231=AXIS2_PLACEMENT_3D(&#x27;p3&#x27;,#100,#230,#201); #232=PLANE(&#x27;diag_plane&#x27;,#231);
+<span class="lineno">43</span>/* Edges. The shared edge along +X axis is #311. */
+<span class="lineno">44</span>#300=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0)); #301=VECTOR(&#x27;&#x27;,#300,1.0);
+<span class="lineno">45</span>#302=DIRECTION(&#x27;&#x27;,(0.0,1.0,0.0)); #303=VECTOR(&#x27;&#x27;,#302,1.0);
+<span class="lineno">46</span>#304=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0)); #305=VECTOR(&#x27;&#x27;,#304,1.0);
+<span class="lineno">47</span>#306=DIRECTION(&#x27;&#x27;,(0.0,0.7071,0.7071)); #307=VECTOR(&#x27;&#x27;,#306,1.0);
+<span class="lineno">48</span>#310=LINE(&#x27;shared_axis_line&#x27;,#100,#301);
+<span class="lineno">49</span>#311=EDGE_CURVE(&#x27;shared_edge&#x27;,#110,#111,#310,.T.); /* shared by 3 faces */
+<span class="lineno">50</span>/* Face 1 edges (xy plane, square 0..1 x 0..1). */
+<span class="lineno">51</span>#320=LINE(&#x27;&#x27;,#101,#303); #321=EDGE_CURVE(&#x27;&#x27;,#111,#112,#320,.T.);
+<span class="lineno">52</span>#322=LINE(&#x27;&#x27;,#103,#301); #323=EDGE_CURVE(&#x27;&#x27;,#113,#112,#322,.T.);
+<span class="lineno">53</span>#324=LINE(&#x27;&#x27;,#100,#303); #325=EDGE_CURVE(&#x27;&#x27;,#110,#113,#324,.T.);
+<span class="lineno">54</span>/* Face 2 edges (xz plane, square 0..1 x 0..1 in z). */
+<span class="lineno">55</span>#330=LINE(&#x27;&#x27;,#101,#305); #331=EDGE_CURVE(&#x27;&#x27;,#111,#114,#330,.T.);
+<span class="lineno">56</span>#332=LINE(&#x27;&#x27;,#105,#301); #333=EDGE_CURVE(&#x27;&#x27;,#115,#114,#332,.T.);
+<span class="lineno">57</span>#334=LINE(&#x27;&#x27;,#100,#305); #335=EDGE_CURVE(&#x27;&#x27;,#110,#115,#334,.T.);
+<span class="lineno">58</span>/* Face 3 edges (diagonal plane). */
+<span class="lineno">59</span>#340=LINE(&#x27;&#x27;,#101,#307); #341=EDGE_CURVE(&#x27;&#x27;,#111,#116,#340,.T.);
+<span class="lineno">60</span>#342=LINE(&#x27;&#x27;,#107,#301); #343=EDGE_CURVE(&#x27;&#x27;,#117,#116,#342,.T.);
+<span class="lineno">61</span>#344=LINE(&#x27;&#x27;,#100,#307); #345=EDGE_CURVE(&#x27;&#x27;,#110,#117,#344,.T.);
+<span class="lineno">62</span>/* Face 1: xy plane, uses shared edge #311. */
+<span class="lineno">63</span>#400=ORIENTED_EDGE(&#x27;&#x27;,*,*,#311,.T.); #401=ORIENTED_EDGE(&#x27;&#x27;,*,*,#321,.T.);
+<span class="lineno">64</span>#402=ORIENTED_EDGE(&#x27;&#x27;,*,*,#323,.F.); #403=ORIENTED_EDGE(&#x27;&#x27;,*,*,#325,.F.);
+<span class="lineno">65</span>#404=EDGE_LOOP(&#x27;&#x27;,(#400,#401,#402,#403)); #405=FACE_OUTER_BOUND(&#x27;&#x27;,#404,.T.);
+<span class="lineno">66</span><mark>#406=ADVANCED_FACE(</mark>&#x27;face_xy&#x27;,(#405),#212,.T.);
+<span class="lineno">67</span>/* Face 2: xz plane, uses shared edge #311. */
+<span class="lineno">68</span>#410=ORIENTED_EDGE(&#x27;&#x27;,*,*,#311,.T.); #411=ORIENTED_EDGE(&#x27;&#x27;,*,*,#331,.T.);
+<span class="lineno">69</span>#412=ORIENTED_EDGE(&#x27;&#x27;,*,*,#333,.F.); #413=ORIENTED_EDGE(&#x27;&#x27;,*,*,#335,.F.);
+<span class="lineno">70</span>#414=EDGE_LOOP(&#x27;&#x27;,(#410,#411,#412,#413)); #415=FACE_OUTER_BOUND(&#x27;&#x27;,#414,.T.);
+<span class="lineno">71</span><mark>#416=ADVANCED_FACE(</mark>&#x27;face_xz&#x27;,(#415),#222,.T.);
+<span class="lineno">72</span>/* Face 3: diagonal plane, uses shared edge #311. */
+<span class="lineno">73</span>#420=ORIENTED_EDGE(&#x27;&#x27;,*,*,#311,.T.); #421=ORIENTED_EDGE(&#x27;&#x27;,*,*,#341,.T.);
+<span class="lineno">74</span>#422=ORIENTED_EDGE(&#x27;&#x27;,*,*,#343,.F.); #423=ORIENTED_EDGE(&#x27;&#x27;,*,*,#345,.F.);
+<span class="lineno">75</span>#424=EDGE_LOOP(&#x27;&#x27;,(#420,#421,#422,#423)); #425=FACE_OUTER_BOUND(&#x27;&#x27;,#424,.T.);
+<span class="lineno">76</span><mark>#426=ADVANCED_FACE(</mark>&#x27;face_diag&#x27;,(#425),#232,.T.);
+<span class="lineno">77</span>/* Two open shells -- one carries face1+face2 (the &quot;fold&quot;); the other
+<span class="lineno">78</span>   carries face3 alone -- but the SBSM aggregates them, sharing #311. */
+<span class="lineno">79</span><mark>#500=OPEN_SHELL(</mark>&#x27;fold_shell&#x27;,(#406,#416));
+<span class="lineno">80</span><mark>#510=OPEN_SHELL(</mark>&#x27;extra_face_shell&#x27;,(#426));
+<span class="lineno">81</span>#520=<mark>SHELL_BASED_SURFACE_MODEL</mark>(&#x27;two_shells_one_edge&#x27;,(#500,#510));
+<span class="lineno">82</span>ENDSEC;
+<span class="lineno">83</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Tsh039.html">&larr; Tsh039</a> <a class="up" href="index.html">§12.3a Shells / orientation</a> <a class="next" href="Tsh041.html">Tsh041 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

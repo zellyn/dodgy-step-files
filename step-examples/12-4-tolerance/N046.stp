@@ -1,0 +1,71 @@
+ISO-10303-21;
+/* N046 - Default tolerance projection wrong on bloated shape
+ * Defect: a planar face is wrapped in a shell whose representation
+ * context declares a vertex tolerance of 1.0E-3 mm. A free
+ * CARTESIAN_POINT sits at distance 5.0E-4 mm above the plane (z =
+ * 0.0005). The projection should declare the point on-surface (since
+ * 5e-4 < 1e-3 declared tolerance), but the kernel uses an internal
+ * fixed 1e-7 threshold and rejects the projection. */
+HEADER;
+FILE_DESCRIPTION(('N046 test case','Default tolerance projection wrong on bloated shape'),'2;1');
+FILE_NAME('N046.stp','2026-04-30T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+/* Host PLANE z=0 */
+#100=CARTESIAN_POINT('origin',(0.0,0.0,0.0));
+#101=DIRECTION('+z',(0.0,0.0,1.0));
+#102=DIRECTION('+x',(1.0,0.0,0.0));
+#103=AXIS2_PLACEMENT_3D('axes',#100,#101,#102);
+#104=PLANE('high_tolerance',#103);
+/* Quad face boundary */
+#110=CARTESIAN_POINT('v0',(0.0,0.0,0.0));
+#111=VERTEX_POINT('',#110);
+#112=CARTESIAN_POINT('v1',(1.0,0.0,0.0));
+#113=VERTEX_POINT('',#112);
+#114=CARTESIAN_POINT('v2',(1.0,1.0,0.0));
+#115=VERTEX_POINT('',#114);
+#116=CARTESIAN_POINT('v3',(0.0,1.0,0.0));
+#117=VERTEX_POINT('',#116);
+#120=DIRECTION('+x',(1.0,0.0,0.0));#121=VECTOR('',#120,1.0);#122=LINE('',#110,#121);
+#123=EDGE_CURVE('',#111,#113,#122,.T.);
+#124=DIRECTION('+y',(0.0,1.0,0.0));#125=VECTOR('',#124,1.0);#126=LINE('',#112,#125);
+#127=EDGE_CURVE('',#113,#115,#126,.T.);
+#128=DIRECTION('-x',(-1.0,0.0,0.0));#129=VECTOR('',#128,1.0);#130=LINE('',#114,#129);
+#131=EDGE_CURVE('',#115,#117,#130,.T.);
+#132=DIRECTION('-y',(0.0,-1.0,0.0));#133=VECTOR('',#132,1.0);#134=LINE('',#116,#133);
+#135=EDGE_CURVE('',#117,#111,#134,.T.);
+#140=ORIENTED_EDGE('',*,*,#123,.T.);
+#141=ORIENTED_EDGE('',*,*,#127,.T.);
+#142=ORIENTED_EDGE('',*,*,#131,.T.);
+#143=ORIENTED_EDGE('',*,*,#135,.T.);
+#144=EDGE_LOOP('',(#140,#141,#142,#143));
+#145=FACE_OUTER_BOUND('',#144,.T.);
+#146=ADVANCED_FACE('bloated',(#145),#104,.T.);
+#147=OPEN_SHELL('bloated_shell',(#146));
+/* Free point: 5e-4 mm above the plane (closer than declared tol 1e-3). */
+#150=CARTESIAN_POINT('test_pt_5e-4_above_plane',(0.5,0.5,5.0E-4));
+/* Declared tolerance: 1e-3 mm vertex tolerance */
+#160=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#161=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#162=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#163=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-3),#160,
+  'distance_accuracy_value','bloated_vertex_tolerance');
+#164=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+      GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#163))
+      GLOBAL_UNIT_ASSIGNED_CONTEXT((#160,#161,#162))
+      REPRESENTATION_CONTEXT('ctx','3D'));
+/* Minimal PRODUCT chain so OCCT TransferRoots produces a shape. */
+#9010=PRODUCT_CONTEXT('',#1,'mechanical');
+#9011=PRODUCT('N046','N046','',(#9010));
+#9012=PRODUCT_DEFINITION_FORMATION('','',#9011);
+#9013=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9014=PRODUCT_DEFINITION('','',#9012,#9013);
+#9015=PRODUCT_DEFINITION_SHAPE('','',#9014);
+#9030=SHELL_BASED_SURFACE_MODEL('wrap_sbsm',(#147));
+#9050=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9030),#164);
+#9051=SHAPE_DEFINITION_REPRESENTATION(#9015,#9050);
+ENDSEC;
+END-ISO-10303-21;

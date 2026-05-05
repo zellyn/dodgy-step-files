@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>M002 — AP242 Edition 1 disallows axis2_placement_3d in tessellated_shape_representation</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.8 Mixed (tessellation, validation properties, etc.)</a> <span class="sep">/</span> <span class="current">M002</span>
+</nav>
+<header class="title-bar">
+<h1>M002 <span class="sep">—</span> <span class="entry-title">AP242 Edition 1 disallows axis2_placement_3d in tessellated_shape_representation</span></h1>
+<p class="category">§12.8 (sub-class: tessellation)</p>
+<p class="severity-badge severity-p1">P1 — silent data loss</p>
+<p class="tag-pills">
+<a class="tag tag-assembly" href="../by-tag/assembly/index.html">assembly</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-8-mixed/M002.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-8-mixed/M002.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>02-caxif.md</li>
+<li>Tessellated Geometry §4.1</li>
+<li>PMI v4.1 §8.2</li>
+</ul></section>
+<section><h2>Description</h2>
+<p>AP242 Ed.1&#x27;s `tessellated_shape_representation` accepts only `tessellated_representation_item` in its `items`, so an `axis2_placement_3d` for assembly placement cannot be inside it. Workaround is to use a plain `shape_representation` and keep tessellated items under a separate representation. Files written by tools that ignore this rule fail schema validation.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>Author an AP242 Ed.1 file containing one `tessellated_shape_representation` whose `items` list includes both a `tessellated_solid` and an `axis2_placement_3d` for component placement.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>reject for AP242 Ed.1; with AP242 Ed.2+ the constraint is relaxed.</p></section>
+<section><h2>Notes</h2>
+<p>Synonyms: &quot;axis2_placement in tessellated_shape&quot;, &quot;AP242 Ed.1 schema violation&quot;, &quot;placement inside tessellation rejected&quot;, &quot;AP242 ED1 disallows axis_placement in tess shape&quot;.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>contains(b&#x27;TESSELLATED_SHAPE_REPRESENTATION&#x27;)</code></li>
+<li><code>contains(b&#x27;AXIS2_PLACEMENT_3D&#x27;)</code></li>
+<li><code>matches(rb&#x27;TESSELLATED_SHAPE_REPRESENTATION\([^)]*#133&#x27;)</code></li>
+</ul></section>
+<section><h2>Live oracle output</h2>
+<table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
+<tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>no_shapes_loaded</code></td></tr>
+</tbody></table>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* M002 - AP242 Edition 1 disallows axis2_placement_3d in
+<span class="lineno">3</span> * tessellated_shape_representation.
+<span class="lineno">4</span> * Defect: in AP242 Ed.1 the items list of <mark>TESSELLATED_SHAPE_REPRESENTATION</mark>
+<span class="lineno">5</span> * must contain only TESSELLATED_REPRESENTATION_ITEM subtypes. Here the
+<span class="lineno">6</span> * items include an <mark>AXIS2_PLACEMENT_3D</mark> used for component placement, which
+<span class="lineno">7</span> * is forbidden under Ed.1 (the constraint is relaxed in Ed.2+). Strict
+<span class="lineno">8</span> * AP242 Ed.1 validation should reject; tolerant readers may accept and
+<span class="lineno">9</span> * promote to Ed.2 semantics. */
+<span class="lineno">10</span>HEADER;
+<span class="lineno">11</span>FILE_DESCRIPTION((&#x27;M002 test case&#x27;,&#x27;axis2_placement_3d in tessellated_shape_representation under AP242 Ed.1&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">12</span>FILE_NAME(&#x27;M002.stp&#x27;,&#x27;2026-04-26T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;auto-generated&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">13</span>FILE_SCHEMA((&#x27;AP242_MANAGED_MODEL_BASED_3D_ENGINEERING_MIM_LF { 1 0 10303 442 1 1 4 }&#x27;));
+<span class="lineno">14</span>ENDSEC;
+<span class="lineno">15</span>DATA;
+<span class="lineno">16</span>#1=APPLICATION_CONTEXT(&#x27;managed model based 3d engineering&#x27;);
+<span class="lineno">17</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,
+<span class="lineno">18</span>  &#x27;ap242_managed_model_based_3d_engineering&#x27;,2014,#1);
+<span class="lineno">19</span>/* Units */
+<span class="lineno">20</span>#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">21</span>#11=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+<span class="lineno">22</span>#12=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+<span class="lineno">23</span>#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.E-6),#10,&#x27;distance_accuracy_value&#x27;,&#x27;&#x27;);
+<span class="lineno">24</span>#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+<span class="lineno">25</span>     GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13))
+<span class="lineno">26</span>     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12))
+<span class="lineno">27</span>     REPRESENTATION_CONTEXT(&#x27;part&#x27;,&#x27;3D&#x27;));
+<span class="lineno">28</span>/* Tessellated tetrahedron: one coordinates_list, one tessellated_solid */
+<span class="lineno">29</span>#100=COORDINATES_LIST(&#x27;&#x27;,4,((0.0,0.0,0.0),(1.0,0.0,0.0),
+<span class="lineno">30</span>                            (0.5,1.0,0.0),(0.5,0.5,1.0)));
+<span class="lineno">31</span>#110=TRIANGULATED_FACE(&#x27;&#x27;,#100,$,$,(),
+<span class="lineno">32</span>       ((1,2,3),(1,2,4),(2,3,4),(3,1,4)));
+<span class="lineno">33</span>#120=TESSELLATED_SOLID(&#x27;tet&#x27;,(#110),$);
+<span class="lineno">34</span>/* Defect: this <mark>AXIS2_PLACEMENT_3D</mark> is placed in the items list of the
+<span class="lineno">35</span> * tessellated_shape_representation. Under AP242 Ed.1 the items must be
+<span class="lineno">36</span> * only tessellated_representation_item subtypes. */
+<span class="lineno">37</span>#130=CARTESIAN_POINT(&#x27;origin&#x27;,(0.0,0.0,0.0));
+<span class="lineno">38</span>#131=DIRECTION(&#x27;z&#x27;,(0.0,0.0,1.0));
+<span class="lineno">39</span>#132=DIRECTION(&#x27;x&#x27;,(1.0,0.0,0.0));
+<span class="lineno">40</span>#133=<mark>AXIS2_PLACEMENT_3D</mark>(&#x27;component_placement&#x27;,#130,#131,#132);
+<span class="lineno">41</span>#200=<mark>TESSELLATED_SHAPE_REPRESENTATION(&#x27;illegal_mix&#x27;,(#120,#133</mark>),#14);
+<span class="lineno">42</span>ENDSEC;
+<span class="lineno">43</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Fi008.html">&larr; Fi008</a> <a class="up" href="index.html">§12.8 Mixed (tessellation, validation properties, etc.)</a> <a class="next" href="M003.html">M003 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

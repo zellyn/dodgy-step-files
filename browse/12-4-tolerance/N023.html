@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>N023 — `EDGE_CURVE` based on `LINE` displaced from true vertex position</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.4 Tolerance &amp; numerical precision</a> <span class="sep">/</span> <span class="current">N023</span>
+</nav>
+<header class="title-bar">
+<h1>N023 <span class="sep">—</span> <span class="entry-title">`EDGE_CURVE` based on `LINE` displaced from true vertex position</span></h1>
+<p class="category">§12.4 (sub-class: working precision / edge geometry inconsistency)</p>
+<p class="severity-badge severity-p1">P1 — silent data loss</p>
+<p class="tag-pills">
+<a class="tag tag-topology" href="../by-tag/topology/index.html">topology</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-4-tolerance/N023.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-4-tolerance/N023.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>08-occt-gitlog G001 (OCCT 5939991, Mantis 0025415)</li>
+<li>04-occt-translation Q011</li>
+</ul></section>
+<section><h2>Sender</h2>
+<p>FPX Expert 2013 (PCB design system)</p></section>
+<section><h2>Description</h2>
+<p>STEP files emit an `EDGE_CURVE` whose underlying `LINE` is parallel-displaced from the line that actually passes through both vertex points. Direction is correct; position is offset. Translator must shift the line so it passes through both vertices, preserving direction.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>VERTEX_POINT A at `(0,0,0)`, VERTEX_POINT B at `(10,0,0)`, EDGE_CURVE referring to LINE whose `pnt`/`dir` give a parallel line offset by 0.001 mm.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>heal — replace the line so it passes through both vertices, preserving original direction.</p></section>
+<section><h2>Notes</h2>
+<p>**See also**: Gs021. Synonyms: &quot;edge LINE doesn&#x27;t pass through its vertices&quot;, &quot;line direction correct but offset&quot;, &quot;translator must shift line to vertex points&quot;, &quot;underlying line parallel to actual edge&quot;.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>count_entity_def(b&#x27;EDGE_CURVE&#x27;) == 1</code></li>
+<li><code>count_entity_def(b&#x27;LINE&#x27;) == 1</code></li>
+<li><code>contains(b&#x27;1.0E-6&#x27;)</code></li>
+</ul></section>
+<section><h2>Cross-references</h2>
+<p><a href="../12-2c-surfaces/Gs021.html">Gs021</a></p>
+</section>
+<section><h2>Live oracle output</h2>
+<table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
+<tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>no_shapes_loaded</code></td></tr>
+</tbody></table>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>/* N023 - EDGE_CURVE based on LINE displaced from true vertex position
+<span class="lineno">2</span> * Defect: STEP files emit an EDGE_CURVE whose underlying LINE is parallel-
+<span class="lineno">3</span> * displaced from the line that actually passes through both vertex points.
+<span class="lineno">4</span> * Direction is correct; position is offset.
+<span class="lineno">5</span> * Reproducer: VERTEX_POINT A at (0,0,0), B at (10,0,0); LINE pnt is at
+<span class="lineno">6</span> * (0, 0.001, 0) (offset 1e-3 mm from the true line through both vertices).
+<span class="lineno">7</span> */
+<span class="lineno">8</span>ISO-10303-21;
+<span class="lineno">9</span>HEADER;
+<span class="lineno">10</span>FILE_DESCRIPTION((&#x27;N023 EDGE_CURVE LINE parallel-displaced from vertices&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">11</span>FILE_NAME(&#x27;N023.stp&#x27;,&#x27;2026-04-26T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),
+<span class="lineno">12</span>  &#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">13</span>FILE_SCHEMA((&#x27;CONFIG_CONTROL_DESIGN&#x27;));
+<span class="lineno">14</span>ENDSEC;
+<span class="lineno">15</span>DATA;
+<span class="lineno">16</span>#1=APPLICATION_CONTEXT(&#x27;configuration controlled 3d designs of mechanical parts&#x27;);
+<span class="lineno">17</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,
+<span class="lineno">18</span>  &#x27;config_control_design&#x27;,1994,#1);
+<span class="lineno">19</span>#10=CARTESIAN_POINT(&#x27;vertex_A&#x27;,(0.0,0.0,0.0));
+<span class="lineno">20</span>#11=CARTESIAN_POINT(&#x27;vertex_B&#x27;,(10.0,0.0,0.0));
+<span class="lineno">21</span>/* Defect: line origin point is offset 1e-3 in y; direction correct */
+<span class="lineno">22</span>#12=CARTESIAN_POINT(&#x27;LINE_pnt_offset_1e-3&#x27;,(0.0,0.001,0.0));
+<span class="lineno">23</span>#20=VERTEX_POINT(&#x27;A&#x27;,#10);
+<span class="lineno">24</span>#21=VERTEX_POINT(&#x27;B&#x27;,#11);
+<span class="lineno">25</span>#30=DIRECTION(&#x27;+x_correct&#x27;,(1.0,0.0,0.0));
+<span class="lineno">26</span>#31=VECTOR(&#x27;&#x27;,#30,10.0);
+<span class="lineno">27</span>/* LINE.pnt is offset 1e-3 from where it should be -- parallel-displaced */
+<span class="lineno">28</span><mark>#32=LINE(</mark>&#x27;parallel_displaced&#x27;,#12,#31);
+<span class="lineno">29</span><mark>#40=EDGE_CURVE(</mark>&#x27;fpx_expert_edge&#x27;,#20,#21,#32,.T.);
+<span class="lineno">30</span>#50=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">31</span>#51=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+<span class="lineno">32</span>#52=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+<span class="lineno">33</span>#60=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(<mark>1.0E-6</mark>),#50,
+<span class="lineno">34</span>  &#x27;distance_accuracy_value&#x27;,&#x27;declared_tight&#x27;);
+<span class="lineno">35</span>#70=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+<span class="lineno">36</span>  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#60))
+<span class="lineno">37</span>  GLOBAL_UNIT_ASSIGNED_CONTEXT((#50,#51,#52))
+<span class="lineno">38</span>  REPRESENTATION_CONTEXT(&#x27;ctx&#x27;,&#x27;3D&#x27;));
+<span class="lineno">39</span>ENDSEC;
+<span class="lineno">40</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="N021.html">&larr; N021</a> <a class="up" href="index.html">§12.4 Tolerance &amp; numerical precision</a> <a class="next" href="N024.html">N024 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

@@ -1,0 +1,29 @@
+/* Gn037 - BSpline curve whose knot vector collapses to a single unique value
+   Defect: ISO 10303-42 requires a B_SPLINE_CURVE_WITH_KNOTS to carry a
+   knot vector with at least two distinct values, so that the parametric
+   range is non-empty. This curve has four legitimate poles but its knot
+   vector is (0., 0.) with multiplicities (4,4) - the unique-knot count
+   is 1, so the parametric range collapses. Compliant readers should
+   reject with a precise diagnostic and continue. (OCCT historically
+   threw from RWStepGeom_RWBSplineCurveWithKnots; see Mantis 0027575.) */
+ISO-10303-21;
+HEADER;
+FILE_DESCRIPTION(
+  ('Gn037 - BSpline curve single-unique-knot collapses parametric range'),'2;1');
+FILE_NAME('Gn037.stp','2026-04-26T00:00:00',('auto-generated'),(''),
+  'auto-generated','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+/* Four legitimate poles, but knot vector collapses to one unique value. */
+#20=CARTESIAN_POINT('a',(0.0,0.0,0.0));
+#21=CARTESIAN_POINT('b',(1.0,0.0,0.0));
+#22=CARTESIAN_POINT('c',(2.0,0.0,0.0));
+#23=CARTESIAN_POINT('d',(3.0,0.0,0.0));
+/* Defect: knots = (0., 0.) -- only one unique value. Multiplicities sum to
+   degree+1+n_poles=8, but the unique-knot count is 1 so the parametric
+   range is empty. */
+#30=B_SPLINE_CURVE_WITH_KNOTS('single_knot',3,(#20,#21,#22,#23),
+  .UNSPECIFIED.,.F.,.F.,(4,4),(0.0,0.0),.UNSPECIFIED.);
+ENDSEC;
+END-ISO-10303-21;

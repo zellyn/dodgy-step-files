@@ -1,0 +1,15 @@
+ISO-10303-21;
+/* In013 - Entity type unrecognized; transfer status remains Void.
+ * Defect: a hypothetical AP242 ed.2 entity that the reader's actor
+ * pool doesn't know about. */
+HEADER;
+FILE_DESCRIPTION(('In013 - unrecognised entity type','Pass C gap-fill'),'2;1');
+FILE_NAME('In013.stp','2026-04-30T00:00:00',(''),(''),'gap-fill C','','');
+FILE_SCHEMA(('AP242_MANAGED_MODEL_BASED_3D_ENGINEERING_MIM_LF { 1 0 10303 442 1 1 4 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+/* Made-up entity type that no actor recognises */
+#10=HYPOTHETICAL_AP242_ED2_FUTURE_ENTITY('unknown_type','params',1.0);
+ENDSEC;
+END-ISO-10303-21;

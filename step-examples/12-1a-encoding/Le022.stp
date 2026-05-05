@@ -1,0 +1,29 @@
+/* Le022 — Non-ASCII / Japanese / Greek Unicode in PRODUCT.name via \X2\..\X0\
+   Defect: a spec-conformant file that uses \X2\..\X0\ to carry Unicode in
+   PRODUCT.name and PMI annotation slots. Older parsers that did not decode
+   the directives emitted '?' replacements. The file itself is conformant.
+   This file demonstrates Greek alpha (U+03B1), a Japanese hiragana run
+   (U+3042 U+3044), and a degree-sign mixed with ASCII to exercise the
+   recognizer. */
+ISO-10303-21;
+HEADER;
+FILE_DESCRIPTION(('Le022 - non-ASCII Unicode in PRODUCT.name via X2'),'2;1');
+FILE_NAME('Le022.stp','2026-04-26T00:00:00',('auto-generated'),(''),
+  'auto-generated','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+/* Greek lowercase alpha as PRODUCT.name */
+#10=PRODUCT('\X2\03B1\X0\','alpha','description',(#100));
+/* Japanese hiragana "ai" */
+#11=PRODUCT('\X2\30423044\X0\','ai','description',(#100));
+/* mixed ASCII + degree sign U+00B0 */
+#12=PRODUCT('temp\X2\00B0\X0\C','temp deg C','description',(#100));
+#100=PRODUCT_CONTEXT('part definition',#101,'mechanical');
+#101=APPLICATION_CONTEXT('automotive_design');
+#20=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#21=DIRECTION('',(0.0,0.0,1.0));
+#22=DIRECTION('',(1.0,0.0,0.0));
+#23=AXIS2_PLACEMENT_3D('',#20,#21,#22);
+ENDSEC;
+END-ISO-10303-21;

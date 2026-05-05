@@ -1,0 +1,27 @@
+ISO-10303-21;
+/* M065 - Product is both an assembly and a part.
+ * Defect: the same PRODUCT_DEFINITION is parent in NAUO AND has its
+ * own SHAPE_DEFINITION_REPRESENTATION. */
+HEADER;
+FILE_DESCRIPTION(('In009 - hybrid product','Pass C gap-fill'),'2;1');
+FILE_NAME('M065.stp','2026-04-30T00:00:00',(''),(''),'gap-fill C','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#10=PRODUCT('hybrid','hybrid','',());
+#11=PRODUCT('child','child','',());
+#20=PRODUCT_DEFINITION_FORMATION('','',#10);
+#21=PRODUCT_DEFINITION_FORMATION('','',#11);
+#22=PRODUCT_DEFINITION('','',#20,$);
+#23=PRODUCT_DEFINITION('','',#21,$);
+/* hybrid is parent in NAUO */
+#30=NEXT_ASSEMBLY_USAGE_OCCURRENCE('','','',#22,#23,$);
+/* hybrid ALSO has direct shape */
+#40=PRODUCT_DEFINITION_SHAPE('','',#22);
+#50=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#51=GEOMETRIC_REPRESENTATION_CONTEXT('',$,3);
+#52=SHAPE_REPRESENTATION('',(#50),#51);
+#60=SHAPE_DEFINITION_REPRESENTATION(#40,#52);
+ENDSEC;
+END-ISO-10303-21;

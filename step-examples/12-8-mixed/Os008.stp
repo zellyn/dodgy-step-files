@@ -1,0 +1,67 @@
+ISO-10303-21;
+/* Os008 - Mixed C0/G1 connectivity along shared edge.
+ * Defect: two B-spline faces share an edge whose tangent jump is zero
+ * on t in [0,0.5] (G1, smooth) and non-zero on t in [0.5,1] (C0, kink).
+ * Encoded: two B_SPLINE_SURFACE_WITH_KNOTS faces sharing one EDGE_CURVE. */
+HEADER;
+FILE_DESCRIPTION(('Os008 test case','Mixed C0/G1 connectivity edge'),'2;1');
+FILE_NAME('Os008.stp','2026-04-30T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+/* Surface A control net (3x2, degree 1 along V, degree 2 along U).
+ * Endpoints on shared edge are the two corners of the U boundary at V=0. */
+#10=CARTESIAN_POINT('a00',(0.0,0.0,0.0));
+#11=CARTESIAN_POINT('a10',(0.5,0.0,0.0));
+#12=CARTESIAN_POINT('a20',(1.0,0.0,0.0));
+#13=CARTESIAN_POINT('a01',(0.0,1.0,0.0));
+#14=CARTESIAN_POINT('a11',(0.5,1.0,0.0));
+#15=CARTESIAN_POINT('a21',(1.0,1.0,0.0));
+#20=B_SPLINE_SURFACE_WITH_KNOTS('face_a_surface',2,1,
+       ((#10,#13),(#11,#14),(#12,#15)),
+       .UNSPECIFIED.,.F.,.F.,.F.,
+       (3,3),(2,2),(0.0,1.0),(0.0,1.0),.UNSPECIFIED.);
+/* Surface B - smooth on first half (matches A's tangent), kink on second */
+#30=CARTESIAN_POINT('b00',(0.0,0.0,0.0));
+#31=CARTESIAN_POINT('b10',(0.5,0.0,0.0));
+#32=CARTESIAN_POINT('b20',(1.0,0.0,0.0));
+#33=CARTESIAN_POINT('b01',(0.0,-1.0,0.0));
+#34=CARTESIAN_POINT('b11',(0.5,-1.0,0.5));
+#35=CARTESIAN_POINT('b21',(1.0,-1.5,1.0));
+#40=B_SPLINE_SURFACE_WITH_KNOTS('face_b_surface',2,1,
+       ((#30,#33),(#31,#34),(#32,#35)),
+       .UNSPECIFIED.,.F.,.F.,.F.,
+       (3,3),(2,2),(0.0,1.0),(0.0,1.0),.UNSPECIFIED.);
+/* Shared edge along V=0 of both surfaces */
+#50=VERTEX_POINT('shared_v0',#10);
+#51=VERTEX_POINT('shared_v1',#12);
+#52=DIRECTION('',(1.0,0.0,0.0));
+#53=VECTOR('',#52,1.0);
+#54=LINE('shared_curve_3d',#10,#53);
+#55=EDGE_CURVE('shared_edge',#50,#51,#54,.T.);
+/* Two ADVANCED_FACEs sharing the edge */
+#60=ORIENTED_EDGE('',*,*,#55,.T.);
+#61=EDGE_LOOP('',(#60));
+#62=FACE_OUTER_BOUND('',#61,.T.);
+#63=ADVANCED_FACE('face_a',(#62),#20,.T.);
+#64=ADVANCED_FACE('face_b',(#62),#40,.T.);
+/* Minimal PRODUCT chain so OCCT TransferRoots produces a shape. */
+#9010=PRODUCT_CONTEXT('',#1,'mechanical');
+#9011=PRODUCT('Os008','Os008','',(#9010));
+#9012=PRODUCT_DEFINITION_FORMATION('','',#9011);
+#9013=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9014=PRODUCT_DEFINITION('','',#9012,#9013);
+#9015=PRODUCT_DEFINITION_SHAPE('','',#9014);
+#9020=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9021=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9022=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9023=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9020,'distance_accuracy_value','');
+#9024=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9023))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9020,#9021,#9022))REPRESENTATION_CONTEXT('','3D'));
+#9030=OPEN_SHELL('wrap_shell',(#63,#64));
+#9031=SHELL_BASED_SURFACE_MODEL('wrap_sbsm',(#9030));
+#9050=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9031),#9024);
+#9051=SHAPE_DEFINITION_REPRESENTATION(#9015,#9050);
+ENDSEC;
+END-ISO-10303-21;

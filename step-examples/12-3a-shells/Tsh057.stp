@@ -1,0 +1,52 @@
+ISO-10303-21;
+/* Tsh057 - Merging near-tangent adjacent faces returns a self-overlapping face
+ * Two quads sharing an edge along x=1: face A on PLANE with normal +Z; face B
+ * on PLANE with normal (0.0001, 0, ~1) -- normals differ by ~0.0001 rad.
+ * Faces share the edge V_S0 -> V_S1 along x=1 via the same EDGE_CURVE. */
+HEADER;
+FILE_DESCRIPTION(('Tsh057 test case','Two adjacent quads on near-tangent planes (normal diff 1e-4 rad) sharing one edge'),'2;1');
+FILE_NAME('Tsh057.stp','2026-04-30T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#11=DIRECTION('',(0.0,0.0,1.0));
+#12=DIRECTION('',(1.0,0.0,0.0));
+#13=AXIS2_PLACEMENT_3D('',#10,#11,#12);
+#14=PLANE('faceA_plane',#13);
+/* face B normal is tilted by ~0.0001 rad about the y-axis */
+#15=CARTESIAN_POINT('',(1.0,0.0,0.0));
+#16=DIRECTION('faceB_normal_near_tangent',(0.0001,0.0,0.99999999));
+#17=AXIS2_PLACEMENT_3D('',#15,#16,#12);
+#18=PLANE('faceB_plane',#17);
+/* Six perimeter vertices */
+#20=CARTESIAN_POINT('',(0.0,0.0,0.0));#21=VERTEX_POINT('V_A0',#20);
+#22=CARTESIAN_POINT('',(1.0,0.0,0.0));#23=VERTEX_POINT('V_S0',#22);
+#24=CARTESIAN_POINT('',(2.0,0.0,0.0));#25=VERTEX_POINT('V_B0',#24);
+#26=CARTESIAN_POINT('',(2.0,1.0,0.00009999));#27=VERTEX_POINT('V_B1',#26);
+#28=CARTESIAN_POINT('',(1.0,1.0,0.0));#29=VERTEX_POINT('V_S1',#28);
+#30=CARTESIAN_POINT('',(0.0,1.0,0.0));#31=VERTEX_POINT('V_A1',#30);
+/* Edges */
+#40=DIRECTION('',(1.0,0.0,0.0));#41=VECTOR('',#40,1.0);#42=LINE('',#20,#41);#43=EDGE_CURVE('A_bottom',#21,#23,#42,.T.);
+/* SHARED edge V_S0 -> V_S1 along x=1 */
+#44=DIRECTION('',(0.0,1.0,0.0));#45=VECTOR('',#44,1.0);#46=LINE('',#22,#45);#47=EDGE_CURVE('shared_x1',#23,#29,#46,.T.);
+#48=DIRECTION('',(-1.0,0.0,0.0));#49=VECTOR('',#48,1.0);#50=LINE('',#28,#49);#51=EDGE_CURVE('A_top',#29,#31,#50,.T.);
+#52=DIRECTION('',(0.0,-1.0,0.0));#53=VECTOR('',#52,1.0);#54=LINE('',#30,#53);#55=EDGE_CURVE('A_left',#31,#21,#54,.T.);
+#56=DIRECTION('',(1.0,0.0,0.0));#57=VECTOR('',#56,1.0);#58=LINE('',#22,#57);#59=EDGE_CURVE('B_bottom',#23,#25,#58,.T.);
+#60=DIRECTION('',(0.0,1.0,0.0001));#61=VECTOR('',#60,1.0);#62=LINE('',#24,#61);#63=EDGE_CURVE('B_right',#25,#27,#62,.T.);
+#64=DIRECTION('',(-1.0,0.0,0.0));#65=VECTOR('',#64,1.0);#66=LINE('',#26,#65);#67=EDGE_CURVE('B_top',#27,#29,#66,.T.);
+/* Face A outer wire */
+#70=ORIENTED_EDGE('',*,*,#43,.T.);#71=ORIENTED_EDGE('',*,*,#47,.T.);
+#72=ORIENTED_EDGE('',*,*,#51,.T.);#73=ORIENTED_EDGE('',*,*,#55,.T.);
+#74=EDGE_LOOP('A_outer',(#70,#71,#72,#73));#75=FACE_OUTER_BOUND('',#74,.T.);
+#76=ADVANCED_FACE('faceA_normal_pure_Z',(#75),#14,.T.);
+/* Face B outer wire reuses shared edge with reversed orientation */
+#80=ORIENTED_EDGE('',*,*,#59,.T.);#81=ORIENTED_EDGE('',*,*,#63,.T.);
+#82=ORIENTED_EDGE('',*,*,#67,.T.);#83=ORIENTED_EDGE('',*,*,#47,.F.);
+#84=EDGE_LOOP('B_outer',(#80,#81,#82,#83));#85=FACE_OUTER_BOUND('',#84,.T.);
+#86=ADVANCED_FACE('faceB_normal_off_by_0p0001rad',(#85),#18,.T.);
+#90=OPEN_SHELL('two_near_tangent_quads',(#76,#86));
+ENDSEC;
+END-ISO-10303-21;

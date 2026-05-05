@@ -1,0 +1,23 @@
+ISO-10303-21;
+/* M108 - AP238 freeform_milling_operation without surface-tolerance.
+ * Defect: a FREEFORM_MILLING_OPERATION is declared with no associated
+ * surface-deviation tolerance (chord tolerance / scallop height). The
+ * CAM consumer either invents a default (often loose) or rejects. */
+HEADER;
+FILE_DESCRIPTION(('M108 test case','AP238 freeform op missing tolerance attribute'),'2;1');
+FILE_NAME('M108.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AP238_STEP_NC_MIM { 1 0 10303 238 1 0 0 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('numerical_control_machining');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
+  'numerical_control_machining',2007,#1);
+#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10))
+     REPRESENTATION_CONTEXT('nc','3D'));
+/* Defect: all tolerance attributes left as $. */
+#100=FREEFORM_MILLING_OPERATION('sculpted_pass',$,$,$,$,$);
+#200=WORKPLAN('main',(#100),$,$,$);
+ENDSEC;
+END-ISO-10303-21;

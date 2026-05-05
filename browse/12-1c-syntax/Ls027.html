@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Ls027 — Legacy SCOPE/ENDSCOPE blocks (Edition 1) and EXPORT lists</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.1c Part-21 grammar</a> <span class="sep">/</span> <span class="current">Ls027</span>
+</nav>
+<header class="title-bar">
+<h1>Ls027 <span class="sep">—</span> <span class="entry-title">Legacy SCOPE/ENDSCOPE blocks (Edition 1) and EXPORT lists</span></h1>
+<p class="category">§12.1c legacy structure</p>
+<p class="tag-pills">
+<a class="tag tag-syntax" href="../by-tag/syntax/index.html">syntax</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-1c-syntax/Ls027.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-1c-syntax/Ls027.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>Q073, N043 (Implementors Issues 001/002)</li>
+</ul></section>
+<section><h2>Description</h2>
+<p>Edition 1 had inline SCOPE/ENDSCOPE delimiters; Editions 2/3 removed them but legacy translators still emit them. EXPORT lists also appeared inside ENDSCOPE in Ed.1. Implementors Issues 001/002 record the disagreement on whether modern processors must parse SCOPE blocks.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>`DATA;\n#1=PRODUCT(..);\nSCOPE\n #2=..;\nENDSCOPE;\nENDSEC;`</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>Strict Ed.2/Ed.3 reject; lenient skip-to-matching-ENDSCOPE without aborting; emit a single informational warning per file.</p></section>
+<section><h2>Notes</h2>
+<p>Synonyms: &quot;legacy SCOPE block in STEP&quot;, &quot;Edition 1 SCOPE/ENDSCOPE&quot;, &quot;EXPORT list in STEP&quot;, &quot;old-style scope delimiters&quot;, &quot;Ed.1 scope blocks in modern STEP&quot;.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>contains(b&#x27;SCOPE&#x27;) and contains(b&#x27;ENDSCOPE&#x27;)</code></li>
+<li><code>count(b&#x27;SCOPE&#x27;) &gt;= 2</code></li>
+</ul></section>
+<section><h2>Live oracle output</h2>
+<table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
+<tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>no_shapes_loaded</code></td></tr>
+</tbody></table>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>/* Ls027 - Legacy <mark>SCOPE</mark>/END<mark>SCOPE</mark> blocks (Edition 1) and EXPORT lists
+<span class="lineno">2</span>   ----------------------------------------------------------------------
+<span class="lineno">3</span>   Catalog section : Â§12.1c legacy structure
+<span class="lineno">4</span>   Sources         : Q073, N043 (Implementors Issues 001 / 002)
+<span class="lineno">5</span>   Originally also catalogued as: Ad060
+<span class="lineno">6</span>   ----------------------------------------------------------------------
+<span class="lineno">7</span>   Defect
+<span class="lineno">8</span>     Edition 1 of ISO 10303-21 had inline <mark>SCOPE</mark> / END<mark>SCOPE</mark> delimiters;
+<span class="lineno">9</span>     Editions 2 and 3 removed them, but legacy translators continue to
+<span class="lineno">10</span>     emit them. EXPORT lists also appeared inside END<mark>SCOPE</mark> in Edition 1.
+<span class="lineno">11</span>     Implementors Issues 001 and 002 record the disagreement on whether
+<span class="lineno">12</span>     modern processors must parse <mark>SCOPE</mark> blocks.
+<span class="lineno">13</span>   Expected behavior
+<span class="lineno">14</span>     Strict Ed.2 / Ed.3 reject. Lenient mode skip-to-matching-END<mark>SCOPE</mark>
+<span class="lineno">15</span>     without aborting; emit a single informational warning per file
+<span class="lineno">16</span>     identifying the <mark>SCOPE</mark>-block start.
+<span class="lineno">17</span>   ----------------------------------------------------------------------
+<span class="lineno">18</span>*/
+<span class="lineno">19</span>ISO-10303-21;
+<span class="lineno">20</span>HEADER;
+<span class="lineno">21</span>FILE_DESCRIPTION((&#x27;Ls027 - legacy <mark>SCOPE</mark> / END<mark>SCOPE</mark> blocks&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">22</span>FILE_NAME(&#x27;Ls027.stp&#x27;,&#x27;2026-04-26T00:00:00&#x27;,(&#x27;auto-generated&#x27;),(&#x27;&#x27;),
+<span class="lineno">23</span>  &#x27;auto-generated&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">24</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
+<span class="lineno">25</span>ENDSEC;
+<span class="lineno">26</span>DATA;
+<span class="lineno">27</span>#10=CARTESIAN_POINT(&#x27;origin&#x27;,(0.0,0.0,0.0));
+<span class="lineno">28</span>#11=PRODUCT(&#x27;outer&#x27;,&#x27;outer&#x27;,&#x27;&#x27;,(#10));
+<span class="lineno">29</span>/* Defect: Edition-1 <mark>SCOPE</mark> block embedded in DATA */
+<span class="lineno">30</span><mark>SCOPE</mark>
+<span class="lineno">31</span>  #20=CARTESIAN_POINT(&#x27;inner&#x27;,(1.0,1.0,1.0));
+<span class="lineno">32</span>  #21=DIRECTION(&#x27;x&#x27;,(1.0,0.0,0.0));
+<span class="lineno">33</span>END<mark>SCOPE</mark> EXPORT(#20,#21);
+<span class="lineno">34</span>#30=AXIS2_PLACEMENT_3D(&#x27;placement&#x27;,#10,$,$);
+<span class="lineno">35</span>ENDSEC;
+<span class="lineno">36</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Ls024.html">&larr; Ls024</a> <a class="up" href="index.html">§12.1c Part-21 grammar</a> <a class="next" href="Ls029.html">Ls029 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

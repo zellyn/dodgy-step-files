@@ -1,0 +1,45 @@
+ISO-10303-21;
+/* Gp015 - Pcurve/3D-curve trimming failure
+ * Defect: 3D curve range corresponds to U=[5,7] of host CYLINDRICAL_SURFACE
+ * but the supplied pcurve is defined only on U=[0, 2pi]. When the
+ * translator tries to trim the pcurve to the edge's parameter range,
+ * "Trimming of 2D curve failed" and edge construction aborts. */
+HEADER;
+FILE_DESCRIPTION(('Gp015 test case','Pcurve/3D-curve trimming failure'),'2;1');
+FILE_NAME('Gp015.stp','2026-04-27T00:00:00',(''),(''),'auto-generated','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#11=DIRECTION('',(0.0,0.0,1.0));
+#12=DIRECTION('',(1.0,0.0,0.0));
+#13=AXIS2_PLACEMENT_3D('',#10,#11,#12);
+#20=CYLINDRICAL_SURFACE('',#13,10.0);
+/* 3D curve: helical-like polyline whose (lifted) U sweeps [5,7] - outside [0,2pi] of pcurve */
+#21=CARTESIAN_POINT('',(2.836621,9.589243,0.0));     /* U=5 in [0,2pi] would be unique; U=5+2pi=11.28 mismatched */
+#22=CARTESIAN_POINT('',(7.539023,6.569866,1.0));
+#23=B_SPLINE_CURVE_WITH_KNOTS('',1,(#21,#22),.POLYLINE_FORM.,.F.,.F.,
+  (2,2),(5.0,7.0),.UNSPECIFIED.);
+#40=VERTEX_POINT('',#21);
+#41=VERTEX_POINT('',#22);
+/* Pcurve declared with parametric domain [0, 2pi] only */
+#71=CARTESIAN_POINT('',(0.0,0.0));
+#72=DIRECTION('',(1.0,0.0));
+#73=VECTOR('',#72,1.0);
+#74=LINE('',#71,#73);
+#75=( GEOMETRIC_REPRESENTATION_CONTEXT(2)
+      PARAMETRIC_REPRESENTATION_CONTEXT()
+      REPRESENTATION_CONTEXT('parametric','2D') );
+#76=DEFINITIONAL_REPRESENTATION('',(#74),#75);
+#77=PCURVE('',#20,#76);
+/* Defect: 3D curve param range [5,7] cannot be lined up with pcurve [0, 2pi] */
+#50=SURFACE_CURVE('',#23,(#77),.PCURVE_S1.);
+#60=EDGE_CURVE('',#40,#41,#50,.T.);
+#61=ORIENTED_EDGE('',*,*,#60,.T.);
+#62=EDGE_LOOP('',(#61));
+#63=FACE_OUTER_BOUND('',#62,.T.);
+#64=ADVANCED_FACE('',(#63),#20,.T.);
+ENDSEC;
+END-ISO-10303-21;

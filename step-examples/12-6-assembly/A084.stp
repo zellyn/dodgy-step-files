@@ -1,0 +1,27 @@
+ISO-10303-21;
+/* A084 - Writer emits untrimmed curve where trimmed expected
+ * Defect: edge backed by trimmed curve t=[0,pi]; exporter writes parent CIRCLE with full range [0,2pi] */
+HEADER;
+FILE_DESCRIPTION(('A084 test case','Writer emits untrimmed curve where trimmed expected'),'2;1');
+FILE_NAME('A084.stp','2026-04-30T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+#10=PRODUCT_CONTEXT('',#1,'mechanical');
+#11=PRODUCT('part1','part1','part1',(#10));
+#12=PRODUCT_DEFINITION_FORMATION('','',#11);
+#13=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#14=PRODUCT_DEFINITION('','',#12,#13);
+#15=PRODUCT_DEFINITION_SHAPE('','',#14);
+#100=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#101=DIRECTION('',(0.0,0.0,1.0));#102=DIRECTION('',(1.0,0.0,0.0));
+#103=AXIS2_PLACEMENT_3D('',#100,#101,#102);
+#104=CIRCLE('parent',#103,1.0);
+#105=CARTESIAN_POINT('start',(1.0,0.0,0.0));#106=VERTEX_POINT('',#105);
+#107=CARTESIAN_POINT('end',(-1.0,0.0,0.0));#108=VERTEX_POINT('',#107);
+#109=EDGE_CURVE('half_arc_full_curve',#106,#108,#104,.T.);
+
+ENDSEC;
+END-ISO-10303-21;

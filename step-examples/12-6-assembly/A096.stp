@@ -1,0 +1,26 @@
+ISO-10303-21;
+/* A096 - STEPCAFControl_Writer skips identity-located instance when partners have non-identity
+ * Defect: assembly has 3 instances; one at identity, two at non-identity transforms. Writer's
+ * de-duplication treats identity location as "no instance" and drops it. */
+HEADER;
+FILE_DESCRIPTION(('A096 - identity-placed instance dropped by writer'),'2;1');
+FILE_NAME('A096.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+#3=PRODUCT_CONTEXT('',#1,'mechanical');
+#4=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#5=PRODUCT('A096_root','assembly with mixed locations','',(#3));
+#6=PRODUCT_DEFINITION_FORMATION('','',#5);
+#7=PRODUCT_DEFINITION('design','',#6,#4);
+#10=PRODUCT('child','master part','',(#3));
+#11=PRODUCT_DEFINITION_FORMATION('','',#10);
+#12=PRODUCT_DEFINITION('design','',#11,#4);
+/* Three NEXT_ASSEMBLY_USAGE_OCCURRENCE; first at identity, others at non-identity. */
+#20=NEXT_ASSEMBLY_USAGE_OCCURRENCE('id','identity_inst','at_origin',#7,#12,$);
+#21=NEXT_ASSEMBLY_USAGE_OCCURRENCE('a','offset_A','at_(10,0,0)',#7,#12,$);
+#22=NEXT_ASSEMBLY_USAGE_OCCURRENCE('b','offset_B','at_(0,10,0)',#7,#12,$);
+ENDSEC;
+END-ISO-10303-21;

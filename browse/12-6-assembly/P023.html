@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>P023 — Mixed `FACE_OUTER_BOUND` orientation flag (negative-volume pocket)</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.6 Assembly hierarchy</a> <span class="sep">/</span> <span class="current">P023</span>
+</nav>
+<header class="title-bar">
+<h1>P023 <span class="sep">—</span> <span class="entry-title">Mixed `FACE_OUTER_BOUND` orientation flag (negative-volume pocket)</span></h1>
+<p class="category">§12.3 topology / orientation-sign</p>
+<p class="severity-badge severity-p1">P1 — silent data loss</p>
+<p class="tag-pills">
+<a class="tag tag-assembly" href="../by-tag/assembly/index.html">assembly</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-6-assembly/P023.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-6-assembly/P023.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>FreeCAD #10736</li>
+</ul></section>
+<section><h2>Sender</h2>
+<p>FreeCAD</p></section>
+<section><h2>Description</h2>
+<p>A `MANIFOLD_SOLID_BREP` where some `FACE_OUTER_BOUND` is `.F.` (orientation false) on a small subset of faces while surface normals are otherwise consistent → reader interprets as inverted pocket (negative volume).</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>STEP solid with mixed `.T.`/`.F.` orientation flags on a subset of faces.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>Correct interpretation of mixed-orientation face flags, or reject with clear diagnostic.</p></section>
+<section><h2>Notes</h2>
+<p>Synonyms: &quot;FACE_OUTER_BOUND orientation flag inverted&quot;, &quot;negative-volume pocket from mixed bound flags&quot;, &quot;outer loop reversed creates pocket instead of solid&quot;, &quot;orientation flag mismatch produces inside-out face&quot;.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=shape(1)/shape(1) gmsh=shape(2) ifc=schema_n/a</code></p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>count_entity_def(b&#x27;MANIFOLD_SOLID_BREP&#x27;) &gt;= 1</code></li>
+<li><code>matches(rb&#x27;FACE_OUTER_BOUND.*\.F\.&#x27;)</code></li>
+</ul></section>
+<section><h2>Live oracle output</h2>
+<table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
+<tr><td><code>occt_heal_on</code></td><td><code>shape(1)</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>shape(1)</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>shape(2)</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>shape(2)</code></td></tr>
+<tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>empty_mesh</code></td></tr>
+</tbody></table>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/*
+<span class="lineno">3</span> * P023 â Mixed <mark>FACE_OUTER_BOUND orientation flag (negative-volume pocket)</mark>
+<span class="lineno">4</span><mark> * Defect (FreeCAD #10736; FreeCAD):</mark>
+<span class="lineno">5</span><mark> *   A MANIFOLD_SOLID_BREP where some FACE_OUTER_BOUND is .F. (orientation</mark>
+<span class="lineno">6</span><mark> *   false) on a small subset of faces while surface normals are otherwise</mark>
+<span class="lineno">7</span><mark> *   consistent â reader interprets as inverted pocket (negative volume).</mark>
+<span class="lineno">8</span><mark> * Reproducer: solid with mixed .T. / .F. orientation flags on a subset of</mark>
+<span class="lineno">9</span><mark> *   faces.</mark>
+<span class="lineno">10</span><mark> * Expected kernel: correct interpretation of mixed-orientation face flags,</mark>
+<span class="lineno">11</span><mark> *   or reject with clear diagnostic.</mark>
+<span class="lineno">12</span><mark> */</mark>
+<span class="lineno">13</span><mark>HEADER;</mark>
+<span class="lineno">14</span><mark>FILE_DESCRIPTION((&#x27;P023 mixed FACE_OUTER_BOUND .T./.F. â negative-volume pocket&#x27;),&#x27;2;1&#x27;);</mark>
+<span class="lineno">15</span><mark>FILE_NAME(&#x27;P023.stp&#x27;,&#x27;2026-04-26T00:00:00&#x27;,(&#x27;catalog&#x27;),(&#x27;cad&#x27;),&#x27;manual&#x27;,&#x27;&#x27;,&#x27;&#x27;);</mark>
+<span class="lineno">16</span><mark>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }&#x27;));</mark>
+<span class="lineno">17</span><mark>ENDSEC;</mark>
+<span class="lineno">18</span><mark>DATA;</mark>
+<span class="lineno">19</span><mark>#10 = APPLICATION_CONTEXT(&#x27;automotive design&#x27;);</mark>
+<span class="lineno">20</span><mark>#11 = APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,&#x27;automotive_design&#x27;,2001,#10);</mark>
+<span class="lineno">21</span><mark>#12 = PRODUCT_CONTEXT(&#x27;&#x27;,#10,&#x27;mechanical&#x27;);</mark>
+<span class="lineno">22</span><mark>#13 = PRODUCT_DEFINITION_CONTEXT(&#x27;part definition&#x27;,#10,&#x27;design&#x27;);</mark>
+<span class="lineno">23</span><mark>#20 = PRODUCT(&#x27;P023_ASSY&#x27;,&#x27;&#x27;,&#x27;&#x27;,(#12));</mark>
+<span class="lineno">24</span><mark>#21 = PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#20);</mark>
+<span class="lineno">25</span><mark>#22 = PRODUCT_DEFINITION(&#x27;design&#x27;,&#x27;&#x27;,#21,#13);</mark>
+<span class="lineno">26</span><mark>#23 = PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,#22);</mark>
+<span class="lineno">27</span><mark>#30 = PRODUCT(&#x27;MIXED_ORIENT_BREP&#x27;,&#x27;&#x27;,&#x27;&#x27;,(#12));</mark>
+<span class="lineno">28</span><mark>#31 = PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#30);</mark>
+<span class="lineno">29</span><mark>#32 = PRODUCT_DEFINITION(&#x27;design&#x27;,&#x27;&#x27;,#31,#13);</mark>
+<span class="lineno">30</span><mark>#33 = PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,#32);</mark>
+<span class="lineno">31</span><mark>#40 = NEXT_ASSEMBLY_USAGE_OCCURRENCE(&#x27;1&#x27;,&#x27;MOB_INST&#x27;,&#x27;&#x27;,#22,#32,$);</mark>
+<span class="lineno">32</span><mark>/* shared geometry for two faces */</mark>
+<span class="lineno">33</span><mark>#90 = CARTESIAN_POINT(&#x27;p0&#x27;,(0.0,0.0,0.0));</mark>
+<span class="lineno">34</span><mark>#91 = DIRECTION(&#x27;z&#x27;,(0.0,0.0,1.0));</mark>
+<span class="lineno">35</span><mark>#92 = DIRECTION(&#x27;x&#x27;,(1.0,0.0,0.0));</mark>
+<span class="lineno">36</span><mark>#93 = AXIS2_PLACEMENT_3D(&#x27;plane1_axes&#x27;,#90,#91,#92);</mark>
+<span class="lineno">37</span><mark>#94 = PLANE(&#x27;plane1&#x27;,#93);</mark>
+<span class="lineno">38</span><mark>#95 = CARTESIAN_POINT(&#x27;p1&#x27;,(0.0,0.0,10.0));</mark>
+<span class="lineno">39</span><mark>#96 = AXIS2_PLACEMENT_3D(&#x27;plane2_axes&#x27;,#95,#91,#92);</mark>
+<span class="lineno">40</span><mark>#97 = PLANE(&#x27;plane2&#x27;,#96);</mark>
+<span class="lineno">41</span><mark>/* placeholder loops referencing degenerate single-edge */</mark>
+<span class="lineno">42</span><mark>#98 = VERTEX_POINT(&#x27;v0&#x27;,#90);</mark>
+<span class="lineno">43</span><mark>#99 = VECTOR(&#x27;vx&#x27;,#92,1.0);</mark>
+<span class="lineno">44</span><mark>#100 = LINE(&#x27;l1&#x27;,#90,#99);</mark>
+<span class="lineno">45</span><mark>#101 = EDGE_CURVE(&#x27;e1&#x27;,#98,#98,#100,.T.);</mark>
+<span class="lineno">46</span><mark>#102 = ORIENTED_EDGE(&#x27;oe1&#x27;,*,*,#101,.T.);</mark>
+<span class="lineno">47</span><mark>#103 = EDGE_LOOP(&#x27;loop1&#x27;,(#102));</mark>
+<span class="lineno">48</span><mark>#104 = EDGE_LOOP(&#x27;loop2&#x27;,(#102));</mark>
+<span class="lineno">49</span><mark>/* DEFECT: face1 outer-bound .T., face2 outer-bound .F. â mixed flags */</mark>
+<span class="lineno">50</span><mark>#105 = FACE_OUTER_BOUND(&#x27;fb1_T&#x27;,#103,.T.);</mark>
+<span class="lineno">51</span><mark>#106 = FACE_OUTER_BOUND(&#x27;fb2_F&#x27;,#104,.F.</mark>);
+<span class="lineno">52</span>#107 = ADVANCED_FACE(&#x27;face_T&#x27;,(#105),#94,.T.);
+<span class="lineno">53</span>#108 = ADVANCED_FACE(&#x27;face_F&#x27;,(#106),#97,.T.);
+<span class="lineno">54</span>#109 = CLOSED_SHELL(&#x27;mixed_shell&#x27;,(#107,#108));
+<span class="lineno">55</span><mark>#110 = MANIFOLD_SOLID_BREP(</mark>&#x27;mixed_solid&#x27;,#109);
+<span class="lineno">56</span>#50 = ( LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT(.MILLI.,.METRE.) );
+<span class="lineno">57</span>#51 = ( NAMED_UNIT(*) PLANE_ANGLE_UNIT() SI_UNIT($,.RADIAN.) );
+<span class="lineno">58</span>#52 = ( NAMED_UNIT(*) SI_UNIT($,.STERADIAN.) SOLID_ANGLE_UNIT() );
+<span class="lineno">59</span>#53 = UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#50,&#x27;distance_accuracy_value&#x27;,&#x27;&#x27;);
+<span class="lineno">60</span>#54 = ( GEOMETRIC_REPRESENTATION_CONTEXT(3) GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#53))
+<span class="lineno">61</span>        GLOBAL_UNIT_ASSIGNED_CONTEXT((#50,#51,#52)) REPRESENTATION_CONTEXT(&#x27;&#x27;,&#x27;3D&#x27;) );
+<span class="lineno">62</span>#60 = CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">63</span>#61 = DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">64</span>#62 = DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">65</span>#63 = AXIS2_PLACEMENT_3D(&#x27;part_origin&#x27;,#60,#61,#62);
+<span class="lineno">66</span>#64 = ADVANCED_BREP_SHAPE_REPRESENTATION(&#x27;part_rep&#x27;,(#63,#110),#54);
+<span class="lineno">67</span>#65 = SHAPE_DEFINITION_REPRESENTATION(#33,#64);
+<span class="lineno">68</span>#66 = REPRESENTATION_MAP(#63,#64);
+<span class="lineno">69</span>#67 = MAPPED_ITEM(&#x27;inst&#x27;,#66,#63);
+<span class="lineno">70</span>#80 = AXIS2_PLACEMENT_3D(&#x27;assy_origin&#x27;,#60,#61,#62);
+<span class="lineno">71</span>#81 = SHAPE_REPRESENTATION(&#x27;assy_rep&#x27;,(#80,#67),#54);
+<span class="lineno">72</span>#82 = SHAPE_DEFINITION_REPRESENTATION(#23,#81);
+<span class="lineno">73</span>/* Extended catalog notes:
+<span class="lineno">74</span> * This reproducer is a minimal demonstrator of the Â§12.6 entry
+<span class="lineno">75</span> * referenced in the /* */ header above. The entity-graph above
+<span class="lineno">76</span> * is just enough to exercise the defect on a writer or reader
+<span class="lineno">77</span> * test harness; it is NOT a production-quality assembly.
+<span class="lineno">78</span> *
+<span class="lineno">79</span> * License: this file is part of a defect catalog assembled from
+<span class="lineno">80</span> * publicly described bug reports and recommended-practice notes.
+<span class="lineno">81</span> * No proprietary geometry or names are reproduced. The entity IDs
+<span class="lineno">82</span> * and minimal coordinates are author-original.
+<span class="lineno">83</span> *
+<span class="lineno">84</span> * Cross-refs: see STEP_PROBLEM_CATALOG.md Â§12.6 for full entry,
+<span class="lineno">85</span> * source list, sender attribution and expected kernel behavior.
+<span class="lineno">86</span> */
+<span class="lineno">87</span>#900 = DESCRIPTIVE_REPRESENTATION_ITEM(&#x27;catalog_id&#x27;,&#x27;P023&#x27;);
+<span class="lineno">88</span>#901 = DESCRIPTIVE_REPRESENTATION_ITEM(&#x27;catalog_section&#x27;,&#x27;12.6 assembly hierarchy&#x27;);
+<span class="lineno">89</span>#902 = DESCRIPTIVE_REPRESENTATION_ITEM(&#x27;catalog_status&#x27;,&#x27;pending&#x27;);
+<span class="lineno">90</span>ENDSEC;
+<span class="lineno">91</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="P022.html">&larr; P022</a> <a class="up" href="index.html">§12.6 Assembly hierarchy</a> <a class="next" href="P024.html">P024 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

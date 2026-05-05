@@ -1,0 +1,80 @@
+/* Tfa002 - Unbound ADVANCED_FACE (no FACE_OUTER_BOUND, no FACE_BOUND)
+ * Defect: an ADVANCED_FACE is emitted with an empty bounds list - no
+ * FACE_OUTER_BOUND and no FACE_BOUND. Either the writer dropped the
+ * loop or the producer relied on natural bounds being implied for a
+ * closed/periodic surface (sphere or torus). Either way receivers see
+ * a face with no wires.
+ *
+ * Sources cited in catalog: 03-occt-tests R047 (bug24283); 04-occt-
+ * translation Q019.
+ *
+ * Expected kernel behavior: when the surface is closed/periodic in U
+ * and V, insert natural bounds. Otherwise, drop the face with a
+ * diagnostic - never construct a face with an empty wire set.
+ *
+ * Reproducer: ADVANCED_FACE on a SPHERICAL_SURFACE with empty bounds
+ * list (#30 below). For comparison this file also emits a TOROIDAL_
+ * SURFACE that is similarly unbound (#40), and a PLANE that lacks
+ * natural-bound semantics (#50) - the planar case must always be
+ * rejected by the receiver as the planar surface is not closed and so
+ * has no implicit boundary the kernel could synthesise.
+ */
+ISO-10303-21;
+HEADER;
+FILE_DESCRIPTION(('Tfa002 unbound advanced_face'),'2;1');
+FILE_NAME('Tfa002.stp','2026-04-26T00:00:00',(''),(''),
+  'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
+  'automotive_design',2009,#1);
+/* Common axis placements used by the three surfaces below.             */
+#10=CARTESIAN_POINT('center_sph',(0.0,0.0,0.0));
+#11=DIRECTION('z_sph',(0.0,0.0,1.0));
+#12=DIRECTION('x_sph',(1.0,0.0,0.0));
+#13=AXIS2_PLACEMENT_3D('sph_plc',#10,#11,#12);
+#14=CARTESIAN_POINT('center_tor',(50.0,0.0,0.0));
+#15=DIRECTION('z_tor',(0.0,0.0,1.0));
+#16=DIRECTION('x_tor',(1.0,0.0,0.0));
+#17=AXIS2_PLACEMENT_3D('tor_plc',#14,#15,#16);
+#18=CARTESIAN_POINT('plane_origin',(100.0,0.0,0.0));
+#19=DIRECTION('z_plane',(0.0,0.0,1.0));
+#20=DIRECTION('x_plane',(1.0,0.0,0.0));
+#21=AXIS2_PLACEMENT_3D('plane_plc',#18,#19,#20);
+/* Three supporting surfaces with progressively weaker natural-bound
+ * semantics: sphere (closed in U and V), torus (closed in U and V),
+ * plane (open in both - no natural bound).                             */
+#30=SPHERICAL_SURFACE('sph_5',#13,5.0);
+#40=TOROIDAL_SURFACE('tor_R10_r2',#17,10.0,2.0);
+#50=PLANE('plane_xy',#21);
+/* Defect site #1: empty bounds list, surface is closed in U and V.
+ * Kernel may insert natural bounds and accept; it MUST NOT crash.      */
+#60=ADVANCED_FACE('unbound_sphere',(),#30,.T.);
+/* Defect site #2: torus-based unbound face - same scenario.            */
+#61=ADVANCED_FACE('unbound_torus',(),#40,.T.);
+/* Defect site #3: plane has no closed parametric extent - the receiver
+ * MUST reject this face with a diagnostic rather than synthesise.      */
+#62=ADVANCED_FACE('unbound_plane',(),#50,.T.);
+/* Group all three faces into a shell so the defect surfaces inside a
+ * realistic representation context.                                    */
+#70=OPEN_SHELL('unbound_collection',(#60,#61,#62));
+#80=SHELL_BASED_SURFACE_MODEL('unbound_advanced_faces',(#70));
+/* Wrap: minimal PRODUCT chain so OCCT TransferRoots produces a shape. */
+#9000=PRODUCT_CONTEXT('',#1,'mechanical');
+#9001=PRODUCT('Tfa002','Tfa002','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
+#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
+#9021=SHELL_BASED_SURFACE_MODEL('wrap_sbsm',(#70));
+#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#9010);
+#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+ENDSEC;
+END-ISO-10303-21;

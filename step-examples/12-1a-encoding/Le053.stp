@@ -1,0 +1,20 @@
+/* Le053 - Nested \X2\ opened without closing the prior \X0\
+   Defect: \X2\..\X0\ directives are not re-entrant; opening a fresh \X2\
+   while another is still active is malformed. A naive scanner may merge
+   the two hex runs or lose the inner content entirely. */
+ISO-10303-21;
+HEADER;
+FILE_DESCRIPTION(('Le053 - nested X2 without prior X0 close'),'2;1');
+FILE_NAME('Le053.stp','2026-04-26T00:00:00',('auto-generated'),(''),
+  'auto-generated','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+/* Defect: a second \X2\ opens before the first is closed by \X0\ */
+#10=PERSON('p4','name=\X2\30A2\X2\30A4\X0\','given',$,$,$,$,$);
+#20=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#21=DIRECTION('',(0.0,0.0,1.0));
+#22=DIRECTION('',(1.0,0.0,0.0));
+#23=AXIS2_PLACEMENT_3D('',#20,#21,#22);
+ENDSEC;
+END-ISO-10303-21;

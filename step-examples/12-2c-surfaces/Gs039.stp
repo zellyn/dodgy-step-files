@@ -1,0 +1,33 @@
+ISO-10303-21;
+/* Gs039 - Helical sweep / variable-radius blend silently emitted as incomplete shell
+ * Defect: Specific feature kinds (helical sweeps, variable-radius blends) vanish after
+ * STEP export because the writer's BRep decomposition fails, but the writer silently
+ * emits an incomplete shell instead of an error. Here a "hemisphere + cylindrical-cut"
+ * lacks several side faces - a classic build123d/cadquery export pathology. */
+HEADER;
+FILE_DESCRIPTION(('Gs039 test case','Silent incomplete shell emission'),'2;1');
+FILE_NAME('Gs039.stp','2026-04-26T00:00:00',(''),(''),'auto-generated','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#11=DIRECTION('',(0.0,0.0,1.0));
+#12=DIRECTION('',(1.0,0.0,0.0));
+#13=AXIS2_PLACEMENT_3D('',#10,#11,#12);
+/* The model SHOULD be a closed hemisphere + cylindrical cut: spherical cap, cylindrical
+ * side wall, planar bottom annulus. The writer emits ONLY the spherical face. */
+#20=SPHERICAL_SURFACE('',#13,10.0);
+/* Single FACE_OUTER_BOUND on full natural rectangle */
+#30=CARTESIAN_POINT('',(10.0,0.0,0.0));
+#31=VERTEX_POINT('',#30);
+#32=VERTEX_LOOP('',#31);
+#33=FACE_OUTER_BOUND('',#32,.T.);
+#34=ADVANCED_FACE('',(#33),#20,.T.);
+/* Defect: the SHELL has only the cap face. The cylindrical side wall and planar
+ * bottom annulus that should close it are silently missing. Validation properties
+ * (volume, area) would flag this; the file alone passes syntactic checks. */
+#40=OPEN_SHELL('',(#34));
+ENDSEC;
+END-ISO-10303-21;

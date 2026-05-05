@@ -1,0 +1,39 @@
+ISO-10303-21;
+/* Twi078 - Wire-order analysis: reorder unordered edges (no reversal needed)
+ * Four edges of a unit square authored as #e1=bottom (V1->V2), #e2=right
+ * (V2->V3), #e3=top (V3->V4), #e4=left (V4->V1). Wire is emitted with the
+ * edges in scrambled order [e3, e1, e4, e2]. Each edge already has the
+ * correct head-to-tail orientation -- only reorder is needed, no flips. */
+HEADER;
+FILE_DESCRIPTION(('Twi078 test case','Four-edge square wire emitted in scrambled order [e3,e1,e4,e2]'),'2;1');
+FILE_NAME('Twi078.stp','2026-04-30T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+#10=CARTESIAN_POINT('',(0.0,0.0,0.0));#11=VERTEX_POINT('V1',#10);
+#12=CARTESIAN_POINT('',(1.0,0.0,0.0));#13=VERTEX_POINT('V2',#12);
+#14=CARTESIAN_POINT('',(1.0,1.0,0.0));#15=VERTEX_POINT('V3',#14);
+#16=CARTESIAN_POINT('',(0.0,1.0,0.0));#17=VERTEX_POINT('V4',#16);
+/* edge e1: V1->V2 */
+#20=DIRECTION('',(1.0,0.0,0.0));#21=VECTOR('',#20,1.0);#22=LINE('',#10,#21);
+#23=EDGE_CURVE('e1_bottom',#11,#13,#22,.T.);
+/* edge e2: V2->V3 */
+#24=DIRECTION('',(0.0,1.0,0.0));#25=VECTOR('',#24,1.0);#26=LINE('',#12,#25);
+#27=EDGE_CURVE('e2_right',#13,#15,#26,.T.);
+/* edge e3: V3->V4 */
+#28=DIRECTION('',(-1.0,0.0,0.0));#29=VECTOR('',#28,1.0);#30=LINE('',#14,#29);
+#31=EDGE_CURVE('e3_top',#15,#17,#30,.T.);
+/* edge e4: V4->V1 */
+#32=DIRECTION('',(0.0,-1.0,0.0));#33=VECTOR('',#32,1.0);#34=LINE('',#16,#33);
+#35=EDGE_CURVE('e4_left',#17,#11,#34,.T.);
+/* ORIENTED_EDGEs all .T. -- correct orientation, only the LIST order is scrambled. */
+#40=ORIENTED_EDGE('oe_e3',*,*,#31,.T.);
+#41=ORIENTED_EDGE('oe_e1',*,*,#23,.T.);
+#42=ORIENTED_EDGE('oe_e4',*,*,#35,.T.);
+#43=ORIENTED_EDGE('oe_e2',*,*,#27,.T.);
+/* Scrambled list: [3, 1, 4, 2] -- valid square only after reordering to [1,2,3,4]. */
+#44=EDGE_LOOP('scrambled_3_1_4_2',(#40,#41,#42,#43));
+ENDSEC;
+END-ISO-10303-21;

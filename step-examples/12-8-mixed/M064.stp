@@ -1,0 +1,18 @@
+ISO-10303-21;
+/* M064 - No length uncertainty in context.
+ * Defect: GEOMETRIC_REPRESENTATION_CONTEXT has no
+ * UNCERTAINTY_MEASURE_WITH_UNIT. */
+HEADER;
+FILE_DESCRIPTION(('In008 - no length uncertainty','Pass C gap-fill'),'2;1');
+FILE_NAME('M064.stp','2026-04-30T00:00:00',(''),(''),'gap-fill C','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+/* SI_UNIT length but no UNCERTAINTY_MEASURE_WITH_UNIT in the context */
+#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#20=GEOMETRIC_REPRESENTATION_CONTEXT('no_uncertainty',(#10),3);
+#30=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#40=SHAPE_REPRESENTATION('',(#30),#20);
+ENDSEC;
+END-ISO-10303-21;

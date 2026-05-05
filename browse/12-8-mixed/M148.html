@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>M148 — AP210 same NETWORK identifier used for two unrelated nets</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.8 Mixed (tessellation, validation properties, etc.)</a> <span class="sep">/</span> <span class="current">M148</span>
+</nav>
+<header class="title-bar">
+<h1>M148 <span class="sep">—</span> <span class="entry-title">AP210 same NETWORK identifier used for two unrelated nets</span></h1>
+<p class="category">§12.8 mixed (sub-class: AP210 net naming collision)</p>
+<p class="severity-badge severity-p1">P1 — silent data loss</p>
+<p class="tag-pills">
+<a class="tag tag-spec-violation" href="../by-tag/spec-violation/index.html">spec-violation</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-8-mixed/M148.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-8-mixed/M148.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>16-iso-spec ISO 10303-210 §7 (network identifier uniqueness)</li>
+<li>bug-reporter language: &quot;AP210 two nets named VCC&quot;, &quot;PCB net name collision&quot;, &quot;ECAD duplicate net name&quot;.</li>
+</ul></section>
+<section><h2>Sender</h2>
+<p>deduced — ECAD exporter that merged two PCB sub-designs without re-namespacing nets</p></section>
+<section><h2>Description</h2>
+<p>Two `NETWORK` entities both declare the name &#x27;VCC&#x27; yet route different conductors with no common node. A net-by-name lookup returns one or the other depending on instance ordering. Connectivity tools merge unrelated traces, breaking impedance / continuity checks.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>two `NETWORK(&#x27;VCC&#x27;,..)` entities each with a distinct, non-overlapping `NETWORK_NODE` set.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>validate NETWORK.name uniqueness; reject or rename one with a diagnostic.</p></section>
+<section><h2>Notes</h2>
+<p>Synonyms: &quot;PCB net name collision&quot;, &quot;AP210 duplicate net&quot;, &quot;ECAD net namespace conflict&quot;.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>contains(b&#x27;ELECTRONIC_ASSEMBLY_INTERCONNECT_AND_PACKAGING_DESIGN&#x27;)</code></li>
+<li><code>count_entity_def(b&#x27;NETWORK&#x27;) &gt;= 2</code></li>
+<li><code>contains(b&quot;NETWORK(&#x27;VCC&#x27;,&quot;)</code></li>
+</ul></section>
+<section><h2>Live oracle output</h2>
+<table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
+<tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>no_shapes_loaded</code></td></tr>
+</tbody></table>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* M148 - AP210 same NETWORK identifier used for two unrelated nets.
+<span class="lineno">3</span> * Defect: two NETWORK entities both declare the name &#x27;VCC&#x27; yet route
+<span class="lineno">4</span> * different conductors with no common node. A net-by-name lookup
+<span class="lineno">5</span> * returns one or the other depending on instance ordering, breaking
+<span class="lineno">6</span> * impedance / continuity tooling. */
+<span class="lineno">7</span>HEADER;
+<span class="lineno">8</span>FILE_DESCRIPTION((&#x27;M148 test case&#x27;,&#x27;AP210 net name collision&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">9</span>FILE_NAME(&#x27;M148.stp&#x27;,&#x27;2026-05-02T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">10</span>FILE_SCHEMA((&#x27;<mark>ELECTRONIC_ASSEMBLY_INTERCONNECT_AND_PACKAGING_DESIGN</mark> { 1 0 10303 210 3 1 0 }&#x27;));
+<span class="lineno">11</span>ENDSEC;
+<span class="lineno">12</span>DATA;
+<span class="lineno">13</span>#1=APPLICATION_CONTEXT(&#x27;electronic_assembly_interconnect_and_packaging_design&#x27;);
+<span class="lineno">14</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,
+<span class="lineno">15</span>  &#x27;electronic_assembly_interconnect_and_packaging_design&#x27;,2014,#1);
+<span class="lineno">16</span>#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">17</span>#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+<span class="lineno">18</span>     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10))
+<span class="lineno">19</span>     REPRESENTATION_CONTEXT(&#x27;pcb&#x27;,&#x27;3D&#x27;));
+<span class="lineno">20</span>#100=TERMINAL(&#x27;U1_pin1&#x27;,&#x27;VCC_in_a&#x27;,$);
+<span class="lineno">21</span>#101=TERMINAL(&#x27;U2_pin1&#x27;,&#x27;VCC_in_b&#x27;,$);
+<span class="lineno">22</span>#200=NETWORK_NODE(&#x27;node_a&#x27;,#100);
+<span class="lineno">23</span>#201=NETWORK_NODE(&#x27;node_b&#x27;,#101);
+<span class="lineno">24</span>/* Defect: two NETWORK entities both named &#x27;VCC&#x27;. */
+<span class="lineno">25</span><mark>#300=NETWORK(&#x27;VCC&#x27;,</mark>(#200),(#200));
+<span class="lineno">26</span><mark>#301=NETWORK(&#x27;VCC&#x27;,</mark>(#201),(#201));
+<span class="lineno">27</span>ENDSEC;
+<span class="lineno">28</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="M147.html">&larr; M147</a> <a class="up" href="index.html">§12.8 Mixed (tessellation, validation properties, etc.)</a> <a class="next" href="M149.html">M149 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

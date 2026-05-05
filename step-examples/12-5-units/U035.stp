@@ -1,0 +1,20 @@
+ISO-10303-21;
+/* U035 - Ellipse exported with mm values in inch-declared file
+ * Defect: document with LENGTH_UNIT INCH; ellipse semi-axes emitted in mm internal representation */
+HEADER;
+FILE_DESCRIPTION(('U035 test case','Ellipse exported with mm values in inch-declared file'),'2;1');
+FILE_NAME('U035.stp','2026-04-30T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+#100=(LENGTH_UNIT() NAMED_UNIT(*) CONVERSION_BASED_UNIT('INCH',#101));
+#101=LENGTH_MEASURE_WITH_UNIT(LENGTH_MEASURE(25.4),#102);
+#102=(LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT(.MILLI.,.METRE.));
+#110=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#111=DIRECTION('',(0.0,0.0,1.0));#112=DIRECTION('',(1.0,0.0,0.0));
+#113=AXIS2_PLACEMENT_3D('',#110,#111,#112);
+#114=ELLIPSE('mm_in_inch_file',#113,2.0,1.0);
+ENDSEC;
+END-ISO-10303-21;

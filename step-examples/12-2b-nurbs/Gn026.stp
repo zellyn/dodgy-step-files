@@ -1,0 +1,38 @@
+/* Gn026 - BSpline-restriction approximation correctness (typo bug)
+   Defect (input side): a high-degree BSpline that, when passed through
+   ShapeCustom_BSplineRestriction targeting degree 3 with C2 continuity,
+   may NOT actually achieve C2 due to a historical typo in
+   ShapeCustom_RestrictionParameters.  Direct hazard: kernels that trust
+   the restriction output ship sub-spec geometry downstream.
+   This file is the input: degree-9 single Bezier-style B_SPLINE_CURVE_WITH_KNOTS
+   with a bend.  Verifier should compare requested-vs-achieved continuity
+   on the restriction output. */
+ISO-10303-21;
+HEADER;
+FILE_DESCRIPTION(
+  ('Gn026 - degree-9 BSpline input for restriction continuity check'),'2;1');
+FILE_NAME('Gn026.stp','2026-04-26T00:00:00',('auto-generated'),(''),
+  'auto-generated','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+/* 10 control points -> degree-9 single Bezier-style segment with
+   non-trivial curvature variation. */
+#10=CARTESIAN_POINT('p0',( 0.0, 0.0, 0.0));
+#11=CARTESIAN_POINT('p1',( 1.0, 1.0, 0.0));
+#12=CARTESIAN_POINT('p2',( 2.0, 2.5, 0.0));
+#13=CARTESIAN_POINT('p3',( 3.0, 3.0, 0.0));
+#14=CARTESIAN_POINT('p4',( 4.0, 2.5, 0.0));
+#15=CARTESIAN_POINT('p5',( 5.0, 1.0, 0.0));
+#16=CARTESIAN_POINT('p6',( 6.0,-0.5, 0.0));
+#17=CARTESIAN_POINT('p7',( 7.0,-1.0, 0.0));
+#18=CARTESIAN_POINT('p8',( 8.0,-0.5, 0.0));
+#19=CARTESIAN_POINT('p9',( 9.0, 0.0, 0.0));
+#100=B_SPLINE_CURVE_WITH_KNOTS('deg9_for_restrict',9,
+  (#10,#11,#12,#13,#14,#15,#16,#17,#18,#19),
+  .UNSPECIFIED.,.F.,.F.,
+  (10,10),
+  (0.0,1.0),
+  .UNSPECIFIED.);
+ENDSEC;
+END-ISO-10303-21;

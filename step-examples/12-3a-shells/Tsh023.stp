@@ -1,0 +1,56 @@
+ISO-10303-21;
+/* Tsh023 - Empty EDGE_LOOP / empty face list on shells
+ * Defect: STEP file with empty EDGE_LOOP(...,()) crashes reader.
+ * Similarly: EDGE_BASED_WIREFRAME_MODEL with empty boundary or empty
+ * connected_edge_set; FACE_BASED_SURFACE_MODEL with empty face list.
+ * Sources: R045 (bug33307), Q001, Q028, Q029.
+ *
+ * This file demonstrates several flavours together:
+ *   - #410: EDGE_LOOP with empty edge_list ()
+ *   - #420: ADVANCED_FACE referencing the empty loop (cascade failure)
+ *   - #500: FACE_BASED_SURFACE_MODEL with empty face list
+ *   - #510: OPEN_SHELL with empty cfs_faces
+ * A robust reader should reject each malformed entity but never crash. */
+HEADER;
+FILE_DESCRIPTION(('Tsh023 test case','Empty EDGE_LOOP and empty shell lists'),'2;1');
+FILE_NAME('Tsh023.stp','2026-04-26T00:00:00',(''),(''),'auto-generated','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+/* A normal valid square face for context */
+#100=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#101=CARTESIAN_POINT('',(1.0,0.0,0.0));
+#102=CARTESIAN_POINT('',(1.0,1.0,0.0));
+#103=CARTESIAN_POINT('',(0.0,1.0,0.0));
+#110=VERTEX_POINT('',#100); #111=VERTEX_POINT('',#101);
+#112=VERTEX_POINT('',#102); #113=VERTEX_POINT('',#103);
+#200=DIRECTION('',(0.0,0.0,1.0)); #201=DIRECTION('',(1.0,0.0,0.0));
+#211=AXIS2_PLACEMENT_3D('',#100,#200,#201); #212=PLANE('valid_plane',#211);
+#220=AXIS2_PLACEMENT_3D('',#101,#200,#201); #222=PLANE('plane_for_empty_face',#220);
+#300=DIRECTION('',(1.0,0.0,0.0)); #301=VECTOR('',#300,1.0);
+#302=DIRECTION('',(0.0,1.0,0.0)); #303=VECTOR('',#302,1.0);
+#310=LINE('',#100,#301); #311=EDGE_CURVE('',#110,#111,#310,.T.);
+#312=LINE('',#101,#303); #313=EDGE_CURVE('',#111,#112,#312,.T.);
+#314=LINE('',#103,#301); #315=EDGE_CURVE('',#113,#112,#314,.T.);
+#316=LINE('',#100,#303); #317=EDGE_CURVE('',#110,#113,#316,.T.);
+#400=ORIENTED_EDGE('',*,*,#311,.T.); #401=ORIENTED_EDGE('',*,*,#313,.T.);
+#402=ORIENTED_EDGE('',*,*,#315,.F.); #403=ORIENTED_EDGE('',*,*,#317,.F.);
+#404=EDGE_LOOP('valid_loop',(#400,#401,#402,#403));
+#405=FACE_OUTER_BOUND('',#404,.T.);
+#406=ADVANCED_FACE('valid_face',(#405),#212,.T.);
+/* Defect A: empty EDGE_LOOP */
+#410=EDGE_LOOP('empty_edge_loop',());
+#411=FACE_OUTER_BOUND('bound_with_empty_loop',#410,.T.);
+/* Defect B: ADVANCED_FACE that references the empty bound */
+#420=ADVANCED_FACE('face_with_empty_loop',(#411),#222,.T.);
+/* Defect C: FACE_BASED_SURFACE_MODEL with empty face list */
+#500=FACE_BASED_SURFACE_MODEL('empty_FBSM',());
+/* Defect D: OPEN_SHELL with empty face list */
+#510=OPEN_SHELL('empty_shell',());
+/* Wrapping shell with the salvageable face plus the broken pieces */
+#520=OPEN_SHELL('mixed_valid_invalid',(#406,#420));
+#530=SHELL_BASED_SURFACE_MODEL('container',(#510,#520));
+ENDSEC;
+END-ISO-10303-21;
