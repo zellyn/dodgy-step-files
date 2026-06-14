@@ -36,6 +36,12 @@ The STEP corpus is presented as a single coherent reference. It contains:
 - `EVIDENCE_MODEL.md` per-fixture proof model.
 - `SEGFAULT_CHARACTERIZATION.md` characterizing the 15+ OCCT crash fixtures.
 
+### Rust crate
+
+- `rust/` ships a `dodgy-step-files` crate that embeds the full corpus (`include_dir!`) and catalog JSON (`include_str!`) into the binary. Consumers add it as a git dependency pinned to a tag — no filesystem setup, no submodule, no crates.io lookup.
+- API: `fixtures()` / `fixture(id)` / `by_tag(tag)` / `by_section(section)` / `catalog()`. Each `Fixture` carries a `&'static CatalogEntry` plus `&'static [u8]` STEP bytes.
+- MSRV 1.80 (uses `std::sync::LazyLock`). Adds ~6 MB to the consumer's test binary.
+
 ### Final verdict matrix
 
 | Verdict | Count | Pct |

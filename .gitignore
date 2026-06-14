@@ -17,6 +17,10 @@ build/
 dist/
 *.so
 
+# Rust
+rust/target/
+rust/Cargo.lock
+
 # Editor / OS
 .DS_Store
 *.swp

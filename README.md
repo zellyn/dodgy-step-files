@@ -36,14 +36,19 @@ The goal is to give CAD-kernel and STEP-tooling authors a license-clean, citable
 ├── index.html                      # landing page for the GitHub Pages site
 ├── CONFORMANCE_KIT.md              # curated 80-entry conformance subset
 ├── DEFECT_CLASS_DEFINITIONS.md     # 88 formal defect-class definitions (15 tags + sub-classes)
-└── validation/                     # multi-tier validator (uv-managed Python package)
-    ├── pyproject.toml
+├── validation/                     # multi-tier validator (uv-managed Python package)
+│   ├── pyproject.toml
+│   ├── README.md
+│   ├── VALIDATION_SUMMARY.md       # global verdict matrix + outstanding work
+│   ├── SEGFAULT_CHARACTERIZATION.md # 8 unintended-OCCT-segfault fixtures with hypothesised failure paths
+│   ├── src/step_corpus/            # validators (validate2 + tier3_geometric + …)
+│   ├── tests/                      # pytest self-tests for the validator
+│   └── reports/                    # generated per-section reports + triage notes
+└── rust/                           # Rust crate that embeds the full corpus + catalog
+    ├── Cargo.toml
     ├── README.md
-    ├── VALIDATION_SUMMARY.md       # global verdict matrix + outstanding work
-    ├── SEGFAULT_CHARACTERIZATION.md # 8 unintended-OCCT-segfault fixtures with hypothesised failure paths
-    ├── src/step_corpus/            # validators (validate2 + tier3_geometric + …)
-    ├── tests/                      # pytest self-tests for the validator
-    └── reports/                    # generated per-section reports + triage notes
+    ├── src/lib.rs                  # Fixture iterator / by_tag / by_section / catalog()
+    └── examples/list.rs
 ```
 
 ## Use as a standalone repository
@@ -126,12 +131,35 @@ Per-section reports land in `validation/reports/`. The global summary lives in `
 
 ## Using the corpus in your own project
 
-The corpus is intended to be vendored or git-submoduled into kernel test suites. Each fixture's catalog entry tells you what the file is *supposed* to provoke; your test harness can either:
+Each fixture's catalog entry tells you what the file is *supposed* to provoke; your test harness can either:
 
 - assert your kernel behaves the way the catalog says it should ("heal", "reject", "accept"), or
 - pin a snapshot of your kernel's current behavior and use the corpus as a regression suite.
 
-A typical kernel-test workflow: walk `step-examples/<section>/<id>.stp`, look up `<id>` in `STEP_PROBLEM_CATALOG.json` (machine-readable mirror of the catalog markdown), parse with your kernel, and compare your behavior to the entry's `Expected kernel behavior` and `Expected validation` fields. The browse pages at `browse/<id>.html` render each fixture with byte highlighting on the defect site, useful for human triage.
+A typical kernel-test workflow: walk the fixtures, look up each id in `STEP_PROBLEM_CATALOG.json` (machine-readable mirror of the catalog markdown), parse with your kernel, and compare your behavior to the entry's `Expected kernel behavior` and `Expected validation` fields. The browse pages at `browse/<id>.html` render each fixture with byte highlighting on the defect site, useful for human triage.
+
+### From Rust
+
+The `rust/` directory ships a crate (`dodgy-step-files`) that embeds the full corpus and catalog. Consume it as a git dependency pinned to a tag:
+
+```toml
+[dependencies]
+dodgy-step-files = { git = "https://github.com/zellyn/dodgy-step-files", tag = "v1.0.0" }
+```
+
+```rust
+for f in dodgy_step_files::fixtures() {
+    let _ = (f.entry.id.as_str(), f.entry.expected_validation.as_str(), f.step_bytes);
+}
+
+for f in dodgy_step_files::by_tag("crash") { /* ... */ }
+```
+
+No filesystem setup, no submodule. Adds ~6 MB to your test binary. See [`rust/README.md`](rust/README.md) for the full API.
+
+### From any other language
+
+Walk `step-examples/<section>/<id>.stp` and load metadata from `STEP_PROBLEM_CATALOG.json`. Either vendor a snapshot, add the repo as a git submodule, or download a release tarball from the [releases page](https://github.com/zellyn/dodgy-step-files/releases). The catalog JSON schema is documented in [`schema/`](schema/).
 
 ## Where to find what
 
