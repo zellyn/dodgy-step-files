@@ -7,27 +7,1592 @@ v3's bar: every branch's description is rich enough to either RECREATE the defec
 
 | | Count |
 |---|---:|
-| Methods enumerated | 22 |
-| Repair branches | 474 |
-| Low-confidence branches (need better prose) | 24 |
+| Methods enumerated | 182 |
+| Repair branches | 1247 |
+| Low-confidence branches (need better prose) | 234 |
 | Truncated worker outputs (need follow-up) | 0 |
 
 ## Defect-axis distribution
 
 | Axis | Count |
 |---|---:|
-| `healer-state` | 179 |
-| `kernel-pair` | 76 |
-| `input-shape` | 68 |
-| `tolerance` | 61 |
-| `api-contract` | 47 |
-| `conformance-probe` | 36 |
-| `encoding` | 6 |
-| `unspecified` | 1 |
+| `healer-state` | 187 |
+| `kernel-pair` | 88 |
+| `input-shape` | 82 |
+| `tolerance` | 70 |
+| `api-contract` | 56 |
+| `unspecified` | 56 |
+| `control_flow_ambiguity` | 43 |
+| `conformance-probe` | 40 |
+| `encoding` | 9 |
+| `tolerance_escalation` | 9 |
+| `pcurve` | 7 |
+| `initialization` | 6 |
+| `data-precondition-missing` | 6 |
+| `parameter_coherence` | 5 |
+| `input_validation` | 4 |
+| `topological_validity` | 4 |
+| `curve_validation` | 4 |
+| `selective_vertex_checking` | 4 |
+| `vertex_distance_tolerance_exceeded` | 4 |
+| `state_validation` | 4 |
+| `geometry-probe` | 3 |
+| `incomplete_diagnostics` | 3 |
+| `incomplete_coverage` | 3 |
+| `projection_failure` | 3 |
+| `vertex_merging` | 3 |
+| `topology` | 3 |
+| `degeneracy` | 3 |
+| `computation` | 3 |
+| `intersection` | 3 |
+| `SUBMETHOD_STATUS_PROPAGATION` | 3 |
+| `INDEX_BOUNDARY_LOGIC` | 3 |
+| `INCOMPLETE_REPAIR` | 3 |
+| `vertex_deduplication` | 3 |
+| `Uninitialized variable` | 3 |
+| `TOLERANCE_ESCALATION` | 2 |
+| `PARAMETER_SYNC` | 2 |
+| `dependency_coupling` | 2 |
+| `mode_suppression` | 2 |
+| `null_check_silent` | 2 |
+| `bounds_check` | 2 |
+| `failure_suppression` | 2 |
+| `context_escape` | 2 |
+| `ordering_assumption` | 2 |
+| `degenerate_classification` | 2 |
+| `edge_classification` | 2 |
+| `shape-type-filter` | 2 |
+| `cardinality-dispatch` | 2 |
+| `split-validation` | 2 |
+| `curve-type-handling` | 2 |
+| `error-handling` | 2 |
+| `tangent_computation_method_boundary` | 2 |
+| `derivative_degeneracy_escalation` | 2 |
+| `pcurve_extraction_failure` | 2 |
+| `curve3d_extraction_failure` | 2 |
+| `domain_window_asymmetric_clamping` | 2 |
+| `range_parameter_coherence` | 2 |
+| `placeholder_geometry` | 2 |
+| `mode-branch-incompleteness` | 2 |
+| `shape_consistency` | 2 |
+| `input_aggregation` | 2 |
+| `edge_processing` | 2 |
+| `edge_filtering` | 2 |
+| `state_mapping` | 2 |
+| `structure` | 2 |
+| `connectivity` | 2 |
+| `STATE_PRECONDITION` | 2 |
+| `PRECONDITION_VALIDATION` | 2 |
+| `STATE_SYNCHRONIZATION` | 2 |
+| `CONTEXT_MODIFICATION` | 2 |
+| `EDGE_INDEX_CLAMPING` | 2 |
+| `lazy-init-validation` | 2 |
+| `TOPOLOGY_PROPAGATION` | 2 |
+| `silent-precondition-failure` | 2 |
+| `parameter_binding` | 2 |
+| `face_membership` | 2 |
+| `free_edge_tracking` | 2 |
+| `edge_state_machine` | 2 |
+| `projection_extrema` | 2 |
+| `curve-extraction-failure` | 2 |
+| `pcurve-extraction-failure` | 2 |
+| `Semantic ambiguity` | 2 |
+| `DATA_INCONSISTENCY` | 1 |
+| `GEOMETRIC_EXCEPTION` | 1 |
+| `MISSING_GEOMETRY` | 1 |
+| `CLOSURE_CONSISTENCY` | 1 |
+| `Parametrization: 3D!=2D -> Projection: param mismatch` | 1 |
+| `Scale: absolute tol -> Verdict: over-permissive for large edges` | 1 |
+| `Sampling: sparse -> Validation: incomplete` | 1 |
+| `Input: degenerate face (no wires) -> Output: returns true without validation` | 1 |
+| `Logic: asymmetric init -> Geo: bounding box error if negative coords` | 1 |
+| `Sampling: single midpoint insufficient -> Geo: false negative for twisted edges` | 1 |
+| `Logic: scan order -> Geo: incomplete strip detection` | 1 |
+| `Semantics: status bits -> API: caller decodes incorrectly` | 1 |
+| `Input: seam edge topology -> Logic: vertex dedup fails` | 1 |
+| `Tolerance: vert->edge -> Geo: over-permissive` | 1 |
+| `Math: extrema classification -> Geo: false positive projection` | 1 |
+| `Periodicity: uMax-uMin -> Param: may exceed bounds` | 1 |
+| `Search: local->global fail -> Tol: unchecked fallback` | 1 |
+| `Param: knot-space vs curve-domain -> Range: mismatch` | 1 |
+| `Param: expansion -> Continuity: G1 break at edge` | 1 |
+| `Periodicity: unwrapped param -> Dedup: fails` | 1 |
+| `Topology: seam direction -> Geometry: normal orientation ignored` | 1 |
+| `mode_override_cascade` | 1 |
+| `conditional_skip_wrong` | 1 |
+| `ordering_sensitivity` | 1 |
+| `mode_collision` | 1 |
+| `conditional_omission` | 1 |
+| `ordering_drift` | 1 |
+| `error_accumulation` | 1 |
+| `failure_masking` | 1 |
+| `mode_override` | 1 |
+| `edge_case_handling` | 1 |
+| `arithmetic_assumption` | 1 |
+| `shape_update_incomplete` | 1 |
+| `incomplete_fix` | 1 |
+| `zero_length_edge` | 1 |
+| `wraparound_error` | 1 |
+| `iteration_limit` | 1 |
+| `threshold_logic` | 1 |
+| `null_pointer_use` | 1 |
+| `value_loss` | 1 |
+| `geometry_ignorance` | 1 |
+| `state_reset` | 1 |
+| `null_append` | 1 |
+| `validity_check` | 1 |
+| `post_repair_validation` | 1 |
+| `tolerance_selection` | 1 |
+| `loop_skip_logic` | 1 |
+| `undocumented_logic` | 1 |
+| `return_value_validation` | 1 |
+| `identity_vs_equality` | 1 |
+| `geometry_simplification` | 1 |
+| `failure_handling` | 1 |
+| `flag_semantics` | 1 |
+| `accumulation_limit` | 1 |
+| `flag_sync_error` | 1 |
+| `identity_precision` | 1 |
+| `post_operation_validation` | 1 |
+| `geometric_consistency` | 1 |
+| `parametric_topology` | 1 |
+| `geometric_topology` | 1 |
+| `seam_topology` | 1 |
+| `continuity` | 1 |
+| `parametric_continuity` | 1 |
+| `parameterization_coherence` | 1 |
+| `local_topology` | 1 |
+| `global_planarity` | 1 |
+| `computational_efficiency` | 1 |
+| `topology_closure` | 1 |
+| `aggregation` | 1 |
+| `mode_compatibility` | 1 |
+| `mode_fallback` | 1 |
+| `mode_switching` | 1 |
+| `correctness_positive` | 1 |
+| `ordering_correction` | 1 |
+| `shift_operation` | 1 |
+| `algorithm_failure` | 1 |
+| `edge_structure` | 1 |
+| `numerical_precision` | 1 |
+| `precision_tolerance` | 1 |
+| `parameter_precision` | 1 |
+| `single_edge_closure` | 1 |
+| `edge_orientation` | 1 |
+| `orientation_fix` | 1 |
+| `minimum_structure` | 1 |
+| `geometric_collapse` | 1 |
+| `curve_closure` | 1 |
+| `curve_parametrization` | 1 |
+| `curve_extraction_failure` | 1 |
+| `interior_closure` | 1 |
+| `degenerate_preservation` | 1 |
+| `degenerate_parametrization` | 1 |
+| `degenerate_clustering` | 1 |
+| `singularity_detection` | 1 |
+| `singularity_topology` | 1 |
+| `singularity_matching` | 1 |
+| `pcurve_extraction` | 1 |
+| `parametric_validation` | 1 |
+| `parametric_closure` | 1 |
+| `degenerate_flag_consistency` | 1 |
+| `state management, cache invalidation` | 1 |
+| `null pointer safety` | 1 |
+| `conical degeneracy, apex detection` | 1 |
+| `toroidal degeneracy, parametric singularities` | 1 |
+| `spherical poles, normal singularity` | 1 |
+| `edge degeneracy, boundary collapse` | 1 |
+| `lazy initialization, singularity dependency` | 1 |
+| `tolerance filtering, precision consistency` | 1 |
+| `singularity matching, degenerate validation` | 1 |
+| `total degeneracy, parametric redistribution` | 1 |
+| `segment collapse, parametric alignment` | 1 |
+| `state caching, lazy evaluation` | 1 |
+| `periodicity detection, geometric property` | 1 |
+| `plane degeneracy, false positives` | 1 |
+| `extrusion closure, basis-curve dependency` | 1 |
+| `B-spline periodicity, shortcut evaluation` | 1 |
+| `boundary condition, pole count validation` | 1 |
+| `knot multiplicity, topology validation` | 1 |
+| `rational surface handling, knot-aware sampling` | 1 |
+| `pole-based closure, efficient evaluation` | 1 |
+| `pole validation, Bezier boundary` | 1 |
+| `Bezier pole closure, direct evaluation` | 1 |
+| `trimmed surface closure, grid sampling` | 1 |
+| `closure validation, geometric sanity` | 1 |
+| `caching, lazy evaluation` | 1 |
+| `periodicity detection, V-axis` | 1 |
+| `surface type shortcuts, false positives` | 1 |
+| `revolution closure, basis dependency` | 1 |
+| `V-periodic shortcut` | 1 |
+| `V-pole count validation` | 1 |
+| `V-knot validation, topology` | 1 |
+| `rational V-closure, knot sampling` | 1 |
+| `V-pole closure, efficient eval` | 1 |
+| `Bezier V-pole validation` | 1 |
+| `Bezier V-pole closure` | 1 |
+| `trimmed V-closure, grid sampling` | 1 |
+| `V-closure sanity, geometric validation` | 1 |
+| `normal degeneracy, singular points` | 1 |
+| `discriminant singularity, step computation` | 1 |
+| `domain bounds, step validation` | 1 |
+| `convergence criterion, step size` | 1 |
+| `divergence detection, residual growth` | 1 |
+| `normal error, projection accuracy` | 1 |
+| `curvature flagging, solution quality` | 1 |
+| `failure reporting, caller feedback` | 1 |
+| `continuity discontinuity, knot singularities` | 1 |
+| `V-continuity discontinuity, V-knot singularities` | 1 |
+| `solution validation, convergence flag` | 1 |
+| `high-curvature validation, fallback comparison` | 1 |
+| `solution comparison, fallback priority` | 1 |
+| `surface-type dispatch, fallback logic` | 1 |
+| `null-safety` | 1 |
+| `boundary-detection-gap` | 1 |
+| `missing-boundary` | 1 |
+| `periodicity-conditional` | 1 |
+| `surface-type-dispatch` | 1 |
+| `numerical-threshold` | 1 |
+| `idempotence` | 1 |
+| `state-management` | 1 |
+| `loop-validation` | 1 |
+| `duplicate-detection` | 1 |
+| `orientation-handling` | 1 |
+| `threshold-consistency` | 1 |
+| `wire-topology` | 1 |
+| `merge-greediness` | 1 |
+| `cardinality-threshold` | 1 |
+| `surface-type-conditional` | 1 |
+| `cardinality-check` | 1 |
+| `orientation-sensitivity` | 1 |
+| `closure_classification` | 1 |
+| `bounds_handling` | 1 |
+| `tolerance_initialization` | 1 |
+| `wire_loading` | 1 |
+| `result_topology` | 1 |
+| `wire_topology` | 1 |
+| `orientation_classification` | 1 |
+| `edge_ordering` | 1 |
+| `periodicity_handling` | 1 |
+| `intersection_classification` | 1 |
+| `tangency_merging` | 1 |
+| `tangency_state_machine` | 1 |
+| `vertex_tolerance` | 1 |
+| `periodic_indexing` | 1 |
+| `loop_termination` | 1 |
+| `grid_alignment` | 1 |
+| `missing_pcurve_data_completeness` | 1 |
+| `parameter_degeneracy_precision` | 1 |
+| `finite_difference_degeneracy` | 1 |
+| `derivative_complete_degeneracy` | 1 |
+| `complete_tangent_degeneracy` | 1 |
+| `orientation_reversal_semantics` | 1 |
+| `planar_surface_bypass` | 1 |
+| `null_vertex_topology` | 1 |
+| `location_transformation_semantics` | 1 |
+| `location_transformation_consistency` | 1 |
+| `overlap_extent_localization` | 1 |
+| `domain_distance_bypass` | 1 |
+| `mindist_stability_validation` | 1 |
+| `domain_distance_bypass_conditional` | 1 |
+| `vertex_support_parametrization` | 1 |
+| `parameterization_scale_mismatch` | 1 |
+| `support_type_coverage` | 1 |
+| `overlap_locality_tracking` | 1 |
+| `periodic_range_semantics` | 1 |
+| `trimmed_curve_unwrapping` | 1 |
+| `trimmed_curve_periodicity_override` | 1 |
+| `periodic_range_overspanning` | 1 |
+| `non_periodic_range_bounds_validation` | 1 |
+| `topology consistency` | 1 |
+| `vertex replacement coherence across wires` | 1 |
+| `edge-wire consistency` | 1 |
+| `face-wire-edge consistency` | 1 |
+| `precision preservation` | 1 |
+| `tolerance closure` | 1 |
+| `orientation coherence` | 1 |
+| `shape consistency post-deletion` | 1 |
+| `failure atomicity` | 1 |
+| `iterator safety during modification` | 1 |
+| `pcurve consistency` | 1 |
+| `input validation` | 1 |
+| `adjacent-face symmetry` | 1 |
+| `edge-face semantic consistency` | 1 |
+| `multi-face edge orientation` | 1 |
+| `edge-removal consistency` | 1 |
+| `endpoint-pair merging asymmetry` | 1 |
+| `tolerance scaling on merged vertices` | 1 |
+| `degenerate-edge handling` | 1 |
+| `branch-logic coherence` | 1 |
+| `error propagation` | 1 |
+| `curve-range consistency` | 1 |
+| `range-match precision` | 1 |
+| `tolerance conservatism` | 1 |
+| `post-split topology validity` | 1 |
+| `failure granularity` | 1 |
+| `EARLY_RETURN_DISTANCE_BIAS` | 1 |
+| `NUMERIC_UNDERFLOW_RESOLUTION` | 1 |
+| `UNBOUNDED_CURVE_BYPASS` | 1 |
+| `TOLERANCE_REGRESSION` | 1 |
+| `EPSILON_RACE_CONDITION` | 1 |
+| `HISTORY_IGNORED` | 1 |
+| `PARAMETER_RANGE_OVERFLOW` | 1 |
+| `SAMPLING_UNDERRESOLUTION` | 1 |
+| `INTERVAL_BOUNDARY_MISMATCH` | 1 |
+| `UNCONSTRAINED_SEARCH_DRIFT` | 1 |
+| `DEGENERATE_REFERENCE_FRAME` | 1 |
+| `SIGN_AMBIGUITY` | 1 |
+| `ACCUMULATION_STABILITY` | 1 |
+| `DEGENERATE_ACCEPTANCE` | 1 |
+| `CURVE_GEOMETRY_BLIND` | 1 |
+| `AXIS_VS_CONTAINMENT` | 1 |
+| `TRIM_CONTEXT_LOSS` | 1 |
+| `POLE_SUFFICIENCY_FALSE` | 1 |
+| `COMPOSITE_PLANE_MISMATCH` | 1 |
+| `same-domain detection / tolerance boundary / seam-edge coherence` | 1 |
+| `same-domain detection / direction continuity / tolerance tolerance` | 1 |
+| `closure handling / edge sequencing / same-domain detection` | 1 |
+| `memory safety / iterator stability / closure semantics` | 1 |
+| `null-pointer safety / map coherence / shell association` | 1 |
+| `degenerate edge handling / free boundary definition / same-domain filtering` | 1 |
+| `shell isolation / face traversal / coverage completeness` | 1 |
+| `context coherence / modification tracking / history consistency` | 1 |
+| `safe-mode consistency / shape tracking / context state coherence` | 1 |
+| `merge coherence / context recording / history consistency` | 1 |
+| `null-safety / removal tracking / history coherence` | 1 |
+| `pcurve coherence / safe-mode limitation / face fix dependency` | 1 |
+| `shape consistency / shell orientation / context apply ordering` | 1 |
+| `shape identity / modification detection / orientation semantics` | 1 |
+| `history completeness / null-safety contract / caller expectation` | 1 |
+| `null-pointer safety / context state / history dependency` | 1 |
+| `shape taxonomy / coverage completeness / history scope` | 1 |
+| `null-safety / history coherence / state validation` | 1 |
+| `history semantics / multi-image tracking / modification classification` | 1 |
+| `shape identity semantics / modification definition / history completeness` | 1 |
+| `mode-flag-precedence` | 1 |
+| `state-accumulation-semantics` | 1 |
+| `dual-storage-consistency` | 1 |
+| `stale-cache-semantics` | 1 |
+| `null-pointer-risk` | 1 |
+| `tolerance-semantics-ambiguity` | 1 |
+| `shape_validation` | 1 |
+| `face_culling` | 1 |
+| `state_deduplication` | 1 |
+| `mode_application` | 1 |
+| `orientation_filtering` | 1 |
+| `progress_handling` | 1 |
+| `state_lookup` | 1 |
+| `vertex_graph` | 1 |
+| `merge_idempotence` | 1 |
+| `section_validation` | 1 |
+| `merge_strategy` | 1 |
+| `merge_outcome` | 1 |
+| `bound_filtering` | 1 |
+| `geometric_filtering` | 1 |
+| `section_creation` | 1 |
+| `state_mutation` | 1 |
+| `orientation` | 1 |
+| `context` | 1 |
+| `discontinuity` | 1 |
+| `geometry` | 1 |
+| `consistency` | 1 |
+| `bounds` | 1 |
+| `tangency` | 1 |
+| `INITIALIZATION_CONSISTENCY` | 1 |
+| `SURFACE_PERIODICITY_HANDLING` | 1 |
+| `STATUS_MAPPING` | 1 |
+| `EARLY_EXIT_LOGIC` | 1 |
+| `ORDER_STATUS_ENCODING` | 1 |
+| `EARLY_EXIT_NOOP` | 1 |
+| `ERROR_THRESHOLD_DETECTION` | 1 |
+| `CARDINALITY_VIOLATION` | 1 |
+| `INVALID_ORDERING_INDEX` | 1 |
+| `VERTEX_COINCIDENCE_HANDLING` | 1 |
+| `CONTEXT_MODIFICATION_LOGIC` | 1 |
+| `INDEX_ORDERING` | 1 |
+| `TAIL_DETECTION_FAILURE` | 1 |
+| `EDGE_CONSERVATION` | 1 |
+| `SPLIT_SKIP_LOGIC` | 1 |
+| `ORIENTATION_MAPPING` | 1 |
+| `INDEX_OFFSET_LOGIC` | 1 |
+| `DUAL_EDGE_REMOVAL_PATH` | 1 |
+| `EDGE_COUNT_PRESERVATION` | 1 |
+| `SYMMETRIC_SPLIT_HANDLING` | 1 |
+| `ASYMMETRIC_SPLIT_HANDLING` | 1 |
+| `SINGLE_EDGE_REMOVAL_PATH` | 1 |
+| `REMOVAL_TARGET_DETECTION` | 1 |
+| `SPLIT_HANDLING_ON_REMOVAL` | 1 |
+| `REMOVE_INDEX_OFFSET` | 1 |
+| `defensive-nullcheck-swallowed` | 1 |
+| `boundary-precision-off-by-one` | 1 |
+| `distance-metric-inconsistency` | 1 |
+| `degenerate-axis-flag-validation` | 1 |
+| `resolution-precision-boundary` | 1 |
+| `tolerance-scaling-unbounded` | 1 |
+| `direct-projection-bounds` | 1 |
+| `period-adjustment-consistency` | 1 |
+| `cone-singularity-bounds` | 1 |
+| `sphere-pole-singularity` | 1 |
+| `torus-dual-wrap-consistency` | 1 |
+| `newton-convergence-silent` | 1 |
+| `offset-surface-extension-skip` | 1 |
+| `extrema-index-initialization` | 1 |
+| `workaround-distance-override` | 1 |
+| `newton-refinement-guard` | 1 |
+| `local-extremum-classification` | 1 |
+| `iso-fallback-comparison` | 1 |
+| `dual-algorithm-failure` | 1 |
+| `exception-fallback-origin` | 1 |
+| `state-persistence-gap` | 1 |
+| `array-swap-boundary` | 1 |
+| `parallel-array-invariant` | 1 |
+| `null-iso-silent-skip` | 1 |
+| `cache-invalidation-surface-change` | 1 |
+| `TYPE_SAFETY` | 1 |
+| `DEGENERATE_HANDLING` | 1 |
+| `VALIDATION_BYPASS` | 1 |
+| `RANGE_CONSISTENCY` | 1 |
+| `STATE_CONSISTENCY` | 1 |
+| `PRECISION_LOSS` | 1 |
+| `ERROR_CLASSIFICATION` | 1 |
+| `SELECTION_LOGIC` | 1 |
+| `incomplete-state-transition` | 1 |
+| `missing-validation-fallback` | 1 |
+| `unvalidated-transform` | 1 |
+| `tolerance-threshold-bypass` | 1 |
+| `periodic-range-underflow` | 1 |
+| `silent-failure-masking` | 1 |
+| `fallback-without-validation` | 1 |
+| `unscaled-tolerance-comparison` | 1 |
+| `transform-direction-inconsistency` | 1 |
+| `missing-precondition-check` | 1 |
+| `degenerate-range-assumption` | 1 |
+| `silent-clamping-error` | 1 |
+| `incomplete-delegation` | 1 |
+| `incomplete-error-state` | 1 |
+| `unchecked-curve-evaluation` | 1 |
+| `epsilon-adjustment-overflow` | 1 |
+| `incomplete-basis-resolution` | 1 |
+| `multi-representation-consistency` | 1 |
+| `parameter-domain-mismatch` | 1 |
+| `missing-representation-fallback` | 1 |
+| `unchecked-projection-result` | 1 |
+| `parameter-out-of-range-evaluation` | 1 |
+| `surface-domain-mismatch` | 1 |
+| `degenerate-surface-handling` | 1 |
+| `unvalidated-uv-parameters` | 1 |
+| `incomplete_edge_consumption` | 1 |
+| `endpoint_preference` | 1 |
+| `cutting_node_dedup` | 1 |
+| `tolerance_threshold` | 1 |
+| `parameter_range_inclusion` | 1 |
+| `section_face_binding` | 1 |
+| `pcurve_existence` | 1 |
+| `curve-projection-failure` | 1 |
+| `parametric-gap-detection-failure` | 1 |
+| `geometric-gap-detection` | 1 |
+| `topology-orientation-error` | 1 |
+| `degenerate-edge-detection` | 1 |
+| `vertex-extraction-failure` | 1 |
+| `topology-connectivity-error` | 1 |
+| `singular-derivative-detection` | 1 |
+| `geometric-discontinuity-detection` | 1 |
+| `orthogonal-projection-failure` | 1 |
+| `proximity-sampling-failure` | 1 |
+| `Control flow safety` | 1 |
+| `Type safety` | 1 |
+| `Loop invariant violation` | 1 |
+| `Index out-of-bounds` | 1 |
+| `Null dereference` | 1 |
+| `Data loss` | 1 |
+| `Inconsistent error reporting` | 1 |
+| `Variable scope violation` | 1 |
+| `Numerical robustness` | 1 |
+| `Control flow ambiguity` | 1 |
+| `Numerical overflow` | 1 |
+| `Tolerance coherence` | 1 |
+| `floating_point_accumulation` | 1 |
+| `error_suppression` | 1 |
+| `error_masking` | 1 |
+| `classification_soundness` | 1 |
+| `robustness` | 1 |
+| `classification_staleness` | 1 |
+| `error_transparency` | 1 |
+| `null_geometry_handling` | 1 |
+| `type_coverage` | 1 |
 
 ## Per-method records
 
 ### BRepBuilderAPI_Sewing
+
+#### `BRepBuilderAPI_Sewing.AnalysisNearestEdges`
+ (6 branches; source: `v3-deep-batch-C.json`)
+
+##### `BRepBuilderAPI_Sewing.AnalysisNearestEdges.section_bound_lookup`
+- **Line**: BRepBuilderAPI_Sewing.cxx:1636  **Axis**: `healer-state`
+- **Brief**: Missing bound mapping lookup causes canonical edge representation to be lost.
+- **Falsifiable claim**: Without if(mySectionBound.IsBound(bnd)) remap, edge identity remains non-canonical, duplicating work face retrieval. To test: Add edge with bound mapping to mySectionBound. Without: workfaces lookup fails. With: resolves to mapped edge.
+- **Minimal reproducer**: Add canonical edge Ecan to mySectionBound with key=Eduplicate. Call AnalysisNearestEdges with Eduplicate. Without remap: myBoundFaces lookup on Eduplicate fails. With: remaps to Ecan, lookup succeeds.
+- **Search anchors**: 'mySectionBound.IsBound', 'canonical edge', 'remap'
+
+##### `BRepBuilderAPI_Sewing.AnalysisNearestEdges.work_faces_lookup`
+- **Line**: BRepBuilderAPI_Sewing.cxx:1641  **Axis**: `healer-state`
+- **Brief**: Omitting work-edge face lookup causes subsequent analysis to proceed without face context.
+- **Falsifiable claim**: Without if(myBoundFaces.Contains(bnd)) lookup, workfaces remains empty, causing early return at line 1648. To test: work edge not in myBoundFaces. Without: function continues with empty workfaces. With: returns early.
+- **Minimal reproducer**: Call AnalysisNearestEdges with workIndex pointing to edge absent from myBoundFaces. Without check: workfaces empty, return at 1648. With: Contains fails, populated workfaces.
+- **Search anchors**: 'myBoundFaces.Contains', 'workfaces', 'face list'
+
+##### `BRepBuilderAPI_Sewing.AnalysisNearestEdges.empty_workfaces_gate`
+- **Line**: BRepBuilderAPI_Sewing.cxx:1648  **Axis**: `healer-state`
+- **Brief**: Skipping empty-workfaces check causes mapFaces to remain empty, invalidating membership tests.
+- **Falsifiable claim**: Without if(workfaces.IsEmpty()) return, mapFaces is populated with empty list, causing all subsequent Contains(face) to fail. To test: work edge with no faces. Without: mapFaces empty, false positives at line 1678. With: returns early.
+- **Minimal reproducer**: Construct work edge with empty workfaces list. Call AnalysisNearestEdges. Without guard: mapFaces empty, all isMerged checks fail. With: returns, avoids cascade.
+- **Search anchors**: 'workfaces.IsEmpty', 'early return', 'face list validation'
+
+##### `BRepBuilderAPI_Sewing.AnalysisNearestEdges.shared_face_membership`
+- **Line**: BRepBuilderAPI_Sewing.cxx:1678  **Axis**: `kernel-pair`
+- **Brief**: Omitting shared-face membership check causes merge decision to be based on unrelated geometry.
+- **Falsifiable claim**: Without if(mapFaces.Contains(lIt.Value())) guard, IsMergedClosed is invoked on faces not shared between work and candidate edges. To test: Edges on disjoint faces. Without: IsMergedClosed on unrelated face. With: skipped.
+- **Minimal reproducer**: Work edge E1 on Face F1. Candidate E2 on Face F2 (disjoint). Call AnalysisNearestEdges. Without check: IsMergedClosed(E1, E2, F2) invoked. With: skipped due to F2 not in mapFaces.
+- **Search anchors**: 'mapFaces.Contains', 'shared face', 'membership test'
+
+##### `BRepBuilderAPI_Sewing.AnalysisNearestEdges.unevaluated_distance_filter_first_pass`
+- **Line**: BRepBuilderAPI_Sewing.cxx:1682  **Axis**: `kernel-pair`
+- **Brief**: Failing to filter unevaluated (-1) or out-of-tolerance edges includes spurious candidates in first pass.
+- **Falsifiable claim**: Without if(arrDist(n)==-1 || arrDist(n)>tolerance) continue, candidates with tabDst=-1 (unevaluated) are added to MapIndex. To test: candidate with arrDist=-1. Without: included. With: skipped.
+- **Minimal reproducer**: EvaluateDistances returns arrDist(3)=-1 (failed eval). If check absent: MapIndex.Add(3) skipped. With check: not added, candidate remains candidate.
+- **Search anchors**: 'arrDist == -1', 'tolerance filter', 'threshold'
+
+##### `BRepBuilderAPI_Sewing.AnalysisNearestEdges.distance_tolerance_filter_second_pass`
+- **Line**: BRepBuilderAPI_Sewing.cxx:1732  **Axis**: `tolerance`
+- **Brief**: Omitting distance threshold check allows out-of-tolerance candidates in distance comparison.
+- **Falsifiable claim**: Without if(tabDst(n+1)==-1 || tabDst(n+1)>tolerance) continue, out-of-tolerance distances are compared against reference at line 1733. To test: tabDst(n+1) >> tolerance. Without: included in comparison. With: skipped.
+- **Minimal reproducer**: tabDst(2)=0.5, myTolerance=0.1. Without check: if(tabDst(2)<TotTabDist(1,1)) proceeds. With: skipped due to >tolerance filter.
+- **Search anchors**: 'tabDst > myTolerance', 'threshold filter', 'continue'
+
+
+#### `BRepBuilderAPI_Sewing.CreateCuttingNodes_at5490`
+ (12 branches; 9 low-confidence; source: `v3-deep-batch-U.json`)
+
+##### `CreateCuttingNodes_at5490_5500` **[low-confidence]**
+- **Line**: 5500  **Axis**: `control_flow_ambiguity`
+- **Brief**: distProj < 0.0
+- **Falsifiable claim**: Branch at 5500 may not handle all valid input states
+- **Minimal reproducer**: Construct edge/face topology triggering branch
+- **Search anchors**: 'distProj < 0.0'
+
+##### `CreateCuttingNodes_at5490_5508` **[low-confidence]**
+- **Line**: 5508  **Axis**: `control_flow_ambiguity`
+- **Brief**: isInserted
+- **Falsifiable claim**: Branch at 5508 may not handle all valid input states
+- **Minimal reproducer**: Construct edge/face topology triggering branch
+- **Search anchors**: 'isInserted'
+
+##### `CreateCuttingNodes_at5490_5514` **[low-confidence]**
+- **Line**: 5514  **Axis**: `control_flow_ambiguity`
+- **Brief**: !isInserted
+- **Falsifiable claim**: Negated branch at 5514 may not handle all valid input states
+- **Minimal reproducer**: Construct edge/face topology triggering branch
+- **Search anchors**: '!isInserted'
+
+##### `CreateCuttingNodes_at5490_5522` **[low-confidence]**
+- **Line**: 5522  **Axis**: `control_flow_ambiguity`
+- **Brief**: !nbProj
+- **Falsifiable claim**: Negated branch at 5522 may not handle all valid input states
+- **Minimal reproducer**: Construct edge/face topology triggering branch
+- **Search anchors**: '!nbProj'
+
+##### `CreateCuttingNodes_at5490_5537` **[low-confidence]**
+- **Line**: 5537  **Axis**: `control_flow_ambiguity`
+- **Brief**: !loc.IsIdentity(
+- **Falsifiable claim**: Negated branch at 5537 may not handle all valid input states
+- **Minimal reproducer**: Construct edge/face topology triggering branch
+- **Search anchors**: '!loc.IsIdentity'
+
+##### `CreateCuttingNodes_at5490_5563`
+- **Line**: 5563  **Axis**: `cutting_node_dedup`
+- **Brief**: NodeCuttingVertex.Contains(node
+- **Falsifiable claim**: Duplicate cutting nodes inserted at same parameter
+- **Minimal reproducer**: Multiple faces intersect at same curve parameter
+- **Search anchors**: 'NodeCuttingVertex.Contains'
+
+##### `CreateCuttingNodes_at5490_5574` **[low-confidence]**
+- **Line**: 5574  **Axis**: `control_flow_ambiguity`
+- **Brief**: dist < distMin
+- **Falsifiable claim**: Branch at 5574 may not handle all valid input states
+- **Minimal reproducer**: Construct edge/face topology triggering branch
+- **Search anchors**: 'dist < distMin'
+
+##### `CreateCuttingNodes_at5490_5582`
+- **Line**: 5582  **Axis**: `tolerance_threshold`
+- **Brief**: distMin <= std::max(disProj * 0.1, MinTolerance(
+- **Falsifiable claim**: Dynamic tolerance formula may not account for curve curvature
+- **Minimal reproducer**: Highly curved edges with tight tolerances
+- **Search anchors**: 'distMin <= std::max'
+
+##### `CreateCuttingNodes_at5490_5586` **[low-confidence]**
+- **Line**: 5586  **Axis**: `control_flow_ambiguity`
+- **Brief**: jdist < 0.0
+- **Falsifiable claim**: Branch at 5586 may not handle all valid input states
+- **Minimal reproducer**: Construct edge/face topology triggering branch
+- **Search anchors**: 'jdist < 0.0'
+
+##### `CreateCuttingNodes_at5490_5610` **[low-confidence]**
+- **Line**: 5610  **Axis**: `control_flow_ambiguity`
+- **Brief**: parProj <= seqPara.Value(j
+- **Falsifiable claim**: Branch at 5610 may not handle all valid input states
+- **Minimal reproducer**: Construct edge/face topology triggering branch
+- **Search anchors**: 'parProj <= seqPara.Value'
+
+##### `CreateCuttingNodes_at5490_5629` **[low-confidence]**
+- **Line**: 5629  **Axis**: `control_flow_ambiguity`
+- **Brief**: cnode.IsNull(
+- **Falsifiable claim**: Branch at 5629 may not handle all valid input states
+- **Minimal reproducer**: Construct edge/face topology triggering branch
+- **Search anchors**: 'cnode.IsNull'
+
+##### `CreateCuttingNodes_at5490_5635`
+- **Line**: 5635  **Axis**: `vertex_deduplication`
+- **Brief**: myVertexNode.Contains(cnode
+- **Falsifiable claim**: Vertex nodes may not be properly deduplicated across merges
+- **Minimal reproducer**: Coincident vertices after projection
+- **Search anchors**: 'myVertexNode.Contains'
+
+
+#### `BRepBuilderAPI_Sewing.CreateOutputInformations`
+ (3 branches; source: `v3-deep-batch-A.json`)
+
+##### `BRepBuilderAPI_Sewing.CreateOutputInformations.edge-degeneracy-classification`
+- **Line**: BRepBuilderAPI_Sewing.cxx:5312  **Axis**: `input-shape`
+- **Brief**: Classifies edges as degenerated or regular for sewing output tracking.
+- **Falsifiable claim**: Without classification, degenerated edges are merged or matched incorrectly. To test: sew topology with degenerate edge; without classification, wrong adjacency.
+- **Minimal reproducer**: Two shells sharing a degenerated edge at boundary. Sew with CreateOutputInformations. Without classification: degenerate treated as regular, causes spurious matching. With classification: degenerate excluded from edge matching.
+- **Search anchors**: 'Degenerated', 'myDegenerated', 'TopoDS::Edge'
+
+##### `BRepBuilderAPI_Sewing.CreateOutputInformations.edge-multiplicity-bucketing`
+- **Line**: BRepBuilderAPI_Sewing.cxx:5310  **Axis**: `healer-state`
+- **Brief**: Buckets edges by appearance count to identify free, contiguous, and multi-use edges.
+- **Falsifiable claim**: Without multiplicity tracking, free edges are confused with shared edges, causing incorrect output topology. To test: shell with boundary + interior edges; without bucketing, boundary treated as shared.
+- **Minimal reproducer**: Open shell: edges on boundary appear once, interior edges twice. CreateOutputInformations. Without bucketing: all edges mixed. With bucketing: free (1x) separated from contiguous (2x).
+- **Search anchors**: 'listSection.Extent', 'myFreeEdges', 'myMultipleEdges'
+
+##### `BRepBuilderAPI_Sewing.CreateOutputInformations.section-edge-identity`
+- **Line**: BRepBuilderAPI_Sewing.cxx:5283  **Axis**: `kernel-pair`
+- **Brief**: Matches edges to their section references by equality after reShape transformation.
+- **Falsifiable claim**: Without identity check, sections are mismatched to edges, causing wrong topology in output. To test: reShape changes edge identity; without check, wrong section assigned.
+- **Minimal reproducer**: Construct edge-section pair where reShape(section) transforms identity. CreateOutputInformations. Without identity match: wrong section mapped. With match: correct section identified.
+- **Search anchors**: 'IsSame', 'myReShape->Apply', 'edge.IsSame'
+
+
+#### `BRepBuilderAPI_Sewing.CreateSections_at5673`
+ (10 branches; 7 low-confidence; source: `v3-deep-batch-U.json`)
+
+##### `CreateSections_at5673_5697` **[low-confidence]**
+- **Line**: 5697  **Axis**: `control_flow_ambiguity`
+- **Brief**: i == 1
+- **Falsifiable claim**: Branch at 5697 may not handle all valid input states
+- **Minimal reproducer**: Construct edge/face topology triggering branch
+- **Search anchors**: 'i == 1'
+
+##### `CreateSections_at5673_5704` **[low-confidence]**
+- **Line**: 5704  **Axis**: `control_flow_ambiguity`
+- **Brief**: i == len
+- **Falsifiable claim**: Branch at 5704 may not handle all valid input states
+- **Minimal reproducer**: Construct edge/face topology triggering branch
+- **Search anchors**: 'i == len'
+
+##### `CreateSections_at5673_5734`
+- **Line**: 5734  **Axis**: `parameter_range_inclusion`
+- **Brief**: apar >= par1 && apar <= par2
+- **Falsifiable claim**: Boundary parameter inequality may exclude/include wrong curve segments
+- **Minimal reproducer**: Section parameter coincident with range boundary
+- **Search anchors**: 'apar >= par1 && apar <= par2'
+
+##### `CreateSections_at5673_5746`
+- **Line**: 5746  **Axis**: `section_face_binding`
+- **Brief**: !listFaces.Extent(
+- **Falsifiable claim**: Negated empty face list causes null section creation
+- **Minimal reproducer**: Edge with no incident faces (non-manifold)
+- **Search anchors**: '!listFaces.Extent'
+
+##### `CreateSections_at5673_5763`
+- **Line**: 5763  **Axis**: `pcurve_existence`
+- **Brief**: c2d.IsNull(
+- **Falsifiable claim**: Null PCurve silently skipped; section incomplete
+- **Minimal reproducer**: Face-edge combination without 2D curve
+- **Search anchors**: 'c2d.IsNull'
+
+##### `CreateSections_at5673_5792` **[low-confidence]**
+- **Line**: 5792  **Axis**: `control_flow_ambiguity`
+- **Brief**: isSeam
+- **Falsifiable claim**: Branch at 5792 may not handle all valid input states
+- **Minimal reproducer**: Construct edge/face topology triggering branch
+- **Search anchors**: 'isSeam'
+
+##### `CreateSections_at5673_5797` **[low-confidence]**
+- **Line**: 5797  **Axis**: `control_flow_ambiguity`
+- **Brief**: c2d1.IsNull(
+- **Falsifiable claim**: Branch at 5797 may not handle all valid input states
+- **Minimal reproducer**: Construct edge/face topology triggering branch
+- **Search anchors**: 'c2d1.IsNull'
+
+##### `CreateSections_at5673_5839` **[low-confidence]**
+- **Line**: 5839  **Axis**: `control_flow_ambiguity`
+- **Brief**: !c2d1.IsNull(
+- **Falsifiable claim**: Negated branch at 5839 may not handle all valid input states
+- **Minimal reproducer**: Construct edge/face topology triggering branch
+- **Search anchors**: '!c2d1.IsNull'
+
+##### `CreateSections_at5673_5855` **[low-confidence]**
+- **Line**: 5855  **Axis**: `control_flow_ambiguity`
+- **Brief**: !isSeam && c2d1New.IsNull(
+- **Falsifiable claim**: Negated branch at 5855 may not handle all valid input states
+- **Minimal reproducer**: Construct edge/face topology triggering branch
+- **Search anchors**: '!isSeam && c2d1New.IsNull'
+
+##### `CreateSections_at5673_5862` **[low-confidence]**
+- **Line**: 5862  **Axis**: `control_flow_ambiguity`
+- **Brief**: fac.Orientation(
+- **Falsifiable claim**: Branch at 5862 may not handle all valid input states
+- **Minimal reproducer**: Construct edge/face topology triggering branch
+- **Search anchors**: 'fac.Orientation'
+
+
+#### `BRepBuilderAPI_Sewing.CreateSewedShape_at5031`
+ (9 branches; 9 low-confidence; source: `v3-deep-batch-U.json`)
+
+##### `CreateSewedShape_at5031_5037` **[low-confidence]**
+- **Line**: 5037  **Axis**: `control_flow_ambiguity`
+- **Brief**: isLocal
+- **Falsifiable claim**: Branch at 5037 may not handle all valid input states
+- **Minimal reproducer**: Construct edge/face topology triggering branch
+- **Search anchors**: 'isLocal'
+
+##### `CreateSewedShape_at5031_5048` **[low-confidence]**
+- **Line**: 5048  **Axis**: `control_flow_ambiguity`
+- **Brief**: !sh.IsNull(
+- **Falsifiable claim**: Negated branch at 5048 may not handle all valid input states
+- **Minimal reproducer**: Construct edge/face topology triggering branch
+- **Search anchors**: '!sh.IsNull'
+
+##### `CreateSewedShape_at5031_5052` **[low-confidence]**
+- **Line**: 5052  **Axis**: `control_flow_ambiguity`
+- **Brief**: !isLocal
+- **Falsifiable claim**: Negated branch at 5052 may not handle all valid input states
+- **Minimal reproducer**: Construct edge/face topology triggering branch
+- **Search anchors**: '!isLocal'
+
+##### `CreateSewedShape_at5031_5070` **[low-confidence]**
+- **Line**: 5070  **Axis**: `control_flow_ambiguity`
+- **Brief**: sh.ShapeType(
+- **Falsifiable claim**: Branch at 5070 may not handle all valid input states
+- **Minimal reproducer**: Construct edge/face topology triggering branch
+- **Search anchors**: 'sh.ShapeType'
+
+##### `CreateSewedShape_at5031_5072` **[low-confidence]**
+- **Line**: 5072  **Axis**: `control_flow_ambiguity`
+- **Brief**: myNonmanifold
+- **Falsifiable claim**: Branch at 5072 may not handle all valid input states
+- **Minimal reproducer**: Construct edge/face topology triggering branch
+- **Search anchors**: 'myNonmanifold'
+
+##### `CreateSewedShape_at5031_5085` **[low-confidence]**
+- **Line**: 5085  **Axis**: `control_flow_ambiguity`
+- **Brief**: numf == 1
+- **Falsifiable claim**: Branch at 5085 may not handle all valid input states
+- **Minimal reproducer**: Construct edge/face topology triggering branch
+- **Search anchors**: 'numf == 1'
+
+##### `CreateSewedShape_at5031_5099` **[low-confidence]**
+- **Line**: 5099  **Axis**: `control_flow_ambiguity`
+- **Brief**: sh.ShapeType(
+- **Falsifiable claim**: Branch at 5099 may not handle all valid input states
+- **Minimal reproducer**: Construct edge/face topology triggering branch
+- **Search anchors**: 'sh.ShapeType'
+
+##### `CreateSewedShape_at5031_5101` **[low-confidence]**
+- **Line**: 5101  **Axis**: `control_flow_ambiguity`
+- **Brief**: myNonmanifold
+- **Falsifiable claim**: Branch at 5101 may not handle all valid input states
+- **Minimal reproducer**: Construct edge/face topology triggering branch
+- **Search anchors**: 'myNonmanifold'
+
+##### `CreateSewedShape_at5031_5120` **[low-confidence]**
+- **Line**: 5120  **Axis**: `control_flow_ambiguity`
+- **Brief**: hasEdges
+- **Falsifiable claim**: Branch at 5120 may not handle all valid input states
+- **Minimal reproducer**: Construct edge/face topology triggering branch
+- **Search anchors**: 'hasEdges'
+
+
+#### `BRepBuilderAPI_Sewing.Cutting`
+ (7 branches; 1 low-confidence; source: `v3-deep-batch-O.json`)
+
+##### `Cutting-B1`
+- **Line**: 4443  **Axis**: `state_validation`
+- **Brief**: Empty vertex node map skip
+- **Falsifiable claim**: If nbVertices==0, early return; no bounds processed
+- **Minimal reproducer**: Call Cutting with no vertex nodes; verify no-op
+- **Search anchors**: 'if (!nbVertices)', 'return'
+
+##### `Cutting-B2`
+- **Line**: 4475  **Axis**: `bound_filtering`
+- **Brief**: Floating edge skip in cut iteration
+- **Falsifiable claim**: Bounds with empty face list (floating edges) not cut
+- **Minimal reproducer**: Add floating edge bound; verify not in myBoundSections after Cutting
+- **Search anchors**: '!anIterB.Value().Extent()', 'continue'
+
+##### `Cutting-B3`
+- **Line**: 4481  **Axis**: `curve_validation`
+- **Brief**: Null bound curve skip
+- **Falsifiable claim**: Bounds with null 3D curve not cut; silently skipped
+- **Minimal reproducer**: Add bound with null curve; verify not cut
+- **Search anchors**: 'c3d.IsNull()', 'continue'
+
+##### `Cutting-B4`
+- **Line**: 4510  **Axis**: `geometric_filtering`
+- **Brief**: Empty candidate vertex search skip
+- **Falsifiable claim**: If no candidates in bounding box, bound not cut
+- **Minimal reproducer**: Add bound far from all vertices; verify not cut
+- **Search anchors**: '!aSelector.ResInd().Extent()', 'continue'
+
+##### `Cutting-B5` **[low-confidence]**
+- **Line**: 4539  **Axis**: `section_creation`
+- **Brief**: No-cut on empty seqPara result
+- **Falsifiable claim**: If CreateCuttingNodes produces no parameters, bound not cut
+- **Minimal reproducer**: Add bound; verify CreateCuttingNodes empty -> no sections
+- **Search anchors**: '!seqPara.Length()', 'continue'
+
+##### `Cutting-B6`
+- **Line**: 4547  **Axis**: `state_mutation`
+- **Brief**: Multi-section bound update path
+- **Falsifiable claim**: listSections.Extent() > 1 triggers map updates; single section ignored
+- **Minimal reproducer**: Verify CreateSections produces 2+ sections -> myBoundSections updated
+- **Search anchors**: 'if (listSections.Extent() > 1)', 'myBoundSections.Bind(bound, listSections)'
+
+##### `Cutting-B7`
+- **Line**: 4560  **Axis**: `state_mapping`
+- **Brief**: Vertex-to-node resolution on cut sections
+- **Falsifiable claim**: Section vertices resolved to nodes via myVertexNode map
+- **Minimal reproducer**: Verify cut section vertex maps to node correctly
+- **Search anchors**: 'if (myVertexNode.Contains(vertex))', 'vertex = TopoDS::Vertex(myVertexNode.FindFromKey(vertex))'
+
+
+#### `BRepBuilderAPI_Sewing.Dump`
+ (0 branches; source: `v3-deep-batch-O.json`)
+
+
+#### `BRepBuilderAPI_Sewing.EdgeProcessing_at4913`
+ (8 branches; 4 low-confidence; source: `v3-deep-batch-U.json`)
+
+##### `EdgeProcessing_at4913_4925` **[low-confidence]**
+- **Line**: 4925  **Axis**: `control_flow_ambiguity`
+- **Brief**: listFaces.Extent(
+- **Falsifiable claim**: Branch at 4925 may not handle all valid input states
+- **Minimal reproducer**: Construct edge/face topology triggering branch
+- **Search anchors**: 'listFaces.Extent'
+
+##### `EdgeProcessing_at4913_4927` **[low-confidence]**
+- **Line**: 4927  **Axis**: `control_flow_ambiguity`
+- **Brief**: myBoundSections.IsBound(bound
+- **Falsifiable claim**: Branch at 4927 may not handle all valid input states
+- **Minimal reproducer**: Construct edge/face topology triggering branch
+- **Search anchors**: 'myBoundSections.IsBound'
+
+##### `EdgeProcessing_at4913_4932`
+- **Line**: 4932  **Axis**: `edge_state_machine`
+- **Brief**: !myMergedEdges.Contains(liter.Value(
+- **Falsifiable claim**: Negated merged edge state not properly propagated through classifiers
+- **Minimal reproducer**: Multi-face edges marked merged but not excluded from processing
+- **Search anchors**: 'myMergedEdges.Contains'
+
+##### `EdgeProcessing_at4913_4935`
+- **Line**: 4935  **Axis**: `free_edge_tracking`
+- **Brief**: !MapFreeEdges.Contains(edge
+- **Falsifiable claim**: Negated duplicate free edges added to map causing iteration corruption
+- **Minimal reproducer**: Sew shells with multiply-referenced boundaries
+- **Search anchors**: 'MapFreeEdges.Contains'
+
+##### `EdgeProcessing_at4913_4946`
+- **Line**: 4946  **Axis**: `edge_state_machine`
+- **Brief**: !myMergedEdges.Contains(bound
+- **Falsifiable claim**: Negated merged edge state not properly propagated through classifiers
+- **Minimal reproducer**: Multi-face edges marked merged but not excluded from processing
+- **Search anchors**: 'myMergedEdges.Contains'
+
+##### `EdgeProcessing_at4913_4960`
+- **Line**: 4960  **Axis**: `incomplete_edge_consumption`
+- **Brief**: !MapFreeEdges.IsEmpty(
+- **Falsifiable claim**: Negated orphaned free edges remain after processing loop
+- **Minimal reproducer**: Process shell with unreachable edge sets
+- **Search anchors**: '!MapFreeEdges.IsEmpty'
+
+##### `EdgeProcessing_at4913_4967` **[low-confidence]**
+- **Line**: 4967  **Axis**: `control_flow_ambiguity`
+- **Brief**: !IsDegeneratedWire(wire
+- **Falsifiable claim**: Negated branch at 4967 may not handle all valid input states
+- **Minimal reproducer**: Construct edge/face topology triggering branch
+- **Search anchors**: '!IsDegeneratedWire'
+
+##### `EdgeProcessing_at4913_4976` **[low-confidence]**
+- **Line**: 4976  **Axis**: `control_flow_ambiguity`
+- **Brief**: EdgeFace.IsBound(edge
+- **Falsifiable claim**: Branch at 4976 may not handle all valid input states
+- **Minimal reproducer**: Construct edge/face topology triggering branch
+- **Search anchors**: 'EdgeFace.IsBound'
+
+
+#### `BRepBuilderAPI_Sewing.EvaluateAngulars`
+ (6 branches; source: `v3-deep-batch-C.json`)
+
+##### `BRepBuilderAPI_Sewing.EvaluateAngulars.unbound_section_skip`
+- **Line**: BRepBuilderAPI_Sewing.cxx:1212  **Axis**: `healer-state`
+- **Brief**: Missing surface lookup causes normal computation to be skipped for sections without bound-face mapping.
+- **Falsifiable claim**: Without the myBoundFaces.Contains(bnd) check, attempting to retrieve surface for unmapped edges would throw null-dereference or access invalid memory. To test: construct edge without myBoundFaces entry, invoke EvaluateAngulars; Without: crash/undefined normal. With: normal skipped, tabAng remains -1.
+- **Minimal reproducer**: Construct TopoDS_Edge E1 with 3D curve. Add E1 to sequenceSec. Do NOT add E1 to myBoundFaces map. Call EvaluateAngulars(sequenceSec, ..., 1). Without check: surface retrieval fails. With check: section skipped, tabAng(1)=-1.
+- **Search anchors**: 'myBoundFaces.Contains', 'surface lookup', 'normal vector computation'
+
+##### `BRepBuilderAPI_Sewing.EvaluateAngulars.location_transform_omission`
+- **Line**: BRepBuilderAPI_Sewing.cxx:1218  **Axis**: `input-shape`
+- **Brief**: Skipping location transformation for non-identity placements corrupts normal vector in global coordinate system.
+- **Falsifiable claim**: Without the !loc.IsIdentity() transform, normals computed in local coordinates would not align with global frame. To test: Create surface with non-trivial placement; Construct curve on transformed surface. Without: computed normal direction offset from true global direction. With: normal correctly transformed.
+- **Minimal reproducer**: Create Face F with Geom_Surface S and non-identity TopLoc_Location L. Build Edge E on F. Call EvaluateAngulars with E. Without transform: normal magnitude correct but direction rotated by L. With transform: normal direction matches global orientation.
+- **Search anchors**: 'loc.IsIdentity', 'Transform', 'normal vector'
+
+##### `BRepBuilderAPI_Sewing.EvaluateAngulars.reference_validation_gate`
+- **Line**: BRepBuilderAPI_Sewing.cxx:1227  **Axis**: `kernel-pair`
+- **Brief**: Missing reference edge validation causes evaluation to proceed with null normal reference array.
+- **Falsifiable claim**: Without else-if (i==indRef) early return, reference edge not found triggers undefined behavior when normRef is accessed by subsequent sections. To test: set indRef to edge absent from myBoundFaces. Without: normRef undefined, angles compute incorrectly. With: function exits, avoiding cascade.
+- **Minimal reproducer**: Set indRef=2 in EvaluateDistances. Add only edges 3,4,5 to sequenceSec without myBoundFaces mapping. Call EvaluateAngulars(sequenceSec, ..., 2). Without: normRef(j) uninitialized at line 1256. With: return at 1227 prevents error.
+- **Search anchors**: 'indRef', 'early return', 'reference validation'
+
+##### `BRepBuilderAPI_Sewing.EvaluateAngulars.curve_transform_omission`
+- **Line**: BRepBuilderAPI_Sewing.cxx:1236  **Axis**: `input-shape`
+- **Brief**: Omitting 3D curve transformation causes sampled points to be misaligned with surface normal frame.
+- **Falsifiable claim**: Without !loc.IsIdentity() transform for c3d, parametric points map to global 3D space but normals remain in local coords. To test: Construct edge with non-identity location. Compute normal and point independently. Without: normal-point pairing in different frames. With: both in global frame.
+- **Minimal reproducer**: Create TopoDS_Edge with non-identity location and GeomCurve. Call EvaluateAngulars. Extract computed normal and compute surface point directly. Without: displacement vectors (point-to-normal) do not align. With: alignment correct.
+- **Search anchors**: 'c3d Transform', 'parametric curve', 'location'
+
+##### `BRepBuilderAPI_Sewing.EvaluateAngulars.angular_obtuse_normalization`
+- **Line**: BRepBuilderAPI_Sewing.cxx:1255  **Axis**: `conformance-probe`
+- **Brief**: Failure to normalize obtuse angles (>90°) causes inflated angular deviation metrics.
+- **Falsifiable claim**: Without the angular>M_PI/2 adjustment, normals pointing in opposite hemispheres would report deviation near 180° instead of acute angle. To test: Construct sections on opposite sides of surface. Compute deviation. Without: angle reported as 100°+. With: angle normalized to 80° or less.
+- **Minimal reproducer**: Create two faces on opposite sides of parametric surface (e.g., offset torus). Edges E1, E2 with normals n1, n2 where n1.Angle(n2)=150°. Call EvaluateAngulars. Without normalization: tabAng records 150°. With: records 30° (180-150).
+- **Search anchors**: 'M_PI / 2', 'angular deviation', 'obtuse angle'
+
+##### `BRepBuilderAPI_Sewing.EvaluateAngulars.zero_angle_count_guard`
+- **Line**: BRepBuilderAPI_Sewing.cxx:1265  **Axis**: `tolerance`
+- **Brief**: Recording average angular deviation with zero valid angles produces NaN or div-by-zero.
+- **Falsifiable claim**: Without if(nbComputedAngle) guard, cumulateAngular/0 yields undefined result. To test: construct sections where normal magnitude always zero. Without: tabAng(i) becomes NaN. With: tabAng(i) remains -1.
+- **Minimal reproducer**: Create degenerate surface with zero-magnitude D1 partial derivatives (plane or point-like surface). Call EvaluateAngulars with edges on this surface. Without guard: division by zero at line 1266. With: remains -1.
+- **Search anchors**: 'nbComputedAngle', 'division guard', 'average'
+
+
+#### `BRepBuilderAPI_Sewing.EvaluateDistances`
+ (9 branches; 1 low-confidence; source: `v3-deep-batch-C.json`)
+
+##### `BRepBuilderAPI_Sewing.EvaluateDistances.null_curve_skip`
+- **Line**: BRepBuilderAPI_Sewing.cxx:1318  **Axis**: `input-shape`
+- **Brief**: Null 3D curve causes point sampling to fail silently, masking invalid geometry.
+- **Falsifiable claim**: Without if(c3d.IsNull()) continue, dereferencing null handle at c3d->Value(T) causes crash. To test: Add edge without valid 3D representation to sequenceSec. Without: segfault. With: edge skipped, distance remains -1.
+- **Minimal reproducer**: Create TopoDS_Edge with null underlying Geom_Curve (edge with only 2D rep). Add to sequenceSec. Call EvaluateDistances. Without check: c3d->Value(T) dereference fails. With: continue skips edge.
+- **Search anchors**: 'c3d.IsNull', 'curve retrieval', 'null geometry'
+
+##### `BRepBuilderAPI_Sewing.EvaluateDistances.location_transform_curve`
+- **Line**: BRepBuilderAPI_Sewing.cxx:1322  **Axis**: `input-shape`
+- **Brief**: Skipping curve transformation causes sampled points to remain in local coordinates.
+- **Falsifiable claim**: Without !loc.IsIdentity() transform, c3d->Value(T) returns points in edge's local frame, not global. To test: Create edge with non-identity TopLoc_Location. Distance computed against reference in global frame. Without: distance artificially inflated. With: correct distance.
+- **Minimal reproducer**: Create reference edge at origin and candidate edge with gp_Trsf(gp_Vec(1,0,0)). Call EvaluateDistances. Without transform: distances computed in misaligned frames. With: distances reflect actual geometry separation.
+- **Search anchors**: 'loc.IsIdentity', 'Transform', 'sampled point'
+
+##### `BRepBuilderAPI_Sewing.EvaluateDistances.first_point_skip` **[low-confidence]**
+- **Line**: BRepBuilderAPI_Sewing.cxx:1351  **Axis**: `tolerance`
+- **Brief**: Omitting first-point guard causes zero-length curve to report non-zero distance.
+- **Falsifiable claim**: Without if(j>1) guard, distance from first point to itself (zero) incorrectly updates aLenSec2. To test: Sample single-point curve or highly degenerate edge. Without: aLenSec reports length > 0 even for zero-length geometry. With: skips self-distance.
+- **Minimal reproducer**: Construct edge from degenerate curve (e.g., point geometry). aLenSec2 initialized to 0. At j=1, if no skip, pt.SquareDistance(pt) adds 0 (ok). At j=2, without guard on j>1, self-distance could be double-counted. With guard: correct length.
+- **Low-confidence reason**: First-point handling semantically correct; guard is bounds-check idiom but not critical for non-degenerate curves.
+- **Search anchors**: 'j > 1', 'length accumulation', 'degenerate'
+
+##### `BRepBuilderAPI_Sewing.EvaluateDistances.min_distance_tracking`
+- **Line**: BRepBuilderAPI_Sewing.cxx:1365  **Axis**: `kernel-pair`
+- **Brief**: Skipping minimum distance update causes aMinDist to remain infinite for closest point pair.
+- **Falsifiable claim**: Without if(aMinDist>dist) update, aMinDist stays at Precision::Infinite() even when valid distances exist. To test: compute distances, track aMinDist. Without: always Precision::Infinite(). With: updated to actual minimum.
+- **Minimal reproducer**: Sample two curves at corresponding parameters. Compute distances. Without update: aMinDist not modified, remains infinite. With: aMinDist = min(actual_distances). Falsifiable at tabMinDist(i) observation.
+- **Search anchors**: 'aMinDist', 'min tracking', 'Precision::Infinite'
+
+##### `BRepBuilderAPI_Sewing.EvaluateDistances.endpoint_containment_test`
+- **Line**: BRepBuilderAPI_Sewing.cxx:1385  **Axis**: `geometry-probe`
+- **Brief**: Omitting containment test incorrectly counts points outside reference curve span.
+- **Falsifiable claim**: Without (aVecRef*aVec1)*(aVecRef*aVec2)<0 test, points beyond curve endpoints are treated as 'contained'. To test: sample point beyond reference endpoints. Without: nbFound includes exterior points. With: excludes them.
+- **Minimal reproducer**: Reference curve from P1(0,0,0) to P2(10,0,0). Sample point P(15,0,0). Compute aVecRef=(10,0,0), aVec1=(-15,0,0), aVec2=(-5,0,0). Dot products: 10*(-15)=-150, 10*(-5)=-50. Product=-150*-50=7500>0. Without check: nbFound++. With: skipped.
+- **Search anchors**: 'dot product', 'span test', 'endpoint'
+
+##### `BRepBuilderAPI_Sewing.EvaluateDistances.acceptance_criteria_composite`
+- **Line**: BRepBuilderAPI_Sewing.cxx:1401  **Axis**: `kernel-pair`
+- **Brief**: Recording distance without composite acceptance criteria accepts spurious candidates.
+- **Falsifiable claim**: Without (i==indRef || (dist<tol && nbFound>=npt*0.5)) OR, distant edges with <50% coverage are recorded. To test: Edge with only 3/8 points in range, dist=small. Without: accepted. With: rejected.
+- **Minimal reproducer**: Construct candidate where only 2 of 8 sampled points fall within tolerance distance. Set dist to within myTolerance. Without full condition: tabDst recorded incorrectly. With: tabDst remains -1 due to nbFound<4.
+- **Search anchors**: 'nbFound >= npt', 'acceptance criteria', 'composite OR'
+
+##### `BRepBuilderAPI_Sewing.EvaluateDistances.projection_direction_selection`
+- **Line**: BRepBuilderAPI_Sewing.cxx:1410  **Axis**: `kernel-pair`
+- **Brief**: Choosing projection direction by length comparison can miss closest solution when curve lengths are similar.
+- **Falsifiable claim**: Without if(arrLen(indRef)>=arrLen(i)) selector, projection direction may be backwards, computing distance to wrong curve branch. To test: Two curves of similar length, one much closer when projected forward. Without: distance to far branch reported. With: distance to near branch.
+- **Minimal reproducer**: Reference curve length=5.0. Candidate length=4.9. Candidate is actually 0.1 away in forward direction. Without check: ProjectPointsOnCurve(ptsRef, c3d, ...) projects in only one direction, missing optimal pairing. With: ProjectPointsOnCurve(ptsSec, c3dRef, ...) projects correctly.
+- **Search anchors**: 'arrLen comparison', 'projection direction', 'curve length'
+
+##### `BRepBuilderAPI_Sewing.EvaluateDistances.negative_distance_skip`
+- **Line**: BRepBuilderAPI_Sewing.cxx:1422  **Axis**: `geometry-probe`
+- **Brief**: Skipping negative distance markers excludes non-projected points, preventing partial evaluation.
+- **Falsifiable claim**: Without if(arrDist(j)<0) continue, invalid projections (marked -1) are included in distance aggregation. To test: Point not projectible on curve. Without: arrDist(j)=-1 contributes to max/min. With: skipped, distance accurate.
+- **Minimal reproducer**: Project point far from curve onto curve axis. If projection fails, arrDist(j)=-1. Without guard: -1 enters min/max comparisons. With: skipped, metrics use only valid projections.
+- **Search anchors**: 'arrDist < 0', 'projection marker', 'invalid skip'
+
+##### `BRepBuilderAPI_Sewing.EvaluateDistances.multi_point_projection_guard`
+- **Line**: BRepBuilderAPI_Sewing.cxx:1431  **Axis**: `kernel-pair`
+- **Brief**: Recording distance metrics with single projected point gives unreliable coverage estimate.
+- **Falsifiable claim**: Without if(nbFound>1) guard, distance recorded from single successful projection may overfit to local geometry. To test: Most points not projectible, one projects. Without: tabDst recorded. With: rejected, remains -1.
+- **Minimal reproducer**: Construct curve and 8 points to project. Only 1 point lies on curve, other 7 fail projection. nbFound=1. Without guard: tabDst recorded from single point. With: requires nbFound>1.
+- **Search anchors**: 'nbFound > 1', 'projection count guard', 'coverage'
+
+
+#### `BRepBuilderAPI_Sewing.FaceAnalysis`
+ (6 branches; 2 low-confidence; source: `v3-deep-batch-O.json`)
+
+##### `FaceAnalysis-B1` **[low-confidence]**
+- **Line**: 2599  **Axis**: `input_aggregation`
+- **Brief**: Context shape merge on empty input
+- **Falsifiable claim**: If myShape non-null and myOldShapes empty, Add(myShape) succeeds
+- **Minimal reproducer**: Load context shape, call FaceAnalysis with no prior Add; verify shape added
+- **Search anchors**: '!myShape.IsNull() && myOldShapes.IsEmpty()', 'Add(myShape)'
+
+##### `FaceAnalysis-B2`
+- **Line**: 2635  **Axis**: `shape_validation`
+- **Brief**: Wire shape-type mismatch skip
+- **Falsifiable claim**: Non-WIRE shapes skipped without error signal
+- **Minimal reproducer**: Add compound with non-wire sub-shape; verify silently ignored
+- **Search anchors**: 'ShapeType() != TopAbs_WIRE', 'continue'
+
+##### `FaceAnalysis-B3`
+- **Line**: 2651  **Axis**: `edge_processing`
+- **Brief**: Degenerated edge keeper
+- **Falsifiable claim**: Degenerated edges added to wire unchanged; no geometry update
+- **Minimal reproducer**: Add face with degenerated edge; verify not modified in output
+- **Search anchors**: 'BRep_Tool::Degenerated(edge)', 'B.Add(nwire, edge)'
+
+##### `FaceAnalysis-B4`
+- **Line**: 2661  **Axis**: `curve_validation`
+- **Brief**: Null 3D curve small-edge check skip
+- **Falsifiable claim**: Edges with null 3D curve are not marked small; only debug output
+- **Minimal reproducer**: Add edge with null 3D curve; verify not added to SmallEdges
+- **Search anchors**: 'c3d.IsNull()', 'OCCT_DEBUG'
+
+##### `FaceAnalysis-B5` **[low-confidence]**
+- **Line**: 2747  **Axis**: `vertex_merging`
+- **Brief**: Small edge glued-vertex merge path collision
+- **Falsifiable claim**: isSmall && nv1!=v1 && nv2!=v2 && nv1!=nv2 case merges lists correctly
+- **Minimal reproducer**: Create face with small edge connecting two pre-glued vertices; verify list merge
+- **Search anchors**: '!nv1.IsSame(v1)', '!nv2.IsSame(v2)', 'nv1.IsSame(nv2)', 'Replace'
+
+##### `FaceAnalysis-B6`
+- **Line**: 2838  **Axis**: `face_culling`
+- **Brief**: All-edges-small face removal
+- **Falsifiable claim**: Face removed iff all edges marked small; no partial face removal
+- **Minimal reproducer**: Add face where nbSmall==nbEdges; verify face in myLittleFace
+- **Search anchors**: 'nbSmall == nbEdges', 'myLittleFace.Add(face)', 'myReShape->Remove(face)'
+
+
+#### `BRepBuilderAPI_Sewing.FindCandidates`
+ (12 branches; source: `v3-deep-batch-C.json`)
+
+##### `BRepBuilderAPI_Sewing.FindCandidates.cardinality_gate`
+- **Line**: BRepBuilderAPI_Sewing.cxx:1803  **Axis**: `kernel-pair`
+- **Brief**: Omitting section count validation attempts merge with single section.
+- **Falsifiable claim**: Without if(nbSections<=1) return false, algorithm tries to find candidates for isolated section, returning false anyway but after unnecessary work. To test: Call with nbSections=1. Without: proceeds to line 1810+. With: returns false immediately.
+- **Minimal reproducer**: Create seqSections with single edge. Call FindCandidates. Without check: EvaluateDistances computed for single edge. With: short-circuits.
+- **Search anchors**: 'nbSections <= 1', 'cardinality check', 'merge precondition'
+
+##### `BRepBuilderAPI_Sewing.FindCandidates.reference_face_collection`
+- **Line**: BRepBuilderAPI_Sewing.cxx:1825  **Axis**: `healer-state`
+- **Brief**: Skipping reference face collection leaves Faces1 empty, invalidating comparison logic.
+- **Falsifiable claim**: Without if(myBoundFaces.Contains(bnd)) lookup, Faces1 remains empty, causing all subsequent membership tests (line 2052) to return true. To test: reference edge absent from myBoundFaces. Without: Faces1 empty, all edges treated as non-conformant. With: Faces1 populated.
+- **Minimal reproducer**: Reference edge E1 not in myBoundFaces. Call FindCandidates. Without lookup: Faces1 empty. At line 2052: !Faces1.Contains(Face2) always true. With: Faces1 contains reference faces.
+- **Search anchors**: 'myBoundFaces.Contains', 'Faces1', 'reference face collection'
+
+##### `BRepBuilderAPI_Sewing.FindCandidates.acceptance_criteria_composite_filter`
+- **Line**: BRepBuilderAPI_Sewing.cxx:1856  **Axis**: `tolerance`
+- **Brief**: Omitting composite acceptance criteria accepts candidates exceeding tolerance or below minimum length.
+- **Falsifiable claim**: Without if(aMaxDist>=0 && aMaxDist<=tol && arrLen>minTol), distant edges (aMaxDist>tol) are added to seqCandidates. To test: aMaxDist=2*tol. Without: added. With: rejected.
+- **Minimal reproducer**: After EvaluateDistances: arrDistance(i)=0.15, myTolerance=0.1, arrLen(i)=0.5, myMinTolerance=0.2. Without full AND: added. With: rejected due to distance exceeds tolerance.
+- **Search anchors**: 'aMaxDist <= myTolerance', 'arrLen > myMinTolerance', 'acceptance'
+
+##### `BRepBuilderAPI_Sewing.FindCandidates.equidistant_precision_test`
+- **Line**: BRepBuilderAPI_Sewing.cxx:1862  **Axis**: `tolerance`
+- **Brief**: Omitting precision-equality test causes slightly different distances to be treated as equal.
+- **Falsifiable claim**: Without if(aDelta<Precision::Confusion()), candidates with distances differing by 1e-8 are inserted arbitrarily. To test: aDelta=1e-9, Precision::Confusion()~1e-10. Without: inserted randomly. With: inserted in order.
+- **Minimal reproducer**: seqCandidates has edge at distance 1.0. New candidate at 1.0+1e-11. aDelta=1e-11<Precision::Confusion(). Without: treats as different. With: treats as equal, proceeds to tiebreaker.
+- **Search anchors**: 'Precision::Confusion', 'equidistant', 'distance precision'
+
+##### `BRepBuilderAPI_Sewing.FindCandidates.tiebreaker_min_distance`
+- **Line**: BRepBuilderAPI_Sewing.cxx:1864  **Axis**: `kernel-pair`
+- **Brief**: Omitting min-distance tiebreaker merges equidistant candidates based on insertion order rather than proximity.
+- **Falsifiable claim**: Without if(fabs(aDelta)>RealSmall() || arrMinDist(i)<arrMinDist(j)) OR, equidistant candidates are ordered by insertion time. To test: Two candidates at same distance, one with closer minimum point. Without: arbitrary order. With: better candidate first.
+- **Minimal reproducer**: Candidate A at dist=1.0, arrMinDist=0.05. Candidate B at dist=1.0, arrMinDist=0.10. Without second OR clause: B inserted before A due to order. With: A inserted first due to better arrMinDist.
+- **Search anchors**: 'arrMinDist comparison', 'tiebreaker', 'RealSmall'
+
+##### `BRepBuilderAPI_Sewing.FindCandidates.early_rejection_empty_list`
+- **Line**: BRepBuilderAPI_Sewing.cxx:1885  **Axis**: `kernel-pair`
+- **Brief**: Failing to reject early when candidate list is empty causes unnecessary iterations.
+- **Falsifiable claim**: Without if(!nbCandidates) return false, algorithm continues with empty seqCandidates, producing meaningless result. To test: All candidates filtered out by distance/length. Without: proceeds. With: returns false.
+- **Minimal reproducer**: All edges too far (arrDistance>tol) or too short (arrLen<minTol). seqCandidates empty. Without guard: nbCandidates=0, proceeds to line 1900. With: returns false at 1885.
+- **Search anchors**: '!nbCandidates', 'empty candidate list', 'early return'
+
+##### `BRepBuilderAPI_Sewing.FindCandidates.final_rejection_empty_list`
+- **Line**: BRepBuilderAPI_Sewing.cxx:1900  **Axis**: `api-contract`
+- **Brief**: Omitting final empty-check returns success despite no valid candidates.
+- **Falsifiable claim**: Without if(!nbCandidates) return false at line 1900, seqCandidates may remain empty after processing, causing caller to merge with invalid edge. To test: No candidates survive filtering. Without: returns true. With: returns false.
+- **Minimal reproducer**: After all filtering, seqCandidates.Length()=0. Without check: returns true at 2057. With: returns false at 1900.
+- **Search anchors**: '!nbCandidates', 'final return', 'empty sequence'
+
+##### `BRepBuilderAPI_Sewing.FindCandidates.nonmanifold_mode_selector`
+- **Line**: BRepBuilderAPI_Sewing.cxx:1904  **Axis**: `api-contract`
+- **Brief**: Skipping non-manifold mode selector applies manifold logic to non-manifold input.
+- **Falsifiable claim**: Without if(myNonmanifold && nbCandidates>1) branch, non-manifold geometry is processed with manifold candidate selection (keep first). To test: Non-manifold object with multiple valid candidates. Without: only first kept. With: AnalysisNearestEdges refines.
+- **Minimal reproducer**: myNonmanifold=true, nbCandidates=3 (edges E1, E2, E3 all valid). Without branch: seqCandidates kept as-is. With: AnalysisNearestEdges filters to single best per face.
+- **Search anchors**: 'myNonmanifold', 'AnalysisNearestEdges', 'mode branch'
+
+##### `BRepBuilderAPI_Sewing.FindCandidates.mutual_selection_symmetry`
+- **Line**: BRepBuilderAPI_Sewing.cxx:1987  **Axis**: `kernel-pair`
+- **Brief**: Omitting mutual-selection check approves asymmetric candidate pairs.
+- **Falsifiable claim**: Without if(indCandidate1==indReference), candidate E1 pointing to E2 is approved even if E2 points elsewhere. To test: FindCandidates(E1) returns E2, FindCandidates(E2) returns E3. Without: E1 approved. With: rejected if E2 not reciprocal.
+- **Minimal reproducer**: seqCandidates(1)=2. MapReference.Add(2), call FindCandidates(E2), returns indCandidate1=3. Without check: approved. With: 3!=1, rejected.
+- **Search anchors**: 'indCandidate1 == indReference', 'mutual merge', 'symmetry'
+
+##### `BRepBuilderAPI_Sewing.FindCandidates.map_reference_membership`
+- **Line**: BRepBuilderAPI_Sewing.cxx:1997  **Axis**: `healer-state`
+- **Brief**: Skipping map membership check treats unapproved candidates as valid.
+- **Falsifiable claim**: Without if(mapReference.Contains(indCandidate1)), indCandidate1 not yet in approved set may not represent valid chain. To test: indCandidate1 is new, unvalidated candidate. Without: accepted. With: rejected unless in mapReference.
+- **Minimal reproducer**: mapReference contains only E1. indCandidate1=E3 (fresh edge). Without check: E3 accepted as valid reference. With: not in mapReference, rejected.
+- **Search anchors**: 'mapReference.Contains', 'approved reference', 'membership'
+
+##### `BRepBuilderAPI_Sewing.FindCandidates.final_candidate_face_validation`
+- **Line**: BRepBuilderAPI_Sewing.cxx:2050  **Axis**: `healer-state`
+- **Brief**: Omitting final face validation allows merge of candidates without confirmed face context.
+- **Falsifiable claim**: Without if(myBoundFaces.Contains(bnd)), final candidate with unknown faces is approved. To test: Best candidate absent from myBoundFaces. Without: approved anyway. With: rejected.
+- **Minimal reproducer**: seqCandidates(1)=E_unknown (not in myBoundFaces). Without check: isOK=true, returns true. With: myBoundFaces.Contains fails, skips.
+- **Search anchors**: 'myBoundFaces.Contains', 'final candidate', 'face validation'
+
+##### `BRepBuilderAPI_Sewing.FindCandidates.closed_surface_merge_condition`
+- **Line**: BRepBuilderAPI_Sewing.cxx:2054  **Axis**: `conformance-probe`
+- **Brief**: Omitting closed-surface merge check approves candidates that violate periodicity constraints.
+- **Falsifiable claim**: Without if(!isOK) return false, candidate E2 on closed face F may fail IsMergedClosed but merge is approved. To test: E2 on U-closed surface, not properly overlapped. Without: returns true. With: returns false.
+- **Minimal reproducer**: IsMergedClosed(E1, E2, F) returns false (non-conformant). Without check: isOK=false but proceeds. With: returns false at 2054.
+- **Search anchors**: 'IsMergedClosed', 'isOK', 'merge condition'
+
+
+#### `BRepBuilderAPI_Sewing.FindFreeBoundaries`
+ (12 branches; 5 low-confidence; source: `v3-deep-batch-O.json`)
+
+##### `FindFreeBoundaries-B1` **[low-confidence]**
+- **Line**: 2883  **Axis**: `input_aggregation`
+- **Brief**: Context shape merge on empty old-shapes
+- **Falsifiable claim**: If myShape non-null and myOldShapes empty, Add(myShape) succeeds
+- **Minimal reproducer**: Load context, call FindFreeBoundaries; verify shape added
+- **Search anchors**: '!myShape.IsNull() && myOldShapes.IsEmpty()', 'Add(myShape)'
+
+##### `FindFreeBoundaries-B2` **[low-confidence]**
+- **Line**: 2893  **Axis**: `shape_consistency`
+- **Brief**: Null context shape apply path
+- **Falsifiable claim**: myReShape->Apply(myShape) returns valid non-null shape when myShape non-null
+- **Minimal reproducer**: Set non-null context; verify NewShapes not empty after Apply
+- **Search anchors**: 'newShape = myReShape->Apply(myShape)', '!newShape.IsNull()'
+
+##### `FindFreeBoundaries-B3`
+- **Line**: 2908  **Axis**: `state_validation`
+- **Brief**: Null shape in old-shapes loop skip
+- **Falsifiable claim**: Null shapes in myOldShapes do not cause crash; silently skipped
+- **Minimal reproducer**: Store null shape in myOldShapes; verify FindFreeBoundaries completes
+- **Search anchors**: 'shape.IsNull()', 'continue'
+
+##### `FindFreeBoundaries-B4`
+- **Line**: 2932  **Axis**: `state_deduplication`
+- **Brief**: Duplicate face map check miss
+- **Falsifiable claim**: Duplicate face check mapFaces.Contains() prevents duplicate processing
+- **Minimal reproducer**: Add compound with shared face; verify face processed once
+- **Search anchors**: 'mapFaces.Contains(face)', 'continue'
+
+##### `FindFreeBoundaries-B5`
+- **Line**: 2960  **Axis**: `edge_filtering`
+- **Brief**: Internal edge orientation skip
+- **Falsifiable claim**: INTERNAL edges ignored; non-internal edges processed
+- **Minimal reproducer**: Add face with internal edge; verify not in myBoundFaces
+- **Search anchors**: 'edge.Orientation() == TopAbs_INTERNAL', 'continue'
+
+##### `FindFreeBoundaries-B6` **[low-confidence]**
+- **Line**: 2964  **Axis**: `edge_classification`
+- **Brief**: Seam detection on single-face edge
+- **Falsifiable claim**: IsClosed() called only when nbFaces==1; seam status cached
+- **Minimal reproducer**: Add face with seam edge; verify isSeam true, edge replaced
+- **Search anchors**: 'nbFaces == 1', 'BRep_Tool::IsClosed'
+
+##### `FindFreeBoundaries-B7` **[low-confidence]**
+- **Line**: 2990  **Axis**: `edge_processing`
+- **Brief**: Seam edge replacement condition
+- **Falsifiable claim**: Seam edges replaced iff isSeam true; prevents double-processing
+- **Minimal reproducer**: Verify seam edge replaced only once per FindFreeBoundaries
+- **Search anchors**: 'isSeam', 'myReShape->Replace(edge, anewEdge)'
+
+##### `FindFreeBoundaries-B8` **[low-confidence]**
+- **Line**: 2996  **Axis**: `mode_application`
+- **Brief**: Free/bound edge classification
+- **Falsifiable claim**: isBound && myFaceMode ensures correct classification; isBoundFloat && myFloatingEdgesMode
+- **Minimal reproducer**: Toggle myFaceMode, myFloatingEdgesMode; verify bound edge lists match
+- **Search anchors**: 'isBoundFloat = (myFloatingEdgesMode && !nbFaces)', 'isBound = (myFaceMode && ...'
+
+##### `FindFreeBoundaries-B9`
+- **Line**: 3001  **Axis**: `edge_filtering`
+- **Brief**: Degenerated boundary edge skip
+- **Falsifiable claim**: Degenerated edges not added to myBoundFaces
+- **Minimal reproducer**: Add degenerated edge as boundary; verify not in myBoundFaces
+- **Search anchors**: 'BRep_Tool::Degenerated(TopoDS::Edge(edge))', 'continue'
+
+##### `FindFreeBoundaries-B10`
+- **Line**: 3013  **Axis**: `state_validation`
+- **Brief**: Null vertex skip on bound
+- **Falsifiable claim**: Null edge vertices prevent bound entry; silently skipped
+- **Minimal reproducer**: Add edge with null vertex; verify not added to myBoundFaces
+- **Search anchors**: 'vFirst.IsNull() || vLast.IsNull()', 'continue'
+
+##### `FindFreeBoundaries-B11`
+- **Line**: 3018  **Axis**: `orientation_filtering`
+- **Brief**: Internal vertex boundary skip
+- **Falsifiable claim**: Vertices with INTERNAL orientation excluded from boundary processing
+- **Minimal reproducer**: Add edge with internal vertex; verify not processed
+- **Search anchors**: 'Orientation() == TopAbs_INTERNAL', 'continue'
+
+##### `FindFreeBoundaries-B12`
+- **Line**: 3021  **Axis**: `state_mapping`
+- **Brief**: Vertex node assignment on non-floating bound
+- **Falsifiable claim**: myVertexNode populated iff isBound; myVertexNodeFree iff !isBound
+- **Minimal reproducer**: Toggle myFaceMode; verify vertex node assignment changes
+- **Search anchors**: 'if (isBound)', 'myVertexNode.Add', 'myVertexNodeFree.Add'
+
+
+#### `BRepBuilderAPI_Sewing.GetFreeWires_at4657`
+ (4 branches; 3 low-confidence; source: `v3-deep-batch-U.json`)
+
+##### `GetFreeWires_at4657_4668` **[low-confidence]**
+- **Line**: 4668  **Axis**: `control_flow_ambiguity`
+- **Brief**: VertEdge.IsBound(V1
+- **Falsifiable claim**: Branch at 4668 may not handle all valid input states
+- **Minimal reproducer**: Construct edge/face topology triggering branch
+- **Search anchors**: 'VertEdge.IsBound'
+
+##### `GetFreeWires_at4657_4672` **[low-confidence]**
+- **Line**: 4672  **Axis**: `control_flow_ambiguity`
+- **Falsifiable claim**: Branch at 4672 may not handle all valid input states
+- **Minimal reproducer**: Construct edge/face topology triggering branch
+- **Search anchors**: ''
+
+##### `GetFreeWires_at4657_4686`
+- **Line**: 4686  **Axis**: `free_edge_tracking`
+- **Brief**: !MapFreeEdges.Contains(edge
+- **Falsifiable claim**: Negated duplicate free edges added to map causing iteration corruption
+- **Minimal reproducer**: Sew shells with multiply-referenced boundaries
+- **Search anchors**: 'MapFreeEdges.Contains'
+
+##### `GetFreeWires_at4657_4700` **[low-confidence]**
+- **Line**: 4700  **Axis**: `control_flow_ambiguity`
+- **Brief**: MapFreeEdges.IsEmpty(
+- **Falsifiable claim**: Branch at 4700 may not handle all valid input states
+- **Minimal reproducer**: Construct edge/face topology triggering branch
+- **Search anchors**: 'MapFreeEdges.IsEmpty'
+
+
+#### `BRepBuilderAPI_Sewing.Init_at2110`
+ (1 branches; source: `v3-deep-batch-Y.json`)
+
+##### `?`
+- **Line**: 2117  **Axis**: `?`
+
+
+#### `BRepBuilderAPI_Sewing.IsDegenerated_at2467`
+ (4 branches; source: `v3-deep-batch-Y.json`)
+
+##### `?`
+- **Line**: 2470  **Axis**: `?`
+
+##### `?`
+- **Line**: 2474  **Axis**: `?`
+
+##### `?`
+- **Line**: 2478  **Axis**: `?`
+
+##### `?`
+- **Line**: 2482  **Axis**: `?`
+
+
+#### `BRepBuilderAPI_Sewing.IsMergedClosed`
+ (6 branches; source: `v3-deep-batch-C.json`)
+
+##### `BRepBuilderAPI_Sewing.IsMergedClosed.closure_gate`
+- **Line**: BRepBuilderAPI_Sewing.cxx:1535  **Axis**: `input-shape`
+- **Brief**: Omitting closure validation causes open surfaces to be tested for merge conditions designed for closed surfaces.
+- **Falsifiable claim**: Without if(!isUClosed && !isVClosed) return false, subsequent overlap tests (line 1607) divide by zero or access undefined periodicity. To test: Call IsMergedClosed with open surface (plane). Without: false positives or crash. With: returns false immediately.
+- **Minimal reproducer**: Create TopoDS_Face from Geom_Plane (open surface). Call IsMergedClosed with two edges on plane. isUClosed=false, isVClosed=false. Without guard: proceeds to line 1603 conditional. With: returns false at 1535.
+- **Search anchors**: 'isUClosed', 'isVClosed', 'open surface'
+
+##### `BRepBuilderAPI_Sewing.IsMergedClosed.parametric_curve_null_check`
+- **Line**: BRepBuilderAPI_Sewing.cxx:1547  **Axis**: `input-shape`
+- **Brief**: Missing 2D curve validation causes bounding-box computation on null handles.
+- **Falsifiable claim**: Without if(C2d1.IsNull() || C2d2.IsNull()) return false, dereferencing null 2D curve at line 1573 (BndLib_Add2dCurve) crashes. To test: Edge without 2D representation on face. Without: segfault. With: returns false.
+- **Minimal reproducer**: Create Face F and Edge E where E has 3D curve but no 2D parametrization on F. Call IsMergedClosed(E, E, F). Without check: C2d1.IsNull()=true but accessed. With: caught, returns false.
+- **Search anchors**: 'C2d.IsNull', 'CurveOnSurface', 'null geometry'
+
+##### `BRepBuilderAPI_Sewing.IsMergedClosed.u_closed_overlap_validation`
+- **Line**: BRepBuilderAPI_Sewing.cxx:1603  **Axis**: `input-shape`
+- **Brief**: Skipping U-closed overlap check merges non-overlapping V-elongated curves on U-periodic surfaces.
+- **Falsifiable claim**: Without if(isUClosed && isVLongC1 && isVLongC2) block, two V-elongated curves separated in V (dist>0 at line 1607) are wrongly approved for merge. To test: Two V-elongated curves on U-torus, separated in V. Without: returns true. With: returns false.
+- **Minimal reproducer**: Geom_SurfaceOfRevolution (U-closed torus). Edge1 at V=0 to V=pi/2. Edge2 at V=pi to V=3*pi/2 (separated by pi/2). Call IsMergedClosed. Without block: no V-overlap check, returns true. With: dist = 0 - (pi/2) = negative, overlap confirmed.
+- **Search anchors**: 'isUClosed', 'isVLongC1', 'isVLongC2', 'overlap'
+
+##### `BRepBuilderAPI_Sewing.IsMergedClosed.v_overlap_negativity_test`
+- **Line**: BRepBuilderAPI_Sewing.cxx:1607  **Axis**: `geometry-probe`
+- **Brief**: Omitting dist<0 check causes non-overlapping curves to proceed to inner/outer validation.
+- **Falsifiable claim**: Without if(dist<0) guard, gaps between curves are passed to distInner/distOuter logic. To test: Two curves with gap in V. dist=max(gap)>0. Without: accesses undefined distInner. With: rejected.
+- **Minimal reproducer**: U-closed surface. Curves with C1Vmax=0.5, C2Vmin=1.5 (gap=1.0). dist=max(0, 1.0-0.5)=0.5>0. Without if: proceeds into line 1609. With: rejected.
+- **Search anchors**: 'dist < 0', 'overlap negativity', 'gap detection'
+
+##### `BRepBuilderAPI_Sewing.IsMergedClosed.outer_inner_constraint`
+- **Line**: BRepBuilderAPI_Sewing.cxx:1609  **Axis**: `kernel-pair`
+- **Brief**: Omitting outer<=inner constraint allows merges where outer boundary is larger than inner span.
+- **Falsifiable claim**: Without if(distOuter<=distInner) test, merge approved when outer region (non-overlapping part) exceeds overlapped region, creating visible gap. To test: Overlapped region small, gap region large. Without: approved. With: rejected.
+- **Minimal reproducer**: U-closed cylinder. C1Umin=0, C1Umax=1. C2Umin=0.2, C2Umax=0.8 (overlap=0.6). distInner=max(0.2-1, 0-0.8)=0.2. distOuter=(2*pi-1)-max(0.8-0, 1-0.2)=2*pi-1-0.8 >> 0.2. Without: approved. With: rejected by constraint.
+- **Search anchors**: 'distOuter <= distInner', 'boundary constraint', 'gap tolerance'
+
+##### `BRepBuilderAPI_Sewing.IsMergedClosed.v_closed_overlap_validation`
+- **Line**: BRepBuilderAPI_Sewing.cxx:1614  **Axis**: `input-shape`
+- **Brief**: Skipping V-closed overlap check merges non-overlapping U-elongated curves on V-periodic surfaces.
+- **Falsifiable claim**: Without if(isVClosed && isULongC1 && isULongC2) block, two U-elongated curves separated in U are approved for merge on V-periodic surfaces. To test: Two U-elongated curves on V-torus, separated in U. Without: true. With: false.
+- **Minimal reproducer**: Geom_SurfaceOfRevolution (V-closed). Edge1 at U=0.2 to U=0.8. Edge2 at U=1.5 to U=2.0 (separated by gap>0). Call IsMergedClosed. Without block: skips U-overlap check. With: dist>0, rejects.
+- **Search anchors**: 'isVClosed', 'isULongC1', 'isULongC2'
+
+
+#### `BRepBuilderAPI_Sewing.IsUClosedSurface_at264`
+ (4 branches; source: `v3-deep-batch-Y.json`)
+
+##### `?`
+- **Line**: 267  **Axis**: `?`
+
+##### `?`
+- **Line**: 270  **Axis**: `?`
+
+##### `?`
+- **Line**: 274  **Axis**: `?`
+
+##### `?`
+- **Line**: 279  **Axis**: `?`
+
+
+#### `BRepBuilderAPI_Sewing.IsVClosedSurface_at298`
+ (4 branches; source: `v3-deep-batch-Y.json`)
+
+##### `?`
+- **Line**: 301  **Axis**: `?`
+
+##### `?`
+- **Line**: 304  **Axis**: `?`
+
+##### `?`
+- **Line**: 308  **Axis**: `?`
+
+##### `?`
+- **Line**: 313  **Axis**: `?`
+
+
+#### `BRepBuilderAPI_Sewing.Load`
+ (2 branches; 1 low-confidence; source: `v3-deep-batch-O.json`)
+
+##### `Load-B1`
+- **Line**: 2140  **Axis**: `input_validation`
+- **Brief**: Null shape input acceptance
+- **Falsifiable claim**: Load(nullptr) clears shape and state; no defect on null input
+- **Minimal reproducer**: Create sewing, call Load(TopoDS_Shape()) on empty shape
+- **Search anchors**: 'theShape.IsNull()', 'myShape.Nullify()'
+
+##### `Load-B2` **[low-confidence]**
+- **Line**: 2143  **Axis**: `shape_consistency`
+- **Brief**: Non-null shape reshape application
+- **Falsifiable claim**: myReShape->Apply() preserves validity for all shape types
+- **Minimal reproducer**: Load shape; verify myReShape->Apply() returns valid shape
+- **Search anchors**: 'else', 'myReShape->Apply(theShape)'
+
+
+#### `BRepBuilderAPI_Sewing.MergedNearestEdges`
+ (6 branches; 4 low-confidence; source: `v3-deep-batch-O.json`)
+
+##### `MergedNearestEdges-B1`
+- **Line**: 4249  **Axis**: `state_lookup`
+- **Brief**: Vertex node lookup on edge endpoints
+- **Falsifiable claim**: nno1/nno2 resolve to node or original vertex; isNode flags correct
+- **Minimal reproducer**: Add edge with/without vertex node mapping; verify nno1/nno2 set
+- **Search anchors**: 'myVertexNode.Contains(no1)', 'nno1 = myVertexNode.FindFromKey(no1)'
+
+##### `MergedNearestEdges-B2` **[low-confidence]**
+- **Line**: 4257  **Axis**: `vertex_graph`
+- **Brief**: Cutting node transitive closure on node1
+- **Falsifiable claim**: myCuttingNode map traversed fully; second-level nodes only if !isNode1
+- **Minimal reproducer**: Create cutting nodes; verify transitive neighbors included
+- **Search anchors**: 'if (myCuttingNode.IsBound(nno1))', '!isNode1 && myCuttingNode.IsBound(v1)'
+
+##### `MergedNearestEdges-B3`
+- **Line**: 4284  **Axis**: `merge_idempotence`
+- **Brief**: Section edge rejection on merged marker
+- **Falsifiable claim**: myMergedEdges prevents double-merge; isRejected blocks merge
+- **Minimal reproducer**: Mark edge merged; verify not re-merged in MergedNearestEdges
+- **Search anchors**: 'bool isRejected = myMergedEdges.Contains(sec)', 'if (!isRejected)'
+
+##### `MergedNearestEdges-B4` **[low-confidence]**
+- **Line**: 4292  **Axis**: `section_validation`
+- **Brief**: Bound-section rejection path
+- **Falsifiable claim**: If mySectionBound.IsBound(sec), check if bound split; reject if unmarked
+- **Minimal reproducer**: Add cut section; verify isRejected true if bound not in myBoundSections
+- **Search anchors**: 'mySectionBound.IsBound(sec)', '!myBoundSections.IsBound(bnd)'
+
+##### `MergedNearestEdges-B5` **[low-confidence]**
+- **Line**: 3036  **Axis**: `merge_strategy`
+- **Brief**: Nonmanifold longest-edge prioritization
+- **Falsifiable claim**: myNonmanifold mode reorders seqEdges; longest first; single-manifold stops after first merge
+- **Minimal reproducer**: Toggle myNonmanifold; verify merge order changes
+- **Search anchors**: 'if (myNonmanifold)', 'indRef != 1', 'seqEdges(indRef) = seqEdges(1)'
+
+##### `MergedNearestEdges-B6` **[low-confidence]**
+- **Line**: 3058  **Axis**: `merge_outcome`
+- **Brief**: Success condition on nonzero candidates
+- **Falsifiable claim**: success = (nbCandidates != 0); FindCandidates must succeed
+- **Minimal reproducer**: Verify FindCandidates returns false -> success=false
+- **Search anchors**: 'success = (nbCandidates != 0)', 'return success'
+
+
+#### `BRepBuilderAPI_Sewing.Perform`
+ (6 branches; source: `v3-deep-batch-C.json`)
+
+##### `BRepBuilderAPI_Sewing.Perform.analysis_stage_gate`
+- **Line**: BRepBuilderAPI_Sewing.cxx:2200  **Axis**: `api-contract`
+- **Brief**: Omitting analysis stage gate executes analysis regardless of configuration flag.
+- **Falsifiable claim**: Without if(myAnalysis), FaceAnalysis invoked even when analysis disabled. To test: myAnalysis=false. Without: FaceAnalysis called. With: skipped.
+- **Minimal reproducer**: Create sewing object, set myAnalysis=false. Call Perform. Without guard: FaceAnalysis executes. With: skipped, progress advances.
+- **Search anchors**: 'myAnalysis', 'FaceAnalysis', 'feature gate'
+
+##### `BRepBuilderAPI_Sewing.Perform.input_shape_validation`
+- **Line**: BRepBuilderAPI_Sewing.cxx:2216  **Axis**: `api-contract`
+- **Brief**: Skipping input validation processes empty sewing object without error.
+- **Falsifiable claim**: Without if(myNbShapes || !myShape.IsNull()), Perform proceeds with null shape and zero shapes, producing invalid result. To test: No Add() calls, call Perform. Without: processes, returns null shape. With: skips entire pipeline.
+- **Minimal reproducer**: Create BRepBuilderAPI_Sewing() without Add(). Call Perform. Without check: myNbShapes=0, myShape.IsNull()=true, proceeds. With: skips to end.
+- **Search anchors**: 'myNbShapes', 'myShape.IsNull', 'input validation'
+
+##### `BRepBuilderAPI_Sewing.Perform.boundary_cardinality_check`
+- **Line**: BRepBuilderAPI_Sewing.cxx:2221  **Axis**: `kernel-pair`
+- **Brief**: Omitting boundary existence check executes merging on null-boundary case.
+- **Falsifiable claim**: Without if(myBoundFaces.Extent()), VerticesAssembling and Merging called on empty boundary map. To test: Add shape with no free boundaries. Without: executes. With: skips to end.
+- **Minimal reproducer**: Add closed shell (no free boundaries). myBoundFaces.Extent()=0. Without check: VerticesAssembling invoked on empty map. With: skipped.
+- **Search anchors**: 'myBoundFaces.Extent', 'boundary check', 'merging precondition'
+
+##### `BRepBuilderAPI_Sewing.Perform.cutting_stage_gate`
+- **Line**: BRepBuilderAPI_Sewing.cxx:2245  **Axis**: `api-contract`
+- **Brief**: Skipping cutting stage gate executes cutting regardless of configuration.
+- **Falsifiable claim**: Without if(myCutting), Cutting invoked even when disabled. To test: myCutting=false. Without: executes. With: skipped.
+- **Minimal reproducer**: Set myCutting=false. Call Perform. Without guard: Cutting called. With: aPS.Next() without Cutting.
+- **Search anchors**: 'myCutting', 'Cutting', 'feature gate'
+
+##### `BRepBuilderAPI_Sewing.Perform.sewing_stage_gate`
+- **Line**: BRepBuilderAPI_Sewing.cxx:2268  **Axis**: `api-contract`
+- **Brief**: Omitting sewing stage gate executes edge processing regardless of configuration.
+- **Falsifiable claim**: Without if(mySewing), EdgeProcessing and CreateSewedShape invoked even when sewing disabled. To test: mySewing=false. Without: executes. With: skipped.
+- **Minimal reproducer**: Set mySewing=false. Call Perform. Without guard: EdgeProcessing called. With: skipped, progress to end.
+- **Search anchors**: 'mySewing', 'EdgeProcessing', 'sewing gate'
+
+##### `BRepBuilderAPI_Sewing.Perform.same_parameter_feature_gate`
+- **Line**: BRepBuilderAPI_Sewing.cxx:2289  **Axis**: `api-contract`
+- **Brief**: Skipping same-parameter mode check applies SameParameterShape when only one condition is true.
+- **Falsifiable claim**: Without if(mySameParameterMode && myFaceMode), SameParameterShape called when mySameParameterMode=true but myFaceMode=false. To test: mySameParameterMode=true, myFaceMode=false. Without: executes. With: skipped.
+- **Minimal reproducer**: Set mySameParameterMode=true, myFaceMode=false. Call Perform. Without full AND: SameParameterShape invoked. With: skipped.
+- **Search anchors**: 'mySameParameterMode && myFaceMode', 'feature gate', 'both conditions'
+
+
+#### `BRepBuilderAPI_Sewing.ProjectPointsOnCurve_at5375`
+ (10 branches; 7 low-confidence; source: `v3-deep-batch-U.json`)
+
+##### `ProjectPointsOnCurve_at5375_5399` **[low-confidence]**
+- **Line**: 5399  **Axis**: `control_flow_ambiguity`
+- **Brief**: locProj.IsDone(
+- **Falsifiable claim**: Branch at 5399 may not handle all valid input states
+- **Minimal reproducer**: Construct edge/face topology triggering branch
+- **Search anchors**: 'locProj.IsDone'
+
+##### `ProjectPointsOnCurve_at5375_5407` **[low-confidence]**
+- **Line**: 5407  **Axis**: `control_flow_ambiguity`
+- **Brief**: dProj2 < dist2Min
+- **Falsifiable claim**: Branch at 5407 may not handle all valid input states
+- **Minimal reproducer**: Construct edge/face topology triggering branch
+- **Search anchors**: 'dProj2 < dist2Min'
+
+##### `ProjectPointsOnCurve_at5375_5413` **[low-confidence]**
+- **Line**: 5413  **Axis**: `control_flow_ambiguity`
+- **Brief**: indMin
+- **Falsifiable claim**: Branch at 5413 may not handle all valid input states
+- **Minimal reproducer**: Construct edge/face topology triggering branch
+- **Search anchors**: 'indMin'
+
+##### `ProjectPointsOnCurve_at5375_5420`
+- **Line**: 5420  **Axis**: `projection_extrema`
+- **Brief**: !locProj.IsMin(indMin
+- **Falsifiable claim**: Negated non-minimum projections incorrectly selected over endpoints
+- **Minimal reproducer**: Project points near curve endpoints
+- **Search anchors**: 'locProj.IsMin'
+
+##### `ProjectPointsOnCurve_at5375_5422`
+- **Line**: 5422  **Axis**: `projection_extrema`
+- **Brief**: std::min(distF2, distL2
+- **Falsifiable claim**: Non-minimum projections incorrectly selected over endpoints
+- **Minimal reproducer**: Project points near curve endpoints
+- **Search anchors**: 'locProj.IsMin'
+
+##### `ProjectPointsOnCurve_at5375_5424`
+- **Line**: 5424  **Axis**: `endpoint_preference`
+- **Brief**: distF2 < distL2
+- **Falsifiable claim**: Endpoint distance comparison may snap to wrong terminus
+- **Minimal reproducer**: Project point equidistant from endpoints
+- **Search anchors**: 'std::min(distF2, distL2) < dist2Min'
+
+##### `ProjectPointsOnCurve_at5375_5438` **[low-confidence]**
+- **Line**: 5438  **Axis**: `control_flow_ambiguity`
+- **Brief**: distProj2 < worktol * worktol || !isConsiderEnds
+- **Falsifiable claim**: Branch at 5438 may not handle all valid input states
+- **Minimal reproducer**: Construct edge/face topology triggering branch
+- **Search anchors**: 'distProj2 < worktol * worktol || !isConsiderEnds'
+
+##### `ProjectPointsOnCurve_at5375_5457` **[low-confidence]**
+- **Line**: 5457  **Axis**: `control_flow_ambiguity`
+- **Brief**: !isProjected && isConsiderEnds
+- **Falsifiable claim**: Negated branch at 5457 may not handle all valid input states
+- **Minimal reproducer**: Construct edge/face topology triggering branch
+- **Search anchors**: '!isProjected && isConsiderEnds'
+
+##### `ProjectPointsOnCurve_at5375_5459` **[low-confidence]**
+- **Line**: 5459  **Axis**: `control_flow_ambiguity`
+- **Brief**: std::min(distF2, distL2
+- **Falsifiable claim**: Branch at 5459 may not handle all valid input states
+- **Minimal reproducer**: Construct edge/face topology triggering branch
+- **Search anchors**: 'std::min'
+
+##### `ProjectPointsOnCurve_at5375_5461` **[low-confidence]**
+- **Line**: 5461  **Axis**: `control_flow_ambiguity`
+- **Brief**: distF2 < distL2
+- **Falsifiable claim**: Branch at 5461 may not handle all valid input states
+- **Minimal reproducer**: Construct edge/face topology triggering branch
+- **Search anchors**: 'distF2 < distL2'
+
 
 #### `BRepBuilderAPI_Sewing.SameParameterEdge`
  (27 branches; 4 low-confidence; source: `v3-deep-BRepBuilderAPI_Sewing_SameParameterEdge.json`)
@@ -222,7 +1787,187 @@ v3's bar: every branch's description is rich enough to either RECREATE the defec
 - **Search anchors**: 'tolEdge1 > MaxTolerance()', 'edge.Nullify()', 'return edge'
 
 
+#### `BRepBuilderAPI_Sewing.SameParameterEdge_at364`
+ (10 branches; 4 low-confidence; source: `v3-deep-batch-U.json`)
+
+##### `SameParameterEdge_at364_369` **[low-confidence]**
+- **Line**: 369  **Axis**: `control_flow_ambiguity`
+- **Brief**: locReShape != myReShape
+- **Falsifiable claim**: Branch at 369 may not handle all valid input states
+- **Minimal reproducer**: Construct edge/face topology triggering branch
+- **Search anchors**: 'locReShape != myReShape'
+
+##### `SameParameterEdge_at364_379` **[low-confidence]**
+- **Line**: 379  **Axis**: `control_flow_ambiguity`
+- **Brief**: mySewing
+- **Falsifiable claim**: Branch at 379 may not handle all valid input states
+- **Minimal reproducer**: Construct edge/face topology triggering branch
+- **Search anchors**: 'mySewing'
+
+##### `SameParameterEdge_at364_384`
+- **Line**: 384  **Axis**: `parameter_binding`
+- **Brief**: mySectionBound.IsBound(bnd1
+- **Falsifiable claim**: Unbound section edges may bypass parameter coherence checks
+- **Minimal reproducer**: Sew faces with unbound section boundaries
+- **Search anchors**: 'mySectionBound.IsBound'
+
+##### `SameParameterEdge_at364_388`
+- **Line**: 388  **Axis**: `face_membership`
+- **Brief**: myBoundFaces.Contains(bnd1
+- **Falsifiable claim**: Non-member faces incorrectly processed in boundary collection
+- **Minimal reproducer**: Sew mixed-topology shapes with selective bound faces
+- **Search anchors**: 'myBoundFaces.Contains'
+
+##### `SameParameterEdge_at364_406`
+- **Line**: 406  **Axis**: `vertex_deduplication`
+- **Brief**: myVertexNode.Contains(V1
+- **Falsifiable claim**: Vertex nodes may not be properly deduplicated across merges
+- **Minimal reproducer**: Coincident vertices after projection
+- **Search anchors**: 'myVertexNode.Contains'
+
+##### `SameParameterEdge_at364_410`
+- **Line**: 410  **Axis**: `vertex_deduplication`
+- **Brief**: myVertexNode.Contains(V2
+- **Falsifiable claim**: Vertex nodes may not be properly deduplicated across merges
+- **Minimal reproducer**: Coincident vertices after projection
+- **Search anchors**: 'myVertexNode.Contains'
+
+##### `SameParameterEdge_at364_436` **[low-confidence]**
+- **Line**: 436  **Axis**: `control_flow_ambiguity`
+- **Brief**: mySewing
+- **Falsifiable claim**: Branch at 436 may not handle all valid input states
+- **Minimal reproducer**: Construct edge/face topology triggering branch
+- **Search anchors**: 'mySewing'
+
+##### `SameParameterEdge_at364_449` **[low-confidence]**
+- **Line**: 449  **Axis**: `control_flow_ambiguity`
+- **Brief**: !isForward
+- **Falsifiable claim**: Negated branch at 449 may not handle all valid input states
+- **Minimal reproducer**: Construct edge/face topology triggering branch
+- **Search anchors**: '!isForward'
+
+##### `SameParameterEdge_at364_456`
+- **Line**: 456  **Axis**: `parameter_binding`
+- **Brief**: mySectionBound.IsBound(bnd2
+- **Falsifiable claim**: Unbound section edges may bypass parameter coherence checks
+- **Minimal reproducer**: Sew faces with unbound section boundaries
+- **Search anchors**: 'mySectionBound.IsBound'
+
+##### `SameParameterEdge_at364_460`
+- **Line**: 460  **Axis**: `face_membership`
+- **Brief**: !myBoundFaces.Contains(bnd2
+- **Falsifiable claim**: Negated non-member faces incorrectly processed in boundary collection
+- **Minimal reproducer**: Sew mixed-topology shapes with selective bound faces
+- **Search anchors**: 'myBoundFaces.Contains'
+
+
+#### `BRepBuilderAPI_Sewing.SameParameter_at330`
+ (1 branches; source: `v3-deep-batch-Y.json`)
+
+##### `?`
+- **Line**: 334  **Axis**: `?`
+
+
+#### `BRepBuilderAPI_Sewing.SameRange_at116`
+ (1 branches; source: `v3-deep-batch-Y.json`)
+
+##### `?`
+- **Line**: 129  **Axis**: `?`
+
+
+#### `BRepBuilderAPI_Sewing.VerticesAssembling`
+ (4 branches; 3 low-confidence; source: `v3-deep-batch-O.json`)
+
+##### `VerticesAssembling-B1`
+- **Line**: 3553  **Axis**: `state_validation`
+- **Brief**: Empty vertex node map skip
+- **Falsifiable claim**: If nbVert==0 && nbVertFree==0, no processing; returns early
+- **Minimal reproducer**: Call VerticesAssembling with no prior bound vertices; verify no-op
+- **Search anchors**: 'if (nbVert || nbVertFree)', 'return'
+
+##### `VerticesAssembling-B2` **[low-confidence]**
+- **Line**: 3569  **Axis**: `vertex_merging`
+- **Brief**: Bound vertex gluing loop termination
+- **Falsifiable claim**: GlueVertices loop continues while returns true; handles all merges
+- **Minimal reproducer**: Add multiple coincident vertices; verify all glued
+- **Search anchors**: 'while (GlueVertices(myVertexNode', 'aPS.Next()'
+
+##### `VerticesAssembling-B3` **[low-confidence]**
+- **Line**: 3576  **Axis**: `progress_handling`
+- **Brief**: Progress timeout interrupt
+- **Falsifiable claim**: VerticesAssembling stops on progress timeout; aPS.More() check
+- **Minimal reproducer**: Set progress timeout; verify gluing incomplete
+- **Search anchors**: '!aPS.More()', 'return'
+
+##### `VerticesAssembling-B4` **[low-confidence]**
+- **Line**: 3580  **Axis**: `vertex_merging`
+- **Brief**: Free vertex gluing loop termination
+- **Falsifiable claim**: GlueVertices(myVertexNodeFree) merges floating edge vertices
+- **Minimal reproducer**: Add floating edge with coincident vertices; verify glued
+- **Search anchors**: 'while (GlueVertices(myVertexNodeFree', 'aPS.Next()'
+
+
+#### `BRepBuilderAPI_Sewing.WhichFace_at147`
+ (3 branches; source: `v3-deep-batch-Y.json`)
+
+##### `?`
+- **Line**: 151  **Axis**: `?`
+
+##### `?`
+- **Line**: 154  **Axis**: `?`
+
+##### `?`
+- **Line**: 158  **Axis**: `?`
+
+
 ### BRepLib
+
+#### `BRepLib.BuildCurve3d`
+ (3 branches; 2 low-confidence; source: `v3-deep-batch-J.json`)
+
+##### `BC3D-001` **[low-confidence]**
+- **Line**: 53  **Axis**: `projection_failure`
+- **Brief**: Plane extraction succeeds but C3d projection result unchecked before edge update
+- **Falsifiable claim**: GeomLib::To3d(axes, PC) returns non-null; C3d.IsNull() check at line 58 passes but transformed curve may violate manifold constraints
+- **Minimal reproducer**: PCurve near plane singularity; GeomLib::To3d succeeds with degenerate Jacobian; edge updated with topologically invalid 3D curve
+- **Search anchors**: 'GeomLib::To3d', 'IsNull', 'Geom_Plane'
+
+##### `BC3D-002`
+- **Line**: 136  **Axis**: `parameter_coherence`
+- **Brief**: SameParameter flag set only for single-surface case; dual-surface edges miss qualification
+- **Falsifiable claim**: jj == 1 condition restricts SameParameter to single PCurve; multi-surface edges with BuildCurve3d result remain marked SameParameter=false despite adequate tolerance
+- **Minimal reproducer**: Edge with two PCurves on non-intersecting surfaces; jj=2, BuildCurve3d produces high-fidelity 3D; SameParameter flag false, downstream ops treat as low-confidence
+- **Search anchors**: 'jj == 1', 'SameParameter', 'BuildCurve3d'
+
+##### `BC3D-003` **[low-confidence]**
+- **Line**: 25  **Axis**: `parameter_coherence`
+- **Brief**: SameRange precondition enforcement via CheckSameRange but failure path calls SameRange recursively
+- **Falsifiable claim**: CheckSameRange failure triggers SameRange call; if SameRange itself detects range mismatch, no protection against infinite cascade
+- **Minimal reproducer**: Edge with degenerate PCurve (parametric domain collapsed); CheckSameRange returns false, SameRange re-invoked, potential divergence
+- **Search anchors**: 'CheckSameRange', 'SameRange', '!C.IsNull'
+
+
+#### `BRepLib.BuildCurves3d_at473`
+ (1 branches; source: `v3-deep-batch-X.json`)
+
+##### `BC3D-1`
+- **Line**: 480  **Axis**: `error_suppression`
+- **Brief**: Missing error propagation on deduplication collision
+- **Falsifiable claim**: If a_counter.Add() returns false (duplicate detected), BuildCurve3d() is skipped without logging; caller cannot distinguish suppressed duplicates from failures
+- **Minimal reproducer**: Shape with same edge referenced twice in different subshapes; verify BuildCurve3d only called once
+- **Search anchors**: 'a_counter.Add(ex.Current())', 'TopExp_Explorer', 'BuildCurve3d'
+
+
+#### `BRepLib.CheckSameRange_at150`
+ (1 branches; source: `v3-deep-batch-X.json`)
+
+##### `CSR-1`
+- **Line**: 163  **Axis**: `floating_point_accumulation`
+- **Brief**: Tolerance comparison uses abs() without explicit floating-point precondition
+- **Falsifiable claim**: Comparing floating-point differences via std::abs(delta) <= Tolerance may accumulate rounding errors across multiple curve representations
+- **Minimal reproducer**: Edge with 3+ curve representations; each geometric_representation->First/Last() differs by (Tolerance/2)
+- **Search anchors**: 'std::abs(current_first - first)', 'Tolerance', 'IsSameRange'
+
 
 #### `BRepLib.ContinuityOfFaces`
  (0 branches; source: `v3-deep-BRepLib_ContinuityOfFaces.json`)
@@ -230,6 +1975,103 @@ v3's bar: every branch's description is rich enough to either RECREATE the defec
 
 #### `BRepLib.EncodeRegularity`
  (0 branches; source: `v3-deep-BRepLib_ContinuityOfFaces.json`)
+
+
+#### `BRepLib.EncodeRegularity_at2548`
+ (2 branches; source: `v3-deep-batch-X.json`)
+
+##### `ER1-1`
+- **Line**: 2551  **Axis**: `classification_staleness`
+- **Brief**: Continuity check uses static threshold before dynamic computation
+- **Falsifiable claim**: Edges with stored continuity <= C0 may have higher actual continuity; recomputation via ContinuityOfFaces is skipped for pre-classified edges
+- **Minimal reproducer**: Edge marked C0 between two compatible faces; verify ContinuityOfFaces would return higher continuity
+- **Search anchors**: 'BRep_Tool::Continuity', 'GeomAbs_C0', 'ContinuityOfFaces'
+
+##### `ER1-2`
+- **Line**: 2559  **Axis**: `error_transparency`
+- **Brief**: Exception swallowed without diagnostic context
+- **Falsifiable claim**: Standard_Failure in ContinuityOfFaces() is caught and logged only in OCCT_DEBUG mode; production builds silently skip edge
+- **Minimal reproducer**: Degenerate edge geometry triggering exception in ContinuityOfFaces; verify OCCT_DEBUG off produces no output
+- **Search anchors**: 'catch (Standard_Failure', 'OCCT_DEBUG', 'std::cout'
+
+
+#### `BRepLib.EncodeRegularity_at2574`
+ (1 branches; 1 low-confidence; source: `v3-deep-batch-X.json`)
+
+##### `ER2-1` **[low-confidence]**
+- **Line**: 2579  **Axis**: `null_geometry_handling`
+- **Brief**: Null surface pointer skipped without trace
+- **Falsifiable claim**: Faces with null geometric surface skip GeomAdaptor_Surface classification; defect class ER1-1 (staleness) compounds if S.IsNull() persists
+- **Minimal reproducer**: Face with null Geom_Surface in BRep model; verify ReverseSortFaces behavior with null geometry
+- **Search anchors**: 'S.IsNull()', 'BRep_Tool::Surface', 'TopoDS::Face'
+
+
+#### `BRepLib.EnsureNormalConsistency`
+ (4 branches; source: `v3-deep-batch-A.json`)
+
+##### `BRepLib.EnsureNormalConsistency.triangulation-skip`
+- **Line**: BRepLib.cxx:2617  **Axis**: `api-contract`
+- **Brief**: Skips faces without triangulation or skips recompute if normals already present and force flag is false.
+- **Falsifiable claim**: Without skipping, attempt to access null triangulation causes crash. Without respecting force flag, stale normals persist. To test: face without triangulation; without guard, null-pointer access.
+- **Minimal reproducer**: Topology with face lacking Poly_Triangulation. Invoke EnsureNormalConsistency(shape, tol, false). Without null-guard: segfault. With guard: face skipped, no modification.
+- **Search anchors**: 'aPT.IsNull', 'continue', 'triangulation'
+
+##### `BRepLib.EnsureNormalConsistency.normal-existence-check`
+- **Line**: BRepLib.cxx:2621  **Axis**: `healer-state`
+- **Brief**: Branches on force-recompute flag vs. existing normals to decide whether to recompute or keep cached.
+- **Falsifiable claim**: Ignoring force flag causes stale normals from previous computation to be returned unchanged. To test: recompute with different tolerance; without branching on force, old normals retained.
+- **Minimal reproducer**: Face with triangulation and normals computed at coarse tolerance. Call EnsureNormalConsistency(..., fine_tolerance, false). Without force check: coarse normals returned. With check: fine normals recomputed iff force=true.
+- **Search anchors**: 'theForceComputeNormals', 'HasNormals', 'isNormalsFound'
+
+##### `BRepLib.EnsureNormalConsistency.singular-point-fallback`
+- **Line**: BRepLib.cxx:2634  **Axis**: `conformance-probe`
+- **Brief**: Sets zero normal when surface cannot compute normal at a point (singularity, e.g. pole).
+- **Falsifiable claim**: Without fallback, attempted normal computation at singular point causes crash. To test: sphere with pole; without fallback, IsNormalDefined() check fails to prevent exception.
+- **Minimal reproducer**: Sphere triangulation with pole node. Invoke EnsureNormalConsistency. Without fallback: exception at aSLP.Normal() on pole. With fallback: pole gets zero normal (degenerate but safe).
+- **Search anchors**: 'IsNormalDefined', 'SetNormal', 'singular', 'pole'
+
+##### `BRepLib.EnsureNormalConsistency.orientation-flip`
+- **Line**: BRepLib.cxx:2644  **Axis**: `input-shape`
+- **Brief**: Reverses normal vector if face is oriented backward.
+- **Falsifiable claim**: Without orientation check, normals always point in canonical surface direction, ignoring face orientation. To test: reversed face; without flip, normals point inward for outer shell.
+- **Minimal reproducer**: Topology with face marked REVERSED. Triangulate and compute normals. Call EnsureNormalConsistency. Without flip: normals point canonical direction (wrong for reversed). With flip: normals respect face orientation.
+- **Search anchors**: 'Orientation', 'REVERSED', 'Reverse', 'outward'
+
+
+#### `BRepLib.OrientClosedSolid_at2088`
+ (2 branches; 1 low-confidence; source: `v3-deep-batch-X.json`)
+
+##### `OCS-1` **[low-confidence]**
+- **Line**: 2091  **Axis**: `classification_soundness`
+- **Brief**: Solid orientation based on single infinite-point test
+- **Falsifiable claim**: PerformInfinitePoint() may fail to correctly classify non-convex solids; reversal assumes material-inside heuristic applies
+- **Minimal reproducer**: Non-convex solid (e.g., torus with hole); verify infinite-point test matches topological interior
+- **Search anchors**: 'PerformInfinitePoint', 'Precision::Confusion', 'solid.Reverse'
+
+##### `OCS-2`
+- **Line**: 2096  **Axis**: `robustness`
+- **Brief**: No recovery for ambiguous orientation state
+- **Falsifiable claim**: If where.State() is TopAbs_ON or TopAbs_UNKNOWN, method returns false without attempting alternative tests or healing
+- **Minimal reproducer**: Solid with boundary near infinite point; verify State() == TopAbs_ON triggers false return
+- **Search anchors**: 'TopAbs_ON', 'TopAbs_UNKNOWN', 'where.State()'
+
+
+#### `BRepLib.ReverseSortFaces_at2956`
+ (2 branches; 1 low-confidence; source: `v3-deep-batch-X.json`)
+
+##### `RSF-1`
+- **Line**: 2969  **Axis**: `type_coverage`
+- **Brief**: Default case silently absorbs unmapped surface types
+- **Falsifiable claim**: Surfaces not matching Plane/Cylinder/Cone/Sphere/Torus are classified as 'Other' without subtype discrimination; downstream facet generation may assume surface regularity
+- **Minimal reproducer**: Face with Bezier/Spline surface; verify LOther sorting does not degrade tolerances
+- **Search anchors**: 'default:', 'LOther.Append', 'AS.GetType()'
+
+##### `RSF-2` **[low-confidence]**
+- **Line**: 3009  **Axis**: `ordering_assumption`
+- **Brief**: Face sort order assumes canonical topology implications
+- **Falsifiable claim**: Append sequence (Tri, Other, Torus, Sphere, Cone, Cylinder, Plane) assumes downstream algorithms prefer primitive types; reordering may break assumptions
+- **Minimal reproducer**: Verify sort order used in downstream mesh generation; test with non-standard append sequence
+- **Search anchors**: 'LF.Append(LTri)', 'LF.Append(LPlan)', 'Sh, TopAbs_FACE'
 
 
 #### `BRepLib.SameParameter`
@@ -402,6 +2244,163 @@ v3's bar: every branch's description is rich enough to either RECREATE the defec
 - **Falsifiable claim**: Without reduction, edge retains coarse tolerance even after healing tightens it; reducing to maxdist documents actual precision achieved. To test: initial edge tolerance 0.1, computed maxdist 0.02; set to 0.02.
 - **Minimal reproducer**: Edge with tolerance 0.1. After healing, maxdist=0.02 (tightest 3D/2D mismatch). Expected: aNTE->Tolerance(0.02). Incorrect: leave at 0.1, hide improvement.
 - **Search anchors**: 'tolerance reduction', 'maxdist update', 'precision documentation'
+
+
+#### `BRepLib.SameRange`
+ (3 branches; 1 low-confidence; source: `v3-deep-batch-J.json`)
+
+##### `SR-001`
+- **Line**: 188  **Axis**: `parameter_coherence`
+- **Brief**: Null C3d curve unchecked before range assignment
+- **Falsifiable claim**: 3D curve null-check omitted; BRep_Builder::Range(current_first, current_last) proceeds despite invalid geometry state
+- **Minimal reproducer**: Edge with no 3D curve, multiple PCurves with disparate ranges; SameRange iteration reaches BRep_Builder::Range without prior C validation
+- **Search anchors**: 'BRep_Tool::Curve', 'IsNull()', 'BRep_Builder::Range'
+
+##### `SR-002`
+- **Line**: 45  **Axis**: `tolerance_escalation`
+- **Brief**: Range tolerance threshold uses Precision::Confusion without caller override
+- **Falsifiable claim**: Hard-coded precision gate ignores context tolerance; edges with explicit tighter/looser tolerance are force-synchronized
+- **Minimal reproducer**: Edge with Tolerance 0.001, PCurves differ by 1e-5 in range; no recalibration of threshold based on edge tolerance
+- **Search anchors**: 'Precision::Confusion', 'GeomLib::SameRange', 'std::abs'
+
+##### `SR-003` **[low-confidence]**
+- **Line**: 36  **Axis**: `range_parameter_coherence`
+- **Brief**: Closed-surface PCurve2 skipped on first iteration
+- **Falsifiable claim**: Loop condition (has_curve || has_closed_curve) guards reparametrization but first_time_in only updates on OR; second PCurve may adopt wrong anchor range
+- **Minimal reproducer**: Edge with only closed-surface PCurve2, no plain PCurve; first_time_in set by PCurve2 but current_first/last mismatch triggers mid-loop adjustment
+- **Search anchors**: 'has_closed_curve', 'first_time_in', 'has_curve'
+
+
+#### `BRepLib.SortFaces`
+ (3 branches; 1 low-confidence; source: `v3-deep-batch-J.json`)
+
+##### `SF-001` **[low-confidence]**
+- **Line**: 14  **Axis**: `projection_failure`
+- **Brief**: RectangularTrimmedSurface unwrapping assumes BasisSurface is non-null and well-formed
+- **Falsifiable claim**: if (S->DynamicType() == STANDARD_TYPE(Geom_RectangularTrimmedSurface)) ... S = down_cast->BasisSurface(); no null-check on result
+- **Minimal reproducer**: Trimmed surface with null basis; down_cast succeeds but BasisSurface() returns null; S overwritten to null; GeomAdaptor_Surface(S) undefined behavior
+- **Search anchors**: 'STANDARD_TYPE(Geom_RectangularTrimmedSurface)', 'down_cast', 'BasisSurface'
+
+##### `SF-002`
+- **Line**: 18  **Axis**: `parameter_coherence`
+- **Brief**: GeomAdaptor_Surface type classification depends on unwrapped surface; type switch incomplete for edge cases
+- **Falsifiable claim**: switch (AS.GetType()) covers 5 standard types + default; surfaces with mixed or approximate types (e.g., offset, blend) fall to LOther without subclassification
+- **Minimal reproducer**: Offset surface misidentified as LOther; sorting loses semantic grouping; downstream algorithms expect plane/cylinder/sphere but receive generic surface
+- **Search anchors**: 'GeomAdaptor_Surface AS(S)', 'switch (AS.GetType())', 'default: LOther.Append'
+
+##### `SF-003`
+- **Line**: 11  **Axis**: `placeholder_geometry`
+- **Brief**: Surface null on face does not partition face; face silently dropped from output lists
+- **Falsifiable claim**: if (!S.IsNull()) ... else LTri.Append(F); null surface faces treated as triangulation-only; no recovery attempt or error logging
+- **Minimal reproducer**: Face with undefined surface (e.g., corrupted topology); S.IsNull()=true; face appended to LTri but never validated for mesh integrity
+- **Search anchors**: 'S.IsNull()', 'LTri.Append(F)'
+
+
+#### `BRepLib.UpdateDeflection`
+ (4 branches; 3 low-confidence; source: `v3-deep-batch-J.json`)
+
+##### `UD-001`
+- **Line**: 13  **Axis**: `tolerance_escalation`
+- **Brief**: Triangulation UV-nodes presence check; null triangulation skips deflection update entirely
+- **Falsifiable claim**: if (aPT.IsNull() || !aPT->HasUVNodes()) continue; faces with missing UV data never receive deflection; downstream consumers may use stale values
+- **Minimal reproducer**: Face with triangulation but no UV parametrization (e.g., analytical surface); aPT->HasUVNodes()=false; continue skips deflection calc
+- **Search anchors**: 'aPT.IsNull', 'HasUVNodes', 'continue'
+
+##### `UD-002` **[low-confidence]**
+- **Line**: 54  **Axis**: `placeholder_geometry`
+- **Brief**: Degenerate edge node filtering via aDegNodes map but interior degeneracies unchecked
+- **Falsifiable claim**: Degenerate edges detected; nodes added to aDegNodes; triangles skipped if any vertex is degenerate but degenerate interior nodes (face-internal) bypass filter
+- **Minimal reproducer**: Face with internal degenerate edge (e.g., cusp); aDegNodes populated only for edges on boundary; interior triangle containing cusp node still evaluated
+- **Search anchors**: 'BRep_Tool::Degenerated', 'aDegNodes.Add', 'aDegNodes.Contains'
+
+##### `UD-003` **[low-confidence]**
+- **Line**: 72  **Axis**: `projection_failure`
+- **Brief**: EvalDeflection tool initialized with aFace but no validation of surface-mesh consistency
+- **Falsifiable claim**: EvalDeflection aTool(aFace) assumes face surface and triangulation are coherent; no check for parametrization misalignment
+- **Minimal reproducer**: Face surface reparametrized post-triangulation; EvalDeflection samples stale UV-to-3D map; deflection severely underestimated
+- **Search anchors**: 'EvalDeflection aTool(aFace)', 'Eval(aMid2d_t, aMid3d_t)'
+
+##### `UD-004` **[low-confidence]**
+- **Line**: 61  **Axis**: `tolerance_escalation`
+- **Brief**: Midpoint deflection sampled per-triangle but link (edge) deflection only on non-boundary link
+- **Falsifiable claim**: Triangle midpoint always evaluated (line 72); link midpoint evaluated only if !aLinks.Add(aLink) (boundary links); asymmetric coverage
+- **Minimal reproducer**: Mesh with thin triangles on face boundary; link deflection skipped for boundary edges; face deflection underestimates near-boundary curvature
+- **Search anchors**: '!aLinks.Add(aLink)', 'aTool.Eval(aMid2d_l, aMid3d_l)'
+
+
+#### `BRepLib.UpdateEdgeTol`
+ (4 branches; 3 low-confidence; source: `v3-deep-batch-J.json`)
+
+##### `UET-001`
+- **Line**: 17  **Axis**: `tolerance_escalation`
+- **Brief**: Coded tolerance vs. MaxToleranceToCheck; early exit permits arbitrarily large gaps
+- **Falsifiable claim**: if (coded_edge_tolerance > MaxToleranceToCheck) return false; oversized edges bypass verification, leaving unvalidated PCurve-to-3D disparities
+- **Minimal reproducer**: Edge with tolerance 1.0 (> MaxToleranceToCheck 0.5); UpdateEdgeTol returns false; edge tolerance never recalibrated despite projection errors
+- **Search anchors**: 'MaxToleranceToCheck', 'coded_edge_tolerance', 'return false'
+
+##### `UET-002` **[low-confidence]**
+- **Line**: 156  **Axis**: `tolerance_escalation`
+- **Brief**: SameParameter path uses EvalMaxParametricDistance; non-SameParameter uses EvalMaxDistanceAlongParameter but differs in sampling semantics
+- **Falsifiable claim**: Two distance evaluation branches depend on SameParameter flag; parameter sampling strategy inverts, risking tolerance underestimation on one path
+- **Minimal reproducer**: Edge with SameParameter=true but actual disparity in domain parametrization; EvalMaxParametricDistance samples 3D curve at uniform parameter, misses peak deviation
+- **Search anchors**: 'BRep_Tool::SameParameter', 'EvalMaxParametricDistance', 'EvalMaxDistanceAlongParameter'
+
+##### `UET-003` **[low-confidence]**
+- **Line**: 35  **Axis**: `parameter_coherence`
+- **Brief**: curve_on_surface_index initialization (-1) vs. loop increment logic
+- **Falsifiable claim**: Index starts at -1, incremented in first iteration; skipping first curve-on-surface (index 0) if loop exits early
+- **Minimal reproducer**: Edge with single PCurve; curve_on_surface_index=-1 on entry, ++increment yields 0; while-loop at line 117 skips reference curve evaluation
+- **Search anchors**: 'curve_on_surface_index = -1', 'while (not_done)', 'curve_index'
+
+##### `UET-004` **[low-confidence]**
+- **Line**: 96  **Axis**: `tolerance_escalation`
+- **Brief**: Sampling point density thresholds (min=30, max=90) independent of curve complexity
+- **Falsifiable claim**: Hard-coded sampling limits ignore surface curvature, PCurve degree; high-curvature edges may undersample with 30 points
+- **Minimal reproducer**: Edge on toroidal surface with sharp curvature variation; min_sampling_points=30 insufficient; GeomLib::DensifyArray1OfReal stretches uniformly without adaptive refinement
+- **Search anchors**: 'min_sampling_points = 30', 'max_sampling_points = 90', 'GeomLib::DensifyArray1OfReal'
+
+
+#### `BRepLib.UpdateEdgeTolerance_at694`
+ (1 branches; source: `v3-deep-batch-X.json`)
+
+##### `UET-1`
+- **Line**: 706  **Axis**: `error_masking`
+- **Brief**: Boolean aggregation logic may mask partial failures
+- **Falsifiable claim**: If UpdateEdgeTol() succeeds on edge N then fails on edge N+1, return_status=true hides the N+1 failure
+- **Minimal reproducer**: Shape with 2 edges; first UpdateEdgeTol succeeds, second fails; method returns true despite partial failure
+- **Search anchors**: 'return_status = true', 'local_flag', 'UpdateEdgeTol'
+
+
+#### `BRepLib.UpdateInnerTolerances`
+ (4 branches; 2 low-confidence; source: `v3-deep-batch-J.json`)
+
+##### `UIT-001`
+- **Line**: 32  **Axis**: `tolerance_escalation`
+- **Brief**: Degenerate edge check skips tolerance update; vertex distances still computed and updated
+- **Falsifiable claim**: if (BRep_Tool::Degenerated(anEdge)) condition exits loop body but vertices V1, V2 at lines 85-98 still receive UpdateVertex calls post-loop
+- **Minimal reproducer**: Degenerate edge with null 3D curve; loop continues, line 85-98 reach UpdateVertex(V1/V2) with undefined End1/End2 values
+- **Search anchors**: 'BRep_Tool::Degenerated', 'continue', 'UpdateVertex'
+
+##### `UIT-002`
+- **Line**: 45  **Axis**: `tolerance_escalation`
+- **Brief**: Sampling granularity (NbSamples) conditional on SameParameter but no validation of sampler convergence
+- **Falsifiable claim**: NbSamples = 23 if SameParameter else 2; switch to 2 samples on non-SameParameter edges may miss local peaks in edge-face separation
+- **Minimal reproducer**: Edge on high-curvature surface, SameParameter=false; 2 samples at endpoints only; mid-edge deviation > tolerance goes undetected
+- **Search anchors**: 'NbSamples = (SameParameter) ? 23 : 2', 'for (int k = 0; k <= NbSamples', 'MaxDist'
+
+##### `UIT-003` **[low-confidence]**
+- **Line**: 68  **Axis**: `range_parameter_coherence`
+- **Brief**: Vertex tolerance update conditional only on k==0 && V1 not-null; no inverse check for k==NbSamples
+- **Falsifiable claim**: Line 68-72 updates V1 on first sample; line 74-78 updates V2 on last sample but condition redundant (k==NbSamples always implies i==last loop iter)
+- **Minimal reproducer**: Edge with parameterization where lpar < fpar; loop iteration logic breaks assumption; vertex updates apply to wrong endpoints
+- **Search anchors**: 'if (k == 0 && !V1.IsNull())', 'if (k == NbSamples && !V2.IsNull())'
+
+##### `UIT-004` **[low-confidence]**
+- **Line**: 61  **Axis**: `tolerance_escalation`
+- **Brief**: Epsilon scaling factor (2.0) hardcoded; no adaptive scaling by edge tolerance magnitude
+- **Falsifiable claim**: aDist += 2. * Epsilon(aDist) applies uniform safety margin; low-tolerance edges get same absolute buffer as high-tolerance edges
+- **Minimal reproducer**: Edge with tolerance 0.0001; Epsilon(aDist) ~ 1e-15; +2e-15 negligible; edge tolerance underestimated by orders of magnitude
+- **Search anchors**: 'Epsilon(aDist)', '2. *', 'aDist +='
 
 
 ### MergeSeq
@@ -584,6 +2583,834 @@ v3's bar: every branch's description is rich enough to either RECREATE the defec
 - **Search anchors**: 'if (c3d.IsNull())', 'continue'
 
 
+### ShapeAnalysis_CheckSmallFace
+
+#### `ShapeAnalysis_CheckSmallFace.CheckPin`
+ (4 branches; source: `v3-deep-batch-A.json`)
+
+##### `ShapeAnalysis_CheckSmallFace.CheckPin.elementary-surface-filter`
+- **Line**: ShapeAnalysis_CheckSmallFace.cxx:852  **Axis**: `conformance-probe`
+- **Brief**: Rejects elementary surfaces (planes, cylinders, spheres) from pin detection since they don't have poles.
+- **Falsifiable claim**: Without filter, elementary surfaces incorrectly reported as pin faces. To test: planar face; without filter, sens=1 returned even though plane has no pin.
+- **Minimal reproducer**: Planar face with rectangular bounds. CheckPin(...). Without filter: sens might be 1 (incorrect). With filter: false return since plane is elementary.
+- **Search anchors**: 'IsKind', 'ElementarySurface', 'return false'
+
+##### `ShapeAnalysis_CheckSmallFace.CheckPin.tolerance-fallback`
+- **Line**: ShapeAnalysis_CheckSmallFace.cxx:858  **Axis**: `api-contract`
+- **Brief**: Falls back to default tolerance if precision is negative.
+- **Falsifiable claim**: Without fallback, negative precision causes undefined comparison behavior in sharpness tests. To test: toler < 0; without fallback, IsoStat tests use invalid tolerance.
+- **Minimal reproducer**: CheckPin with myPrecision = -1. Without fallback: IsoStat uses invalid tolerance, returns spurious results. With fallback: toler = 1e-4 used for valid comparisons.
+- **Search anchors**: 'myPrecision < 0', 'toler = 1.e-4', 'precision fallback'
+
+##### `ShapeAnalysis_CheckSmallFace.CheckPin.bspline-vs-bezier-dispatch`
+- **Line**: ShapeAnalysis_CheckSmallFace.cxx:870  **Axis**: `api-contract`
+- **Brief**: Dispatches pole extraction to either BSplineSurface or BezierSurface based on surface type.
+- **Falsifiable claim**: Without dispatch, pole array is null, causing segfault when accessed. To test: surface that is neither BSpline nor Bezier; without dispatch, allpolesPtr remains null.
+- **Minimal reproducer**: NURBS surface (handles BSpline). CheckPin. Poles extracted from bs->Poles(). Without dispatch: bs.IsNull() and bz.IsNull() both true, allpolesPtr=nullptr, crash at allpoles[]. With dispatch: correct cast and extraction.
+- **Search anchors**: 'down_cast', 'Poles', 'allpolesPtr'
+
+##### `ShapeAnalysis_CheckSmallFace.CheckPin.pole-grid-iteration`
+- **Line**: ShapeAnalysis_CheckSmallFace.cxx:901  **Axis**: `input-shape`
+- **Brief**: Iterates over boundary pole rows/columns (natural boundaries in U/V) to detect singularities.
+- **Falsifiable claim**: Without boundary iteration, interior poles are tested instead, missing actual pin singularities at edges. To test: pin in U-direction at boundary; without boundary check, interior poles analyzed.
+- **Minimal reproducer**: NURBS surface with pole singularity at U-boundary (first/last U row). CheckPin. Without boundary focus: interior rows tested, pin missed. With boundary focus: boundary row IsoStat detects singularity, sens=1.
+- **Search anchors**: 'IsoStat', '1, 1', 'nbu', 'whatrow'
+
+
+#### `ShapeAnalysis_CheckSmallFace.CheckPinFace_at1069`
+ (10 branches; source: `v3-deep-batch-Z.json`)
+
+##### `?`
+- **Line**: 1106  **Axis**: `?`
+- **Falsifiable claim**: Without this check, the analyzer would FAIL TO REPORT zero-length edges (degenerate first edge).
+
+##### `?`
+- **Line**: 1110  **Axis**: `?`
+- **Falsifiable claim**: Without this check, the analyzer would FAIL TO REPORT normalized edge-length ratio (above unity scale).
+
+##### `?`
+- **Line**: 1116  **Axis**: `?`
+- **Falsifiable claim**: Without this check, the analyzer would FAIL TO REPORT below-threshold pin coefficient (too small to be significant pin).
+
+##### `?`
+- **Line**: 1128  **Axis**: `?`
+- **Falsifiable claim**: Without this check, the analyzer would FAIL TO REPORT excess distance between candidate pin-edge endpoints.
+
+##### `?`
+- **Line**: 1136  **Axis**: `?`
+- **Falsifiable claim**: Without this check, the analyzer would FAIL TO REPORT zero-length second edge candidate (degenerate pair).
+
+##### `?`
+- **Line**: 1140  **Axis**: `?`
+- **Falsifiable claim**: Without this check, the analyzer would FAIL TO REPORT normalized second edge ratio.
+
+##### `?`
+- **Line**: 1145  **Axis**: `?`
+- **Falsifiable claim**: Without this check, the analyzer would FAIL TO REPORT second edge below-threshold coefficient.
+
+##### `?`
+- **Line**: 1149  **Axis**: `?`
+- **Falsifiable claim**: Without this check, the analyzer would FAIL TO REPORT first-to-second edge coefficient ratio exceeding 10:1 (imbalanced pin).
+
+##### `?`
+- **Line**: 1153  **Axis**: `?`
+- **Falsifiable claim**: Without this check, the analyzer would FAIL TO REPORT second-to-first edge coefficient ratio exceeding 10:1 (imbalanced pin).
+
+##### `?`
+- **Line**: 1160  **Axis**: `?`
+- **Falsifiable claim**: Without this check, the analyzer would FAIL TO REPORT topologically qualifying pin-edge pairs failing geometric validation.
+
+
+#### `ShapeAnalysis_CheckSmallFace.CheckSingleStrip`
+ (2 branches; 1 low-confidence; source: `v3-deep-batch-B.json`)
+
+##### `SSTRIP_001`
+- **Line**: 530  **Axis**: `Input: seam edge topology -> Logic: vertex dedup fails`
+- **Brief**: Vertex collection logic assumes exactly 2 vertices; multi-vertex wires cause silent failure
+- **Falsifiable claim**: Loop collects V1, V2, and returns false if >2 unique vertices, but wires with repeated verts (seam) confuse the count
+- **Minimal reproducer**: Face with seam edge visited twice; V.IsSame(V1/V2) continue logic may undercount or overcount
+- **Search anchors**: 'V1.IsSame(V)', 'continue', 'return false'
+
+##### `SSTRIP_002` **[low-confidence]**
+- **Line**: 571  **Axis**: `Tolerance: vert->edge -> Geo: over-permissive`
+- **Brief**: Tolerance propagation from vertices to edges loses precision context
+- **Falsifiable claim**: Edge tolerance check uses max vertex tolerance without considering edge-specific drift
+- **Minimal reproducer**: Edge connecting two high-tolerance vertices; edge itself deviates beyond max-vertex tol
+- **Search anchors**: 'tolv = BRep_Tool::Tolerance(VA)', 'toler < tolv'
+
+
+#### `ShapeAnalysis_CheckSmallFace.CheckSplittingVertices_at687`
+ (8 branches; source: `v3-deep-batch-Z.json`)
+
+##### `?`
+- **Line**: 701  **Axis**: `?`
+- **Falsifiable claim**: Without this check, the analyzer would FAIL TO REPORT empty vertex sets (topologically degenerate faces).
+
+##### `?`
+- **Line**: 720  **Axis**: `?`
+- **Falsifiable claim**: Without this check, the analyzer would FAIL TO REPORT automatic tolerance derivation for vertices.
+
+##### `?`
+- **Line**: 740  **Axis**: `?`
+- **Falsifiable claim**: Without this check, the analyzer would FAIL TO REPORT null-curve edges skipped during projection.
+
+##### `?`
+- **Line**: 744  **Axis**: `?`
+- **Falsifiable claim**: Without this check, the analyzer would FAIL TO REPORT edge-endpoint filtering (excluding true endpoints).
+
+##### `?`
+- **Line**: 754  **Axis**: `?`
+- **Falsifiable claim**: Without this check, the analyzer would FAIL TO REPORT zero-distance projections (inherent point-on-curve).
+
+##### `?`
+- **Line**: 759  **Axis**: `?`
+- **Falsifiable claim**: Without this check, the analyzer would FAIL TO REPORT vertex-to-edge projection within tolerance threshold.
+
+##### `?`
+- **Line**: 763  **Axis**: `?`
+- **Falsifiable claim**: Without this check, the analyzer would FAIL TO REPORT parameter range violation (projection outside curve domain).
+
+##### `?`
+- **Line**: 769  **Axis**: `?`
+- **Falsifiable claim**: Without this check, the analyzer would FAIL TO REPORT near-endpoint projections (epsilon-based endpoint proximity).
+
+
+#### `ShapeAnalysis_CheckSmallFace.CheckSpotFace_at235`
+ (3 branches; source: `v3-deep-batch-Z.json`)
+
+##### `?`
+- **Line**: 239  **Axis**: `?`
+- **Falsifiable claim**: Without this check, the analyzer would FAIL TO REPORT that a face is not classified as spot-geometry (IsSpotFace returned falsy status).
+
+##### `?`
+- **Line**: 243  **Axis**: `?`
+- **Falsifiable claim**: Without this check, the analyzer would FAIL TO REPORT discrete spot classification (case 1: vertex-like singularity).
+
+##### `?`
+- **Line**: 246  **Axis**: `?`
+- **Falsifiable claim**: Without this check, the analyzer would FAIL TO REPORT parametric spot classification (case 2: interior singularity).
+
+
+#### `ShapeAnalysis_CheckSmallFace.CheckStripEdges_at351`
+ (5 branches; source: `v3-deep-batch-Z.json`)
+
+##### `?`
+- **Line**: 357  **Axis**: `?`
+- **Falsifiable claim**: Without this check, the analyzer would FAIL TO REPORT automatic tolerance derivation from edge vertex tolerances.
+
+##### `?`
+- **Line**: 363  **Axis**: `?`
+- **Falsifiable claim**: Without this check, the analyzer would FAIL TO REPORT tolerance unification across mismatched edge tolerances.
+
+##### `?`
+- **Line**: 373  **Axis**: `?`
+- **Falsifiable claim**: Without this check, the analyzer would FAIL TO REPORT degenerate edge curves (null geometry).
+
+##### `?`
+- **Line**: 404  **Axis**: `?`
+- **Falsifiable claim**: Without this check, the analyzer would FAIL TO REPORT projection parameter out-of-domain (edges not truly coincident).
+
+##### `?`
+- **Line**: 412  **Axis**: `?`
+- **Falsifiable claim**: Without this check, the analyzer would FAIL TO REPORT excess projection distance between paired edges.
+
+
+#### `ShapeAnalysis_CheckSmallFace.CheckStripFace_at659`
+ (2 branches; source: `v3-deep-batch-Z.json`)
+
+##### `?`
+- **Line**: 662  **Axis**: `?`
+- **Falsifiable claim**: Without this check, the analyzer would FAIL TO REPORT single-strip faces (opposing edge pairs with parallel support).
+
+##### `?`
+- **Line**: 668  **Axis**: `?`
+- **Falsifiable claim**: Without this check, the analyzer would FAIL TO REPORT multi-strip candidates (faces with hidden strip topology).
+
+
+#### `ShapeAnalysis_CheckSmallFace.CheckTwisted_at975`
+ (3 branches; source: `v3-deep-batch-Z.json`)
+
+##### `?`
+- **Line**: 979  **Axis**: `?`
+- **Falsifiable claim**: Without this check, the analyzer would FAIL TO REPORT elementary surface type rejection (planes, cylinders, etc.).
+
+##### `?`
+- **Line**: 987  **Axis**: `?`
+- **Falsifiable claim**: Without this check, the analyzer would FAIL TO REPORT automatic tolerance substitution for twisted-face detection.
+
+##### `?`
+- **Line**: 1015  **Axis**: `?`
+- **Falsifiable claim**: Without this check, the analyzer would FAIL TO REPORT normal inversion (scalar product negative = twist angle > 90°).
+
+
+#### `ShapeAnalysis_CheckSmallFace.FindStripEdges_at442`
+ (6 branches; source: `v3-deep-batch-Z.json`)
+
+##### `?`
+- **Line**: 449  **Axis**: `?`
+- **Falsifiable claim**: Without this check, the analyzer would FAIL TO REPORT seam-edge filtering (topologically duplicate edges).
+
+##### `?`
+- **Line**: 456  **Axis**: `?`
+- **Falsifiable claim**: Without this check, the analyzer would FAIL TO REPORT automatic tolerance from vertex pair tolerances.
+
+##### `?`
+- **Line**: 468  **Axis**: `?`
+- **Falsifiable claim**: Without this check, the analyzer would FAIL TO REPORT null-curve edges (degenerate topology).
+
+##### `?`
+- **Line**: 472  **Axis**: `?`
+- **Falsifiable claim**: Without this check, the analyzer would FAIL TO REPORT degenerate edges with null or near-zero curve length.
+
+##### `?`
+- **Line**: 477  **Axis**: `?`
+- **Falsifiable claim**: Without this check, the analyzer would FAIL TO REPORT vertex-collapsed edges (endpoints coincident).
+
+##### `?`
+- **Line**: 490  **Axis**: `?`
+- **Falsifiable claim**: Without this check, the analyzer would FAIL TO REPORT topologically qualifying edge pairs that fail geometric strip validation.
+
+
+#### `ShapeAnalysis_CheckSmallFace.IsSpotFace`
+ (3 branches; 1 low-confidence; source: `v3-deep-batch-B.json`)
+
+##### `SPOT_001`
+- **Line**: 162  **Axis**: `Input: degenerate face (no wires) -> Output: returns true without validation`
+- **Brief**: Missing wire check returns true unconditionally for faces without wires
+- **Falsifiable claim**: Face with no wires (isWir=false) returns true immediately without checking vertex geometry
+- **Minimal reproducer**: Create TopoDS_Face with null wire; IsSpotFace should handle this edge case
+- **Search anchors**: 'isWir = false', 'return true', 'Protection against faces without wires'
+
+##### `SPOT_002` **[low-confidence]**
+- **Line**: 169  **Axis**: `Logic: asymmetric init -> Geo: bounding box error if negative coords`
+- **Brief**: Uninitialized minmax bounds used before iteration
+- **Falsifiable claim**: minx, miny, minz initialized to 0; maxx, maxy, maxz initialized to Precision::Infinite() - may cause wrong bounding box
+- **Minimal reproducer**: Face with vertex at origin; MinMaxPnt logic depends on initialization order
+- **Search anchors**: 'double minx = 0, miny = 0, minz = 0', 'Precision::Infinite()'
+
+##### `SPOT_003`
+- **Line**: 203  **Axis**: `Sampling: single midpoint insufficient -> Geo: false negative for twisted edges`
+- **Brief**: Edge evaluation at midpoint only; closed edges may have non-zero length
+- **Falsifiable claim**: Using cf and cl endpoints plus midpoint for edge length check misses S-curve degenerate edges
+- **Minimal reproducer**: Edge that goes out and returns (S-shape) with midpoint=endpoint would pass when it shouldn't
+- **Search anchors**: '(cf + cl) / 2', 'SquareDistance', 'closed edge may be a non-null length edge'
+
+
+#### `ShapeAnalysis_CheckSmallFace.IsStripSupport`
+ (2 branches; 2 low-confidence; source: `v3-deep-batch-B.json`)
+
+##### `STRIP_001` **[low-confidence]**
+- **Line**: 290  **Axis**: `Logic: scan order -> Geo: incomplete strip detection`
+- **Brief**: Asymmetric U/V pole scanning may miss strip defects in one direction
+- **Falsifiable claim**: Scanning poles row-by-row (constant U) then col-by-col (constant V) with early break skips full analysis
+- **Minimal reproducer**: BSpline surface small in U but not V, where U-scan breaks after first non-small row
+- **Search anchors**: 'for (iu = 1; iu <= nbu; iu++)', 'issmall = false; break'
+
+##### `STRIP_002` **[low-confidence]**
+- **Line**: 278  **Axis**: `Semantics: status bits -> API: caller decodes incorrectly`
+- **Brief**: Status encoding (DONE1/DONE2) reversed for U vs V strip classification
+- **Falsifiable claim**: DONE2 is set when small in V (rows scan), DONE1 when small in U (cols scan) - may conflict with caller expectations
+- **Minimal reproducer**: Check caller interpretation of myStatusStrip values; likely convention inversion
+- **Search anchors**: 'myStatusStrip = ShapeExtend::EncodeStatus(ShapeExtend_DONE2)', 'DONE1'
+
+
+### ShapeAnalysis_Curve
+
+#### `ShapeAnalysis_Curve.FillBndBox`
+ (3 branches; 1 low-confidence; source: `v3-deep-batch-L.json`)
+
+##### `BBOX_794_APPROX_SAMPLING`
+- **Line**: 804  **Axis**: `SAMPLING_UNDERRESOLUTION`
+- **Brief**: Approximate mode uses linear parameter grid; may miss extrema in high-curvature intervals
+- **Falsifiable claim**: nseg=(NPoints-1); extrema outside grid spacing remain undetected; Box.Add() incomplete
+- **Minimal reproducer**: S-curve with NPoints=2; single evaluation step misses inflection extrema
+- **Search anchors**: 'nseg = (NPoints < 2 ? 1 : NPoints - 1)', 'step = (Last - First) / nseg'
+
+##### `BBOX_820_CONTINUITY_INTERVAL_MISMATCH`
+- **Line**: 823  **Axis**: `INTERVAL_BOUNDARY_MISMATCH`
+- **Brief**: Exact mode uses C2 intervals; nbSamples=nbInt but SearchForExtremum expects paired interval endpoints
+- **Falsifiable claim**: if nbInt >= 2, aParams stores C2 breaks; loop assumes aParams(i+1) is right endpoint of interval i
+- **Minimal reproducer**: Composite curve with 3+ C2 pieces; aParams length = nbInt+1, but loop pairs (i,i+1) incorrectly
+- **Search anchors**: 'int nbInt = anAC.NbIntervals(GeomAbs_C2)', 'anAC.Intervals(aParams'
+
+##### `BBOX_843_EXTREMUM_INITIALIZATION` **[low-confidence]**
+- **Line**: 843  **Axis**: `UNCONSTRAINED_SEARCH_DRIFT`
+- **Brief**: parextr initialized to par (interval midpoint); SearchForExtremum may converge to local extremum, not global
+- **Falsifiable claim**: Two parallel SearchForExtremum calls (X,Y) with same parextr seed; no guarantee extrema are in (aPar1,aPar2)
+- **Minimal reproducer**: Spiral curve; SearchForExtremum(gp_Vec2d(1,0)) finds local max outside interval; parextr drifts
+- **Search anchors**: 'parextr = par', 'SearchForExtremum(C2d, aPar1, aPar2'
+
+
+#### `ShapeAnalysis_Curve.IsPlanar_at1100`
+ (4 branches; 2 low-confidence; source: `v3-deep-batch-L.json`)
+
+##### `PLANAR_1100_TRIVIAL_LENGTH`
+- **Line**: 1110  **Axis**: `DEGENERATE_REFERENCE_FRAME`
+- **Brief**: pnts.Length() < 3 computes cross product on 2 points; degenerate normal definition
+- **Falsifiable claim**: N1 = pnts(1).XYZ() - pnts(2).XYZ(); if collinear with Normal, std::abs(N1 * Normal) = |N1|*|Normal|
+- **Minimal reproducer**: 2-point array; Normal parallel to segment; returns true for any pair even if not coplanar with 3rd point
+- **Search anchors**: 'pnts.Length() < 3', 'N1 * Normal'
+
+##### `PLANAR_1100_NORMAL_INITIALIZATION` **[low-confidence]**
+- **Line**: 1128  **Axis**: `SIGN_AMBIGUITY`
+- **Brief**: Normal computed via cross product (pnts(pnts.Length()) - center) ^ aMaxDir; order/sign undefined
+- **Falsifiable claim**: Cross product sign depends on vector order; subsequent normalization loses handedness check
+- **Minimal reproducer**: 3 coplanar points; Normal flipped if points ordered opposite; final deviation check same both cases
+- **Search anchors**: 'Normal = (pnts(pnts.Length()).XYZ() - aCenter) ^ aMaxDir'
+
+##### `PLANAR_1100_ACCUMULATION_SIGN_FLIP` **[low-confidence]**
+- **Line**: 1141  **Axis**: `ACCUMULATION_STABILITY`
+- **Brief**: Cross product accumulation uses (aDelta * (-1)) if aDelta dot Normal < 0; ad-hoc sign correction
+- **Falsifiable claim**: If individual aDelta anti-parallel to Normal, flipping creates non-orthogonal accumulation bias
+- **Minimal reproducer**: Slightly out-of-plane points oscillating above/below plane; sign flips cause normal drift
+- **Search anchors**: 'if (Normal * aDelta < 0)', 'aDelta *= -1', 'Normal += aDelta'
+
+##### `PLANAR_1100_ZERO_NORM_FALLBACK`
+- **Line**: 1151  **Axis**: `DEGENERATE_ACCEPTANCE`
+- **Brief**: Linear points detected (nrm < Confusion()); calls GetAnyNormal() but returns true without validity check
+- **Falsifiable claim**: GetAnyNormal() may return arbitrary perpendicular; subsequent plane deviation always passes trivially
+- **Minimal reproducer**: 3 collinear points; Normal=arbitrary; maxd-mind=0; tolerance comparison returns true incorrectly
+- **Search anchors**: 'nrm < Precision::Confusion()', 'Normal = GetAnyNormal(aMaxDir)', 'return true'
+
+
+#### `ShapeAnalysis_Curve.IsPlanar_at1178`
+ (5 branches; 2 low-confidence; source: `v3-deep-batch-L.json`)
+
+##### `PLANAR_1178_LINE_DISPATCH`
+- **Line**: 1189  **Axis**: `CURVE_GEOMETRY_BLIND`
+- **Brief**: Geom_Line returns Normal derived from axis direction; no point sampling verification
+- **Falsifiable claim**: Line planar iff curve parallel to Normal; points may be arbitrarily far from line
+- **Minimal reproducer**: Geom_Line along X-axis; Normal=Y-direction; 3D points at (0,10,0) returns true without checking points
+- **Search anchors**: 'curve->IsKind(STANDARD_TYPE(Geom_Line))', 'N1 * Normal'
+
+##### `PLANAR_1178_CONIC_AXIS_ASSUMPTION`
+- **Line**: 1202  **Axis**: `AXIS_VS_CONTAINMENT`
+- **Brief**: Geom_Conic checks axis direction only; assumes conic plane contains all control points
+- **Falsifiable claim**: Ellipse in XY-plane with Z-offset points; axis check passes but points not coplanar
+- **Minimal reproducer**: Ellipse(XY); Normal=(0,0,1); points at (x,y,z=0.1); aVecMul.SquareModulus() < eps passes
+
+##### `PLANAR_1178_TRIMMED_RECURSION` **[low-confidence]**
+- **Line**: 1213  **Axis**: `TRIM_CONTEXT_LOSS`
+- **Brief**: Trimmed/Offset curve delegates to basis; no parameter range validation on original trim bounds
+- **Falsifiable claim**: Basis planar iff segment planar; trim endpoints may define different plane than basis
+- **Minimal reproducer**: BSplineCurve 3D nonplanar; TrimmedCurve extracts planar interval; BasisCurve IsPlanar=true but trim span crosses plane
+- **Search anchors**: 'Trimmed->BasisCurve()', 'IsPlanar(Trimmed->BasisCurve()'
+
+##### `PLANAR_1178_BSPLINE_POLES_ONLY`
+- **Line**: 1232  **Axis**: `POLE_SUFFICIENCY_FALSE`
+- **Brief**: BSpline planarity checked on control poles only; curve itself may deviate between poles
+- **Falsifiable claim**: Poles coplanar does not imply curve coplanar (non-uniform knots, high-degree curvature)
+- **Minimal reproducer**: Degree-4 BSpline, poles in XY-plane, high curvature in Z near knot; IsPlanar returns true
+- **Search anchors**: 'BSpline->Poles()', 'IsPlanar(BSpline->Poles()'
+
+##### `PLANAR_1178_COMPLEX_ACCUMULATION` **[low-confidence]**
+- **Line**: 1251  **Axis**: `COMPOSITE_PLANE_MISMATCH`
+- **Brief**: ComplexCurve aggregates control poles from all component curves; no intermediate planarity check per curve
+- **Falsifiable claim**: Sequence of planar curves is planar only if all in same plane; accumulation ignores plane transitions
+- **Minimal reproducer**: 2-segment: Line(XY plane) + Line(YZ plane); poles combine; IsPlanar returns true with merged Normal
+- **Search anchors**: 'Complex->NbCurves()', 'AppendControlPoles(sequence'
+
+
+#### `ShapeAnalysis_Curve.NextProject`
+ (2 branches; 1 low-confidence; source: `v3-deep-batch-L.json`)
+
+##### `NPROJ_513_BOUNDED_LOGIC`
+- **Line**: 523  **Axis**: `HISTORY_IGNORED`
+- **Brief**: BoundedCurve endpoint check duplicates Project_at155; same prec fallback and early-return bias
+- **Falsifiable claim**: paramPrev context ignored in bounded check; returns endpoint even if paramPrev hints interior optimum
+- **Minimal reproducer**: paramPrev near interior; curve endpoints closer than interior after Confusion() downgrade
+- **Search anchors**: 'LowBound.Distance(P3D)', 'prec = ( AdjustToEnds'
+
+##### `NPROJ_513_CLOSURE_ASSUMPTION` **[low-confidence]**
+- **Line**: 537  **Axis**: `PARAMETER_RANGE_OVERFLOW`
+- **Brief**: !IsClosed() expansion mirrors Project; delta overflow risk if paramPrev far from (uMin,uMax)
+- **Falsifiable claim**: delta computed on GAC domain, not relative to paramPrev; extrapolation may exceed curve definition
+- **Minimal reproducer**: paramPrev=-10, uMin=0, uMax=1; delta expansion pushes beyond valid curve parameter space
+- **Search anchors**: 'delta = std::min', 'uMin -= delta', 'uMax += delta'
+
+
+#### `ShapeAnalysis_Curve.ProjectAct`
+ (3 branches; 1 low-confidence; source: `v3-deep-batch-B.json`)
+
+##### `PROJ_001`
+- **Line**: 294  **Axis**: `Math: extrema classification -> Geo: false positive projection`
+- **Brief**: Extrema solution acceptance depends on IsMin flag; tangent points may wrongly pass as minima
+- **Falsifiable claim**: Loop filters extrema points by IsMin(i) but doesn't validate that solution is true distance minimum
+- **Minimal reproducer**: Curve with inflection point; tangency condition (second-order) may pass IsMin without being actual minimum
+- **Search anchors**: 'if (!aCurveExtrema.IsMin(i))', 'continue'
+
+##### `PROJ_002` **[low-confidence]**
+- **Line**: 321  **Axis**: `Periodicity: uMax-uMin -> Param: may exceed bounds`
+- **Brief**: Closed curve period computation may wrap parameter outside [uMin, uMax]
+- **Falsifiable claim**: theCurve.IsClosed() && (aCurvePeriod = uMax - uMin) allows downstream periodic wrapping without bounds check
+- **Minimal reproducer**: Periodic NURBS; theProjParam after wrapping may exceed curve definition range
+- **Search anchors**: 'anIsClosedCurve = true', 'aCurvePeriod = uMax - uMin'
+
+##### `PROJ_003`
+- **Line**: 373  **Axis**: `Search: local->global fail -> Tol: unchecked fallback`
+- **Brief**: Fallback to old solution without validating it still meets tolerance
+- **Falsifiable claim**: If new search fails (OK=false after loop), code uses anOldProj/anOldParam without re-checking distance < theTolerance
+- **Minimal reproducer**: Curve moved between initial and fallback check; anOldProj distance may now exceed theTolerance
+- **Search anchors**: 'anIsHaveOldSolution', 'use anOldProj', 'theProjPoint = anOldProj'
+
+
+#### `ShapeAnalysis_Curve.Project_at155`
+ (2 branches; source: `v3-deep-batch-L.json`)
+
+##### `PROJ_155_BND_CHECK`
+- **Line**: 165  **Axis**: `EARLY_RETURN_DISTANCE_BIAS`
+- **Brief**: BoundedCurve endpoint distance check may return before interior optimum found
+- **Falsifiable claim**: If nearest point is interior but endpoint distance passes prec threshold first, projection returns suboptimal endpoint parameter
+- **Minimal reproducer**: Curve with interior minimum closer than endpoint, preci=large; AdjustToEnds=true triggers confusion-tolerance fallback
+- **Search anchors**: 'distmin <= prec', 'LowBound.Distance', 'HigBound.Distance'
+
+##### `PROJ_155_DELTA_UNDERFLOW`
+- **Line**: 188  **Axis**: `NUMERIC_UNDERFLOW_RESOLUTION`
+- **Brief**: delta computation via std::min() may yield zero for tight parameter ranges
+- **Falsifiable claim**: When (uMax - uMin) * 0.1 < GAC.Resolution(preci), delta rounds to zero, expansion fails
+- **Minimal reproducer**: Short curve segment with large preci relative to domain width; !IsClosed()=true
+- **Search anchors**: 'std::min(GAC.Resolution', '(uMax - uMin) * 0.1'
+
+
+#### `ShapeAnalysis_Curve.Project_at212`
+ (3 branches; source: `v3-deep-batch-L.json`)
+
+##### `PROJ_212_INFINITE_PARAM`
+- **Line**: 220  **Axis**: `UNBOUNDED_CURVE_BYPASS`
+- **Brief**: Infinite parameter bounds bypass all endpoint checks; ProjectAct fallback assumes finite bounds
+- **Falsifiable claim**: Line curves (infinite bounds) skip distance initialization; ProjectAct may fail on unbounded topology
+- **Minimal reproducer**: Geom_Line input with no clamping; preci=0
+- **Search anchors**: 'Precision::IsInfinite(uMin)', 'Precision::IsInfinite(uMax)'
+
+##### `PROJ_212_CONFUSION_FALLBACK`
+- **Line**: 230  **Axis**: `TOLERANCE_REGRESSION`
+- **Brief**: AdjustToEnds fallback to Confusion() may mask legitimate endpoint proximity in high-precision mode
+- **Falsifiable claim**: preci > Precision::Confusion() but AdjustToEnds=false silently downgrades tolerance
+- **Minimal reproducer**: preci=1e-6, AdjustToEnds=false, point very close to endpoint at preci level but not Confusion()
+- **Search anchors**: 'AdjustToEnds ? preci : Precision::Confusion()'
+
+##### `PROJ_212_PROJECTION_RACE`
+- **Line**: 243  **Axis**: `EPSILON_RACE_CONDITION`
+- **Brief**: Interior projection chosen only if strictly better than both endpoints within Confusion() margin
+- **Falsifiable claim**: distProj falls in [distmin_L-eps, distmin_H+eps] ambiguity zone; endpoint selection dominates by design
+- **Minimal reproducer**: distProj ≈ distmin_L + 1e-15; distmin_H > distProj; tolerance comparison fails
+- **Search anchors**: 'distProj < distmin_L + Precision::Confusion()', 'distProj < distmin_H'
+
+
+#### `ShapeAnalysis_Curve.SelectForwardSeam`
+ (2 branches; 1 low-confidence; source: `v3-deep-batch-B.json`)
+
+##### `SEAM_001` **[low-confidence]**
+- **Line**: 820  **Axis**: `Periodicity: unwrapped param -> Dedup: fails`
+- **Brief**: Seam curve selection compares u-parameter ranges without normalizing periodic wrapping
+- **Falsifiable claim**: Two seams with same (v, u) but different parametrization (u vs u+period) are not deduplicated
+- **Minimal reproducer**: Cylindrical surface; seams at u=0 and u=2pi have different C3D->IsClosed() behavior
+- **Search anchors**: 'IsClosed', 'period', 'Abs(u1 - u2)'
+
+##### `SEAM_002`
+- **Line**: 850  **Axis**: `Topology: seam direction -> Geometry: normal orientation ignored`
+- **Brief**: Forward-direction classification uses hardcoded direction check without validating normal consistency
+- **Falsifiable claim**: Seam marked 'forward' based on parameter order, not on geometric normal alignment
+- **Minimal reproducer**: Seam with inverted normal (flipped face); forward/backward classification is wrong
+- **Search anchors**: 'forward', 'direction', 'normal'
+
+
+#### `ShapeAnalysis_Curve.ValidateRange`
+ (2 branches; 1 low-confidence; source: `v3-deep-batch-B.json`)
+
+##### `VRANGE_001` **[low-confidence]**
+- **Line**: 620  **Axis**: `Param: knot-space vs curve-domain -> Range: mismatch`
+- **Brief**: BSpline knot vector bounds used without checking if curve is reparametrized
+- **Falsifiable claim**: FirstParameter/LastParameter from BSpline may not match geometric curve bounds if reparametrized
+- **Minimal reproducer**: BSpline with restricted domain via GeomAdaptor; ValidateRange compares against full knot-space range
+- **Search anchors**: 'FirstParameter', 'LastParameter', 'BSpline'
+
+##### `VRANGE_002`
+- **Line**: 660  **Axis**: `Param: expansion -> Continuity: G1 break at edge`
+- **Brief**: Parametric bounds adjusted without checking curve derivative continuity at edges
+- **Falsifiable claim**: Expanding [First, Last] by delta may land on C0 discontinuity, causing solver issues
+- **Minimal reproducer**: Composite curve (BezierCurve) with joined segments; delta expansion crosses joint
+- **Search anchors**: 'delta', 'uMin -= delta', 'uMax += delta'
+
+
+### ShapeAnalysis_Edge
+
+#### `ShapeAnalysis_Edge.CheckCurve3dWithPCurve`
+ (4 branches; source: `v3-deep-batch-I.json`)
+
+##### `CHECK_CURVE_3D_WITH_PCURVE_B001`
+- **Line**: 384  **Axis**: `planar_surface_bypass`
+- **Brief**: Planar surface skips 3D-2D curve consistency check
+- **Falsifiable claim**: Analyzer returns false without checking whether 3D curve endpoints match P-curve projections on plane, failing to detect inconsistency specific to planar surfaces
+- **Minimal reproducer**: Edge on planar surface where 3D curve and P-curve endpoints don't correspond under plane projection; method silently passes
+- **Search anchors**: 'Geom_Plane', 'IsKind', 'return false'
+
+##### `CHECK_CURVE_3D_WITH_PCURVE_B002`
+- **Line**: 391  **Axis**: `pcurve_extraction_failure`
+- **Brief**: P-curve extraction fails with FAIL1 status
+- **Falsifiable claim**: Analyzer fails to report when P-curve cannot be extracted or computed for given edge-surface pair, masking missing parametric curve data
+- **Minimal reproducer**: Edge with missing or corrupt P-curve on surface; PCurve call fails, returns FAIL1 status
+- **Search anchors**: 'PCurve', 'FAIL1', 'return false'
+
+##### `CHECK_CURVE_3D_WITH_PCURVE_B003`
+- **Line**: 399  **Axis**: `curve3d_extraction_failure`
+- **Brief**: 3D curve extraction fails with FAIL2 status
+- **Falsifiable claim**: Analyzer fails to report when 3D curve cannot be extracted from edge, omitting edge-curve binding failure
+- **Minimal reproducer**: Edge with missing or invalid 3D curve (e.g., topological edge without geometric curve); Curve3d call fails
+- **Search anchors**: 'Curve3d', 'FAIL2', 'return false'
+
+##### `CHECK_CURVE_3D_WITH_PCURVE_B004`
+- **Line**: 405  **Axis**: `null_vertex_topology`
+- **Brief**: Edge vertices are null; consistency check skipped
+- **Falsifiable claim**: Analyzer skips endpoint consistency validation when edge has null first or last vertex, failing to detect topologically malformed edges
+- **Minimal reproducer**: Edge with null FirstVertex or LastVertex; endpoint comparison bypassed
+- **Search anchors**: 'IsNull', 'FirstVertex', 'LastVertex'
+
+
+#### `ShapeAnalysis_Edge.CheckOverlapping`
+ (10 branches; 5 low-confidence; source: `v3-deep-batch-I.json`)
+
+##### `CHECK_OVERLAPPING_B001`
+- **Line**: 916  **Axis**: `overlap_extent_localization`
+- **Brief**: Initial full-span overlap detection triggers early return with DONE3
+- **Falsifiable claim**: Analyzer fails to continue fine-grained domain-specific overlap checking after detecting full-span overlap, potentially missing partial or localized overlaps in restricted regions
+- **Minimal reproducer**: Two edges that overlap across entire length; IsOverlapPartEdges returns true at first check, exits without domain analysis
+- **Search anchors**: 'isOverlap', 'DONE3', 'return isOverlap'
+
+##### `CHECK_OVERLAPPING_B002`
+- **Line**: 921  **Axis**: `domain_distance_bypass`
+- **Brief**: Zero domain distance parameter skips domain-specific overlap checking
+- **Falsifiable claim**: Analyzer skips refined domain-based overlap detection when theDomainDist is zero, returning coarse full-span result without analyzing restricted regions
+- **Minimal reproducer**: theDomainDist=0 on edge pair with localized overlap; method exits without examining vicinity of closest points
+- **Search anchors**: 'theDomainDist', '== 0.0', 'return isOverlap'
+
+##### `CHECK_OVERLAPPING_B003` **[low-confidence]**
+- **Line**: 937  **Axis**: `mindist_stability_validation`
+- **Brief**: Min-distance computation succeeds; distance-based filtering follows
+- **Falsifiable claim**: Analyzer applies aresTol = aMinDist.Value() without verifying numerical stability or geometric significance of computed distance, potentially masking ill-conditioned configurations
+- **Minimal reproducer**: Two edges with computed min-distance near numerical precision limits; value applied directly without validation
+- **Search anchors**: 'IsDone', 'Value', 'aresTol'
+
+##### `CHECK_OVERLAPPING_B004`
+- **Line**: 939  **Axis**: `domain_distance_bypass_conditional`
+- **Brief**: Computed distance >= overlap tolerance; returns false without domain analysis
+- **Falsifiable claim**: Analyzer returns false immediately when aresTol >= theTolOverlap, bypassing domain-specific checks that might reveal overlap in proximity regions even when overall distance exceeds tolerance
+- **Minimal reproducer**: Two edges with min-distance > theTolOverlap; method exits without examining localized domain regions
+- **Search anchors**: 'aresTol', 'theTolOverlap', 'return false'
+
+##### `CHECK_OVERLAPPING_B005` **[low-confidence]**
+- **Line**: 943  **Axis**: `vertex_support_parametrization`
+- **Brief**: Support point is vertex of first edge; domain center at parametric extremum
+- **Falsifiable claim**: Analyzer assumes aLengthP is meaningful extremum (0 or aLength) for vertex support, missing intermediate vertex locations or non-topological support points
+- **Minimal reproducer**: Min-distance support point at first edge vertex; aLengthP set to 0 or aLength without validating vertex is truly at parameter endpoint
+- **Search anchors**: 'BRepExtrema_IsVertex', 'IsSame', 'aV1', 'aV2'
+
+##### `CHECK_OVERLAPPING_B006` **[low-confidence]**
+- **Line**: 956  **Axis**: `parameterization_scale_mismatch`
+- **Brief**: Support point is on edge curve; domain center computed from arc-length parameterization
+- **Falsifiable claim**: Analyzer converts parameter-based support point to arc-length coordinate aLengthP, masking issues where parameter and arc-length scales differ (e.g., high-curvature regions)
+- **Minimal reproducer**: Min-distance support on high-curvature edge section; arc-length parameterization yields different domain center than raw curve parameter
+- **Search anchors**: 'BRepExtrema_IsOnEdge', 'GCPnts_AbscissaPoint', 'aLengthP'
+
+##### `CHECK_OVERLAPPING_B007` **[low-confidence]**
+- **Line**: 961  **Axis**: `support_type_coverage`
+- **Brief**: Support type unrecognized; solution skipped without reporting
+- **Falsifiable claim**: Analyzer silently skips solutions with support type outside (Vertex, OnEdge), potentially overlooking face-interior or other degenerate support scenarios
+- **Minimal reproducer**: BRepExtrema result with support type not IsVertex or IsOnEdge; continue statement bypasses solution processing
+- **Search anchors**: 'else', 'continue'
+
+##### `CHECK_OVERLAPPING_B008`
+- **Line**: 963  **Axis**: `domain_window_asymmetric_clamping`
+- **Brief**: Negative start length clamped to zero; domain window extended forward
+- **Falsifiable claim**: Analyzer clamps negative aStartLength to 0 and extends aEndLength by aDomainTol, asymmetrically biasing domain window away from negative parameters without validating intent
+- **Minimal reproducer**: Domain center aLengthP < aDomainTol/2; clamping shifts domain window toward curve end
+- **Search anchors**: 'aStartLength < 0.0', 'aStartLength = 0', 'aDomainTol'
+
+##### `CHECK_OVERLAPPING_B009`
+- **Line**: 971  **Axis**: `domain_window_asymmetric_clamping`
+- **Brief**: End length exceeds curve length; domain window clamped backward
+- **Falsifiable claim**: Analyzer clamps aEndLength to aLength and resets aStartLength by aDomainTol, asymmetrically biasing domain away from curve end without validating intent
+- **Minimal reproducer**: Domain center aLengthP > aLength - aDomainTol/2; clamping shifts domain window toward curve start
+- **Search anchors**: 'aEndLength > aLength', 'aEndLength = aLength'
+
+##### `CHECK_OVERLAPPING_B010` **[low-confidence]**
+- **Line**: 975  **Axis**: `overlap_locality_tracking`
+- **Brief**: Domain-specific overlap check performed; DONE4 status set on success
+- **Falsifiable claim**: Analyzer sets DONE4 status only after IsOverlapPartEdges returns true within domain window, failing to distinguish between full-span (DONE3) and domain-specific (DONE4) overlap detections in multi-domain scenarios
+- **Minimal reproducer**: Two edges with multiple localized overlap regions; method sets DONE4 for detected domain overlap without tracking which domains were examined
+- **Search anchors**: 'isOverlap', 'IsOverlapPartEdges', 'DONE4'
+
+
+#### `ShapeAnalysis_Edge.CheckPCurveRange`
+ (5 branches; 3 low-confidence; source: `v3-deep-batch-I.json`)
+
+##### `CHECK_PCURVE_RANGE_B001` **[low-confidence]**
+- **Line**: 1007  **Axis**: `periodic_range_semantics`
+- **Brief**: P-curve is periodic; period extracted for range validation
+- **Falsifiable claim**: Analyzer applies periodic-curve logic when IsPeriodic flag is set, failing to detect cases where periodicity is declared but parameter range wraps non-monotonically
+- **Minimal reproducer**: Periodic P-curve with theFirst and theLast straddling period boundary; validation assumes wrap-around is intentional
+- **Search anchors**: 'IsPeriodic', 'Period'
+
+##### `CHECK_PCURVE_RANGE_B002` **[low-confidence]**
+- **Line**: 1015  **Axis**: `trimmed_curve_unwrapping`
+- **Brief**: P-curve is TrimmedCurve; basis curve properties extracted instead
+- **Falsifiable claim**: Analyzer unwraps TrimmedCurve to inspect underlying basis curve for periodicity and range, failing to detect when trim boundaries conflict with basis curve properties
+- **Minimal reproducer**: TrimmedCurve wrapping periodic basis curve with trim range that restricts effective periodicity; basis check bypasses trim semantics
+- **Search anchors**: 'STANDARD_TYPE', 'TrimmedCurve', 'BasisCurve'
+
+##### `CHECK_PCURVE_RANGE_B003` **[low-confidence]**
+- **Line**: 1022  **Axis**: `trimmed_curve_periodicity_override`
+- **Brief**: Basis curve is periodic; period updated from unwrapped curve
+- **Falsifiable claim**: Analyzer updates periodicity and period from basis curve after TrimmedCurve unwrap, potentially masking trim-induced range restrictions
+- **Minimal reproducer**: TrimmedCurve with non-periodic trim on periodic basis; basis period applied without validating trim compatibility
+- **Search anchors**: 'IsPeriodic', 'Period', 'aC'
+
+##### `CHECK_PCURVE_RANGE_B004`
+- **Line**: 1027  **Axis**: `periodic_range_overspanning`
+- **Brief**: Periodic curve with range exceeding period by epsilon; range marked invalid
+- **Falsifiable claim**: Analyzer rejects ranges theLast - theFirst > aPeriod + eps for periodic curves, failing to detect over-wrapping or intentional multi-period specifications
+- **Minimal reproducer**: Periodic P-curve with range spanning 1.5 periods; validation rejects without distinguishing wrap-around intent from over-range error
+- **Search anchors**: 'IsPeriodic', 'theLast - theFirst', 'aPeriod'
+
+##### `CHECK_PCURVE_RANGE_B005`
+- **Line**: 1030  **Axis**: `non_periodic_range_bounds_validation`
+- **Brief**: Non-periodic curve with range outside basis curve bounds; range marked invalid
+- **Falsifiable claim**: Analyzer rejects non-periodic curves with theFirst < fp - eps or theLast > lp + eps, failing to distinguish between intentional extrapolation and genuine out-of-bounds errors
+- **Minimal reproducer**: Non-periodic P-curve with requested range slightly exceeding natural parameter bounds; validation fails without considering extrapolation intent
+- **Search anchors**: '!IsPeriodic', 'theFirst < fp', 'theLast > lp'
+
+
+#### `ShapeAnalysis_Edge.CheckSameParameter`
+ (3 branches; 1 low-confidence; source: `v3-deep-batch-B.json`)
+
+##### `SAMEPARAM_001`
+- **Line**: 480  **Axis**: `Parametrization: 3D!=2D -> Projection: param mismatch`
+- **Brief**: 3D curve parameter range may not match 2D PCurve range; projection uses 3D params on 2D curve
+- **Falsifiable claim**: Edge may have cf3d/cl3d != cf2d/cl2d (due to reparametrization); ProjectAct uses cf3d but evaluates PCurve
+- **Minimal reproducer**: Edge with 3D curve param [0,10] and 2D PCurve param [0,1]; ProjectAct(C3d_param) fails on 2D
+- **Search anchors**: 'cf3d', 'cl3d', 'cf2d', 'cl2d', 'ProjectAct'
+
+##### `SAMEPARAM_002` **[low-confidence]**
+- **Line**: 510  **Axis**: `Scale: absolute tol -> Verdict: over-permissive for large edges`
+- **Brief**: Tolerance threshold for 'same parameter' verdict is constant; should scale with edge length
+- **Falsifiable claim**: Fixed tolerance preci (e.g., 1e-7) applied to all edges regardless of bounding box size
+- **Minimal reproducer**: Tiny edge (1mm) vs huge edge (1km); same absolute tolerance is inappropriate
+- **Search anchors**: 'preci', 'tolerance', 'fixed'
+
+##### `SAMEPARAM_003`
+- **Line**: 540  **Axis**: `Sampling: sparse -> Validation: incomplete`
+- **Brief**: Sampling strategy (3 points: start, mid, end) may miss oscillating deviations
+- **Falsifiable claim**: Only 3 evaluation points on edge; parametric deviation may oscillate between samples
+- **Minimal reproducer**: Periodic edge deviation (e.g., spiraling); 3-point sample misses peaks between points
+- **Search anchors**: 'Value(cf)', 'Value((cf+cl)/2)', 'Value(cl)'
+
+
+#### `ShapeAnalysis_Edge.CheckVerticesWithCurve3d`
+ (5 branches; source: `v3-deep-batch-I.json`)
+
+##### `CHECK_VERTICES_WITH_CURVE_3D_B001`
+- **Line**: 462  **Axis**: `curve3d_extraction_failure`
+- **Brief**: 3D curve extraction fails; vertex consistency check aborted
+- **Falsifiable claim**: Analyzer fails to report when 3D curve cannot be extracted, omitting check for vertex-curve correspondence
+- **Minimal reproducer**: Edge without 3D curve; Curve3d call returns false, method exits with FAIL1
+- **Search anchors**: 'Curve3d', 'FAIL1', 'return false'
+
+##### `CHECK_VERTICES_WITH_CURVE_3D_B002`
+- **Line**: 469  **Axis**: `selective_vertex_checking`
+- **Brief**: First vertex excluded from distance check via vtx parameter
+- **Falsifiable claim**: Analyzer omits checking first vertex when vtx == 2 (check only last vertex), masking start-point curve inconsistencies
+- **Minimal reproducer**: Call with vtx=2 on edge where first vertex is far from curve start point; distance check skipped for V1
+- **Search anchors**: 'vtx', '!= 2', 'FirstVertex'
+
+##### `CHECK_VERTICES_WITH_CURVE_3D_B003`
+- **Line**: 474  **Axis**: `vertex_distance_tolerance_exceeded`
+- **Brief**: First vertex distance exceeds tolerance; DONE1 status set
+- **Falsifiable claim**: Analyzer detects distance violation at first vertex but delegates severity assessment to status flags without reporting magnitude or recovery recommendation
+- **Minimal reproducer**: First vertex location differs from 3D curve start by more than tolerance; distance > threshold triggers DONE1 status only
+- **Search anchors**: 'Distance', 'preci', 'DONE1'
+
+##### `CHECK_VERTICES_WITH_CURVE_3D_B004`
+- **Line**: 480  **Axis**: `selective_vertex_checking`
+- **Brief**: Second vertex excluded from distance check via vtx parameter
+- **Falsifiable claim**: Analyzer omits checking second vertex when vtx == 1 (check only first vertex), masking end-point curve inconsistencies
+- **Minimal reproducer**: Call with vtx=1 on edge where last vertex is far from curve end point; distance check skipped for V2
+- **Search anchors**: 'vtx', '!= 1', 'LastVertex'
+
+##### `CHECK_VERTICES_WITH_CURVE_3D_B005`
+- **Line**: 485  **Axis**: `vertex_distance_tolerance_exceeded`
+- **Brief**: Second vertex distance exceeds tolerance; DONE2 status set
+- **Falsifiable claim**: Analyzer detects distance violation at second vertex but reports via status flag without reporting magnitude or context
+- **Minimal reproducer**: Last vertex location differs from 3D curve end by more than tolerance; distance > threshold triggers DONE2 status only
+- **Search anchors**: 'Distance', 'preci', 'DONE2'
+
+
+#### `ShapeAnalysis_Edge.CheckVerticesWithPCurve`
+ (7 branches; source: `v3-deep-batch-I.json`)
+
+##### `CHECK_VERTICES_WITH_PCURVE_B001`
+- **Line**: 525  **Axis**: `pcurve_extraction_failure`
+- **Brief**: P-curve extraction fails; vertex consistency check aborted
+- **Falsifiable claim**: Analyzer fails to report when P-curve cannot be extracted, omitting check for vertex-P-curve correspondence
+- **Minimal reproducer**: Edge without P-curve on surface; PCurve call returns false, method exits with FAIL1
+- **Search anchors**: 'PCurve', 'FAIL1', 'return false'
+
+##### `CHECK_VERTICES_WITH_PCURVE_B002`
+- **Line**: 533  **Axis**: `selective_vertex_checking`
+- **Brief**: First vertex excluded from distance check via vtx parameter
+- **Falsifiable claim**: Analyzer omits checking first vertex when vtx == 2, masking discrepancy between vertex location and P-curve start projection
+- **Minimal reproducer**: Call with vtx=2 on edge where first vertex projects far from P-curve start; distance check bypassed for V1
+- **Search anchors**: 'vtx', '!= 2', 'FirstVertex'
+
+##### `CHECK_VERTICES_WITH_PCURVE_B003`
+- **Line**: 539  **Axis**: `location_transformation_semantics`
+- **Brief**: Location transformation applied to P-curve surface point evaluation
+- **Falsifiable claim**: Analyzer fails to detect when surface location transform is not applied (identity check bypassed), causing P-curve endpoint to be evaluated without account for edge placement
+- **Minimal reproducer**: Edge on surface with non-identity location; IsIdentity check omitted leads to untransformed surface evaluation
+- **Search anchors**: 'IsIdentity', 'Transform', 'loc'
+
+##### `CHECK_VERTICES_WITH_PCURVE_B004`
+- **Line**: 544  **Axis**: `vertex_distance_tolerance_exceeded`
+- **Brief**: First vertex distance exceeds tolerance; DONE1 status set
+- **Falsifiable claim**: Analyzer detects distance violation at first vertex projected onto P-curve surface but reports status without magnitude context
+- **Minimal reproducer**: First vertex distance from P-curve start point exceeds tolerance; distance > threshold triggers DONE1 status
+- **Search anchors**: 'Distance', 'preci', 'DONE1'
+
+##### `CHECK_VERTICES_WITH_PCURVE_B005`
+- **Line**: 551  **Axis**: `selective_vertex_checking`
+- **Brief**: Second vertex excluded from distance check via vtx parameter
+- **Falsifiable claim**: Analyzer omits checking second vertex when vtx == 1, masking discrepancy between last vertex and P-curve end projection
+- **Minimal reproducer**: Call with vtx=1 on edge where last vertex projects far from P-curve end; distance check bypassed for V2
+- **Search anchors**: 'vtx', '!= 1', 'LastVertex'
+
+##### `CHECK_VERTICES_WITH_PCURVE_B006`
+- **Line**: 557  **Axis**: `location_transformation_consistency`
+- **Brief**: Location transformation applied to second P-curve surface point evaluation
+- **Falsifiable claim**: Analyzer fails to detect when surface location transform is not applied to second vertex projection, causing inconsistency between V1 and V2 handling
+- **Minimal reproducer**: Edge on surface with non-identity location; second vertex transform check inconsistently applied vs first vertex
+- **Search anchors**: 'IsIdentity', 'Transform', 'loc'
+
+##### `CHECK_VERTICES_WITH_PCURVE_B007`
+- **Line**: 562  **Axis**: `vertex_distance_tolerance_exceeded`
+- **Brief**: Second vertex distance exceeds tolerance; DONE2 status set
+- **Falsifiable claim**: Analyzer detects distance violation at second vertex projected onto P-curve surface but reports status without magnitude context
+- **Minimal reproducer**: Last vertex distance from P-curve end point exceeds tolerance; distance > threshold triggers DONE2 status
+- **Search anchors**: 'Distance', 'preci', 'DONE2'
+
+
+#### `ShapeAnalysis_Edge.GetEndTangent2d`
+ (10 branches; 2 low-confidence; source: `v3-deep-batch-I.json`)
+
+##### `GET_END_TANGENT_2D_B001`
+- **Line**: 293  **Axis**: `missing_pcurve_data_completeness`
+- **Brief**: Missing P-curve extraction fails tangent calculation
+- **Falsifiable claim**: Analyzer fails to report when P-curve cannot be extracted from edge-surface pair, causing silent return of zero vector instead of signaling missing geometric data
+- **Minimal reproducer**: Edge with null or invalid P-curve on given surface; call GetEndTangent2d expecting tangent vector
+- **Search anchors**: 'PCurve', 'edge', 'surface', 'location'
+
+##### `GET_END_TANGENT_2D_B002`
+- **Line**: 305  **Axis**: `parameter_degeneracy_precision`
+- **Brief**: Negligible parameter delta skips tangent difference computation
+- **Falsifiable claim**: Analyzer omits tangent vector magnitude check when parameter delta falls below confusion threshold, failing to validate whether finite difference is numerically meaningful
+- **Minimal reproducer**: Edge with very small parameter range (cl - cf) near or below Precision::PConfusion; delta computed from dparam shrinks to epsilon
+- **Search anchors**: 'delta', 'Precision::PConfusion', 'dpnew'
+
+##### `GET_END_TANGENT_2D_B003`
+- **Line**: 319  **Axis**: `tangent_computation_method_boundary`
+- **Brief**: End-point tangent calculation uses curve interior point instead of derivative at endpoint
+- **Falsifiable claim**: Analyzer fails to detect when tangent fallback uses finite difference from interior point (par2 offset) instead of curve derivative, missing cases where curve direction is non-differentiable at endpoint
+- **Minimal reproducer**: P-curve with high curvature variation near endpoint; dparam-based difference may mask non-smooth behavior vs D1 evaluation at endpoint
+- **Search anchors**: 'atend2', 'cl', 'cf', 'D0', 'delta'
+
+##### `GET_END_TANGENT_2D_B004`
+- **Line**: 327  **Axis**: `tangent_computation_method_boundary`
+- **Brief**: Start-point tangent uses forward difference from curve start
+- **Falsifiable claim**: Analyzer fails to detect when tangent at start uses forward finite difference (cf + delta) instead of derivative, missing asymmetry in curve regularity between start and end
+- **Minimal reproducer**: P-curve with discontinuous or undefined tangent at start parameter; finite difference direction differs from true derivative
+- **Search anchors**: 'atend2', 'cf', 'par1', 'par2'
+
+##### `GET_END_TANGENT_2D_B005`
+- **Line**: 332  **Axis**: `finite_difference_degeneracy`
+- **Brief**: Zero magnitude tangent vector from finite difference triggers fallback
+- **Falsifiable claim**: Analyzer fails to report when finite difference produces zero-magnitude tangent (numerically ill-conditioned finite difference), bypassing validation of whether dparam is appropriate for curve scale
+- **Minimal reproducer**: P-curve with very short span or flat section at endpoint; finite difference v.SquareMagnitude() == 0 forces dpnew = 0.0
+- **Search anchors**: 'SquareMagnitude', 'PConfusion', 'dpnew'
+
+##### `GET_END_TANGENT_2D_B006`
+- **Line**: 340  **Axis**: `derivative_degeneracy_escalation`
+- **Brief**: D1 derivative is zero; falls back to D2 second derivative
+- **Falsifiable claim**: Analyzer omits reporting when first derivative is numerically zero, failing to detect inflection points or degenerate curve sections before escalating to D2
+- **Minimal reproducer**: P-curve at inflection point where D1 = 0; D2 evaluation used as fallback tangent approximation
+- **Search anchors**: 'D1', 'D2', 'SquareMagnitude'
+
+##### `GET_END_TANGENT_2D_B007` **[low-confidence]**
+- **Line**: 346  **Axis**: `derivative_degeneracy_escalation`
+- **Brief**: D2 second derivative is zero; falls back to D3 third derivative
+- **Falsifiable claim**: Analyzer fails to detect when second derivative is numerically zero (e.g., at symmetry point), before attempting third-order derivative for tangent
+- **Minimal reproducer**: P-curve at symmetric point where D2 vanishes; D3 computation attempted as final tangent source
+- **Search anchors**: 'D2', 'D3', 'SquareMagnitude'
+
+##### `GET_END_TANGENT_2D_B008` **[low-confidence]**
+- **Line**: 352  **Axis**: `derivative_complete_degeneracy`
+- **Brief**: D3 third derivative is zero; falls back to straight-line tangent between curve endpoints
+- **Falsifiable claim**: Analyzer omits reporting when all three derivatives vanish (curve segment locally flat or degenerate), before resorting to linear interpolation across curve span
+- **Minimal reproducer**: P-curve segment with all derivatives zero up to D3 (e.g., low-degree polynomial segment); straight line between endpoints used as tangent
+- **Search anchors**: 'D3', 'p2', 'cf', 'cl'
+
+##### `GET_END_TANGENT_2D_B009`
+- **Line**: 357  **Axis**: `complete_tangent_degeneracy`
+- **Brief**: Straight-line tangent magnitude is zero; method returns failure
+- **Falsifiable claim**: Analyzer fails to detect when all fallback tangent sources (D1..D3 and line endpoints) yield zero-magnitude vector, indicating completely degenerate geometry with no detectable direction
+- **Minimal reproducer**: P-curve segment where start = end and all derivatives vanish; no tangent direction can be computed
+- **Search anchors**: 'p2', 'pnt', 'return false'
+
+##### `GET_END_TANGENT_2D_B010`
+- **Line**: 361  **Axis**: `orientation_reversal_semantics`
+- **Brief**: Edge orientation reversal negates computed tangent
+- **Falsifiable claim**: Analyzer fails to detect when edge orientation reversal is applied post-computation, potentially masking consistent tangent-reversal errors in underlying curve data
+- **Minimal reproducer**: Edge with REVERSED orientation; tangent computed then negated without validation of orientation consistency with curve parameterization
+- **Search anchors**: 'Orientation', 'REVERSED', 'Reverse'
+
+
 ### ShapeAnalysis_ShapeTolerance
 
 #### `ShapeAnalysis_ShapeTolerance.InTolerance`
@@ -629,7 +3456,1340 @@ v3's bar: every branch's description is rich enough to either RECREATE the defec
 - **Brief**: Confirmed OCCT source bug: VERTEX case uses inverted comparison vs other shape types.
 
 
+### ShapeAnalysis_Surface
+
+#### `ShapeAnalysis_Surface.ComputeBoxes`
+ (2 branches; source: `v3-deep-batch-R.json`)
+
+##### `ComputeBoxes-iso-null-guard`
+- **Line**: 1906  **Axis**: `null-iso-silent-skip`
+- **Brief**: ISO curve null checks prevent BndLib addition but don't report failure
+- **Falsifiable claim**: Without this check, the analyzer would FAIL TO REPORT missing boundary boxes for degenerate ISO curves
+- **Minimal reproducer**: Surface with one or more null ISO curves; ComputeBoxes silently skips
+- **Search anchors**: 'if (!myIsoUF.IsNull())', 'BndLib_Add3dCurve::Add'
+
+##### `ComputeBoxes-cached-flag`
+- **Line**: 1899  **Axis**: `cache-invalidation-surface-change`
+- **Brief**: Once myIsoBoxes = true, function never recomputes even after surface change
+- **Falsifiable claim**: Without this check, the analyzer would FAIL TO REPORT stale box cache when surface or ISO curves change
+- **Minimal reproducer**: Call Init with new surface, then ComputeBoxes; uses stale cache
+- **Search anchors**: 'if (myIsoBoxes)', 'return;', 'myIsoBoxes = true'
+
+
+#### `ShapeAnalysis_Surface.ComputeSingularities`
+ (6 branches; source: `v3-deep-batch-F.json`)
+
+##### `ShapeAnalysis_Surface.ComputeSingularities.skip-when-cached`
+- **Line**: ShapeAnalysis_Surface.cxx:184  **Axis**: `state management, cache invalidation`
+- **Brief**: Skip recomputation if singularities already cached
+- **Falsifiable claim**: Without this check, the analyzer would re-process and redundantly cache singularity data on every call, wasting computation and potentially corrupting cached singularity markers
+- **Minimal reproducer**: Create a BSplineSurface with 2 poles in U, call ComputeSingularities() twice; second call should detect cache hit
+- **Search anchors**: 'myNbDeg >= 0', 'return without recomputation', 'singularity cache'
+
+##### `ShapeAnalysis_Surface.ComputeSingularities.null-surface-guard`
+- **Line**: ShapeAnalysis_Surface.cxx:190  **Axis**: `null pointer safety`
+- **Brief**: Guard against null surface reference
+- **Falsifiable claim**: Without this check, the analyzer would dereference a null surface pointer, causing a crash or undefined behavior instead of safely returning without populating singularity metadata
+- **Minimal reproducer**: Initialize ShapeAnalysis_Surface with null handle; call ComputeSingularities(); should return silently without crashing
+- **Search anchors**: 'mySurf.IsNull()', 'null surface guard', 'early return'
+
+##### `ShapeAnalysis_Surface.ComputeSingularities.conic-apex-singularity`
+- **Line**: ShapeAnalysis_Surface.cxx:201  **Axis**: `conical degeneracy, apex detection`
+- **Brief**: Detect conical surface apex singularity
+- **Falsifiable claim**: Without this check, the analyzer would fail to identify the apex point for conical surfaces, leaving the healer unable to detect or correct degeneracy at the cone apex where the surface collapses to a line
+- **Minimal reproducer**: STEP surface with Geom_ConicalSurface (semi-angle π/4, ref-radius 1.0); apex should be at computed v-parameter; verify singularity point matches cone apex in 3D
+- **Search anchors**: 'Geom_ConicalSurface', 'RefRadius', 'SemiAngle', 'Apex()'
+
+##### `ShapeAnalysis_Surface.ComputeSingularities.toroidal-pinch-singularities`
+- **Line**: ShapeAnalysis_Surface.cxx:214  **Axis**: `toroidal degeneracy, parametric singularities`
+- **Brief**: Detect torus inner-radius pinch points (two singularities if major > minor)
+- **Falsifiable claim**: Without this check, the analyzer would fail to report toroidal pinch singularities where the surface self-closes around the minor-radius circle, leaving healing unable to detect torus-specific degeneracies
+- **Minimal reproducer**: Geom_ToroidalSurface with majorR=2.0, minorR=1.5; should report 1 pinch (major < minor); with majorR=3.0, minorR=1.5 should report 2 pinches; verify angular positions via acos formula
+- **Search anchors**: 'Geom_ToroidalSurface', 'MinorRadius', 'MajorRadius', 'M_PI +/- Ang'
+
+##### `ShapeAnalysis_Surface.ComputeSingularities.spherical-pole-singularities`
+- **Line**: ShapeAnalysis_Surface.cxx:233  **Axis**: `spherical poles, normal singularity`
+- **Brief**: Detect both north and south spherical poles
+- **Falsifiable claim**: Without this check, the analyzer would fail to identify the two pole singularities on a sphere, allowing healing to miss critical degeneracies where surface normals become singular
+- **Minimal reproducer**: Geom_SphericalSurface with radius 1.0; verify myP3d[0] evaluates to northern pole (sv2) and myP3d[1] to southern pole (sv1) in 3D; check myUIsoDeg false for both (u-oriented degeneracy)
+- **Search anchors**: 'Geom_SphericalSurface', 'Value(su1, sv2)', 'Value(su1, sv1)', 'myUIsoDeg'
+
+##### `ShapeAnalysis_Surface.ComputeSingularities.bounded-surface-edge-singularities`
+- **Line**: ShapeAnalysis_Surface.cxx:247  **Axis**: `edge degeneracy, boundary collapse`
+- **Brief**: Detect potential edge degeneracies in bounded, revolution, and offset surfaces
+- **Falsifiable claim**: Without this check, the analyzer would fail to identify degenerate edges in bounded/revolution/offset surfaces by sampling 4 boundary edges, leaving the healer unable to detect edge-collapse anomalies
+- **Minimal reproducer**: Geom_SurfaceOfRevolution with basis curve that pinches at one end; 4 edge-midpoints sampled; verify corner distances and midpoint distances capture potential degeneracy signature
+- **Search anchors**: 'Geom_BoundedSurface', 'Geom_SurfaceOfRevolution', 'Geom_OffsetSurface', 'Corner1..4', 'myPreci'
+
+
+#### `ShapeAnalysis_Surface.DegeneratedValues`
+ (2 branches; 1 low-confidence; source: `v3-deep-batch-R.json`)
+
+##### `DegeneratedValues-lazy-compute`
+- **Line**: 381  **Axis**: `lazy-init-validation`
+- **Brief**: Singularities computed lazily without bounds validation
+- **Falsifiable claim**: Without this check, the analyzer would FAIL TO REPORT missing singularity precondition and use stale data
+- **Minimal reproducer**: Call DegeneratedValues before ComputeSingularities; myNbDeg = -1 branch triggers
+- **Search anchors**: 'if (myNbDeg < 0)', 'ComputeSingularities()'
+
+##### `DegeneratedValues-gap-threshold` **[low-confidence]**
+- **Line**: 396  **Axis**: `boundary-precision-off-by-one`
+- **Brief**: Gap minimum selection depends on precision loop boundary
+- **Falsifiable claim**: Without this check, the analyzer would FAIL TO REPORT singularities at precision threshold due to early loop termination
+- **Minimal reproducer**: Call with preci at boundary of myPreci[i] <= preci condition
+- **Search anchors**: 'myPreci[i] <= preci', 'gapMin > myGap'
+
+
+#### `ShapeAnalysis_Surface.Init`
+ (1 branches; source: `v3-deep-batch-R.json`)
+
+##### `Init-null-surface`
+- **Line**: 131  **Axis**: `defensive-nullcheck-swallowed`
+- **Brief**: Null surface reference accepted without exception
+- **Falsifiable claim**: Without this check, the analyzer would FAIL TO REPORT invalid null surface initialization and risk downstream crashes
+- **Minimal reproducer**: ShapeAnalysis_Surface sa; sa.Init(null_handle);
+- **Search anchors**: 'theSurface.IsNull()', 'Message::SendWarning'
+
+
+#### `ShapeAnalysis_Surface.IsDegenerated`
+ (2 branches; 1 low-confidence; source: `v3-deep-batch-R.json`)
+
+##### `IsDegenerated-resolution-guard`
+- **Line**: 562  **Axis**: `resolution-precision-boundary`
+- **Brief**: Resolution check skips analysis if resolution undefined
+- **Falsifiable claim**: Without this check, the analyzer would FAIL TO REPORT degeneracy when U/V resolution is near-confusion
+- **Minimal reproducer**: Surface with UResolution or VResolution near Precision::PConfusion()
+- **Search anchors**: 'if (RU < Precision::PConfusion()', 'if (RV < Precision::PConfusion()'
+
+##### `IsDegenerated-ratio-scaling` **[low-confidence]**
+- **Line**: 570  **Axis**: `tolerance-scaling-unbounded`
+- **Brief**: Max3d tolerance scaled by ratio without upper bound
+- **Falsifiable claim**: Without this check, the analyzer would FAIL TO REPORT degeneracy tolerance scaling when ratio is excessive
+- **Minimal reproducer**: Call with large ratio parameter and max3d near tolerance
+- **Search anchors**: 'max3d *= ratio', 'du * du + dv * dv > max3d * max3d'
+
+
+#### `ShapeAnalysis_Surface.IsUClosed`
+ (13 branches; source: `v3-deep-batch-F.json`)
+
+##### `ShapeAnalysis_Surface.IsUClosed.cached-result`
+- **Line**: ShapeAnalysis_Surface.cxx:665  **Axis**: `state caching, lazy evaluation`
+- **Brief**: Return cached closure check result if available
+- **Falsifiable claim**: Without this check, the analyzer would re-evaluate U-closure on every call, wasting computation and risking inconsistent state if surface mutates between checks
+- **Minimal reproducer**: BSplineSurface; call IsUClosed() twice; second call should return immediately with cached myUCloseVal
+- **Search anchors**: 'myUCloseVal < 0', 'cached value', 'initialization guard'
+
+##### `ShapeAnalysis_Surface.IsUClosed.geometric-uclosed`
+- **Line**: ShapeAnalysis_Surface.cxx:674  **Axis**: `periodicity detection, geometric property`
+- **Brief**: Report U-closure if the underlying geometry is marked periodic
+- **Falsifiable claim**: Without this check, the analyzer would skip periodic surfaces, failing to report U-closure and causing healing to incorrectly treat periodic surfaces as open
+- **Minimal reproducer**: B-spline with IsUPeriodic()=true; should set myUCloseVal=0, myGap=0, return true immediately
+- **Search anchors**: 'mySurf->IsUClosed()', 'geometric closure', 'periodic surface'
+
+##### `ShapeAnalysis_Surface.IsUClosed.plane-not-closed`
+- **Line**: ShapeAnalysis_Surface.cxx:693  **Axis**: `plane degeneracy, false positives`
+- **Brief**: Mark planes as not U-closed
+- **Falsifiable claim**: Without this check, the analyzer would compute closure distance for planes, incorrectly reporting plane closure and signaling false degeneracy to the healer
+- **Minimal reproducer**: Geom_Plane; myUCloseVal should be set to RealLast() (infinity), indicating no closure
+- **Search anchors**: 'GeomAbs_Plane', 'RealLast()', 'plane exclusion'
+
+##### `ShapeAnalysis_Surface.IsUClosed.linear-extrusion-basis-closure`
+- **Line**: ShapeAnalysis_Surface.cxx:697  **Axis**: `extrusion closure, basis-curve dependency`
+- **Brief**: Check U-closure by examining basis curve endpoints for extrusions
+- **Falsifiable claim**: Without this check, the analyzer would fail to detect U-closure in extruded surfaces by examining the basis curve endpoints, leaving extrusion-specific closure undetected
+- **Minimal reproducer**: Geom_SurfaceOfLinearExtrusion with closed basis curve (circle); p1 and p2 should be close; myUCloseVal = p1.SquareDistance(p2) near 0
+- **Search anchors**: 'SurfaceOfLinearExtrusion', 'BasisCurve', 'FirstParameter', 'LastParameter'
+
+##### `ShapeAnalysis_Surface.IsUClosed.bspline-periodic-u`
+- **Line**: ShapeAnalysis_Surface.cxx:723  **Axis**: `B-spline periodicity, shortcut evaluation`
+- **Brief**: Recognize periodic B-splines and mark U-closure immediate
+- **Falsifiable claim**: Without this check, the analyzer would process periodic B-splines as non-periodic, performing unnecessary closure calculations and potentially reporting false gaps
+- **Minimal reproducer**: BSplineSurface with IsUPeriodic()=true; should set myUCloseVal=0, myUDelt=0 immediately
+- **Search anchors**: 'bs->IsUPeriodic()', 'myUCloseVal = 0', 'myUDelt = 0'
+
+##### `ShapeAnalysis_Surface.IsUClosed.bspline-insufficient-poles`
+- **Line**: ShapeAnalysis_Surface.cxx:728  **Axis**: `boundary condition, pole count validation`
+- **Brief**: Reject B-splines with fewer than 3 U-poles as not closable
+- **Falsifiable claim**: Without this check, the analyzer would attempt closure check on degenerate B-splines with < 3 poles, accessing out-of-bounds pole indices and crashing or returning garbage
+- **Minimal reproducer**: BSplineSurface with nbup=2; closure check should set myUCloseVal=RealLast() and skip pole-based distance calculations
+- **Search anchors**: 'nbup < 3', 'RealLast()', 'insufficient poles'
+
+##### `ShapeAnalysis_Surface.IsUClosed.bspline-non-rational-boundary-knot-check`
+- **Line**: ShapeAnalysis_Surface.cxx:732  **Axis**: `knot multiplicity, topology validation`
+- **Brief**: For non-rational B-splines, check boundary knot multiplicity to confirm U-closure eligibility
+- **Falsifiable claim**: Without this check, the analyzer would bypass knot-multiplicity validation, reporting closure for B-splines with incorrect knot boundaries that are topologically non-closed
+- **Minimal reproducer**: Non-rational BSplineSurface with UMultiplicity(1) < UDegree()+1; should trigger the condition and use surface evaluation (not pole-based) closure check
+- **Search anchors**: 'bs->IsURational()', 'UMultiplicity(1)', 'UDegree() + 1'
+
+##### `ShapeAnalysis_Surface.IsUClosed.bspline-rational-or-bad-knots-sampling`
+- **Line**: ShapeAnalysis_Surface.cxx:738  **Axis**: `rational surface handling, knot-aware sampling`
+- **Brief**: For rational B-splines or bad knot multiplicity, sample surface at V-knot grid to detect closure
+- **Falsifiable claim**: Without this check, the analyzer would fail to detect closure for complex B-spline configurations, missing rational and edge-case B-splines and reporting them as non-closed
+- **Minimal reproducer**: Rational BSplineSurface with multiple V knots; sample endpoints at V knot midpoints; find max distance between u-endpoints
+- **Search anchors**: 'bs->IsURational()', 'nbvk = bs->NbVKnots()', 'VKnot(i)', 'SurfAdapt.Value()'
+
+##### `ShapeAnalysis_Surface.IsUClosed.bspline-normal-poles-closure`
+- **Line**: ShapeAnalysis_Surface.cxx:768  **Axis**: `pole-based closure, efficient evaluation`
+- **Brief**: For non-rational normal B-splines with correct knots, compute closure from pole endpoints
+- **Falsifiable claim**: Without this check, the analyzer would skip the efficient pole-based closure check for normal B-splines, forcing slower surface evaluation and missing pole-based anomalies
+- **Minimal reproducer**: Non-rational BSplineSurface with proper knot multiplicities and nbup >= 3; myUCloseVal = Pole(1,1).SquareDistance(Pole(nbup,1)); loop over V poles for max distance
+- **Search anchors**: 'bs->Pole(1, i)', 'bs->Pole(nbup, i)', 'nbvp loop'
+
+##### `ShapeAnalysis_Surface.IsUClosed.bezier-insufficient-poles`
+- **Line**: ShapeAnalysis_Surface.cxx:794  **Axis**: `pole validation, Bezier boundary`
+- **Brief**: Reject Bezier surfaces with < 3 U-poles
+- **Falsifiable claim**: Without this check, the analyzer would attempt Bezier pole-based closure on degenerate Beziers, accessing invalid pole indices and crashing
+- **Minimal reproducer**: BezierSurface with nbup=2; should set myUCloseVal=RealLast() without accessing poles
+- **Search anchors**: 'nbup < 3', 'Bezier', 'RealLast()'
+
+##### `ShapeAnalysis_Surface.IsUClosed.bezier-poles-closure`
+- **Line**: ShapeAnalysis_Surface.cxx:800  **Axis**: `Bezier pole closure, direct evaluation`
+- **Brief**: Compute Bezier U-closure from pole endpoints
+- **Falsifiable claim**: Without this check, the analyzer would fail to report Bezier U-closure via poles, missing the simplest closure indicator and requiring slower surface evaluation fallback
+- **Minimal reproducer**: BezierSurface with nbup >= 3; myUCloseVal = Pole(1,1).SquareDistance(Pole(nbup,1)); loop over V poles for max
+- **Search anchors**: 'bz->Pole(1, i)', 'bz->Pole(nbup, i)', 'nbvp'
+
+##### `ShapeAnalysis_Surface.IsUClosed.trimmed-default-sampling`
+- **Line**: ShapeAnalysis_Surface.cxx:822  **Axis**: `trimmed surface closure, grid sampling`
+- **Brief**: For trimmed, offset, and other surfaces, sample endpoints on grid to detect closure
+- **Falsifiable claim**: Without this check, the analyzer would fail to detect closure in trimmed and offset surfaces, falling back to heuristics and missing closure signals for those common surface types
+- **Minimal reproducer**: RectangularTrimmedSurface or OffsetSurface; sample 101 points along V; compute max endpoint distance at each V level
+- **Search anchors**: 'nbpoints = 101', 'SurfAdapt.Value(uf, vparam)', 'SurfAdapt.Value(ul, vparam)'
+
+##### `ShapeAnalysis_Surface.IsUClosed.midpoint-sanity-check`
+- **Line**: ShapeAnalysis_Surface.cxx:857  **Axis**: `closure validation, geometric sanity`
+- **Brief**: Reject closure claim if endpoint distance << midpoint distance (non-monotonic proximity)
+- **Falsifiable claim**: Without this check, the analyzer would accept false U-closure claims when endpoints are far but midpoint is closer, indicating a gap not a closure and leading healing astray
+- **Minimal reproducer**: Surface where endpoint distance is small but midpoint is much larger (e.g., strongly curved seam); anUmidVal > 0 && myUCloseVal > sqrt(anUmidVal) should be true; return false
+- **Search anchors**: 'anUmidVal > 0', 'myUCloseVal > sqrt(anUmidVal)', 'sanity gate'
+
+
+#### `ShapeAnalysis_Surface.IsVClosed`
+ (13 branches; source: `v3-deep-batch-F.json`)
+
+##### `ShapeAnalysis_Surface.IsVClosed.cached-result`
+- **Line**: ShapeAnalysis_Surface.cxx:872  **Axis**: `caching, lazy evaluation`
+- **Brief**: Return cached V-closure check result if available
+- **Falsifiable claim**: Without this check, the analyzer would re-evaluate V-closure on every call, wasting computation and risking inconsistent results if surface changes
+- **Minimal reproducer**: BSplineSurface; call IsVClosed() twice; second call should return cached myVCloseVal immediately
+- **Search anchors**: 'myVCloseVal < 0', 'cached V-closure'
+
+##### `ShapeAnalysis_Surface.IsVClosed.geometric-vclosed`
+- **Line**: ShapeAnalysis_Surface.cxx:881  **Axis**: `periodicity detection, V-axis`
+- **Brief**: Report V-closure if underlying geometry is marked periodic
+- **Falsifiable claim**: Without this check, the analyzer would skip periodic surfaces, failing to report V-closure and causing healing to treat periodic surfaces as non-closed
+- **Minimal reproducer**: B-spline with IsVPeriodic()=true; myVCloseVal=0, myGap=0, return true
+- **Search anchors**: 'mySurf->IsVClosed()', 'periodic V'
+
+##### `ShapeAnalysis_Surface.IsVClosed.plane-cone-cylinder-sphere-not-vclosed`
+- **Line**: ShapeAnalysis_Surface.cxx:900  **Axis**: `surface type shortcuts, false positives`
+- **Brief**: Mark planes, cones, cylinders, and spheres as not V-closed
+- **Falsifiable claim**: Without this check, the analyzer would waste computation on surface types that are never V-closed, and risk false positive V-closure claims for axis-aligned surfaces
+- **Minimal reproducer**: Geom_Plane, Cone, Cylinder, Sphere; myVCloseVal=RealLast() for all; return no V-closure claim
+- **Search anchors**: 'Plane, Cone, Cylinder, Sphere', 'RealLast()', 'axes-symmetric exclusion'
+
+##### `ShapeAnalysis_Surface.IsVClosed.revolution-basis-closure`
+- **Line**: ShapeAnalysis_Surface.cxx:908  **Axis**: `revolution closure, basis dependency`
+- **Brief**: For revolution surfaces, check basis curve endpoints to detect V-closure
+- **Falsifiable claim**: Without this check, the analyzer would fail to detect V-closure in revolution surfaces via basis endpoints, missing a key revolution-surface closure indicator
+- **Minimal reproducer**: SurfaceOfRevolution with closed basis curve; p1.SquareDistance(p2) should be near 0; myVCloseVal set accordingly
+- **Search anchors**: 'SurfaceOfRevolution', 'BasisCurve', 'FirstParameter', 'LastParameter'
+
+##### `ShapeAnalysis_Surface.IsVClosed.bspline-periodic-v`
+- **Line**: ShapeAnalysis_Surface.cxx:921  **Axis**: `V-periodic shortcut`
+- **Brief**: Recognize V-periodic B-splines and mark immediate V-closure
+- **Falsifiable claim**: Without this check, the analyzer would compute closure for already-periodic B-splines, wasting effort and risking state conflicts
+- **Minimal reproducer**: BSplineSurface with IsVPeriodic()=true; myVCloseVal=0, myVDelt=0
+- **Search anchors**: 'bs->IsVPeriodic()', 'myVCloseVal = 0'
+
+##### `ShapeAnalysis_Surface.IsVClosed.bspline-insufficient-poles`
+- **Line**: ShapeAnalysis_Surface.cxx:926  **Axis**: `V-pole count validation`
+- **Brief**: Reject B-splines with < 3 V-poles
+- **Falsifiable claim**: Without this check, the analyzer would access out-of-bounds pole indices on degenerate B-splines, crashing or returning invalid results
+- **Minimal reproducer**: BSplineSurface with nbvp=2; myVCloseVal=RealLast() without pole access
+- **Search anchors**: 'nbvp < 3', 'RealLast()'
+
+##### `ShapeAnalysis_Surface.IsVClosed.bspline-non-rational-boundary-knot-check`
+- **Line**: ShapeAnalysis_Surface.cxx:930  **Axis**: `V-knot validation, topology`
+- **Brief**: For non-rational B-splines, validate boundary V-knot multiplicities
+- **Falsifiable claim**: Without this check, the analyzer would report V-closure for topologically non-closed B-splines, misleading healing about closure properties
+- **Minimal reproducer**: Non-rational BSplineSurface with VMultiplicity(1) < VDegree()+1; should use surface evaluation, not poles
+- **Search anchors**: 'bs->IsVRational()', 'VMultiplicity(1)', 'VDegree() + 1'
+
+##### `ShapeAnalysis_Surface.IsVClosed.bspline-rational-or-bad-knots-sampling`
+- **Line**: ShapeAnalysis_Surface.cxx:932  **Axis**: `rational V-closure, knot sampling`
+- **Brief**: For rational B-splines or bad knots, sample surface at U-knot grid
+- **Falsifiable claim**: Without this check, the analyzer would fail to detect closure for rational and edge-case B-splines, leaving closure undetected for complex surfaces
+- **Minimal reproducer**: Rational BSplineSurface; sample at U-knot midpoints; find max V-endpoint distance
+- **Search anchors**: 'bs->IsVRational()', 'nbuk = bs->NbUKnots()', 'UKnot(i)'
+
+##### `ShapeAnalysis_Surface.IsVClosed.bspline-normal-poles-closure`
+- **Line**: ShapeAnalysis_Surface.cxx:962  **Axis**: `V-pole closure, efficient eval`
+- **Brief**: For non-rational normal B-splines, compute V-closure from pole endpoints
+- **Falsifiable claim**: Without this check, the analyzer would skip efficient pole-based V-closure, forcing slower evaluation and missing pole-based V-closure signatures
+- **Minimal reproducer**: Non-rational BSplineSurface with correct knots; myVCloseVal = Pole(1,1).SquareDistance(Pole(1,nbvp)); loop U poles
+- **Search anchors**: 'bs->Pole(i, 1)', 'bs->Pole(i, nbvp)', 'nbup loop'
+
+##### `ShapeAnalysis_Surface.IsVClosed.bezier-insufficient-poles`
+- **Line**: ShapeAnalysis_Surface.cxx:989  **Axis**: `Bezier V-pole validation`
+- **Brief**: Reject Bezier with < 3 V-poles
+- **Falsifiable claim**: Without this check, the analyzer would access invalid Bezier pole indices, crashing on degenerate Beziers
+- **Minimal reproducer**: BezierSurface with nbvp=2; myVCloseVal=RealLast()
+- **Search anchors**: 'nbvp < 3', 'Bezier'
+
+##### `ShapeAnalysis_Surface.IsVClosed.bezier-poles-closure`
+- **Line**: ShapeAnalysis_Surface.cxx:995  **Axis**: `Bezier V-pole closure`
+- **Brief**: Compute Bezier V-closure from pole endpoints
+- **Falsifiable claim**: Without this check, the analyzer would fail to detect Bezier V-closure via poles, requiring slower evaluation fallback
+- **Minimal reproducer**: BezierSurface with nbvp >= 3; myVCloseVal = Pole(1,1).SquareDistance(Pole(1,nbvp)); loop U poles
+- **Search anchors**: 'bz->Pole(i, 1)', 'bz->Pole(i, nbvp)', 'nbup'
+
+##### `ShapeAnalysis_Surface.IsVClosed.trimmed-default-sampling`
+- **Line**: ShapeAnalysis_Surface.cxx:1017  **Axis**: `trimmed V-closure, grid sampling`
+- **Brief**: For trimmed and offset surfaces, sample V-endpoints on grid
+- **Falsifiable claim**: Without this check, the analyzer would skip V-closure evaluation for trimmed/offset surfaces, missing closure in those common types
+- **Minimal reproducer**: RectangularTrimmedSurface or OffsetSurface; sample 101 points along U; compute max V-endpoint distance
+- **Search anchors**: 'nbpoints = 101', 'SurfAdapt.Value(uparam, vf)', 'SurfAdapt.Value(uparam, vl)'
+
+##### `ShapeAnalysis_Surface.IsVClosed.midpoint-sanity-check`
+- **Line**: ShapeAnalysis_Surface.cxx:1052  **Axis**: `V-closure sanity, geometric validation`
+- **Brief**: Reject V-closure if midpoint distance >> endpoint distance
+- **Falsifiable claim**: Without this check, the analyzer would report false V-closure for non-monotonic gaps, misleading healing about surface closure
+- **Minimal reproducer**: Surface where V-endpoints are close but V-midpoint is far; aVmidVal > 0 && myVCloseVal > sqrt(aVmidVal) true; return false
+- **Search anchors**: 'aVmidVal > 0', 'myVCloseVal > sqrt(aVmidVal)'
+
+
+#### `ShapeAnalysis_Surface.NextValueOfUV`
+ (6 branches; source: `v3-deep-batch-F.json`)
+
+##### `ShapeAnalysis_Surface.NextValueOfUV.bspline-c0-u-knot-discontinuity`
+- **Line**: ShapeAnalysis_Surface.cxx:1186  **Axis**: `continuity discontinuity, knot singularities`
+- **Brief**: Detect C0 continuity discontinuity at U-knots and fall back to standard projection
+- **Falsifiable claim**: Without this check, the Newton solver would attempt refinement at U-discontinuity points where the surface is not differentiable, potentially converging to wrong solutions or diverging near C0 knots
+- **Minimal reproducer**: B-spline with UContinuity()=GeomAbs_C0; p2dPrev.X() near a U-knot; should call ValueOfUV() fallback instead of Newton
+- **Search anchors**: 'SurfAdapt.UContinuity() == C0', 'UKnot(anIdx)', 'ValueOfUV fallback'
+
+##### `ShapeAnalysis_Surface.NextValueOfUV.bspline-c0-v-knot-discontinuity`
+- **Line**: ShapeAnalysis_Surface.cxx:1201  **Axis**: `V-continuity discontinuity, V-knot singularities`
+- **Brief**: Detect C0 continuity discontinuity at V-knots and fall back to standard projection
+- **Falsifiable claim**: Without this check, the Newton solver would use invalid derivatives at V-discontinuities, producing wrong projections or failing to converge at V-knot singularities
+- **Minimal reproducer**: B-spline with VContinuity()=GeomAbs_C0; p2dPrev.Y() near a V-knot; should call ValueOfUV() instead of Newton
+- **Search anchors**: 'SurfAdapt.VContinuity() == C0', 'VKnot(anIdx)', 'ValueOfUV fallback'
+
+##### `ShapeAnalysis_Surface.NextValueOfUV.newton-success-validation`
+- **Line**: ShapeAnalysis_Surface.cxx:1218  **Axis**: `solution validation, convergence flag`
+- **Brief**: Accept Newton solution if convergence successful (res != 0)
+- **Falsifiable claim**: Without this check, the caller would treat Newton failure (res=0) as success, returning invalid projected points and causing downstream healing failures
+- **Minimal reproducer**: Newton returns res=1 or res=2; gap validation and maxpreci checks follow; if all pass, return sol
+- **Search anchors**: 'res != 0', 'Newton success', 'solution acceptance'
+
+##### `ShapeAnalysis_Surface.NextValueOfUV.high-curvature-fallback-check`
+- **Line**: ShapeAnalysis_Surface.cxx:1221  **Axis**: `high-curvature validation, fallback comparison`
+- **Brief**: Flag high-curvature solutions (res=2) for special validation before accepting
+- **Falsifiable claim**: Without this check, high-curvature solutions would bypass extra validation, potentially projecting to near-singular regions and causing healing to reference incorrect surface neighborhoods
+- **Minimal reproducer**: Newton returns res=2 (high curvature); should validate against UVFromIso() fallback and accept only if gap < myGap
+- **Search anchors**: 'res == 2', 'maxpreci check', 'UVFromIso fallback'
+
+##### `ShapeAnalysis_Surface.NextValueOfUV.fallback-rejection-if-worse`
+- **Line**: ShapeAnalysis_Surface.cxx:1227  **Axis**: `solution comparison, fallback priority`
+- **Brief**: Reject Newton solution if UVFromIso fallback is better
+- **Falsifiable claim**: Without this check, the analyzer would accept worse Newton solutions over better fallback projections, leaving the healer with suboptimal reference points
+- **Minimal reproducer**: Newton gap > UVFromIso gap; should not return Newton sol; return UVFromIso instead
+- **Search anchors**: 'gap >= myGap', 'return UVFromIso', 'solution rejection'
+
+##### `ShapeAnalysis_Surface.NextValueOfUV.standard-projection-fallback`
+- **Line**: ShapeAnalysis_Surface.cxx:1240  **Axis**: `surface-type dispatch, fallback logic`
+- **Brief**: Use standard ValueOfUV() projection for surface types not eligible for Newton
+- **Falsifiable claim**: Without this check, non-Newton-eligible surfaces (planes, default types) would attempt Newton refinement, potentially diverging or crashing on unsupported geometry
+- **Minimal reproducer**: Plane or default surface type; switch default case; call ValueOfUV() instead of Newton
+- **Search anchors**: 'default:', 'ValueOfUV(P3D, preci)', 'fallback projection'
+
+
+#### `ShapeAnalysis_Surface.ProjectDegenerated`
+ (5 branches; source: `v3-deep-batch-F.json`)
+
+##### `ShapeAnalysis_Surface.ProjectDegenerated.lazy-singularity-init`
+- **Line**: ShapeAnalysis_Surface.cxx:470  **Axis**: `lazy initialization, singularity dependency`
+- **Brief**: Trigger lazy singularity computation if not yet cached
+- **Falsifiable claim**: Without this check, the projector would proceed without detecting singularities, allowing degenerate edge-points to project incorrectly away from actual singularity loci
+- **Minimal reproducer**: Create surface, call ProjectDegenerated() before any singularity computation; should invoke ComputeSingularities() internally; verify myNbDeg > 0 after call
+- **Search anchors**: 'myNbDeg < 0', 'ComputeSingularities()', 'initialization order'
+
+##### `ShapeAnalysis_Surface.ProjectDegenerated.singularity-tolerance-threshold`
+- **Line**: ShapeAnalysis_Surface.cxx:480  **Axis**: `tolerance filtering, precision consistency`
+- **Brief**: Filter singularities by precision threshold
+- **Falsifiable claim**: Without this check, the projector would attempt to project onto singularities with larger tolerance than the requested precision, leaving some degenerate points incorrectly projected
+- **Minimal reproducer**: Conical surface with apex precision > requested preci; loop should skip apex; verify no projection updates occur for that singularity
+- **Search anchors**: 'myPreci[i] <= preci', 'tolerance gate', 'singularity filter'
+
+##### `ShapeAnalysis_Surface.ProjectDegenerated.no-matching-singularity`
+- **Line**: ShapeAnalysis_Surface.cxx:493  **Axis**: `singularity matching, degenerate validation`
+- **Brief**: Abort projection if no singularity matches the degenerate point
+- **Falsifiable claim**: Without this check, the projector would attempt to redistribute a degenerate edge with no reference singularity, causing incorrect parametric mapping and breaking the healing signal
+- **Minimal reproducer**: Bounded surface with edge-points far from all singularities; all gap2 > prec2; indMin stays -1; should return false and not modify points
+- **Search anchors**: 'indMin < 0', 'no match return false', 'degenerate rejection'
+
+##### `ShapeAnalysis_Surface.ProjectDegenerated.whole-edge-degenerate`
+- **Line**: ShapeAnalysis_Surface.cxx:513  **Axis**: `total degeneracy, parametric redistribution`
+- **Brief**: Detect when entire pcurve collapses to singularity; redistribute evenly along non-degenerate axis
+- **Falsifiable claim**: Without this check, the projector would fail to handle the case where all edge points are degenerate, instead crashing or leaving inconsistent parametric values; even distribution is the fallback repair
+- **Minimal reproducer**: Conical surface with all pcurve points near apex; k bounds check fails; should enter redistribution block, evenly space points along u (or v) axis
+- **Search anchors**: 'k < 1 || k > nbrPnt', 'whole pcurve degenerate', 'even redistribution'
+
+##### `ShapeAnalysis_Surface.ProjectDegenerated.partial-edge-collapse`
+- **Line**: ShapeAnalysis_Surface.cxx:533  **Axis**: `segment collapse, parametric alignment`
+- **Brief**: Collapse portion of pcurve (from degenerate start/end to singularity) to singularity parameter
+- **Falsifiable claim**: Without this check, the projector would leave a partially collapsed edge with mixed degenerate and non-degenerate points, failing to report the collapsed segment to the healer
+- **Minimal reproducer**: Sphere with first half of pcurve near north pole; k breaks at edge; j loop should set X or Y to pole parameter, collapsing degenerate segment
+- **Search anchors**: 'j -= step', 'SetX/SetY', 'partial collapse', 'non-degenerate anchor'
+
+
+#### `ShapeAnalysis_Surface.ProjectDegenerated_at421`
+ (3 branches; 2 low-confidence; source: `v3-deep-batch-R.json`)
+
+##### `ProjectDegenerated-lazy-compute`
+- **Line**: 421  **Axis**: `lazy-init-validation`
+- **Brief**: Singularities computed lazily without revalidation
+- **Falsifiable claim**: Without this check, the analyzer would FAIL TO REPORT stale singularity data
+- **Minimal reproducer**: Call ProjectDegenerated before updating surface state
+- **Search anchors**: 'if (myNbDeg < 0)', 'ComputeSingularities()'
+
+##### `ProjectDegenerated-dual-distance-logic` **[low-confidence]**
+- **Line**: 437  **Axis**: `distance-metric-inconsistency`
+- **Brief**: Square distance comparison mixes direct and recomputed distances
+- **Falsifiable claim**: Without this check, the analyzer would FAIL TO REPORT degeneration when recomputed distance differs
+- **Minimal reproducer**: 3D point with gap2 > preci*preci initially, closer to recomputed Value()
+- **Search anchors**: 'gap2 > preci * preci', 'std::min(gap2, myP3d[i].SquareDistance(Value(result)))'
+
+##### `ProjectDegenerated-iso-flag-unvalidated` **[low-confidence]**
+- **Line**: 450  **Axis**: `degenerate-axis-flag-validation`
+- **Brief**: U/V iso degeneracy flag used without consistency check
+- **Falsifiable claim**: Without this check, the analyzer would FAIL TO REPORT coordinate axis mismatch in degenerate projection
+- **Minimal reproducer**: Surface with degenerate U-iso, project with inconsistent neighbour coordinates
+- **Search anchors**: 'myUIsoDeg[indMin]', 'result.SetX', 'result.SetY'
+
+
+#### `ShapeAnalysis_Surface.SortSingularities`
+ (2 branches; 1 low-confidence; source: `v3-deep-batch-R.json`)
+
+##### `SortSingularities-swap-logic` **[low-confidence]**
+- **Line**: 1862  **Axis**: `array-swap-boundary`
+- **Brief**: Selection sort swaps all arrays without index boundary validation
+- **Falsifiable claim**: Without this check, the analyzer would FAIL TO REPORT array index out-of-bounds in swaps
+- **Minimal reproducer**: myNbDeg = 0, loop condition i < myNbDeg - 1 skips guard
+- **Search anchors**: 'for (int i = 0; i < myNbDeg - 1', 'if (minIndex != i)'
+
+##### `SortSingularities-array-count-mismatch`
+- **Line**: 1846  **Axis**: `parallel-array-invariant`
+- **Brief**: Sort assumes all parallel arrays have myNbDeg elements without validation
+- **Falsifiable claim**: Without this check, the analyzer would FAIL TO REPORT array size mismatch across myPreci, myP3d, myFirstP2d, etc.
+- **Minimal reproducer**: Allocate singularities with inconsistent array sizes
+- **Search anchors**: 'for (int i = 0; i < myNbDeg - 1', 'myPreci[minIndex] = myPreci[i]'
+
+
+#### `ShapeAnalysis_Surface.SurfaceNewton`
+ (8 branches; source: `v3-deep-batch-F.json`)
+
+##### `ShapeAnalysis_Surface.SurfaceNewton.zero-normal-break`
+- **Line**: ShapeAnalysis_Surface.cxx:1093  **Axis**: `normal degeneracy, singular points`
+- **Brief**: Abort Newton iteration if surface normal is degenerate or near-zero
+- **Falsifiable claim**: Without this check, the Newton solver would proceed with degenerate normals, causing division-by-zero in subsequent steps and returning invalid projections from singular-point regions
+- **Minimal reproducer**: B-spline surface with ru × rv ≈ 0 at evaluation point; nrm2 < 1e-10; should break and revert to fallback
+- **Search anchors**: 'nrm2 < 1e-10', 'zero normal', 'break iteration'
+
+##### `ShapeAnalysis_Surface.SurfaceNewton.bad-discriminant`
+- **Line**: ShapeAnalysis_Surface.cxx:1104  **Axis**: `discriminant singularity, step computation`
+- **Brief**: Abort if discriminant of step equation is near-zero
+- **Falsifiable claim**: Without this check, the Newton solver would divide by a near-zero discriminant, computing huge step sizes and diverging or landing in invalid parameter space
+- **Minimal reproducer**: Surface where D ≈ 0 (numerically ill-conditioned point); fabs(D) < 1e-10; should break and use fallback projection
+- **Search anchors**: 'D close to 0', 'fabs(D) < 1e-10', 'ill-conditioned'
+
+##### `ShapeAnalysis_Surface.SurfaceNewton.step-out-of-bounds`
+- **Line**: ShapeAnalysis_Surface.cxx:1115  **Axis**: `domain bounds, step validation`
+- **Brief**: Abort if Newton step would leave surface bounds
+- **Falsifiable claim**: Without this check, the Newton solver would compute points outside the surface parameter domain, projecting to phantom surface regions and violating domain constraints
+- **Minimal reproducer**: Surface with bounds [uf, ul] × [vf, vl]; Newton step pushes U or V outside; should break immediately
+- **Search anchors**: 'U < UF || U > UL || V < VF || V > VL', 'bounds check', 'break'
+
+##### `ShapeAnalysis_Surface.SurfaceNewton.step-size-convergence`
+- **Line**: ShapeAnalysis_Surface.cxx:1126  **Axis**: `convergence criterion, step size`
+- **Brief**: Continue iteration if step size remains above convergence threshold
+- **Falsifiable claim**: Without this check, the Newton solver would terminate prematurely with residual error above tolerance, reporting false convergence and leaving points far from the surface
+- **Minimal reproducer**: Point far from surface; du + dv > aResolution; should continue; at convergence du + dv < aResolution should exit
+- **Search anchors**: 'fabs(du) + fabs(dv) > aResolution', 'continue', 'tolerance'
+
+##### `ShapeAnalysis_Surface.SurfaceNewton.residual-divergence-check`
+- **Line**: ShapeAnalysis_Surface.cxx:1135  **Axis**: `divergence detection, residual growth`
+- **Brief**: Abort if residual grows beyond initial value (divergence check)
+- **Falsifiable claim**: Without this check, the Newton solver would diverge silently, computing worse approximations and reporting false convergence on divergent trajectories
+- **Minimal reproducer**: Newton iteration where rs2 > rsfirst.SquareMagnitude(); residual grows; should break
+- **Search anchors**: 'rs2 > rsfirst.SquareMagnitude()', 'divergence check', 'break'
+
+##### `ShapeAnalysis_Surface.SurfaceNewton.normal-component-validation`
+- **Line**: ShapeAnalysis_Surface.cxx:1141  **Axis**: `normal error, projection accuracy`
+- **Brief**: Abort if normal-component of residual exceeds tolerance
+- **Falsifiable claim**: Without this check, the Newton solver would accept solutions with large normal-component error, projecting to tangent lines of the surface instead of onto the surface itself
+- **Minimal reproducer**: Point where rs * n (normal component) is large; rs2 - (rsn^2 / nrm2) > Tol2; should break
+- **Search anchors**: 'rs2 - rsn * rsn / nrm2 > Tol2', 'normal component', 'tolerance'
+
+##### `ShapeAnalysis_Surface.SurfaceNewton.success-return-high-curvature-flag`
+- **Line**: ShapeAnalysis_Surface.cxx:1152  **Axis**: `curvature flagging, solution quality`
+- **Brief**: Return success code 1 for normal convergence; code 2 for high-curvature regions
+- **Falsifiable claim**: Without this check, the analyzer would fail to distinguish high-curvature solutions from normal ones, preventing downstream healing from applying special handling to singular or near-singular regions
+- **Minimal reproducer**: Converged Newton solution; if nrm2 < 0.01*ru2*rv2 (high curvature), return 2; else return 1
+- **Search anchors**: 'nrm2 < 0.01 * ru2 * rv2', 'return 2', 'high-curvature indicator'
+
+##### `ShapeAnalysis_Surface.SurfaceNewton.convergence-failure-return-zero`
+- **Line**: ShapeAnalysis_Surface.cxx:1156  **Axis**: `failure reporting, caller feedback`
+- **Brief**: Return false (code 0) if Newton iteration fails
+- **Falsifiable claim**: Without this check, the analyzer would skip returning failure status, allowing calling code to treat diverged solutions as valid and project points incorrectly
+- **Minimal reproducer**: Newton fails to converge (all break conditions hit); should exit loop and return false
+- **Search anchors**: 'return false', 'convergence failure'
+
+
+#### `ShapeAnalysis_Surface.ValueOfUV`
+ (15 branches; 11 low-confidence; source: `v3-deep-batch-R.json`)
+
+##### `ValueOfUV-plane-direct`
+- **Line**: 1267  **Axis**: `direct-projection-bounds`
+- **Brief**: Plane surface uses direct ElSLib inversion without bounds check
+- **Falsifiable claim**: Without this check, the analyzer would FAIL TO REPORT out-of-bounds plane projections
+- **Minimal reproducer**: Project 3D point outside plane bounds via ElSLib::Parameters
+- **Search anchors**: 'case GeomAbs_Plane:', 'ElSLib::Parameters(Plane, P3D, S, T)'
+
+##### `ValueOfUV-cylinder-period-adjust` **[low-confidence]**
+- **Line**: 1272  **Axis**: `period-adjustment-consistency`
+- **Brief**: Cylinder U-parameter adjusted by period without modulo validation
+- **Falsifiable claim**: Without this check, the analyzer would FAIL TO REPORT parameter wrap errors after period adjustment
+- **Minimal reproducer**: Project point on cylinder at parameter boundary, verify AdjustByPeriod result
+- **Search anchors**: 'case GeomAbs_Cylinder:', 'ShapeAnalysis::AdjustByPeriod(S,'
+
+##### `ValueOfUV-cone-period-adjust` **[low-confidence]**
+- **Line**: 1278  **Axis**: `cone-singularity-bounds`
+- **Brief**: Cone U-parameter adjusted without cone-specific singularity handling
+- **Falsifiable claim**: Without this check, the analyzer would FAIL TO REPORT cone apex proximity errors
+- **Minimal reproducer**: Project point near cone apex with period adjustment
+- **Search anchors**: 'case GeomAbs_Cone:', 'ShapeAnalysis::AdjustByPeriod(S,'
+
+##### `ValueOfUV-sphere-period-adjust` **[low-confidence]**
+- **Line**: 1284  **Axis**: `sphere-pole-singularity`
+- **Brief**: Sphere parameter adjustment without pole singularity check
+- **Falsifiable claim**: Without this check, the analyzer would FAIL TO REPORT pole projection errors
+- **Minimal reproducer**: Project point at sphere pole after period adjustment
+- **Search anchors**: 'case GeomAbs_Sphere:', 'ShapeAnalysis::AdjustByPeriod(S,'
+
+##### `ValueOfUV-torus-dual-period` **[low-confidence]**
+- **Line**: 1291  **Axis**: `torus-dual-wrap-consistency`
+- **Brief**: Torus dual-period adjustment without cross-parameter consistency
+- **Falsifiable claim**: Without this check, the analyzer would FAIL TO REPORT torus parameter wrapping inconsistencies
+- **Minimal reproducer**: Project point on torus with both U and V period adjustments near corners
+- **Search anchors**: 'case GeomAbs_Torus:', 'ShapeAnalysis::AdjustByPeriod(T,'
+
+##### `ValueOfUV-extrusion-infinite-bounds`
+- **Line**: 1304  **Axis**: `newton-convergence-silent`
+- **Brief**: Conic extrusion fallback uses Newton without convergence guarantee
+- **Falsifiable claim**: Without this check, the analyzer would FAIL TO REPORT convergence failures in Newton iteration
+- **Minimal reproducer**: SurfaceOfExtrusion with infinite bounds, Newton fails silently
+- **Search anchors**: 'if ((surftype == GeomAbs_SurfaceOfExtrusion)', 'SurfaceNewton(prev,'
+
+##### `ValueOfUV-extrema-offset-skip` **[low-confidence]**
+- **Line**: 1333  **Axis**: `offset-surface-extension-skip`
+- **Brief**: OffsetSurface extension skipped without fallback strategy
+- **Falsifiable claim**: Without this check, the analyzer would FAIL TO REPORT offset surface projection gaps
+- **Minimal reproducer**: OffsetSurface projection with preci larger than resolution delta
+- **Search anchors**: 'if (!mySurf->IsKind(STANDARD_TYPE(Geom_OffsetSurface)))', 'du = std::min'
+
+##### `ValueOfUV-extrema-distance-minimum`
+- **Line**: 1359  **Axis**: `extrema-index-initialization`
+- **Brief**: Extrema solution selection uses only first index comparison
+- **Falsifiable claim**: Without this check, the analyzer would FAIL TO REPORT minimum selection initialization bug if NbExt > 1
+- **Minimal reproducer**: Multiple extrema solutions with first being suboptimal
+- **Search anchors**: 'double dist2Min = myExtPS.SquareDistance(1)', 'for (int sol = 2'
+
+##### `ValueOfUV-workaround-distance-recompute` **[low-confidence]**
+- **Line**: 1372  **Axis**: `workaround-distance-override`
+- **Brief**: Distance recomputed for SurfaceOfRevolution workaround without error propagation
+- **Falsifiable claim**: Without this check, the analyzer would FAIL TO REPORT incorrect distance when SurfaceOfRevolution returns stale value
+- **Minimal reproducer**: SurfaceOfRevolution extrema with distance mismatch
+- **Search anchors**: 'gp_Pnt aCheckPnt = SurfAdapt.Value(S, T)', 'dist2Min = P3D.SquareDistance(aCheckPnt)'
+
+##### `ValueOfUV-newton-distance-tolerance` **[low-confidence]**
+- **Line**: 1393  **Axis**: `newton-refinement-guard`
+- **Brief**: Newton refinement applied when disSurf > preci without convergence limit
+- **Falsifiable claim**: Without this check, the analyzer would FAIL TO REPORT non-convergent Newton iterations
+- **Minimal reproducer**: Call SurfaceNewton on nearly-critical points where iteration doesn't improve
+- **Search anchors**: 'if (disSurf > preci)', 'if (SurfaceNewton(pp, P3D, preci, pp) != 0)'
+
+##### `ValueOfUV-local-extremum-detection` **[low-confidence]**
+- **Line**: 1404  **Axis**: `local-extremum-classification`
+- **Brief**: Local extremum (possLockal) detected via cross-product but skips UVFromIso unconditionally
+- **Falsifiable claim**: Without this check, the analyzer would FAIL TO REPORT local extremum miss when possLockal check fails
+- **Minimal reproducer**: Surface with low-continuity at extremum, cross-product near-zero
+- **Search anchors**: 'gp_Vec b = D1U.Crossed(D1V)', 'possLockal = (dist < Tol * Tol)'
+
+##### `ValueOfUV-iso-fallback-distance` **[low-confidence]**
+- **Line**: 1418  **Axis**: `iso-fallback-comparison`
+- **Brief**: ISO curve distance compared with surface distance without type validation
+- **Falsifiable claim**: Without this check, the analyzer would FAIL TO REPORT ISO/surface distance inconsistency
+- **Minimal reproducer**: Highly curved surface where ISO distance > surface distance at extrema
+- **Search anchors**: 'if (disSurf > DistMinOnIso)', 'DistMinOnIso = UVFromIso'
+
+##### `ValueOfUV-extrema-failed-fallback`
+- **Line**: 1448  **Axis**: `dual-algorithm-failure`
+- **Brief**: Extrema failure triggers ISO fallback without confirmation
+- **Falsifiable claim**: Without this check, the analyzer would FAIL TO REPORT when both Extrema and UVFromIso fail silently
+- **Minimal reproducer**: Complex surface where Extrema.IsDone() = false and UVFromIso returns garbage
+- **Search anchors**: 'if (nPSurf > 0)', 'else', 'myGap = UVFromIso'
+
+##### `ValueOfUV-exception-fallback-infinite` **[low-confidence]**
+- **Line**: 1474  **Axis**: `exception-fallback-origin`
+- **Brief**: Exception handler uses Precision::IsInfinite() without origin consistency
+- **Falsifiable claim**: Without this check, the analyzer would FAIL TO REPORT exception recovery origin error (0 vs midpoint)
+- **Minimal reproducer**: Trigger exception during ValueOfUV with infinite bounds
+- **Search anchors**: 'catch (Standard_Failure const&', 'S = (Precision::IsInfinite(uf)) ? 0 : (uf + ul) / 2'
+
+##### `ValueOfUV-gap-uninitialized-recompute` **[low-confidence]**
+- **Line**: 1485  **Axis**: `state-persistence-gap`
+- **Brief**: Gap recomputed only if myGap <= 0 after all branches
+- **Falsifiable claim**: Without this check, the analyzer would FAIL TO REPORT stale gap from previous calls
+- **Minimal reproducer**: Successive ValueOfUV calls where second call skips gap recompute
+- **Search anchors**: 'if (computed)', 'if (myGap <= 0)', 'myGap = P3D.Distance'
+
+
+### ShapeAnalysis_TransferParametersProj
+
+#### `ShapeAnalysis_TransferParametersProj.CopyNMVertex_at565`
+ (5 branches; 1 low-confidence; source: `v3-deep-batch-T.json`)
+
+##### `SAT_CopyNM1_001`
+- **Line**: 568  **Axis**: `silent-precondition-failure`
+- **Brief**: Non-manifold vertex orientation check returns empty vertex without error
+- **Falsifiable claim**: If orientation not INTERNAL/EXTERNAL, empty anewV returned but caller may assume valid
+- **Minimal reproducer**: Vertex with orientation=FORWARD -> returns empty vertex, caller expects non-empty copy
+- **Search anchors**: 'TopAbs_INTERNAL && TopAbs_EXTERNAL', 'return anewV'
+
+##### `SAT_CopyNM1_002` **[low-confidence]**
+- **Line**: 597  **Axis**: `parameter-domain-mismatch`
+- **Brief**: Point representation copy ignores surface parameter transformation validity
+- **Falsifiable claim**: When copying PointOnSurface, parameters copied directly without checking if surface permits UV in new context
+- **Minimal reproducer**: Surface with cyclic UV domain -> copied params may exceed new surface bounds
+- **Search anchors**: 'IsPointOnSurface()', 'aOld->Parameter()', 'aOld->Parameter2()'
+
+##### `SAT_CopyNM1_003`
+- **Line**: 619  **Axis**: `missing-representation-fallback`
+- **Brief**: CurveOnSurface point representation skipped if matching surface not found
+- **Falsifiable claim**: If matching fromGC surface not found, point silently dropped without fallback projection
+- **Minimal reproducer**: Vertex on surface pair not in fromEdge -> point discarded, aOldPar undefined
+- **Search anchors**: 'if (found)', 'continue', 'if (!hasRepr'
+
+##### `SAT_CopyNM1_004`
+- **Line**: 641  **Axis**: `unchecked-projection-result`
+- **Brief**: Parameter projection onto C2 uses distance threshold without validating success
+- **Falsifiable claim**: sac.Project(C2, apv, Precision::Confusion(), ...) may fail or return invalid ppar without check
+- **Minimal reproducer**: C2 null or degenerate -> Project returns garbage ppar, tolerance updated with unvalidated distance
+- **Search anchors**: 'sac.Project(C2, apv', 'if (aTol < adist)'
+
+##### `SAT_CopyNM1_005`
+- **Line**: 679  **Axis**: `parameter-out-of-range-evaluation`
+- **Brief**: Surface-to-2D point evaluation uses unvalidated AC2d curve range
+- **Falsifiable claim**: AC2d range [first, last] derived from toGC but not validated against apar bounds
+- **Minimal reproducer**: apar outside [first, last] -> ac2d1->Value(apar) extrapolates, invalid 3D point
+- **Search anchors**: 'ac2d1->Value(apar)', 'apar'
+
+
+#### `ShapeAnalysis_TransferParametersProj.CopyNMVertex_at718`
+ (4 branches; 1 low-confidence; source: `v3-deep-batch-T.json`)
+
+##### `SAT_CopyNM2_001`
+- **Line**: 721  **Axis**: `silent-precondition-failure`
+- **Brief**: Non-manifold vertex orientation filter returns empty vertex silently
+- **Falsifiable claim**: If orientation not INTERNAL/EXTERNAL, empty anewV returned without error
+- **Minimal reproducer**: Vertex with orientation=REVERSED -> empty return, caller expects valid copy
+- **Search anchors**: 'TopAbs_INTERNAL && TopAbs_EXTERNAL'
+
+##### `SAT_CopyNM2_002`
+- **Line**: 755  **Axis**: `surface-domain-mismatch`
+- **Brief**: Surface parameter extraction assumes PointOnSurface exists without domain validation
+- **Falsifiable claim**: If PointOnSurface found on fromSurf but toSurf different, hasRepr=true but apar1/apar2 may not map to toSurf domain
+- **Minimal reproducer**: Different fromSurf and toSurf -> apar1/apar2 from fromSurf used on toSurf, domain mismatch
+- **Search anchors**: 'if (pr->IsPointOnSurface(fromSurf, fromLoc))', 'hasRepr = true'
+
+##### `SAT_CopyNM2_003`
+- **Line**: 765  **Axis**: `degenerate-surface-handling`
+- **Brief**: Surface point extraction uses tolerance from tool without validation
+- **Falsifiable claim**: aSurfTool->ValueOfUV(apv, Precision::Confusion()) may return invalid UV if surface is singular
+- **Minimal reproducer**: Degenerate surface (e.g., pole) -> ValueOfUV returns arbitrary UV, tolerance updated with Gap()
+- **Search anchors**: 'aSurfTool->ValueOfUV(apv', 'aSurfTool->Gap()'
+
+##### `SAT_CopyNM2_004` **[low-confidence]**
+- **Line**: 771  **Axis**: `unvalidated-uv-parameters`
+- **Brief**: Vertex update applied without confirming UV parameters are in surface domain
+- **Falsifiable claim**: UpdateVertex(anewV, apar1, apar2, toFace, aTol) assumes apar1/apar2 valid for toFace
+- **Minimal reproducer**: Extracted apar1/apar2 outside toFace surface bounds -> UpdateVertex may not detect, mismatch remains
+- **Search anchors**: 'aB.UpdateVertex(anewV, apar1, apar2, toFace, aTol)'
+
+
+#### `ShapeAnalysis_TransferParametersProj.Init`
+ (3 branches; 1 low-confidence; source: `v3-deep-batch-T.json`)
+
+##### `SAT_Init_001`
+- **Line**: 74  **Axis**: `incomplete-state-transition`
+- **Brief**: Null 3D curve skips initialization without setting range defaults
+- **Falsifiable claim**: When myCurve is null, myFirst/myLast remain undefined (0.0/1.0 set after return)
+- **Minimal reproducer**: Init(edge_with_null_curve, face) -> myInitOK stays false, range unset
+- **Search anchors**: 'myCurve.IsNull()', 'myFirst = 0', 'return'
+
+##### `SAT_Init_002`
+- **Line**: 80  **Axis**: `missing-validation-fallback`
+- **Brief**: Face validation skipped; 2D curve extraction may fail silently
+- **Falsifiable claim**: If F.IsNull(), PCurve extraction skipped but myInitOK set true on success
+- **Minimal reproducer**: Init(edge, null_face) -> myInitOK=false but proceeds with 3D only
+- **Search anchors**: 'F.IsNull()', 'if (sae.PCurve(E, F', 'myInitOK = true'
+
+##### `SAT_Init_003` **[low-confidence]**
+- **Line**: 96  **Axis**: `unvalidated-transform`
+- **Brief**: 3D-to-2D adaptor assignment uses uninitialized location
+- **Falsifiable claim**: myLocation extracted from surface but transform validity unchecked
+- **Minimal reproducer**: Init with degenerate face location -> transformed adaptor produces incorrect 2D params
+- **Search anchors**: 'myLocation', 'Adaptor3d_CurveOnSurface', 'Ad1'
+
+
+#### `ShapeAnalysis_TransferParametersProj.Perform_at110`
+ (3 branches; source: `v3-deep-batch-T.json`)
+
+##### `SAT_Perf110_001`
+- **Line**: 113  **Axis**: `tolerance-threshold-bypass`
+- **Brief**: SameParameter check bypasses projection for edges with poor tolerance fit
+- **Falsifiable claim**: If myPrecision < myMaxTolerance && SameParameter, fallback skips projection validation
+- **Minimal reproducer**: Edge with tolerance=0.5 > maxTol=1 but SameParameter=true -> uses linear xfer
+- **Search anchors**: 'myForceProj && myPrecision < myMaxTolerance', 'SameParameter(myEdge)'
+
+##### `SAT_Perf110_002`
+- **Line**: 135  **Axis**: `periodic-range-underflow`
+- **Brief**: Periodic curve parameter wrapping uses hardcoded epsilon without validation
+- **Falsifiable claim**: Closed curve correction subtracts preci*(len-j) without verifying closure params within domain
+- **Minimal reproducer**: Closed curve with knots near boundaries -> subtracting preci shifts params outside valid range
+- **Search anchors**: 'myCurve->IsClosed()', 'preci * (len - j)'
+
+##### `SAT_Perf110_003`
+- **Line**: 145  **Axis**: `silent-failure-masking`
+- **Brief**: Final parameter clamping silently hides parameter mapping failures
+- **Falsifiable claim**: Knots exceeding [first, last] clamped without logging; true projection failures masked
+- **Minimal reproducer**: Knot maps to 2.5 > last=2.0 -> clamped to 2.0 silently, loss of curve detail
+- **Search anchors**: 'resKnots->SetValue(j, first)', 'resKnots->SetValue(j, last)'
+
+
+#### `ShapeAnalysis_TransferParametersProj.Perform_at223`
+ (3 branches; source: `v3-deep-batch-T.json`)
+
+##### `SAT_Perf223_001`
+- **Line**: 226  **Axis**: `missing-precondition-check`
+- **Brief**: Uninitialized myInitOK check returns linear parameters without validation
+- **Falsifiable claim**: If !myInitOK, fallback to Perform(double) without checking if curve geometry exists
+- **Minimal reproducer**: Vertex on edge with no surface -> returns linear param, ignores surface projection need
+- **Search anchors**: '!myInitOK', 'ShapeAnalysis_TransferParameters::Perform'
+
+##### `SAT_Perf223_002`
+- **Line**: 230  **Axis**: `degenerate-range-assumption`
+- **Brief**: Parameter range selection uses unvalidated adapter parameters
+- **Falsifiable claim**: Ranges [myAC3d.FirstParameter(), myAC3d.LastParameter()] assumed valid but adapter initialization unchecked
+- **Minimal reproducer**: Adaptor with degenerate surface -> FirstParameter=LastParameter, division by zero risk
+- **Search anchors**: 'myAC3d.FirstParameter()', 'myAC3d.LastParameter()'
+
+##### `SAT_Perf223_003`
+- **Line**: 238  **Axis**: `silent-clamping-error`
+- **Brief**: Clamping applied after PreformSegment may hide boundary projection failures
+- **Falsifiable claim**: Endpoints clamped to [first, last] may produce discontinuous parameter jumps
+- **Minimal reproducer**: Projected param=2.1 > last=2.0 -> clamped to 2.0, endpoint mismatch undetected
+- **Search anchors**: 'res < first', 'res > last', 'res = last'
+
+
+#### `ShapeAnalysis_TransferParametersProj.PreformSegment`
+ (3 branches; 1 low-confidence; source: `v3-deep-batch-T.json`)
+
+##### `SAT_PerfSeg_001`
+- **Line**: 187  **Axis**: `fallback-without-validation`
+- **Brief**: Linear parameter returned if projection initialization fails
+- **Falsifiable claim**: When !myInitOK || !SameParameter, linear Perform returned without spatial validation
+- **Minimal reproducer**: Uninitialized adaptor -> fallback to param-space-only transfer ignoring geometry
+- **Search anchors**: '!myInitOK', 'return linPar'
+
+##### `SAT_PerfSeg_002`
+- **Line**: 208  **Axis**: `unscaled-tolerance-comparison`
+- **Brief**: Projection deviation uses unvalidated threshold (2x precision)
+- **Falsifiable claim**: Linear acceptable if linDev < myPrecision && linDev <= 2*projDev but myPrecision never validated against geometry bounds
+- **Minimal reproducer**: Precision=0.1, projDev=0.05 -> linDev=0.09 accepted even if geometry has 0.2 feature scale
+- **Search anchors**: 'linDev <= projDev', 'linDev < myPrecision && linDev <= 2 * projDev'
+
+##### `SAT_PerfSeg_003` **[low-confidence]**
+- **Line**: 200  **Axis**: `transform-direction-inconsistency`
+- **Brief**: Location transformation inverted/non-inverted inconsistently for 2D vs 3D
+- **Falsifiable claim**: To2d case inverts location (Inverted()) but 3D applies directly; asymmetric transforms risk incorrect projections
+- **Minimal reproducer**: Edge with non-identity location in To2d case -> Inverted() not equivalent to forward
+- **Search anchors**: 'myLocation.Inverted()', 'p1.Transformed(myLocation)'
+
+
+#### `ShapeAnalysis_TransferParametersProj.TransferRange`
+ (6 branches; 2 low-confidence; source: `v3-deep-batch-T.json`)
+
+##### `SAT_TransfR_001`
+- **Line**: 301  **Axis**: `incomplete-delegation`
+- **Brief**: SameParameter bypass skips edge range updates for imprecise edges
+- **Falsifiable claim**: If !myInitOK || SameParameter, range transfer delegated without validating newEdge state
+- **Minimal reproducer**: Edge with SameParameter=false but myPrecision >= threshold -> delegates, newEdge ranges unchanged
+- **Search anchors**: '!myInitOK', 'SameParameter(myEdge)', 'TransferRange(...newEdge'
+
+##### `SAT_TransfR_002` **[low-confidence]**
+- **Line**: 327  **Axis**: `incomplete-error-state`
+- **Brief**: Infinite coordinate detection returns early without explicit samerange state
+- **Falsifiable claim**: Infinite point checks call B.SameRange(false) but don't validate if edge curves exist post-call
+- **Minimal reproducer**: Point at infinity in Is2d case -> returns with SameRange=false, edge state inconsistent
+- **Search anchors**: 'Precision::IsInfinite', 'B.SameRange(newEdge, false)'
+
+##### `SAT_TransfR_003`
+- **Line**: 369  **Axis**: `unchecked-curve-evaluation`
+- **Brief**: 3D curve projection uses linear interpolation without curve validity check
+- **Falsifiable claim**: linFirst/linLast computed from alpha/beta but C3d validity never checked before Value() call
+- **Minimal reproducer**: Degenerate 3D curve -> linFirst=invalid param, C3d->Value(linFirst) may throw or return garbage
+- **Search anchors**: 'double linFirst = first + alpha * len', 'C3d->Value(linFirst)'
+
+##### `SAT_TransfR_004`
+- **Line**: 409  **Axis**: `epsilon-adjustment-overflow`
+- **Brief**: Parameter swapping doesn't validate if swap creates degenerate range
+- **Falsifiable claim**: If ppar1 > ppar2, swap occurs but resulting ppar2-ppar1 may be epsilon, causing SetRange fail
+- **Minimal reproducer**: Projection returns reversed params -> swap, epsilon adjustment may overflow
+- **Search anchors**: 'if (ppar1 > ppar2)', 'ppar2 - ppar1 < preci'
+
+##### `SAT_TransfR_005`
+- **Line**: 445  **Axis**: `incomplete-basis-resolution`
+- **Brief**: 2D curve parameter correction assumes all wrapped curves have basis curves
+- **Falsifiable claim**: CorrectParameter recursion on TrimmedCurve/OffsetCurve may not find BSpline basis, returns uncorrected
+- **Minimal reproducer**: Nested Offset->Trimmed->custom curve -> param not snapped to knot, precision loss
+- **Search anchors**: 'CorrectParameter(C2d, ppar1)', 'BSplineCurve'
+
+##### `SAT_TransfR_006` **[low-confidence]**
+- **Line**: 454  **Axis**: `multi-representation-consistency`
+- **Brief**: Edge curve representation iteration doesn't validate consistency across updates
+- **Falsifiable claim**: 3D and 2D curves updated independently; if one fails, edge left in inconsistent state
+- **Minimal reproducer**: 3D curve SetRange succeeds but 2D SetRange fails -> edge has mismatched ranges
+- **Search anchors**: 'for (NCollection_List...Iterator toitcr', 'toGC->SetRange(ppar1, ppar2)'
+
+
 ### ShapeAnalysis_Wire
+
+#### `ShapeAnalysis_Wire.CheckClosed_at471`
+ (0 branches; source: `v3-deep-batch-V.json`)
+
+
+#### `ShapeAnalysis_Wire.CheckConnected`
+ (9 branches; source: `v3-deep-batch-E.json`)
+
+##### `WIRE_NOT_LOADED`
+- **Line**: 697  **Axis**: `initialization`
+- **Brief**: Wire or edge sequence not available
+- **Falsifiable claim**: Without checking IsLoaded or NbEdges, analyzer attempts to access null wire or empty sequence, causing null-dereference and preventing connectivity assessment.
+- **Minimal reproducer**: Call CheckConnected on uninitialized analyzer or wire with 0 edges; must fail gracefully.
+- **Search anchors**: '!IsLoaded', 'NbEdges < 1'
+
+##### `NULL_EDGE_VERTICES`
+- **Line**: 716  **Axis**: `topological_validity`
+- **Brief**: Edge endpoints are null vertices
+- **Falsifiable claim**: Without detecting null vertices, analyzer skips connectivity test for this edge, leaving repair unaware that edge topology is corrupted.
+- **Minimal reproducer**: Edge with null FirstVertex or LastVertex; analyzer must flag FAIL2.
+- **Search anchors**: 'V1.IsNull', 'V2.IsNull', 'FAIL2'
+
+##### `SAME_VERTEX_BOTH_ENDS`
+- **Line**: 721  **Axis**: `edge_structure`
+- **Brief**: Edge is a loop (same vertex at both ends)
+- **Falsifiable claim**: Without checking V1.IsSame(V2), analyzer would measure 0 distance as a valid connection, masking loops that should be flagged or split.
+- **Minimal reproducer**: Edge where FirstVertex and LastVertex are identical (loop edge); analyzer must return false to skip this edge in connectivity analysis.
+- **Search anchors**: 'V1.IsSame(V2)', 'return false'
+
+##### `VERTICES_COINCIDENT_RESOLUTION_LIMIT`
+- **Line**: 733  **Axis**: `numerical_precision`
+- **Brief**: Vertex distance below machine epsilon
+- **Falsifiable claim**: Without detecting sub-epsilon distances, analyzer may report false connectivity where vertices are numerically identical but topologically distinct, confusing repair logic.
+- **Minimal reproducer**: Two vertices with distance 1e-17 (below gp::Resolution); analyzer must flag DONE1 as connected at machine precision.
+- **Search anchors**: 'gp::Resolution', 'DONE1'
+
+##### `VERTICES_CLOSE_WITHIN_PRECISION`
+- **Line**: 738  **Axis**: `precision_tolerance`
+- **Brief**: Vertex distance within analyzer precision tolerance
+- **Falsifiable claim**: Without this tier, analyzer cannot distinguish well-connected edges from those needing fillet or merge; DONE2 signals repair that vertices are close enough for healing.
+- **Minimal reproducer**: Two vertices with distance = myPrecision/2; analyzer sets DONE2 to allow merge.
+- **Search anchors**: 'myPrecision', 'DONE2'
+
+##### `VERTICES_CLOSE_WITHIN_PARAMETER_PRECISION`
+- **Line**: 743  **Axis**: `parameter_precision`
+- **Brief**: Vertex distance within parameter-space precision (prec arg)
+- **Falsifiable claim**: Without distinguishing prec tier, analyzer cannot report edges that barely meet connectivity threshold; DONE3 signals repair to accept minimal-tolerance connections.
+- **Minimal reproducer**: Two vertices with distance in (myPrecision, prec]; analyzer sets DONE3.
+- **Search anchors**: 'prec parameter', 'DONE3'
+
+##### `DISCONNECTED_SINGLE_EDGE_WIRE`
+- **Line**: 751  **Axis**: `single_edge_closure`
+- **Brief**: Single-edge wire has disconnected endpoints
+- **Falsifiable claim**: Without detecting n1 == n2 in disconnected case, analyzer reports FAIL1 but repair cannot determine if edge should be split or endpoints merged.
+- **Minimal reproducer**: Single-edge wire where FirstVertex != LastVertex and distance > prec; n1 == n2 triggers FAIL1.
+- **Search anchors**: 'n1 == n2', 'FAIL1'
+
+##### `DISCONNECTED_MULTI_EDGE_FORWARD_CHECK`
+- **Line**: 756  **Axis**: `edge_orientation`
+- **Brief**: Successor edge endpoint exceeds distance threshold
+- **Falsifiable claim**: Without checking distance to last endpoint of E2, analyzer misses cases where reorienting the next edge could heal the gap; distance > myPrecision triggers FAIL1.
+- **Minimal reproducer**: Two consecutive edges E1, E2 where LastVertex(E1) far from FirstVertex(E2) but close to LastVertex(E2); reorientation fixes gap.
+- **Search anchors**: 'V2 = sae.LastVertex(E2)', 'dist > myPrecision', 'FAIL1'
+
+##### `DISCONNECTED_MULTI_EDGE_REVERSE_ACCEPTABLE`
+- **Line**: 762  **Axis**: `orientation_fix`
+- **Brief**: Reorienting successor edge brings endpoints within tolerance
+- **Falsifiable claim**: Without flagging FAIL2 when reorientation succeeds, analyzer skips communicating to repair that edge reordering (not just shifting) is needed.
+- **Minimal reproducer**: E1 LastVertex within tolerance of E2 LastVertex (not FirstVertex); analyzer sets FAIL2 to signal repair to reverse E2.
+- **Search anchors**: 'FAIL2', 'dist <= myPrecision'
+
+
+#### `ShapeAnalysis_Wire.CheckCurveGap`
+ (4 branches; source: `v3-deep-batch-P.json`)
+
+##### `SE-CGAP-001`
+- **Line**: 1197  **Axis**: `initialization`
+- **Brief**: Wire not loaded or empty
+- **Falsifiable claim**: Without this check, the analyzer would fail to report uninitialized wire.
+- **Minimal reproducer**: Call CheckCurveGap on unloaded wire.
+- **Search anchors**: 'IsLoaded', 'NbEdges'
+
+##### `SE-CGAP-002`
+- **Line**: 1207  **Axis**: `geometry`
+- **Brief**: 3D curve missing or invalid
+- **Falsifiable claim**: Without this check, the analyzer would fail to report missing 3D curve data.
+- **Minimal reproducer**: Edge with degenerate or null 3D curve.
+- **Search anchors**: 'SAE.Curve3d', 'c', 'cuf', 'cul'
+
+##### `SE-CGAP-003`
+- **Line**: 1215  **Axis**: `pcurve`
+- **Brief**: PCurve missing or invalid
+- **Falsifiable claim**: Without this check, the analyzer would fail to report missing surface parameterization.
+- **Minimal reproducer**: Edge with no pcurve on face.
+- **Search anchors**: 'SAE.PCurve', 'pc', 'myFace'
+
+##### `SE-CGAP-004`
+- **Line**: 1228  **Axis**: `consistency`
+- **Brief**: 3D curve-surface gap exceeds precision
+- **Falsifiable claim**: Without this check, the analyzer would fail to report curve deviation from surface.
+- **Minimal reproducer**: Edge where 3D curve deviates from surface parameterization.
+- **Search anchors**: 'myMin3d', 'myMax3d', 'maxdist', 'myPrecision'
+
+
+#### `ShapeAnalysis_Wire.CheckCurveGaps_at564`
+ (2 branches; source: `v3-deep-batch-V.json`)
+
+##### `CCurveGaps_NoReady`
+- **Line**: 566  **Axis**: `data-precondition-missing`
+- **Brief**: Wire not ready for curve evaluation
+- **Falsifiable claim**: Without this check, the analyzer would FAIL TO REPORT parametric curve discontinuities on incomplete wires.
+- **Minimal reproducer**: Call CheckCurveGaps() on uninitialized wire.
+- **Search anchors**: 'IsReady', 'NbEdges'
+
+##### `CCurveGaps_FailStatus`
+- **Line**: 577  **Axis**: `parametric-gap-detection-failure`
+- **Brief**: Individual curve gap check fails
+- **Falsifiable claim**: Without this check, the analyzer would FAIL TO REPORT parametric discontinuities.
+- **Minimal reproducer**: Call CheckCurveGap(i) on degenerate or invalid edge.
+- **Search anchors**: 'LastCheckStatus', 'ShapeExtend_FAIL1'
+
+
+#### `ShapeAnalysis_Wire.CheckDegenerated`
+ (13 branches; source: `v3-deep-batch-E.json`)
+
+##### `DEGENERATED_EDGE_VALID_PCURVE_SKIP`
+- **Line**: 913  **Axis**: `degenerate_preservation`
+- **Brief**: Edge marked degenerated with valid PCurve; analysis skipped
+- **Falsifiable claim**: Without checking HasPCurve on pre-marked degenerated edges, analyzer would report false failures on valid degenerate edges that already have proper parametrization; skipping allows repair to preserve them.
+- **Minimal reproducer**: Edge with BRep_Tool::Degenerated true and HasPCurve true; analyzer returns false (skip analysis).
+- **Search anchors**: 'BRep_Tool::Degenerated(E2)', 'sae.HasPCurve(E2, Face())'
+
+##### `DEGENERATED_EDGE_BADPCURVE_MISMATCH`
+- **Line**: 925  **Axis**: `degenerate_parametrization`
+- **Brief**: Degenerated edge with bad PCurve parametrization
+- **Falsifiable claim**: Without comparing PCurve endpoints of adjacent edges to detect parametric mismatch on degenerated edge, analyzer cannot flag edges where PCurve fails to connect surface singularities correctly; missing check prevents repair from fixing.
+- **Minimal reproducer**: Degenerated edge E2 with E1, E3 neighbors; PCurve(E1, end) and PCurve(E3, start) separated by distance not matching PCurve(E2) span; FAIL2 signals bad parametrization.
+- **Search anchors**: 'fabs(p12.Distance(p31) - p21.Distance(p22)) > 2 * Precision::PConfusion()', 'FAIL2'
+
+##### `CONSECUTIVE_DEGENERATED_NO_PCURVE`
+- **Line**: 940  **Axis**: `degenerate_clustering`
+- **Brief**: Two consecutive degenerated edges lack PCurves
+- **Falsifiable claim**: Without detecting consecutive degenerated edges without PCurves, analyzer cannot flag configuration requiring edge removal; reporting FAIL2 signals repair to address.
+- **Minimal reproducer**: Degenerated E1 without PCurve, followed by degenerated E2; analyzer sets FAIL2.
+- **Search anchors**: 'BRep_Tool::Degenerated(E1)', '!sae.HasPCurve(E1, Face())', 'BRep_Tool::Degenerated(E2)', 'FAIL2'
+
+##### `NULL_VERTICES_DEGENERATED`
+- **Line**: 956  **Axis**: `topological_validity`
+- **Brief**: Edge has null vertices in degenerated analysis
+- **Falsifiable claim**: Without checking for null vertices, analyzer skips degeneration assessment, leaving repair unaware of topological corruption.
+- **Minimal reproducer**: Edge with null Vp, V0, V1, or V2; analyzer returns false.
+- **Search anchors**: 'Vp.IsNull', 'V0.IsNull', 'V1.IsNull', 'V2.IsNull'
+
+##### `DEGENERATE_SURFACE_SINGULARITY_DETECTED`
+- **Line**: 974  **Axis**: `singularity_detection`
+- **Brief**: Edge endpoints lie on surface singularity (pole, seam degenerate)
+- **Falsifiable claim**: Without checking DegeneratedValues on surface, analyzer cannot identify edges that bridge surface singularities; detection triggers special PCurve generation in repair.
+- **Minimal reproducer**: Wire on cone or sphere; edge spans pole; DegeneratedValues returns true; dgnr set.
+- **Search anchors**: 'mySurf->DegeneratedValues', 'p1.Distance(p2) <= precFirst'
+
+##### `DEGENERATE_3DCURVE_NONZERO_MIDPOINT`
+- **Line**: 987  **Axis**: `curve_validation`
+- **Brief**: Edge marked degenerate but 3D midpoint far from endpoints
+- **Falsifiable claim**: Without checking if 3D curve midpoint diverges from endpoints, analyzer cannot reject false degenerate claims where curve loops outward; setting dgnr=false forces re-analysis.
+- **Minimal reproducer**: Edge on cone where endpoints are at pole but curve spirals outward; midpoint distant from endpoints; dgnr set to false.
+- **Search anchors**: 'p.SquareDistance(p1) > precVtx * precVtx', 'dgnr = false'
+
+##### `PREVIOUS_EDGE_SINGULAR_POSITION`
+- **Line**: 1000  **Axis**: `singularity_topology`
+- **Brief**: Previous edge endpoint lies on degenerated surface region
+- **Falsifiable claim**: Without checking if preceding edge touches singularity, analyzer misses degeneration opportunities; detecting pp on singularity with Pp != p1 prevents false degeneration claims.
+- **Minimal reproducer**: Wire on cone; edge N-1 at pole, edge N not; analyzer detects Pp on IsDegenerated and skips N.
+- **Search anchors**: 'n1 != n2', 'p1.Distance(pp) <= precFirst', 'mySurf->IsDegenerated(pp, precFirst)', '!BRep_Tool::Degenerated(E1)'
+
+##### `LACK_DEGENERATION_SINGULARITY_SEARCH`
+- **Line**: 1026  **Axis**: `singularity_matching`
+- **Brief**: Search for closest surface singularity when edge endpoints near surface singularity
+- **Falsifiable claim**: Without iterating through mySurf->NbSingularities to find best-match singularity, analyzer cannot construct accurate PCurve for edges on cones/surfaces with multiple poles; missing best match leaves parametrization wrong.
+- **Minimal reproducer**: Surface with multiple singularities; edge near one; algorithm tests all via Singularity(i) and selects closest via gapMin2 minimization.
+- **Search anchors**: 'mySurf->NbSingularities(precVtx)', 'Singularity(i)', 'gap2 <= precVtx * precVtx', 'indMin'
+
+##### `LACK_DEGENERATION_INSUFFICIENT_NEIGHBORS`
+- **Line**: 1070  **Axis**: `pcurve_extraction`
+- **Brief**: Cannot extract PCurves from adjacent edges to locate edge endpoints parametrically
+- **Falsifiable claim**: Without checking HasPCurve and PCurve on neighbors E1 and E3, analyzer cannot establish parametric bounds for degenerate edge PCurve; missing check prevents proper parametrization and leaves FAIL1.
+- **Minimal reproducer**: Edge N (degenerated) with E1 or E3 lacking PCurve; analyzer sets FAIL1.
+- **Search anchors**: '!sae.PCurve(E1, myFace, c2d, a, b, true)', 'FAIL1'
+
+##### `PCURVE_NONDEGENERATE_SURFACE`
+- **Line**: 1087  **Axis**: `parametric_validation`
+- **Brief**: Constructed PCurve points do not lie on degenerated surface region
+- **Falsifiable claim**: Without validating that p2d1 and p2d2 parametrically span a degenerated part of surface, analyzer reports false degeneration on edges that happen to be small but geometrically valid; setting FAIL2 signals repair to skip edge.
+- **Minimal reproducer**: Edge where p2d1.Distance(p2d2) short in 2D but IsDegenerated(p2d1, p2d2) returns false; FAIL2 set.
+- **Search anchors**: '!mySurf->IsDegenerated(p2d1, p2d2, precVtx, 10.)', 'FAIL2'
+
+##### `DEGENERATE_PCURVE_CLOSED_PARAMETRICALLY`
+- **Line**: 1102  **Axis**: `parametric_closure`
+- **Brief**: PCurve endpoints coincide in parametric space (edge already degenerate in flag)
+- **Falsifiable claim**: Without checking if p2d1.Distance(p2d2) <= max + gp::Resolution where max is surface resolution, analyzer cannot identify edges that are already degenerate parametrically; skipping this returns false to preserve existing degenerate flag.
+- **Minimal reproducer**: Surface of revolution; edge at pole with p2d1, p2d2 separated by <resolution; analyzer returns false (parametrically closed).
+- **Search anchors**: 'p2d1.Distance(p2d2) <= max + gp::Resolution'
+
+##### `DEGENERATE_EDGE_CLASSIFICATION_BOTH_TYPES`
+- **Line**: 1108  **Axis**: `degenerate_classification`
+- **Brief**: Edge classified as either genuine-degenerate (DONE2) or lacking-degenerate (DONE1)
+- **Falsifiable claim**: Without distinguishing dgnr (surface singularity detected) from lack (endpoint degeneration), repair cannot apply correct parametrization; DONE1 for lacking, DONE2 for genuine singularity edges.
+- **Minimal reproducer**: Genuine singularity edge: dgnr=true -> DONE2; missing-degenerate edge: lack=true -> DONE1.
+- **Search anchors**: 'dgnr ? ShapeExtend_DONE2 : ShapeExtend_DONE1'
+
+##### `DEGENERATED_EDGE_NOT_DETECTED`
+- **Line**: 1082  **Axis**: `degenerate_flag_consistency`
+- **Brief**: Edge flagged degenerated in BRep but not detected as dgnr or lack
+- **Falsifiable claim**: Without checking if edge is already marked degenerated when neither dgnr nor lack conditions trigger, analyzer would report false negatives on edge removal requirements; FAIL2 signals repair to remove edge.
+- **Minimal reproducer**: Edge with BRep_Tool::Degenerated(E2)=true but analyzer fails to set dgnr or lack; FAIL2 set to flag for removal.
+- **Search anchors**: '!lack && !dgnr', 'BRep_Tool::Degenerated(E2)', '!sae.HasPCurve(E2, Face())', 'FAIL2'
+
+
+#### `ShapeAnalysis_Wire.CheckEdgeCurves`
+ (7 branches; source: `v3-deep-batch-E.json`)
+
+##### `EDGE_CURVE_3D_PCURVE_MISMATCH`
+- **Line**: 288  **Axis**: `geometric_consistency`
+- **Brief**: 3D curve and parametric curve geometry divergence
+- **Falsifiable claim**: Without checking 3D-vs-PCurve consistency via CheckCurve3dWithPCurve, analyzer fails to flag edges where the 3D and parametric representations are inconsistent, leaving repair to skip necessary fit correction.
+- **Minimal reproducer**: STEP file with edge having 3D curve and PCurve pointing to different locations; encoded as face with surface and degenerate parameterization bounds.
+- **Search anchors**: 'CheckCurve3dWithPCurve', 'DONE1', 'FAIL1'
+
+##### `VERTEX_PCURVE_MISMATCH`
+- **Line**: 302  **Axis**: `parametric_topology`
+- **Brief**: Vertex endpoint vs parametric curve endpoint divergence
+- **Falsifiable claim**: Without CheckVerticesWithPCurve, analyzer cannot detect when edge vertices do not align with PCurve domain endpoints, causing downstream repair to miss critical endpoint corrections.
+- **Minimal reproducer**: Wire with edge vertex displaced from PCurve(f) or PCurve(l); verify via BRep_Tool::Pnt and Geom2d_Curve::Value mismatch.
+- **Search anchors**: 'CheckVerticesWithPCurve', 'DONE2', 'FAIL2'
+
+##### `VERTEX_3DCURVE_MISMATCH`
+- **Line**: 316  **Axis**: `geometric_topology`
+- **Brief**: Vertex position inconsistent with 3D curve endpoints
+- **Falsifiable claim**: Without CheckVerticesWithCurve3d, analyzer skips validation that edge vertices lie on the 3D curve, leaving repair unaware of curves that miss their endpoints.
+- **Minimal reproducer**: Edge with 3D curve C and vertex V where C(param_start) != BRep_Tool::Pnt(V); offset by tolerance violation.
+- **Search anchors**: 'CheckVerticesWithCurve3d', 'DONE3', 'FAIL3'
+
+##### `SEAM_EDGE_INCONSISTENCY`
+- **Line**: 330  **Axis**: `seam_topology`
+- **Brief**: Seam surface parameterization mismatch on faces with periodic bounds
+- **Falsifiable claim**: Without CheckSeam analysis, wire repair misses edges traversing seam curves that require special PCurve handling to preserve surface parametric continuity.
+- **Minimal reproducer**: Wire on face with seam (e.g., surface of revolution); edge PCurve crosses u=0/u=2π discontinuity without proper parameterization adjustment.
+- **Search anchors**: 'CheckSeam', 'DONE4', 'FAIL4'
+
+##### `GAP_3D_VERTICES`
+- **Line**: 344  **Axis**: `continuity`
+- **Brief**: Consecutive edge endpoints separated in 3D space
+- **Falsifiable claim**: Without CheckGap3d detection, repair cannot fix wire continuity breaks where sequential edges do not meet in 3D geometry, leaving topological gaps unaddressed.
+- **Minimal reproducer**: Two consecutive edges E1, E2 where LastVertex(E1) and FirstVertex(E2) have distance > tolerance; forces wire to self-intersect or leak surface coverage.
+- **Search anchors**: 'CheckGap3d', 'DONE5', 'FAIL5'
+
+##### `GAP_2D_PCURVE`
+- **Line**: 358  **Axis**: `parametric_continuity`
+- **Brief**: Consecutive edges PCurves do not meet parametrically
+- **Falsifiable claim**: Without CheckGap2d, analyzer cannot flag parametric discontinuities where PCurve(E1, l) != PCurve(E2, f) in UV space, causing repair to miss surface parameterization fixes.
+- **Minimal reproducer**: Wire where PCurve endpoints in parameter space show discontinuity; edges adjacent in topology but disconnected in UV domain.
+- **Search anchors**: 'CheckGap2d', 'DONE6', 'FAIL6'
+
+##### `SAME_PARAMETER_DEVIATION`
+- **Line**: 372  **Axis**: `parameterization_coherence`
+- **Brief**: 3D curve and PCurve parameterization deviates beyond tolerance
+- **Falsifiable claim**: Without CheckSameParameter validation, repair cannot identify edges where the same parameter value yields different 3D points on curve vs PCurve-lifted surface, leading to geometric discontinuities.
+- **Minimal reproducer**: Edge where Geom_Curve::Value(t) and BRep_Tool::Surface(Face)::Value(PCurve(t)) differ by >tolerance; captures parameter-space versus arc-length mismatch.
+- **Search anchors**: 'CheckSameParameter', 'DONE7', 'FAIL7'
+
+
+#### `ShapeAnalysis_Wire.CheckGap2d`
+ (4 branches; source: `v3-deep-batch-P.json`)
+
+##### `SE-GAP2D-001`
+- **Line**: 1157  **Axis**: `context`
+- **Brief**: Missing face or surface
+- **Falsifiable claim**: Without this check, the analyzer would fail to report missing face/surface context.
+- **Minimal reproducer**: Call CheckGap2d with null face.
+- **Search anchors**: 'myFace.IsNull', 'mySurf.IsNull'
+
+##### `SE-GAP2D-002`
+- **Line**: 1165  **Axis**: `structure`
+- **Brief**: Insufficient edges or wire not ready
+- **Falsifiable claim**: Without this check, the analyzer would fail to report degenerate wires.
+- **Minimal reproducer**: Call CheckGap2d with fewer than 1 edge.
+- **Search anchors**: 'IsReady', 'NbEdges'
+
+##### `SE-GAP2D-003`
+- **Line**: 1175  **Axis**: `pcurve`
+- **Brief**: PCurve retrieval failure on adjacent edges
+- **Falsifiable claim**: Without this check, the analyzer would fail to report missing pcurve data.
+- **Minimal reproducer**: Edge with no pcurve on the face.
+- **Search anchors**: 'SAE.PCurve', 'C1', 'C2'
+
+##### `SE-GAP2D-004`
+- **Line**: 1183  **Axis**: `discontinuity`
+- **Brief**: 2D gap exceeds resolution threshold
+- **Falsifiable claim**: Without this check, the analyzer would fail to report excessive 2D discontinuity.
+- **Minimal reproducer**: Adjacent edges with 2D endpoints separated beyond tolerance.
+- **Search anchors**: 'myMin2d', 'myMax2d', 'UResolution', 'VResolution'
+
+
+#### `ShapeAnalysis_Wire.CheckGap3d_at1125`
+ (3 branches; source: `v3-deep-batch-V.json`)
+
+##### `Gap3d_NoLoad`
+- **Line**: 1128  **Axis**: `data-precondition-missing`
+- **Brief**: Wire not loaded or empty
+- **Falsifiable claim**: Without this check, the analyzer would FAIL TO REPORT 3D gaps on uninitialized wires.
+- **Minimal reproducer**: Call CheckGap3d(i) on unloaded wire.
+- **Search anchors**: 'IsLoaded', 'NbEdges'
+
+##### `Gap3d_NoCurve3d`
+- **Line**: 1139  **Axis**: `curve-extraction-failure`
+- **Brief**: Cannot extract 3D curves from edge(s)
+- **Falsifiable claim**: Without this check, the analyzer would FAIL TO REPORT edges lacking valid 3D geometry.
+- **Minimal reproducer**: Call CheckGap3d(i) on edge with null or invalid 3D curve.
+- **Search anchors**: 'Curve3d', 'ShapeExtend_FAIL1'
+
+##### `Gap3d_DistanceThreshold`
+- **Line**: 1147  **Axis**: `geometric-gap-detection`
+- **Brief**: Gap distance exceeds tolerance
+- **Falsifiable claim**: Without this check, the analyzer would FAIL TO REPORT 3D geometric discontinuities where endpoint distance exceeds precision.
+- **Minimal reproducer**: Call CheckGap3d(i) on edges separated by distance > myPrecision.
+- **Search anchors**: 'myPrecision', 'Distance'
+
+
+#### `ShapeAnalysis_Wire.CheckGaps2d_at534`
+ (2 branches; source: `v3-deep-batch-V.json`)
+
+##### `CGaps2d_NoReady`
+- **Line**: 536  **Axis**: `data-precondition-missing`
+- **Brief**: Wire not ready (missing face reference)
+- **Falsifiable claim**: Without this check, the analyzer would FAIL TO REPORT 2D gaps on uninitialized or incomplete wires.
+- **Minimal reproducer**: Call CheckGaps2d() on wire without face context.
+- **Search anchors**: 'IsReady', 'NbEdges'
+
+##### `CGaps2d_FailStatus`
+- **Line**: 547  **Axis**: `curve-projection-failure`
+- **Brief**: Individual 2D gap check fails
+- **Falsifiable claim**: Without this check, the analyzer would FAIL TO REPORT 2D projection failures.
+- **Minimal reproducer**: Call CheckGap2d(i) on edge with missing 2D curve.
+- **Search anchors**: 'LastCheckStatus', 'ShapeExtend_FAIL1'
+
+
+#### `ShapeAnalysis_Wire.CheckGaps3d_at504`
+ (2 branches; source: `v3-deep-batch-V.json`)
+
+##### `CGaps3d_NoLoad`
+- **Line**: 506  **Axis**: `data-precondition-missing`
+- **Brief**: Wire not loaded or empty
+- **Falsifiable claim**: Without this check, the analyzer would FAIL TO REPORT wires lacking edge geometry or coordinate data.
+- **Minimal reproducer**: Call CheckGaps3d() on uninitialized or empty wire.
+- **Search anchors**: 'IsLoaded', 'NbEdges'
+
+##### `CGaps3d_FailStatus`
+- **Line**: 517  **Axis**: `curve-extraction-failure`
+- **Brief**: Individual gap check fails to extract 3D curve
+- **Falsifiable claim**: Without this check, the analyzer would FAIL TO REPORT edges where 3D curve extraction fails.
+- **Minimal reproducer**: Call CheckGap3d(i) on edge with no 3D geometry, observe FAIL1 status.
+- **Search anchors**: 'LastCheckStatus', 'ShapeExtend_FAIL1'
+
+
+#### `ShapeAnalysis_Wire.CheckIntersectingEdges_at1365`
+ (8 branches; 1 low-confidence; source: `v3-deep-batch-P.json`)
+
+##### `SE-IXIE-001`
+- **Line**: 1365  **Axis**: `structure`
+- **Brief**: Wire not ready or insufficient edges
+- **Falsifiable claim**: Without this check, the analyzer would fail to report uninitialized state or single-edge wires.
+- **Minimal reproducer**: Call on wire with 0 or 1 edge.
+- **Search anchors**: 'IsReady', 'NbEdges < 2'
+
+##### `SE-IXIE-002`
+- **Line**: 1383  **Axis**: `connectivity`
+- **Brief**: Adjacent edge endpoint mismatch
+- **Falsifiable claim**: Without this check, the analyzer would fail to report broken edge connectivity.
+- **Minimal reproducer**: Two adjacent edges with non-coincident endpoints.
+- **Search anchors**: 'V1.IsNull', 'V2.IsNull', 'BRepTools::Compare'
+
+##### `SE-IXIE-003`
+- **Line**: 1401  **Axis**: `pcurve`
+- **Brief**: PCurve retrieval failure
+- **Falsifiable claim**: Without this check, the analyzer would fail to report missing pcurve.
+- **Minimal reproducer**: Edge with no pcurve on the face.
+- **Search anchors**: 'sae.PCurve', 'Crv1', 'Crv2'
+
+##### `SE-IXIE-004`
+- **Line**: 1416  **Axis**: `degeneracy`
+- **Brief**: Degenerate pcurve range
+- **Falsifiable claim**: Without this check, the analyzer would fail to report degenerate parametric domains.
+- **Minimal reproducer**: Edge with zero-length pcurve parameter range.
+- **Search anchors**: 'abs(a1 - b1)', 'abs(a2 - b2)'
+
+##### `SE-IXIE-005`
+- **Line**: 1434  **Axis**: `computation`
+- **Brief**: 2D intersection computation failed
+- **Falsifiable claim**: Without this check, the analyzer would fail to detect when intersection cannot be computed.
+- **Minimal reproducer**: Degenerate curves that break Geom2dInt_GInter.
+- **Search anchors**: 'Inter.IsDone'
+
+##### `SE-IXIE-006`
+- **Line**: 1444  **Axis**: `intersection`
+- **Brief**: Intersection point not in curve interior
+- **Falsifiable claim**: Without this check, the analyzer would fail to report interior intersections.
+- **Minimal reproducer**: Curves touching only at endpoints.
+- **Search anchors**: 'PositionOnCurve', 'IntRes2d_Middle', 'continue'
+
+##### `SE-IXIE-007`
+- **Line**: 1456  **Axis**: `bounds`
+- **Brief**: Intersection parameter out of curve bounds
+- **Falsifiable claim**: Without this check, the analyzer would fail to filter out-of-range intersections.
+- **Minimal reproducer**: Intersection reported beyond curve parameter range.
+- **Search anchors**: 'a1 - param1', 'param1 - b1', 'PConfusion'
+
+##### `SE-IXIE-008` **[low-confidence]**
+- **Line**: 1476  **Axis**: `tolerance`
+- **Brief**: Intersection gap exceeds tolerance
+- **Falsifiable claim**: Without this check, the analyzer would fail to report significant edge separations.
+- **Minimal reproducer**: Two non-intersecting adjacent edges.
+- **Search anchors**: 'dist2', 'tolt', 'isLacking'
+
+
+#### `ShapeAnalysis_Wire.CheckIntersectingEdges_at1563`
+ (6 branches; source: `v3-deep-batch-P.json`)
+
+##### `SE-IXIE-NON-001`
+- **Line**: 1563  **Axis**: `initialization`
+- **Brief**: Wire not ready
+- **Falsifiable claim**: Without this check, the analyzer would fail to report uninitialized state.
+- **Minimal reproducer**: Call on uninitialized wire.
+- **Search anchors**: 'IsReady'
+
+##### `SE-IXIE-NON-002`
+- **Line**: 1577  **Axis**: `pcurve`
+- **Brief**: PCurve retrieval failure
+- **Falsifiable claim**: Without this check, the analyzer would fail to report missing pcurve.
+- **Minimal reproducer**: Edge with no pcurve on face.
+- **Search anchors**: 'sae.PCurve', 'Crv1', 'Crv2'
+
+##### `SE-IXIE-NON-003`
+- **Line**: 1593  **Axis**: `degeneracy`
+- **Brief**: Degenerate pcurve range
+- **Falsifiable claim**: Without this check, the analyzer would fail to report zero-length parametric curves.
+- **Minimal reproducer**: Edge with identical start and end parameters.
+- **Search anchors**: 'abs(a1 - b1)', 'abs(a2 - b2)'
+
+##### `SE-IXIE-NON-004`
+- **Line**: 1620  **Axis**: `computation`
+- **Brief**: 2D intersection computation failed
+- **Falsifiable claim**: Without this check, the analyzer would fail to detect when Geom2dInt_GInter fails.
+- **Minimal reproducer**: Invalid 2D domains.
+- **Search anchors**: 'Inter.IsDone'
+
+##### `SE-IXIE-NON-005`
+- **Line**: 1630  **Axis**: `intersection`
+- **Brief**: Intersection at curve boundary (not interior)
+- **Falsifiable claim**: Without this check, the analyzer would fail to filter boundary intersections.
+- **Minimal reproducer**: Curves touching at endpoints only.
+- **Search anchors**: 'PositionOnCurve', 'IntRes2d_Middle'
+
+##### `SE-IXIE-NON-006`
+- **Line**: 1645  **Axis**: `tolerance`
+- **Brief**: Intersection point distance exceeds vertex tolerance
+- **Falsifiable claim**: Without this check, the analyzer would fail to report genuine curve intersections.
+- **Minimal reproducer**: Two non-adjacent edges truly intersecting away from vertices.
+- **Search anchors**: 'OK1', 'OK2', 'vertexTolers', 'vertexPoints'
+
+
+#### `ShapeAnalysis_Wire.CheckLacking`
+ (6 branches; source: `v3-deep-batch-P.json`)
+
+##### `SE-LACK-001`
+- **Line**: 1715  **Axis**: `initialization`
+- **Brief**: Wire not ready
+- **Falsifiable claim**: Without this check, the analyzer would fail to report uninitialized state.
+- **Minimal reproducer**: Call CheckLacking on uninitialized wire.
+- **Search anchors**: 'IsReady'
+
+##### `SE-LACK-002`
+- **Line**: 1731  **Axis**: `topology`
+- **Brief**: Null vertices at edge endpoints
+- **Falsifiable claim**: Without this check, the analyzer would fail to report invalid topology.
+- **Minimal reproducer**: Edge with null start or end vertex.
+- **Search anchors**: 'V1.IsNull', 'V2.IsNull'
+
+##### `SE-LACK-003`
+- **Line**: 1738  **Axis**: `connectivity`
+- **Brief**: Adjacent vertices are distinct
+- **Falsifiable claim**: Without this check, the analyzer would fail to identify genuinely lacking edges.
+- **Minimal reproducer**: Two adjacent edges with different endpoint vertices.
+- **Search anchors**: 'BRepTools::Compare'
+
+##### `SE-LACK-004`
+- **Line**: 1753  **Axis**: `pcurve`
+- **Brief**: PCurve retrieval failure
+- **Falsifiable claim**: Without this check, the analyzer would fail to report missing pcurve.
+- **Minimal reproducer**: Edge with no pcurve on face.
+- **Search anchors**: 'sae.PCurve', 'c2d'
+
+##### `SE-LACK-005`
+- **Line**: 1768  **Axis**: `tolerance`
+- **Brief**: 2D gap below tolerance (no lacking edge needed)
+- **Falsifiable claim**: Without this check, the analyzer would report false positives for edges with negligible gaps.
+- **Minimal reproducer**: Adjacent edges with tiny 2D separation.
+- **Search anchors**: 'myMax2d < tol2d', 'tol2d * tol2d'
+
+##### `SE-LACK-006`
+- **Line**: 1780  **Axis**: `tangency`
+- **Brief**: Edges meet at bad angle (opposing directions)
+- **Falsifiable claim**: Without this check, the analyzer would fail to identify edges meeting at poor tangency.
+- **Minimal reproducer**: Two edges meeting nearly head-to-head.
+- **Search anchors**: 'v12.Angle(v1)', 'v12.Angle(v2)', '0.9 * M_PI'
+
 
 #### `ShapeAnalysis_Wire.CheckLoop`
  (12 branches; source: `v3-deep-ShapeAnalysis_Wire_CheckLoop.json`)
@@ -719,90 +4879,852 @@ v3's bar: every branch's description is rich enough to either RECREATE the defec
 - **Search anchors**: 'myStatus = ShapeExtend::EncodeStatus(ShapeExtend_DONE1);', 'myStatusLoop |= myStatus;'
 
 
+#### `ShapeAnalysis_Wire.CheckNotchedEdges_at1868`
+ (10 branches; source: `v3-deep-batch-V.json`)
+
+##### `NotchedEdges_NoReady`
+- **Line**: 1870  **Axis**: `data-precondition-missing`
+- **Brief**: Wire or face not initialized
+- **Falsifiable claim**: Without this check, the analyzer would FAIL TO REPORT notch topology on incomplete wires.
+- **Minimal reproducer**: Call CheckNotchedEdges() on uninitialized wire.
+- **Search anchors**: 'IsReady'
+
+##### `NotchedEdges_DegenerateEdge`
+- **Line**: 1880  **Axis**: `degenerate-edge-detection`
+- **Brief**: Either edge is degenerate
+- **Falsifiable claim**: Without this check, the analyzer would FAIL TO REPORT notch topology involving degenerate edges.
+- **Minimal reproducer**: Call CheckNotchedEdges(i) where edge E1 or E2 is degenerate.
+- **Search anchors**: 'BRep_Tool::Degenerated'
+
+##### `NotchedEdges_NoVertex`
+- **Line**: 1889  **Axis**: `vertex-extraction-failure`
+- **Brief**: Shared vertex is null or missing
+- **Falsifiable claim**: Without this check, the analyzer would FAIL TO REPORT topology defects where vertex pointers are invalid.
+- **Minimal reproducer**: Call CheckNotchedEdges(i) on edges with null vertices.
+- **Search anchors**: 'IsNull', 'FirstVertex', 'LastVertex'
+
+##### `NotchedEdges_VertexMismatch`
+- **Line**: 1894  **Axis**: `topology-connectivity-error`
+- **Brief**: Edges do not share a common vertex
+- **Falsifiable claim**: Without this check, the analyzer would FAIL TO REPORT wire connectivity violations.
+- **Minimal reproducer**: Call CheckNotchedEdges(i) on edges with distinct endpoints.
+- **Search anchors**: 'BRepTools::Compare'
+
+##### `NotchedEdges_NoPCurve1`
+- **Line**: 1904  **Axis**: `pcurve-extraction-failure`
+- **Brief**: First edge lacks 2D parametric curve on face
+- **Falsifiable claim**: Without this check, the analyzer would FAIL TO REPORT 2D curve projection failures.
+- **Minimal reproducer**: Call CheckNotchedEdges(i) where E1 has no PCurve on face.
+- **Search anchors**: 'PCurve', 'ShapeExtend_FAIL3'
+
+##### `NotchedEdges_NoPCurve2`
+- **Line**: 1920  **Axis**: `pcurve-extraction-failure`
+- **Brief**: Second edge lacks 2D parametric curve on face
+- **Falsifiable claim**: Without this check, the analyzer would FAIL TO REPORT missing projection geometry on second edge.
+- **Minimal reproducer**: Call CheckNotchedEdges(i) where E2 has no PCurve on face.
+- **Search anchors**: 'PCurve', 'ShapeExtend_FAIL3'
+
+##### `NotchedEdges_ZeroVelocity`
+- **Line**: 1935  **Axis**: `singular-derivative-detection`
+- **Brief**: Tangent vector magnitude below tolerance
+- **Falsifiable claim**: Without this check, the analyzer would FAIL TO REPORT degenerate tangent vectors.
+- **Minimal reproducer**: Call CheckNotchedEdges(i) on edges with singular parametric derivatives.
+- **Search anchors**: 'Magnitude', 'Resolution'
+
+##### `NotchedEdges_AngleOrDistance`
+- **Line**: 1940  **Axis**: `geometric-discontinuity-detection`
+- **Brief**: Tangent angle or endpoint distance exceeds threshold
+- **Falsifiable claim**: Without this check, the analyzer would FAIL TO REPORT notches where tangents diverge or endpoints scatter.
+- **Minimal reproducer**: Call CheckNotchedEdges(i, tol) where Angle > 0.1 rad or distance > tol.
+- **Search anchors**: 'Angle', 'Distance', 'Tolerance'
+
+##### `NotchedEdges_ProjectionFailure`
+- **Line**: 1965  **Axis**: `orthogonal-projection-failure`
+- **Brief**: Both orthogonal projections exceed tolerance
+- **Falsifiable claim**: Without this check, the analyzer would FAIL TO REPORT notches where cross-projection distances are too large.
+- **Minimal reproducer**: Call CheckNotchedEdges(i, tol) with both dist1, dist2 > tol.
+- **Search anchors**: 'ProjectInside', 'Tolerance'
+
+##### `NotchedEdges_InternalProjectionFail`
+- **Line**: 1993  **Axis**: `proximity-sampling-failure`
+- **Brief**: Projection of sample point onto long curve exceeds tolerance
+- **Falsifiable claim**: Without this check, the analyzer would FAIL TO REPORT notches where curve-curve proximity sampling fails.
+- **Minimal reproducer**: Call CheckNotchedEdges(i, tol) with internal sample projection > tol.
+- **Search anchors**: 'Project', 'd1', 'Tolerance'
+
+
+#### `ShapeAnalysis_Wire.CheckOrder`
+ (8 branches; 1 low-confidence; source: `v3-deep-batch-E.json`)
+
+##### `MISSING_FACE_2D_MODE`
+- **Line**: 601  **Axis**: `mode_compatibility`
+- **Brief**: 2D mode requested but face not provided
+- **Falsifiable claim**: Without this check, analyzer proceeds with null face in 2D mode, causing null-dereference or garbage results when extracting PCurves, preventing repair from detecting edge ordering issues.
+- **Minimal reproducer**: Call CheckOrder with theMode3D=false, theModeBoth=true but myFace.IsNull(); analyzer must reject.
+- **Search anchors**: '!theMode3D || theModeBoth', 'myFace.IsNull', 'FAIL2'
+
+##### `NULL_VERTEX_ENDPOINTS`
+- **Line**: 618  **Axis**: `topological_validity`
+- **Brief**: Edge has null or missing vertex in 3D mode
+- **Falsifiable claim**: Without null-vertex detection, analyzer skips edge from ordering analysis, leaving repair unaware that this edge cannot be ordered due to topological corruption.
+- **Minimal reproducer**: Edge with null FirstVertex or LastVertex; analyzer must flag and return false to prevent downstream issues.
+- **Search anchors**: 'FirstVertex', 'LastVertex', 'IsNull', 'FAIL2'
+
+##### `MISSING_PCURVE_2D_MODE`
+- **Line**: 633  **Axis**: `mode_fallback`
+- **Brief**: PCurve extraction fails in 2D-only mode
+- **Falsifiable claim**: Without this check, analyzer would pass null PCurves to ordering algorithm in pure-2D mode, causing silent ordering errors; detection triggers fallback or error report.
+- **Minimal reproducer**: Edge lacking PCurve on given face; if theMode3D=false, analyzer must fail; if theModeBoth=true, must set isAll2dEdgesOk=false to retry in 3D.
+- **Search anchors**: '!theMode3D && !theModeBoth', 'FAIL2'
+
+##### `MODE_FALLBACK_2D_TO_3D`
+- **Line**: 647  **Axis**: `mode_switching`
+- **Brief**: Fallback from 2D to 3D when not all PCurves available in mixed mode
+- **Falsifiable claim**: Without tracking isAll2dEdgesOk and switching to 3D, analyzer in mixed mode would report incorrect 2D-based ordering when 3D mode is actually required, causing repair to use wrong coordinate system.
+- **Minimal reproducer**: Wire in theModeBoth mode where edge N lacks PCurve; analyzer sets isAll2dEdgesOk=false, then re-runs with 3D mode only.
+- **Search anchors**: 'isAll2dEdgesOk = false', 'SetMode(true, 0.0, false)'
+
+##### `ORDERING_ALGORITHM_CASE_0_OK`
+- **Line**: 670  **Axis**: `correctness_positive`
+- **Brief**: Wire edges are properly ordered; no correction needed
+- **Falsifiable claim**: Reporting OK status when ordering algorithm returns 0 ensures analyzer correctly identifies well-formed wires, preventing repair from making unnecessary and potentially harmful reordering.
+- **Minimal reproducer**: Wire with edges in correct geometric sequence; algorithm returns 0; analyzer sets ShapeExtend_OK.
+- **Search anchors**: 'case 0:', 'ShapeExtend_OK'
+
+##### `ORDERING_CORRECTION_DONE1`
+- **Line**: 674  **Axis**: `ordering_correction`
+- **Brief**: Edges reordered to restore proper sequence
+- **Falsifiable claim**: Without flagging DONE1 when ordering algorithm returns 1, repair skips reordering action and leaves wire in incorrect geometric sequence.
+- **Minimal reproducer**: Wire with non-sequential edges detected; reordering algorithm computes correction; analyzer sets DONE1 to signal repair must apply reordering.
+- **Search anchors**: 'case 1:', 'DONE1'
+
+##### `ORDERING_SHIFT_ONLY_DONE5`
+- **Line**: 685  **Axis**: `shift_operation`
+- **Brief**: Wire edges require cyclic shift without reordering
+- **Falsifiable claim**: Without distinguishing shift-only (DONE5) from full reordering (DONE1), repair cannot apply the minimal fix; setting DONE5 signals repair to only adjust start edge, not permute sequence.
+- **Minimal reproducer**: Closed wire where edge sequence is correct but rotated (e.g., starts mid-loop); analyzer must set DONE5 to trigger cyclic shift, not full reordering.
+- **Search anchors**: 'case 3:', 'DONE5'
+
+##### `ORDERING_FAIL_SINGULAR_OPERATION` **[low-confidence]**
+- **Line**: 687  **Axis**: `algorithm_failure`
+- **Brief**: Ordering algorithm encountered failure condition
+- **Falsifiable claim**: Without flagging case -10 as FAIL1, analyzer cannot communicate to repair that ordering operation encountered a failure (e.g., singular matrix), preventing repair from attempting corrective action.
+- **Minimal reproducer**: Wire configuration that makes reordering algorithm fail (e.g., degenerate metric); analyzer must set FAIL1.
+- **Search anchors**: 'case -10:', 'FAIL1'
+
+
+#### `ShapeAnalysis_Wire.CheckOuterBound_at1806`
+ (2 branches; source: `v3-deep-batch-V.json`)
+
+##### `OuterBound_NoReady`
+- **Line**: 1808  **Axis**: `data-precondition-missing`
+- **Brief**: Wire or face context not initialized
+- **Falsifiable claim**: Without this check, the analyzer would FAIL TO REPORT wire orientation issues on uninitialized faces.
+- **Minimal reproducer**: Call CheckOuterBound() on uninitialized wire.
+- **Search anchors**: 'IsReady'
+
+##### `OuterBound_Orientation`
+- **Line**: 1827  **Axis**: `topology-orientation-error`
+- **Brief**: Wire is already outer bound
+- **Falsifiable claim**: Without this check, the analyzer would FAIL TO REPORT wire-to-face orientation misclassification.
+- **Minimal reproducer**: Call CheckOuterBound(true) on wire already outer bound.
+- **Search anchors**: 'IsOuterBound'
+
+
+#### `ShapeAnalysis_Wire.CheckSeam`
+ (4 branches; source: `v3-deep-batch-P.json`)
+
+##### `SE-SEAM-001`
+- **Line**: 844  **Axis**: `initialization`
+- **Brief**: Wire not ready
+- **Falsifiable claim**: Without this check, the analyzer would fail to report if wire state is uninitialized.
+- **Minimal reproducer**: Call CheckSeam on uninitialized wire.
+- **Search anchors**: 'IsReady()', 'myWire'
+
+##### `SE-SEAM-002`
+- **Line**: 853  **Axis**: `topology`
+- **Brief**: Edge is not a seam on the face
+- **Falsifiable claim**: Without this check, the analyzer would fail to report non-seam edges.
+- **Minimal reproducer**: Call CheckSeam on non-seam edge.
+- **Search anchors**: 'IsSeam', 'myFace'
+
+##### `SE-SEAM-003`
+- **Line**: 865  **Axis**: `pcurve`
+- **Brief**: Missing or null PCurves for seam edge
+- **Falsifiable claim**: Without this check, the analyzer would fail to report missing pcurves.
+- **Minimal reproducer**: Seam edge with null curve on one orientation.
+- **Search anchors**: 'CurveOnSurface', 'C1.IsNull', 'C2.IsNull'
+
+##### `SE-SEAM-004`
+- **Line**: 872  **Axis**: `orientation`
+- **Brief**: Seam curves not properly oriented for comparison
+- **Falsifiable claim**: Without this check, the analyzer would fail to validate seam curve orientation.
+- **Minimal reproducer**: Seam with incorrectly selected forward curve.
+- **Search anchors**: 'SelectForwardSeam', 'theCurveIndice'
+
+
+#### `ShapeAnalysis_Wire.CheckSelfIntersectingEdge`
+ (7 branches; source: `v3-deep-batch-P.json`)
+
+##### `SE-SXIE-001`
+- **Line**: 1273  **Axis**: `initialization`
+- **Brief**: Wire not ready
+- **Falsifiable claim**: Without this check, the analyzer would fail to report uninitialized state.
+- **Minimal reproducer**: Call CheckSelfIntersectingEdge on uninitialized wire.
+- **Search anchors**: 'IsReady'
+
+##### `SE-SXIE-002`
+- **Line**: 1283  **Axis**: `pcurve`
+- **Brief**: PCurve retrieval fails
+- **Falsifiable claim**: Without this check, the analyzer would fail to report missing pcurve.
+- **Minimal reproducer**: Edge with no pcurve on the face.
+- **Search anchors**: 'sae.PCurve', 'Crv'
+
+##### `SE-SXIE-003`
+- **Line**: 1290  **Axis**: `degeneracy`
+- **Brief**: Degenerate pcurve (start equals end)
+- **Falsifiable claim**: Without this check, the analyzer would fail to report degenerate parametric curve.
+- **Minimal reproducer**: Edge with zero-length pcurve parameter range.
+- **Search anchors**: 'abs(a - b)', 'PConfusion'
+
+##### `SE-SXIE-004`
+- **Line**: 1309  **Axis**: `computation`
+- **Brief**: Intersection computation failed
+- **Falsifiable claim**: Without this check, the analyzer would fail to detect when self-intersection cannot be computed.
+- **Minimal reproducer**: Degenerate 2D geometry that breaks Geom2dInt_GInter.
+- **Search anchors**: 'Inter.IsDone'
+
+##### `SE-SXIE-005`
+- **Line**: 1318  **Axis**: `topology`
+- **Brief**: Null vertices at edge endpoints
+- **Falsifiable claim**: Without this check, the analyzer would fail to report invalid edge topology.
+- **Minimal reproducer**: Edge with null start or end vertex.
+- **Search anchors**: 'V1.IsNull', 'V2.IsNull'
+
+##### `SE-SXIE-006`
+- **Line**: 1326  **Axis**: `intersection`
+- **Brief**: Self-intersection point not at edge interior
+- **Falsifiable claim**: Without this check, the analyzer would fail to report mid-curve self-intersections.
+- **Minimal reproducer**: Pcurve self-intersecting away from endpoints.
+- **Search anchors**: 'PositionOnCurve', 'IntRes2d_Middle'
+
+##### `SE-SXIE-007`
+- **Line**: 1333  **Axis**: `tolerance`
+- **Brief**: Intersection point close to edge endpoints
+- **Falsifiable claim**: Without this check, the analyzer would fail to filter trivial endpoint self-intersections.
+- **Minimal reproducer**: Self-intersection at vertex tolerance boundary.
+- **Search anchors**: 'dist21', 'dist22', 'tol1', 'tol2'
+
+
+#### `ShapeAnalysis_Wire.CheckSelfIntersection`
+ (5 branches; 1 low-confidence; source: `v3-deep-batch-E.json`)
+
+##### `EDGE_SELF_INTERSECTION`
+- **Line**: 388  **Axis**: `local_topology`
+- **Brief**: Single edge curves back on itself in 3D or 2D
+- **Falsifiable claim**: Without CheckSelfIntersectingEdge, analyzer fails to report edges where curve loops cross themselves, leaving repair unable to flatten or split the defective edge.
+- **Minimal reproducer**: Edge with 3D curve or PCurve forming a lemniscate or loop; intersection point detected via tangent reversal or curve self-touching.
+- **Search anchors**: 'CheckSelfIntersectingEdge', 'DONE1', 'FAIL1'
+
+##### `PAIRWISE_EDGE_INTERSECTION`
+- **Line**: 402  **Axis**: `global_planarity`
+- **Brief**: Two distinct edges cross in 3D or parametric space
+- **Falsifiable claim**: Without pairwise CheckIntersectingEdges, analyzer cannot detect transverse intersections between non-adjacent wire edges, allowing repair to miss global wire-integrity violations.
+- **Minimal reproducer**: Wire with edges E_i and E_j (i < j-1) whose curves intersect; bounding-box overlap triggers deeper intersection test.
+- **Search anchors**: 'CheckIntersectingEdges', 'DONE2', 'FAIL2'
+
+##### `BOUNDING_BOX_INTERSECTION_2D` **[low-confidence]**
+- **Line**: 432  **Axis**: `computational_efficiency`
+- **Brief**: Bounding boxes of non-adjacent edges overlap in parametric domain
+- **Falsifiable claim**: Without spatial partitioning via bounding-box tests, analyzer would redundantly invoke intersection tests on all O(n²) edge pairs, missing the optimization needed to scale to large wires; skipping this leads to missed intersections in real cases requiring box-pruning.
+- **Minimal reproducer**: Wire with 100+ edges; 3 non-adjacent pairs have overlapping 2D PCurve bounding boxes; intersection algorithm must be triggered selectively only for overlapping boxes.
+- **Search anchors**: 'Bnd_Box2d', 'BndLib_Add2dCurve', 'IsOut'
+
+##### `CLOSED_WIRE_FIRST_LAST_INTERSECTION`
+- **Line**: 444  **Axis**: `topology_closure`
+- **Brief**: First and last edges may intersect on closed wires; test exclusion avoids self-test
+- **Falsifiable claim**: Without the closed-wire check excluding edges (1, n) from intersection analysis, analyzer reports spurious intersections at wire closure, leaving repair unable to distinguish valid closure from false positives.
+- **Minimal reproducer**: Closed wire where Edge(1) and Edge(n) share endpoint; analyzer must skip this pair to avoid false-positive intersection at closure point.
+- **Search anchors**: 'CheckClosed', 'fin = nb - 1'
+
+##### `MULTI_EDGE_INTERSECTION_AGGREGATION`
+- **Line**: 454  **Axis**: `aggregation`
+- **Brief**: Bounding-box refinement for multiple edge pair intersections collected into single status
+- **Falsifiable claim**: Without aggregating pairwise intersection results into DONE3/FAIL3 status, analyzer cannot report whether ANY non-adjacent pair intersects, leaving repair unaware of global wire self-crossing.
+- **Minimal reproducer**: Wire where 5 non-adjacent pairs have overlapping boxes; at least one pair genuinely intersects; FAIL3 flag must be set to trigger wire reordering.
+- **Search anchors**: 'FAIL3', 'DONE3', 'isFail |=', 'isDone |='
+
+
+#### `ShapeAnalysis_Wire.CheckSmall`
+ (9 branches; source: `v3-deep-batch-E.json`)
+
+##### `WIRE_EMPTY_OR_UNLOADED`
+- **Line**: 770  **Axis**: `minimum_structure`
+- **Brief**: Wire has fewer than 2 edges (cannot have small interior edges)
+- **Falsifiable claim**: Without rejecting wires with <=1 edges, analyzer would attempt to measure interior edge size on degenerate wires, causing index errors or false results.
+- **Minimal reproducer**: Wire with 1 edge or 0 edges; CheckSmall must return false.
+- **Search anchors**: 'NbEdges <= 1'
+
+##### `DEGENERATED_EDGE_WITHOUT_PCURVE`
+- **Line**: 785  **Axis**: `degenerate_classification`
+- **Brief**: Edge marked degenerated but lacks parametric curve
+- **Falsifiable claim**: Without checking HasPCurve on degenerated edges, analyzer cannot distinguish valid degenerated edges (with PCurve preservation) from those requiring removal; skipping check prevents correct status assignment.
+- **Minimal reproducer**: Degenerated edge without PCurve; analyzer must set FAIL1 to signal repair to remove it.
+- **Search anchors**: 'BRep_Tool::Degenerated', '!sae.HasPCurve', 'FAIL1'
+
+##### `NULL_VERTEX_ENDPOINTS_SMALL`
+- **Line**: 795  **Axis**: `topological_validity`
+- **Brief**: Edge has null or missing vertex in small-edge check
+- **Falsifiable claim**: Without detecting null vertices, analyzer skips size measurement, leaving repair unaware of topologically broken edges.
+- **Minimal reproducer**: Edge with null FirstVertex; analyzer sets FAIL2.
+- **Search anchors**: 'V1.IsNull', 'V2.IsNull', 'FAIL2'
+
+##### `SMALL_EDGE_ENDPOINTS_COINCIDENT`
+- **Line**: 808  **Axis**: `geometric_collapse`
+- **Brief**: Edge vertices meet at single 3D point within threshold
+- **Falsifiable claim**: Without measuring 3D endpoint distance, analyzer cannot identify edges whose vertices collapse to near-identical positions, signaling repair to remove the edge.
+- **Minimal reproducer**: Edge where BRep_Tool::Pnt(V1) and BRep_Tool::Pnt(V2) are within 1e-8 m; analyzer flags DONE1.
+- **Search anchors**: 'p1.Distance(p2)', 'precsmall'
+
+##### `SMALL_EDGE_3D_CURVE_CLOSED`
+- **Line**: 822  **Axis**: `curve_closure`
+- **Brief**: 3D curve is a closed loop within small distance
+- **Falsifiable claim**: Without checking if 3D curve forms a closed segment (midpoint near endpoints), analyzer cannot flag edges that loop back on themselves within tolerance, leaving repair unable to split or remove.
+- **Minimal reproducer**: Edge with 3D curve C where C(c_start), C(c_mid), C(c_end) are all within epsilon; analyzer must validate.
+- **Search anchors**: 'c3d->Value((cf + cl) / 2)', 'aMidpoint.Distance(p1)'
+
+##### `SMALL_EDGE_PCURVE_CLOSED_FALLBACK`
+- **Line**: 835  **Axis**: `curve_parametrization`
+- **Brief**: No 3D curve; PCurve midpoint used to validate closure
+- **Falsifiable claim**: Without fallback to PCurve-derived 3D position when 3D curve unavailable, analyzer cannot assess small-edge geometry on surfaces, leaving surface-bound edges unvalidated.
+- **Minimal reproducer**: Edge with only PCurve (no 3D curve); PCurve midpoint lifted to surface via mySurf->Value; midpoint distance checked against endpoints.
+- **Search anchors**: '!myFace.IsNull', '!mySurf.IsNull', 'mySurf->Value(p2m)'
+
+##### `SMALL_EDGE_PCURVE_MISSING_FAIL`
+- **Line**: 843  **Axis**: `curve_extraction_failure`
+- **Brief**: Cannot extract 3D or parametric curve for closure test
+- **Falsifiable claim**: Without flagging FAIL1 when both 3D and PCurve are unavailable, analyzer skips small-edge assessment entirely, leaving repair unaware of un-measurable edges.
+- **Minimal reproducer**: Edge with neither 3D curve nor valid PCurve; analyzer sets FAIL1.
+- **Search anchors**: 'FAIL1', 'aMidpoint = p1'
+
+##### `SMALL_EDGE_CLOSED_BOTH_DIRECTIONS`
+- **Line**: 847  **Axis**: `interior_closure`
+- **Brief**: Midpoint lies within small distance of both endpoints
+- **Falsifiable claim**: Without verifying midpoint distance to BOTH endpoints, analyzer could report edges that zigzag outward, missing genuine small-edge closure; both distances must be <= prec.
+- **Minimal reproducer**: Edge where midpoint is not along straight line to endpoints; analyzer must check both aMidpoint.Distance(p1) and .Distance(p2).
+- **Search anchors**: 'aMidpoint.Distance(p1) > prec', 'aMidpoint.Distance(p2) > prec'
+
+##### `SMALL_EDGE_LOOP_VS_DEGENERATE`
+- **Line**: 851  **Axis**: `edge_classification`
+- **Brief**: Edge classified as closed loop (DONE1) vs degenerate segment (DONE2)
+- **Falsifiable claim**: Without distinguishing loop edges (V1 == V2) from genuine small degenerate edges, repair cannot apply correct healing; DONE1 for loops, DONE2 for collapsed segments.
+- **Minimal reproducer**: Loop edge: DONE1; collapsed edge with different endpoints: DONE2.
+- **Search anchors**: 'V1.IsSame(V2) ? ShapeExtend_DONE1 : ShapeExtend_DONE2'
+
+
+### ShapeAnalysis_WireOrder
+
+#### `ShapeAnalysis_WireOrder.Add_at135`
+ (1 branches; source: `v3-deep-batch-N.json`)
+
+##### `Add_at135.Mode2DOnly`
+- **Line**: 137  **Axis**: `mode-branch-incompleteness`
+- **Brief**: 2D edge data appended only when myMode==Mode2D; ModeBoth/Mode3D silently drop 2D coordinate
+- **Falsifiable claim**: Add(start2d, end2d) in Mode3D or ModeBoth does not store start2d/end2d; ModeBoth branch missing
+- **Minimal reproducer**: SetMode(ModeBoth); Add(2d_start, 2d_end, 3d_start, 3d_end); query 2D returns uninitialized/previous data
+- **Search anchors**: 'if (myMode == Mode2D)', 'myXYZ->Append', 'theStart2d.X()'
+
+
+#### `ShapeAnalysis_WireOrder.Add_at152`
+ (1 branches; source: `v3-deep-batch-N.json`)
+
+##### `Add_at152.ModeBothOnly`
+- **Line**: 154  **Axis**: `mode-branch-incompleteness`
+- **Brief**: 3D and 2D data appended only when myMode==ModeBoth; Mode2D/Mode3D variants ignored
+- **Falsifiable claim**: Add(start3d, end3d, start2d, end2d) in Mode3D only appends nothing; Mode2D/Mode3D branches missing entirely
+- **Minimal reproducer**: SetMode(Mode3D); Add(3d_start, 3d_end, 2d_start, 2d_end); myXYZ remains empty
+- **Search anchors**: 'if (myMode == ModeBoth)', 'myXYZ->Append', 'myXY->Append'
+
+
+#### `ShapeAnalysis_WireOrder.Gap`
+ (1 branches; source: `v3-deep-batch-N.json`)
+
+##### `Gap.ZeroEdgeShortCircuit`
+- **Line**: 749  **Axis**: `stale-cache-semantics`
+- **Brief**: Early return myGap when num==0; cached gap value may be stale or uninitialized
+- **Falsifiable claim**: Gap(0) returns myGap without recomputing; if myGap was set during SetMode() to 0.0, caller gets cached 0.0 indefinitely
+- **Minimal reproducer**: SetMode(Mode2D); Gap(0) returns 0.0; add edges; Gap(0) still 0.0 (not recomputed)
+- **Search anchors**: 'if (num == 0)', 'return myGap', 'Ordered(num)'
+
+
+#### `ShapeAnalysis_WireOrder.SetChains`
+ (2 branches; source: `v3-deep-batch-N.json`)
+
+##### `SetChains.EmptyEdgeListReturn`
+- **Line**: 770  **Axis**: `null-pointer-risk`
+- **Brief**: Early return when nb==0; no validation that chains match edge count or ordering invariants
+- **Falsifiable claim**: SetChains exits silently if NbEdges()==0; corrupted myChains left uninitialized from prior calls
+- **Minimal reproducer**: SetMode(); SetChains(gap); nb==0 path returns; next Ordered(i) accesses uninitialized myChains pointer
+- **Search anchors**: 'if (nb == 0)', 'return;', 'NbEdges()'
+
+##### `SetChains.GapToleranceComputation`
+- **Line**: 787  **Axis**: `tolerance-semantics-ambiguity`
+- **Brief**: Chain continuity check uses IsEqual(l13d, f3d, gap); gap semantics unclear—tolerates or asserts exact equality?
+- **Falsifiable claim**: !f3d.IsEqual(l13d, gap) breaks chain when distance exceeds gap tolerance; if gap=0, only exact coordinate equality continues chain
+- **Minimal reproducer**: SetChains(0.0) chains only if endpoints coincide exactly; SetChains(1e-7) chains if within 1e-7; tolerance inversion risk
+- **Search anchors**: 'if (!f3d.IsEqual(l13d, gap))', 'chain.Append(n2)', 'n0 = 0'
+
+
+#### `ShapeAnalysis_WireOrder.SetMode`
+ (2 branches; source: `v3-deep-batch-N.json`)
+
+##### `SetMode.BothModePriority`
+- **Line**: 77  **Axis**: `mode-flag-precedence`
+- **Brief**: ModeBoth unconditionally selected if theModeBoth=true; 3D/2D branches unreachable
+- **Falsifiable claim**: When theModeBoth=true, mode is always ModeBoth regardless of theMode3D flag state
+- **Minimal reproducer**: SetMode(true, true, X) and SetMode(true, false, X) both yield ModeBoth; 3D/2D distinction ignored
+- **Search anchors**: 'theModeBoth short-circuit', 'nested if theMode3D', 'unreachable branch elimination'
+
+##### `SetMode.ModeTransitionClear`
+- **Line**: 96  **Axis**: `state-accumulation-semantics`
+- **Brief**: Clear() invoked only on mode change; stale state persists if mode unchanged
+- **Falsifiable claim**: Calling SetMode with identical mode preserves accumulated myXYZ/myXY; calling with new mode clears both
+- **Minimal reproducer**: SetMode(Mode2D); Add(); SetMode(Mode2D) again—first Add() persists; vs SetMode(Mode3D) clears it
+- **Search anchors**: 'if (myMode != aNewMode)', 'Clear()', 'myGap = 0.0'
+
+
+#### `ShapeAnalysis_WireOrder.XY`
+ (1 branches; source: `v3-deep-batch-N.json`)
+
+##### `XY.ModeBothExtraction`
+- **Line**: 731  **Axis**: `dual-storage-consistency`
+- **Brief**: ModeBoth uses cached myXY; Mode3D/Mode2D extract from myXYZ; inconsistent source semantics
+- **Falsifiable claim**: ModeBoth queries return pre-computed myXY; Mode3D returns XY projection of myXYZ; if myXY stale, ModeBoth returns wrong data
+- **Minimal reproducer**: SetMode(ModeBoth); Add(...); modify returned reference via XY(); same index in Mode2D returns different value
+- **Search anchors**: 'if (myMode == ModeBoth)', 'theStart2D = myXY->Value', 'SetCoord(aStart3d.X()'
+
+
+### ShapeFix_ComposeShell
+
+#### `ShapeFix_ComposeShell.ComputeCode`
+ (3 branches; 2 low-confidence; source: `v3-deep-batch-H.json`)
+
+##### `COMPUTECODE_PCURVE_MISS`
+- **Line**: 695  **Axis**: `curve_validation`
+- **Brief**: Missing PCurve logged as FAIL3 but edge retained in tangency test loop; tangency claimed for invalid curves
+- **Falsifiable claim**: Edge without PCurve skipped via continue but loop counter i unchanged; tangency verdict may be wrong
+- **Minimal reproducer**: Wire with degenerate edge lacking PCurve on closed face; ComputeCode claims tangency
+- **Search anchors**: '!sae.PCurve', 'ShapeExtend_FAIL3', 'continue'
+
+##### `COMPUTECODE_PERIODIC_SHIFT` **[low-confidence]**
+- **Line**: 718  **Axis**: `periodicity_handling`
+- **Brief**: U-closed adjustment applies shift to first point but shift calculated from single interval; wraparound error not detected
+- **Falsifiable claim**: Segment crossing U-seam adjusted by modulo, but shift sign assumes monotone parametrization
+- **Minimal reproducer**: U-closed surface, wire segment with U-parameter jump (e.g., [0.9, 0.1] in [0, 2pi]), AdjustByPeriod sign reversal
+- **Search anchors**: 'myUClosed && std::abs(line.Direction().X())', 'AdjustByPeriod', 'shift ='
+
+##### `COMPUTECODE_PARITY_LOSS` **[low-confidence]**
+- **Line**: 823  **Axis**: `intersection_classification`
+- **Brief**: Parity error fallback: code==IOR_BOTH resets to IOR_LEFT without explicit intersection-loss recovery
+- **Falsifiable claim**: Lost intersector point on even-parity line blamed on single defect; may mask duplicate intersections
+- **Minimal reproducer**: Tangent wire crossing line twice at same point; intersector reports both, code==IOR_BOTH triggers fallback
+- **Search anchors**: 'code == IOR_BOTH', 'parity error', 'IOR_LEFT'
+
+
+#### `ShapeFix_ComposeShell.Init`
+ (3 branches; 2 low-confidence; source: `v3-deep-batch-H.json`)
+
+##### `INIT_CLOSED_FILTER`
+- **Line**: 111  **Axis**: `closure_classification`
+- **Brief**: ElementarySurface closure filter may discard valid periodic topology on composite surfaces
+- **Falsifiable claim**: Non-elementary periodic surfaces erroneously flagged as closed when thin-face heuristic zeros closure
+- **Minimal reproducer**: Composite surface (BSpline) with U/V periodicity covering small domain, Init checks elementary-only
+- **Search anchors**: 'IsKind(STANDARD_TYPE(Geom_ElementarySurface))', 'DTK-CKY 100531'
+
+##### `INIT_INFINITE_BOUNDS` **[low-confidence]**
+- **Line**: 120  **Axis**: `bounds_handling`
+- **Brief**: Infinite parametric bounds fall through to distance-check only if elementary surface test fails
+- **Falsifiable claim**: Non-elementary surface with infinite bounds skips SurfaceUVBounds fallback under certain conditions
+- **Minimal reproducer**: Geom_OffsetSurface on closed elementary, IsUClosed=true but bounds infinite
+- **Search anchors**: 'Precision::IsInfinite', 'BRepTools::UVBounds'
+
+##### `INIT_RESOLUTION_UNINIT` **[low-confidence]**
+- **Line**: 194  **Axis**: `tolerance_initialization`
+- **Brief**: Resolution fallback uses Precision::Parametric(1.0) for surfaces with zero resolution patches
+- **Falsifiable claim**: Grid with all-zero patch resolutions produces over-generous tolerance without grid bounds check
+- **Minimal reproducer**: Degenerate grid with zero-area patches (singular surface region)
+- **Search anchors**: 'myUResolution == RealLast()', 'Precision::Parametric'
+
+
+#### `ShapeFix_ComposeShell.LoadWires`
+ (3 branches; 3 low-confidence; source: `v3-deep-batch-H.json`)
+
+##### `LOADWIRES_VERTEX_ORPHAN` **[low-confidence]**
+- **Line**: 509  **Axis**: `wire_topology`
+- **Brief**: Isolated vertices added as wire segments; no validation that vertex lies on face or in wire context
+- **Falsifiable claim**: Stray vertices from context replacement create edge-less segments that fail downstream stitching
+- **Minimal reproducer**: Input face with orphaned vertex after Context()->Apply, LoadWires accepts it
+- **Search anchors**: 'tmpW.ShapeType() == TopAbs_VERTEX', 'seg.SetVertex'
+
+##### `LOADWIRES_NONMANIFOLD_SPLIT` **[low-confidence]**
+- **Line**: 534  **Axis**: `orientation_classification`
+- **Brief**: Non-manifold wires split into INTERNAL + REVERSED segments; split logic assumes manifold/non-manifold edges are contiguous
+- **Falsifiable claim**: Alternating manifold/non-manifold edge sequence produces out-of-order wire segments with inconsistent orientation
+- **Minimal reproducer**: Wire with pattern: FORWARD, INTERNAL, FORWARD edge; split logic fails on interleaving
+- **Search anchors**: 'isNonManifold', 'TopAbs_INTERNAL', 'else if (nbMEdges)'
+
+##### `LOADWIRES_PERIODIC_REORDER` **[low-confidence]**
+- **Line**: 586  **Axis**: `edge_ordering`
+- **Brief**: Torus-like surface reordering uses gp_Dir2d comparison but discards reorder decision if status DONE3
+- **Falsifiable claim**: FixReorder(sawo) then FixReorder() applies two passes; second pass may revert first, leaving stat=-1 inconsistent
+- **Minimal reproducer**: Torus (U,V periodic) with pre-reordered wire edges, FixReorder(sawo) + FixReorder() produce conflicting results
+- **Search anchors**: 'gs->IsUPeriodic() && gs->IsVPeriodic()', 'FixReorder(sawo)', 'StatusReorder(ShapeExtend_DONE3)'
+
+
+#### `ShapeFix_ComposeShell.Perform`
+ (2 branches; source: `v3-deep-batch-H.json`)
+
+##### `PERFORM_EMPTY_WIRES`
+- **Line**: 215  **Axis**: `wire_loading`
+- **Brief**: LoadWires returns empty sequence flagged as FAIL6, but no diagnostic on cause
+- **Falsifiable claim**: All-internal or all-degenerate wire loops undiagnosed; repair silently fails without root-cause status
+- **Minimal reproducer**: Face with only INTERNAL-oriented wires (seams only)
+- **Search anchors**: 'LoadWires(seqw)', 'seqw.Length() == 0', 'ShapeExtend_FAIL6'
+
+##### `PERFORM_FACE_VS_SHELL`
+- **Line**: 236  **Axis**: `result_topology`
+- **Brief**: Single-face result wrapped as shell even if topologically equivalent to input face
+- **Falsifiable claim**: faces.Length() == 1 returns bare Face instead of Shell, breaking shape-type contract
+- **Minimal reproducer**: Input Face, no grid splitting, Perform returns Face instead of Shell
+- **Search anchors**: 'faces.Length() != 1', 'myResult = faces(1)'
+
+
+#### `ShapeFix_ComposeShell.SplitByGrid`
+ (3 branches; 2 low-confidence; source: `v3-deep-batch-H.json`)
+
+##### `SPLITBYGRID_CLOSED_RANGE` **[low-confidence]**
+- **Line**: 2144  **Axis**: `periodic_indexing`
+- **Brief**: Closed-mode U/V patch indexing assumes wire bounds fit [Grid(1), Grid(2)); wire spanning [Grid(0), Grid(2)] overflows index
+- **Falsifiable claim**: Closed mode computes shiftU/V to map wire into Grid range, but loop bounds -period, +period allow wire > 1.5*period
+- **Minimal reproducer**: U-closed grid [0, 2pi], wire in [−pi, 3pi]; shift maps to [−pi, +pi], DefineIUMax overshoots patch 2
+- **Search anchors**: 'myClosedMode && myUClosed', 'ShapeAnalysis::AdjustToPeriod', 'GetPatchIndex'
+
+##### `SPLITBYGRID_INFINITE_LOOP`
+- **Line**: 2240  **Axis**: `loop_termination`
+- **Brief**: Non-closed U-periodic surface splitting loop continues while X + sh <= Ul + pprec; no guard on iteration count
+- **Falsifiable claim**: If Ul - Uf >> period, sh incremented indefinitely; loop creates unbounded split lines beyond face UV extent
+- **Minimal reproducer**: U-periodic surface with Uf=0, Ul=10*period; loop generates 10 split lines, last ones outside face bounds
+- **Search anchors**: 'for (; X + sh <= Ul + pprec; sh += period)', '!myClosedMode && myUClosed'
+
+##### `SPLITBYGRID_LINE_TRANSLATION` **[low-confidence]**
+- **Line**: 2242  **Axis**: `grid_alignment`
+- **Brief**: Line translation by sh (period shift) assumes gp_Lin2d supports vector addition; no verification of periodicity alignment
+- **Falsifiable claim**: gp_Lin2d::Translated(gp_Vec2d(sh, 0)) creates new line; if sh not aligned to grid period, split point misses grid cell boundary
+- **Minimal reproducer**: Grid U-joints [0, 1, 2], line at U=0.5 translated by sh=0.7; new line U=1.2 not at joint
+- **Search anchors**: 'line.Translated(gp_Vec2d(sh, 0))', 'gp_Lin2d ln ='
+
+
+#### `ShapeFix_ComposeShell.SplitByLine`
+ (3 branches; 1 low-confidence; source: `v3-deep-batch-H.json`)
+
+##### `SPLITBYLINE_MERGE_LOGIC` **[low-confidence]**
+- **Line**: 1951  **Axis**: `tangency_merging`
+- **Brief**: Null-segment merge assumes i and i+1 are equivalent tangencies, but code can carry stale IOR flags from prior iterations
+- **Falsifiable claim**: Two segments merged if both have ITP_ENDSEG/BEGSEG and same vertex; code bitwise OR may combine unrelated IOR_LEFT/RIGHT
+- **Minimal reproducer**: Three consecutive tangencies with alternating IOR sides; first+second merged, second+third skip; final code inconsistent
+- **Search anchors**: 'SplitLineCode(i) | SplitLineCode(i + 1)', 'ITP_ENDSEG', 'ITP_BEGSEG'
+
+##### `SPLITBYLINE_PARITY_NESTING`
+- **Line**: 2005  **Axis**: `tangency_state_machine`
+- **Brief**: Tangency nesting level can go negative if ENDSEG precedes BEGSEG; parity/halfparity updates bypass level guard
+- **Falsifiable claim**: tanglevel-- before check; if level<0, parity/halfparity already modified, recovery unclear
+- **Minimal reproducer**: Three tangencies in sequence, middle one has only ENDSEG code (no BEGSEG); tanglevel underflows
+- **Search anchors**: 'tanglevel < 0', 'ITP_ENDSEG', 'else if (code & ITP_BEGSEG)'
+
+##### `SPLITBYLINE_VERTEX_MERGE_TOL`
+- **Line**: 2026  **Axis**: `vertex_tolerance`
+- **Brief**: MaxTolerance cap logic triggers Infinite if aMaxTol < 2*Confusion; vertex merge skips coincidence if Infinite
+- **Falsifiable claim**: aMaxTol set to Infinite causes (aD <= (aTol1*aTol1)) to always fail; vertices never merged when max tolerance undefined
+- **Minimal reproducer**: Face with undefined MaxTolerance, two split vertices at distance < default tolerance; never merged
+- **Search anchors**: 'aMaxTol <= 2. * Precision::Confusion()', 'aMaxTol = Precision::Infinite()'
+
+
 ### ShapeFix_Edge
 
 #### `ShapeFix_Edge.FixAddPCurve`
- (11 branches; source: `v3-deep-ShapeFix_Edge_FixAddPCurve.json`)
+ (6 branches; 2 low-confidence; source: `v3-deep-batch-S.json`)
 
-##### `ShapeFix_Edge.FixAddPCurve.existing_pcurve_shortcut`
-- **Line**: ShapeFix_Edge.cxx:470  **Axis**: `healer-state`
-- **Brief**: Early return if PCurve already exists prevents re-projection and redundant state mutations.
-- **Falsifiable claim**: Without this check, the kernel would attempt to project and register a new PCurve even when one is already associated with the edge on the surface, potentially duplicating or corrupting the PCurve list via BRep_Builder::UpdateEdge. To test: provide an edge with an existing PCurve on a given face; without the guard, the edge's PCurve would be overwritten or multiplied.
-- **Minimal reproducer**: Create a TopoDS_Edge with a 3D curve and an existing PCurve on a cylindrical surface. Call FixAddPCurve(edge, face, false, 0.01). Without the guard: edge PCurves are reprojected and duplicated. With the guard: edge PCurves unchanged, method returns false immediately.
-- **Search anchors**: 'HasPCurve', 'IsSeam', 'early return'
+##### `FIXADDPCURVE_PRE_EXISTING`
+- **Line**: 479  **Axis**: `DATA_INCONSISTENCY`
+- **Brief**: PCurve already exists on seam or surface
+- **Falsifiable claim**: HasPCurve/IsSeam check skips repair when PCurve state is uncertain
+- **Minimal reproducer**: Edge with orphaned PCurve marker but missing actual curve
+- **Search anchors**: 'HasPCurve', 'IsSeam', 'premature return'
 
-##### `ShapeFix_Edge.FixAddPCurve.plane_surface_no_op`
-- **Line**: ShapeFix_Edge.cxx:478  **Axis**: `kernel-pair`
-- **Brief**: Explicit no-op for planar surfaces avoids wasteful projection since planar PCurves are trivial.
-- **Falsifiable claim**: Without this guard, the kernel would invoke the full projection pipeline on planar surfaces, which is numerically redundant (any line in 3D space projects to a line in 2D with known parametrization). To test: provide an edge on a planar face and verify no projection is triggered.
-- **Minimal reproducer**: Construct a rectangular planar face (Geom_Plane) and an edge lying on it. Call FixAddPCurve(edge, planarFace, false, prec). Without the guard: myProjector->Perform() called wastefully. With the guard: method returns false, no projection occurs.
-- **Search anchors**: 'Geom_Plane', 'planar', 'early return'
+##### `FIXADDPCURVE_PLANE_SKIP`
+- **Line**: 486  **Axis**: `GEOMETRIC_EXCEPTION`
+- **Brief**: Plane surfaces bypass PCurve projection
+- **Falsifiable claim**: Plane surfaces cannot have PCurves per design, but repair skips all planes
+- **Minimal reproducer**: Plane face with missing PCurve on projected edge
+- **Search anchors**: 'Geom_Plane', 'IsKind', 'PCurve on Plane'
 
-##### `ShapeFix_Edge.FixAddPCurve.missing_3d_curve_fail`
-- **Line**: ShapeFix_Edge.cxx:497  **Axis**: `api-contract`
-- **Brief**: Handles degenerate edge case where 3D curve is absent, blocking projection with explicit error.
-- **Falsifiable claim**: Without this check, the kernel would attempt to project a null 3D curve, leading to a downstream segfault or undefined projection result. To test: create an edge without a 3D curve; the method must fail gracefully.
-- **Minimal reproducer**: Construct a TopoDS_Edge without a 3D curve representation (e.g., a degenerate edge). Call FixAddPCurve(edge, surface, false, prec). Without the guard: null pointer dereference in myProjector->Perform. With the guard: method returns false and sets FAIL1 status.
-- **Search anchors**: 'c3d.IsNull', 'FAIL1', 'missing 3D curve'
+##### `FIXADDPCURVE_NULL_3D`
+- **Line**: 502  **Axis**: `MISSING_GEOMETRY`
+- **Brief**: Null 3D curve fails repair silently
+- **Falsifiable claim**: Missing 3D curve returns FAIL1 status but construction incomplete
+- **Minimal reproducer**: Edge with no 3D geometry and seam flag
+- **Search anchors**: 'c3d.IsNull', 'BRep_Tool::Curve', 'FAIL1'
 
-##### `ShapeFix_Edge.FixAddPCurve.pcurve_projection_with_tolerances`
-- **Line**: ShapeFix_Edge.cxx:515  **Axis**: `tolerance`
-- **Brief**: Projection respects vertex tolerances to ensure PCurve endpoints align within acceptable deviation.
-- **Falsifiable claim**: Without carrying vertex tolerances (TolFirst, TolLast) into myProjector->Perform, the kernel would project the PCurve without respecting the spatial slack at edge endpoints, potentially creating PCurves that deviate from vertices beyond the acceptable tolerance cone. To test: provide an edge with high vertex tolerance and verify projected PCurve endpoints are constrained.
-- **Minimal reproducer**: Create a toroidal surface and an edge with high endpoint tolerances (e.g., 0.1). Construct vertices with TolFirst=0.1, TolLast=0.1. Call FixAddPCurve(edge, toroidalSurf, false, prec). Without tolerance propagation: PCurve endpoints may project outside the tolerance cones. With it: PCurve constrained to vertex tolerance envelopes.
-- **Search anchors**: 'TolFirst', 'TolLast', 'Perform', 'vertex tolerance'
+##### `FIXADDPCURVE_PROJECTION_FAIL` **[low-confidence]**
+- **Line**: 536  **Axis**: `TOLERANCE_ESCALATION`
+- **Brief**: PCurve projection status not fully validated
+- **Falsifiable claim**: DONE4 status check incomplete; tolerances from vertices may exceed precision
+- **Minimal reproducer**: High-curvature surface with vertex tolerance > projected precision
+- **Search anchors**: 'myProjector->Status', 'DONE4', 'TolFirst', 'TolLast'
 
-##### `ShapeFix_Edge.FixAddPCurve.seam_u_closed_translation`
-- **Line**: ShapeFix_Edge.cxx:545  **Axis**: `healer-state`
-- **Brief**: For U-closed (but not V-closed) surfaces, seam PCurve is offset by U-parameter range to create distinct representations.
-- **Falsifiable claim**: Without this translation, the kernel would register two identical PCurves on a U-closed seam (e.g., a cylindrical surface seam), causing the double-covering representation to collapse to a single curve and corrupting seam topology. To test: verify that dual PCurves differ by exactly (ul - uf, 0) in parameter space.
-- **Minimal reproducer**: Construct a cylindrical surface (U-closed, V-open) with a seam edge aligned to the seam parameter U=0. Call FixAddPCurve(edge, cylinderFace, true, prec). Without translation: both PCurves identical, seam topology broken. With translation: c2d2 translated by (ul-uf, 0), creating distinct forward and reverse PCurves.
-- **Search anchors**: 'IsUClosed', 'Translate', 'seam', 'ProSTEP'
+##### `FIXADDPCURVE_SEAM_CLOSURE`
+- **Line**: 564  **Axis**: `CLOSURE_CONSISTENCY`
+- **Brief**: Seam translation assumes closure consistency
+- **Falsifiable claim**: IsUClosed/IsVClosed checks ignore numerical precision in closure validation
+- **Minimal reproducer**: Seam edge on toroidal surface with marginal u/v closure
+- **Search anchors**: 'IsUClosed', 'IsVClosed', 'TranslatePCurve', 'prec'
 
-##### `ShapeFix_Edge.FixAddPCurve.seam_v_closed_translation`
-- **Line**: ShapeFix_Edge.cxx:550  **Axis**: `healer-state`
-- **Brief**: For V-closed (but not U-closed) surfaces, seam PCurve is offset by V-parameter range.
-- **Falsifiable claim**: Without this translation for V-closed surfaces (e.g., conical surface seam), the kernel would fail to create distinct dual PCurves, resulting in incorrect seam representation and topology corruption. To test: verify translation by (0, vl - vf).
-- **Minimal reproducer**: Construct a conical surface (V-closed, U-open) with a seam edge. Call FixAddPCurve(edge, conicalFace, true, prec). Without V-translation: both PCurves collapse. With it: c2d2 offset by (0, vl-vf), creating proper seam duality.
-- **Search anchors**: 'IsVClosed', 'Translate', 'seam', 'cone'
+##### `FIXADDPCURVE_3D_UPDATE_RACE` **[low-confidence]**
+- **Line**: 593  **Axis**: `PARAMETER_SYNC`
+- **Brief**: 3D curve update deferred after PCurve assignment
+- **Falsifiable claim**: DONE3 check applies 3D range after 2D update; parameter mismatch possible
+- **Minimal reproducer**: Edge with periodic 3D curve and seam PCurves
+- **Search anchors**: 'DONE3', 'UpdateEdge', '3D curve range', 'FirstParameter'
 
-##### `ShapeFix_Edge.FixAddPCurve.seam_on_doubly_closed_surface`
-- **Line**: ShapeFix_Edge.cxx:553  **Axis**: `kernel-pair`
-- **Brief**: For doubly-closed surfaces (both U and V closed, e.g., torus), seam PCurve translation delegates to TranslatePCurve to avoid naive parameter-space shifting that would produce topologically invalid seam.
-- **Falsifiable claim**: Without TranslatePCurve for doubly-closed surfaces, the kernel would apply a simple parameter translation (e.g., (ul-uf, 0) or (0, vl-vf)), which would project the seam onto a wrong locus on the torus and corrupt the seam edge topology. The correct repair requires geometric analysis of the actual seam path on the doubly-periodic surface. To test: for a toroidal seam edge, verify that the dual PCurve is geometrically distinct and seam-conforming after healing, not merely parameter-shifted.
-- **Minimal reproducer**: Construct a toroidal surface (both U and V closed). Create a seam edge aligned to the torus's seam curve (e.g., at U=0 or V=0 parameter, with endpoints at opposite poles). Call FixAddPCurve(edge, toroidalFace, true, prec). Without TranslatePCurve: c2d2 is naively translated by (ul-uf, 0), placing it on the wrong part of the torus's parameter space, breaking seam topology. With TranslatePCurve: the method reconstructs c2d2 geometrically, ensuring it follows the actual seam curve on the torus and maintains proper dual-covering semantics. Observation: check that the two PCurves on the torus correspond to the two halves of the seam in parameter space and in 3D both lie on the actual seam geometric locus.
-- **Search anchors**: 'IsUClosed', 'IsVClosed', 'TranslatePCurve', 'Doublement fermee', 'tore'
 
-##### `ShapeFix_Edge.FixAddPCurve.non_seam_single_pcurve`
-- **Line**: ShapeFix_Edge.cxx:560  **Axis**: `healer-state`
-- **Brief**: For non-seam edges, a single PCurve is registered without duplication or translation.
-- **Falsifiable claim**: Without this non-seam branch, the kernel would attempt to create dual-PCurves for all edges, corrupting non-seam edge topology by falsely introducing a second PCurve. To test: verify that a non-seam edge receives exactly one PCurve.
-- **Minimal reproducer**: Create a non-seam edge on a cylindrical surface (not at the seam). Call FixAddPCurve(edge, cylinder, false, prec). Without the non-seam branch: edge would incorrectly get two PCurves. With the branch: edge receives single PCurve via UpdateEdge(edge, c2d, ...).
-- **Search anchors**: 'UpdateEdge', 'single PCurve', 'non-seam'
+#### `ShapeFix_Edge.FixReversed2d`
+ (2 branches; source: `v3-deep-batch-S.json`)
 
-##### `ShapeFix_Edge.FixAddPCurve.curve3d_update_on_done3`
-- **Line**: ShapeFix_Edge.cxx:567  **Axis**: `healer-state`
-- **Brief**: If projector signals DONE3 (3D curve approximation occurred), the edge is updated with the new 3D curve.
-- **Falsifiable claim**: Without this update, if the projector had to approximate the input 3D curve (DONE3 status), the edge would retain the original, potentially misaligned 3D curve, causing downstream mismatches between the original and projected PCurve. To test: provide a 3D curve that requires approximation; verify the new 3D curve is written.
-- **Minimal reproducer**: Create an edge with a 3D curve that does not project cleanly (e.g., a very high-curvature spline). Call FixAddPCurve with a surface requiring reapproximation. If myProjector sets DONE3: the edge's 3D curve should be replaced. Without the update: edge retains original, misaligned curve. With it: edge updated with approximated curve.
-- **Search anchors**: 'DONE3', 'UpdateEdge', 'Curve3d', 'approximation'
+##### `FIXREV2D_CHECK_FAIL`
+- **Line**: 752  **Axis**: `VALIDATION_BYPASS`
+- **Brief**: FAIL1 status from 3D/2D check propagates without remediation
+- **Falsifiable claim**: Curve/PCurve mismatch detected but 2D reversal proceeds unchecked
+- **Minimal reproducer**: Edge with misaligned 3D and existing PCurve
+- **Search anchors**: 'CheckCurve3dWithPCurve', 'FAIL1', 'EA.Status'
 
-##### `ShapeFix_Edge.FixAddPCurve.exception_handling_fail2`
-- **Line**: ShapeFix_Edge.cxx:577  **Axis**: `api-contract`
-- **Brief**: Catch-all exception handler logs projection failure and sets FAIL2 status to signal healing abort.
-- **Falsifiable claim**: Without exception handling, an unexpected numerical failure in projection (e.g., invalid surface, degenerate geometry) would crash the healer. With it, the method gracefully degrades and returns status FAIL2 to allow caller to decide next steps. To test: trigger an exception in myProjector->Perform (e.g., provide invalid surface).
-- **Minimal reproducer**: Create a pathological surface (e.g., Geom_Surface subclass with NaN bounds). Call FixAddPCurve(edge, badSurface, false, prec). Without exception handling: process crashes. With it: exception caught, method returns false with FAIL2 status, healing continues on other edges.
-- **Search anchors**: 'catch', 'FAIL2', 'exception', 'Standard_Failure'
+##### `FIXREV2D_RANGE_MISMATCH`
+- **Line**: 779  **Axis**: `RANGE_CONSISTENCY`
+- **Brief**: Range reversal mismatch on B-splines breaks seams
+- **Falsifiable claim**: ReversedParameter(l) != newf numerically; SameRange flag set false but seams corrupted
+- **Minimal reproducer**: B-spline PCurve on seam with non-periodic parameterization
+- **Search anchors**: 'ReversedParameter', 'first != newf', 'SameRange(false)'
 
-##### `ShapeFix_Edge.FixAddPCurve.done1_invariant_success`
-- **Line**: ShapeFix_Edge.cxx:583  **Axis**: `api-contract`
-- **Brief**: Always sets DONE1 status on successful return to signal to caller that method executed.
-- **Falsifiable claim**: Without this status, the caller cannot distinguish between 'method was not called' and 'method ran but found nothing to do'. The DONE1 flag ensures consistent state tracking for healing workflows. To test: verify myStatus includes DONE1 after method completes.
-- **Minimal reproducer**: Call FixAddPCurve on any valid edge and surface. After return, check myStatus for ShapeExtend_DONE1 flag. Without invariant: status may be ambiguous. With it: status always contains DONE1 on completion.
-- **Search anchors**: 'DONE1', 'status', 'invariant'
+
+#### `ShapeFix_Edge.FixSameParameter`
+ (8 branches; 4 low-confidence; source: `v3-deep-batch-S.json`)
+
+##### `FIXSAMEPAR_DEGENERATE_SHORTCUT`
+- **Line**: 804  **Axis**: `STATE_CONSISTENCY`
+- **Brief**: Degenerate edges flagged SameParameter without validation
+- **Falsifiable claim**: Degenerate check returns false after setting SameParameter=true; inconsistent state
+- **Minimal reproducer**: Degenerate edge on compound geometry
+- **Search anchors**: 'Degenerated', 'SameParameter(true)', 'return false'
+
+##### `FIXSAMEPAR_TEMP_RANGE_LOSE` **[low-confidence]**
+- **Line**: 831  **Axis**: `PRECISION_LOSS`
+- **Brief**: TempSameRange on non-SameRange edges loses precision context
+- **Falsifiable claim**: TempSameRange(Precision::PConfusion()) may drop input tolerance info for later copyedge
+- **Minimal reproducer**: Edge with SameRange=false, tolerance >> PConfusion
+- **Search anchors**: 'TempSameRange', 'SameRange', 'Precision::PConfusion'
+
+##### `FIXSAMEPAR_COPYEDGE_RANGE_TRAP`
+- **Line**: 837  **Axis**: `PARAMETER_SYNC`
+- **Brief**: Copy constructor may alter 3D range; offset compensated but PCurves diverge
+- **Falsifiable claim**: ShapeBuild_Edge().Copy() changes 3D range; Range(aF, aL, true) only corrects 3D, not 2D
+- **Minimal reproducer**: Periodic 3D curve with copyedge offset and multi-surface PCurves
+- **Search anchors**: 'ShapeBuild_Edge().Copy', 'Range(aF, aL, true)', 'CopyPCurves'
+
+##### `FIXSAMEPAR_BRLIB_FAIL_MASK` **[low-confidence]**
+- **Line**: 852  **Axis**: `ERROR_CLASSIFICATION`
+- **Brief**: BRepLib::SameParameter failure not distinguished from input
+- **Falsifiable claim**: FAIL2 status on copyedge obscures whether input or algorithm failed
+- **Minimal reproducer**: Edge failing BRepLib::SameParameter on non-sameparametrized input
+- **Search anchors**: 'BRepLib::SameParameter', 'FAIL2', 'Exception'
+
+##### `FIXSAMEPAR_DEVIATION_CALC_SCOPE`
+- **Line**: 883  **Axis**: `INCOMPLETE_REPAIR`
+- **Brief**: CheckSameParameter scope ambiguity on non-wasSP edges
+- **Falsifiable claim**: aFace set to empty when !wasSP; deviation compared against incomplete PCurve set
+- **Minimal reproducer**: Non-SameParameter edge with multi-surface PCurves; CheckSameParameter on empty face
+- **Search anchors**: 'CheckSameParameter', 'aFace = anEmptyFace', '!wasSP'
+
+##### `FIXSAMEPAR_BRLIB_SELECTION_BIAS` **[low-confidence]**
+- **Line**: 900  **Axis**: `SELECTION_LOGIC`
+- **Brief**: BRepLib tolerance vs deviation comparison reversed logic
+- **Falsifiable claim**: BRLTol < maxdev selects BRepLib even when maxdev from original is acceptable
+- **Minimal reproducer**: Edge where original deviation < BRepLib tolerance but BRepLib selected
+- **Search anchors**: 'BRLTol < maxdev', 'chose the best result', 'BRepLib'
+
+##### `FIXSAMEPAR_VERTEX_TOL_ESCALATION`
+- **Line**: 915  **Axis**: `TOLERANCE_ESCALATION`
+- **Brief**: Vertex tolerance escalated to maxdev without floor check
+- **Falsifiable claim**: max(maxdev, TolFV) always >= TolFV; tolerance never decreases even if repair better
+- **Minimal reproducer**: Edge with high initial vertex tolerance; repair computes lower deviation
+- **Search anchors**: 'max(maxdev, TolFV)', 'SetTolerance', 'vertex'
+
+##### `FIXSAMEPAR_EDGE_TOL_UPDATE` **[low-confidence]**
+- **Line**: 924  **Axis**: `INCOMPLETE_REPAIR`
+- **Brief**: Edge tolerance updated only if deviation exceeds initial tolerance
+- **Falsifiable claim**: maxdev > tol condition may leave edge with insufficient tolerance when tol artificially low
+- **Minimal reproducer**: Edge with tolerance < true deviation; repair calculates higher maxdev but skips update
+- **Search anchors**: 'maxdev > tol', 'UpdateEdge', 'DONE1'
+
+
+#### `ShapeFix_Edge.FixVertexTolerance_at643`
+ (3 branches; 1 low-confidence; source: `v3-deep-batch-S.json`)
+
+##### `FIXVTOL643_CONTEXT_BYPASS`
+- **Line**: 647  **Axis**: `TOPOLOGY_PROPAGATION`
+- **Brief**: Context nullity may bypass shape graph updates
+- **Falsifiable claim**: CopyVertex when Context exists vs direct UpdateVertex; inconsistent propagation
+- **Minimal reproducer**: Face-less edge with Context but vertex tolerance escalation
+- **Search anchors**: 'Context().IsNull', 'CopyVertex', 'UpdateVertex'
+
+##### `FIXVTOL643_SHAPE_TYPE_CHECK` **[low-confidence]**
+- **Line**: 650  **Axis**: `TYPE_SAFETY`
+- **Brief**: Apply result shape type validation incomplete
+- **Falsifiable claim**: TopAbs_EDGE check passes null or non-edge shapes in edge contexts
+- **Minimal reproducer**: Context->Apply(edge) returns vertex or compound
+- **Search anchors**: 'ShapeType', 'TopAbs_EDGE', 'Apply'
+
+##### `FIXVTOL643_CHECK_FAIL`
+- **Line**: 659  **Axis**: `DEGENERATE_HANDLING`
+- **Brief**: CheckVertexTolerance failure returns without analysis
+- **Falsifiable claim**: Degenerate or colocated vertices skip tolerance computation
+- **Minimal reproducer**: Edge with degenerate vertex or zero-length span
+- **Search anchors**: 'CheckVertexTolerance', 'return false', 'face param'
+
+
+#### `ShapeFix_Edge.FixVertexTolerance_at690`
+ (2 branches; 1 low-confidence; source: `v3-deep-batch-S.json`)
+
+##### `FIXVTOL690_CONTEXT_BYPASS` **[low-confidence]**
+- **Line**: 694  **Axis**: `TOPOLOGY_PROPAGATION`
+- **Brief**: No-face variant bypasses context propagation identically
+- **Falsifiable claim**: Same context check as _at643; different tolerance computation path unclear
+- **Minimal reproducer**: Edge without face reference; Context exists
+- **Search anchors**: 'Context().IsNull', 'CheckVertexTolerance', 'no face'
+
+##### `FIXVTOL690_IMPLICIT_CHECK`
+- **Line**: 705  **Axis**: `INCOMPLETE_REPAIR`
+- **Brief**: Tolerance check without surface context may underestimate deviation
+- **Falsifiable claim**: CheckVertexTolerance(edge only) vs CheckVertexTolerance(edge, face) returns inconsistent tolerances
+- **Minimal reproducer**: Multi-surface edge; tolerance computed on first surface only
+- **Search anchors**: 'CheckVertexTolerance', 'single-arg overload', 'multi-surface'
 
 
 ### ShapeFix_Face
+
+#### `ShapeFix_Face.FixAddNaturalBound`
+ (5 branches; 3 low-confidence; source: `v3-deep-batch-G.json`)
+
+##### `FAN-001`
+- **Line**: 878  **Axis**: `null-safety`
+- **Brief**: Null surface guard; face rejected without modification
+- **Falsifiable claim**: Face is processed only when mySurf is non-null; null surface causes early return
+- **Minimal reproducer**: Load face with null surface handle into ShapeFix_Face, call FixAddNaturalBound
+- **Search anchors**: 'mySurf.IsNull()', 'return false'
+
+##### `FAN-002` **[low-confidence]**
+- **Line**: 908  **Axis**: `boundary-detection-gap`
+- **Brief**: Empty-wire face creation on infinite UV surface skipped; finite-surface substitution assumed
+- **Falsifiable claim**: Face without wires on finite surface creates new face via natural bounds; infinite surfaces rejected without action
+- **Minimal reproducer**: Face with zero wires on finite periodic surface (e.g., cylinder); Face with zero wires on infinite surface (e.g., plane)
+- **Search anchors**: 'ws.IsEmpty()', 'IsSurfaceUVInfinite'
+
+##### `FAN-003` **[low-confidence]**
+- **Line**: 942  **Axis**: `missing-boundary`
+- **Brief**: Helper predicate isNeedAddNaturalBound determines if wires need natural bound augmentation; false return aborts entire operation
+- **Falsifiable claim**: Natural bounds are added only when isNeedAddNaturalBound returns true; behavior depends on internal heuristic not validated
+- **Minimal reproducer**: Periodic surface with partial wire coverage where natural bounds should be added; observe when isNeedAddNaturalBound returns false vs true
+- **Search anchors**: 'isNeedAddNaturalBound', 'return false'
+
+##### `FAN-004`
+- **Line**: 967  **Axis**: `periodicity-conditional`
+- **Brief**: U-closure detection precondition for interval splitting; skipped on non-closed surfaces
+- **Falsifiable claim**: Intervals are cut only on U-closed surfaces; non-closed surfaces bypass interval update despite partial wire coverage
+- **Minimal reproducer**: Non-U-closed surface with wires at boundary; U-closed surface with equivalent geometry
+- **Search anchors**: 'IsUClosed()', 'CutInterval'
+
+##### `FAN-005` **[low-confidence]**
+- **Line**: 1030  **Axis**: `surface-type-dispatch`
+- **Brief**: Sphere-specific degenerate-edge merging; other surface types skip merging logic
+- **Falsifiable claim**: Degenerate edges at poles are merged with natural boundary only on spheres; toroidal/conical surfaces with similar geometry skip this step
+- **Minimal reproducer**: Sphere with pole hole and natural bound (observes merging); Torus with similar pole structure (skips merging)
+- **Search anchors**: 'GeomAbs_Sphere', 'ws.Length() == nb + 1'
+
+
+#### `ShapeFix_Face.FixLoopWire`
+ (9 branches; 5 low-confidence; source: `v3-deep-batch-G.json`)
+
+##### `FLW-001` **[low-confidence]**
+- **Line**: 2485  **Axis**: `loop-validation`
+- **Brief**: CheckLoop predicate analyzes wire connectivity; failure aborts all loop repairs
+- **Falsifiable claim**: Loop merging proceeds only if CheckLoop succeeds; malformed loop structures causing CheckLoop=false skip all repair logic
+- **Minimal reproducer**: Wire with disconnected edge chains; Wire with proper vertex connections
+- **Search anchors**: 'CheckLoop', 'aMapVertices'
+
+##### `FLW-002`
+- **Line**: 2506  **Axis**: `duplicate-detection`
+- **Brief**: Already-processed edge skip; prevents duplicate insertion into result
+- **Falsifiable claim**: Each edge is visited once; re-encountering an edge in aMapEdges skips its processing
+- **Minimal reproducer**: Wire where edge appears in multiple loops; proper loop where each edge appears once
+- **Search anchors**: 'aMapEdges.Contains', 'continue'
+
+##### `FLW-003`
+- **Line**: 2513  **Axis**: `orientation-handling`
+- **Brief**: Seem-edge reversing for dual-edge representation; non-seem-edges ignored
+- **Falsifiable claim**: Seem edges (seam/boundary edges) are added in reversed orientation; non-seem-edges skip reversal
+- **Minimal reproducer**: Periodic surface with seam edge; non-periodic surface without seam
+- **Search anchors**: 'aMapSeemEdges.Contains', 'Reversed()'
+
+##### `FLW-004` **[low-confidence]**
+- **Line**: 2526  **Axis**: `threshold-consistency`
+- **Brief**: Single-small-edge wire rejection; multi-edge wires accepted regardless of smallness
+- **Falsifiable claim**: Wires with exactly one edge and that edge is small are skipped; multi-edge wires continue even if first edge is small
+- **Minimal reproducer**: Wire with one tiny edge; Wire with two edges where first is tiny
+- **Search anchors**: 'NbEdges() == 1', 'aMapSmallEdges.Contains'
+
+##### `FLW-005`
+- **Line**: 2534  **Axis**: `wire-topology`
+- **Brief**: Closed-wire (loop) processing via FixReorder; open-wire fallback via direct appending
+- **Falsifiable claim**: Closed wires (V1=V2) are reordered before appending; open wires appended to sequence for later handling
+- **Minimal reproducer**: Wire with first vertex = last vertex (closed); Wire with distinct endpoints
+- **Search anchors**: 'aV1.IsSame(aV2)', 'FixReorder'
+
+##### `FLW-006`
+- **Line**: 2550  **Axis**: `cardinality-dispatch`
+- **Brief**: Single open-wire fast path; multi-wire joining logic skipped
+- **Falsifiable claim**: Single open wire is directly added to result; merging heuristics only invoked for multiple wires
+- **Minimal reproducer**: Open wire alone; Open wire among three others
+- **Search anchors**: 'aSeqWires.Length() == 1', 'aResWires.Append'
+
+##### `FLW-007` **[low-confidence]**
+- **Line**: 2568  **Axis**: `merge-greediness`
+- **Brief**: Two-common-vertex wire pair merging; single-common-vertex pairs deferred
+- **Falsifiable claim**: Wire pairs sharing both endpoints are merged immediately; pairs with one shared endpoint defer to second pass
+- **Minimal reproducer**: Two wires with endpoints (V1,V2) and (V1,V2); Two wires with endpoints (V1,V2) and (V1,V3)
+- **Search anchors**: 'aV1.IsSame(aV21) || aV1.IsSame(aV22)', 'aV2.IsSame'
+
+##### `FLW-008` **[low-confidence]**
+- **Line**: 2586  **Axis**: `cardinality-threshold`
+- **Brief**: Three-or-more-wire merging triggers single-endpoint heuristic; fewer wires appended unmerged
+- **Falsifiable claim**: Remaining 3+ wires undergo single-vertex merging; 2 wires skipped to result directly
+- **Minimal reproducer**: Three or more unconnected open wires; Two unconnected open wires
+- **Search anchors**: 'aSeqWires.Length() < 3', 'aSeqWires.Length()'
+
+##### `FLW-009` **[low-confidence]**
+- **Line**: 2627  **Axis**: `surface-type-conditional`
+- **Brief**: 2D-closure check skipped on plane surfaces; non-plane surfaces validated
+- **Falsifiable claim**: Non-plane surfaces check if result wires are closed in 2D parameter space; plane surfaces skip this check (assumed always closed)
+- **Minimal reproducer**: Sphere with result wires; Plane with result wires
+- **Search anchors**: 'GeomAbs_Plane', 'isClosed2D'
+
 
 #### `ShapeFix_Face.FixMissingSeam`
  (24 branches; 5 low-confidence; source: `v3-deep-ShapeFix_Face_FixMissingSeam.json`)
@@ -1076,6 +5998,120 @@ v3's bar: every branch's description is rich enough to either RECREATE the defec
 - **Falsifiable claim**: Without rebuild, myFace retains references to old wire objects even if their edge topology changed; context tracking and downstream operations see stale geometry. To test: reverse wire, don't rebuild; myFace.EmptyCopied() still references original wire; downstream operations reference old edges.
 - **Minimal reproducer**: STEP: any face triggering done=true (e.g., single wire reversal). Trigger FixOrientation(). Without rebuild: myFace still references original ws.Value(1) even though it was replaced in ws via sewd.Wire(). With rebuild: S=myFace.EmptyCopied(), B.Add(S, ws.Value(i)) for all i, myFace=TopoDS::Face(S); BRepTools::Update(myFace) ensures topology is current.
 - **Search anchors**: 'if (done)', 'TopoDS_Shape S = myFace.EmptyCopied()', 'B.Add(S, ws.Value(i))', 'BRepTools::Update(myFace)'
+
+
+#### `ShapeFix_Face.FixSmallAreaWire`
+ (4 branches; 2 low-confidence; source: `v3-deep-batch-G.json`)
+
+##### `FSA-001`
+- **Line**: 2350  **Axis**: `shape-type-filter`
+- **Brief**: Wire shape-type validation; non-WIRE or invalid-orientation shapes skip analysis
+- **Falsifiable claim**: Small-area check applied only to WIRE shapes with FORWARD/REVERSED orientation; other sub-shapes silently skipped
+- **Minimal reproducer**: Face with EDGE sub-shape directly; Face with shell sub-shape; Wire with INTERNAL orientation
+- **Search anchors**: 'ShapeType() != TopAbs_WIRE', 'Orientation() != TopAbs_FORWARD'
+
+##### `FSA-002` **[low-confidence]**
+- **Line**: 2359  **Axis**: `numerical-threshold`
+- **Brief**: CheckSmallArea predicate identifies zero-area wires; false negative risk on near-zero but positive areas
+- **Falsifiable claim**: Wires with area below tolerance are removed; wires with slightly positive area near tolerance threshold retained
+- **Minimal reproducer**: Wire with area = 0.5 * tolerance; Wire with area = 1.1 * tolerance
+- **Search anchors**: 'CheckSmallArea', 'anAnalyzer'
+
+##### `FSA-003`
+- **Line**: 2372  **Axis**: `idempotence`
+- **Brief**: No-removal early exit if zero small-area wires detected; context unchanged
+- **Falsifiable claim**: Method returns false without context replacement when nbRemoved <= 0; face state unmodified
+- **Minimal reproducer**: Face with all wires passing small-area check
+- **Search anchors**: 'nbRemoved <= 0', 'return false'
+
+##### `FSA-004` **[low-confidence]**
+- **Line**: 2377  **Axis**: `state-management`
+- **Brief**: All-wires-removed face disposal conditional on parameter and context presence
+- **Falsifiable claim**: Face is removed from context only when theIsRemoveSmallFace=true AND context exists; otherwise face disappears from topology without cleanup
+- **Minimal reproducer**: Face with only small-area wires, theIsRemoveSmallFace=false, non-null context
+- **Search anchors**: 'nbWires <= 0', 'theIsRemoveSmallFace'
+
+
+#### `ShapeFix_Face.FixWiresTwoCoincEdges`
+ (4 branches; 1 low-confidence; source: `v3-deep-batch-G.json`)
+
+##### `FWC-001`
+- **Line**: 2846  **Axis**: `shape-type-filter`
+- **Brief**: Wire shape-type and orientation validation; invalid shapes skipped
+- **Falsifiable claim**: Only WIRE shapes with FORWARD/REVERSED orientation are checked for coincident-edge pattern; other sub-shapes bypass logic
+- **Minimal reproducer**: Face with EDGE sub-shape; Face with shell sub-shape; Wire with INTERNAL orientation
+- **Search anchors**: 'ShapeType() != TopAbs_WIRE', 'Orientation()'
+
+##### `FWC-002`
+- **Line**: 2854  **Axis**: `cardinality-check`
+- **Brief**: Pre-check: fewer than 2 wires returns early; single-wire faces skip entire method
+- **Falsifiable claim**: Coincident-edge merging only occurs on multi-wire faces; single-wire faces return false immediately
+- **Minimal reproducer**: Face with one wire; Face with two wires
+- **Search anchors**: 'nbWires < 2', 'return false'
+
+##### `FWC-003`
+- **Line**: 2870  **Axis**: `cardinality-dispatch`
+- **Brief**: Two-edge-per-wire check gates coincident-edge detection; other wire sizes skip pattern
+- **Falsifiable claim**: Coincident-edge pattern (E1 == E2) only checked on wires with exactly 2 edges; 1-edge or 3+-edge wires added unmodified
+- **Minimal reproducer**: Wire with 2 identical edges; Wire with 3 edges where first two identical
+- **Search anchors**: 'NbEdges() == 2'
+
+##### `FWC-004` **[low-confidence]**
+- **Line**: 2876  **Axis**: `orientation-sensitivity`
+- **Brief**: Edge-identity check (E1 == E2) at FORWARD orientation; orientation mismatch or non-identical edges skipped
+- **Falsifiable claim**: Wires are merged only when both edges are identical at FORWARD orientation; same edge at different orientations or distinct edges are not merged
+- **Minimal reproducer**: Wire with [E, E] at FORWARD; Wire with [E, E.Reversed()]; Wire with [E1, E2]
+- **Search anchors**: '!(E1 == E2)', 'E1.Orientation(TopAbs_FORWARD)'
+
+
+#### `ShapeFix_Face.SplitEdge_at2653`
+ (3 branches; 2 low-confidence; source: `v3-deep-batch-G.json`)
+
+##### `SPE-001`
+- **Line**: 2657  **Axis**: `split-validation`
+- **Brief**: Edge split success predicate gates context update and geometry recomputation
+- **Falsifiable claim**: Edge is split and wire/bounding-box state updated only on successful aTool.SplitEdge; failed splits return false and skip all updates
+- **Minimal reproducer**: Edge with invalid split parameter (out of range); Edge with valid split parameter within parametric range
+- **Search anchors**: 'aTool.SplitEdge', 'if'
+
+##### `SPE-002` **[low-confidence]**
+- **Line**: 2696  **Axis**: `curve-type-handling`
+- **Brief**: BSpline-curve extended-parameter handling for segment bounding-box safety
+- **Falsifiable claim**: BSpline curves load without parameter clipping to avoid segment evaluation issues; non-BSpline curves clipped to (cf, cl) range
+- **Minimal reproducer**: BSpline 2d-curve with cf < FirstParameter; Non-BSpline 2d-curve with cf < FirstParameter
+- **Search anchors**: 'IsKind(STANDARD_TYPE(Geom2d_BSplineCurve))', 'gac.Load'
+
+##### `SPE-003` **[low-confidence]**
+- **Line**: 2690  **Axis**: `error-handling`
+- **Brief**: PCurve extraction failure silently skips bounding-box binding for new edge
+- **Falsifiable claim**: New edges with extractable pcurves receive bounding boxes; edges where PCurve fails silently omit box binding
+- **Minimal reproducer**: Edge with valid pcurve representation; Edge with degenerate pcurve
+- **Search anchors**: 'sae.PCurve', 'if', 'boxes.Bind'
+
+
+#### `ShapeFix_Face.SplitEdge_at2741`
+ (3 branches; 2 low-confidence; source: `v3-deep-batch-G.json`)
+
+##### `SPE2-001`
+- **Line**: 2745  **Axis**: `split-validation`
+- **Brief**: Two-parameter edge split (param1, param2) gates all downstream updates
+- **Falsifiable claim**: Edge split and wire state updated only on successful split between two parameters; failed splits return false without modification
+- **Minimal reproducer**: Edge with param1=param2 (degenerate); Edge with param1 < param2 within parametric range
+- **Search anchors**: 'aTool.SplitEdge', 'param1, param2'
+
+##### `SPE2-002` **[low-confidence]**
+- **Line**: 2784  **Axis**: `curve-type-handling`
+- **Brief**: BSpline-curve extended-parameter handling identical to SplitEdge_at2653 variant
+- **Falsifiable claim**: BSpline curves load full domain; other curves clip to evaluation range (cf, cl)
+- **Minimal reproducer**: BSpline 2d-curve vs non-BSpline 2d-curve with extended cf/cl
+- **Search anchors**: 'IsKind(STANDARD_TYPE(Geom2d_BSplineCurve))', 'gac.Load'
+
+##### `SPE2-003` **[low-confidence]**
+- **Line**: 2778  **Axis**: `error-handling`
+- **Brief**: PCurve extraction failure silently omits bounding-box for split products
+- **Falsifiable claim**: Split edges with valid pcurves receive bounding boxes; extraction failures skip box binding
+- **Minimal reproducer**: Split edge with valid surface pcurve; Split edge with degenerate pcurve
+- **Search anchors**: 'sae.PCurve', 'boxes.Bind'
 
 
 ### ShapeFix_FaceConnect
@@ -1359,6 +6395,66 @@ v3's bar: every branch's description is rich enough to either RECREATE the defec
 
 ### ShapeFix_FixSmallFace
 
+#### `ShapeFix_FixSmallFace.ComputeSharedEdgeForStripFace`
+ (8 branches; 1 low-confidence; source: `v3-deep-batch-K.json`)
+
+##### `SHARED-001`
+- **Line**: 442-474  **Axis**: `endpoint-pair merging asymmetry`
+- **Brief**: Vertex-proximity branch: V1 vs V3 distance test; V1 vs V4 deferred, asymmetry
+- **Falsifiable claim**: If dev(V1,V3) <= tol, vertices V1 and V3 are merged; then V2 vs V4 checked independently using same tolerance semantics
+- **Minimal reproducer**: Edges E1=(V1,V2), E2=(V3,V4); dev(V1,V3)=0.0001 (< tol), dev(V2,V4)=1.0 (> tol); V1 merged to V3 but V2 remains unmerged, creating degenerate edge with one matched vertex and one unmatched
+- **Search anchors**: 'dev <= BRep_Tool::Tolerance(V1)', 'dev <= tol', 'else if (!V2.IsSame(V4))'
+
+##### `SHARED-002`
+- **Line**: 444-474  **Axis**: `tolerance scaling on merged vertices`
+- **Brief**: V1 IsSame V3 branch: direct assignment bypasses tolerance update; orphans theFirstVer
+- **Falsifiable claim**: If V1.IsSame(V3), theFirstVer = V1 skips tolerance scaling; subsequently, theFirstVer tolerance unchanged even if V1 tolerance < F1 adjacent-edge tolerance
+- **Minimal reproducer**: E1, E2 share endpoint V (V1=V3=V); V tolerance = 0.001; F1 edge tolerance = 0.01; theFirstVer = V (not scaled); shared edge created with tolerance 0.001 < F1 edges (0.01), causing inconsistency
+- **Search anchors**: 'if (V1.IsSame(V3))', 'theFirstVer = V1', 'UpdateVertex(theFirstVer'
+
+##### `SHARED-003`
+- **Line**: 475-498  **Axis**: `degenerate-edge handling`
+- **Brief**: V1 IsSame V2 or V3 IsSame V4 check misdirected; mid-vertex merging
+- **Falsifiable claim**: If V1 IsSame V2 (degenerate E1) or V3 IsSame V4 (degenerate E2), theSecondVer assigned to theFirstVer; preserves degeneracy semantics
+- **Minimal reproducer**: E1 degenerate (V1=V2), E2 normal (V3!=V4); condition at 475 true, theSecondVer = theFirstVer; but V3, V4 not yet processed for merging (only V1 was); creates shared edge with end-points (V1, V1) not reflecting (V3, V4) reduction
+- **Search anchors**: 'if (V1.IsSame(V2) || V3.IsSame(V4))', 'theSecondVer = theFirstVer'
+
+##### `SHARED-004` **[low-confidence]**
+- **Line**: 519-608  **Axis**: `branch-logic coherence`
+- **Brief**: Dual-vertex-pair branch structure; condition at 523 replicates 442 logic, creating code-path inconsistency
+- **Falsifiable claim**: The else branch at 519 (dev(V1,V3) > tol) correctly tests dev(V1,V4) at 523; subsequent vertex merging (V1,V4) and (V2,V3) follows same semantics as 442-474 branch
+- **Minimal reproducer**: E1=(V1,V2), E2=(V3,V4); dev(V1,V3)>tol, dev(V1,V4)<=tol (branch 519); merges V1<->V4 and checks V2 vs V3; but previous branch merged V2 vs V4; condition logic differs slightly (V2.IsSame(V3) vs V2.IsSame(V4)), leading to different decision trees
+- **Search anchors**: 'else {', 'p2 = BRep_Tool::Pnt(V4)', 'dev = p1.Distance(p2)'
+
+##### `SHARED-005`
+- **Line**: 609-612  **Axis**: `error propagation`
+- **Brief**: Null-vertex guard; returns null-edge if theFirstVer or theSecondVer null (silent failure path)
+- **Falsifiable claim**: If theFirstVer or theSecondVer is null after vertex merging, returning empty theNewEdge is correct (caller checks IsNull and skips replacement)
+- **Minimal reproducer**: Edge pair where vertex merging fails (e.g., tolerance logic produces null vertices); function returns null theNewEdge; caller ReplaceInCaseOfStrip checks IsNull, returns false; face not replaced but strip-removal not aborted
+- **Search anchors**: 'if (theFirstVer.IsNull() || theSecondVer.IsNull())', 'return theNewEdge'
+
+##### `SHARED-006`
+- **Line**: 614-663  **Axis**: `curve-range consistency`
+- **Brief**: New edge construction; 3D curve reused from E1 without reparametrization check
+- **Falsifiable claim**: Edge theNewEdge created with 3D curve from E1 (f,l range), and if F1 present, pcurve computed via GeomLib::SameRange; pcurve range matches 3D range (f,l)
+- **Minimal reproducer**: E1 parametrized (f=0, l=1), E2 parametrized (f=5, l=10); shared edge uses E1 curve (f=0,l=1) but F1 expects (f=5,l=10); GeomLib::SameRange reparametrizes F1 pcurve, but 3D curve remains (0,1), creating mismatch
+- **Search anchors**: 'the3dcurve = BRep_Tool::Curve(E1', 'GeomLib::SameRange', 'theBuilder.Range(theNewEdge'
+
+##### `SHARED-007`
+- **Line**: 620-627  **Axis**: `range-match precision`
+- **Brief**: pcurve reparametrization conditional (fp1 != f && lp1 != l); partial mismatch not handled
+- **Falsifiable claim**: pcurve reparametrization via GeomLib::SameRange called only if both fp1 != f AND lp1 != l; partial range mismatch (fp1=f but lp1!=l) skips reparametrization
+- **Minimal reproducer**: E1 (f=0,l=1), F1 pcurve (fp1=0, lp1=1); condition false, SameRange skipped; edge later queried with (0,1) range but F1 still expects (0,1)—happens to work but logic is brittle
+- **Search anchors**: 'if (!the2dcurve1.IsNull() && fp1 != f && lp1 != l)', 'GeomLib::SameRange'
+
+##### `SHARED-008`
+- **Line**: 637-656  **Axis**: `tolerance conservatism`
+- **Brief**: Edge tolerance computed from endpoint tolerance min (not max); adjacent edges may have larger tolerance
+- **Falsifiable claim**: theNewEdge tolerance set to min(tol(theFirstVer), tol(theSecondVer)); all 3D points on theNewEdge fit within this tolerance band
+- **Minimal reproducer**: theFirstVer tol=0.01, theSecondVer tol=0.001; maxdev = 0.001; adjacent edges on F1 expect tolerance 0.01 for curve continuity; theNewEdge with 0.001 may cause false discontinuity detection
+- **Search anchors**: 'if ((BRep_Tool::Tolerance(theFirstVer))', 'maxdev = (BRep_Tool::Tolerance(theSecondVer))'
+
+
 #### `ShapeFix_FixSmallFace.FixPinFace`
  (0 branches; source: `v3-deep-ShapeFix_FixSmallFace_FixPinFace.json`)
 
@@ -1368,6 +6464,152 @@ v3's bar: every branch's description is rich enough to either RECREATE the defec
 - Intended defect class (if implemented): `ShapeFix_FixSmallFace.FixPinFace.UNIMPLEMENTED.pin_face_repair`
 - Falsifiable claim: If implemented, this method would remove or repair faces with 'pin' singularities (pole-collapsed NURBS edges where one row of control points degenerates to a point). Currently it returns true without modifying the shape. Calling ShapeFix_FixSmallFace::FixShape processes spot and strip faces but skips all FixPinFace logic — pin-face fixtures in regression catalogs exercise detection (CheckPin/CheckPinFace) but no actual kernel repair. A kernel-grading consumer should treat pin-face test fixtures
 - Minimal reproducer: Construct an ADVANCED_FACE with a BSpline surface where one boundary row of poles has collapsed (e.g. all U=umax poles at identical (x,y,z) in 3D space). This represents a topological singularity or 'pin' — the face has infinite curvature at one edge. The face will pass CheckPin()==true and CheckPinFace() will identify the two edges adjacent to the pin. Call ShapeFix_FixSmallFace::FixShape(). Without an implemented FixPinFace: the pin face survives unchanged (only Spot and Strip repairs are appl
+
+
+#### `ShapeFix_FixSmallFace.FixSplitFace`
+ (2 branches; 1 low-confidence; source: `v3-deep-batch-K.json`)
+
+##### `SPLIT-001` **[low-confidence]**
+- **Line**: 685-698  **Axis**: `post-split topology validity`
+- **Brief**: Shape-type filter; no per-face null-check after split replacement
+- **Falsifiable claim**: SplitOneFace returns true, Context()->Replace replaces F with CompSplittedFaces; all sub-faces in CompSplittedFaces are non-null and topologically valid
+- **Minimal reproducer**: Face F splits into two faces F1, F2; F1 null after internal operation; CompSplittedFaces contains null; Context()->Replace propagates null into myShape
+- **Search anchors**: 'if (SplitOneFace(F, CompSplittedFaces))', 'Context()->Replace(F, CompSplittedFaces)'
+
+##### `SPLIT-002`
+- **Line**: 700-706  **Axis**: `failure granularity`
+- **Brief**: Status encoding deferred to after all splits; cascading failures not individually marked
+- **Falsifiable claim**: If any SplitOneFace returns true, done=true and myStatus set to DONE3 once; partial failures (some faces split, some not) both reported as done
+- **Minimal reproducer**: Face F1 splits successfully (done=true), face F2 split fails; status set DONE3, but F2 remains unsplit; caller unaware of partial failure
+- **Search anchors**: 'if (done)', 'myStatus = ShapeExtend::EncodeStatus(ShapeExtend_DONE3)'
+
+
+#### `ShapeFix_FixSmallFace.FixSpotFace`
+ (3 branches; 1 low-confidence; source: `v3-deep-batch-K.json`)
+
+##### `SPOT-001`
+- **Line**: 87-88  **Axis**: `topology consistency`
+- **Brief**: Shape type check misses intermediate topologies
+- **Falsifiable claim**: All shapes that enter FixSpotFace with type COMPOUND/SHELL/FACE will have faces discoverable via explorer iteration without null-apply gaps
+- **Minimal reproducer**: Feed compound with nested null-result after context apply; explorer returns stale shapes
+- **Search anchors**: 'Context()->Apply', 'TopExp_Explorer itf', 'IsNull()'
+
+##### `SPOT-002`
+- **Line**: 99-105  **Axis**: `vertex replacement coherence across wires`
+- **Brief**: Spot detection + replacement not atomic; topology diverges mid-transaction
+- **Falsifiable claim**: CheckSpotFace returns true and ReplaceVerticesInCaseOfSpot succeeds, then RemoveFacesInCaseOfSpot always succeeds without residual dangling references
+- **Minimal reproducer**: Spot face with multi-wire; vertex replacement into one wire leaves orphan edges in second wire
+- **Search anchors**: 'ReplaceVerticesInCaseOfSpot', 'RemoveFacesInCaseOfSpot', 'Context()->Replace'
+
+##### `SPOT-003` **[low-confidence]**
+- **Line**: 108-128  **Axis**: `edge-wire consistency`
+- **Brief**: Wire-fixing deferred; orphaned geometry before FixShape called
+- **Falsifiable claim**: After vertex replacement of spot face, shape is immediately valid for FixShape without missing pcurves or inverted wire orders
+- **Minimal reproducer**: Spot face with seam edge; vertex collapsed but seam topology not recomputed until FixShape
+- **Search anchors**: 'FixShape()', 'ShapeFix_Wire', 'sfw->FixNotchedEdgesMode'
+
+
+#### `ShapeFix_FixSmallFace.FixStripFace`
+ (4 branches; 1 low-confidence; source: `v3-deep-batch-K.json`)
+
+##### `STRIP-001`
+- **Line**: 252-267  **Axis**: `shape consistency post-deletion`
+- **Brief**: Strip detection iterator may skip null-apply faces; topology inconsistency cascades
+- **Falsifiable claim**: All faces in myShape after Context()->Apply are non-null and have identical topology to pre-apply state, except deleted faces
+- **Minimal reproducer**: Shell with strip face; after first strip removal, remaining faces have stale cached edges in myShape
+- **Search anchors**: 'Context()->Apply(F)', 'F.IsNull()', 'CheckStripFace'
+
+##### `STRIP-002`
+- **Line**: 270-278  **Axis**: `failure atomicity`
+- **Brief**: Strip replacement and face removal not guarded; orphan edges if ReplaceInCaseOfStrip fails
+- **Falsifiable claim**: RemoveFacesInCaseOfStrip called only if ReplaceInCaseOfStrip succeeds; no face removal without edge replacement
+- **Minimal reproducer**: Strip face with E1, E2 on separate boundary components; ReplaceInCaseOfStrip returns false but RemoveFacesInCaseOfStrip still called
+- **Search anchors**: 'if (ReplaceInCaseOfStrip(F, E1, E2', 'RemoveFacesInCaseOfStrip(F)'
+
+##### `STRIP-003`
+- **Line**: 282-294  **Axis**: `iterator safety during modification`
+- **Brief**: Empty shell removal during face iteration; iterator invalidation risk
+- **Falsifiable claim**: Removing empty shells mid-iteration over exp_s does not invalidate shell explorer state or skip unvisited shells
+- **Minimal reproducer**: Shell containing N sub-shells; k-th sub-shell becomes empty after strip-face removal; Context()->Remove invalidates iterator, skips shells k+1..N
+- **Search anchors**: 'TopExp_Explorer exp_s(myShape, TopAbs_SHELL)', 'Context()->Remove(Sh)', 'exp_s.More()'
+
+##### `STRIP-004` **[low-confidence]**
+- **Line**: 295-306  **Axis**: `pcurve consistency`
+- **Brief**: FixShape deferred; pcurves missing until late pass
+- **Falsifiable claim**: After edge-replacement in strip removal, edge has valid pcurve on all adjacent faces before myShape re-applied
+- **Minimal reproducer**: Strip face removes 2-edge; shared edge created but not linked to adjacent-face surface; FixShape must later compute pcurve
+- **Search anchors**: 'FixShape()', 'if (done)', 'Fixing of missing pcurves'
+
+
+#### `ShapeFix_FixSmallFace.ReplaceInCaseOfStrip`
+ (5 branches; 1 low-confidence; source: `v3-deep-batch-K.json`)
+
+##### `STRIP-REP-001`
+- **Line**: 317-319  **Axis**: `input validation`
+- **Brief**: Early return on null edges; asymmetric edge replacement not checked
+- **Falsifiable claim**: If E1 or E2 is null, function returns false immediately without modifying topology; caller sees false and does not proceed
+- **Minimal reproducer**: CheckStripFace incorrectly identifies E1=null, E2=valid; ReplaceInCaseOfStrip early-returns but E2 already registered in strip-detection logic
+- **Search anchors**: 'if (E1.IsNull() || E2.IsNull())', 'return false'
+
+##### `STRIP-REP-002`
+- **Line**: 326-351  **Axis**: `adjacent-face symmetry`
+- **Brief**: Adjacent-face search may fail to locate F1/F2; shared edge computed without adjacent context
+- **Falsifiable claim**: For strip face F with edges E1, E2, adjacent faces F1 (if E1 used) and F2 (if E2 used) are always found or both null, never one-null
+- **Minimal reproducer**: Strip face F on boundary; E1 used by exterior shell boundary only (no adjacent face); search sets F1=null but E2 used by interior face (F2 found); asymmetric state leads to wrong edge orientation
+- **Search anchors**: 'for (TopExp_Explorer expf(myShape', 'if (tempE.IsSame(E1))', 'F1 = tempF'
+
+##### `STRIP-REP-003`
+- **Line**: 354-366  **Axis**: `edge-face semantic consistency`
+- **Brief**: Asymmetric edge discovery logic; swapped E1/E2 loses semantic pairing
+- **Falsifiable claim**: If F1 null, swap E1<->E2 and E1tmp<->E2tmp, making E1tmp always associated with F1; semantic pairing preserved in ComputeSharedEdgeForStripFace
+- **Minimal reproducer**: Strip face F with E1 on interior boundary and E2 on exterior (no F2); after swap, E2tmp becomes E1tmp; ComputeSharedEdgeForStripFace receives edge-pairing (E1tmp, E2tmp) but (F, E1tmp, F1) semantics already violated
+- **Search anchors**: 'if (F1.IsNull())', 'E1tmp = E2; E2tmp = E1; F1 = F2'
+
+##### `STRIP-REP-004`
+- **Line**: 372-395  **Axis**: `multi-face edge orientation`
+- **Brief**: Orientation replacement logic branches on E1 orientation; F orientation cross-product unsafe
+- **Falsifiable claim**: Edge orientation (FWD/REV) combined with face-pair orientation equality yields consistent replacement orientation in both branches
+- **Minimal reproducer**: E1 reversed, F and F1 opposite orientation; branch (else) at 384 compares F.Orientation() == F1.Orientation() = false, replaces E2tmp with theSharedEdge; but E1tmp already replaced with reversed in 374, creating crossed orientations on shared edge
+- **Search anchors**: 'if (E1.Orientation() == TopAbs_REVERSED)', 'Context()->Replace(E1tmp', 'F.Orientation() == F1.Orientation()'
+
+##### `STRIP-REP-005` **[low-confidence]**
+- **Line**: 398-405  **Axis**: `edge-removal consistency`
+- **Brief**: Short-edge removal by exclusion; intermediate edges dropped if not E1tmp/E2tmp
+- **Falsifiable claim**: Removing all edges except E1tmp, E2tmp correctly replaces E1, E2 and leaves no dangling short edges in F
+- **Minimal reproducer**: Strip face F with 4 edges: short-a, E1 (long), short-b, E2 (long); after replace, E1tmp and E2tmp installed; removal loop removes short-a and short-b; but if short-a duplicates endpoint with E1tmp, geometry may snap inconsistently
+- **Search anchors**: 'for (TopExp_Explorer exp_e(F', 'shortedge.IsSame(E1tmp)', 'Context()->Remove(shortedge)'
+
+
+#### `ShapeFix_FixSmallFace.ReplaceVerticesInCaseOfSpot`
+ (4 branches; source: `v3-deep-batch-K.json`)
+
+##### `SPOT-VRT-001`
+- **Line**: 152-169  **Axis**: `face-wire-edge consistency`
+- **Brief**: Wire existence check insufficient; orphaned edges post-removal
+- **Falsifiable claim**: If isWir=true after iterator over F, all edges of F belong to exactly one wire and no dangling edges exist
+- **Minimal reproducer**: Face with edge not in wire topology; isWir=true but edge explorer returns edge not in wire list
+- **Search anchors**: 'TopoDS_Iterator itw', 'TopAbs_WIRE', 'isWir = true'
+
+##### `SPOT-VRT-002`
+- **Line**: 171-192  **Axis**: `precision preservation`
+- **Brief**: Tolerance-biased vertex averaging; position drift at precision boundary
+- **Falsifiable claim**: Mean position computed from vertices [1..n] without tolerance weighting preserves geometric intent when vertices differ by max-tol/2
+- **Minimal reproducer**: Spot face with one vertex at tol=0.001 and another at tol=0.0001; mean position lies outside min envelope
+- **Search anchors**: 'theMaxTol = BRep_Tool::Tolerance(V)', 'thePosition /= theNbPos', 'Modulus()'
+
+##### `SPOT-VRT-003`
+- **Line**: 207-209  **Axis**: `tolerance closure`
+- **Brief**: Tolerance computed as max-deviation-scaled; aliasing at discontinuities
+- **Falsifiable claim**: Shared vertex with tolerance theMaxDev + theMaxTol/2 encloses all original vertices within its ball
+- **Minimal reproducer**: Vertices with deviations [0.1, 0.1, 0.1] and tol [0.05]; max-dev scaled 1.00001 gives 0.100001; final tol= 0.100001 + 0.025 but one vertex at distance ~0.1 + tol offset rejected
+- **Search anchors**: 'theMaxDev *= 1.00001', 'theMaxDev + theMaxTol / 2', 'theBuilder.UpdateVertex'
+
+##### `SPOT-VRT-004`
+- **Line**: 214-230  **Axis**: `orientation coherence`
+- **Brief**: Orientation-aware replacement inconsistent; forward/reversed not validated
+- **Falsifiable claim**: Each vertex orientation (FWD/REV) in Context()->Replace maps to distinct oriented copy; no aliasing
+- **Minimal reproducer**: Spot face with two edges sharing vertex; one edge uses vertex-FWD, other vertex-REV; after replace, both point to same underlying vertex with conflicting orientations
+- **Search anchors**: 'Oriented(TopAbs_FORWARD)', 'Oriented(TopAbs_REVERSED)', 'Context()->Replace(V, theNewVertex)'
 
 
 ### ShapeFix_IntersectionTool
@@ -1591,6 +6833,45 @@ v3's bar: every branch's description is rich enough to either RECREATE the defec
 - **Falsifiable claim**: Without this break, reprocessing modified edges could cause infinite loops or redundant splits. To test: track loop iterations before/after modification; verify count reduction.
 - **Minimal reproducer**: Construct multi-edge wire triggering multiple splits in sequence. Without break: inner loop reprocesses newly-split edges, causing O(n³) behavior. With break: breaks after each split, maintaining O(n²).
 - **Search anchors**: 'num1--; break', 'loop termination after modification'
+
+
+#### `ShapeFix_IntersectionTool.SplitEdge2`
+ (5 branches; 1 low-confidence; source: `v3-deep-batch-A.json`)
+
+##### `ShapeFix_IntersectionTool.SplitEdge2.midpoint-split`
+- **Line**: ShapeFix_IntersectionTool.cxx:379  **Axis**: `tolerance`
+- **Brief**: Initiates split at midpoint between two parameters, creating two edge fragments.
+- **Falsifiable claim**: Without midpoint choice, parameter mapping between original and split edge fragments is inconsistent. To test: split at arbitrary point; without midpoint, CutEdge references param1/param2 on wrong fragments.
+- **Minimal reproducer**: Edge with param1=0.2, param2=0.8. SplitEdge2(...) splits at 0.5. Without midpoint: CutEdge applied to fragments may use params on wrong edge. With midpoint: param mapping is symmetric and unambiguous.
+- **Search anchors**: 'param = (param1 + param2) / 2', 'SplitEdge'
+
+##### `ShapeFix_IntersectionTool.SplitEdge2.pcurve-endpoint-detection`
+- **Line**: ShapeFix_IntersectionTool.cxx:393  **Axis**: `encoding`
+- **Brief**: Determines which fragment is which by comparing PCurve endpoints to midpoint parameter.
+- **Falsifiable claim**: Without endpoint detection, param1 and param2 cuts are applied to wrong fragments, creating wrong trim. To test: split with lp1 != param; without detection, cuts inverted.
+- **Minimal reproducer**: Split edge with newE1.lp1 = param. Without endpoint check: param1 applied to newE2 (wrong). With check: correctly routes param1/param2 to newE1/newE2.
+- **Search anchors**: 'lp1 == param', 'fp1', 'lp1', 'else'
+
+##### `ShapeFix_IntersectionTool.SplitEdge2.param-orientation-swap`
+- **Line**: ShapeFix_IntersectionTool.cxx:395  **Axis**: `encoding`
+- **Brief**: Swaps param1 and param2 cuts between fragments if parameter orientation is reversed.
+- **Falsifiable claim**: Without swap, parameter order is ignored, applying cuts to wrong domain sections. To test: PCurve orientation opposite to expected; without swap, cuts applied backwards.
+- **Minimal reproducer**: Split result: newE1.fp1 > newE1.lp1 (reversed param). CutEdge param1, param2. Without swap: cuts applied in natural order to reversed domain (wrong trim). With swap: cuts respect reversed orientation.
+- **Search anchors**: '(lp1 - fp1) * (lp1 - param1) > 0', 'CutEdge', 'param2', 'param1'
+
+##### `ShapeFix_IntersectionTool.SplitEdge2.context-replacement`
+- **Line**: ShapeFix_IntersectionTool.cxx:426  **Axis**: `healer-state`
+- **Brief**: Replaces original edge with split result in the context for downstream operations.
+- **Falsifiable claim**: Without context replacement, original edge is still referenced, causing stale geometry in subsequent repair steps. To test: downstream operations on original edge; without replacement, they ignore split.
+- **Minimal reproducer**: Call SplitEdge2, then perform subsequent wire repair. Without context replacement: downstream uses original (unsplit) edge. With replacement: downstream sees split result.
+- **Search anchors**: 'myContext->Replace', 'wd->Wire', 'edge'
+
+##### `ShapeFix_IntersectionTool.SplitEdge2.edge-update-call` **[low-confidence]**
+- **Line**: ShapeFix_IntersectionTool.cxx:433  **Axis**: `healer-state`
+- **Brief**: Calls BRepTools::Update on each split edge fragment to refresh cached geometry.
+- **Falsifiable claim**: Without update, cached edge data (bounds, curves) becomes stale relative to new geometry. To test: access edge bounds after split; without update, old bounds returned.
+- **Minimal reproducer**: SplitEdge2 produces newE1, newE2. Without BRepTools::Update: newE1.Bounds may return original edge range. With update: newE1.Bounds reflects actual fragment domain.
+- **Search anchors**: 'BRepTools::Update', 'topology refresh'
 
 
 ### ShapeFix_IntersectionTool::FixIntersectingWires
@@ -1951,6 +7232,622 @@ v3's bar: every branch's description is rich enough to either RECREATE the defec
 
 ### ShapeFix_Wire
 
+#### `ShapeFix_Wire.ClearModes`
+ (1 branches; source: `v3-deep-batch-Q.json`)
+
+##### `ClearModes.1`
+- **Line**: 168  **Axis**: `INITIALIZATION_CONSISTENCY`
+- **Brief**: No branches — pure initialization block
+- **Falsifiable claim**: All mode flags reset to specified default states (boolean or -1 for tri-state)
+- **Minimal reproducer**: Call ClearModes(); verify myTopoMode==false, myGeomMode==true, myFixReorderMode==-1
+- **Search anchors**: 'myTopoMode = false', 'myFixRemoveLoopMode = -1', 'myFixTailMode = 0'
+
+
+#### `ShapeFix_Wire.FixClosed`
+ (4 branches; source: `v3-deep-batch-Q.json`)
+
+##### `FixClosed.1`
+- **Line**: 1308  **Axis**: `PRECONDITION_VALIDATION`
+- **Brief**: Guard: unloaded or zero-edge wire
+- **Falsifiable claim**: !IsLoaded() || NbEdges()<1 → return false
+- **Minimal reproducer**: Call FixClosed(prec) on empty or unloaded wire; expect false
+- **Search anchors**: '!IsLoaded() || NbEdges() < 1', 'return false'
+
+##### `FixClosed.2`
+- **Line**: 1312  **Axis**: `SUBMETHOD_STATUS_PROPAGATION`
+- **Brief**: FixConnected result status branching
+- **Falsifiable claim**: LastFixStatus(DONE) → encode DONE1; LastFixStatus(FAIL) → encode FAIL1
+- **Minimal reproducer**: FixConnected produces DONE or FAIL; verify status flags match
+- **Search anchors**: 'FixConnected(1, prec)', 'ShapeExtend_DONE1', 'ShapeExtend_FAIL1'
+
+##### `FixClosed.3`
+- **Line**: 1320  **Axis**: `SUBMETHOD_STATUS_PROPAGATION`
+- **Brief**: FixDegenerated result status branching
+- **Falsifiable claim**: LastFixStatus(DONE) → encode DONE2; LastFixStatus(FAIL) → encode FAIL2
+- **Minimal reproducer**: FixDegenerated produces DONE or FAIL; verify status flags match
+- **Search anchors**: 'FixDegenerated(1)', 'ShapeExtend_DONE2', 'ShapeExtend_FAIL2'
+
+##### `FixClosed.4`
+- **Line**: 1328  **Axis**: `SUBMETHOD_STATUS_PROPAGATION`
+- **Brief**: FixLacking result status branching
+- **Falsifiable claim**: LastFixStatus(DONE) → encode DONE3; LastFixStatus(FAIL) → encode FAIL3
+- **Minimal reproducer**: FixLacking produces DONE or FAIL; verify status flags match
+- **Search anchors**: 'FixLacking(1)', 'ShapeExtend_DONE3', 'ShapeExtend_FAIL3'
+
+
+#### `ShapeFix_Wire.FixConnected`
+ (6 branches; 3 low-confidence; source: `v3-deep-batch-D.json`)
+
+##### `SF_FixConnected_001`
+- **Line**: 1482  **Axis**: `incomplete_coverage`
+- **Brief**: Early return when wire is empty or has no edges
+- **Falsifiable claim**: Empty wires fail silently without status
+- **Minimal reproducer**: Wire with NbEdges()=0; invoke FixConnected()
+- **Search anchors**: '!IsLoaded() || NbEdges() <= 0', 'return false'
+
+##### `SF_FixConnected_002`
+- **Line**: 1492  **Axis**: `failure_suppression`
+- **Brief**: Analyzer failure status recorded but method continues without failing
+- **Falsifiable claim**: CheckConnected failure sets FAIL1 but method proceeds to repair attempt
+- **Minimal reproducer**: Connectivity check fails; verify FAIL1 set but method returns true
+- **Search anchors**: 'LastCheckStatus(ShapeExtend_FAIL)', 'FAIL1'
+
+##### `SF_FixConnected_003` **[low-confidence]**
+- **Line**: 1507  **Axis**: `edge_case_handling`
+- **Brief**: Vertex degeneration check passes but vertex replacement logic assumes vertex sameness
+- **Falsifiable claim**: DONE1 path replaces V1 with V2 if V2 is same as itself; logic unclear for degenerate cases
+- **Minimal reproducer**: Edge with V2.IsSame(LastVertex(E2)); verify replacement behavior
+- **Search anchors**: 'V2.IsSame(sae.LastVertex(E2))', 'Context()->Replace'
+
+##### `SF_FixConnected_004` **[low-confidence]**
+- **Line**: 1527  **Axis**: `arithmetic_assumption`
+- **Brief**: Averaged vertex creation in DONE2/DONE3 paths without validation
+- **Falsifiable claim**: CombineVertex creates a new position; if both vertices are bad, averaging may not converge to proper location
+- **Minimal reproducer**: Two vertices far apart; verify CombineVertex creates point between them
+- **Search anchors**: 'CombineVertex(V1, V2, 1.0001)', 'myLastFixStatus |= DONE2'
+
+##### `SF_FixConnected_005`
+- **Line**: 1543  **Axis**: `context_escape`
+- **Brief**: Single-edge wire handling uses direct BRep_Builder modification without context
+- **Falsifiable claim**: When NbEdges()<2, vertex modification is direct; if edge is shared, other wires affected
+- **Minimal reproducer**: Wire with 1 edge used in multiple wires; modify tolerance
+- **Search anchors**: 'if (sbwd->NbEdges() < 2)', 'B.Remove(E2', 'B.Add(E2'
+
+##### `SF_FixConnected_006` **[low-confidence]**
+- **Line**: 1555  **Axis**: `shape_update_incomplete`
+- **Brief**: Multi-edge path creates new edges without removing old ones from builder context
+- **Falsifiable claim**: CopyReplaceVertices creates edges that may not be properly tracked by Context()->Replace
+- **Minimal reproducer**: Multi-edge wire; verify old edges removed from shape
+- **Search anchors**: 'CopyReplaceVertices(E2, V,', 'Context()->Replace(E2'
+
+
+#### `ShapeFix_Wire.FixConnected_at558`
+ (2 branches; source: `v3-deep-batch-W.json`)
+
+##### `W558.1`
+- **Line**: 561  **Axis**: `Control flow safety`
+- **Brief**: Missing guard: IsLoaded() check only prevents method continuation, loop still executes if false on exit
+- **Falsifiable claim**: Loop variable aI can be used after IsLoaded() returns false without proper initialization of myStatusConnected
+- **Minimal reproducer**: Call FixConnected_at558 on unloaded wire; observe myStatusConnected remains uninitialized if early return is skipped
+- **Search anchors**: 'IsLoaded', 'myStatusConnected = ShapeExtend::EncodeStatus', 'aI > aStop'
+
+##### `W558.2`
+- **Line**: 574  **Axis**: `Type safety`
+- **Brief**: Context refresh logic conditional on null-check but uses unvalidated applied shape without type assertion recovery
+- **Falsifiable claim**: aRefresh.ShapeType() != TopAbs_EDGE check passes but subsequent TopoDS::Edge cast may dereference null or malformed shape
+- **Minimal reproducer**: Wire with context; apply operation returns non-EDGE shape; aWireSBWD->Set receives invalid edge cast
+- **Search anchors**: 'aRefresh.IsNull', 'aRefresh.ShapeType', 'TopAbs_EDGE', 'aWireSBWD->Set'
+
+
+#### `ShapeFix_Wire.FixDegenerated`
+ (6 branches; 2 low-confidence; source: `v3-deep-batch-D.json`)
+
+##### `SF_FixDegen_001`
+- **Line**: 2136  **Axis**: `incomplete_diagnostics`
+- **Brief**: Early return when wire is not ready without status
+- **Falsifiable claim**: IsReady() failure causes silent return
+- **Minimal reproducer**: Wire with context issues; invoke FixDegenerated()
+- **Search anchors**: '!IsReady()', 'return false'
+
+##### `SF_FixDegen_002`
+- **Line**: 2145  **Axis**: `incomplete_fix`
+- **Brief**: FAIL2 status triggers edge removal but CheckDegenerated returns without completion
+- **Falsifiable claim**: If edge has no pcurve and no singularity found, edge is removed but not re-analyzed
+- **Minimal reproducer**: Edge marked degenerated but missing pcurve; verify removed without recheck
+- **Search anchors**: 'ShapeExtend_FAIL2', 'WireData()->Remove(num)', 'DONE3'
+
+##### `SF_FixDegen_003` **[low-confidence]**
+- **Line**: 2156  **Axis**: `input_validation`
+- **Brief**: Degenerated edge construction assumes p2d1 and p2d2 are valid endpoints
+- **Falsifiable claim**: If CheckDegenerated returns degenerate points at infinity, line construction fails
+- **Minimal reproducer**: Wire with infinity degenerate parameters; verify Geom2d_Line creation
+- **Search anchors**: 'gp_Vec2d(p2d1, p2d2)', 'Geom2d_Line'
+
+##### `SF_FixDegen_004`
+- **Line**: 2171  **Axis**: `zero_length_edge`
+- **Brief**: Degenerated edge range set to vect2d.Magnitude() without tolerance check
+- **Falsifiable claim**: Zero-length degenerate edges created with range 0.0
+- **Minimal reproducer**: p2d1==p2d2; verify vect2d.Magnitude()=0, range=0
+- **Search anchors**: 'B.Range(degEdge, Face(), 0., vect2d.Magnitude())'
+
+##### `SF_FixDegen_005`
+- **Line**: 2181  **Axis**: `wraparound_error`
+- **Brief**: Vertex computation for degenerate edge insertion uses implicit modulo arithmetic
+- **Falsifiable claim**: n3 calculation wraps to 1 if n2==NbEdges but should insert at different position
+- **Minimal reproducer**: Degenerate edge at wire end; verify n3 wraps to 1
+- **Search anchors**: 'n3   = (lack ? n2 : (n2 < sbwd->NbEdges() ? n2 + 1 : 1))'
+
+##### `SF_FixDegen_006` **[low-confidence]**
+- **Line**: 2191  **Axis**: `bounds_check`
+- **Brief**: Edge add/set uses index that may be out of bounds after NbEdges decreases
+- **Falsifiable claim**: If n2 was last edge and is replaced (lack=false), n2 index remains valid
+- **Minimal reproducer**: Degenerate at edge count N; set degEdge at N after removal
+- **Search anchors**: 'sbwd->Add(degEdge, n2)', 'sbwd->Set(degEdge, n2)'
+
+
+#### `ShapeFix_Wire.FixDegenerated_at1035`
+ (3 branches; 1 low-confidence; source: `v3-deep-batch-W.json`)
+
+##### `W1035.1` **[low-confidence]**
+- **Line**: 1038  **Axis**: `Semantic ambiguity`
+- **Brief**: Early return on !IsReady() leaves myStatusDegenerated initialized but loop iteration invariant unstated
+- **Falsifiable claim**: Caller cannot distinguish between 'not ready' and 'ready but no degenerated edges found' via return value alone
+- **Minimal reproducer**: Call FixDegenerated on uninitialized wire; returns false; differs from wire with no degenerate edges (also false)
+- **Search anchors**: '!IsReady', 'return false', 'myStatusDegenerated'
+
+##### `W1035.2`
+- **Line**: 1050  **Axis**: `Loop invariant violation`
+- **Brief**: Coded flag tracking relies on LastFixStatus(ShapeExtend_DONE2) but duplicate edge removal modifies loop structure
+- **Falsifiable claim**: When sbwd->Remove(i) is called, subsequent i++ in else-if may skip edge or cause out-of-bounds access
+- **Minimal reproducer**: Wire with consecutive degenerate edges at end; first removal triggers prevcoded=0 and i=NbEdges(); i++ increments past valid range
+- **Search anchors**: 'sbwd->Remove(i)', 'i = NbEdges()', 'i++', 'prevcoded'
+
+##### `W1035.3`
+- **Line**: 1055  **Axis**: `Index out-of-bounds`
+- **Brief**: Degeneration flag reset via B.Degenerated(sbwd->Edge(i++), false) uses post-increment without bounds validation
+- **Falsifiable claim**: If i is already at NbEdges() due to earlier reset, sbwd->Edge(i++) accesses edge beyond size; post-increment masks the error
+- **Minimal reproducer**: Last edge marked degenerate; prevcoded=0 sets i=NbEdges(); B.Degenerated(sbwd->Edge(i++), false) accesses edge i then increments
+- **Search anchors**: 'B.Degenerated', 'sbwd->Edge(i++)', 'i = NbEdges()'
+
+
+#### `ShapeFix_Wire.FixDummySeam`
+ (3 branches; source: `v3-deep-batch-Q.json`)
+
+##### `FixDummySeam.1`
+- **Line**: 4222  **Axis**: `VERTEX_COINCIDENCE_HANDLING`
+- **Brief**: Combined vertex creation guard
+- **Falsifiable claim**: Vs.IsSame(V1) || Vs.IsSame(V2) → substitute Vs=Vm, else keep Vs
+- **Minimal reproducer**: E1,E2 seam pair where FirstVertex(E2) matches V1 or V2; expect Vs→Vm
+- **Search anchors**: 'Vs.IsSame(V1)', 'Vs.IsSame(V2)', 'Vs = Vm'
+
+##### `FixDummySeam.2`
+- **Line**: 4231  **Axis**: `CONTEXT_MODIFICATION_LOGIC`
+- **Brief**: Context removal vs. replacement branching
+- **Falsifiable claim**: toRemove → Context::Remove(E2,E1); else Context::Replace(E2,newEdge), Replace(E1,newEdge.Reversed())
+- **Minimal reproducer**: toRemove==true vs false; verify Remove or Replace calls match intent
+- **Search anchors**: 'if (toRemove)', 'Context()->Remove(E2)', 'Context()->Replace(E2, newEdge)'
+
+##### `FixDummySeam.3`
+- **Line**: 4260  **Axis**: `INDEX_ORDERING`
+- **Brief**: Edge index order normalization
+- **Falsifiable claim**: num < num1 → (n1,n2)=(num,num1), else (n1,n2)=(num1,num)
+- **Minimal reproducer**: num=3, num1=2 vs num=2, num1=3; verify n1<n2 invariant
+- **Search anchors**: 'if (num < num1)', 'n1 = num', 'n1 = num1'
+
+
+#### `ShapeFix_Wire.FixIntersectingEdges`
+ (17 branches; 13 low-confidence; source: `v3-deep-batch-D.json`)
+
+##### `SF_FixIntEdges_001`
+- **Line**: 2972  **Axis**: `incomplete_coverage`
+- **Brief**: Early return when wire has fewer than 2 edges without status
+- **Falsifiable claim**: Single-edge wires return false silently
+- **Minimal reproducer**: Wire with 1 edge; invoke FixIntersectingEdges()
+- **Search anchors**: '!IsReady() || NbEdges() < 2', 'return false'
+
+##### `SF_FixIntEdges_002`
+- **Line**: 2980  **Axis**: `failure_suppression`
+- **Brief**: Analyzer failure recorded but method continues to attempt repair
+- **Falsifiable claim**: CheckIntersectingEdges failure sets FAIL1 but method proceeds
+- **Minimal reproducer**: Intersection check fails; verify FAIL1 set but method returns true
+- **Search anchors**: 'LastCheckStatus(ShapeExtend_FAIL)', 'FAIL1'
+
+##### `SF_FixIntEdges_003` **[low-confidence]**
+- **Line**: 2998  **Axis**: `input_validation`
+- **Brief**: Edge orientation and range extraction assumes edges are valid STEP edges
+- **Falsifiable claim**: If edges have no F2D curves, BRep_Tool::Range fails silently
+- **Minimal reproducer**: Edges without F2D curves; verify Range extraction
+- **Search anchors**: 'BRep_Tool::Range(E1, Face(), a1, b1)'
+
+##### `SF_FixIntEdges_004` **[low-confidence]**
+- **Line**: 3008  **Axis**: `tolerance_selection`
+- **Brief**: Vertex tolerance initialized from V1 without considering V2 or intersection geometry
+- **Falsifiable claim**: If V2 has higher tolerance, using V1's tolerance may be insufficient
+- **Minimal reproducer**: V1 tol=0.001, V2 tol=0.01, intersection at V2; verify V1 tol used
+- **Search anchors**: 'double tol = BRep_Tool::Tolerance(V1)'
+
+##### `SF_FixIntEdges_005`
+- **Line**: 3020  **Axis**: `loop_skip_logic`
+- **Brief**: Intersection loop skips points if both newRange1 and newRange2 are larger than previous
+- **Falsifiable claim**: If ranges increase monotonically, intersection points beyond first are never processed
+- **Minimal reproducer**: Two intersections with increasing parameters; verify second skipped
+- **Search anchors**: 'if (newRange1 > prevRange1 && newRange2 > prevRange2)', 'continue'
+
+##### `SF_FixIntEdges_006` **[low-confidence]**
+- **Line**: 3026  **Axis**: `undocumented_logic`
+- **Brief**: Parameter extraction logic depends on num==1 comparison without documented semantics
+- **Falsifiable claim**: If num is not 1, param1 and param2 are swapped; ambiguous what this means
+- **Minimal reproducer**: IntersectingEdges(2); verify param order swapped
+- **Search anchors**: 'param1 = (num == 1 ? IP.ParamOnSecond() : IP.ParamOnFirst())'
+
+##### `SF_FixIntEdges_007` **[low-confidence]**
+- **Line**: 3038  **Axis**: `return_value_validation`
+- **Brief**: Edge tolerance increase path uses ComputeLocalDeviation without validating return value
+- **Falsifiable claim**: If ComputeLocalDeviation returns garbage, maxte calculation is unreliable
+- **Minimal reproducer**: ComputeLocalDeviation fails; verify maxte handling
+- **Search anchors**: 'ComputeLocalDeviation(E1', 'double maxte = std::max(te1, te2)'
+
+##### `SF_FixIntEdges_008` **[low-confidence]**
+- **Line**: 3051  **Axis**: `context_escape`
+- **Brief**: Context vertex copying creates new vertices without checking if originals are shared
+- **Falsifiable claim**: If V1 is shared across multiple wires, CopyVertex affects other shapes
+- **Minimal reproducer**: V1 used in multiple wires; verify all wires affected
+- **Search anchors**: 'Context()->CopyVertex(V1)'
+
+##### `SF_FixIntEdges_009` **[low-confidence]**
+- **Line**: 3061  **Axis**: `identity_vs_equality`
+- **Brief**: Shared vertex detection uses IsSame() which may not catch topologically equivalent vertices
+- **Falsifiable claim**: If Vp and Vn are equivalent but not identical, shared vertex logic fails
+- **Minimal reproducer**: Vp and Vn are same point but different objects; verify IsSame returns false
+- **Search anchors**: 'if (Vp.IsSame(Vn))', 'VVp = Context()->CopyVertex(Vp)'
+
+##### `SF_FixIntEdges_010` **[low-confidence]**
+- **Line**: 3078  **Axis**: `geometry_simplification`
+- **Brief**: Edge tolerance update applied to both endpoints without considering edge curvature
+- **Falsifiable claim**: If edge is highly curved, increasing endpoint tolerance may not cover interior
+- **Minimal reproducer**: Highly curved edge with tolerance increase; verify interior remains outside tolerance band
+- **Search anchors**: 'B.UpdateEdge(E1, 1.000001 * te1)'
+
+##### `SF_FixIntEdges_011` **[low-confidence]**
+- **Line**: 3088  **Axis**: `failure_handling`
+- **Brief**: Edge cutting logic assumes CutEdge succeeds without validating wire connectivity after cuts
+- **Falsifiable claim**: If CutEdge fails, wire may remain with invalid edge references
+- **Minimal reproducer**: CutEdge returns false; verify wire state unchanged
+- **Search anchors**: 'if (!aTool.CutEdge(E1', 'locMayEdit = false'
+
+##### `SF_FixIntEdges_012` **[low-confidence]**
+- **Line**: 3103  **Axis**: `input_validation`
+- **Brief**: SameParameter assumption in repair condition without checking if edges are actually SP
+- **Falsifiable claim**: If E1 or E2 is not SameParameter, repair may introduce new geometry inconsistencies
+- **Minimal reproducer**: Non-SP edges; verify BRep_Tool::SameParameter returns false
+- **Search anchors**: 'BRep_Tool::SameParameter(E1) && BRep_Tool::SameParameter(E2)'
+
+##### `SF_FixIntEdges_013` **[low-confidence]**
+- **Line**: 3120  **Axis**: `flag_semantics`
+- **Brief**: IsCutLine flag set by CutEdge but used as condition for other branches without clear semantics
+- **Falsifiable claim**: If CutEdge sets IsCutLine but actual cutting fails, subsequent tolerance logic incorrect
+- **Minimal reproducer**: CutEdge with IsCutLine=true but edges unchanged; verify tolerance applied anyway
+- **Search anchors**: 'if (IsCutLine)', 'else'
+
+##### `SF_FixIntEdges_014`
+- **Line**: 3134  **Axis**: `accumulation_limit`
+- **Brief**: Tolerance value accumulation without upper bound in loop
+- **Falsifiable claim**: If multiple intersections require increasing tolerance, final tol may exceed bounds
+- **Minimal reproducer**: Many intersections; verify tol stays <=MaxTolerance
+- **Search anchors**: 'tol = 1.001 * rad', 'for (int i = 1; i <= nb; i++)'
+
+##### `SF_FixIntEdges_015` **[low-confidence]**
+- **Line**: 3146  **Axis**: `flag_sync_error`
+- **Brief**: Final vertex update uses isChangedEdge flag to decide between direct update and context replacement
+- **Falsifiable claim**: If isChangedEdge is false but edges were copied, vertex updates may not propagate to new edges
+- **Minimal reproducer**: Edges copied but isChangedEdge=false; verify vertex updates on original edges only
+- **Search anchors**: 'if (isChangedEdge)', 'else'
+
+##### `SF_FixIntEdges_016` **[low-confidence]**
+- **Line**: 3156  **Axis**: `identity_precision`
+- **Brief**: Shared vertex path assumes V1==V2 but may have precision differences
+- **Falsifiable claim**: If vertices are 'same' topologically but not identical, CopyVertex called twice on different objects
+- **Minimal reproducer**: V1.IsSame(V2)=true but BRep_Tool::Pnt(V1)!=BRep_Tool::Pnt(V2); verify behavior
+- **Search anchors**: 'if (V1.IsSame(V2))', 'else'
+
+##### `SF_FixIntEdges_017` **[low-confidence]**
+- **Line**: 3172  **Axis**: `post_operation_validation`
+- **Brief**: FixSameParameter called without checking if previous operations preserved edge validity
+- **Falsifiable claim**: If CutEdge created invalid edge, FixSameParameter may fail or worsen geometry
+- **Minimal reproducer**: CutEdge creates invalid edge; verify FixSameParameter behavior
+- **Search anchors**: 'if (cutEdge1)', 'myFixEdge->FixSameParameter(E1)'
+
+
+#### `ShapeFix_Wire.FixIntersectingEdges_at3272`
+ (10 branches; 3 low-confidence; source: `v3-deep-batch-W.json`)
+
+##### `W3272.1`
+- **Line**: 3275  **Axis**: `Inconsistent error reporting`
+- **Brief**: IsReady() guard passes but theAdvAnalyzer.IsNull() check after assignment leaves method state ambiguous on double failure
+- **Falsifiable claim**: IsReady()=true but myAnalyzer=null; theAdvAnalyzer.IsNull() returns true; method returns false without partial status encoding
+- **Minimal reproducer**: Wire ready but analyzer uninitialized; returns false at line 3285 without ShapeExtend_FAIL1 status set
+- **Search anchors**: '!IsReady', 'theAdvAnalyzer.IsNull', 'return false'
+
+##### `W3272.2` **[low-confidence]**
+- **Line**: 3303  **Axis**: `Semantic ambiguity`
+- **Brief**: n1, n2 calculation uses conditional ternary with side-effect semantics; n1 > n2 check does not validate parametrization
+- **Falsifiable claim**: n1 = (num2 > 1 ? num2 : sbwd->NbEdges()) can equal n2; check n1 == n2 returns false but edge access order undefined
+- **Minimal reproducer**: num1=2, num2=1, NbEdges()=1; n2=2, n1=1; then reversed: n1=1, n2=2; order-dependent behavior
+- **Search anchors**: 'num2 > 1', 'num1 > 0', 'n1 == n2', 'sbwd->NbEdges()'
+
+##### `W3272.3`
+- **Line**: 3335  **Axis**: `Uninitialized variable`
+- **Brief**: Nearest vertex search compares aMinDist but nearest vertex never confirmed valid if all aCurve pointers null
+- **Falsifiable claim**: Loop at line 3340 only checks aVC1/aVC2 indices; if no valid vertex pair found, aNearestVertex remains uninitialized
+- **Minimal reproducer**: Two edges with no valid intersection points; loop exits without setting aNearestVertex; used in gp_Lin at line 3351
+- **Search anchors**: 'aNearestVertex', 'aMinDist = RealLast()', 'gp_Lin aLig'
+
+##### `W3272.4`
+- **Line**: 3360  **Axis**: `Variable scope violation`
+- **Brief**: Curve retrieval BRep_Tool::Curve(edge, L1/L2, f, l) uses f,l output but overwrite semantics unsafe across loop
+- **Falsifiable claim**: f, l are overwritten each iteration (line 3358) but only declared once; loop2 param2 calculation uses stale f,l from edge1
+- **Minimal reproducer**: Two edges with different parametric ranges; second iteration recalculates param2 using f,l from edge1 not edge2
+- **Search anchors**: 'aCurve1 = BRep_Tool::Curve', 'aCurve2 = BRep_Tool::Curve', 'param1 = IP.ParamOnFirst'
+
+##### `W3272.5`
+- **Line**: 3381  **Axis**: `Uninitialized variable`
+- **Brief**: Condition aMinDist < gp::Resolution() continues loop but aNearestVertex may not have been set if no pair satisfied aMinDist check
+- **Falsifiable claim**: If no aVC1/aVC2 pair sets aMinDist < RealLast(), continue skips gp_Lin usage but aNearestVertex remains uninitialized for next iteration
+- **Minimal reproducer**: Intersection point far from all vertex pairs; aMinDist stays RealLast(); continue; next iteration uses aNearestVertex uninitialized
+- **Search anchors**: 'aMinDist < gp::Resolution', 'continue', 'aNearestVertex'
+
+##### `W3272.6` **[low-confidence]**
+- **Line**: 3389  **Axis**: `Numerical robustness`
+- **Brief**: Curve sampling loop computes d1, d2 with magic constant 2.0000001 without justification; underflow risk on tight tolerances
+- **Falsifiable claim**: Multiplication by 2.0000001 lacks numerical stability justification; aMaxEdgeTol1/2 can underflow if d1 near zero
+- **Minimal reproducer**: Intersection where aLig.Distance(P1) returns value smaller than epsilon; 2.0000001 multiplication produces false positive
+- **Search anchors**: '2.0000001', 'aLig.Distance', 'aMaxEdgeTol1'
+
+##### `W3272.7`
+- **Line**: 3405  **Axis**: `Control flow ambiguity`
+- **Brief**: Check aMaxEdgeTol1 == 0.0 && aMaxEdgeTol2 == 0.0 continues but preceding if-block may have zero'd both without intent to skip
+- **Falsifiable claim**: If inner if-block never executes (curves null), aMaxEdgeTol1/2 stay 0.0; outer continue skips vertex tolerance updates incorrectly
+- **Minimal reproducer**: edges1/2 with null 3d curves; aMaxEdgeTol initialized to 0.0; proceed to line 3405 continue skips rank calculation
+- **Search anchors**: 'aMaxEdgeTol1 == 0.0 && aMaxEdgeTol2 == 0.0', 'continue', 'if (aMinDist < RealLast()'
+
+##### `W3272.8`
+- **Line**: 3412  **Axis**: `Uninitialized variable`
+- **Brief**: Vertex tolerance comparison aNecessaryVtxTole > std::max(...) uses distance metric but comparison direction unchecked for edge cases
+- **Falsifiable claim**: aNecessaryVtxTole set only if aMinDist assignment triggers; if loop never updates aNecessaryVtxTole, comparison uses 0.0 default
+- **Minimal reproducer**: No intersection point satisfies inner loop condition; aNecessaryVtxTole=0.0; comparison always true, incorrectly resets aMaxEdgeTol
+- **Search anchors**: 'aNecessaryVtxTole = 0.0', 'aNecessaryVtxTole > std::max'
+
+##### `W3272.9` **[low-confidence]**
+- **Line**: 3425  **Axis**: `Numerical overflow`
+- **Brief**: Rank selection loop computes newtol but finTol = RealLast() can overflow if rank=1 and pint.Distance very large
+- **Falsifiable claim**: RealLast() - epsilon can become NaN or overflow in distance addition; no saturation check before finTol comparison
+- **Minimal reproducer**: Intersection point far from all vertices; finTol = RealLast(); newtol wraps around in floating-point addition
+- **Search anchors**: 'finTol = RealLast()', '1.0001 * (pint.Distance', 'rad)'
+
+##### `W3272.10`
+- **Line**: 3435  **Axis**: `Tolerance coherence`
+- **Brief**: Update newTolers(rank) but subsequent edge tolerance assignment uses separate aNewTolEdge variables without synchronization
+- **Falsifiable claim**: newTolers(1/2) updated independently from aNewTolEdge1; if finTol < aNewTolEdge1, edge tolerance overwrites vertex tolerance
+- **Minimal reproducer**: Intersection near vertex1; finTol=0.5, aNewTolEdge1=1.0; newTolers(1)=0.5 then B.UpdateEdge(edge1, 1.0) bypasses vertex tolerance
+- **Search anchors**: 'newTolers(rank) = finTol', 'aNewTolEdge1', 'B.UpdateEdge'
+
+
+#### `ShapeFix_Wire.FixNotchedEdges`
+ (4 branches; source: `v3-deep-batch-A.json`)
+
+##### `ShapeFix_Wire.FixNotchedEdges.IsReady-guard`
+- **Line**: ShapeFix_Wire.cxx:3980  **Axis**: `api-contract`
+- **Brief**: Early return if wire is not ready to be repaired.
+- **Falsifiable claim**: Without this branch, the method would operate on uninitialized wire data and cause undefined behavior. To test: call FixNotchedEdges on a wire where IsReady() returns false; expect early exit with status preservation.
+- **Minimal reproducer**: Create a ShapeFix_Wire with an uninitialized internal state. Invoke FixNotchedEdges(). Without guard: invalid memory access or status corruption. With guard: immediate return of false.
+- **Search anchors**: 'IsReady', 'myLastFixStatus', 'guard'
+
+##### `ShapeFix_Wire.FixNotchedEdges.context-update`
+- **Line**: ShapeFix_Wire.cxx:3987  **Axis**: `healer-state`
+- **Brief**: Synchronizes wire data with context if context exists before processing notched edges.
+- **Falsifiable claim**: Without updating the wire against context, modifications made outside this method would not be visible. To test: modify the shape in a shared context, then call FixNotchedEdges; without update, notches are detected on stale geometry.
+- **Minimal reproducer**: Create a wire with ShapeFix context. Externally modify the geometry in context. Call FixNotchedEdges. Without update: wrong notches or missed edges. With update: correct detection on current geometry.
+- **Search anchors**: 'Context', 'UpdateWire', 'myContext'
+
+##### `ShapeFix_Wire.FixNotchedEdges.notch-split-strategy`
+- **Line**: ShapeFix_Wire.cxx:3997  **Axis**: `input-shape`
+- **Brief**: Branches on whether to remove or split edge when notch detected, choosing target edge based on notch position.
+- **Falsifiable claim**: Incorrect split-vs-remove strategy leads to topology corruption. To test: apply to wire with notches where isRemoveFirst differs; incorrect strategy produces non-manifold or degenerate results.
+- **Minimal reproducer**: Construct wire with two consecutive edges E1, E2 where E1 has notch near endpoint shared with E2. Geometry: both tangent to same surface. Without correct split logic: topological mismatch or invalid edge orientation. With logic: notch removed via split of correct edge.
+- **Search anchors**: 'toRemove', 'isRemoveFirst', 'toSplit', 'CheckNotchedEdges'
+
+##### `ShapeFix_Wire.FixNotchedEdges.degenerate-curve-handling`
+- **Line**: ShapeFix_Wire.cxx:4007  **Axis**: `encoding`
+- **Brief**: Retrieves 2D curves for edges to determine parameter space boundaries when splitting.
+- **Falsifiable claim**: Missing 2D curve retrieval causes split parameters to be misaligned. To test: edge with multiple surface representations; without PCurve fetch, wrong param used for split.
+- **Minimal reproducer**: Wire with edge on complex surface with multiple trim domains. Call FixNotchedEdges. Without PCurve: split at incorrect parameter, creating degenerate trim. With PCurve: split respects param bounds.
+- **Search anchors**: 'PCurve', 'c2d', 'a, b', 'sae.PCurve'
+
+
+#### `ShapeFix_Wire.FixReorder_at1352`
+ (5 branches; source: `v3-deep-batch-Q.json`)
+
+##### `FixReorder_1352.1`
+- **Line**: 1355  **Axis**: `STATE_PRECONDITION`
+- **Brief**: Guard: unloaded wire
+- **Falsifiable claim**: !IsLoaded() → return false
+- **Minimal reproducer**: Call on unloaded wire; expect false
+- **Search anchors**: '!IsLoaded()', 'return false'
+
+##### `FixReorder_1352.2`
+- **Line**: 1359  **Axis**: `EARLY_EXIT_NOOP`
+- **Brief**: Guard: zero status from ShapeAnalysis_WireOrder
+- **Falsifiable claim**: wi.Status()==0 → no reordering needed, return false
+- **Minimal reproducer**: Create wi with Status()==0; call FixReorder; expect false
+- **Search anchors**: 'status == 0', 'return false'
+
+##### `FixReorder_1352.3`
+- **Line**: 1363  **Axis**: `ERROR_THRESHOLD_DETECTION`
+- **Brief**: Severe error: status <= -10
+- **Falsifiable claim**: wi.Status() <= -10 → encode FAIL1, return false
+- **Minimal reproducer**: wi.Status() == -10 or worse; expect FAIL1 status, false return
+- **Search anchors**: 'status <= -10', 'ShapeExtend_FAIL1'
+
+##### `FixReorder_1352.4`
+- **Line**: 1369  **Axis**: `CARDINALITY_VIOLATION`
+- **Brief**: Edge count mismatch guard
+- **Falsifiable claim**: NbEdges(sbwd) != wi.NbEdges() → encode FAIL2, return false
+- **Minimal reproducer**: sbwd has different edge count than wi; expect FAIL2
+- **Search anchors**: 'nb != wi.NbEdges()', 'ShapeExtend_FAIL2'
+
+##### `FixReorder_1352.5`
+- **Line**: 1376  **Axis**: `INVALID_ORDERING_INDEX`
+- **Brief**: Zero ordered index guard in loop
+- **Falsifiable claim**: wi.Ordered(i)==0 for any i ∈ [1,nb] → encode FAIL3, return false
+- **Minimal reproducer**: wi has Ordered(i)==0 for some i; expect FAIL3 on first such i
+- **Search anchors**: 'wi.Ordered(i) == 0', 'ShapeExtend_FAIL3'
+
+
+#### `ShapeFix_Wire.FixReorder_at488`
+ (5 branches; source: `v3-deep-batch-Q.json`)
+
+##### `FixReorder.1`
+- **Line**: 492  **Axis**: `STATE_PRECONDITION`
+- **Brief**: Guard: unloaded wire state
+- **Falsifiable claim**: IsLoaded() must return true for reorder logic to execute
+- **Minimal reproducer**: Call FixReorder(sawo) on uninitialized wire; expect false return
+- **Search anchors**: '!IsLoaded()', 'return false'
+
+##### `FixReorder.2`
+- **Line**: 499  **Axis**: `SURFACE_PERIODICITY_HANDLING`
+- **Brief**: Bi-periodic surface order check branch
+- **Falsifiable claim**: IsUPeriodic && IsVPeriodic && theModeBoth → CheckOrder with periodi=true; else periodi=false
+- **Minimal reproducer**: Surface with IsUPeriodic=true, IsVPeriodic=true, theModeBoth=true → CheckOrder(...,true,true); otherwise CheckOrder(...,true,false)
+- **Search anchors**: 'IsUPeriodic()', 'IsVPeriodic()', 'theModeBoth'
+
+##### `FixReorder.3`
+- **Line**: 513  **Axis**: `STATUS_MAPPING`
+- **Brief**: Status failure encoding branch
+- **Falsifiable claim**: LastFixStatus(FAIL) → encode FAIL1 if LastFixStatus(FAIL1), else FAIL2
+- **Minimal reproducer**: FixReorder returns FAIL status; check if status encodes FAIL1 or FAIL2 correctly
+- **Search anchors**: 'LastFixStatus(ShapeExtend_FAIL)', 'ShapeExtend_FAIL1 : ShapeExtend_FAIL2'
+
+##### `FixReorder.4`
+- **Line**: 518  **Axis**: `EARLY_EXIT_LOGIC`
+- **Brief**: Status not DONE guard
+- **Falsifiable claim**: !LastFixStatus(DONE) → return false early
+- **Minimal reproducer**: FixReorder fails to produce DONE; method returns false
+- **Search anchors**: '!LastFixStatus(ShapeExtend_DONE)', 'return false'
+
+##### `FixReorder.5`
+- **Line**: 526  **Axis**: `ORDER_STATUS_ENCODING`
+- **Brief**: sawo.Status() magnitude and sign tests
+- **Falsifiable claim**: Status==±2 → DONE2; Status<0 → DONE3; Status==3 → DONE5 (shifted-only flag)
+- **Minimal reproducer**: Produce sawo with Status==2, -2, negative, 3; verify respective flags encoded
+- **Search anchors**: 'sawo.Status() == 2', 'sawo.Status() < 0', 'sawo.Status() == 3'
+
+
+#### `ShapeFix_Wire.FixSeam_at1616`
+ (2 branches; 1 low-confidence; source: `v3-deep-batch-W.json`)
+
+##### `W1616.1` **[low-confidence]**
+- **Line**: 1619  **Axis**: `Null dereference`
+- **Brief**: IsReady() guard passes but Face() and WireData() calls not null-checked before use
+- **Falsifiable claim**: IsReady() may return true yet Face() or WireData() return null; subsequent B.UpdateEdge dereferences null
+- **Minimal reproducer**: Call FixSeam on wire where Face() returns null despite IsReady()=true; B.UpdateEdge(E, ...) fails
+- **Search anchors**: '!IsReady', 'CheckSeam', 'WireData()->Edge', 'Face()'
+
+##### `W1616.2`
+- **Line**: 1624  **Axis**: `Data loss`
+- **Brief**: CheckSeam populates C1, C2 but tolerances set unconditionally to 0.0 without validation
+- **Falsifiable claim**: B.UpdateEdge tolerance=0.0 loses precision info from original edge; no fallback if C1/C2 are invalid curves
+- **Minimal reproducer**: Edge with tight tolerance; CheckSeam returns true with null or degenerate C1/C2; UpdateEdge(E, C2, C1, Face(), 0.0) degrades tolerance
+- **Search anchors**: 'B.UpdateEdge', '0.', 'CheckSeam'
+
+
+#### `ShapeFix_Wire.FixSelfIntersectingEdge`
+ (12 branches; 6 low-confidence; source: `v3-deep-batch-D.json`)
+
+##### `SF_FixSelfInt_001`
+- **Line**: 2714  **Axis**: `incomplete_diagnostics`
+- **Brief**: Early return when wire is not ready
+- **Falsifiable claim**: IsReady() failure causes silent return
+- **Minimal reproducer**: Wire without face context; invoke FixSelfIntersectingEdge()
+- **Search anchors**: '!IsReady()', 'return false'
+
+##### `SF_FixSelfInt_002`
+- **Line**: 2721  **Axis**: `null_check_silent`
+- **Brief**: Null analyzer causes early return without status
+- **Falsifiable claim**: If myAnalyzer is null, method fails silently
+- **Minimal reproducer**: FixSelfIntersectingEdge with myAnalyzer=null
+- **Search anchors**: 'theAdvAnalyzer.IsNull()', 'return false'
+
+##### `SF_FixSelfInt_003`
+- **Line**: 2733  **Axis**: `iteration_limit`
+- **Brief**: Loop detection uses iteration count (30) without convergence test
+- **Falsifiable claim**: If self-intersection persists after 30 iterations, loop exits without reporting
+- **Minimal reproducer**: Edge with persistent self-intersection; verify 30 iterations then exit
+- **Search anchors**: 'for (int iter = 0; iter < 30; iter++)'
+
+##### `SF_FixSelfInt_004`
+- **Line**: 2740  **Axis**: `threshold_logic`
+- **Brief**: Intersection point tolerance check skips points very close to edge endpoints
+- **Falsifiable claim**: If intersection at tol1 distance from V1, tolerance increase skipped
+- **Minimal reproducer**: Self-intersection near edge endpoint; verify tolerance not increased
+- **Search anchors**: 'dist21 < tol1 * tol1', 'continue'
+
+##### `SF_FixSelfInt_005` **[low-confidence]**
+- **Line**: 2753  **Axis**: `null_pointer_use`
+- **Brief**: Loop removal geometric mode uses uninitialized c2d pointer
+- **Falsifiable claim**: If c2d.IsNull(), PCurve call fills it; but if that fails, RemoveLoop uses garbage pointer
+- **Minimal reproducer**: Edge without PCurve; verify PCurve call handles failure
+- **Search anchors**: 'if (c2d.IsNull())', 'sae.PCurve(E, Face(), c2d'
+
+##### `SF_FixSelfInt_006` **[low-confidence]**
+- **Line**: 2758  **Axis**: `ordering_assumption`
+- **Brief**: Parameter range check assumes param ordering is preserved across iterations
+- **Falsifiable claim**: If prevFirst and prevLast are not monotonic, loop detection fails
+- **Minimal reproducer**: Self-intersection with parameters: (0.2,0.8), (0.1,0.9); second iteration skipped
+- **Search anchors**: 'if (firstpar > prevFirst && lastpar < prevLast)', 'continue'
+
+##### `SF_FixSelfInt_007`
+- **Line**: 2762  **Axis**: `value_loss`
+- **Brief**: RemoveLoop tolerance argument uses clamped value without recording original intersection value
+- **Falsifiable claim**: If newtol>MaxTolerance, tolerance clamped but original error magnitude lost
+- **Minimal reproducer**: Self-intersection requiring tolerance>MaxTolerance; verify FAIL2 status
+- **Search anchors**: 'std::min(MaxTolerance(), std::max(newtol', 'myRemoveLoopMode == 0'
+
+##### `SF_FixSelfInt_008` **[low-confidence]**
+- **Line**: 2772  **Axis**: `geometry_ignorance`
+- **Brief**: Vertex tolerance increase logic prefers dist21<dist22 without considering edge geometry
+- **Falsifiable claim**: If V1 is internal and V2 is at boundary, V1 tolerance should be preferred but V2 chosen based on distance
+- **Minimal reproducer**: Self-intersection closer to V2; verify V2 tolerance increased regardless of geometry
+- **Search anchors**: 'if (dist21 < dist22)', 'B.UpdateVertex(V1'
+
+##### `SF_FixSelfInt_009` **[low-confidence]**
+- **Line**: 2783  **Axis**: `state_reset`
+- **Brief**: Re-analysis after RemoveLoop resets points3d/points2d without appending
+- **Falsifiable claim**: After loop removal, intersection re-check may find new intersections but prior ones discarded
+- **Minimal reproducer**: Edge with multiple self-intersections; remove first loop, recheck loses context
+- **Search anchors**: 'points3d = pnts3d', 'points2d = pnts2d'
+
+##### `SF_FixSelfInt_010`
+- **Line**: 2802  **Axis**: `null_append`
+- **Brief**: myRemoveLoopMode==1 path assumes E1 is always valid after RemoveLoop
+- **Falsifiable claim**: If RemoveLoop returns E1.IsNull(), TTSS appends null edge
+- **Minimal reproducer**: RemoveLoop with E1=null; verify TTSS->Append(E1) still runs
+- **Search anchors**: 'if (RemoveLoop(E, Face()', 'if (!E1.IsNull())', 'TTSS->Append(E1)'
+
+##### `SF_FixSelfInt_011` **[low-confidence]**
+- **Line**: 2827  **Axis**: `validity_check`
+- **Brief**: Wire construction from TTSS sequence without validating connectivity
+- **Falsifiable claim**: If edges in TTSS are disconnected, resulting wire is invalid
+- **Minimal reproducer**: RemoveLoop returns disconnected edges; sewd.Wire() creates broken wire
+- **Search anchors**: 'ShapeExtend_WireData sewd', 'sewd.Wire()'
+
+##### `SF_FixSelfInt_012` **[low-confidence]**
+- **Line**: 2834  **Axis**: `post_repair_validation`
+- **Brief**: UpdateWire called after Context()->Replace without verifying wire validity
+- **Falsifiable claim**: If replacement creates invalid wire, UpdateWire propagates corruption
+- **Minimal reproducer**: Replacement with disconnected edges; verify UpdateWire succeeds
+- **Search anchors**: 'Context()->Replace(E, sewd.Wire())', 'UpdateWire()'
+
+
 #### `ShapeFix_Wire.FixSelfIntersection`
  (20 branches; 1 low-confidence; source: `v3-deep-ShapeFix_Wire_FixSelfIntersection.json`)
 
@@ -2093,6 +7990,298 @@ v3's bar: every branch's description is rich enough to either RECREATE the defec
 - **Falsifiable claim**: Without this reload, analyzer's internal state would be stale and subsequent fixes might operate on wrong geometry. To test: fix non-adjacent intersection; verify subsequent operations use updated edge list.
 - **Minimal reproducer**: Create wire with non-adjacent intersection. After FixSelfIntersectWire() modifies sbwd (NbSplit > 0), without the branch: myAnalyzer still references old sbwd. With branch: Load(sbwd) updates analyzer.
 - **Search anchors**: 'myAnalyzer->Load(sbwd)'
+
+
+#### `ShapeFix_Wire.FixSmall`
+ (5 branches; source: `v3-deep-batch-D.json`)
+
+##### `SF_FixSmall_001`
+- **Line**: 1410  **Axis**: `incomplete_coverage`
+- **Brief**: Early return without status if wire is empty or has 1 edge
+- **Falsifiable claim**: Single-edge or empty wires return false without attempting small edge detection
+- **Minimal reproducer**: Create wire with 1 edge, invoke FixSmall()
+- **Search anchors**: '!IsLoaded() || NbEdges() <= 1', 'return false'
+
+##### `SF_FixSmall_002`
+- **Line**: 1418  **Axis**: `null_check_silent`
+- **Brief**: Analyzer is null causes early return without recording failure
+- **Falsifiable claim**: Null analyzer silently fails instead of marking error
+- **Minimal reproducer**: FixSmall with myAnalyzer=null
+- **Search anchors**: 'theAdvAnalyzer.IsNull()', 'return false'
+
+##### `SF_FixSmall_003`
+- **Line**: 1427  **Axis**: `failure_masking`
+- **Brief**: CheckSmall failure status set but method continues instead of failing
+- **Falsifiable claim**: When CheckSmall returns FAIL, the method continues to return false, losing failure context
+- **Minimal reproducer**: Small edge detection fails; verify LastCheckStatus=FAIL1 but method returns false
+- **Search anchors**: 'LastCheckStatus(ShapeExtend_FAIL)', 'FAIL1', 'return false'
+
+##### `SF_FixSmall_004`
+- **Line**: 1434  **Axis**: `mode_override`
+- **Brief**: Edge removal skipped if lockvtx=true or myTopoMode=false despite small edge
+- **Falsifiable claim**: Small edges are detected but not removed when topology locking is enabled
+- **Minimal reproducer**: Small edge with lockvtx=true; verify wire unchanged
+- **Search anchors**: 'if (lockvtx || !myTopoMode)', 'myLastFixStatus |= FAIL2', 'return false'
+
+##### `SF_FixSmall_005`
+- **Line**: 1453  **Axis**: `bounds_check`
+- **Brief**: FixConnected called unconditionally on vertex mismatch without checking n bounds
+- **Falsifiable claim**: FixConnected invoked with edge index n that may be out of bounds after removal
+- **Minimal reproducer**: Small edge at end of wire; FixConnected called with n=NbEdges+1
+- **Search anchors**: 'FixConnected(n <= NbEdges', 'n : 1'
+
+
+#### `ShapeFix_Wire.FixTails`
+ (23 branches; source: `v3-deep-batch-Q.json`)
+
+##### `FixTails.1`
+- **Line**: 4318  **Axis**: `PRECONDITION_VALIDATION`
+- **Brief**: Guard: invalid max tail width or unready state
+- **Falsifiable claim**: myMaxTailWidth<0 || !IsReady() → return false
+- **Minimal reproducer**: Call FixTails with myMaxTailWidth<0 or IsReady()==false; expect false
+- **Search anchors**: 'myMaxTailWidth < 0', '!IsReady()', 'return false'
+
+##### `FixTails.2`
+- **Line**: 4323  **Axis**: `STATE_SYNCHRONIZATION`
+- **Brief**: Context update guard
+- **Falsifiable claim**: !Context().IsNull() → UpdateWire() before main loop
+- **Minimal reproducer**: Context non-null; verify UpdateWire() called once
+- **Search anchors**: '!Context().IsNull()', 'UpdateWire()'
+
+##### `FixTails.3`
+- **Line**: 4330  **Axis**: `TAIL_DETECTION_FAILURE`
+- **Brief**: Tail detection failed guard
+- **Falsifiable claim**: !CheckTail(...) → skip split/remove, advance indices, reset angle check
+- **Minimal reproducer**: Two edges fail CheckTail; expect aENs[0]=aENs[1]++, aCheckAngle=true, continue
+- **Search anchors**: '!myAnalyzer->CheckTail(...)', 'aENs[1]++'
+
+##### `FixTails.4`
+- **Line**: 4343  **Axis**: `EDGE_CONSERVATION`
+- **Brief**: Insufficient edge count for removal guard
+- **Falsifiable claim**: aECount+aSplitCounts[0]+aSplitCounts[1] < 1+aRemoveCount → skip split/remove
+- **Minimal reproducer**: Two-edge wire with both to be split and removed; result would be <1 edge; expect skip
+- **Search anchors**: 'aECount + aSplitCounts[0] + aSplitCounts[1] < 1 + aRemoveCount'
+
+##### `FixTails.5`
+- **Line**: 4352  **Axis**: `SPLIT_SKIP_LOGIC`
+- **Brief**: Split count zero guard
+- **Falsifiable claim**: aSplitCounts[aEI]==0 → skip this edge split, continue to next
+- **Minimal reproducer**: aEI=0 but aSplitCounts[0]==0; skip inner block
+- **Search anchors**: 'if (aSplitCounts[aEI] == 0)', 'continue'
+
+##### `FixTails.6`
+- **Line**: 4358  **Axis**: `CONTEXT_MODIFICATION`
+- **Brief**: Context non-null edge replacement
+- **Falsifiable claim**: !Context().IsNull() → Replace edge with wire of parts in context
+- **Minimal reproducer**: Context non-null, split needed; expect Context()->Replace called
+- **Search anchors**: '!Context().IsNull()', 'Context()->Replace(aFE, aEWire)'
+
+##### `FixTails.7`
+- **Line**: 4374  **Axis**: `ORIENTATION_MAPPING`
+- **Brief**: Orientation-based first part index selection
+- **Falsifiable claim**: aOrient != REVERSED → aFirstPI=0, else aFirstPI=1
+- **Minimal reproducer**: E.Orientation()==FORWARD vs REVERSED; verify aFirstPI selection
+- **Search anchors**: 'aOrient != TopAbs_REVERSED', 'aFirstPI = (aOrient != TopAbs_REVERSED) ? 0 : 1'
+
+##### `FixTails.8`
+- **Line**: 4376  **Axis**: `INDEX_OFFSET_LOGIC`
+- **Brief**: Split offset calculation
+- **Falsifiable claim**: aEI==0 || aENs[1]<aENs[0] → aAdd=0, else aAdd=aSplitCounts[0]
+- **Minimal reproducer**: aEI=1 and aENs[1]>=aENs[0]; expect aAdd=aSplitCounts[0]
+- **Search anchors**: 'aAdd = (aEI == 0 || aENs[1] < aENs[0]) ? 0 : aSplitCounts[0]'
+
+##### `FixTails.9`
+- **Line**: 4381  **Axis**: `DUAL_EDGE_REMOVAL_PATH`
+- **Brief**: Remove count==2 branch (both edges removed)
+- **Falsifiable claim**: aRemoveCount==2 → FixDummySeam, set aCheckAngle=true, branch on split sums
+- **Minimal reproducer**: Both edges removed (aRemoveCount==2); expect FixDummySeam call
+- **Search anchors**: 'if (aRemoveCount == 2)', 'FixDummySeam('
+
+##### `FixTails.10`
+- **Line**: 4389  **Axis**: `STATE_SYNCHRONIZATION`
+- **Brief**: Post-FixDummySeam context update
+- **Falsifiable claim**: !Context().IsNull() → UpdateWire() after FixDummySeam
+- **Minimal reproducer**: aRemoveCount==2, Context non-null; expect UpdateWire() called
+- **Search anchors**: '!Context().IsNull()', 'UpdateWire()', 'if (aRemoveCount == 2)'
+
+##### `FixTails.11`
+- **Line**: 4395  **Axis**: `EDGE_COUNT_PRESERVATION`
+- **Brief**: Sum-of-splits==2 guard (no net edge removal)
+- **Falsifiable claim**: aSplitCounts[0]+aSplitCounts[1]==2 → no index adjustment needed
+- **Minimal reproducer**: Remove 2, split into 1+1=2 parts total; aECount unchanged
+- **Search anchors**: 'if (aSplitCounts[0] + aSplitCounts[1] == 2)'
+
+##### `FixTails.12`
+- **Line**: 4401  **Axis**: `SYMMETRIC_SPLIT_HANDLING`
+- **Brief**: Equal split counts branch
+- **Falsifiable claim**: aSplitCounts[0]==aSplitCounts[1] → aECount-=2, adjust aENs indices
+- **Minimal reproducer**: Both edges split equally (1 part each); aECount decremented, index adjustments
+- **Search anchors**: 'if (aSplitCounts[0] == aSplitCounts[1])', 'aECount -= 2'
+
+##### `FixTails.13`
+- **Line**: 4404  **Axis**: `INDEX_BOUNDARY_LOGIC`
+- **Brief**: Index boundary check for aENs[1]
+- **Falsifiable claim**: aENs[1]>=3 → decrement both aENs, else reset to (aECount,1)
+- **Minimal reproducer**: Equal splits with aENs[1]>=3 vs <3; verify index reset
+- **Search anchors**: 'if (aENs[1] >= 3)', 'aENs[0] = aECount'
+
+##### `FixTails.14`
+- **Line**: 4414  **Axis**: `ASYMMETRIC_SPLIT_HANDLING`
+- **Brief**: Unequal split counts else branch
+- **Falsifiable claim**: aSplitCounts[0] != aSplitCounts[1] → aECount-=1, branch on aSplitCounts[0]
+- **Minimal reproducer**: One edge split (1 part), other removed (0 parts); aECount-=1
+- **Search anchors**: 'else { --aECount;', 'if (aSplitCounts[0] != 0)'
+
+##### `FixTails.15`
+- **Line**: 4417  **Axis**: `EDGE_INDEX_CLAMPING`
+- **Brief**: aSplitCounts[0] non-zero guard
+- **Falsifiable claim**: aSplitCounts[0]!=0 → clamp aENs[0] to [0,aECount], else branch resets indices
+- **Minimal reproducer**: aSplitCounts[0]!=0; expect aENs[0]=min(aENs[0],aECount)
+- **Search anchors**: 'if (aSplitCounts[0] != 0)', 'aENs[0] = (aENs[0] <= aECount) ? aENs[0] : aECount'
+
+##### `FixTails.16`
+- **Line**: 4421  **Axis**: `INDEX_BOUNDARY_LOGIC`
+- **Brief**: Nested index reset for aENs[1]<3
+- **Falsifiable claim**: aENs[1]<3 inside aSplitCounts[0]==0 → reset to (aECount,1)
+- **Minimal reproducer**: aSplitCounts[0]==0 and aENs[1]<3; expect reset
+- **Search anchors**: 'aENs[0] = aECount; aENs[1] = 1'
+
+##### `FixTails.17`
+- **Line**: 4433  **Axis**: `SINGLE_EDGE_REMOVAL_PATH`
+- **Brief**: Single-edge-removal else branch (aRemoveCount<2)
+- **Falsifiable claim**: aRemoveCount!=2 → single-edge path, set aCheckAngle=false, aECount-=1
+- **Minimal reproducer**: One edge removed (aRemoveCount==1); expect aCheckAngle=false, aECount-=1
+- **Search anchors**: 'else { aCheckAngle = false; --aECount;'
+
+##### `FixTails.18`
+- **Line**: 4435  **Axis**: `REMOVAL_TARGET_DETECTION`
+- **Brief**: Removal index selection by null part
+- **Falsifiable claim**: aEParts[0][0].IsNull() → aRI=1, else aRI=0
+- **Minimal reproducer**: E1 removed (part[0][0]=null) vs E2 removed; aRI selects the removed edge
+- **Search anchors**: 'aEParts[0][0].IsNull() ? 1 : 0'
+
+##### `FixTails.19`
+- **Line**: 4436  **Axis**: `SPLIT_HANDLING_ON_REMOVAL`
+- **Brief**: Split part of removed edge guard
+- **Falsifiable claim**: aSplitCounts[aRI]!=0 → nested branch on aRI value
+- **Minimal reproducer**: aRI=0 or 1, aSplitCounts[aRI]!=0; expect nested branching
+- **Search anchors**: 'if (aSplitCounts[aRI] != 0)'
+
+##### `FixTails.20`
+- **Line**: 4438  **Axis**: `INDEX_BOUNDARY_LOGIC`
+- **Brief**: aRI==0 index adjustment
+- **Falsifiable claim**: aRI==0 and split → adjust aENs indices if aENs[1]>=3, else reset
+- **Minimal reproducer**: aRI==0, split needed, aENs[1]>=3; expect aENs decrement
+- **Search anchors**: 'if (aRI == 0)', 'if (aENs[1] >= 3)'
+
+##### `FixTails.21`
+- **Line**: 4446  **Axis**: `EDGE_INDEX_CLAMPING`
+- **Brief**: aRI==1 single-edge removal clamping
+- **Falsifiable claim**: aRI==1 → aENs[0]=clamp(aENs[0], 0, aECount) iff aENs[1]>1 else aECount
+- **Minimal reproducer**: aRI==1, aENs[1]<=1; expect aENs[0]=aECount
+- **Search anchors**: 'aENs[0] = (aENs[1] > 1) ? aENs[0] : aECount'
+
+##### `FixTails.22`
+- **Line**: 4450  **Axis**: `REMOVE_INDEX_OFFSET`
+- **Brief**: Remove index calculation
+- **Falsifiable claim**: aRI!=0 || aSplitCounts[0]==0 → offset=0, else offset=1 in Remove() index
+- **Minimal reproducer**: Calculate remove index; aENs[aRI] + ((aRI != 0 || aSplitCounts[0] == 0) ? 0 : 1)
+- **Search anchors**: 'aSEWD->Remove(aENs[aRI] + ((aRI != 0 || aSplitCounts[0] == 0) ? 0 : 1))'
+
+##### `FixTails.23`
+- **Line**: 4451  **Axis**: `CONTEXT_MODIFICATION`
+- **Brief**: Context non-null removal propagation
+- **Falsifiable claim**: !Context().IsNull() → Context()->Remove(aEs[aRI]), UpdateWire()
+- **Minimal reproducer**: Context non-null, single removal; expect Context()->Remove and UpdateWire
+- **Search anchors**: '!Context().IsNull()', 'Context()->Remove(aEs[aRI]'
+
+
+#### `ShapeFix_Wire.Perform`
+ (12 branches; 2 low-confidence; source: `v3-deep-batch-D.json`)
+
+##### `SF_Perform_001`
+- **Line**: 305  **Axis**: `incomplete_diagnostics`
+- **Brief**: Early return without status update when wire fails to load
+- **Falsifiable claim**: A wire that IsLoaded() fails causes Perform to return false immediately without calling ClearStatuses or recording reason
+- **Minimal reproducer**: Create a null or uninitialized ShapeFix_Wire, invoke Perform()
+- **Search anchors**: '!IsLoaded()', 'return false', 'ClearStatuses'
+
+##### `SF_Perform_002`
+- **Line**: 320  **Axis**: `mode_override_cascade`
+- **Brief**: FixReorder skipped when myFixReorderMode=0 despite wire order problems detected
+- **Falsifiable claim**: When CheckOrder detects reordering problems but NeedFix is false (mode forbidden), wire remains disordered and subsequent FixSmall/FixConnected may fail
+- **Minimal reproducer**: Disordered wire with myFixReorderMode=0; verify ReorderOK remains false, affecting downstream fixes
+- **Search anchors**: 'NeedFix(myFixReorderMode', 'ReorderOK', 'FixReorder'
+
+##### `SF_Perform_003`
+- **Line**: 331  **Axis**: `conditional_skip_wrong`
+- **Brief**: FixSmall is disabled if ReorderOK=false, leaving small edges in wire
+- **Falsifiable claim**: When reordering failed, FixSmall never runs even if myFixSmallMode is enabled; small degenerate edges persist
+- **Minimal reproducer**: Disordered wire with small edges, myFixSmallMode enabled; verify FixSmall() not called
+- **Search anchors**: '!myTopoMode || !ReorderOK', 'FixSmall', 'myFixSmallMode'
+
+##### `SF_Perform_004`
+- **Line**: 355  **Axis**: `dependency_coupling`
+- **Brief**: FixConnected conditional depends on ReorderOK rather than connectivity problems
+- **Falsifiable claim**: Connected edges are not fixed if reordering failed, even though connectivity repair is independent
+- **Minimal reproducer**: Wire with bad vertices+bad order; reorder fails so FixConnected is skipped
+- **Search anchors**: 'NeedFix(myFixConnectedMode, ReorderOK', 'FixConnected'
+
+##### `SF_Perform_005`
+- **Line**: 367  **Axis**: `mode_suppression`
+- **Brief**: FixEdgeCurves mode forcibly set to 0 if ReorderOK=false and mode=-1
+- **Falsifiable claim**: When reorder fails and myFixShiftedMode=-1, shifted edges are never fixed
+- **Minimal reproducer**: Wire with shifted curves + reorder failure; verify myFixShiftedMode changed to 0
+- **Search anchors**: 'myFixShiftedMode == -1', '!ReorderOK', 'myFixShiftedMode = 0'
+
+##### `SF_Perform_006` **[low-confidence]**
+- **Line**: 381  **Axis**: `ordering_sensitivity`
+- **Brief**: FixDegenerated called unconditionally on mode, but result depends on prior FixSmall
+- **Falsifiable claim**: If FixSmall was skipped, degenerated edges may not be properly detected by analyzer
+- **Minimal reproducer**: Wire with degen edge + small edge, FixSmall disabled; FixDegenerated may miss degen
+- **Search anchors**: 'NeedFix(myFixDegeneratedMode', 'FixDegenerated', '??'
+
+##### `SF_Perform_007`
+- **Line**: 395  **Axis**: `mode_collision`
+- **Brief**: FixNotchedEdges skipped if myFixTailMode<=0, even if notched problems exist
+- **Falsifiable claim**: Notched edges repair blocked by tail mode condition
+- **Minimal reproducer**: Wire with notched edges + myFixTailMode>0; verify FixNotchedEdges never runs
+- **Search anchors**: 'myFixTailMode <= 0', 'NeedFix(myFixNotchedEdgesMode', 'ReorderOK'
+
+##### `SF_Perform_008`
+- **Line**: 403  **Axis**: `conditional_omission`
+- **Brief**: FixShifted called unconditionally after FixNotchedEdges but only if FixNotchedEdges succeeded
+- **Falsifiable claim**: FixShifted may not run if both FixNotchedEdges and FixTails fail
+- **Minimal reproducer**: Wire where FixNotchedEdges returns false; FixShifted not invoked
+- **Search anchors**: 'Fixed |= FixNotchedEdges', 'if (Fixed)', 'FixShifted'
+
+##### `SF_Perform_009`
+- **Line**: 415  **Axis**: `mode_suppression`
+- **Brief**: FixSelfIntersection mode forced to 0 if ReorderOK=false and mode=-1
+- **Falsifiable claim**: Self-intersecting wires are not fixed if reorder failed and mode=-1
+- **Minimal reproducer**: Wire with self-intersection + reorder failure; verify myFixIntersectingEdgesMode set to 0
+- **Search anchors**: 'myFixIntersectingEdgesMode == -1', '!ReorderOK', 'myFixIntersectingEdgesMode = 0'
+
+##### `SF_Perform_010` **[low-confidence]**
+- **Line**: 424  **Axis**: `ordering_drift`
+- **Brief**: FixReorder called unconditionally after FixSelfIntersection regardless of result
+- **Falsifiable claim**: Wire may be re-ordered even though self-intersection fix may have inserted vertices
+- **Minimal reproducer**: Wire with self-intersecting edge fixed by vertex insertion; reorder changes edge topology again
+- **Search anchors**: 'FixSelfIntersection', 'FixReorder', 'myFixIntersectingEdgesMode'
+
+##### `SF_Perform_011`
+- **Line**: 434  **Axis**: `dependency_coupling`
+- **Brief**: FixLacking is conditional on ReorderOK, but lacking edges may exist despite order
+- **Falsifiable claim**: Lacking edges are not inserted if wire reordering failed
+- **Minimal reproducer**: Wire with missing edge + bad order; FixLacking skipped due to ReorderOK=false
+- **Search anchors**: 'NeedFix(myFixLackingMode, ReorderOK', 'FixLacking'
+
+##### `SF_Perform_012`
+- **Line**: 446  **Axis**: `error_accumulation`
+- **Brief**: FixVertexTolerance called on all edges in loop without early termination on failure
+- **Falsifiable claim**: If FixVertexTolerance fails on edge N, edges N+1..NbEdges still processed
+- **Minimal reproducer**: Wire where FixVertexTolerance fails on edge 1; verify edge 2+ still processed
+- **Search anchors**: 'for (int iedge', 'FixVertexTolerance', 'Fixed = true'
 
 
 ### ShapeFix_Wireframe
@@ -2942,6 +9131,52 @@ v3's bar: every branch's description is rich enough to either RECREATE the defec
 
 ### ShapeUpgrade_UnifySameDomain
 
+#### `ShapeUpgrade_UnifySameDomain.FillHistory`
+ (6 branches; 4 low-confidence; source: `v3-deep-batch-M.json`)
+
+##### `M4-FillHistory-null-check`
+- **Line**: 4477  **Axis**: `history completeness / null-safety contract / caller expectation`
+- **Brief**: Early return when myHistory.IsNull() prevents history recording; callers expecting modified() output get incomplete history
+- **Falsifiable claim**: If myHistory is null, modified shapes are never recorded, and external code cannot determine what changed
+- **Minimal reproducer**: FillHistory() called with null myHistory; caller queries modified() expecting results
+- **Search anchors**: 'myHistory.IsNull()', 'return;', 'History is not requested comment'
+
+##### `M4-FillHistory-context-history-null`
+- **Line**: 4489  **Axis**: `null-pointer safety / context state / history dependency`
+- **Brief**: myContext->History() may return null, causing subsequent Modified() calls to crash
+- **Falsifiable claim**: If myContext has no history tracking enabled, aCtxHistory will be null and line 4523 will dereference null
+- **Minimal reproducer**: myContext created without history tracking; FillHistory() calls aCtxHistory->Modified()
+- **Search anchors**: 'aCtxHistory = myContext->History()', 'aCtxHistory->Modified(aS)', 'null check missing'
+
+##### `M4-FillHistory-shape-kind-filter` **[low-confidence]**
+- **Line**: 4497  **Axis**: `shape taxonomy / coverage completeness / history scope`
+- **Brief**: Only VERTEX, EDGE, FACE, SOLID shapes are mapped for history, but compound/shell modifications are ignored
+- **Falsifiable claim**: Shells or compounds modified by unification are not tracked in aMapInputShape, and their history is lost
+- **Minimal reproducer**: Unification modifies shell structure; FillHistory only checks V/E/F/Solid, shell changes are dropped
+- **Search anchors**: 'TopAbs_VERTEX', 'TopAbs_EDGE', 'TopAbs_FACE', 'TopAbs_SOLID', 'compound/shell omission'
+
+##### `M4-FillHistory-result-shape-null` **[low-confidence]**
+- **Line**: 4504  **Axis**: `null-safety / history coherence / state validation`
+- **Brief**: aMapResultShapes built from myShape without null check; if myShape is null, map will be empty and all shapes appear removed
+- **Falsifiable claim**: If myShape becomes null during operation, all input shapes appear removed from result without actually being deleted
+- **Minimal reproducer**: myShape becomes null; FillHistory() proceeds and records all shapes as removed
+- **Search anchors**: 'TopExp::MapShapes(myShape, ...)', 'null check missing', 'aMapResultShapes.Extent()'
+
+##### `M4-FillHistory-image-presence-logic` **[low-confidence]**
+- **Line**: 4535  **Axis**: `history semantics / multi-image tracking / modification classification`
+- **Brief**: Loop checks if any image is present in result, but if only some images are present, partial modifications are not distinguished from complete removal
+- **Falsifiable claim**: If shape has images [A,B,C] and only B is in result, only B is recorded as modified; A and C's status is ambiguous
+- **Minimal reproducer**: Shape produces multiple images; only one survives filtering; partial modification semantics unclear
+- **Search anchors**: 'aLSImages', 'Iterator aItLSIm', 'bRemoved logic', 'partial survival'
+
+##### `M4-FillHistory-same-identity-skip` **[low-confidence]**
+- **Line**: 4540  **Axis**: `shape identity semantics / modification definition / history completeness`
+- **Brief**: IsSame() check skips recording if image is identical to input, but topological equivalence with location/attribute differences is invisible
+- **Falsifiable claim**: If image differs only in location or internal attributes but IsSame() returns true, modification is not recorded
+- **Minimal reproducer**: Shape modified with location change; IsSame() returns true; modification hidden from history
+- **Search anchors**: 'if (!aSIm.IsSame(aS))', 'AddModified(aS, aSIm)', 'skipped for identical'
+
+
 #### `ShapeUpgrade_UnifySameDomain.IntUnifyFaces`
  (75 branches; 2 low-confidence; source: `v3-deep-ShapeUpgrade_UnifySameDomain_IntUnifyFaces.json`)
 
@@ -3469,4 +9704,146 @@ v3's bar: every branch's description is rich enough to either RECREATE the defec
 - **Falsifiable claim**: Without mapping, context merge would not know which old faces correspond to new faces. To test: verify edge in NewFaces appears in at least one original face.
 - **Minimal reproducer**: Original faces F1, F2 merged to NewFace NF. For each edge in NF, find F1 or F2 containing it. Without: mapping fails. With: works.
 - **Search anchors**: 'TopExp::MapShapes(faces(ii), aEmap)', 'Emaps.Append(aEmap)'
+
+
+#### `ShapeUpgrade_UnifySameDomain.MergeEdges`
+ (4 branches; source: `v3-deep-batch-A.json`)
+
+##### `ShapeUpgrade_UnifySameDomain.MergeEdges.vertex-orientation-filter`
+- **Line**: ShapeUpgrade_UnifySameDomain.cxx:2776  **Axis**: `input-shape`
+- **Brief**: Filters vertices by orientation to exclude neutral or unclassified vertices from merge tracking.
+- **Falsifiable claim**: Without filtering, neutral-orientation vertices become hidden duplicates in the merge map. To test: edge with neutral-orientation vertex; without filter, map ambiguity causes wrong merges.
+- **Minimal reproducer**: Construct wire with edge having vertex at TopAbs_INTERNAL or TopAbs_EXTERNAL orientation. Call MergeEdges. Without filter: spurious map entries. With filter: only FORWARD/REVERSED tracked.
+- **Search anchors**: 'Orientation', 'TopAbs_FORWARD', 'TopAbs_REVERSED', 'aMapVE.Add'
+
+##### `ShapeUpgrade_UnifySameDomain.MergeEdges.vertex-reachability-chain`
+- **Line**: ShapeUpgrade_UnifySameDomain.cxx:2809  **Axis**: `input-shape`
+- **Brief**: Builds edge chains by walking vertex neighborhoods until all connected edges are collected.
+- **Falsifiable claim**: Without reachability walk, only immediate neighbors are collected, breaking chains at vertices with degree > 2. To test: branching wire; without walk, components treated as isolated.
+- **Minimal reproducer**: Wire geometry: E1-V1-E2, E1-V1-E3 (V1 degree 3). Call MergeEdges. Without walk: E1 chains alone, E2/E3 miss connation to each other. With walk: full connected chain [E1, E2, E3].
+- **Search anchors**: 'aChain', 'isAdded', 'while', 'V[j]'
+
+##### `ShapeUpgrade_UnifySameDomain.MergeEdges.used-edge-skip`
+- **Line**: ShapeUpgrade_UnifySameDomain.cxx:2794  **Axis**: `healer-state`
+- **Brief**: Skips edges already processed in chains to avoid duplicate merging.
+- **Falsifiable claim**: Without skip, edges are merged multiple times, creating invalid geometry references. To test: reuse edge in two chains; without skip, double merge causes corruption.
+- **Minimal reproducer**: Construct sequence with edge E appearing twice. Call MergeEdges. Without skip: E merged twice, creating reference duplication. With skip: E processed once.
+- **Search anchors**: 'aUsedEdges', 'Contains', 'Add', 'continue'
+
+##### `ShapeUpgrade_UnifySameDomain.MergeEdges.null-vertex-terminator`
+- **Line**: ShapeUpgrade_UnifySameDomain.cxx:2812  **Axis**: `api-contract`
+- **Brief**: Terminates chain walk when vertex is null (e.g., at boundary or after removal).
+- **Falsifiable claim**: Without null check, null-vertex dereference causes crash. To test: edge with null vertex endpoint; without check, walk attempts to query null vertex.
+- **Minimal reproducer**: Edge with null endpoint (degenerate or incomplete). Walk chains. Without null check: dereferencing exception at V[j]. With check: chain terminates gracefully.
+- **Search anchors**: 'IsNull', 'break', 'V[j].IsNull'
+
+
+#### `ShapeUpgrade_UnifySameDomain.UnifyEdges`
+ (6 branches; 6 low-confidence; source: `v3-deep-batch-M.json`)
+
+##### `M3-UnifyEdges-safe-mode-update` **[low-confidence]**
+- **Line**: 4340  **Axis**: `safe-mode consistency / shape tracking / context state coherence`
+- **Brief**: UpdateMapOfShapes() in safe mode may fail to synchronize myKeepShapes with context modifications made before this call
+- **Falsifiable claim**: If myKeepShapes references edges already modified by myContext->Apply(myShape) on line 4326, UpdateMapOfShapes() will not repair stale references
+- **Minimal reproducer**: Pre-existing modifications in myContext applied to myShape before UpdateMapOfShapes() call
+- **Search anchors**: 'mySafeInputMode', 'UpdateMapOfShapes', 'myContext->Apply(myShape) precedent'
+
+##### `M3-UnifyEdges-merge-return-unused` **[low-confidence]**
+- **Line**: 4357  **Axis**: `merge coherence / context recording / history consistency`
+- **Brief**: MergeSeq() return value isMerged drives subsequent face rebuild, but no validation that merge actually succeeded
+- **Falsifiable claim**: If MergeSeq() returns true but myContext->IsRecorded(aE) remains false for all edges, aChangedFaces remains empty and face fixup is skipped
+- **Minimal reproducer**: MergeSeq() claims success without recording any edge replacements in myContext
+- **Search anchors**: 'isMerged = MergeSeq()', 'if (isMerged)', 'myContext->IsRecorded(aE)'
+
+##### `M3-UnifyEdges-face-null-continuation` **[low-confidence]**
+- **Line**: 4381  **Axis**: `null-safety / removal tracking / history coherence`
+- **Brief**: Null face after context->Apply() is silently skipped with continue, potentially leaving dependent shell unfixed
+- **Falsifiable claim**: If aFace becomes null after Apply() due to removal, the loop continues without recording this in history or myContext
+- **Minimal reproducer**: Edge merge causes face removal; Apply() returns null; continue skips shell rebuild
+- **Search anchors**: 'if (aFace.IsNull())', 'continue', 'aChangedFaces.Extent()', 'shell rebuild guard'
+
+##### `M3-UnifyEdges-pcurve-non-safe-only` **[low-confidence]**
+- **Line**: 4388  **Axis**: `pcurve coherence / safe-mode limitation / face fix dependency`
+- **Brief**: PCurve creation for planar faces skipped in safe mode, potentially causing subsequent face fixes to use stale curve data
+- **Falsifiable claim**: When mySafeInputMode is true, BRepLib::BuildPCurveForEdgesOnPlane() is never called, and ShapeFix_Face may operate on incomplete pcurves
+- **Minimal reproducer**: Safe-mode operation on merged edges in planar face; face fix uses stale or missing pcurve
+- **Search anchors**: '!mySafeInputMode', 'BuildPCurveForEdgesOnPlane', 'Geom_Plane type check'
+
+##### `M3-UnifyEdges-shell-orientation-local` **[low-confidence]**
+- **Line**: 4430  **Axis**: `shape consistency / shell orientation / context apply ordering`
+- **Brief**: Shell orientation fix applied only to aRes1 after re-applying context, but myShape may contain stale shell references
+- **Falsifiable claim**: If shell orientation is fixed in aRes1 but myShape was not updated between Apply() calls, myShape may contain unfixed shells
+- **Minimal reproducer**: Multiple Apply() calls without propagating shell orientation fixes back to all references
+- **Search anchors**: 'aRes1 = myContext->Apply(aRes)', 'FixFaceOrientation(aShell)', 'myShape = myContext->Apply(myShape)'
+
+##### `M3-UnifyEdges-shell-identity-same-check` **[low-confidence]**
+- **Line**: 4436  **Axis**: `shape identity / modification detection / orientation semantics`
+- **Brief**: IsSame() used to detect shell modification, but topologically identical shells with different internal references may not be detected
+- **Falsifiable claim**: If FixFaceOrientation() modifies shell topology without changing object identity (IsSame returns false), the replacement fails
+- **Minimal reproducer**: Shell with isolated orientation issue; FixFaceOrientation() returns geometrically equivalent shell but IsSame() returns true incorrectly
+- **Search anchors**: '!aNewShell.IsSame(aShell)', 'FixFaceOrientation', 'isChanged flag'
+
+
+#### `ShapeUpgrade_UnifySameDomain.UnifyFaces`
+ (4 branches; 3 low-confidence; source: `v3-deep-batch-M.json`)
+
+##### `M2-UnifyFaces-face-shell-mapping`
+- **Line**: 3069  **Axis**: `null-pointer safety / map coherence / shell association`
+- **Brief**: ChangeSeek() on face-shell map returns pointer without null-safety check before dereferencing Add()
+- **Falsifiable claim**: If ChangeSeek(aF) returns nullptr, the subsequent conditional dereference on line 3072/3077 will crash
+- **Minimal reproducer**: Face aF not yet in aGMapFaceShells with ChangeSeek() returning null, immediate dereference without null check
+- **Search anchors**: 'ChangeSeek(aF)', 'pShells->Add', 'else clause pointer dereference'
+
+##### `M2-UnifyFaces-free-boundary-degenerate` **[low-confidence]**
+- **Line**: 3098  **Axis**: `degenerate edge handling / free boundary definition / same-domain filtering`
+- **Brief**: Degenerate edge check excludes genuinely degenerate edges from free-boundary map, but map is later used as allowlist for unification
+- **Falsifiable claim**: Degenerate edges on shell boundaries with aFaceList.Extent() == 1 are not added to aFreeBoundMap, potentially allowing invalid mergings
+- **Minimal reproducer**: Degenerate edge on single face in isolated shell; unification proceeds without boundary protection
+- **Search anchors**: '!BRep_Tool::Degenerated(anEdge)', 'aFaceList.Extent() == 1', 'aFreeBoundMap.Add'
+
+##### `M2-UnifyFaces-compound-empty` **[low-confidence]**
+- **Line**: 3122  **Axis**: `shell isolation / face traversal / coverage completeness`
+- **Brief**: Face-out-of-shell compound created but unification skipped if nbf == 0, leaving orphaned faces unprocessed
+- **Falsifiable claim**: Faces existing outside shells in myShape are never unified if nbf remains 0 after loop completion
+- **Minimal reproducer**: Solid with faces not belonging to any shell; these faces are skipped by the nbf > 0 guard
+- **Search anchors**: 'nbf > 0', 'exps.Init(myShape, TopAbs_FACE, TopAbs_SHELL)', 'aCmp creation without use'
+
+##### `M2-UnifyFaces-context-apply` **[low-confidence]**
+- **Line**: 3128  **Axis**: `context coherence / modification tracking / history consistency`
+- **Brief**: myContext->Apply(myShape) called post-unification without validation that all IntUnifyFaces modifications are reflected
+- **Falsifiable claim**: If myContext does not properly track modifications from IntUnifyFaces, Apply() may return stale geometry
+- **Minimal reproducer**: IntUnifyFaces performs local modifications without recording them in myContext
+- **Search anchors**: 'myContext->Apply(myShape)', 'IntUnifyFaces', 'aGMapEdgeFaces state after call'
+
+
+#### `ShapeUpgrade_UnifySameDomain.generateSubSeq`
+ (4 branches; 3 low-confidence; source: `v3-deep-batch-M.json`)
+
+##### `M1-generateSubSeq-loop-notOk` **[low-confidence]**
+- **Line**: 2721  **Axis**: `same-domain detection / tolerance boundary / seam-edge coherence`
+- **Brief**: Non-mergeable edge pair handling may create orphaned edge subsequences without validating edge topology consistency
+- **Falsifiable claim**: If two consecutive edges fail IsMergingPossible(), the new subsequence is created without verifying that edge2 shares a valid vertex with the previous subsequence's last edge
+- **Minimal reproducer**: Two collinear edges with matching direction but tolerance-exceeding gap or degenerate shared vertex
+- **Search anchors**: 'IsMergingPossible', 'SubSequenceOfEdges.Append', 'isLineDirectionOk reassignment'
+
+##### `M1-generateSubSeq-loop-isOk` **[low-confidence]**
+- **Line**: 2728  **Axis**: `same-domain detection / direction continuity / tolerance tolerance`
+- **Brief**: Merged edges appended without re-checking direction consistency after merging into accumulated subsequence
+- **Falsifiable claim**: When appending edge2 to the last subsequence, no verification occurs that the cumulative direction vector remains valid across all accumulated edges
+- **Minimal reproducer**: Three collinear edges where first+second merge, but second+third have opposite tangent direction at boundary
+- **Search anchors**: 'SeqOfSubSeqOfEdges.ChangeLast', 'direction validation', 'accumulated edge chain'
+
+##### `M1-generateSubSeq-closure-check`
+- **Line**: 2734  **Axis**: `closure handling / edge sequencing / same-domain detection`
+- **Brief**: Closed-wire closure merging skipped when only one subsequence exists, leaving disconnected chain unmerged
+- **Falsifiable claim**: If SeqOfSubSeqOfEdges.Length() == 1 in a closed wire, the final edge is never tested against the first edge for mergibility
+- **Minimal reproducer**: Closed wire where all intermediate edges merge into single subsequence, but first/last edge remain unmerged due to length check
+- **Search anchors**: 'IsClosed && SeqOfSubSeqOfEdges.Length() > 1', 'SeqOfSubSeqOfEdges.Remove(1)'
+
+##### `M1-generateSubSeq-closure-merge-remove` **[low-confidence]**
+- **Line**: 2748  **Axis**: `memory safety / iterator stability / closure semantics`
+- **Brief**: Circular merge of first edges into last subsequence followed by removal may cause stale references if iteration already started
+- **Falsifiable claim**: If external code holds iterator to SeqOfSubSeqOfEdges(1), the Remove(1) call invalidates that iterator without notification
+- **Minimal reproducer**: Concurrent iteration over SeqOfSubSeqOfEdges during closure merge execution
+- **Search anchors**: 'SeqOfSubSeqOfEdges.Remove(1)', 'circular append', 'sequence mutation'
 
