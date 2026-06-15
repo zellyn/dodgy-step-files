@@ -19,7 +19,7 @@ DATA;
 #102=CARTESIAN_POINT('',(2.0,0.0,1.0));#103=AXIS2_PLACEMENT_3D('',#102,#11,#12);
 #104=CIRCLE('',#103,0.3);
 #105=EDGE_CURVE('window',#101,#101,#104,.T.);
-#106=ORIENTED_EDGE('',*,*,#105,.T.);#107=EDGE_LOOP('',(#106,));
+#106=ORIENTED_EDGE('',*,*,#105,.T.);#107=EDGE_LOOP('',(#106));
 #108=FACE_INNER_BOUND('only_inner',#107,.T.);
 #109=ADVANCED_FACE('no_outer_bound',(#108),#14,.T.);
 /* Wrap: minimal PRODUCT chain so OCCT TransferRoots produces a shape. */

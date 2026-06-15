@@ -29,11 +29,11 @@ DATA;
 #10=CARTESIAN_POINT('a',(0.0,0.0,0.0));
 #11=CARTESIAN_POINT('a-near',(1e-7,0.0,0.0));
 #12=CARTESIAN_POINT('b',(1.0,0.0,0.0));
-#13=CARTESIAN_POINT('b-near',(1.0+1e-7,0.0,0.0));
+#13=CARTESIAN_POINT('b-near',(1.0000001,0.0,0.0));
 #14=CARTESIAN_POINT('c',(1.0,1.0,0.0));
-#15=CARTESIAN_POINT('c-near',(1.0,1.0+1e-7,0.0));
+#15=CARTESIAN_POINT('c-near',(1.0,1.0000001,0.0));
 #16=CARTESIAN_POINT('d',(0.0,1.0,0.0));
-#17=CARTESIAN_POINT('d-near',(0.0,1.0+1e-7,0.0));
+#17=CARTESIAN_POINT('d-near',(0.0,1.0000001,0.0));
 /* sixteen faces, each sharing a degenerate loop, are all attached to
    the single CLOSED_SHELL #100 - this is the huge single-shell pattern */
 #20=EDGE_LOOP('',());

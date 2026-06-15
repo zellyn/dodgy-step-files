@@ -41,14 +41,14 @@ DATA;
 /* PCURVE 1: U from 0 to 2*pi + 1e-3 (one full period plus 1e-3 drift). */
 #50=CARTESIAN_POINT('uv0',(0.0,0.0));
 #51=DIRECTION('uv_dir',(1.0,0.0));
-#52=VECTOR('uv_vec',#51,6.283185307179586+1.0E-3);
+#52=VECTOR('uv_vec',#51,6.284185307179586);
 #53=LINE('uv_line1',#50,#52);
 #54=DEFINITIONAL_REPRESENTATION('def1',(#53),#80);
 #55=PCURVE('pc1',#14,#54);
 #56=SURFACE_CURVE('sc1',#42,(#55),.PCURVE_S1.);
 #60=EDGE_CURVE('e_period_plus_1e-3',#30,#31,#56,.T.);
 /* PCURVE 2: U from 2*pi + 1e-3 to 1e-3 (back to "start" minus 1e-3). */
-#61=CARTESIAN_POINT('uv1',(6.283185307179586+1.0E-3,0.0));
+#61=CARTESIAN_POINT('uv1',(6.284185307179586,0.0));
 #62=DIRECTION('uv_dir2',(-1.0,0.0));
 #63=VECTOR('uv_vec2',#62,6.283185307179586);
 #64=LINE('uv_line2',#61,#63);

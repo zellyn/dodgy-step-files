@@ -1,19 +1,37 @@
 # Changelog
 
-## v1.2.1 — canonical cube template (Bo003, Bo004, Bo024, Ps001)
+## v1.2.1 — canonical cube template + illegal-Part-21 cleanup
 
-Continues the v1.2.0 fidelity work. Four fixtures whose shared cube template had `EDGE_CURVE`s referenced with the same `.T.` orientation by both incident faces (preventing a 2-manifold build, so the parse-succeeded fixtures couldn't even reach their intended defect) are regenerated with a canonical-winding cube generator.
+Continues the v1.2.0 fidelity work. Two clusters of fixes.
 
-The generator (`/tmp/cube_block.py` during development, will move into `validation/` in v1.3) emits 12 edges where every edge is used **exactly once with `.T.` and once with `.F.`** across its two incident faces. Verified by post-emission consistency check before each fixture is written.
+### Canonical cube template (4 fixtures)
 
-- **Bo003** — Two void shells of one solid are nested inside each other. Outer cube (0..10) + outer void (2..8) + inner void (3..7), the two voids wrapped in `ORIENTED_CLOSED_SHELL .F.` and stuffed into a `BREP_WITH_VOIDS`. Defect is the geometric nesting of the two voids, now reachable past the build step.
-- **Bo004** — Closed shell encloses an unrepresented cavity. Outer cube + inner cube, but the `MANIFOLD_SOLID_BREP` references only the outer shell; the inner cube exists in the file but is unwrapped as a void.
-- **Bo024** — Closed shell whose face orientations imply negative volume. Single cube with all face normals pointing INWARD (`outward=False`), wrapped in `MANIFOLD_SOLID_BREP`.
-- **Ps001** — Negative-volume cube in the Ps "pathological success" section. Same all-inward topology as Bo024 but listed under the section where less-careful kernels silently accept the solid.
+Four fixtures whose shared cube template had `EDGE_CURVE`s referenced with the same `.T.` orientation by both incident faces (preventing a 2-manifold build, so the parse-succeeded fixtures couldn't even reach their intended defect) are regenerated with a canonical-winding cube generator that emits 12 edges where every edge is used **exactly once with `.T.` and once with `.F.`** across its two incident faces.
 
-**Fi008** (fillet completes partially) was left alone — its defect is a fillet pathology beyond the cube-template scope; will be reworked in a later release with a real fillet construction.
+- **Bo003** — Two void shells nested inside each other. Outer cube (0..10) + outer void (2..8) + inner void (3..7), both voids in `ORIENTED_CLOSED_SHELL .F.` inside `BREP_WITH_VOIDS`. Defect (imbricated voids) now reachable past build.
+- **Bo004** — Closed shell encloses an unrepresented cavity. Outer + inner cube, only outer in `MANIFOLD_SOLID_BREP`. Inner exists but unwrapped — the "cavity not declared" defect.
+- **Bo024** — Closed shell whose face orientations imply negative volume. Single cube with all face normals pointing INWARD (`outward=False`).
+- **Ps001** — Negative-volume cube in the Ps "pathological success" section. Same all-inward topology as Bo024.
 
-The remaining ~15 Ps-section fixtures (Ps002, Ps003, Ps005–Ps015) carry varied bespoke defects (CW/CCW mix, same_sense flips, overlapping faces, unit traps, identity-vs-offset placements). Each needs targeted edits rather than blanket regen; deferred to v1.2.2+.
+**Fi008** left alone — fillet pathology beyond cube-template scope; will be reworked with a real fillet construction in a later release. The remaining ~14 Ps fixtures (Ps002, Ps003, Ps005–Ps015) carry varied bespoke defects (CW/CCW mix, same_sense flips, overlapping faces, unit traps, identity-vs-offset placements); deferred to v1.2.2+.
+
+### Illegal-Part-21 form cleanup (6 fixtures)
+
+Fixtures whose intended defect was shadowed by an upstream Part-21 grammar violation:
+
+- **Twi048, Twi059, Twi060, Twi061** — replaced `A()|B(*)|C(x,y)` (`|`-delimited complex-entity form, not in Part-21) with `(A()B(*)C(x,y))` (the standard parenthesised juxtaposition).
+- **Tsh048** — wrapped the previously un-parenthesised `GEOMETRIC_REPRESENTATION_CONTEXT(3) GLOBAL_UNIT_ASSIGNED_CONTEXT(()) REPRESENTATION_CONTEXT('','3D')` in outer parens and populated the unit-assigned context with real `LENGTH_UNIT` / `PLANE_ANGLE_UNIT` / `SOLID_ANGLE_UNIT` references.
+- **Tb011** — replaced literal arithmetic expression `6.283185307179586+1.0E-3` (illegal Part-21 — REAL literals don't allow `+` infix) with the pre-computed value `6.284185307179586`.
+- **Pf017** — same fix for `1.0+1e-7` → `1.0000001`.
+- **Twi091** — removed Python-style trailing comma `(#106,)` → `(#106)` in `EDGE_LOOP`.
+
+**Pf012 left alone** — its deeply-nested aggregate parens (`((((((((((((((((((((((((( #1 )))…`) ARE the test (stack-overflow probe); rewriting them would defeat the fixture.
+
+The `M` cluster (~17 fixtures with inline/nested entity constructors as parameters) was deferred — most candidates turned out to be legal typed-parameter syntax; an audit would be required to identify the actually-illegal subset.
+
+### Rust crate 1.2.1
+
+API unchanged from v1.2.0.
 
 ## v1.2.0 — fidelity fixes from kernel-author feedback
 
