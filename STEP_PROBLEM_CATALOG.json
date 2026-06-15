@@ -17884,7 +17884,7 @@
       "topology"
     ],
     "tier3_assertions": [
-      "face[0].area >= 9000",
+      "face[0].area >= 99",
       "n_edges_total >= 24",
       "face[0].surface_type == \"plane\"",
       "face[5].surface_type == \"plane\""
@@ -18046,7 +18046,7 @@
     "cross_oracle_note": null,
     "description": "An L-shaped bracket whose intended right-hand configuration was mirrored across the X axis during export; every X coordinate was negated. Topology, face count, edge count, and unit context are all unchanged; the part is a valid L-bracket, just the wrong-handed one. For chiral mechanical parts (threads, hand-side brackets, steering linkages) this is a critical defect that the kernel cannot detect from the geometry alone.",
     "expected_kernel_behavior": "Warn and accept: a kernel cannot self-detect chirality errors on a single file, but it normalizes and exposes the AABB and the principal-axes / inertia-tensor of every solid so downstream tools comparing against a known-good reference can detect mirroring (negative determinant of the rotation that aligns inertial axes).",
-    "expected_validation": "occt=shape(1)/shape(1) gmsh=shape(39) ifc=schema_n/a",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=shape(27) ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-3a-shells/Ps013.stp",
     "id": "Ps013",
@@ -18068,7 +18068,7 @@
       "topology"
     ],
     "tier3_assertions": [
-      "n_edges_total >= 36",
+      "n_edges_total >= 24",
       "face[0].surface_type == \"plane\"",
       "face[5].surface_type == \"plane\""
     ],

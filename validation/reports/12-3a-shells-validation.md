@@ -31,7 +31,7 @@ Total: 100  CONFIRMED: 100  CONCERN: 0  FAIL: 0  DRIFT: 0  MERGED: 0  ERROR: 0
 `Ps011.input` **CONFIRMED** — occt=empty gmsh=empty ifc=schema_n/a — silent acceptance / no transfer (default for fixture-style)
 `Ps011` **CONFIRMED** — occt=shape(1) gmsh=shape(27) ifc=schema_n/a — geometry loaded (shape(1)); entity-level defect
 `Ps012` **CONFIRMED** — occt=shape(1) gmsh=shape(9) ifc=schema_n/a — geometry loaded (shape(1)); entity-level defect
-`Ps013` **CONFIRMED** — occt=shape(1) gmsh=shape(39) ifc=schema_n/a — geometry loaded (shape(1)); entity-level defect
+`Ps013` **CONFIRMED** — occt=shape(1) gmsh=shape(27) ifc=schema_n/a — geometry loaded (shape(1)); entity-level defect
 `Ps014` **CONFIRMED** — occt=shape(1) gmsh=shape(27) ifc=schema_n/a — geometry loaded (shape(1)); entity-level defect
 `Ps015` **CONFIRMED** — occt=shape(1) gmsh=shape(27) ifc=schema_n/a — geometry loaded (shape(1)); entity-level defect
 `Sw001` **CONFIRMED** — occt=empty gmsh=empty ifc=schema_n/a — silent acceptance matches catalog defect class

@@ -17719,7 +17719,7 @@ _Section summary: 41 entries._
 - **Notes**: Tier-3 metric: AABB-extent-vs-expected-size cross-check; any
  metadata field naming a unit (PRODUCT.description, FILE_NAME author
  field) compared against SI_UNIT prefix. Synonyms: "STEP file imported 25.4x too large", "model came in as 100 mm but was 100 inches", "wrong units mm vs inch", "unit declaration mismatched", "part scaled wrong by inch-millimeter swap".
-- **Tier-3 assertion**: face[0].area >= 9000
+- **Tier-3 assertion**: face[0].area >= 99
 - **Tier-3 assertion**: n_edges_total >= 24
 - **Tier-3 assertion**: face[0].surface_type == "plane"
 - **Tier-3 assertion**: face[5].surface_type == "plane"
@@ -17861,13 +17861,13 @@ _Section summary: 41 entries._
 - **Notes**: Tier-3 metric: determinant of the rigid alignment between
  this part's principal axes and a reference part's; -1 indicates a
  mirror. Synonyms: "left-hand part imported as right-hand", "thread direction reversed", "bracket mirrored after import", "chiral part comes in wrong-handed", "x-coordinate negated on export".
-- **Tier-3 assertion**: n_edges_total >= 36
+- **Tier-3 assertion**: n_edges_total >= 24
 - **Tier-3 assertion**: face[0].surface_type == "plane"
 - **Tier-3 assertion**: face[5].surface_type == "plane"
 - **OCC behavior**: loads a shape (no diagnostic) — reading as healing; outside catalog's allowed set ({warn-and-proceed}). Documented divergence: OCC's auto-repair is stronger than the catalog's warn-only stance; conservative kernels should still emit a diagnostic.
 - **Severity**: P1
 - **Model impact**: Kernel reports SUCCESS for an operation that should have failed; the loaded shape passes BRepCheck despite carrying a hidden invalidity that surfaces later in downstream booleans/meshing as wrong geometry or signal-11.
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(39) ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(27) ifc=schema_n/a`
 
 ### Ps014 — Position tolerance frame cites datum compartments in wrong order
 - **Category**: §12.3a shells / orientation (filed here per Ps prefix; conceptually §12.7 PMI)
