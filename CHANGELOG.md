@@ -1,5 +1,43 @@
 # Changelog
 
+## v1.4.0 — Deep-pass v3 validation slice + 2 confirmed OCCT source bugs
+
+Per the user-feedback methodology turn: v2's per-branch deep pass enumerated 3,399 OCCT branches with 1-2-sentence descriptions, which were too thin to either recreate the defect or be falsified by an adversarial reader. v3's bar is much higher: every branch carries a `falsifiable_claim` (specific wrong outcome + observation distinguishing correct from incorrect) and a `minimal_reproducer` (specific STEP entities with concrete parameter values).
+
+### Validation slice (20 methods)
+
+20 carefully-selected OCCT methods covering known-interesting cases re-passed under the v3 schema. Result: `OCCT_HEAL_COVERAGE_V3.md` (3472 lines).
+
+| | Count |
+|---|---:|
+| Methods enumerated | 22 *(20 workers, some carry 2 methods)* |
+| Repair branches | 474 |
+| Low-confidence branches (need better prose) | 24 |
+| Truncated worker outputs | 0 |
+
+Defect-axis distribution: `healer-state` 179, `kernel-pair` 76, `input-shape` 68, `tolerance` 61, `api-contract` 47, `conformance-probe` 36, `encoding` 6.
+
+**Single-worker Haiku handles 1200-line methods at v3 fidelity without truncation** — 2-level decomposition not required for OCCT.
+
+### Confirmed OCCT source bugs
+
+The richer-prose pass surfaced two genuine OCCT source-bug candidates worth upstream filing:
+
+1. **`ShapeAnalysis_ShapeTolerance::InTolerance` line ~140** — VERTEX case uses `tol >= valmax` where the FACE and EDGE cases at lines 113 and 125 correctly use `tol <= valmax`. Calling `InTolerance(shape, 0.001, 0.002, TopAbs_VERTEX)` returns vertices with tol ≥ 0.002 instead of tol ≤ 0.002, contradicting the FACE/EDGE behavior and the documented intent.
+2. **`BRepBuilderAPI_Sewing::SameParameterEdge` line ~1168** — `static_cast<BRep_TEdge*>(edge.TShape().get())->Tolerance(maxTol)` performs a raw `BRep_TEdge` write that circumvents the public `SetMaxTolerance` cap. The comment "overwrite too large tolerance" indicates deliberate intent, but no validation that the resulting edge is later rejected. Worth filing as either bug or doc gap.
+
+### `FixPinFace` no-op confirmed
+
+A previous audit flagged `ShapeFix_FixSmallFace::FixPinFace` as a possible no-op stub. v3 confirms: body is literally `return true;` with no shape modification. `CheckPin` / `IsPinFace` (the detector pair) ARE implemented, but the repair side is not. The intended repair would remove or reparametrise faces with pin singularities (collapsed pole rows). Catalog fixtures `Tfa008`/`Tfa044` were already re-tagged `fixture_kind: receiver-behavior` in v1.2.2.
+
+### Next steps
+
+If the validation slice is judged usable, scale to all 320 OCCT methods + 151 mesh methods (~300 more workers, batched 3 in parallel). Methodology + worker prompt template in [`DEEP_PASS_V3_PLAN.md`](DEEP_PASS_V3_PLAN.md).
+
+After v3 prose is complete for the full surface:
+1. Synthesise STEP fixtures from the prose descriptions (Phase 6 of `PLAN_OF_ATTACK.md`).
+2. Spawn adversarial sub-agents on each fixture to prove or disprove that it actually demonstrates its claimed defect.
+
 ## v1.3.2 — Phase 4 defect-class mining (103 new candidates)
 
 Per `PLAN_OF_ATTACK.md` Phase 4: enumerate defect classes from issue trackers + release notes + KB articles that aren't in OCCT/MeshFix headers. Two parallel mining agents produced:

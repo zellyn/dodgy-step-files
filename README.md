@@ -144,7 +144,7 @@ The `rust/` directory ships a crate (`dodgy-step-files`) that embeds the full co
 
 ```toml
 [dependencies]
-dodgy-step-files = { git = "https://github.com/zellyn/dodgy-step-files", tag = "v1.3.2" }
+dodgy-step-files = { git = "https://github.com/zellyn/dodgy-step-files", tag = "v1.4.0" }
 ```
 
 ```rust
@@ -175,6 +175,7 @@ Walk `step-examples/<section>/<id>.stp` and load metadata from `STEP_PROBLEM_CAT
 | Per-fixture proof / evidence schema | `EVIDENCE_MODEL.md` |
 | OCCT healing-operation coverage map (API-surface pass) | `OCCT_HEAL_COVERAGE.md` |
 | OCCT per-branch deep coverage (v2 — line-by-line implementation pass) | `OCCT_HEAL_COVERAGE_V2.md` |
+| OCCT per-branch rich-prose deep coverage (v3 — falsifiable claims + minimal reproducers) | `OCCT_HEAL_COVERAGE_V3.md` |
 | Mesh-defect taxonomy + repair-surface survey | `MESH_DEFECT_TAXONOMY.md` |
 | Mesh-repair (MeshFix + CGAL PMP) per-method coverage map | `MESH_HEAL_COVERAGE.md` |
 | Codebase landscape (codebases worth auditing beyond OCCT/MeshFix/CGAL) | `CODEBASE_LANDSCAPE.md` |
