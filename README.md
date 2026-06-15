@@ -174,6 +174,7 @@ Walk `step-examples/<section>/<id>.stp` and load metadata from `STEP_PROBLEM_CAT
 | One-page tour of "most interesting findings" | `QUALITY_DASHBOARD.md` |
 | Per-fixture proof / evidence schema | `EVIDENCE_MODEL.md` |
 | OCCT healing-operation coverage map | `OCCT_HEAL_COVERAGE.md` |
+| Mesh-defect taxonomy + repair-surface survey | `MESH_DEFECT_TAXONOMY.md` |
 | Coverage policy / what's intentionally out-of-scope | `COVERAGE_POLICY.md` |
 
 ## Project status
