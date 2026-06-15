@@ -1,5 +1,35 @@
 # Changelog
 
+## v1.3.0 — comprehensive-curriculum scaffolding + OCCT deep coverage v2 (per-method)
+
+This release recalibrates the corpus's self-assessment. The v1.2.0 OCCT API-surface coverage map credited a fixture as "covering" an operation if the fixture mentioned it by name. The v1.2.2 per-`.cxx`-file pass enumerated ~229 repair branches across 13 files. **v1.3.0's per-method deep pass** runs 67 worker agents (one per method or small file-batch) and enumerates **3,399 repair branches across 317 methods** — and finds that only **867 (25.5%) have a catalog fixture whose text matches a branch's defect-class search anchors**. The previous "73% covered" was overestimating dramatically; per-branch, real coverage is **~25%**.
+
+### New documents
+
+- **`OCCT_HEAL_COVERAGE_V2.md`** (14k lines, 3399 branches): the v2 per-method coverage map. For each branch: file + line range, defect-class summary, what-it-tests, repair action, list of catalog fixtures whose text matches the branch's search anchors (or `UNCOVERED` with a suggested-fixture hint).
+- **`CODEBASE_LANDSCAPE.md`** (596 lines, 52 open-source codebases + 75 defect-source enumerations): broader audit landscape produced by two landscape-research agents. Notable findings: (i) **MeshLab `filter_clean` + vcglib `vcg::tri::Clean`** is the cleanest named taxonomy of mesh-repair defects we hadn't audited; (ii) **CAx Implementor Forum round-trip reports** are the densest public taxonomy of kernel-pair translator failures and would mostly be invisible to open-source bug trackers; (iii) the original "skip proprietary kernels" instruction would have excised exactly the highest-leverage source class (commercial-translator-pair literature like HOOPS Exchange / CADfix / Parasolid release notes / SolidWorks SPR lists / CADfix release notes).
+- **`PLAN_OF_ATTACK.md`**: structured 9-phase plan-of-attack for the comprehensive-curriculum goal, with `[ ]` checkboxes per item.
+
+### New infrastructure
+
+- **`validation/src/step_corpus/_cube_block.py`**: canonical-winding cube fixture generator. Emits 12 edges where every edge is used exactly once with `.T.` and once with `.F.` across its two incident faces (verified by post-emission consistency check). Supports `outward=True/False` for outward-shell vs void-shell normals. Used to regenerate Bo003/Bo004/Bo024/Ps001/Ps003/Ps005/Ps008/Ps013 in v1.2.1/v1.2.2; future fixtures will use the same generator.
+- **`validation/src/step_corpus/_format_check.py`**: Stage 1 of the adversarial-fixture-review pipeline. Scans a fixture's bytes for the v1.0/v1.2-class Part-21 corruptions (nested `/* */`, `|`-delimited complex entities, arithmetic REAL literals, trailing commas in aggregates, same-orientation EDGE_CURVE pairs). Runs against a single fixture or the whole corpus.
+- **`validation/tests/test_cube_block.py`**: regression tests verifying the cube generator's outward/inward winding invariants and ID-range layout.
+
+### Notable findings from the deep pass
+
+1. **`ShapeAnalysis_ShapeTolerance::InTolerance`** at `ShapeAnalysis_ShapeTolerance.cxx` line ~149: VERTEX case uses `tol >= valmax` where the other shape types use `<= valmax`. Likely an OCCT source bug. Worth filing upstream.
+2. **`ShapeUpgrade_ConvertCurve2dToBezier.Compute` / `ShapeUpgrade_ClosedFaceDivide.SplitSurface`** carry surprisingly intricate periodic-surface seam handling (127 branches across just 2 methods). Lots of UNCOVERED catalog gaps in seam/periodic territory.
+3. **`BRepLib::EncodeRegularity`** itself is a thin wrapper; the real continuity-classification logic lives in `BRepLib::ContinuityOfFaces` (15 branches handling G0/G1/G2/CN via tangent derivatives + principal curvatures). Catalog has no fixture matching the principal-curvature-direction-alignment branch — high-leverage gap.
+
+### Rust crate
+
+API unchanged from v1.2.2. Tag the consumer to `v1.3.0` if you want to pin to the broader audit landscape.
+
+```toml
+dodgy-step-files = { git = "https://github.com/zellyn/dodgy-step-files", tag = "v1.3.0" }
+```
+
 ## v1.2.2 — Ps-section cube regens + Bo004 Expected sync + OCCT per-branch deep coverage
 
 (Continued from v1.2.2 cube regens — see below — plus a second pass of OCCT coverage.)
