@@ -18,6 +18,15 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      # gmsh's PyPI wheel link-depends on libGLU at load time even with
+      # gmsh.initialize([], False) (no GUI). Without this the gmsh oracle
+      # subprocess crashes with `libGLU.so.1: cannot open shared object file`
+      # and downstream tests see `gmsh=subprocess_error` everywhere.
+      - name: Install gmsh runtime deps
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends libglu1-mesa
+
       - name: Set up uv
         uses: astral-sh/setup-uv@v3
         with:

@@ -1,5 +1,11 @@
 # Changelog
 
+## v1.1.1 — CI: install gmsh runtime deps (libGLU)
+
+CI workflow now installs `libglu1-mesa` before syncing Python deps. The gmsh PyPI wheel link-depends on libGLU even when initialised headlessly (`gmsh.initialize([], False)`), and the GitHub-hosted Ubuntu runner doesn't ship it. Every CI run since the initial release was failing four self-tests for this reason (gmsh subprocess crashed at import, all `gmsh=…` verdicts came back as `subprocess_error`, conformance fell to zero).
+
+No functional change to consumers or the published corpus; only the workflow file changed. Rust crate bumped to 1.1.1 to keep the published tag in lockstep.
+
 ## v1.1 — closure_intent classification for open-shell fixtures
 
 263 fixtures whose STEP bytes use `OPEN_SHELL` or `SHELL_BASED_SURFACE_MODEL` now carry a `closure_intent` label (`sheet` / `solid` / `ambiguous`). The split exists because an open shell is ambiguous between two test intents whose correct kernel behavior is *opposite*: a sheet body is a model-capability test (a solid-only kernel should cleanly refuse); an accidentally-unclosed solid is a repair test (the same kernel must heal it). Without the label a consumer can't tell a correct refusal from a missed repair.
