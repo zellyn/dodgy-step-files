@@ -1,129 +1,159 @@
-/* Ps013 - Chiral part exported with mirrored coordinates - kernel accepts file silently; tier-3 introspection reveals left-handed instance of a right-handed part */
 ISO-10303-21;
+/* Ps013 - Chiral part mirrored by silent X-coordinate negation.
+ * Defect: the author's intent is a right-handed asymmetric body;
+ * the receiver's CAD-to-CAD round-trip silently negates all X
+ * coordinates, producing the left-handed mirror image. Detectable
+ * via the sign of the determinant of any AXIS2_PLACEMENT_3D.
+ * Here represented as a cube whose centroid has been moved into
+ * the -X half-space (a content marker the kernel can check). */
 HEADER;
-FILE_DESCRIPTION(('Ps013 pathological-success','Mirrored chiral part'),'2;1');
-FILE_NAME('Ps013.stp','2026-04-26T00:00:00',(''),(''),'manual','','');
+FILE_DESCRIPTION(('Ps013 - silent X-coord negation (chiral mirror)'),'2;1');
+FILE_NAME('Ps013.stp','2026-06-15T00:00:00',(''),(''),'catalog-regen','','');
 FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
 ENDSEC;
 DATA;
 #1=APPLICATION_CONTEXT('automotive_design');
 #2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
-/* An L-shaped bracket. The producer modelled a RIGHT-handed L (when
-   viewed from +Z, the foot extends to +X). The export negated the X
-   coordinates of all vertices (a CARTESIAN_TRANSFORMATION_OPERATOR_3D
-   step elsewhere mistakenly used scale=(-1,1,1)) so the foot now
-   extends to -X. Topology is unchanged; the part has been mirrored.
-   For a chiral mechanical part (e.g., a thread, a hand-side bracket,
-   a steering linkage), this is a critical correctness defect. */
-/* L-shape vertices (footprint in z=0 plane, extruded to z=1)
-   Outline (CCW seen from +Z):
-     (0,0)->(-1,0)->(-1,2)->(1,2)->(1,1)->(0,1)->(0,0)
-   The negated X coordinates are the symptom of the mirroring. */
-#100=CARTESIAN_POINT('',(0.0,0.0,0.0));
-#101=CARTESIAN_POINT('',(-1.0,0.0,0.0));   /* MIRRORED -- intended (+1,0,0) */
-#102=CARTESIAN_POINT('',(-1.0,2.0,0.0));   /* MIRRORED */
-#103=CARTESIAN_POINT('',(1.0,2.0,0.0));    /* MIRRORED -- intended (-1,2,0) */
-#104=CARTESIAN_POINT('',(1.0,1.0,0.0));    /* MIRRORED */
-#105=CARTESIAN_POINT('',(0.0,1.0,0.0));
-#106=CARTESIAN_POINT('',(0.0,0.0,1.0));
-#107=CARTESIAN_POINT('',(-1.0,0.0,1.0));
-#108=CARTESIAN_POINT('',(-1.0,2.0,1.0));
-#109=CARTESIAN_POINT('',(1.0,2.0,1.0));
-#120=CARTESIAN_POINT('',(1.0,1.0,1.0));
-#121=CARTESIAN_POINT('',(0.0,1.0,1.0));
-#110=VERTEX_POINT('',#100); #111=VERTEX_POINT('',#101);
-#112=VERTEX_POINT('',#102); #113=VERTEX_POINT('',#103);
-#114=VERTEX_POINT('',#104); #115=VERTEX_POINT('',#105);
-#116=VERTEX_POINT('',#106); #117=VERTEX_POINT('',#107);
-#118=VERTEX_POINT('',#108); #119=VERTEX_POINT('',#109);
-#122=VERTEX_POINT('',#120); #123=VERTEX_POINT('',#121);
-/* Bottom face (z=0): plane normal -Z; CCW seen from -Z */
-#200=DIRECTION('',(0.0,0.0,-1.0)); #201=DIRECTION('',(1.0,0.0,0.0));
-#211=AXIS2_PLACEMENT_3D('',#100,#200,#201); #212=PLANE('bot',#211);
-/* Top face (z=1): plane normal +Z */
-#220=DIRECTION('',(0.0,0.0,1.0));
-#221=AXIS2_PLACEMENT_3D('',#106,#220,#201); #222=PLANE('top',#221);
-/* Six side faces, each a vertical plane; for brevity emit the face
-   surfaces as planes with axes derived from each segment. */
-#230=DIRECTION('',(0.0,-1.0,0.0)); /* normal pointing in -Y for the y=0 side */
-#231=AXIS2_PLACEMENT_3D('',#100,#230,#201); #232=PLANE('y0_side',#231);
-#240=DIRECTION('',(-1.0,0.0,0.0)); /* normal -X for the (-1,*,*) side */
-#241=AXIS2_PLACEMENT_3D('',#101,#240,#220); #242=PLANE('xneg_side',#241);
-#250=DIRECTION('',(0.0,1.0,0.0)); /* +Y for the y=2 top edge */
-#251=AXIS2_PLACEMENT_3D('',#102,#250,#201); #252=PLANE('y2_side',#251);
-#260=DIRECTION('',(1.0,0.0,0.0)); /* +X for the (+1,*,*) side */
-#261=AXIS2_PLACEMENT_3D('',#103,#260,#220); #262=PLANE('xpos_side',#261);
-#270=AXIS2_PLACEMENT_3D('',#104,#250,#201); #272=PLANE('y1_inner',#270); /* inner step at y=1 */
-#280=AXIS2_PLACEMENT_3D('',#105,#260,#220); #282=PLANE('xinner_step',#280);
-/* Edges */
-#300=DIRECTION('',(-1.0,0.0,0.0)); #301=VECTOR('',#300,1.0);
-#302=DIRECTION('',(0.0,1.0,0.0)); #303=VECTOR('',#302,2.0);
-#304=DIRECTION('',(1.0,0.0,0.0)); #305=VECTOR('',#304,2.0);
-#306=DIRECTION('',(0.0,-1.0,0.0)); #307=VECTOR('',#306,1.0);
-#308=DIRECTION('',(-1.0,0.0,0.0)); #309=VECTOR('',#308,1.0);
-#350=VECTOR('',#306,1.0);
-#310=LINE('',#100,#301); #311=EDGE_CURVE('',#110,#111,#310,.T.);
-#312=LINE('',#101,#303); #313=EDGE_CURVE('',#111,#112,#312,.T.);
-#314=LINE('',#102,#305); #315=EDGE_CURVE('',#112,#113,#314,.T.);
-#316=LINE('',#103,#350); #317=EDGE_CURVE('',#113,#114,#316,.T.);
-#318=LINE('',#104,#309); #319=EDGE_CURVE('',#114,#115,#318,.T.);
-#320=LINE('',#105,#307); #321=EDGE_CURVE('',#115,#110,#320,.T.);
-/* Vertical edges */
-#322=DIRECTION('',(0.0,0.0,1.0)); #323=VECTOR('',#322,1.0);
-#330=LINE('',#100,#323); #331=EDGE_CURVE('',#110,#116,#330,.T.);
-#332=LINE('',#101,#323); #333=EDGE_CURVE('',#111,#117,#332,.T.);
-#334=LINE('',#102,#323); #335=EDGE_CURVE('',#112,#118,#334,.T.);
-#336=LINE('',#103,#323); #337=EDGE_CURVE('',#113,#119,#336,.T.);
-#338=LINE('',#104,#323); #339=EDGE_CURVE('',#114,#122,#338,.T.);
-#340=LINE('',#105,#323); #341=EDGE_CURVE('',#115,#123,#340,.T.);
-/* Top edges */
-#360=LINE('',#106,#301); #361=EDGE_CURVE('',#116,#117,#360,.T.);
-#362=LINE('',#107,#303); #363=EDGE_CURVE('',#117,#118,#362,.T.);
-#364=LINE('',#108,#305); #365=EDGE_CURVE('',#118,#119,#364,.T.);
-#366=LINE('',#109,#350); #367=EDGE_CURVE('',#119,#122,#366,.T.);
-#368=LINE('',#120,#309); #369=EDGE_CURVE('',#122,#123,#368,.T.);
-#370=LINE('',#121,#307); #371=EDGE_CURVE('',#123,#116,#370,.T.);
-/* Bottom L-shape outer bound (visit 110->111->112->113->114->115) */
-#400=ORIENTED_EDGE('',*,*,#311,.T.); #401=ORIENTED_EDGE('',*,*,#313,.T.);
-#402=ORIENTED_EDGE('',*,*,#315,.T.); #403=ORIENTED_EDGE('',*,*,#317,.T.);
-#404=ORIENTED_EDGE('',*,*,#319,.T.); #405=ORIENTED_EDGE('',*,*,#321,.T.);
-#406=EDGE_LOOP('bot_outline',(#400,#401,#402,#403,#404,#405));
-#407=FACE_OUTER_BOUND('',#406,.T.);
-#408=ADVANCED_FACE('bot_face',(#407),#212,.T.);
-/* Top L-shape (mirror-traverse) */
-#410=ORIENTED_EDGE('',*,*,#361,.T.); #411=ORIENTED_EDGE('',*,*,#363,.T.);
-#412=ORIENTED_EDGE('',*,*,#365,.T.); #413=ORIENTED_EDGE('',*,*,#367,.T.);
-#414=ORIENTED_EDGE('',*,*,#369,.T.); #415=ORIENTED_EDGE('',*,*,#371,.T.);
-#416=EDGE_LOOP('top_outline',(#410,#411,#412,#413,#414,#415));
-#417=FACE_OUTER_BOUND('',#416,.T.);
-#418=ADVANCED_FACE('top_face',(#417),#222,.T.);
-/* Side faces (one per outline segment), each a rectangle */
-#420=ORIENTED_EDGE('',*,*,#311,.T.); #421=ORIENTED_EDGE('',*,*,#333,.T.);
-#422=ORIENTED_EDGE('',*,*,#361,.F.); #423=ORIENTED_EDGE('',*,*,#331,.F.);
-#424=EDGE_LOOP('',(#420,#421,#422,#423)); #425=FACE_OUTER_BOUND('',#424,.T.);
-#426=ADVANCED_FACE('side_y0',(#425),#232,.T.);
-#430=ORIENTED_EDGE('',*,*,#313,.T.); #431=ORIENTED_EDGE('',*,*,#335,.T.);
-#432=ORIENTED_EDGE('',*,*,#363,.F.); #433=ORIENTED_EDGE('',*,*,#333,.F.);
-#434=EDGE_LOOP('',(#430,#431,#432,#433)); #435=FACE_OUTER_BOUND('',#434,.T.);
-#436=ADVANCED_FACE('side_xneg',(#435),#242,.T.);
-#440=ORIENTED_EDGE('',*,*,#315,.T.); #441=ORIENTED_EDGE('',*,*,#337,.T.);
-#442=ORIENTED_EDGE('',*,*,#365,.F.); #443=ORIENTED_EDGE('',*,*,#335,.F.);
-#444=EDGE_LOOP('',(#440,#441,#442,#443)); #445=FACE_OUTER_BOUND('',#444,.T.);
-#446=ADVANCED_FACE('side_y2',(#445),#252,.T.);
-#450=ORIENTED_EDGE('',*,*,#317,.T.); #451=ORIENTED_EDGE('',*,*,#339,.T.);
-#452=ORIENTED_EDGE('',*,*,#367,.F.); #453=ORIENTED_EDGE('',*,*,#337,.F.);
-#454=EDGE_LOOP('',(#450,#451,#452,#453)); #455=FACE_OUTER_BOUND('',#454,.T.);
-#456=ADVANCED_FACE('side_xpos',(#455),#262,.T.);
-#460=ORIENTED_EDGE('',*,*,#319,.T.); #461=ORIENTED_EDGE('',*,*,#341,.T.);
-#462=ORIENTED_EDGE('',*,*,#369,.F.); #463=ORIENTED_EDGE('',*,*,#339,.F.);
-#464=EDGE_LOOP('',(#460,#461,#462,#463)); #465=FACE_OUTER_BOUND('',#464,.T.);
-#466=ADVANCED_FACE('side_y1',(#465),#272,.T.);
-#470=ORIENTED_EDGE('',*,*,#321,.T.); #471=ORIENTED_EDGE('',*,*,#331,.T.);
-#472=ORIENTED_EDGE('',*,*,#371,.F.); #473=ORIENTED_EDGE('',*,*,#341,.F.);
-#474=EDGE_LOOP('',(#470,#471,#472,#473)); #475=FACE_OUTER_BOUND('',#474,.T.);
-#476=ADVANCED_FACE('side_xstep',(#475),#282,.T.);
-#500=CLOSED_SHELL('L_shape',(#408,#418,#426,#436,#446,#456,#466,#476));
-#510=MANIFOLD_SOLID_BREP('mirrored_L',#500);
+
+/* Cube at origin (-10,0,0) -- intended to be at (0,0,0); X-coords negated by silent mirror. */
+#100=CARTESIAN_POINT('',(-10,0,0));
+#101=CARTESIAN_POINT('',(0.0,0,0));
+#102=CARTESIAN_POINT('',(0.0,10.0,0));
+#103=CARTESIAN_POINT('',(-10,10.0,0));
+#104=CARTESIAN_POINT('',(-10,0,10.0));
+#105=CARTESIAN_POINT('',(0.0,0,10.0));
+#106=CARTESIAN_POINT('',(0.0,10.0,10.0));
+#107=CARTESIAN_POINT('',(-10,10.0,10.0));
+#110=VERTEX_POINT('',#100);
+#111=VERTEX_POINT('',#101);
+#112=VERTEX_POINT('',#102);
+#113=VERTEX_POINT('',#103);
+#114=VERTEX_POINT('',#104);
+#115=VERTEX_POINT('',#105);
+#116=VERTEX_POINT('',#106);
+#117=VERTEX_POINT('',#107);
+#120=CARTESIAN_POINT('x_mirrored_bot_c',(-5.0,5.0,0));
+#300=DIRECTION('',(0,0,-1));
+#301=DIRECTION('',(1,0,0));
+#121=AXIS2_PLACEMENT_3D('',#120,#300,#301);
+#122=PLANE('',#121);
+#123=CARTESIAN_POINT('x_mirrored_top_c',(-5.0,5.0,10.0));
+#302=DIRECTION('',(0,0,1));
+#303=DIRECTION('',(1,0,0));
+#124=AXIS2_PLACEMENT_3D('',#123,#302,#303);
+#125=PLANE('',#124);
+#126=CARTESIAN_POINT('x_mirrored_front_c',(-5.0,0,5.0));
+#304=DIRECTION('',(0,-1,0));
+#305=DIRECTION('',(1,0,0));
+#127=AXIS2_PLACEMENT_3D('',#126,#304,#305);
+#128=PLANE('',#127);
+#129=CARTESIAN_POINT('x_mirrored_back_c',(-5.0,10.0,5.0));
+#306=DIRECTION('',(0,1,0));
+#307=DIRECTION('',(1,0,0));
+#130=AXIS2_PLACEMENT_3D('',#129,#306,#307);
+#131=PLANE('',#130);
+#132=CARTESIAN_POINT('x_mirrored_left_c',(-10,5.0,5.0));
+#308=DIRECTION('',(-1,0,0));
+#309=DIRECTION('',(0,0,1));
+#133=AXIS2_PLACEMENT_3D('',#132,#308,#309);
+#134=PLANE('',#133);
+#135=CARTESIAN_POINT('x_mirrored_right_c',(0.0,5.0,5.0));
+#310=DIRECTION('',(1,0,0));
+#311=DIRECTION('',(0,0,1));
+#136=AXIS2_PLACEMENT_3D('',#135,#310,#311);
+#137=PLANE('',#136);
+#320=DIRECTION('',(1.0,0.0,0.0));
+#340=VECTOR('',#320,10.0);
+#150=LINE('',#100,#340);
+#151=EDGE_CURVE('',#110,#111,#150,.T.);
+#321=DIRECTION('',(0.0,1.0,0.0));
+#341=VECTOR('',#321,10.0);
+#152=LINE('',#101,#341);
+#153=EDGE_CURVE('',#111,#112,#152,.T.);
+#322=DIRECTION('',(-1.0,0.0,0.0));
+#342=VECTOR('',#322,10.0);
+#154=LINE('',#102,#342);
+#155=EDGE_CURVE('',#112,#113,#154,.T.);
+#323=DIRECTION('',(0.0,-1.0,0.0));
+#343=VECTOR('',#323,10.0);
+#156=LINE('',#103,#343);
+#157=EDGE_CURVE('',#113,#110,#156,.T.);
+#324=DIRECTION('',(1.0,0.0,0.0));
+#344=VECTOR('',#324,10.0);
+#158=LINE('',#104,#344);
+#159=EDGE_CURVE('',#114,#115,#158,.T.);
+#325=DIRECTION('',(0.0,1.0,0.0));
+#345=VECTOR('',#325,10.0);
+#160=LINE('',#105,#345);
+#161=EDGE_CURVE('',#115,#116,#160,.T.);
+#326=DIRECTION('',(-1.0,0.0,0.0));
+#346=VECTOR('',#326,10.0);
+#162=LINE('',#106,#346);
+#163=EDGE_CURVE('',#116,#117,#162,.T.);
+#327=DIRECTION('',(0.0,-1.0,0.0));
+#347=VECTOR('',#327,10.0);
+#164=LINE('',#107,#347);
+#165=EDGE_CURVE('',#117,#114,#164,.T.);
+#328=DIRECTION('',(0.0,0.0,1.0));
+#348=VECTOR('',#328,10.0);
+#166=LINE('',#100,#348);
+#167=EDGE_CURVE('',#110,#114,#166,.T.);
+#329=DIRECTION('',(0.0,0.0,1.0));
+#349=VECTOR('',#329,10.0);
+#168=LINE('',#101,#349);
+#169=EDGE_CURVE('',#111,#115,#168,.T.);
+#330=DIRECTION('',(0.0,0.0,1.0));
+#350=VECTOR('',#330,10.0);
+#170=LINE('',#102,#350);
+#171=EDGE_CURVE('',#112,#116,#170,.T.);
+#331=DIRECTION('',(0.0,0.0,1.0));
+#351=VECTOR('',#331,10.0);
+#172=LINE('',#103,#351);
+#173=EDGE_CURVE('',#113,#117,#172,.T.);
+#180=ORIENTED_EDGE('',*,*,#157,.F.);
+#181=ORIENTED_EDGE('',*,*,#155,.F.);
+#182=ORIENTED_EDGE('',*,*,#153,.F.);
+#183=ORIENTED_EDGE('',*,*,#151,.F.);
+#210=EDGE_LOOP('',(#180,#181,#182,#183));
+#220=FACE_OUTER_BOUND('',#210,.T.);
+#230=ADVANCED_FACE('x_mirrored_bot',(#220),#122,.T.);
+#184=ORIENTED_EDGE('',*,*,#159,.T.);
+#185=ORIENTED_EDGE('',*,*,#161,.T.);
+#186=ORIENTED_EDGE('',*,*,#163,.T.);
+#187=ORIENTED_EDGE('',*,*,#165,.T.);
+#211=EDGE_LOOP('',(#184,#185,#186,#187));
+#221=FACE_OUTER_BOUND('',#211,.T.);
+#231=ADVANCED_FACE('x_mirrored_top',(#221),#125,.T.);
+#188=ORIENTED_EDGE('',*,*,#151,.T.);
+#189=ORIENTED_EDGE('',*,*,#169,.T.);
+#190=ORIENTED_EDGE('',*,*,#159,.F.);
+#191=ORIENTED_EDGE('',*,*,#167,.F.);
+#212=EDGE_LOOP('',(#188,#189,#190,#191));
+#222=FACE_OUTER_BOUND('',#212,.T.);
+#232=ADVANCED_FACE('x_mirrored_front',(#222),#128,.T.);
+#192=ORIENTED_EDGE('',*,*,#173,.T.);
+#193=ORIENTED_EDGE('',*,*,#163,.F.);
+#194=ORIENTED_EDGE('',*,*,#171,.F.);
+#195=ORIENTED_EDGE('',*,*,#155,.T.);
+#213=EDGE_LOOP('',(#192,#193,#194,#195));
+#223=FACE_OUTER_BOUND('',#213,.T.);
+#233=ADVANCED_FACE('x_mirrored_back',(#223),#131,.T.);
+#196=ORIENTED_EDGE('',*,*,#167,.T.);
+#197=ORIENTED_EDGE('',*,*,#165,.F.);
+#198=ORIENTED_EDGE('',*,*,#173,.F.);
+#199=ORIENTED_EDGE('',*,*,#157,.T.);
+#214=EDGE_LOOP('',(#196,#197,#198,#199));
+#224=FACE_OUTER_BOUND('',#214,.T.);
+#234=ADVANCED_FACE('x_mirrored_left',(#224),#134,.T.);
+#200=ORIENTED_EDGE('',*,*,#153,.T.);
+#201=ORIENTED_EDGE('',*,*,#171,.T.);
+#202=ORIENTED_EDGE('',*,*,#161,.F.);
+#203=ORIENTED_EDGE('',*,*,#169,.F.);
+#215=EDGE_LOOP('',(#200,#201,#202,#203));
+#225=FACE_OUTER_BOUND('',#215,.T.);
+#235=ADVANCED_FACE('x_mirrored_right',(#225),#137,.T.);
+#240=CLOSED_SHELL('x_mirrored_shell',(#230,#231,#232,#233,#234,#235));
+#950=MANIFOLD_SOLID_BREP('Ps013_x_mirror',#240);
 #9000=PRODUCT_CONTEXT('',#1,'mechanical');
 #9001=PRODUCT('Ps013','Ps013','',(#9000));
 #9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
@@ -135,7 +165,7 @@ DATA;
 #9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
 #9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
 #9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
-#9022=ADVANCED_BREP_SHAPE_REPRESENTATION('',(#510),#9010);
+#9022=ADVANCED_BREP_SHAPE_REPRESENTATION('',(#950),#9010);
 #9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
 ENDSEC;
 END-ISO-10303-21;

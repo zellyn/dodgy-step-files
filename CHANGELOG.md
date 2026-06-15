@@ -1,5 +1,26 @@
 # Changelog
 
+## v1.2.2 — Ps-section cube regens + Bo004 Expected sync
+
+Extends v1.2.1's canonical-cube template work into the Ps "pathological success" section, and aligns Bo004's Expected validation with the live oracle output of the regenerated cube.
+
+### Ps-section cube regenerations (4 fixtures)
+
+- **Ps003** — Single inverted face on outer skin: regenerated cube with the "top" face's `ADVANCED_FACE.same_sense` flipped to `.F.`, so its `+z` surface normal is reinterpreted as `-z`. Topologically still closed; one face inverted (the defect).
+- **Ps005** — Twin solids at identical coordinates: two `MANIFOLD_SOLID_BREP`s over geometrically identical cubes, listed in one `ADVANCED_BREP_SHAPE_REPRESENTATION`.
+- **Ps008** — Inch-valued coordinates labelled as millimetres: cube at 0..10 (intended inches; ~254mm bounding box) with the units context declaring `MILLI METRE`. A correct receiver detects the unit-vs-content mismatch.
+- **Ps013** — Chiral part mirrored by silent X-coordinate negation: cube at origin `(-10,0,0)` (intended `(0,0,0)`); X-coords negated mark the left-hand mirror of the author's intent. Detectable via sign of an AXIS2_PLACEMENT_3D determinant.
+
+The remaining Ps fixtures (Ps007, Ps009, Ps011, Ps012, Ps014, Ps015) carry more bespoke defects (assembly placement, PMI annotation drift, NAUO dedup, sweep truncation, etc.); deferred to v1.2.3+.
+
+### Bo004 Expected alignment
+
+The regenerated Bo004 cube has fewer geometrically-distinct faces visible to gmsh (27 shapes vs the pre-regen 53). Updated `Expected validation` from `gmsh=shape(53)` to `gmsh=shape(27)` to match the new live oracle. Same kernel-grading meaning; just resyncs the catalog to what the new geometry actually produces.
+
+### Rust crate 1.2.2
+
+API unchanged.
+
 ## v1.2.1 — canonical cube template + illegal-Part-21 cleanup
 
 Continues the v1.2.0 fidelity work. Two clusters of fixes.

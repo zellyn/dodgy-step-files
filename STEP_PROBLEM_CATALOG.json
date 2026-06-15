@@ -17224,7 +17224,7 @@
     "cross_oracle_note": null,
     "description": "The outer `CLOSED_SHELL` of a solid has topological genus ≥ 1 — it bounds one or more interior cavities — yet the `MANIFOLD_SOLID_BREP` carries no `BREP_WITH_VOIDS` wrapper to describe those cavities. The kernel observes that point-in-solid classification disagrees with the user's intent: regions inside the cavity look \"solid\" rather than \"void\". Bug-reporter language: \"interior cavity not described\", \"hidden hole inside solid\".",
     "expected_kernel_behavior": "Heal by promoting the solid to `BREP_WITH_VOIDS`, synthesizing inner shells from the disconnected components of the outer shell's complement; or reject with a diagnostic that the solid encloses an undescribed region.",
-    "expected_validation": "occt=shape(1)/shape(1) gmsh=shape(53) ifc=schema_n/a",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=shape(27) ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-3a-shells/Bo004.stp",
     "id": "Bo004",

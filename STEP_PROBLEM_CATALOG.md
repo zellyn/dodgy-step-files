@@ -17328,7 +17328,7 @@ _Section summary: 41 entries._
 - **Tier-3 assertion**: face[0].surface_type == "plane"
 - **Tier-3 assertion**: face[5].surface_type == "plane"
 - **Model impact**: Shell construction reports invalidity (free edges, multi-connected vertices, or wrong orientation); BRepCheck flags the shape, and downstream solid construction either produces an invalid solid or fails outright.
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(53) ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(27) ifc=schema_n/a`
 - **Fixture path**: step-examples/12-3a-shells/Bo004.stp
 
 ### Bo005 — Shell whose orientation flags admit no globally consistent normal (Möbius-like)

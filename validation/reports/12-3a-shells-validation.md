@@ -7,7 +7,7 @@ Total: 100  CONFIRMED: 100  CONCERN: 0  FAIL: 0  DRIFT: 0  MERGED: 0  ERROR: 0
 `Bo001` **CONFIRMED** — occt=shape(1) gmsh=empty ifc=schema_n/a — geometry loaded (shape(1)); entity-level defect
 `Bo002` **CONFIRMED** — occt=empty gmsh=empty ifc=schema_n/a — silent acceptance matches catalog defect class
 `Bo003` **CONFIRMED** — occt=shape(1) gmsh=shape(79) ifc=schema_n/a — geometry loaded (shape(1)); entity-level defect
-`Bo004` **CONFIRMED** — occt=shape(1) gmsh=shape(53) ifc=schema_n/a — geometry loaded (shape(1)); entity-level defect
+`Bo004` **CONFIRMED** — occt=shape(1) gmsh=shape(27) ifc=schema_n/a — geometry loaded (shape(1)); entity-level defect
 `Bo005` **CONFIRMED** — occt=shape(1) gmsh=reject ifc=schema_n/a — geometry loaded (shape(1)); entity-level defect
 `Bo006` **CONFIRMED** — occt=shape(1) gmsh=shape(21) ifc=schema_n/a — geometry loaded (shape(1)); entity-level defect
 `Bo007` **CONFIRMED** — occt=shape(1) gmsh=shape(9) ifc=schema_n/a — geometry loaded (shape(1)); entity-level defect

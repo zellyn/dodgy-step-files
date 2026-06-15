@@ -1,6 +1,6 @@
 [package]
 name = "dodgy-step-files"
-version = "1.2.1"
+version = "1.2.2"
 edition = "2021"
 rust-version = "1.80"
 description = "Embedded corpus of known-defective STEP / ISO 10303-21 files for testing CAD kernels"
