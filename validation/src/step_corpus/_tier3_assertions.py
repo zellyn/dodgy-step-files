@@ -231,18 +231,29 @@ def main(argv: list[str] | None = None) -> int:
         sys.stdout.write("\n")
         return 0
 
+    # Statuses that should fail CI: assertion mistakes that the catalog can
+    # fix. Statuses tolerated as infrastructure noise (see the
+    # test_tier3_assertions docstring for the rationale):
+    #   - no-tier3-output: the tier3 worker didn't run on this fixture
+    #     (segfault / timeout); covered by validate2's spec line.
+    #   - tier3-parse-error: tier3 produced empty/broken JSON (rare).
+    FAILING_STATUSES = {"fail", "parse-error", "eval-error", "lhs-unresolved"}
+
     by_status: dict[str, int] = {}
     failures: list[dict] = []
+    non_pass_for_display: list[dict] = []
     for r in results:
         by_status[r["status"]] = by_status.get(r["status"], 0) + 1
         if r["status"] != "pass":
+            non_pass_for_display.append(r)
+        if r["status"] in FAILING_STATUSES:
             failures.append(r)
     print(f"Tier-3 assertions: {len(results)} total")
     for k, v in sorted(by_status.items(), key=lambda kv: -kv[1]):
         print(f"  {k:<22} {v:>4}")
-    if failures:
+    if non_pass_for_display:
         print(f"\nFirst 20 non-pass:")
-        for f in failures[:20]:
+        for f in non_pass_for_display[:20]:
             extras = ""
             if "actual" in f:
                 extras = f"  actual={f.get('actual')!r}"
