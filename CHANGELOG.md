@@ -1,5 +1,17 @@
 # Changelog
 
+## v1.3.1 — MeshFix + CGAL PMP per-method coverage map
+
+Same per-method enumeration pipeline applied to two open-source mesh-repair libraries. Result: **`MESH_HEAL_COVERAGE.md`** (3986 lines, 151 methods, 812 branches across MeshFix v2.1 and CGAL PMP). Coverage 0%: this catalog has effectively no mesh fixtures — the entries are a punch list for a future mesh sub-catalog.
+
+| Library | Methods | Branches |
+|---|---:|---:|
+| MeshFix | 76 | 490 |
+| CGAL PMP | 75 | 322 |
+| **Total** | **151** | **812** |
+
+Methodology mirrors `OCCT_HEAL_COVERAGE_V2.md`: master enumerator → ~14 per-method Haiku worker agents → aggregator. Prose-laundered — no MeshFix / CGAL code or test data copied.
+
 ## v1.3.0 — comprehensive-curriculum scaffolding + OCCT deep coverage v2 (per-method)
 
 This release recalibrates the corpus's self-assessment. The v1.2.0 OCCT API-surface coverage map credited a fixture as "covering" an operation if the fixture mentioned it by name. The v1.2.2 per-`.cxx`-file pass enumerated ~229 repair branches across 13 files. **v1.3.0's per-method deep pass** runs 67 worker agents (one per method or small file-batch) and enumerates **3,399 repair branches across 317 methods** — and finds that only **867 (25.5%) have a catalog fixture whose text matches a branch's defect-class search anchors**. The previous "73% covered" was overestimating dramatically; per-branch, real coverage is **~25%**.
@@ -21,6 +33,20 @@ This release recalibrates the corpus's self-assessment. The v1.2.0 OCCT API-surf
 1. **`ShapeAnalysis_ShapeTolerance::InTolerance`** at `ShapeAnalysis_ShapeTolerance.cxx` line ~149: VERTEX case uses `tol >= valmax` where the other shape types use `<= valmax`. Likely an OCCT source bug. Worth filing upstream.
 2. **`ShapeUpgrade_ConvertCurve2dToBezier.Compute` / `ShapeUpgrade_ClosedFaceDivide.SplitSurface`** carry surprisingly intricate periodic-surface seam handling (127 branches across just 2 methods). Lots of UNCOVERED catalog gaps in seam/periodic territory.
 3. **`BRepLib::EncodeRegularity`** itself is a thin wrapper; the real continuity-classification logic lives in `BRepLib::ContinuityOfFaces` (15 branches handling G0/G1/G2/CN via tangent derivatives + principal curvatures). Catalog has no fixture matching the principal-curvature-direction-alignment branch — high-leverage gap.
+
+### MeshFix + CGAL PMP coverage map
+
+Same per-method enumeration pipeline applied to two open-source mesh-repair libraries: **MeshFix v2.1** (Attene) and **CGAL Polygon Mesh Processing**. Result: [`MESH_HEAL_COVERAGE.md`](MESH_HEAL_COVERAGE.md), **151 methods, 812 repair branches** enumerated across both libraries.
+
+| Library | Methods | Branches |
+|---|---:|---:|
+| MeshFix | 76 | 490 |
+| CGAL PMP | 75 | 322 |
+| **Total** | **151** | **812** |
+
+**Coverage: 0%.** This corpus has effectively no mesh fixtures — the entries are a punch list for a future mesh sub-catalog (the [`MESH_DEFECT_TAXONOMY.md`](MESH_DEFECT_TAXONOMY.md) survey from v1.2.0 recommended `github.com/zellyn/dodgy-mesh-files` as the separate-repo home for those fixtures).
+
+Methodology identical to OCCT_HEAL_COVERAGE_V2: master enumerator → ~14 per-method Haiku worker agents → aggregator. All prose-laundered — no MeshFix / CGAL code or test data copied.
 
 ### Rust crate
 
