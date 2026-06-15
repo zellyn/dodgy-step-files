@@ -576,6 +576,21 @@ def render_fixture_page(entry: dict, section_entries: list[dict],
         out.append(f'<p><code>{_h(pt)}</code> — '
                    f'defect not fully embodied in fixture bytes.</p></section>')
 
+    # Closure intent (open-shell fixtures only)
+    ci = entry.get("closure_intent")
+    if ci:
+        cd = entry.get("closure_defect")
+        blurb = {
+            "sheet": "the open shell is the intended final geometry; a solid-only kernel should cleanly refuse.",
+            "solid": "authored as a closed solid; openness is the defect — heal it shut.",
+            "ambiguous": "the open shell is an incidental scaffold for a non-closure-related test.",
+        }.get(ci, "")
+        defect_html = f' (defect kind: <code>{_h(cd)}</code>)' if cd else ""
+        out.append('<section><h2>Closure intent</h2>')
+        out.append(
+            f'<p><code>{_h(ci)}</code>{defect_html} — {_h(blurb)}</p></section>'
+        )
+
     # Byte assertions
     byte_asserts = entry.get("byte_assertions") or []
     if byte_asserts:

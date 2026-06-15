@@ -1964,6 +1964,7 @@ End of file.
 - **Description**: Some vendors encode reversed face orientation by emitting a `TOROIDAL_SURFACE` with negative `major_radius` (and/or negative `minor_radius`, or `minor > major`). Translators that take the radius value at face value compute the wrong geometry; translators that only check sign produce partially wrong shapes.
 - **Reproducer recipe**: `TOROIDAL_SURFACE('',axis2,major:=10.0,minor:=-2.0)` referenced by an `ADVANCED_FACE`; or major_radius negative and SameSense interpreted by writer as flip.
 - **Expected kernel behavior**: heal; interpret negative-radius torus as orientation flip; reject only when the absolute dimensions are physically impossible.
+- **Closure intent**: ambiguous
 - **Notes**: Recurs across OCCT bug R001 (bug11857) and Mantis 0026376; maintainer-acknowledged orientation pathology in J010. **See also**: Gs036, Tsh035. Synonyms: "torus negative major radius", "TOROIDAL_SURFACE has negative MajorRadius", "SolidWorks negative-radius torus orientation marker", "Pro/E torus with sign-flipped radius", "torus radius negative encodes face flip".
 - **Byte assertion**: contains(b'TOROIDAL_SURFACE(')
 - **Byte assertion**: contains(b'-50.0,10.0')
@@ -1978,6 +1979,7 @@ End of file.
 - **Description**: A STEP `TOROIDAL_SURFACE` with minor radius equal to or exceeding major radius collapses the analytic torus into a self-intersecting "lemon" (minor > major, no central hole) or "apple" (minor = major, single pinch point at the centre). Receivers that assume `minor < major` produce overlarge bounding boxes, mis-handle seam insertion, or import a revolved-shape variant inverted.
 - **Reproducer recipe**: `TOROIDAL_SURFACE` with major_radius=2, minor_radius=3; reference from a face with single FACE_OUTER_BOUND covering the full parameter rectangle.
 - **Expected kernel behavior**: accept the analytic surface and treat its parameter range correctly for seam insertion and bbox computation, or reject as malformed (a kernel that requires `minor < major` should refuse rather than silently mis-bound).
+- **Closure intent**: ambiguous
 - **Notes**: Synonyms: "torus minor radius greater than major (lemon shape)", "apple torus minor equals major", "self-intersecting torus no central hole", "lemon-shape torus collapses bounding box", "TOROIDAL_SURFACE with minor_radius >= major_radius".
 - **Byte assertion**: contains(b'TOROIDAL_SURFACE(')
 - **Byte assertion**: contains(b'2.0,3.0')
@@ -2009,6 +2011,7 @@ End of file.
 - **Description**: Surface has degenerate row in UV grid (cone apex, sphere pole, collapsed BSpline row) but the file does not flag the degeneracy. Surface-surface intersection algorithms and pcurve projection misbehave near these. Tech Soft 3D fixed singularity-handling at intersections in HOOPS Exchange 2025.3.0 (W018).
 - **Reproducer recipe**: BSpline surface with one interior control row at a single point producing a parametric singularity; or sphere face whose outer loop touches both poles.
 - **Expected kernel behavior**: Accept; intersection/projection routines must heal-and-accept the singularity (insert degenerate edge, handle U/V wrap).
+- **Closure intent**: ambiguous
 - **Notes**: Synonyms: "surface singularity not declared", "degenerate pole on sphere/cone unflagged", "BSpline surface has collapsed row at pole", "intersection routine misbehaves at singular pole", "sphere outer loop touches both poles without degenerate edge".
 - **Byte assertion**: contains(b'B_SPLINE_SURFACE_WITH_KNOTS(')
 - **Byte assertion**: count(b'(0.0,0.0,10.0)') >= 3
@@ -2054,6 +2057,7 @@ End of file.
 - **Description**: A `B_SPLINE_SURFACE_WITH_KNOTS` whose control net has interior rows transposed or that traverse U in opposite directions, so the Jacobian flips sign within the parameter range; a folded / non-injective surface parametrisation. Typical shape: a degree 3×2 surface with a 4×3 control net and clamped knot multiplicities like (4,4) U and (3,3) V where two interior rows swap order. Common output of poorly-trimmed offset surfaces or Boolean-derived subdivision surfaces.
 - **Reproducer recipe**: BSpline surface with two interior control rows transposed so the parametric mapping is non-injective; reference from `ADVANCED_FACE`.
 - **Expected kernel behavior**: heal by surface re-fit; reject with "non-injective surface parametrization" diagnostic; never silently use the surface for projection.
+- **Closure intent**: ambiguous
 - **Notes**: **See also**: Gn025, Twi041. **OCC behavior**: silently accepts the folded BSpline surface and uses it without re-fit or diagnostic; kernel mishandling; the catalog above forbids silent acceptance. Synonyms: "self-intersecting BSpline surface Jacobian sign change", "folded NURBS surface non-injective", "B-spline surface control rows transposed", "surface fold creates non-injective parametrisation", "BSpline surface from poorly-trimmed offset folds back".
 - **Byte assertion**: contains(b'B_SPLINE_SURFACE_WITH_KNOTS(')
 - **Byte assertion**: contains(b'(15.0,5.0,2.0)')
@@ -2068,6 +2072,7 @@ End of file.
 - **Description**: Mesh-to-BRep tools fit `B_SPLINE_SURFACE_WITH_KNOTS` patches per triangle and stitch them; near sharp creases the patches' trim curves self-intersect or overlap. Typical shape: an `EDGE_LOOP` containing two diagonal `EDGE_CURVE`s — for example one running (0,0)→(10,10) and another (0,10)→(10,0) — which cross in UV at the centre and do not share endpoints, so the wire loop is two disjoint crossed diagonals. Output STEP loads but every later Boolean fails.
 - **Reproducer recipe**: STL with creases > ~30°; sew tolerance ≤ 1e-6; resulting `ADVANCED_FACE` contains pcurves that cross.
 - **Expected kernel behavior**: STL→STEP path should emit faceted BRep (`FACETED_BREP` / `OPEN_SHELL`) rather than smooth NURBS; or run self-intersection healing as a final step.
+- **Closure intent**: ambiguous
 - **Notes**: Synonyms: "STL-to-BRep emits self-intersecting BSpline patches", "mesh-derived BRep has crossed-trim wire", "STL-to-STEP utility produces overlapping pcurves at sharp creases", "two diagonals cross in UV non-shared endpoints", "FreeCAD shape-from-mesh stitches overlapping patches".
 - **Byte assertion**: contains(b'EDGE_LOOP(')
 - **Byte assertion**: count_entity_def(b'ORIENTED_EDGE') == 2
@@ -2281,6 +2286,7 @@ End of file.
 - **Description**: A `SURFACE_OF_LINEAR_EXTRUSION` whose basis curve is a `LINE` collinear with the extrusion direction is degenerate; it collapses to a line.
 - **Reproducer recipe**: `SURFACE_OF_LINEAR_EXTRUSION` with basis `LINE` and `extrusion_axis` direction parallel to LINE.dir.
 - **Expected kernel behavior**: reject this surface; emit warning; carry on with face omission.
+- **Closure intent**: ambiguous
 - **Notes**: **See also**: Gs036. Synonyms: "surface of linear extrusion direction parallel to basis line", "extruded curve collapses to line", "SURFACE_OF_LINEAR_EXTRUSION degenerate basis", "extrusion vector colinear with LINE basis", "surface collapses because direction matches basis line".
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject, warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must reject or emit a diagnostic this fixture.
 - **Severity**: P1
@@ -2383,6 +2389,7 @@ End of file.
 - **Description**: Specific feature kinds that exist in source CAD vanish after STEP export — typically because writer's BRep decomposition fails on multi-blend intersections, helical sweeps, or variable-radius blends and silently emits an incomplete shell (zero-volume, missing faces, or only end caps surviving). Common signature: a `SHELL_BASED_SURFACE_MODEL` carries only one face — a `SPHERICAL_SURFACE` cap whose `FACE_OUTER_BOUND` is a degenerate `VERTEX_LOOP` at a single equator vertex (one point covers the whole sphere) — with the side walls and other caps missing.
 - **Reproducer recipe**: Round-trip a model containing variable-radius blend or helix-on-circle sweep through a STEP writer that doesn't support full G2 NURBS reconstruction of the blend.
 - **Expected kernel behavior**: accept what is present; rely on validation properties (volume, area, centroid checksums) to detect loss; never silently emit zero-volume body.
+- **Closure intent**: ambiguous
 - **Notes**: **See also**: Tsh004, Tsh006. **OCC behavior**: silently imports the cap-only shell as a zero-volume body without surfacing a checksum-mismatch diagnostic; kernel mishandling; the catalog above forbids silent zero-volume acceptance. Synonyms: "helical sweep silently emitted as incomplete shell", "variable-radius blend missing from STEP", "cap-only face on SPHERICAL_SURFACE with VERTEX_LOOP", "writer drops side walls of helix sweep", "feature kind vanishes after STEP export".
 - **Byte assertion**: contains(b'SPHERICAL_SURFACE(')
 - **Byte assertion**: contains(b'VERTEX_LOOP(')
@@ -2418,6 +2425,8 @@ _Section summary: 101 entries._
 - **Description**: STEP files emit a `MANIFOLD_SOLID_BREP` whose `outer` shell is an `OPEN_SHELL`, contradicting the schema's requirement that the outer shell be a `CLOSED_SHELL`.
 - **Reproducer recipe**: `#N=MANIFOLD_SOLID_BREP('',#M);` where `#M=OPEN_SHELL('',(..));`.
 - **Expected kernel behavior**: heal: accept with warning; if topology demonstrably closes, promote to closed shell; otherwise treat as compound of faces.
+- **Closure intent**: solid
+- **Closure defect**: gap
 - **Notes**: **See also**: N026, Tsh002, Tsh003, Tsh004, Tsh005, Tsh006. Synonyms: "solid built from open shell instead of closed", "manifold solid wrapping non-manifold geometry", "solid body has leaks", "outer boundary of solid is not watertight", "schema says closed but file says open".
 - **Byte assertion**: contains(b'OPEN_SHELL')
 - **Byte assertion**: contains(b'MANIFOLD_SOLID_BREP')
@@ -2434,6 +2443,8 @@ _Section summary: 101 entries._
 - **Description**: The `FACETED_BREP` schema requires a `CLOSED_SHELL`, but some producers reference an `OPEN_SHELL` instead. The receiver aborts with "not supported", losing the geometry entirely.
 - **Reproducer recipe**: `#N=FACETED_BREP('',#M);` where `#M=OPEN_SHELL('',(..));`.
 - **Expected kernel behavior**: reject with precise diagnostic, or accept by promoting the shell to closed when its topology actually closes within tolerance.
+- **Closure intent**: solid
+- **Closure defect**: gap
 - **Notes**: **See also**: Tsh001. Synonyms: "faceted solid imported as empty", "faceted brep with non-watertight shell", "tessellated solid loses geometry on import", "faceted body declared closed but isn't", "solid aborts with not-supported error".
 - **Byte assertion**: contains(b'OPEN_SHELL')
 - **Byte assertion**: contains(b'FACETED_BREP')
@@ -2450,6 +2461,8 @@ _Section summary: 101 entries._
 - **Description**: A topologically closed solid is emitted as `SHELL_BASED_SURFACE_MODEL → OPEN_SHELL` inside `ADVANCED_BREP_SHAPE_REPRESENTATION` instead of `MANIFOLD_SOLID_BREP → CLOSED_SHELL`. Downstream tools (Bambu Studio etc.) refuse to import as solid.
 - **Reproducer recipe**: Topologically closed face-set whose root entity is `SHELL_BASED_SURFACE_MODEL → OPEN_SHELL`, no `MANIFOLD_SOLID_BREP`.
 - **Expected kernel behavior**: heal; promote to closed shell when topology proves closure; do not classify "solid vs surface" purely by entity type.
+- **Closure intent**: solid
+- **Closure defect**: unstitched_seam
 - **Notes**: **See also**: Tsh001. Synonyms: "closed solid round-trips as open surface model", "solid downgrades to surface body after re-export", "downstream tool refuses solid because writer emitted shell", "Bambu Studio rejects solid", "SpaceClaim regression demotes solid to surfaces".
 - **Byte assertion**: contains(b'OPEN_SHELL')
 - **Byte assertion**: contains(b'SHELL_BASED_SURFACE_MODEL')
@@ -2466,6 +2479,8 @@ _Section summary: 101 entries._
 - **Description**: STEP intended to carry a solid arrives as `OPEN_SHELL` / `SHELL_BASED_SURFACE_MODEL` because (a) writer never sewed faces into a `MANIFOLD_SOLID_BREP` or (b) edge tolerances exceeded receiver's sewing tolerance. FEA/CFD pipelines reject the body for meshing. Round-trip degradation also seen in Rhino-to-Rhino and Rhino-to-SolidWorks.
 - **Reproducer recipe**: Export from a surface-only mode; ensure no `MANIFOLD_SOLID_BREP` is emitted; adjacent face boundaries differ by tolerance > receiver's sewing tolerance.
 - **Expected kernel behavior**: heal; sew within scaled tolerance, attempt `MakeSolid`; fall back to surface model only if sew fails; report which edge gaps blocked closure.
+- **Closure intent**: solid
+- **Closure defect**: unstitched_seam
 - **Notes**: **See also**: Gs039, Tsh001. Synonyms: "surface model imported in place of solid", "STEP gives sheet body instead of solid", "FEA mesher refuses imported body", "Rhino round-trip drops solid", "loose face boundaries prevent solid promotion".
 - **Byte assertion**: contains(b'OPEN_SHELL')
 - **Byte assertion**: contains(b'SHELL_BASED_SURFACE_MODEL')
@@ -2483,6 +2498,8 @@ _Section summary: 101 entries._
 - **Description**: Correctly emitted `MANIFOLD_SOLID_BREP` whose face vertex tolerance barely exceeds receiver-default sewing tolerance gets rejected as non-manifold and demoted to `SHELL_BASED_SURFACE_MODEL` (or per-face surface bodies), producing a hollow shell.
 - **Reproducer recipe**: Solid with one face vertex tolerance ~1.1e-3 against receiver's 1.0e-3 sewing default.
 - **Expected kernel behavior**: heal; when solid promotion fails, retry with progressively higher (capped) tolerances; report the gap that defeated the join.
+- **Closure intent**: solid
+- **Closure defect**: unstitched_seam
 - **Notes**: **See also**: Tsh001. Synonyms: "solid clean in FreeCAD broken in SolidWorks", "solid demoted to surfaces by stricter receiver", "small face tolerance defeats sewing in target CAD", "hollow shell after import", "solid becomes per-face bodies after round-trip".
 - **Byte assertion**: contains(b'CLOSED_SHELL')
 - **Byte assertion**: contains(b'MANIFOLD_SOLID_BREP')
@@ -2499,6 +2516,8 @@ _Section summary: 101 entries._
 - **Description**: Vendor-supplied component STEP models are emitted as `SHELL_BASED_SURFACE_MODEL` (open shells) rather than `MANIFOLD_SOLID_BREP`, even when their topology actually closes. PCB-CAD pipelines that gate on closed solid drop these components silently on re-export.
 - **Reproducer recipe**: STEP with `OPEN_SHELL` referenced by `SHELL_BASED_SURFACE_MODEL`, no `CLOSED_SHELL`. Pass through pipeline gating on `MANIFOLD_SOLID_BREP`.
 - **Expected kernel behavior**: attempt sewing with adaptive tolerance to recover a closed shell when topology actually closes; reject only after sewing fails. Promotion to closed should be based on actual face connectivity, not the input flag.
+- **Closure intent**: solid
+- **Closure defect**: unstitched_seam
 - **Notes**: **See also**: Gs039, Tsh001. Synonyms: "vendor STEP package emits open shell", "component model not solid after import", "PCB CAD silently drops parts on re-export", "kicad-packages3D exports as surface", "vendor library models won't sew into solid".
 - **Byte assertion**: contains(b'OPEN_SHELL')
 - **Byte assertion**: contains(b'SHELL_BASED_SURFACE_MODEL')
@@ -2649,6 +2668,7 @@ _Section summary: 101 entries._
 - **Description**: An edge shared by three or more faces; surface is not locally homeomorphic to a disk along the edge. Two cubes sharing one common edge (4 faces meet at one edge) emitted as one `MANIFOLD_SOLID_BREP` is the canonical case. Many translators silently smash these into one `CLOSED_SHELL`.
 - **Reproducer recipe**: `MANIFOLD_SOLID_BREP` whose `CLOSED_SHELL` contains an edge appearing as `ORIENTED_EDGE` referent in 3+ `FACE_BOUND` chains; or two `OPEN_SHELL`s with shared `EDGE_CURVE` joined into one compound.
 - **Expected kernel behavior**: reject as `MANIFOLD_SOLID_BREP`; offer to split into separate lumps or reclassify as `non_manifold_surface_shape_representation`. Healers split the model along the NM edge into manifold pieces.
+- **Closure intent**: sheet
 - **Notes**: **See also**: Tsh020, Tsh021, Tsh040, Tsh041. Synonyms: "edge shared by three or more faces", "T-junction edge in solid", "non-manifold edge where surfaces meet", "two cubes joined along a single edge", "more than two faces meet at one edge".
 - **Tier-3 assertion**: n_edges_total >= 12
 - **Tier-3 assertion**: face[0].surface_type == "plane"
@@ -2662,6 +2682,7 @@ _Section summary: 101 entries._
 - **Description**: For a 2-manifold solid, every edge must be incident to exactly two faces. Schema validation flags edges that appear on only one face (free / naked edge) or three or more faces (non-manifold T-junction). The receiver's edge-curve attribute reader checks the incidence count and warns or rejects.
 - **Reproducer recipe**: STEP file whose `EDGE_CURVE` is referenced by exactly one or three `FACE_BOUND` chains.
 - **Expected kernel behavior**: warn and reclassify; reject solid promotion when count != 2.
+- **Closure intent**: sheet
 - **Notes**: **See also**: Tsh019, Bo006. Synonyms: "edge appears on only one face", "free naked edge in solid", "edge incident to three or more faces", "face boundary edge usage count wrong", "non-2-manifold edge incidence".
 - **Byte assertion**: contains(b'OPEN_SHELL')
 - **Byte assertion**: contains(b'SHELL_BASED_SURFACE_MODEL')
@@ -2677,6 +2698,7 @@ _Section summary: 101 entries._
 - **Description**: A vertex whose 1-ring is not a single fan; touching cones, bowtie meshes (two fans glued at a single point). Common when two solids touch at exactly one vertex (hourglass).
 - **Reproducer recipe**: Two solids that share only one common `VERTEX_POINT`; or hand-construct a face fan-of-fans.
 - **Expected kernel behavior**: heal; duplicate the vertex into one copy per fan; topology becomes 2-manifold at cost of vertex count growth.
+- **Closure intent**: sheet
 - **Notes**: **See also**: Tsh019. Synonyms: "two solids touch at a single point", "bowtie geometry pinches at vertex", "hourglass topology", "fan of fans at one vertex", "non-manifold pinch point".
 - **Byte assertion**: contains(b'OPEN_SHELL')
 - **Byte assertion**: contains(b'SHELL_BASED_SURFACE_MODEL')
@@ -2692,6 +2714,7 @@ _Section summary: 101 entries._
 - **Description**: STEP reader's non-manifold path skipped XCAF attribute application; STEP export in non-manifold mode lost all but one face / some compound parts.
 - **Reproducer recipe**: STEP file with `NON_MANIFOLD_SURFACE_SHAPE_REPRESENTATION` carrying colors; or non-manifold OCCT shape exported via `write.step.nonmanifold 1`.
 - **Expected kernel behavior**: Heal and accept: coerce colours / styles through the non-manifold path; emit and bind every face on export.
+- **Closure intent**: ambiguous
 - **Notes**: **See also**: M045. Synonyms: "non-manifold STEP loses colors and PMI", "color attributes dropped on multi-shell import", "PMI lost when reading non-manifold body", "XCAF metadata not applied to non-manifold parts", "writer drops faces in non-manifold export".
 - **Byte assertion**: contains(b'OPEN_SHELL')
 - **Byte assertion**: count_entity_def(b'ADVANCED_FACE') == 2
@@ -2706,6 +2729,7 @@ _Section summary: 101 entries._
 - **Description**: STEP file with empty `EDGE_LOOP(..,())` crashes reader. Similarly: `EDGE_BASED_WIREFRAME_MODEL` with empty boundary or empty `connected_edge_set`; `FACE_BASED_SURFACE_MODEL` with empty face list.
 - **Reproducer recipe**: `#10=EDGE_LOOP('',());` or `#N=FACE_BASED_SURFACE_MODEL('',());`.
 - **Expected kernel behavior**: reject the malformed entity, continue reading; never crash.
+- **Closure intent**: sheet
 - **Notes**: **See also**: Twi001. Cross-oracle: pure-Python Part-21 validator accepts (`accept`); OCCT crashes (`signal(11)`). The crash is on the kernel side; the file is spec-conformant Part-21. **OCC behavior**: crashes (signal 11) on the empty `EDGE_LOOP`; exactly the kernel mishandling the catalog above forbids; documented here so kernel authors know this is what OCC currently does. Synonyms: "wire has no edges", "empty face boundary list", "shell with zero faces crashes reader", "loop with empty edge aggregate", "empty list crashes import".
 - **Byte assertion**: matches(rb'EDGE_LOOP\s*\(\s*\x27[^\x27]*\x27\s*,\s*\(\s*\)\s*\)')
 - **Byte assertion**: count_entity_def(b'OPEN_SHELL') == 2
@@ -2719,6 +2743,7 @@ _Section summary: 101 entries._
 - **Description**: When sub-shapes are enabled, a `CONNECTED_FACE_SET` may contain `VERTEX_POINT` entries; OCCT's `ExpandShell` assumed all children were faces.
 - **Reproducer recipe**: `CONNECTED_FACE_SET` aggregating `ADVANCED_FACE` entities and one `VERTEX_POINT`.
 - **Expected kernel behavior**: Warn and accept: normalize / filter children to faces; emit a warning diagnostic on the rest.
+- **Closure intent**: sheet
 - **Notes**: Synonyms: "shell contains non-face entities", "vertex appears in face set", "wrong entity type in connected face set", "face aggregation has stray vertices", "ExpandShell crashes on non-face child".
 - **Byte assertion**: contains(b'OPEN_SHELL')
 - **Byte assertion**: contains(b'SHELL_BASED_SURFACE_MODEL')
@@ -2763,6 +2788,7 @@ _Section summary: 101 entries._
 - **Description**: Per-face `STYLED_ITEM` / `PRESENTATION_STYLE_ASSIGNMENT` references break when the face they target is dropped by sliver-face removal or merged with neighbors during orientation healing. Common signature: a 3-edge sliver `ADVANCED_FACE` whose two long-side vertices differ in only one coordinate by ~1e-9 mm — width below the working tolerance — with a `STYLED_ITEM` attached. Also seen with nested `PRODUCT_DEFINITION` hierarchy where flatten loses inner-component color.
 - **Reproducer recipe**: `STYLED_ITEM` referencing an `ADVANCED_FACE` that gets dropped by sliver-face healing (`ShapeFix_Face::FixSmallAreaWire`); or two-level assembly with color on inner solid, flatten via `XCAFDoc_ShapeTool::CopyShape`.
 - **Expected kernel behavior**: heal; re-bind to surviving merged face when possible; propagate `STYLED_ITEM` through every level of `NEXT_ASSEMBLY_USAGE_OCCURRENCE` during flatten.
+- **Closure intent**: sheet
 - **Notes**: Synonyms: "color disappears after sliver removal", "face style lost when small face dropped", "presentation style references missing face", "color attribute orphaned after healing", "nested assembly flatten loses inner-component color".
 - **Byte assertion**: contains(b'OPEN_SHELL')
 - **Byte assertion**: contains(b'SHELL_BASED_SURFACE_MODEL')
@@ -2823,6 +2849,7 @@ _Section summary: 101 entries._
 - **Description**: When "Export parameter space curves" is enabled and the block instance has a negative-determinant transform (mirror), some surfaces import with reversed normal in HiCAD/other consumers. `MAPPED_ITEM` with mirroring `AXIS2_PLACEMENT_3D` is exported with a copy whose orientation is silently corrected, flipping handedness.
 - **Reproducer recipe**: Rhino model with block instance scaled `(-1, 1, 1)`; export AP214 with pcurves on; or `MAPPED_ITEM` whose `mapping_target.transformation` axes produce a left-handed frame.
 - **Expected kernel behavior**: Heal and accept: when emitting pcurve from a mirrored instance, repair by flipping pcurve orientation (reverse trim) to keep `face.same_sense XOR loop_orientation` consistent; preserve handedness; coerce face normals coherently to maintain solidness.
+- **Closure intent**: sheet
 - **Notes**: **See also**: Gs018, A024. Synonyms: "mirrored block produces flipped surface", "negative-determinant transform inverts normals", "left-handed instance reverses face direction", "mirrored part imports inside-out", "MAPPED_ITEM with mirror loses orientation".
 - **Byte assertion**: contains(b'OPEN_SHELL')
 - **Byte assertion**: contains(b'SHELL_BASED_SURFACE_MODEL')
@@ -2838,6 +2865,7 @@ _Section summary: 101 entries._
 - **Description**: A `DEGENERATE_TOROIDAL_SURFACE` whose minor radius is negative (e.g. minor=-0.3, major=1.0) — the toroid is created by revolving a profile whose curvature center sits to the left of the rotation axis and below the upper edge — leads OCCT to invert the surface normal. Common signature: an `EDGE_LOOP` on the degenerate torus seam reuses the same `EDGE_CURVE` twice with opposite `ORIENTED_EDGE` senses, so the orientation choice is genuinely ambiguous and depends on the sign convention. Causes flipped face shading and hole-vs-stud mis-classification.
 - **Reproducer recipe**: `DEGENERATE_TOROIDAL_SURFACE(..,major_radius<0)` plus a profile arc placed in the inverted half-plane.
 - **Expected kernel behavior**: Heal and accept: normalize orientation from the bounding wire's parametric direction, not from the ambiguous `(major_radius, minor_radius)` sign convention.
+- **Closure intent**: sheet
 - **Notes**: **See also**: Gs001. Synonyms: "torus with negative minor radius flips normal", "degenerate torus orientation ambiguous", "shared edge reused with opposite directions on torus seam", "hole or stud confused on torus", "torus profile inverted by negative radius".
 - **Byte assertion**: contains(b'OPEN_SHELL')
 - **Byte assertion**: count_entity_def(b'ADVANCED_FACE') == 1
@@ -2852,6 +2880,7 @@ _Section summary: 101 entries._
 - **Description**: A revolved shape comes out with the complementary (reversed) angular sweep. Visible in standard XDE display.
 - **Reproducer recipe**: `REVOLUTION_AREA_SOLID` / `SURFACE_OF_REVOLUTION` with axis orientation that the reader misinterprets.
 - **Expected kernel behavior**: Heal and accept: normalize / honor sweep direction encoded by axis orientation.
+- **Closure intent**: sheet
 - **Notes**: **See also**: Tsh009. Synonyms: "revolved feature comes in with wrong angle", "complementary sweep on revolve import", "revolution direction reversed", "axis orientation misread on revolved solid", "revolve sweeps the wrong way".
 - **Byte assertion**: contains(b'OPEN_SHELL')
 - **Byte assertion**: count_entity_def(b'ADVANCED_FACE') == 1
@@ -2881,6 +2910,7 @@ _Section summary: 101 entries._
 - **Description**: A face whose boundary loop folds back on itself after triangulation, or "4-manifold edge" (one shared edge has two pairs of triangles).
 - **Reproducer recipe**: Mesh derived from STEP face whose outer wire pinches; or two solids merged by index union without proper Boolean.
 - **Expected kernel behavior**: heal — CGAL `stitch_boundary_cycle`; Manifold's `DedupeEdges` splits 4-manifold edges by duplicating endpoint and adding two triangles to separate topology.
+- **Closure intent**: ambiguous
 - **Notes**: **See also**: Gs009. Synonyms: "boundary loop folds back on itself", "self-touching face perimeter", "4-manifold edge after triangulation", "face boundary is a figure-eight", "two solids merged by index union form pinch".
 - **Byte assertion**: contains(b'OPEN_SHELL')
 - **Byte assertion**: contains(b'SHELL_BASED_SURFACE_MODEL')
@@ -2898,6 +2928,7 @@ _Section summary: 101 entries._
 - **Description**: Two adjacent `OPEN_SHELL`s inside one `SHELL_BASED_SURFACE_MODEL` share an `EDGE_CURVE` along a perfectly manifold T-junction (the same edge is referenced by faces in both shells). A slicer mesher classifies the shared edge as non-manifold because the edge has 3+ face references once the shells are joined. STEP allows the edge to bridge two open shells; the receiver collapses both shells into one compound and trips its non-manifold check.
 - **Reproducer recipe**: Two `OPEN_SHELL`s with one shared `EDGE_CURVE` (legal in STEP) collapsed by receiver into a single mesh.
 - **Expected kernel behavior**: when joining open shells, recognize "interior" shared edges as non-manifold by design and either keep them shelled or reject with a clear message.
+- **Closure intent**: sheet
 - **Notes**: **See also**: Tsh019, M053. Synonyms: "shared edge bridging two open shells", "T-junction edge across shell boundary", "slicer flags imported geometry as non-manifold", "Bambu Studio classifies STEP as non-manifold mesh", "edge appears in two shell groups".
 - **Byte assertion**: count_entity_def(b'OPEN_SHELL') == 2
 - **Byte assertion**: contains(b'SHELL_BASED_SURFACE_MODEL')
@@ -2931,6 +2962,7 @@ _Section summary: 101 entries._
 - **Description**: The `VERTEX_POINT` coordinate does not coincide with the curve evaluation at the edge's parameter endpoint(s); wire orientation/snap defect at corners.
 - **Reproducer recipe**: `EDGE_CURVE` referencing a `LINE` from (0,0,0) to (10,0,0) but with start `VERTEX_POINT` at (0.001, 0.001, 0); offset both ends similarly.
 - **Expected kernel behavior**: heal; snap vertex to curve endpoint within tolerance; if outside, mark tolerant edge or reject.
+- **Closure intent**: sheet
 - **Notes**: **See also**: Gs030, Tfa019, Twi011. Synonyms: "vertex coordinate doesn't match curve endpoint", "corner snap defect at edge ends", "vertex offset from line by tolerance", "wire vertex misplaced relative to underlying line", "endpoint position disagrees with curve evaluation".
 - **Tier-3 assertion**: face[0].surface_type == "plane"
 - **Tier-3 assertion**: n_edges_total >= 4
@@ -2959,6 +2991,7 @@ _Section summary: 101 entries._
 - **Description**: A loop containing exactly one ORIENTED_EDGE requires the underlying EDGE_CURVE start and end vertices to coincide (closed curve such as full circle/ellipse). Some files emit a single open edge as a "loop", violating the closure invariant.
 - **Reproducer recipe**: `EDGE_LOOP('',(#orient));` where `#orient`'s `EDGE_CURVE` has distinct start and end `VERTEX_POINT`s.
 - **Expected kernel behavior**: reject loop or heal by inserting closing edge; warn.
+- **Closure intent**: sheet
 - **Notes**: The defect is detected by the AP203/AP242 entity-reader's edge-loop attribute validator (every single-edge loop demands a closed underlying curve). **See also**: Twi017. Synonyms: "single edge loop with open curve", "one-edge wire start and end don't match", "circle wire has distinct endpoints", "loop closure invariant violated", "single ORIENTED_EDGE has open arc".
 - **Tier-3 assertion**: n_edges_total >= 1
 - **Tier-3 assertion**: face[0].surface_type == "plane"
@@ -2972,6 +3005,7 @@ _Section summary: 101 entries._
 - **Description**: Edge n's end vertex is not edge n+1's start vertex; they are positioned at distinct `VERTEX_POINT`s separated by more than the kernel's vertex-equality tolerance. The edges are listed in traversal order but the wire is broken: there is a 3D gap between consecutive edges. Affects ~5% of "imperfect" Onshape STEP exports per ABC paper.
 - **Reproducer recipe**: STEP face whose `EDGE_LOOP` enumerates `ORIENTED_EDGE`s in topological order but with vertex `VERTEX_POINT`s separated by a small but >tolerance gap.
 - **Expected kernel behavior**: merge near-coincident vertices within the kernel's vertex-equality tolerance to close the gap, or reject as malformed if the gap exceeds the working tolerance budget.
+- **Closure intent**: sheet
 - **Notes**: Translation reads the `EDGE_LOOP` end-to-start expecting matching vertices; otherwise the wire transfer fails. **See also**: Gp020, Twi007, Twi034, Twi038. Synonyms: "small gap between consecutive edges", "edges not connected head to tail", "wire has 3D gap between vertices", "Onshape export has disconnected edges", "vertices nearby but not coincident in wire".
 - **Tier-3 assertion**: n_edges_total >= 4
 - **Tier-3 assertion**: face[0].surface_type == "plane"
@@ -2985,6 +3019,7 @@ _Section summary: 101 entries._
 - **Description**: An `ORIENTED_EDGE` whose `edge_element` is itself an `ORIENTED_EDGE` instead of an `EDGE_CURVE`. Technically illegal but observed in the wild.
 - **Reproducer recipe**: `#1=ORIENTED_EDGE('',*,*,#2,.T.); #2=ORIENTED_EDGE(..,#3,.T.); #3=EDGE_CURVE(..);`
 - **Expected kernel behavior**: heal-by-traversal; chase ORIENTED_EDGE chains until an EDGE_CURVE is found, composing the orientation flags; never crash.
+- **Closure intent**: sheet
 - **Notes**: The translator's edge-loop transfer pass must chase wrapper chains until it finds the underlying `EDGE_CURVE`, composing orientation flags as it descends. Validation observed: silent-empty rather than a crash. Without a PRODUCT chain the transfer never invokes the edge-loop translator; with a wrap chain the receiver silently heals (chases the wrapper). The kernel-mishandling-by-silent-acceptance still demonstrates the defect class; the bare reader's malformed-reference handling is not exercised at fixture scale. **See also**: Twi005, Twi006. Synonyms: "edge wraps another edge instead of curve", "double-wrapped edge reference", "ORIENTED_EDGE points at another ORIENTED_EDGE", "indirect edge reference chain", "wrapper chain in edge topology".
 - **Tier-3 assertion**: n_edges_total >= 1
 - **Tier-3 assertion**: face[0].surface_type == "plane"
@@ -3013,6 +3048,7 @@ _Section summary: 101 entries._
 - **Description**: `ORIENTED_EDGE` whose `edge_element` slot is `*` or null reference (or unresolved id), or — conversely — derived attributes `edge_start`/`edge_end` filled with explicit vertices instead of `*`.
 - **Reproducer recipe**: `ORIENTED_EDGE('',*,*,$,.T.)` or `ORIENTED_EDGE('',#v1,#v2,#180,.F.)` (deriveds non-`*`).
 - **Expected kernel behavior**: Heal and accept: normalize / tolerate either form on read; coerce derived attributes to `*` on write per Part-21 §6.4.4.
+- **Closure intent**: sheet
 - **Notes**: Mantis 0029979 also covers null EDGE_CURVE. **See also**: Twi004, Twi005. Synonyms: "edge has null curve reference", "blank edge geometry slot", "edge with dollar-sign placeholder", "derived edge attributes filled instead of star", "edge slot holds null pointer".
 - **Tier-3 assertion**: n_edges_total >= 1
 - **Tier-3 assertion**: face[0].surface_type == "plane"
@@ -3026,6 +3062,7 @@ _Section summary: 101 entries._
 - **Description**: The edges in an `EDGE_LOOP` are emitted in arbitrary order; the head/tail vertices of consecutive entries do not match, but the edges as a set can be reordered into a valid head-to-tail traversal. Common with Pro/E composite-curve segments where the exporter writes edges in arbitrary slot order.
 - **Reproducer recipe**: STEP face whose `EDGE_LOOP` lists edges in non-traversal order; vertices common but not adjacent.
 - **Expected kernel behavior**: reorder the edges by vertex matching to recover a head-to-tail traversal; if no consistent ordering exists (some edges need flipping or no permutation works), reject as malformed.
+- **Closure intent**: sheet
 - **Notes**: For STEP-disordered loops where reordering alone is insufficient and orientation flipping is also required, see Twi038. **See also**: Twi003. Synonyms: "edges out of order in wire", "wire edges in random sequence", "Pro/E composite curve in wrong slot order", "edges shuffled in EDGE_LOOP", "reorderable but not head-to-tail".
 - **Tier-3 assertion**: n_edges_total >= 4
 - **Tier-3 assertion**: face[0].surface_type == "plane"
@@ -3039,6 +3076,7 @@ _Section summary: 101 entries._
 - **Description**: A wire on a periodic surface (torus / cylinder / sphere) has its edges in a consistent 3D head-to-tail order, but the 2D pcurve order is not consistent (or vice versa). A reorder pass that uses only 3D or only 2D evidence leaves the other space wrong; on periodic surfaces the two spaces are not equivalent.
 - **Reproducer recipe**: Round-trip a complete torus through a writer that emits pcurves; observe wires that don't trace the parameter rectangle correctly.
 - **Expected kernel behavior**: Heal and accept: for periodic surfaces, run a wire-ordering pass that normalizes / reconciles 3D head-to-tail and 2D pcurve adjacency before emitting / repairing.
+- **Closure intent**: sheet
 - **Notes**: **See also**: Twi028. Synonyms: "wire reorder works in one space breaks the other", "torus face wire wraps inconsistently", "round-trip torus wire order broken", "miscible-mode wire", "periodic-face reorder leaves UV wrong".
 - **Tier-3 assertion**: face[0].surface_type == "torus"
 - **Tier-3 assertion**: n_edges_total >= 4
@@ -3053,6 +3091,7 @@ _Section summary: 101 entries._
 - **Description**: STEP requires that each wire of a face own its own distinct `VERTEX_POINT`s. The sender produces a face whose outer wire and inner wire reference the same `VERTEX_POINT` instance; legal in some kernel-internal BRep representations, but invalid in STEP and ambiguous to receivers expecting per-wire vertex ownership.
 - **Reproducer recipe**: `FACE_OUTER_BOUND` and `FACE_BOUND` whose `EDGE_LOOP`s reference the same `VERTEX_POINT` `#v`.
 - **Expected kernel behavior**: split the shared vertex into per-wire copies, or reject as malformed.
+- **Closure intent**: sheet
 - **Notes**: **OCC behavior**: the validity-checker does not flag the shared `VERTEX_POINT` between distinct wires; tier-3 valid-flag should be ignored for this entry. The reader most likely silently fixes or ignores the shared vertex on import. Synonyms: "two wires reference same vertex instance", "outer and inner loops share VERTEX_POINT", "vertex shared across distinct wires", "wires must not share vertices", "ambiguous vertex ownership between loops".
 - **Tier-3 assertion**: n_edges_total >= 7
 - **Tier-3 assertion**: face[0].surface_type == "plane"
@@ -3066,6 +3105,7 @@ _Section summary: 101 entries._
 - **Description**: A wire's edge sequence visits the same vertex twice mid-traversal; the face is topologically two disks joined at a single point (a figure-eight or pinched face). Outer-boundary integrity check fails; downstream Booleans break.
 - **Reproducer recipe**: Planar face whose outer wire visits a shared `VERTEX_POINT` twice; export.
 - **Expected kernel behavior**: split the wire at the pinch vertex into two separate wires (and the face into two faces sharing the vertex), or reject as a non-manifold face.
+- **Closure intent**: sheet
 - **Notes**: **See also**: Gs009. **OCC behavior**: the validity-checker does not flag the figure-eight wire revisiting a vertex; tier-3 valid-flag should be ignored for this entry. The reader most likely silently fixes or ignores the pinched wire on import. Synonyms: "wire visits same vertex twice", "pinched wire forms figure eight", "two disks joined at point", "self-touching wire", "boundary loop pinches at single vertex".
 - **Tier-3 assertion**: face[0].surface_type == "plane"
 - **Tier-3 assertion**: n_edges_total >= 2
@@ -3080,6 +3120,7 @@ _Section summary: 101 entries._
 - **Description**: A wire emits a thin spike — a collinear go-and-return — that is sharper than a configured max-angle and narrower than a max-width threshold. Produces zero-area extrusion artefacts. Some faces have two such notches per wire.
 - **Reproducer recipe**: Polyline wire with three near-collinear vertices A-B-C where B is between A and C and the wire goes A→B→A→C. STEP-imported face whose wire has two near-collinear backtrack pairs.
 - **Expected kernel behavior**: detect and remove the spike (drop the redundant out-and-back edges, merge endpoints), iterating until no spike remains; or reject the wire as malformed.
+- **Closure intent**: sheet
 - **Notes**: **See also**: Tsh042, Twi013. Synonyms: "wire has thin spike or hair", "wire goes out and back along itself", "needle-like backtrack on perimeter", "zero-area extrusion artifact", "wire has hairpin notch".
 - **Tier-3 assertion**: n_edges_total >= 5
 - **Tier-3 assertion**: face[0].surface_type == "plane"
@@ -3093,6 +3134,7 @@ _Section summary: 101 entries._
 - **Description**: An `EDGE_CURVE` whose 3D length is below the kernel's working tolerance; both endpoint vertices are nearly coincident. Often the remnant of a translated tangency or an over-trimmed edge. The edge contributes nothing to the topology but its presence in the host wire confuses traversal-order and self-intersection logic.
 - **Reproducer recipe**: `EDGE_CURVE` whose two `VERTEX_POINT` `CARTESIAN_POINT`s differ by 1e-9 m on a 1 m part; underlying `LINE` of nominally that length.
 - **Expected kernel behavior**: drop the sliver edge and merge its endpoints; rebuild any adjacent wires; or reject as malformed. The fix must not let the sliver propagate into a face outer bound.
+- **Closure intent**: sheet
 - **Notes**: **See also**: Twi011. Synonyms: "edge has zero length", "wire has tiny sliver edge", "endpoints near-coincident on edge", "nano-meter scale edge", "over-trimmed edge in wire".
 - **Tier-3 assertion**: face[0].sliver_aspect_max_min > 1e6
 - **Tier-3 assertion**: face[0].surface_type == "plane"
@@ -3106,6 +3148,7 @@ _Section summary: 101 entries._
 - **Description**: An EDGE_CURVE whose 3D curve is closed (full circle/ellipse) but cites two distinct VERTEX_POINTs as endpoints; per STEP/OCCT, a closed curve must reuse the same vertex at both ends.
 - **Reproducer recipe**: `EDGE_CURVE('',#v1,#v2,#circle_geom,.T.);` with `#circle_geom` a full `CIRCLE` and `#v1`, `#v2` distinct entities.
 - **Expected kernel behavior**: heal; translator reuses the first vertex on both ends.
+- **Closure intent**: sheet
 - **Notes**: The translator's edge-transfer pass must detect the closed-curve case and reuse the same vertex at both ends, regardless of how many distinct vertex entities the file references. **See also**: Twi002, Twi018. Synonyms: "circle edge has two distinct endpoints", "full circle stored with separate start and end vertex", "closed curve uses two vertex instances", "ellipse edge with mismatched endpoints", "periodic curve doesn't reuse vertex".
 - **Tier-3 assertion**: n_edges_total == 1
 - **Tier-3 assertion**: n_vertices_total == 2
@@ -3120,6 +3163,7 @@ _Section summary: 101 entries._
 - **Description**: EDGE_CURVE references the same VERTEX_POINT for start and end but underlying curve is open (e.g. a `LINE`); arc length is zero.
 - **Reproducer recipe**: `EDGE_CURVE('',#v,#v,#line,.T.);`
 - **Expected kernel behavior**: synthesize tiny line through the points; if V1==V2, drop the edge.
+- **Closure intent**: sheet
 - **Notes**: **See also**: Twi017. Synonyms: "edge with zero arc length", "line edge from a point to itself", "open curve with same start and end vertex", "edge collapses to a point", "duplicate vertex on line edge".
 - **Tier-3 assertion**: face[0].sliver_aspect_max_min > 1e6
 - **Tier-3 assertion**: face[0].surface_type == "plane"
@@ -3133,6 +3177,7 @@ _Section summary: 101 entries._
 - **Description**: An `EDGE_CURVE` whose underlying curve is closed (full circle / ellipse) is used as a single edge; the curve goes around 360° and the edge's start vertex equals its end vertex. Downstream tools that expect every edge to be a topologically open arc (with two distinct endpoints) require the edge to be split at a seam parameter or a natural break.
 - **Reproducer recipe**: Edge wraps full 360° on cylindrical face without explicit seam; receiver needs to split into two half-edges.
 - **Expected kernel behavior**: split the closed edge at the seam parameter (u=0 / u=period) into two open arcs, or accept a single closed edge as a kernel-internal representation. Choice is design-dependent; consumers of the result must agree on the convention.
+- **Closure intent**: sheet
 - **Notes**: Synonyms: "edge wraps full 360 degrees", "closed circular edge needs splitting", "single edge spans whole period on cylinder", "downstream tool wants two halves of seam", "full periodic edge unsupported".
 - **Tier-3 assertion**: face[0].surface_type == "cylinder"
 - **Tier-3 assertion**: n_edges_total >= 4
@@ -3148,6 +3193,7 @@ _Section summary: 101 entries._
 - **Description**: Face on cylinder/sphere/torus/closed-BSpline bounded by wire(s) closed in 3D but open in UV; the explicit seam edge along the U=0 (or V=0) isoline is missing from the wire. The receiver sees a wire that doesn't close in 2D parameter space, even though the 3D endpoints meet.
 - **Reproducer recipe**: `ADVANCED_FACE` on `CYLINDRICAL_SURFACE` whose outer loop traverses U from 0 to 2π but no `EDGE_CURVE` on U=0 to seam-close.
 - **Expected kernel behavior**: synthesise a seam edge along the U=0 isoline to bridge the UV gap, or reject as malformed. Do not split a single existing seam edge into two.
+- **Closure intent**: sheet
 - **Notes**: **See also**: Gp026. Synonyms: "missing seam on cylinder face", "wire closes in 3D but open in UV", "cylinder face missing the U=0 edge", "closed surface lacks seam edge", "torus face has no parameter seam".
 - **Tier-3 assertion**: face[0].surface_type == "cylinder"
 - **Tier-3 assertion**: n_edges_total >= 2
@@ -3163,6 +3209,7 @@ _Section summary: 101 entries._
 - **Description**: A face on a cone or sphere has the surface's singular point (apex / pole) inside its parametric domain, but the wire bounding that face does not include the degenerate edge (zero length in 3D, finite length in UV) that bridges the singular row. Without the bridging edge the wire is open in UV, and surface-surface intersection routines misbehave at the singularity.
 - **Reproducer recipe**: `CONICAL_SURFACE` semi-angle 30°; `ADVANCED_FACE` whose outer loop touches the cone apex `vertex_point`; no degenerate ORIENTED_EDGE inserted at apex.
 - **Expected kernel behavior**: insert a degenerate edge bridging the singular row in UV (zero length in 3D, full surface-period length in UV), or reject as malformed. This is a separate concern from inserting a seam edge on a periodic surface.
+- **Closure intent**: sheet
 - **Notes**: **See also**: Tfa004, Tfa005, Twi029, Twi031, Gp005. Synonyms: "missing apex bridge edge", "cone tip degenerate edge missing", "wire on sphere pole has no closing edge", "singular point bridging edge absent", "face passing through pole has gap in UV".
 - **Tier-3 assertion**: face[0].surface_type == "cone"
 - **Tier-3 assertion**: n_edges_total >= 4
@@ -3179,6 +3226,7 @@ _Section summary: 101 entries._
 - **Description**: A seam edge on a periodic face is supposed to carry two pcurves; one on the U=0 side and one on the U=period side. The input either swaps the two pcurves (each is on the wrong side) or assigns the same pcurve to both slots. The wire fails to close in UV: a step of one full period that the seam edge should take in parameter space is missing.
 - **Reproducer recipe**: `SEAM_CURVE` referencing the same `PCURVE` for both `associated_geometry` slots.
 - **Expected kernel behavior**: detect the missing period-shift and either shift one pcurve by the surface period to restore UV closure, swap the two pcurves to their correct sides, or reject as malformed.
+- **Closure intent**: sheet
 - **Notes**: **See also**: Gp011, Gp012. Synonyms: "seam parameter curves the same on both sides", "duplicated 2D trace on seam", "swapped sides on periodic face seam", "missing period shift on seam", "seam fails to close in UV".
 - **Tier-3 assertion**: n_edges_total >= 2
 - **Tier-3 assertion**: face[0].surface_type == "cylinder"
@@ -3194,6 +3242,7 @@ _Section summary: 101 entries._
 - **Description**: An inner ("hole") wire is oriented as if it were the outer wire (wrong winding direction), or actually lies geometrically outside the outer wire it is meant to be cut from. CW winding where CCW is expected (or vice-versa) for the face's outward normal.
 - **Reproducer recipe**: `ADVANCED_FACE` with `FACE_OUTER_BOUND` containing an inner wire whose 2D winding is CCW (same as outer) instead of CW.
 - **Expected kernel behavior**: propagate orientation from the face normal and the wire's signed 2D area, flipping wrongly-oriented inner/outer designations. Reject only if the loop is geometrically inconsistent (not merely flag-wrong).
+- **Closure intent**: sheet
 - **Notes**: **See also**: Tfa034, Tsh011. Synonyms: "hole wire winds wrong direction", "inner loop oriented as outer", "hole loop CCW when CW expected", "inner wire mistaken for outer boundary", "hole sits geometrically outside its face".
 - **Tier-3 assertion**: n_edges_total >= 8
 - **Tier-3 assertion**: face[0].surface_type == "plane"
@@ -3224,6 +3273,7 @@ _Section summary: 101 entries._
 - **Description**: An `EDGE_LOOP` whose `edge_list` is out of cyclic head-to-tail order — for example ordered (#50, #52, #51, #53) so consecutive `ORIENTED_EDGE`s do not share endpoints. A face whose wire is reordered during shape-healing isn't replaced in the resulting shape, so the fix is lost — outer/inner trees still point to the unreordered wire. Common shape: face on `TOROIDAL_SURFACE` whose four edges are scrambled and the wire does not traverse vertices consecutively.
 - **Reproducer recipe**: STEP face on torus needing only wire reordering; pass through `ShapeFix_Wire::FixReorder` and observe original wire still attached to face.
 - **Expected kernel behavior**: replace face after wire reordering, even if no other fix occurred.
+- **Closure intent**: sheet
 - **Notes**: **See also**: Twi008, Twi038. Synonyms: "edges scrambled out of cyclic order", "torus wire not in head-to-tail order", "wire reorder lost after healing", "scrambled EDGE_LOOP needs reorder only", "fix succeeds but face still references unfixed wire".- **Tier-3 assertion**: face[0].surface_type == "torus"
 - **Tier-3 assertion**: n_edges_total >= 4
 - **Tier-3 assertion**: n_vertices_total >= 8
@@ -3237,6 +3287,7 @@ _Section summary: 101 entries._
 - **Description**: When an OCCT shape contains a wire with one or more degenerate edges (apex-bridge, seam) the writer historically omitted the entire wire on STEP export.
 - **Reproducer recipe**: BRep cone solid with apex degenerate edge; round-trip through OCCT writer; observe missing apex-bridge edge in output.
 - **Expected kernel behavior**: Heal and accept: emit degenerate edges; the reader normalizes / accepts them.
+- **Closure intent**: sheet
 - **Notes**: **See also**: Twi021. Synonyms: "writer drops wire with degenerate edge", "exporter omits cone apex bridge edge", "round-trip loses pole edges", "STEP write loses wires containing zero-length edges", "cone apex disappears on export".
 - **Tier-3 assertion**: face[0].surface_type == "cone"
 - **Tier-3 assertion**: n_edges_total >= 4
@@ -3251,6 +3302,7 @@ _Section summary: 101 entries._
 - **Description**: A degenerate edge bridges a singular row that is shared by adjacent faces; translator processes it once per face, building it again with potentially divergent vertex tolerance.
 - **Reproducer recipe**: Two faces both touching a sphere pole, sharing a degenerate edge along the pole; observe duplicated `EDGE_CURVE` instances in OCCT topology.
 - **Expected kernel behavior**: Heal and accept: normalize by caching and reusing the translated degenerate edge across faces.
+- **Closure intent**: sheet
 - **Notes**: A translator with a per-face entity cache reuses the same edge across faces; one without translates each occurrence independently. **See also**: Twi031. Synonyms: "duplicate edge created at sphere pole", "degenerate edge translated multiple times", "same singular edge reread per face", "no caching for shared apex edge", "vertex tolerance differs between duplicates".
 - **Tier-3 assertion**: face[0].surface_type == "sphere"
 - **Tier-3 assertion**: n_edges_total >= 4
@@ -3266,6 +3318,7 @@ _Section summary: 101 entries._
 - **Description**: Some Pro/E exports emit two degenerate edges where one is sufficient at a cone/sphere apex. Causes downstream wire reorder confusion.
 - **Reproducer recipe**: Pro/E-exported cone whose apex carries two zero-length ORIENTED_EDGEs in the same wire.
 - **Expected kernel behavior**: detect and dedupe; preserve a single canonical apex bridge.
+- **Closure intent**: sheet
 - **Notes**: **See also**: Twi021, Twi030. Synonyms: "two zero-length edges at apex", "Pro/E exports redundant degenerate edges", "duplicate apex bridge edges", "wire reorder confused by extra apex edge", "multiple degenerate edges at cone tip".
 - **Tier-3 assertion**: face[0].surface_type == "cone"
 - **Tier-3 assertion**: n_edges_total >= 4
@@ -3280,6 +3333,7 @@ _Section summary: 101 entries._
 - **Description**: Periodic face (cylinder, sphere, torus) wrapping U or V needs to be split at the seam into multiple faces; for downstream meshing, parametric trimming, or BSpline conversion. Closed-edge splitting is a sub-step.
 - **Reproducer recipe**: BRep solid with full cylinder face (one face spans 360°); pass through `ShapeUpgrade_ShapeDivideClosed`.
 - **Expected kernel behavior**: split into two faces (or N) at U=0 (and U=π) introducing seam edges and matching pcurves.
+- **Closure intent**: sheet
 - **Notes**: **See also**: Gp027. Synonyms: "single face wraps full cylinder", "periodic face needs splitting at seam", "full 360 degree face won't mesh", "BSpline conversion needs split closed face", "face spans whole period".
 - **Tier-3 assertion**: face[0].surface_type == "cylinder"
 - **Tier-3 assertion**: n_edges_total >= 4
@@ -3294,6 +3348,7 @@ _Section summary: 101 entries._
 - **Description**: A single wire contains two distinct edges whose 3D and 2D traces coincide within tolerance; both edges describe the same arc, but the wire references them as separate entries. Likely from a failed Boolean or duplicate-injection during translation.
 - **Reproducer recipe**: Wire `[e1, e2, e3, e2', e4]` where `e2'` is geometrically equal to `e2`.
 - **Expected kernel behavior**: detect the coincident edges and drop the duplicate, or reject as malformed.
+- **Closure intent**: sheet
 - **Notes**: **See also**: Tfa025. Synonyms: "wire has duplicate overlapping edges", "two edges describe same arc", "doubled edge in wire", "same arc referenced twice in EDGE_LOOP", "Boolean fallout left duplicate edges".
 - **Tier-3 assertion**: n_edges_total >= 4
 - **Tier-3 assertion**: face[0].surface_type == "plane"
@@ -3309,6 +3364,7 @@ _Section summary: 101 entries._
 - **Description**: An `EDGE_LOOP` is missing the edge that would close it back to its starting vertex; for example three `ORIENTED_EDGE`s forming an L-shape (bottom, right, top, with no closing left edge), so the wire never returns to its start vertex. The fixer's default `ClosedWireMode` mis-matches the caller's expectation: a closed wire missing one edge gets treated as intentionally open and never repaired.
 - **Reproducer recipe**: STEP face whose outer wire has a small gap > tol; pass through `ShapeFix_Wire` with default `ClosedWireMode=Standard_False`.
 - **Expected kernel behavior**: Heal and accept: callers explicitly set `ClosedWireMode` per topological context; the healer / repairer respects it.
+- **Closure intent**: sheet
 - **Notes**: **See also**: Twi003. Synonyms: "wire missing closing edge", "L-shaped wire never returns to start", "almost-closed wire treated as open", "open wire repaired as closed", "ClosedWireMode default mismatched with input".
 - **Tier-3 assertion**: n_edges_total >= 3
 - **Tier-3 assertion**: face[0].surface_type == "plane"
@@ -3322,6 +3378,7 @@ _Section summary: 101 entries._
 - **Description**: A sphere is encoded by a face whose outer wire consists of two meridian edges (going from north to south pole and back). Special-case for `FixShifted`.
 - **Reproducer recipe**: STEP `ADVANCED_FACE` on `SPHERICAL_SURFACE` with two meridian `EDGE_CURVE`s + apex/pole degenerate edges.
 - **Expected kernel behavior**: Heal and accept: normalize the meridian-pair pattern; do not coerce pcurves by shifting; repair by inserting pole degenerate edges if missing.
+- **Closure intent**: sheet
 - **Notes**: Synonyms: "sphere face described by two meridians", "north-to-south pole edge pair on sphere", "two meridian wire on spherical surface", "lune-shaped sphere face", "meridian-pair wire pattern".
 - **Tier-3 assertion**: face[0].surface_type == "sphere"
 - **Tier-3 assertion**: n_edges_total >= 6
@@ -3337,6 +3394,7 @@ _Section summary: 101 entries._
 - **Description**: Two adjacent edges meet in 3D within tolerance but their pcurve endpoints in UV are separated by a parametric gap that no vertex tolerance can bridge; the wire is connected in 3D but missing a "lacking edge" in UV. The face's parametric outline cannot be closed without adding a synthetic edge to span the UV gap.
 - **Reproducer recipe**: Two `EDGE_CURVE`s sharing a vertex in 3D, but their `PCURVE` endpoints on the face surface differ in UV by Δu,Δv > 1e-3 with surface scale 1.
 - **Expected kernel behavior**: synthesise a short bridging edge (degenerate in 3D, finite in UV) to close the parametric outline, or reject the input as a topology-vs-parametrisation mismatch.
+- **Closure intent**: sheet
 - **Notes**: Synonyms: "wire has gap in UV but connected in 3D", "lacking edge in parameter space", "face boundary won't close in UV", "topology connected but parametrisation has hole", "parametric outline has gap kernel can't bridge".
 - **Tier-3 assertion**: n_edges_total >= 2
 - **Tier-3 assertion**: face[0].surface_type == "cylinder"
@@ -3350,6 +3408,8 @@ _Section summary: 101 entries._
 - **Description**: After Boolean op or translation, two faces that should share an edge each carry their own copy of it; geometrically coincident, topologically separate. The shell appears to have free / dangling edges where it actually has duplicated edges. Stitching pairs the duplicates into shared edges and reconstructs the closed shell.
 - **Reproducer recipe**: Open shell with two faces sharing a coincident edge geometry but separate `EDGE_CURVE` instances.
 - **Expected kernel behavior**: identify pairs of geometrically-coincident dangling edges and merge each pair into a single shared edge (sewing), or reject the input as a non-watertight shell. A free-edge-only kernel may also leave the duplicates and surface them as a diagnostic.
+- **Closure intent**: solid
+- **Closure defect**: unstitched_seam
 - **Notes**: **See also**: Tfa020, Tfa023, Tsh029. Synonyms: "adjacent faces don't share edge instance", "duplicated edges between faces need sewing", "open shell needs stitching", "free dangling edges from un-sewn shell", "two faces have separate copies of shared edge".
 - **Tier-3 assertion**: n_edges_total >= 8
 - **Tier-3 assertion**: face[0].surface_type == "plane"
@@ -3363,6 +3423,7 @@ _Section summary: 101 entries._
 - **Description**: An `EDGE_LOOP` whose `edge_list` is ordered out of cyclic head-to-tail (e.g. (#71, #70, #73, #72) — square corners visited in scrambled order so consecutive `ORIENTED_EDGE`s do not share endpoints) needs only a reorder, no edge replacement. When a wire-healing pass performs only a wire reorder and no other modification, the parent face is not replaced with the new (reordered) wire. The pass reports success, but the output shape still references the unhealed wire — the fix is silently lost.
 - **Reproducer recipe**: BRep face requiring only wire-reorder; run a healing pass; observe original unfixed face still present in the output.
 - **Expected kernel behavior**: a healing pass that produces a modified sub-shape must propagate the replacement up the parent chain unconditionally; any sub-fix that succeeds must result in the parent referring to the new sub-shape.
+- **Closure intent**: sheet
 - **Notes**: **See also**: Twi003, Twi028. Synonyms: "wire reorder healing not propagated to face", "fix succeeds but parent face not updated", "scrambled wire fixed but ignored", "healing pass returns success without applying fix", "shape still references unhealed wire after repair".- **Tier-3 assertion**: n_edges_total >= 4
 - **Tier-3 assertion**: face[0].surface_type == "plane"
 - **Tier-3 assertion**: n_vertices_total >= 8
@@ -3376,6 +3437,7 @@ _Section summary: 101 entries._
 - **Description**: A custom pad shape consisting of one arc and one line is mirrored to the bottom layer with a small non-zero rotation. The mirror operation negates Y but does not invert the arc's parameterisation symmetrically, so the resulting wire's closure check fails at floating-point ULP level; the wire reads as "not closed in 2D" / "self-interfering" even though the geometry is fine.
 - **Reproducer recipe**: Footprint with custom pad consisting of one arc + line; place on bottom layer at rotation 1° or 45°; export STEP.
 - **Expected kernel behavior**: Heal and accept: a mirror that flips an axis normalizes the parameterisation of orientation-bearing curves symmetrically, not just negates the coordinate. The closure tolerance for self-intersection is coerced to be at least as tight as the kernel's vertex-equality tolerance.
+- **Closure intent**: sheet
 - **Notes**: **See also**: Gs009. **OCC behavior**: the validity-checker does not flag the ULP-level closure failure in the mirrored-then-rotated wire; tier-3 valid-flag should be ignored for this entry. The reader most likely silently fixes or ignores the parameterisation mismatch on import. Synonyms: "mirrored arc footprint fails self-intersection check", "KiCad bottom-layer pad with arc breaks STEP export", "wire closure fails at ULP scale", "mirrored-and-rotated wire flagged as self-touching", "false-positive self-intersection on rotated mirror".
 - **Tier-3 assertion**: n_edges_total >= 2
 - **Tier-3 assertion**: face[0].surface_type == "plane"
@@ -3391,6 +3453,7 @@ _Section summary: 101 entries._
 - **Description**: An `EDGE_CURVE` `LINE` on a `CYLINDRICAL_SURFACE` whose start point is offset from the surface by `Precision::Confusion()`-scale (e.g. line starting at (10.0000001, 0, 0) on a R=10 cylinder while the endpoint `VERTEX_POINT`s lie exactly on R=10), so the edge does not quite lie on the host surface. Until gmsh 4.11 this logged a "Recomputing incorrect OpenCASCADE wire" warning and fixed the wire; from 4.12 the same input throws fatal exceptions on identical surfaces; a tolerance-handling regression.
 - **Reproducer recipe**: STEP with `EDGE_LOOP` whose `EDGE_CURVE` start/end points disagree by ~`Precision::Confusion()` from the surface parametric trace.
 - **Expected kernel behavior**: heal; degrade to warning + accept the file with a fudged wire when fix fails, matching pre-4.12 behavior.
+- **Closure intent**: sheet
 - **Notes**: **See also**: Gs009. Synonyms: "Could not fix wire in surface error", "edge slightly off cylinder surface", "gmsh 4.12 throws on tolerance-scale wire deviation", "edge offset by Precision::Confusion", "wire fixer regression after OCCT bump".
 - **Tier-3 assertion**: face[0].surface_type == "cylinder"
 - **Tier-3 assertion**: n_edges_total >= 1
@@ -3406,6 +3469,7 @@ _Section summary: 101 entries._
 - **Description**: An `ADVANCED_FACE` with a normal square `FACE_OUTER_BOUND` plus an inner `FACE_BOUND` containing a `VERTEX_LOOP` that wraps a single `VERTEX_POINT` inside the outer wire (e.g. at (5, 5, 0)); a wire-bound that visits an internal vertex with no edge. Such INTERNAL-orientation vertex sub-shapes cause an outer-wire-detection pass to spin indefinitely, or to skip the primal wire when iteration reports only vertex children remaining. The face's outer wire is unreachable through naive child iteration when non-wire children appear in the traversal order.
 - **Reproducer recipe**: Face with one wire and several INTERNAL-oriented vertex sub-shapes in iteration order.
 - **Expected kernel behavior**: Heal and accept: normalize outer-wire detection to skip internal sub-shapes; iterate strictly over wires; coerce the choice regardless of trailing non-wire elements.
+- **Closure intent**: sheet
 - **Notes**: Validation observed: silent-empty rather than the cited infinite loop. The OuterWire spin requires post-translation ShapeAnalysis to be invoked; the validate2 transfer pipeline does not run that pass at fixture scale, and the historical fix has long landed in current OCCT. The kernel-mishandling-by-silent-acceptance still demonstrates the defect class. **See also**: Gs010, Gs034, Pf025. Synonyms: "outer-wire detection hangs forever", "vertex loop inside face causes infinite loop", "single-vertex bound wraps internal point", "INTERNAL vertex sub-shape stalls iteration", "loop wrapping a stray vertex in face".
 - **Tier-3 assertion**: n_edges_total >= 4
 - **Tier-3 assertion**: face[0].surface_type == "plane"
@@ -3419,6 +3483,7 @@ _Section summary: 101 entries._
 - **Description**: A wire's vertices include same-coordinate or close-coordinate vertices that the global vertex-equality tolerance would treat as separate, but local context (wire-level adjacency) suggests they should be merged. Conversely, a wire may have a single vertex referenced where two distinct vertices are required.
 - **Reproducer recipe**: Wire with two vertices at coords (0,0,0) and (1e-7,0,0) that the global tolerance treats as separate.
 - **Expected kernel behavior**: at the wire level, decide merge vs. split based on local context and a wire-specific tolerance budget, then propagate the decision up to incident faces; or reject as malformed.
+- **Closure intent**: sheet
 - **Notes**: **See also**: Tfa019. Synonyms: "near-coincident wire vertices", "merge-or-split decision on close vertices", "two vertices at sub-tolerance distance in wire", "vertex equality decision context-dependent", "wire-local tolerance differs from global".
 - **Tier-3 assertion**: n_edges_total >= 3
 - **Tier-3 assertion**: face[0].surface_type == "plane"
@@ -3432,6 +3497,7 @@ _Section summary: 101 entries._
 - **Description**: A face carries one or more inner `FACE_BOUND` ("hole") wires whose enclosed area is below a configurable threshold relative to the face's overall area — a tiny wire that almost-encloses-nothing, typically left behind by imprecise reverse-engineering or Boolean fallout rather than describing a genuine hole. Common shape: a triangle inner wire with vertices like (5,5,0), (5.001,5,0), (5.0,5.001,0) — enclosed area ~5e-7 mm² well below typical working tolerance — sitting inside a 100 mm² planar face.
 - **Reproducer recipe**: Planar face with a small inner wire enclosing area < 1e-6 mm² inside a 100 mm² face.
 - **Expected kernel behavior**: drop the spurious inner wire and fill the would-be hole, keep it but accept the noise, or reject as malformed; choice is kernel-policy-dependent and may be exposed via a healing flag.
+- **Closure intent**: sheet
 - **Notes**: **See also**: Twi045. Validation observed: kernel-level segfault (signal 11) on OCCT/gmsh load. Hypothesized path: NaN propagation through BRepLib::SameParameter on degenerate geometry. Stronger than catalog's 'needs healing' claim. See validation/SEGFAULT_CHARACTERIZATION.md. Synonyms: "tiny inner hole wire below threshold area", "spurious sub-mm hole on face", "hole wire encloses near-zero area", "Boolean leftover tiny inner loop", "kernel crashes on micro-scale inner wire".
 - **Notes**: Cross-oracle: pure-Python Part-21 validator accepts (`accept`); OCCT crashes (`signal(11)`). The crash is on the kernel side; the file is spec-conformant Part-21.
 - **OCC behavior**: crashes with signal(11); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture; never crash.
@@ -3448,6 +3514,7 @@ _Section summary: 101 entries._
 - **Description**: When a hole-wire-removal pass runs on a face that has been reversed (its normal points the other way), the rebuilt face emerges with mis-oriented wires; the algorithm rebuilt the face from scratch and lost the original wire-orientation context. A related case: when the face carries a non-identity placement transform, the helper face used to project pcurves is built without preserving the placement and pcurves are dropped.
 - **Reproducer recipe**: Reversed face containing small (sub-tolerance) hole wire; or located face with sub-tolerance hole wire.
 - **Expected kernel behavior**: Heal and accept: a same-shape healing / repair pass preserves face orientation and placement context across the rebuild; wires emerge with the same orientation relative to the face, and pcurves survive.
+- **Closure intent**: ambiguous
 - **Notes**: **See also**: Twi044. Synonyms: "small wire removal flips orientation on reversed face", "hole removal on located face drops pcurves", "rebuilt face has wrong wire direction after healing", "FixSmallAreaWire mis-orients on reversed face", "small-hole removal loses placement transform".
 - **Byte assertion**: contains(b'#20,.F.)')
 - **Byte assertion**: contains(b'FACE_BOUND(')
@@ -3467,6 +3534,7 @@ End of file. 45 entries. License-clean: descriptions are paraphrased from public
 - **Description**: An `ADVANCED_FACE` / `FACE_SURFACE` entity carries `$` (NULL) or an unresolved reference for `face_geometry`. The parent shell loses one face entirely; downstream solids fail to close.
 - **Reproducer recipe**: `#10=ADVANCED_FACE('',(#20),$,.T.);` where the face_geometry slot is `$`, or referenced ID points at a surface that itself failed to translate.
 - **Expected kernel behavior**: skip face with diagnostic; do not abort the surrounding shell. Continue translation and report missing face count.
+- **Closure intent**: sheet
 - **Notes**: Pairs with R046 "open shell as ManifoldSolidBrep outer". **See also**: Tfa002, Tfa003. Synonyms: "face has no surface attached", "face geometry pointer is null", "face_geometry slot is empty", "face missing its underlying surface", "shell loses a face entirely on import".
 - **Tier-3 assertion**: brepcheck.valid == False
 - **Model impact**: Face sewing leaves free bounds or duplicate edges; the resulting shell is open instead of closed, so MakeSolid produces an invalid solid and volume/property computations return wrong values.
@@ -3478,6 +3546,7 @@ End of file. 45 entries. License-clean: descriptions are paraphrased from public
 - **Description**: An `ADVANCED_FACE` is emitted with an empty bounds list; no `FACE_OUTER_BOUND` and no `FACE_BOUND`. Either the writer dropped the loop or the face represents a complete surface (sphere/torus) where natural bounds are implied.
 - **Reproducer recipe**: `#10=ADVANCED_FACE('',(),#20,.T.);` whose `face_geometry #20` is a `SPHERICAL_SURFACE` or `TOROIDAL_SURFACE`.
 - **Expected kernel behavior**: Heal and accept: when the surface is closed/periodic in U and V, repair the face by inserting natural bounds. Otherwise, reject the face with a diagnostic; never construct a face with an empty wire set.
+- **Closure intent**: sheet
 - **Notes**: **See also**: Tfa001. Synonyms: "face has empty bounds list", "face has no outer wire and no inner wire", "advanced face with empty wire set", "face on sphere or torus has no boundary", "natural bounds missing on closed surface".
 - **Tier-3 assertion**: face[0].surface_type == "torus"
 - **Tier-3 assertion**: face[2].surface_type == "sphere"
@@ -3490,6 +3559,7 @@ End of file. 45 entries. License-clean: descriptions are paraphrased from public
 - **Description**: The bound entity referenced from `FACE_OUTER_BOUND.bound` failed translation (e.g., empty `EDGE_LOOP`, all edges dropped). Without an outer bound the face is incomplete.
 - **Reproducer recipe**: `FACE_OUTER_BOUND` whose `bound` is an `EDGE_LOOP` with all `ORIENTED_EDGE`s referencing edges that themselves had null curves (Q006).
 - **Expected kernel behavior**: Warn and accept: drop the offending face; emit "TP fail: outer bound translation" diagnostic; coerce the shell to continue.
+- **Closure intent**: ambiguous
 - **Notes**: **See also**: Gp001, Tfa001. Synonyms: "outer boundary failed to translate", "face dropped because its outer wire was empty", "all edges in outer loop went missing", "face has no usable outer boundary after import".
 - **Byte assertion**: contains(b'FACE_OUTER_BOUND(')
 - **Byte assertion**: count_entity_def(b'EDGE_LOOP') >= 2
@@ -3506,6 +3576,7 @@ End of file. 45 entries. License-clean: descriptions are paraphrased from public
 - **Description**: A face on a closed surface (sphere, torus, full BSpline, surface_of_revolution) is given with only inner wires — or with a single VERTEX_LOOP — and no outer bound. STEP semantics permit this ("the entire surface with cutouts"), but kernels that pre-orient inner wires before adding the natural bound flip the region.
 - **Reproducer recipe**: `ADVANCED_FACE` on `SPHERICAL_SURFACE` whose only `FACE_BOUND` wraps a single inner wire; emit no `FACE_OUTER_BOUND`.
 - **Expected kernel behavior**: heal; insert the natural surface boundary first, then orient inner wires as holes. Do NOT pre-orient inner wires before natural-bound insertion on closed surfaces.
+- **Closure intent**: sheet
 - **Notes**: **See also**: Tfa005, Twi021. Synonyms: "sphere face has only a hole", "torus face missing outer boundary", "closed surface with only inner wire flips region", "face represents whole surface minus hole but kernel inverts it", "natural seam not added before orientation".
 - **Tier-3 assertion**: face[0].surface_type == "torus"
 - **Tier-3 assertion**: n_edges_total >= 5
@@ -3520,6 +3591,7 @@ End of file. 45 entries. License-clean: descriptions are paraphrased from public
 - **Description**: A periodic surface (sphere, cone, toroidal pole) is bounded by a single closed wire that wraps once around the periodic direction. The face has a degenerate pole and the wire crosses (or skirts) the apex/pole.
 - **Reproducer recipe**: Cone face whose only outer wire passes through the apex `vertex_point`, no degenerate edge inserted.
 - **Expected kernel behavior**: Heal and accept: detect the single-belt periodic configuration; repair by inserting the implicit degenerate edge at the pole; coerce the wire orientation so it traces the UV rectangle correctly.
+- **Closure intent**: sheet
 - **Notes**: **See also**: Tfa004, Twi021. Synonyms: "wire wraps once around cone apex", "single closed wire across the pole", "boundary skirts singular point of surface", "missing degenerate edge at periodic pole", "wire crosses sphere pole without seam".
 - **Tier-3 assertion**: face[0].surface_type == "sphere"
 - **Tier-3 assertion**: n_edges_total >= 8
@@ -3535,6 +3607,7 @@ End of file. 45 entries. License-clean: descriptions are paraphrased from public
 - **Description**: A face whose entire boundary lies within `Precision::Confusion` of a single point. All vertex coordinates are equal within tolerance; surface evaluation degenerates.
 - **Reproducer recipe**: An `ADVANCED_FACE` on a `PLANE` whose 4-edge `FACE_OUTER_BOUND` traces vertices at `(0,0,0), (1e-9,0,0), (1e-9,1e-9,0), (0,1e-9,0)`.
 - **Expected kernel behavior**: heal; collapse the spot face to a `tolerant_vertex`; remove the face from the shell; re-stitch incident edges via that vertex.
+- **Closure intent**: ambiguous
 - **Notes**: **See also**: Gs014. Synonyms: "face collapsed to a single point", "all face vertices are at the same XYZ", "face has zero area within tolerance", "spot face needs to become a tolerant vertex", "face boundary fits inside a single point".
 - **Tier-3 assertion**: face[0].area < 1e-9
 - **Tier-3 assertion**: face[0].surface_type == "plane"
@@ -3548,6 +3621,7 @@ End of file. 45 entries. License-clean: descriptions are paraphrased from public
 - **Description**: A face whose UV bounds collapse one parametric direction to within tolerance. The face is geometrically a thin strip; perpendicular distance between its two long boundary edges < tolerance.
 - **Reproducer recipe**: `ADVANCED_FACE` on `PLANE` with two long parallel edges of length 100 mm separated by `1e-7` mm and two short connecting edges.
 - **Expected kernel behavior**: heal; collapse the strip face to a `tolerant_edge` between its two long sides; remove face; merge incident shells.
+- **Closure intent**: sheet
 - **Notes**: **See also**: Gs014. Synonyms: "face is a thin strip", "two long edges sit on top of each other", "face width less than tolerance", "face is geometrically a line", "strip face needs absorbing into neighbor".
 - **Tier-3 assertion**: face[0].sliver_aspect_max_min > 1e3
 - **Tier-3 assertion**: face[0].surface_type == "plane"
@@ -3562,6 +3636,7 @@ End of file. 45 entries. License-clean: descriptions are paraphrased from public
 - **Description**: A high-aspect-ratio degenerate face (knife-like, needle-like). Two long edges plus one tiny edge so that the cross-perpendicular distance between long edges is below tolerance. Distinguished from pure spot/strip by retained 2D area.
 - **Reproducer recipe**: 4-edge `ADVANCED_FACE` on `PLANE` with two 100 mm sides and two `1e-7` mm connecting edges.
 - **Expected kernel behavior**: heal; replace short edges with `tolerant_vertex`s; collapse the sliver/pin face to a `tolerant_edge`; reject the collapse if it would violate manifold-ness.
+- **Closure intent**: sheet
 - **Notes**: **See also**: Gs014, Gs015. Synonyms: "needle-shaped face", "knife-edge face with one tiny edge", "high aspect ratio sliver face", "face tapers to a point at one corner", "pin face from boolean residue".
 - **Tier-3 assertion**: face[0].sliver_aspect_max_min > 1e3
 - **Tier-3 assertion**: face[0].surface_type == "plane"
@@ -3575,6 +3650,7 @@ End of file. 45 entries. License-clean: descriptions are paraphrased from public
 - **Description**: A face contains a vertex sub-shape that lies on the interior of another wire's edge, effectively bisecting the face. The face boundary's regularity is broken; downstream Booleans see ambiguous adjacency.
 - **Reproducer recipe**: `ADVANCED_FACE` whose outer wire passes by a vertex `V`, and an inner wire (or another part of the outer wire) anchors a separate edge at `V` lying on the first wire's edge curve.
 - **Expected kernel behavior**: heal; split the face at the splitting vertex into two (or more) regular faces; alternatively flag and surface the defect to the user.
+- **Closure intent**: sheet
 - **Notes**: **See also**: Gs034. Synonyms: "vertex sits on the middle of another edge", "T-junction inside a face", "wire vertex bisects another wire's edge", "face has interior vertex breaking adjacency", "splitting vertex inside face boundary".
 - **Tier-3 assertion**: n_edges_total >= 6
 - **Tier-3 assertion**: face[0].surface_type == "plane"
@@ -3588,6 +3664,7 @@ End of file. 45 entries. License-clean: descriptions are paraphrased from public
 - **Description**: An `ADVANCED_FACE` is emitted with two or more `FACE_OUTER_BOUND` entries when STEP requires exactly one. Common signature: `ADVANCED_FACE.bounds` contains two distinct `FACE_OUTER_BOUND` instances for two disjoint regions (e.g. two 10×10 squares each with its own `EDGE_LOOP`). Often the result of a botched rehost/MakeFace where every 3D edge — including those already representing the contour — was reprojected onto a new surface without dedup, producing two pcurves tracing the same or two separate contours.
 - **Reproducer recipe**: `ADVANCED_FACE` with two `FACE_OUTER_BOUND` records (or, equivalently, one outer wire and one `FACE_BOUND` that geometrically duplicates it).
 - **Expected kernel behavior**: heal; split into two faces (one per outer wire) or merge if outer wires coincide; reject if the loops cross.
+- **Closure intent**: sheet
 - **Notes**: Synonyms: "face needs splitting into separate faces", "two outer boundaries on one face", "face has multiple outer loops", "ADVANCED_FACE with two FACE_OUTER_BOUND entries", "face encloses two disjoint regions".
 - **Tier-3 assertion**: load == "ok"
 - **Tier-3 assertion**: n_edges_total >= 8
@@ -3602,6 +3679,7 @@ End of file. 45 entries. License-clean: descriptions are paraphrased from public
 - **Description**: After healing, `BRepGProp::SurfaceProperties` returns zero or negative area for a face. Either the face is fully degenerate, or healing reversed its orientation and signed-area integration flipped sign.
 - **Reproducer recipe**: Construct a face whose outer wire winds clockwise on the natural surface orientation; pass through ShapeFix; compute signed area.
 - **Expected kernel behavior**: heal — restore consistent winding; reject if both surface and wire are themselves degenerate (zero unsigned area).
+- **Closure intent**: sheet
 - **Notes**: **See also**: Gs014. Synonyms: "face has zero area after healing", "face area went negative after fix", "fixshape flipped face orientation", "signed area is wrong sign", "face is degenerate after repair".
 - **Tier-3 assertion**: face[0].surface_type == "plane"
 - **Tier-3 assertion**: n_edges_total >= 4
@@ -3616,6 +3694,7 @@ End of file. 45 entries. License-clean: descriptions are paraphrased from public
 - **Description**: One face dominates the model's area budget (e.g., a single huge skin face on a long thin part). Downstream meshers produce uneven element sizes; analyses degrade.
 - **Reproducer recipe**: `ADVANCED_FACE` on a `B_SPLINE_SURFACE_WITH_KNOTS` covering 90% of model surface area as one patch.
 - **Expected kernel behavior**: Heal and accept: accept the input, then offer `ShapeDivideArea` to repair / subdivide along iso-curves so each child face stays under a configured area threshold.
+- **Closure intent**: sheet
 - **Notes**: **See also**: Tfa028. Synonyms: "one face dominates total area", "single huge face in model", "face too large for downstream meshing", "skin face needs subdivision".
 - **Tier-3 assertion**: face[0].area > 1e6
 - **Tier-3 assertion**: face[0].surface_type == "plane"
@@ -3629,6 +3708,7 @@ End of file. 45 entries. License-clean: descriptions are paraphrased from public
 - **Description**: An `ADVANCED_FACE` whose total area is below a user-configured small-face threshold but is not strictly a spot / strip / pin / sliver. Typical shape: a square face on a `PLANE` of size 0.05 × 0.05 mm (≈2.5e-3 mm²); small enough for downstream meshers/healers to drop. Common in meshing prep where the user wants to drop sub-feature-size faces.
 - **Reproducer recipe**: Boolean fragment leaving a fingernail-sized residual face on an otherwise large solid.
 - **Expected kernel behavior**: heal — eliminate the face; merge surrounding wires onto neighbors; never break shell closure without diagnostic.
+- **Closure intent**: sheet
 - **Notes**: **See also**: Gs015, Tfa015. Synonyms: "face below feature size", "tiny face below user threshold", "face area under sub-mm threshold", "small face wants dropping", "0.05 mm square face needs removal".
 - **Tier-3 assertion**: face[0].area < 0.01
 - **Tier-3 assertion**: face[0].surface_type == "plane"
@@ -3653,6 +3733,7 @@ End of file. 45 entries. License-clean: descriptions are paraphrased from public
 - **Description**: Two or more coplanar (or co-cylindrical, co-conical, co-spherical, co-toroidal) faces from a Boolean union remain separate even though they share one underlying surface, joined by an artificial internal edge that does not separate distinct geometry. Feature recognition and CAM/FEA pipelines see redundant topology where the input was a single feature.
 - **Reproducer recipe**: Boolean-fuse two boxes sharing a face; result has two coplanar faces on the shared plane separated by a useless internal edge.
 - **Expected kernel behavior**: merge adjacent faces that share one underlying surface and have collinear shared edges, leaving the topology with one face per geometric region. The merge must respect periodic directions; do not merge across a cylinder/torus seam.
+- **Closure intent**: sheet
 - **Notes**: **See also**: Tfa017, Tfa018, Tfa032. Synonyms: "coplanar faces left as separate entities", "two faces on same plane joined by fake edge", "redundant internal edge between coplanar faces", "feature recognition sees split where input was one face", "boolean union didn't merge coplanar pair".
 - **Tier-3 assertion**: face[0].surface_type == "plane"
 - **Tier-3 assertion**: n_edges_total >= 8
@@ -3667,6 +3748,7 @@ End of file. 45 entries. License-clean: descriptions are paraphrased from public
 - **Description**: A same-domain face merge dissolves the shared edge of two coplanar faces and assigns the result a tolerance equal to the worst of the inputs (~1e-1) instead of recomputing it from the actual post-merge geometry (would have been ~2e-7). Downstream operations then see inflated tolerances on a result that didn't need them.
 - **Reproducer recipe**: Two coplanar faces with vertex tolerances ~2e-7; fuse; run a same-domain merge; check vertex tolerances on the result.
 - **Expected kernel behavior**: recompute tolerance from actual post-merge geometric deviation; preserve the input precision when merged vertices coincide within source tolerance.
+- **Closure intent**: sheet
 - **Notes**: **See also**: Tfa016. Synonyms: "merged face inherits worst tolerance", "face merge bloats vertex tolerance", "tolerance jumps after coplanar merge", "merged result tolerant on a precise input".
 - **Tier-3 assertion**: n_edges_total >= 8
 - **Tier-3 assertion**: face[0].surface_type == "plane"
@@ -3695,6 +3777,7 @@ End of file. 45 entries. License-clean: descriptions are paraphrased from public
 - **Description**: Two `ADVANCED_FACE`s that touch along a physical shared boundary use distinct `VERTEX_POINT` instances on each side and distinct `EDGE_CURVE` instances for what should be one shared edge — each owns its own vertex / edge copy. Common signature: an `OPEN_SHELL` of two coplanar faces meeting at, say, x=10, where face A uses vertices (#30, #31) and edge #71 along that border while face B uses vertices (#34, #37) and edge #77 — duplicate vertices at the seam needing connect / sew. Distance-only checks pass but the shell has zero-tolerance topological cracks.
 - **Reproducer recipe**: Two `ADVANCED_FACE`s sharing an identical `B_SPLINE_CURVE_WITH_KNOTS` geometry but each referencing its own `EDGE_CURVE` and `ORIENTED_EDGE`.
 - **Expected kernel behavior**: heal; merge coincident vertices/edges within tolerance; downgrade cracks to gaps then run gap pipeline. After healing, edge ancestor-count = 2 for shared boundaries.
+- **Closure intent**: sheet
 - **Notes**: **See also**: Tsh042, Twi043. Synonyms: "adjacent faces use different vertices on shared boundary", "duplicate vertices at face seam", "topology has cracks despite zero distance", "two faces meet but share no vertex", "FaceConnect didn't unify boundary vertices".
 - **Tier-3 assertion**: n_edges_total >= 8
 - **Tier-3 assertion**: face[0].surface_type == "plane"
@@ -3708,6 +3791,8 @@ End of file. 45 entries. License-clean: descriptions are paraphrased from public
 - **Description**: A shell that should be closed has free (naked) edges; edges incident to fewer than two faces. Either a face is missing (W009), or adjacent face boundaries weren't sewn within tolerance.
 - **Reproducer recipe**: Shell exported as separate faces (no `CLOSED_SHELL`), with `OPEN_SHELL` carrying free boundary loops where adjacent face edges sit within `1e-5` m of each other but reference different `EDGE_CURVE` records.
 - **Expected kernel behavior**: stitch the free boundaries pairwise within model-derived tolerance to recover a closed shell; recompute the closed-shell flag from connectivity; or reject as an open shell. The closed-shell flag must follow the actual topology, not be carried over from the input.
+- **Closure intent**: solid
+- **Closure defect**: missing_face
 - **Notes**: **See also**: Twi037. Synonyms: "shell looks closed but has open edges", "free naked edge on closed shell", "edge belongs to only one face", "shell has boundary edges where there shouldn't be any", "sewing tolerance failed to close shell".
 - **Tier-3 assertion**: n_edges_total >= 8
 - **Tier-3 assertion**: face[0].surface_type == "plane"
@@ -3736,6 +3821,8 @@ End of file. 45 entries. License-clean: descriptions are paraphrased from public
 - **Description**: A multi-face STEP file exports as a flat collection of disjoint faces — no `CLOSED_SHELL`, no `OPEN_SHELL`, no `MANIFOLD_SOLID_BREP` — sometimes wrapped only as a top-level `SHELL_BASED_SURFACE_MODEL`. The downstream consumer needs to stitch the faces back into shells based on geometric coincidence at boundaries.
 - **Reproducer recipe**: STEP file containing N `ADVANCED_FACE`s with no `CLOSED_SHELL` or `OPEN_SHELL` — only top-level `SHELL_BASED_SURFACE_MODEL`.
 - **Expected kernel behavior**: stitch the disjoint faces into one or more sewn shells with configurable tolerance, reporting per-face diagnostics for boundaries that did not join.
+- **Closure intent**: solid
+- **Closure defect**: unstitched_seam
 - **Notes**: **See also**: Twi037. Synonyms: "STEP file has loose faces with no shell", "no CLOSED_SHELL or OPEN_SHELL in file", "faces need sewing into shell", "model is just a pile of faces", "no manifold solid wrapping".
 - **Tier-3 assertion**: n_edges_total >= 8
 - **Tier-3 assertion**: face[0].surface_type == "plane"
@@ -3749,6 +3836,7 @@ End of file. 45 entries. License-clean: descriptions are paraphrased from public
 - **Description**: Two `ADVANCED_FACE`s are geometrically coincident; duplicate layers on the same underlying surface, often from botched Booleans. Both attached to the same shell.
 - **Reproducer recipe**: Two `ADVANCED_FACE`s on the same `PLANE` with identical loops; both attached to the same `CLOSED_SHELL`.
 - **Expected kernel behavior**: heal — keep one face, drop the duplicate; if coincidence is partial, log; merge results into a non-manifold-clean compound.
+- **Closure intent**: sheet
 - **Notes**: **See also**: Tsh026. Synonyms: "two coincident faces on same surface", "duplicate face layers on shell", "boolean produced overlapping coincident faces", "two faces in identical position".
 - **Tier-3 assertion**: n_edges_total >= 8
 - **Tier-3 assertion**: face[0].surface_type == "plane"
@@ -3777,6 +3865,7 @@ End of file. 45 entries. License-clean: descriptions are paraphrased from public
 - **Description**: An `ADVANCED_FACE` references an `OFFSET_SURFACE` whose basis is itself a complex `B_SPLINE_SURFACE` aggregate or a `SURFACE_OF_LINEAR_EXTRUSION`. Translator emits warning; iso evaluation through offset+extrusion chain raises exception (G065, G106). I010 reports failure when `OFFSET_SURFACE` wraps a complex base, succeeding when the base is referenced directly.
 - **Reproducer recipe**: `#157=OFFSET_SURFACE('',#288,20.0,.F.);` where `#288=(BOUNDED_SURFACE() B_SPLINE_SURFACE() ..)` complex aggregate.
 - **Expected kernel behavior**: accept; UIso/VIso evaluation must descend through offset/extrusion wrappers; emit warning that offset surface is out of AP214 scope; do not crash on indirect chain.
+- **Closure intent**: sheet
 - **Notes**: **See also**: Gn021. Synonyms: "offset surface used out of AP214 scope", "offset on top of B-spline base fails translation", "offset of extrusion surface throws exception", "compound offset surface chain unsupported".
 - **Tier-3 assertion**: face[0].surface_type == "offset"
 - **Tier-3 assertion**: face[1].surface_type == "offset"
@@ -3791,6 +3880,7 @@ End of file. 45 entries. License-clean: descriptions are paraphrased from public
 - **Description**: Cones, cylinders, `SURFACE_OF_REVOLUTION` faces with angular range exceeding a configured threshold (90°, 180°, full revolution) must be subdivided. Common signature: a full-revolution `CYLINDRICAL_SURFACE` `ADVANCED_FACE` whose `FACE_OUTER_BOUND` carries top and bottom `CIRCLE` `EDGE_CURVE`s with start==end vertex (closed circular edges) plus a single seam `EDGE_CURVE` used twice in the same `EDGE_LOOP` — once with `.T.` and once with `.F.` — instead of the two split-seam halves a downstream consumer expects. Downstream meshers misbehave on full-revolution faces; CAM tool-axis derivation expects per-segment.
 - **Reproducer recipe**: Full revolution face on `CYLINDRICAL_SURFACE` (angular span 2π).
 - **Expected kernel behavior**: heal; split into N faces (configurable angular cap); preserve the underlying surface; insert seam edges between segments.
+- **Closure intent**: sheet
 - **Notes**: **See also**: Tfa013. Provenance tier: runtime-only; the bytes encode a valid full-revolution face with a doubled seam edge, but the catalogued defect is the kernel's split-angle healing pass behavior (whether and how it subdivides the face). The healing decision and its quality manifest only at kernel runtime; the static fixture encodes only the trigger geometry. Synonyms: "cylinder face uses one seam edge twice", "full revolution face spans 360 degrees", "split_angle exceeded on revolved face", "single seam in EDGE_LOOP appears with both .T. and .F.", "downstream mesher fails on full revolution face".
 - **Tier-3 assertion**: face[0].surface_type == "cylinder"
 - **Tier-3 assertion**: n_edges_total >= 4
@@ -3805,6 +3895,7 @@ End of file. 45 entries. License-clean: descriptions are paraphrased from public
 - **Description**: A face's local placement transform is lost or ignored relative to its bounding vertices. Common signature: an `ADVANCED_FACE` references a `PLANE` whose `AXIS2_PLACEMENT_3D` origin is shifted (e.g. to (3,4,5)) and x-axis rotated (e.g. 30°), but the `EDGE_LOOP`'s `CARTESIAN_POINT`s are written in raw global coordinates (e.g. (0,0,0).(10,10,0)) as if the placement were identity. Equivalently, a subshape-replacement helper that replaces a face / edge / vertex inside a parent shape historically loses the local placement transform attached to the subshape, producing shifted geometry on the result.
 - **Reproducer recipe**: Programmatically attach a non-identity transform to a face, insert it back into a shell, run a healing pass that replaces the face, and check whether the transform survives.
 - **Expected kernel behavior**: Heal and accept: when sub-shapes carry non-identity location, repair by absorbing the location into the underlying surface/curve at the time of replacement, then normalize the sub-shape location to identity. Declared assembly locations are preserved exactly.
+- **Closure intent**: sheet
 - **Notes**: **See also**: Tfa031. Synonyms: "face placement ignored by import", "face on shifted plane drawn at wrong position", "AXIS2_PLACEMENT_3D not applied to bounding points", "subshape replacement loses local placement", "vertices stored in raw global instead of placement-local".
 - **Tier-3 assertion**: n_edges_total >= 4
 - **Tier-3 assertion**: face[0].surface_type == "plane"
@@ -3818,6 +3909,7 @@ End of file. 45 entries. License-clean: descriptions are paraphrased from public
 - **Description**: After STEP round-trip, individual faces acquire near-identity `TopLoc_Location` transforms even though the source carried no per-face transforms. The reader interprets a top-level `Compound` as an assembly and propagates locations down to leaves. Locations are computationally meaningless but break `IsEqual`/hash dedup.
 - **Reproducer recipe**: Build a `TopoDS_Compound` containing a single shell; write to STEP; re-read; iterate faces and check `TopoDS_Shape::Location().IsIdentity()`.
 - **Expected kernel behavior**: heal; collapse identity locations on leaf faces during reader (or in a healer pass); `RemoveLocations` flattens orphan locations on sub-shapes.
+- **Closure intent**: sheet
 - **Notes**: **See also**: Tfa030. Synonyms: "faces have spurious near-identity transforms after round-trip", "compound treated as assembly inflates per-face locations", "STEP read adds bogus TopLoc per face", "IsEqual fails on round-tripped faces".
 - **Tier-3 assertion**: n_edges_total >= 4
 - **Tier-3 assertion**: face[0].surface_type == "plane"
@@ -3831,6 +3923,7 @@ End of file. 45 entries. License-clean: descriptions are paraphrased from public
 - **Description**: Merging adjacent same-domain faces on a boolean result introduces new defects (overlapping faces, self-intersections) that were not present in the raw boolean output. The merge unions topology that should remain separate, e.g. a tapered-shape-sharing-edge case or a wedge-wedge-boundary case.
 - **Reproducer recipe**: Boolean fuse a tapered shape with a box where their bounding boxes share an edge along x-min; raw boolean is valid; pass through same-domain face merging.
 - **Expected kernel behavior**: a face-merge pass must produce topologically valid output; detect cases where merging would introduce overlap or self-intersection and skip the merge there with a diagnostic, or roll back the partial merge.
+- **Closure intent**: sheet
 - **Notes**: **See also**: Tfa016. **OCC behavior**: the validity-checker does not flag this same-domain-merge overlap; tier-3 valid-flag should be ignored for this entry. The reader most likely silently fixes or ignores the merge-induced overlap on import. Synonyms: "face merge introduces overlap", "boolean result self-intersects after merge", "coplanar merge creates new defect", "merge unions topology that should stay separate".
 - **Tier-3 assertion**: n_edges_total >= 9
 - **Tier-3 assertion**: face[0].surface_type == "plane"
@@ -4449,6 +4542,7 @@ _Section summary: 70 entries._
 - **Description**: When OCCT computed a curve's bounding box for self-intersection detection, it used too few sampling points; near-tangent intersections were missed. step-g hits the inverse: sampling p-curves with <2 points produces degenerate trims.
 - **Reproducer recipe**: STEP wire on planar face containing two near-tangent edges; bbox-based intersection test with default sample count misses the crossing.
 - **Expected kernel behavior**: heal; use density-of-discretization correlated with curve curvature for bbox; never rely on a fixed sample count; enforce minimum sample count ≥ 2 on degenerate inputs.
+- **Closure intent**: sheet
 - **Notes**: **See also**: Pf006. **OCC behavior**: the validity-checker does not flag the near-tangent edge intersections missed by coarse bbox sampling; tier-3 valid-flag should be ignored for this entry. The reader most likely silently fixes or ignores the missed self-intersection on import. Synonyms: "self-intersection missed by sparse sampling", "coarse bounding box check misses near-tangent", "p-curves with too few samples cause degenerate trims", "near-tangent curves miss intersection due to undersample".
 - **Tier-3 assertion**: face[0].surface_type == "plane"
 - **Tier-3 assertion**: n_edges_total >= 2
@@ -4639,6 +4733,7 @@ End of file. 44 distinct entries.
  face that is non-degenerate at one tolerance must remain non-degenerate at
  any other tolerance within the operating range. Silent drop of an
  "infinitesimal" face is unacceptable; reject loudly or preserve the face.
+- **Closure intent**: sheet
 - **Notes**: Searchable as "face disappeared after Boolean", "small feature. Synonyms: "small-face check uses tol*tol instead of tol", "kernel compares area to squared tolerance", "linear feature dropped under squared comparison", "face area threshold inconsistent with linear tolerance".
  silently removed", "ShapeFix dropped my face".
 - **Tier-3 assertion**: face[0].area < 1e-6
@@ -4882,6 +4977,7 @@ End of file. 44 distinct entries.
 - **Expected kernel behavior**: sliver threshold must be a documented
  invariant; consistency across kernel versions and configuration; never
  silently drop a face.
+- **Closure intent**: sheet
 - **Notes**: Searchable as "thin sliver triangle", "face removed by ShapeFix",. Synonyms: "sliver triangle exactly at angle threshold", "internal angle 0.0001 degrees at trigger", "sliver detector boundary case", "near-degenerate triangle at hardcoded angle limit".
  "long skinny face missing".
 - **Tier-3 assertion**: face[0].area < 1e-3
@@ -4961,6 +5057,7 @@ End of file. 44 distinct entries.
  `PLANE`s offset by 1.0e-6 mm; declared uncertainty 1.0e-6 mm. Wrap in
  PRODUCT chain.
 - **Expected kernel behavior**: Heal and accept: normalize the equality-vs-strict-inequality choice at the tolerance boundary; tie-breaking is documented.
+- **Closure intent**: sheet
 - **Notes**: Searchable as "duplicate coincident faces", "thin slab. Synonyms: "faces at exact tolerance distance", "is this coincident or not at exactly tol", "boundary case for face dedup", "parallel faces separated by exactly the tolerance".
  disappeared after import".
 - **Tier-3 assertion**: n_edges_total >= 8
@@ -5175,6 +5272,7 @@ End of file. 44 distinct entries.
  a free CARTESIAN_POINT at (0.5, 0.5, 5e-4) onto the surface. Routine
  reports "no projection found" because internal tolerance is 1e-7.
 - **Expected kernel behavior**: Heal and accept: projection routines consume the source shape's tolerance; default value is a fallback only when no shape context is available.
+- **Closure intent**: sheet
 - **Notes**: **See also**: N039. Synonyms: "projection uses hard-coded internal tolerance", "free point off plane within file tolerance but rejected by hard internal", "internal tolerance ignores file uncertainty", "point projection fails on tolerant face".
 - **Tier-3 assertion**: n_edges_total >= 4
 - **Tier-3 assertion**: face[0].surface_type == "plane"
@@ -5193,6 +5291,7 @@ End of file. 44 distinct entries.
  ~0.1 mm, sharing a common edge. Algorithm uses fixed 1e-7 threshold and
  refuses to merge.
 - **Expected kernel behavior**: Heal and accept: tolerance-using algorithms accept caller-supplied tolerances or read them from the input shape; never hard-code.
+- **Closure intent**: sheet
 - **Notes**: **See also**: N039, Tfa017. Synonyms: "two coplanar faces share an edge but are not unified", "same-plane faces fail to merge", "face merge fails on shared edge", "coplanar adjacent faces left separate", "fixed merge threshold rejects coplanar faces", "merge tolerance not user-specifiable".
 - **Tier-3 assertion**: face[0].surface_type == "plane"
 - **Tier-3 assertion**: n_edges_total >= 8
@@ -5664,6 +5763,7 @@ _Section summary: 31 entries._
  matching the inch-scale geometry. Rescale to millimetres. B-rep edges are
  25.4 mm; triangulation vertices are 1.0 mm.
 - **Expected kernel behavior**: Heal and accept: normalize / rescale walks every representation form attached to a part — B-rep, mesh, polyline, point cloud — and applies the factor consistently.
+- **Closure intent**: solid
 - **Notes**: **See also**: M046. Synonyms: "RescaleGeometry skips triangulation", "B-rep rescaled but mesh not", "triangulation at wrong scale after rescale", "OCCT rescale partial across representations", "mesh scale wrong after unit conversion".
 - **Byte assertion**: contains(b'TRIANGULATED_FACE')
 - **Byte assertion**: contains(b'INCH')
@@ -6444,6 +6544,8 @@ End of file. Total: 38 entries (A001.A038).
 - **Description**: A solid that is closed in the producer is wrapped as `MANIFOLD_SOLID_BREP` but at least one edge appears only once across the shell, or one face's `FACE_OUTER_BOUND` orientation is inverted; so the result is not actually manifold. Re-import yields zero solids; STL still works because tessellation ignores topology.
 - **Reproducer recipe**: STEP file with all faces individually valid but at least one edge appearing only once; or one face with inverted outer-bound orientation. Optionally drop `MANIFOLD_SOLID_BREP` wrapper and emit only `SHELL_BASED_SURFACE_MODEL`.
 - **Expected kernel behavior**: Either heal to solid, or expose explicitly as open shell with warning.
+- **Closure intent**: solid
+- **Closure defect**: missing_face
 - **Notes**: **See also**: M052. Synonyms: "open shell exported as MANIFOLD_SOLID_BREP", "non-manifold geometry mislabeled as solid", "writer claims solid but topology is open shell", "MANIFOLD_SOLID_BREP with missing faces".
 - **Byte assertion**: count_entity_def(b'MANIFOLD_SOLID_BREP') >= 1
 - **Byte assertion**: contains(b'FACE_OUTER_BOUND')
@@ -7055,6 +7157,7 @@ End of file. Total: 38 entries (A001.A038).
  in nonmanifold mode. Output has each cube as a separate solid; shared
  face appears twice.
 - **Expected kernel behavior**: Heal and accept: nonmanifold export preserves shared faces using `NON_MANIFOLD_SURFACE_SHAPE_REPRESENTATION`; cellular topology recoverable on re-import. Must not silently lose COMPSOLID.
+- **Closure intent**: solid
 - **Notes**: **See also**: Tsh041. Synonyms: "STEP exporter loses COMPSOLID in non-manifold writes", "compsolid stripped during non-manifold export", "multi-volume solid lost on write".
 - **Notes**: Provenance tier: writer-side; writer loses COMPSOLID in non-manifold export.
 - **Byte assertion**: count_entity_def(b'MANIFOLD_SOLID_BREP') >= 2
@@ -7190,6 +7293,7 @@ End of file. Total: 38 entries (A001.A038).
  attached to a face directly, the other attached via `SHAPE_ASPECT`. Write
  STEP. Output has only the face-attached dimension.
 - **Expected kernel behavior**: Heal and accept: writer emits every PMI attached anywhere in the assembly tree, regardless of attachment style.
+- **Closure intent**: sheet
 - **Notes**: **See also**: A077, Pmi076. Synonyms: "dimension lost after STEP export round-trip", "tolerance gone after round-trip", "dimension entity dropped on re-export".
 - **Tier-3 assertion**: face[0].surface_type == "plane"
 - **Tier-3 assertion**: face[1].surface_type == "plane"
@@ -7266,6 +7370,7 @@ End of file. Total: 38 entries (A001.A038).
  annotation plane sharing the face's surface. Reader produces annotation
  with normal opposite the face's outward direction.
 - **Expected kernel behavior**: Heal and accept: coerce the annotation plane normal to follow face orientation, not just the underlying surface; consult `ADVANCED_FACE` same-sense flag.
+- **Closure intent**: sheet
 - **Notes**: **See also**: Tsh001. Synonyms: "annotation plane orientation flipped on GD&T import", "GD&T text faces wrong way on read", "annotation reads backward", "PMI plane normal points into part".
 - **Tier-3 assertion**: face[0].surface_type == "plane"
 - **Tier-3 assertion**: face[0].sliver_aspect_max_min > 1e6
@@ -8375,6 +8480,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Description**: AP242 ROUND_HOLE is a feature definition that asserts a circular hole on a host face with a stated diameter and depth. A producer that authors a hole feature with a diameter larger than the host face's local extent (a 50 mm hole on a face whose smallest extent is 30 mm) leaves a feature definition that the host geometry cannot support. Receivers that build downstream representations (PMI dimensioning, manufacturing simulation, hole-pattern detection) either trim the diameter, error, or accept the contradiction silently. Bug-reporter language: "ROUND_HOLE bigger than face", "AP242 hole feature exceeds host", "hole diameter inconsistent with face".
 - **Reproducer recipe**: a 30x30 mm planar `ADVANCED_FACE` host; a `ROUND_HOLE` feature with `internal_diameter` of 50 mm referencing the face.
 - **Expected kernel behavior**: validate hole-feature attributes against the host face's measured extent; reject as inconsistent or warn deterministically.
+- **Closure intent**: sheet
 - **Notes**: First fully-AP242-feature-definition entry exercising ROUND_HOLE attribute consistency beyond the existing entries Pmi055/Pmi066/Pmi074. **See also**: Pmi055, Pmi074, Pmi092, Pmi093. Synonyms: "ROUND_HOLE internal_diameter exceeds host face extent", "hole bigger than the face it's drilled into", "hole diameter larger than parent face".
 - **Tier-3 assertion**: n_faces_total == 1
 - **Tier-3 assertion**: face[0].surface_type == "plane"
@@ -8392,6 +8498,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Description**: AP242 COUNTERBORE_HOLE represents a counterbored hole: a smaller-diameter through-feature plus a larger-diameter shallow recess at one end. The defining geometric invariant: counterbore_diameter must be strictly greater than thru_hole_diameter (otherwise the counterbore is not a counterbore). A producer that emits a counterbore_diameter equal to or smaller than the thru-hole diameter leaves a malformed feature. Receivers diverge: some reject, some swap the two values heuristically, some accept and produce a downstream model that contradicts itself. Bug-reporter language: "counterbore smaller than hole", "AP242 counterbore inverted", "feature attributes contradict each other".
 - **Reproducer recipe**: a `COUNTERBORE_HOLE` (or its `SHAPE_ASPECT` equivalent with the dimensional-size pattern) with `internal_diameter` 12 mm (thru-hole) and `counterbore_diameter` 8 mm (smaller — invalid).
 - **Expected kernel behavior**: reject as malformed and name the attribute relationship that is violated; never silently swap values.
+- **Closure intent**: sheet
 - **Notes**: Distinct from Pmi055 (missing required attributes); Pmi092 is contradiction within attributes. **See also**: Pmi055, Pmi066, Pmi091, Pmi093. Synonyms: "counterbore diameter smaller than thru-hole diameter", "counterbore smaller than through-hole", "C'BORE diameter less than parent hole".
 - **Tier-3 assertion**: n_faces_total == 1
 - **Tier-3 assertion**: face[0].surface_type == "plane"
@@ -8409,6 +8516,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Description**: AP242 RECTANGULAR_PATTERN replicates a feature on a regular rectangular grid: count along U, count along V, spacing along U, spacing along V. The geometric invariant: spacings must be strictly positive (zero spacing collapses all instances onto each other). A producer that authors a 1-D pattern (a row of holes) and emits it as a 2-D rectangular pattern with `count_v=4, spacing_v=0.0` leaves a contradiction: nominally four rows along V, but every row coincides with row 1. Receivers either collapse to one row (intended), interpret as four phantom-coincident rows (a different defect class), or reject. Bug-reporter language: "AP242 pattern has zero spacing", "pattern count says 4 but spacing 0".
 - **Reproducer recipe**: a `RECTANGULAR_PATTERN` linked feature with `pattern_count_u=3, pattern_count_v=4, pattern_spacing_u=10.0, pattern_spacing_v=0.0` (the V spacing collapses all V copies onto V index 0).
 - **Expected kernel behavior**: reject as malformed when a pattern spacing is zero with count > 1; or treat as a 1-D pattern (collapsing V) with a warning that documents the silent re-interpretation.
+- **Closure intent**: sheet
 - **Notes**: First entry exercising AP242 pattern feature definitions. **See also**: Pmi091, Pmi092. Synonyms: "rectangular pattern with zero spacing in one direction", "pattern row/column spacing zero", "duplicate pattern members at same location".
 - **Tier-3 assertion**: n_faces_total == 1
 - **Tier-3 assertion**: face[0].surface_type == "plane"
@@ -8426,6 +8534,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Description**: AP242 `locating_feature` (datum-target / inspection locator) is a `SHAPE_ASPECT` whose `DIMENSIONAL_LOCATION` (or equivalent) carries a pointer to a second `SHAPE_ASPECT` that names what the locator is measured against. A producer that emits a locator whose target is a forward-declared entity reference that is never actually instantiated (e.g. `#9999` in a file whose highest entity is `#612`) leaves a feature definition with a dangling pointer. Receivers either silently resolve to NULL (drop the locator), accept the reference and crash later when downstream code dereferences it, or reject the file. Bug-reporter language: "locating_feature references missing shape aspect", "AP242 locator points to entity that doesn't exist", "datum target reference unresolved".
 - **Reproducer recipe**: a `SHAPE_ASPECT('locating_feature',..)`; a `DIMENSIONAL_LOCATION` whose `relating_shape_aspect` is the locator and whose `related_shape_aspect` is `#9999` (an entity reference that is never declared anywhere in the file).
 - **Expected kernel behavior**: reject as malformed; never silently drop the locator. If the kernel reads-and-heals, every dropped locator must be reported by id.
+- **Closure intent**: sheet
 - **Notes**: First catalog entry for AP242 `locating_feature` references. **See also**: Pmi091, Pmi126. Synonyms: "LOCATING_FEATURE references nonexistent shape aspect", "AP242 datum target points to undeclared entity", "locator shape aspect not found".
 - **Tier-3 assertion**: n_faces_total == 1
 - **Tier-3 assertion**: face[0].surface_type == "plane"
@@ -8443,6 +8552,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Description**: AP242 `locating_feature` carries a feature size (e.g. a 5 mm-diameter datum target circle) plus a companion tolerance-zone magnitude that constrains how the locator may shift. The implicit invariant: `tolerance_zone_magnitude <= locator_feature_size` (a 20 mm tolerance zone on a 5 mm locator means the locator is unconstrained, any position within a zone four times its own size is acceptable, which is not a constraint). A producer that emits the two values reversed leaves a locator that is functionally absent. Receivers either swap the two values heuristically, reject, or accept the contradiction and report inspection passes that should not pass. Bug-reporter language: "tolerance zone bigger than feature", "datum target tolerance unbounded", "locator essentially unconstrained".
 - **Reproducer recipe**: a `SHAPE_ASPECT('locating_feature',..)`; a `DIMENSIONAL_SIZE(*, 'locator_size')` of 5 mm and a second `DIMENSIONAL_SIZE(*, 'tolerance_zone_magnitude')` of 20 mm — the tolerance zone is larger than the locator.
 - **Expected kernel behavior**: reject as malformed and name the relationship that is violated; never silently swap.
+- **Closure intent**: sheet
 - **Notes**: Distinct from Pmi071 (zero-offset projected zone); Pmi126 is a magnitude inversion. **See also**: Pmi071, Pmi125. Synonyms: "tolerance zone larger than feature", "datum-target tolerance exceeds locator size", "locating_feature unconstrained by oversized zone".
 - **Tier-3 assertion**: n_faces_total == 1
 - **Tier-3 assertion**: face[0].surface_type == "plane"
@@ -8460,6 +8570,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Description**: AP242 `marking` describes a text/laser/engraving feature on a host face: an inscribed text string, a placement plane, a font size, and (optionally) a font family. The implicit invariant: a non-zero font size paired with a non-empty text string. A producer that emits a marking with `font_size = 5.0` but text `''` leaves a contradictory feature; the marking nominally exists, but has nothing to render. Receivers either drop the marking, render an empty bounding-box ghost, propagate the empty string to manufacturing instructions, or reject. Bug-reporter language: "marking has no text", "AP242 engraving with empty string", "laser-mark feature with no characters".
 - **Reproducer recipe**: a `SHAPE_ASPECT('marking',..)`; a `DESCRIPTIVE_REPRESENTATION_ITEM('marking_text','')` (empty); a `DIMENSIONAL_SIZE(*,'font_size')` of 5 mm.
 - **Expected kernel behavior**: reject as malformed when a marking has non-zero font size and empty text; or warn-and-drop the marking with a stable diagnostic.
+- **Closure intent**: sheet
 - **Notes**: First catalog entry for AP242 `marking`. **See also**: Pmi128, Pmi129. Synonyms: "MARKING with empty text", "engraving feature with no characters", "laser-mark with empty inscribed string", "AP242 marking font_size set, text blank".
 - **Tier-3 assertion**: n_faces_total == 1
 - **Tier-3 assertion**: face[0].surface_type == "plane"
@@ -8477,6 +8588,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Description**: AP242 `marking` carries an `AXIS2_PLACEMENT_3D` that specifies the plane on which the text is drawn. The implicit invariant: the placement plane normal must be parallel (or anti-parallel) to the host face's surface normal; the text lies on the marked surface, not edge-on or into the part. A producer that emits a marking placement with normal `(1,0,0)` on a host face whose normal is `(0,0,1)` leaves a feature whose draw direction is into / through the part body. Receivers either rotate the placement to match the host face, reject, render the text edge-on (zero visible width), or accept and propagate the contradiction to CAM. Bug-reporter language: "marking text on wrong plane", "engraving direction perpendicular to surface", "AP242 marking placement is sideways".
 - **Reproducer recipe**: a `SHAPE_ASPECT('marking',..)` whose host face has normal `(0,0,1)`; an `AXIS2_PLACEMENT_3D('marking_placement', .., DIRECTION('marking_normal',(1,0,0)), ..)` referenced from the marking's representation. The placement normal is perpendicular to the host normal.
 - **Expected kernel behavior**: reject as malformed when the dot product of the marking-placement normal and host-face normal is approximately zero; or auto-rotate with a stable diagnostic.
+- **Closure intent**: sheet
 - **Notes**: Distinct from Pmi068 (annotation_plane mirror flip on import); Pmi128 is producer-side mis-orientation. **See also**: Pmi068, Pmi127, Pmi129. Synonyms: "MARKING placement plane perpendicular to host", "engraving normal sideways", "laser-mark text drawn into part", "AP242 marking face/plane mismatch".
 - **Tier-3 assertion**: n_faces_total == 1
 - **Tier-3 assertion**: face[0].surface_type == "plane"
@@ -8494,6 +8606,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Description**: AP242 `marking` text strings may contain newline / line-feed escapes (`\X\0A` or `\n` depending on encoding). Multi-line markings need a `line_spacing` dimensional attribute that specifies the vertical gap between consecutive baselines; without it, the producer's spacing intent is ambiguous. A producer that emits a marking with two-line text but no `line_spacing` leaves the rendering up to the receiver: some default to `1.0 * font_size`, some collapse the lines onto one another, some pick a CAD-vendor-specific default that disagrees with the producer's CAD-vendor default. Bug-reporter language: "lines on top of each other", "AP242 multi-line marking has no line spacing", "engraving line_spacing default differs across kernels".
 - **Reproducer recipe**: a `SHAPE_ASPECT('marking',..)`; a `DESCRIPTIVE_REPRESENTATION_ITEM('marking_text','LINE_ONE\\X\\0ALINE_TWO')`; a `font_size` of 4 mm; **no** companion `line_spacing` dimensional attribute.
 - **Expected kernel behavior**: Warn and accept: heal with a documented default (e.g. `line_spacing = 1.2 * font_size`) and emit warning `W_MARKING_NO_LINE_SPACING` so the deterministic default is auditable. Picking a vendor-specific default without surfacing the assumption is a coverage gap.
+- **Closure intent**: sheet
 - **Notes**: Producer-side ambiguity rather than receiver bug; tagged so that round-trip differential testing flags spacing drift. **See also**: Pmi127, Pmi128. Synonyms: "MARKING multi-line no line spacing", "AP242 engraving multiple lines, spacing missing", "two-line marking lines collapse".
 - **Tier-3 assertion**: n_faces_total == 1
 - **Tier-3 assertion**: face[0].surface_type == "plane"
@@ -8511,6 +8624,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Description**: AP242 `thread` (typically `internal_thread` or `external_thread` SHAPE_ASPECT) carries a nominal diameter and a pitch. The pitch is the axial distance between adjacent helical thread crests; it must be strictly positive. A producer that emits `pitch = -1.5` (negative) or `pitch = 0.0` leaves a feature whose helix is geometrically meaningless. Receivers either use `abs(pitch)` and proceed (silently transforming the feature), reject, or accept and emit a degenerate helix that intersects itself. Bug-reporter language: "thread pitch is negative", "AP242 thread has zero pitch", "thread feature pitch invalid".
 - **Reproducer recipe**: a `SHAPE_ASPECT('thread',..)` with `DIMENSIONAL_SIZE(*,'nominal_diameter')` of 10 mm and `DIMENSIONAL_SIZE(*,'pitch')` of -1.5 mm.
 - **Expected kernel behavior**: reject as malformed when pitch is non-positive; or take `abs(pitch)` with a stable diagnostic. Never silently use the signed value.
+- **Closure intent**: sheet
 - **Notes**: First catalog entry for AP242 `thread` feature pitch. **See also**: Pmi131, Pmi132. Synonyms: "THREAD pitch negative", "AP242 thread feature zero pitch", "internal_thread pitch invalid".
 - **Tier-3 assertion**: n_faces_total == 1
 - **Tier-3 assertion**: face[0].surface_type == "plane"
@@ -8528,6 +8642,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Description**: AP242 `thread` features may carry a `fit_class` descriptor identifying the tolerance grade. The standard set for inch UN/UNJ threads is `1A`, `2A`, `3A` (external) and `1B`, `2B`, `3B` (internal); ISO metric threads use `4g6g`, `6g`, `5H6H`, `6H`, etc. A producer that emits `fit_class = 'X1'` leaves a string that cannot be mapped to any standard tolerance grade. Receivers either drop the fit_class (defaulting silently), reject, or accept the string and propagate it to manufacturing software that doesn't understand it. Bug-reporter language: "thread fit class unknown", "AP242 fit_class string not recognized", "thread tolerance grade invalid".
 - **Reproducer recipe**: a `SHAPE_ASPECT('thread',..)` carrying a `PROPERTY_DEFINITION` named `'fit_class'` whose `DESCRIPTIVE_REPRESENTATION_ITEM` is `'X1'` (not a standard fit-class designator).
 - **Expected kernel behavior**: reject as malformed when fit_class is outside the recognized standard set; or drop fit_class with a stable `W_THREAD_UNKNOWN_FIT_CLASS` diagnostic. Never silently propagate.
+- **Closure intent**: sheet
 - **Notes**: Distinct from Pmi130 (geometric pitch defect); Pmi131 is a string-domain defect. **See also**: Pmi130, Pmi132. Synonyms: "THREAD fit class doesn't exist", "AP242 thread non-standard fit_class string", "thread tolerance grade unrecognized", "fit_class X1 not 1A/2A/3A".
 - **Tier-3 assertion**: n_faces_total == 1
 - **Tier-3 assertion**: face[0].surface_type == "plane"
@@ -8545,6 +8660,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Description**: AP242 distinguishes `internal_thread` (a hole's threading; gender F) from `external_thread` (a shaft / boss; gender M). The implicit invariant: an `internal_thread` SHAPE_ASPECT must reference a host face that represents an internal cylindrical surface (bore); an `external_thread` must reference an external cylindrical surface. A producer that emits an `internal_thread` whose host face is tagged or named as an external boss leaves a feature whose gender contradicts the host geometry. Receivers either trust the gender label and machine the wrong operation, trust the host and re-tag silently, or reject. Manufacturing impact is high: an internal-thread CAM operation on an external boss removes the boss. Bug-reporter language: "internal thread on a shaft", "AP242 thread gender mismatch", "external_thread feature on a hole".
 - **Reproducer recipe**: a `SHAPE_ASPECT('internal_thread',..)`; a `GEOMETRIC_ITEM_SPECIFIC_USAGE` linking it to a face named `'external_boss_face'` and additionally tagged via a `DESCRIPTIVE_REPRESENTATION_ITEM('host_kind','external_cylindrical_face')`.
 - **Expected kernel behavior**: reject as malformed when the thread's declared gender contradicts the host face's classification; or emit `W_THREAD_GENDER_MISMATCH` and pick the host as the source of truth. Never silently downstream the contradicted label.
+- **Closure intent**: sheet
 - **Notes**: Distinct from Pmi130 (numeric pitch defect); Pmi132 is a categorical type mismatch. **See also**: Pmi130, Pmi131. Synonyms: "INTERNAL_THREAD on EXTERNAL host", "AP242 thread gender mismatch", "internal thread feature attached to boss", "external_thread on bore".
 - **Tier-3 assertion**: n_faces_total == 1
 - **Tier-3 assertion**: face[0].surface_type == "plane"
@@ -8562,6 +8678,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Description**: AP242 `chamfer` describes an angled cut along a host edge; its size attribute (the distance back from the edge along the adjacent face) must be less than the edge's actual length, otherwise the chamfer consumes the entire edge plus more. A producer that emits a chamfer with size 35 mm on a 30 mm edge leaves a feature that cannot be constructed without chewing into neighboring faces. Receivers either clamp the size to the edge length (silently changing the feature), reject, or accept and produce a self-intersecting chamfer surface. Bug-reporter language: "chamfer too big for edge", "AP242 chamfer size exceeds edge", "over-chamfer collapses face".
 - **Reproducer recipe**: a `SHAPE_ASPECT('chamfer',..)` whose GISU references a 30 mm-long EDGE_CURVE; `DIMENSIONAL_SIZE(*,'chamfer_size')` of 35 mm.
 - **Expected kernel behavior**: reject as malformed when chamfer_size >= edge_length; or clamp to edge_length with a stable `W_CHAMFER_OVERSIZED` diagnostic.
+- **Closure intent**: sheet
 - **Notes**: First catalog entry for AP242 `chamfer` feature size invariants. **See also**: Pmi134, Pmi136. Synonyms: "CHAMFER size exceeds edge length", "over-chamfer", "AP242 chamfer larger than host edge".
 - **Tier-3 assertion**: n_faces_total == 1
 - **Tier-3 assertion**: face[0].surface_type == "plane"
@@ -8579,6 +8696,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Description**: AP242 `chamfer` carries a single `chamfer_angle` attribute (the angle of the cut measured from one of the adjacent faces). The implicit invariant: there is exactly one chamfer angle. A producer that emits two `DIMENSIONAL_SIZE` records both named `chamfer_angle` with different values (45 deg = π/4 and 60 deg = π/3) leaves a feature that is internally contradictory. Receivers either pick the first, pick the last, average them, reject, or silently emit one and drop the other. Round-trip differential tests fail because different kernels pick differently. Bug-reporter language: "chamfer has two angles", "AP242 chamfer attributes conflict", "feature has duplicate chamfer_angle".
 - **Reproducer recipe**: a `SHAPE_ASPECT('chamfer',..)`; two `DIMENSIONAL_SIZE` entries both named `'chamfer_angle'`, with `MEASURE_REPRESENTATION_ITEM` values `PLANE_ANGLE_MEASURE(0.7853981634)` (45 deg) and `PLANE_ANGLE_MEASURE(1.0471975512)` (60 deg).
 - **Expected kernel behavior**: reject as malformed when a feature has two `DIMENSIONAL_SIZE` records of the same `attribute_name` with conflicting values; never silently pick one.
+- **Closure intent**: sheet
 - **Notes**: Distinct from Pmi133 (size-vs-edge invariant); Pmi134 is duplicate-attribute contradiction. **See also**: Pmi133, Pmi092. Synonyms: "CHAMFER two angle attributes", "AP242 duplicate chamfer_angle", "chamfer feature 45 vs 60", "conflicting chamfer angle values".
 - **Tier-3 assertion**: n_faces_total == 1
 - **Tier-3 assertion**: face[0].surface_type == "plane"
@@ -8596,6 +8714,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Description**: AP242 `fillet` describes a rounded blend along a host edge; its radius attribute must be strictly positive. A radius of zero collapses to a sharp edge (the absence of a fillet); a negative radius is geometrically meaningless. A producer that emits `fillet_radius = -2.0` leaves a feature that cannot be constructed. Receivers either use `abs(radius)` (silently transforming the feature), reject, or accept and emit a torus surface with a negative principal radius. Bug-reporter language: "fillet radius is negative", "AP242 fillet zero radius", "fillet feature degenerate".
 - **Reproducer recipe**: a `SHAPE_ASPECT('fillet',..)`; a `DIMENSIONAL_SIZE(*,'fillet_radius')` whose `MEASURE_REPRESENTATION_ITEM` is `LENGTH_MEASURE(-2.0)`.
 - **Expected kernel behavior**: reject as malformed when fillet_radius is non-positive; or take `abs(radius)` with a stable diagnostic. Never silently propagate the signed value to downstream geometry construction.
+- **Closure intent**: sheet
 - **Notes**: First catalog entry for AP242 `fillet` feature radius invariants. **See also**: Pmi136, Fi001. Synonyms: "FILLET negative radius", "AP242 fillet zero radius", "fillet feature with non-positive radius".
 - **Tier-3 assertion**: n_faces_total == 1
 - **Tier-3 assertion**: face[0].surface_type == "plane"
@@ -8613,6 +8732,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Description**: AP242 `fillet` is a rolling-ball blend along a host edge. The geometric invariant: the rolling-ball radius must be strictly less than the smallest extent of every face adjacent to the filleted edge. A producer that emits a 40 mm fillet on the edge of a 30x30 mm face leaves a feature whose construction is impossible; the ball cannot fit anywhere on the host face. Receivers either clamp the radius (silently shrinking the feature), reject, or attempt construction and produce self-intersecting surfaces. Bug-reporter language: "fillet doesn't fit on face", "AP242 fillet radius too large", "rolling-ball larger than face".
 - **Reproducer recipe**: a `SHAPE_ASPECT('fillet',..)` whose GISU references an EDGE_CURVE on a 30x30 mm planar face; `DIMENSIONAL_SIZE(*,'fillet_radius')` of 40 mm (larger than the 30 mm smallest face extent).
 - **Expected kernel behavior**: reject as malformed when fillet_radius >= min(face_extent_u, face_extent_v) for every adjacent face; or clamp with a stable `W_FILLET_DOES_NOT_FIT` diagnostic.
+- **Closure intent**: sheet
 - **Notes**: Distinct from Pmi135 (sign defect); Pmi136 is a geometric-fit defect. Distinct from Fi001 (concavity-flip): here the construction fails on size, not topology. **See also**: Pmi135, Pmi133, Fi001. Synonyms: "FILLET radius larger than face", "AP242 fillet doesn't fit", "rolling-ball blend exceeds host extent", "fillet too big for face".
 - **Tier-3 assertion**: n_faces_total == 1
 - **Tier-3 assertion**: face[0].surface_type == "plane"
@@ -8630,6 +8750,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Description**: AP242 `composite_feature` aggregates several sub-features (each a `SHAPE_ASPECT`) and presents them to receivers as a single defect-bearing unit (a slot whose floor carries a sub-groove, a counterbore where the recess and through-hole are siblings, etc.). The defining invariant: the wrapped sub-features must share at least one host-shape boundary (a shared edge, vertex, or co-incident face) so that the "composite" label is geometrically meaningful. A producer that emits a composite_feature whose sub-features reference disjoint regions of the host (slot on face A, groove on face B, no shared edge) leaves a feature definition whose grouping is meaningless. Receivers diverge: some treat the composite as two unrelated features (silently dropping the composite grouping), some reject (no shared boundary), some accept the contradictory link. Bug-reporter language: "composite_feature sub-features disjoint", "AP242 composite has no shared boundary", "composite groups unrelated features".
 - **Reproducer recipe**: A `SHAPE_ASPECT('composite_feature',..)` linked via `SHAPE_ASPECT_RELATIONSHIP` to two sub-`SHAPE_ASPECT` records each tagged for a region of the host with no shared edge or vertex; explicit descriptive property `composite_boundary_share = 'none'`.
 - **Expected kernel behavior**: reject as malformed (composite-feature semantics require shared boundary); or warn and degrade to a flat list of unrelated features with `W_COMPOSITE_BOUNDARY_MISSING`.
+- **Closure intent**: sheet
 - **Notes**: First COMPOSITE_FEATURE entry. **See also**: Pmi066, Pmi073, Pmi091, Pmi111, Pmi112, Pmi113. Synonyms: "composite_feature wrapping disjoint sub-features", "AP242 composite has no shared boundary", "composite groups unrelated features", "composite feature without shared edge".
 - **Tier-3 assertion**: n_faces_total == 1
 - **Tier-3 assertion**: face[0].surface_type == "plane"
@@ -8647,6 +8768,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Description**: AP242 composite_feature relationships are encoded via `SHAPE_ASPECT_RELATIONSHIP` records linking a parent feature to its sub-features. The graph must be acyclic; a feature cannot be (transitively) its own sub-feature. A producer that emits two composite-membership records (A → B as sub-of-A, B → A as sub-of-B) creates a cycle. Receivers that materialize the feature tree may enter unbounded recursion (kernel hang), detect the cycle and reject, or silently break the cycle at first repeat (silently choosing one resolution). Bug-reporter language: "composite_feature cycle", "shape_aspect_relationship loop", "feature is its own ancestor".
 - **Reproducer recipe**: Two `SHAPE_ASPECT` records (composite_A, composite_B) and two `SHAPE_ASPECT_RELATIONSHIP` records: (relating=A, related=B) and (relating=B, related=A) — the cycle is two records long.
 - **Expected kernel behavior**: detect cycle on the SHAPE_ASPECT_RELATIONSHIP graph and reject with `E_COMPOSITE_CYCLE`; never silently break.
+- **Closure intent**: sheet
 - **Notes**: Sister to Pmi070 (GEOMETRIC_TOLERANCE_RELATIONSHIP cycle); applies the same cycle-detection invariant to feature-membership graphs. **See also**: Pmi070, Pmi073, Pmi110, Pmi112. Synonyms: "composite_feature cycle", "shape_aspect_relationship loop", "feature is its own ancestor", "feature membership graph has cycle".
 - **Tier-3 assertion**: n_faces_total == 1
 - **Tier-3 assertion**: face[0].surface_type == "plane"
@@ -8664,6 +8786,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Description**: AP242 composite_feature can carry depth attributes both on the parent (a slot whose floor sits 5 mm below the host face) and on its sub-features (a sub-groove inside the slot, depth 8 mm). A child sub-feature inside a parent recess cannot exceed the parent's depth; the sub-groove would punch through the slot floor. A producer that emits parent_depth=5 mm and sub_depth=8 mm leaves a contradiction. Receivers diverge: some take the larger as authoritative, some take the parent (truncating the sub-feature), some reject. Bug-reporter language: "sub-feature deeper than parent", "composite depth conflict", "AP242 sub-groove punches through slot floor".
 - **Reproducer recipe**: A `SHAPE_ASPECT('composite_slot')` with `DIMENSIONAL_SIZE(depth)=5.0`; a child `SHAPE_ASPECT('sub_groove')` linked via `SHAPE_ASPECT_RELATIONSHIP` with `DIMENSIONAL_SIZE(depth)=8.0` (greater than parent).
 - **Expected kernel behavior**: reject as malformed; or warn `W_COMPOSITE_DEPTH_CONFLICT` and clamp the sub-feature to the parent's depth (deterministic resolution rule).
+- **Closure intent**: sheet
 - **Notes**: Distinct from Pmi074 (depth exceeds host bounding box); Pmi112 is parent-vs-child contradiction within a composite. **See also**: Pmi074, Pmi091, Pmi092, Pmi110, Pmi111. Synonyms: "composite_feature depth conflict", "sub-feature deeper than parent feature", "AP242 sub-groove punches through slot floor", "composite child overflows parent extent".
 - **Tier-3 assertion**: n_faces_total == 1
 - **Tier-3 assertion**: face[0].surface_type == "plane"
@@ -8681,6 +8804,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Description**: AP242 composite_feature wraps two-or-more sub-features. A producer that emits a composite SHAPE_ASPECT with zero `SHAPE_ASPECT_RELATIONSHIP` records pointing at it leaves an empty composite; semantically meaningless. This typically arises when a source-CAD edit deletes every sub-feature but leaves the composite wrapper alive. Receivers either treat the empty composite as a degenerate single feature, drop the composite entirely, or reject. Bug-reporter language: "empty composite_feature", "composite with no members", "AP242 composite has zero sub-features".
 - **Reproducer recipe**: A `SHAPE_ASPECT('composite_feature_empty')` with no incoming `SHAPE_ASPECT_RELATIONSHIP` records that name it as parent; explicit descriptive property `composite_member_count = '0'`.
 - **Expected kernel behavior**: reject as malformed; or drop the empty composite with `W_COMPOSITE_EMPTY`.
+- **Closure intent**: sheet
 - **Notes**: Distinct from Pmi055 (missing required attributes on a single feature); Pmi113 is a structural emptiness on the membership relation. **See also**: Pmi055, Pmi110, Pmi111, Pmi112. Synonyms: "empty composite_feature", "composite with no members", "AP242 composite has zero sub-features", "composite feature has empty membership list".
 - **Tier-3 assertion**: n_faces_total == 1
 - **Tier-3 assertion**: face[0].surface_type == "plane"
@@ -8698,6 +8822,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Description**: AP242 `flat_pattern` represents the unfolded sheet-metal layout: a 2-D map of panels and bend-line relationships. Each bend has an angle (the dihedral by which the bent panel rotates relative to the flat reference). A bend angle is geometrically bounded by `0 < angle < 180°`; a 180° bend folds the sheet completely onto itself; angles greater than 180° cannot be physically realised without sheet self-intersection. A producer that emits `bend_angle = 270°` (4.7124 rad) leaves a flat pattern that cannot be folded into a real sheet-metal part. Receivers either reject (manufacturability check), clamp to 180° (silent), or accept and produce a self-intersecting fold. Bug-reporter language: "bend angle over 180", "AP242 flat pattern impossible bend", "flat pattern bend self-intersects".
 - **Reproducer recipe**: A `SHAPE_ASPECT('flat_pattern')` with a child `SHAPE_ASPECT('bend_line')` linked via SHAPE_ASPECT_RELATIONSHIP, whose `DIMENSIONAL_SIZE('bend_angle')` is `PLANE_ANGLE_MEASURE(4.7124)` (270°).
 - **Expected kernel behavior**: reject as geometrically impossible (`E_BEND_ANGLE_OUT_OF_RANGE`); or warn and clamp to `min(angle, 180°)` deterministically.
+- **Closure intent**: sheet
 - **Notes**: First flat_pattern entry. **See also**: Pmi115, Pmi116, Pmi117, Pmi118. Synonyms: "FLAT_PATTERN bend angle over 180 degrees", "sheet-metal bend angle exceeds 180", "AP242 flat pattern impossible bend", "bend angle out of range".
 - **Tier-3 assertion**: n_faces_total == 1
 - **Tier-3 assertion**: face[0].surface_type == "plane"
@@ -8715,6 +8840,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Description**: AP242 flat_pattern carries the material thickness and per-bend inside-radius. Sheet-metal manufacturability requires `bend_radius ≥ material_thickness` (a tighter bend cracks or tears the material, and the K-factor calibration breaks down). A producer that emits `material_thickness = 2.0 mm` and `bend_radius = 0.5 mm` leaves a flat pattern that is geometrically representable but unmanufacturable. Receivers either reject (manufacturability), warn, or accept (silent producer of a bad K-factor / bad neutral-axis geometry, the unrolled length will be wrong). Bug-reporter language: "bend radius too small for thickness", "AP242 flat pattern impossible bend radius", "K-factor calibration fails".
 - **Reproducer recipe**: A `SHAPE_ASPECT('flat_pattern')` with `DIMENSIONAL_SIZE('material_thickness') = 2.0` and a child `SHAPE_ASPECT('bend_line')` whose `DIMENSIONAL_SIZE('bend_radius') = 0.5`.
 - **Expected kernel behavior**: warn `W_BEND_RADIUS_BELOW_THICKNESS` (manufacturability) and proceed; or reject if the kernel's policy treats this as a hard constraint.
+- **Closure intent**: sheet
 - **Notes**: Distinct from Pmi114 (angle out of range); Pmi115 is dimensional consistency between two attributes. **See also**: Pmi114, Pmi116, Pmi117, Pmi118. Synonyms: "FLAT_PATTERN bend radius less than material thickness", "sheet-metal bend radius too small", "K-factor calibration breaks", "bend radius below sheet thickness".
 - **Tier-3 assertion**: n_faces_total == 1
 - **Tier-3 assertion**: face[0].surface_type == "plane"
@@ -8732,6 +8858,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Description**: AP242 flat_pattern groups sheet-metal panels connected by bend lines. The defining invariant: every panel must be reachable from every other panel via at least one bend (the bend graph must be connected); otherwise the flat layout cannot be folded back into a single 3-D part. A producer that emits two panels with no bend_line between them creates a disconnected flat pattern; this typically arises when a CAD operator nests multiple unrelated parts on a single sheet but mistakenly groups them as one flat_pattern. Receivers either reject (multi-part flat invalid), heuristically split into separate patterns, or silently accept. Bug-reporter language: "FLAT_PATTERN disconnected panels", "flat pattern bend graph not connected", "two panels nested as one pattern".
 - **Reproducer recipe**: A `SHAPE_ASPECT('flat_pattern')` with two child `SHAPE_ASPECT` records (`panel_A`, `panel_B`) linked via SHAPE_ASPECT_RELATIONSHIP, but no `bend_line` SHAPE_ASPECT connecting the two; explicit descriptive property `flat_pattern_bend_lines = '0'`.
 - **Expected kernel behavior**: reject (`E_FLAT_PATTERN_DISCONNECTED`); or split into N separate flat_pattern groups (one per connected component) with `W_FLAT_PATTERN_SPLIT`.
+- **Closure intent**: sheet
 - **Notes**: Sister to Pmi110 (composite without shared boundary) but specialised for sheet-metal connectivity. **See also**: Pmi110, Pmi114, Pmi115, Pmi117, Pmi118. Synonyms: "FLAT_PATTERN disjoint panels", "flat pattern bend graph not connected", "sheet-metal nested parts grouped as one pattern", "flat pattern panels have no bend connection".
 - **Tier-3 assertion**: n_faces_total == 1
 - **Tier-3 assertion**: face[0].surface_type == "plane"
@@ -8749,6 +8876,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Description**: AP242 flat_pattern is defined for sheet-metal hosts: 2-D surface bodies whose thickness is a property, not a geometric extent (a `SHELL_BASED_SURFACE_MODEL` plus thickness attribute, or a `MANIFOLD_SURFACE_SHAPE_REPRESENTATION`). A producer that emits a flat_pattern referencing a thick `MANIFOLD_SOLID_BREP` creates a host-type contradiction: the host is not a sheet, so the flat layout has no meaning. Receivers either reject (host-type mismatch), heuristically extract a mid-surface (silent geometry change), or accept and produce a flat layout that does not match the host. Bug-reporter language: "flat pattern on solid not sheet", "AP242 flat pattern host type wrong", "FLAT_PATTERN expects surface body".
 - **Reproducer recipe**: A `SHAPE_ASPECT('flat_pattern')` whose `GEOMETRIC_ITEM_SPECIFIC_USAGE` references a host shape declared as solid (descriptive property `host_kind = 'solid'`) rather than a surface model.
 - **Expected kernel behavior**: reject (`E_FLAT_PATTERN_HOST_TYPE`); or extract mid-surface and emit `W_FLAT_PATTERN_HOST_DEMOTED` documenting the silent re-interpretation.
+- **Closure intent**: sheet
 - **Notes**: Sister to Pmi091 (feature attribute vs host extent); Pmi117 is host-type rather than host-extent. **See also**: Pmi091, Pmi114, Pmi115, Pmi116, Pmi118. Synonyms: "FLAT_PATTERN host is solid not sheet", "AP242 flat pattern non-surface host", "flat pattern references solid body", "sheet-metal layout on solid host".
 - **Tier-3 assertion**: n_faces_total == 1
 - **Tier-3 assertion**: face[0].surface_type == "plane"
@@ -8766,6 +8894,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Description**: A sheet-metal bend's rotation axis must lie along the bend line; the panel rotates about that line. AP242 flat_pattern can carry both a `bend_line` (a curve in the flat layout) and an `AXIS1_PLACEMENT` declaring the rotation axis; if the axis direction is not parallel to the line direction, the bend cannot fold the sheet about its own bend line. A producer that emits a bend_line along Y but a rotation axis along X creates a contradiction. Receivers either project the axis onto the line (silent geometry change), reject (invalid bend), or accept and produce a fold that does not match the intended bend. Bug-reporter language: "bend axis not on bend line", "AP242 flat pattern axis-line mismatch", "sheet-metal rotation axis orthogonal to bend".
 - **Reproducer recipe**: A bend `SHAPE_ASPECT` whose bend_line geometry (e.g., a `LINE` along (0,1,0)) and bend rotation `AXIS1_PLACEMENT` direction (e.g., (1,0,0)) are not parallel.
 - **Expected kernel behavior**: reject (`E_BEND_AXIS_LINE_MISMATCH`); or project the axis onto the bend-line direction with `W_BEND_AXIS_PROJECTED`.
+- **Closure intent**: sheet
 - **Notes**: Distinct from Pmi114/Pmi115 (scalar attribute defects); Pmi118 is a vector-relationship defect. **See also**: Pmi114, Pmi115, Pmi116, Pmi117. Synonyms: "FLAT_PATTERN bend axis not parallel to bend line", "sheet-metal rotation axis orthogonal to bend", "AP242 bend axis-line mismatch", "bend axis direction inconsistent with bend line".
 - **Tier-3 assertion**: n_faces_total == 1
 - **Tier-3 assertion**: face[0].surface_type == "plane"
@@ -8783,6 +8912,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Description**: AP242 `profile_feature` is a 2-D profile that bounds an extrusion, sweep, or revolve. The profile must be a closed loop; start vertex must equal end vertex, the bounded region must be finite and oriented. A producer that emits an open polyline (three line segments with three distinct endpoints, no closing edge) leaves a profile that cannot bound a region; a downstream extrude has no enclosed area to sweep. Receivers either close the profile heuristically by adding an inferred closing edge (silent geometry change), reject (open profile invalid), or accept and produce a degenerate sweep (zero-thickness surface). Bug-reporter language: "PROFILE_FEATURE open profile", "AP242 profile not closed", "profile polyline open ends".
 - **Reproducer recipe**: A `SHAPE_ASPECT('profile_feature')` with three `VERTEX_POINT` records and only two `EDGE_CURVE` segments connecting them — no closing edge from the third vertex back to the first; explicit descriptive property `profile_closure = 'OPEN'`.
 - **Expected kernel behavior**: reject (`E_PROFILE_NOT_CLOSED`); never silently close the profile.
+- **Closure intent**: sheet
 - **Notes**: First PROFILE_FEATURE entry. **See also**: Pmi120, Pmi121, Pmi122, Pmi123. Synonyms: "PROFILE_FEATURE open profile", "AP242 profile polyline not closed", "profile boundary has open ends", "profile loop missing closing edge".
 - **Tier-3 assertion**: n_faces_total == 1
 - **Tier-3 assertion**: face[0].surface_type == "plane"
@@ -8800,6 +8930,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Description**: AP242 profile_feature requires a simple (non-self-intersecting) closed loop. A profile that crosses itself — a figure-eight — has multi-valued bounded regions: the interior orientation flips at the crossing. Sweeping a figure-eight produces a self-intersecting solid whose volume calculation is ill-defined (orientation-dependent, kernel-specific). A producer that emits four diagonal segments forming an X-crossing leaves a non-simple profile. Receivers either reject (non-simple curve), split into two simple loops at the crossing (silent topological change), or accept and produce a kernel-specific solid. Bug-reporter language: "PROFILE_FEATURE self-intersect", "AP242 profile figure-eight", "profile loop crosses itself".
 - **Reproducer recipe**: A `SHAPE_ASPECT('profile_feature')` whose four `EDGE_CURVE` segments form a figure-eight: vertices at (5,5), (15,15), (5,15), (15,5) connected p0→p1→p2→p3→p0; the diagonals p0p1 and p2p3 cross at (10,10).
 - **Expected kernel behavior**: reject (`E_PROFILE_SELF_INTERSECT`); never silently split.
+- **Closure intent**: sheet
 - **Notes**: Sister to Pmi119 (open profile); Pmi120 is closed-but-non-simple. **See also**: Pmi119, Pmi121, Pmi122, Pmi123. Synonyms: "PROFILE_FEATURE figure-eight", "AP242 profile self-intersects", "profile loop crosses itself", "non-simple profile boundary".
 - **Tier-3 assertion**: n_faces_total == 1
 - **Tier-3 assertion**: face[0].surface_type == "plane"
@@ -8817,6 +8948,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Description**: For a straight extrude on an AP242 profile_feature, the sweep direction must be perpendicular to the profile plane (or the producer must declare an explicit "tilt extrude" mode and provide both the normal and the tilt vector). A producer that emits a profile on the XY plane (normal = +Z) and a sweep direction of (1,0,0) — lying IN the profile plane, not perpendicular — creates a degenerate sweep: the profile slides parallel to itself, producing zero volume. Receivers either reject (degenerate extrude), project the direction onto the profile-plane normal (silent geometry change), or accept and produce empty geometry. Bug-reporter language: "extrude direction in profile plane", "AP242 sweep direction parallel to profile", "extrude produces zero volume".
 - **Reproducer recipe**: A `SHAPE_ASPECT('profile_feature')` on a profile plane with normal (0,0,1) (XY plane); a sweep direction emitted as DIRECTION (1,0,0); explicit descriptive property `depth_dir_vs_normal` documenting the parallelism.
 - **Expected kernel behavior**: reject (`E_DEGENERATE_EXTRUDE_DIRECTION`); or project the direction onto the profile-plane normal with `W_EXTRUDE_DIR_PROJECTED`.
+- **Closure intent**: sheet
 - **Notes**: **See also**: Pmi119, Pmi120, Pmi122, Pmi123. Synonyms: "PROFILE_FEATURE depth direction not perpendicular to profile plane", "AP242 extrude direction in profile plane", "sweep direction parallel to profile", "extrude produces zero volume".
 - **Tier-3 assertion**: n_faces_total == 1
 - **Tier-3 assertion**: face[0].surface_type == "plane"
@@ -8834,6 +8966,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Description**: AP242 profile_feature can carry a draft angle that tapers the swept solid as it descends from the profile plane. A negative draft causes the swept cross-section to grow outward; a positive draft causes it to shrink. The geometric invariant: the magnitude of a positive draft cannot exceed the half-angle that would collapse the profile to a point before reaching the sweep depth (`tan(draft) × depth ≤ profile_half_extent`); a negative draft has analogous outward-collapse limits. A producer that emits a small profile (5×5 mm cross-section, half-extent 2.5 mm), depth 10 mm, and draft -45° (tan(45°)·10 = 10 mm of inward taper, far exceeding the 2.5 mm half-extent) creates a self-intersecting taper. Receivers either reject (geometric inconsistency), clamp the draft (silent), or accept and produce a self-intersecting solid. Bug-reporter language: "draft angle exceeds profile half-extent", "AP242 negative draft self-intersect", "profile + draft inconsistent".
 - **Reproducer recipe**: A `SHAPE_ASPECT('profile_feature')` with `DIMENSIONAL_SIZE('sweep_depth')=10.0`, `DIMENSIONAL_SIZE('profile_half_extent')=2.5`, and `DIMENSIONAL_SIZE('draft_angle') = PLANE_ANGLE_MEASURE(-0.7854)` (-45°).
 - **Expected kernel behavior**: reject (`E_DRAFT_EXCEEDS_PROFILE`); or clamp the draft angle with `W_DRAFT_CLAMPED`.
+- **Closure intent**: sheet
 - **Notes**: **See also**: Pmi119, Pmi120, Pmi121, Pmi123. Synonyms: "PROFILE_FEATURE draft angle conflict", "AP242 negative draft exceeds profile half-extent", "profile + draft self-intersect", "draft tapers profile to a point before sweep depth".
 - **Tier-3 assertion**: n_faces_total == 1
 - **Tier-3 assertion**: face[0].surface_type == "plane"
@@ -8851,6 +8984,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Description**: AP242 profile_feature can be classified by sweep operation: extrude (depth + direction), revolve (axis + angle), or sweep-along-path (path curve). A profile_feature classified as "sweep" without a `sweep_path` attribute leaves a feature definition that cannot resolve to a swept surface; the path along which to sweep is missing. Producers sometimes emit this when a path curve is present in the source CAD but is dropped on export (writer coverage gap). Receivers either degrade to a zero-thickness profile (silent), reject (missing required attribute), or accept and produce empty geometry. Bug-reporter language: "PROFILE_FEATURE sweep no path", "AP242 swept feature missing path", "sweep classified but no path curve".
 - **Reproducer recipe**: A `SHAPE_ASPECT('profile_feature')` with descriptive property `feature_op = 'sweep'` but no SHAPE_ASPECT or geometric record naming the sweep path.
 - **Expected kernel behavior**: reject (`E_SWEEP_MISSING_PATH`); or downgrade to extrude with default direction and emit `W_SWEEP_PATH_MISSING`.
+- **Closure intent**: sheet
 - **Notes**: Sister to Pmi055 (missing required attribute) but specific to sweep operations. **See also**: Pmi055, Pmi119, Pmi120, Pmi121, Pmi122. Synonyms: "PROFILE_FEATURE sweep without path", "AP242 swept feature missing path curve", "sweep classified but no path provided", "profile feature sweep operation incomplete".
 - **Tier-3 assertion**: n_faces_total == 1
 - **Tier-3 assertion**: face[0].surface_type == "plane"
@@ -8869,6 +9003,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Description**: A user requests a fillet along a contour of edges that pass from a concave region into a convex region (or vice versa) mid-spine. The fillet surface that would be needed twists across the concavity flip; convex-side fillet meets concave-side fillet in a self-intersecting way. Bug-reporter language: "fillet twists", "fillet self-intersects on contour", "fillet spans convex/concave change".
 - **Reproducer recipe**: A solid whose spine edge has a vertex where the dihedral angle transitions from <180° (convex) to >180° (concave). Request a fillet on the entire spine.
 - **Expected kernel behavior**: Reject as unsupported; or split the spine at the concavity-flip vertex and fillet each segment independently.
+- **Closure intent**: sheet
 - **Notes**: Synonyms: "concavity-flip fillet", "twisted fillet", "fillet self-intersects on contour", "fillet spans convex/concave change", "rolling-ball flips sign mid-edge".
 - **Tier-3 assertion**: n_edges_total >= 2
 - **Tier-3 assertion**: face[0].surface_type == "plane"
@@ -8900,6 +9035,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Description**: User requests a fillet of radius R on a spine edge where one of the adjacent face's principal curvatures is less than 1/R; meaning the fillet rolling-ball cannot fit between the faces without intersecting them. Bug-reporter language: "fillet radius too large", "rolling ball doesn't fit", "fillet start failure".
 - **Reproducer recipe**: A small cylinder (radius 5 mm) with a spine edge at one end. Request a fillet of radius 6 mm at that edge.
 - **Expected kernel behavior**: Reject with "radius too large for local curvature" diagnostic; or heal by clamping to maximum feasible radius.
+- **Closure intent**: sheet
 - **Notes**: Synonyms: "ball radius too big", "fillet cannot start", "fillet radius too large for face curvature", "rolling ball doesn't fit", "fillet start failure".
 - **Tier-3 assertion**: face[0].surface_type == "cylinder"
 - **Tier-3 assertion**: n_edges_total >= 1
@@ -8931,6 +9067,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Description**: A fillet contour terminates at a vertex where the fillet surface needs to be trimmed by the adjacent faces, but the trimming operation produces a degenerate or non-simply-connected piece. Fixture precondition: two ADVANCED_FACEs share a spine edge with near-coplanar normals (e.g., (0,0,1) and (0.001,0,~1)) so the dihedral angle at the vertex is near zero. Bug-reporter language: "fillet faulty at corner", "fillet termination fails", "near-coplanar faces share spine".
 - **Reproducer recipe**: Spine edge ending at a vertex where two adjacent ADVANCED_FACEs meet at near-zero dihedral (PLANE normals differ by ~1e-3 radians, almost coplanar).
 - **Expected kernel behavior**: Warn and accept partial result: report the offending vertex; offer partial result with the bad vertex flagged.
+- **Closure intent**: sheet
 - **Notes**: Synonyms: "fillet end vertex broken", "fillet trim degenerate at vertex", "near-coplanar normals at fillet end", "rolling-ball can't trim cleanly".
 - **Tier-3 assertion**: face[0].sliver_aspect_max_min > 100
 - **Tier-3 assertion**: face[0].surface_type == "plane"
@@ -8962,6 +9099,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Description**: The rolling-ball trace for a fillet leaves the parametric domain of one of the adjacent faces before reaching the contour endpoint. Bug-reporter language: "fillet runs off face", "fillet leaks", "fillet exceeds face boundary".
 - **Reproducer recipe**: A small face adjacent to the spine; the fillet radius requires the rolling ball to leave the face's UV domain.
 - **Expected kernel behavior**: Heal and accept: truncate fillet at the face boundary; emit diagnostic.
+- **Closure intent**: sheet
 - **Notes**: Synonyms: "fillet overshoots face", "fillet runs off face", "fillet leaks past face boundary", "rolling-ball escapes parametric domain".
 - **Tier-3 assertion**: face[0].area < 1e-3
 - **Tier-3 assertion**: n_edges_total >= 1
@@ -8996,6 +9134,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Description**: A face on a periodic surface (e.g., `CYLINDRICAL_SURFACE`) is supplied with `same_sense = .F.`, so the face normal contradicts the surface's natural normal direction. An offset request then has no consistent direction to push.
 - **Reproducer recipe**: An `ADVANCED_FACE` on a cylindrical surface with `same_sense = .F.`. Submit the face for an outward offset.
 - **Expected kernel behavior**: Recompute normals, or reject with a diagnostic naming the offending face.
+- **Closure intent**: sheet
 - **Notes**: Synonyms: "offset normal flip", "face sense fights surface", "offset bad normals", "face normal flipped before offset", "same_sense=F breaks offset", "offset cannot start, normal direction unclear".
 - **Tier-3 assertion**: face[0].surface_type == "cylinder"
 - **Tier-3 assertion**: n_edges_total >= 1
@@ -9045,6 +9184,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Description**: The shell submitted for offsetting consists of two or more disconnected face groups; the offset algorithm cannot construct a connected offset shell.
 - **Reproducer recipe**: Two cubes' worth of faces with no shared edge, wrapped in one `OPEN_SHELL`.
 - **Expected kernel behavior**: Offset each connected component independently and return a list of results, or reject.
+- **Closure intent**: sheet
 - **Notes**: Synonyms: "offset on disconnected shell fails", "shell falls apart in offset", "offset source has split components", "offset rejects multi-piece shell". **See also**: Bo022.
 - **Tier-3 assertion**: face[0].surface_type == "plane"
 - **Tier-3 assertion**: face[1].surface_type == "plane"
@@ -9061,6 +9201,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Description**: After offsetting each face independently, the edges between neighbouring offset faces don't intersect cleanly to produce shared trim curves.
 - **Reproducer recipe**: A solid with two adjacent faces whose normals differ by a small angle and whose offset distances are large enough that the offset surfaces miss each other.
 - **Expected kernel behavior**: Extend or extrude offset surfaces until they intersect; or reject with diagnostic.
+- **Closure intent**: sheet
 - **Notes**: Synonyms: "offset re-join failure", "offset edge trimming failed", "offset faces don't reconnect", "offset edges don't intersect cleanly".
 - **Tier-3 assertion**: face[0].surface_type == "plane"
 - **Tier-3 assertion**: face[1].surface_type == "plane"
@@ -9107,6 +9248,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Description**: Two faces meet along a shared edge that is C0 (a sharp crease) on part of its length and G1 (smooth) on the rest. Offset must produce different surface types for each subsection.
 - **Reproducer recipe**: Two B-spline faces sharing an edge whose tangent jump is zero on `t∈[0,0.5]` and non-zero on `t∈[0.5,1]`.
 - **Expected kernel behavior**: Split the edge at the regularity transition; offset each segment independently.
+- **Closure intent**: sheet
 - **Notes**: Synonyms: "C0/G1 split edge", "mixed connectivity offset", "edge partly smooth partly sharp", "offset can't decide regularity", "shared edge has tangent discontinuity".
 - **Tier-3 assertion**: n_edges_total >= 4
 - **Tier-3 assertion**: face[0].surface_type == "bspline"
@@ -9218,6 +9360,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Description**: A draft (taper) angle applied to a face produces a deformed surface that cannot be re-fitted to the kernel's surface representation: the deformed B-spline degenerates or the analytic surface family doesn't extend to the requested angle. Bug-reporter language: "draft face recomputation fails", "draft angle breaks face".
 - **Reproducer recipe**: A `CYLINDRICAL_SURFACE` face; request a 45° draft. Cylinder cannot become a cone-like surface in the analytic family — recompute fails.
 - **Expected kernel behavior**: Convert to B-spline before drafting; or reject.
+- **Closure intent**: sheet
 - **Notes**: Synonyms: "draft taper failure", "draft face recomputation fails", "drafted surface won't refit", "draft angle exceeds analytic range".
 - **Tier-3 assertion**: face[0].surface_type == "cylinder"
 - **Tier-3 assertion**: n_edges_total >= 1
@@ -9234,6 +9377,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Description**: After drafting adjacent faces, the shared edge needs new geometry — the intersection of the two new (drafted) surfaces — but the intersection algorithm fails or yields a multi-component curve. Bug-reporter language: "draft edge fails", "draft edge multi-curve".
 - **Reproducer recipe**: Two adjacent faces with very different draft angles; their drafted versions intersect along a non-simple curve.
 - **Expected kernel behavior**: Pick the closest-to-original branch; or reject with diagnostic.
+- **Closure intent**: sheet
 - **Notes**: Synonyms: "draft edge fails", "draft edge multi-curve", "drafted edge intersection fails", "drafted face intersection multi-component". **See also**: Os015, Os017.
 - **Tier-3 assertion**: n_edges_total >= 2
 - **Tier-3 assertion**: face[0].surface_type == "plane"
@@ -9251,6 +9395,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Description**: After drafting, a corner vertex lies on the drafted surfaces but its position cannot be uniquely determined: the three (or more) drafted surfaces meeting at the vertex don't have a common intersection within tolerance. Bug-reporter language: "draft corner vertex fails", "drafted corner not stable".
 - **Reproducer recipe**: A solid corner of valence 3 with three draft angles such that the new surfaces' triple intersection is empty.
 - **Expected kernel behavior**: Synthesize a small triangular cap; or reject.
+- **Closure intent**: sheet
 - **Notes**: Synonyms: "draft corner cap missing", "draft corner vertex fails", "drafted corner not stable", "drafted surfaces don't share a vertex". **See also**: Os016.
 - **Tier-3 assertion**: n_edges_total >= 6
 - **Tier-3 assertion**: face[0].surface_type == "plane"
@@ -9404,6 +9549,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
  prior `BRepMesh_IncrementalMesh` call with custom deflection); write to STL.
 - **Expected kernel behavior**: STL writer reuses any existing triangulation
  unless explicitly told to remesh; never silently re-tessellate.
+- **Closure intent**: sheet
 - **Notes**: Synonyms: "STL writer ignores triangulation", "user mesh re-tessellated", "tuned mesh lost on STL export", "writer recomputes deflection", "STL writer ignores attached triangulation". **See also**: M057, U037.
 - **Tier-3 assertion**: n_edges_total >= 4
 - **Tier-3 assertion**: face[0].surface_type == "plane"
@@ -11886,6 +12032,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Description**: A non-manifold `COMPSOLID` (multiple solids sharing faces) is silently broken into separate `MANIFOLD_SOLID_BREP`s on write; the shared-face topology is lost. Round-tripping the file via OCCT no longer reflects the original non-manifold structure. Bug-reporter language: "compsolid lost", "non-manifold broken on round-trip".
 - **Reproducer recipe**: Two solids sharing a single face, wrapped in a compsolid; export round-trip.
 - **Expected kernel behavior**: Heal and accept: preserve compsolid via `SHELL_BASED_SURFACE_MODEL` or AP242 non-manifold subtypes; warn-and-accept if the AP doesn't support it.
+- **Closure intent**: solid
 - **Notes**: Synonyms: "compsolid decomposed", "non-manifold lost on write", "shared face topology dropped", "COMPSOLID broken into independent solids".
 - **Tier-3 assertion**: face[0].surface_type == "plane"
 - **Tier-3 assertion**: face[5].surface_type == "plane"
@@ -12442,6 +12589,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Reproducer recipe**: STEP file with `OPEN_SHELL('',())` (zero-face shell).
 - **Expected kernel behavior**: empty face list is a malformed shell;
  diagnose and skip; never crash.
+- **Closure intent**: ambiguous
 - **Notes**: **See also**: Tsh023, Tsh024. **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers must reject this fixture per the catalog's stated invariant.
 - **Byte assertion**: matches(rb"OPEN_SHELL\('[^']*',\(\)\)")
 - **Byte assertion**: matches(rb'\(\)\)')
@@ -12513,6 +12661,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
  sliver faces, each exposing the next when removed.
 - **Expected kernel behavior**: ShapeFix uses a fixed iteration count or
  relative-change termination; never unbounded recursion.
+- **Closure intent**: solid
 - **Notes**: **See also**: Tfa056.
 - **Byte assertion**: count_entity_def(b'ADVANCED_FACE') >= 3 and contains(b'sliver')
 - **Byte assertion**: count_entity_def(b'ADVANCED_FACE') >= 4
@@ -13166,6 +13315,7 @@ _Section summary: 52 entries._
 - **Description**: Mesh-to-BRep tools fit `B_SPLINE_SURFACE_WITH_KNOTS` patches per triangle and stitch them; near sharp creases the per-triangle patches' inner trims cross outside their outer bounds. Common signature: a face whose outer rectangular `FACE_OUTER_BOUND` is a 2×2 square but whose inner triangular `FACE_BOUND` has vertices (e.g. (1,1), (3,1), (2,3)) that extend outside the outer square; a self-intersecting face from mesh-to-NURBS conversion. Output STEP loads but every later Boolean fails.
 - **Reproducer recipe**: STL with creases > ~30°; sew tolerance ≤ 1e-6; resulting `ADVANCED_FACE` contains pcurves that cross.
 - **Expected kernel behavior**: heal; STL→STEP path should emit faceted BRep (`FACETED_BREP`/`OPEN_SHELL`) rather than smooth NURBS, or run self-intersection healing as a final step.
+- **Closure intent**: sheet
 - **Notes**: Synonyms: "mesh-to-NURBS inner trim outside outer", "STL-to-STEP face self-intersects", "FACE_BOUND extends past outer bound", "self-intersecting reverse-engineered face". **See also**: Pf015. **OCC behavior**: the validity-checker does not flag inner-trim-outside-outer-bound on the mesh-to-NURBS face; tier-3 valid-flag should be ignored for this entry. The reader most likely silently fixes or ignores the self-intersecting trim on import.
 - **Tier-3 assertion**: n_edges_total >= 11
 - **Tier-3 assertion**: face[0].surface_type == "plane"
@@ -13179,6 +13329,8 @@ _Section summary: 52 entries._
 - **Description**: When a mesh is fitted with NURBS patches to produce a B-rep (reverse engineering or scan-to-CAD), boundary mesh edges are constrained to lie on trim curves. Independent fitting of adjacent patches leaves gaps and overlaps along those curves; the resulting B-rep is non-watertight even though visually closed.
 - **Reproducer recipe**: Convert an STL of a scan to STEP via patch fitting; check `ADVANCED_FACE` edges for tolerance-exceeding gaps to neighbour faces.
 - **Expected kernel behavior**: heal; use a single shared trim curve fitted to a tighter tolerance than the patch interior; enforce watertightness as a fitting constraint, not a cleanup step.
+- **Closure intent**: solid
+- **Closure defect**: gap
 - **Notes**: Synonyms: "mesh-to-BRep gaps at trims", "non-watertight reverse-engineered face", "patch fitting leaves trim gaps", "STL-to-NURBS not watertight". **OCC behavior**: the validity-checker does not flag sub-tolerance trim-curve gaps in the mesh-to-BRep result; tier-3 valid-flag should be ignored for this entry. The reader most likely silently fixes or ignores the gap on import.
 - **Tier-3 assertion**: n_edges_total >= 8
 - **Tier-3 assertion**: face[0].surface_type == "plane"
@@ -13457,6 +13609,7 @@ _Section summary: 52 entries._
 - **Description**: STEP reader's non-manifold path skips XCAF attribute application; STEP non-manifold export drops every XCAF attribute (regression after 31617 fix). Common signature: a `NON_MANIFOLD_SURFACE_SHAPE_REPRESENTATION` whose `SHELL_BASED_SURFACE_MODEL` carries multiple `OPEN_SHELL`s (e.g. three shells in a T-shape sharing an edge) with `STYLED_ITEM` colour and `PRESENTATION_LAYER_ASSIGNMENT` layer attached; names, colours, layers all lost on the non-manifold reader path.
 - **Reproducer recipe**: STEP file with `NON_MANIFOLD_SURFACE_SHAPE_REPRESENTATION` carrying colors; or set `write.step.nonmanifold 1` and SetName then WriteStep — re-import shows auto names.
 - **Expected kernel behavior**: heal; apply colors/styles in non-manifold path; retain attribute mapping after topology copy.
+- **Closure intent**: sheet
 - **Notes**: Synonyms: "non-manifold loses XCAF colors", "OPEN_SHELL multiple shared edges color drop", "non-manifold export drops layer attrs", "NON_MANIFOLD_SURFACE_SHAPE_REPRESENTATION attribute loss". **See also**: A019, Tsh022.
 - **Tier-3 assertion**: face[0].surface_type == "plane"
 - **Tier-3 assertion**: face[2].surface_type == "plane"
@@ -13470,6 +13623,7 @@ _Section summary: 52 entries._
 - **Description**: Producers sometimes encode physical-group / material semantics in `PRESENTATION_LAYER_ASSIGNMENT` rather than `STYLED_ITEM`. OCC's XCAF only honors layer for visibility, not as named groups, so the data is silently lost.
 - **Reproducer recipe**: STEP with `PRESENTATION_LAYER_ASSIGNMENT('Copper', 'meshable', (#42, #43))` pointing at `SHELL_BASED_SURFACE_MODEL`s.
 - **Expected kernel behavior**: heal — surface `PRESENTATION_LAYER_ASSIGNMENT` names as queryable group attributes.
+- **Closure intent**: sheet
 - **Notes**: Synonyms: "layer carrying material name dropped", "physical group encoded as layer", "PRESENTATION_LAYER_ASSIGNMENT semantic loss", "layer-as-group not honored". **See also**: A022.
 - **Tier-3 assertion**: face[0].surface_type == "plane"
 - **Tier-3 assertion**: n_edges_total >= 3
@@ -13553,6 +13707,8 @@ _Section summary: 52 entries._
 - **Description**: A topologically closed solid is emitted as `OPEN_SHELL` inside `SHELL_BASED_SURFACE_MODEL` instead of `MANIFOLD_SOLID_BREP`. Round-trip through OCCT writer can demote `closed_shell` to `open_shell`/`OpenPolysurface`; FEA/CFD pipelines reject the body for meshing. Bundled vendor 3D models (KiCad's `kicad-packages3D`) are technically `SHELL_BASED_SURFACE_MODEL` rather than closed.
 - **Reproducer recipe**: A topologically closed shell whose root entity in `ADVANCED_BREP_SHAPE_REPRESENTATION` is `SHELL_BASED_SURFACE_MODEL → OPEN_SHELL` instead of `MANIFOLD_SOLID_BREP → CLOSED_SHELL`.
 - **Expected kernel behavior**: heal; promote to closed shell when topology proves closure; sew within scaled tolerance and try `MakeSolid`; do not rely solely on entity type.
+- **Closure intent**: solid
+- **Closure defect**: unstitched_seam
 - **Notes**: Synonyms: "closed solid emitted as OPEN_SHELL", "solid demoted to sheet body", "manifold solid as shell-based-surface-model", "solid expected but open shell found". **See also**: P015.
 - **Tier-3 assertion**: face[0].surface_type == "plane"
 - **Tier-3 assertion**: n_edges_total >= 3
@@ -13567,6 +13723,8 @@ _Section summary: 52 entries._
 - **Description**: Two adjacent open shells share an edge in a manifold T-junction, but slicer mesher classifies the shared edge as non-manifold because the joined compound has 3+ face references. Conversely, a correctly-emitted `MANIFOLD_SOLID_BREP` gets demoted to `SHELL_BASED_SURFACE_MODEL` when receiver-default sewing tolerance is exceeded.
 - **Reproducer recipe**: Two `OPEN_SHELL`s with one shared `EDGE_CURVE` collapsed by receiver into a single mesh; or solid with one face whose vertex tolerance is 1.1e-3 against receiver's 1.0e-3 sewing default.
 - **Expected kernel behavior**: Heal and accept: when joining open shells, recognize "interior" shared edges; on solid promotion failure, retry with progressively higher tolerances and report the gap.
+- **Closure intent**: solid
+- **Closure defect**: unstitched_seam
 - **Notes**: Synonyms: "mesh non-manifold misclassified", "manifold solid demoted to shell", "T-junction mistaken for non-manifold", "receiver default sewing tolerance flips classification". **See also**: Tsh040.
 - **Tier-3 assertion**: face[0].surface_type == "plane"
 - **Tier-3 assertion**: face[1].surface_type == "plane"
@@ -13579,6 +13737,7 @@ _Section summary: 52 entries._
 - **Description**: `FACETED_BREP` is required by the schema to reference a `CLOSED_SHELL`. Some producers emit it pointing at an `OPEN_SHELL`. OCCT only handles the closed case, so loading aborts.
 - **Reproducer recipe**: `#N = FACETED_BREP('', #M);` where `#M = OPEN_SHELL('', (..));`.
 - **Expected kernel behavior**: reject with a precise diagnostic; optionally heal by promoting the shell to `CLOSED_SHELL` if topology actually closes.
+- **Closure intent**: solid
 - **Notes**: Synonyms: "FACETED_BREP linked to OPEN_SHELL", "schema-illegal faceted brep", "faceted brep needs closed shell", "schema-version vs entity-vocabulary disagreement".
 - **Byte assertion**: contains(b'FACETED_BREP')
 - **Byte assertion**: contains(b'OPEN_SHELL')
@@ -13886,6 +14045,8 @@ _Section summary: 28 entries._
  export STL; FreeCAD: Mesh → Shape → Solid → STEP. Try a Boolean cut
  on the result.
 - **Expected kernel behavior**: reject with explicit "non-watertight,
+- **Closure intent**: solid
+- **Closure defect**: gap
 - **Notes**: **See also**: M023, Pf027. Provenance tier: runtime-only; bytes alone cannot demonstrate this defect; the catalogued symptoms (quadratic-time stitching, Boolean failures, resource exhaustion at ~10k+ faces) are runtime resource consumption that scales with mesh size. A fixture-scale `OPEN_SHELL` does not embody the production-scale exhaustion; a behavioral test on the stitching/Boolean pipeline at scale is the appropriate venue.
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P2
@@ -14008,6 +14169,8 @@ _Section summary: 28 entries._
 - **Reproducer recipe**: run healing on the same large STEP 1000 times;
  detect non-deterministic crashes / divergent outputs.
 - **Expected kernel behavior**: Heal and accept: deterministic same-input-same-output writer; normalize the output across runs.
+- **Closure intent**: solid
+- **Closure defect**: unstitched_seam
 - **Notes**: **See also**: N041. Validation observed: this is a deliberately scaled-down representative; the structural pattern is present but the production-scale resource exhaustion / catastrophic timing is not exercised at fixture size. To trigger the documented kernel-crash, multiply the entity-replication factor by ~10^N as noted in the reproducer recipe.
 - **Notes**: Cross-oracle: pure-Python Part-21 validator rejects (reject(E_REAL_NO_DOT)); OCCT silently accepts (load is `empty`). OCC auto-heals a spec-level violation.
 - **Byte assertion**: count_entity_def(b'CARTESIAN_POINT') >= 3
@@ -14619,6 +14782,7 @@ _Section summary: 41 entries._
 - **Description**: Consumer uses `_` as field delimiter on quoted-string content of `MANIFOLD_SURFACE_SHAPE_REPRESENTATION` name; everything after first `_` lost.
 - **Reproducer recipe**: `MANIFOLD_SURFACE_SHAPE_REPRESENTATION('component1_1|dipole1', ..);`
 - **Expected kernel behavior**: Heal and accept: never modify quoted-string contents. Must not silently truncate.
+- **Closure intent**: sheet
 - **Tier-3 assertion**: face[0].sliver_aspect_max_min > 1e6
 - **Tier-3 assertion**: face[0].surface_type == "plane"
 - **Tier-3 assertion**: brepcheck.valid == True
@@ -14712,6 +14876,7 @@ _Section summary: 41 entries._
 - **Description**: STEP read crashes inside `FindSubShape` while building XCAF tree on otherwise well-formed file.
 - **Reproducer recipe**: ReadFile + Transfer on shipped propeller.stp.
 - **Expected kernel behavior**: reject or heal without crashing.
+- **Closure intent**: sheet
 - **Notes**: **See also**: Ad005, Ad031.
 - **Tier-3 assertion**: face[0].sliver_aspect_max_min > 1e6
 - **Tier-3 assertion**: face[0].surface_type == "plane"
@@ -15599,6 +15764,7 @@ _Section summary: 41 entries._
  collapse the sliver (and if so, into which neighbour), and whether to
  treat the 3-face junction as legitimate non-manifold topology or a
  malformed shell. The corpus does not prescribe order.
+- **Closure intent**: sheet
 - **Byte assertion**: contains(b'FILE_SCHEMA')
 - **Byte assertion**: contains(b'EDGE_CURVE')
 - **Byte assertion**: contains(b'ADVANCED_FACE')
@@ -15739,6 +15905,7 @@ _Section summary: 41 entries._
 - **Expected kernel behavior**: each malformed sub-shape rejected/skipped
  independently; the kernel decides whether to surface the resulting open
  shell or attempt repair.
+- **Closure intent**: solid
 - **Byte assertion**: contains(b'FILE_SCHEMA')
 - **Byte assertion**: contains(b'EDGE_CURVE')
 - **Byte assertion**: contains(b'ADVANCED_FACE')
@@ -15858,6 +16025,7 @@ _Section summary: 41 entries._
  through the apex; a B-spline surface face nearby with control net that
  folds; one vertex incident to 4 edges across multiple shell components.
 - **Expected kernel behavior**: Heal and accept, or reject with diagnostic: each pathology is addressed independently; apex-singularity policy (heal/repair), folded-surface detection (warn or reject), non-manifold-vertex policy.
+- **Closure intent**: sheet
 - **Byte assertion**: contains(b'FILE_SCHEMA')
 - **Byte assertion**: contains(b'EDGE_CURVE')
 - **Byte assertion**: contains(b'ADVANCED_FACE')
@@ -15884,6 +16052,7 @@ _Section summary: 41 entries._
  `VERTEX_POINT.tolerance > EDGE_CURVE.tolerance`; coordinates in the
  range 0.001 with mm declared.
 - **Expected kernel behavior**: Heal and accept, or warn and accept: schema-class invariant, tolerance-hierarchy invariant, and unit-vs-magnitude policy each addressed independently; repair where possible, warn otherwise.
+- **Closure intent**: solid
 - **Byte assertion**: contains(b'FILE_SCHEMA')
 - **Byte assertion**: contains(b'EDGE_CURVE')
 - **Byte assertion**: contains(b'ADVANCED_FACE')
@@ -16170,6 +16339,8 @@ _Section summary: 41 entries._
 - **Description**: A 6-face cube has only 5 ADVANCED_FACE entries (the +Z lid is missing); the file wraps them into an OPEN_SHELL inside a SHELL_BASED_SURFACE_MODEL. Onshape's importer (Parasolid kernel) loads the surface body but refuses to insert it into an assembly because surfaces are not assembly-valid children. Fusion 360 likewise yields a surface body. Users repeatedly post asking "why doesn't this open as a solid"; the upstream tool emitted a non-watertight body.
 - **Reproducer recipe**: 5 ADVANCED_FACE entries describing a unit cube minus the +Z face; OPEN_SHELL referencing all five; SHELL_BASED_SURFACE_MODEL referencing the OPEN_SHELL. No MANIFOLD_SOLID_BREP.
 - **Expected kernel behavior**: load as a surface body and surface a "non-watertight body" diagnostic; offer auto-stitch / fill-hole as a healing option; filling in a missing face without diagnostic is outside the spec.
+- **Closure intent**: solid
+- **Closure defect**: missing_face
 - **Notes**: Synonyms: "STEP imports as surface body only", "missing face means not a solid", "OPEN_SHELL where CLOSED_SHELL expected", "5-of-6 cube faces", "watertight body not constructed".
 - **Byte assertion**: contains(b'OPEN_SHELL')
 - **Byte assertion**: contains(b'SHELL_BASED_SURFACE_MODEL')
@@ -17060,6 +17231,7 @@ _Section summary: 41 entries._
 - **Description**: An OPEN_SHELL of multiple faces has per-face defects (orientation flips, missing pcurves, sub-tolerance edges) and shell-level defects (face-orientation propagation cannot resolve until per-face fixes converge). Healing one face changes the inputs to the next face's fix; a one-pass approach leaves residual defects.
 - **Reproducer recipe**: Two adjacent square faces sharing one edge, packaged as an OPEN_SHELL where one face has its orientation flag flipped relative to its neighbor.
 - **Expected kernel behavior**: a shell-level orchestrator that interleaves per-face healing with shell-wide invariants (consistent orientation, edge sharing) and iterates until either convergence or a fixed budget is exhausted; alternatively, a stricter kernel can refuse and require pre-healed input.
+- **Closure intent**: ambiguous
 - **Notes**: Umbrella entry; covers the "iterate until stable" requirement common to multi-defect shells. **See also**: Hea001 (shape-level), Hea002 (solid-level). Synonyms: "shell needs iterative healing", "per-face fixes interact with shell-level repair", "one-pass healing leaves residual defects", "multiple defects need orchestrated cleanup", "shell healer must converge".
 - **Byte assertion**: contains(b'OPEN_SHELL')
 - **Byte assertion**: count_entity_def(b'ADVANCED_FACE') == 2
@@ -17074,6 +17246,8 @@ _Section summary: 41 entries._
 - **Description**: A shell-orientation analyzer checks that each edge appears either once (free edge, legal in an open shell) or twice with opposite FORWARD/REVERSED orientations (legal for a connected pair). Edges appearing twice with the same orientation, or three or more times, are defects. The diagnostic must distinguish a true non-watertight ("naked", "leaky") defect from a legitimately open free boundary.
 - **Reproducer recipe**: An OPEN_SHELL of two squares sharing no common edge — every edge appears exactly once. The "shell" is two disjoint plates; orientation analysis must label every edge as a free edge (legal) and flag the absence of any sharing as informational.
 - **Expected kernel behavior**: a per-edge tally with three buckets; shared-with-opposite-orientation (good), free (legal in open shells, optionally reported), and pathological (same-orientation pair, or count>2). Kernels intending to build a closed solid must reject the second bucket; kernels handling open shells may accept it.
+- **Closure intent**: solid
+- **Closure defect**: gap
 - **Notes**: Free edges are also called "naked edges" in some kernels; both terms in scope. Synonyms: "naked edges versus duplicate edges", "open shell free boundary classification", "edge appears once is legal but twice with same orientation isn't", "shell analyzer must distinguish leak from intentional opening", "non-watertight defect versus open boundary".
 - **Byte assertion**: contains(b'OPEN_SHELL')
 - **Byte assertion**: count_entity_def(b'ADVANCED_FACE') == 2
@@ -17148,6 +17322,7 @@ _Section summary: 41 entries._
 - **Description**: A shell's per-face `same_sense` flags and edge orientations form a non-orientable assembly: there is no choice of "outward" that propagates consistently around the shell's edge graph. A Möbius-strip-like topology emerges; when the kernel walks face-to-face across shared edges, the sense flips after a closed loop. Common fixture pattern: an OPEN_SHELL whose ADVANCED_FACEs all sit on the same PLANE while one face's same_sense flag is flipped relative to its neighbour, producing a non-orientable face arrangement. Bug-reporter language: "Möbius shell", "kernel says shape is non-orientable", "cannot determine inside vs outside", "flipped face same_sense breaks orientation".
 - **Reproducer recipe**: An OPEN_SHELL of three rectangular `ADVANCED_FACE` entries (often all on the same PLANE) connected end-to-end into a closed loop. The third face's `same_sense=.F.` is set so that, when traversed in the closed loop, the orientation reverses.
 - **Expected kernel behavior**: Detect non-orientability via parity-walk of orientation flags; reject the shape, or split the shell into orientable pieces and warn.
+- **Closure intent**: sheet
 - **Notes**: Distinct from Tsh008 (mis-oriented but orientable). The defect here is intrinsic, not an importer mistake. Synonyms: "Möbius shell", "kernel says shape is non-orientable", "cannot determine inside vs outside", "flipped face same_sense breaks orientation", "no consistent normal direction possible".
 - **Tier-3 assertion**: face[0].surface_type == "plane"
 - **Tier-3 assertion**: face[2].surface_type == "plane"
@@ -17162,6 +17337,7 @@ _Section summary: 41 entries._
 - **Description**: A single `EDGE_CURVE` is referenced by `ORIENTED_EDGE`s belonging to three (or more) distinct faces of one shell, but the shell is meant to be a 2-manifold. The expected invariant — every edge of a 2-manifold shell is incident to exactly two faces — is violated. Bug-reporter language: "non-manifold edge", "T-junction", "edge in three faces", "non-manifold seam".
 - **Reproducer recipe**: Three `ADVANCED_FACE` entries whose outer `EDGE_LOOP`s each reference the same `EDGE_CURVE` (with possibly different orientations). Wrap them in a `CLOSED_SHELL` along with whatever else is needed to close the topology.
 - **Expected kernel behavior**: Reject as non-manifold, or split the model into manifold sub-shells, or accept with a non-manifold marker; kernel-design choice.
+- **Closure intent**: sheet
 - **Notes**: Synonyms: "T-junction edge", "non-manifold T", "edge with three incident faces", "non-manifold seam in 2-manifold shell", "edge referenced by more than two faces". **See also**: Sw001, Tsh020.
 - **Tier-3 assertion**: face[0].surface_type == "plane"
 - **Tier-3 assertion**: face[2].surface_type == "plane"
@@ -17176,6 +17352,7 @@ _Section summary: 41 entries._
 - **Description**: A `CLOSED_SHELL` references the same `ADVANCED_FACE` entity in its face list twice (or two `ADVANCED_FACE`s sharing identical geometry and orientation). The shell topology is therefore over-counted: the same surface region is listed as belonging to the boundary twice. Bug-reporter language: "duplicate face in shell", "face listed twice", "same face appears multiple times".
 - **Reproducer recipe**: A `CLOSED_SHELL` whose `cfs_faces` list contains the same `ADVANCED_FACE` entity reference twice.
 - **Expected kernel behavior**: Detect duplicate references; heal by merging duplicates silently or reject with a diagnostic naming the offending face.
+- **Closure intent**: sheet
 - **Notes**: Validation observed in OCCT: BRepCheck flags `SubshapeNotInShape` after dedup. Synonyms: "duplicate face in shell", "face listed twice", "same face appears multiple times", "shell has redundant face entry", "over-counted face in face list".
 - **Tier-3 assertion**: face[0].surface_type == "plane"
 - **Tier-3 assertion**: n_edges_total >= 4
@@ -17205,6 +17382,7 @@ _Section summary: 41 entries._
 - **Description**: A `CLOSED_SHELL` (or `OPEN_SHELL`) lists faces in two disconnected components; there is no chain of shared edges connecting them. The "shell" is really two shells stuffed into one wrapper. Bug-reporter language: "shell is two pieces", "disconnected shell", "shell falls apart".
 - **Reproducer recipe**: A `CLOSED_SHELL` with two cubes' worth of faces (12 faces total), built from disjoint vertex sets (no shared edge between the two cubes).
 - **Expected kernel behavior**: Split into connected components and emit one shell per component; or reject.
+- **Closure intent**: sheet
 - **Notes**: Synonyms: "leaky shell", "two-island shell", "shell components disjoint", "shell has two unconnected halves", "two cubes packaged in one shell wrapper".
 - **Tier-3 assertion**: face[0].surface_type == "plane"
 - **Tier-3 assertion**: face[1].surface_type == "plane"
@@ -17233,6 +17411,7 @@ _Section summary: 41 entries._
 - **Description**: Two ADVANCED_FACEs on CYLINDRICAL_SURFACEs (often defined as two distinct surface entities with identical axis and radius, duplicates of one cylinder) meet along a shared circular edge; their normals at the edge are tangent-continuous (G1) but the edge is tagged in the model as a sharp boundary (e.g., `C0` continuity). Or the inverse: an edge is tagged smooth but the two surfaces meet at an angle. Bug-reporter language: "edge continuity wrong", "smooth edge marked sharp", "fillet edge marked as crease", "duplicate cylinders should share one surface".
 - **Reproducer recipe**: Two ADVANCED_FACEs on two CYLINDRICAL_SURFACE entities that are duplicates (same axis, same radius) sharing a tangent edge, with the edge marked `C0` in the source model. (In STEP this is implicit in face tessellation tools but not in the entity graph; the reproducer is geometric — surfaces meet smoothly.)
 - **Expected kernel behavior**: Heal and accept: recompute regularity from face normals; correct the tag.
+- **Closure intent**: sheet
 - **Notes**: Affects downstream meshing and shading. Provenance tier: runtime-only; bytes alone cannot demonstrate this defect; STEP edge entities have no continuity-tag attribute, so the "C0 vs G1" mistagging exists only as kernel-internal regularity state populated during the regularity-encoding pass. The static fixture encodes only the geometric trigger (two cylinders meeting tangentially). A behavioral test against the regularity-encoder is the appropriate venue. Synonyms: "edge continuity wrong", "smooth edge marked sharp", "fillet edge marked as crease", "duplicate cylinders should share one surface", "regularity tag disagrees with measured smoothness".
 - **Tier-3 assertion**: face[0].surface_type == "cylinder"
 - **Tier-3 assertion**: face[1].surface_type == "cylinder"
@@ -17262,6 +17441,7 @@ _Section summary: 41 entries._
 - **Description**: Two surfaces meet along a shared edge with first-derivative discontinuity (a kink) but the model's continuity claim or downstream-tooling expectation was C1. Bug-reporter language: "kink between faces", "G1 expected but kink found", "non-tangent surface seam".
 - **Reproducer recipe**: Two `PLANE` faces sharing an edge but at right angles (90°), claimed by post-processing tools to be tangent.
 - **Expected kernel behavior**: Heal and accept: compute actual continuity, attach a regularity tag, or warn the consumer.
+- **Closure intent**: sheet
 - **Notes**: Distinct from Bo025 (regularity *encoding*); this is *measured* continuity. Synonyms: "kink between faces", "G1 expected but kink found", "non-tangent surface seam", "face boundary has tangent discontinuity", "two surfaces meet at right angles claimed smooth".
 - **Tier-3 assertion**: face[0].surface_type == "plane"
 - **Tier-3 assertion**: face[1].surface_type == "plane"
@@ -17342,6 +17522,7 @@ _Section summary: 41 entries._
  the kernel chooses), and either flip non-conforming loops, reject the
  face, or report the inversion. Should not silently produce a face whose
  point-membership predicate is the complement of the producer's intent.
+- **Closure intent**: sheet
 - **Notes**: Tier-3 metric: signed area of each loop. Outer should have
  positive signed area; inner negative. This fixture has them reversed. Synonyms: "face inside-out", "hole in plate appears solid", "boolean subtraction adds material", "inner and outer loops swapped", "hole loop winds same direction as outer".
 - **Tier-3 assertion**: n_edges_total >= 8
@@ -17460,6 +17641,7 @@ _Section summary: 41 entries._
  region of the same supporting surface, or by enforcing the
  edge-degree-2 invariant globally (overlapping faces fail it). Should
  reject, repair, or surface the overlap as a quality metric.
+- **Closure intent**: sheet
 - **Notes**: Tier-3 metric: cumulative covered-area-per-supporting-surface
  vs. union-area. For a clean shell these match; here they differ by the
  area of the overlay quadrant. T-vertices appear at (0.5, 0, 0),
@@ -17575,6 +17757,7 @@ _Section summary: 41 entries._
  vectors trace the CCW path. Four ORIENTED_EDGEs each with
  orientation=.F. EDGE_LOOP composed of those four.
 - **Expected kernel behavior**: Reject with E_WIRE_ORIENTATION_INCONSISTENT diagnostic, or warn and accept: verify the wire-orientation invariant (chained start/end matching modulo orientation flag) AND signed-area consistency with the face surface normal. A clean wire passes both; this fixture passes the first but fails the second.
+- **Closure intent**: sheet
 - **Notes**: Tier-3 metric: signed area of the loop in face UV space.
  Differs from the area whose absolute value the kernel reports if the
  signed-area check is not run. Synonyms: "wire goes the wrong way", "loop traversed backwards", "edge orientation flag inverted", "every half-edge of wire flipped", "loop traverses CW where CCW expected".
@@ -17835,6 +18018,7 @@ _Section summary: 41 entries._
 - **Expected kernel behavior**: when merging same-domain faces, accumulate
  angular deviation across consecutive collinear-tested edges and report a
  single merge decision for the entire chain, not per-edge.
+- **Closure intent**: ambiguous
 - **Notes**: **See also**: Tfa016, Tsh047. Synonyms: "tiny stitched edges not merged", "near-collinear edge chain not unified", "cumulative angle deviation across edges", "redundant slivers left after healing", "per-edge angle threshold misses chain".
 - **Byte assertion**: contains(b'OPEN_SHELL')
 - **Byte assertion**: count_entity_def(b'ADVANCED_FACE') == 2
@@ -17858,6 +18042,7 @@ _Section summary: 41 entries._
 - **Expected kernel behavior**: never merge across a periodic seam; treat
  closed-surface seams as topology-relevant even when surface geometry is
  identical on both sides.
+- **Closure intent**: ambiguous
 - **Notes**: **See also**: Tsh046, Tfa016. Synonyms: "merging halves of cylinder produces non-manifold", "face unifier crosses periodic seam", "two half-cylinder faces collapse incorrectly", "seam edge listed twice after merge", "cylinder seam treated as interior".
 - **Byte assertion**: contains(b'OPEN_SHELL')
 - **Byte assertion**: contains(b'CYLINDRICAL_SURFACE')
@@ -17903,6 +18088,7 @@ _Section summary: 41 entries._
  rectangle with no holes.
 - **Expected kernel behavior**: face-merge must preserve all `FACE_INNER_BOUND`
  wires from input faces; only the outer boundary is unified.
+- **Closure intent**: ambiguous
 - **Notes**: **See also**: Tsh046. Synonyms: "holes lost during face merge", "inner wires dropped on unification", "face inner bounds disappear after merge", "circular hole disappears after healing", "FACE_INNER_BOUND not preserved through unification".
 - **Byte assertion**: contains(b'OPEN_SHELL')
 - **Byte assertion**: contains(b'FACE_INNER_BOUND')
@@ -18084,6 +18270,7 @@ _Section summary: 41 entries._
 - **Expected kernel behavior**: post-merge validity check on the resulting
  face's wire (no self-intersections, no zero-area regions); revert merge
  if invalidity is detected.
+- **Closure intent**: ambiguous
 - **Notes**: **See also**: Tsh055, Tfa018. Synonyms: "near-tangent face merge produces self-overlapping face", "small angle deviation passes merge but creates invalid result", "merged face wire crosses itself", "merge across near-coplanar faces breaks geometry", "tiny normal mismatch corrupts face union".
 - **Byte assertion**: contains(b'OPEN_SHELL')
 - **Byte assertion**: count_entity_def(b'ADVANCED_FACE') == 2
@@ -18104,6 +18291,7 @@ _Section summary: 41 entries._
  as "keep". Call unify with a list of edges to preserve. Resulting shape
  no longer contains the kept edge.
 - **Expected kernel behavior**: Heal and accept: coerce every internal traversal to honour the edge-preservation flag; normalize / expose a list of "edges that survived" to confirm.
+- **Closure intent**: ambiguous
 - **Notes**: **See also**: Tsh050. Defect manifests at runtime; fixture establishes the input precondition (two coplanar faces sharing edge E, with a property association marking E as `keep`). Synonyms: "kept edges still merged through", "edge preservation flag ignored by merge", "keep-edges list not respected", "protected edges removed by unifier", "feature edges lost after merge".
 - **Byte assertion**: contains(b'OPEN_SHELL')
 - **Byte assertion**: count_entity_def(b'ADVANCED_FACE') == 2
@@ -18148,6 +18336,7 @@ _Section summary: 41 entries._
 - **Reproducer recipe**: Compound of 50 small disjoint solids, each a unit
  cube. Run unify; observe time grows quadratically with cube count.
 - **Expected kernel behavior**: Heal and accept: normalize / filter same-surface candidate pairs by spatial / connectivity grouping (e.g., only pairs sharing an edge can be candidates); never iterate all-pairs across disconnected shells. Must not hang on all-pairs traversal.
+- **Closure intent**: sheet
 - **Notes**: **See also**: Tfa054, Pf027. Fixture is a scaled representative (8 disjoint single-face shells) of the catalog's 50; topology pattern (N independent shells in a compound) is identical. Synonyms: "face merge takes hours on assembly", "quadratic complexity in face unifier", "face merger runs all-pairs across compound", "assembly-level merge hangs", "performance regression on N-solid compound".
 - **Byte assertion**: count_entity_def(b'OPEN_SHELL') == 8
 - **Byte assertion**: count_entity_def(b'ADVANCED_FACE') == 8
@@ -18191,6 +18380,7 @@ _Section summary: 41 entries._
  in the middle of the original edge. Wire is still closed; cached
  `closed_flag` says open.
 - **Expected kernel behavior**: Heal and accept: any edge insertion / replacement on a wire normalizes / invalidates cached topological flags (closed, simple, ordered); recompute on demand or eagerly.
+- **Closure intent**: sheet
 - **Notes**: **See also**: Twi053, Twi064. Synonyms: "wire closed flag not refreshed after edge replacement", "stale closed flag after healing", "wire fix updates topology but not flags", "closed wire reported as open downstream", "split edge keeps wire closed but flag says no".
 - **Tier-3 assertion**: n_edges_total >= 4
 - **Tier-3 assertion**: face[0].surface_type == "plane"
@@ -18212,6 +18402,7 @@ _Section summary: 41 entries._
  `FACE_INNER_BOUND` (a circular wire on the cylinder representing a window
  cut-out) and no `FACE_OUTER_BOUND` element in the bounds list.
 - **Expected kernel behavior**: Heal and accept: when a face on a closed surface has no outer bound, normalize / coerce the entire surface (modulo seam handling) to the implicit outer bound; the inner wire then describes a hole through the natural face.
+- **Closure intent**: sheet
 - **Notes**: **See also**: Tfa038, Tsh001. Synonyms: "face on cylinder has hole but no outer bound", "natural surface bound not synthesized", "face read with no boundary at all", "inner wire on closed surface treated as disk", "cylinder face missing implicit outer boundary".
 - **Byte assertion**: contains(b'CYLINDRICAL_SURFACE(')
 - **Byte assertion**: contains(b'FACE_INNER_BOUND(')
@@ -18233,6 +18424,7 @@ _Section summary: 41 entries._
  (zero-length segment between two coincident vertex points at the apex).
  Exporter writes the wire with three edges instead of four.
 - **Expected kernel behavior**: Heal and accept: preserve degenerate edges on export, normalized / marked via `EDGE_CURVE` of zero parametric length or via the dedicated degenerated-edge representation.
+- **Closure intent**: sheet
 - **Notes**: **See also**: Twi053. Synonyms: "cone apex degenerate edge missing on export", "STEP writer drops zero-length edge", "exported wire missing apex bridge", "round-trip removes degenerate edges", "writer omits sphere wedge pole edge".
 - **Tier-3 assertion**: face[0].surface_type == "cone"
 - **Tier-3 assertion**: n_edges_total >= 4
@@ -18254,6 +18446,7 @@ _Section summary: 41 entries._
 - **Expected kernel behavior**: seam reconstruction must check whether the
  inserted seam intersects the existing wire and, if so, split the existing
  wire at the seam crossing before inserting.
+- **Closure intent**: sheet
 - **Notes**: **See also**: Twi049, Tsh047. Synonyms: "edge curve wraps a full helix on cylindrical surface", "wire crosses cylinder seam line but no seam edge in loop", "helix wire start and end vertex coincide", "seam reconstruction inserts edge through existing wire", "seam edge synthesised through wire crossing".
 - **Tier-3 assertion**: face[0].surface_type == "cylinder"
 - **Tier-3 assertion**: n_edges_total >= 1
@@ -18302,6 +18495,7 @@ _Section summary: 41 entries._
 - **Expected kernel behavior**: detect tangential contact between wires of
  the same face and either split the touching wire into two or reject as a
  non-simple boundary.
+- **Closure intent**: sheet
 - **Notes**: **See also**: Tfa045. Synonyms: "two wires touch at single point", "tangential contact between hole and outer wire", "outer wire and inner wire share a vertex", "non-simple face boundary from touching wires", "kissing wires on face crash kernel".
 - **OCC behavior**: crashes with signal(11); outside catalog's allowed set ({heal, reject}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture; never crash.
 - **Severity**: P0
@@ -18390,6 +18584,8 @@ _Section summary: 41 entries._
  by 100 mm long, sharing edges along their long sides. Process through
  sewing.
 - **Expected kernel behavior**: Heal and accept: coerce sewing / seam-creation to sub-quadratic in face count; thin-face handling must not degenerate to all-pairs edge comparison. Must not hang on thin-face inputs.
+- **Closure intent**: solid
+- **Closure defect**: unstitched_seam
 - **Notes**: **See also**: Tfa040, Tsh046, Pf027. Fixture is a scaled representative (12 ribbon faces) of the catalog's ~400; topology pattern (shared long edges between thin ribbons) is identical. Synonyms: "sewing many thin faces is extremely slow", "seam-edge creation runs forever", "thin face sewing performance regression", "sewing time blows up on strip faces".
 - **Byte assertion**: contains(b'(0.0,0.001,0.0)')
 - **Byte assertion**: contains(b'(100.0,0.001,0.0)')
@@ -18411,6 +18607,7 @@ _Section summary: 41 entries._
 - **Expected kernel behavior**: bounds list with null/missing entries must be
  rejected with diagnostic before any geometric computation; never dereference
  a null bound.
+- **Closure intent**: sheet
 - **Notes**: **See also**: Ad084. Synonyms: "face fix crashes on null inner wire", "ShapeFix crashes on FACE_BOUND with null wire", "fix invalid face dereferences null pointer", "null inner loop causes face fix segfault".
 - **Notes**: Cross-oracle: pure-Python Part-21 validator rejects (reject(E_UNRESOLVED_REFS)); OCCT silently accepts (load is `empty`). OCC auto-heals a spec-level violation.
 - **OCC behavior**: crashes (signal 11) on some heal modes and warn-and-proceed on others; outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture; never crash.
@@ -18433,6 +18630,7 @@ _Section summary: 41 entries._
 - **Expected kernel behavior**: small-face removal uses iteration with explicit
  worklist, not unbounded recursion; threshold thresholds are absolute, not
  relative to remaining shell.
+- **Closure intent**: sheet
 - **Notes**: **See also**: Tfa040, Pf027. Fixture is a scaled representative (10 slabs) of the catalog's 1000; topology pattern (chain of small faces each below threshold) is identical. Synonyms: "stack overflow during small-face removal", "unbounded recursion in face cleanup", "RemoveSmallFaces blows the stack", "recursive face removal crashes on cyclic case".
 - **Byte assertion**: contains(b'plane_z_0')
 - **Byte assertion**: contains(b'slab_face_0')
@@ -18454,6 +18652,7 @@ _Section summary: 41 entries._
 - **Expected kernel behavior**: seam-fix must splice the missing seam segment
  in topological order, adjacent to the existing partial seam; preserve
  wire-edge ordering.
+- **Closure intent**: sheet
 - **Notes**: **See also**: Twi084. **OCC behavior**: the validity-checker does not flag the seam-fix wire-ordering defect; tier-3 valid-flag should be ignored for this entry. The reader most likely silently fixes or ignores the misordered seam splice on import. Synonyms: "missing-seam reconstruction fails with circle arcs", "cylinder face with partial seam plus circles", "seam rebuild can't handle mixed line and circle wire", "partial seam line confuses missing-seam helper".
 - **Tier-3 assertion**: face[0].surface_type == "cylinder"
 - **Tier-3 assertion**: n_edges_total >= 4
@@ -18473,6 +18672,7 @@ _Section summary: 41 entries._
  1e-7) and one edge with a 1e-3 gap to its neighbour. After healing the
  face tolerance is set to 1e-1 (>> the worst gap) rather than 1.5e-3.
 - **Expected kernel behavior**: Heal and accept: normalize face / shell tolerance to the maximum measured deviation across constituent edges, not orders of magnitude above; do not inflate tolerance preemptively.
+- **Closure intent**: sheet
 - **Notes**: **See also**: Tfa017, N040. Synonyms: "healed face overuses inflated tolerance", "tolerance inflated even where original gap was tiny", "healer applies global tolerance bump per-vertex", "small EDGE_LOOP gap causes whole-face tolerance bloat".
 - **Tier-3 assertion**: n_edges_total >= 4
 - **Tier-3 assertion**: face[0].surface_type == "plane"
@@ -18491,6 +18691,7 @@ _Section summary: 41 entries._
  (so bbox width is 0.1 mm). A small-face detector with width threshold
  0.5 mm flags it for removal.
 - **Expected kernel behavior**: Heal and accept: normalize small-face detection to use area, not bounding-box minor dimension; long thin features are not "small".
+- **Closure intent**: sheet
 - **Notes**: **See also**: Tfa040, Tfa042. Synonyms: "pipe face seam removed as small", "long thin pipe seam edge dropped", "small-edge filter eats seam edge", "pipe face loses periodic seam after cleanup".
 - **Tier-3 assertion**: face[0].surface_type == "cylinder"
 - **Tier-3 assertion**: n_edges_total >= 5
@@ -18560,6 +18761,8 @@ _Section summary: 41 entries._
  (.PCURVE_S1_AND_S2.). After glue-edges-with-pcurves, the edge has only
  one pcurve and references the wrong face's parameter frame.
 - **Expected kernel behavior**: Heal and accept: glue operations preserve all pcurves attached to glued edges; pcurve-to-face binding is preserved. Must not silently drop pcurves.
+- **Closure intent**: solid
+- **Closure defect**: unstitched_seam
 - **Notes**: **See also**: Tfa064. Synonyms: "shared edge has duplicate pcurves", "EDGE_CURVE has same pcurve twice", "PCURVE_S1_AND_S2 entries identical", "shape healing regression on glued edges duplicates pcurves".
 - **Tier-3 assertion**: n_edges_total >= 8
 - **Tier-3 assertion**: face[0].surface_type == "plane"
@@ -18589,6 +18792,7 @@ _Section summary: 41 entries._
  (no duplicate edges, every edge incident to ≤ 2 faces, every face's
  wires closed).
 - **Expected kernel behavior**: Reject with E_INVALID_TOPOLOGY diagnostic, or heal and accept: every shape-modifying operation runs a topology validity check on its output; if the output is invalid, the algorithm reports failure (rejects) and leaves the input shape unchanged.
+- **Closure intent**: ambiguous
 - **Notes**: **See also**: Tsh053, Tsh057. Synonyms: "face merge produces invalid topology", "no post-merge validity check", "valid input invalid output after merge", "Boolean-fuse result corrupted by unifier", "merge of cylinder faces with degenerate seam fails".
 - **Byte assertion**: contains(b'OPEN_SHELL')
 - **Byte assertion**: contains(b'CYLINDRICAL_SURFACE')
@@ -18611,6 +18815,7 @@ _Section summary: 41 entries._
  entities with identical major / minor radius and identical
  `AXIS2_PLACEMENT_3D`. Same-surface check returns false; merge skipped.
 - **Expected kernel behavior**: Heal and accept: normalize the surface-equality check to compare structural parameters (axis, radii, etc.) rather than pointers; collapse named parameter equality to a single canonical surface.
+- **Closure intent**: ambiguous
 - **Notes**: **See also**: Tfa016, Tsh047. Synonyms: "duplicate torus surfaces not merged", "two halves of torus stay separate", "surface equality uses pointer not parameters", "identical TOROIDAL_SURFACE entities not detected as same", "torus halves don't unify".
 - **Byte assertion**: contains(b'TOROIDAL_SURFACE')
 - **Byte assertion**: contains(b'OPEN_SHELL')
@@ -18634,6 +18839,7 @@ _Section summary: 41 entries._
 - **Expected kernel behavior**: removed-edge contract is documented and
  consistent: every removed edge has an explicit history record (deleted /
  modified-into / split-into); never silently drop edges from history.
+- **Closure intent**: ambiguous
 - **Notes**: **See also**: Tsh059, Tsh058. Defect manifests at runtime (modification history is API-level state); fixture establishes the input precondition (two coplanar faces sharing edge E). **OCC behavior**: silently accepts the input shape with no diagnostic; the contract drift is what the catalog above documents — the merge-history contract is not yet codified, and the catalog claim describes the desired future behavior. Provenance tier: runtime-only — bytes alone cannot demonstrate this defect; the symptom is an undocumented contract for the post-merge modification-history map (a kernel API-level data structure produced by the merge operation). Demonstrating this requires a kernel runtime trace of the modification-history map after the merge. Synonyms: "edge history contract undocumented after merge", "removed edges have no consistent history record", "modification history disagrees between versions", "merge edge tracking ambiguous", "history map missing on removed shared edge".
 - **Byte assertion**: contains(b'OPEN_SHELL')
 - **Byte assertion**: count_entity_def(b'ADVANCED_FACE') == 2
@@ -18745,6 +18951,8 @@ _Section summary: 41 entries._
 - **Description**: An input face passed to a fast-sewing path has a null surface reference. The fast-sewing algorithm has no fallback for surface evaluation; it aborts. Bug-reporter language: "fast sewing fails on null face", "null surface in fast sew".
 - **Reproducer recipe**: An ADVANCED_FACE whose `face_geometry` slot is `$` (null), passed as input to a fast-sewing pipeline.
 - **Expected kernel behavior**: Warn and accept: skip the face with a diagnostic; or heal and accept by falling back to slow sewing.
+- **Closure intent**: solid
+- **Closure defect**: unstitched_seam
 - **Notes**: **See also**: Sw005. Synonyms: "fast sewing fails on null face", "null surface in fast sew", "ADVANCED_FACE with no face_geometry", "face_geometry slot is dollar", "fast-sewer aborts on missing surface".- **Byte assertion**: matches(rb'ADVANCED_FACE\([^,]+,\(\),\$,')
 - **Byte assertion**: contains(b'OPEN_SHELL')
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal, warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must heal or emit a diagnostic this fixture.
@@ -18846,6 +19054,7 @@ _Section summary: 41 entries._
 - **Description**: An EDGE_CURVE's 3D representation, evaluated at the edge's parameter range, returns points that are not the same as the edge's start/end VERTEX_POINTs; the curve goes somewhere else entirely. Senders that regenerated the curve without coordinating with vertices, or that copied the wrong curve handle, produce this.
 - **Reproducer recipe**: An EDGE_CURVE whose vertices are at `(0,0,0)` and `(2,0,0)` but whose 3D curve is a LINE in the +Z direction starting at `(0,0,0)` — the curve ends at `(0,0,1)`, far from the second vertex.
 - **Expected kernel behavior**: detect the curve-vertex mismatch; choose to drop the bad 3D curve (and either rebuild it from vertices or rely on a pcurve), snap vertices to the curve, or reject the edge as inconsistent. The chosen response should be reported.
+- **Closure intent**: sheet
 - **Notes**: Often paired with Twi047 (no 3D curve at all) when senders strip the bad curve and forget to add a replacement. Synonyms: "edge curve doesn't reach declared end vertex", "3D curve evaluation lands away from vertex", "edge geometry runs off in wrong direction", "curve goes somewhere other than its endpoints".
 - **Tier-3 assertion**: n_edges_total >= 4
 - **Tier-3 assertion**: face[0].surface_type == "plane"
@@ -18861,6 +19070,7 @@ _Section summary: 41 entries._
 - **Description**: An EDGE_CURVE on a face references a SURFACE_CURVE whose representations list contains only a 2D pcurve and lacks the 3D space curve. Length, sampling, sewing across faces, and Boolean operations all need a 3D curve; without one, the edge cannot participate in cross-face topology checks.
 - **Reproducer recipe**: An edge of a face whose curve is a PCURVE on the face's surface, with no `Geom_Curve` 3D representation listed.
 - **Expected kernel behavior**: synthesize the 3D curve by lifting the pcurve through the host surface, verify that the result is same-parameter, and re-validate vertex coincidence; or reject the edge as malformed.
+- **Closure intent**: sheet
 - **Notes**: Existing entry Gp001 covers the converse (no pcurve, only 3D). This is the symmetric variant. Synonyms: "orphan parametric curve without spatial trace", "kernel cannot run cross-face checks without 3D trace", "edge stored as UV trace only", "implicit edge from surface trim only".
 - **Tier-3 assertion**: n_edges_total >= 4
 - **Tier-3 assertion**: face[0].surface_type == "plane"
@@ -18874,6 +19084,7 @@ _Section summary: 41 entries._
 - **Description**: A VERTEX_POINT carries (or inherits) a tolerance of 1e-6, but the edge curve's evaluation at the endpoint is 5e-3 away from the vertex. The vertex's tolerance ball does not reach the curve, so any "is this point on this edge?" query fails. Often produced by senders that compute vertex tolerance globally rather than per-incident-edge.
 - **Reproducer recipe**: Square face where one corner vertex is positioned at `(10.005, 10, 0)` while the adjoining edges' 3D LINE curves run between `(10,0)` and `(10,10)`; global UNCERTAINTY_MEASURE_WITH_UNIT declared at 1e-6 mm.
 - **Expected kernel behavior**: detect the tolerance shortfall; either inflate the vertex tolerance to cover the discrepancy, snap the vertex to the curve, or reject the edge as not same-parameter. Excessive tolerance inflation should be flagged as a quality regression.
+- **Closure intent**: sheet
 - **Notes**: Cascading inflation is a known anti-pattern (see N008). Synonyms: "vertex tolerance ball doesn't reach the curve", "endpoint discrepancy too big for declared tolerance", "tolerance budget too small for vertex offset", "vertex sits off the line by more than its tolerance".
 - **OCC behavior**: loads a shape with diagnostic — reading as warn-and-heal; outside catalog's allowed set ({reject}). Documented divergence: OCC's auto-repair is stronger than the catalog's reject-only stance; conservative kernels should still reject.
 - **Severity**: P1
@@ -18889,6 +19100,7 @@ _Section summary: 41 entries._
 - **Description**: A single closed wire's edges, when projected to the host face's UV parameter space, cross each other (figure-eight shape). The wire is topologically closed but geometrically self-intersecting; it cannot bound a simple region.
 - **Reproducer recipe**: An EDGE_LOOP of four edges forming a figure-eight: edges from `(0,0)→(10,10)`, `(10,10)→(10,0)`, `(10,0)→(0,10)`, `(0,10)→(0,0)`. The diagonals cross at `(5,5)`.
 - **Expected kernel behavior**: detect the self-intersection point(s) in UV; either split the wire at the intersection into two simple loops, remove the inner sub-loop, or reject the face as malformed. A diagnostic citing the offending edge pair must be available.
+- **Closure intent**: sheet
 - **Notes**: 3D self-intersection (independent of any host surface) is a separate class. **See also**: existing Twi entries on self-intersection. **OCC behavior**: the validity-checker does not flag the UV-space figure-eight wire self-intersection; tier-3 valid-flag should be ignored for this entry. The reader most likely silently fixes or ignores the self-intersection on import. Synonyms: "wire crosses itself in UV", "figure-eight in parameter space", "boundary loop crosses in face UV", "diagonals of wire intersect inside face".
 - **Tier-3 assertion**: n_edges_total >= 6
 - **Tier-3 assertion**: face[0].surface_type == "plane"
@@ -18902,6 +19114,7 @@ _Section summary: 41 entries._
 - **Description**: Two unrelated wires (in two different faces, or in two unrelated regions of one face) accidentally reference the same VERTEX_POINT instance because the sender deduplicated vertices too aggressively. Topology operators that assume vertices are owned by exactly one connected component misbehave.
 - **Reproducer recipe**: Two faces whose outer wires both list a VERTEX_POINT at `(0,0,0)` via the same instance reference.
 - **Expected kernel behavior**: detect vertex over-sharing; split the common vertex into independent copies (one per wire) so each wire's connectivity is explicit. Optional: reject as malformed if the share crosses topological boundaries that the kernel cannot resolve.
+- **Closure intent**: sheet
 - **Notes**: Search terms: "shared vertex", "vertex over-sharing", "common vertex split". Synonyms: "two wires reference same vertex instance", "vertex deduplicated too aggressively across wires", "common vertex needs splitting per wire", "topology operators confused by shared vertex".
 - **Tier-3 assertion**: n_edges_total >= 6
 - **Tier-3 assertion**: face[0].surface_type == "plane"
@@ -18915,6 +19128,7 @@ _Section summary: 41 entries._
 - **Description**: A wire simultaneously has out-of-order edges, a 3D gap between two of its edges, and a missing edge between two non-coincident vertices. Fixing in the wrong order (e.g., reorder before connect) produces a different end-state than fixing in the right order. The wire-level orchestrator must apply fixes in a sequence that converges on a closed wire.
 - **Reproducer recipe**: A face with one outer wire whose edges are listed in scrambled order plus an inner wire with a sub-tolerance hole and disordered edges.
 - **Expected kernel behavior**: an iterative healing pipeline that begins with reorder, then connection, then degenerate-edge handling, then self-intersection, then lacking-edge insertion, then closure verification; each fix re-evaluates the wire's status before the next.
+- **Closure intent**: sheet
 - **Notes**: Umbrella entry over the per-defect wire-healing rows (reorder, small-edge removal, connection, edge-curve fix, degenerate-edge insertion, self-intersection resolution, lacking-edge insertion, closure verification). This row captures the pipeline contract that ties them together. Synonyms: "wire healing pipeline must order fixes correctly", "multi-defect wire needs convergent repair", "fix sequence matters for wires with multiple problems", "wire orchestrator iterates until stable".
 - **Tier-3 assertion**: n_edges_total >= 4
 - **Tier-3 assertion**: face[0].surface_type == "plane"
@@ -18943,6 +19157,7 @@ _Section summary: 41 entries._
 - **Description**: A wire's last edge ends at a vertex distinct from where its first edge starts, with a 3D gap that exceeds working precision but is below the maximum-tolerance budget. The wire is intended to be closed (it bounds a face) but is in fact a chain.
 - **Reproducer recipe**: A FACE_OUTER_BOUND wire with three edges whose vertices form a closed triangle minus one side — the "closing" edge is missing entirely.
 - **Expected kernel behavior**: detect the wire's open status; close it by inserting a synthetic edge between the dangling vertices, by snapping the dangling vertices together, or by rejecting the face. Closure tolerance must come from the kernel's policy, not from a hard-coded value.
+- **Closure intent**: sheet
 - **Notes**: Existing Twi006 covers a related closure issue. This is the sub-pipeline that applies near-end-of-wire connect/degenerate/lacking fixes. Synonyms: "wire missing closing edge with large gap", "open chain wire intended to bound face", "first and last vertex don't coincide in wire", "triangle wire missing one of three sides".
 - **Tier-3 assertion**: n_edges_total >= 3
 - **Tier-3 assertion**: face[0].surface_type == "plane"
@@ -18958,6 +19173,7 @@ _Section summary: 41 entries._
 - **Description**: A wire contains three consecutive edges where the middle is a short edge that forms a sharp triangular notch between two long edges that should otherwise be near-collinear. The notch is not a feature; it's the residue of a faulty Boolean or a sub-feature that should have been absorbed.
 - **Reproducer recipe**: A five-edge wire forming a unit rectangle with one edge replaced by a 3-edge "bump out" of width 0.001 — the middle edge of the bump is the notch.
 - **Expected kernel behavior**: Heal and accept: detect notch-shaped triplets; repair by removing the short edge and extending the two long neighbors to meet; or warn and accept by leaving the notch and reporting it as a quality metric. Threshold for "short" is kernel-policy.
+- **Closure intent**: sheet
 - **Notes**: **See also**: Twi074. Search terms: "notch", "spike", "snag", "tail" (Twi077 covers a different sub-case). Synonyms: "wire has triangular bump", "boolean leftover causes notch in wire", "small detour edge between long ones", "wire side has sub-mm protrusion".- **Tier-3 assertion**: n_edges_total >= 5
 - **Tier-3 assertion**: face[0].surface_type == "plane"
 - **Tier-3 assertion**: n_vertices_total >= 8
@@ -18970,6 +19186,7 @@ _Section summary: 41 entries._
 - **Description**: An edge on a face built atop a RECTANGULAR_COMPOSITE_SURFACE carries patch-index metadata identifying which sub-patch the edge crosses. The metadata is invalid (`IUMin > IUMax`, or the edge claims it spans more than one patch in a single segment when it actually doesn't), making it impossible to localize the edge to a specific patch for evaluation. A related fixture pattern: two ADVANCED_FACEs share the same FACE_OUTER_BOUND wire while referencing two different host PLANEs (e.g., one PLANE at origin, another at (1,0,0)); the same wire reused as boundary on two distinct host surfaces.
 - **Reproducer recipe**: Composite surface of two abutting PLANE patches; an edge crosses both patches but its segment record claims `IUMax = IUMin + 2` (skipping a patch). Or: two ADVANCED_FACEs sharing one FACE_OUTER_BOUND but pointing at distinct PLANE entities.
 - **Expected kernel behavior**: re-derive the patch index from the edge's actual UV trace and ignore the bad metadata, or reject the edge as misclassified. The patch grid should be re-validated globally if many edges fail this check.
+- **Closure intent**: sheet
 - **Notes**: Adjacent to Tfa036 (composite-surface face composition). **OCC behavior**: the validity-checker does not flag the bad patch-index metadata or the duplicate `FACE_OUTER_BOUND` aliasing; tier-3 valid-flag should be ignored for this entry. The reader most likely silently fixes or ignores the misclassification on import. Synonyms: "wire segment claims wrong patch on composite surface", "patch index metadata invalid", "edge spans patches but record says one", "two faces alias same wire on different host surfaces".
 - **Tier-3 assertion**: face[0].surface_type == "plane"
 - **Tier-3 assertion**: n_edges_total >= 8
@@ -18984,6 +19201,7 @@ _Section summary: 41 entries._
 - **Description**: Two adjacent edges of a wire reference distinct VERTEX_POINTs whose 3D coordinates agree only within 1e-7 (or some other sub-precision distance). The edges should share a single vertex; they appear independent because the sender forgot to deduplicate.
 - **Reproducer recipe**: A square wire where the "first" vertex `(0,0,0)` and the "last" vertex `(1e-7, 0, 0)` are intended to be the same but are emitted as two distinct VERTEX_POINTs. The closing edge is omitted, expecting the consumer to merge.
 - **Expected kernel behavior**: detect near-coincident vertex pairs; merge them and re-stitch incident edges, or reject the wire as not-actually-closed. The merge tolerance is kernel policy.
+- **Closure intent**: ambiguous
 - **Notes**: Related to Twi050 (vertex over-sharing, opposite defect). Search terms: "duplicate vertex", "vertices not merged", "near-coincident vertex". Synonyms: "two vertices at almost identical coordinates", "wire vertices differ by sub-precision distance", "endpoints intended to be the same kept separate", "writer forgot to deduplicate vertices".
 - **Tier-3 assertion**: n_edges_total >= 4
 - **Tier-3 assertion**: face[0].surface_type == "plane"
@@ -18997,6 +19215,7 @@ _Section summary: 41 entries._
 - **Description**: Two long edges of a wire are within tolerance distance of each other along the full parameter range of both. The pair-of-edges check operates without knowing the host face; it is purely about whether two edges describe approximately the same curve.
 - **Reproducer recipe**: A wire with two parallel edges from `(0,0,0)→(100,0,0)` and `(0,1e-6,0)→(100,1e-6,0)`; the gap is 1e-6 over a 100-unit length.
 - **Expected kernel behavior**: detect the strip pair and report which two edges form it, with the maximum gap distance; downstream healing can merge the edges. Detector must be independent of host face (so pairs across faces are also caught).
+- **Closure intent**: sheet
 - **Notes**: Related to Tfa042 (strip face) but at edge-pair granularity. Synonyms: "two parallel edges within tolerance over full length", "edge-pair forms a sliver strip", "two long edges describe almost the same line", "duplicate edges close to each other".
 - **Tier-3 assertion**: n_edges_total >= 1
 - **Tier-3 assertion**: face[0].surface_type == "plane"
@@ -19010,6 +19229,7 @@ _Section summary: 41 entries._
 - **Description**: Two edges sharing a vertex meet with a sub-precision opening angle and tapering widths along their length. Coefficients describing the taper rate let downstream tools decide whether the pair is a sharp pin (snip-able) or a smooth pin (relimit-able).
 - **Reproducer recipe**: Two LINE edges from `(0,0,0)`, one to `(10, 0.001, 0)` and one to `(10, -0.001, 0)`. Opening angle ≈ 0.0002 radians.
 - **Expected kernel behavior**: report taper coefficients; let upstream (face-level pin handler) decide on cut-off, smoothing, or rejection.
+- **Closure intent**: sheet
 - **Notes**: Edge-pair analogue of the face-level pin check (Tfa049). Synonyms: "two edges meet at very narrow angle", "tapered edges form a pin", "pin shape between two converging edges", "spike at vertex where two edges nearly retrace".
 - **Tier-3 assertion**: face[0].area < 1e-3
 - **Tier-3 assertion**: n_edges_total >= 2
@@ -19026,6 +19246,7 @@ _Section summary: 41 entries._
 - **Description**: An edge's start (or end) VERTEX_POINT lies further than the vertex's tolerance from where the 3D curve's first (or last) parameter evaluates. The edge is "broken"; geometric path doesn't match the topological endpoint.
 - **Reproducer recipe**: VERTEX_POINT at `(10.005, 10, 0)` paired with a 3D LINE that evaluates to `(10, 10, 0)` at the edge's last parameter; declared vertex tolerance 1e-6.
 - **Expected kernel behavior**: report which vertex (start, end, or both) and the actual distance; let the caller decide whether to inflate vertex tolerance, snap the vertex, or reject the edge.
+- **Closure intent**: sheet
 - **Notes**: Diagnostic-only check (`Check*` not `Fix*`); fix counterpart is FixVertexTolerance (Twi048). **See also**: Gp038. Synonyms: "vertex 3D point disagrees with curve evaluation", "edge endpoint and vertex coordinates differ", "vertex sits off the curve", "edge curve start doesn't reach declared start vertex".
 - **OCC behavior**: loads a shape with diagnostic — reading as warn-and-heal; outside catalog's allowed set ({reject}). Documented divergence: OCC's auto-repair is stronger than the catalog's reject-only stance; conservative kernels should still reject.
 - **Severity**: P1
@@ -19041,6 +19262,7 @@ _Section summary: 41 entries._
 - **Description**: As Twi059 but the disagreement is between the 3D vertex and the pcurve evaluated through the host surface. Both representations claim the same endpoint; in fact they don't agree. Common when senders regenerate one representation independently of the other.
 - **Reproducer recipe**: As Twi048 but additionally the host surface evaluation of the pcurve at parameter t=0 differs from the vertex by 5e-3.
 - **Expected kernel behavior**: report which representation (3D curve, pcurve, or both) disagrees with the vertex; inflate tolerance, reproject the pcurve, or reject. Kernels with both representations available can cross-check.
+- **Closure intent**: sheet
 - **Notes**: Pcurve-counterpart of Twi059. Synonyms: "vertex disagrees with parametric curve endpoint", "lifted pcurve doesn't land at vertex", "parametric trace endpoint off from vertex", "vertex doesn't match where parametric curve ends".
 - **OCC behavior**: loads a shape with diagnostic — reading as warn-and-heal; outside catalog's allowed set ({reject}). Documented divergence: OCC's auto-repair is stronger than the catalog's reject-only stance; conservative kernels should still reject.
 - **Severity**: P1
@@ -19056,6 +19278,7 @@ _Section summary: 41 entries._
 - **Description**: Diagnostic that, given an edge and its host face, computes the minimum vertex tolerance that would be needed to absorb the edge endpoint discrepancy. Returns separate values for the two endpoints. Lets the caller choose between snap and tolerance-inflate.
 - **Reproducer recipe**: As Twi048 — the diagnostic should report `toler1=5e-3` for the offset corner and `toler2=0` for the others.
 - **Expected kernel behavior**: report a per-vertex inflation requirement; do not modify the shape. Let policy higher up decide whether to inflate, snap, or reject.
+- **Closure intent**: sheet
 - **Notes**: Diagnostic-only counterpart to FixVertexTolerance. Synonyms: "needed tolerance inflation amount returned", "diagnostic reports required tolerance bump", "compute minimum tolerance to absorb endpoint gap", "per-vertex tolerance shortfall query".
 - **OCC behavior**: loads a shape with diagnostic — reading as warn-and-heal; outside catalog's allowed set ({reject}). Documented divergence: OCC's auto-repair is stronger than the catalog's reject-only stance; conservative kernels should still reject.
 - **Severity**: P1
@@ -19070,6 +19293,7 @@ _Section summary: 41 entries._
 - **Description**: At the edge's first parameter `t=0`, the 3D curve evaluates to the start vertex but the pcurve, lifted through the host surface, evaluates to the end vertex (and vice versa at `t=1`). The two representations disagree about which way the edge runs. Reprojection-based imports often produce this when the projector picks the opposite sweep.
 - **Reproducer recipe**: A square face where one edge's pcurve runs `(10,0)→(10,10)` in UV but the corresponding 3D curve was emitted with reversed `LINE` direction.
 - **Expected kernel behavior**: detect the directional mismatch; flip the pcurve sense (or the 3D curve's parameter direction), re-validate same-parameter, and continue. Alternative: reject as malformed.
+- **Closure intent**: sheet
 - **Notes**: FixReversed2d (existing entry) is the corresponding healer. Synonyms: "spatial and parametric edge directions disagree", "reversed parametric trace direction", "edge runs forward in 3D backward in UV", "import direction confusion on edge".
 - **Tier-3 assertion**: n_edges_total >= 4
 - **Tier-3 assertion**: face[0].surface_type == "plane"
@@ -19085,6 +19309,7 @@ _Section summary: 41 entries._
 - **Description**: Two distinct EDGE_CURVEs share a finite-length segment of the same underlying curve; distance between them stays below tolerance over a non-zero parameter interval. The edges are not duplicates (their endpoints differ), but their interiors collide.
 - **Reproducer recipe**: Edge A from `(0,0,0)→(5,0,0)` along the X-axis; edge B from `(2,0,0)→(7,0,0)` along the same axis. Overlap span: `[2,5]`.
 - **Expected kernel behavior**: report the overlap interval and the offending edge pair; either trim one edge, merge them, or reject. The "domain distance" parameter lets the caller filter overlaps below a length threshold.
+- **Closure intent**: sheet
 - **Notes**: Distinct from coincident edges (which would overlap fully). Synonyms: "two edges share a span on same curve", "edges overlap partially", "interior collision between two edges", "edge interiors overlap but endpoints differ".
 - **Tier-3 assertion**: n_edges_total >= 1
 - **Tier-3 assertion**: face[0].surface_type == "plane"
@@ -19098,6 +19323,7 @@ _Section summary: 41 entries._
 - **Description**: A diagnostic-only pass over a wire (no healing). The pipeline must run CheckOrder, CheckSmall, CheckConnected, CheckEdgeCurves, CheckDegenerated, CheckSelfIntersection, CheckLacking, CheckClosed and aggregate all status flags — short-circuiting on the first defect leaves the user without a complete picture. Typical fixture: an inner FACE_BOUND triangle with three near-coincident VERTEX_POINTs and an EDGE_LOOP whose ORIENTED_EDGEs are listed out of head-to-tail order — multiple defects in one EDGE_LOOP.
 - **Reproducer recipe**: An EDGE_LOOP that fails at least three sub-checks: out-of-order ORIENTED_EDGEs, sub-tolerance edges between near-coincident vertices, not closed.
 - **Expected kernel behavior**: Heal and accept: normalize / run each sub-check independently of the others' outcomes; return a status object with one entry per check. Callers later filter by severity.
+- **Closure intent**: sheet
 - **Notes**: Umbrella for diagnostic-only pipeline; separate from Twi051 which is the healer pipeline. Synonyms: "wire diagnostic must run all sub-checks", "no early termination in wire analyzer", "complete status report needed not first failure", "all defect flags collected per wire".
 - **Tier-3 assertion**: n_edges_total >= 4
 - **Tier-3 assertion**: face[0].surface_type == "plane"
@@ -19111,6 +19337,7 @@ _Section summary: 41 entries._
 - **Description**: For a wire (EDGE_LOOP) whose edges variously fail CheckCurve3dWithPCurve, CheckVerticesWithPCurve, CheckVerticesWithCurve3d, CheckSeam, CheckGap3d, CheckGap2d, CheckSameParameter — the analyzer must run all these checks and surface every status flag, even when earlier checks already flagged the wire as defective. Typical fixture: a four-edge EDGE_LOOP combining distinct defects (edge1 with pcurve direction reversed relative to 3D LINE, edge2 with 3D LINE start point disagreeing with VERTEX_POINT, edge3 starting offset from previous endpoint leaving a junction gap, edge4 with pcurve length not matching 3D length — same-parameter violation).
 - **Reproducer recipe**: A four-edge EDGE_LOOP where each EDGE_CURVE fails a different check (pcurve direction reversed, vertex vs 3D-line start mismatch, 3D junction gap, pcurve/3D length mismatch).
 - **Expected kernel behavior**: Heal and accept: normalize a per-edge, per-check status grid; no early termination.
+- **Closure intent**: sheet
 - **Notes**: Sub-pipeline of Twi064. Synonyms: "wire edge curves analysis combined report", "per-edge per-check status grid for wire", "edge consistency check across spatial and parametric", "exhaustive edge curve diagnostics".
 - **Tier-3 assertion**: n_edges_total >= 4
 - **Tier-3 assertion**: face[0].surface_type == "plane"
@@ -19124,6 +19351,7 @@ _Section summary: 41 entries._
 - **Description**: An EDGE_LOOP is "closed" only if its first and last VERTEX_POINTs coincide in *both* 3D and UV. Either condition can fail independently; the diagnostic must report the two outcomes separately so the caller can decide which representation to fix. Typical fixture: a 3-edge open EDGE_LOOP missing its closing ORIENTED_EDGE entirely, where additionally the last edge's 3D LINE direction/length doesn't even reach the declared end VERTEX_POINT (e.g., a LINE from (10,10,0) along -X over length 1 reaches (9,10,0) but the edge claims its endpoint is (1,10,0)).
 - **Reproducer recipe**: As Twi053 but additionally the pcurves of the first and last edges have endpoints in different parameter bands, AND/OR the last edge's underlying 3D LINE doesn't actually reach the declared end VERTEX_POINT (the wire is open in 3D *and* open in UV).
 - **Expected kernel behavior**: emit FAIL1/DONE1 for the 3D-side and FAIL2/DONE2 for the 2D-side; never collapse them into one boolean "closed".
+- **Closure intent**: sheet
 - **Notes**: 3D-closed but UV-open is a separate defect (Twi-class on shifted pcurves). Synonyms: "wire closure check separate for spatial and parametric", "wire reports two closure flags one per dimension", "open in 3D but closed in UV or vice versa", "closure check returns spatial and parametric outcomes".
 - **Tier-3 assertion**: n_edges_total >= 3
 - **Tier-3 assertion**: face[0].surface_type == "plane"
@@ -19212,6 +19440,7 @@ _Section summary: 41 entries._
 - **Description**: Targeted single-junction 3D gap query. Caller specifies `num`; analyzer reports whether the gap between edge `num-1` and edge `num` exceeds working precision and the actual distance. Used by interactive healing tools to focus on one defect at a time.
 - **Reproducer recipe**: As Twi053 but the caller queries junction 4 specifically.
 - **Expected kernel behavior**: Heal and accept: normalize an O(1) check returning OK/DONE/FAIL plus the gap value.
+- **Closure intent**: sheet
 - **Notes**: **See also**: Twi073. Per-junction counterpart to Twi068 (whole-wire). Synonyms: "single-junction 3D gap query", "specific gap location query", "ask about one specific junction in wire", "wire gap diagnostic at one index".- **Tier-3 assertion**: n_edges_total >= 3
 - **Tier-3 assertion**: face[0].surface_type == "plane"
 - **Tier-3 assertion**: n_vertices_total >= 6
@@ -19238,6 +19467,7 @@ _Section summary: 41 entries._
 - **Description**: Diagnostic-only counterpart to Twi054. For a specific edge pair `(num-1, num)`, the analyzer determines whether they form a notch and returns the index of the short edge plus the parameter on the long edge at which the long edge could be split to flatten the notch.
 - **Reproducer recipe**: As Twi054, querying the specific notch triplet.
 - **Expected kernel behavior**: return short-edge index and split-parameter; do not modify the wire.
+- **Closure intent**: sheet
 - **Notes**: **See also**: Twi054. Per-pair counterpart to FixNotchedEdges. Synonyms: "single-pair notch detection", "is this edge pair a notch query", "diagnose specific triplet for notch shape", "per-pair notch diagnostic with split parameter".- **Tier-3 assertion**: n_edges_total >= 5
 - **Tier-3 assertion**: face[0].surface_type == "plane"
 - **Tier-3 assertion**: n_vertices_total >= 8
@@ -19265,6 +19495,7 @@ _Section summary: 41 entries._
 - **Description**: A vertex referenced by more than two oriented-edges in a single wire creates a figure-eight or pinched topology. The wire is technically traversable but cannot bound a face without splitting at the offending vertex.
 - **Reproducer recipe**: As Twi049 (self-intersecting figure-eight) but framed as a vertex over-visit problem.
 - **Expected kernel behavior**: identify "loop vertices" (those with degree > 2 in the wire's edge graph); split the wire at those vertices into multiple simple wires, or reject as malformed.
+- **Closure intent**: sheet
 - **Notes**: Related to Twi049 but vertex-centric rather than edge-intersection-centric. **OCC behavior**: the validity-checker does not flag a wire vertex with edge-graph degree > 2; tier-3 valid-flag should be ignored for this entry. The reader most likely silently fixes or ignores the figure-eight wire on import. Synonyms: "vertex visited more than twice in wire", "loop vertex with degree greater than two", "wire pinches at high-degree vertex", "pinched wire centered on vertex".
 - **Tier-3 assertion**: n_edges_total >= 6
 - **Tier-3 assertion**: face[0].surface_type == "plane"
@@ -19308,6 +19539,7 @@ _Section summary: 41 entries._
 - **Description**: A face has one or more inner FACE_BOUND wires whose enclosed area is below a caller-specified minimum. The hole is sub-feature: a manufacturing artifact, sliver-cut residue, or import precision noise. Removing the wire enlarges the face's effective area.
 - **Reproducer recipe**: A square face with a tiny inner triangle hole of area 5e-7 mm² (vertices within 1e-3 of each other).
 - **Expected kernel behavior**: Heal and accept: detect inner wires below the threshold, repair by removing them, and re-validate / normalize the face's outer-bound topology. The threshold is caller policy.
+- **Closure intent**: sheet
 - **Notes**: Search terms: "remove tiny holes", "sub-feature holes", "hole sliver". Synonyms: "tiny inner wire enclosing tiny area", "sub-tolerance hole on face", "spurious tiny inner wire", "hole sliver from boolean residue", "FACE_INNER_BOUND with negligible enclosed area".
 - **Byte assertion**: contains(b'inner_subthreshold_tri')
 - **Byte assertion**: contains(b'(5.001,5.0,0.0)')
@@ -19323,6 +19555,7 @@ _Section summary: 41 entries._
 - **Description**: When an edge's supporting curve was split (Gp033/Gs049), every wire containing the edge must be re-built using the new sub-edges. The wire-divide pipeline walks the wire's edges and replaces each with its post-split sub-sequence, then re-validates closure.
 - **Reproducer recipe**: A square face whose edges include one whose underlying curve was C0-split mid-span; the wire must now contain N+1 sub-edges instead of N.
 - **Expected kernel behavior**: substitute split sub-edges in place; preserve wire orientation; re-stitch via shared vertices created by the split.
+- **Closure intent**: ambiguous
 - **Notes**: Wire-side analogue of Hea010 (shape-divide). Synonyms: "wire must rebuild after edge or curve split", "split-propagation through wires", "sub-edges must replace split edge in wire", "wire divide pipeline rebuilds after curve split".
 - **Tier-3 assertion**: n_edges_total >= 5
 - **Tier-3 assertion**: face[0].surface_type == "plane"
@@ -19490,6 +19723,7 @@ _Section summary: 41 entries._
 - **Description**: An ADVANCED_FACE references a RECTANGULAR_COMPOSITE_SURFACE assembled from multiple sub-patches, *or* two ADVANCED_FACEs share the same FACE_OUTER_BOUND wire while referencing two different host PLANEs (e.g., one PLANE at origin, another offset to (1,0,0)) that abut at a patch seam. The face's boundary wire crosses one or more patch seams; pcurves are not split per patch. To evaluate the face's geometry, the kernel must reassemble per-patch fragments while keeping pcurves continuous across patch boundaries.
 - **Reproducer recipe**: Two coplanar PLANE patches abutting at U=1, either as a RECTANGULAR_COMPOSITE_SURFACE or as two ADVANCED_FACEs sharing one FACE_OUTER_BOUND; the wire is a 2x1 rectangle whose top/bottom edges cross the U=1 seam.
 - **Expected kernel behavior**: split the face's edges at patch boundaries (or treat the composite as one logical surface and lift pcurves accordingly); produce a shell of patch-local sub-faces with continuous wire connectivity, or reject if the composite cannot be unified.
+- **Closure intent**: sheet
 - **Notes**: Existing Tfa entries cover related composite-surface defects. **See also**: Tfa053, Twi055, Gp019. Synonyms: "face spans multiple surface patches", "wire crosses composite surface seam", "rectangular composite surface boundary discontinuity", "pcurves not split per patch on composite surface".
 - **Tier-3 assertion**: face[0].surface_type == "plane"
 - **Tier-3 assertion**: n_edges_total >= 8
@@ -19504,6 +19738,7 @@ _Section summary: 41 entries._
 - **Description**: A single ADVANCED_FACE has multiple defects: unordered wire edges, an inner wire whose orientation classifies it as outer when it should be inner, a sub-tolerance hole, plus a missing seam (on a periodic surface). Each defect alone is fixable; the orchestrator must apply fixes in an order that does not destabilize others; fixing wires before orientation produces a different result than the reverse.
 - **Reproducer recipe**: A square face with one out-of-order inner wire whose enclosed area is sub-tolerance and whose orientation flag is wrong.
 - **Expected kernel behavior**: a face-level orchestrator that runs fix-wires, fix-orientation, fix-missing-seam, fix-small-area-wire, fix-natural-bounds in an order that converges; report status per sub-fix.
+- **Closure intent**: sheet
 - **Notes**: Cites Perform's status codes (DONE1.DONE5, FAIL1.FAIL4). Synonyms: "multi-defect face needs orchestrated healing", "fix order matters for face with several defects", "wire/orientation/seam/area fixes in sequence", "face-level pipeline must converge".
 - **OCC behavior**: crashes with signal(11); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture; never crash.
 - **Severity**: P0
@@ -19519,6 +19754,7 @@ _Section summary: 41 entries._
 - **Description**: An ADVANCED_FACE on a SPHERICAL_SURFACE or TOROIDAL_SURFACE (geometrically closed in both U and V) carries only inner FACE_BOUND wires (holes) and no FACE_OUTER_BOUND. The face is "the surface minus the holes". Without a synthesized natural boundary, area, sampling, and sewing are undefined.
 - **Reproducer recipe**: An ADVANCED_FACE on a sphere with one tiny circular hole at the equator and no outer bound.
 - **Expected kernel behavior**: detect that the surface is doubly-closed and the face has no left-oriented outer wire; synthesize a natural boundary that traverses the surface's full parameter domain. Alternative: reject if the kernel does not support implicit natural bounds.
+- **Closure intent**: sheet
 - **Notes**: Specifically named for closed surfaces; planar/cylindrical faces have explicit bounds. Synonyms: "sphere face has only holes no outer", "closed surface face has only inner wires", "face is whole surface minus holes", "torus face missing outer boundary".
 - **Tier-3 assertion**: face[0].surface_type == "sphere"
 - **Tier-3 assertion**: n_edges_total >= 1
@@ -19533,6 +19769,7 @@ _Section summary: 41 entries._
 - **Description**: An ADVANCED_FACE has an outer wire and one or more inner wires whose 2D pcurves cross each other in the host surface's parameter space. The wires are not nested; they overlap. The face cannot bound a simple region.
 - **Reproducer recipe**: A square face with two diagonal "inner" wires that cross at the face center.
 - **Expected kernel behavior**: detect the crossing(s); split the face into multiple regions whose wires are non-crossing, merge the crossing wires into a single non-simple wire and resolve, or reject. This entry covers both the face-level fixer and the lower-level IntersectionTool counterpart.
+- **Closure intent**: sheet
 - **Notes**: Collapses two OCCT methods (different layers, same defect class). **See also**: Tfa055. Synonyms: "wires cross in UV", "outer and inner wire overlap", "face has overlapping wires", "non-nested wires on same face".
 - **Tier-3 assertion**: n_edges_total >= 8
 - **Tier-3 assertion**: face[0].surface_type == "plane"
@@ -19546,6 +19783,7 @@ _Section summary: 41 entries._
 - **Description**: An ADVANCED_FACE that simultaneously satisfies multiple "small face" heuristics; bounding box below precision (sub-tolerance spot face, e.g., a 0.001 x 0.001 mm square outer EDGE_LOOP at the origin), aspect ratio extreme in one direction (strip), and a sharp single-vertex pinch (pin). The pipeline must classify before applying a removal/healing strategy; the wrong classification produces a different (worse) result.
 - **Reproducer recipe**: A near-zero-area ADVANCED_FACE whose outer EDGE_LOOP vertices are all within 1e-3 of `(0,0)` — a sub-tolerance spot face.
 - **Expected kernel behavior**: Heal and accept: a deterministic classifier normalizes the dominant defect (e.g., spot beats strip beats pin), then dispatches to the specific fixer / repairer.
+- **Closure intent**: sheet
 - **Notes**: Umbrella entry over FixSpotFace/FixStripFace/FixPinFace. Synonyms: "sub-tolerance face needs classifying as spot/strip/pin", "small face dispatcher orchestrates classification", "face fits multiple small-face heuristics", "tiny face needs spot vs strip vs pin decision".
 - **Tier-3 assertion**: face[0].area < 1e-3
 - **Tier-3 assertion**: face[0].sliver_aspect_max_min > 1e3
@@ -19559,6 +19797,7 @@ _Section summary: 41 entries._
 - **Description**: An ADVANCED_FACE whose outer wire's bounding box is smaller than the kernel's working precision in both U and V. The face is geometrically a point; it has no usable interior and contributes nothing to the shape's volume or boundary.
 - **Reproducer recipe**: A square face with vertices at `(0,0)`, `(0.001,0)`, `(0.001,0.001)`, `(0,0.001)`.
 - **Expected kernel behavior**: remove the face and replace it with a vertex wherever the topology requires a referent; alternatively reject as malformed. The neighboring faces' wires may need re-stitching.
+- **Closure intent**: ambiguous
 - **Notes**: Search terms: "spot face", "point-collapsed face", "zero-area face", "tiny face". Synonyms: "spot face collapsed to near-point", "face bounding box smaller than precision", "face is geometrically a point", "face has no usable interior".
 - **Tier-3 assertion**: face[0].area < 1e-3
 - **Tier-3 assertion**: n_edges_total >= 4
@@ -19575,6 +19814,7 @@ _Section summary: 41 entries._
 - **Description**: A face is bounded by two long edges that are confused along their full length (separated by < tolerance) and two tiny end edges. The face is a degenerate sliver; typically the residue of a Boolean-cut subtraction along a feature edge.
 - **Reproducer recipe**: A face whose outer wire is `(0,0)→(100,0)→(100,1e-3)→(0,1e-3)→(0,0)` — aspect ratio 1e5.
 - **Expected kernel behavior**: remove the strip face and merge its long edges into one (or absorb into a neighboring face); alternatively reject.
+- **Closure intent**: sheet
 - **Notes**: Search terms: "strip face", "sliver face", "thin face", "ribbon face". Synonyms: "strip face thinner than tolerance", "two long edges separated by less than tolerance", "boolean cut leaves degenerate strip", "thin sliver face from boolean residue".
 - **Tier-3 assertion**: face[0].sliver_aspect_max_min > 1e3
 - **Tier-3 assertion**: n_edges_total >= 4
@@ -19589,6 +19829,7 @@ _Section summary: 41 entries._
 - **Description**: A standalone ADVANCED_FACE supplied without context. The dispatcher must classify it as spot, strip, or pin (or none), and then call the specific fixer. The classification is the entry-point for any small-face workflow.
 - **Reproducer recipe**: A near-zero-area face supplied as the only face of a fixture.
 - **Expected kernel behavior**: classify, dispatch, return the modified face (or null if removed). A kernel may also choose to refuse to mutate single faces and require shell-level context.
+- **Closure intent**: sheet
 - **Notes**: Functional duplicate of Tfa040 at a different API layer; both must be documented because they're separately testable. Synonyms: "small spot face", "tiny 0.001 mm sliver face", "near-zero-area face needs classification", "single face below tolerance", "face dispatcher classify spot strip pin", "structurally identical to Tfa040 / Tfa041 small spot face".
 - **Tier-3 assertion**: face[0].area < 1e-3
 - **Tier-3 assertion**: face[0].sliver_aspect_max_min > 1e3
@@ -19604,6 +19845,7 @@ _Section summary: 41 entries._
 - **Description**: A face whose outer wire pinches to a single near-vertex pin; a sharp protrusion whose width tapers to 0 at one corner. Subsequent meshing/Boolean operations corrupt at the pin tip; the face's normal is undefined there.
 - **Reproducer recipe**: A triangular face with vertices at `(0,0)`, `(10, 0.001)`, `(10, -0.001)` — opening angle ≈ 0.0002 rad.
 - **Expected kernel behavior**: detect the pin; either snip it off (replace the pin tip with a vertex on the face's neighbor) or reject. Healing must preserve the integrity of incident shells.
+- **Closure intent**: sheet
 - **Notes**: Search terms: "pin face", "needle face", "spike face". Synonyms: "face pinches to a vertex", "pin tip with undefined normal", "long thin protrusion at corner", "boolean leaves pin protrusion at vertex".
 - **Tier-3 assertion**: face[0].sliver_aspect_max_min > 1e3
 - **Tier-3 assertion**: n_edges_total >= 3
@@ -19620,6 +19862,7 @@ _Section summary: 41 entries._
 - **Description**: A face has two inner wires that touch at a single point in UV (tangent rather than crossing). The face boundary is technically simple (no edges cross) but the wires are kissing; under tolerance perturbations the kissing point becomes an actual crossing or a separation.
 - **Reproducer recipe**: Two triangle wires inside a square face, both having a vertex at `(5,5)` and otherwise non-overlapping. The shared vertex is the kissing point.
 - **Expected kernel behavior**: distinguish tangent kiss from crossing; either merge the two wires at the shared point, leave the kiss alone if topology permits (kernel-policy), or reject.
+- **Closure intent**: sheet
 - **Notes**: Distinct from Tfa039 because the tangency-vs-crossing decision is a different kernel branch. **OCC behavior**: the validity-checker does not flag this defect; tier-3 valid-flag should be ignored for this entry. The reader most likely silently fixes or ignores the kissing-wires case on import. Synonyms: "two inner wires kiss at single point", "tangentially touching wires", "wires share a vertex but don't cross", "kissing inner wires on face".
 - **Tier-3 assertion**: n_edges_total >= 4
 - **Tier-3 assertion**: face[0].surface_type == "plane"
@@ -19633,6 +19876,7 @@ _Section summary: 41 entries._
 - **Description**: As Tfa041 but emphasizing the diagnostic-only phase: the analyzer must detect the spot classification and emit a structured warning containing the spot's 3D location (`Pnt`) before any healer is invoked. Typical fixture: an ADVANCED_FACE whose outer EDGE_LOOP encloses a sub-tolerance area (e.g., a 0.001 x 0.001 mm square at the origin); same sub-precision spot pattern as Tfa040/Tfa041/Tfa043. Lets users inspect spot positions and decide on tolerance policy.
 - **Reproducer recipe**: As Tfa041 — a sub-precision spot ADVANCED_FACE.
 - **Expected kernel behavior**: Warn and accept: emit the diagnostic with the location attribute; do not modify (heal) the face.
+- **Closure intent**: sheet
 - **Notes**: Pure-diagnostic counterpart of FixSpotFace. Synonyms: "analyzer emits spot-face location warning", "spot-face diagnostic before healing", "warning includes 3D location of spot face", "diagnostic-only spot face detection".
 - **Tier-3 assertion**: face[0].area < 1e-3
 - **Tier-3 assertion**: n_edges_total >= 4
@@ -19647,6 +19891,7 @@ _Section summary: 41 entries._
 - **Description**: A face is a single strip (two long confused edges) but the diagnostic must additionally report whether the strip extends in the U or V direction of the host surface. Without that, the strip cannot be unfolded or merged into a neighbor; the absorbing face's parameter direction needs to align with the strip's long axis.
 - **Reproducer recipe**: As Tfa042 — the diagnostic should return "strip in U" because the long edges run along U.
 - **Expected kernel behavior**: Heal and accept: normalize and classify the direction (0/1/2 for not-strip / U / V); return both long edges plus direction.
+- **Closure intent**: sheet
 - **Notes**: Diagnostic counterpart of FixStripFace. Synonyms: "strip face needs U vs V direction tag", "diagnose long axis of strip face", "strip orientation classification", "strip extends in U or V direction".
 - **Tier-3 assertion**: face[0].sliver_aspect_max_min > 1e3
 - **Tier-3 assertion**: n_edges_total >= 4
@@ -19661,6 +19906,7 @@ _Section summary: 41 entries._
 - **Description**: A face that is a strip only at tolerances larger than its own edge tolerances. The caller supplies a tolerance band; the analyzer determines whether the face fits the band (its width is less than the supplied tolerance). Permits queries like "is this face a strip at 1mm tolerance?" independent of its own tolerance metadata.
 - **Reproducer recipe**: A 100x0.5 face whose edge tolerances are 1e-7 — only a strip at tolerances ≥ 0.5.
 - **Expected kernel behavior**: Heal and accept: parameterize / coerce the strip check with a caller-supplied tolerance; report the direction and bounding edges.
+- **Closure intent**: sheet
 - **Notes**: Generalization of Tfa047 with explicit tolerance. Synonyms: "is this face a strip at given tolerance", "strip detection at user tolerance band", "tolerance-parameterized strip query", "face is strip only above given tolerance".
 - **Tier-3 assertion**: face[0].sliver_aspect_max_min > 1e3
 - **Tier-3 assertion**: n_edges_total >= 4
@@ -19675,6 +19921,7 @@ _Section summary: 41 entries._
 - **Description**: An ADVANCED_FACE has a pin (singular tip), but pins come in three morphologies that need different healing: smooth-tapered tip (no need to act), sharp tip with discontinuous tangent, and stretched pin where another vertex along the boundary could re-bound the face. The analyzer must distinguish these. Typical fixture: a triangular outer EDGE_LOOP with vertices (0,0,0), (10,0.001,0), (10,-0.001,0); a long thin pin shape ~10mm long with sub-mm width at the tip.
 - **Reproducer recipe**: A triangular ADVANCED_FACE with two near-collinear long edges meeting at a tip (e.g., (0,0,0)->(10,0.001,0)->(10,-0.001,0)->back); the angle is sharp enough to qualify as a sharp pin.
 - **Expected kernel behavior**: return classification (0=none/smooth/no-act, 1=smooth-pin, 2=sharp-or-stretched-pin) plus the tip 3D location for stretched pins.
+- **Closure intent**: sheet
 - **Notes**: Three-way classifier for pin-shaped defects. Synonyms: "pin face shape: smooth vs sharp vs stretched", "pin classification needed for healing", "long thin triangular face needs pin morphology", "pin tip type determines fix strategy".
 - **Tier-3 assertion**: face[0].sliver_aspect_max_min > 1e3
 - **Tier-3 assertion**: n_edges_total >= 3
@@ -19689,6 +19936,7 @@ _Section summary: 41 entries._
 - **Description**: As Tfa049 but additionally builds a map from old edges to new edges that result from snipping the pin. Healing relies on this map to splice the trimmed face back into its incident shell without leaving naked edges. Typical fixture: same long thin triangular ADVANCED_FACE outer EDGE_LOOP as Tfa049 (e.g., vertices (0,0,0), (10,0.001,0), (10,-0.001,0)).
 - **Reproducer recipe**: As Tfa044 / Tfa049 — a triangular pin face whose analyzer produces a 2-entry edge map for the two long edges that get split.
 - **Expected kernel behavior**: Heal and accept: build / normalize the edge correspondence; do not modify (repair) the shape; let the caller apply the edits.
+- **Closure intent**: sheet
 - **Notes**: Diagnostic counterpart of FixPinFace with a richer return type. Synonyms: "pin face healing needs edge correspondence map", "pin trim leaves edges that need rejoin", "edge correspondence after pin snip", "pin removal must splice edges back".
 - **Tier-3 assertion**: face[0].sliver_aspect_max_min > 1e3
 - **Tier-3 assertion**: n_edges_total >= 3
@@ -19703,6 +19951,7 @@ _Section summary: 41 entries._
 - **Description**: A face on a surface with internal C0 knots, large parameter span, or multiple analytic regions. Downstream tools handle smaller pieces better; meshers produce more uniform elements, Booleans avoid the C0 line, fillet engines find tangents. The face-divide pipeline produces a shell of replacement sub-faces.
 - **Reproducer recipe**: A square face whose underlying surface has a C0 line at U=0.5; the division must split the face into two sub-faces along that isoline.
 - **Expected kernel behavior**: emit a shell of sub-faces with consistent orientation, sharing edges along the cut, with re-stitched outer wires. The split criteria are kernel policy.
+- **Closure intent**: ambiguous
 - **Notes**: Face-side counterpart to Gp033 (curve split) and Gs049 (surface split). Synonyms: "B-spline surface with C0 knot ridge", "knot multiplicity equals degree creates C0 continuity", "rectangular boundary crosses C0 ridge", "face needs splitting at internal C0 knot", "sub-face division at parametric break", "face on multi-region NURBS surface".
 - **Tier-3 assertion**: n_edges_total >= 4
 - **Tier-3 assertion**: face[0].surface_type == "bspline"
@@ -19716,6 +19965,7 @@ _Section summary: 41 entries._
 - **Description**: A single face whose surface area exceeds a caller-specified threshold; downstream meshing performance requires it be split into N sub-faces of bounded area. The N is computed from total area / threshold.
 - **Reproducer recipe**: A 100x100 face when the caller supplies a maximum area of 100 mm² — must divide into ≥100 sub-faces.
 - **Expected kernel behavior**: Heal and accept: split / divide along U or V (or both) so each sub-face has area below threshold; preserve outer-wire connectivity.
+- **Closure intent**: sheet
 - **Notes**: Variation of Tfa051 driven by area instead of continuity. Synonyms: "face area too large needs split", "100x100 mm face must subdivide", "single face larger than caller threshold", "downstream meshing requires bounded face area".
 - **Tier-3 assertion**: n_edges_total >= 4
 - **Tier-3 assertion**: face[0].surface_type == "plane"
@@ -19729,6 +19979,7 @@ _Section summary: 41 entries._
 - **Description**: A RECTANGULAR_COMPOSITE_SURFACE has a 3D gap on the shared boundary between two neighboring patches; patches do not actually touch within the connectivity tolerance. Faces built atop the composite have invalid topology because the surface is not a single continuous manifold.
 - **Reproducer recipe**: Two abutting plane patches whose touching edges should be at U=1 but the second patch's origin is at `(1.005,0,0)` instead of `(1,0,0)`.
 - **Expected kernel behavior**: detect the gap; either reject the composite, or report the gap as a quality metric so faces atop it can be flagged. Repair (snapping patches together) is also valid.
+- **Closure intent**: sheet
 - **Notes**: Surface-side counterpart to Gp034 (complex-curve connectivity). **OCC behavior**: the validity-checker does not flag this defect; tier-3 valid-flag should be ignored for this entry. The reader most likely silently fixes or ignores the patch-gap on import. Synonyms: "composite surface patches have gap", "RECTANGULAR_COMPOSITE_SURFACE patches don't touch", "composite surface not continuous manifold", "shared boundary between patches has 3D gap".
 - **Tier-3 assertion**: face[0].surface_type == "plane"
 - **Tier-3 assertion**: n_edges_total >= 8
@@ -19750,6 +20001,7 @@ they capture invariants shared by a family of healing methods. Filed under
 - **Description**: A top-level shape (GEOMETRIC_SET compound, solid, shell, or single face) has multiple defects whose fix order matters; fixing wires before faces vs. after produces different end-states. The shape-level orchestrator iterates over sub-shapes and invokes the appropriate sub-fixer; the orchestrator must converge on a stable result and not loop indefinitely. Typical fixture: a GEOMETRIC_SET mixing an ADVANCED_FACE with a scrambled inner triangular hole EDGE_LOOP, an OPEN_SHELL whose face has a flipped same_sense, and a free EDGE_LOOP wire whose ORIENTED_EDGEs are listed out of head-to-tail order.
 - **Reproducer recipe**: A GEOMETRIC_SET compound that mixes a defective face (Tfa037-style), a defective shell (Tsh043-style), and a free wire (Twi051-style); the orchestrator must dispatch to each sub-fixer.
 - **Expected kernel behavior**: Heal and accept via a top-level driver that walks the shape hierarchy, dispatches to per-shape fixers, and either converges or rejects with a fixed-point failure listing the offending sub-shape.
+- **Closure intent**: sheet
 - **Notes**: Umbrella over all sub-shape Perform() methods. Synonyms: "multi-defect shape needs pipeline convergence", "fix order changes end state", "shape orchestrator must converge not loop", "compound with mixed defects healing".
 - **Tier-3 assertion**: n_edges_total >= 8
 - **Tier-3 assertion**: face[0].surface_type == "plane"
@@ -19763,6 +20015,8 @@ they capture invariants shared by a family of healing methods. Filed under
 - **Description**: A MANIFOLD_SOLID_BREP built from one or more shells with internal defects, in particular one whose `outer` slot wraps an OPEN_SHELL rather than a CLOSED_SHELL; a manifold solid requires a closed shell. The solid-level orchestrator must propagate fixes inward to shells/faces and then re-evaluate solid-level invariants (closure, orientation toward outer void, finiteness).
 - **Reproducer recipe**: A MANIFOLD_SOLID_BREP whose outer shell is an OPEN_SHELL (not a CLOSED_SHELL); the kernel must detect the non-closure and either decline to construct the solid or insert capping shells.
 - **Expected kernel behavior**: shell-by-shell healing followed by solid-level closure check; reject if the post-fix shells still don't bound a finite volume.
+- **Closure intent**: solid
+- **Closure defect**: gap
 - **Notes**: Search terms: "non-watertight solid", "open solid", "leaky solid", "non-manifold solid". Synonyms: "MANIFOLD_SOLID_BREP wraps open shell", "manifold solid built on open shell", "solid-level healing must close inner shell", "open shell inside solid needs closure check".
 - **Tier-3 assertion**: n_edges_total >= 4
 - **Tier-3 assertion**: face[0].surface_type == "plane"
@@ -19776,6 +20030,7 @@ they capture invariants shared by a family of healing methods. Filed under
 - **Description**: A shell with one or more free bounds (open boundaries). The kernel's free-bound analyzer must compute, per bound, the area of the contour, perimeter, average length-to-width ratio, average width, and notch list; all derived from the same boundary representation in one pass to avoid recomputing.
 - **Reproducer recipe**: An open shell containing a single rectangular face; the analyzer reports a single free bound with width 10, length 10, area 100, no notches.
 - **Expected kernel behavior**: Heal and accept: produce a structured per-bound report; downstream tools filter by area/perimeter/ratio thresholds.
+- **Closure intent**: sheet
 - **Notes**: Replaces ad-hoc per-property queries with a unified pipeline. Synonyms: "free-bound metrics computed in one pass", "area perimeter notches in single analyzer", "shell free-bound properties computation", "free-bound analyzer single-pass".
 - **Tier-3 assertion**: n_edges_total >= 4
 - **Tier-3 assertion**: face[0].surface_type == "plane"
@@ -19789,6 +20044,7 @@ they capture invariants shared by a family of healing methods. Filed under
 - **Description**: An OPEN_SHELL with multiple free bounds (EDGE_LOOPs) where most are smooth but one has measurable defects. A precision parameter controls which contours are flagged for downstream healing (those whose defect magnitude exceeds the precision). Typical fixture: an EDGE_LOOP with a long side decomposed into many sub-segments, with intermediate VERTEX_POINTs wiggling by +/-1e-7 (well below typical tolerance); sub-precision noise encoded as separate ORIENTED_EDGEs.
 - **Reproducer recipe**: As Hea003 with an EDGE_LOOP whose perimeter has sub-precision wiggles (e.g., 13 ORIENTED_EDGEs where 10 sub-segments along one side encode a vertex wiggle of +/-1e-7 in one axis).
 - **Expected kernel behavior**: Heal and accept: filter contours by the supplied precision; emit only the problematic ones.
+- **Closure intent**: sheet
 - **Notes**: Companion to Hea003. Synonyms: "free bound has sub-precision wiggle vertices", "many short sub-segments below tolerance", "noise vertices on EDGE_LOOP", "wiggly contour with deviations under precision".
 - **Tier-3 assertion**: n_edges_total >= 13
 - **Tier-3 assertion**: face[0].surface_type == "plane"
@@ -19802,6 +20058,7 @@ they capture invariants shared by a family of healing methods. Filed under
 - **Description**: A free-bound contour (EDGE_LOOP / outer wire) has one or more notches; sharp inward triangular detours where a straight side has been broken into 3+ ORIENTED_EDGEs through extra VERTEX_POINTs offset perpendicular to the main side (typical detour: (0,0,0)->(4.5,0,0)->(5.0,0.05,0)->(5.5,0,0)->(10,0,0)). The check must report each with width and depth so the user can decide whether to flatten or split the host face.
 - **Reproducer recipe**: An OPEN_SHELL whose face's outer EDGE_LOOP has the notched-wire defect from Twi054 — vertices V_notch_a, V_notch_apex, V_notch_b interrupt an otherwise straight side.
 - **Expected kernel behavior**: Heal and accept: per-notch (location, width, depth) report; do not modify.
+- **Closure intent**: sheet
 - **Notes**: Free-bound-level counterpart of Twi054. Synonyms: "triangular notch in straight side", "side broken into 3 segments by tiny notch", "perpendicular bump on free-bound contour", "notch detection with width and depth".
 - **Tier-3 assertion**: n_edges_total >= 7
 - **Tier-3 assertion**: face[0].surface_type == "plane"
@@ -19815,6 +20072,7 @@ they capture invariants shared by a family of healing methods. Filed under
 - **Description**: A compound shape whose constituents the kernel must enumerate and tally; counts of faces, edges, vertices, wires, distinct surface kinds, distinct curve kinds, total volume, etc. Drives downstream defect-detection (e.g., "any shape with > N faces gets a stricter check").
 - **Reproducer recipe**: A compound containing one face plus a free wire; the report shows 1 face, 1 wire, 4 edges, 4 vertices.
 - **Expected kernel behavior**: Heal and accept: produce a structured inventory; informational only.
+- **Closure intent**: sheet
 - **Notes**: Diagnostic-only; useful for kernel benchmarking. Synonyms: "enumerate all sub-shapes and counts", "subshape histogram for compound", "shape contents inventory faces edges vertices", "shape contents tally for downstream check".
 - **Tier-3 assertion**: n_edges_total >= 4
 - **Tier-3 assertion**: face[0].surface_type == "plane"
@@ -19884,6 +20142,7 @@ they capture invariants shared by a family of healing methods. Filed under
 - **Description**: A top-level driver runs a sequence of named healing operators ("fix-shape, split-closed-faces, .."). The sequence is configured at runtime; operator parameters come from a context resource. Errors at any step must be aggregated; the driver must not silently skip failed operators. Typical fixture: a GEOMETRIC_SET with multiple defect classes; a sub-tolerance EDGE_CURVE (length ~1e-7 between near-coincident VERTEX_POINTs), a rectangular shell, and an EDGE_CURVE whose 3D length disagrees with its pcurve length (same-parameter violation).
 - **Reproducer recipe**: A multi-defect GEOMETRIC_SET compound (sub-tolerance edge, rectangular shell, same-parameter pcurve mismatch); driver invoked with operator list "fix-shape, same-parameter, remove-small-edges".
 - **Expected kernel behavior**: run operators in declared order; collect per-operator status; abort on operator-not-found, otherwise continue. Configuration parameters are pulled from the context.
+- **Closure intent**: sheet
 - **Notes**: Provides the runtime extension point for the healing pipeline. Defect manifests at runtime (operator-list invocation is API-level); fixture establishes the input precondition (a multi-defect compound mixing sub-tolerance edge, open shell, and same-parameter violation). Synonyms: "runtime-configured healing operator sequence", "named healing operators chained at runtime", "sub-tolerance edge plus open shell plus same-param violation", "healing driver aggregates errors from each operator".
 - **Tier-3 assertion**: n_edges_total >= 4
 - **Tier-3 assertion**: face[0].surface_type == "plane"
@@ -19897,6 +20156,7 @@ they capture invariants shared by a family of healing methods. Filed under
 - **Description**: A single registered operator must (a) accept a context, (b) perform its healing step, (c) record changes back to the context for subsequent operators to observe. The contract is stateless w.r.t. the operator's own data; all transient state lives in the context. Typical fixture: an ADVANCED_FACE with a rectangular outer EDGE_LOOP and an inner FACE_BOUND triangle whose three VERTEX_POINTs are near-coincident at sub-mm distances and whose ORIENTED_EDGEs are listed in scrambled (non-head-to-tail) order.
 - **Reproducer recipe**: A defective face supplied to a registered operator; the inner FACE_BOUND has near-coincident triangle vertices and out-of-order edges; the operator runs and the context's "modified" flag is set.
 - **Expected kernel behavior**: Heal and accept: each operator implements the same Perform(context) interface; the driver does not need per-operator special casing.
+- **Closure intent**: sheet
 - **Notes**: **See also**: Hea013. Abstract base contract. Synonyms: "pluggable healing operator with context", "operator contract for shape-process", "stateless operator with all state in context", "healing step contract with change recording".- **Tier-3 assertion**: n_edges_total >= 4
 - **Tier-3 assertion**: face[0].surface_type == "plane"
 - **Tier-3 assertion**: n_vertices_total >= 8
@@ -19909,6 +20169,7 @@ they capture invariants shared by a family of healing methods. Filed under
 - **Description**: A kernel API for registering ad-hoc user operators in the shape-healing pipeline; same contract as Hea012 but injected by a caller rather than being part of the kernel's built-in operator set. Lets host applications splice domain-specific healing into the standard pipeline. Typical input fixture: a rectangular ADVANCED_FACE with an inner triangle FACE_BOUND whose VERTEX_POINTs are near-coincident and whose ORIENTED_EDGEs are listed in scrambled order; structurally identical input to Hea012.
 - **Reproducer recipe**: As Hea012 (face with scrambled inner FACE_BOUND triangle) supplied to a user-registered operator.
 - **Expected kernel behavior**: Heal and accept: identical to Hea012 but allow runtime registration; sandbox the user operator if its execution diverges.
+- **Closure intent**: sheet
 - **Notes**: **See also**: Hea012. Concrete subclass of Hea012's contract. Synonyms: "user-defined healing operator", "register custom healer in pipeline", "host application splices custom healing step", "ad-hoc operator injected by caller".- **Tier-3 assertion**: n_edges_total >= 4
 - **Tier-3 assertion**: face[0].surface_type == "plane"
 - **Tier-3 assertion**: n_vertices_total >= 8
@@ -19922,6 +20183,7 @@ they capture invariants shared by a family of healing methods. Filed under
 - **Description**: An `ADVANCED_FACE` is declared but its `face_geometry` slot is null or references a non-existent entity. The face has bounding wires but nothing to bound; there is no surface in 3D for the face to lie on. Bug-reporter language: "face has no surface", "face_geometry missing", "kernel can't compute face area".
 - **Reproducer recipe**: `ADVANCED_FACE` with `face_geometry = $` (omitted/null) but a non-empty `bounds` list.
 - **Expected kernel behavior**: Reject the face at parse time; or, in lenient mode, drop the face and warn.
+- **Closure intent**: sheet
 - **Notes**: Synonyms: "missing face geometry", "null surface reference", "ADVANCED_FACE has no surface", "face_geometry slot is dollar sign", "kernel can't compute face area".
 - **Tier-3 assertion**: brepcheck.valid == False
 - **OCC behavior**: loads a shape (no diagnostic) — reading as healing; outside catalog's allowed set ({reject}). Documented divergence: OCC's auto-repair is stronger than the catalog's reject-only stance; conservative kernels should still reject.
@@ -19937,6 +20199,7 @@ they capture invariants shared by a family of healing methods. Filed under
 - **Description**: A face has an outer bound and an inner bound (a hole) whose pcurves cross in the surface's UV parameter space. The expected invariant — outer and inner wires of the same face are pairwise disjoint in UV — is violated. The "hole" actually pokes through the outer boundary. Bug-reporter language: "wire intersects another wire", "hole crosses outer boundary", "inner loop sticks out of face".
 - **Reproducer recipe**: An `ADVANCED_FACE` on a `PLANE` with one `FACE_OUTER_BOUND` (a square) and one `FACE_BOUND` (a square partly outside the outer square so the boundaries intersect).
 - **Expected kernel behavior**: Reject the face; or recompute Boolean of the wires in UV and use the result as the corrected boundary.
+- **Closure intent**: sheet
 - **Notes**: Synonyms: "wires cross", "boundary self-overlap", "overlapping wires". **See also**: Tfa039. **OCC behavior**: the validity-checker does not flag the UV-crossing inner-vs-outer wire defect; tier-3 valid-flag should be ignored for this entry. The reader most likely silently fixes or ignores the crossing on import.
 - **Tier-3 assertion**: n_faces_total == 2
 - **Tier-3 assertion**: face[0].surface_type == "plane"
@@ -19955,6 +20218,7 @@ they capture invariants shared by a family of healing methods. Filed under
 - **Description**: A face has two inner wires (holes) where one is geometrically nested inside the other. The inner-most wire is then a "hole inside a hole", which is contradictory: that region was already excluded from the face. Bug-reporter language: "redundant wire", "hole inside hole", "useless inner loop".
 - **Reproducer recipe**: An `ADVANCED_FACE` with one `FACE_OUTER_BOUND` (large square) and two `FACE_BOUND` entries — a smaller square hole, and a still-smaller square wire fully contained in the first hole.
 - **Expected kernel behavior**: Detect nesting via UV-domain point-in-polygon; drop the redundant inner wire and warn, or reject as malformed.
+- **Closure intent**: sheet
 - **Notes**: Synonyms: "duplicate wire", "wire inside hole", "nested inner wires", "redundant wire inside another wire", "useless inner loop nested in another".
 - **Tier-3 assertion**: n_faces_total == 1
 - **Tier-3 assertion**: face[0].surface_type == "plane"
@@ -19974,6 +20238,7 @@ they capture invariants shared by a family of healing methods. Filed under
 - **Description**: An `ADVANCED_FACE` has its outer wire wound clockwise (when the surface normal is taken as outward) and its inner wires wound counter-clockwise; i.e., the orientations are swapped relative to the convention. Bug-reporter language: "wire winds wrong way", "outer loop reversed", "hole oriented as outer".
 - **Reproducer recipe**: `ADVANCED_FACE` whose outer `EDGE_LOOP` traces vertices in the wrong direction relative to the surface normal.
 - **Expected kernel behavior**: Detect via signed-area in UV; flip the offending loop, or reject the face.
+- **Closure intent**: sheet
 - **Notes**: Distinct from Tsh010 (face same_sense flipped); this is wire-loop winding direction. Synonyms: "wire winds wrong way", "outer loop reversed", "hole oriented as outer", "inner wire winds same direction as outer".
 - **Tier-3 assertion**: n_faces_total == 1
 - **Tier-3 assertion**: face[0].surface_type == "plane"
@@ -19993,6 +20258,7 @@ they capture invariants shared by a family of healing methods. Filed under
 - **Description**: An `ADVANCED_FACE` declares its surface as a `PLANE`, but the bounding wire visits 3D vertices that don't lie on that plane (the largest deviation exceeds any plausible tolerance). Bug-reporter language: "face not planar", "vertices not on plane", "non-flat plane face".
 - **Reproducer recipe**: `ADVANCED_FACE` with `face_geometry = #PLANE` (z=0 plane). The four corner vertices of the bounding rectangle: (0,0,0), (1,0,0), (1,1,0), (0,1,0.5) — fourth vertex 0.5 above the plane.
 - **Expected kernel behavior**: Reproject vertices, refit a non-planar surface, or reject as malformed.
+- **Closure intent**: sheet
 - **Notes**: Synonyms: "warped 'plane'", "non-coplanar quad", "face declared planar but vertices not flat", "vertices off declared PLANE surface", "non-coplanar plane face".
 - **Tier-3 assertion**: face[0].surface_type == "plane"
 - **Tier-3 assertion**: n_edges_total >= 4
@@ -20011,6 +20277,7 @@ they capture invariants shared by a family of healing methods. Filed under
 - **Description**: A face's bounding edge has a 3D curve that does not lie on the face's surface; the 3D curve is significantly off-surface. The kernel cannot project the curve into UV to build a pcurve because the projection diverges or is multi-valued. Bug-reporter language: "edge not on surface", "pcurve construction failed", "edge floats above face".
 - **Reproducer recipe**: An `ADVANCED_FACE` on a `PLANE` (z=0). The face's outer wire references an `EDGE_CURVE` whose `LINE` runs at `z=0.5` — well above the plane.
 - **Expected kernel behavior**: Recompute the curve by projection (and report residual deviation), or reject the face.
+- **Closure intent**: sheet
 - **Notes**: Synonyms: "off-surface edge", "pcurve missing", "edge floats above face", "pcurve construction failed", "edge curve not on its host surface".
 - **Tier-3 assertion**: face[0].surface_type == "plane"
 - **Tier-3 assertion**: n_edges_total >= 1
@@ -20029,6 +20296,7 @@ they capture invariants shared by a family of healing methods. Filed under
 - **Description**: A face within a shell has a bounding wire whose pcurve excursion in UV exceeds the `u_min.u_max`/`v_min.v_max` of the underlying surface. The face "wraps around" or "overshoots" the surface. Bug-reporter language: "face parameters out of range", "wire goes off surface".
 - **Reproducer recipe**: An `ADVANCED_FACE` on a `RECTANGULAR_TRIMMED_SURFACE` with `u1=0, u2=1`. The bounding wire's pcurve runs from `u=0` to `u=1.5`.
 - **Expected kernel behavior**: Clamp pcurve to surface domain, or extend the surface trim, or reject.
+- **Closure intent**: sheet
 - **Notes**: Synonyms: "uv parameters too wide", "face overshoots surface", "face wraps around surface bounds", "wire goes off surface", "pcurve excursion beyond u_min.u_max".
 - **Tier-3 assertion**: brepcheck.valid == False
 - **OCC behavior**: loads a shape (no diagnostic) — reading as healing; outside catalog's allowed set ({reject}). Documented divergence: OCC's auto-repair is stronger than the catalog's reject-only stance; conservative kernels should still reject.
@@ -20496,6 +20764,7 @@ they capture invariants shared by a family of healing methods. Filed under
 - **Description**: The producer received a file with face- and solid-level colour assignments (`STYLED_ITEM`, `PRESENTATION_LAYER_ASSIGNMENT`) and emits a file that lacks them entirely, even though the geometry is intact. Bug-reporter language: "STEP file lost colours after round-trip", "colours gone", "all faces grey now".
 - **Reproducer recipe**: a STEP file showing the *post*-pathology state — a clean `MANIFOLD_SOLID_BREP` with no `STYLED_ITEM` / `COLOUR_RGB` references, where the title comment notes "originally had per-face colours, dropped on re-export".
 - **Expected kernel behavior**: preserve `STYLED_ITEM` / `COLOUR_RGB` chains on round-trip; surface a warning if the kernel's internal model cannot represent them.
+- **Closure intent**: solid
 - **Notes**: Visible in §12.6 / §12.8 colour-bound entries; Wr019 documents the writer-side root cause. Bytes alone are insufficient to demonstrate this defect; needs sibling input fixture. Tagged provenance_tier: requires-sibling-pair.
 - **Byte assertion**: count_entity_def(b'STYLED_ITEM') == 0 and count_entity_def(b'COLOUR_RGB') == 0
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must emit a diagnostic this fixture.
@@ -20799,6 +21068,7 @@ they capture invariants shared by a family of healing methods. Filed under
 - **Description**: Every entity in DATA (`CARTESIAN_POINT`, `DIRECTION`, `EDGE_CURVE`, `ADVANCED_FACE`, etc.) has `name = ''`. The schema requires `name`, so empty string is well-formed; but `PRESENTATION_LAYER_ASSIGNMENT` and other display-name-bearing references find empty strings everywhere and the assembly tree displays as a forest of unnamed nodes. Bug-reporter language: "every entity name is empty", "STEP file has no labels", "names lost on re-export".
 - **Reproducer recipe**: a complete fixture where every entity's `name` first attribute is `''`.
 - **Expected kernel behavior**: Heal and accept: preserve any non-empty input names on round-trip; coerce `''` only for entities with no name in input. This is a subset of Wr020.
+- **Closure intent**: ambiguous
 - **Notes**: Most-frequent name-round-trip complaint.
 - **Byte assertion**: count(b"=CARTESIAN_POINT('',") >= 1
 - **Byte assertion**: count(b"=DIRECTION('',") >= 1
@@ -20933,6 +21203,7 @@ they capture invariants shared by a family of healing methods. Filed under
 - **Description**: A subtractive-pipe (PartDesign-style sweep used for material removal) along a path with 90° or greater bends with rounded corner transitions emits the corner-fill sphere as part of the additive-result solid in the STEP file, even though the source kernel correctly hides it during display. On re-import the geometry shows a solid sphere occupying the would-be-hollow joint region. The on-disk symptom is a stray closed sub-shell whose centre coincides with the bend pivot point and whose radius equals the pipe radius; a sub-shell that should have been Boolean-subtracted before emission.
 - **Reproducer recipe**: STEP file with a `SHELL_BASED_SURFACE_MODEL` containing two cylindrical sub-shells joined at a right angle, plus an extra closed `SPHERICAL_SURFACE`-bounded sub-shell at the joint pivot — the sphere is the residual that should have been hidden.
 - **Expected kernel behavior**: Heal and accept: writer Boolean-subtracts construction-residual primitives before emission; receivers may warn and accept on isolated sub-shells with no NAUO/styled-item parent that were obviously construction artefacts. Loading stray construction residuals as visible geometry is a coverage gap.
+- **Closure intent**: sheet
 - **Notes**: Synonyms: "subtractive pipe leaves sphere at joint", "right-angle pipe joint has invisible ball", "STEP export shows extra material in pipe corners", "construction residual sphere in joint".
 - **Byte assertion**: contains(b'SPHERICAL_SURFACE')
 - **Byte assertion**: count_entity_def(b'SHELL_BASED_SURFACE_MODEL') >= 1 or count_entity_def(b'CLOSED_SHELL') >= 2
@@ -21444,6 +21715,7 @@ they capture invariants shared by a family of healing methods. Filed under
 - **Description**: The schema mandates that the outer shell of a `MANIFOLD_SOLID_BREP` be a watertight `CLOSED_SHELL`. Some producers route an `OPEN_SHELL` through the same slot or emit a `CLOSED_SHELL` whose face/edge graph has free edges. The reader accepts both forms; the resulting "solid" has open boundary, downstream Boolean operations fail with cryptic errors, and the user is never told the file was malformed.
 - **Reproducer recipe**: `#10=OPEN_SHELL('',(#11,#12));` then `#20=MANIFOLD_SOLID_BREP('',#10);` — schema requires a `CLOSED_SHELL` here. Reader silently treats as solid.
 - **Expected kernel behavior**: reject; verify shell closedness (every edge belongs to exactly two faces of the shell) before promoting to solid; emit `E_OPEN_OUTER_SHELL` when the invariant fails.
+- **Closure intent**: solid
 - **Notes**: **See also**: Tsh021, Tsh041. Synonyms: "STEP Reader allows opened shells as outer", "MANIFOLD_SOLID_BREP open outer", "non-closed outer shell accepted as solid", "STEP solid invariant violated by reader".
 - **Byte assertion**: contains(b'MANIFOLD_SOLID_BREP')
 - **Byte assertion**: contains(b'OPEN_SHELL') or contains(b'CLOSED_SHELL')
@@ -21649,6 +21921,7 @@ they capture invariants shared by a family of healing methods. Filed under
 - **Description**: AP242 `slot` is a feature definition for a rectangular linear cut on a host face with `slot_length`, `slot_width`, `slot_depth`, and an end-condition. The defining geometric invariant: `slot_length >= slot_width` (otherwise the feature is a wide rectangular pocket, not a slot, different feature class with different downstream PMI semantics). A producer that emits `slot_length=8 mm` and `slot_width=20 mm` leaves a malformed feature. Receivers diverge: NX-style importers swap the values heuristically, CATIA-style importers reject, Solid Edge accepts and produces a downstream pocket-shaped feature contradicting the SLOT class. Bug-reporter language: "SLOT length less than width", "AP242 slot is degenerate", "slot wider than long".
 - **Reproducer recipe**: a 50x50 mm planar `ADVANCED_FACE` host; a `SHAPE_ASPECT('SLOT',..)` linked via `GEOMETRIC_ITEM_SPECIFIC_USAGE` with `DIMENSIONAL_SIZE` of `slot_length=8.0 mm` and `slot_width=20.0 mm` (length < width).
 - **Expected kernel behavior**: reject as malformed and name the attribute relationship that is violated; never silently swap values; alternative: reclassify as a rectangular pocket with a deterministic warning.
+- **Closure intent**: sheet
 - **Notes**: First entry exercising AP242 SLOT feature-definition attribute consistency. **See also**: Pmi091, Pmi092, Pmi096, Pmi097. Synonyms: "SLOT length < width", "degenerate slot (length < width)", "slot wider than long", "AP242 slot dimension swap".
 - **Byte assertion**: contains(b'SLOT')
 - **Byte assertion**: contains(b'slot_length')
@@ -21664,6 +21937,7 @@ they capture invariants shared by a family of healing methods. Filed under
 - **Description**: AP242 `slot` carries a depth attribute and an end-condition (open/closed/blind/through). The geometric invariant: when `end_condition='blind'`, `slot_depth < host_thickness`; when `slot_depth >= host_thickness`, the feature must declare `end_condition='through'`. A producer that emits `slot_depth=8 mm` on a 5 mm-thick plate while still declaring `end_condition='blind'` leaves a contradiction: the slot would punch through the host but the feature definition denies it. Receivers diverge: some auto-promote to through, some leave the feature misclassified, some reject. Bug-reporter language: "blind slot is deeper than the plate", "slot depth exceeds host thickness", "AP242 slot end condition wrong".
 - **Reproducer recipe**: a 60x40 mm planar host face advertised at 5 mm thickness; a `SHAPE_ASPECT('SLOT',..)` with `slot_depth=8.0 mm` and `end_condition='blind'`.
 - **Expected kernel behavior**: reject as inconsistent; or auto-promote `end_condition` to `through` and emit a deterministic warning; never accept silently.
+- **Closure intent**: sheet
 - **Notes**: **See also**: Pmi091, Pmi095, Pmi097, Pmi100. Synonyms: "SLOT depth >= host thickness", "blind slot deeper than host", "slot end_condition contradicts depth", "through-slot mis-declared as blind".
 - **Byte assertion**: contains(b'SLOT')
 - **Byte assertion**: contains(b'slot_depth')
@@ -21679,6 +21953,7 @@ they capture invariants shared by a family of healing methods. Filed under
 - **Description**: AP242 `slot` carries an end-condition attribute (`open`, `closed`, `round_end`, `flat_end`) that constrains the profile shape. The defining invariant: `end_condition='round_end'` requires the explicit profile (when one is provided) to terminate in semicircular ends. A producer that declares `end_condition='round_end'` while emitting a profile with four sharp corners (rectangular) leaves a contradiction. Receivers diverge: some honour the end-condition string and ignore the profile, some honour the profile and ignore the string, some reject. Bug-reporter language: "round-end slot has rectangular profile", "SLOT end-condition string contradicts profile", "AP242 slot mixed metaphor".
 - **Reproducer recipe**: a `SHAPE_ASPECT('SLOT',..)` with `DESCRIPTIVE_REPRESENTATION_ITEM('end_condition','round_end')` and `DESCRIPTIVE_REPRESENTATION_ITEM('profile_shape','rectangular')` on the same feature.
 - **Expected kernel behavior**: reject as inconsistent and name the attribute that contradicts the profile; never silently pick one side.
+- **Closure intent**: sheet
 - **Notes**: **See also**: Pmi095, Pmi096, Pmi099. Synonyms: "SLOT end_condition mismatch with profile", "round-end declaration but rectangular profile", "SLOT shape contradicts end-condition string".
 - **Byte assertion**: contains(b'SLOT')
 - **Byte assertion**: contains(b'round_end')
@@ -21694,6 +21969,7 @@ they capture invariants shared by a family of healing methods. Filed under
 - **Description**: AP242 `slot` carries an `AXIS2_PLACEMENT_3D` whose Z direction is the slot's cutting axis. For a planar host face, the slot's cutting axis must be parallel to the host face normal (i.e., perpendicular to the face). When the slot's axis is parallel to the host face (Z direction in-plane), the slot would not actually engrave the host. A producer that emits a slot with Z=(1,0,0) on a host face whose normal is (0,0,1) leaves a feature that cannot be physically realised. Receivers diverge: some silently re-orient, some accept and produce a malformed solid, some reject. Bug-reporter language: "SLOT axis parallel to host face", "slot would not cut the part", "AP242 slot orientation defect".
 - **Reproducer recipe**: a planar host face with normal (0,0,1); a `SHAPE_ASPECT('SLOT',..)` whose linked `AXIS2_PLACEMENT_3D` has Z direction (1,0,0) — parallel to the face.
 - **Expected kernel behavior**: validate slot axis vs host face normal; reject as inconsistent or auto-correct with a deterministic warning. Never accept silently.
+- **Closure intent**: sheet
 - **Notes**: **See also**: Pmi091, Pmi095, Pmi105. Synonyms: "SLOT axis parallel to host face", "slot placement orientation wrong", "AP242 slot Z direction mis-aligned".
 - **Byte assertion**: contains(b'SLOT')
 - **Byte assertion**: contains(b'AXIS2_PLACEMENT_3D')
@@ -21709,6 +21985,7 @@ they capture invariants shared by a family of healing methods. Filed under
 - **Description**: AP242 supports parametric patterns (`rectangular_pattern`, `circular_pattern`) that capture the relationship between a primary feature and its copies. The canonical form for three identical SLOTs sharing a direction with even spacing is one SLOT plus a 3-instance RECTANGULAR_PATTERN. A producer that decomposes the pattern at export and emits three independent SLOT features — same orientation, same dimensions, evenly spaced — loses the parametric relationship. Receivers cannot reconstruct downstream pattern PMI from this form: each SLOT is treated as an independent feature, and modifying the pattern (changing instance count, spacing) becomes impossible. Bug-reporter language: "AP242 pattern lost on export", "three identical slots emitted as instances", "pattern decomposition at export".
 - **Reproducer recipe**: three `SHAPE_ASPECT('SLOT',..)` records sharing the same dimensions (length=15, width=5, depth=2), evenly spaced 25 mm apart along X, no `RECTANGULAR_PATTERN` linking them.
 - **Expected kernel behavior**: Warn and accept: writer should detect identical co-axial features and heal by emitting one feature plus a pattern record; reader should emit a warning `W_FEATURE_PATTERN_LOST` when it observes the decomposed form. Accepting the decomposed form without surfacing the lost pattern relationship is a coverage gap.
+- **Closure intent**: sheet
 - **Notes**: **See also**: Pmi093, Pmi095. Synonyms: "coaxial SLOTs not patterned", "AP242 pattern decomposed to instances", "three slots no pattern", "feature pattern relationship lost".
 - **Byte assertion**: count_entity_def(b'SHAPE_ASPECT') >= 3
 - **Byte assertion**: contains(b'SLOT')
@@ -21722,6 +21999,7 @@ they capture invariants shared by a family of healing methods. Filed under
 - **Description**: AP242 `groove` is a recessed feature with `groove_width`, `groove_depth`, and a profile/sweep description. The geometric invariant: `groove_width > 0` (a zero-width groove removes no material, the feature is degenerate). A producer that emits `groove_width=0.0` leaves a feature definition that cannot be physically realised. Receivers diverge: some accept and produce a zero-volume cut, some reject as malformed, some silently substitute a default width. Bug-reporter language: "GROOVE has zero width", "AP242 groove with no opening", "groove width attribute is zero".
 - **Reproducer recipe**: a planar host face; a `SHAPE_ASPECT('GROOVE',..)` with `DIMENSIONAL_SIZE` of `groove_width=0.0 mm` and `groove_depth=2.0 mm`.
 - **Expected kernel behavior**: reject as malformed and name `groove_width` as the violated attribute; never substitute a default silently.
+- **Closure intent**: sheet
 - **Notes**: First entry exercising AP242 GROOVE feature-definition attribute consistency. **See also**: Pmi101, Pmi102, Pmi104. Synonyms: "GROOVE width <= 0", "zero-width groove", "groove with no opening", "degenerate AP242 groove".
 - **Byte assertion**: contains(b'GROOVE')
 - **Byte assertion**: contains(b'groove_width')
@@ -21737,6 +22015,7 @@ they capture invariants shared by a family of healing methods. Filed under
 - **Description**: AP242 `groove` carries a sweep description; for a circumferential groove on a cylindrical host, the sweep must close; `sweep_end_angle - sweep_start_angle = 2π`. A producer that emits a circumferential groove with `sweep_start=0` and `sweep_end=4.8869 rad` (≈280°) leaves an open path: the groove cuts roughly three-quarters of the way around the cylinder and stops mid-pass. The feature class is `groove` (closed by definition), but the path is unmistakably open. Receivers diverge: some auto-close the path with a warning, some leave it open and produce a partial cut, some reject. Bug-reporter language: "groove path does not close", "circumferential groove ends mid-pass", "AP242 groove sweep open".
 - **Reproducer recipe**: a `SHAPE_ASPECT('GROOVE',..)` on a planar host with `sweep_start_angle=0.0` and `sweep_end_angle=4.8869` rad (≈280°, not 2π).
 - **Expected kernel behavior**: reject as inconsistent (groove class implies closed sweep); or reclassify the feature as a partial-arc slot with a deterministic warning.
+- **Closure intent**: sheet
 - **Notes**: **See also**: Pmi100, Pmi102. Synonyms: "GROOVE profile not closed", "groove sweep stops mid-pass", "AP242 groove open path", "circumferential groove ends short".
 - **Byte assertion**: contains(b'GROOVE')
 - **Byte assertion**: contains(b'sweep_end')
@@ -21752,6 +22031,7 @@ they capture invariants shared by a family of healing methods. Filed under
 - **Description**: AP242 `groove` on a cylindrical host has a radial depth that must be strictly less than the cylinder radius (otherwise the groove cuts through the cylinder centerline and "wraps" past the axis to reappear on the other side, leaving a self-intersecting feature definition). A producer that emits a groove with `radial_depth=15 mm` on a cylinder of radius 10 mm leaves a feature whose constructive evaluation is non-manifold. Receivers diverge: some clamp the depth to the radius, some accept and produce a self-intersecting solid, some reject. Bug-reporter language: "groove depth exceeds host radius", "GROOVE cuts past cylinder centreline", "AP242 groove wrap-around".
 - **Reproducer recipe**: a cylindrical host face with radius 10; a `SHAPE_ASPECT('GROOVE',..)` with `groove_radial_depth=15.0 mm` and `host_cylinder_radius=10.0 mm`.
 - **Expected kernel behavior**: validate radial depth < host radius for circumferential grooves; reject as inconsistent or clamp with a deterministic warning. Never accept silently.
+- **Closure intent**: sheet
 - **Notes**: **See also**: Pmi091, Pmi100, Pmi101. Synonyms: "GROOVE depth wrap-around", "groove cuts through cylinder centerline", "AP242 circumferential groove too deep", "radial depth exceeds host radius".
 - **Byte assertion**: contains(b'GROOVE')
 - **Byte assertion**: contains(b'CYLINDRICAL_SURFACE')
@@ -21767,6 +22047,7 @@ they capture invariants shared by a family of healing methods. Filed under
 - **Description**: AP242 `boss` is a raised cylindrical feature representing a substantial protrusion on a host face. The conventional invariant: `boss_diameter >= host_thickness` (a boss thinner than its substrate is a `stud` or `pin`; a different feature class with different downstream PMI semantics, including thread-bearing assumptions). A producer that emits `boss_diameter=2 mm` on a 10 mm-thick plate leaves the feature mis-classified: downstream tooling that processes BOSSes expects a substantial protrusion and may attempt operations (chamfer-the-base, attach-counterbore) that do not make sense for a thin pin. Bug-reporter language: "BOSS thinner than plate", "AP242 boss is actually a stud", "boss diameter < host thickness".
 - **Reproducer recipe**: a 50x50 mm planar host face advertised at 10 mm thickness; a `SHAPE_ASPECT('BOSS',..)` with `boss_diameter=2.0 mm` and `boss_height=4.0 mm`.
 - **Expected kernel behavior**: warn `W_BOSS_FEATURE_CLASS_MISMATCH` when boss diameter is below host thickness; suggest reclassification as `stud` or `pin`. Receivers must not silently treat the feature as a heavy boss.
+- **Closure intent**: sheet
 - **Notes**: **See also**: Pmi091, Pmi104, Pmi105. Synonyms: "BOSS diameter < host thickness", "boss thinner than plate", "AP242 boss is really a stud", "feature class mis-classified as boss".
 - **Byte assertion**: contains(b'BOSS')
 - **Byte assertion**: contains(b'boss_diameter')
@@ -21780,6 +22061,7 @@ they capture invariants shared by a family of healing methods. Filed under
 - **Description**: AP242 `boss` height must be strictly positive (the boss is a *raised* feature). A producer that emits `boss_height=0.0` leaves a feature that adds no material; equivalent to drawing a circular outline on the host face with no extrusion. Receivers diverge: some accept and produce a zero-volume feature that confuses downstream BOM and machining tooling, some reject as malformed, some silently substitute a default height. Bug-reporter language: "BOSS has zero height", "AP242 boss with no protrusion", "boss height is zero".
 - **Reproducer recipe**: a planar host face; a `SHAPE_ASPECT('BOSS',..)` with `DIMENSIONAL_SIZE` of `boss_diameter=12.0 mm` and `boss_height=0.0 mm`.
 - **Expected kernel behavior**: reject as degenerate and name `boss_height` as the violated attribute; never substitute a default height silently.
+- **Closure intent**: sheet
 - **Notes**: **See also**: Pmi100, Pmi103, Pmi105. Synonyms: "BOSS height <= 0", "zero-height boss", "boss with no protrusion", "degenerate AP242 boss".
 - **Byte assertion**: contains(b'BOSS')
 - **Byte assertion**: contains(b'boss_height')
@@ -21795,6 +22077,7 @@ they capture invariants shared by a family of healing methods. Filed under
 - **Description**: AP242 `boss` carries an `AXIS2_PLACEMENT_3D` for its base; the geometric invariant is that the boss base plane coincides with the host face plane (the boss attaches *to* the substrate). A producer that emits a boss whose base is offset by 5 mm from the host face leaves the feature physically disconnected from the substrate; constructive evaluation produces a floating cylinder. Receivers diverge: some snap the boss to the face, some accept and produce a non-manifold solid, some reject. Bug-reporter language: "BOSS base not coplanar with host", "boss floats above plate", "AP242 boss base offset".
 - **Reproducer recipe**: a planar host face at z=0; a `SHAPE_ASPECT('BOSS',..)` whose `AXIS2_PLACEMENT_3D` location is `(25.0, 25.0, 5.0)` (5 mm offset above the host face).
 - **Expected kernel behavior**: validate boss base plane against host face plane; reject as inconsistent or snap-and-warn deterministically. Never accept silently.
+- **Closure intent**: sheet
 - **Notes**: **See also**: Pmi098, Pmi103, Pmi104. Synonyms: "BOSS base not coplanar with host face", "boss floating above plate", "AP242 boss base disconnected from host", "boss placement Z offset".
 - **Byte assertion**: contains(b'BOSS')
 - **Byte assertion**: contains(b'boss_base_FLOATING')
@@ -21810,6 +22093,7 @@ they capture invariants shared by a family of healing methods. Filed under
 - **Description**: AP242 feature definitions (SLOT, GROOVE, BOSS, etc.) link to host geometry via `GEOMETRIC_ITEM_SPECIFIC_USAGE` whose `definition` references the host face's `ADVANCED_FACE` entity id. A producer that emits SHAPE_ASPECT/GISU records for SLOT, GROOVE, and BOSS — all pointing at entity id `#9999` which is never declared in the file — leaves three orphaned feature definitions. Strict readers reject the file at the cross-reference pass; lenient readers silently drop the linkage and the features become un-anchored (they appear in the file's PMI section but cannot be tied to any geometry). Bug-reporter language: "AP242 feature references missing entity", "GISU host face does not exist", "SHAPE_ASPECT dangling target".
 - **Reproducer recipe**: three `SHAPE_ASPECT` records (SLOT, GROOVE, BOSS) each linked through `GEOMETRIC_ITEM_SPECIFIC_USAGE(..,#9999)` where `#9999` is never declared.
 - **Expected kernel behavior**: reject the file at the cross-reference pass and name every dangling target; never silently drop feature linkages.
+- **Closure intent**: sheet
 - **Notes**: **See also**: Pmi091, M161 (cross-reference validation). Synonyms: "feature definition with dangling host face", "SLOT/GROOVE/BOSS link to nonexistent geometry", "GISU dangling reference", "AP242 feature linkage broken".
 - **Byte assertion**: contains(b'SLOT')
 - **Byte assertion**: contains(b'GROOVE')

@@ -351,6 +351,19 @@ _RE_BYTE_ASSERTION = re.compile(
 _RE_SEVERITY = re.compile(
     r"^- \*\*Severity\*\*:\s*(P[0-3])\s*$", re.MULTILINE,
 )
+# Closure intent for fixtures whose STEP bytes contain OPEN_SHELL or
+# SHELL_BASED_SURFACE_MODEL: "sheet" (intentional sheet body), "solid"
+# (accidentally-unclosed solid; heal target), or "ambiguous". When solid,
+# an optional Closure defect line records the defect kind.
+_RE_CLOSURE_INTENT = re.compile(
+    r"^- \*\*Closure intent\*\*:\s*(sheet|solid|ambiguous)\s*$", re.MULTILINE,
+)
+_RE_CLOSURE_DEFECT = re.compile(
+    r"^- \*\*Closure defect\*\*:\s*(gap|missing_face|unstitched_seam)\s*$", re.MULTILINE,
+)
+
+CLOSURE_INTENTS = ("sheet", "solid", "ambiguous")
+CLOSURE_DEFECTS = ("gap", "missing_face", "unstitched_seam")
 
 
 def _extract_provenance_tier(notes: str) -> str:
@@ -396,6 +409,10 @@ def build_entry(entry_id: str, title: str, fields: dict[str, str], block_text: s
     byte_assertions = _extract_assertions(block_text, _RE_BYTE_ASSERTION)
     severity_match = _RE_SEVERITY.search(block_text)
     severity = severity_match.group(1) if severity_match else None
+    closure_match = _RE_CLOSURE_INTENT.search(block_text)
+    closure_intent = closure_match.group(1) if closure_match else None
+    closure_defect_match = _RE_CLOSURE_DEFECT.search(block_text)
+    closure_defect = closure_defect_match.group(1) if closure_defect_match else None
 
     record = {
         "id": entry_id,
@@ -423,6 +440,8 @@ def build_entry(entry_id: str, title: str, fields: dict[str, str], block_text: s
         "cross_oracle_note": cross_oracle_note,
         "occ_behavior_note": occ_behavior_note,
         "severity": severity,
+        "closure_intent": closure_intent,
+        "closure_defect": closure_defect,
     }
     # Cross-cutting taxonomy tags. Derived deterministically from the
     # other fields above; the markdown stays human-readable and the JSON

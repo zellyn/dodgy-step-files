@@ -1,5 +1,18 @@
 # Changelog
 
+## v1.1 — closure_intent classification for open-shell fixtures
+
+263 fixtures whose STEP bytes use `OPEN_SHELL` or `SHELL_BASED_SURFACE_MODEL` now carry a `closure_intent` label (`sheet` / `solid` / `ambiguous`). The split exists because an open shell is ambiguous between two test intents whose correct kernel behavior is *opposite*: a sheet body is a model-capability test (a solid-only kernel should cleanly refuse); an accidentally-unclosed solid is a repair test (the same kernel must heal it). Without the label a consumer can't tell a correct refusal from a missed repair.
+
+Distribution: **206 sheet**, **30 solid**, **27 ambiguous**. Solid-intent entries also carry a `closure_defect` (`gap` / `missing_face` / `unstitched_seam`) where determinable.
+
+### Surface
+- Markdown: `- **Closure intent**: <value>` and optional `- **Closure defect**: <value>` bullets, parsed by `_build_catalog_json.py`.
+- JSON: `closure_intent` and `closure_defect` are new top-level fields on every catalog entry, `null` when the fixture has no open-shell context.
+- Schema: added to `schema/catalog.schema.json`.
+- Browse pages: per-fixture HTML now renders a "Closure intent" section with the kernel-routing blurb.
+- Rust crate: `CatalogEntry::closure_intent: Option<ClosureIntent>` + `closure_defect: Option<ClosureDefect>`, with a `by_closure_intent(ClosureIntent)` iterator helper.
+
 ## v1.0 — initial release
 
 The STEP corpus is presented as a single coherent reference. It contains:

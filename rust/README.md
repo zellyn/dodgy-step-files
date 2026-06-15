@@ -11,7 +11,7 @@ tag or commit:
 
 ```toml
 [dependencies]
-dodgy-step-files = { git = "https://github.com/zellyn/dodgy-step-files", tag = "v1.0.0" }
+dodgy-step-files = { git = "https://github.com/zellyn/dodgy-step-files", tag = "v1.1.0" }
 ```
 
 ## Usage
@@ -37,6 +37,15 @@ for f in by_tag("crash") {
 for f in by_section("12.10") {
     // f.entry.section == "12.10"
 }
+
+// Open-shell fixtures: distinguish intended sheet bodies from
+// accidentally-unclosed solids (heal targets). A solid-only kernel can
+// cleanly refuse `Sheet` fixtures; it must heal `Solid` fixtures.
+use dodgy_step_files::{by_closure_intent, ClosureIntent};
+for f in by_closure_intent(ClosureIntent::Solid) {
+    // f.entry.closure_defect: Option<ClosureDefect>
+    // (Gap / MissingFace / UnstitchedSeam when known)
+}
 ```
 
 `Fixture` is `Copy`. It holds a `&'static CatalogEntry` and `&'static [u8]` —
@@ -58,6 +67,7 @@ Every entry has at least:
   Python validator runs — from Rust they're documentation, not executable)
 - `see_also`, `sources`
 - `occ_behavior_note`, `cross_oracle_note`
+- `closure_intent` (`Sheet` / `Solid` / `Ambiguous`, `None` when the fixture has no open-shell context) and `closure_defect` (`Gap` / `MissingFace` / `UnstitchedSeam`, set only when `closure_intent == Solid`)
 
 See [`STEP_PROBLEM_CATALOG.md`](https://github.com/zellyn/dodgy-step-files/blob/main/STEP_PROBLEM_CATALOG.md)
 for the human-readable version and

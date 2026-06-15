@@ -144,7 +144,7 @@ The `rust/` directory ships a crate (`dodgy-step-files`) that embeds the full co
 
 ```toml
 [dependencies]
-dodgy-step-files = { git = "https://github.com/zellyn/dodgy-step-files", tag = "v1.0.0" }
+dodgy-step-files = { git = "https://github.com/zellyn/dodgy-step-files", tag = "v1.1.0" }
 ```
 
 ```rust

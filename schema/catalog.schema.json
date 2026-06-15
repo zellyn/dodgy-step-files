@@ -30,7 +30,9 @@
         "tier3_assertions",
         "see_also",
         "occ_behavior_note",
-        "cross_oracle_note"
+        "cross_oracle_note",
+        "closure_intent",
+        "closure_defect"
       ],
       "properties": {
         "id": {
@@ -192,6 +194,16 @@
           "description": "P0/P1/P2/P3 severity rank derived from the OCC behavior + Model impact; null for entries lacking an OCC behavior line. P0 = receiver crash/hang/OOM; P1 = silent data loss; P2 = spec deviation without data loss; P3 = cosmetic/metadata-only.",
           "type": ["string", "null"],
           "enum": ["P0", "P1", "P2", "P3", null]
+        },
+        "closure_intent": {
+          "description": "For fixtures whose STEP bytes use OPEN_SHELL or SHELL_BASED_SURFACE_MODEL: was the open topology the intended final geometry (sheet body / surface model), the symptom of an accidentally-unclosed solid (heal target), or undeterminable? Without this distinction a consumer can't tell a correct refusal of a sheet body from a missed repair of a should-be-solid. Null when the fixture has no open-shell context.",
+          "type": ["string", "null"],
+          "enum": ["sheet", "solid", "ambiguous", null]
+        },
+        "closure_defect": {
+          "description": "When closure_intent is 'solid', the defect kind that left the shell open: 'gap' (boundary edges almost meet but do not), 'missing_face' (a face that should be present is absent), or 'unstitched_seam' (faces present but not joined). Null when closure_intent != 'solid' or the defect kind is undeterminable.",
+          "type": ["string", "null"],
+          "enum": ["gap", "missing_face", "unstitched_seam", null]
         }
       }
     }

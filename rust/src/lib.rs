@@ -48,6 +48,44 @@ pub struct CatalogEntry {
     pub sources: Vec<String>,
     pub occ_behavior_note: Option<String>,
     pub cross_oracle_note: Option<String>,
+    /// For fixtures whose STEP bytes use `OPEN_SHELL` or
+    /// `SHELL_BASED_SURFACE_MODEL`: was the open topology the intended final
+    /// geometry (sheet), the symptom of an accidentally-unclosed solid (heal
+    /// target), or undeterminable? `None` when the fixture has no open-shell
+    /// context. A solid-only kernel can refuse `Sheet` fixtures cleanly; it
+    /// must heal `Solid` fixtures rather than refuse them.
+    pub closure_intent: Option<ClosureIntent>,
+    /// When `closure_intent == Some(Solid)`, the defect kind that left the
+    /// shell open. `None` when not applicable or not determinable.
+    pub closure_defect: Option<ClosureDefect>,
+}
+
+/// Authored intent for an open-shell fixture.
+#[derive(Deserialize, Debug, Clone, Copy, PartialEq, Eq)]
+#[serde(rename_all = "lowercase")]
+pub enum ClosureIntent {
+    /// The open shell is the intended final geometry (sheet body / surface
+    /// model). A solid-only kernel should cleanly refuse.
+    Sheet,
+    /// The fixture was authored as a solid that should close; openness is the
+    /// defect. A repair-oriented kernel should heal it shut.
+    Solid,
+    /// Even with authoring intent the closure question is undeterminable —
+    /// typically because the open shell is an incidental scaffold for a
+    /// surface- or face-level defect that isn't fundamentally about closure.
+    Ambiguous,
+}
+
+/// Defect kind that left a should-be-solid fixture open.
+#[derive(Deserialize, Debug, Clone, Copy, PartialEq, Eq)]
+#[serde(rename_all = "snake_case")]
+pub enum ClosureDefect {
+    /// Boundary edges almost meet but do not.
+    Gap,
+    /// A face that should be present is absent.
+    MissingFace,
+    /// Faces present but not joined along shared edges.
+    UnstitchedSeam,
 }
 
 /// A catalog entry paired with the raw bytes of its STEP file.
@@ -114,6 +152,16 @@ pub fn catalog() -> &'static [CatalogEntry] {
     &CATALOG
 }
 
+/// Iterate fixtures whose `closure_intent` matches `intent`. Useful for
+/// splitting open-shell fixtures into the "intended sheet body" vs
+/// "accidentally-unclosed solid" sub-corpora — a solid-only kernel can
+/// refuse the first cleanly but must heal the second.
+pub fn by_closure_intent(
+    intent: ClosureIntent,
+) -> impl Iterator<Item = Fixture<'static>> {
+    fixtures().filter(move |f| f.entry.closure_intent == Some(intent))
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -174,6 +222,46 @@ mod tests {
     fn by_section_returns_only_section_fixtures() {
         for f in by_section("12.10") {
             assert_eq!(f.entry.section, "12.10");
+        }
+    }
+
+    #[test]
+    fn closure_intent_labels_only_open_shell_fixtures() {
+        let labelled: Vec<_> = fixtures()
+            .filter(|f| f.entry.closure_intent.is_some())
+            .collect();
+        assert!(
+            labelled.len() >= 200,
+            "expected several hundred labelled open-shell fixtures, got {}",
+            labelled.len()
+        );
+        for f in &labelled {
+            let bytes = f.step_bytes;
+            let has_open = bytes
+                .windows(b"OPEN_SHELL".len())
+                .any(|w| w == b"OPEN_SHELL");
+            let has_sbsm = bytes
+                .windows(b"SHELL_BASED_SURFACE_MODEL".len())
+                .any(|w| w == b"SHELL_BASED_SURFACE_MODEL");
+            assert!(
+                has_open || has_sbsm,
+                "{} carries closure_intent but bytes have no OPEN_SHELL or SBSM",
+                f.entry.id
+            );
+        }
+    }
+
+    #[test]
+    fn closure_defect_only_set_when_intent_is_solid() {
+        for f in fixtures() {
+            if f.entry.closure_defect.is_some() {
+                assert_eq!(
+                    f.entry.closure_intent,
+                    Some(ClosureIntent::Solid),
+                    "{} has closure_defect but intent is not Solid",
+                    f.entry.id
+                );
+            }
         }
     }
 }
