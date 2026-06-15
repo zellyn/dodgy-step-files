@@ -7,24 +7,25 @@ v3's bar: every branch's description is rich enough to either RECREATE the defec
 
 | | Count |
 |---|---:|
-| Methods enumerated | 182 |
-| Repair branches | 1247 |
-| Low-confidence branches (need better prose) | 234 |
+| Methods enumerated | 278 |
+| Repair branches | 1915 |
+| Low-confidence branches (need better prose) | 247 |
 | Truncated worker outputs (need follow-up) | 0 |
 
 ## Defect-axis distribution
 
 | Axis | Count |
 |---|---:|
-| `healer-state` | 187 |
-| `kernel-pair` | 88 |
-| `input-shape` | 82 |
-| `tolerance` | 70 |
-| `api-contract` | 56 |
-| `unspecified` | 56 |
+| `unspecified` | 449 |
+| `healer-state` | 224 |
+| `input-shape` | 115 |
+| `kernel-pair` | 91 |
+| `tolerance` | 88 |
+| `api-contract` | 71 |
+| `general-branch` | 64 |
+| `conformance-probe` | 52 |
 | `control_flow_ambiguity` | 43 |
-| `conformance-probe` | 40 |
-| `encoding` | 9 |
+| `encoding` | 14 |
 | `tolerance_escalation` | 9 |
 | `pcurve` | 7 |
 | `initialization` | 6 |
@@ -52,6 +53,8 @@ v3's bar: every branch's description is rich enough to either RECREATE the defec
 | `Uninitialized variable` | 3 |
 | `TOLERANCE_ESCALATION` | 2 |
 | `PARAMETER_SYNC` | 2 |
+| `orientation_classification` | 2 |
+| `vertex_degenerate_case` | 2 |
 | `dependency_coupling` | 2 |
 | `mode_suppression` | 2 |
 | `null_check_silent` | 2 |
@@ -59,8 +62,11 @@ v3's bar: every branch's description is rich enough to either RECREATE the defec
 | `failure_suppression` | 2 |
 | `context_escape` | 2 |
 | `ordering_assumption` | 2 |
+| `topological_semantics` | 2 |
 | `degenerate_classification` | 2 |
 | `edge_classification` | 2 |
+| `location-transform` | 2 |
+| `vertex-already-on-edge` | 2 |
 | `shape-type-filter` | 2 |
 | `cardinality-dispatch` | 2 |
 | `split-validation` | 2 |
@@ -104,6 +110,25 @@ v3's bar: every branch's description is rich enough to either RECREATE the defec
 | `Parametrization: 3D!=2D -> Projection: param mismatch` | 1 |
 | `Scale: absolute tol -> Verdict: over-permissive for large edges` | 1 |
 | `Sampling: sparse -> Validation: incomplete` | 1 |
+| `Mode/configuration check before algorithm execution` | 1 |
+| `Surface topology constraint validation` | 1 |
+| `Face boundary classification (inner/outer)` | 1 |
+| `Edge degeneracy detection in candidate wires` | 1 |
+| `Seam edge classification in UV-periodic surfaces` | 1 |
+| `Shape type and orientation pre-filtering` | 1 |
+| `Wire edge count validation` | 1 |
+| `Wire closure topology check` | 1 |
+| `Face/wire relationship classification via point-in-face test` | 1 |
+| `Wire-to-subface mapping completeness` | 1 |
+| `Split success condition (must produce >1 face)` | 1 |
+| `Healing context transformation application` | 1 |
+| `Shape type and orientation filtering` | 1 |
+| `Surface type and wire count constraint` | 1 |
+| `Cone-wrapping loop topology validation` | 1 |
+| `Cone geometry validity (non-zero semi-angle)` | 1 |
+| `Apex positioning relative to wire bounds` | 1 |
+| `Apex curve construction and wire orientation adjustment (lower apex)` | 1 |
+| `Apex curve construction and wire orientation adjustment (upper apex)` | 1 |
 | `Input: degenerate face (no wires) -> Output: returns true without validation` | 1 |
 | `Logic: asymmetric init -> Geo: bounding box error if negative coords` | 1 |
 | `Sampling: single midpoint insufficient -> Geo: false negative for twisted edges` | 1 |
@@ -118,6 +143,35 @@ v3's bar: every branch's description is rich enough to either RECREATE the defec
 | `Param: expansion -> Continuity: G1 break at edge` | 1 |
 | `Periodicity: unwrapped param -> Dedup: fails` | 1 |
 | `Topology: seam direction -> Geometry: normal orientation ignored` | 1 |
+| `no_split_point` | 1 |
+| `closed_wire_rotation` | 1 |
+| `mixed_orientation_repair` | 1 |
+| `segment_finalization` | 1 |
+| `type_checking_shortcut` | 1 |
+| `edge_orientation_correction` | 1 |
+| `shape_type_filtering` | 1 |
+| `empty_structure` | 1 |
+| `orientation_traversal` | 1 |
+| `pcurve_availability` | 1 |
+| `hole_validation` | 1 |
+| `containment_ambiguity` | 1 |
+| `degenerate_topology` | 1 |
+| `orientation_inference` | 1 |
+| `hole_assignment` | 1 |
+| `vertex_projection` | 1 |
+| `residual_loop_promotion` | 1 |
+| `parametric_periodicity` | 1 |
+| `seam_pcurve_ambiguity` | 1 |
+| `degenerate_edge_pruning` | 1 |
+| `boundary_condition` | 1 |
+| `seam_adjustment` | 1 |
+| `edge_caching_orientation` | 1 |
+| `seam_pcurve_transform` | 1 |
+| `range_consistency` | 1 |
+| `curve3d_addition` | 1 |
+| `patch_grouping` | 1 |
+| `vertex_orientation_selection` | 1 |
+| `wire_extraction` | 1 |
 | `mode_override_cascade` | 1 |
 | `conditional_skip_wrong` | 1 |
 | `ordering_sensitivity` | 1 |
@@ -154,6 +208,12 @@ v3's bar: every branch's description is rich enough to either RECREATE the defec
 | `flag_sync_error` | 1 |
 | `identity_precision` | 1 |
 | `post_operation_validation` | 1 |
+| `null_safety_boundary` | 1 |
+| `orientation_semantics` | 1 |
+| `parameter_semantics` | 1 |
+| `tolerance_asymmetry` | 1 |
+| `geometric_heuristic` | 1 |
+| `exception_safety` | 1 |
 | `geometric_consistency` | 1 |
 | `parametric_topology` | 1 |
 | `geometric_topology` | 1 |
@@ -196,6 +256,31 @@ v3's bar: every branch's description is rich enough to either RECREATE the defec
 | `parametric_validation` | 1 |
 | `parametric_closure` | 1 |
 | `degenerate_flag_consistency` | 1 |
+| `vertex-already-at-endpoint` | 1 |
+| `param-at-boundary` | 1 |
+| `sameparameter-check` | 1 |
+| `null-curve-3d` | 1 |
+| `fallback-surface-path` | 1 |
+| `tolerance-mismatch` | 1 |
+| `parameter-order` | 1 |
+| `range-too-small` | 1 |
+| `range-precision` | 1 |
+| `pcurve-not-sameparam` | 1 |
+| `trimmed-curve-type` | 1 |
+| `line-trimmed-basis` | 1 |
+| `range-redundant-check` | 1 |
+| `pcurve-extraction` | 1 |
+| `bspline-bounds` | 1 |
+| `distance-minimum` | 1 |
+| `vertex-distinct-distance` | 1 |
+| `distance-second-min` | 1 |
+| `vertex-swap-distance` | 1 |
+| `distance-third-min` | 1 |
+| `vertex-last-first` | 1 |
+| `distance-fourth-case` | 1 |
+| `vertex-both-last` | 1 |
+| `endpoint-selection` | 1 |
+| `split-forced` | 1 |
 | `state management, cache invalidation` | 1 |
 | `null pointer safety` | 1 |
 | `conical degeneracy, apex detection` | 1 |
@@ -271,7 +356,6 @@ v3's bar: every branch's description is rich enough to either RECREATE the defec
 | `wire_loading` | 1 |
 | `result_topology` | 1 |
 | `wire_topology` | 1 |
-| `orientation_classification` | 1 |
 | `edge_ordering` | 1 |
 | `periodicity_handling` | 1 |
 | `intersection_classification` | 1 |
@@ -1474,6 +1558,101 @@ v3's bar: every branch's description is rich enough to either RECREATE the defec
 - **Search anchors**: 'success = (nbCandidates != 0)', 'return success'
 
 
+#### `BRepBuilderAPI_Sewing.Merging_at3791`
+ (13 branches; 1 low-confidence; source: `v3-deep-batch-NN.json`)
+
+##### `Merging.free_edge_vertex_replace_3823`
+- **Line**: 3823  **Axis**: `healer-state`
+- **Brief**: Free edge vertex replacement (nno1) is applied to original edge without checking if replacement preserves shared vertex topology.
+- **Falsifiable claim**: Without shared-vertex validation, replacing nno1 on one free edge may conflict with same vertex used by adjacent edges. To test: two free edges sharing vertex; replace vertex in first edge; second edge still references old vertex.
+- **Minimal reproducer**: Build two free edges (no1, no2) and (no2, no3) sharing no2; replace no2 with nno2 in first edge; myReShape->Replace(no2, nno2) is called once; second edge's no2 reference is stale.
+- **Search anchors**: 'myVertexNodeFree.Contains', 'myReShape->Replace', 'nno1'
+
+##### `Merging.cut_section_early_break_4106`
+- **Line**: 4106  **Axis**: `healer-state`
+- **Brief**: Cutting section iteration breaks early (line 4110) if isMerged=true but MergedWithSections is incompletely processed.
+- **Falsifiable claim**: Without complete iteration, remaining cutting sections are not evaluated for merging; subsequent iterations skip them. To test: bound with 3 cutting sections; first section merge succeeds while isMerged=true; break statement skips sections 2-3.
+- **Minimal reproducer**: Loop over myBoundSections(bound) at line 3982; in first iteration, MergedNearestEdges succeeds; isMerged=true from earlier; at line 4106, isMerged && !isMergedSplit triggers break; remaining sections not processed.
+- **Search anchors**: 'isMerged', 'isMergedSplit', 'break', 'myBoundSections'
+
+##### `Merging.merged_edge_orientation_3938`
+- **Line**: 3938  **Axis**: `healer-state`
+- **Brief**: Merged edge orientation is reversed if !isForward without validating that reversal is idempotent.
+- **Falsifiable claim**: Without idempotence check, double-reversal (isForward=true, then reversed in line 3940-3941) produces incorrect orientation. To test: track isForward through two merging passes; orientation flips unexpectedly.
+- **Minimal reproducer**: Create MergedEdge with isForward=true; if !isForward condition is false, skip line 3941; but if seqMergedWithBoundOri(ii)=false, line 3945 reverses again; net effect depends on execution order.
+- **Search anchors**: 'isForward', 'TopAbs::Reverse', 'seqMergedWithBoundOri(ii)'
+
+##### `Merging.actually_merged_map_inconsistency_3934`
+- **Line**: 3934  **Axis**: `healer-state`
+- **Brief**: ActuallyMerged map only records edges that passed SameParameterEdge(), but MergedWithBound contains all candidates.
+- **Falsifiable claim**: Without map synchronization, nbActuallyMerged < nbMerged silently; subsequent loop skips non-merged edges without reporting why. To test: SameParameterEdge() rejects an edge; it remains in seqMergedWithBound but not in ActuallyMerged; line 3935 condition fails for that edge.
+- **Minimal reproducer**: seqMergedWithBound contains [edge1, edge2, edge3]; SameParameterEdge() successfully merges only edge1 and edge3; ActuallyMerged.Contains(edge2)=false at line 3934; edge2 is removed at line 3951 silently.
+- **Search anchors**: 'ActuallyMerged', 'ActuallyMerged.Contains', 'MergedWithBound.RemoveKey'
+
+##### `Merging.section_bound_cycle_3891`
+- **Line**: 3891  **Axis**: `healer-state`
+- **Brief**: mySectionBound lookup at line 3891 may retrieve a bound that was already merged, causing circular replacement attempts.
+- **Falsifiable claim**: Without cycle detection, mySectionBound(iedge) → bnd → myMergedEdges.Contains(bnd) creates redundant checks and potential infinite merging. To test: edge marked as section; its bound was already merged; line 3896 rejects edge unnecessarily.
+- **Minimal reproducer**: myBoundSections[bound]={section1}; mySectionBound[section1]=bound; earlier iteration merged bound; at line 3891, mySectionBound.IsBound(section1)=true; line 3894 retrieves bound; line 3896 checks myMergedEdges.Contains(bound)=true; isRejected=true.
+- **Search anchors**: 'mySectionBound.IsBound', 'mySectionBound', 'myMergedEdges.Contains'
+
+##### `Merging.sections_reshape_scope_3976` **[low-confidence]**
+- **Line**: 3976  **Axis**: `healer-state`
+- **Brief**: SectionsReShape is created locally but may hold references to previously-merged sections from prior iterations.
+- **Falsifiable claim**: Without SectionsReShape reset per iteration, old replacement rules persist across merging cycles. To test: first bound's sections merged; second bound's sections reference same vertices; SectionsReShape still holds first bound's rules.
+- **Minimal reproducer**: Iteration 1: bound1 → section1 merged, SectionsReShape holds rule. Iteration 2: bound2 → section2 created; SectionsReShape is new (line 3976) but section2 may reference vertices from section1; Apply() at line 4197 uses stale transformations.
+- **Search anchors**: 'SectionsReShape', 'new BRepTools_ReShape', 'ReplaceEdge'
+
+##### `Merging.tolerance_comparison_4178`
+- **Line**: 4178  **Axis**: `tolerance`
+- **Brief**: MinSplitTol initialization to RealLast() is correct, but loop at line 4174 may skip empty MapSplitEdges, leaving MinSplitTol unchanged.
+- **Falsifiable claim**: Without empty-map check, MinSplitTol stays RealLast() if MapSplitEdges is empty, causing isSplitted comparison at line 4183 to use invalid tolerance. To test: all split edges removed from map; MinSplitTol remains RealLast().
+- **Minimal reproducer**: MapSplitEdges is populated then all entries removed by lines 4154-4168; loop at line 4174 has Extent()=0; loop body never executes; MinSplitTol = RealLast(); comparison at line 4183 uses extreme value.
+- **Search anchors**: 'RealLast()', 'MapSplitEdges.Extent()', 'MinSplitTol = std::min'
+
+##### `Merging.bound_not_added_4227`
+- **Line**: 4227  **Axis**: `healer-state`
+- **Brief**: Bound is added to myMergedEdges only if !myMergedEdges.Contains(bound), but earlier code paths may have already added it.
+- **Falsifiable claim**: Without earlier-add check, bound may be added twice or skipped entirely depending on code path. To test: trace execution through isSplitted=true branch; line 4191 is executed; later bound is conditionally added at 4229; double-add or missing-add possible.
+- **Minimal reproducer**: If isSplitted=true, line 4191 replaces bound; myMergedEdges.Add(bound) is never called for isSplitted case; at line 4227, condition checks !myMergedEdges.Contains(bound); if true, bound is added.
+- **Search anchors**: '!myMergedEdges.Contains(bound)', 'myMergedEdges.Add', 'isSplitted'
+
+##### `Merging.nearest_edges_rejection_3875`
+- **Line**: 3875  **Axis**: `healer-state`
+- **Brief**: MergedNearestEdges result is assumed successful if seqMergedWithBound is populated, but early rejection at line 3875-3877 may prevent proper validation.
+- **Falsifiable claim**: Without explicit success flag, rejected edges silently reduce nbMerged count, but MergedWithBound logic assumes successful merging. To test: MergedNearestEdges returns true with seqMergedWithBound containing rejected edges; isRejected logic removes them; nbMerged may become zero despite MergedWithBound initialization.
+- **Minimal reproducer**: MergedNearestEdges(bound, seqMergedWithBound, ...) populates seqMergedWithBound; all entries are in myMergedEdges; loop at line 3871-3913 removes all via isRejected=true; nbMerged=0; line 3915 check fails.
+- **Search anchors**: 'isRejected', 'MergedWithBound.Add', 'nbMerged = seqMergedWithBound.Length()'
+
+##### `Merging.edge_orientation_propagation_4077`
+- **Line**: 4077  **Axis**: `healer-state`
+- **Brief**: ReplaceEdge is called with oedge (result of MergedEdge.Oriented()), but subsequent SectionsReShape->Apply() at line 4197 may re-orient it again.
+- **Falsifiable claim**: Without apply-order validation, edge orientation is set via ReplaceEdge, then Apply() re-orients; net orientation is unpredictable. To test: track edge orientation through line 4079 and 4197; observe double-application.
+- **Minimal reproducer**: Line 4077: oedge = MergedEdge.Oriented(orient) with orient=FORWARD; line 4079: ReplaceEdge(..., oedge, SectionsReShape); later line 4197: SectionsReShape->Apply(anItm.Value()) applies another transformation to oedge.
+- **Search anchors**: 'ReplaceEdge', 'SectionsReShape->Apply', 'MergedEdge.Oriented'
+
+##### `Merging.bound_sections_unbind_inconsistency_4202`
+- **Line**: 4202  **Axis**: `healer-state`
+- **Brief**: myBoundSections.UnBind(oldedge) is called inside isSplitted branch but not checked in non-isSplitted branch until line 4223.
+- **Falsifiable claim**: Without uniform unbind, myBoundSections state diverges between isSplitted and non-isSplitted paths. To test: split and non-split bounds; myBoundSections entries persist in one path but not the other.
+- **Minimal reproducer**: isSplitted=true: loop at 4192-4204 unbinds oldedge sections; isSplitted=false: loop at 4210-4222 unbinds, then line 4223-4225 unbinds bound itself; state is consistent only if both paths execute identically.
+- **Search anchors**: 'myBoundSections.UnBind', 'isSplitted', 'myBoundSections.IsBound'
+
+##### `Merging.vertex_node_clear_4234`
+- **Line**: 4234  **Axis**: `healer-state`
+- **Brief**: myVertexNode and myVertexNodeFree are cleared after myNbVertices is computed, but computation uses myVertexNodeFree.Extent() which may give stale count.
+- **Falsifiable claim**: Without pre-clear count, myNbVertices reflects state after free edges were processed, but node structures were modified during Merging; count is inaccurate. To test: verify myNbVertices before and after merging; mismatch expected.
+- **Minimal reproducer**: myVertexNode.Extent()=5, myVertexNodeFree.Extent()=3; during merging, vertices are replaced; line 4234 computes myNbVertices=8; then Clear() removes entries; subsequent operations use stale myNbVertices.
+- **Search anchors**: 'myNbVertices', 'myVertexNode.Clear()', 'myVertexNodeFree.Extent()'
+
+##### `Merging.progress_scope_continuation_3798`
+- **Line**: 3798  **Axis**: `api-contract`
+- **Brief**: aPS.More() and aPS.Next() are checked in loop condition, but early-continue statements bypass aPS.Next(), causing progress tracking desynchronization.
+- **Falsifiable claim**: Without forced aPS.Next(), early continues cause progress to advance inconsistently. To test: trace continue statements; aPS.Next() is skipped; progress bar may hang or miscount.
+- **Minimal reproducer**: Loop at line 3798: for (; anIterB.More() && aPS.More(); anIterB.Next(), aPS.Next()); at line 3806 or 3834: continue; aPS.Next() is NOT executed; loop continues with aPS.More()=true but internal counter out of sync.
+- **Search anchors**: 'Message_ProgressScope', 'aPS.More()', 'aPS.Next()', 'continue'
+
+
 #### `BRepBuilderAPI_Sewing.Perform`
  (6 branches; source: `v3-deep-batch-C.json`)
 
@@ -1861,6 +2040,24 @@ v3's bar: every branch's description is rich enough to either RECREATE the defec
 - **Search anchors**: 'myBoundFaces.Contains'
 
 
+#### `BRepBuilderAPI_Sewing.SameParameterShape_at5883`
+ (2 branches; source: `v3-deep-batch-NN.json`)
+
+##### `SameParameterShape.exception_swallow_5898`
+- **Line**: 5898  **Axis**: `conformance-probe`
+- **Brief**: Standard_Failure exception is caught and silently continued without logging failure reason or incrementing error counter.
+- **Falsifiable claim**: Without exception logging, callers cannot diagnose SameParameter failures; malformed edges are silently skipped. To test: provide edge that causes BRepLib::SameParameter to throw; no error indication to caller.
+- **Minimal reproducer**: Construct edge with inconsistent 3D curve and pcurves; BRepLib::SameParameter throws Standard_Failure; catch block at line 5898 executes continue; no diagnostic output; operation appears successful.
+- **Search anchors**: 'catch (Standard_Failure const&)', 'continue', 'OCCT_DEBUG'
+
+##### `SameParameterShape.early_return_guard_5884`
+- **Line**: 5884  **Axis**: `api-contract`
+- **Brief**: mySameParameterMode=false causes early return without warning that SameParameter processing is disabled.
+- **Falsifiable claim**: Without mode-disabled notification, callers assume SameParameter was applied when it was skipped. To test: call SameParameterShape with mySameParameterMode=false; subsequent operations fail silently.
+- **Minimal reproducer**: BRepBuilderAPI_Sewing::SetSameParameterMode(false); call Sewing with Shape; call SameParameterShape(); no edges are modified; but external code assumes they are.
+- **Search anchors**: 'mySameParameterMode', 'return', 'TopExp_Explorer'
+
+
 #### `BRepBuilderAPI_Sewing.SameParameter_at330`
  (1 branches; source: `v3-deep-batch-Y.json`)
 
@@ -1921,6 +2118,59 @@ v3's bar: every branch's description is rich enough to either RECREATE the defec
 
 
 ### BRepLib
+
+#### `BRepLib.BoundingVertex_at3016`
+ (7 branches; 2 low-confidence; source: `v3-deep-batch-NN.json`)
+
+##### `BoundingVertex.two_vertex_case_3048` **[low-confidence]**
+- **Line**: 3048  **Axis**: `tolerance`
+- **Brief**: dR calculation (aR[m] - aR[n]) assumes aR[m] >= aR[n] but swap logic at line 3042-3045 may not guarantee this in all paths.
+- **Falsifiable claim**: Without guaranteed ordering, dR can be negative in edge cases; subsequent comparison at line 3052 uses wrong dR value. To test: provide two vertices with equal tolerance; swap logic may not execute; dR==0 is correct but reasoning assumes dR>=0.
+- **Minimal reproducer**: aR[0]=aR[1]=0.5; swap at line 3042 condition is false; m=0, n=1; dR = aR[0]-aR[1]=0; logic proceeds correctly since dR==0, but assumption is violated.
+- **Search anchors**: 'dR = aR[m] - aR[n]', 'aR[0] < aR[1]', 'm = 1; n = 0'
+
+##### `BoundingVertex.distance_calculation_3049`
+- **Line**: 3049  **Axis**: `input-shape`
+- **Brief**: aVD is computed as vector from aP[m] to aP[n], but subsequent aD calculation uses Magnitude without validating that points are distinct.
+- **Falsifiable claim**: Without distinct-point check, aD=0 if vertices coincide; line 3052 condition aD <= dR || aD < aEps both trigger; resulting tolerance selection may be suboptimal. To test: two vertices at same location; aD=0; theNewTol = aR[m] may be too large.
+- **Minimal reproducer**: aP[0]=aP[1]=(x,y,z); gp_Vec aVD(aP[m], aP[n]) creates zero vector; aD = Magnitude() = 0; condition at line 3052 is true; theNewTol = aR[m].
+- **Search anchors**: 'gp_Pnt aP[2]', 'gp_Vec aVD', 'aD.Magnitude()'
+
+##### `BoundingVertex.epsilon_comparison_3052`
+- **Line**: 3052  **Axis**: `tolerance`
+- **Brief**: RealEpsilon() is used as distance threshold without considering geometry scale; epsilon may be too small for large coordinates.
+- **Falsifiable claim**: Without scale-aware epsilon, large-coordinate geometry fails the aD < aEps check; incorrect center is computed. To test: vertices at (1e6, 1e6, 1e6); aD < RealEpsilon() is false even if points are effectively coincident.
+- **Minimal reproducer**: aP[0]=(1e6, 0, 0), aP[1]=(1e6 + 1e-15, 0, 0); aD ≈ 1e-15; aEps = RealEpsilon() ≈ 2e-16; condition aD < aEps is false; computation proceeds even though points coincide at scale.
+- **Search anchors**: 'aEps = RealEpsilon()', 'aD < aEps', 'aD <= dR'
+
+##### `BoundingVertex.square_distance_sqrt_3111`
+- **Line**: 3111  **Axis**: `tolerance`
+- **Brief**: aDi uses SquareDistance but then takes sqrt; intermediate aDi value is not validated against precision before sqrt.
+- **Falsifiable claim**: Without sqrt validation, negative SquareDistance (due to floating-point error) causes NaN. To test: vertices very close to computed center; SquareDistance due to rounding is negative; sqrt fails.
+- **Minimal reproducer**: aP computed as average; aP.SquareDistance(aPi) returns -1e-16 due to rounding; sqrt(-1e-16) returns NaN; aDi = NaN; subsequent aDi > aDmax fails.
+- **Search anchors**: 'aDi = aP.SquareDistance(aPi)', 'sqrt(aDi)', 'aDi + aTi'
+
+##### `BoundingVertex.coordinate_sort_stability_3090`
+- **Line**: 3090  **Axis**: `tolerance`
+- **Brief**: std::sort using BRepLib_ComparePoints() reorders vertices by coordinate; subsequent summation at line 3095 may cause Kahan summation errors.
+- **Falsifiable claim**: Without order-invariant summation, sorted coordinate sum may differ from unsorted sum; issue 0027540 is partially addressed but summation precision is still O(aN). To test: permute vertex order; recompute aXYZ; result differs beyond epsilon.
+- **Minimal reproducer**: Unsorted: vertices with x=[1e10, 1, 1e-10]; sum=1e10+2. Sorted: sum=(1e10+1)+1e-10 due to limited precision in floating-point; aXYZ differs.
+- **Search anchors**: 'std::sort', 'BRepLib_ComparePoints()', 'aXYZ += aPoints(i).XYZ()'
+
+##### `BoundingVertex.aNb_division_3097` **[low-confidence]**
+- **Line**: 3097  **Axis**: `tolerance`
+- **Brief**: aXYZ.Divide((double)aNb) may lose precision if aNb is very large; no accumulation of division error is checked.
+- **Falsifiable claim**: Without precision tracking, large-vertex-count averaging loses precision; theNewCenter has unvalidated error. To test: 1e6 vertices; divide operation accumulates relative error ~1e-6; theNewCenter is inaccurate at scale.
+- **Minimal reproducer**: aNb=1e6; aXYZ accumulated over 1e6 points; aXYZ.Divide(1e6) causes relative rounding at ~1e-6; theNewCenter offset from true average.
+- **Search anchors**: 'aXYZ.Divide', '(double)aNb', 'aXYZ += aPoints'
+
+##### `BoundingVertex.initialization_default_3104`
+- **Line**: 3104  **Axis**: `input-shape`
+- **Brief**: aDmax is initialized to -1.0 without validation that loop will execute; if theLV is empty, aDmax stays -1.0, causing theNewTol=-1.0.
+- **Falsifiable claim**: Without empty-list guard, aDmax=-1.0 is returned as theNewTol for degenerate input. To test: call BoundingVertex with empty vertex list; theNewTol=-1.0 is invalid.
+- **Minimal reproducer**: aNb=0 at line 3019; function returns at line 3022; if aNb>2 branch at line 3075 is executed; aDmax=-1.0 initialized; loop at line 3106 has Extent()=0; theNewTol=-1.0.
+- **Search anchors**: 'aDmax = -1.', 'aIt.More()', 'theNewTol = aDmax'
+
 
 #### `BRepLib.BuildCurve3d`
  (3 branches; 2 low-confidence; source: `v3-deep-batch-J.json`)
@@ -2881,6 +3131,66 @@ v3's bar: every branch's description is rich enough to either RECREATE the defec
 - **Search anchors**: 'parextr = par', 'SearchForExtremum(C2d, aPar1, aPar2'
 
 
+#### `ShapeAnalysis_Curve.GetSamplePoints_at1262`
+ (8 branches; source: `v3-deep-batch-JJ.json`)
+
+##### `?`
+- **Line**: 1264  **Axis**: `?`
+
+##### `?`
+- **Line**: 1271  **Axis**: `?`
+
+##### `?`
+- **Line**: 1275  **Axis**: `?`
+
+##### `?`
+- **Line**: 1279  **Axis**: `?`
+
+##### `?`
+- **Line**: 1284  **Axis**: `?`
+
+##### `?`
+- **Line**: 1289  **Axis**: `?`
+
+##### `?`
+- **Line**: 1294  **Axis**: `?`
+
+##### `?`
+- **Line**: 1299  **Axis**: `?`
+
+
+#### `ShapeAnalysis_Curve.GetSamplePoints_at1321`
+ (5 branches; source: `v3-deep-batch-JJ.json`)
+
+##### `?`
+- **Line**: 1325  **Axis**: `?`
+
+##### `?`
+- **Line**: 1327  **Axis**: `?`
+
+##### `?`
+- **Line**: 1331  **Axis**: `?`
+
+##### `?`
+- **Line**: 1332  **Axis**: `?`
+
+##### `?`
+- **Line**: 1336  **Axis**: `?`
+
+
+#### `ShapeAnalysis_Curve.IsClosed_at1425`
+ (3 branches; source: `v3-deep-batch-JJ.json`)
+
+##### `?`
+- **Line**: 1426  **Axis**: `?`
+
+##### `?`
+- **Line**: 1437  **Axis**: `?`
+
+##### `?`
+- **Line**: 1442  **Axis**: `?`
+
+
 #### `ShapeAnalysis_Curve.IsPlanar_at1100`
  (4 branches; 2 low-confidence; source: `v3-deep-batch-L.json`)
 
@@ -2994,6 +3304,31 @@ v3's bar: every branch's description is rich enough to either RECREATE the defec
 - **Search anchors**: 'anIsHaveOldSolution', 'use anOldProj', 'theProjPoint = anOldProj'
 
 
+#### `ShapeAnalysis_Curve.Project_at132`
+ (3 branches; 1 low-confidence; source: `v3-deep-batch-OO.json`)
+
+##### `Project.parameterOrder.ascending`
+- **Line**: 135  **Axis**: `api-contract`
+- **Brief**: Curve parameter order validation: uMin < uMax guards normal delegation.
+- **Falsifiable claim**: Without uMin < uMax check, reversed parameters are not swapped before projection. To test: Curve with FirstParameter() > LastParameter(); without: Project fails or projects to wrong range. With: parameters swapped.
+- **Minimal reproducer**: Construct curve with reversed parametrization (e.g., last=-1, first=1). Call Project(curve, point). Without: uMin=1, uMax=-1 passed to overload. With: uMax=1, uMin=-1 passed (swapped).
+- **Search anchors**: 'Project', 'FirstParameter', 'LastParameter', 'parameter order'
+
+##### `Project.parameterOrder.reversed`
+- **Line**: 141  **Axis**: `conformance-probe`
+- **Brief**: Fallback invocation for reversed parameter ranges (uMin >= uMax).
+- **Falsifiable claim**: Without else clause for uMax >= uMin case, reversed parametrizations cause undefined behavior in projection overload. To test: Curve with FirstParameter >= LastParameter; observer: parameters swapped in call.
+- **Minimal reproducer**: Curve c with range [10, -5]; Project(c, pt). Without else: uMin=10, uMax=-5 forwarded. With: uMax=10, uMin=-5 forwarded.
+- **Search anchors**: 'Project', 'uMax', 'uMin', 'reversed'
+
+##### `Project.degenerate.emptyRange` **[low-confidence]**
+- **Line**: 138  **Axis**: `input-shape`
+- **Brief**: Edge case: parameters equal (uMin == uMax) treated as ascending.
+- **Falsifiable claim**: Without guard, single-point curves (FirstParameter==LastParameter) are projected with zero-length range. To test: Construct point-like curve; Project() observer: range is [p, p].
+- **Minimal reproducer**: Curve where first==last (degenerate to single parameter). Call Project. Observer: invokes overload with uMin=uMax.
+- **Search anchors**: 'Project', 'degenerate', 'equal parameters'
+
+
 #### `ShapeAnalysis_Curve.Project_at155`
  (2 branches; source: `v3-deep-batch-L.json`)
 
@@ -3074,6 +3409,10 @@ v3's bar: every branch's description is rich enough to either RECREATE the defec
 
 
 ### ShapeAnalysis_Edge
+
+#### `ShapeAnalysis_Edge.BoundUV_at78`
+ (0 branches; source: `v3-deep-batch-DD.json`)
+
 
 #### `ShapeAnalysis_Edge.CheckCurve3dWithPCurve`
  (4 branches; source: `v3-deep-batch-I.json`)
@@ -3220,6 +3559,24 @@ v3's bar: every branch's description is rich enough to either RECREATE the defec
 - **Search anchors**: '!IsPeriodic', 'theFirst < fp', 'theLast > lp'
 
 
+#### `ShapeAnalysis_Edge.CheckPoints_at435`
+ (2 branches; 1 low-confidence; source: `v3-deep-batch-DD.json`)
+
+##### `SQUARED_DISTANCE_THRESHOLD`
+- **Line**: 437  **Axis**: `tolerance_asymmetry`
+- **Brief**: Separate squared-distance checks for two point pairs with asymmetric precision
+- **Falsifiable claim**: Condition P1A.SquareDistance(P2A) <= preci1² && P1B.SquareDistance(P2B) <= preci2² conflates two independent tolerances; no mixed-tolerance path
+- **Minimal reproducer**: P1A/P2A within preci1, P1B/P2B outside preci2; returns false despite one pair passing
+- **Search anchors**: 'SquareDistance', 'preci1', 'preci2', 'Distance'
+
+##### `CROSS_DISTANCE_SWAP_DETECTION` **[low-confidence]**
+- **Line**: 441  **Axis**: `geometric_heuristic`
+- **Brief**: Heuristic swap detection without signed area or winding validation
+- **Falsifiable claim**: Branch detects potential point-pair swap via cross-distance comparison; no topological or orientation validation
+- **Minimal reproducer**: Four colinear points; heuristic fires regardless of actual swap semantics
+- **Search anchors**: 'Distance', 'P1A', 'P1B', 'P2A', 'P2B'
+
+
 #### `ShapeAnalysis_Edge.CheckSameParameter`
  (3 branches; 1 low-confidence; source: `v3-deep-batch-B.json`)
 
@@ -3337,6 +3694,35 @@ v3's bar: every branch's description is rich enough to either RECREATE the defec
 - **Search anchors**: 'Distance', 'preci', 'DONE2'
 
 
+#### `ShapeAnalysis_Edge.Curve3d_at106`
+ (2 branches; source: `v3-deep-batch-DD.json`)
+
+##### `CURVE3D_NULL_CHECK`
+- **Line**: 109  **Axis**: `null_safety_boundary`
+- **Brief**: Nested null-check and identity-check on curve and location
+- **Falsifiable claim**: Branch condition !C3d.IsNull() && !L.IsIdentity() may suppress location transformation logic when only one fails
+- **Minimal reproducer**: Edge with null curve or identity location transformation
+- **Search anchors**: 'BRep_Tool::Curve', 'Transformed', 'TransformedParameter'
+
+##### `EDGE_ORIENTATION_REVERSAL`
+- **Line**: 117  **Axis**: `orientation_semantics`
+- **Brief**: Parameter swap on edge orientation reversal without validation
+- **Falsifiable claim**: Reversed edge causes blind parameter swap (cf, cl); no bounds check post-swap
+- **Minimal reproducer**: REVERSED edge with parameters cf > cl after swap
+- **Search anchors**: 'TopAbs_REVERSED', 'TransformedParameter', 'Orientation'
+
+
+#### `ShapeAnalysis_Edge.FirstVertex_at229`
+ (1 branches; 1 low-confidence; source: `v3-deep-batch-DD.json`)
+
+##### `VERTEX_ORIENTATION_BRANCH` **[low-confidence]**
+- **Line**: 231  **Axis**: `topological_semantics`
+- **Brief**: Vertex extraction diverges on edge orientation; no equivalence proof
+- **Falsifiable claim**: REVERSED branch selects LastVertex then reverses; FORWARD selects FirstVertex; semantic equivalence unvalidated
+- **Minimal reproducer**: Edge with REVERSED orientation; verify FirstVertex(LastVertex_reversed) == FirstVertex(FirstVertex)
+- **Search anchors**: 'TopAbs_REVERSED', 'FirstVertex', 'LastVertex', 'Reverse'
+
+
 #### `ShapeAnalysis_Edge.GetEndTangent2d`
  (10 branches; 2 low-confidence; source: `v3-deep-batch-I.json`)
 
@@ -3411,7 +3797,391 @@ v3's bar: every branch's description is rich enough to either RECREATE the defec
 - **Search anchors**: 'Orientation', 'REVERSED', 'Reverse'
 
 
+#### `ShapeAnalysis_Edge.LastVertex_at246`
+ (1 branches; 1 low-confidence; source: `v3-deep-batch-DD.json`)
+
+##### `VERTEX_ORIENTATION_BRANCH` **[low-confidence]**
+- **Line**: 248  **Axis**: `topological_semantics`
+- **Brief**: Vertex extraction diverges on edge orientation; no equivalence proof
+- **Falsifiable claim**: REVERSED branch selects FirstVertex then reverses; FORWARD selects LastVertex; semantic equivalence unvalidated
+- **Minimal reproducer**: Edge with REVERSED orientation; verify LastVertex(FirstVertex_reversed) == LastVertex(LastVertex)
+- **Search anchors**: 'TopAbs_REVERSED', 'FirstVertex', 'LastVertex', 'Reverse'
+
+
+#### `ShapeAnalysis_Edge.PCurve_at177`
+ (0 branches; source: `v3-deep-batch-DD.json`)
+
+
+#### `ShapeAnalysis_Edge.PCurve_at199`
+ (1 branches; source: `v3-deep-batch-DD.json`)
+
+##### `ORIENTATION_PARAMETER_SWAP`
+- **Line**: 201  **Axis**: `parameter_semantics`
+- **Brief**: Conditional parameter reversal on edge orientation without validation
+- **Falsifiable claim**: If orient=true and edge.Orientation()=REVERSED, cf/cl swap executed unconditionally; no post-swap range check
+- **Minimal reproducer**: REVERSED edge with orient=true; cf > cl after swap violates parameter bounds
+- **Search anchors**: 'TopAbs_REVERSED', 'orient', 'cf', 'cl'
+
+
+### ShapeAnalysis_FreeBounds
+
+#### `ShapeAnalysis_FreeBounds.ConnectEdgesToWires_at139`
+ (3 branches; source: `v3-deep-batch-GG.json`)
+
+##### `?`
+- **Line**: 147  **Axis**: `?`
+
+##### `?`
+- **Line**: 151  **Axis**: `?`
+
+##### `?`
+- **Line**: 153  **Axis**: `?`
+
+
+#### `ShapeAnalysis_FreeBounds.DispatchWires_at613`
+ (5 branches; source: `v3-deep-batch-OO.json`)
+
+##### `DispatchWires.nullClosed.init`
+- **Line**: 616  **Axis**: `api-contract`
+- **Brief**: Closed-wire compound creation guard: auto-constructs if null.
+- **Falsifiable claim**: Without check for closed.IsNull(), null closed reference is not initialized to compound, causing null dereference in subsequent B.Add(). To test: pass null closed; without: crash on Add. With: MakeCompound initializes.
+- **Minimal reproducer**: ShapeAnalysis_FreeBounds ana; ana.DispatchWires(wires, null_closed, open_compound). Without: null dereference. With: closed auto-initialized to compound.
+- **Search anchors**: 'DispatchWires', 'closed', 'IsNull', 'MakeCompound'
+
+##### `DispatchWires.nullOpen.init`
+- **Line**: 620  **Axis**: `api-contract`
+- **Brief**: Open-wire compound creation guard: auto-constructs if null.
+- **Falsifiable claim**: Without check for open.IsNull(), null open reference is not initialized, causing crash when adding open wires. To test: pass null open; without: dereference fail. With: MakeCompound initializes.
+- **Minimal reproducer**: DispatchWires(wires, closed_cmpd, null_open). Without: crash on B.Add(open, wire). With: open auto-initialized.
+- **Search anchors**: 'DispatchWires', 'open', 'IsNull', 'MakeCompound'
+
+##### `DispatchWires.nullWires.earlyReturn`
+- **Line**: 624  **Axis**: `input-shape`
+- **Brief**: Early-exit guard for null/empty wire list.
+- **Falsifiable claim**: Without wires.IsNull() check, loop iteration on null reference causes undefined behavior or exception. To test: DispatchWires(null_wires, closed, open); without: iteration fault. With: returns early.
+- **Minimal reproducer**: DispatchWires(null_wire_seq, closed, open). Without: loop Init on null fails. With: returns early.
+- **Search anchors**: 'DispatchWires', 'wires', 'IsNull', 'early return'
+
+##### `DispatchWires.closedWire.dispatch`
+- **Line**: 630  **Axis**: `input-shape`
+- **Brief**: Closed-wire predicate routes wire to closed compound.
+- **Falsifiable claim**: Without wires->Value(iw).Closed() check, open wires would be added to closed compound. To test: mixed open+closed wires; observer: closed wires separated.
+- **Minimal reproducer**: Wire sequence with closed and open wires. DispatchWires(seq, closed, open). Observer: closed wires in closed compound only.
+- **Search anchors**: 'DispatchWires', 'Closed', 'dispatch', 'wire predicate'
+
+##### `DispatchWires.openWire.dispatch`
+- **Line**: 635  **Axis**: `input-shape`
+- **Brief**: Open-wire fallback routes non-closed wires to open compound.
+- **Falsifiable claim**: Without else clause, open wires are not routed to open compound. To test: open wire; observer: open compound receives wire.
+- **Minimal reproducer**: Open wire in sequence. DispatchWires(seq, closed, open). Observer: open wire in open compound.
+- **Search anchors**: 'DispatchWires', 'open', 'else clause', 'dispatch'
+
+
+#### `ShapeAnalysis_FreeBounds.SplitWires_at649`
+ (5 branches; source: `v3-deep-batch-GG.json`)
+
+##### `?`
+- **Line**: 652  **Axis**: `?`
+
+##### `?`
+- **Line**: 660  **Axis**: `?`
+
+##### `?`
+- **Line**: 665  **Axis**: `?`
+
+##### `?`
+- **Line**: 668  **Axis**: `?`
+
+##### `?`
+- **Line**: 672  **Axis**: `?`
+
+
+### ShapeAnalysis_FreeBoundsProperties
+
+#### `ShapeAnalysis_FreeBoundsProperties.CheckContours_at278`
+ (2 branches; source: `v3-deep-batch-GG.json`)
+
+##### `?`
+- **Line**: 281  **Axis**: `?`
+
+##### `?`
+- **Line**: 285  **Axis**: `?`
+
+
+#### `ShapeAnalysis_FreeBoundsProperties.CheckNotches_at236`
+ (2 branches; source: `v3-deep-batch-GG.json`)
+
+##### `?`
+- **Line**: 238  **Axis**: `?`
+
+##### `?`
+- **Line**: 242  **Axis**: `?`
+
+
+#### `ShapeAnalysis_FreeBoundsProperties.CheckNotches_at257`
+ (2 branches; source: `v3-deep-batch-GG.json`)
+
+##### `?`
+- **Line**: 263  **Axis**: `?`
+
+##### `?`
+- **Line**: 264  **Axis**: `?`
+
+
+#### `ShapeAnalysis_FreeBoundsProperties.CheckNotches_at302`
+ (11 branches; source: `v3-deep-batch-GG.json`)
+
+##### `?`
+- **Line**: 310  **Axis**: `?`
+
+##### `?`
+- **Line**: 321  **Axis**: `?`
+
+##### `?`
+- **Line**: 330  **Axis**: `?`
+
+##### `?`
+- **Line**: 340  **Axis**: `?`
+
+##### `?`
+- **Line**: 344  **Axis**: `?`
+
+##### `?`
+- **Line**: 347  **Axis**: `?`
+
+##### `?`
+- **Line**: 350  **Axis**: `?`
+
+##### `?`
+- **Line**: 355  **Axis**: `?`
+
+##### `?`
+- **Line**: 361  **Axis**: `?`
+
+##### `?`
+- **Line**: 366  **Axis**: `?`
+
+##### `?`
+- **Line**: 367  **Axis**: `?`
+
+
+#### `ShapeAnalysis_FreeBoundsProperties.DispatchBounds_at188`
+ (3 branches; source: `v3-deep-batch-GG.json`)
+
+##### `?`
+- **Line**: 192  **Axis**: `?`
+
+##### `?`
+- **Line**: 197  **Axis**: `?`
+
+##### `?`
+- **Line**: 203  **Axis**: `?`
+
+
+#### `ShapeAnalysis_FreeBoundsProperties.FillProperties_at394`
+ (3 branches; source: `v3-deep-batch-GG.json`)
+
+##### `?`
+- **Line**: 400  **Axis**: `?`
+
+##### `?`
+- **Line**: 402  **Axis**: `?`
+
+##### `?`
+- **Line**: 404  **Axis**: `?`
+
+
+### ShapeAnalysis_ShapeContents
+
+#### `ShapeAnalysis_ShapeContents.Perform_at113`
+ (20 branches; source: `v3-deep-batch-OO.json`)
+
+##### `Perform.solids.shellVoid.detection`
+- **Line**: 127  **Axis**: `input-shape`
+- **Brief**: Multi-shell solid detection: counts shells > 1 as voids.
+- **Falsifiable claim**: Without nbs > 1 check, solids with multiple shells are not flagged as containing voids. To test: solid with 2+ shells; observer: myNbSolidsWithVoids incremented only if nbs > 1.
+- **Minimal reproducer**: Construct solid with inner void (2 shells). Perform(shape). Observer: myNbSolidsWithVoids > 0 iff nbs > 1.
+- **Search anchors**: 'Perform', 'TopAbs_SHELL', 'nbs', 'myNbSolidsWithVoids'
+
+##### `Perform.surfaces.trimmed.extraction`
+- **Line**: 163  **Axis**: `healer-state`
+- **Brief**: Trimmed-surface unwrapping: detects and counts RectangularTrimmedSurface bases.
+- **Falsifiable claim**: Without trsu.IsNull() check, basis surface type is never inspected for trimmed shells. To test: trimmed surface; observer: myNbTrimSurf and basis type both counted.
+- **Minimal reproducer**: Face with RectangularTrimmedSurface. Perform(shape). Observer: myNbTrimSurf incremented; basis BSpline checked for C0/type.
+- **Search anchors**: 'Perform', 'Geom_RectangularTrimmedSurface', 'myNbTrimSurf', 'BasisSurface'
+
+##### `Perform.surfaces.c0Detection.bivariant`
+- **Line**: 188  **Axis**: `conformance-probe`
+- **Brief**: C0-continuity detection checks both U and V directions.
+- **Falsifiable claim**: Without !(IsCNu(1) && IsCNv(1)) logic, surfaces with C0 in only one direction are not flagged as C0. To test: surface C1 in U, C0 in V; observer: myNbC0Surfaces incremented.
+- **Minimal reproducer**: Surface with C0 in V-direction only. Perform(shape). Without: myNbC0Surfaces not incremented. With: incremented.
+- **Search anchors**: 'Perform', 'IsCNu', 'IsCNv', 'myNbC0Surfaces'
+
+##### `Perform.bspline.largePolePole.threshold`
+- **Line**: 199  **Axis**: `input-shape`
+- **Brief**: BSpline pole count threshold at 8192 (64*128).
+- **Falsifiable claim**: Without > 8192 check, large BSplines (>64*128 poles) are not identified for special handling. To test: BSpline with 8193 poles; observer: myNbBigSplines incremented.
+- **Minimal reproducer**: BSplineSurface with NbUPoles*NbVPoles = 8193. Perform(shape). Observer: myNbBigSplines incremented.
+- **Search anchors**: 'Perform', 'NbUPoles', 'NbVPoles', '8192', 'myNbBigSplines'
+
+##### `Perform.bspline.largeCollection.conditional`
+- **Line**: 201  **Axis**: `healer-state`
+- **Brief**: Optional face accumulation for large BSplines if myBigSplineMode enabled.
+- **Falsifiable claim**: Without myBigSplineMode check, large BSpline faces are not collected into myBigSplineSec. To test: mode ON; observer: face added. Mode OFF; observer: not added.
+- **Minimal reproducer**: SetBigSplineMode(true/false); Perform(shape_with_large_bspline). Observer: myBigSplineSec count differs.
+- **Search anchors**: 'Perform', 'myBigSplineMode', 'myBigSplineSec', 'Append'
+
+##### `Perform.elementarySurface.indirect.direction`
+- **Line**: 219  **Axis**: `input-shape`
+- **Brief**: Elementary surface orientation detection: Position().Direct() check.
+- **Falsifiable claim**: Without Direct() check, indirectly-oriented surfaces (mirrored) are not flagged. To test: plane with indirect transform; observer: myNbIndirectSurf incremented.
+- **Minimal reproducer**: ElementarySurface with mirrored/inverted position. Perform(shape). Observer: myNbIndirectSurf > 0.
+- **Search anchors**: 'Perform', 'Position', 'Direct', 'myNbIndirectSurf'
+
+##### `Perform.elementarySurface.indirectCollection.conditional`
+- **Line**: 222  **Axis**: `healer-state`
+- **Brief**: Optional face accumulation for indirect elementary surfaces if myIndirectMode enabled.
+- **Falsifiable claim**: Without myIndirectMode check, indirect faces are not collected into myIndirectSec. To test: mode ON vs OFF; observer: collection differs.
+- **Minimal reproducer**: SetIndirectSurfaceMode(true/false); Perform(shape). Observer: myIndirectSec count.
+- **Search anchors**: 'Perform', 'myIndirectMode', 'myIndirectSec', 'Append'
+
+##### `Perform.offsetSurface.detection`
+- **Line**: 228  **Axis**: `input-shape`
+- **Brief**: Offset-surface detection via IsKind check.
+- **Falsifiable claim**: Without Geom_OffsetSurface IsKind check, offset surfaces are not counted separately. To test: OffsetSurface; observer: myNbOffsetSurf incremented.
+- **Minimal reproducer**: Face with Geom_OffsetSurface. Perform(shape). Observer: myNbOffsetSurf > 0.
+- **Search anchors**: 'Perform', 'Geom_OffsetSurface', 'IsKind', 'myNbOffsetSurf'
+
+##### `Perform.offsetSurface.collection.conditional`
+- **Line**: 230  **Axis**: `healer-state`
+- **Brief**: Optional offset-surface face accumulation if myOffsetSurfaceMode enabled.
+- **Falsifiable claim**: Without mode check, offset-surface faces are not collected into myOffsetSurfaceSec. To test: mode ON/OFF; observer: collection count.
+- **Minimal reproducer**: SetOffsetSurfaceMode(true/false); Perform(shape_with_offset). Observer: myOffsetSurfaceSec count.
+- **Search anchors**: 'Perform', 'myOffsetSurfaceMode', 'myOffsetSurfaceSec'
+
+##### `Perform.bezierSurface.detection.elif`
+- **Line**: 236  **Axis**: `conformance-probe`
+- **Brief**: BezierSurface detection as elif-guard (mutually exclusive with OffsetSurface).
+- **Falsifiable claim**: Without elif (else-if), surfaces that are both offset-like and Bezier-like would be counted twice. To test: Bezier vs OffsetSurface; observer: only one incremented.
+- **Minimal reproducer**: Face with Geom_BezierSurface. Perform(shape). Observer: myNbBezierSurf incremented, myNbOffsetSurf not.
+- **Search anchors**: 'Perform', 'Geom_BezierSurface', 'elif', 'mutual exclusion'
+
+##### `Perform.seam.maxCount.tracking`
+- **Line**: 251  **Axis**: `input-shape`
+- **Brief**: Wire seam-edge count aggregation: maxseam tracks maximum per wire.
+- **Falsifiable claim**: Without maxseam > nbseam tracking, seam edges are not correctly categorized as single vs multiple. To test: wire with 2+ seam edges; observer: maxseam >= 2.
+- **Minimal reproducer**: Wire with 2 seam edges on closed surface. Perform(shape). Observer: maxseam = 2; myNbWireWithSevSeams incremented.
+- **Search anchors**: 'Perform', 'maxseam', 'nbseam', 'seam edge'
+
+##### `Perform.seam.singleSeam.predicate`
+- **Line**: 265  **Axis**: `input-shape`
+- **Brief**: Single-seam wire classification (maxseam == 1).
+- **Falsifiable claim**: Without maxseam == 1 check, wires with exactly one seam edge are not flagged as myNbWireWitnSeam. To test: wire with 1 seam; observer: myNbWireWitnSeam incremented.
+- **Minimal reproducer**: Wire with single seam on closed surface. Perform(shape). Observer: maxseam = 1; myNbWireWitnSeam incremented.
+- **Search anchors**: 'Perform', 'maxseam', 'myNbWireWitnSeam'
+
+##### `Perform.seam.multipleSeams.predicate`
+- **Line**: 268  **Axis**: `input-shape`
+- **Brief**: Multiple-seam wire classification (maxseam > 1).
+- **Falsifiable claim**: Without maxseam > 1 check, wires with 2+ seam edges are not flagged as myNbWireWithSevSeams. To test: wire with 2+ seams; observer: myNbWireWithSevSeams incremented.
+- **Minimal reproducer**: Wire with 2 seam edges. Perform(shape). Observer: maxseam = 2; myNbWireWithSevSeams incremented.
+- **Search anchors**: 'Perform', 'maxseam', 'myNbWireWithSevSeams'
+
+##### `Perform.multipleWires.detection`
+- **Line**: 272  **Axis**: `input-shape`
+- **Brief**: Face multi-wire detection: nbwires > 1 flags faces with multiple wire boundaries.
+- **Falsifiable claim**: Without nbwires > 1 check, faces with holes (multiple wires) are not flagged as myNbFaceWithSevWires. To test: face with hole; observer: myNbFaceWithSevWires incremented.
+- **Minimal reproducer**: Face with outer + inner wire (hole). Perform(shape). Observer: nbwires = 2; myNbFaceWithSevWires incremented.
+- **Search anchors**: 'Perform', 'nbwires', 'myNbFaceWithSevWires'
+
+##### `Perform.curves3d.trimmed.detection`
+- **Line**: 278  **Axis**: `input-shape`
+- **Brief**: 3D trimmed-curve detection within wire edges.
+- **Falsifiable claim**: Without Geom_TrimmedCurve IsKind check, trimmed 3D curves in edges are not counted. To test: edge with trimmed curve; observer: myNbTrimmedCurve3d incremented.
+- **Minimal reproducer**: Edge with Geom_TrimmedCurve. Perform(shape). Observer: myNbTrimmedCurve3d > 0.
+- **Search anchors**: 'Perform', 'Geom_TrimmedCurve', 'c3d', 'myNbTrimmedCurve3d'
+
+##### `Perform.pcurve.missing.detection`
+- **Line**: 288  **Axis**: `conformance-probe`
+- **Brief**: Missing P-curve detection: c2d.IsNull() flag.
+- **Falsifiable claim**: Without c2d.IsNull() check, edges without parametric curves on surface are not counted as myNbNoPCurve. To test: edge with null c2d; observer: myNbNoPCurve incremented.
+- **Minimal reproducer**: Edge with no parametric curve on face. Perform(shape). Observer: myNbNoPCurve > 0.
+- **Search anchors**: 'Perform', 'c2d', 'IsNull', 'myNbNoPCurve'
+
+##### `Perform.offsetCurve2d.detection`
+- **Line**: 291  **Axis**: `input-shape`
+- **Brief**: 2D offset-curve detection on surface.
+- **Falsifiable claim**: Without Geom2d_OffsetCurve IsKind check, offset curves in surface parametrization are not identified. To test: edge with offset c2d; observer: myNbOffsetCurves incremented.
+- **Minimal reproducer**: Edge with Geom2d_OffsetCurve on face. Perform(shape). Observer: myNbOffsetCurves > 0.
+- **Search anchors**: 'Perform', 'Geom2d_OffsetCurve', 'myNbOffsetCurves'
+
+##### `Perform.trimmedCurve2d.detection`
+- **Line**: 299  **Axis**: `input-shape`
+- **Brief**: 2D trimmed-curve detection on surface.
+- **Falsifiable claim**: Without Geom2d_TrimmedCurve IsKind check, trimmed parametric curves are not counted separately. To test: edge with trimmed c2d; observer: myNbTrimmedCurve2d incremented.
+- **Minimal reproducer**: Edge with Geom2d_TrimmedCurve on face. Perform(shape). Observer: myNbTrimmedCurve2d > 0.
+- **Search anchors**: 'Perform', 'Geom2d_TrimmedCurve', 'myNbTrimmedCurve2d'
+
+##### `Perform.edge.offsetCurve3d.detection`
+- **Line**: 311  **Axis**: `input-shape`
+- **Brief**: Offset-curve detection in free edges (3D).
+- **Falsifiable claim**: Without Geom_OffsetCurve IsKind check, offset curves in edge 3D are not flagged. To test: free edge with offset curve; observer: myNbOffsetCurves incremented.
+- **Minimal reproducer**: Edge (not on face) with Geom_OffsetCurve. Perform(shape). Observer: myNbOffsetCurves > 0.
+- **Search anchors**: 'Perform', 'Geom_OffsetCurve', 'free edge'
+
+##### `Perform.curve.c0Detection.univariant`
+- **Line**: 318  **Axis**: `conformance-probe`
+- **Brief**: C0-curve detection: IsCN(1) check.
+- **Falsifiable claim**: Without IsCN(1) check, curves with C0-continuity are not identified. To test: C0 curve; observer: myNbC0Curves incremented.
+- **Minimal reproducer**: Edge with C0-continuous curve. Perform(shape). Observer: myNbC0Curves > 0.
+- **Search anchors**: 'Perform', 'IsCN', 'myNbC0Curves'
+
+
 ### ShapeAnalysis_ShapeTolerance
+
+#### `ShapeAnalysis_ShapeTolerance.AddTolerance_at240`
+ (6 branches; source: `v3-deep-batch.json`)
+
+##### `?`
+- **Line**: 248  **Axis**: `?`
+
+##### `?`
+- **Line**: 261  **Axis**: `?`
+
+##### `?`
+- **Line**: 274  **Axis**: `?`
+
+##### `?`
+- **Line**: 286  **Axis**: `?`
+
+##### `?`
+- **Line**: 290  **Axis**: `?`
+
+##### `?`
+- **Line**: 294  **Axis**: `?`
+
+
+#### `ShapeAnalysis_ShapeTolerance.GlobalTolerance_at305`
+ (6 branches; source: `v3-deep-batch.json`)
+
+##### `?`
+- **Line**: 308  **Axis**: `?`
+
+##### `?`
+- **Line**: 310  **Axis**: `?`
+
+##### `?`
+- **Line**: 314  **Axis**: `?`
+
+##### `?`
+- **Line**: 316  **Axis**: `?`
+
+##### `?`
+- **Line**: 320  **Axis**: `?`
+
+##### `?`
+- **Line**: 325  **Axis**: `?`
+
 
 #### `ShapeAnalysis_ShapeTolerance.InTolerance`
  (6 branches; source: `v3-deep-ShapeAnalysis_ShapeTolerance_InTolerance.json`)
@@ -3454,6 +4224,85 @@ v3's bar: every branch's description is rich enough to either RECREATE the defec
 ##### `ShapeAnalysis_ShapeTolerance.InTolerance.SUSPECTED_BUG`
 - **Line**: ShapeAnalysis_ShapeTolerance.cxx:140  **Axis**: `?`
 - **Brief**: Confirmed OCCT source bug: VERTEX case uses inverted comparison vs other shape types.
+
+
+### ShapeAnalysis_Shell
+
+#### `ShapeAnalysis_Shell.CheckOrientedShells_at142`
+ (20 branches; source: `v3-deep-batch.json`)
+
+##### `?`
+- **Line**: 144  **Axis**: `?`
+
+##### `?`
+- **Line**: 155  **Axis**: `?`
+
+##### `?`
+- **Line**: 157  **Axis**: `?`
+
+##### `?`
+- **Line**: 165  **Axis**: `?`
+
+##### `?`
+- **Line**: 177  **Axis**: `?`
+
+##### `?`
+- **Line**: 179  **Axis**: `?`
+
+##### `?`
+- **Line**: 181  **Axis**: `?`
+
+##### `?`
+- **Line**: 183  **Axis**: `?`
+
+##### `?`
+- **Line**: 187  **Axis**: `?`
+
+##### `?`
+- **Line**: 192  **Axis**: `?`
+
+##### `?`
+- **Line**: 197  **Axis**: `?`
+
+##### `?`
+- **Line**: 202  **Axis**: `?`
+
+##### `?`
+- **Line**: 212  **Axis**: `?`
+
+##### `?`
+- **Line**: 214  **Axis**: `?`
+
+##### `?`
+- **Line**: 216  **Axis**: `?`
+
+##### `?`
+- **Line**: 218  **Axis**: `?`
+
+##### `?`
+- **Line**: 222  **Axis**: `?`
+
+##### `?`
+- **Line**: 227  **Axis**: `?`
+
+##### `?`
+- **Line**: 232  **Axis**: `?`
+
+##### `?`
+- **Line**: 237  **Axis**: `?`
+
+
+#### `ShapeAnalysis_Shell.LoadShells_at46`
+ (3 branches; source: `v3-deep-batch.json`)
+
+##### `?`
+- **Line**: 47  **Axis**: `?`
+
+##### `?`
+- **Line**: 52  **Axis**: `?`
+
+##### `?`
+- **Line**: 56  **Axis**: `?`
 
 
 ### ShapeAnalysis_Surface
@@ -3549,6 +4398,10 @@ v3's bar: every branch's description is rich enough to either RECREATE the defec
 - **Falsifiable claim**: Without this check, the analyzer would FAIL TO REPORT invalid null surface initialization and risk downstream crashes
 - **Minimal reproducer**: ShapeAnalysis_Surface sa; sa.Init(null_handle);
 - **Search anchors**: 'theSurface.IsNull()', 'Message::SendWarning'
+
+
+#### `ShapeAnalysis_Surface.Init_at155`
+ (0 branches; source: `v3-deep-batch.json`)
 
 
 #### `ShapeAnalysis_Surface.IsDegenerated`
@@ -3869,6 +4722,16 @@ v3's bar: every branch's description is rich enough to either RECREATE the defec
 - **Search anchors**: 'myUIsoDeg[indMin]', 'result.SetX', 'result.SetY'
 
 
+#### `ShapeAnalysis_Surface.Singularity_at332`
+ (2 branches; source: `v3-deep-batch.json`)
+
+##### `?`
+- **Line**: 334  **Axis**: `?`
+
+##### `?`
+- **Line**: 338  **Axis**: `?`
+
+
 #### `ShapeAnalysis_Surface.SortSingularities`
  (2 branches; 1 low-confidence; source: `v3-deep-batch-R.json`)
 
@@ -3945,6 +4808,159 @@ v3's bar: every branch's description is rich enough to either RECREATE the defec
 - **Falsifiable claim**: Without this check, the analyzer would skip returning failure status, allowing calling code to treat diverged solutions as valid and project points incorrectly
 - **Minimal reproducer**: Newton fails to converge (all break conditions hit); should exit loop and return false
 - **Search anchors**: 'return false', 'convergence failure'
+
+
+#### `ShapeAnalysis_Surface.UIso_at628`
+ (3 branches; source: `v3-deep-batch-OO.json`)
+
+##### `UIso.cacheMiss.boundsMatch`
+- **Line**: 630  **Axis**: `tolerance`
+- **Brief**: Boundary U-iso cache lookup by equality; fails on floating-point near-misses.
+- **Falsifiable claim**: Without exact match on U==myUF, cached boundary iso is bypassed and ComputeIso recomputes expensively. To test: call UIso(myUF - epsilon); observer: two calls recompute instead of cache-hitting.
+- **Minimal reproducer**: Surface s; UIso(s.UMin()). Then UIso(s.UMin()+1e-15). Without: both trigger ComputeIso (no cache). With: first caches, second hits.
+- **Search anchors**: 'UIso', 'myUF', 'exact match', 'cache'
+
+##### `UIso.cacheMiss.boundaryVL`
+- **Line**: 636  **Axis**: `api-contract`
+- **Brief**: Second boundary U-iso cache lookup at myUL by equality guard.
+- **Falsifiable claim**: Without U==myUL check, calls to UIso(myUL) bypass myIsoUL cache and recompute. To test: UIso(myUL) vs UIso(myUL+1e-10); first recomputes, second cache-misses.
+- **Minimal reproducer**: Surface s; u_last = s.UMax(); iso1 = UIso(u_last); iso2 = UIso(u_last). Without: both recompute. With: second returns cached myIsoUL.
+- **Search anchors**: 'UIso', 'myUL', 'UMax', 'boundary'
+
+##### `UIso.fallthrough.generalCurve`
+- **Line**: 640  **Axis**: `kernel-pair`
+- **Brief**: Non-boundary U-iso dispatch falls through to general ComputeIso.
+- **Falsifiable claim**: Without fallthrough logic, interior U-iso queries would not compute curves. To test: UIso(0.5*UMin+0.5*UMax) triggers ComputeIso(mySurf, true, U).
+- **Minimal reproducer**: Construct surface; call UIso(0.5); observer: returns valid Geom_Curve from ComputeIso.
+- **Search anchors**: 'ComputeIso', 'general case', 'U parameter'
+
+
+#### `ShapeAnalysis_Surface.UVFromIso_at1523`
+ (33 branches; source: `v3-deep-batch.json`)
+
+##### `?`
+- **Line**: 1538  **Axis**: `?`
+
+##### `?`
+- **Line**: 1543  **Axis**: `?`
+
+##### `?`
+- **Line**: 1568  **Axis**: `?`
+
+##### `?`
+- **Line**: 1606  **Axis**: `?`
+
+##### `?`
+- **Line**: 1608  **Axis**: `?`
+
+##### `?`
+- **Line**: 1618  **Axis**: `?`
+
+##### `?`
+- **Line**: 1629  **Axis**: `?`
+
+##### `?`
+- **Line**: 1674  **Axis**: `?`
+
+##### `?`
+- **Line**: 1679  **Axis**: `?`
+
+##### `?`
+- **Line**: 1691  **Axis**: `?`
+
+##### `?`
+- **Line**: 1697  **Axis**: `?`
+
+##### `?`
+- **Line**: 1702  **Axis**: `?`
+
+##### `?`
+- **Line**: 1707  **Axis**: `?`
+
+##### `?`
+- **Line**: 1713  **Axis**: `?`
+
+##### `?`
+- **Line**: 1716  **Axis**: `?`
+
+##### `?`
+- **Line**: 1720  **Axis**: `?`
+
+##### `?`
+- **Line**: 1727  **Axis**: `?`
+
+##### `?`
+- **Line**: 1732  **Axis**: `?`
+
+##### `?`
+- **Line**: 1737  **Axis**: `?`
+
+##### `?`
+- **Line**: 1743  **Axis**: `?`
+
+##### `?`
+- **Line**: 1746  **Axis**: `?`
+
+##### `?`
+- **Line**: 1750  **Axis**: `?`
+
+##### `?`
+- **Line**: 1761  **Axis**: `?`
+
+##### `?`
+- **Line**: 1767  **Axis**: `?`
+
+##### `?`
+- **Line**: 1772  **Axis**: `?`
+
+##### `?`
+- **Line**: 1781  **Axis**: `?`
+
+##### `?`
+- **Line**: 1784  **Axis**: `?`
+
+##### `?`
+- **Line**: 1788  **Axis**: `?`
+
+##### `?`
+- **Line**: 1794  **Axis**: `?`
+
+##### `?`
+- **Line**: 1799  **Axis**: `?`
+
+##### `?`
+- **Line**: 1808  **Axis**: `?`
+
+##### `?`
+- **Line**: 1811  **Axis**: `?`
+
+##### `?`
+- **Line**: 1815  **Axis**: `?`
+
+
+#### `ShapeAnalysis_Surface.VIso_at645`
+ (3 branches; source: `v3-deep-batch-OO.json`)
+
+##### `VIso.cacheMiss.boundsMatch_VF`
+- **Line**: 647  **Axis**: `tolerance`
+- **Brief**: Boundary V-iso cache lookup at myVF by exact equality.
+- **Falsifiable claim**: Without V==myVF check, cached myIsoVF is never returned. To test: VIso(myVF) vs VIso(myVF-epsilon); first cache-misses on no match.
+- **Minimal reproducer**: Surface s; VIso(s.VMin()). Repeat VIso(s.VMin()). Without: both recompute. With: second hits myIsoVF cache.
+- **Search anchors**: 'VIso', 'myVF', 'VMin', 'boundary cache'
+
+##### `VIso.cacheMiss.boundsMatch_VL`
+- **Line**: 653  **Axis**: `api-contract`
+- **Brief**: Boundary V-iso cache lookup at myVL by exact equality.
+- **Falsifiable claim**: Without V==myVL check, cached myIsoVL is never returned and ComputeIso recomputes. To test: VIso(myVL); observer: recomputes unless exactly matched.
+- **Minimal reproducer**: Surface s; v_last = s.VMax(); iso1 = VIso(v_last); iso2 = VIso(v_last). Without: both recompute. With: second returns cached myIsoVL.
+- **Search anchors**: 'VIso', 'myVL', 'VMax', 'boundary'
+
+##### `VIso.fallthrough.generalCurve`
+- **Line**: 657  **Axis**: `kernel-pair`
+- **Brief**: Non-boundary V-iso dispatch falls through to general ComputeIso with false flag.
+- **Falsifiable claim**: Without fallthrough, interior V-iso queries would not compute curves. To test: VIso(0.5*VMin+0.5*VMax) triggers ComputeIso(mySurf, false, V).
+- **Minimal reproducer**: Surface s; call VIso(0.5); observer: returns valid Geom_Curve from ComputeIso(mySurf, false, 0.5).
+- **Search anchors**: 'ComputeIso', 'V parameter', 'false'
 
 
 #### `ShapeAnalysis_Surface.ValueOfUV`
@@ -5155,6 +6171,40 @@ v3's bar: every branch's description is rich enough to either RECREATE the defec
 - **Search anchors**: 'FAIL3', 'DONE3', 'isFail |=', 'isDone |='
 
 
+#### `ShapeAnalysis_Wire.CheckShapeConnect_at2117`
+ (10 branches; source: `v3-deep-batch-JJ.json`)
+
+##### `?`
+- **Line**: 2119  **Axis**: `?`
+
+##### `?`
+- **Line**: 2127  **Axis**: `?`
+
+##### `?`
+- **Line**: 2133  **Axis**: `?`
+
+##### `?`
+- **Line**: 2159  **Axis**: `?`
+
+##### `?`
+- **Line**: 2164  **Axis**: `?`
+
+##### `?`
+- **Line**: 2172  **Axis**: `?`
+
+##### `?`
+- **Line**: 2177  **Axis**: `?`
+
+##### `?`
+- **Line**: 2189  **Axis**: `?`
+
+##### `?`
+- **Line**: 2193  **Axis**: `?`
+
+##### `?`
+- **Line**: 2198  **Axis**: `?`
+
+
 #### `ShapeAnalysis_Wire.CheckSmall`
  (9 branches; source: `v3-deep-batch-E.json`)
 
@@ -5222,6 +6272,171 @@ v3's bar: every branch's description is rich enough to either RECREATE the defec
 - **Search anchors**: 'V1.IsSame(V2) ? ShapeExtend_DONE1 : ShapeExtend_DONE2'
 
 
+#### `ShapeAnalysis_Wire.CheckSmallArea_at2005`
+ (8 branches; source: `v3-deep-batch-JJ.json`)
+
+##### `?`
+- **Line**: 2009  **Axis**: `?`
+
+##### `?`
+- **Line**: 2024  **Axis**: `?`
+
+##### `?`
+- **Line**: 2030  **Axis**: `?`
+
+##### `?`
+- **Line**: 2047  **Axis**: `?`
+
+##### `?`
+- **Line**: 2052  **Axis**: `?`
+
+##### `?`
+- **Line**: 2058  **Axis**: `?`
+
+##### `?`
+- **Line**: 2080  **Axis**: `?`
+
+##### `?`
+- **Line**: 2091  **Axis**: `?`
+
+
+#### `ShapeAnalysis_Wire.CheckTail_at2356`
+ (22 branches; source: `v3-deep-batch-JJ.json`)
+
+##### `?`
+- **Line**: 2358  **Axis**: `?`
+
+##### `?`
+- **Line**: 2376  **Axis**: `?`
+
+##### `?`
+- **Line**: 2381  **Axis**: `?`
+
+##### `?`
+- **Line**: 2384  **Axis**: `?`
+
+##### `?`
+- **Line**: 2391  **Axis**: `?`
+
+##### `?`
+- **Line**: 2399  **Axis**: `?`
+
+##### `?`
+- **Line**: 2409  **Axis**: `?`
+
+##### `?`
+- **Line**: 2419  **Axis**: `?`
+
+##### `?`
+- **Line**: 2431  **Axis**: `?`
+
+##### `?`
+- **Line**: 2454  **Axis**: `?`
+
+##### `?`
+- **Line**: 2460  **Axis**: `?`
+
+##### `?`
+- **Line**: 2478  **Axis**: `?`
+
+##### `?`
+- **Line**: 2491  **Axis**: `?`
+
+##### `?`
+- **Line**: 2503  **Axis**: `?`
+
+##### `?`
+- **Line**: 2511  **Axis**: `?`
+
+##### `?`
+- **Line**: 2520  **Axis**: `?`
+
+##### `?`
+- **Line**: 2538  **Axis**: `?`
+
+##### `?`
+- **Line**: 2543  **Axis**: `?`
+
+##### `?`
+- **Line**: 2552  **Axis**: `?`
+
+##### `?`
+- **Line**: 2578  **Axis**: `?`
+
+##### `?`
+- **Line**: 2586  **Axis**: `?`
+
+##### `?`
+- **Line**: 2598  **Axis**: `?`
+
+
+#### `ShapeAnalysis_Wire.Perform_at220`
+ (9 branches; source: `v3-deep-batch-OO.json`)
+
+##### `Perform.checkOrder.cumulative`
+- **Line**: 222  **Axis**: `conformance-probe`
+- **Brief**: Wire order validation: edge sequence traversal check.
+- **Falsifiable claim**: Without CheckOrder(), edges in wrong traversal order are not detected. To test: wire with reversed edges; observer: result flag set on violation.
+- **Minimal reproducer**: Wire with edges in wrong order. Perform(wire). Observer: CheckOrder() detects, result |= true.
+- **Search anchors**: 'Perform', 'CheckOrder', 'wire order'
+
+##### `Perform.checkSmall.cumulative`
+- **Line**: 223  **Axis**: `tolerance`
+- **Brief**: Small-edge detection in wire.
+- **Falsifiable claim**: Without CheckSmall(), tiny edges below tolerance are not detected. To test: wire with small edge; observer: result flag set.
+- **Minimal reproducer**: Wire with edge < tolerance. Perform(wire). Observer: CheckSmall() detects, result flag cumulates.
+- **Search anchors**: 'Perform', 'CheckSmall', 'small edge'
+
+##### `Perform.checkConnected.cumulative`
+- **Line**: 224  **Axis**: `input-shape`
+- **Brief**: Edge connectivity validation in wire.
+- **Falsifiable claim**: Without CheckConnected(), disconnected edges are not flagged. To test: wire with gap; observer: result flag set.
+- **Minimal reproducer**: Wire with disconnected edges. Perform(wire). Observer: CheckConnected() detects gap, result flag cumulates.
+- **Search anchors**: 'Perform', 'CheckConnected', 'gap'
+
+##### `Perform.checkEdgeCurves.cumulative`
+- **Line**: 225  **Axis**: `conformance-probe`
+- **Brief**: Edge curve validity and continuity checks.
+- **Falsifiable claim**: Without CheckEdgeCurves(), invalid or discontinuous curves are not detected. To test: wire with broken curve; observer: result flag set.
+- **Minimal reproducer**: Wire with discontinuous edge curve. Perform(wire). Observer: CheckEdgeCurves() detects, result flag cumulates.
+- **Search anchors**: 'Perform', 'CheckEdgeCurves', 'curve continuity'
+
+##### `Perform.checkDegenerated.cumulative`
+- **Line**: 226  **Axis**: `input-shape`
+- **Brief**: Degenerate edge detection in wire.
+- **Falsifiable claim**: Without CheckDegenerated(), point-like edges are not identified. To test: wire with degenerate edge; observer: result flag set.
+- **Minimal reproducer**: Wire with edge where start==end. Perform(wire). Observer: CheckDegenerated() detects, result flag cumulates.
+- **Search anchors**: 'Perform', 'CheckDegenerated', 'degenerate edge'
+
+##### `Perform.checkSelfIntersection.cumulative`
+- **Line**: 227  **Axis**: `input-shape`
+- **Brief**: Wire self-intersection detection.
+- **Falsifiable claim**: Without CheckSelfIntersection(), crossing edges are not flagged. To test: self-intersecting wire; observer: result flag set.
+- **Minimal reproducer**: Wire with crossing edges. Perform(wire). Observer: CheckSelfIntersection() detects, result flag cumulates.
+- **Search anchors**: 'Perform', 'CheckSelfIntersection', 'crossing'
+
+##### `Perform.checkLacking.cumulative`
+- **Line**: 228  **Axis**: `input-shape`
+- **Brief**: Missing topology detection (gaps, missing edges).
+- **Falsifiable claim**: Without CheckLacking(), incomplete wires are not detected. To test: wire with missing edge; observer: result flag set.
+- **Minimal reproducer**: Wire with gap in topology. Perform(wire). Observer: CheckLacking() detects, result flag cumulates.
+- **Search anchors**: 'Perform', 'CheckLacking', 'missing'
+
+##### `Perform.checkClosed.cumulative`
+- **Line**: 229  **Axis**: `input-shape`
+- **Brief**: Wire closure validation.
+- **Falsifiable claim**: Without CheckClosed(), wires that should be closed but are not are not flagged. To test: unclosed wire; observer: result flag set.
+- **Minimal reproducer**: Wire with gap at start/end. Perform(wire). Observer: CheckClosed() detects, result flag cumulates.
+- **Search anchors**: 'Perform', 'CheckClosed', 'closure'
+
+##### `Perform.bitwise_or.accumulation`
+- **Line**: 221  **Axis**: `api-contract`
+- **Brief**: OR-accumulation of all check results into single return value.
+- **Falsifiable claim**: Without |= operator, only the last CheckX() result is returned; earlier failures are masked. To test: wire with 2+ defects; observer: all flagged in result.
+- **Minimal reproducer**: Wire with small edge + discontinuity. Perform(wire). Without: result = CheckClosed() only. With: result accumulates all.
+- **Search anchors**: 'Perform', '|=', 'accumulation', 'bitwise or'
+
+
 ### ShapeAnalysis_WireOrder
 
 #### `ShapeAnalysis_WireOrder.Add_at135`
@@ -5244,6 +6459,22 @@ v3's bar: every branch's description is rich enough to either RECREATE the defec
 - **Falsifiable claim**: Add(start3d, end3d, start2d, end2d) in Mode3D only appends nothing; Mode2D/Mode3D branches missing entirely
 - **Minimal reproducer**: SetMode(Mode3D); Add(3d_start, 3d_end, 2d_start, 2d_end); myXYZ remains empty
 - **Search anchors**: 'if (myMode == ModeBoth)', 'myXYZ->Append', 'myXY->Append'
+
+
+#### `ShapeAnalysis_WireOrder.Chain_at814`
+ (4 branches; source: `v3-deep-batch-JJ.json`)
+
+##### `?`
+- **Line**: 2816  **Axis**: `?`
+
+##### `?`
+- **Line**: 2821  **Axis**: `?`
+
+##### `?`
+- **Line**: 2826  **Axis**: `?`
+
+##### `?`
+- **Line**: 2832  **Axis**: `?`
 
 
 #### `ShapeAnalysis_WireOrder.Gap`
@@ -5306,6 +6537,63 @@ v3's bar: every branch's description is rich enough to either RECREATE the defec
 
 ### ShapeFix_ComposeShell
 
+#### `ShapeFix_ComposeShell.BreakWires_at2280`
+ (6 branches; source: `v3-deep-batch-BB.json`)
+
+##### `BreakWires.2290-2293`
+- **Line**: 2290  **Axis**: `orientation_classification`
+- **Brief**: Skip wire with non-external/internal orientation
+- **Falsifiable claim**: Wires with orientation != EXTERNAL or INTERNAL are excluded from splitting
+- **Minimal reproducer**: Wire with TopAbs_FORWARD orientation should not be processed
+- **Search anchors**: 'ori_wire != TopAbs_EXTERNAL', 'ori_wire != TopAbs_INTERNAL'
+
+##### `BreakWires.2314-2316`
+- **Line**: 2314  **Axis**: `vertex_degenerate_case`
+- **Brief**: Skip vertex-only wires in split iteration
+- **Falsifiable claim**: IsVertex() check gates splitting logic
+- **Minimal reproducer**: Vertex wire should skip splitting loop entirely
+- **Search anchors**: 'wire.IsVertex()', 'continue'
+
+##### `BreakWires.2330-2332`
+- **Line**: 2330  **Axis**: `no_split_point`
+- **Brief**: Skip wire when no split vertex found
+- **Falsifiable claim**: If no split vertices are in wire edges, wire is skipped
+- **Minimal reproducer**: Wire with no edges in splitVertices map should continue without change
+- **Search anchors**: 'j > sbwd->NbEdges()', 'continue // splitting not needed'
+
+##### `BreakWires.2337-2345`
+- **Line**: 2337  **Axis**: `closed_wire_rotation`
+- **Brief**: Permutation shift for closed wires with external split vertices
+- **Falsifiable claim**: Closed non-manifold wires need shift adjustment if first edge lacks split vertex
+- **Minimal reproducer**: Closed wire where first edge has no split vertex but later edge does
+- **Search anchors**: '!myClosedMode', 'wire.IsClosed()', 'shift = j - 1'
+
+##### `BreakWires.2370-2375`
+- **Line**: 2370  **Axis**: `mixed_orientation_repair`
+- **Brief**: Reorient external edge in internal wire
+- **Falsifiable claim**: Edge with EXTERNAL orientation in INTERNAL wire triggers orientation flip + nbnew increment
+- **Minimal reproducer**: Internal wire (ori=INTERNAL) containing EXTERNAL edge
+- **Search anchors**: 'ori == TopAbs_INTERNAL && edge.Orientation() == TopAbs_EXTERNAL', 'curOri = TopAbs_EXTERNAL'
+
+##### `BreakWires.2378-2383`
+- **Line**: 2378  **Axis**: `segment_finalization`
+- **Brief**: Commit final wire segment if splits occurred
+- **Falsifiable claim**: Final newwire only committed to seqw if nbnew > 0
+- **Minimal reproducer**: Multiple wires split should leave last segment committed
+- **Search anchors**: 'if (nbnew)', 'seqw.SetValue(i, newwire)'
+
+
+#### `ShapeFix_ComposeShell.CollectWires_at2514`
+ (1 branches; source: `v3-deep-batch-MM.json`)
+
+##### `ShapeFix_ComposeShell.CollectWires.wire-type-filter`
+- **Line**: 2514  **Axis**: `conformance-probe`
+- **Brief**: CollectWires() iterates face and collects only WIRE-type shapes.
+- **Falsifiable claim**: Without type filter, non-wire shapes (e.g., loose vertices) processed as wires, causing type crash. To test: face with loose vertex; without filter, vertex passed to wire processing.
+- **Minimal reproducer**: Face with standalone vertex (non-standard), call CollectWires(). Without type check: vertex treated as wire, crash. With filter: skip non-wires.
+- **Search anchors**: 'ShapeType()', 'TopAbs_WIRE', 'wire collection'
+
+
 #### `ShapeFix_ComposeShell.ComputeCode`
  (3 branches; 2 low-confidence; source: `v3-deep-batch-H.json`)
 
@@ -5329,6 +6617,101 @@ v3's bar: every branch's description is rich enough to either RECREATE the defec
 - **Falsifiable claim**: Lost intersector point on even-parity line blamed on single defect; may mask duplicate intersections
 - **Minimal reproducer**: Tangent wire crossing line twice at same point; intersector reports both, code==IOR_BOTH triggers fallback
 - **Search anchors**: 'code == IOR_BOTH', 'parity error', 'IOR_LEFT'
+
+
+#### `ShapeFix_ComposeShell.DispatchWires_at3277`
+ (13 branches; source: `v3-deep-batch-BB.json`)
+
+##### `DispatchWires.3281-3360`
+- **Line**: 3281  **Axis**: `parametric_periodicity`
+- **Brief**: Closed-mode seam healing: shift pcurves and fix degenerated edges
+- **Falsifiable claim**: In myClosedMode, reversed seam edges get parametric shift; degenerated edges recomputed
+- **Minimal reproducer**: Closed surface with REVERSED seam edge that needs period shift
+- **Search anchors**: 'if (myClosedMode)', 'E.Orientation() == TopAbs_REVERSED && BRep_Tool::IsClosed', 'c22->Translate(shift)'
+
+##### `DispatchWires.3300-3325`
+- **Line**: 3300  **Axis**: `seam_pcurve_ambiguity`
+- **Brief**: Detect seam with matching pcurves and apply period shift
+- **Falsifiable claim**: If reversed seam edge has coincident or identical pcurves, shift by U/V period if closed
+- **Minimal reproducer**: Seam edge on closed surface with identical pcurves both directions
+- **Search anchors**: 'c21 == c22 || pf1.SquareDistance(pf2) < dPreci', 'shift.SetX(myUPeriod)'
+
+##### `DispatchWires.3337-3343`
+- **Line**: 3337  **Axis**: `degenerate_edge_pruning`
+- **Brief**: Remove wire with single degenerated edge or no edges
+- **Falsifiable claim**: Wires containing only degenerated edges (or empty) are removed from processing
+- **Minimal reproducer**: Wire with one degenerated edge should be purged
+- **Search anchors**: 'sbwd->NbEdges() <= 0 || (sbwd->NbEdges() == 1 && BRep_Tool::Degenerated)', 'wires.Remove(i--)'
+
+##### `DispatchWires.3367-3370`
+- **Line**: 3367  **Axis**: `boundary_condition`
+- **Brief**: Early exit if no wires to dispatch
+- **Falsifiable claim**: Empty wire sequence halts dispatch without error
+- **Minimal reproducer**: Zero wires passed to DispatchWires
+- **Search anchors**: 'if (nb == 0)', 'return'
+
+##### `DispatchWires.3391-3400`
+- **Line**: 3391  **Axis**: `seam_adjustment`
+- **Brief**: Apply parametric period shift for closed surfaces
+- **Falsifiable claim**: Wire center point adjusted by period if surface is U/V-closed
+- **Minimal reproducer**: Wire on closed surface whose center point is near seam
+- **Search anchors**: 'if (myUClosed)', 'ush = ShapeAnalysis::AdjustToPeriod'
+
+##### `DispatchWires.3416-3419`
+- **Line**: 3416  **Axis**: `vertex_degenerate_case`
+- **Brief**: Skip vertex wires in edge-dispatch loop
+- **Falsifiable claim**: Vertex-type wire segments skip pcurve reassignment
+- **Minimal reproducer**: VERTEX wire should not undergo edge processing
+- **Search anchors**: 'if (wires(i).IsVertex())', 'continue'
+
+##### `DispatchWires.3438-3458`
+- **Line**: 3438  **Axis**: `edge_caching_orientation`
+- **Brief**: Cache or copy edge; preserve non-manifold orientation
+- **Falsifiable claim**: If edge already reshaped, use cached copy; else copy with orientation preservation for non-manifold
+- **Minimal reproducer**: Same edge processed in two wires on different patches
+- **Search anchors**: 'if (rs.IsRecorded(edge))', 'rs.Replace(edge, newEdge)'
+
+##### `DispatchWires.3471-3503`
+- **Line**: 3471  **Axis**: `seam_pcurve_transform`
+- **Brief**: Handle seam edge: dual pcurves transformed separately
+- **Falsifiable claim**: Closed edges get transformation applied to both forward and reverse pcurves
+- **Minimal reproducer**: Seam edge on closed surface with needT transformation
+- **Search anchors**: 'if (BRep_Tool::IsClosed(newEdge, face))', 'B.UpdateEdge(newEdge, c2dnew, c2d2, face, 0.)'
+
+##### `DispatchWires.3506-3526`
+- **Line**: 3506  **Axis**: `range_consistency`
+- **Brief**: Rebuild 3D curve if SameRange property violated
+- **Falsifiable claim**: Non-SameRange edges trigger 3D curve fixup via FixAddCurve3d
+- **Minimal reproducer**: Edge with parametric range mismatch between 2D and 3D
+- **Search anchors**: 'if (!BRep_Tool::SameRange(newEdge))', 'sfe->FixAddCurve3d(etmp)'
+
+##### `DispatchWires.3527-3530`
+- **Line**: 3527  **Axis**: `curve3d_addition`
+- **Brief**: Add 3D curve for SameRange edges
+- **Falsifiable claim**: SameRange-compliant edges still get 3D curve assignment via FixAddCurve3d
+- **Minimal reproducer**: SameRange edge without 3D curve representation
+- **Search anchors**: 'else', 'sfe->FixAddCurve3d(newEdge)'
+
+##### `DispatchWires.3544-3557`
+- **Line**: 3544  **Axis**: `patch_grouping`
+- **Brief**: Group wires by surface patch before face construction
+- **Falsifiable claim**: Wires on same grid patch are batched; mismatch causes skip to next wire
+- **Minimal reproducer**: Two wires on different patches should not be combined
+- **Search anchors**: 'if (Surf.IsNull())', 'else if (S != Surf)', 'continue'
+
+##### `DispatchWires.3560-3567`
+- **Line**: 3560  **Axis**: `vertex_orientation_selection`
+- **Brief**: Collect INTERNAL vertices for face construction
+- **Falsifiable claim**: INTERNAL-oriented vertex wires are added to loop batch
+- **Minimal reproducer**: VERTEX wire with INTERNAL orientation
+- **Search anchors**: 'if (aVert.Orientation() == TopAbs_INTERNAL)', 'loops.Append'
+
+##### `DispatchWires.3570-3575`
+- **Line**: 3570  **Axis**: `wire_extraction`
+- **Brief**: Append wire data as WIRE loop for face construction
+- **Falsifiable claim**: Non-vertex wires converted to topology WIRE for MakeFacesOnPatch
+- **Minimal reproducer**: Non-vertex wire segment should add Wire() object to loops
+- **Search anchors**: 'const occ::handle<ShapeExtend_WireData>& aWD = aSeg.WireData()', 'loops.Append(aWD->Wire())'
 
 
 #### `ShapeFix_ComposeShell.Init`
@@ -5379,6 +6762,101 @@ v3's bar: every branch's description is rich enough to either RECREATE the defec
 - **Falsifiable claim**: FixReorder(sawo) then FixReorder() applies two passes; second pass may revert first, leaving stat=-1 inconsistent
 - **Minimal reproducer**: Torus (U,V periodic) with pre-reordered wire edges, FixReorder(sawo) + FixReorder() produce conflicting results
 - **Search anchors**: 'gs->IsUPeriodic() && gs->IsVPeriodic()', 'FixReorder(sawo)', 'StatusReorder(ShapeExtend_DONE3)'
+
+
+#### `ShapeFix_ComposeShell.MakeFacesOnPatch_at2981`
+ (13 branches; 2 low-confidence; source: `v3-deep-batch-BB.json`)
+
+##### `MakeFacesOnPatch.2985-2992`
+- **Line**: 2985  **Axis**: `type_checking_shortcut`
+- **Brief**: Single-loop fast path: skip root-finding
+- **Falsifiable claim**: If loops.Length==1 and not WIRE type, method returns early without face construction
+- **Minimal reproducer**: Single non-WIRE loop (e.g., VERTEX) passed to method
+- **Search anchors**: 'loops.Length() == 1', 'if (aSH.ShapeType() != TopAbs_WIRE)', 'return'
+
+##### `MakeFacesOnPatch.2997-3006`
+- **Line**: 2997  **Axis**: `edge_orientation_correction`
+- **Brief**: Fix orientation for single-loop face if myInvertEdgeStatus set
+- **Falsifiable claim**: Single WIRE loop face orientation repair via ShapeFix_Face when flag true
+- **Minimal reproducer**: Single WIRE loop with myInvertEdgeStatus=true should call FixOrientation
+- **Search anchors**: 'if (myInvertEdgeStatus)', 'sff->FixOrientation(MapWires)'
+
+##### `MakeFacesOnPatch.3026-3030`
+- **Line**: 3026  **Axis**: `shape_type_filtering`
+- **Brief**: Skip non-WIRE or degenerate-orientation loops when finding roots
+- **Falsifiable claim**: Loops not WIRE type or with non-FORWARD/REVERSED orientation excluded from root detection
+- **Minimal reproducer**: Loop with TopAbs_INTERNAL orientation should skip root analysis
+- **Search anchors**: 'aShape.ShapeType() != TopAbs_WIRE', 'aShape.Orientation() != TopAbs_FORWARD', 'continue'
+
+##### `MakeFacesOnPatch.3034-3037`
+- **Line**: 3034  **Axis**: `empty_structure`
+- **Brief**: Skip empty wires
+- **Falsifiable claim**: Wires with no edges are skipped during root identification
+- **Minimal reproducer**: Empty wire (ew.More() == false) should not be processed
+- **Search anchors**: '!ew.More()', 'continue'
+
+##### `MakeFacesOnPatch.3040-3051`
+- **Line**: 3040  **Axis**: `orientation_traversal`
+- **Brief**: Skip to next valid edge if current edge has non-manifold orientation
+- **Falsifiable claim**: Non-manifold edge orientations (not FORWARD/REVERSED) are skipped with Next()
+- **Minimal reproducer**: Wire with first edge in non-manifold state
+- **Search anchors**: 'ed.Orientation() != TopAbs_FORWARD && ed.Orientation() != TopAbs_REVERSED', 'ew.Next()'
+
+##### `MakeFacesOnPatch.3058-3061`
+- **Line**: 3058  **Axis**: `pcurve_availability`
+- **Brief**: Skip edge if pcurve unavailable
+- **Falsifiable claim**: Edges without pcurve on pseudo-face cannot be analyzed as roots
+- **Minimal reproducer**: Edge with null pcurve should skip root processing
+- **Search anchors**: 'cw.IsNull()', 'continue'
+
+##### `MakeFacesOnPatch.3092-3095`
+- **Line**: 3092  **Axis**: `hole_validation`
+- **Brief**: Skip candidate hole if it has no manifold edges
+- **Falsifiable claim**: Hole candidate with zero FORWARD/REVERSED edges (nbe==0) is skipped
+- **Minimal reproducer**: Wire with all non-manifold edges should not qualify as hole
+- **Search anchors**: 'if (!nbe)', 'continue'
+
+##### `MakeFacesOnPatch.3101-3131`
+- **Line**: 3101  **Axis**: `containment_ambiguity`
+- **Brief**: Handle tangential wire-hole boundary (ON/UNKNOWN state)
+- **Falsifiable claim**: When point is ON or UNKNOWN w.r.t. candidate hole, advance along wire edges until clear state
+- **Minimal reproducer**: Root point touching hole boundary; algorithm walks wire to find definitive IN/OUT
+- **Search anchors**: 'stPoint == TopAbs_ON || stPoint == TopAbs_UNKNOWN', 'while (stPoint == TopAbs_ON)'
+
+##### `MakeFacesOnPatch.3159-3170` **[low-confidence]**
+- **Line**: 3159  **Axis**: `degenerate_topology`
+- **Brief**: No root found fallback: treat all remaining loops as roots
+- **Falsifiable claim**: If root detection fails (roots.Length <= 0 and loops non-empty), all loops become roots
+- **Minimal reproducer**: Pathological case where no root wire is identifiable from topology
+- **Search anchors**: 'if (roots.Length() <= 0 && loops.Length() > 0)', 'roots.Append(loops(j))'
+
+##### `MakeFacesOnPatch.3181-3188`
+- **Line**: 3181  **Axis**: `orientation_inference`
+- **Brief**: Reverse root wire orientation if point-at-infinity is inside
+- **Falsifiable claim**: Root wire with PerformInfinitePoint()==IN indicates reversed outer boundary; orientation flag set
+- **Minimal reproducer**: Root loop with infinite-point classification mismatch from geometry
+- **Search anchors**: 'if (clas.PerformInfinitePoint() == TopAbs_IN)', 'reverse = true'
+
+##### `MakeFacesOnPatch.3224-3228`
+- **Line**: 3224  **Axis**: `hole_assignment`
+- **Brief**: Classify loop as hole or root based on point state and reverse flag
+- **Falsifiable claim**: (state==OUT) XOR reverse determines if shape is hole for current root
+- **Minimal reproducer**: Loop inside root boundary should be hole; outside should not be
+- **Search anchors**: 'if ((state == TopAbs_OUT) == reverse)', 'holes.Append(loops(j))'
+
+##### `MakeFacesOnPatch.3238-3243`
+- **Line**: 3238  **Axis**: `vertex_projection`
+- **Brief**: Copy VERTEX holes to new face with parametric transfer
+- **Falsifiable claim**: VERTEX holes use ShapeAnalysis_TransferParametersProj::CopyNMVertex for projection
+- **Minimal reproducer**: VERTEX hole in multi-loop patch
+- **Search anchors**: 'if (aSh.ShapeType() == TopAbs_VERTEX)', 'CopyNMVertex'
+
+##### `MakeFacesOnPatch.3253-3269` **[low-confidence]**
+- **Line**: 3253  **Axis**: `residual_loop_promotion`
+- **Brief**: Final root iteration: unclaimed loops become roots (second fallback)
+- **Falsifiable claim**: After last root processed, remaining loops promoted to roots if WIRE type
+- **Minimal reproducer**: Loop not claimed as hole after all roots processed
+- **Search anchors**: 'if (i == roots.Length() && loops.Length() > 0)', 'roots.Append(loops(j))'
 
 
 #### `ShapeFix_ComposeShell.Perform`
@@ -5449,7 +6927,117 @@ v3's bar: every branch's description is rich enough to either RECREATE the defec
 - **Search anchors**: 'aMaxTol <= 2. * Precision::Confusion()', 'aMaxTol = Precision::Infinite()'
 
 
+#### `ShapeFix_ComposeShell.SplitByLine_at1440`
+ (4 branches; 1 low-confidence; source: `v3-deep-batch-MM.json`)
+
+##### `ShapeFix_ComposeShell.SplitByLine.vertex-wire-special`
+- **Line**: 1452  **Axis**: `input-shape`
+- **Brief**: SplitByLine() handles special case of wire-vertex (single vertex, no edges).
+- **Falsifiable claim**: Without vertex check, single-vertex wire treated as edge-wire, causing type mismatch crash. To test: pass vertex-wire to SplitByLine; without line 1452-1476, crash in edge iteration.
+- **Minimal reproducer**: Construct wire from single vertex (no edges). Without line 1452: IsVertex() returns false, code tries iterate edges, crash. With: line 1452-1476 handles vertex case.
+- **Search anchors**: 'IsVertex()', 'wire-vertex', 'special case'
+
+##### `ShapeFix_ComposeShell.SplitByLine.closed-surface-adjust`
+- **Line**: 1484  **Axis**: `tolerance`
+- **Brief**: SplitByLine() adjusts split parameters for closed surfaces (periodic U/V).
+- **Falsifiable claim**: Without closed-surface handling, intersections on wrapped edges computed in wrong parameter range. To test: closed surface, line crosses seam; without line 1484-1495, wrong halfPeriod.
+- **Minimal reproducer**: Closed surface (torus), SplitByLine at U-seam. Without line 1484-1495: halfPeriod=0, adjustment skipped, split params wrong. With: halfPeriod computed, params adjusted.
+- **Search anchors**: 'myClosedMode', 'myUPeriod', 'halfPeriod'
+
+##### `ShapeFix_ComposeShell.SplitByLine.pcurve-missing-skip`
+- **Line**: 1509  **Axis**: `input-shape`
+- **Brief**: SplitByLine() skips edges without PCurve on face (continue statement).
+- **Falsifiable claim**: Without skip, edge without PCurve causes null-dereference in intersection code. To test: edge without face PCurve; without line 1509-1511, crash in gac projection.
+- **Minimal reproducer**: Edge with 3D curve but no PCurve on target face. Without line 1509-1511: crash in Geom2dAdaptor. With: continue skips edge.
+- **Search anchors**: 'PCurve(E, myFace)', 'continue skip', 'missing PCurve'
+
+##### `ShapeFix_ComposeShell.SplitByLine.bndbox-closed-adjust` **[low-confidence]**
+- **Line**: 1524  **Axis**: `tolerance`
+- **Brief**: SplitByLine() computes bounding box of PCurve and adjusts for closed-surface period.
+- **Falsifiable claim**: Without period adjustment, PCurve spanning seam yields incorrect bbox, missed intersections. To test: PCurve wrapping around closed U; without line 1524-1539, bbox misses intersection.
+- **Minimal reproducer**: Torus face, PCurve wraps U-seam (0->2pi wraps). Without box adjustment: bbox covers [1.9pi, 0.1pi] as [1.9pi, 0.1pi] (wrong). With adjustment: normalizes to [1.9pi, 2pi, 0, 0.1pi] union.
+- **Low-confidence reason**: Complex period-wrapping logic; reproducer requires precise bbox behavior in closed surface
+- **Search anchors**: 'Bnd_Box2d', 'ShapeAnalysis::AdjustToPeriod', 'wrapping PCurve'
+
+
+#### `ShapeFix_ComposeShell.SplitEdges_at260`
+ (1 branches; source: `v3-deep-batch-MM.json`)
+
+##### `ShapeFix_ComposeShell.SplitEdges.load-split-grid`
+- **Line**: 266  **Axis**: `healer-state`
+- **Brief**: SplitEdges() calls LoadWires() and SplitByGrid() sequentially to initialize wire segments and split by grid.
+- **Falsifiable claim**: Without LoadWires(), seqw is empty, SplitByGrid() has no wires to split. To test: call SplitByGrid() without LoadWires(); grid splitting fails on empty sequence.
+- **Minimal reproducer**: Create ShapeFix_ComposeShell, call SplitByGrid() directly (skip LoadWires). Without load, seqw empty, no splits. With LoadWires(): wires loaded and split.
+- **Search anchors**: 'LoadWires', 'SplitByGrid', 'grid initialization'
+
+
+#### `ShapeFix_ComposeShell.SplitWire_at949`
+ (7 branches; source: `v3-deep-batch-MM.json`)
+
+##### `ShapeFix_ComposeShell.SplitWire.context-apply-edge`
+- **Line**: 969  **Axis**: `healer-state`
+- **Brief**: SplitWire() applies context to edge to handle pre-split seam edges.
+- **Falsifiable claim**: Without ApplyContext(), already-split seam edges processed as single, causing invalid split redistribution. To test: seam edge split by context; without line 969, nsplit=1 (wrong), DistributeSplitPoints fails.
+- **Minimal reproducer**: Seam edge already split via context (nsplit>1). Without line 969: nsplit=1 (not applied). With: nsplit reflects actual split count.
+- **Search anchors**: 'ApplyContext', 'seam-edge', 'split redistribution'
+
+##### `ShapeFix_ComposeShell.SplitWire.distribute-splits`
+- **Line**: 972  **Axis**: `healer-state`
+- **Brief**: SplitWire() conditionally redistributes split points if edge is pre-split (nsplit != 1).
+- **Falsifiable claim**: Without redistribute check, pre-split edge points not adjusted, topology corrupted. To test: nsplit=3 (pre-split); without line 972, points not redistributed.
+- **Minimal reproducer**: Seam split 3x by context. Without line 972: DistributeSplitPoints not called, edge split points misaligned. With: points redistributed correctly.
+- **Search anchors**: 'DistributeSplitPoints', 'pre-split edge', 'nsplit>1'
+
+##### `ShapeFix_ComposeShell.SplitWire.edge-dismiss-error`
+- **Line**: 973  **Axis**: `healer-state`
+- **Brief**: SplitWire() checks if DistributeSplitPoints returns invalid value (nsplit <= 0), indicating edge dismissal.
+- **Falsifiable claim**: Without dismiss check, edge marked for removal (nsplit<0) not handled, invalid edge added to wire. To test: DistributeSplitPoints returns -1; without line 973, edge not skipped.
+- **Minimal reproducer**: DistributeSplitPoints returns -1 (error). Without line 973-979: edge added to result (corrupted). With: i--, loop retried.
+- **Search anchors**: 'nsplit<=0', 'edge dismiss', 'loop decrement'
+
+##### `ShapeFix_ComposeShell.SplitWire.no-split-edge`
+- **Line**: 996  **Axis**: `healer-state`
+- **Brief**: SplitWire() handles edges with no split points (stop == start) by adding unsplit edge to result.
+- **Falsifiable claim**: Without unsplit branch, edges without intersections lost. To test: edge with no grid intersections; without line 998, edge not added.
+- **Minimal reproducer**: Edge crosses no grid lines (stop==start). Without line 998: edge omitted. With: AddEdge(0, edge) preserves unsplit edge.
+- **Search anchors**: 'stop==start', 'no-split edge', 'AddEdge'
+
+##### `ShapeFix_ComposeShell.SplitWire.nonmanifold-vertex`
+- **Line**: 1006  **Axis**: `conformance-probe`
+- **Brief**: SplitWire() collects non-manifold vertices on edge before splitting.
+- **Falsifiable claim**: Without collection, non-manifold refs lost during split, topology becomes invalid. To test: edge with non-manifold vertex; without line 1006-1015, NM vertex lost.
+- **Minimal reproducer**: Edge with internal non-manifold vertex (Orientation != FORWARD/REVERSED). Without collection: NM vertex not preserved in split. With: aNMVertices collected for later reattachment.
+- **Search anchors**: 'non-manifold vertex', 'TopoDS_Iterator', 'orientation check'
+
+##### `ShapeFix_ComposeShell.SplitWire.curve3d-missing`
+- **Line**: 1033  **Axis**: `input-shape`
+- **Brief**: SplitWire() tolerates missing 3D curve, setting c3d=null and parameters to 0.
+- **Falsifiable claim**: Without tolerance, edge without 3D curve crashes in projection. To test: edge with only 2D PCurve; without line 1033-1036, crash in 3D interpolation.
+- **Minimal reproducer**: Edge with PCurve but no 3D curve. Without line 1033-1036: crash. With: c3d.Nullify(), f3d=l3d=0, processing continues.
+- **Search anchors**: 'Curve3d missing', 'nullify', '2D-only edge'
+
+##### `ShapeFix_ComposeShell.SplitWire.pcurve-fail`
+- **Line**: 1041  **Axis**: `healer-state`
+- **Brief**: SplitWire() flags FAIL2 status if PCurve extraction fails.
+- **Falsifiable claim**: Without failure flag, edge without PCurve silently skipped, status mask corrupted. To test: edge with missing PCurve; without line 1041-1043, status unchanged.
+- **Minimal reproducer**: Edge without PCurve on face. Without line 1041-1043: status OK (wrong). With: FAIL2 bit set, caller knows PCurve missing.
+- **Search anchors**: 'PCurve missing', 'FAIL2 status', 'error flagging'
+
+
 ### ShapeFix_Edge
+
+#### `ShapeFix_Edge.FixAddCurve3d_at619`
+ (3 branches; source: `v3-deep-batch-KK.json`)
+
+##### `?`
+- **Line**: 622  **Axis**: `?`
+
+##### `?`
+- **Line**: 625  **Axis**: `?`
+
+##### `?`
+- **Line**: 629  **Axis**: `?`
+
 
 #### `ShapeFix_Edge.FixAddPCurve`
  (6 branches; 2 low-confidence; source: `v3-deep-batch-S.json`)
@@ -5495,6 +7083,17 @@ v3's bar: every branch's description is rich enough to either RECREATE the defec
 - **Falsifiable claim**: DONE3 check applies 3D range after 2D update; parameter mismatch possible
 - **Minimal reproducer**: Edge with periodic 3D curve and seam PCurves
 - **Search anchors**: 'DONE3', 'UpdateEdge', '3D curve range', 'FirstParameter'
+
+
+#### `ShapeFix_Edge.FixRemovePCurve_at90`
+ (1 branches; source: `v3-deep-batch-DD.json`)
+
+##### `CONDITIONAL_PCURVE_REMOVAL`
+- **Line**: 94  **Axis**: `exception_safety`
+- **Brief**: PCurve removal triggered only on CheckVerticesWithPCurve success; asymmetric action
+- **Falsifiable claim**: If CheckVerticesWithPCurve returns true, PCurve is removed; no rollback on removal failure; orphaned reference risk if RemovePCurve throws
+- **Minimal reproducer**: Edge with valid PCurve that CheckVerticesWithPCurve approves; RemovePCurve fails silently or throws; edge state inconsistent
+- **Search anchors**: 'CheckVerticesWithPCurve', 'RemovePCurve', 'result'
 
 
 #### `ShapeFix_Edge.FixReversed2d`
@@ -5618,7 +7217,88 @@ v3's bar: every branch's description is rich enough to either RECREATE the defec
 - **Search anchors**: 'CheckVertexTolerance', 'single-arg overload', 'multi-surface'
 
 
+### ShapeFix_EdgeConnect
+
+#### `ShapeFix_EdgeConnect.Add_at127`
+ (2 branches; source: `v3-deep-batch-KK.json`)
+
+##### `?`
+- **Line**: 131  **Axis**: `?`
+
+##### `?`
+- **Line**: 141  **Axis**: `?`
+
+
+#### `ShapeFix_EdgeConnect.Add_at49`
+ (3 branches; source: `v3-deep-batch-KK.json`)
+
+##### `?`
+- **Line**: 54  **Axis**: `?`
+
+##### `?`
+- **Line**: 79  **Axis**: `?`
+
+##### `?`
+- **Line**: 90  **Axis**: `?`
+
+
+#### `ShapeFix_EdgeConnect.Build_at157`
+ (10 branches; source: `v3-deep-batch-KK.json`)
+
+##### `?`
+- **Line**: 202  **Axis**: `?`
+
+##### `?`
+- **Line**: 207  **Axis**: `?`
+
+##### `?`
+- **Line**: 212  **Axis**: `?`
+
+##### `?`
+- **Line**: 242  **Axis**: `?`
+
+##### `?`
+- **Line**: 271  **Axis**: `?`
+
+##### `?`
+- **Line**: 277  **Axis**: `?`
+
+##### `?`
+- **Line**: 293  **Axis**: `?`
+
+##### `?`
+- **Line**: 300  **Axis**: `?`
+
+##### `?`
+- **Line**: 305  **Axis**: `?`
+
+##### `?`
+- **Line**: 308  **Axis**: `?`
+
+
 ### ShapeFix_Face
+
+#### `ShapeFix_Face.Add_at226`
+ (1 branches; source: `v3-deep-batch-MM.json`)
+
+##### `ShapeFix_Face.Add.null-wire-guard`
+- **Line**: 227  **Axis**: `input-shape`
+- **Brief**: Add() returns early if input wire is null, preventing null-reference in BRep_Builder::Add().
+- **Falsifiable claim**: Without IsNull() check, null wire passed to BRep_Builder::Add(myFace, wire) corrupts face topology. To test: Add(nullWire); without guard, builder adds invalid null edge chain.
+- **Minimal reproducer**: Construct empty TopoDS_Wire, call Add(). Without line 227-229: builder crashes or corrupts myFace. With guard: early return, myFace unchanged.
+- **Search anchors**: 'IsNull()', 'wire validation', 'null-wire'
+
+
+#### `ShapeFix_Face.ClearModes_at133`
+ (1 branches; source: `v3-deep-batch-MM.json`)
+
+##### `ShapeFix_Face.ClearModes.init-all-modes`
+- **Line**: 134  **Axis**: `healer-state`
+- **Brief**: ClearModes unconditionally initializes all fixing mode flags to -1, establishing default disable state.
+- **Falsifiable claim**: Without this initialization, undefined myFixWireMode values propagate to NeedFix() comparisons. To test: call ClearModes() then check myFixWireMode == -1; without init, value is indeterminate.
+- **Minimal reproducer**: Create ShapeFix_Face obj, do NOT call ClearModes(), call Perform() on face with wire. Healer crashes on undefined myFixWireMode comparison at line 365 (NeedFix). With ClearModes(): safe -1 comparison.
+- **Search anchors**: 'myFixWireMode = -1', 'ClearModes initialization', 'mode defaults'
+
 
 #### `ShapeFix_Face.FixAddNaturalBound`
  (5 branches; 3 low-confidence; source: `v3-deep-batch-G.json`)
@@ -6000,6 +7680,66 @@ v3's bar: every branch's description is rich enough to either RECREATE the defec
 - **Search anchors**: 'if (done)', 'TopoDS_Shape S = myFace.EmptyCopied()', 'B.Add(S, ws.Value(i))', 'BRepTools::Update(myFace)'
 
 
+#### `ShapeFix_Face.FixPeriodicDegenerated_at3102`
+ (8 branches; source: `v3-deep-batch-AA.json`)
+
+##### `?`
+- **Line**: 3108  **Axis**: `Healing context transformation application`
+- **Brief**: Context not null; apply context transformation to myFace before processing
+- **Falsifiable claim**: Context().IsNull() returns false when healing context is active
+- **Minimal reproducer**: Create face with healing context; Context()->Apply returns transformed face
+- **Search anchors**: 'Context', 'IsNull', 'Apply'
+
+##### `?`
+- **Line**: 3131  **Axis**: `Shape type and orientation filtering`
+- **Brief**: Wire has invalid shape type or orientation
+- **Falsifiable claim**: ShapeType check rejects non-wire shapes; Orientation check rejects non-FORWARD/REVERSED
+- **Minimal reproducer**: Add vertex to face; loop skips non-wire entry
+- **Search anchors**: 'TopAbs_WIRE', 'Orientation', 'continue'
+
+##### `?`
+- **Line**: 3145  **Axis**: `Surface type and wire count constraint`
+- **Brief**: Wire count != 1 or surface null or not conical
+- **Falsifiable claim**: Conical surface required; method only processes single-wire conical faces
+- **Minimal reproducer**: Create multi-wire face or face on non-conical surface; method rejects
+- **Search anchors**: 'aNbWires', 'DynamicType', 'Geom_ConicalSurface'
+
+##### `?`
+- **Line**: 3162  **Axis**: `Cone-wrapping loop topology validation`
+- **Brief**: Wire does not form periodic conic loop belting the surface
+- **Falsifiable claim**: IsPeriodicConicalLoop returns false when wire does not wrap cone axis
+- **Minimal reproducer**: Create cone face with wire not belting cone; isConicLoop returns false
+- **Search anchors**: 'IsPeriodicConicalLoop', 'isConicLoop', 'aMinLoopV', 'aMaxLoopV'
+
+##### `?`
+- **Line**: 3192  **Axis**: `Cone geometry validity (non-zero semi-angle)`
+- **Brief**: Semi-angle too small (zero or near-zero); invalid cone geometry
+- **Falsifiable claim**: Cone with aSemiAngle <= Precision::Confusion indicates degenerate geometry
+- **Minimal reproducer**: Create cone with very small semi-angle; fabs(aSemiAngle) near 0
+- **Search anchors**: 'aSemiAngle', 'Precision::Confusion', 'Bad surface'
+
+##### `?`
+- **Line**: 3198  **Axis**: `Apex positioning relative to wire bounds`
+- **Brief**: Apex position not outside wire bounds; positional relationship inconsistent
+- **Falsifiable claim**: Apex V parameter within or at wire bounds causes positional conflict
+- **Minimal reproducer**: Create cone where apex sits within wire V-range; condition triggers return
+- **Search anchors**: 'anApexV', 'aMinLoopV', 'aMaxLoopV', 'Precision'
+
+##### `?`
+- **Line**: 3204  **Axis**: `Apex curve construction and wire orientation adjustment (lower apex)`
+- **Brief**: Apex below wire: build downward-pointing apex curve and reverse wire if U non-decreasing
+- **Falsifiable claim**: When anApexV < aMinLoopV, apex curve direction and wire orientation set correctly
+- **Minimal reproducer**: Create cone with apex below wire; isUDecrease=false triggers aSoleWire.Reverse()
+- **Search anchors**: 'anApexV < aMinLoopV', 'anApexCurve2d', 'isUDecrease', 'Reverse'
+
+##### `?`
+- **Line**: 3211  **Axis**: `Apex curve construction and wire orientation adjustment (upper apex)`
+- **Brief**: Apex above wire: build upward-pointing apex curve and reverse wire if U decreasing
+- **Falsifiable claim**: When anApexV > aMaxLoopV, apex curve direction and wire orientation set correctly
+- **Minimal reproducer**: Create cone with apex above wire; isUDecrease=true triggers aSoleWire.Reverse()
+- **Search anchors**: 'anApexV > aMaxLoopV', 'anApexCurve2d', 'isUDecrease', 'Reverse'
+
+
 #### `ShapeFix_Face.FixSmallAreaWire`
  (4 branches; 2 low-confidence; source: `v3-deep-batch-G.json`)
 
@@ -6032,6 +7772,52 @@ v3's bar: every branch's description is rich enough to either RECREATE the defec
 - **Search anchors**: 'nbWires <= 0', 'theIsRemoveSmallFace'
 
 
+#### `ShapeFix_Face.FixSplitFace_at2908`
+ (6 branches; source: `v3-deep-batch-AA.json`)
+
+##### `?`
+- **Line**: 2920  **Axis**: `Shape type and orientation pre-filtering`
+- **Brief**: Shape not a wire or orientation invalid (not FORWARD/REVERSED)
+- **Falsifiable claim**: ShapeType check rejects non-wire shapes or improperly oriented wires
+- **Minimal reproducer**: Add vertex or invalid orientation to face; loop skips entry
+- **Search anchors**: 'TopAbs_WIRE', 'Orientation', 'continue'
+
+##### `?`
+- **Line**: 2935  **Axis**: `Wire edge count validation`
+- **Brief**: Wire has zero edges; empty wire structure
+- **Falsifiable claim**: NbEdges() == 0 for synthetic or malformed wires
+- **Minimal reproducer**: Create empty wire; NbEdges() returns 0, loop continues
+- **Search anchors**: 'NbEdges', 'continue', 'sewd'
+
+##### `?`
+- **Line**: 2950  **Axis**: `Wire closure topology check`
+- **Brief**: Wire not closed: first and last vertices differ
+- **Falsifiable claim**: V1.IsSame(V2) returns false when wire endpoints do not coincide in topology
+- **Minimal reproducer**: Create open wire; sae.FirstVertex != sae.LastVertex; method returns false
+- **Search anchors**: 'IsSame', 'V1', 'V2', 'FirstVertex', 'LastVertex'
+
+##### `?`
+- **Line**: 2962  **Axis**: `Face/wire relationship classification via point-in-face test`
+- **Brief**: Interior wire classification: point at infinity inside face signals incorrect wire orientation
+- **Falsifiable claim**: PerformInfinitePoint returns TopAbs_IN when interior classification fails
+- **Minimal reproducer**: Create multi-wire face with reversed interior wire; clas returns IN
+- **Search anchors**: 'PerformInfinitePoint', 'TopAbs_IN', 'staout'
+
+##### `?`
+- **Line**: 2970  **Axis**: `Wire-to-subface mapping completeness`
+- **Brief**: Wire count mismatch: internal wires not properly distributed across split faces
+- **Falsifiable claim**: NbWires != NbWiresNew indicates incomplete mapping of wires to sub-faces
+- **Minimal reproducer**: Create multi-wire face where MapWires entries do not cover all wires
+- **Search anchors**: 'NbWires', 'NbWiresNew', 'MapWires'
+
+##### `?`
+- **Line**: 2974  **Axis**: `Split success condition (must produce >1 face)`
+- **Brief**: Single split result: face cannot be split into multiple sub-faces
+- **Falsifiable claim**: faces.Length() <= 1 indicates no split occurred or only one sub-face produced
+- **Minimal reproducer**: Create face that splits into only one sub-face; Length() returns 1
+- **Search anchors**: 'faces.Length', 'Compound', 'Comp'
+
+
 #### `ShapeFix_Face.FixWiresTwoCoincEdges`
  (4 branches; 1 low-confidence; source: `v3-deep-batch-G.json`)
 
@@ -6062,6 +7848,137 @@ v3's bar: every branch's description is rich enough to either RECREATE the defec
 - **Falsifiable claim**: Wires are merged only when both edges are identical at FORWARD orientation; same edge at different orientations or distinct edges are not merged
 - **Minimal reproducer**: Wire with [E, E] at FORWARD; Wire with [E, E.Reversed()]; Wire with [E1, E2]
 - **Search anchors**: '!(E1 == E2)', 'E1.Orientation(TopAbs_FORWARD)'
+
+
+#### `ShapeFix_Face.Init_at193`
+ (1 branches; source: `v3-deep-batch-MM.json`)
+
+##### `ShapeFix_Face.Init.fwd-orientation-check`
+- **Line**: 201  **Axis**: `input-shape`
+- **Brief**: Init() checks if input face orientation is REVERSED and inverts myFace only when !fwd.
+- **Falsifiable claim**: Without this check, reversed faces are processed in forward orientation, causing invalid wire traversal. To test: Init(reversedFace, false) then check face orientation; without check, face stays FORWARD incorrectly.
+- **Minimal reproducer**: Construct Face(REVERSED_ORIENT), pass fwd=false to Init(). Without line 201-203, myFace.Orientation() returns FORWARD (wrong). With it: REVERSED. Wire fixes apply incorrect sense to edges.
+- **Search anchors**: 'TopAbs_REVERSED', 'fwd parameter', 'orientation handling'
+
+
+#### `ShapeFix_Face.Init_at210`
+ (1 branches; source: `v3-deep-batch-MM.json`)
+
+##### `ShapeFix_Face.Init.null-surface-guard`
+- **Line**: 214  **Axis**: `input-shape`
+- **Brief**: Init() checks if BRep_Tool::Surface is null before wrapping in ShapeAnalysis_Surface, preventing null-dereference crash.
+- **Falsifiable claim**: Without the IsNull() check, null surface passed to ShapeAnalysis_Surface constructor crashes. To test: Init(faceWithNullSurface); without guard, immediate segfault in ShapeAnalysis_Surface::ShapeAnalysis_Surface.
+- **Minimal reproducer**: Build TopoDS_Face with null geometry (no SetSurface call), pass to Init(). Without line 214: crash. With guard: mySurf stays null, Perform() skips surface analysis gracefully.
+- **Search anchors**: 'IsNull()', 'BRep_Tool::Surface', 'Geom_Surface null'
+
+
+#### `ShapeFix_Face.Perform_at346`
+ (15 branches; source: `v3-deep-batch-MM.json`)
+
+##### `ShapeFix_Face.Perform.null-fixwire-guard`
+- **Line**: 350  **Axis**: `healer-state`
+- **Brief**: Perform() guards against null myFixWire handle, returning false immediately to prevent cascade failures.
+- **Falsifiable claim**: Without this null check, null myFixWire->SetFace() at line 367 crashes. To test: manually null myFixWire, call Perform(); without guard, segfault at line 367.
+- **Minimal reproducer**: Create ShapeFix_Face, manually set myFixWire=null, call Perform(). Without line 350-352: crash at line 367. With guard: safe false return.
+- **Search anchors**: 'IsNull()', 'theAdvFixWire', 'fixture safety'
+
+##### `ShapeFix_Face.Perform.context-apply`
+- **Line**: 378  **Axis**: `healer-state`
+- **Brief**: Perform() conditionally applies healing context to shape; without context, uses original face directly.
+- **Falsifiable claim**: Without !Context().IsNull() check, orphaned shape edits bypass context tracking, causing lost healing messages. To test: setContext(), fix wires, check message log; without branch, messages missing.
+- **Minimal reproducer**: Set healing context via SetContext(). Without line 378-380: S=myFace untracked. With branch: S=Context()->Apply() ensures all edits logged in message registry (OCC21771).
+- **Search anchors**: 'Context()', 'Apply healing', 'message registry OCC21771'
+
+##### `ShapeFix_Face.Perform.auto-precision`
+- **Line**: 387  **Axis**: `tolerance`
+- **Brief**: Perform() auto-corrects precision if myAutoCorrectPrecisionMode enabled; computes safe tolerance from smallest edge.
+- **Falsifiable claim**: Without auto-precision adjustment, small-edge processing fails due to tolerance mismatch (OCC21623). To test: set myAutoCorrectPrecisionMode=true, pass face with 0.001 edge to face with 0.1 precision; without branch, tolerance too large, edge lost.
+- **Minimal reproducer**: Face with tiny edge (0.001 size) but high precision (0.1). Without auto-precision: edge discarded. With branch (line 389-396): precision drops to 0.0005, edge preserved.
+- **Search anchors**: 'myAutoCorrectPrecisionMode', 'LeastEdgeSize', 'OCC21623'
+
+##### `ShapeFix_Face.Perform.wire-type-filter`
+- **Line**: 403  **Axis**: `input-shape`
+- **Brief**: Perform() skips non-WIRE shapes during face traversal, only processing actual wires.
+- **Falsifiable claim**: Without type filter, non-wire sub-shapes (e.g., vertices, edges) passed to theAdvFixWire->Load(edge) cause type mismatch crash. To test: face with orphan vertex, load to wire fixer; without filter, crash.
+- **Minimal reproducer**: Build Face with loose Vertex child (non-standard), iterate. Without line 403-406: attempt Load(vertex), crash in wire fixer. With filter: skip vertex, continue.
+- **Search anchors**: 'ShapeType()', 'TopAbs_WIRE', 'shape filtering'
+
+##### `ShapeFix_Face.Perform.empty-wire-nonmanifold`
+- **Line**: 410  **Axis**: `conformance-probe`
+- **Brief**: Perform() distinguishes empty-but-manifold wires from empty-with-nonmanifold-edges.
+- **Falsifiable claim**: Without NbNonManifoldEdges() check, non-manifold edge wires incorrectly dropped. To test: wire with 0 normal edges but non-manifold refs; without branch, wire lost.
+- **Minimal reproducer**: Wire(NbEdges=0, NbNonManifoldEdges=2). Without line 412-415: delete wire. With branch: preserve non-manifold refs in output.
+- **Search anchors**: 'NbNonManifoldEdges', 'empty-wire', 'manifold check'
+
+##### `ShapeFix_Face.Perform.wire-fix-success`
+- **Line**: 423  **Axis**: `kernel-pair`
+- **Brief**: Perform() executes theAdvFixWire->Perform() and only proceeds if it returns true.
+- **Falsifiable claim**: Without success check, failed wire fixes propagate downstream, corrupting face topology. To test: malformed wire that Perform() rejects; without check, bad wire added to face.
+- **Minimal reproducer**: Wire that theAdvFixWire->Perform() returns false for (e.g., all edges degenerate). Without line 423 check: wire added anyway. With: skipped.
+- **Search anchors**: 'Perform()', 'wire fixer return', 'success validation'
+
+##### `ShapeFix_Face.Perform.fixed-status-aggregate`
+- **Line**: 427  **Axis**: `healer-state`
+- **Brief**: Perform() aggregates multiple wire-fix status flags into single 'fixed' bool via OR logic.
+- **Falsifiable claim**: Without OR aggregation, one successful sub-fix missed if checked individually, face marked unchanged. To test: wire with only StatusConnected=DONE; without OR, fixed=false, face not replaced.
+- **Minimal reproducer**: Wire fixed only by StatusConnected(). Without line 427-433: fixed=false. With: fixed=true because OR includes StatusConnected.
+- **Search anchors**: 'StatusSmall', 'StatusConnected', 'OR aggregation'
+
+##### `ShapeFix_Face.Perform.context-replace-fixed`
+- **Line**: 437  **Axis**: `healer-state`
+- **Brief**: Perform() conditionally records fixed wire in context only if context exists.
+- **Falsifiable claim**: Without context check, fixed wire replacement lost when message tracking required. To test: set context, fix wire, query replaced shapes; without branch, replacement not tracked.
+- **Minimal reproducer**: SetContext(myCtx), fix wire. Without line 437-439: Context()->Replace() not called, healing not logged. With: replacement recorded.
+- **Search anchors**: 'Context()->Replace', 'healing tracking', 'message log'
+
+##### `ShapeFix_Face.Perform.empty-wire-after-fix`
+- **Line**: 441  **Axis**: `input-shape`
+- **Brief**: Perform() re-checks NbEdges after fix; if wire becomes empty, marks DONE5 and skips adding to face.
+- **Falsifiable claim**: Without post-fix check, empty wires added to face, corrupting topology. To test: wire that fix reduces to 0 edges; without line 441-444, empty wire added.
+- **Minimal reproducer**: Wire with 1 degenerate edge. Fix removes it (NbEdges->0). Without line 441-444: empty wire added to tmpFace. With: skip via continue.
+- **Search anchors**: 'NbEdges==0 check', 'post-fix validation', 'empty-wire skip'
+
+##### `ShapeFix_Face.Perform.unfixed-wire-reorder`
+- **Line**: 447  **Axis**: `healer-state`
+- **Brief**: Perform() handles unfixed wires that differ from original via reorder mapping.
+- **Falsifiable claim**: Without reorder check, topology changes from reordering lost in message context. To test: wire reordered but not 'fixed'; without branch, mapping skipped.
+- **Minimal reproducer**: Wire reordered (e.g., start point moved) but no other fix. Without line 447-449: aMapReorderedWires miss. With: capture wire change for later processing.
+- **Search anchors**: 'IsSame()', 'reorder mapping', 'unfixed wire'
+
+##### `ShapeFix_Face.Perform.face-orientation-restore`
+- **Line**: 459  **Axis**: `input-shape`
+- **Brief**: Perform() restores tmpFace orientation to REVERSED if input was reversed (!myFwd).
+- **Falsifiable claim**: Without orientation restore, reversed faces become forward, flipping face normals. To test: reversed face input; without line 459-461, output is forward (wrong).
+- **Minimal reproducer**: Face(REVERSED). Without line 459-461: tmpFace stays FORWARD. With: tmpFace.Orientation(REVERSED) restores original sense.
+- **Search anchors**: 'myFwd', 'TopAbs_REVERSED', 'orientation restore'
+
+##### `ShapeFix_Face.Perform.context-replace-face`
+- **Line**: 466  **Axis**: `healer-state`
+- **Brief**: Perform() records fixed face in context only if context exists.
+- **Falsifiable claim**: Without context branch, face replacement lost from healing log. To test: fix face, query context; without line 466-468, replacement missing.
+- **Minimal reproducer**: SetContext(), Perform(). Without line 466-468: Context()->Replace(S, tmpFace) not called. With: face edit logged.
+- **Search anchors**: 'Context()->Replace face', 'healing log', 'context tracking'
+
+##### `ShapeFix_Face.Perform.missing-seam-check`
+- **Line**: 492  **Axis**: `api-contract`
+- **Brief**: Perform() conditionally executes FixMissingSeam() only if myFixMissingSeamMode is enabled.
+- **Falsifiable claim**: Without mode check, FixMissingSeam() runs always, potentially adding unwanted seams. To test: set myFixMissingSeamMode=-1 (disabled); without branch, seams still added.
+- **Minimal reproducer**: myFixMissingSeamMode=-1 (no fix). Without line 492: FixMissingSeam() called anyway. With: skipped per NeedFix().
+- **Search anchors**: 'NeedFix(myFixMissingSeamMode)', 'conditional fix', 'mode dispatch'
+
+##### `ShapeFix_Face.Perform.seam-fix-status`
+- **Line**: 494  **Axis**: `healer-state`
+- **Brief**: Perform() records DONE3 status if FixMissingSeam() returns true.
+- **Falsifiable claim**: Without status check, successful seam fixes untracked, face appears unfixed. To test: FixMissingSeam() returns true; without line 494-496, status remains OK.
+- **Minimal reproducer**: Seam fixed by FixMissingSeam(). Without line 494-496: myStatus stays ShapeExtend_OK (wrong). With: DONE3 bit set.
+- **Search anchors**: 'FixMissingSeam()', 'status encoding', 'DONE3'
+
+##### `ShapeFix_Face.Perform.face-explorer-multi`
+- **Line**: 502  **Axis**: `healer-state`
+- **Brief**: Perform() iterates all faces produced by FixMissingSeam() for secondary wire fixes.
+- **Falsifiable claim**: Without explorer loop, only first face from FixMissingSeam() gets secondary fixes, remaining faces are unhealed. To test: seam fix splits face into 2; without loop, 2nd face skips wire fixing.
+- **Minimal reproducer**: FixMissingSeam() returns face split into 2 faces. Without line 502-605 loop: only face #1 fixed. With loop: both faces fixed.
+- **Search anchors**: 'TopExp_Explorer', 'FixMissingSeam split', 'multi-face iterate'
 
 
 #### `ShapeFix_Face.SplitEdge_at2653`
@@ -6112,6 +8029,45 @@ v3's bar: every branch's description is rich enough to either RECREATE the defec
 - **Falsifiable claim**: Split edges with valid pcurves receive bounding boxes; extraction failures skip box binding
 - **Minimal reproducer**: Split edge with valid surface pcurve; Split edge with degenerate pcurve
 - **Search anchors**: 'sae.PCurve', 'boxes.Bind'
+
+
+#### `ShapeFix_Face.isNeedAddNaturalBound_at1123`
+ (5 branches; source: `v3-deep-batch-AA.json`)
+
+##### `?`
+- **Line**: 1127  **Axis**: `Mode/configuration check before algorithm execution`
+- **Brief**: Fix mode disabled or condition not met
+- **Falsifiable claim**: NeedFix(myFixAddNaturalBoundMode) returns false when fix mode is properly configured
+- **Minimal reproducer**: Create face with myFixAddNaturalBoundMode disabled; method returns false
+- **Search anchors**: 'NeedFix', 'myFixAddNaturalBoundMode', 'return false'
+
+##### `?`
+- **Line**: 1132  **Axis**: `Surface topology constraint validation`
+- **Brief**: Surface not UV-periodic (both U and V directions must close)
+- **Falsifiable claim**: IsSurfaceUVPeriodic returns false for torus or doubly-wrapped surfaces
+- **Minimal reproducer**: Create face on sphere or single-periodic surface; method rejects
+- **Search anchors**: 'IsSurfaceUVPeriodic', 'mySurf', 'Adaptor3d'
+
+##### `?`
+- **Line**: 1137  **Axis**: `Face boundary classification (inner/outer)`
+- **Brief**: Face has OUTER bound; natural bound addition only for inner faces
+- **Falsifiable claim**: IsOuterBound returns true for annular or outer-marked faces
+- **Minimal reproducer**: Create outer boundary face; method rejects natural bound addition
+- **Search anchors**: 'IsOuterBound', 'myFace', 'OUTER bound'
+
+##### `?`
+- **Line**: 1153  **Axis**: `Edge degeneracy detection in candidate wires`
+- **Brief**: Wire contains degenerated edge; indicates external wire with orientation issue
+- **Falsifiable claim**: BRep_Tool::Degenerated returns true for edges at cone apexes or seam singularities
+- **Minimal reproducer**: Create face with degenerated edge in wire; method rejects
+- **Search anchors**: 'Degenerated', 'anEdge', 'return false'
+
+##### `?`
+- **Line**: 1157  **Axis**: `Seam edge classification in UV-periodic surfaces`
+- **Brief**: Wire contains closed seam edge; indicates external wire status
+- **Falsifiable claim**: BRep_Tool::IsClosed returns true for periodic seams on doubly-wrapped surfaces
+- **Minimal reproducer**: Create face with seam edge; method rejects natural bound addition
+- **Search anchors**: 'IsClosed', 'anEdge', 'myFace'
 
 
 ### ShapeFix_FaceConnect
@@ -6455,6 +8411,10 @@ v3's bar: every branch's description is rich enough to either RECREATE the defec
 - **Search anchors**: 'if ((BRep_Tool::Tolerance(theFirstVer))', 'maxdev = (BRep_Tool::Tolerance(theSecondVer))'
 
 
+#### `ShapeFix_FixSmallFace.FixFace_at921`
+ (0 branches; source: `v3-deep-batch-II.json`)
+
+
 #### `ShapeFix_FixSmallFace.FixPinFace`
  (0 branches; source: `v3-deep-ShapeFix_FixSmallFace_FixPinFace.json`)
 
@@ -6464,6 +8424,13 @@ v3's bar: every branch's description is rich enough to either RECREATE the defec
 - Intended defect class (if implemented): `ShapeFix_FixSmallFace.FixPinFace.UNIMPLEMENTED.pin_face_repair`
 - Falsifiable claim: If implemented, this method would remove or repair faces with 'pin' singularities (pole-collapsed NURBS edges where one row of control points degenerates to a point). Currently it returns true without modifying the shape. Calling ShapeFix_FixSmallFace::FixShape processes spot and strip faces but skips all FixPinFace logic — pin-face fixtures in regression catalogs exercise detection (CheckPin/CheckPinFace) but no actual kernel repair. A kernel-grading consumer should treat pin-face test fixtures
 - Minimal reproducer: Construct an ADVANCED_FACE with a BSpline surface where one boundary row of poles has collapsed (e.g. all U=umax poles at identical (x,y,z) in 3D space). This represents a topological singularity or 'pin' — the face has infinite curvature at one edge. The face will pass CheckPin()==true and CheckPinFace() will identify the two edges adjacent to the pin. Call ShapeFix_FixSmallFace::FixShape(). Without an implemented FixPinFace: the pin face survives unchanged (only Spot and Strip repairs are appl
+
+
+#### `ShapeFix_FixSmallFace.FixShape_at950`
+ (1 branches; source: `v3-deep-batch-II.json`)
+
+##### `?`
+- **Line**: 952  **Axis**: `?`
 
 
 #### `ShapeFix_FixSmallFace.FixSplitFace`
@@ -6612,7 +8579,235 @@ v3's bar: every branch's description is rich enough to either RECREATE the defec
 - **Search anchors**: 'Oriented(TopAbs_FORWARD)', 'Oriented(TopAbs_REVERSED)', 'Context()->Replace(V, theNewVertex)'
 
 
+#### `ShapeFix_FixSmallFace.SplitOneFace_at710`
+ (21 branches; source: `v3-deep-batch-II.json`)
+
+##### `?`
+- **Line**: 720  **Axis**: `?`
+
+##### `?`
+- **Line**: 724  **Axis**: `?`
+
+##### `?`
+- **Line**: 732  **Axis**: `?`
+
+##### `?`
+- **Line**: 742  **Axis**: `?`
+
+##### `?`
+- **Line**: 756  **Axis**: `?`
+
+##### `?`
+- **Line**: 763  **Axis**: `?`
+
+##### `?`
+- **Line**: 767  **Axis**: `?`
+
+##### `?`
+- **Line**: 777  **Axis**: `?`
+
+##### `?`
+- **Line**: 784  **Axis**: `?`
+
+##### `?`
+- **Line**: 796  **Axis**: `?`
+
+##### `?`
+- **Line**: 801  **Axis**: `?`
+
+##### `?`
+- **Line**: 810  **Axis**: `?`
+
+##### `?`
+- **Line**: 834  **Axis**: `?`
+
+##### `?`
+- **Line**: 851  **Axis**: `?`
+
+##### `?`
+- **Line**: 866  **Axis**: `?`
+
+##### `?`
+- **Line**: 870  **Axis**: `?`
+
+##### `?`
+- **Line**: 875  **Axis**: `?`
+
+##### `?`
+- **Line**: 882  **Axis**: `?`
+
+##### `?`
+- **Line**: 890  **Axis**: `?`
+
+##### `?`
+- **Line**: 906  **Axis**: `?`
+
+##### `?`
+- **Line**: 910  **Axis**: `?`
+
+
+### ShapeFix_FixSmallSolid
+
+#### `ShapeFix_FixSmallSolid.IsSmall_at570`
+ (2 branches; source: `v3-deep-batch-KK.json`)
+
+##### `?`
+- **Line**: 574  **Axis**: `?`
+
+##### `?`
+- **Line**: 580  **Axis**: `?`
+
+
+#### `ShapeFix_FixSmallSolid.Merge_at439`
+ (5 branches; source: `v3-deep-batch-KK.json`)
+
+##### `?`
+- **Line**: 442  **Axis**: `?`
+
+##### `?`
+- **Line**: 453  **Axis**: `?`
+
+##### `?`
+- **Line**: 478  **Axis**: `?`
+
+##### `?`
+- **Line**: 492  **Axis**: `?`
+
+##### `?`
+- **Line**: 502  **Axis**: `?`
+
+
+#### `ShapeFix_FixSmallSolid.Remove_at96`
+ (2 branches; source: `v3-deep-batch-KK.json`)
+
+##### `?`
+- **Line**: 99  **Axis**: `?`
+
+##### `?`
+- **Line**: 105  **Axis**: `?`
+
+
 ### ShapeFix_IntersectionTool
+
+#### `ShapeFix_IntersectionTool.CutEdge_at199`
+ (10 branches; source: `v3-deep-batch-EE.json`)
+
+##### `CutEdge_at199_L200`
+- **Line**: 200  **Axis**: `range-too-small`
+- **Brief**: Cut range below tolerance threshold
+- **Falsifiable claim**: Condition if (std::abs(cut - pend) < 10. * Precision::PConfusion()) evaluates correctly; branch side-effects preserve invariants
+- **Minimal reproducer**: Construct input where if (std::abs(cut - pend) < 10. * Precision::PConfusion()) triggers; verify edge/vertex state consistency
+- **Search anchors**: 'CutEdge_at199', 'L200', 'range-too-small'
+
+##### `CutEdge_at199_L208`
+- **Line**: 208  **Axis**: `range-precision`
+- **Brief**: Range magnitude check against confusion
+- **Falsifiable claim**: Condition if (aRange < 10. * Precision::PConfusion()) evaluates correctly; branch side-effects preserve invariants
+- **Minimal reproducer**: Construct input where if (aRange < 10. * Precision::PConfusion()) triggers; verify edge/vertex state consistency
+- **Search anchors**: 'CutEdge_at199', 'L208', 'range-precision'
+
+##### `CutEdge_at199_L214`
+- **Line**: 214  **Axis**: `pcurve-not-sameparam`
+- **Brief**: PCurve on non-SameParameter edge
+- **Falsifiable claim**: Condition if (!BRep_Tool::SameParameter(edge)) evaluates correctly; branch side-effects preserve invariants
+- **Minimal reproducer**: Construct input where if (!BRep_Tool::SameParameter(edge)) triggers; verify edge/vertex state consistency
+- **Search anchors**: 'CutEdge_at199', 'L214', 'pcurve-not-sameparam'
+
+##### `CutEdge_at199_L219`
+- **Line**: 219  **Axis**: `general-branch`
+- **Brief**: if (sae.PCurve(edge, face, Crv, fp, lp, false))
+- **Falsifiable claim**: Condition if (sae.PCurve(edge, face, Crv, fp, lp, false)) evaluates correctly; branch side-effects preserve invariants
+- **Minimal reproducer**: Construct input where if (sae.PCurve(edge, face, Crv, fp, lp, false)) triggers; verify edge/vertex state consistency
+- **Search anchors**: 'CutEdge_at199', 'L219', 'general-branch'
+
+##### `CutEdge_at199_L221`
+- **Line**: 221  **Axis**: `trimmed-curve-type`
+- **Brief**: Detect trimmed curve wrapper
+- **Falsifiable claim**: Condition if (Crv->IsKind(STANDARD_TYPE(Geom2d_TrimmedCurve))) evaluates correctly; branch side-effects preserve invariants
+- **Minimal reproducer**: Construct input where if (Crv->IsKind(STANDARD_TYPE(Geom2d_TrimmedCurve))) triggers; verify edge/vertex state consistency
+- **Search anchors**: 'CutEdge_at199', 'L221', 'trimmed-curve-type'
+
+##### `CutEdge_at199_L224`
+- **Line**: 224  **Axis**: `line-trimmed-basis`
+- **Brief**: Basis curve is line geometry
+- **Falsifiable claim**: Condition if (tc->BasisCurve()->IsKind(STANDARD_TYPE(Geom2d_Line))) evaluates correctly; branch side-effects preserve invariants
+- **Minimal reproducer**: Construct input where if (tc->BasisCurve()->IsKind(STANDARD_TYPE(Geom2d_Line))) triggers; verify edge/vertex state consistency
+- **Search anchors**: 'CutEdge_at199', 'L224', 'line-trimmed-basis'
+
+##### `CutEdge_at199_L228`
+- **Line**: 228  **Axis**: `general-branch`
+- **Brief**: if (std::abs(pend - lp) < Precision::PConfusion())
+- **Falsifiable claim**: Condition if (std::abs(pend - lp) < Precision::PConfusion()) evaluates correctly; branch side-effects preserve invariants
+- **Minimal reproducer**: Construct input where if (std::abs(pend - lp) < Precision::PConfusion()) triggers; verify edge/vertex state consistency
+- **Search anchors**: 'CutEdge_at199', 'L228', 'general-branch'
+
+##### `CutEdge_at199_L234`
+- **Line**: 234  **Axis**: `general-branch`
+- **Brief**: else if (std::abs(pend - fp) < Precision::PConfusion())
+- **Falsifiable claim**: Condition else if (std::abs(pend - fp) < Precision::PConfusion()) evaluates correctly; branch side-effects preserve invariants
+- **Minimal reproducer**: Construct input where else if (std::abs(pend - fp) < Precision::PConfusion()) triggers; verify edge/vertex state consistency
+- **Search anchors**: 'CutEdge_at199', 'L234', 'general-branch'
+
+##### `CutEdge_at199_L249`
+- **Line**: 249  **Axis**: `range-redundant-check`
+- **Brief**: Validate new range vs old
+- **Falsifiable claim**: Condition if (std::abs(std::abs(a - b) - aRange) < Precision::PConfusion()) evaluates correctly; branch side-effects preserve invariants
+- **Minimal reproducer**: Construct input where if (std::abs(std::abs(a - b) - aRange) < Precision::PConfusion()) triggers; verify edge/vertex state consistency
+- **Search anchors**: 'CutEdge_at199', 'L249', 'range-redundant-check'
+
+##### `CutEdge_at199_L253`
+- **Line**: 253  **Axis**: `general-branch`
+- **Brief**: if (aRange < 10. * Precision::PConfusion())
+- **Falsifiable claim**: Condition if (aRange < 10. * Precision::PConfusion()) evaluates correctly; branch side-effects preserve invariants
+- **Minimal reproducer**: Construct input where if (aRange < 10. * Precision::PConfusion()) triggers; verify edge/vertex state consistency
+- **Search anchors**: 'CutEdge_at199', 'L253', 'general-branch'
+
+
+#### `ShapeFix_IntersectionTool.FindVertAndSplitEdge_at979`
+ (6 branches; source: `v3-deep-batch-EE.json`)
+
+##### `FindVertAndSplitEdge_at979_L994`
+- **Line**: 994  **Axis**: `endpoint-selection`
+- **Brief**: Choose nearer endpoint vertex
+- **Falsifiable claim**: Condition if (pi1.Distance(PV1) < pi1.Distance(PV2)) evaluates correctly; branch side-effects preserve invariants
+- **Minimal reproducer**: Construct input where if (pi1.Distance(PV1) < pi1.Distance(PV2)) triggers; verify edge/vertex state consistency
+- **Search anchors**: 'FindVertAndSplitEdge_at979', 'L994', 'endpoint-selection'
+
+##### `FindVertAndSplitEdge_at979_L996`
+- **Line**: 996  **Axis**: `vertex-already-on-edge`
+- **Brief**: Vertex already terminates edge1
+- **Falsifiable claim**: Condition if (V1.IsSame(V11) || V1.IsSame(V12)) evaluates correctly; branch side-effects preserve invariants
+- **Minimal reproducer**: Construct input where if (V1.IsSame(V11) || V1.IsSame(V12)) triggers; verify edge/vertex state consistency
+- **Search anchors**: 'FindVertAndSplitEdge_at979', 'L996', 'vertex-already-on-edge'
+
+##### `FindVertAndSplitEdge_at979_L1003`
+- **Line**: 1003  **Axis**: `general-branch`
+- **Brief**: else
+- **Falsifiable claim**: Condition else evaluates correctly; branch side-effects preserve invariants
+- **Minimal reproducer**: Construct input where else triggers; verify edge/vertex state consistency
+- **Search anchors**: 'FindVertAndSplitEdge_at979', 'L1003', 'general-branch'
+
+##### `FindVertAndSplitEdge_at979_L1005`
+- **Line**: 1005  **Axis**: `vertex-already-on-edge`
+- **Brief**: Vertex already terminates edge1
+- **Falsifiable claim**: Condition if (V2.IsSame(V11) || V2.IsSame(V12)) evaluates correctly; branch side-effects preserve invariants
+- **Minimal reproducer**: Construct input where if (V2.IsSame(V11) || V2.IsSame(V12)) triggers; verify edge/vertex state consistency
+- **Search anchors**: 'FindVertAndSplitEdge_at979', 'L1005', 'vertex-already-on-edge'
+
+##### `FindVertAndSplitEdge_at979_L1012`
+- **Line**: 1012  **Axis**: `split-forced`
+- **Brief**: Force split if key set or needed
+- **Falsifiable claim**: Condition if (NeedSplit || aTmpKey) evaluates correctly; branch side-effects preserve invariants
+- **Minimal reproducer**: Construct input where if (NeedSplit || aTmpKey) triggers; verify edge/vertex state consistency
+- **Search anchors**: 'FindVertAndSplitEdge_at979', 'L1012', 'split-forced'
+
+##### `FindVertAndSplitEdge_at979_L1014`
+- **Line**: 1014  **Axis**: `general-branch`
+- **Brief**: if (SplitEdge1(sewd, face, num1, param1, V, tolV, boxes))
+- **Falsifiable claim**: Condition if (SplitEdge1(sewd, face, num1, param1, V, tolV, boxes)) evaluates correctly; branch side-effects preserve invariants
+- **Minimal reproducer**: Construct input where if (SplitEdge1(sewd, face, num1, param1, V, tolV, boxes)) triggers; verify edge/vertex state consistency
+- **Search anchors**: 'FindVertAndSplitEdge_at979', 'L1014', 'general-branch'
+
 
 #### `ShapeFix_IntersectionTool.FixSelfIntersectWire`
  (31 branches; 2 low-confidence; source: `v3-deep-ShapeFix_IntersectionTool_FixSelfIntersectWire.json`)
@@ -6835,6 +9030,80 @@ v3's bar: every branch's description is rich enough to either RECREATE the defec
 - **Search anchors**: 'num1--; break', 'loop termination after modification'
 
 
+#### `ShapeFix_IntersectionTool.SplitEdge1_at278`
+ (10 branches; source: `v3-deep-batch-EE.json`)
+
+##### `SplitEdge1_at278_L283`
+- **Line**: 283  **Axis**: `general-branch`
+- **Brief**: if (!SplitEdge(edge, param, vert, face, newE1, newE2, preci))
+- **Falsifiable claim**: Condition if (!SplitEdge(edge, param, vert, face, newE1, newE2, preci)) evaluates correctly; branch side-effects preserve invariants
+- **Minimal reproducer**: Construct input where if (!SplitEdge(edge, param, vert, face, newE1, newE2, preci)) triggers; verify edge/vertex state consistency
+- **Search anchors**: 'SplitEdge1_at278', 'L283', 'general-branch'
+
+##### `SplitEdge1_at278_L292`
+- **Line**: 292  **Axis**: `general-branch`
+- **Brief**: if (!myContext.IsNull())
+- **Falsifiable claim**: Condition if (!myContext.IsNull()) evaluates correctly; branch side-effects preserve invariants
+- **Minimal reproducer**: Construct input where if (!myContext.IsNull()) triggers; verify edge/vertex state consistency
+- **Search anchors**: 'SplitEdge1_at278', 'L292', 'general-branch'
+
+##### `SplitEdge1_at278_L304`
+- **Line**: 304  **Axis**: `general-branch`
+- **Brief**: if (num == sewd->NbEdges())
+- **Falsifiable claim**: Condition if (num == sewd->NbEdges()) evaluates correctly; branch side-effects preserve invariants
+- **Minimal reproducer**: Construct input where if (num == sewd->NbEdges()) triggers; verify edge/vertex state consistency
+- **Search anchors**: 'SplitEdge1_at278', 'L304', 'general-branch'
+
+##### `SplitEdge1_at278_L308`
+- **Line**: 308  **Axis**: `general-branch`
+- **Brief**: else
+- **Falsifiable claim**: Condition else evaluates correctly; branch side-effects preserve invariants
+- **Minimal reproducer**: Construct input where else triggers; verify edge/vertex state consistency
+- **Search anchors**: 'SplitEdge1_at278', 'L308', 'general-branch'
+
+##### `SplitEdge1_at278_L320`
+- **Line**: 320  **Axis**: `pcurve-extraction`
+- **Brief**: PCurve fetch for box calculation
+- **Falsifiable claim**: Condition if (sae.PCurve(newE1, S, L, c2d, cf, cl, false)) evaluates correctly; branch side-effects preserve invariants
+- **Minimal reproducer**: Construct input where if (sae.PCurve(newE1, S, L, c2d, cf, cl, false)) triggers; verify edge/vertex state consistency
+- **Search anchors**: 'SplitEdge1_at278', 'L320', 'pcurve-extraction'
+
+##### `SplitEdge1_at278_L326`
+- **Line**: 326  **Axis**: `bspline-bounds`
+- **Brief**: B-spline curve bounds validation
+- **Falsifiable claim**: Condition if (c2d->IsKind(STANDARD_TYPE(Geom2d_BSplineCurve)) && (cf < aFirst || cl > aLas evaluates correctly; branch side-effects preserve invariants
+- **Minimal reproducer**: Construct input where if (c2d->IsKind(STANDARD_TYPE(Geom2d_BSplineCurve)) && (cf < aFirst || cl > aLas triggers; verify edge/vertex state consistency
+- **Search anchors**: 'SplitEdge1_at278', 'L326', 'bspline-bounds'
+
+##### `SplitEdge1_at278_L331`
+- **Line**: 331  **Axis**: `general-branch`
+- **Brief**: else
+- **Falsifiable claim**: Condition else evaluates correctly; branch side-effects preserve invariants
+- **Minimal reproducer**: Construct input where else triggers; verify edge/vertex state consistency
+- **Search anchors**: 'SplitEdge1_at278', 'L331', 'general-branch'
+
+##### `SplitEdge1_at278_L338`
+- **Line**: 338  **Axis**: `general-branch`
+- **Brief**: if (sae.PCurve(newE2, S, L, c2d, cf, cl, false))
+- **Falsifiable claim**: Condition if (sae.PCurve(newE2, S, L, c2d, cf, cl, false)) evaluates correctly; branch side-effects preserve invariants
+- **Minimal reproducer**: Construct input where if (sae.PCurve(newE2, S, L, c2d, cf, cl, false)) triggers; verify edge/vertex state consistency
+- **Search anchors**: 'SplitEdge1_at278', 'L338', 'general-branch'
+
+##### `SplitEdge1_at278_L344`
+- **Line**: 344  **Axis**: `general-branch`
+- **Brief**: if (c2d->IsKind(STANDARD_TYPE(Geom2d_BSplineCurve)) && (cf < aFirst || cl > aLas
+- **Falsifiable claim**: Condition if (c2d->IsKind(STANDARD_TYPE(Geom2d_BSplineCurve)) && (cf < aFirst || cl > aLas evaluates correctly; branch side-effects preserve invariants
+- **Minimal reproducer**: Construct input where if (c2d->IsKind(STANDARD_TYPE(Geom2d_BSplineCurve)) && (cf < aFirst || cl > aLas triggers; verify edge/vertex state consistency
+- **Search anchors**: 'SplitEdge1_at278', 'L344', 'general-branch'
+
+##### `SplitEdge1_at278_L349`
+- **Line**: 349  **Axis**: `general-branch`
+- **Brief**: else
+- **Falsifiable claim**: Condition else evaluates correctly; branch side-effects preserve invariants
+- **Minimal reproducer**: Construct input where else triggers; verify edge/vertex state consistency
+- **Search anchors**: 'SplitEdge1_at278', 'L349', 'general-branch'
+
+
 #### `ShapeFix_IntersectionTool.SplitEdge2`
  (5 branches; 1 low-confidence; source: `v3-deep-batch-A.json`)
 
@@ -6872,6 +9141,483 @@ v3's bar: every branch's description is rich enough to either RECREATE the defec
 - **Falsifiable claim**: Without update, cached edge data (bounds, curves) becomes stale relative to new geometry. To test: access edge bounds after split; without update, old bounds returned.
 - **Minimal reproducer**: SplitEdge2 produces newE1, newE2. Without BRepTools::Update: newE1.Bounds may return original edge range. With update: newE1.Bounds reflects actual fragment domain.
 - **Search anchors**: 'BRepTools::Update', 'topology refresh'
+
+
+#### `ShapeFix_IntersectionTool.SplitEdge_at94`
+ (11 branches; source: `v3-deep-batch-EE.json`)
+
+##### `SplitEdge_at94_L100`
+- **Line**: 100  **Axis**: `vertex-already-at-endpoint`
+- **Brief**: Split fails if vertex matches edge endpoint
+- **Falsifiable claim**: Condition if (V1.IsSame(vert) || V2.IsSame(vert)) evaluates correctly; branch side-effects preserve invariants
+- **Minimal reproducer**: Construct input where if (V1.IsSame(vert) || V2.IsSame(vert)) triggers; verify edge/vertex state consistency
+- **Search anchors**: 'SplitEdge_at94', 'L100', 'vertex-already-at-endpoint'
+
+##### `SplitEdge_at94_L107`
+- **Line**: 107  **Axis**: `param-at-boundary`
+- **Brief**: Parameter too close to edge boundary
+- **Falsifiable claim**: Condition if (std::abs(a - param) < 0.01 * preci || std::abs(b - param) < 0.01 * preci) evaluates correctly; branch side-effects preserve invariants
+- **Minimal reproducer**: Construct input where if (std::abs(a - param) < 0.01 * preci || std::abs(b - param) < 0.01 * preci) triggers; verify edge/vertex state consistency
+- **Search anchors**: 'SplitEdge_at94', 'L107', 'param-at-boundary'
+
+##### `SplitEdge_at94_L114`
+- **Line**: 114  **Axis**: `sameparameter-check`
+- **Brief**: Edge SameParameter flag affects split path
+- **Falsifiable claim**: Condition if (BRep_Tool::SameParameter(edge) && !BRep_Tool::Degenerated(edge)) evaluates correctly; branch side-effects preserve invariants
+- **Minimal reproducer**: Construct input where if (BRep_Tool::SameParameter(edge) && !BRep_Tool::Degenerated(edge)) triggers; verify edge/vertex state consistency
+- **Search anchors**: 'SplitEdge_at94', 'L114', 'sameparameter-check'
+
+##### `SplitEdge_at94_L118`
+- **Line**: 118  **Axis**: `null-curve-3d`
+- **Brief**: Null 3D curve when SameParameter set
+- **Falsifiable claim**: Condition if (c3d.IsNull()) evaluates correctly; branch side-effects preserve invariants
+- **Minimal reproducer**: Construct input where if (c3d.IsNull()) triggers; verify edge/vertex state consistency
+- **Search anchors**: 'SplitEdge_at94', 'L118', 'null-curve-3d'
+
+##### `SplitEdge_at94_L123`
+- **Line**: 123  **Axis**: `location-transform`
+- **Brief**: Edge location transformation handling
+- **Falsifiable claim**: Condition if (!L.IsIdentity()) evaluates correctly; branch side-effects preserve invariants
+- **Minimal reproducer**: Construct input where if (!L.IsIdentity()) triggers; verify edge/vertex state consistency
+- **Search anchors**: 'SplitEdge_at94', 'L123', 'location-transform'
+
+##### `SplitEdge_at94_L128`
+- **Line**: 128  **Axis**: `fallback-surface-path`
+- **Brief**: Fallback to surface-based point evaluation
+- **Falsifiable claim**: Condition else evaluates correctly; branch side-effects preserve invariants
+- **Minimal reproducer**: Construct input where else triggers; verify edge/vertex state consistency
+- **Search anchors**: 'SplitEdge_at94', 'L128', 'fallback-surface-path'
+
+##### `SplitEdge_at94_L133`
+- **Line**: 133  **Axis**: `location-transform`
+- **Brief**: Location transformation on surface point
+- **Falsifiable claim**: Condition if (!L.IsIdentity()) evaluates correctly; branch side-effects preserve invariants
+- **Minimal reproducer**: Construct input where if (!L.IsIdentity()) triggers; verify edge/vertex state consistency
+- **Search anchors**: 'SplitEdge_at94', 'L133', 'location-transform'
+
+##### `SplitEdge_at94_L139`
+- **Line**: 139  **Axis**: `tolerance-mismatch`
+- **Brief**: Computed distance exceeds precision
+- **Falsifiable claim**: Condition if (P1.Distance(P2) > preci) evaluates correctly; branch side-effects preserve invariants
+- **Minimal reproducer**: Construct input where if (P1.Distance(P2) > preci) triggers; verify edge/vertex state consistency
+- **Search anchors**: 'SplitEdge_at94', 'L139', 'tolerance-mismatch'
+
+##### `SplitEdge_at94_L151`
+- **Line**: 151  **Axis**: `parameter-order`
+- **Brief**: Parameter range orientation
+- **Falsifiable claim**: Condition if (a < b) evaluates correctly; branch side-effects preserve invariants
+- **Minimal reproducer**: Construct input where if (a < b) triggers; verify edge/vertex state consistency
+- **Search anchors**: 'SplitEdge_at94', 'L151', 'parameter-order'
+
+##### `SplitEdge_at94_L156`
+- **Line**: 156  **Axis**: `general-branch`
+- **Brief**: else
+- **Falsifiable claim**: Condition else evaluates correctly; branch side-effects preserve invariants
+- **Minimal reproducer**: Construct input where else triggers; verify edge/vertex state consistency
+- **Search anchors**: 'SplitEdge_at94', 'L156', 'general-branch'
+
+##### `SplitEdge_at94_L182`
+- **Line**: 182  **Axis**: `general-branch`
+- **Brief**: if (orient == TopAbs_REVERSED)
+- **Falsifiable claim**: Condition if (orient == TopAbs_REVERSED) evaluates correctly; branch side-effects preserve invariants
+- **Minimal reproducer**: Construct input where if (orient == TopAbs_REVERSED) triggers; verify edge/vertex state consistency
+- **Search anchors**: 'SplitEdge_at94', 'L182', 'general-branch'
+
+
+#### `ShapeFix_IntersectionTool.UnionVertexes_at502`
+ (56 branches; source: `v3-deep-batch-EE.json`)
+
+##### `UnionVertexes_at502_L521`
+- **Line**: 521  **Axis**: `distance-minimum`
+- **Brief**: Vertex distance minimum selection
+- **Falsifiable claim**: Condition if (d11 < d12 && d11 < d21 && d11 < d22) evaluates correctly; branch side-effects preserve invariants
+- **Minimal reproducer**: Construct input where if (d11 < d12 && d11 < d21 && d11 < d22) triggers; verify edge/vertex state consistency
+- **Search anchors**: 'UnionVertexes_at502', 'L521', 'distance-minimum'
+
+##### `UnionVertexes_at502_L524`
+- **Line**: 524  **Axis**: `vertex-distinct-distance`
+- **Brief**: Unification check for first-first pair
+- **Falsifiable claim**: Condition if (!V2F.IsSame(V1F) && d11 < tolv) evaluates correctly; branch side-effects preserve invariants
+- **Minimal reproducer**: Construct input where if (!V2F.IsSame(V1F) && d11 < tolv) triggers; verify edge/vertex state consistency
+- **Search anchors**: 'UnionVertexes_at502', 'L524', 'vertex-distinct-distance'
+
+##### `UnionVertexes_at502_L541`
+- **Line**: 541  **Axis**: `general-branch`
+- **Brief**: if (num2 > 1)
+- **Falsifiable claim**: Condition if (num2 > 1) evaluates correctly; branch side-effects preserve invariants
+- **Minimal reproducer**: Construct input where if (num2 > 1) triggers; verify edge/vertex state consistency
+- **Search anchors**: 'UnionVertexes_at502', 'L541', 'general-branch'
+
+##### `UnionVertexes_at502_L545`
+- **Line**: 545  **Axis**: `general-branch`
+- **Brief**: else
+- **Falsifiable claim**: Condition else evaluates correctly; branch side-effects preserve invariants
+- **Minimal reproducer**: Construct input where else triggers; verify edge/vertex state consistency
+- **Search anchors**: 'UnionVertexes_at502', 'L545', 'general-branch'
+
+##### `UnionVertexes_at502_L549`
+- **Line**: 549  **Axis**: `general-branch`
+- **Brief**: if (num2 < sewd->NbEdges())
+- **Falsifiable claim**: Condition if (num2 < sewd->NbEdges()) evaluates correctly; branch side-effects preserve invariants
+- **Minimal reproducer**: Construct input where if (num2 < sewd->NbEdges()) triggers; verify edge/vertex state consistency
+- **Search anchors**: 'UnionVertexes_at502', 'L549', 'general-branch'
+
+##### `UnionVertexes_at502_L553`
+- **Line**: 553  **Axis**: `general-branch`
+- **Brief**: else
+- **Falsifiable claim**: Condition else evaluates correctly; branch side-effects preserve invariants
+- **Minimal reproducer**: Construct input where else triggers; verify edge/vertex state consistency
+- **Search anchors**: 'UnionVertexes_at502', 'L553', 'general-branch'
+
+##### `UnionVertexes_at502_L563`
+- **Line**: 563  **Axis**: `general-branch`
+- **Brief**: if (V21F.IsSame(V2F))
+- **Falsifiable claim**: Condition if (V21F.IsSame(V2F)) evaluates correctly; branch side-effects preserve invariants
+- **Minimal reproducer**: Construct input where if (V21F.IsSame(V2F)) triggers; verify edge/vertex state consistency
+- **Search anchors**: 'UnionVertexes_at502', 'L563', 'general-branch'
+
+##### `UnionVertexes_at502_L567`
+- **Line**: 567  **Axis**: `general-branch`
+- **Brief**: if (boxes.IsBound(edge21))
+- **Falsifiable claim**: Condition if (boxes.IsBound(edge21)) evaluates correctly; branch side-effects preserve invariants
+- **Minimal reproducer**: Construct input where if (boxes.IsBound(edge21)) triggers; verify edge/vertex state consistency
+- **Search anchors**: 'UnionVertexes_at502', 'L567', 'general-branch'
+
+##### `UnionVertexes_at502_L574`
+- **Line**: 574  **Axis**: `general-branch`
+- **Brief**: if (V21L.IsSame(V2F))
+- **Falsifiable claim**: Condition if (V21L.IsSame(V2F)) evaluates correctly; branch side-effects preserve invariants
+- **Minimal reproducer**: Construct input where if (V21L.IsSame(V2F)) triggers; verify edge/vertex state consistency
+- **Search anchors**: 'UnionVertexes_at502', 'L574', 'general-branch'
+
+##### `UnionVertexes_at502_L578`
+- **Line**: 578  **Axis**: `general-branch`
+- **Brief**: if (boxes.IsBound(edge21))
+- **Falsifiable claim**: Condition if (boxes.IsBound(edge21)) evaluates correctly; branch side-effects preserve invariants
+- **Minimal reproducer**: Construct input where if (boxes.IsBound(edge21)) triggers; verify edge/vertex state consistency
+- **Search anchors**: 'UnionVertexes_at502', 'L578', 'general-branch'
+
+##### `UnionVertexes_at502_L585`
+- **Line**: 585  **Axis**: `general-branch`
+- **Brief**: if (V22F.IsSame(V2F))
+- **Falsifiable claim**: Condition if (V22F.IsSame(V2F)) evaluates correctly; branch side-effects preserve invariants
+- **Minimal reproducer**: Construct input where if (V22F.IsSame(V2F)) triggers; verify edge/vertex state consistency
+- **Search anchors**: 'UnionVertexes_at502', 'L585', 'general-branch'
+
+##### `UnionVertexes_at502_L589`
+- **Line**: 589  **Axis**: `general-branch`
+- **Brief**: if (boxes.IsBound(edge22))
+- **Falsifiable claim**: Condition if (boxes.IsBound(edge22)) evaluates correctly; branch side-effects preserve invariants
+- **Minimal reproducer**: Construct input where if (boxes.IsBound(edge22)) triggers; verify edge/vertex state consistency
+- **Search anchors**: 'UnionVertexes_at502', 'L589', 'general-branch'
+
+##### `UnionVertexes_at502_L596`
+- **Line**: 596  **Axis**: `general-branch`
+- **Brief**: if (V22L.IsSame(V2F))
+- **Falsifiable claim**: Condition if (V22L.IsSame(V2F)) evaluates correctly; branch side-effects preserve invariants
+- **Minimal reproducer**: Construct input where if (V22L.IsSame(V2F)) triggers; verify edge/vertex state consistency
+- **Search anchors**: 'UnionVertexes_at502', 'L596', 'general-branch'
+
+##### `UnionVertexes_at502_L600`
+- **Line**: 600  **Axis**: `general-branch`
+- **Brief**: if (boxes.IsBound(edge22))
+- **Falsifiable claim**: Condition if (boxes.IsBound(edge22)) evaluates correctly; branch side-effects preserve invariants
+- **Minimal reproducer**: Construct input where if (boxes.IsBound(edge22)) triggers; verify edge/vertex state consistency
+- **Search anchors**: 'UnionVertexes_at502', 'L600', 'general-branch'
+
+##### `UnionVertexes_at502_L610`
+- **Line**: 610  **Axis**: `distance-second-min`
+- **Brief**: Second distance minimum selection
+- **Falsifiable claim**: Condition else if (d12 < d21 && d12 < d22) evaluates correctly; branch side-effects preserve invariants
+- **Minimal reproducer**: Construct input where else if (d12 < d21 && d12 < d22) triggers; verify edge/vertex state consistency
+- **Search anchors**: 'UnionVertexes_at502', 'L610', 'distance-second-min'
+
+##### `UnionVertexes_at502_L613`
+- **Line**: 613  **Axis**: `vertex-swap-distance`
+- **Brief**: Unification for first-last pair
+- **Falsifiable claim**: Condition if (!V2L.IsSame(V1F) && d12 < tolv) evaluates correctly; branch side-effects preserve invariants
+- **Minimal reproducer**: Construct input where if (!V2L.IsSame(V1F) && d12 < tolv) triggers; verify edge/vertex state consistency
+- **Search anchors**: 'UnionVertexes_at502', 'L613', 'vertex-swap-distance'
+
+##### `UnionVertexes_at502_L631`
+- **Line**: 631  **Axis**: `general-branch`
+- **Brief**: if (num2 > 1)
+- **Falsifiable claim**: Condition if (num2 > 1) evaluates correctly; branch side-effects preserve invariants
+- **Minimal reproducer**: Construct input where if (num2 > 1) triggers; verify edge/vertex state consistency
+- **Search anchors**: 'UnionVertexes_at502', 'L631', 'general-branch'
+
+##### `UnionVertexes_at502_L635`
+- **Line**: 635  **Axis**: `general-branch`
+- **Brief**: else
+- **Falsifiable claim**: Condition else evaluates correctly; branch side-effects preserve invariants
+- **Minimal reproducer**: Construct input where else triggers; verify edge/vertex state consistency
+- **Search anchors**: 'UnionVertexes_at502', 'L635', 'general-branch'
+
+##### `UnionVertexes_at502_L639`
+- **Line**: 639  **Axis**: `general-branch`
+- **Brief**: if (num2 < sewd->NbEdges())
+- **Falsifiable claim**: Condition if (num2 < sewd->NbEdges()) evaluates correctly; branch side-effects preserve invariants
+- **Minimal reproducer**: Construct input where if (num2 < sewd->NbEdges()) triggers; verify edge/vertex state consistency
+- **Search anchors**: 'UnionVertexes_at502', 'L639', 'general-branch'
+
+##### `UnionVertexes_at502_L643`
+- **Line**: 643  **Axis**: `general-branch`
+- **Brief**: else
+- **Falsifiable claim**: Condition else evaluates correctly; branch side-effects preserve invariants
+- **Minimal reproducer**: Construct input where else triggers; verify edge/vertex state consistency
+- **Search anchors**: 'UnionVertexes_at502', 'L643', 'general-branch'
+
+##### `UnionVertexes_at502_L653`
+- **Line**: 653  **Axis**: `general-branch`
+- **Brief**: if (V21F.IsSame(V2L))
+- **Falsifiable claim**: Condition if (V21F.IsSame(V2L)) evaluates correctly; branch side-effects preserve invariants
+- **Minimal reproducer**: Construct input where if (V21F.IsSame(V2L)) triggers; verify edge/vertex state consistency
+- **Search anchors**: 'UnionVertexes_at502', 'L653', 'general-branch'
+
+##### `UnionVertexes_at502_L657`
+- **Line**: 657  **Axis**: `general-branch`
+- **Brief**: if (boxes.IsBound(edge21))
+- **Falsifiable claim**: Condition if (boxes.IsBound(edge21)) evaluates correctly; branch side-effects preserve invariants
+- **Minimal reproducer**: Construct input where if (boxes.IsBound(edge21)) triggers; verify edge/vertex state consistency
+- **Search anchors**: 'UnionVertexes_at502', 'L657', 'general-branch'
+
+##### `UnionVertexes_at502_L664`
+- **Line**: 664  **Axis**: `general-branch`
+- **Brief**: if (V21L.IsSame(V2L))
+- **Falsifiable claim**: Condition if (V21L.IsSame(V2L)) evaluates correctly; branch side-effects preserve invariants
+- **Minimal reproducer**: Construct input where if (V21L.IsSame(V2L)) triggers; verify edge/vertex state consistency
+- **Search anchors**: 'UnionVertexes_at502', 'L664', 'general-branch'
+
+##### `UnionVertexes_at502_L668`
+- **Line**: 668  **Axis**: `general-branch`
+- **Brief**: if (boxes.IsBound(edge21))
+- **Falsifiable claim**: Condition if (boxes.IsBound(edge21)) evaluates correctly; branch side-effects preserve invariants
+- **Minimal reproducer**: Construct input where if (boxes.IsBound(edge21)) triggers; verify edge/vertex state consistency
+- **Search anchors**: 'UnionVertexes_at502', 'L668', 'general-branch'
+
+##### `UnionVertexes_at502_L675`
+- **Line**: 675  **Axis**: `general-branch`
+- **Brief**: if (V22F.IsSame(V2L))
+- **Falsifiable claim**: Condition if (V22F.IsSame(V2L)) evaluates correctly; branch side-effects preserve invariants
+- **Minimal reproducer**: Construct input where if (V22F.IsSame(V2L)) triggers; verify edge/vertex state consistency
+- **Search anchors**: 'UnionVertexes_at502', 'L675', 'general-branch'
+
+##### `UnionVertexes_at502_L679`
+- **Line**: 679  **Axis**: `general-branch`
+- **Brief**: if (boxes.IsBound(edge22))
+- **Falsifiable claim**: Condition if (boxes.IsBound(edge22)) evaluates correctly; branch side-effects preserve invariants
+- **Minimal reproducer**: Construct input where if (boxes.IsBound(edge22)) triggers; verify edge/vertex state consistency
+- **Search anchors**: 'UnionVertexes_at502', 'L679', 'general-branch'
+
+##### `UnionVertexes_at502_L686`
+- **Line**: 686  **Axis**: `general-branch`
+- **Brief**: if (V22L.IsSame(V2L))
+- **Falsifiable claim**: Condition if (V22L.IsSame(V2L)) evaluates correctly; branch side-effects preserve invariants
+- **Minimal reproducer**: Construct input where if (V22L.IsSame(V2L)) triggers; verify edge/vertex state consistency
+- **Search anchors**: 'UnionVertexes_at502', 'L686', 'general-branch'
+
+##### `UnionVertexes_at502_L690`
+- **Line**: 690  **Axis**: `general-branch`
+- **Brief**: if (boxes.IsBound(edge22))
+- **Falsifiable claim**: Condition if (boxes.IsBound(edge22)) evaluates correctly; branch side-effects preserve invariants
+- **Minimal reproducer**: Construct input where if (boxes.IsBound(edge22)) triggers; verify edge/vertex state consistency
+- **Search anchors**: 'UnionVertexes_at502', 'L690', 'general-branch'
+
+##### `UnionVertexes_at502_L700`
+- **Line**: 700  **Axis**: `distance-third-min`
+- **Brief**: Third distance minimum selection
+- **Falsifiable claim**: Condition else if (d21 < d22) evaluates correctly; branch side-effects preserve invariants
+- **Minimal reproducer**: Construct input where else if (d21 < d22) triggers; verify edge/vertex state consistency
+- **Search anchors**: 'UnionVertexes_at502', 'L700', 'distance-third-min'
+
+##### `UnionVertexes_at502_L703`
+- **Line**: 703  **Axis**: `vertex-last-first`
+- **Brief**: Unification for last-first pair
+- **Falsifiable claim**: Condition if (!V2F.IsSame(V1L) && d21 < tolv) evaluates correctly; branch side-effects preserve invariants
+- **Minimal reproducer**: Construct input where if (!V2F.IsSame(V1L) && d21 < tolv) triggers; verify edge/vertex state consistency
+- **Search anchors**: 'UnionVertexes_at502', 'L703', 'vertex-last-first'
+
+##### `UnionVertexes_at502_L720`
+- **Line**: 720  **Axis**: `general-branch`
+- **Brief**: if (num2 > 1)
+- **Falsifiable claim**: Condition if (num2 > 1) evaluates correctly; branch side-effects preserve invariants
+- **Minimal reproducer**: Construct input where if (num2 > 1) triggers; verify edge/vertex state consistency
+- **Search anchors**: 'UnionVertexes_at502', 'L720', 'general-branch'
+
+##### `UnionVertexes_at502_L724`
+- **Line**: 724  **Axis**: `general-branch`
+- **Brief**: else
+- **Falsifiable claim**: Condition else evaluates correctly; branch side-effects preserve invariants
+- **Minimal reproducer**: Construct input where else triggers; verify edge/vertex state consistency
+- **Search anchors**: 'UnionVertexes_at502', 'L724', 'general-branch'
+
+##### `UnionVertexes_at502_L728`
+- **Line**: 728  **Axis**: `general-branch`
+- **Brief**: if (num2 < sewd->NbEdges())
+- **Falsifiable claim**: Condition if (num2 < sewd->NbEdges()) evaluates correctly; branch side-effects preserve invariants
+- **Minimal reproducer**: Construct input where if (num2 < sewd->NbEdges()) triggers; verify edge/vertex state consistency
+- **Search anchors**: 'UnionVertexes_at502', 'L728', 'general-branch'
+
+##### `UnionVertexes_at502_L732`
+- **Line**: 732  **Axis**: `general-branch`
+- **Brief**: else
+- **Falsifiable claim**: Condition else evaluates correctly; branch side-effects preserve invariants
+- **Minimal reproducer**: Construct input where else triggers; verify edge/vertex state consistency
+- **Search anchors**: 'UnionVertexes_at502', 'L732', 'general-branch'
+
+##### `UnionVertexes_at502_L742`
+- **Line**: 742  **Axis**: `general-branch`
+- **Brief**: if (V21F.IsSame(V2F))
+- **Falsifiable claim**: Condition if (V21F.IsSame(V2F)) evaluates correctly; branch side-effects preserve invariants
+- **Minimal reproducer**: Construct input where if (V21F.IsSame(V2F)) triggers; verify edge/vertex state consistency
+- **Search anchors**: 'UnionVertexes_at502', 'L742', 'general-branch'
+
+##### `UnionVertexes_at502_L746`
+- **Line**: 746  **Axis**: `general-branch`
+- **Brief**: if (boxes.IsBound(edge21))
+- **Falsifiable claim**: Condition if (boxes.IsBound(edge21)) evaluates correctly; branch side-effects preserve invariants
+- **Minimal reproducer**: Construct input where if (boxes.IsBound(edge21)) triggers; verify edge/vertex state consistency
+- **Search anchors**: 'UnionVertexes_at502', 'L746', 'general-branch'
+
+##### `UnionVertexes_at502_L753`
+- **Line**: 753  **Axis**: `general-branch`
+- **Brief**: if (V21L.IsSame(V2F))
+- **Falsifiable claim**: Condition if (V21L.IsSame(V2F)) evaluates correctly; branch side-effects preserve invariants
+- **Minimal reproducer**: Construct input where if (V21L.IsSame(V2F)) triggers; verify edge/vertex state consistency
+- **Search anchors**: 'UnionVertexes_at502', 'L753', 'general-branch'
+
+##### `UnionVertexes_at502_L757`
+- **Line**: 757  **Axis**: `general-branch`
+- **Brief**: if (boxes.IsBound(edge21))
+- **Falsifiable claim**: Condition if (boxes.IsBound(edge21)) evaluates correctly; branch side-effects preserve invariants
+- **Minimal reproducer**: Construct input where if (boxes.IsBound(edge21)) triggers; verify edge/vertex state consistency
+- **Search anchors**: 'UnionVertexes_at502', 'L757', 'general-branch'
+
+##### `UnionVertexes_at502_L764`
+- **Line**: 764  **Axis**: `general-branch`
+- **Brief**: if (V22F.IsSame(V2F))
+- **Falsifiable claim**: Condition if (V22F.IsSame(V2F)) evaluates correctly; branch side-effects preserve invariants
+- **Minimal reproducer**: Construct input where if (V22F.IsSame(V2F)) triggers; verify edge/vertex state consistency
+- **Search anchors**: 'UnionVertexes_at502', 'L764', 'general-branch'
+
+##### `UnionVertexes_at502_L768`
+- **Line**: 768  **Axis**: `general-branch`
+- **Brief**: if (boxes.IsBound(edge22))
+- **Falsifiable claim**: Condition if (boxes.IsBound(edge22)) evaluates correctly; branch side-effects preserve invariants
+- **Minimal reproducer**: Construct input where if (boxes.IsBound(edge22)) triggers; verify edge/vertex state consistency
+- **Search anchors**: 'UnionVertexes_at502', 'L768', 'general-branch'
+
+##### `UnionVertexes_at502_L775`
+- **Line**: 775  **Axis**: `general-branch`
+- **Brief**: if (V22L.IsSame(V2F))
+- **Falsifiable claim**: Condition if (V22L.IsSame(V2F)) evaluates correctly; branch side-effects preserve invariants
+- **Minimal reproducer**: Construct input where if (V22L.IsSame(V2F)) triggers; verify edge/vertex state consistency
+- **Search anchors**: 'UnionVertexes_at502', 'L775', 'general-branch'
+
+##### `UnionVertexes_at502_L779`
+- **Line**: 779  **Axis**: `general-branch`
+- **Brief**: if (boxes.IsBound(edge22))
+- **Falsifiable claim**: Condition if (boxes.IsBound(edge22)) evaluates correctly; branch side-effects preserve invariants
+- **Minimal reproducer**: Construct input where if (boxes.IsBound(edge22)) triggers; verify edge/vertex state consistency
+- **Search anchors**: 'UnionVertexes_at502', 'L779', 'general-branch'
+
+##### `UnionVertexes_at502_L789`
+- **Line**: 789  **Axis**: `distance-fourth-case`
+- **Brief**: Default to last-last pairing
+- **Falsifiable claim**: Condition else evaluates correctly; branch side-effects preserve invariants
+- **Minimal reproducer**: Construct input where else triggers; verify edge/vertex state consistency
+- **Search anchors**: 'UnionVertexes_at502', 'L789', 'distance-fourth-case'
+
+##### `UnionVertexes_at502_L792`
+- **Line**: 792  **Axis**: `vertex-both-last`
+- **Brief**: Unification for last-last pair
+- **Falsifiable claim**: Condition if (!V2L.IsSame(V1L) && d22 < tolv) evaluates correctly; branch side-effects preserve invariants
+- **Minimal reproducer**: Construct input where if (!V2L.IsSame(V1L) && d22 < tolv) triggers; verify edge/vertex state consistency
+- **Search anchors**: 'UnionVertexes_at502', 'L792', 'vertex-both-last'
+
+##### `UnionVertexes_at502_L809`
+- **Line**: 809  **Axis**: `general-branch`
+- **Brief**: if (num2 > 1)
+- **Falsifiable claim**: Condition if (num2 > 1) evaluates correctly; branch side-effects preserve invariants
+- **Minimal reproducer**: Construct input where if (num2 > 1) triggers; verify edge/vertex state consistency
+- **Search anchors**: 'UnionVertexes_at502', 'L809', 'general-branch'
+
+##### `UnionVertexes_at502_L813`
+- **Line**: 813  **Axis**: `general-branch`
+- **Brief**: else
+- **Falsifiable claim**: Condition else evaluates correctly; branch side-effects preserve invariants
+- **Minimal reproducer**: Construct input where else triggers; verify edge/vertex state consistency
+- **Search anchors**: 'UnionVertexes_at502', 'L813', 'general-branch'
+
+##### `UnionVertexes_at502_L817`
+- **Line**: 817  **Axis**: `general-branch`
+- **Brief**: if (num2 < sewd->NbEdges())
+- **Falsifiable claim**: Condition if (num2 < sewd->NbEdges()) evaluates correctly; branch side-effects preserve invariants
+- **Minimal reproducer**: Construct input where if (num2 < sewd->NbEdges()) triggers; verify edge/vertex state consistency
+- **Search anchors**: 'UnionVertexes_at502', 'L817', 'general-branch'
+
+##### `UnionVertexes_at502_L821`
+- **Line**: 821  **Axis**: `general-branch`
+- **Brief**: else
+- **Falsifiable claim**: Condition else evaluates correctly; branch side-effects preserve invariants
+- **Minimal reproducer**: Construct input where else triggers; verify edge/vertex state consistency
+- **Search anchors**: 'UnionVertexes_at502', 'L821', 'general-branch'
+
+##### `UnionVertexes_at502_L831`
+- **Line**: 831  **Axis**: `general-branch`
+- **Brief**: if (V21F.IsSame(V2L))
+- **Falsifiable claim**: Condition if (V21F.IsSame(V2L)) evaluates correctly; branch side-effects preserve invariants
+- **Minimal reproducer**: Construct input where if (V21F.IsSame(V2L)) triggers; verify edge/vertex state consistency
+- **Search anchors**: 'UnionVertexes_at502', 'L831', 'general-branch'
+
+##### `UnionVertexes_at502_L835`
+- **Line**: 835  **Axis**: `general-branch`
+- **Brief**: if (boxes.IsBound(edge21))
+- **Falsifiable claim**: Condition if (boxes.IsBound(edge21)) evaluates correctly; branch side-effects preserve invariants
+- **Minimal reproducer**: Construct input where if (boxes.IsBound(edge21)) triggers; verify edge/vertex state consistency
+- **Search anchors**: 'UnionVertexes_at502', 'L835', 'general-branch'
+
+##### `UnionVertexes_at502_L842`
+- **Line**: 842  **Axis**: `general-branch`
+- **Brief**: if (V21L.IsSame(V2L))
+- **Falsifiable claim**: Condition if (V21L.IsSame(V2L)) evaluates correctly; branch side-effects preserve invariants
+- **Minimal reproducer**: Construct input where if (V21L.IsSame(V2L)) triggers; verify edge/vertex state consistency
+- **Search anchors**: 'UnionVertexes_at502', 'L842', 'general-branch'
+
+##### `UnionVertexes_at502_L846`
+- **Line**: 846  **Axis**: `general-branch`
+- **Brief**: if (boxes.IsBound(edge21))
+- **Falsifiable claim**: Condition if (boxes.IsBound(edge21)) evaluates correctly; branch side-effects preserve invariants
+- **Minimal reproducer**: Construct input where if (boxes.IsBound(edge21)) triggers; verify edge/vertex state consistency
+- **Search anchors**: 'UnionVertexes_at502', 'L846', 'general-branch'
+
+##### `UnionVertexes_at502_L853`
+- **Line**: 853  **Axis**: `general-branch`
+- **Brief**: if (V22F.IsSame(V2L))
+- **Falsifiable claim**: Condition if (V22F.IsSame(V2L)) evaluates correctly; branch side-effects preserve invariants
+- **Minimal reproducer**: Construct input where if (V22F.IsSame(V2L)) triggers; verify edge/vertex state consistency
+- **Search anchors**: 'UnionVertexes_at502', 'L853', 'general-branch'
+
+##### `UnionVertexes_at502_L857`
+- **Line**: 857  **Axis**: `general-branch`
+- **Brief**: if (boxes.IsBound(edge22))
+- **Falsifiable claim**: Condition if (boxes.IsBound(edge22)) evaluates correctly; branch side-effects preserve invariants
+- **Minimal reproducer**: Construct input where if (boxes.IsBound(edge22)) triggers; verify edge/vertex state consistency
+- **Search anchors**: 'UnionVertexes_at502', 'L857', 'general-branch'
+
+##### `UnionVertexes_at502_L864`
+- **Line**: 864  **Axis**: `general-branch`
+- **Brief**: if (V22L.IsSame(V2L))
+- **Falsifiable claim**: Condition if (V22L.IsSame(V2L)) evaluates correctly; branch side-effects preserve invariants
+- **Minimal reproducer**: Construct input where if (V22L.IsSame(V2L)) triggers; verify edge/vertex state consistency
+- **Search anchors**: 'UnionVertexes_at502', 'L864', 'general-branch'
+
+##### `UnionVertexes_at502_L868`
+- **Line**: 868  **Axis**: `general-branch`
+- **Brief**: if (boxes.IsBound(edge22))
+- **Falsifiable claim**: Condition if (boxes.IsBound(edge22)) evaluates correctly; branch side-effects preserve invariants
+- **Minimal reproducer**: Construct input where if (boxes.IsBound(edge22)) triggers; verify edge/vertex state consistency
+- **Search anchors**: 'UnionVertexes_at502', 'L868', 'general-branch'
 
 
 ### ShapeFix_IntersectionTool::FixIntersectingWires
@@ -7435,6 +10181,45 @@ v3's bar: every branch's description is rich enough to either RECREATE the defec
 - **Search anchors**: 'if (num < num1)', 'n1 = num', 'n1 = num1'
 
 
+#### `ShapeFix_Wire.FixEdgeCurves_at601`
+ (5 branches; source: `v3-deep-batch-MM.json`)
+
+##### `ShapeFix_Wire.FixEdgeCurves.loaded-check`
+- **Line**: 603  **Axis**: `api-contract`
+- **Brief**: FixEdgeCurves() returns false if wire not loaded, preventing crash in edge analysis.
+- **Falsifiable claim**: Without IsLoaded() check, null WireData causes segfault in loop over edges. To test: call FixEdgeCurves() without Load(); without check, crash.
+- **Minimal reproducer**: Create ShapeFix_Wire, call FixEdgeCurves() (no Load). Without line 603: crash. With: false return.
+- **Search anchors**: 'IsLoaded()', 'Load precondition', 'early return'
+
+##### `ShapeFix_Wire.FixEdgeCurves.null-fixedge-guard`
+- **Line**: 613  **Axis**: `healer-state`
+- **Brief**: FixEdgeCurves() disables FixReversed2dMode if myFixEdge is null.
+- **Falsifiable claim**: Without null guard, null myFixEdge->FixReversed2d() at line 623 crashes. To test: manually null myFixEdge, call FixEdgeCurves(); without guard, crash.
+- **Minimal reproducer**: Manually set myFixEdge=null, call FixEdgeCurves(). Without line 613-615: crash at line 623. With: mode disabled, loop skipped.
+- **Search anchors**: 'IsNull() fixture', 'myFixEdge guard', 'null handle'
+
+##### `ShapeFix_Wire.FixEdgeCurves.reversed2d-loop`
+- **Line**: 621  **Axis**: `healer-state`
+- **Brief**: FixEdgeCurves() iterates edges and calls FixReversed2d on each if mode enabled.
+- **Falsifiable claim**: Without loop, only first edge gets 2D reversal fix, remaining edges untreated. To test: wire with 2 reversed 2D curves; without loop, only edge 1 fixed.
+- **Minimal reproducer**: Wire with edges 1,2 having reversed 2D curves. Without loop: only edge 1 fixed. With loop (line 621-632): both fixed.
+- **Search anchors**: 'for i=1..nb', 'FixReversed2d', 'edge loop'
+
+##### `ShapeFix_Wire.FixEdgeCurves.singularity-split`
+- **Line**: 673  **Axis**: `tolerance`
+- **Brief**: FixEdgeCurves() detects surface singularities on added PCurve edges and splits if crossing.
+- **Falsifiable claim**: Without singularity check, edge crossing singular point (e.g., cone apex) not split, tolerance violated. To test: cone face, edge across apex; without line 673-754, edge not split.
+- **Minimal reproducer**: Cone face (singularity at apex), edge AC-PCurve crosses apex. Without line 673-754: edge stays unsplit, tolerance > actual distance to singular point. With: edge split at singularity.
+- **Search anchors**: 'Singularity(j)', 'cone apex', 'edge split'
+
+##### `ShapeFix_Wire.FixEdgeCurves.same-parameter-pcurve`
+- **Line**: 733  **Axis**: `encoding`
+- **Brief**: FixEdgeCurves() checks if edge is SameParameter before deciding PCurve removal strategy.
+- **Falsifiable claim**: Without SameParameter check, trimmed PCurves incorrectly removed, edge becomes 3D-only. To test: SameParameter=false, trimmed PCurve; without line 733, PCurve removed (wrong).
+- **Minimal reproducer**: Edge(SameParameter=false, has trimmed PCurve). Without line 733-736: RemovePCurve called (wrong). With: line 739 checks IsKind(TrimmedCurve) first.
+- **Search anchors**: 'SameParameter', 'TrimmedCurve', 'PCurve removal'
+
+
 #### `ShapeFix_Wire.FixIntersectingEdges`
  (17 branches; 13 low-confidence; source: `v3-deep-batch-D.json`)
 
@@ -7630,6 +10415,134 @@ v3's bar: every branch's description is rich enough to either RECREATE the defec
 - **Falsifiable claim**: newTolers(1/2) updated independently from aNewTolEdge1; if finTol < aNewTolEdge1, edge tolerance overwrites vertex tolerance
 - **Minimal reproducer**: Intersection near vertex1; finTol=0.5, aNewTolEdge1=1.0; newTolers(1)=0.5 then B.UpdateEdge(edge1, 1.0) bypasses vertex tolerance
 - **Search anchors**: 'newTolers(rank) = finTol', 'aNewTolEdge1', 'B.UpdateEdge'
+
+
+#### `ShapeFix_Wire.FixLacking_at1285`
+ (1 branches; source: `v3-deep-batch-CC.json`)
+
+##### `?`
+- **Line**: 1287  **Axis**: `?`
+
+
+#### `ShapeFix_Wire.FixLacking_at3618`
+ (39 branches; source: `v3-deep-batch-CC.json`)
+
+##### `?`
+- **Line**: 3620  **Axis**: `?`
+
+##### `?`
+- **Line**: 3629  **Axis**: `?`
+
+##### `?`
+- **Line**: 3633  **Axis**: `?`
+
+##### `?`
+- **Line**: 3667  **Axis**: `?`
+
+##### `?`
+- **Line**: 3686  **Axis**: `?`
+
+##### `?`
+- **Line**: 3698  **Axis**: `?`
+
+##### `?`
+- **Line**: 3710  **Axis**: `?`
+
+##### `?`
+- **Line**: 3727  **Axis**: `?`
+
+##### `?`
+- **Line**: 3735  **Axis**: `?`
+
+##### `?`
+- **Line**: 3741  **Axis**: `?`
+
+##### `?`
+- **Line**: 3745  **Axis**: `?`
+
+##### `?`
+- **Line**: 3749  **Axis**: `?`
+
+##### `?`
+- **Line**: 3756  **Axis**: `?`
+
+##### `?`
+- **Line**: 3771  **Axis**: `?`
+
+##### `?`
+- **Line**: 3781  **Axis**: `?`
+
+##### `?`
+- **Line**: 3784  **Axis**: `?`
+
+##### `?`
+- **Line**: 3796  **Axis**: `?`
+
+##### `?`
+- **Line**: 3802  **Axis**: `?`
+
+##### `?`
+- **Line**: 3806  **Axis**: `?`
+
+##### `?`
+- **Line**: 3810  **Axis**: `?`
+
+##### `?`
+- **Line**: 3819  **Axis**: `?`
+
+##### `?`
+- **Line**: 3823  **Axis**: `?`
+
+##### `?`
+- **Line**: 3833  **Axis**: `?`
+
+##### `?`
+- **Line**: 3838  **Axis**: `?`
+
+##### `?`
+- **Line**: 3855  **Axis**: `?`
+
+##### `?`
+- **Line**: 3866  **Axis**: `?`
+
+##### `?`
+- **Line**: 3873  **Axis**: `?`
+
+##### `?`
+- **Line**: 3879  **Axis**: `?`
+
+##### `?`
+- **Line**: 3886  **Axis**: `?`
+
+##### `?`
+- **Line**: 3892  **Axis**: `?`
+
+##### `?`
+- **Line**: 3896  **Axis**: `?`
+
+##### `?`
+- **Line**: 3901  **Axis**: `?`
+
+##### `?`
+- **Line**: 3908  **Axis**: `?`
+
+##### `?`
+- **Line**: 3915  **Axis**: `?`
+
+##### `?`
+- **Line**: 3924  **Axis**: `?`
+
+##### `?`
+- **Line**: 3926  **Axis**: `?`
+
+##### `?`
+- **Line**: 3937  **Axis**: `?`
+
+##### `?`
+- **Line**: 3959  **Axis**: `?`
+
+##### `?`
+- **Line**: 3966  **Axis**: `?`
 
 
 #### `ShapeFix_Wire.FixNotchedEdges`
@@ -7992,6 +10905,17 @@ v3's bar: every branch's description is rich enough to either RECREATE the defec
 - **Search anchors**: 'myAnalyzer->Load(sbwd)'
 
 
+#### `ShapeFix_Wire.FixShifted_at1662`
+ (1 branches; source: `v3-deep-batch-MM.json`)
+
+##### `ShapeFix_Wire.FixShifted.loaded-check`
+- **Line**: 1663  **Axis**: `api-contract`
+- **Brief**: FixShifted() returns false if wire not loaded.
+- **Falsifiable claim**: Without load check, null WireData causes crash. To test: call FixShifted() without Load(); without check, crash.
+- **Minimal reproducer**: ShapeFix_Wire (not loaded), call FixShifted(). Without line 1663: crash. With: false return.
+- **Search anchors**: 'IsLoaded()', 'precondition', 'early return'
+
+
 #### `ShapeFix_Wire.FixSmall`
  (5 branches; source: `v3-deep-batch-D.json`)
 
@@ -8029,6 +10953,13 @@ v3's bar: every branch's description is rich enough to either RECREATE the defec
 - **Falsifiable claim**: FixConnected invoked with edge index n that may be out of bounds after removal
 - **Minimal reproducer**: Small edge at end of wire; FixConnected called with n=NbEdges+1
 - **Search anchors**: 'FixConnected(n <= NbEdges', 'n : 1'
+
+
+#### `ShapeFix_Wire.FixSmall_at539`
+ (1 branches; source: `v3-deep-batch-CC.json`)
+
+##### `?`
+- **Line**: 541  **Axis**: `?`
 
 
 #### `ShapeFix_Wire.FixTails`
@@ -8196,6 +11127,17 @@ v3's bar: every branch's description is rich enough to either RECREATE the defec
 - **Search anchors**: '!Context().IsNull()', 'Context()->Remove(aEs[aRI]'
 
 
+#### `ShapeFix_Wire.Load_at248`
+ (1 branches; source: `v3-deep-batch-MM.json`)
+
+##### `ShapeFix_Wire.Load.face-set-check`
+- **Line**: 249  **Axis**: `api-contract`
+- **Brief**: Load() verifies face is set before initializing wire data.
+- **Falsifiable claim**: Without face check, null face causes crash in WireData initialization. To test: Load(wire) without calling SetFace(); without check, crash.
+- **Minimal reproducer**: Create ShapeFix_Wire, call Load(wire) without SetFace(). Without line 249: crash in face-dependent wire analysis. With guard: early return or error.
+- **Search anchors**: 'SetFace() required', 'face validation', 'Load precondition'
+
+
 #### `ShapeFix_Wire.Perform`
  (12 branches; 2 low-confidence; source: `v3-deep-batch-D.json`)
 
@@ -8282,6 +11224,13 @@ v3's bar: every branch's description is rich enough to either RECREATE the defec
 - **Falsifiable claim**: If FixVertexTolerance fails on edge N, edges N+1..NbEdges still processed
 - **Minimal reproducer**: Wire where FixVertexTolerance fails on edge 1; verify edge 2+ still processed
 - **Search anchors**: 'for (int iedge', 'FixVertexTolerance', 'Fixed = true'
+
+
+#### `ShapeFix_Wire.UpdateWire_at4294`
+ (1 branches; source: `v3-deep-batch-CC.json`)
+
+##### `?`
+- **Line**: 4300  **Axis**: `?`
 
 
 ### ShapeFix_Wireframe
@@ -9129,7 +12078,385 @@ v3's bar: every branch's description is rich enough to either RECREATE the defec
 - **Search anchors**: 'First < bf', 'Last > bl', 'mySplitValues->SetValue', 'mySplitParams->Append(First + Shift)'
 
 
+### ShapeUpgrade_FaceDivide
+
+#### `ShapeUpgrade_FaceDivide.Perform_at80`
+ (2 branches; source: `v3-deep-batch-LL.json`)
+
+##### `?`
+- **Line**: 82  **Axis**: `?`
+
+##### `?`
+- **Line**: 85  **Axis**: `?`
+
+
+#### `ShapeUpgrade_FaceDivide.SplitSurface_at99`
+ (14 branches; source: `v3-deep-batch-LL.json`)
+
+##### `?`
+- **Line**: 101  **Axis**: `?`
+
+##### `?`
+- **Line**: 105  **Axis**: `?`
+
+##### `?`
+- **Line**: 118  **Axis**: `?`
+
+##### `?`
+- **Line**: 125  **Axis**: `?`
+
+##### `?`
+- **Line**: 127  **Axis**: `?`
+
+##### `?`
+- **Line**: 131  **Axis**: `?`
+
+##### `?`
+- **Line**: 135  **Axis**: `?`
+
+##### `?`
+- **Line**: 137  **Axis**: `?`
+
+##### `?`
+- **Line**: 141  **Axis**: `?`
+
+##### `?`
+- **Line**: 149  **Axis**: `?`
+
+##### `?`
+- **Line**: 154  **Axis**: `?`
+
+##### `?`
+- **Line**: 157  **Axis**: `?`
+
+##### `?`
+- **Line**: 174  **Axis**: `?`
+
+##### `?`
+- **Line**: 179  **Axis**: `?`
+
+
+### ShapeUpgrade_RemoveInternalWires
+
+#### `ShapeUpgrade_RemoveInternalWires.Perform_at71`
+ (2 branches; source: `v3-deep-batch-LL.json`)
+
+##### `?`
+- **Line**: 74  **Axis**: `?`
+
+##### `?`
+- **Line**: 83  **Axis**: `?`
+
+
+#### `ShapeUpgrade_RemoveInternalWires.Perform_at97`
+ (6 branches; source: `v3-deep-batch-LL.json`)
+
+##### `?`
+- **Line**: 99  **Axis**: `?`
+
+##### `?`
+- **Line**: 107  **Axis**: `?`
+
+##### `?`
+- **Line**: 110  **Axis**: `?`
+
+##### `?`
+- **Line**: 112  **Axis**: `?`
+
+##### `?`
+- **Line**: 115  **Axis**: `?`
+
+##### `?`
+- **Line**: 127  **Axis**: `?`
+
+
+#### `ShapeUpgrade_RemoveInternalWires.removeSmallFaces_at192`
+ (13 branches; source: `v3-deep-batch-LL.json`)
+
+##### `?`
+- **Line**: 198  **Axis**: `?`
+
+##### `?`
+- **Line**: 204  **Axis**: `?`
+
+##### `?`
+- **Line**: 208  **Axis**: `?`
+
+##### `?`
+- **Line**: 210  **Axis**: `?`
+
+##### `?`
+- **Line**: 215  **Axis**: `?`
+
+##### `?`
+- **Line**: 217  **Axis**: `?`
+
+##### `?`
+- **Line**: 220  **Axis**: `?`
+
+##### `?`
+- **Line**: 229  **Axis**: `?`
+
+##### `?`
+- **Line**: 233  **Axis**: `?`
+
+##### `?`
+- **Line**: 237  **Axis**: `?`
+
+##### `?`
+- **Line**: 240  **Axis**: `?`
+
+##### `?`
+- **Line**: 248  **Axis**: `?`
+
+##### `?`
+- **Line**: 255  **Axis**: `?`
+
+
+#### `ShapeUpgrade_RemoveInternalWires.removeSmallWire_at143`
+ (4 branches; source: `v3-deep-batch-LL.json`)
+
+##### `?`
+- **Line**: 152  **Axis**: `?`
+
+##### `?`
+- **Line**: 158  **Axis**: `?`
+
+##### `?`
+- **Line**: 162  **Axis**: `?`
+
+##### `?`
+- **Line**: 168  **Axis**: `?`
+
+
+### ShapeUpgrade_ShellSewing
+
+#### `ShapeUpgrade_ShellSewing.ApplySewing_at118`
+ (3 branches; source: `v3-deep-batch-LL.json`)
+
+##### `?`
+- **Line**: 120  **Axis**: `?`
+
+##### `?`
+- **Line**: 125  **Axis**: `?`
+
+##### `?`
+- **Line**: 131  **Axis**: `?`
+
+
+#### `ShapeUpgrade_ShellSewing.Apply_at83`
+ (3 branches; source: `v3-deep-batch-LL.json`)
+
+##### `?`
+- **Line**: 85  **Axis**: `?`
+
+##### `?`
+- **Line**: 99  **Axis**: `?`
+
+##### `?`
+- **Line**: 107  **Axis**: `?`
+
+
+#### `ShapeUpgrade_ShellSewing.Init_at37`
+ (2 branches; source: `v3-deep-batch-LL.json`)
+
+##### `?`
+- **Line**: 39  **Axis**: `?`
+
+##### `?`
+- **Line**: 42  **Axis**: `?`
+
+
+#### `ShapeUpgrade_ShellSewing.Prepare_at58`
+ (1 branches; source: `v3-deep-batch-LL.json`)
+
+##### `?`
+- **Line**: 64  **Axis**: `?`
+
+
+### ShapeUpgrade_SplitSurface
+
+#### `ShapeUpgrade_SplitSurface.Build_at241`
+ (35 branches; source: `v3-deep-batch-FF.json`)
+
+##### `?`
+- **Line**: 248  **Axis**: `?`
+
+##### `?`
+- **Line**: 255  **Axis**: `?`
+
+##### `?`
+- **Line**: 266  **Axis**: `?`
+
+##### `?`
+- **Line**: 291  **Axis**: `?`
+
+##### `?`
+- **Line**: 300  **Axis**: `?`
+
+##### `?`
+- **Line**: 304  **Axis**: `?`
+
+##### `?`
+- **Line**: 319  **Axis**: `?`
+
+##### `?`
+- **Line**: 323  **Axis**: `?`
+
+##### `?`
+- **Line**: 327  **Axis**: `?`
+
+##### `?`
+- **Line**: 334  **Axis**: `?`
+
+##### `?`
+- **Line**: 345  **Axis**: `?`
+
+##### `?`
+- **Line**: 370  **Axis**: `?`
+
+##### `?`
+- **Line**: 379  **Axis**: `?`
+
+##### `?`
+- **Line**: 383  **Axis**: `?`
+
+##### `?`
+- **Line**: 398  **Axis**: `?`
+
+##### `?`
+- **Line**: 402  **Axis**: `?`
+
+##### `?`
+- **Line**: 406  **Axis**: `?`
+
+##### `?`
+- **Line**: 413  **Axis**: `?`
+
+##### `?`
+- **Line**: 428  **Axis**: `?`
+
+##### `?`
+- **Line**: 473  **Axis**: `?`
+
+##### `?`
+- **Line**: 477  **Axis**: `?`
+
+##### `?`
+- **Line**: 484  **Axis**: `?`
+
+##### `?`
+- **Line**: 493  **Axis**: `?`
+
+##### `?`
+- **Line**: 497  **Axis**: `?`
+
+##### `?`
+- **Line**: 505  **Axis**: `?`
+
+##### `?`
+- **Line**: 516  **Axis**: `?`
+
+##### `?`
+- **Line**: 520  **Axis**: `?`
+
+##### `?`
+- **Line**: 526  **Axis**: `?`
+
+##### `?`
+- **Line**: 538  **Axis**: `?`
+
+##### `?`
+- **Line**: 542  **Axis**: `?`
+
+##### `?`
+- **Line**: 548  **Axis**: `?`
+
+##### `?`
+- **Line**: 568  **Axis**: `?`
+
+##### `?`
+- **Line**: 573  **Axis**: `?`
+
+##### `?`
+- **Line**: 577  **Axis**: `?`
+
+##### `?`
+- **Line**: 606  **Axis**: `?`
+
+
+#### `ShapeUpgrade_SplitSurface.Init_at61`
+ (0 branches; source: `v3-deep-batch-FF.json`)
+
+
+#### `ShapeUpgrade_SplitSurface.Init_at88`
+ (9 branches; source: `v3-deep-batch-FF.json`)
+
+##### `?`
+- **Line**: 104  **Axis**: `?`
+
+##### `?`
+- **Line**: 109  **Axis**: `?`
+
+##### `?`
+- **Line**: 115  **Axis**: `?`
+
+##### `?`
+- **Line**: 120  **Axis**: `?`
+
+##### `?`
+- **Line**: 125  **Axis**: `?`
+
+##### `?`
+- **Line**: 130  **Axis**: `?`
+
+##### `?`
+- **Line**: 136  **Axis**: `?`
+
+##### `?`
+- **Line**: 154  **Axis**: `?`
+
+##### `?`
+- **Line**: 160  **Axis**: `?`
+
+
+#### `ShapeUpgrade_SplitSurface.SetUSplitValues_at177`
+ (3 branches; source: `v3-deep-batch-FF.json`)
+
+##### `?`
+- **Line**: 178  **Axis**: `?`
+
+##### `?`
+- **Line**: 192  **Axis**: `?`
+
+##### `?`
+- **Line**: 196  **Axis**: `?`
+
+
+#### `ShapeUpgrade_SplitSurface.SetVSplitValues_at210`
+ (3 branches; source: `v3-deep-batch-FF.json`)
+
+##### `?`
+- **Line**: 211  **Axis**: `?`
+
+##### `?`
+- **Line**: 224  **Axis**: `?`
+
+##### `?`
+- **Line**: 228  **Axis**: `?`
+
+
 ### ShapeUpgrade_UnifySameDomain
+
+#### `ShapeUpgrade_UnifySameDomain.Build_at4455`
+ (2 branches; source: `v3-deep-batch-FF.json`)
+
+##### `?`
+- **Line**: 4458  **Axis**: `?`
+
+##### `?`
+- **Line**: 4462  **Axis**: `?`
+
 
 #### `ShapeUpgrade_UnifySameDomain.FillHistory`
  (6 branches; 4 low-confidence; source: `v3-deep-batch-M.json`)
@@ -9175,6 +12502,17 @@ v3's bar: every branch's description is rich enough to either RECREATE the defec
 - **Falsifiable claim**: If image differs only in location or internal attributes but IsSame() returns true, modification is not recorded
 - **Minimal reproducer**: Shape modified with location change; IsSame() returns true; modification hidden from history
 - **Search anchors**: 'if (!aSIm.IsSame(aS))', 'AddModified(aS, aSIm)', 'skipped for identical'
+
+
+#### `ShapeUpgrade_UnifySameDomain.Initialize_at2991`
+ (1 branches; source: `v3-deep-batch-NN.json`)
+
+##### `Initialize.state_clear_sequence_2998`
+- **Line**: 2998  **Axis**: `healer-state`
+- **Brief**: myContext->Clear() is called without verification that myContext is initialized or that historical state is safely disposable.
+- **Falsifiable claim**: Without initialization check, multiple Initialize() calls on same object may leave stale references in myContext if Clear() fails. To test: initialize, run operation, initialize again; if Clear() exception occurs, myContext retains old state.
+- **Minimal reproducer**: Create UnifySameDomain, call Initialize(shape1), call Perform(), call Initialize(shape2); if myContext->Clear() throws, subsequent operations reference shape1's context.
+- **Search anchors**: 'myContext->Clear()', 'myKeepShapes.Clear()', 'myHistory->Clear()'
 
 
 #### `ShapeUpgrade_UnifySameDomain.IntUnifyFaces`
@@ -9738,6 +13076,131 @@ v3's bar: every branch's description is rich enough to either RECREATE the defec
 - **Search anchors**: 'IsNull', 'break', 'V[j].IsNull'
 
 
+#### `ShapeUpgrade_UnifySameDomain.MergeSeq_at2890`
+ (2 branches; source: `v3-deep-batch-FF.json`)
+
+##### `?`
+- **Line**: 2892  **Axis**: `?`
+
+##### `?`
+- **Line**: 2896  **Axis**: `?`
+
+
+#### `ShapeUpgrade_UnifySameDomain.MergeSubSeq_at2170`
+ (37 branches; source: `v3-deep-batch-FF.json`)
+
+##### `?`
+- **Line**: 2184  **Axis**: `?`
+
+##### `?`
+- **Line**: 2216  **Axis**: `?`
+
+##### `?`
+- **Line**: 2249  **Axis**: `?`
+
+##### `?`
+- **Line**: 2254  **Axis**: `?`
+
+##### `?`
+- **Line**: 2259  **Axis**: `?`
+
+##### `?`
+- **Line**: 2264  **Axis**: `?`
+
+##### `?`
+- **Line**: 2268  **Axis**: `?`
+
+##### `?`
+- **Line**: 2273  **Axis**: `?`
+
+##### `?`
+- **Line**: 2277  **Axis**: `?`
+
+##### `?`
+- **Line**: 2283  **Axis**: `?`
+
+##### `?`
+- **Line**: 2288  **Axis**: `?`
+
+##### `?`
+- **Line**: 2293  **Axis**: `?`
+
+##### `?`
+- **Line**: 2299  **Axis**: `?`
+
+##### `?`
+- **Line**: 2307  **Axis**: `?`
+
+##### `?`
+- **Line**: 2311  **Axis**: `?`
+
+##### `?`
+- **Line**: 2317  **Axis**: `?`
+
+##### `?`
+- **Line**: 2337  **Axis**: `?`
+
+##### `?`
+- **Line**: 2343  **Axis**: `?`
+
+##### `?`
+- **Line**: 2354  **Axis**: `?`
+
+##### `?`
+- **Line**: 2361  **Axis**: `?`
+
+##### `?`
+- **Line**: 2369  **Axis**: `?`
+
+##### `?`
+- **Line**: 2375  **Axis**: `?`
+
+##### `?`
+- **Line**: 2380  **Axis**: `?`
+
+##### `?`
+- **Line**: 2385  **Axis**: `?`
+
+##### `?`
+- **Line**: 2392  **Axis**: `?`
+
+##### `?`
+- **Line**: 2395  **Axis**: `?`
+
+##### `?`
+- **Line**: 2399  **Axis**: `?`
+
+##### `?`
+- **Line**: 2408  **Axis**: `?`
+
+##### `?`
+- **Line**: 2414  **Axis**: `?`
+
+##### `?`
+- **Line**: 2418  **Axis**: `?`
+
+##### `?`
+- **Line**: 2424  **Axis**: `?`
+
+##### `?`
+- **Line**: 2447  **Axis**: `?`
+
+##### `?`
+- **Line**: 2463  **Axis**: `?`
+
+##### `?`
+- **Line**: 2477  **Axis**: `?`
+
+##### `?`
+- **Line**: 2481  **Axis**: `?`
+
+##### `?`
+- **Line**: 2486  **Axis**: `?`
+
+##### `?`
+- **Line**: 2494  **Axis**: `?`
+
+
 #### `ShapeUpgrade_UnifySameDomain.UnifyEdges`
  (6 branches; 6 low-confidence; source: `v3-deep-batch-M.json`)
 
@@ -9814,6 +13277,136 @@ v3's bar: every branch's description is rich enough to either RECREATE the defec
 - **Falsifiable claim**: If myContext does not properly track modifications from IntUnifyFaces, Apply() may return stale geometry
 - **Minimal reproducer**: IntUnifyFaces performs local modifications without recording them in myContext
 - **Search anchors**: 'myContext->Apply(myShape)', 'IntUnifyFaces', 'aGMapEdgeFaces state after call'
+
+
+#### `ShapeUpgrade_UnifySameDomain.UnionPCurves_at1756`
+ (18 branches; 3 low-confidence; source: `v3-deep-batch-NN.json`)
+
+##### `UnionPCurves.seam_detection_1843`
+- **Line**: 1843  **Axis**: `healer-state`
+- **Brief**: Seam edge detection branches onto unreversed pcurve equality check without validating parametric domain orientation.
+- **Falsifiable claim**: Without seam detection logic (lines 1843-1854), faces with parametrically reversed seam edges are not duplicated, causing the merged pcurve to lose orientation data. To test: construct edge with same-geometry seam on BSpline face; merge without duplication; verify pcurve orientation is lost.
+- **Minimal reproducer**: Create BSpline surface with seam (e.g., revolution); build edge referencing both sides of seam with same 3D curve; call UnionPCurves; without duplication: aPCurve == aPCurve2 stays false when reversed check fails; with: anIsSeam sets faceSeq.Length()=2.
+- **Search anchors**: 'aFaceSeq.Length() == 1', 'aReversedEdge.Reverse()', 'aPCurve2'
+
+##### `UnionPCurves.plane_skip_1770`
+- **Line**: 1770  **Axis**: `tolerance`
+- **Brief**: Early-exit loop skips plane faces without checking if they contribute valid pcurves to chain.
+- **Falsifiable claim**: Without plane skip (line 1770-1772), degenerate or near-planar faces enter concatenation logic. To test: use slightly-curved face with plane tolerance; without skip: unnecessary bspline conversion; with skip: reduced computation but may miss precision-critical faces.
+- **Minimal reproducer**: Build shape with chain on quasi-planar surface (Geom_CylindricalSurface with radius→0); apply UnionPCurves; observe that plane.IsBound() check allows early return vs. proceeding through expensive C1 concatenation.
+- **Search anchors**: 'BRepAdaptor_Surface', 'GeomAbs_Plane', 'myFacePlaneMap.IsBound'
+
+##### `UnionPCurves.surface_identity_1796`
+- **Line**: 1796  **Axis**: `encoding`
+- **Brief**: Surface equality check uses direct handle comparison (==) without topological verification of orientation.
+- **Falsifiable claim**: Without identity check (line 1796), duplicate surface references with different aLoc values are merged into single pcurve sequence. To test: apply local transformation to face; UnionPCurves should distinguish transformed/untransformed surfaces by location.
+- **Minimal reproducer**: Create edge shared by two faces on same geometry surface but with different placements (TopLoc_Location); first loop finds aSurf, second loop checks aPrevSurf == aSurf && aPrevLoc == aLoc; if location differs, surfaces are treated as distinct.
+- **Search anchors**: 'TopLoc_Location', 'BRep_Tool::Surface', 'aPrevLoc == aLoc'
+
+##### `UnionPCurves.c1_concatenation_2024`
+- **Line**: 2024  **Axis**: `api-contract`
+- **Brief**: C1 concatenation via ConcatC1 returns aClosedFlag=false without validating connectivity between last and first pcurve segments.
+- **Falsifiable claim**: Without aClosedFlag check, chains intended to be closed (edge loop) are treated as open, causing discontinuity artifacts. To test: create closed edge chain; observe whether final pcurve properly joins last vertex back to first.
+- **Minimal reproducer**: Build closed edge loop (wire forming circle); concatenate aPCurveSeq via Geom2dConvert::ConcatC1 with tolerance; if aClosedFlag remains false, concatenation treats sequence as open-ended chain despite topological closure.
+- **Search anchors**: 'Geom2dConvert::ConcatC1', 'aClosedFlag', 'concatc2d->Length()'
+
+##### `UnionPCurves.line_circle_reparametrization_2106`
+- **Line**: 2106  **Axis**: `encoding`
+- **Brief**: Curve type detection via Geom2dAdaptor skips validation that line/circle geometric basis matches actual stored geometry.
+- **Falsifiable claim**: Without type-specific reparametrization (line 2106-2139), non-canonical curves (TrimmedCurve wrapping Line/Circle) fail to reparametrize correctly. To test: use TrimmedCurve(Line2d) with range [10,20]; UnionPCurves without unwrapping produces incorrect parameter mapping.
+- **Minimal reproducer**: Construct Geom2d_TrimmedCurve wrapping Geom2d_Line with aFirst3d=0, aLast3d=100; call aGAcurve.GetType() returns GeomAbs_Line; reparametrization at line 2108-2116 creates aNewLine2d with offset from original aFirst3d.
+- **Search anchors**: 'Geom2dAdaptor_Curve', 'GeomAbs_Circle', 'aGAcurve.Line()'
+
+##### `UnionPCurves.range_mismatch_2055`
+- **Line**: 2055  **Axis**: `tolerance`
+- **Brief**: 3D edge range (aRange3d) is compared against 2D pcurve range without accounting for circular/periodic parametrizations.
+- **Falsifiable claim**: Without periodic range validation, circular pcurves with parameter wrapping (e.g., 2π → 0) fail range consistency check at line 2060. To test: edge on periodic surface; UnionPCurves triggers IsBadRange=true even when geometrically correct.
+- **Minimal reproducer**: Create edge on cylindrical surface with pcurve range [0, 2π]; 3D range aRange3d may be [0,100]; check at line 2060 compares |100 - 2π| > aMaxTol, triggering reparametrization fallback.
+- **Search anchors**: 'aRange3d', 'std::abs(aRange3d - aRange)', 'IsBadRange'
+
+##### `UnionPCurves.projection_fallback_2076`
+- **Line**: 2076  **Axis**: `conformance-probe`
+- **Brief**: aToolProj.Perform() failure silently falls back to reparametrization without logging projection error cause.
+- **Falsifiable claim**: Without projection error handling, invalid 3D-to-2D projections are masked by generic reparametrization. To test: provide edge curve that cannot project onto surface; Perform() returns false; fallback reparametrization produces incorrect pcurve.
+- **Minimal reproducer**: Use edge curve skew to all surface normals; aToolProj.Perform(aCurve, aFirst3d, aLast3d, aNewPCurve) returns false; code enters else block (line 2081) and reparametrizes stale pcurve instead of failing visibly.
+- **Search anchors**: 'aToolProj.Perform', 'ShapeConstruct_ProjectCurveOnSurface', 'aNewPCurve'
+
+##### `UnionPCurves.forward_orientation_1984` **[low-confidence]**
+- **Line**: 1984  **Axis**: `api-contract`
+- **Brief**: Single-pcurve case reverses orientation without validating that ReversedParameter() and Reverse() preserve geometric continuity.
+- **Falsifiable claim**: Without orientation validation, reversing a pcurve that does not support Reverse() (e.g., implicit curves) silently fails. To test: use non-reversible pcurve geometry; observe Reverse() call succeeds but subsequent parameter values are invalid.
+- **Minimal reproducer**: Load aPCurveSeq with single Geom2d_BezierCurve; if aForwardsSeq.Last()=false, code calls aResPCurve->Reverse() at line 1988; BezierCurve.Reverse() is valid, but subsequent ReversedParameter() calls may produce NaN if control points are degenerate.
+- **Search anchors**: 'aForwardsSeq.Last()', 'aResPCurve->Reverse()', 'ReversedParameter'
+
+##### `UnionPCurves.line_containment_1904`
+- **Line**: 1904  **Axis**: `tolerance`
+- **Brief**: Line containment test uses Precision::Confusion() without considering edge tolerance context.
+- **Falsifiable claim**: Without edge-tolerance-aware containment, edges on loose-tolerance faces incorrectly merge into single pcurve. To test: create two edges on face with different BRep_Tool::Tolerance() values; containment check ignores aTolEdge.
+- **Minimal reproducer**: Build face with edge aTolEdge=0.1; chain pcurves with different tolerances; at line 1904, aPrevLin.Contains() uses fixed Precision::Confusion() instead of aTolEdge, merging geometrically separate pcurves.
+- **Search anchors**: 'aPrevLin.Contains', 'Precision::Confusion()', 'aFirstP2d'
+
+##### `UnionPCurves.circle_parameter_1930`
+- **Line**: 1930  **Axis**: `input-shape`
+- **Brief**: Circle parameter extraction assumes aNewF <= aNewL invariant without handling wraparound in periodic domain.
+- **Falsifiable claim**: Without wraparound check, circular pcurves spanning parameter discontinuity (e.g., -π to π) produce incorrect range [aNewL, aNewF]. To test: edge on torus spanning seam; ElCLib::Parameter() returns angles on opposite sides of 2π; swap at line 1932 produces wrong interval.
+- **Minimal reproducer**: Create edge on torus spanning seam from param 6.0 to param 0.5 (wrapping around 2π); ElCLib::Parameter() returns aNewF=6.0, aNewL=0.5; swap logic reverses to aNewF=0.5, aNewL=6.0, creating inverted range.
+- **Search anchors**: 'ElCLib::Parameter', 'aNewF > aNewL', 'aPrevCirc'
+
+##### `UnionPCurves.bspline_knot_mutation_2006` **[low-confidence]**
+- **Line**: 2006  **Axis**: `healer-state`
+- **Brief**: Geom2dConvert::C0BSplineToC1BSplineCurve mutates tab_c2d in-place without preserving original curve for error recovery.
+- **Falsifiable claim**: Without mutation isolation, C0→C1 conversion failure silently corrupts pcurve geometry. To test: provide degenerate trimmed curve; C0BSplineToC1BSplineCurve fails partway; tab_c2d contains corrupted knots.
+- **Minimal reproducer**: Build tab_c2d[0] from degenerate TrimmedCurve; Geom2dConvert::C0BSplineToC1BSplineCurve(tab_c2d(0), ...) raises or corrupts knots; downstream ConcatC1 uses damaged curve without error.
+- **Search anchors**: 'Geom2dConvert::C0BSplineToC1BSplineCurve', 'tab_c2d', 'Precision::Confusion()'
+
+##### `UnionPCurves.vertex_tolerance_mismatch_1971`
+- **Line**: 1971  **Axis**: `tolerance`
+- **Brief**: Vertex tolerance extracted from CommonVertex is appended without validation against current aMaxTol or segment tolerances.
+- **Falsifiable claim**: Without tolerance hierarchy validation, vertices with inconsistent tolerances produce pcurves with mismatched continuity tolerance. To test: edge chain with vertices of vastly different tolerances; aTolVerSeq contains unsorted values; ConcatC1 uses incoherent tolerance array.
+- **Minimal reproducer**: Build edge chain with vertices aTol[0]=0.001, aTol[1]=10.0; TopExp::CommonVertex at line 1970 retrieves both; aTolVerSeq.Append(aTol) at line 1972 stores unvalidated values; tabtolvertex array becomes heterogeneous.
+- **Search anchors**: 'TopExp::CommonVertex', 'BRep_Tool::Tolerance', 'aTolVerSeq.Append'
+
+##### `UnionPCurves.same_curve_detection_1891`
+- **Line**: 1891  **Axis**: `encoding`
+- **Brief**: Direct handle equality (aPCurve == aPCurveSeq.Last()) may be false for geometrically identical trimmed curves with different trim ranges.
+- **Falsifiable claim**: Without geometric equivalence check, two TrimmedCurve(sameBasis, [a1,b1]) and TrimmedCurve(sameBasis, [a2,b2]) are treated as different curves. To test: chain with overlapping trimmed segments of same base curve; merging produces extra pcurve segments.
+- **Minimal reproducer**: Construct aPCurveSeq with TrimmedCurve(Line, [0,10]); next iteration provides TrimmedCurve(Line, [5,15]) referencing same Line; handle equality check fails; new curve added despite geometric overlap.
+- **Search anchors**: 'aPCurve == aPCurveSeq.Last()', 'isSameCurve', 'Geom2d_TrimmedCurve'
+
+##### `UnionPCurves.curve_copy_trimming_1874`
+- **Line**: 1874  **Axis**: `encoding`
+- **Brief**: TrimmedCurve unwrapping assumes BasisCurve() is always valid without checking for nested trimming.
+- **Falsifiable claim**: Without nested-trimming validation, deeply nested TrimmedCurve(TrimmedCurve(...)) loses inner bounds. To test: programmatically wrap TrimmedCurve twice; UnionPCurves unwraps only outer layer.
+- **Minimal reproducer**: Create aPCurve = TrimmedCurve(TrimmedCurve(Line, [5,15]), [8,12]); line 1876 retrieves BasisCurve() → TrimmedCurve(Line, [5,15]); inner [5,15] bounds are lost; resulting curve has effective range [8,12] on outer trimmed range.
+- **Search anchors**: 'Geom2d_TrimmedCurve', 'BasisCurve()', 'IsKind'
+
+##### `UnionPCurves.max_tolerance_tracking_2014` **[low-confidence]**
+- **Line**: 2014  **Axis**: `tolerance`
+- **Brief**: aMaxTol is updated inside the aTolVerSeq iteration loop without synchronizing with earlier aMaxTol comparisons.
+- **Falsifiable claim**: Without aMaxTol synchronization, tolerance comparisons at line 2060 may use stale aMaxTol from first face iteration. To test: multi-face chain with increasing vertex tolerances; final reparametrization uses incorrect aMaxTol threshold.
+- **Minimal reproducer**: Loop j=1,2 over aFaceSeq; in loop, aTolVerSeq accumulates different tolerances; aMaxTol updated at line 2016; but line 2060 comparisons happen after loop, using final aMaxTol; earlier faces may have had different requirements.
+- **Search anchors**: 'aMaxTol', 'aTolVerSeq', 'if (aTol > aMaxTol)'
+
+##### `UnionPCurves.edge_orientation_loss_1829`
+- **Line**: 1829  **Axis**: `healer-state`
+- **Brief**: isForward orientation flag is captured from anEdge but may be reversed by seam-detection logic without updating tracking variable.
+- **Falsifiable claim**: Without orientation re-capture after seam handling, reversed seam edges (line 1833) produce pcurves with stale forward/backward tracking. To test: seam edge with initial isForward=true; after anEdge.Reverse() at line 1833, isForward remains true; accumulated pcurve orientation is incorrect.
+- **Minimal reproducer**: Build seam edge with Orientation=FORWARD; isForward=true; at j=2 (second pass), anEdge.Reverse() is called; isForward tracking is not updated; aForwardsSeq.Append(isForward) appends wrong value.
+- **Search anchors**: 'isForward', 'anEdge.Orientation()', 'anEdge.Reverse()'
+
+##### `UnionPCurves.prev_edge_uninitialized_1814`
+- **Line**: 1814  **Axis**: `healer-state`
+- **Brief**: aPrevEdge is declared but not initialized; first iteration assigns it at line 1884, but CommonVertex call at line 1970 may reference uninitialized value if aPCurveSeq branches early.
+- **Falsifiable claim**: Without initialization, aPrevEdge is undefined until first valid pcurve is added; if chain contains null pcurves, line 1970 uses garbage. To test: edge chain with null pcurve entries; TopExp::CommonVertex crashes or produces spurious results.
+- **Minimal reproducer**: Build theChain with null-pcurve edges; first loop iteration (i=1) has aPCurve.IsNull()=true, continues without updating aPrevEdge; second iteration tries TopExp::CommonVertex(aPrevEdge, anEdge) with uninitialized aPrevEdge.
+- **Search anchors**: 'TopoDS_Edge aPrevEdge', 'continue', 'TopExp::CommonVertex'
+
+##### `UnionPCurves.concat_result_truncation_2031`
+- **Line**: 2031  **Axis**: `api-contract`
+- **Brief**: ConcatC1 output array concatc2d may return multiple curves if concatenation fails at intermediate points, but code only checks Length()>1 without validating individual curve quality.
+- **Falsifiable claim**: Without quality check, concatc2d contains multiple low-quality segments that should have remained separate. To test: concatenate incompatible pcurves; ConcatC1 produces 2-3 fragments; Concat2d.Add() at line 2037 force-merges them.
+- **Minimal reproducer**: Feed Geom2dConvert::ConcatC1 with Line and Circle pcurves with large gap; concatc2d->Length()=2; code iterates and Add()s them anyway, creating artificial continuity.
+- **Search anchors**: 'concatc2d->Length()', 'Geom2dConvert_CompCurveToBSplineCurve', 'Concat2d.Add'
 
 
 #### `ShapeUpgrade_UnifySameDomain.generateSubSeq`
