@@ -1,5 +1,20 @@
 # Changelog
 
+## v1.2.1 — canonical cube template (Bo003, Bo004, Bo024, Ps001)
+
+Continues the v1.2.0 fidelity work. Four fixtures whose shared cube template had `EDGE_CURVE`s referenced with the same `.T.` orientation by both incident faces (preventing a 2-manifold build, so the parse-succeeded fixtures couldn't even reach their intended defect) are regenerated with a canonical-winding cube generator.
+
+The generator (`/tmp/cube_block.py` during development, will move into `validation/` in v1.3) emits 12 edges where every edge is used **exactly once with `.T.` and once with `.F.`** across its two incident faces. Verified by post-emission consistency check before each fixture is written.
+
+- **Bo003** — Two void shells of one solid are nested inside each other. Outer cube (0..10) + outer void (2..8) + inner void (3..7), the two voids wrapped in `ORIENTED_CLOSED_SHELL .F.` and stuffed into a `BREP_WITH_VOIDS`. Defect is the geometric nesting of the two voids, now reachable past the build step.
+- **Bo004** — Closed shell encloses an unrepresented cavity. Outer cube + inner cube, but the `MANIFOLD_SOLID_BREP` references only the outer shell; the inner cube exists in the file but is unwrapped as a void.
+- **Bo024** — Closed shell whose face orientations imply negative volume. Single cube with all face normals pointing INWARD (`outward=False`), wrapped in `MANIFOLD_SOLID_BREP`.
+- **Ps001** — Negative-volume cube in the Ps "pathological success" section. Same all-inward topology as Bo024 but listed under the section where less-careful kernels silently accept the solid.
+
+**Fi008** (fillet completes partially) was left alone — its defect is a fillet pathology beyond the cube-template scope; will be reworked in a later release with a real fillet construction.
+
+The remaining ~15 Ps-section fixtures (Ps002, Ps003, Ps005–Ps015) carry varied bespoke defects (CW/CCW mix, same_sense flips, overlapping faces, unit traps, identity-vs-offset placements). Each needs targeted edits rather than blanket regen; deferred to v1.2.2+.
+
 ## v1.2.0 — fidelity fixes from kernel-author feedback
 
 A real CAD-kernel author imported the full corpus and read each fixture's data against its catalog claim. This release lands the highest-leverage fixes from that review. (Further fixture rewrites continue in v1.2.1+.)
