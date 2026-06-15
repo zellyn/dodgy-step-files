@@ -173,6 +173,7 @@ Walk `step-examples/<section>/<id>.stp` and load metadata from `STEP_PROBLEM_CAT
 | OCCT crash reproducers with hypothesised paths | `validation/SEGFAULT_CHARACTERIZATION.md` |
 | One-page tour of "most interesting findings" | `QUALITY_DASHBOARD.md` |
 | Per-fixture proof / evidence schema | `EVIDENCE_MODEL.md` |
+| OCCT healing-operation coverage map | `OCCT_HEAL_COVERAGE.md` |
 | Coverage policy / what's intentionally out-of-scope | `COVERAGE_POLICY.md` |
 
 ## Project status
