@@ -43,14 +43,18 @@ jobs:
         run: uv sync --frozen
         working-directory: validation
 
-      # ---- Self-tests run first; they're fast and catch most regressions ----
-      # 500+ tests cover: catalog integrity, byte-stable JSON round-trip,
-      # bug-report search regression, OCCT-API ratchet (corpus must stay
-      # at 0 token-leaks), tier-3 assertion regression, entity-match drift,
-      # validator self-tests, fixture lint coverage.
-      - name: Validator self-tests (pytest)
+      # ---- Fast self-tests first; they catch most regressions cheaply ----
+      # 500+ tests cover catalog integrity, byte-stable JSON round-trip,
+      # bug-report search regression, OCCT-API ratchet, entity-match drift,
+      # validator self-tests, fixture lint coverage. The two oracle-dependent
+      # test modules (outcome_conformance, tier3_assertions) need
+      # /tmp/cad-v2-out* populated by `_run_corpus` and run later.
+      - name: Validator self-tests — fast tier (pytest)
         working-directory: validation
-        run: uv run pytest tests/ -v --tb=short
+        run: |
+          uv run pytest tests/ -v --tb=short \
+            --ignore=tests/test_outcome_conformance.py \
+            --ignore=tests/test_tier3_assertions.py
 
       - name: Fixture lint (file-naming, header comments, framing)
         working-directory: validation
@@ -61,6 +65,15 @@ jobs:
       - name: Run validate2 + tier3 across full corpus
         working-directory: validation
         run: uv run python -m step_corpus._run_corpus --workers 4
+
+      # ---- Oracle-dependent self-tests run after the oracle pass ----
+      # outcome_conformance + tier3_assertions read /tmp/cad-v2-out*.
+      - name: Validator self-tests — oracle-dependent tier (pytest)
+        working-directory: validation
+        run: |
+          uv run pytest -v --tb=short \
+            tests/test_outcome_conformance.py \
+            tests/test_tier3_assertions.py
 
       # ---- DRIFT detection: codified Expected validation vs live oracle ----
       # _final_verdict reads catalog Expected lines + /tmp/cad-v2-out and
