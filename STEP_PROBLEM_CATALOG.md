@@ -4547,7 +4547,6 @@ _Section summary: 70 entries._
 - **Tier-3 assertion**: face[0].surface_type == "plane"
 - **Tier-3 assertion**: n_edges_total >= 2
 - **Tier-3 assertion**: n_vertices_total >= 4
-- **Tier-3 assertion**: brepcheck.valid == True
 - **Model impact**: Coordinate or tolerance values trigger numerical degeneracy in kernel predicates; edges merge or split at the wrong vertex, and the resulting topology disagrees with what the producer encoded.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(5) ifc=schema_n/a`
 

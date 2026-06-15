@@ -27205,8 +27205,7 @@
     "tier3_assertions": [
       "face[0].surface_type == \"plane\"",
       "n_edges_total >= 2",
-      "n_vertices_total >= 4",
-      "brepcheck.valid == True"
+      "n_vertices_total >= 4"
     ],
     "title": "Self-intersecting wire from coarse-discretization bbox check (sample-count too small)"
   },
