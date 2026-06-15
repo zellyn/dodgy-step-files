@@ -1,0 +1,33 @@
+ISO-10303-21;
+/* N052 — BRepBuilderAPI_Sewing.SameParameterEdge raw TEdge tolerance bypass
+ * Defect: Direct BRep_TEdge::Tolerance() write at line 1168 circumvents the
+ * SetMaxTolerance API cap when computed tolerance exceeds the cap. The bypass
+ * violates API contract that SetMaxTolerance enforces user-specified tolerance
+ * limits on merged edges. */
+HEADER;
+FILE_DESCRIPTION(('N052 - SameParameterEdge SetMaxTolerance bypass via raw write'),'2;1');
+FILE_NAME('N052.stp','2026-06-15T00:00:00',('auto-generated'),(''),
+  'auto-generated','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+#10=CARTESIAN_POINT('origin',(0.0,0.0,0.0));
+#11=DIRECTION('z',(0.0,0.0,1.0));
+#12=DIRECTION('x',(1.0,0.0,0.0));
+#13=AXIS2_PLACEMENT_3D('placement',#10,#11,#12);
+#14=AXIS2_PLACEMENT_2D(#10,#11,#12);
+/* Cylinder surface for edge placement */
+#15=CYLINDRICAL_SURFACE('cyl_srf',#13,10.0);
+#20=CARTESIAN_POINT('edge_p1',(10.0,0.0,0.0));
+#21=CARTESIAN_POINT('edge_p2',(10.0,0.0,5.0));
+#22=VERTEX_POINT('v1',(#20,0.005));
+#23=VERTEX_POINT('v2',(#21,0.005));
+/* Edge with parameterized curve on cylinder - will compute high tolerance */
+#30=LINE('edge_line',#20,#12);
+#31=EDGE_CURVE('edge',#22,#23,#30,.T.);
+/* Defect: When edge tolerance computed as 0.05 (exceeds SetMaxTolerance cap of 0.01),
+   raw TShape()->Tolerance(0.05) write bypasses cap validation */
+ENDSEC;
+END-ISO-10303-21;

@@ -1,0 +1,78 @@
+ISO-10303-21;
+/* Twi103 - ShapeFix_Wire.FixSelfIntersectingEdge 30-iteration convergence limit
+   Defect: FixSelfIntersectingEdge at line 2709 implements a hard 30-iteration
+   limit for self-intersection repair convergence. Persistent intersections
+   after 30 iterations silently exit without reporting failure or status change.
+   Pathological wire geometry with unresolvable self-intersections fails silent. */
+HEADER;
+FILE_DESCRIPTION(('Twi103 - FixSelfIntersectingEdge convergence limit exits silent'),'2;1');
+FILE_NAME('Twi103.stp','2026-06-15T00:00:00',('auto-generated'),(''),'auto-generated','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+/* Plane for wire */
+#20=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#21=DIRECTION('',(0.0,0.0,1.0));
+#22=DIRECTION('',(1.0,0.0,0.0));
+#23=AXIS2_PLACEMENT_3D('',#20,#21,#22);
+#24=PLANE('',#23);
+/* Defect: Self-intersecting wire with S-curve topology
+   that cannot be resolved in 30 iterations
+   Edge 1: (0,0) -> (10,5) */
+#30=CARTESIAN_POINT('A',(0.0,0.0,0.0));
+#31=CARTESIAN_POINT('B',(10.0,5.0,0.0));
+#32=VERTEX_POINT('',#30);
+#33=VERTEX_POINT('',#31);
+#34=DIRECTION('',(1.0,0.5,0.0));
+#35=VECTOR('',#34,1.0);
+#36=LINE('',#30,#35);
+#37=EDGE_CURVE('E1',#32,#33,#36,.T.);
+/* Edge 2: (10,5) -> (0,10) - creates self-crossing */
+#40=CARTESIAN_POINT('C',(0.0,10.0,0.0));
+#41=VERTEX_POINT('',#40);
+#42=DIRECTION('',(-1.0,0.5,0.0));
+#43=VECTOR('',#42,1.0);
+#44=LINE('',#31,#43);
+#45=EDGE_CURVE('E2',#33,#41,#44,.T.);
+/* Edge 3: (0,10) -> (10,0) - completes the crossing pattern */
+#50=CARTESIAN_POINT('D',(10.0,0.0,0.0));
+#51=VERTEX_POINT('',#50);
+#52=DIRECTION('',(1.0,-1.0,0.0));
+#53=VECTOR('',#52,1.0);
+#54=LINE('',#40,#53);
+#55=EDGE_CURVE('E3',#41,#51,#54,.T.);
+/* Edge 4: (10,0) -> (0,0) - closes with pathological geometry */
+#56=DIRECTION('',(-1.0,0.0,0.0));
+#57=VECTOR('',#56,1.0);
+#58=LINE('',#50,#57);
+#59=EDGE_CURVE('E4',#51,#32,#58,.T.);
+/* Wire with persistent self-intersections */
+#60=ORIENTED_EDGE('',*,*,#37,.T.);
+#61=ORIENTED_EDGE('',*,*,#45,.T.);
+#62=ORIENTED_EDGE('',*,*,#55,.T.);
+#63=ORIENTED_EDGE('',*,*,#59,.T.);
+#64=EDGE_LOOP('',(#60,#61,#62,#63));
+#65=FACE_OUTER_BOUND('',#64,.T.);
+/* Defect: Wire marked as self-intersecting; FixSelfIntersectingEdge
+   will iterate up to 30 times, then exit silent if still unresolved */
+#66=ADVANCED_FACE('',(#65),#24,.T.);
+#70=OPEN_SHELL('',(#66));
+/* PRODUCT chain */
+#9000=PRODUCT_CONTEXT('',#1,'mechanical');
+#9001=PRODUCT('Twi103','Twi103','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
+#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
+#9021=SHELL_BASED_SURFACE_MODEL('wrap_sbsm',(#70));
+#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#9010);
+#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+ENDSEC;
+END-ISO-10303-21;

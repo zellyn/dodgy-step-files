@@ -1,0 +1,47 @@
+ISO-10303-21;
+/* Tfa071 — ShapeFix_Face.FixPeriodicDegenerated apex-curve direction
+   Defect: cone with apex below wire, where isUDecrease=false triggers
+   conditional wire reversal. Apex curve direction and wire orientation
+   set incorrectly when apex bounds positioning conflicts with wire wrapping. */
+HEADER;
+FILE_DESCRIPTION(('Tfa071 - cone apex-curve direction with conditional wire reversal'),'2;1');
+FILE_NAME('Tfa071.stp','2026-06-15T00:00:00',('auto-generated'),(''),
+  'auto-generated','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+#1=CARTESIAN_POINT('origin',(0.0,0.0,0.0));
+#2=DIRECTION('zdir',(0.0,0.0,1.0));
+#3=DIRECTION('xdir',(1.0,0.0,0.0));
+#4=AXIS2_PLACEMENT_3D('placement',#1,#2,#3);
+/* Conical surface: semi-angle ~30 deg, apex at V=-1 (below wire bounds) */
+#5=CONICAL_SURFACE('cone',#4,0.5,0.52359877);
+/* Wire vertices on cone at V=1..3 (above apex) */
+#10=CARTESIAN_POINT('v1',(0.5,0.0,1.0));
+#11=CARTESIAN_POINT('v2',(0.433,0.25,2.0));
+#12=CARTESIAN_POINT('v3',(0.366,0.433,3.0));
+#13=VERTEX_POINT('',#10);
+#14=VERTEX_POINT('',#11);
+#15=VERTEX_POINT('',#12);
+/* Close loop back to v1 */
+#16=CARTESIAN_POINT('v1b',(0.5,0.0,1.0));
+#17=VERTEX_POINT('',#16);
+/* Edges forming a single conical loop (non-decreasing U, wrapping cone) */
+#20=LINE('e1',#10,#27);
+#21=DIRECTION('',(0.0,1.0,0.0));
+#27=VECTOR('',#21,1.0);
+#30=EDGE_CURVE('edge1',#13,#14,#20,.T.);
+#31=EDGE_CURVE('edge2',#14,#15,#20,.T.);
+#32=EDGE_CURVE('edge3',#15,#17,#20,.T.);
+#33=ORIENTED_EDGE('oe1',*,*,#30,.T.);
+#34=ORIENTED_EDGE('oe2',*,*,#31,.T.);
+#35=ORIENTED_EDGE('oe3',*,*,#32,.T.);
+/* Wire with forward orientation (isUDecrease=false case) */
+#40=EDGE_LOOP('loop',(#33,#34,#35));
+#41=FACE_OUTER_BOUND('bound',#40,.T.);
+/* Face on conical surface with the single-wire loop */
+#50=ADVANCED_FACE('conical_face',(#41),#5,.T.);
+#60=CLOSED_SHELL('shell',(#50));
+#70=MANIFOLD_SOLID_BREP('solid',#60);
+ENDSEC;
+END-ISO-10303-21;

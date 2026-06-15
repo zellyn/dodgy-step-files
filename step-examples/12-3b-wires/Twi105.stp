@@ -1,0 +1,85 @@
+ISO-10303-21;
+/* Twi105 - ShapeAnalysis_Wire.CheckIntersectingEdges vertex tolerance filtering
+   Defect: CheckIntersectingEdges at line 1563 detects non-adjacent edge
+   intersections. The implementation uses vertex tolerance to classify whether
+   an intersection point is "close enough" to a vertex. When intersection point
+   lies in spatial gap created by seam-edge mapping, tolerance filtering
+   (comparing against vertexTolers) misses the intersection entirely.
+   Non-adjacent edges with small spatial gap fail intersection detection. */
+HEADER;
+FILE_DESCRIPTION(('Twi105 - CheckIntersectingEdges misses seam-gap intersection'),'2;1');
+FILE_NAME('Twi105.stp','2026-06-15T00:00:00',('auto-generated'),(''),'auto-generated','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+/* Plane for closure */
+#20=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#21=DIRECTION('',(0.0,0.0,1.0));
+#22=DIRECTION('',(1.0,0.0,0.0));
+#23=AXIS2_PLACEMENT_3D('',#20,#21,#22);
+#24=PLANE('',#23);
+/* Non-adjacent edges that intersect in spatial seam-gap:
+   Edge 1: runs from (0,0) to (10,0) */
+#30=CARTESIAN_POINT('A',(0.0,0.0,0.0));
+#31=CARTESIAN_POINT('B',(10.0,0.0,0.0));
+#32=VERTEX_POINT('',#30);
+#33=VERTEX_POINT('',#31);
+#34=DIRECTION('',(1.0,0.0,0.0));
+#35=VECTOR('',#34,1.0);
+#36=LINE('',#30,#35);
+#37=EDGE_CURVE('E1',#32,#33,#36,.T.);
+/* Edge 2: short edge at (10, 0) with tolerance offset
+   Creates vertex at (10.0, 0.0) but with tolerance 0.1 */
+#40=CARTESIAN_POINT('B_offset',(10.0,0.0,0.0));
+#41=VERTEX_POINT('',#40);
+#42=CARTESIAN_POINT('C',(10.0,1.0,0.0));
+#43=VERTEX_POINT('',#42);
+#44=DIRECTION('',(0.0,1.0,0.0));
+#45=VECTOR('',#44,1.0);
+#46=LINE('',#40,#45);
+#47=EDGE_CURVE('E2',#41,#43,#46,.T.);
+/* Edge 3: runs from (0,0) to (5,5) - will intersect at spatial gap
+   Defect: This edge's intersection with E1 in parametric space
+   maps to a point in 3D that falls in the seam-edge gap.
+   Vertex tolerance filtering at line 1645 ('OK1', 'OK2') fails to detect. */
+#50=CARTESIAN_POINT('D',(5.0,5.0,0.0));
+#51=VERTEX_POINT('',#50);
+#52=DIRECTION('',(0.5,0.5,0.0));
+#53=VECTOR('',#52,1.0);
+#54=LINE('',#30,#53);
+#55=EDGE_CURVE('E3',#32,#51,#54,.T.);
+/* Edge 4: closes from D back to B with slight offset */
+#56=CARTESIAN_POINT('B_close',(10.05,0.0,0.0));
+#57=VERTEX_POINT('',#56);
+#58=DIRECTION('',(0.5,-0.5,0.0));
+#59=VECTOR('',#58,1.0);
+#60=LINE('',#50,#59);
+#61=EDGE_CURVE('E4',#51,#57,#60,.T.);
+/* Wire with non-adjacent intersecting edges */
+#70=ORIENTED_EDGE('',*,*,#37,.T.);
+#71=ORIENTED_EDGE('',*,*,#47,.T.);
+#72=ORIENTED_EDGE('',*,*,#55,.T.);
+#73=ORIENTED_EDGE('',*,*,#61,.T.);
+#74=EDGE_LOOP('',(#70,#71,#72,#73));
+#75=FACE_OUTER_BOUND('',#74,.T.);
+#76=ADVANCED_FACE('',(#75),#24,.T.);
+#80=OPEN_SHELL('',(#76));
+/* PRODUCT chain */
+#9000=PRODUCT_CONTEXT('',#1,'mechanical');
+#9001=PRODUCT('Twi105','Twi105','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
+#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
+#9021=SHELL_BASED_SURFACE_MODEL('wrap_sbsm',(#80));
+#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#9010);
+#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+ENDSEC;
+END-ISO-10303-21;

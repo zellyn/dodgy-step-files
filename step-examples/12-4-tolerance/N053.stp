@@ -1,0 +1,29 @@
+ISO-10303-21;
+/* N053 — ShapeAnalysis_ShapeTolerance.AddTolerance polarity asymmetry
+ * Defect: AddTolerance applies asymmetric comparisons to tolerance array:
+ * myTols[0] (minimum) compared with > (upper bound check) while
+ * myTols[2] (maximum) compared with < (lower bound check), inverting
+ * the semantic meaning of min vs max boundary conditions.
+ * This causes in-range tolerances to be rejected asymmetrically. */
+HEADER;
+FILE_DESCRIPTION(('N053 - AddTolerance polarity asymmetry'),'2;1');
+FILE_NAME('N053.stp','2026-06-15T00:00:00',('auto-generated'),(''),
+  'auto-generated','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#10=CARTESIAN_POINT('p1',(0.0,0.0,0.0));
+#11=CARTESIAN_POINT('p2',(1.0,0.0,0.0));
+#12=CARTESIAN_POINT('p3',(1.0,1.0,0.0));
+#13=VERTEX_POINT('vertex_min_edge',(#10,0.001));
+#14=VERTEX_POINT('vertex_max_edge',(#11,0.002));
+#15=VERTEX_POINT('vertex_nominal',(#12,0.0015));
+/* Edge with nominal tolerance 0.0015 - should pass bounds [0.001, 0.002]
+   Defect: AddTolerance asymmetrically rejects due to myTols[0] > cmin
+   (0.001 > 0.001 false, passes) vs myTols[2] < cmax (0.0015 < 0.002 true,
+   passes) but logic inverted causes edge to be rejected despite in-range. */
+#20=LINE('line',(#10,#15));
+#21=EDGE_CURVE('edge_nominal',(#13),(#14),(#20),.T.);
+ENDSEC;
+END-ISO-10303-21;

@@ -21460,6 +21460,46 @@ they capture invariants shared by a family of healing methods. Filed under
 - **Model impact**: Face sewing leaves free bounds or duplicate edges; the resulting shell is open instead of closed, so MakeSolid produces an invalid solid and volume/property computations return wrong values.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
+### Tfa071 — ShapeFix_Face.FixPeriodicDegenerated apex-curve direction
+- **Category**: §12.3c (face / sewing / free bounds)
+- **Sources**: OCCT method `ShapeFix_Face.FixPeriodicDegenerated_at3102` (line 3204)
+- **Description**: Conical face with apex below wire bounds. When apex V parameter sits outside wire V-range and isUDecrease=false, apex curve direction and conditional wire reversal produce inconsistent orientation. Wire reversal triggered at line 3204 but apex curve construction does not account for actual wire topology.
+- **Reproducer recipe**: Cone geometry with semi-angle ~0.52 rad, apex at V=-1; wire wrapping cone at V=1..3 with non-decreasing U. FixPeriodicDegenerated applies apex curve construction and conditionally reverses wire when apex below wire lower bound.
+- **Expected kernel behavior**: OCCT healing should detect apex positioning, build correct downward apex curve, and reverse wire orientation consistently. Failure: wire reversal applied but apex curve direction remains inconsistent.
+- **Expected validation**: `occt=unknown/unknown gmsh=unknown ifc=schema_n/a`
+
+### Tfa072 — ShapeFix_FixSmallFace.ReplaceVerticesInCaseOfSpot coherence
+- **Category**: §12.3c (face / sewing / free bounds)
+- **Sources**: OCCT method `ShapeFix_FixSmallFace.ReplaceVerticesInCaseOfSpot_at138` (line 152-192)
+- **Description**: Pin-face (spot face) with vertices clustered near origin. Wire-existence check (isWir=true) insufficient to guarantee all face edges belong to wire topology. Tolerance-drift on vertex replacement: computed tolerance may leave original vertices outside enclosing sphere when tolerance is not scaled consistently.
+- **Reproducer recipe**: Spot face on plane with 3 vertices clustered at ~0.001 unit radius from origin; one vertex at tol=0.001, another at tol=0.0001. Mean position computed without tolerance weighting; tolerance closure fails to enclose all vertices.
+- **Expected kernel behavior**: Kernel should validate wire existence exhaustively (all edges in face belong to wire), then compute vertex mean with tolerance scaling that encloses all originals. Failure: tolerance drift allows vertices outside enclosing ball.
+- **Expected validation**: `occt=unknown/unknown gmsh=unknown ifc=schema_n/a`
+
+### Tfa073 — ShapeFix_FixSmallFace.ComputeSharedEdgeForStripFace asymmetry
+- **Category**: §12.3c (face / sewing / free bounds)
+- **Sources**: OCCT method `ShapeFix_FixSmallFace.ComputeSharedEdgeForStripFace_at422` (line 442-474)
+- **Description**: Strip-face shared-edge construction with asymmetric endpoint-pair merging. V1 merged to V3 (dev < tol), but V2 not merged to V4 (dev > tol), creating degenerate edge with one matched vertex and one unmatched. Asymmetry arises from sequential V1 vs V3 check followed by independent V2 vs V4 check.
+- **Reproducer recipe**: Two edges E1=(V1,V2) and E2=(V3,V4) where dev(V1,V3)=0.00005 (<tol), but dev(V2,V4)=1.5 (>>tol). V1 merged to V3; V2 remains unmerged; shared edge created with (V3, V4) semantics violated.
+- **Expected kernel behavior**: Kernel should either merge both endpoint pairs or neither. Asymmetric merging produces degenerate shared edge that breaks strip-face topology.
+- **Expected validation**: `occt=unknown/unknown gmsh=unknown ifc=schema_n/a`
+
+### Tfa074 — ShapeFix_Face.FixWiresTwoCoincEdges orientation detection
+- **Category**: §12.3c (face / sewing / free bounds)
+- **Sources**: OCCT method `ShapeFix_Face.FixWiresTwoCoincEdges_at2830` (line 2876)
+- **Description**: Face with two identical edges [E, E] at FORWARD orientation in single 2-edge wire. Orientation mismatch detection (line 2876) fails to recognize that both edges are identical at same orientation, allowing coincident-edge pattern to pass unmerged.
+- **Reproducer recipe**: Single PLANE face with 2-edge wire containing identical edge E at FORWARD orientation twice. Pattern should trigger merge but orientation check at 2876 does not correctly identify matching orientation.
+- **Expected kernel behavior**: When E1==E2 and both at FORWARD, wires should be merged into single wire. Failure: orientation sensitivity rejects merge even though orientations match.
+- **Expected validation**: `occt=unknown/unknown gmsh=unknown ifc=schema_n/a`
+
+### Tfa075 — ShapeFix_ComposeShell.MakeFacesOnPatch fallback resolution
+- **Category**: §12.3c (face / sewing / free bounds)
+- **Sources**: OCCT method `ShapeFix_ComposeShell.MakeFacesOnPatch_at2981` (line 2985-2992)
+- **Description**: MakeFacesOnPatch receives single non-WIRE loop (e.g., VERTEX). Fast-path check at line 2985 (loops.Length==1 && !WIRE) returns early, promoting residual loop as face without proper topology resolution. Fallback resolution ambiguous when loop type is not WIRE.
+- **Reproducer recipe**: Patch with single degenerate loop; single-edge WIRE loop passed through. Type-checking shortcut skips root-finding; residual loop promoted without face construction.
+- **Expected kernel behavior**: Kernel should distinguish between single-WIRE (valid, construct face) and single-non-WIRE (error, abort or fallback with diagnostic). Failure: non-WIRE loop bypass leads to unresolved topology.
+- **Expected validation**: `occt=unknown/unknown gmsh=unknown ifc=schema_n/a`
+
 ### Hea016 — Empty solid output from STEP export of complex body, despite STL succeeding
 - **Category**: §12.3c faces / shape healing
 - **Sources**: FreeCAD #20396; bug-reporter language: "Models exported to STEP crash or produce empty objects", "appears to export fine but results in an empty object", "STL and 3MF export work, STEP doesn't".
@@ -21563,6 +21603,46 @@ they capture invariants shared by a family of healing methods. Filed under
 - **Severity**: P1
 - **Model impact**: The wire/loop closes with a topological gap or self-intersection; the parent face loads with broken bounds, BRepCheck reports `BRepCheck_NotClosed` or `BRepCheck_SelfIntersectingWire`, and downstream face triangulation skips or mis-bounds the region.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+
+### Twi102 — ShapeFix_Wire.FixDegenerated modulo-index wraparound at wire end
+- **Category**: §12.3b (wire/loop/edge)
+- **Sources**: OCCT ShapeFix_Wire.cxx:2131 (FixDegenerated)
+- **Description**: FixDegenerated exhibits modulo-index boundary logic when inserting degenerate edges at wire-end. Without closure validation, inserting at position (n % wire_size) constructs invalid topology by wrapping the insertion point. Wire with degenerate segment at end-boundary causes index wraparound, potentially replicating edges or creating orphaned topology.
+- **Reproducer recipe**: Wire with 3 edges (E1, E3 normal; E2_degen at index 2, connecting P2->P2 with zero-length geometry). Call FixDegenerated; index modulo n=2 wraps to unexpected position.
+- **Expected kernel behavior**: Reject or heal by either removing degenerate or correctly inserting at end without wraparound.
+- **Expected validation**: `occt=unknown/unknown gmsh=unknown ifc=schema_n/a`
+
+### Twi103 — ShapeFix_Wire.FixSelfIntersectingEdge 30-iteration convergence silently exits
+- **Category**: §12.3b (wire/loop/edge)
+- **Sources**: OCCT ShapeFix_Wire.cxx:2709 (FixSelfIntersectingEdge)
+- **Description**: FixSelfIntersectingEdge implements hard 30-iteration limit for self-intersection repair convergence. Persistent intersections after 30 iterations cause silent exit without reporting failure status or incomplete repair. Pathological wire geometry with unresolvable self-intersections (e.g., topologically required crossing) fails without diagnostic.
+- **Reproducer recipe**: Wire with S-curve self-intersecting topology at 4 edges (forming two crossing pairs). Each repair iteration shifts vertices without resolving underlying topology. After 30 iterations, algorithm exits and returns success despite unresolved intersections.
+- **Expected kernel behavior**: Exit with error status or diagnostic indicating convergence failure, not silent acceptance.
+- **Expected validation**: `occt=unknown/unknown gmsh=unknown ifc=schema_n/a`
+
+### Twi104 — ShapeAnalysis_Wire.CheckTail misclassifies degenerate orientation
+- **Category**: §12.3b (wire/loop/edge)
+- **Sources**: OCCT ShapeAnalysis_Wire.cxx:2356 (CheckTail)
+- **Description**: CheckTail implements binary-search tail detection for edge sequences where parametric domain is narrowed to find discontinuity. When wire orientation is degenerate (start/end parameters inverted or nearly equal), tail-bound computation fails. False positives occur when final edges have near-parallel orientation and minimal parametric extent.
+- **Reproducer recipe**: Wire with 3 edges where E1 normal; E2, E3 nearly parallel with near-zero parametric extent relative to parent curve. CheckTail binary search at line 2356 misclassifies E3 as tail due to inverted domain bounds.
+- **Expected kernel behavior**: Correctly identify tail or report invalid orientation without false positive.
+- **Expected validation**: `occt=unknown/unknown gmsh=unknown ifc=schema_n/a`
+
+### Twi105 — ShapeAnalysis_Wire.CheckIntersectingEdges seam-gap tolerance filter miss
+- **Category**: §12.3b (wire/loop/edge)
+- **Sources**: OCCT ShapeAnalysis_Wire.cxx:1563 (CheckIntersectingEdges)
+- **Description**: CheckIntersectingEdges detects non-adjacent edge intersections by 2D parametric intersection followed by 3D vertex-tolerance distance check (line 1645, OK1/OK2). When non-adjacent edges' parametric intersection maps to spatial point in seam-edge gap (vertex offset region), tolerance filtering fails to detect genuine intersection. Gap magnitude typically < vertex tolerance but > parametric precision.
+- **Reproducer recipe**: Wire with 4 edges where E1 horizontal; E3 diagonal intersecting E1 in space; E2, E4 create seam offset at vertex. Intersection point falls in 0.05 unit spatial gap with 0.1 unit vertex tolerance. CheckIntersectingEdges misses intersection at line 1645.
+- **Expected kernel behavior**: Detect intersection despite seam-gap offset; report or repair.
+- **Expected validation**: `occt=unknown/unknown gmsh=unknown ifc=schema_n/a`
+
+### Twi106 — ShapeFix_Wire.FixIntersectingEdges accumulation cascade without upper bound
+- **Category**: §12.3b (wire/loop/edge)
+- **Sources**: OCCT ShapeFix_Wire.cxx:2967 (FixIntersectingEdges)
+- **Description**: FixIntersectingEdges repairs wire self-intersections by splitting and re-ordering edges. Multiple intersection points without upper-bound tolerance enforcement cause accumulation cascade: each split generates additional vertices; re-insertion may create new intersections at previously-clean edge pairs. Wire with 5+ edges in cascading zigzag pattern exhibits unbounded vertex accumulation or silent partial repair.
+- **Reproducer recipe**: Wire with 5 edges (P0->P1->P2->P3->P4->P0) in zigzag: E2 crosses E1; E3 crosses E2; E4 crosses E3; E5 crosses E4 and E1. FixIntersectingEdges splits each; split vertices create new intersection cascade between E4 and newly-split E2. Iteration limit or tolerance cap never enforced.
+- **Expected kernel behavior**: Bound repair iterations and enforce that tolerance does not grow with each split; reject if unresolvable.
+- **Expected validation**: `occt=unknown/unknown gmsh=unknown ifc=schema_n/a`
 
 ### Gs056 — `SURFACE_OF_REVOLUTION` of an ellipse around its own centre produces a degenerate surface
 - **Category**: §12.2c surface / curve degeneracies (sub-class: revolution of conic)
@@ -21907,6 +21987,46 @@ they capture invariants shared by a family of healing methods. Filed under
 - **Byte assertion**: contains(b'1.0E-6') or contains(b'1e-6')
 - **Model impact**: Coordinate or tolerance values trigger numerical degeneracy in kernel predicates; edges merge or split at the wrong vertex, and the resulting topology disagrees with what the producer encoded.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+
+### N051 — ShapeAnalysis_ShapeTolerance.InTolerance vertex polarity inversion
+- **Category**: §12.4 (sub-class: tolerance-comparison-inversion)
+- **Sources**: OCCT `ShapeAnalysis_ShapeTolerance.cxx` ~line 140 (deep-pass v3 record)
+- **Description**: InTolerance filters vertices by tolerance range [valmin, valmax] using an inverted comparison (tol >= valmax) instead of the correct (tol <= valmax). This contradicts the FACE and EDGE branches which correctly use (tol <= valmax), causing in-range vertices to be rejected while out-of-range vertices are selected.
+- **Reproducer recipe**: Call InTolerance(shape, 0.001, 0.002, TopAbs_VERTEX) on a shape with vertices at tol=0.0015 (in-range) and tol=0.005 (out-of-range). Buggy result returns only the 0.005 vertex; correct result returns only the 0.0015 vertex.
+- **Expected kernel behavior**: reject the inverted comparison; filter vertices with (tol >= valmin && tol <= valmax) consistently with FACE/EDGE branches
+- **Expected validation**: `occt=unknown/unknown gmsh=unknown ifc=schema_n/a`
+
+### N052 — BRepBuilderAPI_Sewing.SameParameterEdge SetMaxTolerance bypass
+- **Category**: §12.4 (sub-class: api-contract-violation)
+- **Sources**: OCCT `BRepBuilderAPI_Sewing.cxx` ~lines 1165-1169 (deep-pass v3 record)
+- **Description**: Direct BRep_TEdge::Tolerance() write at line 1168 bypasses the SetMaxTolerance API cap when computed tolerance exceeds the user-specified limit. The static_cast and raw TShape mutation circumvent the validation that UpdateEdge would perform, violating the API contract that SetMaxTolerance(cap) enforces cap on all merged edges.
+- **Reproducer recipe**: Construct edge with discretized-curve tolerance path triggering line 1168. Set SetMaxTolerance(0.01). When computed tolerance (0.05) exceeds cap, raw write creates edge with 0.05 tolerance, bypassing cap. Expected: cap enforcement nullifies edge or rejects computation.
+- **Expected kernel behavior**: reject raw tolerance write; enforce SetMaxTolerance cap via UpdateEdge API or nullify edge if tolerance exceeds cap
+- **Expected validation**: `occt=unknown/unknown gmsh=unknown ifc=schema_n/a`
+
+### N053 — ShapeAnalysis_ShapeTolerance.AddTolerance polarity asymmetry
+- **Category**: §12.4 (sub-class: tolerance-array-asymmetry)
+- **Sources**: OCCT `ShapeAnalysis_ShapeTolerance.cxx` ~lines 248-294 (deep-pass v3 record)
+- **Description**: AddTolerance accumulates tolerance array myTols[0..2] with asymmetric comparisons: myTols[0] (minimum) checked with > operator (upper-bound semantics) while myTols[2] (maximum) checked with < operator (lower-bound semantics). This inverts the intended meaning of min/max boundaries, causing in-range tolerances to be rejected when the asymmetry dominates.
+- **Reproducer recipe**: Call AddTolerance on shape with edge tolerance 0.0015 and bounds [0.001, 0.002]. Asymmetric comparisons (myTols[0] > cmin vs myTols[2] < cmax) cause nondeterministic rejection despite in-range value.
+- **Expected kernel behavior**: apply symmetric comparisons consistently: both array elements checked with same directional logic relative to bounds
+- **Expected validation**: `occt=unknown/unknown gmsh=unknown ifc=schema_n/a`
+
+### N054 — ShapeFix_Edge.FixVertexTolerance multi-surface underestimation
+- **Category**: §12.4 (sub-class: face-context-null-bypass)
+- **Sources**: OCCT `ShapeFix_Edge.cxx` ~lines 643-659 (deep-pass v3 record)
+- **Description**: When face parameter evaluation fails or face context is null, CheckVertexTolerance computes vertex tolerance using only single-surface geometry. For vertices shared between multiple surfaces with different curvatures, single-surface evaluation underestimates required tolerance. The computed value accounts only for proximity to one surface, omitting contributions from adjacent surfaces.
+- **Reproducer recipe**: Create edge shared between plane and cylindrical surfaces. Vertex at intersection. Call FixVertexTolerance with face context=null. Single-surface (plane only) tolerance computed as 0.001; correct tolerance should be ≥0.002 accounting for both plane and cylinder.
+- **Expected kernel behavior**: accept edge if both surfaces available; reject or escalate tolerance if single-surface evaluation only; signal ambiguity
+- **Expected validation**: `occt=unknown/unknown gmsh=unknown ifc=schema_n/a`
+
+### N055 — ShapeFix_ShapeTolerance.LimitTolerance boundary ambiguity
+- **Category**: §12.4 (sub-class: equality-boundary-undefined)
+- **Sources**: OCCT `ShapeFix_ShapeTolerance.cxx` ~lines 39-50 (deep-pass v3 record)
+- **Description**: LimitTolerance permits tmax >= tmin, allowing equality case tmax == tmin. When bounds are equal, newtol selection logic becomes nondeterministic: clamping to tmin vs tmax yields identical result but the invariant tmin < tmax (strict ordering) is violated. Downstream code assumes strict ordering; equality case creates ambiguity in tolerance domain membership.
+- **Reproducer recipe**: Call LimitTolerance(shape, tmin=0.002, tmax=0.002) with vertices at tolerance 0.002. Condition (tmax >= tmin) is satisfied; newtol selection at lines 47-50 cannot decide whether to clamp to tmin or tmax (they are equal). Expected: validation error for tmin >= tmax.
+- **Expected kernel behavior**: require strict ordering (tmin < tmax); reject or error on tmin == tmax; enforce at API boundary before tolerance selection
+- **Expected validation**: `occt=unknown/unknown gmsh=unknown ifc=schema_n/a`
 
 ### M161 — Reader does not validate cross-references; dangling references silently accepted
 - **Category**: §12.8 mixed / auxiliary (sub-class: missing input validation)

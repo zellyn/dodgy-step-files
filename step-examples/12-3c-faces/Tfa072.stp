@@ -1,0 +1,47 @@
+ISO-10303-21;
+/* Tfa072 — ShapeFix_FixSmallFace.ReplaceVerticesInCaseOfSpot wire-existence coherence
+   Defect: pin-face vertex replacement with insufficient wire-existence check.
+   Tolerance drift on replace: computed tolerance may leave vertices outside
+   enclosing sphere when wire existence is not fully validated. */
+HEADER;
+FILE_DESCRIPTION(('Tfa072 - spot-face vertex replacement coherence'),'2;1');
+FILE_NAME('Tfa072.stp','2026-06-15T00:00:00',('auto-generated'),(''),
+  'auto-generated','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+#1=CARTESIAN_POINT('origin',(0.0,0.0,0.0));
+#2=DIRECTION('zdir',(0.0,0.0,1.0));
+#3=DIRECTION('xdir',(1.0,0.0,0.0));
+#4=AXIS2_PLACEMENT_3D('placement',#1,#2,#3);
+/* Plane for spot face */
+#5=PLANE('pin_plane',#4);
+/* Pin-face vertices clustered near origin, with tolerance mismatch */
+#10=CARTESIAN_POINT('v1',(0.001,0.0,0.0));
+#11=CARTESIAN_POINT('v2',(-0.0009,0.0,0.0));
+#12=CARTESIAN_POINT('v3',(0.0,0.001,0.0));
+#13=VERTEX_POINT('vp1',#10);
+#14=VERTEX_POINT('vp2',#11);
+#15=VERTEX_POINT('vp3',#12);
+/* Close vertex for loop */
+#16=CARTESIAN_POINT('v1_close',(0.001,0.0,0.0));
+#17=VERTEX_POINT('vp_close',#16);
+/* Edges forming a degenerate spot loop */
+#20=LINE('l1',#10,#27);
+#21=DIRECTION('',(1.0,0.0,0.0));
+#27=VECTOR('',#21,0.001);
+#30=EDGE_CURVE('edge1',#13,#14,#20,.T.);
+#31=EDGE_CURVE('edge2',#14,#15,#20,.T.);
+#32=EDGE_CURVE('edge3',#15,#17,#20,.T.);
+#33=ORIENTED_EDGE('oe1',*,*,#30,.T.);
+#34=ORIENTED_EDGE('oe2',*,*,#31,.T.);
+#35=ORIENTED_EDGE('oe3',*,*,#32,.T.);
+/* Wire with all edges present but clustered */
+#40=EDGE_LOOP('spot_loop',(#33,#34,#35));
+#41=FACE_OUTER_BOUND('spot_bound',#40,.T.);
+/* Spot face on plane */
+#50=ADVANCED_FACE('spot_face',(#41),#5,.T.);
+#60=CLOSED_SHELL('spot_shell',(#50));
+#70=MANIFOLD_SOLID_BREP('spot_solid',#60);
+ENDSEC;
+END-ISO-10303-21;

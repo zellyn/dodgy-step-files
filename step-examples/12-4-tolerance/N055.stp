@@ -1,0 +1,34 @@
+ISO-10303-21;
+/* N055 — ShapeFix_ShapeTolerance.LimitTolerance boundary ambiguity
+ * Defect: The condition (tmax >= tmin) at line 45 permits the equality case
+ * tmax == tmin, creating ambiguous tolerance semantics. When upper and lower
+ * bounds are equal, LimitTolerance's newtol selection logic becomes
+ * nondeterministic: it is unclear whether the tolerance should be clamped to
+ * tmin, clamped to tmax, or remain unchanged. This violates the invariant
+ * that tolerance bounds should have tmin < tmax (strict ordering). */
+HEADER;
+FILE_DESCRIPTION(('N055 - LimitTolerance boundary ambiguity at tmax==tmin'),'2;1');
+FILE_NAME('N055.stp','2026-06-15T00:00:00',('auto-generated'),(''),
+  'auto-generated','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#10=CARTESIAN_POINT('p1',(0.0,0.0,0.0));
+#11=CARTESIAN_POINT('p2',(1.0,0.0,0.0));
+#12=VERTEX_POINT('v1',(#10,0.002));
+#13=VERTEX_POINT('v2',(#11,0.002));
+/* Defect: Shape with vertices at tolerance 0.002.
+   LimitTolerance(shape, tmin=0.002, tmax=0.002) is called (tmax == tmin).
+   The condition (tmax >= tmin) is true, allowing the equality.
+   newtol selection at line 47-50 becomes ambiguous:
+     - if tolerance < tmin (0.002): should set to tmin or tmax (both 0.002)?
+     - if tolerance > tmax (0.002): should set to tmin or tmax (both 0.002)?
+     - if tolerance == tmin==tmax (0.002): should remain or be re-validated?
+   Without strict ordering (tmin < tmax), the downstream logic is undefined.
+   Expected: caller should validate tmin < tmax before calling.
+   Bug: no validation, nondeterministic result. */
+#20=LINE('line',(#10,#12));
+#21=EDGE_CURVE('edge',(#12),(#13),(#20),.T.);
+ENDSEC;
+END-ISO-10303-21;

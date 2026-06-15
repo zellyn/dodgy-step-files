@@ -1,0 +1,34 @@
+ISO-10303-21;
+/* N054 — ShapeFix_Edge.FixVertexTolerance multi-surface underestimation
+ * Defect: When face context is unavailable (face parameter evaluation fails),
+ * CheckVertexTolerance computes tolerance using only single-surface geometry,
+ * underestimating the required tolerance for vertices shared between multiple
+ * surfaces. The computed tolerance (from one surface) may be insufficient
+ * when the vertex lies on the intersection of multiple faces with different
+ * curvatures and orientations. */
+HEADER;
+FILE_DESCRIPTION(('N054 - FixVertexTolerance multi-surface underestimation'),'2;1');
+FILE_NAME('N054.stp','2026-06-15T00:00:00',('auto-generated'),(''),
+  'auto-generated','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#10=CARTESIAN_POINT('origin',(0.0,0.0,0.0));
+#11=DIRECTION('z',(0.0,0.0,1.0));
+#12=DIRECTION('x',(1.0,0.0,0.0));
+#13=AXIS2_PLACEMENT_3D('ax3_plane',#10,#11,#12);
+#14=AXIS2_PLACEMENT_3D('ax3_cyl',#10,#11,#12);
+/* Two surfaces: plane at z=0 and cylinder at x=0, y=0, r=5 */
+#20=PLANE('plane_z0',#13);
+#21=CYLINDRICAL_SURFACE('cyl',#14,5.0);
+/* Shared vertex at intersection: (5, 0, 0) */
+#30=CARTESIAN_POINT('shared_vertex',(5.0,0.0,0.0));
+#31=VERTEX_POINT('v_shared',(#30,0.001));
+/* Defect: Vertex lies on intersection of plane and cylinder.
+   FixVertexTolerance with face context=null computes tolerance from plane only,
+   missing the cylinder's contribution. Required tolerance should account for
+   both surfaces' proximity tolerance, but single-surface evaluation returns
+   underestimated tolerance (e.g., 0.001 instead of required 0.002+). */
+ENDSEC;
+END-ISO-10303-21;

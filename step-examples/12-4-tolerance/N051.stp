@@ -1,0 +1,22 @@
+ISO-10303-21;
+/* N051 — ShapeAnalysis_ShapeTolerance.InTolerance vertex-vs-face polarity
+ * Defect: VERTEX iteration uses inverted tolerance comparison (tol >= valmax)
+ * instead of (tol <= valmax), causing vertices outside tolerance range to be
+ * incorrectly selected while in-range vertices are rejected.
+ * This contradicts FACE and EDGE filtering which correctly use (tol <= valmax). */
+HEADER;
+FILE_DESCRIPTION(('N051 - InTolerance vertex polarity inversion'),'2;1');
+FILE_NAME('N051.stp','2026-06-15T00:00:00',('auto-generated'),(''),
+  'auto-generated','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#10=CARTESIAN_POINT('v_in_range',(0.0,0.0,0.0));
+#11=CARTESIAN_POINT('v_out_of_range',(1.0,0.0,0.0));
+#12=VERTEX_POINT('vp_in',(#10,0.0015));
+#13=VERTEX_POINT('vp_out',(#11,0.005));
+/* Defect: inverted comparison returns vp_out (tol=0.005 >= valmax=0.002)
+   while rejecting vp_in (tol=0.0015 should pass tol <= valmax=0.002) */
+ENDSEC;
+END-ISO-10303-21;
