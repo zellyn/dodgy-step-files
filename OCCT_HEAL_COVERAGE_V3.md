@@ -7,9 +7,9 @@ v3's bar: every branch's description is rich enough to either RECREATE the defec
 
 | | Count |
 |---|---:|
-| Methods enumerated | 318 |
-| Repair branches | 2048 |
-| Low-confidence branches (need better prose) | 275 |
+| Methods enumerated | 327 |
+| Repair branches | 2058 |
+| Low-confidence branches (need better prose) | 276 |
 | Truncated worker outputs (need follow-up) | 0 |
 
 ## Defect-axis distribution
@@ -698,6 +698,16 @@ v3's bar: every branch's description is rich enough to either RECREATE the defec
 | `geometric-discontinuity-detection` | 1 |
 | `orthogonal-projection-failure` | 1 |
 | `proximity-sampling-failure` | 1 |
+| `resource-leak` | 1 |
+| `observer-gap` | 1 |
+| `location-fusion` | 1 |
+| `enum-gap` | 1 |
+| `index-boundary` | 1 |
+| `context-cache-gap` | 1 |
+| `replace-skip` | 1 |
+| `null-propagation` | 1 |
+| `filter-silent-discard` | 1 |
+| `extent-guard-silent` | 1 |
 | `Control flow safety` | 1 |
 | `Type safety` | 1 |
 | `Loop invariant violation` | 1 |
@@ -1139,6 +1149,17 @@ v3's bar: every branch's description is rich enough to either RECREATE the defec
 - **Falsifiable claim**: Branch at 4976 may not handle all valid input states
 - **Minimal reproducer**: Construct edge/face topology triggering branch
 - **Search anchors**: 'EdgeFace.IsBound'
+
+
+#### `BRepBuilderAPI_Sewing.EdgeRegularity_at5004`
+ (1 branches; source: `v3-deep-batch-VV.json`)
+
+##### `BRepBuilderAPI_Sewing.EdgeRegularity.extent-not-2-skip`
+- **Line**: 5017  **Axis**: `extent-guard-silent`
+- **Brief**: EncodeRegularity() skipped if aFaces->Extent() != 2; manifold edges (1 face) and non-manifold (>2) silently pass without status
+- **Falsifiable claim**: Non-manifold edge in mySewedShape → aFaces->Extent() != 2 → EncodeRegularity() omitted → edge regularity undefined in output
+- **Minimal reproducer**: Sew non-manifold geometry; EdgeRegularity()—merged edge with 3+ incident faces → no regularity encoding, topology ambiguous
+- **Search anchors**: 'aFaces->Extent() == 2', 'if (aFaces &&', 'EncodeRegularity', 'myMergedEdges'
 
 
 #### `BRepBuilderAPI_Sewing.EvaluateAngulars`
@@ -12759,7 +12780,29 @@ v3's bar: every branch's description is rich enough to either RECREATE the defec
 - **Search anchors**: 'down_cast', 'ctx.IsNull', 'return false'
 
 
+#### `ShapeProcess_OperLibrary.Init_at983`
+ (1 branches; source: `v3-deep-batch-VV.json`)
+
+##### `ShapeProcess_OperLibrary.Init.registration-leak`
+- **Line**: 991  **Axis**: `resource-leak`
+- **Brief**: RegisterOperator() heap allocations never freed; missing ShapeProcess cleanup function
+- **Falsifiable claim**: Multiple ShapeProcess_UOperator instances allocated and registered but no matching destruction during ShapeProcess::Destroy() or module unload
+- **Minimal reproducer**: Load ShapeProcess module; call ShapeProcess_OperLibrary::Init(); inspect memory; call final teardown—operators persist
+- **Search anchors**: 'RegisterOperator', 'new ShapeProcess_UOperator', 'done = true', 'ShapeExtend::Init'
+
+
 ### ShapeProcess_ShapeContext
+
+#### `ShapeProcess_ShapeContext.GetContinuity_at416`
+ (1 branches; 1 low-confidence; source: `v3-deep-batch-VV.json`)
+
+##### `ShapeProcess_ShapeContext.GetContinuity.enum-exhaustion-gap` **[low-confidence]**
+- **Line**: 451  **Axis**: `enum-gap`
+- **Brief**: else { return false } final block catches unknown continuity strings; no logging or error code differentiates invalid input from missing enum case
+- **Falsifiable claim**: New GeomAbs continuity enum added to OCCT; GetContinuity() returns false silently without documenting unhandled case
+- **Minimal reproducer**: Add new continuity enum (e.g. C4); pass param='C4'—returns false with no diagnostic trace
+- **Search anchors**: 'str.IsEqual', 'C0', 'CN', 'else', 'return false'
+
 
 #### `ShapeProcess_ShapeContext.PrintStatistics_at474`
  (3 branches; 1 low-confidence; source: `v3-deep-batch-TT.json`)
@@ -12784,6 +12827,28 @@ v3's bar: every branch's description is rich enough to either RECREATE the defec
 - **Falsifiable claim**: tmp110 = EPMSG110.Original() copies original format, then EPMSG110.Set(tmp110.ToCString()) resets; if original format already consumed by first Send(), second Set() is invalid
 - **Minimal reproducer**: Message_Msg tracks state; first Send() consumes original; tmp110 copy is stale; second Set() with stale string causes subsequent Arg() to apply to wrong template
 - **Search anchors**: 'TCollection_AsciiString tmp110', 'EPMSG110.Original()', 'EPMSG110.Set(tmp110.ToCString())'
+
+
+#### `ShapeProcess_ShapeContext.RecordModification_at250`
+ (1 branches; source: `v3-deep-batch-VV.json`)
+
+##### `ShapeProcess_ShapeContext.RecordModification.early-return-gap`
+- **Line**: 252  **Axis**: `observer-gap`
+- **Brief**: Extent() <= 0 early exit skips RecModif() entirely; inconsistent state between caller's expectation and recorded map
+- **Falsifiable claim**: Empty replacement list causes early return without updating myResult, leaving observer-visible state drift
+- **Minimal reproducer**: RecordModification() with repl.Extent()=0; check myResult state vs myShape—myResult uninitialized or stale
+- **Search anchors**: 'if (repl.Extent() <= 0)', 'return', 'RecModif', 'myMap.IsBound'
+
+
+#### `ShapeProcess_ShapeContext.RecordModification_at346`
+ (1 branches; source: `v3-deep-batch-VV.json`)
+
+##### `ShapeProcess_ShapeContext.RecordModification.location-override-branch`
+- **Line**: 351  **Axis**: `location-fusion`
+- **Brief**: Location set unconditionally when map binding exists; overwrites original location without validation of compound/sub-shape consistency
+- **Falsifiable claim**: myResult.Location(myShape.Location(), false) applies location even if myShape geometry mismatch or location already set—double-application risk
+- **Minimal reproducer**: Call RecordModification(repl, msg) where repl already has non-identity Location; verify myResult.Location() overwrite—location doubled or lost
+- **Search anchors**: 'myResult.Location(myShape.Location())', 'myMap.IsBound', 'myMap.Find', 'false'
 
 
 ### ShapeUpgrade_ClosedFaceDivide
@@ -13003,6 +13068,17 @@ v3's bar: every branch's description is rich enough to either RECREATE the defec
 
 ### ShapeUpgrade_ConvertCurve2dToBezier
 
+#### `ShapeUpgrade_ConvertCurve2dToBezier.Build_at270`
+ (1 branches; source: `v3-deep-batch-VV.json`)
+
+##### `ShapeUpgrade_ConvertCurve2dToBezier.Build.index-boundary-gap`
+- **Line**: 276  **Axis**: `index-boundary`
+- **Brief**: Loop starts j=2; seeks mySplitParams[j] with no guard against j > mySplitParams->Length(); double-increment per i iteration
+- **Falsifiable claim**: mySplitParams->Length() < nb-1 case: inner for loop j increments past Length() before outer break; Segment() called on invalid segment
+- **Minimal reproducer**: mySplitValues length >> mySplitParams length; Build()—j overflows, mySplitParams->Value(j-1) out-of-bounds
+- **Search anchors**: 'j <= mySplitParams->Length()', 'j++', 'mySplitValues->Value(i)', 'mySegments->Value(j-1)'
+
+
 #### `ShapeUpgrade_ConvertCurve2dToBezier.Compute`
  (10 branches; 4 low-confidence; source: `v3-deep-ShapeUpgrade_ConvertCurve2dToBezier_Compute.json`)
 
@@ -13174,6 +13250,24 @@ v3's bar: every branch's description is rich enough to either RECREATE the defec
 
 ##### `?`
 - **Line**: 85  **Axis**: `?`
+
+
+#### `ShapeUpgrade_FaceDivide.SplitCurves_at207`
+ (2 branches; source: `v3-deep-batch-VV.json`)
+
+##### `ShapeUpgrade_FaceDivide.SplitCurves.context-apply-nullcheck`
+- **Line**: 215  **Axis**: `context-cache-gap`
+- **Brief**: Context()->Apply() may return null; null-check exists but error status does NOT propagate if null returned for face not in context cache
+- **Falsifiable claim**: Face missing from Context()->myMap → Apply() returns null → S.IsNull() true → FAIL3 set; but Replace() never called, myResult inconsistent
+- **Minimal reproducer**: Load new Face F; SplitCurves()—F not in Context; Apply() null → status FAIL3; check myResult vs original input—shapes misaligned
+- **Search anchors**: 'Context()->Apply', 'S.IsNull()', 'FAIL3', 'Context()->Replace'
+
+##### `ShapeUpgrade_FaceDivide.SplitCurves.continue-skip-replace`
+- **Line**: 235  **Axis**: `replace-skip`
+- **Brief**: ShapeType() != WIRE → continue skips Replace() for malformed wire; myResult contains orphaned face with unmodified wire
+- **Falsifiable claim**: Degenerate wire (ShapeType != WIRE) in face → continue → Replace() never called → myResult.Wire() unchanged, Context left empty
+- **Minimal reproducer**: Face F with non-WIRE child; SplitCurves()—check myResult wire vs original—replace never happened
+- **Search anchors**: 'wi.Value().ShapeType() != TopAbs_WIRE', 'continue', 'Context()->Replace'
 
 
 #### `ShapeUpgrade_FaceDivide.SplitSurface_at99`
@@ -13385,6 +13479,19 @@ v3's bar: every branch's description is rich enough to either RECREATE the defec
 - **Falsifiable claim**: MakeNewShape returns true if aRebuild OR isBound; isBound path doesn't indicate actual geometry change.
 - **Minimal reproducer**: Call Remove on cached shape; isDone true but myShape unchanged.
 - **Search anchors**: 'return isDone;', 'bool isDone = MakeNewShape(theShape, S, myShape, isRemoveLoc);'
+
+
+### ShapeUpgrade_ShapeDivideContinuity
+
+#### `ShapeUpgrade_ShapeDivideContinuity.GetSplitFaceTool_at87`
+ (1 branches; source: `v3-deep-batch-VV.json`)
+
+##### `ShapeUpgrade_ShapeDivideContinuity.GetSplitFaceTool.criterion-unvalidated`
+- **Line**: 94  **Axis**: `null-propagation`
+- **Brief**: SetCriterion() called on split tools without null-check on myCurve2dCriterion, myCurve3dCriterion, mySurfaceCriterion; default null → undefined behavior
+- **Falsifiable claim**: If GetSplitFaceTool() called before criterion setters → SetCriterion(nullptr) → downstream split ops dereference null criterion
+- **Minimal reproducer**: Construct ShapeUpgrade_ShapeDivideContinuity; call GetSplitFaceTool() directly—SplitCurve2dTool->SetCriterion(nullptr)
+- **Search anchors**: 'SetCriterion(myCurve2dCriterion)', 'SetTolerance', 'new ShapeUpgrade_SplitCurve2dContinuity'
 
 
 ### ShapeUpgrade_ShellSewing
@@ -14276,6 +14383,17 @@ v3's bar: every branch's description is rich enough to either RECREATE the defec
 - **Falsifiable claim**: Without mapping, context merge would not know which old faces correspond to new faces. To test: verify edge in NewFaces appears in at least one original face.
 - **Minimal reproducer**: Original faces F1, F2 merged to NewFace NF. For each edge in NF, find F1 or F2 containing it. Without: mapping fails. With: works.
 - **Search anchors**: 'TopExp::MapShapes(faces(ii), aEmap)', 'Emaps.Append(aEmap)'
+
+
+#### `ShapeUpgrade_UnifySameDomain.KeepShapes_at3034`
+ (1 branches; source: `v3-deep-batch-VV.json`)
+
+##### `ShapeUpgrade_UnifySameDomain.KeepShapes.filter-gap`
+- **Line**: 3038  **Axis**: `filter-silent-discard`
+- **Brief**: Only EDGE and VERTEX added to myKeepShapes; FACE, SOLID, SHELL, WIRE silently skipped without removal from theShapes or error log
+- **Falsifiable claim**: KeepShapes(map_with_mixed_types) → only E/V kept; caller sees theShapes unchanged but myKeepShapes incomplete
+- **Minimal reproducer**: KeepShapes({Face, Edge, Vertex}); check myKeepShapes—Face missing, no warning
+- **Search anchors**: 'TopAbs_EDGE', 'TopAbs_VERTEX', 'myKeepShapes.Add', 'ShapeType()'
 
 
 #### `ShapeUpgrade_UnifySameDomain.MergeEdges`

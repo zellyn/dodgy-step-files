@@ -4,19 +4,30 @@
 
 ## State-of-play (anyone picking up mid-stream: start here)
 
-**Stage**: Validation slice in flight — 20 high-leverage OCCT methods being re-passed with the rich-prose schema. If validation looks good, scale to all 320 OCCT methods + 151 mesh methods.
+**Stage**: OCCT v3 deep-pass COMPLETE (2026-06-15). 327 of 327 method records enumerated, 2,058 branches at rich-prose v3 fidelity, 276 low-confidence (13%).
 
 **Outputs land in**:
-- `/tmp/v3-deep-<method-id>.json` — one file per method worker
-- `OCCT_HEAL_COVERAGE_V3.md` — aggregated rich-prose coverage map (not written yet; will appear after first scaled pass)
-- This doc — methodology + plan + slice contents
+- `/tmp/v3-deep-<batch-letter>.json` — per-batch worker outputs (batches A-Z, AA-VV)
+- `OCCT_HEAL_COVERAGE_V3.md` — aggregated rich-prose coverage map (committed)
+- `/tmp/aggregate_v3.py` — aggregator script (incrementally re-runnable)
+- This doc — methodology
 
-**To resume after a session restart**:
-1. `ls /tmp/v3-deep-*.json` — see what's already enumerated
-2. Compare against the 20-method validation list in §"Validation slice" below
-3. Launch a new worker for any missing method using the prompt template in §"Worker prompt template"
-4. After all 20 done, validate the schema by adversarial-reading 2-3 random outputs (does the prose meet the falsifiability bar?)
-5. If yes, scale to remaining 300 methods. If no, refine the schema, re-run the slice.
+**Confirmed OCCT source bugs surfaced during enumeration**:
+1. `ShapeAnalysis_ShapeTolerance::InTolerance` ~line 140 — VERTEX path uses `tol >= valmax` while FACE/EDGE use `tol <= valmax` (polarity inversion across topology types)
+2. `BRepBuilderAPI_Sewing::SameParameterEdge` ~line 1168 — raw `BRep_TEdge::Tolerance(maxTol)` bypasses `SetMaxTolerance` cap
+3. `ShapeAnalysis_ShapeTolerance::AddTolerance` ~line 290/294 — asymmetric `myTols[0] > cmin` vs `myTols[2] < cmax` polarity
+
+**Truncated big methods (15-20 of 50+ branches each)** — follow-up:
+- ShapeFix_Face.Perform_at346 (16/63)
+- ShapeFix_ComposeShell.{SplitWire,SplitByLine,CollectWires} (7/61, 4/55, 1/58)
+- ShapeFix_Wire.{FixEdgeCurves,FixShifted} (5/65, 1/63)
+- ShapeFix_IntersectionTool.FixIntersectingWires (10/25)
+- Plus several 9/12, 9/22, 10/20 across ShapeUpgrade
+
+**Next phase** (per user's stated sequence):
+1. ✅ describe every problem in OCCT (327 methods / 2058 branches)
+2. ⏳ synthesize STEP fixtures matching the cataloged defects
+3. ⏳ adversarial sub-agents prove fixtures demonstrate the claimed defect
 
 ## Rich-prose schema (per branch)
 
