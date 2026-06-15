@@ -1,5 +1,26 @@
 # Changelog
 
+## v1.3.2 — Phase 4 defect-class mining (103 new candidates)
+
+Per `PLAN_OF_ATTACK.md` Phase 4: enumerate defect classes from issue trackers + release notes + KB articles that aren't in OCCT/MeshFix headers. Two parallel mining agents produced:
+
+- **OCCT GitHub issues + closed PRs**: 41 new defect classes (date range early-2024 through mid-2026; ~80 issues touched).
+- **Commercial-translator literature** (HOOPS Exchange Fixed Bugs, CAD Exchanger CHANGES, CAx-IF Recommended Practices, CADinterop, CADfix): 62 new defect classes.
+
+**Total: 103 prose-laundered defect-class candidates** for future catalog expansion. Full per-defect details in [`PHASE4_DEFECT_MINING.md`](PHASE4_DEFECT_MINING.md).
+
+### Key insights from the mining
+
+1. **OCCT's recent robustness story is "add null/guard checks to the healer's own pipeline-state assumptions"** — not accommodating new wild input shapes. Examples: null context, null surface/curve, array-size races, reverse range, zero-iterator throw. Suggests a new catalog axis: **healer-state defects** (bad intermediate post-import shape state, not bad STEP input). The existing §12.3a "UnifySameDomain crash family" already lives there — it could plausibly become a much larger top-level section.
+
+2. **56% of CAx-IF / HOOPS / CAD Exchanger defects are kernel-A-to-kernel-B specific**, not universal. The commercial-translator literature is highly orthogonal to OCCT's own bug history. Standouts:
+   - `nx_parasolid_micro_gap_below_step_tolerance` — solid arrives as free faces on CATIA/ACIS receivers; the single most-cited interop class.
+   - `solidworks_no_mbd_ap242_silent_semantic_pmi_downgrade` — file looks correct visually, contains zero semantic GD&T; *invisible from the producer side* because the affected feature path is gated behind commercial licensing.
+
+3. The CAx-IF mining set alone could 10× the catalog's current `producer-receiver-pair` fixture count.
+
+Will fold into catalog entries across v1.4.0+.
+
 ## v1.3.1 — MeshFix + CGAL PMP per-method coverage map
 
 Same per-method enumeration pipeline applied to two open-source mesh-repair libraries. Result: **`MESH_HEAL_COVERAGE.md`** (3986 lines, 151 methods, 812 branches across MeshFix v2.1 and CGAL PMP). Coverage 0%: this catalog has effectively no mesh fixtures — the entries are a punch list for a future mesh sub-catalog.
