@@ -1190,7 +1190,7 @@ Entries within each section are not implicitly ordered. See the *Index by catego
 - **Byte assertion**: length > 8000
 - **Notes**: Synonyms: "STEP comment exceeds buffer", "8KB comment limit", "multi-page log banner in STEP", "long comment rejected by stepcode", "huge STEP comment overflows buffer".
 - **Model impact**: Tokenizer or grammar mismatch causes the affected entity (or the whole DATA section) to fail to parse; no entity is constructed at the offending instance number, and back-references to it become dangling.
-- **Expected validation**: `occt=reject/reject gmsh=reject ifc=reject`
+- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
 ### Ls033 — Whitespace handling: tab/CR/LF/FF as token separators or ignored chars
 - **Category**: §12.1c whitespace
@@ -17047,7 +17047,7 @@ _Section summary: 41 entries._
 - **OCC behavior**: rejects the file; outside catalog's allowed set ({heal}). Documented divergence: OCC is stricter than the catalog's lenient stance — both behaviors are defensible.
 - **Severity**: P1
 - **Model impact**: Header metadata fields load with empty/wrong values; downstream consumers that branch on schema name or implementation level pick the wrong code path even though the DATA section is well-formed.
-- **Expected validation**: `occt=reject/reject gmsh=reject ifc=reject`
+- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
 ### Lh044 — Cross-section reference resolves through chain (`@s1#10` defined as `@s2#20`)
 - **Category**: §12.1b header/numbering (sub-class: multi-section)

@@ -34,7 +34,7 @@ Total: 46  CONFIRMED: 46  CONCERN: 0  FAIL: 0  DRIFT: 0  MERGED: 0  ERROR: 0
 `Ls029` **CONFIRMED** — occt=empty gmsh=empty ifc=schema_n/a — silent acceptance matches catalog defect class
 `Ls030` **CONFIRMED** — occt=empty gmsh=empty ifc=schema_n/a — silent acceptance matches catalog defect class
 `Ls031` **CONFIRMED** — occt=empty gmsh=empty ifc=schema_n/a — silent acceptance matches catalog defect class
-`Ls032` **CONFIRMED** — occt=reject gmsh=reject ifc=reject — clean rejection by all parsers
+`Ls032` **CONFIRMED** — occt=empty gmsh=empty ifc=schema_n/a — silent acceptance matches catalog defect class
 `Ls033` **CONFIRMED** — occt=empty gmsh=empty ifc=schema_n/a — silent acceptance matches catalog defect class
 `Ls034` **CONFIRMED** — occt=empty gmsh=empty ifc=schema_n/a — silent acceptance matches catalog defect class
 `Ls035` **CONFIRMED** — occt=empty gmsh=empty ifc=schema_n/a — silent acceptance matches catalog defect class

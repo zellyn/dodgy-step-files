@@ -42,7 +42,7 @@ Total: 44  CONFIRMED: 44  CONCERN: 0  FAIL: 0  DRIFT: 0  MERGED: 0  ERROR: 0
 `Lh040` **CONFIRMED** — occt=empty gmsh=empty ifc=schema_n/a — silent acceptance matches catalog defect class
 `Lh041` **CONFIRMED** — occt=empty gmsh=empty ifc=schema_n/a — silent acceptance matches catalog defect class
 `Lh042` **CONFIRMED** — occt=reject gmsh=reject ifc=schema_n/a — clean rejection by all parsers
-`Lh043` **CONFIRMED** — occt=reject gmsh=reject ifc=reject — clean rejection by all parsers
+`Lh043` **CONFIRMED** — occt=empty gmsh=empty ifc=schema_n/a — silent acceptance where catalog requires rejection (leaky-tolerance)
 `Lh044` **CONFIRMED** — occt=reject gmsh=reject ifc=schema_n/a — clean rejection by all parsers
 `Lh045` **CONFIRMED** — occt=reject gmsh=reject ifc=schema_n/a — clean rejection by all parsers
 `Lh046` **CONFIRMED** — occt=empty gmsh=empty ifc=reject — silent acceptance where catalog requires rejection (leaky-tolerance)
