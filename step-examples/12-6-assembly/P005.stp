@@ -62,7 +62,7 @@ DATA;
 #82 = SHAPE_DEFINITION_REPRESENTATION(#23,#81);
 /* Extended catalog notes:
  * This reproducer is a minimal demonstrator of the §12.6 entry
- * referenced in the /* */ header above. The entity-graph above
+ * referenced in the /* * / header above. The entity-graph above
  * is just enough to exercise the defect on a writer or reader
  * test harness; it is NOT a production-quality assembly.
  *

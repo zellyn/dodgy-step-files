@@ -1,6 +1,6 @@
 ISO-10303-21;
 /* Ad097 - Comment containing fake section terminator
- * Defect: comment /* ... */ contains */ENDSEC; -- naive regex strips early */
+ * Defect: comment /* ... * / contains */ENDSEC; -- naive regex strips early */
 HEADER;
 FILE_DESCRIPTION(('Ad097 test case','Comment containing fake section terminator'),'2;1');
 FILE_NAME('Ad097.stp','2026-04-30T00:00:00',(''),(''),'cad-research-suite','','');

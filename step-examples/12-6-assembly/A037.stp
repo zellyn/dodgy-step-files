@@ -58,7 +58,7 @@ DATA;
 #64 = ADVANCED_BREP_SHAPE_REPRESENTATION('orphan_brep',(#63,#80),#54);
 /* Extended catalog notes:
  * This reproducer is a minimal demonstrator of the §12.6 entry
- * referenced in the /* */ header above. The entity-graph above
+ * referenced in the /* * / header above. The entity-graph above
  * is just enough to exercise the defect on a writer or reader
  * test harness; it is NOT a production-quality assembly.
  *

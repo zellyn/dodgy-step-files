@@ -58,6 +58,17 @@ pub struct CatalogEntry {
     /// When `closure_intent == Some(Solid)`, the defect kind that left the
     /// shell open. `None` when not applicable or not determinable.
     pub closure_defect: Option<ClosureDefect>,
+    /// How the consumer should route the expectation for this fixture.
+    /// Without this, a `conformance-probe` (legal-edge-case test where a
+    /// correct kernel ACCEPTS) is indistinguishable from a
+    /// `malformed-file` (where a correct kernel REJECTS) — and a
+    /// `receiver-behavior` (valid file, buggy reader) is indistinguishable
+    /// from either. `None` when not yet classified.
+    pub fixture_kind: Option<FixtureKind>,
+    /// When the defect requires comparing this fixture to a sibling
+    /// (producer/receiver pair), the id of the sibling fixture. `None`
+    /// when the fixture stands alone.
+    pub pair_with: Option<String>,
 }
 
 /// Authored intent for an open-shell fixture.
@@ -86,6 +97,29 @@ pub enum ClosureDefect {
     MissingFace,
     /// Faces present but not joined along shared edges.
     UnstitchedSeam,
+}
+
+/// How a consumer should route the expectation for a fixture.
+#[derive(Deserialize, Debug, Clone, Copy, PartialEq, Eq)]
+#[serde(rename_all = "kebab-case")]
+pub enum FixtureKind {
+    /// The bytes themselves embody the defect. A correct kernel rejects,
+    /// heals, or flags. This is the default kind for catalog entries
+    /// whose claim is "this byte sequence is bad."
+    MalformedFile,
+    /// The file is fully legal Part-21 and tests that a correct kernel
+    /// handles a legal edge case (e.g. Unicode at U+10FFFF, IEEE-754
+    /// subnormals, exactly-at-limit values, every printable ASCII).
+    /// A correct kernel ACCEPTS.
+    ConformanceProbe,
+    /// The file is valid; the defect is in how a buggy consumer
+    /// reads/interprets it (e.g. silent unit mis-reads, attribute drops
+    /// on round-trip). Express the expectation as "a correct reader does X."
+    ReceiverBehavior,
+    /// The defect lives in the TRANSFORM between two files; the test
+    /// requires the sibling identified by `pair_with`. Invisible to a
+    /// single-file consumer.
+    ProducerReceiverPair,
 }
 
 /// A catalog entry paired with the raw bytes of its STEP file.
@@ -262,6 +296,33 @@ mod tests {
                     f.entry.id
                 );
             }
+        }
+    }
+
+    #[test]
+    fn fixture_kind_labels_are_present_where_expected() {
+        // The 1a conformance probes called out by the consumer feedback.
+        for id in ["Ls005", "Ls030", "Le040", "Le045", "Le046", "Le047", "Ps004"] {
+            let f = fixture(id).unwrap_or_else(|| panic!("{id} not in catalog"));
+            assert_eq!(
+                f.entry.fixture_kind,
+                Some(FixtureKind::ConformanceProbe),
+                "{id} should be labelled conformance-probe"
+            );
+        }
+        // Producer/receiver pairs (the consumer-feedback set).
+        for id in ["Le036", "Le049", "Le050", "A074", "Pmi090", "Ps011", "Wr043"] {
+            let f = fixture(id).unwrap_or_else(|| panic!("{id} not in catalog"));
+            assert_eq!(
+                f.entry.fixture_kind,
+                Some(FixtureKind::ProducerReceiverPair),
+                "{id} should be labelled producer-receiver-pair"
+            );
+            assert_eq!(
+                f.entry.pair_with.as_deref(),
+                Some(format!("{id}.input").as_str()),
+                "{id} pair_with mismatch"
+            );
         }
     }
 }

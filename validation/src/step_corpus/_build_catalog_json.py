@@ -361,9 +361,19 @@ _RE_CLOSURE_INTENT = re.compile(
 _RE_CLOSURE_DEFECT = re.compile(
     r"^- \*\*Closure defect\*\*:\s*(gap|missing_face|unstitched_seam)\s*$", re.MULTILINE,
 )
+# Fixture-kind: how a consumer should route the expectation.
+_RE_FIXTURE_KIND = re.compile(
+    r"^- \*\*Fixture kind\*\*:\s*(malformed-file|conformance-probe|receiver-behavior|producer-receiver-pair)\s*$",
+    re.MULTILINE,
+)
+# Pair-with: sibling fixture id for producer/receiver paired defects.
+_RE_PAIR_WITH = re.compile(
+    r"^- \*\*Pair with\*\*:\s*([A-Za-z]+\d+(?:\.input)?)\s*$", re.MULTILINE,
+)
 
 CLOSURE_INTENTS = ("sheet", "solid", "ambiguous")
 CLOSURE_DEFECTS = ("gap", "missing_face", "unstitched_seam")
+FIXTURE_KINDS = ("malformed-file", "conformance-probe", "receiver-behavior", "producer-receiver-pair")
 
 
 def _extract_provenance_tier(notes: str) -> str:
@@ -413,6 +423,10 @@ def build_entry(entry_id: str, title: str, fields: dict[str, str], block_text: s
     closure_intent = closure_match.group(1) if closure_match else None
     closure_defect_match = _RE_CLOSURE_DEFECT.search(block_text)
     closure_defect = closure_defect_match.group(1) if closure_defect_match else None
+    fixture_kind_match = _RE_FIXTURE_KIND.search(block_text)
+    fixture_kind = fixture_kind_match.group(1) if fixture_kind_match else None
+    pair_with_match = _RE_PAIR_WITH.search(block_text)
+    pair_with = pair_with_match.group(1) if pair_with_match else None
 
     record = {
         "id": entry_id,
@@ -442,6 +456,8 @@ def build_entry(entry_id: str, title: str, fields: dict[str, str], block_text: s
         "severity": severity,
         "closure_intent": closure_intent,
         "closure_defect": closure_defect,
+        "fixture_kind": fixture_kind,
+        "pair_with": pair_with,
     }
     # Cross-cutting taxonomy tags. Derived deterministically from the
     # other fields above; the markdown stays human-readable and the JSON

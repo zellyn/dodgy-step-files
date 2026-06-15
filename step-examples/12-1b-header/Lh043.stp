@@ -1,6 +1,6 @@
 ISO-10303-21;
 /* Lh043 - Header FILE_DESCRIPTION with embedded comment
- * Defect: FILE_DESCRIPTION string contains /* note */ which legacy readers strip */
+ * Defect: FILE_DESCRIPTION string contains /* note * / which legacy readers strip */
 HEADER;
 FILE_DESCRIPTION(('Test /* note */ part'),'2;1');
 FILE_NAME('Lh043.stp','2026-04-30T00:00:00',(''),(''),'cad-research-suite','','');

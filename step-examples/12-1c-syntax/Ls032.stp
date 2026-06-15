@@ -15,7 +15,7 @@
    ----------------------------------------------------------------------
    This fixture deliberately includes a single comment whose body
    exceeds the 8 KiB stepcode cap so that strict readers exercise the
-   overflow path. The padding banner below is one /* ... */ comment.
+   overflow path. The padding banner below is one /* ... * / comment.
 */
 ISO-10303-21;
 HEADER;

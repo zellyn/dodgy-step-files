@@ -474,6 +474,8 @@ Entries within each section are not implicitly ordered. See the *Index by catego
 - **Description**: A toolchain that decodes `\X2\…\X0\` into UTF-8 internally and re-encodes for export must round-trip the original Unicode characters. Several vendors lost backslashes (OCCT 7.5 regression) or replaced rare code points with `?` when the storage layer (XML, SQL VARCHAR(..)) silently truncated.
 - **Reproducer recipe**: PRODUCT name containing literal backslashes (`'C:\path\file'`) or rare CJK code points; export and re-import.
 - **Expected kernel behavior**: Heal and accept: preserve exact Unicode through encode/decode/storage; emit `\X2\…\X0\` only when the Ed.2 conformance class requires it. Must not silently lose Unicode content.
+- **Fixture kind**: producer-receiver-pair
+- **Pair with**: Le036.input
 - **Notes**: **See also**: Le022. Provenance tier: requires-sibling-pair; bytes alone cannot demonstrate round-trip loss; the defect is the differential between the input file and the writer's output. Demonstrating this requires both an `<id>.input.stp` fixture and the corrupted `<id>.stp` produced by re-export through the lossy XML/DB layer. Synonyms: "X2 content lost in XML round trip", "Unicode dropped through database layer", "VARCHAR truncates STEP Unicode", "STEP characters become question marks after DB store", "round-trip loses backslash X2 content".
 - **Byte assertion**: contains(b'\\X4\\')
 - **Byte assertion**: contains(b'\\X2\\')
@@ -923,6 +925,7 @@ Entries within each section are not implicitly ordered. See the *Index by catego
 - **Description**: Some generators write `+1.0` for positive REAL. The Part-21 BNF arguably disallows leading `+` for INTEGER but admits it for REAL; uniform handling preferred.
 - **Reproducer recipe**: `#1=IFCDIRECTION((+1.,+0.,+0.));`
 - **Expected kernel behavior**: Accept signed reals and integers uniformly; never silently strip the sign.
+- **Fixture kind**: conformance-probe
 - **Notes**: **See also**: Ls001. **OCC behavior**: silently strips the leading `+` sign with no diagnostic on the surrounding context; kernel mishandling; the catalog above expects uniform handling without sign-stripping. Synonyms: "plus sign on positive REAL", "+1.0 in STEP literal", "explicit positive sign on numeric", "STEP rejects leading plus", "INTEGER with explicit plus".
 - **Byte assertion**: matches(rb'\(\s*\+\d')
 - **Byte assertion**: matches(rb'\(\+\d')
@@ -1154,6 +1157,7 @@ Entries within each section are not implicitly ordered. See the *Index by catego
 - **Description**: A `/* .. */` comment containing an apostrophe is rejected because the comment-skip routine and a separate string-literal recognizer share a regex/scanner that mis-pairs the in-comment apostrophe with the next apostrophe in the file.
 - **Reproducer recipe**: `/* plane angle is 'degree' as non-SI unit */` placed between header and DATA.
 - **Expected kernel behavior**: Heal and accept: comments scanned to next `*/` independent of any string state; apostrophe inside comment is opaque.
+- **Fixture kind**: conformance-probe
 - **Notes**: Synonyms: "apostrophe inside STEP comment misread", "comment containing single quote breaks parser", "comment apostrophe paired with later quote", "STEP comment quote desyncs scanner", "in-comment apostrophe confuses lexer".
 - **Byte assertion**: matches(rb"/\*[^*]*'[^*]*\*/")
 - **Byte assertion**: matches(rb"/\*[^*]*'")
@@ -6940,6 +6944,8 @@ End of file. Total: 38 entries (A001.A038).
 - **Reproducer recipe**: STEP file with a textured face; import, save XBF,
  reload XBF — texture binding is missing.
 - **Expected kernel behavior**: Heal and accept: persistence layer round-trips every document attribute including textures; if a kernel doesn't support textures, it must reject with a clear "feature not supported" diagnostic at save time, not silently lose data.
+- **Fixture kind**: producer-receiver-pair
+- **Pair with**: A074.input
 - **Notes**: **See also**: M047. Synonyms: "texture lost saving binary XBF after STEP import", "imported texture disappears on XBF write", "image texture not persisted to binary XBF".
 - **Notes**: Provenance tier: requires-sibling-pair; texture lost across XBF roundtrip; needs both pre- and post-roundtrip files.
 - **Byte assertion**: contains(b'IMAGE_TEXTURE')
@@ -8464,6 +8470,8 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Description**: AP242 supports persistent UUID-based identification of features via `APPLIED_IDENTIFICATION_ASSIGNMENT` with `IDENTIFICATION_ROLE('uuid','')` and a UUID string item. A receiver that imports the file, manipulates the model, and re-exports must preserve every input UUID on every entity that survives; that is the entire point of the persistent-id mechanism. A receiver that regenerates UUIDs on import / on export silently breaks PMI links from external files (DDP-style cross-file references resolve via UUID). The first round-trip is the discovery moment: a downstream tool that loads the original file plus the re-exported one cannot reconcile their feature lists. Bug-reporter language: "STEP UUID changes on round-trip", "PMI link breaks after re-export", "DDP cross-file ref resolves to wrong feature after round-trip".
 - **Reproducer recipe**: an `ADVANCED_FACE` `#35` carries an `APPLIED_IDENTIFICATION_ASSIGNMENT('4ce0acf8-1a2b-4c3d-9e8f-7a6b5c4d3e2f', IDENTIFICATION_ROLE('uuid',''), (#35))`. A receiver-side round-trip that emits a new UUID for the same face is the defect; the input fixture establishes the original UUID. Provenance tier: requires-sibling-pair — bytes alone (the input fixture) cannot demonstrate the round-trip drift; the defect lives in the differential between the input file's UUID assignment and the re-exported file's.
 - **Expected kernel behavior**: preserve every persistent UUID on every entity that survives a round-trip; emit a new UUID only for entities that did not exist in input. Reject the import if a UUID format is invalid; never silently overwrite a producer-emitted UUID with a fresh one.
+- **Fixture kind**: producer-receiver-pair
+- **Pair with**: Pmi090.input
 - **Notes**: **See also**: Pmi001, Pmi065. Provenance tier: requires-sibling-pair; the defect is the differential between the input UUID and the re-exported UUID; demonstrating it requires both an input fixture and the corrupted output a receiver produces. Synonyms: "persistent UUID lost on round-trip", "PMI association breaks because UUID changed", "UUID regenerated, link broken".
 - **Byte assertion**: contains(b'APPLIED_IDENTIFICATION_ASSIGNMENT')
 - **Byte assertion**: contains(b'IDENTIFICATION_ROLE')
@@ -12275,6 +12283,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Description**: A user requests a B-spline approximation of a non-rational curve (e.g., a polynomial of high degree) within tolerance ε. The approximation algorithm does not converge; the residual remains above ε after the maximum number of refinement iterations. Bug-reporter language: "approximation didn't converge", "B-spline fit failed", "tolerance too tight for fit".
 - **Reproducer recipe**: A `LINE` evaluated at densely-sampled points; request a B-spline approximation through these points within tolerance below the kernel's working precision.
 - **Expected kernel behavior**: Return the partial result with the achieved residual reported; or reject.
+- **Fixture kind**: receiver-behavior
 - **Notes**: Synonyms: "fit didn't converge". Bytes alone are insufficient to demonstrate this defect; needs sibling input fixture. Tagged provenance_tier: runtime-only. **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers must reject this fixture per the catalog's stated invariant.
 - **Byte assertion**: contains(b'LINE(')
 - **Byte assertion**: count_entity_def(b'CARTESIAN_POINT') >= 5
@@ -16618,6 +16627,7 @@ _Section summary: 41 entries._
 - **Description**: Edition-3 `\Q\xxxx\Q\` encodes a character by its decimal Unicode scalar value between bracketing `\Q\` pairs. Many implementations either ignore `\Q\` entirely (passing digits through verbatim) or accept only values up to `0xFFFF` (BMP only). The largest legal Unicode scalar is `0x10FFFF` (decimal `1114111`); a kernel claiming Edition-3 conformance should be able to decode this upper boundary into a four-byte UTF-8 sequence.
 - **Reproducer recipe**: `PRODUCT.name='top=\Q\1114111\Q\'` — the `\Q\.\Q\` payload is the decimal value of U+10FFFF.
 - **Expected kernel behavior**: decode `\Q\NNN\Q\` payloads into the corresponding Unicode scalar; reject only values outside the legal scalar range (`> 0x10FFFF` or surrogate halves); do not silently truncate to BMP.
+- **Fixture kind**: conformance-probe
 - **Notes**: **See also**: Le030, Le041, Le042. Validation observed: ifcopenshell terminates via process signal — the `\Q\.\Q\` form may interact badly with the parser's ASCII-only string decoder. **OCC behavior**: silently accepts the file and either truncates to BMP or passes the digits through verbatim; kernel mishandling — the catalog above forbids silent BMP truncation. Synonyms: "Q directive at U+10FFFF boundary", "STEP Q encodes max Unicode", "supplementary plane via Q escape", "Q escape decodes high code point", "Q directive at top of Unicode".
 - **Byte assertion**: contains(b'\\Q\\1114111\\Q\\')
 - **Byte assertion**: contains(b'1114111')
@@ -16680,6 +16690,7 @@ _Section summary: 41 entries._
 - **Description**: Edition-3 raises the maximum string-literal length to 32768 characters (Edition 1 was 256). A reader that statically allocates a 256-char buffer truncates silently or faults; a reader that allocates dynamically but checks against an off-by-one threshold may reject one too many or one too few. The boundary character itself becomes load-bearing.
 - **Reproducer recipe**: `PRODUCT.name` whose string literal is exactly 32768 characters of `'A'`.
 - **Expected kernel behavior**: accept literals up to 32768 characters; reject longer with a length diagnostic; never silently truncate. Reading should be O(N) in literal length, not quadratic.
+- **Fixture kind**: conformance-probe
 - **Notes**: **See also**: Le022 (long-string sub-class). Validation observed: occt and gmsh both reject; likely due to internal buffer constraints below the Edition-3 limit.
 - **Notes**: Cross-oracle: pure-Python Part-21 validator accepts (`accept`); OCCT rejects (`reject`). OCC enforces stricter framing than the spec text requires. Synonyms: "string literal at 32768 char limit", "STEP string at exact Ed.3 maximum", "boundary-length string literal", "off-by-one on max string length", "max-length string truncated".
 - **Byte assertion**: max_string_literal_length >= 32768
@@ -16693,6 +16704,7 @@ _Section summary: 41 entries._
 - **Description**: A kernel that does not handle every printable-ASCII byte (0x20.0x7E) correctly inside a single string literal will mis-parse one of: embedded apostrophe (must be doubled as `''`), backslash (legal literal in Ed.2 but begins a directive in Ed.3), `=` / `#` / `;` (token boundary characters at outer scope but legal in strings).
 - **Reproducer recipe**: `PRODUCT.name=' !"#$%&''()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_'`<..full printable ASCII..>'` — exactly one occurrence of each printable ASCII byte.
 - **Expected kernel behavior**: Heal and accept: round-trip every printable ASCII byte through encode/decode/storage byte-for-byte; in particular preserve doubled apostrophes (`''`) and the literal backslash form per the active edition.
+- **Fixture kind**: conformance-probe
 - **Notes**: **See also**: Le036. Synonyms: "string with every printable ASCII", "STEP literal containing all printable bytes", "embedded apostrophe and backslash and =", "round-trip every printable ASCII", "all-ASCII string literal".
 - **Byte assertion**: matches(rb"'[^']* !\"#")
 - **Byte assertion**: contains(b"#$%&")
@@ -16707,6 +16719,7 @@ _Section summary: 41 entries._
 - **Description**: ISO 10303-21 specifies REAL as a decimal floating-point representation but most implementations parse into IEEE-754 binary64. Inputs at the subnormal boundary (smallest positive subnormal ~4.94E-324; smallest positive normal ~2.225E-308; largest finite ~1.798E+308) test for two failure modes: readers that round to zero and silently drop the value, and readers that flag underflow and reject the file. A coordinate emitted at this magnitude often arises in BSpline weight values from buggy producers normalising weights through very small denominators.
 - **Reproducer recipe**: `CARTESIAN_POINT('subnormal',(4.9406564584124654E-324,0.0,0.0))`; also min-normal `2.2250738585072014E-308`, max-finite `1.7976931348623157E+308`, and negative zero `-0.0`.
 - **Expected kernel behavior**: Heal and accept: parse the value losslessly into the kernel's working numeric type; if the value is below the kernel's coordinate precision, snap to zero with a diagnostic rather than letting it propagate as silent NaN or Inf.
+- **Fixture kind**: conformance-probe
 - **Notes**: **See also**: Le048. Synonyms: "REAL at IEEE-754 subnormal", "smallest normal double in STEP", "max double 1.798E+308 in REAL", "subnormal value loses precision", "REAL at IEEE boundary".
 - **Byte assertion**: contains(b'4.9406564584124654E-324') or contains(b'2.2250738585072014E-308') or contains(b'-0.0')
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
@@ -16740,6 +16753,8 @@ _Section summary: 41 entries._
 - **Reproducer recipe**: STEP record `DESCRIPTION_ATTRIBUTE('line1\r\nline2','desc')`
  where the `\r` is intentional. Writer strips, output reads `line1\nline2`.
 - **Expected kernel behavior**: Heal and accept: line-ending normalisation only outside string literals; preserve string contents byte-for-byte (with proper escaping via `\X\` if needed). Must not silently strip CR.
+- **Fixture kind**: producer-receiver-pair
+- **Pair with**: Le049.input
 - **Notes**: **See also**: Le017, Le028. Provenance tier: requires-sibling-pair; bytes alone cannot demonstrate the writer-side stripping; the defect is the differential between the writer's input (string containing `\r`) and its output (string without `\r`). Demonstrating this requires both an input fixture and the corrupted output it produces, exercised through a STEP writer. Synonyms: "STEP writer strips carriage return", "CR removed during STEP write", "line endings normalised by writer", "STEP export drops CR", "writer rewrites CRLF to LF".
 - **Byte assertion**: contains(b'ISO-10303-21')
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
@@ -16758,6 +16773,8 @@ _Section summary: 41 entries._
  emits raw bytes `'\xD0\xA2\xD0\xB5\xD1\x81\xD1\x82'` in an Ed.2-declared
  file — illegal under Ed.2.
 - **Expected kernel behavior**: Heal and accept: writer escapes non-ASCII via the edition-appropriate directive (`\X2\` for Ed.2, raw UTF-8 for Ed.3 with proper FILE_DESCRIPTION declaration). Must not silently drop Unicode.
+- **Fixture kind**: producer-receiver-pair
+- **Pair with**: Le050.input
 - **Notes**: **See also**: Le022, Le001. Provenance tier: requires-sibling-pair; bytes alone cannot demonstrate the writer-side dropping; the defect is the differential between the in-memory document name and the bytes the writer emits. Demonstrating this requires both the producer-input state (document with non-ASCII name) and the corrupted output it produces. Synonyms: "Unicode dropped in STEP export", "Cyrillic name lost on write", "non-ASCII silently stripped by writer", "STEP writer drops accented chars", "Unicode characters lost during export".
 - **Byte assertion**: contains(b'ISO-10303-21')
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
@@ -17582,6 +17599,7 @@ _Section summary: 41 entries._
  formed by (ref_direction, axis × ref_direction, axis); reject or warn
  on negative determinant. A correct kernel should not silently propagate
  a reflection through downstream transforms.
+- **Fixture kind**: conformance-probe
 - **Notes**: Tier-3 metric: determinant of computed basis matrix. Should
  be +1 for a right-handed frame; this fixture has determinants both ways. Synonyms: "imported part is mirrored", "AXIS2_PLACEMENT mirror", "right-hand part appeared left-hand", "left-handed coordinate frame slipped through", "reflection masquerading as rotation".
 - **Tier-3 assertion**: face[3].surface_type == "plane"
@@ -17782,6 +17800,8 @@ _Section summary: 41 entries._
  (with the missing inner CLOSED_SHELL listed in voids) would have been
  the correct export.
 - **Expected kernel behavior**: Warn and accept: there is no kernel-side detection possible from this file alone, but the kernel normalizes and exposes the representation type (MANIFOLD_SOLID_BREP vs. BREP_WITH_VOIDS) and the outer-shell-volume vs. material-volume invariants so downstream code can detect when a part that "should be" hollow is actually solid. Cross-checking with PRODUCT.description hints (e.g., "hollow tank") emits the discrepancy as a warning.
+- **Fixture kind**: producer-receiver-pair
+- **Pair with**: Ps011.input
 - **Notes**: Tier-3 metric: inner-cavity count (always 0 for
  MANIFOLD_SOLID_BREP) vs. expected count from metadata. Provenance tier: requires-sibling-pair; bytes alone cannot demonstrate the void-loss defect; the resulting MANIFOLD_SOLID_BREP file is structurally valid in isolation. Demonstrating the defect requires both the producer's intended-hollow input model (or its description hints) and the export it produced; the kernel reading just the output cannot tell the void was lost. Synonyms: "hollow tank exported as solid block", "inner cavity disappeared", "mass-properties wrong because void lost", "BREP_WITH_VOIDS downgraded to plain solid", "interior void dropped on export".
 - **Tier-3 assertion**: face[0].area >= 90
@@ -21114,6 +21134,8 @@ they capture invariants shared by a family of healing methods. Filed under
 - **Description**: A producer's writer emits non-ASCII characters as raw UTF-8 bytes (`\xC3\xA9` for `é`) inside a string literal, while the file's `FILE_DESCRIPTION` declares Edition-2 (`'2;1'`). Edition-2 mandates 8-bit default with non-ASCII expressed via `\X\HH`, `\X2\HHHH\X0\`, or `\PA\.\PI\` page-shift directives; raw multi-byte UTF-8 violates the edition's encoding contract. Edition-3 readers (UTF-8 default) decode the bytes correctly by accident; Edition-2 readers see two single-byte ISO-8859-1 characters instead of one composed `é`. The writer is the producer-side root cause for the receiver-side defect Le003 / Ad058. Bug-reporter language: "STEP writer outputs UTF-8 in Ed.2 file", "non-ASCII in Edition-2 STEP", "exporter does not escape non-ASCII".
 - **Reproducer recipe**: a `FILE_DESCRIPTION` `'2;1'` (Edition 2); a `PRODUCT.name` containing the raw bytes `\xC3\xA9` representing UTF-8 `é` instead of the spec-required `'\X\E9'` escape.
 - **Expected kernel behavior**: the writer detects the file's declared edition and emits non-ASCII characters via the edition-appropriate directive; Edition-2 uses `\X\` / `\X2\` / `\PA\.\PI\`; Edition-3 may emit raw UTF-8 with proper `FILE_DESCRIPTION` declaration. Never silently mismatch edition and encoding.
+- **Fixture kind**: producer-receiver-pair
+- **Pair with**: Wr043.input
 - **Notes**: Producer-side root cause for Le003 (now merged into Le021), Le050, Ad058. **See also**: Le050, Le021. Provenance tier: requires-sibling-pair — bytes alone (this fixture's body) demonstrate the defect; the fuller demonstration is the differential between the in-memory string and the bytes the writer emits. **OCC behavior**: silently accepts (no diagnostic, empty result); catalog disallows silent-accept. Kernel-bug witnessed: receivers enforcing the spec must reject (or surface a diagnostic) — silent acceptance defeats the catalog's stated invariant.
 - **Byte assertion**: contains(b"'2;1'") and matches(rb'[\xC0-\xDF][\x80-\xBF]')
 - **Byte assertion**: matches(rb'[\xC0-\xF7][\x80-\xBF]')

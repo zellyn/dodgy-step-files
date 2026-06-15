@@ -32,7 +32,9 @@
         "occ_behavior_note",
         "cross_oracle_note",
         "closure_intent",
-        "closure_defect"
+        "closure_defect",
+        "fixture_kind",
+        "pair_with"
       ],
       "properties": {
         "id": {
@@ -204,6 +206,16 @@
           "description": "When closure_intent is 'solid', the defect kind that left the shell open: 'gap' (boundary edges almost meet but do not), 'missing_face' (a face that should be present is absent), or 'unstitched_seam' (faces present but not joined). Null when closure_intent != 'solid' or the defect kind is undeterminable.",
           "type": ["string", "null"],
           "enum": ["gap", "missing_face", "unstitched_seam", null]
+        },
+        "fixture_kind": {
+          "description": "How the consumer should route this fixture's expectation. 'malformed-file': the bytes themselves embody the defect; a correct kernel rejects or heals. 'conformance-probe': the file is fully legal Part-21 and tests that a correct kernel handles a legal edge case (e.g. Unicode at U+10FFFF, IEEE-754 subnormals, exactly-at-limit values). 'receiver-behavior': the file is valid; the defect is in how a buggy consumer reads/interprets it (e.g. unit mis-reads, attribute drops). 'producer-receiver-pair': the defect lives in the TRANSFORM between two files; requires the sibling fixture identified by `pair_with`. Null when not classified yet.",
+          "type": ["string", "null"],
+          "enum": ["malformed-file", "conformance-probe", "receiver-behavior", "producer-receiver-pair", null]
+        },
+        "pair_with": {
+          "description": "When the defect requires comparing this fixture to a sibling (producer/receiver pair), the id of the sibling fixture. For a receiver-side fixture (`<id>.stp`), this points at the producer input (typically `<id>.input.stp`'s id). Null when the fixture stands alone.",
+          "type": ["string", "null"],
+          "pattern": "^[A-Za-z]+\\d+(\\.input)?$"
         }
       }
     }

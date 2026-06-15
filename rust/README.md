@@ -11,7 +11,7 @@ tag or commit:
 
 ```toml
 [dependencies]
-dodgy-step-files = { git = "https://github.com/zellyn/dodgy-step-files", tag = "v1.1.1" }
+dodgy-step-files = { git = "https://github.com/zellyn/dodgy-step-files", tag = "v1.2.0" }
 ```
 
 ## Usage

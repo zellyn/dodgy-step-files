@@ -1,5 +1,45 @@
 # Changelog
 
+## v1.2.0 — fidelity fixes from kernel-author feedback
+
+A real CAD-kernel author imported the full corpus and read each fixture's data against its catalog claim. This release lands the highest-leverage fixes from that review. (Further fixture rewrites continue in v1.2.1+.)
+
+### Parse-unblocking
+
+- **38 fixtures had nested-comment corruption.** Part-21 `/* */` comments don't nest — the first inner `*/` closes the comment early and the prose after it is parsed as STEP code, corrupting the parse before the actual claim ever fires. Fixtures affected (single-`*/` rewrite each): A028–A038, Ad097, Lh043, Ls032, P001–P003, P005–P007, P009–P019, P021–P027. Fix: embedded `*/` inside a multi-section author-intended comment is rewritten to `* /` (space inside); visual meaning preserved, no longer a comment closer. **Ls031 was deliberately left alone** — its nested-comment IS the test data (a buggy scanner that re-fires on inner `/*` mis-parses it; a correct Part-21 reader closes at the first `*/`).
+
+### New metadata: fixture_kind + pair_with
+
+Two new optional fields on every catalog entry:
+
+- **`fixture_kind`** — how a consumer should route the expectation:
+  - `malformed-file` — the bytes embody the defect; a correct kernel rejects/heals
+  - `conformance-probe` — the file is fully legal Part-21 and tests a legal edge case (Unicode at U+10FFFF, IEEE-754 subnormals, exactly-at-limit values, every printable ASCII); a correct kernel ACCEPTS
+  - `receiver-behavior` — the file is valid; the defect is in how a buggy consumer reads it
+  - `producer-receiver-pair` — the defect lives in the TRANSFORM between two files; requires the sibling identified by `pair_with`
+
+- **`pair_with`** — sibling id for paired fixtures (e.g. `Le036.input`).
+
+Without `fixture_kind`, a consumer can't tell a correct refusal of a conformance probe (wrong) from a correct refusal of a malformed file (right). Without `pair_with`, the defect in producer/receiver pairs is invisible to a single-file consumer.
+
+This release labels:
+- **8 fixtures relabelled to `conformance-probe`** (per kernel-author feedback that the claimed defect is actually a legal edge case): Ls005, Ls030, Le040, Le045, Le046, Le047, Ps004 — and Gb001 to `receiver-behavior`.
+- **7 producer/receiver pair receivers** to `producer-receiver-pair` with `pair_with = "<id>.input"`: A074, Le036, Le049, Le050, Pmi090, Ps011, Wr043.
+
+Further entries can be labelled incrementally as the kernel-author review continues.
+
+### Rust crate (1.2.0)
+
+```toml
+dodgy-step-files = { git = "https://github.com/zellyn/dodgy-step-files", tag = "v1.2.0" }
+```
+
+New types: `FixtureKind`. New fields on `CatalogEntry`: `fixture_kind: Option<FixtureKind>`, `pair_with: Option<String>`. API additive — v1.1.x consumers compile unchanged.
+
+### Pending (v1.2.1+)
+
+Per the feedback: shared mis-wound cube in Bo003/Bo004/Bo024/Fi008 (4); Ps section's shared broken EDGE_LOOP (~16); illegal-Part-21 forms in Twi/Tb/Pf/Tsh/M cluster (~25); build-error-signature audit across 75 fixtures (some are the test, some shadow a different claim).
+
 ## v1.1.1 — CI now green
 
 Every CI run since the initial release had been failing. Three independent issues:
