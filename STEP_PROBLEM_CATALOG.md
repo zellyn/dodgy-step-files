@@ -3641,6 +3641,7 @@ End of file. 45 entries. License-clean: descriptions are paraphrased from public
 - **Reproducer recipe**: 4-edge `ADVANCED_FACE` on `PLANE` with two 100 mm sides and two `1e-7` mm connecting edges.
 - **Expected kernel behavior**: heal; replace short edges with `tolerant_vertex`s; collapse the sliver/pin face to a `tolerant_edge`; reject the collapse if it would violate manifold-ness.
 - **Closure intent**: sheet
+- **Fixture kind**: receiver-behavior
 - **Notes**: **See also**: Gs014, Gs015. Synonyms: "needle-shaped face", "knife-edge face with one tiny edge", "high aspect ratio sliver face", "face tapers to a point at one corner", "pin face from boolean residue".
 - **Tier-3 assertion**: face[0].sliver_aspect_max_min > 1e3
 - **Tier-3 assertion**: face[0].surface_type == "plane"
@@ -19865,6 +19866,7 @@ _Section summary: 41 entries._
 - **Reproducer recipe**: A triangular face with vertices at `(0,0)`, `(10, 0.001)`, `(10, -0.001)` — opening angle ≈ 0.0002 rad.
 - **Expected kernel behavior**: detect the pin; either snip it off (replace the pin tip with a vertex on the face's neighbor) or reject. Healing must preserve the integrity of incident shells.
 - **Closure intent**: sheet
+- **Fixture kind**: receiver-behavior
 - **Notes**: Search terms: "pin face", "needle face", "spike face". Synonyms: "face pinches to a vertex", "pin tip with undefined normal", "long thin protrusion at corner", "boolean leaves pin protrusion at vertex".
 - **Tier-3 assertion**: face[0].sliver_aspect_max_min > 1e3
 - **Tier-3 assertion**: n_edges_total >= 3

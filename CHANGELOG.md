@@ -1,6 +1,28 @@
 # Changelog
 
-## v1.2.2 — Ps-section cube regens + Bo004 Expected sync
+## v1.2.2 — Ps-section cube regens + Bo004 Expected sync + OCCT per-branch deep coverage
+
+(Continued from v1.2.2 cube regens — see below — plus a second pass of OCCT coverage.)
+
+### OCCT per-branch deep coverage
+
+The v1.2.0 OCCT coverage map was an API-surface pass: it credited a fixture as "covering" an operation if the fixture's text mentioned the operation by name. But OCCT's public repair methods (e.g. `ShapeFix_Wire::FixSelfIntersection`) are hundreds of lines of nested `if/else if` branches, each handling a specific defect *shape*. A fixture that mentions "self-intersection" exercises *one* of a dozen self-intersection branches.
+
+Three parallel sub-agents now walked the `.cxx` implementation files and enumerated every substantive repair branch as a separate coverage unit. The result is appended to `OCCT_HEAL_COVERAGE.md` as a "Per-branch deep coverage (second pass)" section.
+
+| Module group | Branches | Covered | UNCOVERED |
+|---|---:|---:|---:|
+| Wire-level (`ShapeFix_Wire/Edge/IntersectionTool/WireVertex.cxx`) | 88 | 72 | 16 |
+| Face/Shell/Shape-level (`ShapeFix_Face/Shell/Shape/Solid/FixSmallFace.cxx`) | 73 | 53 | 20 |
+| Sewing + UnifySameDomain (`BRepBuilderAPI_Sewing.cxx` + 3 others) | 68 | 43 | 25 |
+| **Total** | **229** | **168 (73%)** | **61** |
+
+Two notable findings shifted catalog data, not just docs:
+
+1. **`ShapeFix_FixSmallFace::FixPinFace` is a no-op stub.** Body is literally `return true;`. Fixtures Tfa008 and Tfa044 (pin faces) — credited as covering this op by the API-surface pass — actually exercise no OCCT repair logic. Re-tagged both as `fixture_kind: receiver-behavior` since the defect is the kernel's missing implementation, not the file's content.
+2. **`BRepBuilderAPI_Sewing::SetMaxTolerance` is bypassed.** Even when MaxTolerance is set, the inner loop writes a raw `BRep_TEdge` tolerance at line ~1168, silently exceeding the user cap. No fixture stresses this hard-override path — a high-leverage gap flagged in the deep report for a future release.
+
+### Ps-section cube regenerations (4 fixtures)
 
 Extends v1.2.1's canonical-cube template work into the Ps "pathological success" section, and aligns Bo004's Expected validation with the live oracle output of the regenerated cube.
 
