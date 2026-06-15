@@ -1,10 +1,14 @@
 # Changelog
 
-## v1.1.1 — CI: install gmsh runtime deps (libGLU)
+## v1.1.1 — CI now green
 
-CI workflow now installs `libglu1-mesa` before syncing Python deps. The gmsh PyPI wheel link-depends on libGLU even when initialised headlessly (`gmsh.initialize([], False)`), and the GitHub-hosted Ubuntu runner doesn't ship it. Every CI run since the initial release was failing four self-tests for this reason (gmsh subprocess crashed at import, all `gmsh=…` verdicts came back as `subprocess_error`, conformance fell to zero).
+Every CI run since the initial release had been failing. Three independent issues:
 
-No functional change to consumers or the published corpus; only the workflow file changed. Rust crate bumped to 1.1.1 to keep the published tag in lockstep.
+1. **Missing `libGLU.so.1` on the runner.** The `gmsh` PyPI wheel link-depends on libGLU at load time even when initialised headlessly (`gmsh.initialize([], False)`); the GitHub-hosted Ubuntu runner doesn't ship it. The gmsh oracle crashed at import, all `gmsh=…` verdicts came back as `subprocess_error`, and four self-tests failed downstream. Fix: `apt-get install libglu1-mesa` before `uv sync`.
+2. **Workflow ran pytest before `_run_corpus`.** `test_outcome_conformance` and `test_tier3_assertions` both read `/tmp/cad-v2-out*`, which only gets populated by `_run_corpus`. Fix: split pytest into a fast pre-oracle tier (`--ignore` those two files) and an oracle-dependent post-oracle tier.
+3. **Stale `brepcheck.valid == True` assertion on N042.** The entry's own Notes field already documented "tier-3 valid-flag should be ignored for this entry" — the assertion was added against an older OCCT that missed the near-tangent self-intersection. The runner's newer OCCT catches it (returning `valid=False`). Fix: drop the assertion.
+
+No functional change to consumers other than N042's `tier3_assertions` array shrinking by one entry. Rust crate bumped to 1.1.1 to keep the published tag in lockstep.
 
 ## v1.1 — closure_intent classification for open-shell fixtures
 
