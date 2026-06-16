@@ -1,0 +1,104 @@
+ISO-10303-21;
+/* Tsh110 - ShapeUpgrade_ShellSewing tolerance-scale interaction
+ * Defect: sewing tolerance 0.01 but vertex uncertainty 0.001; the tolerance
+ * hierarchy is unclear and Apply uses the wrong one. */
+HEADER;
+FILE_DESCRIPTION(('Tsh110 - tolerance-scale mismatch','wave 19'),'2;1');
+FILE_NAME('Tsh110.stp','2026-06-15T00:00:00',(''),(''),'heal coverage','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+
+/* Two separate faces with gap smaller than sewing tolerance but larger than
+   vertex uncertainty */
+
+/* Face 1: bottom-left quad */
+#100=CARTESIAN_POINT('',(0,0,0));
+#101=CARTESIAN_POINT('',(5.0,0,0));
+#102=CARTESIAN_POINT('',(5.0,5.0,0));
+#103=CARTESIAN_POINT('',(0,5.0,0));
+
+/* Face 2: bottom-right quad with 0.005 gap (between 0.001 uncertainty and 0.01 sewing) */
+#104=CARTESIAN_POINT('',(5.005,0,0));
+#105=CARTESIAN_POINT('',(10.0,0,0));
+#106=CARTESIAN_POINT('',(10.0,5.0,0));
+#107=CARTESIAN_POINT('',(5.005,5.0,0));
+
+/* VERTEX_POINT entities */
+#120=VERTEX_POINT('',#100);
+#121=VERTEX_POINT('',#101);
+#122=VERTEX_POINT('',#102);
+#123=VERTEX_POINT('',#103);
+#124=VERTEX_POINT('',#104);
+#125=VERTEX_POINT('',#105);
+#126=VERTEX_POINT('',#106);
+#127=VERTEX_POINT('',#107);
+
+/* Plane for both faces */
+#200=AXIS2_PLACEMENT_3D('',#100,DIRECTION('',(0,0,1)),DIRECTION('',(1,0,0)));
+#201=PLANE('base_plane',#200);
+
+/* Edges for Face 1 */
+#250=LINE('',#100,VECTOR('',(1,0,0),5.0));
+#251=EDGE_CURVE('',#120,#121,#250,.T.);
+#252=LINE('',#101,VECTOR('',(0,1,0),5.0));
+#253=EDGE_CURVE('',#121,#122,#252,.T.);
+#254=LINE('',#102,VECTOR('',(-1,0,0),5.0));
+#255=EDGE_CURVE('',#122,#123,#254,.T.);
+#256=LINE('',#103,VECTOR('',(0,-1,0),5.0));
+#257=EDGE_CURVE('',#123,#120,#256,.T.);
+
+/* Edges for Face 2 */
+#258=LINE('',#104,VECTOR('',(1,0,0),4.995));
+#259=EDGE_CURVE('',#124,#125,#258,.T.);
+#260=LINE('',#105,VECTOR('',(0,1,0),5.0));
+#261=EDGE_CURVE('',#125,#126,#260,.T.);
+#262=LINE('',#106,VECTOR('',(-1,0,0),4.995));
+#263=EDGE_CURVE('',#126,#127,#262,.T.);
+#264=LINE('',#107,VECTOR('',(0,-1,0),5.0));
+#265=EDGE_CURVE('',#127,#124,#264,.T.);
+
+/* Edge loops for Face 1 */
+#300=ORIENTED_EDGE('',*,*,#251,.T.);
+#301=ORIENTED_EDGE('',*,*,#253,.T.);
+#302=ORIENTED_EDGE('',*,*,#255,.T.);
+#303=ORIENTED_EDGE('',*,*,#257,.T.);
+#310=EDGE_LOOP('',(#300,#301,#302,#303));
+
+/* Edge loops for Face 2 */
+#311=ORIENTED_EDGE('',*,*,#259,.T.);
+#312=ORIENTED_EDGE('',*,*,#261,.T.);
+#313=ORIENTED_EDGE('',*,*,#263,.T.);
+#314=ORIENTED_EDGE('',*,*,#265,.T.);
+#315=EDGE_LOOP('',(#311,#312,#313,#314));
+
+/* Face bounds */
+#400=FACE_OUTER_BOUND('',#310,.T.);
+#401=FACE_OUTER_BOUND('',#315,.T.);
+
+/* Faces */
+#500=ADVANCED_FACE('face_left',(#400),#201,.T.);
+#501=ADVANCED_FACE('face_right',(#401),#201,.T.);
+
+/* Shell containing faces */
+#601=OPEN_SHELL('sewing_gap_shell',(#500,#501));
+
+/* Mandatory PRODUCT chain */
+#9000=PRODUCT_CONTEXT('',#1,'mechanical');
+#9001=PRODUCT('Tsh110','Tsh110','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-3),#9006,'distance_accuracy_value','');
+#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
+#9021=SHELL_BASED_SURFACE_MODEL('sbsm',(#601));
+#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#9010);
+#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+ENDSEC;
+END-ISO-10303-21;

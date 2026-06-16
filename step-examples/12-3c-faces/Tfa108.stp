@@ -1,0 +1,64 @@
+ISO-10303-21;
+/* Tfa108 - ShapeFix_Face.FixAddNaturalBound RECTANGULAR_TRIMMED
+ * Natural boundary on a trimmed surface.
+ * FixAddNaturalBound constructs the boundary using the un-trimmed parameter range.
+ * Expected: should use trimmed surface bounds, not underlying basis surface bounds.
+ */
+HEADER;
+FILE_DESCRIPTION(('Tfa108 test case','Natural boundary on RECTANGULAR_TRIMMED surface'),'2;1');
+FILE_NAME('Tfa108.stp','2026-06-15T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+/* === Base torus surface with full parameter bounds === */
+#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#11=DIRECTION('',(0.0,0.0,1.0));#12=DIRECTION('',(1.0,0.0,0.0));
+#13=AXIS2_PLACEMENT_3D('',#10,#11,#12);
+#14=TOROIDAL_SURFACE('base_torus',#13,5.0,2.0);
+/* === RectangularTrimmedSurface with restricted param bounds === */
+/* Base surface: torus [u:0..2π, v:0..2π]
+   Trimmed bounds: [u:0.5..3.5, v:0.5..3.5] (restricted quarter-section)  */
+#20=RECTANGULAR_TRIMMED_SURFACE('trimmed_torus',#14,0.5,3.5,0.5,3.5,.T.,.T.);
+/* === Boundary loop on trimmed surface === */
+#30=CARTESIAN_POINT('',(6.5,0.0,0.0));#31=VERTEX_POINT('',#30);
+#32=CARTESIAN_POINT('',(7.5,0.0,0.0));#33=VERTEX_POINT('',#32);
+#34=CARTESIAN_POINT('',(7.5,2.0,0.0));#35=VERTEX_POINT('',#34);
+#36=CARTESIAN_POINT('',(6.5,2.0,0.0));#37=VERTEX_POINT('',#36);
+/* === Edges with 2D curves in trimmed surface parameter space === */
+#40=LINE('',#30,#(DIRECTION('',(1.0,0.0,0.0)),VECTOR('',(1.0,0.0,0.0),1.0)));
+#41=PCURVE('',#20,#40);
+#42=EDGE_CURVE('trim_e1',#31,#33,#41,.T.);
+#43=LINE('',#33,#(DIRECTION('',(0.0,1.0,0.0)),VECTOR('',(0.0,1.0,0.0),1.0)));
+#44=PCURVE('',#20,#43);
+#45=EDGE_CURVE('trim_e2',#33,#35,#44,.T.);
+#46=LINE('',#35,#(DIRECTION('',(-1.0,0.0,0.0)),VECTOR('',(-1.0,0.0,0.0),1.0)));
+#47=PCURVE('',#20,#46);
+#48=EDGE_CURVE('trim_e3',#35,#37,#47,.T.);
+#49=LINE('',#37,#(DIRECTION('',(0.0,-1.0,0.0)),VECTOR('',(0.0,-1.0,0.0),1.0)));
+#50=PCURVE('',#20,#49);
+#51=EDGE_CURVE('trim_e4',#37,#31,#50,.T.);
+#52=ORIENTED_EDGE('oe1',*,*,#42,.T.);#53=ORIENTED_EDGE('oe2',*,*,#45,.T.);
+#54=ORIENTED_EDGE('oe3',*,*,#48,.T.);#55=ORIENTED_EDGE('oe4',*,*,#51,.T.);
+#56=EDGE_LOOP('boundary',(#52,#53,#54,#55));
+#57=FACE_OUTER_BOUND('',#56,.T.);
+#60=ADVANCED_FACE('trimmed_torus_face',(#57),#20,.T.);
+/* === Mandatory product chain === */
+#9000=PRODUCT_CONTEXT('',#1,'mechanical');
+#9001=PRODUCT('Tfa108','Tfa108','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
+#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
+#9021=OPEN_SHELL('shell',(#60));
+#9022=SHELL_BASED_SURFACE_MODEL('sbsm',(#9021));
+#9023=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9022),#9010);
+#9024=SHAPE_DEFINITION_REPRESENTATION(#9005,#9023);
+ENDSEC;
+END-ISO-10303-21;

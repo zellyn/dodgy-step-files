@@ -1,0 +1,67 @@
+ISO-10303-21;
+/* Twi137 - ShapeFix_Wire.FixIntersectingEdges 2D-only intersection
+ * Defect: ShapeFix_Wire.FixIntersectingEdges 2D-only intersection
+ */
+HEADER;
+FILE_DESCRIPTION(('Twi137 test case','ShapeFix_Wire.FixIntersectingEdges 2D-only intersection'),'2;1');
+FILE_NAME('Twi137.stp','2026-06-15T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#11=DIRECTION('',(0.0,0.0,1.0));
+#12=DIRECTION('',(1.0,0.0,0.0));
+#13=AXIS2_PLACEMENT_3D('',#10,#11,#12);
+
+#20=PLANE('',#13);
+/* Surface (parametric 2D) for edges with PCurves */
+/* Two edges that intersect in 2D parameter space but NOT in 3D */
+#100=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#101=VERTEX_POINT('',#100);
+#102=CARTESIAN_POINT('',(10.0,0.0,0.0));
+#103=VERTEX_POINT('',#102);
+#104=CARTESIAN_POINT('',(0.0,10.0,0.0));
+#105=VERTEX_POINT('',#104);
+#106=CARTESIAN_POINT('',(10.0,10.0,0.0));
+#107=VERTEX_POINT('',#106);
+
+/* Edge 1: straight line from (0,0,0) to (10,10,0) in 3D, PCurve (0,0)-(5,5) in 2D */
+#110=LINE('',#100,#12);
+#111=EDGE_CURVE('',#101,#107,#110,.T.);
+
+/* Edge 2: straight line from (5,-5,1) to (5,15,1) in 3D, PCurve (5,0)-(5,10) in 2D */
+#120=CARTESIAN_POINT('',(5.0,-5.0,1.0));
+#121=VERTEX_POINT('',#120);
+#122=CARTESIAN_POINT('',(5.0,15.0,1.0));
+#123=VERTEX_POINT('',#122);
+#124=DIRECTION('',(0.0,1.0,0.0));
+#125=LINE('',#120,#124);
+#126=EDGE_CURVE('',#121,#123,#125,.T.);
+
+/* Wire with 2 edges: these intersect in 2D parameter space (5,5) but not in 3D */
+#140=ORIENTED_EDGE('',*,*,#111,.T.);
+#141=ORIENTED_EDGE('',*,*,#126,.T.);
+#142=EDGE_LOOP('',(#140,#141));
+#143=FACE_OUTER_BOUND('',#142,.T.);
+#144=ADVANCED_FACE('',(#143),#20,.T.);
+#8000=OPEN_SHELL('',(#144));
+
+/* PRODUCT CHAIN - Mandatory */
+#9000=PRODUCT_CONTEXT('',#1,'mechanical');
+#9001=PRODUCT('Twi137','Twi137','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
+#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
+#9021=SHELL_BASED_SURFACE_MODEL('sbsm',(#8000));
+#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#9010);
+#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+ENDSEC;
+END-ISO-10303-21;

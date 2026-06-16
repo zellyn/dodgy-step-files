@@ -1,0 +1,86 @@
+ISO-10303-21;
+/* Twi148 - ShapeAnalysis_Wire.CheckClosed degenerate-tolerance
+ * Defect: wire whose closing distance is exactly equal to the closure tolerance;
+ * non-strict equality leads to false-positive closure validation.
+ * CheckClosed returns true when distance == tolerance, masking a closed wire check failure.
+ */
+HEADER;
+FILE_DESCRIPTION(('Twi148 test case','ShapeAnalysis_Wire.CheckClosed degenerate-tolerance'),'2;1');
+FILE_NAME('Twi148.stp','2026-06-15T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#11=DIRECTION('',(0.0,0.0,1.0));
+#12=DIRECTION('',(1.0,0.0,0.0));
+#13=AXIS2_PLACEMENT_3D('',#10,#11,#12);
+
+/* Plane containing the wire */
+#20=PLANE('',#13);
+
+/* Wire with closure distance exactly equal to tolerance (1.0E-7) */
+#100=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#101=VERTEX_POINT('',#100);
+
+#102=CARTESIAN_POINT('',(10.0,0.0,0.0));
+#103=VERTEX_POINT('',#102);
+
+#104=CARTESIAN_POINT('',(10.0,10.0,0.0));
+#105=VERTEX_POINT('',#104);
+
+#106=CARTESIAN_POINT('',(0.0,10.0,0.0));
+#107=VERTEX_POINT('',#106);
+
+/* Return to start with gap exactly equal to tolerance */
+#108=CARTESIAN_POINT('',(1.0E-7,0.0,0.0));
+#109=VERTEX_POINT('',#108);
+
+/* Edge 1: (0,0,0) to (10,0,0) */
+#120=DIRECTION('',(1.0,0.0,0.0));
+#121=LINE('',#100,#120);
+#122=EDGE_CURVE('',#101,#103,#121,.T.);
+
+/* Edge 2: (10,0,0) to (10,10,0) */
+#123=DIRECTION('',(0.0,1.0,0.0));
+#124=LINE('',#102,#123);
+#125=EDGE_CURVE('',#103,#105,#124,.T.);
+
+/* Edge 3: (10,10,0) to (0,10,0) */
+#126=DIRECTION('',(-1.0,0.0,0.0));
+#127=LINE('',#104,#126);
+#128=EDGE_CURVE('',#105,#107,#127,.T.);
+
+/* Edge 4: (0,10,0) back towards (0,0,0), but stops at (1.0E-7, 0, 0) */
+#129=DIRECTION('',(0.0,-1.0,0.0));
+#130=LINE('',#106,#129);
+#131=EDGE_CURVE('',#107,#109,#130,.T.);
+
+/* Edge loop - appears closed but gap = tolerance exactly */
+#140=ORIENTED_EDGE('',*,*,#122,.T.);
+#141=ORIENTED_EDGE('',*,*,#125,.T.);
+#142=ORIENTED_EDGE('',*,*,#128,.T.);
+#143=ORIENTED_EDGE('',*,*,#131,.T.);
+#144=EDGE_LOOP('',(#140,#141,#142,#143));
+#145=FACE_OUTER_BOUND('',#144,.T.);
+#146=ADVANCED_FACE('',(#145),#20,.T.);
+#8000=OPEN_SHELL('',(#146));
+
+/* PRODUCT CHAIN - Mandatory */
+#9000=PRODUCT_CONTEXT('',#1,'mechanical');
+#9001=PRODUCT('Twi148','Twi148','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
+#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
+#9021=SHELL_BASED_SURFACE_MODEL('sbsm',(#8000));
+#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#9010);
+#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+ENDSEC;
+END-ISO-10303-21;

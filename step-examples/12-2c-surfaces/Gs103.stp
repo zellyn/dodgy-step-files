@@ -1,0 +1,68 @@
+ISO-10303-21;
+/* Gs103 - IsUClosed: periodic-vs-closed semantic mismatch
+ *
+ * Defect: Surface IsUClosed() checks u_closed declaration flag, not actual geometry.
+ * Surface may declare u_closed=true but control polygon doesn't close within tolerance
+ * (gap > Precision::Confusion). IsUClosed returns based on declaration, not validation.
+ *
+ * Reproducer: B_SPLINE_SURFACE with u_closed=true; control polygon first/last poles
+ * differ by more than tolerance; IsUClosed returns true incorrectly.
+ */
+HEADER;
+FILE_DESCRIPTION(('Gs103 test case','IsUClosed ignores geometry gap; checks declaration only'),'2;1');
+FILE_NAME('Gs103.stp','2026-06-15T00:00:00',('zellyn@gmail.com'),'','auto-generated','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#11=DIRECTION('',(0.0,0.0,1.0));
+#12=DIRECTION('',(1.0,0.0,0.0));
+#13=AXIS2_PLACEMENT_3D('',#10,#11,#12);
+/* B_SPLINE_SURFACE with u_closed=true; 4x3 control points.
+   U direction: first pole (0,0,0) and last pole (10,0,1) differ by 1mm in Z.
+   This gap exceeds typical tolerance (~0.001mm) but surface declares u_closed=true. */
+#20=B_SPLINE_SURFACE_WITH_KNOTS('',4,3,2,2,.T.,.F.,.F.,
+  (1,2,3,4,5),(1,2,3,4),
+  (#30,#31,#32,#33,#34,#35,#36,#37,#38,#39,#40,#41),
+  (1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0),
+  (1.0,1.0,1.0,1.0,1.0,1.0),.UNSPECIFIED.);
+/* First row (u indices 1-4) */
+#30=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#31=CARTESIAN_POINT('',(3.3,2.0,0.1));
+#32=CARTESIAN_POINT('',(6.7,2.0,0.1));
+#33=CARTESIAN_POINT('',(10.0,0.0,1.0));
+/* Second row */
+#34=CARTESIAN_POINT('',(0.0,5.0,0.5));
+#35=CARTESIAN_POINT('',(3.3,7.0,1.2));
+#36=CARTESIAN_POINT('',(6.7,7.0,1.2));
+#37=CARTESIAN_POINT('',(10.0,5.0,1.5));
+/* Third row */
+#38=CARTESIAN_POINT('',(0.0,10.0,0.0));
+#39=CARTESIAN_POINT('',(3.3,12.0,0.1));
+#40=CARTESIAN_POINT('',(6.7,12.0,0.1));
+#41=CARTESIAN_POINT('',(10.0,10.0,1.0));
+/* Face on u-closed but geometrically non-closed surface */
+#50=CARTESIAN_POINT('',(5.0,5.0,0.6));
+#51=VERTEX_POINT('',#50);
+#52=VERTEX_LOOP('',#51);
+#53=FACE_OUTER_BOUND('',#52,.T.);
+#54=ADVANCED_FACE('',(#53),#20,.T.);
+#60=OPEN_SHELL('',(#54));
+/* Product definition */
+#9000=PRODUCT_CONTEXT('',#1,'mechanical');
+#9001=PRODUCT('Gs103','Gs103','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
+#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
+#9022=GEOMETRICALLY_BOUNDED_SURFACE_SHAPE_REPRESENTATION('',(#60),#9010);
+#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+ENDSEC;
+END-ISO-10303-21;

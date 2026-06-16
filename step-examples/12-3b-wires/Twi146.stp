@@ -1,0 +1,88 @@
+ISO-10303-21;
+/* Twi146 - ShapeFix_Wire.FixLacking wrap-around on closed surface
+ * Defect: wire on cylinder missing the edge that crosses the periodic seam;
+ * FixLacking inserts an edge to close the gap but places it in the wrong period
+ * of the cyclic domain (e.g., inserts near u=0 instead of u=2π or vice versa).
+ */
+HEADER;
+FILE_DESCRIPTION(('Twi146 test case','ShapeFix_Wire.FixLacking wrap-around on closed surface'),'2;1');
+FILE_NAME('Twi146.stp','2026-06-15T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#11=DIRECTION('',(0.0,0.0,1.0));
+#12=DIRECTION('',(1.0,0.0,0.0));
+#13=AXIS2_PLACEMENT_3D('',#10,#11,#12);
+
+/* Cylindrical surface (periodic in rotation) */
+#20=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#21=DIRECTION('',(0.0,0.0,1.0));
+#22=AXIS2_PLACEMENT_3D('',#20,#21,#12);
+#30=CYLINDRICAL_SURFACE('',#22,5.0);
+
+/* Wire missing edge across seam - gap near u=0 and u=2π */
+#100=CARTESIAN_POINT('',(5.0,0.0,0.0));
+#101=VERTEX_POINT('',#100);
+
+/* Edge 1: from (5,0,0) around cylinder partway */
+#102=CARTESIAN_POINT('',(0.0,5.0,0.0));
+#103=VERTEX_POINT('',#102);
+#110=LINE('',#100,#12);
+#111=EDGE_CURVE('',#101,#103,#110,.T.);
+
+/* Edge 2: up the cylinder */
+#104=CARTESIAN_POINT('',(0.0,5.0,10.0));
+#105=VERTEX_POINT('',#104);
+#112=DIRECTION('',(0.0,0.0,1.0));
+#113=LINE('',#102,#112);
+#114=EDGE_CURVE('',#103,#105,#113,.T.);
+
+/* Edge 3: down from top, approaching seam from other side */
+#106=CARTESIAN_POINT('',(-5.0,0.0,10.0));
+#107=VERTEX_POINT('',#106);
+#115=LINE('',#104,#12);
+#116=EDGE_CURVE('',#105,#107,#115,.T.);
+
+/* Edge 4: down the cylinder on far side */
+#108=CARTESIAN_POINT('',(-5.0,0.0,0.0));
+#109=VERTEX_POINT('',#108);
+#117=DIRECTION('',(0.0,0.0,-1.0));
+#118=LINE('',#106,#117);
+#119=EDGE_CURVE('',#107,#109,#118,.T.);
+
+/* Missing edge: from (-5,0,0) back to (5,0,0) - crosses seam near u=0/u=2π */
+#120=DIRECTION('',(1.0,0.0,0.0));
+#121=LINE('',#108,#120);
+#122=EDGE_CURVE('',#109,#101,#121,.T.);
+
+/* Edge loop incomplete - missing correct seam-crossing edge */
+#130=ORIENTED_EDGE('',*,*,#111,.T.);
+#131=ORIENTED_EDGE('',*,*,#114,.T.);
+#132=ORIENTED_EDGE('',*,*,#116,.T.);
+#133=ORIENTED_EDGE('',*,*,#119,.T.);
+#134=ORIENTED_EDGE('',*,*,#122,.T.);
+#135=EDGE_LOOP('',(#130,#131,#132,#133,#134));
+#136=FACE_OUTER_BOUND('',#135,.T.);
+#137=ADVANCED_FACE('',(#136),#30,.T.);
+#8000=OPEN_SHELL('',(#137));
+
+/* PRODUCT CHAIN - Mandatory */
+#9000=PRODUCT_CONTEXT('',#1,'mechanical');
+#9001=PRODUCT('Twi146','Twi146','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
+#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
+#9021=SHELL_BASED_SURFACE_MODEL('sbsm',(#8000));
+#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#9010);
+#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+ENDSEC;
+END-ISO-10303-21;

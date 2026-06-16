@@ -1,0 +1,92 @@
+ISO-10303-21;
+/* Tsh114 - near-tangent wedge dihedral angle
+ * Defect: two faces meeting at a wedge with near-zero dihedral angle (~0.001 rad);
+ * sewing tolerance triggers, producing phantom faces near the wedge tip. */
+HEADER;
+FILE_DESCRIPTION(('Tsh114 - wedge near-tangent dihedral','wave 20'),'2;1');
+FILE_NAME('Tsh114.stp','2026-06-15T00:00:00',(''),(''),'heal coverage','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+
+/* Two triangular faces meeting at a wedge (nearly coplanar, ~0.001 rad angle) */
+
+/* Face 1 triangle (lower) */
+#10=CARTESIAN_POINT('',(0,0,0));
+#11=CARTESIAN_POINT('',(10.0,0,0));
+#12=CARTESIAN_POINT('',(5.0,5.0,0.005));
+
+/* Face 2 triangle (upper, tiny tilt) */
+#13=CARTESIAN_POINT('',(0,0,0));
+#14=CARTESIAN_POINT('',(10.0,0,0));
+#15=CARTESIAN_POINT('',(5.0,5.0,0.0055));
+
+/* Vertices */
+#20=VERTEX_POINT('',#10);
+#21=VERTEX_POINT('',#11);
+#22=VERTEX_POINT('',#12);
+#23=VERTEX_POINT('',#13);
+#24=VERTEX_POINT('',#14);
+#25=VERTEX_POINT('',#15);
+
+/* Planes (nearly coincident) */
+#30=AXIS2_PLACEMENT_3D('plane1',#10,DIRECTION('',(0,0,1)),DIRECTION('',(1,0,0)));
+#31=PLANE('',#30);
+#32=AXIS2_PLACEMENT_3D('plane2',#13,DIRECTION('',(0.0005,0,0.9999999)),DIRECTION('',(1,0,0)));
+#33=PLANE('',#32);
+
+/* Face 1 edges */
+#40=LINE('',#10,VECTOR('',(1,0,0),10.0));
+#41=EDGE_CURVE('f1_e1',#20,#21,#40,.T.);
+#42=LINE('',#11,VECTOR('',(-0.5,0.5,0.0005),7.0710678));
+#43=EDGE_CURVE('f1_e2',#21,#22,#42,.T.);
+#44=LINE('',#12,VECTOR('',(-0.5,-0.5,-0.0005),7.0710678));
+#45=EDGE_CURVE('f1_e3',#22,#20,#44,.T.);
+
+/* Face 2 edges (shared edge #41 with face 1) */
+#46=LINE('',#14,VECTOR('',(-0.5,0.5,0.0055),7.0710678));
+#47=EDGE_CURVE('f2_e2',#24,#25,#46,.T.);
+#48=LINE('',#15,VECTOR('',(-0.5,-0.5,-0.0055),7.0710678));
+#49=EDGE_CURVE('f2_e3',#25,#23,#48,.T.);
+
+/* Edge loops */
+#50=ORIENTED_EDGE('',*,*,#41,.T.);
+#51=ORIENTED_EDGE('',*,*,#43,.T.);
+#52=ORIENTED_EDGE('',*,*,#45,.T.);
+#53=EDGE_LOOP('f1_loop',(#50,#51,#52));
+
+#54=ORIENTED_EDGE('',*,*,#41,.F.);
+#55=ORIENTED_EDGE('',*,*,#47,.T.);
+#56=ORIENTED_EDGE('',*,*,#49,.T.);
+#57=EDGE_LOOP('f2_loop',(#54,#55,#56));
+
+/* Face bounds */
+#60=FACE_OUTER_BOUND('',#53,.T.);
+#61=FACE_OUTER_BOUND('',#57,.T.);
+
+/* Faces */
+#70=ADVANCED_FACE('face1',(#60),#31,.T.);
+#71=ADVANCED_FACE('face2',(#61),#33,.T.);
+
+/* Shell */
+#80=OPEN_SHELL('wedge_shell',(#70,#71));
+
+/* Mandatory PRODUCT chain */
+#9000=PRODUCT_CONTEXT('',#1,'mechanical');
+#9001=PRODUCT('Tsh114','Tsh114','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
+#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
+#9021=SHELL_BASED_SURFACE_MODEL('sbsm',(#80));
+#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#9010);
+#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+ENDSEC;
+END-ISO-10303-21;

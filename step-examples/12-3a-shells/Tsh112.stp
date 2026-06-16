@@ -1,0 +1,140 @@
+ISO-10303-21;
+/* Tsh112 - ShapeFix_Shell.FixFaceOrientation T-junction shell
+ * Defect: three faces meeting at a single edge (one inner, two outer);
+ * orientation propagation has to pick which neighbor to follow. */
+HEADER;
+FILE_DESCRIPTION(('Tsh112 - T-junction three-face edge','wave 19'),'2;1');
+FILE_NAME('Tsh112.stp','2026-06-15T00:00:00',(''),(''),'heal coverage','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+
+/* Create three faces sharing a single edge: one "inner" face and two "outer" faces */
+
+/* Shared edge vertices (on the T-junction) */
+#100=CARTESIAN_POINT('',(0,0,0));
+#101=CARTESIAN_POINT('',(0,0,5.0));
+
+/* Face 1 (bottom-left): quad from 0,0 to 5,5 */
+#102=CARTESIAN_POINT('',(0,0,0));
+#103=CARTESIAN_POINT('',(5.0,0,0));
+#104=CARTESIAN_POINT('',(5.0,5.0,0));
+#105=CARTESIAN_POINT('',(0,5.0,0));
+
+/* Face 2 (bottom-right): quad from 0,0 to -5,5 */
+#106=CARTESIAN_POINT('',(0,0,0));
+#107=CARTESIAN_POINT('',(-5.0,0,0));
+#108=CARTESIAN_POINT('',(-5.0,5.0,0));
+#109=CARTESIAN_POINT('',(0,5.0,0));
+
+/* Face 3 (inner/vertical): small quad along Y=0 plane, back face */
+#110=CARTESIAN_POINT('',(0,-1.0,0));
+#111=CARTESIAN_POINT('',(0,-1.0,5.0));
+#112=CARTESIAN_POINT('',(0,1.0,5.0));
+#113=CARTESIAN_POINT('',(0,1.0,0));
+
+/* VERTEX_POINT entities */
+#200=VERTEX_POINT('',#100);
+#201=VERTEX_POINT('',#101);
+#202=VERTEX_POINT('',#102);
+#203=VERTEX_POINT('',#103);
+#204=VERTEX_POINT('',#104);
+#205=VERTEX_POINT('',#105);
+#206=VERTEX_POINT('',#106);
+#207=VERTEX_POINT('',#107);
+#208=VERTEX_POINT('',#108);
+#209=VERTEX_POINT('',#109);
+#210=VERTEX_POINT('',#110);
+#211=VERTEX_POINT('',#111);
+#212=VERTEX_POINT('',#112);
+#213=VERTEX_POINT('',#113);
+
+/* Planes */
+#300=AXIS2_PLACEMENT_3D('face1_plane',#100,DIRECTION('',(0,0,1)),DIRECTION('',(1,0,0)));
+#301=PLANE('',#300);
+#302=AXIS2_PLACEMENT_3D('face2_plane',#106,DIRECTION('',(0,0,1)),DIRECTION('',(-1,0,0)));
+#303=PLANE('',#302);
+#304=AXIS2_PLACEMENT_3D('face3_plane',#110,DIRECTION('',(1,0,0)),DIRECTION('',(0,1,0)));
+#305=PLANE('',#304);
+
+/* Face 1 edges */
+#400=LINE('',#102,VECTOR('',(1,0,0),5.0));
+#401=EDGE_CURVE('f1e1',#202,#203,#400,.T.);
+#402=LINE('',#103,VECTOR('',(0,1,0),5.0));
+#403=EDGE_CURVE('f1e2',#203,#204,#402,.T.);
+#404=LINE('',#104,VECTOR('',(-1,0,0),5.0));
+#405=EDGE_CURVE('f1e3',#204,#205,#404,.T.);
+#406=LINE('',#105,VECTOR('',(0,-1,0),5.0));
+#407=EDGE_CURVE('f1e4',#205,#202,#406,.T.);
+
+/* Face 2 edges */
+#408=LINE('',#106,VECTOR('',(-1,0,0),5.0));
+#409=EDGE_CURVE('f2e1',#206,#207,#408,.T.);
+#410=LINE('',#107,VECTOR('',(0,1,0),5.0));
+#411=EDGE_CURVE('f2e2',#207,#208,#410,.T.);
+#412=LINE('',#108,VECTOR('',(1,0,0),5.0));
+#413=EDGE_CURVE('f2e3',#208,#209,#412,.T.);
+#414=LINE('',#109,VECTOR('',(0,-1,0),5.0));
+#415=EDGE_CURVE('f2e4',#209,#206,#414,.T.);
+
+/* Face 3 edges: includes the shared edge in T-junction */
+#416=LINE('',#110,VECTOR('',(0,0,5.0),5.0));
+#417=EDGE_CURVE('f3e1',#210,#211,#416,.T.);
+#418=LINE('',#111,VECTOR('',(0,2.0,0),2.0));
+#419=EDGE_CURVE('f3e2',#211,#212,#418,.T.);
+#420=LINE('',#112,VECTOR('',(0,-2.0,0),2.0));
+#421=EDGE_CURVE('f3e3',#212,#213,#420,.T.);
+#422=LINE('',#113,VECTOR('',(0,0,-5.0),5.0));
+#423=EDGE_CURVE('f3e4',#213,#210,#422,.T.);
+
+/* Edge loops */
+#500=ORIENTED_EDGE('',*,*,#401,.T.);
+#501=ORIENTED_EDGE('',*,*,#403,.T.);
+#502=ORIENTED_EDGE('',*,*,#405,.T.);
+#503=ORIENTED_EDGE('',*,*,#407,.T.);
+#504=EDGE_LOOP('face1_loop',(#500,#501,#502,#503));
+
+#505=ORIENTED_EDGE('',*,*,#409,.T.);
+#506=ORIENTED_EDGE('',*,*,#411,.T.);
+#507=ORIENTED_EDGE('',*,*,#413,.T.);
+#508=ORIENTED_EDGE('',*,*,#415,.T.);
+#509=EDGE_LOOP('face2_loop',(#505,#506,#507,#508));
+
+#510=ORIENTED_EDGE('',*,*,#417,.T.);
+#511=ORIENTED_EDGE('',*,*,#419,.T.);
+#512=ORIENTED_EDGE('',*,*,#421,.T.);
+#513=ORIENTED_EDGE('',*,*,#423,.T.);
+#514=EDGE_LOOP('face3_loop',(#510,#511,#512,#513));
+
+/* Face bounds */
+#600=FACE_OUTER_BOUND('',#504,.T.);
+#601=FACE_OUTER_BOUND('',#509,.T.);
+#602=FACE_OUTER_BOUND('',#514,.T.);
+
+/* Faces */
+#700=ADVANCED_FACE('face1_outer',(#600),#301,.T.);
+#701=ADVANCED_FACE('face2_outer',(#601),#303,.T.);
+#702=ADVANCED_FACE('face3_inner',(#602),#305,.T.);
+
+/* Shell */
+#800=OPEN_SHELL('tjunction_shell',(#700,#701,#702));
+
+/* Mandatory PRODUCT chain */
+#9000=PRODUCT_CONTEXT('',#1,'mechanical');
+#9001=PRODUCT('Tsh112','Tsh112','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
+#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
+#9021=SHELL_BASED_SURFACE_MODEL('sbsm',(#800));
+#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#9010);
+#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+ENDSEC;
+END-ISO-10303-21;

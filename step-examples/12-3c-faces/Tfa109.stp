@@ -1,0 +1,56 @@
+ISO-10303-21;
+/* Tfa109 - ShapeAnalysis_CheckSmallFace.CheckPin obtuse-angle pin
+ * Pin face whose tip angle exceeds 90° (not really a pin).
+ * CheckPin's threshold flags it incorrectly when other dimensions are small.
+ * Expected: should distinguish true pins (acute tip) from wedges (obtuse tip).
+ */
+HEADER;
+FILE_DESCRIPTION(('Tfa109 test case','Pin face with obtuse tip angle (>90 degrees)'),'2;1');
+FILE_NAME('Tfa109.stp','2026-06-15T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+/* === Planar surface: z = 0 === */
+#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#11=DIRECTION('',(0.0,0.0,1.0));#12=DIRECTION('',(1.0,0.0,0.0));
+#13=AXIS2_PLACEMENT_3D('',#10,#11,#12);#14=PLANE('pin_plane',#13);
+/* === Pin-like boundary: wide base, tip with obtuse angle ~120° === */
+#20=CARTESIAN_POINT('',(0.0,-1.0,0.0));#21=VERTEX_POINT('',#20);
+#22=CARTESIAN_POINT('',(0.0,1.0,0.0));#23=VERTEX_POINT('',#22);
+#24=CARTESIAN_POINT('',(1.0,0.0,0.0));#25=VERTEX_POINT('',#24);
+/* === Base edge (wide): 2mm === */
+#30=DIRECTION('',(0.0,1.0,0.0));#31=VECTOR('',#30,1.0);#32=LINE('',#20,#31);
+#33=EDGE_CURVE('base_edge',#21,#23,#32,.T.);
+/* === Left side to tip: 60° from base (creates obtuse tip angle) === */
+#34=DIRECTION('',(0.866,0.5,0.0));#35=VECTOR('',#34,1.0);#36=LINE('',#23,#35);
+#37=EDGE_CURVE('left_edge',#23,#25,#36,.T.);
+/* === Right side to tip: -60° from base === */
+#38=DIRECTION('',(0.866,-0.5,0.0));#39=VECTOR('',#38,1.0);#40=LINE('',#25,#40);
+#41=EDGE_CURVE('right_edge',#25,#21,#40,.T.);
+/* === Boundary loop === */
+#50=ORIENTED_EDGE('oe_base',*,*,#33,.T.);#51=ORIENTED_EDGE('oe_left',*,*,#37,.T.);
+#52=ORIENTED_EDGE('oe_right',*,*,#41,.T.);
+#53=EDGE_LOOP('pin_boundary',(#50,#51,#52));
+#54=FACE_OUTER_BOUND('',#53,.T.);
+/* === Obtuse-tip pin face === */
+#60=ADVANCED_FACE('obtuse_pin_face',(#54),#14,.T.);
+/* === Mandatory product chain === */
+#9000=PRODUCT_CONTEXT('',#1,'mechanical');
+#9001=PRODUCT('Tfa109','Tfa109','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
+#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
+#9021=OPEN_SHELL('shell',(#60));
+#9022=SHELL_BASED_SURFACE_MODEL('sbsm',(#9021));
+#9023=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9022),#9010);
+#9024=SHAPE_DEFINITION_REPRESENTATION(#9005,#9023);
+ENDSEC;
+END-ISO-10303-21;

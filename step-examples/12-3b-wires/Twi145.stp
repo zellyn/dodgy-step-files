@@ -1,0 +1,82 @@
+ISO-10303-21;
+/* Twi145 - ShapeAnalysis_Wire.CheckGap3d 3D-only with valid 2D
+ * Defect: wire on surface where 3D edges have a real gap but their parametric
+ * (2D) curves on the surface connect seamlessly; CheckGap3d misses this because
+ * it checks 2D first and skips 3D validation when 2D passes.
+ */
+HEADER;
+FILE_DESCRIPTION(('Twi145 test case','ShapeAnalysis_Wire.CheckGap3d 3D-only with valid 2D'),'2;1');
+FILE_NAME('Twi145.stp','2026-06-15T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#11=DIRECTION('',(0.0,0.0,1.0));
+#12=DIRECTION('',(1.0,0.0,0.0));
+#13=AXIS2_PLACEMENT_3D('',#10,#11,#12);
+
+#20=PLANE('',#13);
+/* Wire with edges whose 2D pcurves connect but 3D curves have gap */
+#100=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#101=VERTEX_POINT('',#100);
+#102=CARTESIAN_POINT('',(10.0,0.0,0.0));
+#103=VERTEX_POINT('',#102);
+
+/* Edge 1: (0,0) -> (10,0) in 3D */
+#110=LINE('',#100,#12);
+#111=EDGE_CURVE('',#101,#103,#110,.T.);
+
+/* Edge 2: (10.1,0.0) -> (10.0,10.0) - starts at 10.1 instead of 10.0, creating 3D gap */
+#120=CARTESIAN_POINT('',(10.1,0.0,0.0));
+#121=VERTEX_POINT('',#120);
+#122=CARTESIAN_POINT('',(10.0,10.0,0.0));
+#123=VERTEX_POINT('',#122);
+#124=DIRECTION('',(0.0,1.0,0.0));
+#125=LINE('',#120,#124);
+#126=EDGE_CURVE('',#121,#123,#125,.T.);
+
+/* Edge 3: (10,10) -> (0,10) */
+#130=CARTESIAN_POINT('',(10.0,10.0,0.0));
+#131=VERTEX_POINT('',#130);
+#132=CARTESIAN_POINT('',(0.0,10.0,0.0));
+#133=VERTEX_POINT('',#132);
+#134=DIRECTION('',(0.0,-1.0,0.0));
+#135=LINE('',#130,#134);
+#136=EDGE_CURVE('',#131,#133,#135,.T.);
+
+/* Edge 4: (0,10) -> (0,0) */
+#140=CARTESIAN_POINT('',(0.0,10.0,0.0));
+#141=VERTEX_POINT('',#140);
+#142=DIRECTION('',(0.0,-1.0,0.0));
+#143=LINE('',#140,#142);
+#144=EDGE_CURVE('',#141,#101,#143,.T.);
+
+/* Edge loop with 3D gap at edge 2 start */
+#150=ORIENTED_EDGE('',*,*,#111,.T.);
+#151=ORIENTED_EDGE('',*,*,#126,.T.);
+#152=ORIENTED_EDGE('',*,*,#136,.T.);
+#153=ORIENTED_EDGE('',*,*,#144,.T.);
+#154=EDGE_LOOP('',(#150,#151,#152,#153));
+#155=FACE_OUTER_BOUND('',#154,.T.);
+#156=ADVANCED_FACE('',(#155),#20,.T.);
+#8000=OPEN_SHELL('',(#156));
+
+/* PRODUCT CHAIN - Mandatory */
+#9000=PRODUCT_CONTEXT('',#1,'mechanical');
+#9001=PRODUCT('Twi145','Twi145','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
+#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
+#9021=SHELL_BASED_SURFACE_MODEL('sbsm',(#8000));
+#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#9010);
+#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+ENDSEC;
+END-ISO-10303-21;

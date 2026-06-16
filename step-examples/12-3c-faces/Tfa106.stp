@@ -1,0 +1,69 @@
+ISO-10303-21;
+/* Tfa106 - ShapeFix_Face.FixLoopWire concentric inner wires
+ * Face with two inner wires that are concentric (one fully inside the other).
+ * FixLoopWire's nested-loop detection logic merges them but loses the topological information.
+ */
+HEADER;
+FILE_DESCRIPTION(('Tfa106 test case','Face with concentric inner wires (nested containment)'),'2;1');
+FILE_NAME('Tfa106.stp','2026-06-15T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+/* === Outer boundary: 20x20 square at z=0 === */
+#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#11=DIRECTION('',(0.0,0.0,1.0));#12=DIRECTION('',(1.0,0.0,0.0));
+#13=AXIS2_PLACEMENT_3D('',#10,#11,#12);#14=PLANE('outer_plane',#13);
+#20=CARTESIAN_POINT('',(0.0,0.0,0.0));#21=VERTEX_POINT('',#20);
+#22=CARTESIAN_POINT('',(20.0,0.0,0.0));#23=VERTEX_POINT('',#22);
+#24=CARTESIAN_POINT('',(20.0,20.0,0.0));#25=VERTEX_POINT('',#24);
+#26=CARTESIAN_POINT('',(0.0,20.0,0.0));#27=VERTEX_POINT('',#26);
+#30=DIRECTION('',(1.0,0.0,0.0));#31=VECTOR('',#30,1.0);#32=LINE('',#20,#31);
+#33=EDGE_CURVE('outer_e1',#21,#23,#32,.T.);
+#34=DIRECTION('',(0.0,1.0,0.0));#35=VECTOR('',#34,1.0);#36=LINE('',#22,#35);
+#37=EDGE_CURVE('outer_e2',#23,#25,#36,.T.);
+#38=DIRECTION('',(-1.0,0.0,0.0));#39=VECTOR('',#38,1.0);#40=LINE('',#24,#39);
+#41=EDGE_CURVE('outer_e3',#25,#27,#40,.T.);
+#42=DIRECTION('',(0.0,-1.0,0.0));#43=VECTOR('',#42,1.0);#44=LINE('',#26,#43);
+#45=EDGE_CURVE('outer_e4',#27,#21,#44,.T.);
+#50=ORIENTED_EDGE('oe1',*,*,#33,.T.);#51=ORIENTED_EDGE('oe2',*,*,#37,.T.);
+#52=ORIENTED_EDGE('oe3',*,*,#41,.T.);#53=ORIENTED_EDGE('oe4',*,*,#45,.T.);
+#54=EDGE_LOOP('outer_loop',(#50,#51,#52,#53));
+#55=FACE_OUTER_BOUND('',#54,.T.);
+/* === Inner wire 1: small circle centered at (10,10), radius 2 === */
+#60=CARTESIAN_POINT('',(10.0,10.0,0.0));
+#61=AXIS2_PLACEMENT_3D('',#60,#11,#12);
+#62=CIRCLE('inner_circ1',#61,2.0);
+#70=CARTESIAN_POINT('',(12.0,10.0,0.0));#71=VERTEX_POINT('',#70);
+#72=EDGE_CURVE('inner_arc1',#71,#71,#62,.T.);
+#73=ORIENTED_EDGE('inner_oe1',*,*,#72,.T.);
+#74=EDGE_LOOP('inner_loop1_concentric',(#73));
+#75=FACE_INNER_BOUND('',#74,.T.);
+/* === Inner wire 2: larger concentric circle, radius 4 === */
+#80=CIRCLE('inner_circ2',#61,4.0);
+#90=CARTESIAN_POINT('',(14.0,10.0,0.0));#91=VERTEX_POINT('',#90);
+#92=EDGE_CURVE('inner_arc2',#91,#91,#80,.T.);
+#93=ORIENTED_EDGE('inner_oe2',*,*,#92,.T.);
+#94=EDGE_LOOP('inner_loop2_outer_concentric',(#93));
+#95=FACE_INNER_BOUND('',#94,.T.);
+/* === Face combining outer + both inner wires === */
+#100=ADVANCED_FACE('tfa106_nested_inner',(#55,#75,#95),#14,.T.);
+/* === Mandatory product chain === */
+#9000=PRODUCT_CONTEXT('',#1,'mechanical');
+#9001=PRODUCT('Tfa106','Tfa106','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
+#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
+#9021=OPEN_SHELL('shell',(#100));
+#9022=SHELL_BASED_SURFACE_MODEL('sbsm',(#9021));
+#9023=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9022),#9010);
+#9024=SHAPE_DEFINITION_REPRESENTATION(#9005,#9023);
+ENDSEC;
+END-ISO-10303-21;

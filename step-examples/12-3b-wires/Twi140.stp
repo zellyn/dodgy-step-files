@@ -1,0 +1,68 @@
+ISO-10303-21;
+/* Twi140 - ShapeAnalysis_Wire.CheckTail B-spline tail
+ * Defect: ShapeAnalysis_Wire.CheckTail B-spline tail
+ */
+HEADER;
+FILE_DESCRIPTION(('Twi140 test case','ShapeAnalysis_Wire.CheckTail B-spline tail'),'2;1');
+FILE_NAME('Twi140.stp','2026-06-15T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#11=DIRECTION('',(0.0,0.0,1.0));
+#12=DIRECTION('',(1.0,0.0,0.0));
+#13=AXIS2_PLACEMENT_3D('',#10,#11,#12);
+
+#20=PLANE('',#13);
+/* Wire with last edge a B-spline whose tangent at endpoint is undefined (degenerate knot) */
+#100=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#101=VERTEX_POINT('',#100);
+#102=CARTESIAN_POINT('',(5.0,0.0,0.0));
+#103=VERTEX_POINT('',#102);
+
+/* First edge: simple line */
+#110=LINE('',#100,#12);
+#111=EDGE_CURVE('',#101,#103,#110,.T.);
+
+/* Second edge: B-spline with degenerate end knot (multiplicity 4 for cubic) */
+#120=CARTESIAN_POINT('',(5.0,5.0,0.0));
+#121=VERTEX_POINT('',#120);
+#122=B_SPLINE_CURVE_WITH_KNOTS('',3,
+  (#102,#102,#120,#120),
+  .UNSPECIFIED.,.F.,.F.,
+  (4,4),(0.0,1.0),
+  .UNSPECIFIED.);
+#123=EDGE_CURVE('',#103,#121,#122,.T.);
+
+/* Closing edge */
+#130=DIRECTION('',(0.0,-1.0,0.0));
+#131=LINE('',#120,#130);
+#132=EDGE_CURVE('',#121,#101,#131,.T.);
+
+#140=ORIENTED_EDGE('',*,*,#111,.T.);
+#141=ORIENTED_EDGE('',*,*,#123,.T.);
+#142=ORIENTED_EDGE('',*,*,#132,.T.);
+#143=EDGE_LOOP('',(#140,#141,#142));
+#144=FACE_OUTER_BOUND('',#143,.T.);
+#145=ADVANCED_FACE('',(#144),#20,.T.);
+#8000=OPEN_SHELL('',(#145));
+
+/* PRODUCT CHAIN - Mandatory */
+#9000=PRODUCT_CONTEXT('',#1,'mechanical');
+#9001=PRODUCT('Twi140','Twi140','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
+#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
+#9021=SHELL_BASED_SURFACE_MODEL('sbsm',(#8000));
+#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#9010);
+#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+ENDSEC;
+END-ISO-10303-21;

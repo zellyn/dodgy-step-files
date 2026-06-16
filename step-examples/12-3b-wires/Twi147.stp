@@ -1,0 +1,106 @@
+ISO-10303-21;
+/* Twi147 - ShapeFix_Wire.FixGaps3d edge-replacement
+ * Defect: wire with a gap that FixGaps3d wants to bridge by extending one edge;
+ * the extension creates a self-intersection with another edge in the wire.
+ * The algorithm fails to detect the induced self-intersection before committing the fix.
+ */
+HEADER;
+FILE_DESCRIPTION(('Twi147 test case','ShapeFix_Wire.FixGaps3d edge-replacement'),'2;1');
+FILE_NAME('Twi147.stp','2026-06-15T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#11=DIRECTION('',(0.0,0.0,1.0));
+#12=DIRECTION('',(1.0,0.0,0.0));
+#13=AXIS2_PLACEMENT_3D('',#10,#11,#12);
+
+/* Plane containing the wire */
+#20=PLANE('',#13);
+
+/* Wire with gap: edge1 ends at (5,0,0), edge2 starts at (5.01,0,0) - small gap
+   Edge1: from (0,0,0) to (5,0,0) horizontal
+   Edge2: from (5.01,0,0) to (10,0,0) horizontal (small gap 0.01)
+   Edge3: from (10,0,0) to (10,5,0) vertical
+   Edge4: from (10,5,0) to (2.5,2.5,0) diagonal (will intersect extended edge1)
+   Edge5: from (2.5,2.5,0) back to (0,0,0)
+*/
+
+/* Vertex for edge 1 */
+#100=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#101=VERTEX_POINT('',#100);
+
+/* Vertex between edge1 and gap */
+#102=CARTESIAN_POINT('',(5.0,0.0,0.0));
+#103=VERTEX_POINT('',#102);
+
+/* Vertex after gap (edge2 start) */
+#104=CARTESIAN_POINT('',(5.01,0.0,0.0));
+#105=VERTEX_POINT('',#104);
+
+/* Vertex at end of edge2 */
+#106=CARTESIAN_POINT('',(10.0,0.0,0.0));
+#107=VERTEX_POINT('',#106);
+
+/* Vertex at top right */
+#108=CARTESIAN_POINT('',(10.0,5.0,0.0));
+#109=VERTEX_POINT('',#108);
+
+/* Vertex on diagonal (intersection point) */
+#110=CARTESIAN_POINT('',(2.5,2.5,0.0));
+#111=VERTEX_POINT('',#110);
+
+/* Edge 1: horizontal from (0,0,0) to (5,0,0) */
+#120=DIRECTION('',(1.0,0.0,0.0));
+#121=LINE('',#100,#120);
+#122=EDGE_CURVE('',#101,#103,#121,.T.);
+
+/* Edge 2: horizontal from (5.01,0,0) to (10,0,0) - starts after gap */
+#123=LINE('',#104,#120);
+#124=EDGE_CURVE('',#105,#107,#123,.T.);
+
+/* Edge 3: vertical from (10,0,0) to (10,5,0) */
+#125=DIRECTION('',(0.0,1.0,0.0));
+#126=LINE('',#106,#125);
+#127=EDGE_CURVE('',#107,#109,#126,.T.);
+
+/* Edge 4: diagonal from (10,5,0) to (2.5,2.5,0) - will intersect extended edge1 */
+#128=DIRECTION('',(-1.47552825814757,(1.0,0.0)));
+#129=LINE('',#108,#128);
+#130=EDGE_CURVE('',#109,#111,#129,.T.);
+
+/* Edge 5: back to origin from (2.5,2.5,0) to (0,0,0) */
+#131=DIRECTION('',(-0.707106781186547,-0.707106781186547,0.0));
+#132=LINE('',#110,#131);
+#133=EDGE_CURVE('',#111,#101,#132,.T.);
+
+/* Edge loop with gap */
+#140=ORIENTED_EDGE('',*,*,#122,.T.);
+#141=ORIENTED_EDGE('',*,*,#124,.T.);
+#142=ORIENTED_EDGE('',*,*,#127,.T.);
+#143=ORIENTED_EDGE('',*,*,#130,.T.);
+#144=ORIENTED_EDGE('',*,*,#133,.T.);
+#145=EDGE_LOOP('',(#140,#141,#142,#143,#144));
+#146=FACE_OUTER_BOUND('',#145,.T.);
+#147=ADVANCED_FACE('',(#146),#20,.T.);
+#8000=OPEN_SHELL('',(#147));
+
+/* PRODUCT CHAIN - Mandatory */
+#9000=PRODUCT_CONTEXT('',#1,'mechanical');
+#9001=PRODUCT('Twi147','Twi147','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
+#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
+#9021=SHELL_BASED_SURFACE_MODEL('sbsm',(#8000));
+#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#9010);
+#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+ENDSEC;
+END-ISO-10303-21;

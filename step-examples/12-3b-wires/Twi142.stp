@@ -1,0 +1,80 @@
+ISO-10303-21;
+/* Twi142 - ShapeFix_Wire.FixDegenerated insertion at index 0
+ * Defect: wire's degenerate edge is at the start (position 0); FixDegenerated's
+ * index logic doesn't handle position-0 special case, causing incorrect insertion
+ * or index-out-of-bounds when attempting to insert at index 0.
+ */
+HEADER;
+FILE_DESCRIPTION(('Twi142 test case','ShapeFix_Wire.FixDegenerated insertion at index 0'),'2;1');
+FILE_NAME('Twi142.stp','2026-06-15T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#11=DIRECTION('',(0.0,0.0,1.0));
+#12=DIRECTION('',(1.0,0.0,0.0));
+#13=AXIS2_PLACEMENT_3D('',#10,#11,#12);
+
+#20=PLANE('',#13);
+/* Wire with degenerate edge (zero-length) at position 0 */
+#100=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#101=VERTEX_POINT('',#100);
+#102=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#103=VERTEX_POINT('',#102);
+
+/* Degenerate edge at position 0: zero-length edge */
+#110=LINE('',#100,#12);
+#111=EDGE_CURVE('',#101,#103,#110,.T.);
+
+/* Normal edges following the degenerate */
+#120=CARTESIAN_POINT('',(10.0,0.0,0.0));
+#121=VERTEX_POINT('',#120);
+#122=LINE('',#100,#12);
+#123=EDGE_CURVE('',#103,#121,#122,.T.);
+
+#130=CARTESIAN_POINT('',(10.0,10.0,0.0));
+#131=VERTEX_POINT('',#130);
+#132=DIRECTION('',(0.0,1.0,0.0));
+#133=LINE('',#120,#132);
+#134=EDGE_CURVE('',#121,#131,#133,.T.);
+
+#140=CARTESIAN_POINT('',(0.0,10.0,0.0));
+#141=VERTEX_POINT('',#140);
+#142=DIRECTION('',(0.0,-1.0,0.0));
+#143=LINE('',#130,#142);
+#144=EDGE_CURVE('',#131,#141,#143,.T.);
+
+#150=DIRECTION('',(0.0,-1.0,0.0));
+#151=LINE('',#140,#150);
+#152=EDGE_CURVE('',#141,#101,#151,.T.);
+
+/* Edge loop: degenerate at index 0 */
+#160=ORIENTED_EDGE('',*,*,#111,.T.);
+#161=ORIENTED_EDGE('',*,*,#123,.T.);
+#162=ORIENTED_EDGE('',*,*,#134,.T.);
+#163=ORIENTED_EDGE('',*,*,#144,.T.);
+#164=ORIENTED_EDGE('',*,*,#152,.T.);
+#165=EDGE_LOOP('',(#160,#161,#162,#163,#164));
+#166=FACE_OUTER_BOUND('',#165,.T.);
+#167=ADVANCED_FACE('',(#166),#20,.T.);
+#8000=OPEN_SHELL('',(#167));
+
+/* PRODUCT CHAIN - Mandatory */
+#9000=PRODUCT_CONTEXT('',#1,'mechanical');
+#9001=PRODUCT('Twi142','Twi142','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
+#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
+#9021=SHELL_BASED_SURFACE_MODEL('sbsm',(#8000));
+#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#9010);
+#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+ENDSEC;
+END-ISO-10303-21;

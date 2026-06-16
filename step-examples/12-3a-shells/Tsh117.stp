@@ -1,0 +1,133 @@
+ISO-10303-21;
+/* Tsh117 - aliased EDGE_LOOP between face outer and inner bounds
+ * Defect: FACE_BOUND (inner hole) references same EDGE_LOOP id as the outer
+ * wire of another face — edge aliasing bug that breaks face independence. */
+HEADER;
+FILE_DESCRIPTION(('Tsh117 - aliased edge loop between faces','wave 20'),'2;1');
+FILE_NAME('Tsh117.stp','2026-06-15T00:00:00',(''),(''),'heal coverage','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+
+/* Face 1: quad with hole (inner EDGE_LOOP aliased to Face 2's outer loop) */
+
+/* Face 1 outer quad */
+#10=CARTESIAN_POINT('',(0,0,0));
+#11=CARTESIAN_POINT('',(10.0,0,0));
+#12=CARTESIAN_POINT('',(10.0,10.0,0));
+#13=CARTESIAN_POINT('',(0,10.0,0));
+
+/* Face 1 hole inner quad (same location as Face 2) */
+#14=CARTESIAN_POINT('',(2.0,2.0,0));
+#15=CARTESIAN_POINT('',(4.0,2.0,0));
+#16=CARTESIAN_POINT('',(4.0,4.0,0));
+#17=CARTESIAN_POINT('',(2.0,4.0,0));
+
+/* Face 2 outer quad (at z=5) */
+#18=CARTESIAN_POINT('',(2.0,2.0,5.0));
+#19=CARTESIAN_POINT('',(4.0,2.0,5.0));
+#20=CARTESIAN_POINT('',(4.0,4.0,5.0));
+#21=CARTESIAN_POINT('',(2.0,4.0,5.0));
+
+/* Vertices */
+#30=VERTEX_POINT('',#10);
+#31=VERTEX_POINT('',#11);
+#32=VERTEX_POINT('',#12);
+#33=VERTEX_POINT('',#13);
+#34=VERTEX_POINT('',#14);
+#35=VERTEX_POINT('',#15);
+#36=VERTEX_POINT('',#16);
+#37=VERTEX_POINT('',#17);
+#38=VERTEX_POINT('',#18);
+#39=VERTEX_POINT('',#19);
+#40=VERTEX_POINT('',#20);
+#41=VERTEX_POINT('',#21);
+
+/* Planes */
+#50=AXIS2_PLACEMENT_3D('plane1',#10,DIRECTION('',(0,0,1)),DIRECTION('',(1,0,0)));
+#51=PLANE('',#50);
+#52=AXIS2_PLACEMENT_3D('plane2',#18,DIRECTION('',(0,0,1)),DIRECTION('',(1,0,0)));
+#53=PLANE('',#52);
+
+/* Face 1 outer boundary edges */
+#60=LINE('',#10,VECTOR('',(1,0,0),10.0));
+#61=EDGE_CURVE('f1_outer_e1',#30,#31,#60,.T.);
+#62=LINE('',#11,VECTOR('',(0,1,0),10.0));
+#63=EDGE_CURVE('f1_outer_e2',#31,#32,#62,.T.);
+#64=LINE('',#12,VECTOR('',(-1,0,0),10.0));
+#65=EDGE_CURVE('f1_outer_e3',#32,#33,#64,.T.);
+#66=LINE('',#13,VECTOR('',(0,-1,0),10.0));
+#67=EDGE_CURVE('f1_outer_e4',#33,#30,#66,.T.);
+
+/* Hole boundary edges (will be aliased) */
+#68=LINE('',#14,VECTOR('',(1,0,0),2.0));
+#69=EDGE_CURVE('hole_e1',#34,#35,#68,.T.);
+#70=LINE('',#15,VECTOR('',(0,1,0),2.0));
+#71=EDGE_CURVE('hole_e2',#35,#36,#70,.T.);
+#72=LINE('',#16,VECTOR('',(-1,0,0),2.0));
+#73=EDGE_CURVE('hole_e3',#36,#37,#72,.T.);
+#74=LINE('',#17,VECTOR('',(0,-1,0),2.0));
+#75=EDGE_CURVE('hole_e4',#37,#34,#74,.T.);
+
+/* Face 2 boundary edges (SAME ids as hole edges) */
+#76=LINE('',#18,VECTOR('',(1,0,0),2.0));
+#77=EDGE_CURVE('f2_e1',#38,#39,#76,.T.);
+#78=LINE('',#19,VECTOR('',(0,1,0),2.0));
+#79=EDGE_CURVE('f2_e2',#39,#40,#78,.T.);
+#80=LINE('',#20,VECTOR('',(-1,0,0),2.0));
+#81=EDGE_CURVE('f2_e3',#40,#41,#80,.T.);
+#82=LINE('',#21,VECTOR('',(0,-1,0),2.0));
+#83=EDGE_CURVE('f2_e4',#41,#38,#82,.T.);
+
+/* Face 1 outer edge loop */
+#90=ORIENTED_EDGE('',*,*,#61,.T.);
+#91=ORIENTED_EDGE('',*,*,#63,.T.);
+#92=ORIENTED_EDGE('',*,*,#65,.T.);
+#93=ORIENTED_EDGE('',*,*,#67,.T.);
+#94=EDGE_LOOP('f1_outer_loop',(#90,#91,#92,#93));
+
+/* Hole edge loop (will be aliased to Face 2's outer) */
+#95=ORIENTED_EDGE('',*,*,#69,.F.);
+#96=ORIENTED_EDGE('',*,*,#71,.F.);
+#97=ORIENTED_EDGE('',*,*,#73,.F.);
+#98=ORIENTED_EDGE('',*,*,#75,.F.);
+#99=EDGE_LOOP('hole_loop',(#95,#96,#97,#98));
+
+/* Face 2 outer edge loop (ALIASED - same as hole_loop via #99) */
+#100=ORIENTED_EDGE('',*,*,#77,.T.);
+#101=ORIENTED_EDGE('',*,*,#79,.T.);
+#102=ORIENTED_EDGE('',*,*,#81,.T.);
+#103=ORIENTED_EDGE('',*,*,#83,.T.);
+#104=EDGE_LOOP('f2_outer_loop',(#100,#101,#102,#103));
+
+/* Face bounds */
+#110=FACE_OUTER_BOUND('',#94,.T.);
+#111=FACE_BOUND('',#99,.T.);
+#112=FACE_OUTER_BOUND('',#99,.T.);
+
+/* Faces - Face 1 hole uses #99 (same as Face 2 outer) */
+#120=ADVANCED_FACE('face1_with_hole',(#110,#111),#51,.T.);
+#121=ADVANCED_FACE('face2',(#112),#53,.T.);
+
+/* Open shell */
+#130=OPEN_SHELL('aliased_loop_shell',(#120,#121));
+
+/* Mandatory PRODUCT chain */
+#9000=PRODUCT_CONTEXT('',#1,'mechanical');
+#9001=PRODUCT('Tsh117','Tsh117','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
+#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
+#9021=SHELL_BASED_SURFACE_MODEL('sbsm',(#130));
+#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#9010);
+#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+ENDSEC;
+END-ISO-10303-21;

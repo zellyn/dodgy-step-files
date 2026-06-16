@@ -1,0 +1,51 @@
+ISO-10303-21;
+/* Gs101 - ShapeAnalysis_Surface.ValueOfUV: antipodal sphere convergence failure
+ *
+ * Defect: ValueOfUV() projects a 3D point onto a sphere using Newton iteration
+ * seeded from initial UV guess. When target is near the antipode of the seed,
+ * Newton initializes on the wrong sheet and converges to wrong root.
+ *
+ * Reproducer: SPHERICAL_SURFACE, request projection of 3D point P to UV where
+ * P is roughly antipodal to UV seed; Newton iteration converges to nearby but
+ * wrong point on opposite hemisphere.
+ */
+HEADER;
+FILE_DESCRIPTION(('Gs101 test case','Sphere antipodal Newton convergence to wrong root'),'2;1');
+FILE_NAME('Gs101.stp','2026-06-15T00:00:00',('zellyn@gmail.com'),'','auto-generated','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+/* Axis placement: sphere at origin */
+#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#11=DIRECTION('',(0.0,0.0,1.0));
+#12=DIRECTION('',(1.0,0.0,0.0));
+#13=AXIS2_PLACEMENT_3D('',#10,#11,#12);
+/* SPHERICAL_SURFACE radius 50.0 mm */
+#20=SPHERICAL_SURFACE('',#13,50.0);
+/* RECTANGULAR_TRIMMED_SURFACE: full sphere parametrization u in [0, 2*pi], v in [0, pi] */
+#21=RECTANGULAR_TRIMMED_SURFACE('',#20,0.0,6.283185,0.0,3.141592,.T.,.T.);
+/* North pole vertex as outer bound */
+#30=CARTESIAN_POINT('',(0.0,0.0,50.0));
+#31=VERTEX_POINT('',#30);
+#32=VERTEX_LOOP('',#31);
+#33=FACE_OUTER_BOUND('',#32,.T.);
+#34=ADVANCED_FACE('',(#33),#21,.T.);
+#40=OPEN_SHELL('',(#34));
+/* Product definition */
+#9000=PRODUCT_CONTEXT('',#1,'mechanical');
+#9001=PRODUCT('Gs101','Gs101','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
+#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
+#9022=GEOMETRICALLY_BOUNDED_SURFACE_SHAPE_REPRESENTATION('',(#40),#9010);
+#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+ENDSEC;
+END-ISO-10303-21;

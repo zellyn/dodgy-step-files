@@ -1,0 +1,62 @@
+ISO-10303-21;
+/* Gs100 - SplitSurface trim-aware split: splits base not trimmed wrapper
+ *
+ * Defect: ShapeUpgrade_SplitSurface.Build() processes RECTANGULAR_TRIMMED_SURFACE
+ * by extracting and splitting the base surface, ignoring the trim bounds.
+ * Result: split patches extend beyond original trim, creating invalid geometry.
+ *
+ * Reproducer: B-SPLINE_SURFACE_WITH_KNOTS trimmed to [u1,u2]x[v1,v2];
+ * request u-split; algorithm applies to base surface and ignores trim.
+ */
+HEADER;
+FILE_DESCRIPTION(('Gs100 test case','SplitSurface ignores trim on RECTANGULAR_TRIMMED_SURFACE'),'2;1');
+FILE_NAME('Gs100.stp','2026-06-15T00:00:00',('zellyn@gmail.com'),'','auto-generated','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#11=DIRECTION('',(0.0,0.0,1.0));
+#12=DIRECTION('',(1.0,0.0,0.0));
+#13=AXIS2_PLACEMENT_3D('',#10,#11,#12);
+/* B-SPLINE_SURFACE with 3x3 control points, degree 2 in both directions */
+#20=B_SPLINE_SURFACE_WITH_KNOTS('',3,3,2,2,.F.,.F.,.F.,
+  (1,2,3,4),(1,2,3,4),
+  (#30,#31,#32,#33,#34,#35,#36,#37,#38),
+  (1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0),
+  (1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0),.UNSPECIFIED.);
+/* Control points */
+#30=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#31=CARTESIAN_POINT('',(5.0,0.0,2.0));
+#32=CARTESIAN_POINT('',(10.0,0.0,0.0));
+#33=CARTESIAN_POINT('',(0.0,5.0,1.0));
+#34=CARTESIAN_POINT('',(5.0,5.0,3.0));
+#35=CARTESIAN_POINT('',(10.0,5.0,1.0));
+#36=CARTESIAN_POINT('',(0.0,10.0,0.0));
+#37=CARTESIAN_POINT('',(5.0,10.0,2.0));
+#38=CARTESIAN_POINT('',(10.0,10.0,0.0));
+/* RECTANGULAR_TRIMMED_SURFACE: trim to u in [1.5, 2.5], v in [1.0, 3.0] */
+#40=RECTANGULAR_TRIMMED_SURFACE('',#20,1.5,2.5,1.0,3.0,.T.,.T.);
+#50=CARTESIAN_POINT('',(5.0,5.0,2.5));
+#51=VERTEX_POINT('',#50);
+#52=VERTEX_LOOP('',#51);
+#53=FACE_OUTER_BOUND('',#52,.T.);
+#54=ADVANCED_FACE('',(#53),#40,.T.);
+#60=OPEN_SHELL('',(#54));
+/* Product definition */
+#9000=PRODUCT_CONTEXT('',#1,'mechanical');
+#9001=PRODUCT('Gs100','Gs100','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
+#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
+#9022=GEOMETRICALLY_BOUNDED_SURFACE_SHAPE_REPRESENTATION('',(#60),#9010);
+#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+ENDSEC;
+END-ISO-10303-21;

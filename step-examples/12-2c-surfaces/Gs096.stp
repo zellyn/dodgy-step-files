@@ -1,0 +1,45 @@
+ISO-10303-21;
+/* Gs096 - ShapeAnalysis_Surface.ComputeSingularities torus pinch
+ *
+ * Defect: Self-intersecting torus with major radius R < minor radius r.
+ * ComputeSingularities reports zero singularities despite self-intersection
+ * creating a pinch point where the surface crosses itself.
+ * Reproducer: Torus with major radius 1.0, minor radius 2.0.
+ */
+HEADER;
+FILE_DESCRIPTION(('Gs096 test case','Self-intersecting torus singularity detection'),'2;1');
+FILE_NAME('Gs096.stp','2026-06-15T00:00:00',(''),(''),'auto-generated','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+/* Self-intersecting torus: major radius 1.0, minor radius 2.0 */
+#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#11=AXIS2_PLACEMENT_3D('',#10,#21,#22);
+#21=DIRECTION('',(0.0,0.0,1.0));
+#22=DIRECTION('',(1.0,0.0,0.0));
+#30=TOROIDAL_SURFACE('',#11,1.0,2.0);
+/* Boundary vertex on major circle */
+#40=CARTESIAN_POINT('',(1.0,0.0,0.0));
+#41=VERTEX_POINT('',#40);
+#42=VERTEX_LOOP('',#41);
+#43=FACE_OUTER_BOUND('',#42,.T.);
+#44=ADVANCED_FACE('',(#43),#30,.T.);
+#45=OPEN_SHELL('',(#44));
+/* Product context and shape representation */
+#9000=PRODUCT_CONTEXT('',#1,'mechanical');
+#9001=PRODUCT('Gs096','Gs096','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
+#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
+#9022=GEOMETRICALLY_BOUNDED_SURFACE_SHAPE_REPRESENTATION('',(#30),#9010);
+#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+ENDSEC;
+END-ISO-10303-21;

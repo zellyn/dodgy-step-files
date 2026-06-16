@@ -1,0 +1,148 @@
+ISO-10303-21;
+/* Tsh118 - 5-face open box (missing top)
+ * Defect: open shell with free edges (manifold boundary); Perform might remove
+ * free edges and destroy topology, collapsing the box into invalid geometry. */
+HEADER;
+FILE_DESCRIPTION(('Tsh118 - open box with free edges','wave 20'),'2;1');
+FILE_NAME('Tsh118.stp','2026-06-15T00:00:00',(''),(''),'heal coverage','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+
+/* 5-face open box (bottom + 4 sides, no top) */
+
+/* Bottom face (z=0) */
+#10=CARTESIAN_POINT('',(0,0,0));
+#11=CARTESIAN_POINT('',(10.0,0,0));
+#12=CARTESIAN_POINT('',(10.0,10.0,0));
+#13=CARTESIAN_POINT('',(0,10.0,0));
+
+/* Top opening edges (z=10) - define free edges */
+#14=CARTESIAN_POINT('',(0,0,10.0));
+#15=CARTESIAN_POINT('',(10.0,0,10.0));
+#16=CARTESIAN_POINT('',(10.0,10.0,10.0));
+#17=CARTESIAN_POINT('',(0,10.0,10.0));
+
+/* Vertices */
+#20=VERTEX_POINT('',#10);
+#21=VERTEX_POINT('',#11);
+#22=VERTEX_POINT('',#12);
+#23=VERTEX_POINT('',#13);
+#24=VERTEX_POINT('',#14);
+#25=VERTEX_POINT('',#15);
+#26=VERTEX_POINT('',#16);
+#27=VERTEX_POINT('',#17);
+
+/* Planes */
+#30=AXIS2_PLACEMENT_3D('z0_plane',#10,DIRECTION('',(0,0,-1)),DIRECTION('',(1,0,0)));
+#31=PLANE('',#30);
+#32=AXIS2_PLACEMENT_3D('x0_plane',#10,DIRECTION('',(-1,0,0)),DIRECTION('',(0,1,0)));
+#33=PLANE('',#32);
+#34=AXIS2_PLACEMENT_3D('x10_plane',#11,DIRECTION('',(1,0,0)),DIRECTION('',(0,1,0)));
+#35=PLANE('',#34);
+#36=AXIS2_PLACEMENT_3D('y0_plane',#10,DIRECTION('',(0,-1,0)),DIRECTION('',(1,0,0)));
+#37=PLANE('',#36);
+#38=AXIS2_PLACEMENT_3D('y10_plane',#12,DIRECTION('',(0,1,0)),DIRECTION('',(1,0,0)));
+#39=PLANE('',#38);
+
+/* Bottom face edges */
+#50=LINE('',#10,VECTOR('',(1,0,0),10.0));
+#51=EDGE_CURVE('bot_e1',#20,#21,#50,.T.);
+#52=LINE('',#11,VECTOR('',(0,1,0),10.0));
+#53=EDGE_CURVE('bot_e2',#21,#22,#52,.T.);
+#54=LINE('',#12,VECTOR('',(-1,0,0),10.0));
+#55=EDGE_CURVE('bot_e3',#22,#23,#54,.T.);
+#56=LINE('',#13,VECTOR('',(0,-1,0),10.0));
+#57=EDGE_CURVE('bot_e4',#23,#20,#56,.T.);
+
+/* Vertical edges (free on top) */
+#58=LINE('',#10,VECTOR('',(0,0,1),10.0));
+#59=EDGE_CURVE('vert_e1',#20,#24,#58,.T.);
+#60=LINE('',#11,VECTOR('',(0,0,1),10.0));
+#61=EDGE_CURVE('vert_e2',#21,#25,#60,.T.);
+#62=LINE('',#12,VECTOR('',(0,0,1),10.0));
+#63=EDGE_CURVE('vert_e3',#22,#26,#62,.T.);
+#64=LINE('',#13,VECTOR('',(0,0,1),10.0));
+#65=EDGE_CURVE('vert_e4',#23,#27,#64,.T.);
+
+/* Top rim edges (free, no face using them) */
+#66=LINE('',#14,VECTOR('',(1,0,0),10.0));
+#67=EDGE_CURVE('top_e1',#24,#25,#66,.T.);
+#68=LINE('',#15,VECTOR('',(0,1,0),10.0));
+#69=EDGE_CURVE('top_e2',#25,#26,#68,.T.);
+#70=LINE('',#16,VECTOR('',(-1,0,0),10.0));
+#71=EDGE_CURVE('top_e3',#26,#27,#70,.T.);
+#72=LINE('',#17,VECTOR('',(0,-1,0),10.0));
+#73=EDGE_CURVE('top_e4',#27,#24,#72,.T.);
+
+/* Bottom face edge loop */
+#80=ORIENTED_EDGE('',*,*,#51,.T.);
+#81=ORIENTED_EDGE('',*,*,#53,.T.);
+#82=ORIENTED_EDGE('',*,*,#55,.T.);
+#83=ORIENTED_EDGE('',*,*,#57,.T.);
+#84=EDGE_LOOP('bot_loop',(#80,#81,#82,#83));
+
+/* X=0 face edge loop */
+#85=ORIENTED_EDGE('',*,*,#57,.F.);
+#86=ORIENTED_EDGE('',*,*,#59,.T.);
+#87=ORIENTED_EDGE('',*,*,#73,.T.);
+#88=ORIENTED_EDGE('',*,*,#65,.F.);
+#89=EDGE_LOOP('x0_loop',(#85,#86,#87,#88));
+
+/* X=10 face edge loop */
+#90=ORIENTED_EDGE('',*,*,#51,.F.);
+#91=ORIENTED_EDGE('',*,*,#61,.T.);
+#92=ORIENTED_EDGE('',*,*,#67,.T.);
+#93=ORIENTED_EDGE('',*,*,#63,.F.);
+#94=EDGE_LOOP('x10_loop',(#90,#91,#92,#93));
+
+/* Y=0 face edge loop */
+#95=ORIENTED_EDGE('',*,*,#53,.F.);
+#96=ORIENTED_EDGE('',*,*,#63,.T.);
+#97=ORIENTED_EDGE('',*,*,#69,.T.);
+#98=ORIENTED_EDGE('',*,*,#61,.F.);
+#99=EDGE_LOOP('y0_loop',(#95,#96,#97,#98));
+
+/* Y=10 face edge loop */
+#100=ORIENTED_EDGE('',*,*,#55,.F.);
+#101=ORIENTED_EDGE('',*,*,#65,.T.);
+#102=ORIENTED_EDGE('',*,*,#71,.T.);
+#103=ORIENTED_EDGE('',*,*,#59,.F.);
+#104=EDGE_LOOP('y10_loop',(#100,#101,#102,#103));
+
+/* Face bounds */
+#110=FACE_OUTER_BOUND('',#84,.T.);
+#111=FACE_OUTER_BOUND('',#89,.T.);
+#112=FACE_OUTER_BOUND('',#94,.T.);
+#113=FACE_OUTER_BOUND('',#99,.T.);
+#114=FACE_OUTER_BOUND('',#104,.T.);
+
+/* Faces */
+#120=ADVANCED_FACE('f_bot',(#110),#31,.T.);
+#121=ADVANCED_FACE('f_x0',(#111),#33,.T.);
+#122=ADVANCED_FACE('f_x10',(#112),#35,.T.);
+#123=ADVANCED_FACE('f_y0',(#113),#37,.T.);
+#124=ADVANCED_FACE('f_y10',(#114),#39,.T.);
+
+/* Open shell (5 faces, free edges on top rim) */
+#130=OPEN_SHELL('open_box',(#120,#121,#122,#123,#124));
+
+/* Mandatory PRODUCT chain */
+#9000=PRODUCT_CONTEXT('',#1,'mechanical');
+#9001=PRODUCT('Tsh118','Tsh118','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
+#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
+#9021=SHELL_BASED_SURFACE_MODEL('sbsm',(#130));
+#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#9010);
+#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+ENDSEC;
+END-ISO-10303-21;

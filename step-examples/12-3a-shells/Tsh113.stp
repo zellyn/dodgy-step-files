@@ -1,0 +1,168 @@
+ISO-10303-21;
+/* Tsh113 - ShapeUpgrade_RemoveInternalWires duplicate-wire-id
+ * Defect: two FACE_BOUND entities referencing the same EDGE_LOOP id (aliasing);
+ * RemoveInternalWires removes the wire on one face, breaking the other. */
+HEADER;
+FILE_DESCRIPTION(('Tsh113 - duplicate wire id aliasing','wave 19'),'2;1');
+FILE_NAME('Tsh113.stp','2026-06-15T00:00:00',(''),(''),'heal coverage','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+
+/* Two faces that share the same EDGE_LOOP id (internal wire) via aliasing */
+
+/* Face 1: outer quad */
+#100=CARTESIAN_POINT('',(0,0,0));
+#101=CARTESIAN_POINT('',(10.0,0,0));
+#102=CARTESIAN_POINT('',(10.0,10.0,0));
+#103=CARTESIAN_POINT('',(0,10.0,0));
+
+/* Inner hole for Face 1 */
+#104=CARTESIAN_POINT('',(2.0,2.0,0));
+#105=CARTESIAN_POINT('',(4.0,2.0,0));
+#106=CARTESIAN_POINT('',(4.0,4.0,0));
+#107=CARTESIAN_POINT('',(2.0,4.0,0));
+
+/* Face 2: separate quad at different height */
+#108=CARTESIAN_POINT('',(0,0,5.0));
+#109=CARTESIAN_POINT('',(10.0,0,5.0));
+#110=CARTESIAN_POINT('',(10.0,10.0,5.0));
+#111=CARTESIAN_POINT('',(0,10.0,5.0));
+
+/* Inner hole for Face 2 (SAME EDGE_LOOP as Face 1's hole via id #300) */
+/* Points: same location but at z=5 */
+#112=CARTESIAN_POINT('',(2.0,2.0,5.0));
+#113=CARTESIAN_POINT('',(4.0,2.0,5.0));
+#114=CARTESIAN_POINT('',(4.0,4.0,5.0));
+#115=CARTESIAN_POINT('',(2.0,4.0,5.0));
+
+/* VERTEX_POINT entities for Face 1 outer boundary */
+#200=VERTEX_POINT('',#100);
+#201=VERTEX_POINT('',#101);
+#202=VERTEX_POINT('',#102);
+#203=VERTEX_POINT('',#103);
+
+/* VERTEX_POINT entities for Face 1 inner boundary */
+#204=VERTEX_POINT('',#104);
+#205=VERTEX_POINT('',#105);
+#206=VERTEX_POINT('',#106);
+#207=VERTEX_POINT('',#107);
+
+/* VERTEX_POINT entities for Face 2 outer boundary */
+#208=VERTEX_POINT('',#108);
+#209=VERTEX_POINT('',#109);
+#210=VERTEX_POINT('',#110);
+#211=VERTEX_POINT('',#111);
+
+/* VERTEX_POINT entities for Face 2 inner boundary */
+#212=VERTEX_POINT('',#112);
+#213=VERTEX_POINT('',#113);
+#214=VERTEX_POINT('',#114);
+#215=VERTEX_POINT('',#115);
+
+/* Planes */
+#300=AXIS2_PLACEMENT_3D('face1_plane',#100,DIRECTION('',(0,0,1)),DIRECTION('',(1,0,0)));
+#301=PLANE('',#300);
+#302=AXIS2_PLACEMENT_3D('face2_plane',#108,DIRECTION('',(0,0,1)),DIRECTION('',(1,0,0)));
+#303=PLANE('',#302);
+
+/* Face 1 outer boundary edges */
+#400=LINE('',#100,VECTOR('',(1,0,0),10.0));
+#401=EDGE_CURVE('f1_e1',#200,#201,#400,.T.);
+#402=LINE('',#101,VECTOR('',(0,1,0),10.0));
+#403=EDGE_CURVE('f1_e2',#201,#202,#402,.T.);
+#404=LINE('',#102,VECTOR('',(-1,0,0),10.0));
+#405=EDGE_CURVE('f1_e3',#202,#203,#404,.T.);
+#406=LINE('',#103,VECTOR('',(0,-1,0),10.0));
+#407=EDGE_CURVE('f1_e4',#203,#200,#406,.T.);
+
+/* Face 1 inner boundary edges (hole) */
+#408=LINE('',#104,VECTOR('',(1,0,0),2.0));
+#409=EDGE_CURVE('f1_hole_e1',#204,#205,#408,.T.);
+#410=LINE('',#105,VECTOR('',(0,1,0),2.0));
+#411=EDGE_CURVE('f1_hole_e2',#205,#206,#410,.T.);
+#412=LINE('',#106,VECTOR('',(-1,0,0),2.0));
+#413=EDGE_CURVE('f1_hole_e3',#206,#207,#412,.T.);
+#414=LINE('',#107,VECTOR('',(0,-1,0),2.0));
+#415=EDGE_CURVE('f1_hole_e4',#207,#204,#414,.T.);
+
+/* Face 2 outer boundary edges */
+#416=LINE('',#108,VECTOR('',(1,0,0),10.0));
+#417=EDGE_CURVE('f2_e1',#208,#209,#416,.T.);
+#418=LINE('',#109,VECTOR('',(0,1,0),10.0));
+#419=EDGE_CURVE('f2_e2',#209,#210,#418,.T.);
+#420=LINE('',#110,VECTOR('',(-1,0,0),10.0));
+#421=EDGE_CURVE('f2_e3',#210,#211,#420,.T.);
+#422=LINE('',#111,VECTOR('',(0,-1,0),10.0));
+#423=EDGE_CURVE('f2_e4',#211,#208,#422,.T.);
+
+/* Face 2 inner boundary edges (hole) */
+#424=LINE('',#112,VECTOR('',(1,0,0),2.0));
+#425=EDGE_CURVE('f2_hole_e1',#212,#213,#424,.T.);
+#426=LINE('',#113,VECTOR('',(0,1,0),2.0));
+#427=EDGE_CURVE('f2_hole_e2',#213,#214,#426,.T.);
+#428=LINE('',#114,VECTOR('',(-1,0,0),2.0));
+#429=EDGE_CURVE('f2_hole_e3',#214,#215,#428,.T.);
+#430=LINE('',#115,VECTOR('',(0,-1,0),2.0));
+#431=EDGE_CURVE('f2_hole_e4',#215,#212,#430,.T.);
+
+/* Edge loops */
+#500=ORIENTED_EDGE('',*,*,#401,.T.);
+#501=ORIENTED_EDGE('',*,*,#403,.T.);
+#502=ORIENTED_EDGE('',*,*,#405,.T.);
+#503=ORIENTED_EDGE('',*,*,#407,.T.);
+#504=EDGE_LOOP('f1_outer_loop',(#500,#501,#502,#503));
+
+/* SHARED EDGE LOOP - aliased by both faces */
+#505=ORIENTED_EDGE('',*,*,#409,.F.);
+#506=ORIENTED_EDGE('',*,*,#411,.F.);
+#507=ORIENTED_EDGE('',*,*,#413,.F.);
+#508=ORIENTED_EDGE('',*,*,#415,.F.);
+#509=EDGE_LOOP('shared_hole_loop',(#505,#506,#507,#508));
+
+#510=ORIENTED_EDGE('',*,*,#417,.T.);
+#511=ORIENTED_EDGE('',*,*,#419,.T.);
+#512=ORIENTED_EDGE('',*,*,#421,.T.);
+#513=ORIENTED_EDGE('',*,*,#423,.T.);
+#514=EDGE_LOOP('f2_outer_loop',(#510,#511,#512,#513));
+
+/* Face 2 inner loop (separate from Face 1's) */
+#515=ORIENTED_EDGE('',*,*,#425,.F.);
+#516=ORIENTED_EDGE('',*,*,#427,.F.);
+#517=ORIENTED_EDGE('',*,*,#429,.F.);
+#518=ORIENTED_EDGE('',*,*,#431,.F.);
+#519=EDGE_LOOP('f2_inner_loop',(#515,#516,#517,#518));
+
+/* Face bounds */
+#600=FACE_OUTER_BOUND('',#504,.T.);
+#601=FACE_BOUND('',#509,.T.);
+#602=FACE_OUTER_BOUND('',#514,.T.);
+/* Face 2 uses the SAME #509 EDGE_LOOP for its inner bound - ALIASING BUG */
+#603=FACE_BOUND('',#509,.T.);
+
+/* Faces with aliased inner boundary reference */
+#700=ADVANCED_FACE('face1_with_hole',(#600,#601),#301,.T.);
+#701=ADVANCED_FACE('face2_with_hole',(#602,#603),#303,.T.);
+
+/* Shell */
+#800=OPEN_SHELL('aliased_hole_shell',(#700,#701));
+
+/* Mandatory PRODUCT chain */
+#9000=PRODUCT_CONTEXT('',#1,'mechanical');
+#9001=PRODUCT('Tsh113','Tsh113','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
+#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
+#9021=SHELL_BASED_SURFACE_MODEL('sbsm',(#800));
+#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#9010);
+#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+ENDSEC;
+END-ISO-10303-21;
