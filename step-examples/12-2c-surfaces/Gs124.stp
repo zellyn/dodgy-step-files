@@ -1,0 +1,103 @@
+ISO-10303-21;
+/* Gs124 - B-SPLINE_SURFACE with u_periodic flag but non-coincident poles
+ *
+ * Defect: ShapeAnalysis_Surface.IsUClosed reports true based on the
+ *  u_periodic flag, but the first/last U-poles don't coincide, leaving
+ *  a gap. This confuses healing logic which expects closed surfaces to
+ *  have geometrically coincident boundaries.
+ *
+ * Reproducer: B-SPLINE_SURFACE flagged as u_periodic=true but with
+ *  Pole(1,j) at (0,j,0) and Pole(nu,j) at (9.999,j,0), distance ~10.
+ *
+ * Expected kernel behavior:
+ *   IsUClosed - return true (respects flag)
+ *   heal - detect gap and flag as invalid periodic. */
+HEADER;
+FILE_DESCRIPTION(('Gs124 test case','B-SPLINE_SURFACE with periodic-flag but non-coincident poles'),'2;1');
+FILE_NAME('Gs124.stp','2026-06-15T00:00:00',(''),(''),'auto-generated','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+/* Axis placement */
+#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#11=DIRECTION('',(0.0,0.0,1.0));
+#12=DIRECTION('',(1.0,0.0,0.0));
+#13=AXIS2_PLACEMENT_3D('',#10,#11,#12);
+/* B-SPLINE_SURFACE: u_periodic=true but poles don't close
+ * nu=5, nv=3, ku=2, kv=2
+ * Poles: 5x3 grid; U endpoints at 0.0 and 9.999 (gap!)
+ * UKnots: [0, 0, 2.5, 5.0, 7.5, 10.0, 10.0]
+ * VKnots: [0, 0, 5.0, 10.0, 10.0] */
+#20=B_SPLINE_SURFACE('',5,3,2,2,.T.,.F.,.F.,
+  ((#30,#31,#32),
+   (#33,#34,#35),
+   (#36,#37,#38),
+   (#39,#40,#41),
+   (#42,#43,#44)),
+  ((0.0,1),(2.5,1),(5.0,1),(7.5,1),(10.0,1)),
+  ((0.0,1),(5.0,1),(10.0,1)),
+  0.0E+0,.F.);
+/* U-direction poles: first at 0, last at 9.999 (should coincide for periodic) */
+#30=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#31=CARTESIAN_POINT('',(0.0,5.0,0.0));
+#32=CARTESIAN_POINT('',(0.0,10.0,0.0));
+#33=CARTESIAN_POINT('',(3.0,0.0,0.0));
+#34=CARTESIAN_POINT('',(3.0,5.0,0.0));
+#35=CARTESIAN_POINT('',(3.0,10.0,0.0));
+#36=CARTESIAN_POINT('',(6.0,0.0,0.0));
+#37=CARTESIAN_POINT('',(6.0,5.0,0.0));
+#38=CARTESIAN_POINT('',(6.0,10.0,0.0));
+#39=CARTESIAN_POINT('',(8.5,0.0,0.0));
+#40=CARTESIAN_POINT('',(8.5,5.0,0.0));
+#41=CARTESIAN_POINT('',(8.5,10.0,0.0));
+/* Last U pole at 9.999 (gap from first at 0.0) */
+#42=CARTESIAN_POINT('',(9.999,0.0,0.0));
+#43=CARTESIAN_POINT('',(9.999,5.0,0.0));
+#44=CARTESIAN_POINT('',(9.999,10.0,0.0));
+/* Shell and face */
+#50=FACE_OUTER_BOUND('',#51,.T.);
+#51=EDGE_LOOP('',(#52,#53,#54,#55));
+#52=ORIENTED_EDGE('',*,*,#60,.T.);
+#53=ORIENTED_EDGE('',*,*,#61,.T.);
+#54=ORIENTED_EDGE('',*,*,#62,.T.);
+#55=ORIENTED_EDGE('',*,*,#63,.T.);
+#60=EDGE_CURVE('',#64,#65,#66,.T.);
+#61=EDGE_CURVE('',#65,#67,#68,.T.);
+#62=EDGE_CURVE('',#67,#69,#70,.T.);
+#63=EDGE_CURVE('',#69,#64,#71,.T.);
+#64=VERTEX_POINT('',#72);
+#65=VERTEX_POINT('',#73);
+#66=LINE('',#72,#74);
+#67=VERTEX_POINT('',#75);
+#68=LINE('',#73,#76);
+#69=VERTEX_POINT('',#77);
+#70=LINE('',#75,#78);
+#71=LINE('',#77,#79);
+#72=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#73=CARTESIAN_POINT('',(0.0,10.0,0.0));
+#74=DIRECTION('',(0.0,1.0,0.0));
+#75=CARTESIAN_POINT('',(9.999,10.0,0.0));
+#76=DIRECTION('',(-0.0,-1.0,0.0));
+#77=CARTESIAN_POINT('',(9.999,0.0,0.0));
+#78=DIRECTION('',(0.0,-1.0,0.0));
+#79=DIRECTION('',(-0.0,1.0,0.0));
+#80=ADVANCED_FACE('',(#50),#20,.T.);
+#90=OPEN_SHELL('',(#80));
+/* Product context chain */
+#9000=PRODUCT_CONTEXT('',#1,'mechanical');
+#9001=PRODUCT('Gs124','Gs124','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
+#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
+#9022=GEOMETRICALLY_BOUNDED_SURFACE_SHAPE_REPRESENTATION('',(#90),#9010);
+#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+ENDSEC;
+END-ISO-10303-21;

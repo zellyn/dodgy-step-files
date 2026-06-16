@@ -1,0 +1,86 @@
+ISO-10303-21;
+/* Tfa160 — ShapeFix_Face.FixWiresTwoCoincEdges loop-inside-loop
+ * Face with inner wire (hole) fully inside outer wire.
+ * Inner wire's edge is coincident with outer wire's edge.
+ * FixWiresTwoCoincEdges sees coincidence but can't decide ownership.
+ */
+HEADER;
+FILE_DESCRIPTION(('Tfa160 test case','Loop-inside-loop with coincident edge; ownership ambiguity'),'2;1');
+FILE_NAME('Tfa160.stp','2026-06-15T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+/* Planar surface for face */
+#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#11=DIRECTION('',(0.0,0.0,1.0));
+#12=DIRECTION('',(1.0,0.0,0.0));
+#13=AXIS2_PLACEMENT_3D('',#10,#11,#12);
+#14=PLANE('face_plane',#13);
+/* Outer wire: 10x10 square, (0,0) to (10,10) */
+#20=CARTESIAN_POINT('',(0.0,0.0,0.0));#21=VERTEX_POINT('',#20);
+#22=CARTESIAN_POINT('',(10.0,0.0,0.0));#23=VERTEX_POINT('',#22);
+#24=CARTESIAN_POINT('',(10.0,10.0,0.0));#25=VERTEX_POINT('',#24);
+#26=CARTESIAN_POINT('',(0.0,10.0,0.0));#27=VERTEX_POINT('',#26);
+/* Outer wire edges */
+#30=DIRECTION('',(1.0,0.0,0.0));#31=VECTOR('',#30,1.0);#32=LINE('',#20,#31);
+#33=EDGE_CURVE('outer_e0',#21,#23,#32,.T.);
+#34=DIRECTION('',(0.0,1.0,0.0));#35=VECTOR('',#34,1.0);#36=LINE('',#22,#35);
+#37=EDGE_CURVE('outer_e1',#23,#25,#36,.T.);
+#38=DIRECTION('',(-1.0,0.0,0.0));#39=VECTOR('',#38,1.0);#40=LINE('',#24,#39);
+#41=EDGE_CURVE('outer_e2',#25,#27,#40,.T.);
+#42=DIRECTION('',(0.0,-1.0,0.0));#43=VECTOR('',#42,1.0);#44=LINE('',#26,#43);
+#45=EDGE_CURVE('outer_e3',#27,#21,#44,.T.);
+#46=ORIENTED_EDGE('',*,*,#33,.T.);
+#47=ORIENTED_EDGE('',*,*,#37,.T.);
+#48=ORIENTED_EDGE('',*,*,#41,.T.);
+#49=ORIENTED_EDGE('',*,*,#45,.T.);
+#50=EDGE_LOOP('outer_loop',(#46,#47,#48,#49));
+#51=FACE_OUTER_BOUND('',#50,.T.);
+/* Inner wire (hole): rectangle (2,2) to (6,6), but shares an edge with outer wire.
+   Inner bottom edge (2,2)-(4,2) is COINCIDENT with portion of outer bottom edge (0,0)-(10,0).
+   This creates ambiguity in edge ownership. */
+#60=CARTESIAN_POINT('',(2.0,2.0,0.0));#61=VERTEX_POINT('',#60);
+#62=CARTESIAN_POINT('',(6.0,2.0,0.0));#63=VERTEX_POINT('',#62);
+#64=CARTESIAN_POINT('',(6.0,6.0,0.0));#65=VERTEX_POINT('',#64);
+#66=CARTESIAN_POINT('',(2.0,6.0,0.0));#67=VERTEX_POINT('',#66);
+/* Inner edge 0: (2,2) to (6,2) — COINCIDENT with outer edge segment
+   This edge geometrically lies ON outer edge #33 but is separate entity */
+#70=DIRECTION('',(1.0,0.0,0.0));#71=VECTOR('',#70,1.0);#72=LINE('',#60,#71);
+#73=EDGE_CURVE('inner_e0_coinc',#61,#63,#72,.T.);
+/* Inner edge 1: (6,2) to (6,6) */
+#80=DIRECTION('',(0.0,1.0,0.0));#81=VECTOR('',#81,1.0);#82=LINE('',#62,#81);
+#83=EDGE_CURVE('inner_e1',#63,#65,#82,.T.);
+/* Inner edge 2: (6,6) to (2,6) */
+#90=DIRECTION('',(-1.0,0.0,0.0));#91=VECTOR('',#90,1.0);#92=LINE('',#64,#91);
+#93=EDGE_CURVE('inner_e2',#65,#67,#92,.T.);
+/* Inner edge 3: (2,6) to (2,2) */
+#100=DIRECTION('',(0.0,-1.0,0.0));#101=VECTOR('',#100,1.0);#102=LINE('',#66,#101);
+#103=EDGE_CURVE('inner_e3',#67,#61,#102,.T.);
+/* Inner wire loop */
+#110=ORIENTED_EDGE('',*,*,#73,.T.);
+#111=ORIENTED_EDGE('',*,*,#83,.T.);
+#112=ORIENTED_EDGE('',*,*,#93,.T.);
+#113=ORIENTED_EDGE('',*,*,#103,.T.);
+#114=EDGE_LOOP('inner_loop',(#110,#111,#112,#113));
+#115=FACE_INNER_BOUND('',#114,.T.);
+/* Face with both loops */
+#116=ADVANCED_FACE('face_coinc_edges',(#51,#115),#14,.T.);
+/* Mandatory PRODUCT chain */
+#9000=PRODUCT_CONTEXT('',#1,'mechanical');
+#9001=PRODUCT('Tfa160','Tfa160','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
+#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
+#9021=SHELL_BASED_SURFACE_MODEL('sbsm',(#116));
+#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#9010);
+#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+ENDSEC;
+END-ISO-10303-21;

@@ -1,0 +1,66 @@
+ISO-10303-21;
+/* Twi202 - ShapeFix_Wire.FixReorder duplicate-vertex-causes-cycle
+ * Defect: Wire with two edges sharing both endpoints (parallel paths).
+ * FixReorder attempts to reorder but the parallel paths create a non-trivial
+ * graph structure that cannot be resolved by simple edge reordering. */
+HEADER;
+FILE_DESCRIPTION(('Twi202 test case','ShapeFix_Wire.FixReorder duplicate-vertex-causes-cycle — wire with two edges sharing both endpoints (parallel paths)'),'2;1');
+FILE_NAME('Twi202.stp','2026-06-16T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+/* Base plane */
+#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#11=DIRECTION('',(0.0,0.0,1.0));
+#12=DIRECTION('',(1.0,0.0,0.0));
+#13=AXIS2_PLACEMENT_3D('',#10,#11,#12);
+#20=PLANE('',#13);
+/* Vertices: A=(0,0), B=(10,0) repeated to create duplicate paths */
+#30=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#31=VERTEX_POINT('',#30);
+#32=CARTESIAN_POINT('',(10.0,0.0,0.0));
+#33=VERTEX_POINT('',#32);
+/* First path from A to B: lower route */
+#40=DIRECTION('',(1.0,0.0,0.0));
+#41=VECTOR('',#40,1.0);
+#42=LINE('',#30,#41);
+#50=EDGE_CURVE('',#31,#33,#42,.T.);
+/* Second path from A to B: upper route (offset in Y) */
+#51=CARTESIAN_POINT('',(0.0,2.0,0.0));
+#52=CARTESIAN_POINT('',(10.0,2.0,0.0));
+#60=DIRECTION('',(1.0,0.0,0.0));
+#61=VECTOR('',#60,1.0);
+#62=LINE('',#51,#61);
+#70=EDGE_CURVE('',#31,#33,#62,.T.);
+/* Return path B to A */
+#80=DIRECTION('',(-1.0,0.0,0.0));
+#81=VECTOR('',#80,1.0);
+#82=LINE('',#32,#81);
+#90=EDGE_CURVE('',#33,#31,#82,.T.);
+/* Wire edges in scrambled order to test reorder: E1, E3, E2 */
+#100=ORIENTED_EDGE('',*,*,#50,.T.);
+#101=ORIENTED_EDGE('',*,*,#90,.T.);
+#102=ORIENTED_EDGE('',*,*,#70,.T.);
+#110=EDGE_LOOP('',(#100,#101,#102));
+#111=FACE_OUTER_BOUND('',#110,.T.);
+#120=ADVANCED_FACE('',(#111),#20,.T.);
+/* Mandatory product chain */
+#9000=PRODUCT_CONTEXT('',#1,'mechanical');
+#9001=PRODUCT('Twi202','Twi202','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
+#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
+#9021=SHELL_BASED_SURFACE_MODEL('sbsm',(#9020));
+#9020=OPEN_SHELL('wrap_shell',(#120));
+#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#9010);
+#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+ENDSEC;
+END-ISO-10303-21;

@@ -1,0 +1,53 @@
+ISO-10303-21;
+/* Tfa168 - ShapeFix_Face.FixOrientation degenerate-edge-only
+ * Face whose outer wire consists only of degenerate edges; FixOrientation
+ * produces an undefined direction. All edges collapse to points. */
+HEADER;
+FILE_DESCRIPTION(('Tfa168 test case','ShapeFix_Face.FixOrientation degenerate-edge-only'),'2;1');
+FILE_NAME('Tfa168.stp','2026-06-15T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+/* Plane surface */
+#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#11=DIRECTION('',(0.0,0.0,1.0));
+#12=DIRECTION('',(1.0,0.0,0.0));
+#13=AXIS2_PLACEMENT_3D('',#10,#11,#12);
+#14=PLANE('face_plane',#13);
+/* All vertices at same location - creates degenerate edges */
+#20=CARTESIAN_POINT('',(5.0,5.0,0.0));
+#21=VERTEX_POINT('v1',#20);
+#22=VERTEX_POINT('v2',#20);
+#23=VERTEX_POINT('v3',#20);
+#24=VERTEX_POINT('v4',#20);
+/* DEFECT: Degenerate edges (start=end, same point) */
+#30=DIRECTION('',(0.0,0.0,1.0));#31=VECTOR('',#30,0.0);#32=LINE('degen_line',#20,#31);
+#33=EDGE_CURVE('degen_e1',#21,#22,#32,.T.);
+#34=EDGE_CURVE('degen_e2',#22,#23,#32,.T.);
+#35=EDGE_CURVE('degen_e3',#23,#24,#32,.T.);
+#36=EDGE_CURVE('degen_e4',#24,#21,#32,.T.);
+#37=ORIENTED_EDGE('',*,*,#33,.T.);#38=ORIENTED_EDGE('',*,*,#34,.T.);
+#39=ORIENTED_EDGE('',*,*,#35,.T.);#40=ORIENTED_EDGE('',*,*,#36,.T.);
+#41=EDGE_LOOP('degen_loop',(#37,#38,#39,#40));
+#42=FACE_OUTER_BOUND('',#41,.T.);
+/* DEFECT: Face with only degenerate outer wire */
+#100=ADVANCED_FACE('degen_face',(#42),#14,.T.);
+/* PRODUCT CHAIN */
+#9000=PRODUCT_CONTEXT('',#1,'mechanical');
+#9001=PRODUCT('Tfa168','Tfa168','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
+#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
+#9021=SHELL_BASED_SURFACE_MODEL('sbsm',(#100));
+#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#9010);
+#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+ENDSEC;
+END-ISO-10303-21;

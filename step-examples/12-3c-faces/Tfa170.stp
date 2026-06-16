@@ -1,0 +1,92 @@
+ISO-10303-21;
+/* Tfa170 - ShapeFix_Face.FixWiresTwoCoincEdges asymmetric-tolerance-merge
+ * Two wires with coincident edges but different per-vertex tolerances;
+ * FixWiresTwoCoincEdges uses one set of tolerances and discards the other. */
+HEADER;
+FILE_DESCRIPTION(('Tfa170 test case','ShapeFix_Face.FixWiresTwoCoincEdges asymmetric-tolerance-merge'),'2;1');
+FILE_NAME('Tfa170.stp','2026-06-15T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+/* Plane surface */
+#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#11=DIRECTION('',(0.0,0.0,1.0));
+#12=DIRECTION('',(1.0,0.0,0.0));
+#13=AXIS2_PLACEMENT_3D('',#10,#11,#12);
+#14=PLANE('face_plane',#13);
+/* Outer rectangular wire */
+#20=CARTESIAN_POINT('',(0.0,0.0,0.0));#21=VERTEX_POINT('',#20);
+#22=CARTESIAN_POINT('',(10.0,0.0,0.0));#23=VERTEX_POINT('',#22);
+#24=CARTESIAN_POINT('',(10.0,10.0,0.0));#25=VERTEX_POINT('',#24);
+#26=CARTESIAN_POINT('',(0.0,10.0,0.0));#27=VERTEX_POINT('',#26);
+/* Outer edges */
+#30=DIRECTION('',(1.0,0.0,0.0));#31=VECTOR('',#30,1.0);#32=LINE('',#20,#31);
+#33=EDGE_CURVE('outer_e1',#21,#23,#32,.T.);
+#34=DIRECTION('',(0.0,1.0,0.0));#35=VECTOR('',#34,1.0);#36=LINE('',#22,#35);
+#37=EDGE_CURVE('outer_e2',#23,#25,#36,.T.);
+#38=DIRECTION('',(-1.0,0.0,0.0));#39=VECTOR('',#38,1.0);#40=LINE('',#24,#39);
+#41=EDGE_CURVE('outer_e3',#25,#27,#40,.T.);
+#42=DIRECTION('',(0.0,-1.0,0.0));#43=VECTOR('',#42,1.0);#44=LINE('',#26,#43);
+#45=EDGE_CURVE('outer_e4',#27,#21,#44,.T.);
+#46=ORIENTED_EDGE('',*,*,#33,.T.);#47=ORIENTED_EDGE('',*,*,#37,.T.);
+#48=ORIENTED_EDGE('',*,*,#41,.T.);#49=ORIENTED_EDGE('',*,*,#45,.T.);
+#50=EDGE_LOOP('outer_loop',(#46,#47,#48,#49));
+#51=FACE_OUTER_BOUND('',#50,.T.);
+/* DEFECT: Two inner wires with coincident shared edges but different tolerances
+ * Inner wire 1: square (2,2) to (3,3) with tight tolerance */
+#60=CARTESIAN_POINT('',(2.0,2.0,0.0));#61=VERTEX_POINT('',#60);
+#62=CARTESIAN_POINT('',(3.0,2.0,0.0));#63=VERTEX_POINT('',#62);
+#64=CARTESIAN_POINT('',(3.0,3.0,0.0));#65=VERTEX_POINT('',#64);
+#66=CARTESIAN_POINT('',(2.0,3.0,0.0));#67=VERTEX_POINT('',#66);
+/* Inner wire 1 edges */
+#70=DIRECTION('',(1.0,0.0,0.0));#71=VECTOR('',#70,1.0);#72=LINE('',#60,#71);
+#73=EDGE_CURVE('inner1_e1',#61,#63,#72,.T.);
+#74=DIRECTION('',(0.0,1.0,0.0));#75=VECTOR('',#74,1.0);#76=LINE('',#62,#75);
+#77=EDGE_CURVE('inner1_e2',#63,#65,#76,.T.);
+#78=DIRECTION('',(-1.0,0.0,0.0));#79=VECTOR('',#78,1.0);#80=LINE('',#64,#79);
+#81=EDGE_CURVE('inner1_e3',#65,#67,#80,.T.);
+#82=DIRECTION('',(0.0,-1.0,0.0));#83=VECTOR('',#82,1.0);#84=LINE('',#66,#83);
+#85=EDGE_CURVE('inner1_e4',#67,#61,#84,.T.);
+#86=ORIENTED_EDGE('',*,*,#73,.T.);#87=ORIENTED_EDGE('',*,*,#77,.T.);
+#88=ORIENTED_EDGE('',*,*,#81,.T.);#89=ORIENTED_EDGE('',*,*,#85,.T.);
+#90=EDGE_LOOP('inner1_tight',(#86,#87,#88,#89));
+#91=FACE_INNER_BOUND('inner_tight_tol',#90,.T.);
+/* Inner wire 2: identical square with loose tolerance, shares edges */
+#100=CARTESIAN_POINT('',(2.0,2.0,0.0));#101=VERTEX_POINT('',#100);
+#102=CARTESIAN_POINT('',(3.0,2.0,0.0));#103=VERTEX_POINT('',#102);
+#104=CARTESIAN_POINT('',(3.0,3.0,0.0));#105=VERTEX_POINT('',#104);
+#106=CARTESIAN_POINT('',(2.0,3.0,0.0));#107=VERTEX_POINT('',#106);
+/* Inner wire 2 edges: reuse edges with different tolerance handling */
+#110=DIRECTION('',(1.0,0.0,0.0));#111=VECTOR('',#110,1.0);#112=LINE('',#100,#111);
+#113=EDGE_CURVE('inner2_e1',#101,#103,#112,.T.);
+#114=DIRECTION('',(0.0,1.0,0.0));#115=VECTOR('',#114,1.0);#116=LINE('',#102,#115);
+#117=EDGE_CURVE('inner2_e2',#103,#105,#116,.T.);
+#118=DIRECTION('',(-1.0,0.0,0.0));#119=VECTOR('',#118,1.0);#120=LINE('',#104,#119);
+#121=EDGE_CURVE('inner2_e3',#105,#107,#120,.T.);
+#122=DIRECTION('',(0.0,-1.0,0.0));#123=VECTOR('',#122,1.0);#124=LINE('',#106,#123);
+#125=EDGE_CURVE('inner2_e4',#107,#101,#124,.T.);
+#126=ORIENTED_EDGE('',*,*,#113,.T.);#127=ORIENTED_EDGE('',*,*,#117,.T.);
+#128=ORIENTED_EDGE('',*,*,#121,.T.);#129=ORIENTED_EDGE('',*,*,#125,.T.);
+#130=EDGE_LOOP('inner2_loose',(#126,#127,#128,#129));
+#131=FACE_INNER_BOUND('inner_loose_tol',#130,.T.);
+/* DEFECT: Face with two inner wires (coincident geometry, asymmetric tolerances) */
+#140=ADVANCED_FACE('face_two_coinc_holes',(#51,#91,#131),#14,.T.);
+/* PRODUCT CHAIN */
+#9000=PRODUCT_CONTEXT('',#1,'mechanical');
+#9001=PRODUCT('Tfa170','Tfa170','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
+#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
+#9021=SHELL_BASED_SURFACE_MODEL('sbsm',(#140));
+#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#9010);
+#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+ENDSEC;
+END-ISO-10303-21;

@@ -1,0 +1,49 @@
+ISO-10303-21;
+/* Gn107 - approximate-mode B-spline high-frequency
+   Defect: ShapeAnalysis_Curve.FillBndBox approximate mode
+   misses high-frequency oscillation entirely. Control points
+   form sawtooth from 0.0 to 1.0 in y; bounding-box computation
+   should span [0,1] but approximate mode misses peaks. */
+HEADER;
+FILE_DESCRIPTION(('Gn107 - approximate-mode B-spline high-frequency'),'2;1');
+FILE_NAME('Gn107.stp','2026-06-15T00:00:00',('auto-generated'),(''),
+  'auto-generated','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+/* 8-point B-spline with high-frequency sawtooth pattern */
+#1001=CARTESIAN_POINT('p',(0.0,0.0,0.0));
+#1002=CARTESIAN_POINT('p',(0.1,1.0,0.0));
+#1003=CARTESIAN_POINT('p',(0.2,0.1,0.0));
+#1004=CARTESIAN_POINT('p',(0.3,0.9,0.0));
+#1005=CARTESIAN_POINT('p',(0.4,0.2,0.0));
+#1006=CARTESIAN_POINT('p',(0.5,0.8,0.0));
+#1007=CARTESIAN_POINT('p',(0.6,0.3,0.0));
+#1008=CARTESIAN_POINT('p',(1.0,0.0,0.0));
+
+/* Cubic B-spline; knot multiplicities (4,1,1,1,1,1,2) sum to 12 */
+#5000=B_SPLINE_CURVE_WITH_KNOTS('highfreq_saw',
+  3,.F.,
+  (#1001,#1002,#1003,#1004,#1005,#1006,#1007,#1008),
+  (1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0),
+  .UNSPECIFIED.,.F.,.F.,
+  (4,1,1,1,1,1,2),
+  (0.0,0.143,0.286,0.429,0.571,0.714,0.857,1.0),
+  .UNSPECIFIED.);
+
+#9000=PRODUCT_CONTEXT('',#1,'mechanical');
+#9001=PRODUCT('Gn107','Gn107','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
+#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
+#9022=GEOMETRICALLY_BOUNDED_WIREFRAME_SHAPE_REPRESENTATION('',(#5000),#9010);
+#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+
+ENDSEC;
+END-ISO-10303-21;

@@ -1,0 +1,76 @@
+ISO-10303-21;
+/* Twi195 - CheckClosed open-tail-vs-spur
+ * Defect: ShapeAnalysis_Wire.CheckClosed reports wire as unclosed due to a
+ * small trailing spur (e.g., 1e-6 units) that nearly closes the gap. The
+ * defect is that a spur too small to close meaningfully should be
+ * distinguished from a true open gap, but CheckClosed only returns boolean
+ * open/closed, losing nuance for "almost closed" classification. */
+HEADER;
+FILE_DESCRIPTION(('Twi195 test case','CheckClosed open-tail-vs-spur classification'),'2;1');
+FILE_NAME('Twi195.stp','2026-06-15T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#11=DIRECTION('',(0.0,0.0,1.0));
+#12=DIRECTION('',(1.0,0.0,0.0));
+#13=AXIS2_PLACEMENT_3D('',#10,#11,#12);
+#20=PLANE('',#13);
+/* Start vertex at origin */
+#31=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#32=VERTEX_POINT('Start',#31);
+/* First edge: (0,0) to (10,0) */
+#33=CARTESIAN_POINT('',(10.0,0.0,0.0));
+#34=VERTEX_POINT('P1',#33);
+#35=DIRECTION('',(1.0,0.0,0.0));
+#36=VECTOR('',#35,10.0);
+#37=LINE('',#31,#36);
+#38=EDGE_CURVE('E1',#32,#34,#37,.T.);
+#39=ORIENTED_EDGE('',*,*,#38,.T.);
+/* Second edge: (10,0) to (0,1) -- goes up and back */
+#40=CARTESIAN_POINT('',(0.0,1.0,0.0));
+#41=VERTEX_POINT('P2',#40);
+#42=DIRECTION('',(-1.0,0.1,0.0));
+#43=VECTOR('',#42,1.0);
+#44=LINE('',#33,#43);
+#45=EDGE_CURVE('E2',#34,#41,#44,.T.);
+#46=ORIENTED_EDGE('',*,*,#45,.T.);
+/* Third edge: (0,1) to (0,0) -- closes almost, ending at (0, 1e-6) */
+#47=CARTESIAN_POINT('',(0.0,0.000001,0.0));
+#48=VERTEX_POINT('Almost',#47);
+#49=DIRECTION('',(0.0,-1.0,0.0));
+#50=VECTOR('',#49,0.999999);
+#51=LINE('',#40,#50);
+#52=EDGE_CURVE('E3',#41,#48,#51,.T.);
+#53=ORIENTED_EDGE('',*,*,#52,.T.);
+/* Tiny spur edge: (0, 1e-6) back to (0,0) -- gap of 1e-6 */
+#54=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#55=DIRECTION('',(0.0,-1.0,0.0));
+#56=VECTOR('',#55,0.000001);
+#57=LINE('',#47,#56);
+#58=EDGE_CURVE('E4',#48,#32,#57,.T.);
+#59=ORIENTED_EDGE('',*,*,#58,.T.);
+/* Wire: three main edges plus tiny spur; wire is not fully closed */
+#60=EDGE_LOOP('',(#39,#46,#53,#59));
+#61=FACE_OUTER_BOUND('',#60,.T.);
+#62=ADVANCED_FACE('',(#61),#20,.T.);
+/* Mandatory PRODUCT chain */
+#9000=PRODUCT_CONTEXT('',#1,'mechanical');
+#9001=PRODUCT('Twi195','Twi195','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
+#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
+#9021=SHELL_BASED_SURFACE_MODEL('sbsm',(#9020));
+#9020=CLOSED_SHELL('shell',(#62));
+#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#9010);
+#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+ENDSEC;
+END-ISO-10303-21;

@@ -1,0 +1,59 @@
+ISO-10303-21;
+/* Twi192 - FixGaps2d 2D-only-bridge
+ * Defect: ShapeFix_Wire.FixGaps2d creates a 2D-only edge whose 3D coordinates
+ * are nonsense when bridging a 2D pcurve gap that doesn't exist in 3D.
+ * Wire on a PLANE has two edges connected in 3D but with a gap in 2D pcurve
+ * parameter space. FixGaps2d creates a bridge edge with invalid 3D geometry. */
+HEADER;
+FILE_DESCRIPTION(('Twi192 test case','FixGaps2d 2D-only-bridge with nonsense 3D'),'2;1');
+FILE_NAME('Twi192.stp','2026-06-15T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#11=DIRECTION('',(0.0,0.0,1.0));
+#12=DIRECTION('',(1.0,0.0,0.0));
+#13=AXIS2_PLACEMENT_3D('',#10,#11,#12);
+#20=PLANE('',#13);
+/* First edge: (0,0) to (10,0) in 2D, vertices at (0,0,0) to (10,0,0) in 3D */
+#31=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#32=VERTEX_POINT('',#31);
+#33=CARTESIAN_POINT('',(10.0,0.0,0.0));
+#34=VERTEX_POINT('',#33);
+#35=DIRECTION('',(1.0,0.0,0.0));
+#36=VECTOR('',#35,10.0);
+#37=LINE('',#31,#36);
+#38=EDGE_CURVE('E1',#32,#34,#37,.T.);
+#39=ORIENTED_EDGE('',*,*,#38,.T.);
+/* Second edge: starts at (10,0) in 3D but 2D pcurve starts at (10.5,0) */
+#41=CARTESIAN_POINT('',(20.0,0.0,0.0));
+#42=VERTEX_POINT('',#41);
+#43=DIRECTION('',(1.0,0.0,0.0));
+#44=VECTOR('',#43,10.0);
+#45=LINE('',#33,#44);
+#46=EDGE_CURVE('E2',#34,#42,#45,.T.);
+#47=ORIENTED_EDGE('',*,*,#46,.T.);
+/* Wire: two edges with 3D endpoints connected but 2D pcurve gap at 0.5 units */
+#50=EDGE_LOOP('',(#39,#47));
+#51=FACE_OUTER_BOUND('',#50,.T.);
+#52=ADVANCED_FACE('',(#51),#20,.T.);
+/* Mandatory PRODUCT chain */
+#9000=PRODUCT_CONTEXT('',#1,'mechanical');
+#9001=PRODUCT('Twi192','Twi192','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
+#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
+#9021=SHELL_BASED_SURFACE_MODEL('sbsm',(#9020));
+#9020=CLOSED_SHELL('shell',(#52));
+#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#9010);
+#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+ENDSEC;
+END-ISO-10303-21;

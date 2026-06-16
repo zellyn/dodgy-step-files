@@ -1,0 +1,55 @@
+ISO-10303-21;
+/* Gs123 - TOROIDAL_SURFACE with major_radius < minor_radius (self-intersecting)
+ *
+ * Defect: ShapeAnalysis_Surface.IsVClosed reports true for a self-intersecting
+ *  torus where major_radius < minor_radius. The geometry is degenerate (torus
+ *  touches itself) but IsVClosed doesn't detect the invalid configuration.
+ *
+ * Reproducer: TOROIDAL_SURFACE with major_radius = 5.0, minor_radius = 8.0.
+ *  The torus is self-intersecting; IsVClosed should reject but passes.
+ *
+ * Expected kernel behavior:
+ *   heal - detect major < minor and flag as degenerate/invalid;
+ *   reject only when semi-axes are negative. */
+HEADER;
+FILE_DESCRIPTION(('Gs123 test case','TOROIDAL_SURFACE with major less than minor'),'2;1');
+FILE_NAME('Gs123.stp','2026-06-15T00:00:00',(''),(''),'auto-generated','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+/* Axis placement at origin */
+#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#11=DIRECTION('',(0.0,0.0,1.0));
+#12=DIRECTION('',(1.0,0.0,0.0));
+#13=AXIS2_PLACEMENT_3D('',#10,#11,#12);
+/* Defect: TOROIDAL_SURFACE with major_radius < minor_radius (5.0 < 8.0)
+ * This creates a self-intersecting torus; IsVClosed should flag it degenerate */
+#20=TOROIDAL_SURFACE('',#13,5.0,8.0);
+/* Outer-bound vertex on the natural major circumference */
+#30=CARTESIAN_POINT('',(13.0,0.0,0.0));
+#31=VERTEX_POINT('',#30);
+/* Vertex loop */
+#32=VERTEX_LOOP('',#31);
+#33=FACE_OUTER_BOUND('',#32,.T.);
+/* ADVANCED_FACE with self-intersecting torus */
+#34=ADVANCED_FACE('',(#33),#20,.T.);
+/* Shell */
+#40=OPEN_SHELL('',(#34));
+/* Product context chain */
+#9000=PRODUCT_CONTEXT('',#1,'mechanical');
+#9001=PRODUCT('Gs123','Gs123','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
+#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
+#9022=GEOMETRICALLY_BOUNDED_SURFACE_SHAPE_REPRESENTATION('',(#40),#9010);
+#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+ENDSEC;
+END-ISO-10303-21;

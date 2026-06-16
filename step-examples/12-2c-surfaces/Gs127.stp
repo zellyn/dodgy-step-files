@@ -1,0 +1,106 @@
+ISO-10303-21;
+/* Gs127 - B-SPLINE_SURFACE with degenerate edge after split
+ *
+ * Defect: ShapeUpgrade_SplitSurface splits a surface such that one
+ *  sub-patch has degenerate edge (zero parameter range in V). The
+ *  split produces it without flagging, causing downstream healing
+ *  to reference invalid surface boundaries.
+ *
+ * Reproducer: B-SPLINE_SURFACE split at u=5.0 creates left and right
+ *  patches. Right patch has V knots [5, 5, 5.001, 10, 10] where first
+ *  span (5 to 5) is degenerate (zero width).
+ *
+ * Expected kernel behavior:
+ *   heal - detect zero-width knot spans and flag as degenerate. */
+HEADER;
+FILE_DESCRIPTION(('Gs127 test case','B-SPLINE_SURFACE split producing degenerate-edge sub-patch'),'2;1');
+FILE_NAME('Gs127.stp','2026-06-15T00:00:00',(''),(''),'auto-generated','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+/* Axis placement */
+#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#11=DIRECTION('',(0.0,0.0,1.0));
+#12=DIRECTION('',(1.0,0.0,0.0));
+#13=AXIS2_PLACEMENT_3D('',#10,#11,#12);
+/* B-SPLINE_SURFACE: intentionally designed to have degenerate V span
+ * after splitting at u=5.0
+ * nu=4, nv=5, ku=2, kv=2
+ * UKnots: [0, 0, 5, 10, 10]
+ * VKnots: [0, 0, 5, 5.001, 10, 10] - includes degenerate span [5,5] */
+#20=B_SPLINE_SURFACE('',4,5,2,2,.F.,.F.,.F.,
+  ((#30,#31,#32,#33,#34),
+   (#35,#36,#37,#38,#39),
+   (#40,#41,#42,#43,#44),
+   (#45,#46,#47,#48,#49)),
+  ((0.0,1),(5.0,1),(10.0,1)),
+  ((0.0,1),(5.0,1),(5.001,1),(10.0,1)),
+  0.0E+0,.F.);
+/* Poles: 4x5 grid */
+#30=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#31=CARTESIAN_POINT('',(0.0,3.3,0.0));
+#32=CARTESIAN_POINT('',(0.0,5.0,0.0));
+#33=CARTESIAN_POINT('',(0.0,7.5,0.0));
+#34=CARTESIAN_POINT('',(0.0,10.0,0.0));
+#35=CARTESIAN_POINT('',(3.3,0.0,0.0));
+#36=CARTESIAN_POINT('',(3.3,3.3,2.0));
+#37=CARTESIAN_POINT('',(3.3,5.0,2.0));
+#38=CARTESIAN_POINT('',(3.3,7.5,2.0));
+#39=CARTESIAN_POINT('',(3.3,10.0,0.0));
+#40=CARTESIAN_POINT('',(6.7,0.0,0.0));
+#41=CARTESIAN_POINT('',(6.7,3.3,2.0));
+#42=CARTESIAN_POINT('',(6.7,5.0,2.0));
+#43=CARTESIAN_POINT('',(6.7,7.5,2.0));
+#44=CARTESIAN_POINT('',(6.7,10.0,0.0));
+#45=CARTESIAN_POINT('',(10.0,0.0,0.0));
+#46=CARTESIAN_POINT('',(10.0,3.3,0.0));
+#47=CARTESIAN_POINT('',(10.0,5.0,0.0));
+#48=CARTESIAN_POINT('',(10.0,7.5,0.0));
+#49=CARTESIAN_POINT('',(10.0,10.0,0.0));
+/* Shell and face */
+#50=FACE_OUTER_BOUND('',#51,.T.);
+#51=EDGE_LOOP('',(#52,#53,#54,#55));
+#52=ORIENTED_EDGE('',*,*,#60,.T.);
+#53=ORIENTED_EDGE('',*,*,#61,.T.);
+#54=ORIENTED_EDGE('',*,*,#62,.T.);
+#55=ORIENTED_EDGE('',*,*,#63,.T.);
+#60=EDGE_CURVE('',#64,#65,#66,.T.);
+#61=EDGE_CURVE('',#65,#67,#68,.T.);
+#62=EDGE_CURVE('',#67,#69,#70,.T.);
+#63=EDGE_CURVE('',#69,#64,#71,.T.);
+#64=VERTEX_POINT('',#72);
+#65=VERTEX_POINT('',#73);
+#66=LINE('',#72,#74);
+#67=VERTEX_POINT('',#75);
+#68=LINE('',#73,#76);
+#69=VERTEX_POINT('',#77);
+#70=LINE('',#75,#78);
+#71=LINE('',#77,#79);
+#72=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#73=CARTESIAN_POINT('',(0.0,10.0,0.0));
+#74=DIRECTION('',(0.0,1.0,0.0));
+#75=CARTESIAN_POINT('',(10.0,10.0,0.0));
+#76=DIRECTION('',(0.0,-1.0,0.0));
+#77=CARTESIAN_POINT('',(10.0,0.0,0.0));
+#78=DIRECTION('',(0.0,-1.0,0.0));
+#79=DIRECTION('',(0.0,1.0,0.0));
+#80=ADVANCED_FACE('',(#50),#20,.T.);
+#90=OPEN_SHELL('',(#80));
+/* Product context chain */
+#9000=PRODUCT_CONTEXT('',#1,'mechanical');
+#9001=PRODUCT('Gs127','Gs127','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
+#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
+#9022=GEOMETRICALLY_BOUNDED_SURFACE_SHAPE_REPRESENTATION('',(#90),#9010);
+#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+ENDSEC;
+END-ISO-10303-21;

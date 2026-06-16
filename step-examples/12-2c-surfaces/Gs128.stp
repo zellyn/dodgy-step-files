@@ -1,0 +1,64 @@
+ISO-10303-21;
+/* Gs128 - TOROIDAL_SURFACE with v-closed property and u-iso wraparound
+ *
+ * Defect: ShapeAnalysis_Surface.UVFromIso misclassifies wraparound
+ *  handling for u-iso requests on v-closed surfaces. When requesting
+ *  u-iso near v=v_max on a v-closed torus, the method confuses u-iso
+ *  with v-iso and produces incorrect parameter projection.
+ *
+ * Reproducer: TOROIDAL_SURFACE (major=20, minor=5) with u-iso request
+ *  near v=2π-0.001. UVFromIso should recognize v-closure and handle
+ *  u-iso correctly but instead wraps v parameter incorrectly.
+ *
+ * Expected kernel behavior:
+ *   heal - detect v-closure, distinguish u-iso from v-iso, apply
+ *  correct wrapping for requested iso type. */
+HEADER;
+FILE_DESCRIPTION(('Gs128 test case','TOROIDAL_SURFACE with u-iso-on-v-closed wraparound confusion'),'2;1');
+FILE_NAME('Gs128.stp','2026-06-15T00:00:00',(''),(''),'auto-generated','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+/* Axis placement at origin */
+#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#11=DIRECTION('',(0.0,0.0,1.0));
+#12=DIRECTION('',(1.0,0.0,0.0));
+#13=AXIS2_PLACEMENT_3D('',#10,#11,#12);
+/* TOROIDAL_SURFACE: major_radius=20, minor_radius=5
+ * v-closed at v=[0, 2π]
+ * u-periodic at u=[0, 2π] */
+#20=TOROIDAL_SURFACE('',#13,20.0,5.0);
+/* Edge near v=2π (wraparound boundary): u-iso at u=0.5 */
+#30=CARTESIAN_POINT('',(24.5,0.0,0.0));
+#31=VERTEX_POINT('',#30);
+#32=VERTEX_LOOP('',#31);
+#33=FACE_OUTER_BOUND('',#32,.T.);
+/* ADVANCED_FACE wrapping torus */
+#34=ADVANCED_FACE('',(#33),#20,.T.);
+/* Wire: simple edge from p1 to p2 near v_max, u-constant */
+#40=CARTESIAN_POINT('',(24.5,0.0,0.0));
+#41=VERTEX_POINT('',#40);
+#42=CARTESIAN_POINT('',(24.5,0.0001,0.0));
+#43=VERTEX_POINT('',#42);
+#44=EDGE_CURVE('',#41,#43,#45,.T.);
+#45=LINE('',#40,#46);
+#46=DIRECTION('',(0.0,0.00001,0.0));
+#47=OPEN_SHELL('',(#34));
+/* Product context chain */
+#9000=PRODUCT_CONTEXT('',#1,'mechanical');
+#9001=PRODUCT('Gs128','Gs128','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
+#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
+#9022=GEOMETRICALLY_BOUNDED_SURFACE_SHAPE_REPRESENTATION('',(#47),#9010);
+#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+ENDSEC;
+END-ISO-10303-21;
