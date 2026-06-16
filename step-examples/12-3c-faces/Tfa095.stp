@@ -1,0 +1,99 @@
+ISO-10303-21;
+/* Tfa095 - ShapeFix_Face.FixPeriodicDegenerated SURFACE_OF_REVOLUTION apex
+ * Full surface-of-revolution with degenerate apex curve at v=0 (the axis of rotation).
+ * FixPeriodicDegenerated must handle the revolution-axis degenerate edge differently
+ * from cone apex. Revolution surfaces pinch at v=0 to a line/point on rotation axis. */
+HEADER;
+FILE_DESCRIPTION(('Tfa095 test case','Face with SURFACE_OF_REVOLUTION having degenerate apex at revolution axis'),'2;1');
+FILE_NAME('Tfa095.stp','2026-06-15T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+/* === Axis placement for revolution: axis along Z, origin at (0,0,0) === */
+#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#11=DIRECTION('',(0.0,0.0,1.0));
+#12=DIRECTION('',(1.0,0.0,0.0));
+#13=AXIS2_PLACEMENT_3D('',#10,#11,#12);
+/* === Profile curve for revolution: a line from (1.0, 0.0, 0.0) to (1.0, 0.0, 2.0)
+ * When revolved 360 degrees around Z axis, creates a cylinder with apex at Z=0. === */
+#20=CARTESIAN_POINT('',(1.0,0.0,0.0));
+#21=CARTESIAN_POINT('',(1.0,0.0,2.0));
+#22=DIRECTION('',(0.0,0.0,1.0));
+#23=VECTOR('',#22,2.0);
+#24=LINE('profile_line',#20,#23);
+/* === Surface of Revolution: 360 degrees === */
+#30=SURFACE_OF_REVOLUTION('surface_of_rev',#24,#13);
+/* === Outer boundary: circle at top (z=2.0), radius 1.0 === */
+#40=CARTESIAN_POINT('',(1.0,0.0,2.0));#41=VERTEX_POINT('',#40);
+#42=CARTESIAN_POINT('',(0.0,1.0,2.0));#43=VERTEX_POINT('',#42);
+#44=CARTESIAN_POINT('',(-1.0,0.0,2.0));#45=VERTEX_POINT('',#44);
+#46=CARTESIAN_POINT('',(0.0,-1.0,2.0));#47=VERTEX_POINT('',#46);
+/* Top circle edges (4 quarter-arcs) */
+#50=DIRECTION('',(0.0,0.0,2.0));
+#51=AXIS2_PLACEMENT_3D('',#40,#50,#12);
+#52=CIRCLE('top_circle',#51,1.0);
+#53=EDGE_CURVE('top_q1',#41,#43,#52,.T.);
+#54=EDGE_CURVE('top_q2',#43,#45,#52,.T.);
+#55=EDGE_CURVE('top_q3',#45,#47,#52,.T.);
+#56=EDGE_CURVE('top_q4',#47,#41,#52,.T.);
+#57=ORIENTED_EDGE('',*,*,#53,.T.);#58=ORIENTED_EDGE('',*,*,#54,.T.);
+#59=ORIENTED_EDGE('',*,*,#55,.T.);#60=ORIENTED_EDGE('',*,*,#56,.T.);
+#61=EDGE_LOOP('top_loop',(#57,#58,#59,#60));
+#62=FACE_OUTER_BOUND('',#61,.T.);
+/* === Degenerate edge at apex (z=0): all four radial lines converge to single point
+ * This represents the axis line from (0,0,0) to (0,0,0) — truly degenerate.
+ * In STEP, we model this as a single EDGE_CURVE from origin to origin. === */
+#70=CARTESIAN_POINT('',(0.0,0.0,0.0));#71=VERTEX_POINT('apex_pt',#70);
+#72=DIRECTION('',(0.0,0.0,1.0));
+#73=VECTOR('',#72,0.0);
+#74=LINE('degenerate_apex_edge',#70,#73);
+#75=EDGE_CURVE('apex_edge',#71,#71,#74,.T.);
+/* Connect apex to top circle at 4 points via meridian edges */
+#80=DIRECTION('',(0.0,0.0,1.0));
+#81=VECTOR('',#80,2.0);
+#82=LINE('meridian1',#70,#81);
+#83=EDGE_CURVE('meridian1_edge',#71,#41,#82,.T.);
+#84=LINE('meridian2',#70,#81);
+#85=EDGE_CURVE('meridian2_edge',#71,#43,#84,.T.);
+#86=LINE('meridian3',#70,#81);
+#87=EDGE_CURVE('meridian3_edge',#71,#45,#86,.T.);
+#88=LINE('meridian4',#70,#81);
+#89=EDGE_CURVE('meridian4_edge',#71,#47,#88,.T.);
+/* Four inner loops: each connects apex to two adjacent top points via degenerate apex edge */
+#90=ORIENTED_EDGE('',*,*,#75,.T.);#91=ORIENTED_EDGE('',*,*,#83,.T.);
+#92=ORIENTED_EDGE('',*,*,#53,.T.);#93=ORIENTED_EDGE('',*,*,#89,.F.);
+#94=EDGE_LOOP('inner_q1',(#90,#91,#92,#93));
+#95=FACE_INNER_BOUND('',#94,.T.);
+#100=ORIENTED_EDGE('',*,*,#75,.T.);#101=ORIENTED_EDGE('',*,*,#85,.T.);
+#102=ORIENTED_EDGE('',*,*,#54,.T.);#103=ORIENTED_EDGE('',*,*,#83,.F.);
+#104=EDGE_LOOP('inner_q2',(#100,#101,#102,#103));
+#105=FACE_INNER_BOUND('',#104,.T.);
+#110=ORIENTED_EDGE('',*,*,#75,.T.);#111=ORIENTED_EDGE('',*,*,#87,.T.);
+#112=ORIENTED_EDGE('',*,*,#55,.T.);#113=ORIENTED_EDGE('',*,*,#85,.F.);
+#114=EDGE_LOOP('inner_q3',(#110,#111,#112,#113));
+#115=FACE_INNER_BOUND('',#114,.T.);
+#120=ORIENTED_EDGE('',*,*,#75,.T.);#121=ORIENTED_EDGE('',*,*,#89,.T.);
+#122=ORIENTED_EDGE('',*,*,#56,.T.);#123=ORIENTED_EDGE('',*,*,#87,.F.);
+#124=EDGE_LOOP('inner_q4',(#120,#121,#122,#123));
+#125=FACE_INNER_BOUND('',#124,.T.);
+#140=ADVANCED_FACE('revolution_apex_face',(#62,#95,#105,#115,#125),#30,.T.);
+/* === Mandatory product context chain === */
+#9000=PRODUCT_CONTEXT('',#1,'mechanical');
+#9001=PRODUCT('Tfa095','Tfa095','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
+#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
+#9021=SHELL_BASED_SURFACE_MODEL('sbsm',(#9020));
+#9020=OPEN_SHELL('shell',(#140));
+#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#9010);
+#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+ENDSEC;
+END-ISO-10303-21;

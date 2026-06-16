@@ -1,0 +1,87 @@
+ISO-10303-21;
+/* Tfa094 - ShapeAnalysis_CheckSmallFace.CheckSplittingVertices boundary T-vertex
+ * Outer wire passes through a vertex that is the endpoint of an inner wire.
+ * This creates a T-shaped junction at boundary. The T-vertex detector classifies
+ * interior T-vertices but misses the boundary case where outer wire vertex
+ * coincides with inner wire endpoint. */
+HEADER;
+FILE_DESCRIPTION(('Tfa094 test case','Face with boundary T-vertex where outer wire vertex meets inner wire endpoint'),'2;1');
+FILE_NAME('Tfa094.stp','2026-06-15T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+/* === Outer wire: forms a hexagon, with one vertex at (0.5, 0.0)
+ * This is specifically where an inner wire endpoint touches === */
+#10=CARTESIAN_POINT('',(0.0,0.0,0.0));#11=VERTEX_POINT('',#10);
+#12=CARTESIAN_POINT('',(0.5,0.0,0.0));#13=VERTEX_POINT('',#12);
+#14=CARTESIAN_POINT('',(1.0,0.0,0.0));#15=VERTEX_POINT('',#14);
+#16=CARTESIAN_POINT('',(1.5,-0.5,0.0));#17=VERTEX_POINT('',#16);
+#18=CARTESIAN_POINT('',(1.5,0.5,0.0));#19=VERTEX_POINT('',#18);
+#20=CARTESIAN_POINT('',(1.0,1.0,0.0));#21=VERTEX_POINT('',#20);
+#22=CARTESIAN_POINT('',(0.5,1.0,0.0));#23=VERTEX_POINT('',#22);
+#24=CARTESIAN_POINT('',(0.0,0.5,0.0));#25=VERTEX_POINT('',#24);
+/* Outer wire edges */
+#30=DIRECTION('',(1.0,0.0,0.0));#31=VECTOR('',#30,0.5);#32=LINE('',#10,#31);
+#33=EDGE_CURVE('outer_e0',#11,#13,#32,.T.);
+#34=DIRECTION('',(1.0,0.0,0.0));#35=VECTOR('',#34,0.5);#36=LINE('',#12,#35);
+#37=EDGE_CURVE('outer_e1',#13,#15,#36,.T.);
+#38=DIRECTION('',(1.0,-1.0,0.0));#39=VECTOR('',#38,0.707);#40=LINE('',#14,#39);
+#41=EDGE_CURVE('outer_e2',#15,#17,#40,.T.);
+#42=DIRECTION('',(0.0,1.0,0.0));#43=VECTOR('',#42,1.0);#44=LINE('',#16,#43);
+#45=EDGE_CURVE('outer_e3',#17,#19,#44,.T.);
+#46=DIRECTION('',(-1.0,-1.0,0.0));#47=VECTOR('',#46,0.707);#48=LINE('',#18,#47);
+#49=EDGE_CURVE('outer_e4',#19,#21,#48,.T.);
+#50=DIRECTION('',(-1.0,0.0,0.0));#51=VECTOR('',#50,0.5);#52=LINE('',#20,#51);
+#53=EDGE_CURVE('outer_e5',#21,#23,#52,.T.);
+#54=DIRECTION('',(-1.0,0.0,0.0));#55=VECTOR('',#54,0.5);#56=LINE('',#22,#55);
+#57=EDGE_CURVE('outer_e6',#23,#11,#56,.T.);
+#58=DIRECTION('',(0.0,-1.0,0.0));#59=VECTOR('',#58,0.5);#60=LINE('',#24,#59);
+#61=EDGE_CURVE('outer_e7',#25,#11,#60,.T.);
+#62=ORIENTED_EDGE('',*,*,#33,.T.);#63=ORIENTED_EDGE('',*,*,#37,.T.);
+#64=ORIENTED_EDGE('',*,*,#41,.T.);#65=ORIENTED_EDGE('',*,*,#45,.T.);
+#66=ORIENTED_EDGE('',*,*,#49,.T.);#67=ORIENTED_EDGE('',*,*,#53,.T.);
+#68=ORIENTED_EDGE('',*,*,#57,.T.);#69=ORIENTED_EDGE('',*,*,#61,.T.);
+#70=EDGE_LOOP('outer',(#62,#63,#64,#65,#66,#67,#68,#69));
+#71=FACE_OUTER_BOUND('',#70,.T.);
+/* === Inner wire: a small rectangle with endpoint at (0.5, 0.0)
+ * which matches outer wire vertex #13 at index. This creates boundary T-vertex. === */
+#80=CARTESIAN_POINT('',(0.5,0.0,0.0));#81=VERTEX_POINT('',#80);
+#82=CARTESIAN_POINT('',(0.7,0.0,0.0));#83=VERTEX_POINT('',#82);
+#84=CARTESIAN_POINT('',(0.7,0.2,0.0));#85=VERTEX_POINT('',#84);
+#86=CARTESIAN_POINT('',(0.5,0.2,0.0));#87=VERTEX_POINT('',#86);
+#90=DIRECTION('',(1.0,0.0,0.0));#91=VECTOR('',#90,0.2);#92=LINE('',#80,#91);
+#93=EDGE_CURVE('inner_e1',#81,#83,#92,.T.);
+#94=DIRECTION('',(0.0,1.0,0.0));#95=VECTOR('',#95,0.2);#96=LINE('',#82,#95);
+#97=EDGE_CURVE('inner_e2',#83,#85,#96,.T.);
+#98=DIRECTION('',(-1.0,0.0,0.0));#99=VECTOR('',#98,0.2);#100=LINE('',#84,#99);
+#101=EDGE_CURVE('inner_e3',#85,#87,#100,.T.);
+#102=DIRECTION('',(0.0,-1.0,0.0));#103=VECTOR('',#102,0.2);#104=LINE('',#86,#103);
+#105=EDGE_CURVE('inner_e4',#87,#81,#104,.T.);
+#106=ORIENTED_EDGE('',*,*,#93,.T.);#107=ORIENTED_EDGE('',*,*,#97,.T.);
+#108=ORIENTED_EDGE('',*,*,#101,.T.);#109=ORIENTED_EDGE('',*,*,#105,.T.);
+#110=EDGE_LOOP('inner',(#106,#107,#108,#109));
+#111=FACE_INNER_BOUND('',#110,.T.);
+#120=PLANE_ORIGIN_PLACEMENT('plane');
+#121=AXIS2_PLACEMENT_3D('',#10);
+#122=PLANE('face_plane',#121);
+#130=ADVANCED_FACE('face_boundary_t_vertex',(#71,#111),#122,.T.);
+/* === Mandatory product context chain === */
+#9000=PRODUCT_CONTEXT('',#1,'mechanical');
+#9001=PRODUCT('Tfa094','Tfa094','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
+#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
+#9021=SHELL_BASED_SURFACE_MODEL('sbsm',(#9020));
+#9020=OPEN_SHELL('shell',(#130));
+#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#9010);
+#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+ENDSEC;
+END-ISO-10303-21;

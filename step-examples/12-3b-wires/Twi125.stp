@@ -1,0 +1,69 @@
+ISO-10303-21;
+/* Twi125 - ShapeAnalysis_Wire.CheckSelfIntersection bounding-box pruning
+ * Defect: wire with very narrow bounding box where two edges intersect just at
+ * the bbox corner; bbox prune incorrectly excludes the intersection
+ */
+HEADER;
+FILE_DESCRIPTION(('Twi125 test case','ShapeAnalysis_Wire.CheckSelfIntersection bounding-box pruning'),'2;1');
+FILE_NAME('Twi125.stp','2026-06-15T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+/* Narrow bounding box with intersection exactly at corner */
+#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#11=VERTEX_POINT('',#10);
+#12=CARTESIAN_POINT('',(1.0,0.0,0.0));
+#13=VERTEX_POINT('',#12);
+#14=CARTESIAN_POINT('',(1.0,1.0,0.0));
+#15=VERTEX_POINT('',#14);
+#16=CARTESIAN_POINT('',(0.0,1.0,0.0));
+#17=VERTEX_POINT('',#16);
+#18=CARTESIAN_POINT('',(0.5,0.5,0.0));
+#19=VERTEX_POINT('',#18);
+#20=CARTESIAN_POINT('',(1.0,0.0,0.0));
+#21=VERTEX_POINT('',#20);
+/* First edge: along bottom from (0,0) to (1,0) */
+#30=LINE('',#10,#12);
+#31=EDGE_CURVE('',#11,#13,#30,.T.);
+/* Second edge: diagonal from (0,0) to (1,1) - hits first at corner */
+#40=LINE('',#10,#14);
+#41=EDGE_CURVE('',#11,#15,#40,.T.);
+/* Third edge: along top from (1,1) to (0,1) */
+#50=LINE('',#14,#16);
+#51=EDGE_CURVE('',#15,#17,#50,.T.);
+/* Fourth edge: back to origin */
+#60=LINE('',#16,#10);
+#61=EDGE_CURVE('',#17,#11,#60,.T.);
+/* Wire: intersection at (1,0) corner point undetected by bbox prune */
+#70=ORIENTED_EDGE('',*,*,#31,.T.);
+#71=ORIENTED_EDGE('',*,*,#41,.T.);
+#72=ORIENTED_EDGE('',*,*,#51,.T.);
+#73=ORIENTED_EDGE('',*,*,#61,.T.);
+#80=EDGE_LOOP('',(#70,#71,#72,#73));
+/* Plane surface */
+#90=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#91=DIRECTION('',(0.0,0.0,1.0));
+#92=DIRECTION('',(1.0,0.0,0.0));
+#93=AXIS2_PLACEMENT_3D('',#90,#91,#92);
+#94=PLANE('',#93);
+#100=FACE_OUTER_BOUND('',#80,.T.);
+#101=ADVANCED_FACE('',(#100),#94,.T.);
+/* Product chain */
+#9000=PRODUCT_CONTEXT('',#1,'mechanical');
+#9001=PRODUCT('Twi125','Twi125','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
+#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
+#9021=SHELL_BASED_SURFACE_MODEL('sbsm',(#101));
+#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#9010);
+#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+ENDSEC;
+END-ISO-10303-21;

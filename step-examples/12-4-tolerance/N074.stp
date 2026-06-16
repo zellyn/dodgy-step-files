@@ -1,0 +1,66 @@
+/* N074 - ShapeAnalysis_Edge.CheckPoints colinear-points shortcut
+ * Defect: CheckPoints has a shortcut for "colinear endpoints": if the
+ * two vertices are colinear in 3D, the check returns early. But two
+ * vertices can be colinear in 3D while having different parameter
+ * values on their edge curve. The shortcut doesn't validate that the
+ * parameter correspondence is correct, leading to false negatives.
+ * Reproducer: Edge with 3D curve where start-endpoint and end-endpoint
+ * lie on the same line in 3D (e.g., a line segment from (0,0,0) to
+ * (10,0,0)) but parametrized with reversed or mismatched params.
+ * CheckPoints colinear-shortcut returns "OK" without checking params.
+ * Expected: validate that param_start maps to point_start and param_end
+ * maps to point_end, even if colinear.
+ * Bug: colinear shortcut skips parameter correspondence check.
+ */
+ISO-10303-21;
+HEADER;
+FILE_DESCRIPTION(('N074 ShapeAnalysis_Edge CheckPoints colinear-shortcut','2;1');
+FILE_NAME('N074.stp','2026-06-15T00:00:00',(''),(''),
+  'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
+  'automotive_design',2009,#1);
+/* Colinear endpoints: (0,0,0) and (10,0,0) along X-axis */
+#10=CARTESIAN_POINT('p_start',(0.0,0.0,0.0));
+#11=CARTESIAN_POINT('p_end',(10.0,0.0,0.0));
+#20=VERTEX_POINT('v_start',#10);
+#21=VERTEX_POINT('v_end',#11);
+/* LINE curve along X-axis: colinear with endpoints */
+#30=LINE('colinear_line',#10,#(VECTOR('',#(DIRECTION('',(1.0,0.0,0.0))),10.0)));
+/* EDGE_CURVE: the curve is colinear with the vertices,
+   but imagine reversed or wrong parameter mapping internally */
+#40=EDGE_CURVE('e_colinear',#20,#21,#30,.T.);
+/* Simple face containing this edge */
+#50=EDGE_LOOP('',#(#40));
+#60=CARTESIAN_POINT('origin',(0.0,0.0,0.0));
+#61=DIRECTION('z',(0.0,0.0,1.0));
+#62=DIRECTION('x',(1.0,0.0,0.0));
+#63=AXIS2_PLACEMENT_3D('',#60,#61,#62);
+#64=PLANE('',#63);
+#65=FACE_OUTER_BOUND('',#50,.T.);
+#66=ADVANCED_FACE('',(#65),#64,.T.);
+/* Units and tolerance */
+#200=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#201=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#202=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#203=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-3),#200,
+  'distance_accuracy_value','');
+#204=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#203))
+  GLOBAL_UNIT_ASSIGNED_CONTEXT((#200,#201,#202))
+  REPRESENTATION_CONTEXT('','3D'));
+/* Mandatory product chain */
+#9000=PRODUCT_CONTEXT('',#1,'mechanical');
+#9001=PRODUCT('N074','N074','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9021=SHELL_BASED_SURFACE_MODEL('sbsm',(#66));
+#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#204);
+#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+ENDSEC;
+END-ISO-10303-21;

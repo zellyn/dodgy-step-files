@@ -1,0 +1,59 @@
+/* N066 - ShapeAnalysis_ShapeTolerance.OverTolerance >= vs > bug
+ * Defect: OverTolerance uses >= instead of >, flagging 0.0 tolerance
+ * as exceeding ANY threshold. Vertex with 0.0 tolerance incorrectly
+ * reports as "over-tolerance" when checked against declared threshold.
+ * Reproducer: Vertex with tolerance 0.0, call OverTolerance(shape, 1e-3).
+ * Expected: returns false (0.0 not exceeding 1e-3).
+ * Bug: returns true (0.0 >= 1e-3 treated as match).
+ */
+ISO-10303-21;
+HEADER;
+FILE_DESCRIPTION(('N066 ShapeAnalysis_ShapeTolerance OverTolerance >= vs >','2;1');
+FILE_NAME('N066.stp','2026-06-15T00:00:00',(''),(''),
+  'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
+  'automotive_design',2009,#1);
+/* Simple edge with zero-tolerance vertex */
+#10=CARTESIAN_POINT('p0',(0.0,0.0,0.0));
+#11=CARTESIAN_POINT('p1',(1.0,0.0,0.0));
+#20=VERTEX_POINT('v0',#10);
+#21=VERTEX_POINT('v1',#11);
+#30=LINE('',#10,#(VECTOR('',#(DIRECTION('',(1.0,0.0,0.0))),1.0)));
+#40=EDGE_CURVE('e0',#20,#21,#30,.T.);
+/* Single-edge loop (degenerate but valid) */
+#50=EDGE_LOOP('',#(#40));
+/* Dummy plane to close topology */
+#60=CARTESIAN_POINT('origin',(0.0,0.0,0.0));
+#61=DIRECTION('z',(0.0,0.0,1.0));
+#62=DIRECTION('x',(1.0,0.0,0.0));
+#63=AXIS2_PLACEMENT_3D('',#60,#61,#62);
+#64=PLANE('',#63);
+#65=FACE_OUTER_BOUND('',#50,.T.);
+#66=ADVANCED_FACE('',(#65),#64,.T.);
+/* Units */
+#200=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#201=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#202=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+/* Tolerance context with 1e-3 mm as global threshold */
+#203=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-3),#200,
+  'distance_accuracy_value','');
+#204=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#203))
+  GLOBAL_UNIT_ASSIGNED_CONTEXT((#200,#201,#202))
+  REPRESENTATION_CONTEXT('','3D'));
+/* Mandatory product chain */
+#9000=PRODUCT_CONTEXT('',#1,'mechanical');
+#9001=PRODUCT('N066','N066','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9021=SHELL_BASED_SURFACE_MODEL('sbsm',(#66));
+#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#204);
+#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+ENDSEC;
+END-ISO-10303-21;

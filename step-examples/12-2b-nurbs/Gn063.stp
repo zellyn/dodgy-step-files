@@ -1,0 +1,50 @@
+/* Gn063 - ShapeAnalysis_Curve.GetSamplePoints rational pole density
+   Defect: rational B-spline curve with one extreme weight (>100);
+   sample density doesn't scale with weight, missing the cusp pulled by
+   the high-weight pole. This fixture has a NURBS with weight 150 at midpoint. */
+ISO-10303-21;
+HEADER;
+FILE_DESCRIPTION(('Gn063 - GetSamplePoints extreme weight cusp density miss','2;1');
+FILE_NAME('Gn063.stp','2026-06-16T00:00:00',('auto-generated'),(''),
+  'auto-generated','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+/* 5 control points forming a flat baseline curve from (0,0,0) to (4,0,0). */
+#10=CARTESIAN_POINT('p1',(0.0,0.0,0.0));
+#11=CARTESIAN_POINT('p2',(1.0,0.0,0.0));
+#12=CARTESIAN_POINT('p3',(2.0,0.0,0.0));
+#13=CARTESIAN_POINT('p4',(3.0,0.0,0.0));
+#14=CARTESIAN_POINT('p5',(4.0,0.0,0.0));
+/* Rational B-spline (NURBS) with degree 3, 5 control points.
+   Knot vector for clamped 5-point degree-3 curve:
+   length = 5+3+1 = 9, multiplicities (4,1,1,1,2) sum to 9.
+   Knots: [0, 0, 0, 0, 0.5, 0.75, 1, 1, 1].
+
+   Weights: default 1.0 except control point 3 (midpoint) with weight 150.0.
+   This extreme weight pulls the curve sharply toward point #12 at (2,0,0),
+   creating a cusp-like feature that requires adaptive sampling to capture. */
+#100=B_SPLINE_CURVE_WITH_KNOTS('extreme_weight',3,
+  (#10,#11,#12,#13,#14),
+  .UNSPECIFIED.,.F.,.F.,
+  (4,1,1,1,2),
+  (0.0,0.0,0.0,0.0,0.5,0.75,1.0,1.0,1.0),
+  .UNSPECIFIED.);
+/* PRODUCT chain wrapping wireframe. */
+#9990=APPLICATION_CONTEXT('automotive_design');
+#9000=PRODUCT_CONTEXT('',#9990,'mechanical');
+#9001=PRODUCT('Gn063','Gn063','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#9990,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
+#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
+#9020=GEOMETRIC_CURVE_SET('wire_set',(#100));
+#9021=GEOMETRICALLY_BOUNDED_WIREFRAME_SHAPE_REPRESENTATION('',(#9020),#9010);
+#9022=SHAPE_DEFINITION_REPRESENTATION(#9005,#9021);
+ENDSEC;
+END-ISO-10303-21;

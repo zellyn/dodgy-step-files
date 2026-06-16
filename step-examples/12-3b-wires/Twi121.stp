@@ -1,0 +1,69 @@
+ISO-10303-21;
+/* Twi121 - ShapeFix_Wire.FixSeam closed-surface seam reset
+ * Defect: wire on cylindrical surface where seam-edge tolerance gets reset to 0.0
+ * unconditionally; FixSeam erases user-set tolerance. Seam edge on cylindrical surface
+ * at u-parameter boundary (seam) with explicit tolerance set; FixSeam clears it to 0.
+ * Creates gap tolerance mismatch downstream in CheckConnected or healing chain.
+ */
+HEADER;
+FILE_DESCRIPTION(('Twi121 test case','ShapeFix_Wire.FixSeam closed-surface seam reset'),'2;1');
+FILE_NAME('Twi121.stp','2026-06-15T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#11=DIRECTION('',(0.0,0.0,1.0));
+#12=DIRECTION('',(1.0,0.0,0.0));
+#13=AXIS2_PLACEMENT_3D('',#10,#11,#12);
+/* Cylindrical surface: axis Z, radius 1.0, u=theta (0..2*pi), v=z */
+#20=AXIS2_PLACEMENT_3D('',#10,#11,#12);
+#21=CYLINDRICAL_SURFACE('',#20,1.0);
+/* Vertices at seam (u=0 and u=2*pi are same point on cylinder) */
+#30=CARTESIAN_POINT('',(1.0,0.0,0.0));
+#31=VERTEX_POINT('',#30);
+#32=CARTESIAN_POINT('',(1.0,0.0,1.0));
+#33=VERTEX_POINT('',#32);
+#34=CARTESIAN_POINT('',(0.99999,0.0628,1.0));
+#35=VERTEX_POINT('',#34);
+#36=CARTESIAN_POINT('',(0.99999,0.0628,0.0));
+#37=VERTEX_POINT('',#36);
+/* Curve 1: seam line on cylinder from (1,0,0) to (1,0,1) - u=0 boundary */
+#50=LINE('',#30,#11);
+/* Curve 2: arc at v=1, u from 0 to pi/50 (small arc near seam) */
+#60=CIRCLE('',#20,1.0);
+/* Curve 3: line at u=pi/50, v from 1 to 0 */
+#61=LINE('',#35,#11);
+/* Curve 4: arc at v=0 closing back - u from pi/50 to 0 */
+#62=CIRCLE('',#20,1.0);
+/* Edges: edge 1 is the seam with explicit tolerance */
+#70=EDGE_CURVE('',#31,#33,#50,.T.);
+#71=EDGE_CURVE('',#33,#35,#60,.T.);
+#72=EDGE_CURVE('',#35,#37,#61,.T.);
+#73=EDGE_CURVE('',#37,#31,#62,.T.);
+/* Seam edge (edge 0) has tolerance 0.001 - FixSeam will reset it to 0.0 */
+#80=ORIENTED_EDGE('',*,*,#70,.T.);
+#81=ORIENTED_EDGE('',*,*,#71,.T.);
+#82=ORIENTED_EDGE('',*,*,#72,.T.);
+#83=ORIENTED_EDGE('',*,*,#73,.T.);
+#90=EDGE_LOOP('',(#80,#81,#82,#83));
+#91=FACE_OUTER_BOUND('',#90,.T.);
+#92=ADVANCED_FACE('',(#91),#21,.T.);
+/* Product chain */
+#9000=PRODUCT_CONTEXT('',#1,'mechanical');
+#9001=PRODUCT('Twi121','Twi121','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
+#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
+#9021=SHELL_BASED_SURFACE_MODEL('sbsm',(#92));
+#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#9010);
+#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+ENDSEC;
+END-ISO-10303-21;

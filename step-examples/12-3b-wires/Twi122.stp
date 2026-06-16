@@ -1,0 +1,64 @@
+ISO-10303-21;
+/* Twi122 - ShapeFix_Wire.FixTails wire-tail asymmetry
+ * Defect: wire where first edge is very short and last edge is normal-length;
+ * FixTails detects on the last edge but doesn't symmetrically check the first
+ */
+HEADER;
+FILE_DESCRIPTION(('Twi122 test case','ShapeFix_Wire.FixTails wire-tail asymmetry'),'2;1');
+FILE_NAME('Twi122.stp','2026-06-15T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+/* Vertices: V1 and V2 very close (short edge), V2-V3 normal distance */
+#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#11=VERTEX_POINT('',#10);
+#12=CARTESIAN_POINT('',(0.0001,0.0,0.0));
+#13=VERTEX_POINT('',#12);
+#14=CARTESIAN_POINT('',(1.0,0.0,0.0));
+#15=VERTEX_POINT('',#14);
+#16=CARTESIAN_POINT('',(2.0,0.0,0.0));
+#17=VERTEX_POINT('',#16);
+#18=CARTESIAN_POINT('',(2.0001,0.0,0.0));
+#19=VERTEX_POINT('',#18);
+/* Edges: first edge is 0.0001mm, middle normal, last is normal-length */
+#20=LINE('',#10,#12);
+#21=EDGE_CURVE('',#11,#13,#20,.T.);
+#22=LINE('',#12,#14);
+#23=EDGE_CURVE('',#13,#15,#22,.T.);
+#24=LINE('',#14,#16);
+#25=EDGE_CURVE('',#15,#17,#24,.T.);
+#26=LINE('',#16,#18);
+#27=EDGE_CURVE('',#17,#19,#26,.T.);
+/* Wire: FixTails should detect short edges but misses first */
+#30=ORIENTED_EDGE('',*,*,#21,.T.);
+#31=ORIENTED_EDGE('',*,*,#23,.T.);
+#32=ORIENTED_EDGE('',*,*,#25,.T.);
+#33=ORIENTED_EDGE('',*,*,#27,.T.);
+#40=EDGE_LOOP('',(#30,#31,#32,#33));
+/* Mock surface for wire binding */
+#50=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#51=DIRECTION('',(0.0,0.0,1.0));
+#52=DIRECTION('',(1.0,0.0,0.0));
+#53=AXIS2_PLACEMENT_3D('',#50,#51,#52);
+#54=PLANE('',#53);
+#60=FACE_OUTER_BOUND('',#40,.T.);
+#61=ADVANCED_FACE('',(#60),#54,.T.);
+/* Product chain */
+#9000=PRODUCT_CONTEXT('',#1,'mechanical');
+#9001=PRODUCT('Twi122','Twi122','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
+#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
+#9021=SHELL_BASED_SURFACE_MODEL('sbsm',(#61));
+#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#9010);
+#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+ENDSEC;
+END-ISO-10303-21;

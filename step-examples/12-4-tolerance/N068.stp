@@ -1,0 +1,75 @@
+/* N068 - BRepLib.UpdateInnerTolerances 2-sample undersampling
+ * Defect: Edge with B-spline curve sampled at only 2 points (start, end).
+ * UpdateInnerTolerances computes tolerance based on deviation at those
+ * endpoints only; interior curvature with higher tolerance requirement
+ * is missed. Resulting edge tolerance insufficient for true geometry.
+ * Reproducer: B-spline edge with tight curve in middle, sample count=2.
+ * Expected: tolerance captures interior curvature.
+ * Bug: tolerance computed only at endpoints; interior maxdev ignored.
+ */
+ISO-10303-21;
+HEADER;
+FILE_DESCRIPTION(('N068 BRepLib UpdateInnerTolerances 2-sample undersampling','2;1');
+FILE_NAME('N068.stp','2026-06-15T00:00:00',(''),(''),
+  'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
+  'automotive_design',2009,#1);
+/* B-spline endpoints */
+#10=CARTESIAN_POINT('p0',(0.0,0.0,0.0));
+#11=CARTESIAN_POINT('p1',(10.0,0.0,0.0));
+/* Vertices */
+#20=VERTEX_POINT('v0',#10);
+#21=VERTEX_POINT('v1',#11);
+/* B-spline curve with control points: 0,0,0 -> 3,5,0 -> 7,5,0 -> 10,0,0
+   Creates a bulge in y-direction, interior curvature significant */
+#30=B_SPLINE_CURVE_WITH_KNOTS('bspline',3,
+  (#(CARTESIAN_POINT('cp0',(0.0,0.0,0.0)),
+     CARTESIAN_POINT('cp1',(3.0,5.0,0.0)),
+     CARTESIAN_POINT('cp2',(7.0,5.0,0.0)),
+     CARTESIAN_POINT('cp3',(10.0,0.0,0.0)))),
+  .UNSPECIFIED.,
+  .F.,
+  .F.,
+  3,
+  (#(0.0,0.0,0.0,0.5,1.0,1.0,1.0)),
+  (#(1,1,1,1)),
+  0.0,
+  360.0,
+  $);
+#40=EDGE_CURVE('bspl_edge',#20,#21,#30,.T.);
+/* Single-edge loop */
+#50=EDGE_LOOP('',#(#40));
+/* Dummy plane */
+#60=CARTESIAN_POINT('origin',(0.0,0.0,0.0));
+#61=DIRECTION('z',(0.0,0.0,1.0));
+#62=DIRECTION('x',(1.0,0.0,0.0));
+#63=AXIS2_PLACEMENT_3D('',#60,#61,#62);
+#64=PLANE('',#63);
+#65=FACE_OUTER_BOUND('',#50,.T.);
+#66=ADVANCED_FACE('',(#65),#64,.T.);
+/* Units and tight tolerance */
+#200=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#201=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#202=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#203=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-4),#200,
+  'distance_accuracy_value','');
+#204=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#203))
+  GLOBAL_UNIT_ASSIGNED_CONTEXT((#200,#201,#202))
+  REPRESENTATION_CONTEXT('','3D'));
+/* Mandatory product chain */
+#9000=PRODUCT_CONTEXT('',#1,'mechanical');
+#9001=PRODUCT('N068','N068','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9021=SHELL_BASED_SURFACE_MODEL('sbsm',(#66));
+#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#204);
+#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+ENDSEC;
+END-ISO-10303-21;

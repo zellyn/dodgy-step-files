@@ -1,0 +1,70 @@
+ISO-10303-21;
+/* Tfa092 - ShapeAnalysis_CheckSmallFace.CheckTwisted concave-saddle
+ * Face whose surface has both convex and concave regions (saddle topology).
+ * Twisted-face classifier confuses two-zone topology when computing normal
+ * orientation. A saddle surface pinches at center with opposite curvatures. */
+HEADER;
+FILE_DESCRIPTION(('Tfa092 test case','Face with saddle surface having both convex and concave zones'),'2;1');
+FILE_NAME('Tfa092.stp','2026-06-15T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+/* === Create a saddle-like surface using BSpline
+ * Center point at Z=0 with surrounding points at different heights.
+ * Curvature is positive in X direction (convex, bulge up)
+ * and negative in Y direction (concave, pinch down). === */
+/* Boundary loop on rectangular outer wire: 4x4 in XY, varying Z */
+#10=CARTESIAN_POINT('',(0.0,0.0,0.5));#11=VERTEX_POINT('',#10);
+#12=CARTESIAN_POINT('',(4.0,0.0,0.5));#13=VERTEX_POINT('',#12);
+#14=CARTESIAN_POINT('',(4.0,4.0,0.5));#15=VERTEX_POINT('',#14);
+#16=CARTESIAN_POINT('',(0.0,4.0,0.5));#17=VERTEX_POINT('',#16);
+#20=DIRECTION('',(1.0,0.0,0.0));#21=VECTOR('',#20,4.0);#22=LINE('',#10,#21);
+#23=EDGE_CURVE('e_x0',#11,#13,#22,.T.);
+#24=DIRECTION('',(0.0,1.0,0.0));#25=VECTOR('',#24,4.0);#26=LINE('',#12,#25);
+#27=EDGE_CURVE('e_y1',#13,#15,#26,.T.);
+#28=DIRECTION('',(-1.0,0.0,0.0));#29=VECTOR('',#28,4.0);#30=LINE('',#14,#29);
+#31=EDGE_CURVE('e_x1',#15,#17,#30,.T.);
+#32=DIRECTION('',(0.0,-1.0,0.0));#33=VECTOR('',#32,4.0);#34=LINE('',#16,#33);
+#35=EDGE_CURVE('e_y0',#17,#11,#34,.T.);
+#36=ORIENTED_EDGE('',*,*,#23,.T.);#37=ORIENTED_EDGE('',*,*,#27,.T.);
+#38=ORIENTED_EDGE('',*,*,#31,.T.);#39=ORIENTED_EDGE('',*,*,#35,.T.);
+#40=EDGE_LOOP('outer',(#36,#37,#38,#39));
+#41=FACE_OUTER_BOUND('',#40,.T.);
+/* === Saddle BSpline surface: degree 2 in both U,V
+ * Control points create hyperbolic paraboloid: z = 0.25 * (u² - v²)
+ * at u,v ∈ [0,4]. This has positive Gaussian curvature at edges,
+ * transitions to negative (saddle) at center. === */
+#50=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#51=CARTESIAN_POINT('',(2.0,0.0,0.5));
+#52=CARTESIAN_POINT('',(4.0,0.0,0.0));
+#53=CARTESIAN_POINT('',(0.0,2.0,-0.5));
+#54=CARTESIAN_POINT('',(2.0,2.0,0.0));
+#55=CARTESIAN_POINT('',(4.0,2.0,-0.5));
+#56=CARTESIAN_POINT('',(0.0,4.0,0.0));
+#57=CARTESIAN_POINT('',(2.0,4.0,-0.5));
+#58=CARTESIAN_POINT('',(4.0,4.0,0.0));
+#60=B_SPLINE_SURFACE_WITH_KNOTS('saddle_surface',2,2,
+  ((#50,#51,#52),(#53,#54,#55),(#56,#57,#58)),
+  .UNSPECIFIED.,.F.,.F.,.F.,
+  (2,1,2),(2,1,2),(0.0,2.0,4.0),(0.0,2.0,4.0),.UNSPECIFIED.);
+#70=ADVANCED_FACE('saddle_face',(#41),#60,.T.);
+/* === Mandatory product context chain === */
+#9000=PRODUCT_CONTEXT('',#1,'mechanical');
+#9001=PRODUCT('Tfa092','Tfa092','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
+#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
+#9021=SHELL_BASED_SURFACE_MODEL('sbsm',(#9020));
+#9020=OPEN_SHELL('shell',(#70));
+#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#9010);
+#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+ENDSEC;
+END-ISO-10303-21;

@@ -1,0 +1,64 @@
+/* N070 - ShapeFix_ShapeTolerance.LimitTolerance 0-as-no-cap
+ * Defect: LimitTolerance(shape, 0, 0.01) intended to mean "limit upper
+ * to 0.01 mm; 0 as lower bound". Zero is treated as a no-op marker for
+ * lower bound, but upper check is ALSO skipped when lower=0. Contract
+ * violation: upper limit 0.01 never enforced; shape keeps arbitrarily
+ * large tolerances.
+ * Reproducer: Shape with tolerance 0.5 mm, call LimitTolerance(shape, 0, 0.01).
+ * Expected: tolerance clamped to 0.01 mm.
+ * Bug: upper bound check skipped; tolerance remains 0.5 mm.
+ */
+ISO-10303-21;
+HEADER;
+FILE_DESCRIPTION(('N070 ShapeFix_ShapeTolerance LimitTolerance 0-as-no-cap','2;1');
+FILE_NAME('N070.stp','2026-06-15T00:00:00',(''),(''),
+  'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
+  'automotive_design',2009,#1);
+/* Simple triangle face with loose tolerance */
+#10=CARTESIAN_POINT('p0',(0.0,0.0,0.0));
+#11=CARTESIAN_POINT('p1',(1.0,0.0,0.0));
+#12=CARTESIAN_POINT('p2',(0.5,1.0,0.0));
+#20=VERTEX_POINT('v0',#10);
+#21=VERTEX_POINT('v1',#11);
+#22=VERTEX_POINT('v2',#12);
+#30=LINE('',#10,#(VECTOR('',#(DIRECTION('',(1.0,0.0,0.0))),1.0)));
+#31=LINE('',#11,#(VECTOR('',#(DIRECTION('',(-0.5,1.0,0.0))),1.118)));
+#32=LINE('',#12,#(VECTOR('',#(DIRECTION('',(-0.5,-1.0,0.0))),1.118)));
+#40=EDGE_CURVE('e0',#20,#21,#30,.T.);
+#41=EDGE_CURVE('e1',#21,#22,#31,.T.);
+#42=EDGE_CURVE('e2',#22,#20,#32,.T.);
+#50=EDGE_LOOP('',#(#40,#41,#42));
+#60=CARTESIAN_POINT('origin',(0.0,0.0,0.0));
+#61=DIRECTION('z',(0.0,0.0,1.0));
+#62=DIRECTION('x',(1.0,0.0,0.0));
+#63=AXIS2_PLACEMENT_3D('',#60,#61,#62);
+#64=PLANE('',#63);
+#65=FACE_OUTER_BOUND('',#50,.T.);
+#66=ADVANCED_FACE('',(#65),#64,.T.);
+/* Units and loose tolerance (0.5 mm, way above desired 0.01) */
+#200=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#201=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#202=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#203=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(5.0E-1),#200,
+  'distance_accuracy_value','');
+#204=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#203))
+  GLOBAL_UNIT_ASSIGNED_CONTEXT((#200,#201,#202))
+  REPRESENTATION_CONTEXT('','3D'));
+/* Mandatory product chain */
+#9000=PRODUCT_CONTEXT('',#1,'mechanical');
+#9001=PRODUCT('N070','N070','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9021=SHELL_BASED_SURFACE_MODEL('sbsm',(#66));
+#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#204);
+#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+ENDSEC;
+END-ISO-10303-21;

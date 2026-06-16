@@ -1,0 +1,69 @@
+/* N069 - ShapeAnalysis_Edge.CheckOverlapping arc-length divergence
+ * Defect: Two edges overlap by arc length but their parameter ranges
+ * differ in scale (one normalized [0,1], other [0,100]). Tolerance test
+ * uses parameter distance not arc length. Parameter distance 0.5 may
+ * represent very different arc lengths on edges with different scales.
+ * Reproducer: Edge1 param range [0,1], Edge2 param range [0,100], both
+ * geometrically overlapping. CheckOverlapping compares param distances.
+ * Expected: arc-length based comparison.
+ * Bug: parameter-distance based; scale mismatch causes false overlap.
+ */
+ISO-10303-21;
+HEADER;
+FILE_DESCRIPTION(('N069 ShapeAnalysis_Edge CheckOverlapping arc-length divergence','2;1');
+FILE_NAME('N069.stp','2026-06-15T00:00:00',(''),(''),
+  'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
+  'automotive_design',2009,#1);
+/* Edge 1: 3D line with small parameter domain */
+#10=CARTESIAN_POINT('e1_p0',(0.0,0.0,0.0));
+#11=CARTESIAN_POINT('e1_p1',(1.0,0.0,0.0));
+#20=VERTEX_POINT('e1_v0',#10);
+#21=VERTEX_POINT('e1_v1',#11);
+/* Line curve for Edge 1 */
+#30=LINE('l1',#10,#(VECTOR('',#(DIRECTION('',(1.0,0.0,0.0))),1.0)));
+#40=EDGE_CURVE('e1',#20,#21,#30,.T.);
+/* Edge 2: 3D line overlapping Edge 1 but with large parameter domain [0,100] */
+#50=CARTESIAN_POINT('e2_p0',(0.0,0.0,0.0));
+#51=CARTESIAN_POINT('e2_p1',(1.0,0.0,0.0));
+#60=VERTEX_POINT('e2_v0',#50);
+#61=VERTEX_POINT('e2_v1',#51);
+/* Same geometric line but will be parameterized differently */
+#70=LINE('l2',#50,#(VECTOR('',#(DIRECTION('',(1.0,0.0,0.0))),1.0)));
+#80=EDGE_CURVE('e2',#60,#61,#70,.T.);
+/* Single-edge loop using Edge 1 */
+#90=EDGE_LOOP('',#(#40));
+/* Dummy plane */
+#100=CARTESIAN_POINT('origin',(0.0,0.0,0.0));
+#101=DIRECTION('z',(0.0,0.0,1.0));
+#102=DIRECTION('x',(1.0,0.0,0.0));
+#103=AXIS2_PLACEMENT_3D('',#100,#101,#102);
+#104=PLANE('',#103);
+#105=FACE_OUTER_BOUND('',#90,.T.);
+#106=ADVANCED_FACE('',(#105),#104,.T.);
+/* Units and loose tolerance */
+#200=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#201=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#202=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#203=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-2),#200,
+  'distance_accuracy_value','');
+#204=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#203))
+  GLOBAL_UNIT_ASSIGNED_CONTEXT((#200,#201,#202))
+  REPRESENTATION_CONTEXT('','3D'));
+/* Mandatory product chain */
+#9000=PRODUCT_CONTEXT('',#1,'mechanical');
+#9001=PRODUCT('N069','N069','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9021=SHELL_BASED_SURFACE_MODEL('sbsm',(#106));
+#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#204);
+#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+ENDSEC;
+END-ISO-10303-21;

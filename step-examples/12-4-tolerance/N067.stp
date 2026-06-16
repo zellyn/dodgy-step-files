@@ -1,0 +1,85 @@
+/* N067 - ShapeFix_ShapeTolerance.SetTolerance compound-cascade
+ * Defect: SetTolerance(compound, 0.001) applied to compound containing
+ * a shell containing a face does not propagate into nested face's
+ * tolerance state. SetTolerance descends into compound → shell but stops
+ * there, leaving face tolerance unmodified. Violates contract that
+ * SetTolerance modifies ALL sub-shapes transitively.
+ * Reproducer: Compound→Shell→Face. SetTolerance(compound, 0.001).
+ * Expected: face tolerance becomes 0.001.
+ * Bug: face tolerance remains at previous value.
+ */
+ISO-10303-21;
+HEADER;
+FILE_DESCRIPTION(('N067 ShapeFix_ShapeTolerance SetTolerance compound-cascade','2;1');
+FILE_NAME('N067.stp','2026-06-15T00:00:00',(''),(''),
+  'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
+  'automotive_design',2009,#1);
+/* Face 1: triangle in shell */
+#10=CARTESIAN_POINT('f1_p0',(0.0,0.0,0.0));
+#11=CARTESIAN_POINT('f1_p1',(1.0,0.0,0.0));
+#12=CARTESIAN_POINT('f1_p2',(0.5,1.0,0.0));
+#20=VERTEX_POINT('f1_v0',#10);
+#21=VERTEX_POINT('f1_v1',#11);
+#22=VERTEX_POINT('f1_v2',#12);
+#30=LINE('',#10,#(VECTOR('',#(DIRECTION('',(1.0,0.0,0.0))),1.0)));
+#31=LINE('',#11,#(VECTOR('',#(DIRECTION('',(-0.5,1.0,0.0))),1.118)));
+#32=LINE('',#12,#(VECTOR('',#(DIRECTION('',(-0.5,-1.0,0.0))),1.118)));
+#40=EDGE_CURVE('f1_e0',#20,#21,#30,.T.);
+#41=EDGE_CURVE('f1_e1',#21,#22,#31,.T.);
+#42=EDGE_CURVE('f1_e2',#22,#20,#32,.T.);
+#50=EDGE_LOOP('',#(#40,#41,#42));
+#60=CARTESIAN_POINT('origin1',(0.0,0.0,0.0));
+#61=DIRECTION('z1',(0.0,0.0,1.0));
+#62=DIRECTION('x1',(1.0,0.0,0.0));
+#63=AXIS2_PLACEMENT_3D('',#60,#61,#62);
+#64=PLANE('',#63);
+#65=FACE_OUTER_BOUND('',#50,.T.);
+#66=ADVANCED_FACE('',(#65),#64,.T.);
+/* Face 2: another triangle (shell contains 2 faces) */
+#110=CARTESIAN_POINT('f2_p0',(2.0,0.0,0.0));
+#111=CARTESIAN_POINT('f2_p1',(3.0,0.0,0.0));
+#112=CARTESIAN_POINT('f2_p2',(2.5,1.0,0.0));
+#120=VERTEX_POINT('f2_v0',#110);
+#121=VERTEX_POINT('f2_v1',#111);
+#122=VERTEX_POINT('f2_v2',#112);
+#130=LINE('',#110,#(VECTOR('',#(DIRECTION('',(1.0,0.0,0.0))),1.0)));
+#131=LINE('',#111,#(VECTOR('',#(DIRECTION('',(-0.5,1.0,0.0))),1.118)));
+#132=LINE('',#112,#(VECTOR('',#(DIRECTION('',(-0.5,-1.0,0.0))),1.118)));
+#140=EDGE_CURVE('f2_e0',#120,#121,#130,.T.);
+#141=EDGE_CURVE('f2_e1',#121,#122,#131,.T.);
+#142=EDGE_CURVE('f2_e2',#122,#120,#132,.T.);
+#150=EDGE_LOOP('',#(#140,#141,#142));
+#160=CARTESIAN_POINT('origin2',(0.0,0.0,0.0));
+#161=DIRECTION('z2',(0.0,0.0,1.0));
+#162=DIRECTION('x2',(1.0,0.0,0.0));
+#163=AXIS2_PLACEMENT_3D('',#160,#161,#162);
+#164=PLANE('',#163);
+#165=FACE_OUTER_BOUND('',#150,.T.);
+#166=ADVANCED_FACE('',(#165),#164,.T.);
+/* Units and initial high tolerance */
+#200=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#201=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#202=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#203=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-1),#200,
+  'distance_accuracy_value','');
+#204=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#203))
+  GLOBAL_UNIT_ASSIGNED_CONTEXT((#200,#201,#202))
+  REPRESENTATION_CONTEXT('','3D'));
+/* Mandatory product chain */
+#9000=PRODUCT_CONTEXT('',#1,'mechanical');
+#9001=PRODUCT('N067','N067','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9021=SHELL_BASED_SURFACE_MODEL('sbsm',(#66,#166));
+#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#204);
+#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+ENDSEC;
+END-ISO-10303-21;

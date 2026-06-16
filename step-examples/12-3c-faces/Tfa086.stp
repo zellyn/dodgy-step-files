@@ -1,0 +1,141 @@
+ISO-10303-21;
+/* Tfa086 - ShapeFix_Face.FixWiresTwoCoincEdges: 3-edge coincidence
+ * Face with three wires sharing a coincident edge. FixWiresTwoCoincEdges
+ * only handles the 2-wire case and skips the 3rd wire.
+ */
+HEADER;
+FILE_DESCRIPTION(('Tfa086 test case','Face with 3 wires sharing coincident edge; FixWiresTwoCoincEdges handles 2-wire only'),'2;1');
+FILE_NAME('Tfa086.stp','2026-06-15T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+/* Plane at Z=0 */
+#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#11=DIRECTION('',(0.0,0.0,1.0));
+#12=DIRECTION('',(1.0,0.0,0.0));
+#13=AXIS2_PLACEMENT_3D('',#10,#11,#12);
+#14=PLANE('base_plane',#13);
+/* Outer boundary: rectangle (0,0)-(12,10) */
+#20=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#21=VERTEX_POINT('v0',#20);
+#22=CARTESIAN_POINT('',(12.0,0.0,0.0));
+#23=VERTEX_POINT('v1',#22);
+#24=CARTESIAN_POINT('',(12.0,10.0,0.0));
+#25=VERTEX_POINT('v2',#24);
+#26=CARTESIAN_POINT('',(0.0,10.0,0.0));
+#27=VERTEX_POINT('v3',#26);
+/* Outer edges */
+#30=DIRECTION('',(1.0,0.0,0.0));
+#31=VECTOR('',#30,1.0);
+#32=LINE('',#20,#31);
+#33=EDGE_CURVE('e_outer_0',#21,#23,#32,.T.);
+#34=DIRECTION('',(0.0,1.0,0.0));
+#35=VECTOR('',#34,1.0);
+#36=LINE('',#22,#35);
+#37=EDGE_CURVE('e_outer_1',#23,#25,#36,.T.);
+#38=DIRECTION('',(-1.0,0.0,0.0));
+#39=VECTOR('',#38,1.0);
+#40=LINE('',#24,#39);
+#41=EDGE_CURVE('e_outer_2',#25,#27,#40,.T.);
+#42=DIRECTION('',(0.0,-1.0,0.0));
+#43=VECTOR('',#42,1.0);
+#44=LINE('',#26,#43);
+#45=EDGE_CURVE('e_outer_3',#27,#21,#44,.T.);
+#46=ORIENTED_EDGE('',*,*,#33,.T.);
+#47=ORIENTED_EDGE('',*,*,#37,.T.);
+#48=ORIENTED_EDGE('',*,*,#41,.T.);
+#49=ORIENTED_EDGE('',*,*,#45,.T.);
+#50=EDGE_LOOP('outer_loop',(#46,#47,#48,#49));
+#51=FACE_OUTER_BOUND('',#50,.T.);
+/* Shared edge at Y=5 from (2,5) to (10,5) - used by 3 wires */
+#60=CARTESIAN_POINT('',(2.0,5.0,0.0));
+#61=VERTEX_POINT('v_shared_start',#60);
+#62=CARTESIAN_POINT('',(10.0,5.0,0.0));
+#63=VERTEX_POINT('v_shared_end',#62);
+#64=DIRECTION('',(1.0,0.0,0.0));
+#65=VECTOR('',#64,1.0);
+#66=LINE('',#60,#65);
+#67=EDGE_CURVE('e_shared_coincident',#61,#63,#66,.T.);
+/* First hole: (2,1)-(4,5) */
+#70=CARTESIAN_POINT('',(2.0,1.0,0.0));
+#71=VERTEX_POINT('v_h1_0',#70);
+#72=CARTESIAN_POINT('',(4.0,1.0,0.0));
+#73=VERTEX_POINT('v_h1_1',#72);
+#74=CARTESIAN_POINT('',(4.0,5.0,0.0));
+#75=VERTEX_POINT('v_h1_2',#74);
+#76=DIRECTION('',(1.0,0.0,0.0));
+#77=VECTOR('',#76,1.0);
+#78=LINE('',#70,#77);
+#79=EDGE_CURVE('e_h1_bottom',#71,#73,#78,.T.);
+#80=DIRECTION('',(0.0,1.0,0.0));
+#81=VECTOR('',#80,1.0);
+#82=LINE('',#72,#81);
+#83=EDGE_CURVE('e_h1_right',#73,#75,#82,.T.);
+#84=ORIENTED_EDGE('oe_h1_bot',*,*,#79,.T.);
+#85=ORIENTED_EDGE('oe_h1_right',*,*,#83,.T.);
+#86=ORIENTED_EDGE('oe_h1_shared_fwd',*,*,#67,.F.);
+#87=ORIENTED_EDGE('oe_h1_left',*,*,#45,.F.);
+#88=EDGE_LOOP('hole1_loop',(#84,#85,#86,#87));
+#89=FACE_INNER_BOUND('',#88,.T.);
+/* Second hole: (4,1)-(6,5) */
+#90=CARTESIAN_POINT('',(4.0,1.0,0.0));
+#91=VERTEX_POINT('v_h2_0',#90);
+#92=CARTESIAN_POINT('',(6.0,1.0,0.0));
+#93=VERTEX_POINT('v_h2_1',#92);
+#94=CARTESIAN_POINT('',(6.0,5.0,0.0));
+#95=VERTEX_POINT('v_h2_2',#94);
+#96=DIRECTION('',(1.0,0.0,0.0));
+#97=VECTOR('',#96,1.0);
+#98=LINE('',#90,#97);
+#99=EDGE_CURVE('e_h2_bottom',#91,#93,#98,.T.);
+#100=DIRECTION('',(0.0,1.0,0.0));
+#101=VECTOR('',#100,1.0);
+#102=LINE('',#92,#101);
+#103=EDGE_CURVE('e_h2_right',#93,#95,#102,.T.);
+#104=ORIENTED_EDGE('oe_h2_bot',*,*,#99,.T.);
+#105=ORIENTED_EDGE('oe_h2_right',*,*,#103,.T.);
+#106=ORIENTED_EDGE('oe_h2_shared',*,*,#67,.T.);
+#107=ORIENTED_EDGE('oe_h2_left',*,*,#45,.T.);
+#108=EDGE_LOOP('hole2_loop',(#104,#105,#106,#107));
+#109=FACE_INNER_BOUND('',#108,.T.);
+/* Third hole: (6,1)-(10,5) */
+#110=CARTESIAN_POINT('',(6.0,1.0,0.0));
+#111=VERTEX_POINT('v_h3_0',#110);
+#112=CARTESIAN_POINT('',(10.0,1.0,0.0));
+#113=VERTEX_POINT('v_h3_1',#112);
+#114=DIRECTION('',(1.0,0.0,0.0));
+#115=VECTOR('',#114,1.0);
+#116=LINE('',#110,#115);
+#117=EDGE_CURVE('e_h3_bottom',#111,#113,#116,.T.);
+#118=DIRECTION('',(0.0,1.0,0.0));
+#119=VECTOR('',#118,1.0);
+#120=LINE('',#112,#119);
+#121=EDGE_CURVE('e_h3_right',#113,#63,#120,.T.);
+#122=ORIENTED_EDGE('oe_h3_bot',*,*,#117,.T.);
+#123=ORIENTED_EDGE('oe_h3_right',*,*,#121,.T.);
+#124=ORIENTED_EDGE('oe_h3_shared_rev',*,*,#67,.F.);
+#125=ORIENTED_EDGE('oe_h3_left',*,*,#45,.F.);
+#126=EDGE_LOOP('hole3_loop',(#122,#123,#124,#125));
+#127=FACE_INNER_BOUND('',#126,.T.);
+/* Face with 3 inner bounds all using same coincident edge */
+#130=ADVANCED_FACE('face_3coincident',(#51,#89,#109,#127),#14,.T.);
+/* Minimal PRODUCT chain */
+#9000=PRODUCT_CONTEXT('',#1,'mechanical');
+#9001=PRODUCT('Tfa086','Tfa086','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
+#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
+#9021=SHELL_BASED_SURFACE_MODEL('sbsm',(#9100));
+#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#9010);
+#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+#9100=CLOSED_SHELL('shell_for_product',(#130));
+ENDSEC;
+END-ISO-10303-21;

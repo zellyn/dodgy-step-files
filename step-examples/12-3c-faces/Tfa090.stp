@@ -1,0 +1,107 @@
+ISO-10303-21;
+/* Tfa090 - ShapeFix_Face.Perform: mode-flag ordering
+ * Perform runs multiple sub-fixers. The mode flag order determines which
+ * fixes apply. The order can prevent FixNaturalBound from running before
+ * FixOrientation needs it.
+ */
+HEADER;
+FILE_DESCRIPTION(('Tfa090 test case','Face with orientation-dependent natural-bound fix; mode-flag order prevents proper execution'),'2;1');
+FILE_NAME('Tfa090.stp','2026-06-15T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+/* Plane at Z=0 */
+#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#11=DIRECTION('',(0.0,0.0,1.0));
+#12=DIRECTION('',(1.0,0.0,0.0));
+#13=AXIS2_PLACEMENT_3D('',#10,#11,#12);
+#14=PLANE('base_plane',#13);
+/* Face that is incomplete/missing natural boundaries and has reversed orientation.
+   FixOrientation should run after FixNaturalBound, but mode-flag ordering
+   can prevent FixNaturalBound from running first.
+*/
+#20=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#21=VERTEX_POINT('v0',#20);
+#22=CARTESIAN_POINT('',(5.0,0.0,0.0));
+#23=VERTEX_POINT('v1',#22);
+#24=CARTESIAN_POINT('',(5.0,5.0,0.0));
+#25=VERTEX_POINT('v2',#24);
+#26=CARTESIAN_POINT('',(0.0,5.0,0.0));
+#27=VERTEX_POINT('v3',#26);
+/* Reversed outer boundary (counter-clockwise instead of clockwise) */
+#30=DIRECTION('',(1.0,0.0,0.0));
+#31=VECTOR('',#30,1.0);
+#32=LINE('',#20,#31);
+#33=EDGE_CURVE('e_outer_0',#21,#23,#32,.T.);
+#34=DIRECTION('',(0.0,1.0,0.0));
+#35=VECTOR('',#34,1.0);
+#36=LINE('',#22,#35);
+#37=EDGE_CURVE('e_outer_1',#23,#25,#36,.T.);
+#38=DIRECTION('',(-1.0,0.0,0.0));
+#39=VECTOR('',#38,1.0);
+#40=LINE('',#24,#39);
+#41=EDGE_CURVE('e_outer_2',#25,#27,#40,.T.);
+#42=DIRECTION('',(0.0,-1.0,0.0));
+#43=VECTOR('',#42,1.0);
+#44=LINE('',#26,#43);
+#45=EDGE_CURVE('e_outer_3',#27,#21,#44,.T.);
+/* Reversed orientation - edges in CCW instead of CW */
+#46=ORIENTED_EDGE('',*,*,#33,.F.);
+#47=ORIENTED_EDGE('',*,*,#37,.F.);
+#48=ORIENTED_EDGE('',*,*,#41,.F.);
+#49=ORIENTED_EDGE('',*,*,#45,.F.);
+#50=EDGE_LOOP('reversed_boundary_loop',(#46,#47,#48,#49));
+#51=FACE_OUTER_BOUND('',#50,.F.);
+/* Inner hole with missing boundary edge */
+#60=CARTESIAN_POINT('',(1.0,1.0,0.0));
+#61=VERTEX_POINT('v_h0',#60);
+#62=CARTESIAN_POINT('',(2.0,1.0,0.0));
+#63=VERTEX_POINT('v_h1',#62);
+#64=CARTESIAN_POINT('',(2.0,2.0,0.0));
+#65=VERTEX_POINT('v_h2',#64);
+#66=CARTESIAN_POINT('',(1.0,2.0,0.0));
+#67=VERTEX_POINT('v_h3',#66);
+/* Hole boundary - incomplete (missing one edge) */
+#70=DIRECTION('',(1.0,0.0,0.0));
+#71=VECTOR('',#70,1.0);
+#72=LINE('',#60,#71);
+#73=EDGE_CURVE('e_hole_0',#61,#63,#72,.T.);
+#74=DIRECTION('',(0.0,1.0,0.0));
+#75=VECTOR('',#74,1.0);
+#76=LINE('',#62,#75);
+#77=EDGE_CURVE('e_hole_1',#63,#65,#76,.T.);
+#78=DIRECTION('',(-1.0,0.0,0.0));
+#79=VECTOR('',#78,1.0);
+#80=LINE('',#64,#79);
+#81=EDGE_CURVE('e_hole_2',#65,#67,#80,.T.);
+/* Missing edge back to start - would be e_hole_3 */
+#82=ORIENTED_EDGE('',*,*,#73,.T.);
+#83=ORIENTED_EDGE('',*,*,#77,.T.);
+#84=ORIENTED_EDGE('',*,*,#81,.T.);
+#90=EDGE_LOOP('incomplete_hole_loop',(#82,#83,#84));
+#91=FACE_INNER_BOUND('',#90,.T.);
+/* Face with reversed outer bound and incomplete inner bound
+   FixOrientation must reverse the face, but if FixNaturalBound doesn't run
+   before it, the natural boundary correction for the incomplete hole won't apply.
+*/
+#100=ADVANCED_FACE('reversed_incomplete_face',(#51,#91),#14,.F.);
+/* Minimal PRODUCT chain */
+#9000=PRODUCT_CONTEXT('',#1,'mechanical');
+#9001=PRODUCT('Tfa090','Tfa090','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
+#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
+#9021=SHELL_BASED_SURFACE_MODEL('sbsm',(#9100));
+#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#9010);
+#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+#9100=CLOSED_SHELL('shell_for_product',(#100));
+ENDSEC;
+END-ISO-10303-21;

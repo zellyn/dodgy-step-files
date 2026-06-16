@@ -1,0 +1,69 @@
+ISO-10303-21;
+/* Twi118 - ShapeAnalysis_Wire.CheckLacking lacking-edge tangency
+ * Defect: adjacent edges leave a gap; CheckLacking detects via tangent-angle test
+ * but the test fails when one tangent is computed from degenerate (zero-length) sub-curve.
+ * Edge 1: normal line. Edge 2: starts from degenerate point (zero-length bezier segment).
+ * Tangent of degenerate segment is undefined, distance-gap check should fire but doesn't.
+ */
+HEADER;
+FILE_DESCRIPTION(('Twi118 test case','ShapeAnalysis_Wire.CheckLacking lacking-edge tangency'),'2;1');
+FILE_NAME('Twi118.stp','2026-06-15T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#11=DIRECTION('',(0.0,0.0,1.0));
+#12=DIRECTION('',(1.0,0.0,0.0));
+#13=AXIS2_PLACEMENT_3D('',#10,#11,#12);
+#20=PLANE('',#13);
+/* Vertices */
+#30=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#31=VERTEX_POINT('',#30);
+#32=CARTESIAN_POINT('',(1.0,0.0,0.0));
+#33=VERTEX_POINT('',#32);
+/* Degenerate point: all control points the same */
+#34=CARTESIAN_POINT('',(1.1,0.0,0.0));
+#35=VERTEX_POINT('',#34);
+#36=CARTESIAN_POINT('',(2.0,0.0,0.0));
+#37=VERTEX_POINT('',#36);
+/* Curve 1: line from (0,0,0) to (1,0,0) */
+#50=DIRECTION('',(1.0,0.0,0.0));
+#51=VECTOR('',#50,1.0);
+#52=LINE('',#30,#51);
+/* Curve 2: degenerate bezier (all control points at (1,0,0)) */
+#60=B_SPLINE_CURVE_WITH_KNOTS('',3,(#32,#32,#32,#32),(0.0,0.0,0.0,0.0,1.0,1.0,1.0,1.0),
+  .F.,.F.,.F.);
+/* Curve 3: line from gap-point (1.1,0,0) to (2,0,0) */
+#61=DIRECTION('',(1.0,0.0,0.0));
+#62=VECTOR('',#61,1.0);
+#63=LINE('',#34,#62);
+/* Edges */
+#70=EDGE_CURVE('',#31,#33,#52,.T.);
+#71=EDGE_CURVE('',#33,#35,#60,.T.);
+#72=EDGE_CURVE('',#35,#37,#63,.T.);
+/* Oriented edges */
+#80=ORIENTED_EDGE('',*,*,#70,.T.);
+#81=ORIENTED_EDGE('',*,*,#71,.T.);
+#82=ORIENTED_EDGE('',*,*,#72,.T.);
+#90=EDGE_LOOP('',(#80,#81,#82));
+#91=FACE_OUTER_BOUND('',#90,.T.);
+#92=ADVANCED_FACE('',(#91),#20,.T.);
+/* Product chain */
+#9000=PRODUCT_CONTEXT('',#1,'mechanical');
+#9001=PRODUCT('Twi118','Twi118','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
+#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
+#9021=SHELL_BASED_SURFACE_MODEL('sbsm',(#92));
+#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#9010);
+#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+ENDSEC;
+END-ISO-10303-21;

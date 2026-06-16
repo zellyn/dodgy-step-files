@@ -1,0 +1,70 @@
+ISO-10303-21;
+/* Gp063 - ShapeAnalysis_Edge.CheckOverlapping bounded-curve trim
+ * Defect: two edges share same 3D curve but with non-overlapping trim ranges.
+ * CheckOverlapping doesn't intersect trims properly and reports false overlap. */
+HEADER;
+FILE_DESCRIPTION(('Gp063 test case','CheckOverlapping bounded-curve trim'),'2;1');
+FILE_NAME('Gp063.stp','2026-06-15T00:00:00',(''),(''),'auto-generated','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#11=DIRECTION('',(0.0,0.0,1.0));
+#12=DIRECTION('',(1.0,0.0,0.0));
+#13=AXIS2_PLACEMENT_3D('',#10,#11,#12);
+/* Cylindrical surface */
+#20=CYLINDRICAL_SURFACE('',#13,10.0);
+/* Shared 3D curve - line on cylinder generator from 0 to 20 units */
+#30=CARTESIAN_POINT('',(10.0,0.0,0.0));
+#31=DIRECTION('',(0.0,0.0,1.0));
+#32=VECTOR('',#31,20.0);
+#33=LINE('',#30,#32);
+/* Edge 1: uses 3D curve trimmed from 0 to 5, vertex points at 0.0 and 5.0 */
+#40=VERTEX_POINT('',(10.0,0.0,0.0));
+#41=VERTEX_POINT('',(10.0,0.0,5.0));
+/* PCurve 1 - line in (u,v) space from v=0 to v=5 */
+#50=CARTESIAN_POINT('',(0.0,0.0));
+#51=DIRECTION('',(0.0,1.0));
+#52=VECTOR('',#51,5.0);
+#53=LINE('',#50,#52);
+#54=PCURVE('',#20,#53);
+#60=SURFACE_CURVE('',#33,(#54),.PCURVE_S1.);
+#70=EDGE_CURVE('',#40,#41,#60,.T.);
+#71=ORIENTED_EDGE('',*,*,#70,.T.);
+#72=EDGE_LOOP('',(#71));
+#73=FACE_OUTER_BOUND('',#72,.T.);
+#74=ADVANCED_FACE('',(#73),#20,.T.);
+/* Edge 2: SAME 3D curve #33 but trimmed from 10 to 15, no overlap with edge 1
+ * This simulates non-overlapping trim ranges on shared curve */
+#80=VERTEX_POINT('',(10.0,0.0,10.0));
+#81=VERTEX_POINT('',(10.0,0.0,15.0));
+/* PCurve 2 - line in (u,v) space from v=10 to v=15 */
+#90=CARTESIAN_POINT('',(0.0,10.0));
+#91=DIRECTION('',(0.0,1.0));
+#92=VECTOR('',#91,5.0);
+#93=LINE('',#90,#92);
+#94=PCURVE('',#20,#93);
+#100=SURFACE_CURVE('',#33,(#94),.PCURVE_S1.);
+#110=EDGE_CURVE('',#80,#81,#100,.T.);
+#111=ORIENTED_EDGE('',*,*,#110,.T.);
+#112=EDGE_LOOP('',(#111));
+#113=FACE_OUTER_BOUND('',#112,.T.);
+#114=ADVANCED_FACE('',(#113),#20,.T.);
+#9000=PRODUCT_CONTEXT('',#1,'mechanical');
+#9001=PRODUCT('Gp063','Gp063','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
+#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
+#9021=SHELL_BASED_SURFACE_MODEL('sbsm',(#72,#112));
+#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#9010);
+#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+ENDSEC;
+END-ISO-10303-21;
