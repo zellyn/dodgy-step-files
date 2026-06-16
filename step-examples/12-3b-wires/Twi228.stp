@@ -1,0 +1,85 @@
+ISO-10303-21;
+/* Twi228 - ShapeAnalysis_Wire.CheckGap3d with-very-large-coordinates
+ * Defect: Adjacent vertices at coordinates ~1e6 with gap at ~1e-6 scale.
+ * CheckGap3d's relative tolerance fails because absolute coordinate magnitude
+ * dominates comparison, missing the small geometric gap.
+ */
+HEADER;
+FILE_DESCRIPTION(('Twi228 test case','CheckGap3d with-very-large-coordinates — relative tolerance overflow'),'2;1');
+FILE_NAME('Twi228.stp','2026-06-15T00:00:00',('zellyn@gmail.com'),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+#100=CARTESIAN_POINT('',(1000000.0,1000000.0,1000000.0));
+#101=DIRECTION('',(0.0,0.0,1.0));
+#102=DIRECTION('',(1.0,0.0,0.0));
+#103=AXIS2_PLACEMENT_3D('',#100,#101,#102);
+#104=PLANE('',#103);
+/* Vertices at very large coordinate values */
+#110=CARTESIAN_POINT('',(1000000.0,1000000.0,0.0));
+#111=CARTESIAN_POINT('',(1000005.0,1000000.0,0.0));
+#112=CARTESIAN_POINT('',(1000005.0000001,1000000.0000001,0.0));
+#113=CARTESIAN_POINT('',(1000010.0,1000000.0,0.0));
+#114=CARTESIAN_POINT('',(1000010.0,1000005.0,0.0));
+#115=CARTESIAN_POINT('',(1000000.0,1000005.0,0.0));
+/* Create vertices */
+#120=VERTEX_POINT('',#110);
+#121=VERTEX_POINT('',#111);
+#122=VERTEX_POINT('',#112);
+#123=VERTEX_POINT('',#113);
+#124=VERTEX_POINT('',#114);
+#125=VERTEX_POINT('',#115);
+/* Edge1: normal segment from (1e6,1e6) to (1e6+5,1e6) */
+#130=LINE('',#110,#102);
+#131=EDGE_CURVE('',#120,#121,#130,.T.);
+/* Edge2: gap-containing segment - endpoint at (1e6+5,1e6)
+   Next vertex at (1e6+5.0000001,1e6.0000001) - gap of 1e-7 scale
+   At absolute scale 1e6, relative gap ~1e-13, below typical relative tolerance */
+#132=LINE('',#111,#102);
+#133=EDGE_CURVE('',#121,#122,#132,.T.);
+/* Edge3: continues from gap, from (1e6+5.0000001,1e6.0000001) to (1e6+10,1e6) */
+#134=DIRECTION('',(1.0,-0.00000005,0.0));
+#135=LINE('',#112,#134);
+#136=EDGE_CURVE('',#122,#123,#135,.T.);
+/* Edge4 through Edge6: complete rectangle */
+#137=DIRECTION('',(0.0,1.0,0.0));
+#138=LINE('',#113,#137);
+#139=EDGE_CURVE('',#123,#124,#138,.T.);
+#140=DIRECTION('',(-1.0,0.0,0.0));
+#141=LINE('',#114,#140);
+#142=EDGE_CURVE('',#124,#125,#141,.T.);
+#143=DIRECTION('',(0.0,-1.0,0.0));
+#144=LINE('',#115,#143);
+#145=EDGE_CURVE('',#125,#120,#144,.T.);
+/* Oriented edges */
+#200=ORIENTED_EDGE('',*,*,#131,.T.);
+#201=ORIENTED_EDGE('',*,*,#133,.T.);
+#202=ORIENTED_EDGE('',*,*,#136,.T.);
+#203=ORIENTED_EDGE('',*,*,#139,.T.);
+#204=ORIENTED_EDGE('',*,*,#142,.T.);
+#205=ORIENTED_EDGE('',*,*,#145,.T.);
+/* Closed edge loop */
+#210=EDGE_LOOP('',(#200,#201,#202,#203,#204,#205));
+/* Face */
+#220=FACE_OUTER_BOUND('',#210,.T.);
+#221=ADVANCED_FACE('',(#220),#104,.T.);
+/* Shell and manifold representation */
+#250=CLOSED_SHELL('',(#221));
+#9021=SHELL_BASED_SURFACE_MODEL('sbsm',(#250));
+#9000=PRODUCT_CONTEXT('',#1,'mechanical');
+#9001=PRODUCT('Twi228','Twi228','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
+#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
+#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#9010);
+#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+ENDSEC;
+END-ISO-10303-21;

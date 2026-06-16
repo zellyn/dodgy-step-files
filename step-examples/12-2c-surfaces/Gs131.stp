@@ -1,0 +1,72 @@
+ISO-10303-21;
+/* Gs131 - TOROIDAL_SURFACE with Newton iteration near convergence
+ *
+ * Defect: ShapeAnalysis_Surface.NextValueOfUV implements Newton iteration
+ *  to find UV coordinates on a surface for a given 3D point. When the
+ *  previous iterate is very close to the target (within Confusion tolerance),
+ *  the algorithm declares convergence prematurely without verifying that
+ *  the 3D projection actually matches. This causes the method to return
+ *  incorrect UV coordinates that are geometrically far from the target point.
+ *
+ * Reproducer: TOROIDAL_SURFACE with target 3D point. Initialize Newton
+ *  iteration with previous iterate P_prev close to P_target (within Confusion).
+ *  The algorithm skips refinement and returns UV(P_prev) instead of
+ *  continuing to the true Newton fix point.
+ *
+ * Expected kernel behavior:
+ *   heal - require convergence in both parameter-space and 3D-space distance,
+ *  not just parameter proximity. */
+HEADER;
+FILE_DESCRIPTION(('Gs131 test case','TOROIDAL_SURFACE with premature Newton convergence near target'),'2;1');
+FILE_NAME('Gs131.stp','2026-06-15T00:00:00',(''),(''),'auto-generated','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+/* Axis placement at origin */
+#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#11=DIRECTION('',(0.0,0.0,1.0));
+#12=DIRECTION('',(1.0,0.0,0.0));
+#13=AXIS2_PLACEMENT_3D('',#10,#11,#12);
+/* TOROIDAL_SURFACE: major=50, minor=10
+ * Parametric domain: U in [0,2π], V in [0,2π]
+ * Surface point at U=π/4, V=π/4:
+ *  X = (50 + 10·cos(π/4))·cos(π/4) ≈ 42.426
+ *  Y = (50 + 10·cos(π/4))·sin(π/4) ≈ 42.426
+ *  Z = 10·sin(π/4) ≈ 7.071 */
+#20=TOROIDAL_SURFACE('',#13,50.0,10.0);
+/* Target 3D point near (42.426, 42.426, 7.071)
+ * This point is close to the torus but not exactly on it */
+#30=CARTESIAN_POINT('',(42.426,42.426,7.071));
+#31=VERTEX_POINT('',#30);
+/* Point slightly offset to create Newton iteration challenge
+ * If previous iterate is within Confusion of this, premature convergence occurs */
+#35=CARTESIAN_POINT('',(42.4261,42.4261,7.0711));
+#36=VERTEX_POINT('',#35);
+/* Degenerate edge to anchor vertices */
+#40=EDGE_CURVE('',#31,#36,#41,.T.);
+#41=LINE('',#30,#42);
+#42=DIRECTION('',(0.00001,0.00001,0.00001));
+/* Wire and face on torus */
+#50=WIRE('',((#40)));
+#51=FACE_OUTER_BOUND('',#50,.T.);
+#52=ADVANCED_FACE('',(#51),#20,.T.);
+/* Shell */
+#60=OPEN_SHELL('',(#52));
+/* Product context chain */
+#9000=PRODUCT_CONTEXT('',#1,'mechanical');
+#9001=PRODUCT('Gs131','Gs131','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
+#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
+#9022=GEOMETRICALLY_BOUNDED_SURFACE_SHAPE_REPRESENTATION('',(#60),#9010);
+#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+ENDSEC;
+END-ISO-10303-21;

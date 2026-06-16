@@ -20933,6 +20933,64 @@ Curve knot vector has interior knot at t=0.5 with multiplicity 2. Init's split r
 
 B-spline with periodic flag (.T.) but knot multiplicities at endpoints differ: u_min has multiplicity 2, u_max has multiplicity 2 but computed span widths asymmetric. IsClosed reports .T. based on flag, ignoring asymmetry in knot partition.
 
+### Gn114 — ShapeAnalysis_Curve.IsClosed knot-vector-not-symmetric
+
+Closed B-spline curve (degree 3, 7 control points) with asymmetric knot multiplicities at endpoints (multiplicity 2 at start, 2 at end). Poles form a closed loop but knot vector lacks symmetry. IsClosed incorrectly reports closed based on pole coincidence while downstream code assumes symmetric knot structure.
+
+### Gn115 — ShapeUpgrade_ConvertSurfaceToBezierBasis non-uniform-degree
+
+B-spline surface with highly disparate degrees: U direction degree 5, V direction degree 1. Control point layout (7×2) creates vastly different patch sizes when converted to Bezier basis. Tests Init's assumption of uniform degree across dimensions.
+
+### Gn116 — ShapeAnalysis_Curve.GetSamplePoints near-collinear-poles
+
+B-spline curve (degree 3, 5 control points) with poles nearly collinear in XY plane (offsets ~1e-5 in Y). Sampler detects "almost linear" geometry and returns minimal sample count, failing to discretize the sparse curvature information.
+
+### Gn117 — ShapeUpgrade_SplitSurface with-rational-and-non-rational-mixed
+
+Rational B-spline surface (degree 2×1) with mixed rationality: weights specified (rational in U) but V direction non-rational. Init's split logic assumes uniform rationality and produces incorrect patch boundaries.
+
+### Gn118 — ShapeAnalysis_Curve.IsPlanar two-points-and-one-offset
+
+Degenerate B-spline curve (degree 2, 3 points) where first two poles are coincident and third is spatially offset. IsPlanar's degenerate-input handler produces a verdict but computes a meaningless "plane" from insufficient independent points.
+
+### Gn119 — ShapeAnalysis_Curve.GetSamplePoints with-clustered-knots
+
+**Defect:** B-spline curve degree 3, 8 control points, with 5 knots clustered within parameter range [0.20025, 0.20100] (width 0.001). GetSamplePoints over-counts samples in the cluster region, causing excessive subdivision or missed coarse regions.
+
+**Geometry:** Cubic B-spline with control polygon (0,0,0)→(4,2,0). Interior knots at {0.2, 0.20025, 0.2005, 0.200750, 0.20100, 0.8}.
+
+---
+
+### Gn120 — ShapeUpgrade_ConvertSurfaceToBezierBasis with-clamped-knots-degenerate
+
+**Defect:** B-spline surface, degree (2,2), where U-direction knots are clamped (multiplicity at endpoints = degree+1) but V-direction knots are unclamped. Conversion to Bezier basis applies different logic per direction, causing inconsistent patch decomposition.
+
+**Geometry:** 4×2 control grid, U knots clamped {0.0, 0.0, 0.0, 1.0, 1.0, 1.0}, V knots unclamped {0.1, 0.2, 0.3}.
+
+---
+
+### Gn121 — ShapeAnalysis_Curve.IsPlanar B-spline-of-degree-1
+
+**Defect:** Degree-1 B-spline (piecewise linear) with control polygon bent out of plane. IsPlanar returns true trivially (linearity ≠ planarity) but endpoint test misses mid-segment deviation.
+
+**Geometry:** 5-point degree-1 B-spline: (0,0,0)→(1,0,0)→(2,1,1)→(3,0,0)→(4,0,0). Point #22 at (2,1,1) lifts the control polygon out XY plane.
+
+---
+
+### Gn122 — ShapeUpgrade_SplitSurface.Init with-control-net-collapsed
+
+**Defect:** B-spline surface whose first 6 control points map to a single location (1,1,1); remaining 2 points at (2,2,2). Split initialization logic skips validation of degenerate control nets, allowing invalid surface to proceed to splitting algorithm.
+
+**Geometry:** 4×2 surface, degree (2,2), 8 control points collapsed to 2 unique positions.
+
+---
+
+### Gn123 — ShapeAnalysis_Curve.IsClosed COMPOSITE_CURVE with-direction-reversal
+
+**Defect:** Composite curve with 2 line segments: first forward (0,0,0)→(2,0,0), second reversed (2,0,0)→(0,0,0). IsClosed checks endpoint coincidence but ignores direction reversal, missing topological mismatch.
+
+**Geometry:** Two lines, segment 1 direction (1,0,0), segment 2 direction (-1,0,0) with REVERSE sense flag.
+
 ### Wr001 — Trailing whitespace on every record line
 - **Category**: §12.13 writer-pathology (sub-class: whitespace/line-ending)
 - **Sources**: prostep ivip CAx-IF round-trip reports; FreeCAD #4231 "STEP exporter pads lines with spaces"; bug-reporter language: "diff between exports is all whitespace"
@@ -22775,6 +22833,34 @@ Face on plane with C0 discontinuity in parameter domain (split at u=5.0). Inner 
 
 **Fixture**: ADVANCED_FACE with outer wire (10×10 rectangle) and inner wire (triangle) touching only at single shared vertex (5,5), no shared edges.
 
+### Tfa191 — ShapeFix_Face.FixLoopWire with-multiple-inner-loops-touching
+
+Face with 3 rectangular inner wires (0.2×0.15, 0.2×0.05, 0.2×0.15 units) positioned at distinct vertices of outer 1×1 square. All inner loops touch outer boundary at single vertices; FixLoopWire processes sequentially with ownership cascading. Defect: wire reordering cascades corruption when processing 2nd and 3rd inner wires due to improper edge-ownership tracking across loop merges.
+
+---
+
+### Tfa192 — ShapeAnalysis_CheckSmallFace.CheckPin three-way-pin-asymmetric
+
+Face with three pins of different heights projecting from center into face. Pin dimensions: (0.1×0.01), (0.2×0.005), (0.1×0.002) units. CheckPin reports largest pin (0.2×0.005) only, missing the two smaller pins due to early-exit logic that doesn't aggregate all singularities.
+
+---
+
+### Tfa193 — ShapeFix_Face.FixSmallAreaWire wire-equal-to-face-area
+
+Outer boundary 4×4 units, inner wire 2×2 units (area=4). Wire area numerically equals face area due to combined tolerance accumulation. FixSmallAreaWire's comparison logic is non-deterministic at equality boundary; floating-point rounding causes spurious acceptance/rejection.
+
+---
+
+### Tfa194 — ShapeAnalysis_CheckSmallFace.CheckSpotFace face-with-bbox-much-larger
+
+Outer boundary 200×200 units with inner rectangle 100×100 units (50-150 on each axis), but placement yields bounding box extrapolation to full outer extent. CheckSpotFace's 3D bbox-based heuristic misclassifies tight inner geometry as spot-like due to bbox >> actual face extent.
+
+---
+
+### Tfa195 — ShapeFix_Face.FixOrientation face-on-curved-vs-planar
+
+Unit square planar face with centered 0.5×0.5 inner rectangle. FixOrientation's winding tests yield opposite results for equivalent topology: planar face correctly detects inner winding direction, but B-spline approximation of same geometry yields reversed classification due to numerical drift in normal computation.
+
 ### Hea016 — Empty solid output from STEP export of complex body, despite STL succeeding
 - **Category**: §12.3c faces / shape healing
 - **Sources**: FreeCAD #20396; bug-reporter language: "Models exported to STEP crash or produce empty objects", "appears to export fine but results in an empty object", "STL and 3MF export work, STEP doesn't".
@@ -23720,6 +23806,26 @@ Surface with seam at u=π/4 (not standard 0 or 2π). FixDummySeam's heuristic as
 **Falsifiable claim**: Without distinguishing boundary intersections from interior crossings, FixIntersectingEdges applies cutting/vertex-tolerance fixes to edges that merely touch the trim, causing topology corruption.
 
 **Minimal reproducer**: Wire on trimmed plane where Edge2 terminates exactly at boundary u=10, and Edge3 starts there. FixIntersectingEdges detects boundary touch as intersection and inserts spurious vertex, breaking edge sequence.
+
+### Twi227 — ShapeFix_Wire.FixGaps2d on-bspline-surface
+
+Wire on B-spline surface with non-uniform pcurve. FixGaps2d's bridge logic assumes uniform knot spacing; non-uniform knot distributions cause misaligned 2D geometry when gaps are bridged.
+
+### Twi228 — ShapeAnalysis_Wire.CheckGap3d with-very-large-coordinates
+
+Adjacent vertices at coordinates 1e6 with gap at 1e-6 scale. CheckGap3d's relative tolerance fails because absolute coordinate magnitude dominates comparison, missing the geometrically significant gap.
+
+### Twi229 — ShapeFix_Wire.FixReorder all-edges-degenerate
+
+Wire with all edges degenerate (zero-length). FixReorder has no direction to use for ordering and produces unspecified result.
+
+### Twi230 — ShapeAnalysis_Wire.CheckIntersectingEdges B-spline-edge-with-many-knots
+
+Wire with high-knot-count B-spline edges. CheckIntersectingEdges's sub-segment comparison produces quadratic explosion or overflows internal buffer.
+
+### Twi231 — ShapeFix_Wire.FixLacking with-existing-wire-degenerate-vertex
+
+Wire missing edge where existing path passes through degenerate vertex. FixLacking's insertion logic doesn't account for degenerate intermediate vertices in edge connectivity.
 
 ### Gs056 — `SURFACE_OF_REVOLUTION` of an ellipse around its own centre produces a degenerate surface
 - **Category**: §12.2c surface / curve degeneracies (sub-class: revolution of conic)

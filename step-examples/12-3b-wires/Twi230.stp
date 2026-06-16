@@ -1,0 +1,90 @@
+ISO-10303-21;
+/* Twi230 - ShapeAnalysis_Wire.CheckIntersectingEdges B-spline-edge-with-many-knots
+ * Defect: Wire with high-knot-count B-spline edges. CheckIntersectingEdges's
+ * sub-segment comparison overflows internal buffer or produces quadratic
+ * explosion in intersection tests.
+ */
+HEADER;
+FILE_DESCRIPTION(('Twi230 test case','CheckIntersectingEdges B-spline-edge-with-many-knots — buffer overflow'),'2;1');
+FILE_NAME('Twi230.stp','2026-06-15T00:00:00',('zellyn@gmail.com'),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+#100=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#101=DIRECTION('',(0.0,0.0,1.0));
+#102=DIRECTION('',(1.0,0.0,0.0));
+#103=AXIS2_PLACEMENT_3D('',#100,#101,#102);
+#104=PLANE('',#103);
+/* B-spline curve with many knots for high-complexity edge */
+#200=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#201=CARTESIAN_POINT('',(1.0,0.5,0.0));
+#202=CARTESIAN_POINT('',(2.0,0.2,0.0));
+#203=CARTESIAN_POINT('',(3.0,0.8,0.0));
+#204=CARTESIAN_POINT('',(4.0,0.1,0.0));
+#205=CARTESIAN_POINT('',(5.0,0.9,0.0));
+#206=CARTESIAN_POINT('',(6.0,0.3,0.0));
+#207=CARTESIAN_POINT('',(7.0,0.7,0.0));
+#208=CARTESIAN_POINT('',(8.0,0.4,0.0));
+#209=CARTESIAN_POINT('',(9.0,0.6,0.0));
+#210=CARTESIAN_POINT('',(10.0,0.0,0.0));
+/* Complex B-spline with high knot multiplicity */
+#220=B_SPLINE_CURVE_WITH_KNOTS('bspl1',3,
+  (#200,#201,#202,#203,#204,#205,#206,#207,#208,#209,#210),
+  (0.0,0.5,1.0,1.5,2.0,2.5,3.0,3.5,4.0,4.5,5.0,5.5,6.0,6.5,7.0,7.5,8.0,8.5,9.0,9.5,10.0),
+  (3,2,2,2,2,2,2,2,2,2,3),.U.);
+/* Vertices for wire */
+#300=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#301=CARTESIAN_POINT('',(10.0,0.0,0.0));
+#302=CARTESIAN_POINT('',(10.0,5.0,0.0));
+#303=CARTESIAN_POINT('',(0.0,5.0,0.0));
+#310=VERTEX_POINT('',#300);
+#311=VERTEX_POINT('',#301);
+#312=VERTEX_POINT('',#302);
+#313=VERTEX_POINT('',#303);
+/* Edge1: complex B-spline with many knots */
+#400=EDGE_CURVE('',#310,#311,#220,.T.);
+/* Edge2: straight edge */
+#401=LINE('',#301,#DIRECTION('',(0.0,1.0,0.0)));
+#402=EDGE_CURVE('',#311,#312,#401,.T.);
+/* Edge3: another complex curve with many control points */
+#403=B_SPLINE_CURVE_WITH_KNOTS('bspl2',2,
+  (#CARTESIAN_POINT('',(10.0,5.0,0.0)),#CARTESIAN_POINT('',(9.0,4.8,0.0)),#CARTESIAN_POINT('',(8.0,4.9,0.0)),
+   #CARTESIAN_POINT('',(7.0,5.1,0.0)),#CARTESIAN_POINT('',(6.0,4.95,0.0)),#CARTESIAN_POINT('',(5.0,5.05,0.0)),
+   #CARTESIAN_POINT('',(4.0,4.9,0.0)),#CARTESIAN_POINT('',(3.0,5.1,0.0)),#CARTESIAN_POINT('',(2.0,4.95,0.0)),
+   #CARTESIAN_POINT('',(1.0,5.05,0.0)),#CARTESIAN_POINT('',(0.0,5.0,0.0))),
+  (0.0,0.5,1.0,1.5,2.0,2.5,3.0,3.5,4.0,4.5,5.0,5.5,6.0,6.5,7.0,7.5,8.0,8.5,9.0,9.5,10.0),
+  (2,2,2,2,2,2,2,2,2,2,2),.U.);
+#404=EDGE_CURVE('',#312,#313,#403,.T.);
+/* Edge4: closing straight edge */
+#405=LINE('',#303,#DIRECTION('',(0.0,-1.0,0.0)));
+#406=EDGE_CURVE('',#313,#310,#405,.T.);
+/* Oriented edges */
+#500=ORIENTED_EDGE('',*,*,#400,.T.);
+#501=ORIENTED_EDGE('',*,*,#402,.T.);
+#502=ORIENTED_EDGE('',*,*,#404,.T.);
+#503=ORIENTED_EDGE('',*,*,#406,.T.);
+/* Closed edge loop */
+#510=EDGE_LOOP('',(#500,#501,#502,#503));
+/* Face */
+#520=FACE_OUTER_BOUND('',#510,.T.);
+#521=ADVANCED_FACE('',(#520),#104,.T.);
+/* Shell and manifold representation */
+#600=CLOSED_SHELL('',(#521));
+#9021=SHELL_BASED_SURFACE_MODEL('sbsm',(#600));
+#9000=PRODUCT_CONTEXT('',#1,'mechanical');
+#9001=PRODUCT('Twi230','Twi230','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
+#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
+#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#9010);
+#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+ENDSEC;
+END-ISO-10303-21;

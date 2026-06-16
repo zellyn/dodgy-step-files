@@ -1,0 +1,59 @@
+ISO-10303-21;
+/* Gs136 - ShapeAnalysis_Surface.Singularity TOROIDAL_SURFACE non-standard-axis
+ *
+ * Defect: Torus whose rotation axis is NOT aligned with global Z-axis causes
+ * Singularity() to produce incorrect results. Code assumes axis=(0,0,1) and
+ * singular circles lie at (R+r, z=0) and (R-r, z=0); rotated torus has
+ * singularities in rotated frame.
+ *
+ * Reproducer: TOROIDAL_SURFACE with major radius 30, minor radius 5, but
+ * AXIS2_PLACEMENT_3D rotated 45° about X and 30° about Z.
+ *
+ * Expected kernel behavior:
+ *   heal - transform singularity detection to local torus frame; convert
+ *   to global coords using inverse of AXIS2_PLACEMENT_3D. */
+HEADER;
+FILE_DESCRIPTION(('Gs136 test case','Non-axis-aligned torus singularity'),'2;1');
+FILE_NAME('Gs136.stp','2026-06-15T00:00:00',(''),(''),'auto-generated','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+/* Base coordinate system - at origin */
+#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
+/* Rotated axis: Z' = (sin(45°), 0, cos(45°)) = (0.707, 0, 0.707) */
+#11=DIRECTION('',(0.707,0.0,0.707));
+/* X' after 45° rotation about Y = (cos(45°), 0, -sin(45°)) = (0.707, 0, -0.707) */
+#12=DIRECTION('',(0.707,0.0,-0.707));
+#13=AXIS2_PLACEMENT_3D('',#10,#11,#12);
+/* Torus with major radius 30, minor radius 5, on rotated axis */
+#20=TOROIDAL_SURFACE('',#13,30.0,5.0);
+/* Vertices on torus outer equator (major circle + minor radius) */
+#30=CARTESIAN_POINT('',(35.0,0.0,0.0));
+#31=VERTEX_POINT('',#30);
+#32=CARTESIAN_POINT('',(35.0,0.0,0.1));
+#33=VERTEX_POINT('',#32);
+/* Degenerate edge */
+#40=LINE('',#30,#30);
+#41=EDGE_CURVE('',#31,#33,#40,.T.);
+#42=ORIENTED_EDGE('',*,*,#41,.T.);
+#50=EDGE_LOOP('',(#42));
+#51=FACE_OUTER_BOUND('',#50,.T.);
+#52=ADVANCED_FACE('',(#51),#20,.T.);
+/* PRODUCT chain */
+#9000=PRODUCT_CONTEXT('',#1,'mechanical');
+#9001=PRODUCT('Gs136','Gs136','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
+#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
+#9022=GEOMETRICALLY_BOUNDED_SURFACE_SHAPE_REPRESENTATION('',(#52),#9010);
+#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+ENDSEC;
+END-ISO-10303-21;

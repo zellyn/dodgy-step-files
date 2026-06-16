@@ -1,0 +1,65 @@
+ISO-10303-21;
+/* Gs138 - ShapeAnalysis_Surface.IsDegenerated bounded-surface-with-only-corner-points
+ *
+ * Defect: Surface defined by 4 corner control points only (no interior patches
+ * or knot structure) passes IsDegenerated correctly as non-degenerate, but the
+ * surface itself is barely defined—derivative evaluation is unreliable, and
+ * trimming or intersection operations assume richer surface structure.
+ *
+ * Reproducer: Minimal B-spline surface with a 2x2 control-point grid and
+ * degree (1,1)—technically valid bilinear patch but minimal and fragile.
+ *
+ * Expected kernel behavior:
+ *   heal - flag minimal surfaces; add robustness check for evaluation at
+ *   interior points; consider elevation to higher degree or add validation
+ *   warning during healing audit. */
+HEADER;
+FILE_DESCRIPTION(('Gs138 test case','Minimal bilinear surface (4 corners only)'),'2;1');
+FILE_NAME('Gs138.stp','2026-06-15T00:00:00',(''),(''),'auto-generated','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+/* Base coordinate system */
+#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#11=DIRECTION('',(0.0,0.0,1.0));
+#12=DIRECTION('',(1.0,0.0,0.0));
+#13=AXIS2_PLACEMENT_3D('',#10,#11,#12);
+/* Four corner points only - minimal 2x2 bilinear surface */
+#20=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#21=CARTESIAN_POINT('',(4.0,0.0,0.1));
+#22=CARTESIAN_POINT('',(0.0,4.0,0.2));
+#23=CARTESIAN_POINT('',(4.0,4.0,0.3));
+/* Degree (1,1) B-spline surface - bilinear patch */
+#50=B_SPLINE_SURFACE_WITH_KNOTS('',1,1,(#20,#21,#22,#23),
+  ((0.0,0.0,1.0,1.0),(0.0,0.0,1.0,1.0)),
+  ((1.0,1.0),(1.0,1.0)),.F.,.F.,.F.);
+/* Vertices at corners */
+#60=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#61=VERTEX_POINT('',#60);
+#62=CARTESIAN_POINT('',(4.0,0.0,0.1));
+#63=VERTEX_POINT('',#62);
+/* Degenerate edge */
+#70=LINE('',#60,#60);
+#71=EDGE_CURVE('',#61,#63,#70,.T.);
+#72=ORIENTED_EDGE('',*,*,#71,.T.);
+#80=EDGE_LOOP('',(#72));
+#81=FACE_OUTER_BOUND('',#80,.T.);
+#82=ADVANCED_FACE('',(#81),#50,.T.);
+/* PRODUCT chain */
+#9000=PRODUCT_CONTEXT('',#1,'mechanical');
+#9001=PRODUCT('Gs138','Gs138','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
+#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
+#9022=GEOMETRICALLY_BOUNDED_SURFACE_SHAPE_REPRESENTATION('',(#82),#9010);
+#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+ENDSEC;
+END-ISO-10303-21;

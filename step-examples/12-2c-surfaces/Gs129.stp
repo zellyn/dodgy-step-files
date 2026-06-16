@@ -1,0 +1,65 @@
+ISO-10303-21;
+/* Gs129 - CYLINDRICAL_SURFACE with non-unit radius underflowing tolerance check
+ *
+ * Defect: ShapeAnalysis_Surface.IsUClosed applies radius-relative tolerance
+ *  when testing if a CYLINDRICAL_SURFACE closes in the U direction. For very
+ *  small radii (e.g., 0.0001 mm), the radius-relative tolerance underflows,
+ *  causing the method to incorrectly report closure even when the surface
+ *  parametric range is incomplete. This causes healing methods to skip
+ *  necessary boundary repairs.
+ *
+ * Reproducer: CYLINDRICAL_SURFACE with radius = 0.0001 (much smaller than
+ *  Confusion ~ 1e-7). The surface spans U = [0, π] (not full 2π). IsUClosed
+ *  uses radius-relative tolerance which underflows for such a tiny radius.
+ *
+ * Expected kernel behavior:
+ *   heal - apply minimum absolute tolerance floor independent of radius,
+ *  or switch to absolute-only tolerance for near-zero-radius cylinders. */
+HEADER;
+FILE_DESCRIPTION(('Gs129 test case','CYLINDRICAL_SURFACE with tiny radius underflowing IsUClosed tolerance'),'2;1');
+FILE_NAME('Gs129.stp','2026-06-15T00:00:00',(''),(''),'auto-generated','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+/* Axis placement at origin */
+#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#11=DIRECTION('',(0.0,0.0,1.0));
+#12=DIRECTION('',(1.0,0.0,0.0));
+#13=AXIS2_PLACEMENT_3D('',#10,#11,#12);
+/* CYLINDRICAL_SURFACE with radius = 0.0001 (far below Confusion ~ 1e-7)
+ * This triggers radius-relative tolerance underflow in IsUClosed */
+#20=CYLINDRICAL_SURFACE('',#13,0.0001);
+/* Vertex on the cylinder at u=0, v=0 */
+#30=CARTESIAN_POINT('',(0.0001,0.0,0.0));
+#31=VERTEX_POINT('',#30);
+/* Vertex at u=π (incomplete: NOT full 2π closure) */
+#35=CARTESIAN_POINT('',(-0.0001,0.0,0.0));
+#36=VERTEX_POINT('',#35);
+/* Edge from u=0 to u=π along v=0 */
+#40=EDGE_CURVE('',#31,#36,#41,.T.);
+#41=LINE('',#30,#42);
+#42=DIRECTION('',(-0.0002,0.0,0.0));
+/* Wire and face */
+#50=WIRE('',((#40)));
+#51=FACE_OUTER_BOUND('',#50,.T.);
+#52=ADVANCED_FACE('',(#51),#20,.T.);
+/* Shell */
+#60=OPEN_SHELL('',(#52));
+/* Product context chain */
+#9000=PRODUCT_CONTEXT('',#1,'mechanical');
+#9001=PRODUCT('Gs129','Gs129','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
+#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
+#9022=GEOMETRICALLY_BOUNDED_SURFACE_SHAPE_REPRESENTATION('',(#60),#9010);
+#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+ENDSEC;
+END-ISO-10303-21;

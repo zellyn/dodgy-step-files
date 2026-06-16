@@ -1,0 +1,69 @@
+ISO-10303-21;
+/* Gs133 - CYLINDRICAL_SURFACE degenerate edge with sub-optimal projection
+ *
+ * Defect: ShapeAnalysis_Surface.ProjectDegenerated is called on a
+ *  degenerate edge whose endpoints collapse to a single point (within
+ *  tolerance margin). The method picks a sub-optimal projection onto
+ *  the surface: it projects the collapse-point tangent direction but
+ *  fails to minimize the actual 3D distance. When the collapse has a
+ *  tolerance margin (e.g., vertex tolerance = 0.001), the projection
+ *  may land far from the ideal (geodesic-shortest) point on the surface.
+ *
+ * Reproducer: CYLINDRICAL_SURFACE with degenerate edge where both
+ *  endpoints (with tolerance margin) collapse to region near axis.
+ *  ProjectDegenerated projects the tangent but chooses a point with
+ *  large 3D error instead of minimizing distance.
+ *
+ * Expected kernel behavior:
+ *   heal - apply full point-on-surface projection (via Newton iteration
+ *  or grid search) for degenerate edges with tolerance margins, not just
+ *  tangent-direction projection. */
+HEADER;
+FILE_DESCRIPTION(('Gs133 test case','CYLINDRICAL_SURFACE degenerate edge with sub-optimal projection'),'2;1');
+FILE_NAME('Gs133.stp','2026-06-15T00:00:00',(''),(''),'auto-generated','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+/* Axis placement at origin */
+#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#11=DIRECTION('',(0.0,0.0,1.0));
+#12=DIRECTION('',(1.0,0.0,0.0));
+#13=AXIS2_PLACEMENT_3D('',#10,#11,#12);
+/* CYLINDRICAL_SURFACE: radius=10, axis along Z */
+#20=CYLINDRICAL_SURFACE('',#13,10.0);
+/* Degenerate edge: both endpoints collapse to near-axis region
+ * Vertex 1: (0.5, 0.5, 0.0) with tolerance margin 0.001
+ * Vertex 2: (0.6, 0.4, 0.0) with tolerance margin 0.001
+ * These are both very close to Z-axis, forming a degenerate edge */
+#30=CARTESIAN_POINT('',(0.5,0.5,0.0));
+#31=VERTEX_POINT('',#30);
+#32=CARTESIAN_POINT('',(0.6,0.4,0.0));
+#33=VERTEX_POINT('',#32);
+/* Degenerate edge with very small tangent */
+#40=EDGE_CURVE('',#31,#33,#41,.T.);
+#41=LINE('',#30,#42);
+#42=DIRECTION('',(0.1,-0.1,0.0));
+/* Wire and face with degenerate boundary */
+#50=WIRE('',((#40)));
+#51=FACE_OUTER_BOUND('',#50,.T.);
+#52=ADVANCED_FACE('',(#51),#20,.T.);
+/* Shell */
+#60=OPEN_SHELL('',(#52));
+/* Product context chain */
+#9000=PRODUCT_CONTEXT('',#1,'mechanical');
+#9001=PRODUCT('Gs133','Gs133','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
+#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
+#9022=GEOMETRICALLY_BOUNDED_SURFACE_SHAPE_REPRESENTATION('',(#60),#9010);
+#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+ENDSEC;
+END-ISO-10303-21;

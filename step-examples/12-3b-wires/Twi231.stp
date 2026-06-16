@@ -1,0 +1,86 @@
+ISO-10303-21;
+/* Twi231 - ShapeFix_Wire.FixLacking with-existing-wire-degenerate-vertex
+ * Defect: Wire missing an edge where existing wire passes through a
+ * degenerate vertex. FixLacking's insertion logic doesn't account for
+ * degenerate intermediate vertices in edge connectivity.
+ */
+HEADER;
+FILE_DESCRIPTION(('Twi231 test case','FixLacking with-existing-wire-degenerate-vertex — missing edge at degenerate'),'2;1');
+FILE_NAME('Twi231.stp','2026-06-15T00:00:00',('zellyn@gmail.com'),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+#100=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#101=DIRECTION('',(0.0,0.0,1.0));
+#102=DIRECTION('',(1.0,0.0,0.0));
+#103=AXIS2_PLACEMENT_3D('',#100,#101,#102);
+#104=PLANE('',#103);
+/* Vertices: normal corners and a degenerate middle vertex */
+#110=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#111=CARTESIAN_POINT('',(5.0,0.0,0.0));
+#112=CARTESIAN_POINT('',(5.0,5.0,0.0));
+#113=CARTESIAN_POINT('',(5.0,5.0,0.0));
+#114=CARTESIAN_POINT('',(5.0,10.0,0.0));
+#115=CARTESIAN_POINT('',(0.0,10.0,0.0));
+#120=VERTEX_POINT('',#110);
+#121=VERTEX_POINT('',#111);
+#122=VERTEX_POINT('',#112);
+#123=VERTEX_POINT('',#113);
+#124=VERTEX_POINT('',#114);
+#125=VERTEX_POINT('',#115);
+/* Edge1: normal edge from (0,0) to (5,0) */
+#130=LINE('',#110,#102);
+#131=EDGE_CURVE('',#120,#121,#130,.T.);
+/* Edge2: edge from (5,0) to (5,5) - normal */
+#132=DIRECTION('',(0.0,1.0,0.0));
+#133=LINE('',#111,#132);
+#134=EDGE_CURVE('',#121,#122,#133,.T.);
+/* Edge3: MISSING - should connect (5,5) to degenerate point
+   This edge is intentionally missing, and #123 is degenerate (coincides with #122)
+   FixLacking must detect this gap and insert appropriate correction.
+   But degenerate vertex at #123 confuses the insertion logic.
+*/
+/* Edge4: edge from degenerate vertex (5,5) to (5,10) - zero-length initially
+   This creates a degenerate edge that FixLacking must handle */
+#135=DIRECTION('',(0.0,1.0,0.0));
+#136=LINE('',#113,#135);
+#137=EDGE_CURVE('',#123,#124,#136,.T.);
+/* Edge5: edge from (5,10) to (0,10) */
+#138=DIRECTION('',(-1.0,0.0,0.0));
+#139=LINE('',#114,#138);
+#140=EDGE_CURVE('',#124,#125,#139,.T.);
+/* Edge6: closing edge from (0,10) to (0,0) */
+#141=DIRECTION('',(0.0,-1.0,0.0));
+#142=LINE('',#115,#141);
+#143=EDGE_CURVE('',#125,#120,#142,.T.);
+/* Oriented edges forming incomplete loop */
+#200=ORIENTED_EDGE('',*,*,#131,.T.);
+#201=ORIENTED_EDGE('',*,*,#134,.T.);
+#202=ORIENTED_EDGE('',*,*,#137,.T.);
+#203=ORIENTED_EDGE('',*,*,#140,.T.);
+#204=ORIENTED_EDGE('',*,*,#143,.T.);
+/* Edge loop with missing connection at degenerate vertex */
+#210=EDGE_LOOP('',(#200,#201,#202,#203,#204));
+/* Face */
+#220=FACE_OUTER_BOUND('',#210,.T.);
+#221=ADVANCED_FACE('',(#220),#104,.T.);
+/* Shell and manifold representation */
+#250=CLOSED_SHELL('',(#221));
+#9021=SHELL_BASED_SURFACE_MODEL('sbsm',(#250));
+#9000=PRODUCT_CONTEXT('',#1,'mechanical');
+#9001=PRODUCT('Twi231','Twi231','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
+#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
+#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#9010);
+#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+ENDSEC;
+END-ISO-10303-21;
