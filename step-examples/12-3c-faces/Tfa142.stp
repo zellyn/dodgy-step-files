@@ -1,0 +1,66 @@
+ISO-10303-21;
+/* Tfa142 - ShapeAnalysis_CheckSmallFace.CheckSmallArea torus-patch
+ * Small face on torus surface; CheckSmallArea computes area assuming
+ * planar projection but torus curvature distorts actual area. */
+HEADER;
+FILE_DESCRIPTION(('Tfa142 test case','Small face on torus with curvature-distorted area'),'2;1');
+FILE_NAME('Tfa142.stp','2026-06-15T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+/* === Torus surface: major radius 5.0, minor radius 1.0 === */
+#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#11=DIRECTION('',(0.0,0.0,1.0));
+#12=DIRECTION('',(1.0,0.0,0.0));
+#13=AXIS2_PLACEMENT_3D('',#10,#11,#12);
+#14=TOROIDAL_SURFACE('torus_surf',#13,5.0,1.0);
+/* === Small patch on torus: narrow in both u,v directions === */
+/* Parametric bounds: u from 0 to 0.2 rad (11.5 deg), v from 0 to 0.3 rad (17.2 deg) */
+/* At this location, planar approximation gives wrong area */
+#20=CARTESIAN_POINT('',(5.098,0.099,0.0));#21=VERTEX_POINT('',#20);
+#22=CARTESIAN_POINT('',(5.215,0.198,0.0));#23=VERTEX_POINT('',#22);
+#24=CARTESIAN_POINT('',(5.282,0.283,0.0));#25=VERTEX_POINT('',#24);
+#26=CARTESIAN_POINT('',(5.165,0.185,0.0));#27=VERTEX_POINT('',#26);
+/* === P-curves (parametric edges on torus) === */
+/* Edge 1: u-direction at v=0 */
+#30=PCURVE('',#14,#31);
+#31=LINE('',#40,#41);
+#40=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#41=DIRECTION('',(1.0,0.0,0.0));#42=VECTOR('',#41,0.1);
+/* 3D curve along u-direction */
+#43=DIRECTION('',(1.0,0.0,0.0));#44=VECTOR('',#43,1.0);#45=LINE('',#20,#43);
+#46=EDGE_CURVE('torus_u_edge1',#21,#23,#45,.T.);
+/* Need to set pcurve reference -- use PCURVE_REFERENCE_EDGE if needed */
+/* Edge 2: v-direction */
+#50=DIRECTION('',(0.0,1.0,0.0));#51=VECTOR('',#50,1.0);#52=LINE('',#22,#50);
+#53=EDGE_CURVE('torus_v_edge1',#23,#25,#52,.T.);
+/* Edge 3: u-direction at v=0.3 */
+#54=DIRECTION('',(-1.0,0.0,0.0));#55=VECTOR('',#54,1.0);#56=LINE('',#24,#54);
+#57=EDGE_CURVE('torus_u_edge2',#25,#27,#56,.T.);
+/* Edge 4: v-direction return */
+#58=DIRECTION('',(0.0,-1.0,0.0));#59=VECTOR('',#58,1.0);#60=LINE('',#26,#58);
+#61=EDGE_CURVE('torus_v_edge2',#27,#21,#60,.T.);
+#62=ORIENTED_EDGE('',*,*,#46,.T.);#63=ORIENTED_EDGE('',*,*,#53,.T.);
+#64=ORIENTED_EDGE('',*,*,#57,.T.);#65=ORIENTED_EDGE('',*,*,#61,.T.);
+#66=EDGE_LOOP('torus_patch',(#62,#63,#64,#65));
+#67=FACE_OUTER_BOUND('',#66,.T.);
+/* === Face on torus === */
+#200=ADVANCED_FACE('small_torus_patch',(#67),#14,.T.);
+/* === Mandatory product chain === */
+#9000=PRODUCT_CONTEXT('',#1,'mechanical');
+#9001=PRODUCT('Tfa142','Tfa142','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
+#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
+#9021=SHELL_BASED_SURFACE_MODEL('sbsm',(#200));
+#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#9010);
+#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+ENDSEC;
+END;

@@ -1,0 +1,83 @@
+ISO-10303-21;
+/* Twi176 - ShapeFix_Wire.FixIntersectingEdges concurrent-modification
+ * Defect: Wire where FixIntersectingEdges modifies the edge list while iterating; downstream operations get stale iterator */
+HEADER;
+FILE_DESCRIPTION(('Twi176 test case','FixIntersectingEdges concurrent-modification'),'2;1');
+FILE_NAME('Twi176.stp','2026-06-15T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#11=DIRECTION('',(0.0,0.0,1.0));
+#12=DIRECTION('',(1.0,0.0,0.0));
+#13=AXIS2_PLACEMENT_3D('',#10,#11,#12);
+#20=PLANE('',#13);
+/* Six vertices forming a self-intersecting wire. */
+#30=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#31=VERTEX_POINT('',#30);
+#32=CARTESIAN_POINT('',(2.0,0.0,0.0));
+#33=VERTEX_POINT('',#32);
+#34=CARTESIAN_POINT('',(2.0,2.0,0.0));
+#35=VERTEX_POINT('',#34);
+#36=CARTESIAN_POINT('',(0.0,2.0,0.0));
+#37=VERTEX_POINT('',#36);
+#38=CARTESIAN_POINT('',(1.0,0.5,0.0));
+#39=VERTEX_POINT('',#38);
+#40=CARTESIAN_POINT('',(1.0,1.5,0.0));
+#41=VERTEX_POINT('',#40);
+/* Line segments forming an X-pattern (figure-eight). */
+#50=DIRECTION('',(1.0,0.0,0.0));
+#51=VECTOR('',#50,2.0);
+#52=LINE('',#30,#50);
+#53=DIRECTION('',(0.0,1.0,0.0));
+#54=VECTOR('',#53,2.0);
+#55=LINE('',#32,#53);
+#56=DIRECTION('',(-1.0,0.0,0.0));
+#57=VECTOR('',#56,2.0);
+#58=LINE('',#34,#56);
+#59=DIRECTION('',(0.0,-1.0,0.0));
+#60=VECTOR('',#59,2.0);
+#61=LINE('',#36,#59);
+#62=DIRECTION('',(0.0,1.0,0.0));
+#63=VECTOR('',#62,1.0);
+#64=LINE('',#38,#62);
+#65=DIRECTION('',(0.0,-1.0,0.0));
+#66=VECTOR('',#65,1.0);
+#67=LINE('',#40,#65);
+/* Six edges forming the self-intersecting pattern. */
+#70=EDGE_CURVE('',#31,#33,#52,.T.);
+#71=EDGE_CURVE('',#33,#35,#55,.T.);
+#72=EDGE_CURVE('',#35,#37,#58,.T.);
+#73=EDGE_CURVE('',#37,#31,#61,.T.);
+#74=EDGE_CURVE('',#39,#41,#64,.T.);
+#75=EDGE_CURVE('',#41,#39,#67,.T.);
+/* ORIENTED_EDGES. */
+#80=ORIENTED_EDGE('',*,*,#70,.T.);
+#81=ORIENTED_EDGE('',*,*,#71,.T.);
+#82=ORIENTED_EDGE('',*,*,#72,.T.);
+#83=ORIENTED_EDGE('',*,*,#73,.T.);
+#84=ORIENTED_EDGE('',*,*,#74,.T.);
+#85=ORIENTED_EDGE('',*,*,#75,.T.);
+/* Wire with self-intersecting edges; FixIntersectingEdges may modify list during iteration. */
+#90=EDGE_LOOP('',(#80,#81,#82,#83,#84,#85));
+#91=FACE_OUTER_BOUND('',#90,.T.);
+#92=ADVANCED_FACE('',(#91),#20,.T.);
+/* Mandatory PRODUCT chain. */
+#9000=PRODUCT_CONTEXT('',#1,'mechanical');
+#9001=PRODUCT('Twi176','Twi176','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
+#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
+#9021=SHELL_BASED_SURFACE_MODEL('sbsm',(#92));
+#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#9010);
+#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+ENDSEC;
+END-ISO-10303-21;

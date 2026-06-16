@@ -1,0 +1,89 @@
+ISO-10303-21;
+/* Twi177 - ShapeAnalysis_Wire.CheckOuterBound nested-faces
+ * Defect: Wire is the outer bound of an inner face within a larger face; CheckOuterBound classifies based on enclosed area but the nested context is missing */
+HEADER;
+FILE_DESCRIPTION(('Twi177 test case','CheckOuterBound nested-faces'),'2;1');
+FILE_NAME('Twi177.stp','2026-06-15T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+/* Coordinate system and plane */
+#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#11=DIRECTION('',(0.0,0.0,1.0));
+#12=DIRECTION('',(1.0,0.0,0.0));
+#13=AXIS2_PLACEMENT_3D('',#10,#11,#12);
+#20=PLANE('',#13);
+/* Outer wire vertices (larger rectangle) */
+#30=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#31=VERTEX_POINT('',#30);
+#32=CARTESIAN_POINT('',(10.0,0.0,0.0));
+#33=VERTEX_POINT('',#32);
+#34=CARTESIAN_POINT('',(10.0,10.0,0.0));
+#35=VERTEX_POINT('',#34);
+#36=CARTESIAN_POINT('',(0.0,10.0,0.0));
+#37=VERTEX_POINT('',#36);
+/* Inner wire vertices (smaller rectangle, nested inside) */
+#40=CARTESIAN_POINT('',(2.0,2.0,0.0));
+#41=VERTEX_POINT('',#40);
+#42=CARTESIAN_POINT('',(8.0,2.0,0.0));
+#43=VERTEX_POINT('',#42);
+#44=CARTESIAN_POINT('',(8.0,8.0,0.0));
+#45=VERTEX_POINT('',#44);
+#46=CARTESIAN_POINT('',(2.0,8.0,0.0));
+#47=VERTEX_POINT('',#46);
+/* Line curves for outer wire */
+#50=LINE('',(0.0,0.0,0.0),(1.0,0.0,0.0));
+#51=LINE('',(10.0,0.0,0.0),(0.0,1.0,0.0));
+#52=LINE('',(10.0,10.0,0.0),(-1.0,0.0,0.0));
+#53=LINE('',(0.0,10.0,0.0),(0.0,-1.0,0.0));
+/* Line curves for inner wire */
+#60=LINE('',(2.0,2.0,0.0),(1.0,0.0,0.0));
+#61=LINE('',(8.0,2.0,0.0),(0.0,1.0,0.0));
+#62=LINE('',(8.0,8.0,0.0),(-1.0,0.0,0.0));
+#63=LINE('',(2.0,8.0,0.0),(0.0,-1.0,0.0));
+/* Outer edges */
+#70=EDGE_CURVE('',#31,#33,#50,.T.);
+#71=EDGE_CURVE('',#33,#35,#51,.T.);
+#72=EDGE_CURVE('',#35,#37,#52,.T.);
+#73=EDGE_CURVE('',#37,#31,#53,.T.);
+/* Inner edges */
+#74=EDGE_CURVE('',#41,#43,#60,.T.);
+#75=EDGE_CURVE('',#43,#45,#61,.T.);
+#76=EDGE_CURVE('',#45,#47,#62,.T.);
+#77=EDGE_CURVE('',#47,#41,#63,.T.);
+/* Oriented edges for outer wire */
+#80=ORIENTED_EDGE('',*,*,#70,.T.);
+#81=ORIENTED_EDGE('',*,*,#71,.T.);
+#82=ORIENTED_EDGE('',*,*,#72,.T.);
+#83=ORIENTED_EDGE('',*,*,#73,.T.);
+/* Oriented edges for inner wire */
+#84=ORIENTED_EDGE('',*,*,#74,.T.);
+#85=ORIENTED_EDGE('',*,*,#75,.T.);
+#86=ORIENTED_EDGE('',*,*,#76,.T.);
+#87=ORIENTED_EDGE('',*,*,#77,.T.);
+/* Loops */
+#90=EDGE_LOOP('',(#80,#81,#82,#83));
+#91=EDGE_LOOP('',(#84,#85,#86,#87));
+/* Faces */
+#92=FACE_OUTER_BOUND('',#90,.T.);
+#93=FACE_BOUND('',#91,.F.);
+#94=ADVANCED_FACE('',(#92,#93),#20,.T.);
+/* Mandatory PRODUCT chain. */
+#9000=PRODUCT_CONTEXT('',#1,'mechanical');
+#9001=PRODUCT('Twi177','Twi177','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
+#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
+#9021=SHELL_BASED_SURFACE_MODEL('sbsm',(#94));
+#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#9010);
+#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+ENDSEC;
+END-ISO-10303-21;

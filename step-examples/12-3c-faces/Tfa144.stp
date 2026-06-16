@@ -1,0 +1,69 @@
+ISO-10303-21;
+/* Tfa144 - ShapeAnalysis_CheckSmallFace.CheckPinFace 3D-vs-parametric-pin
+ * Face with parametric pin (narrow in u,v) but 3D pin is wide due to
+ * surface stretch; CheckPinFace uses parametric ratio, missing 3D geometry. */
+HEADER;
+FILE_DESCRIPTION(('Tfa144 test case','Face with parametric pin but 3D width distorted'),'2;1');
+FILE_NAME('Tfa144.stp','2026-06-15T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+/* === Surface: sphere with high aspect ratio in 3D space via non-uniform scaling ===
+ * B-SPLINE_SURFACE_WITH_KNOTS with control points stretched in Y-direction
+ * This creates parametric squareness but 3D elongation */
+#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
+/* Simple surface: B-spline sphere-like surface stretched in Y */
+#11=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#12=CARTESIAN_POINT('',(2.0,0.0,0.0));
+#13=CARTESIAN_POINT('',(4.0,0.0,0.0));
+#14=CARTESIAN_POINT('',(0.0,20.0,0.0));
+#15=CARTESIAN_POINT('',(2.0,20.0,0.0));
+#16=CARTESIAN_POINT('',(4.0,20.0,0.0));
+#17=CARTESIAN_POINT('',(0.0,40.0,0.0));
+#18=CARTESIAN_POINT('',(2.0,40.0,0.0));
+#19=CARTESIAN_POINT('',(4.0,40.0,0.0));
+#20=B_SPLINE_SURFACE_WITH_KNOTS('stretched_surface',1,1,
+  ((#11,#12,#13),(#14,#15,#16),(#17,#18,#19)),
+  (3,3),(3,3),(0.0,0.0,1.0,1.0),(0.0,0.0,1.0,1.0),
+  .UNSPECIFIED.,.F.,.F.,.F.);
+/* === Pin face: narrow in u-direction parametrically, but wide in 3D ===
+ * u from 0.1 to 0.15 (5% of domain), v from 0.2 to 0.9 (70% of domain)
+ * Parametric aspect ratio: 0.05 / 0.7 = 0.071 (very pinched)
+ * But 3D: width at pin ~0.5, length ~20 (aspect 0.025, even worse)
+ */
+#30=CARTESIAN_POINT('',(0.2,4.0,0.0));#31=VERTEX_POINT('',#30);
+#32=CARTESIAN_POINT('',(0.3,4.0,0.0));#33=VERTEX_POINT('',#32);
+#34=CARTESIAN_POINT('',(0.3,36.0,0.0));#35=VERTEX_POINT('',#34);
+#36=CARTESIAN_POINT('',(0.2,36.0,0.0));#37=VERTEX_POINT('',#36);
+/* Edges of pin face */
+#40=DIRECTION('',(1.0,0.0,0.0));#41=VECTOR('',#40,0.1);#42=LINE('',#30,#40);
+#43=EDGE_CURVE('pin_u_min',#31,#33,#42,.T.);
+#44=DIRECTION('',(0.0,1.0,0.0));#45=VECTOR('',#44,32.0);#46=LINE('',#32,#44);
+#47=EDGE_CURVE('pin_v_max',#33,#35,#46,.T.);
+#48=DIRECTION('',(-1.0,0.0,0.0));#49=VECTOR('',#48,0.1);#50=LINE('',#34,#48);
+#51=EDGE_CURVE('pin_u_max',#35,#37,#50,.T.);
+#52=DIRECTION('',(0.0,-1.0,0.0));#53=VECTOR('',#52,32.0);#54=LINE('',#36,#52);
+#55=EDGE_CURVE('pin_v_min',#37,#31,#54,.T.);
+#56=ORIENTED_EDGE('',*,*,#43,.T.);#57=ORIENTED_EDGE('',*,*,#47,.T.);
+#58=ORIENTED_EDGE('',*,*,#51,.T.);#59=ORIENTED_EDGE('',*,*,#55,.T.);
+#60=EDGE_LOOP('pin_loop',(#56,#57,#58,#59));
+#61=FACE_OUTER_BOUND('',#60,.T.);
+#200=ADVANCED_FACE('parametric_pin_face',(#61),#20,.T.);
+/* === Mandatory product chain === */
+#9000=PRODUCT_CONTEXT('',#1,'mechanical');
+#9001=PRODUCT('Tfa144','Tfa144','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
+#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
+#9021=SHELL_BASED_SURFACE_MODEL('sbsm',(#200));
+#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#9010);
+#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+ENDSEC;
+END;

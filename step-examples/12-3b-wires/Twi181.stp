@@ -1,0 +1,66 @@
+ISO-10303-21;
+/* Twi181 - ShapeAnalysis_Wire.CheckGap3d B-spline-vs-LINE
+ * Defect: Adjacent edges where one is B-spline and the other is LINE; CheckGap3d's endpoint extraction works differently for the two types */
+HEADER;
+FILE_DESCRIPTION(('Twi181 test case','CheckGap3d B-spline-vs-LINE'),'2;1');
+FILE_NAME('Twi181.stp','2026-06-15T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+/* Coordinate system and plane */
+#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#11=DIRECTION('',(0.0,0.0,1.0));
+#12=DIRECTION('',(1.0,0.0,0.0));
+#13=AXIS2_PLACEMENT_3D('',#10,#11,#12);
+#20=PLANE('',#13);
+/* Four vertices */
+#30=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#31=VERTEX_POINT('',#30);
+#32=CARTESIAN_POINT('',(5.0,2.0,0.0));
+#33=VERTEX_POINT('',#32);
+#34=CARTESIAN_POINT('',(10.0,1.0,0.0));
+#35=VERTEX_POINT('',#34);
+#36=CARTESIAN_POINT('',(15.0,0.0,0.0));
+#37=VERTEX_POINT('',#36);
+/* Line segment */
+#50=LINE('',(0.0,0.0,0.0),(1.0,0.4,0.0));
+/* B-spline curve with control points */
+#60=CARTESIAN_POINT('',(5.0,2.0,0.0));
+#61=CARTESIAN_POINT('',(7.0,2.5,0.0));
+#62=CARTESIAN_POINT('',(10.0,1.0,0.0));
+#63=B_SPLINE_CURVE_WITH_KNOTS('',3,(#60,#61,#62),
+    .UNSPECIFIED.,.F.,.F.,
+    (2,1,2),(0.0,0.5,1.0),.UNSPECIFIED.);
+/* Another line segment */
+#70=LINE('',(10.0,1.0,0.0),(1.0,-0.2,0.0));
+/* Edges: LINE, B-spline, LINE */
+#80=EDGE_CURVE('',#31,#33,#50,.T.);
+#81=EDGE_CURVE('',#33,#35,#63,.T.);
+#82=EDGE_CURVE('',#35,#37,#70,.T.);
+/* Oriented edges */
+#90=ORIENTED_EDGE('',*,*,#80,.T.);
+#91=ORIENTED_EDGE('',*,*,#81,.T.);
+#92=ORIENTED_EDGE('',*,*,#82,.T.);
+/* Wire with mixed curve types */
+#100=EDGE_LOOP('',(#90,#91,#92));
+#101=FACE_OUTER_BOUND('',#100,.T.);
+#102=ADVANCED_FACE('',(#101),#20,.T.);
+/* Mandatory PRODUCT chain. */
+#9000=PRODUCT_CONTEXT('',#1,'mechanical');
+#9001=PRODUCT('Twi181','Twi181','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
+#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
+#9021=SHELL_BASED_SURFACE_MODEL('sbsm',(#102));
+#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#9010);
+#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+ENDSEC;
+END-ISO-10303-21;

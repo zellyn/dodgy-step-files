@@ -1,0 +1,60 @@
+ISO-10303-21;
+/* Tfa143 - ShapeFix_Face.FixAddNaturalBound on cone-with-apex-in-domain
+ * Cone face whose parametric domain includes the apex; FixAddNaturalBound
+ * constructs boundary including apex region but apex makes pcurve undefined. */
+HEADER;
+FILE_DESCRIPTION(('Tfa143 test case','Cone with apex in parametric domain'),'2;1');
+FILE_NAME('Tfa143.stp','2026-06-15T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+/* === Cone surface: apex at (0,0,0), half-angle 30 deg, axis along Z === */
+#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#11=DIRECTION('',(0.0,0.0,1.0));
+#12=DIRECTION('',(1.0,0.0,0.0));
+#13=AXIS2_PLACEMENT_3D('',#10,#11,#12);
+/* Cone: semi-vertical angle 0.52 rad (30 deg), height unbounded */
+#14=CONICAL_SURFACE('cone',#13,0.52);
+/* === Single partial wire on cone face ===
+ * Boundary at constant z (height 5.0), with theta from 0 to pi/2
+ * This leaves uncovered region that FixAddNaturalBound will try to fill.
+ * At z=5, radius = 5*tan(30deg) = 2.887
+ */
+#20=CARTESIAN_POINT('',(2.887,0.0,5.0));#21=VERTEX_POINT('',#20);
+#22=CARTESIAN_POINT('',(2.041,2.041,5.0));#23=VERTEX_POINT('',#22);
+#24=CARTESIAN_POINT('',(0.0,2.887,5.0));#25=VERTEX_POINT('',#24);
+/* Arc edges at constant height */
+#30=DIRECTION('',(1.0,0.0,0.0));#31=VECTOR('',#30,1.0);#32=LINE('',#20,#31);
+#33=EDGE_CURVE('cone_arc1',#21,#23,#32,.T.);
+#34=DIRECTION('',(0.0,1.0,0.0));#35=VECTOR('',#34,1.0);#36=LINE('',#22,#35);
+#37=EDGE_CURVE('cone_arc2',#23,#25,#36,.T.);
+/* Radial edges from boundary toward apex would connect to apex at (0,0,0) */
+#38=CARTESIAN_POINT('',(0.0,0.0,0.0));#39=VERTEX_POINT('',#38);
+#40=DIRECTION('',(-2.887,0.0,-5.0));#41=VECTOR('',#40,1.0);#42=LINE('',#20,#40);
+#43=EDGE_CURVE('cone_to_apex1',#21,#39,#42,.T.);
+#44=DIRECTION('',(-2.041,-2.041,-5.0));#45=VECTOR('',#44,1.0);#46=LINE('',#24,#44);
+#47=EDGE_CURVE('cone_to_apex2',#25,#39,#46,.T.);
+#48=ORIENTED_EDGE('',*,*,#33,.T.);#49=ORIENTED_EDGE('',*,*,#37,.T.);
+#50=ORIENTED_EDGE('',*,*,#47,.F.);#51=ORIENTED_EDGE('',*,*,#43,.F.);
+#52=EDGE_LOOP('cone_partial',(#48,#49,#50,#51));
+#53=FACE_OUTER_BOUND('',#52,.T.);
+/* === Cone face with natural bounds to be added (involving apex) === */
+#200=ADVANCED_FACE('cone_with_apex',(#53),#14,.T.);
+/* === Mandatory product chain === */
+#9000=PRODUCT_CONTEXT('',#1,'mechanical');
+#9001=PRODUCT('Tfa143','Tfa143','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
+#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
+#9021=SHELL_BASED_SURFACE_MODEL('sbsm',(#200));
+#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#9010);
+#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+ENDSEC;
+END;

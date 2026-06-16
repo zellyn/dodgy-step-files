@@ -1,0 +1,78 @@
+ISO-10303-21;
+/* Tfa145 - ShapeFix_Face.FixSplitFace two-splitters
+ * Face split by two intersecting splitter LINEs; FixSplitFace's loop
+ * applies splitters sequentially but the second sees stale topology
+ * from the first. */
+HEADER;
+FILE_DESCRIPTION(('Tfa145 test case','Face with two intersecting splitter lines'),'2;1');
+FILE_NAME('Tfa145.stp','2026-06-15T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+/* === Base plane === */
+#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#11=DIRECTION('',(0.0,0.0,1.0));
+#12=DIRECTION('',(1.0,0.0,0.0));
+#13=AXIS2_PLACEMENT_3D('',#10,#11,#12);
+#14=PLANE('',#13);
+/* === Outer boundary: 10x10 square === */
+#20=CARTESIAN_POINT('',(0.0,0.0,0.0));#21=VERTEX_POINT('',#20);
+#22=CARTESIAN_POINT('',(10.0,0.0,0.0));#23=VERTEX_POINT('',#22);
+#24=CARTESIAN_POINT('',(10.0,10.0,0.0));#25=VERTEX_POINT('',#24);
+#26=CARTESIAN_POINT('',(0.0,10.0,0.0));#27=VERTEX_POINT('',#26);
+#30=DIRECTION('',(1.0,0.0,0.0));#31=VECTOR('',#30,1.0);#32=LINE('',#20,#31);
+#33=EDGE_CURVE('outer_0',#21,#23,#32,.T.);
+#34=DIRECTION('',(0.0,1.0,0.0));#35=VECTOR('',#34,1.0);#36=LINE('',#22,#35);
+#37=EDGE_CURVE('outer_1',#23,#25,#36,.T.);
+#38=DIRECTION('',(-1.0,0.0,0.0));#39=VECTOR('',#38,1.0);#40=LINE('',#24,#39);
+#41=EDGE_CURVE('outer_2',#25,#27,#40,.T.);
+#42=DIRECTION('',(0.0,-1.0,0.0));#43=VECTOR('',#42,1.0);#44=LINE('',#26,#43);
+#45=EDGE_CURVE('outer_3',#27,#21,#44,.T.);
+#46=ORIENTED_EDGE('',*,*,#33,.T.);#47=ORIENTED_EDGE('',*,*,#37,.T.);
+#48=ORIENTED_EDGE('',*,*,#41,.T.);#49=ORIENTED_EDGE('',*,*,#45,.T.);
+#50=EDGE_LOOP('outer',(#46,#47,#48,#49));
+#51=FACE_OUTER_BOUND('',#50,.T.);
+/* === Splitter wire 1: vertical line from (2,0) to (2,10) ===
+ * This line should split the face into left and right regions
+ */
+#60=CARTESIAN_POINT('',(2.0,0.0,0.0));#61=VERTEX_POINT('',#60);
+#62=CARTESIAN_POINT('',(2.0,10.0,0.0));#63=VERTEX_POINT('',#62);
+#64=DIRECTION('',(0.0,1.0,0.0));#65=VECTOR('',#64,1.0);#66=LINE('',#60,#64);
+#67=EDGE_CURVE('splitter1_edge',#61,#63,#66,.T.);
+#68=ORIENTED_EDGE('',*,*,#67,.T.);
+#69=EDGE_LOOP('splitter1',(#68));
+#70=FACE_INNER_BOUND('',#69,.T.);
+/* === Splitter wire 2: horizontal line from (0,5) to (10,5) ===
+ * This line should further split the face into 4 quadrants
+ * When applied after splitter1, it must see updated topology
+ */
+#80=CARTESIAN_POINT('',(0.0,5.0,0.0));#81=VERTEX_POINT('',#80);
+#82=CARTESIAN_POINT('',(10.0,5.0,0.0));#83=VERTEX_POINT('',#82);
+#84=DIRECTION('',(1.0,0.0,0.0));#85=VECTOR('',#84,1.0);#86=LINE('',#80,#84);
+#87=EDGE_CURVE('splitter2_edge',#81,#83,#86,.T.);
+#88=ORIENTED_EDGE('',*,*,#87,.T.);
+#89=EDGE_LOOP('splitter2',(#88));
+#90=FACE_INNER_BOUND('',#89,.T.);
+/* === Face with both splitter wires ===
+ * FixSplitFace should split this into 4 sub-faces,
+ * but stale topology after first split may cause failure
+ */
+#200=ADVANCED_FACE('face_with_two_splitters',(#51,#70,#90),#14,.T.);
+/* === Mandatory product chain === */
+#9000=PRODUCT_CONTEXT('',#1,'mechanical');
+#9001=PRODUCT('Tfa145','Tfa145','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
+#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
+#9021=SHELL_BASED_SURFACE_MODEL('sbsm',(#200));
+#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#9010);
+#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+ENDSEC;
+END;
