@@ -20536,6 +20536,26 @@ B-spline surface with double knot (multiplicity=2) at interior U-position yields
 
 Rational B-spline with non-uniform weights (1.0, 2.0 variation) triggers 4x sample-count amplification via denominator pre-image expansion; excessive overhead during healing.
 
+### Gn044 — ShapeUpgrade_ConvertCurve2dToBezier degree-elevation skip on degree=1
+
+2D B-spline curve of degree 1 with 3 control points. Degree-elevation logic should elevate to degree 3 before Bezier extraction but skips this step when input degree equals 1, causing downstream conversion failures.
+
+### Gn045 — ShapeUpgrade_SplitSurface.Init split-parameters validation out-of-domain
+
+B-spline surface with split request using u_split values outside [u_min, u_max]. Init() must reject these values but currently accepts them, producing empty patches instead of raising validation error.
+
+### Gn046 — ShapeAnalysis_Curve.IsPlanar near-coplanar at tolerance boundary
+
+4-point cubic B-spline where 3 control points are coplanar and the 4th is offset by exactly 1.0E-7 (planarity tolerance). IsPlanar() returns true at the tolerance boundary despite curve being technically non-planar.
+
+### Gn047 — ShapeAnalysis_Curve.GetSamplePoints 2D rational weight-ratio dominance
+
+2D rational B-spline with alternating weight values (1.0 and 10.0) creating a 10:1 weight ratio. GetSamplePoints() sample density dominated by rational denominator, causing non-uniform parameter distribution and missing curve features.
+
+### Gn048 — ShapeFix_Edge.FixSameParameter B-spline endpoint knot-multiplicity
+
+5-point cubic B-spline with endpoint knot multiplicity equal to degree (3), placing the endpoint parameter exactly at knot boundary. SameParameter test incorrectly detects discontinuity at the endpoint due to multiplicity configuration.
+
 ### Wr001 — Trailing whitespace on every record line
 - **Category**: §12.13 writer-pathology (sub-class: whitespace/line-ending)
 - **Sources**: prostep ivip CAx-IF round-trip reports; FreeCAD #4231 "STEP exporter pads lines with spaces"; bug-reporter language: "diff between exports is all whitespace"
@@ -21853,6 +21873,89 @@ Rational B-spline with non-uniform weights (1.0, 2.0 variation) triggers 4x samp
 - **Trigger**: Bezier decomposition ignores trim parameters and offset displacement
 - **Expected healing**: Conversion result is untrimmed and unoff-set; healer must reject or reapply constraints
 
+### Gs064 — ShapeAnalysis_Surface.IsVClosed midpoint sampling on torus
+
+**Category**: §12.2c — Surface singularity & closure analysis  
+**Source**: OCCT_HEAL_COVERAGE_V3.md (ShapeAnalysis_Surface defect axis)  
+**Description**: IsVClosed must check V-periodicity via knot vector AND a sample-midpoint correlation. Near-degenerate torus where major radius R ≈ minor radius r (both 10mm) returns false negative because midpoint sampling misses the closure due to numerical symmetry.
+
+**Reproducer recipe**:
+1. Load Gs064.stp (TOROIDAL_SURFACE with R=10.0, r=10.0)
+2. Instantiate ShapeAnalysis_Surface with torus
+3. Call IsVClosed() — expect true, observe false
+
+**Expected kernel behavior**: Kernel must detect V-periodicity without relying solely on sampled boundary points; correlate knot-vector periods with geometric midpoint evaluation.
+
+**Expected validation**: Pass on V-closure detection; fail on false-negative IsVClosed result.
+
+---
+
+### Gs065 — ShapeAnalysis_Surface.ValueOfUV near-tangent surface
+
+**Category**: §12.2c — Surface projection & tangency  
+**Source**: OCCT_HEAL_COVERAGE_V3.md (ValueOfUV Newton refinement divergence)  
+**Description**: ValueOfUV's Newton refinement diverges on surfaces with small first-fundamental-form determinant (near-tangent or nearly-degenerate metric). B-spline with control-point alignment creates vanishing Gaussian curvature region.
+
+**Reproducer recipe**:
+1. Load Gs065.stp (B-spline with aligned control points in U-direction)
+2. Call ValueOfUV(0.5, 1.0) near center
+3. Observe Newton iteration failure or non-convergence
+
+**Expected kernel behavior**: Kernel must detect low metric rank (det(First Form) ≈ 0) and switch to projection-fallback before attempting Newton refinement.
+
+**Expected validation**: Reject divergent Newton; fallback to closest-point or parametric projection method.
+
+---
+
+### Gs066 — ShapeAnalysis_Surface.SortSingularities cone vs cylinder differing singularities
+
+**Category**: §12.2c — Singularity classification  
+**Source**: OCCT_HEAL_COVERAGE_V3.md (conical vs spherical form mismatch)  
+**Description**: SortSingularities picks the wrong singularity model when surface_form='conical' conflicts with actual entity type SPHERICAL_SURFACE. Sphere has two poles (north, south); cone has one apex. Misclassification leads to incorrect singularity removal or merger.
+
+**Reproducer recipe**:
+1. Load Gs066.stp (SPHERICAL_SURFACE with intentionally marked form='conical')
+2. Call ComputeSingularities(); observe returned singularities
+3. Compare against pure SPHERICAL_SURFACE fixture
+
+**Expected kernel behavior**: Kernel must validate surface_form against actual entity IsKind() checks; use entity-type singularities as source-of-truth, not form hint.
+
+**Expected validation**: Detect singularity cardinality mismatch (2 poles vs 1 apex); flag as defect or auto-correct.
+
+---
+
+### Gs067 — ShapeUpgrade_ConvertSurfaceToBezierBasis offset surface with negative distance
+
+**Category**: §12.2c — Offset surface conversion  
+**Source**: OCCT_HEAL_COVERAGE_V3.md (offset surface collapse under negative distance)  
+**Description**: OFFSET_SURFACE wrapping PLANE with negative distance (-2.5mm) ought to produce a plane on the opposite side. The converter may collapse the offset if not handling sign-flipped surfaces correctly.
+
+**Reproducer recipe**:
+1. Load Gs067.stp (OFFSET_SURFACE with negative_offset_value=-2.5)
+2. Call ShapeUpgrade_ConvertSurfaceToBezierBasis::Perform()
+3. Verify result surface is valid and distinct from base
+
+**Expected kernel behavior**: Kernel must preserve negative-offset semantics; conversion must not degenerate or invert the surface silently.
+
+**Expected validation**: Converted Bezier surface must maintain parallel plane property with opposite normal.
+
+---
+
+### Gs068 — ShapeAnalysis_Surface.UVFromIso boundary U-iso failure
+
+**Category**: §12.2c — Iso-curve projection  
+**Source**: OCCT_HEAL_COVERAGE_V3.md (boundary parameter clamping)  
+**Description**: Surface trimmed such that the requested u-iso falls just outside the trim domain. UVFromIso must clamp or reject, not return uninitialized UV. B-spline with U-range [0, 2] trimmed to [0.5, 1.5]; request u=1.9 → uninitialized.
+
+**Reproducer recipe**:
+1. Load Gs068.stp (B-spline with wide U-range and dense knots)
+2. Call UVFromIso(1.9, /*iso_u=*/true) on trimmed bounds [0.5, 1.5]
+3. Verify returned (u, v) is initialized or error is thrown
+
+**Expected kernel behavior**: Kernel must check parameter bounds before projection; clamp or return error code, never silently return garbage UV.
+
+**Expected validation**: Reject out-of-bounds iso request; signal error rather than produce uninitialized result.
+
 ### Ad117 — STEP reader crashes on minimal file with malformed `STYLED_ITEM`
 - **Category**: §12.11 adversarial / parser-robustness (sub-class: SEGV on style record)
 - **Sources**: OCCT MANTIS#0029979; bug-reporter language: "crash by reading STEP file", "STEP reader crashes on import", "segmentation fault on small STEP file". (OCCT MANTIS tracker 502 as of 2026-05-02)
@@ -22080,6 +22183,51 @@ Rational B-spline with non-uniform weights (1.0, 2.0 variation) triggers 4x samp
 - **Reproducer recipe**: Create an OPEN_SHELL with one ADVANCED_FACE whose edge loop has 4 edges forming a topological twist (edge sequence creates orientation flip around loop). Call ShapeFix_Shell.FixFaceOrientation(). Propagation detects contradictory orientation and crashes.
 - **Expected kernel behavior**: Kernel must detect non-orientable surface topology and either reject or flag for manual repair.
 - **Expected validation**: occt=unknown/unknown gmsh=unknown ifc=schema_n/a
+
+### Tsh079 — ShapeUpgrade_ShellSewing.Apply two-shell sew vertex-tolerance mismatch gap
+
+- **Category**: Shell healing / sewing defect
+- **Sources**: OCCT ShapeUpgrade_ShellSewing.Apply()
+- **Description**: Two OPEN_SHELL entities intended to merge into one closed solid; sewing pass should join them but a vertex-tolerance mismatch leaves a gap in the merged result
+- **Reproducer recipe**: Feed two open shells to ShapeUpgrade_ShellSewing.Apply(); observe that edges intended to merge do not due to tolerance deviation
+- **Expected kernel behavior**: Kernel should either merge shells successfully within tolerance or raise a clear non-closure diagnostic
+- **Expected validation**: Resulting shell must be manifold; edges must have matching endpoints; no free wires allowed
+
+### Tsh080 — ShapeFix_Shell.FixFaceOrientation cascade-fix star-shaped junction incomplete propagation
+
+- **Category**: Shell healing / face reorientation propagation
+- **Sources**: OCCT ShapeFix_Shell.FixFaceOrientation()
+- **Description**: Shell with 4 faces meeting at a central vertex (star-shaped junction); reorienting one face requires propagating orientation change to neighbors; cascade is incomplete, leaving some faces in inconsistent orientation
+- **Reproducer recipe**: Feed open shell with 4 faces + central vertex to FixFaceOrientation; verify all face normals point consistently outward after fix
+- **Expected kernel behavior**: Kernel must fully propagate orientation fix across all connected faces meeting at junction
+- **Expected validation**: All face normal vectors must be consistently oriented; no outward-inward mixed orientations at shared edges
+
+### Tsh081 — ShapeAnalysis_Shell.LoadShells multiple-shell input iteration order affects healing
+
+- **Category**: Shell analysis / compound processing
+- **Sources**: OCCT ShapeAnalysis_Shell.LoadShells()
+- **Description**: Input compound contains 3+ shells; LoadShells iterates across them; iteration order affects subsequent healing results, indicating non-deterministic or order-dependent state
+- **Reproducer recipe**: Create compound with 3 shells in different order; call LoadShells; observe healing outcome changes with shell order
+- **Expected kernel behavior**: Healing outcome must be deterministic regardless of shell order in input compound
+- **Expected validation**: All output shells must pass closure and manifold checks; healing results must be identical for same input shells in any order
+
+### Tsh082 — ShapeUpgrade_RemoveLocations.MakeNewShape stale location reference during traversal
+
+- **Category**: Shape transformation / location handling
+- **Sources**: OCCT ShapeUpgrade_RemoveLocations.MakeNewShape()
+- **Description**: Shape has multiple faces with different local placement transforms; RemoveLocations removes a transform during traversal but a downstream face/edge reference observes stale cached location
+- **Reproducer recipe**: Create shell with 2 faces, one with identity placement, one with non-identity AXIS2_PLACEMENT_3D; remove locations; verify edges reference correct (updated) locations
+- **Expected kernel behavior**: All location caches must be invalidated/refreshed after transformation removal
+- **Expected validation**: All geometry edges must reference current (non-stale) locations; bounding boxes must be correctly computed
+
+### Tsh083 — ShapeFix_Solid.SolidFromShell open-shell-as-solid promotion non-closure detection
+
+- **Category**: Solid promotion / closure validation
+- **Sources**: OCCT ShapeFix_Solid.SolidFromShell()
+- **Description**: Single OPEN_SHELL passed where a closed solid is required; shell is missing one face (e.g., top), so it is not closed; fixer must detect non-closure or refuse promotion with diagnostic
+- **Reproducer recipe**: Create open shell (5 of 6 faces of a box); attempt SolidFromShell; expect clear rejection or diagnostic of non-closure
+- **Expected kernel behavior**: Kernel must validate shell closure before promotion; raise exception or return null with clear status code
+- **Expected validation**: Resulting object must be CLOSED_SHELL or SOLID, never OPEN_SHELL; closure check must be deterministic
 
 ### Gp040 — Pcurves emitted by default duplicate / contradict the surface 3D curve
 - **Category**: §12.2a pcurve defects (sub-class: writer-emitted pcurves disagree with 3D)
