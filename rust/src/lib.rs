@@ -120,6 +120,15 @@ pub enum FixtureKind {
     /// requires the sibling identified by `pair_with`. Invisible to a
     /// single-file consumer.
     ProducerReceiverPair,
+    /// The file documents the input geometry but the defect only
+    /// manifests when paired with a specific runtime API call sequence
+    /// (e.g. `SetMaxTolerance(cap)` then sewing, or
+    /// `LimitTolerance(shape, tmin, tmax)` with `tmin == tmax`). The
+    /// file alone will not trigger the bug; consumers should treat the
+    /// catalog entry as the canonical reference and write a paired
+    /// kernel test that invokes the named API with the documented
+    /// parameter pattern.
+    KernelTestPair,
 }
 
 /// A catalog entry paired with the raw bytes of its STEP file.

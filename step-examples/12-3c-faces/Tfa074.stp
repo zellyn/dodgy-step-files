@@ -1,38 +1,95 @@
 ISO-10303-21;
 /* Tfa074 — ShapeFix_Face.FixWiresTwoCoincEdges orientation detection
-   Defect: face with two identical edges at FORWARD orientation that should
-   be merged, but orientation detection fails to recognize coincident pattern. */
+ * Defect: face with TWO separate EDGE_LOOPs whose first edges are
+ * geometrically identical (same VERTEX endpoints, same LINE basis).
+ * Each loop closes via a distinct return-edge so the loop itself is
+ * topologically valid, but the shared spine should be detected by
+ * FixWiresTwoCoincEdges and the wires merged. */
 HEADER;
 FILE_DESCRIPTION(('Tfa074 - coincident-edge orientation detection'),'2;1');
-FILE_NAME('Tfa074.stp','2026-06-15T00:00:00',('auto-generated'),(''),
+FILE_NAME('Tfa074.stp','2026-06-16T00:00:00',('auto-generated'),(''),
   'auto-generated','','');
 FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#1=CARTESIAN_POINT('origin',(0.0,0.0,0.0));
-#2=DIRECTION('zdir',(0.0,0.0,1.0));
-#3=DIRECTION('xdir',(1.0,0.0,0.0));
-#4=AXIS2_PLACEMENT_3D('placement',#1,#2,#3);
-#5=PLANE('plane',#4);
-/* Shared endpoint for two coincident edges */
-#10=CARTESIAN_POINT('v1',(0.0,0.0,0.0));
-#11=CARTESIAN_POINT('v2',(1.0,0.0,0.0));
-#12=VERTEX_POINT('vp1',#10);
-#13=VERTEX_POINT('vp2',#11);
-/* Single line segment used twice in same wire */
-#20=LINE('line',#10,#27);
-#21=DIRECTION('',(1.0,0.0,0.0));
-#27=VECTOR('',#21,1.0);
-/* Edge curve: shared geometry */
-#30=EDGE_CURVE('coincident_edge',#12,#13,#20,.T.);
-/* Wire with two identical edges [E, E] at FORWARD orientation */
-#33=ORIENTED_EDGE('oe1',*,*,#30,.T.);
-#34=ORIENTED_EDGE('oe2',*,*,#30,.T.);
-#40=EDGE_LOOP('two_coin_loop',(#33,#34));
-#41=FACE_OUTER_BOUND('bound',#40,.T.);
-/* Face: two-wire structure with coincident edges */
-#50=ADVANCED_FACE('coin_face',(#41),#5,.T.);
-#60=CLOSED_SHELL('shell',(#50));
-#70=MANIFOLD_SOLID_BREP('solid',#60);
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+/* Planar surface */
+#10=CARTESIAN_POINT('origin',(0.0,0.0,0.0));
+#11=DIRECTION('z_dir',(0.0,0.0,1.0));
+#12=DIRECTION('x_dir',(1.0,0.0,0.0));
+#13=AXIS2_PLACEMENT_3D('plane_place',#10,#11,#12);
+#14=PLANE('plane',#13);
+/* Shared spine endpoints (both wires anchor here) */
+#20=CARTESIAN_POINT('v1',(0.0,0.0,0.0));
+#21=VERTEX_POINT('vp1',#20);
+#22=CARTESIAN_POINT('v2',(1.0,0.0,0.0));
+#23=VERTEX_POINT('vp2',#22);
+/* Detour vertex for the outer wire's return path (above the spine) */
+#24=CARTESIAN_POINT('v3_outer',(0.5,1.0,0.0));
+#25=VERTEX_POINT('vp3_outer',#24);
+/* Detour vertex for the inner wire's return path (below the spine) */
+#26=CARTESIAN_POINT('v3_inner',(0.5,-1.0,0.0));
+#27=VERTEX_POINT('vp3_inner',#26);
+/* Shared spine LINE: v1 -> v2 along +x */
+#30=DIRECTION('spine_dir',(1.0,0.0,0.0));
+#31=VECTOR('spine_vec',#30,1.0);
+#32=LINE('spine_line',#20,#31);
+/* Defect: edge_a (outer wire) and edge_b (inner wire) share the SAME
+   start/end vertices AND the SAME LINE entity. FixWiresTwoCoincEdges
+   should recognize that the two wires meet along an identical spine
+   and merge them. */
+#40=EDGE_CURVE('edge_a',#21,#23,#32,.T.);
+#41=EDGE_CURVE('edge_b',#21,#23,#32,.T.);
+/* Outer wire return path: v2 -> v3_outer -> v1 (above spine) */
+#42=DIRECTION('outer_up_dir',(-0.4472135954999579,0.8944271909999159,0.0));
+#43=VECTOR('outer_up_vec',#42,1.118033988749895);
+#44=LINE('outer_up_line',#22,#43);
+#45=EDGE_CURVE('outer_up',#23,#25,#44,.T.);
+#46=DIRECTION('outer_dn_dir',(-0.4472135954999579,-0.8944271909999159,0.0));
+#47=VECTOR('outer_dn_vec',#46,1.118033988749895);
+#48=LINE('outer_dn_line',#24,#47);
+#49=EDGE_CURVE('outer_dn',#25,#21,#48,.T.);
+/* Inner wire return path: v2 -> v3_inner -> v1 (below spine) */
+#50=DIRECTION('inner_dn_dir',(-0.4472135954999579,-0.8944271909999159,0.0));
+#51=VECTOR('inner_dn_vec',#50,1.118033988749895);
+#52=LINE('inner_dn_line',#22,#51);
+#53=EDGE_CURVE('inner_dn',#23,#27,#52,.T.);
+#54=DIRECTION('inner_up_dir',(-0.4472135954999579,0.8944271909999159,0.0));
+#55=VECTOR('inner_up_vec',#54,1.118033988749895);
+#56=LINE('inner_up_line',#26,#55);
+#57=EDGE_CURVE('inner_up',#27,#21,#56,.T.);
+/* Outer wire: edge_a forward, then outer_up, then outer_dn back to v1.
+   Loop vertex chain: vp1 -> vp2 -> vp3_outer -> vp1  (closed). */
+#60=ORIENTED_EDGE('oe_a',*,*,#40,.T.);
+#61=ORIENTED_EDGE('oe_outer_up',*,*,#45,.T.);
+#62=ORIENTED_EDGE('oe_outer_dn',*,*,#49,.T.);
+#63=EDGE_LOOP('outer_loop',(#60,#61,#62));
+#64=FACE_OUTER_BOUND('outer_bound',#63,.T.);
+/* Inner wire: edge_b forward, then inner_dn, then inner_up back to v1.
+   Loop vertex chain: vp1 -> vp2 -> vp3_inner -> vp1  (closed). */
+#70=ORIENTED_EDGE('oe_b',*,*,#41,.T.);
+#71=ORIENTED_EDGE('oe_inner_dn',*,*,#53,.T.);
+#72=ORIENTED_EDGE('oe_inner_up',*,*,#57,.T.);
+#73=EDGE_LOOP('inner_loop',(#70,#71,#72));
+#74=FACE_BOUND('inner_bound',#73,.T.);
+/* Face has two closed wires meeting along a coincident spine */
+#80=ADVANCED_FACE('two_wire_face',(#64,#74),#14,.T.);
+/* PRODUCT chain */
+#200=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#201=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#202=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#203=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#200,'distance_accuracy_value','');
+#204=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#203))GLOBAL_UNIT_ASSIGNED_CONTEXT((#200,#201,#202))REPRESENTATION_CONTEXT('','3D'));
+#9000=PRODUCT_CONTEXT('',#1,'mechanical');
+#9001=PRODUCT('Tfa074','Tfa074','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9020=OPEN_SHELL('wrap_shell',(#80));
+#9021=SHELL_BASED_SURFACE_MODEL('wrap_sbsm',(#9020));
+#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#204);
+#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
 ENDSEC;
 END-ISO-10303-21;

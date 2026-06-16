@@ -22000,8 +22000,10 @@ they capture invariants shared by a family of healing methods. Filed under
 - **Category**: §12.4 (sub-class: api-contract-violation)
 - **Sources**: OCCT `BRepBuilderAPI_Sewing.cxx` ~lines 1165-1169 (deep-pass v3 record)
 - **Description**: Direct BRep_TEdge::Tolerance() write at line 1168 bypasses the SetMaxTolerance API cap when computed tolerance exceeds the user-specified limit. The static_cast and raw TShape mutation circumvent the validation that UpdateEdge would perform, violating the API contract that SetMaxTolerance(cap) enforces cap on all merged edges.
-- **Reproducer recipe**: Construct edge with discretized-curve tolerance path triggering line 1168. Set SetMaxTolerance(0.01). When computed tolerance (0.05) exceeds cap, raw write creates edge with 0.05 tolerance, bypassing cap. Expected: cap enforcement nullifies edge or rejects computation.
+- **Reproducer recipe**: Construct two faces meeting at edges that need sewing with non-trivial discretized-curve tolerance path. Call `BRepBuilderAPI_Sewing sw; sw.SetMaxTolerance(0.01); sw.Add(shape); sw.Perform();` — when computed tolerance (0.05) exceeds cap, raw write at line 1168 creates edge with 0.05 tolerance, bypassing cap. Expected: cap enforcement nullifies edge or rejects computation.
 - **Expected kernel behavior**: reject raw tolerance write; enforce SetMaxTolerance cap via UpdateEdge API or nullify edge if tolerance exceeds cap
+- **Fixture kind**: kernel-test-pair
+- **Notes**: The `N052.stp` fixture documents the input geometry but the defect only manifests when paired with the `SetMaxTolerance(0.01)` runtime API call above. A passive STEP loader will not trigger the bypass; the consuming test harness must invoke `BRepBuilderAPI_Sewing` with an explicit cap. **See also**: N055.
 - **Expected validation**: `occt=unknown/unknown gmsh=unknown ifc=schema_n/a`
 
 ### N053 — ShapeAnalysis_ShapeTolerance.AddTolerance polarity asymmetry
@@ -22024,8 +22026,10 @@ they capture invariants shared by a family of healing methods. Filed under
 - **Category**: §12.4 (sub-class: equality-boundary-undefined)
 - **Sources**: OCCT `ShapeFix_ShapeTolerance.cxx` ~lines 39-50 (deep-pass v3 record)
 - **Description**: LimitTolerance permits tmax >= tmin, allowing equality case tmax == tmin. When bounds are equal, newtol selection logic becomes nondeterministic: clamping to tmin vs tmax yields identical result but the invariant tmin < tmax (strict ordering) is violated. Downstream code assumes strict ordering; equality case creates ambiguity in tolerance domain membership.
-- **Reproducer recipe**: Call LimitTolerance(shape, tmin=0.002, tmax=0.002) with vertices at tolerance 0.002. Condition (tmax >= tmin) is satisfied; newtol selection at lines 47-50 cannot decide whether to clamp to tmin or tmax (they are equal). Expected: validation error for tmin >= tmax.
+- **Reproducer recipe**: Load `N055.stp` then call `ShapeFix_ShapeTolerance st; st.LimitTolerance(shape, 0.002, 0.002, TopAbs_VERTEX);` with the loaded shape. Condition (tmax >= tmin) is satisfied; newtol selection at lines 47-50 cannot decide whether to clamp to tmin or tmax (they are equal). Expected: validation error for tmin >= tmax.
 - **Expected kernel behavior**: require strict ordering (tmin < tmax); reject or error on tmin == tmax; enforce at API boundary before tolerance selection
+- **Fixture kind**: kernel-test-pair
+- **Notes**: The `N055.stp` fixture provides the input shape but the bug is in the `LimitTolerance` API's parameter validation — only a runtime caller passing `tmin == tmax` will exercise the buggy clamp logic. The catalog entry's "Reproducer recipe" line is the canonical paired test. **See also**: N052.
 - **Expected validation**: `occt=unknown/unknown gmsh=unknown ifc=schema_n/a`
 
 ### M161 — Reader does not validate cross-references; dangling references silently accepted

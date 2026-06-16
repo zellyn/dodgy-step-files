@@ -208,9 +208,9 @@
           "enum": ["gap", "missing_face", "unstitched_seam", null]
         },
         "fixture_kind": {
-          "description": "How the consumer should route this fixture's expectation. 'malformed-file': the bytes themselves embody the defect; a correct kernel rejects or heals. 'conformance-probe': the file is fully legal Part-21 and tests that a correct kernel handles a legal edge case (e.g. Unicode at U+10FFFF, IEEE-754 subnormals, exactly-at-limit values). 'receiver-behavior': the file is valid; the defect is in how a buggy consumer reads/interprets it (e.g. unit mis-reads, attribute drops). 'producer-receiver-pair': the defect lives in the TRANSFORM between two files; requires the sibling fixture identified by `pair_with`. Null when not classified yet.",
+          "description": "How the consumer should route this fixture's expectation. 'malformed-file': the bytes themselves embody the defect; a correct kernel rejects or heals. 'conformance-probe': the file is fully legal Part-21 and tests that a correct kernel handles a legal edge case (e.g. Unicode at U+10FFFF, IEEE-754 subnormals, exactly-at-limit values). 'receiver-behavior': the file is valid; the defect is in how a buggy consumer reads/interprets it (e.g. unit mis-reads, attribute drops). 'producer-receiver-pair': the defect lives in the TRANSFORM between two files; requires the sibling fixture identified by `pair_with`. 'kernel-test-pair': the file documents the input geometry but the defect only manifests when paired with a specific runtime API call sequence (e.g. SetMaxTolerance cap then sewing); the file alone won't trigger the bug. Null when not classified yet.",
           "type": ["string", "null"],
-          "enum": ["malformed-file", "conformance-probe", "receiver-behavior", "producer-receiver-pair", null]
+          "enum": ["malformed-file", "conformance-probe", "receiver-behavior", "producer-receiver-pair", "kernel-test-pair", null]
         },
         "pair_with": {
           "description": "When the defect requires comparing this fixture to a sibling (producer/receiver pair), the id of the sibling fixture. For a receiver-side fixture (`<id>.stp`), this points at the producer input (typically `<id>.input.stp`'s id). Null when the fixture stands alone.",

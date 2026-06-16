@@ -363,7 +363,7 @@ _RE_CLOSURE_DEFECT = re.compile(
 )
 # Fixture-kind: how a consumer should route the expectation.
 _RE_FIXTURE_KIND = re.compile(
-    r"^- \*\*Fixture kind\*\*:\s*(malformed-file|conformance-probe|receiver-behavior|producer-receiver-pair)\s*$",
+    r"^- \*\*Fixture kind\*\*:\s*(malformed-file|conformance-probe|receiver-behavior|producer-receiver-pair|kernel-test-pair)\s*$",
     re.MULTILINE,
 )
 # Pair-with: sibling fixture id for producer/receiver paired defects.
