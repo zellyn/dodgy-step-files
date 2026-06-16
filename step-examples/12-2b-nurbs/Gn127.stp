@@ -1,0 +1,41 @@
+/* Gn127 - ShapeUpgrade_ConvertCurve2dToBezier with-already-bezier
+   Defect: 2D curve that's already a BEZIER_CURVE; the converter should be
+   a no-op but creates an over-elevated copy. The conversion process
+   unnecessarily increases the degree and number of control points even
+   when the curve is already in Bezier form. */
+ISO-10303-21;
+HEADER;
+FILE_DESCRIPTION(('Gn127 - Bezier 2D curve over-conversion'),
+  '2;1');
+FILE_NAME('Gn127.stp','2026-06-15T00:00:00',('auto-generated'),(''),
+  'auto-generated','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+#1=GEOMETRIC_REPRESENTATION_CONTEXT(3);
+#2=SI_UNIT(*,.METRE.);
+#3=NAMED_UNIT(*,#2);
+/* 2D Bezier curve of degree 3 with 4 control points */
+#10=CARTESIAN_POINT('pt0',(0.0,0.0));
+#11=CARTESIAN_POINT('pt1',(1.0,2.0));
+#12=CARTESIAN_POINT('pt2',(2.0,1.0));
+#13=CARTESIAN_POINT('pt3',(3.0,0.0));
+/* Original degree-3 Bezier (already in Bezier form) */
+#100=BEZIER_CURVE('bezier_orig',3,
+  (#10,#11,#12,#13),
+  .UNSPECIFIED.);
+#1000=PRODUCT_CONTEXT('',#1,'mechanical');
+#1001=PRODUCT('Gn127','Gn127','',(#1000));
+#1002=PRODUCT_DEFINITION_FORMATION('','',#1001);
+#1003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#1004=PRODUCT_DEFINITION('','',#1002,#1003);
+#1005=PRODUCT_DEFINITION_SHAPE('','',#1004);
+#1006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#1007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#1008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#1009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#1006,'distance_accuracy_value','');
+#1010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#1009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#1006,#1007,#1008))REPRESENTATION_CONTEXT('','3D'));
+#1022=GEOMETRICALLY_BOUNDED_WIREFRAME_SHAPE_REPRESENTATION('',(#100),#1010);
+#1023=SHAPE_DEFINITION_REPRESENTATION(#1005,#1022);
+ENDSEC;
+END-ISO-10303-21;

@@ -20991,6 +20991,26 @@ Degenerate B-spline curve (degree 2, 3 points) where first two poles are coincid
 
 **Geometry:** Two lines, segment 1 direction (1,0,0), segment 2 direction (-1,0,0) with REVERSE sense flag.
 
+### Gn124 — ShapeAnalysis_Curve.FillBndBox with-degenerate-segments
+
+Composite curve containing a degenerate segment (zero-length). FillBndBox samples all segments including the degenerate one, causing the bounding box to contain a collapsed axis. Downstream code assumes all bbox axes span non-zero ranges.
+
+### Gn125 — ShapeUpgrade_SplitSurface.SetVSplitValues partial-domain
+
+BSpline surface with full V domain [0,1]. Split values provided only for partial range [0.3, 0.7]. SetVSplitValues clips silently, leaving V ranges [0, 0.3) and (0.7, 1] unprocessed and unsplit.
+
+### Gn126 — ShapeAnalysis_Curve.GetSamplePoints CIRCLE with-trim-near-2π
+
+Trimmed circle with parameters [0.001, 2π-0.001]. GetSamplePoints uses 360-degree cap for sampling, but the trim removes start/end points, leaving a tiny gap that the sampling grid misses.
+
+### Gn127 — ShapeUpgrade_ConvertCurve2dToBezier with-already-bezier
+
+Degree-3 Bezier curve (already in Bezier form). ConvertCurve2dToBezier should be a no-op but instead elevates the degree and replicates control points unnecessarily.
+
+### Gn128 — ShapeAnalysis_Curve.IsClosed B-spline with-identical-knots-different-poles
+
+Periodic B-spline with knot parameters identical at boundaries but control poles differing by 1e-3. IsClosed checks knot equality only and reports true, but geometry gap persists at closure point.
+
 ### Wr001 — Trailing whitespace on every record line
 - **Category**: §12.13 writer-pathology (sub-class: whitespace/line-ending)
 - **Sources**: prostep ivip CAx-IF round-trip reports; FreeCAD #4231 "STEP exporter pads lines with spaces"; bug-reporter language: "diff between exports is all whitespace"
@@ -24978,6 +24998,76 @@ Non-manifold vertex shared by three faces with conflicting outward normals. FixF
 
 Compound with nested shell references. LoadShells() recursion incomplete when detecting cyclic structure; verdict incomplete or truncated.
 
+### Tsh174 — ShapeFix_Shell.FixFaceOrientation with-empty-shell-after-fix
+
+**Defect**: Shell where Perform removes all faces; FixFaceOrientation runs on the empty shell and reports success without detecting the void.
+
+**Trigger**: Degenerate faces (zero-area, line-like geometry) that fail topological validation. When Perform clears all faces, a subsequent FixFaceOrientation call succeeds on empty shell, masking the repair failure.
+
+**Input**: Shell with two coplanar degenerate faces (line segments with opposite orientations). Each forms a closed loop via reversed edge self-references.
+
+### Tsh175 — ShapeAnalysis_Shell.CheckOrientedShells with-self-touching-shell
+
+**Defect**: Shell where two faces touch at a single point (not edge); CheckOrientedShells uses edge-only adjacency and misses the touch.
+
+**Trigger**: Two separate faces sharing exactly one vertex with no edge adjacency. Edge-based analysis skips non-edge topological contacts, allowing misorientation to pass validation.
+
+**Input**: Shell with two square faces meeting at diagonal corner (1,1). First face: [0,1]x[0,1]; second: [1,2]x[1,2]. Both on same plane, sharing only vertex point.
+
+### Tsh176 — ShapeUpgrade_ShellSewing.Apply with-coincident-but-different-orientation
+
+**Defect**: Two shells with coincident faces in opposite orientations; Apply doesn't detect orientation conflict and produces overlapping output.
+
+**Trigger**: Identical geometry (same vertices, edges, surface) with opposite face orientations (+Z vs. -Z). Sewing algorithm merges without orientation conflict detection.
+
+**Input**: Compound with two open shells. Shell 1: square [0,1]x[0,1] on plane Z=0 with normal +Z. Shell 2: identical square with normal -Z (all edges reversed). No shared edge loop between them.
+
+### Tsh177 — ShapeFix_Shell.Perform infinite-loop-detection
+
+**Defect**: Shell whose fix repeatedly invalidates a previous fix; Perform should detect loop but uses simple counter that fires too late.
+
+**Trigger**: Multiple faces sharing same edge loop with conflicting orientations. Attempting to fix face 1's orientation invalidates face 2's fix. Counter-based loop detection exhausts iteration limit before convergence.
+
+**Input**: Shell with two faces sharing same triangular edge loop. Face 1: normal +Z. Face 2: normal -Z (reversed). Fix oscillates between correcting face orientations without global stabilization.
+
+### Tsh178 — ShapeAnalysis_Shell.FreeEdges with-degenerate-edges
+
+**Defect**: Shell where some edges are degenerate (zero-length); FreeEdges counts them as free even though they don't bound a face.
+
+**Trigger**: Zero-length edges (same start/end vertex) created by degenerate curves. FreeEdges classification treats them as boundary edges despite not topologically bounding any face.
+
+**Input**: Shell with one normal triangular face and three separate degenerate self-loop edges (zero-length from each triangle vertex back to itself). FreeEdges analysis should exclude degenerates; instead counts all three as free edges.
+
+### Tsh179 — ShapeFix_Shell.FixFaceOrientation hex-prism orientation propagation oscillation
+- **Defect class**: Orientation propagation across 6 lateral faces of hexagonal prism creates oscillating fix-pattern
+- **Trigger**: Call FixFaceOrientation() on shell with 8 faces (hex base, top, 6 lateral faces); propagation walks edges and flips orientation at each lateral face inconsistently
+- **Expected failure**: Lateral faces alternate between correct and flipped normals; final state oscillates between two invalid patterns
+- **Test assertion**: Shell orientation state after Perform() should stabilize, not oscillate between two configurations
+
+### Tsh180 — ShapeAnalysis_Shell.CheckOrientedShells single-face zero-area
+- **Defect class**: Shell containing single face with computed area exactly 0.0; normal-based orientation test fails to classify orientation
+- **Trigger**: Call CheckOrientedShells() on CLOSED_SHELL with one degenerate face (e.g., all edges collinear or all vertices coplanar in line)
+- **Expected failure**: Normal-based orientation test produces NaN or inf during determinant computation; returns false instead of exception-free classification
+- **Test assertion**: CheckOrientedShells() should classify shell orientation without raising exception, even for zero-area faces
+
+### Tsh181 — ShapeUpgrade_ShellSewing.Apply bridge tolerance too large
+- **Defect class**: Sewing tolerance parameter set so large that all faces satisfy "merge" criteria; Apply() produces single-face shell from multi-face input
+- **Trigger**: Call Apply() with sewing tolerance >> max edge distance; two separate coplanar faces merge into one
+- **Expected failure**: Output shell contains only 1 face instead of 2; sewing logic collapses topology
+- **Test assertion**: Shell face count should not decrease below input count when tolerance is explicitly bounded
+
+### Tsh182 — ShapeFix_Shell.Perform face removal with shared edge
+- **Defect class**: Removed face's edge is still referenced by another face in same shell; Perform's removal leaves dangling reference
+- **Trigger**: Call Perform() to fix shell where removed face and remaining face share edge; edge list in remaining face still contains reference to removed edge
+- **Expected failure**: Dangling reference causes downstream topology query to fail (e.g., edge iteration on remaining face)
+- **Test assertion**: After Perform(), all edges in remaining faces must exist in shell edge set; no dangling references
+
+### Tsh183 — ShapeAnalysis_Shell.LoadShells with-shell-marker-but-no-faces
+- **Defect class**: Shape labeled as CLOSED_SHELL but containing zero faces; LoadShells produces empty entry in result
+- **Trigger**: Call LoadShells() on SHELL_BASED_SURFACE_MODEL containing CLOSED_SHELL('name',()) with empty face list
+- **Expected failure**: Result contains empty shell entry; CheckOrientedShells() on empty shell causes null dereference or assertion on normal computation
+- **Test assertion**: LoadShells() should skip or flag empty shells; downstream operations should not receive empty shell instances
+
 ### Gp040 — Pcurves emitted by default duplicate / contradict the surface 3D curve
 - **Category**: §12.2a pcurve defects (sub-class: writer-emitted pcurves disagree with 3D)
 - **Sources**: OCCT MANTIS#0025654; bug-reporter language: "disable writing pcurves to STEP and IGES by default", "pcurves and 3D curves disagree on round-trip", "writer-emitted pcurves cause downstream failures". (OCCT MANTIS tracker 502 as of 2026-05-02)
@@ -25461,6 +25551,26 @@ ShapeFix_Edge.FixSameParameter handles seam edge (u=0 vs u=2π) ambiguously; pcu
 
 ### Gp120 — Composite pcurve tangent discontinuity
 ShapeAnalysis_Edge.GetEndTangent2d fails on COMPOSITE_CURVE with G0 continuity; tangent jump at segment join causes discontinuity.
+
+### Gp121 — ShapeAnalysis_Edge.CheckCurve3dWithPCurve OFFSET_CURVE
+
+Edge with 3D OFFSET_CURVE wrapping a line. CheckCurve3dWithPCurve samples but offset application uses base-curve normal, ignoring offset distance.
+
+### Gp122 — ShapeFix_Edge.FixAddPCurve B-spline-on-trimmed-surface
+
+Edge on RECTANGULAR_TRIMMED_SURFACE wrapping B-spline. FixAddPCurve constructs pcurve in base-surface coords, missing trim translation.
+
+### Gp123 — ShapeAnalysis_Edge.CheckPCurveRange CIRCLE with-large-radius
+
+Pcurve is CIRCLE with radius 1e6 but edge parameters [0, 0.001]. CheckPCurveRange's tolerance check uses absolute parameter not arc-length.
+
+### Gp124 — ShapeFix_Edge.FixReversed2d HYPERBOLA
+
+Pcurve is HYPERBOLA with reversed edge orientation. FixReversed2d's reversal doesn't handle asymptote-direction invariant.
+
+### Gp125 — ShapeAnalysis_Edge.GetEndTangent2d at-trim-boundary
+
+Pcurve is TRIMMED_CURVE. GetEndTangent2d uses untrimmed-curve tangent at trim boundary, producing wrong direction.
 
 ### A105 — Regression OCC 6.9.1 → 7.4.0: colours stop appearing on certain STEP files
 - **Category**: §12.6 assembly hierarchy (sub-class: appearance regression across kernel versions)
@@ -26125,6 +26235,36 @@ CheckPoints called with precision 1e-3 but projection-distance test uses 1e-6 in
 **Defect**: Call `GlobalTolerance` with mode=avg on a shape containing no vertices/edges of the requested type; division-by-zero produces NaN. The method accumulates sum across elements and divides by count at the end, but does not guard against empty iteration.
 
 **Reproducer**: Closed shell with a single triangular face and three boundary edges, but no free (isolated) vertices. Calling `GlobalTolerance` with selector=VERTEX and mode=averaging iterates over an empty vertex set, dividing total(0) by count(0) to produce NaN.
+
+### N121 — ShapeFix_Edge.FixVertexTolerance with-tessellation-only-context
+
+**Defect category:** Tolerance recovery / fallback logic  
+**Input pattern:** Edge on untessellated face with high vertex tolerance requirement  
+**Triggering condition:** Surface has no triangulation data; FixVertexTolerance falls back to hardcoded 1e-7 instead of computing from analytical geometry or raising diagnostic error
+
+### N122 — ShapeAnalysis_Edge.CheckPoints with-NaN-precision-input
+
+**Defect category:** Numeric validation / NaN propagation  
+**Input pattern:** Edge with parametric sample points; precision parameter initialized to 0.0 or missing  
+**Triggering condition:** NaN comparisons in point validation loop; `dist > NaN` always false, skipping tolerance checks
+
+### N123 — BRepLib.UpdateEdgeTol with-edge-on-degenerate-surface
+
+**Defect category:** Surface singularity / numeric stability  
+**Input pattern:** Edge on conical surface at apex (parametric u=0, degenerate parametric domain)  
+**Triggering condition:** Sampling edge at parametric intervals produces zero-length derivatives on degenerate patch; division-by-zero or normalization singularity
+
+### N124 — ShapeFix_ShapeTolerance.SetTolerance recursion-stack-overflow
+
+**Defect category:** Recursion depth control  
+**Input pattern:** Deeply nested COMPOUND_SHAPE structure (50+ levels of nesting)  
+**Triggering condition:** SetTolerance recurses on compound children without stack depth guard; uncontrolled recursion exhausts stack
+
+### N125 — ShapeAnalysis_ShapeTolerance.AddTolerance concurrent-modification
+
+**Defect category:** Iterator invalidation / concurrent modification  
+**Input pattern:** Shell-based model with shared face/edge references; tolerance map iteration and modification in same pass  
+**Triggering condition:** AddTolerance mutates tolerance map while iterating; topology map corruption or inconsistent state on shared geometry
 
 ### M161 — Reader does not validate cross-references; dangling references silently accepted
 - **Category**: §12.8 mixed / auxiliary (sub-class: missing input validation)

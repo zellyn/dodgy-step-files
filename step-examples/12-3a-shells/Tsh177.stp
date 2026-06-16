@@ -1,0 +1,68 @@
+ISO-10303-21;
+/* Tsh177 - ShapeFix_Shell.Perform infinite-loop-detection
+ * Defect: shell whose fix repeatedly invalidates a previous fix; Perform
+ * should detect the loop but uses a simple counter that fires too late.
+ * Tests: shell with three edges where fixing orientation of edge1 breaks edge2. */
+HEADER;
+FILE_DESCRIPTION(('Tsh177 test case','ShapeFix_Shell infinite-loop-detection'),'2;1');
+FILE_NAME('Tsh177.stp','2026-06-15T00:00:00',(''),(''),'auto-generated','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+/* Plane Z=0 */
+#10=DIRECTION('z',(0.0,0.0,1.0));
+#11=DIRECTION('x',(1.0,0.0,0.0));
+#12=CARTESIAN_POINT('',(1.0,1.0,0.0));
+#13=AXIS2_PLACEMENT_3D('',#12,#10,#11);
+#14=PLANE('plane_z0',#13);
+/* Triangle with internally conflicting orientations */
+#100=CARTESIAN_POINT('p0',(0.0,0.0,0.0));
+#101=CARTESIAN_POINT('p1',(2.0,0.0,0.0));
+#102=CARTESIAN_POINT('p2',(1.0,1.732,0.0));
+#110=VERTEX_POINT('',#100);
+#111=VERTEX_POINT('',#101);
+#112=VERTEX_POINT('',#102);
+/* Edge 1: p0->p1 */
+#120=DIRECTION('x',(1.0,0.0,0.0));
+#121=VECTOR('',#120,1.0);
+#122=LINE('',#100,#121);
+#123=EDGE_CURVE('',#110,#111,#122,.T.);
+/* Edge 2: p1->p2 */
+#130=DIRECTION('',(0.5,-0.866,0.0));
+#131=VECTOR('',#130,1.0);
+#132=LINE('',#101,#131);
+#133=EDGE_CURVE('',#111,#112,#132,.T.);
+/* Edge 3: p2->p0 (will have conflicting direction relative to edge1+edge2) */
+#140=DIRECTION('',(-0.5,-0.866,0.0));
+#141=VECTOR('',#140,1.0);
+#142=LINE('',#102,#141);
+#143=EDGE_CURVE('',#112,#110,#142,.T.);
+/* Edge loop with internal misorientation */
+#150=ORIENTED_EDGE('',*,*,#123,.T.);
+#151=ORIENTED_EDGE('',*,*,#133,.T.);
+#152=ORIENTED_EDGE('',*,*,#143,.T.);
+#153=EDGE_LOOP('',(#150,#151,#152));
+#154=FACE_OUTER_BOUND('',#153,.T.);
+#155=ADVANCED_FACE('',(#154),#14,.T.);
+/* Create two faces from same triangle with different orientations */
+#156=ADVANCED_FACE('',(#154),#14,.F.);
+/* Shell with looping faces */
+#300=OPEN_SHELL('loop_shell',(#155,#156));
+#9000=PRODUCT_CONTEXT('',#1,'mechanical');
+#9001=PRODUCT('Tsh177','Tsh177','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
+#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
+#9021=SHELL_BASED_SURFACE_MODEL('sbsm',(#300));
+#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#9010);
+#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+ENDSEC;
+END-ISO-10303-21;

@@ -1,0 +1,69 @@
+ISO-10303-21;
+HEADER;
+FILE_DESCRIPTION(('CAD kernel test fixture - ShapeAnalysis_Shell single-face zero-area'),
+                 '2',
+                 2026,
+                 6,
+                 15,
+                 12,
+                 0,
+                 '',
+                 '');
+FILE_NAME('Tsh180.stp',
+          2026-06-15T12:00:00,
+          (''),
+          (''),
+          'Open CASCADE STEP writer 7.0',
+          'CAD kernel test',
+          '');
+FILE_SCHEMA((
+    'AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'
+));
+ENDSEC;
+DATA;
+#1=DIRECTION('',(-1.0,0.0,0.0));
+#2=DIRECTION('',(0.0,0.0,1.0));
+#3=DIRECTION('',(0.0,1.0,0.0));
+#4=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#5=AXIS2_PLACEMENT_3D('',#4,#2,#3);
+#6=PLANE('',#5);
+#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#11=CARTESIAN_POINT('',(1.0,0.0,0.0));
+#12=CARTESIAN_POINT('',(1.0,1.0,0.0));
+#13=CARTESIAN_POINT('',(0.0,1.0,0.0));
+#16=VERTEX_POINT('',#10);
+#17=VERTEX_POINT('',#11);
+#18=VERTEX_POINT('',#12);
+#19=VERTEX_POINT('',#13);
+#20=LINE('',#10,#1);
+#21=LINE('',#11,#1);
+#22=LINE('',#12,#1);
+#23=LINE('',#13,#1);
+#30=EDGE_CURVE('',#16,#17,#20,.T.);
+#31=EDGE_CURVE('',#17,#18,#21,.T.);
+#32=EDGE_CURVE('',#18,#19,#22,.T.);
+#33=EDGE_CURVE('',#19,#16,#23,.T.);
+#40=ORIENTED_EDGE('',*,*,#30,.T.);
+#41=ORIENTED_EDGE('',*,*,#31,.T.);
+#42=ORIENTED_EDGE('',*,*,#32,.T.);
+#43=ORIENTED_EDGE('',*,*,#33,.T.);
+#44=EDGE_LOOP('',(#40,#41,#42,#43));
+#45=FACE_OUTER_BOUND('',#44,.T.);
+#46=FACE('zero_area_face',(#45),#6,.T.);
+#50=CLOSED_SHELL('zero_area_shell',(#46));
+#51=SHELL_BASED_SURFACE_MODEL('sbsm_zero_area',(#50));
+#52=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#51),#9010);
+#53=SHAPE_DEFINITION_REPRESENTATION(#9005,#52);
+#9000=PRODUCT_CONTEXT('',#1,'mechanical');
+#9001=PRODUCT('Tsh180','Tsh180','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
+#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
+ENDSEC;
+END-ISO-10303-21;

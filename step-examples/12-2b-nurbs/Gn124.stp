@@ -1,0 +1,57 @@
+/* Gn124 - ShapeAnalysis_Curve.FillBndBox with-degenerate-segments
+   Defect: composite curve where one segment is degenerate (zero-length);
+   FillBndBox samples the degenerate segment and the result contains a
+   degenerate axis. The degenerate segment introduces a point that collapses
+   one or more axes of the bounding box, violating assumptions downstream. */
+ISO-10303-21;
+HEADER;
+FILE_DESCRIPTION(('Gn124 - Composite curve with degenerate segment'),
+  '2;1');
+FILE_NAME('Gn124.stp','2026-06-15T00:00:00',('auto-generated'),(''),
+  'auto-generated','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+#1=GEOMETRIC_REPRESENTATION_CONTEXT(3);
+#2=SI_UNIT(*,.METRE.);
+#3=NAMED_UNIT(*,#2);
+#10=CARTESIAN_POINT('p1',(0.0,0.0,0.0));
+#11=CARTESIAN_POINT('p2',(1.0,0.0,0.0));
+#12=CARTESIAN_POINT('p3',(2.0,1.0,0.0));
+#13=CARTESIAN_POINT('p4',(2.0,1.0,0.0));
+#14=CARTESIAN_POINT('p5',(3.0,0.0,0.0));
+/* Line segment from p1 to p2 */
+#100=LINE('line1',#10,
+  (1.0,0.0,0.0));
+#101=TRIMMED_CURVE('trim_line1',#100,#10,#11,.T.,.PARAMETER.,.PARAMETER.);
+/* Bezier segment p2 to p4 with degenerate endpoint (p3 == p4) */
+#102=BEZIER_CURVE('bezier_degen',2,
+  (#11,#12,#13),
+  .UNSPECIFIED.);
+#103=TRIMMED_CURVE('trim_bezier',#102,#11,#13,.T.,.PARAMETER.,.PARAMETER.);
+/* Line segment from p4 to p5 */
+#104=LINE('line2',#13,
+  (1.0,-1.0,0.0));
+#105=TRIMMED_CURVE('trim_line2',#104,#13,#14,.T.,.PARAMETER.,.PARAMETER.);
+/* Composite curve: line1 + bezier_degen + line2 */
+#200=COMPOSITE_CURVE('composite_degen',
+  (#101,#103,#105),
+  .F.);
+#201=COMPOSITE_CURVE_ON_SURFACE('comp_on_surf',#200,
+  DUMMY_FACE_REFERENCE(),
+  .F.);
+#1000=PRODUCT_CONTEXT('',#1,'mechanical');
+#1001=PRODUCT('Gn124','Gn124','',(#1000));
+#1002=PRODUCT_DEFINITION_FORMATION('','',#1001);
+#1003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#1004=PRODUCT_DEFINITION('','',#1002,#1003);
+#1005=PRODUCT_DEFINITION_SHAPE('','',#1004);
+#1006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#1007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#1008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#1009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#1006,'distance_accuracy_value','');
+#1010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#1009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#1006,#1007,#1008))REPRESENTATION_CONTEXT('','3D'));
+#1022=GEOMETRICALLY_BOUNDED_WIREFRAME_SHAPE_REPRESENTATION('',(#200),#1010);
+#1023=SHAPE_DEFINITION_REPRESENTATION(#1005,#1022);
+ENDSEC;
+END-ISO-10303-21;

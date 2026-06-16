@@ -1,0 +1,45 @@
+/* Gn126 - ShapeAnalysis_Curve.GetSamplePoints CIRCLE with-trim-near-2π
+   Defect: trimmed circle covering [0.001, 2π-0.001]; GetSamplePoints uses
+   360-cap but the trim leaves tiny gap that misses last sample. The sampling
+   grid assumes closed circle but the trim removes start and end points,
+   leaving a gap in the sample coverage. */
+ISO-10303-21;
+HEADER;
+FILE_DESCRIPTION(('Gn126 - Trimmed circle near 2pi with gap'),
+  '2;1');
+FILE_NAME('Gn126.stp','2026-06-15T00:00:00',('auto-generated'),(''),
+  'auto-generated','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+#1=GEOMETRIC_REPRESENTATION_CONTEXT(3);
+#2=SI_UNIT(*,.METRE.);
+#3=NAMED_UNIT(*,#2);
+/* Center and axis for circle */
+#10=CARTESIAN_POINT('center',(0.0,0.0,0.0));
+#11=DIRECTION('axis',(0.0,0.0,1.0));
+#12=DIRECTION('refdir',(1.0,0.0,0.0));
+#13=AXIS2_PLACEMENT_3D('circ_placement',#10,#11,#12);
+/* Circle with radius 1.0 */
+#100=CIRCLE('full_circle',#13,1.0);
+/* Trim parameters: [0.001, 2π - 0.001] ≈ [0.001, 6.282185...] */
+/* Start: param=0.001, End: param=6.282185 */
+#101=TRIMMED_CURVE('trimmed_circ',#100,
+  PARAMETER_VALUE(0.001),
+  PARAMETER_VALUE(6.282185),
+  .T.,.PARAMETER.,.PARAMETER.);
+#1000=PRODUCT_CONTEXT('',#1,'mechanical');
+#1001=PRODUCT('Gn126','Gn126','',(#1000));
+#1002=PRODUCT_DEFINITION_FORMATION('','',#1001);
+#1003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#1004=PRODUCT_DEFINITION('','',#1002,#1003);
+#1005=PRODUCT_DEFINITION_SHAPE('','',#1004);
+#1006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#1007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#1008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#1009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#1006,'distance_accuracy_value','');
+#1010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#1009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#1006,#1007,#1008))REPRESENTATION_CONTEXT('','3D'));
+#1022=GEOMETRICALLY_BOUNDED_WIREFRAME_SHAPE_REPRESENTATION('',(#101),#1010);
+#1023=SHAPE_DEFINITION_REPRESENTATION(#1005,#1022);
+ENDSEC;
+END-ISO-10303-21;

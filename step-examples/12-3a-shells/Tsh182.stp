@@ -1,0 +1,92 @@
+ISO-10303-21;
+HEADER;
+FILE_DESCRIPTION(('CAD kernel test fixture - ShapeFix_Shell face removal with shared edge'),
+                 '2',
+                 2026,
+                 6,
+                 15,
+                 12,
+                 0,
+                 '',
+                 '');
+FILE_NAME('Tsh182.stp',
+          2026-06-15T12:00:00,
+          (''),
+          (''),
+          'Open CASCADE STEP writer 7.0',
+          'CAD kernel test',
+          '');
+FILE_SCHEMA((
+    'AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'
+));
+ENDSEC;
+DATA;
+#1=DIRECTION('',(-1.0,0.0,0.0));
+#2=DIRECTION('',(0.0,0.0,1.0));
+#3=DIRECTION('',(0.0,1.0,0.0));
+#4=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#5=AXIS2_PLACEMENT_3D('',#4,#2,#3);
+#6=PLANE('',#5);
+#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#11=CARTESIAN_POINT('',(2.0,0.0,0.0));
+#12=CARTESIAN_POINT('',(2.0,2.0,0.0));
+#13=CARTESIAN_POINT('',(0.0,2.0,0.0));
+#16=VERTEX_POINT('',#10);
+#17=VERTEX_POINT('',#11);
+#18=VERTEX_POINT('',#12);
+#19=VERTEX_POINT('',#13);
+#20=LINE('',#10,#1);
+#21=LINE('',#11,#1);
+#22=LINE('',#12,#1);
+#23=LINE('',#13,#1);
+#30=EDGE_CURVE('',#16,#17,#20,.T.);
+#31=EDGE_CURVE('',#17,#18,#21,.T.);
+#32=EDGE_CURVE('',#18,#19,#22,.T.);
+#33=EDGE_CURVE('',#19,#16,#23,.T.);
+#40=ORIENTED_EDGE('',*,*,#30,.T.);
+#41=ORIENTED_EDGE('',*,*,#31,.T.);
+#42=ORIENTED_EDGE('',*,*,#32,.T.);
+#43=ORIENTED_EDGE('',*,*,#33,.T.);
+#44=EDGE_LOOP('',(#40,#41,#42,#43));
+#45=FACE_OUTER_BOUND('',#44,.T.);
+#46=FACE('face_top',(#45),#6,.T.);
+#50=CARTESIAN_POINT('',(0.0,0.0,-1.0));
+#51=CARTESIAN_POINT('',(2.0,0.0,-1.0));
+#52=CARTESIAN_POINT('',(2.0,2.0,-1.0));
+#53=CARTESIAN_POINT('',(0.0,2.0,-1.0));
+#54=VERTEX_POINT('',#50);
+#55=VERTEX_POINT('',#51);
+#56=VERTEX_POINT('',#52);
+#57=VERTEX_POINT('',#53);
+#58=LINE('',#50,#1);
+#59=LINE('',#51,#1);
+#60=LINE('',#52,#1);
+#61=LINE('',#53,#1);
+#65=EDGE_CURVE('',#54,#55,#58,.T.);
+#66=EDGE_CURVE('',#55,#56,#59,.T.);
+#67=EDGE_CURVE('',#56,#57,#60,.T.);
+#68=EDGE_CURVE('',#57,#54,#61,.T.);
+#70=ORIENTED_EDGE('',*,*,#65,.T.);
+#71=ORIENTED_EDGE('',*,*,#66,.T.);
+#72=ORIENTED_EDGE('',*,*,#67,.T.);
+#73=ORIENTED_EDGE('',*,*,#68,.T.);
+#74=EDGE_LOOP('',(#70,#71,#72,#73));
+#75=FACE_OUTER_BOUND('',#74,.T.);
+#76=FACE('face_bottom_shared_edge',(#75),#6,.T.);
+#77=CLOSED_SHELL('shell_shared_edge',(#46,#76));
+#78=SHELL_BASED_SURFACE_MODEL('sbsm_shared_edge',(#77));
+#79=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#78),#9010);
+#80=SHAPE_DEFINITION_REPRESENTATION(#9005,#79);
+#9000=PRODUCT_CONTEXT('',#1,'mechanical');
+#9001=PRODUCT('Tsh182','Tsh182','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
+#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
+ENDSEC;
+END-ISO-10303-21;

@@ -1,0 +1,79 @@
+ISO-10303-21;
+HEADER;
+FILE_DESCRIPTION(('CAD kernel test fixture - ShapeFix_Shell hex-prism orientation'),
+                 '2',
+                 2026,
+                 6,
+                 15,
+                 12,
+                 0,
+                 '',
+                 '');
+FILE_NAME('Tsh179.stp',
+          2026-06-15T12:00:00,
+          (''),
+          (''),
+          'Open CASCADE STEP writer 7.0',
+          'CAD kernel test',
+          '');
+FILE_SCHEMA((
+    'AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'
+));
+ENDSEC;
+DATA;
+#1=DIRECTION('',(-1.0,0.0,0.0));
+#2=DIRECTION('',(0.0,0.0,1.0));
+#3=DIRECTION('',(0.0,1.0,0.0));
+#4=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#5=AXIS2_PLACEMENT_3D('',#4,#2,#3);
+#6=PLANE('',#5);
+#10=CARTESIAN_POINT('',(1.0,0.0,0.0));
+#11=CARTESIAN_POINT('',(0.866,0.5,0.0));
+#12=CARTESIAN_POINT('',(0.5,0.866,0.0));
+#13=CARTESIAN_POINT('',(0.0,1.0,0.0));
+#14=CARTESIAN_POINT(''),(−0.5,0.866,0.0));
+#15=CARTESIAN_POINT(''),(−0.866,0.5,0.0));
+#16=VERTEX_POINT('',#10);
+#17=VERTEX_POINT('',#11);
+#18=VERTEX_POINT('',#12);
+#19=VERTEX_POINT('',#13);
+#20=VERTEX_POINT('',#14);
+#21=VERTEX_POINT('',#15);
+#30=LINE('',#10,#1);
+#31=VERTEX_POINT('',(1.0,0.0,1.0));
+#32=VERTEX_POINT('',(0.866,0.5,1.0));
+#33=VERTEX_POINT('',(0.5,0.866,1.0));
+#34=VERTEX_POINT('',(0.0,1.0,1.0));
+#35=VERTEX_POINT(''),(−0.5,0.866,1.0));
+#36=VERTEX_POINT(''),(−0.866,0.5,1.0));
+#40=EDGE_CURVE('',#16,#17,#30,.T.);
+#41=EDGE_CURVE('',#17,#18,#30,.T.);
+#42=EDGE_CURVE('',#18,#19,#30,.T.);
+#43=EDGE_CURVE('',#19,#20,#30,.T.);
+#44=EDGE_CURVE('',#20,#21,#30,.T.);
+#45=EDGE_CURVE('',#21,#16,#30,.T.);
+#50=ORIENTED_EDGE('',*,*,#40,.F.);
+#51=ORIENTED_EDGE('',*,*,#41,.F.);
+#52=ORIENTED_EDGE('',*,*,#42,.F.);
+#53=ORIENTED_EDGE('',*,*,#43,.F.);
+#54=ORIENTED_EDGE('',*,*,#44,.F.);
+#55=ORIENTED_EDGE('',*,*,#45,.F.);
+#60=EDGE_LOOP('',(#50,#51,#52,#53,#54,#55));
+#61=FACE_OUTER_BOUND('',#60,.F.);
+#62=FACE('bottom_face',(#61),#6,.F.);
+#63=SHELL_BASED_SURFACE_MODEL('hex_6lateral_with_orientation_oscillation',(#62));
+#64=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#63),#9010);
+#65=SHAPE_DEFINITION_REPRESENTATION(#9005,#64);
+#9000=PRODUCT_CONTEXT('',#1,'mechanical');
+#9001=PRODUCT('Tsh179','Tsh179','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
+#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
+ENDSEC;
+END-ISO-10303-21;

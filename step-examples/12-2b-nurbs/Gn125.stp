@@ -1,0 +1,53 @@
+/* Gn125 - ShapeUpgrade_SplitSurface.SetVSplitValues partial-domain
+   Defect: split values that cover only part of V domain (e.g. [0.3, 0.7]
+   for V in [0,1]); SetVSplitValues clips silently leaving unprocessed
+   regions. The surface is split only in the range [0.3,0.7] in V, while
+   [0,0.3) and (0.7,1] remain unprocessed. */
+ISO-10303-21;
+HEADER;
+FILE_DESCRIPTION(('Gn125 - BSpline surface partial V-domain split'),
+  '2;1');
+FILE_NAME('Gn125.stp','2026-06-15T00:00:00',('auto-generated'),(''),
+  'auto-generated','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+#1=GEOMETRIC_REPRESENTATION_CONTEXT(3);
+#2=SI_UNIT(*,.METRE.);
+#3=NAMED_UNIT(*,#2);
+/* 3x3 control net */
+#10=CARTESIAN_POINT('p00',(0.0,0.0,0.0));
+#11=CARTESIAN_POINT('p01',(0.0,1.0,0.0));
+#12=CARTESIAN_POINT('p02',(0.0,2.0,0.5));
+#20=CARTESIAN_POINT('p10',(1.0,0.0,0.1));
+#21=CARTESIAN_POINT('p11',(1.0,1.0,0.5));
+#22=CARTESIAN_POINT('p12',(1.0,2.0,0.6));
+#30=CARTESIAN_POINT('p20',(2.0,0.0,0.0));
+#31=CARTESIAN_POINT('p21',(2.0,1.0,0.5));
+#32=CARTESIAN_POINT('p22',(2.0,2.0,0.5));
+/* BSpline surface with full domain [0,1] x [0,1]
+   Split values provided only for partial V range [0.3, 0.7] */
+#100=B_SPLINE_SURFACE_WITH_KNOTS('partial_v_split',
+  2,2,
+  ((#10,#11,#12),(#20,#21,#22),(#30,#31,#32)),
+  .UNSPECIFIED.,.F.,.F.,.F.,
+  (3,3),
+  (3,3),
+  (0.0,0.0,0.0,1.0,1.0,1.0),
+  (0.0,0.0,0.0,1.0,1.0,1.0),
+  .UNSPECIFIED.);
+#1000=PRODUCT_CONTEXT('',#1,'mechanical');
+#1001=PRODUCT('Gn125','Gn125','',(#1000));
+#1002=PRODUCT_DEFINITION_FORMATION('','',#1001);
+#1003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#1004=PRODUCT_DEFINITION('','',#1002,#1003);
+#1005=PRODUCT_DEFINITION_SHAPE('','',#1004);
+#1006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#1007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#1008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#1009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#1006,'distance_accuracy_value','');
+#1010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#1009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#1006,#1007,#1008))REPRESENTATION_CONTEXT('','3D'));
+#1022=GEOMETRICALLY_BOUNDED_WIREFRAME_SHAPE_REPRESENTATION('',(#100),#1010);
+#1023=SHAPE_DEFINITION_REPRESENTATION(#1005,#1022);
+ENDSEC;
+END-ISO-10303-21;

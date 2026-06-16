@@ -1,0 +1,45 @@
+ISO-10303-21;
+HEADER;
+FILE_DESCRIPTION(('CAD kernel test fixture - ShapeAnalysis_Shell closed-shell marker with no faces'),
+                 '2',
+                 2026,
+                 6,
+                 15,
+                 12,
+                 0,
+                 '',
+                 '');
+FILE_NAME('Tsh183.stp',
+          2026-06-15T12:00:00,
+          (''),
+          (''),
+          'Open CASCADE STEP writer 7.0',
+          'CAD kernel test',
+          '');
+FILE_SCHEMA((
+    'AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'
+));
+ENDSEC;
+DATA;
+#1=DIRECTION('',(-1.0,0.0,0.0));
+#2=DIRECTION('',(0.0,0.0,1.0));
+#3=DIRECTION('',(0.0,1.0,0.0));
+#4=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#5=AXIS2_PLACEMENT_3D('',#4,#2,#3);
+#10=CLOSED_SHELL('empty_marked_closed_shell',());
+#11=SHELL_BASED_SURFACE_MODEL('sbsm_empty_closed',(#10));
+#12=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#11),#9010);
+#13=SHAPE_DEFINITION_REPRESENTATION(#9005,#12);
+#9000=PRODUCT_CONTEXT('',#1,'mechanical');
+#9001=PRODUCT('Tsh183','Tsh183','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
+#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
+ENDSEC;
+END-ISO-10303-21;
