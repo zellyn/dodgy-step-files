@@ -1,0 +1,38 @@
+ISO-10303-21;
+/* Gs060 - ShapeAnalysis_Surface.ComputeSingularities spherical-pole detection
+ * Defect: A SPHERICAL_SURFACE has natural singularities at the two poles
+ * (v=π/2 and v=-π/2 for ISO convention). The ComputeSingularities method must
+ * detect and mark these poles as singular points. The method analyzes the
+ * surface normal at sample points to find where the normal becomes degenerate
+ * or where the gradient of the surface position becomes parallel (zero area).
+ * For a sphere, this occurs exactly at the north and south poles. */
+HEADER;
+FILE_DESCRIPTION(('Gs060 - Spherical surface pole singularity detection'),'2;1');
+FILE_NAME('Gs060.stp','2026-06-15T00:00:00',(''),(''),
+  'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+/* Sphere: center at origin, radius 5.0 */
+#10=CARTESIAN_POINT('center',(0.0,0.0,0.0));
+#11=DIRECTION('z_axis',(0.0,0.0,1.0));
+#12=DIRECTION('x_axis',(1.0,0.0,0.0));
+#13=AXIS2_PLACEMENT_3D('sphere_placement',#10,#11,#12);
+#20=SPHERICAL_SURFACE('sphere_r5',#13,5.0);
+/* Wrap: PRODUCT chain + surface representation so OCCT TransferRoots reaches the surface. */
+#9000=PRODUCT_CONTEXT('',#1,'mechanical');
+#9001=PRODUCT('Gs060','Gs060','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
+#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
+#9022=GEOMETRICALLY_BOUNDED_SURFACE_SHAPE_REPRESENTATION('',(#20),#9010);
+#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+ENDSEC;
+END-ISO-10303-21;

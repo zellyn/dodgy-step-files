@@ -1,0 +1,45 @@
+ISO-10303-21;
+/* Gs063 - ShapeUpgrade_ConvertSurfaceToBezierBasis.Compute trimmed/offset delegation
+ * Defect: When converting a RECTANGULAR_TRIMMED_SURFACE or OFFSET_SURFACE to
+ * Bezier basis (via Compute), the conversion logic delegates to the basis
+ * surface recursively. However, the trim parameters (u1,u2,v1,v2) or offset
+ * value are not propagated: the method returns the Bezier decomposition of the
+ * basis surface without re-trimming or re-offsetting the result. For trimmed
+ * surfaces, this returns geometry outside the trim domain. For offset surfaces,
+ * the offset displacement is lost entirely. Here: a trimmed plane wrapped in an
+ * offset surface; conversion should preserve both, but will return untrimmed
+ * and unoff-set Bezier instead. */
+HEADER;
+FILE_DESCRIPTION(('Gs063 - Trimmed offset surface Bezier conversion delegation failure'),'2;1');
+FILE_NAME('Gs063.stp','2026-06-15T00:00:00',(''),(''),
+  'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+/* Base plane in XY at z=0 */
+#10=CARTESIAN_POINT('plane_origin',(0.0,0.0,0.0));
+#11=DIRECTION('plane_z',(0.0,0.0,1.0));
+#12=DIRECTION('plane_x',(1.0,0.0,0.0));
+#13=AXIS2_PLACEMENT_3D('plane_placement',#10,#11,#12);
+#14=PLANE('base_plane',#13);
+/* Trim the plane to u in [0.5, 2.5] and v in [0.5, 2.5] */
+#20=RECTANGULAR_TRIMMED_SURFACE(
+  'trimmed_plane',
+  #14,
+  0.5,
+  2.5,
+  0.5,
+  2.5,
+  .T.,
+  .T.);
+/* Offset the trimmed plane by 2.0 units in the normal (Z) direction */
+/* The offset surface wraps the trimmed plane, not the base plane. */
+#30=OFFSET_SURFACE(
+  'offset_trimmed_plane',
+  #20,
+  2.0,
+  .T.,
+  .T.);
+ENDSEC;
+END-ISO-10303-21;

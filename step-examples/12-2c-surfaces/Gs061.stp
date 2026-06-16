@@ -1,0 +1,59 @@
+ISO-10303-21;
+/* Gs061 - ShapeAnalysis_Surface.SurfaceNewton normal-degeneracy divergence
+ * Defect: Newton iteration on a surface normal direction fails when the normal
+ * becomes near-tangent or degenerate at a specific (u,v) point. The method
+ * attempts to find the closest point on a surface by iterating: at each step,
+ * project a test point onto the surface tangent plane and refine the (u,v)
+ * estimate. If the surface normal becomes near-zero (cusp point) or nearly
+ * parallel to the search direction, the iteration diverges instead of converging.
+ * Here: a B-spline surface with a localized cusp where the normal degenerates. */
+HEADER;
+FILE_DESCRIPTION(('Gs061 - B-spline surface with normal degeneracy at cusp'),'2;1');
+FILE_NAME('Gs061.stp','2026-06-15T00:00:00',(''),(''),
+  'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+/* Degree 3 in both U and V, 4x4 control points */
+/* Designed to have a cusp at the center (u~0.5, v~0.5) where the two tangent */
+/* vectors become parallel, causing normal degeneracy. */
+/* Bottom-left row (v=0) */
+#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#11=CARTESIAN_POINT('',(1.0,0.0,0.0));
+#12=CARTESIAN_POINT('',(2.0,0.0,0.0));
+#13=CARTESIAN_POINT('',(3.0,0.0,0.0));
+/* Second row (v=1), tangents in X direction */
+#14=CARTESIAN_POINT('',(0.0,1.0,1.0));
+#15=CARTESIAN_POINT('',(1.0,1.0,1.2));
+#16=CARTESIAN_POINT('',(2.0,1.0,1.2));
+#17=CARTESIAN_POINT('',(3.0,1.0,1.0));
+/* Third row (v=2), cusp point: both edges tangent in X, normal becomes singular */
+#18=CARTESIAN_POINT('',(0.0,2.0,0.5));
+#19=CARTESIAN_POINT('',(1.0,2.0,0.7));
+#20=CARTESIAN_POINT('',(2.0,2.0,0.7));
+#21=CARTESIAN_POINT('',(3.0,2.0,0.5));
+/* Top row (v=3) */
+#22=CARTESIAN_POINT('',(0.0,3.0,0.0));
+#23=CARTESIAN_POINT('',(1.0,3.0,0.0));
+#24=CARTESIAN_POINT('',(2.0,3.0,0.0));
+#25=CARTESIAN_POINT('',(3.0,3.0,0.0));
+/* B-spline surface: 4x4 poles, cubic in both directions */
+#100=B_SPLINE_SURFACE_WITH_KNOTS(
+  'cusp_surface',
+  3,3,
+  ((#10,#11,#12,#13),
+   (#14,#15,#16,#17),
+   (#18,#19,#20,#21),
+   (#22,#23,#24,#25)),
+  .UNSPECIFIED.,
+  .F.,
+  .F.,
+  (4,1,4),
+  (4,1,4),
+  (0.0,1.0,2.0),
+  (0.0,1.0,2.0),
+  .UNSPECIFIED.,
+  .UNSPECIFIED.);
+ENDSEC;
+END-ISO-10303-21;

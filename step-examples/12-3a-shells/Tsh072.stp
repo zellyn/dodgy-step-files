@@ -1,0 +1,109 @@
+ISO-10303-21;
+/* Tsh072 - Shell with free (single-face) edges leaks the closure invariant
+ * This shell contains edges that appear in only one face loop, violating
+ * the manifold invariant that every edge should be shared by exactly 2 faces.
+ * ShapeAnalysis_Shell.FreeEdges detection at line 303 identifies these. */
+HEADER;
+FILE_DESCRIPTION(('Tsh072 - FreeEdges detection for non-closed shells','Shell with free (single-face) edges'),'2;1');
+FILE_NAME('Tsh072.stp','2026-06-16T00:00:00',('auto-generated'),(''),'auto-generated','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+/* Vertices for Face 1 (quad) */
+#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#11=VERTEX_POINT('',#10);
+#12=CARTESIAN_POINT('',(1.0,0.0,0.0));
+#13=VERTEX_POINT('',#12);
+#14=CARTESIAN_POINT('',(1.0,1.0,0.0));
+#15=VERTEX_POINT('',#14);
+#16=CARTESIAN_POINT('',(0.0,1.0,0.0));
+#17=VERTEX_POINT('',#16);
+/* Vertices for Face 2 (triangle) - partial overlap, one free edge */
+#18=CARTESIAN_POINT('',(2.0,0.0,0.0));
+#19=VERTEX_POINT('',#18);
+#20=CARTESIAN_POINT('',(2.0,1.0,0.0));
+#21=VERTEX_POINT('',#20);
+/* Shared edge between Face 1 and Face 2: (1,0,0) to (2,0,0) */
+#22=DIRECTION('',(1.0,0.0,0.0));
+#23=VECTOR('',#22,1.0);
+#24=LINE('',#12,#23);
+#25=EDGE_CURVE('',#13,#19,#24,.T.);
+/* Face 1 edges */
+/* Edge: (0,0,0) to (1,0,0) - will be free on Face 1 side */
+#26=DIRECTION('',(1.0,0.0,0.0));
+#27=VECTOR('',#26,1.0);
+#28=LINE('',#10,#27);
+#29=EDGE_CURVE('',#11,#13,#28,.T.);
+/* Edge: (1,0,0) to (1,1,0) */
+#30=DIRECTION('',(0.0,1.0,0.0));
+#31=VECTOR('',#30,1.0);
+#32=LINE('',#12,#31);
+#33=EDGE_CURVE('',#13,#15,#32,.T.);
+/* Edge: (1,1,0) to (0,1,0) */
+#34=DIRECTION('',(-1.0,0.0,0.0));
+#35=VECTOR('',#34,1.0);
+#36=LINE('',#14,#35);
+#37=EDGE_CURVE('',#15,#17,#36,.T.);
+/* Edge: (0,1,0) to (0,0,0) */
+#38=DIRECTION('',(0.0,-1.0,0.0));
+#39=VECTOR('',#38,1.0);
+#40=LINE('',#16,#39);
+#41=EDGE_CURVE('',#17,#11,#40,.T.);
+/* Face 2 edges */
+/* Edge: (2,0,0) to (2,1,0) - free edge on Face 2 side */
+#42=DIRECTION('',(0.0,1.0,0.0));
+#43=VECTOR('',#42,1.0);
+#44=LINE('',#18,#43);
+#45=EDGE_CURVE('',#19,#21,#44,.T.);
+/* Edge: (2,1,0) to (1,0,0) - free edge on Face 2 side */
+#46=DIRECTION('',(-1.0,-1.0,0.0));
+#47=VECTOR('',#46,1.414213562373095);
+#48=LINE('',#20,#47);
+#49=EDGE_CURVE('',#21,#13,#48,.T.);
+/* Face 1: Quad (0,0,0)-(1,0,0)-(1,1,0)-(0,1,0) */
+#50=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#51=DIRECTION('',(0.0,0.0,1.0));
+#52=DIRECTION('',(1.0,0.0,0.0));
+#53=AXIS2_PLACEMENT_3D('',#50,#51,#52);
+#54=PLANE('',#53);
+#55=ORIENTED_EDGE('',*,*,#29,.T.);
+#56=ORIENTED_EDGE('',*,*,#33,.T.);
+#57=ORIENTED_EDGE('',*,*,#37,.T.);
+#58=ORIENTED_EDGE('',*,*,#41,.T.);
+#59=EDGE_LOOP('',(#55,#56,#57,#58));
+#60=FACE_OUTER_BOUND('',#59,.T.);
+#61=ADVANCED_FACE('face1_quad',(#60),#54,.T.);
+/* Face 2: Triangle (1,0,0)-(2,0,0)-(2,1,0) with free edges */
+#62=CARTESIAN_POINT('',(1.666,0.666,0.0));
+#63=DIRECTION('',(0.0,0.0,1.0));
+#64=DIRECTION('',(1.0,0.0,0.0));
+#65=AXIS2_PLACEMENT_3D('',#62,#63,#64);
+#66=PLANE('',#65);
+/* Defect: Face 2 has free edges not shared with Face 1 */
+#67=ORIENTED_EDGE('',*,*,#25,.T.);
+#68=ORIENTED_EDGE('',*,*,#45,.T.);
+#69=ORIENTED_EDGE('',*,*,#49,.T.);
+#70=EDGE_LOOP('',(#67,#68,#69));
+#71=FACE_OUTER_BOUND('',#70,.T.);
+#72=ADVANCED_FACE('face2_triangle',(#71),#66,.T.);
+/* Shell with free edges (not a manifold) */
+#200=OPEN_SHELL('',(#61,#72));
+/* Wrap: full PRODUCT chain */
+#9000=PRODUCT_CONTEXT('',#1,'mechanical');
+#9001=PRODUCT('Tsh072','Tsh072','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
+#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
+#9021=SHELL_BASED_SURFACE_MODEL('sbsm_model',(#200));
+#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#9010);
+#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+ENDSEC;
+END-ISO-10303-21;

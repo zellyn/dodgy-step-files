@@ -21689,6 +21689,47 @@ they capture invariants shared by a family of healing methods. Filed under
 - **Model impact**: The affected surface or curve has degenerate parameterization (zero-length axis, non-unit direction, near-zero radius); evaluations at the degenerate parameter produce NaN/Inf, which propagates into face bounds and downstream BRep operations.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
+### Gs059 — B-spline knot-multiplicity closure sanity
+- **Defect class**: `ShapeAnalysis_Surface.IsUClosed`
+- **Probe method**: `IsUClosed_at662`
+- **Geometry**: B-spline surface with 8×4 control points, degree 3 in U
+- **Closure claim**: Surface claims to be closed in U via knot multiplicities [4,1,1,1,4]
+- **Actual closure**: Last pole at u_max offset 0.01 in Z, breaking closure
+- **Trigger**: Midpoint sample in IsUClosed detects pole mismatch despite knot structure
+- **Expected healing**: Surface marked as non-closed; subsequent passes may split or reject
+
+### Gs060 — Spherical surface pole singularity detection
+- **Defect class**: `ShapeAnalysis_Surface.ComputeSingularities`
+- **Probe method**: `ComputeSingularities_at182`
+- **Geometry**: Spherical surface, radius 5.0, ISO axes (Z-axis vertical)
+- **Singularity**: Natural poles at v=π/2 (north) and v=-π/2 (south)
+- **Trigger**: Gradient analysis of surface position; normal becomes degenerate at poles
+- **Expected healing**: Poles marked in singularity map; edge loops adjusted to avoid pole crossing
+
+### Gs061 — B-spline surface normal degeneracy at cusp
+- **Defect class**: `ShapeAnalysis_Surface.SurfaceNewton`
+- **Probe method**: `SurfaceNewton_at1069`
+- **Geometry**: 4×4 cubic B-spline with cusp at center (u~0.5, v~0.5)
+- **Degeneracy**: Two rows (v=1, v=2) have parallel X-directional tangent vectors; normal becomes singular
+- **Trigger**: Newton iteration for closest-point projection diverges when normal is near-zero
+- **Expected healing**: Projection fails; surface may be rejected or split at cusp
+
+### Gs062 — Trimmed cylinder ValueOfUV dispatch
+- **Defect class**: `ShapeAnalysis_Surface.ValueOfUV`
+- **Probe method**: `ValueOfUV_at1246`
+- **Geometry**: Cylindrical surface (r=5.0) trimmed to u∈[π/4, 3π/4], v∈[1.0, 5.0]
+- **Dispatch bug**: ValueOfUV checks basis type (CYLINDER) but ignores trim bounds
+- **Trigger**: Inversion of 3D point to (u,v) produces parameters outside trim domain
+- **Expected healing**: Out-of-bounds (u,v) detected; point re-projected or clamped to trim
+
+### Gs063 — Trimmed offset surface Bezier delegation
+- **Defect class**: `ShapeUpgrade_ConvertSurfaceToBezierBasis.Compute`
+- **Probe method**: `Compute_at58` (wrapper-delegation branch)
+- **Geometry**: Plane trimmed to u∈[0.5, 2.5], v∈[0.5, 2.5], then offset by 2.0
+- **Delegation bug**: Recursion converts basis surface (trimmed plane) without re-applying trim or offset
+- **Trigger**: Bezier decomposition ignores trim parameters and offset displacement
+- **Expected healing**: Conversion result is untrimmed and unoff-set; healer must reject or reapply constraints
+
 ### Ad117 — STEP reader crashes on minimal file with malformed `STYLED_ITEM`
 - **Category**: §12.11 adversarial / parser-robustness (sub-class: SEGV on style record)
 - **Sources**: OCCT MANTIS#0029979; bug-reporter language: "crash by reading STEP file", "STEP reader crashes on import", "segmentation fault on small STEP file". (OCCT MANTIS tracker 502 as of 2026-05-02)
@@ -21827,6 +21868,51 @@ they capture invariants shared by a family of healing methods. Filed under
 - **Model impact**: Shell topology loads with inconsistent face orientations or non-manifold edges; BRepCheck flags the shell as invalid, and boolean / offset operations on the solid either produce wrong-sided results or fail outright.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
+### Tsh069 — CheckOrientedShells Normal-Flip Detection
+
+- **Category**: §12.3a Shells
+- **Sources**: OCCT_HEAL_COVERAGE_V3.md (CheckOrientedShells_at142)
+- **Description**: Two ADVANCED_FACEs share a base rectangle but with reversed normal orientation (one +Z, one -Z). The shared edge makes the shell appear non-manifold. ShapeAnalysis_Shell.CheckOrientedShells at line 142 detects normal-flip inconsistency across adjacent faces in the shell.
+- **Reproducer recipe**: Load Tsh069.stp; invoke OCCT shell analyzer; CheckOrientedShells should report orientation conflict between Face A (outward +Z) and Face B (outward -Z) sharing the base edge loop.
+- **Expected kernel behavior**: Kernel should detect that faces with opposing normals on shared edges violate the manifold orientation invariant and flag the shell as non-manifold or require reorientation.
+- **Expected validation**: `occt=unknown/unknown gmsh=unknown ifc=schema_n/a`
+
+### Tsh070 — FixFaceOrientation Multiconnect-Edge Classification
+
+- **Category**: §12.3a Shells
+- **Sources**: OCCT_HEAL_COVERAGE_V3.md (FixFaceOrientation_at1428)
+- **Description**: Three ADVANCED_FACEs (xy-plane triangles, xz-plane triangle) share a single edge (0,0,0)-(1,0,0), creating a multiconnect edge (3+ faces). ShapeFix_Shell.FixFaceOrientation multiconnect-edge classification at line 1428 fails to properly propagate orientation fixes when an edge connects more than 2 faces, making orientation propagation ambiguous.
+- **Reproducer recipe**: Load Tsh070.stp; invoke OCCT face orientation fixer; FixFaceOrientation should fail or produce inconsistent results when trying to propagate orientation across the 3-face multiconnect edge.
+- **Expected kernel behavior**: Kernel should either reject the non-manifold topology or use special handling for multiconnect edges; unambiguous orientation propagation is impossible without additional constraints.
+- **Expected validation**: `occt=unknown/unknown gmsh=unknown ifc=schema_n/a`
+
+### Tsh071 — BadEdges Detection for Mismatched Edge Ordering
+
+- **Category**: §12.3a Shells
+- **Sources**: OCCT_HEAL_COVERAGE_V3.md (BadEdges_at281)
+- **Description**: Two ADVANCED_FACEs share a common edge but with opposite orientation semantics: Face A uses EDGE_CURVE #23 (direction (0,0,0) to (2,0,0)), Face B uses EDGE_CURVE #47 (direction (2,0,0) to (0,0,0)). The ORIENTED_EDGE flags do not compensate for the reversed underlying geometry, creating a topological mismatch. ShapeAnalysis_Shell.BadEdges at line 281 catches edges with mismatched ordering across the two faces.
+- **Reproducer recipe**: Load Tsh071.stp; invoke OCCT bad-edge detector; BadEdges should report edge #23/#47 as having inconsistent direction across Face A and Face B.
+- **Expected kernel behavior**: Kernel should detect that the two faces reference curves with opposite parametric directions and flag this as a topology error requiring edge consolidation or reorientation.
+- **Expected validation**: `occt=unknown/unknown gmsh=unknown ifc=schema_n/a`
+
+### Tsh072 — FreeEdges Detection for Non-Closed Shells
+
+- **Category**: §12.3a Shells
+- **Sources**: OCCT_HEAL_COVERAGE_V3.md (FreeEdges_at303)
+- **Description**: OPEN_SHELL containing two faces (quad + triangle) with only partial edge overlap. Face 2 has three edges: one shared with Face 1 (the shared edge), and two free edges (#45 and #49) that appear in only Face 2. ShapeAnalysis_Shell.FreeEdges at line 303 detects these unshared edges, which violate the closure invariant—every edge in a manifold shell must be shared by exactly 2 faces.
+- **Reproducer recipe**: Load Tsh072.stp; invoke OCCT free-edge detector; FreeEdges should return compounds containing #45 and #49 as free edges not present in any neighboring face.
+- **Expected kernel behavior**: Kernel should identify free edges, marking the shell as non-closed and non-manifold; validation should fail or flag the shell as incomplete.
+- **Expected validation**: `occt=unknown/unknown gmsh=unknown ifc=schema_n/a`
+
+### Tsh073 — Perform Context State Reuse Vulnerability
+
+- **Category**: §12.3a Shells
+- **Sources**: OCCT_HEAL_COVERAGE_V3.md (Perform_at102)
+- **Description**: CLOSED_SHELL with 5 faces (base quad + 4 apex triangles). Face 2 has intentionally reversed orientation requiring a fix. ShapeFix_Shell.Perform at line 102 checks if Context() is null and creates a new context only on first call. If Perform() is called twice without context reset, the second call reuses the stale ShapeBuild_ReShape, causing accumulated reshape operations to apply twice, resulting in double-fixed faces and inconsistent orientation state.
+- **Reproducer recipe**: Load Tsh073.stp; invoke OCCT fixer Perform() on the shell; then invoke Perform() again without resetting context; observe that Face 2 is orientation-fixed twice, leaving the shell in an inconsistent state.
+- **Expected kernel behavior**: Kernel should either automatically reset context between calls or throw an error on second Perform() without explicit context clear; currently double-fix silently corrupts orientation.
+- **Expected validation**: `occt=unknown/unknown gmsh=unknown ifc=schema_n/a`
+
 ### Gp040 — Pcurves emitted by default duplicate / contradict the surface 3D curve
 - **Category**: §12.2a pcurve defects (sub-class: writer-emitted pcurves disagree with 3D)
 - **Sources**: OCCT MANTIS#0025654; bug-reporter language: "disable writing pcurves to STEP and IGES by default", "pcurves and 3D curves disagree on round-trip", "writer-emitted pcurves cause downstream failures". (OCCT MANTIS tracker 502 as of 2026-05-02)
@@ -21841,6 +21927,41 @@ they capture invariants shared by a family of healing methods. Filed under
 - **Severity**: P1
 - **Model impact**: The pcurve attribute on the affected EDGE_CURVE/SEAM_CURVE is missing, NULL, or inconsistent with its 3D companion; downstream meshing and boolean operations either rebuild it from the 3D edge (introducing tolerance error) or dereference a null handle and abort.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+
+### Gp041 — Sample-point divergence between 3D curve and PCURVE exceeds tolerance.
+
+- **Geometry**: PLANE host; 3D LINE from (0,0,0) to (10,0,0); PCURVE B-spline.
+- **Defect**: Midspan 3D curve point (5,0,0) maps to PCURVE point (5.1,0,0) — 0.1 mm divergence exceeding edge tolerance 0.001 mm.
+- **Healer impact**: CheckCurve3dWithPCurve sample-point inspection detects the mismatch and flags the edge for healing or healing-time analysis.
+- **File**: `step-examples/12-2a-pcurves/Gp041.stp`
+
+### Gp042 — Edge on planar face missing PCURVE despite 3D curve geometry.
+
+- **Geometry**: PLANE host; 3D LINE from (0,0,0) to (5,0,0); empty SURFACE_CURVE.associated_geometry list.
+- **Defect**: SURFACE_CURVE has no PCURVE `(*)`. Some FixAddPCurve branches bypass plane-trivial PCURVE construction when geometry or downstream healing requires explicit parametric representation.
+- **Healer impact**: FixAddPCurve should construct a trivial PCURVE (identity map) but plane-bypass branch skips it, leaving the edge without parametric curve data.
+- **File**: `step-examples/12-2a-pcurves/Gp042.stp`
+
+### Gp043 — B-spline PCURVE reversal corrupts knot-vector structure without re-evaluation.
+
+- **Geometry**: PLANE host; 3D LINE from (0,0,0) to (10,0,0); PCURVE B-spline degree 2, knots (0.0, 0.5, 1.0), control points (0,0), (3.333,2.5), (6.667,5.0), (10,7.5).
+- **Defect**: Reversing parametric direction without re-evaluating knot domain leaves stale multiplicity data. Naive range flip keeps knot structure intact even though parameter direction is inverted.
+- **Healer impact**: FixReversed2d attempts to reverse PCURVE but the knot-vector corruption causes wrong parameter mapping during edge reconstruction.
+- **File**: `step-examples/12-2a-pcurves/Gp043.stp`
+
+### Gp044 — Endpoint-bias projection picks wrong candidate when multiple equidistant points exist.
+
+- **Geometry**: PLANE host; 3D B-spline arc degree 2 with inflection at midspan; PCURVE B-spline.
+- **Defect**: Both endpoints and interior point are equidistant from probe point. Project's endpoint-bias returns endpoint distance even when interior local-min is the true projection. PCURVE maps to wrong parameter bounds.
+- **Healer impact**: Project returns suboptimal projection result, causing downstream healers to misalign PCURVE parameter mapping or report stale boundary conditions.
+- **File**: `step-examples/12-2a-pcurves/Gp044.stp`
+
+### Gp045 — Edge copy during SameParameter recomputation inherits stale parameter range when curve is BSpline.
+
+- **Geometry**: PLANE host; 3D B-spline degree 2, knots (0.0, 0.333, 0.667, 1.0); matching PCURVE B-spline.
+- **Defect**: FixSameParameter copies EDGE_CURVE to new TEdge but preserves old range bounds. New BSpline's actual knot domain differs from preserved bounds, causing parameter mismatch between 3D and 2D curves.
+- **Healer impact**: Edge copy trap: parameter range bounds become stale when BSpline geometry is recomputed. SameParameter recomputation fails to detect and correct the range corruption.
+- **File**: `step-examples/12-2a-pcurves/Gp045.stp`
 
 ### A105 — Regression OCC 6.9.1 → 7.4.0: colours stop appearing on certain STEP files
 - **Category**: §12.6 assembly hierarchy (sub-class: appearance regression across kernel versions)

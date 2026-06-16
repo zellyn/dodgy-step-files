@@ -1,0 +1,110 @@
+ISO-10303-21;
+/* Tsh070 - Shell with edge shared by 3+ faces breaks orientation propagation
+ * Three ADVANCED_FACEs share a common edge, causing ShapeFix_Shell.FixFaceOrientation
+ * multiconnect-edge classification to fail at line 1428. The shared edge has more
+ * than 2 faces, making the orientation propagation algorithm ambiguous. */
+HEADER;
+FILE_DESCRIPTION(('Tsh070 - FixFaceOrientation multiconnect-edge classification','Shell with edge shared by 3+ faces'),'2;1');
+FILE_NAME('Tsh070.stp','2026-06-16T00:00:00',('auto-generated'),(''),'auto-generated','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+/* Shared edge vertices */
+#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#11=VERTEX_POINT('',#10);
+#12=CARTESIAN_POINT('',(1.0,0.0,0.0));
+#13=VERTEX_POINT('',#12);
+/* Face vertices - three faces share edge #10-#12 */
+#14=CARTESIAN_POINT('',(0.5,1.0,0.0));
+#15=VERTEX_POINT('',#14);
+#16=CARTESIAN_POINT('',(0.5,-1.0,0.0));
+#17=VERTEX_POINT('',#16);
+#18=CARTESIAN_POINT('',(0.5,0.0,1.0));
+#19=VERTEX_POINT('',#18);
+/* Shared edge: (0,0,0) to (1,0,0) */
+#20=DIRECTION('',(1.0,0.0,0.0));
+#21=VECTOR('',#20,1.0);
+#22=LINE('',#10,#21);
+#23=EDGE_CURVE('',#11,#13,#22,.T.);
+/* Edge for Face 1: (1,0,0) to (0.5,1,0) */
+#24=DIRECTION('',(-0.5,1.0,0.0));
+#25=VECTOR('',#24,1.118033988749895);
+#26=LINE('',#12,#25);
+#27=EDGE_CURVE('',#13,#15,#26,.T.);
+/* Edge for Face 1: (0.5,1,0) to (0,0,0) */
+#28=DIRECTION('',(-0.5,-1.0,0.0));
+#29=VECTOR('',#28,1.118033988749895);
+#30=LINE('',#14,#29);
+#31=EDGE_CURVE('',#15,#11,#30,.T.);
+/* Edge for Face 2: (1,0,0) to (0.5,-1,0) */
+#32=DIRECTION('',(-0.5,-1.0,0.0));
+#33=VECTOR('',#32,1.118033988749895);
+#34=LINE('',#12,#33);
+#35=EDGE_CURVE('',#13,#17,#34,.T.);
+/* Edge for Face 2: (0.5,-1,0) to (0,0,0) */
+#36=DIRECTION('',(-0.5,1.0,0.0));
+#37=VECTOR('',#36,1.118033988749895);
+#38=LINE('',#16,#37);
+#39=EDGE_CURVE('',#17,#11,#38,.T.);
+/* Edge for Face 3: (1,0,0) to (0.5,0,1) */
+#40=DIRECTION('',(-0.5,0.0,1.0));
+#41=VECTOR('',#40,1.118033988749895);
+#42=LINE('',#12,#41);
+#43=EDGE_CURVE('',#13,#19,#42,.T.);
+/* Edge for Face 3: (0.5,0,1) to (0,0,0) */
+#44=DIRECTION('',(-0.5,0.0,-1.0));
+#45=VECTOR('',#44,1.118033988749895);
+#46=LINE('',#18,#45);
+#47=EDGE_CURVE('',#19,#11,#46,.T.);
+/* Face 1: triangle (0,0,0)-(1,0,0)-(0.5,1,0) in Z=0 plane */
+#50=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#51=DIRECTION('',(0.0,0.0,1.0));
+#52=DIRECTION('',(1.0,0.0,0.0));
+#53=AXIS2_PLACEMENT_3D('',#50,#51,#52);
+#54=PLANE('',#53);
+#55=ORIENTED_EDGE('',*,*,#23,.T.);
+#56=ORIENTED_EDGE('',*,*,#27,.T.);
+#57=ORIENTED_EDGE('',*,*,#31,.T.);
+#58=EDGE_LOOP('',(#55,#56,#57));
+#59=FACE_OUTER_BOUND('',#58,.T.);
+#60=ADVANCED_FACE('face1_xy_plane',(#59),#54,.T.);
+/* Face 2: triangle (0,0,0)-(1,0,0)-(0.5,-1,0) in Z=0 plane */
+#61=ORIENTED_EDGE('',*,*,#23,.T.);
+#62=ORIENTED_EDGE('',*,*,#35,.T.);
+#63=ORIENTED_EDGE('',*,*,#39,.T.);
+#64=EDGE_LOOP('',(#61,#62,#63));
+#65=FACE_OUTER_BOUND('',#64,.T.);
+#66=ADVANCED_FACE('face2_xy_plane',(#65),#54,.T.);
+/* Face 3: triangle (0,0,0)-(1,0,0)-(0.5,0,1) in XZ plane /* Defect: multiconnect-edge shared by 3 faces */ */
+#67=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#68=DIRECTION('',(0.0,1.0,0.0));
+#69=DIRECTION('',(1.0,0.0,0.0));
+#70=AXIS2_PLACEMENT_3D('',#67,#68,#69);
+#71=PLANE('',#70);
+#72=ORIENTED_EDGE('',*,*,#23,.T.);
+#73=ORIENTED_EDGE('',*,*,#43,.T.);
+#74=ORIENTED_EDGE('',*,*,#47,.T.);
+#75=EDGE_LOOP('',(#72,#73,#74));
+#76=FACE_OUTER_BOUND('',#75,.T.);
+#77=ADVANCED_FACE('face3_xz_plane',(#76),#71,.T.);
+/* Shell with multiconnect edge */
+#200=OPEN_SHELL('',(#60,#66,#77));
+/* Wrap: full PRODUCT chain */
+#9000=PRODUCT_CONTEXT('',#1,'mechanical');
+#9001=PRODUCT('Tsh070','Tsh070','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
+#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
+#9021=SHELL_BASED_SURFACE_MODEL('sbsm_model',(#200));
+#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#9010);
+#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+ENDSEC;
+END-ISO-10303-21;

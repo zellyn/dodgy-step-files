@@ -1,0 +1,36 @@
+ISO-10303-21;
+/* Gs062 - ShapeAnalysis_Surface.ValueOfUV plane-vs-cylinder dispatch on trimmed surface
+ * Defect: When a RECTANGULAR_TRIMMED_SURFACE wraps a CYLINDRICAL_SURFACE, the
+ * ValueOfUV method attempts to invert 3D XYZ back to surface (u,v) parameters.
+ * The dispatch logic checks the basis surface type (PLANE vs CYLINDER) but does
+ * not account for trim bounds. If u1!=0 or v1!=0, the inversion produces
+ * parameters outside the trimmed domain, leading to out-of-bounds evaluation.
+ * Here: a cylinder trimmed to a band in both U and V; inversion fails to
+ * account for the offset trim boundaries. */
+HEADER;
+FILE_DESCRIPTION(('Gs062 - Trimmed cylinder ValueOfUV dispatch failure'),'2;1');
+FILE_NAME('Gs062.stp','2026-06-15T00:00:00',(''),(''),
+  'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+/* Cylinder: axis along Z, radius 5.0 */
+#10=CARTESIAN_POINT('cyl_origin',(0.0,0.0,0.0));
+#11=DIRECTION('cyl_z',(0.0,0.0,1.0));
+#12=DIRECTION('cyl_x',(1.0,0.0,0.0));
+#13=AXIS2_PLACEMENT_3D('cyl_placement',#10,#11,#12);
+#14=CYLINDRICAL_SURFACE('cylinder_r5',#13,5.0);
+/* Trim the cylinder to u in [π/4, 3π/4] and v in [1.0, 5.0] */
+/* This offset trim domain is where ValueOfUV dispatch will fail */
+#100=RECTANGULAR_TRIMMED_SURFACE(
+  'trimmed_cylinder',
+  #14,
+  0.7853981633974483,
+  2.356194490192345,
+  1.0,
+  5.0,
+  .T.,
+  .T.);
+ENDSEC;
+END-ISO-10303-21;
