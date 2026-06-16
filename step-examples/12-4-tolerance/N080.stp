@@ -1,0 +1,112 @@
+/* N080 - ShapeFix_ShapeTolerance.LimitTolerance recursive-only-vertex
+ * Defect: LimitTolerance(shape, tmin, tmax, TopAbs_VERTEX); only-vertex mode
+ * recursion should descend through faces+edges but skip them; recursion stops
+ * at first face entirely. When called with shape_type=VERTEX, the function
+ * should recursively traverse faces and edges to reach vertices, apply
+ * tolerance limits to vertices only, but skip modifying faces/edges. Instead,
+ * recursion halts at the first face encountered, leaving vertices within that
+ * face untouched. Vertices in other faces remain unprocessed, causing
+ * inconsistent tolerance hierarchy.
+ */
+ISO-10303-21;
+HEADER;
+FILE_DESCRIPTION(('N080 LimitTolerance recursive-only-vertex incomplete descent'),'2;1');
+FILE_NAME('N080.stp','2026-06-15T00:00:00',(''),(''),
+  'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
+  'automotive_design',2009,#1);
+/* Multi-face geometry to test vertex-only recursion through multiple faces */
+#10=CARTESIAN_POINT('origin',(0.0,0.0,0.0));
+#11=DIRECTION('z',(0.0,0.0,1.0));
+#12=DIRECTION('x',(1.0,0.0,0.0));
+#13=AXIS2_PLACEMENT_3D('plc',#10,#11,#12);
+/* Face 1: square base (z=0) with 4 vertices */
+#20=CARTESIAN_POINT('f1_p0',(0.0,0.0,0.0));
+#21=CARTESIAN_POINT('f1_p1',(5.0,0.0,0.0));
+#22=CARTESIAN_POINT('f1_p2',(5.0,5.0,0.0));
+#23=CARTESIAN_POINT('f1_p3',(0.0,5.0,0.0));
+#30=VERTEX_POINT('f1_v0',#20);
+#31=VERTEX_POINT('f1_v1',#21);
+#32=VERTEX_POINT('f1_v2',#22);
+#33=VERTEX_POINT('f1_v3',#23);
+/* Face 1 edges */
+#40=DIRECTION('f1_e1_dir',(1.0,0.0,0.0));
+#41=VECTOR('f1_e1_vec',#40,5.0);
+#42=LINE('f1_e1_curve',#20,#41);
+#43=EDGE_CURVE('f1_e1',#30,#31,#42,.T.);
+#50=DIRECTION('f1_e2_dir',(0.0,1.0,0.0));
+#51=VECTOR('f1_e2_vec',#50,5.0);
+#52=LINE('f1_e2_curve',#21,#51);
+#53=EDGE_CURVE('f1_e2',#31,#32,#52,.T.);
+#60=DIRECTION('f1_e3_dir',(-1.0,0.0,0.0));
+#61=VECTOR('f1_e3_vec',#60,5.0);
+#62=LINE('f1_e3_curve',#22,#61);
+#63=EDGE_CURVE('f1_e3',#32,#33,#62,.T.);
+#64=DIRECTION('f1_e4_dir',(0.0,-1.0,0.0));
+#65=VECTOR('f1_e4_vec',#64,5.0);
+#66=LINE('f1_e4_curve',#23,#65);
+#67=EDGE_CURVE('f1_e4',#33,#30,#66,.T.);
+/* Face 2: square top (z=5) with 4 vertices, shares edges with Face 1 */
+#70=CARTESIAN_POINT('f2_p0',(0.0,0.0,5.0));
+#71=CARTESIAN_POINT('f2_p1',(5.0,0.0,5.0));
+#72=CARTESIAN_POINT('f2_p2',(5.0,5.0,5.0));
+#73=CARTESIAN_POINT('f2_p3',(0.0,5.0,5.0));
+#74=VERTEX_POINT('f2_v0',#70);
+#75=VERTEX_POINT('f2_v1',#71);
+#76=VERTEX_POINT('f2_v2',#72);
+#77=VERTEX_POINT('f2_v3',#73);
+/* Face 2 edges */
+#80=DIRECTION('f2_e1_dir',(1.0,0.0,0.0));
+#81=VECTOR('f2_e1_vec',#80,5.0);
+#82=LINE('f2_e1_curve',#70,#81);
+#83=EDGE_CURVE('f2_e1',#74,#75,#82,.T.);
+#84=DIRECTION('f2_e2_dir',(0.0,1.0,0.0));
+#85=VECTOR('f2_e2_vec',#84,5.0);
+#86=LINE('f2_e2_curve',#71,#85);
+#87=EDGE_CURVE('f2_e2',#75,#76,#86,.T.);
+#88=DIRECTION('f2_e3_dir',(-1.0,0.0,0.0));
+#89=VECTOR('f2_e3_vec',#88,5.0);
+#90=LINE('f2_e3_curve',#72,#89);
+#91=EDGE_CURVE('f2_e3',#76,#77,#90,.T.);
+#92=DIRECTION('f2_e4_dir',(0.0,-1.0,0.0));
+#93=VECTOR('f2_e4_vec',#92,5.0);
+#94=LINE('f2_e4_curve',#73,#93);
+#95=EDGE_CURVE('f2_e4',#77,#74,#94,.T.);
+/* Vertical edges connecting Face 1 to Face 2 */
+#96=DIRECTION('vert_e1_dir',(0.0,0.0,1.0));
+#97=VECTOR('vert_e1_vec',#96,5.0);
+#98=LINE('vert_e1_curve',#20,#97);
+#99=EDGE_CURVE('vert_e1',#30,#74,#98,.T.);
+#100=DIRECTION('vert_e2_dir',(0.0,0.0,1.0));
+#101=VECTOR('vert_e2_vec',#100,5.0);
+#102=LINE('vert_e2_curve',#21,#101);
+#103=EDGE_CURVE('vert_e2',#31,#75,#102,.T.);
+#104=DIRECTION('vert_e3_dir',(0.0,0.0,1.0));
+#105=VECTOR('vert_e3_vec',#104,5.0);
+#106=LINE('vert_e3_curve',#22,#106);
+#107=EDGE_CURVE('vert_e3',#32,#76,#106,.T.);
+#108=DIRECTION('vert_e4_dir',(0.0,0.0,1.0));
+#109=VECTOR('vert_e4_vec',#108,5.0);
+#110=LINE('vert_e4_curve',#23,#109);
+#111=EDGE_CURVE('vert_e4',#33,#77,#110,.T.);
+/* Context with limit tolerance range for vertex-only operations */
+#120=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#121=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#122=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#123=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-6),#120,
+  'distance_accuracy_value','context_tolerance');
+#124=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#123))
+  GLOBAL_UNIT_ASSIGNED_CONTEXT((#120,#121,#122))
+  REPRESENTATION_CONTEXT('vertex_limit_ctx','3D'));
+/* Vertex-level tolerance declarations to test LimitTolerance with mode=VERTEX */
+#125=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(2.0E-5),#120,
+  'distance_accuracy_value','f1_v0_loose_tol');
+#126=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(3.0E-5),#120,
+  'distance_accuracy_value','f2_v2_loose_tol');
+ENDSEC;
+END-ISO-10303-21;

@@ -1,0 +1,59 @@
+ISO-10303-21;
+/* Tfa096 - ShapeFix_Face.FixOrientation degenerate-wire bypass
+ * Face with outer wire composed entirely of zero-length edges (degenerate).
+ * FixOrientation skips degenerate wires without diagnostic, leaving face
+ * in undefined orientation state. Triggers when all EDGE_CURVE have identical
+ * start and end vertices. */
+HEADER;
+FILE_DESCRIPTION(('Tfa096 test case','Face with degenerate outer wire'),'2;1');
+FILE_NAME('Tfa096.stp','2026-06-15T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+/* Degenerate outer wire: all edges collapse to single point */
+#10=CARTESIAN_POINT('',(5.0,5.0,0.0));
+#11=VERTEX_POINT('degen_v',#10);
+/* Edge 1: zero-length (collapse to same point) */
+#20=DIRECTION('',(1.0,0.0,0.0));#21=VECTOR('',#20,0.0);#22=LINE('',#10,#21);
+#23=EDGE_CURVE('degen_e1',#11,#11,#22,.T.);
+/* Edge 2: zero-length */
+#30=DIRECTION('',(0.0,1.0,0.0));#31=VECTOR('',#30,0.0);#32=LINE('',#10,#31);
+#33=EDGE_CURVE('degen_e2',#11,#11,#32,.T.);
+/* Edge 3: zero-length */
+#40=DIRECTION('',(-1.0,0.0,0.0));#41=VECTOR('',#40,0.0);#42=LINE('',#10,#41);
+#43=EDGE_CURVE('degen_e3',#11,#11,#42,.T.);
+/* Edge 4: zero-length */
+#50=DIRECTION('',(0.0,-1.0,0.0));#51=VECTOR('',#50,0.0);#52=LINE('',#10,#51);
+#53=EDGE_CURVE('degen_e4',#11,#11,#52,.T.);
+/* Degenerate outer loop */
+#60=ORIENTED_EDGE('',*,*,#23,.T.);#61=ORIENTED_EDGE('',*,*,#33,.T.);
+#62=ORIENTED_EDGE('',*,*,#43,.T.);#63=ORIENTED_EDGE('',*,*,#53,.T.);
+#64=EDGE_LOOP('degenerate_outer',(#60,#61,#62,#63));
+#65=FACE_OUTER_BOUND('',#64,.T.);
+/* Surface: plane */
+#70=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#71=DIRECTION('',(0.0,0.0,1.0));#72=DIRECTION('',(1.0,0.0,0.0));
+#73=AXIS2_PLACEMENT_3D('',#70,#71,#72);#74=PLANE('surf',#73);
+/* Face: degenerate outer wire on plane */
+#80=ADVANCED_FACE('degenerate_face',(#65),#74,.T.);
+/* PRODUCT chain */
+#9000=PRODUCT_CONTEXT('',#1,'mechanical');
+#9001=PRODUCT('Tfa096','Tfa096','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
+#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
+#9021=SHELL_BASED_SURFACE_MODEL('sbsm',(#90));
+#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#9010);
+#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+/* Closed shell wrapper for the single face */
+#90=CLOSED_SHELL('shell',(#80));
+ENDSEC;
+END-ISO-10303-21;

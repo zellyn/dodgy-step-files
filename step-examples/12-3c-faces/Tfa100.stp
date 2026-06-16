@@ -1,0 +1,66 @@
+ISO-10303-21;
+/* Tfa100 - ShapeFix_Face.FixWiresTwoCoincEdges with seam
+ * Face on cylinder with two wires both containing the cylinder's seam edge.
+ * FixWiresTwoCoincEdges treats seams differently than regular edges and misses
+ * the coincidence, failing to merge or flag the duplicate. */
+HEADER;
+FILE_DESCRIPTION(('Tfa100 test case','Face on cylinder with seam in two wires'),'2;1');
+FILE_NAME('Tfa100.stp','2026-06-15T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+/* Cylinder surface: axis z, radius 5 mm */
+#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#11=DIRECTION('',(0.0,0.0,1.0));#12=DIRECTION('',(1.0,0.0,0.0));
+#13=AXIS2_PLACEMENT_3D('',#10,#11,#12);
+#14=CYLINDER('cyl_surf',#13,5.0);
+/* Outer wire: circle at z=0 on cylinder seam (u=0 to 2π, v=0) */
+/* Point on seam: u=0, v=0, (5,0,0) */
+#20=CARTESIAN_POINT('',(5.0,0.0,0.0));#21=VERTEX_POINT('v_seam_outer',#20);
+/* Arc 1: u=0 to π, v=0 (along seam side u=0) */
+#22=CARTESIAN_POINT('',(-5.0,0.0,0.0));#23=VERTEX_POINT('v_mid_outer',#22);
+#24=CENTER_POINT('',(0.0,0.0,0.0));
+#25=DIRECTION('',(0.0,0.0,1.0));
+#26=CIRCLE('arc1_outer',#13,5.0);
+#27=EDGE_CURVE('outer_arc1_u0_to_pi',#21,#23,#26,.T.);
+/* Arc 2: u=π to 2π, v=0 (along seam side u=2π) -- SEAM EDGE */
+#28=EDGE_CURVE('outer_arc2_seam_u_2pi',#23,#21,#26,.T.);
+/* Outer loop: two arcs on cylinder seam */
+#50=ORIENTED_EDGE('',*,*,#27,.T.);#51=ORIENTED_EDGE('',*,*,#28,.T.);
+#52=EDGE_LOOP('outer_seam_loop',(#50,#51));
+#53=FACE_OUTER_BOUND('',#52,.T.);
+/* Inner wire: another circle at z=2 also using seam edge at v=2 */
+#60=CARTESIAN_POINT('',(5.0,0.0,2.0));#61=VERTEX_POINT('v_seam_inner',#60);
+#62=CARTESIAN_POINT('',(-5.0,0.0,2.0));#63=VERTEX_POINT('v_mid_inner',#62);
+#64=CIRCLE('arc3_inner',#13,5.0);
+/* Arc 3: u=0 to π, v=2 (seam crossing) */
+#65=EDGE_CURVE('inner_arc1_u0_to_pi',#61,#63,#64,.T.);
+/* Arc 4: u=π to 2π, v=2 (seam crossing) -- SEAM EDGE AGAIN */
+#66=EDGE_CURVE('inner_arc2_seam_u_2pi_v2',#63,#61,#64,.T.);
+/* Inner loop: also touches seam */
+#70=ORIENTED_EDGE('',*,*,#65,.T.);#71=ORIENTED_EDGE('',*,*,#66,.T.);
+#72=EDGE_LOOP('inner_seam_loop',(#70,#71));
+#73=FACE_INNER_BOUND('',#72,.T.);
+/* Face on cylinder with seam edge in both wires */
+#80=ADVANCED_FACE('cylinder_seam_two_wires',(#53,#73),#14,.T.);
+/* PRODUCT chain */
+#9000=PRODUCT_CONTEXT('',#1,'mechanical');
+#9001=PRODUCT('Tfa100','Tfa100','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
+#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
+#9021=SHELL_BASED_SURFACE_MODEL('sbsm',(#90));
+#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#9010);
+#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+/* Closed shell wrapper */
+#90=CLOSED_SHELL('shell',(#80));
+ENDSEC;
+END-ISO-10303-21;

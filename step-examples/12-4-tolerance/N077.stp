@@ -1,0 +1,63 @@
+/* N077 - BRepLib.BuildCurves3d batch-batch failure
+ * Defect: BRepLib::BuildCurves3d called with multiple edges; one edge's
+ * BuildCurves3d failure causes batch return false but other edges that
+ * succeeded aren't reported as such. A batch operation (building 3D curves
+ * for an edge set) fails if any member fails, but the function doesn't
+ * distinguish between partial success and total failure. Downstream code
+ * assumes all edges failed and may skip valid geometries or perform
+ * redundant repairs.
+ */
+ISO-10303-21;
+HEADER;
+FILE_DESCRIPTION(('N077 BuildCurves3d batch-batch failure reporting'),'2;1');
+FILE_NAME('N077.stp','2026-06-15T00:00:00',(''),(''),
+  'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
+  'automotive_design',2009,#1);
+/* Multi-edge geometry: two valid edges + one edge with missing 3D curve */
+#10=CARTESIAN_POINT('origin',(0.0,0.0,0.0));
+#11=DIRECTION('z',(0.0,0.0,1.0));
+#12=DIRECTION('x',(1.0,0.0,0.0));
+#13=AXIS2_PLACEMENT_3D('plc',#10,#11,#12);
+/* Valid edge 1: line from origin to (10,0,0) */
+#20=CARTESIAN_POINT('p1_start',(0.0,0.0,0.0));
+#21=CARTESIAN_POINT('p1_end',(10.0,0.0,0.0));
+#30=VERTEX_POINT('v1_start',#20);
+#31=VERTEX_POINT('v1_end',#21);
+#40=DIRECTION('line1_dir',(1.0,0.0,0.0));
+#41=VECTOR('line1_vec',#40,10.0);
+#42=LINE('line1_3d',#20,#41);
+#43=EDGE_CURVE('edge1_valid',#30,#31,#42,.T.);
+/* Valid edge 2: line from (10,0,0) to (10,10,0) */
+#50=CARTESIAN_POINT('p2_start',(10.0,0.0,0.0));
+#51=CARTESIAN_POINT('p2_end',(10.0,10.0,0.0));
+#60=VERTEX_POINT('v2_start',#50);
+#61=VERTEX_POINT('v2_end',#51);
+#70=DIRECTION('line2_dir',(0.0,1.0,0.0));
+#71=VECTOR('line2_vec',#70,10.0);
+#72=LINE('line2_3d',#50,#71);
+#73=EDGE_CURVE('edge2_valid',#60,#61,#72,.T.);
+/* Degenerate/failing edge 3: pcurve-only edge without 3D curve geometry
+   This edge has no curve_3d, only parametric reference geometry
+   triggering BuildCurves3d failure for this edge in batch */
+#80=CARTESIAN_POINT('p3_start',(10.0,10.0,0.0));
+#81=CARTESIAN_POINT('p3_end',(0.0,10.0,0.0));
+#90=VERTEX_POINT('v3_start',#80);
+#91=VERTEX_POINT('v3_end',#81);
+#100=EDGE_CURVE('edge3_no_curve',#90,#91,$,.T.);
+/* Context with 1e-6 tolerance for 3D curve geometry validation */
+#110=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#111=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#112=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#113=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-6),#110,
+  'distance_accuracy_value','batch_tolerance');
+#114=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#113))
+  GLOBAL_UNIT_ASSIGNED_CONTEXT((#110,#111,#112))
+  REPRESENTATION_CONTEXT('ctx','3D'));
+ENDSEC;
+END-ISO-10303-21;

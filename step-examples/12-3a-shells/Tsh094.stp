@@ -1,0 +1,90 @@
+ISO-10303-21;
+/* Tsh094 - ShapeFix_Shell.FixFaceOrientation duplicate-face removal
+ * Defect: Shell contains two ADVANCED_FACEs that are geometrically identical
+ * (same surface + same outer wire, but different face entity IDs).
+ * FixFaceOrientation processes both independently; aMapAdded tracks duplicates
+ * but only warns—duplicate faces are not removed before orientation propagation,
+ * causing inconsistent outward direction markers. */
+HEADER;
+FILE_DESCRIPTION(('Tsh094 - duplicate identical faces in shell','2;1');
+FILE_NAME('Tsh094.stp','2026-06-15T00:00:00',(''),(''),'wave-14','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+
+/* Minimal square face (0..2 x 0..2 x 0) */
+#100=CARTESIAN_POINT('',(0,0,0));
+#101=CARTESIAN_POINT('',(2,0,0));
+#102=CARTESIAN_POINT('',(2,2,0));
+#103=CARTESIAN_POINT('',(0,2,0));
+#110=VERTEX_POINT('',#100);
+#111=VERTEX_POINT('',#101);
+#112=VERTEX_POINT('',#102);
+#113=VERTEX_POINT('',#103);
+
+/* Plane z=0 (outward normal) */
+#300=DIRECTION('',(0,0,1));
+#301=DIRECTION('',(1,0,0));
+#120=AXIS2_PLACEMENT_3D('',#100,#300,#301);
+#122=PLANE('',#120);
+
+/* Edges for perimeter 0->1->2->3->0 */
+#320=DIRECTION('',(1.0,0.0,0.0));
+#340=VECTOR('',#320,2.0);
+#150=LINE('',#100,#340);
+#151=EDGE_CURVE('e01',#110,#111,#150,.T.);
+
+#321=DIRECTION('',(0.0,1.0,0.0));
+#341=VECTOR('',#321,2.0);
+#152=LINE('',#101,#341);
+#153=EDGE_CURVE('e12',#111,#112,#152,.T.);
+
+#322=DIRECTION('',(-1.0,0.0,0.0));
+#342=VECTOR('',#322,2.0);
+#154=LINE('',#102,#342);
+#155=EDGE_CURVE('e23',#112,#113,#154,.T.);
+
+#323=DIRECTION('',(0.0,-1.0,0.0));
+#343=VECTOR('',#323,2.0);
+#156=LINE('',#103,#343);
+#157=EDGE_CURVE('e30',#113,#110,#156,.T.);
+
+/* Single edge loop for outer bound */
+#180=ORIENTED_EDGE('oe0',*,*,#151,.T.);
+#181=ORIENTED_EDGE('oe1',*,*,#153,.T.);
+#182=ORIENTED_EDGE('oe2',*,*,#155,.T.);
+#183=ORIENTED_EDGE('oe3',*,*,#157,.T.);
+#210=EDGE_LOOP('loop1',(#180,#181,#182,#183));
+#220=FACE_OUTER_BOUND('',#210,.T.);
+
+/* First face instance */
+#230=ADVANCED_FACE('face_dup_a',(#220),#122,.T.);
+
+/* Second face instance (IDENTICAL geometry, same surface, same wire, different entity) */
+#231=ADVANCED_FACE('face_dup_b',(#220),#122,.T.);
+
+/* Shell with both duplicate faces */
+#240=CLOSED_SHELL('shell_with_duplicates',(#230,#231));
+
+/* Solid referencing the shell */
+#950=MANIFOLD_SOLID_BREP('Tsh094_dup_faces',#240);
+
+/* Mandatory PRODUCT chain */
+#9000=PRODUCT_CONTEXT('',#1,'mechanical');
+#9001=PRODUCT('Tsh094','Tsh094','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
+#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
+#9021=SHELL_BASED_SURFACE_MODEL('sbsm',(#240));
+#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#9010);
+#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+ENDSEC;
+END-ISO-10303-21;

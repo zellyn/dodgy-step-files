@@ -1,0 +1,118 @@
+ISO-10303-21;
+/* Tsh096 - ShapeAnalysis_Shell.CheckOrientedShells degenerate-face
+ * Defect: Shell contains a degenerate face (zero-area, e.g. a line
+ * collapsed to a point or degenerate surface). CheckOrientedShells
+ * uses normal direction to classify outward/inward, but a degenerate
+ * face has no well-defined normal vector. */
+HEADER;
+FILE_DESCRIPTION(('Tsh096 - shell with degenerate zero-area face','2;1');
+FILE_NAME('Tsh096.stp','2026-06-15T00:00:00',(''),(''),'wave-14','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+
+/* Normal face: square 0..2 x 0..2 x 0 */
+#100=CARTESIAN_POINT('',(0,0,0));
+#101=CARTESIAN_POINT('',(2,0,0));
+#102=CARTESIAN_POINT('',(2,2,0));
+#103=CARTESIAN_POINT('',(0,2,0));
+#110=VERTEX_POINT('',#100);
+#111=VERTEX_POINT('',#101);
+#112=VERTEX_POINT('',#102);
+#113=VERTEX_POINT('',#103);
+
+/* Degenerate points (all same = collapse) */
+#104=CARTESIAN_POINT('',(1,1,1));
+#114=VERTEX_POINT('',#104);
+#115=VERTEX_POINT('',#104);
+#116=VERTEX_POINT('',#104);
+
+/* Plane z=0 (normal face) */
+#300=DIRECTION('',(0,0,1));
+#301=DIRECTION('',(1,0,0));
+#120=AXIS2_PLACEMENT_3D('',#100,#300,#301);
+#122=PLANE('',#120);
+
+/* Degenerate plane (all points same) */
+#302=DIRECTION('',(1,0,0));
+#303=DIRECTION('',(0,1,0));
+#123=AXIS2_PLACEMENT_3D('',#104,#302,#303);
+#125=PLANE('',#123);
+
+/* Normal face edges */
+#320=DIRECTION('',(1.0,0.0,0.0));
+#340=VECTOR('',#320,2.0);
+#150=LINE('',#100,#340);
+#151=EDGE_CURVE('n_e0',#110,#111,#150,.T.);
+
+#321=DIRECTION('',(0.0,1.0,0.0));
+#341=VECTOR('',#321,2.0);
+#152=LINE('',#101,#341);
+#153=EDGE_CURVE('n_e1',#111,#112,#152,.T.);
+
+#322=DIRECTION('',(-1.0,0.0,0.0));
+#342=VECTOR('',#322,2.0);
+#154=LINE('',#102,#342);
+#155=EDGE_CURVE('n_e2',#112,#113,#154,.T.);
+
+#323=DIRECTION('',(0.0,-1.0,0.0));
+#343=VECTOR('',#323,2.0);
+#156=LINE('',#103,#343);
+#157=EDGE_CURVE('n_e3',#113,#110,#156,.T.);
+
+/* Normal face loop */
+#180=ORIENTED_EDGE('',*,*,#151,.T.);
+#181=ORIENTED_EDGE('',*,*,#153,.T.);
+#182=ORIENTED_EDGE('',*,*,#155,.T.);
+#183=ORIENTED_EDGE('',*,*,#157,.T.);
+#210=EDGE_LOOP('normal_loop',(#180,#181,#182,#183));
+#220=FACE_OUTER_BOUND('',#210,.T.);
+#230=ADVANCED_FACE('normal_face',(#220),#122,.T.);
+
+/* Degenerate face edges (zero-length) */
+#324=DIRECTION('',(1.0,0.0,0.0));
+#344=VECTOR('',#324,0.0);
+#158=LINE('',#104,#344);
+#159=EDGE_CURVE('d_e0',#114,#115,#158,.T.);
+
+#325=DIRECTION('',(0.0,1.0,0.0));
+#345=VECTOR('',#325,0.0);
+#160=LINE('',#104,#345);
+#161=EDGE_CURVE('d_e1',#115,#116,#160,.T.);
+
+#326=DIRECTION('',(-1.0,0.0,0.0));
+#346=VECTOR('',#326,0.0);
+#162=LINE('',#104,#346);
+#163=EDGE_CURVE('d_e2',#116,#114,#162,.T.);
+
+/* Degenerate face loop (collapsed) */
+#184=ORIENTED_EDGE('',*,*,#159,.T.);
+#185=ORIENTED_EDGE('',*,*,#161,.T.);
+#186=ORIENTED_EDGE('',*,*,#163,.T.);
+#211=EDGE_LOOP('degen_loop',(#184,#185,#186));
+#221=FACE_OUTER_BOUND('',#211,.T.);
+#231=ADVANCED_FACE('degenerate_face',(#221),#125,.T.);
+
+/* Shell with one normal and one degenerate face */
+#240=CLOSED_SHELL('degen_shell',(#230,#231));
+#950=MANIFOLD_SOLID_BREP('Tsh096_degenerate',#240);
+
+/* Mandatory PRODUCT chain */
+#9000=PRODUCT_CONTEXT('',#1,'mechanical');
+#9001=PRODUCT('Tsh096','Tsh096','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
+#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
+#9021=SHELL_BASED_SURFACE_MODEL('sbsm',(#240));
+#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#9010);
+#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+ENDSEC;
+END-ISO-10303-21;

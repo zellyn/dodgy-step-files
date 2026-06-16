@@ -1,0 +1,79 @@
+/* N078 - ShapeFix_Edge.FixSameParameter precision-floor
+ * Defect: Edge with extremely tight tolerance (1e-15); FixSameParameter's
+ * interior tolerance computation falls below the floor and gets clamped,
+ * hiding the actual edge tolerance. The interior-precision computation
+ * uses hard-coded tolerance floors that assume typical manufacturing
+ * precision (1e-7 to 1e-6). When an edge declares tolerance tighter than
+ * the floor, the algorithm clamps to the floor and loses the original
+ * tolerance spec, leaving the edge with artificially relaxed precision.
+ * Downstream SameParameter checks then pass incorrectly because they use
+ * the clamped floor instead of the declared tolerance.
+ */
+ISO-10303-21;
+HEADER;
+FILE_DESCRIPTION(('N078 FixSameParameter precision-floor clamping'),'2;1');
+FILE_NAME('N078.stp','2026-06-15T00:00:00',(''),(''),
+  'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
+  'automotive_design',2009,#1);
+/* Edge with extremely tight tolerance declaration */
+#10=CARTESIAN_POINT('origin',(0.0,0.0,0.0));
+#11=DIRECTION('z',(0.0,0.0,1.0));
+#12=DIRECTION('x',(1.0,0.0,0.0));
+#13=AXIS2_PLACEMENT_3D('plc',#10,#11,#12);
+/* Curve with tight parameterization */
+#20=CARTESIAN_POINT('curve_start',(0.0,0.0,0.0));
+#21=CARTESIAN_POINT('curve_end',(1.0,0.0,0.0));
+#30=VERTEX_POINT('v_start',#20);
+#31=VERTEX_POINT('v_end',#21);
+#40=DIRECTION('curve_dir',(1.0,0.0,0.0));
+#41=VECTOR('curve_vec',#40,1.0);
+#42=LINE('curve_3d',#20,#41);
+#43=EDGE_CURVE('edge_tight_tol',#30,#31,#42,.T.);
+/* Context with sub-floor tolerance (1e-15) to trigger clamping */
+#50=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#51=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#52=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+/* Ultra-tight tolerance below typical floor */
+#53=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-15),#50,
+  'distance_accuracy_value','sub_floor_tolerance');
+#54=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#53))
+  GLOBAL_UNIT_ASSIGNED_CONTEXT((#50,#51,#52))
+  REPRESENTATION_CONTEXT('tight_ctx','3D'));
+/* Explicit edge tolerance even tighter than context */
+#55=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-16),#50,
+  'distance_accuracy_value','edge_ultra_tight');
+/* Additional geometry to create a face with the edge */
+#60=CARTESIAN_POINT('face_p0',(0.0,0.0,0.0));
+#61=CARTESIAN_POINT('face_p1',(1.0,0.0,0.0));
+#62=CARTESIAN_POINT('face_p2',(1.0,1.0,0.0));
+#63=CARTESIAN_POINT('face_p3',(0.0,1.0,0.0));
+/* Vertices for square face boundary */
+#70=VERTEX_POINT('fp0',#60);
+#71=VERTEX_POINT('fp1',#61);
+#72=VERTEX_POINT('fp2',#62);
+#73=VERTEX_POINT('fp3',#63);
+/* Face edges */
+#80=DIRECTION('fe1_dir',(1.0,0.0,0.0));
+#81=VECTOR('fe1_vec',#80,1.0);
+#82=LINE('fe1_curve',#60,#81);
+#83=EDGE_CURVE('fe1',#70,#71,#82,.T.);
+#84=DIRECTION('fe2_dir',(0.0,1.0,0.0));
+#85=VECTOR('fe2_vec',#84,1.0);
+#86=LINE('fe2_curve',#61,#85);
+#87=EDGE_CURVE('fe2',#71,#72,#86,.T.);
+#88=DIRECTION('fe3_dir',(-1.0,0.0,0.0));
+#89=VECTOR('fe3_vec',#88,1.0);
+#90=LINE('fe3_curve',#62,#89);
+#91=EDGE_CURVE('fe3',#72,#73,#90,.T.);
+#92=DIRECTION('fe4_dir',(0.0,-1.0,0.0));
+#93=VECTOR('fe4_vec',#92,1.0);
+#94=LINE('fe4_curve',#63,#93);
+#95=EDGE_CURVE('fe4',#73,#70,#94,.T.);
+ENDSEC;
+END-ISO-10303-21;

@@ -1,0 +1,65 @@
+ISO-10303-21;
+/* Tsh104 - ShapeFix_Shell.FixFaceOrientation reverse-edge propagation
+ * Defect: shell where one face's edge is referenced with .F. by a neighbor;
+ * orientation propagation should flip but the logic only handles .T. inputs */
+HEADER;
+FILE_DESCRIPTION(('Tsh104 test case','FixFaceOrientation reverse-edge propagation'),'2;1');
+FILE_NAME('Tsh104.stp','2026-06-15T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+/* Two adjacent rectangular faces; shared edge referenced as .F. by face2 */
+#20=CARTESIAN_POINT('',(0.0,0.0,0.0));#21=VERTEX_POINT('',#20);
+#22=CARTESIAN_POINT('',(1.0,0.0,0.0));#23=VERTEX_POINT('',#22);
+#24=CARTESIAN_POINT('',(1.0,1.0,0.0));#25=VERTEX_POINT('',#24);
+#26=CARTESIAN_POINT('',(0.0,1.0,0.0));#27=VERTEX_POINT('',#26);
+#28=CARTESIAN_POINT('',(1.0,2.0,0.0));#29=VERTEX_POINT('',#28);
+#30=DIRECTION('',(1.0,0.0,0.0));#31=VECTOR('',#30,1.0);#32=LINE('',#20,#31);
+#33=EDGE_CURVE('',#21,#23,#32,.T.);
+#34=DIRECTION('',(0.0,1.0,0.0));#35=VECTOR('',#34,1.0);#36=LINE('',#22,#35);
+#37=EDGE_CURVE('',#23,#25,#36,.T.);
+#38=DIRECTION('',(-1.0,0.0,0.0));#39=VECTOR('',#38,1.0);#40=LINE('',#24,#39);
+#41=EDGE_CURVE('',#25,#27,#40,.T.);
+#42=DIRECTION('',(0.0,-1.0,0.0));#43=VECTOR('',#42,1.0);#44=LINE('',#26,#43);
+#45=EDGE_CURVE('',#27,#21,#44,.T.);
+#46=DIRECTION('',(0.0,1.0,0.0));#47=VECTOR('',#46,1.0);#48=LINE('',#24,#47);
+#49=EDGE_CURVE('',#25,#29,#48,.T.);
+#50=DIRECTION('',(0.0,-1.0,0.0));#51=VECTOR('',#50,1.0);#52=LINE('',#28,#51);
+#53=EDGE_CURVE('',#29,#25,#52,.T.);
+/* Face1 outer loop */
+#60=ORIENTED_EDGE('',*,*,#33,.T.);#61=ORIENTED_EDGE('',*,*,#37,.T.);
+#62=ORIENTED_EDGE('',*,*,#41,.T.);#63=ORIENTED_EDGE('',*,*,#45,.T.);
+#64=EDGE_LOOP('',(#60,#61,#62,#63));
+#70=DIRECTION('',(0.0,0.0,1.0));#71=DIRECTION('',(1.0,0.0,0.0));
+#72=AXIS2_PLACEMENT_3D('',#20,#70,#71);#73=PLANE('',#72);
+#80=FACE_OUTER_BOUND('',#64,.T.);
+#81=ADVANCED_FACE('face1',(#80),#73,.T.);
+/* Face2 outer loop - shared edge with .F. orientation (violates propagation) */
+#90=ORIENTED_EDGE('',*,*,#37,.F.);
+#91=ORIENTED_EDGE('',*,*,#49,.T.);
+#92=ORIENTED_EDGE('',*,*,#53,.T.);
+#93=EDGE_LOOP('',(#90,#91,#92));
+#100=FACE_OUTER_BOUND('',#93,.T.);
+#101=ADVANCED_FACE('face2',(#100),#73,.T.);
+/* OPEN_SHELL with two faces sharing edge #37 but inconsistently oriented */
+#200=OPEN_SHELL('defective_shell',(#81,#101));
+#210=SHELL_BASED_SURFACE_MODEL('sbsm',(#200));
+#220=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#221=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#222=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#223=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#220,'distance_accuracy_value','');
+#224=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#223))GLOBAL_UNIT_ASSIGNED_CONTEXT((#220,#221,#222))REPRESENTATION_CONTEXT('','3D'));
+#230=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#210),#224);
+#9000=PRODUCT_CONTEXT('',#1,'mechanical');
+#9001=PRODUCT('Tsh104','Tsh104','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9021=SHELL_BASED_SURFACE_MODEL('sbsm',(#200));
+#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#224);
+#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+ENDSEC;
+END-ISO-10303-21;

@@ -1,0 +1,69 @@
+ISO-10303-21;
+/* Gp076 - ShapeFix_Edge.FixAddPCurve curve-on-surface with periodic surface
+ * Defect: edge 3D curve lies on cylindrical seam; FixAddPCurve constructs pcurve
+ * at u=0 but should also accept u=2π as equivalent on periodic surface */
+HEADER;
+FILE_DESCRIPTION(('Gp076 test case','FixAddPCurve periodic-surface-seam'),'2;1');
+FILE_NAME('Gp076.stp','2026-06-15T00:00:00',(''),(''),'auto-generated','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+/* Cylindrical surface: radius 1, axis along Z */
+#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#11=DIRECTION('',(0.0,0.0,1.0));
+#12=DIRECTION('',(1.0,0.0,0.0));
+#13=AXIS2_PLACEMENT_3D('',#10,#11,#12);
+#20=CYLINDRICAL_SURFACE('',#13,1.0);
+/* 3D edge curve along seam at u=0 (X=1, Y=0): line from (1,0,0) to (1,0,5) */
+#30=CARTESIAN_POINT('',(1.0,0.0,0.0));
+#31=DIRECTION('',(0.0,0.0,1.0));
+#32=VECTOR('',#31,5.0);
+#33=LINE('',#30,#32);
+/* Vertices */
+#40=VERTEX_POINT('',(1.0,0.0,0.0));
+#41=VERTEX_POINT('',(1.0,0.0,5.0));
+/* PCurve 1 at u=0: parametric curve (0,0) to (0,5) */
+#50=CARTESIAN_POINT('',(0.0,0.0));
+#51=DIRECTION('',(0.0,1.0));
+#52=VECTOR('',#51,5.0);
+#53=LINE('',#50,#52);
+#54=PCURVE('',#20,#53);
+#55=SURFACE_CURVE('',#33,(#54),.PCURVE_S1.);
+#56=EDGE_CURVE('',#40,#41,#55,.T.);
+#57=ORIENTED_EDGE('',*,*,#56,.T.);
+/* Closing edge: from (1,0,5) to (1,0,0) along v=5 */
+#60=CARTESIAN_POINT('',(1.0,0.0,5.0));
+#61=DIRECTION('',(0.0,0.0,-1.0));
+#62=VECTOR('',#61,5.0);
+#63=LINE('',#60,#62);
+#64=VERTEX_POINT('',(1.0,0.0,5.0));
+#65=VERTEX_POINT('',(1.0,0.0,0.0));
+#66=CARTESIAN_POINT('',(0.0,5.0));
+#67=DIRECTION('',(0.0,-1.0));
+#68=VECTOR('',#67,5.0);
+#69=LINE('',#66,#68);
+#70=PCURVE('',#20,#69);
+#71=SURFACE_CURVE('',#63,(#70),.PCURVE_S1.);
+#72=EDGE_CURVE('',#64,#65,#71,.T.);
+#73=ORIENTED_EDGE('',*,*,#72,.T.);
+#80=EDGE_LOOP('',(#57,#73));
+#81=FACE_OUTER_BOUND('',(#80),.T.);
+#82=ADVANCED_FACE('',(#81),#20,.T.);
+#9000=PRODUCT_CONTEXT('',#1,'mechanical');
+#9001=PRODUCT('Gp076','Gp076','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
+#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
+#9021=SHELL_BASED_SURFACE_MODEL('sbsm',(#80));
+#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#9010);
+#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+ENDSEC;
+END-ISO-10303-21;

@@ -1,0 +1,83 @@
+ISO-10303-21;
+/* Tsh108 - ShapeUpgrade_ShellSewing.Apply zero-tolerance
+ * Defect: sewing tolerance set to 0.0; Apply should reject or use Confusion
+ * as minimum but uses 0.0 literally, leaving vertex-pair matches to require
+ * exact equality */
+HEADER;
+FILE_DESCRIPTION(('Tsh108 test case','ShellSewing Apply zero-tolerance'),'2;1');
+FILE_NAME('Tsh108.stp','2026-06-15T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+/* Two adjacent faces with near-coincident but non-identical vertices
+   on their shared boundary; sewing at 0.0 tolerance fails to merge them */
+#10=CARTESIAN_POINT('',(0.0,0.0,0.0));#11=VERTEX_POINT('',#10);
+#12=CARTESIAN_POINT('',(1.0,0.0,0.0));#13=VERTEX_POINT('',#12);
+#14=CARTESIAN_POINT('',(1.0,1.0,0.0));#15=VERTEX_POINT('',#14);
+#16=CARTESIAN_POINT('',(0.0,1.0,0.0));#17=VERTEX_POINT('',#16);
+/* Face 2 shares X=1 edge but with slightly perturbed vertices */
+#18=CARTESIAN_POINT('',(1.0000001,0.0,0.0));#19=VERTEX_POINT('',#18);
+#20=CARTESIAN_POINT('',(1.0000001,1.0,0.0));#21=VERTEX_POINT('',#20);
+#22=CARTESIAN_POINT('',(2.0,1.0,0.0));#23=VERTEX_POINT('',#22);
+#24=CARTESIAN_POINT('',(2.0,0.0,0.0));#25=VERTEX_POINT('',#24);
+/* Face 1 edges */
+#30=DIRECTION('',(1.0,0.0,0.0));#31=VECTOR('',#30,1.0);#32=LINE('',#10,#31);
+#33=EDGE_CURVE('',#11,#13,#32,.T.);
+#34=DIRECTION('',(0.0,1.0,0.0));#35=VECTOR('',#35,1.0);#36=LINE('',#12,#35);
+#37=EDGE_CURVE('',#13,#15,#36,.T.);
+#38=DIRECTION('',(-1.0,0.0,0.0));#39=VECTOR('',#38,1.0);#40=LINE('',#14,#39);
+#41=EDGE_CURVE('',#15,#17,#40,.T.);
+#42=DIRECTION('',(0.0,-1.0,0.0));#43=VECTOR('',#42,1.0);#44=LINE('',#16,#43);
+#45=EDGE_CURVE('',#17,#11,#44,.T.);
+/* Face 2 edges - uses perturbed vertices for shared edge */
+#50=DIRECTION('',(1.0,0.0,0.0));#51=VECTOR('',#50,1.0);#52=LINE('',#18,#51);
+#53=EDGE_CURVE('',#19,#25,#52,.T.);
+#54=DIRECTION('',(0.0,1.0,0.0));#55=VECTOR('',#54,1.0);#56=LINE('',#24,#55);
+#57=EDGE_CURVE('',#25,#23,#56,.T.);
+#58=DIRECTION('',(-1.0,0.0,0.0));#59=VECTOR('',#58,1.0);#60=LINE('',#22,#59);
+#61=EDGE_CURVE('',#23,#21,#60,.T.);
+#62=DIRECTION('',(0.0,-1.0,0.0));#63=VECTOR('',#62,1.0);#64=LINE('',#20,#63);
+#65=EDGE_CURVE('',#21,#19,#64,.T.);
+/* Shared edge definition with nominal vertices (used by Face 1) */
+#66=DIRECTION('',(0.0,1.0,0.0));#67=VECTOR('',#66,1.0);#68=LINE('',#12,#67);
+#69=EDGE_CURVE('',#13,#15,#68,.T.);
+/* Face 1 outer loop */
+#70=ORIENTED_EDGE('',*,*,#33,.T.);#71=ORIENTED_EDGE('',*,*,#37,.T.);
+#72=ORIENTED_EDGE('',*,*,#41,.T.);#73=ORIENTED_EDGE('',*,*,#45,.T.);
+#74=EDGE_LOOP('',(#70,#71,#72,#73));
+#75=DIRECTION('',(0.0,0.0,1.0));#76=DIRECTION('',(1.0,0.0,0.0));
+#77=AXIS2_PLACEMENT_3D('',#10,#75,#76);#78=PLANE('',#77);
+#79=FACE_OUTER_BOUND('',#74,.T.);
+#80=ADVANCED_FACE('face1',(#79),#78,.T.);
+/* Face 2 outer loop - vertices perturbed */
+#90=ORIENTED_EDGE('',*,*,#53,.T.);#91=ORIENTED_EDGE('',*,*,#57,.T.);
+#92=ORIENTED_EDGE('',*,*,#61,.T.);#93=ORIENTED_EDGE('',*,*,#65,.T.);
+#94=EDGE_LOOP('',(#90,#91,#92,#93));
+#95=FACE_OUTER_BOUND('',#94,.T.);
+#96=ADVANCED_FACE('face2',(#95),#78,.T.);
+/* OPEN_SHELL with two faces that should sew but can't at zero tolerance */
+#200=OPEN_SHELL('sewing_zero_tol',(#80,#96));
+#210=SHELL_BASED_SURFACE_MODEL('sbsm',(#200));
+#220=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#221=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#222=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#223=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#220,'distance_accuracy_value','');
+#224=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#223))GLOBAL_UNIT_ASSIGNED_CONTEXT((#220,#221,#222))REPRESENTATION_CONTEXT('','3D'));
+#9000=PRODUCT_CONTEXT('',#1,'mechanical');
+#9001=PRODUCT('Tsh108','Tsh108','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
+#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
+#9021=SHELL_BASED_SURFACE_MODEL('sbsm',(#200));
+#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#9010);
+#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+ENDSEC;
+END-ISO-10303-21;

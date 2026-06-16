@@ -1,0 +1,67 @@
+ISO-10303-21;
+/* Gp071 - ShapeAnalysis_Edge.CheckCurve3dWithPCurve scaled-host-surface
+ * Defect: host surface has scale factor in AXIS2_PLACEMENT_3D (non-unit basis);
+ * CheckCurve3dWithPCurve compares 3D positions but pcurve eval doesn't apply the scale */
+HEADER;
+FILE_DESCRIPTION(('Gp071 test case','CheckCurve3dWithPCurve scaled-host-surface'),'2;1');
+FILE_NAME('Gp071.stp','2026-06-15T00:00:00',(''),(''),'auto-generated','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+/* Scaled placement: origin at 0,0,0 but Z-axis scaled by 2.0 (non-unit basis) */
+#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#11=DIRECTION('',(0.0,0.0,2.0));
+#12=DIRECTION('',(1.0,0.0,0.0));
+#13=AXIS2_PLACEMENT_3D('',#10,#11,#12);
+/* Plane surface with scaled placement */
+#20=PLANE('',#13);
+/* 3D curve: line from (0,0,0) to (5,0,0) */
+#30=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#31=DIRECTION('',(1.0,0.0,0.0));
+#32=VECTOR('',#31,5.0);
+#33=LINE('',#30,#32);
+/* Vertices */
+#40=VERTEX_POINT('',(0.0,0.0,0.0));
+#41=VERTEX_POINT('',(5.0,0.0,0.0));
+/* PCurve: parametric 2D line (0,0) to (5,0) - doesn't account for scale */
+#50=CARTESIAN_POINT('',(0.0,0.0));
+#51=DIRECTION('',(1.0,0.0));
+#52=VECTOR('',#51,5.0);
+#53=LINE('',#50,#52);
+#55=PCURVE('',#20,#53);
+#60=SURFACE_CURVE('',#33,(#55),.PCURVE_S1.);
+#70=EDGE_CURVE('',#40,#41,#60,.T.);
+#71=ORIENTED_EDGE('',*,*,#70,.T.);
+/* Closing edge for manifold */
+#80=CARTESIAN_POINT('',(5.0,5.0,0.0));
+#81=VERTEX_POINT('',(5.0,5.0,0.0));
+#82=CARTESIAN_POINT('',(5.0,0.0));
+#83=DIRECTION('',(0.0,1.0));
+#84=VECTOR('',#83,5.0);
+#85=LINE('',#82,#84);
+#86=PCURVE('',#20,#85);
+#87=LINE('',#41,#84);
+#88=SURFACE_CURVE('',#87,(#86),.PCURVE_S1.);
+#89=EDGE_CURVE('',#41,#81,#88,.T.);
+#90=ORIENTED_EDGE('',*,*,#89,.T.);
+#100=EDGE_LOOP('',(#71,#90));
+#101=FACE_OUTER_BOUND('',(#100),.T.);
+#102=ADVANCED_FACE('',(#101),#20,.T.);
+#9000=PRODUCT_CONTEXT('',#1,'mechanical');
+#9001=PRODUCT('Gp071','Gp071','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
+#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
+#9021=SHELL_BASED_SURFACE_MODEL('sbsm',(#100));
+#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#9010);
+#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+ENDSEC;
+END-ISO-10303-21;

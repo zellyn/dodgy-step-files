@@ -1,0 +1,73 @@
+ISO-10303-21;
+/* Gs089 - ShapeAnalysis_Surface.UVFromIso B-spline midspan failure
+ *
+ * Defect: B-spline surface where iso-curve at v=0.5 has a knot exactly at u=0.5.
+ * UVFromIso's bisection algorithm ends up on the wrong side of the knot during
+ * convergence, causing incorrect UV parameter resolution.
+ *
+ * Reproducer: B-spline surface with U knot vector containing 0.5 as interior knot,
+ * and an iso-curve evaluation that triggers bisection across the knot boundary.
+ */
+HEADER;
+FILE_DESCRIPTION(('Gs089 test case','B-spline iso-curve knot bisection failure'),'2;1');
+FILE_NAME('Gs089.stp','2026-06-15T00:00:00',(''),(''),'auto-generated','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+/* B-spline surface: degree 3 x 3, knot multiplicities 0.0(4)-0.5(2)-1.0(4) in U */
+#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#11=CARTESIAN_POINT('',(1.0,0.0,0.5));
+#12=CARTESIAN_POINT('',(2.0,0.0,0.0));
+#13=CARTESIAN_POINT('',(3.0,0.0,0.5));
+#14=CARTESIAN_POINT('',(0.0,1.0,1.0));
+#15=CARTESIAN_POINT('',(1.0,1.0,1.5));
+#16=CARTESIAN_POINT('',(2.0,1.0,1.0));
+#17=CARTESIAN_POINT('',(3.0,1.0,1.5));
+#18=CARTESIAN_POINT('',(0.0,2.0,0.0));
+#19=CARTESIAN_POINT('',(1.0,2.0,0.5));
+#20=CARTESIAN_POINT('',(2.0,2.0,0.0));
+#21=CARTESIAN_POINT('',(3.0,2.0,0.5));
+/* B-spline surface with knot multiplicity at 0.5 */
+#30=B_SPLINE_SURFACE_WITH_KNOTS('',3,3,
+  ((#10,#11,#12,#13),(#14,#15,#16,#17),(#18,#19,#20,#21)),
+  .UNSPECIFIED.,.F.,.F.,.F.,
+  (0.0,0.0,0.0,0.0,0.5,0.5,1.0,1.0,1.0,1.0),
+  (0.0,0.0,0.0,0.0,1.0,1.0,1.0,1.0),
+  $,$);
+/* Axis2 placement at origin */
+#40=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#41=DIRECTION('',(0.0,0.0,1.0));
+#42=DIRECTION('',(1.0,0.0,0.0));
+#43=AXIS2_PLACEMENT_3D('',#40,#41,#42);
+/* Boundary vertices */
+#50=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#51=VERTEX_POINT('',#50);
+#52=CARTESIAN_POINT('',(3.0,0.0,0.5));
+#53=VERTEX_POINT('',#52);
+#54=CARTESIAN_POINT('',(3.0,2.0,0.5));
+#55=VERTEX_POINT('',#54);
+#56=CARTESIAN_POINT('',(0.0,2.0,0.0));
+#57=VERTEX_POINT('',#56);
+/* Edges and loops */
+#60=VERTEX_LOOP('',#51);
+#61=FACE_OUTER_BOUND('',#60,.T.);
+#62=ADVANCED_FACE('',(#61),#30,.T.);
+#63=OPEN_SHELL('',(#62));
+/* Product context and shape representation */
+#9000=PRODUCT_CONTEXT('',#1,'mechanical');
+#9001=PRODUCT('Gs089','Gs089','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
+#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
+#9022=GEOMETRICALLY_BOUNDED_SURFACE_SHAPE_REPRESENTATION('',(#30),#9010);
+#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+ENDSEC;
+END-ISO-10303-21;

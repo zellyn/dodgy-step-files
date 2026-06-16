@@ -1,0 +1,74 @@
+ISO-10303-21;
+/* Tfa102 — ShapeAnalysis_CheckSmallFace.CheckSmallArea aspect-ratio infinite
+ * Face with one dimension at 1000.0 and another at 0.0001.
+ * Aspect-ratio overflow in CheckSmallArea's classification logic.
+ */
+HEADER;
+FILE_DESCRIPTION(('Tfa102 test case','Face with infinite aspect-ratio causes overflow'),'2;1');
+FILE_NAME('Tfa102.stp','2026-06-15T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+/* Plane at origin, XY-oriented */
+#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#11=DIRECTION('',(0.0,0.0,1.0));
+#12=DIRECTION('',(1.0,0.0,0.0));
+#13=AXIS2_PLACEMENT_3D('',#10,#11,#12);
+#14=PLANE('extreme_aspect_plane',#13);
+/* Long thin rectangle: 1000.0 x 0.0001 */
+#20=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#21=VERTEX_POINT('v1',#20);
+#22=CARTESIAN_POINT('',(1000.0,0.0,0.0));
+#23=VERTEX_POINT('v2',#22);
+#24=CARTESIAN_POINT('',(1000.0,0.0001,0.0));
+#25=VERTEX_POINT('v3',#24);
+#26=CARTESIAN_POINT('',(0.0,0.0001,0.0));
+#27=VERTEX_POINT('v4',#26);
+/* Bottom edge: 1000.0 long */
+#30=DIRECTION('',(1.0,0.0,0.0));
+#31=VECTOR('',#30,1.0);
+#32=LINE('bottom',#20,#31);
+#33=EDGE_CURVE('e_bottom',#21,#23,#32,.T.);
+/* Right edge: 0.0001 long */
+#34=DIRECTION('',(0.0,1.0,0.0));
+#35=VECTOR('',#34,1.0);
+#36=LINE('right',#22,#35);
+#37=EDGE_CURVE('e_right',#23,#25,#36,.T.);
+/* Top edge: 1000.0 long (reverse) */
+#38=DIRECTION('',(-1.0,0.0,0.0));
+#39=VECTOR('',#38,1.0);
+#40=LINE('top',#24,#39);
+#41=EDGE_CURVE('e_top',#25,#27,#40,.T.);
+/* Left edge: 0.0001 long (reverse) */
+#42=DIRECTION('',(0.0,-1.0,0.0));
+#43=VECTOR('',#42,1.0);
+#44=LINE('left',#26,#43);
+#45=EDGE_CURVE('e_left',#27,#21,#44,.T.);
+/* Assemble loop */
+#50=ORIENTED_EDGE('oe_bottom',*,*,#33,.T.);
+#51=ORIENTED_EDGE('oe_right',*,*,#37,.T.);
+#52=ORIENTED_EDGE('oe_top',*,*,#41,.T.);
+#53=ORIENTED_EDGE('oe_left',*,*,#45,.T.);
+#54=EDGE_LOOP('extreme_aspect_loop',(#50,#51,#52,#53));
+#55=FACE_OUTER_BOUND('',#54,.T.);
+#60=ADVANCED_FACE('extreme_aspect_face',(#55),#14,.T.);
+/* Product chain */
+#9000=PRODUCT_CONTEXT('',#1,'mechanical');
+#9001=PRODUCT('Tfa102','Tfa102','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
+#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
+#9021=SHELL_BASED_SURFACE_MODEL('sbsm',(#9030));
+#9030=OPEN_SHELL('aspect_shell',(#60));
+#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#9010);
+#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+ENDSEC;
+END-ISO-10303-21;

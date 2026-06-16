@@ -1,0 +1,68 @@
+ISO-10303-21;
+/* Gp069 - ShapeAnalysis_Edge.CheckOverlapping common-sub-pattern miss
+ * Defect: two edges sharing small segment in the middle (not at endpoints);
+ * CheckOverlapping looks for endpoint-overlap or full-curve overlap, missing interior sub-pattern. */
+HEADER;
+FILE_DESCRIPTION(('Gp069 test case','CheckOverlapping common-sub-pattern miss'),'2;1');
+FILE_NAME('Gp069.stp','2026-06-15T00:00:00',(''),(''),'auto-generated','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#11=DIRECTION('',(0.0,0.0,1.0));
+#12=DIRECTION('',(1.0,0.0,0.0));
+#13=AXIS2_PLACEMENT_3D('',#10,#11,#12);
+/* Plane surface */
+#20=PLANE('',#13);
+/* Edge 1: line from (0,0,0) to (3,0,0) */
+#30=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#31=DIRECTION('',(1.0,0.0,0.0));
+#32=VECTOR('',#31,3.0);
+#33=LINE('',#30,#32);
+#40=VERTEX_POINT('',(0.0,0.0,0.0));
+#41=VERTEX_POINT('',(3.0,0.0,0.0));
+/* PCurve for edge 1: linear (0,0) to (3,0) */
+#50=CARTESIAN_POINT('',(0.0,0.0));
+#51=CARTESIAN_POINT('',(3.0,0.0));
+#52=LINE('',(#50),(DIRECTION('',(1.0,0.0))));
+#55=PCURVE('',#20,#52);
+#60=SURFACE_CURVE('',#33,(#55),.PCURVE_S1.);
+#70=EDGE_CURVE('',#40,#41,#60,.T.);
+#71=ORIENTED_EDGE('',*,*,#70,.T.);
+/* Edge 2: line from (1,0,0) to (2,0,0) — overlaps edge 1 in [1,2] range */
+#80=CARTESIAN_POINT('',(1.0,0.0,0.0));
+#81=DIRECTION('',(1.0,0.0,0.0));
+#82=VECTOR('',#81,1.0);
+#83=LINE('',#80,#82);
+#90=VERTEX_POINT('',(1.0,0.0,0.0));
+#91=VERTEX_POINT('',(2.0,0.0,0.0));
+/* PCurve for edge 2: linear (1,0) to (2,0) */
+#100=CARTESIAN_POINT('',(1.0,0.0));
+#101=CARTESIAN_POINT('',(2.0,0.0));
+#102=LINE('',(#100),(DIRECTION('',(1.0,0.0))));
+#105=PCURVE('',#20,#102);
+#110=SURFACE_CURVE('',#83,(#105),.PCURVE_S1.);
+#120=EDGE_CURVE('',#90,#91,#110,.T.);
+#121=ORIENTED_EDGE('',*,*,#120,.T.);
+/* Edge loop with both edges */
+#130=EDGE_LOOP('',(#71,#121));
+#131=FACE_OUTER_BOUND('',(#130),.T.);
+#132=ADVANCED_FACE('',(#131),#20,.T.);
+#9000=PRODUCT_CONTEXT('',#1,'mechanical');
+#9001=PRODUCT('Gp069','Gp069','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
+#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
+#9021=SHELL_BASED_SURFACE_MODEL('sbsm',(#130));
+#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#9010);
+#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+ENDSEC;
+END-ISO-10303-21;

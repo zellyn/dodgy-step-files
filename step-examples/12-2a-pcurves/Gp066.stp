@@ -1,0 +1,55 @@
+ISO-10303-21;
+/* Gp066 - ShapeFix_Edge.FixSameParameter selection-bias tolerance comparison
+ * Defect: FixSameParameter chooses first candidate tolerance exceeding Precision::Confusion
+ * instead of picking the minimum feasible tolerance. Creates edge with suboptimal fit. */
+HEADER;
+FILE_DESCRIPTION(('Gp066 test case','FixSameParameter tolerance selection bias'),'2;1');
+FILE_NAME('Gp066.stp','2026-06-15T00:00:00',(''),(''),'auto-generated','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#11=DIRECTION('',(0.0,0.0,1.0));
+#12=DIRECTION('',(1.0,0.0,0.0));
+#13=AXIS2_PLACEMENT_3D('',#10,#11,#12);
+/* Plane surface */
+#20=PLANE('',#13);
+/* 3D curve: BSpline with multiple knots, range [0,3] */
+#30=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#31=CARTESIAN_POINT('',(1.0,1.0,0.0));
+#32=CARTESIAN_POINT('',(2.0,-1.0,0.0));
+#33=CARTESIAN_POINT('',(3.0,0.0,0.0));
+#34=B_SPLINE_CURVE_WITH_KNOTS('',3,(#30,#31,#32,#33),.UNSPECIFIED.,.F.,.F.,(4,4),(0.0,3.0),.UNSPECIFIED.);
+/* Vertices at extremes */
+#40=VERTEX_POINT('',(0.0,0.0,0.0));
+#41=VERTEX_POINT('',(3.0,0.0,0.0));
+/* PCurve: linear approximation (0,0) to (3,0) */
+#50=CARTESIAN_POINT('',(0.0,0.0));
+#51=CARTESIAN_POINT('',(3.0,0.0));
+#52=LINE('',(#50),(DIRECTION('',(1.0,0.0))));
+#55=PCURVE('',#20,#52);
+/* Edge with pcurve mismatch: 3D curve deviates from pcurve projection */
+#60=SURFACE_CURVE('',#34,(#55),.PCURVE_S1.);
+#70=EDGE_CURVE('',#40,#41,#60,.T.);
+#71=ORIENTED_EDGE('',*,*,#70,.T.);
+#72=EDGE_LOOP('',(#71));
+#73=FACE_OUTER_BOUND('',#72,.T.);
+#74=ADVANCED_FACE('',(#73),#20,.T.);
+#9000=PRODUCT_CONTEXT('',#1,'mechanical');
+#9001=PRODUCT('Gp066','Gp066','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
+#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
+#9021=SHELL_BASED_SURFACE_MODEL('sbsm',(#72));
+#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#9010);
+#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+ENDSEC;
+END-ISO-10303-21;

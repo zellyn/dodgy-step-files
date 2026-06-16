@@ -1,0 +1,68 @@
+/* N076 - ShapeAnalysis_ShapeTolerance.AddTolerance cumulative-mode
+ * Defect: AddTolerance with mode=true (cumulative); the cumulative aggregation
+ * uses += but doesn't reset between calls, accumulating across passes.
+ * When AddTolerance is called multiple times, the internal accumulator state
+ * persists, causing tolerances from previous calls to leak into the current
+ * computation. Expected behavior: each AddTolerance call should independently
+ * aggregate tolerances for the shape; observed behavior: tolerances accumulate
+ * across multiple invocations. A shape processed twice shows 2x the expected
+ * tolerance delta.
+ */
+ISO-10303-21;
+HEADER;
+FILE_DESCRIPTION(('N076 AddTolerance cumulative-mode state leakage'),'2;1');
+FILE_NAME('N076.stp','2026-06-15T00:00:00',(''),(''),
+  'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
+  'automotive_design',2009,#1);
+/* Geometry with multiple edges to trigger cumulative aggregation */
+#10=CARTESIAN_POINT('origin',(0.0,0.0,0.0));
+#11=DIRECTION('z',(0.0,0.0,1.0));
+#12=DIRECTION('x',(1.0,0.0,0.0));
+#13=AXIS2_PLACEMENT_3D('plc',#10,#11,#12);
+/* Three edges sharing vertices to create a wire path */
+#20=CARTESIAN_POINT('p0',(0.0,0.0,0.0));
+#21=CARTESIAN_POINT('p1',(5.0,0.0,0.0));
+#22=CARTESIAN_POINT('p2',(5.0,5.0,0.0));
+#23=CARTESIAN_POINT('p3',(0.0,5.0,0.0));
+/* Vertices */
+#30=VERTEX_POINT('v0',#20);
+#31=VERTEX_POINT('v1',#21);
+#32=VERTEX_POINT('v2',#22);
+#33=VERTEX_POINT('v3',#23);
+/* Edges */
+#40=DIRECTION('e1_dir',(1.0,0.0,0.0));
+#41=VECTOR('e1_vec',#40,5.0);
+#42=LINE('e1_curve',#20,#41);
+#43=EDGE_CURVE('edge1',#30,#31,#42,.T.);
+#50=DIRECTION('e2_dir',(0.0,1.0,0.0));
+#51=VECTOR('e2_vec',#50,5.0);
+#52=LINE('e2_curve',#21,#51);
+#53=EDGE_CURVE('edge2',#31,#32,#52,.T.);
+#60=DIRECTION('e3_dir',(-1.0,0.0,0.0));
+#61=VECTOR('e3_vec',#60,5.0);
+#62=LINE('e3_curve',#22,#61);
+#63=EDGE_CURVE('edge3',#32,#33,#62,.T.);
+/* Context with 1e-6 base tolerance for edge-level operations */
+#70=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#71=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#72=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#73=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-6),#70,
+  'distance_accuracy_value','base_tolerance');
+#74=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#73))
+  GLOBAL_UNIT_ASSIGNED_CONTEXT((#70,#71,#72))
+  REPRESENTATION_CONTEXT('ctx','3D'));
+/* Edge-level tolerance declarations for triggering AddTolerance calls */
+#75=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(5.0E-6),#70,
+  'distance_accuracy_value','edge1_tol');
+#76=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(8.0E-6),#70,
+  'distance_accuracy_value','edge2_tol');
+#77=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(3.0E-6),#70,
+  'distance_accuracy_value','edge3_tol');
+ENDSEC;
+END-ISO-10303-21;

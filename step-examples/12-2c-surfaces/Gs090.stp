@@ -1,0 +1,53 @@
+ISO-10303-21;
+/* Gs090 - ShapeUpgrade_ConvertSurfaceToBezierBasis thin-patch elimination
+ *
+ * Defect: Bezier conversion produces a near-zero-area patch with width 1e-9.
+ * Should be eliminated but tolerance test uses absolute area instead of normalized area.
+ * Reproducer: Bezier surface with control points nearly collinear, creating
+ * geometrically degenerate patch that passes threshold due to absolute comparison.
+ */
+HEADER;
+FILE_DESCRIPTION(('Gs090 test case','Bezier thin-patch elimination threshold'),'2;1');
+FILE_NAME('Gs090.stp','2026-06-15T00:00:00',(''),(''),'auto-generated','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+/* Bezier surface with near-degenerate control point grid */
+/* Control points in 4x2 array: top row nearly collinear (thin patch) */
+#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#11=CARTESIAN_POINT('',(1.0,0.0,1.0E-9));
+#12=CARTESIAN_POINT('',(2.0,0.0,2.0E-9));
+#13=CARTESIAN_POINT('',(3.0,0.0,3.0E-9));
+#14=CARTESIAN_POINT('',(0.0,1.0,0.0));
+#15=CARTESIAN_POINT('',(1.0,1.0,0.5));
+#16=CARTESIAN_POINT('',(2.0,1.0,0.5));
+#17=CARTESIAN_POINT('',(3.0,1.0,0.0));
+/* Bezier surface degree 3x1 */
+#20=BEZIER_SURFACE('',3,1,
+  ((#10,#11,#12,#13),(#14,#15,#16,#17)),
+  .UNSPECIFIED.,.F.,.F.);
+/* Boundary vertex */
+#30=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#31=VERTEX_POINT('',#30);
+#32=VERTEX_LOOP('',#31);
+#33=FACE_OUTER_BOUND('',#32,.T.);
+#34=ADVANCED_FACE('',(#33),#20,.T.);
+#35=OPEN_SHELL('',(#34));
+/* Product context and shape representation */
+#9000=PRODUCT_CONTEXT('',#1,'mechanical');
+#9001=PRODUCT('Gs090','Gs090','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
+#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
+#9022=GEOMETRICALLY_BOUNDED_SURFACE_SHAPE_REPRESENTATION('',(#20),#9010);
+#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+ENDSEC;
+END-ISO-10303-21;

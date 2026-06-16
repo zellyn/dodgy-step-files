@@ -1,0 +1,78 @@
+ISO-10303-21;
+/* Tfa103 — ShapeFix_Face.FixPeriodicDegenerated apex-at-V-min
+ * Surface-of-revolution with apex at v_min instead of v_max.
+ * The bug: degenerate-edge insertion logic only handles v_max apex.
+ */
+HEADER;
+FILE_DESCRIPTION(('Tfa103 test case','Cone with apex at V-min boundary'),'2;1');
+FILE_NAME('Tfa103.stp','2026-06-15T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+/* Cone: apex at origin (V=0), semi-angle 30 deg, axis along +Z */
+#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#11=DIRECTION('',(0.0,0.0,1.0));
+#12=DIRECTION('',(1.0,0.0,0.0));
+#13=AXIS2_PLACEMENT_3D('',#10,#11,#12);
+#14=CONICAL_SURFACE('apex_at_vmin_cone',#13,0.0,0.5235987755982988);
+/* Wire encircling cone at V=5.0 (far from apex at V=0) */
+#20=CARTESIAN_POINT('',(2.887,0.0,5.0));
+#21=VERTEX_POINT('v1',#20);
+#22=CARTESIAN_POINT('',(2.5,1.44,5.0));
+#23=VERTEX_POINT('v2',#22);
+#24=CARTESIAN_POINT('',(0.0,2.887,5.0));
+#25=VERTEX_POINT('v3',#24);
+#26=CARTESIAN_POINT('',(-2.5,1.44,5.0));
+#27=VERTEX_POINT('v4',#26);
+#28=CARTESIAN_POINT('',(-2.887,0.0,5.0));
+#29=VERTEX_POINT('v5',#28);
+/* Edges forming closed loop on cone surface at V=5 */
+#30=DIRECTION('',(0.0,1.0,0.0));
+#31=VECTOR('',#30,1.0);
+#32=LINE('e1',#20,#31);
+#33=EDGE_CURVE('edge1',#21,#23,#32,.T.);
+#34=DIRECTION('',(-0.866,0.5,0.0));
+#35=VECTOR('',#34,1.0);
+#36=LINE('e2',#22,#35);
+#37=EDGE_CURVE('edge2',#23,#25,#36,.T.);
+#38=DIRECTION('',(-0.866,-0.5,0.0));
+#39=VECTOR('',#38,1.0);
+#40=LINE('e3',#24,#39);
+#41=EDGE_CURVE('edge3',#25,#27,#40,.T.);
+#42=DIRECTION('',(0.0,-1.0,0.0));
+#43=VECTOR('',#42,1.0);
+#44=LINE('e4',#26,#43);
+#45=EDGE_CURVE('edge4',#27,#29,#44,.T.);
+#46=DIRECTION('',(0.866,-0.5,0.0));
+#47=VECTOR('',#46,1.0);
+#48=LINE('e5',#28,#47);
+#49=EDGE_CURVE('edge5',#29,#21,#48,.T.);
+/* Assemble loop */
+#50=ORIENTED_EDGE('oe1',*,*,#33,.T.);
+#51=ORIENTED_EDGE('oe2',*,*,#37,.T.);
+#52=ORIENTED_EDGE('oe3',*,*,#41,.T.);
+#53=ORIENTED_EDGE('oe4',*,*,#45,.T.);
+#54=ORIENTED_EDGE('oe5',*,*,#49,.T.);
+#55=EDGE_LOOP('cone_loop_at_vmax',(#50,#51,#52,#53,#54));
+#56=FACE_OUTER_BOUND('',#55,.T.);
+#60=ADVANCED_FACE('cone_apex_vmin_face',(#56),#14,.T.);
+/* Product chain */
+#9000=PRODUCT_CONTEXT('',#1,'mechanical');
+#9001=PRODUCT('Tfa103','Tfa103','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
+#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
+#9021=SHELL_BASED_SURFACE_MODEL('sbsm',(#9030));
+#9030=OPEN_SHELL('cone_shell',(#60));
+#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#9010);
+#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+ENDSEC;
+END-ISO-10303-21;

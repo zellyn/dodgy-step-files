@@ -1,0 +1,55 @@
+ISO-10303-21;
+/* Gs091 - ShapeAnalysis_Surface.IsUClosed B-spline rational weights
+ *
+ * Defect: B-spline surface with first U pole at weight 1.0 and last at weight 2.0.
+ * Geometric distance between them is small but weighted projection differs.
+ * IsUClosed misses the closure due to not accounting for rational weight variance.
+ * Reproducer: Rational B-spline surface with asymmetric weights at closure boundary.
+ */
+HEADER;
+FILE_DESCRIPTION(('Gs091 test case','B-spline rational weights U-closure detection'),'2;1');
+FILE_NAME('Gs091.stp','2026-06-15T00:00:00',(''),(''),'auto-generated','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+/* Rational B-spline surface with U closure */
+/* Control points: 3x2 grid, asymmetric weights at U closure */
+#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#11=CARTESIAN_POINT('',(1.0,0.0,0.5));
+#12=CARTESIAN_POINT('',(0.0,2.0,0.0));
+#13=CARTESIAN_POINT('',(1.0,2.0,0.5));
+#14=CARTESIAN_POINT('',(0.0,1.0,1.0));
+#15=CARTESIAN_POINT('',(1.0,1.0,1.5));
+/* Weight array: [1.0, 1.0, 1.0, 1.0, 2.0, 2.0] - asymmetric at closure */
+#20=B_SPLINE_SURFACE_WITH_KNOTS('',2,1,
+  ((#10,#11,#12),(#13,#14,#15)),
+  .UNSPECIFIED.,.T.,.F.,.F.,
+  (0.0,0.0,0.0,1.0,1.0,1.0),
+  (0.0,0.0,0.0,1.0,1.0,1.0),
+  $,
+  ((1.0,1.0,1.0),(1.0,2.0,2.0)));
+/* Boundary vertex */
+#30=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#31=VERTEX_POINT('',#30);
+#32=VERTEX_LOOP('',#31);
+#33=FACE_OUTER_BOUND('',#32,.T.);
+#34=ADVANCED_FACE('',(#33),#20,.T.);
+#35=OPEN_SHELL('',(#34));
+/* Product context and shape representation */
+#9000=PRODUCT_CONTEXT('',#1,'mechanical');
+#9001=PRODUCT('Gs091','Gs091','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
+#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
+#9022=GEOMETRICALLY_BOUNDED_SURFACE_SHAPE_REPRESENTATION('',(#20),#9010);
+#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+ENDSEC;
+END-ISO-10303-21;

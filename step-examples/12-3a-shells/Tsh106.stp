@@ -1,0 +1,78 @@
+ISO-10303-21;
+/* Tsh106 - ShapeUpgrade_RemoveInternalWires shell-level skip
+ * Defect: shell-level RemoveInternalWires is called but it doesn't
+ * propagate to face-level interior wires */
+HEADER;
+FILE_DESCRIPTION(('Tsh106 test case','RemoveInternalWires shell-level skip'),'2;1');
+FILE_NAME('Tsh106.stp','2026-06-15T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+/* Outer square face with inner square hole */
+#10=CARTESIAN_POINT('',(0.0,0.0,0.0));#11=VERTEX_POINT('',#10);
+#12=CARTESIAN_POINT('',(4.0,0.0,0.0));#13=VERTEX_POINT('',#12);
+#14=CARTESIAN_POINT('',(4.0,4.0,0.0));#15=VERTEX_POINT('',#14);
+#16=CARTESIAN_POINT('',(0.0,4.0,0.0));#17=VERTEX_POINT('',#16);
+/* Hole vertices */
+#20=CARTESIAN_POINT('',(1.0,1.0,0.0));#21=VERTEX_POINT('',#20);
+#22=CARTESIAN_POINT('',(3.0,1.0,0.0));#23=VERTEX_POINT('',#22);
+#24=CARTESIAN_POINT('',(3.0,3.0,0.0));#25=VERTEX_POINT('',#24);
+#26=CARTESIAN_POINT('',(1.0,3.0,0.0));#27=VERTEX_POINT('',#26);
+/* Outer edges */
+#30=DIRECTION('',(1.0,0.0,0.0));#31=VECTOR('',#30,4.0);#32=LINE('',#10,#31);
+#33=EDGE_CURVE('',#11,#13,#32,.T.);
+#34=DIRECTION('',(0.0,1.0,0.0));#35=VECTOR('',#34,4.0);#36=LINE('',#12,#35);
+#37=EDGE_CURVE('',#13,#15,#36,.T.);
+#38=DIRECTION('',(-1.0,0.0,0.0));#39=VECTOR('',#38,4.0);#40=LINE('',#14,#39);
+#41=EDGE_CURVE('',#15,#17,#40,.T.);
+#42=DIRECTION('',(0.0,-1.0,0.0));#43=VECTOR('',#42,4.0);#44=LINE('',#16,#43);
+#45=EDGE_CURVE('',#17,#11,#44,.T.);
+/* Inner hole edges */
+#50=DIRECTION('',(1.0,0.0,0.0));#51=VECTOR('',#50,2.0);#52=LINE('',#20,#51);
+#53=EDGE_CURVE('',#21,#23,#52,.T.);
+#54=DIRECTION('',(0.0,1.0,0.0));#55=VECTOR('',#54,2.0);#56=LINE('',#22,#55);
+#57=EDGE_CURVE('',#23,#25,#56,.T.);
+#58=DIRECTION('',(-1.0,0.0,0.0));#59=VECTOR('',#58,2.0);#60=LINE('',#24,#59);
+#61=EDGE_CURVE('',#25,#27,#60,.T.);
+#62=DIRECTION('',(0.0,-1.0,0.0));#63=VECTOR('',#62,2.0);#64=LINE('',#26,#63);
+#65=EDGE_CURVE('',#27,#21,#64,.T.);
+/* Outer loop */
+#70=ORIENTED_EDGE('',*,*,#33,.T.);#71=ORIENTED_EDGE('',*,*,#37,.T.);
+#72=ORIENTED_EDGE('',*,*,#41,.T.);#73=ORIENTED_EDGE('',*,*,#45,.T.);
+#74=EDGE_LOOP('',(#70,#71,#72,#73));
+/* Inner loop (hole) */
+#80=ORIENTED_EDGE('',*,*,#53,.F.);#81=ORIENTED_EDGE('',*,*,#57,.F.);
+#82=ORIENTED_EDGE('',*,*,#61,.F.);#83=ORIENTED_EDGE('',*,*,#65,.F.);
+#84=EDGE_LOOP('',(#80,#81,#82,#83));
+#85=FACE_INNER_BOUND('',#84,.T.);
+/* Face with outer and inner bounds */
+#90=DIRECTION('',(0.0,0.0,1.0));#91=DIRECTION('',(1.0,0.0,0.0));
+#92=AXIS2_PLACEMENT_3D('',#10,#90,#91);#93=PLANE('',#92);
+#100=FACE_OUTER_BOUND('',#74,.T.);
+#101=ADVANCED_FACE('face_with_hole',(#100,#85),#93,.T.);
+/* OPEN_SHELL with single face; RemoveInternalWires should process the hole */
+#200=OPEN_SHELL('shell_with_interior_wire',(#101));
+#210=SHELL_BASED_SURFACE_MODEL('sbsm',(#200));
+#220=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#221=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#222=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#223=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#220,'distance_accuracy_value','');
+#224=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#223))GLOBAL_UNIT_ASSIGNED_CONTEXT((#220,#221,#222))REPRESENTATION_CONTEXT('','3D'));
+#9000=PRODUCT_CONTEXT('',#1,'mechanical');
+#9001=PRODUCT('Tsh106','Tsh106','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
+#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
+#9021=SHELL_BASED_SURFACE_MODEL('sbsm',(#200));
+#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#9010);
+#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+ENDSEC;
+END-ISO-10303-21;

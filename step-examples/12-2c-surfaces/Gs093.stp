@@ -1,0 +1,61 @@
+ISO-10303-21;
+/* Gs093 - ShapeUpgrade_SplitSurface BSpline irregular knots
+ *
+ * Defect: Surface with knot multiplicities (3,1,3) on 4 control points.
+ * SplitSurface's interior split logic assumes uniform multiplicities and
+ * over-subdivides, creating invalid knot structure or redundant patches.
+ * Reproducer: B-spline with irregular interior knot multiplicity.
+ */
+HEADER;
+FILE_DESCRIPTION(('Gs093 test case','B-spline irregular knot multiplicities'),'2;1');
+FILE_NAME('Gs093.stp','2026-06-15T00:00:00',(''),(''),'auto-generated','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+/* B-spline surface with irregular knot multiplicities */
+/* U knots: [0,0,0,0.5,1,1,1] - interior multiplicity 1 (regular) */
+/* V knots: [0,0,0,0.3,0.3,0.3,1,1,1] - interior multiplicities (3,) irregular */
+#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#11=CARTESIAN_POINT('',(1.0,0.0,0.5));
+#12=CARTESIAN_POINT('',(2.0,0.0,0.0));
+#13=CARTESIAN_POINT('',(3.0,0.0,0.5));
+#14=CARTESIAN_POINT('',(0.0,1.0,1.0));
+#15=CARTESIAN_POINT('',(1.0,1.0,1.5));
+#16=CARTESIAN_POINT('',(2.0,1.0,1.0));
+#17=CARTESIAN_POINT('',(3.0,1.0,1.5));
+#18=CARTESIAN_POINT('',(0.0,2.0,0.5));
+#19=CARTESIAN_POINT('',(1.0,2.0,1.0));
+#20=CARTESIAN_POINT('',(2.0,2.0,0.5));
+#21=CARTESIAN_POINT('',(3.0,2.0,1.0));
+/* B-spline surface degree 2x2 with irregular V multiplicities */
+#30=B_SPLINE_SURFACE_WITH_KNOTS('',2,2,
+  ((#10,#11,#12,#13),(#14,#15,#16,#17),(#18,#19,#20,#21)),
+  .UNSPECIFIED.,.F.,.F.,.F.,
+  (0.0,0.0,0.0,0.5,1.0,1.0,1.0),
+  (0.0,0.0,0.0,0.3,0.3,0.3,1.0,1.0,1.0),
+  $,$);
+/* Boundary vertex */
+#40=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#41=VERTEX_POINT('',#40);
+#42=VERTEX_LOOP('',#41);
+#43=FACE_OUTER_BOUND('',#42,.T.);
+#44=ADVANCED_FACE('',(#43),#30,.T.);
+#45=OPEN_SHELL('',(#44));
+/* Product context and shape representation */
+#9000=PRODUCT_CONTEXT('',#1,'mechanical');
+#9001=PRODUCT('Gs093','Gs093','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
+#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
+#9022=GEOMETRICALLY_BOUNDED_SURFACE_SHAPE_REPRESENTATION('',(#30),#9010);
+#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+ENDSEC;
+END-ISO-10303-21;

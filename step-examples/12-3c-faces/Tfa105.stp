@@ -1,0 +1,105 @@
+ISO-10303-21;
+/* Tfa105 — ShapeFix_Face.FixSmallAreaWire seam-aware
+ * Face whose small inner wire crosses the host surface seam.
+ * The bug: FixSmallAreaWire's area calculation doesn't account for seam wrapping.
+ */
+HEADER;
+FILE_DESCRIPTION(('Tfa105 test case','Small wire crossing periodic surface seam'),'2;1');
+FILE_NAME('Tfa105.stp','2026-06-15T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+/* Cylinder: U-periodic (seam at U=0/2PI), base radius 5, axis Z */
+#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#11=DIRECTION('',(0.0,0.0,1.0));
+#12=DIRECTION('',(1.0,0.0,0.0));
+#13=AXIS2_PLACEMENT_3D('',#10,#11,#12);
+#14=CYLINDRICAL_SURFACE('periodic_cyl',#13,5.0);
+/* Outer wire: complete loop on cylinder at z=0 to z=5 */
+#20=CARTESIAN_POINT('',(5.0,0.0,0.0));
+#21=VERTEX_POINT('outer_v1',#20);
+#22=CARTESIAN_POINT('',(5.0,0.0,5.0));
+#23=VERTEX_POINT('outer_v2',#22);
+#24=CARTESIAN_POINT('',(-5.0,0.0,5.0));
+#25=VERTEX_POINT('outer_v3',#24);
+#26=CARTESIAN_POINT('',(-5.0,0.0,0.0));
+#27=VERTEX_POINT('outer_v4',#26);
+/* Edges for outer wire */
+#30=DIRECTION('',(0.0,0.0,1.0));
+#31=VECTOR('',#30,1.0);
+#32=LINE('outer_e1',#20,#31);
+#33=EDGE_CURVE('outer_edge_1',#21,#23,#32,.T.);
+#34=DIRECTION('',(-1.0,0.0,0.0));
+#35=VECTOR('',#34,1.0);
+#36=LINE('outer_e2',#22,#35);
+#37=EDGE_CURVE('outer_edge_2',#23,#25,#36,.T.);
+#38=DIRECTION('',(0.0,0.0,-1.0));
+#39=VECTOR('',#38,1.0);
+#40=LINE('outer_e3',#24,#39);
+#41=EDGE_CURVE('outer_edge_3',#25,#27,#40,.T.);
+#42=DIRECTION('',(1.0,0.0,0.0));
+#43=VECTOR('',#42,1.0);
+#44=LINE('outer_e4',#26,#43);
+#45=EDGE_CURVE('outer_edge_4',#27,#21,#44,.T.);
+/* Outer loop */
+#50=ORIENTED_EDGE('outer_oe1',*,*,#33,.T.);
+#51=ORIENTED_EDGE('outer_oe2',*,*,#37,.T.);
+#52=ORIENTED_EDGE('outer_oe3',*,*,#41,.T.);
+#53=ORIENTED_EDGE('outer_oe4',*,*,#45,.T.);
+#54=EDGE_LOOP('outer_loop',(#50,#51,#52,#53));
+#55=FACE_OUTER_BOUND('',#54,.T.);
+/* Small inner wire crossing seam: z=2, U wraps 2PI boundary */
+#60=CARTESIAN_POINT('',(5.0,0.0,2.0));
+#61=VERTEX_POINT('inner_v1',#60);
+#62=CARTESIAN_POINT('',(4.99,0.1,2.0));
+#63=VERTEX_POINT('inner_v2',#62);
+#64=CARTESIAN_POINT('',(5.0,0.0,2.0));
+#65=VERTEX_POINT('inner_v3',#64);
+#66=CARTESIAN_POINT('',(5.01,-0.1,2.0));
+#67=VERTEX_POINT('inner_v4',#66);
+/* Edges for seam-crossing inner wire (tiny, area near zero before seam unwrap) */
+#70=DIRECTION('',(0.0,1.0,0.0));
+#71=VECTOR('',#70,1.0);
+#72=LINE('inner_e1',#60,#71);
+#73=EDGE_CURVE('inner_edge_1',#61,#63,#72,.T.);
+#74=DIRECTION('',(1.0,0.0,0.0));
+#75=VECTOR('',#74,1.0);
+#76=LINE('inner_e2',#62,#75);
+#77=EDGE_CURVE('inner_edge_2',#63,#65,#76,.T.);
+#78=DIRECTION('',(0.0,-1.0,0.0));
+#79=VECTOR('',#78,1.0);
+#80=LINE('inner_e3',#64,#79);
+#81=EDGE_CURVE('inner_edge_3',#65,#67,#80,.T.);
+#82=DIRECTION('',(-1.0,0.0,0.0));
+#83=VECTOR('',#82,1.0);
+#84=LINE('inner_e4',#66,#83);
+#85=EDGE_CURVE('inner_edge_4',#67,#61,#84,.T.);
+/* Inner loop */
+#86=ORIENTED_EDGE('inner_oe1',*,*,#73,.T.);
+#87=ORIENTED_EDGE('inner_oe2',*,*,#77,.T.);
+#88=ORIENTED_EDGE('inner_oe3',*,*,#81,.T.);
+#89=ORIENTED_EDGE('inner_oe4',*,*,#85,.T.);
+#90=EDGE_LOOP('seam_crossing_loop',(#86,#87,#88,#89));
+#91=FACE_INNER_BOUND('seam_crossing_bound',#90,.T.);
+/* Create face with both outer and small inner wire */
+#100=ADVANCED_FACE('seam_crossing_face',(#55,#91),#14,.T.);
+/* Product chain */
+#9000=PRODUCT_CONTEXT('',#1,'mechanical');
+#9001=PRODUCT('Tfa105','Tfa105','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
+#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
+#9021=SHELL_BASED_SURFACE_MODEL('sbsm',(#9030));
+#9030=OPEN_SHELL('seam_shell',(#100));
+#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#9010);
+#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+ENDSEC;
+END-ISO-10303-21;
