@@ -1,0 +1,52 @@
+ISO-10303-21;
+HEADER;
+FILE_DESCRIPTION(('Gn049: ShapeAnalysis_Curve.IsClosed parameter-infinite B-spline curve with infinite knot sentinel'),
+  '2',
+  2026,
+  6,
+  15,
+  0,
+  '',
+  '',
+  '');
+FILE_NAME('Gn049.stp','',(''),(''),'',' ','');
+FILE_SCHEMA(('CONFIG_CONTROL_DESIGN'));
+ENDSEC;
+DATA;
+#1=MECHANICAL_DESIGN_GEOMETRIC_PRESENTATION_REPRESENTATION('',(#9022),#9010);
+/* B-spline curve where one parameter (U_MAX) is intentionally set to infinity.
+   IsClosed should reject this at parameter bounds check, but current code checks
+   closure first (evaluating at infinite parameter), allowing NaN comparison. */
+#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#11=CARTESIAN_POINT('',(2.0,1.0,0.0));
+#12=CARTESIAN_POINT('',(4.0,2.0,0.0));
+#13=CARTESIAN_POINT('',(6.0,1.0,0.0));
+#14=CARTESIAN_POINT('',(8.0,0.0,0.0));
+/* Knot vector with sentinel infinity value at end; degree 2, 5 poles => 8 knot positions.
+   Multiplicities (3,1,1,3) sum to 8. One knot value is infinity (parameter-domain sentinel). */
+#100=B_SPLINE_CURVE_WITH_KNOTS('Gn049_infinite_param',
+  2,
+  (#10,#11,#12,#13,#14),
+  .UNSPECIFIED.,
+  .T.,
+  .F.,
+  (3,1,1,3),
+  (0.0,0.0,0.0,0.5,1.0,1.0,1.0,1.7976931348623157E+308),
+  .UNSPECIFIED.);
+#101=CURVE_3D(#100);
+#102=REPRESENTATION_ITEM('',#101);
+#9000=PRODUCT_CONTEXT('',#1,'mechanical');
+#9001=PRODUCT('Gn049','Gn049','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
+#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
+#9022=GEOMETRICALLY_BOUNDED_WIREFRAME_SHAPE_REPRESENTATION('',(#102),#9010);
+#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+ENDSEC;
+END-ISO-10303-21;

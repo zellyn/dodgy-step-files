@@ -1,0 +1,62 @@
+ISO-10303-21;
+/* Gs083 - ShapeUpgrade_ConvertSurfaceToBezierBasis quasi-uniform vs non-uniform mismatch
+ *
+ * Defect: surface declared form='quasi_uniform_knots' but knots are non-uniform;
+ * converter follows form tag and produces incorrect Bezier patches.
+ *
+ * Reproducer: B_SPLINE_SURFACE_WITH_KNOTS with mismatched form tag. */
+HEADER;
+FILE_DESCRIPTION(('Gs083 test case','Quasi-uniform form tag knot mismatch Bezier conversion'),'2;1');
+FILE_NAME('Gs083.stp','2026-06-15T00:00:00',('Zellyn Hunter'),'','auto-generated','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#11=DIRECTION('',(0.0,0.0,1.0));
+#12=DIRECTION('',(1.0,0.0,0.0));
+#13=AXIS2_PLACEMENT_3D('',#10,#11,#12);
+/* Control points: 4x3 grid */
+#20=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#21=CARTESIAN_POINT('',(1.0,0.0,0.5));
+#22=CARTESIAN_POINT('',(2.0,0.0,0.3));
+#23=CARTESIAN_POINT('',(3.0,0.0,0.0));
+#24=CARTESIAN_POINT('',(0.0,1.0,0.0));
+#25=CARTESIAN_POINT('',(1.0,1.0,1.2));
+#26=CARTESIAN_POINT('',(2.0,1.0,0.8));
+#27=CARTESIAN_POINT('',(3.0,1.0,0.0));
+#28=CARTESIAN_POINT('',(0.0,2.0,0.0));
+#29=CARTESIAN_POINT('',(1.0,2.0,0.6));
+#30=CARTESIAN_POINT('',(2.0,2.0,0.4));
+#31=CARTESIAN_POINT('',(3.0,2.0,0.0));
+/* B-spline: form says quasi-uniform but knots are non-uniform */
+#40=B_SPLINE_SURFACE_WITH_KNOTS('',2,2,
+  (#20,#21,#22,#23,#24,#25,#26,#27,#28,#29,#30,#31),
+  .QUASI_UNIFORM_KNOTS.,.F.,.F.,.F.,
+  (2,1,1,2),(2,1,2),
+  (0.0,0.2,0.7,1.5,2.0),
+  (0.0,0.3,1.0,1.5),
+  .UNSPECIFIED.);
+/* Outer bound */
+#50=VERTEX_POINT('',#20);
+#51=VERTEX_LOOP('',#50);
+#52=FACE_OUTER_BOUND('',#51,.T.);
+#60=ADVANCED_FACE('',(#52),#40,.T.);
+#70=OPEN_SHELL('',(#60));
+/* Product chain */
+#9000=PRODUCT_CONTEXT('',#1,'mechanical');
+#9001=PRODUCT('Gs083','Gs083','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
+#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
+#9022=GEOMETRICALLY_BOUNDED_SURFACE_SHAPE_REPRESENTATION('',(#70),#9010);
+#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+ENDSEC;
+END-ISO-10303-21;

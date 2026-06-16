@@ -20556,6 +20556,46 @@ B-spline surface with split request using u_split values outside [u_min, u_max].
 
 5-point cubic B-spline with endpoint knot multiplicity equal to degree (3), placing the endpoint parameter exactly at knot boundary. SameParameter test incorrectly detects discontinuity at the endpoint due to multiplicity configuration.
 
+### Gn049 — ShapeAnalysis_Curve.IsClosed parameter-infinite B-spline curve with knot sentinel
+
+B-spline curve with one parameter (U_MAX) set to infinity sentinel value (`1.797...e+308`). IsClosed checks closure before validating parameter bounds, allowing NaN comparisons on infinite knot value. Expects rejection at parameter validation layer.
+
+### Gn050 — ShapeUpgrade_SplitSurface.SetUSplitValues empty parameter list
+
+Valid B-spline surface (degree 2×2, 3×4 control net) fed to SetUSplitValues with empty split parameter list. Code initializes without diagnostic message and produces no surface splits. Lacks error signaling for degenerate input.
+
+### Gn051 — ShapeAnalysis_Curve.GetSamplePoints offset/trimmed recursion depth
+
+Curve nesting: `OFFSET_CURVE(TRIMMED_CURVE(B_SPLINE))` with 0.5mm offset on trimmed domain [0.25, 0.75]. GetSamplePoints recursion selects incorrect sample density when unwrapping nested derivative curves; interior evaluation may fail.
+
+### Gn052 — ShapeUpgrade_ConvertSurfaceToBezierBasis knot-multiplicity C0 boundary
+
+B-spline surface (degree 3×3) with interior V-knot at 0.5 where multiplicity equals degree (4,3,4 pattern), creating C0 continuity. Converter re-inserts at this boundary despite already full multiplicity; spurious subdivisions follow.
+
+### Gn053 — ShapeAnalysis_Curve.IsPlanar weighted BSpline poles threshold false positive
+
+4-point rational B-spline with weights [1,1,8,1] and poles within ±0.02mm of XY plane. Curve interior (midspan) evaluates 1.2mm off-plane due to weight amplification; IsPlanar checks only control-point distance to plane, missing interior deviation.
+
+### Gn054 — ShapeAnalysis_Curve.IsPlanar BSpline dispatch false-negative
+
+B-spline degree-3 curve with poles clustered in XY plane but high-curvature interior sections bow out to Z=5. IsPlanar samples only poles; threshold check fails when interior geometry dominates. Validates2 passes; tier-3 lint should flag.
+
+### Gn055 — ShapeUpgrade_SplitSurface knot-spec mismatch on QUASI_UNIFORM
+
+Degree-2 B-spline surface marked `.QUASI_UNIFORM_KNOTS.` but knot vectors are piecewise (0.0, 0.25, 0.75, 1.0) and (0.0, 0.4, 0.6, 1.0). Init dispatch recognizes form tag and skips careful split logic, causing incorrect patch extraction.
+
+### Gn056 — ShapeAnalysis_Curve.FillBndBox exact-mode knot-boundary clamping
+
+Degree-2 B-spline with knot exactly at t=0.5 (multiplicity 1 in interior). Exact-mode FillBndBox samples both sides of knot but clamps result at knot value, missing parabolic peak at t=0.5 (0.5, ±0.5, 0).
+
+### Gn057 — ShapeAnalysis_Curve.GetSamplePoints high-radius full-circle 360K cap
+
+Full-circle CIRCLE entity with radius 1,000,000 meters. GetSamplePoints caps at 360 samples; 1-degree resolution insufficient to detect near-tangent intersections in high-curvature regions.
+
+### Gn058 — ShapeUpgrade_ConvertSurfaceToBezierBasis symmetric-knot asymmetric extraction
+
+Degree-2 B-spline surface with symmetric knot vectors (0.0, 0.5, 1.0) in both U and V. Extraction algorithm applies knot insertions in order-dependent sequence, producing asymmetric Bezier patches despite symmetric input structure.
+
 ### Wr001 — Trailing whitespace on every record line
 - **Category**: §12.13 writer-pathology (sub-class: whitespace/line-ending)
 - **Sources**: prostep ivip CAx-IF round-trip reports; FreeCAD #4231 "STEP exporter pads lines with spaces"; bug-reporter language: "diff between exports is all whitespace"
@@ -21991,6 +22031,112 @@ Wire with edges that should connect via a shared vertex but use different VERTEX
 
 **Expected validation**: Reject out-of-bounds iso request; signal error rather than produce uninitialized result.
 
+### Gs069 — ShapeAnalysis_Surface.IsDegenerated zero-length axis
+
+**Source**: OCCT_HEAL_COVERAGE_V3.md §12.2c
+
+**Defect**: SURFACE_OF_REVOLUTION with axis vector magnitude near zero (1e-11). IsDegenerated() checks absolute value of vector components instead of computing true Euclidean norm, missing the near-degenerate axis. The surface degeneracy should be detected but magnitude-component check fails to trigger.
+
+**Fixture kind**: standard
+
+**File**: `/Users/zellyn/gh/dodgy-step-files/step-examples/12-2c-surfaces/Gs069.stp`
+
+---
+
+### Gs070 — ShapeUpgrade_SplitSurfaceContinuity.Compute trimmed-fallback
+
+**Source**: OCCT_HEAL_COVERAGE_V3.md §12.2c (derived)
+
+**Defect**: TRIMMED_CURVE wrapping a B-spline with C0 knot at parameter 0.5. The Compute() pass should subdivide the surface at the knot discontinuity but trim-aware fallback path skips subdivision, leaving the C0 singularity unhandled.
+
+**Fixture kind**: standard
+
+**File**: `/Users/zellyn/gh/dodgy-step-files/step-examples/12-2c-surfaces/Gs070.stp`
+
+---
+
+### Gs071 — ShapeAnalysis_Surface.ProjectDegenerated even-redistribution
+
+**Source**: OCCT_HEAL_COVERAGE_V3.md §12.2c
+
+**Defect**: Degenerate edge collapsing onto a singularity (SURFACE_OF_REVOLUTION cone apex). Whole-edge collapse should redistribute parameter intervals evenly along non-degenerate axis, but the redistribution uses arithmetic mean rather than arc-length-weighted accumulation.
+
+**Fixture kind**: standard
+
+**File**: `/Users/zellyn/gh/dodgy-step-files/step-examples/12-2c-surfaces/Gs071.stp`
+
+---
+
+### Gs072 — ShapeAnalysis_Surface.ValueOfUV bounded surface Newton overflow
+
+**Source**: OCCT_HEAL_COVERAGE_V3.md §12.2c (derived)
+
+**Defect**: RECTANGULAR_TRIMMED_SURFACE with extremely narrow parameter window (1e-10 to 1e-9 range). Newton iteration's step-size clamp logic underflows: the window width is smaller than floating-point epsilon, causing Newton steps to be clamped to zero and iteration to fail to converge.
+
+**Fixture kind**: standard
+
+**File**: `/Users/zellyn/gh/dodgy-step-files/step-examples/12-2c-surfaces/Gs072.stp`
+
+---
+
+### Gs073 — ShapeUpgrade_ConvertSurfaceToBezierBasis plane-approximation thin patch
+
+**Source**: OCCT_HEAL_COVERAGE_V3.md §12.2c
+
+**Defect**: Slightly non-planar B-spline surface (poles differ by 1e-10 along Z). The Bezier converter approximates this as a plane, producing a thin patch with poles only 1e-10 apart. The approximation polarity is inverted: should preserve the bump but instead flattens to plane.
+
+**Fixture kind**: standard
+
+**File**: `/Users/zellyn/gh/dodgy-step-files/step-examples/12-2c-surfaces/Gs073.stp`
+
+### Gs074 — Plane Singularity Misclassification
+
+**Sources:** ShapeAnalysis_Surface.Singularity (OCCT)  
+**Description:** PLANE surface incorrectly classified as having singularity at infinity. ShapeAnalysis_Surface::Singularity() reports false positives for planar geometry.  
+**Reproducer recipe:** Load PLANE surface; invoke Singularity() on large rectangular trim [-100,100]×[-100,100]; expect no singularities; actual: falsely reports singularity location.  
+**Expected kernel behavior:** Reject planes as singular surfaces (planes have no singularities by definition).  
+**Expected validation:** PASS: No singularities detected; FAIL: Report singularity or crash.
+
+---
+
+### Gs075 — Cylindrical Surface Seam-Aware Split
+
+**Sources:** ShapeUpgrade_ClosedFaceDivide.SplitSurface (OCCT)  
+**Description:** CYLINDRICAL_SURFACE with non-trivial angular trim [π/2, 3π/2]. SplitSurface splits at U=π but loses seam metadata (parametric discontinuity marker).  
+**Reproducer recipe:** Load cylindrical trim spanning seam at U=π; invoke SplitSurface(); verify split product carries seam information; actual: seam metadata lost on U-split.  
+**Expected kernel behavior:** Split carries UV-seam classification forward to result surfaces.  
+**Expected validation:** PASS: Seam metadata preserved; FAIL: Seam lost or incorrect split topology.
+
+---
+
+### Gs076 — Newton Fallback Comparison Bias
+
+**Sources:** ShapeAnalysis_Surface.NextValueOfUV (OCCT)  
+**Description:** Newton iteration fails to converge on saddle surface; fallback comparison uses absolute distance instead of normalized parameter distance, selecting wrong-side root.  
+**Reproducer recipe:** Create saddle surface (mixed curvature); call NextValueOfUV(0.3, 0.7) near inflection; Newton fails; fallback picks root at (1.8, 0.9) instead of (0.2, 0.1).  
+**Expected kernel behavior:** Use normalized parameter distance for fallback multi-root selection.  
+**Expected validation:** PASS: Correct root selected; FAIL: Wrong root or projection off-surface.
+
+---
+
+### Gs077 — Newton Discriminant Near-Zero Abort
+
+**Sources:** ShapeAnalysis_Surface.SurfaceNewton (OCCT)  
+**Description:** Newton iteration's discriminant approaches zero at surface inflection point; abort threshold too strict; returns failure where longer step would converge.  
+**Reproducer recipe:** Create B-spline with inflection (curvature sign change); call SurfaceNewton near inflection; watch discriminant→0; actual: premature abort.  
+**Expected kernel behavior:** Allow small-discriminant steps in damped iteration; converge past inflection.  
+**Expected validation:** PASS: Convergence achieved; FAIL: Premature return-false or no root.
+
+---
+
+### Gs078 — Offset-of-Offset Sign Error
+
+**Sources:** ShapeUpgrade_ConvertSurfaceToBezierBasis (OCCT)  
+**Description:** OFFSET_SURFACE wrapping OFFSET_SURFACE wrapping PLANE; recursive offset accumulation has sign error in nested offset conversion (should be +0.5+0.5=1.0, computes -0.5).  
+**Reproducer recipe:** Create nested offset (PLANE→+0.5 offset→+0.5 offset); convert both to Bezier basis; verify Z-coordinate at origin; expected: 1.0; actual: 0.0 or -1.0.  
+**Expected kernel behavior:** Recursive offset sign preserved through ConvertSurfaceToBezierBasis conversion chain.  
+**Expected validation:** PASS: Correct offset accumulation; FAIL: Sign flip or coordinate mismatch.
+
 ### Ad117 — STEP reader crashes on minimal file with malformed `STYLED_ITEM`
 - **Category**: §12.11 adversarial / parser-robustness (sub-class: SEGV on style record)
 - **Sources**: OCCT MANTIS#0029979; bug-reporter language: "crash by reading STEP file", "STEP reader crashes on import", "segmentation fault on small STEP file". (OCCT MANTIS tracker 502 as of 2026-05-02)
@@ -22353,6 +22499,104 @@ Wire with edges that should connect via a shared vertex but use different VERTEX
 - **Reproducer recipe**: see `step-examples/12-2a-pcurves/Gp050.stp`; the fixture file's top comment names the specific OCCT method and line range.
 - **Expected kernel behavior**: detect or heal per the named OCCT branch; the fixture demonstrates the buggy input pattern.
 - **Expected validation**: `occt=unknown/unknown gmsh=unknown ifc=schema_n/a`
+
+### Gp051 — ShapeAnalysis_Edge.GetEndTangent2d B-spline endpoint tangent divergence
+
+- **Category §12.2a**: pcurve analysis
+- **Sources**: OCCT healing coverage, ShapeAnalysis_Edge.cxx GetEndTangent2d
+- **Description**: B-spline pcurve with degree=1 on non-uniform knot vector [0, 0.5, 1.5, 2.5, 5]. Endpoint tangent computation uses control polygon direction instead of analytic 2D tangent, causing divergence on non-uniform knots.
+- **Reproducer recipe**: Load edge with degree-1 B-spline pcurve, non-uniform knots. Query endpoint tangent via GetEndTangent2d. Compare control polygon slope vs. analytic derivative.
+- **Expected kernel behavior**: EndTangent2d should return analytic tangent at endpoint, not control polygon direction. Non-uniform knots magnify divergence.
+- **Expected validation**: `occt=unknown/unknown gmsh=unknown ifc=schema_n/a`
+
+### Gp052 — ShapeFix_Edge.FixSameParameter copyedge stale range
+
+- **Category §12.2a**: pcurve range coherence
+- **Sources**: OCCT healing coverage, ShapeFix_Edge.cxx FixSameParameter
+- **Description**: When SameParameter copies edge into new TEdge, the new edge's vertex parameter range references OLD curve domain (5, 10) instead of NEW reparametrized domain (0, 1). Mismatch between 3D curve domain and pcurve range.
+- **Reproducer recipe**: Create edge with 3D curve parametrized (0, 1), pcurve domain (5, 10). Call FixSameParameter. Verify new TEdge retains stale (5, 10) range instead of reparametrized (0, 1).
+- **Expected kernel behavior**: After reparametrization via GeomLib::SameRange, new edge's pcurve range must match 3D curve domain.
+- **Expected validation**: `occt=unknown/unknown gmsh=unknown ifc=schema_n/a`
+
+### Gp053 — ShapeAnalysis_Edge.CheckVerticesWithPCurve start vs end asymmetry
+
+- **Category §12.2a**: vertex tolerance checking asymmetry
+- **Sources**: OCCT healing coverage, ShapeAnalysis_Edge.cxx CheckVerticesWithPCurve
+- **Description**: Start vertex tolerance check uses different threshold than end vertex check. Edge with vp_tol(start) > vp_tol(end) passes start check but fails end check using same geometric configuration.
+- **Reproducer recipe**: Create edge with B-spline pcurve. Set high vertex parameter tolerance at start (0.01), low at end (0.001). Call CheckVerticesWithPCurve. Observe start passes but end fails.
+- **Expected kernel behavior**: Vertex tolerance checks should be symmetric. Both start and end should pass or fail under identical geometric conditions with consistent tolerance application.
+- **Expected validation**: `occt=unknown/unknown gmsh=unknown ifc=schema_n/a`
+
+### Gp054 — ShapeFix_Edge.FixReversed2d non-B-spline pcurve
+
+- **Category §12.2a**: pcurve reversal on trimmed curves
+- **Sources**: OCCT healing coverage, ShapeFix_Edge.cxx FixReversed2d
+- **Description**: FixReversed2d special-cases B-spline reversal but doesn't handle TRIMMED_CURVE wrapping a LINE. Reversal of trimmed-line pcurves leaves parameter range unflipped, creating inconsistent direction vs. range mapping.
+- **Reproducer recipe**: Create edge with TRIMMED_CURVE(LINE, [0, 50]) as pcurve. Mark edge as needing reversal. Call FixReversed2d. Verify trimmed-line pcurve range inverted (50, 0) instead of remaining (0, 50).
+- **Expected kernel behavior**: Reversal should handle all pcurve types uniformly, including trimmed curves. Parameter range must flip alongside direction reversal.
+- **Expected validation**: `occt=unknown/unknown gmsh=unknown ifc=schema_n/a`
+
+### Gp055 — ShapeAnalysis_Edge.CheckCurve3dWithPCurve uniformly sampled miss
+
+- **Category §12.2a**: sampling strategy for high-curvature detection
+- **Sources**: OCCT healing coverage, ShapeAnalysis_Edge.cxx CheckCurve3dWithPCurve
+- **Description**: 3D curve with reparametrization (clustered knots at [0, 0.1, 0.5, 0.9, 1.0]) exhibiting slow start and fast end. Uniform parameter sampling misses high-curvature region compressed into u ∈ [0, 0.1].
+- **Reproducer recipe**: Create edge curve B-spline with non-uniform knots, high curvature near u=0.05. Use pcurve with matching knot clustering. Call CheckCurve3dWithPCurve with default uniform sampling. Verify high-curvature region undetected.
+- **Expected kernel behavior**: Curve-pcurve consistency check should use adaptive or knot-aware sampling to capture high-curvature regions, especially near clustered knots.
+- **Expected validation**: `occt=unknown/unknown gmsh=unknown ifc=schema_n/a`
+
+### Gp056 — ShapeAnalysis_Edge.CheckCurve3dWithPCurve LOCATION transformation
+
+**Category**: §12.2a (Pcurves)  
+**Sources**: OCCT `src/ShapeAnalysis/ShapeAnalysis_Edge.cxx:1215`  
+**Description**: Edge's face has non-identity LOCATION; CheckCurve3dWithPCurve applies transformation to 3D samples but uses untransformed pcurve samples, causing systematic offset between domain and range.  
+**Reproducer**: Create edge with transformed face location; call CheckCurve3dWithPCurve; observe offset discrepancy.  
+**Expected kernel behavior**: Apply LOCATION transformation symmetrically to both 3D and pcurve samples during comparison.  
+**Expected validation**: `occt=unknown/unknown gmsh=unknown ifc=schema_n/a`
+
+---
+
+### Gp057 — ShapeFix_Edge.FixAddCurve3d trim-aware extension
+
+**Category**: §12.2a (Pcurves)  
+**Sources**: OCCT `src/ShapeFix/ShapeFix_Edge.cxx:695`  
+**Description**: Edge has only 2D pcurve on trimmed face; FixAddCurve3d builds 3D curve from pcurve but ignores face trim bounds, extending past boundary.  
+**Reproducer**: Create rectangular-trimmed surface; edge with pcurve beyond trim limits; call FixAddCurve3d; verify 3D curve respects trim range.  
+**Expected kernel behavior**: FixAddCurve3d clips generated 3D curve to face trim extent before assignment.  
+**Expected validation**: `occt=unknown/unknown gmsh=unknown ifc=schema_n/a`
+
+---
+
+### Gp058 — ShapeAnalysis_Edge.CheckPCurveRange degenerate-vertex parameters
+
+**Category**: §12.2a (Pcurves)  
+**Sources**: OCCT `src/ShapeAnalysis/ShapeAnalysis_Edge.cxx:1401`  
+**Description**: Edge has degenerate vertex (start==end by identity); CheckPCurveRange assumes distinct vertex parameters, producing non-deterministic verdict.  
+**Reproducer**: Create loop-back edge (same vertex both ends); call CheckPCurveRange; observe nondeterministic result.  
+**Expected kernel behavior**: CheckPCurveRange detects degenerate case; handles zero-length domain robustly.  
+**Expected validation**: `occt=unknown/unknown gmsh=unknown ifc=schema_n/a`
+
+---
+
+### Gp059 — ShapeFix_Edge.FixSameParameter zero-length edge
+
+**Category**: §12.2a (Pcurves)  
+**Sources**: OCCT `src/ShapeFix/ShapeFix_Edge.cxx:1175`  
+**Description**: Edge's 3D curve has zero arc length (degenerate); FixSameParameter divides by edge length, producing NaN tolerance.  
+**Reproducer**: Create edge where start==end in 3D; call FixSameParameter; check tolerance value is NaN.  
+**Expected kernel behavior**: FixSameParameter detects zero arc length; use default tolerance or skip computation.  
+**Expected validation**: `occt=unknown/unknown gmsh=unknown ifc=schema_n/a`
+
+---
+
+### Gp060 — ShapeAnalysis_Edge.GetEndTangent2d PCURVE-on-closed-surface seam
+
+**Category**: §12.2a (Pcurves)  
+**Sources**: OCCT `src/ShapeAnalysis/ShapeAnalysis_Edge.cxx:1753`  
+**Description**: Edge pcurve sits at U=0 seam of cylinder; GetEndTangent2d picks wrong side of seam, returning ambiguous tangent direction.  
+**Reproducer**: Create cylinder with seam edge at U=0; call GetEndTangent2d; verify tangent is unambiguous.  
+**Expected kernel behavior**: GetEndTangent2d detects seam position; normalizes to consistent side (U<π or U>π convention).  
+**Expected validation**: `occt=unknown/unknown gmsh=unknown ifc=schema_n/a`
 
 ### A105 — Regression OCC 6.9.1 → 7.4.0: colours stop appearing on certain STEP files
 - **Category**: §12.6 assembly hierarchy (sub-class: appearance regression across kernel versions)
