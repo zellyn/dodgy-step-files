@@ -1,0 +1,110 @@
+/* Tfa180 - ShapeFix_Face.FixWiresTwoCoincEdges with-curved-edges
+ * Defect: FixWiresTwoCoincEdges detects and fixes wires that share edges by
+ * checking if both wires reference the same EDGE_CURVE; however, it only
+ * handles LINE edges and silently ignores curved coincidence (e.g. B-spline
+ * edges), leaving the face with unmerged boundaries that violate manifold.
+ * Reproducer: ADVANCED_FACE with two wires sharing a B-SPLINE_CURVE edge.
+ */
+ISO-10303-21;
+HEADER;
+FILE_DESCRIPTION(('Tfa180 FixWiresTwoCoincEdges curved edge'),'2;1');
+FILE_NAME('Tfa180.stp','2026-06-15T00:00:00',(''),(''),
+  'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
+  'automotive_design',2009,#1);
+#10=CARTESIAN_POINT('origin',(0.0,0.0,0.0));
+#11=DIRECTION('z',(0.0,0.0,1.0));
+#12=DIRECTION('x',(1.0,0.0,0.0));
+#13=AXIS2_PLACEMENT_3D('plc',#10,#11,#12);
+#20=PLANE('base_plane',#13);
+/* Outer wire vertices */
+#200=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#201=VERTEX_POINT('',#200);
+#202=CARTESIAN_POINT('',(10.0,0.0,0.0));
+#203=VERTEX_POINT('',#202);
+#204=CARTESIAN_POINT('',(10.0,10.0,0.0));
+#205=VERTEX_POINT('',#204);
+#206=CARTESIAN_POINT('',(0.0,10.0,0.0));
+#207=VERTEX_POINT('',#206);
+/* Inner wire vertices: shares a B-spline edge with outer */
+#210=CARTESIAN_POINT('',(2.0,2.0,0.0));
+#211=VERTEX_POINT('',#210);
+#212=CARTESIAN_POINT('',(8.0,2.0,0.0));
+#213=VERTEX_POINT('',#212);
+#214=CARTESIAN_POINT('',(8.0,8.0,0.0));
+#215=VERTEX_POINT('',#214);
+#216=CARTESIAN_POINT('',(2.0,8.0,0.0));
+#217=VERTEX_POINT('',#216);
+/* B-spline shared between outer and inner wire: from (2,8) to (8,8) */
+#220=B_SPLINE_CURVE_WITH_KNOTS('bspline_shared',.F.,.F.,.F.,
+  (#216,#217,#214),
+  (1,1,1),
+  (0.0,0.5,1.0),
+  .UNSPECIFIED.);
+/* Outer wire straight edges */
+#300=VECTOR('',(1.0,0.0,0.0),10.0);
+#301=LINE('',#200,#300);
+#302=EDGE_CURVE('',#201,#203,#301,.T.);
+#303=VECTOR('',(0.0,1.0,0.0),10.0);
+#304=LINE('',#202,#303);
+#305=EDGE_CURVE('',#203,#205,#304,.T.);
+/* Outer wire: includes shared B-spline edge (from 8,8 to 2,8) */
+#306=EDGE_CURVE('',#205,#217,#220,.T.);
+#307=VECTOR('',(-1.0,0.0,0.0),2.0);
+#308=LINE('',#206,#307);
+#309=EDGE_CURVE('',#207,#201,#308,.T.);
+/* Inner wire edges */
+#310=VECTOR('',(1.0,0.0,0.0),6.0);
+#311=LINE('',#210,#310);
+#312=EDGE_CURVE('',#211,#213,#311,.T.);
+#313=VECTOR('',(0.0,1.0,0.0),6.0);
+#314=LINE('',#212,#313);
+#315=EDGE_CURVE('',#213,#215,#314,.T.);
+#316=VECTOR('',(-1.0,0.0,0.0),6.0);
+#317=LINE('',#216,#316);
+#318=EDGE_CURVE('',#215,#211,#317,.T.);
+/* Inner wire: second straight edge connecting back to shared curve start */
+#319=VECTOR('',(0.0,-1.0,0.0),6.0);
+#320=LINE('',#214,#319);
+#321=EDGE_CURVE('',#217,#211,#320,.T.);
+/* NOTE: Inner wire shares B-spline #220 with outer wire. FixWiresTwoCoincEdges
+ * should detect this but only handles LINEs, so it silently ignores the shared
+ * curved edge, leaving the face with overlapping boundaries.
+ */
+/* Inner wire oriented edges */
+#400=ORIENTED_EDGE('',*,*,#312,.T.);
+#401=ORIENTED_EDGE('',*,*,#315,.T.);
+#402=ORIENTED_EDGE('',*,*,#306,.F.);
+#403=ORIENTED_EDGE('',*,*,#321,.T.);
+/* Outer wire oriented edges */
+#410=ORIENTED_EDGE('',*,*,#302,.T.);
+#411=ORIENTED_EDGE('',*,*,#305,.T.);
+#412=ORIENTED_EDGE('',*,*,#306,.T.);
+#413=ORIENTED_EDGE('',*,*,#309,.T.);
+/* Loops */
+#500=EDGE_LOOP('',(#410,#411,#412,#413));
+#501=FACE_OUTER_BOUND('',#500,.T.);
+#510=EDGE_LOOP('',(#400,#401,#402,#403));
+#511=FACE_INNER_BOUND('',#510,.F.);
+#600=ADVANCED_FACE('curved_shared_edge',(#501,#511),#20,.T.);
+#9000=PRODUCT_CONTEXT('',#1,'mechanical');
+#9001=PRODUCT('Tfa180','Tfa180','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
+#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
+#9020=OPEN_SHELL('wrap_shell',(#600));
+#9021=SHELL_BASED_SURFACE_MODEL('sbsm',(#9020));
+#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#9010);
+#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+ENDSEC;
+END-ISO-10303-21;

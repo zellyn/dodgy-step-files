@@ -1,0 +1,81 @@
+ISO-10303-21;
+/* Twi211 - ShapeFix_Wire.FixLacking surface-edge-direction-mismatch
+ * Wire on a cylindrical surface where a missing edge would have a specific direction
+ * on the surface. FixLacking inserts an edge with the wrong surface-direction.
+ * Wire edges form a closed path in 3D but have a gap in the parametric space of
+ * the cylindrical surface. The missing edge should bridge u from 2.0 to 2.1 (wrapping
+ * around the seam at u=0 / u=2π), but FixLacking inserts it in the wrong direction. */
+HEADER;
+FILE_DESCRIPTION(('Twi211 test case','ShapeFix_Wire.FixLacking surface-edge-direction-mismatch'),'2;1');
+FILE_NAME('Twi211.stp','2026-06-15T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+/* Cylindrical surface: axis Z, radius 5.0 */
+#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#11=DIRECTION('',(0.0,0.0,1.0));
+#12=DIRECTION('',(1.0,0.0,0.0));
+#13=AXIS2_PLACEMENT_3D('',#10,#11,#12);
+#14=CYLINDRICAL_SURFACE('cyl_surf',#13,5.0);
+/* Vertices on the cylinder surface */
+/* v1: u=0.0 (θ=0), v=5.0 -> 3D point (5,0,5) */
+#20=CARTESIAN_POINT('',(5.0,0.0,5.0));
+#21=VERTEX_POINT('',#20);
+/* v2: u=1.0 (θ≈1 rad), v=5.0 -> 3D point (5*cos(1), 5*sin(1), 5) ≈ (2.7, 4.2, 5) */
+#22=CARTESIAN_POINT('',(2.702,4.207,5.0));
+#23=VERTEX_POINT('',#22);
+/* v3: u=2.0 (θ≈2 rad), v=5.0 -> 3D point (5*cos(2), 5*sin(2), 5) ≈ (-2.08, 4.55, 5) */
+#24=CARTESIAN_POINT('',(-2.081,4.546,5.0));
+#25=VERTEX_POINT('',#24);
+/* v4: u=2.1 (θ≈2.1 rad), v=5.0 -> 3D point at same height but further along */
+#26=CARTESIAN_POINT('',(-2.586,4.287,5.0));
+#27=VERTEX_POINT('',#26);
+/* Edge1: u from 0.0 to 1.0 at v=5.0 (circular arc on cylinder) */
+#30=CARTESIAN_POINT('',(5.0,0.0,0.0));
+#31=AXIS2_PLACEMENT_3D('',#30,#11,#12);
+#32=CIRCLE('edge1_circle',#31,5.0);
+#33=EDGE_CURVE('edge1_arc0to1',#21,#23,#32,.T.);
+/* Edge2: u from 1.0 to 2.0 at v=5.0 (circular arc continuation) */
+#40=CIRCLE('edge2_circle',#31,5.0);
+#41=EDGE_CURVE('edge2_arc1to2',#23,#25,#40,.T.);
+/* Edge3: v from 5.0 to 5.0 (constant), u from 2.0 to 2.0 -- DEGENERATE, should be replaced by FixLacking */
+#42=CARTESIAN_POINT('',(-2.081,4.546,5.0));
+#43=AXIS2_PLACEMENT_3D('',#42,#11,#12);
+#44=LINE('edge3_degenerate',#24,#11);
+#45=EDGE_CURVE('edge3_degen_placeholder',#25,#25,#44,.T.);
+/* Edge4: u from 2.0 to 2.1 at v=5.0 -- THIS IS THE GAP edge that FixLacking should fill.
+ * It's present in the file but with WRONG DIRECTION (.F. instead of .T.),
+ * causing the surface-edge-direction-mismatch. */
+#50=CIRCLE('edge4_circle',#31,5.0);
+#51=EDGE_CURVE('edge4_arc2to2p1_WRONGDIR',#25,#27,#50,.F.);
+/* Edge5: v from 5.0 to 5.0 back to v1 (circular arc u from 2.1 to 2π ≈ 6.28, wrapping to 0.0) */
+#60=CIRCLE('edge5_circle',#31,5.0);
+#61=EDGE_CURVE('edge5_arc2p1_to_0',#27,#21,#60,.T.);
+/* Wire loop with direction mismatch in edge4 */
+#70=ORIENTED_EDGE('',*,*,#33,.T.);
+#71=ORIENTED_EDGE('',*,*,#41,.T.);
+#72=ORIENTED_EDGE('',*,*,#45,.T.);
+#73=ORIENTED_EDGE('',*,*,#51,.T.);
+#74=ORIENTED_EDGE('',*,*,#61,.T.);
+#75=EDGE_LOOP('',(#70,#71,#72,#73,#74));
+#76=FACE_OUTER_BOUND('',#75,.T.);
+#77=ADVANCED_FACE('cyl_wire_bad_direction',(#76),#14,.T.);
+/* Mandatory PRODUCT chain */
+#9000=PRODUCT_CONTEXT('',#1,'mechanical');
+#9001=PRODUCT('Twi211','Twi211','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
+#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
+#9021=SHELL_BASED_SURFACE_MODEL('sbsm',(#77));
+#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#9010);
+#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+ENDSEC;
+END-ISO-10303-21;

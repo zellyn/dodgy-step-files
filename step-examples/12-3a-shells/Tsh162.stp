@@ -1,0 +1,102 @@
+ISO-10303-21;
+/* Tsh162 - ShapeFix_Shell.Perform reports-fixed-but-still-broken
+ * Defect: Shell with subtle topological defect where Perform reports myStatus=DONE
+ * (indicating successful fix) but the defect persists in the topology. Five faces
+ * forming a pyramid base with flipped apex face and mismatched edge sense. */
+HEADER;
+FILE_DESCRIPTION(('Tsh162 test case','Shell defect persists after Perform'),'2;1');
+FILE_NAME('Tsh162.stp','2026-06-15T00:00:00',(''),(''),'auto-generated','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+/* Pyramid: square base + 4 triangular sides, apex flipped */
+#100=CARTESIAN_POINT('base_sw',(0.0,0.0,0.0));
+#101=CARTESIAN_POINT('base_se',(1.0,0.0,0.0));
+#102=CARTESIAN_POINT('base_ne',(1.0,1.0,0.0));
+#103=CARTESIAN_POINT('base_nw',(0.0,1.0,0.0));
+#104=CARTESIAN_POINT('apex',(0.5,0.5,1.0));
+#110=VERTEX_POINT('',#100); #111=VERTEX_POINT('',#101);
+#112=VERTEX_POINT('',#102); #113=VERTEX_POINT('',#103);
+#114=VERTEX_POINT('',#104);
+/* Edges */
+#200=DIRECTION('',(1.0,0.0,0.0));
+#201=VECTOR('',#200,1.0);
+#202=DIRECTION('',(0.0,1.0,0.0));
+#203=VECTOR('',#202,1.0);
+#204=DIRECTION('',(-0.5,0.0,1.0)); #205=VECTOR('',#204,1.12);
+#206=DIRECTION('',(0.5,0.0,1.0)); #207=VECTOR('',#206,1.12);
+#208=DIRECTION('',(0.5,1.0,1.0)); #209=VECTOR('',#208,1.58);
+#210=DIRECTION('',(-0.5,1.0,1.0)); #211=VECTOR('',#210,1.58);
+#220=LINE('',#100,#201); #221=EDGE_CURVE('base_e',#110,#111,#220,.T.);
+#222=LINE('',#101,#203); #223=EDGE_CURVE('base_n',#111,#112,#222,.T.);
+#224=LINE('',#103,#201); #225=EDGE_CURVE('base_s',#113,#112,#224,.T.);
+#226=LINE('',#100,#203); #227=EDGE_CURVE('base_w',#110,#113,#226,.T.);
+#228=LINE('',#100,#204); #229=EDGE_CURVE('apex_sw',#110,#114,#228,.T.);
+#230=LINE('',#101,#206); #231=EDGE_CURVE('apex_se',#111,#114,#230,.T.);
+#232=LINE('',#102,#210); #233=EDGE_CURVE('apex_ne',#112,#114,#232,.T.);
+#234=LINE('',#103,#211); #235=EDGE_CURVE('apex_nw',#113,#114,#234,.T.);
+/* Base face (square) */
+#300=ORIENTED_EDGE('',*,*,#221,.T.);
+#301=ORIENTED_EDGE('',*,*,#223,.T.);
+#302=ORIENTED_EDGE('',*,*,#225,.F.);
+#303=ORIENTED_EDGE('',*,*,#227,.F.);
+#304=EDGE_LOOP('',(#300,#301,#302,#303));
+#305=FACE_OUTER_BOUND('',#304,.T.);
+#306=AXIS2_PLACEMENT_3D('',#100,#202,#200);
+#307=PLANE('base_plane',#306);
+#310=ADVANCED_FACE('base',(#305),#307,.T.);
+/* South face (triangle 0,1,4) */
+#320=ORIENTED_EDGE('',*,*,#221,.T.);
+#321=ORIENTED_EDGE('',*,*,#231,.T.);
+#322=ORIENTED_EDGE('',*,*,#229,.F.);
+#323=EDGE_LOOP('',(#320,#321,#322));
+#324=FACE_OUTER_BOUND('',#323,.T.);
+#325=AXIS2_PLACEMENT_3D('',#100,#206,#200);
+#326=PLANE('south_plane',#325);
+#330=ADVANCED_FACE('south',(#324),#326,.T.);
+/* East face (triangle 1,2,4) */
+#340=ORIENTED_EDGE('',*,*,#223,.T.);
+#341=ORIENTED_EDGE('',*,*,#233,.T.);
+#342=ORIENTED_EDGE('',*,*,#231,.F.);
+#343=EDGE_LOOP('',(#340,#341,#342));
+#344=FACE_OUTER_BOUND('',#343,.T.);
+#345=AXIS2_PLACEMENT_3D('',#101,#208,#202);
+#346=PLANE('east_plane',#345);
+#350=ADVANCED_FACE('east',(#344),#346,.T.);
+/* North face (triangle 2,3,4) */
+#360=ORIENTED_EDGE('',*,*,#225,.T.);
+#361=ORIENTED_EDGE('',*,*,#235,.T.);
+#362=ORIENTED_EDGE('',*,*,#233,.F.);
+#363=EDGE_LOOP('',(#360,#361,#362));
+#364=FACE_OUTER_BOUND('',#363,.T.);
+#365=AXIS2_PLACEMENT_3D('',#102,#208,#202);
+#366=PLANE('north_plane',#365);
+#370=ADVANCED_FACE('north',(#364),#366,.T.);
+/* West face (triangle 3,0,4) - FLIPPED for defect */
+#380=ORIENTED_EDGE('',*,*,#227,.T.);
+#381=ORIENTED_EDGE('',*,*,#235,.F.);
+#382=ORIENTED_EDGE('',*,*,#229,.T.);
+#383=EDGE_LOOP('',(#380,#381,#382));
+#384=FACE_OUTER_BOUND('',#383,.T.);
+#385=AXIS2_PLACEMENT_3D('',#103,#210,#202);
+#386=PLANE('west_plane',#385);
+#390=ADVANCED_FACE('west',(#384),#386,.F.);
+#400=OPEN_SHELL('pyramid_flipped_apex',(#310,#330,#350,#370,#390));
+#9000=PRODUCT_CONTEXT('',#1,'mechanical');
+#9001=PRODUCT('Tsh162','Tsh162','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
+#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
+#9021=SHELL_BASED_SURFACE_MODEL('sbsm',(#400));
+#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#9010);
+#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+ENDSEC;
+END-ISO-10303-21;

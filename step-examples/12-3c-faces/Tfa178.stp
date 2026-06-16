@@ -1,0 +1,93 @@
+/* Tfa178 - ShapeFix_Face.FixSmallAreaWire wire-touching-outer-corner
+ * Defect: FixSmallAreaWire computes the area of inner wires to identify and
+ * remove degenerate wires; when an inner wire's vertex exactly coincides with
+ * a corner of the outer wire, the area calculation misidentifies the wire as
+ * the outer boundary and silently corrupts the face topology.
+ * Reproducer: ADVANCED_FACE with inner wire whose vertex touches outer corner.
+ */
+ISO-10303-21;
+HEADER;
+FILE_DESCRIPTION(('Tfa178 FixSmallAreaWire corner touch'),'2;1');
+FILE_NAME('Tfa178.stp','2026-06-15T00:00:00',(''),(''),
+  'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
+  'automotive_design',2009,#1);
+#10=CARTESIAN_POINT('origin',(0.0,0.0,0.0));
+#11=DIRECTION('z',(0.0,0.0,1.0));
+#12=DIRECTION('x',(1.0,0.0,0.0));
+#13=AXIS2_PLACEMENT_3D('plc',#10,#11,#12);
+#20=PLANE('base_plane',#13);
+/* Outer square wire */
+#200=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#201=VERTEX_POINT('',#200);
+#202=CARTESIAN_POINT('',(20.0,0.0,0.0));
+#203=VERTEX_POINT('',#202);
+#204=CARTESIAN_POINT('',(20.0,20.0,0.0));
+#205=VERTEX_POINT('',#204);
+#206=CARTESIAN_POINT('',(0.0,20.0,0.0));
+#207=VERTEX_POINT('',#206);
+/* Inner wire: tiny triangle with vertex at outer corner (0,0) */
+#210=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#211=VERTEX_POINT('',#210);
+#212=CARTESIAN_POINT('',(0.5,0.0,0.0));
+#213=VERTEX_POINT('',#212);
+#214=CARTESIAN_POINT('',(0.25,0.5,0.0));
+#215=VERTEX_POINT('',#214);
+/* Outer wire edges */
+#300=VECTOR('',(1.0,0.0,0.0),20.0);
+#301=LINE('',#200,#300);
+#302=EDGE_CURVE('',#201,#203,#301,.T.);
+#303=VECTOR('',(0.0,1.0,0.0),20.0);
+#304=LINE('',#202,#303);
+#305=EDGE_CURVE('',#203,#205,#304,.T.);
+#306=VECTOR('',(-1.0,0.0,0.0),20.0);
+#307=LINE('',#204,#306);
+#308=EDGE_CURVE('',#205,#207,#307,.T.);
+#309=VECTOR('',(0.0,-1.0,0.0),20.0);
+#310=LINE('',#206,#309);
+#311=EDGE_CURVE('',#207,#201,#310,.T.);
+/* Inner wire edges */
+#320=VECTOR('',(1.0,0.0,0.0),0.5);
+#321=LINE('',#210,#320);
+#322=EDGE_CURVE('',#211,#213,#321,.T.);
+#323=VECTOR('',(-0.447,0.894,0.0),0.559);
+#324=LINE('',#212,#323);
+#325=EDGE_CURVE('',#213,#215,#324,.T.);
+#326=VECTOR('',(-0.447,-0.894,0.0),0.559);
+#327=LINE('',#214,#326);
+#328=EDGE_CURVE('',#215,#211,#327,.T.);
+/* Oriented edges */
+#400=ORIENTED_EDGE('',*,*,#302,.T.);
+#401=ORIENTED_EDGE('',*,*,#305,.T.);
+#402=ORIENTED_EDGE('',*,*,#308,.T.);
+#403=ORIENTED_EDGE('',*,*,#311,.T.);
+#410=ORIENTED_EDGE('',*,*,#322,.T.);
+#411=ORIENTED_EDGE('',*,*,#325,.T.);
+#412=ORIENTED_EDGE('',*,*,#328,.T.);
+/* Loops */
+#500=EDGE_LOOP('',(#400,#401,#402,#403));
+#501=FACE_OUTER_BOUND('',#500,.T.);
+#510=EDGE_LOOP('',(#410,#411,#412));
+#511=FACE_INNER_BOUND('',#510,.F.);
+#600=ADVANCED_FACE('corner_touch_inner',(#501,#511),#20,.T.);
+#9000=PRODUCT_CONTEXT('',#1,'mechanical');
+#9001=PRODUCT('Tfa178','Tfa178','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
+#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
+#9020=OPEN_SHELL('wrap_shell',(#600));
+#9021=SHELL_BASED_SURFACE_MODEL('sbsm',(#9020));
+#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#9010);
+#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+ENDSEC;
+END-ISO-10303-21;

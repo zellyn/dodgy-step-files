@@ -22632,6 +22632,71 @@ Planar face with a central vertex shared by six or more edges (star geometry wit
 
 Two inner wires with identical geometry but different per-vertex tolerances (inner_tight_tol=0.001 vs inner_loose_tol=0.1). FixWiresTwoCoincEdges merges coincident edges using the first wire's tolerance values and silently discards the second wire's tighter constraints, potentially losing precision requirements.
 
+### Tfa171 — ShapeFix_Face.FixLoopWire complex-self-intersection
+Face with inner wire containing triple-point self-intersection. FixLoopWire's merge logic handles double-points but not triples, where three edges meet at a single point. The fixture exercises the pathological case where self-intersection detection fails and merge creates degenerate sub-faces.
+
+### Tfa172 — ShapeAnalysis_CheckSmallArea non-planar-face
+Parametrically small face on curved B-spline surface where geometric area differs significantly from parametric area. CheckSmallArea uses parametric bounds and misses the actual 3D footprint, triggering false negatives on near-degenerate curved faces.
+
+### Tfa173 — ShapeFix_Face.FixSplitFace splitter-tangent-at-vertex
+Splitter LINE that is tangent to the face boundary at one of its endpoint vertices. FixSplitFace does not detect the tangency condition and produces degenerate sub-face with zero area, violating the face validity contract.
+
+### Tfa174 — ShapeAnalysis_CheckSmallFace.CheckTwisted near-flat-saddle
+Face on a near-flat saddle surface (Gaussian curvature close to zero, very mild principal curvatures). CheckTwisted's twist detection threshold gives indeterminate verdict—saddle orientation cannot be reliably inferred from coordinate-space tests.
+
+### Tfa175 — ShapeFix_Face.FixAddNaturalBound boundary-curve-doesnt-close
+Natural boundary construction where the computed boundary curve fails to close (e.g., surface with corner discontinuity). FixAddNaturalBound returns success code but the resulting boundary is topologically open, leaving face incomplete.
+
+### Tfa176 — ShapeFix_Face.FixOrientation face-with-100-edges
+
+**Class:** Buffer-overflow in edge traversal  
+**Scope:** FACE_SURFACE orientation detection  
+**Trigger:** ADVANCED_FACE whose EDGE_LOOP contains 101+ LINE edges  
+**Mechanism:** FixOrientation allocates a fixed-size internal buffer while traversing the outer wire's edges linearly; the traversal count exceeds buffer capacity causing memory corruption and potential crash.  
+**Evidence:** Fixture contains a 101-edge circular polygon; FixOrientation's edge enumeration will overflow the internal buffer.  
+**Status:** VALID  
+**File:** `Tfa176.stp`
+
+### Tfa177 — ShapeAnalysis_CheckSmallFace.CheckPin near-zero-tip-angle
+
+**Class:** Classification logic failure on degenerate geometry  
+**Scope:** FACE_SURFACE pin-shaped inner wire analysis  
+**Trigger:** ADVANCED_FACE with pin-shaped inner wire where the pin's tip vertices coincide (angle = 0°)  
+**Mechanism:** CheckPin classifies pin orientation by measuring the tip angle; when the angle is exactly 0° (collapsed pin), the classification produces undefined verdict, triggering downstream null-pointer or divergence errors.  
+**Evidence:** Fixture includes a triangular inner wire where two vertices at the tip are identical; CheckPin will compute a meaningless 0° angle.  
+**Status:** VALID  
+**File:** `Tfa177.stp`
+
+### Tfa178 — ShapeFix_Face.FixSmallAreaWire wire-touching-outer-corner
+
+**Class:** Topology classification error on boundary-adjacent geometry  
+**Scope:** FACE_SURFACE inner wire area computation  
+**Trigger:** ADVANCED_FACE with inner wire whose vertex exactly coincides with an outer wire corner  
+**Mechanism:** FixSmallAreaWire computes the signed area of inner wires to identify degenerate boundaries; when an inner vertex touches an outer corner, the area calculation incorrectly identifies the inner wire as the outer boundary, corrupting the face.  
+**Evidence:** Fixture has a tiny triangular inner wire whose first vertex is at coordinate (0.0, 0.0), identical to the outer wire's first corner; FixSmallAreaWire's area calculation will misclassify.  
+**Status:** VALID  
+**File:** `Tfa178.stp`
+
+### Tfa179 — ShapeAnalysis_CheckSmallFace.CheckTwisted with-degenerate-edge
+
+**Class:** Undefined-behavior on zero-tangent edge  
+**Scope:** FACE_SURFACE planarity validation  
+**Trigger:** ADVANCED_FACE whose EDGE_LOOP contains a degenerate (zero-length) LINE edge  
+**Mechanism:** CheckTwisted tests planarity by sampling tangent vectors on each edge; a degenerate edge has undefined tangent, causing NaN propagation in normal computation that invalidates downstream solvers.  
+**Evidence:** Fixture's outer loop includes a LINE edge from (10, 0, 0) to (10, 0, 0); CheckTwisted will compute undefined tangent and produce NaN.  
+**Status:** VALID  
+**File:** `Tfa179.stp`
+
+### Tfa180 — ShapeFix_Face.FixWiresTwoCoincEdges with-curved-edges
+
+**Class:** Incomplete type dispatch in edge-sharing detection  
+**Scope:** FACE_SURFACE wire merging on shared boundaries  
+**Trigger:** ADVANCED_FACE where two wires (outer and inner) share a B_SPLINE_CURVE edge  
+**Mechanism:** FixWiresTwoCoincEdges detects shared edges by identity comparison but only performs fix-up for LINE edges; curved edges (B-splines, arcs) are silently ignored, leaving the face with unmerged boundaries that violate manifold closure.  
+**Evidence:** Fixture has outer and inner wires both referencing the same B_SPLINE_CURVE_WITH_KNOTS edge from (8,8) to (2,8); FixWiresTwoCoincEdges will skip the curved-edge case and fail to merge.  
+**Status:** VALID  
+**File:** `Tfa180.stp`
+
 ### Hea016 — Empty solid output from STEP export of complex body, despite STL succeeding
 - **Category**: §12.3c faces / shape healing
 - **Sources**: FreeCAD #20396; bug-reporter language: "Models exported to STEP crash or produce empty objects", "appears to export fine but results in an empty object", "STL and 3MF export work, STEP doesn't".
@@ -23390,6 +23455,92 @@ Adjacent edges where one is a `B_SPLINE_CURVE` and the other is `LINE`. `CheckGa
 **Minimal reproducer**: Cylinder seam edge; first pcurve parametrized 0→2π, second parametrized 2π→0; FixSeam assumes first direction is canonical.
 
 **Search anchors**: `FixSeam`, `pcurve direction`, `seam edge`, `parametric orientation mismatch`
+
+### Twi202 — ShapeFix_Wire.FixReorder duplicate-vertex-causes-cycle
+
+Wire with two edges sharing both endpoints (parallel paths). FixReorder attempts to reorder but the parallel paths create a non-trivial graph that cannot be resolved by simple edge reordering.
+
+**Fixture:** `/Users/zellyn/gh/dodgy-step-files/step-examples/12-3b-wires/Twi202.stp`
+
+---
+
+### Twi203 — ShapeAnalysis_Wire.CheckTail B-spline tail-detection
+
+Wire's last edge is a B-spline with smoothly decreasing magnitude approaching zero. CheckTail's threshold uses parameter range not 3D length, causing false negatives.
+
+**Fixture:** `/Users/zellyn/gh/dodgy-step-files/step-examples/12-3b-wires/Twi203.stp`
+
+---
+
+### Twi204 — ShapeFix_Wire.FixIntersectingEdges 3-edges-at-vertex
+
+Three edges meeting at single point (star configuration). FixIntersectingEdges pairwise comparison reports 3 intersections at same point but they're vertex contact, not crossings.
+
+**Fixture:** `/Users/zellyn/gh/dodgy-step-files/step-examples/12-3b-wires/Twi204.stp`
+
+---
+
+### Twi205 — ShapeAnalysis_Wire.CheckIntersectingEdges B-spline-tangent-touch
+
+Two B-spline edges touching tangentially (single point, no crossing). CheckIntersectingEdges reports intersection despite no transverse crossing.
+
+**Fixture:** `/Users/zellyn/gh/dodgy-step-files/step-examples/12-3b-wires/Twi205.stp`
+
+---
+
+### Twi206 — ShapeFix_Wire.FixSelfIntersectingEdge cusp-at-vertex
+
+Single edge with cusp at start vertex. FixSelfIntersectingEdge tries to split at cusp but cusp coincides with endpoint, preventing proper healing.
+
+**Fixture:** `/Users/zellyn/gh/dodgy-step-files/step-examples/12-3b-wires/Twi206.stp`
+
+### Twi207 — ShapeFix_Wire.FixGaps2d gap-at-knot-discontinuity
+
+**Defect**: Wire on B-spline surface where pcurves leave gaps exactly at knot lines. B-spline basis discontinuities at knot values cause parametric space jumps. Edge1 pcurve ends at knot u=1.5 with endpoint (1.5, 5.0). Edge2 pcurve starts at u=1.5 but v=5.01 due to B-spline singularity. FixGaps2d's bridging logic attempts straight-line splice across knot boundary, invalid for B-spline surface topology.
+
+**Fixture**: `/Users/zellyn/gh/dodgy-step-files/step-examples/12-3b-wires/Twi207.stp` — 3-edge wire on degree-2/1 B-spline surface with knots at u=0.75, 1.5, 2.25. Edges reuse surface; pcurve gap at knot crossing.
+
+**Search anchors**: `FixGaps2d`, `knot`, `B-spline`, `parametric discontinuity`, `pcurve gap`.
+
+---
+
+### Twi208 — ShapeAnalysis_Wire.CheckSelfIntersection coincident-with-tangency
+
+**Defect**: Wire with two edges that geometrically overlap and are also tangent at mutual contact point. Edges share same LINE geometry with reversed orientations; they touch at single point (t=0.5 on both). CheckSelfIntersection's overlap detection chooses one verdict (tangent or overlapping) but should report ambiguity between geometric coincidence and tangency.
+
+**Fixture**: `/Users/zellyn/gh/dodgy-step-files/step-examples/12-3b-wires/Twi208.stp` — 4-edge square on PLANE. Bottom edge (LINE forward) and left-retrace edge (same LINE reversed) overlap with tangent contact. Ambiguous intersection classification.
+
+**Search anchors**: `CheckSelfIntersection`, `overlapping edges`, `tangent`, `geometric coincidence`, `ambiguous verdict`.
+
+---
+
+### Twi209 — ShapeFix_Wire.FixReorder mixed-curve-types-vertex-merge
+
+**Defect**: Wire with LINE, CIRCLE, and B-spline edges sharing vertices. FixReorder's curve-type-aware logic confused when vertices require merging across heterogeneous edge types. Three-edge wire: LINE (v1→v2), CIRCLE arc (v2→v3), B-spline (v3→v1). Reordering must handle type transitions; vertex merging logic fails.
+
+**Fixture**: `/Users/zellyn/gh/dodgy-step-files/step-examples/12-3b-wires/Twi209.stp` — 3-edge loop on PLANE. Edge1 LINE from (0,0) to (5,0). Edge2 CIRCLE arc (45°, radius 5) from (5,0) to (7.071,7.071). Edge3 degree-2 B-spline (7.071,7.071) back to (0,0). Type mismatch at vertices.
+
+**Search anchors**: `FixReorder`, `mixed curve types`, `LINE CIRCLE BSPLINE`, `vertex merge`, `heterogeneous edges`.
+
+---
+
+### Twi210 — ShapeAnalysis_Wire.CheckClosed near-closed-with-perpendicular-distance
+
+**Defect**: Wire geometrically open but nearly closed: first vertex (0,0,0), last vertex (0.0001, 0.0001, 0). 3D distance ~0.000141 units below nominal tolerance. CheckClosed uses 3D distance metric, not perpendicular distance. Wire appears closed in 3D but fails perpendicular-distance semantics for valid closure on surface.
+
+**Fixture**: `/Users/zellyn/gh/dodgy-step-files/step-examples/12-3b-wires/Twi210.stp` — 5-edge wire on PLANE forming square with tiny gap-closure edge. Last vertex offset from first by (0.0001, 0.0001, 0). Five edges: e1 v1→v2, e2 v2→v3, e3 v3→v4, e4 v4→v5, e5 (gap) v5→v1.
+
+**Search anchors**: `CheckClosed`, `near-closed`, `perpendicular distance`, `3D vs surface closure`, `sub-tolerance gap`.
+
+---
+
+### Twi211 — ShapeFix_Wire.FixLacking surface-edge-direction-mismatch
+
+**Defect**: Wire on CYLINDRICAL_SURFACE missing edge with specific direction in parametric space. FixLacking inserts edge with reversed sense flag (.F. instead of .T.), creating surface-edge-direction mismatch. Missing edge should bridge u=[2.0, 2.1] at v=5.0 on cylinder; inserted edge has wrong orientation, breaking surface-curve compatibility.
+
+**Fixture**: `/Users/zellyn/gh/dodgy-step-files/step-examples/12-3b-wires/Twi211.stp` — 5-edge wire on CYLINDRICAL_SURFACE (radius 5, z-axis). Edges: arc u∈[0,1], arc u∈[1,2], degenerate u=2, arc u∈[2,2.1] with .F. sense (MISMATCH), arc u∈[2.1,2π→0]. FixLacking error in direction inference on periodic surface.
+
+**Search anchors**: `FixLacking`, `CYLINDRICAL_SURFACE`, `direction mismatch`, `same_sense flag`, `missing edge`, `seam wrapping`.
 
 ### Gs056 — `SURFACE_OF_REVOLUTION` of an ellipse around its own centre produces a degenerate surface
 - **Category**: §12.2c surface / curve degeneracies (sub-class: revolution of conic)
@@ -24381,6 +24532,96 @@ Two-triangle shell with all edges shared between faces (no free boundary). FreeE
 **Fixture**: `/Users/zellyn/gh/dodgy-step-files/step-examples/12-3a-shells/Tsh153.stp`
 
 ---
+
+### Tsh154 — ShapeFix_Shell.FixFaceOrientation pyramid-with-apex
+
+**Defect**: Pyramid shell where the apex vertex is shared by N triangular faces (fan configuration). Orientation propagation from apex doesn't decide consistent direction; some faces flip outward, others inward.
+
+**Trigger**: FixFaceOrientation processes fan of triangular faces sharing apex; decides orientation sequentially without conflict detection.
+
+**Impact**: Inconsistent face normals in closed shell; breaks downstream solid construction and manifoldness verification.
+
+---
+
+### Tsh155 — ShapeAnalysis_Shell.CheckOrientedShells with-degenerate-shell
+
+**Defect**: Shell where all faces are degenerate (zero-area). CheckOrientedShells's normal-based test produces a verdict but the verdict is meaningless on zero-area geometry.
+
+**Trigger**: CheckOrientedShells computes face normals; degenerate faces produce zero or invalid normals; algorithm proceeds without failing.
+
+**Impact**: Invalid orientation verdict masks topological defect; degenerate geometry undetected by normal-based heuristic.
+
+---
+
+### Tsh156 — ShapeUpgrade_ShellSewing.Apply mismatch-curve-types
+
+**Defect**: Shells to merge have edges of different curve types (LINE vs BSpline) at corresponding seam positions. Apply doesn't unify the types before merging.
+
+**Trigger**: Two shells with LINE edges meet BSpline edges at seam; Apply matches positions but not curve representations.
+
+**Impact**: Merged shell contains mixed curve types at same edge; downstream algorithms expect uniform representation.
+
+---
+
+### Tsh157 — ShapeFix_Shell.Perform circular-fix-dependency
+
+**Defect**: Three faces where fixing face A requires fixing face B which requires fixing face A. Perform doesn't detect circular dependency and may loop or produce inconsistent result.
+
+**Trigger**: Face orientation fixes create cyclic dependencies; each face's fix breaks the other's invariant; Perform processes sequentially without loop detection.
+
+**Impact**: Algorithm may not terminate or apply fixes inconsistently; status flags unreliable.
+
+---
+
+### Tsh158 — ShapeAnalysis_Shell.BadEdges seam-edge-direction
+
+**Defect**: Shell with seam edges where the two halves traverse the seam in same direction (should be opposite). BadEdges should flag this but uses 3D distance only, missing the direction mismatch.
+
+**Trigger**: Periodic surface with seam edge traversed same way on both halves; BadEdges checks 3D proximity, not parametric direction.
+
+**Impact**: Seam edge direction inconsistency undetected; breaks surface continuity assumptions in downstream healing.
+
+### Tsh159 — ShapeFix_Shell.FixFaceOrientation tetrahedron-flipped
+
+**Problem**: Orientation propagation around triangular faces uses adjacency-only logic, missing one mis-oriented face in a tetrahedron when consensus differs. Affects SetFaceCheckStatus flow where one face orientation violates the global consensus but adjacency-based flip detection doesn't catch it.
+
+**Fixture**: Regular tetrahedron with west face marked `.F.` (inverted); all other faces outward-oriented. Edge reuse ensures no free edges, but face4's flipped same_sense breaks propagation chain.
+
+---
+
+### Tsh160 — ShapeAnalysis_Shell.CheckOrientedShells inverted-trace
+
+**Problem**: A shell where all faces are consistently inverted (inward-facing normals) forms a topologically valid cycle but has globally reversed orientation. Implicit orientation trace yields a closed loop but travels the "inside-out" direction, confusing orientation consensus checks.
+
+**Fixture**: Unit cube with all 6 faces marked `.F.` (inverted), all edge windings consistent locally but globally inside-out. Tests whether orientation consensus detects absolute inversion vs. relative inconsistency.
+
+---
+
+### Tsh161 — ShapeUpgrade_ShellSewing.Apply with-history-tracking
+
+**Problem**: ShellSewing's Apply method produces correct topological output but doesn't record intermediate geometry states in the history map. Caller cannot trace which edges were merged or which faces were refined.
+
+**Fixture**: Two coplanar triangles sharing one edge, second triangle vertex offset by 0.001 units in z to simulate near-coincident geometry requiring sewing. Valid output, but history-map defect breaks change auditing.
+
+---
+
+### Tsh162 — ShapeFix_Shell.Perform reports-fixed-but-still-broken
+
+**Problem**: Pyramid with apex triangles exhibiting subtle face-orientation and edge-sense mismatches. Perform() reports myStatus=DONE (successfully fixed) but the West face remains inverted; defect persists because fix logic doesn't re-validate after repair.
+
+**Fixture**: Square base + 4 triangular sides. West face's same_sense=`.F.` and reversed edges simulate state where simple flip detection passes but deeper consistency checks fail. Perform's exit condition is satisfied prematurely.
+
+---
+
+### Tsh163 — ShapeAnalysis_Shell.FreeEdges edge-by-vertex-coincidence
+
+**Problem**: Two edges reference the same vertex (topological coincidence) but their geometry diverges at that vertex. FreeEdges treats them as connected (no free edge) because adjacency checks vertex identity, not geometric continuity.
+
+**Fixture**: Two triangular faces. Shared vertex at origin; two EDGE_CURVE entities reference it but curve start/end points disagree. FreeEdges will classify the edge pair as connected despite geometric gap, failing to report a topological discontinuity.
+
+---
+
+**Catalog**: Wave 43 baseline — 5 STEP shell fixtures targeting OCCT heal subsystem consensus/orientation/sewing/history defects. All fixtures use AUTOMOTIVE_DESIGN v3.1.1 schema, SHELL_BASED_SURFACE_MODEL wrapper, and mandatory PRODUCT chain. ID range Tsh159–Tsh163.
 
 ### Gp040 — Pcurves emitted by default duplicate / contradict the surface 3D curve
 - **Category**: §12.2a pcurve defects (sub-class: writer-emitted pcurves disagree with 3D)

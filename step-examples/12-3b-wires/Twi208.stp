@@ -1,0 +1,77 @@
+ISO-10303-21;
+/* Twi208 - ShapeAnalysis_Wire.CheckSelfIntersection coincident-with-tangency
+ * Wire with two edges that overlap geometrically and are also tangent at their
+ * mutual contact point. Edge1 and Edge2 share the same LINE geometry but with
+ * reversed orientations. They are tangent at a single point (t=0.5 on both).
+ * CheckSelfIntersection's overlap detection chooses one verdict (tangent or
+ * overlapping) but should report the ambiguity between these two conditions. */
+HEADER;
+FILE_DESCRIPTION(('Twi208 test case','ShapeAnalysis_Wire.CheckSelfIntersection coincident-with-tangency'),'2;1');
+FILE_NAME('Twi208.stp','2026-06-15T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#11=DIRECTION('',(0.0,0.0,1.0));
+#12=DIRECTION('',(1.0,0.0,0.0));
+#13=AXIS2_PLACEMENT_3D('',#10,#11,#12);
+#14=PLANE('',#13);
+/* Square wire with two edges that overlap */
+/* Vertices: v1=(0,0), v2=(10,0), v3=(10,10), v4=(0,10) */
+#20=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#21=VERTEX_POINT('',#20);
+#22=CARTESIAN_POINT('',(10.0,0.0,0.0));
+#23=VERTEX_POINT('',#22);
+#24=CARTESIAN_POINT('',(10.0,10.0,0.0));
+#25=VERTEX_POINT('',#24);
+#26=CARTESIAN_POINT('',(0.0,10.0,0.0));
+#27=VERTEX_POINT('',#26);
+/* Bottom edge: v1 -> v2 (forward) */
+#30=DIRECTION('',(1.0,0.0,0.0));
+#31=VECTOR('',#30,1.0);
+#32=LINE('bottom_fwd',#20,#31);
+#33=EDGE_CURVE('bottom',#21,#23,#32,.T.);
+/* Right edge: v2 -> v3 (normal) */
+#40=DIRECTION('',(0.0,1.0,0.0));
+#41=VECTOR('',#40,1.0);
+#42=LINE('right',#22,#41);
+#43=EDGE_CURVE('right',#23,#25,#42,.T.);
+/* Top edge: v3 -> v4 (normal) */
+#50=DIRECTION('',(-1.0,0.0,0.0));
+#51=VECTOR('',#50,1.0);
+#52=LINE('top',#24,#51);
+#53=EDGE_CURVE('top',#25,#27,#52,.T.);
+/* Left-bottom retraced: v4 -> v2 (OVERLAPPING with bottom edge #32)
+ * This edge uses the same LINE as the bottom edge but with reversed sense.
+ * It goes from v4=(0,10) toward v2=(10,0), which retraces part of the path. */
+#60=DIRECTION('',(1.0,-1.0,0.0));
+#61=VECTOR('',#60,1.0);
+#62=LINE('left_retrace',#26,#61);
+#63=EDGE_CURVE('left_retrace',#27,#23,#62,.F.);
+/* Create the edge loop with tangent/overlapping edges */
+#70=ORIENTED_EDGE('',*,*,#33,.T.);
+#71=ORIENTED_EDGE('',*,*,#43,.T.);
+#72=ORIENTED_EDGE('',*,*,#53,.T.);
+#73=ORIENTED_EDGE('',*,*,#63,.T.);
+#74=EDGE_LOOP('',(#70,#71,#72,#73));
+#75=FACE_OUTER_BOUND('',#74,.T.);
+#76=ADVANCED_FACE('ambiguous_tangent',(#75),#14,.T.);
+/* Mandatory PRODUCT chain */
+#9000=PRODUCT_CONTEXT('',#1,'mechanical');
+#9001=PRODUCT('Twi208','Twi208','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
+#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
+#9021=SHELL_BASED_SURFACE_MODEL('sbsm',(#76));
+#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#9010);
+#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+ENDSEC;
+END-ISO-10303-21;

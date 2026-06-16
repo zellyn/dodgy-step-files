@@ -1,0 +1,114 @@
+ISO-10303-21;
+/* Tsh165 - ShapeAnalysis_Shell.CheckOrientedShells multi-component
+ * Defect: shell with 3 disjoint sub-shells; CheckOrientedShells reports
+ * per-component but verdict-merge logic loses one. Tests: compound
+ * with isolated face clusters that are not topologically connected. */
+HEADER;
+FILE_DESCRIPTION(('Tsh165 test case','ShapeAnalysis_Shell multi-component'),'2;1');
+FILE_NAME('Tsh165.stp','2026-06-15T00:00:00',(''),(''),'auto-generated','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+/* Component 1: square face at z=0 */
+#100=CARTESIAN_POINT('c1p0',(0.0,0.0,0.0));
+#101=CARTESIAN_POINT('c1p1',(1.0,0.0,0.0));
+#102=CARTESIAN_POINT('c1p2',(1.0,1.0,0.0));
+#103=CARTESIAN_POINT('c1p3',(0.0,1.0,0.0));
+#110=VERTEX_POINT('',#100);
+#111=VERTEX_POINT('',#101);
+#112=VERTEX_POINT('',#102);
+#113=VERTEX_POINT('',#103);
+/* Component 2: isolated square at z=2 */
+#120=CARTESIAN_POINT('c2p0',(0.0,0.0,2.0));
+#121=CARTESIAN_POINT('c2p1',(1.0,0.0,2.0));
+#122=CARTESIAN_POINT('c2p2',(1.0,1.0,2.0));
+#123=CARTESIAN_POINT('c2p3',(0.0,1.0,2.0));
+#130=VERTEX_POINT('',#120);
+#131=VERTEX_POINT('',#121);
+#132=VERTEX_POINT('',#122);
+#133=VERTEX_POINT('',#123);
+/* Component 3: third isolated square at z=4 */
+#140=CARTESIAN_POINT('c3p0',(0.0,0.0,4.0));
+#141=CARTESIAN_POINT('c3p1',(1.0,0.0,4.0));
+#142=CARTESIAN_POINT('c3p2',(1.0,1.0,4.0));
+#143=CARTESIAN_POINT('c3p3',(0.0,1.0,4.0));
+#150=VERTEX_POINT('',#140);
+#151=VERTEX_POINT('',#141);
+#152=VERTEX_POINT('',#142);
+#153=VERTEX_POINT('',#143);
+/* Directions and edges for all three components */
+#200=DIRECTION('x',(1.0,0.0,0.0));
+#201=VECTOR('',#200,1.0);
+#202=DIRECTION('y',(0.0,1.0,0.0));
+#203=VECTOR('',#202,1.0);
+/* Component 1 edges */
+#300=LINE('',#100,#201); #301=EDGE_CURVE('',#110,#111,#300,.T.);
+#302=LINE('',#101,#203); #303=EDGE_CURVE('',#111,#112,#302,.T.);
+#304=LINE('',#103,#201); #305=EDGE_CURVE('',#113,#112,#304,.T.);
+#306=LINE('',#100,#203); #307=EDGE_CURVE('',#110,#113,#306,.T.);
+/* Component 2 edges */
+#310=LINE('',#120,#201); #311=EDGE_CURVE('',#130,#131,#310,.T.);
+#312=LINE('',#121,#203); #313=EDGE_CURVE('',#131,#132,#312,.T.);
+#314=LINE('',#123,#201); #315=EDGE_CURVE('',#133,#132,#314,.T.);
+#316=LINE('',#120,#203); #317=EDGE_CURVE('',#130,#133,#316,.T.);
+/* Component 3 edges */
+#320=LINE('',#140,#201); #321=EDGE_CURVE('',#150,#151,#320,.T.);
+#322=LINE('',#141,#203); #323=EDGE_CURVE('',#151,#152,#322,.T.);
+#324=LINE('',#143,#201); #325=EDGE_CURVE('',#153,#152,#324,.T.);
+#326=LINE('',#140,#203); #327=EDGE_CURVE('',#150,#153,#326,.T.);
+/* Plane surfaces */
+#400=DIRECTION('z',(0.0,0.0,1.0));
+#410=DIRECTION('x',(1.0,0.0,0.0));
+#420=CARTESIAN_POINT('',(0.5,0.5,0.0));
+#421=AXIS2_PLACEMENT_3D('',#420,#400,#410);
+#422=PLANE('plane1',#421);
+#430=CARTESIAN_POINT('',(0.5,0.5,2.0));
+#431=AXIS2_PLACEMENT_3D('',#430,#400,#410);
+#432=PLANE('plane2',#431);
+#440=CARTESIAN_POINT('',(0.5,0.5,4.0));
+#441=AXIS2_PLACEMENT_3D('',#440,#400,#410);
+#442=PLANE('plane3',#441);
+/* Face 1 */
+#500=ORIENTED_EDGE('',*,*,#301,.T.);
+#501=ORIENTED_EDGE('',*,*,#303,.T.);
+#502=ORIENTED_EDGE('',*,*,#305,.F.);
+#503=ORIENTED_EDGE('',*,*,#307,.F.);
+#504=EDGE_LOOP('',(#500,#501,#502,#503));
+#505=FACE_OUTER_BOUND('',#504,.T.);
+#506=ADVANCED_FACE('',(#505),#422,.T.);
+/* Face 2 */
+#510=ORIENTED_EDGE('',*,*,#311,.T.);
+#511=ORIENTED_EDGE('',*,*,#313,.T.);
+#512=ORIENTED_EDGE('',*,*,#315,.F.);
+#513=ORIENTED_EDGE('',*,*,#317,.F.);
+#514=EDGE_LOOP('',(#510,#511,#512,#513));
+#515=FACE_OUTER_BOUND('',#514,.T.);
+#516=ADVANCED_FACE('',(#515),#432,.T.);
+/* Face 3 */
+#520=ORIENTED_EDGE('',*,*,#321,.T.);
+#521=ORIENTED_EDGE('',*,*,#323,.T.);
+#522=ORIENTED_EDGE('',*,*,#325,.F.);
+#523=ORIENTED_EDGE('',*,*,#327,.F.);
+#524=EDGE_LOOP('',(#520,#521,#522,#523));
+#525=FACE_OUTER_BOUND('',#524,.T.);
+#526=ADVANCED_FACE('',(#525),#442,.T.);
+/* Open shell with 3 disjoint faces */
+#600=OPEN_SHELL('three_disjoint_faces',(#506,#516,#526));
+#9000=PRODUCT_CONTEXT('',#1,'mechanical');
+#9001=PRODUCT('Tsh165','Tsh165','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
+#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
+#9021=SHELL_BASED_SURFACE_MODEL('sbsm',(#600));
+#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#9010);
+#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+ENDSEC;
+END-ISO-10303-21;

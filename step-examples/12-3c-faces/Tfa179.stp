@@ -1,0 +1,78 @@
+/* Tfa179 - ShapeAnalysis_CheckSmallFace.CheckTwisted with-degenerate-edge
+ * Defect: CheckTwisted tests a face's planarity by sampling points on edges
+ * and computing a normal; when the outer wire contains a degenerate edge,
+ * the edge's tangent is undefined, causing undefined behavior and NaN output
+ * that propagates downstream and crashes solvers.
+ * Reproducer: ADVANCED_FACE whose outer wire includes a degenerate edge.
+ */
+ISO-10303-21;
+HEADER;
+FILE_DESCRIPTION(('Tfa179 CheckTwisted degenerate edge NaN'),'2;1');
+FILE_NAME('Tfa179.stp','2026-06-15T00:00:00',(''),(''),
+  'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
+  'automotive_design',2009,#1);
+#10=CARTESIAN_POINT('origin',(0.0,0.0,0.0));
+#11=DIRECTION('z',(0.0,0.0,1.0));
+#12=DIRECTION('x',(1.0,0.0,0.0));
+#13=AXIS2_PLACEMENT_3D('plc',#10,#11,#12);
+#20=PLANE('base_plane',#13);
+/* Wire vertices: outer square with one degenerate edge */
+#200=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#201=VERTEX_POINT('',#200);
+#202=CARTESIAN_POINT('',(10.0,0.0,0.0));
+#203=VERTEX_POINT('',#202);
+#204=CARTESIAN_POINT('',(10.0,0.0,0.0));
+#205=VERTEX_POINT('',#204);
+#206=CARTESIAN_POINT('',(10.0,10.0,0.0));
+#207=VERTEX_POINT('',#206);
+#208=CARTESIAN_POINT('',(0.0,10.0,0.0));
+#209=VERTEX_POINT('',#208);
+/* Edges */
+#300=VECTOR('',(1.0,0.0,0.0),10.0);
+#301=LINE('',#200,#300);
+#302=EDGE_CURVE('',#201,#203,#301,.T.);
+/* Degenerate edge: from (10,0) to (10,0) - zero length */
+#303=VECTOR('',(0.0,0.0,0.0),1.0);
+#304=LINE('',#202,#303);
+#305=EDGE_CURVE('',#203,#205,#304,.T.);
+#306=VECTOR('',(0.0,1.0,0.0),10.0);
+#307=LINE('',#204,#306);
+#308=EDGE_CURVE('',#205,#207,#307,.T.);
+#309=VECTOR('',(-1.0,0.0,0.0),10.0);
+#310=LINE('',#206,#309);
+#311=EDGE_CURVE('',#207,#209,#309,.T.);
+#312=VECTOR('',(0.0,-1.0,0.0),10.0);
+#313=LINE('',#208,#312);
+#314=EDGE_CURVE('',#209,#201,#313,.T.);
+/* Oriented edges */
+#400=ORIENTED_EDGE('',*,*,#302,.T.);
+#401=ORIENTED_EDGE('',*,*,#305,.T.);
+#402=ORIENTED_EDGE('',*,*,#308,.T.);
+#403=ORIENTED_EDGE('',*,*,#311,.T.);
+#404=ORIENTED_EDGE('',*,*,#314,.T.);
+/* Loop with degenerate edge */
+#500=EDGE_LOOP('',(#400,#401,#402,#403,#404));
+#501=FACE_OUTER_BOUND('',#500,.T.);
+#600=ADVANCED_FACE('with_degenerate',(#501),#20,.T.);
+#9000=PRODUCT_CONTEXT('',#1,'mechanical');
+#9001=PRODUCT('Tfa179','Tfa179','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
+#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
+#9020=OPEN_SHELL('wrap_shell',(#600));
+#9021=SHELL_BASED_SURFACE_MODEL('sbsm',(#9020));
+#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#9010);
+#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+ENDSEC;
+END-ISO-10303-21;

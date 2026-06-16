@@ -1,0 +1,68 @@
+ISO-10303-21;
+/* Tsh163 - ShapeAnalysis_Shell.FreeEdges edge-by-vertex-coincidence
+ * Defect: Two edges connect at a vertex but their curve geometries don't agree
+ * at the vertex. FreeEdges treats them as connected (no free edge reported) even
+ * though the geometry shows discontinuity. */
+HEADER;
+FILE_DESCRIPTION(('Tsh163 test case','Edges with vertex-geometry mismatch'),'2;1');
+FILE_NAME('Tsh163.stp','2026-06-15T00:00:00',(''),(''),'auto-generated','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+/* Two faces sharing a vertex but with misaligned curves at that vertex */
+#100=CARTESIAN_POINT('v0',(0.0,0.0,0.0));
+#101=CARTESIAN_POINT('v1',(1.0,0.0,0.0));
+#102=CARTESIAN_POINT('v2',(0.5,1.0,0.0));
+#103=CARTESIAN_POINT('v3',(1.5,1.0,0.0));
+#110=VERTEX_POINT('',#100); #111=VERTEX_POINT('',#101);
+#112=VERTEX_POINT('',#102); #113=VERTEX_POINT('',#103);
+/* Edge 1: (0,1) straight line */
+#200=DIRECTION('',(1.0,0.0,0.0));
+#201=VECTOR('',#200,1.0);
+#202=DIRECTION('',(0.0,1.0,0.0));
+#203=VECTOR('',#202,1.0);
+#204=DIRECTION('',(-0.5,1.0,0.0)); #205=VECTOR('',#204,1.12);
+#206=DIRECTION('',(0.5,1.0,0.0)); #207=VECTOR('',#206,1.12);
+#210=LINE('e01',#100,#201); #211=EDGE_CURVE('shared_01',#110,#111,#210,.T.);
+#212=LINE('e02_f1',#100,#202); #213=EDGE_CURVE('',#110,#112,#212,.T.);
+#214=LINE('e12_f1',#101,#204); #215=EDGE_CURVE('e12_tri1',#111,#112,#214,.T.);
+#216=LINE('e01_other',#100,#201); #217=EDGE_CURVE('edge_01_f2',#110,#111,#216,.T.);
+#218=LINE('e13_f2',#101,#206); #219=EDGE_CURVE('e13_tri2',#111,#113,#218,.T.);
+#220=LINE('e03_f2',#100,#202); #221=EDGE_CURVE('e03_f2',#100,#113,#220,.T.);
+/* Face 1: triangle (0,1,2) */
+#300=ORIENTED_EDGE('',*,*,#211,.T.);
+#301=ORIENTED_EDGE('',*,*,#215,.T.);
+#302=ORIENTED_EDGE('',*,*,#213,.F.);
+#303=EDGE_LOOP('',(#300,#301,#302));
+#304=FACE_OUTER_BOUND('',#303,.T.);
+#305=AXIS2_PLACEMENT_3D('',#100,#202,#200);
+#306=PLANE('plane_f1',#305);
+#310=ADVANCED_FACE('tri_f1',(#304),#306,.T.);
+/* Face 2: triangle (1,2,3) with edge01 reference - geometry mismatch */
+#320=ORIENTED_EDGE('',*,*,#211,.F.);
+#321=ORIENTED_EDGE('',*,*,#219,.T.);
+#322=ORIENTED_EDGE('',*,*,#221,.F.);
+#323=EDGE_LOOP('',(#320,#321,#322));
+#324=FACE_OUTER_BOUND('',#323,.T.);
+#325=AXIS2_PLACEMENT_3D('',#101,#202,#200);
+#326=PLANE('plane_f2',#325);
+#330=ADVANCED_FACE('tri_f2',(#324),#326,.T.);
+#400=OPEN_SHELL('faces_vertex_mismatch',(#310,#330));
+#9000=PRODUCT_CONTEXT('',#1,'mechanical');
+#9001=PRODUCT('Tsh163','Tsh163','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
+#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
+#9021=SHELL_BASED_SURFACE_MODEL('sbsm',(#400));
+#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#9010);
+#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+ENDSEC;
+END-ISO-10303-21;

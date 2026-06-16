@@ -1,0 +1,62 @@
+ISO-10303-21;
+/* Twi212 — ShapeFix_Wire.FixIntersectingEdges trim-aware-intersection
+ * Defect: Two TRIMMED_CURVE edges geometrically don't intersect (different trim
+ * ranges) but their base curves do; FixIntersectingEdges incorrectly splits at
+ * base-curve intersection, producing erroneous split point in trimmed domain. */
+HEADER;
+FILE_DESCRIPTION(('Twi212 test case','FixIntersectingEdges trim-aware-intersection'),'2;1');
+FILE_NAME('Twi212.stp','2026-06-15T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+/* Two lines on same carrier: Line 1 from (0,0) to (10,0), Line 2 from (0,0) in same direction
+   Edge 1: TRIMMED_CURVE restricts Line 1 to [0,5]  → (0,0) to (5,0)
+   Edge 2: TRIMMED_CURVE restricts Line 2 to [6,10] → (6,0) to (10,0)
+   Base curves intersect at all points (same line), but trimmed ranges don't overlap */
+#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#11=DIRECTION('',(0.0,0.0,1.0));
+#12=DIRECTION('',(1.0,0.0,0.0));
+#13=AXIS2_PLACEMENT_3D('',#10,#11,#12);
+#14=PLANE('',#13);
+/* Vertices for wire (open chain) */
+#20=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#21=VERTEX_POINT('',#20);
+#22=CARTESIAN_POINT('',(5.0,0.0,0.0));
+#23=VERTEX_POINT('',#22);
+#24=CARTESIAN_POINT('',(6.0,0.0,0.0));
+#25=VERTEX_POINT('',#24);
+#26=CARTESIAN_POINT('',(10.0,0.0,0.0));
+#27=VERTEX_POINT('',#26);
+/* Base Line: parametrized 0→10 along X-axis */
+#30=DIRECTION('',(1.0,0.0,0.0));
+#31=VECTOR('',#30,1.0);
+#32=LINE('',#10,#31);
+/* Edge 1: same base line, TRIMMED to [0,5] */
+#40=TRIMMED_CURVE('',#32,.T.,#20,.T.,.T.,#22);
+#41=EDGE_CURVE('',#21,#23,#40,.T.);
+/* Edge 2: same base line, TRIMMED to [6,10] */
+#42=TRIMMED_CURVE('',#32,.T.,#24,.T.,.T.,#26);
+#43=EDGE_CURVE('',#25,#27,#42,.T.);
+/* Wire: two edges that should not intersect geometrically */
+#50=ORIENTED_EDGE('',*,*,#41,.T.);
+#51=ORIENTED_EDGE('',*,*,#43,.T.);
+#60=EDGE_LOOP('',(#50,#51));
+/* Mandatory product chain */
+#9000=PRODUCT_CONTEXT('',#1,'mechanical');
+#9001=PRODUCT('Twi212','Twi212','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
+#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
+#9021=SHELL_BASED_SURFACE_MODEL('sbsm',(#60));
+#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#9010);
+#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+ENDSEC;
+END-ISO-10303-21;

@@ -1,0 +1,88 @@
+ISO-10303-21;
+/* Twi210 - ShapeAnalysis_Wire.CheckClosed near-closed-with-perpendicular-distance
+ * Wire that is geometrically not closed: first vertex at (0,0,0) and last vertex at
+ * (0.0001, 0.0001, 0) (offset by ~0.00014 units in 3D). The perpendicular distance
+ * from end to start is very small, but CheckClosed uses 3D distance, not perpendicular.
+ * The 3D distance is sqrt(0.0001^2 + 0.0001^2) = 0.0001414..., below the default
+ * tolerance of 1e-7 milli-units = 1e-10 units (in STEP meters). Wire appears closed
+ * in 3D but should fail perpendicular-distance check if properly analyzed. */
+HEADER;
+FILE_DESCRIPTION(('Twi210 test case','ShapeAnalysis_Wire.CheckClosed near-closed-with-perpendicular-distance'),'2;1');
+FILE_NAME('Twi210.stp','2026-06-15T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#11=DIRECTION('',(0.0,0.0,1.0));
+#12=DIRECTION('',(1.0,0.0,0.0));
+#13=AXIS2_PLACEMENT_3D('',#10,#11,#12);
+#14=PLANE('',#13);
+/* Wire vertices: nearly but not quite closed */
+/* v1 at origin (0,0,0) */
+#20=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#21=VERTEX_POINT('',#20);
+/* v2 at (10,0,0) */
+#22=CARTESIAN_POINT('',(10.0,0.0,0.0));
+#23=VERTEX_POINT('',#22);
+/* v3 at (10,10,0) */
+#24=CARTESIAN_POINT('',(10.0,10.0,0.0));
+#25=VERTEX_POINT('',#24);
+/* v4 at (0,10,0) */
+#26=CARTESIAN_POINT('',(0.0,10.0,0.0));
+#27=VERTEX_POINT('',#26);
+/* v5 at (0.0001, 0.0001, 0) -- nearly at v1 but NOT exactly, so wire is open */
+#28=CARTESIAN_POINT('',(0.0001,0.0001,0.0));
+#29=VERTEX_POINT('',#28);
+/* Edge1: v1 -> v2 */
+#30=DIRECTION('',(1.0,0.0,0.0));
+#31=VECTOR('',#30,1.0);
+#32=LINE('edge1',#20,#31);
+#33=EDGE_CURVE('e1',#21,#23,#32,.T.);
+/* Edge2: v2 -> v3 */
+#40=DIRECTION('',(0.0,1.0,0.0));
+#41=VECTOR('',#40,1.0);
+#42=LINE('edge2',#22,#41);
+#43=EDGE_CURVE('e2',#23,#25,#42,.T.);
+/* Edge3: v3 -> v4 */
+#50=DIRECTION('',(-1.0,0.0,0.0));
+#51=VECTOR('',#50,1.0);
+#52=LINE('edge3',#24,#51);
+#53=EDGE_CURVE('e3',#25,#27,#52,.T.);
+/* Edge4: v4 -> v5 (closing edge that doesn't quite close) */
+#60=DIRECTION('',(0.0,-1.0,0.0));
+#61=VECTOR('',#60,1.0);
+#62=LINE('edge4_nearly_closing',#26,#61);
+#63=EDGE_CURVE('e4',#27,#29,#62,.T.);
+/* Edge5: v5 -> v1 (tiny gap edge, but present) */
+#64=DIRECTION('',(-0.00005,-0.00005,0.0));
+#65=VECTOR('',#64,1.0);
+#66=LINE('tiny_gap',#28,#65);
+#67=EDGE_CURVE('e5_gap',#29,#21,#66,.T.);
+/* Wire loop: nearly closed but not quite */
+#70=ORIENTED_EDGE('',*,*,#33,.T.);
+#71=ORIENTED_EDGE('',*,*,#43,.T.);
+#72=ORIENTED_EDGE('',*,*,#53,.T.);
+#73=ORIENTED_EDGE('',*,*,#63,.T.);
+#74=ORIENTED_EDGE('',*,*,#67,.T.);
+#75=EDGE_LOOP('',(#70,#71,#72,#73,#74));
+#76=FACE_OUTER_BOUND('',#75,.T.);
+#77=ADVANCED_FACE('nearly_closed',(#76),#14,.T.);
+/* Mandatory PRODUCT chain */
+#9000=PRODUCT_CONTEXT('',#1,'mechanical');
+#9001=PRODUCT('Twi210','Twi210','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
+#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
+#9021=SHELL_BASED_SURFACE_MODEL('sbsm',(#77));
+#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#9010);
+#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+ENDSEC;
+END-ISO-10303-21;

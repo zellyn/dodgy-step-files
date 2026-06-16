@@ -1,0 +1,100 @@
+/* Tfa177 - ShapeAnalysis_CheckSmallFace.CheckPin near-zero-tip-angle
+ * Defect: CheckPin classifies a pin vertex by measuring the tip angle; when
+ * the pin is collapsed (tip angle is exactly 0°), the angle is meaningless
+ * and the classification produces an undefined verdict that can trigger
+ * downstream null-pointer dereferences.
+ * Reproducer: ADVANCED_FACE with a pin-shaped wire where the tip has zero angle.
+ */
+ISO-10303-21;
+HEADER;
+FILE_DESCRIPTION(('Tfa177 CheckPin collapsed tip angle'),'2;1');
+FILE_NAME('Tfa177.stp','2026-06-15T00:00:00',(''),(''),
+  'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
+  'automotive_design',2009,#1);
+#10=CARTESIAN_POINT('origin',(0.0,0.0,0.0));
+#11=DIRECTION('z',(0.0,0.0,1.0));
+#12=DIRECTION('x',(1.0,0.0,0.0));
+#13=AXIS2_PLACEMENT_3D('plc',#10,#11,#12);
+#20=PLANE('base_plane',#13);
+/* Outer square wire */
+#200=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#201=VERTEX_POINT('',#200);
+#202=CARTESIAN_POINT('',(10.0,0.0,0.0));
+#203=VERTEX_POINT('',#202);
+#204=CARTESIAN_POINT('',(10.0,10.0,0.0));
+#205=VERTEX_POINT('',#204);
+#206=CARTESIAN_POINT('',(0.0,10.0,0.0));
+#207=VERTEX_POINT('',#206);
+/* Pin wire: sharp triangle with collapsed tip */
+#210=CARTESIAN_POINT('',(2.0,2.0,0.0));
+#211=VERTEX_POINT('',#210);
+#212=CARTESIAN_POINT('',(8.0,2.0,0.0));
+#213=VERTEX_POINT('',#212);
+#214=CARTESIAN_POINT('',(5.0,8.0,0.0));
+#215=VERTEX_POINT('',#214);
+#216=CARTESIAN_POINT('',(5.0,8.0,0.0));
+#217=VERTEX_POINT('',#216);
+/* Outer wire edges */
+#300=VECTOR('',(1.0,0.0,0.0),10.0);
+#301=LINE('',#200,#300);
+#302=EDGE_CURVE('',#201,#203,#301,.T.);
+#303=VECTOR('',(0.0,1.0,0.0),10.0);
+#304=LINE('',#202,#303);
+#305=EDGE_CURVE('',#203,#205,#304,.T.);
+#306=VECTOR('',(-1.0,0.0,0.0),10.0);
+#307=LINE('',#204,#306);
+#308=EDGE_CURVE('',#205,#207,#307,.T.);
+#309=VECTOR('',(0.0,-1.0,0.0),10.0);
+#310=LINE('',#206,#309);
+#311=EDGE_CURVE('',#207,#201,#310,.T.);
+/* Pin wire edges - collapsed tip */
+#320=VECTOR('',(1.0,0.0,0.0),6.0);
+#321=LINE('',#210,#320);
+#322=EDGE_CURVE('',#211,#213,#321,.T.);
+#323=VECTOR('',(-0.428,0.428,0.0),8.485);
+#324=LINE('',#212,#323);
+#325=EDGE_CURVE('',#213,#215,#324,.T.);
+/* Degenerate edge: both vertices at same point (collapsed tip) */
+#326=VECTOR('',(0.0,0.0,0.0),1.0);
+#327=LINE('',#214,#326);
+#328=EDGE_CURVE('',#215,#217,#327,.T.);
+#329=VECTOR('',(-0.428,-0.428,0.0),8.485);
+#330=LINE('',#216,#329);
+#331=EDGE_CURVE('',#217,#211,#330,.T.);
+/* Oriented edges */
+#400=ORIENTED_EDGE('',*,*,#302,.T.);
+#401=ORIENTED_EDGE('',*,*,#305,.T.);
+#402=ORIENTED_EDGE('',*,*,#308,.T.);
+#403=ORIENTED_EDGE('',*,*,#311,.T.);
+#410=ORIENTED_EDGE('',*,*,#322,.T.);
+#411=ORIENTED_EDGE('',*,*,#325,.T.);
+#412=ORIENTED_EDGE('',*,*,#328,.T.);
+#413=ORIENTED_EDGE('',*,*,#331,.T.);
+/* Loops */
+#500=EDGE_LOOP('',(#400,#401,#402,#403));
+#501=FACE_OUTER_BOUND('',#500,.T.);
+#510=EDGE_LOOP('',(#410,#411,#412,#413));
+#511=FACE_INNER_BOUND('',#510,.F.);
+#600=ADVANCED_FACE('pin_collapsed_tip',(#501,#511),#20,.T.);
+#9000=PRODUCT_CONTEXT('',#1,'mechanical');
+#9001=PRODUCT('Tfa177','Tfa177','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
+#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
+#9020=OPEN_SHELL('wrap_shell',(#600));
+#9021=SHELL_BASED_SURFACE_MODEL('sbsm',(#9020));
+#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#9010);
+#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+ENDSEC;
+END-ISO-10303-21;
