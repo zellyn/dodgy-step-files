@@ -1,0 +1,137 @@
+ISO-10303-21;
+HEADER;
+FILE_DESCRIPTION(('dodgy-step-files wave 28 face fixture Tfa133'),'2;1');
+FILE_NAME('','2026-06-15T00:00:00',(''),(''),
+  'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2009,#1);
+/* Tfa133 - FixOrientation.outer-bound-but-inner-correct
+ * Defect: Outer bound has wrong winding but inner bounds are correct.
+ * FixOrientation flips outer but breaks inner-relative winding.
+ * Trigger: Face with counter-clockwise outer (wrong) and clockwise inners (right).
+ */
+
+#10=CARTESIAN_POINT('origin',(0.0,0.0,0.0));
+#11=DIRECTION('z',(0.0,0.0,1.0));
+#12=DIRECTION('x',(1.0,0.0,0.0));
+#13=AXIS2_PLACEMENT_3D('placement',#10,#11,#12);
+
+/* Outer wire: counter-clockwise (incorrect) */
+#20=CARTESIAN_POINT('p0',(0.0,0.0,0.0));
+#21=CARTESIAN_POINT('p1',(0.0,20.0,0.0));
+#22=CARTESIAN_POINT('p2',(20.0,20.0,0.0));
+#23=CARTESIAN_POINT('p3',(20.0,0.0,0.0));
+
+/* Inner wire 1: clockwise (correct relative to ccw outer) */
+#24=CARTESIAN_POINT('p4',(2.0,2.0,0.0));
+#25=CARTESIAN_POINT('p5',(2.0,8.0,0.0));
+#26=CARTESIAN_POINT('p6',(8.0,8.0,0.0));
+#27=CARTESIAN_POINT('p7',(8.0,2.0,0.0));
+
+/* Inner wire 2: clockwise (correct relative to ccw outer) */
+#28=CARTESIAN_POINT('p8',(12.0,12.0,0.0));
+#29=CARTESIAN_POINT('p9',(12.0,18.0,0.0));
+#30=CARTESIAN_POINT('p10',(18.0,18.0,0.0));
+#31=CARTESIAN_POINT('p11',(18.0,12.0,0.0));
+
+/* Vertices */
+#40=VERTEX_POINT('v0',#20);
+#41=VERTEX_POINT('v1',#21);
+#42=VERTEX_POINT('v2',#22);
+#43=VERTEX_POINT('v3',#23);
+#44=VERTEX_POINT('v4',#24);
+#45=VERTEX_POINT('v5',#25);
+#46=VERTEX_POINT('v6',#26);
+#47=VERTEX_POINT('v7',#27);
+#48=VERTEX_POINT('v8',#28);
+#49=VERTEX_POINT('v9',#29);
+#50=VERTEX_POINT('v10',#30);
+#51=VERTEX_POINT('v11',#31);
+
+/* Outer wire edges (ccw: 0→1→2→3→0) */
+#60=LINE('l0',#20,#(VECTOR('',#(DIRECTION('',(0.0,1.0,0.0))),20.0)));
+#61=LINE('l1',#21,#(VECTOR('',#(DIRECTION('',(1.0,0.0,0.0))),20.0)));
+#62=LINE('l2',#22,#(VECTOR('',#(DIRECTION('',(0.0,-1.0,0.0))),20.0)));
+#63=LINE('l3',#23,#(VECTOR('',#(DIRECTION('',(-1.0,0.0,0.0))),20.0)));
+
+#70=EDGE_CURVE('e0',#40,#41,#60,.T.);
+#71=EDGE_CURVE('e1',#41,#42,#61,.T.);
+#72=EDGE_CURVE('e2',#42,#43,#62,.T.);
+#73=EDGE_CURVE('e3',#43,#40,#63,.T.);
+
+/* Inner wire 1 edges (cw: 4→5→6→7→4) */
+#74=LINE('l4',#24,#(VECTOR('',#(DIRECTION('',(0.0,1.0,0.0))),6.0)));
+#75=LINE('l5',#25,#(VECTOR('',#(DIRECTION('',(1.0,0.0,0.0))),6.0)));
+#76=LINE('l6',#26,#(VECTOR('',#(DIRECTION('',(0.0,-1.0,0.0))),6.0)));
+#77=LINE('l7',#27,#(VECTOR('',#(DIRECTION('',(-1.0,0.0,0.0))),6.0)));
+
+#78=EDGE_CURVE('e4',#44,#45,#74,.T.);
+#79=EDGE_CURVE('e5',#45,#46,#75,.T.);
+#80=EDGE_CURVE('e6',#46,#47,#76,.T.);
+#81=EDGE_CURVE('e7',#47,#44,#77,.T.);
+
+/* Inner wire 2 edges (cw: 8→9→10→11→8) */
+#82=LINE('l8',#28,#(VECTOR('',#(DIRECTION('',(0.0,1.0,0.0))),6.0)));
+#83=LINE('l9',#29,#(VECTOR('',#(DIRECTION('',(1.0,0.0,0.0))),6.0)));
+#84=LINE('l10',#30,#(VECTOR('',#(DIRECTION('',(0.0,-1.0,0.0))),6.0)));
+#85=LINE('l11',#31,#(VECTOR('',#(DIRECTION('',(-1.0,0.0,0.0))),6.0)));
+
+#86=EDGE_CURVE('e8',#48,#49,#82,.T.);
+#87=EDGE_CURVE('e9',#49,#50,#83,.T.);
+#88=EDGE_CURVE('e10',#50,#51,#84,.T.);
+#89=EDGE_CURVE('e11',#51,#48,#85,.T.);
+
+/* Oriented edges */
+#90=ORIENTED_EDGE('oe0',*,*,#70,.T.);
+#91=ORIENTED_EDGE('oe1',*,*,#71,.T.);
+#92=ORIENTED_EDGE('oe2',*,*,#72,.T.);
+#93=ORIENTED_EDGE('oe3',*,*,#73,.T.);
+
+#94=ORIENTED_EDGE('oe4',*,*,#78,.T.);
+#95=ORIENTED_EDGE('oe5',*,*,#79,.T.);
+#96=ORIENTED_EDGE('oe6',*,*,#80,.T.);
+#97=ORIENTED_EDGE('oe7',*,*,#81,.T.);
+
+#98=ORIENTED_EDGE('oe8',*,*,#86,.T.);
+#99=ORIENTED_EDGE('oe9',*,*,#87,.T.);
+#100=ORIENTED_EDGE('oe10',*,*,#88,.T.);
+#101=ORIENTED_EDGE('oe11',*,*,#89,.T.);
+
+/* Edge loops */
+#110=EDGE_LOOP('outer',(#90,#91,#92,#93));
+#111=EDGE_LOOP('inner1',(#94,#95,#96,#97));
+#112=EDGE_LOOP('inner2',(#98,#99,#100,#101));
+
+/* Face bounds */
+#120=FACE_OUTER_BOUND('outer',#110,.T.);
+#121=FACE_INNER_BOUND('inner1',#111,.T.);
+#122=FACE_INNER_BOUND('inner2',#112,.T.);
+
+/* Geometry */
+#130=PLANE('plane',#13);
+
+/* Face with reversed outer and correct inners */
+#140=ADVANCED_FACE('mixed-winding',(#120,#121,#122),#130,.T.);
+
+#150=OPEN_SHELL('shell',(#140));
+
+/* Mandatory PRODUCT chain */
+#9000=PRODUCT_CONTEXT('',#1,'mechanical');
+#9001=PRODUCT('Tfa133','Tfa133','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
+#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
+#9021=SHELL_BASED_SURFACE_MODEL('sbsm',(#150));
+#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#9010);
+#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+ENDSEC;
+END-ISO-10303-21;

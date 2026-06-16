@@ -1,0 +1,92 @@
+/* N097 - ShapeFix_ShapeTolerance.LimitTolerance same-min-and-max
+ * Defect: Call LimitTolerance(shape, 0.001, 0.001) with identical min and max.
+ * Expected: "set all tolerances to 0.001". Actual: condition iamax = (tmax >= tmin)
+ * evaluates true, but implementation treats it as no-op because the semantic
+ * intent of "clamp to range [tmin, tmax]" breaks when min == max. The function
+ * fails to normalize tolerances when both bounds are identical.
+ * Reproducer: Shape with mixed tolerances (0.0005, 0.002, 0.0015). Call
+ * LimitTolerance with tmin=tmax=0.001. Tolerances should all become 0.001,
+ * but implementation leaves them unchanged.
+ */
+ISO-10303-21;
+HEADER;
+FILE_DESCRIPTION(('N097 LimitTolerance same-min-and-max no-op'),'2;1');
+FILE_NAME('N097.stp','2026-06-15T00:00:00',(''),(''),
+  'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
+  'automotive_design',2009,#1);
+/* Multi-face shape with varying tolerance values */
+#10=CARTESIAN_POINT('origin',(0.0,0.0,0.0));
+#11=DIRECTION('z',(0.0,0.0,1.0));
+#12=DIRECTION('x',(1.0,0.0,0.0));
+#13=AXIS2_PLACEMENT_3D('plc',#10,#11,#12);
+/* Face 1 vertices */
+#20=CARTESIAN_POINT('f1_p0',(0.0,0.0,0.0));
+#21=CARTESIAN_POINT('f1_p1',(10.0,0.0,0.0));
+#22=CARTESIAN_POINT('f1_p2',(10.0,10.0,0.0));
+#23=CARTESIAN_POINT('f1_p3',(0.0,10.0,0.0));
+#30=VERTEX_POINT('f1_v0',#20);
+#31=VERTEX_POINT('f1_v1',#21);
+#32=VERTEX_POINT('f1_v2',#22);
+#33=VERTEX_POINT('f1_v3',#23);
+/* Face 1 edges */
+#40=DIRECTION('e1_dir',(1.0,0.0,0.0));
+#41=VECTOR('e1_vec',#40,10.0);
+#42=LINE('e1_curve',#20,#41);
+#43=EDGE_CURVE('e1',#30,#31,#42,.T.);
+#50=DIRECTION('e2_dir',(0.0,1.0,0.0));
+#51=VECTOR('e2_vec',#50,10.0);
+#52=LINE('e2_curve',#21,#51);
+#53=EDGE_CURVE('e2',#31,#32,#52,.T.);
+#60=DIRECTION('e3_dir',(-1.0,0.0,0.0));
+#61=VECTOR('e3_vec',#60,10.0);
+#62=LINE('e3_curve',#22,#61);
+#63=EDGE_CURVE('e3',#32,#33,#62,.T.);
+#64=DIRECTION('e4_dir',(0.0,-1.0,0.0));
+#65=VECTOR('e4_vec',#64,10.0);
+#66=LINE('e4_curve',#23,#65);
+#67=EDGE_CURVE('e4',#33,#30,#66,.T.);
+/* Units and context */
+#70=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#71=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#72=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#73=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#70,
+  'distance_accuracy_value','context_tolerance');
+#74=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#73))
+  GLOBAL_UNIT_ASSIGNED_CONTEXT((#70,#71,#72))
+  REPRESENTATION_CONTEXT('mixed_tol_ctx','3D'));
+/* Tolerance declarations with mixed values; LimitTolerance(0.001, 0.001)
+   should normalize all to 0.001, but with equal bounds the operation becomes
+   ambiguous and may be skipped */
+#75=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(5.0E-4),#70,
+  'distance_accuracy_value','f1_e1_tight_tol');
+#76=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.002),#70,
+  'distance_accuracy_value','f1_e2_loose_tol');
+#77=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.0015),#70,
+  'distance_accuracy_value','f1_e3_mid_tol');
+#78=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-5),#70,
+  'distance_accuracy_value','f1_v0_micro_tol');
+#79=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(5.0E-3),#70,
+  'distance_accuracy_value','f1_v2_macro_tol');
+/* PRODUCT CHAIN */
+#9000=PRODUCT_CONTEXT('',#1,'mechanical');
+#9001=PRODUCT('N097','N097','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
+#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
+#9021=SHELL_BASED_SURFACE_MODEL('sbsm',(#74));
+#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#9010);
+#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+ENDSEC;
+END-ISO-10303-21;

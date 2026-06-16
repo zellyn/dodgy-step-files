@@ -1,0 +1,51 @@
+ISO-10303-21;
+/* Gn092 - ShapeAnalysis_Curve.GetSamplePoints offset-curve sample-density
+   Defect: OFFSET_CURVE wrapping a B-spline; sample density inherited from
+   base curve doesn't account for offset's local curvature change.
+   Fixture: degree-3 B-spline base curve with 8 control points, wrapped
+   by OFFSET_CURVE with significant offset distance. */
+HEADER;
+FILE_DESCRIPTION(('Gn092 - OFFSET_CURVE with insufficient sample density'),'2;1');
+FILE_NAME('Gn092.stp','2026-06-15T00:00:00',('auto-generated'),(''),
+  'auto-generated','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+/* Degree-3 B-spline, 8 control points - high curvature variation */
+#1=CARTESIAN_POINT('p0',(0.0,0.0,0.0));
+#2=CARTESIAN_POINT('p1',(1.0,0.0,0.0));
+#3=CARTESIAN_POINT('p2',(2.0,0.5,0.0));
+#4=CARTESIAN_POINT('p3',(3.0,1.5,0.0));
+#5=CARTESIAN_POINT('p4',(4.0,2.0,0.0));
+#6=CARTESIAN_POINT('p5',(5.0,1.5,0.0));
+#7=CARTESIAN_POINT('p6',(6.0,0.5,0.0));
+#8=CARTESIAN_POINT('p7',(7.0,0.0,0.0));
+/* Base degree-3 curve with knot vector (4,1,1,1,1,4) */
+#100=B_SPLINE_CURVE_WITH_KNOTS('base_curve',
+  3,
+  (#1,#2,#3,#4,#5,#6,#7,#8),
+  .UNSPECIFIED.,.F.,.F.,
+  (4,1,1,1,1,4),
+  (0.0,0.2,0.4,0.6,0.8,1.0),
+  .UNSPECIFIED.);
+/* Direction vector for offset (normal in XY plane) */
+#101=DIRECTION('offset_dir',(0.0,0.0,1.0));
+/* Offset curve with significant offset (1.5mm) that changes local curvature */
+#102=OFFSET_CURVE_3D('offset_high_curvature',#100,1.5,#101);
+/* Product chain */
+#9000=PRODUCT_CONTEXT('',#200,'mechanical');
+#9001=PRODUCT('Gn092','Gn092','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#200,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
+#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
+#9022=GEOMETRICALLY_BOUNDED_WIREFRAME_SHAPE_REPRESENTATION('',(#102),#9010);
+#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+#200=SI_UNIT($,.METRE.);
+ENDSEC;
+END-ISO-10303-21;

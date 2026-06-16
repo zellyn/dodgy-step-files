@@ -1,0 +1,47 @@
+ISO-10303-21;
+/* Gn091 - ShapeUpgrade_ConvertCurve2dToBezier endpoint-pole-multiplicity
+   Defect: 2D B-spline whose endpoint knot multiplicity is degree (open),
+   but inner multiplicity is also degree (C0 break). Converter expects
+   only-endpoint-clamped. Fixture: degree-3 2D curve with 7 control points,
+   endpoint multiplicities (4,4) and inner multiplicities (3,3). */
+HEADER;
+FILE_DESCRIPTION(('Gn091 - 2D B-spline with C0 break at inner knot'),'2;1');
+FILE_NAME('Gn091.stp','2026-06-15T00:00:00',('auto-generated'),(''),
+  'auto-generated','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+/* Degree-3, 7 control points in 2D
+   Knot multiplicities: (4, 3, 3, 4) - endpoints clamped AND inner C0 break
+   Knot vector: 0,0,0,0, 0.333,0.333,0.333, 0.667,0.667,0.667, 1,1,1,1 */
+#1=CARTESIAN_POINT('p0',(0.0,0.0));
+#2=CARTESIAN_POINT('p1',(1.0,0.0));
+#3=CARTESIAN_POINT('p2',(2.0,0.0));
+#4=CARTESIAN_POINT('p3',(3.0,1.5));
+#5=CARTESIAN_POINT('p4',(4.0,1.5));
+#6=CARTESIAN_POINT('p5',(5.0,2.0));
+#7=CARTESIAN_POINT('p6',(6.0,2.0));
+#100=B_SPLINE_CURVE_WITH_KNOTS('2d_c0_break_curve',
+  3,
+  (#1,#2,#3,#4,#5,#6,#7),
+  .UNSPECIFIED.,.F.,.F.,
+  (4,3,3,4),
+  (0.0,0.333,0.667,1.0),
+  .UNSPECIFIED.);
+/* Product chain */
+#9000=PRODUCT_CONTEXT('',#200,'mechanical');
+#9001=PRODUCT('Gn091','Gn091','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#200,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
+#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
+#9022=GEOMETRICALLY_BOUNDED_WIREFRAME_SHAPE_REPRESENTATION('',(#100),#9010);
+#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+#200=SI_UNIT($,.METRE.);
+ENDSEC;
+END-ISO-10303-21;

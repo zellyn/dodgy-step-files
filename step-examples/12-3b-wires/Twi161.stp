@@ -1,0 +1,61 @@
+ISO-10303-21;
+/* Twi161 - ShapeAnalysis_Wire.CheckGap2d on B-spline pcurve
+ * Defect: adjacent edges with B-spline pcurves. CheckGap2d uses endpoint
+ * values from knot vector but the start/end pole positions may differ from
+ * the parameter endpoints. */
+HEADER;
+FILE_DESCRIPTION(('Twi161 test case','CheckGap2d on B-spline pcurve'),'2;1');
+FILE_NAME('Twi161.stp','2026-06-15T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#11=DIRECTION('',(0.0,0.0,1.0));
+#12=DIRECTION('',(1.0,0.0,0.0));
+#13=AXIS2_PLACEMENT_3D('',#10,#11,#12);
+#20=PLANE('',#13);
+/* Two vertices on a surface */
+#30=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#31=VERTEX_POINT('',#30);
+#32=CARTESIAN_POINT('',(1.0,0.0,0.0));
+#33=VERTEX_POINT('',#32);
+#34=CARTESIAN_POINT('',(2.0,0.0,0.0));
+#35=VERTEX_POINT('',#34);
+/* B-spline curves for 3D edges */
+#40=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#41=CARTESIAN_POINT('',(0.5,0.1,0.0));
+#42=CARTESIAN_POINT('',(1.0,0.0,0.0));
+#43=B_SPLINE_CURVE_WITH_KNOTS('',3,( #40,#41,#42),.F.,.F.,.F.,(2,1,2),(0.0,0.5,1.0),1);
+#44=CARTESIAN_POINT('',(1.0,0.05,0.0));
+#45=CARTESIAN_POINT('',(1.5,0.0,0.0));
+#46=CARTESIAN_POINT('',(2.0,0.0,0.0));
+#47=B_SPLINE_CURVE_WITH_KNOTS('',3,(#44,#45,#46),.F.,.F.,.F.,(2,1,2),(0.0,0.5,1.0),1);
+/* Two edges with B-spline curves */
+#60=EDGE_CURVE('',#31,#33,#43,.T.);
+#61=EDGE_CURVE('',#33,#35,#47,.T.);
+#70=ORIENTED_EDGE('',*,*,#60,.T.);
+#71=ORIENTED_EDGE('',*,*,#61,.T.);
+/* Defect: CheckGap2d evaluates pcurves at knot endpoints but the B-spline
+   start/end poles may not align with the parameter values, leaving a gap */
+#80=EDGE_LOOP('',(#70,#71));
+#81=FACE_OUTER_BOUND('',#80,.T.);
+#82=ADVANCED_FACE('',(#81),#20,.T.);
+#9000=PRODUCT_CONTEXT('',#1,'mechanical');
+#9001=PRODUCT('Twi161','Twi161','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
+#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
+#9020=OPEN_SHELL('shell',(#82));
+#9021=SHELL_BASED_SURFACE_MODEL('sbsm',(#9020));
+#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#9010);
+#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+ENDSEC;
+END-ISO-10303-21;

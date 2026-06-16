@@ -1,0 +1,51 @@
+ISO-10303-21;
+/* Gn086 - ShapeAnalysis_Curve.GetSamplePoints helix-sampling defect
+   Defect: GetSamplePoints determines sample count based on parameter range
+   but NOT on curvature. A long-pitch 3D helix (low pitch angle) covers a wide
+   parameter span but has low curvature, and receives too few samples for
+   mid-pitch deviation analysis. Fixture: degree-3 B-spline helix with
+   parameter range [0, 4π] (multiple turns) but tight pitch (z-rise ~0.2 per turn). */
+HEADER;
+FILE_DESCRIPTION(('Gn086 - Helix sampling undercount'),'2;1');
+FILE_NAME('Gn086.stp','2026-06-15T00:00:00',('auto-generated'),(''),
+  'auto-generated','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+/* Long-pitch helix: 12 control points over 2 turns, radius 1.0, pitch ~0.2 per turn */
+#1=CARTESIAN_POINT('h0',(1.0,0.0,0.0));
+#2=CARTESIAN_POINT('h1',(0.866,0.5,0.03));
+#3=CARTESIAN_POINT('h2',(0.5,0.866,0.06));
+#4=CARTESIAN_POINT('h3',(0.0,1.0,0.1));
+#5=CARTESIAN_POINT('h4',(-0.5,0.866,0.13));
+#6=CARTESIAN_POINT('h5',(-0.866,0.5,0.16));
+#7=CARTESIAN_POINT('h6',(-1.0,0.0,0.2));
+#8=CARTESIAN_POINT('h7',(-0.866,-0.5,0.23));
+#9=CARTESIAN_POINT('h8',(-0.5,-0.866,0.26));
+#10=CARTESIAN_POINT('h9',(0.0,-1.0,0.3));
+#11=CARTESIAN_POINT('h10',(0.5,-0.866,0.33));
+#12=CARTESIAN_POINT('h11',(0.866,-0.5,0.36));
+/* Degree-3 B-spline helix, parameterized from 0 to 4π */
+#100=B_SPLINE_CURVE_WITH_KNOTS('long_pitch_helix',
+  3,
+  (#1,#2,#3,#4,#5,#6,#7,#8,#9,#10,#11,#12),
+  .UNSPECIFIED.,.F.,.F.,
+  (4,1,1,1,1,1,1,1,1,1,1,4),
+  (0.0,1.047197551,2.094395102,3.141592654,4.1887902,5.235987755,6.283185307,7.330382859,8.377580409,9.424777961,10.47197551,12.566370614),
+  .UNSPECIFIED.);
+#9000=PRODUCT_CONTEXT('',#200,'mechanical');
+#9001=PRODUCT('Gn086','Gn086','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#200,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
+#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
+#9022=GEOMETRICALLY_BOUNDED_WIREFRAME_SHAPE_REPRESENTATION('',(#100),#9010);
+#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+#200=SI_UNIT($,.METRE.);
+ENDSEC;
+END-ISO-10303-21;

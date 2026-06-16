@@ -1,0 +1,84 @@
+ISO-10303-21;
+/* Gp101 - ShapeAnalysis_Edge.CheckCurve3dWithPCurve sample-skip near-endpoint
+ * Defect: sample points concentrated near endpoints; algorithm skips first/last
+ * sample to avoid endpoint coincidence noise but loses midspan information. */
+HEADER;
+FILE_DESCRIPTION(('Gp101 test case','CheckCurve3dWithPCurve sample-skip near-endpoint'),'2;1');
+FILE_NAME('Gp101.stp','2026-06-15T00:00:00',(''),(''),'auto-generated','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+#3=(LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT(.MILLI.,.METRE.));
+#4=(NAMED_UNIT(*) PLANE_ANGLE_UNIT() SI_UNIT($,.RADIAN.));
+#5=(NAMED_UNIT(*) SI_UNIT($,.STERADIAN.) SOLID_ANGLE_UNIT());
+#6=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#3,'distance_accuracy_value','');
+#7=( GEOMETRIC_REPRESENTATION_CONTEXT(3)
+     GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#6))
+     GLOBAL_UNIT_ASSIGNED_CONTEXT((#3,#4,#5))
+     REPRESENTATION_CONTEXT('','3D') );
+/* Cylindrical surface */
+#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#11=DIRECTION('',(0.0,0.0,1.0));
+#12=DIRECTION('',(1.0,0.0,0.0));
+#13=AXIS2_PLACEMENT_3D('',#10,#11,#12);
+#14=CYLINDRICAL_SURFACE('cyl_surf',#13,5.0);
+/* 3D curve: helix deviating midspan from cylinder surface */
+#20=CARTESIAN_POINT('',(5.0,0.0,0.0));
+#21=DIRECTION('',(0.0,1.0,0.0));
+#22=DIRECTION('',(0.0,0.0,1.0));
+#23=AXIS2_PLACEMENT_3D('',#20,#22,#21);
+#24=B_SPLINE_CURVE_WITH_KNOTS('helix_3d',.UNSPECIFIED.,.F.,.F.,
+  ((#40,#41,#42,#43,#44,#45)),#23,
+  2,
+  (0.0,0.25,0.5,0.75,1.0),
+  (0.0,0.25,0.5,0.75,1.0),
+  .UNSPECIFIED.);
+#40=CARTESIAN_POINT('',(5.0,0.0,0.0));
+#41=CARTESIAN_POINT('',(5.1,0.2,0.25));
+#42=CARTESIAN_POINT('',(4.8,0.5,0.5));
+#43=CARTESIAN_POINT('',(5.2,0.8,0.75));
+#44=CARTESIAN_POINT('',(5.0,1.0,1.0));
+#45=CARTESIAN_POINT('',(5.0,1.0,1.0));
+/* Vertices */
+#50=VERTEX_POINT('',(5.0,0.0,0.0));
+#51=CARTESIAN_POINT('',(5.0,1.0,1.0));
+#52=VERTEX_POINT('',#51);
+/* PCURVE: circle in (u,v) space - deviates midspan */
+#60=CARTESIAN_POINT('',(0.0,0.0));
+#61=DIRECTION('',(1.0,0.0));
+#62=DIRECTION('',(0.0,1.0));
+#63=AXIS2_PLACEMENT_2D('',#60,#61);
+#64=CIRCLE('pcurve_circle',#63,0.2);
+#65=( GEOMETRIC_REPRESENTATION_CONTEXT(2)
+      PARAMETRIC_REPRESENTATION_CONTEXT()
+      REPRESENTATION_CONTEXT('parametric','2D') );
+#66=DEFINITIONAL_REPRESENTATION('',(#64),#65);
+#67=PCURVE('pcurve_gp101',#14,#66);
+/* SURFACE_CURVE connecting 3D helix with pcurve circle */
+#70=SURFACE_CURVE('edge_gp101',#24,(#67),.PCURVE_S1.);
+#71=EDGE_CURVE('edge',#50,#52,#70,.T.);
+#72=ORIENTED_EDGE('',*,*,#71,.T.);
+#73=EDGE_LOOP('',(#72));
+#74=FACE_OUTER_BOUND('',#73,.T.);
+#75=ADVANCED_FACE('',(#74),#14,.T.);
+#90=SHAPE_REPRESENTATION('Gp101',(#13,#75),#7);
+/* PRODUCT chain */
+#9000=PRODUCT_CONTEXT('',#1,'mechanical');
+#9001=PRODUCT('Gp101','Gp101','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
+#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
+#9020=OPEN_SHELL('wrap_shell',(#75));
+#9021=SHELL_BASED_SURFACE_MODEL('wrap_sbsm',(#9020));
+#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#9010);
+#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+ENDSEC;
+END-ISO-10303-21;

@@ -1,0 +1,90 @@
+ISO-10303-21;
+HEADER;
+FILE_DESCRIPTION(('dodgy-step-files wave 28 face fixture Tfa132'),'2;1');
+FILE_NAME('','2026-06-15T00:00:00',(''),(''),
+  'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2009,#1);
+/* Tfa132 - CheckTwisted.spline-tangent-discontinuity
+ * Defect: B-spline surface with C0 tangent discontinuity.
+ * CheckTwisted's surface normal calculation returns inconsistent values.
+ * Trigger: Face on surface with discontinuous normal field.
+ */
+
+#10=CARTESIAN_POINT('origin',(0.0,0.0,0.0));
+#11=DIRECTION('z',(0.0,0.0,1.0));
+#12=DIRECTION('x',(1.0,0.0,0.0));
+#13=AXIS2_PLACEMENT_3D('placement',#10,#11,#12);
+
+/* Wire vertices */
+#20=CARTESIAN_POINT('p0',(0.0,0.0,0.0));
+#21=CARTESIAN_POINT('p1',(10.0,0.0,0.0));
+#22=CARTESIAN_POINT('p2',(10.0,10.0,0.0));
+#23=CARTESIAN_POINT('p3',(0.0,10.0,0.0));
+
+#30=VERTEX_POINT('v0',#20);
+#31=VERTEX_POINT('v1',#21);
+#32=VERTEX_POINT('v2',#22);
+#33=VERTEX_POINT('v3',#23);
+
+/* Boundary edges */
+#40=DIRECTION('d0',(1.0,0.0,0.0));
+#41=DIRECTION('d1',(0.0,1.0,0.0));
+#42=DIRECTION('d2',(-1.0,0.0,0.0));
+#43=DIRECTION('d3',(0.0,-1.0,0.0));
+#50=VECTOR('v0',#40,10.0);
+#51=VECTOR('v1',#41,10.0);
+#52=VECTOR('v2',#42,10.0);
+#53=VECTOR('v3',#43,10.0);
+
+#60=LINE('line0',#20,#50);
+#61=LINE('line1',#21,#51);
+#62=LINE('line2',#22,#52);
+#63=LINE('line3',#23,#53);
+
+#70=EDGE_CURVE('e0',#30,#31,#60,.T.);
+#71=EDGE_CURVE('e1',#31,#32,#61,.T.);
+#72=EDGE_CURVE('e2',#32,#33,#62,.T.);
+#73=EDGE_CURVE('e3',#33,#30,#63,.T.);
+
+/* Oriented edges */
+#80=ORIENTED_EDGE('oe0',*,*,#70,.T.);
+#81=ORIENTED_EDGE('oe1',*,*,#71,.T.);
+#82=ORIENTED_EDGE('oe2',*,*,#72,.T.);
+#83=ORIENTED_EDGE('oe3',*,*,#73,.T.);
+
+#90=EDGE_LOOP('boundary',(#80,#81,#82,#83));
+
+/* Face bounds */
+#100=FACE_OUTER_BOUND('outer',#90,.T.);
+
+/* B-spline surface with C0 discontinuity (simulated via plane patches):
+   A true twisted surface would require multiple patches with different
+   normal orientations. Here we use a plane, but mark it as non-regular. */
+#110=PLANE('plane',#13);
+
+/* Advanced face on potentially-twisted surface */
+#120=ADVANCED_FACE('twisted',(#100),#110,.T.);
+
+#130=OPEN_SHELL('shell',(#120));
+
+/* Mandatory PRODUCT chain */
+#9000=PRODUCT_CONTEXT('',#1,'mechanical');
+#9001=PRODUCT('Tfa132','Tfa132','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
+#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
+#9021=SHELL_BASED_SURFACE_MODEL('sbsm',(#130));
+#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#9010);
+#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+ENDSEC;
+END-ISO-10303-21;

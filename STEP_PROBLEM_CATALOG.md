@@ -20762,6 +20762,74 @@ Bi-quadratic B-spline surface (3×3 control points, degree 2×2). When split val
 
 **Fixture**: Degree-3 curve, 7 poles, Y range [-0.8, 0.5] with minimum not at endpoints.
 
+### Gn084 — ShapeAnalysis_Curve.IsPlanar tolerance-zero
+
+**Defect:** IsPlanar called with tolerance=0 (strict planarity); the implementation uses tolerance > 0 in the comparison and returns false for any non-trivial floating-point deviation.
+
+**Fixture:** Degree-2 B-spline curve with control points near XY plane; z-values are ±1e-12 to trigger strict-vs-loose tolerance logic.
+
+**File:** Gn084.stp
+
+---
+
+### Gn085 — ShapeUpgrade_ConvertSurfaceToBezierBasis cylinder-conversion
+
+**Defect:** Cylinder converted to Bezier patches; the resulting 4 Bezier patches have weights but conversion doesn't propagate the rational weights from the cylinder's analytic form.
+
+**Fixture:** NURBS quarter-cylinder surface (3x3 control net, degree 2) with all weights=1.0; should have sqrt(2)/2 weights for proper rational representation.
+
+**File:** Gn085.stp
+
+---
+
+### Gn086 — ShapeAnalysis_Curve.GetSamplePoints helix-sampling
+
+**Defect:** GetSamplePoints determines sample count based on parameter range but not on curvature; long-pitch helix gets too few samples for mid-pitch deviation.
+
+**Fixture:** Degree-3 B-spline helix (12 control points, parameter range [0, 4π]); tight pitch ~0.2 per turn, low curvature, parameter span wide—triggers undersampling.
+
+**File:** Gn086.stp
+
+---
+
+### Gn087 — ShapeUpgrade_SplitSurface.SetUSplitValues neg-zero
+
+**Defect:** Split values containing -0.0; the dedup logic doesn't treat -0.0 == 0.0 and produces a spurious "split" at the boundary.
+
+**Fixture:** Degree-(2,2) B-spline surface (3x3 net, flat patch); split values nominally [0.0, 0.5, 1.0] encode -0.0 at boundary.
+
+**File:** Gn087.stp
+
+---
+
+### Gn088 — ShapeAnalysis_Curve.IsClosed B-spline open-via-knots
+
+**Defect:** B-spline whose control polygon closes but the knot vector is clamped with multiplicity degree+1 at endpoints (intentionally open); IsClosed reports closed based on polygon.
+
+**Fixture:** Degree-3 B-spline (6 control points, first and last coincident at origin); knot multiplicities (4,1,1,4) clamp endpoints, making curve open despite polygon closure.
+
+**File:** Gn088.stp
+
+### Gn089 — ShapeUpgrade_SplitSurface non-rectangular-region
+
+Defect: B-spline surface trimmed to non-rectangular region (triangular trim); SplitSurface attempts axis-aligned split but the trim breaks the assumption. Fixture: degree-3 degree-2 surface with 4x3 control points, trimmed boundary defining a triangular region within parameter space.
+
+### Gn090 — ShapeAnalysis_Curve.IsPlanar Z-NaN
+
+Defect: B-spline with one control point having Z=NaN; IsPlanar's pole sampling produces NaN result, which IEEE compare-with-zero returns false (so "is planar" reported). Fixture: degree-3 curve with 6 control points; middle pole has Z=1.0E+100 to simulate NaN behavior.
+
+### Gn091 — ShapeUpgrade_ConvertCurve2dToBezier endpoint-pole-multiplicity
+
+Defect: 2D B-spline whose endpoint knot multiplicity is degree (open), but inner multiplicity is also degree (C0 break); converter expects only-endpoint-clamped. Fixture: degree-3 2D curve with 7 control points, knot multiplicities (4,3,3,4).
+
+### Gn092 — ShapeAnalysis_Curve.GetSamplePoints offset-curve sample-density
+
+Defect: OFFSET_CURVE wrapping a B-spline; sample density inherited from base curve doesn't account for offset's local curvature change. Fixture: degree-3 B-spline with 8 control points wrapped by OFFSET_CURVE with 1.5mm offset in Z direction.
+
+### Gn093 — ShapeUpgrade_ConvertSurfaceToBezierBasis u-and-v-knot-asymmetry
+
+Defect: Surface with u_degree=3, v_degree=5 and asymmetric knot multiplicities; conversion's symmetric assumption produces wrong Bezier patch count in U vs V. Fixture: 4x6 control point grid, degree-3 in U, degree-5 in V, knot multiplicities (3,1,3) in U and (5,1,5) in V.
+
 ### Wr001 — Trailing whitespace on every record line
 - **Category**: §12.13 writer-pathology (sub-class: whitespace/line-ending)
 - **Sources**: prostep ivip CAx-IF round-trip reports; FreeCAD #4231 "STEP exporter pads lines with spaces"; bug-reporter language: "diff between exports is all whitespace"
@@ -22192,6 +22260,132 @@ Small face with one long dimension (50 units) and one short dimension (0.5 units
 ### Tfa125 — ShapeFix_Face.FixPeriodicDegenerated u-axis-degenerate
 Spherical surface where U direction is degenerate at the south pole (v=0). FixPeriodicDegenerated handles V-degenerate surfaces but assumes U parametric direction is always non-degenerate.
 
+### Tfa126 — FixLoopWire: crossing-wires defect
+
+**Defect axis:** `loop-validation` / `topology`
+
+Face has outer wire and inner wire (hole) that cross each other instead of nesting properly. FixLoopWire's fundamental assumption that loops are either strictly outer or strictly inner breaks when wires spatially intersect. Reproducer: single face with 10×10 outer loop and crossing 4×4 inner loop; inner loop edges do not form a closed loop (incomplete test).
+
+### Tfa127 — CheckPin: oversized-pin
+
+**Defect axis:** `geometry-probe` / `tolerance`
+
+Face with pin-like morphology (very thin rectangle: 10×1.5) where width exceeds CheckPin's maximum pin-width threshold. Algorithm reports face is not a pin despite pin structure. Reproducer: rectangular plane face with aspect ratio triggering false negative.
+
+### Tfa128 — FixOrientation: already-correct
+
+**Defect axis:** `api-contract` / `incomplete_fix`
+
+Face whose normal orientation is already correct according to the face geometry and bounds. FixOrientation runs the correction algorithm and produces identical output but marks myStatus as "fixed" even though no change occurred. Reproducer: simple 5×5 square with correct ccw outer boundary and correct normal.
+
+### Tfa129 — CheckSplittingVertices: T-vertex at B-spline midpoint
+
+**Defect axis:** `curve_validation` / `parameter_coherence`
+
+Vertex positioned at exact midpoint of a B-spline edge (not a LINE). CheckSplittingVertices uses parameter domain midpoint (0.5) for detection rather than 3D spatial midpoint, causing misdetection. Reproducer: rectangular face with T-junction vertex at parameter u=0.5 on non-line edge.
+
+### Tfa130 — FixSmallAreaWire: mixed-size-wires
+
+**Defect axis:** `orientation_classification` / `cardinality-dispatch`
+
+Face declares two outer-wire candidates: one large (20×20) and one tiny (0.2×0.2) with no nesting relationship. FixSmallAreaWire's outer-vs-inner detection heuristic selects tiny wire as outer because it processes area-sorted list incorrectly. Reproducer: single plane face with two disjoint FACE_OUTER_BOUND entries of vastly different scales.
+
+### Tfa131 — FixWiresTwoCoincEdges crossing-wires-coincident-segment
+
+Face with two wires sharing a coincident edge segment. The method cannot decide which wire owns the shared edge, triggering the core defect where wires with identical edge geometry at FORWARD orientation should merge but classification logic fails on multi-wire faces with crossed topology.
+
+**Fixture design**: Planar face with outer rectangle (0,0)-(10,10) and inner wire (10,0)-(12,10) sharing the edge from (10,0) to (10,10). Both wires have coincident edge #61 (identical curve, FORWARD orientation).
+
+**Defect class**: `ShapeFix_Face.FixWiresTwoCoincEdges.cardinality-dispatch` (line 2870).
+
+---
+
+### Tfa132 — CheckTwisted spline-tangent-discontinuity
+
+Face on B-spline surface with C0 tangent discontinuity. The surface normal calculation returns inconsistent values across the discontinuity, causing the twisted-face detector to misclassify the surface topology.
+
+**Fixture design**: Planar face (10×10 square) as proxy for discontinuous spline. The defect requires a true B-spline with split continuity; this fixture provides the geometric boundary, expecting downstream enhancement with actual NURBS surface definition.
+
+**Defect class**: `ShapeAnalysis_CheckSmallFace.CheckTwisted_at975` (line 1015).
+
+---
+
+### Tfa133 — FixOrientation outer-bound-but-inner-correct
+
+Face with counter-clockwise outer bound (incorrect winding) but clockwise inner bounds (correct relative to ccw outer). When FixOrientation flips the outer to correct winding, the inner-relative orientation becomes inverted, violating the nested topology.
+
+**Fixture design**: Planar face with outer wire at (0,0)-(20,20) traversed counter-clockwise (wrong), and two inner wires at (2,2)-(8,8) and (12,12)-(18,18) both traversed clockwise (correct relative to outer). Removing the outer flip would leave all wires with compatible winding; flipping outer breaks inner consistency.
+
+**Defect class**: `ShapeFix_Face.FixOrientation.ReverseOnOuterContainment` (line 1420–1432).
+
+---
+
+### Tfa134 — CheckStripFace strip-with-pin
+
+Strip-like face (30×0.5 rectangle) with a pin protrusion (2×2 square) at one end. The classifier detects both strip and pin character but the strip dominates, causing misclassification of the pin as part of the strip or vice versa, affecting downstream removal logic.
+
+**Fixture design**: Planar face with outer loop defining strip region (0,0)-(30,0.5) and inner hole (0,-2)-(2,0) creating the pin protrusion at x=0. The area ratio and topology trigger ambiguity in `CheckStripFace` branch logic.
+
+**Defect class**: `ShapeAnalysis_CheckSmallFace.CheckStripFace_at659` (line 662).
+
+---
+
+### Tfa135 — FixSmallAreaWire chained-removal
+
+Face with three small inner wires (areas 0.01, 0.0225, 0.04) on a 20×20 outer square. Removing the first wire changes the face area calculation, causing the second to also fall below the small-area threshold (cascade effect).
+
+**Fixture design**: Planar face with outer loop (0,0)-(20,20) and three inner loops: (2,2)-(2.1,2.1) [0.01], (5,5)-(5.15,5.15) [0.0225], (8,8)-(8.2,8.2) [0.04]. The removal threshold is calibrated so first removal changes the effective area context, triggering cascade removal of the second wire.
+
+**Defect class**: `ShapeFix_Face.FixSmallAreaWire.idempotence` (line 2372).
+
+### Tfa136 — ShapeFix_Face.FixSplitFace splitter-out-of-range
+
+**Defect:** ShapeFix_Face::FixSplitFace receives a splitter LINE that does not intersect the face bounds. FixSplitFace fails to detect this out-of-range condition and produces an empty split result with no diagnostic error.
+
+**Fixture:** Rectangular face (10x5mm) on plane. Demonstrates silent failure when splitting algorithm is applied with invalid splitter geometry.
+
+**Taxonomy:** OCCT heal logic, edge-case boundary condition detection.
+
+---
+
+### Tfa137 — ShapeAnalysis_CheckSmallFace.CheckTwisted face-with-hole
+
+**Defect:** ShapeAnalysis_CheckSmallFace::CheckTwisted classifies face twist using only the outer wire's winding contribution for inside/outside tests. Missing hole's counter-winding causes misclassification of faces with complex topology.
+
+**Fixture:** Rectangular face (12x10mm) with inner rectangular hole (4x3mm). Tests twist classification under dual-loop topology.
+
+**Taxonomy:** OCCT face analysis, winding number calculation, topology awareness.
+
+---
+
+### Tfa138 — ShapeFix_Face.FixAddNaturalBound surface-not-closed-but-flagged
+
+**Defect:** A surface flagged as u_closed=true but geometrically NOT closed (seam gap exists). FixAddNaturalBound incorrectly constructs a natural boundary at the assumed closure point instead of diagnosing the flag/geometry mismatch.
+
+**Fixture:** Surface_of_revolution with u_closed flag set true but actual surface has gap. Tests natural boundary inference under contradictory metadata.
+
+**Taxonomy:** OCCT surface closure semantics, parameterization assumptions.
+
+---
+
+### Tfa139 — ShapeAnalysis_CheckSmallFace.CheckSpotFace spot-with-internal-pin
+
+**Defect:** ShapeAnalysis_CheckSmallFace::CheckSpotFace classifies small faces as "spot" (degenerate/noise) when they have minimal area. Missing secondary features (pin protrusions) that contradict spot classification, producing false positives.
+
+**Fixture:** Tiny planar face (0.1x0.1mm) with internal hole loop (0.005x0.005mm) at center. Tests spot detection when internal topology suggests intentional geometry.
+
+**Taxonomy:** OCCT face classification, feature-level degenerate detection.
+
+---
+
+### Tfa140 — ShapeFix_Face.FixLoopWire wire-with-self-intersection
+
+**Defect:** ShapeFix_Face::FixLoopWire receives an inner wire with self-intersection (figure-8 topology). Loop-merge logic produces non-manifold output instead of rejecting or healing the self-intersecting path.
+
+**Fixture:** Rectangular face (10x8mm) with inner loop forming figure-8 self-intersecting path. Tests manifold constraint validation in inner loop repair.
+
+**Taxonomy:** OCCT wire topology, loop self-intersection detection, manifold enforcement.
+
 ### Hea016 — Empty solid output from STEP export of complex body, despite STL succeeding
 - **Category**: §12.3c faces / shape healing
 - **Sources**: FreeCAD #20396; bug-reporter language: "Models exported to STEP crash or produce empty objects", "appears to export fine but results in an empty object", "STL and 3MF export work, STEP doesn't".
@@ -22598,6 +22792,56 @@ Wire contains same edge twice with forward and reverse orientations. FixReorder 
 **Defect class**: `input-shape`, duplicate edge reference  
 **Source**: OCCT_HEAL_COVERAGE_V3.md ShapeFix_Wire.FixReorder_at1352, _at488  
 **Root cause**: EDGE_LOOP reorder logic does not detect duplicate edge references with opposite orientations; treats them as independent entities
+
+### Twi157 — ShapeAnalysis_Wire.CheckSelfIntersection figure-8 wire
+Wire whose path forms a figure-8 (crosses itself at one point). CheckSelfIntersection must detect the crossing at the self-intersection point where the two lobes meet.
+
+### Twi158 — ShapeFix_Wire.FixGaps2d 2D-gap on periodic surface
+Wire on cylindrical surface where 2D pcurves leave a gap exactly at u=0 (the seam). FixGaps2d's gap-bridging fails to handle seam-crossing correctly.
+
+### Twi159 — ShapeAnalysis_Wire.CheckOrder wire-completely-reversed
+4-edge closed wire where all edges are .F. orientation. CheckOrder should detect reverse-traversal and flag it as a fixable mode rather than failing silently.
+
+### Twi160 — ShapeFix_Wire.FixLacking degenerate-vertex-gap
+Wire missing an edge between v1 and v2 where dist(v1,v2) < Confusion (effectively coincident). FixLacking inserts a degenerate edge but the construction has wrong direction.
+
+### Twi161 — ShapeAnalysis_Wire.CheckGap2d on B-spline pcurve
+Adjacent edges with B-spline pcurves. CheckGap2d evaluates at knot vector endpoints but start/end pole positions may differ, leaving a gap in connectivity.
+
+### Twi162 — ShapeFix_Wire.FixIntersectingEdges 3-edge-mutual-intersection
+**Axis**: `healer-state` | **Kind**: `fixture`  
+**Brief**: Wire with 3 edges mutually intersecting at single point (star geometry); FixIntersectingEdges splits pairwise and produces inconsistent topology.  
+**Claim**: Without cycle detection, pairwise splitting of 3 mutually-intersecting edges leaves at least one pair with undetected overlap.  
+**Reproducer**: Three line segments (horizontal, vertical, diagonal) passing through (5,5,0); wire loop enclosing all three. FixIntersectingEdges should split pairwise but create invalid vertex/edge correspondence.  
+**Fixture**: `/Users/zellyn/gh/dodgy-step-files/step-examples/12-3b-wires/Twi162.stp`
+
+### Twi163 — ShapeAnalysis_Wire.CheckIntersectingEdges trimmed-edges-overlap-base-curve
+**Axis**: `conformance-probe` | **Kind**: `fixture`  
+**Brief**: Two edges sharing same base B-spline curve with overlapping trim ranges; CheckIntersectingEdges should report overlap but may miss it.  
+**Claim**: Without range-overlap detection on shared-base-curve edges, CheckIntersectingEdges reports false-clean on edges [0.0–0.6] and [0.4–0.9] of same curve.  
+**Reproducer**: Degree-3 B-spline base curve; two EDGE_CURVEs both reference it with parameter ranges [0.0, 0.6] and [0.4, 0.9]. CheckIntersectingEdges must detect overlap.  
+**Fixture**: `/Users/zellyn/gh/dodgy-step-files/step-examples/12-3b-wires/Twi163.stp`
+
+### Twi164 — ShapeFix_Wire.FixReorder algorithm-cycle
+**Axis**: `healer-state` | **Kind**: `fixture`  
+**Brief**: Wire where reorder algorithm reaches cycle: edge X must come before Y but Y also requires X-first; algorithm doesn't detect and loops.  
+**Claim**: Without cycle detection in FixReorder's dependency graph, a diamond-shaped wire with overlapping edge endpoints causes infinite loop or hanging reorder pass.  
+**Reproducer**: Four-edge diamond (v0→v1→v2→v3→v0) with near-tangent junctions creating bi-directional ordering constraints. FixReorder should detect cycle and exit gracefully.  
+**Fixture**: `/Users/zellyn/gh/dodgy-step-files/step-examples/12-3b-wires/Twi164.stp`
+
+### Twi165 — ShapeAnalysis_Wire.CheckTail B-spline subdivided
+**Axis**: `healer-state` | **Kind**: `fixture`  
+**Brief**: Last edge is B-spline subdivided into multiple sub-curves; CheckTail's tangent-discontinuity test fires on every sub-curve boundary.  
+**Claim**: Without knot-continuity awareness, CheckTail flags C1 discontinuities at every sub-curve join as tail failures, over-reporting defects.  
+**Reproducer**: Straight edge followed by three B-spline sub-curves (representing subdivided single curve), each with C1 discontinuity at junction. CheckTail should not fire on subdivisions of single logical edge.  
+**Fixture**: `/Users/zellyn/gh/dodgy-step-files/step-examples/12-3b-wires/Twi165.stp`
+
+### Twi166 — ShapeFix_Wire.FixSelfIntersectingEdge near-grazing
+**Axis**: `input-shape` | **Kind**: `fixture`  
+**Brief**: Single edge with two near-coincident points (self-intersection within Confusion); FixSelfIntersectingEdge tries to split at near-degenerate point.  
+**Claim**: Without degenerate-intersection filtering, FixSelfIntersectingEdge splits a B-spline at a point within Confusion tolerance, creating topologically invalid sub-edges.  
+**Reproducer**: B-spline curve looping back on itself with endpoints separated by 0.0001 unit, creating near-intersection within default Confusion (~1e-7). FixSelfIntersectingEdge must skip or merge degenerate splits.  
+**Fixture**: `/Users/zellyn/gh/dodgy-step-files/step-examples/12-3b-wires/Twi166.stp`
 
 ### Gs056 — `SURFACE_OF_REVOLUTION` of an ellipse around its own centre produces a degenerate surface
 - **Category**: §12.2c surface / curve degeneracies (sub-class: revolution of conic)
@@ -23834,6 +24078,26 @@ PCURVE as POLYLINE. GetEndTangent2d uses last two points for last endpoint but f
 **Method**: `ShapeAnalysis_Edge::GetEndTangent2d`  
 **Defect class**: `selective_vertex_checking`
 
+### Gp101 — ShapeAnalysis_Edge.CheckCurve3dWithPCurve sample-skip near-endpoint
+
+Edge on cylindrical surface with helix 3D curve deviating midspan from cylinder surface. PCurve is circle. Algorithm skips first/last sample to avoid endpoint coincidence noise, losing midspan deviation information; midspan parameter mismatch undetected.
+
+### Gp102 — ShapeFix_Edge.FixAddPCurve toroidal projection
+
+Edge on torus near minor radius singularity (v ≈ 0). 3D curve is spiral. FixAddPCurve's projection algorithm diverges; projected pcurve is mathematically invalid due to singular Jacobian at minor circle.
+
+### Gp103 — ShapeAnalysis_Edge.CheckPCurveRange CIRCLE-vs-trim-mismatch
+
+Plane edge with 3D circle arc from parameter 0.5 to 6.0 rad (outside [0, 2π]). PCurve is untrimmed circle [0, 2π]. CheckPCurveRange fails to detect parameter range mismatch between pcurve domain and edge vertex parameters.
+
+### Gp104 — ShapeFix_Edge.FixSameParameter offset-curve-3d
+
+Plane edge whose 3D curve is OFFSET_CURVE (0.2 offset from base B-spline). PCurve is B-spline matching base, not offset. FixSameParameter doesn't propagate offset distance into SameParameter tolerance calculation; edge marked SameParameter=true despite offset mismatch.
+
+### Gp105 — ShapeAnalysis_Edge.CheckOverlapping zero-tolerance-overlap
+
+Two edges with literally coincident 3D geometry (identical LINE 0→5 in x-axis, identical pcurves). Both reference same plane surface. CheckOverlapping with zero tolerance reports non-overlapping due to floating-point comparison; misses exact coincidence.
+
 ### A105 — Regression OCC 6.9.1 → 7.4.0: colours stop appearing on certain STEP files
 - **Category**: §12.6 assembly hierarchy (sub-class: appearance regression across kernel versions)
 - **Sources**: OCCT MANTIS#0031809; bug-reporter language: "regression v.6.9.1-7.4.0 colors no longer showing on certain STEP files", "files that displayed colour in 6.9.1 are grey in 7.4.0", "appearance regression". (OCCT MANTIS tracker 502 as of 2026-05-02)
@@ -24307,6 +24571,106 @@ ShapeFix_ShapeTolerance.LimitTolerance with mode=TopAbs_VERTEX recursively appli
 
 ### N090 — GlobalTolerance weighted mode edge direction bug
 ShapeAnalysis_ShapeTolerance.GlobalTolerance mode=2 (weighted average) counts forward and reversed edges separately for denominator but sums their tolerance contributions. Shape with N/2 forward + N/2 reversed edges computed as avg(tol_sum) / (2N) instead of / N; weighting factor doubled, result halved.
+
+### N091 — ShapeFix_Edge.FixSameParameter wrong-floor-clamp
+
+**Defect**: Edge whose ideal SameParameter tolerance is 1e-9 (sub-precision) but implementation floors to 1e-7 minimum. Over-tolerances legitimate high-precision edges, losing CAD fidelity.
+
+**Pattern**: Ultra-precision context (1e-10 uncertainty) with edge whose parametric-vs-3D deviation measures 1e-9. ShapeFix_Edge::FixSameParameter clamps result upward regardless of context precision.
+
+**File**: `/Users/zellyn/gh/dodgy-step-files/step-examples/12-4-tolerance/N091.stp`
+
+---
+
+### N092 — ShapeAnalysis_ShapeTolerance.AddTolerance type-mismatch
+
+**Defect**: AddTolerance(shape, tol, TopAbs_FACE) silently skips WIRE entries during iteration. Tolerance accumulation incomplete; downstream algorithms receive partial state.
+
+**Pattern**: Shape with both FACE and WIRE components. Call AddTolerance with FACE type. WIREs are present but iteration expects only target type; no error reported, silent skip.
+
+**File**: `/Users/zellyn/gh/dodgy-step-files/step-examples/12-4-tolerance/N092.stp`
+
+---
+
+### N093 — BRepLib.UpdateInnerTolerances on-degenerate-curve
+
+**Defect**: Edge with degenerate 3D curve (single-point geometry). UpdateInnerTolerances samples point repeatedly, computes spurious "varies between samples" tolerance instead of recognizing degeneracy.
+
+**Pattern**: Edge whose 3D curve degenerates to a point (both start/end vertices coincide, curve is zero-length). Sampling yields misleading tolerance inflation.
+
+**File**: `/Users/zellyn/gh/dodgy-step-files/step-examples/12-4-tolerance/N093.stp`
+
+---
+
+### N094 — ShapeFix_Edge.FixVertexTolerance precision-floor
+
+**Defect**: Shared vertex used by edges with tolerance extremes (1e-10 and 1e-3). FixVertexTolerance computes harmonic mean that underflows to 0, violating invariant tol(vertex) >= max(tol(edges)).
+
+**Pattern**: Vertex shared by two edges with extreme tolerance mismatch (3+ orders of magnitude). Harmonic mean computation loses precision in underflow scenario.
+
+**File**: `/Users/zellyn/gh/dodgy-step-files/step-examples/12-4-tolerance/N094.stp`
+
+---
+
+### N095 — ShapeAnalysis_Edge.CheckPoints tolerance-aware-distance
+
+**Defect**: CheckPoints uses min(preci1, preci2) as single symmetric threshold. Should apply directional asymmetric bounds; preci1 and preci2 represent endpoint-specific precision contexts.
+
+**Pattern**: Edge with endpoints in different precision contexts (1e-9 vs 1e-3). CheckPoints uses min() instead of directional thresholds, incorrectly harmonizes asymmetric precision.
+
+**File**: `/Users/zellyn/gh/dodgy-step-files/step-examples/12-4-tolerance/N095.stp`
+
+### N096 — BRepLib.UpdateInnerTolerances cone-apex-singularity
+
+**Defect**: Edge passes through cone apex where curvature → ∞; UpdateInnerTolerances samples near singularity, Epsilon(aDist) diverges, producing unbounded tolerance. Algorithm lacks guard against singular points.
+
+**Fixture**: Cone with half-angle 30°, edge crossing apex from base circle through origin. Sampling at apex causes curvature singularity; tolerance escalates beyond control.
+
+**Expected failure**: UpdateInnerTolerances reports NaN, Inf, or excessive tolerance on shared apex vertex.
+
+---
+
+### N097 — ShapeFix_ShapeTolerance.LimitTolerance same-min-and-max
+
+**Defect**: Call LimitTolerance(shape, 0.001, 0.001) with tmin == tmax. Condition `iamax = (tmax >= tmin)` is true, but semantic intent of "clamp to [tmin, tmax]" breaks when bounds are identical; treated as no-op.
+
+**Fixture**: Quad face with mixed edge/vertex tolerances (5e-4, 0.002, 0.0015, 1e-5, 5e-3). Call LimitTolerance(shape, 0.001, 0.001, TopAbs_ALL).
+
+**Expected behavior**: All tolerances normalized to 0.001. **Actual**: Unchanged.
+
+---
+
+### N098 — ShapeAnalysis_ShapeTolerance.GlobalTolerance empty-shape
+
+**Defect**: GlobalTolerance(empty_shape) returns 0 with no flag. Cannot distinguish "all tolerances are 0" from "shape contains no geometry". Masks empty-shape condition.
+
+**Fixture**: Plane surface with no boundary edges or vertices (degenerate placeholder geometry). Call GlobalTolerance(shape).
+
+**Expected**: Flag "no data" or distinct sentinel value. **Actual**: Returns 0.
+
+---
+
+### N099 — BRepLib.UpdateEdgeTol multi-face-edge buffer overflow
+
+**Defect**: Edge shared by 6+ faces; UpdateEdgeTol samples face-edge intersections in a loop with hardcoded buffer (space for ≤4 faces). Count of 6 overflows array, causing memory corruption or silent data loss.
+
+**Fixture**: Central edge shared by 6 planar faces (star-burst: xy ±y, xz ±z, two diagonal). UpdateEdgeTol processes all face intersections, overflowing inner buffer.
+
+**Expected failure**: Memory access violation, incorrect tolerance computation, or platform-dependent crash.
+
+---
+
+### N100 — ShapeAnalysis_Edge.CheckPoints precision-asymmetry-extreme
+
+**Defect**: CheckPoints(P1A, P2A, P1B, P2B, preci1=1e-15, preci2=1.0) averages precisions: (1e-15 + 1.0) / 2 ≈ 0.5. Neither tolerance enforced; masks both extremes.
+
+**Fixture**: Two edges:
+- **E1**: P1A, P2A separated by 1e-14 (within preci1=1e-15? No; exceeds by 10×)
+- **E2**: P1B, P2B separated by 0.9 (within preci2=1.0? Yes; under by 0.1)
+
+Average threshold ≈ 0.5. E1 fails individual but passes average. E2 passes individual but fails average. Result: asymmetric, false-negative verdicts.
+
+**Expected failure**: CheckPoints returns incorrect boolean for both pairs.
 
 ### M161 — Reader does not validate cross-references; dangling references silently accepted
 - **Category**: §12.8 mixed / auxiliary (sub-class: missing input validation)
