@@ -69,3 +69,66 @@ We've made 90 fixtures across 7 waves; the v3 catalog still has thousands of bra
 - **Adversarial pass on waves 5-7** — sample-spot-check rather than full re-attack to catch any large quality slips.
 
 Cumulative commit history: see `0fa07e3` (wave 1), `47f3f76` (wave 2 hybrid), `6cf4e66` (wave 3), `4342f20` (wave 4), `5e292da` (wave 5), `9ec2b97` (wave 6), `dadc24b` (wave 7).
+
+## Post-wave-52 quality audit (2026-06-16)
+
+After 52 waves committed without per-wave verify, ran a stratified
+adversarial sample sweep — 35 fixtures across all 7 prefixes. Three
+parallel Haiku validators reported:
+
+| Prefix | Sample VALID | Sample WEAK | Sample INVALID |
+|---|---:|---:|---:|
+| N (tolerance) | 0/5 | 0 | 5/5 (over-flagged — see below) |
+| Tsh (shells) | 0/5 | 2 | 3 |
+| Twi (wires) | 5/5 | 0 | 0 |
+| Tfa (faces) | 4/5 | 0 | 1 |
+| Gs (surfaces) | 4/5 | 1 | 0 |
+| Gn (NURBS) | 3/5 | 1 | 1 |
+| Gp (pcurves) | 4/5 | 1 | 0 |
+
+**Headline: 20/35 strong-VALID, 5 WEAK, 10 INVALID**, but the failure
+is heavily concentrated in early waves of N + Tsh — not a corpus-wide
+quality issue.
+
+### Diagnosis via structural grep
+
+The sweep verdicts were verified against the *full* prefix counts:
+
+- **N055–N060 (6 files)** — `LINE('name',(#pt,#vtx))` list-wrapped
+  args. Pre-fix LINE template.
+- **N062–N075 (14 files)** — `LINE('name',#pt,#(VECTOR(...)))` invalid
+  inline-instance syntax. Pre-fix.
+- **N076+** — clean. Sweep agent over-flagged N090/N100/N115;
+  manual inspection confirmed correct three-arg `LINE(name, pnt, vec)`
+  form with separately-declared VECTOR.
+- **Tsh001–Tsh068 (55 files)** — missing the entire PRODUCT chain
+  (#9000–#9023), so OCCT's `TransferRoots` cannot reach the topology
+  and no healing pass ever runs. Pre-PRODUCT-chain-mandate.
+- **Tsh069+** — clean (all 121 have SHAPE_DEFINITION_REPRESENTATION).
+
+### Actions taken
+
+1. **Quarantined 75 files** to `step-examples/_quarantine/early-waves/`
+   with a README explaining the bug patterns + canonical-template
+   reminder.
+2. **Collective follow-up note** `fixture_followups/_early-waves-quarantine.md`
+   tracks the regen-against-current-template backlog.
+3. **Individual follow-ups** for the 4 single-file sweep findings:
+   `Gn044.md` (knot multiplicity), `Gn090.md` (entity after ENDSEC +
+   NaN parse uncertainty), `Gp117.md` (closed-pcurve / open-edge —
+   likely kernel-test-pair), `Gs135.md` (visual fold rather than
+   parametric overlap).
+4. **No corpus-wide bulk-fix** for the 569 files with comment-before-
+   `ISO-10303-21;` — the pattern is present across 20+ prefixes
+   including pre-synthesis bug-database imports, so it's de-facto
+   corpus convention, not a synthesis-template bug. OCCT's STEP
+   reader is permissive about leading whitespace/comments. Flagged
+   for user signoff before any change.
+
+### Implication for further waves
+
+- Twi/Tfa/Gs/Gn/Gp are at 75–90% strong-VALID. The current synthesis
+  pipeline produces acceptable fixtures.
+- Future waves should keep the canonical PRODUCT chain + corrected
+  LINE/VECTOR/DIRECTION template baked into the prompt.
+- 75 quarantined IDs are a regen backlog, not a synthesis blocker.

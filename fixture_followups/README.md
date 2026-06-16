@@ -72,6 +72,21 @@ fine — just don't reproduce the body.
 - [`Tfa075.md`](Tfa075.md) — `ShapeFix_ComposeShell.MakeFacesOnPatch`
   non-WIRE fallback (WEAK_VALID — valid WIRE provided, but the bug
   needs a non-WIRE loop type)
+- [`Gn044.md`](Gn044.md) — `ShapeUpgrade_ConvertCurve2dToBezier`
+  degree-1 skip (REFUTED — knot multiplicity sum wrong; needs
+  parser-valid degree-1 B-spline)
+- [`Gn090.md`](Gn090.md) — `ShapeAnalysis_Curve.IsPlanar` NaN handling
+  (WEAK_VALID — entity declared after ENDSEC blocks parse; plus
+  uncertainty whether OCCT parses `NaN` REAL literals)
+- [`Gp117.md`](Gp117.md) — `ShapeFix_Edge.FixAddCurve3d` closed-pcurve
+  open-edge (WEAK_VALID — semantic mismatch loads but healer branch
+  choice undetermined; likely kernel-test-pair)
+- [`Gs135.md`](Gs135.md) — `ShapeUpgrade_ConvertSurfaceToBezierBasis`
+  self-intersection (WEAK_VALID — visual fold rather than parametric
+  overlap; convert-step path not actually triggered)
+- [`_early-waves-quarantine.md`](_early-waves-quarantine.md) — 75-file
+  collective entry for N055–N075 + Tsh001–Tsh068 quarantined for
+  pre-mandate template bugs
 
 ## When to close a follow-up out
 
