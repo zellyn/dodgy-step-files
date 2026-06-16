@@ -1,0 +1,68 @@
+ISO-10303-21;
+/* Twi185 - ShapeAnalysis_Wire.CheckSelfIntersection coincident-curves
+ * Defect: Wire's first and last edges are geometrically coincident (oppositely oriented);
+ * CheckSelfIntersection should flag as self-intersection of the wire boundary
+ * but may miss this degenerate case where curves overlap exactly. */
+HEADER;
+FILE_DESCRIPTION(('Twi185 test case','Coincident opposite-oriented edges missed by CheckSelfIntersection'),'2;1');
+FILE_NAME('Twi185.stp','2026-06-15T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#11=DIRECTION('',(0.0,0.0,1.0));
+#12=DIRECTION('',(1.0,0.0,0.0));
+#13=AXIS2_PLACEMENT_3D('',#10,#11,#12);
+#20=PLANE('',#13);
+/* Four vertices forming a degenerate quad: two on one side, two on the opposite */
+#30=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#31=VERTEX_POINT('',#30);
+#32=CARTESIAN_POINT('',(1.0,0.0,0.0));
+#33=VERTEX_POINT('',#32);
+#34=CARTESIAN_POINT('',(0.0,1.0,0.0));
+#35=VERTEX_POINT('',#34);
+#36=CARTESIAN_POINT('',(1.0,1.0,0.0));
+#37=VERTEX_POINT('',#36);
+/* Edge 1: V1 -> V3 (left vertical) */
+#40=LINE('',#30,#(0.0,1.0,0.0));
+#41=EDGE_CURVE('',#31,#35,#40,.T.);
+/* Edge 2: V3 -> V4 (right slant) */
+#42=LINE('',#34,#(1.0,1.0,0.0));
+#43=EDGE_CURVE('',#35,#37,#42,.T.);
+/* Edge 3: V4 -> V2 (upper right) */
+#44=LINE('',#36,#(0.0,-1.0,0.0));
+#45=EDGE_CURVE('',#37,#33,#44,.T.);
+/* Defect: Edge 4 is geometrically identical to Edge 1 but REVERSED orientation:
+ * V2 -> V1 on same LINE (0,0,0) direction (0,1,0). When CheckSelfIntersection
+ * analyzes this, it should detect self-intersection (curves overlap exactly),
+ * but may classify as "closed without issue" due to orientation handling */
+#40=LINE('',#32,#(0.0,-1.0,0.0));
+#46=EDGE_CURVE('',#33,#31,#40,.F.);
+#70=ORIENTED_EDGE('',*,*,#41,.T.);
+#71=ORIENTED_EDGE('',*,*,#43,.T.);
+#72=ORIENTED_EDGE('',*,*,#45,.T.);
+#73=ORIENTED_EDGE('',*,*,#46,.T.);
+/* Defect: Wire closes but edges #41 and #46 are geometrically coincident
+ * with opposite orientation; this creates implicit self-intersection */
+#80=EDGE_LOOP('',(#70,#71,#72,#73));
+#81=FACE_OUTER_BOUND('',#80,.T.);
+#82=ADVANCED_FACE('',(#81),#20,.T.);
+#9000=PRODUCT_CONTEXT('',#1,'mechanical');
+#9001=PRODUCT('Twi185','Twi185','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
+#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
+#9020=OPEN_SHELL('wrap_shell',(#82));
+#9021=SHELL_BASED_SURFACE_MODEL('sbsm',(#9020));
+#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#9010);
+#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+ENDSEC;
+END-ISO-10303-21;

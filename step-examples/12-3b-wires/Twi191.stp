@@ -1,0 +1,82 @@
+ISO-10303-21;
+/* Twi191 - ShapeFix_Wire.FixIntersectingEdges parameter-monotonicity
+ * Defect: Wire with edges whose parameters increase non-monotonically;
+ * FixIntersectingEdges' parameter-sort step destroys the original wire ordering.
+ * After sorting by parameter, the edge sequence no longer represents the
+ * intended topology.
+ */
+HEADER;
+FILE_DESCRIPTION(('Twi191 test case','FixIntersectingEdges parameter-monotonicity'),'2;1');
+FILE_NAME('Twi191.stp','2026-06-15T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#11=DIRECTION('',(0.0,0.0,1.0));
+#12=DIRECTION('',(1.0,0.0,0.0));
+#13=AXIS2_PLACEMENT_3D('',#10,#11,#12);
+#20=PLANE('',#13);
+/* Create edges with non-monotonic parameter progression */
+#30=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#31=VERTEX_POINT('',#30);
+#32=CARTESIAN_POINT('',(5.0,0.0,0.0));
+#33=VERTEX_POINT('',#32);
+#34=CARTESIAN_POINT('',(10.0,5.0,0.0));
+#35=VERTEX_POINT('',#34);
+#36=CARTESIAN_POINT('',(5.0,10.0,0.0));
+#37=VERTEX_POINT('',#36);
+#38=CARTESIAN_POINT('',(0.0,5.0,0.0));
+#39=VERTEX_POINT('',#38);
+/* Edge 1: normal direction (0,0) to (5,0) - parameter 0.0 to 0.2 */
+#50=DIRECTION('',(1.0,0.0,0.0));
+#51=VECTOR('',#50,1.0);
+#52=LINE('',#30,#51);
+#53=EDGE_CURVE('',#31,#33,#52,.T.);
+/* Edge 2: (5,0) to (10,5) - parameter 0.5 to 0.8 (jump backwards in global param) */
+#54=DIRECTION('',(1.0,1.0,0.0));
+#55=VECTOR('',#54,1.0);
+#56=LINE('',#32,#55);
+#57=EDGE_CURVE('',#33,#35,#56,.T.);
+/* Edge 3: (10,5) to (5,10) - parameter 0.1 to 0.4 (backwards again) */
+#58=DIRECTION('',(-1.0,1.0,0.0));
+#59=VECTOR('',#58,1.0);
+#60=LINE('',#34,#59);
+#61=EDGE_CURVE('',#35,#37,#60,.T.);
+/* Edge 4: (5,10) to (0,5) - parameter 0.7 to 1.0 */
+#62=DIRECTION('',(-1.0,-1.0,0.0));
+#63=VECTOR('',#62,1.0);
+#64=LINE('',#36,#63);
+#65=EDGE_CURVE('',#37,#39,#64,.T.);
+/* Edge 5: (0,5) to (0,0) - parameter 0.3 to 0.6 */
+#66=DIRECTION('',(0.0,-1.0,0.0));
+#67=VECTOR('',#66,1.0);
+#68=LINE('',#38,#67);
+#69=EDGE_CURVE('',#39,#31,#68,.T.);
+/* Wire with non-monotonic parameter ordering: 0.0-0.2, 0.5-0.8, 0.1-0.4, 0.7-1.0, 0.3-0.6 */
+#100=ORIENTED_EDGE('',*,*,#53,.T.);
+#101=ORIENTED_EDGE('',*,*,#57,.T.);
+#102=ORIENTED_EDGE('',*,*,#61,.T.);
+#103=ORIENTED_EDGE('',*,*,#65,.T.);
+#104=ORIENTED_EDGE('',*,*,#69,.T.);
+#110=EDGE_LOOP('',(#100,#101,#102,#103,#104));
+#111=FACE_OUTER_BOUND('',#110,.T.);
+#112=ADVANCED_FACE('',(#111),#20,.T.);
+/* Mandatory product chain */
+#9000=PRODUCT_CONTEXT('',#1,'mechanical');
+#9001=PRODUCT('Twi191','Twi191','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
+#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
+#9021=SHELL_BASED_SURFACE_MODEL('sbsm',(#112));
+#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#9010);
+#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+ENDSEC;
+END-ISO-10303-21;

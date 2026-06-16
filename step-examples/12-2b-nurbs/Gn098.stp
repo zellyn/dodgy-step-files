@@ -1,0 +1,45 @@
+/* Gn098 - ShapeAnalysis_Curve.IsPlanar exactly-2-points
+   Defect: B-spline with only 2 control points (degree 1 line); IsPlanar's
+   pole-sampling test trivially passes (line is in infinite planes), reporting
+   planar with default plane. A 2-point degree-1 curve is a line segment,
+   which lies in infinitely many planes; the default plane should not be auto-
+   selected without explicit user direction. */
+ISO-10303-21;
+HEADER;
+FILE_DESCRIPTION(('Gn098 - IsPlanar on 2-point degree-1 line'),'2;1');
+FILE_NAME('Gn098.stp','2026-06-15T00:00:00',('auto-generated'),(''),
+  'auto-generated','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+/* Two control points define a degree-1 line segment (0,0,0) to (1,0,0). */
+#10=CARTESIAN_POINT('p0',(0.0,0.0,0.0));
+#11=CARTESIAN_POINT('p1',(1.0,0.0,0.0));
+/* Defect: degree-1 B-spline with exactly 2 control points (1+1=2 = degree+1).
+   Multiplicity (2,2) at knot ends means no interior knots.
+   IsPlanar checks if poles are coplanar; trivially true for a line.
+   But line is in infinite planes -> default plane selection is ambiguous. */
+#100=B_SPLINE_CURVE_WITH_KNOTS('line_2pt',1,
+  (#10,#11),
+  .UNSPECIFIED.,.F.,.F.,
+  (2,2),
+  (0.0,1.0),
+  .UNSPECIFIED.);
+/* PRODUCT chain. */
+#9990=APPLICATION_CONTEXT('automotive_design');
+#9000=PRODUCT_CONTEXT('',#9990,'mechanical');
+#9001=PRODUCT('Gn098','Gn098','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#9990,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
+#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
+#9020=GEOMETRIC_CURVE_SET('wire_set',(#100));
+#9022=GEOMETRICALLY_BOUNDED_WIREFRAME_SHAPE_REPRESENTATION('',(#9020),#9010);
+#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+ENDSEC;
+END-ISO-10303-21;

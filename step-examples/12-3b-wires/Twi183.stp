@@ -1,0 +1,64 @@
+ISO-10303-21;
+/* Twi183 - ShapeAnalysis_Wire.CheckSeam non-cylindrical-seam
+ * Defect: Wire on closed surface that's not a cylinder (e.g., sphere);
+ * CheckSeam's heuristic for "seam edge" doesn't generalize to non-cylindrical seams.
+ * On sphere, edges traversing meridian singularities are not detected as seams
+ * and lack proper PCurve handling. */
+HEADER;
+FILE_DESCRIPTION(('Twi183 test case','Non-cylindrical seam (sphere) not detected by CheckSeam'),'2;1');
+FILE_NAME('Twi183.stp','2026-06-15T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#11=DIRECTION('',(0.0,0.0,1.0));
+#12=DIRECTION('',(1.0,0.0,0.0));
+#13=AXIS2_PLACEMENT_3D('',#10,#11,#12);
+/* Sphere surface with radius 1.0 */
+#20=SPHERICAL_SURFACE('',#13,1.0);
+/* Pole vertices at opposite ends of Z axis */
+#30=CARTESIAN_POINT('',(0.0,0.0,1.0));
+#31=VERTEX_POINT('',#30);
+#32=CARTESIAN_POINT('',(0.0,0.0,-1.0));
+#33=VERTEX_POINT('',#32);
+/* Equatorial vertices at U=0 and U=pi seam boundaries */
+#34=CARTESIAN_POINT('',(1.0,0.0,0.0));
+#35=VERTEX_POINT('',#34);
+#36=CARTESIAN_POINT('',(-1.0,0.0,0.0));
+#37=VERTEX_POINT('',#36);
+/* Edge from north pole to equator-seam (parametric discontinuity) */
+#40=EDGE_CURVE('',#31,#35,#(1.0,0.0,0.0),.T.);
+/* Edge from equator-seam to south pole (crosses meridian) */
+#41=EDGE_CURVE('',#35,#33,#(0.0,0.0,-1.0),.T.);
+/* Edge from south pole to opposite seam edge */
+#42=EDGE_CURVE('',#33,#37,#(-1.0,0.0,0.0),.T.);
+/* Edge closing back to north pole, crossing seam (CheckSeam should flag but won't) */
+#43=EDGE_CURVE('',#37,#31,#(0.0,0.0,1.0),.T.);
+#70=ORIENTED_EDGE('',*,*,#40,.T.);
+#71=ORIENTED_EDGE('',*,*,#41,.T.);
+#72=ORIENTED_EDGE('',*,*,#42,.T.);
+#73=ORIENTED_EDGE('',*,*,#43,.T.);
+/* Defect: Wire closes but crosses sphere seam twice; CheckSeam heuristic
+ * (designed for cylinders) fails to detect this as a seam crossing pattern */
+#80=EDGE_LOOP('',(#70,#71,#72,#73));
+#81=FACE_OUTER_BOUND('',#80,.T.);
+#82=ADVANCED_FACE('',(#81),#20,.T.);
+#9000=PRODUCT_CONTEXT('',#1,'mechanical');
+#9001=PRODUCT('Twi183','Twi183','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
+#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
+#9020=OPEN_SHELL('wrap_shell',(#82));
+#9021=SHELL_BASED_SURFACE_MODEL('sbsm',(#9020));
+#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#9010);
+#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+ENDSEC;
+END-ISO-10303-21;

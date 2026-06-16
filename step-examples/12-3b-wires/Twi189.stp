@@ -1,0 +1,70 @@
+ISO-10303-21;
+/* Twi189 - ShapeFix_Wire.FixGaps3d directional-extension
+ * Defect: Gap-bridge by extending edge A vs extending edge B yields different results;
+ * FixGaps3d picks arbitrary direction not the geometrically-correct one.
+ * Wire has symmetric gap where either edge can extend to fill it, but algorithm
+ * chooses extension direction that is not the intended geometry.
+ */
+HEADER;
+FILE_DESCRIPTION(('Twi189 test case','FixGaps3d directional-extension'),'2;1');
+FILE_NAME('Twi189.stp','2026-06-15T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#11=DIRECTION('',(0.0,0.0,1.0));
+#12=DIRECTION('',(1.0,0.0,0.0));
+#13=AXIS2_PLACEMENT_3D('',#10,#11,#12);
+#20=PLANE('',#13);
+/* Create a symmetric gap where extending either edge would close it,
+   but correct geometry would prefer one direction */
+#30=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#31=VERTEX_POINT('',#30);
+#32=CARTESIAN_POINT('',(5.0,5.0,0.0));
+#33=VERTEX_POINT('',#32);
+#34=CARTESIAN_POINT('',(5.0,5.1,0.0));
+#35=VERTEX_POINT('',#34);
+#36=CARTESIAN_POINT('',(10.0,10.0,0.0));
+#37=VERTEX_POINT('',#36);
+/* Edge 1: (0,0) to (5,5) */
+#50=DIRECTION('',(1.0,1.0,0.0));
+#51=VECTOR('',#50,1.0);
+#52=LINE('',#30,#51);
+#53=EDGE_CURVE('',#31,#33,#52,.T.);
+/* Gap: edge ends at (5,5), next edge starts at (5,5.1) - small gap in Y */
+/* Edge 2: (5,5.1) to (10,10) */
+#54=DIRECTION('',(1.0,1.0,0.0));
+#55=VECTOR('',#54,1.0);
+#56=LINE('',#34,#55);
+#57=EDGE_CURVE('',#35,#37,#56,.T.);
+/* Closing edges to form a closed wire */
+#58=DIRECTION('',(-1.0,-1.0,0.0));
+#59=VECTOR('',#58,1.0);
+#60=LINE('',#36,#59);
+#61=EDGE_CURVE('',#37,#31,#60,.T.);
+/* Wire with directionally ambiguous gap */
+#100=ORIENTED_EDGE('',*,*,#53,.T.);
+#101=ORIENTED_EDGE('',*,*,#57,.T.);
+#102=ORIENTED_EDGE('',*,*,#61,.T.);
+#110=EDGE_LOOP('',(#100,#101,#102));
+#111=FACE_OUTER_BOUND('',#110,.T.);
+#112=ADVANCED_FACE('',(#111),#20,.T.);
+/* Mandatory product chain */
+#9000=PRODUCT_CONTEXT('',#1,'mechanical');
+#9001=PRODUCT('Twi189','Twi189','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
+#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
+#9021=SHELL_BASED_SURFACE_MODEL('sbsm',(#112));
+#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#9010);
+#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+ENDSEC;
+END-ISO-10303-21;
