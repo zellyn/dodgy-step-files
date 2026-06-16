@@ -1,0 +1,69 @@
+ISO-10303-21;
+/* N058 - BRepLib.SameRange null-pcurve null-check dereference
+ * Defect: SameRange called on edge with null 2D curve assumes the curve exists
+ * and dereferences, masking the failure. When an edge has multiple faces and one
+ * of those faces has a null PCurve (parametric curve) for that edge, SameRange
+ * should detect and skip or error. Instead it dereferences the null pointer,
+ * either causing a crash or silent corruption of the edge parameter bounds. */
+HEADER;
+FILE_DESCRIPTION(('N058 - SameRange null-pcurve dereference'),'2;1');
+FILE_NAME('N058.stp','2026-06-15T00:00:00',('auto-generated'),(''),'auto-generated','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+/* Edge with parametric domain [0, 10] */
+#10=CARTESIAN_POINT('origin',(0.0,0.0,0.0));
+#11=CARTESIAN_POINT('end_pt',(10.0,0.0,0.0));
+#20=VERTEX_POINT('v_start',#10);
+#21=VERTEX_POINT('v_end',#11);
+/* 3D edge curve: LINE from origin to end_pt */
+#30=LINE('edge_3d',(#10,#21));
+#31=EDGE_CURVE('edge_with_pcurves',#20,#21,#30,.T.);
+/* Face 1: on XY plane with valid PCurve for the edge */
+#40=DIRECTION('',(0.0,0.0,1.0));
+#41=DIRECTION('',(1.0,0.0,0.0));
+#42=AXIS2_PLACEMENT_3D('ax3_f1',#10,#40,#41);
+#43=PLANE('plane_z0',#42);
+/* PCurve for face 1: parametric line [0, 10] in 2D */
+#44=CARTESIAN_POINT('',(0.0,0.0));
+#45=DIRECTION('',(1.0,0.0));
+#46=VECTOR('',#45,1.0);
+#47=LINE('pcurve_f1',#44,#46);
+#48=PCURVE('pcurve_f1_wrapped',#43,#47);
+#49=EDGE_LOOP_PCURVE('',#31,#48);
+#50=FACE_OUTER_BOUND('',#49,.T.);
+#51=ADVANCED_FACE('face_1',(#50),#43,.T.);
+/* Face 2: on XZ plane
+   Defect: This face has null PCurve for the edge (edge parameter domain
+   cannot be rescaled to match face domain). SameRange should detect this
+   and skip/error, but instead tries to dereference the null pointer. */
+#60=DIRECTION('',(0.0,1.0,0.0));
+#61=DIRECTION('',(1.0,0.0,0.0));
+#62=AXIS2_PLACEMENT_3D('ax3_f2',#10,#60,#61);
+#63=PLANE('plane_y0',#62);
+/* No PCurve for this face: null reference (defect trigger) */
+#64=EDGE_LOOP('',(#70));
+#65=FACE_OUTER_BOUND('',#64,.T.);
+#66=ADVANCED_FACE('face_2',(#65),#63,.T.);
+/* Single edge in a loop with vertices matching start/end of #31 */
+#70=ORIENTED_EDGE('',*,*,#31,.T.);
+#100=OPEN_SHELL('',(#51,#66));
+/* PRODUCT chain with tolerance context */
+#9000=PRODUCT_CONTEXT('',#1,'mechanical');
+#9001=PRODUCT('N058','N058','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
+#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
+#9021=SHELL_BASED_SURFACE_MODEL('sbsm',(#100));
+#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#9010);
+#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+ENDSEC;
+END-ISO-10303-21;

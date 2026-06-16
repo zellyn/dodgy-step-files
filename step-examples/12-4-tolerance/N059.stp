@@ -1,0 +1,66 @@
+ISO-10303-21;
+/* N059 - BRepLib.UpdateEdgeTol sampling-grid undersample
+ * Defect: UpdateEdgeTol uses 23-sample default; on a B-spline edge with high
+ * curvature peak between samples, the peak's tolerance contribution is lost.
+ * The edge tolerance is computed by sampling the 3D curve at discrete points
+ * and checking distance to the 2D parameter curve. If a high-curvature feature
+ * falls between two sample points, the maximum distance (and thus required
+ * tolerance) is never observed, leading to underestimated edge tolerance. */
+HEADER;
+FILE_DESCRIPTION(('N059 - UpdateEdgeTol undersample curvature peak'),'2;1');
+FILE_NAME('N059.stp','2026-06-15T00:00:00',('auto-generated'),(''),'auto-generated','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+/* High-curvature B-spline edge: knot vector with internal high-curvature region */
+#10=CARTESIAN_POINT('cp0',(0.0,0.0,0.0));
+#11=CARTESIAN_POINT('cp1',(1.0,0.0,0.0));
+#12=CARTESIAN_POINT('cp2',(2.0,1.0,0.0));
+#13=CARTESIAN_POINT('cp3',(3.0,0.5,0.0));
+#14=CARTESIAN_POINT('cp4',(4.0,0.0,0.0));
+#20=VERTEX_POINT('v_start',#10);
+#21=VERTEX_POINT('v_end',#14);
+/* B-spline curve: degree 3, 5 control points
+   High curvature region at parameter ~0.5 (between samples at 0, 0.25, 0.5, 0.75, 1.0)
+   with default 23-point sample grid, the peak at ~0.48 is missed */
+#30=(PCURVE_AND_SURFACE_INTERSECTION())BOUNDED_CURVE()B_SPLINE_CURVE(3,
+  (#10,#11,#12,#13,#14),.UNSPECIFIED.,.F.,.F.);
+#31=EDGE_CURVE('bspline_edge',#20,#21,#30,.T.);
+/* Face on XY plane with parameter curve */
+#40=DIRECTION('',(0.0,0.0,1.0));
+#41=DIRECTION('',(1.0,0.0,0.0));
+#42=AXIS2_PLACEMENT_3D('ax3',#10,#40,#41);
+#43=PLANE('plane_xy',#42);
+/* Simple parametric curve for face (doesn't capture the B-spline curvature) */
+#44=CARTESIAN_POINT('',(0.0,0.0));
+#45=DIRECTION('',(1.0,0.0));
+#46=VECTOR('',#45,1.0);
+#47=LINE('pcurve',(#44,#46));
+#48=PCURVE('pcurve_wrapped',#43,#47);
+#49=EDGE_LOOP_PCURVE('',#31,#48);
+#50=FACE_OUTER_BOUND('',#49,.T.);
+#51=ADVANCED_FACE('face_on_plane',(#50),#43,.T.);
+/* Defect trigger: when UpdateEdgeTol is called with default 23 samples,
+   the high-curvature peak between sample points is not detected. The
+   computed tolerance is thus too small, underestimating the actual
+   distance between 3D curve and 2D parameter curve at the peak. */
+#60=OPEN_SHELL('',(#51));
+/* PRODUCT chain with tolerance context */
+#9000=PRODUCT_CONTEXT('',#1,'mechanical');
+#9001=PRODUCT('N059','N059','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
+#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
+#9021=SHELL_BASED_SURFACE_MODEL('sbsm',(#60));
+#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#9010);
+#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+ENDSEC;
+END-ISO-10303-21;

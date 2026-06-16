@@ -1,0 +1,125 @@
+ISO-10303-21;
+/* Twi111 - ShapeFix_Wire.FixDummySeam dummy-seam removal
+ * Defect: Wire on a closed surface (cylindrical) contains a seam edge that
+ * no longer matches the surface's true seam line. Seam edge should be identified
+ * and removed by FixDummySeam when the edge no longer lies on seam geometry. */
+HEADER;
+FILE_DESCRIPTION(('Twi111 - FixDummySeam removes stale seam edge'),'2;1');
+FILE_NAME('Twi111.stp','2026-06-15T00:00:00',('cad-research-suite'),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+/* Cylindrical surface (seam at u=0 and u=2π) */
+#20=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#21=DIRECTION('',(0.0,0.0,1.0));
+#22=DIRECTION('',(1.0,0.0,0.0));
+#23=AXIS2_PLACEMENT_3D('',#20,#21,#22);
+#24=CYLINDRICAL_SURFACE('',#23,5.0);
+/* 2D parameter context */
+#100=(GEOMETRIC_REPRESENTATION_CONTEXT(2)
+     PARAMETRIC_REPRESENTATION_CONTEXT()
+     REPRESENTATION_CONTEXT('uv','2D'));
+/* Five vertices on cylinder: four forming main loop + one for dummy seam edge */
+#30=CARTESIAN_POINT('P0',(5.0,0.0,0.0));
+#31=CARTESIAN_POINT('P1',(5.0,0.0,5.0));
+#32=CARTESIAN_POINT('P2',(3.5,3.5,5.0));
+#33=CARTESIAN_POINT('P3',(3.5,3.5,0.0));
+#34=CARTESIAN_POINT('P4',(5.0,0.01,2.5));
+#40=VERTEX_POINT('',#30);
+#41=VERTEX_POINT('',#31);
+#42=VERTEX_POINT('',#32);
+#43=VERTEX_POINT('',#33);
+#44=VERTEX_POINT('',#34);
+/* Edge 1: P0 -> P1 (vertical at seam u=0) */
+#50=DIRECTION('',(0.0,0.0,1.0));
+#51=VECTOR('',#50,1.0);
+#52=LINE('',#30,#51);
+#60=CARTESIAN_POINT('uv0',(0.0,0.0));
+#61=CARTESIAN_POINT('uv1',(0.0,1.0));
+#62=POLYLINE('pcurve1',(#60,#61));
+#63=DEFINITIONAL_REPRESENTATION('pcurve1_def',(#62),#100);
+#64=PCURVE('pcurve1',#24,#63);
+#65=EDGE_CURVE('E1',#40,#41,#52,.T.);
+/* Edge 2: P1 -> P2 */
+#70=DIRECTION('',(-0.7071067811865475,0.7071067811865475,0.0));
+#71=VECTOR('',#70,1.0);
+#72=LINE('',#31,#71);
+#80=CARTESIAN_POINT('uv2',(0.7853981633974483,1.0));
+#81=CARTESIAN_POINT('uv3',(0.7853981633974483,0.0));
+#82=POLYLINE('pcurve2',(#80,#81));
+#83=DEFINITIONAL_REPRESENTATION('pcurve2_def',(#82),#100);
+#84=PCURVE('pcurve2',#24,#83);
+#85=EDGE_CURVE('E2',#41,#42,#72,.T.);
+/* Edge 3: P2 -> P3 */
+#90=DIRECTION('',(0.0,0.0,-1.0));
+#91=VECTOR('',#90,1.0);
+#92=LINE('',#32,#91);
+#95=CARTESIAN_POINT('uv4',(0.7853981633974483,-1.0));
+#96=CARTESIAN_POINT('uv5',(0.7853981633974483,-5.0));
+#97=POLYLINE('pcurve3',(#95,#96));
+#98=DEFINITIONAL_REPRESENTATION('pcurve3_def',(#97),#100);
+#99=PCURVE('pcurve3',#24,#98);
+#101=EDGE_CURVE('E3',#42,#43,#92,.T.);
+/* Edge 4: P3 -> P0 */
+#110=DIRECTION('',(0.7071067811865475,-0.7071067811865475,0.0));
+#111=VECTOR('',#110,1.0);
+#112=LINE('',#33,#110);
+#115=CARTESIAN_POINT('uv6',(0.0,-1.0));
+#116=CARTESIAN_POINT('uv7',(0.0,0.0));
+#117=POLYLINE('pcurve4',(#115,#116));
+#118=DEFINITIONAL_REPRESENTATION('pcurve4_def',(#117),#100);
+#119=PCURVE('pcurve4',#24,#118);
+#120=EDGE_CURVE('E4',#43,#40,#112,.T.);
+/* Defect: Dummy seam edge (P1 -> P4 -> P1)
+   This edge is marked as a seam but no longer lies on the cylinder seam (u=0 or u=2π).
+   It's an extraneous seam edge that FixDummySeam should detect and remove.
+   Instead of connecting at u=0 (true seam), it connects near u≈0.002 (P4 offset). */
+#130=DIRECTION('',(0.0,0.0,1.0));
+#131=VECTOR('',#130,0.5);
+#132=LINE('',#31,#131);
+#135=CARTESIAN_POINT('uv8',(0.002,1.0));
+#136=CARTESIAN_POINT('uv9',(0.002,0.5));
+#137=POLYLINE('pcurve5',(#135,#136));
+#138=DEFINITIONAL_REPRESENTATION('pcurve5_def',(#137),#100);
+#139=PCURVE('pcurve5',#24,#138);
+#140=EDGE_CURVE('dummy_seam',#41,#44,#132,.T.);
+/* Dummy seam closing back to P1 */
+#150=DIRECTION('',(0.0,0.0,-1.0));
+#151=VECTOR('',#150,0.5);
+#152=LINE('',#34,#151);
+#155=CARTESIAN_POINT('uv10',(0.002,0.5));
+#156=CARTESIAN_POINT('uv11',(0.002,1.0));
+#157=POLYLINE('pcurve6',(#155,#156));
+#158=DEFINITIONAL_REPRESENTATION('pcurve6_def',(#157),#100);
+#159=PCURVE('pcurve6',#24,#158);
+#160=EDGE_CURVE('seam_close',#44,#41,#152,.T.);
+/* Wire loop with dummy seam edges inserted at P1 */
+#170=ORIENTED_EDGE('',*,*,#65,.T.);
+#171=ORIENTED_EDGE('',*,*,#85,.T.);
+#172=ORIENTED_EDGE('',*,*,#101,.T.);
+#173=ORIENTED_EDGE('',*,*,#120,.T.);
+#174=ORIENTED_EDGE('',*,*,#140,.T.);
+#175=ORIENTED_EDGE('',*,*,#160,.T.);
+#176=EDGE_LOOP('',(#170,#171,#172,#173,#174,#175));
+#177=FACE_OUTER_BOUND('',#176,.T.);
+#178=ADVANCED_FACE('',(#177),#24,.T.);
+#180=CLOSED_SHELL('',(#178));
+/* PRODUCT chain */
+#9000=PRODUCT_CONTEXT('',#1,'mechanical');
+#9001=PRODUCT('Twi111','Twi111','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
+#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
+#9021=SHELL_BASED_SURFACE_MODEL('wrap_sbsm',(#180));
+#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#9010);
+#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+ENDSEC;
+END-ISO-10303-21;

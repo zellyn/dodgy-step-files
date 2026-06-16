@@ -21742,6 +21742,31 @@ Rational B-spline with non-uniform weights (1.0, 2.0 variation) triggers 4x samp
 - **Expected kernel behavior**: Bound repair iterations and enforce that tolerance does not grow with each split; reject if unresolvable.
 - **Expected validation**: `occt=unknown/unknown gmsh=unknown ifc=schema_n/a`
 
+### Twi107 — FixReorder Mode-Cascade
+**Defect**: Wire with edges in wrong order (E0→E2→E1→E3→E4). FixReorder fails (ReorderOK=false), cascading suppression to FixSmall, FixConnected, FixSelfIntersection per SF_Perform lines 320, 331, 355.
+**Pattern**: 5-edge closed loop on plane; deliberate edge order reversal triggers reorder impossibility.
+**Coverage**: SF_Perform_002 (mode_override_cascade), SF_Perform_003 (conditional_skip_wrong), SF_Perform_004 (dependency_coupling).
+
+### Twi108 — FixGaps3d 3D-Gap Repair
+**Defect**: Wire with adjacent edges missing exactly (gap ~0.05 unit in Z between P1 and P2 vertices). Vertex-tolerance ball overlap but distance exceeds Confusion threshold.
+**Pattern**: 4-edge planar loop with deliberate Z-offset at P2 to force FixGaps3d bridge repair.
+**Coverage**: ShapeFix_Wire.FixGaps3d edge vertex connection tolerance handling.
+
+### Twi109 — FixShifted Period-Shift on Closed Surface
+**Defect**: Cylindrical wire (periodic in U) where edge E3 pcurve is shifted by +2π in parameter space, breaking U continuity. 3D curve correct; pcurve jumps discontinuously.
+**Pattern**: 4-edge closed loop on CYLINDRICAL_SURFACE; E3 pcurve uses u∈[8.06, 8.06] (shifted) instead of u∈[0.78, 0.78] (true).
+**Coverage**: ShapeFix_Wire.FixShifted periodic surface parameter normalization.
+
+### Twi110 — CheckEdgeCurves 3D-vs-2D Coherence
+**Defect**: Cylindrical wire where edge E3 3D curve (LINE P2→P3) is geometrically correct but pcurve maps to surface parameters (u, v) that evaluate to misaligned 3D point, failing curve/pcurve coherence.
+**Pattern**: 4-edge cylindrical loop; E3 pcurve v-extent artificially expanded to -5.0 to break sampling alignment.
+**Coverage**: ShapeAnalysis_Wire.CheckEdgeCurves 3D curve vs pcurve-on-surface point sampling mismatch.
+
+### Twi111 — FixDummySeam Dummy-Seam Removal
+**Defect**: Cylindrical wire with extraneous seam edge pair (dummy_seam + seam_close) at P1 that no longer matches true seam line (u=0, 2π). Seam edge lies near u=0.002, falsely marked as seam.
+**Pattern**: 6-edge loop (4 main + 2 dummy seam) on CYLINDRICAL_SURFACE; dummy pair inserted at P1 with pcurves offset from true seam.
+**Coverage**: ShapeFix_Wire.FixDummySeam seam edge validation and removal when seam no longer coincides with surface seam.
+
 ### Gs056 — `SURFACE_OF_REVOLUTION` of an ellipse around its own centre produces a degenerate surface
 - **Category**: §12.2c surface / curve degeneracies (sub-class: revolution of conic)
 - **Sources**: OCCT MANTIS#0027722; bug-reporter language: "STEP error for ellipse revol shape", "revolution of ellipse fails on import", "degenerate surface from ellipse-of-revolution". (OCCT MANTIS tracker 502 as of 2026-05-02)
@@ -22106,6 +22131,46 @@ Rational B-spline with non-uniform weights (1.0, 2.0 variation) triggers 4x samp
 - **Healer impact**: Edge copy trap: parameter range bounds become stale when BSpline geometry is recomputed. SameParameter recomputation fails to detect and correct the range corruption.
 - **File**: `step-examples/12-2a-pcurves/Gp045.stp`
 
+### Gp046 — ShapeFix_Edge.FixVertexTolerance face-context null underestimates multi-surface tolerance
+- **Category**: §12.2a (pcurves)
+- **Sources**: deep-pass v3 record matching OCCT method/branch (see file comment)
+- **Description**: Edge shared by a PLANE and a CYLINDRICAL_SURFACE; the shared vertex is bound to both surfaces. When FixVertexTolerance runs with face context null, it computes vertex tolerance using only one of the surfaces, underestimating the required value compared to the multi-surface case.
+- **Reproducer recipe**: see `step-examples/12-2a-pcurves/Gp046.stp`; the fixture file's top comment names the specific OCCT method and line range.
+- **Expected kernel behavior**: detect or heal per the named OCCT branch; the fixture demonstrates the buggy input pattern.
+- **Expected validation**: `occt=unknown/unknown gmsh=unknown ifc=schema_n/a`
+
+### Gp047 — ShapeAnalysis_Edge.CheckPCurveRange parameter-domain mismatch
+- **Category**: §12.2a (pcurves)
+- **Sources**: deep-pass v3 record matching OCCT method/branch (see file comment)
+- **Description**: LINE-backed edge whose pcurve is restricted to the parameter interval [0,1] while the EDGE_CURVE's start/end vertex parameters fall at 0.2 and 0.8. CheckPCurveRange must detect that the pcurve domain does not cover the edge's vertex parameter range.
+- **Reproducer recipe**: see `step-examples/12-2a-pcurves/Gp047.stp`; the fixture file's top comment names the specific OCCT method and line range.
+- **Expected kernel behavior**: detect or heal per the named OCCT branch; the fixture demonstrates the buggy input pattern.
+- **Expected validation**: `occt=unknown/unknown gmsh=unknown ifc=schema_n/a`
+
+### Gp048 — ShapeFix_Edge.FixAddPCurve degenerate-curve at cone apex
+- **Category**: §12.2a (pcurves)
+- **Sources**: deep-pass v3 record matching OCCT method/branch (see file comment)
+- **Description**: Conical surface with an edge running vertically from the cone apex. The pcurve at the apex degenerates to the single line u=0 (axis of revolution). FixAddPCurve must construct the degenerate pcurve correctly rather than skipping or producing an invalid representation.
+- **Reproducer recipe**: see `step-examples/12-2a-pcurves/Gp048.stp`; the fixture file's top comment names the specific OCCT method and line range.
+- **Expected kernel behavior**: detect or heal per the named OCCT branch; the fixture demonstrates the buggy input pattern.
+- **Expected validation**: `occt=unknown/unknown gmsh=unknown ifc=schema_n/a`
+
+### Gp049 — ShapeAnalysis_Edge.CheckOverlapping arc-length vs parameter-space
+- **Category**: §12.2a (pcurves)
+- **Sources**: deep-pass v3 record matching OCCT method/branch (see file comment)
+- **Description**: Two edges share their 3D endpoints; one uses a LINE with parameter range [0,100], the other a CIRCLE arc with parameter range [π,0]. Their 3D point sets overlap but the parameter-space tests in CheckOverlapping do not detect the overlap because the parameter ranges differ in shape and orientation.
+- **Reproducer recipe**: see `step-examples/12-2a-pcurves/Gp049.stp`; the fixture file's top comment names the specific OCCT method and line range.
+- **Expected kernel behavior**: detect or heal per the named OCCT branch; the fixture demonstrates the buggy input pattern.
+- **Expected validation**: `occt=unknown/unknown gmsh=unknown ifc=schema_n/a`
+
+### Gp050 — ShapeFix_Edge.FixSameParameter recursive SameRange
+- **Category**: §12.2a (pcurves)
+- **Sources**: deep-pass v3 record matching OCCT method/branch (see file comment)
+- **Description**: Edge with high-degree B-spline 3D curve (degree 3, 10 control points, 11-knot vector) paired with a simple degree-2 PCURVE B-spline (3 control points). The knot-domain mismatch triggers recursive SameRange refinement; on deep nesting the recursion consumes stack depth before convergence.
+- **Reproducer recipe**: see `step-examples/12-2a-pcurves/Gp050.stp`; the fixture file's top comment names the specific OCCT method and line range.
+- **Expected kernel behavior**: detect or heal per the named OCCT branch; the fixture demonstrates the buggy input pattern.
+- **Expected validation**: `occt=unknown/unknown gmsh=unknown ifc=schema_n/a`
+
 ### A105 — Regression OCC 6.9.1 → 7.4.0: colours stop appearing on certain STEP files
 - **Category**: §12.6 assembly hierarchy (sub-class: appearance regression across kernel versions)
 - **Sources**: OCCT MANTIS#0031809; bug-reporter language: "regression v.6.9.1-7.4.0 colors no longer showing on certain STEP files", "files that displayed colour in 6.9.1 are grey in 7.4.0", "appearance regression". (OCCT MANTIS tracker 502 as of 2026-05-02)
@@ -22295,6 +22360,41 @@ Rational B-spline with non-uniform weights (1.0, 2.0 variation) triggers 4x samp
 - **Fixture kind**: kernel-test-pair
 - **Notes**: The `N055.stp` fixture provides the input shape but the bug is in the `LimitTolerance` API's parameter validation — only a runtime caller passing `tmin == tmax` will exercise the buggy clamp logic. The catalog entry's "Reproducer recipe" line is the canonical paired test. **See also**: N052.
 - **Expected validation**: `occt=unknown/unknown gmsh=unknown ifc=schema_n/a`
+
+### N056 — ShapeFix_ShapeTolerance.SetTolerance bulk-rewrite
+
+Defect: SetTolerance(shape, t, type) overwrites tolerances on all sub-elements
+even when they already exceed the new tolerance value, causing silent precision
+loss. When tolerance is reduced globally, higher-precision edges/vertices should
+be preserved or warned; instead they are silently clamped downward.
+
+### N057 — ShapeAnalysis_ShapeTolerance.GlobalTolerance weight dispatch inversion
+
+Defect: GlobalTolerance(shape, type, 0=avg) computes weighted average tolerance,
+but weight assignment inverts for nested shapes—shell's faces are counted twice,
+skewing the average toward face tolerances and violating unbiased averaging
+semantics across all geometry types.
+
+### N058 — BRepLib.SameRange null-pcurve null-check dereference
+
+Defect: SameRange rescales PCurve domains to match 3D edge parameter range, but
+assumes the PCurve exists. When an edge has a null 2D curve on a face (parametric
+curve extraction failed), SameRange dereferences the null pointer without check,
+masking the failure and corrupting downstream edge state.
+
+### N059 — BRepLib.UpdateEdgeTol sampling-grid undersample
+
+Defect: UpdateEdgeTol uses 23-sample default grid to detect maximum distance
+between 3D curve and 2D parametric curve. On B-spline edges with high-curvature
+peaks between sample points, the peak distance is never observed, causing
+underestimated edge tolerance that fails later validation.
+
+### N060 — ShapeFix_Edge.FixSameParameter SameParameterEdge upper-bound
+
+Defect: FixSameParameter computes tolerance to synchronize 3D and parametric
+curves; when computed tolerance exceeds user ceiling, silently clamps without
+flagging. Caller sees "tolerances fixed" but edge is actually incompatible—
+same-parameter constraint cannot be achieved at the ceiling value.
 
 ### M161 — Reader does not validate cross-references; dangling references silently accepted
 - **Category**: §12.8 mixed / auxiliary (sub-class: missing input validation)

@@ -1,0 +1,73 @@
+ISO-10303-21;
+/* N060 - ShapeFix_Edge.FixSameParameter SameParameterEdge upper-bound
+ * Defect: When computed Same-Parameter tolerance exceeds the user-set ceiling,
+ * the writer chooses ceiling silently but doesn't flag the edge as exceeded.
+ * FixSameParameter computes the tolerance needed to synchronize a 3D curve
+ * with its 2D parametric curves. If this computed tolerance exceeds a user-
+ * supplied upper bound, the function silently clamps to the ceiling without
+ * recording that the edge is incompatible (same-parameter sync impossible). */
+HEADER;
+FILE_DESCRIPTION(('N060 - FixSameParameter silent ceiling clamp without flag'),'2;1');
+FILE_NAME('N060.stp','2026-06-15T00:00:00',('auto-generated'),(''),'auto-generated','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+/* Edge with large parameter domain mismatch between 3D and 2D curves */
+#10=CARTESIAN_POINT('p_start',(0.0,0.0,0.0));
+#11=CARTESIAN_POINT('p_end',(10.0,0.0,0.0));
+#20=VERTEX_POINT('v_start',#10);
+#21=VERTEX_POINT('v_end',#11);
+/* 3D edge: LINE from 0 to 10 with parameter domain [0, 10] */
+#30=LINE('line_3d',(#10,#21));
+#31=EDGE_CURVE('edge_large_mismatch',#20,#21,#30,.T.);
+/* Face 1 on XY plane */
+#40=DIRECTION('',(0.0,0.0,1.0));
+#41=DIRECTION('',(1.0,0.0,0.0));
+#42=AXIS2_PLACEMENT_3D('ax3_f1',#10,#40,#41);
+#43=PLANE('plane_z0',#42);
+/* PCurve for face 1: domain [0, 1] (mismatch: 3D is [0, 10], 2D is [0, 1]) */
+#44=CARTESIAN_POINT('',(0.0,0.0));
+#45=DIRECTION('',(1.0,0.0));
+#46=VECTOR('',#45,1.0);
+#47=LINE('pcurve_f1',(#44,#46));
+#48=PCURVE('pcurve_f1_wrapped',#43,#47);
+#49=EDGE_LOOP_PCURVE('',#31,#48);
+#50=FACE_OUTER_BOUND('',#49,.T.);
+#51=ADVANCED_FACE('face_1',(#50),#43,.T.);
+/* Face 2 on XZ plane */
+#60=DIRECTION('',(0.0,1.0,0.0));
+#61=DIRECTION('',(1.0,0.0,0.0));
+#62=AXIS2_PLACEMENT_3D('ax3_f2',#10,#60,#61);
+#63=PLANE('plane_y0',#62);
+/* PCurve for face 2: domain [0, 2*pi] (different mismatch: 3D is [0, 10], 2D is [0, 2*pi])
+   Required tolerance to synchronize both curves is ~5.0 (to rescale [0,1] and [0,2*pi]
+   to [0,10]). But user tolerance ceiling is 0.01. FixSameParameter silently clamps
+   to 0.01 without flagging that same-parameter constraint is violated. */
+#64=CARTESIAN_POINT('',(0.0,0.0));
+#65=DIRECTION('',(1.0,0.0));
+#66=VECTOR('',#65,6.283185307179586);
+#67=LINE('pcurve_f2',(#64,#65,#66));
+#68=PCURVE('pcurve_f2_wrapped',#63,#67);
+#69=EDGE_LOOP_PCURVE('',#31,#68);
+#70=FACE_OUTER_BOUND('',#69,.T.);
+#71=ADVANCED_FACE('face_2',(#70),#63,.T.);
+#80=OPEN_SHELL('',(#51,#71));
+/* PRODUCT chain with tolerance context */
+#9000=PRODUCT_CONTEXT('',#1,'mechanical');
+#9001=PRODUCT('N060','N060','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
+#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
+#9021=SHELL_BASED_SURFACE_MODEL('sbsm',(#80));
+#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#9010);
+#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+ENDSEC;
+END-ISO-10303-21;

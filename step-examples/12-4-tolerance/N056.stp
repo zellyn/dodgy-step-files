@@ -1,0 +1,68 @@
+ISO-10303-21;
+/* N056 - ShapeFix_ShapeTolerance.SetTolerance bulk-rewrite
+ * Defect: SetTolerance(shape, t, type) overwrites tolerances even when
+ * shape's own subentries already exceed t (silent precision loss). When
+ * SetTolerance is called with a tolerance value that is LESS than the
+ * maximum tolerance already present in sub-elements, those sub-elements'
+ * tolerances should either be preserved or explicitly warned. Instead,
+ * the function silently rewrites all tolerances to the new value,
+ * potentially losing information about higher-precision edges/faces. */
+HEADER;
+FILE_DESCRIPTION(('N056 - SetTolerance silent precision loss on bulk rewrite'),'2;1');
+FILE_NAME('N056.stp','2026-06-15T00:00:00',('auto-generated'),(''),'auto-generated','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+/* Shape with three edges: two high-tolerance, one low-tolerance */
+#10=CARTESIAN_POINT('p_origin',(0.0,0.0,0.0));
+#11=CARTESIAN_POINT('p1',(1.0,0.0,0.0));
+#12=CARTESIAN_POINT('p2',(2.0,0.0,0.0));
+#13=CARTESIAN_POINT('p3',(3.0,0.0,0.0));
+#20=VERTEX_POINT('v_origin',#10);
+#21=VERTEX_POINT('v1',#11);
+#22=VERTEX_POINT('v2',#12);
+#23=VERTEX_POINT('v3',#13);
+/* Edge 1: Line from origin to p1, tolerance=0.005 */
+#30=LINE('line1',(#10,#21));
+#31=EDGE_CURVE('edge1_high_tol',#20,#21,#30,.T.);
+/* Edge 2: Line from p1 to p2, tolerance=0.001 (lower) */
+#40=LINE('line2',(#11,#22));
+#41=EDGE_CURVE('edge2_low_tol',#21,#22,#40,.T.);
+/* Edge 3: Line from p2 to p3, tolerance=0.004 */
+#50=LINE('line3',(#12,#23));
+#51=EDGE_CURVE('edge3_high_tol',#22,#23,#50,.T.);
+/* Closed wire: defect triggers when SetTolerance(shape, 0.002, ...) is called
+   to rewrite tolerances. The function should detect that edge1 and edge3
+   already have higher tolerance (0.005, 0.004 > 0.002) and either preserve
+   them or warn. Instead it silently overwrites all to 0.002. */
+#60=ORIENTED_EDGE('',*,*,#31,.T.);
+#61=ORIENTED_EDGE('',*,*,#41,.T.);
+#62=ORIENTED_EDGE('',*,*,#51,.T.);
+#63=EDGE_LOOP('',(#60,#61,#62));
+#64=FACE_OUTER_BOUND('',#63,.T.);
+/* Face on XY plane */
+#70=DIRECTION('',(0.0,0.0,1.0));
+#71=DIRECTION('',(1.0,0.0,0.0));
+#72=AXIS2_PLACEMENT_3D('ax3',#10,#70,#71);
+#73=PLANE('plane_xy',#72);
+#74=ADVANCED_FACE('face1',(#64),#73,.T.);
+#75=OPEN_SHELL('',(#74));
+/* PRODUCT chain with tolerance context */
+#9000=PRODUCT_CONTEXT('',#1,'mechanical');
+#9001=PRODUCT('N056','N056','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
+#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
+#9021=SHELL_BASED_SURFACE_MODEL('sbsm',(#75));
+#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#9010);
+#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+ENDSEC;
+END-ISO-10303-21;

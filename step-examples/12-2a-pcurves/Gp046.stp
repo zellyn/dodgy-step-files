@@ -1,0 +1,93 @@
+ISO-10303-21;
+/* Gp046 - ShapeFix_Edge.FixVertexTolerance face-context null
+ * Defect: edge shared between PLANE and CYLINDRICAL_SURFACE where the
+ * face context is null at FixVertexTolerance entry. Single-surface tolerance
+ * is used, underestimating the multi-surface tolerance needed at the shared
+ * vertex. Edge binds same vertex to both surfaces with inconsistent tolerance. */
+HEADER;
+FILE_DESCRIPTION(('Gp046 test case','FixVertexTolerance face-context null'),'2;1');
+FILE_NAME('Gp046.stp','2026-06-15T00:00:00',(''),(''),'auto-generated','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+#3=(LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT(.MILLI.,.METRE.));
+#4=(NAMED_UNIT(*) PLANE_ANGLE_UNIT() SI_UNIT($,.RADIAN.));
+#5=(NAMED_UNIT(*) SI_UNIT($,.STERADIAN.) SOLID_ANGLE_UNIT());
+#6=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#3,'distance_accuracy_value','');
+#7=( GEOMETRIC_REPRESENTATION_CONTEXT(3)
+     GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#6))
+     GLOBAL_UNIT_ASSIGNED_CONTEXT((#3,#4,#5))
+     REPRESENTATION_CONTEXT('','3D') );
+/* Plane surface origin */
+#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#11=DIRECTION('',(0.0,0.0,1.0));
+#12=DIRECTION('',(1.0,0.0,0.0));
+#13=AXIS2_PLACEMENT_3D('',#10,#11,#12);
+#14=PLANE('plane_surf',#13);
+/* Cylinder surface (radius 5.0) */
+#15=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#16=DIRECTION('',(0.0,0.0,1.0));
+#17=DIRECTION('',(1.0,0.0,0.0));
+#18=AXIS2_PLACEMENT_3D('',#15,#16,#17);
+#19=CYLINDRICAL_SURFACE('cyl_surf',#18,5.0);
+/* Shared edge: 3D straight line along Y-axis from (5.0, 0.0, 0.0) to (5.0, 10.0, 0.0) */
+#20=CARTESIAN_POINT('',(5.0,0.0,0.0));
+#21=DIRECTION('',(0.0,1.0,0.0));
+#22=LINE('edge_line',#20,#21);
+/* Vertices: start and end of shared edge */
+#30=CARTESIAN_POINT('',(5.0,0.0,0.0));
+#31=VERTEX_POINT('',#30);
+#32=CARTESIAN_POINT('',(5.0,10.0,0.0));
+#33=VERTEX_POINT('',#32);
+/* PCURVE on plane (X,Y coordinates) */
+#40=CARTESIAN_POINT('',(5.0,0.0));
+#41=DIRECTION('',(0.0,1.0));
+#42=LINE('pcurve_plane',#40,#41);
+#43=( GEOMETRIC_REPRESENTATION_CONTEXT(2)
+      PARAMETRIC_REPRESENTATION_CONTEXT()
+      REPRESENTATION_CONTEXT('parametric','2D') );
+#44=DEFINITIONAL_REPRESENTATION('',(#42),#43);
+#45=PCURVE('pcurve_on_plane',#14,#44);
+/* PCURVE on cylinder (u=angle, v=height) */
+#46=CARTESIAN_POINT('',(1.5707963,0.0));
+#47=DIRECTION('',(0.0,1.0));
+#48=LINE('pcurve_cyl',#46,#47);
+#49=DEFINITIONAL_REPRESENTATION('',(#48),#43);
+#50=PCURVE('pcurve_on_cyl',#19,#49);
+/* SURFACE_CURVE for plane */
+#51=SURFACE_CURVE('edge_plane',#22,(#45),.PCURVE_S1.);
+/* SURFACE_CURVE for cylinder */
+#52=SURFACE_CURVE('edge_cyl',#22,(#50),.PCURVE_S1.);
+/* Shared EDGE_CURVE with both surface curves */
+#60=EDGE_CURVE('edge_gp046_shared',#31,#33,#51,.T.);
+/* Face on plane */
+#61=ORIENTED_EDGE('',*,*,#60,.T.);
+#62=EDGE_LOOP('',(#61));
+#63=FACE_OUTER_BOUND('',#62,.T.);
+#64=ADVANCED_FACE('',(#63),#14,.T.);
+/* Face on cylinder */
+#70=ORIENTED_EDGE('',*,*,#60,.T.);
+#71=EDGE_LOOP('',(#70));
+#72=FACE_OUTER_BOUND('',#71,.T.);
+#73=ADVANCED_FACE('',(#72),#19,.T.);
+#90=SHAPE_REPRESENTATION('Gp046',(#13,#14,#19,#64,#73),#7);
+/* Wrap: PRODUCT chain so OCCT TransferRoots produces a shape. */
+#9000=PRODUCT_CONTEXT('',#1,'mechanical');
+#9001=PRODUCT('Gp046','Gp046','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
+#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
+#9020=OPEN_SHELL('wrap_shell',(#64,#73));
+#9021=SHELL_BASED_SURFACE_MODEL('wrap_sbsm',(#9020));
+#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#9010);
+#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+ENDSEC;
+END-ISO-10303-21;
