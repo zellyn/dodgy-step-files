@@ -1,0 +1,88 @@
+ISO-10303-21;
+/* Tsh169 - ShapeFix_Shell.Perform shell-with-floating-faces
+ * Defect: shell containing faces not connected to the main topology (floating);
+ * Perform doesn't separate them and they pollute the output shell.
+ * Tests: shell with main connected region + isolated floating face. */
+HEADER;
+FILE_DESCRIPTION(('Tsh169 test case','ShapeFix_Shell floating-faces'),'2;1');
+FILE_NAME('Tsh169.stp','2026-06-15T00:00:00',(''),(''),'auto-generated','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+/* Main connected shell: 4 vertices forming a closed rectangle */
+#100=CARTESIAN_POINT('p0',(0.0,0.0,0.0));
+#101=CARTESIAN_POINT('p1',(1.0,0.0,0.0));
+#102=CARTESIAN_POINT('p2',(1.0,1.0,0.0));
+#103=CARTESIAN_POINT('p3',(0.0,1.0,0.0));
+#110=VERTEX_POINT('',#100);
+#111=VERTEX_POINT('',#101);
+#112=VERTEX_POINT('',#102);
+#113=VERTEX_POINT('',#103);
+/* Floating face: separate from main shell */
+#120=CARTESIAN_POINT('f0',(5.0,0.0,0.0));
+#121=CARTESIAN_POINT('f1',(6.0,0.0,0.0));
+#122=CARTESIAN_POINT('f2',(6.0,1.0,0.0));
+#123=CARTESIAN_POINT('f3',(5.0,1.0,0.0));
+#130=VERTEX_POINT('',#120);
+#131=VERTEX_POINT('',#121);
+#132=VERTEX_POINT('',#122);
+#133=VERTEX_POINT('',#123);
+/* Plane surfaces */
+#200=DIRECTION('z',(0.0,0.0,1.0));
+#201=DIRECTION('x',(1.0,0.0,0.0));
+#210=CARTESIAN_POINT('',(0.5,0.5,0.0));
+#211=AXIS2_PLACEMENT_3D('',#210,#200,#201);
+#212=PLANE('plane1',#211);
+#220=CARTESIAN_POINT('',(5.5,0.5,0.0));
+#221=AXIS2_PLACEMENT_3D('',#220,#200,#201);
+#222=PLANE('plane2',#221);
+/* Edges for main face */
+#300=DIRECTION('x',(1.0,0.0,0.0));
+#301=VECTOR('',#300,1.0);
+#302=DIRECTION('y',(0.0,1.0,0.0));
+#303=VECTOR('',#302,1.0);
+#310=LINE('',#100,#301); #311=EDGE_CURVE('',#110,#111,#310,.T.);
+#312=LINE('',#101,#303); #313=EDGE_CURVE('',#111,#112,#312,.T.);
+#314=LINE('',#103,#301); #315=EDGE_CURVE('',#113,#112,#314,.T.);
+#316=LINE('',#100,#303); #317=EDGE_CURVE('',#110,#113,#316,.T.);
+/* Edges for floating face */
+#320=LINE('',#120,#301); #321=EDGE_CURVE('',#130,#131,#320,.T.);
+#322=LINE('',#121,#303); #323=EDGE_CURVE('',#131,#132,#322,.T.);
+#324=LINE('',#123,#301); #325=EDGE_CURVE('',#133,#132,#324,.T.);
+#326=LINE('',#120,#303); #327=EDGE_CURVE('',#130,#133,#326,.T.);
+/* Main face */
+#400=ORIENTED_EDGE('',*,*,#311,.T.);
+#401=ORIENTED_EDGE('',*,*,#313,.T.);
+#402=ORIENTED_EDGE('',*,*,#315,.F.);
+#403=ORIENTED_EDGE('',*,*,#317,.F.);
+#404=EDGE_LOOP('',(#400,#401,#402,#403));
+#405=FACE_OUTER_BOUND('',#404,.T.);
+#406=ADVANCED_FACE('',(#405),#212,.T.);
+/* Floating face (disconnected from main) */
+#410=ORIENTED_EDGE('',*,*,#321,.T.);
+#411=ORIENTED_EDGE('',*,*,#323,.T.);
+#412=ORIENTED_EDGE('',*,*,#325,.F.);
+#413=ORIENTED_EDGE('',*,*,#327,.F.);
+#414=EDGE_LOOP('',(#410,#411,#412,#413));
+#415=FACE_OUTER_BOUND('',#414,.T.);
+#416=ADVANCED_FACE('',(#415),#222,.T.);
+/* Open shell containing both main and floating faces */
+#500=OPEN_SHELL('shell_with_floating',(#406,#416));
+#9000=PRODUCT_CONTEXT('',#1,'mechanical');
+#9001=PRODUCT('Tsh169','Tsh169','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
+#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
+#9021=SHELL_BASED_SURFACE_MODEL('sbsm',(#500));
+#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#9010);
+#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+ENDSEC;
+END-ISO-10303-21;

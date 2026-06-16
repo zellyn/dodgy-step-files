@@ -1,0 +1,67 @@
+/* N119 — ShapeFix_ShapeTolerance.LimitTolerance with-very-large-shape
+ * Defect: shape with coordinates 1e10; LimitTolerance's relative comparison
+ * underflows because input tolerance has no scale awareness. A tolerance of
+ * 1.0 is actually reasonable for coords at 1e10, but relative checks like
+ * (tol / coord_magnitude) underflow to zero, causing LimitTolerance to reject
+ * valid tolerances and report spurious violations.
+ */
+ISO-10303-21;
+HEADER;
+FILE_DESCRIPTION(('N119 LimitTolerance scale underflow on large coords'),'2;1');
+FILE_NAME('N119.stp','2026-06-15T00:00:00',(''),(''),
+  'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
+  'automotive_design',2009,#1);
+#6=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#7=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#8=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+/* Vertices at enormous coordinates (1e10 scale). */
+#10=CARTESIAN_POINT('origin_huge',(1.0E10,1.0E10,1.0E10));
+#11=CARTESIAN_POINT('edge_end_huge',(1.0E10,1.0E10+1.0,1.0E10));
+#12=VERTEX_POINT('v_huge_0',#10);
+#13=VERTEX_POINT('v_huge_1',#11);
+/* Edge curve at 1e10 scale with reasonable tolerance 1.0 (relative precision 1e-10). */
+#20=DIRECTION('huge_y',(0.0,1.0,0.0));
+#21=VECTOR('huge_vec_1',#20,1.0);
+#22=LINE('huge_line',#10,#21);
+#30=EDGE_CURVE('edge_at_1e10_scale',#12,#13,#22,.T.);
+/* Plane at huge coordinates. */
+#40=CARTESIAN_POINT('plane_huge',(1.0E10,1.0E10,1.0E10));
+#41=DIRECTION('plane_z_huge',(0.0,0.0,1.0));
+#42=DIRECTION('plane_x_huge',(1.0,0.0,0.0));
+#43=AXIS2_PLACEMENT_3D('huge_plane_plc',#40,#41,#42);
+#44=PLANE('huge_plane',#43);
+/* Edge at huge scale with nominal tolerance 1.0;
+ * relative to 1e10 coordinates, this is reasonable (1e-10 relative precision)
+ * but LimitTolerance's relative check (tol / MAX_COORD) underflows. */
+#100=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0),#6,
+  'distance_accuracy_value','reasonable_absolute_huge_scale');
+#110=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#100))
+  GLOBAL_UNIT_ASSIGNED_CONTEXT((#6,#7,#8))
+  REPRESENTATION_CONTEXT('huge_coords','3D'));
+#200=ORIENTED_EDGE('',*,*,#30,.T.);
+#201=EDGE_LOOP('huge_loop',(#200));
+#202=FACE_OUTER_BOUND('',#201,.T.);
+#203=ADVANCED_FACE('huge_face',(#202),#44,.T.);
+#210=CLOSED_SHELL('huge_shell',(#203));
+#9000=PRODUCT_CONTEXT('',#1,'mechanical');
+#9001=PRODUCT('N119','N119','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
+#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
+#9021=SHELL_BASED_SURFACE_MODEL('sbsm',(#210));
+#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#9010);
+#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+ENDSEC;
+END-ISO-10303-21;

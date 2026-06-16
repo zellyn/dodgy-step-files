@@ -1,0 +1,64 @@
+ISO-10303-21;
+/* Tsh174 - ShapeFix_Shell.FixFaceOrientation with-empty-shell-after-fix
+ * Defect: shell where Perform removes all faces; FixFaceOrientation runs on
+ * the empty shell and reports success without detecting the void.
+ * Tests: shell with two degenerate faces that get removed, leaving empty shell. */
+HEADER;
+FILE_DESCRIPTION(('Tsh174 test case','ShapeFix_Shell empty-shell-after-fix'),'2;1');
+FILE_NAME('Tsh174.stp','2026-06-15T00:00:00',(''),(''),'auto-generated','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+/* Degenerate face 1: line [0,0,0]-[1,0,0] as planar zero-area */
+#100=CARTESIAN_POINT('p0',(0.0,0.0,0.0));
+#101=CARTESIAN_POINT('p1',(1.0,0.0,0.0));
+#110=VERTEX_POINT('',#100);
+#111=VERTEX_POINT('',#101);
+#120=DIRECTION('x',(1.0,0.0,0.0));
+#121=VECTOR('',#120,1.0);
+#122=LINE('',#100,#121);
+#123=EDGE_CURVE('',#110,#111,#122,.T.);
+#124=ORIENTED_EDGE('',*,*,#123,.T.);
+#125=ORIENTED_EDGE('',*,*,#123,.F.);
+#130=EDGE_LOOP('',(#124,#125));
+#131=DIRECTION('z',(0.0,0.0,1.0));
+#132=DIRECTION('x',(1.0,0.0,0.0));
+#133=CARTESIAN_POINT('',(0.5,0.0,0.0));
+#134=AXIS2_PLACEMENT_3D('',#133,#131,#132);
+#135=PLANE('plane1',#134);
+#140=FACE_OUTER_BOUND('',#130,.T.);
+#141=ADVANCED_FACE('',(#140),#135,.T.);
+/* Degenerate face 2: line [1,0,0]-[0,0,0] reversed orientation */
+#200=CARTESIAN_POINT('q0',(1.0,0.0,0.0));
+#201=CARTESIAN_POINT('q1',(0.0,0.0,0.0));
+#210=VERTEX_POINT('',#200);
+#211=VERTEX_POINT('',#201);
+#220=DIRECTION('x',(-1.0,0.0,0.0));
+#221=VECTOR('',#220,1.0);
+#222=LINE('',#200,#221);
+#223=EDGE_CURVE('',#210,#211,#222,.T.);
+#224=ORIENTED_EDGE('',*,*,#223,.T.);
+#225=ORIENTED_EDGE('',*,*,#223,.F.);
+#230=EDGE_LOOP('',(#224,#225));
+#240=FACE_OUTER_BOUND('',#230,.T.);
+#241=ADVANCED_FACE('',(#240),#135,.F.);
+/* Shell containing degenerate faces (will be emptied by Perform) */
+#300=OPEN_SHELL('degen_shell',(#141,#241));
+#9000=PRODUCT_CONTEXT('',#1,'mechanical');
+#9001=PRODUCT('Tsh174','Tsh174','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
+#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
+#9021=SHELL_BASED_SURFACE_MODEL('sbsm',(#300));
+#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#9010);
+#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+ENDSEC;
+END-ISO-10303-21;

@@ -1,0 +1,80 @@
+ISO-10303-21;
+/* Twi235 - ShapeAnalysis_Wire.CheckTail B-spline-tangent-mismatch
+ * Defect: Wire's tail edge (last edge) has tangent at start that doesn't
+ * match the previous edge's tangent at end. Forms a sharp corner.
+ * CheckTail's smooth-only assumption misses this case when using B-splines.
+ * (ShapeAnalysis_Wire::CheckTail, ShapeFix_Wire::FixTails)
+ */
+HEADER;
+FILE_DESCRIPTION(('Twi235 test case','ShapeAnalysis_Wire.CheckTail B-spline-tangent-mismatch'),'2;1');
+FILE_NAME('Twi235.stp','2026-06-15T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#11=DIRECTION('',(0.0,0.0,1.0));
+#12=DIRECTION('',(1.0,0.0,0.0));
+#13=AXIS2_PLACEMENT_3D('',#10,#11,#12);
+#20=PLANE('',#13);
+#21=RECTANGULAR_TRIMMED_SURFACE('wrap_trim',#20,0.0,2.0,0.0,2.0,.T.,.T.);
+/* Four vertices for a wire path */
+#30=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#31=VERTEX_POINT('',#30);
+#32=CARTESIAN_POINT('',(1.0,0.0,0.0));
+#33=VERTEX_POINT('',#32);
+#34=CARTESIAN_POINT('',(1.5,1.0,0.0));
+#35=VERTEX_POINT('',#34);
+#36=CARTESIAN_POINT('',(2.0,2.0,0.0));
+#37=VERTEX_POINT('',#36);
+#38=CARTESIAN_POINT('',(0.0,2.0,0.0));
+#39=VERTEX_POINT('',#38);
+/* Line edges */
+#40=DIRECTION('',(1.0,0.0,0.0));
+#41=VECTOR('',#40,1.0);
+#42=LINE('',#30,#41);
+/* B-spline with tangent mismatch at start
+ * This B-spline does not have matching tangent with the previous LINE at their junction */
+#50=DIRECTION('',(1.0,1.0,0.0));
+#51=VECTOR('',#50,0.7071067811865475);
+#52=B_SPLINE_CURVE_WITH_KNOTS('',3,(#32,#34,#36),
+  .UNSPECIFIED.,.F.,.F.,(4,2,4),(0.0,0.5,1.0),
+  .UNSPECIFIED.);
+/* More line edges */
+#60=DIRECTION('',(-1.0,0.0,0.0));
+#61=VECTOR('',#60,1.0);
+#62=LINE('',#38,#61);
+#63=DIRECTION('',(0.0,-1.0,0.0));
+#64=VECTOR('',#63,1.0);
+#65=LINE('',#39,#64);
+/* Defect: tangent mismatch at junction between line and B-spline */
+#70=EDGE_CURVE('',#31,#33,#42,.T.);
+#71=EDGE_CURVE('',#33,#36,#52,.T.);
+#72=EDGE_CURVE('',#36,#38,#62,.T.);
+#73=EDGE_CURVE('',#38,#31,#65,.T.);
+#80=ORIENTED_EDGE('',*,*,#70,.T.);
+#81=ORIENTED_EDGE('',*,*,#71,.T.);
+#82=ORIENTED_EDGE('',*,*,#72,.T.);
+#83=ORIENTED_EDGE('',*,*,#73,.T.);
+#90=EDGE_LOOP('',(#80,#81,#82,#83));
+#91=FACE_OUTER_BOUND('',#90,.T.);
+#92=ADVANCED_FACE('',(#91),#21,.T.);
+/* Minimal PRODUCT chain */
+#9000=PRODUCT_CONTEXT('',#1,'mechanical');
+#9001=PRODUCT('Twi235','Twi235','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
+#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
+#9020=OPEN_SHELL('wrap_shell',(#92));
+#9021=SHELL_BASED_SURFACE_MODEL('sbsm',(#9020));
+#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#9010);
+#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+ENDSEC;
+END-ISO-10303-21;

@@ -1,0 +1,73 @@
+/* N117 — ShapeAnalysis_Edge.CheckOverlapping mixed-curve-orientation
+ * Defect: overlapping edges where one is traversed forward and the other
+ * backward (geometrically same path); CheckOverlapping's directional test
+ * compares the tangent directions and reports no overlap when they differ,
+ * even though the 3D curves are coincident. The defect masks topology errors.
+ */
+ISO-10303-21;
+HEADER;
+FILE_DESCRIPTION(('N117 CheckOverlapping directional false-negative'),'2;1');
+FILE_NAME('N117.stp','2026-06-15T00:00:00',(''),(''),
+  'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
+  'automotive_design',2009,#1);
+#6=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#7=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#8=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+/* Shared vertices for bidirectional traversal. */
+#10=CARTESIAN_POINT('p_start',(0.0,0.0,0.0));
+#11=CARTESIAN_POINT('p_end',(10.0,0.0,0.0));
+#12=VERTEX_POINT('v_start',#10);
+#13=VERTEX_POINT('v_end',#11);
+/* Two identical line segments representing the same geometry. */
+#20=DIRECTION('fwd_x',(1.0,0.0,0.0));
+#21=DIRECTION('bwd_x',(-1.0,0.0,0.0));
+#30=VECTOR('fwd_vec',#20,10.0);
+#31=VECTOR('bwd_vec',#21,10.0);
+#40=LINE('fwd_line',#10,#30);
+#41=LINE('bwd_line',#11,#31);
+/* Edge A: 0->10 forward (+x direction). */
+#50=EDGE_CURVE('edge_fwd',#12,#13,#40,.T.);
+/* Edge B: 10->0 backward (-x direction), same 3D curve. */
+#51=EDGE_CURVE('edge_bwd',#13,#12,#41,.T.);
+/* Both edges participate in a wire; CheckOverlapping sees opposite
+ * tangent directions and reports no geometric overlap, missing the fact
+ * that they are the same line segment traversed in opposite senses. */
+#60=ORIENTED_EDGE('',*,*,#50,.T.);
+#61=ORIENTED_EDGE('',*,*,#51,.T.);
+#70=EDGE_LOOP('bidirectional_loop',(#60,#61));
+#71=FACE_OUTER_BOUND('',#70,.T.);
+/* Axis2 for a degenerate planar face to host these edges. */
+#80=CARTESIAN_POINT('plane_origin',(0.0,0.0,0.0));
+#81=DIRECTION('plane_z',(0.0,0.0,1.0));
+#82=DIRECTION('plane_x',(1.0,0.0,0.0));
+#83=AXIS2_PLACEMENT_3D('plane_place',#80,#81,#82);
+#84=PLANE('host_plane',#83);
+#85=ADVANCED_FACE('degenerate_face',(#71),#84,.T.);
+#100=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#6,
+  'distance_accuracy_value','nominal_tolerance');
+#110=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#100))
+  GLOBAL_UNIT_ASSIGNED_CONTEXT((#6,#7,#8))
+  REPRESENTATION_CONTEXT('bidirectional','3D'));
+#200=CLOSED_SHELL('bidirectional_shell',(#85));
+#9000=PRODUCT_CONTEXT('',#1,'mechanical');
+#9001=PRODUCT('N117','N117','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
+#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
+#9021=SHELL_BASED_SURFACE_MODEL('sbsm',(#200));
+#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#9010);
+#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+ENDSEC;
+END-ISO-10303-21;

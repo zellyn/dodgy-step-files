@@ -1,0 +1,89 @@
+/* N116 — ShapeFix_Edge.FixVertexTolerance shared-by-many-edges
+ * Defect: vertex used by 4+ edges; FixVertexTolerance iterates per-edge but
+ * writes back to the shared vertex, overwriting previous results. Final
+ * tolerance reflects only the last edge that touched it, losing constraints
+ * from the first 3. Each iteration recalculates and overwrites #180's
+ * tolerance field without accumulating maxima.
+ */
+ISO-10303-21;
+HEADER;
+FILE_DESCRIPTION(('N116 FixVertexTolerance overwrite on shared vertex'),'2;1');
+FILE_NAME('N116.stp','2026-06-15T00:00:00',(''),(''),
+  'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
+  'automotive_design',2009,#1);
+#6=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#7=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#8=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+/* Shared vertex at center; 4 edges demand 4 different tolerances.
+ * FixVertexTolerance per-edge will overwrite this field 4 times. */
+#10=CARTESIAN_POINT('shared_hub',(0.0,0.0,0.0));
+#11=VERTEX_POINT('hub',#10);
+#20=CARTESIAN_POINT('e1_far',(10.0,0.0,0.0));
+#21=CARTESIAN_POINT('e2_far',(0.0,10.0,0.0));
+#22=CARTESIAN_POINT('e3_far',(-10.0,0.0,0.0));
+#23=CARTESIAN_POINT('e4_far',(0.0,-10.0,0.0));
+#30=VERTEX_POINT('v1',#20);
+#31=VERTEX_POINT('v2',#21);
+#32=VERTEX_POINT('v3',#22);
+#33=VERTEX_POINT('v4',#23);
+#40=DIRECTION('x',(1.0,0.0,0.0));
+#41=DIRECTION('y',(0.0,1.0,0.0));
+#42=DIRECTION('nx',(-1.0,0.0,0.0));
+#43=DIRECTION('ny',(0.0,-1.0,0.0));
+#50=VECTOR('vx10',#40,10.0);
+#51=VECTOR('vy10',#41,10.0);
+#52=VECTOR('vnx10',#42,10.0);
+#53=VECTOR('vny10',#43,10.0);
+#60=LINE('e1_line',#10,#50);
+#61=LINE('e2_line',#10,#51);
+#62=LINE('e3_line',#10,#52);
+#63=LINE('e4_line',#10,#53);
+/* Four edges radiate from shared vertex #11; each has different tolerance
+ * demand due to different geometric deviation from ideal line. */
+#70=EDGE_CURVE('e1_1e-2',#11,#30,#60,.T.);
+#71=EDGE_CURVE('e2_1e-3',#11,#31,#61,.T.);
+#72=EDGE_CURVE('e3_1e-4',#11,#32,#62,.T.);
+#73=EDGE_CURVE('e4_1e-5',#11,#33,#63,.T.);
+#100=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#6,
+  'distance_accuracy_value','nominal_tolerance');
+#101=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-2),#6,
+  'distance_accuracy_value','e1_tol_demand');
+#102=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-3),#6,
+  'distance_accuracy_value','e2_tol_demand');
+#103=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-4),#6,
+  'distance_accuracy_value','e3_tol_demand');
+#104=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-5),#6,
+  'distance_accuracy_value','e4_tol_demand');
+#110=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#100,#101,#102,#103,#104))
+  GLOBAL_UNIT_ASSIGNED_CONTEXT((#6,#7,#8))
+  REPRESENTATION_CONTEXT('hub_4edges','3D'));
+#200=ORIENTED_EDGE('',*,*,#70,.T.);
+#201=ORIENTED_EDGE('',*,*,#71,.T.);
+#202=ORIENTED_EDGE('',*,*,#72,.T.);
+#203=ORIENTED_EDGE('',*,*,#73,.T.);
+#210=EDGE_LOOP('hub_star',(#200,#201,#202,#203));
+#211=FACE_OUTER_BOUND('',#210,.T.);
+#212=ADVANCED_FACE('star_face',(#211),#110,.T.);
+#220=CLOSED_SHELL('star_shell',(#212));
+#9000=PRODUCT_CONTEXT('',#1,'mechanical');
+#9001=PRODUCT('N116','N116','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
+#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
+#9021=SHELL_BASED_SURFACE_MODEL('sbsm',(#220));
+#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#9010);
+#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+ENDSEC;
+END-ISO-10303-21;

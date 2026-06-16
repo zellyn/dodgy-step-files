@@ -23827,6 +23827,26 @@ Wire with high-knot-count B-spline edges. CheckIntersectingEdges's sub-segment c
 
 Wire missing edge where existing path passes through degenerate vertex. FixLacking's insertion logic doesn't account for degenerate intermediate vertices in edge connectivity.
 
+### Twi232 — ShapeFix_Wire.FixSelfIntersection two-edges-two-intersections
+
+Two edges that cross at TWO distinct points in 3D space. FixSelfIntersection handles single intersection per edge pair only; with multiple crossings, the second intersection remains undetected and unrepaired.
+
+### Twi233 — ShapeAnalysis_Wire.CheckOuterBound winding-number-zero
+
+Wire forming a figure-8 pattern (two loops meeting at pinch vertex). The 3D winding number around a test point is zero. CheckOuterBound's enclosing test returns inconclusive, failing to classify the wire correctly as inner/outer bound.
+
+### Twi234 — ShapeFix_Wire.FixDegenerated zero-vertex
+
+Wire containing a vertex at exactly the origin (0,0,0). FixDegenerated's vertex-distance test uses absolute comparison and treats the origin specially, failing to recognize degenerate edges incident to it.
+
+### Twi235 — ShapeAnalysis_Wire.CheckTail B-spline-tangent-mismatch
+
+Wire's tail edge has tangent at start that doesn't match the previous edge's tangent at end, forming a sharp corner. CheckTail's smooth-only assumption misses this case when B-splines are involved.
+
+### Twi236 — ShapeFix_Wire.FixGaps3d bridge-creates-degeneracy
+
+Wire has a 3D gap at a junction (endpoints separated by ~1e-8, within tolerance). FixGaps3d attempts to bridge by creating a new edge, but the bridge itself becomes degenerate with coincident or near-coincident endpoints.
+
 ### Gs056 — `SURFACE_OF_REVOLUTION` of an ellipse around its own centre produces a degenerate surface
 - **Category**: §12.2c surface / curve degeneracies (sub-class: revolution of conic)
 - **Sources**: OCCT MANTIS#0027722; bug-reporter language: "STEP error for ellipse revol shape", "revolution of ellipse fails on import", "degenerate surface from ellipse-of-revolution". (OCCT MANTIS tracker 502 as of 2026-05-02)
@@ -24937,6 +24957,26 @@ Shell with one face whose outer loop is empty (zero edges). FixFaceOrientation p
 **Defect class**: silent_filtering | ShapeAnalysis_Shell.LoadShells_at46
 
 Input compound has mixed entities (shells + solids + faces). LoadShells filters to shells only and silently ignores non-shell children without warning. Tests compound entity filtering semantics.
+
+### Tsh169 — ShapeFix_Shell.Perform shell-with-floating-faces
+
+Shell containing disconnected faces not reachable from main topology. Perform() fails to isolate floating face; output shell retains unpredictable adjacency.
+
+### Tsh170 — ShapeAnalysis_Shell.CheckOrientedShells with-zero-tolerance
+
+Adjacent faces with exact edge coincidence. CheckOrientedShells(tolerance=0) produces ambiguous match verdicts; adjacent-face orientation propagation undefined.
+
+### Tsh171 — ShapeUpgrade_ShellSewing.Apply with-cross-shell-intersection
+
+Two distinct shells geometrically overlapping. Apply() ignores intersection; merged shell contains self-intersecting face topology.
+
+### Tsh172 — ShapeFix_Shell.FixFaceOrientation with-3-faces-sharing-vertex
+
+Non-manifold vertex shared by three faces with conflicting outward normals. FixFaceOrientation() orientation propagation cannot resolve 3-way conflict.
+
+### Tsh173 — ShapeAnalysis_Shell.LoadShells with-recursive-compound
+
+Compound with nested shell references. LoadShells() recursion incomplete when detecting cyclic structure; verdict incomplete or truncated.
 
 ### Gp040 — Pcurves emitted by default duplicate / contradict the surface 3D curve
 - **Category**: §12.2a pcurve defects (sub-class: writer-emitted pcurves disagree with 3D)
@@ -26055,6 +26095,36 @@ CheckPoints called with precision 1e-3 but projection-distance test uses 1e-6 in
 **Defect**: ShapeAnalysis_ShapeTolerance.OverTolerance with vertex tolerance exactly equal to threshold; non-strict comparison includes threshold in "over" result.
 **Pattern**: Single edge with vertex tolerance set to 0.5 mm, matching UNCERTAINTY_MEASURE threshold value.
 **File**: `/Users/zellyn/gh/dodgy-step-files/step-examples/12-4-tolerance/N115.stp`
+
+### N116 — ShapeFix_Edge.FixVertexTolerance shared-by-many-edges
+
+**Defect**: Vertex used by 4+ edges; `FixVertexTolerance` iterates per-edge but writes back to the shared vertex, overwriting previous results. Final tolerance reflects only the last edge that touched it, losing constraints from earlier edges. Each iteration recalculates and overwrites the vertex tolerance field without accumulating maxima.
+
+**Reproducer**: Star topology with a central hub vertex (#11) shared by 4 radial edges, each demanding a different tolerance (1e-2, 1e-3, 1e-4, 1e-5). The algorithm processes edges in order, overwriting the hub's tolerance 4 times. Downstream operations see only the last (1e-5) value instead of the maximum required (1e-2).
+
+### N117 — ShapeAnalysis_Edge.CheckOverlapping mixed-curve-orientation
+
+**Defect**: Overlapping edges where one is traversed forward and the other backward (geometrically identical path); `CheckOverlapping`'s directional test compares tangent directions and reports no overlap when they differ, even though the 3D curves are coincident. This masks topology errors where duplicate geometry should be detected.
+
+**Reproducer**: Two identical line segments (0,0,0) to (10,0,0), one with EDGE_CURVE forward direction (+X), one backward (−X direction). Both form a wire boundary loop. The directional mismatch causes the overlap check to return false negative.
+
+### N118 — BRepLib.UpdateEdgeTol with-pcurve-discontinuity
+
+**Defect**: Edge whose pcurve has a C0 discontinuity in the middle; `UpdateEdgeTol` samples uniformly and the discontinuity contaminates one sample's tolerance calculation, inflating the entire edge tolerance to hide the discontinuity instead of reporting healing failure.
+
+**Reproducer**: Single edge spanning (0,0,0) to (10,0,0) in 3D with a composite pcurve consisting of two B-spline segments meeting at u=0.5. Segment A ends at (5.0, 0.0) in uv; segment B begins at (5.0, 0.5)—a 0.5-unit jump in v. Uniform sampling hits this discontinuity and inflates the edge tolerance to 0.5 rather than reporting the gap.
+
+### N119 — ShapeFix_ShapeTolerance.LimitTolerance with-very-large-shape
+
+**Defect**: Shape with coordinates at 1e10 scale; `LimitTolerance`'s relative comparison underflows because input tolerance has no scale awareness. A tolerance of 1.0 is reasonable for coords at 1e10 (relative precision 1e−10), but relative checks like `(tol / MAX_COORD)` underflow to zero, causing the method to reject valid tolerances and report spurious violations.
+
+**Reproducer**: Single edge at (1e10, 1e10, 1e10) to (1e10, 1e10+1, 1e10) with nominal tolerance 1.0 in the uncertainty context. LimitTolerance's internal relative ratio test underflows, flagging this as an invalid tolerance configuration.
+
+### N120 — ShapeAnalysis_ShapeTolerance.GlobalTolerance averaging-over-empty
+
+**Defect**: Call `GlobalTolerance` with mode=avg on a shape containing no vertices/edges of the requested type; division-by-zero produces NaN. The method accumulates sum across elements and divides by count at the end, but does not guard against empty iteration.
+
+**Reproducer**: Closed shell with a single triangular face and three boundary edges, but no free (isolated) vertices. Calling `GlobalTolerance` with selector=VERTEX and mode=averaging iterates over an empty vertex set, dividing total(0) by count(0) to produce NaN.
 
 ### M161 — Reader does not validate cross-references; dangling references silently accepted
 - **Category**: §12.8 mixed / auxiliary (sub-class: missing input validation)

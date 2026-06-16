@@ -1,0 +1,101 @@
+ISO-10303-21;
+/* Twi233 - ShapeAnalysis_Wire.CheckOuterBound winding-number-zero
+ * Defect: Wire forms a figure-8 pattern (two loops meeting at a pinch point).
+ * The 3D winding number around a test point is zero; CheckOuterBound's
+ * enclosing test returns inconclusive, failing to classify the wire correctly.
+ * (ShapeAnalysis_Wire::CheckOuterBound, winding-number algorithm)
+ */
+HEADER;
+FILE_DESCRIPTION(('Twi233 test case','ShapeAnalysis_Wire.CheckOuterBound winding-number-zero'),'2;1');
+FILE_NAME('Twi233.stp','2026-06-15T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#11=DIRECTION('',(0.0,0.0,1.0));
+#12=DIRECTION('',(1.0,0.0,0.0));
+#13=AXIS2_PLACEMENT_3D('',#10,#11,#12);
+#20=PLANE('',#13);
+#21=RECTANGULAR_TRIMMED_SURFACE('wrap_trim',#20,0.0,2.0,-1.0,1.0,.T.,.T.);
+/* Figure-8 wire: two loops sharing a pinch vertex at (1,0,0)
+ * Left loop: (0,0,0) -> pinch -> (0.5,-0.5,0) -> (0.5,0.5,0) -> pinch
+ * Right loop: pinch -> (1.5,-0.5,0) -> (1.5,0.5,0) -> pinch
+ * Net winding number is zero around origin */
+#30=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#31=VERTEX_POINT('',#30);
+#32=CARTESIAN_POINT('',(1.0,0.0,0.0));
+#33=VERTEX_POINT('',#32);
+#34=CARTESIAN_POINT('',(0.5,-0.5,0.0));
+#35=VERTEX_POINT('',#34);
+#36=CARTESIAN_POINT('',(0.5,0.5,0.0));
+#37=VERTEX_POINT('',#36);
+#38=CARTESIAN_POINT('',(1.5,-0.5,0.0));
+#39=VERTEX_POINT('',#38);
+#40=CARTESIAN_POINT('',(1.5,0.5,0.0));
+#41=VERTEX_POINT('',#40);
+/* Left lobe curves */
+#50=DIRECTION('',(-1.0,-1.0,0.0));
+#51=VECTOR('',#50,0.7071067811865475);
+#52=LINE('',#31,#51);
+#53=DIRECTION('',(0.0,-1.0,0.0));
+#54=VECTOR('',#53,1.0);
+#55=LINE('',#35,#54);
+#56=DIRECTION('',(0.0,1.0,0.0));
+#57=VECTOR('',#56,1.0);
+#58=LINE('',#36,#57);
+#59=DIRECTION('',(1.0,1.0,0.0));
+#60=VECTOR('',#59,0.7071067811865475);
+#61=LINE('',#37,#60);
+/* Right lobe curves */
+#62=DIRECTION('',(1.0,-1.0,0.0));
+#63=VECTOR('',#62,0.7071067811865475);
+#64=LINE('',#33,#63);
+#65=DIRECTION('',(0.0,-1.0,0.0));
+#66=VECTOR('',#65,1.0);
+#67=LINE('',#38,#66);
+#68=DIRECTION('',(0.0,1.0,0.0));
+#69=VECTOR('',#68,1.0);
+#70=LINE('',#41,#69);
+#71=DIRECTION('',(-1.0,1.0,0.0));
+#72=VECTOR('',#71,0.7071067811865475);
+#73=LINE('',#40,#72);
+/* Defect: figure-8 wire with zero winding number */
+#80=EDGE_CURVE('',#31,#35,#52,.T.);
+#81=EDGE_CURVE('',#35,#36,#55,.T.);
+#82=EDGE_CURVE('',#36,#37,#58,.T.);
+#83=EDGE_CURVE('',#37,#33,#61,.T.);
+#84=EDGE_CURVE('',#33,#39,#64,.T.);
+#85=EDGE_CURVE('',#39,#40,#67,.T.);
+#86=EDGE_CURVE('',#40,#41,#70,.T.);
+#87=EDGE_CURVE('',#41,#31,#73,.T.);
+#90=ORIENTED_EDGE('',*,*,#80,.T.);
+#91=ORIENTED_EDGE('',*,*,#81,.T.);
+#92=ORIENTED_EDGE('',*,*,#82,.T.);
+#93=ORIENTED_EDGE('',*,*,#83,.T.);
+#94=ORIENTED_EDGE('',*,*,#84,.T.);
+#95=ORIENTED_EDGE('',*,*,#85,.T.);
+#96=ORIENTED_EDGE('',*,*,#86,.T.);
+#97=ORIENTED_EDGE('',*,*,#87,.T.);
+#100=EDGE_LOOP('',(#90,#91,#92,#93,#94,#95,#96,#97));
+#101=FACE_OUTER_BOUND('',#100,.T.);
+#102=ADVANCED_FACE('',(#101),#21,.T.);
+/* Minimal PRODUCT chain */
+#9000=PRODUCT_CONTEXT('',#1,'mechanical');
+#9001=PRODUCT('Twi233','Twi233','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
+#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
+#9020=OPEN_SHELL('wrap_shell',(#102));
+#9021=SHELL_BASED_SURFACE_MODEL('sbsm',(#9020));
+#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#9010);
+#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+ENDSEC;
+END-ISO-10303-21;
