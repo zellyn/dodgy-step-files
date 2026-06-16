@@ -1,0 +1,87 @@
+ISO-10303-21;
+/* Twi225 - ShapeAnalysis_Wire.CheckSelfIntersection branch-point
+ * Defect: Wire with a vertex where 3 or more edges meet (branch point).
+ * CheckSelfIntersection assumes wire vertices are 2-edge vertices (start/end of
+ * adjacent edges). At a branch point with 3+ edges, the intersection detection
+ * logic incorrectly classifies the configuration as "self-intersection" rather
+ * than a topological degeneration or degeneracy condition that needs explicit handling.
+ */
+HEADER;
+FILE_DESCRIPTION(('Twi225 test case','CheckSelfIntersection branch-point — vertex with 3+ edges'),'2;1');
+FILE_NAME('Twi225.stp','2026-06-15T00:00:00',('zellyn@gmail.com'),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+#9000=PRODUCT_CONTEXT('',#1,'mechanical');
+#9001=PRODUCT('Twi225','Twi225','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
+#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
+#100=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#101=DIRECTION('',(0.0,0.0,1.0));
+#102=DIRECTION('',(1.0,0.0,0.0));
+#103=AXIS2_PLACEMENT_3D('',#100,#101,#102);
+#104=PLANE('',#103);
+/* Wire with branch point: vertex V_branch where 3 edges meet
+   Normal wire structure: V1 -> V_branch -> V3
+                         V0 -> V_branch
+                         V_branch -> V4
+   This creates a "Y" junction where CheckSelfIntersection will see 3 edges
+   meeting at one vertex and misinterpret it as self-intersection instead of
+   recognizing it as topological degeneracy.
+*/
+#110=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#111=CARTESIAN_POINT('',(5.0,0.0,0.0));
+#112=CARTESIAN_POINT('',(5.0,5.0,0.0));
+#113=CARTESIAN_POINT('',(5.0,-5.0,0.0));
+#114=CARTESIAN_POINT('',(10.0,0.0,0.0));
+#115=CARTESIAN_POINT('',(0.0,0.0,0.0));
+/* Create vertices for the branch junction */
+#120=VERTEX_POINT('',#110);
+#121=VERTEX_POINT('',#111);
+#122=VERTEX_POINT('',#112);
+#123=VERTEX_POINT('',#113);
+#124=VERTEX_POINT('',#114);
+/* Edge1: entry to branch from V0 to V_branch */
+#130=LINE('',#110,#102);
+#131=EDGE_CURVE('',#120,#121,#130,.T.);
+/* Edge2: first exit from branch, V_branch to V2 (upward) */
+#132=DIRECTION('',(0.0,1.0,0.0));
+#133=LINE('',#111,#132);
+#134=EDGE_CURVE('',#121,#122,#133,.T.);
+/* Edge3: second exit from branch, V_branch to V3 (downward) */
+#135=DIRECTION('',(0.0,-1.0,0.0));
+#136=LINE('',#111,#135);
+#137=EDGE_CURVE('',#121,#123,#136,.T.);
+/* Edge4: third exit from branch, V_branch to V4 (rightward) - creating 3-degree vertex */
+#138=LINE('',#111,#102);
+#139=EDGE_CURVE('',#121,#124,#138,.T.);
+/* Edge5: close wire from V4 back to V0 */
+#140=LINE('',#114,#102);
+#141=EDGE_CURVE('',#124,#120,#140,.T.);
+/* Oriented edges: E1, E2, E3, E4, E5 */
+#200=ORIENTED_EDGE('',*,*,#131,.T.);
+#201=ORIENTED_EDGE('',*,*,#134,.T.);
+#202=ORIENTED_EDGE('',*,*,#137,.T.);
+#203=ORIENTED_EDGE('',*,*,#139,.T.);
+#204=ORIENTED_EDGE('',*,*,#141,.T.);
+/* Edge loop with branch point (V_branch where 3 edges meet) */
+#210=EDGE_LOOP('',(#200,#201,#202,#203,#204));
+/* Face outer bound */
+#220=FACE_OUTER_BOUND('',#210,.T.);
+#221=ADVANCED_FACE('',(#220),#104,.T.);
+/* Shell and manifold representation */
+#250=CLOSED_SHELL('',(#221));
+#9021=SHELL_BASED_SURFACE_MODEL('sbsm',(#250));
+#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#9010);
+#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+ENDSEC;
+END-ISO-10303-21;

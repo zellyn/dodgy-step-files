@@ -1,0 +1,94 @@
+/* Tfa190 - ShapeFix_Face.FixWiresTwoCoincEdges with-coincident-vertex-only
+ * Defect: FixWiresTwoCoincEdges detects shared edges by checking EDGE_CURVE
+ * identity. However, it treats vertex-only coincidence as edge coincidence.
+ * Two wires that share only a single vertex (point-touching, not edge-sharing)
+ * trigger false-positive merging, incorrectly modifying topology.
+ * Reproducer: ADVANCED_FACE with two separate wires touching at exactly one vertex.
+ */
+ISO-10303-21;
+HEADER;
+FILE_DESCRIPTION(('Tfa190 FixWiresTwoCoincEdges vertex-coincidence'),'2;1');
+FILE_NAME('Tfa190.stp','2026-06-15T00:00:00',(''),(''),
+  'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
+  'automotive_design',2009,#1);
+#10=CARTESIAN_POINT('origin',(0.0,0.0,0.0));
+#11=DIRECTION('z',(0.0,0.0,1.0));
+#12=DIRECTION('x',(1.0,0.0,0.0));
+#13=AXIS2_PLACEMENT_3D('plc',#10,#11,#12);
+#20=PLANE('base_plane',#13);
+/* Outer wire: rectangle (0,0) to (10,10) */
+#100=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#101=VERTEX_POINT('',#100);
+#102=CARTESIAN_POINT('',(10.0,0.0,0.0));
+#103=VERTEX_POINT('',#102);
+#104=CARTESIAN_POINT('',(10.0,10.0,0.0));
+#105=VERTEX_POINT('',#104);
+#106=CARTESIAN_POINT('',(0.0,10.0,0.0));
+#107=VERTEX_POINT('',#106);
+/* Inner wire: triangle sharing only vertex with outer wire at (5,5) */
+#110=CARTESIAN_POINT('',(5.0,5.0,0.0));
+#111=VERTEX_POINT('',#110);
+#112=CARTESIAN_POINT('',(7.0,5.0,0.0));
+#113=VERTEX_POINT('',#112);
+#114=CARTESIAN_POINT('',(6.0,7.0,0.0));
+#115=VERTEX_POINT('',#114);
+/* Outer wire edges */
+#200=VECTOR('',(1.0,0.0,0.0),10.0);
+#201=LINE('',#100,#200);
+#202=EDGE_CURVE('',#101,#103,#201,.T.);
+#203=VECTOR('',(0.0,1.0,0.0),10.0);
+#204=LINE('',#102,#203);
+#205=EDGE_CURVE('',#103,#105,#204,.T.);
+#206=VECTOR('',(-1.0,0.0,0.0),10.0);
+#207=LINE('',#104,#206);
+#208=EDGE_CURVE('',#105,#107,#207,.T.);
+#209=VECTOR('',(0.0,-1.0,0.0),10.0);
+#210=LINE('',#106,#209);
+#211=EDGE_CURVE('',#107,#101,#210,.T.);
+/* Inner wire edges: triangle touching outer at #111 only */
+#220=VECTOR('',(1.0,0.0,0.0),2.0);
+#221=LINE('',#110,#220);
+#222=EDGE_CURVE('',#111,#113,#221,.T.);
+#223=VECTOR('',(-1.0,0.5,0.0),2.236);
+#224=LINE('',#112,#223);
+#225=EDGE_CURVE('',#113,#115,#224,.T.);
+#226=VECTOR('',(-1.0,-1.0,0.0),1.414);
+#227=LINE('',#114,#226);
+#228=EDGE_CURVE('',#115,#111,#227,.T.);
+/* Outer wire oriented edges */
+#300=ORIENTED_EDGE('',*,*,#202,.T.);
+#301=ORIENTED_EDGE('',*,*,#205,.T.);
+#302=ORIENTED_EDGE('',*,*,#208,.T.);
+#303=ORIENTED_EDGE('',*,*,#211,.T.);
+/* Inner wire oriented edges */
+#310=ORIENTED_EDGE('',*,*,#222,.T.);
+#311=ORIENTED_EDGE('',*,*,#225,.T.);
+#312=ORIENTED_EDGE('',*,*,#228,.T.);
+/* Loops */
+#400=EDGE_LOOP('',(#300,#301,#302,#303));
+#401=FACE_OUTER_BOUND('',#400,.T.);
+#410=EDGE_LOOP('',(#310,#311,#312));
+#411=FACE_INNER_BOUND('',#410,.F.);
+/* Face: inner and outer wires touch at only one point #111 */
+#600=ADVANCED_FACE('vertex_touch',(#401,#411),#20,.T.);
+#9000=PRODUCT_CONTEXT('',#1,'mechanical');
+#9001=PRODUCT('Tfa190','Tfa190','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
+#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
+#9021=SHELL_BASED_SURFACE_MODEL('sbsm',(#600));
+#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#9010);
+#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+ENDSEC;
+END;

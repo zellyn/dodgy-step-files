@@ -1,0 +1,104 @@
+ISO-10303-21;
+/* Twi215 — ShapeAnalysis_Wire.CheckTail multi-tail-detection
+ * Defect: Wire with multiple potential tail candidates (vertices that could be
+ * removed as tails). CheckTail picks the first and reports it as definitive
+ * but should enumerate all candidates. */
+HEADER;
+FILE_DESCRIPTION(('Twi215 test case','CheckTail multi-tail-detection'),'2;1');
+FILE_NAME('Twi215.stp','2026-06-15T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+/* Surface: plane */
+#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#11=DIRECTION('',(0.0,0.0,1.0));
+#12=DIRECTION('',(1.0,0.0,0.0));
+#13=AXIS2_PLACEMENT_3D('',#10,#11,#12);
+#14=PLANE('',#13);
+/* Main loop vertices: rectangle (0,0)→(10,0)→(10,10)→(0,10) */
+#20=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#21=VERTEX_POINT('',#20);
+#22=CARTESIAN_POINT('',(10.0,0.0,0.0));
+#23=VERTEX_POINT('',#22);
+#24=CARTESIAN_POINT('',(10.0,10.0,0.0));
+#25=VERTEX_POINT('',#24);
+#26=CARTESIAN_POINT('',(0.0,10.0,0.0));
+#27=VERTEX_POINT('',#26);
+/* Tail 1: spike from (5, 0) → (5, -2) → (5, 0) [small detour] */
+#28=CARTESIAN_POINT('',(5.0,0.0,0.0));
+#29=VERTEX_POINT('',#28);
+#30=CARTESIAN_POINT('',(5.0,-2.0,0.0));
+#31=VERTEX_POINT('',#30);
+/* Tail 2: spike from (10, 5) → (12, 5) → (10, 5) [small detour] */
+#32=CARTESIAN_POINT('',(10.0,5.0,0.0));
+#33=VERTEX_POINT('',#32);
+#34=CARTESIAN_POINT('',(12.0,5.0,0.0));
+#35=VERTEX_POINT('',#34);
+/* Curves for main edges */
+#40=DIRECTION('',(1.0,0.0,0.0));
+#41=VECTOR('',#40,1.0);
+#42=LINE('',#20,#41);
+#43=TRIMMED_CURVE('',#42,.T.,#20,.T.,.T.,#22);
+#44=EDGE_CURVE('',#21,#23,#43,.T.);
+#45=DIRECTION('',(0.0,1.0,0.0));
+#46=VECTOR('',#45,1.0);
+#47=LINE('',#22,#46);
+#48=TRIMMED_CURVE('',#47,.T.,#22,.T.,.T.,#24);
+#49=EDGE_CURVE('',#23,#25,#48,.T.);
+#50=DIRECTION('',(-1.0,0.0,0.0));
+#51=VECTOR('',#50,1.0);
+#52=LINE('',#24,#51);
+#53=TRIMMED_CURVE('',#52,.T.,#24,.T.,.T.,#26);
+#54=EDGE_CURVE('',#25,#27,#53,.T.);
+#55=DIRECTION('',(0.0,-1.0,0.0));
+#56=VECTOR('',#55,1.0);
+#57=LINE('',#26,#56);
+#58=TRIMMED_CURVE('',#57,.T.,#26,.T.,.T.,#20);
+#59=EDGE_CURVE('',#27,#21,#58,.T.);
+/* Tail 1 edges */
+#60=DIRECTION('',(0.0,-1.0,0.0));
+#61=VECTOR('',#60,1.0);
+#62=LINE('',#28,#61);
+#63=TRIMMED_CURVE('',#62,.T.,#28,.T.,.T.,#30);
+#64=EDGE_CURVE('',#29,#31,#63,.T.);
+#65=LINE('',#30,#60);
+#66=TRIMMED_CURVE('',#65,.T.,#30,.T.,.T.,#28);
+#67=EDGE_CURVE('',#31,#29,#66,.T.);
+/* Tail 2 edges */
+#68=DIRECTION('',(1.0,0.0,0.0));
+#69=VECTOR('',#68,1.0);
+#70=LINE('',#32,#69);
+#71=TRIMMED_CURVE('',#70,.T.,#32,.T.,.T.,#34);
+#72=EDGE_CURVE('',#33,#35,#71,.T.);
+#73=LINE('',#34,#50);
+#74=TRIMMED_CURVE('',#73,.T.,#34,.T.,.T.,#32);
+#75=EDGE_CURVE('',#35,#33,#74,.T.);
+/* Wire with two tail candidates */
+#80=ORIENTED_EDGE('',*,*,#44,.T.);
+#81=ORIENTED_EDGE('',*,*,#49,.T.);
+#82=ORIENTED_EDGE('',*,*,#54,.T.);
+#83=ORIENTED_EDGE('',*,*,#59,.T.);
+#84=ORIENTED_EDGE('',*,*,#64,.T.);
+#85=ORIENTED_EDGE('',*,*,#67,.T.);
+#86=ORIENTED_EDGE('',*,*,#72,.T.);
+#87=ORIENTED_EDGE('',*,*,#75,.T.);
+#90=EDGE_LOOP('',(#80,#81,#82,#83,#84,#85,#86,#87));
+/* Mandatory product chain */
+#9000=PRODUCT_CONTEXT('',#1,'mechanical');
+#9001=PRODUCT('Twi215','Twi215','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
+#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
+#9021=SHELL_BASED_SURFACE_MODEL('sbsm',(#90));
+#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#9010);
+#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+ENDSEC;
+END-ISO-10303-21;

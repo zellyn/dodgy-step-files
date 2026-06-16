@@ -1,0 +1,92 @@
+/* Tfa187 - ShapeAnalysis_CheckSmallFace.CheckPin pin-with-fillet
+ * Defect: CheckPin's angle measurement detects a pin singularity by examining
+ * pole convergence. When the pin's tip has been filleted (rounded), the
+ * characteristic singularity becomes undefined because the poles remain
+ * distributed rather than collapsed. CheckPin's singular-pole detection fails.
+ * Reproducer: NURBS surface with convergent poles forming a near-pin at one end,
+ * then filleted smooth poles at the actual tip.
+ */
+ISO-10303-21;
+HEADER;
+FILE_DESCRIPTION(('Tfa187 CheckPin pin-with-fillet'),'2;1');
+FILE_NAME('Tfa187.stp','2026-06-15T00:00:00',(''),(''),
+  'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
+  'automotive_design',2009,#1);
+#10=CARTESIAN_POINT('origin',(0.0,0.0,0.0));
+#11=DIRECTION('z',(0.0,0.0,1.0));
+#12=DIRECTION('x',(1.0,0.0,0.0));
+#13=AXIS2_PLACEMENT_3D('plc',#10,#11,#12);
+/* B-spline surface representing cone-like pin tip with fillet at apex */
+#20=B_SPLINE_SURFACE_WITH_KNOTS('filleted_pin',
+  3,3,
+  (CARTESIAN_POINT('',(0.0,0.0,0.0)),
+   CARTESIAN_POINT('',(1.0,0.0,0.0)),
+   CARTESIAN_POINT('',(2.0,0.0,0.0)),
+   CARTESIAN_POINT('',(0.0,1.0,0.5)),
+   CARTESIAN_POINT('',(1.0,1.0,0.5)),
+   CARTESIAN_POINT('',(2.0,1.0,0.5)),
+   CARTESIAN_POINT('',(0.0,2.0,0.8)),
+   CARTESIAN_POINT('',(1.0,2.0,0.8)),
+   CARTESIAN_POINT('',(2.0,2.0,0.8)),
+   CARTESIAN_POINT('',(0.0,3.0,0.95)),
+   CARTESIAN_POINT('',(1.0,3.0,0.95)),
+   CARTESIAN_POINT('',(2.0,3.0,0.95))),
+  3,3,
+  (1,1,1,2,1,1,1),
+  (1,1,1,2,1,1,1),
+  (0.0,0.33,0.67,1.0),
+  (0.0,0.33,0.67,1.0),
+  .F.,.F.,.F.);
+/* Face with vertices */
+#100=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#101=VERTEX_POINT('',#100);
+#102=CARTESIAN_POINT('',(2.0,0.0,0.0));
+#103=VERTEX_POINT('',#102);
+#104=CARTESIAN_POINT('',(2.0,3.0,0.95));
+#105=VERTEX_POINT('',#104);
+#106=CARTESIAN_POINT('',(0.0,3.0,0.95));
+#107=VERTEX_POINT('',#106);
+/* Outer wire edges */
+#200=VECTOR('',(1.0,0.0,0.0),2.0);
+#201=LINE('',#100,#200);
+#202=EDGE_CURVE('',#101,#103,#201,.T.);
+#203=VECTOR('',(0.0,1.0,0.0),3.0);
+#204=LINE('',#102,#203);
+#205=EDGE_CURVE('',#103,#105,#204,.T.);
+#206=VECTOR('',(-1.0,0.0,0.0),2.0);
+#207=LINE('',#104,#206);
+#208=EDGE_CURVE('',#105,#107,#207,.T.);
+#209=VECTOR('',(0.0,-1.0,0.0),3.0);
+#210=LINE('',#106,#209);
+#211=EDGE_CURVE('',#107,#101,#210,.T.);
+/* Outer wire oriented edges */
+#300=ORIENTED_EDGE('',*,*,#202,.T.);
+#301=ORIENTED_EDGE('',*,*,#205,.T.);
+#302=ORIENTED_EDGE('',*,*,#208,.T.);
+#303=ORIENTED_EDGE('',*,*,#211,.T.);
+/* Loop */
+#400=EDGE_LOOP('',(#300,#301,#302,#303));
+#401=FACE_OUTER_BOUND('',#400,.T.);
+/* Face on filleted surface */
+#600=ADVANCED_FACE('filleted_pin',(#401),#20,.T.);
+#9000=PRODUCT_CONTEXT('',#1,'mechanical');
+#9001=PRODUCT('Tfa187','Tfa187','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
+#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
+#9021=SHELL_BASED_SURFACE_MODEL('sbsm',(#600));
+#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#9010);
+#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+ENDSEC;
+END;

@@ -1,0 +1,63 @@
+ISO-10303-21;
+/* Twi219 - ShapeFix_Wire.FixIntersectingEdges 2D-and-3D-disagree
+ * Defect: Two edges that intersect in 2D parameter space but not in 3D space
+ * (or vice versa). This is physically impossible without a degenerate surface
+ * or projection artifact. FixIntersectingEdges uses 2D intersection logic and
+ * splits edges at parameter intersection, but the 3D curves do not actually
+ * intersect at the computed split point, leaving geometry inconsistent.
+ * Reproduces: ShapeFix_Wire.FixIntersectingEdges_at3272 branch. */
+HEADER;
+FILE_DESCRIPTION(('Twi219 test case','2D-3D parameter space intersection mismatch'),'2;1');
+FILE_NAME('Twi219.stp','2026-06-15T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#11=DIRECTION('',(0.0,0.0,1.0));
+#12=DIRECTION('',(1.0,0.0,0.0));
+#13=AXIS2_PLACEMENT_3D('',#10,#11,#12);
+#20=PLANE('',#13);
+/* First edge: 3D line from (0,0,0) to (10,0,0)
+ * 2D projection (0,0) to (10,0) on plane */
+#30=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#31=CARTESIAN_POINT('',(10.0,0.0,0.0));
+#32=LINE('',#30,(DIRECTION('',(1.0,0.0,0.0)),1.0));
+#33=VERTEX_POINT('',(0.0,0.0,0.0));
+#34=VERTEX_POINT('',(10.0,0.0,0.0));
+#35=EDGE_CURVE('',#33,#34,#32,.T.);
+#36=ORIENTED_EDGE('',*,*,#35,.T.);
+/* Second edge: 3D line from (5,5,0) to (5,-5,0)
+ * Parameter projection (5,5) to (5,-5) on plane
+ * This creates 2D intersection at (5,0) but 3D curves don't intersect
+ * (one at y=0, one at y=±5) */
+#40=CARTESIAN_POINT('',(5.0,5.0,0.0));
+#41=CARTESIAN_POINT('',(5.0,-5.0,0.0));
+#42=LINE('',#40,(DIRECTION('',(0.0,-1.0,0.0)),1.0));
+#43=VERTEX_POINT('',(5.0,5.0,0.0));
+#44=VERTEX_POINT('',(5.0,-5.0,0.0));
+#45=EDGE_CURVE('',#43,#44,#42,.T.);
+#46=ORIENTED_EDGE('',*,*,#45,.T.);
+/* Wire containing both edges */
+#60=EDGE_LOOP('',(#36,#46));
+#61=FACE_OUTER_BOUND('',#60,.T.);
+#62=ADVANCED_FACE('',(#61),#20,.T.);
+/* Product chain (v3.2 schema) */
+#9000=PRODUCT_CONTEXT('',#1,'mechanical');
+#9001=PRODUCT('Twi219','Twi219','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
+#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
+#9020=OPEN_SHELL('shell',(#62));
+#9021=SHELL_BASED_SURFACE_MODEL('sbsm',(#9020));
+#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#9010);
+#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+ENDSEC;
+END-ISO-10303-21;

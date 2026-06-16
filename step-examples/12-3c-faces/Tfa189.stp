@@ -1,0 +1,88 @@
+/* Tfa189 - ShapeAnalysis_CheckSmallFace.CheckTwisted face-on-sphere-with-pole
+ * Defect: CheckTwisted detects face twisting by comparing surface normals at
+ * boundary points. On a sphere including both poles, the normal becomes
+ * undefined at pole singularities, causing comparison failures. The test
+ * assumes well-defined normal vectors everywhere, which breaks at geometric
+ * singularities.
+ * Reproducer: ADVANCED_FACE on sphere that spans from south pole to north pole.
+ */
+ISO-10303-21;
+HEADER;
+FILE_DESCRIPTION(('Tfa189 CheckTwisted face-on-sphere-with-pole'),'2;1');
+FILE_NAME('Tfa189.stp','2026-06-15T00:00:00',(''),(''),
+  'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
+  'automotive_design',2009,#1);
+#10=CARTESIAN_POINT('origin',(0.0,0.0,0.0));
+#11=DIRECTION('z',(0.0,0.0,1.0));
+#12=DIRECTION('x',(1.0,0.0,0.0));
+#13=AXIS2_PLACEMENT_3D('plc',#10,#11,#12);
+/* Sphere of radius 5.0 centered at origin */
+#20=SPHERICAL_SURFACE('sphere',#13,5.0);
+/* Vertices spanning from south pole to north pole */
+#100=CARTESIAN_POINT('',(0.0,0.0,-5.0));
+#101=VERTEX_POINT('',#100);
+#102=CARTESIAN_POINT('',(5.0,0.0,0.0));
+#103=VERTEX_POINT('',#102);
+#104=CARTESIAN_POINT('',(0.0,0.0,5.0));
+#105=VERTEX_POINT('',#104);
+#106=CARTESIAN_POINT('',(-5.0,0.0,0.0));
+#107=VERTEX_POINT('',#106);
+/* Circle at equator from (5,0,0) to (-5,0,0) via (0,5,0) - approximation */
+#110=CARTESIAN_POINT('',(0.0,5.0,0.0));
+#111=VERTEX_POINT('',#110);
+#112=CARTESIAN_POINT('',(0.0,-5.0,0.0));
+#113=VERTEX_POINT('',#112);
+/* Meridian edge from south pole to equator */
+#200=VECTOR('',(1.0,0.0,0.0),5.0);
+#201=LINE('',#100,#200);
+#202=EDGE_CURVE('',#101,#103,#201,.T.);
+/* Equator arc: approximated as line segments */
+#203=VECTOR('',(0.0,1.0,0.0),5.0);
+#204=LINE('',#103,#203);
+#205=EDGE_CURVE('',#103,#111,#204,.T.);
+#206=VECTOR('',(-1.0,0.0,0.0),5.0);
+#207=LINE('',#111,#206);
+#208=EDGE_CURVE('',#111,#107,#207,.T.);
+#209=VECTOR('',(0.0,-1.0,0.0),5.0);
+#210=LINE('',#107,#209);
+#211=EDGE_CURVE('',#107,#103,#210,.T.);
+/* Meridian edge from equator to north pole */
+#212=VECTOR('',(0.0,0.0,1.0),5.0);
+#213=LINE('',#103,#212);
+#214=EDGE_CURVE('',#103,#105,#213,.T.);
+/* Meridian edge from north pole back to equator (completing closure) */
+#215=VECTOR('',(-1.0,0.0,0.0),5.0);
+#216=LINE('',#105,#215);
+#217=EDGE_CURVE('',#105,#107,#216,.T.);
+/* Outer wire: path from south pole around equator to north pole */
+#300=ORIENTED_EDGE('',*,*,#202,.T.);
+#301=ORIENTED_EDGE('',*,*,#205,.T.);
+#302=ORIENTED_EDGE('',*,*,#208,.T.);
+#303=ORIENTED_EDGE('',*,*,#217,.T.);
+#304=ORIENTED_EDGE('',*,*,#214,.F.);
+/* Loop encompassing both poles */
+#400=EDGE_LOOP('',(#300,#301,#302,#303,#304));
+#401=FACE_OUTER_BOUND('',#400,.T.);
+/* Face on sphere including both poles (problematic for CheckTwisted) */
+#600=ADVANCED_FACE('sphere_poles',(#401),#20,.T.);
+#9000=PRODUCT_CONTEXT('',#1,'mechanical');
+#9001=PRODUCT('Tfa189','Tfa189','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
+#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
+#9021=SHELL_BASED_SURFACE_MODEL('sbsm',(#600));
+#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#9010);
+#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+ENDSEC;
+END;

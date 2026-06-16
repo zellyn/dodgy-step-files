@@ -1,0 +1,75 @@
+ISO-10303-21;
+/* Twi223 - ShapeAnalysis_Wire.CheckOrder mode-3D-vs-2D-disagree
+ * Defect: Wire whose 3D edge order differs from the parametric curve (PCurve)
+ * order on the host surface. This occurs when the surface has a seam jump or
+ * periodicity discontinuity. CheckOrder picks either 3D or 2D mode but cannot
+ * detect that the two orderings contradict each other. The analyzer cannot
+ * report that the wire is over-constrained or topologically degenerate.
+ */
+HEADER;
+FILE_DESCRIPTION(('Twi223 test case','CheckOrder mode-3D-vs-2D-disagree — surface seam causes coordinate mismatch'),'2;1');
+FILE_NAME('Twi223.stp','2026-06-15T00:00:00',('zellyn@gmail.com'),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+#9000=PRODUCT_CONTEXT('',#1,'mechanical');
+#9001=PRODUCT('Twi223','Twi223','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
+#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
+#100=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#101=DIRECTION('',(0.0,0.0,1.0));
+#102=DIRECTION('',(1.0,0.0,0.0));
+#103=AXIS2_PLACEMENT_3D('',#100,#101,#102);
+/* Cylindrical surface with seam at u=0/2π */
+#104=AXIS2_PLACEMENT_3D('',#100,#101,#102);
+#105=CIRCLE('',#104,5.0);
+#106=CYLINDRICAL_SURFACE('',#104,5.0);
+/* Wire vertices on cylinder */
+#110=CARTESIAN_POINT('',(5.0,0.0,0.0));
+#111=CARTESIAN_POINT('',(5.0,0.0,5.0));
+#112=CARTESIAN_POINT('',(5.0,0.0,10.0));
+#113=CARTESIAN_POINT('',(5.0,0.0,0.0));
+/* 3D path goes: v1 -> v2 -> v3 -> v1
+   But parametric path u changes as: u=0 -> u=π/2 -> u=-π (=π) -> u=-π/2
+   This creates a 3D ordering that conflicts with 2D parametric ordering due to seam */
+#120=VERTEX_POINT('',#110);
+#121=VERTEX_POINT('',#111);
+#122=VERTEX_POINT('',#112);
+/* Edge1: 3D edge along u=0 line at z=0..5 */
+#130=PCURVE('',#106,(PARAMETRIC_B_SPLINE_CURVE(1,((0.0,0.0),(0.0,5.0)),3,0,0,0)));
+#131=LINE('',#110,#101);
+#132=EDGE_CURVE('',#120,#121,#131,.T.);
+/* Edge2: 3D edge along u=π/2 line at z=5..10 */
+#133=PCURVE('',#106,(PARAMETRIC_B_SPLINE_CURVE(1,((1.5707963,5.0),(1.5707963,10.0)),3,0,0,0)));
+#134=LINE('',#111,#101);
+#135=EDGE_CURVE('',#121,#122,#134,.T.);
+/* Edge3: 3D edge along u=-π line back to start, but seam jump means
+   parametric order reverses relative to 3D */
+#136=PCURVE('',#106,(PARAMETRIC_B_SPLINE_CURVE(1,((3.14159265,10.0),(3.14159265,0.0)),3,0,0,0)));
+#137=LINE('',#112,#101);
+#138=EDGE_CURVE('',#122,#120,#137,.T.);
+/* Oriented edges */
+#200=ORIENTED_EDGE('',*,*,#132,.T.);
+#201=ORIENTED_EDGE('',*,*,#135,.T.);
+#202=ORIENTED_EDGE('',*,*,#138,.T.);
+/* Edge loop with seam-conflict edges */
+#210=EDGE_LOOP('',(#200,#201,#202));
+/* Face outer bound on cylindrical surface */
+#220=FACE_OUTER_BOUND('',#210,.T.);
+#221=ADVANCED_FACE('',(#220),#106,.T.);
+/* Shell */
+#250=CLOSED_SHELL('',(#221));
+#9021=SHELL_BASED_SURFACE_MODEL('sbsm',(#250));
+#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#9010);
+#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+ENDSEC;
+END-ISO-10303-21;

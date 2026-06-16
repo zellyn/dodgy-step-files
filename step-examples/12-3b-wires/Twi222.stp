@@ -1,0 +1,87 @@
+ISO-10303-21;
+/* Twi222 - ShapeFix_Wire.FixTails consecutive-removal
+ * Defect: Wire with 3+ small tails at different positions. When FixTails removes
+ * the first tail, the wire topology changes, causing the second tail's classification
+ * to change. The removal alters edge indices, making subsequent tail detection invalid.
+ * The analyzer must track index changes sequentially but does not; second tail
+ * classification becomes wrong after first removal.
+ */
+HEADER;
+FILE_DESCRIPTION(('Twi222 test case','FixTails consecutive-removal — topology change on sequential removal'),'2;1');
+FILE_NAME('Twi222.stp','2026-06-15T00:00:00',('zellyn@gmail.com'),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+#9000=PRODUCT_CONTEXT('',#1,'mechanical');
+#9001=PRODUCT('Twi222','Twi222','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
+#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
+#100=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#101=DIRECTION('',(0.0,0.0,1.0));
+#102=DIRECTION('',(1.0,0.0,0.0));
+#103=AXIS2_PLACEMENT_3D('',#100,#101,#102);
+#104=PLANE('',#103);
+/* Wire with 3 edges: main edge E1, tail T1, tail T2, tail T3 */
+#110=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#111=CARTESIAN_POINT('',(10.0,0.0,0.0));
+#112=CARTESIAN_POINT('',(10.2,0.0,0.0));
+#113=CARTESIAN_POINT('',(10.4,0.0,0.0));
+#114=CARTESIAN_POINT('',(10.6,0.0,0.0));
+#115=CARTESIAN_POINT('',(10.8,0.0,0.0));
+#116=CARTESIAN_POINT('',(11.0,0.0,0.0));
+#117=CARTESIAN_POINT('',(0.0,0.0,0.0));
+/* Vertices V1-V6 for 6 edges that form the wire */
+#120=VERTEX_POINT('',#110);
+#121=VERTEX_POINT('',#111);
+#122=VERTEX_POINT('',#112);
+#123=VERTEX_POINT('',#113);
+#124=VERTEX_POINT('',#114);
+#125=VERTEX_POINT('',#115);
+/* Edge1: main edge 0.0 to 10.0 */
+#130=LINE('',#110,#102);
+#131=EDGE_CURVE('',#120,#121,#130,.T.);
+/* Edge2: small tail (gap) 10.0 to 10.2 (0.2 mm) */
+#132=LINE('',#111,#102);
+#133=EDGE_CURVE('',#121,#122,#132,.T.);
+/* Edge3: disconnected tail 10.4 to 10.6 (0.2 mm, gap from E2) */
+#134=LINE('',#113,#102);
+#135=EDGE_CURVE('',#123,#124,#134,.T.);
+/* Edge4: small tail 10.6 to 10.8 (0.2 mm) */
+#136=LINE('',#114,#102);
+#137=EDGE_CURVE('',#124,#125,#136,.T.);
+/* Edge5: small tail 10.8 to 11.0 (0.2 mm) */
+#138=LINE('',#115,#101);
+#139=CARTESIAN_POINT('',(11.0,0.0,0.1));
+#140=VERTEX_POINT('',#139);
+#141=EDGE_CURVE('',#125,#140,#138,.T.);
+/* Edge6: back to start 11.0 to 0.0 (closing edge) */
+#142=LINE('',#116,#102);
+#143=EDGE_CURVE('',#140,#120,#142,.T.);
+/* Oriented edges for EDGE_LOOP */
+#200=ORIENTED_EDGE('',*,*,#131,.T.);
+#201=ORIENTED_EDGE('',*,*,#133,.T.);
+#202=ORIENTED_EDGE('',*,*,#135,.T.);
+#203=ORIENTED_EDGE('',*,*,#137,.T.);
+#204=ORIENTED_EDGE('',*,*,#141,.T.);
+#205=ORIENTED_EDGE('',*,*,#143,.T.);
+/* Edge loop with 6 edges (main + 3 tails + reconnect + close) */
+#210=EDGE_LOOP('',(#200,#201,#202,#203,#204,#205));
+/* Face outer bound */
+#220=FACE_OUTER_BOUND('',#210,.T.);
+#221=ADVANCED_FACE('',(#220),#104,.T.);
+/* Shell and manifold representation */
+#250=CLOSED_SHELL('',(#221));
+#9021=SHELL_BASED_SURFACE_MODEL('sbsm',(#250));
+#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#9010);
+#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+ENDSEC;
+END-ISO-10303-21;

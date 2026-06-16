@@ -1,0 +1,101 @@
+/* Tfa188 - ShapeFix_Face.FixSmallAreaWire wire-bigger-than-face
+ * Defect: FixSmallAreaWire removes wires whose area is below a threshold,
+ * assuming smaller wires are noise. However, it does not validate that the
+ * inner wire's area is SMALLER than the outer wire's area. An inner wire with
+ * calculated area exceeding the outer boundary violates topology but passes the
+ * per-wire check, creating impossible geometry.
+ * Reproducer: ADVANCED_FACE with inner wire whose bounding area exceeds outer.
+ */
+ISO-10303-21;
+HEADER;
+FILE_DESCRIPTION(('Tfa188 FixSmallAreaWire wire-bigger-than-face'),'2;1');
+FILE_NAME('Tfa188.stp','2026-06-15T00:00:00',(''),(''),
+  'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
+  'automotive_design',2009,#1);
+#10=CARTESIAN_POINT('origin',(0.0,0.0,0.0));
+#11=DIRECTION('z',(0.0,0.0,1.0));
+#12=DIRECTION('x',(1.0,0.0,0.0));
+#13=AXIS2_PLACEMENT_3D('plc',#10,#11,#12);
+#20=PLANE('base_plane',#13);
+/* Outer wire: small square (0,0) to (2,2), area=4 */
+#100=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#101=VERTEX_POINT('',#100);
+#102=CARTESIAN_POINT('',(2.0,0.0,0.0));
+#103=VERTEX_POINT('',#102);
+#104=CARTESIAN_POINT('',(2.0,2.0,0.0));
+#105=VERTEX_POINT('',#104);
+#106=CARTESIAN_POINT('',(0.0,2.0,0.0));
+#107=VERTEX_POINT('',#106);
+/* Inner wire: larger rectangle (0.5,0.5) to (5,5), area=20.25 > 4 */
+#110=CARTESIAN_POINT('',(0.5,0.5,0.0));
+#111=VERTEX_POINT('',#110);
+#112=CARTESIAN_POINT('',(5.0,0.5,0.0));
+#113=VERTEX_POINT('',#112);
+#114=CARTESIAN_POINT('',(5.0,5.0,0.0));
+#115=VERTEX_POINT('',#114);
+#116=CARTESIAN_POINT('',(0.5,5.0,0.0));
+#117=VERTEX_POINT('',#116);
+/* Outer wire edges */
+#200=VECTOR('',(1.0,0.0,0.0),2.0);
+#201=LINE('',#100,#200);
+#202=EDGE_CURVE('',#101,#103,#201,.T.);
+#203=VECTOR('',(0.0,1.0,0.0),2.0);
+#204=LINE('',#102,#203);
+#205=EDGE_CURVE('',#103,#105,#204,.T.);
+#206=VECTOR('',(-1.0,0.0,0.0),2.0);
+#207=LINE('',#104,#206);
+#208=EDGE_CURVE('',#105,#107,#207,.T.);
+#209=VECTOR('',(0.0,-1.0,0.0),2.0);
+#210=LINE('',#106,#209);
+#211=EDGE_CURVE('',#107,#101,#210,.T.);
+/* Inner wire edges */
+#220=VECTOR('',(1.0,0.0,0.0),4.5);
+#221=LINE('',#110,#220);
+#222=EDGE_CURVE('',#111,#113,#221,.T.);
+#223=VECTOR('',(0.0,1.0,0.0),4.5);
+#224=LINE('',#112,#223);
+#225=EDGE_CURVE('',#113,#115,#224,.T.);
+#226=VECTOR('',(-1.0,0.0,0.0),4.5);
+#227=LINE('',#114,#226);
+#228=EDGE_CURVE('',#115,#117,#227,.T.);
+#229=VECTOR('',(0.0,-1.0,0.0),4.5);
+#230=LINE('',#116,#229);
+#231=EDGE_CURVE('',#117,#111,#230,.T.);
+/* Outer wire oriented edges */
+#300=ORIENTED_EDGE('',*,*,#202,.T.);
+#301=ORIENTED_EDGE('',*,*,#205,.T.);
+#302=ORIENTED_EDGE('',*,*,#208,.T.);
+#303=ORIENTED_EDGE('',*,*,#211,.T.);
+/* Inner wire oriented edges */
+#310=ORIENTED_EDGE('',*,*,#222,.F.);
+#311=ORIENTED_EDGE('',*,*,#225,.F.);
+#312=ORIENTED_EDGE('',*,*,#228,.F.);
+#313=ORIENTED_EDGE('',*,*,#231,.F.);
+/* Loops */
+#400=EDGE_LOOP('',(#300,#301,#302,#303));
+#401=FACE_OUTER_BOUND('',#400,.T.);
+#410=EDGE_LOOP('',(#310,#311,#312,#313));
+#411=FACE_INNER_BOUND('',#410,.F.);
+/* Face: impossible topology (inner bigger than outer) */
+#600=ADVANCED_FACE('area_inversion',(#401,#411),#20,.T.);
+#9000=PRODUCT_CONTEXT('',#1,'mechanical');
+#9001=PRODUCT('Tfa188','Tfa188','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
+#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
+#9021=SHELL_BASED_SURFACE_MODEL('sbsm',(#600));
+#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#9010);
+#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+ENDSEC;
+END;
