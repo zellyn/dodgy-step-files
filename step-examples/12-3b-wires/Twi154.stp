@@ -1,0 +1,65 @@
+ISO-10303-21;
+/* Twi154 - ShapeFix_Wire.FixSeam edge-direction reversed on seam
+ * Defect: Wire on cylindrical surface with seam edge in reverse (.F.) orientation.
+ * FixSeam assumes edges are in forward (.T.) orientation and applies period
+ * correction unconditionally. Reversed-orientation edges have opposite parameter
+ * direction; applying positive period shift moves parameter backward instead.
+ * (ShapeFix_Wire.cxx seam handling; orientation not checked before period adjustment) */
+HEADER;
+FILE_DESCRIPTION(('Twi154 test case','Seam edge with reversed orientation'),'2;1');
+FILE_NAME('Twi154.stp','2026-06-15T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#11=DIRECTION('',(0.0,0.0,1.0));
+#12=DIRECTION('',(1.0,0.0,0.0));
+#13=AXIS2_PLACEMENT_3D('',#10,#11,#12);
+/* Cylindrical surface: radius 1, height from 0 to 2 */
+#20=AXIS2_PLACEMENT_3D('',#10,#11,#12);
+#21=CYLINDRICAL_SURFACE('',#20,1.0);
+/* Vertices: seam edge connects two points at U=0 (or U=2*pi) at different V */
+#30=CARTESIAN_POINT('',(1.0,0.0,0.0));
+#31=VERTEX_POINT('',#30);
+#32=CARTESIAN_POINT('',(1.0,0.0,1.0));
+#33=VERTEX_POINT('',#32);
+#34=CARTESIAN_POINT('',(0.5,0.866,0.0));
+#35=VERTEX_POINT('',#34);
+#36=CARTESIAN_POINT('',(0.5,0.866,1.0));
+#37=VERTEX_POINT('',#36);
+/* 3D seam curve: line on cylinder from (1,0,0) to (1,0,2) at U=0 */
+#40=DIRECTION('',(0.0,0.0,1.0));
+#41=VECTOR('',#40,2.0);
+#42=LINE('',#30,#41);
+/* Regular arc (pi/3 radians) on cylinder surface */
+#50=AXIS2_PLACEMENT_3D('',#10,#11,#12);
+#51=CIRCLE('',#50,1.0);
+#52=TRIMMED_CURVE('',#51,0.0,1.047197,*,.T.);
+/* Seam edge in reverse orientation (.F.) - this is the defect */
+#60=EDGE_CURVE('',#33,#31,#42,.T.);
+#61=EDGE_CURVE('',#35,#37,#52,.T.);
+#62=ORIENTED_EDGE('',*,*,#60,.F.);
+#63=ORIENTED_EDGE('',*,*,#61,.T.);
+#64=EDGE_LOOP('',(#62,#63));
+#65=FACE_OUTER_BOUND('',#64,.T.);
+#66=ADVANCED_FACE('',(#65),#21,.T.);
+/* Mandatory PRODUCT chain */
+#9000=PRODUCT_CONTEXT('',#1,'mechanical');
+#9001=PRODUCT('Twi154','Twi154','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
+#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
+#9021=SHELL_BASED_SURFACE_MODEL('sbsm',(#9020));
+#9020=CLOSED_SHELL('shell',(#66));
+#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#9010);
+#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+ENDSEC;
+END-ISO-10303-21;

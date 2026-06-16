@@ -1,0 +1,97 @@
+ISO-10303-21;
+/* Tfa119 — ShapeAnalysis_CheckSmallFace.CheckTwisted opposite-winding-inner-wire
+ * Defect: face whose inner wire winds opposite to outer; CheckTwisted's region
+ * orientation logic doesn't handle inner-wire reversal correctly. */
+HEADER;
+FILE_DESCRIPTION(('Tfa119 - CheckTwisted opposite-winding-inner-wire defect'),'2;1');
+FILE_NAME('Tfa119.stp','2026-06-16T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+/* Outer loop: counterclockwise when viewed from above (CCW) */
+#10=CARTESIAN_POINT('p_origin',(0.0,0.0,0.0));
+#11=CARTESIAN_POINT('p_outer_1',(10.0,0.0,0.0));
+#12=VERTEX_POINT('v_outer_1',#11);
+#13=CARTESIAN_POINT('p_outer_2',(10.0,10.0,0.0));
+#14=VERTEX_POINT('v_outer_2',#13);
+#15=CARTESIAN_POINT('p_outer_3',(0.0,10.0,0.0));
+#16=VERTEX_POINT('v_outer_3',#15);
+#17=VERTEX_POINT('v_origin',#10);
+/* Outer edges CCW: 0→10,0 → 10,10 → 0,10 → 0,0 */
+#18=LINE('outer_e1',(#10),#19);
+#19=VECTOR('outer_v1',#20,1.0);
+#20=DIRECTION('outer_d1',(1.0,0.0,0.0));
+#21=EDGE_CURVE('outer_edge1',#17,#12,#18,.T.);
+#22=LINE('outer_e2',(#11),#23);
+#23=VECTOR('outer_v2',#24,1.0);
+#24=DIRECTION('outer_d2',(0.0,1.0,0.0));
+#25=EDGE_CURVE('outer_edge2',#12,#14,#22,.T.);
+#26=LINE('outer_e3',(#13),#27);
+#27=VECTOR('outer_v3',#28,1.0);
+#28=DIRECTION('outer_d3',(-1.0,0.0,0.0));
+#29=EDGE_CURVE('outer_edge3',#14,#16,#26,.T.);
+#30=LINE('outer_e4',(#15),#31);
+#31=VECTOR('outer_v4',#32,1.0);
+#32=DIRECTION('outer_d4',(0.0,-1.0,0.0));
+#33=EDGE_CURVE('outer_edge4',#16,#17,#30,.T.);
+#34=ORIENTED_EDGE('outer_oe1',*,*,#21,.T.);
+#35=ORIENTED_EDGE('outer_oe2',*,*,#25,.T.);
+#36=ORIENTED_EDGE('outer_oe3',*,*,#29,.T.);
+#37=ORIENTED_EDGE('outer_oe4',*,*,#33,.T.);
+#38=EDGE_LOOP('outer_loop',(#34,#35,#36,#37));
+#39=FACE_OUTER_BOUND('outer_bound',#38,.T.);
+/* Inner loop: CLOCKWISE (opposite to outer — creates twist) */
+#40=CARTESIAN_POINT('p_inner_1',(2.0,2.0,0.0));
+#41=VERTEX_POINT('v_inner_1',#40);
+#42=CARTESIAN_POINT('p_inner_2',(8.0,2.0,0.0));
+#43=VERTEX_POINT('v_inner_2',#42);
+#44=CARTESIAN_POINT('p_inner_3',(8.0,8.0,0.0));
+#45=VERTEX_POINT('v_inner_3',#44);
+#46=CARTESIAN_POINT('p_inner_4',(2.0,8.0,0.0));
+#47=VERTEX_POINT('v_inner_4',#46);
+/* Inner edges CW: 2,2 → 2,8 → 8,8 → 8,2 → 2,2 */
+#48=LINE('inner_e1',(#40),#49);
+#49=VECTOR('inner_v1',#24,1.0);
+#50=EDGE_CURVE('inner_edge1',#41,#47,#48,.T.);
+#51=LINE('inner_e2',(#46),#52);
+#52=VECTOR('inner_v2',#20,1.0);
+#53=EDGE_CURVE('inner_edge2',#47,#45,#51,.T.);
+#54=LINE('inner_e3',(#44),#55);
+#55=VECTOR('inner_v3',#56,1.0);
+#56=DIRECTION('inner_d3',(0.0,-1.0,0.0));
+#57=EDGE_CURVE('inner_edge3',#45,#43,#54,.T.);
+#58=LINE('inner_e4',(#42),#59);
+#59=VECTOR('inner_v4',#28,1.0);
+#60=EDGE_CURVE('inner_edge4',#43,#41,#58,.T.);
+#61=ORIENTED_EDGE('inner_oe1',*,*,#50,.T.);
+#62=ORIENTED_EDGE('inner_oe2',*,*,#53,.T.);
+#63=ORIENTED_EDGE('inner_oe3',*,*,#57,.T.);
+#64=ORIENTED_EDGE('inner_oe4',*,*,#60,.T.);
+#65=EDGE_LOOP('inner_loop',(#61,#62,#63,#64));
+#66=FACE_INNER_BOUND('inner_bound',#65,.T.);
+/* Plane surface */
+#67=DIRECTION('z_dir',(0.0,0.0,1.0));
+#68=DIRECTION('x_dir',(1.0,0.0,0.0));
+#69=AXIS2_PLACEMENT_3D('plane_place',#10,#67,#68);
+#70=PLANE('face_plane',#69);
+/* Face with opposite winding inner loop */
+#71=ADVANCED_FACE('twisted_face',(#39,#66),#70,.T.);
+#9000=PRODUCT_CONTEXT('',#1,'mechanical');
+#9001=PRODUCT('Tfa119','Tfa119','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
+#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
+#9020=OPEN_SHELL('shell',(#71));
+#9021=SHELL_BASED_SURFACE_MODEL('sbsm',(#9020));
+#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#9010);
+#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+ENDSEC;
+END-ISO-10303-21;

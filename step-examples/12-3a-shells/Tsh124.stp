@@ -1,0 +1,167 @@
+ISO-10303-21;
+/* Tsh124 - ShapeUpgrade_RemoveInternalWires multiple-internal-wires
+ * Defect: Face with 3 internal wires; RemoveInternalWires iterates internal
+ * wires but removes them in wrong order, leaving inconsistent face state */
+HEADER;
+FILE_DESCRIPTION(('Tsh124 - face with multiple internal wires removed in wrong order','wave 26'),'2;1');
+FILE_NAME('Tsh124.stp','2026-06-15T00:00:00',(''),(''),'heal coverage','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+
+/* Face with outer bound and 3 internal wires (holes) */
+/* Outer boundary: (0,0,0)-(100,0,0)-(100,100,0)-(0,100,0) */
+/* Internal wire 1 (hole): (10,10,0)-(20,10,0)-(20,20,0)-(10,20,0) */
+/* Internal wire 2 (hole): (30,30,0)-(40,30,0)-(40,40,0)-(30,40,0) */
+/* Internal wire 3 (hole): (60,60,0)-(70,60,0)-(70,70,0)-(60,70,0) */
+
+#10=CARTESIAN_POINT('',(0,0,0));
+#11=CARTESIAN_POINT('',(100.0,0,0));
+#12=CARTESIAN_POINT('',(100.0,100.0,0));
+#13=CARTESIAN_POINT('',(0,100.0,0));
+
+/* Hole 1 vertices */
+#20=CARTESIAN_POINT('',(10.0,10.0,0));
+#21=CARTESIAN_POINT('',(20.0,10.0,0));
+#22=CARTESIAN_POINT('',(20.0,20.0,0));
+#23=CARTESIAN_POINT('',(10.0,20.0,0));
+
+/* Hole 2 vertices */
+#24=CARTESIAN_POINT('',(30.0,30.0,0));
+#25=CARTESIAN_POINT('',(40.0,30.0,0));
+#26=CARTESIAN_POINT('',(40.0,40.0,0));
+#27=CARTESIAN_POINT('',(30.0,40.0,0));
+
+/* Hole 3 vertices */
+#28=CARTESIAN_POINT('',(60.0,60.0,0));
+#29=CARTESIAN_POINT('',(70.0,60.0,0));
+#30=CARTESIAN_POINT('',(70.0,70.0,0));
+#31=CARTESIAN_POINT('',(60.0,70.0,0));
+
+/* Outer boundary vertices */
+#40=VERTEX_POINT('',#10);
+#41=VERTEX_POINT('',#11);
+#42=VERTEX_POINT('',#12);
+#43=VERTEX_POINT('',#13);
+
+/* Hole 1 vertices */
+#44=VERTEX_POINT('',#20);
+#45=VERTEX_POINT('',#21);
+#46=VERTEX_POINT('',#22);
+#47=VERTEX_POINT('',#23);
+
+/* Hole 2 vertices */
+#48=VERTEX_POINT('',#24);
+#49=VERTEX_POINT('',#25);
+#50=VERTEX_POINT('',#26);
+#51=VERTEX_POINT('',#27);
+
+/* Hole 3 vertices */
+#52=VERTEX_POINT('',#28);
+#53=VERTEX_POINT('',#29);
+#54=VERTEX_POINT('',#30);
+#55=VERTEX_POINT('',#31);
+
+/* Plane */
+#60=AXIS2_PLACEMENT_3D('plane_xy',#10,DIRECTION('',(0,0,1)),DIRECTION('',(1,0,0)));
+#61=PLANE('',#60);
+
+/* Outer boundary edges */
+#70=LINE('',#10,VECTOR('',(1,0,0),100.0));
+#71=EDGE_CURVE('outer_e1',#40,#41,#70,.T.);
+#72=LINE('',#11,VECTOR('',(0,1,0),100.0));
+#73=EDGE_CURVE('outer_e2',#41,#42,#72,.T.);
+#74=LINE('',#12,VECTOR('',(-1,0,0),100.0));
+#75=EDGE_CURVE('outer_e3',#42,#43,#74,.T.);
+#76=LINE('',#13,VECTOR('',(0,-1,0),100.0));
+#77=EDGE_CURVE('outer_e4',#43,#40,#76,.T.);
+
+/* Hole 1 edges */
+#80=LINE('',#20,VECTOR('',(1,0,0),10.0));
+#81=EDGE_CURVE('h1_e1',#44,#45,#80,.T.);
+#82=LINE('',#21,VECTOR('',(0,1,0),10.0));
+#83=EDGE_CURVE('h1_e2',#45,#46,#82,.T.);
+#84=LINE('',#22,VECTOR('',(-1,0,0),10.0));
+#85=EDGE_CURVE('h1_e3',#46,#47,#84,.T.);
+#86=LINE('',#23,VECTOR('',(0,-1,0),10.0));
+#87=EDGE_CURVE('h1_e4',#47,#44,#86,.T.);
+
+/* Hole 2 edges */
+#90=LINE('',#24,VECTOR('',(1,0,0),10.0));
+#91=EDGE_CURVE('h2_e1',#48,#49,#90,.T.);
+#92=LINE('',#25,VECTOR('',(0,1,0),10.0));
+#93=EDGE_CURVE('h2_e2',#49,#50,#92,.T.);
+#94=LINE('',#26,VECTOR('',(-1,0,0),10.0));
+#95=EDGE_CURVE('h2_e3',#50,#51,#94,.T.);
+#96=LINE('',#27,VECTOR('',(0,-1,0),10.0));
+#97=EDGE_CURVE('h2_e4',#51,#48,#96,.T.);
+
+/* Hole 3 edges */
+#100=LINE('',#28,VECTOR('',(1,0,0),10.0));
+#101=EDGE_CURVE('h3_e1',#52,#53,#100,.T.);
+#102=LINE('',#29,VECTOR('',(0,1,0),10.0));
+#103=EDGE_CURVE('h3_e2',#53,#54,#102,.T.);
+#104=LINE('',#30,VECTOR('',(-1,0,0),10.0));
+#105=EDGE_CURVE('h3_e3',#54,#55,#104,.T.);
+#106=LINE('',#31,VECTOR('',(0,-1,0),10.0));
+#107=EDGE_CURVE('h3_e4',#55,#52,#106,.T.);
+
+/* Outer edge loop */
+#150=ORIENTED_EDGE('',*,*,#71,.T.);
+#151=ORIENTED_EDGE('',*,*,#73,.T.);
+#152=ORIENTED_EDGE('',*,*,#75,.T.);
+#153=ORIENTED_EDGE('',*,*,#77,.T.);
+#154=EDGE_LOOP('outer_loop',(#150,#151,#152,#153));
+
+/* Hole 1 edge loop */
+#160=ORIENTED_EDGE('',*,*,#81,.T.);
+#161=ORIENTED_EDGE('',*,*,#83,.T.);
+#162=ORIENTED_EDGE('',*,*,#85,.T.);
+#163=ORIENTED_EDGE('',*,*,#87,.T.);
+#164=EDGE_LOOP('h1_loop',(#160,#161,#162,#163));
+
+/* Hole 2 edge loop */
+#170=ORIENTED_EDGE('',*,*,#91,.T.);
+#171=ORIENTED_EDGE('',*,*,#93,.T.);
+#172=ORIENTED_EDGE('',*,*,#95,.T.);
+#173=ORIENTED_EDGE('',*,*,#97,.T.);
+#174=EDGE_LOOP('h2_loop',(#170,#171,#172,#173));
+
+/* Hole 3 edge loop */
+#180=ORIENTED_EDGE('',*,*,#101,.T.);
+#181=ORIENTED_EDGE('',*,*,#103,.T.);
+#182=ORIENTED_EDGE('',*,*,#105,.T.);
+#183=ORIENTED_EDGE('',*,*,#107,.T.);
+#184=EDGE_LOOP('h3_loop',(#180,#181,#182,#183));
+
+/* Face bounds */
+#200=FACE_OUTER_BOUND('',#154,.T.);
+#201=FACE_INNER_BOUND('',#164,.T.);
+#202=FACE_INNER_BOUND('',#174,.T.);
+#203=FACE_INNER_BOUND('',#184,.T.);
+
+/* Face with 3 internal wires */
+#210=ADVANCED_FACE('holey_face',(#200,#201,#202,#203),#61,.T.);
+
+/* Shell containing the face */
+#220=OPEN_SHELL('multi_wire_shell',(#210));
+
+/* Mandatory PRODUCT chain */
+#9000=PRODUCT_CONTEXT('',#1,'mechanical');
+#9001=PRODUCT('Tsh124','Tsh124','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
+#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
+#9021=SHELL_BASED_SURFACE_MODEL('sbsm',(#220));
+#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#9010);
+#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+ENDSEC;
+END-ISO-10303-21;

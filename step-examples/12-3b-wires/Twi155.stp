@@ -1,0 +1,75 @@
+ISO-10303-21;
+/* Twi155 - ShapeAnalysis_Wire.CheckGap3d zero-length-edge
+ * Defect: Wire contains a zero-length edge (start vertex == end vertex).
+ * CheckGap3d's adjacent-edge gap check computes the distance between the end
+ * of edge i and start of edge i+1. When edge has zero length, it has no well-defined
+ * direction, producing non-deterministic gap verdict depending on floating-point
+ * evaluation order. (ShapeAnalysis_Wire.cxx:1125-1200; gap check does not guard
+ * against start==end vertex, direction undefined) */
+HEADER;
+FILE_DESCRIPTION(('Twi155 test case','Wire with zero-length edge'),'2;1');
+FILE_NAME('Twi155.stp','2026-06-15T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#11=DIRECTION('',(0.0,0.0,1.0));
+#12=DIRECTION('',(1.0,0.0,0.0));
+#13=AXIS2_PLACEMENT_3D('',#10,#11,#12);
+#20=PLANE('',#13);
+/* Vertices: two line edges with a zero-length edge sandwiched between */
+#30=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#31=VERTEX_POINT('',#30);
+#32=CARTESIAN_POINT('',(1.0,0.0,0.0));
+#33=VERTEX_POINT('',#32);
+#34=CARTESIAN_POINT('',(1.0,1.0,0.0));
+#35=VERTEX_POINT('',#34);
+#36=CARTESIAN_POINT('',(0.0,1.0,0.0));
+#37=VERTEX_POINT('',#36);
+/* Curves */
+#40=DIRECTION('',(1.0,0.0,0.0));
+#41=VECTOR('',#40,1.0);
+#42=LINE('',#30,#41);
+/* Zero-length curve: point curve (direction irrelevant, magnitude 0) */
+#50=DIRECTION('',(1.0,0.0,0.0));
+#51=VECTOR('',#50,0.0);
+#52=LINE('',#32,#51);
+#60=DIRECTION('',(0.0,1.0,0.0));
+#61=VECTOR('',#60,1.0);
+#62=LINE('',#32,#61);
+#70=DIRECTION('',(0.0,-1.0,0.0));
+#71=VECTOR('',#70,1.0);
+#72=LINE('',#34,#71);
+/* Edges: normal, zero-length, normal, normal */
+#100=EDGE_CURVE('',#31,#33,#42,.T.);
+/* Zero-length edge: both vertices are the same point */
+#101=EDGE_CURVE('',#33,#33,#52,.T.);
+#102=EDGE_CURVE('',#33,#35,#62,.T.);
+#103=EDGE_CURVE('',#35,#37,#72,.T.);
+#110=ORIENTED_EDGE('',*,*,#100,.T.);
+#111=ORIENTED_EDGE('',*,*,#101,.T.);
+#112=ORIENTED_EDGE('',*,*,#102,.T.);
+#113=ORIENTED_EDGE('',*,*,#103,.T.);
+#120=EDGE_LOOP('',(#110,#111,#112,#113));
+#121=FACE_OUTER_BOUND('',#120,.T.);
+#122=ADVANCED_FACE('',(#121),#20,.T.);
+/* Mandatory PRODUCT chain */
+#9000=PRODUCT_CONTEXT('',#1,'mechanical');
+#9001=PRODUCT('Twi155','Twi155','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
+#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
+#9021=SHELL_BASED_SURFACE_MODEL('sbsm',(#9020));
+#9020=CLOSED_SHELL('shell',(#122));
+#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#9010);
+#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+ENDSEC;
+END-ISO-10303-21;

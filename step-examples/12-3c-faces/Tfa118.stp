@@ -1,0 +1,65 @@
+ISO-10303-21;
+/* Tfa118 — ShapeFix_Face.FixSplitFace line-tangent-to-wire
+ * Defect: face split by a LINE that's tangent to the outer wire (single-point
+ * contact); FixSplitFace produces zero new faces but reports success. */
+HEADER;
+FILE_DESCRIPTION(('Tfa118 - FixSplitFace line-tangent-to-wire defect'),'2;1');
+FILE_NAME('Tfa118.stp','2026-06-16T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+/* Outer boundary: semicircle */
+#10=CARTESIAN_POINT('circle_center',(0.0,0.0,0.0));
+#11=DIRECTION('z_axis',(0.0,0.0,1.0));
+#12=DIRECTION('x_axis',(1.0,0.0,0.0));
+#13=AXIS2_PLACEMENT_3D('circle_place',#10,#11,#12);
+#14=CIRCLE('outer_circle',#13,2.0);
+#15=CARTESIAN_POINT('p_left',(-2.0,0.0,0.0));
+#16=VERTEX_POINT('v_left',#15);
+#17=CARTESIAN_POINT('p_right',(2.0,0.0,0.0));
+#18=VERTEX_POINT('v_right',#17);
+/* Semicircle from left to right (upper arc) */
+#19=EDGE_CURVE('circle_edge',#16,#18,#14,.T.);
+/* Closing line from right to left */
+#20=LINE('closing_line',(#17),#21);
+#21=VECTOR('closing_vec',#22,1.0);
+#22=DIRECTION('closing_dir',(-1.0,0.0,0.0));
+#23=EDGE_CURVE('closing_edge',#18,#16,#20,.T.);
+#24=ORIENTED_EDGE('oe_circle',*,*,#19,.T.);
+#25=ORIENTED_EDGE('oe_closing',*,*,#23,.T.);
+#26=EDGE_LOOP('outer_loop',(#24,#25));
+#27=FACE_OUTER_BOUND('outer_bound',#26,.T.);
+/* Tangent line: touches the circle at top (0,2,0), tangent to Y=2 plane */
+#28=CARTESIAN_POINT('tangent_start',(-1.0,2.0,0.0));
+#29=VERTEX_POINT('v_tangent_start',#28);
+#30=CARTESIAN_POINT('tangent_end',(1.0,2.0,0.0));
+#31=VERTEX_POINT('v_tangent_end',#30);
+#32=LINE('tangent_split_line',(#28),#33);
+#33=VECTOR('tangent_vec',#12,1.0);
+#34=EDGE_CURVE('tangent_edge',#29,#31,#32,.T.);
+#35=ORIENTED_EDGE('oe_tangent',*,*,#34,.T.);
+#36=EDGE_LOOP('tangent_loop',(#35));
+#37=FACE_INNER_BOUND('tangent_bound',#36,.T.);
+/* Plane surface */
+#38=PLANE('face_plane',#13);
+/* Face with tangent split curve (topologically creates degenerate subdivision) */
+#39=ADVANCED_FACE('tangent_face',(#27,#37),#38,.T.);
+#9000=PRODUCT_CONTEXT('',#1,'mechanical');
+#9001=PRODUCT('Tfa118','Tfa118','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
+#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
+#9020=OPEN_SHELL('shell',(#39));
+#9021=SHELL_BASED_SURFACE_MODEL('sbsm',(#9020));
+#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#9010);
+#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+ENDSEC;
+END-ISO-10303-21;

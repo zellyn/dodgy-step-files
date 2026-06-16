@@ -1,0 +1,78 @@
+ISO-10303-21;
+/* Tfa120 — ShapeFix_Face.FixAddNaturalBound trimmed-conical
+ * Defect: natural boundary on a trimmed CONICAL_SURFACE; FixAddNaturalBound
+ * uses base surface parameter range, missing the trim. */
+HEADER;
+FILE_DESCRIPTION(('Tfa120 - FixAddNaturalBound trimmed-conical defect'),'2;1');
+FILE_NAME('Tfa120.stp','2026-06-16T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+/* Conical surface: apex at origin, axis along Z, semi-angle 30 degrees */
+#10=CARTESIAN_POINT('apex',(0.0,0.0,0.0));
+#11=DIRECTION('cone_axis',(0.0,0.0,1.0));
+#12=DIRECTION('cone_x',(1.0,0.0,0.0));
+#13=AXIS2_PLACEMENT_3D('cone_place',#10,#11,#12);
+#14=CONICAL_SURFACE('cone_surf',#13,0.523599,1.0);
+/* Face boundary: parametric rectangle (u,v) where u ∈ [0, π], v ∈ [1, 3] */
+/* These are the TRIMMED bounds — natural bounds for full cone are different */
+/* At u=0, v from 1 to 3 */
+#15=CARTESIAN_POINT('p_u0_v1',(1.0,0.0,1.0));
+#16=VERTEX_POINT('v_u0_v1',#15);
+#17=CARTESIAN_POINT('p_u0_v3',(3.0,0.0,3.0));
+#18=VERTEX_POINT('v_u0_v3',#17);
+/* At u=pi, v from 1 to 3 */
+#19=CARTESIAN_POINT('p_upi_v1',(-1.0,0.0,1.0));
+#20=VERTEX_POINT('v_upi_v1',#19);
+#21=CARTESIAN_POINT('p_upi_v3',(-3.0,0.0,3.0));
+#22=VERTEX_POINT('v_upi_v3',#21);
+/* Generatrix line at u=0: from cone apex through (1,0,1) towards (3,0,3) */
+#23=LINE('gen_u0',(#10),#24);
+#24=VECTOR('gen_u0_vec',#25,1.0);
+#25=DIRECTION('gen_u0_dir',(1.0,0.0,1.0));
+#26=EDGE_CURVE('edge_u0',#16,#18,#23,.T.);
+/* Generatrix line at u=pi: from apex through (-1,0,1) to (-3,0,3) */
+#27=LINE('gen_upi',(#10),#28);
+#28=VECTOR('gen_upi_vec',#29,1.0);
+#29=DIRECTION('gen_upi_dir',(-1.0,0.0,1.0));
+#30=EDGE_CURVE('edge_upi',#20,#22,#27,.T.);
+/* Parallel circle at v=1: radius 1, height 1 */
+#31=CARTESIAN_POINT('circle_center_v1',(0.0,0.0,1.0));
+#32=DIRECTION('circle_z',(0.0,0.0,1.0));
+#33=DIRECTION('circle_x',(1.0,0.0,0.0));
+#34=AXIS2_PLACEMENT_3D('circle_place_v1',#31,#32,#33);
+#35=CIRCLE('circle_v1',#34,1.0);
+#36=EDGE_CURVE('edge_v1',#16,#20,#35,.T.);
+/* Parallel circle at v=3: radius 3, height 3 */
+#37=CARTESIAN_POINT('circle_center_v3',(0.0,0.0,3.0));
+#38=AXIS2_PLACEMENT_3D('circle_place_v3',#37,#32,#33);
+#39=CIRCLE('circle_v3',#38,3.0);
+#40=EDGE_CURVE('edge_v3',#18,#22,#39,.T.);
+/* Outer loop with 4 edges */
+#41=ORIENTED_EDGE('oe_u0',*,*,#26,.T.);
+#42=ORIENTED_EDGE('oe_v3',*,*,#40,.T.);
+#43=ORIENTED_EDGE('oe_upi',*,*,#30,.F.);
+#44=ORIENTED_EDGE('oe_v1',*,*,#36,.F.);
+#45=EDGE_LOOP('trim_loop',(#41,#42,#43,#44));
+#46=FACE_OUTER_BOUND('trim_bound',#45,.T.);
+/* Conical face with TRIMMED bounds (not full natural bounds) */
+#47=ADVANCED_FACE('trimmed_conical',(#46),#14,.T.);
+#9000=PRODUCT_CONTEXT('',#1,'mechanical');
+#9001=PRODUCT('Tfa120','Tfa120','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
+#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
+#9020=OPEN_SHELL('shell',(#47));
+#9021=SHELL_BASED_SURFACE_MODEL('sbsm',(#9020));
+#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#9010);
+#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+ENDSEC;
+END-ISO-10303-21;
