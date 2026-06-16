@@ -1,0 +1,65 @@
+/* N063 - ShapeFix_Edge.FixVertexTolerance escalation cascade
+ * Defect: Multiple edges share a common vertex. FixVertexTolerance on edge A
+ * escalates the vertex tolerance to accommodate A's needs. When FixVertexTolerance
+ * is called on edge B sharing the same vertex, it sees the escalated value and
+ * re-escalates without re-checking whether the escalation is necessary,
+ * causing unbounded growth.
+ * Reproducer: Create 3 edges meeting at a vertex; first call FixVertexTolerance(edgeA),
+ * then FixVertexTolerance(edgeB) on same vertex. Vertex tolerance grows beyond
+ * the actual requirement of either edge.
+ */
+ISO-10303-21;
+HEADER;
+FILE_DESCRIPTION(('N063 ShapeFix_Edge FixVertexTolerance escalation cascade'),'2;1');
+FILE_NAME('N063.stp','2026-06-15T00:00:00',(''),(''),
+  'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
+  'automotive_design',2009,#1);
+/* Shared vertex at origin */
+#10=CARTESIAN_POINT('hub',(0.0,0.0,0.0));
+#20=VERTEX_POINT('hub',#10);
+/* Three edge endpoints */
+#11=CARTESIAN_POINT('ep1',(1.0,0.0,0.0));
+#12=CARTESIAN_POINT('ep2',(0.0,1.0,0.0));
+#13=CARTESIAN_POINT('ep3',(0.0,0.0,1.0));
+#21=VERTEX_POINT('ep1',#11);
+#22=VERTEX_POINT('ep2',#12);
+#23=VERTEX_POINT('ep3',#13);
+/* Three lines from hub in different directions */
+#30=LINE('',#10,#(VECTOR('',#(DIRECTION('',(1.0,0.0,0.0))),1.0)));
+#31=LINE('',#10,#(VECTOR('',#(DIRECTION('',(0.0,1.0,0.0))),1.0)));
+#32=LINE('',#10,#(VECTOR('',#(DIRECTION('',(0.0,0.0,1.0))),1.0)));
+/* Three edges meeting at hub vertex */
+#40=EDGE_CURVE('e1',#20,#21,#30,.T.);
+#41=EDGE_CURVE('e2',#20,#22,#31,.T.);
+#42=EDGE_CURVE('e3',#20,#23,#32,.T.);
+/* Units with edge-level tolerance 1e-4 */
+#100=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#101=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#102=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+/* Hub vertex tolerance initially 1e-5 */
+#103=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-5),#100,
+  'distance_accuracy_value','vertex_tolerance');
+/* Edge tolerance 1e-4 */
+#104=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-4),#100,
+  'distance_accuracy_value','edge_tolerance');
+#105=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#103,#104))
+  GLOBAL_UNIT_ASSIGNED_CONTEXT((#100,#101,#102))
+  REPRESENTATION_CONTEXT('','3D'));
+/* Mandatory product chain */
+#9000=PRODUCT_CONTEXT('',#1,'mechanical');
+#9001=PRODUCT('N063','N063','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9021=SHELL_BASED_SURFACE_MODEL('sbsm',(#40,#41,#42));
+#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#105);
+#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+ENDSEC;
+END-ISO-10303-21;

@@ -1,0 +1,92 @@
+ISO-10303-21;
+/* Tfa083 - ShapeFix_Face.FixNotchedEdges: near-tangent notch detection
+ * Face boundary contains a small notch: two consecutive edges that nearly
+ * reverse direction (nearly opposite tangent). Tangent-angle test fails
+ * because angle is very close to pi (180 degrees) but not quite.
+ */
+HEADER;
+FILE_DESCRIPTION(('Tfa083 test case','Face with near-tangent notch; FixNotchedEdges tangent test fails'),'2;1');
+FILE_NAME('Tfa083.stp','2026-06-15T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+/* Plane at Z=0 */
+#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#11=DIRECTION('',(0.0,0.0,1.0));
+#12=DIRECTION('',(1.0,0.0,0.0));
+#13=AXIS2_PLACEMENT_3D('',#10,#11,#12);
+#14=PLANE('notch_plane',#13);
+/* Outer boundary: rectangle with near-reversal notch on bottom edge
+   Bottom-left corner: (0,0) -> (5,0) -> (4.99,0.01) -> reversal notch
+   The two edges at (5,0)-(4.99,0.01) and back nearly reverse (angle ~179.8 deg)
+*/
+#20=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#21=VERTEX_POINT('v0',#20);
+#22=CARTESIAN_POINT('',(5.0,0.0,0.0));
+#23=VERTEX_POINT('v1',#22);
+#24=CARTESIAN_POINT('',(4.99,0.01,0.0));
+#25=VERTEX_POINT('v_notch',#24);
+#26=CARTESIAN_POINT('',(5.0,5.0,0.0));
+#27=VERTEX_POINT('v2',#26);
+#28=CARTESIAN_POINT('',(0.0,5.0,0.0));
+#29=VERTEX_POINT('v3',#28);
+/* Edge 0: (0,0)->(5,0) along +X */
+#30=DIRECTION('',(1.0,0.0,0.0));
+#31=VECTOR('',#30,1.0);
+#32=LINE('',#20,#31);
+#33=EDGE_CURVE('e0_to_notch',#21,#23,#32,.T.);
+/* Edge 1: (5,0)->(4.99,0.01) -- small step back with angle ~179.8 deg */
+#34=DIRECTION('',(-0.999975,0.00999999,0.0));
+#35=VECTOR('',#34,0.01001);
+#36=LINE('',#22,#35);
+#37=EDGE_CURVE('e1_notch_out',#23,#25,#36,.T.);
+/* Edge 2: (4.99,0.01)->(5,0) -- returns to edge 0, nearly reversing */
+#38=DIRECTION('',(0.999975,-0.00999999,0.0));
+#39=VECTOR('',#38,0.01001);
+#40=LINE('',#24,#39);
+#41=EDGE_CURVE('e2_notch_back',#25,#23,#40,.T.);
+/* Edge 3: (5,0)->(5,5) along +Y */
+#42=DIRECTION('',(0.0,1.0,0.0));
+#43=VECTOR('',#42,1.0);
+#44=LINE('',#22,#43);
+#45=EDGE_CURVE('e3_right',#23,#27,#44,.T.);
+/* Edge 4: (5,5)->(0,5) along -X */
+#46=DIRECTION('',(-1.0,0.0,0.0));
+#47=VECTOR('',#46,1.0);
+#48=LINE('',#26,#47);
+#49=EDGE_CURVE('e4_top',#27,#29,#48,.T.);
+/* Edge 5: (0,5)->(0,0) along -Y */
+#50=DIRECTION('',(0.0,-1.0,0.0));
+#51=VECTOR('',#50,1.0);
+#52=LINE('',#28,#51);
+#53=EDGE_CURVE('e5_left',#29,#21,#52,.T.);
+/* Orient all edges forward */
+#54=ORIENTED_EDGE('oe0',*,*,#33,.T.);
+#55=ORIENTED_EDGE('oe1',*,*,#37,.T.);
+#56=ORIENTED_EDGE('oe2',*,*,#41,.T.);
+#57=ORIENTED_EDGE('oe3',*,*,#45,.T.);
+#58=ORIENTED_EDGE('oe4',*,*,#49,.T.);
+#59=ORIENTED_EDGE('oe5',*,*,#53,.T.);
+#60=EDGE_LOOP('notched_outer',(#54,#55,#56,#57,#58,#59));
+#61=FACE_OUTER_BOUND('',#60,.T.);
+#90=ADVANCED_FACE('notched_face',(#61),#14,.T.);
+/* Minimal PRODUCT chain */
+#9000=PRODUCT_CONTEXT('',#1,'mechanical');
+#9001=PRODUCT('Tfa083','Tfa083','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
+#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
+#9021=SHELL_BASED_SURFACE_MODEL('sbsm',(#9100));
+#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#9010);
+#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+#9100=CLOSED_SHELL('shell_for_product',(#90));
+ENDSEC;
+END-ISO-10303-21;

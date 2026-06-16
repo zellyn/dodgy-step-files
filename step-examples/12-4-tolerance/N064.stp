@@ -1,0 +1,63 @@
+/* N064 - ShapeAnalysis_Edge.CheckPoints precision asymmetry
+ * Defect: An edge with asymmetric vertex tolerances (preci1 != preci2 at
+ * the two endpoints) is checked by CheckPoints, which conflates the two
+ * precision values into a single tolerance for curve validation, losing the
+ * asymmetry information. Results in incorrect curve projection and validation.
+ * Reproducer: Create edge where one vertex has 1e-2 tolerance and the other
+ * has 1e-5 tolerance; CheckPoints conflates them instead of checking
+ * each endpoint against its own tolerance.
+ */
+ISO-10303-21;
+HEADER;
+FILE_DESCRIPTION(('N064 ShapeAnalysis_Edge CheckPoints precision asymmetry'),'2;1');
+FILE_NAME('N064.stp','2026-06-15T00:00:00',(''),(''),
+  'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
+  'automotive_design',2009,#1);
+/* Edge endpoints with different precision characteristics */
+#10=CARTESIAN_POINT('p_coarse',(0.0,0.0,0.0));
+#11=CARTESIAN_POINT('p_fine',(10.0,0.0,0.0));
+#20=VERTEX_POINT('coarse',#10);
+#21=VERTEX_POINT('fine',#11);
+/* Curved edge (cubic spline approximation via line) */
+#30=LINE('',#10,#(VECTOR('',#(DIRECTION('',(1.0,0.0,0.0))),10.0)));
+#40=EDGE_CURVE('asym_edge',#20,#21,#30,.T.);
+/* Wire and face from edge */
+#50=EDGE_LOOP('',#(#40));
+#60=CARTESIAN_POINT('origin',(0.0,0.0,0.0));
+#61=DIRECTION('z',(0.0,0.0,1.0));
+#62=DIRECTION('x',(1.0,0.0,0.0));
+#63=AXIS2_PLACEMENT_3D('',#60,#61,#62);
+#64=PLANE('',#63);
+#65=FACE_OUTER_BOUND('',#50,.T.);
+#66=ADVANCED_FACE('',(#65),#64,.T.);
+/* Units with asymmetric tolerances */
+#100=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#101=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#102=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+/* Coarse endpoint tolerance: 1e-2 */
+#103=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-2),#100,
+  'distance_accuracy_value','coarse_tolerance');
+/* Fine endpoint tolerance: 1e-5 */
+#104=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-5),#100,
+  'distance_accuracy_value','fine_tolerance');
+#105=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#103,#104))
+  GLOBAL_UNIT_ASSIGNED_CONTEXT((#100,#101,#102))
+  REPRESENTATION_CONTEXT('','3D'));
+/* Mandatory product chain */
+#9000=PRODUCT_CONTEXT('',#1,'mechanical');
+#9001=PRODUCT('N064','N064','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9021=SHELL_BASED_SURFACE_MODEL('sbsm',(#66));
+#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#105);
+#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+ENDSEC;
+END-ISO-10303-21;

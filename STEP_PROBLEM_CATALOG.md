@@ -21618,6 +21618,21 @@ B-spline surface with split request using u_split values outside [u_min, u_max].
 
 **Expected validation**: Twist flag set to true; interior point count > threshold; at least one scalar product < 0 at non-boundary location.
 
+### Tfa081 — ShapeFix_Face.FixOrientation reversed-normal heal
+Face with inward-pointing surface normal (same_sense=.F.). Healer detects via outer-wire winding direction and flips to outward orientation. Planar square boundary, defect is orientation flag mismatch.
+
+### Tfa082 — ShapeAnalysis_CheckSmallFace.CheckPin pin-direction classification
+Planar face with sharp pin singularity along V parametric axis (vertical). Classifier assumes pin aligns with U-parameter axis; axis-agnostic detection required. NURBS 3x2 poles with near-zero angle at boundary.
+
+### Tfa083 — ShapeFix_Face.FixNotchedEdges near-tangent notch detection
+Face boundary with two consecutive edges forming 179.8-degree angle (near-reversal notch). Tangent-angle comparison fails for near-tangent threshold. Small notch bulge on bottom edge of rectangle.
+
+### Tfa084 — ShapeAnalysis_FreeBoundsProperties.CheckNotches gap-after-fix
+Rectangular face with interior notch that, when removed, leaves 0.1-unit gap between surviving edges. CheckNotches must flag orphaned gaps as invalid; defect: gap detection skipped.
+
+### Tfa085 — ShapeFix_Face.FixSplitFace split-result multiplicity
+Rectangular face with two parallel interior edges (at X=3, X=7) creating 3 sub-zones. FixSplitFace loop assumes binary split and misses zones beyond the first pair. Represented as single face with two inner bounds.
+
 ### Hea016 — Empty solid output from STEP export of complex body, despite STL succeeding
 - **Category**: §12.3c faces / shape healing
 - **Sources**: FreeCAD #20396; bug-reporter language: "Models exported to STEP crash or produce empty objects", "appears to export fine but results in an empty object", "STL and 3MF export work, STEP doesn't".
@@ -21786,6 +21801,26 @@ B-spline surface with split request using u_split values outside [u_min, u_max].
 **Defect**: Cylindrical wire with extraneous seam edge pair (dummy_seam + seam_close) at P1 that no longer matches true seam line (u=0, 2π). Seam edge lies near u=0.002, falsely marked as seam.
 **Pattern**: 6-edge loop (4 main + 2 dummy seam) on CYLINDRICAL_SURFACE; dummy pair inserted at P1 with pcurves offset from true seam.
 **Coverage**: ShapeFix_Wire.FixDummySeam seam edge validation and removal when seam no longer coincides with surface seam.
+
+### Twi112 — ShapeFix_Wire.FixGaps2d 2D-gap repair on cylindrical surface
+
+Wire on cylindrical surface with consecutive edges' parametric curves (pcurves) leaving a 2D gap in the parameter domain. First edge pcurve ranges [0.0, 1.0], second edge pcurve starts at [1.01, ...], creating a 0.01-unit discontinuity. FixGaps2d should bridge with a new pcurve segment to restore continuity.
+
+### Twi113 — ShapeAnalysis_Wire.CheckOuterBound outer-bound mis-identification
+
+Face with multiple wires where the loop with largest enclosed area (20×20 outer rectangle) is not tagged as FACE_OUTER_BOUND; smaller hole loop (4×4) is present. CheckOuterBound should detect the outer rectangle as the true boundary and flag misidentification.
+
+### Twi114 — ShapeFix_Wire.FixTails tail-elimination
+
+Wire ending in a small "tail" edge (length 0.05 units) much shorter than its neighbors (length 10.0). Tail extends from (0,10) to (0,10.05). FixTails should identify and remove this degenerate edge to restore wire closure.
+
+### Twi115 — ShapeAnalysis_Wire.CheckGap3d threshold-comparison edge
+
+Adjacent edges where the gap between endpoint of first edge (10.0, 0.0, 0.0) and start of second edge (10.0001, 5.0, 0.0) equals exactly 0.0001 units, matching default vertex tolerance. Threshold check uses >= instead of >, causing boundary-case gaps to be silently accepted.
+
+### Twi116 — ShapeFix_Wire.FixConnected vertex-sharing mismatch
+
+Wire with edges that should connect via a shared vertex but use different VERTEX_POINT entities at identical coordinates (10.0, 0.0, 0.0): v2a in edge1→edge2 transition, v2b in edge3 start. FixConnected should unify these duplicate vertices into a single reference.
 
 ### Gs056 — `SURFACE_OF_REVOLUTION` of an ellipse around its own centre produces a degenerate surface
 - **Category**: §12.2c surface / curve degeneracies (sub-class: revolution of conic)
@@ -22543,6 +22578,64 @@ Defect: FixSameParameter computes tolerance to synchronize 3D and parametric
 curves; when computed tolerance exceeds user ceiling, silently clamps without
 flagging. Caller sees "tolerances fixed" but edge is actually incompatible—
 same-parameter constraint cannot be achieved at the ceiling value.
+
+### N061 — BRepLib.BoundingVertex bounding-sphere under-estimate
+
+**Defect**: BRepLib's bounding sphere computation uses center-of-mass + max-distance heuristic. With 4+ co-located vertices clustered within 1e-8, the heuristic fails to produce a radius large enough to contain all points, resulting in under-estimated bounding boxes downstream.
+
+**Geometry**: 5 vertices co-located within 1e-8 of (1, 1, 1), connected by 4 edges forming a degenerate polyline.
+
+**Tolerance state**: UNCERTAINTY_MEASURE_WITH_UNIT at 1e-7 in GEOMETRIC_REPRESENTATION_CONTEXT.
+
+**Expected behavior**: Bounding sphere radius ≥ 1e-8; heuristic produces ~0.0 (machine epsilon).
+
+---
+
+### N062 — ShapeAnalysis_ShapeTolerance.GlobalTolerance min/max dispatch
+
+**Defect**: GlobalTolerance with mode=-1 (minimum) returns inconsistent results when the input shape contains both VERTEX and EDGE with identical tolerance values. The tie-breaking logic is order-dependent and affected by topological traversal order.
+
+**Geometry**: 4-vertex square face (1×1) with edges and vertices all declaring 1e-3 tolerance.
+
+**Tolerance state**: Two UNCERTAINTY_MEASURE_WITH_UNIT entries (1e-3 each) for vertex and edge, in GEOMETRIC_REPRESENTATION_CONTEXT.
+
+**Expected behavior**: GlobalTolerance(mode=-1) should consistently return 1e-3; actual behavior depends on traversal order.
+
+---
+
+### N063 — ShapeFix_Edge.FixVertexTolerance escalation cascade
+
+**Defect**: Multiple edges share a common vertex. FixVertexTolerance on edge A escalates the vertex tolerance. When FixVertexTolerance is called on edge B (sharing the same vertex), it sees the escalated value and re-escalates without re-checking necessity, causing unbounded growth.
+
+**Geometry**: 3-edge star topology with hub vertex at origin; three endpoints at (1,0,0), (0,1,0), (0,0,1).
+
+**Tolerance state**: Hub vertex tolerance 1e-5, edge tolerance 1e-4.
+
+**Expected behavior**: After two FixVertexTolerance calls, vertex tolerance should be ≤ max(edge tolerances) = 1e-4; actual behavior escalates beyond this.
+
+---
+
+### N064 — ShapeAnalysis_Edge.CheckPoints precision asymmetry
+
+**Defect**: An edge with asymmetric vertex tolerances (preci1 ≠ preci2) is validated by CheckPoints, which conflates the two precision values into a single tolerance, losing asymmetry information.
+
+**Geometry**: Single edge from (0,0,0) to (10,0,0) with coarse endpoint (1e-2) and fine endpoint (1e-5).
+
+**Tolerance state**: Two UNCERTAINTY_MEASURE_WITH_UNIT entries (1e-2 and 1e-5).
+
+**Expected behavior**: CheckPoints should validate each endpoint against its own tolerance; actual behavior uses a single conflated value.
+
+---
+
+### N065 — ShapeFix_ShapeTolerance.LimitTolerance partial-tree application
+
+**Defect**: LimitTolerance called on a compound containing both a shell and a solid. The recursion stops at the shell boundary without descending into the solid's interior, leaving inner topological elements un-limited.
+
+**Geometry**: Compound with (1) independent triangular shell and (2) cube embedded at (5,5,5) with faces, edges, vertices representing solid interior.
+
+**Tolerance state**: High tolerance (1e-1) in GEOMETRIC_REPRESENTATION_CONTEXT.
+
+**Expected behavior**: LimitTolerance(compound, max=1e-4) should limit all geometry; actual behavior skips the solid's interior faces/edges/vertices.
 
 ### M161 — Reader does not validate cross-references; dangling references silently accepted
 - **Category**: §12.8 mixed / auxiliary (sub-class: missing input validation)
