@@ -20516,6 +20516,26 @@ they capture invariants shared by a family of healing methods. Filed under
 
 ## §12.13 Writer Pathology
 
+### Gn039 — ShapeAnalysis_Curve.IsClosed B-spline near-closure rejection
+
+B-spline curve with last pole within 1e-3 of first pole triggers false-negative closure test; healing tools reject intended closure fixes due to exact-equality requirement.
+
+### Gn040 — ShapeAnalysis_Curve.FillBndBox S-curve extremum undersample
+
+2-point sampling on high-curvature S-curve misses inflection peak; bounding box omits Z-coordinate extremum, breaking downstream extent calculations.
+
+### Gn041 — ShapeAnalysis_Surface.NextValueOfUV C0-knot Newton convergence
+
+B-spline surface with C0 discontinuity at interior U-knot (multiplicity=degree) causes Newton iteration to converge to wrong-side solution due to derivative invalidity at knot.
+
+### Gn042 — ShapeUpgrade_ConvertSurfaceToBezierBasis double-knot thin patch
+
+B-spline surface with double knot (multiplicity=2) at interior U-position yields degenerate Bezier patches after knot insertion; extent filter fails removal.
+
+### Gn043 — ShapeAnalysis_Curve.GetSamplePoints rational curve 4x amplification
+
+Rational B-spline with non-uniform weights (1.0, 2.0 variation) triggers 4x sample-count amplification via denominator pre-image expansion; excessive overhead during healing.
+
 ### Wr001 — Trailing whitespace on every record line
 - **Category**: §12.13 writer-pathology (sub-class: whitespace/line-ending)
 - **Sources**: prostep ivip CAx-IF round-trip reports; FreeCAD #4231 "STEP exporter pads lines with spaces"; bug-reporter language: "diff between exports is all whitespace"
@@ -21500,6 +21520,84 @@ they capture invariants shared by a family of healing methods. Filed under
 - **Expected kernel behavior**: Kernel should distinguish between single-WIRE (valid, construct face) and single-non-WIRE (error, abort or fallback with diagnostic). Failure: non-WIRE loop bypass leads to unresolved topology.
 - **Expected validation**: `occt=unknown/unknown gmsh=unknown ifc=schema_n/a`
 
+### Tfa076 — FixAddNaturalBound seam-edge skip
+
+**Category**: §12.3c Face Topology — ShapeFix_Face Boundary Insertion
+
+**Sources**: OCCT_HEAL_COVERAGE_V3.md `FixAddNaturalBound_at877` (FAN-004: periodicity-conditional)
+
+**Description**: Surface-of-revolution with seam edge. Natural boundary insertion skipped when seam edge confuses the closure detector on periodicity-conditional surfaces. Face has outer wire on torus-like surface; FixAddNaturalBound should detect periodic boundary and insert natural edges, but seam edge position prevents correct interval detection.
+
+**Reproducer recipe**: Load Tfa076.stp; call ShapeFix_Face::FixAddNaturalBound; expect natural bounds added to wire set, but seam edge at u=0 causes interval detection to bypass U-closed surface condition on non-periodic mode.
+
+**Expected kernel behavior**: Kernel should detect seam edge independently and insert natural bounds even when periodicity interval detection fails; natural bounds at U-seam should be distinct from inner wire structure.
+
+**Expected validation**: CheckSplittingVertices should report vertex count increases; no degenerate inner loops introduced; edge loop closure maintained.
+
+---
+
+### Tfa077 — FixSmallAreaWire small-area early-exit
+
+**Category**: §12.3c Face Topology — ShapeFix_Face Wire Removal
+
+**Sources**: OCCT_HEAL_COVERAGE_V3.md `FixSmallAreaWire_at2332` (FSA-002: numerical-threshold)
+
+**Description**: Planar face with micro-scale outer wire (0.001×0.001 mm²). Area is below tolerance threshold; SmallAreaWire fixer should remove it. Degenerate orientation check bypasses early exit even though wire is small, keeping low-area wire in face.
+
+**Reproducer recipe**: Load Tfa077.stp; call ShapeFix_Face::FixSmallAreaWire with default threshold; expect wire removal but threshold check on degenerate orientation prevents action.
+
+**Expected kernel behavior**: Kernel should remove small-area wires regardless of orientation flag state; all wires below area tolerance should be candidates for removal.
+
+**Expected validation**: Wire count should decrease; no outer bound remains; face should be marked for deletion or context cleanup.
+
+---
+
+### Tfa078 — FixLoopWire intersecting-loops merge
+
+**Category**: §12.3c Face Topology — ShapeFix_Face Loop Merging
+
+**Sources**: OCCT_HEAL_COVERAGE_V3.md `FixLoopWire_at2479` (FLW-007: merge-greediness)
+
+**Description**: Planar face with two inner loops positioned such that their geometric footprints intersect (hole1 at 20–40 mm, hole2 at 50–70 mm; overlap at midline). FixLoopWire merges intersecting loops but merge introduces tangent self-touch at boundary contact point.
+
+**Reproducer recipe**: Load Tfa078.stp; call ShapeFix_Face::FixLoopWire; expect loop merge at intersection boundary but merged wire self-touches at merge seam (u=45 mm).
+
+**Expected kernel behavior**: Kernel should detect intersecting loops and either: (a) reject merge and keep separate, or (b) merge with internal vertex split to eliminate tangency.
+
+**Expected validation**: Edge loop closure maintained; no gap-at-merge introduced; self-touch validation catches tangent point as potential singularity.
+
+---
+
+### Tfa079 — CheckSplittingVertices vertex-on-edge midspan
+
+**Category**: §12.3c Face Topology — ShapeAnalysis_CheckSmallFace Vertex Detection
+
+**Sources**: OCCT_HEAL_COVERAGE_V3.md `CheckSplittingVertices_at687` (line 754: vertex-to-edge projection within tolerance)
+
+**Description**: Planar face with T-vertex configuration: vertex at midpoint (50, 0) of edge from (0,0) to (100,0). Second inner loop with vertices at (50, -50), (50, -30), (50, -70) creates vertex-on-edge pattern. Detector should flag splitting vertex and recommend edge split.
+
+**Reproducer recipe**: Load Tfa079.stp; call ShapeAnalysis_CheckSmallFace::CheckSplittingVertices; expect report of vertex at parameter t=0.5 on edge e1; projection distance near-zero.
+
+**Expected kernel behavior**: Kernel should identify vertices within tolerance distance of edge midpoints; report (u, v, parameter_on_edge) triplets for all splitting vertices.
+
+**Expected validation**: Splitting vertex count > 0; parameter values in (0, 1) exclusive; distances below tolerance.
+
+---
+
+### Tfa080 — CheckTwisted normal-inversion
+
+**Category**: §12.3c Face Topology — ShapeAnalysis_CheckSmallFace Twist Detection
+
+**Sources**: OCCT_HEAL_COVERAGE_V3.md `CheckTwisted_at975` (line 1015: normal inversion scalar product negative)
+
+**Description**: B-spline surface with hyperbolic (saddle) geometry. Surface normal flips sign at (u=0.5, v=0.5) interior point due to zero Gaussian curvature. Face boundary rectangular but interior normal inversion indicates saddle twist where curvature changes sign.
+
+**Reproducer recipe**: Load Tfa080.stp; call ShapeAnalysis_CheckSmallFace::CheckTwisted; expect detection of normal inversion at center (u, v) parameters.
+
+**Expected kernel behavior**: Kernel should sample surface normals at interior grid points (u, v) ∈ (0,1)²; detect sign flip via scalar product < 0; report twist angle > 90°.
+
+**Expected validation**: Twist flag set to true; interior point count > threshold; at least one scalar product < 0 at non-boundary location.
+
 ### Hea016 — Empty solid output from STEP export of complex body, despite STL succeeding
 - **Category**: §12.3c faces / shape healing
 - **Sources**: FreeCAD #20396; bug-reporter language: "Models exported to STEP crash or produce empty objects", "appears to export fine but results in an empty object", "STL and 3MF export work, STEP doesn't".
@@ -21912,6 +22010,51 @@ they capture invariants shared by a family of healing methods. Filed under
 - **Reproducer recipe**: Load Tsh073.stp; invoke OCCT fixer Perform() on the shell; then invoke Perform() again without resetting context; observe that Face 2 is orientation-fixed twice, leaving the shell in an inconsistent state.
 - **Expected kernel behavior**: Kernel should either automatically reset context between calls or throw an error on second Perform() without explicit context clear; currently double-fix silently corrupts orientation.
 - **Expected validation**: `occt=unknown/unknown gmsh=unknown ifc=schema_n/a`
+
+### Tsh074 — Duplicate faces in shell
+
+- **Category**: §12.3a (shells)
+- **Sources**: OCCT method line ShapeFix_Shell.FixFaceOrientation:1440 (FixFaceOrientation_at1428)
+- **Description**: aMapAdded tracks duplicate geometry but only warns; duplicate ADVANCED_FACE entities with identical topology are processed independently, resulting in inconsistent outward orientation fixes during shell healing.
+- **Reproducer recipe**: Create a CLOSED_SHELL containing two ADVANCED_FACE entities with identical edge loops, vertices, and plane reference. Call ShapeFix_Shell.Perform(). Observe that FixFaceOrientation fixes one face but not the other, leaving inconsistent orientations.
+- **Expected kernel behavior**: Kernel should reject duplicate face detection or unify orientation across all geometry instances.
+- **Expected validation**: occt=unknown/unknown gmsh=unknown ifc=schema_n/a
+
+### Tsh075 — Non-orientable Möbius shell
+
+- **Category**: §12.3a (shells)
+- **Sources**: OCCT method line ShapeAnalysis_Shell.CheckOrientedShells:142 (CheckOrientedShells_at142)
+- **Description**: Orientation propagation fails to identify one-sided (non-orientable) surface arrangements. A shell with twisted topology escapes orientation checks, causing downstream healers to crash or produce corrupted geometry.
+- **Reproducer recipe**: Create an OPEN_SHELL with two ADVANCED_FACE entities sharing one edge but with a twist arrangement (both faces oriented forward across the shared edge, creating Möbius topology). Call ShapeAnalysis_Shell.CheckOrientedShells(). Healer crashes during propagation.
+- **Expected kernel behavior**: Kernel must detect non-orientable topology and either reject the shell or flag it for special handling.
+- **Expected validation**: occt=unknown/unknown gmsh=unknown ifc=schema_n/a
+
+### Tsh076 — Shell-count escalation on decomposition
+
+- **Category**: §12.3a (shells)
+- **Sources**: OCCT method line ShapeFix_Shell.Perform:102 (Perform_at102)
+- **Description**: Input shell decomposition by GetShells() creates 3+ closed sub-shells, escalating NbShells count unexpectedly. Downstream logic assuming single output shell breaks.
+- **Reproducer recipe**: Create a CLOSED_SHELL containing three disconnected cubes (three independent face clusters with no shared edges). Call ShapeFix_Shell.Perform(). Observe NbShells increases from 1 to 3, breaking orientation-fix logic that expects single shell.
+- **Expected kernel behavior**: Kernel must reconcile multi-shell output or emit error if input cannot be treated as single shell.
+- **Expected validation**: occt=unknown/unknown gmsh=unknown ifc=schema_n/a
+
+### Tsh077 — Empty CLOSED_SHELL
+
+- **Category**: §12.3a (shells)
+- **Sources**: OCCT method line ShapeAnalysis_Shell.LoadShells:46 (LoadShells_at46)
+- **Description**: LoadShells accepts CLOSED_SHELL with zero faces without reporting error. Empty shell silently passes validation and crashes downstream processors expecting face list.
+- **Reproducer recipe**: Create a CLOSED_SHELL with empty face aggregate: `#100=CLOSED_SHELL('empty',())`. Load via STEP reader. Call ShapeAnalysis_Shell.LoadShells(). Kernel silently accepts, no error reported.
+- **Expected kernel behavior**: Kernel must reject empty shell or emit clear validation error.
+- **Expected validation**: occt=unknown/unknown gmsh=unknown ifc=schema_n/a
+
+### Tsh078 — Möbius-strip orientation contradiction
+
+- **Category**: §12.3a (shells)
+- **Sources**: OCCT method line ShapeFix_Shell.FixFaceOrientation:1428 (FixFaceOrientation_at1428)
+- **Description**: Single-face shell with edge-loop twist creates orientation propagation contradiction. Normal direction reverses as loop is traversed, exposing intrinsic non-orientability. FixFaceOrientation fails to detect and crashes.
+- **Reproducer recipe**: Create an OPEN_SHELL with one ADVANCED_FACE whose edge loop has 4 edges forming a topological twist (edge sequence creates orientation flip around loop). Call ShapeFix_Shell.FixFaceOrientation(). Propagation detects contradictory orientation and crashes.
+- **Expected kernel behavior**: Kernel must detect non-orientable surface topology and either reject or flag for manual repair.
+- **Expected validation**: occt=unknown/unknown gmsh=unknown ifc=schema_n/a
 
 ### Gp040 — Pcurves emitted by default duplicate / contradict the surface 3D curve
 - **Category**: §12.2a pcurve defects (sub-class: writer-emitted pcurves disagree with 3D)

@@ -1,0 +1,102 @@
+ISO-10303-21;
+/* Tfa079 — ShapeAnalysis_CheckSmallFace.CheckSplittingVertices T-vertex
+ * Defect: face whose outer wire passes through a vertex (v_mid) that
+ * sits at the midspan of an adjacent inner-loop edge. T-vertex pattern:
+ * the outer-loop edge at (0,0)→(100,0) is geometrically met by an
+ * inner-wire edge endpoint at (50,0). The healer's
+ * CheckSplittingVertices should detect this midspan touch and split
+ * the outer edge to bind both topologies. */
+HEADER;
+FILE_DESCRIPTION(('Tfa079 - T-vertex at outer-edge midspan'),'2;1');
+FILE_NAME('Tfa079.stp','2026-06-16T00:00:00',('auto-generated'),(''),
+  'auto-generated','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+/* Planar host */
+#3=CARTESIAN_POINT('origin',(0.0,0.0,0.0));
+#4=DIRECTION('Z',(0.0,0.0,1.0));
+#5=DIRECTION('X',(1.0,0.0,0.0));
+#6=AXIS2_PLACEMENT_3D('placement',#3,#4,#5);
+#7=PLANE('base_plane',#6);
+/* Outer-wire corner vertices */
+#8=CARTESIAN_POINT('p1',(0.0,0.0,0.0));
+#9=CARTESIAN_POINT('p2',(100.0,0.0,0.0));
+#10=CARTESIAN_POINT('p3',(100.0,100.0,0.0));
+#11=CARTESIAN_POINT('p4',(0.0,100.0,0.0));
+#16=VERTEX_POINT('v1',#8);
+#17=VERTEX_POINT('v2',#9);
+#18=VERTEX_POINT('v3',#10);
+#19=VERTEX_POINT('v4',#11);
+/* The T-vertex itself: sits at the midspan of the outer-edge v1->v2 line. */
+#12=CARTESIAN_POINT('p_mid',(50.0,0.0,0.0));
+#20=VERTEX_POINT('v_mid',#12);
+/* An inner detour vertex so the inner wire can close back to v_mid. */
+#13=CARTESIAN_POINT('p_inner',(50.0,30.0,0.0));
+#21=VERTEX_POINT('v_inner',#13);
+/* Outer-edge directions + LINEs (sequence VECTOR before LINE). */
+#22=DIRECTION('d_bot',(1.0,0.0,0.0));
+#23=VECTOR('v_bot',#22,1.0);
+#24=LINE('line_bot',#8,#23);
+#25=DIRECTION('d_right',(0.0,1.0,0.0));
+#26=VECTOR('v_right',#25,1.0);
+#27=LINE('line_right',#9,#26);
+#28=DIRECTION('d_top',(-1.0,0.0,0.0));
+#29=VECTOR('v_top',#28,1.0);
+#30=LINE('line_top',#10,#29);
+#31=DIRECTION('d_left',(0.0,-1.0,0.0));
+#32=VECTOR('v_left',#31,1.0);
+#33=LINE('line_left',#11,#32);
+/* Outer wire edges (4 edges, closed at v1). */
+#34=EDGE_CURVE('e_bot',#16,#17,#24,.T.);
+#35=EDGE_CURVE('e_right',#17,#18,#27,.T.);
+#36=EDGE_CURVE('e_top',#18,#19,#30,.T.);
+#37=EDGE_CURVE('e_left',#19,#16,#33,.T.);
+/* Inner wire: a triangular loop touching the outer edge at v_mid
+ * (T-vertex defect target).  Edges: v_mid -> v_inner -> v_mid (closed
+ * via a single detour vertex; this is the smallest closed inner loop
+ * that touches the outer edge midspan). */
+#38=DIRECTION('d_in1',(0.0,1.0,0.0));
+#39=VECTOR('v_in1',#38,1.0);
+#40=LINE('line_in1',#12,#39);
+#41=DIRECTION('d_in2',(0.0,-1.0,0.0));
+#42=VECTOR('v_in2',#41,1.0);
+#43=LINE('line_in2',#13,#42);
+#44=EDGE_CURVE('e_in_up',#20,#21,#40,.T.);
+#45=EDGE_CURVE('e_in_dn',#21,#20,#43,.T.);
+/* Defect: v_mid (#20) lies on the geometric LINE of e_bot (#34) at
+ * its midspan (parameter 50 along a direction (1,0,0) starting at
+ * (0,0,0)). The outer-loop edge e_bot does NOT terminate at v_mid;
+ * the inner wire's e_in_up STARTS at v_mid. CheckSplittingVertices
+ * should detect this T-vertex and split e_bot at (50,0,0). */
+#46=ORIENTED_EDGE('oe_bot',*,*,#34,.T.);
+#47=ORIENTED_EDGE('oe_right',*,*,#35,.T.);
+#48=ORIENTED_EDGE('oe_top',*,*,#36,.T.);
+#49=ORIENTED_EDGE('oe_left',*,*,#37,.T.);
+#50=EDGE_LOOP('outer_loop',(#46,#47,#48,#49));
+#51=FACE_OUTER_BOUND('outer',#50,.T.);
+#52=ORIENTED_EDGE('oe_in_up',*,*,#44,.T.);
+#53=ORIENTED_EDGE('oe_in_dn',*,*,#45,.T.);
+#54=EDGE_LOOP('inner_loop',(#52,#53));
+#55=FACE_BOUND('inner',#54,.T.);
+#56=ADVANCED_FACE('face_t_vertex',(#51,#55),#7,.T.);
+#57=OPEN_SHELL('shell_t_vertex',(#56));
+/* PRODUCT chain */
+#9000=PRODUCT_CONTEXT('',#1,'mechanical');
+#9001=PRODUCT('Tfa079','Tfa079','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
+#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
+#9021=SHELL_BASED_SURFACE_MODEL('sbsm',(#57));
+#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#9010);
+#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+ENDSEC;
+END-ISO-10303-21;

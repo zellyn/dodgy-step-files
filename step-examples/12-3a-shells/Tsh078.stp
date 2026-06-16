@@ -1,0 +1,63 @@
+ISO-10303-21;
+/* Tsh078 - ShapeFix_Shell Möbius-strip detection in FixFaceOrientation
+ * Defect: Shell with single face where orientation propagation produces
+ * contradictory normals as the face is traversed. FixFaceOrientation
+ * fails to detect intrinsic non-orientability (one-sided surface) and
+ * crashes during propagation. Source: ShapeFix_Shell.FixFaceOrientation
+ * line 1428 (FixFaceOrientation_at1428). */
+HEADER;
+FILE_DESCRIPTION(('Tsh078 test case','Möbius-strip orientation contradiction'),'2;1');
+FILE_NAME('Tsh078.stp','2026-06-16T00:00:00',('auto-generated'),(''),'auto-generated','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+/* Möbius strip: single face with 4 edges; traversal creates orientation contradiction */
+#100=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#101=CARTESIAN_POINT('',(2.0,0.0,0.0));
+#102=CARTESIAN_POINT('',(2.0,1.0,0.0));
+#103=CARTESIAN_POINT('',(0.0,1.0,0.0));
+#104=CARTESIAN_POINT('',(0.0,1.0,0.5));
+#105=CARTESIAN_POINT('',(2.0,1.0,0.5));
+#110=VERTEX_POINT('',#100); #111=VERTEX_POINT('',#101);
+#112=VERTEX_POINT('',#102); #113=VERTEX_POINT('',#103);
+#114=VERTEX_POINT('',#104); #115=VERTEX_POINT('',#105);
+/* Surface is approximately a SURFACE_OF_REVOLUTION (Möbius topology) */
+#200=DIRECTION('',(0.0,1.0,0.0)); #201=DIRECTION('',(1.0,0.0,0.0));
+#210=AXIS2_PLACEMENT_3D('',#100,#200,#201); #220=PLANE('',#210);
+/* Four edges forming a strip; the twist creates non-orientability */
+#300=DIRECTION('',(1.0,0.0,0.0)); #301=VECTOR('',#300,2.0);
+#310=LINE('',#100,#301); #311=EDGE_CURVE('e0',#110,#111,#310,.T.);
+#312=DIRECTION('',(0.0,0.0,1.0)); #313=VECTOR('',#312,0.5);
+#320=LINE('',#101,#313); #321=EDGE_CURVE('e1',#111,#115,#320,.T.);
+#322=DIRECTION('',(-1.0,0.0,0.0)); #323=VECTOR('',#322,2.0);
+#330=LINE('',#105,#323); #331=EDGE_CURVE('e2_twist',#115,#114,#330,.T.);
+#332=DIRECTION('',(0.0,0.0,-1.0)); #333=VECTOR('',#332,0.5);
+#340=LINE('',#104,#333); #341=EDGE_CURVE('e3',#114,#113,#340,.T.);
+/* Defect: Edge loop has twist; traversing from #110->...->back to #113
+   produces orientation contradiction for a non-orientable surface */
+#400=ORIENTED_EDGE('',*,*,#311,.T.);
+#401=ORIENTED_EDGE('',*,*,#321,.T.);
+#402=ORIENTED_EDGE('',*,*,#331,.T.);
+#403=ORIENTED_EDGE('',*,*,#341,.T.);
+#404=EDGE_LOOP('',(#400,#401,#402,#403)); #405=FACE_OUTER_BOUND('',#404,.T.);
+#406=ADVANCED_FACE('mobius_face',(#405),#220,.T.);
+#500=OPEN_SHELL('mobius_shell',(#406));
+/* PRODUCT chain */
+#9000=PRODUCT_CONTEXT('',#1,'mechanical');
+#9001=PRODUCT('Tsh078','Tsh078','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
+#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
+#9021=SHELL_BASED_SURFACE_MODEL('sbsm',(#500));
+#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#9010);
+#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+ENDSEC;
+END-ISO-10303-21;
