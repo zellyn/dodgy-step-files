@@ -38,7 +38,7 @@ DATA;
 #61=CARTESIAN_POINT('',(0.0,0.0));
 #62=VECTOR('',#63,1.0);
 #63=DIRECTION('',(1.0,0.0));
-#70=WIRE('',()#40,#41));
+#70=(WIRE('',()#40,#41));
 #80=FACE('',#70,#50,.T.);
 #90=CLOSED_SHELL('',(#80));
 #9021=SHELL_BASED_SURFACE_MODEL('sbsm',(#90));

@@ -17,8 +17,8 @@
     },
     "12-3a-shells": {
       "accept": 168,
-      "accept_with_warnings": 66,
-      "reject": 26
+      "accept_with_warnings": 69,
+      "reject": 23
     },
     "12-11-adversarial": {
       "accept": 53,
@@ -42,8 +42,8 @@
     },
     "12-3b-wires": {
       "accept": 196,
-      "accept_with_warnings": 69,
-      "reject": 3
+      "accept_with_warnings": 72,
+      "reject": 0
     },
     "12-12-cross-product": {
       "accept": 26,
@@ -62,8 +62,8 @@
     },
     "12-4-tolerance": {
       "accept": 158,
-      "accept_with_warnings": 15,
-      "reject": 14
+      "accept_with_warnings": 19,
+      "reject": 10
     },
     "12-2a-pcurves": {
       "accept": 110,
@@ -72,8 +72,8 @@
     },
     "12-2c-surfaces": {
       "accept": 104,
-      "accept_with_warnings": 59,
-      "reject": 9
+      "accept_with_warnings": 63,
+      "reject": 5
     },
     "12-7-pmi": {
       "accept": 70,
@@ -235,13 +235,6 @@
     },
     {
       "section": "12-3a-shells",
-      "name": "Tsh179.stp",
-      "codes": [
-        "E_PAREN_NEGATIVE"
-      ]
-    },
-    {
-      "section": "12-3a-shells",
       "name": "Tsh033.stp",
       "codes": [
         "E_NO_DATA"
@@ -301,20 +294,6 @@
       "name": "Tsh035.stp",
       "codes": [
         "E_NO_DATA"
-      ]
-    },
-    {
-      "section": "12-3a-shells",
-      "name": "Tsh155.stp",
-      "codes": [
-        "E_PAREN_NEGATIVE"
-      ]
-    },
-    {
-      "section": "12-3a-shells",
-      "name": "Tsh154.stp",
-      "codes": [
-        "E_PAREN_NEGATIVE"
       ]
     },
     {
@@ -451,27 +430,6 @@
       ]
     },
     {
-      "section": "12-3b-wires",
-      "name": "Twi136.stp",
-      "codes": [
-        "E_PAREN_NEGATIVE"
-      ]
-    },
-    {
-      "section": "12-3b-wires",
-      "name": "Twi135.stp",
-      "codes": [
-        "E_PAREN_NEGATIVE"
-      ]
-    },
-    {
-      "section": "12-3b-wires",
-      "name": "Twi134.stp",
-      "codes": [
-        "E_PAREN_NEGATIVE"
-      ]
-    },
-    {
       "section": "12-2b-nurbs",
       "name": "Gn107.stp",
       "codes": [
@@ -564,20 +522,6 @@
     },
     {
       "section": "12-4-tolerance",
-      "name": "N084.stp",
-      "codes": [
-        "E_PAREN_NEGATIVE"
-      ]
-    },
-    {
-      "section": "12-4-tolerance",
-      "name": "N085.stp",
-      "codes": [
-        "E_PAREN_NEGATIVE"
-      ]
-    },
-    {
-      "section": "12-4-tolerance",
       "name": "N087.stp",
       "codes": [
         "E_NO_CLOSE"
@@ -591,31 +535,10 @@
       ]
     },
     {
-      "section": "12-4-tolerance",
-      "name": "N083.stp",
-      "codes": [
-        "E_PAREN_NEGATIVE"
-      ]
-    },
-    {
-      "section": "12-4-tolerance",
-      "name": "N081.stp",
-      "codes": [
-        "E_PAREN_NEGATIVE"
-      ]
-    },
-    {
       "section": "12-2c-surfaces",
       "name": "Gs087.stp",
       "codes": [
         "E_NO_CLOSE"
-      ]
-    },
-    {
-      "section": "12-2c-surfaces",
-      "name": "Gs118.stp",
-      "codes": [
-        "E_PAREN_NEGATIVE"
       ]
     },
     {
@@ -647,27 +570,6 @@
       ]
     },
     {
-      "section": "12-2c-surfaces",
-      "name": "Gs117.stp",
-      "codes": [
-        "E_PAREN_NEGATIVE"
-      ]
-    },
-    {
-      "section": "12-2c-surfaces",
-      "name": "Gs116.stp",
-      "codes": [
-        "E_PAREN_NEGATIVE"
-      ]
-    },
-    {
-      "section": "12-2c-surfaces",
-      "name": "Gs115.stp",
-      "codes": [
-        "E_PAREN_NEGATIVE"
-      ]
-    },
-    {
       "section": "12-7-pmi",
       "name": "Pmi125.stp",
       "codes": [
@@ -690,8 +592,8 @@
     "E_NO_DATA": 23,
     "E_NO_HEADER": 1,
     "E_FILE_DESC_ARITY": 2,
-    "E_PAREN_NEGATIVE": 15,
     "E_CLOSE_CASE": 1,
+    "E_PAREN_NEGATIVE": 1,
     "E_X4_NO_TERM": 1,
     "E_X4_BAD_LEN": 2,
     "E_X2_NO_TERM": 8,

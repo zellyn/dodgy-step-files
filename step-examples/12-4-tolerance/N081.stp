@@ -36,7 +36,7 @@ DATA;
 #63=DIRECTION('',(1.0,0.0));
 #70=EDGE_CURVE('edge_sameParam',#10,#11,#30,.T.);
 #71=(PCURVE_TOLERANCE(1.0E-6)PCURVE('',#50,#60));
-#80=WIRE('',()#40,#70));
+#80=(WIRE('',()#40,#70));
 #90=FACE('',#80,#50,.T.);
 #100=CLOSED_SHELL('',(#90));
 #9021=SHELL_BASED_SURFACE_MODEL('sbsm',(#100));

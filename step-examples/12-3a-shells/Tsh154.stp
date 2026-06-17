@@ -52,7 +52,7 @@ DATA;
 #121=CARTESIAN_POINT('',(10.,5.,0.));
 #122=DIRECTION('',(-1.,-1.,0.));
 #123=CARTESIAN_POINT('',(0.,5.,0.));
-#124=DIRECTION(''),(-.5.,0.,0.));
+#124=DIRECTION('',(-.5.,0.,0.));
 #150=FACE_OUTER_BOUND('',#151,.T.);
 #151=EDGE_LOOP('',(#152,#153,#154));
 #152=ORIENTED_EDGE('',*,*,#155,.T.);
