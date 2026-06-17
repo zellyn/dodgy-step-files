@@ -22,6 +22,16 @@ Rules
   ``axis`` (Z) and ``ref_direction`` (X) must be linearly independent.
   Parallel basis vectors collapse the placement.
 
+- **line-list-wrapped-args**: ``LINE('name', pnt_id, dir_id)`` takes
+  three space-separated arguments; the second and third must be entity
+  references, not a list. Synthesis-template bug from early N waves
+  produced ``LINE('name', (#pt, #vec))`` which is not valid Part-21.
+
+- **inline-instance-syntax**: ``#(...)`` anywhere in the body is not
+  valid Part-21. Entities must be top-level instances declared with
+  ``#N=Type(...);`` and referenced by id. Synthesis-template bug from
+  early N waves produced ``LINE('', #pt, #(VECTOR(...)))``.
+
 The rules are deliberately conservative; they only flag genuine spec
 violations, not anything that *might* be intentional. Each rule's
 exemption list excuses fixtures where the construction bug IS the
@@ -56,6 +66,12 @@ _RE_AXIS2 = re.compile(
     rb"#(\d+)\s*=\s*AXIS2_PLACEMENT_3D\s*\(\s*'[^']*'\s*,"
     rb"\s*#(\d+)\s*,\s*(?:#(\d+)|\$)\s*,\s*(?:#(\d+)|\$)"
 )
+# Match `#N=LINE('name', (#a, ...))` — args wrapped in a list, never valid.
+_RE_LINE_LIST_WRAPPED = re.compile(
+    rb"#(\d+)\s*=\s*LINE\s*\(\s*'[^']*'\s*,\s*\(\s*#\d+\s*,"
+)
+# Match `#(` anywhere — inline-instance syntax is not valid Part-21.
+_RE_INLINE_INSTANCE = re.compile(rb"#\(")
 
 
 # Exempt fixtures where the construction bug IS the documented defect.
@@ -80,6 +96,11 @@ EXEMPT_AXIS_REFDIR_PARALLEL = {
     "Pmi019",  # "view-up parallel to view-direction" (explicitly cited)
     "Xp016",   # AXIS2_PLACEMENT_3D referencing zero-magnitude direction twice
 }
+
+# LINE list-wrap and `#(...)` inline-instance are unambiguous Part-21
+# syntax errors; no catalog claim can legitimately require them.
+EXEMPT_LINE_LIST_WRAPPED: set[str] = set()
+EXEMPT_INLINE_INSTANCE: set[str] = set()
 
 
 def _parse_directions(body: bytes) -> dict[int, tuple[float, float, float]]:
@@ -150,6 +171,23 @@ def lint_one(entry: dict) -> list[str]:
                     f"#{axis2_id}=AXIS2_PLACEMENT_3D has parallel axis (#{axis_id}) "
                     f"and ref_direction (#{ref_id}); cross magnitude {cross_mag:.4f}"
                 )
+
+    # Rule 3: LINE with list-wrapped args
+    if eid not in EXEMPT_LINE_LIST_WRAPPED:
+        for m in _RE_LINE_LIST_WRAPPED.finditer(body):
+            rid = int(m.group(1))
+            issues.append(
+                f"#{rid}=LINE has list-wrapped args; LINE takes name, "
+                f"pnt_id, dir_id as three separate arguments"
+            )
+
+    # Rule 4: inline-instance syntax `#(...)`
+    if eid not in EXEMPT_INLINE_INSTANCE:
+        if _RE_INLINE_INSTANCE.search(body):
+            issues.append(
+                "body contains `#(` inline-instance syntax; entities must be "
+                "top-level `#N=Type(...);` declarations"
+            )
 
     return issues
 
