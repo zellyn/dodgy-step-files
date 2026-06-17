@@ -24676,6 +24676,23 @@ Three self-loop edges at vertex (Extent=6 after append). Extent>2 and isMultiVer
 ### Twi261 — dual-vertex-binding
 Three edges with V2 having three incident edges (Extent=3). Both V1 and V2 lists must be appended; asymmetric append loses degree count.
 
+## Wave 67A STEP Wire Fixtures
+
+### Twi262 — CheckOrder nullface
+ShapeAnalysis_Wire.CheckOrder silently skips validation when 2D mode requested but face context is null.
+
+### Twi263 — CheckSelfIntersection acyclic-crossing
+Wire with self-crossing edges in acyclic configuration; detection depends on segment traversal order.
+
+### Twi264 — FixConnected gap-skip
+Wire with vertex mismatch at edge junction; FixConnected skips repair when vertices within tolerance but unequal.
+
+### Twi265 — FixClosed endpoint-mismatch
+Wire open by small gap at closure; FixClosed misses repair when endpoint distance uses inconsistent precision.
+
+### Twi266 — FixGap3d parameter-discontinuity
+Wire with 3D curve reversing at edge junction; FixGap3d fails to detect reversals violating parametric continuity.
+
 ### Gs056 — `SURFACE_OF_REVOLUTION` of an ellipse around its own centre produces a degenerate surface
 - **Category**: §12.2c surface / curve degeneracies (sub-class: revolution of conic)
 - **Sources**: OCCT MANTIS#0027722; bug-reporter language: "STEP error for ellipse revol shape", "revolution of ellipse fails on import", "degenerate surface from ellipse-of-revolution". (OCCT MANTIS tracker 502 as of 2026-05-02)
@@ -25167,6 +25184,26 @@ BRepBuilderAPI_Sewing::AddFace does not validate non-null surface reference on A
 
 ### Gs163 — ShapeUpgrade large-pole B-spline threshold
 **Defect**: ShapeUpgrade observer tracks pole count exceeding 8192 (NbUPoles × NbVPoles) but threshold is hardcoded without justification. Surfaces near boundary not flagged; downstream algorithms may fail on unexpectedly large interpolation tasks.
+
+### Gs164 — BezierSurface pole extraction dispatch
+
+ShapeUpgrade_ShapeCopy dispatches pole extraction to BSplineSurface or BezierSurface. Missing mutual exclusion: surfaces classified as both offset-like and Bezier-like may be counted twice. Fixture: BEZIER_SURFACE 5x5 poles; observer myNbBezierSurf incremented exactly once.
+
+### Gs165 — OffsetSurface detection and collection mode
+
+ShapeUpgrade observer detects OffsetSurface via IsKind check; missing mode guard causes offset faces collected regardless of myOffsetSurfaceMode setting. Fixture: OFFSET_SURFACE 0.5 offset from PLANE_SURFACE; verify myNbOffsetSurf > 0 and collection behavior.
+
+### Gs166 — SurfaceOfRevolution V-closed seam edge gap
+
+ShapeAnalysis_Sewing.IsVClosedSurface checks V-parameter overlap on revolution surfaces. Edge pairs separated by gap > 0 may bypass overlap validation; no explicit distance check confirms closure. Fixture: SURFACE_OF_REVOLUTION with closed basis; separated edge U-parameters; verify V-closure validation.
+
+### Gs167 — RectangularTrimmedSurface null basis detection
+
+ShapeUpgrade_ShapeCopy calls BasisSurface() without null check. If basis is null (malformed), down_cast succeeds but result overwritten to null; downstream GeomAdaptor_Surface(null) invokes undefined behavior. Fixture: RECTANGULAR_TRIMMED_SURFACE with basis; verify null-safety on extraction.
+
+### Gs168 — B-spline C0 continuity asymmetric detection
+
+ShapeUpgrade observer flags C0 surfaces via !(IsCNu(1) && IsCNv(1)). Asymmetry: if U is C1 but V is C0, flag increments; if V is C1 and U is C0, detection may skip. Fixture: B-SPLINE_SURFACE C0 in U-direction (C1 in V); verify myNbC0Surfaces incremented.
 
 ### Ad117 — STEP reader crashes on minimal file with malformed `STYLED_ITEM`
 - **Category**: §12.11 adversarial / parser-robustness (sub-class: SEGV on style record)
@@ -28100,6 +28137,49 @@ Precision-equality guard absent: candidates differing by 1e-11 inserted as disti
 ### N150 — IsMergedClosed.v_overlap_negativity_test
 
 V-parameter gap detection missing: curves separated by 1.0 in V (gap beyond overlap tolerance) proceed to distInner/distOuter logic. dist<0 check omitted; non-overlapping geometries incorrectly merged on U-closed surfaces.
+
+### N151 — `BRepBuilderAPI_Sewing.SameParameterEdge.recursive-tolerance-comparison`
+
+**Axis**: tolerance monotonicity validation  
+**Defect**: Accept second attempt only if both SameParameter achieved AND tolerance improved (tolReached_2 < tolReached). Missing check causes worse-tolerance fallbacks.  
+**Reproducer**: First attempt tol=0.08 (good), second attempt tol=0.12 (worse). Without guard, worse result selected.  
+**Falsifiable**: Comparison ensures monotonic tolerance decrease across recursive attempts. Remove check; second worse result improperly accepted.
+
+---
+
+### N152 — `BRepBuilderAPI_Sewing.SameParameterEdge.location-transform-in-tolerance-eval`
+
+**Axis**: surface geometry transformation  
+**Defect**: Transform surface by location before D0 evaluation in tolerance computation. Omitting location transform yields false tolerance on untransformed surface.  
+**Reproducer**: Surface at origin, placement applied (+100mm Y). Compute tolerance with/without transform; difference ±0.001–0.01mm.  
+**Falsifiable**: D0 evaluation must use `aS->Transformed(loc2)` not raw `aS`. Without transform, distance computed to wrong reference surface.
+
+---
+
+### N153 — `BRepBuilderAPI_Sewing.SameParameterEdge.final-tolerance-validation`
+
+**Axis**: tolerance acceptance gate (secondary)  
+**Defect**: Nullify edge if final tolerance exceeds MaxTolerance (second validation gate at line 1180-1184). Bypass creation at line 1168 caught by final check.  
+**Reproducer**: Edge via bypass with tolEdge1=0.05, MaxTolerance=0.01. Final check nullifies; without check, invalid edge returned.  
+**Falsifiable**: Condition `tolEdge1 > MaxTolerance()` triggers `edge.Nullify()`. Remove check; bypass edges escape validation.
+
+---
+
+### N154 — `ShapeUpgrade_UnifySameDomain.MergeSubSeq.circle_spatial_closure_tolerance`
+
+**Axis**: topological vs. spatial closure identity  
+**Defect**: Fallback closure detection via spatial distance + per-vertex tolerance. Non-identical vertices within tolerance distance treated as closed.  
+**Reproducer**: Circle arc V0…V1: V0.IsSame(V1)=false but Pnt(V0).Distance(Pnt(V1))≈1e-8, myTolerance=1e-7. Without check: open chain; with: isClosed=true.  
+**Falsifiable**: Spatial distance threshold `aP0.SquareDistance(aP1) <= (aTol*aTol)` overrides topological identity. Omit check; non-identical endpoints treated as open.
+
+---
+
+### N155 — `ShapeAnalysis_CheckSmallFace.CheckPin.tolerance-fallback`
+
+**Axis**: precision contract validation  
+**Defect**: Falls back to default tolerance (1e-4) if myPrecision < 0 (invalid). Negative precision causes undefined comparison in sharpness tests.  
+**Reproducer**: CheckPin with myPrecision=-1. Without fallback: IsoStat uses invalid tolerance, spurious results. With fallback: toler=1e-4 guards comparisons.  
+**Falsifiable**: Guard `if (myPrecision < 0) toler = 1.e-4` prevents invalid tolerance propagation. Remove; negative precision passes through to undefined behavior.
 
 ### M161 — Reader does not validate cross-references; dangling references silently accepted
 - **Category**: §12.8 mixed / auxiliary (sub-class: missing input validation)

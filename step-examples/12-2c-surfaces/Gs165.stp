@@ -1,0 +1,80 @@
+ISO-10303-21;
+/* Gs165 - ShapeUpgrade_ShapeCopy: OffsetSurface detection and collection
+ *
+ * Defect: OffsetSurface IsKind check determines separate face accumulation.
+ * Missing mode guard: without myOffsetSurfaceMode check, offset faces
+ * collected regardless of mode setting. Result: unexpected faces in output.
+ *
+ * Reproducer: OFFSET_SURFACE with 0.5 offset from PLANE_SURFACE;
+ * verify myNbOffsetSurf > 0 and myOffsetSurfaceSec collection.
+ */
+HEADER;
+FILE_DESCRIPTION(('Gs165 test case','OffsetSurface detection and collection mode'),'2;1');
+FILE_NAME('Gs165.stp','2026-06-16T00:00:00',('zellyn@gmail.com'),'','auto-generated','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#11=DIRECTION('',(0.0,0.0,1.0));
+#12=DIRECTION('',(1.0,0.0,0.0));
+#13=AXIS2_PLACEMENT_3D('',#10,#11,#12);
+/* PLANE_SURFACE base */
+#20=PLANE_SURFACE('',#13);
+/* OFFSET_SURFACE with +0.5 offset */
+#21=OFFSET_SURFACE('',#20,0.5,.F.);
+#22=RECTANGULAR_TRIMMED_SURFACE('',#21,0.0,10.0,0.0,10.0,.T.,.T.);
+/* Vertices for edge loop */
+#50=CARTESIAN_POINT('',(1.0,1.0,0.5));
+#51=VERTEX_POINT('',#50);
+#52=CARTESIAN_POINT('',(9.0,1.0,0.5));
+#53=VERTEX_POINT('',#52);
+#54=CARTESIAN_POINT('',(9.0,9.0,0.5));
+#55=VERTEX_POINT('',#54);
+#56=CARTESIAN_POINT('',(1.0,9.0,0.5));
+#57=VERTEX_POINT('',#56);
+/* Edge 1 */
+#60=DIRECTION('',(1.0,0.0,0.0));
+#61=VECTOR('',#60,8.0);
+#62=LINE('',#50,#61);
+#63=EDGE_CURVE('',#51,#53,#62,.T.);
+#64=ORIENTED_EDGE('',*,*,#63,.T.);
+/* Edge 2 */
+#70=DIRECTION('',(0.0,1.0,0.0));
+#71=VECTOR('',#70,8.0);
+#72=LINE('',#52,#71);
+#73=EDGE_CURVE('',#53,#55,#72,.T.);
+#74=ORIENTED_EDGE('',*,*,#73,.T.);
+/* Edge 3 */
+#80=DIRECTION('',(-1.0,0.0,0.0));
+#81=VECTOR('',#80,8.0);
+#82=LINE('',#54,#81);
+#83=EDGE_CURVE('',#55,#57,#82,.T.);
+#84=ORIENTED_EDGE('',*,*,#83,.T.);
+/* Edge 4 */
+#90=DIRECTION('',(0.0,-1.0,0.0));
+#91=VECTOR('',#90,8.0);
+#92=LINE('',#56,#91);
+#93=EDGE_CURVE('',#57,#51,#92,.T.);
+#94=ORIENTED_EDGE('',*,*,#93,.T.);
+#95=EDGE_LOOP('',(#64,#74,#84,#94));
+#96=FACE_OUTER_BOUND('',#95,.T.);
+#97=ADVANCED_FACE('',(#96),#22,.T.);
+#200=OPEN_SHELL('',(#97));
+/* Product definition */
+#9000=PRODUCT_CONTEXT('',#1,'mechanical');
+#9001=PRODUCT('Gs165','Gs165','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
+#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
+#9022=GEOMETRICALLY_BOUNDED_SURFACE_SHAPE_REPRESENTATION('',(#200),#9010);
+#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+ENDSEC;
+END-ISO-10303-21;

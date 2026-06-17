@@ -1,0 +1,83 @@
+ISO-10303-21;
+/* Gs166 - ShapeAnalysis_Sewing: SurfaceOfRevolution V-closed seam edge
+ *
+ * Defect: IsVClosedSurface checks V-parameter overlap on revolution surface.
+ * Edge pair separated by gap > 0 may bypass overlap validation; no explicit
+ * distance check confirms closure. Result: false positive seam classification.
+ *
+ * Reproducer: SURFACE_OF_REVOLUTION with closed basis curve; two edges
+ * at separated U-parameters; verify V-closure validation and overlap detection.
+ */
+HEADER;
+FILE_DESCRIPTION(('Gs166 test case','SurfaceOfRevolution V-closed seam edge gap'),'2;1');
+FILE_NAME('Gs166.stp','2026-06-16T00:00:00',('zellyn@gmail.com'),'','auto-generated','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#11=DIRECTION('',(0.0,0.0,1.0));
+#12=DIRECTION('',(1.0,0.0,0.0));
+#13=AXIS2_PLACEMENT_3D('',#10,#11,#12);
+/* Basis curve for revolution: vertical line from z=1 to z=5, at radius 2 */
+#20=DIRECTION('',(0.0,0.0,1.0));
+#21=VECTOR('',#20,4.0);
+#22=LINE('',(CARTESIAN_POINT('',(2.0,0.0,1.0))),#21);
+/* SURFACE_OF_REVOLUTION around Z-axis */
+#23=AXIS1_PLACEMENT('',#10,#11);
+#24=SURFACE_OF_REVOLUTION('',#22,#23);
+#25=RECTANGULAR_TRIMMED_SURFACE('',#24,0.0,6.283185307,1.0,5.0,.T.,.T.);
+/* Vertices: separated U-parameters at opposite ends of closed V-range */
+#50=CARTESIAN_POINT('',(2.0,0.0,1.5));
+#51=VERTEX_POINT('',#50);
+#52=CARTESIAN_POINT('',(2.0,0.0,4.5));
+#53=VERTEX_POINT('',#52);
+#54=CARTESIAN_POINT('',(-2.0,0.0,4.5));
+#55=VERTEX_POINT('',#54);
+#56=CARTESIAN_POINT('',(-2.0,0.0,1.5));
+#57=VERTEX_POINT('',#56);
+/* Edge 1: U from 0 to pi, V from 1.5 to 4.5 */
+#60=DIRECTION('',(0.0,1.0,0.0));
+#61=VECTOR('',#60,3.0);
+#62=LINE('',#50,#61);
+#63=EDGE_CURVE('',#51,#53,#62,.T.);
+#64=ORIENTED_EDGE('',*,*,#63,.T.);
+/* Edge 2: U from pi to 2*pi, V from 4.5 back to 1.5 */
+#70=DIRECTION('',(0.0,-1.0,0.0));
+#71=VECTOR('',#70,3.0);
+#72=LINE('',#54,#71);
+#73=EDGE_CURVE('',#55,#57,#72,.T.);
+#74=ORIENTED_EDGE('',*,*,#73,.T.);
+/* Edge 3: connecting at U=2*pi (closure), short gap */
+#80=DIRECTION('',(1.0,0.0,0.0));
+#81=VECTOR('',#80,4.0);
+#82=LINE('',#56,#81);
+#83=EDGE_CURVE('',#57,#51,#82,.T.);
+#84=ORIENTED_EDGE('',*,*,#83,.T.);
+/* Edge 4: return edge U=pi */
+#90=DIRECTION('',(-1.0,0.0,0.0));
+#91=VECTOR('',#90,4.0);
+#92=LINE('',#54,#91);
+#93=EDGE_CURVE('',#55,#53,#92,.T.);
+#94=ORIENTED_EDGE('',*,*,#93,.T.);
+#95=EDGE_LOOP('',(#64,#74,#84,#94));
+#96=FACE_OUTER_BOUND('',#95,.T.);
+#97=ADVANCED_FACE('',(#96),#25,.T.);
+#200=OPEN_SHELL('',(#97));
+/* Product definition */
+#9000=PRODUCT_CONTEXT('',#1,'mechanical');
+#9001=PRODUCT('Gs166','Gs166','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
+#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
+#9022=GEOMETRICALLY_BOUNDED_SURFACE_SHAPE_REPRESENTATION('',(#200),#9010);
+#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+ENDSEC;
+END-ISO-10303-21;
