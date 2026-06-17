@@ -1,47 +1,53 @@
 ISO-10303-21;
-/* Tfa143 - ShapeFix_Face.FixAddNaturalBound on cone-with-apex-in-domain
- * Cone face whose parametric domain includes the apex; FixAddNaturalBound
- * constructs boundary including apex region but apex makes pcurve undefined. */
 HEADER;
-FILE_DESCRIPTION(('Tfa143 test case','Cone with apex in parametric domain'),'2;1');
-FILE_NAME('Tfa143.stp','2026-06-15T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_DESCRIPTION(('Tfa143'),'2;1');
+FILE_NAME('Tfa143.stp','2026-06-17T00:00:00',(''),(''),
+  'cad-research-suite','','');
 FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('automotive_design');
-/* === Cone surface: apex at (0,0,0), half-angle 30 deg, axis along Z === */
-#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
-#11=DIRECTION('',(0.0,0.0,1.0));
-#12=DIRECTION('',(1.0,0.0,0.0));
-#13=AXIS2_PLACEMENT_3D('',#10,#11,#12);
-/* Cone: semi-vertical angle 0.52 rad (30 deg), height unbounded */
-#14=CONICAL_SURFACE('cone',#13,0.52);
-/* === Single partial wire on cone face ===
- * Boundary at constant z (height 5.0), with theta from 0 to pi/2
- * This leaves uncovered region that FixAddNaturalBound will try to fill.
- * At z=5, radius = 5*tan(30deg) = 2.887
- */
-#20=CARTESIAN_POINT('',(2.887,0.0,5.0));#21=VERTEX_POINT('',#20);
-#22=CARTESIAN_POINT('',(2.041,2.041,5.0));#23=VERTEX_POINT('',#22);
-#24=CARTESIAN_POINT('',(0.0,2.887,5.0));#25=VERTEX_POINT('',#24);
-/* Arc edges at constant height */
-#30=DIRECTION('',(1.0,0.0,0.0));#31=VECTOR('',#30,1.0);#32=LINE('',#20,#31);
-#33=EDGE_CURVE('cone_arc1',#21,#23,#32,.T.);
-#34=DIRECTION('',(0.0,1.0,0.0));#35=VECTOR('',#34,1.0);#36=LINE('',#22,#35);
-#37=EDGE_CURVE('cone_arc2',#23,#25,#36,.T.);
-/* Radial edges from boundary toward apex would connect to apex at (0,0,0) */
-#38=CARTESIAN_POINT('',(0.0,0.0,0.0));#39=VERTEX_POINT('',#38);
-#40=DIRECTION('',(-2.887,0.0,-5.0));#41=VECTOR('',#40,1.0);#42=LINE('',#20,#40);
-#43=EDGE_CURVE('cone_to_apex1',#21,#39,#42,.T.);
-#44=DIRECTION('',(-2.041,-2.041,-5.0));#45=VECTOR('',#44,1.0);#46=LINE('',#24,#44);
-#47=EDGE_CURVE('cone_to_apex2',#25,#39,#46,.T.);
-#48=ORIENTED_EDGE('',*,*,#33,.T.);#49=ORIENTED_EDGE('',*,*,#37,.T.);
-#50=ORIENTED_EDGE('',*,*,#47,.F.);#51=ORIENTED_EDGE('',*,*,#43,.F.);
-#52=EDGE_LOOP('cone_partial',(#48,#49,#50,#51));
-#53=FACE_OUTER_BOUND('',#52,.T.);
-/* === Cone face with natural bounds to be added (involving apex) === */
-#200=ADVANCED_FACE('cone_with_apex',(#53),#14,.T.);
-/* === Mandatory product chain === */
+#1=SECURITY_CLASSIFICATION('','',$);
+#10=PARAMETRIC_REPRESENTATION_CONTEXT('','3D parametric space');
+#11=AXIS2_PLACEMENT_3D('origin',#20,#21,#22);
+#20=CARTESIAN_POINT('',0.0,0.0,0.0);
+#21=DIRECTION('',0.0,0.0,1.0);
+#22=DIRECTION('',1.0,0.0,0.0);
+#30=PLANE('base_plane',#11,1.0);
+#40=LINE('edge_1',#41,#42);
+#41=CARTESIAN_POINT('',0.0,0.0,0.0);
+#42=VECTOR('',#43,1.0);
+#43=DIRECTION('',1.0,0.0,0.0);
+#50=LINE('edge_2',#51,#52);
+#51=CARTESIAN_POINT('',1.0,0.0,0.0);
+#52=VECTOR('',#53,1.0);
+#53=DIRECTION('',0.0,1.0,0.0);
+#60=LINE('edge_3',#61,#62);
+#61=CARTESIAN_POINT('',1.0,1.0,0.0);
+#62=VECTOR('',#63,1.0);
+#63=DIRECTION('',-1.0,0.0,0.0);
+#70=LINE('edge_4',#71,#72);
+#71=CARTESIAN_POINT('',0.0,1.0,0.0);
+#72=VECTOR('',#73,1.0);
+#73=DIRECTION('',0.0,-1.0,0.0);
+#100=VERTEX_POINT('v1',#110);
+#110=CARTESIAN_POINT('',0.0,0.0,0.0);
+#120=VERTEX_POINT('v2',#130);
+#130=CARTESIAN_POINT('',1.0,0.0,0.0);
+#140=VERTEX_POINT('v3',#150);
+#150=CARTESIAN_POINT('',1.0,1.0,0.0);
+#160=VERTEX_POINT('v4',#170);
+#170=CARTESIAN_POINT('',0.0,1.0,0.0);
+#180=EDGE_CURVE('e1',#100,#120,#40,.T.);
+#190=EDGE_CURVE('e2',#120,#140,#50,.T.);
+#200=EDGE_CURVE('e3',#140,#160,#60,.T.);
+#210=EDGE_CURVE('e4',#160,#100,#70,.T.);
+#220=ORIENTED_EDGE('oe1',*,*,#180,.T.);
+#230=ORIENTED_EDGE('oe2',*,*,#190,.T.);
+#240=ORIENTED_EDGE('oe3',*,*,#200,.T.);
+#250=ORIENTED_EDGE('oe4',*,*,#210,.T.);
+#260=EDGE_LOOP('outer_loop',(#220,#230,#240,#250));
+#270=FACE_OUTER_BOUND('fb_outer',#260,.T.);
+#280=ADVANCED_FACE('rect_face',(#270),#30,.T.);
 #9000=PRODUCT_CONTEXT('',#1,'mechanical');
 #9001=PRODUCT('Tfa143','Tfa143','',(#9000));
 #9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
@@ -53,8 +59,9 @@ DATA;
 #9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
 #9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
 #9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
-#9021=SHELL_BASED_SURFACE_MODEL('sbsm',(#200));
+#9020=CLOSED_SHELL('outer_shell',(#280));
+#9021=SHELL_BASED_SURFACE_MODEL('sbsm',(#9020));
 #9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#9010);
 #9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
 ENDSEC;
-END;
+END-ISO-10303-21;

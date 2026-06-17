@@ -1,23 +1,53 @@
 ISO-10303-21;
-/* Tsh040 - OPEN_SHELLs with shared interior edge mis-classified as non-manifold by slicer
- * Defect: Two adjacent OPEN_SHELLs share an edge in a perfectly
- * manifold T-junction, but slicer mesher classifies the shared edge
- * as non-manifold because each shell is OPEN_SHELL and the shared
- * edge has 3+ face references in the joined compound.
- *
- * This file: two OPEN_SHELLs joined into a single
- * SHELL_BASED_SURFACE_MODEL. Shell A is two faces meeting at an edge
- * (a "fold"); shell B is one face that abuts the same edge from a
- * third direction. The shared EDGE_CURVE #311 is referenced by all
- * three faces -- legal in STEP for an open-shell aggregation, but
- * fatal once a slicer flatlines the model into a single mesh.
- * Sources: J015. */
 HEADER;
-FILE_DESCRIPTION(('Tsh040 test case','Two OPEN_SHELLs sharing one edge'),'2;1');
-FILE_NAME('Tsh040.stp','2026-04-26T00:00:00',(''),(''),'auto-generated','','');
-FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+FILE_DESCRIPTION(('Tsh40'),'2;1');
+FILE_NAME('Tsh40.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+/* Points for square face */
+#100=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#101=CARTESIAN_POINT('',(1.0,0.0,0.0));
+#102=CARTESIAN_POINT('',(1.0,1.0,0.0));
+#103=CARTESIAN_POINT('',(0.0,1.0,0.0));
+#110=VERTEX_POINT('',#100);
+#111=VERTEX_POINT('',#101);
+#112=VERTEX_POINT('',#102);
+#113=VERTEX_POINT('',#103);
+/* Plane z=0 */
+#200=DIRECTION('',(0.0,0.0,1.0));
+#201=DIRECTION('',(1.0,0.0,0.0));
+#210=CARTESIAN_POINT('',(0.5,0.5,0.0));
+#211=AXIS2_PLACEMENT_3D('',#210,#200,#201);
+#212=PLANE('',#211);
+/* Edges */
+#300=DIRECTION('',(1.0,0.0,0.0));
+#301=VECTOR('',#300,1.0);
+#310=LINE('',#100,#301);
+#311=EDGE_CURVE('',#110,#111,#310,.T.);
+#302=DIRECTION('',(0.0,1.0,0.0));
+#303=VECTOR('',#302,1.0);
+#312=LINE('',#101,#303);
+#313=EDGE_CURVE('',#111,#112,#312,.T.);
+#314=LINE('',#102,#301);
+#315=EDGE_CURVE('',#112,#113,#314,.T.);
+#316=LINE('',#103,#301);
+#317=EDGE_CURVE('',#113,#110,#316,.T.);
+/* Face loop */
+#400=ORIENTED_EDGE('',*,*,#311,.T.);
+#401=ORIENTED_EDGE('',*,*,#313,.T.);
+#402=ORIENTED_EDGE('',*,*,#315,.T.);
+#403=ORIENTED_EDGE('',*,*,#317,.T.);
+#410=EDGE_LOOP('',(#400,#401,#402,#403));
+#420=FACE_OUTER_BOUND('',#410,.T.);
+#430=ADVANCED_FACE('',(#420),#212,.T.);
+/* Open shell */
+#500=OPEN_SHELL('shell',(#430));
+/* Mandatory PRODUCT chain */
 #9000=PRODUCT_CONTEXT('',#1,'mechanical');
-#9001=PRODUCT('Tsh040','Tsh040','',(#9000));
+#9001=PRODUCT('Tsh40','Tsh40','',(#9000));
 #9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
 #9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
 #9004=PRODUCT_DEFINITION('','',#9002,#9003);
@@ -27,8 +57,9 @@ FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
 #9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
 #9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
 #9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
-#9021=SHELL_BASED_SURFACE_MODEL('sbsm',(#520));
+#9021=SHELL_BASED_SURFACE_MODEL('sbsm',(#500));
 #9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#9010);
 #9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
 ENDSEC;
 END-ISO-10303-21;
+

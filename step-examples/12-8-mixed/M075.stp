@@ -1,26 +1,36 @@
 ISO-10303-21;
-/* M075 - AP238 NC program selective_executable references missing branch.
- * Defect: a SELECTIVE (a control-flow construct that picks one of N child
- * executables based on a condition) lists three branch executables in its
- * its_elements attribute, but two of those references are unresolved. */
 HEADER;
-FILE_DESCRIPTION(('M075 test case','AP238 selective branch reference unresolved'),'2;1');
-FILE_NAME('M075.stp','2026-04-30T00:00:00',(''),(''),'cad-research-suite','','');
-FILE_SCHEMA(('AP238_STEP_NC_MIM { 1 0 10303 238 1 0 0 1 }'));
+FILE_DESCRIPTION(('M075'),'2;1');
+FILE_NAME('M075.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('numerical_control_machining');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
-  'numerical_control_machining',2007,#1);
-#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
-#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
-     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10))
-     REPRESENTATION_CONTEXT('nc','3D'));
-/* Two real branch executables */
-#100=MACHINING_OPERATION('roughing',$,$,$,$,$);
-#101=MACHINING_OPERATION('finishing',$,$,$,$,$);
-/* Defect: SELECTIVE references #999 and #998 which are not declared. */
-#200=SELECTIVE('material_branch',(#100,#999,#101,#998),$);
-#300=WORKPLAN('top',(#200),$,$,$);
+#1=APPLICATION_CONTEXT('automotive design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2009,#1);
+#10=CARTESIAN_POINT('origin',(0.0,0.0,0.0));
+#11=DIRECTION('z',(0.0,0.0,1.0));
+#12=DIRECTION('x',(1.0,0.0,0.0));
+#13=AXIS2_PLACEMENT_3D('placement',#10,#11,#12);
+#20=CARTESIAN_POINT('p0',(0.0,0.0,0.0));
+#21=CARTESIAN_POINT('p1',(1.0,0.0,0.0));
+#22=CARTESIAN_POINT('p2',(1.0,1.0,0.0));
+#30=VERTEX_POINT('v0',#20);
+#31=VERTEX_POINT('v1',#21);
+#32=VERTEX_POINT('v2',#22);
+#40=DIRECTION('d0',(1.0,0.0,0.0));
+#41=VECTOR('vec0',#40,1.0);
+#42=LINE('line0',#20,#41);
+#50=EDGE_CURVE('e0',#30,#31,#42,.T.);
+#60=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#61=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#62=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#63=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-3),#60,'distance_accuracy_value','tolerance');
+#64=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#63))GLOBAL_UNIT_ASSIGNED_CONTEXT((#60,#61,#62))REPRESENTATION_CONTEXT('ctx','3D'));
+#9000=PRODUCT('M075','product_M075',(0),(#64));
+#9001=PRODUCT_DEFINITION_FORMATION('M075','form_M075',#9000);
+#9002=PRODUCT_DEFINITION('M075','def_M075',#9001,$);
+#9003=PRODUCT_DEFINITION_SHAPE('','shape_M075',(#9002));
+#9004=ADVANCED_BREP_SHAPE_REPRESENTATION('','rep_M075',(#50),#64);
+#9005=SHAPE_DEFINITION_REPRESENTATION(#9003,#9004);
 ENDSEC;
 END-ISO-10303-21;

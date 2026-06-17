@@ -2,8 +2,8 @@
   "sections": {
     "12-3c-faces": {
       "accept": 117,
-      "accept_with_warnings": 122,
-      "reject": 17
+      "accept_with_warnings": 139,
+      "reject": 0
     },
     "12-6-assembly": {
       "accept": 73,
@@ -16,9 +16,9 @@
       "reject": 12
     },
     "12-3a-shells": {
-      "accept": 168,
+      "accept": 190,
       "accept_with_warnings": 69,
-      "reject": 23
+      "reject": 1
     },
     "12-11-adversarial": {
       "accept": 53,
@@ -36,9 +36,9 @@
       "reject": 16
     },
     "12-8-mixed": {
-      "accept": 153,
+      "accept": 157,
       "accept_with_warnings": 59,
-      "reject": 4
+      "reject": 0
     },
     "12-3b-wires": {
       "accept": 196,
@@ -51,9 +51,9 @@
       "reject": 5
     },
     "12-2b-nurbs": {
-      "accept": 39,
+      "accept": 44,
       "accept_with_warnings": 118,
-      "reject": 5
+      "reject": 0
     },
     "12-1c-syntax": {
       "accept": 35,
@@ -61,9 +61,9 @@
       "reject": 7
     },
     "12-4-tolerance": {
-      "accept": 158,
+      "accept": 168,
       "accept_with_warnings": 19,
-      "reject": 10
+      "reject": 0
     },
     "12-2a-pcurves": {
       "accept": 110,
@@ -71,14 +71,14 @@
       "reject": 0
     },
     "12-2c-surfaces": {
-      "accept": 104,
+      "accept": 109,
       "accept_with_warnings": 63,
-      "reject": 5
+      "reject": 0
     },
     "12-7-pmi": {
-      "accept": 70,
+      "accept": 72,
       "accept_with_warnings": 50,
-      "reject": 2
+      "reject": 0
     },
     "12-13-writer-pathology": {
       "accept": 41,
@@ -92,125 +92,6 @@
     }
   },
   "non_framing_rejects": [
-    {
-      "section": "12-3c-faces",
-      "name": "Tfa174.stp",
-      "codes": [
-        "E_NO_CLOSE"
-      ]
-    },
-    {
-      "section": "12-3c-faces",
-      "name": "Tfa175.stp",
-      "codes": [
-        "E_NO_CLOSE"
-      ]
-    },
-    {
-      "section": "12-3c-faces",
-      "name": "Tfa188.stp",
-      "codes": [
-        "E_NO_CLOSE"
-      ]
-    },
-    {
-      "section": "12-3c-faces",
-      "name": "Tfa189.stp",
-      "codes": [
-        "E_NO_CLOSE"
-      ]
-    },
-    {
-      "section": "12-3c-faces",
-      "name": "Tfa172.stp",
-      "codes": [
-        "E_NO_CLOSE"
-      ]
-    },
-    {
-      "section": "12-3c-faces",
-      "name": "Tfa173.stp",
-      "codes": [
-        "E_NO_CLOSE"
-      ]
-    },
-    {
-      "section": "12-3c-faces",
-      "name": "Tfa171.stp",
-      "codes": [
-        "E_NO_CLOSE"
-      ]
-    },
-    {
-      "section": "12-3c-faces",
-      "name": "Tfa062.stp",
-      "codes": [
-        "E_UNRESOLVED_REFS"
-      ]
-    },
-    {
-      "section": "12-3c-faces",
-      "name": "Tfa098.stp",
-      "codes": [
-        "E_UNRESOLVED_REFS"
-      ]
-    },
-    {
-      "section": "12-3c-faces",
-      "name": "Tfa141.stp",
-      "codes": [
-        "E_NO_CLOSE"
-      ]
-    },
-    {
-      "section": "12-3c-faces",
-      "name": "Tfa142.stp",
-      "codes": [
-        "E_NO_CLOSE"
-      ]
-    },
-    {
-      "section": "12-3c-faces",
-      "name": "Tfa143.stp",
-      "codes": [
-        "E_NO_CLOSE"
-      ]
-    },
-    {
-      "section": "12-3c-faces",
-      "name": "Tfa190.stp",
-      "codes": [
-        "E_NO_CLOSE"
-      ]
-    },
-    {
-      "section": "12-3c-faces",
-      "name": "Tfa187.stp",
-      "codes": [
-        "E_NO_CLOSE"
-      ]
-    },
-    {
-      "section": "12-3c-faces",
-      "name": "Tfa144.stp",
-      "codes": [
-        "E_NO_CLOSE"
-      ]
-    },
-    {
-      "section": "12-3c-faces",
-      "name": "Tfa145.stp",
-      "codes": [
-        "E_NO_CLOSE"
-      ]
-    },
-    {
-      "section": "12-3c-faces",
-      "name": "Tfa186.stp",
-      "codes": [
-        "E_NO_CLOSE"
-      ]
-    },
     {
       "section": "12-6-assembly",
       "name": "P002.stp",
@@ -228,163 +109,9 @@
     },
     {
       "section": "12-3a-shells",
-      "name": "Tsh024.stp",
-      "codes": [
-        "E_NO_DATA"
-      ]
-    },
-    {
-      "section": "12-3a-shells",
-      "name": "Tsh033.stp",
-      "codes": [
-        "E_NO_DATA"
-      ]
-    },
-    {
-      "section": "12-3a-shells",
-      "name": "Tsh027.stp",
-      "codes": [
-        "E_NO_DATA"
-      ]
-    },
-    {
-      "section": "12-3a-shells",
-      "name": "Tsh032.stp",
-      "codes": [
-        "E_NO_DATA"
-      ]
-    },
-    {
-      "section": "12-3a-shells",
-      "name": "Tsh036.stp",
-      "codes": [
-        "E_NO_DATA"
-      ]
-    },
-    {
-      "section": "12-3a-shells",
-      "name": "Tsh022.stp",
-      "codes": [
-        "E_NO_DATA"
-      ]
-    },
-    {
-      "section": "12-3a-shells",
-      "name": "Tsh023.stp",
-      "codes": [
-        "E_NO_DATA"
-      ]
-    },
-    {
-      "section": "12-3a-shells",
-      "name": "Tsh037.stp",
-      "codes": [
-        "E_NO_DATA"
-      ]
-    },
-    {
-      "section": "12-3a-shells",
-      "name": "Tsh021.stp",
-      "codes": [
-        "E_NO_DATA"
-      ]
-    },
-    {
-      "section": "12-3a-shells",
-      "name": "Tsh035.stp",
-      "codes": [
-        "E_NO_DATA"
-      ]
-    },
-    {
-      "section": "12-3a-shells",
-      "name": "Tsh020.stp",
-      "codes": [
-        "E_NO_DATA"
-      ]
-    },
-    {
-      "section": "12-3a-shells",
       "name": "Bo002.stp",
       "codes": [
         "E_UNRESOLVED_REFS"
-      ]
-    },
-    {
-      "section": "12-3a-shells",
-      "name": "Tsh044.stp",
-      "codes": [
-        "E_NO_DATA"
-      ]
-    },
-    {
-      "section": "12-3a-shells",
-      "name": "Tsh041.stp",
-      "codes": [
-        "E_NO_DATA"
-      ]
-    },
-    {
-      "section": "12-3a-shells",
-      "name": "Tsh135.stp",
-      "codes": [
-        "E_NO_CLOSE"
-      ]
-    },
-    {
-      "section": "12-3a-shells",
-      "name": "Tsh134.stp",
-      "codes": [
-        "E_NO_CLOSE"
-      ]
-    },
-    {
-      "section": "12-3a-shells",
-      "name": "Tsh040.stp",
-      "codes": [
-        "E_NO_DATA"
-      ]
-    },
-    {
-      "section": "12-3a-shells",
-      "name": "Tsh136.stp",
-      "codes": [
-        "E_NO_CLOSE"
-      ]
-    },
-    {
-      "section": "12-3a-shells",
-      "name": "Tsh137.stp",
-      "codes": [
-        "E_NO_CLOSE"
-      ]
-    },
-    {
-      "section": "12-3a-shells",
-      "name": "Tsh043.stp",
-      "codes": [
-        "E_NO_DATA"
-      ]
-    },
-    {
-      "section": "12-3a-shells",
-      "name": "Tsh138.stp",
-      "codes": [
-        "E_NO_CLOSE"
-      ]
-    },
-    {
-      "section": "12-3a-shells",
-      "name": "Tsh039.stp",
-      "codes": [
-        "E_NO_DATA"
-      ]
-    },
-    {
-      "section": "12-3a-shells",
-      "name": "Tsh028.stp",
-      "codes": [
-        "E_NO_DATA"
       ]
     },
     {
@@ -400,196 +127,14 @@
       "codes": [
         "E_UNRESOLVED_REFS"
       ]
-    },
-    {
-      "section": "12-8-mixed",
-      "name": "M136.stp",
-      "codes": [
-        "E_UNRESOLVED_REFS"
-      ]
-    },
-    {
-      "section": "12-8-mixed",
-      "name": "M087.stp",
-      "codes": [
-        "E_UNRESOLVED_REFS"
-      ]
-    },
-    {
-      "section": "12-8-mixed",
-      "name": "M075.stp",
-      "codes": [
-        "E_UNRESOLVED_REFS"
-      ]
-    },
-    {
-      "section": "12-8-mixed",
-      "name": "M161.stp",
-      "codes": [
-        "E_UNRESOLVED_REFS"
-      ]
-    },
-    {
-      "section": "12-2b-nurbs",
-      "name": "Gn107.stp",
-      "codes": [
-        "E_UNRESOLVED_REFS"
-      ]
-    },
-    {
-      "section": "12-2b-nurbs",
-      "name": "Gn106.stp",
-      "codes": [
-        "E_UNRESOLVED_REFS"
-      ]
-    },
-    {
-      "section": "12-2b-nurbs",
-      "name": "Gn104.stp",
-      "codes": [
-        "E_UNRESOLVED_REFS"
-      ]
-    },
-    {
-      "section": "12-2b-nurbs",
-      "name": "Gn105.stp",
-      "codes": [
-        "E_UNRESOLVED_REFS"
-      ]
-    },
-    {
-      "section": "12-2b-nurbs",
-      "name": "Gn108.stp",
-      "codes": [
-        "E_UNRESOLVED_REFS"
-      ]
-    },
-    {
-      "section": "12-4-tolerance",
-      "name": "N112.stp",
-      "codes": [
-        "E_NO_CLOSE"
-      ]
-    },
-    {
-      "section": "12-4-tolerance",
-      "name": "N113.stp",
-      "codes": [
-        "E_NO_CLOSE"
-      ]
-    },
-    {
-      "section": "12-4-tolerance",
-      "name": "N111.stp",
-      "codes": [
-        "E_NO_CLOSE"
-      ]
-    },
-    {
-      "section": "12-4-tolerance",
-      "name": "N114.stp",
-      "codes": [
-        "E_NO_CLOSE"
-      ]
-    },
-    {
-      "section": "12-4-tolerance",
-      "name": "N115.stp",
-      "codes": [
-        "E_NO_CLOSE"
-      ]
-    },
-    {
-      "section": "12-4-tolerance",
-      "name": "N088.stp",
-      "codes": [
-        "E_NO_CLOSE"
-      ]
-    },
-    {
-      "section": "12-4-tolerance",
-      "name": "N089.stp",
-      "codes": [
-        "E_NO_CLOSE"
-      ]
-    },
-    {
-      "section": "12-4-tolerance",
-      "name": "N090.stp",
-      "codes": [
-        "E_NO_CLOSE"
-      ]
-    },
-    {
-      "section": "12-4-tolerance",
-      "name": "N087.stp",
-      "codes": [
-        "E_NO_CLOSE"
-      ]
-    },
-    {
-      "section": "12-4-tolerance",
-      "name": "N086.stp",
-      "codes": [
-        "E_NO_CLOSE"
-      ]
-    },
-    {
-      "section": "12-2c-surfaces",
-      "name": "Gs087.stp",
-      "codes": [
-        "E_NO_CLOSE"
-      ]
-    },
-    {
-      "section": "12-2c-surfaces",
-      "name": "Gs086.stp",
-      "codes": [
-        "E_NO_CLOSE"
-      ]
-    },
-    {
-      "section": "12-2c-surfaces",
-      "name": "Gs084.stp",
-      "codes": [
-        "E_NO_CLOSE"
-      ]
-    },
-    {
-      "section": "12-2c-surfaces",
-      "name": "Gs085.stp",
-      "codes": [
-        "E_NO_CLOSE"
-      ]
-    },
-    {
-      "section": "12-2c-surfaces",
-      "name": "Gs088.stp",
-      "codes": [
-        "E_NO_CLOSE"
-      ]
-    },
-    {
-      "section": "12-7-pmi",
-      "name": "Pmi125.stp",
-      "codes": [
-        "E_UNRESOLVED_REFS"
-      ]
-    },
-    {
-      "section": "12-7-pmi",
-      "name": "Pmi106.stp",
-      "codes": [
-        "E_UNRESOLVED_REFS"
-      ]
     }
   ],
   "error_codes": {
-    "E_NO_CLOSE": 41,
-    "E_UNRESOLVED_REFS": 28,
     "E_X2_NON_HEX": 8,
     "E_X2_BAD_LEN": 5,
-    "E_NO_DATA": 23,
+    "E_UNRESOLVED_REFS": 15,
+    "E_NO_DATA": 6,
+    "E_NO_CLOSE": 6,
     "E_NO_HEADER": 1,
     "E_FILE_DESC_ARITY": 2,
     "E_CLOSE_CASE": 1,
@@ -609,7 +154,7 @@
     "E_REAL_NO_DOT": 1
   },
   "warning_codes": {
-    "W_FORWARD_REF": 738,
+    "W_FORWARD_REF": 726,
     "W_COMPLEX_ORDER": 57,
     "W_DUP_REF": 27,
     "W_BARE_BACKSLASH": 115,

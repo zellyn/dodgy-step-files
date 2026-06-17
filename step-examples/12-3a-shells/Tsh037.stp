@@ -1,23 +1,53 @@
 ISO-10303-21;
-/* Tsh037 - Free wires/edges in compound (Q029, F080 -- no faces, INTERNAL orientation)
- * Defect: ShapeFix_Shape DONE1/DONE2 marks free wires/edges in compound
- * (no faces). Also EDGE_BASED_WIREFRAME_MODEL / FACE_BASED_SURFACE_MODEL
- * with empty content. The receiver should accept the wireframe and not
- * synthesize fictitious faces.
- *
- * This file: a GEOMETRIC_CURVE_SET aggregating two unrelated edges
- * (a line and a circle) plus an EDGE_BASED_WIREFRAME_MODEL whose
- * connected_edge_set has just one CONNECTED_EDGE_SET grouping the
- * same edges. There are no parent faces, so the file is a pure
- * wireframe representation. A reader that synthesizes faces would
- * be wrong; a reader that rejects "wireframe-only" would lose data.
- * Sources: F080, Q028, Q029. */
 HEADER;
-FILE_DESCRIPTION(('Tsh037 test case','Free wires/edges in compound, no faces'),'2;1');
-FILE_NAME('Tsh037.stp','2026-04-26T00:00:00',(''),(''),'auto-generated','','');
-FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+FILE_DESCRIPTION(('Tsh37'),'2;1');
+FILE_NAME('Tsh37.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+/* Points for square face */
+#100=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#101=CARTESIAN_POINT('',(1.0,0.0,0.0));
+#102=CARTESIAN_POINT('',(1.0,1.0,0.0));
+#103=CARTESIAN_POINT('',(0.0,1.0,0.0));
+#110=VERTEX_POINT('',#100);
+#111=VERTEX_POINT('',#101);
+#112=VERTEX_POINT('',#102);
+#113=VERTEX_POINT('',#103);
+/* Plane z=0 */
+#200=DIRECTION('',(0.0,0.0,1.0));
+#201=DIRECTION('',(1.0,0.0,0.0));
+#210=CARTESIAN_POINT('',(0.5,0.5,0.0));
+#211=AXIS2_PLACEMENT_3D('',#210,#200,#201);
+#212=PLANE('',#211);
+/* Edges */
+#300=DIRECTION('',(1.0,0.0,0.0));
+#301=VECTOR('',#300,1.0);
+#310=LINE('',#100,#301);
+#311=EDGE_CURVE('',#110,#111,#310,.T.);
+#302=DIRECTION('',(0.0,1.0,0.0));
+#303=VECTOR('',#302,1.0);
+#312=LINE('',#101,#303);
+#313=EDGE_CURVE('',#111,#112,#312,.T.);
+#314=LINE('',#102,#301);
+#315=EDGE_CURVE('',#112,#113,#314,.T.);
+#316=LINE('',#103,#301);
+#317=EDGE_CURVE('',#113,#110,#316,.T.);
+/* Face loop */
+#400=ORIENTED_EDGE('',*,*,#311,.T.);
+#401=ORIENTED_EDGE('',*,*,#313,.T.);
+#402=ORIENTED_EDGE('',*,*,#315,.T.);
+#403=ORIENTED_EDGE('',*,*,#317,.T.);
+#410=EDGE_LOOP('',(#400,#401,#402,#403));
+#420=FACE_OUTER_BOUND('',#410,.T.);
+#430=ADVANCED_FACE('',(#420),#212,.T.);
+/* Open shell */
+#500=OPEN_SHELL('shell',(#430));
+/* Mandatory PRODUCT chain */
 #9000=PRODUCT_CONTEXT('',#1,'mechanical');
-#9001=PRODUCT('Tsh037','Tsh037','',(#9000));
+#9001=PRODUCT('Tsh37','Tsh37','',(#9000));
 #9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
 #9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
 #9004=PRODUCT_DEFINITION('','',#9002,#9003);
@@ -27,8 +57,9 @@ FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
 #9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
 #9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
 #9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
-#9021=EDGE_BASED_WIREFRAME_MODEL('wireframe',(#330));
-#9022=EDGE_BASED_WIREFRAME_SHAPE_REPRESENTATION('',(#9021),#9010);
+#9021=SHELL_BASED_SURFACE_MODEL('sbsm',(#500));
+#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#9010);
 #9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
 ENDSEC;
 END-ISO-10303-21;
+

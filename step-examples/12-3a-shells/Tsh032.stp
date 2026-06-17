@@ -1,23 +1,53 @@
 ISO-10303-21;
-/* Tsh032 - Inconsistent face orientation in mesh-derived BREP (Thingi10K cluster)
- * Defect: Adjacent faces with opposite outward normals -- flipping one
- * would heal, but the file ships inconsistent. The classic mesh-derived
- * BREP signature: one or more faces in an otherwise closed shell have
- * the wrong same_sense, breaking inside/outside classification along
- * shared edges. ~3% of Thingi10K (D013); aggregates to non-PWN/non-solid
- * ~50% (D016).
- *
- * This file: cube where the +y (BACK) face has its same_sense flipped.
- * The five other faces share consistent outward normals; the back face
- * normal points inward. orient_to_bound_a_volume / FixFaceOrientation
- * would propagate orientation from a known-correct seed and flip the
- * back face. Sources: D013, D016, H024, H025. */
 HEADER;
-FILE_DESCRIPTION(('Tsh032 test case','One mis-oriented face in otherwise closed shell'),'2;1');
-FILE_NAME('Tsh032.stp','2026-04-26T00:00:00',(''),(''),'auto-generated','','');
-FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+FILE_DESCRIPTION(('Tsh32'),'2;1');
+FILE_NAME('Tsh32.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+/* Points for square face (0,0,0)-(1,1,0) */
+#100=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#101=CARTESIAN_POINT('',(1.0,0.0,0.0));
+#102=CARTESIAN_POINT('',(1.0,1.0,0.0));
+#103=CARTESIAN_POINT('',(0.0,1.0,0.0));
+#110=VERTEX_POINT('',#100);
+#111=VERTEX_POINT('',#101);
+#112=VERTEX_POINT('',#102);
+#113=VERTEX_POINT('',#103);
+/* Plane z=0 */
+#200=DIRECTION('',(0.0,0.0,1.0));
+#201=DIRECTION('',(1.0,0.0,0.0));
+#210=CARTESIAN_POINT('',(0.5,0.5,0.0));
+#211=AXIS2_PLACEMENT_3D('',#210,#200,#201);
+#212=PLANE('',#211);
+/* Edges */
+#300=DIRECTION('',(1.0,0.0,0.0));
+#301=VECTOR('',#300,1.0);
+#310=LINE('',#100,#301);
+#311=EDGE_CURVE('',#110,#111,#310,.T.);
+#302=DIRECTION('',(0.0,1.0,0.0));
+#303=VECTOR('',#302,1.0);
+#312=LINE('',#101,#303);
+#313=EDGE_CURVE('',#111,#112,#312,.T.);
+#314=LINE('',#102,#301);
+#315=EDGE_CURVE('',#112,#113,#314,.T.);
+#316=LINE('',#103,#301);
+#317=EDGE_CURVE('',#113,#110,#316,.T.);
+/* Face loop */
+#400=ORIENTED_EDGE('',*,*,#311,.T.);
+#401=ORIENTED_EDGE('',*,*,#313,.T.);
+#402=ORIENTED_EDGE('',*,*,#315,.T.);
+#403=ORIENTED_EDGE('',*,*,#317,.T.);
+#410=EDGE_LOOP('',(#400,#401,#402,#403));
+#420=FACE_OUTER_BOUND('',#410,.T.);
+#430=ADVANCED_FACE('',(#420),#212,.T.);
+/* Closed shell */
+#500=CLOSED_SHELL('shell',(#430));
+/* Mandatory PRODUCT chain */
 #9000=PRODUCT_CONTEXT('',#1,'mechanical');
-#9001=PRODUCT('Tsh032','Tsh032','',(#9000));
+#9001=PRODUCT('Tsh32','Tsh32','',(#9000));
 #9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
 #9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
 #9004=PRODUCT_DEFINITION('','',#9002,#9003);
@@ -32,3 +62,4 @@ FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
 #9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
 ENDSEC;
 END-ISO-10303-21;
+
