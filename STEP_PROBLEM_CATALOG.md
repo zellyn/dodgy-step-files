@@ -24123,6 +24123,45 @@ Wire has a 3D gap at a junction (endpoints separated by ~1e-8, within tolerance)
 - **Fixture path**: step-examples/12-3b-wires/Twi241.stp
 - **Fixture kind**: scaffold
 
+# Wave 56B: Wire Prefix Fixtures (Twi242–Twi246)
+
+Geometric defects in wire topology and edge coherence.
+
+### Twi242 — ShapeAnalysis_Wire.CheckOrder
+- **Defect**: Edge orientation reversal breaks traversal order
+- **Geometry**: Closed EDGE_LOOP with reversed edge (#52) that breaks sequential traversal
+- **Test axiom**: CheckOrder detects non-linear topology in wire where one edge opposes expected direction
+- **Repair entry**: ShapeFix_Wire.FixReorder should reorient edges to restore consistency
+- **Fixture kind**: Standard STEP
+
+### Twi243 — ShapeAnalysis_Wire.CheckConnected
+- **Defect**: Sharp discontinuity at junction (non-smooth tangent transition)
+- **Geometry**: Closed EDGE_LOOP with 90° kink at shared vertex (edges form square; tangent direction inverts at each corner)
+- **Test axiom**: CheckConnected flags discontinuous tangent; FixConnected may blend or split at sharp angle
+- **Repair entry**: ShapeFix_Wire.FixConnected detects and addresses tangent discontinuity
+- **Fixture kind**: Standard STEP
+
+### Twi244 — ShapeAnalysis_Wire.CheckSmall
+- **Defect**: Degenerate zero-length edge in closed loop
+- **Geometry**: EDGE_LOOP contains edge #52 with magnitude 0.00001 (far below tolerance), linking same vertex
+- **Test axiom**: CheckSmall flags sub-tolerance edges; FixSmall removes them
+- **Repair entry**: ShapeFix_Wire.FixSmall must identify and suppress degenerate edge
+- **Fixture kind**: Standard STEP
+
+### Twi245 — ShapeAnalysis_Wire closure gap
+- **Defect**: EDGE_LOOP topology declares closed but 3D geometry has gap at closure point
+- **Geometry**: EDGE_LOOP has 4 edges; last edge ends at (0.0, 0.05, 0.0) while first edge starts at (0.0, 0.0, 0.0) — 0.05 mm gap violates geometric closure despite topological closure claim
+- **Test axiom**: Wire validation detects geometric gap; fix must insert bridge or adjust endpoint
+- **Repair entry**: ShapeFix_Wire.FixSeam or FixConnected detects and repairs closure gap
+- **Fixture kind**: Standard STEP
+
+### Twi246 — ShapeAnalysis_Wire.CheckSameParameter
+- **Defect**: Multiple edges share same curve (overlapping geometry)
+- **Geometry**: Edges #53, #54, and #50 all reference same LINE (#10); edges share overlapping 3D segments
+- **Test axiom**: CheckSameParameter or topological analysis flags edge multiplicity; ambiguous parametrization
+- **Repair entry**: ShapeFix_Wire.FixSameParameter or Merging detects overlapped curve and flags for split/merge
+- **Fixture kind**: Standard STEP
+
 ### Gs056 — `SURFACE_OF_REVOLUTION` of an ellipse around its own centre produces a degenerate surface
 - **Category**: §12.2c surface / curve degeneracies (sub-class: revolution of conic)
 - **Sources**: OCCT MANTIS#0027722; bug-reporter language: "STEP error for ellipse revol shape", "revolution of ellipse fails on import", "degenerate surface from ellipse-of-revolution". (OCCT MANTIS tracker 502 as of 2026-05-02)
@@ -25474,6 +25513,56 @@ Compound with nested shell references. LoadShells() recursion incomplete when de
 - **Fixture path**: step-examples/12-3a-shells/Tsh193.stp
 - **Fixture kind**: scaffold
 
+### Tsh194 — ShapeAnalysis_Shell.BadEdges uninitialized extent
+- **Category**: §12.3a shells (sub-class: initialization-order; lazy-init)
+- **Sources**: OCCT/ShapeAnalysis_Shell (line 283)
+- **Description**: BadEdges() returns myBad compound without validating completion of Perform(). If called before analysis finishes, compound uninitialized, causing undefined Extent() behavior. Manifests as lost or spurious bad-edge reports.
+- **Expected kernel behavior**: heal (reject until validated)
+- **Notes**: lazy-init, return-before-init, uninitialized compound
+- **Model impact**: Shell read with geometry containing degenerate edges; attempting BadEdges() query before Perform completes yields undefined extent
+- **Fixture path**: step-examples/12-3a-shells/Tsh194.stp
+- **Fixture kind**: scaffold
+
+### Tsh195 — ShapeFix_Shell.FixFaceOrientation duplicate faces undetected
+- **Category**: §12.3a shells (sub-class: duplicate_mutation)
+- **Sources**: OCCT/ShapeFix_Shell (line 1440)
+- **Description**: Shell containing two identical faces. FixFaceOrientation flips one but aMapAdded only warns; duplicate faces processed independently. Result: inconsistent outward-normal assignments, corrupting shell topology.
+- **Expected kernel behavior**: heal (reject duplicates or enforce consistency)
+- **Notes**: duplicate_mutation, aMapAdded tracking failure, independent orientation fixes
+- **Model impact**: Reading shell with duplicate faces produces faces with opposing normals
+- **Fixture path**: step-examples/12-3a-shells/Tsh195.stp
+- **Fixture kind**: scaffold
+
+### Tsh196 — ShapeFix_Shell.FixFaceOrientation multi-connected edge unbounded loop
+- **Category**: §12.3a shells (sub-class: multiconnect_edge_loop_unbounded)
+- **Sources**: OCCT/ShapeFix_Shell (line 1428)
+- **Description**: Face with edge appearing more than twice in edge loop. FixFaceOrientation cannot determine loop closure; produces malformed FACE_OUTER_BOUND. Edge traversal unbounded.
+- **Expected kernel behavior**: heal (detect and remove or validate closure)
+- **Notes**: unbounded traversal, multiconnected edge, loop-closure failure
+- **Model impact**: Face with repeated edges produces undefined outer-bound semantics
+- **Fixture path**: step-examples/12-3a-shells/Tsh196.stp
+- **Fixture kind**: scaffold
+
+### Tsh197 — ShapeFix_Shell.FixFaceOrientation shells extraction loss
+- **Category**: §12.3a shells (sub-class: shells_extraction_loss)
+- **Sources**: OCCT/ShapeFix_Shell (line 1428)
+- **Description**: Compound with multiple shells; only first shell extracted for FixFaceOrientation. Remaining shells skipped, losing structural information. Shell-based model degrades.
+- **Expected kernel behavior**: heal (process all shells)
+- **Notes**: shells extraction loss, coverage completeness, multi-shell compound
+- **Model impact**: Reading compound with two shells; only first undergoes orientation repair; second shell discarded
+- **Fixture path**: step-examples/12-3a-shells/Tsh197.stp
+- **Fixture kind**: scaffold
+
+### Tsh198 — ShapeFix_Shell.Perform context null initialize
+- **Category**: §12.3a shells (sub-class: context_null_initialize)
+- **Sources**: OCCT/ShapeFix_Shell (line 1420)
+- **Description**: Perform() executes without validating myContext initialization. Null-check missing; shape modifications cannot be recorded. Shell left in inconsistent state post-repair.
+- **Expected kernel behavior**: heal (validate context or initialize)
+- **Notes**: context_null_initialize, null-check missing, state-consistency, modification tracking
+- **Model impact**: Shell with inverted face orientation; Perform() repairs but null context prevents fix recording
+- **Fixture path**: step-examples/12-3a-shells/Tsh198.stp
+- **Fixture kind**: scaffold
+
 ### Gp040 — Pcurves emitted by default duplicate / contradict the surface 3D curve
 - **Category**: §12.2a pcurve defects (sub-class: writer-emitted pcurves disagree with 3D)
 - **Sources**: OCCT MANTIS#0025654; bug-reporter language: "disable writing pcurves to STEP and IGES by default", "pcurves and 3D curves disagree on round-trip", "writer-emitted pcurves cause downstream failures". (OCCT MANTIS tracker 502 as of 2026-05-02)
@@ -26090,6 +26179,56 @@ Pcurve is TRIMMED_CURVE. GetEndTangent2d uses untrimmed-curve tangent at trim bo
 - **Notes**: synthesized fixture from v3 deep-pass; falsifiable claim per Minimal reproducer
 - **Model impact**: B-spline in 3D with knot range [0,10], P-curve B-spline with knot range [0,2]. Parameter sync failure undetected.
 - **Fixture path**: step-examples/12-2a-pcurves/Gp130.stp
+- **Fixture kind**: scaffold
+
+### Gp131 — Confusion tolerance fallback downgrades precision
+- **Category**: §12.2a pcurves (sub-class: ShapeAnalysis_Curve.Project_at212)
+- **Sources**: OCCT/ShapeAnalysis_Curve::Project (line 230)
+- **Description**: The projection algorithm selects endpoint vs interior point based on distance thresholds. When AdjustToEnds=false and preci exceeds Precision::Confusion(), the code silently downgrades tolerance to Confusion(), potentially masking legitimate precision requirements.
+- **Expected kernel behavior**: heal (detect and correct tolerance inconsistency)
+- **Notes**: PROJ_212_CONFUSION_FALLBACK; tolerance regression axis
+- **Model impact**: Edge projection returns suboptimal endpoint when interior point is nearer at preci level but not at Confusion level
+- **Fixture path**: step-examples/12-2a-pcurves/Gp131.stp
+- **Fixture kind**: scaffold
+
+### Gp132 — PCurve projection tolerance escalation unchecked
+- **Category**: §12.2a pcurves (sub-class: ShapeFix_Edge.FixAddPCurve)
+- **Sources**: OCCT/ShapeFix_Edge::FixAddPCurve (line 536)
+- **Description**: PCurve projection status (DONE4) check validates algorithm success but does not verify that resulting tolerances from vertex assignments remain within projected precision bounds. High-curvature surfaces with loose vertex tolerances can exceed the fidelity of the projection.
+- **Expected kernel behavior**: heal (validate or recalculate projection with tighter tolerances)
+- **Notes**: FIXADDPCURVE_PROJECTION_FAIL; tolerance escalation axis
+- **Model impact**: Edge with high-curvature bezier and mismatched vertex tolerance; repair completes but PCurve falls outside tolerance envelope
+- **Fixture path**: step-examples/12-2a-pcurves/Gp132.stp
+- **Fixture kind**: scaffold
+
+### Gp133 — FixSameParameter scope ambiguity on non-SameRange edges
+- **Category**: §12.2a pcurves (sub-class: ShapeFix_Edge.FixSameParameter)
+- **Sources**: OCCT/ShapeFix_Edge::FixSameParameter (line 883)
+- **Description**: When an edge is not originally SameParameter, aFace is set to empty for scope restriction. CheckSameParameter is then invoked with empty face context, causing deviation calculation to ignore multi-surface PCurves. The repair may succeed despite incomplete validation.
+- **Expected kernel behavior**: heal (validate deviation across all faces owning PCurves)
+- **Notes**: FIXSAMEPAR_DEVIATION_CALC_SCOPE; incomplete repair axis
+- **Model impact**: Polyline edge with non-matching parameterization on 3D and 2D; repair completes without checking all PCurve deviations
+- **Fixture path**: step-examples/12-2a-pcurves/Gp133.stp
+- **Fixture kind**: scaffold
+
+### Gp134 — BoundedCurve endpoint distance early return bias
+- **Category**: §12.2a pcurves (sub-class: ShapeAnalysis_Curve.Project_at155)
+- **Sources**: OCCT/ShapeAnalysis_Curve::Project (line 165)
+- **Description**: For bounded curves, endpoint distances are checked first. If endpoint distance satisfies the tolerance threshold, the projection returns immediately without checking if an interior point is actually closer. This bias favors endpoint selection even when interior minima exist.
+- **Expected kernel behavior**: heal (exhaustive search before accepting endpoint projection)
+- **Notes**: PROJ_155_BND_CHECK; early return bias axis
+- **Model impact**: Parabolic arc with interior minimum closer than either endpoint; projection returns endpoint parameter when interior parameter is correct
+- **Fixture path**: step-examples/12-2a-pcurves/Gp134.stp
+- **Fixture kind**: scaffold
+
+### Gp135 — FixSameParameter copyedge range divergence
+- **Category**: §12.2a pcurves (sub-class: ShapeFix_Edge.FixSameParameter)
+- **Sources**: OCCT/ShapeFix_Edge::FixSameParameter (line 837)
+- **Description**: The copy constructor and Range() correction apply parameter adjustments to 3D curves but these offsets may not propagate consistently to PCurves on multiple faces. When periodic 3D curves are copied with offset compensation, 2D ranges can drift, creating SameParameter violations post-repair.
+- **Expected kernel behavior**: heal (verify 3D/2D range consistency after copy)
+- **Notes**: FIXSAMEPAR_COPYEDGE_RANGE_TRAP; parameter sync axis
+- **Model impact**: Periodic circular edge with seam-adjacent PCurves; copyedge range adjustment desynchronizes 2D curves
+- **Fixture path**: step-examples/12-2a-pcurves/Gp135.stp
 - **Fixture kind**: scaffold
 
 ### A105 — Regression OCC 6.9.1 → 7.4.0: colours stop appearing on certain STEP files
