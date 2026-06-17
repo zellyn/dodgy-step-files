@@ -1,0 +1,186 @@
+ISO-10303-21;
+/* Tsh188 - progress abort inconsistency in Perform
+ * Defect: ShapeFix_Shell.Perform user abort (aPS.More() == false) returns false
+ * but myStatus already set; inconsistent error state results. */
+HEADER;
+FILE_DESCRIPTION(('Tsh188 - perform abort inconsistency','2;1');
+FILE_NAME('Tsh188.stp','2026-06-15T00:00:00',(''),(''),'wave-53A','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+
+/* Shell with many faces (to trigger long-running Perform) */
+#100=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#101=CARTESIAN_POINT('',(1.0,0.0,0.0));
+#102=CARTESIAN_POINT('',(1.0,1.0,0.0));
+#103=CARTESIAN_POINT('',(0.0,1.0,0.0));
+#104=CARTESIAN_POINT('',(2.0,0.0,0.0));
+#105=CARTESIAN_POINT('',(2.0,1.0,0.0));
+#106=CARTESIAN_POINT('',(3.0,0.0,0.0));
+#107=CARTESIAN_POINT('',(3.0,1.0,0.0));
+#108=CARTESIAN_POINT('',(4.0,0.0,0.0));
+#109=CARTESIAN_POINT('',(4.0,1.0,0.0));
+
+#110=VERTEX_POINT('',#100);
+#111=VERTEX_POINT('',#101);
+#112=VERTEX_POINT('',#102);
+#113=VERTEX_POINT('',#103);
+#114=VERTEX_POINT('',#104);
+#115=VERTEX_POINT('',#105);
+#116=VERTEX_POINT('',#106);
+#117=VERTEX_POINT('',#107);
+#118=VERTEX_POINT('',#108);
+#119=VERTEX_POINT('',#109);
+
+/* Four coplanar square faces */
+#200=DIRECTION('',(0.0,0.0,1.0));
+#201=DIRECTION('',(1.0,0.0,0.0));
+
+#210=CARTESIAN_POINT('',(0.5,0.5,0.0));
+#211=AXIS2_PLACEMENT_3D('',#210,#200,#201);
+#212=PLANE('',#211);
+
+#220=CARTESIAN_POINT('',(1.5,0.5,0.0));
+#221=AXIS2_PLACEMENT_3D('',#220,#200,#201);
+#222=PLANE('',#221);
+
+#230=CARTESIAN_POINT('',(2.5,0.5,0.0));
+#231=AXIS2_PLACEMENT_3D('',#230,#200,#201);
+#232=PLANE('',#231);
+
+#240=CARTESIAN_POINT('',(3.5,0.5,0.0));
+#241=AXIS2_PLACEMENT_3D('',#240,#200,#201);
+#242=PLANE('',#241);
+
+/* Face 1 edges: 100->101->102->103 */
+#300=DIRECTION('',(1.0,0.0,0.0));
+#301=VECTOR('',#300,1.0);
+#310=LINE('',#100,#301);
+#311=EDGE_CURVE('',#110,#111,#310,.T.);
+
+#302=DIRECTION('',(0.0,1.0,0.0));
+#303=VECTOR('',#302,1.0);
+#312=LINE('',#101,#303);
+#313=EDGE_CURVE('',#111,#112,#312,.T.);
+
+#314=LINE('',#102,#301);
+#315=EDGE_CURVE('',#112,#113,#314,.T.);
+
+#316=LINE('',#103,#301);
+#317=EDGE_CURVE('',#113,#110,#316,.T.);
+
+/* Face 2 edges: 104->105->102->101 */
+#318=DIRECTION('',(1.0,0.0,0.0));
+#319=VECTOR('',#318,1.0);
+#320=LINE('',#104,#319);
+#321=EDGE_CURVE('',#114,#115,#320,.T.);
+
+#322=DIRECTION('',(0.0,1.0,0.0));
+#323=VECTOR('',#322,1.0);
+#324=LINE('',#105,#323);
+#325=EDGE_CURVE('',#115,#112,#324,.T.);
+
+#326=DIRECTION('',(-1.0,0.0,0.0));
+#327=VECTOR('',#326,1.0);
+#328=LINE('',#105,#327);
+#329=EDGE_CURVE('',#115,#111,#328,.T.);
+
+#330=LINE('',#104,#327);
+#331=EDGE_CURVE('',#114,#111,#330,.T.);
+
+/* Face 3 edges: 106->107->105->104 */
+#332=DIRECTION('',(1.0,0.0,0.0));
+#333=VECTOR('',#332,1.0);
+#334=LINE('',#106,#333);
+#335=EDGE_CURVE('',#116,#117,#334,.T.);
+
+#336=DIRECTION('',(0.0,1.0,0.0));
+#337=VECTOR('',#336,1.0);
+#338=LINE('',#107,#337);
+#339=EDGE_CURVE('',#117,#115,#338,.T.);
+
+#340=DIRECTION('',(-1.0,0.0,0.0));
+#341=VECTOR('',#340,1.0);
+#342=LINE('',#107,#341);
+#343=EDGE_CURVE('',#117,#114,#342,.T.);
+
+#344=LINE('',#106,#341);
+#345=EDGE_CURVE('',#116,#114,#344,.T.);
+
+/* Face 4 edges: 108->109->107->106 */
+#346=DIRECTION('',(1.0,0.0,0.0));
+#347=VECTOR('',#346,1.0);
+#348=LINE('',#108,#347);
+#349=EDGE_CURVE('',#118,#119,#348,.T.);
+
+#350=DIRECTION('',(0.0,1.0,0.0));
+#351=VECTOR('',#350,1.0);
+#352=LINE('',#109,#351);
+#353=EDGE_CURVE('',#119,#117,#352,.T.);
+
+#354=DIRECTION('',(-1.0,0.0,0.0));
+#355=VECTOR('',#354,1.0);
+#356=LINE('',#109,#355);
+#357=EDGE_CURVE('',#119,#116,#356,.T.);
+
+#358=LINE('',#108,#355);
+#359=EDGE_CURVE('',#118,#116,#358,.T.);
+
+/* Face 1 loop (one with bad orientation) */
+#400=ORIENTED_EDGE('',*,*,#311,.T.);
+#401=ORIENTED_EDGE('',*,*,#313,.T.);
+#402=ORIENTED_EDGE('',*,*,#315,.T.);
+#403=ORIENTED_EDGE('',*,*,#317,.T.);
+#410=EDGE_LOOP('',(#400,#401,#402,#403));
+#420=FACE_OUTER_BOUND('',#410,.T.);
+#430=ADVANCED_FACE('',(#420),#212,.F.);
+
+/* Face 2 loop */
+#440=ORIENTED_EDGE('',*,*,#321,.T.);
+#441=ORIENTED_EDGE('',*,*,#325,.T.);
+#442=ORIENTED_EDGE('',*,*,#329,.T.);
+#443=ORIENTED_EDGE('',*,*,#331,.T.);
+#450=EDGE_LOOP('',(#440,#441,#442,#443));
+#460=FACE_OUTER_BOUND('',#450,.T.);
+#470=ADVANCED_FACE('',(#460),#222,.T.);
+
+/* Face 3 loop */
+#480=ORIENTED_EDGE('',*,*,#335,.T.);
+#481=ORIENTED_EDGE('',*,*,#339,.T.);
+#482=ORIENTED_EDGE('',*,*,#343,.T.);
+#483=ORIENTED_EDGE('',*,*,#345,.T.);
+#490=EDGE_LOOP('',(#480,#481,#482,#483));
+#500=FACE_OUTER_BOUND('',#490,.T.);
+#510=ADVANCED_FACE('',(#500),#232,.T.);
+
+/* Face 4 loop */
+#520=ORIENTED_EDGE('',*,*,#349,.T.);
+#521=ORIENTED_EDGE('',*,*,#353,.T.);
+#522=ORIENTED_EDGE('',*,*,#357,.T.);
+#523=ORIENTED_EDGE('',*,*,#359,.T.);
+#530=EDGE_LOOP('',(#520,#521,#522,#523));
+#540=FACE_OUTER_BOUND('',#530,.T.);
+#550=ADVANCED_FACE('',(#540),#242,.T.);
+
+/* Shell with multiple faces for long Perform */
+#600=CLOSED_SHELL('abort_shell',(#430,#470,#510,#550));
+
+/* Mandatory PRODUCT chain */
+#9000=PRODUCT_CONTEXT('',#1,'mechanical');
+#9001=PRODUCT('Tsh188','Tsh188','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
+#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
+#9021=SHELL_BASED_SURFACE_MODEL('sbsm',(#600));
+#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#9010);
+#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+ENDSEC;
+END-ISO-10303-21;

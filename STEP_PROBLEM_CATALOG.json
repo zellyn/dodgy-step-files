@@ -30259,6 +30259,161 @@
     "title": "ShapeAnalysis_Shell.LoadShells with-shell-marker-but-no-faces"
   },
   {
+    "byte_assertions": [],
+    "category": "§12.3a shells (sub-class: duplicate-mutation)",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": null,
+    "description": "Shell containing two identical faces; orientation-fix processes both independently without detecting duplication. Results in inconsistent orientation outcomes where one face is corrected while its duplicate remains in original orientation. This breaks closure assumptions downstream.",
+    "expected_kernel_behavior": "heal: deduplicate faces before orientation fix, or consistently apply orientation fix to all copies",
+    "expected_validation": "",
+    "fixture_kind": null,
+    "fixture_path": "step-examples/12-3a-shells/Tsh184.stp",
+    "id": "Tsh184",
+    "notes": "Falsifiable via aMapAdded tracking; low-confidence in v3 analysis",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-sufficient",
+    "reproducer": "",
+    "section": "12.3a",
+    "section_dir": "12-3a-shells",
+    "see_also": [],
+    "sender": "",
+    "severity": null,
+    "sources": [
+      "OCCT/ShapeFix_Shell.FixFaceOrientation (line 1440)"
+    ],
+    "taxonomy": [
+      "topology"
+    ],
+    "tier3_assertions": [],
+    "title": "ShapeFix_Shell.FixFaceOrientation duplicate-face inconsistency"
+  },
+  {
+    "byte_assertions": [],
+    "category": "§12.3a shells (sub-class: state-accumulation)",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": null,
+    "description": "Multiple Perform() calls without context reset cause accumulated reshape operations. First fix creates new context via SetContext(new ShapeBuild_ReShape); second call reuses same context, applying queued operations twice to same shell faces. Orientation inconsistency results.",
+    "expected_kernel_behavior": "heal: reset context on each Perform(), or detect and skip already-applied fixes",
+    "expected_validation": "",
+    "fixture_kind": null,
+    "fixture_path": "step-examples/12-3a-shells/Tsh185.stp",
+    "id": "Tsh185",
+    "notes": "Idempotency violation; state persistence across calls",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-sufficient",
+    "reproducer": "",
+    "section": "12.3a",
+    "section_dir": "12-3a-shells",
+    "see_also": [],
+    "sender": "",
+    "severity": null,
+    "sources": [
+      "OCCT/ShapeFix_Solid.Perform (line 463)"
+    ],
+    "taxonomy": [
+      "topology"
+    ],
+    "tier3_assertions": [],
+    "title": "ShapeFix_Solid.Perform context-stale-state cumulative fixes"
+  },
+  {
+    "byte_assertions": [],
+    "category": "§12.3a shells (sub-class: precondition-violation)",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": null,
+    "description": "BRepClass3d_SolidClassifier.PerformInfinitePoint tests shell orientation by containment at infinity. Non-closed shells with dangling boundary faces produce undefined State() results. Classifier assumes watertight closure but receives open topology, causing IN/OUT misclassification.",
+    "expected_kernel_behavior": "heal: validate shell closure before classification attempt, or detect open boundary and reject conversion",
+    "expected_validation": "",
+    "fixture_kind": null,
+    "fixture_path": "step-examples/12-3a-shells/Tsh186.stp",
+    "id": "Tsh186",
+    "notes": "Silent exception catch (OCC_CATCH_SIGNALS) may mask failures; undefined behavior if classification throws",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-sufficient",
+    "reproducer": "",
+    "section": "12.3a",
+    "section_dir": "12-3a-shells",
+    "see_also": [],
+    "sender": "",
+    "severity": null,
+    "sources": [
+      "OCCT/ShapeFix_Solid.SolidFromShell (line 668)"
+    ],
+    "taxonomy": [
+      "topology"
+    ],
+    "tier3_assertions": [],
+    "title": "ShapeFix_Solid.SolidFromShell orientation-infinite-point non-closed shell"
+  },
+  {
+    "byte_assertions": [],
+    "category": "§12.3a shells (sub-class: healer-state)",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": null,
+    "description": "Section-edge bound tracking initializes lookup structures but may not enumerate all section edges during analysis. Near-gap multi-shell geometries trigger incomplete edge-distance evaluation, producing unmatched or skipped candidates suitable for sewing.",
+    "expected_kernel_behavior": "heal: exhaustively enumerate all section boundary edges and distances, or report confidence level when bounds are incomplete",
+    "expected_validation": "",
+    "fixture_kind": null,
+    "fixture_path": "step-examples/12-3a-shells/Tsh187.stp",
+    "id": "Tsh187",
+    "notes": "Related to aMapMultiConnectEdges and work_faces_lookup semantics",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-sufficient",
+    "reproducer": "",
+    "section": "12.3a",
+    "section_dir": "12-3a-shells",
+    "see_also": [],
+    "sender": "",
+    "severity": null,
+    "sources": [
+      "OCCT/BRepBuilderAPI_Sewing.AnalysisNearestEdges (line 1636)"
+    ],
+    "taxonomy": [
+      "topology"
+    ],
+    "tier3_assertions": [],
+    "title": "BRepBuilderAPI_Sewing.AnalysisNearestEdges section-bound-lookup gate"
+  },
+  {
+    "byte_assertions": [],
+    "category": "§12.3a shells (sub-class: inconsistent-error-reporting)",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": null,
+    "description": "User abort during long-running face-fix loop (aPS.More() returns false) causes early exit with false return value. However, myStatus flag already set to ShapeExtend_DONE1 or similar, creating ambiguity: caller cannot distinguish abort from partial failure. Partial fixes applied with inconsistent error state.",
+    "expected_kernel_behavior": "heal: return distinct abort status code separate from failure codes, or save/restore status on early exit",
+    "expected_validation": "",
+    "fixture_kind": null,
+    "fixture_path": "step-examples/12-3a-shells/Tsh188.stp",
+    "id": "Tsh188",
+    "notes": "Shell with many faces triggers lengthy loop; abort gate only checked at loop start",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-sufficient",
+    "reproducer": "",
+    "section": "12.3a",
+    "section_dir": "12-3a-shells",
+    "see_also": [],
+    "sender": "",
+    "severity": null,
+    "sources": [
+      "OCCT/ShapeFix_Shell.Perform (line 130)"
+    ],
+    "taxonomy": [
+      "topology"
+    ],
+    "tier3_assertions": [],
+    "title": "ShapeFix_Shell.Perform progress-abort inconsistent-status"
+  },
+  {
     "byte_assertions": [
       "contains(b\"EDGE_LOOP('',())\")",
       "count_entity_def(b'ORIENTED_EDGE') == 0"
@@ -37630,6 +37785,161 @@
   },
   {
     "byte_assertions": [],
+    "category": "§12.3b wires (sub-class: size-threshold)",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": null,
+    "description": "Wire contains a segment smaller than the tolerance threshold. The healing operation detects sub-tolerance edges and coalesces them into adjacent geometry, requiring proper endpoint merging and curve reparametrization.",
+    "expected_kernel_behavior": "heal: remove undersized edge, merge vertices, adjust parametric domain",
+    "expected_validation": "",
+    "fixture_kind": null,
+    "fixture_path": "step-examples/12-3b-wires/Twi237.stp",
+    "id": "Twi237",
+    "notes": "Related to ShapeFix_Wire mode-7 enabling; impacts wire simplification passes",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-sufficient",
+    "reproducer": "",
+    "section": "12.3b",
+    "section_dir": "12-3b-wires",
+    "see_also": [],
+    "sender": "",
+    "severity": null,
+    "sources": [
+      "OCCT/ShapeFix_Wire.FixSmall (line 539)"
+    ],
+    "taxonomy": [
+      "topology"
+    ],
+    "tier3_assertions": [],
+    "title": "ShapeFix_Wire.FixSmall edge-coalescing tolerance"
+  },
+  {
+    "byte_assertions": [],
+    "category": "§12.3b wires (sub-class: endpoint-connectivity)",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": null,
+    "description": "Wire edges present connectivity gaps at endpoints where vertices nominally connect but actual coordinates diverge beyond tolerance. The healing operation must detect disconnects and either bridge gaps or merge vertices; failure scenarios occur when endpoint distance exceeds healing capability.",
+    "expected_kernel_behavior": "heal: merge vertices or insert bridge-edge / reject: if gap exceeds precision limit",
+    "expected_validation": "",
+    "fixture_kind": null,
+    "fixture_path": "step-examples/12-3b-wires/Twi238.stp",
+    "id": "Twi238",
+    "notes": "Inverse of FixGaps; tests vertex-consolidation strategy under high error budget",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-sufficient",
+    "reproducer": "",
+    "section": "12.3b",
+    "section_dir": "12-3b-wires",
+    "see_also": [],
+    "sender": "",
+    "severity": null,
+    "sources": [
+      "OCCT/ShapeFix_Wire.FixConnected (line 558)"
+    ],
+    "taxonomy": [
+      "topology"
+    ],
+    "tier3_assertions": [],
+    "title": "ShapeFix_Wire.FixConnected disconnected-endpoints vertex-merge-fails"
+  },
+  {
+    "byte_assertions": [],
+    "category": "§12.3b wires (sub-class: closure-verification)",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": null,
+    "description": "Wire presents closed-loop topology but endpoint mismatch leaves a dangling segment. The closure healing attempts bridge-edge insertion; in degenerate cases, the bridge is itself a zero-length edge requiring special handling.",
+    "expected_kernel_behavior": "heal: insert degenerate edge to close wire / reject: if closure impossible",
+    "expected_validation": "",
+    "fixture_kind": null,
+    "fixture_path": "step-examples/12-3b-wires/Twi239.stp",
+    "id": "Twi239",
+    "notes": "Tests closure-checking robustness; related to CheckClosed diagnostics",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-sufficient",
+    "reproducer": "",
+    "section": "12.3b",
+    "section_dir": "12-3b-wires",
+    "see_also": [],
+    "sender": "",
+    "severity": null,
+    "sources": [
+      "OCCT/ShapeFix_Wire.FixClosed (line 450)"
+    ],
+    "taxonomy": [
+      "topology"
+    ],
+    "tier3_assertions": [],
+    "title": "ShapeFix_Wire.FixClosed open-wire-closure-degenerate"
+  },
+  {
+    "byte_assertions": [],
+    "category": "§12.3b wires (sub-class: seam-parametrization)",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": null,
+    "description": "Seam edge in a periodic or wrapped wire starts at a position not matching the nominal wire start point. The healing operation detects parametric misalignment and adjusts the edge's parametric range without altering 3D geometry, ensuring consistency with wire traversal order.",
+    "expected_kernel_behavior": "heal: reparametrize seam edge to align with wire start",
+    "expected_validation": "",
+    "fixture_kind": null,
+    "fixture_path": "step-examples/12-3b-wires/Twi240.stp",
+    "id": "Twi240",
+    "notes": "Specific to seam-edge handling in trimmed or toroidal surface contexts; involves parameter domain shifting",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-sufficient",
+    "reproducer": "",
+    "section": "12.3b",
+    "section_dir": "12-3b-wires",
+    "see_also": [],
+    "sender": "",
+    "severity": null,
+    "sources": [
+      "OCCT/ShapeFix_Wire.FixShifted (line 1662)"
+    ],
+    "taxonomy": [
+      "topology"
+    ],
+    "tier3_assertions": [],
+    "title": "ShapeFix_Wire.FixShifted seam-vertex-position-mismatch"
+  },
+  {
+    "byte_assertions": [],
+    "category": "§12.3b wires (sub-class: tangency-discontinuity)",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": null,
+    "description": "Edges form a notch pattern at a junction vertex where multiple curves meet at shallow angles or with tangency that creates local concavity. The healing operation splits the offending curve at the notch point to eliminate the discontinuity and restore smooth wire traversal.",
+    "expected_kernel_behavior": "heal: split edge at notch point / reject: if notch detection fails",
+    "expected_validation": "",
+    "fixture_kind": null,
+    "fixture_path": "step-examples/12-3b-wires/Twi241.stp",
+    "id": "Twi241",
+    "notes": "Related to surface/edge consistency; involves tangent-vector analysis and curve splitting",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-sufficient",
+    "reproducer": "",
+    "section": "12.3b",
+    "section_dir": "12-3b-wires",
+    "see_also": [],
+    "sender": "",
+    "severity": null,
+    "sources": [
+      "OCCT/ShapeFix_Wire.FixNotchedEdges (line 3997)"
+    ],
+    "taxonomy": [
+      "topology"
+    ],
+    "tier3_assertions": [],
+    "title": "ShapeFix_Wire.FixNotchedEdges notch-at-multi-edge-junction"
+  },
+  {
+    "byte_assertions": [],
     "category": "§12.3 (sub-class: shape-healing) — pipeline",
     "closure_defect": null,
     "closure_intent": "sheet",
@@ -44290,6 +44600,161 @@
     ],
     "tier3_assertions": [],
     "title": "ShapeFix_Face.FixOrientation face-on-curved-vs-planar"
+  },
+  {
+    "byte_assertions": [],
+    "category": "§12.3c faces (sub-class: surface singularity detection)",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": "OCCT caches singularity state; re-computation may fail on modified surfaces. Synonyms: \"toroidal pinch-point undetected\", \"torus minor radius degeneracy\", \"singularity cache miss on periodic surface\".",
+    "description": "A toroidal face whose minor radius approaches zero creates a \"pinch\" singularity where opposite surface points coincide. The singularity detector must recognize this degenerate locus; incomplete classification allows pinched geometries to pass validation unchecked, producing unpredictable healing outcomes downstream.",
+    "expected_kernel_behavior": "heal: classify pinch as boundary singularity and mark for extra scrutiny; reject: if pinch radius falls below configured tolerance",
+    "expected_validation": "",
+    "fixture_kind": null,
+    "fixture_path": "step-examples/12-3c-faces/Tfa196.stp",
+    "id": "Tfa196",
+    "notes": "Cross-oracle: OCCT caches singularity state; re-computation may fail on modified surfaces. Synonyms: \"toroidal pinch-point undetected\", \"torus minor radius degeneracy\", \"singularity cache miss on periodic surface\".",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-sufficient",
+    "reproducer": "",
+    "section": "12.3c",
+    "section_dir": "12-3c-faces",
+    "see_also": [],
+    "sender": "",
+    "severity": null,
+    "sources": [
+      "OCCT/ShapeAnalysis_Surface.ComputeSingularities (toroidal-pinch-singularities branch)"
+    ],
+    "taxonomy": [
+      "topology"
+    ],
+    "tier3_assertions": [],
+    "title": "ShapeAnalysis_Surface.ComputeSingularities toroidal-pinch"
+  },
+  {
+    "byte_assertions": [],
+    "category": "§12.3c faces (sub-class: periodic surface closure check)",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": null,
+    "description": "A B-spline surface marked periodic in U direction must close geometrically: start and end isoparametric curves coincide. The closure checker caches results but may skip revalidation when the surface is trimmed or modified. A face on a geometrically open but periodically flagged B-spline exhibits incorrect winding classification if the closure test is bypassed.",
+    "expected_kernel_behavior": "heal: validate closure consistency; reject: if closure flag contradicts geometric evaluation",
+    "expected_validation": "",
+    "fixture_kind": null,
+    "fixture_path": "step-examples/12-3c-faces/Tfa197.stp",
+    "id": "Tfa197",
+    "notes": "Periodic B-spline closure testing often relies on knot periodicity rather than evaluating actual curve endpoints. Synonyms: \"B-spline periodic flag ignored\", \"open B-spline masquerades as closed\", \"U-periodic surface endpoint gap\".",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-sufficient",
+    "reproducer": "",
+    "section": "12.3c",
+    "section_dir": "12-3c-faces",
+    "see_also": [],
+    "sender": "",
+    "severity": null,
+    "sources": [
+      "OCCT/ShapeAnalysis_Surface.IsUClosed (bspline-periodic-u branch)"
+    ],
+    "taxonomy": [
+      "topology"
+    ],
+    "tier3_assertions": [],
+    "title": "ShapeAnalysis_Surface.IsUClosed bspline-periodic-u"
+  },
+  {
+    "byte_assertions": [],
+    "category": "§12.3c faces (sub-class: gap detection in free bounds)",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": null,
+    "description": "Free bounds (unclosed edges after face healing) are analyzed for gaps and notches. The notch checker computes arc length between consecutive edge endpoints; a gap smaller than parametric precision but larger than geometric tolerance indicates a healing-recoverable discrepancy. Incomplete re-validation after healing may miss newly opened gaps.",
+    "expected_kernel_behavior": "heal: re-check free bounds after each healing pass; reject: if gap persists beyond configured threshold",
+    "expected_validation": "",
+    "fixture_kind": null,
+    "fixture_path": "step-examples/12-3c-faces/Tfa198.stp",
+    "id": "Tfa198",
+    "notes": "Notch detection depends on curve parameterization; gap magnitude in parameter-space may differ from 3D distance. Synonyms: \"free bound gap post-healing\", \"notch revalidation skipped\", \"disconnected wire after face fix\".",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-sufficient",
+    "reproducer": "",
+    "section": "12.3c",
+    "section_dir": "12-3c-faces",
+    "see_also": [],
+    "sender": "",
+    "severity": null,
+    "sources": [
+      "OCCT/ShapeAnalysis_FreeBoundsProperties.CheckNotches (gap-after-fix branch)"
+    ],
+    "taxonomy": [
+      "topology"
+    ],
+    "tier3_assertions": [],
+    "title": "ShapeAnalysis_FreeBoundsProperties.CheckNotches gap-after-fix"
+  },
+  {
+    "byte_assertions": [],
+    "category": "§12.3c faces (sub-class: periodic surface seam reconstruction)",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": null,
+    "description": "Cylindrical and other periodic surfaces require a seam edge connecting the parametrically discontinuous boundary. A face missing the seam edge exhibits incorrect winding or fails containment checks. The missing-seam fixer detects the gap by analyzing edge coverage across the periodic parameter range; detection may fail if edges are nearly tangent or parameterized asymmetrically.",
+    "expected_kernel_behavior": "heal: insert synthetic seam edge; reject: if seam-space analysis is ambiguous",
+    "expected_validation": "",
+    "fixture_kind": null,
+    "fixture_path": "step-examples/12-3c-faces/Tfa199.stp",
+    "id": "Tfa199",
+    "notes": "Seam detection relies on edge parameter-space analysis; misaligned boundaries or non-conformal parameterization defeat the heuristic. Synonyms: \"cylindrical face seam missing\", \"periodic boundary incomplete\", \"U=0 to U=2π edge gap\".",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-sufficient",
+    "reproducer": "",
+    "section": "12.3c",
+    "section_dir": "12-3c-faces",
+    "see_also": [],
+    "sender": "",
+    "severity": null,
+    "sources": [
+      "OCCT/ShapeFix_Face.FixMissingSeam (seam-detection method)"
+    ],
+    "taxonomy": [
+      "topology"
+    ],
+    "tier3_assertions": [],
+    "title": "ShapeFix_Face.FixMissingSeam seam-detection"
+  },
+  {
+    "byte_assertions": [],
+    "category": "§12.3c faces (sub-class: cone surface apex degeneracy)",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": null,
+    "description": "A conical surface whose semi-angle approaches zero becomes degenerate at the apex. The degeneracy analyzer identifies apex points by evaluating surface parametrization; missing or incomplete checks allow apex-degenerate faces to proceed without special-case handling, causing downstream curve projections and tangent computations to produce NaNs or infinite curvature.",
+    "expected_kernel_behavior": "heal: flag apex edge for special handling; reject: if apex point lies outside face domain or is inconsistently parameterized",
+    "expected_validation": "",
+    "fixture_kind": null,
+    "fixture_path": "step-examples/12-3c-faces/Tfa200.stp",
+    "id": "Tfa200",
+    "notes": "Cone apex degeneracy manifests as zero-radius circular isocurves; detection requires symbolic surface analysis or numerical sampling. Synonyms: \"cone apex point unclassified\", \"zero-angle cone surface\", \"degenerate apex in parametric space\".",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-sufficient",
+    "reproducer": "",
+    "section": "12.3c",
+    "section_dir": "12-3c-faces",
+    "see_also": [],
+    "sender": "",
+    "severity": null,
+    "sources": [
+      "OCCT/ShapeAnalysis_Surface.DegeneratedValues (cone-apex-degeneracy branch)"
+    ],
+    "taxonomy": [
+      "topology"
+    ],
+    "tier3_assertions": [],
+    "title": "ShapeAnalysis_Surface.DegeneratedValues cone-apex-degeneracy"
   },
   {
     "byte_assertions": [

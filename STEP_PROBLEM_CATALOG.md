@@ -22881,6 +22881,56 @@ Outer boundary 200×200 units with inner rectangle 100×100 units (50-150 on eac
 
 Unit square planar face with centered 0.5×0.5 inner rectangle. FixOrientation's winding tests yield opposite results for equivalent topology: planar face correctly detects inner winding direction, but B-spline approximation of same geometry yields reversed classification due to numerical drift in normal computation.
 
+### Tfa196 — ShapeAnalysis_Surface.ComputeSingularities toroidal-pinch
+- **Category**: §12.3c faces (sub-class: surface singularity detection)
+- **Sources**: OCCT/ShapeAnalysis_Surface.ComputeSingularities (toroidal-pinch-singularities branch)
+- **Description**: A toroidal face whose minor radius approaches zero creates a "pinch" singularity where opposite surface points coincide. The singularity detector must recognize this degenerate locus; incomplete classification allows pinched geometries to pass validation unchecked, producing unpredictable healing outcomes downstream.
+- **Expected kernel behavior**: heal: classify pinch as boundary singularity and mark for extra scrutiny; reject: if pinch radius falls below configured tolerance
+- **Notes**: Cross-oracle: OCCT caches singularity state; re-computation may fail on modified surfaces. Synonyms: "toroidal pinch-point undetected", "torus minor radius degeneracy", "singularity cache miss on periodic surface".
+- **Model impact**: Undetected pinch singularities allow downstream face healers to apply local fixes at the coincident-point locus, producing non-manifold topology or unexpected edge collapses.
+- **Fixture path**: step-examples/12-3c-faces/Tfa196.stp
+- **Fixture kind**: scaffold
+
+### Tfa197 — ShapeAnalysis_Surface.IsUClosed bspline-periodic-u
+- **Category**: §12.3c faces (sub-class: periodic surface closure check)
+- **Sources**: OCCT/ShapeAnalysis_Surface.IsUClosed (bspline-periodic-u branch)
+- **Description**: A B-spline surface marked periodic in U direction must close geometrically: start and end isoparametric curves coincide. The closure checker caches results but may skip revalidation when the surface is trimmed or modified. A face on a geometrically open but periodically flagged B-spline exhibits incorrect winding classification if the closure test is bypassed.
+- **Expected kernel behavior**: heal: validate closure consistency; reject: if closure flag contradicts geometric evaluation
+- **Notes**: Periodic B-spline closure testing often relies on knot periodicity rather than evaluating actual curve endpoints. Synonyms: "B-spline periodic flag ignored", "open B-spline masquerades as closed", "U-periodic surface endpoint gap".
+- **Model impact**: Misclassification of surface closure leads to incorrect seam-edge detection and failed face boundary reconstruction on periodic surfaces.
+- **Fixture path**: step-examples/12-3c-faces/Tfa197.stp
+- **Fixture kind**: scaffold
+
+### Tfa198 — ShapeAnalysis_FreeBoundsProperties.CheckNotches gap-after-fix
+- **Category**: §12.3c faces (sub-class: gap detection in free bounds)
+- **Sources**: OCCT/ShapeAnalysis_FreeBoundsProperties.CheckNotches (gap-after-fix branch)
+- **Description**: Free bounds (unclosed edges after face healing) are analyzed for gaps and notches. The notch checker computes arc length between consecutive edge endpoints; a gap smaller than parametric precision but larger than geometric tolerance indicates a healing-recoverable discrepancy. Incomplete re-validation after healing may miss newly opened gaps.
+- **Expected kernel behavior**: heal: re-check free bounds after each healing pass; reject: if gap persists beyond configured threshold
+- **Notes**: Notch detection depends on curve parameterization; gap magnitude in parameter-space may differ from 3D distance. Synonyms: "free bound gap post-healing", "notch revalidation skipped", "disconnected wire after face fix".
+- **Model impact**: Undetected notches in free bounds allow incomplete shell sewing and create non-manifold topology in downstream boolean operations.
+- **Fixture path**: step-examples/12-3c-faces/Tfa198.stp
+- **Fixture kind**: scaffold
+
+### Tfa199 — ShapeFix_Face.FixMissingSeam seam-detection
+- **Category**: §12.3c faces (sub-class: periodic surface seam reconstruction)
+- **Sources**: OCCT/ShapeFix_Face.FixMissingSeam (seam-detection method)
+- **Description**: Cylindrical and other periodic surfaces require a seam edge connecting the parametrically discontinuous boundary. A face missing the seam edge exhibits incorrect winding or fails containment checks. The missing-seam fixer detects the gap by analyzing edge coverage across the periodic parameter range; detection may fail if edges are nearly tangent or parameterized asymmetrically.
+- **Expected kernel behavior**: heal: insert synthetic seam edge; reject: if seam-space analysis is ambiguous
+- **Notes**: Seam detection relies on edge parameter-space analysis; misaligned boundaries or non-conformal parameterization defeat the heuristic. Synonyms: "cylindrical face seam missing", "periodic boundary incomplete", "U=0 to U=2π edge gap".
+- **Model impact**: Missing seam edges produce non-manifold topology and incorrect surface normal orientation; downstream face classification and boolean operations fail.
+- **Fixture path**: step-examples/12-3c-faces/Tfa199.stp
+- **Fixture kind**: scaffold
+
+### Tfa200 — ShapeAnalysis_Surface.DegeneratedValues cone-apex-degeneracy
+- **Category**: §12.3c faces (sub-class: cone surface apex degeneracy)
+- **Sources**: OCCT/ShapeAnalysis_Surface.DegeneratedValues (cone-apex-degeneracy branch)
+- **Description**: A conical surface whose semi-angle approaches zero becomes degenerate at the apex. The degeneracy analyzer identifies apex points by evaluating surface parametrization; missing or incomplete checks allow apex-degenerate faces to proceed without special-case handling, causing downstream curve projections and tangent computations to produce NaNs or infinite curvature.
+- **Expected kernel behavior**: heal: flag apex edge for special handling; reject: if apex point lies outside face domain or is inconsistently parameterized
+- **Notes**: Cone apex degeneracy manifests as zero-radius circular isocurves; detection requires symbolic surface analysis or numerical sampling. Synonyms: "cone apex point unclassified", "zero-angle cone surface", "degenerate apex in parametric space".
+- **Model impact**: Undetected cone apex degeneracy allows face healers to apply standard curve operations at the apex, producing numerical instability and corrupted surface geometry.
+- **Fixture path**: step-examples/12-3c-faces/Tfa200.stp
+- **Fixture kind**: scaffold
+
 ### Hea016 — Empty solid output from STEP export of complex body, despite STL succeeding
 - **Category**: §12.3c faces / shape healing
 - **Sources**: FreeCAD #20396; bug-reporter language: "Models exported to STEP crash or produce empty objects", "appears to export fine but results in an empty object", "STL and 3MF export work, STEP doesn't".
@@ -23866,6 +23916,56 @@ Wire's tail edge has tangent at start that doesn't match the previous edge's tan
 ### Twi236 — ShapeFix_Wire.FixGaps3d bridge-creates-degeneracy
 
 Wire has a 3D gap at a junction (endpoints separated by ~1e-8, within tolerance). FixGaps3d attempts to bridge by creating a new edge, but the bridge itself becomes degenerate with coincident or near-coincident endpoints.
+
+### Twi237 — ShapeFix_Wire.FixSmall edge-coalescing tolerance
+- **Category**: §12.3b wires (sub-class: size-threshold)
+- **Sources**: OCCT/ShapeFix_Wire.FixSmall (line 539)
+- **Description**: Wire contains a segment smaller than the tolerance threshold. The healing operation detects sub-tolerance edges and coalesces them into adjacent geometry, requiring proper endpoint merging and curve reparametrization.
+- **Expected kernel behavior**: heal: remove undersized edge, merge vertices, adjust parametric domain
+- **Notes**: Related to ShapeFix_Wire mode-7 enabling; impacts wire simplification passes
+- **Model impact**: Produces a wire with reduced edge count after coalescing micro-segments
+- **Fixture path**: step-examples/12-3b-wires/Twi237.stp
+- **Fixture kind**: scaffold
+
+### Twi238 — ShapeFix_Wire.FixConnected disconnected-endpoints vertex-merge-fails
+- **Category**: §12.3b wires (sub-class: endpoint-connectivity)
+- **Sources**: OCCT/ShapeFix_Wire.FixConnected (line 558)
+- **Description**: Wire edges present connectivity gaps at endpoints where vertices nominally connect but actual coordinates diverge beyond tolerance. The healing operation must detect disconnects and either bridge gaps or merge vertices; failure scenarios occur when endpoint distance exceeds healing capability.
+- **Expected kernel behavior**: heal: merge vertices or insert bridge-edge / reject: if gap exceeds precision limit
+- **Notes**: Inverse of FixGaps; tests vertex-consolidation strategy under high error budget
+- **Model impact**: Connected wire topology or rejection with diagnostic status
+- **Fixture path**: step-examples/12-3b-wires/Twi238.stp
+- **Fixture kind**: scaffold
+
+### Twi239 — ShapeFix_Wire.FixClosed open-wire-closure-degenerate
+- **Category**: §12.3b wires (sub-class: closure-verification)
+- **Sources**: OCCT/ShapeFix_Wire.FixClosed (line 450)
+- **Description**: Wire presents closed-loop topology but endpoint mismatch leaves a dangling segment. The closure healing attempts bridge-edge insertion; in degenerate cases, the bridge is itself a zero-length edge requiring special handling.
+- **Expected kernel behavior**: heal: insert degenerate edge to close wire / reject: if closure impossible
+- **Notes**: Tests closure-checking robustness; related to CheckClosed diagnostics
+- **Model impact**: Closed wire with possible degenerate edge, or open-wire rejection
+- **Fixture path**: step-examples/12-3b-wires/Twi239.stp
+- **Fixture kind**: scaffold
+
+### Twi240 — ShapeFix_Wire.FixShifted seam-vertex-position-mismatch
+- **Category**: §12.3b wires (sub-class: seam-parametrization)
+- **Sources**: OCCT/ShapeFix_Wire.FixShifted (line 1662)
+- **Description**: Seam edge in a periodic or wrapped wire starts at a position not matching the nominal wire start point. The healing operation detects parametric misalignment and adjusts the edge's parametric range without altering 3D geometry, ensuring consistency with wire traversal order.
+- **Expected kernel behavior**: heal: reparametrize seam edge to align with wire start
+- **Notes**: Specific to seam-edge handling in trimmed or toroidal surface contexts; involves parameter domain shifting
+- **Model impact**: Wire with adjusted seam parametrization, geometric identity preserved
+- **Fixture path**: step-examples/12-3b-wires/Twi240.stp
+- **Fixture kind**: scaffold
+
+### Twi241 — ShapeFix_Wire.FixNotchedEdges notch-at-multi-edge-junction
+- **Category**: §12.3b wires (sub-class: tangency-discontinuity)
+- **Sources**: OCCT/ShapeFix_Wire.FixNotchedEdges (line 3997)
+- **Description**: Edges form a notch pattern at a junction vertex where multiple curves meet at shallow angles or with tangency that creates local concavity. The healing operation splits the offending curve at the notch point to eliminate the discontinuity and restore smooth wire traversal.
+- **Expected kernel behavior**: heal: split edge at notch point / reject: if notch detection fails
+- **Notes**: Related to surface/edge consistency; involves tangent-vector analysis and curve splitting
+- **Model impact**: Wire with additional edge at split point, local geometry refined
+- **Fixture path**: step-examples/12-3b-wires/Twi241.stp
+- **Fixture kind**: scaffold
 
 ### Gs056 — `SURFACE_OF_REVOLUTION` of an ellipse around its own centre produces a degenerate surface
 - **Category**: §12.2c surface / curve degeneracies (sub-class: revolution of conic)
@@ -25067,6 +25167,56 @@ Compound with nested shell references. LoadShells() recursion incomplete when de
 - **Trigger**: Call LoadShells() on SHELL_BASED_SURFACE_MODEL containing CLOSED_SHELL('name',()) with empty face list
 - **Expected failure**: Result contains empty shell entry; CheckOrientedShells() on empty shell causes null dereference or assertion on normal computation
 - **Test assertion**: LoadShells() should skip or flag empty shells; downstream operations should not receive empty shell instances
+
+### Tsh184 — ShapeFix_Shell.FixFaceOrientation duplicate-face inconsistency
+- **Category**: §12.3a shells (sub-class: duplicate-mutation)
+- **Sources**: OCCT/ShapeFix_Shell.FixFaceOrientation (line 1440)
+- **Description**: Shell containing two identical faces; orientation-fix processes both independently without detecting duplication. Results in inconsistent orientation outcomes where one face is corrected while its duplicate remains in original orientation. This breaks closure assumptions downstream.
+- **Expected kernel behavior**: heal: deduplicate faces before orientation fix, or consistently apply orientation fix to all copies
+- **Notes**: Falsifiable via aMapAdded tracking; low-confidence in v3 analysis
+- **Model impact**: Shell with duplicate geometry produces mixed-orientation face sets unsuitable for solid conversion
+- **Fixture path**: step-examples/12-3a-shells/Tsh184.stp
+- **Fixture kind**: scaffold
+
+### Tsh185 — ShapeFix_Solid.Perform context-stale-state cumulative fixes
+- **Category**: §12.3a shells (sub-class: state-accumulation)
+- **Sources**: OCCT/ShapeFix_Solid.Perform (line 463)
+- **Description**: Multiple Perform() calls without context reset cause accumulated reshape operations. First fix creates new context via SetContext(new ShapeBuild_ReShape); second call reuses same context, applying queued operations twice to same shell faces. Orientation inconsistency results.
+- **Expected kernel behavior**: heal: reset context on each Perform(), or detect and skip already-applied fixes
+- **Notes**: Idempotency violation; state persistence across calls
+- **Model impact**: Repeated healing attempts produce over-corrected geometry with inverted or multiply-flipped faces
+- **Fixture path**: step-examples/12-3a-shells/Tsh185.stp
+- **Fixture kind**: scaffold
+
+### Tsh186 — ShapeFix_Solid.SolidFromShell orientation-infinite-point non-closed shell
+- **Category**: §12.3a shells (sub-class: precondition-violation)
+- **Sources**: OCCT/ShapeFix_Solid.SolidFromShell (line 668)
+- **Description**: BRepClass3d_SolidClassifier.PerformInfinitePoint tests shell orientation by containment at infinity. Non-closed shells with dangling boundary faces produce undefined State() results. Classifier assumes watertight closure but receives open topology, causing IN/OUT misclassification.
+- **Expected kernel behavior**: heal: validate shell closure before classification attempt, or detect open boundary and reject conversion
+- **Notes**: Silent exception catch (OCC_CATCH_SIGNALS) may mask failures; undefined behavior if classification throws
+- **Model impact**: Open shell incorrectly classified as valid solid; geometry produces invalid downstream topology
+- **Fixture path**: step-examples/12-3a-shells/Tsh186.stp
+- **Fixture kind**: scaffold
+
+### Tsh187 — BRepBuilderAPI_Sewing.AnalysisNearestEdges section-bound-lookup gate
+- **Category**: §12.3a shells (sub-class: healer-state)
+- **Sources**: OCCT/BRepBuilderAPI_Sewing.AnalysisNearestEdges (line 1636)
+- **Description**: Section-edge bound tracking initializes lookup structures but may not enumerate all section edges during analysis. Near-gap multi-shell geometries trigger incomplete edge-distance evaluation, producing unmatched or skipped candidates suitable for sewing.
+- **Expected kernel behavior**: heal: exhaustively enumerate all section boundary edges and distances, or report confidence level when bounds are incomplete
+- **Notes**: Related to aMapMultiConnectEdges and work_faces_lookup semantics
+- **Model impact**: Adjacent shells with near-gap remain unseamed despite tolerance permitting merge; geometry stays disjoint
+- **Fixture path**: step-examples/12-3a-shells/Tsh187.stp
+- **Fixture kind**: scaffold
+
+### Tsh188 — ShapeFix_Shell.Perform progress-abort inconsistent-status
+- **Category**: §12.3a shells (sub-class: inconsistent-error-reporting)
+- **Sources**: OCCT/ShapeFix_Shell.Perform (line 130)
+- **Description**: User abort during long-running face-fix loop (aPS.More() returns false) causes early exit with false return value. However, myStatus flag already set to ShapeExtend_DONE1 or similar, creating ambiguity: caller cannot distinguish abort from partial failure. Partial fixes applied with inconsistent error state.
+- **Expected kernel behavior**: heal: return distinct abort status code separate from failure codes, or save/restore status on early exit
+- **Notes**: Shell with many faces triggers lengthy loop; abort gate only checked at loop start
+- **Model impact**: Caller receives false but unknown whether healing succeeded, partially succeeded, or was aborted; downstream decisions corrupted
+- **Fixture path**: step-examples/12-3a-shells/Tsh188.stp
+- **Fixture kind**: scaffold
 
 ### Gp040 — Pcurves emitted by default duplicate / contradict the surface 3D curve
 - **Category**: §12.2a pcurve defects (sub-class: writer-emitted pcurves disagree with 3D)
