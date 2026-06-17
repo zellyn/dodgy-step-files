@@ -21337,6 +21337,26 @@ Minimal reproducer: RATIONAL_B_SPLINE_SURFACE, 3×2 control net, degree (2,1). W
 ### Gn158 — B-spline curve with clustered interior knots, condition-number escalation
 Minimal reproducer: B_SPLINE_CURVE_WITH_KNOTS, degree 3, 7 poles. Interior knots clustered: 0.5, 0.501, 0.502 (spacing ~0.001). Knot multiplicities (4,1,1,1,4), sum=11=n+d+1. Healing challenge: tight knot spacing (ratio ~0.001:0.5) creates ill-conditioned basis matrix; conditioning number grows exponentially with clustering. Expected: detect knot clustering and apply knot removal or uniform reparametrization.
 
+### Gn159 — B-spline surface with collapsed U-boundary pole (pin-face singularity)
+
+Defect: 4x3 NURBS surface (U-degree 2, V-degree 2); last U-row poles all at (3.0,1.5,0.0). CheckPin detects singularity; FixPinFace unimplemented. Falsifiable: pin-face repair must flatten degenerate boundary edge.
+
+### Gn160 — Periodic B-spline curve with parameter wrapping
+
+Defect: 5-pole closed curve (degree 2, periodic); period=1.0. Projection parameter may exceed definition range [0,1) after wrapping. Falsifiable: theProjParam validation must enforce domain bounds in periodic NURBS.
+
+### Gn161 — B-spline surface with asymmetric pole clustering
+
+Defect: 5x2 NURBS (U-degree 2, V-degree 1); dense U-boundary clustering at (0.9,0.95,1.0) with sparse V direction (2 poles only). CheckSmallFace boundary-focused IsoStat must detect asymmetric singularities. Falsifiable: pole-grid boundary scan catches strips missed by interior iteration.
+
+### Gn162 — B-spline curve with interior knot over-multiplicity
+
+Defect: 6-pole curve (degree 3); interior knot at 0.5 has multiplicity 4 (degree+1). Creates geometric discontinuity at interior point. Falsifiable: knot removal must repair interior clamping that violates smoothness.
+
+### Gn163 — B-spline surface with degenerate patch from split
+
+Defect: 3x3 NURBS (U-degree 2, V-degree 2); middle U-row poles near-identical (1.5,1.5,0.01). SplitSurface produces zero-area or empty patches. Falsifiable: patch validation rejects degenerate outputs from split operations.
+
 ### Wr001 — Trailing whitespace on every record line
 - **Category**: §12.13 writer-pathology (sub-class: whitespace/line-ending)
 - **Sources**: prostep ivip CAx-IF round-trip reports; FreeCAD #4231 "STEP exporter pads lines with spaces"; bug-reporter language: "diff between exports is all whitespace"
@@ -23531,6 +23551,26 @@ Single-period cylindrical face with degenerate bottom/top loops and explicit sea
 
 TOROIDAL_SURFACE face with U-seam loop traversing toroidal topology; missing P-curve geometry on seam edge. Tests P-curve lookup failure path and early abort before seam insertion.
 
+### Tfa236 — ShapeFix_Face.FixOrientation
+
+Wire-sense correction via face-surface normal evaluation; manifold compatibility validation on planar outer boundary.
+
+### Tfa237 — ShapeFix_Face.SplitEdge (line-2653)
+
+Edge-division on non-manifold geometry; curve parameterization via vertical spine through cylindrical seam topology.
+
+### Tfa238 — ShapeFix_Face.SplitEdge (line-2741)
+
+Multi-point edge subdivision; overlapping parameter intervals via meridian B-spline and closing circle on spherical patch.
+
+### Tfa239 — ShapeFix_Face.FixSplitFace (line-2908)
+
+Multi-wire face splitting; sub-face reconstruction via outer loop + inner hole on rational B-spline surface.
+
+### Tfa240 — ShapeFix_Face.Perform (line-346)
+
+Integrated face-healing pipeline; mode-dependent cascade via base-slant-apex decomposition on conical degenerate closure.
+
 ### Hea016 — Empty solid output from STEP export of complex body, despite STL succeeding
 - **Category**: §12.3c faces / shape healing
 - **Sources**: FreeCAD #20396; bug-reporter language: "Models exported to STEP crash or produce empty objects", "appears to export fine but results in an empty object", "STL and 3MF export work, STEP doesn't".
@@ -24714,6 +24754,23 @@ Wire open by small gap at closure; FixClosed misses repair when endpoint distanc
 
 ### Twi266 — FixGap3d parameter-discontinuity
 Wire with 3D curve reversing at edge junction; FixGap3d fails to detect reversals violating parametric continuity.
+
+# Wave 69B: ShapeAnalysis_Wire Method Coverage
+
+### Twi267 — ShapeAnalysis_Wire.CheckOuterBound
+Wire outer-bound detection; IsOuterBound flag not propagated correctly after outer boundary classification.
+
+### Twi268 — ShapeAnalysis_Wire.CheckSeam
+Seam edge classification; seam flag not detected when edge traverses surface parametric seam discontinuity.
+
+### Twi269 — ShapeAnalysis_Wire.CheckSelfIntersectingEdge
+Individual edge self-crossing; curve loop detection fails on parametric reversals.
+
+### Twi270 — ShapeAnalysis_Wire.CheckShapeConnect
+Multi-edge shape connectivity validation; disconnected edge chains not flagged when vertices lie within tolerance.
+
+### Twi271 — ShapeAnalysis_Wire.CheckTail
+Wire terminus validation; tail edge proximity check fails when endpoint gaps exceed local curve curvature radius.
 
 ### Gs056 — `SURFACE_OF_REVOLUTION` of an ellipse around its own centre produces a degenerate surface
 - **Category**: §12.2c surface / curve degeneracies (sub-class: revolution of conic)

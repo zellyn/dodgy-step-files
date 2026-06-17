@@ -1,0 +1,54 @@
+ISO-10303-21;
+/* Gn161 - B-spline surface with asymmetric pole distribution across boundaries.
+   Defect: CheckSmallFace pole-grid iteration scans U/V boundaries for singularities.
+   This fixture has dense pole clustering in one direction, sparse in the other.
+   Falsifiable: Boundary-focused IsoStat detection must recognize asymmetric
+   singular strips even when interior rows are regular. */
+HEADER;
+FILE_DESCRIPTION(('Gn161 - BSpline surface with asymmetric pole clustering'),'2;1');
+FILE_NAME('Gn161.stp','2026-06-16T00:00:00',('auto-generated'),(''),
+  'auto-generated','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+/* 5x2 control net: U-degree 2, V-degree 1
+   V direction has only 2 poles (minimal).
+   U direction has 5 poles with clustering near U=1.0 boundary. */
+#10=CARTESIAN_POINT('p00',(0.0,0.0,0.0));
+#11=CARTESIAN_POINT('p01',(0.0,2.0,0.0));
+#20=CARTESIAN_POINT('p10',(1.0,0.0,0.1));
+#21=CARTESIAN_POINT('p11',(1.0,2.0,0.1));
+#30=CARTESIAN_POINT('p20',(2.0,0.0,0.2));
+#31=CARTESIAN_POINT('p21',(2.0,2.0,0.2));
+#40=CARTESIAN_POINT('p30',(2.95,0.0,0.05));
+#41=CARTESIAN_POINT('p31',(2.95,2.0,0.05));
+#50=CARTESIAN_POINT('p40',(3.0,0.0,0.0));
+#51=CARTESIAN_POINT('p41',(3.0,2.0,0.0));
+/* U-degree 2, 5 control points => sum(mult) = 5+2+1 = 8
+   V-degree 1, 2 control points => sum(mult) = 2+1+1 = 4
+   Knots cluster near U=0.9, 0.95, 1.0 */
+#100=B_SPLINE_SURFACE_WITH_KNOTS('asym_poles',2,1,
+  ((#10,#11),(#20,#21),(#30,#31),(#40,#41),(#50,#51)),
+  .UNSPECIFIED.,.F.,.F.,.F.,
+  (3,1,1,1,2),
+  (2,2),
+  (0.0,0.0,0.0,0.25,0.5,0.9,0.95,1.0,1.0),
+  (0.0,0.0,1.0,1.0),
+  .UNSPECIFIED.);
+#9990=APPLICATION_CONTEXT('automotive_design');
+#9000=PRODUCT_CONTEXT('',#9990,'mechanical');
+#9001=PRODUCT('Gn161','Gn161','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#9990,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
+#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
+#9020=GEOMETRIC_CURVE_SET('face_set',(#100));
+#9022=GEOMETRICALLY_BOUNDED_WIREFRAME_SHAPE_REPRESENTATION('',(#9020),#9010);
+#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+ENDSEC;
+END-ISO-10303-21;
