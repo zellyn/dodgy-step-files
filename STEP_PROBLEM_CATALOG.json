@@ -20743,6 +20743,161 @@
     "title": "ShapeAnalysis_Curve.CheckOffsetCurve knot-ratio-overflow degenerate-segment"
   },
   {
+    "byte_assertions": [],
+    "category": "§12.2b NURBS (sub-class: ConvertSurfaceToBezierBasis)",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": null,
+    "description": "Surface with 3x2 control point grid, degree 2/1, all weights=1.0. ConvertSurfaceToBezierBasis may fail to preserve weight consistency across Bezier patch decomposition, causing rational surface metadata loss.",
+    "expected_kernel_behavior": "heal or reject",
+    "expected_validation": "",
+    "fixture_kind": null,
+    "fixture_path": "step-examples/12-2b-nurbs/Gn134.stp",
+    "id": "Gn134",
+    "notes": "rational NURBS weight propagation, Bezier conversion",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-sufficient",
+    "reproducer": "",
+    "section": "12.2b",
+    "section_dir": "12-2b-nurbs",
+    "see_also": [],
+    "sender": "",
+    "severity": null,
+    "sources": [
+      "OCCT/ShapeUpgrade_ConvertSurfaceToBezierBasis"
+    ],
+    "taxonomy": [
+      "geometry"
+    ],
+    "tier3_assertions": [],
+    "title": "NURBS weight array uniform propagation"
+  },
+  {
+    "byte_assertions": [],
+    "category": "§12.2b NURBS (sub-class: ConvertCurveToBezier)",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": null,
+    "description": "Curve with 5 poles, degree 2, interior knots at 0.4 and 0.45 create extremely narrow segment. ConvertCurveToBezier may fail numerically when extracting parameterization from non-uniform knot spacing.",
+    "expected_kernel_behavior": "heal or reject",
+    "expected_validation": "",
+    "fixture_kind": null,
+    "fixture_path": "step-examples/12-2b-nurbs/Gn135.stp",
+    "id": "Gn135",
+    "notes": "clustered interior knots, thin segment numerical instability",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-sufficient",
+    "reproducer": "",
+    "section": "12.2b",
+    "section_dir": "12-2b-nurbs",
+    "see_also": [],
+    "sender": "",
+    "severity": null,
+    "sources": [
+      "OCCT/ShapeUpgrade_ConvertCurveToBezier"
+    ],
+    "taxonomy": [
+      "geometry"
+    ],
+    "tier3_assertions": [],
+    "title": "B-spline curve non-uniform interior knots"
+  },
+  {
+    "byte_assertions": [],
+    "category": "§12.2b NURBS (sub-class: ShapeUpgrade_ConvertSurfaceToBezierBasis.Build)",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": null,
+    "description": "Surface with 4x3 grid, degree 2/1. Build method's iterator variables j1, j2 never reset between outer loop iterations over U splits, causing patches to be skipped when split parameters are non-monotonic relative to knots.",
+    "expected_kernel_behavior": "heal or reject",
+    "expected_validation": "",
+    "fixture_kind": null,
+    "fixture_path": "step-examples/12-2b-nurbs/Gn136.stp",
+    "id": "Gn136",
+    "notes": "iterator boundary condition, loop-invariant mutation",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-sufficient",
+    "reproducer": "",
+    "section": "12.2b",
+    "section_dir": "12-2b-nurbs",
+    "see_also": [],
+    "sender": "",
+    "severity": null,
+    "sources": [
+      "OCCT/ShapeUpgrade_ConvertSurfaceToBezierBasis"
+    ],
+    "taxonomy": [
+      "geometry"
+    ],
+    "tier3_assertions": [],
+    "title": "NURBS iterator loop boundary fault in split"
+  },
+  {
+    "byte_assertions": [],
+    "category": "§12.2b NURBS (sub-class: ShapeUpgrade_ConvertSurfaceToBezierBasis.Build)",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": null,
+    "description": "Curve with 7 poles, degree 3. Split logic uses asymmetric test (parU - param < prec) instead of Abs difference. If split parameter exceeds knot by epsilon, loop exits prematurely, skipping valid patches.",
+    "expected_kernel_behavior": "heal or reject",
+    "expected_validation": "",
+    "fixture_kind": null,
+    "fixture_path": "step-examples/12-2b-nurbs/Gn137.stp",
+    "id": "Gn137",
+    "notes": "precision asymmetry, one-directional tolerance, loop exit",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-sufficient",
+    "reproducer": "",
+    "section": "12.2b",
+    "section_dir": "12-2b-nurbs",
+    "see_also": [],
+    "sender": "",
+    "severity": null,
+    "sources": [
+      "OCCT/ShapeUpgrade_ConvertSurfaceToBezierBasis"
+    ],
+    "taxonomy": [
+      "geometry"
+    ],
+    "tier3_assertions": [],
+    "title": "B-spline curve precision asymmetry in split"
+  },
+  {
+    "byte_assertions": [],
+    "category": "§12.2b NURBS (sub-class: ConvertSurfaceToBezierBasis.Compute)",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": null,
+    "description": "Surface with 5x4 grid, degree 2/2. Compute delegates to basis surface recursively for trimmed surfaces. Parameter domain mismatch between trimmed range and basis surface conversion causes bounds validation failure.",
+    "expected_kernel_behavior": "heal or reject",
+    "expected_validation": "",
+    "fixture_kind": null,
+    "fixture_path": "step-examples/12-2b-nurbs/Gn138.stp",
+    "id": "Gn138",
+    "notes": "trimmed surface delegation, parameter domain sync, recursive basis conversion",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-sufficient",
+    "reproducer": "",
+    "section": "12.2b",
+    "section_dir": "12-2b-nurbs",
+    "see_also": [],
+    "sender": "",
+    "severity": null,
+    "sources": [
+      "OCCT/ShapeUpgrade_ConvertSurfaceToBezierBasis"
+    ],
+    "taxonomy": [
+      "geometry"
+    ],
+    "tier3_assertions": [],
+    "title": "NURBS trimmed surface Bezier basis delegation"
+  },
+  {
     "byte_assertions": [
       "contains(b'LINE(')",
       "count_entity_def(b'CARTESIAN_POINT') >= 5"
@@ -23836,6 +23991,161 @@
     ],
     "tier3_assertions": [],
     "title": "MakeBSpline grid-sampling false periodicity"
+  },
+  {
+    "byte_assertions": [],
+    "category": "§12.2c surfaces (sub-class: boundary computation)",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": null,
+    "description": "ISO curve iteration skips null curves without reporting omission. When a U or V iso-curve evaluates to null (degenerate surface, missing parametric branch), BndLib_Add3dCurve::Add is bypassed. Result: boundary box incomplete, missing facets at degenerate edges.",
+    "expected_kernel_behavior": "heal—detect null-ISO case; abort or report incomplete bound",
+    "expected_validation": "",
+    "fixture_kind": null,
+    "fixture_path": "step-examples/12-2c-surfaces/Gs144.stp",
+    "id": "Gs144",
+    "notes": "BndLib integration, lazy-iso-null-guard",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-sufficient",
+    "reproducer": "",
+    "section": "12.2c",
+    "section_dir": "12-2c-surfaces",
+    "see_also": [],
+    "sender": "",
+    "severity": null,
+    "sources": [
+      "OCCT/ShapeAnalysis_Surface::ComputeBoxes"
+    ],
+    "taxonomy": [
+      "geometry"
+    ],
+    "tier3_assertions": [],
+    "title": "ComputeBoxes null-ISO silent skip"
+  },
+  {
+    "byte_assertions": [],
+    "category": "§12.2c surfaces (sub-class: singularity projection)",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": null,
+    "description": "ProjectDegenerated assumes singularities pre-initialized. If myNbDeg < 0 (stale state), lazy recomputation may be skipped. Without triggering ComputeSingularities, degenerate points project incorrectly away from true singularity loci (cone apex, sphere poles).",
+    "expected_kernel_behavior": "heal—detect myNbDeg < 0, force recomputation before projecting",
+    "expected_validation": "",
+    "fixture_kind": null,
+    "fixture_path": "step-examples/12-2c-surfaces/Gs145.stp",
+    "id": "Gs145",
+    "notes": "lazy-singularity-init, cone-apex case, state-precondition",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-sufficient",
+    "reproducer": "",
+    "section": "12.2c",
+    "section_dir": "12-2c-surfaces",
+    "see_also": [],
+    "sender": "",
+    "severity": null,
+    "sources": [
+      "OCCT/ShapeAnalysis_Surface::ProjectDegenerated"
+    ],
+    "taxonomy": [
+      "geometry"
+    ],
+    "tier3_assertions": [],
+    "title": "ProjectDegenerated lazy singularity init"
+  },
+  {
+    "byte_assertions": [],
+    "category": "§12.2c surfaces (sub-class: iterative projection)",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": null,
+    "description": "Newton iteration evaluates surface normals each step. At singular points (sphere pole, cone apex, degenerate patch), D1 partial derivatives collapse to zero magnitude. Without check, division by zero occurs in subsequent normalization, returning invalid projection.",
+    "expected_kernel_behavior": "heal—abort iteration if normal magnitude ≤ epsilon",
+    "expected_validation": "",
+    "fixture_kind": null,
+    "fixture_path": "step-examples/12-2c-surfaces/Gs146.stp",
+    "id": "Gs146",
+    "notes": "normal-degeneracy, singular-point-guard, division-by-zero guard",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-sufficient",
+    "reproducer": "",
+    "section": "12.2c",
+    "section_dir": "12-2c-surfaces",
+    "see_also": [],
+    "sender": "",
+    "severity": null,
+    "sources": [
+      "OCCT/ShapeAnalysis_Surface::SurfaceNewton"
+    ],
+    "taxonomy": [
+      "geometry"
+    ],
+    "tier3_assertions": [],
+    "title": "SurfaceNewton zero-normal break"
+  },
+  {
+    "byte_assertions": [],
+    "category": "§12.2c surfaces (sub-class: uv mapping)",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": null,
+    "description": "Projects 3D point onto surface, returning parametric (u,v). If projection falls outside natural surface parameter range, code may silently clamp or return unclamped values without reporting out-of-bounds. Downstream operations use wrong u/v, breaking topology.",
+    "expected_kernel_behavior": "heal—clamp to bounds with confidence flag; reject if distance-to-bound large",
+    "expected_validation": "",
+    "fixture_kind": null,
+    "fixture_path": "step-examples/12-2c-surfaces/Gs147.stp",
+    "id": "Gs147",
+    "notes": "bounds-clamping, projection-tolerance, parameter-consistency",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-sufficient",
+    "reproducer": "",
+    "section": "12.2c",
+    "section_dir": "12-2c-surfaces",
+    "see_also": [],
+    "sender": "",
+    "severity": null,
+    "sources": [
+      "OCCT/ShapeAnalysis_Surface::ValueOfUV"
+    ],
+    "taxonomy": [
+      "geometry"
+    ],
+    "tier3_assertions": [],
+    "title": "ValueOfUV projection beyond bound"
+  },
+  {
+    "byte_assertions": [],
+    "category": "§12.2c surfaces (sub-class: degeneracy detection)",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": null,
+    "description": "Classifies edge points as degenerate by testing proximity to singularities. If singularities uninitialized (myNbDeg < 0) or tolerance threshold inconsistent with ComputeSingularities, gap metric misses true degenerate edges near apex, poles, or seams.",
+    "expected_kernel_behavior": "heal—recompute singularities if stale; apply consistent tolerance filtering",
+    "expected_validation": "",
+    "fixture_kind": null,
+    "fixture_path": "step-examples/12-2c-surfaces/Gs148.stp",
+    "id": "Gs148",
+    "notes": "singularity-tolerance-threshold, gap-classification, bounded-surface",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-sufficient",
+    "reproducer": "",
+    "section": "12.2c",
+    "section_dir": "12-2c-surfaces",
+    "see_also": [],
+    "sender": "",
+    "severity": null,
+    "sources": [
+      "OCCT/ShapeAnalysis_Surface::DegeneratedValues"
+    ],
+    "taxonomy": [
+      "geometry"
+    ],
+    "tier3_assertions": [],
+    "title": "DegeneratedValues singularity gap classification"
   },
   {
     "byte_assertions": [
@@ -50147,6 +50457,161 @@
     ],
     "tier3_assertions": [],
     "title": "ShapeFix_ShapeTolerance.SetTolerance recursive-double-mutation-shared-vertex"
+  },
+  {
+    "byte_assertions": [],
+    "category": "§12.4 tolerance (sub-class: vertex_filtering)",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": null,
+    "description": "InTolerance(shape, min, max, TopAbs_VERTEX) uses inverted comparison (tol >= valmax) instead of (tol <= valmax), returning vertices outside [min, max] range instead of inside. Contradicts FACE/EDGE filtering logic.",
+    "expected_kernel_behavior": "reject or heal",
+    "expected_validation": "",
+    "fixture_kind": null,
+    "fixture_path": "step-examples/12-4-tolerance/N131.stp",
+    "id": "N131",
+    "notes": "confirmed OCCT source bug; semantic inversion breaks tolerance range semantics",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-sufficient",
+    "reproducer": "",
+    "section": "12.4",
+    "section_dir": "12-4-tolerance",
+    "see_also": [],
+    "sender": "",
+    "severity": null,
+    "sources": [
+      "OCCT/ShapeAnalysis_ShapeTolerance.cxx:131-141"
+    ],
+    "taxonomy": [
+      "topology"
+    ],
+    "tier3_assertions": [],
+    "title": "ShapeAnalysis_ShapeTolerance vertex range inversion"
+  },
+  {
+    "byte_assertions": [],
+    "category": "§12.4 tolerance (sub-class: limit_tolerance)",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": null,
+    "description": "LimitTolerance(shape, tmax, tmin) checks (iamax = tmax >= tmin) without enforcing tmax > tmin. When equality holds, tolerance state becomes nondeterministic; FACE/EDGE/VERTEX bounds undefined.",
+    "expected_kernel_behavior": "reject",
+    "expected_validation": "",
+    "fixture_kind": null,
+    "fixture_path": "step-examples/12-4-tolerance/N132.stp",
+    "id": "N132",
+    "notes": "boundary condition ambiguity; tolerance convergence non-deterministic when tmax==tmin",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-sufficient",
+    "reproducer": "",
+    "section": "12.4",
+    "section_dir": "12-4-tolerance",
+    "see_also": [],
+    "sender": "",
+    "severity": null,
+    "sources": [
+      "OCCT/ShapeFix_ShapeTolerance.cxx:45"
+    ],
+    "taxonomy": [
+      "topology"
+    ],
+    "tier3_assertions": [],
+    "title": "ShapeFix_ShapeTolerance ambiguous equality bound"
+  },
+  {
+    "byte_assertions": [],
+    "category": "§12.4 tolerance (sub-class: input_validation)",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": null,
+    "description": "SetTolerance(shape, prec, VERTEX) accepts negative or zero precision without validation, silently producing TVertex::Tolerance(-0.5) and corrupting downstream operations.",
+    "expected_kernel_behavior": "reject",
+    "expected_validation": "",
+    "fixture_kind": null,
+    "fixture_path": "step-examples/12-4-tolerance/N133.stp",
+    "id": "N133",
+    "notes": "invalid input acceptance; no precondition check",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-sufficient",
+    "reproducer": "",
+    "section": "12.4",
+    "section_dir": "12-4-tolerance",
+    "see_also": [],
+    "sender": "",
+    "severity": null,
+    "sources": [
+      "OCCT/ShapeFix_ShapeTolerance.cxx:148"
+    ],
+    "taxonomy": [
+      "topology"
+    ],
+    "tier3_assertions": [],
+    "title": "ShapeFix_ShapeTolerance negative precision acceptance"
+  },
+  {
+    "byte_assertions": [],
+    "category": "§12.4 tolerance (sub-class: recursive_application)",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": null,
+    "description": "LimitTolerance(wire, tmin, tmax) recursively processes V1/V2 per edge without deduplication. Shared vertices between edges processed multiple times; tolerance converges nondeterministically.",
+    "expected_kernel_behavior": "heal",
+    "expected_validation": "",
+    "fixture_kind": null,
+    "fixture_path": "step-examples/12-4-tolerance/N134.stp",
+    "id": "N134",
+    "notes": "double mutation pattern; tolerance application order nondeterministic",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-sufficient",
+    "reproducer": "",
+    "section": "12.4",
+    "section_dir": "12-4-tolerance",
+    "see_also": [],
+    "sender": "",
+    "severity": null,
+    "sources": [
+      "OCCT/ShapeFix_ShapeTolerance.cxx:98"
+    ],
+    "taxonomy": [
+      "topology"
+    ],
+    "tier3_assertions": [],
+    "title": "ShapeFix_ShapeTolerance shared vertex double mutation"
+  },
+  {
+    "byte_assertions": [],
+    "category": "§12.4 tolerance (sub-class: state_validation)",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": null,
+    "description": "OverTolerance(shell) iterates faces without existence/validity check. Empty or deleted face iterators FAIL TO REPORT tolerance violations; out-of-tolerance geometry escapes validation.",
+    "expected_kernel_behavior": "reject",
+    "expected_validation": "",
+    "fixture_kind": null,
+    "fixture_path": "step-examples/12-4-tolerance/N135.stp",
+    "id": "N135",
+    "notes": "iterator safety; state validation missing",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-sufficient",
+    "reproducer": "",
+    "section": "12.4",
+    "section_dir": "12-4-tolerance",
+    "see_also": [],
+    "sender": "",
+    "severity": null,
+    "sources": [
+      "OCCT/ShapeAnalysis_ShapeTolerance.cxx:87"
+    ],
+    "taxonomy": [
+      "topology"
+    ],
+    "tier3_assertions": [],
+    "title": "ShapeAnalysis_ShapeTolerance missing face validity check"
   },
   {
     "byte_assertions": [

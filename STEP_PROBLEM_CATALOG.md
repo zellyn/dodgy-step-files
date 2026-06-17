@@ -21117,6 +21117,56 @@ Periodic B-spline with knot parameters identical at boundaries but control poles
 - **Fixture path**: step-examples/12-2b-nurbs/Gn133.stp
 - **Fixture kind**: scaffold
 
+### Gn134 — NURBS weight array uniform propagation
+- **Category**: §12.2b NURBS (sub-class: ConvertSurfaceToBezierBasis)
+- **Sources**: OCCT/ShapeUpgrade_ConvertSurfaceToBezierBasis
+- **Description**: Surface with 3x2 control point grid, degree 2/1, all weights=1.0. ConvertSurfaceToBezierBasis may fail to preserve weight consistency across Bezier patch decomposition, causing rational surface metadata loss.
+- **Expected kernel behavior**: heal or reject
+- **Notes**: rational NURBS weight propagation, Bezier conversion
+- **Model impact**: Surface loses rational property during conversion
+- **Fixture path**: step-examples/12-2b-nurbs/Gn134.stp
+- **Fixture kind**: scaffold
+
+### Gn135 — B-spline curve non-uniform interior knots
+- **Category**: §12.2b NURBS (sub-class: ConvertCurveToBezier)
+- **Sources**: OCCT/ShapeUpgrade_ConvertCurveToBezier
+- **Description**: Curve with 5 poles, degree 2, interior knots at 0.4 and 0.45 create extremely narrow segment. ConvertCurveToBezier may fail numerically when extracting parameterization from non-uniform knot spacing.
+- **Expected kernel behavior**: heal or reject
+- **Notes**: clustered interior knots, thin segment numerical instability
+- **Model impact**: Segment parameterization extraction fails
+- **Fixture path**: step-examples/12-2b-nurbs/Gn135.stp
+- **Fixture kind**: scaffold
+
+### Gn136 — NURBS iterator loop boundary fault in split
+- **Category**: §12.2b NURBS (sub-class: ShapeUpgrade_ConvertSurfaceToBezierBasis.Build)
+- **Sources**: OCCT/ShapeUpgrade_ConvertSurfaceToBezierBasis
+- **Description**: Surface with 4x3 grid, degree 2/1. Build method's iterator variables j1, j2 never reset between outer loop iterations over U splits, causing patches to be skipped when split parameters are non-monotonic relative to knots.
+- **Expected kernel behavior**: heal or reject
+- **Notes**: iterator boundary condition, loop-invariant mutation
+- **Model impact**: Patches missing from Bezier decomposition
+- **Fixture path**: step-examples/12-2b-nurbs/Gn136.stp
+- **Fixture kind**: scaffold
+
+### Gn137 — B-spline curve precision asymmetry in split
+- **Category**: §12.2b NURBS (sub-class: ShapeUpgrade_ConvertSurfaceToBezierBasis.Build)
+- **Sources**: OCCT/ShapeUpgrade_ConvertSurfaceToBezierBasis
+- **Description**: Curve with 7 poles, degree 3. Split logic uses asymmetric test (parU - param < prec) instead of Abs difference. If split parameter exceeds knot by epsilon, loop exits prematurely, skipping valid patches.
+- **Expected kernel behavior**: heal or reject
+- **Notes**: precision asymmetry, one-directional tolerance, loop exit
+- **Model impact**: Patch segments skipped due to asymmetric tolerance
+- **Fixture path**: step-examples/12-2b-nurbs/Gn137.stp
+- **Fixture kind**: scaffold
+
+### Gn138 — NURBS trimmed surface Bezier basis delegation
+- **Category**: §12.2b NURBS (sub-class: ConvertSurfaceToBezierBasis.Compute)
+- **Sources**: OCCT/ShapeUpgrade_ConvertSurfaceToBezierBasis
+- **Description**: Surface with 5x4 grid, degree 2/2. Compute delegates to basis surface recursively for trimmed surfaces. Parameter domain mismatch between trimmed range and basis surface conversion causes bounds validation failure.
+- **Expected kernel behavior**: heal or reject
+- **Notes**: trimmed surface delegation, parameter domain sync, recursive basis conversion
+- **Model impact**: Bounds mismatch in recursive Bezier conversion
+- **Fixture path**: step-examples/12-2b-nurbs/Gn138.stp
+- **Fixture kind**: scaffold
+
 ### Wr001 — Trailing whitespace on every record line
 - **Category**: §12.13 writer-pathology (sub-class: whitespace/line-ending)
 - **Sources**: prostep ivip CAx-IF round-trip reports; FreeCAD #4231 "STEP exporter pads lines with spaces"; bug-reporter language: "diff between exports is all whitespace"
@@ -24542,6 +24592,61 @@ B-spline surface with irregular V knot multiplicities (3,1,3) on 4 control point
 - **Fixture path**: step-examples/12-2c-surfaces/Gs143.stp
 - **Fixture kind**: scaffold
 
+### Gs144 — ComputeBoxes null-ISO silent skip
+
+- **Category**: §12.2c surfaces (sub-class: boundary computation)
+- **Sources**: OCCT/ShapeAnalysis_Surface::ComputeBoxes
+- **Description**: ISO curve iteration skips null curves without reporting omission. When a U or V iso-curve evaluates to null (degenerate surface, missing parametric branch), BndLib_Add3dCurve::Add is bypassed. Result: boundary box incomplete, missing facets at degenerate edges.
+- **Expected kernel behavior**: heal—detect null-ISO case; abort or report incomplete bound
+- **Notes**: BndLib integration, lazy-iso-null-guard
+- **Model impact**: Incomplete bounding box; downstream operations using this box (e.g., interference checks) may miss overlaps
+- **Fixture path**: step-examples/12-2c-surfaces/Gs144.stp
+- **Fixture kind**: scaffold
+
+### Gs145 — ProjectDegenerated lazy singularity init
+
+- **Category**: §12.2c surfaces (sub-class: singularity projection)
+- **Sources**: OCCT/ShapeAnalysis_Surface::ProjectDegenerated
+- **Description**: ProjectDegenerated assumes singularities pre-initialized. If myNbDeg < 0 (stale state), lazy recomputation may be skipped. Without triggering ComputeSingularities, degenerate points project incorrectly away from true singularity loci (cone apex, sphere poles).
+- **Expected kernel behavior**: heal—detect myNbDeg < 0, force recomputation before projecting
+- **Notes**: lazy-singularity-init, cone-apex case, state-precondition
+- **Model impact**: Degenerate edges misaligned with singularity; edges collapse to wrong u/v value
+- **Fixture path**: step-examples/12-2c-surfaces/Gs145.stp
+- **Fixture kind**: scaffold
+
+### Gs146 — SurfaceNewton zero-normal break
+
+- **Category**: §12.2c surfaces (sub-class: iterative projection)
+- **Sources**: OCCT/ShapeAnalysis_Surface::SurfaceNewton
+- **Description**: Newton iteration evaluates surface normals each step. At singular points (sphere pole, cone apex, degenerate patch), D1 partial derivatives collapse to zero magnitude. Without check, division by zero occurs in subsequent normalization, returning invalid projection.
+- **Expected kernel behavior**: heal—abort iteration if normal magnitude ≤ epsilon
+- **Notes**: normal-degeneracy, singular-point-guard, division-by-zero guard
+- **Model impact**: Projection returns nan/inf; downstream face evaluation fails
+- **Fixture path**: step-examples/12-2c-surfaces/Gs146.stp
+- **Fixture kind**: scaffold
+
+### Gs147 — ValueOfUV projection beyond bound
+
+- **Category**: §12.2c surfaces (sub-class: uv mapping)
+- **Sources**: OCCT/ShapeAnalysis_Surface::ValueOfUV
+- **Description**: Projects 3D point onto surface, returning parametric (u,v). If projection falls outside natural surface parameter range, code may silently clamp or return unclamped values without reporting out-of-bounds. Downstream operations use wrong u/v, breaking topology.
+- **Expected kernel behavior**: heal—clamp to bounds with confidence flag; reject if distance-to-bound large
+- **Notes**: bounds-clamping, projection-tolerance, parameter-consistency
+- **Model impact**: Incorrect parametric mapping; edges snap to wrong surface regions
+- **Fixture path**: step-examples/12-2c-surfaces/Gs147.stp
+- **Fixture kind**: scaffold
+
+### Gs148 — DegeneratedValues singularity gap classification
+
+- **Category**: §12.2c surfaces (sub-class: degeneracy detection)
+- **Sources**: OCCT/ShapeAnalysis_Surface::DegeneratedValues
+- **Description**: Classifies edge points as degenerate by testing proximity to singularities. If singularities uninitialized (myNbDeg < 0) or tolerance threshold inconsistent with ComputeSingularities, gap metric misses true degenerate edges near apex, poles, or seams.
+- **Expected kernel behavior**: heal—recompute singularities if stale; apply consistent tolerance filtering
+- **Notes**: singularity-tolerance-threshold, gap-classification, bounded-surface
+- **Model impact**: Degenerate edges not identified; healer skips needed edge collapse/redistribution
+- **Fixture path**: step-examples/12-2c-surfaces/Gs148.stp
+- **Fixture kind**: scaffold
+
 ### Ad117 — STEP reader crashes on minimal file with malformed `STYLED_ITEM`
 - **Category**: §12.11 adversarial / parser-robustness (sub-class: SEGV on style record)
 - **Sources**: OCCT MANTIS#0029979; bug-reporter language: "crash by reading STEP file", "STEP reader crashes on import", "segmentation fault on small STEP file". (OCCT MANTIS tracker 502 as of 2026-05-02)
@@ -26973,6 +27078,56 @@ CheckPoints called with precision 1e-3 but projection-distance test uses 1e-6 in
 - **Notes**: Synonym: recursive_double_mutation, shared_vertex_double_application
 - **Model impact**: Reading produces vertex tolerance inconsistent with intended min/max clamping
 - **Fixture path**: step-examples/12-4-tolerance/N130.stp
+- **Fixture kind**: scaffold
+
+### N131 — ShapeAnalysis_ShapeTolerance vertex range inversion
+- **Category**: §12.4 tolerance (sub-class: vertex_filtering)
+- **Sources**: OCCT/ShapeAnalysis_ShapeTolerance.cxx:131-141
+- **Description**: InTolerance(shape, min, max, TopAbs_VERTEX) uses inverted comparison (tol >= valmax) instead of (tol <= valmax), returning vertices outside [min, max] range instead of inside. Contradicts FACE/EDGE filtering logic.
+- **Expected kernel behavior**: reject or heal
+- **Notes**: confirmed OCCT source bug; semantic inversion breaks tolerance range semantics
+- **Model impact**: InTolerance(shape, 0.001, 0.002, VERTEX) returns 0.005-tolerance vertex instead of 0.0015
+- **Fixture path**: step-examples/12-4-tolerance/N131.stp
+- **Fixture kind**: scaffold
+
+### N132 — ShapeFix_ShapeTolerance ambiguous equality bound
+- **Category**: §12.4 tolerance (sub-class: limit_tolerance)
+- **Sources**: OCCT/ShapeFix_ShapeTolerance.cxx:45
+- **Description**: LimitTolerance(shape, tmax, tmin) checks (iamax = tmax >= tmin) without enforcing tmax > tmin. When equality holds, tolerance state becomes nondeterministic; FACE/EDGE/VERTEX bounds undefined.
+- **Expected kernel behavior**: reject
+- **Notes**: boundary condition ambiguity; tolerance convergence non-deterministic when tmax==tmin
+- **Model impact**: SetTolerance(shape, 1.0, 1.0, VERTEX) produces undefined tolerance semantics
+- **Fixture path**: step-examples/12-4-tolerance/N132.stp
+- **Fixture kind**: scaffold
+
+### N133 — ShapeFix_ShapeTolerance negative precision acceptance
+- **Category**: §12.4 tolerance (sub-class: input_validation)
+- **Sources**: OCCT/ShapeFix_ShapeTolerance.cxx:148
+- **Description**: SetTolerance(shape, prec, VERTEX) accepts negative or zero precision without validation, silently producing TVertex::Tolerance(-0.5) and corrupting downstream operations.
+- **Expected kernel behavior**: reject
+- **Notes**: invalid input acceptance; no precondition check
+- **Model impact**: SetTolerance(shape, -0.5, VERTEX) creates negative tolerance corruption
+- **Fixture path**: step-examples/12-4-tolerance/N133.stp
+- **Fixture kind**: scaffold
+
+### N134 — ShapeFix_ShapeTolerance shared vertex double mutation
+- **Category**: §12.4 tolerance (sub-class: recursive_application)
+- **Sources**: OCCT/ShapeFix_ShapeTolerance.cxx:98
+- **Description**: LimitTolerance(wire, tmin, tmax) recursively processes V1/V2 per edge without deduplication. Shared vertices between edges processed multiple times; tolerance converges nondeterministically.
+- **Expected kernel behavior**: heal
+- **Notes**: double mutation pattern; tolerance application order nondeterministic
+- **Model impact**: Wire with shared vertex receives tolerance applied twice, last-write-wins semantics
+- **Fixture path**: step-examples/12-4-tolerance/N134.stp
+- **Fixture kind**: scaffold
+
+### N135 — ShapeAnalysis_ShapeTolerance missing face validity check
+- **Category**: §12.4 tolerance (sub-class: state_validation)
+- **Sources**: OCCT/ShapeAnalysis_ShapeTolerance.cxx:87
+- **Description**: OverTolerance(shell) iterates faces without existence/validity check. Empty or deleted face iterators FAIL TO REPORT tolerance violations; out-of-tolerance geometry escapes validation.
+- **Expected kernel behavior**: reject
+- **Notes**: iterator safety; state validation missing
+- **Model impact**: Shell with deleted faces passes OverTolerance check; violations unreported
+- **Fixture path**: step-examples/12-4-tolerance/N135.stp
 - **Fixture kind**: scaffold
 
 ### M161 — Reader does not validate cross-references; dangling references silently accepted

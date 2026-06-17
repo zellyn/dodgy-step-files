@@ -1,0 +1,54 @@
+ISO-10303-21;
+/* Gs147 - ShapeAnalysis_Surface.ValueOfUV projection beyond bound
+ *
+ * Defect: ValueOfUV() projects a 3D point onto surface and returns parametric
+ * coordinates. If the projection falls outside the surface parameter bounds,
+ * the code may silently clamp or return unclamped values without reporting
+ * the out-of-bounds condition. This leads to incorrect parametric mapping
+ * for downstream operations.
+ *
+ * Reproducer: PLANE offset from origin; project point far outside natural bounds;
+ * verify clamping behavior and tolerance handling.
+ */
+HEADER;
+FILE_DESCRIPTION(('Gs147 test case','ValueOfUV projection beyond bound'),'2;1');
+FILE_NAME('Gs147.stp','2026-06-16T00:00:00',('zellyn@gmail.com'),'','auto-generated','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#11=DIRECTION('',(0.0,0.0,1.0));
+#12=DIRECTION('',(1.0,0.0,0.0));
+#13=AXIS2_PLACEMENT_3D('',#10,#11,#12);
+/* PLANE at z=5.0 */
+#20=PLANE('',#13);
+#50=CARTESIAN_POINT('',(0.0,0.0,5.0));
+#51=VERTEX_POINT('',#50);
+#52=CARTESIAN_POINT('',(10.0,0.0,5.0));
+#53=VERTEX_POINT('',#52);
+#60=DIRECTION('',(1.0,0.0,0.0));
+#61=VECTOR('',#60,10.0);
+#62=LINE('',#50,#61);
+#63=EDGE_CURVE('',#51,#53,#62,.T.);
+#64=ORIENTED_EDGE('',*,*,#63,.T.);
+#65=EDGE_LOOP('',(#64));
+#66=FACE_OUTER_BOUND('',#65,.T.);
+#67=ADVANCED_FACE('',(#66),#20,.T.);
+#80=OPEN_SHELL('',(#67));
+#9000=PRODUCT_CONTEXT('',#1,'mechanical');
+#9001=PRODUCT('Gs147','Gs147','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
+#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
+#9022=GEOMETRICALLY_BOUNDED_SURFACE_SHAPE_REPRESENTATION('',(#80),#9010);
+#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+ENDSEC;
+END-ISO-10303-21;
