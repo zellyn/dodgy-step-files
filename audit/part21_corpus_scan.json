@@ -2,7 +2,7 @@
   "sections": {
     "12-3c-faces": {
       "accept": 117,
-      "accept_with_warnings": 139,
+      "accept_with_warnings": 122,
       "reject": 0
     },
     "12-6-assembly": {
@@ -16,9 +16,9 @@
       "reject": 12
     },
     "12-3a-shells": {
-      "accept": 190,
+      "accept": 168,
       "accept_with_warnings": 69,
-      "reject": 1
+      "reject": 0
     },
     "12-11-adversarial": {
       "accept": 53,
@@ -36,7 +36,7 @@
       "reject": 16
     },
     "12-8-mixed": {
-      "accept": 157,
+      "accept": 153,
       "accept_with_warnings": 59,
       "reject": 0
     },
@@ -51,7 +51,7 @@
       "reject": 5
     },
     "12-2b-nurbs": {
-      "accept": 44,
+      "accept": 39,
       "accept_with_warnings": 118,
       "reject": 0
     },
@@ -61,7 +61,7 @@
       "reject": 7
     },
     "12-4-tolerance": {
-      "accept": 168,
+      "accept": 158,
       "accept_with_warnings": 19,
       "reject": 0
     },
@@ -71,12 +71,12 @@
       "reject": 0
     },
     "12-2c-surfaces": {
-      "accept": 109,
+      "accept": 104,
       "accept_with_warnings": 63,
       "reject": 0
     },
     "12-7-pmi": {
-      "accept": 72,
+      "accept": 70,
       "accept_with_warnings": 50,
       "reject": 0
     },
@@ -108,13 +108,6 @@
       ]
     },
     {
-      "section": "12-3a-shells",
-      "name": "Bo002.stp",
-      "codes": [
-        "E_UNRESOLVED_REFS"
-      ]
-    },
-    {
       "section": "12-10-perf",
       "name": "Pf012.stp",
       "codes": [
@@ -132,7 +125,7 @@
   "error_codes": {
     "E_X2_NON_HEX": 8,
     "E_X2_BAD_LEN": 5,
-    "E_UNRESOLVED_REFS": 15,
+    "E_UNRESOLVED_REFS": 14,
     "E_NO_DATA": 6,
     "E_NO_CLOSE": 6,
     "E_NO_HEADER": 1,
@@ -154,7 +147,7 @@
     "E_REAL_NO_DOT": 1
   },
   "warning_codes": {
-    "W_FORWARD_REF": 726,
+    "W_FORWARD_REF": 708,
     "W_COMPLEX_ORDER": 57,
     "W_DUP_REF": 27,
     "W_BARE_BACKSLASH": 115,
