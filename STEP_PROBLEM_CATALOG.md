@@ -21011,6 +21011,112 @@ Degree-3 Bezier curve (already in Bezier form). ConvertCurve2dToBezier should be
 
 Periodic B-spline with knot parameters identical at boundaries but control poles differing by 1e-3. IsClosed checks knot equality only and reports true, but geometry gap persists at closure point.
 
+# Wave 54C: Gn129–Gn133 NURBS fixtures
+
+## Gn129 — Geom_BSplineSurface periodic-U-closure weight-extraction
+
+**Defect**: B-spline surface with U-periodic declaration (IUPeriodic=.T.) but weight vector initialized to 1.0 uniformly. Healing logic for periodic surfaces calls UPeriod() and assumes proper weight handling in periodicity checks. Without weight-aware closure validation, false closure detected even though weights differ at wrapped edges.
+
+**Minimal reproducer**: Construct B-spline surface with U-periodic knot vector (period 2π), 4x3 poles, rational (weights = [1,1,1,1,1,1,1,1,1,1,1,1]). One weight in wrapped pole row = 0.8. Call IUPeriodic(); ShapeAnalysis_Surface.IsUClosed(). Expected: Correctly account for weight differences, flag as not-closed if poles/weights don't match. Incorrect: Ignore weight disparity, return true.
+
+**File**: `/Users/zellyn/gh/dodgy-step-files/step-examples/12-2b-nurbs/Gn129.stp`
+
+---
+
+## Gn130 — ShapeUpgrade_ConvertCurveToBezier non-uniform-knots tail-degenerate
+
+**Defect**: B-spline curve degree 3, 6 control poles, with non-uniform knot spacing (cluster of 3 knots in [0.2, 0.25], then sparse [0.5, 0.75, 1.0]). ConvertCurveToBezier splits into Bezier segments at each interior knot, but does not validate segment continuity. Last segment (tail) degenerates because the final poles are collinear.
+
+**Minimal reproducer**: 2D B-spline curve, degree 3, poles = [(0,0), (1,2), (2,1), (3,3), (4,4), (4.01,4.01)]. Knots = [0,0,0,0, 0.2, 0.25, 0.5, 0.75, 1,1,1,1]. Call ShapeUpgrade_ConvertCurveToBezier::Perform(). Expected: Detect degenerate tail, warn or skip. Incorrect: Output includes degenerate segment.
+
+**File**: `/Users/zellyn/gh/dodgy-step-files/step-examples/12-2b-nurbs/Gn130.stp`
+
+---
+
+## Gn131 — ShapeFix_ComposeShell.SplitOnEdges B-spline pcurve tangent-mismatch
+
+**Defect**: Closed shell edge with 3D B-spline curve (degree 2, 5 poles, smooth) paired with 2D pcurve on surface (degree 3, knot discontinuity at parameter u=0.5). SplitOnEdges does not check pcurve continuity class before composing. Tangent mismatch violates SameParameter constraint post-healing.
+
+**Minimal reproducer**: B-spline surface (degree 2 in both U, V). Add closed edge: 3D curve (C1 smooth), 2D pcurve with C0 knot at u=0.5. Call ShapeFix_ComposeShell.SplitOnEdges(). Expected: Detect C0 in pcurve, propose split or upgrade. Incorrect: Compose without detecting discontinuity.
+
+**File**: `/Users/zellyn/gh/dodgy-step-files/step-examples/12-2b-nurbs/Gn131.stp`
+
+---
+
+## Gn132 — Geom_BSplineCurve.IncreaseDegree weight-redistribution asymmetry
+
+**Defect**: Rational B-spline curve (degree 2, 4 poles) with non-uniform weights [1.0, 2.0, 1.5, 1.0]. IncreaseDegree to degree 3 inserts new control points via Oslo algorithm. Weight redistribution is not properly scaled, causing geometric shift and loss of continuity properties.
+
+**Minimal reproducer**: Curve degree 2, poles = [(0,0,0), (1,2,0), (2,1,0), (3,0,0)], weights = [1, 2, 1.5, 1]. Knots = [0,0,0, 0.5, 1,1,1]. Call IncreaseDegree(3). Expected: New poles/weights preserve curve shape, C2 continuity. Incorrect: Asymmetric weight distribution shifts curve.
+
+**File**: `/Users/zellyn/gh/dodgy-step-files/step-examples/12-2b-nurbs/Gn132.stp`
+
+---
+
+## Gn133 — ShapeAnalysis_Curve.CheckOffsetCurve knot-ratio-overflow degenerate-segment
+
+**Defect**: B-spline curve with 9 poles, degree 3, knot vector with outlier spacings ([0, 0, 0, 0, 0.01, 0.5, 0.51, 1, 1, 1, 1, 1]). CheckOffsetCurve evaluates each segment and detects knot-ratio > 100. Degenerate segment (between 0.5 and 0.51) causes offset evaluation to fail or produce invalid tangent.
+
+**Minimal reproducer**: B-spline curve, degree 3, 9 poles with geometry concentrated in [0, 0.01] and [0.5, 0.51], sparse [0.01, 0.5]. Knots = [0,0,0,0, 0.01, 0.5, 0.51, 1, 1, 1, 1, 1]. Call CheckOffsetCurve (offset 0.1). Expected: Detect knot-ratio anomaly, flag for reparametrization. Incorrect: Evaluate on ill-conditioned segment, produce NaN tangent.
+
+**File**: `/Users/zellyn/gh/dodgy-step-files/step-examples/12-2b-nurbs/Gn133.stp`
+
+---
+
+### Gn129 — Geom_BSplineSurface periodic-U-closure weight-extraction
+- **Category**: §12.2b NURBS
+- **Sources**: OCCT/see OCCT/v3
+- **Description**: Geom_BSplineSurface periodic-U-closure weight-extraction
+- **Expected kernel behavior**: heal: detect and correct the issue; reject: if precondition unrecoverable
+- **Notes**: synthesized fixture from v3 deep-pass; falsifiable claim per Minimal reproducer
+- **Model impact**: Construct B-spline surface with U-periodic knot vector (period 2π), 4x3 poles, rational (weights = [1,1,1,1,1,1,1,1,1,1,1,1]). One weight in wrapped pole row = 0.8. Call IUPeriodic(); ShapeAnalysis_Su
+- **Fixture path**: step-examples/12-2b-nurbs/Gn129.stp
+- **Fixture kind**: scaffold
+
+
+### Gn130 — ShapeUpgrade_ConvertCurveToBezier non-uniform-knots tail-degenerate
+- **Category**: §12.2b NURBS
+- **Sources**: OCCT/see OCCT/v3
+- **Description**: ShapeUpgrade_ConvertCurveToBezier non-uniform-knots tail-degenerate
+- **Expected kernel behavior**: heal: detect and correct the issue; reject: if precondition unrecoverable
+- **Notes**: synthesized fixture from v3 deep-pass; falsifiable claim per Minimal reproducer
+- **Model impact**: 2D B-spline curve, degree 3, poles = [(0,0), (1,2), (2,1), (3,3), (4,4), (4.01,4.01)]. Knots = [0,0,0,0, 0.2, 0.25, 0.5, 0.75, 1,1,1,1]. Call ShapeUpgrade_ConvertCurveToBezier::Perform(). Expected: De
+- **Fixture path**: step-examples/12-2b-nurbs/Gn130.stp
+- **Fixture kind**: scaffold
+
+
+### Gn131 — ShapeFix_ComposeShell.SplitOnEdges B-spline pcurve tangent-mismatch
+- **Category**: §12.2b NURBS
+- **Sources**: OCCT/see OCCT/v3
+- **Description**: ShapeFix_ComposeShell.SplitOnEdges B-spline pcurve tangent-mismatch
+- **Expected kernel behavior**: heal: detect and correct the issue; reject: if precondition unrecoverable
+- **Notes**: synthesized fixture from v3 deep-pass; falsifiable claim per Minimal reproducer
+- **Model impact**: B-spline surface (degree 2 in both U, V). Add closed edge: 3D curve (C1 smooth), 2D pcurve with C0 knot at u=0.5. Call ShapeFix_ComposeShell.SplitOnEdges(). Expected: Detect C0 in pcurve, propose spli
+- **Fixture path**: step-examples/12-2b-nurbs/Gn131.stp
+- **Fixture kind**: scaffold
+
+
+### Gn132 — Geom_BSplineCurve.IncreaseDegree weight-redistribution asymmetry
+- **Category**: §12.2b NURBS
+- **Sources**: OCCT/see OCCT/v3
+- **Description**: Geom_BSplineCurve.IncreaseDegree weight-redistribution asymmetry
+- **Expected kernel behavior**: heal: detect and correct the issue; reject: if precondition unrecoverable
+- **Notes**: synthesized fixture from v3 deep-pass; falsifiable claim per Minimal reproducer
+- **Model impact**: Curve degree 2, poles = [(0,0,0), (1,2,0), (2,1,0), (3,0,0)], weights = [1, 2, 1.5, 1]. Knots = [0,0,0, 0.5, 1,1,1]. Call IncreaseDegree(3). Expected: New poles/weights preserve curve shape, C2 contin
+- **Fixture path**: step-examples/12-2b-nurbs/Gn132.stp
+- **Fixture kind**: scaffold
+
+
+### Gn133 — ShapeAnalysis_Curve.CheckOffsetCurve knot-ratio-overflow degenerate-segment
+- **Category**: §12.2b NURBS
+- **Sources**: OCCT/see OCCT/v3
+- **Description**: ShapeAnalysis_Curve.CheckOffsetCurve knot-ratio-overflow degenerate-segment
+- **Expected kernel behavior**: heal: detect and correct the issue; reject: if precondition unrecoverable
+- **Notes**: synthesized fixture from v3 deep-pass; falsifiable claim per Minimal reproducer
+- **Model impact**: B-spline curve, degree 3, 9 poles with geometry concentrated in [0, 0.01] and [0.5, 0.51], sparse [0.01, 0.5]. Knots = [0,0,0,0, 0.01, 0.5, 0.51, 1, 1, 1, 1, 1]. Call CheckOffsetCurve (offset 0.1). Ex
+- **Fixture path**: step-examples/12-2b-nurbs/Gn133.stp
+- **Fixture kind**: scaffold
+
 ### Wr001 — Trailing whitespace on every record line
 - **Category**: §12.13 writer-pathology (sub-class: whitespace/line-ending)
 - **Sources**: prostep ivip CAx-IF round-trip reports; FreeCAD #4231 "STEP exporter pads lines with spaces"; bug-reporter language: "diff between exports is all whitespace"
@@ -25722,6 +25828,120 @@ Pcurve is HYPERBOLA with reversed edge orientation. FixReversed2d's reversal doe
 
 Pcurve is TRIMMED_CURVE. GetEndTangent2d uses untrimmed-curve tangent at trim boundary, producing wrong direction.
 
+# Wave 54B Fixtures — Gp126–Gp130
+
+## Gp126 — ShapeAnalysis_Edge.CheckCurve3dWithPCurve plane-projection mismatch
+
+**Method**: `ShapeAnalysis_Edge::CheckCurve3dWithPCurve`  
+**Defect axis**: `pcurve_extraction_failure`  
+**Falsifiable claim**: Analyzer silently passes when 3D curve endpoints and P-curve projections don't match under plane projection; fails to detect inconsistency specific to planar surfaces (Geom_Plane).
+
+**Minimal reproducer**: Edge on plane with 3D line from (0,0,0)→(5,0,0) but P-curve line (0,0)→(5.5,0) in 2D. Endpoint mismatch under projection not detected.
+
+**Search anchors**: `IsKind<Geom_Plane>`, `CheckCurve3dWithPCurve`, `endpoints`, `Geom_Plane`
+
+---
+
+## Gp127 — ShapeAnalysis_Edge.CheckCurve3dWithPCurve missing P-curve (FAIL1)
+
+**Method**: `ShapeAnalysis_Edge::CheckCurve3dWithPCurve`  
+**Defect axis**: `pcurve_extraction_failure`  
+**Falsifiable claim**: Analyzer silently returns false when P-curve extraction fails (FAIL1 status), masking missing or corrupt parametric curve data.
+
+**Minimal reproducer**: SURFACE_CURVE with empty pcurve list on cylindrical surface. CheckCurve3dWithPCurve returns false without reporting extraction failure.
+
+**Search anchors**: `PCurve()`, `FAIL1`, `return false`, `extraction`
+
+---
+
+## Gp128 — ShapeFix_Edge.FixAddPCurve transform surface down_cast failure
+
+**Method**: `ShapeFix_Edge::FixAddPCurve`  
+**Defect axis**: `unsafe_type_narrowing`  
+**Falsifiable claim**: Non-identity location with offset surface causes Transformed() to return incompatible type; down_cast fails, exception handling missing.
+
+**Minimal reproducer**: Edge on OFFSET_SURFACE with non-identity location. Transformed() returns surface that fails safe down_cast to expected type, causing null dereference or exception.
+
+**Search anchors**: `Transformed()`, `down_cast`, `location.IsIdentity()`, `OFFSET_SURFACE`
+
+---
+
+## Gp129 — ShapeAnalysis_Curve.Project degenerate-curve NaN
+
+**Method**: `ShapeAnalysis_Curve::Project`  
+**Defect axis**: `derivative_degeneracy_escalation`  
+**Falsifiable claim**: Project returns NaN on degenerate curves; comparison NaN < f is false, allowing return false via dist > tol path, silently masking failure.
+
+**Minimal reproducer**: Degenerate B-spline with all control points identical (collapses to point). Project returns NaN; distance check fails to catch.
+
+**Search anchors**: `Project()`, `NaN`, `dist > tol`, `degenerate`
+
+---
+
+## Gp130 — ShapeFix_Edge.FixSameParameter B-spline parameter range mismatch
+
+**Method**: `ShapeFix_Edge::FixSameParameter`  
+**Defect axis**: `PARAMETER_SYNC`  
+**Falsifiable claim**: B-spline 3D span [0..10] vs P-curve 2D span [0..2] parameter mismatch silent; FixSameParameter misses compression ratio inconsistency.
+
+**Minimal reproducer**: B-spline in 3D with knot range [0,10], P-curve B-spline with knot range [0,2]. Parameter sync failure undetected.
+
+**Search anchors**: `FixSameParameter`, `B-spline`, `knot range`, `parameter coherence`
+
+### Gp126 — ShapeAnalysis_Edge.CheckCurve3dWithPCurve plane-projection mismatch
+- **Category**: §12.2a pcurves
+- **Sources**: OCCT/ShapeAnalysis_Edge::CheckCurve3dWithPCurve
+- **Description**: Analyzer silently passes when 3D curve endpoints and P-curve projections don't match under plane projection; fails to detect inconsistency specific to planar surfaces (Geom_Plane).
+- **Expected kernel behavior**: heal: detect and correct the issue; reject: if precondition unrecoverable
+- **Notes**: synthesized fixture from v3 deep-pass; falsifiable claim per Minimal reproducer
+- **Model impact**: Edge on plane with 3D line from (0,0,0)→(5,0,0) but P-curve line (0,0)→(5.5,0) in 2D. Endpoint mismatch under projection not detected.
+- **Fixture path**: step-examples/12-2a-pcurves/Gp126.stp
+- **Fixture kind**: scaffold
+
+
+### Gp127 — ShapeAnalysis_Edge.CheckCurve3dWithPCurve missing P-curve (FAIL1)
+- **Category**: §12.2a pcurves
+- **Sources**: OCCT/ShapeAnalysis_Edge::CheckCurve3dWithPCurve
+- **Description**: Analyzer silently returns false when P-curve extraction fails (FAIL1 status), masking missing or corrupt parametric curve data.
+- **Expected kernel behavior**: heal: detect and correct the issue; reject: if precondition unrecoverable
+- **Notes**: synthesized fixture from v3 deep-pass; falsifiable claim per Minimal reproducer
+- **Model impact**: SURFACE_CURVE with empty pcurve list on cylindrical surface. CheckCurve3dWithPCurve returns false without reporting extraction failure.
+- **Fixture path**: step-examples/12-2a-pcurves/Gp127.stp
+- **Fixture kind**: scaffold
+
+
+### Gp128 — ShapeFix_Edge.FixAddPCurve transform surface down_cast failure
+- **Category**: §12.2a pcurves
+- **Sources**: OCCT/ShapeFix_Edge::FixAddPCurve
+- **Description**: Non-identity location with offset surface causes Transformed() to return incompatible type; down_cast fails, exception handling missing.
+- **Expected kernel behavior**: heal: detect and correct the issue; reject: if precondition unrecoverable
+- **Notes**: synthesized fixture from v3 deep-pass; falsifiable claim per Minimal reproducer
+- **Model impact**: Edge on OFFSET_SURFACE with non-identity location. Transformed() returns surface that fails safe down_cast to expected type, causing null dereference or exception.
+- **Fixture path**: step-examples/12-2a-pcurves/Gp128.stp
+- **Fixture kind**: scaffold
+
+
+### Gp129 — ShapeAnalysis_Curve.Project degenerate-curve NaN
+- **Category**: §12.2a pcurves
+- **Sources**: OCCT/ShapeAnalysis_Curve::Project
+- **Description**: Project returns NaN on degenerate curves; comparison NaN < f is false, allowing return false via dist > tol path, silently masking failure.
+- **Expected kernel behavior**: heal: detect and correct the issue; reject: if precondition unrecoverable
+- **Notes**: synthesized fixture from v3 deep-pass; falsifiable claim per Minimal reproducer
+- **Model impact**: Degenerate B-spline with all control points identical (collapses to point). Project returns NaN; distance check fails to catch.
+- **Fixture path**: step-examples/12-2a-pcurves/Gp129.stp
+- **Fixture kind**: scaffold
+
+
+### Gp130 — ShapeFix_Edge.FixSameParameter B-spline parameter range mismatch
+- **Category**: §12.2a pcurves
+- **Sources**: OCCT/ShapeFix_Edge::FixSameParameter
+- **Description**: B-spline 3D span [0..10] vs P-curve 2D span [0..2] parameter mismatch silent; FixSameParameter misses compression ratio inconsistency.
+- **Expected kernel behavior**: heal: detect and correct the issue; reject: if precondition unrecoverable
+- **Notes**: synthesized fixture from v3 deep-pass; falsifiable claim per Minimal reproducer
+- **Model impact**: B-spline in 3D with knot range [0,10], P-curve B-spline with knot range [0,2]. Parameter sync failure undetected.
+- **Fixture path**: step-examples/12-2a-pcurves/Gp130.stp
+- **Fixture kind**: scaffold
+
 ### A105 — Regression OCC 6.9.1 → 7.4.0: colours stop appearing on certain STEP files
 - **Category**: §12.6 assembly hierarchy (sub-class: appearance regression across kernel versions)
 - **Sources**: OCCT MANTIS#0031809; bug-reporter language: "regression v.6.9.1-7.4.0 colors no longer showing on certain STEP files", "files that displayed colour in 6.9.1 are grey in 7.4.0", "appearance regression". (OCCT MANTIS tracker 502 as of 2026-05-02)
@@ -26415,6 +26635,56 @@ CheckPoints called with precision 1e-3 but projection-distance test uses 1e-6 in
 **Defect category:** Iterator invalidation / concurrent modification  
 **Input pattern:** Shell-based model with shared face/edge references; tolerance map iteration and modification in same pass  
 **Triggering condition:** AddTolerance mutates tolerance map while iterating; topology map corruption or inconsistent state on shared geometry
+
+### N126 — ShapeAnalysis_ShapeTolerance.InTolerance vertex-filtering-inverted
+- **Category**: §12.4 tolerance (sub-class: vertex-filtering bug)
+- **Sources**: OCCT/ShapeAnalysis_ShapeTolerance.cxx:131-141 (vertex case uses tol >= valmax)
+- **Description**: InTolerance filters vertices by tolerance range but uses inverted comparison (tol >= valmax) vs FACE/EDGE (tol <= valmax). Query for vertices with tolerance in [0.001, 0.002] returns only those >= 0.002, reversing the range semantics.
+- **Expected kernel behavior**: Reject or heal by using correct comparison operator
+- **Notes**: Synonym: vertex_tolerance_filtering_BUGGY (OCCT source audit)
+- **Model impact**: Reading produces incorrect vertex subset when invoking InTolerance with TopAbs_VERTEX
+- **Fixture path**: step-examples/12-4-tolerance/N126.stp
+- **Fixture kind**: scaffold
+
+### N127 — ShapeFix_ShapeTolerance.SetTolerance no-validation-negative-precision
+- **Category**: §12.4 tolerance (sub-class: input-validation)
+- **Sources**: OCCT/ShapeFix_ShapeTolerance.cxx:148 (no check preci > 0)
+- **Description**: SetTolerance accepts negative or zero precision without validation. Negative tolerance silently stored, corrupting downstream distance checks and tolerance comparisons that assume positive values.
+- **Expected kernel behavior**: Reject with error or enforce preci > 0
+- **Notes**: Synonym: invalid_input_acceptance
+- **Model impact**: Reading with negative tolerance override produces incorrect shape validity assessment
+- **Fixture path**: step-examples/12-4-tolerance/N127.stp
+- **Fixture kind**: scaffold
+
+### N128 — ShapeFix_ShapeTolerance.LimitTolerance boundary-equality-nondeterminism
+- **Category**: §12.4 tolerance (sub-class: boundary-condition ambiguity)
+- **Sources**: OCCT/ShapeFix_ShapeTolerance.cxx:45 (iamax = (tmax >= tmin) insufficient)
+- **Description**: LimitTolerance allows tmax == tmin without semantic enforcement. Tolerance clamping becomes nondeterministic when bounds collapse; newtol selection between tmin/tmax unpredictable. Code checks iamax = (tmax >= tmin) but not tmax > tmin strictly.
+- **Expected kernel behavior**: Reject or enforce strict ordering tmax > tmin
+- **Notes**: Synonym: boundary_condition_ambiguity
+- **Model impact**: Reading with equal min/max tolerance bounds produces unpredictable clamped values
+- **Fixture path**: step-examples/12-4-tolerance/N128.stp
+- **Fixture kind**: scaffold
+
+### N129 — BRep_Tool::Tolerance vertex-null-dereference-risk
+- **Category**: §12.4 tolerance (sub-class: null-check omission)
+- **Sources**: OCCT/BRep_Tool.cxx tolerance query path (no null-check before vertex dereference)
+- **Description**: Tolerance queries call BRep_Tool::Tolerance on vertex references without null-checking. Uninitialized or corrupted vertex references cause undefined behavior or segmentation fault during tolerance retrieval.
+- **Expected kernel behavior**: Reject or add null-check before dereferencing
+- **Notes**: Synonym: vertex-null-dereference
+- **Model impact**: Reading triggers null-pointer dereference when querying vertex tolerance
+- **Fixture path**: step-examples/12-4-tolerance/N129.stp
+- **Fixture kind**: scaffold
+
+### N130 — ShapeFix_ShapeTolerance.SetTolerance recursive-double-mutation-shared-vertex
+- **Category**: §12.4 tolerance (sub-class: double-mutation)
+- **Sources**: OCCT/ShapeFix_ShapeTolerance.cxx:158-190 (recursive vertex tolerance on shared vertices)
+- **Description**: SetTolerance(WIRE, tmin, tmax, TopAbs_VERTEX) recursively processes each edge's start/end vertices without tracking shared vertices. When two edges share a vertex, that vertex's tolerance is overwritten twice (first to tmin, then to tmax); last write wins, violating determinism.
+- **Expected kernel behavior**: Heal by tracking visited vertices or merge mutations
+- **Notes**: Synonym: recursive_double_mutation, shared_vertex_double_application
+- **Model impact**: Reading produces vertex tolerance inconsistent with intended min/max clamping
+- **Fixture path**: step-examples/12-4-tolerance/N130.stp
+- **Fixture kind**: scaffold
 
 ### M161 — Reader does not validate cross-references; dangling references silently accepted
 - **Category**: §12.8 mixed / auxiliary (sub-class: missing input validation)

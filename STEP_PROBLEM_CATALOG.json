@@ -16522,6 +16522,161 @@
     "title": "ShapeAnalysis_Edge.GetEndTangent2d at-trim-boundary"
   },
   {
+    "byte_assertions": [],
+    "category": "§12.2a pcurves",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": null,
+    "description": "Analyzer silently passes when 3D curve endpoints and P-curve projections don't match under plane projection; fails to detect inconsistency specific to planar surfaces (Geom_Plane).",
+    "expected_kernel_behavior": "heal: detect and correct the issue; reject: if precondition unrecoverable",
+    "expected_validation": "",
+    "fixture_kind": null,
+    "fixture_path": "step-examples/12-2a-pcurves/Gp126.stp",
+    "id": "Gp126",
+    "notes": "synthesized fixture from v3 deep-pass; falsifiable claim per Minimal reproducer",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-sufficient",
+    "reproducer": "",
+    "section": "12.2a",
+    "section_dir": "12-2a-pcurves",
+    "see_also": [],
+    "sender": "",
+    "severity": null,
+    "sources": [
+      "OCCT/ShapeAnalysis_Edge::CheckCurve3dWithPCurve"
+    ],
+    "taxonomy": [
+      "geometry"
+    ],
+    "tier3_assertions": [],
+    "title": "ShapeAnalysis_Edge.CheckCurve3dWithPCurve plane-projection mismatch"
+  },
+  {
+    "byte_assertions": [],
+    "category": "§12.2a pcurves",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": null,
+    "description": "Analyzer silently returns false when P-curve extraction fails (FAIL1 status), masking missing or corrupt parametric curve data.",
+    "expected_kernel_behavior": "heal: detect and correct the issue; reject: if precondition unrecoverable",
+    "expected_validation": "",
+    "fixture_kind": null,
+    "fixture_path": "step-examples/12-2a-pcurves/Gp127.stp",
+    "id": "Gp127",
+    "notes": "synthesized fixture from v3 deep-pass; falsifiable claim per Minimal reproducer",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-sufficient",
+    "reproducer": "",
+    "section": "12.2a",
+    "section_dir": "12-2a-pcurves",
+    "see_also": [],
+    "sender": "",
+    "severity": null,
+    "sources": [
+      "OCCT/ShapeAnalysis_Edge::CheckCurve3dWithPCurve"
+    ],
+    "taxonomy": [
+      "geometry"
+    ],
+    "tier3_assertions": [],
+    "title": "ShapeAnalysis_Edge.CheckCurve3dWithPCurve missing P-curve (FAIL1)"
+  },
+  {
+    "byte_assertions": [],
+    "category": "§12.2a pcurves",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": null,
+    "description": "Non-identity location with offset surface causes Transformed() to return incompatible type; down_cast fails, exception handling missing.",
+    "expected_kernel_behavior": "heal: detect and correct the issue; reject: if precondition unrecoverable",
+    "expected_validation": "",
+    "fixture_kind": null,
+    "fixture_path": "step-examples/12-2a-pcurves/Gp128.stp",
+    "id": "Gp128",
+    "notes": "synthesized fixture from v3 deep-pass; falsifiable claim per Minimal reproducer",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-sufficient",
+    "reproducer": "",
+    "section": "12.2a",
+    "section_dir": "12-2a-pcurves",
+    "see_also": [],
+    "sender": "",
+    "severity": null,
+    "sources": [
+      "OCCT/ShapeFix_Edge::FixAddPCurve"
+    ],
+    "taxonomy": [
+      "geometry"
+    ],
+    "tier3_assertions": [],
+    "title": "ShapeFix_Edge.FixAddPCurve transform surface down_cast failure"
+  },
+  {
+    "byte_assertions": [],
+    "category": "§12.2a pcurves",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": null,
+    "description": "Project returns NaN on degenerate curves; comparison NaN < f is false, allowing return false via dist > tol path, silently masking failure.",
+    "expected_kernel_behavior": "heal: detect and correct the issue; reject: if precondition unrecoverable",
+    "expected_validation": "",
+    "fixture_kind": null,
+    "fixture_path": "step-examples/12-2a-pcurves/Gp129.stp",
+    "id": "Gp129",
+    "notes": "synthesized fixture from v3 deep-pass; falsifiable claim per Minimal reproducer",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-sufficient",
+    "reproducer": "",
+    "section": "12.2a",
+    "section_dir": "12-2a-pcurves",
+    "see_also": [],
+    "sender": "",
+    "severity": null,
+    "sources": [
+      "OCCT/ShapeAnalysis_Curve::Project"
+    ],
+    "taxonomy": [
+      "geometry"
+    ],
+    "tier3_assertions": [],
+    "title": "ShapeAnalysis_Curve.Project degenerate-curve NaN"
+  },
+  {
+    "byte_assertions": [],
+    "category": "§12.2a pcurves",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": null,
+    "description": "B-spline 3D span [0..10] vs P-curve 2D span [0..2] parameter mismatch silent; FixSameParameter misses compression ratio inconsistency.",
+    "expected_kernel_behavior": "heal: detect and correct the issue; reject: if precondition unrecoverable",
+    "expected_validation": "",
+    "fixture_kind": null,
+    "fixture_path": "step-examples/12-2a-pcurves/Gp130.stp",
+    "id": "Gp130",
+    "notes": "synthesized fixture from v3 deep-pass; falsifiable claim per Minimal reproducer",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-sufficient",
+    "reproducer": "",
+    "section": "12.2a",
+    "section_dir": "12-2a-pcurves",
+    "see_also": [],
+    "sender": "",
+    "severity": null,
+    "sources": [
+      "OCCT/ShapeFix_Edge::FixSameParameter"
+    ],
+    "taxonomy": [
+      "geometry"
+    ],
+    "tier3_assertions": [],
+    "title": "ShapeFix_Edge.FixSameParameter B-spline parameter range mismatch"
+  },
+  {
     "byte_assertions": [
       "contains(b'B_SPLINE_SURFACE')"
     ],
@@ -20276,6 +20431,161 @@
     ],
     "tier3_assertions": [],
     "title": "ShapeAnalysis_Curve.IsClosed B-spline with-identical-knots-different-poles"
+  },
+  {
+    "byte_assertions": [],
+    "category": "§12.2b NURBS",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": null,
+    "description": "Geom_BSplineSurface periodic-U-closure weight-extraction",
+    "expected_kernel_behavior": "heal: detect and correct the issue; reject: if precondition unrecoverable",
+    "expected_validation": "",
+    "fixture_kind": null,
+    "fixture_path": "step-examples/12-2b-nurbs/Gn129.stp",
+    "id": "Gn129",
+    "notes": "synthesized fixture from v3 deep-pass; falsifiable claim per Minimal reproducer",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-sufficient",
+    "reproducer": "",
+    "section": "12.2b",
+    "section_dir": "12-2b-nurbs",
+    "see_also": [],
+    "sender": "",
+    "severity": null,
+    "sources": [
+      "OCCT/see OCCT/v3"
+    ],
+    "taxonomy": [
+      "geometry"
+    ],
+    "tier3_assertions": [],
+    "title": "Geom_BSplineSurface periodic-U-closure weight-extraction"
+  },
+  {
+    "byte_assertions": [],
+    "category": "§12.2b NURBS",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": null,
+    "description": "ShapeUpgrade_ConvertCurveToBezier non-uniform-knots tail-degenerate",
+    "expected_kernel_behavior": "heal: detect and correct the issue; reject: if precondition unrecoverable",
+    "expected_validation": "",
+    "fixture_kind": null,
+    "fixture_path": "step-examples/12-2b-nurbs/Gn130.stp",
+    "id": "Gn130",
+    "notes": "synthesized fixture from v3 deep-pass; falsifiable claim per Minimal reproducer",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-sufficient",
+    "reproducer": "",
+    "section": "12.2b",
+    "section_dir": "12-2b-nurbs",
+    "see_also": [],
+    "sender": "",
+    "severity": null,
+    "sources": [
+      "OCCT/see OCCT/v3"
+    ],
+    "taxonomy": [
+      "geometry"
+    ],
+    "tier3_assertions": [],
+    "title": "ShapeUpgrade_ConvertCurveToBezier non-uniform-knots tail-degenerate"
+  },
+  {
+    "byte_assertions": [],
+    "category": "§12.2b NURBS",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": null,
+    "description": "ShapeFix_ComposeShell.SplitOnEdges B-spline pcurve tangent-mismatch",
+    "expected_kernel_behavior": "heal: detect and correct the issue; reject: if precondition unrecoverable",
+    "expected_validation": "",
+    "fixture_kind": null,
+    "fixture_path": "step-examples/12-2b-nurbs/Gn131.stp",
+    "id": "Gn131",
+    "notes": "synthesized fixture from v3 deep-pass; falsifiable claim per Minimal reproducer",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-sufficient",
+    "reproducer": "",
+    "section": "12.2b",
+    "section_dir": "12-2b-nurbs",
+    "see_also": [],
+    "sender": "",
+    "severity": null,
+    "sources": [
+      "OCCT/see OCCT/v3"
+    ],
+    "taxonomy": [
+      "geometry"
+    ],
+    "tier3_assertions": [],
+    "title": "ShapeFix_ComposeShell.SplitOnEdges B-spline pcurve tangent-mismatch"
+  },
+  {
+    "byte_assertions": [],
+    "category": "§12.2b NURBS",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": null,
+    "description": "Geom_BSplineCurve.IncreaseDegree weight-redistribution asymmetry",
+    "expected_kernel_behavior": "heal: detect and correct the issue; reject: if precondition unrecoverable",
+    "expected_validation": "",
+    "fixture_kind": null,
+    "fixture_path": "step-examples/12-2b-nurbs/Gn132.stp",
+    "id": "Gn132",
+    "notes": "synthesized fixture from v3 deep-pass; falsifiable claim per Minimal reproducer",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-sufficient",
+    "reproducer": "",
+    "section": "12.2b",
+    "section_dir": "12-2b-nurbs",
+    "see_also": [],
+    "sender": "",
+    "severity": null,
+    "sources": [
+      "OCCT/see OCCT/v3"
+    ],
+    "taxonomy": [
+      "geometry"
+    ],
+    "tier3_assertions": [],
+    "title": "Geom_BSplineCurve.IncreaseDegree weight-redistribution asymmetry"
+  },
+  {
+    "byte_assertions": [],
+    "category": "§12.2b NURBS",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": null,
+    "description": "ShapeAnalysis_Curve.CheckOffsetCurve knot-ratio-overflow degenerate-segment",
+    "expected_kernel_behavior": "heal: detect and correct the issue; reject: if precondition unrecoverable",
+    "expected_validation": "",
+    "fixture_kind": null,
+    "fixture_path": "step-examples/12-2b-nurbs/Gn133.stp",
+    "id": "Gn133",
+    "notes": "synthesized fixture from v3 deep-pass; falsifiable claim per Minimal reproducer",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-sufficient",
+    "reproducer": "",
+    "section": "12.2b",
+    "section_dir": "12-2b-nurbs",
+    "see_also": [],
+    "sender": "",
+    "severity": null,
+    "sources": [
+      "OCCT/see OCCT/v3"
+    ],
+    "taxonomy": [
+      "geometry"
+    ],
+    "tier3_assertions": [],
+    "title": "ShapeAnalysis_Curve.CheckOffsetCurve knot-ratio-overflow degenerate-segment"
   },
   {
     "byte_assertions": [
@@ -48762,6 +49072,161 @@
     ],
     "tier3_assertions": [],
     "title": "ShapeAnalysis_ShapeTolerance.AddTolerance concurrent-modification"
+  },
+  {
+    "byte_assertions": [],
+    "category": "§12.4 tolerance (sub-class: vertex-filtering bug)",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": null,
+    "description": "InTolerance filters vertices by tolerance range but uses inverted comparison (tol >= valmax) vs FACE/EDGE (tol <= valmax). Query for vertices with tolerance in [0.001, 0.002] returns only those >= 0.002, reversing the range semantics.",
+    "expected_kernel_behavior": "Reject or heal by using correct comparison operator",
+    "expected_validation": "",
+    "fixture_kind": null,
+    "fixture_path": "step-examples/12-4-tolerance/N126.stp",
+    "id": "N126",
+    "notes": "Synonym: vertex_tolerance_filtering_BUGGY (OCCT source audit)",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-sufficient",
+    "reproducer": "",
+    "section": "12.4",
+    "section_dir": "12-4-tolerance",
+    "see_also": [],
+    "sender": "",
+    "severity": null,
+    "sources": [
+      "OCCT/ShapeAnalysis_ShapeTolerance.cxx:131-141 (vertex case uses tol >= valmax)"
+    ],
+    "taxonomy": [
+      "topology"
+    ],
+    "tier3_assertions": [],
+    "title": "ShapeAnalysis_ShapeTolerance.InTolerance vertex-filtering-inverted"
+  },
+  {
+    "byte_assertions": [],
+    "category": "§12.4 tolerance (sub-class: input-validation)",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": null,
+    "description": "SetTolerance accepts negative or zero precision without validation. Negative tolerance silently stored, corrupting downstream distance checks and tolerance comparisons that assume positive values.",
+    "expected_kernel_behavior": "Reject with error or enforce preci > 0",
+    "expected_validation": "",
+    "fixture_kind": null,
+    "fixture_path": "step-examples/12-4-tolerance/N127.stp",
+    "id": "N127",
+    "notes": "Synonym: invalid_input_acceptance",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-sufficient",
+    "reproducer": "",
+    "section": "12.4",
+    "section_dir": "12-4-tolerance",
+    "see_also": [],
+    "sender": "",
+    "severity": null,
+    "sources": [
+      "OCCT/ShapeFix_ShapeTolerance.cxx:148 (no check preci > 0)"
+    ],
+    "taxonomy": [
+      "spec-violation"
+    ],
+    "tier3_assertions": [],
+    "title": "ShapeFix_ShapeTolerance.SetTolerance no-validation-negative-precision"
+  },
+  {
+    "byte_assertions": [],
+    "category": "§12.4 tolerance (sub-class: boundary-condition ambiguity)",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": null,
+    "description": "LimitTolerance allows tmax == tmin without semantic enforcement. Tolerance clamping becomes nondeterministic when bounds collapse; newtol selection between tmin/tmax unpredictable. Code checks iamax = (tmax >= tmin) but not tmax > tmin strictly.",
+    "expected_kernel_behavior": "Reject or enforce strict ordering tmax > tmin",
+    "expected_validation": "",
+    "fixture_kind": null,
+    "fixture_path": "step-examples/12-4-tolerance/N128.stp",
+    "id": "N128",
+    "notes": "Synonym: boundary_condition_ambiguity",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-sufficient",
+    "reproducer": "",
+    "section": "12.4",
+    "section_dir": "12-4-tolerance",
+    "see_also": [],
+    "sender": "",
+    "severity": null,
+    "sources": [
+      "OCCT/ShapeFix_ShapeTolerance.cxx:45 (iamax = (tmax >= tmin) insufficient)"
+    ],
+    "taxonomy": [
+      "spec-violation"
+    ],
+    "tier3_assertions": [],
+    "title": "ShapeFix_ShapeTolerance.LimitTolerance boundary-equality-nondeterminism"
+  },
+  {
+    "byte_assertions": [],
+    "category": "§12.4 tolerance (sub-class: null-check omission)",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": null,
+    "description": "Tolerance queries call BRep_Tool::Tolerance on vertex references without null-checking. Uninitialized or corrupted vertex references cause undefined behavior or segmentation fault during tolerance retrieval.",
+    "expected_kernel_behavior": "Reject or add null-check before dereferencing",
+    "expected_validation": "",
+    "fixture_kind": null,
+    "fixture_path": "step-examples/12-4-tolerance/N129.stp",
+    "id": "N129",
+    "notes": "Synonym: vertex-null-dereference",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-sufficient",
+    "reproducer": "",
+    "section": "12.4",
+    "section_dir": "12-4-tolerance",
+    "see_also": [],
+    "sender": "",
+    "severity": null,
+    "sources": [
+      "OCCT/BRep_Tool.cxx tolerance query path (no null-check before vertex dereference)"
+    ],
+    "taxonomy": [
+      "topology"
+    ],
+    "tier3_assertions": [],
+    "title": "BRep_Tool::Tolerance vertex-null-dereference-risk"
+  },
+  {
+    "byte_assertions": [],
+    "category": "§12.4 tolerance (sub-class: double-mutation)",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": null,
+    "description": "SetTolerance(WIRE, tmin, tmax, TopAbs_VERTEX) recursively processes each edge's start/end vertices without tracking shared vertices. When two edges share a vertex, that vertex's tolerance is overwritten twice (first to tmin, then to tmax); last write wins, violating determinism.",
+    "expected_kernel_behavior": "Heal by tracking visited vertices or merge mutations",
+    "expected_validation": "",
+    "fixture_kind": null,
+    "fixture_path": "step-examples/12-4-tolerance/N130.stp",
+    "id": "N130",
+    "notes": "Synonym: recursive_double_mutation, shared_vertex_double_application",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-sufficient",
+    "reproducer": "",
+    "section": "12.4",
+    "section_dir": "12-4-tolerance",
+    "see_also": [],
+    "sender": "",
+    "severity": null,
+    "sources": [
+      "OCCT/ShapeFix_ShapeTolerance.cxx:158-190 (recursive vertex tolerance on shared vertices)"
+    ],
+    "taxonomy": [
+      "topology"
+    ],
+    "tier3_assertions": [],
+    "title": "ShapeFix_ShapeTolerance.SetTolerance recursive-double-mutation-shared-vertex"
   },
   {
     "byte_assertions": [

@@ -1,0 +1,63 @@
+ISO-10303-21;
+/* N127 - ShapeFix_ShapeTolerance.SetTolerance negative-precision
+ * Defect: SetTolerance accepts negative or zero precision without validation.
+ * No check that preci > 0 before casting to Tolerance. Negative tolerance
+ * silently accepted; corrupts downstream operations expecting positive values.
+ * Reproducer: SetTolerance(shape, -0.5, TopAbs_VERTEX) should reject but doesn't.
+ */
+HEADER;
+FILE_DESCRIPTION(('N127 SetTolerance negative-precision'),'2;1');
+FILE_NAME('N127.stp','2026-06-16T00:00:00',(''),(''),
+  'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
+  'automotive_design',2009,#1);
+/* Single vertex with placeholder tolerance (kernel will test negative override) */
+#10=CARTESIAN_POINT('origin',(0.0,0.0,0.0));
+#11=DIRECTION('z',(0.0,0.0,1.0));
+#12=DIRECTION('x',(1.0,0.0,0.0));
+#13=AXIS2_PLACEMENT_3D('plc',#10,#11,#12);
+/* Vertex with valid tolerance */
+#20=CARTESIAN_POINT('v_pt',(0.5,0.5,0.5));
+#30=VERTEX_POINT('vertex',#20);
+/* Trivial edge structure */
+#40=DIRECTION('line_dir',(1.0,0.0,0.0));
+#41=VECTOR('line_vec',#40,1.0);
+#42=LINE('line_geom',#20,#41);
+#50=CARTESIAN_POINT('v2_pt',(1.5,0.5,0.5));
+#60=VERTEX_POINT('v2',#50);
+#70=EDGE_CURVE('edge',#30,#60,#42,.T.);
+#80=EDGE_LOOP('loop',(#70));
+/* Units */
+#100=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#101=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#102=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#103=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#100,
+  'distance_accuracy_value','nominal');
+#104=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#103))
+  GLOBAL_UNIT_ASSIGNED_CONTEXT((#100,#101,#102))
+  REPRESENTATION_CONTEXT('ctx','3D'));
+/* Tolerance declaration: positive value (test vector will apply negative override) */
+#105=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.1),#100,
+  'distance_accuracy_value','nominal_tol');
+/* PRODUCT CHAIN */
+#9000=PRODUCT_CONTEXT('',#1,'mechanical');
+#9001=PRODUCT('N127','N127','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
+#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
+#9021=SHELL_BASED_SURFACE_MODEL('sbsm',(#100));
+#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#9010);
+#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+ENDSEC;
+END-ISO-10303-21;
