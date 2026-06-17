@@ -25153,6 +25153,545 @@ Surface of linear extrusion with non-unit direction vector (2.0,0.0,0.0). Cached
 ### Gs093 — ShapeUpgrade_SplitSurface BSpline irregular knots
 B-spline surface with irregular V knot multiplicities (3,1,3) on 4 control points. SplitSurface assumes uniform multiplicities, causing over-subdivision and invalid knot structure.
 
+### Gs094 — ShapeAnalysis_Surface.UVFromIso parameter-clamp underflow
+- **Category**: §12.2c surfaces (sub-class: face)
+- **Sources**: OCCT/ShapeAnalysis (see fixture)
+- **Description**: Surface trimmed to subnormal parameter range u∈[1.0e-20, 1.0e-19]. UVFromIso's clamp logic doesn't handle subnormal/denormalized floats,
+causing incorrect parameter mapping on extremely narrow domains.
+- **Expected kernel behavior**: heal: investigate / reject: geometric degeneracy
+- **Notes**: synthesized from earlier wave; backfilled from fixture comment
+- **Model impact**: Surface and trimming geometry
+- **Fixture path**: step-examples/12-2c-surfaces/Gs094.stp
+- **Fixture kind**: scaffold
+
+### Gs095 — ShapeUpgrade_ConvertSurfaceToBezierBasis sphere
+- **Category**: §12.2c surfaces (sub-class: face)
+- **Sources**: OCCT/ShapeAnalysis (see fixture)
+- **Description**: SPHERICAL_SURFACE conversion to Bezier basis produces 4 patches,
+but pole regions become degenerate Bezier patches with zero-area. Control points collapse at poles, violating Bezier non-degeneracy.
+- **Expected kernel behavior**: heal: investigate / reject: geometric degeneracy
+- **Notes**: synthesized from earlier wave; backfilled from fixture comment
+- **Model impact**: Surface and trimming geometry
+- **Fixture path**: step-examples/12-2c-surfaces/Gs095.stp
+- **Fixture kind**: scaffold
+
+### Gs096 — ShapeAnalysis_Surface.ComputeSingularities torus pinch
+- **Category**: §12.2c surfaces (sub-class: face)
+- **Sources**: OCCT/ShapeAnalysis (see fixture)
+- **Description**: Self-intersecting torus with major radius R < minor radius r. ComputeSingularities reports zero singularities despite self-intersection
+creating a pinch point where the surface crosses itself.
+- **Expected kernel behavior**: heal: investigate / reject: geometric degeneracy
+- **Notes**: synthesized from earlier wave; backfilled from fixture comment
+- **Model impact**: Surface and trimming geometry
+- **Fixture path**: step-examples/12-2c-surfaces/Gs096.stp
+- **Fixture kind**: scaffold
+
+### Gs097 — ShapeUpgrade_FaceDivideArea.Perform threshold reset
+- **Category**: §12.2c surfaces (sub-class: face)
+- **Sources**: OCCT/ShapeAnalysis (see fixture)
+- **Description**: Face splitting by area threshold; threshold value 0.0 should mean
+"don't split" but is incorrectly treated as "split every sub-face".
+Reproducer: Planar face with area threshold 0.0 triggers infinite recursion.
+- **Expected kernel behavior**: heal: investigate / reject: geometric degeneracy
+- **Notes**: synthesized from earlier wave; backfilled from fixture comment
+- **Model impact**: Surface and trimming geometry
+- **Fixture path**: step-examples/12-2c-surfaces/Gs097.stp
+- **Fixture kind**: scaffold
+
+### Gs098 — ShapeAnalysis_Surface.IsDegenerated revolution-axis-on-curve
+- **Category**: §12.2c surfaces (sub-class: curve)
+- **Sources**: OCCT/ShapeAnalysis (see fixture)
+- **Description**: SURFACE_OF_REVOLUTION where basis curve passes through the axis. IsDegenerated only checks axis vector direction, not curve position,
+missing the degenerate apex singularity.
+- **Expected kernel behavior**: heal: investigate / reject: geometric degeneracy
+- **Notes**: synthesized from earlier wave; backfilled from fixture comment
+- **Model impact**: Surface and trimming geometry
+- **Fixture path**: step-examples/12-2c-surfaces/Gs098.stp
+- **Fixture kind**: scaffold
+
+### Gs099 — Sphere pole singularity: iso-curve sampling misses pole
+- **Category**: §12.2c surfaces (sub-class: curve)
+- **Sources**: OCCT/ShapeAnalysis (see fixture)
+- **Description**: ShapeAnalysis_Surface.Singularity() must report both poles of a sphere,
+but iso-curve sampling (e.g., UIso/VIso sampling) may miss poles if orientation
+places them outside the parametric trim bounds. Newton iteration on iso-curve
+sampling fails to detect singular points at poles.
+- **Expected kernel behavior**: heal: investigate / reject: geometric degeneracy
+- **Notes**: synthesized from earlier wave; backfilled from fixture comment
+- **Model impact**: Surface and trimming geometry
+- **Fixture path**: step-examples/12-2c-surfaces/Gs099.stp
+- **Fixture kind**: scaffold
+
+### Gs100 — SplitSurface trim-aware split: splits base not trimmed wrapper
+- **Category**: §12.2c surfaces (sub-class: face)
+- **Sources**: OCCT/ShapeAnalysis (see fixture)
+- **Description**: ShapeUpgrade_SplitSurface.Build() processes RECTANGULAR_TRIMMED_SURFACE
+by extracting and splitting the base surface, ignoring the trim bounds. Result: split patches extend beyond original trim, creating invalid geometry.
+- **Expected kernel behavior**: heal: investigate / reject: geometric degeneracy
+- **Notes**: synthesized from earlier wave; backfilled from fixture comment
+- **Model impact**: Surface and trimming geometry
+- **Fixture path**: step-examples/12-2c-surfaces/Gs100.stp
+- **Fixture kind**: scaffold
+
+### Gs101 — ShapeAnalysis_Surface.ValueOfUV: antipodal sphere convergence failure
+- **Category**: §12.2c surfaces (sub-class: surface)
+- **Sources**: OCCT/ShapeAnalysis (see fixture)
+- **Description**: ValueOfUV() projects a 3D point onto a sphere using Newton iteration
+seeded from initial UV guess. When target is near the antipode of the seed,
+Newton initializes on the wrong sheet and converges to wrong root.
+- **Expected kernel behavior**: heal: investigate / reject: geometric degeneracy
+- **Notes**: synthesized from earlier wave; backfilled from fixture comment
+- **Model impact**: Surface and trimming geometry
+- **Fixture path**: step-examples/12-2c-surfaces/Gs101.stp
+- **Fixture kind**: scaffold
+
+### Gs102 — ConvertSurfaceToBezierBasis: Bezier passthrough produces re-extracted copy
+- **Category**: §12.2c surfaces (sub-class: face)
+- **Sources**: OCCT/ShapeAnalysis (see fixture)
+- **Description**: ShapeUpgrade_ConvertSurfaceToBezierBasis detects input is already
+BEZIER_SURFACE and should return unmodified. Instead, algorithm extracts and
+reconstructs Bezier, producing numerically different (re-extracted) surface.
+- **Expected kernel behavior**: heal: investigate / reject: geometric degeneracy
+- **Notes**: synthesized from earlier wave; backfilled from fixture comment
+- **Model impact**: Surface and trimming geometry
+- **Fixture path**: step-examples/12-2c-surfaces/Gs102.stp
+- **Fixture kind**: scaffold
+
+### Gs103 — IsUClosed: periodic-vs-closed semantic mismatch
+- **Category**: §12.2c surfaces (sub-class: face)
+- **Sources**: OCCT/ShapeAnalysis (see fixture)
+- **Description**: Surface IsUClosed() checks u_closed declaration flag, not actual geometry. Surface may declare u_closed=true but control polygon doesn't close within tolerance
+(gap > Precision::Confusion).
+- **Expected kernel behavior**: heal: investigate / reject: geometric degeneracy
+- **Notes**: synthesized from earlier wave; backfilled from fixture comment
+- **Model impact**: Surface and trimming geometry
+- **Fixture path**: step-examples/12-2c-surfaces/Gs103.stp
+- **Fixture kind**: scaffold
+
+### Gs104 — SURFACE_OF_REVOLUTION with profile-on-axis
+- **Category**: §12.2c surfaces (sub-class: curve)
+- **Sources**: OCCT/ShapeAnalysis (see fixture)
+- **Description**: ShapeAnalysis_Surface.IsDegenerated fails to detect degenerate
+SURFACE_OF_REVOLUTION where the profile curve coincides with the axis
+of revolution. The cross-product test produces near-zero result but is
+not properly classified as singular.
+- **Expected kernel behavior**: heal: investigate / reject: geometric degeneracy
+- **Notes**: synthesized from earlier wave; backfilled from fixture comment
+- **Model impact**: Surface and trimming geometry
+- **Fixture path**: step-examples/12-2c-surfaces/Gs104.stp
+- **Fixture kind**: scaffold
+
+### Gs105 — FaceDivide crossing-curves defect
+- **Category**: §12.2c surfaces (sub-class: curve)
+- **Sources**: OCCT/ShapeAnalysis (see fixture)
+- **Description**: ShapeUpgrade_FaceDivide.SplitCurves fails when splitting curves
+cross each other. The algorithm doesn't handle intersection between
+splitter curves and produces overlapping sub-faces on same surface.
+- **Expected kernel behavior**: heal: investigate / reject: geometric degeneracy
+- **Notes**: synthesized from earlier wave; backfilled from fixture comment
+- **Model impact**: Surface and trimming geometry
+- **Fixture path**: step-examples/12-2c-surfaces/Gs105.stp
+- **Fixture kind**: scaffold
+
+### Gs106 — Concentrated-poles surface with Newton underflow
+- **Category**: §12.2c surfaces (sub-class: face)
+- **Sources**: OCCT/ShapeAnalysis (see fixture)
+- **Description**: ShapeAnalysis_Surface.NextValueOfUV fails on surfaces where all
+control poles cluster in a small region, creating high curvature and
+causing Newton iteration step to underflow (step size becomes subnormal). Reproducer: B-spline surface with control poles clustered in 1mm cube
+at.
+- **Expected kernel behavior**: heal: investigate / reject: geometric degeneracy
+- **Notes**: synthesized from earlier wave; backfilled from fixture comment
+- **Model impact**: Surface and trimming geometry
+- **Fixture path**: step-examples/12-2c-surfaces/Gs106.stp
+- **Fixture kind**: scaffold
+
+### Gs107 — Closed-surface preservation in Bezier conversion
+- **Category**: §12.2c surfaces (sub-class: face)
+- **Sources**: OCCT/ShapeAnalysis (see fixture)
+- **Description**: ShapeUpgrade_ConvertSurfaceToBezierBasis fails to preserve closure
+when converting closed cylindrical surfaces to Bezier basis. The resulting
+Bezier patches don't maintain seam closure or periodic boundary conditions.
+- **Expected kernel behavior**: heal: investigate / reject: geometric degeneracy
+- **Notes**: synthesized from earlier wave; backfilled from fixture comment
+- **Model impact**: Surface and trimming geometry
+- **Fixture path**: step-examples/12-2c-surfaces/Gs107.stp
+- **Fixture kind**: scaffold
+
+### Gs108 — Singularity boundary classification error
+- **Category**: §12.2c surfaces (sub-class: face)
+- **Sources**: OCCT/ShapeAnalysis (see fixture)
+- **Description**: ShapeAnalysis_Surface.Singularity fails to classify singularities at
+parameter boundaries. When singularity occurs at v=v_max (inclusive boundary),
+the analyzer treats the boundary as exclusive, misclassifying interior vs.
+- **Expected kernel behavior**: heal: investigate / reject: geometric degeneracy
+- **Notes**: synthesized from earlier wave; backfilled from fixture comment
+- **Model impact**: Surface and trimming geometry
+- **Fixture path**: step-examples/12-2c-surfaces/Gs108.stp
+- **Fixture kind**: scaffold
+
+### Gs109 — ShapeAnalysis_Surface.UVFromIso v-iso-at-pole
+- **Category**: §12.2c surfaces (sub-class: face)
+- **Sources**: OCCT/ShapeAnalysis (see fixture)
+- **Description**: ShapeAnalysis_Surface::UVFromIso parameter test allows u-iso at
+v=pole of sphere even though u is undefined at the pole; parameter is
+accepted but produces meaningless results. Reproducer: SPHERICAL_SURFACE with u-iso extraction at v=π/2 (north pole);
+UVFromIso accepts the.
+- **Expected kernel behavior**: heal: investigate / reject: geometric degeneracy
+- **Notes**: synthesized from earlier wave; backfilled from fixture comment
+- **Model impact**: Surface and trimming geometry
+- **Fixture path**: step-examples/12-2c-surfaces/Gs109.stp
+- **Fixture kind**: scaffold
+
+### Gs110 — ShapeUpgrade_SplitSurface.SetUSplitValues count-mismatch
+- **Category**: §12.2c surfaces (sub-class: face)
+- **Sources**: OCCT/ShapeAnalysis (see fixture)
+- **Description**: SetUSplitValues called with 3 split values for a surface that
+internally allocates 2 split slots; silently drops 3rd value without
+validation or warning. Reproducer: PLANE surface with SetUSplitValues(3 values) when internal
+allocation expects 2; the 3rd value is ignored.
+- **Expected kernel behavior**: heal: investigate / reject: geometric degeneracy
+- **Notes**: synthesized from earlier wave; backfilled from fixture comment
+- **Model impact**: Surface and trimming geometry
+- **Fixture path**: step-examples/12-2c-surfaces/Gs110.stp
+- **Fixture kind**: scaffold
+
+### Gs111 — ShapeAnalysis_Surface.IsDegenerated SURFACE_OF_LINEAR_EXTRUSION zero-extrusion
+- **Category**: §12.2c surfaces (sub-class: curve)
+- **Sources**: OCCT/ShapeAnalysis (see fixture)
+- **Description**: SURFACE_OF_LINEAR_EXTRUSION with zero-magnitude extrusion vector;
+surface collapses to base curve but IsDegenerated's test uses Length()
+which returns positive value for zero VECTOR magnitude due to sign bug. Reproducer:.
+- **Expected kernel behavior**: heal: investigate / reject: geometric degeneracy
+- **Notes**: synthesized from earlier wave; backfilled from fixture comment
+- **Model impact**: Surface and trimming geometry
+- **Fixture path**: step-examples/12-2c-surfaces/Gs111.stp
+- **Fixture kind**: scaffold
+
+### Gs112 — ShapeUpgrade_ConvertSurfaceToBezierBasis cone-with-trim
+- **Category**: §12.2c surfaces (sub-class: face)
+- **Sources**: OCCT/ShapeAnalysis (see fixture)
+- **Description**: Trimmed CONICAL_SURFACE conversion to Bezier patch boundaries
+doesn't translate cleanly; trim boundaries don't align with Bezier patch
+boundaries, causing conversion artifacts. Reproducer: CONICAL_SURFACE trimmed with FACE_BOUND defining a partial
+cone; conversion to Bezier.
+- **Expected kernel behavior**: heal: investigate / reject: geometric degeneracy
+- **Notes**: synthesized from earlier wave; backfilled from fixture comment
+- **Model impact**: Surface and trimming geometry
+- **Fixture path**: step-examples/12-2c-surfaces/Gs112.stp
+- **Fixture kind**: scaffold
+
+### Gs113 — ShapeAnalysis_Surface.ComputeBoundIsos negative-trim
+- **Category**: §12.2c surfaces (sub-class: curve)
+- **Sources**: OCCT/ShapeAnalysis (see fixture)
+- **Description**: ComputeBoundIsos doesn't validate trim parameter range; when
+v_min > v_max (inverted range), produces inverted iso sweeps without
+error or warning. Reproducer: Face trim with inverted v-parameter range (e.g., v_min=1.0,
+v_max=0.0); ComputeBoundIsos generates iso curves with.
+- **Expected kernel behavior**: heal: investigate / reject: geometric degeneracy
+- **Notes**: synthesized from earlier wave; backfilled from fixture comment
+- **Model impact**: Surface and trimming geometry
+- **Fixture path**: step-examples/12-2c-surfaces/Gs113.stp
+- **Fixture kind**: scaffold
+
+### Gs114 — B-spline surface
+- **Category**: §12.2c surfaces (sub-class: b-spline)
+- **Sources**: OCCT/ShapeAnalysis (see fixture)
+- **Description**: No explicit defect documentation in fixture comment. Geometry present for investigation.
+- **Expected kernel behavior**: heal: investigate / reject: geometric degeneracy
+- **Notes**: synthesized from earlier wave; backfilled from fixture comment
+- **Model impact**: Surface and trimming geometry
+- **Fixture path**: step-examples/12-2c-surfaces/Gs114.stp
+- **Fixture kind**: scaffold
+
+### Gs115 — B-spline surface
+- **Category**: §12.2c surfaces (sub-class: b-spline)
+- **Sources**: OCCT/ShapeAnalysis (see fixture)
+- **Description**: No explicit defect documentation in fixture comment. Geometry present for investigation.
+- **Expected kernel behavior**: heal: investigate / reject: geometric degeneracy
+- **Notes**: synthesized from earlier wave; backfilled from fixture comment
+- **Model impact**: Surface and trimming geometry
+- **Fixture path**: step-examples/12-2c-surfaces/Gs115.stp
+- **Fixture kind**: scaffold
+
+### Gs116 — B-spline surface
+- **Category**: §12.2c surfaces (sub-class: b-spline)
+- **Sources**: OCCT/ShapeAnalysis (see fixture)
+- **Description**: No explicit defect documentation in fixture comment. Geometry present for investigation.
+- **Expected kernel behavior**: heal: investigate / reject: geometric degeneracy
+- **Notes**: synthesized from earlier wave; backfilled from fixture comment
+- **Model impact**: Surface and trimming geometry
+- **Fixture path**: step-examples/12-2c-surfaces/Gs116.stp
+- **Fixture kind**: scaffold
+
+### Gs117 — B-spline surface
+- **Category**: §12.2c surfaces (sub-class: b-spline)
+- **Sources**: OCCT/ShapeAnalysis (see fixture)
+- **Description**: No explicit defect documentation in fixture comment. Geometry present for investigation.
+- **Expected kernel behavior**: heal: investigate / reject: geometric degeneracy
+- **Notes**: synthesized from earlier wave; backfilled from fixture comment
+- **Model impact**: Surface and trimming geometry
+- **Fixture path**: step-examples/12-2c-surfaces/Gs117.stp
+- **Fixture kind**: scaffold
+
+### Gs118 — B-spline surface
+- **Category**: §12.2c surfaces (sub-class: b-spline)
+- **Sources**: OCCT/ShapeAnalysis (see fixture)
+- **Description**: No explicit defect documentation in fixture comment. Geometry present for investigation.
+- **Expected kernel behavior**: heal: investigate / reject: geometric degeneracy
+- **Notes**: synthesized from earlier wave; backfilled from fixture comment
+- **Model impact**: Surface and trimming geometry
+- **Fixture path**: step-examples/12-2c-surfaces/Gs118.stp
+- **Fixture kind**: scaffold
+
+### Gs119 — CONICAL_SURFACE with zero radius (degenerate point)
+- **Category**: §12.2c surfaces (sub-class: face)
+- **Sources**: OCCT/ShapeAnalysis (see fixture)
+- **Description**: ShapeAnalysis_Surface.IsDegenerated CONICAL_SURFACE zero-radius
+cone with radius 0 and arbitrary semi-angle (effectively a degenerate point). IsDegenerated should detect but the radius test uses `radius > 0` not abs(radius).
+- **Expected kernel behavior**: heal: investigate / reject: geometric degeneracy
+- **Notes**: synthesized from earlier wave; backfilled from fixture comment
+- **Model impact**: Surface and trimming geometry
+- **Fixture path**: step-examples/12-2c-surfaces/Gs119.stp
+- **Fixture kind**: scaffold
+
+### Gs120 — FaceDivide splitter curve tangent to boundary (zero-area sub-face)
+- **Category**: §12.2c surfaces (sub-class: curve)
+- **Sources**: OCCT/ShapeAnalysis (see fixture)
+- **Description**: ShapeUpgrade_FaceDivide.SplitCurves produces zero-area sub-face
+when splitter curve is tangent to face boundary at a single point. The division logic doesn't guard against tangency leading to degenerate splits.
+- **Expected kernel behavior**: heal: investigate / reject: geometric degeneracy
+- **Notes**: synthesized from earlier wave; backfilled from fixture comment
+- **Model impact**: Surface and trimming geometry
+- **Fixture path**: step-examples/12-2c-surfaces/Gs120.stp
+- **Fixture kind**: scaffold
+
+### Gs121 — SurfaceNewton trapped in local minimum of distance function
+- **Category**: §12.2c surfaces (sub-class: face)
+- **Sources**: OCCT/ShapeAnalysis (see fixture)
+- **Description**: ShapeAnalysis_Surface.SurfaceNewton can get trapped in a local minimum
+when the surface has multiple local minima of the distance function. Newton iteration doesn't escape the basin and returns a false minimum.
+- **Expected kernel behavior**: heal: investigate / reject: geometric degeneracy
+- **Notes**: synthesized from earlier wave; backfilled from fixture comment
+- **Model impact**: Surface and trimming geometry
+- **Fixture path**: step-examples/12-2c-surfaces/Gs121.stp
+- **Fixture kind**: scaffold
+
+### Gs122 — Rational B-spline surface with zero weight (degenerate interior)
+- **Category**: §12.2c surfaces (sub-class: face)
+- **Sources**: OCCT/ShapeAnalysis (see fixture)
+- **Description**: ShapeUpgrade_SplitSurface processes rational B-spline surface
+where one weight is 0, producing degenerate interior region. The split operation doesn't validate weight coherence post-split.
+- **Expected kernel behavior**: heal: investigate / reject: geometric degeneracy
+- **Notes**: synthesized from earlier wave; backfilled from fixture comment
+- **Model impact**: Surface and trimming geometry
+- **Fixture path**: step-examples/12-2c-surfaces/Gs122.stp
+- **Fixture kind**: scaffold
+
+### Gs123 — TOROIDAL_SURFACE with major_radius < minor_radius (self-intersecting)
+- **Category**: §12.2c surfaces (sub-class: face)
+- **Sources**: OCCT/ShapeAnalysis (see fixture)
+- **Description**: ShapeAnalysis_Surface.IsVClosed reports true for a self-intersecting
+torus where major_radius < minor_radius. The geometry is degenerate (torus
+touches itself) but IsVClosed doesn't detect the invalid configuration.
+- **Expected kernel behavior**: heal: investigate / reject: geometric degeneracy
+- **Notes**: synthesized from earlier wave; backfilled from fixture comment
+- **Model impact**: Surface and trimming geometry
+- **Fixture path**: step-examples/12-2c-surfaces/Gs123.stp
+- **Fixture kind**: scaffold
+
+### Gs124 — B-SPLINE_SURFACE with u_periodic flag but non-coincident poles
+- **Category**: §12.2c surfaces (sub-class: face)
+- **Sources**: OCCT/ShapeAnalysis (see fixture)
+- **Description**: ShapeAnalysis_Surface.IsUClosed reports true based on the
+u_periodic flag, but the first/last U-poles don't coincide, leaving
+a gap. This confuses healing logic which expects closed surfaces to
+have geometrically coincident boundaries.
+- **Expected kernel behavior**: heal: investigate / reject: geometric degeneracy
+- **Notes**: synthesized from earlier wave; backfilled from fixture comment
+- **Model impact**: Surface and trimming geometry
+- **Fixture path**: step-examples/12-2c-surfaces/Gs124.stp
+- **Fixture kind**: scaffold
+
+### Gs125 — B-SPLINE_SURFACE with very wide U domain
+- **Category**: §12.2c surfaces (sub-class: face)
+- **Sources**: OCCT/ShapeAnalysis (see fixture)
+- **Description**: ShapeUpgrade_ConvertSurfaceToBezierBasis produces excessive
+subdivision when input domain is very wide. A surface with U domain
+[0, 1000] gets split into ~1000 tiny Bezier patches, each occupying
+parameter range of 1.0, causing memory bloat and numerical issues.
+- **Expected kernel behavior**: heal: investigate / reject: geometric degeneracy
+- **Notes**: synthesized from earlier wave; backfilled from fixture comment
+- **Model impact**: Surface and trimming geometry
+- **Fixture path**: step-examples/12-2c-surfaces/Gs125.stp
+- **Fixture kind**: scaffold
+
+### Gs126 — B-SPLINE_SURFACE with high-curvature Newton singularity
+- **Category**: §12.2c surfaces (sub-class: face)
+- **Sources**: OCCT/ShapeAnalysis (see fixture)
+- **Description**: ShapeAnalysis_Surface.NextValueOfUV produces inf intermediate
+when Newton's method is applied near a high-curvature region. The
+clamping to finite value picks an arbitrary direction, leading to
+incorrect UV projections and surface reference failures.
+- **Expected kernel behavior**: heal: investigate / reject: geometric degeneracy
+- **Notes**: synthesized from earlier wave; backfilled from fixture comment
+- **Model impact**: Surface and trimming geometry
+- **Fixture path**: step-examples/12-2c-surfaces/Gs126.stp
+- **Fixture kind**: scaffold
+
+### Gs127 — B-SPLINE_SURFACE with degenerate edge after split
+- **Category**: §12.2c surfaces (sub-class: face)
+- **Sources**: OCCT/ShapeAnalysis (see fixture)
+- **Description**: ShapeUpgrade_SplitSurface splits a surface such that one
+sub-patch has degenerate edge (zero parameter range in V). The
+split produces it without flagging, causing downstream healing
+to reference invalid surface boundaries.
+- **Expected kernel behavior**: heal: investigate / reject: geometric degeneracy
+- **Notes**: synthesized from earlier wave; backfilled from fixture comment
+- **Model impact**: Surface and trimming geometry
+- **Fixture path**: step-examples/12-2c-surfaces/Gs127.stp
+- **Fixture kind**: scaffold
+
+### Gs128 — TOROIDAL_SURFACE with v-closed property and u-iso wraparound
+- **Category**: §12.2c surfaces (sub-class: face)
+- **Sources**: OCCT/ShapeAnalysis (see fixture)
+- **Description**: ShapeAnalysis_Surface.UVFromIso misclassifies wraparound
+handling for u-iso requests on v-closed surfaces. When requesting
+u-iso near v=v_max on a v-closed torus, the method confuses u-iso
+with v-iso and produces incorrect parameter projection.
+- **Expected kernel behavior**: heal: investigate / reject: geometric degeneracy
+- **Notes**: synthesized from earlier wave; backfilled from fixture comment
+- **Model impact**: Surface and trimming geometry
+- **Fixture path**: step-examples/12-2c-surfaces/Gs128.stp
+- **Fixture kind**: scaffold
+
+### Gs129 — CYLINDRICAL_SURFACE with non-unit radius underflowing tolerance check
+- **Category**: §12.2c surfaces (sub-class: face)
+- **Sources**: OCCT/ShapeAnalysis (see fixture)
+- **Description**: ShapeAnalysis_Surface.IsUClosed applies radius-relative tolerance
+when testing if a CYLINDRICAL_SURFACE closes in the U direction. For very
+small radii (e.g., 0.0001 mm), the radius-relative tolerance underflows,
+causing the method to incorrectly report closure even when the.
+- **Expected kernel behavior**: heal: investigate / reject: geometric degeneracy
+- **Notes**: synthesized from earlier wave; backfilled from fixture comment
+- **Model impact**: Surface and trimming geometry
+- **Fixture path**: step-examples/12-2c-surfaces/Gs129.stp
+- **Fixture kind**: scaffold
+
+### Gs130 — FACE with trim coincident to existing split edge
+- **Category**: §12.2c surfaces (sub-class: face)
+- **Sources**: OCCT/ShapeAnalysis (see fixture)
+- **Description**: ShapeUpgrade_FaceDivide.Perform uses a splitter parameter that
+exactly coincides with an existing trim edge. The implementation does not
+detect this collision and creates an empty sub-face whose loop has zero
+area or degenerate bounds.
+- **Expected kernel behavior**: heal: investigate / reject: geometric degeneracy
+- **Notes**: synthesized from earlier wave; backfilled from fixture comment
+- **Model impact**: Surface and trimming geometry
+- **Fixture path**: step-examples/12-2c-surfaces/Gs130.stp
+- **Fixture kind**: scaffold
+
+### Gs131 — TOROIDAL_SURFACE with Newton iteration near convergence
+- **Category**: §12.2c surfaces (sub-class: face)
+- **Sources**: OCCT/ShapeAnalysis (see fixture)
+- **Description**: ShapeAnalysis_Surface.NextValueOfUV implements Newton iteration
+to find UV coordinates on a surface for a given 3D point. When the
+previous iterate is very close to the target (within Confusion tolerance),
+the algorithm declares convergence prematurely without verifying that
+the.
+- **Expected kernel behavior**: heal: investigate / reject: geometric degeneracy
+- **Notes**: synthesized from earlier wave; backfilled from fixture comment
+- **Model impact**: Surface and trimming geometry
+- **Fixture path**: step-examples/12-2c-surfaces/Gs131.stp
+- **Fixture kind**: scaffold
+
+### Gs132 — TOROIDAL_SURFACE wrongly elevated to non-analytic Bezier
+- **Category**: §12.2c surfaces (sub-class: face)
+- **Sources**: OCCT/ShapeAnalysis (see fixture)
+- **Description**: ShapeUpgrade_SplitSurfaceContinuity.Compute is called on an
+analytic surface (C∞ continuous, like TOROIDAL_SURFACE). The method
+attempts to split and elevate continuity via Bezier approximation,
+producing a non-analytic BSpline surface with wrong continuity class.
+- **Expected kernel behavior**: heal: investigate / reject: geometric degeneracy
+- **Notes**: synthesized from earlier wave; backfilled from fixture comment
+- **Model impact**: Surface and trimming geometry
+- **Fixture path**: step-examples/12-2c-surfaces/Gs132.stp
+- **Fixture kind**: scaffold
+
+### Gs133 — CYLINDRICAL_SURFACE degenerate edge with sub-optimal projection
+- **Category**: §12.2c surfaces (sub-class: face)
+- **Sources**: OCCT/ShapeAnalysis (see fixture)
+- **Description**: ShapeAnalysis_Surface.ProjectDegenerated is called on a
+degenerate edge whose endpoints collapse to a single point (within
+tolerance margin). The method picks a sub-optimal projection onto
+the surface: it projects the collapse-point tangent direction but
+fails to minimize the.
+- **Expected kernel behavior**: heal: investigate / reject: geometric degeneracy
+- **Notes**: synthesized from earlier wave; backfilled from fixture comment
+- **Model impact**: Surface and trimming geometry
+- **Fixture path**: step-examples/12-2c-surfaces/Gs133.stp
+- **Fixture kind**: scaffold
+
+### Gs134 — ShapeAnalysis_Surface.UVFromIso intermediate-bounce
+- **Category**: §12.2c surfaces (sub-class: face)
+- **Sources**: OCCT/ShapeAnalysis (see fixture)
+- **Description**: UVFromIso bisection oscillates between two near-equal UV candidates
+without damping, causing non-convergence. Surface is a NURBS with two local
+minima near the target ISO parameter, leading to alternating evaluations.
+- **Expected kernel behavior**: heal: investigate / reject: geometric degeneracy
+- **Notes**: synthesized from earlier wave; backfilled from fixture comment
+- **Model impact**: Surface and trimming geometry
+- **Fixture path**: step-examples/12-2c-surfaces/Gs134.stp
+- **Fixture kind**: scaffold
+
+### Gs135 — ShapeUpgrade_ConvertSurfaceToBezierBasis with-self-intersecting
+- **Category**: §12.2c surfaces (sub-class: face)
+- **Sources**: OCCT/ShapeAnalysis (see fixture)
+- **Description**: Self-intersecting B-spline surface (rare but valid in topology)
+gets converted to Bezier patches without detecting the self-intersection. Result: overlapping patches with reversed normals in intersection zone.
+- **Expected kernel behavior**: heal: investigate / reject: geometric degeneracy
+- **Notes**: synthesized from earlier wave; backfilled from fixture comment
+- **Model impact**: Surface and trimming geometry
+- **Fixture path**: step-examples/12-2c-surfaces/Gs135.stp
+- **Fixture kind**: scaffold
+
+### Gs136 — ShapeAnalysis_Surface.Singularity TOROIDAL_SURFACE non-standard-axis
+- **Category**: §12.2c surfaces (sub-class: surface)
+- **Sources**: OCCT/ShapeAnalysis (see fixture)
+- **Description**: Torus whose rotation axis is NOT aligned with global Z-axis causes
+Singularity() to produce incorrect results. Code assumes axis=(0,0,1) and
+singular circles lie at (R+r, z=0) and (R-r, z=0); rotated torus has
+singularities in rotated frame.
+- **Expected kernel behavior**: heal: investigate / reject: geometric degeneracy
+- **Notes**: synthesized from earlier wave; backfilled from fixture comment
+- **Model impact**: Surface and trimming geometry
+- **Fixture path**: step-examples/12-2c-surfaces/Gs136.stp
+- **Fixture kind**: scaffold
+
+### Gs137 — ShapeUpgrade_SplitSurface non-axis-aligned-split
+- **Category**: §12.2c surfaces (sub-class: surface)
+- **Sources**: OCCT/ShapeAnalysis (see fixture)
+- **Description**: Split parameter at irrational position (e.g. π/√2 ≈ 2.221) gets
+clamped to nearest representable machine-precision double.
+- **Expected kernel behavior**: heal: investigate / reject: geometric degeneracy
+- **Notes**: synthesized from earlier wave; backfilled from fixture comment
+- **Model impact**: Surface and trimming geometry
+- **Fixture path**: step-examples/12-2c-surfaces/Gs137.stp
+- **Fixture kind**: scaffold
+
+### Gs138 — ShapeAnalysis_Surface.IsDegenerated bounded-surface-with-only-corner-points
+- **Category**: §12.2c surfaces (sub-class: face)
+- **Sources**: OCCT/ShapeAnalysis (see fixture)
+- **Description**: Surface defined by 4 corner control points only (no interior patches
+or knot structure) passes IsDegenerated correctly as non-degenerate, but the
+surface itself is barely defined—derivative evaluation is unreliable, and
+trimming or intersection operations assume richer surface.
+- **Expected kernel behavior**: heal: investigate / reject: geometric degeneracy
+- **Notes**: synthesized from earlier wave; backfilled from fixture comment
+- **Model impact**: Surface and trimming geometry
+- **Fixture path**: step-examples/12-2c-surfaces/Gs138.stp
+- **Fixture kind**: scaffold
+
 ### Gs139 — IsUClosed pole-singularity false positive
 - **Category**: §12.2c surfaces (sub-class: ShapeAnalysis_Surface closure detection)
 - **Sources**: OCCT/ShapeAnalysis_Surface.cxx (line 768)
