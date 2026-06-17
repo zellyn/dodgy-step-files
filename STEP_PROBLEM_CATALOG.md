@@ -23137,6 +23137,56 @@ Unit square planar face with centered 0.5×0.5 inner rectangle. FixOrientation's
 - **Fixture path**: step-examples/12-3c-faces/Tfa205.stp
 - **Fixture kind**: scaffold
 
+### Tfa206 — FixOrientation TinyWireFiltering single-edge degenerate
+- **Category**: §12.3c faces (sub-class: wire-orientation)
+- **Sources**: OCCT/ShapeFix_Face.FixOrientation.TinyWireFiltering (line 1185–1225)
+- **Description**: Planar square face with outer loop (5×5) plus single-edge near-degenerate inner loop (length 1e-8). Tests wire-filtering branch that segregates sub-precision loops into VerySmallWires before orientation analysis, preventing false vertex states from degenerate single-edge wires corrupting classification.
+- **Expected kernel behavior**: heal
+- **Notes**: Tiny wire filtering; tolerance-based loop segregation
+- **Model impact**: Degenerate loop segregated and excluded from containment tests
+- **Fixture path**: step-examples/12-3c-faces/Tfa206.stp
+- **Fixture kind**: scaffold
+
+### Tfa207 — FixOrientation PeriodicBoundingBoxShift torus seam wrapping
+- **Category**: §12.3c faces (sub-class: periodic-surface)
+- **Sources**: OCCT/ShapeFix_Face.FixOrientation.PeriodicBoundingBoxShift (line 1295–1310)
+- **Description**: Toroidal surface with outer and two inner wire loops crossing seams. Tests periodic bounding-box adjustment branch that applies AdjustByPeriod() shifts to prevent false non-containment when wires wrap across u/v closure boundaries.
+- **Expected kernel behavior**: heal
+- **Notes**: Periodic surface wrapping; seam-crossing containment
+- **Model impact**: Wire bounding boxes adjusted for period boundaries; containment correctly detected across seams
+- **Fixture path**: step-examples/12-3c-faces/Tfa207.stp
+- **Fixture kind**: scaffold
+
+### Tfa208 — FixSmallAreaWire undersized perimeter degenerate loop
+- **Category**: §12.3c faces (sub-class: small-area-wire)
+- **Sources**: OCCT/ShapeFix_Face.FixSmallAreaWire (line 2483–2550)
+- **Description**: Planar face with normal outer loop (10×10) plus inner loop with perimeter ≈0.0004 (area ≈1e-8). Tests wire-filtering threshold that removes sub-tolerance loops from topology before face healing, preventing degenerate geometry propagation.
+- **Expected kernel behavior**: heal
+- **Notes**: Small-area loop detection; threshold-based removal
+- **Model impact**: Undersized loop removed; face topology simplified
+- **Fixture path**: step-examples/12-3c-faces/Tfa208.stp
+- **Fixture kind**: scaffold
+
+### Tfa209 — FixWiresTwoCoincEdges duplicate coincident edges
+- **Category**: §12.3c faces (sub-class: edge-redundancy)
+- **Sources**: OCCT/ShapeFix_Face.FixWiresTwoCoincEdges (line 2669–2726)
+- **Description**: Square wire with two sequential identical edge instances (same curve, same vertices) appearing as consecutive edges. Tests coincident-edge consolidation branch that detects and merges redundant edge pairs sharing both endpoints.
+- **Expected kernel behavior**: heal
+- **Notes**: Coincident edge pair consolidation; edge multiplicity reduction
+- **Model impact**: Duplicate edge removed; wire topology cleaned
+- **Fixture path**: step-examples/12-3c-faces/Tfa209.stp
+- **Fixture kind**: scaffold
+
+### Tfa210 — FixSplitFace multi-loop split on disconnected wires
+- **Category**: §12.3c faces (sub-class: split-face)
+- **Sources**: OCCT/ShapeFix_Face.FixSplitFace_at2908 (line 2908–2930)
+- **Description**: Planar face with outer boundary and two disconnected inner hole loops. Tests face-splitting branch that detects topological separation and splits into independent faces when holes lack connection edges to outer boundary.
+- **Expected kernel behavior**: heal
+- **Notes**: Disconnected wire detection; multi-face split
+- **Model impact**: Face split into three independent faces (outer + two holes)
+- **Fixture path**: step-examples/12-3c-faces/Tfa210.stp
+- **Fixture kind**: scaffold
+
 ### Hea016 — Empty solid output from STEP export of complex body, despite STL succeeding
 - **Category**: §12.3c faces / shape healing
 - **Sources**: FreeCAD #20396; bug-reporter language: "Models exported to STEP crash or produce empty objects", "appears to export fine but results in an empty object", "STL and 3MF export work, STEP doesn't".
@@ -24646,6 +24696,33 @@ B-spline surface with irregular V knot multiplicities (3,1,3) on 4 control point
 - **Model impact**: Degenerate edges not identified; healer skips needed edge collapse/redistribution
 - **Fixture path**: step-examples/12-2c-surfaces/Gs148.stp
 - **Fixture kind**: scaffold
+
+# Wave 58C: Surface Analysis & Repair Defects
+
+### Gs149 — ShapeAnalysis_Surface.IsUVBounded
+**Defect**: Parameter gap classification on trimmed B-spline surfaces with inverted or missing bounds.
+**Geometry**: B_SPLINE_SURFACE_WITH_KNOTS (3x2, deg 2u/1v) trimmed to u:[0.5,2.5] v:[0.2,0.8].
+**Test**: Verify IsUVBounded correctly identifies bounded status despite inverted or malformed trim.
+
+### Gs150 — ShapeConstruct_Surface.AdjustByTransformation
+**Defect**: Placement inconsistency after coordinate system transformation on cylindrical surface.
+**Geometry**: CYLINDRICAL_SURFACE (radius 2.5) with offset AXIS2_PLACEMENT_3D at (1,2,3).
+**Test**: Verify surface parameterization remains coherent after transformation adjustment.
+
+### Gs151 — ShapeFix_Face.FixWireTool
+**Defect**: Seam edge consolidation failure on toroidal closed surfaces (duplicate/malformed wires).
+**Geometry**: TOROIDAL_SURFACE (major 5.0, minor 2.0) with u/v-periodic bounds.
+**Test**: Verify FixWireTool correctly handles seam edges without duplication on U-closed surface.
+
+### Gs152 — ShapeUpgrade_Surface.SplitSurface
+**Defect**: Parametric split ignores RECTANGULAR_TRIMMED_SURFACE bounds, extending patches beyond envelope.
+**Geometry**: B_SPLINE_SURFACE_WITH_KNOTS (4x4, deg 3/3) trimmed to u:[1.0,3.0] v:[1.5,3.5].
+**Test**: Verify split patches respect trim bounds and maintain G1 continuity.
+
+### Gs153 — ShapeAnalysis_Surface.CalcMaxDegree
+**Defect**: Knot multiplicity mismatch (sum != n+p+1) causes incorrect effective degree computation.
+**Geometry**: B_SPLINE_SURFACE_WITH_KNOTS (3x3, deg 2/2) with intentionally mismatched knots.
+**Test**: Verify CalcMaxDegree detects and handles knot-count inconsistency gracefully.
 
 ### Ad117 — STEP reader crashes on minimal file with malformed `STYLED_ITEM`
 - **Category**: §12.11 adversarial / parser-robustness (sub-class: SEGV on style record)
@@ -26334,6 +26411,61 @@ Pcurve is TRIMMED_CURVE. GetEndTangent2d uses untrimmed-curve tangent at trim bo
 - **Notes**: FIXSAMEPAR_COPYEDGE_RANGE_TRAP; parameter sync axis
 - **Model impact**: Periodic circular edge with seam-adjacent PCurves; copyedge range adjustment desynchronizes 2D curves
 - **Fixture path**: step-examples/12-2a-pcurves/Gp135.stp
+- **Fixture kind**: scaffold
+
+
+### Gp136 — ShapeFix_Edge.FixRemovePCurve.orphan_pcurves
+- **Category**: §12.2a pcurves
+- **Sources**: OCCT/ShapeFix_Edge
+- **Description**: RemoveCurve3d may leave orphaned PCurves on faces without cleanup.
+- **Expected kernel behavior**: heal: detect and correct; reject: if precondition unrecoverable
+- **Notes**: synthesized from v3 deep-pass
+- **Model impact**: Multi-face edge with inconsistent PCurves on two faces. Remove 3D curve without updating face-edge relationships. Result: stale PCurves remain, causing downstream validation failures. - **Search ancho
+- **Fixture path**: step-examples/12-2a-pcurves/Gp136.stp
+- **Fixture kind**: scaffold
+
+
+### Gp137 — ShapeFix_Face.FixMissingSeam.pcurve-translation-period-sync
+- **Category**: §12.2a pcurves
+- **Sources**: OCCT/ShapeFix_Face
+- **Description**: When non-boundary wires require period shift on closed surface, 3D geometry corrected but PCurve UV not translated.
+- **Expected kernel behavior**: heal: detect and correct; reject: if precondition unrecoverable
+- **Notes**: synthesized from v3 deep-pass
+- **Model impact**: Periodic surface (cylinder) with non-boundary wire requiring period shift. Without PCurve translation: 3D geometry fixed but UV wraps incorrectly. With translation: 3D-UV consistent. - **Search anchor
+- **Fixture path**: step-examples/12-2a-pcurves/Gp137.stp
+- **Fixture kind**: scaffold
+
+
+### Gp138 — ShapeFix_IntersectionTool.SplitEdge2.pcurve-endpoint-detection
+- **Category**: §12.2a pcurves
+- **Sources**: OCCT/ShapeFix_IntersectionTool
+- **Description**: Determines fragment assignment by comparing PCurve endpoints to midpoint parameter. Without detection, param cuts applied to wrong fragments.
+- **Expected kernel behavior**: heal: detect and correct; reject: if precondition unrecoverable
+- **Notes**: synthesized from v3 deep-pass
+- **Model impact**: Arc edge with reversed PCurve orientation requiring interior split. Without endpoint detection: cuts inverted. With detection: fragments correctly identified. - **Search anchors**: 'endpoint detection
+- **Fixture path**: step-examples/12-2a-pcurves/Gp138.stp
+- **Fixture kind**: scaffold
+
+
+### Gp139 — BRepBuilderAPI_Sewing.SameParameterEdge.seam-dual-pcurve-extraction
+- **Category**: §12.2a pcurves
+- **Sources**: OCCT/BRepBuilderAPI_Sewing
+- **Description**: Seam edge on closed surface requires dual PCurve (forward + reversed) but only single PCurve supplied.
+- **Expected kernel behavior**: heal: detect and correct; reject: if precondition unrecoverable
+- **Notes**: synthesized from v3 deep-pass
+- **Model impact**: Torus with seam edge along minor circle. Single PCurve (u=0, v=0..2π) missing reversed variant. Result: non-manifold geometry. - **Search anchors**: 'isSeam', 'dual PCurve', 'seam-dual-pcurve-extracti
+- **Fixture path**: step-examples/12-2a-pcurves/Gp139.stp
+- **Fixture kind**: scaffold
+
+
+### Gp140 — ShapeFix_ComposeShell.SplitByLine.pcurve-missing-skip
+- **Category**: §12.2a pcurves
+- **Sources**: OCCT/ShapeFix_ComposeShell
+- **Description**: SplitByLine skips edges without PCurve on face (continue statement). Without skip: null-dereference in Geom2dAdaptor projection.
+- **Expected kernel behavior**: heal: detect and correct; reject: if precondition unrecoverable
+- **Notes**: synthesized from v3 deep-pass
+- **Model impact**: Face with two edges: first has PCurve, second lacks it. Without line 1509-1511 skip: crash in gac projection. With skip: null edge gracefully skipped. - **Search anchors**: 'PCurve missing', 'continue
+- **Fixture path**: step-examples/12-2a-pcurves/Gp140.stp
 - **Fixture kind**: scaffold
 
 ### A105 — Regression OCC 6.9.1 → 7.4.0: colours stop appearing on certain STEP files

@@ -1,0 +1,74 @@
+ISO-10303-21;
+HEADER;
+FILE_DESCRIPTION(('CAD fixture: FixOrientation PeriodicBoundingBoxShift torus seam wrapping'),
+  '2026-06-16T12:00:00',
+  2,
+  (),
+  (),
+  'neutral file',
+  'CAD System',
+  '',
+  ());
+FILE_NAME('Tfa207.stp',
+  2026-06-16T12:00:00,
+  (''),
+  (''),
+  'neutral file format',
+  'CAD System v1',
+  '');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+#1=SECURITY_CLASSIFICATION('','',$);
+#10=PARAMETRIC_REPRESENTATION_CONTEXT('','3D parametric space');
+#11=AXIS2_PLACEMENT_3D('origin',#20,#21,#22);
+#20=CARTESIAN_POINT('',0.0,0.0,0.0);
+#21=DIRECTION('',0.0,0.0,1.0);
+#22=DIRECTION('',1.0,0.0,0.0);
+#30=TOROIDAL_SURFACE('torus',#11,3.0,1.0);
+#40=CIRCLE('circle_outer',#11,4.0);
+#50=CIRCLE('circle_inner',#11,2.0);
+#60=LINE('bridge_e1',#61,#62);
+#61=CARTESIAN_POINT('',4.0,0.0,0.0);
+#62=VECTOR('',#63,1.0);
+#63=DIRECTION('',−2.0,0.0,0.0);
+#70=LINE('bridge_e2',#71,#72);
+#71=CARTESIAN_POINT('',2.0,0.0,0.0);
+#72=VECTOR('',#73,1.0);
+#73=DIRECTION('',2.0,0.0,0.0);
+#100=VERTEX_POINT('v_outer_1',#101);
+#101=CARTESIAN_POINT('',4.0,0.0,0.0);
+#110=VERTEX_POINT('v_inner_1',#111);
+#111=CARTESIAN_POINT('',2.0,0.0,0.0);
+#120=EDGE_CURVE('edge_outer_circle',#100,#100,#40,.T.);
+#130=EDGE_CURVE('edge_inner_circle',#110,#110,#50,.T.);
+#140=EDGE_CURVE('bridge_1',#100,#110,#60,.T.);
+#150=EDGE_CURVE('bridge_2',#110,#100,#70,.T.);
+#160=ORIENTED_EDGE('oe_outer',*,*,#120,.T.);
+#170=ORIENTED_EDGE('oe_inner',*,*,#130,.T.);
+#180=ORIENTED_EDGE('ob_1',*,*,#140,.T.);
+#190=ORIENTED_EDGE('ob_2',*,*,#150,.F.);
+#200=EDGE_LOOP('loop_outer',(#160));
+#210=EDGE_LOOP('loop_inner',(#170));
+#220=EDGE_LOOP('loop_bridge',(#180,#190));
+#230=FACE_OUTER_BOUND('outer_bound',#220,.T.);
+#240=FACE_BOUND('hole_outer',#200,.F.);
+#250=FACE_BOUND('hole_inner',#210,.F.);
+#260=ADVANCED_FACE('torus_face',(#230,#240,#250),#30,.F.);
+#9000=PRODUCT_CONTEXT('',#1,'mechanical');
+#9001=PRODUCT('Tfa207','Tfa207','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
+#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
+#9021=SHELL_BASED_SURFACE_MODEL('sbsm',(#9020));
+#9020=CLOSED_SHELL('outer_shell',(#260));
+#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#9010);
+#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+ENDSEC;
+END-ISO-10303-21;

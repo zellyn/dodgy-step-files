@@ -1,0 +1,54 @@
+ISO-10303-21;
+/* Gs151 - ShapeFix_Face.FixWireTool seam edge consolidation
+ *
+ * Defect: FixWireTool processes EDGE_LOOPs on closed (seam) surfaces.
+ * If seam-edge handling is omitted or asymmetric (forward/reverse), edges
+ * may be duplicated or left malformed, breaking wire closure on toroidal/
+ * cylindrical surfaces.
+ *
+ * Reproducer: TOROIDAL_SURFACE with seam edge at u=0; verify FixWireTool
+ * correctly consolidates seam representation without duplication.
+ */
+HEADER;
+FILE_DESCRIPTION(('Gs151 test case','FixWireTool seam edge consolidation'),'2;1');
+FILE_NAME('Gs151.stp','2026-06-16T00:00:00',('zellyn@gmail.com'),'','auto-generated','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#11=DIRECTION('',(0.0,0.0,1.0));
+#12=DIRECTION('',(1.0,0.0,0.0));
+#13=AXIS2_PLACEMENT_3D('',#10,#11,#12);
+/* TOROIDAL_SURFACE with major radius 5.0, minor radius 2.0 */
+#20=TOROIDAL_SURFACE('',#13,5.0,2.0);
+#21=RECTANGULAR_TRIMMED_SURFACE('',#20,0.0,6.2832,0.0,6.2832,.T.,.T.);
+#50=CARTESIAN_POINT('',(7.0,0.0,0.0));
+#51=VERTEX_POINT('',#50);
+#52=CARTESIAN_POINT('',(7.0,0.0,3.0));
+#53=VERTEX_POINT('',#52);
+#60=DIRECTION('',(0.0,0.0,1.0));
+#61=VECTOR('',#60,3.0);
+#62=LINE('',#50,#61);
+#63=EDGE_CURVE('',#51,#53,#62,.T.);
+#64=ORIENTED_EDGE('',*,*,#63,.T.);
+#65=EDGE_LOOP('',(#64));
+#66=FACE_OUTER_BOUND('',#65,.T.);
+#67=ADVANCED_FACE('',(#66),#21,.T.);
+#80=OPEN_SHELL('',(#67));
+#9000=PRODUCT_CONTEXT('',#1,'mechanical');
+#9001=PRODUCT('Gs151','Gs151','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
+#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
+#9022=GEOMETRICALLY_BOUNDED_SURFACE_SHAPE_REPRESENTATION('',(#80),#9010);
+#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+ENDSEC;
+END-ISO-10303-21;

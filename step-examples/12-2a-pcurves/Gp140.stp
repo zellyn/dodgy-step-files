@@ -1,0 +1,84 @@
+ISO-10303-21;
+/* Gp140 - ShapeFix_ComposeShell.SplitByLine.pcurve-missing-skip
+ * Defect: SplitByLine skips edges without PCurve on face (continue statement).
+ * Without skip, edge without PCurve causes null-dereference in projection code. */
+HEADER;
+FILE_DESCRIPTION(('Gp140 test case','pcurve missing skip null-deref'),'2;1');
+FILE_NAME('Gp140.stp','2026-06-16T00:00:00',(''),(''),'auto-generated','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+#3=(LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT(.MILLI.,.METRE.));
+#4=(NAMED_UNIT(*) PLANE_ANGLE_UNIT() SI_UNIT($,.RADIAN.));
+#5=(NAMED_UNIT(*) SI_UNIT($,.STERADIAN.) SOLID_ANGLE_UNIT());
+#6=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#3,'distance_accuracy_value','');
+#7=( GEOMETRIC_REPRESENTATION_CONTEXT(3)
+     GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#6))
+     GLOBAL_UNIT_ASSIGNED_CONTEXT((#3,#4,#5))
+     REPRESENTATION_CONTEXT('','3D') );
+/* Host plane */
+#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#11=DIRECTION('',(0.0,0.0,1.0));
+#12=DIRECTION('',(1.0,0.0,0.0));
+#13=AXIS2_PLACEMENT_3D('',#10,#11,#12);
+#14=PLANE('plane_z0',#13);
+/* Two 3D curves: first has PCurve, second does not */
+#20=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#21=CARTESIAN_POINT('',(2.0,0.0,0.0));
+#22=DIRECTION('',(1.0,0.0,0.0));
+#23=VECTOR('',#22,2.0);
+#24=LINE('edge1_3d',#20,#23);
+#25=CARTESIAN_POINT('',(2.0,0.0,0.0));
+#26=CARTESIAN_POINT('',(2.0,2.0,0.0));
+#27=DIRECTION('',(0.0,1.0,0.0));
+#28=VECTOR('',#27,2.0);
+#29=LINE('edge2_3d',#25,#28);
+/* Vertices */
+#30=VERTEX_POINT('',(0.0,0.0,0.0));
+#31=CARTESIAN_POINT('',(2.0,0.0,0.0));
+#32=VERTEX_POINT('',#31);
+#33=CARTESIAN_POINT('',(2.0,2.0,0.0));
+#34=VERTEX_POINT('',#33);
+/* Edge 1: with PCurve */
+#40=CARTESIAN_POINT('',(0.0,0.0));
+#41=CARTESIAN_POINT('',(2.0,0.0));
+#42=DIRECTION('',(1.0,0.0));
+#43=VECTOR('',#42,2.0);
+#44=LINE('edge1_pcurve',#40,#43);
+#45=( GEOMETRIC_REPRESENTATION_CONTEXT(2)
+      PARAMETRIC_REPRESENTATION_CONTEXT()
+      REPRESENTATION_CONTEXT('parametric','2D') );
+#46=DEFINITIONAL_REPRESENTATION('',(#44),#45);
+#47=PCURVE('pcurve_e1',#14,#46);
+#50=SURFACE_CURVE('edge1_with_pc',#24,(#47),.PCURVE_S1.);
+#60=EDGE_CURVE('edge_with_pc',#30,#32,#50,.T.);
+/* Edge 2: without PCurve (SURFACE_CURVE with empty associated_geometry) */
+#51=SURFACE_CURVE('edge2_no_pc',#29,(),.PCURVE_S1.);
+#61=EDGE_CURVE('edge_no_pc',#32,#34,#51,.T.);
+/* EDGE_LOOP with both edges */
+#62=ORIENTED_EDGE('',*,*,#60,.T.);
+#63=ORIENTED_EDGE('',*,*,#61,.T.);
+#64=EDGE_LOOP('',(#62,#63));
+#65=FACE_OUTER_BOUND('',#64,.T.);
+#66=ADVANCED_FACE('',(#65),#14,.T.);
+#90=SHAPE_REPRESENTATION('Gp140',(#13,#66),#7);
+/* PRODUCT chain */
+#9000=PRODUCT_CONTEXT('',#1,'mechanical');
+#9001=PRODUCT('Gp140','Gp140','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
+#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
+#9020=OPEN_SHELL('wrap_shell',(#66));
+#9021=SHELL_BASED_SURFACE_MODEL('wrap_sbsm',(#9020));
+#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#9010);
+#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+ENDSEC;
+END-ISO-10303-21;
