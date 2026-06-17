@@ -1,0 +1,34 @@
+ISO-10303-21;
+/* Tsh027 - Coincident-but-not-shared faces between adjacent solids
+ * Defect: A built-up assembly imports as N disconnected MANIFOLD_SOLID_BREPs;
+ * faces shared between adjacent parts are coincident-but-not-shared
+ * (each part has its own copy). FEA mesh has no node continuity across
+ * the interface. Common from CATProduct, SLDASM-as-STEP, Inventor IAM
+ * exported without "merge coincident faces". Tangential / zero-thickness
+ * contact creates a non-manifold body that meshers refuse.
+ *
+ * This file: two unit cubes A=[0,1]^3 and B=[1,2]x[0,1]x[0,1] that
+ * touch along the plane x=1. Each cube has its own VERTEX_POINTs,
+ * EDGE_CURVEs, and ADVANCED_FACEs along the shared plane -- no
+ * sharing of topology even though the two faces are geometrically
+ * coincident. Sources: Y022, M022. */
+HEADER;
+FILE_DESCRIPTION(('Tsh027 test case','Coincident-but-not-shared faces between solids'),'2;1');
+FILE_NAME('Tsh027.stp','2026-04-26T00:00:00',(''),(''),'auto-generated','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+#9000=PRODUCT_CONTEXT('',#1,'mechanical');
+#9001=PRODUCT('Tsh027','Tsh027','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
+#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
+#9021=SHELL_BASED_SURFACE_MODEL('sbsm',(#1000));
+#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#9010);
+#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+ENDSEC;
+END-ISO-10303-21;

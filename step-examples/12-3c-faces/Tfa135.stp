@@ -1,0 +1,173 @@
+ISO-10303-21;
+HEADER;
+FILE_DESCRIPTION(('Tfa135 FixSmallAreaWire chained-removal'),'2;1');
+FILE_NAME('Tfa135.stp','2026-06-15T00:00:00',(''),(''),
+  'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2009,#1);
+/* Tfa135 - FixSmallAreaWire.chained-removal
+ * Defect: Three small inner wires; removing first changes area calc,
+ * causing second to also fall below threshold (cascade effect).
+ * Trigger: Face with multiple small wires where removal propagates.
+ */
+#10=CARTESIAN_POINT('origin',(0.0,0.0,0.0));
+#11=DIRECTION('z',(0.0,0.0,1.0));
+#12=DIRECTION('x',(1.0,0.0,0.0));
+#13=AXIS2_PLACEMENT_3D('placement',#10,#11,#12);
+/* Outer wire: large square */
+#20=CARTESIAN_POINT('p0',(0.0,0.0,0.0));
+#21=CARTESIAN_POINT('p1',(20.0,0.0,0.0));
+#22=CARTESIAN_POINT('p2',(20.0,20.0,0.0));
+#23=CARTESIAN_POINT('p3',(0.0,20.0,0.0));
+/* Small inner wire 1 (0.1x0.1) */
+#24=CARTESIAN_POINT('p4',(2.0,2.0,0.0));
+#25=CARTESIAN_POINT('p5',(2.1,2.0,0.0));
+#26=CARTESIAN_POINT('p6',(2.1,2.1,0.0));
+#27=CARTESIAN_POINT('p7',(2.0,2.1,0.0));
+/* Small inner wire 2 (0.15x0.15) */
+#28=CARTESIAN_POINT('p8',(5.0,5.0,0.0));
+#29=CARTESIAN_POINT('p9',(5.15,5.0,0.0));
+#30=CARTESIAN_POINT('p10',(5.15,5.15,0.0));
+#31=CARTESIAN_POINT('p11',(5.0,5.15,0.0));
+/* Small inner wire 3 (0.2x0.2) */
+#32=CARTESIAN_POINT('p12',(8.0,8.0,0.0));
+#33=CARTESIAN_POINT('p13',(8.2,8.0,0.0));
+#34=CARTESIAN_POINT('p14',(8.2,8.2,0.0));
+#35=CARTESIAN_POINT('p15',(8.0,8.2,0.0));
+/* Vertices */
+#40=VERTEX_POINT('v0',#20);
+#41=VERTEX_POINT('v1',#21);
+#42=VERTEX_POINT('v2',#22);
+#43=VERTEX_POINT('v3',#23);
+#44=VERTEX_POINT('v4',#24);
+#45=VERTEX_POINT('v5',#25);
+#46=VERTEX_POINT('v6',#26);
+#47=VERTEX_POINT('v7',#27);
+#48=VERTEX_POINT('v8',#28);
+#49=VERTEX_POINT('v9',#29);
+#50=VERTEX_POINT('v10',#30);
+#51=VERTEX_POINT('v11',#31);
+#52=VERTEX_POINT('v12',#32);
+#53=VERTEX_POINT('v13',#33);
+#54=VERTEX_POINT('v14',#34);
+#55=VERTEX_POINT('v15',#35);
+/* Outer wire edges */
+#60=DIRECTION('d0',(1.0,0.0,0.0));
+#61=VECTOR('v_o0',#60,20.0);
+#62=LINE('l0',#20,#61);
+#63=DIRECTION('d1',(0.0,1.0,0.0));
+#64=VECTOR('v_o1',#63,20.0);
+#65=LINE('l1',#21,#64);
+#66=DIRECTION('d2',(-1.0,0.0,0.0));
+#67=VECTOR('v_o2',#66,20.0);
+#68=LINE('l2',#22,#67);
+#69=DIRECTION('d3',(0.0,-1.0,0.0));
+#70=VECTOR('v_o3',#69,20.0);
+#71=LINE('l3',#23,#70);
+#72=EDGE_CURVE('e0',#40,#41,#62,.T.);
+#73=EDGE_CURVE('e1',#41,#42,#65,.T.);
+#74=EDGE_CURVE('e2',#42,#43,#68,.T.);
+#75=EDGE_CURVE('e3',#43,#40,#71,.T.);
+/* Inner wire 1 edges (0.1x0.1) */
+#76=DIRECTION('d4',(1.0,0.0,0.0));
+#77=VECTOR('v_i10',#76,0.1);
+#78=LINE('l4',#24,#77);
+#79=DIRECTION('d5',(0.0,1.0,0.0));
+#80=VECTOR('v_i11',#79,0.1);
+#81=LINE('l5',#25,#80);
+#82=DIRECTION('d6',(-1.0,0.0,0.0));
+#83=VECTOR('v_i12',#82,0.1);
+#84=LINE('l6',#26,#83);
+#85=DIRECTION('d7',(0.0,-1.0,0.0));
+#86=VECTOR('v_i13',#85,0.1);
+#87=LINE('l7',#27,#86);
+#88=EDGE_CURVE('e4',#44,#45,#78,.T.);
+#89=EDGE_CURVE('e5',#45,#46,#81,.T.);
+#90=EDGE_CURVE('e6',#46,#47,#84,.T.);
+#91=EDGE_CURVE('e7',#47,#44,#87,.T.);
+/* Inner wire 2 edges (0.15x0.15) */
+#92=DIRECTION('d8',(1.0,0.0,0.0));
+#93=VECTOR('v_i20',#92,0.15);
+#94=LINE('l8',#28,#93);
+#95=DIRECTION('d9',(0.0,1.0,0.0));
+#96=VECTOR('v_i21',#95,0.15);
+#97=LINE('l9',#29,#96);
+#98=DIRECTION('d10',(-1.0,0.0,0.0));
+#99=VECTOR('v_i22',#98,0.15);
+#100=LINE('l10',#30,#99);
+#101=DIRECTION('d11',(0.0,-1.0,0.0));
+#102=VECTOR('v_i23',#101,0.15);
+#103=LINE('l11',#31,#102);
+#104=EDGE_CURVE('e8',#48,#49,#94,.T.);
+#105=EDGE_CURVE('e9',#49,#50,#97,.T.);
+#106=EDGE_CURVE('e10',#50,#51,#100,.T.);
+#107=EDGE_CURVE('e11',#51,#48,#103,.T.);
+/* Inner wire 3 edges (0.2x0.2) */
+#108=DIRECTION('d12',(1.0,0.0,0.0));
+#109=VECTOR('v_i30',#108,0.2);
+#110=LINE('l12',#32,#109);
+#111=DIRECTION('d13',(0.0,1.0,0.0));
+#112=VECTOR('v_i31',#111,0.2);
+#113=LINE('l13',#33,#112);
+#114=DIRECTION('d14',(-1.0,0.0,0.0));
+#115=VECTOR('v_i32',#114,0.2);
+#116=LINE('l14',#34,#115);
+#117=DIRECTION('d15',(0.0,-1.0,0.0));
+#118=VECTOR('v_i33',#117,0.2);
+#119=LINE('l15',#35,#118);
+#120=EDGE_CURVE('e12',#52,#53,#110,.T.);
+#121=EDGE_CURVE('e13',#53,#54,#113,.T.);
+#122=EDGE_CURVE('e14',#54,#55,#116,.T.);
+#123=EDGE_CURVE('e15',#55,#52,#119,.T.);
+/* Oriented edges */
+#130=ORIENTED_EDGE('oe0',*,*,#72,.T.);
+#131=ORIENTED_EDGE('oe1',*,*,#73,.T.);
+#132=ORIENTED_EDGE('oe2',*,*,#74,.T.);
+#133=ORIENTED_EDGE('oe3',*,*,#75,.T.);
+#134=ORIENTED_EDGE('oe4',*,*,#88,.T.);
+#135=ORIENTED_EDGE('oe5',*,*,#89,.T.);
+#136=ORIENTED_EDGE('oe6',*,*,#90,.T.);
+#137=ORIENTED_EDGE('oe7',*,*,#91,.T.);
+#138=ORIENTED_EDGE('oe8',*,*,#104,.T.);
+#139=ORIENTED_EDGE('oe9',*,*,#105,.T.);
+#140=ORIENTED_EDGE('oe10',*,*,#106,.T.);
+#141=ORIENTED_EDGE('oe11',*,*,#107,.T.);
+#142=ORIENTED_EDGE('oe12',*,*,#120,.T.);
+#143=ORIENTED_EDGE('oe13',*,*,#121,.T.);
+#144=ORIENTED_EDGE('oe14',*,*,#122,.T.);
+#145=ORIENTED_EDGE('oe15',*,*,#123,.T.);
+/* Edge loops */
+#150=EDGE_LOOP('outer',(#130,#131,#132,#133));
+#151=EDGE_LOOP('inner1',(#134,#135,#136,#137));
+#152=EDGE_LOOP('inner2',(#138,#139,#140,#141));
+#153=EDGE_LOOP('inner3',(#142,#143,#144,#145));
+/* Face bounds */
+#160=FACE_OUTER_BOUND('outer',#150,.T.);
+#161=FACE_INNER_BOUND('inner1',#151,.T.);
+#162=FACE_INNER_BOUND('inner2',#152,.T.);
+#163=FACE_INNER_BOUND('inner3',#153,.T.);
+/* Geometry */
+#170=PLANE('plane',#13);
+/* Face with three small inner wires triggering chained removal */
+#180=ADVANCED_FACE('chained',(#160,#161,#162,#163),#170,.T.);
+#190=OPEN_SHELL('shell',(#180));
+/* Mandatory PRODUCT chain */
+#9000=PRODUCT_CONTEXT('',#1,'mechanical');
+#9001=PRODUCT('Tfa135','Tfa135','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
+#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
+#9021=SHELL_BASED_SURFACE_MODEL('sbsm',(#190));
+#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#9010);
+#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+ENDSEC;
+END-ISO-10303-21;

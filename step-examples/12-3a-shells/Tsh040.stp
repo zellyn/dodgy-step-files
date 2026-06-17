@@ -1,0 +1,34 @@
+ISO-10303-21;
+/* Tsh040 - OPEN_SHELLs with shared interior edge mis-classified as non-manifold by slicer
+ * Defect: Two adjacent OPEN_SHELLs share an edge in a perfectly
+ * manifold T-junction, but slicer mesher classifies the shared edge
+ * as non-manifold because each shell is OPEN_SHELL and the shared
+ * edge has 3+ face references in the joined compound.
+ *
+ * This file: two OPEN_SHELLs joined into a single
+ * SHELL_BASED_SURFACE_MODEL. Shell A is two faces meeting at an edge
+ * (a "fold"); shell B is one face that abuts the same edge from a
+ * third direction. The shared EDGE_CURVE #311 is referenced by all
+ * three faces -- legal in STEP for an open-shell aggregation, but
+ * fatal once a slicer flatlines the model into a single mesh.
+ * Sources: J015. */
+HEADER;
+FILE_DESCRIPTION(('Tsh040 test case','Two OPEN_SHELLs sharing one edge'),'2;1');
+FILE_NAME('Tsh040.stp','2026-04-26T00:00:00',(''),(''),'auto-generated','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+#9000=PRODUCT_CONTEXT('',#1,'mechanical');
+#9001=PRODUCT('Tsh040','Tsh040','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
+#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
+#9021=SHELL_BASED_SURFACE_MODEL('sbsm',(#520));
+#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#9010);
+#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+ENDSEC;
+END-ISO-10303-21;

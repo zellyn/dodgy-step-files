@@ -1,0 +1,35 @@
+ISO-10303-21;
+/* Tsh036 - Revolved shape imported with complementary (reversed) angle
+ * Defect: A revolved shape comes out with the complementary (reversed)
+ * angular sweep -- e.g. a 270 deg sweep where 90 deg was intended, or
+ * vice versa. The receiver misinterprets the axis orientation and
+ * produces the angular complement. Visible in standard XDE display.
+ *
+ * This file: a SURFACE_OF_REVOLUTION on a 90-degree arc-of-circle
+ * profile around an axis whose direction is encoded as -Z (i.e. the
+ * `axis` field's DIRECTION points DOWN). The profile is bounded by an
+ * EDGE_LOOP that nominally sweeps from u=0 to u=pi/2. A reader that
+ * honours direction encoding gets the right 90 deg face; a reader that
+ * silently flips the axis to +Z while keeping the parameter range
+ * produces the complementary 270 deg sweep.
+ * Sources: I012 (OCCT #378). */
+HEADER;
+FILE_DESCRIPTION(('Tsh036 test case','Revolution with complementary angle ambiguity'),'2;1');
+FILE_NAME('Tsh036.stp','2026-04-26T00:00:00',(''),(''),'auto-generated','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+#9000=PRODUCT_CONTEXT('',#1,'mechanical');
+#9001=PRODUCT('Tsh036','Tsh036','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
+#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
+#9021=SHELL_BASED_SURFACE_MODEL('sbsm',(#510));
+#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#9010);
+#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+ENDSEC;
+END-ISO-10303-21;

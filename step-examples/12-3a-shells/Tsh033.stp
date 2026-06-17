@@ -1,0 +1,39 @@
+ISO-10303-21;
+/* Tsh033 - Mirrored block instances flip surface direction with parameter-space curves
+ * Defect: When a block instance is exported with a true reflection
+ * transform (negative determinant), some receivers silently right-handize
+ * the frame, flipping surface normals. AXIS2_PLACEMENT_3D is by
+ * construction always right-handed (axis x ref produces a right-handed
+ * triad regardless of the ref_direction sign), so a reflection cannot
+ * be encoded as a placement. The correct STEP encoding for a true
+ * reflection is CARTESIAN_TRANSFORMATION_OPERATOR_3D with scale = -1
+ * (or with axis3 set to -(axis1 x axis2) -- a non-orthonormal frame
+ * having determinant -1) referenced through MAPPED_ITEM via a
+ * representation_relationship.
+ *
+ * This file: a planar face wrapped in a REPRESENTATION_MAP, then
+ * instanced two ways:
+ *   - #800 with an identity AXIS2_PLACEMENT_3D (proper rigid placement)
+ *   - #810 with a reflecting CARTESIAN_TRANSFORMATION_OPERATOR_3D
+ *     whose `scale = -1.0` mirrors through the origin (det = -1).
+ * Sources: K017, W039. */
+HEADER;
+FILE_DESCRIPTION(('Tsh033 test case','Mirrored MAPPED_ITEM via CARTESIAN_TRANSFORMATION_OPERATOR_3D scale=-1'),'2;1');
+FILE_NAME('Tsh033.stp','2026-04-26T00:00:00',(''),(''),'auto-generated','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+#9000=PRODUCT_CONTEXT('',#1,'mechanical');
+#9001=PRODUCT('Tsh033','Tsh033','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
+#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
+#9021=SHELL_BASED_SURFACE_MODEL('sbsm',(#510));
+#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#9010);
+#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+ENDSEC;
+END-ISO-10303-21;

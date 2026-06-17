@@ -1,0 +1,111 @@
+ISO-10303-21;
+HEADER;
+FILE_DESCRIPTION(('Tfa134 CheckStripFace strip-with-pin'),'2;1');
+FILE_NAME('Tfa134.stp','2026-06-15T00:00:00',(''),(''),
+  'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2009,#1);
+/* Tfa134 - CheckStripFace.strip-with-pin
+ * Defect: Strip face that also has a pin protrusion at one end.
+ * CheckStripFace sees pin-like character but strip dominates classification.
+ * Trigger: Face with strip topology plus localized pin expansion.
+ */
+#10=CARTESIAN_POINT('origin',(0.0,0.0,0.0));
+#11=DIRECTION('z',(0.0,0.0,1.0));
+#12=DIRECTION('x',(1.0,0.0,0.0));
+#13=AXIS2_PLACEMENT_3D('placement',#10,#11,#12);
+/* Strip region: thin elongated rectangle */
+#20=CARTESIAN_POINT('p0',(0.0,0.0,0.0));
+#21=CARTESIAN_POINT('p1',(30.0,0.0,0.0));
+#22=CARTESIAN_POINT('p2',(30.0,0.5,0.0));
+#23=CARTESIAN_POINT('p3',(0.0,0.5,0.0));
+/* Pin protrusion at one end (square expansion at x=0) */
+#24=CARTESIAN_POINT('p4',(0.0,0.0,0.0));
+#25=CARTESIAN_POINT('p5',(0.0,-2.0,0.0));
+#26=CARTESIAN_POINT('p6',(2.0,-2.0,0.0));
+#27=CARTESIAN_POINT('p7',(2.0,0.0,0.0));
+/* Wire vertices for strip */
+#40=VERTEX_POINT('v0',#20);
+#41=VERTEX_POINT('v1',#21);
+#42=VERTEX_POINT('v2',#22);
+#43=VERTEX_POINT('v3',#23);
+/* Wire vertices for pin */
+#44=VERTEX_POINT('v4',#24);
+#45=VERTEX_POINT('v5',#25);
+#46=VERTEX_POINT('v6',#26);
+#47=VERTEX_POINT('v7',#27);
+/* Strip boundary edges */
+#50=DIRECTION('d0',(1.0,0.0,0.0));
+#51=VECTOR('v_s0',#50,30.0);
+#52=LINE('l0',#20,#51);
+#53=DIRECTION('d1',(0.0,1.0,0.0));
+#54=VECTOR('v_s1',#53,0.5);
+#55=LINE('l1',#21,#54);
+#56=DIRECTION('d2',(-1.0,0.0,0.0));
+#57=VECTOR('v_s2',#56,30.0);
+#58=LINE('l2',#22,#57);
+#59=DIRECTION('d3',(0.0,-1.0,0.0));
+#60=VECTOR('v_s3',#59,0.5);
+#61=LINE('l3',#23,#60);
+#62=EDGE_CURVE('e0',#40,#41,#52,.T.);
+#63=EDGE_CURVE('e1',#41,#42,#55,.T.);
+#64=EDGE_CURVE('e2',#42,#43,#58,.T.);
+#65=EDGE_CURVE('e3',#43,#40,#61,.T.);
+/* Pin expansion edges */
+#66=DIRECTION('d4',(0.0,-1.0,0.0));
+#67=VECTOR('v_p0',#66,2.0);
+#68=LINE('l4',#24,#67);
+#69=DIRECTION('d5',(1.0,0.0,0.0));
+#70=VECTOR('v_p1',#69,2.0);
+#71=LINE('l5',#25,#70);
+#72=DIRECTION('d6',(0.0,1.0,0.0));
+#73=VECTOR('v_p2',#72,2.0);
+#74=LINE('l6',#26,#73);
+#75=DIRECTION('d7',(-1.0,0.0,0.0));
+#76=VECTOR('v_p3',#75,2.0);
+#77=LINE('l7',#27,#76);
+#78=EDGE_CURVE('e4',#44,#45,#68,.T.);
+#79=EDGE_CURVE('e5',#45,#46,#71,.T.);
+#80=EDGE_CURVE('e6',#46,#47,#74,.T.);
+#81=EDGE_CURVE('e7',#47,#44,#77,.T.);
+/* Oriented edges for strip */
+#90=ORIENTED_EDGE('oe0',*,*,#62,.T.);
+#91=ORIENTED_EDGE('oe1',*,*,#63,.T.);
+#92=ORIENTED_EDGE('oe2',*,*,#64,.T.);
+#93=ORIENTED_EDGE('oe3',*,*,#65,.T.);
+/* Oriented edges for pin */
+#94=ORIENTED_EDGE('oe4',*,*,#78,.T.);
+#95=ORIENTED_EDGE('oe5',*,*,#79,.T.);
+#96=ORIENTED_EDGE('oe6',*,*,#80,.T.);
+#97=ORIENTED_EDGE('oe7',*,*,#81,.T.);
+/* Edge loops */
+#100=EDGE_LOOP('strip',(#90,#91,#92,#93));
+#101=EDGE_LOOP('pin',(#94,#95,#96,#97));
+/* Face bounds */
+#110=FACE_OUTER_BOUND('outer',#100,.T.);
+#111=FACE_INNER_BOUND('pin',#101,.T.);
+/* Geometry */
+#120=PLANE('plane',#13);
+/* Face: strip with pin protrusion (triggers strip/pin classification ambiguity) */
+#130=ADVANCED_FACE('strip-pin',(#110,#111),#120,.T.);
+#140=OPEN_SHELL('shell',(#130));
+/* Mandatory PRODUCT chain */
+#9000=PRODUCT_CONTEXT('',#1,'mechanical');
+#9001=PRODUCT('Tfa134','Tfa134','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
+#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
+#9021=SHELL_BASED_SURFACE_MODEL('sbsm',(#140));
+#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#9010);
+#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+ENDSEC;
+END-ISO-10303-21;

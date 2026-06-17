@@ -1,0 +1,38 @@
+ISO-10303-21;
+/* Tsh039 - Self-touching boundary cycle (figure-eight wire after triangulation)
+ * Defect: A face whose boundary loop folds back on itself after
+ * triangulation, or "4-manifold edge" (one shared edge has two pairs
+ * of triangles). CGAL's stitch_boundary_cycles / Manifold's
+ * DedupeEdges resolve by duplicating endpoints and adding edges to
+ * separate the topology.
+ *
+ * This file demonstrates the figure-eight directly: a face whose
+ * single outer wire visits a corner vertex twice -- the wire winds
+ * around a left lobe, returns through the central vertex, then
+ * winds around the right lobe before closing. Vertex #114 (centre)
+ * is the pinch point shared by both lobes.
+ *      _______        _______
+ *     |       |      |       |
+ *     |  L    |  X   |   R   |     X = pinch vertex (#114)
+ *     |_______|______|_______|
+ * Sources: H002, H011, H041, L013. */
+HEADER;
+FILE_DESCRIPTION(('Tsh039 test case','Figure-eight self-touching boundary'),'2;1');
+FILE_NAME('Tsh039.stp','2026-04-26T00:00:00',(''),(''),'auto-generated','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+#9000=PRODUCT_CONTEXT('',#1,'mechanical');
+#9001=PRODUCT('Tsh039','Tsh039','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
+#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
+#9021=SHELL_BASED_SURFACE_MODEL('sbsm',(#510));
+#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#9010);
+#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+ENDSEC;
+END-ISO-10303-21;

@@ -1,0 +1,32 @@
+ISO-10303-21;
+/* Tsh021 - Non-manifold vertex (bowtie / hourglass / fan-of-fans)
+ * Defect: A vertex whose 1-ring is not a single fan -- touching cones,
+ * bowtie meshes (two fans glued at a single point). Common when two
+ * solids touch at exactly one vertex (hourglass). Sources: H009, H010,
+ * H042 (CGAL/Manifold), L012, L047 (Attene 2013).
+ *
+ * This file: two square plates meeting at exactly one corner vertex
+ *  - Plate A: 0,0,0 1,0,0 1,1,0 0,1,0
+ *  - Plate B: 1,1,0 2,1,0 2,2,0 1,2,0
+ * They share VERTEX_POINT #112 (the (1,1,0) vertex) but no edge -- the
+ * topology forms an "hourglass" / bowtie at that vertex. */
+HEADER;
+FILE_DESCRIPTION(('Tsh021 test case','Non-manifold bowtie vertex'),'2;1');
+FILE_NAME('Tsh021.stp','2026-04-26T00:00:00',(''),(''),'auto-generated','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+#9000=PRODUCT_CONTEXT('',#1,'mechanical');
+#9001=PRODUCT('Tsh021','Tsh021','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
+#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
+#9021=SHELL_BASED_SURFACE_MODEL('sbsm',(#510));
+#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#9010);
+#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+ENDSEC;
+END-ISO-10303-21;

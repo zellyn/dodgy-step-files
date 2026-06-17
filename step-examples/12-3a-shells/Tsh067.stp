@@ -1,0 +1,50 @@
+ISO-10303-21;
+/* Tsh067 - Inner void shell extends beyond outer shell extent */
+HEADER;
+FILE_DESCRIPTION(('Tsh067 test case','BREP_WITH_VOIDS where void protrudes from outer shell'),'2;1');
+FILE_NAME('Tsh067.stp','2026-05-01T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#11=DIRECTION('',(0.0,0.0,1.0));
+#12=DIRECTION('',(1.0,0.0,0.0));
+#13=AXIS2_PLACEMENT_3D('',#10,#11,#12);
+#14=PLANE('',#13);
+/* Outer cube 10x10x10, faces at x,y boundaries */
+#20=ADVANCED_FACE('out_top',(),#14,.T.);
+#21=ADVANCED_FACE('out_bottom',(),#14,.T.);
+#22=ADVANCED_FACE('out_xpos',(),#14,.T.);
+#23=ADVANCED_FACE('out_xneg',(),#14,.T.);
+#24=ADVANCED_FACE('out_ypos',(),#14,.T.);
+#25=ADVANCED_FACE('out_yneg',(),#14,.T.);
+#100=CLOSED_SHELL('outer_cube_10x10x10',(#20,#21,#22,#23,#24,#25));
+/* Inner pin: a 2x2x15 mm shell along Z. Its endpoints at z=-7.5 and
+   z=+7.5 sit 2.5 mm outside the cube (cube extends z in [-5,+5]). */
+#30=ADVANCED_FACE('void_top_at_z+7p5',(),#14,.T.);
+#31=ADVANCED_FACE('void_bottom_at_z-7p5',(),#14,.T.);
+#32=ADVANCED_FACE('void_xpos',(),#14,.T.);
+#33=ADVANCED_FACE('void_xneg',(),#14,.T.);
+#34=ADVANCED_FACE('void_ypos',(),#14,.T.);
+#35=ADVANCED_FACE('void_yneg',(),#14,.T.);
+#101=CLOSED_SHELL('void_pin_2x2x15',(#30,#31,#32,#33,#34,#35));
+#102=ORIENTED_CLOSED_SHELL('',#101,.F.);
+/* Defect: the void shell extends beyond the outer shell along Z. */
+#9000=PRODUCT_CONTEXT('',#1,'mechanical');
+#9001=PRODUCT('Tsh067','Tsh067','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
+#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
+#9021=MANIFOLD_SOLID_SHAPE_REPRESENTATION('',(#200),#9010);
+#9022=SHAPE_DEFINITION_REPRESENTATION(#9005,#9021);
+#200=BREP_WITH_VOIDS('block_with_protruding_void',#100,(#102));
+ENDSEC;
+END-ISO-10303-21;

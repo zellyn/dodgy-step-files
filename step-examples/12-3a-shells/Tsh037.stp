@@ -1,0 +1,34 @@
+ISO-10303-21;
+/* Tsh037 - Free wires/edges in compound (Q029, F080 -- no faces, INTERNAL orientation)
+ * Defect: ShapeFix_Shape DONE1/DONE2 marks free wires/edges in compound
+ * (no faces). Also EDGE_BASED_WIREFRAME_MODEL / FACE_BASED_SURFACE_MODEL
+ * with empty content. The receiver should accept the wireframe and not
+ * synthesize fictitious faces.
+ *
+ * This file: a GEOMETRIC_CURVE_SET aggregating two unrelated edges
+ * (a line and a circle) plus an EDGE_BASED_WIREFRAME_MODEL whose
+ * connected_edge_set has just one CONNECTED_EDGE_SET grouping the
+ * same edges. There are no parent faces, so the file is a pure
+ * wireframe representation. A reader that synthesizes faces would
+ * be wrong; a reader that rejects "wireframe-only" would lose data.
+ * Sources: F080, Q028, Q029. */
+HEADER;
+FILE_DESCRIPTION(('Tsh037 test case','Free wires/edges in compound, no faces'),'2;1');
+FILE_NAME('Tsh037.stp','2026-04-26T00:00:00',(''),(''),'auto-generated','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+#9000=PRODUCT_CONTEXT('',#1,'mechanical');
+#9001=PRODUCT('Tsh037','Tsh037','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
+#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
+#9021=EDGE_BASED_WIREFRAME_MODEL('wireframe',(#330));
+#9022=EDGE_BASED_WIREFRAME_SHAPE_REPRESENTATION('',(#9021),#9010);
+#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+ENDSEC;
+END-ISO-10303-21;
