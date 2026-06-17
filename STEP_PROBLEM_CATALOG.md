@@ -21320,6 +21320,23 @@ B_SPLINE_CURVE_WITH_KNOTS (degree 2, 6 poles). Clustered interior knots: [0.01, 
 ### Gn153 — Periodic B-spline origin re-anchor post-upgrade
 B_SPLINE_CURVE_WITH_KNOTS (degree 2, 4 poles, periodic .T., closed loop). Interior knot at 0.5. Defect: after Geom2dConvert::C0BSplineToC1 upgrade, parametrization origin shifts; D0(FirstParameter) changes. Healing must re-anchor via SetOrigin to preserve continuity across period. Knot sum 3+2+1=6 ✓. Invariants: DIRECTION unit, no forward refs, three-arg LINE.
 
+## Wave 66C: NURBS Defect Fixtures — Gn154–Gn158
+
+### Gn154 — Rational B-spline with zero-weight pole singularity
+Minimal reproducer: RATIONAL_B_SPLINE_SURFACE, 3×3 control net, degree (2,2). Interior pole P[1,1] has weight w=0. Knot structure: U,V multiplicities (3,3)/(3,3), fully clamped. Healing challenge: weight=0 creates homogeneous singularity (w=0 in rational plane); rational evaluation undefined at that pole. Expected: flag pole degenerate or skip in geometric computation.
+
+### Gn155 — Interior B-spline knot multiplicity equals degree (C1 discontinuity)
+Minimal reproducer: B_SPLINE_SURFACE_WITH_KNOTS, degree (3,2), 4 poles in U, 3 in V. U-knots: (0, 0, 0, 0, 0.5, 0.5, 0.5, 1.0) with multiplicities (4,3,1). Interior knot at 0.5 has multiplicity=3=degree_U, creating C1 (tangent continuous) but not C2 discontinuity. Healing challenge: loss of curvature continuity; evaluation at that knot span yields discontinuous second derivative. Expected: detect and flag or apply knot removal to restore C2.
+
+### Gn156 — Periodic B-spline with non-closing control polygon, origin-shift risk
+Minimal reproducer: B_SPLINE_CURVE_WITH_KNOTS, degree 2, 5 poles marked periodic (.T.), but P[0]=(1,0,0)≠P[4]=(0.9,−0.1,0). Knot structure: multiplicities (2,2,2,1), sum=7=n+d for periodic. Closed-curve claim violated; polygon open. Healing challenge: post-upgrade (Geom2dConvert C0→C1), periodic origin may shift without SetOrigin re-anchor. Expected: enforce closure or strip periodicity; re-anchor origin after continuity upgrade.
+
+### Gn157 — Rational B-spline with extreme weight ratio (1e4), numerical conditioning
+Minimal reproducer: RATIONAL_B_SPLINE_SURFACE, 3×2 control net, degree (2,1). Weights: (1.0, 10000.0, 1.0, 1.0, 1.0, 1.0) span 4 orders of magnitude. Knot structure: U,V multiplicities (3,3)/(2,2), fully clamped. Healing challenge: weight ratio 10000:1 escalates condition number in rational basis function evaluation; numerical instability in homogeneous coordinate normalization. Expected: rescale weights toward unity or flag ill-conditioning.
+
+### Gn158 — B-spline curve with clustered interior knots, condition-number escalation
+Minimal reproducer: B_SPLINE_CURVE_WITH_KNOTS, degree 3, 7 poles. Interior knots clustered: 0.5, 0.501, 0.502 (spacing ~0.001). Knot multiplicities (4,1,1,1,4), sum=11=n+d+1. Healing challenge: tight knot spacing (ratio ~0.001:0.5) creates ill-conditioned basis matrix; conditioning number grows exponentially with clustering. Expected: detect knot clustering and apply knot removal or uniform reparametrization.
+
 ### Wr001 — Trailing whitespace on every record line
 - **Category**: §12.13 writer-pathology (sub-class: whitespace/line-ending)
 - **Sources**: prostep ivip CAx-IF round-trip reports; FreeCAD #4231 "STEP exporter pads lines with spaces"; bug-reporter language: "diff between exports is all whitespace"
@@ -23474,6 +23491,23 @@ Sphere with 3 degenerate wires (zero-extent edges at same vertex); multi-bound f
 
 ### Tfa225 — FixMissingSeam.seam-boundary-clamping
 U-closed BSpline surface; 2-edge loop with period-wrap geometry; tests seam-boundary clamping at line 2224. Defect: out-of-bounds seam placement (u > 2π) bypasses AdjustToPeriod, producing invalid parameter range.
+
+# Wave 66A: STEP Face Fixtures (Tfa226–Tfa230)
+
+### Tfa226 — ShapeFix_Face.Add.null-wire-guard
+Fresh null-wire guard in Add() prevents null-reference corruption; wire validation before topology merge.
+
+### Tfa227 — ShapeFix_Face.ClearModes.init-all-modes
+Mode-flag initialization (-1 default) prevents undefined comparisons in NeedFix(); healer state precondition.
+
+### Tfa228 — ShapeFix_Face.FixAddNaturalBound.null-surface-guard
+Null-surface early return avoids processing on invalid face geometry; boundary insertion guard.
+
+### Tfa229 — ShapeFix_Face.FixLoopWire.orientation-handling
+Seam-edge reversal for dual-edge UV-periodic representation; non-seam edges skip reversal logic.
+
+### Tfa230 — ShapeFix_Face.FixLoopWire.wire-topology
+Closed-wire reorder via FixReorder vs. open-wire append; topology-driven dispatch path.
 
 ### Hea016 — Empty solid output from STEP export of complex body, despite STL succeeding
 - **Category**: §12.3c faces / shape healing
@@ -27161,6 +27195,21 @@ First vertex offset from 3D curve start; distance check omitted when vtx==2 para
 
 ### Gp155 — ShapeAnalysis_Edge.CheckCurve3dWithPCurve pcurve_extraction_failure
 Empty P-curve representation with null curve data; extraction fails silently at FAIL1 status. Analyzer masks missing parametric curve without reporting diagnostic. Reproduces line 391 defect.
+
+### Gp156 — ShapeAnalysis_Edge.GetEndTangent2d `parameter_degeneracy_precision`
+Parameter delta below Precision::PConfusion skips tangent difference computation. Analyzer omits validation when (cl - cf) falls below confusion threshold, failing to report parametrically-degenerate edges. B-spline pcurve with negligible range [0, 1e-8].
+
+### Gp157 — ShapeAnalysis_Surface.ProjectDegenerated `lazy-singularity-init`
+Projector proceeds without triggering ComputeSingularities. Degenerate edge-points near apex project incorrectly; singularity loci undetected. Cone surface with edge approaching apex singularity at u=0.
+
+### Gp158 — ShapeAnalysis_Surface.ProjectDegenerated `whole-edge-degenerate`
+All pcurve points collapse to singularity; even-spacing fallback not triggered. Inconsistent parametric values remain unmapped. Cone with entire pcurve at u=0 (apex), varying v ∈ [0, 1].
+
+### Gp159 — ShapeAnalysis_Surface.ProjectDegenerated `partial-edge-collapse`
+First half of pcurve near singularity not collapsed to parameter. Mixed degenerate/non-degenerate segment fails healing signal propagation. Sphere with pcurve starting at pole (u≈0.01), ending equator (u=0.5).
+
+### Gp160 — ShapeAnalysis_Surface.ProjectDegenerated `singularity-tolerance-threshold`
+Singularity tolerance exceeds requested precision; tolerance filter passes high-tolerance singularities. Degenerate points project onto cone apex with unvalidated precision consistency. Cone with gradient approach toward u=0 singularity.
 
 ### A105 — Regression OCC 6.9.1 → 7.4.0: colours stop appearing on certain STEP files
 - **Category**: §12.6 assembly hierarchy (sub-class: appearance regression across kernel versions)

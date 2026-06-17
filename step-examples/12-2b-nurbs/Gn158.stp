@@ -1,0 +1,66 @@
+ISO-10303-21;
+/* Gn158 - B-spline curve with extremely dense interior knots (clustering),
+   near-singularity in knot ratio. Defect: Degree 3, 7 poles, interior knots
+   clustered at 0.5, 0.501, 0.502 (spacing ~0.001). Healing must detect
+   clustering and apply knot removal or smoothing. Condition number escalation. */
+HEADER;
+FILE_DESCRIPTION(('Gn158 - B-spline with clustered interior knots, conditioning'),'2;1');
+FILE_NAME('Gn158.stp','2026-06-17T00:00:00',('auto'),(''),
+  'auto','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+/* 7 poles, degree 3, clustered interior knots */
+#10=CARTESIAN_POINT('p0',(0.0,0.0,0.0));
+#11=CARTESIAN_POINT('p1',(1.0,0.2,0.0));
+#12=CARTESIAN_POINT('p2',(2.0,0.5,0.0));
+#13=CARTESIAN_POINT('p3',(3.0,0.3,0.0));
+#14=CARTESIAN_POINT('p4',(4.0,0.2,0.0));
+#15=CARTESIAN_POINT('p5',(5.0,0.5,0.0));
+#16=CARTESIAN_POINT('p6',(6.0,0.0,0.0));
+/* Defect: 7 poles, degree 3 => knot count = 7+3+1 = 11
+   Multiplicities: (4,1,1,1,1,1,1,1,4) => sum=4+1+1+1+1+1+1+1+4=15. TOO MANY!
+   Let me recalculate: for 7 poles, degree 3, fully clamped:
+   Knot count formula: sum(multiplicities) = n + d + 1 = 7+3+1 = 11
+   With clustering at 0.5: (4, 1, 1, 1, 1, 1, 1, 4) => 4+1+1+1+1+1+1+4=14. Still over.
+   Correct: (4, 1, 1, 1, 1, 1, 4) => sum=14. Hmm, 7 poles, degree 3 => exactly 11 knots.
+   Multiplicities must sum to 11. For clamped: (4, ?, ..., 4) where interior sums to 3.
+   Interior region (0,1): if we have clustering at 0.5, 0.501, 0.502:
+   Three interior knots, each with some multiplicity. Min multiplicity=1.
+   So (4, 1, 1, 1, 4) => 4+1+1+1+4=11. Perfect!
+   Knots: (0,0,0,0, 0.5, 0.501, 0.502, 1.0, 1.0, 1.0, 1.0)
+   Wait, that's 11 knots but only 3 interior. Let me list: (4 zeros) + (0.5, 0.501, 0.502) + (4 ones) = 11. Good!
+   Actually, the knot vector indices: k[0..10]
+   k[0..3] = 0.0 (mult 4)
+   k[4] = 0.5, k[5] = 0.501, k[6] = 0.502 (mults 1,1,1)
+   k[7..10] = 1.0 (mult 4)
+   But multiplicities list describes groupings: (4, 1, 1, 1, 4) means 5 distinct knot values
+   with those multiplicities. So multiplicities should be (4,1,1,1,4) => 5 values, 11 total. Good! */
+#100=B_SPLINE_CURVE_WITH_KNOTS('clustered_knots',3,
+  (#10,#11,#12,#13,#14,#15,#16),
+  .UNSPECIFIED.,.F.,.F.,
+  (4,1,1,1,4),
+  (0.0,0.0,0.0,0.0,0.5,0.501,0.502,1.0,1.0,1.0,1.0),
+  .UNSPECIFIED.);
+/* Reference LINE */
+#110=CARTESIAN_POINT('origin',(0.0,0.0,0.0));
+#111=DIRECTION('dir',(1.0,0.0,0.0));
+#112=VECTOR('vec',#111,1.0);
+#113=LINE('ref_axis',#110,#112);
+#9990=APPLICATION_CONTEXT('automotive_design');
+#9000=PRODUCT_CONTEXT('',#9990,'mechanical');
+#9001=PRODUCT('Gn158','Gn158','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#9990,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
+#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
+#9020=GEOMETRIC_CURVE_SET('curve_set',(#113));
+#9022=GEOMETRICALLY_BOUNDED_WIREFRAME_SHAPE_REPRESENTATION('',(#9020),#9010);
+#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+ENDSEC;
+END-ISO-10303-21;

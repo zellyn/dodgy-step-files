@@ -1,0 +1,109 @@
+ISO-10303-21;
+HEADER;
+FILE_DESCRIPTION(('Tfa229: ShapeFix_Face.FixLoopWire.orientation-handling — seam-edge reversal in UV-periodic surface dual-edge representation; non-seam edge skip'),
+  '2026-06-16T00:00:00',
+  2,
+  (),
+  (),
+  'neutral file',
+  'CAD System',
+  '',
+  ());
+FILE_NAME('Tfa229.stp',
+  2026-06-16T00:00:00,
+  (''),
+  (''),
+  'neutral file format',
+  'CAD System v1',
+  '');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+#1=SECURITY_CLASSIFICATION('','',$);
+#10=PARAMETRIC_REPRESENTATION_CONTEXT('','3D parametric space');
+#11=AXIS2_PLACEMENT_3D('origin',#20,#21,#22);
+#20=CARTESIAN_POINT('',0.0,0.0,0.0);
+#21=DIRECTION('',0.0,0.0,1.0);
+#22=DIRECTION('',1.0,0.0,0.0);
+#30=B_SPLINE_SURFACE_WITH_KNOTS('periodic_uv',2,2,(
+(#100,#110,#120),
+(#130,#140,#150),
+(#160,#170,#180)),
+.UNSPECIFIED.,.T.,.F.,.F.,(3,3),(3,3),(0.0,1.0),(0.0,1.0),1);
+#100=CARTESIAN_POINT('',0.0,0.0,0.0);
+#110=CARTESIAN_POINT('',1.0,0.5,0.2);
+#120=CARTESIAN_POINT('',2.0,0.0,0.0);
+#130=CARTESIAN_POINT('',0.0,1.0,0.5);
+#140=CARTESIAN_POINT('',1.0,1.5,1.0);
+#150=CARTESIAN_POINT('',2.0,1.0,0.5);
+#160=CARTESIAN_POINT('',0.0,2.0,0.0);
+#170=CARTESIAN_POINT('',1.0,2.5,0.2);
+#180=CARTESIAN_POINT('',2.0,2.0,0.0);
+#40=LINE('seam_edge_l',#41,#42);
+#41=CARTESIAN_POINT('',0.0,0.0,0.0);
+#42=VECTOR('',#43,2.0);
+#43=DIRECTION('',0.0,1.0,0.0);
+#50=LINE('seam_edge_r',#51,#52);
+#51=CARTESIAN_POINT('',0.0,2.0,0.0);
+#52=VECTOR('',#53,2.0);
+#53=DIRECTION('',0.0,−1.0,0.0);
+#60=LINE('non_seam_u',#61,#62);
+#61=CARTESIAN_POINT('',0.0,0.5,0.1);
+#62=VECTOR('',#63,0.5);
+#63=DIRECTION('',1.0,0.0,0.0);
+#70=LINE('non_seam_v',#71,#72);
+#71=CARTESIAN_POINT('',1.0,0.0,0.1);
+#72=VECTOR('',#73,0.5);
+#73=DIRECTION('',0.0,1.0,0.0);
+#74=LINE('non_seam_dia',#75,#76);
+#75=CARTESIAN_POINT('',0.5,0.5,0.15);
+#76=VECTOR('',#77,0.3);
+#77=DIRECTION('',1.0,0.0,0.0);
+#200=VERTEX_POINT('vs_l_start',#210);
+#210=CARTESIAN_POINT('',0.0,0.0,0.0);
+#220=VERTEX_POINT('vs_l_end',#230);
+#230=CARTESIAN_POINT('',0.0,2.0,0.0);
+#240=VERTEX_POINT('vs_r_end',#250);
+#250=CARTESIAN_POINT('',0.0,2.0,0.0);
+#260=VERTEX_POINT('vs_r_start',#270);
+#270=CARTESIAN_POINT('',0.0,0.0,0.0);
+#280=VERTEX_POINT('vn_u_start',#290);
+#290=CARTESIAN_POINT('',0.0,0.5,0.1);
+#300=VERTEX_POINT('vn_u_end',#310);
+#310=CARTESIAN_POINT('',0.5,0.5,0.15);
+#320=EDGE_CURVE('seam_l',#200,#220,#40,.T.);
+#330=EDGE_CURVE('seam_r',#240,#260,#50,.T.);
+#340=EDGE_CURVE('non_seam_u',#280,#300,#60,.T.);
+#350=EDGE_CURVE('non_seam_v',#200,#280,#70,.T.);
+#351=EDGE_CURVE('non_seam_dia',#300,#352,#74,.T.);
+#352=VERTEX_POINT('vn_dia_start',#353);
+#353=CARTESIAN_POINT('',0.5,0.5,0.15);
+#354=EDGE_CURVE('seam_closing',#220,#240,#40,.T.);
+#360=ORIENTED_EDGE('ose_l',*,*,#320,.T.);
+#361=ORIENTED_EDGE('ose_close',*,*,#354,.T.);
+#370=ORIENTED_EDGE('ose_r',*,*,#330,.F.);
+#380=ORIENTED_EDGE('ons_u',*,*,#340,.T.);
+#381=ORIENTED_EDGE('ons_dia',*,*,#351,.T.);
+#390=ORIENTED_EDGE('ons_v',*,*,#350,.T.);
+#400=EDGE_LOOP('seam_loop',(#360,#361,#370));
+#410=EDGE_LOOP('non_seam_loop',(#380,#381,#390));
+#420=FACE_OUTER_BOUND('fb_seam',#400,.T.);
+#430=FACE_INNER_BOUND('fb_non_seam',#410,.T.);
+#440=ADVANCED_FACE('periodic_face',(#420,#430),#30,.T.);
+#9000=PRODUCT_CONTEXT('',#1,'mechanical');
+#9001=PRODUCT('Tfa229','Tfa229','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
+#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
+#9021=SHELL_BASED_SURFACE_MODEL('sbsm',(#9020));
+#9020=CLOSED_SHELL('outer_shell',(#440));
+#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#9010);
+#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+ENDSEC;
+END-ISO-10303-21;

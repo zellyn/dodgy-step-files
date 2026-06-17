@@ -1,0 +1,62 @@
+ISO-10303-21;
+/* Gn157 - Rational B-spline with extreme weight ratio (1e4), numerical instability
+   Defect: RATIONAL_B_SPLINE_SURFACE with weight range spanning 4 orders of
+   magnitude (1.0 to 10000.0). This creates numerical conditioning problems in
+   rational evaluation. Control point poles: 3x2, degrees 2/1.
+   Healing must either rescale weights or flag as ill-conditioned. */
+HEADER;
+FILE_DESCRIPTION(('Gn157 - Rational surface with extreme weight ratio, conditioning risk'),'2;1');
+FILE_NAME('Gn157.stp','2026-06-17T00:00:00',('auto'),(''),
+  'auto','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+/* 3x2 control net, degree 2/1 */
+#10=CARTESIAN_POINT('p00',(0.0,0.0,0.0));
+#11=CARTESIAN_POINT('p01',(0.0,1.0,0.0));
+#20=CARTESIAN_POINT('p10',(1.0,0.0,0.5));
+#21=CARTESIAN_POINT('p11',(1.0,1.0,1.0));
+#30=CARTESIAN_POINT('p20',(2.0,0.0,0.0));
+#31=CARTESIAN_POINT('p21',(2.0,1.0,0.0));
+/* Defect: Weights with extreme ratio.
+   3x2 poles => 6 weights total.
+   Weights: (1.0, 10000.0, 1.0, 1.0, 1.0, 1.0)
+   Ratio: max/min = 10000 => ill-conditioned rational evaluation.
+   Degree 2/1, so knot counts: (3+2+1=6 for U), (2+1+1=4 for V)
+   Multiplicities U: (3,3), V: (2,2)
+   Knots U: (0,0,0,1,1,1), V: (0,0,1,1) */
+#100=RATIONAL_B_SPLINE_SURFACE(
+  ((#10,#11),(#20,#21),(#30,#31)),
+  ((1.0,10000.0),(1.0,1.0),(1.0,1.0)),
+  'extreme_weight');
+#101=B_SPLINE_SURFACE_WITH_KNOTS(#100,
+  2,1,
+  ((#10,#11),(#20,#21),(#30,#31)),
+  .UNSPECIFIED.,.F.,.F.,.F.,
+  (3,3),
+  (2,2),
+  (0.0,0.0,0.0,1.0,1.0,1.0),
+  (0.0,0.0,1.0,1.0),
+  .UNSPECIFIED.);
+/* Reference LINE */
+#110=CARTESIAN_POINT('origin',(0.0,0.0,0.0));
+#111=DIRECTION('dir',(1.0,0.0,0.0));
+#112=VECTOR('vec',#111,1.0);
+#113=LINE('ref_axis',#110,#112);
+#9990=APPLICATION_CONTEXT('automotive_design');
+#9000=PRODUCT_CONTEXT('',#9990,'mechanical');
+#9001=PRODUCT('Gn157','Gn157','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#9990,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
+#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
+#9020=GEOMETRIC_CURVE_SET('curve_set',(#113));
+#9022=GEOMETRICALLY_BOUNDED_WIREFRAME_SHAPE_REPRESENTATION('',(#9020),#9010);
+#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+ENDSEC;
+END-ISO-10303-21;

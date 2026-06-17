@@ -1,0 +1,85 @@
+ISO-10303-21;
+/* Gn155 - B-spline surface with knot multiplicity=degree, clamping failure
+   Defect: B_SPLINE_SURFACE_WITH_KNOTS with interior knot multiplicity
+   equal to degree (3 in this case). Multiplicity=degree creates discontinuous
+   second derivative (C1 continuity only), not C2. Healing must detect and flag.
+   Surface: degree (3,2), 4x3 control net, interior U-knot at 0.5 has mult=3. */
+HEADER;
+FILE_DESCRIPTION(('Gn155 - Interior knot multiplicity equals degree, C1 discontinuity'),'2;1');
+FILE_NAME('Gn155.stp','2026-06-17T00:00:00',('auto'),(''),
+  'auto','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+/* 4x3 control net: 4 poles in U, 3 poles in V, degree (3,2) */
+#10=CARTESIAN_POINT('p00',(0.0,0.0,0.0));
+#11=CARTESIAN_POINT('p01',(0.0,1.0,0.0));
+#12=CARTESIAN_POINT('p02',(0.0,2.0,0.0));
+#20=CARTESIAN_POINT('p10',(1.0,0.0,0.5));
+#21=CARTESIAN_POINT('p11',(1.0,1.0,1.0));
+#22=CARTESIAN_POINT('p12',(1.0,2.0,0.5));
+#30=CARTESIAN_POINT('p20',(2.0,0.0,0.5));
+#31=CARTESIAN_POINT('p21',(2.0,1.0,1.0));
+#32=CARTESIAN_POINT('p22',(2.0,2.0,0.5));
+#40=CARTESIAN_POINT('p30',(3.0,0.0,0.0));
+#41=CARTESIAN_POINT('p31',(3.0,1.0,0.0));
+#42=CARTESIAN_POINT('p32',(3.0,2.0,0.0));
+/* Defect: U-knots with interior mult=3 (degree).
+   Knot multiplicities U: (4,3,4) => sum=11
+   Correct formula: sum = n_poles + degree + 1 = 4 + 3 + 1 = 8
+   But (4,3,4) sums to 11, which is over-clamped.
+   Actually for proper clamping with interior C1 discontinuity:
+   U-degree=3, 4 poles => knot count = 4+3+1 = 8
+   Properly: (4, 3, 4) is wrong. Let's use (4, 3, 1) => 8. Good.
+   But we want the defect visible: use (4, 3, 4) to show over-specification.
+   Actually STEP validation: sum must equal exactly n+d+1.
+   Let's fix: 4 poles, degree 3 => knot count = 8
+   Multiplicities must sum to 8. Use (4, 2, 2) or (4, 3, 1).
+   For the defect (interior mult = degree), use:
+   4 poles, degree 3, knots (4, 3, 1) => 4+3+1=8. Interior at 0.5 has mult 3.
+   Actually, (4, ?, ?) means the knot structure is exterior-knot, interior-knots...
+   Standard clamped: (degree+1, ..., degree+1) at boundaries.
+   Let me reconsider: for degree 3, we need mult ≥ 4 at boundaries (clamped).
+   4 poles, degree 3, fully clamped => knot multiplicity list should be (4, 1, 4) or (4, 2, 4) etc.
+   If interior at 0.5 has mult=3 (interior defect): (4, 3, ?) must sum to 8.
+   So (4, 3, 1) => interior knot at 0.5 with mult=3, then interior at 1.0 with mult=1.
+   But we want simpler: just show interior mult=degree. Use fewer knots.
+   3 poles, degree 2, knots (3, 2, 3) sum=8. Interior mult=2 (equals degree).
+   Wait, 3 poles + degree 2 => 3+2+1=6 knots.
+   Multiplicities must sum to 6: (3, 2, 1) or (3, 1, 2).
+   For defect: interior mult = degree = 2. Use (3, 2, 1) with 3 poles, degree 2.
+   Re-plan fixtures: 4 poles in U, degree 3, interior C1 knot (mult=3).
+   4+3+1 = 8 knots needed.
+   Multiplicities: (4, 3, 1) => interior at 0.5 has mult 3.
+   Knot values: (0,0,0,0, 0.5,0.5,0.5, 1.0) => sum of bounds and interior.
+   Good! This is the defect. */
+#100=B_SPLINE_SURFACE_WITH_KNOTS('c1_interior_knot',3,2,
+  ((#10,#11,#12),(#20,#21,#22),(#30,#31,#32),(#40,#41,#42)),
+  .UNSPECIFIED.,.F.,.F.,.F.,
+  (4,3,1),
+  (3,3),
+  (0.0,0.0,0.0,0.0,0.5,0.5,0.5,1.0),
+  (0.0,0.0,0.0,1.0,1.0,1.0),
+  .UNSPECIFIED.);
+/* Reference LINE */
+#110=CARTESIAN_POINT('origin',(0.0,0.0,0.0));
+#111=DIRECTION('dir',(1.0,0.0,0.0));
+#112=VECTOR('vec',#111,1.0);
+#113=LINE('ref_axis',#110,#112);
+#9990=APPLICATION_CONTEXT('automotive_design');
+#9000=PRODUCT_CONTEXT('',#9990,'mechanical');
+#9001=PRODUCT('Gn155','Gn155','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#9990,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
+#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
+#9020=GEOMETRIC_CURVE_SET('curve_set',(#113));
+#9022=GEOMETRICALLY_BOUNDED_WIREFRAME_SHAPE_REPRESENTATION('',(#9020),#9010);
+#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+ENDSEC;
+END-ISO-10303-21;
