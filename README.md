@@ -11,9 +11,9 @@ The goal is to give CAD-kernel and STEP-tooling authors a license-clean, citable
 ├── QUALITY_DASHBOARD.md            # per-section stats, top findings, sender-attribution
 ├── CONTRIBUTING.md                 # how to add an entry / a fixture
 ├── CHANGELOG.md                    # release notes
-├── STEP_PROBLEM_CATALOG.md         # the canonical catalog (1282 entries)
+├── STEP_PROBLEM_CATALOG.md         # the canonical catalog (~2,287 entries — see "Aspiration vs current state" below)
 ├── STEP_PROBLEM_POTENTIAL_SOURCES.md
-├── step-examples/                  # 1282 license-clean .stp fixtures (one per canonical entry)
+├── step-examples/                  # ~2,200 license-clean .stp fixtures (one per catalog entry; gaps tracked in audit/)
 │   ├── 12-1a-encoding/             # Le*  — encoding & string-literal defects
 │   ├── 12-1b-header/               # Lh*  — header & instance-numbering
 │   ├── 12-1c-syntax/               # Ls*  — Part-21 grammar
@@ -63,7 +63,7 @@ Everything is in the clone: fixtures, catalog, validator, browse pages. The `bro
 
 ## What's in the catalog
 
-`STEP_PROBLEM_CATALOG.md` contains 1282 canonical entries. Each entry has:
+`STEP_PROBLEM_CATALOG.md` contains ~2,287 canonical entries (see "Aspiration vs current state" below for what that number does and doesn't mean). Each entry has:
 
 - **ID**: prefixed by §12.x category (`Le001`, `Gn003`, `Tsh017`, `Pmi049`, `Ad027`, …).
 - **Category**: taxonomy slot from the §12 hierarchy.
@@ -85,6 +85,60 @@ For every canonical catalog entry there is a matching `.stp` file at `step-examp
 - **Dated 2026-04-26**, with `('auto-generated')` author/org/preprocessor slots so provenance is unambiguous.
 
 See `step-examples/README.md` for the per-section index and `CONTRIBUTING.md` for the fixture style guide.
+
+## Aspiration vs current state
+
+It's easy to look at "thousands of fixtures" and assume this corpus is comprehensive. **It isn't, and it can't be.** This section is the honest calibration.
+
+### What we're aiming at
+
+Twenty-plus years of accumulated CAD-kernel healing knowledge — every BOM, encoding glitch, malformed B-spline, dangling reference, tolerance miscomputation, periodicity edge case, sewing pathology, PMI mash-up, and adversarial input that production parsers have learned to tolerate. The intent is that a new CAD kernel can grade against this corpus and jump much closer to feature parity, instead of waiting for the same defects to filter in through customer bug reports across a decade.
+
+Concretely, the cited surface includes:
+
+- **OCCT TKShHealing**: 327+ methods, 2058+ implementation branches (per `OCCT_HEAL_COVERAGE_V3.md`).
+- **MeshFix + CGAL PMP**: separate mesh-repair surface, taxonomy under `MESH_DEFECT_TAXONOMY.md`.
+- **CAx Implementor Forum bug history, OCCT issue tracker, HOOPS, JT, IFC ecosystem**: see `CODEBASE_LANDSCAPE.md` and `PHASE4_DEFECT_MINING.md`.
+
+That total problem space is enormous — somewhere in the high thousands of distinct defect classes once fully enumerated.
+
+### Where we actually are (as of 2026-06-17)
+
+| Measure | Count |
+|---|---:|
+| Catalog entries (distinct defect classes documented) | ~2,287 |
+| Active fixtures on disk | ~2,200 |
+| Fixtures with `Part-21 validator: accept` (0 unintentional syntactic errors) | ~all non-framing |
+| Fixtures individually adversarially verified VALID (do they really demonstrate the claim?) | ~440 |
+| Catalog entries without a fixture yet (described, not synthesized) | ~800 |
+| Fixtures awaiting individual semantic verification | ~1,700 |
+| Quarantined (known broken, awaiting proper regen) | 84 |
+
+The catalog uses `### ID — title` for each entry. Numbers are best-effort current; re-run `python -m step_corpus._part21_validator --corpus` and `python -m step_corpus._corpus_consistency_lint` from the `validation/` directory to recompute.
+
+### The gap, plainly
+
+- **Mesh defects (MeshFix / CGAL PMP) are catalogued but not synthesized** into STEP fixtures. STEP isn't a mesh format, so this gap is structural, not just unfinished work; mesh defects need a parallel mesh-fixture format that doesn't exist here yet.
+- **OCCT branch coverage**: the v3 deep-pass enumerates 2058 implementation branches, of which the catalog currently has ~2,287 entries spanning many of them — but a substantial chunk of those entries describe related-or-overlapping defect classes, so true unique-branch coverage is lower than the raw count suggests.
+- **Other CAD codebases**: HOOPS, JT, IFC, Parasolid, ACIS — listed in `CODEBASE_LANDSCAPE.md` as worth auditing, mostly not yet deep-passed.
+- **Semantic verification gap**: most fixtures pass *structural* validation (the Part-21 validator says yes) but only ~20% have been individually attacked by an adversarial verifier asking "does the geometry *demonstrate* the catalog-claimed defect, or is it generic boilerplate?". The recent audit work is whittling this down, ~30 fixtures per cycle.
+- **Sender/receiver attribution**: many entries cite the OCCT method that exhibits the defect, not the producer that wrote the malformed file. Real-world provenance attribution (which CAD tools produce which defects, at what rates) is a separate effort outside this corpus.
+
+### How to read the corpus given the gap
+
+- **Use it as a regression-suite seed**, not as a conformance kit. If your kernel passes every fixture, you've handled a meaningful slice — but expect customer bugs that aren't in here.
+- **Treat absence of a defect class as "not yet documented", not "doesn't exist"**. The catalog grows; check git history.
+- **Match your interest area to a section**. The §12.3a-shells / §12.3c-faces / §12.3b-wires / §12.2 geometry sections are densest; §12.6-assembly / §12.7-pmi are sparser; §12.5-units is small.
+- **The `_quarantine/` directory holds fixtures whose ID still has a catalog claim but whose file is known-broken**. Treat those as "real defect class, please regenerate" entries rather than missing.
+
+### Whittling the gap
+
+This README's count tables should be re-checked and updated at every release. Concrete next-work items are tracked in:
+
+- `audit/SESSION_SUMMARY_*.md` — what was found and fixed in each major audit pass
+- `audit/lint_rule_candidates.md` — Part-21-validator rules proposed but not yet implemented
+- `audit/audit_remaining.txt` — fixture IDs still awaiting individual adversarial verification
+- `fixture_followups/` — per-fixture notes on weak-or-invalid findings with regen plans
 
 ## What the validator does
 
@@ -185,7 +239,9 @@ Walk `step-examples/<section>/<id>.stp` and load metadata from `STEP_PROBLEM_CAT
 
 ## Project status
 
-The catalog covers §12.1–§12.13 (18 distinct sub-sections) with **1282 canonical entries**. The corpus has one license-clean fixture per entry (1289 `.stp` files including 7 sibling-input pairs). The multi-tier validator runs across all fixtures and produces a verdict matrix with structured fields (provenance_tier, tier3_assertions, byte_assertions) backing 3080+ machine-checkable invariants.
+The catalog covers §12.1–§12.13 (18 distinct sub-sections) with **~2,287 canonical entries** as of 2026-06-17. The corpus has roughly one license-clean fixture per entry (~2,200 `.stp` files; 84 quarantined pending proper regen). See **"Aspiration vs current state"** above for what these numbers do and don't imply.
+
+The Part-21 validator under `validation/src/step_corpus/_part21_validator.py` runs across the corpus in seconds and finds 0 unintentional syntactic errors in non-framing sections. The multi-tier semantic validator runs across all fixtures and produces a verdict matrix with structured fields (provenance_tier, tier3_assertions, byte_assertions).
 
 25 fixtures crash OCCT (signal 11); 11 are unanimously rejected by every parser (OCCT, gmsh, ifcopenshell-strict); a further set produces different shape counts between OCCT and gmsh (heal-by-split caught in the act on shared bytes). See `QUALITY_DASHBOARD.md` for the discoverability tour, `validation/VALIDATION_SUMMARY.md` for the verdict matrix, and `EVIDENCE_MODEL.md` for the per-fixture proof model.
 
