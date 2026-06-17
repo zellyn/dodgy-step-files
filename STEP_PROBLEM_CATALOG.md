@@ -23571,6 +23571,23 @@ Multi-wire face splitting; sub-face reconstruction via outer loop + inner hole o
 
 Integrated face-healing pipeline; mode-dependent cascade via base-slant-apex decomposition on conical degenerate closure.
 
+## Wave 71C — Face Method Defects (Tfa241–Tfa245)
+
+### Tfa241 — `ShapeFix_Face.FixOrientation.WireBoundingBoxComputation`
+em-dash Periodic bounding-box centering on first-wire midpoint for toroidal containment checks. Two concentric wires on torus; without anchor uMiddle/vMiddle, secondary wire box shifts unanchored relative to first → false containment classification.
+
+### Tfa242 — `ShapeFix_Face.FixOrientation.PeriodicBoundingBoxShift`
+em-dash Seam-crossing wire adjustment via `ShapeAnalysis::AdjustByPeriod()`. Wires wrapping across torus seam (u≈0) at opposite ends; without periodic shift, bounding boxes classified as disjoint despite containment.
+
+### Tfa243 — `ShapeFix_Face.FixOrientation.ToroidalDiagonalShift`
+em-dash 2×2 grid of diagonal period wraps (±uRange, ±vRange) for toroidal surfaces. Outer loop near corner (u≈0, v≈0), inner loop near opposite corner (u≈2π, v≈π); without diagonal enumeration, single u-shift succeeds but v-shift overrides it.
+
+### Tfa244 — `ShapeFix_Face.FixLoopWire.FLW-007`
+em-dash Two-common-vertex wire-pair merging (greedy immediate consolidation). Three open wires with first two sharing both endpoints → merged before third; defect: if first two should not merge, third wire processed alone via fallback.
+
+### Tfa245 — `ShapeFix_Face.FixMissingSeam.sphere-apex-edge-synthesis`
+em-dash Degenerated synthetic edge synthesis at sphere pole. Single wire at equator on sphere (U-open); without synthetic degenerated edge at pole (v=π/2), topology incomplete; with synthesis, seam closure via pole boundary.
+
 ### Hea016 — Empty solid output from STEP export of complex body, despite STL succeeding
 - **Category**: §12.3c faces / shape healing
 - **Sources**: FreeCAD #20396; bug-reporter language: "Models exported to STEP crash or produce empty objects", "appears to export fine but results in an empty object", "STL and 3MF export work, STEP doesn't".
@@ -24771,6 +24788,23 @@ Multi-edge shape connectivity validation; disconnected edge chains not flagged w
 
 ### Twi271 — ShapeAnalysis_Wire.CheckTail
 Wire terminus validation; tail edge proximity check fails when endpoint gaps exceed local curve curvature radius.
+
+## STEP Wire Fixtures: Wave 71-B (Twi272–Twi276)
+
+### Twi272 — CheckLoop Unloaded/Trivial
+Single-edge wire V1→V2. Tests guard against multi-vertex loop detection on degenerate wire (<2 edges). Must skip analysis. **Path**: `step-examples/12-3b-wires/Twi272.stp`
+
+### Twi273 — CheckLoop Null Vertices
+Edge with null V1 vertex. Tests null-check guard that encodes FAIL2 status before dereference. Prevents segfault. **Path**: `step-examples/12-3b-wires/Twi273.stp`
+
+### Twi274 — CheckLoop Seam Classification
+Wire on closed surface: regular edge + seam (V→V). Seam must exclude from loop degree count. Without filter, spurious multi-vertex detection. **Path**: `step-examples/12-3b-wires/Twi274.stp`
+
+### Twi275 — CheckLoop Multi-Vertex Self-Loop
+Three self-loop edges at V1. Tests double-append binding and multi-vertex gate. Extent=6 after appends triggers loop detection. **Path**: `step-examples/12-3b-wires/Twi275.stp`
+
+### Twi276 — CheckLoop Multi-Vertex V2-Check
+Edges E1(V0→V2), E2(V1→V2), E3(V2→V3). V2 extent=3. Tests end-vertex (V2) loop detection symmetry. **Path**: `step-examples/12-3b-wires/Twi276.stp`
 
 ### Gs056 — `SURFACE_OF_REVOLUTION` of an ellipse around its own centre produces a degenerate surface
 - **Category**: §12.2c surface / curve degeneracies (sub-class: revolution of conic)
@@ -26510,6 +26544,26 @@ Shell marked closed but contains free edges after face orientation fix. `Closed(
 
 ### Tsh223 — shells_extraction_loss
 `GetShells()` fails to partition all faces; remaining faces discarded or orphaned. Incomplete decomposition breaks topology validation and orientation analysis.
+
+### Tsh224 — ShapeFix_Shell.FixFaceOrientation duplicate_faces_undetected
+
+Shell with two congruent unit-square faces (at z=0, z=1). aMapAdded tracks duplicates but only warns; FixFaceOrientation flips one, leaves other unchanged. Inconsistent outward directions result.
+
+### Tsh225 — ShapeFix_Shell.FixFaceOrientation multiconnect_edge_loop_unbounded
+
+Three triangular faces meeting at shared central edge (non-manifold, 3+ incident). isAccountMultiConex loop iterates without bound on pathological mesh; O(n^2) complexity pathological behavior.
+
+### Tsh226 — ShapeFix_Shell.FixFaceOrientation shells_extraction_loss
+
+Two isolated unit-square face clusters (5.0+ units apart, no shared edges). GetShells() fails partition; unreachable face cluster orphaned, incomplete shell decomposition.
+
+### Tsh227 — ShapeFix_Shell.FixFaceOrientation error_faces_mebius_assumption
+
+Two coplanar unit squares with ambiguous orientations. aErrFaces mis-classified as Mobius-leaf; intrinsic non-orientability unconfirmed, spurious single-face shells created.
+
+### Tsh228 — ShapeFix_Shell.Perform closed_flag_sync_failure
+
+Three triangular faces forming incomplete closure (free edge between faces 1–2). Shell.Closed() flag marked true but HasFreeEdges detects edge post-FixFaceOrientation; sync breaks.
 
 ### Gp040 — Pcurves emitted by default duplicate / contradict the surface 3D curve
 - **Category**: §12.2a pcurve defects (sub-class: writer-emitted pcurves disagree with 3D)

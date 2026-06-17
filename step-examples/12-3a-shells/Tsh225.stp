@@ -1,0 +1,102 @@
+ISO-10303-21;
+/* Tsh225 - ShapeFix_Shell.FixFaceOrientation.multiconnect_edge_loop_unbounded
+ * Defect: Non-manifold edges (3+ faces meeting) iterate without bound;
+ * algorithm complexity pathological. */
+HEADER;
+FILE_DESCRIPTION(('Tsh225 - multi-connected edge unbounded iteration','2;1');
+FILE_NAME('Tsh225.stp','2026-06-16T00:00:00',(''),(''),'wave-71a','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+
+/* Shared central edge with 3 faces meeting */
+#100=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#101=CARTESIAN_POINT('',(1.0,0.0,0.0));
+#102=CARTESIAN_POINT('',(0.5,-0.5,0.866));
+#103=CARTESIAN_POINT('',(0.5,0.5,0.866));
+#110=VERTEX_POINT('',#100);
+#111=VERTEX_POINT('',#101);
+#112=VERTEX_POINT('',#102);
+#113=VERTEX_POINT('',#103);
+
+/* Three plane surfaces sharing edge 100-101 */
+#200=DIRECTION('',(0.0,0.0,1.0));
+#201=DIRECTION('',(1.0,0.0,0.0));
+#210=CARTESIAN_POINT('',(0.5,0.0,0.0));
+#211=AXIS2_PLACEMENT_3D('',#210,#200,#201);
+#212=PLANE('',#211);
+#213=AXIS2_PLACEMENT_3D('',#210,#200,#201);
+#214=PLANE('',#213);
+#215=AXIS2_PLACEMENT_3D('',#210,#200,#201);
+#216=PLANE('',#215);
+
+/* Shared central edge: 100->101 */
+#300=DIRECTION('',(1.0,0.0,0.0));
+#301=VECTOR('',#300,1.0);
+#302=LINE('',#100,#301);
+#303=EDGE_CURVE('',#110,#111,#302,.T.);
+
+/* Face 1: 100->101->102 */
+#304=DIRECTION('',(0.5,-0.5,0.0));
+#305=VECTOR('',#304,1.414);
+#306=LINE('',#101,#305);
+#307=EDGE_CURVE('',#111,#112,#306,.T.);
+#308=DIRECTION('',(-0.5,-0.5,0.0));
+#309=VECTOR('',#308,1.414);
+#310=LINE('',#102,#309);
+#311=EDGE_CURVE('',#112,#110,#310,.T.);
+
+#400=ORIENTED_EDGE('',*,*,#303,.T.);
+#401=ORIENTED_EDGE('',*,*,#307,.T.);
+#402=ORIENTED_EDGE('',*,*,#311,.T.);
+#410=EDGE_LOOP('',(#400,#401,#402));
+#420=FACE_OUTER_BOUND('',#410,.T.);
+#430=ADVANCED_FACE('',(#420),#212,.T.);
+
+/* Face 2: 100->101->103 */
+#312=DIRECTION('',(0.5,0.5,0.0));
+#313=VECTOR('',#312,1.414);
+#314=LINE('',#101,#313);
+#315=EDGE_CURVE('',#111,#113,#314,.T.);
+#316=DIRECTION('',(-0.5,0.5,0.0));
+#317=VECTOR('',#316,1.414);
+#318=LINE('',#103,#317);
+#319=EDGE_CURVE('',#113,#110,#318,.T.);
+
+#440=ORIENTED_EDGE('',*,*,#303,.F.);
+#441=ORIENTED_EDGE('',*,*,#315,.T.);
+#442=ORIENTED_EDGE('',*,*,#319,.T.);
+#450=EDGE_LOOP('',(#440,#441,#442));
+#460=FACE_OUTER_BOUND('',#450,.T.);
+#470=ADVANCED_FACE('',(#460),#214,.F.);
+
+/* Face 3: 100->101->102 (closing triangle) */
+#480=ORIENTED_EDGE('',*,*,#303,.T.);
+#481=ORIENTED_EDGE('',*,*,#307,.F.);
+#482=ORIENTED_EDGE('',*,*,#319,.F.);
+#490=EDGE_LOOP('',(#480,#481,#482));
+#500=FACE_OUTER_BOUND('',#490,.T.);
+#510=ADVANCED_FACE('',(#500),#216,.T.);
+
+/* Non-manifold shell: edge 303 connects 3 faces */
+#600=CLOSED_SHELL('non_manifold_edges',(#430,#470,#510));
+
+/* Mandatory PRODUCT chain */
+#9000=PRODUCT_CONTEXT('',#1,'mechanical');
+#9001=PRODUCT('Tsh225','Tsh225','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
+#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
+#9021=SHELL_BASED_SURFACE_MODEL('sbsm',(#600));
+#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#9010);
+#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+ENDSEC;
+END-ISO-10303-21;
