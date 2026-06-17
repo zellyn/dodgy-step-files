@@ -1,0 +1,194 @@
+ISO-10303-21;
+/* Tsh049 - Internal edges lost during shell-level face merge
+ * Defect: Two coplanar rectangular faces, each carrying one inner circular wire
+ * (FACE_INNER_BOUND). Merge expected to produce one face with two holes; defective
+ * merge produces one rectangle with no holes (inner wires discarded).
+ * Byte assertions: contains OPEN_SHELL, contains FACE_INNER_BOUND,
+ * count ADVANCED_FACE == 2 */
+HEADER;
+FILE_DESCRIPTION(('Tsh049 - inner wires lost during face merge','2;1'),'2;1');
+FILE_NAME('Tsh049.stp','2026-06-16T00:00:00',(''),(''),'wave-regen','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+
+/* Plane z=0 for both faces */
+#10=CARTESIAN_POINT('',(1.0,0.5,0.0));
+#11=DIRECTION('',(0.0,0.0,1.0));
+#12=DIRECTION('',(1.0,0.0,0.0));
+#13=AXIS2_PLACEMENT_3D('',#10,#11,#12);
+#14=PLANE('',#13);
+
+/* === Left face: x in [0,2], y in [0,1] with circular hole centred at (1,0.5) radius 0.2 === */
+/* Outer rectangle vertices */
+#20=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#21=CARTESIAN_POINT('',(2.0,0.0,0.0));
+#22=CARTESIAN_POINT('',(2.0,1.0,0.0));
+#23=CARTESIAN_POINT('',(0.0,1.0,0.0));
+#24=VERTEX_POINT('',#20);
+#25=VERTEX_POINT('',#21);
+#26=VERTEX_POINT('',#22);
+#27=VERTEX_POINT('',#23);
+
+/* Outer edges left face */
+#30=DIRECTION('',(1.0,0.0,0.0));
+#31=VECTOR('',#30,2.0);
+#32=LINE('',#20,#31);
+#33=EDGE_CURVE('L_bot',#24,#25,#32,.T.);
+
+#34=DIRECTION('',(0.0,1.0,0.0));
+#35=VECTOR('',#34,1.0);
+#36=LINE('',#21,#35);
+#37=EDGE_CURVE('L_right',#25,#26,#36,.T.);
+
+#38=DIRECTION('',(-1.0,0.0,0.0));
+#39=VECTOR('',#38,2.0);
+#40=LINE('',#22,#39);
+#41=EDGE_CURVE('L_top',#26,#27,#40,.T.);
+
+#42=DIRECTION('',(0.0,-1.0,0.0));
+#43=VECTOR('',#42,1.0);
+#44=LINE('',#23,#43);
+#45=EDGE_CURVE('L_left',#27,#24,#44,.T.);
+
+/* Inner circular hole approximated as 4-edge square at (0.8,0.3)-(1.2,0.7) */
+#50=CARTESIAN_POINT('',(0.8,0.3,0.0));
+#51=CARTESIAN_POINT('',(1.2,0.3,0.0));
+#52=CARTESIAN_POINT('',(1.2,0.7,0.0));
+#53=CARTESIAN_POINT('',(0.8,0.7,0.0));
+#54=VERTEX_POINT('',#50);
+#55=VERTEX_POINT('',#51);
+#56=VERTEX_POINT('',#52);
+#57=VERTEX_POINT('',#53);
+
+#60=DIRECTION('',(1.0,0.0,0.0));
+#61=VECTOR('',#60,0.4);
+#62=LINE('',#50,#61);
+#63=EDGE_CURVE('h1_bot',#54,#55,#62,.T.);
+
+#64=DIRECTION('',(0.0,1.0,0.0));
+#65=VECTOR('',#64,0.4);
+#66=LINE('',#51,#65);
+#67=EDGE_CURVE('h1_right',#55,#56,#66,.T.);
+
+#68=DIRECTION('',(-1.0,0.0,0.0));
+#69=VECTOR('',#68,0.4);
+#70=LINE('',#52,#69);
+#71=EDGE_CURVE('h1_top',#56,#57,#70,.T.);
+
+#72=DIRECTION('',(0.0,-1.0,0.0));
+#73=VECTOR('',#72,0.4);
+#74=LINE('',#53,#73);
+#75=EDGE_CURVE('h1_left',#57,#54,#74,.T.);
+
+/* Left face outer loop */
+#80=ORIENTED_EDGE('',*,*,#33,.T.);
+#81=ORIENTED_EDGE('',*,*,#37,.T.);
+#82=ORIENTED_EDGE('',*,*,#41,.T.);
+#83=ORIENTED_EDGE('',*,*,#45,.T.);
+#84=EDGE_LOOP('',(#80,#81,#82,#83));
+#85=FACE_OUTER_BOUND('',#84,.T.);
+
+/* Left face inner hole loop (clockwise = hole) */
+#86=ORIENTED_EDGE('',*,*,#63,.F.);
+#87=ORIENTED_EDGE('',*,*,#75,.F.);
+#88=ORIENTED_EDGE('',*,*,#71,.F.);
+#89=ORIENTED_EDGE('',*,*,#67,.F.);
+#90=EDGE_LOOP('',(#86,#87,#88,#89));
+#91=FACE_INNER_BOUND('hole1',#90,.T.);
+
+#92=ADVANCED_FACE('left_face',(#85,#91),#14,.T.);
+
+/* === Right face: x in [2,4], y in [0,1] with its own inner hole === */
+#100=CARTESIAN_POINT('',(4.0,0.0,0.0));
+#101=CARTESIAN_POINT('',(4.0,1.0,0.0));
+#102=VERTEX_POINT('',#100);
+#103=VERTEX_POINT('',#101);
+
+/* Shared edge: (2,0,0)-(2,1,0) already defined as L_right (#37); use .F. on right face */
+/* right_R far right edge */
+#104=DIRECTION('',(1.0,0.0,0.0));
+#105=VECTOR('',#104,2.0);
+#106=LINE('',#21,#105);
+#107=EDGE_CURVE('R_bot',#25,#102,#106,.T.);
+
+#108=DIRECTION('',(0.0,1.0,0.0));
+#109=VECTOR('',#108,1.0);
+#110=LINE('',#100,#109);
+#111=EDGE_CURVE('R_right',#102,#103,#110,.T.);
+
+#112=DIRECTION('',(-1.0,0.0,0.0));
+#113=VECTOR('',#112,2.0);
+#114=LINE('',#101,#113);
+#115=EDGE_CURVE('R_top',#103,#26,#114,.T.);
+
+/* Inner hole in right face at (2.8,0.3)-(3.2,0.7) */
+#120=CARTESIAN_POINT('',(2.8,0.3,0.0));
+#121=CARTESIAN_POINT('',(3.2,0.3,0.0));
+#122=CARTESIAN_POINT('',(3.2,0.7,0.0));
+#123=CARTESIAN_POINT('',(2.8,0.7,0.0));
+#124=VERTEX_POINT('',#120);
+#125=VERTEX_POINT('',#121);
+#126=VERTEX_POINT('',#122);
+#127=VERTEX_POINT('',#123);
+
+#130=DIRECTION('',(1.0,0.0,0.0));
+#131=VECTOR('',#130,0.4);
+#132=LINE('',#120,#131);
+#133=EDGE_CURVE('h2_bot',#124,#125,#132,.T.);
+
+#134=DIRECTION('',(0.0,1.0,0.0));
+#135=VECTOR('',#134,0.4);
+#136=LINE('',#121,#135);
+#137=EDGE_CURVE('h2_right',#125,#126,#136,.T.);
+
+#138=DIRECTION('',(-1.0,0.0,0.0));
+#139=VECTOR('',#138,0.4);
+#140=LINE('',#122,#139);
+#141=EDGE_CURVE('h2_top',#126,#127,#140,.T.);
+
+#142=DIRECTION('',(0.0,-1.0,0.0));
+#143=VECTOR('',#142,0.4);
+#144=LINE('',#123,#143);
+#145=EDGE_CURVE('h2_left',#127,#124,#144,.T.);
+
+/* Right face outer loop */
+#150=ORIENTED_EDGE('',*,*,#107,.T.);
+#151=ORIENTED_EDGE('',*,*,#111,.T.);
+#152=ORIENTED_EDGE('',*,*,#115,.T.);
+#153=ORIENTED_EDGE('',*,*,#37,.F.);
+#154=EDGE_LOOP('',(#150,#151,#152,#153));
+#155=FACE_OUTER_BOUND('',#154,.T.);
+
+/* Right face inner hole loop */
+#156=ORIENTED_EDGE('',*,*,#133,.F.);
+#157=ORIENTED_EDGE('',*,*,#145,.F.);
+#158=ORIENTED_EDGE('',*,*,#141,.F.);
+#159=ORIENTED_EDGE('',*,*,#137,.F.);
+#160=EDGE_LOOP('',(#156,#157,#158,#159));
+#161=FACE_INNER_BOUND('hole2',#160,.T.);
+
+#162=ADVANCED_FACE('right_face',(#155,#161),#14,.T.);
+
+/* OPEN_SHELL */
+#500=OPEN_SHELL('two_faces_with_holes',(#92,#162));
+
+/* Mandatory PRODUCT chain */
+#9000=PRODUCT_CONTEXT('',#1,'mechanical');
+#9001=PRODUCT('Tsh049','Tsh049','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
+#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
+#9021=SHELL_BASED_SURFACE_MODEL('sbsm',(#500));
+#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#9010);
+#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+ENDSEC;
+END-ISO-10303-21;

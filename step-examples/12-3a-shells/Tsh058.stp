@@ -1,0 +1,122 @@
+ISO-10303-21;
+/* Tsh058 - Adjacent same-surface face merge ignores edge-preservation request
+ * Defect: Two coplanar faces sharing edge E which is marked "keep". Unify is called
+ * with edge-preserve list. The kept edge is removed anyway because the preservation
+ * flag is not propagated into the inner edge-walker.
+ * Byte assertions: contains OPEN_SHELL, count ADVANCED_FACE == 2 */
+HEADER;
+FILE_DESCRIPTION(('Tsh058 - kept edge still merged through in face unifier','2;1'),'2;1');
+FILE_NAME('Tsh058.stp','2026-06-16T00:00:00',(''),(''),'wave-regen','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+
+/* Plane z=0 */
+#10=CARTESIAN_POINT('',(1.0,0.5,0.0));
+#11=DIRECTION('',(0.0,0.0,1.0));
+#12=DIRECTION('',(1.0,0.0,0.0));
+#13=AXIS2_PLACEMENT_3D('',#10,#11,#12);
+#14=PLANE('',#13);
+
+/* Vertices: left face x=[0,1], right face x=[1,2] */
+#20=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#21=CARTESIAN_POINT('',(1.0,0.0,0.0));
+#22=CARTESIAN_POINT('',(1.0,1.0,0.0));
+#23=CARTESIAN_POINT('',(0.0,1.0,0.0));
+#24=CARTESIAN_POINT('',(2.0,0.0,0.0));
+#25=CARTESIAN_POINT('',(2.0,1.0,0.0));
+
+#30=VERTEX_POINT('',#20);
+#31=VERTEX_POINT('',#21);
+#32=VERTEX_POINT('',#22);
+#33=VERTEX_POINT('',#23);
+#34=VERTEX_POINT('',#24);
+#35=VERTEX_POINT('',#25);
+
+/* Left face edges */
+#40=DIRECTION('',(1.0,0.0,0.0));
+#41=VECTOR('',#40,1.0);
+#42=LINE('',#20,#41);
+#43=EDGE_CURVE('L_bot',#30,#31,#42,.T.);
+
+#44=DIRECTION('',(0.0,1.0,0.0));
+#45=VECTOR('',#44,1.0);
+#46=LINE('',#21,#45);
+/* This is the "keep" edge E */
+#47=EDGE_CURVE('keep_edge_E',#31,#32,#46,.T.);
+
+#48=DIRECTION('',(-1.0,0.0,0.0));
+#49=VECTOR('',#48,1.0);
+#50=LINE('',#22,#49);
+#51=EDGE_CURVE('L_top',#32,#33,#50,.T.);
+
+#52=DIRECTION('',(0.0,-1.0,0.0));
+#53=VECTOR('',#52,1.0);
+#54=LINE('',#23,#53);
+#55=EDGE_CURVE('L_left',#33,#30,#54,.T.);
+
+/* Right face edges */
+#56=LINE('',#21,#40);
+#57=DIRECTION('',(1.0,0.0,0.0));
+#58=VECTOR('',#57,1.0);
+#59=LINE('',#21,#58);
+#60=EDGE_CURVE('R_bot',#31,#34,#59,.T.);
+
+#61=DIRECTION('',(0.0,1.0,0.0));
+#62=VECTOR('',#61,1.0);
+#63=LINE('',#24,#62);
+#64=EDGE_CURVE('R_right',#34,#35,#63,.T.);
+
+#65=DIRECTION('',(-1.0,0.0,0.0));
+#66=VECTOR('',#65,1.0);
+#67=LINE('',#25,#66);
+#68=EDGE_CURVE('R_top',#35,#32,#67,.T.);
+
+/* Left face loop */
+#70=ORIENTED_EDGE('',*,*,#43,.T.);
+#71=ORIENTED_EDGE('',*,*,#47,.T.);
+#72=ORIENTED_EDGE('',*,*,#51,.T.);
+#73=ORIENTED_EDGE('',*,*,#55,.T.);
+#74=EDGE_LOOP('',(#70,#71,#72,#73));
+#75=FACE_OUTER_BOUND('',#74,.T.);
+#76=ADVANCED_FACE('left_face',(#75),#14,.T.);
+
+/* Right face loop (shared edge used in reverse) */
+#80=ORIENTED_EDGE('',*,*,#60,.T.);
+#81=ORIENTED_EDGE('',*,*,#64,.T.);
+#82=ORIENTED_EDGE('',*,*,#68,.T.);
+#83=ORIENTED_EDGE('',*,*,#47,.F.);
+#84=EDGE_LOOP('',(#80,#81,#82,#83));
+#85=FACE_OUTER_BOUND('',#84,.T.);
+#86=ADVANCED_FACE('right_face',(#85),#14,.T.);
+
+/* Property association marking edge_E as "keep" */
+#90=PROPERTY_DEFINITION('keep_edge','preserve this edge through unification',#91);
+#91=PRODUCT_DEFINITION_SHAPE('','',#92);
+#92=PRODUCT_DEFINITION('','',#93,#94);
+#93=PRODUCT_DEFINITION_FORMATION('','',#95);
+#94=PRODUCT_DEFINITION_CONTEXT('',#1,'design');
+#95=PRODUCT('keep_prop','keep_prop','',(#9000));
+
+/* OPEN_SHELL */
+#500=OPEN_SHELL('two_coplanar_with_keep_edge',(#76,#86));
+
+/* Mandatory PRODUCT chain */
+#9000=PRODUCT_CONTEXT('',#1,'mechanical');
+#9001=PRODUCT('Tsh058','Tsh058','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
+#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
+#9021=SHELL_BASED_SURFACE_MODEL('sbsm',(#500));
+#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#9010);
+#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+ENDSEC;
+END-ISO-10303-21;

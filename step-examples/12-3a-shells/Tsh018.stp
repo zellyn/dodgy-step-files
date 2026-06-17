@@ -1,0 +1,90 @@
+ISO-10303-21;
+/* Tsh018 - Volume orientation mismatch between LastShape() and parent
+ *          solid
+ * Defect: BRepPrimAPI_MakeRevol::LastShape returns the closing face
+ * oriented FORWARD, but the same face inside the resulting solid is
+ * REVERSED. Code using LastShape() to drive a follow-up operation sees
+ * an inconsistent normal direction. Source: B006 (Quaoar).
+ *
+ * This file mimics the corollary: a SURFACE_OF_REVOLUTION solid where
+ * the closing planar end face is referenced both inside the solid's
+ * CLOSED_SHELL with same_sense=.F. (correct outward orientation) AND
+ * by a STYLED_ITEM/external reference with same_sense=.T. (the shape
+ * MakeRevol::LastShape would have reported). Healers must report both
+ * orientations consistently. */
+HEADER;
+FILE_DESCRIPTION(('Tsh018 - LastShape orientation mismatch','2;1');
+FILE_NAME('Tsh018.stp','2026-06-16T00:00:00',(''),(''),'wave-01','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+/* Cylinder by revolving a vertical line around z-axis: r=1, h=2 */
+#100=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#101=CARTESIAN_POINT('',(0.0,0.0,2.0));
+#200=DIRECTION('',(0.0,0.0,1.0)); #201=DIRECTION('',(1.0,0.0,0.0));
+#210=AXIS2_PLACEMENT_3D('axis',#100,#200,#201);
+/* Cylindrical lateral surface r=1 */
+#220=CYLINDRICAL_SURFACE('lateral',#210,1.0);
+/* Top and bottom planes */
+#221=AXIS2_PLACEMENT_3D('bottom',#100,#200,#201);
+#222=PLANE('bottom_plane',#221);
+#223=AXIS2_PLACEMENT_3D('top',#101,#200,#201);
+#224=PLANE('top_plane',#223);
+/* Vertices on top and bottom rims */
+#230=CARTESIAN_POINT('',(1.0,0.0,0.0));
+#231=VERTEX_POINT('',#230);
+#232=CARTESIAN_POINT('',(1.0,0.0,2.0));
+#233=VERTEX_POINT('',#232);
+/* Bottom and top circles */
+#240=CIRCLE('',#221,1.0);
+#241=CIRCLE('',#223,1.0);
+/* Bottom edge: full circle from #231 back to #231 */
+#250=EDGE_CURVE('bottom_circle',#231,#231,#240,.T.);
+/* Top edge: full circle from #233 back to #233 */
+#251=EDGE_CURVE('top_circle',#233,#233,#241,.T.);
+/* Vertical seam edge from bottom rim to top rim */
+#260=DIRECTION('',(0.0,0.0,1.0)); #261=VECTOR('',#260,2.0);
+#262=LINE('',#230,#261);
+#263=EDGE_CURVE('seam',#231,#233,#262,.T.);
+/* Lateral face -- one degenerate seam loop */
+#400=ORIENTED_EDGE('',*,*,#250,.T.);
+#401=ORIENTED_EDGE('',*,*,#263,.T.);
+#402=ORIENTED_EDGE('',*,*,#251,.F.);
+#403=ORIENTED_EDGE('',*,*,#263,.F.);
+#404=EDGE_LOOP('',(#400,#401,#402,#403));
+#405=FACE_OUTER_BOUND('lateral_loop',#404,.T.);
+#406=ADVANCED_FACE('lateral',(#405),#220,.T.);
+/* Bottom face */
+#410=ORIENTED_EDGE('',*,*,#250,.F.);
+#411=EDGE_LOOP('',(#410));
+#412=FACE_OUTER_BOUND('bottom_loop',#411,.T.);
+#413=ADVANCED_FACE('bottom',(#412),#222,.F.);
+/* Top face -- this is the "LastShape" face */
+#420=ORIENTED_EDGE('',*,*,#251,.T.);
+#421=EDGE_LOOP('',(#420));
+#422=FACE_OUTER_BOUND('top_loop',#421,.T.);
+#423=ADVANCED_FACE('top_lastshape',(#422),#224,.T.);
+#500=CLOSED_SHELL('cyl_shell',(#406,#413,#423));
+#510=MANIFOLD_SOLID_BREP('cyl_solid',#500);
+/* Defect: external reference to the same face #423 with the orientation
+   that LastShape() would report -- mismatching the orientation it has
+   inside #500. The receiver must reconcile these two views. */
+#600=ORIENTED_FACE('lastshape_view',*,#423,.T.);
+/* Mandatory PRODUCT chain */
+#9000=PRODUCT_CONTEXT('',#1,'mechanical');
+#9001=PRODUCT('Tsh018','Tsh018','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
+#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
+#9022=ADVANCED_BREP_SHAPE_REPRESENTATION('',(#510),#9010);
+#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+ENDSEC;
+END-ISO-10303-21;

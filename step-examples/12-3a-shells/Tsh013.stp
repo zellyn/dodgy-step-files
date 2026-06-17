@@ -1,0 +1,79 @@
+ISO-10303-21;
+/* Tsh013 - ShapeFix_Face::FixSplitFace - face needing split (multiple
+ *          outer wires)
+ * Defect: A face has multiple outer wires (each enclosing disjoint
+ * regions); face must be split so each piece has exactly one outer
+ * bound. Source: F031 ShapeFix_Face::FixSplitFace.
+ *
+ * This file: a single ADVANCED_FACE on a planar surface whose face
+ * bounds list contains TWO non-nested FACE_OUTER_BOUND entries -- two
+ * disjoint squares (left at x in [0,1] and right at x in [2,3]).
+ * Healers split into two faces; strict readers reject the topology. */
+HEADER;
+FILE_DESCRIPTION(('Tsh013 - Face with two disjoint outer wires','2;1');
+FILE_NAME('Tsh013.stp','2026-06-16T00:00:00',(''),(''),'wave-01','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+/* Left square corners */
+#100=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#101=CARTESIAN_POINT('',(1.0,0.0,0.0));
+#102=CARTESIAN_POINT('',(1.0,1.0,0.0));
+#103=CARTESIAN_POINT('',(0.0,1.0,0.0));
+/* Right square corners */
+#104=CARTESIAN_POINT('',(2.0,0.0,0.0));
+#105=CARTESIAN_POINT('',(3.0,0.0,0.0));
+#106=CARTESIAN_POINT('',(3.0,1.0,0.0));
+#107=CARTESIAN_POINT('',(2.0,1.0,0.0));
+#110=VERTEX_POINT('',#100); #111=VERTEX_POINT('',#101);
+#112=VERTEX_POINT('',#102); #113=VERTEX_POINT('',#103);
+#114=VERTEX_POINT('',#104); #115=VERTEX_POINT('',#105);
+#116=VERTEX_POINT('',#106); #117=VERTEX_POINT('',#107);
+#200=DIRECTION('',(0.0,0.0,1.0)); #201=DIRECTION('',(1.0,0.0,0.0));
+#211=AXIS2_PLACEMENT_3D('',#100,#200,#201); #212=PLANE('',#211);
+/* Vectors */
+#300=DIRECTION('',(1.0,0.0,0.0)); #301=VECTOR('',#300,1.0);
+#302=DIRECTION('',(0.0,1.0,0.0)); #303=VECTOR('',#302,1.0);
+/* Left square edges */
+#310=LINE('',#100,#301); #311=EDGE_CURVE('',#110,#111,#310,.T.);
+#312=LINE('',#101,#303); #313=EDGE_CURVE('',#111,#112,#312,.T.);
+#314=LINE('',#103,#301); #315=EDGE_CURVE('',#113,#112,#314,.T.);
+#316=LINE('',#100,#303); #317=EDGE_CURVE('',#110,#113,#316,.T.);
+/* Right square edges */
+#318=LINE('',#104,#301); #319=EDGE_CURVE('',#114,#115,#318,.T.);
+#320=LINE('',#105,#303); #321=EDGE_CURVE('',#115,#116,#320,.T.);
+#322=LINE('',#107,#301); #323=EDGE_CURVE('',#117,#116,#322,.T.);
+#324=LINE('',#104,#303); #325=EDGE_CURVE('',#114,#117,#324,.T.);
+/* Outer wire 1 (left square) */
+#400=ORIENTED_EDGE('',*,*,#311,.T.); #401=ORIENTED_EDGE('',*,*,#313,.T.);
+#402=ORIENTED_EDGE('',*,*,#315,.F.); #403=ORIENTED_EDGE('',*,*,#317,.F.);
+#404=EDGE_LOOP('',(#400,#401,#402,#403));
+#405=FACE_OUTER_BOUND('outer_left',#404,.T.);
+/* Outer wire 2 (right square -- DISJOINT from #405) */
+#410=ORIENTED_EDGE('',*,*,#319,.T.); #411=ORIENTED_EDGE('',*,*,#321,.T.);
+#412=ORIENTED_EDGE('',*,*,#323,.F.); #413=ORIENTED_EDGE('',*,*,#325,.F.);
+#414=EDGE_LOOP('',(#410,#411,#412,#413));
+/* Defect: second FACE_OUTER_BOUND on the same face -- two non-nested
+   outer wires, requires FixSplitFace */
+#415=FACE_OUTER_BOUND('outer_right',#414,.T.);
+#420=ADVANCED_FACE('two_outer_bounds',(#405,#415),#212,.T.);
+#500=OPEN_SHELL('split_face_shell',(#420));
+#510=SHELL_BASED_SURFACE_MODEL('container',(#500));
+/* Mandatory PRODUCT chain */
+#9000=PRODUCT_CONTEXT('',#1,'mechanical');
+#9001=PRODUCT('Tsh013','Tsh013','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
+#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
+#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#510),#9010);
+#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+ENDSEC;
+END-ISO-10303-21;

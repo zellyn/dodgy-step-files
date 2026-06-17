@@ -1,0 +1,78 @@
+ISO-10303-21;
+/* N072 — ShapeFix_Edge.FixSameParameter precision-loss via TempSameRange
+ * Defect: TempSameRange clamps parameter range [0, 10] -> [0.5, 9.5] on a B-spline
+ * edge. Original curve has geometric tolerance 1.0E-5 mm. Clamping re-parameterizes
+ * curve to occupy only [0.5, 9.5], shrinking effective resolution: geometric
+ * tolerance relative to range becomes 100x tighter. Precision-loss: tolerance not
+ * adjusted after param clamping, causing silent precision degradation.
+ */
+HEADER;
+FILE_DESCRIPTION(('N072 ShapeFix_Edge FixSameParameter TempSameRange precision-loss'),'2;1');
+FILE_NAME('N072.stp','2026-06-15T00:00:00',(''),(''),
+  'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
+  'automotive_design',2009,#1);
+/* B-spline edge with parameter range [0, 10], high precision tolerance 1e-5 mm.
+   TempSameRange will clamp to [0.5, 9.5], introducing precision loss. */
+#10=CARTESIAN_POINT('p_start',(0.0,0.0,0.0));
+#11=CARTESIAN_POINT('p_end',(10.0,0.0,0.0));
+#20=VERTEX_POINT('v_start',#10);
+#21=VERTEX_POINT('v_end',#11);
+/* Interior control points */
+#12=CARTESIAN_POINT('cp1',(2.5,1.0,0.0));
+#13=CARTESIAN_POINT('cp2',(5.0,0.0,0.0));
+#14=CARTESIAN_POINT('cp3',(7.5,1.0,0.0));
+/* B-spline curve with parameter range [0, 10] */
+#30=B_SPLINE_CURVE_WITH_KNOTS('bspline_wide_param',3,
+  (#10,#12,#13,#14,#11),
+  .UNSPECIFIED.,.F.,.F.,
+  (4,1,4),(0.0,5.0,10.0),
+  .UNSPECIFIED.);
+#31=EDGE_CURVE('e_bspline',#20,#21,#30,.T.);
+/* Close the loop with straight return */
+#32=DIRECTION('negx',(-1.0,0.0,0.0));
+#33=VECTOR('negxvec',#32,10.0);
+#34=LINE('close_line',#11,#33);
+#35=EDGE_CURVE('close_edge',#21,#20,#34,.T.);
+#36=ORIENTED_EDGE('',*,*,#31,.T.);
+#37=ORIENTED_EDGE('',*,*,#35,.T.);
+#38=EDGE_LOOP('',(#36,#37));
+/* Plane surface */
+#40=DIRECTION('zdir',(0.0,0.0,1.0));
+#41=DIRECTION('xdir',(1.0,0.0,0.0));
+#42=AXIS2_PLACEMENT_3D('ax3',#10,#40,#41);
+#43=PLANE('plane',#42);
+#44=FACE_OUTER_BOUND('',#38,.T.);
+#45=ADVANCED_FACE('face',(#44),#43,.T.);
+#46=OPEN_SHELL('shell',(#45));
+/* Units and tight tolerance (1.0E-5 mm) */
+#200=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#201=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#202=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#203=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-5),#200,
+  'distance_accuracy_value','');
+#204=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#203))
+  GLOBAL_UNIT_ASSIGNED_CONTEXT((#200,#201,#202))
+  REPRESENTATION_CONTEXT('','3D'));
+/* PRODUCT CHAIN */
+#9000=PRODUCT_CONTEXT('',#1,'mechanical');
+#9001=PRODUCT('N072','N072','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
+#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
+#9021=SHELL_BASED_SURFACE_MODEL('sbsm',(#46));
+#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#9010);
+#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+ENDSEC;
+END-ISO-10303-21;

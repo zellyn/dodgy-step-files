@@ -1,0 +1,112 @@
+ISO-10303-21;
+/* N065 — ShapeFix_ShapeTolerance.LimitTolerance partial-tree application
+ * Defect: LimitTolerance called on a compound containing both a shell and a solid.
+ * The recursion stops at the shell boundary without descending into the solid's
+ * interior, leaving inner topological elements un-limited.
+ * Geometry: Compound with (1) independent triangular shell and (2) cube at (5,5,5)
+ *   with faces, edges, vertices representing solid interior.
+ * Expected: LimitTolerance(compound, max=1e-4) should limit all geometry;
+ * actual behavior skips solid's interior faces/edges/vertices.
+ */
+HEADER;
+FILE_DESCRIPTION(('N065 ShapeFix_ShapeTolerance LimitTolerance partial-tree'),'2;1');
+FILE_NAME('N065.stp','2026-06-15T00:00:00',(''),(''),
+  'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
+  'automotive_design',2009,#1);
+/* SHELL 1: Simple triangular face */
+#10=CARTESIAN_POINT('sh1_p0',(0.0,0.0,0.0));
+#11=CARTESIAN_POINT('sh1_p1',(1.0,0.0,0.0));
+#12=CARTESIAN_POINT('sh1_p2',(0.5,1.0,0.0));
+#20=VERTEX_POINT('sh1_v0',#10);
+#21=VERTEX_POINT('sh1_v1',#11);
+#22=VERTEX_POINT('sh1_v2',#12);
+#30=DIRECTION('sh1_d0',(1.0,0.0,0.0));
+#31=VECTOR('sh1_vec0',#30,1.0);
+#32=LINE('sh1_line0',#10,#31);
+#33=EDGE_CURVE('sh1_e0',#20,#21,#32,.T.);
+#34=DIRECTION('sh1_d1',(-0.5,1.0,0.0));
+#35=VECTOR('sh1_vec1',#34,1.118);
+#36=LINE('sh1_line1',#11,#35);
+#37=EDGE_CURVE('sh1_e1',#21,#22,#36,.T.);
+#38=DIRECTION('sh1_d2',(-0.5,-1.0,0.0));
+#39=VECTOR('sh1_vec2',#38,1.118);
+#40=LINE('sh1_line2',#12,#39);
+#41=EDGE_CURVE('sh1_e2',#22,#20,#40,.T.);
+#42=ORIENTED_EDGE('',*,*,#33,.T.);
+#43=ORIENTED_EDGE('',*,*,#37,.T.);
+#44=ORIENTED_EDGE('',*,*,#41,.T.);
+#45=EDGE_LOOP('',(#42,#43,#44));
+#46=FACE_OUTER_BOUND('',#45,.T.);
+#47=DIRECTION('sh1_z',(0.0,0.0,1.0));
+#48=DIRECTION('sh1_x',(1.0,0.0,0.0));
+#49=AXIS2_PLACEMENT_3D('sh1_ax3',#10,#47,#48);
+#50=PLANE('sh1_plane',#49);
+#51=ADVANCED_FACE('sh1_face',(#46),#50,.T.);
+/* SHELL 2: Single bottom face of cube at (5,5,5) — represents solid interior */
+#70=CARTESIAN_POINT('sol_p0',(5.0,5.0,5.0));
+#71=CARTESIAN_POINT('sol_p1',(6.0,5.0,5.0));
+#72=CARTESIAN_POINT('sol_p2',(6.0,6.0,5.0));
+#73=CARTESIAN_POINT('sol_p3',(5.0,6.0,5.0));
+#80=VERTEX_POINT('sol_v0',#70);
+#81=VERTEX_POINT('sol_v1',#71);
+#82=VERTEX_POINT('sol_v2',#72);
+#83=VERTEX_POINT('sol_v3',#73);
+#90=DIRECTION('sol_d0',(1.0,0.0,0.0));
+#91=VECTOR('sol_vec0',#90,1.0);
+#92=LINE('sol_line0',#70,#91);
+#93=EDGE_CURVE('sol_e0',#80,#81,#92,.T.);
+#94=DIRECTION('sol_d1',(0.0,1.0,0.0));
+#95=VECTOR('sol_vec1',#94,1.0);
+#96=LINE('sol_line1',#71,#95);
+#97=EDGE_CURVE('sol_e1',#81,#82,#96,.T.);
+#98=DIRECTION('sol_d2',(-1.0,0.0,0.0));
+#99=VECTOR('sol_vec2',#98,1.0);
+#100=LINE('sol_line2',#72,#99);
+#101=EDGE_CURVE('sol_e2',#82,#83,#100,.T.);
+#102=DIRECTION('sol_d3',(0.0,-1.0,0.0));
+#103=VECTOR('sol_vec3',#102,1.0);
+#104=LINE('sol_line3',#73,#103);
+#105=EDGE_CURVE('sol_e3',#83,#80,#104,.T.);
+#106=ORIENTED_EDGE('',*,*,#93,.T.);
+#107=ORIENTED_EDGE('',*,*,#97,.T.);
+#108=ORIENTED_EDGE('',*,*,#101,.T.);
+#109=ORIENTED_EDGE('',*,*,#105,.T.);
+#110=EDGE_LOOP('',(#106,#107,#108,#109));
+#111=FACE_OUTER_BOUND('',#110,.T.);
+#112=DIRECTION('sol_z',(0.0,0.0,1.0));
+#113=DIRECTION('sol_x',(1.0,0.0,0.0));
+#114=AXIS2_PLACEMENT_3D('sol_ax3',#70,#112,#113);
+#115=PLANE('sol_plane',#114);
+#116=ADVANCED_FACE('sol_face',(#111),#115,.T.);
+/* High tolerance (before LimitTolerance) */
+#200=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#201=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#202=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#203=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-1),#200,
+  'distance_accuracy_value','');
+#204=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#203))
+  GLOBAL_UNIT_ASSIGNED_CONTEXT((#200,#201,#202))
+  REPRESENTATION_CONTEXT('','3D'));
+/* PRODUCT CHAIN */
+#9000=PRODUCT_CONTEXT('',#1,'mechanical');
+#9001=PRODUCT('N065','N065','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
+#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
+#9021=SHELL_BASED_SURFACE_MODEL('sbsm',(#51,#116));
+#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#9010);
+#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+ENDSEC;
+END-ISO-10303-21;

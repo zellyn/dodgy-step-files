@@ -1,0 +1,140 @@
+ISO-10303-21;
+/* Tsh059 - Coplanar-face merge history map omits intermediate shapes
+ * Defect: Multiple ADVANCED_FACEs aliasing the same FACE_OUTER_BOUND and same PLANE.
+ * After merging, history map does not record intermediate edges that were created
+ * and then re-merged. Downstream PMI/colour attribute transfer loses data.
+ * Byte assertions: count ADVANCED_FACE == 4 */
+HEADER;
+FILE_DESCRIPTION(('Tsh059 - history map incomplete after multi-pass face merge','2;1'),'2;1');
+FILE_NAME('Tsh059.stp','2026-06-16T00:00:00',(''),(''),'wave-regen','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+
+/* Single shared plane */
+#10=CARTESIAN_POINT('',(1.0,0.5,0.0));
+#11=DIRECTION('',(0.0,0.0,1.0));
+#12=DIRECTION('',(1.0,0.0,0.0));
+#13=AXIS2_PLACEMENT_3D('',#10,#11,#12);
+#14=PLANE('shared_plane',#13);
+
+/* Four coplanar square faces in a 2x2 grid, each 1x1:
+ * Face1: (0,0)-(1,1), Face2: (1,0)-(2,1), Face3: (0,1)-(1,2), Face4: (1,1)-(2,2) */
+
+/* All 9 vertices */
+#20=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#21=CARTESIAN_POINT('',(1.0,0.0,0.0));
+#22=CARTESIAN_POINT('',(2.0,0.0,0.0));
+#23=CARTESIAN_POINT('',(0.0,1.0,0.0));
+#24=CARTESIAN_POINT('',(1.0,1.0,0.0));
+#25=CARTESIAN_POINT('',(2.0,1.0,0.0));
+#26=CARTESIAN_POINT('',(0.0,2.0,0.0));
+#27=CARTESIAN_POINT('',(1.0,2.0,0.0));
+#28=CARTESIAN_POINT('',(2.0,2.0,0.0));
+
+#30=VERTEX_POINT('v00',#20);
+#31=VERTEX_POINT('v10',#21);
+#32=VERTEX_POINT('v20',#22);
+#33=VERTEX_POINT('v01',#23);
+#34=VERTEX_POINT('v11',#24);
+#35=VERTEX_POINT('v21',#25);
+#36=VERTEX_POINT('v02',#26);
+#37=VERTEX_POINT('v12',#27);
+#38=VERTEX_POINT('v22',#28);
+
+/* Horizontal edges */
+#40=DIRECTION('',(1.0,0.0,0.0));
+#41=VECTOR('',#40,1.0);
+/* Row 0 */
+#42=LINE('',#20,#41);
+#43=EDGE_CURVE('h00_10',#30,#31,#42,.T.);
+#44=LINE('',#21,#41);
+#45=EDGE_CURVE('h10_20',#31,#32,#44,.T.);
+/* Row 1 */
+#46=LINE('',#23,#41);
+#47=EDGE_CURVE('h01_11',#33,#34,#46,.T.);
+#48=LINE('',#24,#41);
+#49=EDGE_CURVE('h11_21',#34,#35,#48,.T.);
+/* Row 2 */
+#50=LINE('',#26,#41);
+#51=EDGE_CURVE('h02_12',#36,#37,#50,.T.);
+#52=LINE('',#27,#41);
+#53=EDGE_CURVE('h12_22',#37,#38,#52,.T.);
+
+/* Vertical edges */
+#54=DIRECTION('',(0.0,1.0,0.0));
+#55=VECTOR('',#54,1.0);
+/* Col 0 */
+#56=LINE('',#20,#55);
+#57=EDGE_CURVE('v00_01',#30,#33,#56,.T.);
+#58=LINE('',#23,#55);
+#59=EDGE_CURVE('v01_02',#33,#36,#58,.T.);
+/* Col 1 */
+#60=LINE('',#21,#55);
+#61=EDGE_CURVE('v10_11',#31,#34,#60,.T.);
+#62=LINE('',#24,#55);
+#63=EDGE_CURVE('v11_12',#34,#37,#62,.T.);
+/* Col 2 */
+#64=LINE('',#22,#55);
+#65=EDGE_CURVE('v20_21',#32,#35,#64,.T.);
+#66=LINE('',#25,#55);
+#67=EDGE_CURVE('v21_22',#35,#38,#66,.T.);
+
+/* Face 1: bottom-left (0,0)-(1,1) */
+#70=ORIENTED_EDGE('',*,*,#43,.T.);
+#71=ORIENTED_EDGE('',*,*,#61,.T.);
+#72=ORIENTED_EDGE('',*,*,#47,.F.);
+#73=ORIENTED_EDGE('',*,*,#57,.F.);
+#74=EDGE_LOOP('',(#70,#71,#72,#73));
+#75=FACE_OUTER_BOUND('',#74,.T.);
+#76=ADVANCED_FACE('face1_BL',(#75),#14,.T.);
+
+/* Face 2: bottom-right (1,0)-(2,1) */
+#80=ORIENTED_EDGE('',*,*,#45,.T.);
+#81=ORIENTED_EDGE('',*,*,#65,.T.);
+#82=ORIENTED_EDGE('',*,*,#49,.F.);
+#83=ORIENTED_EDGE('',*,*,#61,.F.);
+#84=EDGE_LOOP('',(#80,#81,#82,#83));
+#85=FACE_OUTER_BOUND('',#84,.T.);
+#86=ADVANCED_FACE('face2_BR',(#85),#14,.T.);
+
+/* Face 3: top-left (0,1)-(1,2) */
+#90=ORIENTED_EDGE('',*,*,#47,.T.);
+#91=ORIENTED_EDGE('',*,*,#63,.T.);
+#92=ORIENTED_EDGE('',*,*,#51,.F.);
+#93=ORIENTED_EDGE('',*,*,#59,.F.);
+#94=EDGE_LOOP('',(#90,#91,#92,#93));
+#95=FACE_OUTER_BOUND('',#94,.T.);
+#96=ADVANCED_FACE('face3_TL',(#95),#14,.T.);
+
+/* Face 4: top-right (1,1)-(2,2) */
+#100=ORIENTED_EDGE('',*,*,#49,.T.);
+#101=ORIENTED_EDGE('',*,*,#67,.T.);
+#102=ORIENTED_EDGE('',*,*,#53,.F.);
+#103=ORIENTED_EDGE('',*,*,#63,.F.);
+#104=EDGE_LOOP('',(#100,#101,#102,#103));
+#105=FACE_OUTER_BOUND('',#104,.T.);
+#106=ADVANCED_FACE('face4_TR',(#105),#14,.T.);
+
+/* OPEN_SHELL of 4 coplanar faces */
+#500=OPEN_SHELL('four_coplanar_faces',(#76,#86,#96,#106));
+
+/* Mandatory PRODUCT chain */
+#9000=PRODUCT_CONTEXT('',#1,'mechanical');
+#9001=PRODUCT('Tsh059','Tsh059','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
+#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
+#9021=SHELL_BASED_SURFACE_MODEL('sbsm',(#500));
+#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#9010);
+#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+ENDSEC;
+END-ISO-10303-21;

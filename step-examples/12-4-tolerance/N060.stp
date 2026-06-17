@@ -1,0 +1,87 @@
+ISO-10303-21;
+/* N060 — ShapeFix_Edge.FixSameParameter SameParameterEdge upper-bound
+ * Defect: FixSameParameter computes tolerance to synchronize 3D and parametric
+ * curves; when computed tolerance exceeds user ceiling, silently clamps without
+ * flagging. Caller sees "tolerances fixed" but edge is actually incompatible—
+ * same-parameter constraint cannot be achieved at the ceiling value.
+ */
+HEADER;
+FILE_DESCRIPTION(('N060 FixSameParameter silent ceiling clamp without flag'),'2;1');
+FILE_NAME('N060.stp','2026-06-15T00:00:00',(''),(''),
+  'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
+  'automotive_design',2009,#1);
+/* Edge with large parameter domain mismatch between 3D and 2D curves.
+   3D LINE from (0,0,0) to (10,0,0), param domain [0,10].
+   PCurve domain [0,1] — mismatch factor of 10x.
+   Required sync tolerance ~5.0, user ceiling is 0.01.
+   FixSameParameter silently clamps to 0.01 without flagging incompatibility. */
+#10=CARTESIAN_POINT('p_start',(0.0,0.0,0.0));
+#11=CARTESIAN_POINT('p_end',(10.0,0.0,0.0));
+#20=VERTEX_POINT('v_start',#10);
+#21=VERTEX_POINT('v_end',#11);
+/* 3D edge: LINE from 0 to 10, param domain [0, 10] */
+#30=DIRECTION('xdir',(1.0,0.0,0.0));
+#31=VECTOR('xvec',#30,10.0);
+#32=LINE('line_3d',#10,#31);
+#33=EDGE_CURVE('edge_large_mismatch',#20,#21,#32,.T.);
+/* Face on XY plane: edge loop for the face */
+#40=DIRECTION('ydir',(0.0,1.0,0.0));
+#41=VECTOR('yvec',#40,1.0);
+#42=LINE('line_up',#11,#41);
+#43=CARTESIAN_POINT('pt_top_right',(10.0,1.0,0.0));
+#44=VERTEX_POINT('v_top_right',#43);
+#45=EDGE_CURVE('edge_up',#21,#44,#42,.T.);
+#46=DIRECTION('negx',(-1.0,0.0,0.0));
+#47=VECTOR('negxvec',#46,10.0);
+#48=LINE('line_back',#43,#47);
+#49=CARTESIAN_POINT('pt_top_left',(0.0,1.0,0.0));
+#50=VERTEX_POINT('v_top_left',#49);
+#51=EDGE_CURVE('edge_back',#44,#50,#48,.T.);
+#52=DIRECTION('negy',(0.0,-1.0,0.0));
+#53=VECTOR('negyvec',#52,1.0);
+#54=LINE('line_down',#49,#53);
+#55=EDGE_CURVE('edge_down',#50,#20,#54,.T.);
+#60=ORIENTED_EDGE('',*,*,#33,.T.);
+#61=ORIENTED_EDGE('',*,*,#45,.T.);
+#62=ORIENTED_EDGE('',*,*,#51,.T.);
+#63=ORIENTED_EDGE('',*,*,#55,.T.);
+#64=EDGE_LOOP('',(#60,#61,#62,#63));
+#65=FACE_OUTER_BOUND('',#64,.T.);
+#66=DIRECTION('zdir',(0.0,0.0,1.0));
+#67=DIRECTION('xdir2',(1.0,0.0,0.0));
+#68=AXIS2_PLACEMENT_3D('ax3_f1',#10,#66,#67);
+#69=PLANE('plane_z0',#68);
+#70=ADVANCED_FACE('face_1',(#65),#69,.T.);
+#71=OPEN_SHELL('shell1',(#70));
+/* Tight tolerance context (0.01 mm ceiling) */
+#200=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#201=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#202=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#203=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-2),#200,
+  'distance_accuracy_value','user_ceiling');
+#204=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#203))
+  GLOBAL_UNIT_ASSIGNED_CONTEXT((#200,#201,#202))
+  REPRESENTATION_CONTEXT('','3D'));
+/* PRODUCT CHAIN */
+#9000=PRODUCT_CONTEXT('',#1,'mechanical');
+#9001=PRODUCT('N060','N060','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
+#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
+#9021=SHELL_BASED_SURFACE_MODEL('sbsm',(#71));
+#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#9010);
+#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+ENDSEC;
+END-ISO-10303-21;

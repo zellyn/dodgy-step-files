@@ -1,0 +1,76 @@
+ISO-10303-21;
+/* N058 — BRepLib.SameRange null-pcurve null-check dereference
+ * Defect: SameRange rescales PCurve domains to match 3D edge parameter range, but
+ * assumes the PCurve exists. When an edge has a null 2D curve on a face (parametric
+ * curve extraction failed), SameRange dereferences the null pointer without check,
+ * masking the failure and corrupting downstream edge state.
+ */
+HEADER;
+FILE_DESCRIPTION(('N058 SameRange null-pcurve dereference'),'2;1');
+FILE_NAME('N058.stp','2026-06-15T00:00:00',(''),(''),
+  'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
+  'automotive_design',2009,#1);
+/* Edge with parametric domain [0, 10] */
+#10=CARTESIAN_POINT('origin',(0.0,0.0,0.0));
+#11=CARTESIAN_POINT('end_pt',(10.0,0.0,0.0));
+#20=VERTEX_POINT('v_start',#10);
+#21=VERTEX_POINT('v_end',#11);
+/* 3D edge curve: LINE from origin to end_pt */
+#30=DIRECTION('xdir',(1.0,0.0,0.0));
+#31=VECTOR('xvec',#30,10.0);
+#32=LINE('edge_3d',#10,#31);
+#33=EDGE_CURVE('edge_with_null_pcurve',#20,#21,#32,.T.);
+/* Face on XY plane: valid edge loop with no PCurve record.
+   SameRange called on this face will find null PCurve and dereference. */
+#40=DIRECTION('zdir',(0.0,0.0,1.0));
+#41=DIRECTION('xdir2',(1.0,0.0,0.0));
+#42=AXIS2_PLACEMENT_3D('ax3_f1',#10,#40,#41);
+#43=PLANE('plane_z0',#42);
+/* Closing edges to form a valid loop: go around and return */
+#50=CARTESIAN_POINT('pt_return',(10.0,1.0,0.0));
+#51=VERTEX_POINT('v_return',#50);
+#52=DIRECTION('ydir',(0.0,1.0,0.0));
+#53=VECTOR('yvec',#52,1.0);
+#54=LINE('line_up',#11,#53);
+#55=EDGE_CURVE('edge_up',#21,#51,#54,.T.);
+#56=DIRECTION('negx',(-1.0,0.0,0.0));
+#57=VECTOR('negxvec',#56,10.0);
+#58=LINE('line_back',#50,#57);
+#59=CARTESIAN_POINT('pt_left',(0.0,1.0,0.0));
+#60=VERTEX_POINT('v_left',#59);
+#61=EDGE_CURVE('edge_back',#51,#60,#58,.T.);
+#62=DIRECTION('negy',(0.0,-1.0,0.0));
+#63=VECTOR('negyvec',#62,1.0);
+#64=LINE('line_down',#59,#63);
+#65=EDGE_CURVE('edge_down',#60,#20,#64,.T.);
+#70=ORIENTED_EDGE('',*,*,#33,.T.);
+#71=ORIENTED_EDGE('',*,*,#55,.T.);
+#72=ORIENTED_EDGE('',*,*,#61,.T.);
+#73=ORIENTED_EDGE('',*,*,#65,.T.);
+#74=EDGE_LOOP('',(#70,#71,#72,#73));
+#75=FACE_OUTER_BOUND('',#74,.T.);
+/* ADVANCED_FACE with no PCURVE child — SameRange finds null pcurve for the edge */
+#76=ADVANCED_FACE('face_no_pcurve',(#75),#43,.T.);
+#77=OPEN_SHELL('shell1',(#76));
+/* PRODUCT CHAIN */
+#9000=PRODUCT_CONTEXT('',#1,'mechanical');
+#9001=PRODUCT('N058','N058','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
+#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
+#9021=SHELL_BASED_SURFACE_MODEL('sbsm',(#77));
+#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#9010);
+#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+ENDSEC;
+END-ISO-10303-21;

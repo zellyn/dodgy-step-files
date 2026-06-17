@@ -1,0 +1,112 @@
+ISO-10303-21;
+/* Tsh050 - Edges on shared face boundary not deduplicated after merge
+ * Defect: Two coplanar quad faces sharing one edge. After merging, expected
+ * wire is 6-edge boundary; defective wire is 8-edge boundary including the
+ * shared edge listed twice with opposite orientations (dangling zero-area segment).
+ * Static fixture: two coplanar faces sharing edge E — the bad wire is a
+ * runtime artifact of the defective merge, not in the input file.
+ * Byte assertions: count ADVANCED_FACE == 1 (single merged result pre-encoded) */
+HEADER;
+FILE_DESCRIPTION(('Tsh050 - shared edge not deduplicated after face merge','2;1'),'2;1');
+FILE_NAME('Tsh050.stp','2026-06-16T00:00:00',(''),(''),'wave-regen','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+
+/* Single merged face representing the defective post-merge output:
+ * a 2x1 rectangle at z=0 whose wire includes a dangling internal edge
+ * from (1,0,0) to (1,1,0) and back — the shared edge appears twice. */
+
+/* Vertices of 2x1 rectangle plus midpoint for internal dangling edge */
+#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#11=CARTESIAN_POINT('',(2.0,0.0,0.0));
+#12=CARTESIAN_POINT('',(2.0,1.0,0.0));
+#13=CARTESIAN_POINT('',(0.0,1.0,0.0));
+/* Shared-edge vertices that appear twice in defective wire */
+#14=CARTESIAN_POINT('',(1.0,0.0,0.0));
+#15=CARTESIAN_POINT('',(1.0,1.0,0.0));
+
+#20=VERTEX_POINT('',#10);
+#21=VERTEX_POINT('',#11);
+#22=VERTEX_POINT('',#12);
+#23=VERTEX_POINT('',#13);
+#24=VERTEX_POINT('',#14);
+#25=VERTEX_POINT('',#15);
+
+/* Plane z=0 */
+#30=CARTESIAN_POINT('',(1.0,0.5,0.0));
+#31=DIRECTION('',(0.0,0.0,1.0));
+#32=DIRECTION('',(1.0,0.0,0.0));
+#33=AXIS2_PLACEMENT_3D('',#30,#31,#32);
+#34=PLANE('',#33);
+
+/* Edges of the outer 2x1 rectangle */
+#40=DIRECTION('',(1.0,0.0,0.0));
+#41=VECTOR('',#40,1.0);
+#42=LINE('',#10,#41);
+#43=EDGE_CURVE('bot_left',#20,#24,#42,.T.);
+
+#44=LINE('',#14,#41);
+#45=EDGE_CURVE('bot_right',#24,#21,#44,.T.);
+
+#46=DIRECTION('',(0.0,1.0,0.0));
+#47=VECTOR('',#46,1.0);
+#48=LINE('',#11,#47);
+#49=EDGE_CURVE('right_side',#21,#22,#48,.T.);
+
+#50=DIRECTION('',(-1.0,0.0,0.0));
+#51=VECTOR('',#50,1.0);
+#52=LINE('',#12,#51);
+#53=EDGE_CURVE('top_right',#22,#25,#52,.T.);
+
+#54=LINE('',#15,#51);
+#55=EDGE_CURVE('top_left',#25,#23,#54,.T.);
+
+#56=DIRECTION('',(0.0,-1.0,0.0));
+#57=VECTOR('',#56,1.0);
+#58=LINE('',#13,#57);
+#59=EDGE_CURVE('left_side',#23,#20,#58,.T.);
+
+/* The shared internal edge (1,0,0)-(1,1,0): appears in wire twice = defect */
+#60=DIRECTION('',(0.0,1.0,0.0));
+#61=VECTOR('',#60,1.0);
+#62=LINE('',#14,#61);
+#63=EDGE_CURVE('shared_internal',#24,#25,#62,.T.);
+
+/* Defective 8-edge wire: goes around outer boundary but inserts shared_internal
+ * twice (once forward, once backward) — this is what the defective merge outputs.
+ * We encode it directly to model the bad output as the input fixture. */
+#70=ORIENTED_EDGE('',*,*,#43,.T.);
+#71=ORIENTED_EDGE('',*,*,#63,.T.);
+#72=ORIENTED_EDGE('',*,*,#63,.F.);
+#73=ORIENTED_EDGE('',*,*,#45,.T.);
+#74=ORIENTED_EDGE('',*,*,#49,.T.);
+#75=ORIENTED_EDGE('',*,*,#53,.T.);
+#76=ORIENTED_EDGE('',*,*,#55,.T.);
+#77=ORIENTED_EDGE('',*,*,#59,.T.);
+#78=EDGE_LOOP('',(#70,#71,#72,#73,#74,#75,#76,#77));
+#79=FACE_OUTER_BOUND('',#78,.T.);
+#80=ADVANCED_FACE('merged_with_dangling_edge',(#79),#34,.T.);
+
+/* OPEN_SHELL wrapping the single defective face */
+#500=OPEN_SHELL('merged_face_shell',(#80));
+
+/* Mandatory PRODUCT chain */
+#9000=PRODUCT_CONTEXT('',#1,'mechanical');
+#9001=PRODUCT('Tsh050','Tsh050','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
+#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
+#9021=SHELL_BASED_SURFACE_MODEL('sbsm',(#500));
+#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#9010);
+#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+ENDSEC;
+END-ISO-10303-21;

@@ -1,0 +1,123 @@
+ISO-10303-21;
+/* N057 — ShapeAnalysis_ShapeTolerance.GlobalTolerance weight dispatch inversion
+ * Defect: GlobalTolerance(shape, type, 0=avg) computes weighted average tolerance,
+ * but weight assignment inverts for nested shapes—shell's faces are counted twice,
+ * skewing the average toward face tolerances and violating unbiased averaging
+ * semantics across all geometry types.
+ */
+HEADER;
+FILE_DESCRIPTION(('N057 GlobalTolerance nested-weight inversion'),'2;1');
+FILE_NAME('N057.stp','2026-06-15T00:00:00',(''),(''),
+  'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
+  'automotive_design',2009,#1);
+/* Two faces with different tolerances.
+   Face 1: tolerance ~0.001 */
+#10=CARTESIAN_POINT('p1_1',(0.0,0.0,0.0));
+#11=CARTESIAN_POINT('p1_2',(1.0,0.0,0.0));
+#12=CARTESIAN_POINT('p1_3',(1.0,1.0,0.0));
+#13=CARTESIAN_POINT('p1_4',(0.0,1.0,0.0));
+#20=VERTEX_POINT('v1_1',#10);
+#21=VERTEX_POINT('v1_2',#11);
+#22=VERTEX_POINT('v1_3',#12);
+#23=VERTEX_POINT('v1_4',#13);
+#30=DIRECTION('d1_1',(1.0,0.0,0.0));
+#31=VECTOR('v1_1',#30,1.0);
+#32=LINE('l1_1',#10,#31);
+#33=EDGE_CURVE('e1_1',#20,#21,#32,.T.);
+#34=DIRECTION('d1_2',(0.0,1.0,0.0));
+#35=VECTOR('v1_2',#34,1.0);
+#36=LINE('l1_2',#11,#35);
+#37=EDGE_CURVE('e1_2',#21,#22,#36,.T.);
+#38=DIRECTION('d1_3',(-1.0,0.0,0.0));
+#39=VECTOR('v1_3',#38,1.0);
+#40=LINE('l1_3',#12,#39);
+#41=EDGE_CURVE('e1_3',#22,#23,#40,.T.);
+#42=DIRECTION('d1_4',(0.0,-1.0,0.0));
+#43=VECTOR('v1_4',#42,1.0);
+#44=LINE('l1_4',#13,#43);
+#45=EDGE_CURVE('e1_4',#23,#20,#44,.T.);
+#46=ORIENTED_EDGE('',*,*,#33,.T.);
+#47=ORIENTED_EDGE('',*,*,#37,.T.);
+#48=ORIENTED_EDGE('',*,*,#41,.T.);
+#49=ORIENTED_EDGE('',*,*,#45,.T.);
+#50=EDGE_LOOP('',(#46,#47,#48,#49));
+#51=FACE_OUTER_BOUND('',#50,.T.);
+#52=DIRECTION('z1',(0.0,0.0,1.0));
+#53=DIRECTION('x1',(1.0,0.0,0.0));
+#54=AXIS2_PLACEMENT_3D('ax3_f1',#10,#52,#53);
+#55=PLANE('plane_f1',#54);
+#56=ADVANCED_FACE('face_1',(#51),#55,.T.);
+/* Face 2: tolerance ~0.008 (higher, at z=1) */
+#100=CARTESIAN_POINT('p2_1',(0.0,0.0,1.0));
+#101=CARTESIAN_POINT('p2_2',(1.0,0.0,1.0));
+#102=CARTESIAN_POINT('p2_3',(1.0,1.0,1.0));
+#103=CARTESIAN_POINT('p2_4',(0.0,1.0,1.0));
+#110=VERTEX_POINT('v2_1',#100);
+#111=VERTEX_POINT('v2_2',#101);
+#112=VERTEX_POINT('v2_3',#102);
+#113=VERTEX_POINT('v2_4',#103);
+#120=DIRECTION('d2_1',(1.0,0.0,0.0));
+#121=VECTOR('v2_1',#120,1.0);
+#122=LINE('l2_1',#100,#121);
+#123=EDGE_CURVE('e2_1',#110,#111,#122,.T.);
+#124=DIRECTION('d2_2',(0.0,1.0,0.0));
+#125=VECTOR('v2_2',#124,1.0);
+#126=LINE('l2_2',#101,#125);
+#127=EDGE_CURVE('e2_2',#111,#112,#126,.T.);
+#128=DIRECTION('d2_3',(-1.0,0.0,0.0));
+#129=VECTOR('v2_3',#128,1.0);
+#130=LINE('l2_3',#102,#129);
+#131=EDGE_CURVE('e2_3',#112,#113,#130,.T.);
+#132=DIRECTION('d2_4',(0.0,-1.0,0.0));
+#133=VECTOR('v2_4',#132,1.0);
+#134=LINE('l2_4',#103,#133);
+#135=EDGE_CURVE('e2_4',#113,#110,#134,.T.);
+#136=ORIENTED_EDGE('',*,*,#123,.T.);
+#137=ORIENTED_EDGE('',*,*,#127,.T.);
+#138=ORIENTED_EDGE('',*,*,#131,.T.);
+#139=ORIENTED_EDGE('',*,*,#135,.T.);
+#140=EDGE_LOOP('',(#136,#137,#138,#139));
+#141=FACE_OUTER_BOUND('',#140,.T.);
+#142=DIRECTION('z2',(0.0,0.0,1.0));
+#143=DIRECTION('x2',(1.0,0.0,0.0));
+#144=AXIS2_PLACEMENT_3D('ax3_f2',#100,#142,#143);
+#145=PLANE('plane_f2',#144);
+#146=ADVANCED_FACE('face_2',(#141),#145,.T.);
+/* Shell containing both faces.
+   When GlobalTolerance(shell) called, nested iteration may double-count.
+   Average should be (0.001 + 0.008)/2 = 0.0045 but weight inversion skews. */
+#150=CLOSED_SHELL('',(#56,#146));
+/* Two tolerance declarations with different values */
+#200=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#201=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#202=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#203=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-3),#200,
+  'distance_accuracy_value','face1_tolerance');
+#204=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(8.0E-3),#200,
+  'distance_accuracy_value','face2_tolerance');
+#205=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#203,#204))
+  GLOBAL_UNIT_ASSIGNED_CONTEXT((#200,#201,#202))
+  REPRESENTATION_CONTEXT('','3D'));
+/* PRODUCT CHAIN */
+#9000=PRODUCT_CONTEXT('',#1,'mechanical');
+#9001=PRODUCT('N057','N057','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
+#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
+#9021=SHELL_BASED_SURFACE_MODEL('sbsm',(#150));
+#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#9010);
+#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+ENDSEC;
+END-ISO-10303-21;

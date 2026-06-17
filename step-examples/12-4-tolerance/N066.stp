@@ -1,0 +1,93 @@
+ISO-10303-21;
+/* N066 — ShapeAnalysis_ShapeTolerance.OverTolerance >= vs > comparison
+ * Defect: OverTolerance comparison operator bug: method uses >= instead of >
+ * when comparing vertex tolerance against threshold, flagging 0.0 tolerance as
+ * exceeding any positive threshold. Root cause: boundary condition equality
+ * treated as over-tolerance state rather than at-threshold state.
+ * Fixture: vertex with 0.0 declared tolerance, global context 1e-3.
+ * OverTolerance(shape, 1e-3) should return false; with bug returns true.
+ */
+HEADER;
+FILE_DESCRIPTION(('N066 ShapeAnalysis_ShapeTolerance OverTolerance >= vs >'),'2;1');
+FILE_NAME('N066.stp','2026-06-15T00:00:00',(''),(''),
+  'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
+  'automotive_design',2009,#1);
+/* Simple edge with zero-tolerance vertex.
+   Vertex v0 at origin has explicitly declared tolerance 0.0
+   (via separate UNCERTAINTY_MEASURE_WITH_UNIT with value 0.0).
+   OverTolerance(shape, 1e-3) should return false since 0.0 < 1e-3.
+   Bug: uses >= so 0.0 >= 1e-3 is false but tied-to-threshold case is mishandled. */
+#10=CARTESIAN_POINT('p0',(0.0,0.0,0.0));
+#11=CARTESIAN_POINT('p1',(1.0,0.0,0.0));
+#20=VERTEX_POINT('v0',#10);
+#21=VERTEX_POINT('v1',#11);
+#30=DIRECTION('xdir',(1.0,0.0,0.0));
+#31=VECTOR('xvec',#30,1.0);
+#32=LINE('line',#10,#31);
+#33=EDGE_CURVE('e0',#20,#21,#32,.T.);
+/* Close the loop */
+#40=DIRECTION('ydir',(0.0,1.0,0.0));
+#41=VECTOR('yvec',#40,1.0);
+#42=LINE('line_up',#11,#41);
+#43=CARTESIAN_POINT('p2',(1.0,1.0,0.0));
+#44=VERTEX_POINT('v2',#43);
+#45=EDGE_CURVE('e_up',#21,#44,#42,.T.);
+#46=DIRECTION('negx',(-1.0,0.0,0.0));
+#47=VECTOR('negxvec',#46,1.0);
+#48=LINE('line_back',#43,#47);
+#49=CARTESIAN_POINT('p3',(0.0,1.0,0.0));
+#50=VERTEX_POINT('v3',#49);
+#51=EDGE_CURVE('e_back',#44,#50,#48,.T.);
+#52=DIRECTION('negy',(0.0,-1.0,0.0));
+#53=VECTOR('negyvec',#52,1.0);
+#54=LINE('line_down',#49,#53);
+#55=EDGE_CURVE('e_down',#50,#20,#54,.T.);
+#60=ORIENTED_EDGE('',*,*,#33,.T.);
+#61=ORIENTED_EDGE('',*,*,#45,.T.);
+#62=ORIENTED_EDGE('',*,*,#51,.T.);
+#63=ORIENTED_EDGE('',*,*,#55,.T.);
+#64=EDGE_LOOP('',(#60,#61,#62,#63));
+#65=FACE_OUTER_BOUND('',#64,.T.);
+#66=DIRECTION('zdir',(0.0,0.0,1.0));
+#67=DIRECTION('xdir2',(1.0,0.0,0.0));
+#68=AXIS2_PLACEMENT_3D('ax3',#10,#66,#67);
+#69=PLANE('plane',#68);
+#70=ADVANCED_FACE('face',(#65),#69,.T.);
+#71=CLOSED_SHELL('shell',(#70));
+/* Units with tolerance context: 1e-3 mm as global threshold.
+   Vertex v0 has zero-tolerance in a separate declaration. */
+#200=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#201=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#202=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+/* Zero tolerance declaration (the at-threshold vertex) */
+#203=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.0),#200,
+  'distance_accuracy_value','zero_vertex_tolerance');
+/* Global threshold: 1e-3 */
+#204=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-3),#200,
+  'distance_accuracy_value','threshold');
+#205=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#203,#204))
+  GLOBAL_UNIT_ASSIGNED_CONTEXT((#200,#201,#202))
+  REPRESENTATION_CONTEXT('','3D'));
+/* PRODUCT CHAIN */
+#9000=PRODUCT_CONTEXT('',#1,'mechanical');
+#9001=PRODUCT('N066','N066','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
+#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
+#9021=SHELL_BASED_SURFACE_MODEL('sbsm',(#71));
+#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#9010);
+#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+ENDSEC;
+END-ISO-10303-21;
