@@ -23443,6 +23443,21 @@ Unit square planar face with centered 0.5×0.5 inner rectangle. FixOrientation's
 **Minimal reproducer**: Feed Line+Circle with large gap; ConcatC1 produces 2 fragments; code iterates Add() anyway; artificial continuity created.
 **Healing path**: Check concatc2d quality before merge; skip low-quality fragments; fail gracefully if ConcatC1 < threshold coherence.
 
+### Tfa221 — FixMissingSeam.null-surface-guard
+Degenerated torus (R=0.5, r=1.0); single EDGE_LOOP with 4 lines; tests null-surface guard at ShapeFix_Face.cxx:1724. Defect: if mySurf.IsNull() guard omitted, null dereference at IsUClosed(). Canonical PRODUCT chain; DIRECTION ratios unit magnitude.
+
+### Tfa222 — FixMissingSeam.no-closure-early-exit
+Open BSpline surface (unclosed U, V); single EDGE_LOOP with 2 rational B-spline edges; tests early exit when surface open in both directions (line 1732). Defect: without early return, kernel attempts seam insertion on non-closed surface. Fully ISO-compliant.
+
+### Tfa223 — FixMissingSeam.infinite-bounds-fallback
+Conical surface (apex at origin, semi-angle 0.5); single degenerated EDGE_LOOP (cone-tip); tests infinite-bounds fallback at line 1759. Defect: infinite U/V bounds bypass wire-bound substitution, causing NaN in seam-placement arithmetic.
+
+### Tfa224 — FixMissingSeam.degenerate-wire-consolidation
+Sphere with 3 degenerate wires (zero-extent edges at same vertex); multi-bound face (outer + 2 holes); tests degenerate-wire removal at line 1872. Defect: without consolidation, degenerated seams collapse to singularity.
+
+### Tfa225 — FixMissingSeam.seam-boundary-clamping
+U-closed BSpline surface; 2-edge loop with period-wrap geometry; tests seam-boundary clamping at line 2224. Defect: out-of-bounds seam placement (u > 2π) bypasses AdjustToPeriod, producing invalid parameter range.
+
 ### Hea016 — Empty solid output from STEP export of complex body, despite STL succeeding
 - **Category**: §12.3c faces / shape healing
 - **Sources**: FreeCAD #20396; bug-reporter language: "Models exported to STEP crash or produce empty objects", "appears to export fine but results in an empty object", "STL and 3MF export work, STEP doesn't".
@@ -24572,6 +24587,26 @@ Geometric defects in wire topology and edge coherence.
 - **Model impact**: Silent failure when wire geometry context is missing
 - **Fixture path**: step-examples/12-3b-wires/Twi251.stp
 - **Fixture kind**: scaffold
+
+### Twi252 — ShapeAnalysis_Wire.CheckConnected.WIRE_NOT_LOADED
+
+Wire with zero edges; validates that CheckConnected detects unloaded state. Without IsLoaded guard, null-dereference on edge sequence access.
+
+### Twi253 — ShapeAnalysis_Wire.CheckConnected.NULL_EDGE_VERTICES
+
+EDGE_CURVE with null V2 endpoint; validates null-vertex detection. Without null check, segfault on IsSame() dereference.
+
+### Twi254 — ShapeAnalysis_Wire.CheckConnected.SAME_VERTEX_BOTH_ENDS
+
+Single edge where FirstVertex == LastVertex (self-loop); validates loop detection. Without V1.IsSame(V2) guard, connectivity masked.
+
+### Twi255 — ShapeAnalysis_Wire.CheckLoop.null-vertices
+
+Multi-edge wire with one edge having null V1 endpoint; validates FAIL2 encoding. Without null check, segfault on BRep_Tool::Tolerance().
+
+### Twi256 — ShapeAnalysis_Wire.CheckLoop.degenerated-edge-filter
+
+Wire with degenerate self-loop (1e-12 magnitude) plus normal edge; validates degen filtering. Without BRep_Tool::Degenerated filter, vertex extent inflates.
 
 ### Gs056 — `SURFACE_OF_REVOLUTION` of an ellipse around its own centre produces a degenerate surface
 - **Category**: §12.2c surface / curve degeneracies (sub-class: revolution of conic)
@@ -26169,6 +26204,56 @@ Compound with nested shell references. LoadShells() recursion incomplete when de
 - **Notes**: closed_flag_sync_failure
 - **Model impact**: Invalid solid construction from non-closed shell marked closed
 - **Fixture path**: step-examples/12-3a-shells/Tsh208.stp
+- **Fixture kind**: scaffold
+
+### Tsh209 — U-closed seam-edge period wrapping
+- **Category**: §12.3a shells (sub-class: parametric-seam)
+- **Sources**: OCCT/ShapeFix_Shell.OrientedShells
+- **Description**: Shell with U-closed surface (cylindrical) and seam edge crossing parametric boundary (U=0→2π). Orientation propagation fails to detect period wraparound, causing undefined seam edge orientation.
+- **Expected kernel behavior**: heal
+- **Notes**: parametric-period-crossing, seam-edge-ambiguity
+- **Model impact**: Shell with single cylindrical face; reads with orientation-undefined seam.
+- **Fixture path**: step-examples/12-3a-shells/Tsh209.stp
+- **Fixture kind**: scaffold
+
+### Tsh210 — Shell tolerance iteration filtering
+- **Category**: §12.3a shells (sub-class: tolerance-analysis)
+- **Sources**: OCCT/ShapeAnalysis_ShapeTolerance.InTolerance
+- **Description**: Shell containing single face with out-of-range tolerance (0.0015 μm, query [0.001, 0.002]). Recursive shell-mode filtering must include container shell even if child face is in-range. Validates shell-face recursion path.
+- **Expected kernel behavior**: heal
+- **Notes**: shell-container-recursion, tolerance-bracket
+- **Model impact**: Shell reads with face-tolerance anomaly; kernel must report shell in result.
+- **Fixture path**: step-examples/12-3a-shells/Tsh210.stp
+- **Fixture kind**: scaffold
+
+### Tsh211 — Degenerate edge-only wire removal
+- **Category**: §12.3a shells (sub-class: degenerate-pruning)
+- **Sources**: OCCT/ShapeFix_ComposeShell.DispatchWires
+- **Description**: Shell face with inner wire containing single degenerate edge (zero-length, both endpoints identical). DispatchWires must detect and remove wire when NbEdges()==1 && Degenerated(edge).
+- **Expected kernel behavior**: heal
+- **Notes**: degenerate-wire-pruning, edge-loop-elimination
+- **Model impact**: Face with outer loop plus inner degenerate wire; reads with degenerate wire present.
+- **Fixture path**: step-examples/12-3a-shells/Tsh211.stp
+- **Fixture kind**: scaffold
+
+### Tsh212 — Mixed wire/edge orientation conflict
+- **Category**: §12.3a shells (sub-class: orientation-repair)
+- **Sources**: OCCT/ShapeFix_ComposeShell.BreakWires
+- **Description**: Face with inner hole wire (INTERNAL orientation) containing edge with EXTERNAL orientation (conflicting). BreakWires must detect and flip edge orientation, incrementing nbnew counter for segment finalization.
+- **Expected kernel behavior**: heal
+- **Notes**: orientation-mismatch, face-bound-repair
+- **Model impact**: Face with 4x4 square + 2x2 hole; reads with misoriented hole boundary.
+- **Fixture path**: step-examples/12-3a-shells/Tsh212.stp
+- **Fixture kind**: scaffold
+
+### Tsh213 — Wire collection type-filter gate
+- **Category**: §12.3a shells (sub-class: type-safety)
+- **Sources**: OCCT/ShapeFix_ComposeShell.CollectWires
+- **Description**: Face traversal during wire collection must filter non-WIRE shapes (e.g., isolated vertices). Without type guard, non-wire subshapes passed to wire processing, causing type-safety crash.
+- **Expected kernel behavior**: heal
+- **Notes**: shape-type-filtering, iterator-safety
+- **Model impact**: Shell with face containing isolated vertex; reads with potential type mismatch in traversal.
+- **Fixture path**: step-examples/12-3a-shells/Tsh213.stp
 - **Fixture kind**: scaffold
 
 ### Gp040 — Pcurves emitted by default duplicate / contradict the surface 3D curve

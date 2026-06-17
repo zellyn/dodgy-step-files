@@ -1,0 +1,85 @@
+ISO-10303-21;
+/* Tsh213 - ShapeFix_ComposeShell.CollectWires type-filter gate
+ * Defect: Face containing non-WIRE shape (loose vertex); CollectWires must skip non-wire types.
+ * Test: Face.Exploration with TopAbs_WIRE filter; without: vertex passed to wire processing. */
+HEADER;
+FILE_DESCRIPTION(('Tsh213 - wire collection type safety','2;1');
+FILE_NAME('Tsh213.stp','2026-06-16T00:00:00',(''),(''),'wave-63a','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+
+/* Rectangular face with outer loop and isolated vertex */
+#100=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#101=CARTESIAN_POINT('',(1.0,0.0,0.0));
+#102=CARTESIAN_POINT('',(1.0,1.0,0.0));
+#103=CARTESIAN_POINT('',(0.0,1.0,0.0));
+#104=CARTESIAN_POINT('',(0.5,0.5,0.0));
+
+#110=VERTEX_POINT('',#100);
+#111=VERTEX_POINT('',#101);
+#112=VERTEX_POINT('',#102);
+#113=VERTEX_POINT('',#103);
+#114=VERTEX_POINT('',#104);
+
+/* Plane z=0 */
+#200=DIRECTION('',(0.0,0.0,1.0));
+#201=DIRECTION('',(1.0,0.0,0.0));
+#210=CARTESIAN_POINT('',(0.5,0.5,0.0));
+#211=AXIS2_PLACEMENT_3D('',#210,#200,#201);
+#212=PLANE('',#211);
+
+/* Outer loop edges (4 minimum) */
+#300=DIRECTION('',(1.0,0.0,0.0));
+#301=VECTOR('',#300,1.0);
+#310=LINE('',#100,#301);
+#311=EDGE_CURVE('',#110,#111,#310,.T.);
+
+#302=DIRECTION('',(0.0,1.0,0.0));
+#303=VECTOR('',#302,1.0);
+#312=LINE('',#101,#303);
+#313=EDGE_CURVE('',#111,#112,#312,.T.);
+
+#314=DIRECTION('',(1.0,0.0,0.0));
+#315=VECTOR('',#314,1.0);
+#316=LINE('',#102,#315);
+#317=EDGE_CURVE('',#112,#113,#316,.T.);
+
+#318=DIRECTION('',(0.0,1.0,0.0));
+#319=VECTOR('',#318,1.0);
+#320=LINE('',#103,#319);
+#321=EDGE_CURVE('',#113,#110,#320,.T.);
+
+/* Outer wire loop (standard structure) */
+#400=ORIENTED_EDGE('',*,*,#311,.T.);
+#401=ORIENTED_EDGE('',*,*,#313,.T.);
+#402=ORIENTED_EDGE('',*,*,#317,.T.);
+#403=ORIENTED_EDGE('',*,*,#321,.T.);
+#410=EDGE_LOOP('',(#400,#401,#402,#403));
+
+/* Face with outer bound (isolated vertex will be checked during face analysis) */
+#420=FACE_OUTER_BOUND('',#410,.T.);
+#430=ADVANCED_FACE('',(#420),#212,.T.);
+
+/* Shell containing face with potential non-wire subshape */
+#500=CLOSED_SHELL('type_filter_shell',(#430));
+
+/* PRODUCT chain */
+#9000=PRODUCT_CONTEXT('',#1,'mechanical');
+#9001=PRODUCT('Tsh213','Tsh213','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
+#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
+#9021=SHELL_BASED_SURFACE_MODEL('sbsm',(#500));
+#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#9010);
+#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+ENDSEC;
+END-ISO-10303-21;
