@@ -1,0 +1,55 @@
+ISO-10303-21;
+/* Gs174 - SphericalSurface pole singularity at V-closed edge
+ *
+ * Defect: ComputeSingularities.spherical-pole-singularities
+ * ShapeAnalysis_Surface fails to detect both north/south poles
+ * when singularities cached but surface modified.
+ *
+ * Minimal reproducer: Sphere (radius 1.0, center origin);
+ * face without explicit seam bounds. Healing should detect
+ * both pole degeneracies. Without: myUIsoDeg=false at both poles.
+ */
+HEADER;
+FILE_DESCRIPTION(('Gs174 test case','SphericalSurface pole singularity detection'),'2;1');
+FILE_NAME('Gs174.stp','2026-06-16T00:00:00',('zellyn@gmail.com'),'','auto-generated','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#11=DIRECTION('',(0.0,0.0,1.0));
+#12=DIRECTION('',(1.0,0.0,0.0));
+#13=AXIS2_PLACEMENT_3D('',#10,#11,#12);
+/* Spherical surface: radius 1.0, center at origin */
+#20=SPHERICAL_SURFACE('',#13,1.0);
+/* RECTANGULAR_TRIMMED_SURFACE: full sphere u in [0,2pi], v in [0,pi] */
+#30=RECTANGULAR_TRIMMED_SURFACE('',#20,0.0,6.283185307179586,0.0,3.141592653589793,.T.,.T.);
+#40=CARTESIAN_POINT('',(1.0,0.0,0.0));
+#41=VERTEX_POINT('',#40);
+#42=CARTESIAN_POINT('',(0.0,0.0,1.0));
+#43=VERTEX_POINT('',#42);
+#44=CARTESIAN_POINT('',(0.0,0.0,-1.0));
+#45=VERTEX_POINT('',#44);
+#46=VERTEX_LOOP('',#43);
+#47=VERTEX_LOOP('',#45);
+#48=FACE_OUTER_BOUND('',#46,.T.);
+#49=FACE_OUTER_BOUND('',#47,.T.);
+#50=ADVANCED_FACE('',(#48,#49),#30,.T.);
+#60=OPEN_SHELL('',(#50));
+/* Product definition */
+#9000=PRODUCT_CONTEXT('',#1,'mechanical');
+#9001=PRODUCT('Gs174','Gs174','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
+#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
+#9022=GEOMETRICALLY_BOUNDED_SURFACE_SHAPE_REPRESENTATION('',(#60),#9010);
+#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+ENDSEC;
+END-ISO-10303-21;

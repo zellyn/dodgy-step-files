@@ -21357,6 +21357,23 @@ Defect: 6-pole curve (degree 3); interior knot at 0.5 has multiplicity 4 (degree
 
 Defect: 3x3 NURBS (U-degree 2, V-degree 2); middle U-row poles near-identical (1.5,1.5,0.01). SplitSurface produces zero-area or empty patches. Falsifiable: patch validation rejects degenerate outputs from split operations.
 
+## Wave 72A: NURBS Healing Defects (Gn164–Gn168)
+
+### Gn164 — Rational BSpline Closure Detection Bypass
+Rational surface with varying weights requires knot-aware grid sampling, not pole-based shortcut. ShapeAnalysis_Surface.IsURational() gate bypassed.
+
+### Gn165 — Ill-Conditioned Knot Spacing (44:1 Ratio)
+Clustered interior knots create numerical instability. BRepLib::SameParameter knot anomaly detection (critratio > 10) triggers arc-length reparametrization.
+
+### Gn166 — Boundary Pole Singularity (First Row)
+U-boundary poles coalesce; ShapeAnalysis_CheckSmallFace.CheckPin must iterate boundary rows via IsoStat, not interior poles.
+
+### Gn167 — Non-Planar Degree-4 BSpline
+Control poles coplanar (XY) but curve deviates significantly in Z. ShapeAnalysis_Curve.IsPlanar pole-sufficiency false positive.
+
+### Gn168 — Interior C0 Discontinuity (Tangent Jump)
+2D B-spline with C0 (positional) but not C1 (tangent) at u=0.5. BRepLib::SameParameter invokes Geom2dConvert::C0BSplineToC1 healing.
+
 ### Wr001 — Trailing whitespace on every record line
 - **Category**: §12.13 writer-pathology (sub-class: whitespace/line-ending)
 - **Sources**: prostep ivip CAx-IF round-trip reports; FreeCAD #4231 "STEP exporter pads lines with spaces"; bug-reporter language: "diff between exports is all whitespace"
@@ -25340,6 +25357,23 @@ Collapsed B-spline (all poles Z=0, D1≈0) triggers division by zero in normal-p
 
 OFFSET_SURFACE (+0.5 distance) with asymmetric coverage vs base bounds; myOffsetSurfaceMode enabled without scope/extent check. Defect: offset face coverage unchecked during collection.
 
+## Wave 72-B: Surface Methods Singularity Detection
+
+### Gs174 — SphericalSurface Pole Singularities
+**Defect**: `ShapeAnalysis_Surface.ComputeSingularities.spherical-pole-singularities` — Fails to detect both north/south poles when singularities cached. Sphere (radius 1.0); both V-closed vertex loops. Healing detects dual poles; without fix myUIsoDeg=false at each.
+
+### Gs175 — ToroidalSurface Dual-Pinch Singularities
+**Defect**: `ShapeAnalysis_Surface.ComputeSingularities.toroidal-pinch-singularities` — Dual pinch detection omitted when majorR>minorR. Torus (majorR=3.0, minorR=1.5); expects 2 singularities at angular positions. Without: reports 1 pinch; missing inner-radius collapse.
+
+### Gs176 — RectangularTrimmedSurface Null Basis
+**Defect**: `Geom_RectangularTrimmedSurface.BasisSurface unwrap` — Down_cast succeeds; null check skipped on BasisSurface() result. Trimmed B-spline (3×3, deg-2); null basis overwrite triggers undefined GeomAdaptor behavior.
+
+### Gs177 — ConicalSurface Apex Singularity
+**Defect**: `ShapeAnalysis_Surface.ComputeSingularities.conic-apex-singularity` — Apex at v-parameter undetected. Cone (π/4 semi-angle, refRad 1.0); singularity point matches 3D apex. Without: healing misses cone-collapse degeneracy.
+
+### Gs178 — OffsetSurface Edge Degeneracy
+**Defect**: `ShapeAnalysis_Surface.ComputeSingularities.bounded-surface-edge-singularities` — 4-edge midpoint sampling omitted. OffsetSurface (0.5 offset from plane); corner distances capture collapse signature. Without: edge-tangency anomalies undetected.
+
 ### Ad117 — STEP reader crashes on minimal file with malformed `STYLED_ITEM`
 - **Category**: §12.11 adversarial / parser-robustness (sub-class: SEGV on style record)
 - **Sources**: OCCT MANTIS#0029979; bug-reporter language: "crash by reading STEP file", "STEP reader crashes on import", "segmentation fault on small STEP file". (OCCT MANTIS tracker 502 as of 2026-05-02)
@@ -28406,6 +28440,23 @@ Raw write to BRep_TEdge bypasses SetMaxTolerance API validation; computed tolera
 
 ### N160 — ComputeTol overflow_error tolerance corruption
 Mismatch between 3D and 2D curves (error 1e10+) accumulated into SameParameter tolerance; no early abort causes corruption when degenerate 2D paired with 3D line.
+
+## wave 72C — STEP tolerance fixtures (N161–N165)
+
+### N161 — `tolerance_escalation` — unbounded multiplier
+Tolerance escalation during sewing lacks upper bound. Factor 1000× applied without capping; initial 1e-7 becomes 1e-4. Tests BRepBuilderAPI_Sewing escalation validation.
+
+### N162 — `tolerance_selection` — coarse fallback unvalidated
+Fine tolerance unavailable; fallback to coarse without magnitude check. 0.1 mm coarse applied without confirming safety. Tests ShapeAnalysis precision fallback logic.
+
+### N163 — `precision_tolerance` — mixed-unit-scale mismatch
+Tolerance declared in metre (1e-7) unscaled against millimetre coordinates (1.0). Factor-of-10000 discrepancy. Tests unit consistency in precision handling.
+
+### N164 — `tolerance_closure` — EDGE_LOOP gap exceeds threshold
+Edge loop gap (0.05 mm) accepted despite closure tolerance (0.01 mm). BRepBuilderAPI_Sewing skips gap validation. Tests loop closure enforcement.
+
+### N165 — `tolerance_conservatism` — no safety margin
+Distance 0.099999 mm compared against 0.1 mm tolerance w/o margin buffer. Single-ULP boundary case. Tests conservative threshold application.
 
 ### M161 — Reader does not validate cross-references; dangling references silently accepted
 - **Category**: §12.8 mixed / auxiliary (sub-class: missing input validation)

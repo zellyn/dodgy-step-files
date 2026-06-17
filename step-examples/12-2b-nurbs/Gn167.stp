@@ -1,0 +1,44 @@
+ISO-10303-21;
+/* Gn167 - Non-planar degree-4 BSpline curve
+   Defect: ShapeAnalysis_Curve.IsPlanar pole-sufficiency false positive.
+   Poles coplanar (XY) but high-curvature Z-deviation between poles. */
+HEADER;
+FILE_DESCRIPTION(('Gn167 - Degree-4 BSpline planarity detection defect'),'2;1');
+FILE_NAME('Gn167.stp','2026-06-16T00:00:00',('auto-generated'),(''),
+  'auto-generated','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+/* Degree-4 curve with control poles in XY plane but high curvature in Z */
+#10=CARTESIAN_POINT('p0',(0.0,0.0,0.0));
+#11=CARTESIAN_POINT('p1',(1.0,0.0,0.0));
+#12=CARTESIAN_POINT('p2',(2.0,1.0,0.0));
+#13=CARTESIAN_POINT('p3',(3.0,2.0,0.0));
+#14=CARTESIAN_POINT('p4',(4.0,3.0,0.0));
+#15=CARTESIAN_POINT('p5',(5.0,2.0,0.0));
+/* Degree-4 curve: poles all in XY plane (Z=0), knots uniform.
+   Actual curve deviates significantly in Z due to degree and curvature.
+   Knot arithmetic: 6 control points, degree 4 → sum=11 */
+#100=B_SPLINE_CURVE_WITH_KNOTS('nonplanar_degree4',4,
+  (#10,#11,#12,#13,#14,#15),
+  .UNSPECIFIED.,.F.,.F.,
+  (5,2,1,1,1,1),
+  (0.0,0.0,0.0,0.0,0.0,0.33,0.67,1.0,1.0,1.0,1.0,1.0),
+  .UNSPECIFIED.);
+#9990=APPLICATION_CONTEXT('automotive_design');
+#9000=PRODUCT_CONTEXT('',#9990,'mechanical');
+#9001=PRODUCT('Gn167','Gn167','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#9990,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
+#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
+#9020=GEOMETRIC_CURVE_SET('curve_set',(#100));
+#9022=GEOMETRICALLY_BOUNDED_WIREFRAME_SHAPE_REPRESENTATION('',(#9020),#9010);
+#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+ENDSEC;
+END-ISO-10303-21;

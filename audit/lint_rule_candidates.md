@@ -98,7 +98,25 @@ a synthesis bug.
 **Should only flag** when no catalog claim explicitly addresses this
 mismatch.
 
-## Prevalence summary (very rough, from ~180 audited)
+## Rule 9: Exemplar-quality gate
+
+**Surfaced by**: burn-down 7 spot-check of Tfa150 (the current exemplar
+for face synthesis). Tfa150 has 7× U+2212 minus signs AND 7-arg
+FILE_DESCRIPTION instead of 2-arg. Tsh100 (shells exemplar) has the
+familiar `((...),'2;1');` arity-imbalance pattern. These broken
+exemplars propagate to every synthesis wave that uses them as
+templates.
+
+Implementation: a meta-lint that flags any fixture used as
+`/Users/zellyn/gh/dodgy-step-files/step-examples/...` exemplar but
+itself fails the other lint rules. Should also be part of new-exemplar
+selection: don't pick a fixture as exemplar without lint-clean status.
+
+Action: regenerate Tfa150, Tsh100, Twi200, N100, Gp100, Gn100, Gs100
+as canonical-clean exemplars, then re-point synthesis prompts at the
+new versions.
+
+## Prevalence summary (very rough, from ~210 audited)
 
 | Rule | Estimated rate |
 |---|---|
