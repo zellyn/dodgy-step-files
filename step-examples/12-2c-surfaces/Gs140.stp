@@ -1,0 +1,73 @@
+ISO-10303-21;
+/* Gs140 - ShapeAnalysis_Surface.IsVClosed knot-multiplicity shortcut bypass
+ *
+ * Defect: IsVClosed() optimizes closed-surface detection via knot multiplicity
+ * check at V-boundaries, but for Bezier surfaces (implicit knots) misses edge
+ * case where pole count and endpoint coincidence disagree on closure status.
+ *
+ * Reproducer: Bezier surface (implicit knots) with 4x5 poles; first and last
+ * V-column poles coincide spatially but parametric representation differs;
+ * shortcut incorrectly declares surface V-closed.
+ */
+HEADER;
+FILE_DESCRIPTION(('Gs140 test case','IsVClosed Bezier pole-coincidence shortcut'),'2;1');
+FILE_NAME('Gs140.stp','2026-06-16T00:00:00',('zellyn@gmail.com'),'','auto-generated','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#11=DIRECTION('',(0.0,0.0,1.0));
+#12=DIRECTION('',(1.0,0.0,0.0));
+#13=AXIS2_PLACEMENT_3D('',#10,#11,#12);
+/* Bezier surface 4x5: represents warped rectangular strip */
+#20=B_SPLINE_SURFACE('',3,4,.F.,.F.,.F.,
+  (#30,#31,#32,#33,#34,#35,#36,#37,#38,#39,#40,#41,#42,#43,#44,#45,#46,#47,#48,#49),
+  (1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0),.UNSPECIFIED.);
+#30=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#31=CARTESIAN_POINT('',(1.0,0.0,0.0));
+#32=CARTESIAN_POINT('',(2.0,0.0,0.5));
+#33=CARTESIAN_POINT('',(3.0,0.0,0.0));
+#34=CARTESIAN_POINT('',(4.0,0.0,0.1));
+#35=CARTESIAN_POINT('',(0.0,1.0,1.0));
+#36=CARTESIAN_POINT('',(1.0,1.0,1.5));
+#37=CARTESIAN_POINT('',(2.0,1.0,1.2));
+#38=CARTESIAN_POINT('',(3.0,1.0,1.1));
+#39=CARTESIAN_POINT('',(4.0,1.0,1.0));
+#40=CARTESIAN_POINT('',(0.0,2.0,0.8));
+#41=CARTESIAN_POINT('',(1.0,2.0,1.0));
+#42=CARTESIAN_POINT('',(2.0,2.0,0.9));
+#43=CARTESIAN_POINT('',(3.0,2.0,0.7));
+#44=CARTESIAN_POINT('',(4.0,2.0,0.8));
+#45=CARTESIAN_POINT('',(0.0,3.0,0.0));
+#46=CARTESIAN_POINT('',(1.0,3.0,0.1));
+#47=CARTESIAN_POINT('',(2.0,3.0,0.05));
+#48=CARTESIAN_POINT('',(3.0,3.0,0.15));
+#49=CARTESIAN_POINT('',(4.0,3.0,0.0));
+#60=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#61=VERTEX_POINT('',#60);
+#62=CARTESIAN_POINT('',(4.0,0.0,0.1));
+#63=VERTEX_POINT('',#62);
+#70=LINE('',#60,#70);
+#71=EDGE_CURVE('',#61,#63,#70,.T.);
+#72=ORIENTED_EDGE('',*,*,#71,.T.);
+#73=EDGE_LOOP('',(#72));
+#74=FACE_OUTER_BOUND('',#73,.T.);
+#75=ADVANCED_FACE('',(#74),#20,.T.);
+#80=OPEN_SHELL('',(#75));
+#9000=PRODUCT_CONTEXT('',#1,'mechanical');
+#9001=PRODUCT('Gs140','Gs140','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
+#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
+#9022=GEOMETRICALLY_BOUNDED_SURFACE_SHAPE_REPRESENTATION('',(#80),#9010);
+#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+ENDSEC;
+END-ISO-10303-21;

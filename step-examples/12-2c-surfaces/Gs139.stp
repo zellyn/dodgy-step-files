@@ -1,0 +1,70 @@
+ISO-10303-21;
+/* Gs139 - ShapeAnalysis_Surface.IsUClosed singularity-pole-count mismatch
+ *
+ * Defect: IsUClosed() validates U-periodicity by examining first/last poles
+ * but skips validation when B-spline poles span degenerate singularities.
+ * Conical surface with apex singularity reports closure when apex pole
+ * dominates endpoint evaluation, masking true non-closure.
+ *
+ * Reproducer: B-spline surface representing cone with apex at pole;
+ * endpoint poles coincide in space but parametric structure disagrees;
+ * IsUClosed returns TRUE incorrectly.
+ */
+HEADER;
+FILE_DESCRIPTION(('Gs139 test case','IsUClosed pole-singularity false positive'),'2;1');
+FILE_NAME('Gs139.stp','2026-06-16T00:00:00',('zellyn@gmail.com'),'','auto-generated','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#11=DIRECTION('',(0.0,0.0,1.0));
+#12=DIRECTION('',(1.0,0.0,0.0));
+#13=AXIS2_PLACEMENT_3D('',#10,#11,#12);
+/* Conical B-spline: apex at (0,0,10), base circle radius 5 */
+#20=CARTESIAN_POINT('',(0.0,0.0,10.0));
+#21=CARTESIAN_POINT('',(5.0,0.0,0.0));
+#22=CARTESIAN_POINT('',(3.536,3.536,0.0));
+#23=CARTESIAN_POINT('',(0.0,5.0,0.0));
+#24=CARTESIAN_POINT('',(-3.536,3.536,0.0));
+#25=CARTESIAN_POINT('',(-5.0,0.0,0.0));
+#26=CARTESIAN_POINT('',(-3.536,-3.536,0.0));
+#27=CARTESIAN_POINT('',(0.0,-5.0,0.0));
+#28=CARTESIAN_POINT('',(3.536,-3.536,0.0));
+#29=CARTESIAN_POINT('',(5.0,0.0,0.0));
+/* B-spline surface degree 3 in U (meridian), degree 2 in V (azimuth) */
+#30=B_SPLINE_SURFACE_WITH_KNOTS('',3,2,.F.,.T.,.F.,
+  (1,2,3,4,5,6),
+  (1,2,3,4,5,6,7,8,9,10),
+  (#20,#20,#20,#20,#20,#20,
+   #21,#22,#23,#24,#25,#26,#27,#28,#29),
+  (1.0,1.0,1.0,1.0,1.0,1.0,
+   1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0),
+  (1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0),.UNSPECIFIED.);
+/* Vertices and edges */
+#50=CARTESIAN_POINT('',(0.0,0.0,10.0));
+#51=VERTEX_POINT('',#50);
+#52=VERTEX_POINT('',#50);
+#60=LINE('',#50,#60);
+#61=EDGE_CURVE('',#51,#52,#60,.T.);
+#62=ORIENTED_EDGE('',*,*,#61,.T.);
+#63=EDGE_LOOP('',(#62));
+#64=FACE_OUTER_BOUND('',#63,.T.);
+#65=ADVANCED_FACE('',(#64),#30,.T.);
+#70=OPEN_SHELL('',(#65));
+#9000=PRODUCT_CONTEXT('',#1,'mechanical');
+#9001=PRODUCT('Gs139','Gs139','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
+#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
+#9022=GEOMETRICALLY_BOUNDED_SURFACE_SHAPE_REPRESENTATION('',(#70),#9010);
+#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+ENDSEC;
+END-ISO-10303-21;

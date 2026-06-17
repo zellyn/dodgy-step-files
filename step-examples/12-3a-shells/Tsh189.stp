@@ -1,0 +1,87 @@
+ISO-10303-21;
+/* Tsh189 - ShapeAnalysis_Shell.BadEdges uninitialized compound
+ * Defect: BadEdges() called before Perform() completes; returns myBad
+ * compound without validation of initialization order. */
+HEADER;
+FILE_DESCRIPTION(('Tsh189 - ShapeAnalysis_Shell BadEdges lazy-init','2;1');
+FILE_NAME('Tsh189.stp','2026-06-16T00:00:00',(''),(''),'wave-55b','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+
+/* Three vertices forming a degenerate edge */
+#100=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#101=CARTESIAN_POINT('',(1.0,0.0,0.0));
+#102=CARTESIAN_POINT('',(1.0,1.0,0.0));
+#103=CARTESIAN_POINT('',(0.0,1.0,0.0));
+#110=VERTEX_POINT('',#100);
+#111=VERTEX_POINT('',#101);
+#112=VERTEX_POINT('',#102);
+#113=VERTEX_POINT('',#103);
+
+/* Degenerate edge: zero-length */
+#200=DIRECTION('',(1.0,0.0,0.0));
+#201=VECTOR('',#200,0.0);
+#210=LINE('',#100,#201);
+#211=EDGE_CURVE('',#110,#110,#210,.T.);
+
+/* Normal edges */
+#212=DIRECTION('',(1.0,0.0,0.0));
+#213=VECTOR('',#212,1.0);
+#214=LINE('',#100,#213);
+#215=EDGE_CURVE('',#110,#111,#214,.T.);
+
+#216=DIRECTION('',(0.0,1.0,0.0));
+#217=VECTOR('',#216,1.0);
+#218=LINE('',#101,#217);
+#219=EDGE_CURVE('',#111,#112,#218,.T.);
+
+#220=DIRECTION('',(-1.0,0.0,0.0));
+#221=VECTOR('',#220,1.0);
+#222=LINE('',#102,#221);
+#223=EDGE_CURVE('',#112,#103,#222,.T.);
+
+#224=DIRECTION('',(0.0,-1.0,0.0));
+#225=VECTOR('',#224,1.0);
+#226=LINE('',#103,#225);
+#227=EDGE_CURVE('',#103,#110,#226,.T.);
+
+/* Plane z=0 */
+#300=DIRECTION('',(0.0,0.0,1.0));
+#301=DIRECTION('',(1.0,0.0,0.0));
+#310=CARTESIAN_POINT('',(0.5,0.5,0.0));
+#311=AXIS2_PLACEMENT_3D('',#310,#300,#301);
+#312=PLANE('',#311);
+
+/* Face with degenerate edge in loop */
+#400=ORIENTED_EDGE('',*,*,#211,.T.);
+#401=ORIENTED_EDGE('',*,*,#215,.T.);
+#402=ORIENTED_EDGE('',*,*,#219,.T.);
+#403=ORIENTED_EDGE('',*,*,#223,.T.);
+#404=ORIENTED_EDGE('',*,*,#227,.T.);
+#410=EDGE_LOOP('',(#400,#401,#402,#403,#404));
+#420=FACE_OUTER_BOUND('',#410,.T.);
+#430=ADVANCED_FACE('',(#420),#312,.T.);
+
+/* Shell */
+#500=CLOSED_SHELL('shell_with_degenerate',(#430));
+
+/* PRODUCT chain */
+#9000=PRODUCT_CONTEXT('',#1,'mechanical');
+#9001=PRODUCT('Tsh189','Tsh189','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
+#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
+#9021=SHELL_BASED_SURFACE_MODEL('sbsm',(#500));
+#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#9010);
+#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+ENDSEC;
+END-ISO-10303-21;

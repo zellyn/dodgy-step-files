@@ -23528,6 +23528,161 @@
     "title": "ShapeUpgrade_SplitSurface BSpline irregular knots"
   },
   {
+    "byte_assertions": [],
+    "category": "§12.2c surfaces (sub-class: ShapeAnalysis_Surface closure detection)",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": null,
+    "description": "IsUClosed() validates U-periodicity via first/last pole comparison but skips validation when poles span conical singularities. Endpoint poles at apex dominate evaluation, masking parametric non-closure. Surface reports closure incorrectly.",
+    "expected_kernel_behavior": "heal",
+    "expected_validation": "",
+    "fixture_kind": null,
+    "fixture_path": "step-examples/12-2c-surfaces/Gs139.stp",
+    "id": "Gs139",
+    "notes": "pole-coincidence-with-singularity, apex-masking",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-sufficient",
+    "reproducer": "",
+    "section": "12.2c",
+    "section_dir": "12-2c-surfaces",
+    "see_also": [],
+    "sender": "",
+    "severity": null,
+    "sources": [
+      "OCCT/ShapeAnalysis_Surface.cxx (line 768)"
+    ],
+    "taxonomy": [
+      "geometry"
+    ],
+    "tier3_assertions": [],
+    "title": "IsUClosed pole-singularity false positive"
+  },
+  {
+    "byte_assertions": [],
+    "category": "§12.2c surfaces (sub-class: ShapeAnalysis_Surface closure detection)",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": null,
+    "description": "IsVClosed() optimizes Bezier closure via knot-boundary check but misses edge case where spatial pole coincidence conflicts with parametric structure. First and last V-columns coincide in 3D but representation differs; shortcut declares closure incorrectly.",
+    "expected_kernel_behavior": "heal",
+    "expected_validation": "",
+    "fixture_kind": null,
+    "fixture_path": "step-examples/12-2c-surfaces/Gs140.stp",
+    "id": "Gs140",
+    "notes": "Bezier-implicit-knots, pole-endpoint-mismatch",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-sufficient",
+    "reproducer": "",
+    "section": "12.2c",
+    "section_dir": "12-2c-surfaces",
+    "see_also": [],
+    "sender": "",
+    "severity": null,
+    "sources": [
+      "OCCT/ShapeAnalysis_Surface.cxx (line 995)"
+    ],
+    "taxonomy": [
+      "geometry"
+    ],
+    "tier3_assertions": [],
+    "title": "IsVClosed Bezier pole-coincidence shortcut"
+  },
+  {
+    "byte_assertions": [],
+    "category": "§12.2c surfaces (sub-class: ShapeFix_Face seam insertion)",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": null,
+    "description": "FixMissingSeam() wraps base surface in RECTANGULAR_TRIMMED_SURFACE using computed bounds [u1,u2]x[v1,v2]. For base surfaces with non-unit-range knot structure, RTS bounds mismatch parametric extents, placing seam at wrong location. Geometry distorted.",
+    "expected_kernel_behavior": "heal",
+    "expected_validation": "",
+    "fixture_kind": null,
+    "fixture_path": "step-examples/12-2c-surfaces/Gs141.stp",
+    "id": "Gs141",
+    "notes": "RTS-parameterization-mismatch, knot-range-dependency",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-sufficient",
+    "reproducer": "",
+    "section": "12.2c",
+    "section_dir": "12-2c-surfaces",
+    "see_also": [],
+    "sender": "",
+    "severity": null,
+    "sources": [
+      "OCCT/ShapeFix_Face.cxx (line 2279)"
+    ],
+    "taxonomy": [
+      "geometry"
+    ],
+    "tier3_assertions": [],
+    "title": "FixMissingSeam RectangularTrimmedSurface bound mismatch"
+  },
+  {
+    "byte_assertions": [],
+    "category": "§12.2c surfaces (sub-class: ShapeUpgrade_Surface splitting)",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": null,
+    "description": "Segment() subdivides rational B-spline surfaces without validating weight stability across split boundaries. For mixed-weight surfaces, splitting at critical parameter can create false singularities where weight transitions occur at patch edge. Boundary evaluation becomes unstable.",
+    "expected_kernel_behavior": "heal",
+    "expected_validation": "",
+    "fixture_kind": null,
+    "fixture_path": "step-examples/12-2c-surfaces/Gs142.stp",
+    "id": "Gs142",
+    "notes": "rational-weight-edge-case, split-boundary-singularity",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-sufficient",
+    "reproducer": "",
+    "section": "12.2c",
+    "section_dir": "12-2c-surfaces",
+    "see_also": [],
+    "sender": "",
+    "severity": null,
+    "sources": [
+      "OCCT/ShapeUpgrade_Surface.cxx (line 450)"
+    ],
+    "taxonomy": [
+      "geometry"
+    ],
+    "tier3_assertions": [],
+    "title": "Segment rational-weight singularity"
+  },
+  {
+    "byte_assertions": [],
+    "category": "§12.2c surfaces (sub-class: ShapeConstruct_Surface grid reconstruction)",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": null,
+    "description": "MakeBSpline() reconstructs B-spline from point grid, detecting periodicity via endpoint sampling. For quasi-periodic grids with repeating midpoint structure but non-matching endpoint heights, sampling returns false-positive closure. Knot topology becomes incorrect.",
+    "expected_kernel_behavior": "heal",
+    "expected_validation": "",
+    "fixture_kind": null,
+    "fixture_path": "step-examples/12-2c-surfaces/Gs143.stp",
+    "id": "Gs143",
+    "notes": "quasi-periodic-grid-false-positive, endpoint-mismatch",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-sufficient",
+    "reproducer": "",
+    "section": "12.2c",
+    "section_dir": "12-2c-surfaces",
+    "see_also": [],
+    "sender": "",
+    "severity": null,
+    "sources": [
+      "OCCT/ShapeConstruct_Surface.cxx (line 310)"
+    ],
+    "taxonomy": [
+      "geometry"
+    ],
+    "tier3_assertions": [],
+    "title": "MakeBSpline grid-sampling false periodicity"
+  },
+  {
     "byte_assertions": [
       "matches(rb'CLOSED_SHELL\\s*\\(\\s*\\x27[^\\x27]*\\x27\\s*,\\s*\\(\\s*\\)\\s*\\)')",
       "contains(b'MANIFOLD_SOLID_BREP')",
@@ -30722,6 +30877,161 @@
     ],
     "tier3_assertions": [],
     "title": "ShapeFix_Shell.Perform progress-abort inconsistent-status"
+  },
+  {
+    "byte_assertions": [],
+    "category": "§12.3a shells (sub-class: initialization-order)",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": null,
+    "description": "BadEdges() returns compound from uninitialized myBad without validation. Calling before Perform() completes exposes lazy-init violation. Shell contains degenerate zero-length edge to trigger analysis path.",
+    "expected_kernel_behavior": "heal",
+    "expected_validation": "",
+    "fixture_kind": null,
+    "fixture_path": "step-examples/12-3a-shells/Tsh189.stp",
+    "id": "Tsh189",
+    "notes": "initialization-order; lazy-init; myBad.Extent; TopoDS_Compound",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-sufficient",
+    "reproducer": "",
+    "section": "12.3a",
+    "section_dir": "12-3a-shells",
+    "see_also": [],
+    "sender": "",
+    "severity": null,
+    "sources": [
+      "OCCT/ShapeAnalysis_Shell::BadEdges (line 283)"
+    ],
+    "taxonomy": [
+      "topology"
+    ],
+    "tier3_assertions": [],
+    "title": "ShapeAnalysis_Shell.BadEdges uninitialized compound"
+  },
+  {
+    "byte_assertions": [],
+    "category": "§12.3a shells (sub-class: initialization-order)",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": null,
+    "description": "FreeEdges() returns compound from uninitialized myFree without completion guard. Open shell with incomplete edge loop creates free edges; FreeEdges() called before analysis state initialized.",
+    "expected_kernel_behavior": "heal",
+    "expected_validation": "",
+    "fixture_kind": null,
+    "fixture_path": "step-examples/12-3a-shells/Tsh190.stp",
+    "id": "Tsh190",
+    "notes": "initialization-order; lazy-init; myFree.Extent; HasFreeEdges",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-sufficient",
+    "reproducer": "",
+    "section": "12.3a",
+    "section_dir": "12-3a-shells",
+    "see_also": [],
+    "sender": "",
+    "severity": null,
+    "sources": [
+      "OCCT/ShapeAnalysis_Shell::FreeEdges (line 305)"
+    ],
+    "taxonomy": [
+      "topology"
+    ],
+    "tier3_assertions": [],
+    "title": "ShapeAnalysis_Shell.FreeEdges uninitialized compound"
+  },
+  {
+    "byte_assertions": [],
+    "category": "§12.3a shells (sub-class: unbounded-iteration)",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": null,
+    "description": "Multi-connected edges (3+ faces sharing edge) only handled if isAccountMultiConex=true; loop processing lacks iteration bound. Three faces share single edge; aMapMultiConnectEdges exhaustively populated without complexity limit.",
+    "expected_kernel_behavior": "heal",
+    "expected_validation": "",
+    "fixture_kind": null,
+    "fixture_path": "step-examples/12-3a-shells/Tsh191.stp",
+    "id": "Tsh191",
+    "notes": "unbounded_iteration; isAccountMultiConex; aFaceCount > 2; aMapMultiConnectEdges",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-sufficient",
+    "reproducer": "",
+    "section": "12.3a",
+    "section_dir": "12-3a-shells",
+    "see_also": [],
+    "sender": "",
+    "severity": null,
+    "sources": [
+      "OCCT/ShapeFix_Shell::FixFaceOrientation (line 1455)"
+    ],
+    "taxonomy": [
+      "topology"
+    ],
+    "tier3_assertions": [],
+    "title": "ShapeFix_Shell.FixFaceOrientation multi-connected edge unbounded"
+  },
+  {
+    "byte_assertions": [],
+    "category": "§12.3a shells (sub-class: invariant-violation)",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": null,
+    "description": "Shell marked closed but FixFaceOrientation detects free edges post-fix; Closed() flag not reset. Face edges offset by tolerance creating gap; shell incorrectly remains marked as closed.",
+    "expected_kernel_behavior": "heal",
+    "expected_validation": "",
+    "fixture_kind": null,
+    "fixture_path": "step-examples/12-3a-shells/Tsh192.stp",
+    "id": "Tsh192",
+    "notes": "invariant_violation; closed_flag_sync; Closed(); HasFreeEdges; FixFaceOrientation",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-sufficient",
+    "reproducer": "",
+    "section": "12.3a",
+    "section_dir": "12-3a-shells",
+    "see_also": [],
+    "sender": "",
+    "severity": null,
+    "sources": [
+      "OCCT/ShapeFix_Shell::Perform (line 159)"
+    ],
+    "taxonomy": [
+      "topology"
+    ],
+    "tier3_assertions": [],
+    "title": "ShapeFix_Shell.Perform closed-flag sync-failure"
+  },
+  {
+    "byte_assertions": [],
+    "category": "§12.3a shells (sub-class: tolerance-branch)",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": null,
+    "description": "Two shells with coincident faces at exactly tolerance boundary 1e-7; Apply doesn't classify consistently across tolerance threshold. Sewing analysis distance-filter decision point triggers branching uncertainty.",
+    "expected_kernel_behavior": "heal",
+    "expected_validation": "",
+    "fixture_kind": null,
+    "fixture_path": "step-examples/12-3a-shells/Tsh193.stp",
+    "id": "Tsh193",
+    "notes": "tolerance; distance_tolerance_filter_second_pass; BRepBuilderAPI_Sewing.cxx:1732",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-sufficient",
+    "reproducer": "",
+    "section": "12.3a",
+    "section_dir": "12-3a-shells",
+    "see_also": [],
+    "sender": "",
+    "severity": null,
+    "sources": [
+      "OCCT/ShapeUpgrade_ShellSewing::Apply (line 99)"
+    ],
+    "taxonomy": [
+      "topology"
+    ],
+    "tier3_assertions": [],
+    "title": "ShapeUpgrade_ShellSewing.Apply tolerance-boundary classification"
   },
   {
     "byte_assertions": [
@@ -45065,6 +45375,161 @@
     ],
     "tier3_assertions": [],
     "title": "ShapeAnalysis_Surface.DegeneratedValues cone-apex-degeneracy"
+  },
+  {
+    "byte_assertions": [],
+    "category": "§12.3c faces (sub-class: spot-detection)",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": null,
+    "description": "B-spline face with interior peak singularity (pole height 3.5 vs 0.2 boundary). Tests parametric spot classification branch detecting interior singularities without vertex-like discrete geometry.",
+    "expected_kernel_behavior": "heal",
+    "expected_validation": "",
+    "fixture_kind": null,
+    "fixture_path": "step-examples/12-3c-faces/Tfa201.stp",
+    "id": "Tfa201",
+    "notes": "CheckSpotFace case 2; interior singularity detection",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-sufficient",
+    "reproducer": "",
+    "section": "12.3c",
+    "section_dir": "12-3c-faces",
+    "see_also": [],
+    "sender": "",
+    "severity": null,
+    "sources": [
+      "OCCT/ShapeAnalysis_CheckSmallFace.CheckSpotFace_at235 (line 246)"
+    ],
+    "taxonomy": [
+      "topology"
+    ],
+    "tier3_assertions": [],
+    "title": "CheckSpotFace parametric interior singularity"
+  },
+  {
+    "byte_assertions": [],
+    "category": "§12.3c faces (sub-class: twisted-face)",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": null,
+    "description": "Cylindrical surface with reversed edge orientation (F/T/T/F pattern) inducing normal inversion. Tests scalar product < 0 detection (twist angle > 90 degrees) on elementary surface type.",
+    "expected_kernel_behavior": "heal",
+    "expected_validation": "",
+    "fixture_kind": null,
+    "fixture_path": "step-examples/12-3c-faces/Tfa202.stp",
+    "id": "Tfa202",
+    "notes": "Normal inversion; elementary surface conformance",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-sufficient",
+    "reproducer": "",
+    "section": "12.3c",
+    "section_dir": "12-3c-faces",
+    "see_also": [],
+    "sender": "",
+    "severity": null,
+    "sources": [
+      "OCCT/ShapeAnalysis_CheckSmallFace.CheckTwisted_at975 (line 1015)"
+    ],
+    "taxonomy": [
+      "topology"
+    ],
+    "tier3_assertions": [],
+    "title": "CheckTwisted normal inversion on elementary"
+  },
+  {
+    "byte_assertions": [],
+    "category": "§12.3c faces (sub-class: seam-synthesis)",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": null,
+    "description": "Toroidal surface with missing seam wire. Tests null-surface-guard branch preventing dereference on uninitialized surface handles before IsUClosed/IsVClosed checks.",
+    "expected_kernel_behavior": "heal",
+    "expected_validation": "",
+    "fixture_kind": null,
+    "fixture_path": "step-examples/12-3c-faces/Tfa203.stp",
+    "id": "Tfa203",
+    "notes": "Null surface guard; dereference protection",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-sufficient",
+    "reproducer": "",
+    "section": "12.3c",
+    "section_dir": "12-3c-faces",
+    "see_also": [],
+    "sender": "",
+    "severity": null,
+    "sources": [
+      "OCCT/ShapeFix_Face.FixMissingSeam (line 1724)"
+    ],
+    "taxonomy": [
+      "topology"
+    ],
+    "tier3_assertions": [],
+    "title": "FixMissingSeam null surface guard"
+  },
+  {
+    "byte_assertions": [],
+    "category": "§12.3c faces (sub-class: wire-topology)",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": null,
+    "description": "Planar square face with properly closed edge loop (v4->v1 closure). Tests closed-wire reordering branch via FixReorder vs open-wire appending path.",
+    "expected_kernel_behavior": "heal",
+    "expected_validation": "",
+    "fixture_kind": null,
+    "fixture_path": "step-examples/12-3c-faces/Tfa204.stp",
+    "id": "Tfa204",
+    "notes": "Closed loop topology; FixReorder dispatch",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-sufficient",
+    "reproducer": "",
+    "section": "12.3c",
+    "section_dir": "12-3c-faces",
+    "see_also": [],
+    "sender": "",
+    "severity": null,
+    "sources": [
+      "OCCT/ShapeFix_Face.FixLoopWire (line 2534)"
+    ],
+    "taxonomy": [
+      "topology"
+    ],
+    "tier3_assertions": [],
+    "title": "FixLoopWire closed topology reordering"
+  },
+  {
+    "byte_assertions": [],
+    "category": "§12.3c faces (sub-class: natural-bound)",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": null,
+    "description": "Conical surface (half-angle 45°) with apex vertex at z=1.414. Tests natural-bound insertion on degenerate apex geometry without explicit seam edge.",
+    "expected_kernel_behavior": "heal",
+    "expected_validation": "",
+    "fixture_kind": null,
+    "fixture_path": "step-examples/12-3c-faces/Tfa205.stp",
+    "id": "Tfa205",
+    "notes": "Cone apex degenerate; natural bound synthesis",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-sufficient",
+    "reproducer": "",
+    "section": "12.3c",
+    "section_dir": "12-3c-faces",
+    "see_also": [],
+    "sender": "",
+    "severity": null,
+    "sources": [
+      "OCCT/ShapeFix_Face.FixAddNaturalBound (line 1744)"
+    ],
+    "taxonomy": [
+      "topology"
+    ],
+    "tier3_assertions": [],
+    "title": "FixAddNaturalBound cone apex degenerate"
   },
   {
     "byte_assertions": [

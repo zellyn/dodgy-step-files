@@ -23037,6 +23037,56 @@ Unit square planar face with centered 0.5×0.5 inner rectangle. FixOrientation's
 - **Fixture path**: step-examples/12-3c-faces/Tfa200.stp
 - **Fixture kind**: scaffold
 
+### Tfa201 — CheckSpotFace parametric interior singularity
+- **Category**: §12.3c faces (sub-class: spot-detection)
+- **Sources**: OCCT/ShapeAnalysis_CheckSmallFace.CheckSpotFace_at235 (line 246)
+- **Description**: B-spline face with interior peak singularity (pole height 3.5 vs 0.2 boundary). Tests parametric spot classification branch detecting interior singularities without vertex-like discrete geometry.
+- **Expected kernel behavior**: heal
+- **Notes**: CheckSpotFace case 2; interior singularity detection
+- **Model impact**: Face recognized as spot-geometry; healing triggers face removal or splitting
+- **Fixture path**: step-examples/12-3c-faces/Tfa201.stp
+- **Fixture kind**: scaffold
+
+### Tfa202 — CheckTwisted normal inversion on elementary
+- **Category**: §12.3c faces (sub-class: twisted-face)
+- **Sources**: OCCT/ShapeAnalysis_CheckSmallFace.CheckTwisted_at975 (line 1015)
+- **Description**: Cylindrical surface with reversed edge orientation (F/T/T/F pattern) inducing normal inversion. Tests scalar product < 0 detection (twist angle > 90 degrees) on elementary surface type.
+- **Expected kernel behavior**: heal
+- **Notes**: Normal inversion; elementary surface conformance
+- **Model impact**: Face marked twisted; requires reorientation or healing
+- **Fixture path**: step-examples/12-3c-faces/Tfa202.stp
+- **Fixture kind**: scaffold
+
+### Tfa203 — FixMissingSeam null surface guard
+- **Category**: §12.3c faces (sub-class: seam-synthesis)
+- **Sources**: OCCT/ShapeFix_Face.FixMissingSeam (line 1724)
+- **Description**: Toroidal surface with missing seam wire. Tests null-surface-guard branch preventing dereference on uninitialized surface handles before IsUClosed/IsVClosed checks.
+- **Expected kernel behavior**: heal
+- **Notes**: Null surface guard; dereference protection
+- **Model impact**: Seam synthesis attempted; guard ensures safe null-check
+- **Fixture path**: step-examples/12-3c-faces/Tfa203.stp
+- **Fixture kind**: scaffold
+
+### Tfa204 — FixLoopWire closed topology reordering
+- **Category**: §12.3c faces (sub-class: wire-topology)
+- **Sources**: OCCT/ShapeFix_Face.FixLoopWire (line 2534)
+- **Description**: Planar square face with properly closed edge loop (v4->v1 closure). Tests closed-wire reordering branch via FixReorder vs open-wire appending path.
+- **Expected kernel behavior**: heal
+- **Notes**: Closed loop topology; FixReorder dispatch
+- **Model impact**: Wire reordering applied; loop connectivity verified
+- **Fixture path**: step-examples/12-3c-faces/Tfa204.stp
+- **Fixture kind**: scaffold
+
+### Tfa205 — FixAddNaturalBound cone apex degenerate
+- **Category**: §12.3c faces (sub-class: natural-bound)
+- **Sources**: OCCT/ShapeFix_Face.FixAddNaturalBound (line 1744)
+- **Description**: Conical surface (half-angle 45°) with apex vertex at z=1.414. Tests natural-bound insertion on degenerate apex geometry without explicit seam edge.
+- **Expected kernel behavior**: heal
+- **Notes**: Cone apex degenerate; natural bound synthesis
+- **Model impact**: Natural boundary inserted at apex; face topology adjusted
+- **Fixture path**: step-examples/12-3c-faces/Tfa205.stp
+- **Fixture kind**: scaffold
+
 ### Hea016 — Empty solid output from STEP export of complex body, despite STL succeeding
 - **Category**: §12.3c faces / shape healing
 - **Sources**: FreeCAD #20396; bug-reporter language: "Models exported to STEP crash or produce empty objects", "appears to export fine but results in an empty object", "STL and 3MF export work, STEP doesn't".
@@ -24403,6 +24453,56 @@ Surface of linear extrusion with non-unit direction vector (2.0,0.0,0.0). Cached
 ### Gs093 — ShapeUpgrade_SplitSurface BSpline irregular knots
 B-spline surface with irregular V knot multiplicities (3,1,3) on 4 control points. SplitSurface assumes uniform multiplicities, causing over-subdivision and invalid knot structure.
 
+### Gs139 — IsUClosed pole-singularity false positive
+- **Category**: §12.2c surfaces (sub-class: ShapeAnalysis_Surface closure detection)
+- **Sources**: OCCT/ShapeAnalysis_Surface.cxx (line 768)
+- **Description**: IsUClosed() validates U-periodicity via first/last pole comparison but skips validation when poles span conical singularities. Endpoint poles at apex dominate evaluation, masking parametric non-closure. Surface reports closure incorrectly.
+- **Expected kernel behavior**: heal
+- **Notes**: pole-coincidence-with-singularity, apex-masking
+- **Model impact**: Incorrectly marked as U-closed; seam placement assumes closure; geometry distortion
+- **Fixture path**: step-examples/12-2c-surfaces/Gs139.stp
+- **Fixture kind**: scaffold
+
+### Gs140 — IsVClosed Bezier pole-coincidence shortcut
+- **Category**: §12.2c surfaces (sub-class: ShapeAnalysis_Surface closure detection)
+- **Sources**: OCCT/ShapeAnalysis_Surface.cxx (line 995)
+- **Description**: IsVClosed() optimizes Bezier closure via knot-boundary check but misses edge case where spatial pole coincidence conflicts with parametric structure. First and last V-columns coincide in 3D but representation differs; shortcut declares closure incorrectly.
+- **Expected kernel behavior**: heal
+- **Notes**: Bezier-implicit-knots, pole-endpoint-mismatch
+- **Model impact**: False V-closure; manifold assumption violated; topology error
+- **Fixture path**: step-examples/12-2c-surfaces/Gs140.stp
+- **Fixture kind**: scaffold
+
+### Gs141 — FixMissingSeam RectangularTrimmedSurface bound mismatch
+- **Category**: §12.2c surfaces (sub-class: ShapeFix_Face seam insertion)
+- **Sources**: OCCT/ShapeFix_Face.cxx (line 2279)
+- **Description**: FixMissingSeam() wraps base surface in RECTANGULAR_TRIMMED_SURFACE using computed bounds [u1,u2]x[v1,v2]. For base surfaces with non-unit-range knot structure, RTS bounds mismatch parametric extents, placing seam at wrong location. Geometry distorted.
+- **Expected kernel behavior**: heal
+- **Notes**: RTS-parameterization-mismatch, knot-range-dependency
+- **Model impact**: Seam misaligned; discontinuity at seam; surface warping
+- **Fixture path**: step-examples/12-2c-surfaces/Gs141.stp
+- **Fixture kind**: scaffold
+
+### Gs142 — Segment rational-weight singularity
+- **Category**: §12.2c surfaces (sub-class: ShapeUpgrade_Surface splitting)
+- **Sources**: OCCT/ShapeUpgrade_Surface.cxx (line 450)
+- **Description**: Segment() subdivides rational B-spline surfaces without validating weight stability across split boundaries. For mixed-weight surfaces, splitting at critical parameter can create false singularities where weight transitions occur at patch edge. Boundary evaluation becomes unstable.
+- **Expected kernel behavior**: heal
+- **Notes**: rational-weight-edge-case, split-boundary-singularity
+- **Model impact**: Weight discontinuity; unstable boundary evaluation; invalid split patches
+- **Fixture path**: step-examples/12-2c-surfaces/Gs142.stp
+- **Fixture kind**: scaffold
+
+### Gs143 — MakeBSpline grid-sampling false periodicity
+- **Category**: §12.2c surfaces (sub-class: ShapeConstruct_Surface grid reconstruction)
+- **Sources**: OCCT/ShapeConstruct_Surface.cxx (line 310)
+- **Description**: MakeBSpline() reconstructs B-spline from point grid, detecting periodicity via endpoint sampling. For quasi-periodic grids with repeating midpoint structure but non-matching endpoint heights, sampling returns false-positive closure. Knot topology becomes incorrect.
+- **Expected kernel behavior**: heal
+- **Notes**: quasi-periodic-grid-false-positive, endpoint-mismatch
+- **Model impact**: Incorrect periodicity flag; invalid knot structure; seam placement error
+- **Fixture path**: step-examples/12-2c-surfaces/Gs143.stp
+- **Fixture kind**: scaffold
+
 ### Ad117 — STEP reader crashes on minimal file with malformed `STYLED_ITEM`
 - **Category**: §12.11 adversarial / parser-robustness (sub-class: SEGV on style record)
 - **Sources**: OCCT MANTIS#0029979; bug-reporter language: "crash by reading STEP file", "STEP reader crashes on import", "segmentation fault on small STEP file". (OCCT MANTIS tracker 502 as of 2026-05-02)
@@ -25322,6 +25422,56 @@ Compound with nested shell references. LoadShells() recursion incomplete when de
 - **Notes**: Shell with many faces triggers lengthy loop; abort gate only checked at loop start
 - **Model impact**: Caller receives false but unknown whether healing succeeded, partially succeeded, or was aborted; downstream decisions corrupted
 - **Fixture path**: step-examples/12-3a-shells/Tsh188.stp
+- **Fixture kind**: scaffold
+
+### Tsh189 — ShapeAnalysis_Shell.BadEdges uninitialized compound
+- **Category**: §12.3a shells (sub-class: initialization-order)
+- **Sources**: OCCT/ShapeAnalysis_Shell::BadEdges (line 283)
+- **Description**: BadEdges() returns compound from uninitialized myBad without validation. Calling before Perform() completes exposes lazy-init violation. Shell contains degenerate zero-length edge to trigger analysis path.
+- **Expected kernel behavior**: heal
+- **Notes**: initialization-order; lazy-init; myBad.Extent; TopoDS_Compound
+- **Model impact**: Returns uninitialized compound or empty set instead of reported bad edges
+- **Fixture path**: step-examples/12-3a-shells/Tsh189.stp
+- **Fixture kind**: scaffold
+
+### Tsh190 — ShapeAnalysis_Shell.FreeEdges uninitialized compound
+- **Category**: §12.3a shells (sub-class: initialization-order)
+- **Sources**: OCCT/ShapeAnalysis_Shell::FreeEdges (line 305)
+- **Description**: FreeEdges() returns compound from uninitialized myFree without completion guard. Open shell with incomplete edge loop creates free edges; FreeEdges() called before analysis state initialized.
+- **Expected kernel behavior**: heal
+- **Notes**: initialization-order; lazy-init; myFree.Extent; HasFreeEdges
+- **Model impact**: Fails to detect free-edge topology; returns uninitialized extent
+- **Fixture path**: step-examples/12-3a-shells/Tsh190.stp
+- **Fixture kind**: scaffold
+
+### Tsh191 — ShapeFix_Shell.FixFaceOrientation multi-connected edge unbounded
+- **Category**: §12.3a shells (sub-class: unbounded-iteration)
+- **Sources**: OCCT/ShapeFix_Shell::FixFaceOrientation (line 1455)
+- **Description**: Multi-connected edges (3+ faces sharing edge) only handled if isAccountMultiConex=true; loop processing lacks iteration bound. Three faces share single edge; aMapMultiConnectEdges exhaustively populated without complexity limit.
+- **Expected kernel behavior**: heal
+- **Notes**: unbounded_iteration; isAccountMultiConex; aFaceCount > 2; aMapMultiConnectEdges
+- **Model impact**: O(n^2) or worse complexity; potential hang on pathological meshes
+- **Fixture path**: step-examples/12-3a-shells/Tsh191.stp
+- **Fixture kind**: scaffold
+
+### Tsh192 — ShapeFix_Shell.Perform closed-flag sync-failure
+- **Category**: §12.3a shells (sub-class: invariant-violation)
+- **Sources**: OCCT/ShapeFix_Shell::Perform (line 159)
+- **Description**: Shell marked closed but FixFaceOrientation detects free edges post-fix; Closed() flag not reset. Face edges offset by tolerance creating gap; shell incorrectly remains marked as closed.
+- **Expected kernel behavior**: heal
+- **Notes**: invariant_violation; closed_flag_sync; Closed(); HasFreeEdges; FixFaceOrientation
+- **Model impact**: Downstream solid construction assumes watertight geometry; fails validation
+- **Fixture path**: step-examples/12-3a-shells/Tsh192.stp
+- **Fixture kind**: scaffold
+
+### Tsh193 — ShapeUpgrade_ShellSewing.Apply tolerance-boundary classification
+- **Category**: §12.3a shells (sub-class: tolerance-branch)
+- **Sources**: OCCT/ShapeUpgrade_ShellSewing::Apply (line 99)
+- **Description**: Two shells with coincident faces at exactly tolerance boundary 1e-7; Apply doesn't classify consistently across tolerance threshold. Sewing analysis distance-filter decision point triggers branching uncertainty.
+- **Expected kernel behavior**: heal
+- **Notes**: tolerance; distance_tolerance_filter_second_pass; BRepBuilderAPI_Sewing.cxx:1732
+- **Model impact**: Inconsistent face merging; shells may or may not sew depending on tolerance epsilon
+- **Fixture path**: step-examples/12-3a-shells/Tsh193.stp
 - **Fixture kind**: scaffold
 
 ### Gp040 — Pcurves emitted by default duplicate / contradict the surface 3D curve
