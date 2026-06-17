@@ -1,0 +1,77 @@
+ISO-10303-21;
+/* N147 - BRepBuilderAPI_Sewing.FindCandidates.acceptance_criteria_composite_filter
+ * Defect: Omitting composite acceptance criteria accepts candidates exceeding
+ * tolerance or below minimum length. Without full AND condition:
+ * (aMaxDist>=0 && aMaxDist<=tol && arrLen>minTol), distant edges are added.
+ * Reproducer: After EvaluateDistances, aMaxDist=0.15, myTolerance=0.1,
+ * arrLen=0.5, myMinTolerance=0.2. Without full AND: added to seqCandidates.
+ * With: rejected due to aMaxDist exceeds tolerance threshold.
+ */
+HEADER;
+FILE_DESCRIPTION(('N147 acceptance_criteria_composite_filter'),'2;1');
+FILE_NAME('N147.stp','2026-06-16T00:00:00',(''),(''),
+  'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
+  'automotive_design',2009,#1);
+/* Reference point */
+#10=CARTESIAN_POINT('origin',(0.0,0.0,0.0));
+#11=DIRECTION('z',(0.0,0.0,1.0));
+#12=DIRECTION('x',(1.0,0.0,0.0));
+#13=AXIS2_PLACEMENT_3D('plc',#10,#11,#12);
+/* Reference edge: tight tolerance candidate */
+#20=CARTESIAN_POINT('ref_start',(0.0,0.0,0.0));
+#21=CARTESIAN_POINT('ref_end',(1.0,0.0,0.0));
+#30=VERTEX_POINT('vref1',#20);
+#31=VERTEX_POINT('vref2',#21);
+#40=DIRECTION('ref_dir',(1.0,0.0,0.0));
+#41=VECTOR('ref_vec',#40,1.0);
+#42=LINE('ref_line',#20,#41);
+#43=EDGE_CURVE('ref_edge',#30,#31,#42,.T.);
+/* Candidate edge: exceeds myTolerance=0.1 with distance 0.15
+   but partial coverage (arrLen=0.5 > myMinTolerance=0.2) */
+#50=CARTESIAN_POINT('cand_start',(0.0,0.15,0.0));
+#51=CARTESIAN_POINT('cand_end',(0.5,0.15,0.0));
+#52=DIRECTION('cand_dir',(1.0,0.0,0.0));
+#53=VECTOR('cand_vec',#52,0.5);
+#54=LINE('cand_line',#50,#53);
+#60=VERTEX_POINT('vcand1',#50);
+#61=VERTEX_POINT('vcand2',#51);
+#62=EDGE_CURVE('cand_edge',#60,#61,#54,.T.);
+/* Units and context */
+#80=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#81=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#82=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#83=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#80,
+  'distance_accuracy_value','nominal_tolerance');
+#84=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#83))
+  GLOBAL_UNIT_ASSIGNED_CONTEXT((#80,#81,#82))
+  REPRESENTATION_CONTEXT('composite_filter_ctx','3D'));
+/* Tolerance parameters: overly permissive without composite AND guard */
+#85=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.1),#80,
+  'distance_accuracy_value','myTolerance');
+#86=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.2),#80,
+  'distance_accuracy_value','myMinTolerance');
+#87=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.15),#80,
+  'distance_accuracy_value','aMaxDist_exceeds_tolerance');
+/* PRODUCT CHAIN */
+#9000=PRODUCT_CONTEXT('',#1,'mechanical');
+#9001=PRODUCT('N147','N147','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
+#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
+#9021=SHELL_BASED_SURFACE_MODEL('sbsm',(#80));
+#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#9010);
+#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+ENDSEC;
+END-ISO-10303-21;

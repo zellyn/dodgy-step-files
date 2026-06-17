@@ -1,0 +1,79 @@
+ISO-10303-21;
+/* N150 - BRepBuilderAPI_Sewing.IsMergedClosed.v_overlap_negativity_test
+ * Defect: Omitting dist<0 check causes non-overlapping curves to proceed to
+ * inner/outer validation. Reproducer: U-closed surface with curves at
+ * V-parameter boundaries: C1Vmax=0.5, C2Vmin=1.5 (gap=1.0). dist=max(0,1.0-0.5)
+ * =0.5>0. Without if: proceeds to distInner/distOuter logic. With: rejected
+ * as non-overlapping. Missing guard allows gap-separated curves to merge.
+ */
+HEADER;
+FILE_DESCRIPTION(('N150 v_overlap_negativity_test'),'2;1');
+FILE_NAME('N150.stp','2026-06-16T00:00:00',(''),(''),
+  'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
+  'automotive_design',2009,#1);
+/* Origin and axes */
+#10=CARTESIAN_POINT('origin',(0.0,0.0,0.0));
+#11=DIRECTION('z',(0.0,0.0,1.0));
+#12=DIRECTION('x',(1.0,0.0,0.0));
+#13=AXIS2_PLACEMENT_3D('plc',#10,#11,#12);
+/* Curve 1: V-parameter range [0.0, 0.5] (upper region) */
+#20=CARTESIAN_POINT('c1_start',(0.0,0.0,0.0));
+#21=CARTESIAN_POINT('c1_end',(1.0,0.5,0.0));
+#30=DIRECTION('c1_dir',(1.0,0.5,0.0));
+#31=VECTOR('c1_vec',#30,1.118);
+#32=LINE('curve1',#20,#31);
+#40=VERTEX_POINT('vc1_1',#20);
+#41=VERTEX_POINT('vc1_2',#21);
+#42=EDGE_CURVE('c1_edge',#40,#41,#32,.T.);
+/* Curve 2: V-parameter range [1.5, 2.0] (lower region, non-overlapping gap)
+   Gap in V: [0.5, 1.5] creates separation. dist = max(0, 1.5-0.5) = 1.0 > 0 */
+#50=CARTESIAN_POINT('c2_start',(0.0,1.5,0.0));
+#51=CARTESIAN_POINT('c2_end',(1.0,2.0,0.0));
+#52=DIRECTION('c2_dir',(1.0,0.5,0.0));
+#53=VECTOR('c2_vec',#52,1.118);
+#54=LINE('curve2',#50,#53);
+#60=VERTEX_POINT('vc2_1',#50);
+#61=VERTEX_POINT('vc2_2',#51);
+#62=EDGE_CURVE('c2_edge',#60,#61,#54,.T.);
+/* Units and context */
+#80=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#81=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#82=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#83=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#80,
+  'distance_accuracy_value','nominal_tolerance');
+#84=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#83))
+  GLOBAL_UNIT_ASSIGNED_CONTEXT((#80,#81,#82))
+  REPRESENTATION_CONTEXT('overlap_gap_ctx','3D'));
+/* V-parameter gap marker: dist = 1.0 (non-negative, exceeds overlap negativity threshold) */
+#85=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.5),#80,
+  'distance_accuracy_value','c1_vmax');
+#86=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.5),#80,
+  'distance_accuracy_value','c2_vmin');
+#87=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0),#80,
+  'distance_accuracy_value','v_gap_distance');
+/* U-closed surface marking (periodicity context) */
+#88=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(2.0),#80,
+  'distance_accuracy_value','u_period');
+/* PRODUCT CHAIN */
+#9000=PRODUCT_CONTEXT('',#1,'mechanical');
+#9001=PRODUCT('N150','N150','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
+#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
+#9021=SHELL_BASED_SURFACE_MODEL('sbsm',(#80));
+#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#9010);
+#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+ENDSEC;
+END-ISO-10303-21;

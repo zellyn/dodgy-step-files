@@ -1,0 +1,85 @@
+ISO-10303-21;
+/* N149 - BRepBuilderAPI_Sewing.FindCandidates.equidistant_precision_test
+ * Defect: Omitting precision-equality test causes slightly different distances
+ * to be treated as equal. Without if(aDelta<Precision::Confusion()), candidates
+ * with distances differing by 1e-8 are inserted arbitrarily. Reproducer: Two
+ * candidates at distances 1.0 and 1.0+1e-11. aDelta=1e-11 < Precision::Confusion()
+ * (~1e-10). Without guard: treated as different. With: treated as equal,
+ * proceeds to tiebreaker logic.
+ */
+HEADER;
+FILE_DESCRIPTION(('N149 equidistant_precision_test'),'2;1');
+FILE_NAME('N149.stp','2026-06-16T00:00:00',(''),(''),
+  'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
+  'automotive_design',2009,#1);
+/* Origin and axes */
+#10=CARTESIAN_POINT('origin',(0.0,0.0,0.0));
+#11=DIRECTION('z',(0.0,0.0,1.0));
+#12=DIRECTION('x',(1.0,0.0,0.0));
+#13=AXIS2_PLACEMENT_3D('plc',#10,#11,#12);
+/* Reference edge */
+#20=CARTESIAN_POINT('ref_start',(0.0,0.0,0.0));
+#21=CARTESIAN_POINT('ref_end',(1.0,0.0,0.0));
+#30=VERTEX_POINT('vref1',#20);
+#31=VERTEX_POINT('vref2',#21);
+#40=DIRECTION('ref_dir',(1.0,0.0,0.0));
+#41=VECTOR('ref_vec',#40,1.0);
+#42=LINE('ref_line',#20,#41);
+#43=EDGE_CURVE('ref_edge',#30,#31,#42,.T.);
+/* Candidate 1: at distance 1.0 */
+#50=CARTESIAN_POINT('cand1_start',(0.0,1.0,0.0));
+#51=CARTESIAN_POINT('cand1_end',(1.0,1.0,0.0));
+#52=DIRECTION('cand1_dir',(1.0,0.0,0.0));
+#53=VECTOR('cand1_vec',#52,1.0);
+#54=LINE('cand1_line',#50,#53);
+#60=VERTEX_POINT('vcand1_1',#50);
+#61=VERTEX_POINT('vcand1_2',#51);
+#62=EDGE_CURVE('cand1_edge',#60,#61,#54,.T.);
+/* Candidate 2: at distance 1.0 + 1e-11 (numerically indistinguishable
+   from 1.0 at Precision::Confusion granularity). Without precision test,
+   this tiny difference causes arbitrary ordering in seqCandidates. */
+#70=CARTESIAN_POINT('cand2_start',(0.0,1.00000000001,0.0));
+#71=CARTESIAN_POINT('cand2_end',(1.0,1.00000000001,0.0));
+#72=DIRECTION('cand2_dir',(1.0,0.0,0.0));
+#73=VECTOR('cand2_vec',#72,1.0);
+#74=LINE('cand2_line',#70,#73);
+#80=VERTEX_POINT('vcand2_1',#70);
+#81=VERTEX_POINT('vcand2_2',#71);
+#82=EDGE_CURVE('cand2_edge',#80,#81,#74,.T.);
+/* Units and context */
+#100=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#101=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#102=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#103=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#100,
+  'distance_accuracy_value','nominal_tolerance');
+#104=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#103))
+  GLOBAL_UNIT_ASSIGNED_CONTEXT((#100,#101,#102))
+  REPRESENTATION_CONTEXT('equidistant_ctx','3D'));
+/* Precision tolerance markers */
+#105=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-10),#100,
+  'distance_accuracy_value','Precision_Confusion');
+#106=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-11),#100,
+  'distance_accuracy_value','aDelta_below_confusion');
+/* PRODUCT CHAIN */
+#9000=PRODUCT_CONTEXT('',#1,'mechanical');
+#9001=PRODUCT('N149','N149','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
+#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
+#9021=SHELL_BASED_SURFACE_MODEL('sbsm',(#100));
+#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#9010);
+#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+ENDSEC;
+END-ISO-10303-21;

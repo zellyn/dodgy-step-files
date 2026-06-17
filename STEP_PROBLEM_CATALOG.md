@@ -24625,6 +24625,23 @@ Multi-edge wire with one edge having null V1 endpoint; validates FAIL2 encoding.
 
 Wire with degenerate self-loop (1e-12 magnitude) plus normal edge; validates degen filtering. Without BRep_Tool::Degenerated filter, vertex extent inflates.
 
+## Wave 65C: Twi257–Twi261 CheckLoop Fixtures
+
+### Twi257 — unloaded-or-trivial-wire
+Single edge (NbEdges<2); CheckLoop returns false immediately. Without IsLoaded/NbEdges guard, iteration causes false classification.
+
+### Twi258 — self-loop-small-edge
+Self-loop with length 0.05 (below tolerance). CheckSmall must filter before counting; without filter, spurious loop.
+
+### Twi259 — self-loop-binding
+Two self-loop edges at same vertex. Double-append required (Extent=4). Without: Extent=2, no multi-vertex detection.
+
+### Twi260 — multi-vertex-self-loop-check
+Three self-loop edges at vertex (Extent=6 after append). Extent>2 and isMultiVertex must add vertex to loop map.
+
+### Twi261 — dual-vertex-binding
+Three edges with V2 having three incident edges (Extent=3). Both V1 and V2 lists must be appended; asymmetric append loses degree count.
+
 ### Gs056 — `SURFACE_OF_REVOLUTION` of an ellipse around its own centre produces a degenerate surface
 - **Category**: §12.2c surface / curve degeneracies (sub-class: revolution of conic)
 - **Sources**: OCCT MANTIS#0027722; bug-reporter language: "STEP error for ellipse revol shape", "revolution of ellipse fails on import", "degenerate surface from ellipse-of-revolution". (OCCT MANTIS tracker 502 as of 2026-05-02)
@@ -26287,6 +26304,23 @@ Compound with nested shell references. LoadShells() recursion incomplete when de
 - **Model impact**: Shell with face containing isolated vertex; reads with potential type mismatch in traversal.
 - **Fixture path**: step-examples/12-3a-shells/Tsh213.stp
 - **Fixture kind**: scaffold
+
+# Wave 65B: ShapeFix_Shell Defect Fixtures
+
+### Tsh214 — ShapeFix_Shell.FixFaceOrientation.duplicate_faces_undetected
+— Duplicate faces in shell; aMapAdded detects but only warns; independent orientation fixes create inconsistency.
+
+### Tsh215 — ShapeFix_Shell.Perform.context_null_initialize
+— Multiple Perform() calls reuse stale context; SetContext state accumulation applies reshape operations twice.
+
+### Tsh216 — ShapeFix_Shell.Perform.progress_abort_inconsistency
+— User abort during face-fix loop indistinguishable from failure; myStatus/return value mismatch.
+
+### Tsh217 — ShapeFix_Shell.Perform.closed_flag_sync_failure
+— Closed() flag out-of-sync with HasFreeEdges after FixFaceOrientation; breaks downstream solid construction.
+
+### Tsh218 — ShapeFix_Shell.FixFaceOrientation.shells_extraction_loss
+— GetShells() fails to partition disconnected face clusters; edge-classification gap creates orphaned faces.
 
 ### Gp040 — Pcurves emitted by default duplicate / contradict the surface 3D curve
 - **Category**: §12.2a pcurve defects (sub-class: writer-emitted pcurves disagree with 3D)
@@ -27997,6 +28031,26 @@ CheckPoints called with precision 1e-3 but projection-distance test uses 1e-6 in
 - **Reproducer**: MaxTolerance=0.01 cap; computed tolerance=0.05; raw write at line 1168 ignores cap.
 - **Impact**: Edge tolerance exceeds API contract; cap enforcement violated.
 - **STEP**: `/Users/zellyn/gh/dodgy-step-files/step-examples/12-4-tolerance/N145.stp`
+
+### N146 — EvaluateDistances.zero_angle_count_guard
+
+BRepBuilderAPI_Sewing angular precision defect: division-by-zero on degenerate surface (zero D1 normal magnitude). nbComputedAngle guard missing; tabAng becomes NaN when evaluating edges on plane/point-like geometry.
+
+### N147 — FindCandidates.acceptance_criteria_composite_filter
+
+Composite AND condition omitted: candidates exceeding myTolerance (0.15 > 0.1) with undersized coverage falsely accepted. Full condition (aMaxDist<=tol AND arrLen>minTol) required but first clause alone applied.
+
+### N148 — EvaluateDistances.projection_direction_selection
+
+Curve-length comparison fails at parity (5.0 vs 4.9): backwards projection direction selected, reporting distance to far branch. True separation 0.1 masked when lengths nearly equal.
+
+### N149 — FindCandidates.equidistant_precision_test
+
+Precision-equality guard absent: candidates differing by 1e-11 inserted as distinct despite Precision::Confusion (~1e-10) threshold. Tiebreaker logic bypassed for numerically identical distances.
+
+### N150 — IsMergedClosed.v_overlap_negativity_test
+
+V-parameter gap detection missing: curves separated by 1.0 in V (gap beyond overlap tolerance) proceed to distInner/distOuter logic. dist<0 check omitted; non-overlapping geometries incorrectly merged on U-closed surfaces.
 
 ### M161 — Reader does not validate cross-references; dangling references silently accepted
 - **Category**: §12.8 mixed / auxiliary (sub-class: missing input validation)
