@@ -427,6 +427,106 @@ def _check_real_literals(masked: bytes, v: Verdict) -> None:
               masked[:m.start()].count(b"\n") + 1)
 
 
+def _check_file_description_arity(body: bytes, v: Verdict) -> None:
+    """FILE_DESCRIPTION per ISO 10303-21 §10.2: takes exactly two args,
+    `(description: LIST OF STRING, implementation_level: STRING)`.
+
+    Surfaced by burn-down audits as a recurring synthesis-template bug.
+    """
+    m = re.search(rb"FILE_DESCRIPTION\s*\((.*?)\)\s*;", body, re.DOTALL)
+    if not m:
+        return
+    args_text = m.group(1)
+    # Count top-level commas (depth==0) to determine arity.
+    depth = 0
+    in_string = False
+    commas = 0
+    i = 0
+    while i < len(args_text):
+        c = args_text[i]
+        if in_string:
+            if c == ord("'"):
+                if i + 1 < len(args_text) and args_text[i+1] == ord("'"):
+                    i += 2
+                    continue
+                in_string = False
+            i += 1
+            continue
+        if c == ord("'"):
+            in_string = True
+        elif c == ord("("):
+            depth += 1
+        elif c == ord(")"):
+            depth -= 1
+        elif c == ord(",") and depth == 0:
+            commas += 1
+        i += 1
+    arity = commas + 1
+    if arity != 2:
+        v.err("E_FILE_DESC_ARITY",
+              f"FILE_DESCRIPTION has {arity} top-level args; spec requires 2 "
+              f"(description list, implementation_level)",
+              _line_of_offset(body, m.start()))
+
+
+def _check_forward_refs(body: bytes, masked: bytes, v: Verdict, data_start: int) -> None:
+    """Walk DATA section in declaration order. Flag any `#N` reference
+    inside an entity body where N > the entity's own id (forward reference).
+
+    Per ISO 10303-21 §3.3.10, instances may be referenced in any order
+    within DATA — forward refs are technically allowed. But many readers
+    (and our own validators) work better when entities are topologically
+    sorted, and forward refs are a common synthesis bug. Reported as a
+    warning, not error.
+    """
+    # Iterate `#N=TYPE(...);` blocks
+    pat = re.compile(rb"(?:^|;)\s*#(\d+)\s*=\s*[A-Za-z_(]")
+    refs_pat = re.compile(rb"#(\d+)")
+    matches = list(pat.finditer(masked, data_start))
+    forward_count = 0
+    first_example = None
+    for i, m in enumerate(matches):
+        eid = int(m.group(1))
+        # Determine the end of this entity body (next entity def or section end)
+        body_start = m.end()
+        body_end = matches[i+1].start() if i + 1 < len(matches) else len(masked)
+        # Find all references in this entity's body, skip the LHS we already matched.
+        entity_body = masked[body_start:body_end]
+        for r in refs_pat.finditer(entity_body):
+            rid = int(r.group(1))
+            if rid > eid:
+                forward_count += 1
+                if first_example is None:
+                    first_example = (eid, rid, _line_of_offset(body, body_start + r.start()))
+    if forward_count > 0:
+        eid, rid, line = first_example
+        v.warn("W_FORWARD_REF",
+               f"{forward_count} forward references in DATA; first: #{eid} → #{rid}",
+               line)
+
+
+def _check_non_ascii_numerics(body: bytes, masked: bytes, v: Verdict) -> None:
+    """Catch Unicode minus sign (U+2212, "−") and other non-ASCII chars in
+    numeric contexts. Part-21 lexer accepts only ASCII 7-bit; non-ASCII
+    in number tuples comes from copy-paste through Unicode-aware editors.
+    """
+    # U+2212 minus sign as UTF-8 = E2 88 92
+    minus_u2212 = b"\xe2\x88\x92"
+    line = 1
+    for i, c in enumerate(body):
+        if c == ord("\n"):
+            line += 1
+        if c > 127:
+            # Only flag once per line and only for the minus sign
+            # (other non-ASCII could be inside a string literal)
+            if i + 2 < len(body) and body[i:i+3] == minus_u2212:
+                v.err("E_NON_ASCII_MINUS",
+                      f"Unicode U+2212 minus sign at byte {i}; use ASCII '-'",
+                      line)
+                # Only report first occurrence per file
+                return
+
+
 def validate(body: bytes) -> Verdict:
     v = Verdict()
     body = _strip_bom(body, v)
@@ -448,6 +548,9 @@ def validate(body: bytes) -> Verdict:
     _check_real_literals(masked, v)
     _check_escapes(body, v)
     _check_complex_instance_order(masked, v)
+    _check_file_description_arity(body, v)
+    _check_forward_refs(body, masked, v, d)
+    _check_non_ascii_numerics(body, masked, v)
     if v.status == "accept" and v.warnings:
         v.status = "accept_with_warnings"
     return v
@@ -457,15 +560,79 @@ def validate_file(path: Path) -> Verdict:
     return validate(path.read_bytes())
 
 
+def _corpus_scan(argv: list[str]) -> int:
+    """Scan all fixtures under step-examples (excluding _quarantine) and
+    print a summary of rejects by section."""
+    from step_corpus._build_catalog_json import RESEARCH_ROOT
+    examples = RESEARCH_ROOT / "step-examples"
+    framing = {"12-1a-encoding", "12-1b-header", "12-1c-syntax",
+               "12-11-adversarial", "12-12-cross-product", "12-13-writer-pathology"}
+
+    json_out = "--json" in argv
+    sections: dict[str, dict[str, int]] = {}
+    non_framing_rejects: list[tuple[str, str, list[str]]] = []
+    error_codes: dict[str, int] = {}
+    warning_codes: dict[str, int] = {}
+
+    for f in examples.rglob("*.stp"):
+        if "_quarantine" in str(f):
+            continue
+        section = f.parts[-2]
+        v = validate_file(f)
+        s = sections.setdefault(section, {"accept": 0, "accept_with_warnings": 0, "reject": 0})
+        s[v.status] = s[v.status] + 1
+        for e in v.errors:
+            error_codes[e["code"]] = error_codes.get(e["code"], 0) + 1
+        for w in v.warnings:
+            warning_codes[w["code"]] = warning_codes.get(w["code"], 0) + 1
+        if v.status == "reject" and section not in framing:
+            codes = [e["code"] for e in v.errors]
+            non_framing_rejects.append((section, f.name, codes))
+
+    if json_out:
+        json.dump({
+            "sections": sections,
+            "non_framing_rejects": [{"section": s, "name": n, "codes": c}
+                                    for s, n, c in non_framing_rejects],
+            "error_codes": error_codes,
+            "warning_codes": warning_codes,
+        }, sys.stdout, indent=2)
+        return 1 if non_framing_rejects else 0
+
+    total = {"accept": 0, "accept_with_warnings": 0, "reject": 0}
+    for s in sections.values():
+        for k, v in s.items():
+            total[k] = total.get(k, 0) + v
+    print(f"Corpus scan: {sum(total.values())} fixtures")
+    print(f"  accept: {total['accept']}")
+    print(f"  accept_with_warnings: {total['accept_with_warnings']}")
+    print(f"  reject: {total['reject']}")
+    print()
+    print("By section (rejects in non-framing sections are real bugs):")
+    for sec in sorted(sections):
+        st = sections[sec]
+        intentional = " [framing-defect section]" if sec in framing else ""
+        print(f"  {sec}: a={st['accept']} w={st['accept_with_warnings']} r={st['reject']}{intentional}")
+    print()
+    print(f"Non-framing rejects: {len(non_framing_rejects)}")
+    print("Top error codes:")
+    for c, n in sorted(error_codes.items(), key=lambda x: -x[1])[:10]:
+        print(f"  {c}: {n}")
+    return 1 if non_framing_rejects else 0
+
+
 def main(argv: list[str] | None = None) -> int:
     args = list(sys.argv[1:] if argv is None else argv)
+    if "--corpus" in args:
+        args.remove("--corpus")
+        return _corpus_scan(args)
     if "--json" in args:
         json_out = True
         args.remove("--json")
     else:
         json_out = False
     if not args:
-        print("usage: python -m step_corpus._part21_validator <file.stp> [--json]", file=sys.stderr)
+        print("usage: python -m step_corpus._part21_validator [--corpus] [--json] [<file.stp>]", file=sys.stderr)
         return 2
     p = Path(args[0])
     if not p.is_file():

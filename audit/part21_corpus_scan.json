@@ -1,0 +1,3210 @@
+{
+  "sections": {
+    "12-3c-faces": {
+      "accept": 114,
+      "accept_with_warnings": 49,
+      "reject": 93
+    },
+    "12-6-assembly": {
+      "accept": 73,
+      "accept_with_warnings": 27,
+      "reject": 2
+    },
+    "12-1b-header": {
+      "accept": 30,
+      "accept_with_warnings": 2,
+      "reject": 12
+    },
+    "12-3a-shells": {
+      "accept": 105,
+      "accept_with_warnings": 33,
+      "reject": 122
+    },
+    "12-11-adversarial": {
+      "accept": 53,
+      "accept_with_warnings": 14,
+      "reject": 7
+    },
+    "12-10-perf": {
+      "accept": 20,
+      "accept_with_warnings": 11,
+      "reject": 4
+    },
+    "12-1a-encoding": {
+      "accept": 21,
+      "accept_with_warnings": 20,
+      "reject": 16
+    },
+    "12-8-mixed": {
+      "accept": 153,
+      "accept_with_warnings": 59,
+      "reject": 4
+    },
+    "12-3b-wires": {
+      "accept": 188,
+      "accept_with_warnings": 12,
+      "reject": 68
+    },
+    "12-12-cross-product": {
+      "accept": 26,
+      "accept_with_warnings": 13,
+      "reject": 5
+    },
+    "12-2b-nurbs": {
+      "accept": 37,
+      "accept_with_warnings": 73,
+      "reject": 52
+    },
+    "12-1c-syntax": {
+      "accept": 35,
+      "accept_with_warnings": 4,
+      "reject": 7
+    },
+    "12-4-tolerance": {
+      "accept": 158,
+      "accept_with_warnings": 4,
+      "reject": 25
+    },
+    "12-2a-pcurves": {
+      "accept": 100,
+      "accept_with_warnings": 47,
+      "reject": 16
+    },
+    "12-2c-surfaces": {
+      "accept": 97,
+      "accept_with_warnings": 50,
+      "reject": 25
+    },
+    "12-7-pmi": {
+      "accept": 70,
+      "accept_with_warnings": 50,
+      "reject": 2
+    },
+    "12-13-writer-pathology": {
+      "accept": 41,
+      "accept_with_warnings": 8,
+      "reject": 3
+    },
+    "12-5-units": {
+      "accept": 16,
+      "accept_with_warnings": 18,
+      "reject": 0
+    }
+  },
+  "non_framing_rejects": [
+    {
+      "section": "12-3c-faces",
+      "name": "Tfa148.stp",
+      "codes": [
+        "E_FILE_DESC_ARITY",
+        "E_NON_ASCII_MINUS"
+      ]
+    },
+    {
+      "section": "12-3c-faces",
+      "name": "Tfa174.stp",
+      "codes": [
+        "E_NO_CLOSE"
+      ]
+    },
+    {
+      "section": "12-3c-faces",
+      "name": "Tfa216.stp",
+      "codes": [
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-3c-faces",
+      "name": "Tfa202.stp",
+      "codes": [
+        "E_FILE_DESC_ARITY",
+        "E_NON_ASCII_MINUS"
+      ]
+    },
+    {
+      "section": "12-3c-faces",
+      "name": "Tfa203.stp",
+      "codes": [
+        "E_FILE_DESC_ARITY",
+        "E_NON_ASCII_MINUS"
+      ]
+    },
+    {
+      "section": "12-3c-faces",
+      "name": "Tfa217.stp",
+      "codes": [
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-3c-faces",
+      "name": "Tfa175.stp",
+      "codes": [
+        "E_NO_CLOSE"
+      ]
+    },
+    {
+      "section": "12-3c-faces",
+      "name": "Tfa161.stp",
+      "codes": [
+        "E_STRING_OPEN",
+        "E_PAREN_UNBALANCED",
+        "E_NO_HEADER_END"
+      ]
+    },
+    {
+      "section": "12-3c-faces",
+      "name": "Tfa149.stp",
+      "codes": [
+        "E_FILE_DESC_ARITY",
+        "E_NON_ASCII_MINUS"
+      ]
+    },
+    {
+      "section": "12-3c-faces",
+      "name": "Tfa188.stp",
+      "codes": [
+        "E_NO_CLOSE"
+      ]
+    },
+    {
+      "section": "12-3c-faces",
+      "name": "Tfa163.stp",
+      "codes": [
+        "E_STRING_OPEN",
+        "E_PAREN_UNBALANCED",
+        "E_NO_HEADER_END"
+      ]
+    },
+    {
+      "section": "12-3c-faces",
+      "name": "Tfa229.stp",
+      "codes": [
+        "E_FILE_DESC_ARITY",
+        "E_NON_ASCII_MINUS"
+      ]
+    },
+    {
+      "section": "12-3c-faces",
+      "name": "Tfa201.stp",
+      "codes": [
+        "E_FILE_DESC_ARITY",
+        "E_NON_ASCII_MINUS"
+      ]
+    },
+    {
+      "section": "12-3c-faces",
+      "name": "Tfa215.stp",
+      "codes": [
+        "E_FILE_DESC_ARITY",
+        "E_NON_ASCII_MINUS"
+      ]
+    },
+    {
+      "section": "12-3c-faces",
+      "name": "Tfa214.stp",
+      "codes": [
+        "E_FILE_DESC_ARITY",
+        "E_NON_ASCII_MINUS"
+      ]
+    },
+    {
+      "section": "12-3c-faces",
+      "name": "Tfa200.stp",
+      "codes": [
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-3c-faces",
+      "name": "Tfa228.stp",
+      "codes": [
+        "E_FILE_DESC_ARITY",
+        "E_NON_ASCII_MINUS"
+      ]
+    },
+    {
+      "section": "12-3c-faces",
+      "name": "Tfa162.stp",
+      "codes": [
+        "E_STRING_OPEN",
+        "E_PAREN_UNBALANCED",
+        "E_NO_HEADER_END"
+      ]
+    },
+    {
+      "section": "12-3c-faces",
+      "name": "Tfa189.stp",
+      "codes": [
+        "E_NO_CLOSE"
+      ]
+    },
+    {
+      "section": "12-3c-faces",
+      "name": "Tfa199.stp",
+      "codes": [
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-3c-faces",
+      "name": "Tfa172.stp",
+      "codes": [
+        "E_NO_CLOSE"
+      ]
+    },
+    {
+      "section": "12-3c-faces",
+      "name": "Tfa204.stp",
+      "codes": [
+        "E_FILE_DESC_ARITY",
+        "E_NON_ASCII_MINUS"
+      ]
+    },
+    {
+      "section": "12-3c-faces",
+      "name": "Tfa210.stp",
+      "codes": [
+        "E_FILE_DESC_ARITY",
+        "E_NON_ASCII_MINUS"
+      ]
+    },
+    {
+      "section": "12-3c-faces",
+      "name": "Tfa238.stp",
+      "codes": [
+        "E_FILE_DESC_ARITY",
+        "E_NON_ASCII_MINUS"
+      ]
+    },
+    {
+      "section": "12-3c-faces",
+      "name": "Tfa239.stp",
+      "codes": [
+        "E_FILE_DESC_ARITY",
+        "E_NON_ASCII_MINUS"
+      ]
+    },
+    {
+      "section": "12-3c-faces",
+      "name": "Tfa211.stp",
+      "codes": [
+        "E_FILE_DESC_ARITY",
+        "E_NON_ASCII_MINUS"
+      ]
+    },
+    {
+      "section": "12-3c-faces",
+      "name": "Tfa205.stp",
+      "codes": [
+        "E_FILE_DESC_ARITY",
+        "E_NON_ASCII_MINUS"
+      ]
+    },
+    {
+      "section": "12-3c-faces",
+      "name": "Tfa173.stp",
+      "codes": [
+        "E_NO_CLOSE"
+      ]
+    },
+    {
+      "section": "12-3c-faces",
+      "name": "Tfa198.stp",
+      "codes": [
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-3c-faces",
+      "name": "Tfa165.stp",
+      "codes": [
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-3c-faces",
+      "name": "Tfa171.stp",
+      "codes": [
+        "E_NO_CLOSE"
+      ]
+    },
+    {
+      "section": "12-3c-faces",
+      "name": "Tfa213.stp",
+      "codes": [
+        "E_FILE_DESC_ARITY",
+        "E_NON_ASCII_MINUS"
+      ]
+    },
+    {
+      "section": "12-3c-faces",
+      "name": "Tfa207.stp",
+      "codes": [
+        "E_FILE_DESC_ARITY",
+        "E_NON_ASCII_MINUS"
+      ]
+    },
+    {
+      "section": "12-3c-faces",
+      "name": "Tfa206.stp",
+      "codes": [
+        "E_FILE_DESC_ARITY",
+        "E_NON_ASCII_MINUS"
+      ]
+    },
+    {
+      "section": "12-3c-faces",
+      "name": "Tfa212.stp",
+      "codes": [
+        "E_FILE_DESC_ARITY",
+        "E_NON_ASCII_MINUS"
+      ]
+    },
+    {
+      "section": "12-3c-faces",
+      "name": "Tfa077.stp",
+      "codes": [
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-3c-faces",
+      "name": "Tfa062.stp",
+      "codes": [
+        "E_UNRESOLVED_REFS"
+      ]
+    },
+    {
+      "section": "12-3c-faces",
+      "name": "Tfa076.stp",
+      "codes": [
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-3c-faces",
+      "name": "Tfa098.stp",
+      "codes": [
+        "E_UNRESOLVED_REFS"
+      ]
+    },
+    {
+      "section": "12-3c-faces",
+      "name": "Tfa240.stp",
+      "codes": [
+        "E_FILE_DESC_ARITY",
+        "E_NON_ASCII_MINUS"
+      ]
+    },
+    {
+      "section": "12-3c-faces",
+      "name": "Tfa080.stp",
+      "codes": [
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-3c-faces",
+      "name": "Tfa241.stp",
+      "codes": [
+        "E_FILE_DESC_ARITY",
+        "E_NON_ASCII_MINUS"
+      ]
+    },
+    {
+      "section": "12-3c-faces",
+      "name": "Tfa243.stp",
+      "codes": [
+        "E_FILE_DESC_ARITY",
+        "E_NON_ASCII_MINUS"
+      ]
+    },
+    {
+      "section": "12-3c-faces",
+      "name": "Tfa242.stp",
+      "codes": [
+        "E_FILE_DESC_ARITY",
+        "E_NON_ASCII_MINUS"
+      ]
+    },
+    {
+      "section": "12-3c-faces",
+      "name": "Tfa078.stp",
+      "codes": [
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-3c-faces",
+      "name": "Tfa245.stp",
+      "codes": [
+        "E_FILE_DESC_ARITY",
+        "E_NON_ASCII_MINUS"
+      ]
+    },
+    {
+      "section": "12-3c-faces",
+      "name": "Tfa244.stp",
+      "codes": [
+        "E_FILE_DESC_ARITY",
+        "E_NON_ASCII_MINUS"
+      ]
+    },
+    {
+      "section": "12-3c-faces",
+      "name": "Tfa196.stp",
+      "codes": [
+        "E_REAL_NO_DOT",
+        "E_REAL_NO_DOT",
+        "E_REAL_NO_DOT",
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-3c-faces",
+      "name": "Tfa141.stp",
+      "codes": [
+        "E_NO_CLOSE"
+      ]
+    },
+    {
+      "section": "12-3c-faces",
+      "name": "Tfa155.stp",
+      "codes": [
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-3c-faces",
+      "name": "Tfa237.stp",
+      "codes": [
+        "E_FILE_DESC_ARITY",
+        "E_NON_ASCII_MINUS"
+      ]
+    },
+    {
+      "section": "12-3c-faces",
+      "name": "Tfa223.stp",
+      "codes": [
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-3c-faces",
+      "name": "Tfa222.stp",
+      "codes": [
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-3c-faces",
+      "name": "Tfa236.stp",
+      "codes": [
+        "E_FILE_DESC_ARITY",
+        "E_NON_ASCII_MINUS"
+      ]
+    },
+    {
+      "section": "12-3c-faces",
+      "name": "Tfa154.stp",
+      "codes": [
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-3c-faces",
+      "name": "Tfa197.stp",
+      "codes": [
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-3c-faces",
+      "name": "Tfa195.stp",
+      "codes": [
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-3c-faces",
+      "name": "Tfa156.stp",
+      "codes": [
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-3c-faces",
+      "name": "Tfa142.stp",
+      "codes": [
+        "E_NO_CLOSE"
+      ]
+    },
+    {
+      "section": "12-3c-faces",
+      "name": "Tfa208.stp",
+      "codes": [
+        "E_FILE_DESC_ARITY",
+        "E_NON_ASCII_MINUS"
+      ]
+    },
+    {
+      "section": "12-3c-faces",
+      "name": "Tfa220.stp",
+      "codes": [
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-3c-faces",
+      "name": "Tfa234.stp",
+      "codes": [
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-3c-faces",
+      "name": "Tfa235.stp",
+      "codes": [
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-3c-faces",
+      "name": "Tfa221.stp",
+      "codes": [
+        "E_FILE_DESC_ARITY",
+        "E_NON_ASCII_MINUS"
+      ]
+    },
+    {
+      "section": "12-3c-faces",
+      "name": "Tfa209.stp",
+      "codes": [
+        "E_FILE_DESC_ARITY",
+        "E_NON_ASCII_MINUS"
+      ]
+    },
+    {
+      "section": "12-3c-faces",
+      "name": "Tfa143.stp",
+      "codes": [
+        "E_NO_CLOSE"
+      ]
+    },
+    {
+      "section": "12-3c-faces",
+      "name": "Tfa157.stp",
+      "codes": [
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-3c-faces",
+      "name": "Tfa194.stp",
+      "codes": [
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-3c-faces",
+      "name": "Tfa190.stp",
+      "codes": [
+        "E_NO_CLOSE"
+      ]
+    },
+    {
+      "section": "12-3c-faces",
+      "name": "Tfa153.stp",
+      "codes": [
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-3c-faces",
+      "name": "Tfa147.stp",
+      "codes": [
+        "E_FILE_DESC_ARITY",
+        "E_NON_ASCII_MINUS"
+      ]
+    },
+    {
+      "section": "12-3c-faces",
+      "name": "Tfa225.stp",
+      "codes": [
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-3c-faces",
+      "name": "Tfa231.stp",
+      "codes": [
+        "E_FILE_DESC_ARITY",
+        "E_NON_ASCII_MINUS"
+      ]
+    },
+    {
+      "section": "12-3c-faces",
+      "name": "Tfa219.stp",
+      "codes": [
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-3c-faces",
+      "name": "Tfa218.stp",
+      "codes": [
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-3c-faces",
+      "name": "Tfa230.stp",
+      "codes": [
+        "E_FILE_DESC_ARITY",
+        "E_NON_ASCII_MINUS"
+      ]
+    },
+    {
+      "section": "12-3c-faces",
+      "name": "Tfa224.stp",
+      "codes": [
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-3c-faces",
+      "name": "Tfa146.stp",
+      "codes": [
+        "E_FILE_DESC_ARITY",
+        "E_NON_ASCII_MINUS"
+      ]
+    },
+    {
+      "section": "12-3c-faces",
+      "name": "Tfa152.stp",
+      "codes": [
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-3c-faces",
+      "name": "Tfa191.stp",
+      "codes": [
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-3c-faces",
+      "name": "Tfa187.stp",
+      "codes": [
+        "E_NO_CLOSE"
+      ]
+    },
+    {
+      "section": "12-3c-faces",
+      "name": "Tfa193.stp",
+      "codes": [
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-3c-faces",
+      "name": "Tfa144.stp",
+      "codes": [
+        "E_NO_CLOSE"
+      ]
+    },
+    {
+      "section": "12-3c-faces",
+      "name": "Tfa150.stp",
+      "codes": [
+        "E_FILE_DESC_ARITY",
+        "E_NON_ASCII_MINUS"
+      ]
+    },
+    {
+      "section": "12-3c-faces",
+      "name": "Tfa232.stp",
+      "codes": [
+        "E_FILE_DESC_ARITY",
+        "E_NON_ASCII_MINUS"
+      ]
+    },
+    {
+      "section": "12-3c-faces",
+      "name": "Tfa226.stp",
+      "codes": [
+        "E_FILE_DESC_ARITY",
+        "E_NON_ASCII_MINUS"
+      ]
+    },
+    {
+      "section": "12-3c-faces",
+      "name": "Hea006.stp",
+      "codes": [
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-3c-faces",
+      "name": "Tfa227.stp",
+      "codes": [
+        "E_FILE_DESC_ARITY",
+        "E_NON_ASCII_MINUS"
+      ]
+    },
+    {
+      "section": "12-3c-faces",
+      "name": "Tfa233.stp",
+      "codes": [
+        "E_FILE_DESC_ARITY",
+        "E_NON_ASCII_MINUS"
+      ]
+    },
+    {
+      "section": "12-3c-faces",
+      "name": "Tfa151.stp",
+      "codes": [
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-3c-faces",
+      "name": "Tfa145.stp",
+      "codes": [
+        "E_NO_CLOSE"
+      ]
+    },
+    {
+      "section": "12-3c-faces",
+      "name": "Tfa192.stp",
+      "codes": [
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-3c-faces",
+      "name": "Tfa186.stp",
+      "codes": [
+        "E_NO_CLOSE"
+      ]
+    },
+    {
+      "section": "12-6-assembly",
+      "name": "P002.stp",
+      "codes": [
+        "E_X2_NO_TERM",
+        "E_X2_NON_HEX",
+        "E_X2_BAD_LEN"
+      ]
+    },
+    {
+      "section": "12-6-assembly",
+      "name": "A004.stp",
+      "codes": [
+        "E_UNRESOLVED_REFS"
+      ]
+    },
+    {
+      "section": "12-3a-shells",
+      "name": "Tsh226.stp",
+      "codes": [
+        "E_PAREN_UNBALANCED",
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-3a-shells",
+      "name": "Tsh024.stp",
+      "codes": [
+        "E_NO_DATA"
+      ]
+    },
+    {
+      "section": "12-3a-shells",
+      "name": "Tsh018.stp",
+      "codes": [
+        "E_PAREN_UNBALANCED",
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-3a-shells",
+      "name": "Tsh150.stp",
+      "codes": [
+        "E_NO_CLOSE",
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-3a-shells",
+      "name": "Tsh144.stp",
+      "codes": [
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-3a-shells",
+      "name": "Tsh193.stp",
+      "codes": [
+        "E_PAREN_UNBALANCED",
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-3a-shells",
+      "name": "Tsh187.stp",
+      "codes": [
+        "E_PAREN_UNBALANCED",
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-3a-shells",
+      "name": "Tsh186.stp",
+      "codes": [
+        "E_PAREN_UNBALANCED",
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-3a-shells",
+      "name": "Tsh192.stp",
+      "codes": [
+        "E_PAREN_UNBALANCED",
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-3a-shells",
+      "name": "Tsh179.stp",
+      "codes": [
+        "E_PAREN_NEGATIVE",
+        "E_FILE_DESC_ARITY",
+        "E_NON_ASCII_MINUS"
+      ]
+    },
+    {
+      "section": "12-3a-shells",
+      "name": "Tsh145.stp",
+      "codes": [
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-3a-shells",
+      "name": "Tsh151.stp",
+      "codes": [
+        "E_NO_CLOSE",
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-3a-shells",
+      "name": "Tsh227.stp",
+      "codes": [
+        "E_PAREN_UNBALANCED",
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-3a-shells",
+      "name": "Tsh225.stp",
+      "codes": [
+        "E_PAREN_UNBALANCED",
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-3a-shells",
+      "name": "Tsh219.stp",
+      "codes": [
+        "E_PAREN_UNBALANCED",
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-3a-shells",
+      "name": "Tsh033.stp",
+      "codes": [
+        "E_NO_DATA"
+      ]
+    },
+    {
+      "section": "12-3a-shells",
+      "name": "Tsh027.stp",
+      "codes": [
+        "E_NO_DATA"
+      ]
+    },
+    {
+      "section": "12-3a-shells",
+      "name": "Tsh147.stp",
+      "codes": [
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-3a-shells",
+      "name": "Tsh153.stp",
+      "codes": [
+        "E_NO_CLOSE",
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-3a-shells",
+      "name": "Tsh184.stp",
+      "codes": [
+        "E_PAREN_UNBALANCED",
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-3a-shells",
+      "name": "Tsh190.stp",
+      "codes": [
+        "E_PAREN_UNBALANCED",
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-3a-shells",
+      "name": "Tsh191.stp",
+      "codes": [
+        "E_PAREN_UNBALANCED",
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-3a-shells",
+      "name": "Tsh185.stp",
+      "codes": [
+        "E_PAREN_UNBALANCED",
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-3a-shells",
+      "name": "Tsh152.stp",
+      "codes": [
+        "E_NO_CLOSE",
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-3a-shells",
+      "name": "Tsh146.stp",
+      "codes": [
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-3a-shells",
+      "name": "Tsh032.stp",
+      "codes": [
+        "E_NO_DATA"
+      ]
+    },
+    {
+      "section": "12-3a-shells",
+      "name": "Tsh218.stp",
+      "codes": [
+        "E_PAREN_UNBALANCED",
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-3a-shells",
+      "name": "Tsh224.stp",
+      "codes": [
+        "E_PAREN_UNBALANCED",
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-3a-shells",
+      "name": "Tsh208.stp",
+      "codes": [
+        "E_PAREN_UNBALANCED",
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-3a-shells",
+      "name": "Tsh220.stp",
+      "codes": [
+        "E_PAREN_UNBALANCED",
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-3a-shells",
+      "name": "Tsh036.stp",
+      "codes": [
+        "E_NO_DATA"
+      ]
+    },
+    {
+      "section": "12-3a-shells",
+      "name": "Tsh022.stp",
+      "codes": [
+        "E_NO_DATA"
+      ]
+    },
+    {
+      "section": "12-3a-shells",
+      "name": "Tsh142.stp",
+      "codes": [
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-3a-shells",
+      "name": "Tsh156.stp",
+      "codes": [
+        "E_NO_CLOSE",
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-3a-shells",
+      "name": "Tsh181.stp",
+      "codes": [
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-3a-shells",
+      "name": "Tsh195.stp",
+      "codes": [
+        "E_PAREN_UNBALANCED",
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-3a-shells",
+      "name": "Tsh194.stp",
+      "codes": [
+        "E_PAREN_UNBALANCED",
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-3a-shells",
+      "name": "Tsh180.stp",
+      "codes": [
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-3a-shells",
+      "name": "Tsh157.stp",
+      "codes": [
+        "E_NO_CLOSE",
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-3a-shells",
+      "name": "Tsh143.stp",
+      "codes": [
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-3a-shells",
+      "name": "Tsh023.stp",
+      "codes": [
+        "E_NO_DATA"
+      ]
+    },
+    {
+      "section": "12-3a-shells",
+      "name": "Tsh037.stp",
+      "codes": [
+        "E_NO_DATA"
+      ]
+    },
+    {
+      "section": "12-3a-shells",
+      "name": "Tsh221.stp",
+      "codes": [
+        "E_PAREN_UNBALANCED",
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-3a-shells",
+      "name": "Tsh209.stp",
+      "codes": [
+        "E_PAREN_UNBALANCED",
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-3a-shells",
+      "name": "Tsh223.stp",
+      "codes": [
+        "E_PAREN_UNBALANCED",
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-3a-shells",
+      "name": "Tsh009.stp",
+      "codes": [
+        "E_PAREN_UNBALANCED",
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-3a-shells",
+      "name": "Tsh021.stp",
+      "codes": [
+        "E_NO_DATA"
+      ]
+    },
+    {
+      "section": "12-3a-shells",
+      "name": "Tsh035.stp",
+      "codes": [
+        "E_NO_DATA"
+      ]
+    },
+    {
+      "section": "12-3a-shells",
+      "name": "Tsh155.stp",
+      "codes": [
+        "E_NO_CLOSE",
+        "E_PAREN_NEGATIVE",
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-3a-shells",
+      "name": "Tsh141.stp",
+      "codes": [
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-3a-shells",
+      "name": "Tsh196.stp",
+      "codes": [
+        "E_PAREN_UNBALANCED",
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-3a-shells",
+      "name": "Tsh182.stp",
+      "codes": [
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-3a-shells",
+      "name": "Tsh183.stp",
+      "codes": [
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-3a-shells",
+      "name": "Tsh197.stp",
+      "codes": [
+        "E_PAREN_UNBALANCED",
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-3a-shells",
+      "name": "Tsh140.stp",
+      "codes": [
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-3a-shells",
+      "name": "Tsh154.stp",
+      "codes": [
+        "E_NO_CLOSE",
+        "E_PAREN_NEGATIVE",
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-3a-shells",
+      "name": "Tsh020.stp",
+      "codes": [
+        "E_NO_DATA"
+      ]
+    },
+    {
+      "section": "12-3a-shells",
+      "name": "Tsh008.stp",
+      "codes": [
+        "E_PAREN_UNBALANCED",
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-3a-shells",
+      "name": "Tsh222.stp",
+      "codes": [
+        "E_PAREN_UNBALANCED",
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-3a-shells",
+      "name": "Bo002.stp",
+      "codes": [
+        "E_UNRESOLVED_REFS"
+      ]
+    },
+    {
+      "section": "12-3a-shells",
+      "name": "Tsh044.stp",
+      "codes": [
+        "E_NO_DATA"
+      ]
+    },
+    {
+      "section": "12-3a-shells",
+      "name": "Tsh079.stp",
+      "codes": [
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-3a-shells",
+      "name": "Tsh041.stp",
+      "codes": [
+        "E_NO_DATA"
+      ]
+    },
+    {
+      "section": "12-3a-shells",
+      "name": "Tsh096.stp",
+      "codes": [
+        "E_PAREN_UNBALANCED",
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-3a-shells",
+      "name": "Tsh082.stp",
+      "codes": [
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-3a-shells",
+      "name": "Tsh135.stp",
+      "codes": [
+        "E_NO_CLOSE"
+      ]
+    },
+    {
+      "section": "12-3a-shells",
+      "name": "Tsh134.stp",
+      "codes": [
+        "E_NO_CLOSE"
+      ]
+    },
+    {
+      "section": "12-3a-shells",
+      "name": "Tsh083.stp",
+      "codes": [
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-3a-shells",
+      "name": "Tsh097.stp",
+      "codes": [
+        "E_PAREN_UNBALANCED",
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-3a-shells",
+      "name": "Tsh040.stp",
+      "codes": [
+        "E_NO_DATA"
+      ]
+    },
+    {
+      "section": "12-3a-shells",
+      "name": "Tsh081.stp",
+      "codes": [
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-3a-shells",
+      "name": "Tsh095.stp",
+      "codes": [
+        "E_PAREN_UNBALANCED",
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-3a-shells",
+      "name": "Tsh136.stp",
+      "codes": [
+        "E_NO_CLOSE"
+      ]
+    },
+    {
+      "section": "12-3a-shells",
+      "name": "Tsh137.stp",
+      "codes": [
+        "E_NO_CLOSE"
+      ]
+    },
+    {
+      "section": "12-3a-shells",
+      "name": "Tsh094.stp",
+      "codes": [
+        "E_PAREN_UNBALANCED",
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-3a-shells",
+      "name": "Tsh080.stp",
+      "codes": [
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-3a-shells",
+      "name": "Tsh043.stp",
+      "codes": [
+        "E_NO_DATA"
+      ]
+    },
+    {
+      "section": "12-3a-shells",
+      "name": "Tsh099.stp",
+      "codes": [
+        "E_PAREN_UNBALANCED",
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-3a-shells",
+      "name": "Tsh098.stp",
+      "codes": [
+        "E_PAREN_UNBALANCED",
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-3a-shells",
+      "name": "Tsh139.stp",
+      "codes": [
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-3a-shells",
+      "name": "Tsh138.stp",
+      "codes": [
+        "E_NO_CLOSE"
+      ]
+    },
+    {
+      "section": "12-3a-shells",
+      "name": "Tsh100.stp",
+      "codes": [
+        "E_PAREN_UNBALANCED",
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-3a-shells",
+      "name": "Tsh101.stp",
+      "codes": [
+        "E_PAREN_UNBALANCED",
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-3a-shells",
+      "name": "Tsh103.stp",
+      "codes": [
+        "E_PAREN_UNBALANCED",
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-3a-shells",
+      "name": "Tsh102.stp",
+      "codes": [
+        "E_PAREN_UNBALANCED",
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-3a-shells",
+      "name": "Tsh207.stp",
+      "codes": [
+        "E_PAREN_UNBALANCED",
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-3a-shells",
+      "name": "Tsh213.stp",
+      "codes": [
+        "E_PAREN_UNBALANCED",
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-3a-shells",
+      "name": "Tsh005.stp",
+      "codes": [
+        "E_PAREN_UNBALANCED",
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-3a-shells",
+      "name": "Tsh011.stp",
+      "codes": [
+        "E_PAREN_UNBALANCED",
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-3a-shells",
+      "name": "Tsh039.stp",
+      "codes": [
+        "E_NO_DATA"
+      ]
+    },
+    {
+      "section": "12-3a-shells",
+      "name": "Tsh158.stp",
+      "codes": [
+        "E_NO_CLOSE",
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-3a-shells",
+      "name": "Tsh010.stp",
+      "codes": [
+        "E_PAREN_UNBALANCED",
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-3a-shells",
+      "name": "Tsh004.stp",
+      "codes": [
+        "E_PAREN_UNBALANCED",
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-3a-shells",
+      "name": "Tsh212.stp",
+      "codes": [
+        "E_PAREN_UNBALANCED",
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-3a-shells",
+      "name": "Tsh206.stp",
+      "codes": [
+        "E_PAREN_UNBALANCED",
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-3a-shells",
+      "name": "Tsh210.stp",
+      "codes": [
+        "E_PAREN_UNBALANCED",
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-3a-shells",
+      "name": "Tsh204.stp",
+      "codes": [
+        "E_PAREN_UNBALANCED",
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-3a-shells",
+      "name": "Tsh012.stp",
+      "codes": [
+        "E_PAREN_UNBALANCED",
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-3a-shells",
+      "name": "Tsh006.stp",
+      "codes": [
+        "E_PAREN_UNBALANCED",
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-3a-shells",
+      "name": "Tsh199.stp",
+      "codes": [
+        "E_PAREN_UNBALANCED",
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-3a-shells",
+      "name": "Tsh198.stp",
+      "codes": [
+        "E_PAREN_UNBALANCED",
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-3a-shells",
+      "name": "Tsh013.stp",
+      "codes": [
+        "E_PAREN_UNBALANCED",
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-3a-shells",
+      "name": "Tsh205.stp",
+      "codes": [
+        "E_PAREN_UNBALANCED",
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-3a-shells",
+      "name": "Tsh211.stp",
+      "codes": [
+        "E_PAREN_UNBALANCED",
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-3a-shells",
+      "name": "Tsh215.stp",
+      "codes": [
+        "E_PAREN_UNBALANCED",
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-3a-shells",
+      "name": "Tsh201.stp",
+      "codes": [
+        "E_PAREN_UNBALANCED",
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-3a-shells",
+      "name": "Tsh003.stp",
+      "codes": [
+        "E_PAREN_UNBALANCED",
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-3a-shells",
+      "name": "Tsh188.stp",
+      "codes": [
+        "E_PAREN_UNBALANCED",
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-3a-shells",
+      "name": "Tsh189.stp",
+      "codes": [
+        "E_PAREN_UNBALANCED",
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-3a-shells",
+      "name": "Tsh002.stp",
+      "codes": [
+        "E_PAREN_UNBALANCED",
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-3a-shells",
+      "name": "Tsh200.stp",
+      "codes": [
+        "E_PAREN_UNBALANCED",
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-3a-shells",
+      "name": "Tsh214.stp",
+      "codes": [
+        "E_PAREN_UNBALANCED",
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-3a-shells",
+      "name": "Tsh228.stp",
+      "codes": [
+        "E_PAREN_UNBALANCED",
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-3a-shells",
+      "name": "Tsh202.stp",
+      "codes": [
+        "E_PAREN_UNBALANCED",
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-3a-shells",
+      "name": "Tsh216.stp",
+      "codes": [
+        "E_PAREN_UNBALANCED",
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-3a-shells",
+      "name": "Tsh028.stp",
+      "codes": [
+        "E_NO_DATA"
+      ]
+    },
+    {
+      "section": "12-3a-shells",
+      "name": "Tsh148.stp",
+      "codes": [
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-3a-shells",
+      "name": "Tsh149.stp",
+      "codes": [
+        "E_NO_CLOSE",
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-3a-shells",
+      "name": "Tsh015.stp",
+      "codes": [
+        "E_PAREN_UNBALANCED",
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-3a-shells",
+      "name": "Tsh001.stp",
+      "codes": [
+        "E_PAREN_UNBALANCED",
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-3a-shells",
+      "name": "Tsh217.stp",
+      "codes": [
+        "E_PAREN_UNBALANCED",
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-3a-shells",
+      "name": "Tsh203.stp",
+      "codes": [
+        "E_PAREN_UNBALANCED",
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-10-perf",
+      "name": "Pf012.stp",
+      "codes": [
+        "E_PAREN_NEGATIVE"
+      ]
+    },
+    {
+      "section": "12-10-perf",
+      "name": "Pf017.stp",
+      "codes": [
+        "E_REAL_NO_DOT"
+      ]
+    },
+    {
+      "section": "12-10-perf",
+      "name": "Pf037.stp",
+      "codes": [
+        "E_UNRESOLVED_REFS"
+      ]
+    },
+    {
+      "section": "12-10-perf",
+      "name": "Pf021.stp",
+      "codes": [
+        "E_REAL_NO_DOT",
+        "E_REAL_NO_DOT",
+        "E_REAL_NO_DOT"
+      ]
+    },
+    {
+      "section": "12-8-mixed",
+      "name": "M136.stp",
+      "codes": [
+        "E_UNRESOLVED_REFS"
+      ]
+    },
+    {
+      "section": "12-8-mixed",
+      "name": "M087.stp",
+      "codes": [
+        "E_UNRESOLVED_REFS"
+      ]
+    },
+    {
+      "section": "12-8-mixed",
+      "name": "M075.stp",
+      "codes": [
+        "E_UNRESOLVED_REFS"
+      ]
+    },
+    {
+      "section": "12-8-mixed",
+      "name": "M161.stp",
+      "codes": [
+        "E_UNRESOLVED_REFS"
+      ]
+    },
+    {
+      "section": "12-3b-wires",
+      "name": "Twi246.stp",
+      "codes": [
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-3b-wires",
+      "name": "Twi252.stp",
+      "codes": [
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-3b-wires",
+      "name": "Twi130.stp",
+      "codes": [
+        "E_FILE_DESC_ARITY",
+        "E_NON_ASCII_MINUS"
+      ]
+    },
+    {
+      "section": "12-3b-wires",
+      "name": "Twi131.stp",
+      "codes": [
+        "E_FILE_DESC_ARITY",
+        "E_NON_ASCII_MINUS"
+      ]
+    },
+    {
+      "section": "12-3b-wires",
+      "name": "Twi253.stp",
+      "codes": [
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-3b-wires",
+      "name": "Twi247.stp",
+      "codes": [
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-3b-wires",
+      "name": "Twi251.stp",
+      "codes": [
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-3b-wires",
+      "name": "Twi245.stp",
+      "codes": [
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-3b-wires",
+      "name": "Twi127.stp",
+      "codes": [
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-3b-wires",
+      "name": "Twi133.stp",
+      "codes": [
+        "E_FILE_DESC_ARITY",
+        "E_NON_ASCII_MINUS"
+      ]
+    },
+    {
+      "section": "12-3b-wires",
+      "name": "Twi132.stp",
+      "codes": [
+        "E_FILE_DESC_ARITY",
+        "E_NON_ASCII_MINUS"
+      ]
+    },
+    {
+      "section": "12-3b-wires",
+      "name": "Twi244.stp",
+      "codes": [
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-3b-wires",
+      "name": "Twi250.stp",
+      "codes": [
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-3b-wires",
+      "name": "Twi254.stp",
+      "codes": [
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-3b-wires",
+      "name": "Twi240.stp",
+      "codes": [
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-3b-wires",
+      "name": "Twi268.stp",
+      "codes": [
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-3b-wires",
+      "name": "Twi136.stp",
+      "codes": [
+        "E_PAREN_NEGATIVE",
+        "E_FILE_DESC_ARITY",
+        "E_NON_ASCII_MINUS"
+      ]
+    },
+    {
+      "section": "12-3b-wires",
+      "name": "Twi269.stp",
+      "codes": [
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-3b-wires",
+      "name": "Twi241.stp",
+      "codes": [
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-3b-wires",
+      "name": "Twi255.stp",
+      "codes": [
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-3b-wires",
+      "name": "Twi243.stp",
+      "codes": [
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-3b-wires",
+      "name": "Twi257.stp",
+      "codes": [
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-3b-wires",
+      "name": "Twi135.stp",
+      "codes": [
+        "E_PAREN_NEGATIVE",
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-3b-wires",
+      "name": "Twi134.stp",
+      "codes": [
+        "E_PAREN_NEGATIVE",
+        "E_FILE_DESC_ARITY",
+        "E_NON_ASCII_MINUS"
+      ]
+    },
+    {
+      "section": "12-3b-wires",
+      "name": "Twi256.stp",
+      "codes": [
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-3b-wires",
+      "name": "Twi242.stp",
+      "codes": [
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-3b-wires",
+      "name": "Twi184.stp",
+      "codes": [
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-3b-wires",
+      "name": "Twi185.stp",
+      "codes": [
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-3b-wires",
+      "name": "Twi186.stp",
+      "codes": [
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-3b-wires",
+      "name": "Twi237.stp",
+      "codes": [
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-3b-wires",
+      "name": "Twi182.stp",
+      "codes": [
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-3b-wires",
+      "name": "Twi197.stp",
+      "codes": [
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-3b-wires",
+      "name": "Twi183.stp",
+      "codes": [
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-3b-wires",
+      "name": "Twi238.stp",
+      "codes": [
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-3b-wires",
+      "name": "Twi204.stp",
+      "codes": [
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-3b-wires",
+      "name": "Twi199.stp",
+      "codes": [
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-3b-wires",
+      "name": "Twi198.stp",
+      "codes": [
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-3b-wires",
+      "name": "Twi205.stp",
+      "codes": [
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-3b-wires",
+      "name": "Twi239.stp",
+      "codes": [
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-3b-wires",
+      "name": "Twi203.stp",
+      "codes": [
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-3b-wires",
+      "name": "Twi201.stp",
+      "codes": [
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-3b-wires",
+      "name": "Twi200.stp",
+      "codes": [
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-3b-wires",
+      "name": "Twi267.stp",
+      "codes": [
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-3b-wires",
+      "name": "Twi273.stp",
+      "codes": [
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-3b-wires",
+      "name": "Twi272.stp",
+      "codes": [
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-3b-wires",
+      "name": "Twi266.stp",
+      "codes": [
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-3b-wires",
+      "name": "Twi258.stp",
+      "codes": [
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-3b-wires",
+      "name": "Twi270.stp",
+      "codes": [
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-3b-wires",
+      "name": "Twi264.stp",
+      "codes": [
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-3b-wires",
+      "name": "Twi112.stp",
+      "codes": [
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-3b-wires",
+      "name": "Twi113.stp",
+      "codes": [
+        "E_FILE_DESC_ARITY",
+        "E_NON_ASCII_MINUS"
+      ]
+    },
+    {
+      "section": "12-3b-wires",
+      "name": "Twi265.stp",
+      "codes": [
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-3b-wires",
+      "name": "Twi271.stp",
+      "codes": [
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-3b-wires",
+      "name": "Twi259.stp",
+      "codes": [
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-3b-wires",
+      "name": "Twi275.stp",
+      "codes": [
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-3b-wires",
+      "name": "Twi261.stp",
+      "codes": [
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-3b-wires",
+      "name": "Twi249.stp",
+      "codes": [
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-3b-wires",
+      "name": "Twi116.stp",
+      "codes": [
+        "E_FILE_DESC_ARITY",
+        "E_NON_ASCII_MINUS"
+      ]
+    },
+    {
+      "section": "12-3b-wires",
+      "name": "Twi248.stp",
+      "codes": [
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-3b-wires",
+      "name": "Twi260.stp",
+      "codes": [
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-3b-wires",
+      "name": "Twi274.stp",
+      "codes": [
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-3b-wires",
+      "name": "Twi262.stp",
+      "codes": [
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-3b-wires",
+      "name": "Twi276.stp",
+      "codes": [
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-3b-wires",
+      "name": "Twi114.stp",
+      "codes": [
+        "E_FILE_DESC_ARITY",
+        "E_NON_ASCII_MINUS"
+      ]
+    },
+    {
+      "section": "12-3b-wires",
+      "name": "Twi128.stp",
+      "codes": [
+        "E_FILE_DESC_ARITY",
+        "E_NON_ASCII_MINUS"
+      ]
+    },
+    {
+      "section": "12-3b-wires",
+      "name": "Twi129.stp",
+      "codes": [
+        "E_FILE_DESC_ARITY",
+        "E_NON_ASCII_MINUS"
+      ]
+    },
+    {
+      "section": "12-3b-wires",
+      "name": "Twi115.stp",
+      "codes": [
+        "E_FILE_DESC_ARITY",
+        "E_NON_ASCII_MINUS"
+      ]
+    },
+    {
+      "section": "12-3b-wires",
+      "name": "Twi263.stp",
+      "codes": [
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-2b-nurbs",
+      "name": "Gn039.stp",
+      "codes": [
+        "E_PAREN_UNBALANCED",
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-2b-nurbs",
+      "name": "Gn107.stp",
+      "codes": [
+        "E_UNRESOLVED_REFS"
+      ]
+    },
+    {
+      "section": "12-2b-nurbs",
+      "name": "Gn073.stp",
+      "codes": [
+        "E_PAREN_UNBALANCED",
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-2b-nurbs",
+      "name": "Gn072.stp",
+      "codes": [
+        "E_PAREN_UNBALANCED",
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-2b-nurbs",
+      "name": "Gn106.stp",
+      "codes": [
+        "E_UNRESOLVED_REFS"
+      ]
+    },
+    {
+      "section": "12-2b-nurbs",
+      "name": "Gn104.stp",
+      "codes": [
+        "E_UNRESOLVED_REFS"
+      ]
+    },
+    {
+      "section": "12-2b-nurbs",
+      "name": "Gn070.stp",
+      "codes": [
+        "E_PAREN_UNBALANCED",
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-2b-nurbs",
+      "name": "Gn059.stp",
+      "codes": [
+        "E_PAREN_UNBALANCED",
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-2b-nurbs",
+      "name": "Gn071.stp",
+      "codes": [
+        "E_PAREN_UNBALANCED",
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-2b-nurbs",
+      "name": "Gn105.stp",
+      "codes": [
+        "E_UNRESOLVED_REFS"
+      ]
+    },
+    {
+      "section": "12-2b-nurbs",
+      "name": "Gn115.stp",
+      "codes": [
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-2b-nurbs",
+      "name": "Gn049.stp",
+      "codes": [
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-2b-nurbs",
+      "name": "Gn061.stp",
+      "codes": [
+        "E_PAREN_UNBALANCED",
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-2b-nurbs",
+      "name": "Gn075.stp",
+      "codes": [
+        "E_PAREN_UNBALANCED",
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-2b-nurbs",
+      "name": "Gn074.stp",
+      "codes": [
+        "E_PAREN_UNBALANCED",
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-2b-nurbs",
+      "name": "Gn060.stp",
+      "codes": [
+        "E_PAREN_UNBALANCED",
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-2b-nurbs",
+      "name": "Gn048.stp",
+      "codes": [
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-2b-nurbs",
+      "name": "Gn114.stp",
+      "codes": [
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-2b-nurbs",
+      "name": "Gn116.stp",
+      "codes": [
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-2b-nurbs",
+      "name": "Gn076.stp",
+      "codes": [
+        "E_PAREN_UNBALANCED",
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-2b-nurbs",
+      "name": "Gn062.stp",
+      "codes": [
+        "E_PAREN_UNBALANCED",
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-2b-nurbs",
+      "name": "Gn063.stp",
+      "codes": [
+        "E_PAREN_UNBALANCED",
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-2b-nurbs",
+      "name": "Gn077.stp",
+      "codes": [
+        "E_PAREN_UNBALANCED",
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-2b-nurbs",
+      "name": "Gn117.stp",
+      "codes": [
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-2b-nurbs",
+      "name": "Gn052.stp",
+      "codes": [
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-2b-nurbs",
+      "name": "Gn046.stp",
+      "codes": [
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-2b-nurbs",
+      "name": "Gn084.stp",
+      "codes": [
+        "E_REAL_NO_DOT",
+        "E_REAL_NO_DOT"
+      ]
+    },
+    {
+      "section": "12-2b-nurbs",
+      "name": "Gn047.stp",
+      "codes": [
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-2b-nurbs",
+      "name": "Gn053.stp",
+      "codes": [
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-2b-nurbs",
+      "name": "Gn119.stp",
+      "codes": [
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-2b-nurbs",
+      "name": "Gn045.stp",
+      "codes": [
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-2b-nurbs",
+      "name": "Gn051.stp",
+      "codes": [
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-2b-nurbs",
+      "name": "Gn079.stp",
+      "codes": [
+        "E_PAREN_UNBALANCED",
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-2b-nurbs",
+      "name": "Gn078.stp",
+      "codes": [
+        "E_PAREN_UNBALANCED",
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-2b-nurbs",
+      "name": "Gn050.stp",
+      "codes": [
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-2b-nurbs",
+      "name": "Gn044.stp",
+      "codes": [
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-2b-nurbs",
+      "name": "Gn118.stp",
+      "codes": [
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-2b-nurbs",
+      "name": "Gn108.stp",
+      "codes": [
+        "E_UNRESOLVED_REFS"
+      ]
+    },
+    {
+      "section": "12-2b-nurbs",
+      "name": "Gn120.stp",
+      "codes": [
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-2b-nurbs",
+      "name": "Gn040.stp",
+      "codes": [
+        "E_PAREN_UNBALANCED",
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-2b-nurbs",
+      "name": "Gn083.stp",
+      "codes": [
+        "E_PAREN_UNBALANCED",
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-2b-nurbs",
+      "name": "Gn082.stp",
+      "codes": [
+        "E_PAREN_UNBALANCED",
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-2b-nurbs",
+      "name": "Gn041.stp",
+      "codes": [
+        "E_PAREN_UNBALANCED",
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-2b-nurbs",
+      "name": "Gn069.stp",
+      "codes": [
+        "E_PAREN_UNBALANCED",
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-2b-nurbs",
+      "name": "Gn121.stp",
+      "codes": [
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-2b-nurbs",
+      "name": "Gn123.stp",
+      "codes": [
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-2b-nurbs",
+      "name": "Gn043.stp",
+      "codes": [
+        "E_PAREN_UNBALANCED",
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-2b-nurbs",
+      "name": "Gn080.stp",
+      "codes": [
+        "E_PAREN_UNBALANCED",
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-2b-nurbs",
+      "name": "Gn081.stp",
+      "codes": [
+        "E_PAREN_UNBALANCED",
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-2b-nurbs",
+      "name": "Gn042.stp",
+      "codes": [
+        "E_PAREN_UNBALANCED",
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-2b-nurbs",
+      "name": "Gn122.stp",
+      "codes": [
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-2b-nurbs",
+      "name": "Gn009.stp",
+      "codes": [
+        "E_REAL_NO_DOT"
+      ]
+    },
+    {
+      "section": "12-4-tolerance",
+      "name": "N106.stp",
+      "codes": [
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-4-tolerance",
+      "name": "N112.stp",
+      "codes": [
+        "E_NO_CLOSE",
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-4-tolerance",
+      "name": "N113.stp",
+      "codes": [
+        "E_NO_CLOSE",
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-4-tolerance",
+      "name": "N107.stp",
+      "codes": [
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-4-tolerance",
+      "name": "N111.stp",
+      "codes": [
+        "E_NO_CLOSE",
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-4-tolerance",
+      "name": "N105.stp",
+      "codes": [
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-4-tolerance",
+      "name": "N104.stp",
+      "codes": [
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-4-tolerance",
+      "name": "N110.stp",
+      "codes": [
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-4-tolerance",
+      "name": "N114.stp",
+      "codes": [
+        "E_NO_CLOSE",
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-4-tolerance",
+      "name": "N101.stp",
+      "codes": [
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-4-tolerance",
+      "name": "N115.stp",
+      "codes": [
+        "E_NO_CLOSE",
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-4-tolerance",
+      "name": "N088.stp",
+      "codes": [
+        "E_NO_CLOSE"
+      ]
+    },
+    {
+      "section": "12-4-tolerance",
+      "name": "N103.stp",
+      "codes": [
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-4-tolerance",
+      "name": "N102.stp",
+      "codes": [
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-4-tolerance",
+      "name": "N089.stp",
+      "codes": [
+        "E_NO_CLOSE"
+      ]
+    },
+    {
+      "section": "12-4-tolerance",
+      "name": "N090.stp",
+      "codes": [
+        "E_NO_CLOSE"
+      ]
+    },
+    {
+      "section": "12-4-tolerance",
+      "name": "N084.stp",
+      "codes": [
+        "E_PAREN_NEGATIVE",
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-4-tolerance",
+      "name": "N085.stp",
+      "codes": [
+        "E_PAREN_NEGATIVE",
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-4-tolerance",
+      "name": "N087.stp",
+      "codes": [
+        "E_NO_CLOSE"
+      ]
+    },
+    {
+      "section": "12-4-tolerance",
+      "name": "N086.stp",
+      "codes": [
+        "E_NO_CLOSE"
+      ]
+    },
+    {
+      "section": "12-4-tolerance",
+      "name": "N082.stp",
+      "codes": [
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-4-tolerance",
+      "name": "N109.stp",
+      "codes": [
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-4-tolerance",
+      "name": "N108.stp",
+      "codes": [
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-4-tolerance",
+      "name": "N083.stp",
+      "codes": [
+        "E_PAREN_NEGATIVE",
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-4-tolerance",
+      "name": "N081.stp",
+      "codes": [
+        "E_PAREN_NEGATIVE",
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-2a-pcurves",
+      "name": "Gp092.stp",
+      "codes": [
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-2a-pcurves",
+      "name": "Gp125.stp",
+      "codes": [
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-2a-pcurves",
+      "name": "Gp124.stp",
+      "codes": [
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-2a-pcurves",
+      "name": "Gp093.stp",
+      "codes": [
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-2a-pcurves",
+      "name": "Gp091.stp",
+      "codes": [
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-2a-pcurves",
+      "name": "Gp085.stp",
+      "codes": [
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-2a-pcurves",
+      "name": "Gp084.stp",
+      "codes": [
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-2a-pcurves",
+      "name": "Gp094.stp",
+      "codes": [
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-2a-pcurves",
+      "name": "Gp123.stp",
+      "codes": [
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-2a-pcurves",
+      "name": "Gp122.stp",
+      "codes": [
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-2a-pcurves",
+      "name": "Gp081.stp",
+      "codes": [
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-2a-pcurves",
+      "name": "Gp095.stp",
+      "codes": [
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-2a-pcurves",
+      "name": "Gp083.stp",
+      "codes": [
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-2a-pcurves",
+      "name": "Gp108.stp",
+      "codes": [
+        "E_NON_ASCII_MINUS"
+      ]
+    },
+    {
+      "section": "12-2a-pcurves",
+      "name": "Gp121.stp",
+      "codes": [
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-2a-pcurves",
+      "name": "Gp082.stp",
+      "codes": [
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-2c-surfaces",
+      "name": "Gs069.stp",
+      "codes": [
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-2c-surfaces",
+      "name": "Gs068.stp",
+      "codes": [
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-2c-surfaces",
+      "name": "Gs078.stp",
+      "codes": [
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-2c-surfaces",
+      "name": "Gs087.stp",
+      "codes": [
+        "E_NO_CLOSE"
+      ]
+    },
+    {
+      "section": "12-2c-surfaces",
+      "name": "Gs118.stp",
+      "codes": [
+        "E_PAREN_NEGATIVE",
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-2c-surfaces",
+      "name": "Gs086.stp",
+      "codes": [
+        "E_NO_CLOSE"
+      ]
+    },
+    {
+      "section": "12-2c-surfaces",
+      "name": "Gs084.stp",
+      "codes": [
+        "E_NO_CLOSE"
+      ]
+    },
+    {
+      "section": "12-2c-surfaces",
+      "name": "Gs085.stp",
+      "codes": [
+        "E_NO_CLOSE"
+      ]
+    },
+    {
+      "section": "12-2c-surfaces",
+      "name": "Gs077.stp",
+      "codes": [
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-2c-surfaces",
+      "name": "Gs088.stp",
+      "codes": [
+        "E_NO_CLOSE"
+      ]
+    },
+    {
+      "section": "12-2c-surfaces",
+      "name": "Gs117.stp",
+      "codes": [
+        "E_PAREN_NEGATIVE",
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-2c-surfaces",
+      "name": "Gs116.stp",
+      "codes": [
+        "E_PAREN_NEGATIVE",
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-2c-surfaces",
+      "name": "Gs076.stp",
+      "codes": [
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-2c-surfaces",
+      "name": "Gs074.stp",
+      "codes": [
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-2c-surfaces",
+      "name": "Gs114.stp",
+      "codes": [
+        "E_STRING_OPEN",
+        "E_PAREN_UNBALANCED",
+        "E_NO_HEADER_END"
+      ]
+    },
+    {
+      "section": "12-2c-surfaces",
+      "name": "Gs115.stp",
+      "codes": [
+        "E_PAREN_NEGATIVE",
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-2c-surfaces",
+      "name": "Gs075.stp",
+      "codes": [
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-2c-surfaces",
+      "name": "Gs065.stp",
+      "codes": [
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-2c-surfaces",
+      "name": "Gs071.stp",
+      "codes": [
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-2c-surfaces",
+      "name": "Gs070.stp",
+      "codes": [
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-2c-surfaces",
+      "name": "Gs064.stp",
+      "codes": [
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-2c-surfaces",
+      "name": "Gs072.stp",
+      "codes": [
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-2c-surfaces",
+      "name": "Gs066.stp",
+      "codes": [
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-2c-surfaces",
+      "name": "Gs067.stp",
+      "codes": [
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-2c-surfaces",
+      "name": "Gs073.stp",
+      "codes": [
+        "E_FILE_DESC_ARITY"
+      ]
+    },
+    {
+      "section": "12-7-pmi",
+      "name": "Pmi125.stp",
+      "codes": [
+        "E_UNRESOLVED_REFS"
+      ]
+    },
+    {
+      "section": "12-7-pmi",
+      "name": "Pmi106.stp",
+      "codes": [
+        "E_UNRESOLVED_REFS"
+      ]
+    }
+  ],
+  "error_codes": {
+    "E_FILE_DESC_ARITY": 341,
+    "E_NON_ASCII_MINUS": 53,
+    "E_NO_CLOSE": 51,
+    "E_STRING_OPEN": 6,
+    "E_PAREN_UNBALANCED": 102,
+    "E_NO_HEADER_END": 5,
+    "E_UNRESOLVED_REFS": 28,
+    "E_REAL_NO_DOT": 11,
+    "E_X2_NO_TERM": 9,
+    "E_X2_NON_HEX": 8,
+    "E_X2_BAD_LEN": 5,
+    "E_NO_DATA": 23,
+    "E_NO_HEADER": 1,
+    "E_PAREN_NEGATIVE": 15,
+    "E_CLOSE_CASE": 1,
+    "E_X4_NO_TERM": 1,
+    "E_X4_BAD_LEN": 2,
+    "E_STRING_TOO_LONG": 2,
+    "E_NO_DATA_END": 2,
+    "E_MAGIC_CASE": 1,
+    "E_UTF16_BOM": 1,
+    "E_NO_MAGIC": 3,
+    "E_COMMENT_OPEN": 1
+  },
+  "warning_codes": {
+    "W_FORWARD_REF": 734,
+    "W_COMPLEX_ORDER": 57,
+    "W_BARE_BACKSLASH": 116,
+    "W_DUP_REF": 27,
+    "W_BOM": 2
+  }
+}
