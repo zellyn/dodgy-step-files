@@ -25284,6 +25284,28 @@ ShapeUpgrade_ShapeCopy calls BasisSurface() without null check. If basis is null
 
 ShapeUpgrade observer flags C0 surfaces via !(IsCNu(1) && IsCNv(1)). Asymmetry: if U is C1 but V is C0, flag increments; if V is C1 and U is C0, detection may skip. Fixture: B-SPLINE_SURFACE C0 in U-direction (C1 in V); verify myNbC0Surfaces incremented.
 
+# Wave 70A: STEP Surface Fixtures — IDs Gs169–Gs173
+
+### Gs169 — ShapeAnalysis_Surface: rational surface knot-unaware sampling gap
+
+Rational B-spline with triple knot at u=1.0; grid sampling omits knot-position guards, missing curvature discontinuity. Defect: knot multiplicity not honored in evaluation grid.
+
+### Gs170 — ShapeAnalysis_Surface: trimmed surface closure validation skip
+
+RECTANGULAR_TRIMMED_SURFACE on U-periodic base (u-span trim crosses seam); closure check absent, UV domain treated as continuous. Defect: no closure-aware parameterization guard.
+
+### Gs171 — ShapeAnalysis_Surface: surface domain mismatch on projection result
+
+NextValueOfUV returns UV outside RECTANGULAR_TRIMMED_SURFACE domain bounds [0.2,0.8]²; bounds-check missing on result validation. Defect: unchecked UV parameter alignment.
+
+### Gs172 — ShapeAnalysis_Surface: degenerate surface derivative guard omission
+
+Collapsed B-spline (all poles Z=0, D1≈0) triggers division by zero in normal-projection logic. Defect: zero-magnitude derivative not guarded before evaluation.
+
+### Gs173 — ShapeUpgrade_ShapeCopy: offset surface mode coverage validation omission
+
+OFFSET_SURFACE (+0.5 distance) with asymmetric coverage vs base bounds; myOffsetSurfaceMode enabled without scope/extent check. Defect: offset face coverage unchecked during collection.
+
 ### Ad117 — STEP reader crashes on minimal file with malformed `STYLED_ITEM`
 - **Category**: §12.11 adversarial / parser-robustness (sub-class: SEGV on style record)
 - **Sources**: OCCT MANTIS#0029979; bug-reporter language: "crash by reading STEP file", "STEP reader crashes on import", "segmentation fault on small STEP file". (OCCT MANTIS tracker 502 as of 2026-05-02)
@@ -27366,6 +27388,23 @@ Circle parametrization assumes aNewF ≤ aNewL without handling periodic wraparo
 
 Vertex tolerance extracted without validation against accumulating tolerance array. Edge chain with heterogeneous vertex tolerances triggers incoherent continuity checks. Line 1971–1972: `TopExp::CommonVertex()` retrieves unvalidated tolerance; `aTolVerSeq.Append()` stores unsorted values.
 
+## Wave 70B: STEP Pcurve Fixtures (Gp166–Gp170)
+
+### Gp166 — `ProjectDegenerated.whole-edge-degenerate`
+Conical surface with entire pcurve collapsing to apex singularity. Fixtures force redistribution of degenerate points along non-degenerate parametric axis.
+
+### Gp167 — `ProjectDegenerated.partial-edge-collapse`
+Spherical surface with half-edge pcurve near pole (singularity), tail normal. Tests collapse of degenerate segment endpoint to singularity parameter.
+
+### Gp168 — `ProjectDegenerated.lazy-compute`
+Toroidal surface with meridian edge. Singularities computed lazily without revalidation; traversing torus singularity boundaries triggers stale cache.
+
+### Gp169 — `ProjectDegenerated.dual-distance-logic`
+B-spline surface with 3D curve initial gap. Pcurve distance metrics inconsistently recompute; direct vs. recomputed gap comparison diverges.
+
+### Gp170 — `ProjectDegenerated.iso-flag-unvalidated`
+Planar surface with U-iso degenerate edge. U-constant pcurve lacks coordinate-axis consistency check; flag used without validation.
+
 ### A105 — Regression OCC 6.9.1 → 7.4.0: colours stop appearing on certain STEP files
 - **Category**: §12.6 assembly hierarchy (sub-class: appearance regression across kernel versions)
 - **Sources**: OCCT MANTIS#0031809; bug-reporter language: "regression v.6.9.1-7.4.0 colors no longer showing on certain STEP files", "files that displayed colour in 6.9.1 are grey in 7.4.0", "appearance regression". (OCCT MANTIS tracker 502 as of 2026-05-02)
@@ -28298,6 +28337,21 @@ V-parameter gap detection missing: curves separated by 1.0 in V (gap beyond over
 **Defect**: Falls back to default tolerance (1e-4) if myPrecision < 0 (invalid). Negative precision causes undefined comparison in sharpness tests.  
 **Reproducer**: CheckPin with myPrecision=-1. Without fallback: IsoStat uses invalid tolerance, spurious results. With fallback: toler=1e-4 guards comparisons.  
 **Falsifiable**: Guard `if (myPrecision < 0) toler = 1.e-4` prevents invalid tolerance propagation. Remove; negative precision passes through to undefined behavior.
+
+### N156 — tolerance_asymmetry conflation
+Extreme precision asymmetry (preci1=1e-12, preci2=0.5) in CheckPoints logic; dual squared-distance condition masks both tolerance extremes, creating false-negative distance checks.
+
+### N157 — distance_tolerance_filter_second_pass bypass
+BRepBuilderAPI_Sewing omits distance threshold check; out-of-tolerance candidates (tabDst=0.8 exceeding myTolerance=0.1) included in comparison via bypassed filter.
+
+### N158 — location_transform_in_tolerance_eval bypass
+SameParameterEdge tolerance computation ignores surface location placement; edge on transformed surface (translate +100mm, rotate 45°) yields false tolerance sans transform.
+
+### N159 — direct_BRep_TEdge_tolerance_write bypass
+Raw write to BRep_TEdge bypasses SetMaxTolerance API validation; computed tolerance (0.05) exceeds cap (0.01) via direct memory write.
+
+### N160 — ComputeTol overflow_error tolerance corruption
+Mismatch between 3D and 2D curves (error 1e10+) accumulated into SameParameter tolerance; no early abort causes corruption when degenerate 2D paired with 3D line.
 
 ### M161 — Reader does not validate cross-references; dangling references silently accepted
 - **Category**: §12.8 mixed / auxiliary (sub-class: missing input validation)

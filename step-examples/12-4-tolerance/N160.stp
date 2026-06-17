@@ -1,0 +1,63 @@
+ISO-10303-21;
+/* N160 - BRepLib.cxx.ComputeTol overflow-error tolerance accumulation
+ * Defect: Mismatch between 3D and 2D curves (error > 1e10) accumulated into
+ * SameParameter tolerance without early abort. Edge with 3D line and completely
+ * mismatched 2D curve; without overflow check, corrupts final tolerance.
+ */
+HEADER;
+FILE_DESCRIPTION(('N160 ComputeTol overflow_error tolerance corruption'),'2;1');
+FILE_NAME('N160.stp','2026-06-16T00:00:00',(''),(''),
+  'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
+  'automotive_design',2009,#1);
+#10=CARTESIAN_POINT('origin',(0.0,0.0,0.0));
+#11=DIRECTION('z',(0.0,0.0,1.0));
+#12=DIRECTION('x',(1.0,0.0,0.0));
+#13=AXIS2_PLACEMENT_3D('plc',#10,#11,#12);
+#20=CARTESIAN_POINT('p1',(0.0,0.0,0.0));
+#21=CARTESIAN_POINT('p2',(1.0,0.0,0.0));
+#30=VERTEX_POINT('v1',#20);
+#31=VERTEX_POINT('v2',#21);
+#40=DIRECTION('dir',(1.0,0.0,0.0));
+#41=VECTOR('vec',#40,1.0);
+#42=LINE('lin_3d',#20,#41);
+#43=EDGE_CURVE('edge_3d_mismatch',#30,#31,#42,.T.);
+#50=CARTESIAN_POINT('p3',(100.0,100.0,0.0));
+#51=CARTESIAN_POINT('p4',(101.0,101.0,0.0));
+#60=VERTEX_POINT('v3',#50);
+#61=VERTEX_POINT('v4',#51);
+#70=DIRECTION('dir2',(0.7071,0.7071,0.0));
+#71=VECTOR('vec2',#70,1.414);
+#72=LINE('lin_mismatch_2d',#50,#71);
+#73=EDGE_CURVE('edge_huge_error',#60,#61,#72,.T.);
+#80=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#81=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#82=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#83=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#80,
+  'distance_accuracy_value','nominal_tolerance');
+#84=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#83))
+  GLOBAL_UNIT_ASSIGNED_CONTEXT((#80,#81,#82))
+  REPRESENTATION_CONTEXT('overflow_ctx','3D'));
+#85=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E+10),#80,
+  'distance_accuracy_value','huge_mismatch_error');
+#9000=PRODUCT_CONTEXT('',#1,'mechanical');
+#9001=PRODUCT('N160','N160','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
+#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
+#9021=SHELL_BASED_SURFACE_MODEL('sbsm',(#80));
+#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#9010);
+#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+ENDSEC;
+END-ISO-10303-21;

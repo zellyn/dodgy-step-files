@@ -1,0 +1,100 @@
+ISO-10303-21;
+/* Gs172 - ShapeAnalysis_Surface: degenerate surface handling missing derivative guard
+ *
+ * Defect: NextValueOfUV evaluates surface derivatives without zero-magnitude check.
+ * Degenerate surfaces (zero or near-zero D1 partial derivatives) cause division by
+ * zero or singular projection. Missing guard permits crash on planes/point-like surfaces.
+ * Result: uncaught exception when projecting to degenerate geometry.
+ *
+ * Reproducer: PLANE (constant normal) or collapsed B-spline with D1=0 at poles.
+ * Attempt normal projection without derivative validation.
+ */
+HEADER;
+FILE_DESCRIPTION(('Gs172 test case','degenerate surface derivative guard omission'),'2;1');
+FILE_NAME('Gs172.stp','2026-06-16T00:00:00',('zellyn@gmail.com'),'','auto-generated','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#11=DIRECTION('',(0.0,0.0,1.0));
+#12=DIRECTION('',(1.0,0.0,0.0));
+#13=AXIS2_PLACEMENT_3D('',#10,#11,#12);
+/* PLANE as degenerate surface: all normals constant, derivatives constant/zero
+   Major axis: X, minor axis: Y, location origin, normal Z */
+#20=PLANE('',#13);
+/* B-SPLINE_SURFACE_WITH_KNOTS: collapsed surface, all poles coplanar + degenerate
+   Knots U: [0, 0, 0, 1, 1, 1]
+   Knots V: [0, 0, 0, 1, 1, 1]
+   3x3 poles, all at same Z (degenerate) */
+#30=B_SPLINE_SURFACE_WITH_KNOTS('',3,3,2,2,.F.,.F.,.F.,
+  (0,0,0,1,1,1),(0,0,0,1,1,1),
+  (#40,#41,#42,#43,#44,#45,#46,#47,#48),
+  (1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0),
+  (1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0),.UNSPECIFIED.);
+/* Degenerate poles (all Z=0) */
+#40=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#41=CARTESIAN_POINT('',(3.0,0.0,0.0));
+#42=CARTESIAN_POINT('',(6.0,0.0,0.0));
+#43=CARTESIAN_POINT('',(0.0,3.0,0.0));
+#44=CARTESIAN_POINT('',(3.0,3.0,0.0));
+#45=CARTESIAN_POINT('',(6.0,3.0,0.0));
+#46=CARTESIAN_POINT('',(0.0,6.0,0.0));
+#47=CARTESIAN_POINT('',(3.0,6.0,0.0));
+#48=CARTESIAN_POINT('',(6.0,6.0,0.0));
+/* Trim degenerate B-spline */
+#31=RECTANGULAR_TRIMMED_SURFACE('',#30,0.0,1.0,0.0,1.0,.T.,.T.);
+/* Edge loop on degenerate surface */
+#50=CARTESIAN_POINT('',(1.5,1.5,0.0));
+#51=VERTEX_POINT('',#50);
+#52=CARTESIAN_POINT('',(2.5,1.5,0.0));
+#53=VERTEX_POINT('',#52);
+#54=CARTESIAN_POINT('',(2.5,2.5,0.0));
+#55=VERTEX_POINT('',#54);
+#56=CARTESIAN_POINT('',(1.5,2.5,0.0));
+#57=VERTEX_POINT('',#56);
+/* Edge 1 */
+#60=DIRECTION('',(1.0,0.0,0.0));
+#61=VECTOR('',#60,1.0);
+#62=LINE('',#50,#61);
+#63=EDGE_CURVE('',#51,#53,#62,.T.);
+#64=ORIENTED_EDGE('',*,*,#63,.T.);
+/* Edge 2 */
+#70=DIRECTION('',(0.0,1.0,0.0));
+#71=VECTOR('',#70,1.0);
+#72=LINE('',#52,#71);
+#73=EDGE_CURVE('',#53,#55,#72,.T.);
+#74=ORIENTED_EDGE('',*,*,#73,.T.);
+/* Edge 3 */
+#80=DIRECTION('',(-1.0,0.0,0.0));
+#81=VECTOR('',#80,1.0);
+#82=LINE('',#54,#81);
+#83=EDGE_CURVE('',#55,#57,#82,.T.);
+#84=ORIENTED_EDGE('',*,*,#83,.T.);
+/* Edge 4 */
+#90=DIRECTION('',(0.0,-1.0,0.0));
+#91=VECTOR('',#90,1.0);
+#92=LINE('',#56,#91);
+#93=EDGE_CURVE('',#57,#51,#92,.T.);
+#94=ORIENTED_EDGE('',*,*,#93,.T.);
+#95=EDGE_LOOP('',(#64,#74,#84,#94));
+#96=FACE_OUTER_BOUND('',#95,.T.);
+#97=ADVANCED_FACE('',(#96),#31,.T.);
+#200=OPEN_SHELL('',(#97));
+/* Product */
+#9000=PRODUCT_CONTEXT('',#1,'mechanical');
+#9001=PRODUCT('Gs172','Gs172','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
+#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
+#9022=GEOMETRICALLY_BOUNDED_SURFACE_SHAPE_REPRESENTATION('',(#200),#9010);
+#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+ENDSEC;
+END-ISO-10303-21;
