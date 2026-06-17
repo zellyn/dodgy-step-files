@@ -23509,6 +23509,28 @@ Seam-edge reversal for dual-edge UV-periodic representation; non-seam edges skip
 ### Tfa230 — ShapeFix_Face.FixLoopWire.wire-topology
 Closed-wire reorder via FixReorder vs. open-wire append; topology-driven dispatch path.
 
+# Wave 68A — ShapeFix_Face defect synthesis (Tfa231–Tfa235)
+
+### Tfa231 — FixSmallAreaWire shape-type filter
+
+Small-area wire detection via sub-shape-type and orientation validation. Planar face with outer loop (3×3 unit boundary) and inner loop (0.05×0.05 unit hole) to exercise the shape-type-filter defect. Tests early rejection of non-WIRE or invalid-orientation sub-shapes.
+
+### Tfa232 — FixWiresTwoCoincEdges FORWARD orientation dispatch
+
+Coincident-edge pair detection on 4-edge wire with duplicate geometry edges (edge_c and edge_d both curve 1→1 at identical path). Tests FORWARD/REVERSED orientation filter preventing false detection on reversed duplicates.
+
+### Tfa233 — FixPeriodicDegenerated context transformation
+
+Periodic surface (SURFACE_OF_REVOLUTION) with B-spline profile curve and degenerate seam closure. Tests context-aware transformation dispatch when healing context is non-null; validates Context().IsNull() check and Apply() invocation.
+
+### Tfa234 — FixAddNaturalBound seam-edge exclusion
+
+Single-period cylindrical face with degenerate bottom/top loops and explicit seam edge. Tests natural-boundary rejection logic when seam-edge is present; validates myFixAddNaturalBoundMode conditional handling.
+
+### Tfa235 — FixMissingSeam P-curve absence on torus
+
+TOROIDAL_SURFACE face with U-seam loop traversing toroidal topology; missing P-curve geometry on seam edge. Tests P-curve lookup failure path and early abort before seam insertion.
+
 ### Hea016 — Empty solid output from STEP export of complex body, despite STL succeeding
 - **Category**: §12.3c faces / shape healing
 - **Sources**: FreeCAD #20396; bug-reporter language: "Models exported to STEP crash or produce empty objects", "appears to export fine but results in an empty object", "STL and 3MF export work, STEP doesn't".
@@ -26393,6 +26415,23 @@ Compound with nested shell references. LoadShells() recursion incomplete when de
 ### Tsh218 — ShapeFix_Shell.FixFaceOrientation.shells_extraction_loss
 — GetShells() fails to partition disconnected face clusters; edge-classification gap creates orphaned faces.
 
+## Wave 68B — ShapeFix_Shell Defects (Tsh219–Tsh223)
+
+### Tsh219 — duplicate_faces_undetected
+Duplicate faces in shell; `aMapAdded` only warns. Independent orientation fixes yield inconsistent outward directions. Closure criterion fails.
+
+### Tsh220 — multiconnect_edge_loop_unbounded
+Non-manifold shell with 3+ faces per edge; unbounded iteration without complexity guard causes O(n²) behavior. Pathological mesh triggers hang.
+
+### Tsh221 — context_null_initialize
+Multiple `Perform()` calls reuse stale context; accumulated reshape operations apply twice. Stale context state causes double-fixing of face orientations.
+
+### Tsh222 — closed_flag_sync_failure
+Shell marked closed but contains free edges after face orientation fix. `Closed()` flag not reset; downstream solid construction assumes watertight but topology invalid.
+
+### Tsh223 — shells_extraction_loss
+`GetShells()` fails to partition all faces; remaining faces discarded or orphaned. Incomplete decomposition breaks topology validation and orientation analysis.
+
 ### Gp040 — Pcurves emitted by default duplicate / contradict the surface 3D curve
 - **Category**: §12.2a pcurve defects (sub-class: writer-emitted pcurves disagree with 3D)
 - **Sources**: OCCT MANTIS#0025654; bug-reporter language: "disable writing pcurves to STEP and IGES by default", "pcurves and 3D curves disagree on round-trip", "writer-emitted pcurves cause downstream failures". (OCCT MANTIS tracker 502 as of 2026-05-02)
@@ -27247,6 +27286,28 @@ First half of pcurve near singularity not collapsed to parameter. Mixed degenera
 
 ### Gp160 — ShapeAnalysis_Surface.ProjectDegenerated `singularity-tolerance-threshold`
 Singularity tolerance exceeds requested precision; tolerance filter passes high-tolerance singularities. Degenerate points project onto cone apex with unvalidated precision consistency. Cone with gradient approach toward u=0 singularity.
+
+## Wave 68C — STEP pcurve fixtures (Gp161–Gp165)
+
+### Gp161 — seam_detection_1843
+
+Seam edge with unreversed pcurve equality check without parametric domain validation. BSpline surface with dual pcurves; orientation loss on merge. Line 1843: `aFaceSeq.Length() == 1` check branches onto unreversed equality without orientation tracking.
+
+### Gp162 — line_circle_reparametrization_2106
+
+TrimmedCurve wrapping Line/Circle skips geometric basis validation during reparametrization. Non-canonical curve geometry mapping failure. Line 2106–2139: Type detection via Geom2dAdaptor fails to unwrap trimmed geometry, producing incorrect parameter mapping.
+
+### Gp163 — circle_parameter_1930
+
+Circle parametrization assumes aNewF ≤ aNewL without handling periodic wraparound. Torus seam edge spanning parameter discontinuity (2π → 0). Line 1930: `ElCLib::Parameter()` returns angles on opposite sides of 2π; swap logic (line 1932) produces inverted range.
+
+### Gp164 — range_mismatch_2055
+
+3D edge range compared to 2D pcurve range without periodic parametrization validation. Cylindrical surface with circular parametrization discontinuity. Line 2055–2060: `aRange3d` vs. `aRange` mismatch with periodic surfaces triggers false reparametrization.
+
+### Gp165 — vertex_tolerance_mismatch_1971
+
+Vertex tolerance extracted without validation against accumulating tolerance array. Edge chain with heterogeneous vertex tolerances triggers incoherent continuity checks. Line 1971–1972: `TopExp::CommonVertex()` retrieves unvalidated tolerance; `aTolVerSeq.Append()` stores unsorted values.
 
 ### A105 — Regression OCC 6.9.1 → 7.4.0: colours stop appearing on certain STEP files
 - **Category**: §12.6 assembly hierarchy (sub-class: appearance regression across kernel versions)

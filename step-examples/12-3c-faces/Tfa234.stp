@@ -1,0 +1,70 @@
+ISO-10303-21;
+HEADER;
+FILE_DESCRIPTION(('Tfa234: ShapeFix_Face.FixAddNaturalBound — natural-boundary addition on single-period cylindrical face; seam-edge exclusion'),
+  '2026-06-16T00:00:00',
+  2,
+  (),
+  (),
+  'neutral file',
+  'CAD System',
+  '',
+  ());
+FILE_NAME('Tfa234.stp',
+  2026-06-16T00:00:00,
+  (''),
+  (''),
+  'neutral file format',
+  'CAD System v1',
+  '');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+#1=SECURITY_CLASSIFICATION('','',$);
+#10=PARAMETRIC_REPRESENTATION_CONTEXT('','3D parametric space');
+#11=AXIS2_PLACEMENT_3D('origin',#20,#21,#22);
+#20=CARTESIAN_POINT('',0.0,0.0,0.0);
+#21=DIRECTION('',0.0,0.0,1.0);
+#22=DIRECTION('',1.0,0.0,0.0);
+#30=CYLINDRICAL_SURFACE('cylinder',#11,1.0);
+#40=LINE('bottom_e',#41,#42);
+#41=CARTESIAN_POINT('',1.0,0.0,0.0);
+#42=VECTOR('',#43,1.0);
+#43=DIRECTION('',0.0,0.0,1.0);
+#50=CIRCLE('seam_circle',#11,1.0);
+#60=CIRCLE('top_circle',#11,1.0);
+#70=VERTEX_POINT('v_bot',#71);
+#71=CARTESIAN_POINT('',1.0,0.0,0.0);
+#72=VERTEX_POINT('v_top',#73);
+#73=CARTESIAN_POINT('',1.0,0.0,2.0);
+#74=VERTEX_POINT('v_seam1',#75);
+#75=CARTESIAN_POINT('',1.0,0.0,0.0);
+#76=VERTEX_POINT('v_seam2',#77);
+#77=CARTESIAN_POINT('',1.0,0.0,2.0);
+#80=EDGE_CURVE('bottom',#70,#70,#40,.T.);
+#81=EDGE_CURVE('seam_edge',#74,#76,#50,.T.);
+#82=EDGE_CURVE('top_edge',#72,#72,#60,.T.);
+#90=ORIENTED_EDGE('o_bot',*,*,#80,.T.);
+#91=ORIENTED_EDGE('o_seam',*,*,#81,.T.);
+#92=ORIENTED_EDGE('o_top',*,*,#82,.T.);
+#100=EDGE_LOOP('bottom_loop',(#90));
+#101=EDGE_LOOP('seam_loop',(#91,#92));
+#110=FACE_OUTER_BOUND('fb_bottom',#100,.T.);
+#111=FACE_INNER_BOUND('fb_seam',#101,.T.);
+#120=ADVANCED_FACE('cylinder_face',(#110,#111),#30,.T.);
+#9000=PRODUCT_CONTEXT('',#1,'mechanical');
+#9001=PRODUCT('Tfa234','Tfa234','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
+#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
+#9021=SHELL_BASED_SURFACE_MODEL('sbsm',(#9020));
+#9020=CLOSED_SHELL('outer_shell',(#120));
+#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#9010);
+#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+ENDSEC;
+END-ISO-10303-21;
