@@ -132,3 +132,45 @@ The sweep verdicts were verified against the *full* prefix counts:
 - Future waves should keep the canonical PRODUCT chain + corrected
   LINE/VECTOR/DIRECTION template baked into the prompt.
 - 75 quarantined IDs are a regen backlog, not a synthesis blocker.
+
+## Audit follow-through (2026-06-16, same day)
+
+After the quarantine, four follow-on commits:
+
+1. **Lint extension** (`_construction_lint.py`, commit `76dec86`) —
+   two new rules `line-list-wrapped-args` and `inline-instance-syntax`
+   that catch the synthesis-template bugs at validation time. Running
+   them surfaced 9 more active fixtures with the same `#(VECTOR(...))`
+   pattern (Twi182-186, Tfa108, Tfa133-135) which were quarantined,
+   bringing the total to 84.
+
+2. **Cookie-position normalization** (commit `91837d1`) — 463
+   fixtures had per-fixture comments before the `ISO-10303-21;` magic
+   cookie, which OCCT tolerates but strict Part-21 validators reject.
+   Bulk-fix script moved the cookie to line 1 across all 463, skipping
+   the §12.1a/§12.1b/§12.1c framing-defect sections (147 files) where
+   the pattern may be the intentional defect.
+
+3. **Regen of 84 quarantined IDs** (commits `50d43fe` + `3695260` +
+   `d9e0050`) — 4 parallel sonnet agents 529'd mid-pass after partial
+   progress (47/84 done). Switched to 4 small haiku agents which
+   completed cleanly. One regen (Tsh068) needed a follow-up fix for
+   accidental face-bounds + forward-ref bugs.
+
+4. **Adversarial sweep on regen** — 15-fixture stratified sample
+   (5 N, 5 Tsh, 3 Twi, 2 Tfa) returned 13 VALID, 1 WEAK_VALID
+   (Tsh065 — 2-triangle tessellation too minimal; follow-up noted),
+   1 INVALID (Tsh068 — fixed in-line). **87 % strong-VALID, up from
+   the pre-quarantine corpus baseline of 57 %.**
+
+### Cumulative impact
+
+- Quarantine: 84 files (catalog claims preserved; files regenerated
+  in active prefix dirs; originals kept in `_quarantine/early-waves/`
+  as historical record).
+- Active corpus: still ~1900 fixtures, now meeting two more Part-21
+  invariants (cookie-first, no list-wrapped LINE, no `#(...)`
+  inline-instance).
+- Construction-lint: 0 hits on the two new rules across active corpus;
+  any future regression will fail validation at synthesis time, not
+  50 waves later.
