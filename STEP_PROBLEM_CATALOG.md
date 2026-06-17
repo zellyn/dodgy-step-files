@@ -21278,6 +21278,31 @@ Periodic B-spline with knot parameters identical at boundaries but control poles
 - **Fixture path**: step-examples/12-2b-nurbs/Gn143.stp
 - **Fixture kind**: scaffold
 
+### Gn144 — Periodic knot-vector closure mismatch
+- **Defect**: Periodic BSpline surface (.T. in U) with open-clamped knot vector. Knot multiplicities (3,3) conflict with 4-pole periodic topology. Healing must validate periodic flag consistency.
+- **Surface**: Degree 2×2, 4×3 poles, U periodic-marked but non-periodic knots.
+- **Knot arithmetic**: 4 poles U + degree 2 → 7 needed; (3,3) only sums to 6. Mismatch triggers closure-check logic against invalid knot structure.
+
+### Gn145 — Interior knot multiplicity C(-1) discontinuity
+- **Defect**: Interior knot at u=0.5 with multiplicity 3 (degree+1), creating cusp discontinuity. Healing must detect high-multiplicity interior knots and consider splitting or elevation.
+- **Surface**: Degree 2×2, 5×3 poles. U knot vector (0,0,0, 0.5,0.5,0.5, 1,1) forces C(-1) at interior.
+- **Knot arithmetic**: 5 poles + degree 2 → 8 mults. (3,3,3) sums to 9 (one too many); (3,2,3) correct, interior mult 2 → C0.
+
+### Gn146 — Rational NURBS singular weight
+- **Defect**: Rational BSpline surface (weights present) with singular weight 0.0 at middle pole. Weighted control point effectively removed; healing must detect and handle weight singularities.
+- **Surface**: Degree 2×2, 3×3 poles. Weights: (1,1,1), (1,0,1), (1,1,1). Center pole vanishes geometrically.
+- **Knot arithmetic**: 3 poles both directions + degree 2 → (3,3) both directions. Correct counts but rational flag exposes weight pathology.
+
+### Gn147 — Stripe singularity (collapsed pole row)
+- **Defect**: All V-poles in middle U-row collapsed to single point (1.0, *, 0.5). Creates stripe singularity (entire row degenerates to line). Healing detects via pole-distance analysis.
+- **Surface**: Degree 2×2, 3×4 poles. Middle row all at (1.0, y, 0.5) across V.
+- **Knot arithmetic**: 3 poles U → (3,3); 4 poles V → (4,3); both correct. Stripe defect implicit in pole coordinates, not explicit knot structure.
+
+### Gn148 — Ill-conditioned knot distribution
+- **Defect**: Interior knots clustered near 0 (0.001, 0.002) while boundary spans [0, 1]. Ratio >1000:1 causes numerical instability in fitting and evaluation. Healing must detect and reparametrize.
+- **Surface**: Degree 2×2, 4×3 poles. U knots (0,0,0, 0.001,0.002, 1,1) create extreme clustering.
+- **Knot arithmetic**: 4 poles U + degree 2 → 7 mults. (3,2,2) sums to 7. Correct structure but bad spacing triggers IsBad flag for arc-length reparametrization.
+
 ### Wr001 — Trailing whitespace on every record line
 - **Category**: §12.13 writer-pathology (sub-class: whitespace/line-ending)
 - **Sources**: prostep ivip CAx-IF round-trip reports; FreeCAD #4231 "STEP exporter pads lines with spaces"; bug-reporter language: "diff between exports is all whitespace"
@@ -23298,7 +23323,7 @@ Unit square planar face with centered 0.5×0.5 inner rectangle. FixOrientation's
 - **Fixture path**: step-examples/12-3c-faces/Tfa210.stp
 - **Fixture kind**: scaffold
 
-### Tfa211: ShapeFix_Face.FixMissingSeam.null-surface-guard
+### Tfa211 — ShapeFix_Face.FixMissingSeam.null-surface-guard
 
 **Category**: Face healing / Missing seam detection
 
@@ -23316,7 +23341,7 @@ Unit square planar face with centered 0.5×0.5 inner rectangle. FixOrientation's
 
 **Fixture kind**: Face-only model; quad EDGE_LOOP on null surface.
 
-### Tfa212: ShapeFix_Face.FixMissingSeam.bspline-non-periodic-rejection
+### Tfa212 — ShapeFix_Face.FixMissingSeam.bspline-non-periodic-rejection
 
 **Category**: Face healing / B-spline periodicity
 
@@ -23334,7 +23359,7 @@ Unit square planar face with centered 0.5×0.5 inner rectangle. FixOrientation's
 
 **Fixture kind**: Face-only model; quad EDGE_LOOP on non-periodic B-spline surface.
 
-### Tfa213: ShapeFix_Face.FixMissingSeam.infinite-bounds-fallback
+### Tfa213 — ShapeFix_Face.FixMissingSeam.infinite-bounds-fallback
 
 **Category**: Face healing / Infinite surface bounds
 
@@ -23352,7 +23377,7 @@ Unit square planar face with centered 0.5×0.5 inner rectangle. FixOrientation's
 
 **Fixture kind**: Face-only model; partial quad wire on cylindrical surface.
 
-### Tfa214: ShapeFix_Face.FixMissingSeam.degenerate-wire-consolidation
+### Tfa214 — ShapeFix_Face.FixMissingSeam.degenerate-wire-consolidation
 
 **Category**: Face healing / Degenerate edge consolidation
 
@@ -23370,7 +23395,7 @@ Unit square planar face with centered 0.5×0.5 inner rectangle. FixOrientation's
 
 **Fixture kind**: Face-only model; degenerate quad EDGE_LOOP with micro-edges on B-spline surface.
 
-### Tfa215: ShapeFix_Face.FixMissingSeam.orientation-correction-partial-closure
+### Tfa215 — ShapeFix_Face.FixMissingSeam.orientation-correction-partial-closure
 
 **Category**: Face healing / Partial-closure orientation
 
@@ -23387,6 +23412,36 @@ Unit square planar face with centered 0.5×0.5 inner rectangle. FixOrientation's
 **Fixture path**: `/Users/zellyn/gh/dodgy-step-files/step-examples/12-3c-faces/Tfa215.stp`
 
 **Fixture kind**: Face-only model; quad EDGE_LOOP with mixed orientation on toroidal surface.
+
+### Tfa216 — seam_detection_orientation_loss
+
+**Defect**: Edge reversal in seam detection without forward-flag update (line 1829, UnionPCurves).
+**Minimal reproducer**: Build seam edge on periodic surface; set isForward=true; reverse edge; isForward tracking stale; accumulated pcurve orientation corrupted.
+**Healing path**: Capture isForward after seam reversal branch; validate forward-flag consistency across seam edges.
+
+### Tfa217 — curve_copy_trimming
+
+**Defect**: Nested TrimmedCurve BasisCurve extraction loses inner bounds (line 1876, UnionPCurves).
+**Minimal reproducer**: TrimmedCurve(TrimmedCurve(Line, [5,15]), [8,12]) unwrapped to outer level; inner [5,15] lost; effective range becomes [8,12].
+**Healing path**: Detect nesting depth; recursively extract all bound layers; reconstruct proper trim envelope.
+
+### Tfa218 — circle_parameter
+
+**Defect**: Circle parameter wraparound fails; periodic domain spanning 2π boundary produces inverted range (line 1930, UnionPCurves).
+**Minimal reproducer**: Edge on torus spanning seam 6.0→0.5 (wrapping); aNewF=6.0, aNewL=0.5; swap reverses to [0.5,6.0]; range invalid.
+**Healing path**: Detect wraparound via ElCLib parameter comparison; normalize range modulo 2π; preserve interval sense.
+
+### Tfa219 — vertex_tolerance_mismatch
+
+**Defect**: Vertex tolerance inconsistency in edge chain appended without hierarchy validation (line 1971, UnionPCurves).
+**Minimal reproducer**: Edge chain with vertices aTol[0]=0.001, aTol[1]=10.0; no synchronization; ConcatC1 receives heterogeneous tolerance array.
+**Healing path**: Validate tolerance hierarchy before accumulation; cap per-vertex tolerance to cumulative aMaxTol; synchronize tolerance state.
+
+### Tfa220 — concat_result_truncation
+
+**Defect**: ConcatC1 output array validation skipped; incompatible fragments force-merged (line 2037, UnionPCurves).
+**Minimal reproducer**: Feed Line+Circle with large gap; ConcatC1 produces 2 fragments; code iterates Add() anyway; artificial continuity created.
+**Healing path**: Check concatc2d quality before merge; skip low-quality fragments; fail gracefully if ConcatC1 < threshold coherence.
 
 ### Hea016 — Empty solid output from STEP export of complex body, despite STL succeeding
 - **Category**: §12.3c faces / shape healing
@@ -24980,19 +25035,19 @@ B-spline surface with irregular V knot multiplicities (3,1,3) on 4 control point
 **Geometry**: B_SPLINE_SURFACE_WITH_KNOTS (3x3, deg 2/2) with intentionally mismatched knots.
 **Test**: Verify CalcMaxDegree detects and handles knot-count inconsistency gracefully.
 
-### Gs154 - CheckSmall weak tolerance comparison
+### Gs154 — CheckSmall weak tolerance comparison
 ShapeAnalysis_WireVertex::CheckSmall uses undocumented internal threshold independent of schema tolerance. Closely-spaced vertices (within declared tolerance) may be spuriously marked degenerate, causing edge collapse in healing.
 
-### Gs155 - CopyTrimmedSurface uv-param loss
+### Gs155 — CopyTrimmedSurface uv-param loss
 ShapeUpgrade_ShapeCopyTool::CopyTrimmedSurface on TOROIDAL_SURFACE loses parametrization bounds in copy. RECTANGULAR_TRIMMED_SURFACE trim range becomes semantically invalid, breaking topology.
 
-### Gs156 - EditVertex ordering corruption
+### Gs156 — EditVertex ordering corruption
 ShapeExtend_WireData::EditVertex corrupts edge-to-vertex connectivity during in-place reorder. Multi-edge wires with shared vertices break EDGE_LOOP closure invariants.
 
-### Gs157 - GetSurfaceType misidentification via precision
+### Gs157 — GetSurfaceType misidentification via precision
 ShapeAnalysis_Geom::GetSurfaceType uses fixed classification thresholds independent of model scale. CONICAL_SURFACE near-cylindrical cases misclassified, triggering wrong healing path.
 
-### Gs158 - AddFace null geometry propagation
+### Gs158 — AddFace null geometry propagation
 BRepBuilderAPI_Sewing::AddFace does not validate non-null surface reference on ADVANCED_FACE. Invalid geometry propagates silently, breaking shell coherence.
 
 ### Ad117 — STEP reader crashes on minimal file with malformed `STYLED_ITEM`
@@ -27737,31 +27792,31 @@ CheckPoints called with precision 1e-3 but projection-distance test uses 1e-6 in
 
 ## Defect Patterns
 
-### N136: ShapeAnalysis_ShapeTolerance.MaxTolerance.unbounded_edge_iteration
+### N136 — ShapeAnalysis_ShapeTolerance.MaxTolerance.unbounded_edge_iteration
 - **Pattern**: Tolerance accumulation without parameterization bounds validation
 - **Trigger**: Infinite curve ranges in edge iteration; no overflow guard
 - **Impact**: Spurious max-tolerance values mask real violations
 - **Axiom**: Edge iteration MUST check bounds before range access
 
-### N137: BRepBuilderAPI_Sewing.AnalysisNearestEdges.distance_tolerance_filter_bypass
+### N137 — BRepBuilderAPI_Sewing.AnalysisNearestEdges.distance_tolerance_filter_bypass
 - **Pattern**: Missing distance threshold check on candidate filtering
 - **Trigger**: arrDist(n) > tolerance not validated; tabDst index unprotected
 - **Impact**: Out-of-tolerance edges pass as false matches (distance=0.5, tol=0.1)
 - **Axiom**: All distance candidates MUST be filtered against tolerance ceiling
 
-### N138: ShapeAnalysis_Edge.CheckPoints.tolerance_conservatism_fail
+### N138 — ShapeAnalysis_Edge.CheckPoints.tolerance_conservatism_fail
 - **Pattern**: Conservative tolerance selection without endpoint validation
 - **Trigger**: Tightest precision bound chosen (1e-8) but not enforced on both endpoints
 - **Impact**: Precision-varying edges (5e-7 sep > 1e-8 tol) incorrectly rejected
 - **Axiom**: Conservative tolerance selection MUST validate all endpoints within bound
 
-### N139: ShapeAnalysis_ShapeTolerance.OuterWire.tolerance_layer_recursion
+### N139 — ShapeAnalysis_ShapeTolerance.OuterWire.tolerance_layer_recursion
 - **Pattern**: Nested wire tolerance scaling without recursion depth tracking
 - **Trigger**: Circular wire references with tolerance propagation; no cycle counter
 - **Impact**: Stack exhaustion or infinite loops in tolerance validation chains
 - **Axiom**: Tolerance layer traversal MUST include depth limits and cycle detection
 
-### N140: ShapeAnalysis_Surface.Continuity.tolerance_interval_mismatch
+### N140 — ShapeAnalysis_Surface.Continuity.tolerance_interval_mismatch
 - **Pattern**: Surface continuity check omits boundary tolerance scaling
 - **Trigger**: Parameter interval alignment (gap=0.001 vs tol base=1e-7) ignores scale
 - **Impact**: Near-matching patches falsely pass continuity despite parameter misalignment
@@ -27773,6 +27828,41 @@ CheckPoints called with precision 1e-3 but projection-distance test uses 1e-6 in
 - DIRECTION ratios ≈ unit
 - No forward references
 - ISO-10303-21 header line 1
+
+### N141 — ShapeFix_IntersectionTool.FixIntEdges tolerance_selection
+
+- **Defect**: Vertex tolerance initialized from V1 without considering V2 tolerance level.
+- **Reproducer**: V1 tol=0.001, V2 tol=0.01, intersection near V2.
+- **Impact**: Intersection result uses insufficient tolerance for high-tolerance vertices.
+- **STEP**: `/Users/zellyn/gh/dodgy-step-files/step-examples/12-4-tolerance/N141.stp`
+
+### N142 — ShapeUpgrade_ConvertCurve2dToBezier precision-semantics,asymmetric-tolerance
+
+- **Defect**: Precision test uses one-directional subtraction (parU - param < prec) instead of absolute distance.
+- **Reproducer**: myUSplitValues above myUSplitParams; condition fails when param > parU.
+- **Impact**: Loop exits prematurely, skipping valid parameter splits.
+- **STEP**: `/Users/zellyn/gh/dodgy-step-files/step-examples/12-4-tolerance/N142.stp`
+
+### N143 — ShapeUpgrade_RemoveLocations.MakeNewShape null-reference-tolerance
+
+- **Defect**: Edge rebuild happens before anAncShape face is verified as bound in myMapNewShapes.
+- **Reproducer**: Edge with compound anAncShape not in map; RebuildShape receives null face.
+- **Impact**: UpdateEdge call fails silently; 2D curve updates skipped.
+- **STEP**: `/Users/zellyn/gh/dodgy-step-files/step-examples/12-4-tolerance/N143.stp`
+
+### N144 — ShapeUpgrade_UnifySameDomain.UnionPCurves vertex_tolerance_mismatch
+
+- **Defect**: Vertex tolerance tracking fails when concatenating PCurves from edges with divergent tolerances.
+- **Reproducer**: Shared vertex V1(tol=1e-3) and V2(tol=1e-2) at junction; max_tolerance_tracking inconsistent.
+- **Impact**: Concatenated PCurve has mismatched tolerance across chain.
+- **STEP**: `/Users/zellyn/gh/dodgy-step-files/step-examples/12-4-tolerance/N144.stp`
+
+### N145 — BRepBuilderAPI_Sewing.SameParameterEdge setMaxTolerance-bypass-raw-write
+
+- **Defect**: Direct BRep_TEdge::Tolerance() write bypasses SetMaxTolerance() API cap validation.
+- **Reproducer**: MaxTolerance=0.01 cap; computed tolerance=0.05; raw write at line 1168 ignores cap.
+- **Impact**: Edge tolerance exceeds API contract; cap enforcement violated.
+- **STEP**: `/Users/zellyn/gh/dodgy-step-files/step-examples/12-4-tolerance/N145.stp`
 
 ### M161 — Reader does not validate cross-references; dangling references silently accepted
 - **Category**: §12.8 mixed / auxiliary (sub-class: missing input validation)

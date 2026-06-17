@@ -1,0 +1,73 @@
+ISO-10303-21;
+/* N143 - ShapeUpgrade_RemoveLocations.MakeNewShape null-reference-tolerance
+ * Defect: Edge rebuild happens before anAncShape face is verified as valid.
+ * RebuildShape accesses null face when anAncShape not bound in myMapNewShapes.
+ * Reproducer: Edge with compound anAncShape; face lookup fails; UpdateEdge skipped.
+ */
+HEADER;
+FILE_DESCRIPTION(('N143 RemoveLocations null-reference-tolerance edge-face binding'),'2;1');
+FILE_NAME('N143.stp','2026-06-16T00:00:00',(''),(''),
+  'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
+  'automotive_design',2009,#1);
+/* Origin and axes */
+#10=CARTESIAN_POINT('origin',(0.0,0.0,0.0));
+#11=DIRECTION('z',(0.0,0.0,1.0));
+#12=DIRECTION('x',(1.0,0.0,0.0));
+#13=AXIS2_PLACEMENT_3D('plc',#10,#11,#12);
+/* Edge 1: standard edge with location */
+#20=CARTESIAN_POINT('e1p1',(0.0,0.0,0.0));
+#21=CARTESIAN_POINT('e1p2',(5.0,0.0,0.0));
+#30=VERTEX_POINT('e1v1',#20);
+#31=VERTEX_POINT('e1v2',#21);
+#40=DIRECTION('e1dir',(1.0,0.0,0.0));
+#41=VECTOR('e1vec',#40,5.0);
+#42=LINE('e1line',#20,#41);
+#43=EDGE_CURVE('e1',#30,#31,#42,.T.);
+/* Edge 2: edge referencing compound as anAncShape
+   Bug: when compound is not bound in myMapNewShapes,
+   RebuildShape receives null face, UpdateEdge fails */
+#50=CARTESIAN_POINT('e2p1',(5.0,0.0,0.0));
+#51=CARTESIAN_POINT('e2p2',(10.0,0.0,0.0));
+#60=VERTEX_POINT('e2v1',#50);
+#61=VERTEX_POINT('e2v2',#51);
+#70=DIRECTION('e2dir',(1.0,0.0,0.0));
+#71=VECTOR('e2vec',#70,5.0);
+#72=LINE('e2line',#50,#71);
+#73=EDGE_CURVE('e2',#60,#61,#72,.T.);
+/* Compound acting as anAncShape (not in myMapNewShapes lookup) */
+#100=COMPOUND('compound_anchor');
+/* Units and context */
+#80=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#81=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#82=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#83=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#80,
+  'distance_accuracy_value','nominal_tolerance');
+#84=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#83))
+  GLOBAL_UNIT_ASSIGNED_CONTEXT((#80,#81,#82))
+  REPRESENTATION_CONTEXT('null_ref_ctx','3D'));
+/* Tolerance: null reference condition */
+#85=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-5),#80,
+  'distance_accuracy_value','null_ref_tolerance');
+/* PRODUCT CHAIN */
+#9000=PRODUCT_CONTEXT('',#1,'mechanical');
+#9001=PRODUCT('N143','N143','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
+#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
+#9021=SHELL_BASED_SURFACE_MODEL('sbsm',(#80));
+#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#9010);
+#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+ENDSEC;
+END-ISO-10303-21;

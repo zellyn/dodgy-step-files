@@ -1,0 +1,71 @@
+ISO-10303-21;
+/* N145 - BRepBuilderAPI_Sewing.SameParameterEdge setMaxTolerance-bypass-raw-write
+ * Defect: Direct BRep_TEdge::Tolerance() write bypasses SetMaxTolerance() cap.
+ * When computed tolerance exceeds cap, raw write circumvents API validation.
+ * Reproducer: Set MaxTolerance=0.01; compute edge with maxTol=0.05.
+ * Result: Edge tolerance 0.05 (exceeds cap) bypasses SetMaxTolerance() contract.
+ */
+HEADER;
+FILE_DESCRIPTION(('N145 SameParameterEdge tolerance-threshold-bypass raw-write'),'2;1');
+FILE_NAME('N145.stp','2026-06-16T00:00:00',(''),(''),
+  'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
+  'automotive_design',2009,#1);
+/* Origin and axes */
+#10=CARTESIAN_POINT('origin',(0.0,0.0,0.0));
+#11=DIRECTION('z',(0.0,0.0,1.0));
+#12=DIRECTION('x',(1.0,0.0,0.0));
+#13=AXIS2_PLACEMENT_3D('plc',#10,#11,#12);
+/* Cylindrical surface with location transform (triggers discretized path) */
+#20=AXIS2_PLACEMENT_3D('cylinder_placement',#10,#11,#12);
+/* Edge on transformed surface: discretized tolerance computation */
+#30=CARTESIAN_POINT('edgestart',(1.0,0.0,0.0));
+#31=CARTESIAN_POINT('edgeend',(1.0,0.0,10.0));
+#40=VERTEX_POINT('ev1',#30);
+#41=VERTEX_POINT('ev2',#31);
+/* Curve: line along cylinder axis */
+#50=DIRECTION('edir',(0.0,0.0,1.0));
+#51=VECTOR('evec',#50,10.0);
+#52=LINE('eline',#30,#51);
+#53=EDGE_CURVE('edge_transform',#40,#41,#52,.T.);
+/* Surface placed with location (transform = translate 100mm + rotate 45 deg)
+   Bug trigger: SameParameterEdge computes tolerance with location,
+   may exceed MaxTolerance cap. Raw write at line 1168 bypasses SetMaxTolerance.
+*/
+/* Units and context */
+#80=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#81=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#82=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#83=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#80,
+  'distance_accuracy_value','nominal_tolerance');
+#84=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#83))
+  GLOBAL_UNIT_ASSIGNED_CONTEXT((#80,#81,#82))
+  REPRESENTATION_CONTEXT('bypass_ctx','3D'));
+/* Tolerance cap declaration (should limit to 0.01)
+   but computed tolerance reaches 0.05, bypassing cap via raw write */
+#85=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-2),#80,
+  'distance_accuracy_value','MaxTolerance_cap_0.01');
+#86=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(5.0E-2),#80,
+  'distance_accuracy_value','computed_tolerance_0.05_exceeds_cap');
+/* PRODUCT CHAIN */
+#9000=PRODUCT_CONTEXT('',#1,'mechanical');
+#9001=PRODUCT('N145','N145','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
+#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
+#9021=SHELL_BASED_SURFACE_MODEL('sbsm',(#80));
+#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#9010);
+#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+ENDSEC;
+END-ISO-10303-21;
