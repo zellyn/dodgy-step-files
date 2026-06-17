@@ -1,0 +1,70 @@
+ISO-10303-21;
+/* Gs154 - ShapeAnalysis_WireVertex::CheckSmall weak tolerance comparison
+ *
+ * Defect: CheckSmall compares vertex distance threshold against wire tolerance.
+ * If vertices lie within declared tolerance but exceed an implicit internal
+ * threshold (not validated against schema), the algorithm may mark valid vertices
+ * as degenerate. Result: spurious edge collapsing in downstream healing.
+ *
+ * Reproducer: EDGE_LOOP with closely-spaced vertices (within schema tolerance
+ * but near undocumented threshold); verify CheckSmall suppression behavior.
+ */
+HEADER;
+FILE_DESCRIPTION(('Gs154 test case','CheckSmall weak tolerance comparison'),'2;1');
+FILE_NAME('Gs154.stp','2026-06-16T00:00:00',('zellyn@gmail.com'),'','auto-generated','','');
+FILE_SCHEMA(('AUTOMOTIVE_design { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#11=DIRECTION('',(0.0,0.0,1.0));
+#12=DIRECTION('',(1.0,0.0,0.0));
+#13=AXIS2_PLACEMENT_3D('',#10,#11,#12);
+/* PLANE_SURFACE as base */
+#20=PLANE_SURFACE('',#13);
+#21=RECTANGULAR_TRIMMED_SURFACE('',#20,0.0,10.0,0.0,10.0,.T.,.T.);
+/* Vertices: closely spaced to trigger CheckSmall sensitivity */
+#50=CARTESIAN_POINT('',(1.0,1.0,0.0));
+#51=VERTEX_POINT('',#50);
+#52=CARTESIAN_POINT('',(1.0001,1.0,0.0));
+#53=VERTEX_POINT('',#52);
+#54=CARTESIAN_POINT('',(2.0,2.0,0.0));
+#55=VERTEX_POINT('',#54);
+/* Edge 1: short segment near tolerance boundary */
+#60=DIRECTION('',(1.0,0.0,0.0));
+#61=VECTOR('',#60,0.0001);
+#62=LINE('',#50,#61);
+#63=EDGE_CURVE('',#51,#53,#62,.T.);
+#64=ORIENTED_EDGE('',*,*,#63,.T.);
+/* Edge 2: normal segment */
+#70=DIRECTION('',(0.7071,0.7071,0.0));
+#71=VECTOR('',#70,1.414);
+#72=LINE('',#52,#71);
+#73=EDGE_CURVE('',#53,#55,#72,.T.);
+#74=ORIENTED_EDGE('',*,*,#73,.T.);
+/* Edge 3: close back */
+#80=DIRECTION('',(0.0,-1.0,0.0));
+#81=VECTOR('',#80,2.0);
+#82=LINE('',#54,#81);
+#83=EDGE_CURVE('',#55,#51,#82,.T.);
+#84=ORIENTED_EDGE('',*,*,#83,.T.);
+#85=EDGE_LOOP('',(#64,#74,#84));
+#86=FACE_OUTER_BOUND('',#85,.T.);
+#87=ADVANCED_FACE('',(#86),#21,.T.);
+#100=OPEN_SHELL('',(#87));
+#9000=PRODUCT_CONTEXT('',#1,'mechanical');
+#9001=PRODUCT('Gs154','Gs154','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
+#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
+#9022=GEOMETRICALLY_BOUNDED_SURFACE_SHAPE_REPRESENTATION('',(#100),#9010);
+#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+ENDSEC;
+END-ISO-10303-21;

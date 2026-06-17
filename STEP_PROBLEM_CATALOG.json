@@ -17142,6 +17142,161 @@
     "title": "Zero Magnitude Tangent from Flat Section"
   },
   {
+    "byte_assertions": [],
+    "category": "§12.2a pcurves",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": null,
+    "description": "Edge pcurve at inflection point where D1 evaluation yields zero magnitude. GetEndTangent2d silently escalates to D2 without reporting degeneracy. Analyzer omits reporting inflection point condition before secondary derivative fallback.",
+    "expected_kernel_behavior": "Heal (escalation path)",
+    "expected_validation": "",
+    "fixture_kind": null,
+    "fixture_path": "step-examples/12-2a-pcurves/Gp146.stp",
+    "id": "Gp146",
+    "notes": "derivative_degeneracy_escalation, GET_END_TANGENT_2D_B006",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-sufficient",
+    "reproducer": "",
+    "section": "12.2a",
+    "section_dir": "12-2a-pcurves",
+    "see_also": [],
+    "sender": "",
+    "severity": null,
+    "sources": [
+      "OCCT/ShapeAnalysis_Edge.GetEndTangent2d"
+    ],
+    "taxonomy": [
+      "geometry"
+    ],
+    "tier3_assertions": [],
+    "title": "D1 derivative zero; falls back to D2 second derivative"
+  },
+  {
+    "byte_assertions": [],
+    "category": "§12.2a pcurves",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": null,
+    "description": "Edge pcurve at symmetric point where D2 vanishes. GetEndTangent2d cascades to D3 evaluation without intermediate validation. Method escalates beyond geometric intent when polynomial structure degenerates.",
+    "expected_kernel_behavior": "Heal (escalation path)",
+    "expected_validation": "",
+    "fixture_kind": null,
+    "fixture_path": "step-examples/12-2a-pcurves/Gp147.stp",
+    "id": "Gp147",
+    "notes": "derivative_degeneracy_escalation, GET_END_TANGENT_2D_B007",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-sufficient",
+    "reproducer": "",
+    "section": "12.2a",
+    "section_dir": "12-2a-pcurves",
+    "see_also": [],
+    "sender": "",
+    "severity": null,
+    "sources": [
+      "OCCT/ShapeAnalysis_Edge.GetEndTangent2d"
+    ],
+    "taxonomy": [
+      "geometry"
+    ],
+    "tier3_assertions": [],
+    "title": "D2 second derivative zero; falls back to D3 third derivative"
+  },
+  {
+    "byte_assertions": [],
+    "category": "§12.2a pcurves",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": null,
+    "description": "Edge pcurve segment with all derivatives zero up to D3 (low-degree locally flat segment). GetEndTangent2d resorts to linear interpolation between endpoints without reporting complete degeneracy. Analyzer fails to detect when all fallback sources exhaust.",
+    "expected_kernel_behavior": "Heal (final escalation)",
+    "expected_validation": "",
+    "fixture_kind": null,
+    "fixture_path": "step-examples/12-2a-pcurves/Gp148.stp",
+    "id": "Gp148",
+    "notes": "derivative_complete_degeneracy, GET_END_TANGENT_2D_B008",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-sufficient",
+    "reproducer": "",
+    "section": "12.2a",
+    "section_dir": "12-2a-pcurves",
+    "see_also": [],
+    "sender": "",
+    "severity": null,
+    "sources": [
+      "OCCT/ShapeAnalysis_Edge.GetEndTangent2d"
+    ],
+    "taxonomy": [
+      "geometry"
+    ],
+    "tier3_assertions": [],
+    "title": "D3 third derivative zero; falls back to line endpoints"
+  },
+  {
+    "byte_assertions": [],
+    "category": "§12.2a pcurves",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": null,
+    "description": "Edge pcurve where start equals end and all derivatives vanish. GetEndTangent2d exhausts all fallback sources (D1, D2, D3, line endpoints) yielding zero-magnitude vector. Method returns failure indication without reporting complete geometric collapse.",
+    "expected_kernel_behavior": "Reject (complete degeneracy)",
+    "expected_validation": "",
+    "fixture_kind": null,
+    "fixture_path": "step-examples/12-2a-pcurves/Gp149.stp",
+    "id": "Gp149",
+    "notes": "complete_tangent_degeneracy, GET_END_TANGENT_2D_B009",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-sufficient",
+    "reproducer": "",
+    "section": "12.2a",
+    "section_dir": "12-2a-pcurves",
+    "see_also": [],
+    "sender": "",
+    "severity": null,
+    "sources": [
+      "OCCT/ShapeAnalysis_Edge.GetEndTangent2d"
+    ],
+    "taxonomy": [
+      "geometry"
+    ],
+    "tier3_assertions": [],
+    "title": "Straight-line tangent magnitude zero; complete tangent degeneracy"
+  },
+  {
+    "byte_assertions": [],
+    "category": "§12.2a pcurves",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": null,
+    "description": "Edge with REVERSED orientation; tangent computed then negated without validation of orientation consistency with curve parameterization. Analyzer fails to detect when orientation reversal applied post-computation masks tangent-reversal errors.",
+    "expected_kernel_behavior": "Heal (orientation validation)",
+    "expected_validation": "",
+    "fixture_kind": null,
+    "fixture_path": "step-examples/12-2a-pcurves/Gp150.stp",
+    "id": "Gp150",
+    "notes": "orientation_reversal_semantics, GET_END_TANGENT_2D_B010",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-sufficient",
+    "reproducer": "",
+    "section": "12.2a",
+    "section_dir": "12-2a-pcurves",
+    "see_also": [],
+    "sender": "",
+    "severity": null,
+    "sources": [
+      "OCCT/ShapeAnalysis_Edge.GetEndTangent2d"
+    ],
+    "taxonomy": [
+      "geometry"
+    ],
+    "tier3_assertions": [],
+    "title": "Edge orientation reversal negates computed tangent post-computation"
+  },
+  {
     "byte_assertions": [
       "contains(b'B_SPLINE_SURFACE')"
     ],
@@ -32417,6 +32572,161 @@
     ],
     "tier3_assertions": [],
     "title": "Sewing distance tolerance filter gap"
+  },
+  {
+    "byte_assertions": [],
+    "category": "§12.3a shells (sub-class: duplicate mutation)",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": null,
+    "description": "Shell containing two identical faces with opposite orientations. The aMapAdded tracking only warns about duplicates but processes both faces independently, causing repeated orientation fixes and inconsistent outward directions.",
+    "expected_kernel_behavior": "Reject or heal with consistent orientation",
+    "expected_validation": "",
+    "fixture_kind": null,
+    "fixture_path": "step-examples/12-3a-shells/Tsh204.stp",
+    "id": "Tsh204",
+    "notes": "duplicate_faces_undetected",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-sufficient",
+    "reproducer": "",
+    "section": "12.3a",
+    "section_dir": "12-3a-shells",
+    "see_also": [],
+    "sender": "",
+    "severity": null,
+    "sources": [
+      "OCCT/ShapeFix_Shell.FixFaceOrientation"
+    ],
+    "taxonomy": [
+      "topology"
+    ],
+    "tier3_assertions": [],
+    "title": "Duplicate faces orientation inconsistency"
+  },
+  {
+    "byte_assertions": [],
+    "category": "§12.3a shells (sub-class: incomplete decomposition)",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": null,
+    "description": "Shell with two face clusters disconnected by edge classification error. GetShells() may fail to partition isolated clusters, leading to incomplete shell set and missing faces.",
+    "expected_kernel_behavior": "Extract all face clusters or reject",
+    "expected_validation": "",
+    "fixture_kind": null,
+    "fixture_path": "step-examples/12-3a-shells/Tsh205.stp",
+    "id": "Tsh205",
+    "notes": "shells_extraction_loss",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-sufficient",
+    "reproducer": "",
+    "section": "12.3a",
+    "section_dir": "12-3a-shells",
+    "see_also": [],
+    "sender": "",
+    "severity": null,
+    "sources": [
+      "OCCT/ShapeFix_Shell.FixFaceOrientation"
+    ],
+    "taxonomy": [
+      "topology"
+    ],
+    "tier3_assertions": [],
+    "title": "Shells extraction partition loss"
+  },
+  {
+    "byte_assertions": [],
+    "category": "§12.3a shells (sub-class: state accumulation)",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": null,
+    "description": "Performs repairable orientation fix on single-face shell. Multiple Perform() calls without context reset may reuse stale ShapeBuild_ReShape, accumulating reshape operations and applying fixes twice.",
+    "expected_kernel_behavior": "Either reset context or track idempotence",
+    "expected_validation": "",
+    "fixture_kind": null,
+    "fixture_path": "step-examples/12-3a-shells/Tsh206.stp",
+    "id": "Tsh206",
+    "notes": "context_null_initialize",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-sufficient",
+    "reproducer": "",
+    "section": "12.3a",
+    "section_dir": "12-3a-shells",
+    "see_also": [],
+    "sender": "",
+    "severity": null,
+    "sources": [
+      "OCCT/ShapeFix_Shell.Perform"
+    ],
+    "taxonomy": [
+      "topology"
+    ],
+    "tier3_assertions": [],
+    "title": "Context null state accumulation"
+  },
+  {
+    "byte_assertions": [],
+    "category": "§12.3a shells (sub-class: inconsistent error reporting)",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": null,
+    "description": "Multi-face shell where user abort (aPS.More() == false) returns false but myStatus already set; partial fixes applied despite abort signal, leaving shell in inconsistent state.",
+    "expected_kernel_behavior": "Revert partial fixes on abort or guarantee completeness",
+    "expected_validation": "",
+    "fixture_kind": null,
+    "fixture_path": "step-examples/12-3a-shells/Tsh207.stp",
+    "id": "Tsh207",
+    "notes": "progress_abort_inconsistency",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-sufficient",
+    "reproducer": "",
+    "section": "12.3a",
+    "section_dir": "12-3a-shells",
+    "see_also": [],
+    "sender": "",
+    "severity": null,
+    "sources": [
+      "OCCT/ShapeFix_Shell.Perform"
+    ],
+    "taxonomy": [
+      "topology"
+    ],
+    "tier3_assertions": [],
+    "title": "Progress abort inconsistent error state"
+  },
+  {
+    "byte_assertions": [],
+    "category": "§12.3a shells (sub-class: invariant violation)",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": null,
+    "description": "Closed shell with interconnected faces where orientation fix creates free edges. Shell.Closed() flag not reset despite post-fix free edges detected, breaking closure invariant.",
+    "expected_kernel_behavior": "Synchronize closed flag after fix or reject",
+    "expected_validation": "",
+    "fixture_kind": null,
+    "fixture_path": "step-examples/12-3a-shells/Tsh208.stp",
+    "id": "Tsh208",
+    "notes": "closed_flag_sync_failure",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-sufficient",
+    "reproducer": "",
+    "section": "12.3a",
+    "section_dir": "12-3a-shells",
+    "see_also": [],
+    "sender": "",
+    "severity": null,
+    "sources": [
+      "OCCT/ShapeFix_Shell.Perform"
+    ],
+    "taxonomy": [
+      "topology"
+    ],
+    "tier3_assertions": [],
+    "title": "Closed flag sync failure"
   },
   {
     "byte_assertions": [

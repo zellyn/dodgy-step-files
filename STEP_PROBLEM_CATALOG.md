@@ -24980,6 +24980,21 @@ B-spline surface with irregular V knot multiplicities (3,1,3) on 4 control point
 **Geometry**: B_SPLINE_SURFACE_WITH_KNOTS (3x3, deg 2/2) with intentionally mismatched knots.
 **Test**: Verify CalcMaxDegree detects and handles knot-count inconsistency gracefully.
 
+### Gs154 - CheckSmall weak tolerance comparison
+ShapeAnalysis_WireVertex::CheckSmall uses undocumented internal threshold independent of schema tolerance. Closely-spaced vertices (within declared tolerance) may be spuriously marked degenerate, causing edge collapse in healing.
+
+### Gs155 - CopyTrimmedSurface uv-param loss
+ShapeUpgrade_ShapeCopyTool::CopyTrimmedSurface on TOROIDAL_SURFACE loses parametrization bounds in copy. RECTANGULAR_TRIMMED_SURFACE trim range becomes semantically invalid, breaking topology.
+
+### Gs156 - EditVertex ordering corruption
+ShapeExtend_WireData::EditVertex corrupts edge-to-vertex connectivity during in-place reorder. Multi-edge wires with shared vertices break EDGE_LOOP closure invariants.
+
+### Gs157 - GetSurfaceType misidentification via precision
+ShapeAnalysis_Geom::GetSurfaceType uses fixed classification thresholds independent of model scale. CONICAL_SURFACE near-cylindrical cases misclassified, triggering wrong healing path.
+
+### Gs158 - AddFace null geometry propagation
+BRepBuilderAPI_Sewing::AddFace does not validate non-null surface reference on ADVANCED_FACE. Invalid geometry propagates silently, breaking shell coherence.
+
 ### Ad117 — STEP reader crashes on minimal file with malformed `STYLED_ITEM`
 - **Category**: §12.11 adversarial / parser-robustness (sub-class: SEGV on style record)
 - **Sources**: OCCT MANTIS#0029979; bug-reporter language: "crash by reading STEP file", "STEP reader crashes on import", "segmentation fault on small STEP file". (OCCT MANTIS tracker 502 as of 2026-05-02)
@@ -26051,6 +26066,56 @@ Compound with nested shell references. LoadShells() recursion incomplete when de
 - **Fixture path**: step-examples/12-3a-shells/Tsh203.stp
 - **Fixture kind**: scaffold
 
+### Tsh204 — Duplicate faces orientation inconsistency
+- **Category**: §12.3a shells (sub-class: duplicate mutation)
+- **Sources**: OCCT/ShapeFix_Shell.FixFaceOrientation
+- **Description**: Shell containing two identical faces with opposite orientations. The aMapAdded tracking only warns about duplicates but processes both faces independently, causing repeated orientation fixes and inconsistent outward directions.
+- **Expected kernel behavior**: Reject or heal with consistent orientation
+- **Notes**: duplicate_faces_undetected
+- **Model impact**: Duplicate face handling produces undefined shell semantics
+- **Fixture path**: step-examples/12-3a-shells/Tsh204.stp
+- **Fixture kind**: scaffold
+
+### Tsh205 — Shells extraction partition loss
+- **Category**: §12.3a shells (sub-class: incomplete decomposition)
+- **Sources**: OCCT/ShapeFix_Shell.FixFaceOrientation
+- **Description**: Shell with two face clusters disconnected by edge classification error. GetShells() may fail to partition isolated clusters, leading to incomplete shell set and missing faces.
+- **Expected kernel behavior**: Extract all face clusters or reject
+- **Notes**: shells_extraction_loss
+- **Model impact**: Orphaned face partition unreachable by topology validation
+- **Fixture path**: step-examples/12-3a-shells/Tsh205.stp
+- **Fixture kind**: scaffold
+
+### Tsh206 — Context null state accumulation
+- **Category**: §12.3a shells (sub-class: state accumulation)
+- **Sources**: OCCT/ShapeFix_Shell.Perform
+- **Description**: Performs repairable orientation fix on single-face shell. Multiple Perform() calls without context reset may reuse stale ShapeBuild_ReShape, accumulating reshape operations and applying fixes twice.
+- **Expected kernel behavior**: Either reset context or track idempotence
+- **Notes**: context_null_initialize
+- **Model impact**: Double-fixed topology with cumulative reshape state
+- **Fixture path**: step-examples/12-3a-shells/Tsh206.stp
+- **Fixture kind**: scaffold
+
+### Tsh207 — Progress abort inconsistent error state
+- **Category**: §12.3a shells (sub-class: inconsistent error reporting)
+- **Sources**: OCCT/ShapeFix_Shell.Perform
+- **Description**: Multi-face shell where user abort (aPS.More() == false) returns false but myStatus already set; partial fixes applied despite abort signal, leaving shell in inconsistent state.
+- **Expected kernel behavior**: Revert partial fixes on abort or guarantee completeness
+- **Notes**: progress_abort_inconsistency
+- **Model impact**: Partially healed shell masquerades as failed operation
+- **Fixture path**: step-examples/12-3a-shells/Tsh207.stp
+- **Fixture kind**: scaffold
+
+### Tsh208 — Closed flag sync failure
+- **Category**: §12.3a shells (sub-class: invariant violation)
+- **Sources**: OCCT/ShapeFix_Shell.Perform
+- **Description**: Closed shell with interconnected faces where orientation fix creates free edges. Shell.Closed() flag not reset despite post-fix free edges detected, breaking closure invariant.
+- **Expected kernel behavior**: Synchronize closed flag after fix or reject
+- **Notes**: closed_flag_sync_failure
+- **Model impact**: Invalid solid construction from non-closed shell marked closed
+- **Fixture path**: step-examples/12-3a-shells/Tsh208.stp
+- **Fixture kind**: scaffold
+
 ### Gp040 — Pcurves emitted by default duplicate / contradict the surface 3D curve
 - **Category**: §12.2a pcurve defects (sub-class: writer-emitted pcurves disagree with 3D)
 - **Sources**: OCCT MANTIS#0025654; bug-reporter language: "disable writing pcurves to STEP and IGES by default", "pcurves and 3D curves disagree on round-trip", "writer-emitted pcurves cause downstream failures". (OCCT MANTIS tracker 502 as of 2026-05-02)
@@ -26822,6 +26887,56 @@ Pcurve is TRIMMED_CURVE. GetEndTangent2d uses untrimmed-curve tangent at trim bo
 - **Notes**: GET_END_TANGENT_2D_B005; finite_difference_degeneracy axis
 - **Model impact**: Tangent vector magnitude zero; D1 escalation path triggered
 - **Fixture path**: step-examples/12-2a-pcurves/Gp145.stp
+- **Fixture kind**: scaffold
+
+### Gp146 — D1 derivative zero; falls back to D2 second derivative
+- **Category**: §12.2a pcurves
+- **Sources**: OCCT/ShapeAnalysis_Edge.GetEndTangent2d
+- **Description**: Edge pcurve at inflection point where D1 evaluation yields zero magnitude. GetEndTangent2d silently escalates to D2 without reporting degeneracy. Analyzer omits reporting inflection point condition before secondary derivative fallback.
+- **Expected kernel behavior**: Heal (escalation path)
+- **Notes**: derivative_degeneracy_escalation, GET_END_TANGENT_2D_B006
+- **Model impact**: Reading fails tangent detection; downstream tangent-dependent healers silently accept degenerate geometry
+- **Fixture path**: step-examples/12-2a-pcurves/Gp146.stp
+- **Fixture kind**: scaffold
+
+### Gp147 — D2 second derivative zero; falls back to D3 third derivative
+- **Category**: §12.2a pcurves
+- **Sources**: OCCT/ShapeAnalysis_Edge.GetEndTangent2d
+- **Description**: Edge pcurve at symmetric point where D2 vanishes. GetEndTangent2d cascades to D3 evaluation without intermediate validation. Method escalates beyond geometric intent when polynomial structure degenerates.
+- **Expected kernel behavior**: Heal (escalation path)
+- **Notes**: derivative_degeneracy_escalation, GET_END_TANGENT_2D_B007
+- **Model impact**: Reading cascades to cubic term; tangent accuracy becomes order-dependent rather than geometry-driven
+- **Fixture path**: step-examples/12-2a-pcurves/Gp147.stp
+- **Fixture kind**: scaffold
+
+### Gp148 — D3 third derivative zero; falls back to line endpoints
+- **Category**: §12.2a pcurves
+- **Sources**: OCCT/ShapeAnalysis_Edge.GetEndTangent2d
+- **Description**: Edge pcurve segment with all derivatives zero up to D3 (low-degree locally flat segment). GetEndTangent2d resorts to linear interpolation between endpoints without reporting complete degeneracy. Analyzer fails to detect when all fallback sources exhaust.
+- **Expected kernel behavior**: Heal (final escalation)
+- **Notes**: derivative_complete_degeneracy, GET_END_TANGENT_2D_B008
+- **Model impact**: Reading uses degenerate line tangent; endpoint-based orientation masks curve structure failure
+- **Fixture path**: step-examples/12-2a-pcurves/Gp148.stp
+- **Fixture kind**: scaffold
+
+### Gp149 — Straight-line tangent magnitude zero; complete tangent degeneracy
+- **Category**: §12.2a pcurves
+- **Sources**: OCCT/ShapeAnalysis_Edge.GetEndTangent2d
+- **Description**: Edge pcurve where start equals end and all derivatives vanish. GetEndTangent2d exhausts all fallback sources (D1, D2, D3, line endpoints) yielding zero-magnitude vector. Method returns failure indication without reporting complete geometric collapse.
+- **Expected kernel behavior**: Reject (complete degeneracy)
+- **Notes**: complete_tangent_degeneracy, GET_END_TANGENT_2D_B009
+- **Model impact**: Reading returns no tangent; downstream geometry dependent on tangent direction fails silently
+- **Fixture path**: step-examples/12-2a-pcurves/Gp149.stp
+- **Fixture kind**: scaffold
+
+### Gp150 — Edge orientation reversal negates computed tangent post-computation
+- **Category**: §12.2a pcurves
+- **Sources**: OCCT/ShapeAnalysis_Edge.GetEndTangent2d
+- **Description**: Edge with REVERSED orientation; tangent computed then negated without validation of orientation consistency with curve parameterization. Analyzer fails to detect when orientation reversal applied post-computation masks tangent-reversal errors.
+- **Expected kernel behavior**: Heal (orientation validation)
+- **Notes**: orientation_reversal_semantics, GET_END_TANGENT_2D_B010
+- **Model impact**: Reading applies negation after computation; reversed edge tangent may diverge from parameterization intent
+- **Fixture path**: step-examples/12-2a-pcurves/Gp150.stp
 - **Fixture kind**: scaffold
 
 ### A105 — Regression OCC 6.9.1 → 7.4.0: colours stop appearing on certain STEP files
