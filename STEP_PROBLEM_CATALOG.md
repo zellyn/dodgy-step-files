@@ -23298,6 +23298,96 @@ Unit square planar face with centered 0.5×0.5 inner rectangle. FixOrientation's
 - **Fixture path**: step-examples/12-3c-faces/Tfa210.stp
 - **Fixture kind**: scaffold
 
+### Tfa211: ShapeFix_Face.FixMissingSeam.null-surface-guard
+
+**Category**: Face healing / Missing seam detection
+
+**Sources**: OCCT_HEAL_COVERAGE_V3.md (ShapeFix_Face.cxx:1724, kernel-pair axis)
+
+**Description**: ADVANCED_FACE with null surface handle ($). Triggers FixMissingSeam null guard path that rejects faces missing surface references before proceeding to seam synthesis.
+
+**Expected kernel behavior**: Kernel detects null surface, skips FixMissingSeam seam synthesis, applies fallback correction or rejects gracefully without crash.
+
+**Notes**: Minimal reproducer for null-surface-guard boundary condition; validates guard presence at line 1724.
+
+**Model impact**: Prevents crashes on malformed STEP files with missing surface definitions; ensures robustness against incomplete geometry.
+
+**Fixture path**: `/Users/zellyn/gh/dodgy-step-files/step-examples/12-3c-faces/Tfa211.stp`
+
+**Fixture kind**: Face-only model; quad EDGE_LOOP on null surface.
+
+### Tfa212: ShapeFix_Face.FixMissingSeam.bspline-non-periodic-rejection
+
+**Category**: Face healing / B-spline periodicity
+
+**Sources**: OCCT_HEAL_COVERAGE_V3.md (ShapeFix_Face.cxx:1744, conformance-probe axis)
+
+**Description**: Non-periodic B-spline surface (knot vectors [0.0,1.0]) with closed EDGE_LOOP. FixMissingSeam must reject seam synthesis on non-periodic surfaces, delegating to wire-fix path instead.
+
+**Expected kernel behavior**: Kernel detects B-spline non-periodicity flag, skips seam synthesis, applies generic wire closure repair.
+
+**Notes**: Exercises conformance-probe branch; validates non-periodic rejection at line 1744; knot counts enforce non-periodic topology.
+
+**Model impact**: Ensures seam synthesis only activates on periodic surfaces; prevents spurious edge injection on non-periodic geometries.
+
+**Fixture path**: `/Users/zellyn/gh/dodgy-step-files/step-examples/12-3c-faces/Tfa212.stp`
+
+**Fixture kind**: Face-only model; quad EDGE_LOOP on non-periodic B-spline surface.
+
+### Tfa213: ShapeFix_Face.FixMissingSeam.infinite-bounds-fallback
+
+**Category**: Face healing / Infinite surface bounds
+
+**Sources**: OCCT_HEAL_COVERAGE_V3.md (ShapeFix_Face.cxx:1759, tolerance axis)
+
+**Description**: CYLINDRICAL_SURFACE (unbounded) with partial wire closure (3-edge quad approximation). Tests infinite-bounds-fallback path that activates when surface parameter space is unbounded.
+
+**Expected kernel behavior**: Kernel detects cylindrical unbounded region, applies fallback tolerance-based closure estimation instead of direct seam bounds query.
+
+**Notes**: Tolerance-axis probe; validates unbounded-surface handling at line 1759; cylinder has implicit infinite Z bounds.
+
+**Model impact**: Handles unbounded surfaces gracefully; enables seam synthesis on infinite cylinders/cones without NaN errors.
+
+**Fixture path**: `/Users/zellyn/gh/dodgy-step-files/step-examples/12-3c-faces/Tfa213.stp`
+
+**Fixture kind**: Face-only model; partial quad wire on cylindrical surface.
+
+### Tfa214: ShapeFix_Face.FixMissingSeam.degenerate-wire-consolidation
+
+**Category**: Face healing / Degenerate edge consolidation
+
+**Sources**: OCCT_HEAL_COVERAGE_V3.md (ShapeFix_Face.cxx:1872, input-shape axis)
+
+**Description**: B-spline surface with degenerate EDGE_LOOP (all edges ~0.001 mm, same endpoints). Tests degenerate-wire-consolidation path that collapses short edges into single vertex before seam synthesis.
+
+**Expected kernel behavior**: Kernel detects degenerate edge lengths, consolidates wire to minimal representation, either skips seam or applies point-based correction.
+
+**Notes**: Input-shape probe; validates degenerate edge detection at line 1872; triggers consolidation path before seam synthesis.
+
+**Model impact**: Robust handling of nearly-collapsed wires; prevents spurious seam synthesis on degenerate geometries.
+
+**Fixture path**: `/Users/zellyn/gh/dodgy-step-files/step-examples/12-3c-faces/Tfa214.stp`
+
+**Fixture kind**: Face-only model; degenerate quad EDGE_LOOP with micro-edges on B-spline surface.
+
+### Tfa215: ShapeFix_Face.FixMissingSeam.orientation-correction-partial-closure
+
+**Category**: Face healing / Partial-closure orientation
+
+**Sources**: OCCT_HEAL_COVERAGE_V3.md (ShapeFix_Face.cxx:2013, input-shape axis)
+
+**Description**: TOROIDAL_SURFACE with mixed EDGE_CURVE orientations (.T./.F.) and FACE_OUTER_BOUND orientation mismatch. Tests orientation-correction-partial-closure path that repairs orientation during partial-closure seam synthesis.
+
+**Expected kernel behavior**: Kernel detects orientation conflicts between edges and bound, applies sign flips to edges, rebuilds seam with corrected orientation before closure test.
+
+**Notes**: Input-shape probe; validates orientation correction at line 2013; mixed edge/bound orientation flags trigger path.
+
+**Model impact**: Ensures seam synthesis respects topology orientation; prevents reversed normals on torus seams.
+
+**Fixture path**: `/Users/zellyn/gh/dodgy-step-files/step-examples/12-3c-faces/Tfa215.stp`
+
+**Fixture kind**: Face-only model; quad EDGE_LOOP with mixed orientation on toroidal surface.
+
 ### Hea016 — Empty solid output from STEP export of complex body, despite STL succeeding
 - **Category**: §12.3c faces / shape healing
 - **Sources**: FreeCAD #20396; bug-reporter language: "Models exported to STEP crash or produce empty objects", "appears to export fine but results in an empty object", "STL and 3MF export work, STEP doesn't".
@@ -24372,6 +24462,61 @@ Geometric defects in wire topology and edge coherence.
 - **Test axiom**: CheckSameParameter or topological analysis flags edge multiplicity; ambiguous parametrization
 - **Repair entry**: ShapeFix_Wire.FixSameParameter or Merging detects overlapped curve and flags for split/merge
 - **Fixture kind**: Standard STEP
+
+### Twi247 — BRepLib::SameParameter exception silent skip
+
+- **Category**: §12.3b wires (sub-class: SameParameter-exception-handling)
+- **Sources**: OCCT/BRepBuilderAPI_Sewing.SameParameterShape
+- **Description**: Edge with inconsistent 3D curve and parametric curves; BRepLib::SameParameter throws Standard_Failure. Catch block at line 5898 executes continue without diagnostic output. Operation appears successful to caller.
+- **Expected kernel behavior**: Reject or report exception
+- **Notes**: Silent exception masking; see OCCT_HEAL_COVERAGE_V3 line 2185
+- **Model impact**: Non-sameparametrized edge silently skipped during healing pass
+- **Fixture path**: step-examples/12-3b-wires/Twi247.stp
+- **Fixture kind**: scaffold
+
+### Twi248 — BRepLib::SameParameter null 3D curve dereference
+
+- **Category**: §12.3b wires (sub-class: SameParameter-null-geometry)
+- **Sources**: OCCT/BRepBuilderAPI_Sewing.SameParameterShape
+- **Description**: Edge with only 2D parametric curve on surface; no 3D curve present. GetCurve3d returns null. Dereferencing null C3d in GAC.Load() would crash.
+- **Expected kernel behavior**: Reject or guard null check
+- **Notes**: Segfault risk in BRepLib::SameParameter; see OCCT_HEAL_COVERAGE_V3 line 2515
+- **Model impact**: Kernel crash during SameParameter evaluation
+- **Fixture path**: step-examples/12-3b-wires/Twi248.stp
+- **Fixture kind**: scaffold
+
+### Twi249 — ShapeFix_IntersectionTool CutEdge range too small
+
+- **Category**: §12.3b wires (sub-class: IntersectionTool-range-validation)
+- **Sources**: OCCT/ShapeFix_IntersectionTool.CutEdge
+- **Description**: Cut range below tolerance threshold. Condition std::abs(cut - pend) < 10*Precision::PConfusion() triggers at line 200. Trimmed edge range becomes invalid or degenerate.
+- **Expected kernel behavior**: Reject degenerate cut or skip trimming
+- **Notes**: Range-too-small branch defect; see OCCT_HEAL_COVERAGE_V3 line 9172
+- **Model impact**: Degenerate edge in healed wire
+- **Fixture path**: step-examples/12-3b-wires/Twi249.stp
+- **Fixture kind**: scaffold
+
+### Twi250 — ShapeFix_IntersectionTool FindVertAndSplitEdge endpoint selection
+
+- **Category**: §12.3b wires (sub-class: IntersectionTool-split-ambiguity)
+- **Sources**: OCCT/ShapeFix_IntersectionTool.FindVertAndSplitEdge
+- **Description**: Intersection point equidistant from both edge endpoints. Distance comparison if (pi1.Distance(PV1) < pi1.Distance(PV2)) at line 994 selects arbitrary endpoint without deterministic ordering.
+- **Expected kernel behavior**: Deterministic endpoint selection or reject ambiguous split
+- **Notes**: Endpoint-selection branch; see OCCT_HEAL_COVERAGE_V3 line 9246
+- **Model impact**: Non-deterministic edge splitting in multi-wire healing
+- **Fixture path**: step-examples/12-3b-wires/Twi250.stp
+- **Fixture kind**: scaffold
+
+### Twi251 — ShapeFix_IntersectionTool FixIntersectingWires null input guard
+
+- **Category**: §12.3b wires (sub-class: IntersectionTool-null-context)
+- **Sources**: OCCT/ShapeFix_IntersectionTool.FixIntersectingWires
+- **Description**: Method receives null context or face argument. Returns false without processing at line 1837. No diagnostic output distinguishes null-input condition from healing-success.
+- **Expected kernel behavior**: Reject with explicit null-input error or exception
+- **Notes**: Null-input-guard branch; see OCCT_HEAL_COVERAGE_V3 line 9301
+- **Model impact**: Silent failure when wire geometry context is missing
+- **Fixture path**: step-examples/12-3b-wires/Twi251.stp
+- **Fixture kind**: scaffold
 
 ### Gs056 — `SURFACE_OF_REVOLUTION` of an ellipse around its own centre produces a degenerate surface
 - **Category**: §12.2c surface / curve degeneracies (sub-class: revolution of conic)
@@ -26627,6 +26772,56 @@ Pcurve is TRIMMED_CURVE. GetEndTangent2d uses untrimmed-curve tangent at trim bo
 - **Notes**: synthesized from v3 deep-pass
 - **Model impact**: Face with two edges: first has PCurve, second lacks it. Without line 1509-1511 skip: crash in gac projection. With skip: null edge gracefully skipped. - **Search anchors**: 'PCurve missing', 'continue
 - **Fixture path**: step-examples/12-2a-pcurves/Gp140.stp
+- **Fixture kind**: scaffold
+
+### Gp141 — Missing PCurve Extraction Failure
+- **Category**: §12.2a pcurves
+- **Sources**: OCCT/ShapeAnalysis_Edge.GetEndTangent2d
+- **Description**: Edge without pcurve on given surface. GetEndTangent2d returns silent zero vector instead of signaling missing geometric data. Surface_curve has empty associated_geometry list.
+- **Expected kernel behavior**: heal/reject with diagnostic
+- **Notes**: GET_END_TANGENT_2D_B001; missing_pcurve_data_completeness axis
+- **Model impact**: Silent failure; tangent returned as (0,0) instead of error flag
+- **Fixture path**: step-examples/12-2a-pcurves/Gp141.stp
+- **Fixture kind**: scaffold
+
+### Gp142 — Negligible Parameter Delta Precision Loss
+- **Category**: §12.2a pcurves
+- **Sources**: OCCT/ShapeAnalysis_Edge.GetEndTangent2d
+- **Description**: PCurve with edge parameter range below Precision::PConfusion (< 1e-8). Finite difference delta shrinks to epsilon; tangent computation skipped entirely. Vertices separated by 1e-8 distance.
+- **Expected kernel behavior**: heal/reject with precision diagnostics
+- **Notes**: GET_END_TANGENT_2D_B002; parameter_degeneracy_precision axis
+- **Model impact**: Tangent magnitude dropped to epsilon; D1 fallback not triggered
+- **Fixture path**: step-examples/12-2a-pcurves/Gp142.stp
+- **Fixture kind**: scaffold
+
+### Gp143 — Endpoint Tangent from Interior Point Fallback
+- **Category**: §12.2a pcurves
+- **Sources**: OCCT/ShapeAnalysis_Edge.GetEndTangent2d
+- **Description**: B-spline 2D pcurve with high curvature variation near endpoint. Method computes tangent from interior point (par2 offset) instead of curve D1 derivative. Masks non-smooth behavior.
+- **Expected kernel behavior**: heal/reject; detect non-differentiable endpoint
+- **Notes**: GET_END_TANGENT_2D_B003; tangent_computation_method_boundary axis
+- **Model impact**: Computed tangent does not match true derivative at endpoint
+- **Fixture path**: step-examples/12-2a-pcurves/Gp143.stp
+- **Fixture kind**: scaffold
+
+### Gp144 — Asymmetric Start Tangent Forward Difference
+- **Category**: §12.2a pcurves
+- **Sources**: OCCT/ShapeAnalysis_Edge.GetEndTangent2d
+- **Description**: Composite 2D pcurve with tangent discontinuity at start. Method uses forward finite difference (cf+delta) instead of derivative. Misses asymmetry between start and end regularity.
+- **Expected kernel behavior**: heal/reject; detect tangent discontinuity
+- **Notes**: GET_END_TANGENT_2D_B004; tangent_computation_method_boundary axis
+- **Model impact**: Start tangent direction diverges from derivative; end uses backward diff
+- **Fixture path**: step-examples/12-2a-pcurves/Gp144.stp
+- **Fixture kind**: scaffold
+
+### Gp145 — Zero Magnitude Tangent from Flat Section
+- **Category**: §12.2a pcurves
+- **Sources**: OCCT/ShapeAnalysis_Edge.GetEndTangent2d
+- **Description**: B-spline 2D pcurve with flat section at endpoint (control point repeated). Finite difference produces zero-magnitude vector. Fallback dparam becomes 0.0; D1 fallback escalates unnecessarily.
+- **Expected kernel behavior**: heal/reject; flag numerically ill-conditioned finite difference
+- **Notes**: GET_END_TANGENT_2D_B005; finite_difference_degeneracy axis
+- **Model impact**: Tangent vector magnitude zero; D1 escalation path triggered
+- **Fixture path**: step-examples/12-2a-pcurves/Gp145.stp
 - **Fixture kind**: scaffold
 
 ### A105 — Regression OCC 6.9.1 → 7.4.0: colours stop appearing on certain STEP files

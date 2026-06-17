@@ -16987,6 +16987,161 @@
     "title": "ShapeFix_ComposeShell.SplitByLine.pcurve-missing-skip"
   },
   {
+    "byte_assertions": [],
+    "category": "§12.2a pcurves",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": null,
+    "description": "Edge without pcurve on given surface. GetEndTangent2d returns silent zero vector instead of signaling missing geometric data. Surface_curve has empty associated_geometry list.",
+    "expected_kernel_behavior": "heal/reject with diagnostic",
+    "expected_validation": "",
+    "fixture_kind": null,
+    "fixture_path": "step-examples/12-2a-pcurves/Gp141.stp",
+    "id": "Gp141",
+    "notes": "GET_END_TANGENT_2D_B001; missing_pcurve_data_completeness axis",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-sufficient",
+    "reproducer": "",
+    "section": "12.2a",
+    "section_dir": "12-2a-pcurves",
+    "see_also": [],
+    "sender": "",
+    "severity": null,
+    "sources": [
+      "OCCT/ShapeAnalysis_Edge.GetEndTangent2d"
+    ],
+    "taxonomy": [
+      "geometry"
+    ],
+    "tier3_assertions": [],
+    "title": "Missing PCurve Extraction Failure"
+  },
+  {
+    "byte_assertions": [],
+    "category": "§12.2a pcurves",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": null,
+    "description": "PCurve with edge parameter range below Precision::PConfusion (< 1e-8). Finite difference delta shrinks to epsilon; tangent computation skipped entirely. Vertices separated by 1e-8 distance.",
+    "expected_kernel_behavior": "heal/reject with precision diagnostics",
+    "expected_validation": "",
+    "fixture_kind": null,
+    "fixture_path": "step-examples/12-2a-pcurves/Gp142.stp",
+    "id": "Gp142",
+    "notes": "GET_END_TANGENT_2D_B002; parameter_degeneracy_precision axis",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-sufficient",
+    "reproducer": "",
+    "section": "12.2a",
+    "section_dir": "12-2a-pcurves",
+    "see_also": [],
+    "sender": "",
+    "severity": null,
+    "sources": [
+      "OCCT/ShapeAnalysis_Edge.GetEndTangent2d"
+    ],
+    "taxonomy": [
+      "geometry"
+    ],
+    "tier3_assertions": [],
+    "title": "Negligible Parameter Delta Precision Loss"
+  },
+  {
+    "byte_assertions": [],
+    "category": "§12.2a pcurves",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": null,
+    "description": "B-spline 2D pcurve with high curvature variation near endpoint. Method computes tangent from interior point (par2 offset) instead of curve D1 derivative. Masks non-smooth behavior.",
+    "expected_kernel_behavior": "heal/reject; detect non-differentiable endpoint",
+    "expected_validation": "",
+    "fixture_kind": null,
+    "fixture_path": "step-examples/12-2a-pcurves/Gp143.stp",
+    "id": "Gp143",
+    "notes": "GET_END_TANGENT_2D_B003; tangent_computation_method_boundary axis",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-sufficient",
+    "reproducer": "",
+    "section": "12.2a",
+    "section_dir": "12-2a-pcurves",
+    "see_also": [],
+    "sender": "",
+    "severity": null,
+    "sources": [
+      "OCCT/ShapeAnalysis_Edge.GetEndTangent2d"
+    ],
+    "taxonomy": [
+      "geometry"
+    ],
+    "tier3_assertions": [],
+    "title": "Endpoint Tangent from Interior Point Fallback"
+  },
+  {
+    "byte_assertions": [],
+    "category": "§12.2a pcurves",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": null,
+    "description": "Composite 2D pcurve with tangent discontinuity at start. Method uses forward finite difference (cf+delta) instead of derivative. Misses asymmetry between start and end regularity.",
+    "expected_kernel_behavior": "heal/reject; detect tangent discontinuity",
+    "expected_validation": "",
+    "fixture_kind": null,
+    "fixture_path": "step-examples/12-2a-pcurves/Gp144.stp",
+    "id": "Gp144",
+    "notes": "GET_END_TANGENT_2D_B004; tangent_computation_method_boundary axis",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-sufficient",
+    "reproducer": "",
+    "section": "12.2a",
+    "section_dir": "12-2a-pcurves",
+    "see_also": [],
+    "sender": "",
+    "severity": null,
+    "sources": [
+      "OCCT/ShapeAnalysis_Edge.GetEndTangent2d"
+    ],
+    "taxonomy": [
+      "geometry"
+    ],
+    "tier3_assertions": [],
+    "title": "Asymmetric Start Tangent Forward Difference"
+  },
+  {
+    "byte_assertions": [],
+    "category": "§12.2a pcurves",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": null,
+    "description": "B-spline 2D pcurve with flat section at endpoint (control point repeated). Finite difference produces zero-magnitude vector. Fallback dparam becomes 0.0; D1 fallback escalates unnecessarily.",
+    "expected_kernel_behavior": "heal/reject; flag numerically ill-conditioned finite difference",
+    "expected_validation": "",
+    "fixture_kind": null,
+    "fixture_path": "step-examples/12-2a-pcurves/Gp145.stp",
+    "id": "Gp145",
+    "notes": "GET_END_TANGENT_2D_B005; finite_difference_degeneracy axis",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-sufficient",
+    "reproducer": "",
+    "section": "12.2a",
+    "section_dir": "12-2a-pcurves",
+    "see_also": [],
+    "sender": "",
+    "severity": null,
+    "sources": [
+      "OCCT/ShapeAnalysis_Edge.GetEndTangent2d"
+    ],
+    "taxonomy": [
+      "geometry"
+    ],
+    "tier3_assertions": [],
+    "title": "Zero Magnitude Tangent from Flat Section"
+  },
+  {
     "byte_assertions": [
       "contains(b'B_SPLINE_SURFACE')"
     ],
@@ -39932,6 +40087,162 @@
     ],
     "tier3_assertions": [],
     "title": "ShapeAnalysis_Wire.CheckSameParameter"
+  },
+  {
+    "byte_assertions": [],
+    "category": "§12.3b wires (sub-class: SameParameter-exception-handling)",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": null,
+    "description": "Edge with inconsistent 3D curve and parametric curves; BRepLib::SameParameter throws Standard_Failure. Catch block at line 5898 executes continue without diagnostic output. Operation appears successful to caller.",
+    "expected_kernel_behavior": "Reject or report exception",
+    "expected_validation": "",
+    "fixture_kind": null,
+    "fixture_path": "step-examples/12-3b-wires/Twi247.stp",
+    "id": "Twi247",
+    "notes": "Silent exception masking; see OCCT_HEAL_COVERAGE_V3 line 2185",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-sufficient",
+    "reproducer": "",
+    "section": "12.3b",
+    "section_dir": "12-3b-wires",
+    "see_also": [],
+    "sender": "",
+    "severity": null,
+    "sources": [
+      "OCCT/BRepBuilderAPI_Sewing.SameParameterShape"
+    ],
+    "taxonomy": [
+      "topology"
+    ],
+    "tier3_assertions": [],
+    "title": "BRepLib::SameParameter exception silent skip"
+  },
+  {
+    "byte_assertions": [],
+    "category": "§12.3b wires (sub-class: SameParameter-null-geometry)",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": null,
+    "description": "Edge with only 2D parametric curve on surface; no 3D curve present. GetCurve3d returns null. Dereferencing null C3d in GAC.Load() would crash.",
+    "expected_kernel_behavior": "Reject or guard null check",
+    "expected_validation": "",
+    "fixture_kind": null,
+    "fixture_path": "step-examples/12-3b-wires/Twi248.stp",
+    "id": "Twi248",
+    "notes": "Segfault risk in BRepLib::SameParameter; see OCCT_HEAL_COVERAGE_V3 line 2515",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-sufficient",
+    "reproducer": "",
+    "section": "12.3b",
+    "section_dir": "12-3b-wires",
+    "see_also": [],
+    "sender": "",
+    "severity": null,
+    "sources": [
+      "OCCT/BRepBuilderAPI_Sewing.SameParameterShape"
+    ],
+    "taxonomy": [
+      "crash",
+      "topology"
+    ],
+    "tier3_assertions": [],
+    "title": "BRepLib::SameParameter null 3D curve dereference"
+  },
+  {
+    "byte_assertions": [],
+    "category": "§12.3b wires (sub-class: IntersectionTool-range-validation)",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": null,
+    "description": "Cut range below tolerance threshold. Condition std::abs(cut - pend) < 10*Precision::PConfusion() triggers at line 200. Trimmed edge range becomes invalid or degenerate.",
+    "expected_kernel_behavior": "Reject degenerate cut or skip trimming",
+    "expected_validation": "",
+    "fixture_kind": null,
+    "fixture_path": "step-examples/12-3b-wires/Twi249.stp",
+    "id": "Twi249",
+    "notes": "Range-too-small branch defect; see OCCT_HEAL_COVERAGE_V3 line 9172",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-sufficient",
+    "reproducer": "",
+    "section": "12.3b",
+    "section_dir": "12-3b-wires",
+    "see_also": [],
+    "sender": "",
+    "severity": null,
+    "sources": [
+      "OCCT/ShapeFix_IntersectionTool.CutEdge"
+    ],
+    "taxonomy": [
+      "topology"
+    ],
+    "tier3_assertions": [],
+    "title": "ShapeFix_IntersectionTool CutEdge range too small"
+  },
+  {
+    "byte_assertions": [],
+    "category": "§12.3b wires (sub-class: IntersectionTool-split-ambiguity)",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": null,
+    "description": "Intersection point equidistant from both edge endpoints. Distance comparison if (pi1.Distance(PV1) < pi1.Distance(PV2)) at line 994 selects arbitrary endpoint without deterministic ordering.",
+    "expected_kernel_behavior": "Deterministic endpoint selection or reject ambiguous split",
+    "expected_validation": "",
+    "fixture_kind": null,
+    "fixture_path": "step-examples/12-3b-wires/Twi250.stp",
+    "id": "Twi250",
+    "notes": "Endpoint-selection branch; see OCCT_HEAL_COVERAGE_V3 line 9246",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-sufficient",
+    "reproducer": "",
+    "section": "12.3b",
+    "section_dir": "12-3b-wires",
+    "see_also": [],
+    "sender": "",
+    "severity": null,
+    "sources": [
+      "OCCT/ShapeFix_IntersectionTool.FindVertAndSplitEdge"
+    ],
+    "taxonomy": [
+      "topology"
+    ],
+    "tier3_assertions": [],
+    "title": "ShapeFix_IntersectionTool FindVertAndSplitEdge endpoint selection"
+  },
+  {
+    "byte_assertions": [],
+    "category": "§12.3b wires (sub-class: IntersectionTool-null-context)",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": null,
+    "description": "Method receives null context or face argument. Returns false without processing at line 1837. No diagnostic output distinguishes null-input condition from healing-success.",
+    "expected_kernel_behavior": "Reject with explicit null-input error or exception",
+    "expected_validation": "",
+    "fixture_kind": null,
+    "fixture_path": "step-examples/12-3b-wires/Twi251.stp",
+    "id": "Twi251",
+    "notes": "Null-input-guard branch; see OCCT_HEAL_COVERAGE_V3 line 9301",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-sufficient",
+    "reproducer": "",
+    "section": "12.3b",
+    "section_dir": "12-3b-wires",
+    "see_also": [],
+    "sender": "",
+    "severity": null,
+    "sources": [
+      "OCCT/ShapeFix_IntersectionTool.FixIntersectingWires"
+    ],
+    "taxonomy": [
+      "topology"
+    ],
+    "tier3_assertions": [],
+    "title": "ShapeFix_IntersectionTool FixIntersectingWires null input guard"
   },
   {
     "byte_assertions": [],
