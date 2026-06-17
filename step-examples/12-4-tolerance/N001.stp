@@ -5,8 +5,8 @@ ISO-10303-21;
  * containing face -- violating the canonical OCCT invariant
  * tol(vertex) <= tol(edge) <= tol(face). Downstream Boolean and meshing
  * algorithms rely on the hierarchy and produce incorrect results when violated.
- * Reproducer: face declares uncertainty 1e-7, edges/vertices in the same
- * representation context have implied healing tolerances 1e-3 / 1e-2.
+ * Reproducer: face declares uncertainty 1.0e-7, edges/vertices in the same
+ * representation context have implied healing tolerances 1.0e-3 / 1.0e-2.
  */
 HEADER;
 FILE_DESCRIPTION(('N001 tolerance hierarchy violation vertex>edge>face'),'2;1');
@@ -30,7 +30,7 @@ DATA;
 #41=VECTOR('',#40,10.0);
 #42=LINE('',#20,#41);
 #50=EDGE_CURVE('',#30,#31,#42,.T.);
-/* Face-level uncertainty declared at 1e-7 */
+/* Face-level uncertainty declared at 1.0e-7 */
 #60=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
 #61=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
 #62=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
@@ -40,10 +40,10 @@ DATA;
   GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#63))
   GLOBAL_UNIT_ASSIGNED_CONTEXT((#60,#61,#62))
   REPRESENTATION_CONTEXT('face_ctx','3D'));
-/* Defect site: vertex tolerance (1e-2) exceeds edge tolerance (1e-3)
- * which itself exceeds the face tolerance carried by the context (1e-7).
- * Receivers walking topology see V-tol=1e-2 dominating E-tol=1e-3
- * dominating F-tol=1e-7 -- inverted hierarchy.
+/* Defect site: vertex tolerance (1.0e-2) exceeds edge tolerance (1.0e-3)
+ * which itself exceeds the face tolerance carried by the context (1.0e-7).
+ * Receivers walking topology see V-tol=1.0e-2 dominating E-tol=1.0e-3
+ * dominating F-tol=1.0e-7 -- inverted hierarchy.
  */
 #70=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-3),#60,
   'distance_accuracy_value','edge_tolerance');

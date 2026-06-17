@@ -5,8 +5,8 @@ ISO-10303-21;
  * model accuracy: a 0.1% threshold becomes smaller than the modeling
  * tolerance, so even valid round-trips fail validation.
  * Reproducer: tiny part with bounding-box space diagonal ~5 mm; uncertainty
- * 2e-2 mm; centroid value provided as a GVP -- relative 0.1% threshold
- * is 5e-3 mm, well below the 2e-2 modeling tolerance.
+ * 2.0e-2 mm; centroid value provided as a GVP -- relative 0.1% threshold
+ * is 5.0e-3 mm, well below the 2.0e-2 modeling tolerance.
  */
 HEADER;
 FILE_DESCRIPTION(('N036 centroid validation relative threshold below modeling tolerance'),'2;1');
@@ -31,7 +31,7 @@ DATA;
 #50=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
 #51=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
 #52=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
-/* Modeling tolerance 0.02 mm; relative 0.1% on 5 mm diagonal => 5e-3 < 2e-2 */
+/* Modeling tolerance 0.02 mm; relative 0.1% on 5 mm diagonal => 5.0e-3 < 2.0e-2 */
 #60=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(2.0E-2),#50,
   'distance_accuracy_value','modeling_tol_above_relative_threshold');
 #70=(GEOMETRIC_REPRESENTATION_CONTEXT(3)

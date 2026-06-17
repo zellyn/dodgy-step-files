@@ -1,14 +1,14 @@
 ISO-10303-21;
 /* Tb012 - Sphere wire near pole singularity at parametric tolerance boundary
  * Defect: SPHERICAL_SURFACE has parametric pole singularity at V = +/- pi/2.
- * A wire pcurve at V = pi/2 - 1e-9 is just below the pole. Receiver with
- * pole-snap tolerance 1e-7 rad does not snap (1e-9 < 1e-7); but a receiver
- * with pole-snap tolerance 1e-3 rad snaps the wire onto the pole, collapsing
+ * A wire pcurve at V = pi/2 - 1.0e-9 is just below the pole. Receiver with
+ * pole-snap tolerance 1.0e-7 rad does not snap (1.0e-9 < 1.0e-7); but a receiver
+ * with pole-snap tolerance 1.0e-3 rad snaps the wire onto the pole, collapsing
  * the upper face into a degenerate point. Same wire, different surface
  * extents at different tolerance policies.
  */
 HEADER;
-FILE_DESCRIPTION(('Tb012 sphere wire near pole at 1e-9 below singularity'),'2;1');
+FILE_DESCRIPTION(('Tb012 sphere wire near pole at 1.0e-9 below singularity'),'2;1');
 FILE_NAME('Tb012.stp','2026-04-30T00:00:00',(''),(''),
   'cad-research-suite','','');
 FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
@@ -22,17 +22,17 @@ DATA;
 #12=DIRECTION('+x',(1.0,0.0,0.0));
 #13=AXIS2_PLACEMENT_3D('plc',#10,#11,#12);
 #14=SPHERICAL_SURFACE('sph',#13,1.0);
-/* Wire on near-pole circle: V = pi/2 - 1e-9, full U sweep. */
+/* Wire on near-pole circle: V = pi/2 - 1.0e-9, full U sweep. */
 #20=CARTESIAN_POINT('p_near_pole',(1.0E-9,0.0,0.99999999999999955));
 #21=VERTEX_POINT('v_near_pole_seam',#20);
-/* Pcurve: V at constant pi/2 - 1e-9, U from 0 to 2*pi (closed circle). */
+/* Pcurve: V at constant pi/2 - 1.0e-9, U from 0 to 2*pi (closed circle). */
 #22=CARTESIAN_POINT('uv0',(0.0,1.5707963257948965));
 #23=DIRECTION('+u',(1.0,0.0));
 #24=VECTOR('uv_vec',#23,6.283185307179586);
 #25=LINE('pcurve_near_pole',#22,#24);
 #26=DEFINITIONAL_REPRESENTATION('pdef',(#25),#80);
 #27=PCURVE('pc',#14,#26);
-/* 3D circle at V = pi/2 - 1e-9, just below north pole. */
+/* 3D circle at V = pi/2 - 1.0e-9, just below north pole. */
 #28=AXIS2_PLACEMENT_3D('circ_axis',#20,#11,#12);
 #29=CIRCLE('circ_near_pole',#28,1.0E-9);
 #30=SURFACE_CURVE('sc',#29,(#27),.PCURVE_S1.);

@@ -1,6 +1,6 @@
 ISO-10303-21;
 HEADER;
-FILE_DESCRIPTION(('Tfa152: ShapeAnalysis_CheckSmallFace.CheckSpotFace exactly-zero-area'),2000-01-01T00:00:00,2,2,'');
+FILE_DESCRIPTION(('Tfa152: ShapeAnalysis_CheckSmallFace.CheckSpotFace exactly-zero-area'),'2;1');
 FILE_NAME('Tfa152.stp','',(''),(''),
 'Open CASCADE STEP writer 7.4',
 'Generated for CAD kernel testing',1);

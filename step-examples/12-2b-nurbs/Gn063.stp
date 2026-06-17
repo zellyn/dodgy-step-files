@@ -4,7 +4,7 @@ ISO-10303-21;
    sample density doesn't scale with weight, missing the cusp pulled by
    the high-weight pole. This fixture has a NURBS with weight 150 at midpoint. */
 HEADER;
-FILE_DESCRIPTION(('Gn063 - GetSamplePoints extreme weight cusp density miss','2;1');
+FILE_DESCRIPTION(('Gn063 - GetSamplePoints extreme weight cusp density miss'',''2;1'',''2;1'),'2;1');
 FILE_NAME('Gn063.stp','2026-06-16T00:00:00',('auto-generated'),(''),
   'auto-generated','','');
 FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));

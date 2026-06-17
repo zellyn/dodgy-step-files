@@ -1,11 +1,11 @@
 ISO-10303-21;
 /* Tfa048 - Strip face flagged using caller-supplied tolerance
  * 100 x 0.5 plane patch on PLANE; an UNCERTAINTY_MEASURE_WITH_UNIT entity
- * declares the face's intrinsic edge tolerance at 1e-7. The face is only
+ * declares the face's intrinsic edge tolerance at 1.0e-7. The face is only
  * a "strip" at caller tolerances >= 0.5; with the caller supplying e.g.
  * 1mm, it qualifies. */
 HEADER;
-FILE_DESCRIPTION(('Tfa048 test case','100x0.5 face with intrinsic edge tolerance 1e-7 -- strip only at caller tol >=0.5'),'2;1');
+FILE_DESCRIPTION(('Tfa048 test case','100x0.5 face with intrinsic edge tolerance 1.0e-7 -- strip only at caller tol >=0.5'),'2;1');
 FILE_NAME('Tfa048.stp','2026-04-30T00:00:00',(''),(''),'cad-research-suite','','');
 FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
 ENDSEC;
@@ -41,7 +41,7 @@ DATA;
 #70=EDGE_LOOP('',(#60,#61,#62,#63));
 #71=FACE_OUTER_BOUND('',#70,.T.);
 #72=ADVANCED_FACE('strip_100_by_0p5',(#71),#14,.T.);
-/* Per-shape edge tolerance assertion: 1e-7 -- the face only qualifies as a
+/* Per-shape edge tolerance assertion: 1.0e-7 -- the face only qualifies as a
  * "strip" when the caller's tolerance band exceeds the face's narrow dim. */
 #80=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
 #81=DIMENSIONAL_EXPONENTS(0.0,0.0,0.0,0.0,0.0,0.0,0.0);

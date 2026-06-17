@@ -1,15 +1,8 @@
 ISO-10303-21;
 HEADER;
-FILE_DESCRIPTION(('Twi135: ShapeAnalysis_Wire.CheckGap2d trimmed-pcurve gap',
- 'Adjacent edges with TRIMMED_CURVE pcurves having different basis curves; CheckGap2d compares endpoints in wrong parameter space'),
-  '2',
-  '2020-01-01T00:00:00',
-  '2020-01-01T00:00:00',
-  ('OPEN CASCADE'),
-  (''),
-  'Unknown');
-FILE_NAME('Twi135.stp','2020-01-01T00:00:00',(''),(''),'Unknown','','');
-FILE_SCHEMA(('AP203_CONFIGURATION_CONTROLLED_3D_DESIGN_OF_MECHANICAL_PARTS_AND_ASSEMBLIES_MCD'));
+FILE_DESCRIPTION(('Twi135'),'2;1');
+FILE_NAME('Twi135.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
 #1=GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));

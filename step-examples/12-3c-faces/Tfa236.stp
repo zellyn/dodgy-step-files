@@ -1,14 +1,6 @@
 ISO-10303-21;
 HEADER;
-FILE_DESCRIPTION(('Tfa236: ShapeFix_Face.FixOrientation — wire-sense correction via face-surface normal; manifold check'),
-  '2026-06-16T00:00:00',
-  2,
-  (),
-  (),
-  'neutral file',
-  'CAD System',
-  '',
-  ());
+FILE_DESCRIPTION(('Tfa236: ShapeFix_Face.FixOrientation — wire-sense correction via face-surface normal; manifold check'),'2;1');
 FILE_NAME('Tfa236.stp',
   2026-06-16T00:00:00,
   (''),
@@ -37,11 +29,11 @@ DATA;
 #60=LINE('edge_neg_x',#61,#62);
 #61=CARTESIAN_POINT('',2.0,2.0,0.0);
 #62=VECTOR('',#63,2.0);
-#63=DIRECTION('',−1.0,0.0,0.0);
+#63=DIRECTION('',-1.0,0.0,0.0);
 #70=LINE('edge_neg_y',#71,#72);
 #71=CARTESIAN_POINT('',0.0,2.0,0.0);
 #72=VECTOR('',#73,2.0);
-#73=DIRECTION('',0.0,−1.0,0.0);
+#73=DIRECTION('',0.0,-1.0,0.0);
 #80=VERTEX_POINT('v1',#81);
 #81=CARTESIAN_POINT('',0.0,0.0,0.0);
 #82=VERTEX_POINT('v2',#83);

@@ -6,8 +6,8 @@ ISO-10303-21;
  * re-checking necessity, causing unbounded growth.
  * Geometry: 3-edge star topology with hub vertex at origin;
  *   three endpoints at (1,0,0), (0,1,0), (0,0,1).
- * Hub vertex tolerance 1e-5, edge tolerance 1e-4.
- * Expected: After two FixVertexTolerance calls, vertex tolerance <= max(edge) = 1e-4.
+ * Hub vertex tolerance 1.0e-5, edge tolerance 1.0e-4.
+ * Expected: After two FixVertexTolerance calls, vertex tolerance <= max(edge) = 1.0e-4.
  */
 HEADER;
 FILE_DESCRIPTION(('N063 ShapeFix_Edge FixVertexTolerance escalation cascade'),'2;1');
@@ -42,14 +42,14 @@ DATA;
 #39=VECTOR('vec3',#38,1.0);
 #40=LINE('line3',#10,#39);
 #41=EDGE_CURVE('e3',#20,#23,#40,.T.);
-/* Units with edge-level tolerance 1e-4 and hub vertex tolerance 1e-5 */
+/* Units with edge-level tolerance 1.0e-4 and hub vertex tolerance 1.0e-5 */
 #100=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
 #101=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
 #102=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
-/* Hub vertex tolerance initially 1e-5 */
+/* Hub vertex tolerance initially 1.0e-5 */
 #103=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-5),#100,
   'distance_accuracy_value','vertex_tolerance');
-/* Edge tolerance 1e-4 */
+/* Edge tolerance 1.0e-4 */
 #104=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-4),#100,
   'distance_accuracy_value','edge_tolerance');
 #105=(GEOMETRIC_REPRESENTATION_CONTEXT(3)

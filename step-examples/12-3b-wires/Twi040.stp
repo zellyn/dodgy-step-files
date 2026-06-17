@@ -21,12 +21,12 @@ DATA;
 #13=AXIS2_PLACEMENT_3D('',#10,#11,#12);
 #20=CYLINDRICAL_SURFACE('',#13,10.0);
 /* Vertex at 3D (10,0,0) but the EDGE_CURVE start is parametrized to land
- * at (10 + 1e-7, 0, 0) - within Precision::Confusion() of the surface. */
+ * at (10 + 1.0e-7, 0, 0) - within Precision::Confusion() of the surface. */
 #30=CARTESIAN_POINT('',(10.0,0.0,0.0));
 #31=VERTEX_POINT('',#30);
 #32=CARTESIAN_POINT('',(10.0,0.0,5.0));
 #33=VERTEX_POINT('',#32);
-/* Defect: 3D curve is parametrized starting 1e-7 off the surface trace */
+/* Defect: 3D curve is parametrized starting 1.0e-7 off the surface trace */
 #34=CARTESIAN_POINT('',(10.0000001,0.0,0.0));
 #35=DIRECTION('',(0.0,0.0,1.0));
 #36=VECTOR('',#35,1.0);

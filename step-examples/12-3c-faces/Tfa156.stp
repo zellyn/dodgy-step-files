@@ -1,11 +1,7 @@
 ISO-10303-21;
-/* Tfa156 — ShapeFix_Face.FixSmallAreaWire wire-with-tangent-edges
- * Face with outer wire + inner wire whose edges form a tangent smooth curve.
- * FixSmallAreaWire's polygon approximation underestimates the enclosed area.
- */
 HEADER;
-FILE_DESCRIPTION(('Tfa156 test case','Wire with tangent edges (smooth curve); FixSmallAreaWire polygon underestimate'),'2;1');
-FILE_NAME('Tfa156.stp','2026-06-15T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_DESCRIPTION(('Tfa156'),'2;1');
+FILE_NAME('Tfa156.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
 FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;

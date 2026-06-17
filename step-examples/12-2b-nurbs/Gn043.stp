@@ -6,7 +6,7 @@ ISO-10303-21;
    accounted for, leading to excessive sampling overhead and potential numerical
    instability during healing operations. */
 HEADER;
-FILE_DESCRIPTION(('Gn043 - Rational BSpline 4x sample amplification','2;1');
+FILE_DESCRIPTION(('Gn043 - Rational BSpline 4x sample amplification'',''2;1'',''2;1'),'2;1');
 FILE_NAME('Gn043.stp','2026-06-16T00:00:00',('auto-generated'),(''),
   'auto-generated','','');
 FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));

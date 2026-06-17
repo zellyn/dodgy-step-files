@@ -20,7 +20,7 @@ DATA;
 #13=AXIS2_PLACEMENT_3D('',#10,#11,#12);
 #20=PLANE('',#13);
 #21=RECTANGULAR_TRIMMED_SURFACE('wrap_trim',#20,0.0,1.0,0.0,1.0,.T.,.T.);
-/* Rectangle with a tiny gap: vertices are separated by 1e-8 (within tolerance)
+/* Rectangle with a tiny gap: vertices are separated by 1.0e-8 (within tolerance)
  * but the wire is topologically broken at that junction */
 #30=CARTESIAN_POINT('',(0.0,0.0,0.0));
 #31=VERTEX_POINT('',#30);
@@ -47,7 +47,7 @@ DATA;
 #50=VECTOR('',#49,1.0);
 #51=LINE('',#36,#50);
 /* Defect: Last edge ends at #39 which doesn't match first vertex #31
- * Gap is tiny (1e-8) so tolerance would absorb it, but FixGaps3d
+ * Gap is tiny (1.0e-8) so tolerance would absorb it, but FixGaps3d
  * creates a degenerate bridge from nearly-origin to origin */
 #60=EDGE_CURVE('',#31,#33,#42,.T.);
 #61=EDGE_CURVE('',#33,#35,#45,.T.);

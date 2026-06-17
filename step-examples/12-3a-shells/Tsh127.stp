@@ -12,8 +12,8 @@ DATA;
 #2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
 
 /* Two separate shells to be sewn together:
- * Shell 1: Single face (0,0,0)-(10,0,0)-(10,10,0)-(0,10,0), tolerance 1e-7
- * Shell 2: Single face (0,0,10)-(10,0,10)-(10,10,10)-(0,10,10), tolerance 1e-5
+ * Shell 1: Single face (0,0,0)-(10,0,0)-(10,10,0)-(0,10,0), tolerance 1.0e-7
+ * Shell 2: Single face (0,0,10)-(10,0,10)-(10,10,10)-(0,10,10), tolerance 1.0e-5
  * They are coplanar but separated; sewing should bridge them but tolerance
  * mismatch causes gaps or missed stitching. */
 

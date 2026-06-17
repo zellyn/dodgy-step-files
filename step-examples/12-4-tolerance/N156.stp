@@ -1,9 +1,9 @@
 ISO-10303-21;
 /* N156 - ShapeAnalysis_Edge.CheckPoints tolerance_asymmetry
- * Defect: Two precision values with extreme asymmetry (preci1=1e-12, preci2=0.5)
+ * Defect: Two precision values with extreme asymmetry (preci1=1.0e-12, preci2=0.5)
  * CheckPoints condition conflates independent tolerances via squared-distance checks:
  * P1A/P2A within preci1² but P1B/P2B within preci2² creates false negative.
- * Reproducer: Point pair A separated by 1e-13 (passes preci1), pair B by 0.4
+ * Reproducer: Point pair A separated by 1.0e-13 (passes preci1), pair B by 0.4
  * (passes preci2), but combined condition fails due to mixed-tolerance logic.
  */
 HEADER;

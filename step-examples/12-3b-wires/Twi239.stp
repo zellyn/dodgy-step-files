@@ -1,7 +1,6 @@
 ISO-10303-21;
 HEADER;
-FILE_DESCRIPTION(('Twi239 — ShapeFix_Wire.FixClosed open-wire-closure-degenerate','closed wire topology claims closure but endpoint mismatch leaves dangling segment; FixClosed insert bridge-edge degenerate'),2000-01-01T00:00:00,2.0,'','',
-'Generated for OCCT wire healing defect regression',(''));
+FILE_DESCRIPTION(('Twi239 — ShapeFix_Wire.FixClosed open-wire-closure-degenerate','closed wire topology claims closure but endpoint mismatch leaves dangling segment; FixClosed insert bridge-edge degenerate'),'2;1');
 FILE_NAME('Twi239.stp',2000-01-01T00:00:00,(''),(''),
 'Copyright Zellyn',2000-01-01T00:00:00,'');
 FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));

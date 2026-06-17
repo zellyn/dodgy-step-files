@@ -1,6 +1,6 @@
 ISO-10303-21;
 /* N094 - ShapeFix_Edge.FixVertexTolerance precision-floor
- * Defect: shared vertex used by multiple edges with tolerances 1e-10 and 1e-3;
+ * Defect: shared vertex used by multiple edges with tolerances 1.0e-10 and 1.0e-3;
  * FixVertexTolerance computes harmonic mean which underflows to 0, violating
  * the invariant that vertex tolerance >= max(edge tolerances).
  * Reproducer: vertex shared by two edges with extreme tolerance mismatch.
@@ -18,17 +18,17 @@ DATA;
 #12=DIRECTION('',(1.0,0.0,0.0));
 #13=AXIS2_PLACEMENT_3D('',#10,#11,#12);
 #14=PLANE('',#13);
-/* Shared vertex at junction - tolerance should be >= max(1e-10, 1e-3) = 1e-3 */
+/* Shared vertex at junction - tolerance should be >= max(1.0e-10, 1.0e-3) = 1.0e-3 */
 #20=CARTESIAN_POINT('',(0.0,0.0,0.0));
 #21=VERTEX_POINT('shared_vertex',#20);
-/* Edge 1: ultra-high precision, tolerance 1e-10 */
+/* Edge 1: ultra-high precision, tolerance 1.0e-10 */
 #30=CARTESIAN_POINT('',(-1.0,0.0,0.0));
 #31=VERTEX_POINT('v_precision',#30);
 #40=DIRECTION('',(1.0,0.0,0.0));
 #41=VECTOR('',#40,1.0);
 #42=LINE('',#30,#41);
 #43=EDGE_CURVE('edge_precision',#31,#21,#42,.T.);
-/* Edge 2: low precision, tolerance 1e-3 */
+/* Edge 2: low precision, tolerance 1.0e-3 */
 #50=CARTESIAN_POINT('',(1.0,0.0,0.0));
 #51=VERTEX_POINT('v_coarse',#50);
 #60=DIRECTION('',(-1.0,0.0,0.0));

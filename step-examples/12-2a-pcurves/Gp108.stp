@@ -30,7 +30,7 @@ DATA;
 #22=VECTOR('',#21,1.0);
 #23=LINE('line_3d',#20,#22);
 /* Vertices at extended range -1 to 6 */
-#30=VERTEX_POINT('',(−1.0,0.0,0.0));
+#30=VERTEX_POINT('',(-1.0,0.0,0.0));
 #31=CARTESIAN_POINT('',(6.0,0.0,0.0));
 #32=VERTEX_POINT('',#31);
 /* 2D B-spline pcurve with knot range [0,5] (doesn't cover [-1,6]) */

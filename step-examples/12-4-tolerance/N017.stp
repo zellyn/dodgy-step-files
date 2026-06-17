@@ -4,9 +4,9 @@ ISO-10303-21;
  * constant field-default value (e.g. 0.027352...) rather than a true measure
  * of producer-side precision. Receivers that take this value as document
  * tolerance get bad joins and false gaps when the real geometry is accurate
- * to 1e-6.
+ * to 1.0e-6.
  * Reproducer: file emits the constant 0.027352 as distance_accuracy_value
- * while real geometry is accurate to 1e-6.
+ * while real geometry is accurate to 1.0e-6.
  */
 HEADER;
 FILE_DESCRIPTION(('N017 UNCERTAINTY field-default 0.027352 untrustworthy'),'2;1');
@@ -30,7 +30,7 @@ DATA;
 #51=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
 #52=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
 /* Defect site: 0.027352... is an exporter field-default constant, NOT a real
- * measure of producer precision. Real geometry is accurate to 1e-6 mm. */
+ * measure of producer precision. Real geometry is accurate to 1.0e-6 mm. */
 #60=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.027352),#50,
   'distance_accuracy_value','confusion accuracy');
 #70=(GEOMETRIC_REPRESENTATION_CONTEXT(3)

@@ -1,14 +1,6 @@
 ISO-10303-21;
 HEADER;
-FILE_DESCRIPTION(('Tfa240: ShapeFix_Face.Perform — integrated face-healing pipeline; mode-dependent cascade'),
-  '2026-06-16T00:00:00',
-  2,
-  (),
-  (),
-  'neutral file',
-  'CAD System',
-  '',
-  ());
+FILE_DESCRIPTION(('Tfa240: ShapeFix_Face.Perform — integrated face-healing pipeline; mode-dependent cascade'),'2;1');
 FILE_NAME('Tfa240.stp',
   2026-06-16T00:00:00,
   (''),
@@ -37,7 +29,7 @@ DATA;
 #70=VERTEX_POINT('v_base_start',#71);
 #71=CARTESIAN_POINT('',1.0,0.0,0.0);
 #72=VERTEX_POINT('v_base_end',#73);
-#73=CARTESIAN_POINT('',−1.0,0.0,0.0);
+#73=CARTESIAN_POINT('',-1.0,0.0,0.0);
 #74=VERTEX_POINT('v_apex_near',#75);
 #75=CARTESIAN_POINT('',0.05,0.0,1.5);
 #80=EDGE_CURVE('base_edge',#70,#72,#40,.T.);

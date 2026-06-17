@@ -1,14 +1,6 @@
 ISO-10303-21;
 HEADER;
-FILE_DESCRIPTION(('CAD fixture: vertex_tolerance_mismatch inconsistent edge-chain vertex tolerances without hierarchy validation'),
-  '2026-06-16T00:00:00',
-  2,
-  (),
-  (),
-  'neutral file',
-  'CAD System',
-  '',
-  ());
+FILE_DESCRIPTION(('CAD fixture: vertex_tolerance_mismatch inconsistent edge-chain vertex tolerances without hierarchy validation'),'2;1');
 FILE_NAME('Tfa219.stp',
   2026-06-16T00:00:00,
   (''),

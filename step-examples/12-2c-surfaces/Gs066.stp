@@ -1,12 +1,6 @@
 ISO-10303-21;
 HEADER;
-FILE_DESCRIPTION(('Gs066: ShapeAnalysis_Surface.SortSingularities cone vs cylinder differing singularities — SPHERICAL_SURFACE misidentified as CONICAL_SURFACE'),
-  '2',
-  2024,
-  '2024-06-15T00:00:00',
-  1.0E-07,
-  1.0E-07,
-  '');
+FILE_DESCRIPTION(('Gs066: ShapeAnalysis_Surface.SortSingularities cone vs cylinder differing singularities — SPHERICAL_SURFACE misidentified as CONICAL_SURFACE'),'2;1');
 FILE_NAME('Gs066.stp','2024-06-15T00:00:00',(''),(''),
   'Geometry defect test','CAD kernel healing','');
 FILE_SCHEMA(('IFC2X3'));

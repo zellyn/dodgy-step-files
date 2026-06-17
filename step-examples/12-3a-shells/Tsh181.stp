@@ -1,14 +1,6 @@
 ISO-10303-21;
 HEADER;
-FILE_DESCRIPTION(('CAD kernel test fixture - ShapeUpgrade_ShellSewing bridge tolerance too large'),
-                 '2',
-                 2026,
-                 6,
-                 15,
-                 12,
-                 0,
-                 '',
-                 '');
+FILE_DESCRIPTION(('CAD kernel test fixture - ShapeUpgrade_ShellSewing bridge tolerance too large'),'2;1');
 FILE_NAME('Tsh181.stp',
           2026-06-15T12:00:00,
           (''),

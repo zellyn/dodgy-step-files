@@ -1,9 +1,7 @@
 ISO-10303-21;
 HEADER;
-FILE_DESCRIPTION(('Twi198 — ShapeAnalysis_Wire.CheckSelfIntersection coincident-line-segments — wire with two edges that share entire geometry (geometrically identical); CheckSelfIntersection doesn''t recognize and reports both as separate'),2000-01-01T00:00:00,2.0,'','',
-'Generated for OCCT wire healing defect regression',(''));
-FILE_NAME('Twi198.stp',2000-01-01T00:00:00,(''),(''),
-'Copyright Zellyn',2000-01-01T00:00:00,'');
+FILE_DESCRIPTION(('Twi198'),'2;1');
+FILE_NAME('Twi198.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
 FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;

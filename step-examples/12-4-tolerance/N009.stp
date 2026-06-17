@@ -5,7 +5,7 @@ ISO-10303-21;
  * local feature. ShapeFix::FixVertexPosition snaps the vertex to the curve
  * point or grows tolerance to encompass deviation.
  * Reproducer: EDGE_CURVE with line (0,0,0)->(1,0,0); vertex stored at
- * (0, 0.001, 0) -- 1e-3 mm off the curve while declared tolerance is 1e-4.
+ * (0, 0.001, 0) -- 1.0e-3 mm off the curve while declared tolerance is 1.0e-4.
  */
 HEADER;
 FILE_DESCRIPTION(('N009 vertex position dispersion exceeds tolerance'),'2;1');
@@ -17,7 +17,7 @@ DATA;
 #1=APPLICATION_CONTEXT('automotive design');
 #2=APPLICATION_PROTOCOL_DEFINITION('international standard',
   'automotive_design',2009,#1);
-/* Defect site: vertex stored 1e-3 off the curve while tol is 1e-4 */
+/* Defect site: vertex stored 1.0e-3 off the curve while tol is 1.0e-4 */
 #10=CARTESIAN_POINT('curve_start',(0.0,0.0,0.0));
 #11=CARTESIAN_POINT('vertex_off_axis',(0.0,0.001,0.0));
 #12=CARTESIAN_POINT('curve_end_eval',(1.0,0.0,0.0));

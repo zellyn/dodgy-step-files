@@ -1,13 +1,7 @@
 ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Twi130: CheckIntersectingEdges adjacency exemption',
- 'Adjacent edges sharing endpoint but curves cross beyond shared vertex; exemption skips detection'),
-  '2',
-  '2020-01-01T00:00:00',
-  '2020-01-01T00:00:00',
-  ('OPEN CASCADE'),
-  (''),
-  'Unknown');
+ 'Adjacent edges sharing endpoint but curves cross beyond shared vertex; exemption skips detection'),'2;1');
 FILE_NAME('Twi130.stp','2020-01-01T00:00:00',(''),(''),'Unknown','','');
 FILE_SCHEMA(('AP203_CONFIGURATION_CONTROLLED_3D_DESIGN_OF_MECHANICAL_PARTS_AND_ASSEMBLIES_MCD'));
 ENDSEC;
@@ -23,7 +17,7 @@ DATA;
 #42=VERTEX_POINT('v2_junction',#43);
 #43=CARTESIAN_POINT('',(10.0,0.0,0.0));
 #44=VERTEX_POINT('v3',#45);
-#45=CARTESIAN_POINT('',(15.0,−2.0,0.0));
+#45=CARTESIAN_POINT('',(15.0,-2.0,0.0));
 #46=VERTEX_POINT('v4',#47);
 #47=CARTESIAN_POINT('',(10.0,10.0,0.0));
 #48=VERTEX_POINT('v5',#49);
@@ -39,16 +33,16 @@ DATA;
 #64=DIRECTION('',(1.0,0.0,0.0));
 #65=TRIMMED_CURVE('e2_arc_crossing',#60,4.71238898038,5.75958653158);
 #70=LINE('',#71,#72);
-#71=CARTESIAN_POINT('',(15.0,−2.0,0.0));
-#72=DIRECTION('',(−0.5,0.6,0.0));
+#71=CARTESIAN_POINT('',(15.0,-2.0,0.0));
+#72=DIRECTION('',(-0.5,0.6,0.0));
 #73=TRIMMED_CURVE('e3_diagonal',#70,0.0,16.6403294162);
 #80=LINE('',#81,#82);
 #81=CARTESIAN_POINT('',(10.0,10.0,0.0));
-#82=DIRECTION('',(−1.0,0.0,0.0));
+#82=DIRECTION('',(-1.0,0.0,0.0));
 #83=TRIMMED_CURVE('e4',#80,0.0,10.0);
 #90=LINE('',#91,#92);
 #91=CARTESIAN_POINT('',(0.0,10.0,0.0));
-#92=DIRECTION('',(0.0,−1.0,0.0));
+#92=DIRECTION('',(0.0,-1.0,0.0));
 #93=TRIMMED_CURVE('e5',#90,0.0,10.0);
 #100=EDGE('e1',#53,#40,#42,.T.);
 #101=EDGE('e2_arc',#65,#42,#44,.T.);

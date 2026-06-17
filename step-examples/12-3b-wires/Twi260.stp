@@ -1,7 +1,6 @@
 ISO-10303-21;
 HEADER;
-FILE_DESCRIPTION(('Twi260 — ShapeAnalysis_Wire.CheckLoop.multi-vertex-self-loop-check — three self-loop edges at same vertex; after double-append, extent=6; CheckLoop must call isMultiVertex(extent=6) and add vertex to loop map; without extent>2 check, false negative'),2000-01-01T00:00:00,2.0,'','',
-'Generated for OCCT wire healing defect regression',(''));
+FILE_DESCRIPTION(('Twi260 — ShapeAnalysis_Wire.CheckLoop.multi-vertex-self-loop-check — three self-loop edges at same vertex; after double-append, extent=6; CheckLoop must call isMultiVertex(extent=6) and add vertex to loop map; without extent>2 check, false negative'),'2;1');
 FILE_NAME('Twi260.stp',2000-01-01T00:00:00,(''),(''),
 'Copyright Zellyn',2000-01-01T00:00:00,'');
 FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));

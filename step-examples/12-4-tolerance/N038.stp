@@ -5,8 +5,8 @@ ISO-10303-21;
  * exceeds the chosen interval radius. Without this guarantee the boundary
  * reconstruction is not provably gap-free.
  * Reproducer: two B-spline patches whose maximum Hausdorff distance along
- * a shared edge is 5*epsilon while declared epsilon = 1e-5 mm. The face-pair
- * gap (5e-5) exceeds the tube radius epsilon.
+ * a shared edge is 5*epsilon while declared epsilon = 1.0e-5 mm. The face-pair
+ * gap (5.0e-5) exceeds the tube radius epsilon.
  */
 HEADER;
 FILE_DESCRIPTION(('N038 Patrikalakis interval-solid face-pair gap exceeds epsilon'),'2;1');
@@ -18,7 +18,7 @@ DATA;
 #1=APPLICATION_CONTEXT('automotive design');
 #2=APPLICATION_PROTOCOL_DEFINITION('international standard',
   'automotive_design',2009,#1);
-/* Patch A along z=0; patch B parallel at z=5e-5 -- max Hausdorff = 5*1e-5 */
+/* Patch A along z=0; patch B parallel at z=5.0e-5 -- max Hausdorff = 5*1.0e-5 */
 #10=CARTESIAN_POINT('A_00',(0.0,0.0,0.0));
 #11=CARTESIAN_POINT('A_01',(0.0,10.0,0.0));
 #12=CARTESIAN_POINT('A_10',(10.0,0.0,0.0));

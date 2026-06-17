@@ -1,7 +1,7 @@
 ISO-10303-21;
 /* N049 - Reading structurally valid STEP file produces invalid TopoDS_Shape
- * Defect: EDGE_CURVE end-vertex CARTESIAN_POINT lies 2e-6 off the underlying LINE
- * curve at the curve's parameter; receiver's edge tolerance is 1e-7. */
+ * Defect: EDGE_CURVE end-vertex CARTESIAN_POINT lies 2.0e-6 off the underlying LINE
+ * curve at the curve's parameter; receiver's edge tolerance is 1.0e-7. */
 HEADER;
 FILE_DESCRIPTION(('N049 - point-on-curve deviation exceeds receiver tolerance'),'2;1');
 FILE_NAME('N049.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');
@@ -11,8 +11,8 @@ DATA;
 #1=APPLICATION_CONTEXT('automotive_design');
 #2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
 #10=CARTESIAN_POINT('start',(0.0,0.0,0.0));
-/* End vertex SHOULD be at (1.0, 0.0, 0.0) on the line; instead it is at (1.0, 2e-6, 0.0).
- * BRepCheck_InvalidPointOnCurve at receiver's 1e-7 tolerance. */
+/* End vertex SHOULD be at (1.0, 0.0, 0.0) on the line; instead it is at (1.0, 2.0e-6, 0.0).
+ * BRepCheck_InvalidPointOnCurve at receiver's 1.0e-7 tolerance. */
 #11=CARTESIAN_POINT('end_off_curve',(1.0,0.000002,0.0));
 #12=VERTEX_POINT('',#10);
 #13=VERTEX_POINT('',#11);

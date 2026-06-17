@@ -4,9 +4,9 @@ ISO-10303-21;
  * magnitude larger than the file's default tolerance. Receivers reading only
  * the global tolerance find gaps between adjacent faces and treat the body
  * as an open shell.
- * Reproducer: file declares global uncertainty 1e-4 mm but emits multiple
+ * Reproducer: file declares global uncertainty 1.0e-4 mm but emits multiple
  * GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT entries with per-edge precisions of
- * 1e-2 / 5e-3 mm (CATIA-style per-entity tolerance metadata).
+ * 1.0e-2 / 5.0e-3 mm (CATIA-style per-entity tolerance metadata).
  */
 HEADER;
 FILE_DESCRIPTION(('N016 CATIA per-edge tolerance 2-3 orders > file tolerance'),'2;1');

@@ -1,13 +1,7 @@
 ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Twi127: FixReorder UV-disjoint regions',
- 'Wire spans two disjoint regions of periodic surface UV space separated by seam; FixReorder picks wrong region as primary'),
-  '2',
-  '2020-01-01T00:00:00',
-  '2020-01-01T00:00:00',
-  ('OPEN CASCADE'),
-  (''),
-  'Unknown');
+ 'Wire spans two disjoint regions of periodic surface UV space separated by seam; FixReorder picks wrong region as primary'),'2;1');
 FILE_NAME('Twi127.stp','2020-01-01T00:00:00',(''),(''),'Unknown','','');
 FILE_SCHEMA(('AP203_CONFIGURATION_CONTROLLED_3D_DESIGN_OF_MECHANICAL_PARTS_AND_ASSEMBLIES_MCD'));
 ENDSEC;

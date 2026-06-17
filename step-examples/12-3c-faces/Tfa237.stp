@@ -1,14 +1,6 @@
 ISO-10303-21;
 HEADER;
-FILE_DESCRIPTION(('Tfa237: ShapeFix_Face.SplitEdge — edge-division on non-manifold geometry; curve parameterization'),
-  '2026-06-16T00:00:00',
-  2,
-  (),
-  (),
-  'neutral file',
-  'CAD System',
-  '',
-  ());
+FILE_DESCRIPTION(('Tfa237: ShapeFix_Face.SplitEdge — edge-division on non-manifold geometry; curve parameterization'),'2;1');
 FILE_NAME('Tfa237.stp',
   2026-06-16T00:00:00,
   (''),
@@ -39,9 +31,9 @@ DATA;
 #72=VERTEX_POINT('v2',#73);
 #73=CARTESIAN_POINT('',1.0,0.0,3.0);
 #74=VERTEX_POINT('v3',#75);
-#75=CARTESIAN_POINT('',−1.0,0.0,0.0);
+#75=CARTESIAN_POINT('',-1.0,0.0,0.0);
 #76=VERTEX_POINT('v4',#77);
-#77=CARTESIAN_POINT('',−1.0,0.0,3.0);
+#77=CARTESIAN_POINT('',-1.0,0.0,3.0);
 #80=EDGE_CURVE('seam_bottom',#70,#75,#40,.T.);
 #81=EDGE_CURVE('spine_edge',#70,#72,#60,.T.);
 #82=EDGE_CURVE('seam_top',#72,#77,#50,.T.);

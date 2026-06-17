@@ -5,7 +5,7 @@ ISO-10303-21;
  * interior, leaving inner topological elements un-limited.
  * Geometry: Compound with (1) independent triangular shell and (2) cube at (5,5,5)
  *   with faces, edges, vertices representing solid interior.
- * Expected: LimitTolerance(compound, max=1e-4) should limit all geometry;
+ * Expected: LimitTolerance(compound, max=1.0e-4) should limit all geometry;
  * actual behavior skips solid's interior faces/edges/vertices.
  */
 HEADER;

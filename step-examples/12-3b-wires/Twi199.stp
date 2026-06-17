@@ -1,7 +1,6 @@
 ISO-10303-21;
 HEADER;
-FILE_DESCRIPTION(('Twi199 — ShapeFix_Wire.FixGaps3d gap-larger-than-Confusion-but-less-than-vertex-tolerance — gap that the threshold treats as "real gap" but a vertex-tolerance test would call it "essentially closed"; FixGaps3d uses wrong threshold'),2000-01-01T00:00:00,2.0,'','',
-'Generated for OCCT wire healing defect regression',(''));
+FILE_DESCRIPTION(('Twi199 — ShapeFix_Wire.FixGaps3d gap-larger-than-Confusion-but-less-than-vertex-tolerance — gap that the threshold treats as "real gap" but a vertex-tolerance test would call it "essentially closed"; FixGaps3d uses wrong threshold'),'2;1');
 FILE_NAME('Twi199.stp',2000-01-01T00:00:00,(''),(''),
 'Copyright Zellyn',2000-01-01T00:00:00,'');
 FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));

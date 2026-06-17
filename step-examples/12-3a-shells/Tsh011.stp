@@ -11,7 +11,7 @@ ISO-10303-21;
  * both: outer reversed, inner hole loop correct. ShapeFix would either
  * swap inner/outer classification or flip the outer ORIENTED_EDGE flags. */
 HEADER;
-FILE_DESCRIPTION(('Tsh011 - FACE_OUTER_BOUND orientation reversed','2;1');
+FILE_DESCRIPTION(('Tsh011 - FACE_OUTER_BOUND orientation reversed'',''2;1'',''2;1'),'2;1');
 FILE_NAME('Tsh011.stp','2026-06-16T00:00:00',(''),(''),'wave-01','','');
 FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
 ENDSEC;

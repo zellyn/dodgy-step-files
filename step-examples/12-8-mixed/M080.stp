@@ -27,7 +27,7 @@ DATA;
      GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12))
      REPRESENTATION_CONTEXT('analysis','3D'));
 /* Defect: Steel modulus declared as 200000.0 in unit-context that is
- * Pascals. Steel modulus is 200 GPa = 2e11 Pa. This is 1e6 too small. */
+ * Pascals. Steel modulus is 200 GPa = 2.0e11 Pa. This is 1.0e6 too small. */
 #100=MEASURE_WITH_UNIT(POSITIVE_RATIO_MEASURE(200000.0),#17);
 #110=GENERAL_PROPERTY('Youngs_Modulus','Youngs_Modulus','steel');
 #120=PROPERTY_DEFINITION('Youngs_Modulus_def','',#110);

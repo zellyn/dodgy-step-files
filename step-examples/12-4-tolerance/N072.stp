@@ -16,7 +16,7 @@ DATA;
 #1=APPLICATION_CONTEXT('automotive design');
 #2=APPLICATION_PROTOCOL_DEFINITION('international standard',
   'automotive_design',2009,#1);
-/* B-spline edge with parameter range [0, 10], high precision tolerance 1e-5 mm.
+/* B-spline edge with parameter range [0, 10], high precision tolerance 1.0e-5 mm.
    TempSameRange will clamp to [0.5, 9.5], introducing precision loss. */
 #10=CARTESIAN_POINT('p_start',(0.0,0.0,0.0));
 #11=CARTESIAN_POINT('p_end',(10.0,0.0,0.0));

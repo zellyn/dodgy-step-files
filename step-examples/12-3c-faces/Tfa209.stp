@@ -1,14 +1,6 @@
 ISO-10303-21;
 HEADER;
-FILE_DESCRIPTION(('CAD fixture: FixWiresTwoCoincEdges duplicate coincident edges'),
-  '2026-06-16T12:00:00',
-  2,
-  (),
-  (),
-  'neutral file',
-  'CAD System',
-  '',
-  ());
+FILE_DESCRIPTION(('CAD fixture: FixWiresTwoCoincEdges duplicate coincident edges'),'2;1');
 FILE_NAME('Tfa209.stp',
   2026-06-16T12:00:00,
   (''),
@@ -37,11 +29,11 @@ DATA;
 #60=LINE('edge_3',#61,#62);
 #61=CARTESIAN_POINT('',1.0,1.0,0.0);
 #62=VECTOR('',#63,1.0);
-#63=DIRECTION('',−1.0,0.0,0.0);
+#63=DIRECTION('',-1.0,0.0,0.0);
 #70=LINE('edge_4',#71,#72);
 #71=CARTESIAN_POINT('',0.0,1.0,0.0);
 #72=VECTOR('',#73,1.0);
-#73=DIRECTION('',0.0,−1.0,0.0);
+#73=DIRECTION('',0.0,-1.0,0.0);
 #100=VERTEX_POINT('v1',#101);
 #101=CARTESIAN_POINT('',0.0,0.0,0.0);
 #110=VERTEX_POINT('v2',#111);

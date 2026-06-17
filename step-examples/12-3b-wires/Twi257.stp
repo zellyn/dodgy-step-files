@@ -1,9 +1,7 @@
 ISO-10303-21;
 HEADER;
-FILE_DESCRIPTION(('Twi257 — ShapeAnalysis_Wire.CheckLoop.unloaded-or-trivial-wire — wire with single edge (NbEdges<2); CheckLoop must return false immediately without loop analysis; without IsLoaded/NbEdges guard, would iterate and cause false multi-vertex classification'),2000-01-01T00:00:00,2.0,'','',
-'Generated for OCCT wire healing defect regression',(''));
-FILE_NAME('Twi257.stp',2000-01-01T00:00:00,(''),(''),
-'Copyright Zellyn',2000-01-01T00:00:00,'');
+FILE_DESCRIPTION(('Twi257'),'2;1');
+FILE_NAME('Twi257.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
 FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;

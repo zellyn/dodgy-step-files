@@ -1,6 +1,6 @@
 ISO-10303-21;
 HEADER;
-FILE_DESCRIPTION(('Tsh153 - ShapeAnalysis_Shell.LoadShells with-deeply-nested-compound'),('CAD'),(''));
+FILE_DESCRIPTION(('Tsh153 - ShapeAnalysis_Shell.LoadShells with-deeply-nested-compound'),'2;1');
 FILE_NAME('Tsh153.stp','2026-06-15T00:00:00',(''),(''),
   'Open CASCADE STEP processor 7.7','','');
 FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
@@ -167,3 +167,4 @@ DATA;
 #9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#9010);
 #9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
 ENDSEC;
+END-ISO-10303-21;

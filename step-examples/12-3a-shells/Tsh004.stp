@@ -7,17 +7,17 @@ ISO-10303-21;
  * Sources: Rhino, ICEM Surf, older CATIA workbenches.
  *
  * This example: 5 of 6 cube faces are emitted (top face is missing) AND
- * one boundary vertex is offset by 1e-2 from its neighbour to mimic a
+ * one boundary vertex is offset by 1.0e-2 from its neighbour to mimic a
  * sewing-tolerance failure. */
 HEADER;
-FILE_DESCRIPTION(('Tsh004 - Sheet body in place of solid','2;1');
+FILE_DESCRIPTION(('Tsh004 - Sheet body in place of solid'',''2;1'',''2;1'),'2;1');
 FILE_NAME('Tsh004.stp','2026-06-16T00:00:00',(''),(''),'wave-01','','');
 FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
 ENDSEC;
 DATA;
 #1=APPLICATION_CONTEXT('automotive_design');
 #2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
-/* Cube vertices, but vertex 105 is offset by 1e-2 in z (sewing-tol failure) */
+/* Cube vertices, but vertex 105 is offset by 1.0e-2 in z (sewing-tol failure) */
 #100=CARTESIAN_POINT('',(0.0,0.0,0.0));
 #101=CARTESIAN_POINT('',(1.0,0.0,0.0));
 #102=CARTESIAN_POINT('',(1.0,1.0,0.0));
@@ -72,7 +72,7 @@ DATA;
 #453=ORIENTED_EDGE('',*,*,#329,.F.);
 #454=EDGE_LOOP('',(#450,#451,#453)); #455=FACE_OUTER_BOUND('',#454,.T.);
 #456=ADVANCED_FACE('',(#455),#263,.T.);
-/* Defect: open shell because top face is missing and #105 is offset 1e-2;
+/* Defect: open shell because top face is missing and #105 is offset 1.0e-2;
    sheet body where a solid was intended */
 #500=OPEN_SHELL('open_box_no_lid',(#406,#426,#436,#446,#456));
 #510=SHELL_BASED_SURFACE_MODEL('sheet_body',(#500));

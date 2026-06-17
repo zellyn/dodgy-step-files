@@ -4,7 +4,7 @@ ISO-10303-21;
  * shape modifications, null-check missing; applied fixes cannot be recorded,
  * leaving shell in inconsistent state. */
 HEADER;
-FILE_DESCRIPTION(('Tsh198 - context null initialize defect','2;1');
+FILE_DESCRIPTION(('Tsh198 - context null initialize defect'',''2;1'',''2;1'),'2;1');
 FILE_NAME('Tsh198.stp','2026-06-16T00:00:00',(''),(''),'wave-56a','','');
 FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
 ENDSEC;

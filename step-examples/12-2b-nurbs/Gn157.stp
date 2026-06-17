@@ -1,5 +1,5 @@
 ISO-10303-21;
-/* Gn157 - Rational B-spline with extreme weight ratio (1e4), numerical instability
+/* Gn157 - Rational B-spline with extreme weight ratio (1.0e4), numerical instability
    Defect: RATIONAL_B_SPLINE_SURFACE with weight range spanning 4 orders of
    magnitude (1.0 to 10000.0). This creates numerical conditioning problems in
    rational evaluation. Control point poles: 3x2, degrees 2/1.

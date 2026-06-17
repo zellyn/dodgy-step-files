@@ -1,8 +1,8 @@
 ISO-10303-21;
 HEADER;
-FILE_DESCRIPTION(('Tfa080: ShapeAnalysis_CheckSmallFace.CheckTwisted normal-inversion — face whose interior normal flips sign at some (u,v); twisted face like a saddle near zero-curvature'),100,2,100,'Unknown');
-FILE_NAME('Tfa080.stp','2026-06-15T00:00:00',('Zellyn Hunter'),('CAD Kernel Test'),'Claude Code','1.0','');
-FILE_SCHEMA(('IEC 10303-514:1998-02'));
+FILE_DESCRIPTION(('Tfa080'),'2;1');
+FILE_NAME('Tfa080.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
 #1=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000000,#2);

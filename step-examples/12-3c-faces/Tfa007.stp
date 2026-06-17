@@ -6,7 +6,7 @@ ISO-10303-21;
  * Healer should collapse the strip face to a tolerant_edge between its
  * two long sides; remove the face; merge incident shells.
  * Reproducer: ADVANCED_FACE on a PLANE with two long parallel edges of
- * length 100 mm separated by 1e-7 mm and two short connecting edges.
+ * length 100 mm separated by 1.0e-7 mm and two short connecting edges.
  */
 HEADER;
 FILE_DESCRIPTION(('Tfa007 strip face one-dimensional'),'2;1');
@@ -23,7 +23,7 @@ DATA;
 #12=DIRECTION('x',(1.0,0.0,0.0));
 #13=AXIS2_PLACEMENT_3D('plc',#10,#11,#12);
 #20=PLANE('plane_xy',#13);
-/* Two long edges (100 mm in x), separated by 1e-7 mm in y.            */
+/* Two long edges (100 mm in x), separated by 1.0e-7 mm in y.            */
 #21=CARTESIAN_POINT('p0',(0.0,0.0,0.0));
 #22=CARTESIAN_POINT('p1',(100.0,0.0,0.0));
 #23=CARTESIAN_POINT('p2',(100.0,1.0E-7,0.0));

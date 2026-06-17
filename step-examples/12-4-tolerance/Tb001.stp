@@ -1,14 +1,14 @@
 ISO-10303-21;
-/* Tb001 - Sub-tolerance vertex gap (5e-5 mm) at declared tolerance 1e-3
- * Defect: Two vertices 5e-5 mm apart on an end-to-end edge pair. At declared
- * tolerance 1e-3 the gap is sub-tolerance and the wire is closed; at a
- * receiver-imposed Precision::Confusion (~1e-7) the gap is super-tolerance
+/* Tb001 - Sub-tolerance vertex gap (5.0e-5 mm) at declared tolerance 1.0e-3
+ * Defect: Two vertices 5.0e-5 mm apart on an end-to-end edge pair. At declared
+ * tolerance 1.0e-3 the gap is sub-tolerance and the wire is closed; at a
+ * receiver-imposed Precision::Confusion (~1.0e-7) the gap is super-tolerance
  * and the wire is open ("naked edge", "free boundary"). The file is
  * simultaneously valid and invalid depending on which tolerance the
  * receiver honours.
  */
 HEADER;
-FILE_DESCRIPTION(('Tb001 sub-tolerance vertex gap at declared 1e-3'),'2;1');
+FILE_DESCRIPTION(('Tb001 sub-tolerance vertex gap at declared 1.0e-3'),'2;1');
 FILE_NAME('Tb001.stp','2026-04-30T00:00:00',(''),(''),
   'cad-research-suite','','');
 FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
@@ -17,7 +17,7 @@ DATA;
 #1=APPLICATION_CONTEXT('automotive_design');
 #2=APPLICATION_PROTOCOL_DEFINITION('international standard',
   'automotive_design',2009,#1);
-/* Edge A goes (0,0,0) -> (10,0,0); Edge B starts at (10.00005,0,0) -- gap 5e-5 mm */
+/* Edge A goes (0,0,0) -> (10,0,0); Edge B starts at (10.00005,0,0) -- gap 5.0e-5 mm */
 #10=CARTESIAN_POINT('a0',(0.0,0.0,0.0));
 #11=CARTESIAN_POINT('a1',(10.0,0.0,0.0));
 #12=CARTESIAN_POINT('b0',(10.00005,0.0,0.0));
@@ -32,8 +32,8 @@ DATA;
 #33=LINE('lB',#12,#31);
 #40=EDGE_CURVE('eA',#20,#21,#32,.T.);
 #41=EDGE_CURVE('eB',#22,#23,#33,.T.);
-/* Units & tolerance: declared 1e-3 mm. Receiver honoring this sees the wire
- * as effectively closed (5e-5 << 1e-3). Receiver hardcoding 1e-7 sees a gap. */
+/* Units & tolerance: declared 1.0e-3 mm. Receiver honoring this sees the wire
+ * as effectively closed (5.0e-5 << 1.0e-3). Receiver hardcoding 1.0e-7 sees a gap. */
 #50=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
 #51=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
 #52=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());

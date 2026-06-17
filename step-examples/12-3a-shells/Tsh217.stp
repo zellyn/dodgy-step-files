@@ -3,7 +3,7 @@ ISO-10303-21;
  * Defect: Shell marked Closed but FixFaceOrientation may create free edges;
  * Closed() flag not reset causing downstream solid construction failure. */
 HEADER;
-FILE_DESCRIPTION(('Tsh217 - closed flag out-of-sync with free edges','2;1');
+FILE_DESCRIPTION(('Tsh217 - closed flag out-of-sync with free edges'',''2;1'',''2;1'),'2;1');
 FILE_NAME('Tsh217.stp','2026-06-16T00:00:00',(''),(''),'wave-65B','','');
 FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
 ENDSEC;

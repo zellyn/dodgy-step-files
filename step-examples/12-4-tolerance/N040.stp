@@ -5,9 +5,9 @@ ISO-10303-21;
  * vertices/edges/faces to a user-given value. When tolerances were inflated
  * by upstream tools to hide real gaps, clamping back down can re-expose
  * those gaps as topology defects (now-disconnected vertices, open wires).
- * Reproducer: file carries inflated 1e-3 tolerance hiding a 5e-4 gap;
+ * Reproducer: file carries inflated 1.0e-3 tolerance hiding a 5.0e-4 gap;
  * an UNCERTAINTY entry tagged "limit_tolerance_post_clamp" records the
- * destructive reset to the file's original 1e-6.
+ * destructive reset to the file's original 1.0e-6.
  */
 HEADER;
 FILE_DESCRIPTION(('N040 Salome Limit Tolerance destructive reset re-exposes gaps'),'2;1');
@@ -19,7 +19,7 @@ DATA;
 #1=APPLICATION_CONTEXT('automotive design');
 #2=APPLICATION_PROTOCOL_DEFINITION('international standard',
   'automotive_design',2009,#1);
-/* Two adjacent edges with a 5e-4 mm gap masked by 1e-3 tolerance balls. */
+/* Two adjacent edges with a 5.0e-4 mm gap masked by 1.0e-3 tolerance balls. */
 #10=CARTESIAN_POINT('a0',(0.0,0.0,0.0));
 #11=CARTESIAN_POINT('a1_end',(10.0,0.0,0.0));
 #12=CARTESIAN_POINT('b0_off_5e-4',(10.0005,0.0,0.0));

@@ -3,7 +3,7 @@ ISO-10303-21;
  * Defect: Shell with seam edges on closed surfaces; FreeEdges classifies
  * seam edges as free even though they're matched by their other half. */
 HEADER;
-FILE_DESCRIPTION(('Tsh103 - seam edge free classification error','2;1');
+FILE_DESCRIPTION(('Tsh103 - seam edge free classification error'',''2;1'',''2;1'),'2;1');
 FILE_NAME('Tsh103.stp','2026-06-15T00:00:00',(''),(''),'wave-17','','');
 FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
 ENDSEC;

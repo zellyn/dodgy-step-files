@@ -1,7 +1,6 @@
 ISO-10303-21;
 HEADER;
-FILE_DESCRIPTION(('Twi242 — ShapeAnalysis_Wire.CheckOrder edge-orientation-reversal — edge traversal order broken, one edge has opposite orientation causing non-sequential traversal'),2000-01-01T00:00:00,2.0,'','',
-'Generated for OCCT wire healing defect regression',(''));
+FILE_DESCRIPTION(('Twi242 — ShapeAnalysis_Wire.CheckOrder edge-orientation-reversal — edge traversal order broken, one edge has opposite orientation causing non-sequential traversal'),'2;1');
 FILE_NAME('Twi242.stp',2000-01-01T00:00:00,(''),(''),
 'Copyright Zellyn',2000-01-01T00:00:00,'');
 FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));

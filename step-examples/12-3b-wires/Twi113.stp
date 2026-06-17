@@ -1,13 +1,7 @@
 ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Twi113: CheckOuterBound outer-bound mis-identification',
- 'Face with multiple wires where largest area wire is not tagged FACE_OUTER_BOUND'),
-  '2',
-  '2020-01-01T00:00:00',
-  '2020-01-01T00:00:00',
-  ('OPEN CASCADE'),
-  (''),
-  'Unknown');
+ 'Face with multiple wires where largest area wire is not tagged FACE_OUTER_BOUND'),'2;1');
 FILE_NAME('Twi113.stp','2020-01-01T00:00:00',(''),(''),'Unknown','','');
 FILE_SCHEMA(('AP203_CONFIGURATION_CONTROLLED_3D_DESIGN_OF_MECHANICAL_PARTS_AND_ASSEMBLIES_MCD'));
 ENDSEC;
@@ -44,11 +38,11 @@ DATA;
 #67=TRIMMED_CURVE('outer_e2',#64,0.0,20.0);
 #68=LINE('',#69,#70);
 #69=CARTESIAN_POINT('',(20.0,20.0,0.0));
-#70=DIRECTION('',(−1.0,0.0,0.0));
+#70=DIRECTION('',(-1.0,0.0,0.0));
 #71=TRIMMED_CURVE('outer_e3',#68,0.0,20.0);
 #72=LINE('',#73,#74);
 #73=CARTESIAN_POINT('',(0.0,20.0,0.0));
-#74=DIRECTION('',(0.0,−1.0,0.0));
+#74=DIRECTION('',(0.0,-1.0,0.0));
 #75=TRIMMED_CURVE('outer_e4',#72,0.0,20.0);
 #80=EDGE('',#63,#40,#42,.T.);
 #81=EDGE('',#67,#42,#44,.T.);
@@ -65,11 +59,11 @@ DATA;
 #97=TRIMMED_CURVE('hole_e2',#94,0.0,4.0);
 #98=LINE('',#99,#100);
 #99=CARTESIAN_POINT('',(12.0,12.0,0.0));
-#100=DIRECTION('',(−1.0,0.0,0.0));
+#100=DIRECTION('',(-1.0,0.0,0.0));
 #101=TRIMMED_CURVE('hole_e3',#98,0.0,4.0);
 #102=LINE('',#103,#104);
 #103=CARTESIAN_POINT('',(8.0,12.0,0.0));
-#104=DIRECTION('',(0.0,−1.0,0.0));
+#104=DIRECTION('',(0.0,-1.0,0.0));
 #105=TRIMMED_CURVE('hole_e4',#102,0.0,4.0);
 #106=EDGE('',#93,#50,#52,.T.);
 #107=EDGE('',#97,#52,#54,.T.);

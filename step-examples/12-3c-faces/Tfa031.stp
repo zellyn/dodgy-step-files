@@ -9,7 +9,7 @@ ISO-10303-21;
  * a healer pass); RemoveLocations flattens orphan locations.
  * Reproducer: a TopoDS_Compound containing a single shell, written and
  * re-read so each face carries a near-identity AXIS2_PLACEMENT_3D
- * (epsilon translation 1e-15, identity rotation).
+ * (epsilon translation 1.0e-15, identity rotation).
  */
 HEADER;
 FILE_DESCRIPTION(('Tfa031 sub-shape locations near-identity'),'2;1');
@@ -22,7 +22,7 @@ DATA;
 #2=APPLICATION_PROTOCOL_DEFINITION('international standard',
   'automotive_design',2009,#1);
 /* Defect site: per-face placement carries near-identity translation
- * 1e-15 - meaningless numerically but breaks IsEqual.                  */
+ * 1.0e-15 - meaningless numerically but breaks IsEqual.                  */
 #10=CARTESIAN_POINT('eps_origin',(1.0E-15,0.0,0.0));
 #11=DIRECTION('z',(0.0,0.0,1.0));
 #12=DIRECTION('x',(1.0,0.0,0.0));

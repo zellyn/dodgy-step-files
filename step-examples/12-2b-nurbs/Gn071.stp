@@ -4,7 +4,7 @@ ISO-10303-21;
    for closure check. IsClosed reports false (technically correct for B-spline
    interpretation) but misses Bezier-specific closure semantics. */
 HEADER;
-FILE_DESCRIPTION(('Gn071 - BEZIER_CURVE closure semantic mismatch','2;1');
+FILE_DESCRIPTION(('Gn071 - BEZIER_CURVE closure semantic mismatch'',''2;1'',''2;1'),'2;1');
 FILE_NAME('Gn071.stp','2026-06-16T00:00:00',('auto-generated'),(''),
   'auto-generated','','');
 FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));

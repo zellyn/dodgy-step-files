@@ -4,7 +4,7 @@ ISO-10303-21;
  * geometric defect, then running ShapeFix, makes the fix algorithm interpret
  * coincident vertex tolerance balls as separate vertices, producing
  * vertex/vertex intersection diagnostics.
- * Reproducer: face declared at 1e-9 tolerance while actual edge gap is 1e-5;
+ * Reproducer: face declared at 1.0e-9 tolerance while actual edge gap is 1.0e-5;
  * sub-resolution tolerance falsely promotes near-coincident vertices to
  * "intersecting" vertices.
  */
@@ -18,8 +18,8 @@ DATA;
 #1=APPLICATION_CONTEXT('automotive design');
 #2=APPLICATION_PROTOCOL_DEFINITION('international standard',
   'automotive_design',2009,#1);
-/* Two vertices 1e-5 apart -- truly coincident relative to model precision,
- * but below the 1e-9 face tolerance they read as "different".  */
+/* Two vertices 1.0e-5 apart -- truly coincident relative to model precision,
+ * but below the 1.0e-9 face tolerance they read as "different".  */
 #10=CARTESIAN_POINT('p_a',(0.0,0.0,0.0));
 #11=CARTESIAN_POINT('p_b',(1.0E-5,0.0,0.0));
 #20=VERTEX_POINT('v_a',#10);
@@ -27,7 +27,7 @@ DATA;
 #30=DIRECTION('+x',(1.0,0.0,0.0));
 #31=VECTOR('',#30,1.0E-5);
 #32=LINE('subres_curve',#10,#31);
-/* Defect site: edge endpoints fall inside true 1e-5 deviation but
+/* Defect site: edge endpoints fall inside true 1.0e-5 deviation but
  * a sub-resolution face tolerance treats them as separate vertices. */
 #40=EDGE_CURVE('vertex_pair_split_by_undertol',#20,#21,#32,.T.);
 #50=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));

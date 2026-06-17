@@ -3,7 +3,7 @@ ISO-10303-21;
  * Defect: BadEdges() called before Perform() completes; returns myBad
  * compound without validation of initialization order. */
 HEADER;
-FILE_DESCRIPTION(('Tsh189 - ShapeAnalysis_Shell BadEdges lazy-init','2;1');
+FILE_DESCRIPTION(('Tsh189 - ShapeAnalysis_Shell BadEdges lazy-init'',''2;1'',''2;1'),'2;1');
 FILE_NAME('Tsh189.stp','2026-06-16T00:00:00',(''),(''),'wave-55b','','');
 FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
 ENDSEC;

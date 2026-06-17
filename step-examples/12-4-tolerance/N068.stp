@@ -5,8 +5,8 @@ ISO-10303-21;
  * peak not captured in tolerance estimate. Root cause: sample-count hardcoded to 2
  * or loop exits early.
  * Fixture: 4-control-point B-spline with ~5-unit bulge at center, parameterized
- * [0,1], global context 1e-4. Endpoint sampling misses interior curvature
- * requiring ~1e-2 tolerance.
+ * [0,1], global context 1.0e-4. Endpoint sampling misses interior curvature
+ * requiring ~1.0e-2 tolerance.
  */
 HEADER;
 FILE_DESCRIPTION(('N068 BRepLib UpdateInnerTolerances 2-sample undersampling'),'2;1');

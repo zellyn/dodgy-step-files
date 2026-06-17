@@ -1,13 +1,6 @@
 ISO-10303-21;
 HEADER;
-FILE_DESCRIPTION(('N102: ShapeAnalysis_Edge.CheckOverlapping — multi-curve three-way overlap'),
-  '2',
-  2026,
-  6,
-  15,
-  0,
-  0,
-  '');
+FILE_DESCRIPTION(('N102: ShapeAnalysis_Edge.CheckOverlapping — multi-curve three-way overlap'),'2;1');
 FILE_NAME('N102.stp','2026-06-15T00:00:00',(''),(''),
   'TOLERANCE RECOVERY',
   '',

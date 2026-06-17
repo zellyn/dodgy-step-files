@@ -11,7 +11,7 @@ ISO-10303-21;
  * This file: a square plate face whose edges are LINEs whose ideal
  * endpoints sit at the 4 corners (0,0,0), (1,0,0), (1,1,0), (0,1,0),
  * but whose VERTEX_POINTs sit a few microns away. Each VERTEX_POINT
- * is offset by (~1e-3, ~1e-3, 0) so the curve evaluation does not
+ * is offset by (~1.0e-3, ~1.0e-3, 0) so the curve evaluation does not
  * land on the vertex coordinate. Sources: W012 (TransMagic Diagnostic
  * Part 2). */
 HEADER;
@@ -23,7 +23,7 @@ DATA;
 #1=APPLICATION_CONTEXT('automotive_design');
 #2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
 /* Vertex coordinates -- DELIBERATELY OFFSET from the corresponding
-   line endpoints by ~1e-3 so vertex != curve(parameter). Healers
+   line endpoints by ~1.0e-3 so vertex != curve(parameter). Healers
    should snap if within tolerance, else mark tolerant. */
 #100=CARTESIAN_POINT('off_corner_00',(0.001,0.001,0.0));
 #101=CARTESIAN_POINT('off_corner_10',(1.001,0.001,0.0));

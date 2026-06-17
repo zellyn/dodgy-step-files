@@ -1,13 +1,7 @@
 ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Twi116: FixConnected vertex-sharing edge mismatch',
- 'Wire with two edges that should connect but use different VERTEX_POINT entities at same coordinate'),
-  '2',
-  '2020-01-01T00:00:00',
-  '2020-01-01T00:00:00',
-  ('OPEN CASCADE'),
-  (''),
-  'Unknown');
+ 'Wire with two edges that should connect but use different VERTEX_POINT entities at same coordinate'),'2;1');
 FILE_NAME('Twi116.stp','2020-01-01T00:00:00',(''),(''),'Unknown','','');
 FILE_SCHEMA(('AP203_CONFIGURATION_CONTROLLED_3D_DESIGN_OF_MECHANICAL_PARTS_AND_ASSEMBLIES_MCD'));
 ENDSEC;
@@ -42,11 +36,11 @@ DATA;
 #71=TRIMMED_CURVE('e3_uses_v2b',#68,0.0,5.0);
 #72=LINE('',#73,#74);
 #73=CARTESIAN_POINT('',(10.0,10.0,0.0));
-#74=DIRECTION('',(−1.0,0.0,0.0));
+#74=DIRECTION('',(-1.0,0.0,0.0));
 #75=TRIMMED_CURVE('e4',#72,0.0,10.0);
 #76=LINE('',#77,#78);
 #77=CARTESIAN_POINT('',(0.0,10.0,0.0));
-#78=DIRECTION('',(0.0,−1.0,0.0));
+#78=DIRECTION('',(0.0,-1.0,0.0));
 #79=TRIMMED_CURVE('e5',#76,0.0,10.0);
 #80=EDGE('edge1',#63,#40,#42,.T.);
 #81=EDGE('edge2_v2a_endpoint',#67,#42,#46,.T.);

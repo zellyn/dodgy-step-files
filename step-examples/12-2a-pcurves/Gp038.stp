@@ -3,7 +3,7 @@ ISO-10303-21;
  * Defect: an edge has start VERTEX at (1.0,0.0,0.0); its 3D LINE
  * agrees; but the bound PCURVE 2D LINE, when evaluated at parameter 0
  * on the host plane, places the start at (1.05,0.0). The 0.05 mismatch
- * exceeds typical 1e-6 vertex tolerance. */
+ * exceeds typical 1.0e-6 vertex tolerance. */
 HEADER;
 FILE_DESCRIPTION(('Gp038 test case','Vertex point and pcurve disagree beyond tolerance'),'2;1');
 FILE_NAME('Gp038.stp','2026-04-30T00:00:00',(''),(''),'cad-research-suite','','');

@@ -8,7 +8,7 @@ ISO-10303-21;
  * edges with tolerant_vertex, collapse to tolerant_edge, and reject
  * collapse if it would violate manifold-ness.
  * Reproducer: 4-edge ADVANCED_FACE on PLANE with two 100 mm sides and
- * two 1e-7 mm connecting edges (sliver triangle/wedge).
+ * two 1.0e-7 mm connecting edges (sliver triangle/wedge).
  */
 HEADER;
 FILE_DESCRIPTION(('Tfa008 pin sliver face'),'2;1');
@@ -25,7 +25,7 @@ DATA;
 #12=DIRECTION('x',(1.0,0.0,0.0));
 #13=AXIS2_PLACEMENT_3D('plc',#10,#11,#12);
 #20=PLANE('plane_xy',#13);
-/* Pin: two ~100 mm edges, two ~1e-7 mm connectors, slight skew.       */
+/* Pin: two ~100 mm edges, two ~1.0e-7 mm connectors, slight skew.       */
 #21=CARTESIAN_POINT('p0',(0.0,0.0,0.0));
 #22=CARTESIAN_POINT('p1',(100.0,5.0E-8,0.0));
 #23=CARTESIAN_POINT('p2',(100.0,1.5E-7,0.0));

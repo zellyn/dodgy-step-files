@@ -2,9 +2,9 @@ ISO-10303-21;
 /* Hea004 - Free-bound contours: filter by tolerance precision
  * As Hea003 (10x10 face on plane in OPEN_SHELL) but the bottom edge has
  * been subdivided into TEN short LINE segments, each laterally offset by
- * +/-1e-7 from the y=0 axis -- a sub-precision wiggle on the perimeter.
- * A precision-filter analyzer with precision >= 1e-6 hides this wiggle;
- * with precision < 1e-7 it surfaces. */
+ * +/-1.0e-7 from the y=0 axis -- a sub-precision wiggle on the perimeter.
+ * A precision-filter analyzer with precision >= 1.0e-6 hides this wiggle;
+ * with precision < 1.0e-7 it surfaces. */
 HEADER;
 FILE_DESCRIPTION(('Hea004 test case','Open shell w/ contour whose bottom edge has 10 sub-precision wiggle segments'),'2;1');
 FILE_NAME('Hea004.stp','2026-04-30T00:00:00',(''),(''),'cad-research-suite','','');
@@ -19,7 +19,7 @@ DATA;
 #13=AXIS2_PLACEMENT_3D('',#10,#11,#12);
 #14=PLANE('',#13);
 /* Eleven vertex points along the bottom (from x=0 to x=10 in 1.0 steps),
- * y oscillating: 0, 1e-7, -1e-7, 1e-7, -1e-7, ... */
+ * y oscillating: 0, 1.0e-7, -1.0e-7, 1.0e-7, -1.0e-7, ... */
 #20=CARTESIAN_POINT('w0',(0.0,0.0,0.0));#21=VERTEX_POINT('',#20);
 #22=CARTESIAN_POINT('w1',(1.0,1.0E-7,0.0));#23=VERTEX_POINT('',#22);
 #24=CARTESIAN_POINT('w2',(2.0,-1.0E-7,0.0));#25=VERTEX_POINT('',#24);

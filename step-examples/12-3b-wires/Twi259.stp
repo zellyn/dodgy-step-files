@@ -1,7 +1,6 @@
 ISO-10303-21;
 HEADER;
-FILE_DESCRIPTION(('Twi259 — ShapeAnalysis_Wire.CheckLoop.self-loop-binding — self-loop edge appended twice to aMapVertexEdges; without double-append for V1==V2 edges, kernel undercounts degree and fails multi-vertex detection; with append: extent=4, without: extent=2'),2000-01-01T00:00:00,2.0,'','',
-'Generated for OCCT wire healing defect regression',(''));
+FILE_DESCRIPTION(('Twi259 — ShapeAnalysis_Wire.CheckLoop.self-loop-binding — self-loop edge appended twice to aMapVertexEdges; without double-append for V1==V2 edges, kernel undercounts degree and fails multi-vertex detection; with append: extent=4, without: extent=2'),'2;1');
 FILE_NAME('Twi259.stp',2000-01-01T00:00:00,(''),(''),
 'Copyright Zellyn',2000-01-01T00:00:00,'');
 FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));

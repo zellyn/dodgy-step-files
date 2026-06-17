@@ -4,7 +4,7 @@ ISO-10303-21;
  * starts at (1.05,0,0) -- gap 0.05. Junction (2,3): edge2 ends at (2.0,0.0,0),
  * edge3 starts at (2.07,0.0,0) -- gap 0.07. Junction (3,4): edge3 ends at
  * (2.0,1.0,0), edge4 starts at (2.0,1.06,0) -- gap 0.06. All gaps are above
- * a typical 1e-2 tolerance and each must be reported. */
+ * a typical 1.0e-2 tolerance and each must be reported. */
 HEADER;
 FILE_DESCRIPTION(('Twi068 test case','Wire with multiple 3D gaps -- analyzer must enumerate every gap'),'2;1');
 FILE_NAME('Twi068.stp','2026-04-30T00:00:00',(''),(''),'cad-research-suite','','');

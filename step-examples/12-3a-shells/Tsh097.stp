@@ -6,7 +6,7 @@ ISO-10303-21;
  * ambiguous error state. Shell must be processable multiple times without
  * status divergence. */
 HEADER;
-FILE_DESCRIPTION(('Tsh097 - shell requiring multi-pass context state accumulation','2;1');
+FILE_DESCRIPTION(('Tsh097 - shell requiring multi-pass context state accumulation'',''2;1'',''2;1'),'2;1');
 FILE_NAME('Tsh097.stp','2026-06-15T00:00:00',(''),(''),'wave-14','','');
 FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
 ENDSEC;

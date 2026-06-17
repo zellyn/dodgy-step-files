@@ -3,7 +3,7 @@ ISO-10303-21;
  * Defect: Shell with multiple faces sharing edges (3+ faces per edge);
  * multi-connected edge loop in FixFaceOrientation has no iteration bound. */
 HEADER;
-FILE_DESCRIPTION(('Tsh191 - ShapeFix_Shell multi-connected edge unbounded','2;1');
+FILE_DESCRIPTION(('Tsh191 - ShapeFix_Shell multi-connected edge unbounded'',''2;1'',''2;1'),'2;1');
 FILE_NAME('Tsh191.stp','2026-06-16T00:00:00',(''),(''),'wave-55b','','');
 FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
 ENDSEC;

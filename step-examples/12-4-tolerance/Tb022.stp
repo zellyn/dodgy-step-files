@@ -3,9 +3,9 @@ ISO-10303-21;
  * Defect: GEOMETRIC_REPRESENTATION_CONTEXT length unit is .MILLI..METRE.
  * (mm). UNCERTAINTY_MEASURE_WITH_UNIT uses a separate inline LENGTH_UNIT
  * of .METRE. (m) with value 1.0E-6. Receiver applying the uncertainty in
- * context units (mm): tolerance = 1e-6 mm = 1 nm (hyper-precise).
+ * context units (mm): tolerance = 1.0e-6 mm = 1 nm (hyper-precise).
  * Receiver applying the uncertainty's own unit binding (m): tolerance =
- * 1e-6 m = 1 um = 1e-3 mm (1000x looser). Same file, 1000x difference
+ * 1.0e-6 m = 1 um = 1.0e-3 mm (1000x looser). Same file, 1000x difference
  * in working tolerance.
  */
 HEADER;

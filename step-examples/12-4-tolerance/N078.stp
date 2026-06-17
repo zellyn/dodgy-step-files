@@ -1,10 +1,10 @@
 ISO-10303-21;
 /* N078 - ShapeFix_Edge.FixSameParameter precision-floor
- * Defect: Edge with extremely tight tolerance (1e-15); FixSameParameter's
+ * Defect: Edge with extremely tight tolerance (1.0e-15); FixSameParameter's
  * interior tolerance computation falls below the floor and gets clamped,
  * hiding the actual edge tolerance. The interior-precision computation
  * uses hard-coded tolerance floors that assume typical manufacturing
- * precision (1e-7 to 1e-6). When an edge declares tolerance tighter than
+ * precision (1.0e-7 to 1.0e-6). When an edge declares tolerance tighter than
  * the floor, the algorithm clamps to the floor and loses the original
  * tolerance spec, leaving the edge with artificially relaxed precision.
  * Downstream SameParameter checks then pass incorrectly because they use
@@ -34,7 +34,7 @@ DATA;
 #41=VECTOR('curve_vec',#40,1.0);
 #42=LINE('curve_3d',#20,#41);
 #43=EDGE_CURVE('edge_tight_tol',#30,#31,#42,.T.);
-/* Context with sub-floor tolerance (1e-15) to trigger clamping */
+/* Context with sub-floor tolerance (1.0e-15) to trigger clamping */
 #50=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
 #51=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
 #52=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());

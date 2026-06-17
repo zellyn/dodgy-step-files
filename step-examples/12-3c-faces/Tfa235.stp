@@ -1,14 +1,6 @@
 ISO-10303-21;
 HEADER;
-FILE_DESCRIPTION(('Tfa235: ShapeFix_Face.FixMissingSeam — P-curve absence detection on periodic surface edge; seam-insertion dispatch'),
-  '2026-06-16T00:00:00',
-  2,
-  (),
-  (),
-  'neutral file',
-  'CAD System',
-  '',
-  ());
+FILE_DESCRIPTION(('Tfa235: ShapeFix_Face.FixMissingSeam — P-curve absence detection on periodic surface edge; seam-insertion dispatch'),'2;1');
 FILE_NAME('Tfa235.stp',
   2026-06-16T00:00:00,
   (''),

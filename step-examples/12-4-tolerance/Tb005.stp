@@ -1,8 +1,8 @@
 ISO-10303-21;
 /* Tb005 - Face area sub-tolerance squared (tol*tol comparison threshold)
- * Defect: A planar face is 3e-4 x 3e-4 mm (area 9e-8 mm^2). At declared
- * tolerance 1e-4 the threshold tol*tol = 1e-8 keeps the face. After a
- * heal that bumped tolerance to 1e-3, threshold tol*tol = 1e-6, and the
+ * Defect: A planar face is 3.0e-4 x 3.0e-4 mm (area 9.0e-8 mm^2). At declared
+ * tolerance 1.0e-4 the threshold tol*tol = 1.0e-8 keeps the face. After a
+ * heal that bumped tolerance to 1.0e-3, threshold tol*tol = 1.0e-6, and the
  * face is sub-threshold and silently dropped. A face that survives one
  * Boolean pass disappears in the next; "small feature silently removed
  * after import".
@@ -17,7 +17,7 @@ DATA;
 #1=APPLICATION_CONTEXT('automotive_design');
 #2=APPLICATION_PROTOCOL_DEFINITION('international standard',
   'automotive_design',2009,#1);
-/* Face on PLANE; quad of side 3e-4 mm. Area = 9e-8 mm^2. */
+/* Face on PLANE; quad of side 3.0e-4 mm. Area = 9.0e-8 mm^2. */
 #10=CARTESIAN_POINT('o',(0.0,0.0,0.0));
 #11=DIRECTION('+z',(0.0,0.0,1.0));
 #12=DIRECTION('+x',(1.0,0.0,0.0));
@@ -57,8 +57,8 @@ DATA;
 #85=RECTANGULAR_TRIMMED_SURFACE('trim',#14,0.0,3.0E-4,0.0,3.0E-4,.T.,.T.);
 #90=FACE_OUTER_BOUND('',#80,.T.);
 #100=ADVANCED_FACE('tiny_face',(#90),#85,.T.);
-/* Tolerance at boundary: declared 1e-4 keeps face (tol*tol=1e-8 < area=9e-8);
- * loosened 1e-3 drops it (tol*tol=1e-6 > area). */
+/* Tolerance at boundary: declared 1.0e-4 keeps face (tol*tol=1.0e-8 < area=9.0e-8);
+ * loosened 1.0e-3 drops it (tol*tol=1.0e-6 > area). */
 #110=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
 #111=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
 #112=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());

@@ -6,8 +6,8 @@ ISO-10303-21;
  * Solids" flag; preserve XCAF attribute mapping for kept solids.
  * Reproducer: compound where one main solid (10x10x10 mm, V=1000 mm^3)
  * sits next to two debris solids:
- *   - debris A: 1e-3 cube (V = 1e-9 mm^3)
- *   - debris B: 5e-4 cube (V = 1.25e-10 mm^3)
+ *   - debris A: 1.0e-3 cube (V = 1.0e-9 mm^3)
+ *   - debris B: 5.0e-4 cube (V = 1.25e-10 mm^3)
  * All three are emitted as MANIFOLD_SOLID_BREP and aggregated through a
  * GEOMETRIC_REPRESENTATION_ITEM-list inside a single SHAPE_REPRESENTATION
  * standing in for the OCCT TopoDS_Compound the healer would receive.
@@ -51,7 +51,7 @@ DATA;
 #123=PLANE('main_face_z0',#122);
 #130=CLOSED_SHELL('main_shell',(#123));
 #131=MANIFOLD_SOLID_BREP('main_solid_10mm',#130);
-/* ---------- debris solid A (1e-3 mm cube, V = 1e-9 mm^3) ---------- */
+/* ---------- debris solid A (1.0e-3 mm cube, V = 1.0e-9 mm^3) ---------- */
 #200=CARTESIAN_POINT('a000',(100.000,100.000,100.000));
 #201=CARTESIAN_POINT('a100',(100.001,100.000,100.000));
 #202=CARTESIAN_POINT('a110',(100.001,100.001,100.000));
@@ -72,7 +72,7 @@ DATA;
 #221=PLANE('debris_a_face_z0',#220);
 #222=CLOSED_SHELL('debris_a_shell',(#221));
 #223=MANIFOLD_SOLID_BREP('debris_a_solid_1um',#222);
-/* ---------- debris solid B (5e-4 mm cube, V = 1.25e-10 mm^3) ----- */
+/* ---------- debris solid B (5.0e-4 mm cube, V = 1.25e-10 mm^3) ----- */
 #300=CARTESIAN_POINT('b000',(50.0000,50.0000,50.0000));
 #301=CARTESIAN_POINT('b100',(50.0005,50.0000,50.0000));
 #302=CARTESIAN_POINT('b110',(50.0005,50.0005,50.0000));

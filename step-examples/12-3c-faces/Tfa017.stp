@@ -1,13 +1,13 @@
 ISO-10303-21;
 /* Tfa017 - UnifySameDomain inflates vertex tolerance
  * Defect: USD merges vertices of unified faces and assigns aggregate
- * tolerance ~1e-1 instead of preserving 2e-7. Subsequent operations see
+ * tolerance ~1.0e-1 instead of preserving 2.0e-7. Subsequent operations see
  * inflated tolerances. Healer should only inflate tolerances when
  * geometric deviation requires it; preserve original tolerances when
  * merged vertices coincide within source tolerance.
  * Reproducer: two coplanar faces with vertex tolerances declared at
- * ~2e-7 via UNCERTAINTY_MEASURE_WITH_UNIT; after USD pass, the merged
- * vertex must not silently bump to ~1e-1.
+ * ~2.0e-7 via UNCERTAINTY_MEASURE_WITH_UNIT; after USD pass, the merged
+ * vertex must not silently bump to ~1.0e-1.
  */
 HEADER;
 FILE_DESCRIPTION(('Tfa017 USD inflates vertex tolerance'),'2;1');
@@ -19,7 +19,7 @@ DATA;
 #1=APPLICATION_CONTEXT('automotive design');
 #2=APPLICATION_PROTOCOL_DEFINITION('international standard',
   'automotive_design',2009,#1);
-/* Declared global tolerance: 2e-7 m.                                   */
+/* Declared global tolerance: 2.0e-7 m.                                   */
 #3=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
 #4=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(2.0E-7),#3,
   'distance_accuracy_value','source_tolerance');
@@ -84,7 +84,7 @@ DATA;
 #111=ADVANCED_FACE('B',(#101),#20,.T.);
 /* Minimal PRODUCT chain so OCCT TransferRoots produces a shape.
    Reuses the existing geometric_representation_context #5 which
-   carries the 2e-7 source tolerance referenced in the test claim. */
+   carries the 2.0e-7 source tolerance referenced in the test claim. */
 #9000=PRODUCT_CONTEXT('',#1,'mechanical');
 #9001=PRODUCT('Tfa017','Tfa017','',(#9000));
 #9002=PRODUCT_DEFINITION_FORMATION('','',#9001);

@@ -3,7 +3,7 @@ ISO-10303-21;
  * Defect: GetShells() fails to partition all faces; isolated cluster
  * unreachable, creates orphaned shell. */
 HEADER;
-FILE_DESCRIPTION(('Tsh226 - shells extraction loss','2;1');
+FILE_DESCRIPTION(('Tsh226 - shells extraction loss'',''2;1'',''2;1'),'2;1');
 FILE_NAME('Tsh226.stp','2026-06-16T00:00:00',(''),(''),'wave-71a','','');
 FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
 ENDSEC;

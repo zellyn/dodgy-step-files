@@ -1,13 +1,7 @@
 ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Twi112: FixGaps2d 2D-gap repair on cylindrical pcurve',
- 'Wire on cylindrical surface with 2D gap between consecutive edge pcurves'),
-  '2',
-  '2020-01-01T00:00:00',
-  '2020-01-01T00:00:00',
-  ('OPEN CASCADE'),
-  (''),
-  'Unknown');
+ 'Wire on cylindrical surface with 2D gap between consecutive edge pcurves'),'2;1');
 FILE_NAME('Twi112.stp','2020-01-01T00:00:00',(''),(''),'Unknown','','');
 FILE_SCHEMA(('AP203_CONFIGURATION_CONTROLLED_3D_DESIGN_OF_MECHANICAL_PARTS_AND_ASSEMBLIES_MCD'));
 ENDSEC;

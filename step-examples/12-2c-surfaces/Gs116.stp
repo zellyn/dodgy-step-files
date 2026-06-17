@@ -1,9 +1,7 @@
 ISO-10303-21;
 HEADER;
-FILE_DESCRIPTION(('Gs116: ShapeAnalysis_Surface.IsVClosed B-spline knot-pattern-mismatch — knot vector says v-periodic but the multiplicity pattern at endpoints is wrong (clamped instead of wrapped); IsVClosed reports based on flag not knots'),
-(''),
-(''));
-FILE_NAME('Gs116.stp',2026-06-15T00:00:00Z,('Zellyn Hunter'),(''),('Fixture synthesis wave 33'),('',''));
+FILE_DESCRIPTION(('Gs116'),'2;1');
+FILE_NAME('Gs116.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
 FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;

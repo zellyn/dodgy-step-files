@@ -10,7 +10,7 @@ ENDSEC;
 DATA;
 #1=APPLICATION_CONTEXT('automotive_design');
 #2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
-/* Tiny face: corners at (0,0,0)-(1e-6,1e-6,0) on plane z=0 */
+/* Tiny face: corners at (0,0,0)-(1.0e-6,1.0e-6,0) on plane z=0 */
 #10=CARTESIAN_POINT('',(0.0,0.0,0.0));
 #11=CARTESIAN_POINT('',(0.000001,0.0,0.0));
 #12=CARTESIAN_POINT('',(0.000001,0.000001,0.0));

@@ -1,6 +1,6 @@
 ISO-10303-21;
 /* Tb016 - Cumulative tolerance budget exhausted across long edge chain
- * Defect: A polyline of 5 short edges (length ~1e-3 mm each); each
+ * Defect: A polyline of 5 short edges (length ~1.0e-3 mm each); each
  * adjacent vertex pair is offset by a constant 2.0E-7 mm in +y. Each
  * individual gap is comfortably sub-tolerance (declared 1.0E-6 mm),
  * but cumulative drift end-to-end after 5 edges is 1.0E-6 mm = exactly

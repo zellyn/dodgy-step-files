@@ -1,8 +1,6 @@
 ISO-10303-21;
 HEADER;
-FILE_DESCRIPTION(('CAD kernel test fixture'),
-'2',
-'*');
+FILE_DESCRIPTION(('CAD kernel test fixture'),'2;1');
 FILE_NAME('Tfa196.stp',
 2026-06-16T00:00:00,
 (''),
@@ -21,15 +19,15 @@ DATA;
 #10=TOROIDAL_SURFACE('',#5,2.0,1.0);
 #20=CARTESIAN_POINT('',(2.0,0.,0.));
 #21=VERTEX_POINT('',#20);
-#22=CARTESIAN_POINT('',(2.0,0.,1e-8));
+#22=CARTESIAN_POINT('',(2.0,0.,1.0e-8));
 #23=VERTEX_POINT('',#22);
 #24=CIRCLE('',#5,2.0);
 #25=EDGE_CURVE('',#21,#23,#24,.T.);
-#26=CARTESIAN_POINT('',(2.0,0.,2e-8));
+#26=CARTESIAN_POINT('',(2.0,0.,2.0e-8));
 #27=VERTEX_POINT('',#26);
 #28=CIRCLE('',#5,2.0);
 #29=EDGE_CURVE('',#23,#27,#28,.T.);
-#30=CARTESIAN_POINT('',(2.0,0.,3e-8));
+#30=CARTESIAN_POINT('',(2.0,0.,3.0e-8));
 #31=VERTEX_POINT('',#30);
 #32=CIRCLE('',#5,2.0);
 #33=EDGE_CURVE('',#27,#31,#32,.T.);

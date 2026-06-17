@@ -4,7 +4,7 @@ ISO-10303-21;
    capture trim limits, missing midspan information used downstream.
    This is a trimmed line with significant offset from endpoints. */
 HEADER;
-FILE_DESCRIPTION(('Gn061 - GetSamplePoints 2pt LINE shortcut misses trim','2;1');
+FILE_DESCRIPTION(('Gn061 - GetSamplePoints 2pt LINE shortcut misses trim'',''2;1'',''2;1'),'2;1');
 FILE_NAME('Gn061.stp','2026-06-16T00:00:00',('auto-generated'),(''),
   'auto-generated','','');
 FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));

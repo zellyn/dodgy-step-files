@@ -1,13 +1,6 @@
 ISO-10303-21;
 HEADER;
-FILE_DESCRIPTION(('N110: ShapeAnalysis_Edge.CheckPoints — precision-vs-projection-distance'),
-  '2',
-  2026,
-  6,
-  15,
-  0,
-  0,
-  '');
+FILE_DESCRIPTION(('N110: ShapeAnalysis_Edge.CheckPoints — precision-vs-projection-distance'),'2;1');
 FILE_NAME('N110.stp','2026-06-15T00:00:00',(''),(''),
   'TOLERANCE RECOVERY',
   '',

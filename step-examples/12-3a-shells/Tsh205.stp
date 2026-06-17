@@ -3,7 +3,7 @@ ISO-10303-21;
  * Defect: GetShells() may fail to partition all faces; isolated face cluster
  * disconnected by edge-classification error creates topology loss. */
 HEADER;
-FILE_DESCRIPTION(('Tsh205 - shells extraction partition loss','2;1');
+FILE_DESCRIPTION(('Tsh205 - shells extraction partition loss'',''2;1'',''2;1'),'2;1');
 FILE_NAME('Tsh205.stp','2026-06-16T00:00:00',(''),(''),'wave-61A','','');
 FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
 ENDSEC;

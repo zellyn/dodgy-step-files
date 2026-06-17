@@ -1,6 +1,6 @@
 ISO-10303-21;
 HEADER;
-FILE_DESCRIPTION(('Tfa078: ShapeFix_Face.FixLoopWire intersecting-loops merge — two inner-wire loops on a face that geometrically intersect; merge introduces tangent self-touch'),100,2,100,'Unknown');
+FILE_DESCRIPTION(('Tfa078: ShapeFix_Face.FixLoopWire intersecting-loops merge — two inner-wire loops on a face that geometrically intersect; merge introduces tangent self-touch'),'2;1');
 FILE_NAME('Tfa078.stp','2026-06-15T00:00:00',('Zellyn Hunter'),('CAD Kernel Test'),'Claude Code','1.0','');
 FILE_SCHEMA(('IEC 10303-514:1998-02'));
 ENDSEC;

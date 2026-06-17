@@ -1,14 +1,6 @@
 ISO-10303-21;
 HEADER;
-FILE_DESCRIPTION(('Tfa227: ShapeFix_Face.ClearModes.init-all-modes — mode-flag initialization prevents undefined NeedFix() comparison; healer-state precondition'),
-  '2026-06-16T00:00:00',
-  2,
-  (),
-  (),
-  'neutral file',
-  'CAD System',
-  '',
-  ());
+FILE_DESCRIPTION(('Tfa227: ShapeFix_Face.ClearModes.init-all-modes — mode-flag initialization prevents undefined NeedFix() comparison; healer-state precondition'),'2;1');
 FILE_NAME('Tfa227.stp',
   2026-06-16T00:00:00,
   (''),
@@ -33,7 +25,7 @@ DATA;
 #50=LINE('edge_r',#51,#52);
 #51=CARTESIAN_POINT('',1.0,0.0,2.0);
 #52=VECTOR('',#53,2.0);
-#53=DIRECTION('',0.0,0.0,−1.0);
+#53=DIRECTION('',0.0,0.0,-1.0);
 #60=CIRCLE('edge_bottom',#11,1.0);
 #70=CIRCLE('edge_top',#70_axis,1.0);
 #70_axis=AXIS2_PLACEMENT_3D('top_origin',#71,#21,#22);

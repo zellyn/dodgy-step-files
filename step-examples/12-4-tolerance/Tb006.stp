@@ -1,8 +1,8 @@
 ISO-10303-21;
 /* Tb006 - Edge length sub-tolerance squared in 2D pcurve domain
- * Defect: Pcurve U-domain length is exactly 1e-4 on a face whose declared
- * uncertainty is 1e-3. A kernel comparing pcurve domain to sqrt(tol)
- * (~3.16e-2) keeps the edge alive. A kernel comparing to tol*tol = 1e-6
+ * Defect: Pcurve U-domain length is exactly 1.0e-4 on a face whose declared
+ * uncertainty is 1.0e-3. A kernel comparing pcurve domain to sqrt(tol)
+ * (~3.16e-2) keeps the edge alive. A kernel comparing to tol*tol = 1.0e-6
  * declares it degenerate and drops the pcurve. The two policies disagree
  * on whether the edge has a usable parametric representation.
  */
@@ -22,7 +22,7 @@ DATA;
 #12=DIRECTION('+x',(1.0,0.0,0.0));
 #13=AXIS2_PLACEMENT_3D('plc',#10,#11,#12);
 #14=PLANE('s',#13);
-/* Edge with 3D length 1e-4 and pcurve U-range 1e-4. */
+/* Edge with 3D length 1.0e-4 and pcurve U-range 1.0e-4. */
 #20=CARTESIAN_POINT('p0',(0.0,0.0,0.0));
 #21=CARTESIAN_POINT('p1',(1.0E-4,0.0,0.0));
 #30=VERTEX_POINT('',#20);
@@ -41,8 +41,8 @@ DATA;
 #50=EDGE_CURVE('e_subtolsq',#30,#31,#49,.T.);
 /* Trim the surface to the tiny edge region. */
 #60=RECTANGULAR_TRIMMED_SURFACE('trim',#14,0.0,1.0E-4,0.0,1.0E-4,.T.,.T.);
-/* Defect-class threshold: declared 1e-3 -> tol*tol = 1e-6 (drop) vs
- * sqrt(tol) ~ 3.16e-2 (keep). Edge length 1e-4 sits between. */
+/* Defect-class threshold: declared 1.0e-3 -> tol*tol = 1.0e-6 (drop) vs
+ * sqrt(tol) ~ 3.16e-2 (keep). Edge length 1.0e-4 sits between. */
 #70=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
 #71=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
 #72=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());

@@ -1,6 +1,6 @@
 ISO-10303-21;
 HEADER;
-FILE_DESCRIPTION(('Gp095: ShapeFix_Edge.FixVertexTolerance face-vertex-conflict — vertex shared by two faces with conflicting tolerance requirements; FixVertexTolerance picks first face''s requirement, ignoring second'),100000,2,100000);
+FILE_DESCRIPTION(('Gp095: ShapeFix_Edge.FixVertexTolerance face-vertex-conflict — vertex shared by two faces with conflicting tolerance requirements; FixVertexTolerance picks first face''s requirement, ignoring second'),'2;1');
 FILE_NAME('Gp095.stp',2026-06-15T00:00:00,('Zellyn Hunter'),(''),(''),100000,'');
 FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;

@@ -1,8 +1,8 @@
 ISO-10303-21;
 HEADER;
-FILE_DESCRIPTION(('ShapeFix_Face.FixAddNaturalBound subsurface — face on a surface that'\''s actually a subsurface of a larger one (trimmed); FixAddNaturalBound uses the larger surface'\''s natural domain'),2000);
-FILE_NAME('Tfa165.stp',2026-06-15T00:00:00Z,('Zellyn Hunter'),(''),('claude-code'),('',''));
-FILE_SCHEMA(('AUTOMOTIVE_DESIGN {1 0 10303 214 3 1 1 }'));
+FILE_DESCRIPTION(('Tfa165'),'2;1');
+FILE_NAME('Tfa165.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
 #1=DIRECTION('',(0.0,0.0,1.0));

@@ -4,7 +4,7 @@ ISO-10303-21;
    interior poles produce a 2mm bow above the plane; IsPlanar samples only
    control points, missing interior curvature deviation. */
 HEADER;
-FILE_DESCRIPTION(('Gn079 - IsPlanar interior bow detection failure','2;1');
+FILE_DESCRIPTION(('Gn079 - IsPlanar interior bow detection failure'',''2;1'',''2;1'),'2;1');
 FILE_NAME('Gn079.stp','2026-06-16T00:00:00',('auto-generated'),(''),
   'auto-generated','','');
 FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));

@@ -2,10 +2,10 @@ ISO-10303-21;
 /* N025 - Coincident-but-not-shared vertices/edges (cross-translator round-off)
  * Defect: Imported B-reps regularly contain pairs of vertices and edges that
  * the designer intended to be the same but which sit a few microns apart due
- * to translator round-off. Coordinates agree to 1e-4 but topology stores
+ * to translator round-off. Coordinates agree to 1.0e-4 but topology stores
  * them as distinct entities -- a "crack" rather than a "gap".
  * Reproducer: two faces' shared corner emitted as two VERTEX_POINTs whose
- * coordinates agree to 1e-4 but are *different objects*; nothing collapses
+ * coordinates agree to 1.0e-4 but are *different objects*; nothing collapses
  * them.
  */
 HEADER;

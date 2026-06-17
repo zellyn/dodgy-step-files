@@ -1,7 +1,7 @@
 ISO-10303-21;
 /* N154 - ShapeUpgrade_UnifySameDomain.MergeSubSeq.circle_spatial_closure_tolerance
  * Defect: Fallback closure detection using spatial distance and per-vertex tolerance.
- * Reproducer: Circle arc V0,...,V1 where V0.IsSame(V1)=false but Pnt distance ~1e-8.
+ * Reproducer: Circle arc V0,...,V1 where V0.IsSame(V1)=false but Pnt distance ~1.0e-8.
  * Expected: isClosed=true (spatially closed within tolerance). Without: open chain.
  * Test: tolerance-aware spatial check ensures closure at precision limit.
  */
@@ -26,7 +26,7 @@ DATA;
 /* Circle mid point */
 #30=CARTESIAN_POINT('circle_mid',(0.0,1.0,0.0));
 #31=VERTEX_POINT('v_circle_mid',#30);
-/* Circle end point (spatially ~1e-8 away from start, topologically distinct) */
+/* Circle end point (spatially ~1.0e-8 away from start, topologically distinct) */
 #40=CARTESIAN_POINT('circle_end',(1.0E-8,1.0E-8,0.0));
 #41=VERTEX_POINT('v_circle_end',#40);
 /* Arc 1: start to mid */

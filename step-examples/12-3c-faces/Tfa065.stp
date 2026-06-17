@@ -1,11 +1,11 @@
 ISO-10303-21;
 /* Tfa065 - Healed face uses inflated tolerance instead of original
  * Rectangular face with three good edges and one edge whose start vertex is
- * shifted 1e-3 from the previous edge's end vertex -- creating a 1e-3 gap.
- * The other three edges are clean (vertex tolerance 1e-7). After healing
- * the face tolerance should be ~1.5e-3, but a defective heal sets it to 1e-1. */
+ * shifted 1.0e-3 from the previous edge's end vertex -- creating a 1.0e-3 gap.
+ * The other three edges are clean (vertex tolerance 1.0e-7). After healing
+ * the face tolerance should be ~1.5e-3, but a defective heal sets it to 1.0e-1. */
 HEADER;
-FILE_DESCRIPTION(('Tfa065 test case','Three clean edges plus one edge with 1e-3 gap to its neighbour'),'2;1');
+FILE_DESCRIPTION(('Tfa065 test case','Three clean edges plus one edge with 1.0e-3 gap to its neighbour'),'2;1');
 FILE_NAME('Tfa065.stp','2026-04-30T00:00:00',(''),(''),'cad-research-suite','','');
 FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
 ENDSEC;
@@ -17,7 +17,7 @@ DATA;
 #12=DIRECTION('',(1.0,0.0,0.0));
 #13=AXIS2_PLACEMENT_3D('',#10,#11,#12);
 #14=PLANE('',#13);
-/* Five vertices: V1, V2, V3 are clean; V3a is the shifted-by-1e-3 start of edge4 */
+/* Five vertices: V1, V2, V3 are clean; V3a is the shifted-by-1.0e-3 start of edge4 */
 #20=CARTESIAN_POINT('',(0.0,0.0,0.0));#21=VERTEX_POINT('V1',#20);
 #22=CARTESIAN_POINT('',(1.0,0.0,0.0));#23=VERTEX_POINT('V2',#22);
 #24=CARTESIAN_POINT('',(1.0,1.0,0.0));#25=VERTEX_POINT('V3_clean',#24);
@@ -29,7 +29,7 @@ DATA;
 /* edge2 V2->V3: clean */
 #34=DIRECTION('',(0.0,1.0,0.0));#35=VECTOR('',#34,1.0);#36=LINE('',#22,#35);
 #37=EDGE_CURVE('e2_clean',#23,#25,#36,.T.);
-/* edge3 starts at V3a (shifted 1e-3 from V3) -- 1e-3 gap with neighbour edge2 end */
+/* edge3 starts at V3a (shifted 1.0e-3 from V3) -- 1.0e-3 gap with neighbour edge2 end */
 #38=DIRECTION('',(-1.0,0.0,0.0));#39=VECTOR('',#38,1.001);#40=LINE('',#26,#39);
 #41=EDGE_CURVE('e3_with_1e-3_gap',#27,#29,#40,.T.);
 /* edge4 V4->V1: clean */

@@ -4,7 +4,7 @@ ISO-10303-21;
    maxima occur at segment transitions. FillBndBox samples each segment
    independently and misses extrema that would be caught by joint analysis. */
 HEADER;
-FILE_DESCRIPTION(('Gn073 - COMPOSITE_CURVE inter-segment extrema miss','2;1');
+FILE_DESCRIPTION(('Gn073 - COMPOSITE_CURVE inter-segment extrema miss'',''2;1'',''2;1'),'2;1');
 FILE_NAME('Gn073.stp','2026-06-16T00:00:00',('auto-generated'),(''),
   'auto-generated','','');
 FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));

@@ -3,7 +3,7 @@ ISO-10303-21;
  * Defect: Multiple Perform() calls reuse stale context; accumulated
  * reshape operations apply twice, causing double-fixing of same geometry. */
 HEADER;
-FILE_DESCRIPTION(('Tsh221 - context null initialize','2;1');
+FILE_DESCRIPTION(('Tsh221 - context null initialize'',''2;1'',''2;1'),'2;1');
 FILE_NAME('Tsh221.stp','2026-06-16T00:00:00',(''),(''),'wave-68B','','');
 FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
 ENDSEC;

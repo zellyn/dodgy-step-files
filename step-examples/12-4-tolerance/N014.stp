@@ -18,7 +18,7 @@ DATA;
 #1=APPLICATION_CONTEXT('automotive design');
 #2=APPLICATION_PROTOCOL_DEFINITION('international standard',
   'automotive_design',2009,#1);
-/* Endpoints both within tol of single corrected position (origin) -- 4e-8 apart */
+/* Endpoints both within tol of single corrected position (origin) -- 4.0e-8 apart */
 #10=CARTESIAN_POINT('p_a',(2.0E-8,0.0,0.0));
 #11=CARTESIAN_POINT('p_b',(-2.0E-8,0.0,0.0));
 #20=VERTEX_POINT('v_a_should_collapse',#10);

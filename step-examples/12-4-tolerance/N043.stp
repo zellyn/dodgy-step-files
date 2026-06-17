@@ -2,7 +2,7 @@ ISO-10303-21;
 /* N043 - BRepExtrema_DistShapeShape reports nonzero distance for clearly
  *        intersecting parts
  * Defect: For two shapes that demonstrably intersect, BRepExtrema_DistShapeShape
- * returns ~6e-5 or 0.083 distance instead of ~0. The distance algorithm
+ * returns ~6.0e-5 or 0.083 distance instead of ~0. The distance algorithm
  * samples but does not fully verify intersection. Several stacked cylinders
  * piercing a host part produce false positive "minimum distance > 0" answers.
  * Reproducer: a host plate centred on the origin with a cylindrical pin

@@ -1,7 +1,6 @@
 ISO-10303-21;
 HEADER;
-FILE_DESCRIPTION(('Twi247 — BRepLib::SameParameter.exception-silent-skip — edge with inconsistent 3D curve and pcurves; SameParameter throws exception; catch block silently continues without diagnostic output'),2000-01-01T00:00:00,2.0,'','',
-'Generated for OCCT wire healing defect regression',(''));
+FILE_DESCRIPTION(('Twi247 — BRepLib::SameParameter.exception-silent-skip — edge with inconsistent 3D curve and pcurves; SameParameter throws exception; catch block silently continues without diagnostic output'),'2;1');
 FILE_NAME('Twi247.stp',2000-01-01T00:00:00,(''),(''),
 'Copyright Zellyn',2000-01-01T00:00:00,'');
 FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));

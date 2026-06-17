@@ -1,7 +1,6 @@
 ISO-10303-21;
 HEADER;
-FILE_DESCRIPTION(('Twi255 — ShapeAnalysis_Wire.CheckLoop.null-vertices — EDGE_CURVE with null V1 or V2; CheckLoop must encode FAIL2 and return false; without null check, segfault on IsSame() call'),2000-01-01T00:00:00,2.0,'','',
-'Generated for OCCT wire healing defect regression',(''));
+FILE_DESCRIPTION(('Twi255 — ShapeAnalysis_Wire.CheckLoop.null-vertices — EDGE_CURVE with null V1 or V2; CheckLoop must encode FAIL2 and return false; without null check, segfault on IsSame() call'),'2;1');
 FILE_NAME('Twi255.stp',2000-01-01T00:00:00,(''),(''),
 'Copyright Zellyn',2000-01-01T00:00:00,'');
 FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));

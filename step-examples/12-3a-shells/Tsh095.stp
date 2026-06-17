@@ -4,7 +4,7 @@ ISO-10303-21;
  * Face A spans (0..4 x 0..4 x 0), Face B spans (2..2.5 x -1..5 x 0).
  * Their edges cross geometrically; ApplySewing must detect and reject but proceeds. */
 HEADER;
-FILE_DESCRIPTION(('Tsh095 - self-intersecting shell with T-crossing','2;1');
+FILE_DESCRIPTION(('Tsh095 - self-intersecting shell with T-crossing'',''2;1'',''2;1'),'2;1');
 FILE_NAME('Tsh095.stp','2026-06-15T00:00:00',(''),(''),'wave-14','','');
 FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
 ENDSEC;

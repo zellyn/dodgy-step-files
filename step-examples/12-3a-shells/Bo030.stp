@@ -1,7 +1,7 @@
 ISO-10303-21;
 /* Bo030 - Inner-vertex tolerance smaller than its actual deviation.
- * Defect: vertex declared with tolerance ~1e-7 but the 3D point
- * is ~1e-3 distant from the curve evaluation it indexes. */
+ * Defect: vertex declared with tolerance ~1.0e-7 but the 3D point
+ * is ~1.0e-3 distant from the curve evaluation it indexes. */
 HEADER;
 FILE_DESCRIPTION(('Bo030 - inner tolerance underestimated','Pass C gap-fill'),'2;1');
 FILE_NAME('Bo030.stp','2026-04-30T00:00:00',(''),(''),'gap-fill C','','');
@@ -20,8 +20,8 @@ DATA;
 #30=DIRECTION('',(1.0,0.0,0.0));
 #31=VECTOR('',#30,1.0);
 #32=LINE('',#10,#31);
-/* Edge declared with start vertex 1e-3 off the line - typical tolerance
-   model would mark vertex tolerance as 1e-7. */
+/* Edge declared with start vertex 1.0e-3 off the line - typical tolerance
+   model would mark vertex tolerance as 1.0e-7. */
 #40=EDGE_CURVE('tolerance_lying',#21,#22,#32,.T.);
 /* PRODUCT chain so OCCT loads the geometry. */
 #9000=PRODUCT_CONTEXT('',#1,'mechanical');

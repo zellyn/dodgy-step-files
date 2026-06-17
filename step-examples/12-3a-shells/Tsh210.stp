@@ -3,7 +3,7 @@ ISO-10303-21;
  * Defect: Shell containing face with tolerance out-of-range; recursive filtering misses shell container.
  * Test: InTolerance(shape, 0.001, 0.002, TopAbs_SHELL) on shell with face tolerance=0.0015. */
 HEADER;
-FILE_DESCRIPTION(('Tsh210 - shell tolerance iteration filtering','2;1');
+FILE_DESCRIPTION(('Tsh210 - shell tolerance iteration filtering'',''2;1'',''2;1'),'2;1');
 FILE_NAME('Tsh210.stp','2026-06-16T00:00:00',(''),(''),'wave-63a','','');
 FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
 ENDSEC;

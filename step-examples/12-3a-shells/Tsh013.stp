@@ -10,7 +10,7 @@ ISO-10303-21;
  * disjoint squares (left at x in [0,1] and right at x in [2,3]).
  * Healers split into two faces; strict readers reject the topology. */
 HEADER;
-FILE_DESCRIPTION(('Tsh013 - Face with two disjoint outer wires','2;1');
+FILE_DESCRIPTION(('Tsh013 - Face with two disjoint outer wires'',''2;1'',''2;1'),'2;1');
 FILE_NAME('Tsh013.stp','2026-06-16T00:00:00',(''),(''),'wave-01','','');
 FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
 ENDSEC;

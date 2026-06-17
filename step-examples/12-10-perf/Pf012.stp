@@ -1,20 +1,7 @@
 ISO-10303-21;
-/* Pf012 - Stack overflow via deeply nested aggregate parens
-   Pattern: a Part-21 LIST/SET/BAG aggregate whose elements are themselves
-   aggregates, recursively. A recursive-descent parser without a depth
-   ceiling stack-overflows when handed thousands of nested parens (A002).
-   The examples below use 25-50 nesting levels - well under the Windows
-   default stack but adequate to demonstrate the pattern. Several depths
-   are included so that a reader fixed at depth N still encounters depth
-   N+1 in a later instance.
-   Scaling-up: replicate the inner aggregate to ~10,000 levels deep to
-   trigger E_AGGREGATE_TOO_DEEP / segfault on naive parsers; this same
-   pattern repeats many times in a single file so single-instance guards
-   don't help. */
 HEADER;
-FILE_DESCRIPTION(('Pf012 - deeply nested aggregate parens'),'2;1');
-FILE_NAME('Pf012.stp','2026-04-26T00:00:00',('auto-generated'),(''),
-  'auto-generated','','');
+FILE_DESCRIPTION(('Pf012'),'2;1');
+FILE_NAME('Pf012.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
 FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;

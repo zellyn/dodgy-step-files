@@ -48,7 +48,7 @@ DATA;
 /* Coarse tolerance: 0.1 (no fine alternative for e_no_fine) */
 #85=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.1),#80,
   'distance_accuracy_value','coarse_tol_fallback');
-/* Fine tolerance: 1e-7 (for e_with_fine comparison) */
+/* Fine tolerance: 1.0e-7 (for e_with_fine comparison) */
 #86=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#80,
   'distance_accuracy_value','fine_tol');
 #9000=PRODUCT_CONTEXT('',#1,'mechanical');

@@ -3,7 +3,7 @@ ISO-10303-21;
  * Defect: Sewing algorithm applies distance tolerance filter in second pass
  * but may miss edges below tolerance threshold during nearest-edge lookup. */
 HEADER;
-FILE_DESCRIPTION(('Tsh203 - sewing distance tolerance filter gap edge','2;1');
+FILE_DESCRIPTION(('Tsh203 - sewing distance tolerance filter gap edge'',''2;1'',''2;1'),'2;1');
 FILE_NAME('Tsh203.stp','2026-06-16T00:00:00',(''),(''),'wave-59A','','');
 FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
 ENDSEC;

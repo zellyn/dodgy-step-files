@@ -1,14 +1,6 @@
 ISO-10303-21;
 HEADER;
-FILE_DESCRIPTION(('Tfa238: ShapeFix_Face.SplitEdge — multi-point edge subdivision; overlapping parameter intervals'),
-  '2026-06-16T00:00:00',
-  2,
-  (),
-  (),
-  'neutral file',
-  'CAD System',
-  '',
-  ());
+FILE_DESCRIPTION(('Tfa238: ShapeFix_Face.SplitEdge — multi-point edge subdivision; overlapping parameter intervals'),'2;1');
 FILE_NAME('Tfa238.stp',
   2026-06-16T00:00:00,
   (''),
@@ -31,21 +23,21 @@ DATA;
 #41=CARTESIAN_POINT('',1.5,0.0,0.0);
 #42=CARTESIAN_POINT('',1.2,0.0,0.8);
 #43=CARTESIAN_POINT('',0.0,0.0,1.5);
-#44=CARTESIAN_POINT('',−1.2,0.0,0.8);
-#45=CARTESIAN_POINT('',−1.5,0.0,0.0);
+#44=CARTESIAN_POINT('',-1.2,0.0,0.8);
+#45=CARTESIAN_POINT('',-1.5,0.0,0.0);
 #50=LINE('bottom_edge',#51,#52);
 #51=CARTESIAN_POINT('',1.5,0.0,0.0);
 #52=VECTOR('',#53,1.0);
-#53=DIRECTION('',−1.0,0.0,0.0);
+#53=DIRECTION('',-1.0,0.0,0.0);
 #60=CIRCLE('closing_circle',#11,1.5);
 #70=VERTEX_POINT('v_start',#71);
 #71=CARTESIAN_POINT('',1.5,0.0,0.0);
 #72=VERTEX_POINT('v_mid1',#73);
 #73=CARTESIAN_POINT('',0.0,0.0,1.5);
 #74=VERTEX_POINT('v_mid2',#75);
-#75=CARTESIAN_POINT('',−1.5,0.0,0.0);
+#75=CARTESIAN_POINT('',-1.5,0.0,0.0);
 #76=VERTEX_POINT('v_end',#77);
-#77=CARTESIAN_POINT('',0.0,0.0,−1.5);
+#77=CARTESIAN_POINT('',0.0,0.0,-1.5);
 #80=EDGE_CURVE('meridian_edge',#70,#72,#40,.T.);
 #81=EDGE_CURVE('bottom_edge_curve',#72,#74,#50,.T.);
 #82=EDGE_CURVE('closing_edge',#74,#70,#60,.T.);

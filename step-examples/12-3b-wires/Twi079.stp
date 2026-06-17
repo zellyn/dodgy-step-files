@@ -2,7 +2,7 @@ ISO-10303-21;
 /* Twi079 - Internal hole wire whose enclosed area is below threshold
  * Square outer face 10x10 on a PLANE; inner FACE_INNER_BOUND is a tiny
  * triangle near the centre with vertices (5.0, 5.0), (5.001, 5.0),
- * (5.0, 5.001) -- enclosed area ~= 5e-7 mm^2, well below any feature
+ * (5.0, 5.001) -- enclosed area ~= 5.0e-7 mm^2, well below any feature
  * threshold. RemoveInternalWires must classify and drop it. */
 HEADER;
 FILE_DESCRIPTION(('Twi079 test case','Square face with sub-threshold inner triangle hole'),'2;1');
@@ -36,7 +36,7 @@ DATA;
 #53=ORIENTED_EDGE('',*,*,#45,.T.);
 #54=EDGE_LOOP('outer_10x10',(#50,#51,#52,#53));
 #55=FACE_OUTER_BOUND('outer',#54,.T.);
-/* tiny inner triangle, area ~= 5e-7 mm^2 */
+/* tiny inner triangle, area ~= 5.0e-7 mm^2 */
 #60=CARTESIAN_POINT('',(5.0,5.0,0.0));#61=VERTEX_POINT('Ia',#60);
 #62=CARTESIAN_POINT('',(5.001,5.0,0.0));#63=VERTEX_POINT('Ib',#62);
 #64=CARTESIAN_POINT('',(5.0,5.001,0.0));#65=VERTEX_POINT('Ic',#64);

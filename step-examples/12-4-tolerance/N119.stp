@@ -1,8 +1,8 @@
 ISO-10303-21;
 /* N119 — ShapeFix_ShapeTolerance.LimitTolerance with-very-large-shape
- * Defect: shape with coordinates 1e10; LimitTolerance's relative comparison
+ * Defect: shape with coordinates 1.0e10; LimitTolerance's relative comparison
  * underflows because input tolerance has no scale awareness. A tolerance of
- * 1.0 is actually reasonable for coords at 1e10, but relative checks like
+ * 1.0 is actually reasonable for coords at 1.0e10, but relative checks like
  * (tol / coord_magnitude) underflow to zero, causing LimitTolerance to reject
  * valid tolerances and report spurious violations.
  */
@@ -19,12 +19,12 @@ DATA;
 #6=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
 #7=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
 #8=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
-/* Vertices at enormous coordinates (1e10 scale). */
+/* Vertices at enormous coordinates (1.0e10 scale). */
 #10=CARTESIAN_POINT('origin_huge',(1.0E10,1.0E10,1.0E10));
 #11=CARTESIAN_POINT('edge_end_huge',(1.0E10,1.0E10+1.0,1.0E10));
 #12=VERTEX_POINT('v_huge_0',#10);
 #13=VERTEX_POINT('v_huge_1',#11);
-/* Edge curve at 1e10 scale with reasonable tolerance 1.0 (relative precision 1e-10). */
+/* Edge curve at 1.0e10 scale with reasonable tolerance 1.0 (relative precision 1.0e-10). */
 #20=DIRECTION('huge_y',(0.0,1.0,0.0));
 #21=VECTOR('huge_vec_1',#20,1.0);
 #22=LINE('huge_line',#10,#21);
@@ -36,7 +36,7 @@ DATA;
 #43=AXIS2_PLACEMENT_3D('huge_plane_plc',#40,#41,#42);
 #44=PLANE('huge_plane',#43);
 /* Edge at huge scale with nominal tolerance 1.0;
- * relative to 1e10 coordinates, this is reasonable (1e-10 relative precision)
+ * relative to 1.0e10 coordinates, this is reasonable (1.0e-10 relative precision)
  * but LimitTolerance's relative check (tol / MAX_COORD) underflows. */
 #100=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0),#6,
   'distance_accuracy_value','reasonable_absolute_huge_scale');

@@ -3,7 +3,7 @@ ISO-10303-21;
  * Defect: two cylindrical surfaces with PERPENDICULAR axes meet at a
  * non-trivial intersection curve. Declared surface tolerance is
  * 1.0E-3 mm. The walk-line algorithm should step at ~tolerance,
- * but in fact uses a fixed internal 1e-7 step, doing 1e4x more
+ * but in fact uses a fixed internal 1.0e-7 step, doing 1e4x more
  * work than necessary and producing pcurves with sub-tolerance
  * sample density. */
 HEADER;

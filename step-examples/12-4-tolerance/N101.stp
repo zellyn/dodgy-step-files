@@ -1,13 +1,6 @@
 ISO-10303-21;
 HEADER;
-FILE_DESCRIPTION(('N101: ShapeFix_Edge.FixVertexTolerance — reset-on-fix'),
-  '2',
-  2026,
-  6,
-  15,
-  0,
-  0,
-  '');
+FILE_DESCRIPTION(('N101: ShapeFix_Edge.FixVertexTolerance — reset-on-fix'),'2;1');
 FILE_NAME('N101.stp','2026-06-15T00:00:00',(''),(''),
   'TOLERANCE RECOVERY',
   '',

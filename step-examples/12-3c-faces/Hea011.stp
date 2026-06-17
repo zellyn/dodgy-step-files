@@ -2,7 +2,7 @@ ISO-10303-21;
 /* Hea011 - Shape-healing driver: run a runtime-configured sequence of operators
  * Multi-defect compound on which the driver is intended to run a sequence
  * "fix-shape, same-parameter, remove-small-edges". Compound contains:
- *   (a) a sub-tolerance edge (1e-7 long) -- target of remove-small-edges;
+ *   (a) a sub-tolerance edge (1.0e-7 long) -- target of remove-small-edges;
  *   (b) an open shell (one face, hole in the topology) -- target of fix-shape;
  *   (c) an edge whose 3D vs pcurve same-parameter is violated -- target of same-parameter.
  * The operator-list itself is API-level (not encoded in STEP bytes). */
@@ -17,7 +17,7 @@ DATA;
 #10=CARTESIAN_POINT('',(0.0,0.0,0.0));
 #11=DIRECTION('',(0.0,0.0,1.0));#12=DIRECTION('',(1.0,0.0,0.0));
 #13=AXIS2_PLACEMENT_3D('',#10,#11,#12);#14=PLANE('',#13);
-/* (a) Sub-tolerance edge between two near-coincident vertex points (1e-7 apart). */
+/* (a) Sub-tolerance edge between two near-coincident vertex points (1.0e-7 apart). */
 #20=CARTESIAN_POINT('',(0.0,0.0,0.0));#21=VERTEX_POINT('Va',#20);
 #22=CARTESIAN_POINT('subtol',(1.0E-7,0.0,0.0));#23=VERTEX_POINT('Vb_subtol',#22);
 #24=DIRECTION('',(1.0,0.0,0.0));#25=VECTOR('',#24,1.0);#26=LINE('',#20,#25);

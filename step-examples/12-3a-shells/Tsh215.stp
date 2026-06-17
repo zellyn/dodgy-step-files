@@ -3,7 +3,7 @@ ISO-10303-21;
  * Defect: Multiple Perform() calls may reuse stale context; accumulated reshape
  * operations apply twice if SetContext not properly reset. */
 HEADER;
-FILE_DESCRIPTION(('Tsh215 - context state accumulation in Perform','2;1');
+FILE_DESCRIPTION(('Tsh215 - context state accumulation in Perform'',''2;1'',''2;1'),'2;1');
 FILE_NAME('Tsh215.stp','2026-06-16T00:00:00',(''),(''),'wave-65B','','');
 FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
 ENDSEC;

@@ -1,7 +1,7 @@
 ISO-10303-21;
 HEADER;
-FILE_DESCRIPTION(('Gp092: ShapeAnalysis_Edge.CheckCurve3dWithPCurve degenerate-pcurve — edge whose pcurve is degenerate (single-point); CheckCurve3dWithPCurve treats degenerate as "agrees with 3D" trivially'),100000,2,100000);
-FILE_NAME('Gp092.stp',2026-06-15T00:00:00,('Zellyn Hunter'),(''),(''),100000,'');
+FILE_DESCRIPTION(('Gp092'),'2;1');
+FILE_NAME('Gp092.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
 FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;

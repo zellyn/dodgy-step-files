@@ -3,7 +3,7 @@ ISO-10303-21;
  * Defect: Two shells with coincident faces at exactly tolerance
  * boundary; Apply doesn't classify consistently. */
 HEADER;
-FILE_DESCRIPTION(('Tsh193 - ShapeUpgrade_ShellSewing tolerance boundary','2;1');
+FILE_DESCRIPTION(('Tsh193 - ShapeUpgrade_ShellSewing tolerance boundary'',''2;1'',''2;1'),'2;1');
 FILE_NAME('Tsh193.stp','2026-06-16T00:00:00',(''),(''),'wave-55b','','');
 FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
 ENDSEC;
@@ -21,7 +21,7 @@ DATA;
 #112=VERTEX_POINT('',#102);
 #113=VERTEX_POINT('',#103);
 
-/* Four vertices for coincident face offset by tolerance boundary 1e-7 */
+/* Four vertices for coincident face offset by tolerance boundary 1.0e-7 */
 #104=CARTESIAN_POINT('',(0.0,0.0,0.00000010));
 #105=CARTESIAN_POINT('',(1.0,0.0,0.00000010));
 #106=CARTESIAN_POINT('',(1.0,1.0,0.00000010));
@@ -80,7 +80,7 @@ DATA;
 #311=AXIS2_PLACEMENT_3D('',#310,#300,#301);
 #312=PLANE('',#311);
 
-/* Plane z=1e-7 */
+/* Plane z=1.0e-7 */
 #313=CARTESIAN_POINT('',(0.5,0.5,0.00000010));
 #314=AXIS2_PLACEMENT_3D('',#313,#300,#301);
 #315=PLANE('',#314);

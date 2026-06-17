@@ -3,7 +3,7 @@ ISO-10303-21;
  * Defect: Multi-connected edges (3+ faces) trigger unbounded iteration loop
  * without explicit termination guard when isAccountMultiConex=true. */
 HEADER;
-FILE_DESCRIPTION(('Tsh201 - multi-connect edge unbounded iteration','2;1');
+FILE_DESCRIPTION(('Tsh201 - multi-connect edge unbounded iteration'',''2;1'',''2;1'),'2;1');
 FILE_NAME('Tsh201.stp','2026-06-16T00:00:00',(''),(''),'wave-59A','','');
 FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
 ENDSEC;

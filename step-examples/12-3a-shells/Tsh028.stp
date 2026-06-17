@@ -5,7 +5,7 @@ ISO-10303-21;
  * (ShapeFix_Face::FixSmallAreaWire) or merged with neighbours during
  * orientation healing.
  *
- * This file: a square plate plus a tiny sliver-face (~1e-9 area) that
+ * This file: a square plate plus a tiny sliver-face (~1.0e-9 area) that
  * a healer would drop. A STYLED_ITEM (#900) is bound to the sliver
  * face #466 -- when the healer drops #466 the style binding becomes
  * a dangling reference. A second STYLED_ITEM (#910) targets the main

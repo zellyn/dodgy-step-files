@@ -3,7 +3,7 @@ ISO-10303-21;
  * Defect: Shell marked closed but FixFaceOrientation detects free edges
  * post-fix; Closed() flag not reset. */
 HEADER;
-FILE_DESCRIPTION(('Tsh192 - ShapeFix_Shell closed-flag sync','2;1');
+FILE_DESCRIPTION(('Tsh192 - ShapeFix_Shell closed-flag sync'',''2;1'',''2;1'),'2;1');
 FILE_NAME('Tsh192.stp','2026-06-16T00:00:00',(''),(''),'wave-55b','','');
 FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
 ENDSEC;

@@ -4,7 +4,7 @@ ISO-10303-21;
  * The declared vertex tolerance is 0.1 mm. UnifySameDomain (or its
  * equivalent) should treat the two faces as a single face since
  * their planes coincide within 0.1 mm. The defect: the algorithm
- * uses a fixed internal 1e-7 mm threshold and refuses to merge. */
+ * uses a fixed internal 1.0e-7 mm threshold and refuses to merge. */
 HEADER;
 FILE_DESCRIPTION(('N047 test case','UnifySameDomain tolerances not user-specifiable'),'2;1');
 FILE_NAME('N047.stp','2026-04-30T00:00:00',(''),(''),'cad-research-suite','','');

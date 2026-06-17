@@ -11,7 +11,7 @@ ENDSEC;
 DATA;
 #1=APPLICATION_CONTEXT('automotive_design');
 #2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
-/* Strip face: 100 x 0.001 plane patch -- aspect ratio 1e5 */
+/* Strip face: 100 x 0.001 plane patch -- aspect ratio 1.0e5 */
 #10=CARTESIAN_POINT('',(0.0,0.0,0.0));
 #11=DIRECTION('',(0.0,0.0,1.0));
 #12=DIRECTION('',(1.0,0.0,0.0));

@@ -4,7 +4,7 @@ ISO-10303-21;
  * idempotent only if no prior state. Multiple Perform() calls may reuse
  * stale context and apply accumulated reshape operations. */
 HEADER;
-FILE_DESCRIPTION(('Tsh206 - context null state accumulation','2;1');
+FILE_DESCRIPTION(('Tsh206 - context null state accumulation'',''2;1'',''2;1'),'2;1');
 FILE_NAME('Tsh206.stp','2026-06-16T00:00:00',(''),(''),'wave-61A','','');
 FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
 ENDSEC;

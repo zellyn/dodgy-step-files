@@ -1,7 +1,7 @@
 ISO-10303-21;
 /* Gs094 - ShapeAnalysis_Surface.UVFromIso parameter-clamp underflow
  *
- * Defect: Surface trimmed to subnormal parameter range u∈[1e-20, 1e-19].
+ * Defect: Surface trimmed to subnormal parameter range u∈[1.0e-20, 1.0e-19].
  * UVFromIso's clamp logic doesn't handle subnormal/denormalized floats,
  * causing incorrect parameter mapping on extremely narrow domains.
  * Reproducer: Sphere with u-range clamped to subnormal boundary.
@@ -20,7 +20,7 @@ DATA;
 #21=DIRECTION('',(0.0,0.0,1.0));
 #22=DIRECTION('',(1.0,0.0,0.0));
 #30=SPHERICAL_SURFACE('',#11,10.0);
-/* Trim to subnormal u-range [1e-20, 1e-19] with normal v-range [0,pi] */
+/* Trim to subnormal u-range [1.0e-20, 1.0e-19] with normal v-range [0,pi] */
 #40=CARTESIAN_POINT('',(10.0,0.0,0.0));
 #41=VERTEX_POINT('',#40);
 #42=VERTEX_LOOP('',#41);

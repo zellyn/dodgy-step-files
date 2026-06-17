@@ -1,7 +1,7 @@
 ISO-10303-21;
 /* Twi003 - EDGE_LOOP edges not head-to-tail (disconnected adjacent edges)
  * Defect: Edge n's end vertex is not edge n+1's start vertex within preci.
- * Here the four edges of a square loop have a small (~5e-5) gap between edge 1
+ * Here the four edges of a square loop have a small (~5.0e-5) gap between edge 1
  * end vertex and edge 2 start vertex - vertices are nearly coincident but
  * exceed default Confusion. Heal by ShapeFix_Wire::FixConnected / vertex merge
  * within tolerance; reject if gap exceeds budget

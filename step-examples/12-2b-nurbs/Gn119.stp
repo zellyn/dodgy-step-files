@@ -1,12 +1,6 @@
 ISO-10303-21;
 HEADER;
-FILE_DESCRIPTION(('Gn119: ShapeAnalysis_Curve.GetSamplePoints with-clustered-knots'),
-  '2',
-  '2026-06-15T00:00:00',
-  '',
-  '',
-  '',
-  '');
+FILE_DESCRIPTION(('Gn119: ShapeAnalysis_Curve.GetSamplePoints with-clustered-knots'),'2;1');
 FILE_NAME('Gn119.stp',
   2026-06-15T00:00:00,
   ('Zellyn Hunter'),

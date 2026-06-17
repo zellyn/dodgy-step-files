@@ -4,7 +4,7 @@ ISO-10303-21;
    conversion produces N×M grid of Bezier patches but neighbor seams have
    tolerance drift. */
 HEADER;
-FILE_DESCRIPTION(('Gn082 - Bezier conversion multi-patch seam tolerance drift','2;1');
+FILE_DESCRIPTION(('Gn082 - Bezier conversion multi-patch seam tolerance drift'',''2;1'',''2;1'),'2;1');
 FILE_NAME('Gn082.stp','2026-06-16T00:00:00',('auto-generated'),(''),
   'auto-generated','','');
 FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));

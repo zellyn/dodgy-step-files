@@ -1,13 +1,6 @@
 ISO-10303-21;
 HEADER;
-FILE_DESCRIPTION(('N105: ShapeAnalysis_Edge.CheckOverlapping — coincident-opposite-direction'),
-  '2',
-  2026,
-  6,
-  15,
-  0,
-  0,
-  '');
+FILE_DESCRIPTION(('N105: ShapeAnalysis_Edge.CheckOverlapping — coincident-opposite-direction'),'2;1');
 FILE_NAME('N105.stp','2026-06-15T00:00:00',(''),(''),
   'TOLERANCE RECOVERY',
   '',

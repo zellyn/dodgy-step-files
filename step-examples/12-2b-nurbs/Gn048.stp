@@ -1,14 +1,6 @@
 ISO-10303-21;
 HEADER;
-FILE_DESCRIPTION(('Gn048: ShapeFix_Edge.FixSameParameter B-spline knot-multiplicity boundary endpoint'),
-  '2',
-  2026,
-  6,
-  15,
-  0,
-  '',
-  '',
-  '');
+FILE_DESCRIPTION(('Gn048: ShapeFix_Edge.FixSameParameter B-spline knot-multiplicity boundary endpoint'),'2;1');
 FILE_NAME('Gn048.stp','',(''),(''),'',' ','');
 FILE_SCHEMA(('CONFIG_CONTROL_DESIGN'));
 ENDSEC;

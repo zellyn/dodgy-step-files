@@ -4,7 +4,7 @@ ISO-10303-21;
  * merged but are still disjoint, or close-coordinate vertices that should merge
  * under a wire-specific tolerance budget rather than the global one. Heal by
  * ShapeFix_WireVertex - merge or split as appropriate. The two vertices
- * below are at (0,0,0) and (1e-7,0,0) - global tolerance treats them as
+ * below are at (0,0,0) and (1.0e-7,0,0) - global tolerance treats them as
  * separate but they should be merged. */
 HEADER;
 FILE_DESCRIPTION(('Twi043 test case','FixWireVertex - close coordinate vertices'),'2;1');
@@ -19,7 +19,7 @@ DATA;
 #12=DIRECTION('',(1.0,0.0,0.0));
 #13=AXIS2_PLACEMENT_3D('',#10,#11,#12);
 #20=PLANE('',#13);
-/* Defect: V1 and V1' are at near-identical coordinates (delta 1e-7 m on a
+/* Defect: V1 and V1' are at near-identical coordinates (delta 1.0e-7 m on a
  * 1 m part) - global tolerance treats them as distinct but they should
  * merge under wire-specific tolerance. */
 #30=CARTESIAN_POINT('',(0.0,0.0,0.0));
@@ -45,7 +45,7 @@ DATA;
 #60=ORIENTED_EDGE('',*,*,#50,.T.);
 #61=ORIENTED_EDGE('',*,*,#51,.T.);
 #62=ORIENTED_EDGE('',*,*,#52,.T.);
-/* Wire ends at #31 but the next edge start was #33 (1e-7 away) - disjoined */
+/* Wire ends at #31 but the next edge start was #33 (1.0e-7 away) - disjoined */
 #70=EDGE_LOOP('',(#60,#61,#62));
 #71=FACE_OUTER_BOUND('',#70,.T.);
 #72=ADVANCED_FACE('',(#71),#20,.T.);

@@ -7,7 +7,7 @@ ISO-10303-21;
  * spot face to a tolerant_vertex, remove the face from the shell, and
  * re-stitch incident edges via that vertex.
  * Reproducer: ADVANCED_FACE on a PLANE whose 4-edge FACE_OUTER_BOUND
- * traces vertices at (0,0,0), (1e-9,0,0), (1e-9,1e-9,0), (0,1e-9,0).
+ * traces vertices at (0,0,0), (1.0e-9,0,0), (1.0e-9,1.0e-9,0), (0,1.0e-9,0).
  */
 HEADER;
 FILE_DESCRIPTION(('Tfa006 spot face collapsed to point'),'2;1');
@@ -24,7 +24,7 @@ DATA;
 #12=DIRECTION('x',(1.0,0.0,0.0));
 #13=AXIS2_PLACEMENT_3D('plc',#10,#11,#12);
 #20=PLANE('plane_xy',#13);
-/* Defect site: four vertices within 1e-9 of one point.                 */
+/* Defect site: four vertices within 1.0e-9 of one point.                 */
 #21=CARTESIAN_POINT('p0',(0.0,0.0,0.0));
 #22=CARTESIAN_POINT('p1',(1.0E-9,0.0,0.0));
 #23=CARTESIAN_POINT('p2',(1.0E-9,1.0E-9,0.0));
@@ -39,7 +39,7 @@ DATA;
 #43=DIRECTION('',(0.0,-1.0,0.0));
 /* VECTOR magnitudes set to unit length so OCCT can build Geom_Line;
  * the defect tininess is preserved by vertex coordinates and TRIMMED_CURVE
- * parameter ranges below (1e-9). */
+ * parameter ranges below (1.0e-9). */
 #50=VECTOR('',#40,1.0);
 #51=VECTOR('',#41,1.0);
 #52=VECTOR('',#42,1.0);
@@ -57,11 +57,11 @@ DATA;
 #82=ORIENTED_EDGE('',*,*,#72,.T.);
 #83=ORIENTED_EDGE('',*,*,#73,.T.);
 #90=EDGE_LOOP('',(#80,#81,#82,#83));
-/* Trim the underlying PLANE to the tiny 1e-9 x 1e-9 spot face region.
+/* Trim the underlying PLANE to the tiny 1.0e-9 x 1.0e-9 spot face region.
  * This ensures the surface domain is finite even if OCCT collapses the
- * sub-tolerance wire (Precision::Confusion = 1e-7). Without this trim,
+ * sub-tolerance wire (Precision::Confusion = 1.0e-7). Without this trim,
  * BRepGProp::SurfaceProperties walks the unbounded plane and reports
- * area=8e+100 which is meaningless. */
+ * area=8.0e+100 which is meaningless. */
 #95=RECTANGULAR_TRIMMED_SURFACE('spot_trim',#20,0.0,1.0E-9,0.0,1.0E-9,.T.,.T.);
 #100=FACE_OUTER_BOUND('',#90,.T.);
 #110=ADVANCED_FACE('spot',(#100),#95,.T.);

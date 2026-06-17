@@ -1,10 +1,10 @@
 ISO-10303-21;
 /* Tb003 - Vertex<edge<face hierarchy holds in mm but flips after rescale to m
- * Defect: Three UNCERTAINTY_MEASURE_WITH_UNIT entries (1e-6, 1e-5, 1e-4)
+ * Defect: Three UNCERTAINTY_MEASURE_WITH_UNIT entries (1.0e-6, 1.0e-5, 1.0e-4)
  * label vertex/edge/face. The OCCT-style invariant tol(V) <= tol(E) <= tol(F)
  * holds in declared mm. Receiver that rescales coordinates from mm to m
- * (factor 1e-3) without atomically rescaling tolerances - or floors them
- * at a working precision floor (e.g. 1e-9) that flattens the small ones -
+ * (factor 1.0e-3) without atomically rescaling tolerances - or floors them
+ * at a working precision floor (e.g. 1.0e-9) that flattens the small ones -
  * inverts the hierarchy. Same input file, two scaling policies, two
  * post-import topologies of the tolerance hierarchy.
  */

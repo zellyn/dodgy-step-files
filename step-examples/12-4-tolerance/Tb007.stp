@@ -1,15 +1,15 @@
 ISO-10303-21;
 /* Tb007 - NURBS knot-difference quantum below tolerance: collapses or doesn't
- * Defect: B-spline curve has knot vector (0.0, 1e-8, 1.0) with multiplicities
- * (4, 1, 4) for cubic. A receiver collapsing near-equal knots within 1e-9
+ * Defect: B-spline curve has knot vector (0.0, 1.0e-8, 1.0) with multiplicities
+ * (4, 1, 4) for cubic. A receiver collapsing near-equal knots within 1.0e-9
  * (Precision::PConfusion) preserves the inner knot. A receiver collapsing
- * within 1e-7 (Precision::Confusion) folds the inner knot into the leading
+ * within 1.0e-7 (Precision::Confusion) folds the inner knot into the leading
  * one, raising leading multiplicity from 4 to 5 (degree+2) and degenerating
  * the curve start. The same input produces different curves under different
  * knot-equality policies.
  */
 HEADER;
-FILE_DESCRIPTION(('Tb007 NURBS knot 1e-8 between Confusion and PConfusion'),'2;1');
+FILE_DESCRIPTION(('Tb007 NURBS knot 1.0e-8 between Confusion and PConfusion'),'2;1');
 FILE_NAME('Tb007.stp','2026-04-30T00:00:00',(''),(''),
   'cad-research-suite','','');
 FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
@@ -18,7 +18,7 @@ DATA;
 #1=APPLICATION_CONTEXT('automotive_design');
 #2=APPLICATION_PROTOCOL_DEFINITION('international standard',
   'automotive_design',2009,#1);
-/* Five control points for a cubic with knot vector of inner-knot 1e-8. */
+/* Five control points for a cubic with knot vector of inner-knot 1.0e-8. */
 #10=CARTESIAN_POINT('cp0',(0.0,0.0,0.0));
 #11=CARTESIAN_POINT('cp1',(1.0,1.0,0.0));
 #12=CARTESIAN_POINT('cp2',(2.0,0.5,0.0));

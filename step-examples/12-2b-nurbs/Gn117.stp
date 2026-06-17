@@ -1,12 +1,6 @@
 ISO-10303-21;
 HEADER;
-FILE_DESCRIPTION(('Gn117: ShapeUpgrade_SplitSurface — rational-and-non-rational-mixed'),
-  '2',
-  '2024-01-15T00:00:00',
-  '',
-  '',
-  '',
-  '');
+FILE_DESCRIPTION(('Gn117: ShapeUpgrade_SplitSurface — rational-and-non-rational-mixed'),'2;1');
 FILE_NAME('Gn117.stp',
   2024-01-15T00:00:00,
   ('Zellyn Hunter'),

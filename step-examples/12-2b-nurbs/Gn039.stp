@@ -1,19 +1,19 @@
 ISO-10303-21;
 /* Gn039 - ShapeAnalysis_Curve.IsClosed B-spline near-closure
    Defect: a B_SPLINE_CURVE_WITH_KNOTS where the last pole is within
-   1e-3 of the first pole but NOT exactly equal. The IsClosed() check
+   1.0e-3 of the first pole but NOT exactly equal. The IsClosed() check
    fails despite intended closure because it expects exact equality
    rather than numerical near-closure. This causes healing tools to
    treat the curve as open and fail to apply closure-dependent fixes. */
 HEADER;
-FILE_DESCRIPTION(('Gn039 - BSpline near-closure, IsClosed rejects','2;1');
+FILE_DESCRIPTION(('Gn039 - BSpline near-closure, IsClosed rejects'',''2;1'',''2;1'),'2;1');
 FILE_NAME('Gn039.stp','2026-06-16T00:00:00',('auto-generated'),(''),
   'auto-generated','','');
 FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
 /* B-spline curve with control points forming a nearly-closed loop.
-   First pole at (0,0,0), last pole at (0.0005, 0.0005, 0) within 1e-3
+   First pole at (0,0,0), last pole at (0.0005, 0.0005, 0) within 1.0e-3
    but not exactly matching the first. */
 #10=CARTESIAN_POINT('p1',(0.0,0.0,0.0));
 #11=CARTESIAN_POINT('p2',(1.0,0.5,0.0));
@@ -21,7 +21,7 @@ DATA;
 #13=CARTESIAN_POINT('p4',(0.5,2.0,0.0));
 #14=CARTESIAN_POINT('p5',(-1.0,1.5,0.0));
 #15=CARTESIAN_POINT('p6',(-1.5,0.5,0.0));
-/* Defect: last pole nearly equal to first but not exact (within 1e-3). */
+/* Defect: last pole nearly equal to first but not exact (within 1.0e-3). */
 #16=CARTESIAN_POINT('p7',(0.0005,0.0005,0.0));
 /* Degree-3 B-spline with 7 control points. For a clamped curve with
    7 points and degree 3, knot multiplicity vector sums to 7+3+1=11. */

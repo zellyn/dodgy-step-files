@@ -47,7 +47,7 @@ DATA;
 #61=VECTOR('e3_vec',#60,5.0);
 #62=LINE('e3_curve',#22,#61);
 #63=EDGE_CURVE('edge3',#32,#33,#62,.T.);
-/* Context with 1e-6 base tolerance for edge-level operations */
+/* Context with 1.0e-6 base tolerance for edge-level operations */
 #70=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
 #71=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
 #72=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());

@@ -26,7 +26,7 @@ DATA;
 #108=CARTESIAN_POINT('end',(1.0,0.0,0.0));
 #109=VERTEX_POINT('v0',#100);
 #110=VERTEX_POINT('v1',#108);
-/* PCURVE 2D LINE running from -1e38 to +1e38 in U
+/* PCURVE 2D LINE running from -1.0e38 to +1.0e38 in U
  * The projection inflates the parametric extents to effectively infinite. */
 #120=CARTESIAN_POINT('puv_origin',(-1.0E+38,0.0));
 #121=DIRECTION('puv_dir',(1.0,0.0));

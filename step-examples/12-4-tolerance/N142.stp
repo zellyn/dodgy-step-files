@@ -21,9 +21,9 @@ DATA;
 #12=DIRECTION('x',(1.0,0.0,0.0));
 #13=AXIS2_PLACEMENT_3D('plc',#10,#11,#12);
 /* U-parameter split causing asymmetry:
-   parU = 5.0, param = 5.00001 (param > parU by 1e-5)
-   With prec = 1e-7 and asymmetric check (parU - param < prec):
-   5.0 - 5.00001 = -0.00001, which is NOT < 1e-7 (false, when should pass)
+   parU = 5.0, param = 5.00001 (param > parU by 1.0e-5)
+   With prec = 1.0e-7 and asymmetric check (parU - param < prec):
+   5.0 - 5.00001 = -0.00001, which is NOT < 1.0e-7 (false, when should pass)
 */
 #20=CARTESIAN_POINT('pt1',(0.0,0.0,0.0));
 #21=CARTESIAN_POINT('pt2',(5.0,0.0,0.0));
@@ -53,7 +53,7 @@ DATA;
   REPRESENTATION_CONTEXT('asymmetry_ctx','3D'));
 /* Split parameters with asymmetry trigger
    Nominal split at 5.0, but represented as 5.00001 in param array
-   Bug: comparison (parU - param < prec) fails because 5.0 - 5.00001 = -0.00001 NOT < 1e-7 */
+   Bug: comparison (parU - param < prec) fails because 5.0 - 5.00001 = -0.00001 NOT < 1.0e-7 */
 #85=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-5),#80,
   'distance_accuracy_value','asymmetric_split_offset');
 #86=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#80,

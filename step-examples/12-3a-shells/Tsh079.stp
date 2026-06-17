@@ -1,13 +1,6 @@
 ISO-10303-21;
 HEADER;
-FILE_DESCRIPTION(('Tsh079: ShapeUpgrade_ShellSewing.Apply two-shell sew — vertex-tolerance mismatch gap'),
-  '2',
-  2026,
-  6,
-  15,
-  0,
-  0,
-  '');
+FILE_DESCRIPTION(('Tsh079: ShapeUpgrade_ShellSewing.Apply two-shell sew — vertex-tolerance mismatch gap'),'2;1');
 FILE_NAME('Tsh079.stp','2026-06-15T00:00:00',(''),(''),'','','');
 FILE_SCHEMA(('IFC2X3'));
 ENDSEC;

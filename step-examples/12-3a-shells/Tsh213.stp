@@ -3,7 +3,7 @@ ISO-10303-21;
  * Defect: Face containing non-WIRE shape (loose vertex); CollectWires must skip non-wire types.
  * Test: Face.Exploration with TopAbs_WIRE filter; without: vertex passed to wire processing. */
 HEADER;
-FILE_DESCRIPTION(('Tsh213 - wire collection type safety','2;1');
+FILE_DESCRIPTION(('Tsh213 - wire collection type safety'',''2;1'',''2;1'),'2;1');
 FILE_NAME('Tsh213.stp','2026-06-16T00:00:00',(''),(''),'wave-63a','','');
 FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
 ENDSEC;

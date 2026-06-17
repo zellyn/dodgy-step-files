@@ -40,7 +40,7 @@ DATA;
 #50=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
 #51=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
 #52=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
-/* Nominal uncertainty: 1e-7 */
+/* Nominal uncertainty: 1.0e-7 */
 #53=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#50,
   'distance_accuracy_value','nominal_tolerance');
 #54=(GEOMETRIC_REPRESENTATION_CONTEXT(3)

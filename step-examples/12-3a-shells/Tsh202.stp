@@ -3,7 +3,7 @@ ISO-10303-21;
  * Defect: Multiple Perform() calls reuse stale Context() if null-initialized;
  * accumulated reshape operations may apply duplicatively. */
 HEADER;
-FILE_DESCRIPTION(('Tsh202 - context null initialize state accumulation','2;1');
+FILE_DESCRIPTION(('Tsh202 - context null initialize state accumulation'',''2;1'',''2;1'),'2;1');
 FILE_NAME('Tsh202.stp','2026-06-16T00:00:00',(''),(''),'wave-59A','','');
 FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
 ENDSEC;

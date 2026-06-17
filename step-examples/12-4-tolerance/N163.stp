@@ -1,8 +1,8 @@
 ISO-10303-21;
 /* N163 - precision_tolerance: mixed-unit-scale mismatch
  * Defect: Tolerance from one unit system applied to coords in different system.
- * Reproducer: Coords in MILLIMETRE (1.0), tolerance in METRE (1e-7 unscaled).
- * Expected: scaled to 1e-4 mm. Actual: applied as 1e-7 mm (off by 10000x).
+ * Reproducer: Coords in MILLIMETRE (1.0), tolerance in METRE (1.0e-7 unscaled).
+ * Expected: scaled to 1.0e-4 mm. Actual: applied as 1.0e-7 mm (off by 10000x).
  */
 HEADER;
 FILE_DESCRIPTION(('N163 precision_tolerance mixed-unit-scale mismatch'),'2;1');
@@ -40,7 +40,7 @@ DATA;
 #80=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
 #81=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
 #82=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
-/* Tolerance declared in METRE (unscaled, should be 1e-4 mm) */
+/* Tolerance declared in METRE (unscaled, should be 1.0e-4 mm) */
 #83=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#80,
   'distance_accuracy_value','metre_unscaled');
 #84=(GEOMETRIC_REPRESENTATION_CONTEXT(3)

@@ -1,7 +1,7 @@
 ISO-10303-21;
 /* Tb004 - Vertex<edge<face hierarchy at ULP precision: barely holds in mm
  * Defect: Same hierarchy invariant as Tb003 but with values 1.000e-6,
- * 1.001e-6, 1.002e-6 -- the ordering is preserved by 0.001e-6 = 1e-9
+ * 1.001e-6, 1.002e-6 -- the ordering is preserved by 0.001e-6 = 1.0e-9
  * margins. After unit conversion mm -> in (factor 25.4 exactly), values
  * become 2.54e-5, 2.5425e-5, 2.5450e-5; but a kernel that round-trips
  * any field through float32 (~7 significant digits) loses the third

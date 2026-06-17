@@ -1,6 +1,6 @@
 ISO-10303-21;
 HEADER;
-FILE_DESCRIPTION(('Tfa154: ShapeAnalysis_CheckSmallFace.CheckTwisted disconnected-wire-region'),2000-01-01T00:00:00,2,2,'');
+FILE_DESCRIPTION(('Tfa154: ShapeAnalysis_CheckSmallFace.CheckTwisted disconnected-wire-region'),'2;1');
 FILE_NAME('Tfa154.stp','',(''),(''),
 'Open CASCADE STEP writer 7.4',
 'Generated for CAD kernel testing',1);

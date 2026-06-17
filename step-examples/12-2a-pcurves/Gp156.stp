@@ -33,7 +33,7 @@ DATA;
 #30=VERTEX_POINT('',(0.0,0.0,0.0));
 #31=CARTESIAN_POINT('',(1.0E-7,0.0,0.0));
 #32=VERTEX_POINT('',#31);
-/* PCURVE: B-spline with negligible parameter range [0, 1e-8] */
+/* PCURVE: B-spline with negligible parameter range [0, 1.0e-8] */
 #40=CARTESIAN_POINT('',(0.0,0.0));
 #41=CARTESIAN_POINT('',(1.0E-8,0.0));
 #42=CARTESIAN_POINT('',(2.0E-8,0.0));

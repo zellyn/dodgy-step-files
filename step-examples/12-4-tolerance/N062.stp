@@ -4,7 +4,7 @@ ISO-10303-21;
  * the input shape contains both VERTEX and EDGE with identical tolerance values.
  * The tie-breaking logic is order-dependent and affected by topological traversal
  * order.
- * Expected behavior: GlobalTolerance(mode=-1) should consistently return 1e-3;
+ * Expected behavior: GlobalTolerance(mode=-1) should consistently return 1.0e-3;
  * actual behavior depends on traversal order.
  */
 HEADER;
@@ -17,7 +17,7 @@ DATA;
 #1=APPLICATION_CONTEXT('automotive design');
 #2=APPLICATION_PROTOCOL_DEFINITION('international standard',
   'automotive_design',2009,#1);
-/* 4-vertex square face (1x1) with edges and vertices all declaring 1e-3 tolerance */
+/* 4-vertex square face (1x1) with edges and vertices all declaring 1.0e-3 tolerance */
 #10=CARTESIAN_POINT('p0',(0.0,0.0,0.0));
 #11=CARTESIAN_POINT('p1',(1.0,0.0,0.0));
 #12=CARTESIAN_POINT('p2',(1.0,1.0,0.0));
@@ -59,14 +59,14 @@ DATA;
 #65=FACE_OUTER_BOUND('',#50,.T.);
 #66=ADVANCED_FACE('',(#65),#64,.T.);
 #67=CLOSED_SHELL('shell',(#66));
-/* Units and TWO tolerance declarations with same value (1e-3) */
+/* Units and TWO tolerance declarations with same value (1.0e-3) */
 #100=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
 #101=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
 #102=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
-/* Vertex tolerance: 1e-3 */
+/* Vertex tolerance: 1.0e-3 */
 #103=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-3),#100,
   'distance_accuracy_value','vertex_tolerance');
-/* Edge tolerance: 1e-3 (tie condition) */
+/* Edge tolerance: 1.0e-3 (tie condition) */
 #104=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-3),#100,
   'distance_accuracy_value','edge_tolerance');
 #105=(GEOMETRIC_REPRESENTATION_CONTEXT(3)

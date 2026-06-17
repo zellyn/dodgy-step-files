@@ -4,7 +4,7 @@ ISO-10303-21;
  * configurable threshold - likely artifacts from imprecise reverse-engineering
  * or Boolean fallout, not genuine holes. Heal by ShapeFix_Face::FixSmallAreaWire
  * or ShapeUpgrade_RemoveInternalWires. The face below has a 100 mm^2 outer
- * boundary with a 1e-6 mm^2 inner wire that should be removed and filled. */
+ * boundary with a 1.0e-6 mm^2 inner wire that should be removed and filled. */
 HEADER;
 FILE_DESCRIPTION(('Twi044 test case','Internal wire below area threshold'),'2;1');
 FILE_NAME('Twi044.stp','2026-04-26T00:00:00',(''),(''),'cad-research-suite','','');
@@ -49,7 +49,7 @@ DATA;
 #73=ORIENTED_EDGE('',*,*,#63,.T.);
 #80=EDGE_LOOP('',(#70,#71,#72,#73));
 #81=FACE_OUTER_BOUND('',#80,.T.);
-/* Defect: tiny inner triangle with area ~5e-7 mm^2 (vertices 1e-3 apart) -
+/* Defect: tiny inner triangle with area ~5.0e-7 mm^2 (vertices 1.0e-3 apart) -
  * Boolean fallout or reverse-engineering artifact, not a real hole.
  * RemoveInternalWires should drop it and fill. */
 #90=CARTESIAN_POINT('',(5.0,5.0,0.0));

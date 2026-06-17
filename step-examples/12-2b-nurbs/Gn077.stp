@@ -5,7 +5,7 @@ ISO-10303-21;
    at P2 causes the curve to cross itself. IsClosed reports closed but misses
    the self-intersection. */
 HEADER;
-FILE_DESCRIPTION(('Gn077 - IsClosed with self-intersecting direction reversal','2;1');
+FILE_DESCRIPTION(('Gn077 - IsClosed with self-intersecting direction reversal'',''2;1'',''2;1'),'2;1');
 FILE_NAME('Gn077.stp','2026-06-16T00:00:00',('auto-generated'),(''),
   'auto-generated','','');
 FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));

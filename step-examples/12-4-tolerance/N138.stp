@@ -21,8 +21,8 @@ DATA;
 #12=DIRECTION('x',(1.0,0.0,0.0));
 #13=AXIS2_PLACEMENT_3D('plc',#10,#11,#12);
 /* Edge with mixed-precision endpoints
-   P1: precision 1e-8, P2: precision 1e-3. Conservative=1e-8.
-   Separation 5e-7 exceeds conservative tolerance but within P2 precision. */
+   P1: precision 1.0e-8, P2: precision 1.0e-3. Conservative=1.0e-8.
+   Separation 5.0e-7 exceeds conservative tolerance but within P2 precision. */
 #20=CARTESIAN_POINT('p1',(0.0,0.0,0.0));
 #30=VERTEX_POINT('v1',#20);
 #21=CARTESIAN_POINT('p2',(5.0E-7,0.0,0.0));

@@ -1,6 +1,6 @@
 ISO-10303-21;
 HEADER;
-FILE_DESCRIPTION(('Tfa076: ShapeFix_Face.FixAddNaturalBound seam-edge skip — closed surface face whose natural boundary insertion is skipped because a seam edge confuses the closure detector'),100,2,100,'Unknown');
+FILE_DESCRIPTION(('Tfa076: ShapeFix_Face.FixAddNaturalBound seam-edge skip — closed surface face whose natural boundary insertion is skipped because a seam edge confuses the closure detector'),'2;1');
 FILE_NAME('Tfa076.stp','2026-06-15T00:00:00',('Zellyn Hunter'),('CAD Kernel Test'),'Claude Code','1.0','');
 FILE_SCHEMA(('IEC 10303-514:1998-02'));
 ENDSEC;

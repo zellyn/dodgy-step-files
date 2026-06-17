@@ -21,7 +21,7 @@ DATA;
 #12=DIRECTION('+x',(1.0,0.0,0.0));
 #13=AXIS2_PLACEMENT_3D('plc1',#10,#11,#12);
 #14=PLANE('p1',#13);
-/* Plane 2 at z=1e-6. */
+/* Plane 2 at z=1.0e-6. */
 #15=CARTESIAN_POINT('o2',(0.0,0.0,1.0E-6));
 #16=AXIS2_PLACEMENT_3D('plc2',#15,#11,#12);
 #17=PLANE('p2_offset_exact_tol',#16);

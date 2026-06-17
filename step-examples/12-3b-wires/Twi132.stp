@@ -1,13 +1,7 @@
 ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Twi132: ShapeFix_Wire.FixDummySeam non-periodic-surface',
- 'Wire on PLANE (non-periodic) with seam-like heuristic trigger; FixDummySeam should be no-op but logic triggers anyway'),
-  '2',
-  '2020-01-01T00:00:00',
-  '2020-01-01T00:00:00',
-  ('OPEN CASCADE'),
-  (''),
-  'Unknown');
+ 'Wire on PLANE (non-periodic) with seam-like heuristic trigger; FixDummySeam should be no-op but logic triggers anyway'),'2;1');
 FILE_NAME('Twi132.stp','2020-01-01T00:00:00',(''),(''),'Unknown','','');
 FILE_SCHEMA(('AP203_CONFIGURATION_CONTROLLED_3D_DESIGN_OF_MECHANICAL_PARTS_AND_ASSEMBLIES_MCD'));
 ENDSEC;
@@ -40,7 +34,7 @@ DATA;
 #73=TRIMMED_CURVE('e3',#70,0.0,10.0);
 #80=LINE('',#81,#82);
 #81=CARTESIAN_POINT('',(20.0,10.0,0.0));
-#82=DIRECTION('',(−1.0,0.0,0.0));
+#82=DIRECTION('',(-1.0,0.0,0.0));
 #83=TRIMMED_CURVE('e4',#80,0.0,20.0);
 #100=EDGE('e1',#53,#40,#42,.T.);
 #101=EDGE('e2_seam_like',#63,#42,#43,.T.);

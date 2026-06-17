@@ -6,7 +6,7 @@ ISO-10303-21;
    filter fails to remove these patches because the extent check is
    insufficient. */
 HEADER;
-FILE_DESCRIPTION(('Gn042 - BSpline surface double knot thin patch','2;1');
+FILE_DESCRIPTION(('Gn042 - BSpline surface double knot thin patch'',''2;1'',''2;1'),'2;1');
 FILE_NAME('Gn042.stp','2026-06-16T00:00:00',('auto-generated'),(''),
   'auto-generated','','');
 FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));

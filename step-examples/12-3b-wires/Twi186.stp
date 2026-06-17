@@ -1,7 +1,6 @@
 ISO-10303-21;
 HEADER;
-FILE_DESCRIPTION(('Twi186 — ShapeFix_Wire.FixIntersectingEdges parametric-overlap','Two edges with overlapping parametric ranges on torus but no 3D intersection; 2D analysis produces false split.'),'2000-01-01T00:00:00',2.0,'','',
-'Generated for OCCT wire healing defect regression',(''));
+FILE_DESCRIPTION(('Twi186 — ShapeFix_Wire.FixIntersectingEdges parametric-overlap','Two edges with overlapping parametric ranges on torus but no 3D intersection; 2D analysis produces false split.'),'2;1');
 FILE_NAME('Twi186.stp','2000-01-01T00:00:00',(''),(''),
 'Copyright Zellyn',2000-01-01T00:00:00,'');
 FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));

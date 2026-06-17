@@ -1,15 +1,8 @@
 ISO-10303-21;
 HEADER;
-FILE_DESCRIPTION(('Twi129: FixSelfIntersectingEdge inflection-self-touch',
- 'Single edge self-touches at inflection point (3D figure-8); FixSelfIntersectingEdge split logic fails'),
-  '2',
-  '2020-01-01T00:00:00',
-  '2020-01-01T00:00:00',
-  ('OPEN CASCADE'),
-  (''),
-  'Unknown');
-FILE_NAME('Twi129.stp','2020-01-01T00:00:00',(''),(''),'Unknown','','');
-FILE_SCHEMA(('AP203_CONFIGURATION_CONTROLLED_3D_DESIGN_OF_MECHANICAL_PARTS_AND_ASSEMBLIES_MCD'));
+FILE_DESCRIPTION(('Twi129'),'2;1');
+FILE_NAME('Twi129.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
 #1=GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D');
@@ -26,7 +19,7 @@ DATA;
 #45=CARTESIAN_POINT('',(10.0,0.0,0.0));
 #50=BOUNDED_CURVE('figure8',#60);
 #60=B_SPLINE_CURVE_WITH_KNOTS('',3,
-((0.0,0.0,0.0),(2.5,5.0,−5.0),(5.0,0.0,0.0),(7.5,−5.0,5.0),(10.0,0.0,0.0)),
+((0.0,0.0,0.0),(2.5,5.0,-5.0),(5.0,0.0,0.0),(7.5,-5.0,5.0),(10.0,0.0,0.0)),
 .UNSPECIFIED.,.F.,.F.,
 (4,1,1,1,4),
 (0.0,2.5,5.0,7.5,10.0),
@@ -40,13 +33,13 @@ DATA;
 #81=CARTESIAN_POINT('',(10.0,10.0,0.0));
 #82=LINE('',#83,#84);
 #83=CARTESIAN_POINT('',(10.0,10.0,0.0));
-#84=DIRECTION('',(−1.0,0.0,0.0));
+#84=DIRECTION('',(-1.0,0.0,0.0));
 #85=TRIMMED_CURVE('e3',#82,0.0,10.0);
 #86=VERTEX_POINT('v5',#87);
 #87=CARTESIAN_POINT('',(0.0,10.0,0.0));
 #88=LINE('',#89,#90);
 #89=CARTESIAN_POINT('',(0.0,10.0,0.0));
-#90=DIRECTION('',(0.0,−1.0,0.0));
+#90=DIRECTION('',(0.0,-1.0,0.0));
 #91=TRIMMED_CURVE('e4',#88,0.0,10.0);
 #100=EDGE('e1_fig8',#61,#40,#44,.T.);
 #101=EDGE('e2',#73,#44,#80,.T.);

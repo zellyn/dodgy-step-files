@@ -11,7 +11,7 @@ ISO-10303-21;
  * legal for senders that consider it "closed", a sewing failure for
  * receivers that consider it "open". */
 HEADER;
-FILE_DESCRIPTION(('Tsh005 - Tolerance-driven solid demotion','2;1');
+FILE_DESCRIPTION(('Tsh005 - Tolerance-driven solid demotion'',''2;1'',''2;1'),'2;1');
 FILE_NAME('Tsh005.stp','2026-06-16T00:00:00',(''),(''),'wave-01','','');
 FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
 ENDSEC;

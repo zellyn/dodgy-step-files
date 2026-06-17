@@ -1,14 +1,6 @@
 ISO-10303-21;
 HEADER;
-FILE_DESCRIPTION(('CAD fixture: FixPeriodicDegenerated B-spline-revolution apex-construction'),
-  '2024-06-15T12:00:00',
-  2,
-  (),
-  (),
-  'neutral file',
-  'CAD System',
-  '',
-  ());
+FILE_DESCRIPTION(('CAD fixture: FixPeriodicDegenerated B-spline-revolution apex-construction'),'2;1');
 FILE_NAME('Tfa150.stp',
   2024-06-15T12:00:00,
   (''),
@@ -32,11 +24,11 @@ DATA;
 #40=LINE('apex_edge_2',#41,#42);
 #41=CARTESIAN_POINT('',1.0,1.0,0.0);
 #42=VECTOR('',#43,1.0);
-#43=DIRECTION('',−1.0,0.0,0.0);
+#43=DIRECTION('',-1.0,0.0,0.0);
 #50=LINE('apex_edge_3',#51,#52);
 #51=CARTESIAN_POINT('',0.0,1.0,0.0);
 #52=VECTOR('',#53,1.0);
-#53=DIRECTION('',0.0,−1.0,0.0);
+#53=DIRECTION('',0.0,-1.0,0.0);
 #60=B_SPLINE_CURVE_WITH_KNOTS('bspline_profile',3,(#70,#80,#90,#100,#110),
   .UNSPECIFIED.,.F.,.F.,(4,2,4),(0.0,0.5,1.0),1);
 #70=CARTESIAN_POINT('',2.0,0.0,0.0);
@@ -54,11 +46,11 @@ DATA;
 #150=CARTESIAN_POINT('',0.0,2.1,2.0);
 #160=CARTESIAN_POINT('',0.0,1.5,2.0);
 #170=CARTESIAN_POINT('',0.0,0.0,2.0);
-#180=CARTESIAN_POINT('',−2.0,0.0,1.0);
-#190=CARTESIAN_POINT('',−3.0,0.5,1.0);
-#200=CARTESIAN_POINT('',−3.5,1.5,1.0);
-#210=CARTESIAN_POINT('',−3.0,2.5,1.0);
-#220=CARTESIAN_POINT('',−2.0,3.0,1.0);
+#180=CARTESIAN_POINT('',-2.0,0.0,1.0);
+#190=CARTESIAN_POINT('',-3.0,0.5,1.0);
+#200=CARTESIAN_POINT('',-3.5,1.5,1.0);
+#210=CARTESIAN_POINT('',-3.0,2.5,1.0);
+#220=CARTESIAN_POINT('',-2.0,3.0,1.0);
 #230=VERTEX_POINT('v1',#240);
 #240=CARTESIAN_POINT('',1.0,0.0,0.0);
 #250=VERTEX_POINT('v2',#260);

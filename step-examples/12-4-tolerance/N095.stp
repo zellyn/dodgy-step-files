@@ -18,14 +18,14 @@ DATA;
 #12=DIRECTION('',(1.0,0.0,0.0));
 #13=AXIS2_PLACEMENT_3D('',#10,#11,#12);
 #14=PLANE('',#13);
-/* Vertex A: high precision context (1e-9) */
+/* Vertex A: high precision context (1.0e-9) */
 #20=CARTESIAN_POINT('',(0.0,0.0,0.0));
 #21=VERTEX_POINT('v_highprec',#20);
-/* Vertex B: low precision context (1e-3) */
+/* Vertex B: low precision context (1.0e-3) */
 #30=CARTESIAN_POINT('',(1.0,0.0,0.0));
 #31=VERTEX_POINT('v_lowprec',#30);
 /* Edge connecting high-prec and low-prec endpoints
-   CheckPoints will use min(1e-9, 1e-3) = 1e-9 as threshold,
+   CheckPoints will use min(1.0e-9, 1.0e-3) = 1.0e-9 as threshold,
    but should use directional asymmetric bounds instead */
 #40=DIRECTION('',(1.0,0.0,0.0));
 #41=VECTOR('',#40,1.0);

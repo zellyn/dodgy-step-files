@@ -1,7 +1,7 @@
 ISO-10303-21;
 /* Gs090 - ShapeUpgrade_ConvertSurfaceToBezierBasis thin-patch elimination
  *
- * Defect: Bezier conversion produces a near-zero-area patch with width 1e-9.
+ * Defect: Bezier conversion produces a near-zero-area patch with width 1.0e-9.
  * Should be eliminated but tolerance test uses absolute area instead of normalized area.
  * Reproducer: Bezier surface with control points nearly collinear, creating
  * geometrically degenerate patch that passes threshold due to absolute comparison.

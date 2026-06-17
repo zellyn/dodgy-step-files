@@ -7,7 +7,7 @@ ISO-10303-21;
    radius 5 mm, axial length 2500 mm, pitch 0.5 mm -- but with only
    ~16 control points so the helix is faceted at sub-mm scale. The defect
    is in the writer's choice of resolution, not in the entity grammar.
-   See V035; recommended workaround: absolute accuracy 1e-4 + disable
+   See V035; recommended workaround: absolute accuracy 1.0e-4 + disable
    surface simplification. */
 HEADER;
 FILE_DESCRIPTION(

@@ -1,14 +1,6 @@
 ISO-10303-21;
 HEADER;
-FILE_DESCRIPTION(('Gn047: ShapeAnalysis_Curve.GetSamplePoints 2D rational with weight ratio 10:1'),
-  '2',
-  2026,
-  6,
-  15,
-  0,
-  '',
-  '',
-  '');
+FILE_DESCRIPTION(('Gn047: ShapeAnalysis_Curve.GetSamplePoints 2D rational with weight ratio 10:1'),'2;1');
 FILE_NAME('Gn047.stp','',(''),(''),'',' ','');
 FILE_SCHEMA(('CONFIG_CONTROL_DESIGN'));
 ENDSEC;

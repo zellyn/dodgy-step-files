@@ -3,7 +3,7 @@ ISO-10303-21;
  * Defect: Shell contains two identical faces; FixFaceOrientation fixes orientation
  * but processes duplicates independently, causing inconsistent outward normals. */
 HEADER;
-FILE_DESCRIPTION(('Tsh199 - duplicate faces orientation inconsistency','2;1');
+FILE_DESCRIPTION(('Tsh199 - duplicate faces orientation inconsistency'',''2;1'',''2;1'),'2;1');
 FILE_NAME('Tsh199.stp','2026-06-16T00:00:00',(''),(''),'wave-59A','','');
 FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
 ENDSEC;

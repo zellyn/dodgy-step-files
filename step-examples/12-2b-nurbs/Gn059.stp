@@ -5,7 +5,7 @@ ISO-10303-21;
    The curve has a sharp peak at u=0.5 with weight concentration that
    requires adaptive sampling, but fixed-step search misses it. */
 HEADER;
-FILE_DESCRIPTION(('Gn059 - SearchForExtremum bbox drift on non-uniform B-spline','2;1');
+FILE_DESCRIPTION(('Gn059 - SearchForExtremum bbox drift on non-uniform B-spline'',''2;1'',''2;1'),'2;1');
 FILE_NAME('Gn059.stp','2026-06-16T00:00:00',('auto-generated'),(''),
   'auto-generated','','');
 FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));

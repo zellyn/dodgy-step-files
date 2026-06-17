@@ -6,7 +6,7 @@ ISO-10303-21;
    This file emits the post-round-trip artifact: the basis curve is a
    TRIMMED_CURVE wrapping a B_SPLINE_CURVE_WITH_KNOTS approximation of the
    ellipse, instead of an ELLIPSE entity, and the SURFACE_OF_REVOLUTION
-   axis differs slightly from the canonical (1,0,0) by 5e-5 radians.
+   axis differs slightly from the canonical (1,0,0) by 5.0e-5 radians.
    Sources: bug23203 / R002 / G107. */
 HEADER;
 FILE_DESCRIPTION(
@@ -38,7 +38,7 @@ DATA;
   (PARAMETER_VALUE(0.0),#30),
   (PARAMETER_VALUE(1.0),#31),
   .T.,.PARAMETER.);
-/* Axis-of-revolution: x-axis with a tiny y-drift (5e-5 rad). */
+/* Axis-of-revolution: x-axis with a tiny y-drift (5.0e-5 rad). */
 #50=CARTESIAN_POINT('axis_origin',(0.0,0.0,0.0));
 #51=DIRECTION('axis_dir_drifted',(0.99999999875,0.00005,0.0));
 #52=AXIS1_PLACEMENT('rev_axis',#50,#51);

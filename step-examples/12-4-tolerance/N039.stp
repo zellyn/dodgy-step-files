@@ -4,8 +4,8 @@ ISO-10303-21;
  * when the existing tolerance covered the actual deviation. The fix routine
  * touched every sub-shape, even ones that did not need it. Combined with
  * SafeInputMode=false, this also mutated the input shape.
- * Reproducer: shape whose declared tolerance 1e-6 already covers all
- * deviations; ShapeFix bumps every edge/vertex tolerance to 1e-3 anyway.
+ * Reproducer: shape whose declared tolerance 1.0e-6 already covers all
+ * deviations; ShapeFix bumps every edge/vertex tolerance to 1.0e-3 anyway.
  */
 HEADER;
 FILE_DESCRIPTION(('N039 ShapeFix_Shape over-eager tolerance bump on valid sub-shapes'),'2;1');
@@ -32,8 +32,8 @@ DATA;
 #50=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
 #51=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
 #52=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
-/* Native precision is 1e-6; ShapeFix bumped tol to 1e-3 across the board
- * even though deviations all fit comfortably under 1e-6. */
+/* Native precision is 1.0e-6; ShapeFix bumped tol to 1.0e-3 across the board
+ * even though deviations all fit comfortably under 1.0e-6. */
 #60=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-6),#50,
   'distance_accuracy_value','native_precision');
 #61=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-3),#50,

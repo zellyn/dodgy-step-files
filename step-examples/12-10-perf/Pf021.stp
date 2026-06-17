@@ -27,7 +27,7 @@ DATA;
 /* edge that touches the apex - projection produces FP exception
    non-deterministically depending on uninitialised scratch state */
 #10=CARTESIAN_POINT('apex',(0.0,0.0,0.0));
-#11=CARTESIAN_POINT('off-apex',(1e-12,1e-12,1e-12));
+#11=CARTESIAN_POINT('off-apex',(1.0e-12,1.0e-12,1.0e-12));
 #12=CARTESIAN_POINT('away',(1.0,0.0,1.0));
 #20=VERTEX_POINT('apex-v',#10);
 #21=VERTEX_POINT('off-apex-v',#11);

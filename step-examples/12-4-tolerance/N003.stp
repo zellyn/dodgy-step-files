@@ -2,12 +2,12 @@ ISO-10303-21;
 /* N003 - UnifySameDomain inflates vertex tolerance by orders of magnitude on merge
  * Defect: When ShapeUpgrade_UnifySameDomain merges adjacent same-domain faces,
  * the resulting shared vertex receives an aggregate tolerance equal to the
- * worst-case vertex among merged inputs (~1e-1 instead of preserving native
- * 2e-7). Downstream algorithms then treat coincident points as fuzzy-equal
+ * worst-case vertex among merged inputs (~1.0e-1 instead of preserving native
+ * 2.0e-7). Downstream algorithms then treat coincident points as fuzzy-equal
  * where they were previously precise.
- * Reproducer: two coplanar faces with vertex tolerance 2e-7 each plus one
- * vertex with tolerance 1e-1 (legacy from prior healing); the post-merge
- * vertex carries 1e-1.
+ * Reproducer: two coplanar faces with vertex tolerance 2.0e-7 each plus one
+ * vertex with tolerance 1.0e-1 (legacy from prior healing); the post-merge
+ * vertex carries 1.0e-1.
  */
 HEADER;
 FILE_DESCRIPTION(('N003 UnifySameDomain inflates merged-vertex tolerance'),'2;1');
@@ -24,7 +24,7 @@ DATA;
 #12=CARTESIAN_POINT('b',(10.0,0.0,0.0));
 #20=VERTEX_POINT('precise_a',#11);
 #21=VERTEX_POINT('precise_b',#12);
-/* Defect site: shared vertex inherited 1e-1 from worst input */
+/* Defect site: shared vertex inherited 1.0e-1 from worst input */
 #22=VERTEX_POINT('merged_shared_bloated',#10);
 #30=DIRECTION('+x',(1.0,0.0,0.0));
 #31=VECTOR('',#30,5.0);

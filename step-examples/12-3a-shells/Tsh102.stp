@@ -3,7 +3,7 @@ ISO-10303-21;
  * Defect: Closed shell containing another closed shell (hollow body);
  * SolidFromShell makes a solid with inner shell as cavity but loses cavity orientation. */
 HEADER;
-FILE_DESCRIPTION(('Tsh102 - hollow solid cavity orientation loss','2;1');
+FILE_DESCRIPTION(('Tsh102 - hollow solid cavity orientation loss'',''2;1'',''2;1'),'2;1');
 FILE_NAME('Tsh102.stp','2026-06-15T00:00:00',(''),(''),'wave-17','','');
 FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
 ENDSEC;

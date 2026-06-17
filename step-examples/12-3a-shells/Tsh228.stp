@@ -3,7 +3,7 @@ ISO-10303-21;
  * Defect: Shell.Closed() flag out-of-sync after face orientation fix;
  * detached free edge produces marked-closed shell with free topology. */
 HEADER;
-FILE_DESCRIPTION(('Tsh228 - closed flag sync failure','2;1');
+FILE_DESCRIPTION(('Tsh228 - closed flag sync failure'',''2;1'',''2;1'),'2;1');
 FILE_NAME('Tsh228.stp','2026-06-16T00:00:00',(''),(''),'wave-71a','','');
 FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
 ENDSEC;

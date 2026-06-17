@@ -9,7 +9,7 @@ ISO-10303-21;
  *  and stitch; near sharp creases the patches' trim curves self-intersect or
  *  overlap. Output STEP loads but every later boolean fails.
  *
- * Reproducer:  STL with creases > ~30 degrees; sew tolerance <= 1e-6; resulting
+ * Reproducer:  STL with creases > ~30 degrees; sew tolerance <= 1.0e-6; resulting
  *  ADVANCED_FACE contains pcurves that cross.
  *
  * Expected kernel behavior:

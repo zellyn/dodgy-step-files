@@ -1,14 +1,14 @@
 ISO-10303-21;
-/* Tb019 - Declared UNCERTAINTY of 1e-30 -- below any sane working precision
+/* Tb019 - Declared UNCERTAINTY of 1.0e-30 -- below any sane working precision
  * Defect: UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-30)) declares
  * a tolerance below any reasonable kernel's working precision. Receiver
- * respecting the value tries to compare features at 1e-30 and rejects
+ * respecting the value tries to compare features at 1.0e-30 and rejects
  * everything as having gaps. Receiver flooring at Precision::Confusion
- * silently uses 1e-7 -- producer/receiver disagree about precision
+ * silently uses 1.0e-7 -- producer/receiver disagree about precision
  * silently. Both directions of substitution are dangerous.
  */
 HEADER;
-FILE_DESCRIPTION(('Tb019 absurdly small declared uncertainty 1e-30'),'2;1');
+FILE_DESCRIPTION(('Tb019 absurdly small declared uncertainty 1.0e-30'),'2;1');
 FILE_NAME('Tb019.stp','2026-04-30T00:00:00',(''),(''),
   'cad-research-suite','','');
 FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));

@@ -3,7 +3,7 @@ ISO-10303-21;
  * Defect: UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.0)) declares zero
  * tolerance. Receiver A respects it: every comparison is exact equality;
  * any sub-bit drift is a defect. Receiver B floors at Precision::Confusion
- * (~1e-7): silently substitutes a non-zero working tolerance, behaves
+ * (~1.0e-7): silently substitutes a non-zero working tolerance, behaves
  * identically to a normal file. The producer's request for exact arithmetic
  * may or may not be honoured.
  */

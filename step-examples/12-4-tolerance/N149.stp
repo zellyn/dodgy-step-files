@@ -2,9 +2,9 @@ ISO-10303-21;
 /* N149 - BRepBuilderAPI_Sewing.FindCandidates.equidistant_precision_test
  * Defect: Omitting precision-equality test causes slightly different distances
  * to be treated as equal. Without if(aDelta<Precision::Confusion()), candidates
- * with distances differing by 1e-8 are inserted arbitrarily. Reproducer: Two
- * candidates at distances 1.0 and 1.0+1e-11. aDelta=1e-11 < Precision::Confusion()
- * (~1e-10). Without guard: treated as different. With: treated as equal,
+ * with distances differing by 1.0e-8 are inserted arbitrarily. Reproducer: Two
+ * candidates at distances 1.0 and 1.0+1.0e-11. aDelta=1.0e-11 < Precision::Confusion()
+ * (~1.0e-10). Without guard: treated as different. With: treated as equal,
  * proceeds to tiebreaker logic.
  */
 HEADER;
@@ -40,7 +40,7 @@ DATA;
 #60=VERTEX_POINT('vcand1_1',#50);
 #61=VERTEX_POINT('vcand1_2',#51);
 #62=EDGE_CURVE('cand1_edge',#60,#61,#54,.T.);
-/* Candidate 2: at distance 1.0 + 1e-11 (numerically indistinguishable
+/* Candidate 2: at distance 1.0 + 1.0e-11 (numerically indistinguishable
    from 1.0 at Precision::Confusion granularity). Without precision test,
    this tiny difference causes arbitrary ordering in seqCandidates. */
 #70=CARTESIAN_POINT('cand2_start',(0.0,1.00000000001,0.0));

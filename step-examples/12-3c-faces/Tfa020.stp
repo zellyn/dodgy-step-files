@@ -7,7 +7,7 @@ ISO-10303-21;
  * CLOSED_SHELL when topology proves closure, and recompute IsClosed
  * flag from connectivity.
  * Reproducer: shell exported as separate faces inside an OPEN_SHELL
- * with adjacent face edges sitting within 1e-5 m of each other but
+ * with adjacent face edges sitting within 1.0e-5 m of each other but
  * referencing different EDGE_CURVE records.
  */
 HEADER;
@@ -30,7 +30,7 @@ DATA;
 #21=CARTESIAN_POINT('a1',(10.0,0.0,0.0));
 #22=CARTESIAN_POINT('a2',(10.0,10.0,0.0));
 #23=CARTESIAN_POINT('a3',(0.0,10.0,0.0));
-/* Face B: shifted by 1e-5 in y so its left edge is "almost" coincident
+/* Face B: shifted by 1.0e-5 in y so its left edge is "almost" coincident
  * with face A's right edge. Sewing must close this gap.                */
 #24=CARTESIAN_POINT('b0',(10.0,0.00001,0.0));
 #25=CARTESIAN_POINT('b1',(20.0,0.0,0.0));
@@ -83,7 +83,7 @@ DATA;
 #110=ADVANCED_FACE('A',(#100),#14,.T.);
 #111=ADVANCED_FACE('B',(#101),#14,.T.);
 /* Defect site: OPEN_SHELL with free bounds along each face's right and
- * the other face's left edge (separated by 1e-5).                      */
+ * the other face's left edge (separated by 1.0e-5).                      */
 #120=OPEN_SHELL('open_shell_to_sew',(#110,#111));
 /* Wrap: minimal PRODUCT chain so OCCT TransferRoots produces a shape. */
 #9000=PRODUCT_CONTEXT('',#1,'mechanical');

@@ -1,21 +1,8 @@
 ISO-10303-21;
 HEADER;
-FILE_DESCRIPTION(('Test case for BRepLib.UpdateInnerTolerances degenerate-edge postcondition'),
-  '2',
-  2026,
-  6,
-  15,
-  0,
-  0,
-  '');
-FILE_NAME('N084.stp',
-  2026-06-15T00:00:00,
-  ('Zellyn Hunter'),
-  (''),
-  'CAD Kernel Test Suite',
-  'STEP',
-  '');
-FILE_SCHEMA(('IFC2X3'));
+FILE_DESCRIPTION(('N084'),'2;1');
+FILE_NAME('N084.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
 #1=APPLICATION_CONTEXT('mechanical design');

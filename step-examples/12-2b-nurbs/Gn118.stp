@@ -1,12 +1,6 @@
 ISO-10303-21;
 HEADER;
-FILE_DESCRIPTION(('Gn118: ShapeAnalysis_Curve.IsPlanar — two-points-and-one-offset'),
-  '2',
-  '2024-01-15T00:00:00',
-  '',
-  '',
-  '',
-  '');
+FILE_DESCRIPTION(('Gn118: ShapeAnalysis_Curve.IsPlanar — two-points-and-one-offset'),'2;1');
 FILE_NAME('Gn118.stp',
   2024-01-15T00:00:00,
   ('Zellyn Hunter'),

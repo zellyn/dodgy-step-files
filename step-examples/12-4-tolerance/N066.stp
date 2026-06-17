@@ -4,8 +4,8 @@ ISO-10303-21;
  * when comparing vertex tolerance against threshold, flagging 0.0 tolerance as
  * exceeding any positive threshold. Root cause: boundary condition equality
  * treated as over-tolerance state rather than at-threshold state.
- * Fixture: vertex with 0.0 declared tolerance, global context 1e-3.
- * OverTolerance(shape, 1e-3) should return false; with bug returns true.
+ * Fixture: vertex with 0.0 declared tolerance, global context 1.0e-3.
+ * OverTolerance(shape, 1.0e-3) should return false; with bug returns true.
  */
 HEADER;
 FILE_DESCRIPTION(('N066 ShapeAnalysis_ShapeTolerance OverTolerance >= vs >'),'2;1');
@@ -20,8 +20,8 @@ DATA;
 /* Simple edge with zero-tolerance vertex.
    Vertex v0 at origin has explicitly declared tolerance 0.0
    (via separate UNCERTAINTY_MEASURE_WITH_UNIT with value 0.0).
-   OverTolerance(shape, 1e-3) should return false since 0.0 < 1e-3.
-   Bug: uses >= so 0.0 >= 1e-3 is false but tied-to-threshold case is mishandled. */
+   OverTolerance(shape, 1.0e-3) should return false since 0.0 < 1.0e-3.
+   Bug: uses >= so 0.0 >= 1.0e-3 is false but tied-to-threshold case is mishandled. */
 #10=CARTESIAN_POINT('p0',(0.0,0.0,0.0));
 #11=CARTESIAN_POINT('p1',(1.0,0.0,0.0));
 #20=VERTEX_POINT('v0',#10);
@@ -59,7 +59,7 @@ DATA;
 #69=PLANE('plane',#68);
 #70=ADVANCED_FACE('face',(#65),#69,.T.);
 #71=CLOSED_SHELL('shell',(#70));
-/* Units with tolerance context: 1e-3 mm as global threshold.
+/* Units with tolerance context: 1.0e-3 mm as global threshold.
    Vertex v0 has zero-tolerance in a separate declaration. */
 #200=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
 #201=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
@@ -67,7 +67,7 @@ DATA;
 /* Zero tolerance declaration (the at-threshold vertex) */
 #203=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.0),#200,
   'distance_accuracy_value','zero_vertex_tolerance');
-/* Global threshold: 1e-3 */
+/* Global threshold: 1.0e-3 */
 #204=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-3),#200,
   'distance_accuracy_value','threshold');
 #205=(GEOMETRIC_REPRESENTATION_CONTEXT(3)

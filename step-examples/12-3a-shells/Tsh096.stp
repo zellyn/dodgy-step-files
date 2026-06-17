@@ -5,7 +5,7 @@ ISO-10303-21;
  * uses normal direction to classify outward/inward, but a degenerate
  * face has no well-defined normal vector. */
 HEADER;
-FILE_DESCRIPTION(('Tsh096 - shell with degenerate zero-area face','2;1');
+FILE_DESCRIPTION(('Tsh096 - shell with degenerate zero-area face'',''2;1'',''2;1'),'2;1');
 FILE_NAME('Tsh096.stp','2026-06-15T00:00:00',(''),(''),'wave-14','','');
 FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
 ENDSEC;

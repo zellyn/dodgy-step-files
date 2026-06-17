@@ -1,6 +1,6 @@
 ISO-10303-21;
 HEADER;
-FILE_DESCRIPTION(('Tfa077: ShapeFix_Face.FixSmallAreaWire small-area early-exit — face with outer wire below area threshold whose removal is bypassed due to degenerate orientation check'),100,2,100,'Unknown');
+FILE_DESCRIPTION(('Tfa077: ShapeFix_Face.FixSmallAreaWire small-area early-exit — face with outer wire below area threshold whose removal is bypassed due to degenerate orientation check'),'2;1');
 FILE_NAME('Tfa077.stp','2026-06-15T00:00:00',('Zellyn Hunter'),('CAD Kernel Test'),'Claude Code','1.0','');
 FILE_SCHEMA(('IEC 10303-514:1998-02'));
 ENDSEC;

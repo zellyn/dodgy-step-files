@@ -3,7 +3,7 @@ ISO-10303-21;
  * Defect: wire with "small" edge exactly at user-configured threshold.
  * FixSmall uses non-strict comparison (<=) at one point and strict (<) at another,
  * causing inconsistent behavior: edge 0.00001 at threshold 0.00001 may flag or not flag.
- * Edge length is exactly 1e-5, threshold is 1e-5, floating-point equality test fails.
+ * Edge length is exactly 1.0e-5, threshold is 1.0e-5, floating-point equality test fails.
  */
 HEADER;
 FILE_DESCRIPTION(('Twi119 test case','ShapeFix_Wire.FixSmall threshold-on-tolerance'),'2;1');
@@ -27,11 +27,11 @@ DATA;
 #35=VERTEX_POINT('',#34);
 #36=CARTESIAN_POINT('',(1.0,1.0,0.0));
 #37=VERTEX_POINT('',#36);
-/* Curve 1: small edge of exactly 1e-5 length */
+/* Curve 1: small edge of exactly 1.0e-5 length */
 #50=DIRECTION('',(1.0,0.0,0.0));
 #51=VECTOR('',#50,0.00001);
 #52=LINE('',#30,#51);
-/* Curve 2: normal edge from (1e-5, 0) to (1, 0) */
+/* Curve 2: normal edge from (1.0e-5, 0) to (1, 0) */
 #53=DIRECTION('',(1.0,0.0,0.0));
 #54=VECTOR('',#53,0.99999);
 #55=LINE('',#32,#54);

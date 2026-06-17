@@ -1,14 +1,6 @@
 ISO-10303-21;
 HEADER;
-FILE_DESCRIPTION(('CAD fixture: twisted elementary surface normal inversion'),
-  '2024-06-16T12:00:00',
-  2,
-  (),
-  (),
-  'neutral file',
-  'CAD System',
-  '',
-  ());
+FILE_DESCRIPTION(('CAD fixture: twisted elementary surface normal inversion'),'2;1');
 FILE_NAME('Tfa202.stp',
   2024-06-16T12:00:00,
   (''),
@@ -33,21 +25,21 @@ DATA;
 #50=LINE('edge_2',#51,#52);
 #51=CARTESIAN_POINT('',1.0,0.0,5.0);
 #52=VECTOR('',#53,2.0);
-#53=DIRECTION('',−1.0,0.0,0.0);
+#53=DIRECTION('',-1.0,0.0,0.0);
 #60=CIRCLE('circle_edge',#11,1.0);
 #70=LINE('edge_3',#71,#72);
-#71=CARTESIAN_POINT('',−1.0,0.0,5.0);
+#71=CARTESIAN_POINT('',-1.0,0.0,5.0);
 #72=VECTOR('',#73,1.0);
-#73=DIRECTION('',0.0,0.0,−1.0);
+#73=DIRECTION('',0.0,0.0,-1.0);
 #80=CIRCLE('circle_base',#11,1.0);
 #230=VERTEX_POINT('v1',#240);
 #240=CARTESIAN_POINT('',1.0,0.0,0.0);
 #250=VERTEX_POINT('v2',#260);
 #260=CARTESIAN_POINT('',1.0,0.0,5.0);
 #270=VERTEX_POINT('v3',#280);
-#280=CARTESIAN_POINT('',−1.0,0.0,5.0);
+#280=CARTESIAN_POINT('',-1.0,0.0,5.0);
 #290=VERTEX_POINT('v4',#300);
-#300=CARTESIAN_POINT('',−1.0,0.0,0.0);
+#300=CARTESIAN_POINT('',-1.0,0.0,0.0);
 #310=EDGE_CURVE('edge_c1',#230,#250,#40,.T.);
 #320=EDGE_CURVE('edge_c2',#250,#270,#50,.T.);
 #330=EDGE_CURVE('edge_c3',#270,#290,#70,.T.);

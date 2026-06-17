@@ -1,13 +1,7 @@
 ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Twi128: CheckTail tail-edge orientation flip',
- 'Wire last edge has .F. orientation; CheckTail assumes .T. and reports false'),
-  '2',
-  '2020-01-01T00:00:00',
-  '2020-01-01T00:00:00',
-  ('OPEN CASCADE'),
-  (''),
-  'Unknown');
+ 'Wire last edge has .F. orientation; CheckTail assumes .T. and reports false'),'2;1');
 FILE_NAME('Twi128.stp','2020-01-01T00:00:00',(''),(''),'Unknown','','');
 FILE_SCHEMA(('AP203_CONFIGURATION_CONTROLLED_3D_DESIGN_OF_MECHANICAL_PARTS_AND_ASSEMBLIES_MCD'));
 ENDSEC;
@@ -38,11 +32,11 @@ DATA;
 #73=TRIMMED_CURVE('e2',#70,0.0,10.0);
 #80=LINE('',#81,#82);
 #81=CARTESIAN_POINT('',(10.0,10.0,0.0));
-#82=DIRECTION('',(−1.0,0.0,0.0));
+#82=DIRECTION('',(-1.0,0.0,0.0));
 #83=TRIMMED_CURVE('e3',#80,0.0,10.0);
 #90=LINE('',#91,#92);
 #91=CARTESIAN_POINT('',(0.0,10.0,0.0));
-#92=DIRECTION('',(0.0,−1.0,0.0));
+#92=DIRECTION('',(0.0,-1.0,0.0));
 #93=TRIMMED_CURVE('e4',#90,0.0,10.0);
 #100=LINE('',#101,#102);
 #101=CARTESIAN_POINT('',(0.0,0.0,0.0));

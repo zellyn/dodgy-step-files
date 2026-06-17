@@ -49,7 +49,7 @@ DATA;
 #90=VERTEX_POINT('v3_start',#80);
 #91=VERTEX_POINT('v3_end',#81);
 #100=EDGE_CURVE('edge3_no_curve',#90,#91,$,.T.);
-/* Context with 1e-6 tolerance for 3D curve geometry validation */
+/* Context with 1.0e-6 tolerance for 3D curve geometry validation */
 #110=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
 #111=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
 #112=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());

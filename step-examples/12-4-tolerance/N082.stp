@@ -1,13 +1,6 @@
 ISO-10303-21;
 HEADER;
-FILE_DESCRIPTION(('Test case for ShapeAnalysis_ShapeTolerance.AddTolerance shape-type membership'),
-  '2',
-  2026,
-  6,
-  15,
-  0,
-  0,
-  '');
+FILE_DESCRIPTION(('Test case for ShapeAnalysis_ShapeTolerance.AddTolerance shape-type membership'),'2;1');
 FILE_NAME('N082.stp',
   2026-06-15T00:00:00,
   ('Zellyn Hunter'),

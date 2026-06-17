@@ -2,7 +2,7 @@ ISO-10303-21;
 /* Twi013 - Small / sliver / zero-length edges (FixSmall)
  * Defect: An EDGE_CURVE whose 3D length is below tolerance; both vertices
  * nearly coincident. Often remnant of translated tangency or over-trimmed edge.
- * Here e2 has length ~1e-9 m on a 1 m part. Must be removed without
+ * Here e2 has length ~1.0e-9 m on a 1 m part. Must be removed without
  * invalidating its host wire. Heal by replacing with tolerant_vertex / merging
  * endpoints; remove edge; rebuild adjacent wire(s)
  * (ShapeFix_Wire::FixSmall, ShapeAnalysis_Wire::CheckSmall,
@@ -25,7 +25,7 @@ DATA;
  * defect (sliver edge) is preserved in the EDGE_LOOP below. */
 #21=RECTANGULAR_TRIMMED_SURFACE('wrap_trim',#20,0.0,1.0,0.0,1.0,.T.,.T.);
 /* Vertices for a triangle. The two near-coincident vertices A and A' differ
- * by 1e-9, well below the natural part scale of 1 m. */
+ * by 1.0e-9, well below the natural part scale of 1 m. */
 #30=CARTESIAN_POINT('',(0.0,0.0,0.0));
 #31=VERTEX_POINT('',#30);
 #32=CARTESIAN_POINT('',(1.0E-9,0.0,0.0));
@@ -37,7 +37,7 @@ DATA;
 /* Curves */
 #40=DIRECTION('',(1.0,0.0,0.0));
 /* Use unit vector magnitude so OCCT can build Geom_Line; the sliver
- * defect is preserved by the vertex coordinates separated by 1e-9. */
+ * defect is preserved by the vertex coordinates separated by 1.0e-9. */
 #41=VECTOR('',#40,1.0);
 #42=LINE('',#30,#41);
 #43=DIRECTION('',(1.0,0.0,0.0));
@@ -49,7 +49,7 @@ DATA;
 #49=DIRECTION('',(0.0,-1.0,0.0));
 #50=VECTOR('',#49,1.0);
 #51=LINE('',#36,#50);
-/* Defect: e1 is a sliver edge of length 1e-9 connecting the two near-coincident
+/* Defect: e1 is a sliver edge of length 1.0e-9 connecting the two near-coincident
  * vertices A and A'. */
 #60=EDGE_CURVE('',#31,#33,#42,.T.);
 #61=EDGE_CURVE('',#33,#35,#45,.T.);

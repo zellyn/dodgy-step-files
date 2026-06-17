@@ -2,10 +2,10 @@ ISO-10303-21;
 /* N045 - Vertex-tolerance under-checked at edge intersection
  * Defect: two edges meet at a T-junction. Edge A goes from V (origin)
  * to A_end. Edge B goes from B_start to B_end and PASSES through
- * V's tolerance ball (perpendicular distance to V = 1e-4 mm < 1e-3 mm
+ * V's tolerance ball (perpendicular distance to V = 1.0e-4 mm < 1.0e-3 mm
  * declared vertex tolerance) without ending at V. The intersection
  * test should declare a near-T-junction but the kernel uses an
- * internal 1e-7 tolerance and reports no intersection. */
+ * internal 1.0e-7 tolerance and reports no intersection. */
 HEADER;
 FILE_DESCRIPTION(('N045 test case','Vertex-tolerance under-checked at edge intersection'),'2;1');
 FILE_NAME('N045.stp','2026-04-30T00:00:00',(''),(''),'cad-research-suite','','');
@@ -23,9 +23,9 @@ DATA;
 #105=VECTOR('vx',#104,1.0);
 #106=LINE('lineA',#100,#105);
 #107=EDGE_CURVE('edgeA',#101,#103,#106,.T.);
-/* Edge B: from (-1, 1e-4, 0) to (-1+2, 1e-4, 0) = (1, 1e-4, 0).
+/* Edge B: from (-1, 1.0e-4, 0) to (-1+2, 1.0e-4, 0) = (1, 1.0e-4, 0).
  * The closest approach of edgeB to vertex V is at parameter t=1
- * (the midpoint), where the line passes (0, 1e-4, 0). 1e-4 < 1e-3
+ * (the midpoint), where the line passes (0, 1.0e-4, 0). 1.0e-4 < 1.0e-3
  * declared tolerance — the line passes inside V's tolerance ball
  * but does NOT end at V. */
 #108=CARTESIAN_POINT('b_start',(-1.0,1.0E-4,0.0));
@@ -36,7 +36,7 @@ DATA;
 #113=VECTOR('vxB',#112,2.0);
 #114=LINE('lineB_passes_near_V',#108,#113);
 #115=EDGE_CURVE('edgeB_inside_v_tol_ball',#109,#111,#114,.T.);
-/* Declared tolerance 1e-3 mm */
+/* Declared tolerance 1.0e-3 mm */
 #120=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
 #121=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
 #122=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());

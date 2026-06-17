@@ -4,7 +4,7 @@ ISO-10303-21;
  * FixFaceOrientation cannot determine unbounded loop closure and produces
  * malformed outer bound. */
 HEADER;
-FILE_DESCRIPTION(('Tsh196 - multi-connected edge unbounded loop','2;1');
+FILE_DESCRIPTION(('Tsh196 - multi-connected edge unbounded loop'',''2;1'',''2;1'),'2;1');
 FILE_NAME('Tsh196.stp','2026-06-16T00:00:00',(''),(''),'wave-56a','','');
 FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
 ENDSEC;

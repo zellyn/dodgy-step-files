@@ -1,14 +1,6 @@
 ISO-10303-21;
 HEADER;
-FILE_DESCRIPTION(('CAD fixture: ShapeFix_Face.FixMissingSeam.orientation-correction-partial-closure'),
-  '2026-06-16T12:00:00',
-  2,
-  (),
-  (),
-  'neutral file',
-  'CAD System',
-  '',
-  ());
+FILE_DESCRIPTION(('CAD fixture: ShapeFix_Face.FixMissingSeam.orientation-correction-partial-closure'),'2;1');
 FILE_NAME('Tfa215.stp',
   2026-06-16T12:00:00,
   (''),
@@ -33,7 +25,7 @@ DATA;
 #50=LINE('edge_2',#51,#52);
 #51=CARTESIAN_POINT('',3.0,0.0,1.0);
 #52=VECTOR('',#53,1.0);
-#53=DIRECTION('',−1.0,0.0,0.0);
+#53=DIRECTION('',-1.0,0.0,0.0);
 #60=LINE('edge_3',#61,#62);
 #61=CARTESIAN_POINT('',1.0,0.0,1.0);
 #62=VECTOR('',#63,1.0);
@@ -41,7 +33,7 @@ DATA;
 #70=LINE('edge_4',#71,#72);
 #71=CARTESIAN_POINT('',1.0,0.0,0.0);
 #72=VECTOR('',#73,1.0);
-#73=DIRECTION('',0.0,−1.0,0.0);
+#73=DIRECTION('',0.0,-1.0,0.0);
 #80=VERTEX_POINT('v1',#90);
 #90=CARTESIAN_POINT('',3.0,0.0,0.0);
 #100=VERTEX_POINT('v2',#110);

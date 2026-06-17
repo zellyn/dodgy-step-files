@@ -3,7 +3,7 @@ ISO-10303-21;
  * Defect: ShapeFix_Solid.Perform called multiple times without context reset;
  * accumulated reshape operations apply fixes twice to same shell. */
 HEADER;
-FILE_DESCRIPTION(('Tsh185 - repeated perform stale context','2;1');
+FILE_DESCRIPTION(('Tsh185 - repeated perform stale context'',''2;1'',''2;1'),'2;1');
 FILE_NAME('Tsh185.stp','2026-06-15T00:00:00',(''),(''),'wave-53A','','');
 FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
 ENDSEC;

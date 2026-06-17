@@ -21,7 +21,7 @@ DATA;
 #16 = PRODUCT_DEFINITION('','',#14,#15);
 #17 = PRODUCT_DEFINITION_SHAPE('','',#16);
 /* User asked the writer for METRE; writer obediently labels metre,
-   but did not multiply the kernel-internal mm by 1e-3.
+   but did not multiply the kernel-internal mm by 1.0e-3.
    File ends up labelled metre with mm-magnitude coordinates. */
 #20 = ( LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT($,.METRE.) );
 #22 = ( NAMED_UNIT(*) PLANE_ANGLE_UNIT() SI_UNIT($,.RADIAN.) );

@@ -1,20 +1,20 @@
 ISO-10303-21;
-/* Tb023 - Coordinates near 1e15 where float64 ULP exceeds declared tolerance
+/* Tb023 - Coordinates near 1.0e15 where float64 ULP exceeds declared tolerance
  * Defect: a CARTESIAN_POINT at (1.234567890123e15, 2.345678901234e15,
  * 3.456789012345e15) and a sibling at (1.234567890124e15, ...). At
- * magnitudes near 1e15 the float64 unit-in-the-last-place is ~0.125;
- * the declared UNCERTAINTY of 1e-3 mm sits below the local ULP.
+ * magnitudes near 1.0e15 the float64 unit-in-the-last-place is ~0.125;
+ * the declared UNCERTAINTY of 1.0e-3 mm sits below the local ULP.
  * Vertex equality, edge connectivity, sliver detection are dominated
  * by floating-point noise. Spatial twin of Tb013 (denormalised
  * near-zero). */
 HEADER;
-FILE_DESCRIPTION(('Tb023 - coordinates near 1e15 ULP exceeds declared tolerance'),'2;1');
+FILE_DESCRIPTION(('Tb023 - coordinates near 1.0e15 ULP exceeds declared tolerance'),'2;1');
 FILE_NAME('Tb023.stp','2026-04-30T00:00:00',(''),(''),'cad-research-suite','','');
 FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
 ENDSEC;
 DATA;
 #1=APPLICATION_CONTEXT('automotive_design');
-/* Two vertices near 1e15 differing by 1e3 in the original-units description. */
+/* Two vertices near 1.0e15 differing by 1.0e3 in the original-units description. */
 #10=CARTESIAN_POINT('p_far_a',(1.234567890123e15,2.345678901234e15,3.456789012345e15));
 #11=CARTESIAN_POINT('p_far_b',(1.234567890124e15,2.345678901234e15,3.456789012345e15));
 #20=VERTEX_POINT('v_a',#10);
@@ -26,7 +26,7 @@ DATA;
 #50=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
 #51=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
 #52=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
-/* Tolerance below local ULP: 1e-3 mm vs. ULP ~0.125 mm at 1e15. */
+/* Tolerance below local ULP: 1.0e-3 mm vs. ULP ~0.125 mm at 1.0e15. */
 #60=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-3),#50,
   'distance_accuracy_value','tol_below_local_ULP');
 #70=(GEOMETRIC_REPRESENTATION_CONTEXT(3)

@@ -1,10 +1,7 @@
 ISO-10303-21;
-/* Twi205 - ShapeAnalysis_Wire.CheckIntersectingEdges B-spline-tangent-touch
- * Defect: Two B-spline edges that touch tangentially (single point, no crossing).
- * CheckIntersectingEdges reports intersection even though no transverse crossing. */
 HEADER;
-FILE_DESCRIPTION(('Twi205 test case','ShapeAnalysis_Wire.CheckIntersectingEdges B-spline-tangent-touch — two B-spline edges that touch tangentially (single point, no crossing); CheckIntersectingEdges reports intersection despite no transverse crossing'),'2;1');
-FILE_NAME('Twi205.stp','2026-06-16T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_DESCRIPTION(('Twi205'),'2;1');
+FILE_NAME('Twi205.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
 FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;

@@ -10,7 +10,7 @@ ISO-10303-21;
  * one face is wrong, exactly the canonical "reversed face normal"
  * pattern. */
 HEADER;
-FILE_DESCRIPTION(('Tsh010 - Reversed face normal in closed shell','2;1');
+FILE_DESCRIPTION(('Tsh010 - Reversed face normal in closed shell'',''2;1'',''2;1'),'2;1');
 FILE_NAME('Tsh010.stp','2026-06-16T00:00:00',(''),(''),'wave-01','','');
 FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
 ENDSEC;

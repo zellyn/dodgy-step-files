@@ -1,7 +1,6 @@
 ISO-10303-21;
 HEADER;
-FILE_DESCRIPTION(('Twi276 — ShapeAnalysis_Wire.CheckLoop multi-vertex-v2-check — wire with edges E1(V0->V2), E2(V1->V2), E3(V2->V3) exposes end-vertex loop detection'),2000-01-01T00:00:00,2.0,'','',
-'Generated for OCCT wire healing defect regression',(''));
+FILE_DESCRIPTION(('Twi276 — ShapeAnalysis_Wire.CheckLoop multi-vertex-v2-check — wire with edges E1(V0->V2), E2(V1->V2), E3(V2->V3) exposes end-vertex loop detection'),'2;1');
 FILE_NAME('Twi276.stp',2000-01-01T00:00:00,(''),(''),
 'Copyright Zellyn',2000-01-01T00:00:00,'');
 FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));

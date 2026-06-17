@@ -16,7 +16,7 @@ DATA;
 #12=DIRECTION('',(1.0,0.0,0.0));
 #13=AXIS2_PLACEMENT_3D('',#10,#11,#12);
 #20=PLANE('',#13);
-/* Near-degenerate 3D curve: from (0,0,0) to (1e-8,0,0) - just above Confusion */
+/* Near-degenerate 3D curve: from (0,0,0) to (1.0e-8,0,0) - just above Confusion */
 #30=CARTESIAN_POINT('',(0.0,0.0,0.0));
 #31=DIRECTION('',(1.0,0.0,0.0));
 #32=VECTOR('',#31,1.0E-8);
@@ -33,7 +33,7 @@ DATA;
 #55=SURFACE_CURVE('',#33,(#54),.PCURVE_S1.);
 #56=EDGE_CURVE('',#40,#41,#55,.T.);
 #57=ORIENTED_EDGE('',*,*,#56,.T.);
-/* Closing edge: parametric (1e-8,0) to (1e-8,5) */
+/* Closing edge: parametric (1.0e-8,0) to (1.0e-8,5) */
 #60=CARTESIAN_POINT('',(1.0E-8,0.0,0.0));
 #61=DIRECTION('',(0.0,1.0,0.0));
 #62=VECTOR('',#61,5.0);
@@ -48,7 +48,7 @@ DATA;
 #71=SURFACE_CURVE('',#63,(#70),.PCURVE_S1.);
 #72=EDGE_CURVE('',#64,#65,#71,.T.);
 #73=ORIENTED_EDGE('',*,*,#72,.T.);
-/* Closing edge: (1e-8,5) to (0,5) */
+/* Closing edge: (1.0e-8,5) to (0,5) */
 #80=CARTESIAN_POINT('',(1.0E-8,5.0,0.0));
 #81=DIRECTION('',(1.0,0.0,0.0));
 #82=VECTOR('',#81,-1.0E-8);

@@ -1,10 +1,10 @@
 ISO-10303-21;
 /* N091 - ShapeFix_Edge.FixSameParameter wrong-floor-clamp
- * Defect: ideal SameParameter tolerance is 1e-9 (sub-precision) but the
- * implementation floors the result to 1e-7 minimum, causing legitimate
+ * Defect: ideal SameParameter tolerance is 1.0e-9 (sub-precision) but the
+ * implementation floors the result to 1.0e-7 minimum, causing legitimate
  * high-precision edges to be over-toleranced and lose fidelity.
- * Reproducer: edge whose parametric-vs-3D deviation measures 1e-9,
- * gets clamped up to 1e-7 despite 1e-9 being valid in the context.
+ * Reproducer: edge whose parametric-vs-3D deviation measures 1.0e-9,
+ * gets clamped up to 1.0e-7 despite 1.0e-9 being valid in the context.
  */
 HEADER;
 FILE_DESCRIPTION(('N091 - FixSameParameter floor clamp defect'),'2;1');
@@ -14,17 +14,17 @@ ENDSEC;
 DATA;
 #1=APPLICATION_CONTEXT('automotive_design');
 #2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
-/* Ultra-precision context: UNCERTAINTY_MEASURE declares 1e-10 */
+/* Ultra-precision context: UNCERTAINTY_MEASURE declares 1.0e-10 */
 #10=CARTESIAN_POINT('',(0.0,0.0,0.0));
 #11=DIRECTION('',(0.0,0.0,1.0));
 #12=DIRECTION('',(1.0,0.0,0.0));
 #13=AXIS2_PLACEMENT_3D('',#10,#11,#12);
-/* Edge with ideal tolerance 1e-9 (should survive, but will be clamped to 1e-7) */
+/* Edge with ideal tolerance 1.0e-9 (should survive, but will be clamped to 1.0e-7) */
 #20=CARTESIAN_POINT('',(0.0,0.0,0.0));
 #21=CARTESIAN_POINT('',(1.0,0.0,0.0));
 #22=VERTEX_POINT('v0',#20);
 #23=VERTEX_POINT('v1',#21);
-/* Curve: nearly-perfect parametrization with 1e-9 max deviation */
+/* Curve: nearly-perfect parametrization with 1.0e-9 max deviation */
 #30=DIRECTION('',(1.0,0.0,0.0));
 #31=VECTOR('',#30,1.0);
 #32=LINE('',#20,#31);
@@ -48,7 +48,7 @@ DATA;
 #81=FACE_OUTER_BOUND('',#72,.T.);
 #82=ADVANCED_FACE('face_from_edges',(#81),#80,.T.);
 #83=OPEN_SHELL('wire_shell',(#82));
-/* Product chain with mandatory units and uncertainty at 1e-10 */
+/* Product chain with mandatory units and uncertainty at 1.0e-10 */
 #9000=PRODUCT_CONTEXT('',#1,'mechanical');
 #9001=PRODUCT('N091','N091','',(#9000));
 #9002=PRODUCT_DEFINITION_FORMATION('','',#9001);

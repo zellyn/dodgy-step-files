@@ -1,13 +1,6 @@
 ISO-10303-21;
 HEADER;
-FILE_DESCRIPTION(('N109: ShapeFix_ShapeTolerance.SetTolerance — with-cyclic-reference'),
-  '2',
-  2026,
-  6,
-  15,
-  0,
-  0,
-  '');
+FILE_DESCRIPTION(('N109: ShapeFix_ShapeTolerance.SetTolerance — with-cyclic-reference'),'2;1');
 FILE_NAME('N109.stp','2026-06-15T00:00:00',(''),(''),
   'TOLERANCE RECOVERY',
   '',

@@ -1,13 +1,7 @@
 ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Twi114: FixTails tail-elimination',
- 'Wire ending in small tail edge much shorter than neighbors; FixTails should remove'),
-  '2',
-  '2020-01-01T00:00:00',
-  '2020-01-01T00:00:00',
-  ('OPEN CASCADE'),
-  (''),
-  'Unknown');
+ 'Wire ending in small tail edge much shorter than neighbors; FixTails should remove'),'2;1');
 FILE_NAME('Twi114.stp','2020-01-01T00:00:00',(''),(''),'Unknown','','');
 FILE_SCHEMA(('AP203_CONFIGURATION_CONTROLLED_3D_DESIGN_OF_MECHANICAL_PARTS_AND_ASSEMBLIES_MCD'));
 ENDSEC;
@@ -38,11 +32,11 @@ DATA;
 #67=TRIMMED_CURVE('e2',#64,0.0,10.0);
 #68=LINE('',#69,#70);
 #69=CARTESIAN_POINT('',(10.0,10.0,0.0));
-#70=DIRECTION('',(−1.0,0.0,0.0));
+#70=DIRECTION('',(-1.0,0.0,0.0));
 #71=TRIMMED_CURVE('e3',#68,0.0,10.0);
 #72=LINE('',#73,#74);
 #73=CARTESIAN_POINT('',(0.0,10.0,0.0));
-#74=DIRECTION('',(0.0,−1.0,0.0));
+#74=DIRECTION('',(0.0,-1.0,0.0));
 #75=TRIMMED_CURVE('e4',#72,0.0,10.0);
 #76=LINE('',#77,#78);
 #77=CARTESIAN_POINT('',(0.0,10.0,0.0));

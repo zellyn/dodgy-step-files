@@ -4,7 +4,7 @@ ISO-10303-21;
    has hardcoded max degree (e.g., 5) and silently truncates instead of
    degree-reducing properly, producing incorrect sub-patches. */
 HEADER;
-FILE_DESCRIPTION(('Gn074 - High-degree surface degree truncation','2;1');
+FILE_DESCRIPTION(('Gn074 - High-degree surface degree truncation'',''2;1'',''2;1'),'2;1');
 FILE_NAME('Gn074.stp','2026-06-16T00:00:00',('auto-generated'),(''),
   'auto-generated','','');
 FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));

@@ -3,7 +3,7 @@ ISO-10303-21;
  * Defect: BRepBuilderAPI_Sewing.AnalysisNearestEdges initializes bounds tracking
  * but may not handle all section edges; lookup gate misses some boundaries. */
 HEADER;
-FILE_DESCRIPTION(('Tsh187 - sewing section bounds lookup','2;1');
+FILE_DESCRIPTION(('Tsh187 - sewing section bounds lookup'',''2;1'',''2;1'),'2;1');
 FILE_NAME('Tsh187.stp','2026-06-15T00:00:00',(''),(''),'wave-53A','','');
 FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
 ENDSEC;

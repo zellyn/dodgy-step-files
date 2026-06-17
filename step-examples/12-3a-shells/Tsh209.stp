@@ -3,7 +3,7 @@ ISO-10303-21;
  * Defect: Shell with U-closed surface and seam edge crossing parametric seam (U=0/2pi).
  * BRepBuilderAPI orientation propagation fails to detect period wraparound. */
 HEADER;
-FILE_DESCRIPTION(('Tsh209 - seam edge U-periodicity wrapping','2;1');
+FILE_DESCRIPTION(('Tsh209 - seam edge U-periodicity wrapping'',''2;1'',''2;1'),'2;1');
 FILE_NAME('Tsh209.stp','2026-06-16T00:00:00',(''),(''),'wave-63a','','');
 FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
 ENDSEC;

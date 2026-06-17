@@ -30,7 +30,7 @@ DATA;
 #35=VERTEX_POINT('',#34);
 #36=CARTESIAN_POINT('',(1.0E-8,0.0,0.0));
 #37=VERTEX_POINT('',#36);
-/* Degenerate edge: from origin to near-origin (1e-8, 0, 0)
+/* Degenerate edge: from origin to near-origin (1.0e-8, 0, 0)
  * This tests the special case where vertex is at (0,0,0) */
 #40=DIRECTION('',(1.0,0.0,0.0));
 #41=VECTOR('',#40,1.0);

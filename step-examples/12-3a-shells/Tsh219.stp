@@ -3,7 +3,7 @@ ISO-10303-21;
  * Defect: Shell with duplicate faces; aMapAdded only warns, duplicate faces
  * processed independently, leading to inconsistent outward orientation. */
 HEADER;
-FILE_DESCRIPTION(('Tsh219 - duplicate faces undetected','2;1');
+FILE_DESCRIPTION(('Tsh219 - duplicate faces undetected'',''2;1'',''2;1'),'2;1');
 FILE_NAME('Tsh219.stp','2026-06-16T00:00:00',(''),(''),'wave-68B','','');
 FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
 ENDSEC;

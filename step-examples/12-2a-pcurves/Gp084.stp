@@ -1,6 +1,6 @@
 ISO-10303-21;
 HEADER;
-FILE_DESCRIPTION(('Gp084: ShapeFix_Edge.FixSameParameter cone-apex tolerance'),('Created for wave 23 pcurve defect synthesis'),'2.0');
+FILE_DESCRIPTION(('Gp084: ShapeFix_Edge.FixSameParameter cone-apex tolerance'),'2;1');
 FILE_NAME('Gp084.stp','2025-02-01T00:00:00',('Zellyn Hunter'),('CAD Research'),'','','');
 FILE_SCHEMA(('IFC2X3'));
 ENDSEC;

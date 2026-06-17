@@ -3,7 +3,7 @@ ISO-10303-21;
  * Defect: Faces misclassified as Mobius-leaf; intrinsic non-orientability
  * unconfirmed, creating spurious single-face shells. */
 HEADER;
-FILE_DESCRIPTION(('Tsh227 - error faces Mobius assumption','2;1');
+FILE_DESCRIPTION(('Tsh227 - error faces Mobius assumption'',''2;1'',''2;1'),'2;1');
 FILE_NAME('Tsh227.stp','2026-06-16T00:00:00',(''),(''),'wave-71a','','');
 FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
 ENDSEC;

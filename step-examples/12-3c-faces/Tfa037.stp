@@ -2,7 +2,7 @@ ISO-10303-21;
 /* Tfa037 - Face-level healing pipeline must orchestrate sub-fixes
  * Square 10x10 face on a PLANE has FACE_OUTER_BOUND plus FACE_INNER_BOUND.
  * Inner wire is the defect bundle: edges out of order (3,1,2), enclosed
- * area sub-tolerance (~5e-7), and FACE_BOUND orientation flag is .T. (outer)
+ * area sub-tolerance (~5.0e-7), and FACE_BOUND orientation flag is .T. (outer)
  * but the wire is positioned as an inner hole. */
 HEADER;
 FILE_DESCRIPTION(('Tfa037 test case','Square face with out-of-order, sub-tolerance, wrong-orientation inner wire'),'2;1');
@@ -36,7 +36,7 @@ DATA;
 #53=ORIENTED_EDGE('',*,*,#45,.T.);
 #54=EDGE_LOOP('outer',(#50,#51,#52,#53));
 #55=FACE_OUTER_BOUND('outer',#54,.T.);
-/* inner triangle: tiny (~5e-7 mm^2 area), edges scrambled-order [e3,e1,e2] */
+/* inner triangle: tiny (~5.0e-7 mm^2 area), edges scrambled-order [e3,e1,e2] */
 #60=CARTESIAN_POINT('',(5.0,5.0,0.0));#61=VERTEX_POINT('',#60);
 #62=CARTESIAN_POINT('',(5.001,5.0,0.0));#63=VERTEX_POINT('',#62);
 #64=CARTESIAN_POINT('',(5.0,5.001,0.0));#65=VERTEX_POINT('',#64);

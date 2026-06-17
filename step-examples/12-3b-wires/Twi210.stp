@@ -4,7 +4,7 @@ ISO-10303-21;
  * (0.0001, 0.0001, 0) (offset by ~0.00014 units in 3D). The perpendicular distance
  * from end to start is very small, but CheckClosed uses 3D distance, not perpendicular.
  * The 3D distance is sqrt(0.0001^2 + 0.0001^2) = 0.0001414..., below the default
- * tolerance of 1e-7 milli-units = 1e-10 units (in STEP meters). Wire appears closed
+ * tolerance of 1.0e-7 milli-units = 1.0e-10 units (in STEP meters). Wire appears closed
  * in 3D but should fail perpendicular-distance check if properly analyzed. */
 HEADER;
 FILE_DESCRIPTION(('Twi210 test case','ShapeAnalysis_Wire.CheckClosed near-closed-with-perpendicular-distance'),'2;1');

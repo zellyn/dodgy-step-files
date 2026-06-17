@@ -1,10 +1,7 @@
 ISO-10303-21;
-/* Twi203 - ShapeAnalysis_Wire.CheckTail B-spline tail-detection
- * Defect: Wire's last edge is a B-spline with smoothly decreasing magnitude
- * approaching zero. CheckTail's threshold uses parameter range not 3D length. */
 HEADER;
-FILE_DESCRIPTION(('Twi203 test case','ShapeAnalysis_Wire.CheckTail B-spline tail-detection — wire last edge is B-spline with smoothly decreasing magnitude (approaching zero); CheckTail threshold uses parameter range not 3D length'),'2;1');
-FILE_NAME('Twi203.stp','2026-06-16T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_DESCRIPTION(('Twi203'),'2;1');
+FILE_NAME('Twi203.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
 FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;

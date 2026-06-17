@@ -1,8 +1,6 @@
 ISO-10303-21;
 HEADER;
-FILE_DESCRIPTION(('CAD kernel test fixture'),
-'2',
-'*');
+FILE_DESCRIPTION(('CAD kernel test fixture'),'2;1');
 FILE_NAME('Tfa200.stp',
 2026-06-16T00:00:00,
 (''),

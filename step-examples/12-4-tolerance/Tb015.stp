@@ -1,9 +1,9 @@
 ISO-10303-21;
-/* Tb015 - Edge length 1e-3 at sqrt(tol=1e-6) ambiguity boundary
- * Defect: Edge has 3D length 1e-3 mm; declared tol = 1e-6.
- * - Receiver comparing length < tol (1e-6): edge keeps (1e-3 > 1e-6).
- * - Receiver comparing length < sqrt(tol) (~1e-3): right at threshold.
- * - Receiver comparing length*length < tol: 1e-6 vs 1e-6 -- exact tie.
+/* Tb015 - Edge length 1.0e-3 at sqrt(tol=1.0e-6) ambiguity boundary
+ * Defect: Edge has 3D length 1.0e-3 mm; declared tol = 1.0e-6.
+ * - Receiver comparing length < tol (1.0e-6): edge keeps (1.0e-3 > 1.0e-6).
+ * - Receiver comparing length < sqrt(tol) (~1.0e-3): right at threshold.
+ * - Receiver comparing length*length < tol: 1.0e-6 vs 1.0e-6 -- exact tie.
  * Linear vs squared vs square-root threshold disagrees on this edge.
  */
 HEADER;

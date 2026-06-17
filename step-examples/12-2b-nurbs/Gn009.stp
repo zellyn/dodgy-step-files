@@ -19,7 +19,7 @@ FILE_NAME('Gn009.stp','2026-04-26T00:00:00',('auto-generated'),(''),
 FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-/* 14x14 control net.  All z=0 except a tiny +1e-6 bump near (i=6,j=6). */
+/* 14x14 control net.  All z=0 except a tiny +1.0e-6 bump near (i=6,j=6). */
 #1001=CARTESIAN_POINT('p',(0.0,0.0,0.0));
 #1002=CARTESIAN_POINT('p',(0.0,1.0,0.0));
 #1003=CARTESIAN_POINT('p',(0.0,2.0,0.0));
@@ -110,7 +110,7 @@ DATA;
 #1604=CARTESIAN_POINT('p',(6.0,3.0,0.0));
 #1605=CARTESIAN_POINT('p',(6.0,4.0,0.0));
 #1606=CARTESIAN_POINT('p',(6.0,5.0,0.0));
-#1607=CARTESIAN_POINT('p',(6.0,6.0,1e-06));
+#1607=CARTESIAN_POINT('p',(6.0,6.0,1.0e-06));
 #1608=CARTESIAN_POINT('p',(6.0,7.0,0.0));
 #1609=CARTESIAN_POINT('p',(6.0,8.0,0.0));
 #1610=CARTESIAN_POINT('p',(6.0,9.0,0.0));

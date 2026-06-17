@@ -1,6 +1,6 @@
 ISO-10303-21;
 /* Gs015 - Sliver face (high aspect ratio, two long edges within tolerance)
- * Defect: Face whose two long bounding edges lie within 1e-5 of each other so
+ * Defect: Face whose two long bounding edges lie within 1.0e-5 of each other so
  * area is near-zero but perimeter is non-trivial. Often produced by surface-surface
  * intersection with grazing angles or near-tangent Boolean. Distinguished from
  * pure zero-area in that the perimeter is non-trivial. */
@@ -17,7 +17,7 @@ DATA;
 #12=DIRECTION('',(1.0,0.0,0.0));
 #13=AXIS2_PLACEMENT_3D('',#10,#11,#12);
 #20=PLANE('',#13);
-/* Long sides at y=0 and y=1e-5 over X in [0, 250] - aspect ratio 2.5e7 */
+/* Long sides at y=0 and y=1.0e-5 over X in [0, 250] - aspect ratio 2.5e7 */
 #30=CARTESIAN_POINT('',(0.0,0.0,0.0));
 #31=VERTEX_POINT('',#30);
 #32=CARTESIAN_POINT('',(250.0,0.0,0.0));
@@ -46,7 +46,7 @@ DATA;
 #71=ORIENTED_EDGE('',*,*,#61,.T.);
 #72=ORIENTED_EDGE('',*,*,#62,.T.);
 #73=ORIENTED_EDGE('',*,*,#63,.T.);
-/* Defect: sliver - 250mm by 1e-5 mm = 2.5e-3 mm^2 with 500mm perimeter */
+/* Defect: sliver - 250mm by 1.0e-5 mm = 2.5e-3 mm^2 with 500mm perimeter */
 #80=EDGE_LOOP('',(#70,#71,#72,#73));
 #81=FACE_OUTER_BOUND('',#80,.T.);
 #82=ADVANCED_FACE('',(#81),#20,.T.);

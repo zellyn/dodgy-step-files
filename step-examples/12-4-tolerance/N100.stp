@@ -1,11 +1,11 @@
 ISO-10303-21;
 /* N100 - ShapeAnalysis_Edge.CheckPoints precision-asymmetry-extreme
  * Defect: CheckPoints averages two precision values with extreme asymmetry:
- * preci1 = 1e-15 (effectively zero), preci2 = 1.0 (huge). Average ≈ 0.5,
+ * preci1 = 1.0e-15 (effectively zero), preci2 = 1.0 (huge). Average ≈ 0.5,
  * masking both extremes. Neither tolerance is enforced; result is neither
  * zero-precision nor unit-precision, creating false-negative distance checks.
- * Reproducer: Call CheckPoints with P1A, P2A (separated by 1e-14) and
- * P1B, P2B (separated by 0.9) with preci1=1e-15, preci2=1.0.
+ * Reproducer: Call CheckPoints with P1A, P2A (separated by 1.0e-14) and
+ * P1B, P2B (separated by 0.9) with preci1=1.0e-15, preci2=1.0.
  * Result: P1A/P2A within preci1 but fails average (0.5) threshold.
  * P1B/P2B exceeds preci2 but passes average threshold. Incorrect verdict.
  */
@@ -25,7 +25,7 @@ DATA;
 #12=DIRECTION('x',(1.0,0.0,0.0));
 #13=AXIS2_PLACEMENT_3D('plc',#10,#11,#12);
 /* Edge 1: ultra-tight precision pair
-   P1A and P2A separated by ~1e-14 (within preci1=1e-15? No, but close) */
+   P1A and P2A separated by ~1.0e-14 (within preci1=1.0e-15? No, but close) */
 #20=CARTESIAN_POINT('p1a',(0.0,0.0,0.0));
 #21=CARTESIAN_POINT('p2a',(1.0E-14,0.0,0.0));
 #30=VERTEX_POINT('v1a',#20);
@@ -55,7 +55,7 @@ DATA;
   GLOBAL_UNIT_ASSIGNED_CONTEXT((#80,#81,#82))
   REPRESENTATION_CONTEXT('asymmetry_ctx','3D'));
 /* Precision declarations: ultra-tight and ultra-loose
-   CheckPoints will average them (1e-15 + 1.0) / 2 ≈ 0.5,
+   CheckPoints will average them (1.0e-15 + 1.0) / 2 ≈ 0.5,
    causing both to fail their respective checks while seemingly passing average */
 #85=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-15),#80,
   'distance_accuracy_value','ultra_tight_preci1');

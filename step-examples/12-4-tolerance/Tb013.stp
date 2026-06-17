@@ -1,14 +1,14 @@
 ISO-10303-21;
-/* Tb013 - Coordinate at 1e-300 tests "near zero" only under denormalized math
- * Defect: A CARTESIAN_POINT has coordinate 1e-300 -- a denormalized double.
- * Receiver A: |x| < 1e-7 -> "near zero" yes. Receiver B with flush-to-zero
- * math library treats 1e-300 as exactly 0. Receiver C without flush-to-zero
- * keeps the value alive and trips on 1.0/(1e-300) = 1e+300 overflow during
+/* Tb013 - Coordinate at 1.0e-300 tests "near zero" only under denormalized math
+ * Defect: A CARTESIAN_POINT has coordinate 1.0e-300 -- a denormalized double.
+ * Receiver A: |x| < 1.0e-7 -> "near zero" yes. Receiver B with flush-to-zero
+ * math library treats 1.0e-300 as exactly 0. Receiver C without flush-to-zero
+ * keeps the value alive and trips on 1.0/(1.0e-300) = 1.0e+300 overflow during
  * a normal-vector or transform computation. The "very small coordinate"
  * test depends on host floating-point environment, not on the file.
  */
 HEADER;
-FILE_DESCRIPTION(('Tb013 coordinate 1e-300 escape under denormalized math'),'2;1');
+FILE_DESCRIPTION(('Tb013 coordinate 1.0e-300 escape under denormalized math'),'2;1');
 FILE_NAME('Tb013.stp','2026-04-30T00:00:00',(''),(''),
   'cad-research-suite','','');
 FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));

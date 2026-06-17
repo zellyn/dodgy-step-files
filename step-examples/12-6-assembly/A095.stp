@@ -1,6 +1,6 @@
 ISO-10303-21;
 /* A095 - STEP export of part with sub-mm fillet generates malformed shape on receiver
- * Defect: writer's emission precision (1e-6) is too coarse for a 0.05mm fillet on a
+ * Defect: writer's emission precision (1.0e-6) is too coarse for a 0.05mm fillet on a
  * 10mm part — the fillet's distinct vertex coordinates collapse to the same point. */
 HEADER;
 FILE_DESCRIPTION(('A095 - sub-mm fillet collapses at writer precision'),'2;1');
@@ -11,7 +11,7 @@ DATA;
 #1=APPLICATION_CONTEXT('automotive_design');
 #2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
 /* Two vertices that ARE distinct in the source (a 0.05mm-radius fillet) but
-   collapse to the same coordinate at writer's 1e-6 precision. */
+   collapse to the same coordinate at writer's 1.0e-6 precision. */
 #10=CARTESIAN_POINT('v1',(0.0000005,0.0,0.0));
 #11=CARTESIAN_POINT('v2',(0.0000004,0.0,0.0));
 #12=DIRECTION('',(0.0,0.0,1.0));

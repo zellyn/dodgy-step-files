@@ -4,8 +4,8 @@ ISO-10303-21;
  * vertex points disagree beyond preci, OCCT bumps vertex tolerance by
  * 1.000001 * (deviation) to make the edge pass invariants. Repeated reads
  * accumulate the factor.
- * Reproducer: VERTEX_POINT.cartesian_point lies 1e-3 from the curve evaluation
- * at the edge's parametric endpoint; declared uncertainty is 1e-6.
+ * Reproducer: VERTEX_POINT.cartesian_point lies 1.0e-3 from the curve evaluation
+ * at the edge's parametric endpoint; declared uncertainty is 1.0e-6.
  */
 HEADER;
 FILE_DESCRIPTION(('N007 vertex tolerance bump factor 1.000001 hard-coded'),'2;1');
@@ -18,11 +18,11 @@ DATA;
 #2=APPLICATION_PROTOCOL_DEFINITION('international standard',
   'config_control_design',1994,#1);
 /* Curve evaluates to (10.0, 0, 0) at t=10; vertex stored at (10.0, 0.001, 0)
- * -- 1e-3 mm off the curve. */
+ * -- 1.0e-3 mm off the curve. */
 #10=CARTESIAN_POINT('curve_start',(0.0,0.0,0.0));
 #11=CARTESIAN_POINT('vertex_off_curve',(10.0,0.001,0.0));
 #12=VERTEX_POINT('v_start',#10);
-/* Defect site: vertex_off_curve will trigger 1.000001 * 1e-3 vertex-tol bump */
+/* Defect site: vertex_off_curve will trigger 1.000001 * 1.0e-3 vertex-tol bump */
 #13=VERTEX_POINT('v_end_offcurve',#11);
 #20=DIRECTION('+x',(1.0,0.0,0.0));
 #21=VECTOR('',#20,10.0);

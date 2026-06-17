@@ -1,7 +1,6 @@
 ISO-10303-21;
 HEADER;
-FILE_DESCRIPTION(('Twi241 — ShapeFix_Wire.FixNotchedEdges notch-at-multi-edge-junction','edges form notch pattern at junction vertex where multiple curves meet tangentially; FixNotchedEdges splits curve at notch-point'),2000-01-01T00:00:00,2.0,'','',
-'Generated for OCCT wire healing defect regression',(''));
+FILE_DESCRIPTION(('Twi241 — ShapeFix_Wire.FixNotchedEdges notch-at-multi-edge-junction','edges form notch pattern at junction vertex where multiple curves meet tangentially; FixNotchedEdges splits curve at notch-point'),'2;1');
 FILE_NAME('Twi241.stp',2000-01-01T00:00:00,(''),(''),
 'Copyright Zellyn',2000-01-01T00:00:00,'');
 FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));

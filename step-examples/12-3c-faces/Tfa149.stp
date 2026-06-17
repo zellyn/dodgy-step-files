@@ -1,14 +1,6 @@
 ISO-10303-21;
 HEADER;
-FILE_DESCRIPTION(('CAD fixture: CheckSplittingVertices wire-not-closed open-path analysis'),
-  '2024-06-15T12:00:00',
-  2,
-  (),
-  (),
-  'neutral file',
-  'CAD System',
-  '',
-  ());
+FILE_DESCRIPTION(('CAD fixture: CheckSplittingVertices wire-not-closed open-path analysis'),'2;1');
 FILE_NAME('Tfa149.stp',
   2024-06-15T12:00:00,
   (''),
@@ -36,7 +28,7 @@ DATA;
 #50=LINE('edge_3',#51,#52);
 #51=CARTESIAN_POINT('',5.0,5.0,0.0);
 #52=VECTOR('',#53,1.0);
-#53=DIRECTION('',−1.0,0.0,0.0);
+#53=DIRECTION('',-1.0,0.0,0.0);
 #60=VERTEX_POINT('v1',#70);
 #70=CARTESIAN_POINT('',0.0,0.0,0.0);
 #80=VERTEX_POINT('v2',#90);

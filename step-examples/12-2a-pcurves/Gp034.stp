@@ -11,7 +11,7 @@ ENDSEC;
 DATA;
 #1=APPLICATION_CONTEXT('automotive_design');
 #2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
-/* COMPOSITE_CURVE with two segments separated by 5e-3 in 3D */
+/* COMPOSITE_CURVE with two segments separated by 5.0e-3 in 3D */
 #10=CARTESIAN_POINT('',(0.0,0.0,0.0));
 #11=DIRECTION('',(0.0,0.0,1.0));
 #12=DIRECTION('',(1.0,0.0,0.0));

@@ -1,14 +1,6 @@
 ISO-10303-21;
 HEADER;
-FILE_DESCRIPTION(('Tfa233: ShapeFix_Face.FixPeriodicDegenerated — context transformation dispatch on non-null healing-context; periodic B-spline boundary'),
-  '2026-06-16T00:00:00',
-  2,
-  (),
-  (),
-  'neutral file',
-  'CAD System',
-  '',
-  ());
+FILE_DESCRIPTION(('Tfa233: ShapeFix_Face.FixPeriodicDegenerated — context transformation dispatch on non-null healing-context; periodic B-spline boundary'),'2;1');
 FILE_NAME('Tfa233.stp',
   2026-06-16T00:00:00,
   (''),
@@ -47,7 +39,7 @@ DATA;
 #90=LINE('e3',#91,#92);
 #91=CARTESIAN_POINT('',1.0,2.0,0.0);
 #92=VECTOR('',#93,1.0);
-#93=DIRECTION('',−1.0,0.0,0.0);
+#93=DIRECTION('',-1.0,0.0,0.0);
 #100=VERTEX_POINT('v1',#101);
 #101=CARTESIAN_POINT('',1.0,0.0,0.0);
 #102=VERTEX_POINT('v2',#103);

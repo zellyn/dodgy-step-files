@@ -4,8 +4,8 @@ ISO-10303-21;
  * BRepLib's bounding sphere computation uses center-of-mass + max-distance heuristic,
  * which fails to produce a valid sphere containing all points. Results in invalid
  * bounding box calculations downstream.
- * Reproducer: Create 5 vertices clustered within 1e-8 of (1,1,1); bounding sphere
- * radius should be ~1e-8 but heuristic computes ~0.0 (machine epsilon).
+ * Reproducer: Create 5 vertices clustered within 1.0e-8 of (1,1,1); bounding sphere
+ * radius should be ~1.0e-8 but heuristic computes ~0.0 (machine epsilon).
  */
 HEADER;
 FILE_DESCRIPTION(('N061 BRepLib.BoundingVertex bounding-sphere under-estimate'),'2;1');
@@ -17,7 +17,7 @@ DATA;
 #1=APPLICATION_CONTEXT('automotive design');
 #2=APPLICATION_PROTOCOL_DEFINITION('international standard',
   'automotive_design',2009,#1);
-/* 5 co-located vertices within 1e-8 cluster at (1.0, 1.0, 1.0) */
+/* 5 co-located vertices within 1.0e-8 cluster at (1.0, 1.0, 1.0) */
 #10=CARTESIAN_POINT('v1',(1.0,1.0,1.0));
 #11=CARTESIAN_POINT('v2',(1.0000000001,1.0,1.0));
 #12=CARTESIAN_POINT('v3',(1.0,1.0000000001,1.0));
@@ -39,7 +39,7 @@ DATA;
 #51=EDGE_CURVE('',#21,#22,#42,.T.);
 #52=EDGE_CURVE('',#22,#23,#42,.T.);
 #53=EDGE_CURVE('',#23,#24,#42,.T.);
-/* Units and context with high precision (1e-7) */
+/* Units and context with high precision (1.0e-7) */
 #100=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
 #101=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
 #102=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());

@@ -1,10 +1,10 @@
 ISO-10303-21;
 /* Tb011 - Periodic surface seam matching needs period-relative tolerance
- * Defect: CYLINDRICAL_SURFACE radius 1e6 mm has period 2*pi*R ~= 6.28e6.
- * A wire's pcurve U-coordinates differ by 2*pi + 1e-3 between adjacent
- * edges. Receiver using fixed parametric tolerance (1e-7 rad) sees
- * 2*pi + 1e-3 != 0 and rejects seam. Receiver using fmod(diff, 2*pi)
- * sees 1e-3 << period and accepts seam. Same wire, two outcomes.
+ * Defect: CYLINDRICAL_SURFACE radius 1.0e6 mm has period 2*pi*R ~= 6.28e6.
+ * A wire's pcurve U-coordinates differ by 2*pi + 1.0e-3 between adjacent
+ * edges. Receiver using fixed parametric tolerance (1.0e-7 rad) sees
+ * 2*pi + 1.0e-3 != 0 and rejects seam. Receiver using fmod(diff, 2*pi)
+ * sees 1.0e-3 << period and accepts seam. Same wire, two outcomes.
  */
 HEADER;
 FILE_DESCRIPTION(('Tb011 cylinder seam needs period-relative tolerance'),'2;1');
@@ -22,8 +22,8 @@ DATA;
 #12=DIRECTION('+x',(1.0,0.0,0.0));
 #13=AXIS2_PLACEMENT_3D('axis',#10,#11,#12);
 #14=CYLINDRICAL_SURFACE('huge_cyl',#13,1.0E6);
-/* Two edges on the cylinder, pcurve U difference = 2*pi + 1e-3.
- * 3D points constructed at corresponding angles on cylinder of R=1e6. */
+/* Two edges on the cylinder, pcurve U difference = 2*pi + 1.0e-3.
+ * 3D points constructed at corresponding angles on cylinder of R=1.0e6. */
 #20=CARTESIAN_POINT('p0_at_u0',(1.0E6,0.0,0.0));
 #21=CARTESIAN_POINT('p1_at_u_2pi_plus_1e-3',(1.0E6,1.0E3,0.0));
 #22=CARTESIAN_POINT('p2_continuation',(1.0E6,0.0,1000.0));
@@ -38,7 +38,7 @@ DATA;
 #43=DIRECTION('d12',(0.0,-1.0,0.0));
 #44=VECTOR('vec12',#43,1.0);
 #45=LINE('l12',#21,#44);
-/* PCURVE 1: U from 0 to 2*pi + 1e-3 (one full period plus 1e-3 drift). */
+/* PCURVE 1: U from 0 to 2*pi + 1.0e-3 (one full period plus 1.0e-3 drift). */
 #50=CARTESIAN_POINT('uv0',(0.0,0.0));
 #51=DIRECTION('uv_dir',(1.0,0.0));
 #52=VECTOR('uv_vec',#51,6.284185307179586);
@@ -47,7 +47,7 @@ DATA;
 #55=PCURVE('pc1',#14,#54);
 #56=SURFACE_CURVE('sc1',#42,(#55),.PCURVE_S1.);
 #60=EDGE_CURVE('e_period_plus_1e-3',#30,#31,#56,.T.);
-/* PCURVE 2: U from 2*pi + 1e-3 to 1e-3 (back to "start" minus 1e-3). */
+/* PCURVE 2: U from 2*pi + 1.0e-3 to 1.0e-3 (back to "start" minus 1.0e-3). */
 #61=CARTESIAN_POINT('uv1',(6.284185307179586,0.0));
 #62=DIRECTION('uv_dir2',(-1.0,0.0));
 #63=VECTOR('uv_vec2',#62,6.283185307179586);

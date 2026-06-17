@@ -3,7 +3,7 @@ ISO-10303-21;
  * Defect: ShapeFix_Wire::FixSelfIntersection modifies a pcurve and bumps the
  * affected vertex tolerance to encompass both the original and the new
  * position. Repeated rounds grow the tolerance ball geometrically
- * (1e-7 -> 1e-3 in a few iterations).
+ * (1.0e-7 -> 1.0e-3 in a few iterations).
  *
  * Reproducer: a closed-shell unit cube whose top face carries a small
  * rectangular inner-loop hole; the hole's outer wire is described by
@@ -12,7 +12,7 @@ ISO-10303-21;
  * coincident in 3D -- they cross slightly inside Precision::Confusion()
  * scaled by file uncertainty, so ShapeFix_Wire::FixSelfIntersection has
  * something real to attempt and the recorded UNCERTAINTY cascade
- * (1e-7..1e-3) reflects the actual geometric inflation per pass.
+ * (1.0e-7..1e-3) reflects the actual geometric inflation per pass.
  */
 HEADER;
 FILE_DESCRIPTION(('N008 vertex tolerance inflation cascade FixSelfIntersection'),'2;1');
@@ -96,7 +96,7 @@ DATA;
 /* Two B-spline edges nominally meeting at vertex #181 ((5.0, 5.0, 10.0))
  * but whose tangent directions at that vertex are nearly equal AND
  * whose interiors cross at a separation of ~2.5e-4 -- well inside
- * Precision::Confusion() (~1e-7 default) once tolerance is inflated.
+ * Precision::Confusion() (~1.0e-7 default) once tolerance is inflated.
  * That crossing is what FixSelfIntersection detects, snaps and grows
  * the vertex tolerance ball around. */
 #180=CARTESIAN_POINT('inner_v',(5.0,5.0,10.0));

@@ -1,7 +1,7 @@
 ISO-10303-21;
 /* Twi195 - CheckClosed open-tail-vs-spur
  * Defect: ShapeAnalysis_Wire.CheckClosed reports wire as unclosed due to a
- * small trailing spur (e.g., 1e-6 units) that nearly closes the gap. The
+ * small trailing spur (e.g., 1.0e-6 units) that nearly closes the gap. The
  * defect is that a spur too small to close meaningfully should be
  * distinguished from a true open gap, but CheckClosed only returns boolean
  * open/closed, losing nuance for "almost closed" classification. */
@@ -37,7 +37,7 @@ DATA;
 #44=LINE('',#33,#43);
 #45=EDGE_CURVE('E2',#34,#41,#44,.T.);
 #46=ORIENTED_EDGE('',*,*,#45,.T.);
-/* Third edge: (0,1) to (0,0) -- closes almost, ending at (0, 1e-6) */
+/* Third edge: (0,1) to (0,0) -- closes almost, ending at (0, 1.0e-6) */
 #47=CARTESIAN_POINT('',(0.0,0.000001,0.0));
 #48=VERTEX_POINT('Almost',#47);
 #49=DIRECTION('',(0.0,-1.0,0.0));
@@ -45,7 +45,7 @@ DATA;
 #51=LINE('',#40,#50);
 #52=EDGE_CURVE('E3',#41,#48,#51,.T.);
 #53=ORIENTED_EDGE('',*,*,#52,.T.);
-/* Tiny spur edge: (0, 1e-6) back to (0,0) -- gap of 1e-6 */
+/* Tiny spur edge: (0, 1.0e-6) back to (0,0) -- gap of 1.0e-6 */
 #54=CARTESIAN_POINT('',(0.0,0.0,0.0));
 #55=DIRECTION('',(0.0,-1.0,0.0));
 #56=VECTOR('',#55,0.000001);

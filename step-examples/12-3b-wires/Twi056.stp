@@ -11,7 +11,7 @@ ENDSEC;
 DATA;
 #1=APPLICATION_CONTEXT('automotive_design');
 #2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
-/* Wire with two vertices at distance 1e-7 -- should merge */
+/* Wire with two vertices at distance 1.0e-7 -- should merge */
 #10=CARTESIAN_POINT('',(0.0,0.0,0.0));
 #11=DIRECTION('',(0.0,0.0,1.0));
 #12=DIRECTION('',(1.0,0.0,0.0));
@@ -39,7 +39,7 @@ DATA;
 #39=DIRECTION('',(0.0,-1.0,0.0));
 #40=VECTOR('',#39,1.0);
 #41=LINE('',#28,#40);
-/* Edge from #21 (0,0) to #23 (1e-7,0) is missing -- the gap should
+/* Edge from #21 (0,0) to #23 (1.0e-7,0) is missing -- the gap should
  * be absorbed by merging #21 and #23 */
 #50=EDGE_CURVE('',#23,#25,#32,.T.);
 #51=EDGE_CURVE('',#25,#27,#35,.T.);

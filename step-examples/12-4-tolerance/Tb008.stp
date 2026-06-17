@@ -1,7 +1,7 @@
 ISO-10303-21;
 /* Tb008 - NURBS knot-quantum scaled by parameter range
- * Defect: B-spline curve has knot vector (0.0, 1e-2, 1e6). Inner knot
- * 1e-2 is "small" relative to range 1e6 (relative ~1e-8) but "large" in
+ * Defect: B-spline curve has knot vector (0.0, 1.0e-2, 1.0e6). Inner knot
+ * 1.0e-2 is "small" relative to range 1.0e6 (relative ~1.0e-8) but "large" in
  * absolute terms. Receiver using absolute tolerance keeps the knot;
  * receiver using relative tolerance (knot-spacing/range) drops it.
  * Producers that re-parameterize curves into very large parametric
@@ -17,7 +17,7 @@ DATA;
 #1=APPLICATION_CONTEXT('automotive_design');
 #2=APPLICATION_PROTOCOL_DEFINITION('international standard',
   'automotive_design',2009,#1);
-/* 5 control points spread across u in [0,1e6]. */
+/* 5 control points spread across u in [0,1.0e6]. */
 #10=CARTESIAN_POINT('cp0',(0.0,0.0,0.0));
 #11=CARTESIAN_POINT('cp1',(2.5E5,1.0,0.0));
 #12=CARTESIAN_POINT('cp2',(5.0E5,0.5,0.0));

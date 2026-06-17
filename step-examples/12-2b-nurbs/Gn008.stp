@@ -1,6 +1,6 @@
 ISO-10303-21;
 /* Gn008 - High-curvature curves: knot multiplicity at full degree producing
-   near-cusps; rational with weight ratio above 1e3
+   near-cusps; rational with weight ratio above 1.0e3
    Defect: two flavors that produce mesher pathologies:
      #110 - degree-3 B_SPLINE_CURVE_WITH_KNOTS with an interior knot of
             multiplicity 3 (= degree).  This forces a true C0 join and a

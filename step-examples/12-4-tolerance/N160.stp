@@ -1,6 +1,6 @@
 ISO-10303-21;
 /* N160 - BRepLib.cxx.ComputeTol overflow-error tolerance accumulation
- * Defect: Mismatch between 3D and 2D curves (error > 1e10) accumulated into
+ * Defect: Mismatch between 3D and 2D curves (error > 1.0e10) accumulated into
  * SameParameter tolerance without early abort. Edge with 3D line and completely
  * mismatched 2D curve; without overflow check, corrupts final tolerance.
  */

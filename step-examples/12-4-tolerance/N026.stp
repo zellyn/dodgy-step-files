@@ -1,10 +1,10 @@
 ISO-10303-21;
 /* N026 - Cross-kernel topology rejection: source-valid, target-invalid by tolerance bookkeeping
  * Defect: Production kernels (Parasolid, ACIS, CGM) define validity
- * differently. ACIS may export a body with a tolerant edge of tolerance 5e-4;
- * Parasolid demands geometric intersection within 1e-6 and rejects the edge.
- * Reproducer: ACIS-style file declares per-edge tolerance 5e-4 mm while
- * the global file uncertainty is 1e-6 mm; receiving Parasolid pipeline
+ * differently. ACIS may export a body with a tolerant edge of tolerance 5.0e-4;
+ * Parasolid demands geometric intersection within 1.0e-6 and rejects the edge.
+ * Reproducer: ACIS-style file declares per-edge tolerance 5.0e-4 mm while
+ * the global file uncertainty is 1.0e-6 mm; receiving Parasolid pipeline
  * cannot accommodate the loose edge tolerance.
  */
 HEADER;
@@ -29,8 +29,8 @@ DATA;
 #50=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
 #51=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
 #52=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
-/* Mixed working precisions: file global 1e-6 (Parasolid-friendly),
- * but per-entity 5e-4 (ACIS-style tolerant edge). Target Parasolid kernel
+/* Mixed working precisions: file global 1.0e-6 (Parasolid-friendly),
+ * but per-entity 5.0e-4 (ACIS-style tolerant edge). Target Parasolid kernel
  * would reject the looser per-edge tolerance. */
 #60=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-6),#50,
   'distance_accuracy_value','file_global_parasolid_friendly');

@@ -3,7 +3,7 @@ ISO-10303-21;
  * Defect: After format conversion the endpoints of adjacent 3D curve segments
  * along a wire no longer meet within geometric tolerance -- a class introduced
  * *by translation*, not present in the native model. Source seam tolerance
- * 1e-3 through a kernel that demands 1e-5 leaves position, cross-tangent,
+ * 1.0e-3 through a kernel that demands 1.0e-5 leaves position, cross-tangent,
  * and cross-curvature gaps.
  * Reproducer: two consecutive B_SPLINE_CURVE_WITH_KNOTS segments where end
  * control points of segment N do not equal start control points of segment
@@ -23,7 +23,7 @@ DATA;
 #10=CARTESIAN_POINT('s1_cp0',(0.0,0.0,0.0));
 #11=CARTESIAN_POINT('s1_cp1',(2.5,1.0,0.0));
 #12=CARTESIAN_POINT('s1_cp2',(5.0,0.0,0.0));
-/* Segment 2 control points START at (5.0001, 0.0, 0.0)  -- 1e-4 gap from s1 end */
+/* Segment 2 control points START at (5.0001, 0.0, 0.0)  -- 1.0e-4 gap from s1 end */
 #13=CARTESIAN_POINT('s2_cp0_GAP',(5.0001,0.0,0.0));
 #14=CARTESIAN_POINT('s2_cp1',(7.5,-1.0,0.0));
 #15=CARTESIAN_POINT('s2_cp2',(10.0,0.0,0.0));
@@ -41,7 +41,7 @@ DATA;
 #50=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
 #51=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
 #52=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
-/* Receiver kernel demands 1e-5 -- 1e-4 gap fails its tolerance budget */
+/* Receiver kernel demands 1.0e-5 -- 1.0e-4 gap fails its tolerance budget */
 #60=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-5),#50,
   'distance_accuracy_value','target_kernel_tighter_than_source_seam');
 #70=(GEOMETRIC_REPRESENTATION_CONTEXT(3)

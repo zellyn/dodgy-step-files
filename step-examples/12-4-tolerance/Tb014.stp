@@ -1,8 +1,8 @@
 ISO-10303-21;
 /* Tb014 - Sliver triangle with smallest internal angle at hardcoded trigger
  * Defect: Triangle has internal angles 89.9999, 89.9999, 0.0002 deg
- * (= 3.49e-6 rad). Different sliver detectors use thresholds 1e-7, 1e-5,
- * 1e-3 rad. The triangle is alive in some regimes and silently dropped
+ * (= 3.49e-6 rad). Different sliver detectors use thresholds 1.0e-7, 1.0e-5,
+ * 1.0e-3 rad. The triangle is alive in some regimes and silently dropped
  * in others. "Long skinny face missing", "thin sliver triangle removed
  * by ShapeFix" -- same input, different verdicts.
  */

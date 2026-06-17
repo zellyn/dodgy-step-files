@@ -2,7 +2,7 @@ ISO-10303-21;
 /* N155 - ShapeAnalysis_CheckSmallFace.CheckPin.tolerance-fallback
  * Defect: Falls back to default tolerance if precision is negative.
  * Reproducer: CheckPin with myPrecision = -1 (invalid). Without fallback, IsoStat uses invalid.
- * Expected: toler = 1e-4 fallback used for valid comparisons. Without: spurious results.
+ * Expected: toler = 1.0e-4 fallback used for valid comparisons. Without: spurious results.
  * Test: precision fallback guards against negative precision in sharpness tests.
  */
 HEADER;

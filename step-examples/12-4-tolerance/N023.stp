@@ -4,7 +4,7 @@ ISO-10303-21;
  * displaced from the line that actually passes through both vertex points.
  * Direction is correct; position is offset.
  * Reproducer: VERTEX_POINT A at (0,0,0), B at (10,0,0); LINE pnt is at
- * (0, 0.001, 0) (offset 1e-3 mm from the true line through both vertices).
+ * (0, 0.001, 0) (offset 1.0e-3 mm from the true line through both vertices).
  */
 HEADER;
 FILE_DESCRIPTION(('N023 EDGE_CURVE LINE parallel-displaced from vertices'),'2;1');
@@ -18,13 +18,13 @@ DATA;
   'config_control_design',1994,#1);
 #10=CARTESIAN_POINT('vertex_A',(0.0,0.0,0.0));
 #11=CARTESIAN_POINT('vertex_B',(10.0,0.0,0.0));
-/* Defect: line origin point is offset 1e-3 in y; direction correct */
+/* Defect: line origin point is offset 1.0e-3 in y; direction correct */
 #12=CARTESIAN_POINT('LINE_pnt_offset_1e-3',(0.0,0.001,0.0));
 #20=VERTEX_POINT('A',#10);
 #21=VERTEX_POINT('B',#11);
 #30=DIRECTION('+x_correct',(1.0,0.0,0.0));
 #31=VECTOR('',#30,10.0);
-/* LINE.pnt is offset 1e-3 from where it should be -- parallel-displaced */
+/* LINE.pnt is offset 1.0e-3 from where it should be -- parallel-displaced */
 #32=LINE('parallel_displaced',#12,#31);
 #40=EDGE_CURVE('fpx_expert_edge',#20,#21,#32,.T.);
 #50=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));

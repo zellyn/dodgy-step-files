@@ -3,7 +3,7 @@ ISO-10303-21;
  * Defect: Vertex tolerance tracking fails across multi-edge chains.
  * When concatenating PCurves from edges with different vertex tolerances,
  * max_tolerance_tracking produces inconsistent results.
- * Reproducer: Two edges with vertices V1(tol=1e-3), V2(tol=1e-2) at shared vertex.
+ * Reproducer: Two edges with vertices V1(tol=1.0e-3), V2(tol=1.0e-2) at shared vertex.
  */
 HEADER;
 FILE_DESCRIPTION(('N144 UnionPCurves vertex_tolerance_mismatch tracking'),'2;1');
@@ -39,7 +39,7 @@ DATA;
 #93=EDGE_CURVE('e2',#30,#80,#92,.T.);
 /* Chain concatenation: e1 -> e2
    Bug: max_tolerance_tracking at e1-e2 junction fails when
-   V_shared_tight (1e-3) from e1 meets tolerance context of e2.
+   V_shared_tight (1.0e-3) from e1 meets tolerance context of e2.
    Result: Concatenated PCurve has inconsistent tolerance. */
 /* Units and context */
 #100=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));

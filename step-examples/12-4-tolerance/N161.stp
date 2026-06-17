@@ -1,8 +1,8 @@
 ISO-10303-21;
 /* N161 - tolerance_escalation: tolerance multiplier unbounded
  * Defect: BRepBuilderAPI_Sewing escalates tolerance by factor without upper bound.
- * Reproducer: Two edges with initial tol=1e-7, multiplication factor=1000.
- * Expected: tol stays ~1e-7. Actual: tol becomes 1e-4 (unbounded escalation).
+ * Reproducer: Two edges with initial tol=1.0e-7, multiplication factor=1000.
+ * Expected: tol stays ~1.0e-7. Actual: tol becomes 1.0e-4 (unbounded escalation).
  */
 HEADER;
 FILE_DESCRIPTION(('N161 tolerance_escalation unbounded multiplier'),'2;1');
@@ -45,7 +45,7 @@ DATA;
   GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#83))
   GLOBAL_UNIT_ASSIGNED_CONTEXT((#80,#81,#82))
   REPRESENTATION_CONTEXT('escalation_ctx','3D'));
-/* Escalated tolerance: base=1e-7, factor=1000 → 1e-4 (unbounded) */
+/* Escalated tolerance: base=1.0e-7, factor=1000 → 1.0e-4 (unbounded) */
 #85=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-4),#80,
   'distance_accuracy_value','escalated_tol');
 #9000=PRODUCT_CONTEXT('',#1,'mechanical');

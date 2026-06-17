@@ -6,7 +6,7 @@ ISO-10303-21;
    lacks checks for C0 knots and uses derivatives that are invalid at the
    discontinuity, leading to incorrect projected points. */
 HEADER;
-FILE_DESCRIPTION(('Gn041 - BSpline surface C0 knot Newton divergence','2;1');
+FILE_DESCRIPTION(('Gn041 - BSpline surface C0 knot Newton divergence'',''2;1'',''2;1'),'2;1');
 FILE_NAME('Gn041.stp','2026-06-16T00:00:00',('auto-generated'),(''),
   'auto-generated','','');
 FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));

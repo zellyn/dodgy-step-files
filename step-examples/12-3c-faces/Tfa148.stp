@@ -1,14 +1,6 @@
 ISO-10303-21;
 HEADER;
-FILE_DESCRIPTION(('CAD fixture: FixSmallAreaWire min-area-threshold-collision'),
-  '2024-06-15T12:00:00',
-  2,
-  (),
-  (),
-  'neutral file',
-  'CAD System',
-  '',
-  ());
+FILE_DESCRIPTION(('CAD fixture: FixSmallAreaWire min-area-threshold-collision'),'2;1');
 FILE_NAME('Tfa148.stp',
   2024-06-15T12:00:00,
   (''),
@@ -36,11 +28,11 @@ DATA;
 #50=LINE('outer_e3',#51,#52);
 #51=CARTESIAN_POINT('',10.0,10.0,0.0);
 #52=VECTOR('',#53,1.0);
-#53=DIRECTION('',−1.0,0.0,0.0);
+#53=DIRECTION('',-1.0,0.0,0.0);
 #60=LINE('outer_e4',#61,#62);
 #61=CARTESIAN_POINT('',0.0,10.0,0.0);
 #62=VECTOR('',#63,1.0);
-#63=DIRECTION('',0.0,−1.0,0.0);
+#63=DIRECTION('',0.0,-1.0,0.0);
 #70=LINE('inner_e1',#71,#72);
 #71=CARTESIAN_POINT('',2.0,2.0,0.0);
 #72=VECTOR('',#73,1.0);
@@ -52,11 +44,11 @@ DATA;
 #79=LINE('inner_e3',#80,#81);
 #80=CARTESIAN_POINT('',2.005,2.005,0.0);
 #81=VECTOR('',#82,1.0);
-#82=DIRECTION('',−1.0,0.0,0.0);
+#82=DIRECTION('',-1.0,0.0,0.0);
 #83=LINE('inner_e4',#84,#85);
 #84=CARTESIAN_POINT('',2.0,2.005,0.0);
 #85=VECTOR('',#86,1.0);
-#86=DIRECTION('',0.0,−1.0,0.0);
+#86=DIRECTION('',0.0,-1.0,0.0);
 #90=VERTEX_POINT('v_o1',#100);
 #100=CARTESIAN_POINT('',0.0,0.0,0.0);
 #110=VERTEX_POINT('v_o2',#120);

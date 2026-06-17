@@ -1,11 +1,7 @@
 ISO-10303-21;
-/* Tfa157 — ShapeAnalysis_CheckSmallFace.CheckPin extreme-axis-pin
- * Pin face with extreme aspect ratio (1000x); very thin in one axis.
- * CheckPin's threshold calculation overflows on extreme ratios.
- */
 HEADER;
-FILE_DESCRIPTION(('Tfa157 test case','Extreme-axis pin face (1000x aspect ratio); CheckPin overflow'),'2;1');
-FILE_NAME('Tfa157.stp','2026-06-15T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_DESCRIPTION(('Tfa157'),'2;1');
+FILE_NAME('Tfa157.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
 FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;

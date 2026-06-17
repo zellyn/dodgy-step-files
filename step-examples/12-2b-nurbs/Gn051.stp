@@ -1,14 +1,6 @@
 ISO-10303-21;
 HEADER;
-FILE_DESCRIPTION(('Gn051: ShapeAnalysis_Curve.GetSamplePoints offset/trimmed recursion depth'),
-  '2',
-  2026,
-  6,
-  15,
-  0,
-  '',
-  '',
-  '');
+FILE_DESCRIPTION(('Gn051: ShapeAnalysis_Curve.GetSamplePoints offset/trimmed recursion depth'),'2;1');
 FILE_NAME('Gn051.stp','',(''),(''),'',' ','');
 FILE_SCHEMA(('CONFIG_CONTROL_DESIGN'));
 ENDSEC;

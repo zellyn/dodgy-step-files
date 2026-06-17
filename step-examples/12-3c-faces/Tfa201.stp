@@ -1,14 +1,6 @@
 ISO-10303-21;
 HEADER;
-FILE_DESCRIPTION(('CAD fixture: spot-face singularity parametric interior'),
-  '2024-06-16T12:00:00',
-  2,
-  (),
-  (),
-  'neutral file',
-  'CAD System',
-  '',
-  ());
+FILE_DESCRIPTION(('CAD fixture: spot-face singularity parametric interior'),'2;1');
 FILE_NAME('Tfa201.stp',
   2024-06-16T12:00:00,
   (''),
@@ -32,11 +24,11 @@ DATA;
 #40=LINE('edge_2',#41,#42);
 #41=CARTESIAN_POINT('',1.0,1.0,0.0);
 #42=VECTOR('',#43,1.0);
-#43=DIRECTION('',−1.0,0.0,0.0);
+#43=DIRECTION('',-1.0,0.0,0.0);
 #50=LINE('edge_3',#51,#52);
 #51=CARTESIAN_POINT('',0.0,1.0,0.0);
 #52=VECTOR('',#53,1.0);
-#53=DIRECTION('',0.0,−1.0,0.0);
+#53=DIRECTION('',0.0,-1.0,0.0);
 #60=B_SPLINE_SURFACE_WITH_KNOTS('spot_surface',2,2,(
 (#70,#80,#90),
 (#100,#110,#120),

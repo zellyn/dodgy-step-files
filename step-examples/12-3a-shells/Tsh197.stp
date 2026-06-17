@@ -3,7 +3,7 @@ ISO-10303-21;
  * Defect: Compound shape with multiple shells; only first shell extracted
  * and fixed. Remaining shells skipped, losing structural information. */
 HEADER;
-FILE_DESCRIPTION(('Tsh197 - shells extraction loss','2;1');
+FILE_DESCRIPTION(('Tsh197 - shells extraction loss'',''2;1'',''2;1'),'2;1');
 FILE_NAME('Tsh197.stp','2026-06-16T00:00:00',(''),(''),'wave-56a','','');
 FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
 ENDSEC;

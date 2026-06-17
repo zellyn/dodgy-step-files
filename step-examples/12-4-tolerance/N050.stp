@@ -3,11 +3,11 @@ ISO-10303-21;
    Defect: BRL-CAD step-g UncertaintyMeasureWithUnit::Load reads the
    uncertainty value (a LENGTH_MEASURE) into the in-memory model, but
    no downstream consumer ever queries it - the importer hard-codes
-   AdvancedFace's `m_tolerance` to 1e-3 mm and uses that for every edge
+   AdvancedFace's `m_tolerance` to 1.0e-3 mm and uses that for every edge
    and trim regardless of what the file says.  A producer authoring at
    tighter precision (e.g. an aerospace AP203 file declaring
-   UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1e-6), MM, ...,
-   'distance_accuracy_value', '')) gets its features at 1e-3 tolerance
+   UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0e-6), MM, ...,
+   'distance_accuracy_value', '')) gets its features at 1.0e-3 tolerance
    instead.  Distinct from N019 (which is the OFFSET_SURFACE-specific
    manifestation: tiny offsets get crushed back into the base plane by
    the same hard-coded constant).  This entry is the umbrella defect:
@@ -37,7 +37,7 @@ DATA;
 #11=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
 #12=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
 /* Defect: file declares 1 micrometre tolerance.  step-g loads the value
-   and uses 1e-3 mm anyway. */
+   and uses 1.0e-3 mm anyway. */
 #13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-6),#10,
   'distance_accuracy_value',
   'producer-supplied tolerance for high-precision aerospace part');

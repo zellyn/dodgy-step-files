@@ -3,8 +3,8 @@ ISO-10303-21;
  * Defect: An edge with asymmetric vertex tolerances (preci1 != preci2) is validated
  * by CheckPoints, which conflates the two precision values into a single tolerance,
  * losing asymmetry information.
- * Geometry: Single edge from (0,0,0) to (10,0,0) with coarse endpoint (1e-2)
- *   and fine endpoint (1e-5).
+ * Geometry: Single edge from (0,0,0) to (10,0,0) with coarse endpoint (1.0e-2)
+ *   and fine endpoint (1.0e-5).
  * Expected: CheckPoints should validate each endpoint against its own tolerance;
  * actual behavior uses a single conflated value.
  */
@@ -61,10 +61,10 @@ DATA;
 #100=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
 #101=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
 #102=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
-/* Coarse endpoint tolerance: 1e-2 */
+/* Coarse endpoint tolerance: 1.0e-2 */
 #103=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-2),#100,
   'distance_accuracy_value','coarse_tolerance');
-/* Fine endpoint tolerance: 1e-5 */
+/* Fine endpoint tolerance: 1.0e-5 */
 #104=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-5),#100,
   'distance_accuracy_value','fine_tolerance');
 #105=(GEOMETRIC_REPRESENTATION_CONTEXT(3)

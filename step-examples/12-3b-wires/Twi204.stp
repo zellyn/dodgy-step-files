@@ -1,11 +1,7 @@
 ISO-10303-21;
-/* Twi204 - ShapeFix_Wire.FixIntersectingEdges 3-edges-at-vertex
- * Defect: Three edges meeting at single point (star configuration).
- * FixIntersectingEdges pairwise comparison reports 3 intersections at same point
- * but they're a vertex contact, not geometric crossings. */
 HEADER;
-FILE_DESCRIPTION(('Twi204 test case','ShapeFix_Wire.FixIntersectingEdges 3-edges-at-vertex — three edges meeting at single point (star); FixIntersectingEdges pairwise reports 3 intersections at same point but they are vertex contact'),'2;1');
-FILE_NAME('Twi204.stp','2026-06-16T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_DESCRIPTION(('Twi204'),'2;1');
+FILE_NAME('Twi204.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
 FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;

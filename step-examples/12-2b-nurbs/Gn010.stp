@@ -8,7 +8,7 @@ ISO-10303-21;
    reject the surface and refuse to materialize, or at minimum refuse to
    use it for projection or intersection.  Validate magnitudes against
    bounding-box envelope.  Note: STEP REAL grammar does not admit NaN, so
-   the textual artifact uses 1e+100 as the largest finite proxy.
+   the textual artifact uses 1.0e+100 as the largest finite proxy.
    Source: HOOPS Exchange SDHE-22166 (W017). */
 HEADER;
 FILE_DESCRIPTION(('Gn010 - NURBS surface with out-of-range control point'),
@@ -23,7 +23,7 @@ DATA;
 #12=CARTESIAN_POINT('p02',(0.0,2.0,0.0));
 #13=CARTESIAN_POINT('p03',(0.0,3.0,0.0));
 #20=CARTESIAN_POINT('p10',(1.0,0.0,0.0));
-/* Defect: interior control point at 1e100 in every coordinate. */
+/* Defect: interior control point at 1.0e100 in every coordinate. */
 #21=CARTESIAN_POINT('p11_bad',(1.0E+100,1.0E+100,1.0E+100));
 #22=CARTESIAN_POINT('p12',(1.0,2.0,0.5));
 #23=CARTESIAN_POINT('p13',(1.0,3.0,0.0));

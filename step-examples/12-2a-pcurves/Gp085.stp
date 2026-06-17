@@ -1,6 +1,6 @@
 ISO-10303-21;
 HEADER;
-FILE_DESCRIPTION(('Gp085: ShapeAnalysis_Edge.GetEndTangent2d ELLIPSE'),('Created for wave 23 pcurve defect synthesis'),'2.0');
+FILE_DESCRIPTION(('Gp085: ShapeAnalysis_Edge.GetEndTangent2d ELLIPSE'),'2;1');
 FILE_NAME('Gp085.stp','2025-02-01T00:00:00',('Zellyn Hunter'),('CAD Research'),'','','');
 FILE_SCHEMA(('IFC2X3'));
 ENDSEC;

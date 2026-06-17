@@ -1,6 +1,6 @@
 ISO-10303-21;
 HEADER;
-FILE_DESCRIPTION(('Gp093: ShapeFix_Edge.FixAddPCurve construct-on-conical-surface near-apex — edge near cone apex where projection to (u,v) is mathematically unstable; FixAddPCurve constructs a pcurve with NaN coordinates near the apex'),100000,2,100000);
+FILE_DESCRIPTION(('Gp093: ShapeFix_Edge.FixAddPCurve construct-on-conical-surface near-apex — edge near cone apex where projection to (u,v) is mathematically unstable; FixAddPCurve constructs a pcurve with NaN coordinates near the apex'),'2;1');
 FILE_NAME('Gp093.stp',2026-06-15T00:00:00,('Zellyn Hunter'),(''),(''),100000,'');
 FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;

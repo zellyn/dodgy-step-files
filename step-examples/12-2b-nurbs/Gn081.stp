@@ -3,7 +3,7 @@ ISO-10303-21;
    Defect: full-circle CIRCLE with radius 0.001 (micro-scale); sample count
    capped at 360 regardless of curve scale, producing 1µm spacing for 1µm radius. */
 HEADER;
-FILE_DESCRIPTION(('Gn081 - CIRCLE sampling unscaled sample count limit','2;1');
+FILE_DESCRIPTION(('Gn081 - CIRCLE sampling unscaled sample count limit'',''2;1'',''2;1'),'2;1');
 FILE_NAME('Gn081.stp','2026-06-16T00:00:00',('auto-generated'),(''),
   'auto-generated','','');
 FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
@@ -11,7 +11,7 @@ ENDSEC;
 DATA;
 /* Micro-scale CIRCLE with radius 0.001 mm (1 micrometer).
    Full circle: arc range [0, 2*pi]. Default sampling caps at 360 points,
-   giving ~6.28e-6 mm sample spacing, which exceeds the 1e-7 tolerance. */
+   giving ~6.28e-6 mm sample spacing, which exceeds the 1.0e-7 tolerance. */
 #10=AXIS2_PLACEMENT_3D('ax',#11,#12,#13);
 #11=CARTESIAN_POINT('origin',(0.0,0.0,0.0));
 #12=DIRECTION('dir1',(0.0,0.0,1.0));

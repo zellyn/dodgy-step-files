@@ -4,7 +4,7 @@ ISO-10303-21;
    implementation uses tolerance > 0 in comparisons and returns false for any
    non-trivial floating-point deviation, even from well-formed plane curves.
    A 3D B-spline that analytically lies in the XY plane (z=0) but with z-values
-   that are tiny non-zero (±1e-12) should return true with zero tolerance only
+   that are tiny non-zero (±1.0e-12) should return true with zero tolerance only
    if exact; this fixture exploits the boundary behavior. */
 HEADER;
 FILE_DESCRIPTION(('Gn084 - IsPlanar tolerance-zero boundary'),'2;1');
@@ -14,11 +14,11 @@ FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
 #1=CARTESIAN_POINT('p0',(0.0,0.0,0.0));
-#2=CARTESIAN_POINT('p1',(1.0,0.0,1e-12));
+#2=CARTESIAN_POINT('p1',(1.0,0.0,1.0e-12));
 #3=CARTESIAN_POINT('p2',(2.0,1.0,0.0));
-#4=CARTESIAN_POINT('p3',(3.0,2.0,-1e-12));
+#4=CARTESIAN_POINT('p3',(3.0,2.0,-1.0e-12));
 #5=CARTESIAN_POINT('p4',(4.0,3.0,0.0));
-/* Degree-2 B-spline curve: control points near XY plane with z deviations < 1e-11 */
+/* Degree-2 B-spline curve: control points near XY plane with z deviations < 1.0e-11 */
 #100=B_SPLINE_CURVE_WITH_KNOTS('planar_z_drift',
   2,
   (#1,#2,#3,#4,#5),

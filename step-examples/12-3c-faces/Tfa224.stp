@@ -1,14 +1,6 @@
 ISO-10303-21;
 HEADER;
-FILE_DESCRIPTION(('CAD fixture: FixMissingSeam degenerate-wire-consolidation multi-degenerated'),
-  '2024-06-16T12:00:00',
-  2,
-  (),
-  (),
-  'neutral file',
-  'CAD System',
-  '',
-  ());
+FILE_DESCRIPTION(('CAD fixture: FixMissingSeam degenerate-wire-consolidation multi-degenerated'),'2;1');
 FILE_NAME('Tfa224.stp',
   2024-06-16T12:00:00,
   (''),

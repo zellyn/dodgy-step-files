@@ -1,6 +1,6 @@
 ISO-10303-21;
 /* Gp099 - ShapeFix_Edge.FixSameParameter very-long-edge
- * Defect: edge of length 1e6 (extreme scale). FixSameParameter's tolerance
+ * Defect: edge of length 1.0e6 (extreme scale). FixSameParameter's tolerance
  * computation underflows when computing relative-to-length tolerance. */
 HEADER;
 FILE_DESCRIPTION(('Gp099 test case','FixSameParameter very-long-edge'),'2;1');
@@ -24,7 +24,7 @@ DATA;
 #12=DIRECTION('',(1.0,0.0,0.0));
 #13=AXIS2_PLACEMENT_3D('',#10,#11,#12);
 #14=PLANE('host_plane',#13);
-/* Very long line: from (0,0,0) to (1e6, 0, 0) */
+/* Very long line: from (0,0,0) to (1.0e6, 0, 0) */
 #20=CARTESIAN_POINT('',(0.0,0.0,0.0));
 #21=CARTESIAN_POINT('',(1000000.0,0.0,0.0));
 #22=LINE('curve_very_long',#20,#21);

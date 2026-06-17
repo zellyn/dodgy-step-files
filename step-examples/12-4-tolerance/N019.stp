@@ -1,15 +1,15 @@
 ISO-10303-21;
-/* N019 - OFFSET_SURFACE fixed tolerance hard-coded 1e-3 (BRL-CAD step-g)
- * Defect: BRL-CAD's step-g importer hard-codes m_tolerance = 1e-3 for edges
+/* N019 - OFFSET_SURFACE fixed tolerance hard-coded 1.0e-3 (BRL-CAD step-g)
+ * Defect: BRL-CAD's step-g importer hard-codes m_tolerance = 1.0e-3 for edges
  * and trims rather than reading the file's uncertainty_measure_with_unit.
  * Models requiring tighter tolerance lose feature fidelity; models tolerant
  * of wider tolerance are over-rejected.
- * Reproducer: file declares declared 1e-6 mm tolerance via
+ * Reproducer: file declares declared 1.0e-6 mm tolerance via
  * GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT, but BRL-CAD's importer ignores it
  * for OFFSET_SURFACE distance tolerance.
  */
 HEADER;
-FILE_DESCRIPTION(('N019 OFFSET_SURFACE step-g hard-coded 1e-3 ignores file uncertainty'),'2;1');
+FILE_DESCRIPTION(('N019 OFFSET_SURFACE step-g hard-coded 1.0e-3 ignores file uncertainty'),'2;1');
 FILE_NAME('N019.stp','2026-04-26T00:00:00',(''),(''),
   'cad-research-suite','','');
 FILE_SCHEMA(('AUTOMOTIVE_DESIGN'));
@@ -23,7 +23,7 @@ DATA;
 #12=DIRECTION('x',(1.0,0.0,0.0));
 #13=AXIS2_PLACEMENT_3D('plc',#10,#11,#12);
 #14=PLANE('base',#13);
-/* OFFSET_SURFACE distance is below step-g's hard-coded 1e-3 floor */
+/* OFFSET_SURFACE distance is below step-g's hard-coded 1.0e-3 floor */
 #15=OFFSET_SURFACE(#14,5.0E-5,.T.);
 #20=CARTESIAN_POINT('p0',(0.0,0.0,5.0E-5));
 #21=CARTESIAN_POINT('p1',(10.0,0.0,5.0E-5));
@@ -36,7 +36,7 @@ DATA;
 #50=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
 #51=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
 #52=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
-/* File explicitly declares tight tolerance 1e-6, but step-g forces 1e-3 */
+/* File explicitly declares tight tolerance 1.0e-6, but step-g forces 1.0e-3 */
 #60=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-6),#50,
   'distance_accuracy_value','file_declared_tight');
 #70=(GEOMETRIC_REPRESENTATION_CONTEXT(3)

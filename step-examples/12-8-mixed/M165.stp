@@ -34,7 +34,7 @@ DATA;
 #32=DIRECTION('',(1.0,0.0,0.0));
 #33=VECTOR('',#32,1.0);
 #34=LINE('',#20,#33);
-/* Three sub-tolerance triangular faces (each well below 1e-3 mm side) --
+/* Three sub-tolerance triangular faces (each well below 1.0e-3 mm side) --
    dense sliver cluster typical of a knurl pattern at low tessellation. */
 #40=EDGE_CURVE('',#26,#27,#34,.T.);
 #41=EDGE_CURVE('',#27,#28,#34,.T.);

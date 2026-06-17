@@ -1,6 +1,6 @@
 ISO-10303-21;
 HEADER;
-FILE_DESCRIPTION(('Gp094: ShapeAnalysis_Edge.CheckOverlapping curves-tangent-at-endpoint — two edges meeting at a tangent point at their shared endpoint; CheckOverlapping''s interior-intersection test ignores boundary tangency'),100000,2,100000);
+FILE_DESCRIPTION(('Gp094: ShapeAnalysis_Edge.CheckOverlapping curves-tangent-at-endpoint — two edges meeting at a tangent point at their shared endpoint; CheckOverlapping''s interior-intersection test ignores boundary tangency'),'2;1');
 FILE_NAME('Gp094.stp',2026-06-15T00:00:00,('Zellyn Hunter'),(''),(''),100000,'');
 FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;

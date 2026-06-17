@@ -1,12 +1,12 @@
 ISO-10303-21;
 /* N015 - xstep.cascade.unit M meters setting inflates tolerance and corrupts geometry
  * Defect: Setting OCCT's cascade unit to meters during STEP/IGES read inflates
- * max-tolerance >0.001 (some files balloon AABB to +/-1e+100). With unit=M,
+ * max-tolerance >0.001 (some files balloon AABB to +/-1.0e+100). With unit=M,
  * too-small distances are not detected during edge reordering and BSpline
  * segments are missed.
  * Reproducer: file declared in METRE units (instead of mm) plus tight
- * uncertainty 1e-7 in metre context. Reader's cascade.unit M scaling
- * produces tolerance 1e-7 m = 0.1 mm, far above true model precision.
+ * uncertainty 1.0e-7 in metre context. Reader's cascade.unit M scaling
+ * produces tolerance 1.0e-7 m = 0.1 mm, far above true model precision.
  */
 HEADER;
 FILE_DESCRIPTION(('N015 cascade.unit M inflates tolerance corrupts geometry'),'2;1');
@@ -28,7 +28,7 @@ DATA;
 #32=LINE('e',#10,#31);
 #40=EDGE_CURVE('cascade_m_edge',#20,#21,#32,.T.);
 /* LENGTH_UNIT defined in metres -- when reader maps via xstep.cascade.unit=M,
- * the working tolerance is interpreted as 1e-7 m == 1e-4 mm, way above
+ * the working tolerance is interpreted as 1.0e-7 m == 1.0e-4 mm, way above
  * native precision. */
 #50=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT($,.METRE.));
 #51=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));

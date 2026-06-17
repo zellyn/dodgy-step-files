@@ -4,8 +4,8 @@ ISO-10303-21;
  * edges/vertices to encompass the gap rather than adjusting the underlying
  * geometry to actually close it. The shape passes BRepCheck only because
  * tolerance discs now overlap, hiding the real defect.
- * Reproducer: two consecutive edges whose 3D endpoints differ by 1e-3 mm
- * on a model with declared 1e-6 uncertainty; vertex tolerance bumped to 2e-3
+ * Reproducer: two consecutive edges whose 3D endpoints differ by 1.0e-3 mm
+ * on a model with declared 1.0e-6 uncertainty; vertex tolerance bumped to 2.0e-3
  * instead of bridging.
  */
 HEADER;
@@ -18,7 +18,7 @@ DATA;
 #1=APPLICATION_CONTEXT('automotive design');
 #2=APPLICATION_PROTOCOL_DEFINITION('international standard',
   'automotive_design',2009,#1);
-/* Edge A goes (0,0,0) -> (10,0,0); Edge B starts at (10.001,0,0) -- 1e-3 gap */
+/* Edge A goes (0,0,0) -> (10,0,0); Edge B starts at (10.001,0,0) -- 1.0e-3 gap */
 #10=CARTESIAN_POINT('a0',(0.0,0.0,0.0));
 #11=CARTESIAN_POINT('a1',(10.0,0.0,0.0));
 #12=CARTESIAN_POINT('b0',(10.001,0.0,0.0));
@@ -36,7 +36,7 @@ DATA;
 #50=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
 #51=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
 #52=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
-/* Declared uncertainty 1e-6 mm, but vertex tolerance was bloated to 2e-3
+/* Declared uncertainty 1.0e-6 mm, but vertex tolerance was bloated to 2.0e-3
  * by FixWireGaps -- the gap is hidden, not bridged. */
 #60=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-6),#50,
   'distance_accuracy_value','declared_precision');

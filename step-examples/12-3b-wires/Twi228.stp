@@ -1,6 +1,6 @@
 ISO-10303-21;
 /* Twi228 - ShapeAnalysis_Wire.CheckGap3d with-very-large-coordinates
- * Defect: Adjacent vertices at coordinates ~1e6 with gap at ~1e-6 scale.
+ * Defect: Adjacent vertices at coordinates ~1.0e6 with gap at ~1.0e-6 scale.
  * CheckGap3d's relative tolerance fails because absolute coordinate magnitude
  * dominates comparison, missing the small geometric gap.
  */
@@ -31,15 +31,15 @@ DATA;
 #123=VERTEX_POINT('',#113);
 #124=VERTEX_POINT('',#114);
 #125=VERTEX_POINT('',#115);
-/* Edge1: normal segment from (1e6,1e6) to (1e6+5,1e6) */
+/* Edge1: normal segment from (1.0e6,1.0e6) to (1.0e6+5,1.0e6) */
 #130=LINE('',#110,#102);
 #131=EDGE_CURVE('',#120,#121,#130,.T.);
-/* Edge2: gap-containing segment - endpoint at (1e6+5,1e6)
-   Next vertex at (1e6+5.0000001,1e6.0000001) - gap of 1e-7 scale
-   At absolute scale 1e6, relative gap ~1e-13, below typical relative tolerance */
+/* Edge2: gap-containing segment - endpoint at (1.0e6+5,1.0e6)
+   Next vertex at (1.0e6+5.0000001,1.0e6.0000001) - gap of 1.0e-7 scale
+   At absolute scale 1.0e6, relative gap ~1.0e-13, below typical relative tolerance */
 #132=LINE('',#111,#102);
 #133=EDGE_CURVE('',#121,#122,#132,.T.);
-/* Edge3: continues from gap, from (1e6+5.0000001,1e6.0000001) to (1e6+10,1e6) */
+/* Edge3: continues from gap, from (1.0e6+5.0000001,1.0e6.0000001) to (1.0e6+10,1.0e6) */
 #134=DIRECTION('',(1.0,-0.00000005,0.0));
 #135=LINE('',#112,#134);
 #136=EDGE_CURVE('',#122,#123,#135,.T.);

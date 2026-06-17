@@ -3,7 +3,7 @@ ISO-10303-21;
  * Defect: Non-manifold edges (3+ faces meeting) iterate without bound;
  * algorithm complexity pathological. */
 HEADER;
-FILE_DESCRIPTION(('Tsh225 - multi-connected edge unbounded iteration','2;1');
+FILE_DESCRIPTION(('Tsh225 - multi-connected edge unbounded iteration'',''2;1'',''2;1'),'2;1');
 FILE_NAME('Tsh225.stp','2026-06-16T00:00:00',(''),(''),'wave-71a','','');
 FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
 ENDSEC;

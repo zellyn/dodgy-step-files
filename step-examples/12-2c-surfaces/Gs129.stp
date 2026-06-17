@@ -9,7 +9,7 @@ ISO-10303-21;
  *  necessary boundary repairs.
  *
  * Reproducer: CYLINDRICAL_SURFACE with radius = 0.0001 (much smaller than
- *  Confusion ~ 1e-7). The surface spans U = [0, π] (not full 2π). IsUClosed
+ *  Confusion ~ 1.0e-7). The surface spans U = [0, π] (not full 2π). IsUClosed
  *  uses radius-relative tolerance which underflows for such a tiny radius.
  *
  * Expected kernel behavior:
@@ -28,7 +28,7 @@ DATA;
 #11=DIRECTION('',(0.0,0.0,1.0));
 #12=DIRECTION('',(1.0,0.0,0.0));
 #13=AXIS2_PLACEMENT_3D('',#10,#11,#12);
-/* CYLINDRICAL_SURFACE with radius = 0.0001 (far below Confusion ~ 1e-7)
+/* CYLINDRICAL_SURFACE with radius = 0.0001 (far below Confusion ~ 1.0e-7)
  * This triggers radius-relative tolerance underflow in IsUClosed */
 #20=CYLINDRICAL_SURFACE('',#13,0.0001);
 /* Vertex on the cylinder at u=0, v=0 */

@@ -1,12 +1,8 @@
 ISO-10303-21;
-/* Hea006 - Shape-contents inventory: subshape histogram
- * Compound containing one ADVANCED_FACE (a unit square) plus one free
- * 4-edge wire (a separate unit square in the y=2 plane). Subshape
- * inventory should report: 1 face, 1 wire, 8 edges, 8 vertices. */
 HEADER;
-FILE_DESCRIPTION(('Hea006 test case','Compound: 1 face + 1 free wire (4-edge); inventory totals 8 edges, 8 vertices'),'2;1');
-FILE_NAME('Hea006.stp','2026-04-30T00:00:00',(''),(''),'cad-research-suite','','');
-FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+FILE_DESCRIPTION(('Hea006'),'2;1');
+FILE_NAME('Hea006.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
 #1=APPLICATION_CONTEXT('automotive_design');

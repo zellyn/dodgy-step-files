@@ -110,7 +110,7 @@ DATA;
 #123=VECTOR('small_ie4_vec',#124,1.0);
 #124=DIRECTION('small_ie4_dir',(0.0,-1.0,0.0));
 #125=EDGE_CURVE('small_ie4',#107,#101,#122,.T.);
-/* Small inner loop (area = 0.0025 m^2, below typical threshold ~1e-6 m^2) */
+/* Small inner loop (area = 0.0025 m^2, below typical threshold ~1.0e-6 m^2) */
 #130=ORIENTED_EDGE('small_ioe1',*,*,#113,.F.);
 #131=ORIENTED_EDGE('small_ioe2',*,*,#117,.F.);
 #132=ORIENTED_EDGE('small_ioe3',*,*,#121,.F.);

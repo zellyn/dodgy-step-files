@@ -1,14 +1,6 @@
 ISO-10303-21;
 HEADER;
-FILE_DESCRIPTION(('Gn045: ShapeUpgrade_SplitSurface.Init split validation with out-of-domain parameters'),
-  '2',
-  2026,
-  6,
-  15,
-  0,
-  '',
-  '',
-  '');
+FILE_DESCRIPTION(('Gn045: ShapeUpgrade_SplitSurface.Init split validation with out-of-domain parameters'),'2;1');
 FILE_NAME('Gn045.stp','',(''),(''),'',' ','');
 FILE_SCHEMA(('CONFIG_CONTROL_DESIGN'));
 ENDSEC;

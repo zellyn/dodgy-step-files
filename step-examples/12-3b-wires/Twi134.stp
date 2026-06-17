@@ -1,15 +1,8 @@
 ISO-10303-21;
 HEADER;
-FILE_DESCRIPTION(('Twi134: ShapeFix_Wire.FixShifted non-2π shift',
- 'Pcurve shifted by π (half period) on periodic surface; FixShifted assumes shifts are multiples of 2π and does not correct'),
-  '2',
-  '2020-01-01T00:00:00',
-  '2020-01-01T00:00:00',
-  ('OPEN CASCADE'),
-  (''),
-  'Unknown');
-FILE_NAME('Twi134.stp','2020-01-01T00:00:00',(''),(''),'Unknown','','');
-FILE_SCHEMA(('AP203_CONFIGURATION_CONTROLLED_3D_DESIGN_OF_MECHANICAL_PARTS_AND_ASSEMBLIES_MCD'));
+FILE_DESCRIPTION(('Twi134'),'2;1');
+FILE_NAME('Twi134.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
 #1=GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
@@ -64,7 +57,7 @@ DATA;
 #119=DIRECTION('',(0.0,1.0));
 #113=LINE('',#120,#121);
 #120=CARTESIAN_POINT('',(0.0,0.0));
-#121=DIRECTION('',(0.0,−1.0));
+#121=DIRECTION('',(0.0,-1.0));
 #130=EDGE_CURVE('e1_ecurve',#100,(#63,#104),#63,.T.);
 #131=EDGE_CURVE('e2_ecurve',#101,(#73,#105),#73,.T.);
 #132=EDGE_CURVE('e3_ecurve',#102,(#83,#106),#83,.T.);

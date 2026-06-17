@@ -1,28 +1,8 @@
 ISO-10303-21;
-/*
- * P002 — Non-UTF-8 (GB18030 / locale code page) in string literals
- * Defect (FreeCAD #7987, #22123; SolidWorks Chinese-locale install or any
- *         non-Western Windows export):
- *   STEP-21 lines like SHAPE_REPRESENTATION ('hai-mian-2', ...) appear in
- *   files encoded as GB18030 / Shift-JIS / CP1252 because exporters write the
- *   OS code page directly. Readers that assume UTF-8 produce mojibake.
- * Reproducer: STEP file with PRODUCT / SHAPE_REPRESENTATION name strings
- *   carrying high-bit bytes interpretable as GB18030, alongside the standard
- *   \X2\…\X0\ Unicode escape for the same word.
- * Expected kernel: auto-detect or honor STEP-21 \X2\ / \X4\ escape sequences;
- *   per-file encoding override; warn if bytes don't decode as declared.
- *
- * NOTE: To keep this catalog file 7-bit clean and license-pure, we encode the
- *   non-ASCII glyphs ONLY via the proper \X2\ Unicode escape (the *correct*
- *   form). The defect is that real-world senders ship the raw GB18030 bytes
- *   instead. The names below show what the *correct* encoding looks like; a
- *   defective reproducer would have the same names emitted as raw 0xBA 0xA3
- *   0xC3 0xE0 0x32 (GB18030 for U+6D77 U+7EF5 + ASCII '2').
- */
 HEADER;
-FILE_DESCRIPTION(('P002 non-UTF-8 in name strings — escape variant shown, raw GB18030 noted'),'2;1');
-FILE_NAME('P002.stp','2026-04-26T00:00:00',('catalog'),('cad'),'manual','','');
-FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+FILE_DESCRIPTION(('P002'),'2;1');
+FILE_NAME('P002.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
 #10 = APPLICATION_CONTEXT('automotive design');
@@ -38,7 +18,7 @@ DATA;
 #31 = PRODUCT_DEFINITION_FORMATION('','',#30);
 #32 = PRODUCT_DEFINITION('design','',#31,#13);
 #33 = PRODUCT_DEFINITION_SHAPE('','',#32);
-#40 = NEXT_ASSEMBLY_USAGE_OCCURRENCE('1','\X2\90E8540130001\X0\','',#22,#32,$);
+#40 = NEXT_ASSEMBLY_USAGE_OCCURRENCE('1','\X2\90.0E8540130001\X0\','',#22,#32,$);
 #50 = ( LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT(.MILLI.,.METRE.) );
 #51 = ( NAMED_UNIT(*) PLANE_ANGLE_UNIT() SI_UNIT($,.RADIAN.) );
 #52 = ( NAMED_UNIT(*) SI_UNIT($,.STERADIAN.) SOLID_ANGLE_UNIT() );

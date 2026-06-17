@@ -1,14 +1,6 @@
 ISO-10303-21;
 HEADER;
-FILE_DESCRIPTION(('Tfa239: ShapeFix_Face.FixSplitFace — multi-wire face splitting; sub-face reconstruction'),
-  '2026-06-16T00:00:00',
-  2,
-  (),
-  (),
-  'neutral file',
-  'CAD System',
-  '',
-  ());
+FILE_DESCRIPTION(('Tfa239: ShapeFix_Face.FixSplitFace — multi-wire face splitting; sub-face reconstruction'),'2;1');
 FILE_NAME('Tfa239.stp',
   2026-06-16T00:00:00,
   (''),
@@ -50,11 +42,11 @@ DATA;
 #60=LINE('outer_top',#61,#62);
 #61=CARTESIAN_POINT('',2.0,2.0,0.0);
 #62=VECTOR('',#63,2.0);
-#63=DIRECTION('',−1.0,0.0,0.0);
+#63=DIRECTION('',-1.0,0.0,0.0);
 #70=LINE('outer_left',#71,#72);
 #71=CARTESIAN_POINT('',0.0,2.0,0.0);
 #72=VECTOR('',#73,2.0);
-#73=DIRECTION('',0.0,−1.0,0.0);
+#73=DIRECTION('',0.0,-1.0,0.0);
 #80=CIRCLE('inner_hole',#11,0.4);
 #90=VERTEX_POINT('v1',#91);
 #91=CARTESIAN_POINT('',0.0,0.0,0.0);

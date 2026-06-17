@@ -1,13 +1,6 @@
 ISO-10303-21;
 HEADER;
-FILE_DESCRIPTION(('N106: ShapeFix_Edge.FixVertexTolerance — vertex-on-singular-surface'),
-  '2',
-  2026,
-  6,
-  15,
-  0,
-  0,
-  '');
+FILE_DESCRIPTION(('N106: ShapeFix_Edge.FixVertexTolerance — vertex-on-singular-surface'),'2;1');
 FILE_NAME('N106.stp','2026-06-15T00:00:00',(''),(''),
   'TOLERANCE RECOVERY',
   '',

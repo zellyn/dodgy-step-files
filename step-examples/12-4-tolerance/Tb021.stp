@@ -1,10 +1,10 @@
 ISO-10303-21;
 /* Tb021 - Multiple unlabelled UNCERTAINTY values in one context
  * Defect: GEOMETRIC_REPRESENTATION_CONTEXT lists three
- * UNCERTAINTY_MEASURE_WITH_UNIT entries with values 1e-3, 1e-6, 1e-9 and
- * no distinguishing name. Receiver-A picks min (1e-9 -- strict).
- * Receiver-B picks max (1e-3 -- lax). Receiver-C picks first (1e-3).
- * Receiver-D picks last (1e-9). Same file, four working tolerances.
+ * UNCERTAINTY_MEASURE_WITH_UNIT entries with values 1.0e-3, 1.0e-6, 1.0e-9 and
+ * no distinguishing name. Receiver-A picks min (1.0e-9 -- strict).
+ * Receiver-B picks max (1.0e-3 -- lax). Receiver-C picks first (1.0e-3).
+ * Receiver-D picks last (1.0e-9). Same file, four working tolerances.
  * All other tolerance-boundary defects in this section amplify under
  * this ambiguity.
  */

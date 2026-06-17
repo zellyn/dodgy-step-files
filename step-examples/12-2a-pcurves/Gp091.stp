@@ -1,6 +1,6 @@
 ISO-10303-21;
 HEADER;
-FILE_DESCRIPTION(('Gp091: ShapeFix_Edge.FixSameParameter pcurve absent — edge with 3D curve but no pcurve at all; FixSameParameter shouldn''t attempt SameParameter calculation but does and produces NaN tolerance'),100000,2,100000);
+FILE_DESCRIPTION(('Gp091: ShapeFix_Edge.FixSameParameter pcurve absent — edge with 3D curve but no pcurve at all; FixSameParameter shouldn''t attempt SameParameter calculation but does and produces NaN tolerance'),'2;1');
 FILE_NAME('Gp091.stp',2026-06-15T00:00:00,('Zellyn Hunter'),(''),(''),100000,'');
 FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;

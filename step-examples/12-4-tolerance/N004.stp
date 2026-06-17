@@ -6,7 +6,7 @@ ISO-10303-21;
  * re-validation after geometry edits.
  * Reproducer: EDGE_CURVE on a planar surface with both 3D BSpline and pcurve;
  * pcurve was reprojected at different sampling so it disagrees with 3D curve
- * at parametric midpoint by ~5e-3 mm, yet same_sense=.T. is asserted.
+ * at parametric midpoint by ~5.0e-3 mm, yet same_sense=.T. is asserted.
  */
 HEADER;
 FILE_DESCRIPTION(('N004 SameParameter flag inconsistent with deviation'),'2;1');
@@ -31,7 +31,7 @@ DATA;
 #30=DIRECTION('+x',(1.0,0.0,0.0));
 #31=VECTOR('',#30,10.0);
 #32=LINE('3d_line',#20,#31);
-/* 2D pcurve: line in (u,v) but offset; 3D-vs-pcurve max deviation ~5e-3 */
+/* 2D pcurve: line in (u,v) but offset; 3D-vs-pcurve max deviation ~5.0e-3 */
 #40=CARTESIAN_POINT('uv0',(0.0,0.005));
 #41=DIRECTION('uv_dir',(1.0,0.0));
 #42=VECTOR('',#41,10.0);

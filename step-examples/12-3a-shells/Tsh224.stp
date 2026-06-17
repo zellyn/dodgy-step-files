@@ -3,7 +3,7 @@ ISO-10303-21;
  * Defect: Shell with two congruent faces; FixFaceOrientation flips one
  * but leaves other unchanged, producing inconsistent orientation. */
 HEADER;
-FILE_DESCRIPTION(('Tsh224 - duplicate faces undetected','2;1');
+FILE_DESCRIPTION(('Tsh224 - duplicate faces undetected'',''2;1'',''2;1'),'2;1');
 FILE_NAME('Tsh224.stp','2026-06-16T00:00:00',(''),(''),'wave-71a','','');
 FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
 ENDSEC;

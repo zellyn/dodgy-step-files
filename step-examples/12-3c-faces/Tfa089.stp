@@ -18,7 +18,7 @@ DATA;
 #13=AXIS2_PLACEMENT_3D('',#10,#11,#12);
 #14=PLANE('base_plane',#13);
 /* Small square: 0.1 x 0.1 (area = 0.01)
-   Spot threshold is typically around 1e-7 to 1e-8.
+   Spot threshold is typically around 1.0e-7 to 1.0e-8.
    This face is larger than spot threshold.
 */
 #20=CARTESIAN_POINT('',(0.0,0.0,0.0));

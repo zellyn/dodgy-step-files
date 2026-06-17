@@ -1,14 +1,6 @@
 ISO-10303-21;
 HEADER;
-FILE_DESCRIPTION(('CAD fixture: ShapeFix_Face.FixMissingSeam.bspline-non-periodic-rejection'),
-  '2026-06-16T12:00:00',
-  2,
-  (),
-  (),
-  'neutral file',
-  'CAD System',
-  '',
-  ());
+FILE_DESCRIPTION(('CAD fixture: ShapeFix_Face.FixMissingSeam.bspline-non-periodic-rejection'),'2;1');
 FILE_NAME('Tfa212.stp',
   2026-06-16T12:00:00,
   (''),
@@ -50,11 +42,11 @@ DATA;
 #150=LINE('edge_3',#151,#152);
 #151=CARTESIAN_POINT('',2.0,2.0,0.0);
 #152=VECTOR('',#153,2.0);
-#153=DIRECTION('',−1.0,0.0,0.0);
+#153=DIRECTION('',-1.0,0.0,0.0);
 #160=LINE('edge_4',#161,#162);
 #161=CARTESIAN_POINT('',0.0,2.0,0.0);
 #162=VECTOR('',#163,2.0);
-#163=DIRECTION('',0.0,−1.0,0.0);
+#163=DIRECTION('',0.0,-1.0,0.0);
 #170=VERTEX_POINT('v1',#180);
 #180=CARTESIAN_POINT('',0.0,0.0,0.0);
 #190=VERTEX_POINT('v2',#200);

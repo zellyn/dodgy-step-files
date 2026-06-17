@@ -1,14 +1,6 @@
 ISO-10303-21;
 HEADER;
-FILE_DESCRIPTION(('Tfa241: FixOrientation.WireBoundingBoxComputation — toroidal periodic-center anchor for two wires'),
-  '2026-06-16T00:00:00',
-  2,
-  (),
-  (),
-  'neutral file',
-  'CAD System',
-  '',
-  ());
+FILE_DESCRIPTION(('Tfa241: FixOrientation.WireBoundingBoxComputation — toroidal periodic-center anchor for two wires'),'2;1');
 FILE_NAME('Tfa241.stp',
   2026-06-16T00:00:00,
   (''),
@@ -33,11 +25,11 @@ DATA;
 #50=LINE('outer_line_2',#51,#52);
 #51=CARTESIAN_POINT('',2.0,3.0,0.0);
 #52=VECTOR('',#53,1.0);
-#53=DIRECTION('',−1.0,0.0,0.0);
+#53=DIRECTION('',-1.0,0.0,0.0);
 #60=LINE('outer_line_3',#61,#62);
 #61=CARTESIAN_POINT('',0.0,3.0,0.0);
 #62=VECTOR('',#63,1.0);
-#63=DIRECTION('',0.0,−1.0,0.0);
+#63=DIRECTION('',0.0,-1.0,0.0);
 #70=LINE('outer_line_4',#71,#72);
 #71=CARTESIAN_POINT('',0.0,0.0,0.0);
 #72=VECTOR('',#73,1.0);
@@ -49,11 +41,11 @@ DATA;
 #90=LINE('inner_line_2',#91,#92);
 #91=CARTESIAN_POINT('',1.5,1.5,0.0);
 #92=VECTOR('',#93,1.0);
-#93=DIRECTION('',−0.5,0.0,0.0);
+#93=DIRECTION('',-0.5,0.0,0.0);
 #100=LINE('inner_line_3',#101,#102);
 #101=CARTESIAN_POINT('',1.0,1.5,0.0);
 #102=VECTOR('',#103,1.0);
-#103=DIRECTION('',0.0,−0.5,0.0);
+#103=DIRECTION('',0.0,-0.5,0.0);
 #110=LINE('inner_line_4',#111,#112);
 #111=CARTESIAN_POINT('',1.0,1.0,0.0);
 #112=VECTOR('',#113,1.0);

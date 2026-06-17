@@ -4,7 +4,7 @@ ISO-10303-21;
    j1 doesn't reset between outer iterations, causing patch skip.
    This fixture is a 2D trimmed curve with multiple continuity breaks. */
 HEADER;
-FILE_DESCRIPTION(('Gn060 - ConvertCurve2dToBezier j1 persistence loop bug','2;1');
+FILE_DESCRIPTION(('Gn060 - ConvertCurve2dToBezier j1 persistence loop bug'',''2;1'',''2;1'),'2;1');
 FILE_NAME('Gn060.stp','2026-06-16T00:00:00',('auto-generated'),(''),
   'auto-generated','','');
 FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));

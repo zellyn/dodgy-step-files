@@ -7,7 +7,7 @@ ISO-10303-21;
  * coincidence within stated tolerance and provide deterministic
  * ordering across runs.
  * Reproducer: set of free edges whose endpoint pairing yields one wire
- * that almost closes within tolerance - last vertex offset by 1e-6.
+ * that almost closes within tolerance - last vertex offset by 1.0e-6.
  */
 HEADER;
 FILE_DESCRIPTION(('Tfa022 ConnectEdgesToWires Closed flag'),'2;1');
@@ -20,7 +20,7 @@ DATA;
 #2=APPLICATION_PROTOCOL_DEFINITION('international standard',
   'automotive_design',2009,#1);
 #10=CARTESIAN_POINT('origin',(0.0,0.0,0.0));
-/* Quasi-square loop: last vertex is at (0, 1e-6, 0) instead of origin
+/* Quasi-square loop: last vertex is at (0, 1.0e-6, 0) instead of origin
  * so the loop almost-closes within tolerance.                          */
 #20=CARTESIAN_POINT('p0',(0.0,0.0,0.0));
 #21=CARTESIAN_POINT('p1',(10.0,0.0,0.0));
@@ -54,7 +54,7 @@ DATA;
 #81=ORIENTED_EDGE('',*,*,#71,.T.);
 #82=ORIENTED_EDGE('',*,*,#72,.T.);
 #83=ORIENTED_EDGE('',*,*,#73,.T.);
-/* Defect site: the wire endpoints (p0, p4) differ by 1e-6 in y - the
+/* Defect site: the wire endpoints (p0, p4) differ by 1.0e-6 in y - the
  * Closed flag may be reported incorrectly depending on tolerance.      */
 #90=EDGE_LOOP('almost_closed',(#80,#81,#82,#83));
 ENDSEC;

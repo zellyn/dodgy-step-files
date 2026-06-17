@@ -1,14 +1,6 @@
 ISO-10303-21;
 HEADER;
-FILE_DESCRIPTION(('CAD fixture: concat_result_truncation ConcatC1 output validation incompatible pcurve merge'),
-  '2026-06-16T00:00:00',
-  2,
-  (),
-  (),
-  'neutral file',
-  'CAD System',
-  '',
-  ());
+FILE_DESCRIPTION(('CAD fixture: concat_result_truncation ConcatC1 output validation incompatible pcurve merge'),'2;1');
 FILE_NAME('Tfa220.stp',
   2026-06-16T00:00:00,
   (''),

@@ -1,5 +1,5 @@
 ISO-10303-21;
-/* Tsh057 - Near-tangent adjacent ADVANCED_FACEs: PLANE normals differ ~1e-4 rad,
+/* Tsh057 - Near-tangent adjacent ADVANCED_FACEs: PLANE normals differ ~1.0e-4 rad,
  * shared EDGE_CURVE with mismatched vertex z; merge produces self-overlapping face
  * Defect: Two ADVANCED_FACEs with PLANE normals differing by ~0.0001 rad sharing
  * an EDGE_CURVE. Single-edge same-surface check passes. Merged face has self-
@@ -42,7 +42,7 @@ DATA;
 /* Right face extra vertices — shared edge has slightly mismatched z on right side */
 #28=CARTESIAN_POINT('',(2.0,0.0,0.0));
 #29=CARTESIAN_POINT('',(2.0,1.0,0.0));
-/* Shared edge right-side vertices: z differs by ~1e-4 */
+/* Shared edge right-side vertices: z differs by ~1.0e-4 */
 #30=CARTESIAN_POINT('',(1.0,0.0,9.999E-5));
 #31=CARTESIAN_POINT('',(1.0,1.0,9.999E-5));
 

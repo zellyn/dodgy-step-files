@@ -3,7 +3,7 @@ ISO-10303-21;
  * Defect: User abort during face-fix loop cannot be distinguished from failure;
  * myStatus set inconsistently with return value. */
 HEADER;
-FILE_DESCRIPTION(('Tsh216 - progress abort inconsistent error reporting','2;1');
+FILE_DESCRIPTION(('Tsh216 - progress abort inconsistent error reporting'',''2;1'',''2;1'),'2;1');
 FILE_NAME('Tsh216.stp','2026-06-16T00:00:00',(''),(''),'wave-65B','','');
 FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
 ENDSEC;
