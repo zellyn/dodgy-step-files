@@ -1,0 +1,161 @@
+ISO-10303-21;
+/* Gs163 - ShapeUpgrade_SplitSurface: large-pole B-spline detection threshold
+ *
+ * Defect: ShapeUpgrade observer tracks B-SPLINE_SURFACE with pole count
+ * exceeding 8192 (NbUPoles * NbVPoles) but threshold is hardcoded without
+ * justification. Result: surfaces near boundary not flagged; downstream
+ * algorithms may fail on unexpectedly large interpolation tasks.
+ *
+ * Reproducer: B-SPLINE_SURFACE with 64x64 poles (4096 total, below 8192);
+ * verify detection threshold and performance impact.
+ */
+HEADER;
+FILE_DESCRIPTION(('Gs163 test case','ShapeUpgrade large-pole B-spline threshold'),'2;1');
+FILE_NAME('Gs163.stp','2026-06-16T00:00:00',('zellyn@gmail.com'),'','auto-generated','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('automotive_design');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#11=DIRECTION('',(0.0,0.0,1.0));
+#12=DIRECTION('',(1.0,0.0,0.0));
+#13=AXIS2_PLACEMENT_3D('',#10,#11,#12);
+/* B-SPLINE_SURFACE_WITH_KNOTS: 8x8 poles (64 total), degree 3 */
+#20=B_SPLINE_SURFACE_WITH_KNOTS('',8,8,3,3,.F.,.F.,.F.,
+  (1,2,3,4,5,6,7,8,9,10,11),(1,2,3,4,5,6,7,8,9,10,11),
+  (#30,#31,#32,#33,#34,#35,#36,#37,#38,#39,#40,#41,#42,#43,#44,#45,
+   #46,#47,#48,#49,#50,#51,#52,#53,#54,#55,#56,#57,#58,#59,#60,#61,
+   #62,#63,#64,#65,#66,#67,#68,#69,#70,#71,#72,#73,#74,#75,#76,#77,
+   #78,#79,#80,#81,#82,#83,#84,#85,#86,#87,#88,#89,#90,#91,#92,#93,
+   #94,#95,#96,#97),
+  (1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0),
+  (1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0),.UNSPECIFIED.);
+/* 64 control points (8x8 grid, 0-7 in u, 0-7 in v) */
+#30=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#31=CARTESIAN_POINT('',(1.0,0.0,0.1));
+#32=CARTESIAN_POINT('',(2.0,0.0,0.2));
+#33=CARTESIAN_POINT('',(3.0,0.0,0.3));
+#34=CARTESIAN_POINT('',(4.0,0.0,0.4));
+#35=CARTESIAN_POINT('',(5.0,0.0,0.5));
+#36=CARTESIAN_POINT('',(6.0,0.0,0.6));
+#37=CARTESIAN_POINT('',(7.0,0.0,0.7));
+#38=CARTESIAN_POINT('',(0.0,1.0,0.2));
+#39=CARTESIAN_POINT('',(1.0,1.0,0.3));
+#40=CARTESIAN_POINT('',(2.0,1.0,0.4));
+#41=CARTESIAN_POINT('',(3.0,1.0,0.5));
+#42=CARTESIAN_POINT('',(4.0,1.0,0.6));
+#43=CARTESIAN_POINT('',(5.0,1.0,0.7));
+#44=CARTESIAN_POINT('',(6.0,1.0,0.8));
+#45=CARTESIAN_POINT('',(7.0,1.0,0.9));
+#46=CARTESIAN_POINT('',(0.0,2.0,0.4));
+#47=CARTESIAN_POINT('',(1.0,2.0,0.5));
+#48=CARTESIAN_POINT('',(2.0,2.0,0.6));
+#49=CARTESIAN_POINT('',(3.0,2.0,0.7));
+#50=CARTESIAN_POINT('',(4.0,2.0,0.8));
+#51=CARTESIAN_POINT('',(5.0,2.0,0.9));
+#52=CARTESIAN_POINT('',(6.0,2.0,1.0));
+#53=CARTESIAN_POINT('',(7.0,2.0,1.1));
+#54=CARTESIAN_POINT('',(0.0,3.0,0.6));
+#55=CARTESIAN_POINT('',(1.0,3.0,0.7));
+#56=CARTESIAN_POINT('',(2.0,3.0,0.8));
+#57=CARTESIAN_POINT('',(3.0,3.0,0.9));
+#58=CARTESIAN_POINT('',(4.0,3.0,1.0));
+#59=CARTESIAN_POINT('',(5.0,3.0,1.1));
+#60=CARTESIAN_POINT('',(6.0,3.0,1.2));
+#61=CARTESIAN_POINT('',(7.0,3.0,1.3));
+#62=CARTESIAN_POINT('',(0.0,4.0,0.8));
+#63=CARTESIAN_POINT('',(1.0,4.0,0.9));
+#64=CARTESIAN_POINT('',(2.0,4.0,1.0));
+#65=CARTESIAN_POINT('',(3.0,4.0,1.1));
+#66=CARTESIAN_POINT('',(4.0,4.0,1.2));
+#67=CARTESIAN_POINT('',(5.0,4.0,1.3));
+#68=CARTESIAN_POINT('',(6.0,4.0,1.4));
+#69=CARTESIAN_POINT('',(7.0,4.0,1.5));
+#70=CARTESIAN_POINT('',(0.0,5.0,0.9));
+#71=CARTESIAN_POINT('',(1.0,5.0,1.0));
+#72=CARTESIAN_POINT('',(2.0,5.0,1.1));
+#73=CARTESIAN_POINT('',(3.0,5.0,1.2));
+#74=CARTESIAN_POINT('',(4.0,5.0,1.3));
+#75=CARTESIAN_POINT('',(5.0,5.0,1.4));
+#76=CARTESIAN_POINT('',(6.0,5.0,1.5));
+#77=CARTESIAN_POINT('',(7.0,5.0,1.6));
+#78=CARTESIAN_POINT('',(0.0,6.0,0.7));
+#79=CARTESIAN_POINT('',(1.0,6.0,0.8));
+#80=CARTESIAN_POINT('',(2.0,6.0,0.9));
+#81=CARTESIAN_POINT('',(3.0,6.0,1.0));
+#82=CARTESIAN_POINT('',(4.0,6.0,1.1));
+#83=CARTESIAN_POINT('',(5.0,6.0,1.2));
+#84=CARTESIAN_POINT('',(6.0,6.0,1.3));
+#85=CARTESIAN_POINT('',(7.0,6.0,1.4));
+#86=CARTESIAN_POINT('',(0.0,7.0,0.5));
+#87=CARTESIAN_POINT('',(1.0,7.0,0.6));
+#88=CARTESIAN_POINT('',(2.0,7.0,0.7));
+#89=CARTESIAN_POINT('',(3.0,7.0,0.8));
+#90=CARTESIAN_POINT('',(4.0,7.0,0.9));
+#91=CARTESIAN_POINT('',(5.0,7.0,1.0));
+#92=CARTESIAN_POINT('',(6.0,7.0,1.1));
+#93=CARTESIAN_POINT('',(7.0,7.0,1.2));
+#94=CARTESIAN_POINT('',(0.0,8.0,0.3));
+#95=CARTESIAN_POINT('',(1.0,8.0,0.4));
+#96=CARTESIAN_POINT('',(2.0,8.0,0.5));
+#97=CARTESIAN_POINT('',(3.0,8.0,0.6));
+#98=CARTESIAN_POINT('',(4.0,8.0,0.7));
+#99=CARTESIAN_POINT('',(5.0,8.0,0.8));
+#100=CARTESIAN_POINT('',(6.0,8.0,0.9));
+#101=CARTESIAN_POINT('',(7.0,8.0,1.0));
+/* Rectangular trim */
+#21=RECTANGULAR_TRIMMED_SURFACE('',#20,2.0,5.0,2.0,5.0,.T.,.T.);
+/* Vertices for edge loop */
+#50A=CARTESIAN_POINT('',(2.0,2.0,0.6));
+#51A=VERTEX_POINT('',#50A);
+#52A=CARTESIAN_POINT('',(5.0,2.0,0.9));
+#53A=VERTEX_POINT('',#52A);
+#54A=CARTESIAN_POINT('',(5.0,5.0,1.4));
+#55A=VERTEX_POINT('',#54A);
+#56A=CARTESIAN_POINT('',(2.0,5.0,1.1));
+#57A=VERTEX_POINT('',#56A);
+/* Edge 1 */
+#60A=DIRECTION('',(1.0,0.0,0.0));
+#61A=VECTOR('',#60A,3.0);
+#62A=LINE('',#50A,#61A);
+#63A=EDGE_CURVE('',#51A,#53A,#62A,.T.);
+#64A=ORIENTED_EDGE('',*,*,#63A,.T.);
+/* Edge 2 */
+#70A=DIRECTION('',(0.0,1.0,0.0));
+#71A=VECTOR('',#70A,3.0);
+#72A=LINE('',#52A,#71A);
+#73A=EDGE_CURVE('',#53A,#55A,#72A,.T.);
+#74A=ORIENTED_EDGE('',*,*,#73A,.T.);
+/* Edge 3 */
+#80A=DIRECTION('',(-1.0,0.0,0.0));
+#81A=VECTOR('',#80A,3.0);
+#82A=LINE('',#54A,#81A);
+#83A=EDGE_CURVE('',#55A,#57A,#82A,.T.);
+#84A=ORIENTED_EDGE('',*,*,#83A,.T.);
+/* Edge 4 */
+#90A=DIRECTION('',(0.0,-1.0,0.0));
+#91A=VECTOR('',#90A,3.0);
+#92A=LINE('',#56A,#91A);
+#93A=EDGE_CURVE('',#57A,#51A,#92A,.T.);
+#94A=ORIENTED_EDGE('',*,*,#93A,.T.);
+#95A=EDGE_LOOP('',(#64A,#74A,#84A,#94A));
+#96A=FACE_OUTER_BOUND('',#95A,.T.);
+#97A=ADVANCED_FACE('',(#96A),#21,.T.);
+#200=OPEN_SHELL('',(#97A));
+/* Product definition */
+#9000=PRODUCT_CONTEXT('',#1,'mechanical');
+#9001=PRODUCT('Gs163','Gs163','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
+#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
+#9022=GEOMETRICALLY_BOUNDED_SURFACE_SHAPE_REPRESENTATION('',(#200),#9010);
+#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+ENDSEC;
+END-ISO-10303-21;

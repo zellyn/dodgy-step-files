@@ -174,3 +174,39 @@ After the quarantine, four follow-on commits:
 - Construction-lint: 0 hits on the two new rules across active corpus;
   any future regression will fail validation at synthesis time, not
   50 waves later.
+
+## Autonomous session waves 53-64 (2026-06-17 overnight)
+
+User stepped away ("do what you think is best next. And then again.").
+12 waves dispatched and verified autonomously:
+
+| Wave | Prefixes | Verify (7 sampled) |
+|---|---|---|
+| 53 | Tsh, Twi, Tfa | 4 VALID / 2 WEAK / 1 INVALID — 3 follow-ups added |
+| 54 | N, Gp, Gn | 7/7 VALID |
+| 55 | Gs, Tsh, Tfa | 3 VALID / 0 WEAK / 4 INVALID — 3 follow-ups added |
+| 56 | Tsh, Twi, Gp | 7/7 VALID (anti-WEAK prompt added) |
+| 57 | N, Gn, Gs | 7/7 VALID |
+| 58 | Tfa, Gp, Gs | 6 VALID / 1 INVALID (Gs153) — 1 follow-up; format converter triggered for Gp |
+| 59 | Tsh, Gn, N | 6 VALID / 1 WEAK (Gn142 under sampling threshold) |
+| 60 | Twi, Gp, Tfa | 5 VALID / 2 WEAK (Twi248, Twi250) |
+| 61 | Tsh, Gp, Gs | 7/7 VALID |
+| 62 | Tfa, N, Gn | 6 VALID / 1 minor catalog correction (Gn145) + catalog separator normalization recovered 30 silently-lost entries |
+| 63 | Tsh, Twi, Tfa | 7/7 VALID |
+| 64 | Gp, Gs, Gn | pending |
+
+**Totals delta**:
+- Catalog 1942 → **2122** entries (+180)
+- Active fixtures (estimated) +180 (180 new minus none quarantined)
+- Lint extension caught 9 additional pattern-bug fixtures (waves 53)
+- 11 individual fixture_followups/ notes added for weak/invalid findings
+
+**Methodology refinements during autonomous run**:
+1. Anti-WEAK-VALID prompt guidance ("demonstrate defect in geometry, not in comments") — adopted from wave 56 onward
+2. Format converter for non-canonical fragment outputs (## or #### headers, : or - separator) — invoked twice
+3. Catalog em-dash separator normalization pass — recovered 30 entries the JSON parser was silently dropping
+
+Operating cadence: ~3-5 minute synth+verify cycles, ~15 fixtures per
+wave, 4 parallel agents (3 synth + 1 verify on prior wave).
+All commits pushed continuously per user policy ("push but not tag
+if any known problems").

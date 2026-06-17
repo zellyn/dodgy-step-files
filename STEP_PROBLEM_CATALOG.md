@@ -21303,6 +21303,23 @@ Periodic B-spline with knot parameters identical at boundaries but control poles
 - **Surface**: Degree 2×2, 4×3 poles. U knots (0,0,0, 0.001,0.002, 1,1) create extreme clustering.
 - **Knot arithmetic**: 4 poles U + degree 2 → 7 mults. (3,2,2) sums to 7. Correct structure but bad spacing triggers IsBad flag for arc-length reparametrization.
 
+# Wave 64C: NURBS Fresh Defects (Gn149–Gn153)
+
+### Gn149 — Rational weight singularity detection
+B_SPLINE_SURFACE_WITH_KNOTS (3×3 control net, U-degree 2, V-degree 2). Rational weights array includes zero weight at middle pole (p11=0.0). Defect: denominator singularity in rational basis function evaluation. Healing must clamp weights to [eps, 1]. Knot arithmetic: 3+2+1=6 per direction. Invariants: three-arg LINE reference, DIRECTION ratios unit.
+
+### Gn150 — Trimmed periodic basis unwrap
+B_SPLINE_CURVE_WITH_KNOTS (degree 3, 5 poles, periodic closure .T.). Full domain [0, 2π]. Wrapped in Geom_TrimmedCurve concept at [0.2, 2.8]. Defect: SameParameter healing without periodic-wrapping detection incorrectly clamps parameters to trim bounds, losing closed semantics. Healing must detect Geom_TrimmedCurve + periodic basis + skip clamping. Knot sum 4+2+2+2+4=14 (periodic accounting). Invariants: DIRECTION unit ratios.
+
+### Gn151 — B-spline C0 interior knot discontinuity
+B_SPLINE_CURVE_WITH_KNOTS (degree 3, 5 poles). Interior knot at parameter 0.5 with multiplicity 4 (=degree). Defect: C0 discontinuity (tangent jump). Knot arithmetic: 4+4+1=9 ✓. Healing must detect via Geom2dConvert::C0BSplineToC1 and upgrade continuity. No forward refs. Invariants: DIRECTION unit.
+
+### Gn152 — Knot ratio anomaly post-C0→C1 upgrade
+B_SPLINE_CURVE_WITH_KNOTS (degree 2, 6 poles). Clustered interior knots: [0.01, 0.02] vs [0.98, 1.0] ratio >100:1. Defect: after C0->C1 upgrade, knot spacing becomes ill-conditioned (IsBad flag true). Healing must detect via ratio criterion (>10) and apply arc-length reparametrization (Approx_CurvilinearParameter). Knot sum 3+3+2+1=9 ✓. DIRECTION unit ratios.
+
+### Gn153 — Periodic B-spline origin re-anchor post-upgrade
+B_SPLINE_CURVE_WITH_KNOTS (degree 2, 4 poles, periodic .T., closed loop). Interior knot at 0.5. Defect: after Geom2dConvert::C0BSplineToC1 upgrade, parametrization origin shifts; D0(FirstParameter) changes. Healing must re-anchor via SetOrigin to preserve continuity across period. Knot sum 3+2+1=6 ✓. Invariants: DIRECTION unit, no forward refs, three-arg LINE.
+
 ### Wr001 — Trailing whitespace on every record line
 - **Category**: §12.13 writer-pathology (sub-class: whitespace/line-ending)
 - **Sources**: prostep ivip CAx-IF round-trip reports; FreeCAD #4231 "STEP exporter pads lines with spaces"; bug-reporter language: "diff between exports is all whitespace"
@@ -25085,6 +25102,21 @@ ShapeAnalysis_Geom::GetSurfaceType uses fixed classification thresholds independ
 ### Gs158 — AddFace null geometry propagation
 BRepBuilderAPI_Sewing::AddFace does not validate non-null surface reference on ADVANCED_FACE. Invalid geometry propagates silently, breaking shell coherence.
 
+### Gs159 — RectangularTrimmedSurface null-basis unwrap
+**Defect**: GeomAdaptor_Surface unwraps trimmed surfaces without null-checking BasisSurface result. Unwrap-null handling in GeomAdaptor_Surface constructor passes null to downstream classifier, triggering undefined behavior.
+
+### Gs160 — GeomAdaptor_Surface offset-surface misclassification
+**Defect**: Type switch covers 5 standard types (plane, cylinder, cone, sphere, torus) but omits offset-surface branch. Offset surfaces fall to default case (LOther), losing semantic grouping and confusing downstream algorithms expecting elementary surfaces.
+
+### Gs161 — Face with null geometric surface
+**Defect**: Face with null surface is silently dropped from partitioned output lists without error logging or recovery. Geometry loss in healing workflows that partition by surface type (SF-003).
+
+### Gs162 — Surface C0 in single direction undetected
+**Defect**: ShapeUpgrade continuity check uses AND logic (C1 in both U and V required) instead of OR. Surfaces discontinuous in only one direction are not flagged as C0. Requires B-spline with C1-U, C0-V knot multiplicity.
+
+### Gs163 — ShapeUpgrade large-pole B-spline threshold
+**Defect**: ShapeUpgrade observer tracks pole count exceeding 8192 (NbUPoles × NbVPoles) but threshold is hardcoded without justification. Surfaces near boundary not flagged; downstream algorithms may fail on unexpectedly large interpolation tasks.
+
 ### Ad117 — STEP reader crashes on minimal file with malformed `STYLED_ITEM`
 - **Category**: §12.11 adversarial / parser-robustness (sub-class: SEGV on style record)
 - **Sources**: OCCT MANTIS#0029979; bug-reporter language: "crash by reading STEP file", "STEP reader crashes on import", "segmentation fault on small STEP file". (OCCT MANTIS tracker 502 as of 2026-05-02)
@@ -27078,6 +27110,23 @@ Pcurve is TRIMMED_CURVE. GetEndTangent2d uses untrimmed-curve tangent at trim bo
 - **Model impact**: Reading applies negation after computation; reversed edge tangent may diverge from parameterization intent
 - **Fixture path**: step-examples/12-2a-pcurves/Gp150.stp
 - **Fixture kind**: scaffold
+
+## Wave 64A: STEP P-Curve Fixtures (Gp151–Gp155)
+
+### Gp151 — ShapeAnalysis_Edge.CheckPCurveRange periodic_range_semantics
+Periodic P-curve with parameter range straddling 2π boundary; validation assumes wrap-around is intentional without detecting non-monotonic parametrization. Reproduces OCCT line 1007 defect.
+
+### Gp152 — ShapeAnalysis_Edge.CheckVerticesWithPCurve location_transformation_semantics
+Edge bound to surface with non-identity location; P-curve endpoint transform omitted from vertex distance check. Analyzer fails to apply surface location xform to V1/V2 projections. Reproduces line 539 defect.
+
+### Gp153 — ShapeAnalysis_Edge.CheckCurve3dWithPCurve planar_surface_bypass
+3D line and 2D P-curve endpoints mismatch on planar surface; consistency check skipped for plane geometry. Analyzer silently passes despite V2 at (3,1,0) ≠ P-curve projection. Reproduces line 384 defect.
+
+### Gp154 — ShapeAnalysis_Edge.CheckVerticesWithPCurve selective_vertex_checking
+First vertex offset from 3D curve start; distance check omitted when vtx==2 parameter set. Analyzer masks V1 discrepancy while checking V2. Reproduces line 533 defect.
+
+### Gp155 — ShapeAnalysis_Edge.CheckCurve3dWithPCurve pcurve_extraction_failure
+Empty P-curve representation with null curve data; extraction fails silently at FAIL1 status. Analyzer masks missing parametric curve without reporting diagnostic. Reproduces line 391 defect.
 
 ### A105 — Regression OCC 6.9.1 → 7.4.0: colours stop appearing on certain STEP files
 - **Category**: §12.6 assembly hierarchy (sub-class: appearance regression across kernel versions)

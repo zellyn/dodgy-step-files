@@ -1,0 +1,54 @@
+ISO-10303-21;
+/* Gn150 - Trimmed B-spline curve with periodic basis wrapped incorrectly
+   Defect: Periodic Geom_BSplineCurve wrapped in Geom_TrimmedCurve, placed on edge.
+   Trimming bounds do not align with period boundaries. SameParameter healing
+   must detect periodic wrapping and skip parameter clamping, else loses periodicity.
+   Curve: degree 3, 5 control points (periodic), trimmed to [0.2, 2.8] of [0, 2π].
+*/
+HEADER;
+FILE_DESCRIPTION(('Gn150 - Trimmed periodic B-spline basis detection'),'2;1');
+FILE_NAME('Gn150.stp','2026-06-17T00:00:00',('auto'),(''),
+  'auto','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+/* 5 control points for periodic B-spline (closed curve) */
+#10=CARTESIAN_POINT('cp0',(1.0,0.0,0.0));
+#11=CARTESIAN_POINT('cp1',(0.707,0.707,0.0));
+#12=CARTESIAN_POINT('cp2',(0.0,1.0,0.0));
+#13=CARTESIAN_POINT('cp3',(-0.707,0.707,0.0));
+#14=CARTESIAN_POINT('cp4',(-1.0,0.0,0.0));
+/* Defect: BSpline is periodic (closed), degree 3, 5 poles.
+   For periodic curve: sum(mults) = n_poles + degree = 5 + 3 = 8
+   Periodic knot: (0, 0, 0, 0, π/2, π, 3π/2, 2π, 2π, 2π, 2π)
+   But TrimmedCurve restricts to [0.2, 2.8], breaking period alignment.
+   After SameParameter healing, without periodic detection, bounds would be
+   incorrectly clamped to [0.2, 2.8], losing the closed-curve semantics. */
+#100=B_SPLINE_CURVE_WITH_KNOTS('periodic_basis',3,
+  (#10,#11,#12,#13,#14),
+  .UNSPECIFIED.,.T.,.F.,
+  (4,2,2,2,4),
+  (0.0,1.57079633,3.14159265,4.71238898,6.28318531,6.28318531,6.28318531,6.28318531),
+  .UNSPECIFIED.);
+/* Edge geometry with one LINE reference for PRODUCT chain only */
+#110=CARTESIAN_POINT('origin',(0.0,0.0,0.0));
+#111=DIRECTION('dir',(1.0,0.0,0.0));
+#112=VECTOR('vec',#111,1.0);
+#113=LINE('ref_axis',#110,#112);
+#9990=APPLICATION_CONTEXT('automotive_design');
+#9000=PRODUCT_CONTEXT('',#9990,'mechanical');
+#9001=PRODUCT('Gn150','Gn150','',(#9000));
+#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
+#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#9990,'design');
+#9004=PRODUCT_DEFINITION('','',#9002,#9003);
+#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
+#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
+#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
+#9020=GEOMETRIC_CURVE_SET('curve_set',(#113));
+#9022=GEOMETRICALLY_BOUNDED_WIREFRAME_SHAPE_REPRESENTATION('',(#9020),#9010);
+#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+ENDSEC;
+END-ISO-10303-21;
