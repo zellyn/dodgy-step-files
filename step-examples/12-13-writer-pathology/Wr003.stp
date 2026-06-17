@@ -1,5 +1,5 @@
-/* Wr003 - Final END-ISO-10303-21; without trailing newline - file ends mid-line */
 ISO-10303-21;
+/* Wr003 - Final END-ISO-10303-21; without trailing newline - file ends mid-line */
 HEADER;
 FILE_DESCRIPTION(('Wr003 - no final newline'),'2;1');
 FILE_NAME('Wr003.stp','2026-04-30T00:00:00',(''),(''),

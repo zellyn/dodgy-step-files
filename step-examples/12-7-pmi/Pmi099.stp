@@ -1,10 +1,10 @@
+ISO-10303-21;
 /* Pmi099 - Multiple SLOTs sharing axis (should be a PATTERN, but instances)
  * Defect: a producer authors three identical SLOT features sharing the same
  * axis direction with periodic spacing. The correct AP242 form is one SLOT
  * plus a rect-pattern feature record. Emitting them as three independent SLOT
  * features loses the parametric pattern relationship. Receivers cannot
  * reconstruct downstream pattern PMI from this form. */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Pmi099 - three coaxial SLOT features instead of a PATTERN'),'2;1');
 FILE_NAME('Pmi099.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');

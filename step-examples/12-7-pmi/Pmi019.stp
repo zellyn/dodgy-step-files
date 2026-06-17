@@ -1,9 +1,9 @@
+ISO-10303-21;
 /* Pmi019 - camera_model_d3 viewpoint not modeled per RP §9
    Defect: CAMERA_MODEL_D3 lacks the orthonormal/orientation conventions
    expected by RP §9. Specifically, this file's view-up direction is
    parallel to the view direction (both are along Z), not orthogonal,
    so a Gram-Schmidt orthonormalization is required to render correctly. */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Pmi019 - camera_model_d3 view-up parallel to view-direction'),'2;1');
 FILE_NAME('Pmi019.stp','2026-04-26T00:00:00',('catalog'),('cad'),

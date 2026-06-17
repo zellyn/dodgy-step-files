@@ -1,3 +1,4 @@
+ISO-10303-21;
 /* Gn019 - Sample count <2 in pcurve approximation
    Defect: when sampling a pcurve for openNURBS ON_BrepTrim, step-g
    sometimes gets fewer than 2 sample points, yielding a degenerate trim.
@@ -8,7 +9,6 @@
    any naive evaluator counts it as a single sample point.  The healer
    should enforce >= 2 samples and fall back to endpoint+midpoint+endpoint
    adaptive refinement. */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(
   ('Gn019 - degenerate pcurve with <2 distinct samples on cylinder seam'),

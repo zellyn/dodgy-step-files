@@ -1,5 +1,5 @@
-/* Wr025 - NAUO chain re-rooted incorrectly - component became top */
 ISO-10303-21;
+/* Wr025 - NAUO chain re-rooted incorrectly - component became top */
 HEADER;
 FILE_DESCRIPTION(('Wr025 - NAUO chain re-rooted'),'2;1');
 FILE_NAME('Wr025.stp','2026-04-30T00:00:00',(''),(''),

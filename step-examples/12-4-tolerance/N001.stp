@@ -1,3 +1,4 @@
+ISO-10303-21;
 /* N001 - Tolerance hierarchy violation (vertex tol > edge tol > face tol)
  * Defect: After ShapeFix_Shape runs, vertex tolerance can exceed the tolerance
  * of its containing edge, and edge tolerance can exceed the tolerance of its
@@ -7,7 +8,6 @@
  * Reproducer: face declares uncertainty 1e-7, edges/vertices in the same
  * representation context have implied healing tolerances 1e-3 / 1e-2.
  */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('N001 tolerance hierarchy violation vertex>edge>face'),'2;1');
 FILE_NAME('N001.stp','2026-04-26T00:00:00',(''),(''),

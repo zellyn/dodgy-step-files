@@ -1,3 +1,4 @@
+ISO-10303-21;
 /* Tfa013 - Face area exceeds limit (needs split)
  * Defect: one face dominates the model's area budget (e.g., a single huge
  * skin face on a long thin part). Downstream meshers produce uneven
@@ -7,7 +8,6 @@
  * Reproducer: ADVANCED_FACE on PLANE covering a 10000x10000 mm patch
  * (1.0e8 mm^2) - dominates a model with otherwise sub-mm features.
  */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Tfa013 face area exceeds limit'),'2;1');
 FILE_NAME('Tfa013.stp','2026-04-26T00:00:00',(''),(''),

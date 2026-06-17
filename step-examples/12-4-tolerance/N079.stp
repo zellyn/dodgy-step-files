@@ -1,3 +1,4 @@
+ISO-10303-21;
 /* N079 - ShapeAnalysis_Edge.CheckPointsAreOnEdges sphere-pole
  * Defect: Edge endpoint at a spherical pole (north or south); the on-edge
  * check uses parameter-space and a pole has indeterminate U coordinate.
@@ -8,7 +9,6 @@
  * parameter. Result: vertex at pole incorrectly marked as NOT on edge,
  * triggering false repairs.
  */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('N079 CheckPointsAreOnEdges sphere-pole singularity'),'2;1');
 FILE_NAME('N079.stp','2026-06-15T00:00:00',(''),(''),

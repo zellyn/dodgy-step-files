@@ -1,8 +1,8 @@
+ISO-10303-21;
 /* Gn072 - ShapeUpgrade_SplitSurface explicit-knot-spec mismatch
    Defect: B-spline surface declares .UNIFORM_KNOTS. but knot vectors have
    non-uniform spacing. Init() follows the tag and produces incorrect splits
    because actual spacing contradicts declared uniformity. */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Gn072 - B-spline surface knot uniformity mismatch','2;1');
 FILE_NAME('Gn072.stp','2026-06-16T00:00:00',('auto-generated'),(''),

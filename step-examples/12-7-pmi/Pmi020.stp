@@ -1,10 +1,10 @@
+ISO-10303-21;
 /* Pmi020 - Saved view missing required mapped_item
    Defect: For Saved Views, the DRAUGHTING_MODEL.items list must include a
    MAPPED_ITEM linking to the underlying draughting model. Files lacking
    the mapped_item are interpreted as "all PMI visible" by the SFA
    validator. This file's saved-view DRAUGHTING_MODEL contains only
    annotation_occurrences and no mapped_item. */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Pmi020 - saved view missing mapped_item'),'2;1');
 FILE_NAME('Pmi020.stp','2026-04-26T00:00:00',('catalog'),('cad'),

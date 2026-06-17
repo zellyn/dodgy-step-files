@@ -1,10 +1,10 @@
+ISO-10303-21;
 /* N118 — BRepLib.UpdateEdgeTol with-pcurve-discontinuity
  * Defect: edge whose pcurve has a C0 discontinuity in the middle; UpdateEdgeTol
  * samples uniformly and the discontinuity contaminates one sample's tolerance
  * calculation, inflating the entire edge tolerance to hide the discontinuity
  * instead of reporting the failure to heal it.
  */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('N118 UpdateEdgeTol pcurve C0 discontinuity'),'2;1');
 FILE_NAME('N118.stp','2026-06-15T00:00:00',(''),(''),

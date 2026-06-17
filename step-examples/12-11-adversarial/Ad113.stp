@@ -1,3 +1,4 @@
+ISO-10303-21;
 /* Ad113 - Symlink swap between read of .input.stp and read of .stp
  * (sibling-pair TOCTOU)
  * Defect: the cad/research validator pairs each .stp fixture with an
@@ -12,7 +13,6 @@
  * IMPORTANT: this fixture documents the scenario in this header
  * comment; no real symlink is created in the repository (cross-platform
  * unfriendly). Provenance tier: cross-file-state. */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Ad113 - sibling-pair TOCTOU race symlink swap .input.stp vs .stp'),'2;1');
 FILE_NAME('Ad113.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');

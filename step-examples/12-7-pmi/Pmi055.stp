@@ -1,3 +1,4 @@
+ISO-10303-21;
 /* Pmi055 - AP242 hole feature missing required attribute / inconsistent dims
    Defect: A counterbore hole feature is encoded with three dimensional
    sizes (drill diameter, counterbore diameter, counterbore depth), but
@@ -7,7 +8,6 @@
    drill_depth > counterbore_depth is violated. Also missing from this
    file is a tip_angle for the drill, which AP242 hole-feature semantics
    would require for a drilled-and-counterbored feature. */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Pmi055 - hole feature inconsistent dimensions',
   'CAx-IF Rec.Pracs.---PMI Rep & Pres---v4.1'),'2;1');

@@ -1,10 +1,10 @@
+ISO-10303-21;
 /* Pmi136 - FILLET radius >= adjacent face's smallest extent (doesn't fit)
  * Defect: a fillet feature on the edge of a 30x30 mm face has radius
  * 40 mm. The rolling-ball would not fit anywhere on the host face
  * (smallest extent = 30 mm); the fillet cannot be constructed.
  * Receivers either clamp the radius, reject, or attempt construction
  * and produce self-intersecting surfaces. */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Pmi136 - FILLET radius exceeds host face smallest extent'),'2;1');
 FILE_NAME('Pmi136.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');

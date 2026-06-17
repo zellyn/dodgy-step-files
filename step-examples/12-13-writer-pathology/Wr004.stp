@@ -1,5 +1,5 @@
-/* Wr004 - Tab characters used for line continuation indentation inconsistently - mix of TAB and SPACE on continuation lines */
 ISO-10303-21;
+/* Wr004 - Tab characters used for line continuation indentation inconsistently - mix of TAB and SPACE on continuation lines */
 HEADER;
 FILE_DESCRIPTION(('Wr004 - inconsistent tab/space indent'),'2;1');
 FILE_NAME('Wr004.stp','2026-04-30T00:00:00',(''),(''),

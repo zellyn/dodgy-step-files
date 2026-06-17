@@ -1,3 +1,4 @@
+ISO-10303-21;
 /* Pmi113 - COMPOSITE_FEATURE with empty sub-features list
  * Defect: a SHAPE_ASPECT carrying composite_feature semantics has no
  * SHAPE_ASPECT_RELATIONSHIP children. The "composite" is empty -- no
@@ -5,7 +6,6 @@
  * deleted in the source CAD but the composite wrapper survived.
  * Receivers either treat as a degenerate single feature, drop the
  * composite entirely, or reject. */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Pmi113 - composite_feature with empty sub-features'),'2;1');
 FILE_NAME('Pmi113.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');

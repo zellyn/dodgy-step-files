@@ -1,9 +1,9 @@
+ISO-10303-21;
 /* Gn095 - ShapeUpgrade_ConvertSurfaceToBezierBasis 1x1-control-grid
    Defect: degenerate B-spline surface with only 1 control point (collapsed
    to a single point); converter doesn't reject and produces a 0-patch Bezier
    surface. The surface has degree (3,3) but 1x1 control net -> invalid.
    Proper validation should reject single-point grids; conversion yields empty. */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Gn095 - ConvertSurfaceToBezierBasis 1x1 collapsed grid'),'2;1');
 FILE_NAME('Gn095.stp','2026-06-15T00:00:00',('auto-generated'),(''),

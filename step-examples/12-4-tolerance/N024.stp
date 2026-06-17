@@ -1,3 +1,4 @@
+ISO-10303-21;
 /* N024 - Edge geometry inconsistent with adjacent faces' actual intersection
  * Defect: After local edits (face translation, blend suppression, partial
  * defeaturing), an edge's stored 3D curve no longer matches the geometric
@@ -6,7 +7,6 @@
  * Reproducer: edge curve stored as line at z=0, but adjacent host plane was
  * later translated to z=0.01 -- true intersection is at z=0.01, not z=0.
  */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('N024 stale edge geometry vs adjacent face intersection'),'2;1');
 FILE_NAME('N024.stp','2026-04-26T00:00:00',(''),(''),

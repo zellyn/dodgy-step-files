@@ -1,8 +1,8 @@
+ISO-10303-21;
 /* Gn075 - ShapeAnalysis_Curve.FillBndBox approximation-mode underestimate
    Defect: B-spline curve with sharp curvature peak between knots.
    FillBndBox in approximation mode uses discrete sampling instead of
    exact control-polygon analysis, reporting bbox 10% smaller than actual. */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Gn075 - Curvature peak bbox underestimate','2;1');
 FILE_NAME('Gn075.stp','2026-06-16T00:00:00',('auto-generated'),(''),

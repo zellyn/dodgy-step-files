@@ -1,3 +1,4 @@
+ISO-10303-21;
 /* Pf009 - Stack overflow when meshing with TBB pool from STEP import
    Pattern: large faces (each with hundreds of UV-evaluation cells)
    imported and then handed to BRepMesh_IncrementalMesh::SetParallelDefault
@@ -7,7 +8,6 @@
    Replicate to hundreds of large faces, each with thousands of edges, to
    reproduce the worker-pool stack-overflow on a real STEP import. The
    trigger is mesher recursion depth, not the file structure itself. */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Pf009 - large faces, TBB-meshing stack-overflow trigger'),'2;1');
 FILE_NAME('Pf009.stp','2026-04-26T00:00:00',('auto-generated'),(''),

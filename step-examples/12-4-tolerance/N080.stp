@@ -1,3 +1,4 @@
+ISO-10303-21;
 /* N080 - ShapeFix_ShapeTolerance.LimitTolerance recursive-only-vertex
  * Defect: LimitTolerance(shape, tmin, tmax, TopAbs_VERTEX); only-vertex mode
  * recursion should descend through faces+edges but skip them; recursion stops
@@ -8,7 +9,6 @@
  * face untouched. Vertices in other faces remain unprocessed, causing
  * inconsistent tolerance hierarchy.
  */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('N080 LimitTolerance recursive-only-vertex incomplete descent'),'2;1');
 FILE_NAME('N080.stp','2026-06-15T00:00:00',(''),(''),

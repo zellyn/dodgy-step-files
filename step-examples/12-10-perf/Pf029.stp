@@ -1,3 +1,4 @@
+ISO-10303-21;
 /* Pf029 - TDocStd_Document creation aborts process under VSCode server
    runtime (pythonocc-core #1428). `doc = TDocStd_Document(...)` triggers
    process abort under code-server / extension-host runtimes when reading
@@ -9,7 +10,6 @@
    Scaling-up: this fixture has assembly depth ~6 with multiple shape
    reps. Replicate to deeper / wider assemblies as needed. The trigger
    is the runtime environment (code-server) more than the file content. */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Pf029 - multi-level assembly that aborts under code-server'),'2;1');
 FILE_NAME('Pf029.stp','2026-04-26T00:00:00',('auto-generated'),(''),

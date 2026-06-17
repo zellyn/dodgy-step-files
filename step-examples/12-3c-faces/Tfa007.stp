@@ -1,3 +1,4 @@
+ISO-10303-21;
 /* Tfa007 - Strip face: face one-dimensional within tolerance
  * Defect: a face whose UV bounds collapse one parametric direction within
  * tolerance. The face is geometrically a thin strip; perpendicular
@@ -7,7 +8,6 @@
  * Reproducer: ADVANCED_FACE on a PLANE with two long parallel edges of
  * length 100 mm separated by 1e-7 mm and two short connecting edges.
  */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Tfa007 strip face one-dimensional'),'2;1');
 FILE_NAME('Tfa007.stp','2026-04-26T00:00:00',(''),(''),

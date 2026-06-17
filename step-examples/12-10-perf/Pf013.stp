@@ -1,3 +1,4 @@
+ISO-10303-21;
 /* Pf013 - Entity-count amplification: tiny file, many GB resident
    Pattern A: many tiny entities each holding O(N) references; parser
               builds an O(N) instance pointer table AND an O(N^2) reverse-
@@ -9,7 +10,6 @@
    referencing several neighbours, plus one HUB referenced by all. Scale
    to 5M points referencing 100 neighbours, or 10M tiny entities pointing
    at one hub, to trigger the reported 40 GB peak resident. */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Pf013 - entity-count amplification, fan-in to hub'),'2;1');
 FILE_NAME('Pf013.stp','2026-04-26T00:00:00',('auto-generated'),(''),

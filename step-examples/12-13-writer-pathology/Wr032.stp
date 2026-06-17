@@ -1,5 +1,5 @@
-/* Wr032 - Schema upgrade on export - AP203 input emitted as AP242 with synthesised stubs */
 ISO-10303-21;
+/* Wr032 - Schema upgrade on export - AP203 input emitted as AP242 with synthesised stubs */
 HEADER;
 FILE_DESCRIPTION(('Wr032 - schema upgrade AP203 -> AP242 with empty stubs'),'2;1');
 FILE_NAME('Wr032.stp','2026-04-30T00:00:00',(''),(''),

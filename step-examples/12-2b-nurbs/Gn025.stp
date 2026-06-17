@@ -1,3 +1,4 @@
+ISO-10303-21;
 /* Gn025 - Folded / non-injective BSpline surface (Jacobian flip)
    Defect: a B_SPLINE_SURFACE_WITH_KNOTS whose control net has interior
    rows that swap order, producing a fold where the Jacobian flips sign
@@ -8,7 +9,6 @@
    2 and 3) -- so the Jacobian flips sign in the (u,v) interior.
    Healer: reject with "non-injective surface parametrization"; or
    re-fit. */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(
   ('Gn025 - folded BSpline surface with swapped interior rows'),'2;1');

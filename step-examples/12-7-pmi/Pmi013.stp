@@ -1,3 +1,4 @@
+ISO-10303-21;
 /* Pmi013 - Counterbore/countersink emitted as separate dimensions with no compound link
    Defect: AP242 Ed.1 lacks compound-feature semantics. Workaround: emit
    counterbore as two unrelated DIMENSIONAL_SIZE instances (drill diameter
@@ -5,7 +6,6 @@
    tying them as one feature. SolidWorks Hole Wizard / Onshape thread
    features become plain holes on round-trip. This file shows three
    independent dimensions with NO compound-hole relationship. */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Pmi013 - counterbore separate dimensions with no link'),'2;1');
 FILE_NAME('Pmi013.stp','2026-04-26T00:00:00',('catalog'),('cad'),

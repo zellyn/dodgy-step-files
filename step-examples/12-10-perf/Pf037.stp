@@ -1,3 +1,4 @@
+ISO-10303-21;
 /* Pf037 - Two-pass loader: instantiation succeeds, second-pass Load fails on missing forward ref
    Defect: BRL-CAD step-g uses a two-pass model: pass 1 instantiates one
    C++ object per STEP entity, registering each via id; pass 2 walks the
@@ -16,7 +17,6 @@
    is too noisy to spot the specific WARNING line.
    Sources: BRL-CAD src/conv/step/STEPWrapper.cpp - WARNING is not valid
    message; entity_status[id] = STEP_LOAD_ERROR set but not propagated. */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(
   ('Pf037 - two-pass loader silently elides subgraph rooted at malformed forward ref'),

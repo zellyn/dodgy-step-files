@@ -1,10 +1,10 @@
+ISO-10303-21;
 /* Gn098 - ShapeAnalysis_Curve.IsPlanar exactly-2-points
    Defect: B-spline with only 2 control points (degree 1 line); IsPlanar's
    pole-sampling test trivially passes (line is in infinite planes), reporting
    planar with default plane. A 2-point degree-1 curve is a line segment,
    which lies in infinitely many planes; the default plane should not be auto-
    selected without explicit user direction. */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Gn098 - IsPlanar on 2-point degree-1 line'),'2;1');
 FILE_NAME('Gn098.stp','2026-06-15T00:00:00',('auto-generated'),(''),

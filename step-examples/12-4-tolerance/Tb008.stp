@@ -1,3 +1,4 @@
+ISO-10303-21;
 /* Tb008 - NURBS knot-quantum scaled by parameter range
  * Defect: B-spline curve has knot vector (0.0, 1e-2, 1e6). Inner knot
  * 1e-2 is "small" relative to range 1e6 (relative ~1e-8) but "large" in
@@ -6,7 +7,6 @@
  * Producers that re-parameterize curves into very large parametric
  * domains hit this regularly.
  */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Tb008 NURBS knot quantum relative-vs-absolute tolerance'),'2;1');
 FILE_NAME('Tb008.stp','2026-04-30T00:00:00',(''),(''),

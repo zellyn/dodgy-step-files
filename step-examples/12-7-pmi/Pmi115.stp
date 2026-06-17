@@ -1,3 +1,4 @@
+ISO-10303-21;
 /* Pmi115 - FLAT_PATTERN bend-radius < material thickness
  * Defect: in sheet-metal a bend's inside radius must be at least the
  * material thickness (a tighter bend tears or cracks). A flat_pattern
@@ -5,7 +6,6 @@
  * is invalid. Receivers either reject (manufacturability), warn,
  * or accept (silent producer of a bad K-factor / bad neutral-axis
  * geometry). */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Pmi115 - flat_pattern bend radius below material thickness'),'2;1');
 FILE_NAME('Pmi115.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');

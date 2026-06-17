@@ -1,10 +1,10 @@
+ISO-10303-21;
 /* Pmi060 - Tolerance datum description NULL on re-export
    Defect: An XCAF document carries a DATUM whose description string is
    empty (''). On re-export the empty string crosses an unchecked path
    in the writer and yields a NULL deref. (Mantis 0031825 / G085).
    Files like this one - DATUM with empty description - must be
    accepted; default the description rather than crash. */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Pmi060 - DATUM with empty description',
   'CAx-IF Rec.Pracs.---PMI Rep & Pres---v4.1'),'2;1');

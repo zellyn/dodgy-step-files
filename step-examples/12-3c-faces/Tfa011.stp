@@ -1,3 +1,4 @@
+ISO-10303-21;
 /* Tfa011 - Multiple outer wires (face needs split)
  * Defect: an ADVANCED_FACE is emitted with two (or more) FACE_OUTER_BOUND
  * records when STEP requires exactly one. Often the result of a botched
@@ -9,7 +10,6 @@
  * Reproducer: ADVANCED_FACE with two FACE_OUTER_BOUND records on PLANE
  * (two disjoint square loops on the same plane).
  */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Tfa011 multiple outer wires'),'2;1');
 FILE_NAME('Tfa011.stp','2026-04-26T00:00:00',(''),(''),

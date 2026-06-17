@@ -1,3 +1,4 @@
+ISO-10303-21;
 /* Gn001 - BSPLINE_SURFACE U knots duplicated without justifying multiplicity
    Defect: a B_SPLINE_SURFACE_WITH_KNOTS U knot vector contains a duplicated
    value (0.25, 0.25) NOT justified by the multiplicity list (which claims
@@ -5,7 +6,6 @@
    pair as a multiplicity-2 bump if it makes sense. The V vector here is
    strictly ascending (well-formed). See ISO 10303-42 6.4.18
    (b_spline_surface_with_knots). */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Gn001 - BSpline surface duplicated U knot, mult=1'),
   '2;1');

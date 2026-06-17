@@ -1,3 +1,4 @@
+ISO-10303-21;
 /* Tfa187 - ShapeAnalysis_CheckSmallFace.CheckPin pin-with-fillet
  * Defect: CheckPin's angle measurement detects a pin singularity by examining
  * pole convergence. When the pin's tip has been filleted (rounded), the
@@ -6,7 +7,6 @@
  * Reproducer: NURBS surface with convergent poles forming a near-pin at one end,
  * then filleted smooth poles at the actual tip.
  */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Tfa187 CheckPin pin-with-fillet'),'2;1');
 FILE_NAME('Tfa187.stp','2026-06-15T00:00:00',(''),(''),

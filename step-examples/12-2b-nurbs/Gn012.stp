@@ -1,3 +1,4 @@
+ISO-10303-21;
 /* Gn012 - C0 BSpline curve should be split into C1+ pieces
    Defect: a B_SPLINE_CURVE_WITH_KNOTS of degree 3 has an interior knot
    whose multiplicity equals the degree (3), which makes the curve only
@@ -6,7 +7,6 @@
    ShapeUpgrade_ShapeDivideContinuity / C0BSplineToSequenceOfC1BsplineCurve
    should split the curve at that location, emitting each piece as its
    own EDGE_CURVE with a shared vertex. */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(
   ('Gn012 - C0 join in BSpline curve (interior mult = degree)'),'2;1');

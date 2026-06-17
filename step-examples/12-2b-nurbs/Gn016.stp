@@ -1,3 +1,4 @@
+ISO-10303-21;
 /* Gn016 - Surface-of-revolution on ellipse: basis curve corruption on round-trip
    Defect: writing a Geom_SurfaceOfRevolution built on an ellipse to STEP
    and reading back yields a TRIMMED_CURVE basis instead of the original
@@ -7,7 +8,6 @@
    ellipse, instead of an ELLIPSE entity, and the SURFACE_OF_REVOLUTION
    axis differs slightly from the canonical (1,0,0) by 5e-5 radians.
    Sources: bug23203 / R002 / G107. */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(
   ('Gn016 - surface of revolution on ellipse, round-trip corruption'),'2;1');

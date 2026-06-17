@@ -1,10 +1,10 @@
+ISO-10303-21;
 /* Pmi111 - COMPOSITE_FEATURE with cyclic sub-feature reference (A -> B -> A)
  * Defect: composite feature A nominally contains sub-feature B; sub-feature
  * B in turn declares A as one of its sub-features. SHAPE_ASPECT_RELATIONSHIP
  * cycle creates infinite descent for receivers that materialize the
  * feature tree. Some kernels enter unbounded recursion, others detect
  * the cycle and reject, others silently break the cycle at first repeat. */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Pmi111 - composite_feature cyclic sub-feature reference'),'2;1');
 FILE_NAME('Pmi111.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');

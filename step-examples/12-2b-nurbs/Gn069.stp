@@ -1,8 +1,8 @@
+ISO-10303-21;
 /* Gn069 - ShapeAnalysis_Curve.GetSamplePoints BSpline knot-aware sampling
    Defect: B-spline with closely-spaced interior knots (0.5, 0.51, 0.52)
    triggers over-densification in knot-aware sampler, producing hundreds of
    samples in a tiny region instead of adaptive sampling. */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Gn069 - B-spline over-dense knot sampling','2;1');
 FILE_NAME('Gn069.stp','2026-06-16T00:00:00',('auto-generated'),(''),

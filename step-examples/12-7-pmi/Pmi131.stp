@@ -1,9 +1,9 @@
+ISO-10303-21;
 /* Pmi131 - THREAD with claimed-fit-class string outside the standard set
  * Defect: a thread feature carries fit_class 'X1', which is not a
  * recognized UNJ/UN/ISO fit-class designator (1A/2A/3A for external,
  * 1B/2B/3B for internal). Inspection-aware receivers cannot map the
  * tolerance to a real grade. */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Pmi131 - THREAD with non-existent fit class string'),'2;1');
 FILE_NAME('Pmi131.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');

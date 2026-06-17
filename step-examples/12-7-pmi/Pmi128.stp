@@ -1,9 +1,9 @@
+ISO-10303-21;
 /* Pmi128 - MARKING placement plane perpendicular to marked surface
  * Defect: a marking SHAPE_ASPECT references a host face with normal
  * (0,0,1) but its own AXIS2_PLACEMENT_3D normal is (1,0,0). The marking
  * draw direction is into the part rather than parallel to the marked face.
  * Receivers either rotate the placement, error, or render the text edge-on. */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Pmi128 - MARKING placement plane perpendicular to host face'),'2;1');
 FILE_NAME('Pmi128.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');

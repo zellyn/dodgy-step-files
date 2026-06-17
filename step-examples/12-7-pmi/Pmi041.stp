@@ -1,3 +1,4 @@
+ISO-10303-21;
 /* Pmi041 - dimensional_size vs dimensional_location confusion
    Defect: Hole-diameter PMI is encoded as DIMENSIONAL_LOCATION (used for
    curved-distance / center-to-center) instead of DIMENSIONAL_SIZE.
@@ -5,7 +6,6 @@
    used for what is conceptually a flat diameter, deviating from the
    AP242 RP table. The result: downstream MBD pipelines mis-classify
    the dimension. NIST SFA reports S061 and S039 capture this. */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Pmi041 - dimensional_size vs location confusion',
   'CAx-IF Rec.Pracs.---PMI Rep & Pres---v4.1'),'2;1');

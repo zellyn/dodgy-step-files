@@ -1,9 +1,9 @@
+ISO-10303-21;
 /* Gn125 - ShapeUpgrade_SplitSurface.SetVSplitValues partial-domain
    Defect: split values that cover only part of V domain (e.g. [0.3, 0.7]
    for V in [0,1]); SetVSplitValues clips silently leaving unprocessed
    regions. The surface is split only in the range [0.3,0.7] in V, while
    [0,0.3) and (0.7,1] remain unprocessed. */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Gn125 - BSpline surface partial V-domain split'),
   '2;1');

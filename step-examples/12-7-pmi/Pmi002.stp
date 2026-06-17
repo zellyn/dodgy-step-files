@@ -1,3 +1,4 @@
+ISO-10303-21;
 /* Pmi002 - Blank/hidden dimensions exported as semantic dimensions
    Defect: CAD users hide a dimension's value (blank dimension) so that only
    extension lines remain as visual aids. Such a dimension is purely
@@ -5,7 +6,6 @@
    same shape_aspect: one is the real dimension, the other is the blank
    dimension. The blank one inflates semantic-PMI counts and produces
    phantom semantic content with no real toleranced value. */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Pmi002 - blank dimension emitted as semantic'),'2;1');
 FILE_NAME('Pmi002.stp','2026-04-26T00:00:00',('catalog'),('cad'),

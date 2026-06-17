@@ -1,3 +1,4 @@
+ISO-10303-21;
 /* Pmi118 - FLAT_PATTERN bend axis not parallel to bend line
  * Defect: a sheet-metal bend's axis (the rotation axis) must lie along
  * the bend line. A producer that emits bend_axis = X-direction but
@@ -6,7 +7,6 @@
  * project the axis onto the line (silent), reject (geometric
  * inconsistency), or accept and produce a fold geometry that does
  * not match the intended bend. */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Pmi118 - flat_pattern bend axis not parallel to bend line'),'2;1');
 FILE_NAME('Pmi118.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');

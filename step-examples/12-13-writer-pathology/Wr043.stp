@@ -1,10 +1,10 @@
+ISO-10303-21;
 /* Wr043 - Writer emits raw UTF-8 bytes in string literal where Ed.2
  * mandates \X\ / \X2\ escape.
  * Defect: FILE_DESCRIPTION declares Edition 2 ('2;1'); a PRODUCT name
  * carries raw UTF-8 bytes for non-ASCII characters. Edition-2 readers
  * see ISO-8859-1 nonsense; only Edition-3 readers (UTF-8 default)
  * decode by accident. */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Wr043 - raw UTF-8 in Ed.2 string literal'),'2;1');
 FILE_NAME('Wr043.stp','2026-04-30T00:00:00',(''),(''),'cad-research-suite','','');

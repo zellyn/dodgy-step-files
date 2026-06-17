@@ -1,3 +1,4 @@
+ISO-10303-21;
 /* N032 - Tolerance type entity coverage: AP242 tolerance entities dropped on import
  * Defect: STEP file uses an AP242 tolerance entity (e.g.
  * RUNOUT_TOLERANCE_WITH_VALUES, UNEQUALLY_DISPOSED_GEOMETRIC_TOLERANCE,
@@ -6,7 +7,6 @@
  * Reproducer: file references an AP242 RUNOUT_TOLERANCE entity tied to a
  * face -- AP214-only importers drop it silently.
  */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('N032 AP242 RUNOUT_TOLERANCE_WITH_VALUES dropped on import'),'2;1');
 FILE_NAME('N032.stp','2026-04-26T00:00:00',(''),(''),

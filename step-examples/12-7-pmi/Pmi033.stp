@@ -1,9 +1,9 @@
+ISO-10303-21;
 /* Pmi033 - placed_datum_target_feature shape mismatch
    Defect: The PLACED_DATUM_TARGET_FEATURE is typed 'circle' but its
    bounded geometric_item references a square face. The shape category
    declared and the bounding face/edges in the geometry are inconsistent.
    Receivers should warn and attempt recovery from the geometric data. */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Pmi033 - placed_datum_target shape mismatch'),'2;1');
 FILE_NAME('Pmi033.stp','2026-04-26T00:00:00',('catalog'),('cad'),

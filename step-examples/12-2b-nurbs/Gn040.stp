@@ -1,9 +1,9 @@
+ISO-10303-21;
 /* Gn040 - ShapeAnalysis_Curve.FillBndBox B-spline approximate-mode undersample
    Defect: a B_SPLINE_CURVE_WITH_KNOTS in approximate mode (2-point sampling)
    used for bounding box calculation misses the inflection extremum in an
    S-curve geometry. The linear parameter grid with only two samples fails
    to capture the peak Z-coordinate between the endpoints. */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Gn040 - BSpline approximate undersample extremum miss','2;1');
 FILE_NAME('Gn040.stp','2026-06-16T00:00:00',('auto-generated'),(''),

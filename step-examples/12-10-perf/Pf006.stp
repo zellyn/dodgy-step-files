@@ -1,3 +1,4 @@
+ISO-10303-21;
 /* Pf006 - Quadratic self-intersection check on perforated sheets
    Pattern: a flat sheet with hundreds of small circular holes. The
    wire self-intersection check inside ShapeFix is O(n^2) per wire and
@@ -7,7 +8,6 @@
    the inner-bound circle pattern to ~1000 holes per sheet to trigger the
    pathological self-intersection-check time during STEPControl_Reader::
    TransferRoots. */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Pf006 - perforated sheet, quadratic self-intersect check'),'2;1');
 FILE_NAME('Pf006.stp','2026-04-26T00:00:00',('auto-generated'),(''),

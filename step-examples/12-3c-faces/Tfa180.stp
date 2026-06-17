@@ -1,3 +1,4 @@
+ISO-10303-21;
 /* Tfa180 - ShapeFix_Face.FixWiresTwoCoincEdges with-curved-edges
  * Defect: FixWiresTwoCoincEdges detects and fixes wires that share edges by
  * checking if both wires reference the same EDGE_CURVE; however, it only
@@ -5,7 +6,6 @@
  * edges), leaving the face with unmerged boundaries that violate manifold.
  * Reproducer: ADVANCED_FACE with two wires sharing a B-SPLINE_CURVE edge.
  */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Tfa180 FixWiresTwoCoincEdges curved edge'),'2;1');
 FILE_NAME('Tfa180.stp','2026-06-15T00:00:00',(''),(''),

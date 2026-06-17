@@ -1,3 +1,4 @@
+ISO-10303-21;
 /* Ad053 - Reference-to-reference chain in shape representation
    ----------------------------------------------------------------------
    Catalog section : §12.11 adversarial (sub-class: cyclic-reference / DoS)
@@ -20,7 +21,6 @@
      coloring (white/gray/black) DFS and emit E_SRR_CYCLE.
    ----------------------------------------------------------------------
 */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Ad053 - SRR chain forms a 3-cycle'),'2;1');
 FILE_NAME('Ad053.stp','2026-04-26T00:00:00',('auto-generated'),(''),

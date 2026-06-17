@@ -1,3 +1,4 @@
+ISO-10303-21;
 /* Pf028 - Rhino joins > 10k face polysurfaces in O(n^2) (K028)
    Rhino exposes "Do not join polysurfaces with more than ___ faces"
    as an explicit configuration cutoff - admission of a scale-related
@@ -9,7 +10,6 @@
    - one body with many faces (16 here, replicate to >10000 to trigger).
    Scaling-up: replicate the ADVANCED_FACE pattern to >10000 children of
    a single CLOSED_SHELL and the NAUO chain to >10 levels. */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Pf028 - Rhino-scale join threshold: deep + wide'),'2;1');
 FILE_NAME('Pf028.stp','2026-04-26T00:00:00',('auto-generated'),(''),

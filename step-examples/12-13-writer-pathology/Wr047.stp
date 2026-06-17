@@ -1,8 +1,8 @@
+ISO-10303-21;
 /* Wr047 - STEP import regressed by BOPAlog_AlertBadPositioning warnings.
  * Defect (FreeCAD #29723): two solids share a co-incident face (zero gap,
  * zero overlap). On import the receiver's BOP fuse pass alerts on every
  * such pair, which surfaces in some builds as Unknown C++ exception. */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Wr047 - co-incident face pair triggers BOP alert on receiver'),'2;1');
 FILE_NAME('Wr047.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');

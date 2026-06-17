@@ -1,3 +1,4 @@
+ISO-10303-21;
 /* Tfa017 - UnifySameDomain inflates vertex tolerance
  * Defect: USD merges vertices of unified faces and assigns aggregate
  * tolerance ~1e-1 instead of preserving 2e-7. Subsequent operations see
@@ -8,7 +9,6 @@
  * ~2e-7 via UNCERTAINTY_MEASURE_WITH_UNIT; after USD pass, the merged
  * vertex must not silently bump to ~1e-1.
  */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Tfa017 USD inflates vertex tolerance'),'2;1');
 FILE_NAME('Tfa017.stp','2026-04-26T00:00:00',(''),(''),

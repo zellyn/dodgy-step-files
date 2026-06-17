@@ -1,3 +1,4 @@
+ISO-10303-21;
 /* N097 - ShapeFix_ShapeTolerance.LimitTolerance same-min-and-max
  * Defect: Call LimitTolerance(shape, 0.001, 0.001) with identical min and max.
  * Expected: "set all tolerances to 0.001". Actual: condition iamax = (tmax >= tmin)
@@ -8,7 +9,6 @@
  * LimitTolerance with tmin=tmax=0.001. Tolerances should all become 0.001,
  * but implementation leaves them unchanged.
  */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('N097 LimitTolerance same-min-and-max no-op'),'2;1');
 FILE_NAME('N097.stp','2026-06-15T00:00:00',(''),(''),

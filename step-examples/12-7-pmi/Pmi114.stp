@@ -1,3 +1,4 @@
+ISO-10303-21;
 /* Pmi114 - FLAT_PATTERN bend-angle exceeding 180 deg
  * Defect: AP242 flat_pattern describes the unfolded sheet-metal layout
  * with bend-angle relationships. A bend angle is bounded by 0 < angle < 180
@@ -6,7 +7,6 @@
  * the bent sheet would self-intersect. Receivers either reject, clamp
  * to 180, or accept and produce an unrolled layout that contradicts
  * the bend definition. */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Pmi114 - flat_pattern bend angle exceeds 180 deg'),'2;1');
 FILE_NAME('Pmi114.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');

@@ -1,3 +1,4 @@
+ISO-10303-21;
 /* Gn013 - Convert elementary <-> BSpline (round-trip degradation)
    Defect: the producer represented a unit-radius cylindrical surface as a
    rational B_SPLINE_SURFACE_WITH_KNOTS of degree (2,1), even though a
@@ -15,7 +16,6 @@
      knots  : (3, 2, 3) over (0.0, 0.5, 1.0)  -- C1 quarter-arc join.
    The V-direction is degree 1 (linear extrusion +z by 1.0).  This is
    the standard exact NURBS half-cylinder. */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(
   ('Gn013 - cylinder represented as rational BSpline (NURBS-everywhere)'),

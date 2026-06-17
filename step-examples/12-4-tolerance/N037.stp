@@ -1,3 +1,4 @@
+ISO-10303-21;
 /* N037 - Curve gaps between adjacent segments after format conversion (LOTAR exchange defect)
  * Defect: After format conversion the endpoints of adjacent 3D curve segments
  * along a wire no longer meet within geometric tolerance -- a class introduced
@@ -8,7 +9,6 @@
  * control points of segment N do not equal start control points of segment
  * N+1 within the file's geometric_representation_context tolerance.
  */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('N037 curve segment gap after format conversion LOTAR'),'2;1');
 FILE_NAME('N037.stp','2026-04-26T00:00:00',(''),(''),

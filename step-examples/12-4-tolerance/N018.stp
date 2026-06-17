@@ -1,3 +1,4 @@
+ISO-10303-21;
 /* N018 - representation_context null/wrong type -> fall back to read.precision
  * Defect: When a STEP file lacks a recognizable
  * geometric_representation_context_with_uncertainty (or attaches the wrong
@@ -7,7 +8,6 @@
  * Reproducer: file uses bare GEOMETRIC_REPRESENTATION_CONTEXT (no
  * GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT), so receivers must invent a tolerance.
  */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('N018 representation_context lacks uncertainty fallback'),'2;1');
 FILE_NAME('N018.stp','2026-04-26T00:00:00',(''),(''),

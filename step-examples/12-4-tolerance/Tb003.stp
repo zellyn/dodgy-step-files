@@ -1,3 +1,4 @@
+ISO-10303-21;
 /* Tb003 - Vertex<edge<face hierarchy holds in mm but flips after rescale to m
  * Defect: Three UNCERTAINTY_MEASURE_WITH_UNIT entries (1e-6, 1e-5, 1e-4)
  * label vertex/edge/face. The OCCT-style invariant tol(V) <= tol(E) <= tol(F)
@@ -7,7 +8,6 @@
  * inverts the hierarchy. Same input file, two scaling policies, two
  * post-import topologies of the tolerance hierarchy.
  */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Tb003 hierarchy holds in mm inverts after rescale to m'),'2;1');
 FILE_NAME('Tb003.stp','2026-04-30T00:00:00',(''),(''),

@@ -1,10 +1,10 @@
+ISO-10303-21;
 /* Gn041 - ShapeAnalysis_Surface.NextValueOfUV C0-discontinuity at knot
    Defect: a B_SPLINE_SURFACE_WITH_KNOTS with a C0 continuity discontinuity
    (multiplicity = degree) at an interior U-knot causes Newton iteration in
    NextValueOfUV() to converge to the wrong-side solution. The iterator
    lacks checks for C0 knots and uses derivatives that are invalid at the
    discontinuity, leading to incorrect projected points. */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Gn041 - BSpline surface C0 knot Newton divergence','2;1');
 FILE_NAME('Gn041.stp','2026-06-16T00:00:00',('auto-generated'),(''),

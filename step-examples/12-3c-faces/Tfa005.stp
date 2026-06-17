@@ -1,3 +1,4 @@
+ISO-10303-21;
 /* Tfa005 - Periodic face given by single belt wire (degenerate pole case)
  * Defect: a periodic surface (sphere, cone, toroidal pole) is bounded
  * by a single closed wire that wraps once around the periodic
@@ -17,7 +18,6 @@
  * For coverage we also include a sphere face bounded by a single
  * equatorial belt - same pole-pair degeneracy, two natural poles.
  */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Tfa005 periodic single belt wire'),'2;1');
 FILE_NAME('Tfa005.stp','2026-04-26T00:00:00',(''),(''),

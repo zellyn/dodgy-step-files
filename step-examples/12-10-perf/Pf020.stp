@@ -1,3 +1,4 @@
+ISO-10303-21;
 /* Pf020 - OCAF modification-delta leak on long-running healing test
    suites (quaoar B013).  OCAF's modification-delta mechanism for
    array-style attributes (Active Data Mesh Attribute) skips a destructor
@@ -11,7 +12,6 @@
    on this file's attributes; observe RSS growth proportional to
    iteration count. The fixture only needs to look like representative
    in-memory state — the leak is in the OCAF Backup/Delta path. */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Pf020 - OCAF mod-delta leak: multi-attribute mesh file'),'2;1');
 FILE_NAME('Pf020.stp','2026-04-26T00:00:00',('auto-generated'),(''),

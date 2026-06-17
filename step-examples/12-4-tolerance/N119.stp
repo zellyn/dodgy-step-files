@@ -1,3 +1,4 @@
+ISO-10303-21;
 /* N119 — ShapeFix_ShapeTolerance.LimitTolerance with-very-large-shape
  * Defect: shape with coordinates 1e10; LimitTolerance's relative comparison
  * underflows because input tolerance has no scale awareness. A tolerance of
@@ -5,7 +6,6 @@
  * (tol / coord_magnitude) underflow to zero, causing LimitTolerance to reject
  * valid tolerances and report spurious violations.
  */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('N119 LimitTolerance scale underflow on large coords'),'2;1');
 FILE_NAME('N119.stp','2026-06-15T00:00:00',(''),(''),

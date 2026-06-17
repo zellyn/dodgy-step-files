@@ -1,5 +1,5 @@
-/* Wr036 - Re-export inverts solid orientation - inside becomes outside */
 ISO-10303-21;
+/* Wr036 - Re-export inverts solid orientation - inside becomes outside */
 HEADER;
 FILE_DESCRIPTION(('Wr036 - solid orientation inverted on re-export'),'2;1');
 FILE_NAME('Wr036.stp','2026-04-30T00:00:00',(''),(''),

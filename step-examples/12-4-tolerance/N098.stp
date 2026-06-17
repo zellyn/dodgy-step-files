@@ -1,3 +1,4 @@
+ISO-10303-21;
 /* N098 - ShapeAnalysis_ShapeTolerance.GlobalTolerance empty-shape
  * Defect: Call GlobalTolerance(shape) on a shape with no edges or vertices.
  * Expected: Return a flag indicating "no data available". Actual: Returns 0
@@ -7,7 +8,6 @@
  * (degenerate or placeholder geometry). Call GlobalTolerance(shape).
  * Returns 0, indistinguishable from a shape with true zero tolerance.
  */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('N098 GlobalTolerance empty-shape no-flag'),'2;1');
 FILE_NAME('N098.stp','2026-06-15T00:00:00',(''),(''),

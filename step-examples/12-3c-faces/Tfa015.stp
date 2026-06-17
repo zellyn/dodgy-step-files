@@ -1,3 +1,4 @@
+ISO-10303-21;
 /* Tfa015 - DropSmallSolids / debris solids from booleans
  * Defect: compound contains tiny / zero-volume sub-solids - Boolean
  * fragments, micron-scale residuals. Healer must detect by volume or
@@ -11,7 +12,6 @@
  * GEOMETRIC_REPRESENTATION_ITEM-list inside a single SHAPE_REPRESENTATION
  * standing in for the OCCT TopoDS_Compound the healer would receive.
  */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Tfa015 debris solids in compound'),'2;1');
 FILE_NAME('Tfa015.stp','2026-04-26T00:00:00',(''),(''),

@@ -1,9 +1,9 @@
+ISO-10303-21;
 /* Gn096 - ShapeAnalysis_Curve.FillBndBox infinite-bbox
    Defect: curve with NaN/inf control points; FillBndBox returns an unbounded
    bbox without flagging the invalid input. The curve contains at least one
    control point with inf or NaN coordinate, causing bbox calculation to fail
    silently and produce an infinite or undefined bounding box. */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Gn096 - FillBndBox with NaN/inf control points'),'2;1');
 FILE_NAME('Gn096.stp','2026-06-15T00:00:00',('auto-generated'),(''),

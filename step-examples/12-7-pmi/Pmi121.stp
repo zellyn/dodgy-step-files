@@ -1,3 +1,4 @@
+ISO-10303-21;
 /* Pmi121 - PROFILE_FEATURE depth direction not perpendicular to profile plane
  * Defect: an extruded profile_feature has a profile plane (where the
  * 2-D profile lies) and a sweep direction. For a straight extrude
@@ -8,7 +9,6 @@
  * that produces zero volume. Receivers either reject (degenerate
  * extrude), project the direction onto the normal (silent), or
  * accept and produce empty geometry. */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Pmi121 - profile_feature depth direction not perpendicular'),'2;1');
 FILE_NAME('Pmi121.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');

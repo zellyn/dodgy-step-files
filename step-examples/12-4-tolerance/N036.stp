@@ -1,3 +1,4 @@
+ISO-10303-21;
 /* N036 - Centroid validation breaks down when relative threshold goes below modeling tolerance
  * Defect: The relative centroid threshold (deviation / model size) breaks
  * down when the bounding-box space diagonal is below ~20 mm at 0.02 mm
@@ -7,7 +8,6 @@
  * 2e-2 mm; centroid value provided as a GVP -- relative 0.1% threshold
  * is 5e-3 mm, well below the 2e-2 modeling tolerance.
  */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('N036 centroid validation relative threshold below modeling tolerance'),'2;1');
 FILE_NAME('N036.stp','2026-04-26T00:00:00',(''),(''),

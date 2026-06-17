@@ -1,3 +1,4 @@
+ISO-10303-21;
 /* N021 - VRML/STEP origin convention mismatch within same producer
  * Defect: KiCad VRML export places Z=0 at the board *center*; STEP export
  * places Z=0 at the board *bottom*. Downstream tools mixing the two formats
@@ -7,7 +8,6 @@
  * sits at z=0 (board bottom) while the same producer's VRML would have
  * placed origin at z=0.8 (board middle).
  */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('N021 KiCad VRML/STEP origin convention mismatch'),'2;1');
 FILE_NAME('N021.stp','2026-04-26T00:00:00',(''),(''),

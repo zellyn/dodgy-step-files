@@ -1,3 +1,4 @@
+ISO-10303-21;
 /* Tfa001 - FACE_SURFACE.face_geometry is null
  * Defect: ADVANCED_FACE / FACE_SURFACE entity carries $ (NULL) in its
  * face_geometry slot, so the parent shell loses one face entirely and
@@ -5,7 +6,6 @@
  * a diagnostic and continue translation, not abort the surrounding shell.
  * Reproducer: ADVANCED_FACE with bounds list set but face_geometry = $.
  */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Tfa001 face_geometry null'),'2;1');
 FILE_NAME('Tfa001.stp','2026-04-26T00:00:00',(''),(''),

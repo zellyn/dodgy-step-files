@@ -1,3 +1,4 @@
+ISO-10303-21;
 /* Ad033 - Translator OOB write copying parsed string into packed C struct
    ----------------------------------------------------------------------
    Catalog section : §12.11 adversarial (sub-class: heap-overflow / OOB-write)
@@ -24,7 +25,6 @@
      Never use unchecked strcpy/memcpy on parser output.
    ----------------------------------------------------------------------
 */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Ad033 - oversized PRODUCT name overflows packed struct'),
   '2;1');

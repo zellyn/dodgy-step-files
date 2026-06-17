@@ -1,10 +1,10 @@
+ISO-10303-21;
 /* A099 - PartDesign Body export omits last-feature operation.
  * Defect (FreeCAD #25567): the visible Tip is a Pocket but the writer
  * emits the body without it. On disk: the MANIFOLD_SOLID_BREP has only
  * the pre-Pocket geometry. We model this as a 7-face cube + fillet body
  * that lacks the inner pocket walls/floor that a "tip-applied" body
  * would carry. */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('A099 - body missing last-feature pocket walls'),'2;1');
 FILE_NAME('A099.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');

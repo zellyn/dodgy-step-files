@@ -1,3 +1,4 @@
+ISO-10303-21;
 /* Ad084 - XCAFDoc_ShapeTool::FindSubShape crash building XCAF tree
    Source: STEP_PROBLEM_CATALOG.md §12.11 Ad084;
            mining 18-other-issues.md I003 (OCCT #1200, propeller.zip).
@@ -16,7 +17,6 @@
    SHAPE_REPRESENTATION that owns an empty (non-null but contentless)
    ADVANCED_FACE; the XCAF tree builder walks the face's bounds list
    and dereferences a null inner shell. License-clean: synthesized. */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(
   ('Ad084 - XCAF FindSubShape null-deref probe'),

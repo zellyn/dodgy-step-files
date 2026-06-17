@@ -1,5 +1,5 @@
-/* Wr005 - Floating-point format inconsistency within one file - same magnitude expressed three different ways */
 ISO-10303-21;
+/* Wr005 - Floating-point format inconsistency within one file - same magnitude expressed three different ways */
 HEADER;
 FILE_DESCRIPTION(('Wr005 - inconsistent float formatting'),'2;1');
 FILE_NAME('Wr005.stp','2026-04-30T00:00:00',(''),(''),

@@ -1,9 +1,9 @@
+ISO-10303-21;
 /* A102 - Cap part exports as STEP that downstream slicers flag as
  * damaged (open shell wrapped as solid).
  * Defect (FreeCAD #29647): a thin-walled Cap body has one face missing
  * from its outer shell, but the writer wraps the result as
  * MANIFOLD_SOLID_BREP. Slicers (Orca, Bambu) reject as non-manifold. */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('A102 - cap body open shell wrapped as solid'),'2;1');
 FILE_NAME('A102.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');

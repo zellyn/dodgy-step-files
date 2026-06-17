@@ -1,9 +1,9 @@
+ISO-10303-21;
 /* Pmi096 - SLOT depth >= host face thickness (through-slot in non-through context)
  * Defect: a SLOT feature on a 5 mm-thick plate with slot_depth=8 mm. The slot
  * passes entirely through the host, but the feature definition does not declare
  * end-condition='through'. Receivers either auto-promote to a through-feature,
  * accept and silently produce a defective solid, or reject. */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Pmi096 - SLOT depth exceeds host face thickness'),'2;1');
 FILE_NAME('Pmi096.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');

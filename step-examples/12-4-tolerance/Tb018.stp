@@ -1,3 +1,4 @@
+ISO-10303-21;
 /* Tb018 - UNCERTAINTY value of exactly zero -- no fuzzy compare requested
  * Defect: UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.0)) declares zero
  * tolerance. Receiver A respects it: every comparison is exact equality;
@@ -6,7 +7,6 @@
  * identically to a normal file. The producer's request for exact arithmetic
  * may or may not be honoured.
  */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Tb018 zero declared uncertainty'),'2;1');
 FILE_NAME('Tb018.stp','2026-04-30T00:00:00',(''),(''),

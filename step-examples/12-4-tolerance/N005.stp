@@ -1,3 +1,4 @@
+ISO-10303-21;
 /* N005 - ShapeUpgrade_ShapeDivideClosed leaves invalid SameParameter state
  * Defect: Splitting a closed periodic face/solid (cylinder/torus seam) returns
  * a result whose new edges are not SameParameter; BRepCheck reports invalid
@@ -6,7 +7,6 @@
  * the seam; the new seam edges carry same_sense=.F. and inconsistent
  * pcurve/3D pairings indicating the splitter did not call SameParameter.
  */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('N005 ShapeDivideClosed leaves invalid SameParameter'),'2;1');
 FILE_NAME('N005.stp','2026-04-26T00:00:00',(''),(''),

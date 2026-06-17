@@ -1,3 +1,4 @@
+ISO-10303-21;
 /* N038 - Patrikalakis interval-solid violation: face-pair gap exceeds bound
  * Defect: Adjacent faces are not "approximately equal" to an interval solid:
  * the maximum gap between any two trimmed surfaces along their shared edge
@@ -7,7 +8,6 @@
  * a shared edge is 5*epsilon while declared epsilon = 1e-5 mm. The face-pair
  * gap (5e-5) exceeds the tube radius epsilon.
  */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('N038 Patrikalakis interval-solid face-pair gap exceeds epsilon'),'2;1');
 FILE_NAME('N038.stp','2026-04-26T00:00:00',(''),(''),

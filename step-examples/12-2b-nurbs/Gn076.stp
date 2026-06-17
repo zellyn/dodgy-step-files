@@ -1,8 +1,8 @@
+ISO-10303-21;
 /* Gn076 - ShapeUpgrade_SplitSurface u-multiplicity loss
    Defect: B-spline surface with u-multiplicity vector (4,2,2,4).
    When SplitSurface splits at the interior knot (u=0.5), the multiplicity-2
    sub-knots are not transferred to sub-patches, losing the structural intent. */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Gn076 - u-multiplicity loss on surface split','2;1');
 FILE_NAME('Gn076.stp','2026-06-16T00:00:00',('auto-generated'),(''),

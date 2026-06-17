@@ -1,10 +1,10 @@
+ISO-10303-21;
 /* Pmi130 - THREAD with pitch <= 0
  * Defect: a thread feature on a host face has nominal_diameter 10 mm
  * but pitch -1.5 mm (negative). Pitch must be strictly positive; a
  * negative or zero pitch is geometrically meaningless. Receivers
  * either use the absolute value, reject, or accept and produce a
  * helix that crosses itself. */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Pmi130 - THREAD with non-positive pitch'),'2;1');
 FILE_NAME('Pmi130.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');

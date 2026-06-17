@@ -1,10 +1,10 @@
+ISO-10303-21;
 /* Pmi120 - PROFILE_FEATURE with self-intersecting profile (figure-eight loop)
  * Defect: a profile_feature emits a closed loop that crosses itself
  * (figure-eight). The orientation is ambiguous and the bounded region
  * is multi-valued -- a sweep of this profile produces a self-intersecting
  * solid. Receivers either reject (non-simple curve), split into two
  * loops heuristically, or accept and produce a kernel-specific solid. */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Pmi120 - profile_feature self-intersecting figure-eight'),'2;1');
 FILE_NAME('Pmi120.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');

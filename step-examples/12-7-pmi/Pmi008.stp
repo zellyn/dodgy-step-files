@@ -1,3 +1,4 @@
+ISO-10303-21;
 /* Pmi008 - Tolerance precision: missing decimal-place qualifier fallback chain
    Defect: Some CAD systems ignore tolerance values that lack an explicit
    decimal-place precision qualifier even when a default precision is set
@@ -6,7 +7,6 @@
    nominal 5.0 with tolerance +/-0.01, but neither the nominal nor the
    tolerance carries a value_format_type_qualifier (precision_qualifier),
    AND no global default is declared. */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Pmi008 - missing decimal-place qualifier fallback chain'),'2;1');
 FILE_NAME('Pmi008.stp','2026-04-26T00:00:00',('catalog'),('cad'),

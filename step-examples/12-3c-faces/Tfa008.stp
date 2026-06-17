@@ -1,3 +1,4 @@
+ISO-10303-21;
 /* Tfa008 - Pin / sliver face
  * Defect: a high-aspect-ratio degenerate face (knife-like, needle-like).
  * Two long edges plus tiny connecting edges, perpendicular distance below
@@ -9,7 +10,6 @@
  * Reproducer: 4-edge ADVANCED_FACE on PLANE with two 100 mm sides and
  * two 1e-7 mm connecting edges (sliver triangle/wedge).
  */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Tfa008 pin sliver face'),'2;1');
 FILE_NAME('Tfa008.stp','2026-04-26T00:00:00',(''),(''),

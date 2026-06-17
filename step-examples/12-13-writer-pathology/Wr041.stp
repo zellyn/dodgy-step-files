@@ -1,7 +1,7 @@
+ISO-10303-21;
 /* Wr041 - Writer emits .TRUE. / .FALSE. instead of canonical .T. / .F.
  * Defect: every boolean attribute uses the long-form .TRUE. / .FALSE.
  * spelling. Producer-side root cause for the receiver-side defect Le055. */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Wr041 - writer emits long-form boolean lexemes'),'2;1');
 FILE_NAME('Wr041.stp','2026-04-30T00:00:00',(''),(''),'cad-research-suite','','');

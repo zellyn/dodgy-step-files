@@ -1,3 +1,4 @@
+ISO-10303-21;
 /* Pf027 - Mixed-scale features produce millions of tiny faces post-tess
    (M023, D020). Geometrically valid mixed length scales (1500 mm shaft
    with 0.05 mm fillets, gear teeth with 0.01 mm chamfers) tessellate
@@ -10,7 +11,6 @@
    Scaling-up: the fixture has 4 fillet faces against a 1500 mm shaft
    surface. Replicate the fillet pattern to thousands of mixed-scale
    features per part to reproduce the tessellation budget exhaustion. */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Pf027 - mixed-scale shaft with sub-mm fillets'),'2;1');
 FILE_NAME('Pf027.stp','2026-04-26T00:00:00',('auto-generated'),(''),

@@ -1,3 +1,4 @@
+ISO-10303-21;
 /* Pmi112 - COMPOSITE_FEATURE depth-attribute conflict between sub-features
  * Defect: a composite feature aggregates a slot (depth=5 mm) and a
  * sub-groove (depth=8 mm). The sub-groove is meant to be inside the
@@ -5,7 +6,6 @@
  * attribute relationship is contradictory: a child cannot be deeper
  * than its parent. Receivers diverge: some take the larger as authoritative,
  * some take the parent as authoritative, some reject. */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Pmi112 - composite_feature depth conflict between parent and sub'),'2;1');
 FILE_NAME('Pmi112.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');

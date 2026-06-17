@@ -1,8 +1,8 @@
+ISO-10303-21;
 /* Gn061 - ShapeAnalysis_Curve.GetSamplePoints (3D 2pt LINE shortcut)
    Defect: LINE entity sampled with the 2-point shortcut; the 2 points don't
    capture trim limits, missing midspan information used downstream.
    This is a trimmed line with significant offset from endpoints. */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Gn061 - GetSamplePoints 2pt LINE shortcut misses trim','2;1');
 FILE_NAME('Gn061.stp','2026-06-16T00:00:00',('auto-generated'),(''),

@@ -1,8 +1,8 @@
+ISO-10303-21;
 /* Gn070 - ShapeUpgrade_ConvertCurve2dToBezier weight-based delegation
    Defect: 2D rational B-spline with weight 1.0 at all poles (degenerate rational)
    should delegate to non-rational path but converter fails to detect and creates
    unnecessary rational segments. */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Gn070 - Degenerate rational 2D B-spline','2;1');
 FILE_NAME('Gn070.stp','2026-06-16T00:00:00',('auto-generated'),(''),

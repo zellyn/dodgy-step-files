@@ -1,3 +1,4 @@
+ISO-10303-21;
 /* Pmi106 - SLOT/GROOVE/BOSS reference dangling host face (does not exist)
  * Defect: SHAPE_ASPECT and GEOMETRIC_ITEM_SPECIFIC_USAGE link three feature
  * definitions (SLOT, GROOVE, BOSS) to a host face that is referenced by
@@ -5,7 +6,6 @@
  * during the PMI link pass; silently dropping the linkage is a defect class
  * because the feature definitions become orphaned but still appear in the
  * file's PMI section. */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Pmi106 - SLOT/GROOVE/BOSS reference non-existent host face'),'2;1');
 FILE_NAME('Pmi106.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');

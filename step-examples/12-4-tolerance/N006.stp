@@ -1,3 +1,4 @@
+ISO-10303-21;
 /* N006 - Pcurve out of sync with 3D curve parameterization (sameparameter, geometric)
  * Defect: After reproject of a pcurve at non-uniform sampling without
  * rebasing parameter, parameter-by-parameter evaluation between 3D curve
@@ -7,7 +8,6 @@
  * applied while the underlying 3D BSpline keeps a uniform knot vector --
  * parameter mismatch within the same edge.
  */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('N006 Pcurve out of sync with 3D curve parameterization'),'2;1');
 FILE_NAME('N006.stp','2026-04-26T00:00:00',(''),(''),

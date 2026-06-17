@@ -1,9 +1,9 @@
+ISO-10303-21;
 /* Pmi018 - Identical Graphic PMI duplicated across saved views
    Defect: Two DRAUGHTING_MODELs for different saved views contain exactly
    the same set of annotation occurrences (same #refs). This indicates
    either a copy-paste bug or an export that did not differentiate views.
    Validators flag the duplication; importers may double-render. */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Pmi018 - identical PMI duplicated across saved views'),'2;1');
 FILE_NAME('Pmi018.stp','2026-04-26T00:00:00',('catalog'),('cad'),

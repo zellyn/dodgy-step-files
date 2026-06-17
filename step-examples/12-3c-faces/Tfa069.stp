@@ -1,8 +1,8 @@
+ISO-10303-21;
 /* Tfa069 - Lettering bottoms not closed in exported STEP.
  * Defect (FreeCAD #20588): each glyph's pocket-floor face emits an
  * EDGE_LOOP that is one edge short -- the floor has only 3 of the
  * required 4 boundary edges, leaving an open boundary. */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Tfa069 - pocket-floor EDGE_LOOP missing one edge'),'2;1');
 FILE_NAME('Tfa069.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');

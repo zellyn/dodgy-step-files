@@ -1,3 +1,4 @@
+ISO-10303-21;
 /* N012 - Setting face tolerance to a tiny value then ShapeFix produces vertex/vertex intersections
  * Defect: Programmatically reducing a face tolerance below the actual
  * geometric defect, then running ShapeFix, makes the fix algorithm interpret
@@ -7,7 +8,6 @@
  * sub-resolution tolerance falsely promotes near-coincident vertices to
  * "intersecting" vertices.
  */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('N012 sub-resolution face tolerance produces vertex intersections'),'2;1');
 FILE_NAME('N012.stp','2026-04-26T00:00:00',(''),(''),

@@ -1,3 +1,4 @@
+ISO-10303-21;
 /* U045 - CARTESIAN_TRANSFORMATION_OPERATOR scale parsed but never applied
    Defect: BRL-CAD step-g CartesianTransformationOperator::Load reads
    the optional `scale` REAL attribute (default 1.0) into a member
@@ -12,7 +13,6 @@
    defect.
    Sources: BRL-CAD src/conv/step/step-g/CartesianTransformationOperator.cpp
    Load reads `scale`; LoadONBrep is a stub that doesn't apply it. */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(
   ('U045 - CARTESIAN_TRANSFORMATION_OPERATOR scale ignored by step-g'),

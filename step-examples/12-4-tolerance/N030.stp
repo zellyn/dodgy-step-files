@@ -1,3 +1,4 @@
+ISO-10303-21;
 /* N030 - Non-canonical surface where canonical is expected (canonical recognition tolerance)
  * Defect: A surface that mathematically is a plane / cylinder / cone / sphere /
  * torus / linear extrusion is stored as a generic Geom_BSplineSurface.
@@ -8,7 +9,6 @@
  * than CYLINDRICAL_SURFACE -- canonical recognition tolerance is needed
  * to recover the analytic form.
  */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('N030 non-canonical BSpline surface where cylinder expected'),'2;1');
 FILE_NAME('N030.stp','2026-04-26T00:00:00',(''),(''),

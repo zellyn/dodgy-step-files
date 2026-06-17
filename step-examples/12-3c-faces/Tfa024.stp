@@ -1,3 +1,4 @@
+ISO-10303-21;
 /* Tfa024 - Glue Faces (coincident faces)
  * Defect: two ADVANCED_FACEs are geometrically coincident - duplicate
  * layers on the same underlying surface, often from botched Booleans.
@@ -7,7 +8,6 @@
  * Reproducer: two ADVANCED_FACEs on the same PLANE with identical
  * outer loops; both attached to the same OPEN_SHELL.
  */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Tfa024 glue faces coincident'),'2;1');
 FILE_NAME('Tfa024.stp','2026-04-26T00:00:00',(''),(''),

@@ -1,3 +1,4 @@
+ISO-10303-21;
 /* Tfa014 - FixFaceSize: small face below threshold
  * Defect: a face whose total area is below a user-configured small-face
  * threshold but is not strictly a spot/strip/pin. Common in meshing prep
@@ -7,7 +8,6 @@
  * Reproducer: a 0.05 x 0.05 mm fingernail-sized residual face on a model
  * whose other features are at the millimetre scale (2.5e-3 mm^2 area).
  */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Tfa014 small face below threshold'),'2;1');
 FILE_NAME('Tfa014.stp','2026-04-26T00:00:00',(''),(''),

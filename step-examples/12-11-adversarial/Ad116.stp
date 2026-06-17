@@ -1,10 +1,10 @@
+ISO-10303-21;
 /* Ad116 - Non-ASCII filename / path causes STEP import to fail.
  * Defect (FreeCAD #16886): the file content is well-formed Part-21
  * ASCII, but readers with locale-bound path handling fail to open it
  * when its filename or path contains non-ASCII bytes. The fixture file
  * itself is plain ASCII; the catalog entry documents the OS-level
  * filename-handling defect. */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Ad116 - well-formed file content; defect is at the OS path layer'),'2;1');
 FILE_NAME('Ad116.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');

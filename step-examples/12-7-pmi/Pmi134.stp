@@ -1,10 +1,10 @@
+ISO-10303-21;
 /* Pmi134 - CHAMFER with two contradictory angle attributes (45 deg AND 60 deg)
  * Defect: a chamfer feature carries two DIMENSIONAL_SIZE entries both
  * named 'chamfer_angle' but with different values (45 and 60 degrees).
  * AP242 chamfer features have a single angle attribute; emitting two
  * is a producer-side bug. Receivers either pick one (which?), reject,
  * or use the average. */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Pmi134 - CHAMFER with two contradictory angle attributes'),'2;1');
 FILE_NAME('Pmi134.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');

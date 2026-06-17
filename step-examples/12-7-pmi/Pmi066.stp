@@ -1,3 +1,4 @@
+ISO-10303-21;
 /* Pmi066 - Compound-feature semantics (HTC counterbore/countersink/counterdrill) per Hole RP
    Defect: A counterbore hole - which the draft Hole Information
    Recommended Practice would model as a single compound-hole feature
@@ -7,7 +8,6 @@
    (an AP242e2+ explicit hole feature). The simplified form (stacked
    dimensions) is used everywhere. (CAx-IF Round 56J §2.3.4.2;
    PMI v4.1 §5.1.9). */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Pmi066 - compound hole as stacked dims, no HTC entity',
   'CAx-IF Rec.Pracs.---PMI Rep & Pres---v4.1'),'2;1');

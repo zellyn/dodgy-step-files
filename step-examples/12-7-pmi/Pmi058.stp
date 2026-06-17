@@ -1,3 +1,4 @@
+ISO-10303-21;
 /* Pmi058 - PMI visibility / configuration loss across saved views
    Defect: PMI annotations defined in one configuration become
    universally visible after STEP round-trip because the
@@ -5,7 +6,6 @@
    declared (cfgA, cfgB), but the ANNOTATION_PLANE is shared between
    the saved views and there is no PROPERTY_DEFINITION linking
    visibility to configuration. (W027 SDHE-21917, SDHE-21787). */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Pmi058 - PMI visibility lost across configurations',
   'CAx-IF Rec.Pracs.---PMI Rep & Pres---v4.1'),'2;1');

@@ -1,9 +1,9 @@
+ISO-10303-21;
 /* Pmi087 - GEOMETRIC_VALIDATION_PROPERTY claimed volume disagrees with geometry
  * Defect: a 10x10x10 mm cube has actual volume 1000 mm^3. The fixture
  * emits a validation property claiming VOLUME_MEASURE(500.0) -- half the
  * computed value. The validation property exists exactly to detect this
  * round-trip drift; receivers must surface the disagreement. */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Pmi087 - validation property volume mismatch'),'2;1');
 FILE_NAME('Pmi087.stp','2026-04-30T00:00:00',(''),(''),'cad-research-suite','','');

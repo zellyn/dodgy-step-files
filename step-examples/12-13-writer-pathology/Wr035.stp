@@ -1,5 +1,5 @@
-/* Wr035 - Coordinate scale-factor applied twice - model 1000x larger or smaller than expected */
 ISO-10303-21;
+/* Wr035 - Coordinate scale-factor applied twice - model 1000x larger or smaller than expected */
 HEADER;
 FILE_DESCRIPTION(('Wr035 - double-applied unit conversion'),'2;1');
 FILE_NAME('Wr035.stp','2026-04-30T00:00:00',(''),(''),

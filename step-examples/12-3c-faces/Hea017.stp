@@ -1,9 +1,9 @@
+ISO-10303-21;
 /* Hea017 - Extrude of 2D Offset of Sketch fails STEP export as
  * non-manifold.
  * Defect (FreeCAD #23694): the offset trace self-intersected, producing
  * a B-spline EDGE_CURVE whose first and last control points are equal
  * but whose tangents are opposite -- a degenerate-loop edge. */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Hea017 - degenerate-loop B-spline EDGE_CURVE'),'2;1');
 FILE_NAME('Hea017.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');

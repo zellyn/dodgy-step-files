@@ -1,3 +1,4 @@
+ISO-10303-21;
 /* Tb013 - Coordinate at 1e-300 tests "near zero" only under denormalized math
  * Defect: A CARTESIAN_POINT has coordinate 1e-300 -- a denormalized double.
  * Receiver A: |x| < 1e-7 -> "near zero" yes. Receiver B with flush-to-zero
@@ -6,7 +7,6 @@
  * a normal-vector or transform computation. The "very small coordinate"
  * test depends on host floating-point environment, not on the file.
  */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Tb013 coordinate 1e-300 escape under denormalized math'),'2;1');
 FILE_NAME('Tb013.stp','2026-04-30T00:00:00',(''),(''),

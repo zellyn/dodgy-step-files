@@ -1,8 +1,8 @@
+ISO-10303-21;
 /* Pmi022 - Duplicate UUID on multiple identified_item
    Defect: The same UUID string is attached via UUID_ATTRIBUTE to two
    different identified_item entities. Violates uniqueness — receivers
    cannot resolve which item the UUID actually identifies. */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Pmi022 - duplicate UUID on different items'),'2;1');
 FILE_NAME('Pmi022.stp','2026-04-26T00:00:00',('catalog'),('cad'),

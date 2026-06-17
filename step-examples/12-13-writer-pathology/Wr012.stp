@@ -1,5 +1,5 @@
-/* Wr012 - Random #N numbering with no monotonic structure - instance numbers jump around */
 ISO-10303-21;
+/* Wr012 - Random #N numbering with no monotonic structure - instance numbers jump around */
 HEADER;
 FILE_DESCRIPTION(('Wr012 - non-monotonic instance numbers'),'2;1');
 FILE_NAME('Wr012.stp','2026-04-30T00:00:00',(''),(''),

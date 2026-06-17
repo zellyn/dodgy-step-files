@@ -1,7 +1,7 @@
+ISO-10303-21;
 /* Pmi049 - Tessellated geometry with no styled_item / color
    Defect: A TESSELLATED_SOLID has no STYLED_ITEM referencing it, so no
    color/style is set. Viewers default to neutral grey. NIST SFA S025. */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Pmi049 - tessellated solid missing styled_item',
   'CAx-IF Rec.Pracs.---PMI Rep & Pres---v4.1'),'2;1');

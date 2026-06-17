@@ -1,3 +1,4 @@
+ISO-10303-21;
 /* Tfa030 - Reshape recording / location handling lost
  * Defect: BRepTools_ReShape historically lost local TopLoc_Location
  * transforms when replacing sub-shapes. A face/edge/vertex deep inside
@@ -12,7 +13,6 @@
  * a face Located(trsf) in the OCC API. After ReShape, the location
  * must survive.
  */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Tfa030 reshape location lost'),'2;1');
 FILE_NAME('Tfa030.stp','2026-04-26T00:00:00',(''),(''),

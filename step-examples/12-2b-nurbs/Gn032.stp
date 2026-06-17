@@ -1,3 +1,4 @@
+ISO-10303-21;
 /* Gn032 - Pro/E non-uniform parameter scaling on 2D Geom2dAPI_Interpolate curves
    Defect: Pro/E emits 2D interpolation curves whose points have
    non-uniform parameter scaling (per-segment chord-length parameterization
@@ -10,7 +11,6 @@
    short last internal segment).  A reader that re-uniformizes will
    produce a different curve.
    Sources: Mantis 0028594, OCCT 353e6fa. */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(
   ('Gn032 - 2D BSpline pcurve with chord-length-style non-uniform knots'),

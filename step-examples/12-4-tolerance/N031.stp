@@ -1,3 +1,4 @@
+ISO-10303-21;
 /* N031 - Surface discontinuities introduced by translation (G0/G1/G2 break at shared edges)
  * Defect: G0/G1/G2 discontinuities introduced when neighbouring faces are
  * re-parametrized into different surface types during translation. Tangent-
@@ -6,7 +7,6 @@
  * planes differ by more than the resolution tolerance -- G1 break introduced
  * by translation independently re-fitting each patch.
  */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('N031 G0/G1/G2 surface discontinuities at shared edge'),'2;1');
 FILE_NAME('N031.stp','2026-04-26T00:00:00',(''),(''),

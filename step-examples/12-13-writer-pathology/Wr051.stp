@@ -1,3 +1,4 @@
+ISO-10303-21;
 /* Wr051 - step-g BRep imports cleanly but g-stl tessellation produces zero triangles silently
    Defect: a STEP file imports cleanly via BRL-CAD step-g (the .g file
    contains a Brep_2.s solid), but the downstream g-stl tessellator
@@ -14,7 +15,6 @@
    Sources: BRL-CAD users mailing list 2017 (Filip Binkiewicz):
    "ERROR(Brep_2.s): tessellation failure" + "0 triangles written";
    step-g side accepts the same file. */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(
   ('Wr051 - sliver-face BRep tessellates to zero triangles silently'),

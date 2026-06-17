@@ -1,10 +1,10 @@
+ISO-10303-21;
 /* Gn042 - ShapeUpgrade_ConvertSurfaceToBezierBasis knot-insertion thin patch
    Defect: a B_SPLINE_SURFACE_WITH_KNOTS with double knot multiplicity
    at an interior position causes the Bezier basis converter to produce
    degenerate (thin) Bezier patches after knot insertion. The thin patch
    filter fails to remove these patches because the extent check is
    insufficient. */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Gn042 - BSpline surface double knot thin patch','2;1');
 FILE_NAME('Gn042.stp','2026-06-16T00:00:00',('auto-generated'),(''),

@@ -1,9 +1,9 @@
+ISO-10303-21;
 /* Pmi100 - GROOVE width <= 0
  * Defect: AP242 GROOVE feature must have positive width (otherwise the
  * groove has no material removal). Producer emits groove_width=0.0
  * (a degenerate "groove" of zero opening). Receivers diverge: some
  * accept and produce a zero-volume feature, some reject. */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Pmi100 - GROOVE width zero (degenerate)'),'2;1');
 FILE_NAME('Pmi100.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');

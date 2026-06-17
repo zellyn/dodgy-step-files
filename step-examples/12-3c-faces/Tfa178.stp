@@ -1,3 +1,4 @@
+ISO-10303-21;
 /* Tfa178 - ShapeFix_Face.FixSmallAreaWire wire-touching-outer-corner
  * Defect: FixSmallAreaWire computes the area of inner wires to identify and
  * remove degenerate wires; when an inner wire's vertex exactly coincides with
@@ -5,7 +6,6 @@
  * the outer boundary and silently corrupts the face topology.
  * Reproducer: ADVANCED_FACE with inner wire whose vertex touches outer corner.
  */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Tfa178 FixSmallAreaWire corner touch'),'2;1');
 FILE_NAME('Tfa178.stp','2026-06-15T00:00:00',(''),(''),

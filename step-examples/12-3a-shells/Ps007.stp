@@ -1,5 +1,5 @@
-/* Ps007 - NAUO chain with ineffectual identity placement on child component - kernel accepts file silently; tier-3 introspection reveals child is at origin instead of its intended assembly position */
 ISO-10303-21;
+/* Ps007 - NAUO chain with ineffectual identity placement on child component - kernel accepts file silently; tier-3 introspection reveals child is at origin instead of its intended assembly position */
 HEADER;
 FILE_DESCRIPTION(('Ps007 pathological-success','Identity placement on assembly child'),'2;1');
 FILE_NAME('Ps007.stp','2026-04-26T00:00:00',(''),(''),'manual','','');

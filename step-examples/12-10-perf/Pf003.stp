@@ -1,3 +1,4 @@
+ISO-10303-21;
 /* Pf003 - 50-second read on a 20 MB STEP, single-threaded
    Pattern: a moderate-sized file (20 MB) with many independent entities
    and forward refs forces the C++ reader's serial parser + serial reference
@@ -7,7 +8,6 @@
    pattern; replicate the EDGE_CURVE/ADVANCED_FACE block to ~30000 entries
    plus a similar count of CARTESIAN_POINTs to reach ~20 MB and reproduce
    the ~50 s parse time documented in pythonocc-core #1244. */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Pf003 - 20 MB single-threaded reader scalability stub'),'2;1');
 FILE_NAME('Pf003.stp','2026-04-26T00:00:00',('auto-generated'),(''),

@@ -1,10 +1,10 @@
+ISO-10303-21;
 /* Pmi102 - GROOVE depth wraps around cylindrical face improperly
  * Defect: a circumferential GROOVE on a cylinder with radial depth=15 mm
  * but the host cylinder radius is only 10 mm. The groove cuts through the
  * cylinder's centerline -- the depth wraps past the axis and reappears on
  * the other side. Receivers must validate radial depth < host radius
  * for circumferential grooves. */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Pmi102 - GROOVE radial depth exceeds cylinder radius'),'2;1');
 FILE_NAME('Pmi102.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');

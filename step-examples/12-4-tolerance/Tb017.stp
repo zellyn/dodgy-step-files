@@ -1,10 +1,10 @@
+ISO-10303-21;
 /* Tb017 - Two parallel coincident faces separated by exactly declared tolerance
  * Defect: Two ADVANCED_FACEs on parallel PLANEs, offset 1.0e-6 mm,
  * declared tolerance 1.0e-6 mm. Strict-< receiver: keeps as separate
  * (thin slab). Lax-<= receiver: merges into one face (slab disappears).
  * The "thin slab" is alive or dead at the equality boundary.
  */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Tb017 coincident faces at exact declared tolerance separation'),'2;1');
 FILE_NAME('Tb017.stp','2026-04-30T00:00:00',(''),(''),

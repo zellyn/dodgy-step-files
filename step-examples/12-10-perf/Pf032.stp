@@ -1,3 +1,4 @@
+ISO-10303-21;
 /* Pf032 - Reader hangs during XCAF tree build on deep assembly.
  * Pattern: 8-level deep assembly with 10 instances per level (10^8
  * visits without memoisation). Production scale: 8 levels x 10
@@ -5,7 +6,6 @@
  * Notes: scaled-down representative - this fixture has 3 levels x 2
  * instances (8 NAUO chain links). Replicate to depth 8 with branching
  * 10 to reproduce the production hang. */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Pf032 test case','Hang during XCAF tree build on deep assembly'),'2;1');
 FILE_NAME('Pf032.stp','2026-04-30T00:00:00',(''),(''),'cad-research-suite','','');

@@ -1,3 +1,4 @@
+ISO-10303-21;
 /* Tb001 - Sub-tolerance vertex gap (5e-5 mm) at declared tolerance 1e-3
  * Defect: Two vertices 5e-5 mm apart on an end-to-end edge pair. At declared
  * tolerance 1e-3 the gap is sub-tolerance and the wire is closed; at a
@@ -6,7 +7,6 @@
  * simultaneously valid and invalid depending on which tolerance the
  * receiver honours.
  */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Tb001 sub-tolerance vertex gap at declared 1e-3'),'2;1');
 FILE_NAME('Tb001.stp','2026-04-30T00:00:00',(''),(''),

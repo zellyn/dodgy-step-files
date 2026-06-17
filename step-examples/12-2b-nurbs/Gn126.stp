@@ -1,9 +1,9 @@
+ISO-10303-21;
 /* Gn126 - ShapeAnalysis_Curve.GetSamplePoints CIRCLE with-trim-near-2π
    Defect: trimmed circle covering [0.001, 2π-0.001]; GetSamplePoints uses
    360-cap but the trim leaves tiny gap that misses last sample. The sampling
    grid assumes closed circle but the trim removes start and end points,
    leaving a gap in the sample coverage. */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Gn126 - Trimmed circle near 2pi with gap'),
   '2;1');

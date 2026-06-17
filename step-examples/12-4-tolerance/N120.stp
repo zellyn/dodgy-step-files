@@ -1,10 +1,10 @@
+ISO-10303-21;
 /* N120 — ShapeAnalysis_ShapeTolerance.GlobalTolerance averaging-over-empty
  * Defect: call GlobalTolerance with mode=avg on a shape containing no
  * vertices/edges of the requested type; division-by-zero produces NaN.
  * The method accumulates sum across elements and divides by count at the end,
  * but does not guard against empty iteration, resulting in NaN or silent overflow.
  */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('N120 GlobalTolerance NaN on empty selection'),'2;1');
 FILE_NAME('N120.stp','2026-06-15T00:00:00',(''),(''),

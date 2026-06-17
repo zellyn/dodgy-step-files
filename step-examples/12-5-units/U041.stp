@@ -1,9 +1,9 @@
+ISO-10303-21;
 /* U041 - Dynamic-viscosity Pa.s as derived-unit chain (kg / (m * s))
  * Defect: a DERIVED_UNIT composed of mass^+1, length^-1, time^-1.
  * Receivers that flatten time exponent into a length-time-mass dictionary
  * lookup may drop the redundant time and read the unit as Pa instead of
  * Pa.s. */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('U041 - dynamic viscosity Pa.s as derived unit chain'),'2;1');
 FILE_NAME('U041.stp','2026-04-30T00:00:00',(''),(''),'cad-research-suite','','');

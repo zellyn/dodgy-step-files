@@ -1,3 +1,4 @@
+ISO-10303-21;
 /* Gn015 - General BSpline that is actually a surface of revolution
    Defect: a B_SPLINE_SURFACE_WITH_KNOTS is mathematically a surface of
    revolution about the z-axis.  The control net carries a 3-pole
@@ -10,7 +11,6 @@
    surface_to_revolution_*.  Compliant healer must detect the rotational
    symmetry in the control net within tolerance and replace the entity
    with SURFACE_OF_REVOLUTION (axis + profile curve). */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(
   ('Gn015 - revolution surface stored as general rational BSpline'),'2;1');

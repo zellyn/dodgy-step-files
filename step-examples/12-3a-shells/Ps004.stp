@@ -1,5 +1,5 @@
-/* Ps004 - AXIS2_PLACEMENT_3D with left-handed basis on a child shape - kernel accepts file silently; tier-3 introspection reveals the placement is a reflection, not a rotation */
 ISO-10303-21;
+/* Ps004 - AXIS2_PLACEMENT_3D with left-handed basis on a child shape - kernel accepts file silently; tier-3 introspection reveals the placement is a reflection, not a rotation */
 HEADER;
 FILE_DESCRIPTION(('Ps004 pathological-success','Left-handed AXIS2_PLACEMENT_3D'),'2;1');
 FILE_NAME('Ps004.stp','2026-04-26T00:00:00',(''),(''),'manual','','');

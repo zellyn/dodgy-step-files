@@ -1,3 +1,4 @@
+ISO-10303-21;
 /* Tfa179 - ShapeAnalysis_CheckSmallFace.CheckTwisted with-degenerate-edge
  * Defect: CheckTwisted tests a face's planarity by sampling points on edges
  * and computing a normal; when the outer wire contains a degenerate edge,
@@ -5,7 +6,6 @@
  * that propagates downstream and crashes solvers.
  * Reproducer: ADVANCED_FACE whose outer wire includes a degenerate edge.
  */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Tfa179 CheckTwisted degenerate edge NaN'),'2;1');
 FILE_NAME('Tfa179.stp','2026-06-15T00:00:00',(''),(''),

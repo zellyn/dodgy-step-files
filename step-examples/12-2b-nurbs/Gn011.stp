@@ -1,3 +1,4 @@
+ISO-10303-21;
 /* Gn011 - BSplineRestriction: convert curves/surfaces to bounded-degree BSplines
    Defect (input side): a curve / surface whose degree exceeds what the
    target system reads. ShapeCustom_BSplineRestriction is meant to re-fit
@@ -7,7 +8,6 @@
    healer.  A compliant healer must report the deviation and refuse if
    continuity cannot be met.
    Sources: bug23944 / R081, ShapeCustom_BSplineRestriction (F052), H055. */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(
   ('Gn011 - high-degree BSpline inputs for BSplineRestriction'),'2;1');

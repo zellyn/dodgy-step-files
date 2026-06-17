@@ -1,8 +1,8 @@
+ISO-10303-21;
 /* Gn083 - ShapeAnalysis_Curve.FillBndBox endpoint-bias extremum miss
    Defect: curve whose endpoints are not at extrema; FillBndBox samples
    interior + endpoints but interior sampling skips the actual extremum,
    and endpoint-bias produces a too-large bbox. */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Gn083 - FillBndBox interior extremum sampling skip','2;1');
 FILE_NAME('Gn083.stp','2026-06-16T00:00:00',('auto-generated'),(''),

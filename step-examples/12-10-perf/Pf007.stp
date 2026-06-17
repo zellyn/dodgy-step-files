@@ -1,3 +1,4 @@
+ISO-10303-21;
 /* Pf007 - BRepAdaptor_Surface re-walks every wire even for surface-type
    queries (quaoar B003). Constructing BRepAdaptor_Surface eagerly walks
    every edge of every wire to compute UV bounds, even when the writer
@@ -7,7 +8,6 @@
    inner-loop holes). Replicate the inner-wire pattern to thousands of
    wires on a single sheet face to expose the eager UV-bounds traversal
    cost during STEPControl_Writer::Transfer. */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Pf007 - eager UV-bounds wire walk on one face'),'2;1');
 FILE_NAME('Pf007.stp','2026-04-26T00:00:00',('auto-generated'),(''),

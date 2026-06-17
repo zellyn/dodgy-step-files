@@ -1,8 +1,8 @@
+ISO-10303-21;
 /* Wr045 - Unit name in LENGTH_UNIT changed without rescaling coordinates.
  * Defect (FreeCAD #20546): user changes the export-unit drop-down; writer
  * flips the LENGTH_UNIT label (mm to METRE) but emits the same numeric
  * values. A 10mm cube re-imports as a 10-metre cube. */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Wr045 - METRE unit declared but mm-scale coordinate values'),'2;1');
 FILE_NAME('Wr045.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');

@@ -1,9 +1,9 @@
+ISO-10303-21;
 /* Pmi032 - Datum target dimension equals zero
    Defect: A point/line/circle/rectangular PLACED_DATUM_TARGET_FEATURE
    carries target diameter / target length of 0. A circle with diameter 0
    is a point; receivers should warn and refuse to emit a degenerate
    target. This file shows target_diameter = 0.0 on a 'circle' target. */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Pmi032 - datum target dimension is zero'),'2;1');
 FILE_NAME('Pmi032.stp','2026-04-26T00:00:00',('catalog'),('cad'),

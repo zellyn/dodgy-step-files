@@ -1,8 +1,8 @@
+ISO-10303-21;
 /* Gn071 - ShapeAnalysis_Curve.IsClosed BezierCurve check
    Defect: BEZIER_CURVE entity with matching first/last poles treated as B-spline
    for closure check. IsClosed reports false (technically correct for B-spline
    interpretation) but misses Bezier-specific closure semantics. */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Gn071 - BEZIER_CURVE closure semantic mismatch','2;1');
 FILE_NAME('Gn071.stp','2026-06-16T00:00:00',('auto-generated'),(''),

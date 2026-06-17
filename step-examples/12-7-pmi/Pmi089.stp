@@ -1,9 +1,9 @@
+ISO-10303-21;
 /* Pmi089 - GEOMETRIC_VALIDATION_PROPERTY claimed centroid disagrees with geometry
  * Defect: a 10x10x10 mm cube placed at world (100, 0, 0). World-frame
  * centroid is (105, 5, 5). The validation property claims
  * (5.0, 5.0, 5.0) -- the local-frame value, missing the parent
  * translation. Receivers must surface the frame in the diagnostic. */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Pmi089 - validation property centroid frame mismatch'),'2;1');
 FILE_NAME('Pmi089.stp','2026-04-30T00:00:00',(''),(''),'cad-research-suite','','');

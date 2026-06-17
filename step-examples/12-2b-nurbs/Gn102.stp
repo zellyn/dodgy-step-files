@@ -1,8 +1,8 @@
+ISO-10303-21;
 /* Gn102 - ShapeUpgrade_ConvertCurve2dToBezier degree-elevation-skip
    Defect: 2D B_SPLINE_CURVE_WITH_KNOTS of degree 0 (piecewise constant).
    Degree-elevation routine computes elevation_diff = target_degree - source_degree.
    For degree 0, this produces -1, causing negative-degree processing or underflow. */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Gn102 - Constant (degree-0) spline elevation underflow'),'2;1');
 FILE_NAME('Gn102.stp','2026-06-15T00:00:00',('auto-generated'),(''),

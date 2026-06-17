@@ -1,9 +1,9 @@
+ISO-10303-21;
 /* Gs054 - Composite curve segment self-cyclic to its containing composite
  * Defect: COMPOSITE_CURVE_SEGMENT.parent_curve references the very
  * COMPOSITE_CURVE that contains the segment. Translator must break the
  * recursion (drop the segment with a warning) rather than recursing
  * forever or stack-overflowing. */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Gs054 - composite curve segment self-cyclic'),'2;1');
 FILE_NAME('Gs054.stp','2026-04-26T00:00:00',(''),(''),'auto-generated','','');

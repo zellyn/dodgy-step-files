@@ -1,10 +1,10 @@
+ISO-10303-21;
 /* Pmi105 - BOSS base not coplanar with host face
  * Defect: a BOSS feature must sit on its host face -- the BOSS base plane
  * coincides with the host face plane. This fixture's boss base is offset
  * by 5 mm in +Z (boss floats above the face). Receivers cannot resolve
  * how the boss attaches to the substrate; constructive geometry would
  * leave the boss disconnected. */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Pmi105 - BOSS base not coplanar with host face'),'2;1');
 FILE_NAME('Pmi105.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');

@@ -1,3 +1,4 @@
+ISO-10303-21;
 /* Pmi042 - Empty semantic-text string in PMI
    Defect: A descriptive_representation_item carries name='semantic text'
    with an empty string ''. NIST SFA report S069 flags producers that
@@ -5,7 +6,6 @@
    inflate PMI counts but provide no information. Receivers should warn
    and ignore, never reject. This file attaches an empty semantic_text
    to a perpendicularity tolerance. */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Pmi042 - empty semantic_text string',
   'CAx-IF Rec.Pracs.---PMI Rep & Pres---v4.1'),'2;1');

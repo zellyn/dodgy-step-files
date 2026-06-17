@@ -1,9 +1,9 @@
+ISO-10303-21;
 /* Pmi091 - ROUND_HOLE feature whose internal_diameter exceeds host face extent
  * Defect: a 30x30 mm planar host face; a SHAPE_ASPECT 'round_hole' linked
  * via a DIMENSIONAL_SIZE of 50.0 mm (diameter). The hole feature is
  * larger than the smallest face extent. Receivers must validate hole
  * dimensions against the host. */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Pmi091 - ROUND_HOLE diameter exceeds host face extent'),'2;1');
 FILE_NAME('Pmi091.stp','2026-04-30T00:00:00',(''),(''),'cad-research-suite','','');

@@ -1,8 +1,8 @@
+ISO-10303-21;
 /* Gn078 - ShapeUpgrade_ConvertCurve2dToBezier double-degree-elevation knot error
    Defect: 2D B-spline degree 2 elevated to degree 4 in single pass (skip step).
    The algorithm assumes single-step elevation and produces wrong knots.
    Correct path: degree 2→3→4 (two steps); incorrect: 2→4 (direct). */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Gn078 - 2D curve double-degree elevation knot error','2;1');
 FILE_NAME('Gn078.stp','2026-06-16T00:00:00',('auto-generated'),(''),

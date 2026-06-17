@@ -1,5 +1,5 @@
-/* Wr038 - Re-emitted file uses entity-numbering pattern that breaks round-trip equivalence */
 ISO-10303-21;
+/* Wr038 - Re-emitted file uses entity-numbering pattern that breaks round-trip equivalence */
 HEADER;
 FILE_DESCRIPTION(('Wr038 - non-canonical numbering breaks round-trip equality'),'2;1');
 FILE_NAME('Wr038.stp','2026-04-30T00:00:00',(''),(''),

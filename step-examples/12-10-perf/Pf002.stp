@@ -1,3 +1,4 @@
+ISO-10303-21;
 /* Pf002 - 30-minute STEP write on 214k-entity IFC-to-STEP conversion
    Pattern: huge entity count where the writer's serialization performs
    repeated linear scans over the entity table while resolving references.
@@ -7,7 +8,6 @@
    ~50000 of each (~200k total) to reproduce the 30-minute write reported
    on the FZK Haus IfcStair model (pythonocc-core #660). The cost arises
    not from any individual entity but from writer reference indexing. */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Pf002 - 214k-entity IFC->STEP writer scalability stub'),'2;1');
 FILE_NAME('Pf002.stp','2026-04-26T00:00:00',('auto-generated'),(''),

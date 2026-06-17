@@ -1,10 +1,10 @@
+ISO-10303-21;
 /* Pmi047 - Annotation has no annotation_plane
    Defect: A graphic PMI ANNOTATION_CURVE_OCCURRENCE is not referenced by
    any ANNOTATION_PLANE.elements list. Without an annotation plane the
    placement is ambiguous - readers cannot determine the 2D plane in
    which the leader and text live. NIST SFA S027. Receivers should
    warn and reject the orphan annotation. */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Pmi047 - annotation orphan, no annotation_plane',
   'CAx-IF Rec.Pracs.---PMI Rep & Pres---v4.1'),'2;1');

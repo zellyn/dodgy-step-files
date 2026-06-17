@@ -1,3 +1,4 @@
+ISO-10303-21;
 /* Pmi005 - Mixing Polyline and Tessellated PMI presentation in one file
    Defect: AP242 schema permits both polyline ANNOTATION_CURVE_OCCURRENCE
    and TESSELLATED_ANNOTATION_OCCURRENCE, but most viewers pick one and
@@ -5,7 +6,6 @@
    different callouts: the diameter dimension is realized as polyline curves
    while the parallelism FCF is realized as tessellated triangles.
    Interoperability-hostile mix. */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Pmi005 - polyline and tessellated PMI mixed'),'2;1');
 FILE_NAME('Pmi005.stp','2026-04-26T00:00:00',('catalog'),('cad'),

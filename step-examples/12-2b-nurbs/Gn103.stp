@@ -1,8 +1,8 @@
+ISO-10303-21;
 /* Gn103 - ShapeAnalysis_Curve.FillBndBox bspline-bezier-mixed
    Defect: COMPOSITE_CURVE with 1 B-spline segment and 1 Bezier segment.
    FillBndBox dispatches per-segment but uses wrong sample-count for the
    Bezier component (applies B-spline count instead of Bezier count). */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Gn103 - Composite BSpline+Bezier bounding-box sample mismatch'),'2;1');
 FILE_NAME('Gn103.stp','2026-06-15T00:00:00',('auto-generated'),(''),

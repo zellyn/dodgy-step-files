@@ -1,3 +1,4 @@
+ISO-10303-21;
 /* Ad078 - NEXT_ASSEMBLY_USAGE_OCCURRENCE child as PRODUCT_DEFINITION_SHAPE
    Source: STEP_PROBLEM_CATALOG.md §12.11 Ad078;
            mining 08-occt-gitlog.md G016 (Mantis 0025167);
@@ -14,7 +15,6 @@
    This file mixes one valid NAUO (PD->PD) with one adversarial NAUO
    (PD->PDS) so a fuzzer can test both paths in a single fixture.
    License-clean: synthesized minimal assembly. */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(
   ('Ad078 - NAUO child mistyped as PRODUCT_DEFINITION_SHAPE'),

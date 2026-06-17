@@ -1,7 +1,7 @@
+ISO-10303-21;
 /* Gn081 - ShapeAnalysis_Curve.GetSamplePoints CIRCLE shortcut scale-insensitive
    Defect: full-circle CIRCLE with radius 0.001 (micro-scale); sample count
    capped at 360 regardless of curve scale, producing 1µm spacing for 1µm radius. */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Gn081 - CIRCLE sampling unscaled sample count limit','2;1');
 FILE_NAME('Gn081.stp','2026-06-16T00:00:00',('auto-generated'),(''),

@@ -1,3 +1,4 @@
+ISO-10303-21;
 /* Tfa028 - Surface revolution span exceeds angle cap (split_angle)
  * Defect: cones, cylinders, surfaces of revolution with angular range
  * exceeding configured threshold (e.g. 90, 180, 360 deg) must be
@@ -8,7 +9,6 @@
  * Reproducer: full-revolution face on a CYLINDRICAL_SURFACE (angular
  * span 2*pi) bounded by a single closed seam.
  */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Tfa028 full revolution face'),'2;1');
 FILE_NAME('Tfa028.stp','2026-04-26T00:00:00',(''),(''),

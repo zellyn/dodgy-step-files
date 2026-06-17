@@ -1,9 +1,9 @@
+ISO-10303-21;
 /* Pmi025 - Datum reference frame contains identical datums
    Defect: A DATUM_SYSTEM lists the same datum letter in primary and
    secondary slots. Either A appears twice (A,A,B) or A and B appear with
    A in two slots (A,B,A). Semantically a DRF cannot reference the same
    datum twice; receivers should warn or repair by deduplication. */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Pmi025 - datum system has identical datums'),'2;1');
 FILE_NAME('Pmi025.stp','2026-04-26T00:00:00',('catalog'),('cad'),

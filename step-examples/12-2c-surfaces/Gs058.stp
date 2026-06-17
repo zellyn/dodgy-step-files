@@ -1,3 +1,4 @@
+ISO-10303-21;
 /* Gs058 - SURFACE_PATCH transition_code, u_sense, v_sense parsed but ignored
    Defect: BRL-CAD step-g SurfacePatch::Load reads u_transition,
    v_transition (Transition_code enum: DISCONTINUOUS / CONTINUOUS /
@@ -13,7 +14,6 @@
    specific loss of the per-patch transition / sense metadata.
    Sources: BRL-CAD src/conv/step/step-g/SurfacePatch.cpp Load+LoadONBrep
    stub. */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(
   ('Gs058 - SURFACE_PATCH transition_code dropped by step-g'),

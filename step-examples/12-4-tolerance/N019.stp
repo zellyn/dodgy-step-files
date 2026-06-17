@@ -1,3 +1,4 @@
+ISO-10303-21;
 /* N019 - OFFSET_SURFACE fixed tolerance hard-coded 1e-3 (BRL-CAD step-g)
  * Defect: BRL-CAD's step-g importer hard-codes m_tolerance = 1e-3 for edges
  * and trims rather than reading the file's uncertainty_measure_with_unit.
@@ -7,7 +8,6 @@
  * GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT, but BRL-CAD's importer ignores it
  * for OFFSET_SURFACE distance tolerance.
  */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('N019 OFFSET_SURFACE step-g hard-coded 1e-3 ignores file uncertainty'),'2;1');
 FILE_NAME('N019.stp','2026-04-26T00:00:00',(''),(''),

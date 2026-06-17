@@ -1,3 +1,4 @@
+ISO-10303-21;
 /* N026 - Cross-kernel topology rejection: source-valid, target-invalid by tolerance bookkeeping
  * Defect: Production kernels (Parasolid, ACIS, CGM) define validity
  * differently. ACIS may export a body with a tolerant edge of tolerance 5e-4;
@@ -6,7 +7,6 @@
  * the global file uncertainty is 1e-6 mm; receiving Parasolid pipeline
  * cannot accommodate the loose edge tolerance.
  */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('N026 cross-kernel mixed precision ACIS->Parasolid rejection'),'2;1');
 FILE_NAME('N026.stp','2026-04-26T00:00:00',(''),(''),

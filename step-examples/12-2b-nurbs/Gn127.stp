@@ -1,9 +1,9 @@
+ISO-10303-21;
 /* Gn127 - ShapeUpgrade_ConvertCurve2dToBezier with-already-bezier
    Defect: 2D curve that's already a BEZIER_CURVE; the converter should be
    a no-op but creates an over-elevated copy. The conversion process
    unnecessarily increases the degree and number of control points even
    when the curve is already in Bezier form. */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Gn127 - Bezier 2D curve over-conversion'),
   '2;1');

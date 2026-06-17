@@ -1,3 +1,4 @@
+ISO-10303-21;
 /* N050 - File-supplied UNCERTAINTY_MEASURE_WITH_UNIT loaded but never consumed
    Defect: BRL-CAD step-g UncertaintyMeasureWithUnit::Load reads the
    uncertainty value (a LENGTH_MEASURE) into the in-memory model, but
@@ -16,7 +17,6 @@
    Sources: BRL-CAD src/conv/step/step-g/UncertaintyMeasureWithUnit.cpp
    has Load that stores the value, no consumer; AdvancedFace.h holds
    m_tolerance hard-coded. */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(
   ('N050 - file UNCERTAINTY_MEASURE_WITH_UNIT loaded then ignored by step-g'),

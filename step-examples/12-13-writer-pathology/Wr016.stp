@@ -1,5 +1,5 @@
-/* Wr016 - Re-output of intermediate construction entities (orphan geometry) - many unreferenced primitives */
 ISO-10303-21;
+/* Wr016 - Re-output of intermediate construction entities (orphan geometry) - many unreferenced primitives */
 HEADER;
 FILE_DESCRIPTION(('Wr016 - orphan construction-history geometry'),'2;1');
 FILE_NAME('Wr016.stp','2026-04-30T00:00:00',(''),(''),

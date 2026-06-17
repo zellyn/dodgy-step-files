@@ -1,9 +1,9 @@
+ISO-10303-21;
 /* Pmi026 - Datum letters not unique within product
    Defect: Two DATUM entities both carry identification='A' inside the
    same product_definition_shape. Semantically a single product must
    not have two datums labelled 'A'; receivers should reject as
    semantically invalid. */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Pmi026 - datum letter A duplicated in one product'),'2;1');
 FILE_NAME('Pmi026.stp','2026-04-26T00:00:00',('catalog'),('cad'),

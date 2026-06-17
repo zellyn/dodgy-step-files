@@ -1,5 +1,5 @@
-/* Wr029 - FILE_DESCRIPTION strings containing newlines or unescaped control characters */
 ISO-10303-21;
+/* Wr029 - FILE_DESCRIPTION strings containing newlines or unescaped control characters */
 HEADER;
 FILE_DESCRIPTION(('first line
 second line continues here'),'2;1');

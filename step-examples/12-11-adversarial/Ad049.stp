@@ -1,3 +1,4 @@
+ISO-10303-21;
 /* Ad049 - Real literal lacks decimal point or has Fortran D exponent
    ----------------------------------------------------------------------
    Catalog section : §12.11 adversarial (sub-class: malformed-numeric / encoding)
@@ -24,7 +25,6 @@
      E_REAL_NONCONFORMING.
    ----------------------------------------------------------------------
 */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Ad049 - REAL literal grammar violations'),'2;1');
 FILE_NAME('Ad049.stp','2026-04-26T00:00:00',('auto-generated'),(''),

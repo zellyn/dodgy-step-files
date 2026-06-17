@@ -1,3 +1,4 @@
+ISO-10303-21;
 /* Tfa189 - ShapeAnalysis_CheckSmallFace.CheckTwisted face-on-sphere-with-pole
  * Defect: CheckTwisted detects face twisting by comparing surface normals at
  * boundary points. On a sphere including both poles, the normal becomes
@@ -6,7 +7,6 @@
  * singularities.
  * Reproducer: ADVANCED_FACE on sphere that spans from south pole to north pole.
  */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Tfa189 CheckTwisted face-on-sphere-with-pole'),'2;1');
 FILE_NAME('Tfa189.stp','2026-06-15T00:00:00',(''),(''),

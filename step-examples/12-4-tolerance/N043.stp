@@ -1,3 +1,4 @@
+ISO-10303-21;
 /* N043 - BRepExtrema_DistShapeShape reports nonzero distance for clearly
  *        intersecting parts
  * Defect: For two shapes that demonstrably intersect, BRepExtrema_DistShapeShape
@@ -8,7 +9,6 @@
  * geometrically piercing through it; sampler-based extrema returns 6.3e-5
  * instead of 0.
  */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('N043 DistShapeShape reports nonzero distance on intersecting bodies'),'2;1');
 FILE_NAME('N043.stp','2026-04-26T00:00:00',(''),(''),

@@ -1,3 +1,4 @@
+ISO-10303-21;
 /* N011 - FixMissingSeam adds degenerate edge inside vertex tolerance ball
  * Defect: When the seam edge to be inserted on a periodic face would lie
  * entirely within an existing vertex tolerance ball, FixMissingSeam still
@@ -6,7 +7,6 @@
  * Reproducer: cylindrical face whose seam line is at length zero (degenerate)
  * with vertex tolerance ball that fully covers the seam location.
  */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('N011 FixMissingSeam degenerate edge inside vertex tol ball'),'2;1');
 FILE_NAME('N011.stp','2026-04-26T00:00:00',(''),(''),

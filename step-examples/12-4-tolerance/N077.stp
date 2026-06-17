@@ -1,3 +1,4 @@
+ISO-10303-21;
 /* N077 - BRepLib.BuildCurves3d batch-batch failure
  * Defect: BRepLib::BuildCurves3d called with multiple edges; one edge's
  * BuildCurves3d failure causes batch return false but other edges that
@@ -7,7 +8,6 @@
  * assumes all edges failed and may skip valid geometries or perform
  * redundant repairs.
  */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('N077 BuildCurves3d batch-batch failure reporting'),'2;1');
 FILE_NAME('N077.stp','2026-06-15T00:00:00',(''),(''),

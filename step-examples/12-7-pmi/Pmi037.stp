@@ -1,9 +1,9 @@
+ISO-10303-21;
 /* Pmi037 - shape_aspect.product_definitional flag wrong polarity
    Defect: SHAPE_ASPECT.product_definitional flag is .F. where it must be
    .T. (e.g. for a feature carrying a DIMENSIONAL_SIZE) — or vice-versa
    for a datum-target placement (which should be .F.). This file shows
    a feature backing a dimensional_size with product_definitional=.F. */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Pmi037 - shape_aspect.product_definitional polarity wrong'),'2;1');
 FILE_NAME('Pmi037.stp','2026-04-26T00:00:00',('catalog'),('cad'),

@@ -1,3 +1,4 @@
+ISO-10303-21;
 /* Pmi122 - PROFILE_FEATURE with conflicting profile + draft angles
  * Defect: a profile_feature emits a closed profile and a NEGATIVE draft
  * angle (the sweep tapers inward). For an extrude where the profile
@@ -8,7 +9,6 @@
  * the centroid creates a self-intersecting taper. Receivers either
  * reject (geometric inconsistency), clamp the draft angle (silent),
  * or accept and produce a self-intersecting solid. */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Pmi122 - profile_feature negative draft angle inconsistent with closed profile'),'2;1');
 FILE_NAME('Pmi122.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');

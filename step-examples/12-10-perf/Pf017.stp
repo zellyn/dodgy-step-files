@@ -1,3 +1,4 @@
+ISO-10303-21;
 /* Pf017 - ShapeFix_Shape hang on huge single-shell input (multi-pass
    healing).  STEP importer hangs and consumes huge memory during
    import-time ShapeFix_Shape::Perform on one big shell - each pass
@@ -10,7 +11,6 @@
    Scaling-up: this fixture has ~16 faces in a single CLOSED_SHELL with
    intentionally gap-prone vertex coords. Replicate to thousands of
    slightly-tolerance-mismatched faces to trigger the hang. */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Pf017 - huge single-shell ShapeFix multi-pass hang'),'2;1');
 FILE_NAME('Pf017.stp','2026-04-26T00:00:00',('auto-generated'),(''),

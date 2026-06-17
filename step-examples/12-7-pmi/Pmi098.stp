@@ -1,10 +1,10 @@
+ISO-10303-21;
 /* Pmi098 - SLOT axis not perpendicular to host face
  * Defect: AP242 SLOT axis defines the cutting direction; for a planar host
  * face the slot axis must be perpendicular to the face normal (not parallel,
  * not skewed). This fixture sets a slot whose AXIS2_PLACEMENT_3D z-direction
  * is (1,0,0) -- parallel to the face, not perpendicular. Receivers must
  * detect that the slot would not actually engrave the host face. */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Pmi098 - SLOT axis not perpendicular to host face'),'2;1');
 FILE_NAME('Pmi098.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');

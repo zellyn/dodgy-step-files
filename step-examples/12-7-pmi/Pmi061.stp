@@ -1,3 +1,4 @@
+ISO-10303-21;
 /* Pmi061 - DATUM->ADVANCED_FACE chain not resolved for some link patterns
    Defect: Four chain patterns are unresolved by
    XCAFDoc_DimTolTool::GetRefShapeLabel (OCCT issue #1138). This file
@@ -7,7 +8,6 @@
    so the DATUM is reached only via an IIRU + SRI hop. Translators that
    resolve the simpler GISU path miss this one. NIST CTC/STC test
    exercise this combination. */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Pmi061 - DATUM-SAR-DF-IIRU-SRI-AF chain unresolved',
   'CAx-IF Rec.Pracs.---PMI Rep & Pres---v4.1'),'2;1');

@@ -1,3 +1,4 @@
+ISO-10303-21;
 /* Tb021 - Multiple unlabelled UNCERTAINTY values in one context
  * Defect: GEOMETRIC_REPRESENTATION_CONTEXT lists three
  * UNCERTAINTY_MEASURE_WITH_UNIT entries with values 1e-3, 1e-6, 1e-9 and
@@ -7,7 +8,6 @@
  * All other tolerance-boundary defects in this section amplify under
  * this ambiguity.
  */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Tb021 multiple unlabelled uncertainty values'),'2;1');
 FILE_NAME('Tb021.stp','2026-04-30T00:00:00',(''),(''),

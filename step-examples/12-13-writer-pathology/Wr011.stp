@@ -1,5 +1,5 @@
-/* Wr011 - Empty parameter list () where schema requires at least one element - shell with no faces */
 ISO-10303-21;
+/* Wr011 - Empty parameter list () where schema requires at least one element - shell with no faces */
 HEADER;
 FILE_DESCRIPTION(('Wr011 - empty container left after pruning'),'2;1');
 FILE_NAME('Wr011.stp','2026-04-30T00:00:00',(''),(''),

@@ -1,3 +1,4 @@
+ISO-10303-21;
 /* Ad115 - Directory-entry race between stat() and open() on STEP fixture path
  * Defect: a receiver that performs a path-based stat() on a fixture
  * (to enforce a max-size budget, or a regular-file-only check, or a
@@ -14,7 +15,6 @@
  * comment. The race requires a concurrent attacker process; no
  * filesystem manipulation is performed by this fixture.
  * Provenance tier: cross-file-state. */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Ad115 - stat-vs-open directory-entry race on STEP path'),'2;1');
 FILE_NAME('Ad115.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');

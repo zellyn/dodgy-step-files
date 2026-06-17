@@ -1,3 +1,4 @@
+ISO-10303-21;
 /* Pf008 - Stack overflow on huge faces-per-shell counts
    Pattern: a single CLOSED_SHELL with very many ADVANCED_FACE children,
    all referencing the same surface. Recursive traversal during topology
@@ -6,7 +7,6 @@
    Scaling-up: this fixture has ~30 faces in one shell. Replicate the
    ADVANCED_FACE block to >80,000 children of the single CLOSED_SHELL to
    reproduce the production crash. */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Pf008 - huge faces-per-shell, stack-overflow stub'),'2;1');
 FILE_NAME('Pf008.stp','2026-04-26T00:00:00',('auto-generated'),(''),

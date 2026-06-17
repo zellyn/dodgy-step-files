@@ -1,5 +1,5 @@
-/* Wr037 - Loss of seam-edge marking on closed surfaces - cylinder seam emitted as ordinary edge with duplicate vertex */
 ISO-10303-21;
+/* Wr037 - Loss of seam-edge marking on closed surfaces - cylinder seam emitted as ordinary edge with duplicate vertex */
 HEADER;
 FILE_DESCRIPTION(('Wr037 - cylinder seam lost on re-export'),'2;1');
 FILE_NAME('Wr037.stp','2026-04-30T00:00:00',(''),(''),

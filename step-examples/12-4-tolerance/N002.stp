@@ -1,3 +1,4 @@
+ISO-10303-21;
 /* N002 - ShapeFix_Wireframe::FixWireGaps inflates max-tolerance instead of bridging gaps
  * Defect: Wireframe gap-fixing increases the maximum tolerance carried by
  * edges/vertices to encompass the gap rather than adjusting the underlying
@@ -7,7 +8,6 @@
  * on a model with declared 1e-6 uncertainty; vertex tolerance bumped to 2e-3
  * instead of bridging.
  */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('N002 FixWireGaps inflates max-tolerance instead of bridging'),'2;1');
 FILE_NAME('N002.stp','2026-04-26T00:00:00',(''),(''),

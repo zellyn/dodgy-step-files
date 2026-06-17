@@ -1,8 +1,8 @@
+ISO-10303-21;
 /* Hea016 - Empty solid output from STEP export of complex body.
  * Defect (FreeCAD #20396): writer encounters a face it cannot represent
  * in B-rep form, silently skips it, and wraps the resulting empty shell
  * as MANIFOLD_SOLID_BREP. The receiver's shape-healer cannot recover. */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Hea016 - CLOSED_SHELL with zero ADVANCED_FACEs wrapped as solid'),'2;1');
 FILE_NAME('Hea016.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');

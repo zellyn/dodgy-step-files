@@ -1,5 +1,5 @@
-/* Wr002 - Mixed CRLF and LF line endings within one file - HEADER section uses CRLF, DATA section uses LF */
 ISO-10303-21;
+/* Wr002 - Mixed CRLF and LF line endings within one file - HEADER section uses CRLF, DATA section uses LF */
 HEADER;
 FILE_DESCRIPTION(('Wr002 - mixed line endings'),'2;1');
 FILE_NAME('Wr002.stp','2026-04-30T00:00:00',(''),(''),

@@ -1,3 +1,4 @@
+ISO-10303-21;
 /* Ad038 - File concatenation produces conflicting IDs and dual end-markers
    ----------------------------------------------------------------------
    Catalog section : §12.11 adversarial (sub-class: framing / schema-validation)
@@ -24,7 +25,6 @@
      complex-record components. Emit E_DUPLICATE_FRAMING.
    ----------------------------------------------------------------------
 */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Ad038 part A - first half of cat-merge'),'2;1');
 FILE_NAME('Ad038.stp','2026-04-26T00:00:00',('auto-generated'),(''),

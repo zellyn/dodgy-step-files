@@ -1,10 +1,10 @@
+ISO-10303-21;
 /* U043 - Slicer-side unit-context inversion: STEP says inch, slicer
  * reads as mm.
  * Defect: a producer correctly emits an inch-unit context with inch-
  * scale coordinates. A receiver that hard-codes "mm" assumes the
  * numbers are mm and produces a 25.4x too-small model. Mirror image
  * of Wr044. */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('U043 - INCH unit context with inch-scale coordinates'),'2;1');
 FILE_NAME('U043.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');

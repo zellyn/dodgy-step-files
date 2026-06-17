@@ -1,3 +1,4 @@
+ISO-10303-21;
 /* Tb022 - Tolerance declared in different units than coordinates
  * Defect: GEOMETRIC_REPRESENTATION_CONTEXT length unit is .MILLI..METRE.
  * (mm). UNCERTAINTY_MEASURE_WITH_UNIT uses a separate inline LENGTH_UNIT
@@ -7,7 +8,6 @@
  * 1e-6 m = 1 um = 1e-3 mm (1000x looser). Same file, 1000x difference
  * in working tolerance.
  */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Tb022 tolerance unit binding mismatch mm vs m'),'2;1');
 FILE_NAME('Tb022.stp','2026-04-30T00:00:00',(''),(''),

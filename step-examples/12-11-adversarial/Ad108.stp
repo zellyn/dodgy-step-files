@@ -1,10 +1,10 @@
+ISO-10303-21;
 /* Ad108 - STEP-XML DOCTYPE references an external DTD over the network
  * Defect: a STEP-XML (.stpx) file whose DOCTYPE names an external DTD
  * via a SYSTEM identifier. An XML parser with external-DTD resolution
  * enabled fetches the URL on every load - leaks the receiver's IP and
  * load timing, hangs on slow URLs, and opens a vector for further XXE
  * attacks via the fetched DTD. Provenance tier: cross-file-state. */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Ad108 - STEP-XML DOCTYPE points at remote DTD'),'2;1');
 FILE_NAME('Ad108.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');

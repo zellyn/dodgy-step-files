@@ -1,3 +1,4 @@
+ISO-10303-21;
 /* Tb011 - Periodic surface seam matching needs period-relative tolerance
  * Defect: CYLINDRICAL_SURFACE radius 1e6 mm has period 2*pi*R ~= 6.28e6.
  * A wire's pcurve U-coordinates differ by 2*pi + 1e-3 between adjacent
@@ -5,7 +6,6 @@
  * 2*pi + 1e-3 != 0 and rejects seam. Receiver using fmod(diff, 2*pi)
  * sees 1e-3 << period and accepts seam. Same wire, two outcomes.
  */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Tb011 cylinder seam needs period-relative tolerance'),'2;1');
 FILE_NAME('Tb011.stp','2026-04-30T00:00:00',(''),(''),

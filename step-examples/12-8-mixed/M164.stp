@@ -1,9 +1,9 @@
+ISO-10303-21;
 /* M164 - Linear pattern of arc-shaped feature emits twisted/corrupted
  * faces in STEP.
  * Defect (FreeCAD #12176): the 4th instance of a 4-count LinearPattern
  * has its axis direction inverted (DIRECTION (0,0,-1) instead of
  * (0,0,1)) -- sign-bit overflow in the pattern transform table. */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('M164 - 4-count LinearPattern with inverted 4th instance'),'2;1');
 FILE_NAME('M164.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');

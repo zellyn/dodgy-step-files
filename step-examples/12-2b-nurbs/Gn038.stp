@@ -1,3 +1,4 @@
+ISO-10303-21;
 /* Gn038 - BOUNDED_PCURVE silently dropped (LoadONBrep stub)
    Defect: BRL-CAD step-g (and several other readers) implement
    BoundedPCurve as a degenerate subclass of PCurve - the entity loads
@@ -9,7 +10,6 @@
    numerically (introducing drift).
    Sources: BRL-CAD src/conv/step/step-g/Curve.cpp LoadONBrep stub
    inherited via Pcurve / BoundedPCurve. */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(
   ('Gn038 - BOUNDED_PCURVE LoadONBrep stub silently drops pcurve'),

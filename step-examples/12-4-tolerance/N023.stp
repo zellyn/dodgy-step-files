@@ -1,3 +1,4 @@
+ISO-10303-21;
 /* N023 - EDGE_CURVE based on LINE displaced from true vertex position
  * Defect: STEP files emit an EDGE_CURVE whose underlying LINE is parallel-
  * displaced from the line that actually passes through both vertex points.
@@ -5,7 +6,6 @@
  * Reproducer: VERTEX_POINT A at (0,0,0), B at (10,0,0); LINE pnt is at
  * (0, 0.001, 0) (offset 1e-3 mm from the true line through both vertices).
  */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('N023 EDGE_CURVE LINE parallel-displaced from vertices'),'2;1');
 FILE_NAME('N023.stp','2026-04-26T00:00:00',(''),(''),

@@ -1,10 +1,10 @@
+ISO-10303-21;
 /* Pf035 - Large assembly STEP loads at 100% CPU with unbounded memory
  * growth until OOM.
  * Defect (FreeCAD #14565): the producer's MAPPED_ITEM resolver computes
  * the closure of the REPRESENTATION_MAP graph eagerly. A single
  * REPRESENTATION_MAP referenced by many MAPPED_ITEMs in deeply nested
  * NEXT_ASSEMBLY_USAGE_OCCURRENCE chains explodes the closure size. */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Pf035 - deeply nested NAUO + many MAPPED_ITEMs sharing one REPRESENTATION_MAP'),'2;1');
 FILE_NAME('Pf035.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');

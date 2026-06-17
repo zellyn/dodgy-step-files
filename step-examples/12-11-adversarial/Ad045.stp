@@ -1,3 +1,4 @@
+ISO-10303-21;
 /* Ad045 - FixShape raises exception on real input ("must not throw")
    ----------------------------------------------------------------------
    Catalog section : §12.11 adversarial (sub-class: null-deref / fuzz-class)
@@ -28,7 +29,6 @@
      return E_FIX_FAILED.
    ----------------------------------------------------------------------
 */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Ad045 - wire with sub-Confusion vertex/curve mismatch'),
   '2;1');

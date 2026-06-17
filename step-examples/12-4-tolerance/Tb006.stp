@@ -1,3 +1,4 @@
+ISO-10303-21;
 /* Tb006 - Edge length sub-tolerance squared in 2D pcurve domain
  * Defect: Pcurve U-domain length is exactly 1e-4 on a face whose declared
  * uncertainty is 1e-3. A kernel comparing pcurve domain to sqrt(tol)
@@ -5,7 +6,6 @@
  * declares it degenerate and drops the pcurve. The two policies disagree
  * on whether the edge has a usable parametric representation.
  */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Tb006 pcurve domain at sqrt-tolerance threshold'),'2;1');
 FILE_NAME('Tb006.stp','2026-04-30T00:00:00',(''),(''),

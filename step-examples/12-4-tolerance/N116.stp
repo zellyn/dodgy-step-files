@@ -1,3 +1,4 @@
+ISO-10303-21;
 /* N116 — ShapeFix_Edge.FixVertexTolerance shared-by-many-edges
  * Defect: vertex used by 4+ edges; FixVertexTolerance iterates per-edge but
  * writes back to the shared vertex, overwriting previous results. Final
@@ -5,7 +6,6 @@
  * from the first 3. Each iteration recalculates and overwrites #180's
  * tolerance field without accumulating maxima.
  */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('N116 FixVertexTolerance overwrite on shared vertex'),'2;1');
 FILE_NAME('N116.stp','2026-06-15T00:00:00',(''),(''),

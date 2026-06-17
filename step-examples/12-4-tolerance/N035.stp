@@ -1,3 +1,4 @@
+ISO-10303-21;
 /* N035 - Default tolerance precision: missing decimal-place qualifier
  * Defect: Some CAD systems ignore tolerance values that lack an explicit
  * decimal-place qualifier even if a global default precision is set. The
@@ -8,7 +9,6 @@
  * precision_qualifier on either the value or the nominal, and no global
  * default for the document.
  */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('N035 default tolerance precision missing decimal-place qualifier'),'2;1');
 FILE_NAME('N035.stp','2026-04-26T00:00:00',(''),(''),

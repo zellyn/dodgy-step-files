@@ -1,10 +1,10 @@
+ISO-10303-21;
 /* Pmi092 - COUNTERBORE_HOLE feature: counterbore diameter smaller than thru-hole
  * Defect: a counterbore hole's defining invariant is
  *   counterbore_diameter > thru_hole_diameter.
  * This fixture emits thru_diameter=12 mm and counterbore_diameter=8 mm
  * (smaller -- malformed). Receivers diverge: some reject, some heuristically
  * swap, some accept and produce a contradictory downstream model. */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Pmi092 - counterbore diameter smaller than thru hole'),'2;1');
 FILE_NAME('Pmi092.stp','2026-04-30T00:00:00',(''),(''),'cad-research-suite','','');

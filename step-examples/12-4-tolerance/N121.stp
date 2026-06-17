@@ -1,10 +1,10 @@
+ISO-10303-21;
 /* N121 — ShapeFix_Edge.FixVertexTolerance with-tessellation-only-context
  * Defect: vertex tolerance computed from face tessellation; if tessellation is
  * null/missing, FixVertexTolerance silently uses default 1e-7 instead of raising
  * an error or computing from alternate geometry representation.
  * Geometry: edge on face with no triangulation data; tolerance resolver falls back.
  */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('N121 FixVertexTolerance tessellation-only context'),'2;1');
 FILE_NAME('N121.stp','2026-06-15T00:00:00',(''),(''),

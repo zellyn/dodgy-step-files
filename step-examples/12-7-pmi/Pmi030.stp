@@ -1,9 +1,9 @@
+ISO-10303-21;
 /* Pmi030 - Negative projected tolerance zone length
    Defect: PROJECTED_ZONE_DEFINITION.magnitude is negative (-5.0).
    Receivers should take the absolute value and warn, or reject — but
    never silently use the negative value (which would produce a tolerance
    zone projected backwards relative to the reference plane). */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Pmi030 - negative projected zone magnitude'),'2;1');
 FILE_NAME('Pmi030.stp','2026-04-26T00:00:00',('catalog'),('cad'),

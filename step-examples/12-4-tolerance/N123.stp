@@ -1,10 +1,10 @@
+ISO-10303-21;
 /* N123 — BRepLib.UpdateEdgeTol with-edge-on-degenerate-surface
  * Defect: edge on a surface with zero-area parametric domain; UpdateEdgeTol's
  * sampling produces division-by-zero or numeric singularity when normalizing
  * parametric delta or computing surface derivatives on degenerate patches.
  * Geometry: cone apex (degenerate parametric region).
  */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('N123 UpdateEdgeTol degenerate surface division-by-zero'),'2;1');
 FILE_NAME('N123.stp','2026-06-15T00:00:00',(''),(''),

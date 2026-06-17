@@ -1,3 +1,4 @@
+ISO-10303-21;
 /* Tb020 - Declared UNCERTAINTY of 1e+30 -- astronomically loose
  * Defect: UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E+30)) declares
  * a tolerance vastly larger than the model. Receiver respecting it
@@ -5,7 +6,6 @@
  * to a sensible maximum (e.g. min-feature-size/100) behaves normally.
  * Inverse of Tb019; same silent-disagreement defect class.
  */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Tb020 astronomically large declared uncertainty 1e+30'),'2;1');
 FILE_NAME('Tb020.stp','2026-04-30T00:00:00',(''),(''),

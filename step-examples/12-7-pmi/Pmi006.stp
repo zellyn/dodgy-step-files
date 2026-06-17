@@ -1,3 +1,4 @@
+ISO-10303-21;
 /* Pmi006 - Saved-view name location ambiguous (camera_model_d3 vs model_geometric_view)
    Defect: Older guidance put the Saved-View name on CAMERA_MODEL_D3.name.
    AP242 Ed.2+ recommends MODEL_GEOMETRIC_VIEW.name. This file has two
@@ -5,7 +6,6 @@
    but no MODEL_GEOMETRIC_VIEW carrying the canonical name. Ed.2-only
    readers see anonymous saved views and fall back to camera names with
    ambiguity. */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Pmi006 - saved view name only on camera_model_d3'),'2;1');
 FILE_NAME('Pmi006.stp','2026-04-26T00:00:00',('catalog'),('cad'),

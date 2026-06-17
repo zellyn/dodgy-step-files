@@ -1,3 +1,4 @@
+ISO-10303-21;
 /* Gn026 - BSpline-restriction approximation correctness (typo bug)
    Defect (input side): a high-degree BSpline that, when passed through
    ShapeCustom_BSplineRestriction targeting degree 3 with C2 continuity,
@@ -7,7 +8,6 @@
    This file is the input: degree-9 single Bezier-style B_SPLINE_CURVE_WITH_KNOTS
    with a bend.  Verifier should compare requested-vs-achieved continuity
    on the restriction output. */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(
   ('Gn026 - degree-9 BSpline input for restriction continuity check'),'2;1');

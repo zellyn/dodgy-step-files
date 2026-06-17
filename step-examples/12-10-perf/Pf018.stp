@@ -1,3 +1,4 @@
+ISO-10303-21;
 /* Pf018 - Memory not released after STEPCAFControl_Reader (Linux/Docker)
    Pattern: a moderately large STEP (~142 MB) read by STEPCAFControl_
    Reader leaves ~900 MB resident on glibc even after the destructor runs;
@@ -8,7 +9,6 @@
    Scaling-up: this fixture mixes small and large entities to trigger the
    typical small/large allocation interleave; replicate the pattern up
    to ~142 MB total to reproduce. */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Pf018 - reader memory-arena retention pattern'),'2;1');
 FILE_NAME('Pf018.stp','2026-04-26T00:00:00',('auto-generated'),(''),

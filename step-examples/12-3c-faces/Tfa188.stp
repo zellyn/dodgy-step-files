@@ -1,3 +1,4 @@
+ISO-10303-21;
 /* Tfa188 - ShapeFix_Face.FixSmallAreaWire wire-bigger-than-face
  * Defect: FixSmallAreaWire removes wires whose area is below a threshold,
  * assuming smaller wires are noise. However, it does not validate that the
@@ -6,7 +7,6 @@
  * per-wire check, creating impossible geometry.
  * Reproducer: ADVANCED_FACE with inner wire whose bounding area exceeds outer.
  */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Tfa188 FixSmallAreaWire wire-bigger-than-face'),'2;1');
 FILE_NAME('Tfa188.stp','2026-06-15T00:00:00',(''),(''),

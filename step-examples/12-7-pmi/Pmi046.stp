@@ -1,10 +1,10 @@
+ISO-10303-21;
 /* Pmi046 - characterized_object with non-PMI draughting subtypes for graphic PMI
    Defect: Producer used a complex (CHARACTERIZED_OBJECT)(DRAUGHTING_CALLOUT)
    construct or DRAUGHTING_ANNOTATION_OCCURRENCE forms instead of the
    AP242 RP-prescribed ANNOTATION_CURVE_OCCURRENCE. NIST SFA S029 flags
    this. Readers should accept and warn for non-conformance, never
    reject. */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Pmi046 - non-RP draughting subtype for graphic PMI',
   'CAx-IF Rec.Pracs.---PMI Rep & Pres---v4.1'),'2;1');

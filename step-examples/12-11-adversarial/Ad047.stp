@@ -1,3 +1,4 @@
+ISO-10303-21;
 /* Ad047 - Negative or invalid face area after fixshape
    ----------------------------------------------------------------------
    Catalog section : §12.11 adversarial (sub-class: schema-validation)
@@ -22,7 +23,6 @@
      once more or emit E_FIXSHAPE_NEGATIVE_AREA. Idempotency is required.
    ----------------------------------------------------------------------
 */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Ad047 - face orientation flag inverse of surface normal'),
   '2;1');

@@ -1,3 +1,4 @@
+ISO-10303-21;
 /* Pmi014 - annotation_plane: plane vs planar_box ambiguity
    Defect: ANNOTATION_PLANE may be defined either by an unbounded PLANE or
    by a PLANAR_BOX (axis placement + sizes). Receivers that support only
@@ -5,7 +6,6 @@
    fail to import unbounded annotation planes when expecting planar_box.
    This file emits TWO annotation planes: one as PLANE, one as PLANAR_BOX,
    for the same logical PMI scope. */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Pmi014 - plane vs planar_box ambiguity'),'2;1');
 FILE_NAME('Pmi014.stp','2026-04-26T00:00:00',('catalog'),('cad'),

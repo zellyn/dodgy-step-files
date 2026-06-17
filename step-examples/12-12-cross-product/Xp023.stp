@@ -1,9 +1,9 @@
+ISO-10303-21;
 /* Xp023 - Deeply nested aggregate AND overlong string literal in one fixture
  * Defect: combines Pf012 (deep parens) and Ad061 (overlong string).
  * The PRODUCT name has 32 770 characters; LIST_OF_LIST_OF_INTEGER has
  * 65 levels of parens. Receivers may stack-overflow on the deep nesting
  * before they encounter the overlong literal. Cross-product. */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Xp023 - cross-product Pf x Ad parser stressors'),'2;1');
 FILE_NAME('Xp023.stp','2026-04-30T00:00:00',(''),(''),'cad-research-suite','','');

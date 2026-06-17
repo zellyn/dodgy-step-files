@@ -1,3 +1,4 @@
+ISO-10303-21;
 /* Ad085 - composite-curve-segment self-cyclic reference
    Source: STEP_PROBLEM_CATALOG.md §12.11 Ad085;
            mining 04-occt-translation.md Q023.
@@ -16,7 +17,6 @@
    This fixture also contains a longer A->B->C->A cycle so a fuzzer
    can verify cycle detection survives non-trivial loop length.
    License-clean: hand-synthesized. */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(
   ('Ad085 - cyclic composite curve reference'),

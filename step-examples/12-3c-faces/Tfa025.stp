@@ -1,3 +1,4 @@
+ISO-10303-21;
 /* Tfa025 - Glue Edges (coincident edges)
  * Defect: edge-level analogue of Glue Faces - a wireframe model or
  * sewing residue carries duplicate edges across patches that should be
@@ -17,7 +18,6 @@
  *  (3) Two EDGE_CURVEs whose VERTEX_POINTs are different objects with
  *      identical coordinates - the duplicate-vertex variant of glue.
  */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Tfa025 glue edges coincident'),'2;1');
 FILE_NAME('Tfa025.stp','2026-04-26T00:00:00',(''),(''),

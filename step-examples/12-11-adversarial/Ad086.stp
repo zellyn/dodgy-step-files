@@ -1,3 +1,4 @@
+ISO-10303-21;
 /* Ad086 - translator catches Standard_Failure at entity boundary
    Source: STEP_PROBLEM_CATALOG.md §12.11 Ad086;
            mining 04-occt-translation.md Q078;
@@ -22,7 +23,6 @@
    which the translator catches and tolerates; in production this
    silently hides any ACCESS_VIOLATION among them.
    License-clean: hand-synthesized. */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(
   ('Ad086 - boundary-caught Standard_Failure mask probe'),

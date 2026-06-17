@@ -1,10 +1,10 @@
+ISO-10303-21;
 /* Pmi036 - relating_shape_aspect / related_shape_aspect reversed
    Defect: For SHAPE_ASPECT_RELATIONSHIP (or GEOMETRIC_ITEM_SPECIFIC_USAGE)
    linking a DATUM_TARGET to a feature face, the relating and related
    roles are swapped. Per RP, the relating side should be the
    datum_target and the related side should be the feature. This file
    inverts that. */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Pmi036 - relating/related shape_aspect roles reversed'),'2;1');
 FILE_NAME('Pmi036.stp','2026-04-26T00:00:00',('catalog'),('cad'),

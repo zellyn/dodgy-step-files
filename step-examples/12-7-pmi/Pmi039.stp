@@ -1,3 +1,4 @@
+ISO-10303-21;
 /* Pmi039 - Multiple plus_minus_tolerance on a single dimension
    Defect: More than one PLUS_MINUS_TOLERANCE references the same
    DIMENSIONAL_SIZE. The S037 pattern from NIST SFA reports producers
@@ -5,7 +6,6 @@
    and never deduplicate. Receivers must warn and pick one
    deterministically (here we expect first wins). This file shows two
    plus_minus_tolerance entities pointing at one dimensional_size. */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Pmi039 - duplicate plus-minus on one dimension',
   'CAx-IF Rec.Pracs.---PMI Rep & Pres---v4.1'),'2;1');

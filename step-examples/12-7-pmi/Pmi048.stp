@@ -1,8 +1,8 @@
+ISO-10303-21;
 /* Pmi048 - Graphic PMI annotation missing color
    Defect: An ANNOTATION_CURVE_OCCURRENCE has no PRESENTATION_STYLE_ASSIGNMENT
    referencing a COLOUR_RGB - i.e. no STYLED_ITEM chain. Receivers must
    default (typically black). NIST SFA S026 records this. */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Pmi048 - graphic PMI missing color/style',
   'CAx-IF Rec.Pracs.---PMI Rep & Pres---v4.1'),'2;1');

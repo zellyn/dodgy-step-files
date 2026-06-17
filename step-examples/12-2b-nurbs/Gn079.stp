@@ -1,8 +1,8 @@
+ISO-10303-21;
 /* Gn079 - ShapeAnalysis_Curve.IsPlanar BSpline interior bow
    Defect: degree-3 B-spline with 5 control points all near a plane but
    interior poles produce a 2mm bow above the plane; IsPlanar samples only
    control points, missing interior curvature deviation. */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Gn079 - IsPlanar interior bow detection failure','2;1');
 FILE_NAME('Gn079.stp','2026-06-16T00:00:00',('auto-generated'),(''),

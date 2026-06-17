@@ -1,10 +1,10 @@
+ISO-10303-21;
 /* Pmi126 - LOCATING_FEATURE.tolerance_zone larger than the locator itself
  * Defect: a locator feature with a measured size of 5 mm carries a
  * TOLERANCE_ZONE_DEFINITION whose magnitude is 20 mm. The tolerance zone
  * exceeds the feature it constrains -- the locator is effectively
  * unconstrained. Inspection-aware receivers must validate
  * tol_zone <= feature_size. */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Pmi126 - LOCATING_FEATURE tolerance zone exceeds feature size'),'2;1');
 FILE_NAME('Pmi126.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');

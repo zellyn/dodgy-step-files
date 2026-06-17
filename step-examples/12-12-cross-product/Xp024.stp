@@ -1,9 +1,9 @@
+ISO-10303-21;
 /* Xp024 - Tessellated topology x shared shell x void containment combined
  * Defect: combines Tsh065 (tess shared-node ambiguity), Tsh066 (shell
  * aliased between two solids), Tsh067 (void pokes through outer). Each
  * defect surfaced independently; receiver must not silently accept any
  * one because the others are louder. */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Xp024 - tessellation x shared shell x void containment'),'2;1');
 FILE_NAME('Xp024.stp','2026-04-30T00:00:00',(''),(''),'cad-research-suite','','');

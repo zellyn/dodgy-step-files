@@ -1,3 +1,4 @@
+ISO-10303-21;
 /* N076 - ShapeAnalysis_ShapeTolerance.AddTolerance cumulative-mode
  * Defect: AddTolerance with mode=true (cumulative); the cumulative aggregation
  * uses += but doesn't reset between calls, accumulating across passes.
@@ -8,7 +9,6 @@
  * across multiple invocations. A shape processed twice shows 2x the expected
  * tolerance delta.
  */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('N076 AddTolerance cumulative-mode state leakage'),'2;1');
 FILE_NAME('N076.stp','2026-06-15T00:00:00',(''),(''),

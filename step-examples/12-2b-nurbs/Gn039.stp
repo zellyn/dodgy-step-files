@@ -1,10 +1,10 @@
+ISO-10303-21;
 /* Gn039 - ShapeAnalysis_Curve.IsClosed B-spline near-closure
    Defect: a B_SPLINE_CURVE_WITH_KNOTS where the last pole is within
    1e-3 of the first pole but NOT exactly equal. The IsClosed() check
    fails despite intended closure because it expects exact equality
    rather than numerical near-closure. This causes healing tools to
    treat the curve as open and fail to apply closure-dependent fixes. */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Gn039 - BSpline near-closure, IsClosed rejects','2;1');
 FILE_NAME('Gn039.stp','2026-06-16T00:00:00',('auto-generated'),(''),

@@ -1,3 +1,4 @@
+ISO-10303-21;
 /* Ad052 - STEP file referencing itself as external file (infinite loop)
    ----------------------------------------------------------------------
    Catalog section : §12.11 adversarial (sub-class: cyclic-reference / DoS)
@@ -19,7 +20,6 @@
      emit E_SELF_EXTERNAL_REFERENCE.
    ----------------------------------------------------------------------
 */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Ad052 - external assignment cycles back to this file'),'2;1');
 FILE_NAME('Ad052.stp','2026-04-26T00:00:00',('auto-generated'),(''),

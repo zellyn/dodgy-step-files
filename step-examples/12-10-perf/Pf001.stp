@@ -1,3 +1,4 @@
+ISO-10303-21;
 /* Pf001 - Multi-GB Creo AP242 assembly: unbounded receiver memory growth
    Pattern: nested NEXT_ASSEMBLY_USAGE_OCCURRENCE chains with thousands of
    MANIFOLD_SOLID_BREP children. The producing kernel re-imports the same
@@ -7,7 +8,6 @@
    stubs. Replicate the chain to depth ~10000 and emit ~10^5 solids per
    level to trigger the production-scale 1+ GB memory footprint described
    in PTC community / Mantis 32127 / OCCT #417 reports. */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Pf001 - multi-GB AP242 assembly nested NAUO + brep stubs'),'2;1');
 FILE_NAME('Pf001.stp','2026-04-26T00:00:00',('auto-generated'),(''),

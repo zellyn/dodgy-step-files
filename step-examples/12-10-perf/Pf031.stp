@@ -1,3 +1,4 @@
+ISO-10303-21;
 /* Pf031 - STEP read parsing slow due to single-pass tokenisation.
  * Pattern: 100 MB STEP files with millions of small entities; the parser
  * issues one read syscall per character. Production scale: ~10^7
@@ -6,7 +7,6 @@
  * CARTESIAN_POINTs to make the small-entity-density pattern recognisable
  * to a static scanner; replicate the block to ~10^6 to reproduce the
  * production-scale 100 MB I/O-dominated parse. */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Pf031 test case','Slow STEP read due to single-byte tokenisation'),'2;1');
 FILE_NAME('Pf031.stp','2026-04-30T00:00:00',(''),(''),'cad-research-suite','','');

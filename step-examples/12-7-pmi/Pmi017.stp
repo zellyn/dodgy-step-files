@@ -1,3 +1,4 @@
+ISO-10303-21;
 /* Pmi017 - Saved-view supplemental geometry split via "supplemental geometry subset"
    Defect: A part may have many supplemental elements but only some belong
    in a particular Saved View. The recommended pattern is one global
@@ -6,7 +7,6 @@
    description_attribute = 'supplemental geometry subset' that pick the
    per-view subset. This file shows the magic-description tag on two
    subset SHAPE_REPRESENTATIONs that pull from the global supplemental CGR. */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Pmi017 - supplemental geometry subset per saved view'),'2;1');
 FILE_NAME('Pmi017.stp','2026-04-26T00:00:00',('catalog'),('cad'),

@@ -1,3 +1,4 @@
+ISO-10303-21;
 /* Pf033 - Long-running mesh on STEP load.
  * Pattern: 5,000 small ADVANCED_FACEs sharing one shell; auto-mesh has
  * worst-case quadratic behaviour and runs for minutes.
@@ -5,7 +6,6 @@
  * ADVANCED_FACEs sharing a CLOSED_SHELL to make the many-small-faces
  * pattern recognisable. Replicate the face block to ~5000 to reproduce
  * the production-scale auto-mesh hang. */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Pf033 test case','Long-running mesh on STEP load'),'2;1');
 FILE_NAME('Pf033.stp','2026-04-30T00:00:00',(''),(''),'cad-research-suite','','');

@@ -1,3 +1,4 @@
+ISO-10303-21;
 /* Pf015 - Pathological B-rep from mesh conversion: OPEN_SHELL from
    OpenSCAD/STL -> FreeCAD "Convert to Shape/Solid" -> STEP.
    Pattern: each input mesh triangle becomes one ADVANCED_FACE in a huge
@@ -8,7 +9,6 @@
    the production failure mode. The producer's choice of OPEN_SHELL
    rather than CLOSED_SHELL is deliberate - it advertises the
    non-watertightness inherited from the mesh. */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Pf015 - mesh->STEP, huge OPEN_SHELL of tiny triangles'),'2;1');
 FILE_NAME('Pf015.stp','2026-04-26T00:00:00',('auto-generated'),(''),

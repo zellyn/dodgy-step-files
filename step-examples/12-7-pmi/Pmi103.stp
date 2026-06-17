@@ -1,3 +1,4 @@
+ISO-10303-21;
 /* Pmi103 - BOSS diameter < host face minimum extent (boss bigger than face)
  * Wait, defect class is "BOSS diameter < host-face thickness" -- a boss
  * smaller than the substrate it sits on. This is degenerate: a boss is a
@@ -5,7 +6,6 @@
  * thickness, the boss is a thin pin and should be modelled as a STUD or
  * a different feature class. Producer emits boss_diameter=2 mm on a plate
  * of thickness 10 mm. Receivers should warn about feature-class mismatch. */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Pmi103 - BOSS diameter smaller than host plate thickness'),'2;1');
 FILE_NAME('Pmi103.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');

@@ -1,3 +1,4 @@
+ISO-10303-21;
 /* Pf022 - Non-deterministic empty-export from in-memory state leakage
    (gmsh #3332; quaoar B011).
    Pattern A (gmsh): import a STEP, gmsh.model.remove() some entities,
@@ -12,7 +13,6 @@
    calls leave varying mixes of populated / cleared state across runs.
    Scaling-up: run import-then-clear cycle in a loop and observe that
    the writer's output depends on prior calls, not on current state. */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Pf022 - non-deterministic empty-export round-trip target'),'2;1');
 FILE_NAME('Pf022.stp','2026-04-26T00:00:00',('auto-generated'),(''),

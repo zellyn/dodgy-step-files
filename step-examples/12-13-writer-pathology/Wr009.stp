@@ -1,5 +1,5 @@
-/* Wr009 - Spurious $ for required parameter - writer emits $ where the schema mandates a value */
 ISO-10303-21;
+/* Wr009 - Spurious $ for required parameter - writer emits $ where the schema mandates a value */
 HEADER;
 FILE_DESCRIPTION(('Wr009 - dollar-sign for required attribute'),'2;1');
 FILE_NAME('Wr009.stp','2026-04-30T00:00:00',(''),(''),

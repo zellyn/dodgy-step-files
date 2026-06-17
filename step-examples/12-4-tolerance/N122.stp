@@ -1,10 +1,10 @@
+ISO-10303-21;
 /* N122 — ShapeAnalysis_Edge.CheckPoints with-NaN-precision-input
  * Defect: CheckPoints called with NaN as precision parameter; the algorithm
  * doesn't validate and propagates NaN through comparisons (dist > precision
  * evaluates false when precision is NaN), skipping point validation.
  * Geometry: edge with vertices and parametric points; precision=NaN.
  */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('N122 CheckPoints NaN precision propagation'),'2;1');
 FILE_NAME('N122.stp','2026-06-15T00:00:00',(''),(''),

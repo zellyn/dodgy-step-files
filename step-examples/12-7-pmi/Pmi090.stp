@@ -1,3 +1,4 @@
+ISO-10303-21;
 /* Pmi090 - Persistent UUID lost on round-trip (PMI association breaks)
  * Defect: a face #35 carries a persistent UUID via
  *   APPLIED_IDENTIFICATION_ASSIGNMENT('4ce0acf8-...','uuid',(#35)).
@@ -7,7 +8,6 @@
  * state. The defect lives in the differential between this file and
  * the receiver's re-export.
  * Provenance tier: requires-sibling-pair. */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Pmi090 - persistent UUID round-trip stability witness'),'2;1');
 FILE_NAME('Pmi090.stp','2026-04-30T00:00:00',(''),(''),'cad-research-suite','','');

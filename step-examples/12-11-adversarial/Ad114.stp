@@ -1,3 +1,4 @@
+ISO-10303-21;
 /* Ad114 - STEP fixture path is a symlink to /etc/passwd or other
  * privileged file
  * Defect: a receiver that opens a fixture by name without checking
@@ -14,7 +15,6 @@
  * IMPORTANT: this fixture documents the scenario in this header
  * comment; no real symlink to /etc/passwd is created in the
  * repository. Provenance tier: cross-file-state. */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Ad114 - .stp fixture path is symlink to /etc/passwd'),'2;1');
 FILE_NAME('Ad114.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');

@@ -1,3 +1,4 @@
+ISO-10303-21;
 /* Ad046 - STEPCAFControl_Writer / writer crashes on shape
    ----------------------------------------------------------------------
    Catalog section : §12.11 adversarial (sub-class: null-deref / DoS)
@@ -26,7 +27,6 @@
      warning; never crash. Reject empty group with E_EMPTY_AGGREGATE.
    ----------------------------------------------------------------------
 */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Ad046 - empty APPLIED_GROUP_ASSIGNMENT + missing pcurve'),
   '2;1');

@@ -1,3 +1,4 @@
+ISO-10303-21;
 /* Gn020 - Spline approximation of analytic primitive (sender philosophy)
    Defect: a face that started as analytic in the source kernel is
    exported as a B_SPLINE_SURFACE_WITH_KNOTS because the source kernel /
@@ -13,7 +14,6 @@
    quadratic only spans up to a quarter.  The catalog text (originally
    citing "half cylinder") is loose; this fixture encodes a quarter,
    which is what 3 control poles can mathematically represent. */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(
   ('Gn020 - cylinder R=25 emitted as degree-(2,1) rational BSpline'),'2;1');

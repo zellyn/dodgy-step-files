@@ -1,5 +1,5 @@
-/* Wr017 - Tessellation re-emitted from B-rep input - silent precision loss */
 ISO-10303-21;
+/* Wr017 - Tessellation re-emitted from B-rep input - silent precision loss */
 HEADER;
 FILE_DESCRIPTION(('Wr017 - tessellated re-export of B-rep'),'2;1');
 FILE_NAME('Wr017.stp','2026-04-30T00:00:00',(''),(''),

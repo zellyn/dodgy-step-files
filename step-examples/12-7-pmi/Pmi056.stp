@@ -1,3 +1,4 @@
+ISO-10303-21;
 /* Pmi056 - Tessellated alongside curve annotations for the same callout (AP242 ed2 conflict)
    Defect: A DRAUGHTING_CALLOUT references both a TESSELLATED_ANNOTATION_OCCURRENCE
    and a curve-style ANNOTATION_CURVE_OCCURRENCE for the same FCF.
@@ -5,7 +6,6 @@
    association (see also Pmi005 which mixes them across separate
    callouts in one file). NIST SFA S068. Receivers should warn and
    treat one form as canonical. */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Pmi056 - tessellated and curve in same callout',
   'CAx-IF Rec.Pracs.---PMI Rep & Pres---v4.1'),'2;1');

@@ -1,3 +1,4 @@
+ISO-10303-21;
 /* Twi100 - COMPOSITE_CURVE_ON_SURFACE used as edge basis silently dropped
    Defect: BRL-CAD step-g CompositeCurveOnSurface::LoadONBrep is a stub
    that prints "::LoadONBrep(...) not implemented for <entity>" and
@@ -11,7 +12,6 @@
    silently dropped.
    Sources: BRL-CAD src/conv/step/step-g/CompositeCurveOnSurface.cpp
    LoadONBrep stub; CompositeCurve.cpp PointAtStart/PointAtEnd stubs. */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(
   ('Twi100 - COMPOSITE_CURVE_ON_SURFACE edge basis dropped by step-g'),

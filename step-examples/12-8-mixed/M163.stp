@@ -1,9 +1,9 @@
+ISO-10303-21;
 /* M163 - Imported STEP per-face colours scramble after any unrelated
  * edit operation.
  * Defect (FreeCAD #13363): receiver binds STYLED_ITEM by document-walk
  * order rather than by entity number; adding any unrelated body shifts
  * the binding and every coloured face references the wrong sub-shape. */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('M163 - styled-items with deliberately interleaved entity numbering'),'2;1');
 FILE_NAME('M163.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');

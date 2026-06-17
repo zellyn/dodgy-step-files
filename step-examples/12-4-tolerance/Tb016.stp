@@ -1,3 +1,4 @@
+ISO-10303-21;
 /* Tb016 - Cumulative tolerance budget exhausted across long edge chain
  * Defect: A polyline of 5 short edges (length ~1e-3 mm each); each
  * adjacent vertex pair is offset by a constant 2.0E-7 mm in +y. Each
@@ -9,7 +10,6 @@
  * tractable representative; the principle scales to 1000-edge chains
  * which producers easily emit.
  */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Tb016 cumulative drift across long edge chain'),'2;1');
 FILE_NAME('Tb016.stp','2026-04-30T00:00:00',(''),(''),

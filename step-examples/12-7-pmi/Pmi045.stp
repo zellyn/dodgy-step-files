@@ -1,3 +1,4 @@
+ISO-10303-21;
 /* Pmi045 - Graphic-only PMI with no semantic backing
    Defect: PMI is exported only as a DRAUGHTING_CALLOUT containing
    ANNOTATION_CURVE_OCCURRENCEs (graphic presentation) with no parallel
@@ -6,7 +7,6 @@
    inspection / CMM / machining downstream. AP203/AP214 producers and
    pre-Creo-9 exports show this pattern. SolidWorks AP242 import drops
    PMI silently (Pmi045/M009/S029/V013). */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Pmi045 - graphic-only PMI no semantic counterpart',
   'CAx-IF Rec.Pracs.---PMI Rep & Pres---v4.1'),'2;1');

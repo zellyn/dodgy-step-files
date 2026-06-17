@@ -1,3 +1,4 @@
+ISO-10303-21;
 /* N100 - ShapeAnalysis_Edge.CheckPoints precision-asymmetry-extreme
  * Defect: CheckPoints averages two precision values with extreme asymmetry:
  * preci1 = 1e-15 (effectively zero), preci2 = 1.0 (huge). Average ≈ 0.5,
@@ -8,7 +9,6 @@
  * Result: P1A/P2A within preci1 but fails average (0.5) threshold.
  * P1B/P2B exceeds preci2 but passes average threshold. Incorrect verdict.
  */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('N100 CheckPoints precision-asymmetry-extreme'),'2;1');
 FILE_NAME('N100.stp','2026-06-15T00:00:00',(''),(''),

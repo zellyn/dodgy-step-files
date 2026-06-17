@@ -1,9 +1,9 @@
+ISO-10303-21;
 /* Pmi129 - MARKING multi-line text with no line-spacing attribute
  * Defect: a marking SHAPE_ASPECT carries text containing two newline-
  * separated lines but no line_spacing dimensional attribute. Receivers
  * either default to 1.0x font size, collapse the lines, or render them
  * overlapping. The producer's spacing intent is ambiguous. */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Pmi129 - MARKING multi-line text without line spacing'),'2;1');
 FILE_NAME('Pmi129.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');

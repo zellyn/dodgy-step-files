@@ -1,3 +1,4 @@
+ISO-10303-21;
 /* Pf024 - ShapeFix_IntersectionTool infinite loop
    Pattern: intersection-healing algorithm could infinite-loop on certain
    edges because a split-index range check was missing (Mantis 0029695;
@@ -7,7 +8,6 @@
    Scaling-up: the same single-face fixture below is enough; just run
    ShapeFix_IntersectionTool against the face. The pre-fix code spins
    forever on this shape. */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Pf024 - ShapeFix_IntersectionTool infinite loop trigger'),'2;1');
 FILE_NAME('Pf024.stp','2026-04-26T00:00:00',('auto-generated'),(''),

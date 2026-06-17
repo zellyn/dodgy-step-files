@@ -1,3 +1,4 @@
+ISO-10303-21;
 /* Pf030 - Schema-EXPRESS WHERE-rule evaluation bomb (billion-laughs analog)
    Pattern: ISO 10303-11 EXPRESS WHERE-rule evaluation can be combinatorially
    explosive on hand-crafted entity graphs that force re-evaluation across
@@ -11,7 +12,6 @@
    Scaling-up: this fixture has 4 levels of width 4 = 4^4 = 256 visits.
    Replicate to width 10, depth 10 = 10^10 = 10 billion to fully expose
    the WHERE-rule evaluation bomb. */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Pf030 - WHERE-rule combinatorial blowup (billion-laughs)'),'2;1');
 FILE_NAME('Pf030.stp','2026-04-26T00:00:00',('auto-generated'),(''),

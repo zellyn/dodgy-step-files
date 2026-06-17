@@ -1,10 +1,10 @@
+ISO-10303-21;
 /* Gn043 - ShapeAnalysis_Curve.GetSamplePoints rational B-spline 4x amplification
    Defect: a rational B_SPLINE_CURVE_WITH_KNOTS with non-uniform weights causes
    the sample point generation to amplify the sample count by a factor of 4x.
    The denominator pre-image expansion in rational curves is not properly
    accounted for, leading to excessive sampling overhead and potential numerical
    instability during healing operations. */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Gn043 - Rational BSpline 4x sample amplification','2;1');
 FILE_NAME('Gn043.stp','2026-06-16T00:00:00',('auto-generated'),(''),

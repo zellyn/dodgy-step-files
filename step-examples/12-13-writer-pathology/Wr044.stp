@@ -1,9 +1,9 @@
+ISO-10303-21;
 /* Wr044 - Inch unit declared in LENGTH_UNIT context but coordinates emitted
  * in millimetres (no conversion).
  * Defect (FreeCAD #18078): user picks "inch" in the export dialog; writer
  * flips the LENGTH_UNIT label but does not divide coordinate values by 25.4.
  * A 25.4 mm cube round-trips as a 25.4 inch (645 mm) cube. */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Wr044 - inch unit declared but mm-scale coordinates'),'2;1');
 FILE_NAME('Wr044.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');

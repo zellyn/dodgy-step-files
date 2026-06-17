@@ -1,3 +1,4 @@
+ISO-10303-21;
 /* Ad044 - EDGE_CURVE.same_sense boolean read uninitialised
    ----------------------------------------------------------------------
    Catalog section : §12.11 adversarial (sub-class: uninit / encoding)
@@ -24,7 +25,6 @@
      declaration, not in setter.
    ----------------------------------------------------------------------
 */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Ad044 - EDGE_CURVE.same_sense uses .U. (illegal BOOLEAN)'),
   '2;1');

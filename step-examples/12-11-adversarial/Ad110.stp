@@ -1,3 +1,4 @@
+ISO-10303-21;
 /* Ad110 - .stpz gzip wrapper expands ratio 1:10000 into multi-gigabyte body
  * Defect: a .stpz file (gzip-wrapped Part-21) whose payload is highly
  * compressible. Gzip ratios approaching 1:1024 per DEFLATE block chain
@@ -7,7 +8,6 @@
  * before any Part-21 token is seen. Distinct from Ad105 (header lies
  * about size) - this gzip stream actually produces the bytes when
  * decoded. Provenance tier: cross-file-state. */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Ad110 - .stpz gzip ratio bomb (witness only - bomb in wrapper)'),'2;1');
 FILE_NAME('Ad110.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');

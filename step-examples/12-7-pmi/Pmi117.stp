@@ -1,3 +1,4 @@
+ISO-10303-21;
 /* Pmi117 - FLAT_PATTERN reference to non-sheet host (host is solid, not surface)
  * Defect: AP242 flat_pattern is defined for sheet-metal hosts -- 2D
  * surface bodies whose thickness is a property, not a geometric extent.
@@ -8,7 +9,6 @@
  * match the host. This fixture witnesses the link by binding the
  * flat_pattern shape_aspect to the planar face of an open shell, but
  * declares via property that the intent was a solid host. */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Pmi117 - flat_pattern host is solid not sheet'),'2;1');
 FILE_NAME('Pmi117.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');

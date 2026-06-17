@@ -1,10 +1,10 @@
+ISO-10303-21;
 /* Pmi029 - Datum system carries mixed Datum_System / Datum_Reference SELECT array
    Defect: AP242 DATUM_SYSTEM_AP242.constituents is a SELECT array that may
    contain both DATUM_SYSTEM and DATUM_REFERENCE items. Decoders that assume
    a homogeneous array (all-DRC or all-DR) crash on multi-body files.
    This file emits a DATUM_SYSTEM_AP242 whose constituents list mixes
    DATUM_REFERENCE_COMPARTMENT (modern) and DATUM_REFERENCE (legacy). */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Pmi029 - mixed Datum_System / Datum_Reference SELECT'),'2;1');
 FILE_NAME('Pmi029.stp','2026-04-26T00:00:00',('catalog'),('cad'),

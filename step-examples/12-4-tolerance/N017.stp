@@ -1,3 +1,4 @@
+ISO-10303-21;
 /* N017 - UNCERTAINTY_MEASURE_WITH_UNIT populated with a fixed field-default value (untrustworthy)
  * Defect: Many STEP exporters emit UNCERTAINTY_MEASURE_WITH_UNIT with a
  * constant field-default value (e.g. 0.027352...) rather than a true measure
@@ -7,7 +8,6 @@
  * Reproducer: file emits the constant 0.027352 as distance_accuracy_value
  * while real geometry is accurate to 1e-6.
  */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('N017 UNCERTAINTY field-default 0.027352 untrustworthy'),'2;1');
 FILE_NAME('N017.stp','2026-04-26T00:00:00',(''),(''),

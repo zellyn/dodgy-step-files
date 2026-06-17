@@ -1,3 +1,4 @@
+ISO-10303-21;
 /* Ad083 - duplicate-name children defeat label-keyed flat-load
    Source: STEP_PROBLEM_CATALOG.md §12.11 Ad083;
            mining 18-other-issues.md I021 (CadQuery #1962, KiCad), I077;
@@ -14,7 +15,6 @@
            on duplicate names.
    This fixture: one parent assembly, three NAUO children that all
    share the same PRODUCT name. License-clean: hand-synthesized. */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(
   ('Ad083 - duplicate child names defeat label-keyed assembly loader'),

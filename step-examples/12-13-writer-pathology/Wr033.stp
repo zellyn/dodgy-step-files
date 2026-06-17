@@ -1,5 +1,5 @@
-/* Wr033 - FILE_SCHEMA declares schema version that does not exist - implausible version tuple */
 ISO-10303-21;
+/* Wr033 - FILE_SCHEMA declares schema version that does not exist - implausible version tuple */
 HEADER;
 FILE_DESCRIPTION(('Wr033 - implausible schema version tuple'),'2;1');
 FILE_NAME('Wr033.stp','2026-04-30T00:00:00',(''),(''),

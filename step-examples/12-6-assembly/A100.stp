@@ -1,9 +1,9 @@
+ISO-10303-21;
 /* A100 - Importer routes Assembly-module assemblies into Part containers.
  * Defect (FreeCAD #18668): the kinematic / mechanism graph is silently
  * dropped. On disk the file carries MECHANISM and KINEMATIC_JOINT
  * annotations alongside two solid bodies; the receiver loads only the
  * geometry and drops everything kinematic. */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('A100 - mechanism / kinematic graph alongside geometry'),'2;1');
 FILE_NAME('A100.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');

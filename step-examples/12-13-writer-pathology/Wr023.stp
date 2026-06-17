@@ -1,5 +1,5 @@
-/* Wr023 - Validation properties dropped on re-export - volume/area/centroid checksums lost */
 ISO-10303-21;
+/* Wr023 - Validation properties dropped on re-export - volume/area/centroid checksums lost */
 HEADER;
 FILE_DESCRIPTION(('Wr023 - validation properties dropped on re-export'),'2;1');
 FILE_NAME('Wr023.stp','2026-04-30T00:00:00',(''),(''),

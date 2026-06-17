@@ -1,3 +1,4 @@
+ISO-10303-21;
 /* Gn017 - Bezier conversion required for export to legacy systems
    Defect (input side): a B_SPLINE_SURFACE_WITH_KNOTS of degree (3,3)
    carries TWO interior knots in U (at 0.33 and 0.67), so the surface is
@@ -8,7 +9,6 @@
    must split exactly at interior knots and preserve continuity.
    This is the input file; expected output: 3 Bezier patches per V-strip
    (i.e. 3 BEZIER_SURFACE entities replacing the one BSpline). */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(
   ('Gn017 - degree-3 NURBS surface with interior knots, for Bezier convert'),

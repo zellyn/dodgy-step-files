@@ -1,5 +1,5 @@
-/* Ps011 - MANIFOLD_SOLID_BREP missing inner void shell on a hollow body - kernel accepts file silently; tier-3 introspection reveals the part should be hollow but has no inner cavity */
 ISO-10303-21;
+/* Ps011 - MANIFOLD_SOLID_BREP missing inner void shell on a hollow body - kernel accepts file silently; tier-3 introspection reveals the part should be hollow but has no inner cavity */
 HEADER;
 FILE_DESCRIPTION(('Ps011 pathological-success','Hollow body lost its inner void on export'),'2;1');
 FILE_NAME('Ps011.stp','2026-04-26T00:00:00',(''),(''),'manual','','');

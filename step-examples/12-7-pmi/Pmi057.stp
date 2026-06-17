@@ -1,3 +1,4 @@
+ISO-10303-21;
 /* Pmi057 - PMI semantic vs presentation associativity lost on round-trip
    Defect: A semantic GEOMETRIC_TOLERANCE (perpendicularity) loses its
    associativity link with the toleranced ADVANCED_FACE: the
@@ -7,7 +8,6 @@
    Multi-surface GTOL refs lose entries on AP242 round-trip; Creo MBD
    notes/symbols partially-write semantic_designation links.
    (W026, M008, V012, V014). */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Pmi057 - tolerance associativity lost on round-trip',
   'CAx-IF Rec.Pracs.---PMI Rep & Pres---v4.1'),'2;1');

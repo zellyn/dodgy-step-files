@@ -1,9 +1,9 @@
+ISO-10303-21;
 /* Pmi133 - CHAMFER size >= adjacent edge length (over-chamfer)
  * Defect: a chamfer feature on a 30 mm-long edge of the host face has
  * size 35 mm. The chamfer would consume the entire edge plus 5 mm beyond
  * (impossible). Receivers either clamp to the edge length, reject, or
  * accept and produce a degenerate face. */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Pmi133 - CHAMFER size exceeds adjacent edge length'),'2;1');
 FILE_NAME('Pmi133.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');

@@ -1,9 +1,9 @@
+ISO-10303-21;
 /* Gn059 - ShapeAnalysis_Curve.FillBndBox SearchForExtremum drift
    Defect: Non-uniform B-spline where the extremum search uses a fixed step
    that overshoots the peak; resulting bbox is too small at the peak.
    The curve has a sharp peak at u=0.5 with weight concentration that
    requires adaptive sampling, but fixed-step search misses it. */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Gn059 - SearchForExtremum bbox drift on non-uniform B-spline','2;1');
 FILE_NAME('Gn059.stp','2026-06-16T00:00:00',('auto-generated'),(''),

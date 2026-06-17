@@ -1,5 +1,5 @@
-/* Wr018 - Empty SHAPE_DEFINITION_REPRESENTATION chain - product structure with no geometry */
 ISO-10303-21;
+/* Wr018 - Empty SHAPE_DEFINITION_REPRESENTATION chain - product structure with no geometry */
 HEADER;
 FILE_DESCRIPTION(('Wr018 - empty product-structure scaffold'),'2;1');
 FILE_NAME('Wr018.stp','2026-04-30T00:00:00',(''),(''),

@@ -1,9 +1,9 @@
+ISO-10303-21;
 /* Pmi125 - LOCATING_FEATURE referencing non-existent shape aspect
  * Defect: an AP242 locating-feature SHAPE_ASPECT carries a
  * GEOMETRIC_ITEM_SPECIFIC_USAGE pointer to an entity reference (#9999)
  * that is not declared anywhere in the file. Receivers may resolve to
  * NULL, drop the locator, or accept the reference and crash later. */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Pmi125 - LOCATING_FEATURE references missing shape aspect'),'2;1');
 FILE_NAME('Pmi125.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');

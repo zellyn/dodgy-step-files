@@ -1,9 +1,9 @@
+ISO-10303-21;
 /* Pmi104 - BOSS height <= 0 (zero-height boss)
  * Defect: a BOSS is a raised feature; its height must be strictly positive.
  * Producer emits boss_height=0.0 (a "boss" with no protrusion -- equivalent
  * to a circular outline drawn on the host face). Receivers diverge: some
  * accept and produce a zero-volume feature, some reject as degenerate. */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Pmi104 - BOSS height zero (no protrusion)'),'2;1');
 FILE_NAME('Pmi104.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');

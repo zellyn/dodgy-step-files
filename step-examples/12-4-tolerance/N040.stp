@@ -1,3 +1,4 @@
+ISO-10303-21;
 /* N040 - Limit Tolerance resets shape to user value (Salome) -- destructive
  *        when bloated tolerances hide gaps
  * Defect: Salome's "Limit Tolerance" forces the tolerance of a shape's
@@ -8,7 +9,6 @@
  * an UNCERTAINTY entry tagged "limit_tolerance_post_clamp" records the
  * destructive reset to the file's original 1e-6.
  */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('N040 Salome Limit Tolerance destructive reset re-exposes gaps'),'2;1');
 FILE_NAME('N040.stp','2026-04-26T00:00:00',(''),(''),

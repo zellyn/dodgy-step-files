@@ -1,3 +1,4 @@
+ISO-10303-21;
 /* Tb002 - Sub-tolerance vertex gap (5e-5 mm) at declared tolerance 1e-7
  * Defect: Inverse of Tb001. Vertices honestly 5e-5 mm apart at strict
  * declared tolerance 1e-7. Strict receiver keeps them distinct (correct).
@@ -6,7 +7,6 @@
  * the input asserted to exist. The "fix" applied by the lax tolerance
  * receiver actively corrupts the model.
  */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Tb002 honestly distinct vertices at declared 1e-7'),'2;1');
 FILE_NAME('Tb002.stp','2026-04-30T00:00:00',(''),(''),

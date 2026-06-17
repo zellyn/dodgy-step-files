@@ -1,3 +1,4 @@
+ISO-10303-21;
 /* N096 - BRepLib.UpdateInnerTolerances cone-apex-singularity
  * Defect: Edge passes through cone apex where curvature is infinite;
  * UpdateInnerTolerances samples near apex, Epsilon(aDist) → 0 as curvature → ∞,
@@ -8,7 +9,6 @@
  * near the apex; at the apex itself, the distance computation becomes singular
  * and the tolerance escalates to infinity or NaN.
  */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('N096 UpdateInnerTolerances cone-apex singularity'),'2;1');
 FILE_NAME('N096.stp','2026-06-15T00:00:00',(''),(''),

@@ -1,3 +1,4 @@
+ISO-10303-21;
 /* Pmi009 - Rounding mode unspecified (ASME banker's vs ISO half-up)
    Defect: For nominal 0.5625 inch displayed at 3 decimals, ASME banker's
    rounding yields 0.562 while ISO half-up yields 0.563. STEP carries no
@@ -5,7 +6,6 @@
    nominal 0.5625; receivers cannot determine whether 0.562 or 0.563 is
    the canonical display value, so round-trip comparisons can flag false
    diffs depending on rounding rule used. */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Pmi009 - rounding mode (ASME vs ISO) unspecified'),'2;1');
 FILE_NAME('Pmi009.stp','2026-04-26T00:00:00',('catalog'),('cad'),

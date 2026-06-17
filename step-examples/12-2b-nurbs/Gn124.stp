@@ -1,9 +1,9 @@
+ISO-10303-21;
 /* Gn124 - ShapeAnalysis_Curve.FillBndBox with-degenerate-segments
    Defect: composite curve where one segment is degenerate (zero-length);
    FillBndBox samples the degenerate segment and the result contains a
    degenerate axis. The degenerate segment introduces a point that collapses
    one or more axes of the bounding box, violating assumptions downstream. */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Gn124 - Composite curve with degenerate segment'),
   '2;1');

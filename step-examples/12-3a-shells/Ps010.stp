@@ -1,5 +1,5 @@
-/* Ps010 - ORIENTED_EDGE.orientation=.F. on edges already directed correctly - kernel accepts file silently; tier-3 introspection reveals loop traversal goes backwards */
 ISO-10303-21;
+/* Ps010 - ORIENTED_EDGE.orientation=.F. on edges already directed correctly - kernel accepts file silently; tier-3 introspection reveals loop traversal goes backwards */
 HEADER;
 FILE_DESCRIPTION(('Ps010 pathological-success','Inverted half-edge traversal on closed wire'),'2;1');
 FILE_NAME('Ps010.stp','2026-04-26T00:00:00',(''),(''),'manual','','');

@@ -1,8 +1,8 @@
+ISO-10303-21;
 /* Gn073 - ShapeAnalysis_Curve.FillBndBox composite-curve segment switch
    Defect: COMPOSITE_CURVE with three B-spline segments where inter-segment
    maxima occur at segment transitions. FillBndBox samples each segment
    independently and misses extrema that would be caught by joint analysis. */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Gn073 - COMPOSITE_CURVE inter-segment extrema miss','2;1');
 FILE_NAME('Gn073.stp','2026-06-16T00:00:00',('auto-generated'),(''),

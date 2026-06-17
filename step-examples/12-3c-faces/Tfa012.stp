@@ -1,3 +1,4 @@
+ISO-10303-21;
 /* Tfa012 - Face area zero / negative after fixshape
  * Defect: BRepGProp::SurfaceProperties returns zero or negative area for
  * a face. Either fully degenerate, or healing reversed orientation and
@@ -8,7 +9,6 @@
  * on the natural surface orientation (i.e., reversed) so the signed
  * area is negative. The face normal disagrees with wire winding.
  */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Tfa012 face area zero or negative'),'2;1');
 FILE_NAME('Tfa012.stp','2026-04-26T00:00:00',(''),(''),

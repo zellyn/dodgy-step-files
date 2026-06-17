@@ -1,3 +1,4 @@
+ISO-10303-21;
 /* Ad056 - BRepBuilderAPI_GTransform constructor throws on extreme face stretch
    ----------------------------------------------------------------------
    Catalog section : §12.11 adversarial (sub-class: malformed-numeric)
@@ -20,7 +21,6 @@
      code; do not throw across ABI boundary. Emit E_GTRSF_OUT_OF_RANGE.
    ----------------------------------------------------------------------
 */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Ad056 - extreme scale factor in CARTESIAN_TRANSFORM_OP_3D'),
   '2;1');

@@ -1,3 +1,4 @@
+ISO-10303-21;
 /* Gn024 - Self-intersecting curve geometry on BSpline edge (figure-eight or fold)
    Defect: a 3D B_SPLINE_CURVE_WITH_KNOTS of degree 3 has a control
    polygon producing a figure-eight inside its parameter range.
@@ -7,7 +8,6 @@
    monotonicity under reprojection.
    Control polygon: (0,0,0) -> (4,0,0) -> (0,3,0) -> (4,3,0) -> (0,0,0)
    -- this crosses itself between parameters 0.25 and 0.75. */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(
   ('Gn024 - self-intersecting BSpline curve (figure-eight control polygon)'),

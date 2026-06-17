@@ -1,5 +1,5 @@
-/* Wr034 - Coordinate-system axis swap without notification - Y-up source emitted as if Z-up */
 ISO-10303-21;
+/* Wr034 - Coordinate-system axis swap without notification - Y-up source emitted as if Z-up */
 HEADER;
 FILE_DESCRIPTION(('Wr034 - Y-up coordinates emitted without rotation'),'2;1');
 FILE_NAME('Wr034.stp','2026-04-30T00:00:00',(''),(''),

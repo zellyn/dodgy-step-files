@@ -1,3 +1,4 @@
+ISO-10303-21;
 /* Ad109 - STEP-XML parameter-entity injection exfiltrates local file via
  * out-of-band DTD fetch
  * Defect: a STEP-XML (.stpx) file with an internal DTD declaring a
@@ -6,7 +7,6 @@
  * DTD fetch - the textbook out-of-band XXE exfiltration. This fixture
  * is shown in .stp form for cataloguing; the actual attack surface is
  * .stpx. Provenance tier: cross-file-state. */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Ad109 - STEP-XML parameter entity exfiltrates local file'),'2;1');
 FILE_NAME('Ad109.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');

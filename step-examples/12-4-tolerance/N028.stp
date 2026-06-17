@@ -1,3 +1,4 @@
+ISO-10303-21;
 /* N028 - xstep.cascade.unit ignored when StepModel has no unit declaration
  * Defect: When the STEP model contains no GEOMETRIC_REPRESENTATION_CONTEXT
  * unit info, the user-configured xstep.cascade.unit is silently ignored.
@@ -6,7 +7,6 @@
  * Reproducer: file lacks any LENGTH_UNIT inside its representation context
  * units list -- coordinates exist but the unit basis is undeclared.
  */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('N028 xstep.cascade.unit ignored when no LENGTH_UNIT'),'2;1');
 FILE_NAME('N028.stp','2026-04-26T00:00:00',(''),(''),

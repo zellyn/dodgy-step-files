@@ -1,3 +1,4 @@
+ISO-10303-21;
 /* Gn010 - Out-of-range / NaN NURBS control points
    Defect: a B_SPLINE_SURFACE_WITH_KNOTS otherwise looks fine -- 4x4
    net, degree (3,3), Bezier-style knots -- but one interior control
@@ -9,7 +10,6 @@
    bounding-box envelope.  Note: STEP REAL grammar does not admit NaN, so
    the textual artifact uses 1e+100 as the largest finite proxy.
    Source: HOOPS Exchange SDHE-22166 (W017). */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Gn010 - NURBS surface with out-of-range control point'),
   '2;1');

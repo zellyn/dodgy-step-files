@@ -1,3 +1,4 @@
+ISO-10303-21;
 /* Gs057 - RECTANGULAR_COMPOSITE_SURFACE silently dropped (LoadONBrep stub)
    Defect: BRL-CAD step-g implements RECTANGULAR_COMPOSITE_SURFACE::Load
    (it parses the segments grid into SurfacePatch objects) but its
@@ -10,7 +11,6 @@
    degree+1 internal knots.
    Sources: BRL-CAD src/conv/step/step-g/RectangularCompositeSurface.cpp
    LoadONBrep stub. */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(
   ('Gs057 - RECTANGULAR_COMPOSITE_SURFACE silently dropped by step-g'),

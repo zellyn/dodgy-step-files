@@ -1,3 +1,4 @@
+ISO-10303-21;
 /* Pf016 - STEPCAFControl_Reader::Transfer hangs indefinitely on Catia/NX
    file (OCCT 7.9, file 250709r8000_asm-all). The file parses cleanly with
    IFSelect_RetDone, but the post-parse Transfer phase enters a
@@ -10,7 +11,6 @@
    Scaling-up: this fixture shows the relationship-web shape with 8
    shape-reps and 8 cross-relations. Replicate to thousands of mutually
    connected SHAPE_REPRESENTATIONs to reproduce the hang. */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Pf016 - STEPCAFControl_Reader::Transfer hang stub'),'2;1');
 FILE_NAME('Pf016.stp','2026-04-26T00:00:00',('auto-generated'),(''),

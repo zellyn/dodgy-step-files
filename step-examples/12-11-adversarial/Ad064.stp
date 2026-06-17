@@ -1,3 +1,4 @@
+ISO-10303-21;
 /* Ad064 - underscore inside quoted name truncated by name-parsing consumer
    Source: STEP_PROBLEM_CATALOG.md §12.11 Ad064; mining 22-niche-forums.md
            Y013 (gmsh #3325, CST Microwave Studio export).
@@ -17,7 +18,6 @@
    This file is INTENTIONALLY a stress-fixture for name-handling code paths;
    the STEP itself is well-formed. License-clean: synthesized minimal
    AP203 fragment, no third-party content reused. */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(
   ('Ad064 - underscore in quoted name truncated by consumer'),

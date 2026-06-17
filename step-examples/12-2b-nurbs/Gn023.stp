@@ -1,3 +1,4 @@
+ISO-10303-21;
 /* Gn023 - STEP->BREP silently injects new B-spline curves (cylinder edges replaced)
    Defect: after STEP->BREP via OCC BRepTools write, B-spline curves
    appear in the BRep that were never in the source -- the analytic
@@ -7,7 +8,6 @@
    This file shows the source side that should be preserved: a
    CYLINDRICAL_SURFACE with two CIRCLE seam-and-cap edges (analytic), so
    that any kernel can verify the read should NOT inject NURBS. */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(
   ('Gn023 - cylinder with analytic CIRCLE edges, must not be NURBS-ified'),

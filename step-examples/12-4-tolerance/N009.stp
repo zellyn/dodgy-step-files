@@ -1,3 +1,4 @@
+ISO-10303-21;
 /* N009 - Vertex position dispersion exceeding tolerance (FixVertexPosition)
  * Defect: A vertex's 3D point is so far from incident edges' curve evaluations
  * at the parametric endpoint that the would-be tolerance disc spans the entire
@@ -6,7 +7,6 @@
  * Reproducer: EDGE_CURVE with line (0,0,0)->(1,0,0); vertex stored at
  * (0, 0.001, 0) -- 1e-3 mm off the curve while declared tolerance is 1e-4.
  */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('N009 vertex position dispersion exceeds tolerance'),'2;1');
 FILE_NAME('N009.stp','2026-04-26T00:00:00',(''),(''),

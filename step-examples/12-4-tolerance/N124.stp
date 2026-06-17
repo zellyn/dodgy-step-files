@@ -1,9 +1,9 @@
+ISO-10303-21;
 /* N124 — ShapeFix_ShapeTolerance.SetTolerance recursion-stack-overflow
  * Defect: deeply nested compound structure (50+ levels); SetTolerance recurses
  * without depth guard, causing stack overflow on recursive compound traversal.
  * Geometry: nested compound with alternating COMPOUND_SHAPE references.
  */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('N124 SetTolerance recursion stack overflow'),'2;1');
 FILE_NAME('N124.stp','2026-06-15T00:00:00',(''),(''),

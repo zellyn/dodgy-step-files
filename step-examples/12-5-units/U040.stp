@@ -1,10 +1,10 @@
+ISO-10303-21;
 /* U040 - Pressure unit Pa built from a derived-unit chain (kg / (m * s^2))
  * Defect: a DERIVED_UNIT composed of three DERIVED_UNIT_ELEMENT entries
  * representing mass^+1, length^-1, time^-2. Spec-conforming, but
  * receivers that pattern-match on a single named pressure unit need to
  * detect the dimensional signature. This fixture's length unit is
  * MILLIMETRE (1000x off from the canonical Pa derivation in metres). */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('U040 - pressure Pa as multi-element derived unit chain'),'2;1');
 FILE_NAME('U040.stp','2026-04-30T00:00:00',(''),(''),'cad-research-suite','','');

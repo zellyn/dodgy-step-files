@@ -1,9 +1,9 @@
+ISO-10303-21;
 /* Gn100 - ShapeUpgrade_SplitSurface high-multiplicity-clamp split failure
    Defect: B_SPLINE_SURFACE_WITH_KNOTS with multiplicity vector (4,4,4)
    in U direction (degree 3, 3 control points, fully clamped). SplitSurface
    attempts splitting at interior but fails because multiplicity==degree+1.
    Produces empty or degenerate patches. */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Gn100 - BSpline surface high-multiplicity-clamp split fail'),'2;1');
 FILE_NAME('Gn100.stp','2026-06-15T00:00:00',('auto-generated'),(''),

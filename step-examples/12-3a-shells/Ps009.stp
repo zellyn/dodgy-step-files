@@ -1,5 +1,5 @@
-/* Ps009 - GD&T tolerance frame references near-but-wrong face - kernel accepts file silently; tier-3 introspection reveals tolerance attached to face adjacent to intended target */
 ISO-10303-21;
+/* Ps009 - GD&T tolerance frame references near-but-wrong face - kernel accepts file silently; tier-3 introspection reveals tolerance attached to face adjacent to intended target */
 HEADER;
 FILE_DESCRIPTION(('Ps009 pathological-success','PMI tolerance on wrong adjacent face'),'2;1');
 FILE_NAME('Ps009.stp','2026-04-26T00:00:00',(''),(''),'manual','','');

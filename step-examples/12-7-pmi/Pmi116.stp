@@ -1,3 +1,4 @@
+ISO-10303-21;
 /* Pmi116 - FLAT_PATTERN with disjoint sub-features (no connecting bend line)
  * Defect: a flat_pattern groups multiple sheet-metal panels but no bend
  * line connects them. The flat layout cannot be folded back into a
@@ -6,7 +7,6 @@
  * but mistakenly group them as one flat_pattern. Receivers either
  * reject (multi-part flat invalid), heuristically split into separate
  * patterns, or silently accept. */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Pmi116 - flat_pattern disjoint panels (no bend line)'),'2;1');
 FILE_NAME('Pmi116.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');

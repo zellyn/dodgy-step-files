@@ -1,3 +1,4 @@
+ISO-10303-21;
 /* Ad077 - signed-integer attribute used as unsigned causes 4 GB loop walk
    Source: STEP_PROBLEM_CATALOG.md §12.11 Ad077; CVE-2024-23133
            (Autodesk ASMDATAX228A.dll on .stp).
@@ -16,7 +17,6 @@
    B_SPLINE_CURVE_WITH_KNOTS with an empty knot multiplicity vector;
    either path tickles the off-by-one downstream of the count read.
    File is INTENTIONALLY adversarial. License-clean: hand-synthesized. */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(
   ('Ad077 - empty aggregate triggers count-1 underflow'),

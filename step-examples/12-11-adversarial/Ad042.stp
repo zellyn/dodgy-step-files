@@ -1,3 +1,4 @@
+ISO-10303-21;
 /* Ad042 - Reference to entity-of-wrong-type in attribute slot
    ----------------------------------------------------------------------
    Catalog section : §12.11 adversarial (sub-class: type-confusion / null-deref)
@@ -26,7 +27,6 @@
      and emits E_SELECT_BRANCH instead of dereffing a null.
    ----------------------------------------------------------------------
 */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Ad042 - SDR points at SHAPE_ASPECT, wrong SELECT branch'),
   '2;1');

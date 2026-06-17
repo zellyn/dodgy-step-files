@@ -1,8 +1,8 @@
+ISO-10303-21;
 /* Gn063 - ShapeAnalysis_Curve.GetSamplePoints rational pole density
    Defect: rational B-spline curve with one extreme weight (>100);
    sample density doesn't scale with weight, missing the cusp pulled by
    the high-weight pole. This fixture has a NURBS with weight 150 at midpoint. */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Gn063 - GetSamplePoints extreme weight cusp density miss','2;1');
 FILE_NAME('Gn063.stp','2026-06-16T00:00:00',('auto-generated'),(''),

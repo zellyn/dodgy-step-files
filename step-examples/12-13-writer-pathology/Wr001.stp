@@ -1,5 +1,5 @@
-/* Wr001 - Trailing whitespace on every record line - producer pads each record line with spaces before the line terminator */
 ISO-10303-21;   
+/* Wr001 - Trailing whitespace on every record line - producer pads each record line with spaces before the line terminator */
 HEADER;   
 FILE_DESCRIPTION(('Wr001 - trailing whitespace on every record'),'2;1');   
 FILE_NAME('Wr001.stp','2026-04-30T00:00:00',(''),(''),   

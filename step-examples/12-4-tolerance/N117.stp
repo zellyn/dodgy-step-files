@@ -1,10 +1,10 @@
+ISO-10303-21;
 /* N117 — ShapeAnalysis_Edge.CheckOverlapping mixed-curve-orientation
  * Defect: overlapping edges where one is traversed forward and the other
  * backward (geometrically same path); CheckOverlapping's directional test
  * compares the tangent directions and reports no overlap when they differ,
  * even though the 3D curves are coincident. The defect masks topology errors.
  */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('N117 CheckOverlapping directional false-negative'),'2;1');
 FILE_NAME('N117.stp','2026-06-15T00:00:00',(''),(''),

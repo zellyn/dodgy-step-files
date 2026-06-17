@@ -1,3 +1,4 @@
+ISO-10303-21;
 /* N015 - xstep.cascade.unit M meters setting inflates tolerance and corrupts geometry
  * Defect: Setting OCCT's cascade unit to meters during STEP/IGES read inflates
  * max-tolerance >0.001 (some files balloon AABB to +/-1e+100). With unit=M,
@@ -7,7 +8,6 @@
  * uncertainty 1e-7 in metre context. Reader's cascade.unit M scaling
  * produces tolerance 1e-7 m = 0.1 mm, far above true model precision.
  */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('N015 cascade.unit M inflates tolerance corrupts geometry'),'2;1');
 FILE_NAME('N015.stp','2026-04-26T00:00:00',(''),(''),

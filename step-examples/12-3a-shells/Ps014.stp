@@ -1,5 +1,5 @@
-/* Ps014 - GD&T datum reference frame cites wrong datum letter than the labeled face - kernel accepts file silently; tier-3 introspection reveals datum-letter inconsistency between callout and feature */
 ISO-10303-21;
+/* Ps014 - GD&T datum reference frame cites wrong datum letter than the labeled face - kernel accepts file silently; tier-3 introspection reveals datum-letter inconsistency between callout and feature */
 HEADER;
 FILE_DESCRIPTION(('Ps014 pathological-success','Datum letter mismatch in tolerance frame'),'2;1');
 FILE_NAME('Ps014.stp','2026-04-26T00:00:00',(''),(''),'manual','','');

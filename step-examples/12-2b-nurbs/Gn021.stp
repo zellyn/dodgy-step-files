@@ -1,3 +1,4 @@
+ISO-10303-21;
 /* Gn021 - OFFSET_SURFACE of complex BSpline base fails parsing only when wrapped
    Defect: a face referencing OFFSET_SURFACE('',#288,20.0,.F.) where #288
    is a complex (B_SPLINE_SURFACE ... ) aggregate fails to render.
@@ -7,7 +8,6 @@
    over a complex rational B_SPLINE_SURFACE_WITH_KNOTS aggregate.
    Sources: I010 / OCCT #994.  Cross-ref: Geom_OffsetSurface over
    Geom_SurfaceOfLinearExtrusion. */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(
   ('Gn021 - OFFSET_SURFACE wrapping complex rational BSpline base'),'2;1');

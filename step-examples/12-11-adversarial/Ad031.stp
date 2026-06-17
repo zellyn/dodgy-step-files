@@ -1,3 +1,4 @@
+ISO-10303-21;
 /* Ad031 - Use-after-free on header-mode-handle reuse
    ----------------------------------------------------------------------
    Catalog section : §12.11 adversarial / parser robustness (sub-class: UAF)
@@ -26,7 +27,6 @@
      of the parse error; do not defer past arena destruction.
    ----------------------------------------------------------------------
 */
-ISO-10303-21;
 HEADER;
 /* Defect: FILE_DESCRIPTION missing the implementation_level argument
    (only one positional arg). Diagnostic captures pointer into the

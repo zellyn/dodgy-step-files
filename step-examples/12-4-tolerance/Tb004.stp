@@ -1,3 +1,4 @@
+ISO-10303-21;
 /* Tb004 - Vertex<edge<face hierarchy at ULP precision: barely holds in mm
  * Defect: Same hierarchy invariant as Tb003 but with values 1.000e-6,
  * 1.001e-6, 1.002e-6 -- the ordering is preserved by 0.001e-6 = 1e-9
@@ -8,7 +9,6 @@
  * strict ordering. Hierarchy invariant holds at one precision policy and
  * fails at another.
  */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Tb004 hierarchy at ULP barely holds in mm fails after inch convert'),'2;1');
 FILE_NAME('Tb004.stp','2026-04-30T00:00:00',(''),(''),

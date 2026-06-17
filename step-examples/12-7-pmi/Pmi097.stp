@@ -1,9 +1,9 @@
+ISO-10303-21;
 /* Pmi097 - SLOT end-condition mismatch: claims 'round_end' but profile rectangular
  * Defect: AP242 SLOT carries an end-condition attribute (open/closed/round-end).
  * This fixture declares end_condition='round_end' but the explicit profile
  * description (4 corners, no fillet) is rectangular. The receiver cannot
  * reconcile the contradiction. */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Pmi097 - SLOT end_condition contradicts profile shape'),'2;1');
 FILE_NAME('Pmi097.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');

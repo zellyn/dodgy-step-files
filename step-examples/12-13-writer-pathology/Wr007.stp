@@ -1,5 +1,5 @@
-/* Wr007 - Locale-sensitive decimal separator emitted (comma instead of period) - German-locale workstation produced this file */
 ISO-10303-21;
+/* Wr007 - Locale-sensitive decimal separator emitted (comma instead of period) - German-locale workstation produced this file */
 HEADER;
 FILE_DESCRIPTION(('Wr007 - comma-decimal numbers'),'2;1');
 FILE_NAME('Wr007.stp','2026-04-30T00:00:00',(''),(''),

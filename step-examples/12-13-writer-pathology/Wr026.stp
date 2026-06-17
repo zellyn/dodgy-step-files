@@ -1,5 +1,5 @@
-/* Wr026 - Vendor-specific FILE_DESCRIPTION strings that downstream readers special-case */
 ISO-10303-21;
+/* Wr026 - Vendor-specific FILE_DESCRIPTION strings that downstream readers special-case */
 HEADER;
 FILE_DESCRIPTION(('CAD-System-X version 12.4.1 build 2026-04-15'),'2;1');
 FILE_NAME('Wr026.stp','2026-04-30T00:00:00',('user'),('ACME'),

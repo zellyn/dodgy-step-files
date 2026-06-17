@@ -1,3 +1,4 @@
+ISO-10303-21;
 /* Tfa010 - Splitting vertex within face (vertex of one wire on edge of another)
  * Defect: a face contains a vertex that lies on the interior of another
  * wire's edge, effectively bisecting the face. The face boundary
@@ -8,7 +9,6 @@
  * inner edge from (5,5) to (5,0) anchors a vertex (5,0) sitting on the
  * interior of the outer wire's bottom edge.
  */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Tfa010 splitting vertex within face'),'2;1');
 FILE_NAME('Tfa010.stp','2026-04-26T00:00:00',(''),(''),

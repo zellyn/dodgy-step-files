@@ -1,3 +1,4 @@
+ISO-10303-21;
 /* Ad111 - ZIP bomb inside a 3MF / IFCZIP container that wraps a STEP body
  * Defect: 3MF and IFCZIP are STEP-adjacent ZIP-container formats. A
  * maliciously-crafted ZIP archive carries one entry whose compressed
@@ -5,7 +6,6 @@
  * textbook ZIP bomb. Distinct from Ad105 (archive header lies about
  * size) - in this entry the ZIP entry actually decompresses to the
  * claimed size. Provenance tier: cross-file-state. */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Ad111 - 3MF/IFCZIP ZIP bomb wrapping STEP body (witness only)'),'2;1');
 FILE_NAME('Ad111.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');

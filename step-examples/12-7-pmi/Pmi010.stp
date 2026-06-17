@@ -1,10 +1,10 @@
+ISO-10303-21;
 /* Pmi010 - Tolerance zone form name from AP242 Ed.2 used in Ed.1 file
    Defect: AP242 Ed.2 added several TOLERANCE_ZONE_FORM.name values
    ('within a sphere', 'within a cone', 'within a single complex surface').
    This file's FILE_SCHEMA declares AP242 Ed.1 (CC1 MIM_LF, version 1) but
    contains a TOLERANCE_ZONE_FORM('within a cone'). Strict Ed.1 conformance
    readers raise a WHERE-rule violation; lenient readers warn. */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Pmi010 - Ed.2 zone form name in Ed.1 file'),'2;1');
 FILE_NAME('Pmi010.stp','2026-04-26T00:00:00',('catalog'),('cad'),

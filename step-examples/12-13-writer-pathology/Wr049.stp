@@ -1,9 +1,9 @@
+ISO-10303-21;
 /* Wr049 - Subtractive pipe at right-angle joints emits hidden sphere of
  * material in joint.
  * Defect (FreeCAD #26161): the sphere that the producer used to fill the
  * inside of a 90-degree pipe corner is left in the file as a closed
  * sub-shell that should have been Boolean-subtracted before emission. */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Wr049 - construction-residual sphere at pipe joint'),'2;1');
 FILE_NAME('Wr049.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');

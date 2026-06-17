@@ -1,3 +1,4 @@
+ISO-10303-21;
 /* Ad081 - Rhino-6 STEP triggers Standard_OutOfRange in TransferRoot
    Source: STEP_PROBLEM_CATALOG.md §12.11 Ad081;
            mining 18-other-issues.md I044 (pythonocc-core #702).
@@ -15,7 +16,6 @@
    This fixture mimics the structural shape Rhino-6 emits: a
    PRODUCT_DEFINITION with no SHAPE_REPRESENTATION counterpart, but
    the SDR points at it anyway. License-clean: hand-synthesized. */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(
   ('Ad081 - Rhino-6-shaped SDR with missing rep mapping'),

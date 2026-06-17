@@ -1,3 +1,4 @@
+ISO-10303-21;
 /* Gn014 - BSpline that fits a plane/cylinder/cone/sphere/torus
    Defect: a face stored as B_SPLINE_SURFACE_WITH_KNOTS is mathematically a
    plane -- four corner control points all on z=0 with linear blending.
@@ -7,7 +8,6 @@
    ShapeAnalysis_CanonicalRecognition (F076) should fit a candidate
    primitive within tolerance and replace the surface.
    IGES round-trip is the canonical lossy path producing this artifact. */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Gn014 - planar surface stored as BSpline of degree 1'),
   '2;1');

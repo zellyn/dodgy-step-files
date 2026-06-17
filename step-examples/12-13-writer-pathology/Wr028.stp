@@ -1,5 +1,5 @@
-/* Wr028 - FILE_NAME author and originating_system fields blank or auto-filled with placeholder */
 ISO-10303-21;
+/* Wr028 - FILE_NAME author and originating_system fields blank or auto-filled with placeholder */
 HEADER;
 FILE_DESCRIPTION(('Wr028 - blank provenance fields'),'2;1');
 /* Wr028: writer never captures user identity; emits empty strings for

@@ -1,3 +1,4 @@
+ISO-10303-21;
 /* Ad105 - .stpz / .stpx archive container claims gigabytes of uncompressed data
  * Defect: a ZIP / gzip archive whose entry header advertises gigabytes
  * of uncompressed payload from a few KB compressed bytes (decompression
@@ -5,7 +6,6 @@
  * STEP body. This fixture shows only the embedded body; the actual
  * exploit is the wrapper's compressed-vs-uncompressed-size ratio.
  * Provenance tier: cross-file-state. */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Ad105 - .stpz archive bomb (witness only - bomb in wrapper)'),'2;1');
 FILE_NAME('Ad105.stp','2026-04-30T00:00:00',(''),(''),'cad-research-suite','','');

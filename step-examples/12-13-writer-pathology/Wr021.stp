@@ -1,5 +1,5 @@
-/* Wr021 - PMI annotations dropped on re-export - GD&T entities present in input are absent here */
 ISO-10303-21;
+/* Wr021 - PMI annotations dropped on re-export - GD&T entities present in input are absent here */
 HEADER;
 FILE_DESCRIPTION(('Wr021 - PMI annotations dropped'),'2;1');
 FILE_NAME('Wr021.stp','2026-04-30T00:00:00',(''),(''),

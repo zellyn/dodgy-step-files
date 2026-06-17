@@ -1,9 +1,9 @@
+ISO-10303-21;
 /* Gn099 - ShapeAnalysis_Curve.GetSamplePoints conic-arc rational-weight cap
    Defect: CONIC_CURVE (circular arc) with rational weights. GetSamplePoints
    uses degree-3 sample count for degree-2 conic, but conic-arc weight
    distribution requires denser sampling near the arc's rational poles.
    Sparse sampling misses curvature extrema. */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Gn099 - Conic arc rational-weight sparse sampling'),'2;1');
 FILE_NAME('Gn099.stp','2026-06-15T00:00:00',('auto-generated'),(''),

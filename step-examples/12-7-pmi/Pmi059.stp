@@ -1,3 +1,4 @@
+ISO-10303-21;
 /* Pmi059 - Surface status (cosmetic / construction / blanked) preservation lost
    Defect: A face tagged in source CAD with status=construction loses
    its status flag after STEP round-trip. The source-side
@@ -5,7 +6,6 @@
    ADVANCED_FACE indistinguishable from a real face. (W029 SDHE-21748).
    Receivers should preserve such properties even if they cannot use
    the value semantically. */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Pmi059 - construction-status flag dropped',
   'CAx-IF Rec.Pracs.---PMI Rep & Pres---v4.1'),'2;1');

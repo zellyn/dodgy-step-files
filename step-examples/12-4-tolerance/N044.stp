@@ -1,3 +1,4 @@
+ISO-10303-21;
 /* N044 - Persistent IDs lost across editing/translation breaks PMI
  *        tolerance attachment
  * Defect: Stable identifiers assigned to entities (faces, edges) for change
@@ -12,7 +13,6 @@
  * the PMI tolerance frame (DIMENSIONAL_LOCATION) dangles -- it still
  * references the old STEP_id which has been reassigned to a different face.
  */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('N044 persistent IDs lost; PMI tolerance frame dangles after round-trip'),'2;1');
 FILE_NAME('N044.stp','2026-04-26T00:00:00',(''),(''),

@@ -1,3 +1,4 @@
+ISO-10303-21;
 /* Tfa070 - CURVE_BOUNDED_SURFACE.implicit_outer = .U. (unset)
    Defect: BRL-CAD step-g CurveBoundedSurface::Load reads the
    `implicit_outer` BOOLEAN attribute via getBooleanAttribute with a
@@ -11,7 +12,6 @@
    silently dropped.
    Sources: BRL-CAD src/conv/step/step-g/CurveBoundedSurface.cpp -
    `implicit_outer` defaults BUnset; LoadONBrep stub. */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(
   ('Tfa070 - CURVE_BOUNDED_SURFACE implicit_outer unset and LoadONBrep stub'),

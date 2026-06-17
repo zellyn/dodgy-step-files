@@ -1,8 +1,8 @@
+ISO-10303-21;
 /* Pmi031 - Projected zone projection_end is not a plane
    Defect: PROJECTED_ZONE_DEFINITION.projection_end must reference a PLANE
    per spec, but this file references a CYLINDRICAL_SURFACE. Receivers
    should warn and require a plane. */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Pmi031 - projection_end is a cylindrical surface'),'2;1');
 FILE_NAME('Pmi031.stp','2026-04-26T00:00:00',('catalog'),('cad'),

@@ -1,3 +1,4 @@
+ISO-10303-21;
 /* Pmi003 - Stacked vs composite tolerance frames mis-tagged
    Defect: Two parallelism tolerances drawn one above the other in the same
    FCF are merely "stacked" (semantically independent), but the writer emits
@@ -5,7 +6,6 @@
    tolerances must use the 'composite' relationship; stacked tolerances must
    not. Receivers that count composite frames will inflate their count, and
    downstream tools may treat the two rows as a single coupled tolerance. */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Pmi003 - stacked tolerances mis-tagged as composite'),'2;1');
 FILE_NAME('Pmi003.stp','2026-04-26T00:00:00',('catalog'),('cad'),

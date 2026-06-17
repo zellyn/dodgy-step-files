@@ -1,9 +1,9 @@
+ISO-10303-21;
 /* Gn077 - ShapeAnalysis_Curve.IsClosed direction-reversed self-intersection
    Defect: B-spline curve with control polygon [P0,P1,P2,P3,P4,P0] where
    the last pole matches the first (closing), but internal direction reversal
    at P2 causes the curve to cross itself. IsClosed reports closed but misses
    the self-intersection. */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Gn077 - IsClosed with self-intersecting direction reversal','2;1');
 FILE_NAME('Gn077.stp','2026-06-16T00:00:00',('auto-generated'),(''),

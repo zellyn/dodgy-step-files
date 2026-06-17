@@ -1,3 +1,4 @@
+ISO-10303-21;
 /* Gn018 - BEZIER_SURFACE and RATIONAL_BEZIER_SURFACE unimplemented
    Defect: BRL-CAD step-g (and other consumers) emit
    "LoadONBrep() not implemented for <entity>" when the file references
@@ -9,7 +10,6 @@
    producers really do emit them as simple entities -- that is what
    trips step-g, not the complex-entity wrapping).
    Sources: K006 BRL-CAD OpenNurbsInterfaces.cpp:554, :800. */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(
   ('Gn018 - BEZIER_SURFACE and RATIONAL_BEZIER_SURFACE entities'),'2;1');

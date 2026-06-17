@@ -1,9 +1,9 @@
+ISO-10303-21;
 /* A101 - SubShapeBinder-derived Boolean Cut crashes downstream slicers
  * and re-import.
  * Defect (FreeCAD #26994): asterisk-implicit ORIENTED_EDGE references
  * escape into the file body. The receiver tries to materialise them
  * and crashes (PrusaSlicer) or yields empty (FreeCAD self-import). */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('A101 - asterisk edge_element escapes into file body'),'2;1');
 FILE_NAME('A101.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');

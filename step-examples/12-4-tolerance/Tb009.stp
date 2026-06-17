@@ -1,3 +1,4 @@
+ISO-10303-21;
 /* Tb009 - Self-intersection visible at full precision but rounded out at receiver tolerance
  * Defect: Two short edges cross at separation 3e-7 mm in 3D. Declared
  * uncertainty is 1e-6 (looser than the crossing). A receiver rounding
@@ -5,7 +6,6 @@
  * a point (no self-intersection). An exact-arithmetic receiver, or one
  * with tol < 3e-7, sees the self-intersection. Same input, two reports.
  */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Tb009 self-intersection at 3e-7 below 1e-6 declared tolerance'),'2;1');
 FILE_NAME('Tb009.stp','2026-04-30T00:00:00',(''),(''),

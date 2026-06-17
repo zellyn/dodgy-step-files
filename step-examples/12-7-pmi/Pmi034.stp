@@ -1,10 +1,10 @@
+ISO-10303-21;
 /* Pmi034 - placed_datum_target_feature shared DatumTargetType_Area null deref
    Defect: Two PLACED_DATUM_TARGET_FEATURE entities incorrectly share a
    single DATUM_TARGET_TYPE_AREA instance. Some translators (notably
    OCCT pre-fix per Mantis 0031685) NULL-deref when iterating the second
    reference because they assume independent ownership. Each placed datum
    target should own its own type-area. */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Pmi034 - shared DatumTargetType_Area null deref'),'2;1');
 FILE_NAME('Pmi034.stp','2026-04-26T00:00:00',('catalog'),('cad'),

@@ -1,8 +1,8 @@
+ISO-10303-21;
 /* Wr046 - Body Placement (rotation/translation) not applied during export.
  * Defect (FreeCAD #25150): a Body with non-identity Placement is emitted
  * with body-local coordinates and identity AXIS2_PLACEMENT_3D, dropping
  * the document's intended orientation. Workaround: wrap in Compound. */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Wr046 - body Placement dropped on STEP export'),'2;1');
 FILE_NAME('Wr046.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');

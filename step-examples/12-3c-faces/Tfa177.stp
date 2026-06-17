@@ -1,3 +1,4 @@
+ISO-10303-21;
 /* Tfa177 - ShapeAnalysis_CheckSmallFace.CheckPin near-zero-tip-angle
  * Defect: CheckPin classifies a pin vertex by measuring the tip angle; when
  * the pin is collapsed (tip angle is exactly 0°), the angle is meaningless
@@ -5,7 +6,6 @@
  * downstream null-pointer dereferences.
  * Reproducer: ADVANCED_FACE with a pin-shaped wire where the tip has zero angle.
  */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Tfa177 CheckPin collapsed tip angle'),'2;1');
 FILE_NAME('Tfa177.stp','2026-06-15T00:00:00',(''),(''),

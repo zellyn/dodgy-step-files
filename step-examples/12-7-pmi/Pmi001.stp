@@ -1,3 +1,4 @@
+ISO-10303-21;
 /* Pmi001 - Hole emitted as two half-cylinders breaks PMI feature association.
  * Defect: a 50x50x20 mm plate with a 10 mm-diameter through-hole. The hole
  * wall is emitted as TWO ADVANCED_FACEs that share ONE CYLINDRICAL_SURFACE
@@ -7,7 +8,6 @@
  * halves through two GEOMETRIC_ITEM_SPECIFIC_USAGE entries (instead of a
  * single feature face). Receivers that expect one face per cylindrical
  * feature drop or duplicate the PMI link. */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Pmi001 - half-cylinders break PMI association'),'2;1');
 FILE_NAME('Pmi001.stp','2026-05-02T00:00:00',('catalog'),('cad'),

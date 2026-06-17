@@ -1,3 +1,4 @@
+ISO-10303-21;
 /* Tfa026 - OFFSET_SURFACE used (out of AP214 scope)
  * Defect: an ADVANCED_FACE references an OFFSET_SURFACE whose basis is
  * itself a complex aggregate (e.g., a B_SPLINE_SURFACE) or a
@@ -20,7 +21,6 @@
  * on a PLANE - that simpler form is reported to translate without
  * issue, while the chained form below triggers the bug.
  */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Tfa026 OFFSET_SURFACE out of AP214 scope'),'2;1');
 FILE_NAME('Tfa026.stp','2026-04-26T00:00:00',(''),(''),

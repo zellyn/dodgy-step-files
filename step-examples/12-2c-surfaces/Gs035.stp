@@ -1,8 +1,8 @@
+ISO-10303-21;
 /* Gs035 - Composite curve segment with null parent_curve
  * Defect: COMPOSITE_CURVE_SEGMENT carries a null parent_curve ($).
  * Translator must drop the null segment with a warning rather than
  * dereferencing $ as a curve. */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Gs035 - composite curve segment null parent_curve'),'2;1');
 FILE_NAME('Gs035.stp','2026-04-26T00:00:00',(''),(''),'auto-generated','','');

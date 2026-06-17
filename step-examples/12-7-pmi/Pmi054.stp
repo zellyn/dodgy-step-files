@@ -1,10 +1,10 @@
+ISO-10303-21;
 /* Pmi054 - basis_curve for leader/annotation not on allowed list
    Defect: An annotation polyline / trimmed_curve references a basis
    curve not on the allowed list (lines, circles, polylines). Here a
    B_SPLINE_CURVE_WITH_KNOTS is used as the underlying graphic
    geometry inside the annotation, which RP §8 of PMI v4.1 forbids.
    NIST SFA S066. Receivers should warn and render best-effort. */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Pmi054 - bspline basis curve in annotation',
   'CAx-IF Rec.Pracs.---PMI Rep & Pres---v4.1'),'2;1');

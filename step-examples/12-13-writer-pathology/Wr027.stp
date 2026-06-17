@@ -1,5 +1,5 @@
-/* Wr027 - Unit context emitted twice with different units - HEADER claims mm, DATA declares INCH */
 ISO-10303-21;
+/* Wr027 - Unit context emitted twice with different units - HEADER claims mm, DATA declares INCH */
 HEADER;
 /* Wr027: HEADER prose says 'part in mm'; DATA-section unit context
    resolves to INCH. Geometry was authored in inches but the HEADER

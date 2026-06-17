@@ -1,9 +1,9 @@
+ISO-10303-21;
 /* Gs055 - Composite curve segment with infinite trim parameters
  * Defect: COMPOSITE_CURVE_SEGMENT trims the parent curve at +INF/-INF
  * via PARAMETER_VALUE literals. Translator must materialize the result
  * as a compound of bounded edges (or reject) rather than keeping an
  * unbounded trim that downstream meshers cannot evaluate. */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Gs055 - composite curve segment with infinite trim parameters'),'2;1');
 FILE_NAME('Gs055.stp','2026-04-26T00:00:00',(''),(''),'auto-generated','','');

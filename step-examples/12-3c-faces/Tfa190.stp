@@ -1,3 +1,4 @@
+ISO-10303-21;
 /* Tfa190 - ShapeFix_Face.FixWiresTwoCoincEdges with-coincident-vertex-only
  * Defect: FixWiresTwoCoincEdges detects shared edges by checking EDGE_CURVE
  * identity. However, it treats vertex-only coincidence as edge coincidence.
@@ -5,7 +6,6 @@
  * trigger false-positive merging, incorrectly modifying topology.
  * Reproducer: ADVANCED_FACE with two separate wires touching at exactly one vertex.
  */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Tfa190 FixWiresTwoCoincEdges vertex-coincidence'),'2;1');
 FILE_NAME('Tfa190.stp','2026-06-15T00:00:00',(''),(''),

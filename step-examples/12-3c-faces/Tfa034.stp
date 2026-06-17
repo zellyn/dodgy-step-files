@@ -1,3 +1,4 @@
+ISO-10303-21;
 /* Tfa034 - Face orientation flag inconsistent with shell normal (FixFaceOrientation)
  * Defect: one or more faces in a closed shell have orientation flags
  * inverted relative to the outward direction. Visualization shows mixed
@@ -10,7 +11,6 @@
  * faces of a unit-10 box, but ONE face is referenced with .F.
  * orientation (its normal points inward instead of outward).
  */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Tfa034 face orientation inverted'),'2;1');
 FILE_NAME('Tfa034.stp','2026-04-26T00:00:00',(''),(''),

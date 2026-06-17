@@ -1,3 +1,4 @@
+ISO-10303-21;
 /* Gn004 - Complex BSpline surface entity with empty knots/multiplicities
    Defect: a complex/AND-instance for a rational BSpline surface
    ((BOUNDED_SURFACE() B_SPLINE_SURFACE() B_SPLINE_SURFACE_WITH_KNOTS()
@@ -6,7 +7,6 @@
    OCCT readers historically null-deref'd here (Mantis 0029478,
    commit 5dd92c3). The reader should reject the surface and skip the host
    face, emitting a per-entity diagnostic, and continue. */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Gn004 - complex BSpline surface empty knot lists'),'2;1');
 FILE_NAME('Gn004.stp','2026-04-26T00:00:00',('auto-generated'),(''),

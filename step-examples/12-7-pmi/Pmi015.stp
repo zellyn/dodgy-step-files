@@ -1,3 +1,4 @@
+ISO-10303-21;
 /* Pmi015 - Annotation geometry must be in plane PARALLEL to annotation_plane
    (small offset)
    Defect: CAD systems offset annotation geometry slightly above the
@@ -6,7 +7,6 @@
    Strict on-plane checks reject valid files. This file places its
    annotation_plane at z=0 and its polyline points at z=0.05 (parallel
    plane offset) — receivers with strict-coincidence checks reject. */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Pmi015 - small parallel offset rejected by strict checker'),'2;1');
 FILE_NAME('Pmi015.stp','2026-04-26T00:00:00',('catalog'),('cad'),

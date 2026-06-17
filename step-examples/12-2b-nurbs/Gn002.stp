@@ -1,3 +1,4 @@
+ISO-10303-21;
 /* Gn002 - RATIONAL_BSPLINE_CURVE / SURFACE with NbWeights != NbControlPoints
    Defect: a RATIONAL_B_SPLINE_CURVE bears a weights array whose length does
    NOT match the control-point list length. STEP semantics require strict
@@ -6,7 +7,6 @@
    (one missing per row).
    References: RWStepGeom_RWRationalBSplineCurve.cxx:193-199; OCCT git G024;
    Mantis 0030921 (writer historically also emitted mismatched lengths). */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Gn002 - rational BSpline weight count mismatch'),'2;1');
 FILE_NAME('Gn002.stp','2026-04-26T00:00:00',('auto-generated'),(''),

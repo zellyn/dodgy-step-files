@@ -1,3 +1,4 @@
+ISO-10303-21;
 /* Pmi123 - PROFILE_FEATURE used for sweep with no path
  * Defect: a profile_feature is tagged for sweep semantics but no
  * sweep_path is provided. AP242 distinguishes extrude (depth +
@@ -6,7 +7,6 @@
  * no way to define the swept surface. Receivers either degrade to
  * a zero-thickness profile (silent), reject (missing required
  * attribute), or accept and produce empty geometry. */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Pmi123 - profile_feature sweep without path'),'2;1');
 FILE_NAME('Pmi123.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');

@@ -1,10 +1,10 @@
+ISO-10303-21;
 /* U042 - Specific-heat-capacity J/(kg.K) as derived-unit chain (m^2 / (s^2 * K))
  * Defect: a DERIVED_UNIT composed of length^+2, time^-2, temperature^-1.
  * The kg cancels in the underlying SI derivation. Receivers must detect
  * the dimensional signature; both the kg-cancelled form (m^2 s^-2 K^-1)
  * and the kg-explicit form (J kg^-1 K^-1) should bind to the same
  * specific-heat-capacity unit. */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('U042 - specific heat capacity J/(kg.K) as derived unit chain'),'2;1');
 FILE_NAME('U042.stp','2026-04-30T00:00:00',(''),(''),'cad-research-suite','','');

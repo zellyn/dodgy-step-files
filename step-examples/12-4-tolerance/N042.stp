@@ -1,3 +1,4 @@
+ISO-10303-21;
 /* N042 - Self-intersecting wire from coarse-discretization bbox check
  *        (sample-count too small)
  * Defect: When OCCT computed a curve's bounding box for self-intersection
@@ -9,7 +10,6 @@
  * segments whose interiors cross at a tangency-like angle; default OCCT
  * bbox sampler misses the crossing.
  */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('N042 self-intersecting wire missed by coarse bbox sampling'),'2;1');
 FILE_NAME('N042.stp','2026-04-26T00:00:00',(''),(''),

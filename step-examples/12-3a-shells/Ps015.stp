@@ -1,5 +1,5 @@
-/* Ps015 - Assembly NAUO collapsed by transform-equality dedup - kernel accepts file silently; tier-3 introspection reveals component-instance count differs from producer intent */
 ISO-10303-21;
+/* Ps015 - Assembly NAUO collapsed by transform-equality dedup - kernel accepts file silently; tier-3 introspection reveals component-instance count differs from producer intent */
 HEADER;
 FILE_DESCRIPTION(('Ps015 pathological-success','NAUO instances collapsed by dedup'),'2;1');
 FILE_NAME('Ps015.stp','2026-04-26T00:00:00',(''),(''),'manual','','');

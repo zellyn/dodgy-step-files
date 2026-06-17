@@ -1,3 +1,4 @@
+ISO-10303-21;
 /* Pmi012 - Identical id_attribute reused across shape_aspect / dimensional_location
    / dimensional_size / shape_aspect_relationship
    Defect: AP242 imposes a global uniqueness rule on the derived 'id'
@@ -5,7 +6,6 @@
    and SHAPE_ASPECT_RELATIONSHIP. This file uses 'A1' both on a
    SHAPE_ASPECT and on a DIMENSIONAL_LOCATION via ID_ATTRIBUTE — the
    classic per-entity-type ID allocator bug producing colliding IDs. */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Pmi012 - id_attribute collisions across subtype namespaces'),'2;1');
 FILE_NAME('Pmi012.stp','2026-04-26T00:00:00',('catalog'),('cad'),

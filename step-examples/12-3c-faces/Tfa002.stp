@@ -1,3 +1,4 @@
+ISO-10303-21;
 /* Tfa002 - Unbound ADVANCED_FACE (no FACE_OUTER_BOUND, no FACE_BOUND)
  * Defect: an ADVANCED_FACE is emitted with an empty bounds list - no
  * FACE_OUTER_BOUND and no FACE_BOUND. Either the writer dropped the
@@ -19,7 +20,6 @@
  * rejected by the receiver as the planar surface is not closed and so
  * has no implicit boundary the kernel could synthesise.
  */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Tfa002 unbound advanced_face'),'2;1');
 FILE_NAME('Tfa002.stp','2026-04-26T00:00:00',(''),(''),

@@ -1,9 +1,9 @@
+ISO-10303-21;
 /* Pmi093 - RECTANGULAR_PATTERN with zero spacing in one direction
  * Defect: a rectangular pattern with count_v=4 but spacing_v=0 collapses
  * all V copies onto V index 0. Producer probably authored a 1-D pattern
  * and emitted it as 2-D. Receivers either collapse silently, accept
  * four phantom-coincident rows, or reject. */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Pmi093 - rectangular pattern zero spacing collapses one axis'),'2;1');
 FILE_NAME('Pmi093.stp','2026-04-30T00:00:00',(''),(''),'cad-research-suite','','');

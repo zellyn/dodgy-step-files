@@ -1,5 +1,5 @@
-/* Wr040 - Empty name strings on every entity - writer pre-fills '' instead of carrying input names */
 ISO-10303-21;
+/* Wr040 - Empty name strings on every entity - writer pre-fills '' instead of carrying input names */
 HEADER;
 FILE_DESCRIPTION(('Wr040 - every entity name is empty string'),'2;1');
 FILE_NAME('Wr040.stp','2026-04-30T00:00:00',(''),(''),

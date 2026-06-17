@@ -1,5 +1,5 @@
-/* Wr039 - Re-export re-orders attributes within complex (subtype-stack) records */
 ISO-10303-21;
+/* Wr039 - Re-export re-orders attributes within complex (subtype-stack) records */
 HEADER;
 FILE_DESCRIPTION(('Wr039 - subtype-stack reordering on re-export'),'2;1');
 FILE_NAME('Wr039.stp','2026-04-30T00:00:00',(''),(''),

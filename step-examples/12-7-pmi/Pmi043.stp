@@ -1,3 +1,4 @@
+ISO-10303-21;
 /* Pmi043 - Lower-case relation names where RP requires lower-case keywords
    Defect: GEOMETRIC_TOLERANCE_RELATIONSHIP.name uses 'Composite' with a
    capital C. The CAx-IF Recommended Practice requires lower-case keywords
@@ -5,7 +6,6 @@
    Case-sensitive readers will fail to recognize the composite frame and
    treat the two tolerances as independent. NIST SFA S070 is the canonical
    pointer. */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Pmi043 - capitalized composite keyword',
   'CAx-IF Rec.Pracs.---PMI Rep & Pres---v4.1'),'2;1');

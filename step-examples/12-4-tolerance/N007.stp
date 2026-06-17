@@ -1,3 +1,4 @@
+ISO-10303-21;
 /* N007 - Vertex tolerance bump factor hard-coded 1.000001 * on disagreement
  * Defect: StepToTopoDS_TranslateEdge -- when imported edge's 3D curve and
  * vertex points disagree beyond preci, OCCT bumps vertex tolerance by
@@ -6,7 +7,6 @@
  * Reproducer: VERTEX_POINT.cartesian_point lies 1e-3 from the curve evaluation
  * at the edge's parametric endpoint; declared uncertainty is 1e-6.
  */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('N007 vertex tolerance bump factor 1.000001 hard-coded'),'2;1');
 FILE_NAME('N007.stp','2026-04-26T00:00:00',(''),(''),

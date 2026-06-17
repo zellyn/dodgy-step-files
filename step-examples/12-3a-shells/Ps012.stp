@@ -1,5 +1,5 @@
-/* Ps012 - Swept solid silently truncated to a simple cone - kernel accepts file silently; tier-3 introspection reveals intended swept profile became a straight CONICAL_SURFACE */
 ISO-10303-21;
+/* Ps012 - Swept solid silently truncated to a simple cone - kernel accepts file silently; tier-3 introspection reveals intended swept profile became a straight CONICAL_SURFACE */
 HEADER;
 FILE_DESCRIPTION(('Ps012 pathological-success','Sweep collapsed to a cone'),'2;1');
 FILE_NAME('Ps012.stp','2026-04-26T00:00:00',(''),(''),'manual','','');

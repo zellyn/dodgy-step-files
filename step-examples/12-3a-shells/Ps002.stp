@@ -1,5 +1,5 @@
-/* Ps002 - FACE_OUTER_BOUND traversed clockwise; inner loop traversed CCW - kernel accepts file silently; tier-3 introspection reveals "inside" and "outside" of the face are swapped */
 ISO-10303-21;
+/* Ps002 - FACE_OUTER_BOUND traversed clockwise; inner loop traversed CCW - kernel accepts file silently; tier-3 introspection reveals "inside" and "outside" of the face are swapped */
 HEADER;
 FILE_DESCRIPTION(('Ps002 pathological-success','Outer/inner loop orientations swapped'),'2;1');
 FILE_NAME('Ps002.stp','2026-04-26T00:00:00',(''),(''),'manual','','');

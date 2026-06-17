@@ -1,9 +1,9 @@
+ISO-10303-21;
 /* Ad104 - STEP-XML wrapper with DTD external-entity reference (XXE)
  * Defect: a STEP-XML (.stpx) file with an internal DTD declaring an
  * external entity. XML parsers with XXE enabled fetch the resource and
  * inline it. This fixture is shown in .stp form for cataloguing; the
  * actual attack surface is .stpx. Provenance tier: cross-file-state. */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Ad104 - STEP-XML wrapper carries DTD with XXE entity'),'2;1');
 FILE_NAME('Ad104.stp','2026-04-30T00:00:00',(''),(''),'cad-research-suite','','');

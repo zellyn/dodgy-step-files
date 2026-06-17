@@ -1,5 +1,5 @@
-/* Ps006 - CLOSED_SHELL where one face double-covers a region of another - kernel accepts file silently; tier-3 introspection reveals two faces overlap on a 2D region */
 ISO-10303-21;
+/* Ps006 - CLOSED_SHELL where one face double-covers a region of another - kernel accepts file silently; tier-3 introspection reveals two faces overlap on a 2D region */
 HEADER;
 FILE_DESCRIPTION(('Ps006 pathological-success','Self-overlapping shell with double-covered region'),'2;1');
 FILE_NAME('Ps006.stp','2026-04-26T00:00:00',(''),(''),'manual','','');

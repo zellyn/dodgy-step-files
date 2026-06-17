@@ -1,3 +1,4 @@
+ISO-10303-21;
 /* Pf010 - Cyclic / self-referential reference graph causes infinite
    recursion. Reference resolver loops forever or stack-overflows.
    This fixture exercises four canonical cycle shapes documented in
@@ -9,7 +10,6 @@
      #40  - COMPOSITE_CURVE_SEGMENT whose parent_curve is the composite
    Scaling-up: any one cycle hangs naive resolvers; combining several in
    one file (as here) defeats single-pattern guards. */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Pf010 - cyclic / self-referential reference graphs'),'2;1');
 FILE_NAME('Pf010.stp','2026-04-26T00:00:00',('auto-generated'),(''),

@@ -1,8 +1,8 @@
+ISO-10303-21;
 /* Gn074 - ShapeUpgrade_ConvertSurfaceToBezierBasis degree truncation
    Defect: B-spline surface with degree u=7, v=7. ConvertSurfaceToBezierBasis
    has hardcoded max degree (e.g., 5) and silently truncates instead of
    degree-reducing properly, producing incorrect sub-patches. */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Gn074 - High-degree surface degree truncation','2;1');
 FILE_NAME('Gn074.stp','2026-06-16T00:00:00',('auto-generated'),(''),

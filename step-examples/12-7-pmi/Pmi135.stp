@@ -1,9 +1,9 @@
+ISO-10303-21;
 /* Pmi135 - FILLET radius <= 0
  * Defect: a fillet feature carries radius -2.0 mm. Fillet radius must be
  * strictly positive (zero collapses to a sharp edge, negative is meaningless).
  * Receivers either use abs(), reject, or accept and emit a torus surface
  * with negative principal-radius. */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Pmi135 - FILLET with non-positive radius'),'2;1');
 FILE_NAME('Pmi135.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');

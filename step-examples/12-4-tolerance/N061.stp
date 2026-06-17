@@ -1,3 +1,4 @@
+ISO-10303-21;
 /* N061 - BRepLib.BoundingVertex bounding-sphere computation under-estimates radius
  * Defect: When 4+ vertices are co-located at nearly identical coordinates,
  * BRepLib's bounding sphere computation uses center-of-mass + max-distance heuristic,
@@ -6,7 +7,6 @@
  * Reproducer: Create 5 vertices clustered within 1e-8 of (1,1,1); bounding sphere
  * radius should be ~1e-8 but heuristic computes ~0.0 (machine epsilon).
  */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('N061 BRepLib.BoundingVertex bounding-sphere under-estimate'),'2;1');
 FILE_NAME('N061.stp','2026-06-15T00:00:00',(''),(''),

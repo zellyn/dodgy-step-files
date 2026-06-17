@@ -1,3 +1,4 @@
+ISO-10303-21;
 /* Pmi063 - FILE_DESCRIPTION missing references to CAx-IF Recommended Practices
    Defect: An AP242 PMI file with datum-target / dimension / GT /
    supplemental-geometry constructs has FILE_DESCRIPTION text that
@@ -5,7 +6,6 @@
    disambiguation is then impossible: a reader does not know whether
    to apply RP v3 vs v4.1 vs v5 conventions. NIST SFA S060.
    Receivers should issue an informational warning, not reject. */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Pmi063 - missing CAx-IF RP citation in header'),'2;1');
 FILE_NAME('Pmi063.stp','2026-04-26T00:00:00',('catalog'),('cad'),

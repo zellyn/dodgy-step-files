@@ -1,9 +1,9 @@
+ISO-10303-21;
 /* Pmi024 - Illegal characters inside a UUID value
    Defect: The UUID string contains characters outside [0-9a-f-].
    Per RFC 4122, hexadecimal lower-case digits and hyphens only.
    This file's UUID contains 'XYZ' (uppercase G/H/I/...non-hex).
    Receivers should warn and not attempt to repair. */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Pmi024 - illegal characters in UUID'),'2;1');
 FILE_NAME('Pmi024.stp','2026-04-26T00:00:00',('catalog'),('cad'),

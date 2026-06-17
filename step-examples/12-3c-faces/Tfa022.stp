@@ -1,3 +1,4 @@
+ISO-10303-21;
 /* Tfa022 - ConnectEdgesToWires produces wires with wrong Closed flag
  * Defect: ShapeAnalysis_FreeBounds::ConnectEdgesToWires returns wires
  * marked Closed=true when geometrically not closed, or marks closed
@@ -8,7 +9,6 @@
  * Reproducer: set of free edges whose endpoint pairing yields one wire
  * that almost closes within tolerance - last vertex offset by 1e-6.
  */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Tfa022 ConnectEdgesToWires Closed flag'),'2;1');
 FILE_NAME('Tfa022.stp','2026-04-26T00:00:00',(''),(''),

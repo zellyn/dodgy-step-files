@@ -1,3 +1,4 @@
+ISO-10303-21;
 /* Tfa006 - Spot face: face collapsed to a point
  * Defect: a face whose entire boundary lies within Precision::Confusion
  * of a single point. All vertex coordinates are equal within tolerance,
@@ -8,7 +9,6 @@
  * Reproducer: ADVANCED_FACE on a PLANE whose 4-edge FACE_OUTER_BOUND
  * traces vertices at (0,0,0), (1e-9,0,0), (1e-9,1e-9,0), (0,1e-9,0).
  */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Tfa006 spot face collapsed to point'),'2;1');
 FILE_NAME('Tfa006.stp','2026-04-26T00:00:00',(''),(''),

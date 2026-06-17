@@ -1,3 +1,4 @@
+ISO-10303-21;
 /* Ad050 - Empty EDGE_LOOP / empty wire / empty entity iterator crashes reader
    ----------------------------------------------------------------------
    Catalog section : §12.11 adversarial (sub-class: schema-validation / null-deref)
@@ -21,7 +22,6 @@
      E_EMPTY_AGGREGATE; continue translation of remaining entities.
    ----------------------------------------------------------------------
 */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Ad050 - empty EDGE_LOOP triggers iterator crash'),'2;1');
 FILE_NAME('Ad050.stp','2026-04-26T00:00:00',('auto-generated'),(''),

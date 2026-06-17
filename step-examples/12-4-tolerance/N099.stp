@@ -1,3 +1,4 @@
+ISO-10303-21;
 /* N099 - BRepLib.UpdateEdgeTol multi-face-edge
  * Defect: Edge shared by 5+ faces; UpdateEdgeTol inner sampling loops over
  * face-edge intersections. Count of 5+ faces overflows a hardcoded buffer
@@ -9,7 +10,6 @@
  * a central edge). UpdateEdgeTol will attempt to process all 6 faces but
  * only allocate space for 4, causing buffer overflow.
  */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('N099 UpdateEdgeTol multi-face-edge buffer overflow'),'2;1');
 FILE_NAME('N099.stp','2026-06-15T00:00:00',(''),(''),

@@ -1,3 +1,4 @@
+ISO-10303-21;
 /* Tfa004 - Missing natural bound on sphere / torus face
  * Defect: a face on a closed/periodic surface (sphere, torus, full
  * BSpline, surface_of_revolution) is given with only inner wires - or
@@ -22,7 +23,6 @@
  * For coverage we also emit a torus equivalent (#70) where the inner
  * wire is a small circular EDGE_LOOP on the toroidal surface.
  */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Tfa004 missing natural bound'),'2;1');
 FILE_NAME('Tfa004.stp','2026-04-26T00:00:00',(''),(''),

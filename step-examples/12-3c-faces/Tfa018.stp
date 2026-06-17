@@ -1,3 +1,4 @@
+ISO-10303-21;
 /* Tfa018 - UnifySameDomain SIGSEGV / invalid result on ReconstructMissedSeam
  * Defect: when unifying same-domain faces across a periodic seam, USD's
  * seam reconstruction crashes (release-mode invalid result; debug-mode
@@ -9,7 +10,6 @@
  * Reproducer: compound of co-cylindrical faces with implicit seam
  * between them (each face occupies half of the cylinder).
  */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Tfa018 USD seam reconstruction crash'),'2;1');
 FILE_NAME('Tfa018.stp','2026-04-26T00:00:00',(''),(''),

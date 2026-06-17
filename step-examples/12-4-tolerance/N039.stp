@@ -1,3 +1,4 @@
+ISO-10303-21;
 /* N039 - ShapeFix_Shape increases tolerance of valid sub-shapes (over-eager bump)
  * Defect: ShapeFix_Shape historically inflated edge/vertex tolerances even
  * when the existing tolerance covered the actual deviation. The fix routine
@@ -6,7 +7,6 @@
  * Reproducer: shape whose declared tolerance 1e-6 already covers all
  * deviations; ShapeFix bumps every edge/vertex tolerance to 1e-3 anyway.
  */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('N039 ShapeFix_Shape over-eager tolerance bump on valid sub-shapes'),'2;1');
 FILE_NAME('N039.stp','2026-04-26T00:00:00',(''),(''),

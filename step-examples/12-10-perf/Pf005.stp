@@ -1,3 +1,4 @@
+ISO-10303-21;
 /* Pf005 - Slow STEP import on geometric-set-heavy file
    Pattern: GEOMETRIC_SET aggregating thousands of points / lines /
    B-spline curves. OCCT matches geometric items via linear scan, giving
@@ -6,7 +7,6 @@
    Replicate to ~10000 CARTESIAN_POINT + ~5000 LINE + ~1000 B_SPLINE_CURVE
    members to trigger the OCCT 1ee621b regression and a multi-minute
    import time. */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Pf005 - geometric-set heavy import: linear-scan match'),'2;1');
 FILE_NAME('Pf005.stp','2026-04-26T00:00:00',('auto-generated'),(''),

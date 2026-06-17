@@ -1,3 +1,4 @@
+ISO-10303-21;
 /* Ad112 - Nested gzip-of-gzip-of-... .stpz triggers N-level recursive
  * decompression
  * Defect: a receiver that auto-detects gzip framing and decompresses
@@ -7,7 +8,6 @@
  * receiver's recursion or per-layer buffer overflows. Distinct from
  * Ad110 (single-layer ratio) - this entry attacks layering depth.
  * Provenance tier: cross-file-state. */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Ad112 - nested gzip recursion .stpz of .stpz of ... (witness only)'),'2;1');
 FILE_NAME('Ad112.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');

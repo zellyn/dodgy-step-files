@@ -1,5 +1,5 @@
-/* Wr010 - Re-emitted * (overridden) where schema does not allow it - asterisk in non-subtype context */
 ISO-10303-21;
+/* Wr010 - Re-emitted * (overridden) where schema does not allow it - asterisk in non-subtype context */
 HEADER;
 FILE_DESCRIPTION(('Wr010 - asterisk in non-subtype attribute'),'2;1');
 FILE_NAME('Wr010.stp','2026-04-30T00:00:00',(''),(''),

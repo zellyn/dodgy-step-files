@@ -1,10 +1,10 @@
+ISO-10303-21;
 /* Tfa176 - ShapeFix_Face.FixOrientation face-with-100-edges
  * Defect: FixOrientation traverses the outer wire's edges to determine face
  * orientation; it allocates an internal buffer of fixed size but the traversal
  * scales linearly, causing buffer overflow when the outer wire has 100+ edges.
  * Reproducer: ADVANCED_FACE whose outer wire contains 101 LINE edges.
  */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Tfa176 FixOrientation 100+ edge overflow'),'2;1');
 FILE_NAME('Tfa176.stp','2026-06-15T00:00:00',(''),(''),

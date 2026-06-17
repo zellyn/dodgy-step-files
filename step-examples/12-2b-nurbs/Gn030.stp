@@ -1,3 +1,4 @@
+ISO-10303-21;
 /* Gn030 - Flat 3D curve as p-curve (instead of 2D PCURVE)
    Defect: a SURFACE_CURVE's associated_geometry references a 3D LINE
    directly rather than a PCURVE in (u,v).  For a flat host PLANE the
@@ -10,7 +11,6 @@
    surface's parameter space) OR SURFACE; some receivers tolerate a 3D
    curve here as a vendor extension and others reject it.  This fixture
    stores the 3D LINE directly to expose the failure mode. */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(
   ('Gn030 - SURFACE_CURVE.associated_geometry holds 3D LINE instead of PCURVE'),

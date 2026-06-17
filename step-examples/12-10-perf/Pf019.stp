@@ -1,3 +1,4 @@
+ISO-10303-21;
 /* Pf019 - Memory leaks in STEPControl_Controller::Init() enum tables
    Pattern: not file-driven. LeakSanitizer flags allocations from
    Interface_Static::Init -> AddEnum triggered by the controller
@@ -10,7 +11,6 @@
    the kernel, not in the file. We exercise multiple enum-bound static
    tables (units, length, plane-angle, solid-angle, time, mass, error
    tolerance, surface-tolerance) so every Init/AddEnum site fires. */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Pf019 - controller enum-table leak; minimal trigger file'),'2;1');
 FILE_NAME('Pf019.stp','2026-04-26T00:00:00',('auto-generated'),(''),

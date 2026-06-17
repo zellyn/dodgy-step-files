@@ -1,5 +1,5 @@
-/* Wr015 - Duplicate #N instance numbers in the same DATA section - two CARTESIAN_POINT records share #10 */
 ISO-10303-21;
+/* Wr015 - Duplicate #N instance numbers in the same DATA section - two CARTESIAN_POINT records share #10 */
 HEADER;
 FILE_DESCRIPTION(('Wr015 - duplicate instance number'),'2;1');
 FILE_NAME('Wr015.stp','2026-04-30T00:00:00',(''),(''),

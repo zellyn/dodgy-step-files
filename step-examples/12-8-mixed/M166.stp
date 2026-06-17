@@ -1,10 +1,10 @@
+ISO-10303-21;
 /* M166 - Heatsink-style fin array crashes export pipeline at faceted
  * sub-shape boundary.
  * Defect (FreeCAD #18524): fin pairs are emitted with FACE_OUTER_BOUND
  * orientation .F. while the surface normal direction is also flipped --
  * double-flip cancels visually but produces wrong sign on volume
  * integral. */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('M166 - fin array with double-flipped face orientation'),'2;1');
 FILE_NAME('M166.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');

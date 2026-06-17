@@ -1,3 +1,4 @@
+ISO-10303-21;
 /* N025 - Coincident-but-not-shared vertices/edges (cross-translator round-off)
  * Defect: Imported B-reps regularly contain pairs of vertices and edges that
  * the designer intended to be the same but which sit a few microns apart due
@@ -7,7 +8,6 @@
  * coordinates agree to 1e-4 but are *different objects*; nothing collapses
  * them.
  */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('N025 coincident-but-not-shared vertices cross-translator round-off'),'2;1');
 FILE_NAME('N025.stp','2026-04-26T00:00:00',(''),(''),

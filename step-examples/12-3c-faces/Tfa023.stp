@@ -1,3 +1,4 @@
+ISO-10303-21;
 /* Tfa023 - ShellSewing - disconnected adjacent faces (sewing wrapper)
  * Defect: multi-face STEP exported as disjoint faces (no CLOSED_SHELL
  * or MANIFOLD_SOLID_BREP). Downstream consumer needs a sewn shell
@@ -9,7 +10,6 @@
  * or OPEN_SHELL - only top-level SHELL_BASED_SURFACE_MODEL listing each
  * face individually wrapped in OPEN_SHELL of size 1.
  */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Tfa023 ShellSewing disconnected faces'),'2;1');
 FILE_NAME('Tfa023.stp','2026-04-26T00:00:00',(''),(''),

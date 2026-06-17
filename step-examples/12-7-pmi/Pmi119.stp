@@ -1,3 +1,4 @@
+ISO-10303-21;
 /* Pmi119 - PROFILE_FEATURE with non-closed profile (open polyline used as boundary)
  * Defect: AP242 profile_feature is a 2-D profile that bounds an
  * extrusion / sweep / revolve. The profile must be a closed loop
@@ -6,7 +7,6 @@
  * closed loop) leaves a profile that cannot bound a region.
  * Receivers either close the profile heuristically (silent), reject,
  * or accept and produce a degenerate sweep. */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Pmi119 - profile_feature open profile'),'2;1');
 FILE_NAME('Pmi119.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');

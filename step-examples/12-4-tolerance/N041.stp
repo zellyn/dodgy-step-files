@@ -1,3 +1,4 @@
+ISO-10303-21;
 /* N041 - Manifold epsilon-validity contract: cumulative transform error
  *        inflates epsilon beyond input scale
  * Defect: The Manifold library tracks an epsilon (the maximum vertex
@@ -11,7 +12,6 @@
  * the file emerges with epsilon 4.2e-3 m -- four orders of magnitude wider
  * than input scale.
  */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('N041 Manifold epsilon-validity inflated by cumulative Boolean drift'),'2;1');
 FILE_NAME('N041.stp','2026-04-26T00:00:00',(''),(''),

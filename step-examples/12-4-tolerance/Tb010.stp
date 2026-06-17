@@ -1,3 +1,4 @@
+ISO-10303-21;
 /* Tb010 - Self-intersection that vanishes after float32 round-trip
  * Defect: Quad face whose diagonals cross at sub-ULP separation in
  * double precision. Vertices at (0,0,0), (1.0000003,0,0), (2.0000007,0,0),
@@ -8,7 +9,6 @@
  * the crossing because two vertices become coincident. Producer uses
  * float32; receiver uses double; the geometry observed differs.
  */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Tb010 self-intersection vanishes after float32 round-trip'),'2;1');
 FILE_NAME('Tb010.stp','2026-04-30T00:00:00',(''),(''),

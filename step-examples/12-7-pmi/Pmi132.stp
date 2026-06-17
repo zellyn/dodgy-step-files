@@ -1,10 +1,10 @@
+ISO-10303-21;
 /* Pmi132 - INTERNAL_THREAD declared on a feature whose host shape is external
  * Defect: a SHAPE_ASPECT typed 'internal_thread' (a hole's threading) is
  * attached to a host face that represents an external cylindrical surface
  * (i.e. boss / shaft, not bore). The thread gender contradicts the host
  * geometry. Receivers either trust the gender label and machine wrong,
  * trust the host and re-tag, or reject. */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Pmi132 - INTERNAL_THREAD on EXTERNAL host (gender mismatch)'),'2;1');
 FILE_NAME('Pmi132.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');

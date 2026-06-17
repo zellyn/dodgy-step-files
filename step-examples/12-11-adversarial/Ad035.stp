@@ -1,3 +1,4 @@
+ISO-10303-21;
 /* Ad035 - IGES-style 80-column padding sensitivity (shared translator paths)
    ----------------------------------------------------------------------
    Catalog section : §12.11 adversarial (sub-class: framing / OOB-read)
@@ -31,7 +32,6 @@
 /*D0000003                                                                D0000004*/
 /*P0000005                                                                P0000005*/
 /*T0000099S0000001G0000001D0000002P0000001                                T0000001*/
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Ad035 - IGES 80-col padding fronting STEP body'),'2;1');
 FILE_NAME('Ad035.stp','2026-04-26T00:00:00',('auto-generated'),(''),

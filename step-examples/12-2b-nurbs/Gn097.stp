@@ -1,9 +1,9 @@
+ISO-10303-21;
 /* Gn097 - ShapeUpgrade_SplitSurface.Init duplicate-split-values
    Defect: call Init with duplicate split parameters [0.5, 0.5, 0.5]; dedup
    logic doesn't fully collapse leaving phantom splits. The surface is split
    at the same parameter value multiple times, and the deduplication logic
    fails to fully remove redundant split locations. */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Gn097 - SplitSurface.Init duplicate split values'),'2;1');
 FILE_NAME('Gn097.stp','2026-06-15T00:00:00',('auto-generated'),(''),

@@ -1,9 +1,9 @@
+ISO-10303-21;
 /* Gn128 - ShapeAnalysis_Curve.IsClosed B-spline with-identical-knots-different-poles
    Defect: closed B-spline whose first and last knots are identical but the
    corresponding poles differ by tiny amount; IsClosed reports closed but
    downstream geometry has gap. The closure check uses knot comparison but
    ignores pole mismatch, leading to false closure assertion. */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Gn128 - BSpline closed with gap in poles'),
   '2;1');

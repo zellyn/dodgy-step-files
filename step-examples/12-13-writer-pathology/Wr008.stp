@@ -1,5 +1,5 @@
-/* Wr008 - Excessive trailing zeros in numeric output - every value padded to 17 decimal digits */
 ISO-10303-21;
+/* Wr008 - Excessive trailing zeros in numeric output - every value padded to 17 decimal digits */
 HEADER;
 FILE_DESCRIPTION(('Wr008 - excessive trailing zeros'),'2;1');
 FILE_NAME('Wr008.stp','2026-04-30T00:00:00',(''),(''),

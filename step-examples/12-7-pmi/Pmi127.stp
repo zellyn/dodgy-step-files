@@ -1,8 +1,8 @@
+ISO-10303-21;
 /* Pmi127 - MARKING with empty text content but non-zero font size
  * Defect: a marking SHAPE_ASPECT carries a font_size of 5.0 mm but
  * the inscribed text string is empty (''). Receivers either drop the
  * marking, render an empty bounding-box ghost, or accept the contradiction. */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Pmi127 - MARKING empty text but non-zero font size'),'2;1');
 FILE_NAME('Pmi127.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');

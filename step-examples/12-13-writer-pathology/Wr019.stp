@@ -1,5 +1,5 @@
-/* Wr019 - Re-export drops XCAF colour assignments - colours present in input file are absent here */
 ISO-10303-21;
+/* Wr019 - Re-export drops XCAF colour assignments - colours present in input file are absent here */
 HEADER;
 FILE_DESCRIPTION(('Wr019 - colours dropped on re-export'),'2;1');
 FILE_NAME('Wr019.stp','2026-04-30T00:00:00',(''),(''),

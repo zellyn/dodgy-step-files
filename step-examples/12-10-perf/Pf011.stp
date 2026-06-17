@@ -1,3 +1,4 @@
+ISO-10303-21;
 /* Pf011 - StepData_EntityCluster pathological deep / cyclic chain
    Pattern: OCCT's internal StepData_EntityCluster chain allows cyclic
    next-pointer links and recursion in Value/SetValue/Append. Pathological
@@ -9,7 +10,6 @@
    list is recursively self-referencing through a long chain.
    Scaling-up: replicate the deeply-nested complex record below to depth
    10000+ to trigger the entity-cluster recursion. */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Pf011 - StepData_EntityCluster cyclic deep chain'),'2;1');
 FILE_NAME('Pf011.stp','2026-04-26T00:00:00',('auto-generated'),(''),

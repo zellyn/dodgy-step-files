@@ -1,10 +1,10 @@
+ISO-10303-21;
 /* Pmi053 - annotation_curve_occurrence leader with single point
    Defect: An ANNOTATION_CURVE_OCCURRENCE representing a leader carries
    a POLYLINE with exactly one point in its points list rather than the
    required two or more. NIST SFA S067. Receivers should drop the
    leader and warn. A leader with one point is geometrically degenerate
    (zero length, no direction). */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Pmi053 - leader polyline with a single point',
   'CAx-IF Rec.Pracs.---PMI Rep & Pres---v4.1'),'2;1');

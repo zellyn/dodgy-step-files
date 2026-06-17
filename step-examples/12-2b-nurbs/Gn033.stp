@@ -1,3 +1,4 @@
+ISO-10303-21;
 /* Gn033 - Pcurve / 3D-curve large jumps on closed BSpline surface
    Defect: 2D points along a projected pcurve sometimes show a huge
    jump (>0.95 of UV range) on a closed-but-not-periodic
@@ -9,7 +10,6 @@
    but surface_form is .UNSPECIFIED. and u_closed = .F.  A correct
    exporter would mark the surface periodic / closed; this file does NOT.
    Sources: Mantis 0030075, OCCT b735354. */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(
   ('Gn033 - closed-but-not-periodic BSpline surface with pcurve jump'),

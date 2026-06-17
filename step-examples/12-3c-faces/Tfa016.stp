@@ -1,3 +1,4 @@
+ISO-10303-21;
 /* Tfa016 - Faces share same supporting surface - UnifySameDomain
  * Defect: multiple coplanar faces from a Boolean union remain separate,
  * joined by an artificial internal edge. Feature recognition and CAM/FEA
@@ -9,7 +10,6 @@
  * Reproducer: two coplanar ADVANCED_FACE entries sharing one PLANE.
  * Both reference the same internal edge between them.
  */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Tfa016 same domain faces unifiable'),'2;1');
 FILE_NAME('Tfa016.stp','2026-04-26T00:00:00',(''),(''),

@@ -1,3 +1,4 @@
+ISO-10303-21;
 /* Gn007 - Long helical NURBS distortion from relative-accuracy tessellation
    Defect: long thin parts (e.g. 2.5 m extrusions with sub-mm helical thread
    features) export as visibly warped helical NURBS because Creo's default
@@ -8,7 +9,6 @@
    is in the writer's choice of resolution, not in the entity grammar.
    See V035; recommended workaround: absolute accuracy 1e-4 + disable
    surface simplification. */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(
   ('Gn007 - helical NURBS distortion from relative-accuracy tessellation'),

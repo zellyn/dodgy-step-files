@@ -1,9 +1,9 @@
+ISO-10303-21;
 /* Pmi028 - common_datum vs common_datum_list (multi-feature datum)
    Defect: For ASME multiple-feature datums or ISO common datums, RP requires
    DATUM_REFERENCE_ELEMENT with COMMON_DATUM_LIST; some senders use the older
    COMMON_DATUM instead. This file emits common_datum(d1,d2) where it should
    have used common_datum_list((d1,d2)). */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Pmi028 - common_datum used instead of common_datum_list'),'2;1');
 FILE_NAME('Pmi028.stp','2026-04-26T00:00:00',('catalog'),('cad'),

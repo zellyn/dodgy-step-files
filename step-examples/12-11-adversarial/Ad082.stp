@@ -1,3 +1,4 @@
+ISO-10303-21;
 /* Ad082 - BinTools.Read_s vs ASCII parser parity
    Source: STEP_PROBLEM_CATALOG.md §12.11 Ad082;
            mining 18-other-issues.md I059 (OCCT #844).
@@ -17,7 +18,6 @@
    stream and its underlying edge_curve cycles. Catches index-map
    readers that build the map in stream order without a two-pass bind.
    License-clean: hand-synthesized. */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(
   ('Ad082 - forward-ref subshape index for binary/ascii parity probe'),

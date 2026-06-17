@@ -1,3 +1,4 @@
+ISO-10303-21;
 /* Gn008 - High-curvature curves: knot multiplicity at full degree producing
    near-cusps; rational with weight ratio above 1e3
    Defect: two flavors that produce mesher pathologies:
@@ -9,7 +10,6 @@
             downstream meshers to over-resolve near it, or fail.
    Geometry remains valid; readers should accept and emit a quality
    warning. Downstream meshers must detect and refit before meshing. */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Gn008 - high-curvature near-cusp BSpline curves'),'2;1');
 FILE_NAME('Gn008.stp','2026-04-26T00:00:00',('auto-generated'),(''),

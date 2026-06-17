@@ -1,9 +1,9 @@
+ISO-10303-21;
 /* Pmi027 - datum_reference (legacy) used instead of datum_system in AP242
    Defect: AP242 file uses the AP203/AP214-style DATUM_REFERENCE chain to
    attach datums directly to a tolerance, when it should use a DATUM_SYSTEM
    containing DATUM_REFERENCE_COMPARTMENTs. Importers expecting modern
    form may miss the datum framing. */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Pmi027 - legacy datum_reference in AP242 file'),'2;1');
 FILE_NAME('Pmi027.stp','2026-04-26T00:00:00',('catalog'),('cad'),

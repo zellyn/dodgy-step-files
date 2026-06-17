@@ -1,3 +1,4 @@
+ISO-10303-21;
 /* Tb007 - NURBS knot-difference quantum below tolerance: collapses or doesn't
  * Defect: B-spline curve has knot vector (0.0, 1e-8, 1.0) with multiplicities
  * (4, 1, 4) for cubic. A receiver collapsing near-equal knots within 1e-9
@@ -7,7 +8,6 @@
  * the curve start. The same input produces different curves under different
  * knot-equality policies.
  */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Tb007 NURBS knot 1e-8 between Confusion and PConfusion'),'2;1');
 FILE_NAME('Tb007.stp','2026-04-30T00:00:00',(''),(''),

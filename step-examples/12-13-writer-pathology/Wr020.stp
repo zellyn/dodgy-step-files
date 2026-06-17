@@ -1,5 +1,5 @@
-/* Wr020 - Re-export drops XCAF labels and names - all name attributes replaced with auto-IDs */
 ISO-10303-21;
+/* Wr020 - Re-export drops XCAF labels and names - all name attributes replaced with auto-IDs */
 HEADER;
 FILE_DESCRIPTION(('Wr020 - feature names lost on re-export'),'2;1');
 FILE_NAME('Wr020.stp','2026-04-30T00:00:00',(''),(''),

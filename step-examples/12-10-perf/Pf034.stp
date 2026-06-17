@@ -1,3 +1,4 @@
+ISO-10303-21;
 /* Pf034 - NoMoreObject on large shape divide.
  * Pattern: compound of ~200 cubes (1,200 faces) - shape-divide hits an
  * internal hard-coded collection limit.
@@ -6,7 +7,6 @@
  * SHAPE_REPRESENTATION to make the many-solid pattern recognisable.
  * Replicate the brep block to 200 to reproduce the production
  * shape-divide overflow. */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Pf034 test case','NoMoreObject on large shape divide'),'2;1');
 FILE_NAME('Pf034.stp','2026-04-30T00:00:00',(''),(''),'cad-research-suite','','');

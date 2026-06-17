@@ -1,10 +1,10 @@
+ISO-10303-21;
 /* Pmi067 - 'INCH' named differently on conversion_based_unit
    Defect: The conventional name for inches in PMI dimensional
    measurements is 'INCH'; this producer wrote 'inches' on the
    CONVERSION_BASED_UNIT, plus another instance with 'IN'. PMI value
    display breaks on case-sensitive readers that match 'INCH' literally.
    NIST SFA S032. Receivers should case-insensitively match and warn. */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Pmi067 - inch unit names not normalized to INCH',
   'CAx-IF Rec.Pracs.---PMI Rep & Pres---v4.1'),'2;1');

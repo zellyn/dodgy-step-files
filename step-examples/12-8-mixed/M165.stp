@@ -1,9 +1,9 @@
+ISO-10303-21;
 /* M165 - Knurled body exports STEP with holes (slicer reports
  * non-manifold).
  * Defect (FreeCAD #16320): dense small triangular faces on a knurled
  * cylinder are below the receiver's prune threshold; the rendered
  * surface has visible holes where they were dropped. */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('M165 - dense sub-tolerance triangular faces (knurl pattern)'),'2;1');
 FILE_NAME('M165.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');

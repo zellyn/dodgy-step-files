@@ -1,3 +1,4 @@
+ISO-10303-21;
 /* Ad080 - token-boundary attack: ENDSEC;DATA; concatenated twice
    Source: STEP_PROBLEM_CATALOG.md §12.11 Ad080;
            mining 12-adversarial.md A025.
@@ -13,7 +14,6 @@
    This fixture supplies two DATA sections in an Ed.2-mode file
    (FILE_DESCRIPTION '2;1') so a strict reader MUST reject the second
    DATA. License-clean: hand-synthesized. */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(
   ('Ad080 - duplicate DATA sections, Ed.2 mode'),

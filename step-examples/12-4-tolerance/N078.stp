@@ -1,3 +1,4 @@
+ISO-10303-21;
 /* N078 - ShapeFix_Edge.FixSameParameter precision-floor
  * Defect: Edge with extremely tight tolerance (1e-15); FixSameParameter's
  * interior tolerance computation falls below the floor and gets clamped,
@@ -9,7 +10,6 @@
  * Downstream SameParameter checks then pass incorrectly because they use
  * the clamped floor instead of the declared tolerance.
  */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('N078 FixSameParameter precision-floor clamping'),'2;1');
 FILE_NAME('N078.stp','2026-06-15T00:00:00',(''),(''),

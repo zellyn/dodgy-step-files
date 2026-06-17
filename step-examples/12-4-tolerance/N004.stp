@@ -1,3 +1,4 @@
+ISO-10303-21;
 /* N004 - Edge SameParameter flag inconsistent with 3D-vs-pcurve deviation
  * Defect: An edge marked SameParameter=.T. claims its 3D curve and 2D pcurve
  * agree at every parameter, but ShapeAnalysis_Edge::CheckSameParameter would
@@ -7,7 +8,6 @@
  * pcurve was reprojected at different sampling so it disagrees with 3D curve
  * at parametric midpoint by ~5e-3 mm, yet same_sense=.T. is asserted.
  */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('N004 SameParameter flag inconsistent with deviation'),'2;1');
 FILE_NAME('N004.stp','2026-04-26T00:00:00',(''),(''),

@@ -1,3 +1,4 @@
+ISO-10303-21;
 /* N016 - Edge tolerance 2-3 orders of magnitude > file tolerance (CATIA per-edge precision)
  * Defect: CATIA writes per-edge tolerance values that are 2-3 orders of
  * magnitude larger than the file's default tolerance. Receivers reading only
@@ -7,7 +8,6 @@
  * GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT entries with per-edge precisions of
  * 1e-2 / 5e-3 mm (CATIA-style per-entity tolerance metadata).
  */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('N016 CATIA per-edge tolerance 2-3 orders > file tolerance'),'2;1');
 FILE_NAME('N016.stp','2026-04-26T00:00:00',(''),(''),

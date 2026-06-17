@@ -1,3 +1,4 @@
+ISO-10303-21;
 /* Pmi065 - DDP / EER cross-file PMI references break on repackaging
    Defect: AP242 supports referencing geometric elements (a face, edge)
    in a separate Part 21 file via COMPONENT_PATH_SHAPE_ASPECT plus an
@@ -11,7 +12,6 @@
          when AP242 requires it to reference the root product_definition
          (AS1).
    See External Reference v3.1 §7.5.2; A013, N044, M030. */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Pmi065 - DDP/EER cross-file PMI link broken',
   'CAx-IF Rec.Pracs.---External Reference---v3.1'),'2;1');

@@ -1,8 +1,8 @@
+ISO-10303-21;
 /* Pmi023 - Multiple UUIDs for the same identified_item
    Defect: Two UUID_ATTRIBUTE entries reference the same shape_aspect with
    different UUID values, creating ambiguity for round-trip. Receivers
    should choose deterministically (e.g. lex-sort) but should warn. */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Pmi023 - multiple UUIDs for same identified item'),'2;1');
 FILE_NAME('Pmi023.stp','2026-04-26T00:00:00',('catalog'),('cad'),

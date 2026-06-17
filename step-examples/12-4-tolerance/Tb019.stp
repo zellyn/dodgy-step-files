@@ -1,3 +1,4 @@
+ISO-10303-21;
 /* Tb019 - Declared UNCERTAINTY of 1e-30 -- below any sane working precision
  * Defect: UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-30)) declares
  * a tolerance below any reasonable kernel's working precision. Receiver
@@ -6,7 +7,6 @@
  * silently uses 1e-7 -- producer/receiver disagree about precision
  * silently. Both directions of substitution are dangerous.
  */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Tb019 absurdly small declared uncertainty 1e-30'),'2;1');
 FILE_NAME('Tb019.stp','2026-04-30T00:00:00',(''),(''),

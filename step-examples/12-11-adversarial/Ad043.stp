@@ -1,3 +1,4 @@
+ISO-10303-21;
 /* Ad043 - STEP read raises uncaught exception (null/invalid entity catch-all)
    ----------------------------------------------------------------------
    Catalog section : §12.11 adversarial (sub-class: null-deref / DoS)
@@ -26,7 +27,6 @@
      never abort. Emit E_NULL_REFERENCE with entity-id context.
    ----------------------------------------------------------------------
 */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Ad043 - STYLED_ITEM points at unresolved entity'),'2;1');
 FILE_NAME('Ad043.stp','2026-04-26T00:00:00',('auto-generated'),(''),

@@ -1,5 +1,5 @@
-/* Wr024 - NAUO assembly-tree flattened on re-export - subassembly grouping lost */
 ISO-10303-21;
+/* Wr024 - NAUO assembly-tree flattened on re-export - subassembly grouping lost */
 HEADER;
 FILE_DESCRIPTION(('Wr024 - NAUO chain flattened'),'2;1');
 FILE_NAME('Wr024.stp','2026-04-30T00:00:00',(''),(''),

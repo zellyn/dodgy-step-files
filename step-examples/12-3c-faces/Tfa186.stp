@@ -1,3 +1,4 @@
+ISO-10303-21;
 /* Tfa186 - ShapeFix_Face.FixOrientation with-inner-wires-only
  * Defect: FixOrientation assumes that a face has at least one outer wire and
  * uses the outer boundary for reference when classifying inner wires. When a
@@ -6,7 +7,6 @@
  * Reproducer: ADVANCED_FACE with inner wires only (no outer wire), triggering
  * FixOrientation.
  */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Tfa186 FixOrientation inner-wires-only'),'2;1');
 FILE_NAME('Tfa186.stp','2026-06-15T00:00:00',(''),(''),

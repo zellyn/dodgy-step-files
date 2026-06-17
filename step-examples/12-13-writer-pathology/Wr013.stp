@@ -1,5 +1,5 @@
-/* Wr013 - Forward references where sequential numbering was expected - definitions appear after their references */
 ISO-10303-21;
+/* Wr013 - Forward references where sequential numbering was expected - definitions appear after their references */
 HEADER;
 FILE_DESCRIPTION(('Wr013 - forward references'),'2;1');
 FILE_NAME('Wr013.stp','2026-04-30T00:00:00',(''),(''),

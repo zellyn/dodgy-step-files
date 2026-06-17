@@ -1,3 +1,4 @@
+ISO-10303-21;
 /* Twi101 - POLYLINE used as EDGE_CURVE.curve_geometry silently dropped
    Defect: BRL-CAD step-g Polyline.cpp implements Load (it parses the
    list of CARTESIAN_POINTs into the in-memory model) but provides no
@@ -11,7 +12,6 @@
    representations of bevels and chamfers over arc-circle compositions.
    Sources: BRL-CAD src/conv/step/step-g/Polyline.cpp - Load present,
    LoadONBrep absent; falls through to Curve.cpp stub. */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(
   ('Twi101 - POLYLINE EDGE_CURVE basis dropped by step-g LoadONBrep stub'),

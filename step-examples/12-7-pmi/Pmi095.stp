@@ -1,9 +1,9 @@
+ISO-10303-21;
 /* Pmi095 - SLOT feature with length < width (degenerate slot)
  * Defect: AP242 SLOT defining invariant requires length >= width
  * (otherwise the "slot" is a wide pocket, not a slot). This fixture
  * emits length=8 mm, width=20 mm. Receivers diverge: some swap, some
  * accept and produce a downstream model that is contradictory. */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Pmi095 - SLOT length less than width (degenerate)'),'2;1');
 FILE_NAME('Pmi095.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');

@@ -1,10 +1,10 @@
+ISO-10303-21;
 /* A098 - Writer-emitted STEP cannot be re-imported by the same writing
  * process (round-trip refused).
  * Defect (FreeCAD #11728, #17839): the file is well-formed but the
  * importer in the same build has a regression in its forward-reference
  * resolver. SHAPE_REPRESENTATION at #10 references AXIS2_PLACEMENT_3D
  * at #100, which is defined later in the file. */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('A098 - all references are forward-only'),'2;1');
 FILE_NAME('A098.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');

@@ -1,10 +1,10 @@
+ISO-10303-21;
 /* M162 - Fillet faces re-import as rounded edge (Onshape/Rhino) but as
  * fillet in producer.
  * Defect (FreeCAD #20889): writer emits the fillet as a B_SPLINE_SURFACE
  * cubic patch instead of an analytical TOROIDAL_SURFACE. Receivers that
  * use surface-type as a feature-classification cue (Onshape, Rhino)
  * lose the fillet category. */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('M162 - fillet emitted as B-spline instead of torus'),'2;1');
 FILE_NAME('M162.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');

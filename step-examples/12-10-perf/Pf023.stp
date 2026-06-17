@@ -1,3 +1,4 @@
+ISO-10303-21;
 /* Pf023 - Iterative ShapeFix exposes new defect every pass (unbounded)
    Pattern: ShapeFix_Wire and friends iterate until modification flags
    settle; each fix introduces a new defect that needs another pass
@@ -10,7 +11,6 @@
    - 3D/2D mismatch (one edge has incompatible vertex coords)
    - self-intersection (a micro-loop crossing earlier edge)
    Run ShapeFix_Wire with default settings to observe many passes. */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Pf023 - multi-pass healing: reorder + mismatch + self-int'),'2;1');
 FILE_NAME('Pf023.stp','2026-04-26T00:00:00',('auto-generated'),(''),

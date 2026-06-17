@@ -1,5 +1,5 @@
-/* Wr022 - Saved-view / camera metadata lost on re-export */
 ISO-10303-21;
+/* Wr022 - Saved-view / camera metadata lost on re-export */
 HEADER;
 FILE_DESCRIPTION(('Wr022 - saved views dropped on re-export'),'2;1');
 FILE_NAME('Wr022.stp','2026-04-30T00:00:00',(''),(''),

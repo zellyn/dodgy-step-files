@@ -1,10 +1,10 @@
+ISO-10303-21;
 /* N125 — ShapeAnalysis_ShapeTolerance.AddTolerance concurrent-modification
  * Defect: AddTolerance iterates and modifies the shape's tolerance map;
  * if called on active iterator or in compound with external references,
  * concurrent modification corrupts topology or produces inconsistent state.
  * Geometry: compound with shared face references; tolerance map mutation.
  */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('N125 AddTolerance concurrent modification corruption'),'2;1');
 FILE_NAME('N125.stp','2026-06-15T00:00:00',(''),(''),

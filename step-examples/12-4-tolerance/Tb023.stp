@@ -1,3 +1,4 @@
+ISO-10303-21;
 /* Tb023 - Coordinates near 1e15 where float64 ULP exceeds declared tolerance
  * Defect: a CARTESIAN_POINT at (1.234567890123e15, 2.345678901234e15,
  * 3.456789012345e15) and a sibling at (1.234567890124e15, ...). At
@@ -6,7 +7,6 @@
  * Vertex equality, edge connectivity, sliver detection are dominated
  * by floating-point noise. Spatial twin of Tb013 (denormalised
  * near-zero). */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Tb023 - coordinates near 1e15 ULP exceeds declared tolerance'),'2;1');
 FILE_NAME('Tb023.stp','2026-04-30T00:00:00',(''),(''),'cad-research-suite','','');

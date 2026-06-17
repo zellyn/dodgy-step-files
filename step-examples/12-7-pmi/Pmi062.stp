@@ -1,3 +1,4 @@
+ISO-10303-21;
 /* Pmi062 - STEP-to-glTF balloon inflation on AP242 (mesh count explosion)
    Defect: An AP242 file with a hole feature plus PMI yields, on glTF
    conversion via RWGltf_CafWriter with SetMergeFaces(true), a vastly
@@ -7,7 +8,6 @@
    (DIMENSIONAL_SIZE / GEOMETRIC_TOLERANCE) on the cylindrical face,
    which the merge-faces logic incorrectly retains as a face boundary.
    (OCCT issue #1081). */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Pmi062 - AP242 PMI causes glTF mesh inflation',
   'CAx-IF Rec.Pracs.---PMI Rep & Pres---v4.1'),'2;1');

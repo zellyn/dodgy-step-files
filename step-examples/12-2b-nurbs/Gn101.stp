@@ -1,8 +1,8 @@
+ISO-10303-21;
 /* Gn101 - ShapeAnalysis_Curve.IsClosed COMPOSITE_CURVE with-discontinuity
    Defect: COMPOSITE_CURVE with 3 segments where segment 2 doesn't start
    where segment 1 ends (discontinuity gap). IsClosed only checks endpoints
    (first-to-last), ignoring segment-to-segment continuity. Misses internal gap. */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Gn101 - Composite curve with internal discontinuity'),'2;1');
 FILE_NAME('Gn101.stp','2026-06-15T00:00:00',('auto-generated'),(''),

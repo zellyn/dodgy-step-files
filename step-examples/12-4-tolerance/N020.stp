@@ -1,3 +1,4 @@
+ISO-10303-21;
 /* N020 - Coordinate-system origin offset: hard-coded BOARD_OFFSET 0.05mm in PCB->MCAD pipeline
  * Defect: KiCad hard-codes a BOARD_OFFSET = 0.05 mm constant on every
  * component's AXIS2_PLACEMENT_3D, floating components above the board surface
@@ -6,7 +7,6 @@
  * Reproducer: every component placement carries Z=0.05 in its location
  * cartesian_point, with no physical clearance to justify it.
  */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('N020 KiCad hard-coded BOARD_OFFSET 0.05mm Z-fight avoidance'),'2;1');
 FILE_NAME('N020.stp','2026-04-26T00:00:00',(''),(''),

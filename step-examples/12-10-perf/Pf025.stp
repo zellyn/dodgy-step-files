@@ -1,3 +1,4 @@
+ISO-10303-21;
 /* Pf025 - ShapeAnalysis::OuterWire() infinite loop on IFC-derived face
    (Mantis 0031144 / 0031926; OCCT G069/G102).
    Pattern: a face whose sub-shape list contains a vertex with INTERNAL
@@ -8,7 +9,6 @@
    on this face triggers the infinite loop. The trigger is the
    INTERNAL-orientation vertex inside the face bounds, not the geometry
    complexity. */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Pf025 - ShapeAnalysis::OuterWire() spin on internal vertex'),'2;1');
 FILE_NAME('Pf025.stp','2026-04-26T00:00:00',('auto-generated'),(''),

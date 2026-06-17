@@ -1,3 +1,4 @@
+ISO-10303-21;
 /* Tb005 - Face area sub-tolerance squared (tol*tol comparison threshold)
  * Defect: A planar face is 3e-4 x 3e-4 mm (area 9e-8 mm^2). At declared
  * tolerance 1e-4 the threshold tol*tol = 1e-8 keeps the face. After a
@@ -6,7 +7,6 @@
  * Boolean pass disappears in the next; "small feature silently removed
  * after import".
  */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Tb005 face area sub-tolerance squared'),'2;1');
 FILE_NAME('Tb005.stp','2026-04-30T00:00:00',(''),(''),

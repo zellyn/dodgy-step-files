@@ -1,3 +1,4 @@
+ISO-10303-21;
 /* Pmi110 - COMPOSITE_FEATURE wrapping sub-features that share no host-shape boundary
  * Defect: an AP242 composite_feature aggregates two sub-features (a slot and
  * a groove) but the two SHAPE_ASPECT sub-features reference different host
@@ -6,7 +7,6 @@
  * the "composite" label is meaningless. Receivers either treat the
  * composite as two unrelated features (silently dropping the composite
  * grouping), reject, or carry the contradictory link. */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Pmi110 - composite_feature sub-features share no boundary'),'2;1');
 FILE_NAME('Pmi110.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');

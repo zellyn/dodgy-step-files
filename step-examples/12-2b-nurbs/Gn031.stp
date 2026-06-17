@@ -1,3 +1,4 @@
+ISO-10303-21;
 /* Gn031 - EDGE_CURVE periodic-to-non-periodic conversion on small-edge export
    Defect: for small edges fully covered by vertex tolerances, the OCCT
    writer converted a periodic BSpline to non-periodic by cutting a
@@ -11,7 +12,6 @@
    B_SPLINE_CURVE_WITH_KNOTS plus an EDGE_CURVE whose start/end vertices
    straddle the wrap-around in a way that yields an empty / inverted range.
    Sources: Mantis 0031301, OCCT 7ef1f9b. */
-ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(
   ('Gn031 - EDGE_CURVE with inverted range from periodic-to-non-periodic'),
