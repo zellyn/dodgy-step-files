@@ -21053,6 +21053,161 @@
     "title": "NURBS trimmed surface Bezier basis delegation"
   },
   {
+    "byte_assertions": [],
+    "category": "§12.2b NURBS",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": null,
+    "description": "see fixture comments",
+    "expected_kernel_behavior": "heal: detect and correct; reject: if precondition unrecoverable",
+    "expected_validation": "",
+    "fixture_kind": null,
+    "fixture_path": "step-examples/12-2b-nurbs/Gn139.stp",
+    "id": "Gn139",
+    "notes": "synthesized from v3 deep-pass",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-sufficient",
+    "reproducer": "",
+    "section": "12.2b",
+    "section_dir": "12-2b-nurbs",
+    "see_also": [],
+    "sender": "",
+    "severity": null,
+    "sources": [
+      "OCCT/v3 NURBS branches"
+    ],
+    "taxonomy": [
+      "geometry"
+    ],
+    "tier3_assertions": [],
+    "title": "TrimmedCurve Wrapping Periodic B-spline"
+  },
+  {
+    "byte_assertions": [],
+    "category": "§12.2b NURBS",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": null,
+    "description": "see fixture comments",
+    "expected_kernel_behavior": "heal: detect and correct; reject: if precondition unrecoverable",
+    "expected_validation": "",
+    "fixture_kind": null,
+    "fixture_path": "step-examples/12-2b-nurbs/Gn140.stp",
+    "id": "Gn140",
+    "notes": "synthesized from v3 deep-pass",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-sufficient",
+    "reproducer": "",
+    "section": "12.2b",
+    "section_dir": "12-2b-nurbs",
+    "see_also": [],
+    "sender": "",
+    "severity": null,
+    "sources": [
+      "OCCT/v3 NURBS branches"
+    ],
+    "taxonomy": [
+      "geometry"
+    ],
+    "tier3_assertions": [],
+    "title": "U-Periodic Surface with V-Bounds Check Mismatch"
+  },
+  {
+    "byte_assertions": [],
+    "category": "§12.2b NURBS",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": null,
+    "description": "see fixture comments",
+    "expected_kernel_behavior": "heal: detect and correct; reject: if precondition unrecoverable",
+    "expected_validation": "",
+    "fixture_kind": null,
+    "fixture_path": "step-examples/12-2b-nurbs/Gn141.stp",
+    "id": "Gn141",
+    "notes": "synthesized from v3 deep-pass",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-sufficient",
+    "reproducer": "",
+    "section": "12.2b",
+    "section_dir": "12-2b-nurbs",
+    "see_also": [],
+    "sender": "",
+    "severity": null,
+    "sources": [
+      "OCCT/v3 NURBS branches"
+    ],
+    "taxonomy": [
+      "geometry"
+    ],
+    "tier3_assertions": [],
+    "title": "High V-Multiplicity Continuity Gap"
+  },
+  {
+    "byte_assertions": [],
+    "category": "§12.2b NURBS",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": null,
+    "description": "see fixture comments",
+    "expected_kernel_behavior": "heal: detect and correct; reject: if precondition unrecoverable",
+    "expected_validation": "",
+    "fixture_kind": null,
+    "fixture_path": "step-examples/12-2b-nurbs/Gn142.stp",
+    "id": "Gn142",
+    "notes": "synthesized from v3 deep-pass",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-sufficient",
+    "reproducer": "",
+    "section": "12.2b",
+    "section_dir": "12-2b-nurbs",
+    "see_also": [],
+    "sender": "",
+    "severity": null,
+    "sources": [
+      "OCCT/v3 NURBS branches"
+    ],
+    "taxonomy": [
+      "geometry"
+    ],
+    "tier3_assertions": [],
+    "title": "Large Pole-Count Surface Sampling Threshold"
+  },
+  {
+    "byte_assertions": [],
+    "category": "§12.2b NURBS",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": null,
+    "description": "see fixture comments",
+    "expected_kernel_behavior": "heal: detect and correct; reject: if precondition unrecoverable",
+    "expected_validation": "",
+    "fixture_kind": null,
+    "fixture_path": "step-examples/12-2b-nurbs/Gn143.stp",
+    "id": "Gn143",
+    "notes": "synthesized from v3 deep-pass",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-sufficient",
+    "reproducer": "",
+    "section": "12.2b",
+    "section_dir": "12-2b-nurbs",
+    "see_also": [],
+    "sender": "",
+    "severity": null,
+    "sources": [
+      "OCCT/v3 NURBS branches"
+    ],
+    "taxonomy": [
+      "geometry"
+    ],
+    "tier3_assertions": [],
+    "title": "RectangularTrimmedSurface Basis Unwrap Null-Check"
+  },
+  {
     "byte_assertions": [
       "contains(b'LINE(')",
       "count_entity_def(b'CARTESIAN_POINT') >= 5"
@@ -31952,6 +32107,161 @@
     ],
     "tier3_assertions": [],
     "title": "ShapeFix_Shell.Perform context null initialize"
+  },
+  {
+    "byte_assertions": [],
+    "category": "§12.3a shells (sub-class: face-orientation-propagation)",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": null,
+    "description": "Shell with two identical coplanar faces exhibits inconsistent outward normals after orientation fixing. FixFaceOrientation processes duplicates independently, failing to synchronize orientation across identical geometry.",
+    "expected_kernel_behavior": "heal (reject or normalize all duplicate faces to consistent outward orientation)",
+    "expected_validation": "",
+    "fixture_kind": null,
+    "fixture_path": "step-examples/12-3a-shells/Tsh199.stp",
+    "id": "Tsh199",
+    "notes": "Duplicate mutation, aMapAdded tracking ineffective",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-sufficient",
+    "reproducer": "",
+    "section": "12.3a",
+    "section_dir": "12-3a-shells",
+    "see_also": [],
+    "sender": "",
+    "severity": null,
+    "sources": [
+      "OCCT/ShapeFix_Shell.FixFaceOrientation"
+    ],
+    "taxonomy": [
+      "topology"
+    ],
+    "tier3_assertions": [],
+    "title": "Duplicate faces orientation inconsistency"
+  },
+  {
+    "byte_assertions": [],
+    "category": "§12.3a shells (sub-class: lazy-initialization)",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": null,
+    "description": "BadEdges() returns compound from myBad without validating initialization. Calling before Perform() completes yields uninitialized extent, masking actual edge defects.",
+    "expected_kernel_behavior": "reject (error on uninitialized access)",
+    "expected_validation": "",
+    "fixture_kind": null,
+    "fixture_path": "step-examples/12-3a-shells/Tsh200.stp",
+    "id": "Tsh200",
+    "notes": "Initialization-order, myBad.Extent validation missing",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-sufficient",
+    "reproducer": "",
+    "section": "12.3a",
+    "section_dir": "12-3a-shells",
+    "see_also": [],
+    "sender": "",
+    "severity": null,
+    "sources": [
+      "OCCT/ShapeAnalysis_Shell.BadEdges_at281"
+    ],
+    "taxonomy": [
+      "topology"
+    ],
+    "tier3_assertions": [],
+    "title": "BadEdges uninitialized extent"
+  },
+  {
+    "byte_assertions": [],
+    "category": "§12.3a shells (sub-class: non-manifold-handling)",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": null,
+    "description": "Non-manifold shell with edge shared by three faces triggers unbounded orientation-fixing loop when isAccountMultiConex=true. No explicit termination guard for pathological connectivity patterns.",
+    "expected_kernel_behavior": "heal (bounded iteration with backtracking limit)",
+    "expected_validation": "",
+    "fixture_kind": null,
+    "fixture_path": "step-examples/12-3a-shells/Tsh201.stp",
+    "id": "Tsh201",
+    "notes": "aMapMultiConnectEdges exhaustive population, O(n²) complexity floor",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-sufficient",
+    "reproducer": "",
+    "section": "12.3a",
+    "section_dir": "12-3a-shells",
+    "see_also": [],
+    "sender": "",
+    "severity": null,
+    "sources": [
+      "OCCT/ShapeFix_Shell.FixFaceOrientation.multiconnect_edge_loop_unbounded"
+    ],
+    "taxonomy": [
+      "topology"
+    ],
+    "tier3_assertions": [],
+    "title": "Multi-connected edge unbounded iteration"
+  },
+  {
+    "byte_assertions": [],
+    "category": "§12.3a shells (sub-class: state-management)",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": null,
+    "description": "Multiple Perform() calls reuse stale Context() if null-initialized at first call. Accumulated reshape operations apply duplicatively on second pass, corrupting face topology.",
+    "expected_kernel_behavior": "heal (reset or validate context fresh per invocation)",
+    "expected_validation": "",
+    "fixture_kind": null,
+    "fixture_path": "step-examples/12-3a-shells/Tsh202.stp",
+    "id": "Tsh202",
+    "notes": "SetContext idempotent only on first init; myStatus inconsistency",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-sufficient",
+    "reproducer": "",
+    "section": "12.3a",
+    "section_dir": "12-3a-shells",
+    "see_also": [],
+    "sender": "",
+    "severity": null,
+    "sources": [
+      "OCCT/ShapeFix_Shell.Perform.context_null_initialize"
+    ],
+    "taxonomy": [
+      "topology"
+    ],
+    "tier3_assertions": [],
+    "title": "Context null-initialize state accumulation"
+  },
+  {
+    "byte_assertions": [],
+    "category": "§12.3a shells (sub-class: edge-merging-tolerance)",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": null,
+    "description": "Two faces with nearly-touching edges (sub-micron gap within tolerance threshold) fail to merge during sewing second pass. Distance tolerance filter rejects edges below threshold, leaving micro-gaps unstitched.",
+    "expected_kernel_behavior": "heal (merge sub-tolerance edges or report explicitly)",
+    "expected_validation": "",
+    "fixture_kind": null,
+    "fixture_path": "step-examples/12-3a-shells/Tsh203.stp",
+    "id": "Tsh203",
+    "notes": "distance_tolerance_filter_second_pass at 1732; unevaluated_distance in first pass",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-sufficient",
+    "reproducer": "",
+    "section": "12.3a",
+    "section_dir": "12-3a-shells",
+    "see_also": [],
+    "sender": "",
+    "severity": null,
+    "sources": [
+      "OCCT/BRepBuilderAPI_Sewing.AnalysisNearestEdges.distance_tolerance_filter"
+    ],
+    "taxonomy": [
+      "topology"
+    ],
+    "tier3_assertions": [],
+    "title": "Sewing distance tolerance filter gap"
   },
   {
     "byte_assertions": [

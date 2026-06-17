@@ -21167,6 +21167,117 @@ Periodic B-spline with knot parameters identical at boundaries but control poles
 - **Fixture path**: step-examples/12-2b-nurbs/Gn138.stp
 - **Fixture kind**: scaffold
 
+# Wave 59B — NURBS Fixtures (Gn139–Gn143)
+
+## Gn139: TrimmedCurve Wrapping Periodic B-spline
+
+**Defect**: Periodic B-spline basis (IsPeriodic=true) wrapped in TrimmedCurve. SameParameter handler fails to detect periodicity, incorrectly clamps parameters to trim bounds.
+
+**Geometry**: 6-pole periodic cubic (degree 3) wrapped at [0.1, 0.9].
+- **Knot arithmetic**: 6 poles + degree 3 + 1 = 10 knot slots. Interior multiplicities all 1 with period 1.0 → sum check ✓
+- **Axis**: periodic_range_semantics, TrimmedCurve_periodicity_override
+- **Minimal reproducer**: BRepLib::SameParameter detects TrimmedCurve but skips period extraction.
+
+---
+
+## Gn140: U-Periodic Surface with V-Bounds Check Mismatch
+
+**Defect**: U-closed surface (period 1.0). ExtendFace.periodic_bounds_adjust uses wrong variable (aSVMax vs aSVMin) for V-closed validation, causing false positives when V-max undefined.
+
+**Geometry**: 3×4 U-periodic (degree 2) / V-open (degree 2) surface.
+- **Knot arithmetic**: U: 3 poles + 2 + 1 = 6 mults (period 1.0). V: 4 poles + 2 + 1 = 7 mults (3,1,3) sum=7 ✓
+- **Axis**: periodicity-conditional, v_periodic_inversion
+- **Minimal reproducer**: Face with U-closed BSplineSurface; call ExtendFace with unbounded V-range.
+
+---
+
+## Gn141: High V-Multiplicity Continuity Gap
+
+**Defect**: V-interior knot multiplicity equals degree (2). GeomAPI_ProjectPointOnSurface closure sampling checks UMultiplicity but ignores VMultiplicity, missing G0 discontinuity.
+
+**Geometry**: 4×3 surface (degree 2/2). V-knots (3,2,3); interior mult=2.
+- **Knot arithmetic**: U: 4 poles + 2 + 1 = 7 mults (3,1,3) sum=7. V: 3 poles + 2 + 1 = 6 mults → (3,2,3) sum=8 ✓
+- **Axis**: continuity_discontinuity, inherent-continuity-detection
+- **Minimal reproducer**: Project point onto surface; derivative at V=0.5 undefined (mult==degree).
+
+---
+
+## Gn142: Large Pole-Count Surface Sampling Threshold
+
+**Defect**: 7×8 pole grid (56 poles; documents NbUPoles×NbVPoles > 8192 risk). ShapeAnalysis_Surface.Perform increments myNbBigSplines but lacks early-exit, causing timeout on expensive closure validation.
+
+**Geometry**: 8×7 cubic (degree 3/3), fully clamped.
+- **Knot arithmetic**: U: 8 poles + 3 + 1 = 12 mults (4,1,1,1,1,1,4) sum=12. V: 7 poles + 3 + 1 = 11 mults (4,1,1,1,1,4) sum=11 ✓
+- **Axis**: loop-validation, criterion-met-optimization
+- **Minimal reproducer**: Surface with > 8192 pole product; Perform() called without sample-count guard.
+
+---
+
+## Gn143: RectangularTrimmedSurface Basis Unwrap Null-Check
+
+**Defect**: Geom_RectangularTrimmedSurface unwrapping assumes BasisSurface non-null. Down_cast followed by dereference without null guard.
+
+**Geometry**: 3×3 B-spline (degree 2/2) wrapped in RectangularTrimmedSurface [0.2..0.8]×[0.3..0.7].
+- **Knot arithmetic**: U: 3 poles + 2 + 1 = 6 mults (3,3) sum=6. V: 3 poles + 2 + 1 = 6 mults (3,3) sum=6 ✓
+- **Axis**: null-safety, surface-type-dispatch
+- **Minimal reproducer**: Face referencing RTS; healing handler calls BasisSurface() without checking result.
+
+---
+
+### Gn139 — TrimmedCurve Wrapping Periodic B-spline
+- **Category**: §12.2b NURBS
+- **Sources**: OCCT/v3 NURBS branches
+- **Description**: see fixture comments
+- **Expected kernel behavior**: heal: detect and correct; reject: if precondition unrecoverable
+- **Notes**: synthesized from v3 deep-pass
+- **Model impact**: reproducer geometry in fixture file
+- **Fixture path**: step-examples/12-2b-nurbs/Gn139.stp
+- **Fixture kind**: scaffold
+
+
+### Gn140 — U-Periodic Surface with V-Bounds Check Mismatch
+- **Category**: §12.2b NURBS
+- **Sources**: OCCT/v3 NURBS branches
+- **Description**: see fixture comments
+- **Expected kernel behavior**: heal: detect and correct; reject: if precondition unrecoverable
+- **Notes**: synthesized from v3 deep-pass
+- **Model impact**: reproducer geometry in fixture file
+- **Fixture path**: step-examples/12-2b-nurbs/Gn140.stp
+- **Fixture kind**: scaffold
+
+
+### Gn141 — High V-Multiplicity Continuity Gap
+- **Category**: §12.2b NURBS
+- **Sources**: OCCT/v3 NURBS branches
+- **Description**: see fixture comments
+- **Expected kernel behavior**: heal: detect and correct; reject: if precondition unrecoverable
+- **Notes**: synthesized from v3 deep-pass
+- **Model impact**: reproducer geometry in fixture file
+- **Fixture path**: step-examples/12-2b-nurbs/Gn141.stp
+- **Fixture kind**: scaffold
+
+
+### Gn142 — Large Pole-Count Surface Sampling Threshold
+- **Category**: §12.2b NURBS
+- **Sources**: OCCT/v3 NURBS branches
+- **Description**: see fixture comments
+- **Expected kernel behavior**: heal: detect and correct; reject: if precondition unrecoverable
+- **Notes**: synthesized from v3 deep-pass
+- **Model impact**: reproducer geometry in fixture file
+- **Fixture path**: step-examples/12-2b-nurbs/Gn142.stp
+- **Fixture kind**: scaffold
+
+
+### Gn143 — RectangularTrimmedSurface Basis Unwrap Null-Check
+- **Category**: §12.2b NURBS
+- **Sources**: OCCT/v3 NURBS branches
+- **Description**: see fixture comments
+- **Expected kernel behavior**: heal: detect and correct; reject: if precondition unrecoverable
+- **Notes**: synthesized from v3 deep-pass
+- **Model impact**: reproducer geometry in fixture file
+- **Fixture path**: step-examples/12-2b-nurbs/Gn143.stp
+- **Fixture kind**: scaffold
+
 ### Wr001 — Trailing whitespace on every record line
 - **Category**: §12.13 writer-pathology (sub-class: whitespace/line-ending)
 - **Sources**: prostep ivip CAx-IF round-trip reports; FreeCAD #4231 "STEP exporter pads lines with spaces"; bug-reporter language: "diff between exports is all whitespace"
@@ -25745,6 +25856,56 @@ Compound with nested shell references. LoadShells() recursion incomplete when de
 - **Fixture path**: step-examples/12-3a-shells/Tsh198.stp
 - **Fixture kind**: scaffold
 
+### Tsh199 — Duplicate faces orientation inconsistency
+- **Category**: §12.3a shells (sub-class: face-orientation-propagation)
+- **Sources**: OCCT/ShapeFix_Shell.FixFaceOrientation
+- **Description**: Shell with two identical coplanar faces exhibits inconsistent outward normals after orientation fixing. FixFaceOrientation processes duplicates independently, failing to synchronize orientation across identical geometry.
+- **Expected kernel behavior**: heal (reject or normalize all duplicate faces to consistent outward orientation)
+- **Notes**: Duplicate mutation, aMapAdded tracking ineffective
+- **Model impact**: Reads as non-manifold shell with conflicting face normals
+- **Fixture path**: step-examples/12-3a-shells/Tsh199.stp
+- **Fixture kind**: scaffold
+
+### Tsh200 — BadEdges uninitialized extent
+- **Category**: §12.3a shells (sub-class: lazy-initialization)
+- **Sources**: OCCT/ShapeAnalysis_Shell.BadEdges_at281
+- **Description**: BadEdges() returns compound from myBad without validating initialization. Calling before Perform() completes yields uninitialized extent, masking actual edge defects.
+- **Expected kernel behavior**: reject (error on uninitialized access)
+- **Notes**: Initialization-order, myBad.Extent validation missing
+- **Model impact**: Reads as clean shell despite containing undetected gap edges
+- **Fixture path**: step-examples/12-3a-shells/Tsh200.stp
+- **Fixture kind**: scaffold
+
+### Tsh201 — Multi-connected edge unbounded iteration
+- **Category**: §12.3a shells (sub-class: non-manifold-handling)
+- **Sources**: OCCT/ShapeFix_Shell.FixFaceOrientation.multiconnect_edge_loop_unbounded
+- **Description**: Non-manifold shell with edge shared by three faces triggers unbounded orientation-fixing loop when isAccountMultiConex=true. No explicit termination guard for pathological connectivity patterns.
+- **Expected kernel behavior**: heal (bounded iteration with backtracking limit)
+- **Notes**: aMapMultiConnectEdges exhaustive population, O(n²) complexity floor
+- **Model impact**: Reads as three-face configuration; kernel may hang or timeout on fix attempt
+- **Fixture path**: step-examples/12-3a-shells/Tsh201.stp
+- **Fixture kind**: scaffold
+
+### Tsh202 — Context null-initialize state accumulation
+- **Category**: §12.3a shells (sub-class: state-management)
+- **Sources**: OCCT/ShapeFix_Shell.Perform.context_null_initialize
+- **Description**: Multiple Perform() calls reuse stale Context() if null-initialized at first call. Accumulated reshape operations apply duplicatively on second pass, corrupting face topology.
+- **Expected kernel behavior**: heal (reset or validate context fresh per invocation)
+- **Notes**: SetContext idempotent only on first init; myStatus inconsistency
+- **Model impact**: Reads as valid; repeated Perform() produces over-fixed faces
+- **Fixture path**: step-examples/12-3a-shells/Tsh202.stp
+- **Fixture kind**: scaffold
+
+### Tsh203 — Sewing distance tolerance filter gap
+- **Category**: §12.3a shells (sub-class: edge-merging-tolerance)
+- **Sources**: OCCT/BRepBuilderAPI_Sewing.AnalysisNearestEdges.distance_tolerance_filter
+- **Description**: Two faces with nearly-touching edges (sub-micron gap within tolerance threshold) fail to merge during sewing second pass. Distance tolerance filter rejects edges below threshold, leaving micro-gaps unstitched.
+- **Expected kernel behavior**: heal (merge sub-tolerance edges or report explicitly)
+- **Notes**: distance_tolerance_filter_second_pass at 1732; unevaluated_distance in first pass
+- **Model impact**: Reads as open shell with invisible seam
+- **Fixture path**: step-examples/12-3a-shells/Tsh203.stp
+- **Fixture kind**: scaffold
+
 ### Gp040 — Pcurves emitted by default duplicate / contradict the surface 3D curve
 - **Category**: §12.2a pcurve defects (sub-class: writer-emitted pcurves disagree with 3D)
 - **Sources**: OCCT MANTIS#0025654; bug-reporter language: "disable writing pcurves to STEP and IGES by default", "pcurves and 3D curves disagree on round-trip", "writer-emitted pcurves cause downstream failures". (OCCT MANTIS tracker 502 as of 2026-05-02)
@@ -27261,6 +27422,47 @@ CheckPoints called with precision 1e-3 but projection-distance test uses 1e-6 in
 - **Model impact**: Shell with deleted faces passes OverTolerance check; violations unreported
 - **Fixture path**: step-examples/12-4-tolerance/N135.stp
 - **Fixture kind**: scaffold
+
+# Wave 59C: Tolerance Prefix Fixtures (N136–N140)
+
+## Defect Patterns
+
+### N136: ShapeAnalysis_ShapeTolerance.MaxTolerance.unbounded_edge_iteration
+- **Pattern**: Tolerance accumulation without parameterization bounds validation
+- **Trigger**: Infinite curve ranges in edge iteration; no overflow guard
+- **Impact**: Spurious max-tolerance values mask real violations
+- **Axiom**: Edge iteration MUST check bounds before range access
+
+### N137: BRepBuilderAPI_Sewing.AnalysisNearestEdges.distance_tolerance_filter_bypass
+- **Pattern**: Missing distance threshold check on candidate filtering
+- **Trigger**: arrDist(n) > tolerance not validated; tabDst index unprotected
+- **Impact**: Out-of-tolerance edges pass as false matches (distance=0.5, tol=0.1)
+- **Axiom**: All distance candidates MUST be filtered against tolerance ceiling
+
+### N138: ShapeAnalysis_Edge.CheckPoints.tolerance_conservatism_fail
+- **Pattern**: Conservative tolerance selection without endpoint validation
+- **Trigger**: Tightest precision bound chosen (1e-8) but not enforced on both endpoints
+- **Impact**: Precision-varying edges (5e-7 sep > 1e-8 tol) incorrectly rejected
+- **Axiom**: Conservative tolerance selection MUST validate all endpoints within bound
+
+### N139: ShapeAnalysis_ShapeTolerance.OuterWire.tolerance_layer_recursion
+- **Pattern**: Nested wire tolerance scaling without recursion depth tracking
+- **Trigger**: Circular wire references with tolerance propagation; no cycle counter
+- **Impact**: Stack exhaustion or infinite loops in tolerance validation chains
+- **Axiom**: Tolerance layer traversal MUST include depth limits and cycle detection
+
+### N140: ShapeAnalysis_Surface.Continuity.tolerance_interval_mismatch
+- **Pattern**: Surface continuity check omits boundary tolerance scaling
+- **Trigger**: Parameter interval alignment (gap=0.001 vs tol base=1e-7) ignores scale
+- **Impact**: Near-matching patches falsely pass continuity despite parameter misalignment
+- **Axiom**: Continuity interval comparison MUST scale tolerance at domain boundaries
+
+## Invariants
+- All fixtures follow N100 PRODUCT chain and EDGE_LOOP closure rules
+- THREE-ARG LINE with separate VECTOR (no self-ref)
+- DIRECTION ratios ≈ unit
+- No forward references
+- ISO-10303-21 header line 1
 
 ### M161 — Reader does not validate cross-references; dangling references silently accepted
 - **Category**: §12.8 mixed / auxiliary (sub-class: missing input validation)
