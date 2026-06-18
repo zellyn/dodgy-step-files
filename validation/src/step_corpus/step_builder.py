@@ -58,11 +58,20 @@ class Entity:
 
 
 def _format_real(v: float) -> str:
-    """Format a float as a Part-21 REAL (must contain a decimal point)."""
-    s = repr(float(v))
+    """Format a float as a Part-21 REAL (must contain a decimal point).
+
+    Rounds to 12 significant digits to make output platform-deterministic
+    (libm's ``math.cos``/``sin`` etc. can differ in the last few bits
+    between macOS and Linux, which broke fixture-source round-trip
+    checks on CI). 12 digits is more than enough precision for CAD
+    fixtures while eliminating libm divergence.
+    """
+    v = float(v)
+    # Round to 12 significant digits; preserves identity of nice values
+    # like 0.5 / -1.0 / 1e-7 and trims libm-divergent trailing bits.
+    s = f"{v:.12g}"
+    # Ensure a decimal point exists (Part-21 §6.4 requires REAL to have one)
     if "e" in s or "E" in s:
-        # Scientific notation already includes the dot if the mantissa has one;
-        # ensure mantissa has dot for the lexer.
         mantissa, exp = (s.split("e") if "e" in s else s.split("E"))
         if "." not in mantissa:
             mantissa += ".0"
