@@ -93,3 +93,15 @@ face_sliver = f.advanced_face([f.face_outer_bound(loop_sliver)], plane_sliver)
 shell = f.open_shell([face_main, face_sliver])
 sbsm = f.shell_based_surface_model([shell])
 f.add_product_chain(sbsm)
+
+# STYLED_ITEM chain referencing the sliver face — this is the defect carrier.
+# When the kernel drops face_sliver during sliver-face healing, the STYLED_ITEM
+# becomes orphaned (references a non-existent face).
+colour = f._emit_raw("COLOUR_RGB('sliver_red',1.0,0.0,0.0)")
+fasc = f._emit_raw(f"FILL_AREA_STYLE_COLOUR('',#{colour.eid})")
+fas = f._emit_raw(f"FILL_AREA_STYLE('',(#{fasc.eid}))")
+ssfa = f._emit_raw(f"SURFACE_STYLE_FILL_AREA(#{fas.eid})")
+sss = f._emit_raw(f"SURFACE_SIDE_STYLE('',(#{ssfa.eid}))")
+ssu = f._emit_raw(f"SURFACE_STYLE_USAGE(.BOTH.,#{sss.eid})")
+psa = f._emit_raw(f"PRESENTATION_STYLE_ASSIGNMENT((#{ssu.eid}))")
+f._emit_raw(f"STYLED_ITEM('sliver_styling',(#{psa.eid}),#{face_sliver.eid})")

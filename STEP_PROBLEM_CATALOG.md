@@ -25766,12 +25766,12 @@ trimming or intersection operations assume richer surface.
 ### Gs143 — MakeBSpline grid-sampling false periodicity
 - **Category**: §12.2c surfaces (sub-class: ShapeConstruct_Surface grid reconstruction)
 - **Sources**: OCCT/ShapeConstruct_Surface.cxx (line 310)
-- **Description**: MakeBSpline() reconstructs B-spline from point grid, detecting periodicity via endpoint sampling. For quasi-periodic grids with repeating midpoint structure but non-matching endpoint heights, sampling returns false-positive closure. Knot topology becomes incorrect.
-- **Expected kernel behavior**: heal
-- **Notes**: quasi-periodic-grid-false-positive, endpoint-mismatch
+- **Description**: ShapeConstruct_Surface::MakeBSpline() reconstructs a B-spline from a raw point grid, detecting periodicity via endpoint sampling. For quasi-periodic grids with repeating midpoint structure but non-matching endpoint heights, sampling returns false-positive closure and the synthesized knot topology is incorrect. The defect lives in the kernel's point→B-spline fitting path, which Part-21 cannot exercise directly — a static STEP file can only carry an already-fit B_SPLINE_SURFACE_WITH_KNOTS, not the raw grid that triggers the bug.
+- **Expected kernel behavior**: heal — endpoint mismatch should suppress the false-periodicity inference
+- **Notes**: quasi-periodic-grid-false-positive, endpoint-mismatch. Defect is runtime-only: reproduce by passing a TColgp_Array2OfPnt grid (matching the geometry shape carried in this fixture) directly into ShapeConstruct_Surface::MakeBSpline. The .stp here is a kernel-pair shape carrier, not a self-contained reproducer.
 - **Model impact**: Incorrect periodicity flag; invalid knot structure; seam placement error
 - **Fixture path**: step-examples/12-2c-surfaces/Gs143.stp
-- **Fixture kind**: scaffold
+- **Fixture kind**: scaffold (kernel-test-pair: shape only; runtime invocation required to reproduce)
 
 ### Gs144 — ComputeBoxes null-ISO silent skip
 
@@ -27343,8 +27343,8 @@ Three triangular faces forming incomplete closure (free edge between faces 1–2
 
 - **Category §12.2a**: vertex tolerance checking asymmetry
 - **Sources**: OCCT healing coverage, ShapeAnalysis_Edge.cxx CheckVerticesWithPCurve
-- **Description**: Start vertex tolerance check uses different threshold than end vertex check. Edge with vp_tol(start) > vp_tol(end) passes start check but fails end check using same geometric configuration.
-- **Reproducer recipe**: Create edge with B-spline pcurve. Set high vertex parameter tolerance at start (0.01), low at end (0.001). Call CheckVerticesWithPCurve. Observe start passes but end fails.
+- **Description**: ShapeAnalysis_Edge::CheckVerticesWithPCurve applies asymmetric thresholds between start- and end-vertex checks. With vp_tol(start) > vp_tol(end) on the same edge, the start check passes while the end check fails — same geometric configuration, same pcurve. The fixture provides the geometric setup (degree-2 B-spline pcurve, well-separated vertices on a planar carrier); the tolerance asymmetry is induced at the kernel-call level after load.
+- **Reproducer recipe**: Load this fixture, then programmatically set the OCCT TopoDS_Vertex tolerances (e.g. via BRep_Builder::UpdateVertex) so vp_tol(start)=0.01 > vp_tol(end)=0.001 before calling CheckVerticesWithPCurve. The static STEP carries only the geometry; the asymmetric-check failure is observable via runtime tolerance manipulation on the loaded shape.
 - **Expected kernel behavior**: Vertex tolerance checks should be symmetric. Both start and end should pass or fail under identical geometric conditions with consistent tolerance application.
 - **Expected validation**: `occt=unknown/unknown gmsh=unknown ifc=schema_n/a`
 
