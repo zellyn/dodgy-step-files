@@ -259,6 +259,99 @@ class StepFile:
 
     # ----- B-spline + trimmed surfaces (the most common _emit_raw use cases) -----
 
+    def rational_b_spline_curve_with_knots(self, degree: int,
+                                            control_points: list[Entity],
+                                            weights: list[float],
+                                            knot_multiplicities: list[int],
+                                            knots: list[float],
+                                            *,
+                                            curve_form: str = "UNSPECIFIED",
+                                            closed: bool = False,
+                                            self_intersect: bool = False,
+                                            knot_spec: str = "UNSPECIFIED",
+                                            name: str = "") -> Entity:
+        """Rational (NURBS) B-spline curve as a complex instance combining
+        BOUNDED_CURVE + B_SPLINE_CURVE + B_SPLINE_CURVE_WITH_KNOTS +
+        CURVE + GEOMETRIC_REPRESENTATION_ITEM + RATIONAL_B_SPLINE_CURVE +
+        REPRESENTATION_ITEM.
+
+        Emitted as a complex-instance ``(B_SPLINE_CURVE_WITH_KNOTS(...)
+        RATIONAL_B_SPLINE_CURVE(...))`` via _emit_raw, since these are
+        the only entity types most readers expect for rational curves.
+
+        ``len(weights)`` must equal ``len(control_points)``.
+        """
+        if len(weights) != len(control_points):
+            raise ValueError(
+                f"weights ({len(weights)}) must match control_points "
+                f"({len(control_points)})")
+        n = len(control_points)
+        expected = n + degree + 1
+        actual = sum(knot_multiplicities)
+        if actual != expected:
+            raise ValueError(
+                f"knot-mult sum {actual} != n_poles({n}) + degree({degree}) + 1 = {expected}")
+        if len(knots) != len(knot_multiplicities):
+            raise ValueError("knots and knot_multiplicities must be parallel")
+        cp_refs = ",".join(p.ref() for p in control_points)
+        mults = ",".join(str(m) for m in knot_multiplicities)
+        knts = ",".join(_format_real(k) for k in knots)
+        wts = ",".join(_format_real(w) for w in weights)
+        body = (
+            f"(B_SPLINE_CURVE({degree},({cp_refs}),.{curve_form}.,"
+            f".{'T' if closed else 'F'}.,.{'T' if self_intersect else 'F'}.)"
+            f"B_SPLINE_CURVE_WITH_KNOTS(({mults}),({knts}),.{knot_spec}.)"
+            f"BOUNDED_CURVE()CURVE()GEOMETRIC_REPRESENTATION_ITEM()"
+            f"RATIONAL_B_SPLINE_CURVE(({wts}))"
+            f"REPRESENTATION_ITEM('{name}'))"
+        )
+        return self._emit_raw(body)
+
+    def rational_b_spline_surface_with_knots(self, u_degree: int, v_degree: int,
+                                              control_points_grid: list[list[Entity]],
+                                              weights_grid: list[list[float]],
+                                              u_multiplicities: list[int],
+                                              v_multiplicities: list[int],
+                                              u_knots: list[float],
+                                              v_knots: list[float],
+                                              *,
+                                              surface_form: str = "UNSPECIFIED",
+                                              u_closed: bool = False,
+                                              v_closed: bool = False,
+                                              self_intersect: bool = False,
+                                              knot_spec: str = "UNSPECIFIED",
+                                              name: str = "") -> Entity:
+        """Rational (NURBS) B-spline surface. weights_grid must be parallel
+        to control_points_grid (same nu × nv shape)."""
+        nu = len(control_points_grid)
+        nv = len(control_points_grid[0]) if nu else 0
+        if len(weights_grid) != nu or any(len(row) != nv for row in weights_grid):
+            raise ValueError("weights_grid must have same shape as control_points_grid")
+        if sum(u_multiplicities) != nu + u_degree + 1:
+            raise ValueError("u-knot-mult sum wrong")
+        if sum(v_multiplicities) != nv + v_degree + 1:
+            raise ValueError("v-knot-mult sum wrong")
+        cp_grid = ",".join(
+            "(" + ",".join(p.ref() for p in row) + ")"
+            for row in control_points_grid)
+        wt_grid = ",".join(
+            "(" + ",".join(_format_real(w) for w in row) + ")"
+            for row in weights_grid)
+        u_mults = ",".join(str(m) for m in u_multiplicities)
+        v_mults = ",".join(str(m) for m in v_multiplicities)
+        u_knts = ",".join(_format_real(k) for k in u_knots)
+        v_knts = ",".join(_format_real(k) for k in v_knots)
+        body = (
+            f"(B_SPLINE_SURFACE({u_degree},{v_degree},({cp_grid}),.{surface_form}.,"
+            f".{'T' if u_closed else 'F'}.,.{'T' if v_closed else 'F'}.,"
+            f".{'T' if self_intersect else 'F'}.)"
+            f"B_SPLINE_SURFACE_WITH_KNOTS(({u_mults}),({v_mults}),({u_knts}),({v_knts}),.{knot_spec}.)"
+            f"BOUNDED_SURFACE()GEOMETRIC_REPRESENTATION_ITEM()"
+            f"RATIONAL_B_SPLINE_SURFACE(({wt_grid}))"
+            f"REPRESENTATION_ITEM('{name}')SURFACE())"
+        )
+        return self._emit_raw(body)
+
     def b_spline_curve_with_knots(self, degree: int,
                                    control_points: list[Entity],
                                    knot_multiplicities: list[int],

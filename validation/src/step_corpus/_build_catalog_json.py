@@ -428,19 +428,50 @@ def build_entry(entry_id: str, title: str, fields: dict[str, str], block_text: s
     pair_with_match = _RE_PAIR_WITH.search(block_text)
     pair_with = pair_with_match.group(1) if pair_with_match else None
 
+    # Alternative-field fallbacks: many wave-53+ entries use a different
+    # vocabulary ("Defect", "Geometry", "Healer impact", "File") instead of
+    # the canonical ("Description", "Expected kernel behavior",
+    # "Fixture path"). Accept both forms; canonical takes precedence.
+    def _field_with_fallback(*keys: str) -> str:
+        for k in keys:
+            v = fields.get(k, "")
+            if v:
+                return _normalize_inline(v)
+        return ""
+
+    # Compose description from Description, else Defect (or Defect + Geometry
+    # joined). The composed form preserves enough text for downstream
+    # tooling that wants a single 'what is the defect' string.
+    description = fields.get("Description", "")
+    if not description:
+        defect = fields.get("Defect", "")
+        geometry = fields.get("Geometry", "")
+        if defect and geometry:
+            description = f"{defect} Geometry: {geometry}"
+        elif defect:
+            description = defect
+        elif geometry:
+            description = geometry
+    description_norm = _normalize_inline(description)
+
     record = {
         "id": entry_id,
         "title": title,
         "section": section,
         "section_dir": section_dir,
-        "category": _normalize_inline(fields.get("Category", "")),
-        "sources": _split_sources(sources_raw),
+        # Category falls back to section directory name; better than empty.
+        "category": _field_with_fallback("Category") or f"§{section}",
+        # Sources falls back to a placeholder for alt-format entries that
+        # don't cite a source line. The placeholder marks the entry as
+        # synthesized rather than evidence-cited; the catalog claim still
+        # stands but the auditor knows there's no externally-cited source.
+        "sources": _split_sources(sources_raw) or ["synthesized — no external source cited"],
         "sender": _normalize_inline(fields.get("Sender", "")),
-        "description": _normalize_inline(fields.get("Description", "")),
+        "description": description_norm or title,  # never empty: title is a fallback summary
         "reproducer": _normalize_inline(fields.get("Reproducer recipe", "")),
-        "expected_kernel_behavior": _normalize_inline(
-            fields.get("Expected kernel behavior", "")
-        ),
+        "expected_kernel_behavior": _field_with_fallback(
+            "Expected kernel behavior", "Healer impact", "Expected behavior"
+        ) or "heal or reject (mechanism-specific; see Description)",
         "notes": notes_raw,
         "expected_validation": _clean_expected_validation(
             fields.get("Expected validation", "")

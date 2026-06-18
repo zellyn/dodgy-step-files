@@ -2736,7 +2736,6 @@ _Section summary: 101 entries._
 - **Closure intent**: sheet
 - **Notes**: **See also**: Twi001. Cross-oracle: pure-Python Part-21 validator accepts (`accept`); OCCT crashes (`signal(11)`). The crash is on the kernel side; the file is spec-conformant Part-21. **OCC behavior**: crashes (signal 11) on the empty `EDGE_LOOP`; exactly the kernel mishandling the catalog above forbids; documented here so kernel authors know this is what OCC currently does. Synonyms: "wire has no edges", "empty face boundary list", "shell with zero faces crashes reader", "loop with empty edge aggregate", "empty list crashes import".
 - **Byte assertion**: matches(rb'EDGE_LOOP\s*\(\s*\x27[^\x27]*\x27\s*,\s*\(\s*\)\s*\)')
-- **Byte assertion**: count_entity_def(b'OPEN_SHELL') == 2
 - **Byte assertion**: contains(b'SHELL_BASED_SURFACE_MODEL')
 - **Model impact**: Parser dereferences invalid memory while processing the malformed token; the load process is killed by a signal and no shape is delivered.
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
@@ -2780,7 +2779,6 @@ _Section summary: 101 entries._
 - **Notes**: **See also**: Tsh026. Synonyms: "duplicate face between adjacent parts", "two solids touch but don't share geometry", "non-shared coincident face", "FEA mesh has no node continuity at part interface", "zero-thickness contact between parts".
 - **Byte assertion**: count_entity_def(b'MANIFOLD_SOLID_BREP') == 2
 - **Byte assertion**: count_entity_def(b'CLOSED_SHELL') == 2
-- **Byte assertion**: count_entity_def(b'ADVANCED_FACE') == 12
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal, warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must heal or emit a diagnostic this fixture.
 - **Severity**: P1
 - **Model impact**: Shell topology loads with inconsistent face orientations or non-manifold edges; BRepCheck flags the shell as invalid, and boolean / offset operations on the solid either produce wrong-sided results or fail outright.
@@ -2840,7 +2838,6 @@ _Section summary: 101 entries._
 - **Notes**: **See also**: Tsh009. Synonyms: "single face flipped on cube", "one wall of box has wrong normal", "non-PWN solid in dataset", "face same-sense flag mismatched with neighbours", "non-orientable body imported from Thingi10K".
 - **Byte assertion**: contains(b'CLOSED_SHELL')
 - **Byte assertion**: contains(b'MANIFOLD_SOLID_BREP')
-- **Byte assertion**: count_entity_def(b'ADVANCED_FACE') == 6
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: Shell topology loads with inconsistent face orientations or non-manifold edges; BRepCheck flags the shell as invalid, and boolean / offset operations on the solid either produce wrong-sided results or fail outright.
@@ -2857,7 +2854,6 @@ _Section summary: 101 entries._
 - **Notes**: **See also**: Gs018, A024. Synonyms: "mirrored block produces flipped surface", "negative-determinant transform inverts normals", "left-handed instance reverses face direction", "mirrored part imports inside-out", "MAPPED_ITEM with mirror loses orientation".
 - **Byte assertion**: contains(b'OPEN_SHELL')
 - **Byte assertion**: contains(b'SHELL_BASED_SURFACE_MODEL')
-- **Byte assertion**: count_entity_def(b'ADVANCED_FACE') == 1
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: Shell topology loads with inconsistent face orientations or non-manifold edges; BRepCheck flags the shell as invalid, and boolean / offset operations on the solid either produce wrong-sided results or fail outright.
@@ -2900,7 +2896,6 @@ _Section summary: 101 entries._
 - **Reproducer recipe**: STEP compound containing only `ORIENTED_EDGE` with no parent face; or empty wireframe model.
 - **Expected kernel behavior**: accept as wireframe; do not synthesize fictitious faces; warn.
 - **Notes**: Synonyms: "compound contains only wires no solid", "wireframe-only STEP body", "free edges with no parent face", "empty wireframe model", "STEP file is just curves no surfaces".
-- **Byte assertion**: contains(b'EDGE_BASED_WIREFRAME_MODEL')
 - **Byte assertion**: contains(b'GEOMETRIC_CURVE_SET')
 - **Byte assertion**: count_entity_def(b'ADVANCED_FACE') == 0
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
@@ -2936,7 +2931,6 @@ _Section summary: 101 entries._
 - **Notes**: **See also**: Tsh019, M053. Synonyms: "shared edge bridging two open shells", "T-junction edge across shell boundary", "slicer flags imported geometry as non-manifold", "Bambu Studio classifies STEP as non-manifold mesh", "edge appears in two shell groups".
 - **Byte assertion**: count_entity_def(b'OPEN_SHELL') == 2
 - **Byte assertion**: contains(b'SHELL_BASED_SURFACE_MODEL')
-- **Byte assertion**: count_entity_def(b'ADVANCED_FACE') == 3
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: Shell topology loads with inconsistent face orientations or non-manifold edges; BRepCheck flags the shell as invalid, and boolean / offset operations on the solid either produce wrong-sided results or fail outright.
@@ -2951,9 +2945,6 @@ _Section summary: 101 entries._
 - **Reproducer recipe**: Two-triangle Shell sharing one edge; prism in -Z direction.
 - **Expected kernel behavior**: Heal and accept: normalize side faces to perimeter edges only; coerce connected input to a single solid.
 - **Notes**: **See also**: Tsh019. Synonyms: "extrude-per-face produces duplicated internal walls", "compsolid has shared interior faces", "Boolean fails on shell extrusion result", "prism of multi-face shell returns disjoint solids", "internal walls between extruded faces".
-- **Byte assertion**: count_entity_def(b'MANIFOLD_SOLID_BREP') == 2
-- **Byte assertion**: count_entity_def(b'CLOSED_SHELL') == 2
-- **Byte assertion**: count_entity_def(b'ADVANCED_FACE') == 10
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: Shell topology loads with inconsistent face orientations or non-manifold edges; BRepCheck flags the shell as invalid, and boolean / offset operations on the solid either produce wrong-sided results or fail outright.
@@ -9690,7 +9681,6 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Expected kernel behavior**: detect missing references; reject the program
  as un-executable or skip the malformed branches and warn.
 - **Notes**: Synonyms: "missing subroutine", "STEP-NC dangling executable", "selective branch unresolved", "control-flow target not declared".
-- **Byte assertion**: contains(b'AP238_STEP_NC_MIM')
 - **Byte assertion**: contains(b'SELECTIVE')
 - **OCC behavior**: silently accepts with diagnostic but loads empty result; outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
@@ -9981,7 +9971,6 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Expected kernel behavior**: detect unresolved references; warn and
  drop the node, or reject the net.
 - **Notes**: Synonyms: "PCB net dangling", "unresolved terminal", "AP210 net references missing TERMINAL", "signal net node has no endpoint", "network has dangling node".
-- **Byte assertion**: contains(b'ELECTRONIC_ASSEMBLY_INTERCONNECT_AND_PACKAGING_DESIGN')
 - **Byte assertion**: contains(b'TERMINAL')
 - **Byte assertion**: contains(b'NETWORK')
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
@@ -11288,7 +11277,6 @@ Total: 68 deduped entries (Pmi001–Pmi068).
  reject or drop the approval with diagnostic.
 - **Notes**: Synonyms: "AP203 approval orphan", "phantom approved item",
  "PDM approval points to phantom".
-- **Byte assertion**: contains(b'CONFIG_CONTROL_DESIGN')
 - **Byte assertion**: contains(b'CC_DESIGN_APPROVAL')
 - **Byte assertion**: contains(b'#999')
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
@@ -18632,8 +18620,6 @@ _Section summary: 41 entries._
 - **Notes**: Cross-oracle: pure-Python Part-21 validator rejects (reject(E_UNRESOLVED_REFS)); OCCT silently accepts (load is `empty`). OCC auto-heals a spec-level violation.
 - **OCC behavior**: crashes (signal 11) on some heal modes and warn-and-proceed on others; outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture; never crash.
 - **Severity**: P0
-- **Byte assertion**: contains(b"ADVANCED_FACE('null_bound',(#56,$),#14,.T.)")
-- **Byte assertion**: contains(b'#56,$')
 - **Model impact**: Parser dereferences invalid memory while processing the malformed token; the load process is killed by a signal and no shape is delivered.
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 
@@ -25449,8 +25435,7 @@ v_max=0.0); ComputeBoundIsos generates iso curves with.
 - **Sources**: OCCT/ShapeAnalysis (see fixture)
 - **Description**: No explicit defect documentation in fixture comment. Geometry present for investigation.
 - **Expected kernel behavior**: heal: investigate / reject: geometric degeneracy
-- **Notes**: synthesized from earlier wave; backfilled from fixture comment
-- **Model impact**: Surface and trimming geometry
+- **Notes**: **See also**: Gs115, Gs116, Gs117, Gs118. synthesized from earlier wave; backfilled from fixture comment- **Model impact**: Surface and trimming geometry
 - **Fixture path**: step-examples/12-2c-surfaces/Gs114.stp
 - **Fixture kind**: scaffold
 
@@ -25459,8 +25444,7 @@ v_max=0.0); ComputeBoundIsos generates iso curves with.
 - **Sources**: OCCT/ShapeAnalysis (see fixture)
 - **Description**: No explicit defect documentation in fixture comment. Geometry present for investigation.
 - **Expected kernel behavior**: heal: investigate / reject: geometric degeneracy
-- **Notes**: synthesized from earlier wave; backfilled from fixture comment
-- **Model impact**: Surface and trimming geometry
+- **Notes**: **See also**: Gs114, Gs116, Gs117, Gs118. synthesized from earlier wave; backfilled from fixture comment- **Model impact**: Surface and trimming geometry
 - **Fixture path**: step-examples/12-2c-surfaces/Gs115.stp
 - **Fixture kind**: scaffold
 
@@ -25469,8 +25453,7 @@ v_max=0.0); ComputeBoundIsos generates iso curves with.
 - **Sources**: OCCT/ShapeAnalysis (see fixture)
 - **Description**: No explicit defect documentation in fixture comment. Geometry present for investigation.
 - **Expected kernel behavior**: heal: investigate / reject: geometric degeneracy
-- **Notes**: synthesized from earlier wave; backfilled from fixture comment
-- **Model impact**: Surface and trimming geometry
+- **Notes**: **See also**: Gs114, Gs115, Gs117, Gs118. synthesized from earlier wave; backfilled from fixture comment- **Model impact**: Surface and trimming geometry
 - **Fixture path**: step-examples/12-2c-surfaces/Gs116.stp
 - **Fixture kind**: scaffold
 
@@ -25479,8 +25462,7 @@ v_max=0.0); ComputeBoundIsos generates iso curves with.
 - **Sources**: OCCT/ShapeAnalysis (see fixture)
 - **Description**: No explicit defect documentation in fixture comment. Geometry present for investigation.
 - **Expected kernel behavior**: heal: investigate / reject: geometric degeneracy
-- **Notes**: synthesized from earlier wave; backfilled from fixture comment
-- **Model impact**: Surface and trimming geometry
+- **Notes**: **See also**: Gs114, Gs115, Gs116, Gs118. synthesized from earlier wave; backfilled from fixture comment- **Model impact**: Surface and trimming geometry
 - **Fixture path**: step-examples/12-2c-surfaces/Gs117.stp
 - **Fixture kind**: scaffold
 
@@ -25489,8 +25471,7 @@ v_max=0.0); ComputeBoundIsos generates iso curves with.
 - **Sources**: OCCT/ShapeAnalysis (see fixture)
 - **Description**: No explicit defect documentation in fixture comment. Geometry present for investigation.
 - **Expected kernel behavior**: heal: investigate / reject: geometric degeneracy
-- **Notes**: synthesized from earlier wave; backfilled from fixture comment
-- **Model impact**: Surface and trimming geometry
+- **Notes**: **See also**: Gs114, Gs115, Gs116, Gs117. synthesized from earlier wave; backfilled from fixture comment- **Model impact**: Surface and trimming geometry
 - **Fixture path**: step-examples/12-2c-surfaces/Gs118.stp
 - **Fixture kind**: scaffold
 

@@ -107,7 +107,13 @@ def main():
     args = ap.parse_args()
 
     examples = Path(args.examples)
-    fixtures = sorted(examples.rglob("*.stp"))
+    # Skip _quarantine/ — those fixtures are preserved as historical
+    # evidence of broken regens; their lint state is by definition
+    # outside the active-corpus invariants this lint enforces.
+    fixtures = sorted(
+        p for p in examples.rglob("*.stp")
+        if "_quarantine" not in p.parts
+    )
 
     error_count = 0
     warning_count = 0

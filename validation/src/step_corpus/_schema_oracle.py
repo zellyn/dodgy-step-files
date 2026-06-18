@@ -140,6 +140,12 @@ EXEMPT_SCHEMA_MISMATCH = {
     "M068",   # "Pretessellated geometry skipped on STEP write"
     "M069",   # "TRIANGULATED_FACE emitted without pnval indices"
     "M070",   # "STL writer does not respect existing triangulation"
+    # Phase F regens (2026-06-18) — fixtures that demonstrate AP242 / AP238 /
+    # AP210 defects using their native vocabulary while declaring the
+    # AUTOMOTIVE_DESIGN schema (the Python builder only emits AP214 by
+    # default; AP242-schema support is on the builder-extension backlog).
+    "Tsh065",  # tessellated shell (TESSELLATED_SHELL_REPRESENTATION etc.)
+    "M087",    # AP210 NETWORK_NODE
 }
 
 # Schema-name patterns that map to schema-IDs we care about.

@@ -66,7 +66,9 @@ def test_catalog_loads_as_list(entries: list[dict]) -> None:
 def test_entry_count_in_expected_range(entries: list[dict]) -> None:
     # Loose bound. Anything outside this band likely means parsing broke
     # or someone added a whole new section.
-    assert 1000 <= len(entries) <= 2000, f"unexpected entry count: {len(entries)}"
+    # Range widened 2026-06-18: v3 OCCT deep-pass + waves 53-73 synthesis
+    # grew the catalog from 1,282 → 2,302 entries.
+    assert 1000 <= len(entries) <= 2500, f"unexpected entry count: {len(entries)}"
 
 
 def test_every_entry_has_required_keys(entries: list[dict]) -> None:

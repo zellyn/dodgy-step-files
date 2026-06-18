@@ -60,6 +60,13 @@ jobs:
         working-directory: validation
         run: uv run python -m step_corpus._fixture_lint
 
+      # ---- Builder round-trip: every fixture_sources/<...>/<ID>.py must
+      # regenerate byte-identical to step-examples/<...>/<ID>.stp. Catches
+      # builder regressions, source/.stp drift, and Python-side errors.
+      - name: Fixture-source round-trip check (Python builder)
+        working-directory: validation
+        run: uv run python -m step_corpus._fixture_source_check
+
       # ---- Run the full validate2 + tier3 corpus pass via the parallel runner ----
       # Output lands in /tmp/cad-v2-out/ and /tmp/cad-v2-out-tier3/.
       - name: Run validate2 + tier3 across full corpus
