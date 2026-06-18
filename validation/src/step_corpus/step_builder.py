@@ -257,6 +257,118 @@ class StepFile:
     def shell_based_surface_model(self, shells: list[Entity], name: str = "") -> Entity:
         return self._emit("SHELL_BASED_SURFACE_MODEL", list(shells), name=name)
 
+    # ----- B-spline + trimmed surfaces (the most common _emit_raw use cases) -----
+
+    def b_spline_curve_with_knots(self, degree: int,
+                                   control_points: list[Entity],
+                                   knot_multiplicities: list[int],
+                                   knots: list[float],
+                                   *,
+                                   curve_form: str = "UNSPECIFIED",
+                                   closed: bool = False,
+                                   self_intersect: bool = False,
+                                   knot_spec: str = "UNSPECIFIED",
+                                   name: str = "") -> Entity:
+        """B_SPLINE_CURVE_WITH_KNOTS per ISO 10303-42 §4.4.43.
+
+        Invariant: ``sum(knot_multiplicities) == len(control_points) + degree + 1``.
+        Builder raises ValueError on violation.
+        """
+        n = len(control_points)
+        expected = n + degree + 1
+        actual = sum(knot_multiplicities)
+        if actual != expected:
+            raise ValueError(
+                f"B_SPLINE_CURVE_WITH_KNOTS knot-mult sum {actual} != "
+                f"n_poles({n}) + degree({degree}) + 1 = {expected}")
+        if len(knots) != len(knot_multiplicities):
+            raise ValueError(
+                f"knots ({len(knots)}) and knot_multiplicities "
+                f"({len(knot_multiplicities)}) must be parallel lists")
+        return self._emit(
+            "B_SPLINE_CURVE_WITH_KNOTS",
+            degree,
+            list(control_points),
+            Enum(curve_form),
+            closed,
+            self_intersect,
+            list(knot_multiplicities),
+            [float(k) for k in knots],
+            Enum(knot_spec),
+            name=name,
+        )
+
+    def b_spline_surface_with_knots(self, u_degree: int, v_degree: int,
+                                     control_points_grid: list[list[Entity]],
+                                     u_multiplicities: list[int],
+                                     v_multiplicities: list[int],
+                                     u_knots: list[float],
+                                     v_knots: list[float],
+                                     *,
+                                     surface_form: str = "UNSPECIFIED",
+                                     u_closed: bool = False,
+                                     v_closed: bool = False,
+                                     self_intersect: bool = False,
+                                     knot_spec: str = "UNSPECIFIED",
+                                     name: str = "") -> Entity:
+        """B_SPLINE_SURFACE_WITH_KNOTS per ISO 10303-42 §4.4.49.
+
+        ``control_points_grid`` is a 2-D list: outer dimension is U, inner V.
+        Invariants:
+          sum(u_multiplicities) == len(control_points_grid)   + u_degree + 1
+          sum(v_multiplicities) == len(control_points_grid[0]) + v_degree + 1
+        """
+        if not control_points_grid or not control_points_grid[0]:
+            raise ValueError("control_points_grid must be non-empty 2-D")
+        nu = len(control_points_grid)
+        nv = len(control_points_grid[0])
+        if any(len(row) != nv for row in control_points_grid):
+            raise ValueError("control_points_grid is not rectangular")
+        u_expected = nu + u_degree + 1
+        v_expected = nv + v_degree + 1
+        if sum(u_multiplicities) != u_expected:
+            raise ValueError(
+                f"u-knot-mult sum {sum(u_multiplicities)} != "
+                f"nu({nu}) + u_degree({u_degree}) + 1 = {u_expected}")
+        if sum(v_multiplicities) != v_expected:
+            raise ValueError(
+                f"v-knot-mult sum {sum(v_multiplicities)} != "
+                f"nv({nv}) + v_degree({v_degree}) + 1 = {v_expected}")
+        return self._emit(
+            "B_SPLINE_SURFACE_WITH_KNOTS",
+            u_degree,
+            v_degree,
+            list(control_points_grid),
+            Enum(surface_form),
+            u_closed,
+            v_closed,
+            self_intersect,
+            list(u_multiplicities),
+            list(v_multiplicities),
+            [float(k) for k in u_knots],
+            [float(k) for k in v_knots],
+            Enum(knot_spec),
+            name=name,
+        )
+
+    def rectangular_trimmed_surface(self, basis_surface: Entity,
+                                     u1: float, u2: float, v1: float, v2: float,
+                                     *,
+                                     usense: bool = True, vsense: bool = True,
+                                     name: str = "") -> Entity:
+        """RECTANGULAR_TRIMMED_SURFACE per ISO 10303-42 §4.4.21.
+
+        Does NOT enforce u1 < u2 or v1 < v2 — fixtures often demonstrate
+        defects via inverted bounds.
+        """
+        return self._emit(
+            "RECTANGULAR_TRIMMED_SURFACE",
+            basis_surface,
+            float(u1), float(u2), float(v1), float(v2),
+            usense, vsense,
+            name=name,
+        )
+
     # ----- Convenience composites -----
 
     def closed_polyline_loop(self, points: list[Entity]) -> Entity:
