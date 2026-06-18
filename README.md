@@ -109,10 +109,12 @@ That total problem space is enormous — somewhere in the high thousands of dist
 | Catalog entries (distinct defect classes documented) | ~2,287 |
 | Active fixtures on disk | ~2,200 |
 | Fixtures with `Part-21 validator: accept` (0 unintentional syntactic errors) | ~all non-framing |
+| Fixtures with `reject` matching an intentional defect claim (DanglingRef, GB18030, etc.) | 11 |
+| Fixtures with Python builder source under `fixture_sources/` | 66 |
 | Fixtures individually adversarially verified VALID (do they really demonstrate the claim?) | ~440 |
 | Catalog entries without a fixture yet (described, not synthesized) | ~800 |
 | Fixtures awaiting individual semantic verification | ~1,700 |
-| Quarantined (known broken, awaiting proper regen) | 84 |
+| Historical quarantine (preserved as evidence; replaced in active corpus) | 84 + 66 |
 
 The catalog uses `### ID — title` for each entry. Numbers are best-effort current; re-run `python -m step_corpus._part21_validator --corpus` and `python -m step_corpus._corpus_consistency_lint` from the `validation/` directory to recompute.
 
@@ -129,7 +131,19 @@ The catalog uses `### ID — title` for each entry. Numbers are best-effort curr
 - **Use it as a regression-suite seed**, not as a conformance kit. If your kernel passes every fixture, you've handled a meaningful slice — but expect customer bugs that aren't in here.
 - **Treat absence of a defect class as "not yet documented", not "doesn't exist"**. The catalog grows; check git history.
 - **Match your interest area to a section**. The §12.3a-shells / §12.3c-faces / §12.3b-wires / §12.2 geometry sections are densest; §12.6-assembly / §12.7-pmi are sparser; §12.5-units is small.
-- **The `_quarantine/` directory holds fixtures whose ID still has a catalog claim but whose file is known-broken**. Treat those as "real defect class, please regenerate" entries rather than missing.
+- **The `_quarantine/` directory holds historical-evidence fixtures**. `early-waves/` are pre-template-fix originals (84 IDs); `phase_F_boilerplate/` are the generic-cube versions produced by a misguided regen pass (66 IDs) — both are PRESERVED but REPLACED in the active corpus by defect-specific regens. The IDs themselves are not missing; the active version is at `step-examples/<section>/<ID>.stp`.
+
+### Python builder for new fixtures
+
+Going forward, new fixtures should be authored as Python sources at
+`fixture_sources/<section>/<ID>.py` using the minimal builder at
+`validation/src/step_corpus/step_builder.py`. The builder takes
+responsibility for Part-21 correctness — agents (or humans) write
+geometric intent, the builder writes syntax. See
+`fixture_sources/README.md` for the API and conventions.
+
+Consumers still read `.stp` files; the `.py` sources are build-time
+only.
 
 ### Whittling the gap
 
