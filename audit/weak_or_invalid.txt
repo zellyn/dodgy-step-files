@@ -1,87 +1,92 @@
-Gn001
-Gn018
-Gn064
-Gn065
-Gn089
-Gn090
-Gn091
-Gn104
-Gn108
-Gn144
-Gn145
-Gn155
-Gn157
-Gn158
-Gn160
-Gn162
-Gp015
-Gp052
-Gp053
-Gp081
-Gp093
-Gp117
-Gp148
-Gs040
-Gs058
-Gs072
-Gs089
-Gs097
-Gs112
-Gs113
-Gs135
-Gs140
-Gs143
-Gs151
-Gs153
-N012
-N087
-N088
-N113
-N146
-N152
-N154
-N155
-Tfa077
-Tfa082
-Tfa098
-Tfa145
-Tfa150
-Tfa170
-Tfa171
-Tfa172
-Tfa175
-Tfa186
-Tfa190
-Tfa237
-Tfa238
-Tfa240
-Tsh021
-Tsh027
-Tsh028
-Tsh033
-Tsh036
-Tsh043
-Tsh044
-Tsh065
-Tsh068
-Tsh082
-Tsh115
-Tsh134
-Tsh135
-Tsh140
-Tsh185
-Tsh190
-Tsh192
-Twi039
-Twi086
-Twi101
-Twi114
-Twi194
-Twi238
-Twi240
-Twi246
-Twi248
-Twi250
-Twi262
-Twi268
-Twi270
+Gn001: [('WEAK_VALID', 'burndown-11.md')]
+Gn018: [('WEAK_VALID', 'burndown-11.md')]
+Gn064: [('INVALID', 'burndown-6.md')]
+Gn065: [('WEAK_VALID', 'sweep-3.md')]
+Gn089: [('WEAK_VALID', 'burndown-11.md')]
+Gn090: [('INVALID', 'sweep-3.md')]
+Gn091: [('INVALID', 'burndown-6.md')]
+Gn104: [('WEAK_VALID', 'verify-phase-F.md')]
+Gn108: [('WEAK_VALID', 'burndown-16.md')]
+Gn134: [('WEAK_VALID', 'burndown-26A.md')]
+Gn144: [('WEAK_VALID', 'burndown-11.md')]
+Gn145: [('INVALID', 'verify-wave62.md')]
+Gn155: [('WEAK_VALID', 'verify-wave66.md')]
+Gn157: [('WEAK_VALID', 'verify-wave66.md')]
+Gn158: [('WEAK_VALID', 'verify-wave66.md')]
+Gn160: [('WEAK_VALID', 'verify-wave69.md')]
+Gn162: [('INVALID', 'verify-wave69.md')]
+Gn171: [('WEAK_VALID', 'burndown-24A.md')]
+Gp015: [('WEAK_VALID', 'burndown-7.md')]
+Gp052: [('INVALID', 'burndown-7.md')]
+Gp053: [('INVALID', 'burndown-7.md')]
+Gp081: [('WEAK_VALID', 'burndown-16.md')]
+Gp093: [('INVALID', 'burndown-6.md')]
+Gp117: [('WEAK_VALID', 'sweep-3.md')]
+Gp148: [('INVALID', 'burndown-7.md')]
+Gs040: [('WEAK_VALID', 'burndown-4.md')]
+Gs058: [('WEAK_VALID', 'burndown-7.md')]
+Gs072: [('WEAK_VALID', 'burndown-6.md')]
+Gs089: [('INVALID', 'burndown-7.md')]
+Gs097: [('WEAK_VALID', 'burndown-5.md')]
+Gs112: [('WEAK_VALID', 'burndown-5.md')]
+Gs113: [('INVALID', 'burndown-1.md')]
+Gs135: [('WEAK_VALID', 'sweep-3.md')]
+Gs140: [('INVALID', 'verify-wave55.md')]
+Gs143: [('INVALID', 'verify-wave55.md')]
+Gs151: [('WEAK_VALID', 'burndown-4.md')]
+Gs153: [('INVALID', 'verify-wave58.md')]
+Gs177: [('WEAK_VALID', 'burndown-18.md')]
+N012: [('INVALID', 'burndown-6.md')]
+N087: [('WEAK_VALID', 'verify-phase-F.md')]
+N098: [('INVALID', 'burndown-22A.md')]
+N146: [('INVALID', 'burndown-7.md')]
+N152: [('WEAK_VALID', 'verify-wave67.md')]
+N154: [('WEAK_VALID', 'verify-wave67.md')]
+N155: [('WEAK_VALID', 'verify-wave67.md')]
+Tfa077: [('INVALID', 'burndown-6.md')]
+Tfa082: [('WEAK_VALID', 'burndown-16.md')]
+Tfa098: [('WEAK_VALID', 'verify-phase-F.md')]
+Tfa132: [('WEAK_VALID', 'burndown-26A.md')]
+Tfa145: [('WEAK_VALID', 'verify-phase-F.md')]
+Tfa150: [('INVALID', 'burndown-7.md')]
+Tfa170: [('WEAK_VALID', 'audit-broader-1.md')]
+Tfa171: [('WEAK_VALID', 'verify-phase-F.md')]
+Tfa172: [('INVALID', 'burndown-6.md')]
+Tfa175: [('INVALID', 'burndown-7.md')]
+Tfa186: [('WEAK_VALID', 'verify-phase-F.md')]
+Tfa190: [('INVALID', 'sweep-2.md')]
+Tfa237: [('WEAK_VALID', 'verify-wave69.md')]
+Tfa238: [('INVALID', 'burndown-6.md')]
+Tfa240: [('INVALID', 'verify-wave69.md')]
+Tsh021: [('WEAK_VALID', 'verify-phase-F.md')]
+Tsh022: [('WEAK_VALID', 'burndown-24A.md')]
+Tsh027: [('WEAK_VALID', 'verify-phase-F.md')]
+Tsh028: [('INVALID', 'burndown-7.md')]
+Tsh033: [('WEAK_VALID', 'verify-phase-F.md')]
+Tsh036: [('WEAK_VALID', 'verify-phase-F.md')]
+Tsh043: [('INVALID', 'burndown-1.md')]
+Tsh044: [('WEAK_VALID', 'verify-phase-F.md')]
+Tsh065: [('WEAK_VALID', 'regen-sweep.md')]
+Tsh068: [('INVALID', 'regen-sweep.md')]
+Tsh082: [('INVALID', 'burndown-6.md')]
+Tsh115: [('WEAK_VALID', 'burndown-16.md')]
+Tsh134: [('WEAK_VALID', 'verify-phase-F.md')]
+Tsh135: [('WEAK_VALID', 'verify-phase-F.md')]
+Tsh140: [('WEAK_VALID', 'audit-broader-1.md')]
+Tsh185: [('WEAK_VALID', 'verify-wave53.md')]
+Tsh190: [('INVALID', 'verify-wave55.md')]
+Tsh192: [('INVALID', 'verify-wave55.md')]
+Twi039: [('WEAK_VALID', 'burndown-2.md')]
+Twi086: [('WEAK_VALID', 'burndown-11.md')]
+Twi101: [('WEAK_VALID', 'burndown-11.md')]
+Twi114: [('WEAK_VALID', 'burndown-6.md')]
+Twi194: [('WEAK_VALID', 'burndown-16.md')]
+Twi199: [('WEAK_VALID', 'burndown-24A.md')]
+Twi238: [('INVALID', 'verify-wave53.md')]
+Twi240: [('WEAK_VALID', 'verify-wave53.md')]
+Twi246: [('INVALID', 'burndown-6.md')]
+Twi248: [('WEAK_VALID', 'verify-wave60.md')]
+Twi250: [('WEAK_VALID', 'verify-wave60.md')]
+Twi262: [('INVALID', 'burndown-7.md')]
+Twi268: [('WEAK_VALID', 'verify-wave69.md')]
+Twi270: [('WEAK_VALID', 'verify-wave69.md')]
