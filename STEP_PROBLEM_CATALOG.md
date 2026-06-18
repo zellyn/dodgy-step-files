@@ -21374,6 +21374,56 @@ Control poles coplanar (XY) but curve deviates significantly in Z. ShapeAnalysis
 ### Gn168 — Interior C0 Discontinuity (Tangent Jump)
 2D B-spline with C0 (positional) but not C1 (tangent) at u=0.5. BRepLib::SameParameter invokes Geom2dConvert::C0BSplineToC1 healing.
 
+### Gn169 — Rational B-spline with weight singularity near origin
+- **Category**: §12.2b NURBS
+- **Sources**: OCCT/ShapeUpgrade_SplitSurfaceContinuity, GeomAPI_ProjectPointOnCurve
+- **Description**: Degree-2 rational B-spline with 5 poles where one pole has weight 1e-6 (numerically invisible) while others have weight 1.0. This extreme weight ratio creates a singularity in the rational basis function, potentially triggering precision loss or adaptive tolerance escalation in parametric evaluation and reparametrization.
+- **Expected kernel behavior**: heal / normalize weights
+- **Notes**: Weight singularities; denominator collapse; basis function discontinuity
+- **Model impact**: C0 geometric discontinuity or unexpected curvature jump at weighted pole
+- **Fixture path**: step-examples/12-2b-nurbs/Gn169.stp
+- **Fixture kind**: scaffold
+
+### Gn170 — B-spline surface with extreme knot ratio and clustering
+- **Category**: §12.2b NURBS
+- **Sources**: OCCT/ShapeUpgrade_SplitSurfaceContinuity, ShapeAnalysis_Surface
+- **Description**: Degree-2 B-spline surface (3×2 poles) with U-knots [0, 0, 0, 0.01, 1, 1, 1] exhibiting extreme knot ratio >100:1 (clustering at u=0.01, then leap to 1.0). This non-uniform spacing triggers recursive subdivision depth escalation in adaptive continuity solvers, potentially missing closure checks or overlap detection on sub-patches.
+- **Expected kernel behavior**: heal / reparametrize to uniform knot ratio
+- **Notes**: Knot clustering; conditioning number escalation; parametric solver precision loss
+- **Model impact**: Mis-subdivided patches; skipped closure detection; adaptive tolerance loop divergence
+- **Fixture path**: step-examples/12-2b-nurbs/Gn170.stp
+- **Fixture kind**: scaffold
+
+### Gn171 — Periodic B-spline curve with non-closing control polygon
+- **Category**: §12.2b NURBS
+- **Sources**: OCCT/ShapeAnalysis_Curve, Geom2dConvert::C0BSplineToC1
+- **Description**: Degree-2 periodic B-spline with 4 poles where first and last poles differ (non-closing polygon). The periodic flag is set, but the control polygon does not form a closed path. Origin re-anchoring (SetOrigin) may fail or produce parametric discontinuity across the period boundary, violating SameParameter constraints.
+- **Expected kernel behavior**: heal / re-anchor origin or reject as invalid periodic curve
+- **Notes**: Periodic boundary violation; pole mismatch; parameter wrapping failure
+- **Model impact**: Parametric discontinuity at period wrap-around; SameParameter validation failure
+- **Fixture path**: step-examples/12-2b-nurbs/Gn171.stp
+- **Fixture kind**: scaffold
+
+### Gn172 — B-spline with interior knot multiplicity equals degree (C0 discontinuity)
+- **Category**: §12.2b NURBS
+- **Sources**: OCCT/ShapeAnalysis_Curve, Geom2dConvert::C0BSplineToC1
+- **Description**: Degree-2 B-spline with 5 poles and interior knot at u=0.5 with multiplicity 2 (equal to degree). By Bezier continuity theory, this creates C0 (positional only) discontinuity. ShapeUpgrade_SplitSurfaceContinuity may fail to properly subdivide or detect the defect, leaving C0 junctions unhealed in multi-pass tolerance escalation.
+- **Expected kernel behavior**: heal / elevate knot continuity or subdivide at C0 junction
+- **Notes**: Interior knot multiplicity == degree; C0 junction; positional discontinuity
+- **Model impact**: Tangent jump at u=0.5; curvature discontinuity; healing bypass risk
+- **Fixture path**: step-examples/12-2b-nurbs/Gn172.stp
+- **Fixture kind**: scaffold
+
+### Gn173 — Rational B-spline surface with extreme pole clustering and weight ratio
+- **Category**: §12.2b NURBS
+- **Sources**: OCCT/ShapeAnalysis_Surface, ShapeUpgrade_SplitSurfaceContinuity
+- **Description**: Degree-1 rational B-spline surface (2×2 poles) with poles clustered in [0, 0.001] region in Y and weights ranging 1:1e6. The interior poles have weight 1e6, creating a numerical singularity. ComputeTol and knot-ratio checks may fail to normalize, causing parametric solver convergence loss in reparametrization and C0-upgrade branches.
+- **Expected kernel behavior**: heal / normalize weights and re-sample with relaxed tolerance
+- **Notes**: Pole clustering (1e-3 scale); weight singularity (1:1e6); numerical instability
+- **Model impact**: Parametric solver divergence; failed reparametrization; adaptive tolerance loop overflow
+- **Fixture path**: step-examples/12-2b-nurbs/Gn173.stp
+- **Fixture kind**: scaffold
+
 ### Wr001 — Trailing whitespace on every record line
 - **Category**: §12.13 writer-pathology (sub-class: whitespace/line-ending)
 - **Sources**: prostep ivip CAx-IF round-trip reports; FreeCAD #4231 "STEP exporter pads lines with spaces"; bug-reporter language: "diff between exports is all whitespace"
@@ -25913,6 +25963,68 @@ OFFSET_SURFACE (+0.5 distance) with asymmetric coverage vs base bounds; myOffset
 ### Gs178 — OffsetSurface Edge Degeneracy
 **Defect**: `ShapeAnalysis_Surface.ComputeSingularities.bounded-surface-edge-singularities` — 4-edge midpoint sampling omitted. OffsetSurface (0.5 offset from plane); corner distances capture collapse signature. Without: edge-tangency anomalies undetected.
 
+# Wave 73B: Surface Defect Fixtures (Gs179–Gs183)
+
+### Gs179 — ShapeAnalysis_Surface.BSplineBoundaries rational-knot-sum validation omission
+
+| Field | Value |
+|-------|-------|
+| **Defect** | RATIONAL B_SPLINE_SURFACE_WITH_KNOTS with violated knot-sum invariant (U knots sum ≠ U degree + 1). ShapeAnalysis_Surface.BSplineBoundaries fails to validate knot-sum constraint before sampling closure. |
+| **Fixture** | `fixture_sources/12-2c-surfaces/Gs179.py` |
+| **STEP File** | `step-examples/12-2c-surfaces/Gs179.stp` |
+| **Surface Type** | RATIONAL B_SPLINE_SURFACE_WITH_KNOTS (degree 2×2, 3×3 control points) |
+| **Basis/Trim** | B-spline trimmed via RECTANGULAR_TRIMMED_SURFACE [0.1–0.9]×[0.1–0.9] |
+| **Key Issue** | Knot structure is syntactically valid but semantically invalid. BSplineBoundaries should detect and reject before closure analysis. |
+| **Status** | Built, validated. Demonstrates knot-sum bypass in boundary closure detection. |
+
+### Gs180 — ShapeAnalysis_Surface.ComputeBoxes null-knot-vector tolerance handling
+
+| Field | Value |
+|-------|-------|
+| **Defect** | B_SPLINE_SURFACE_WITH_KNOTS with collapsed knot-vector subset (multiple identical consecutive interior knots) in U-direction. ComputeBoxes tolerance-aware clamping fails to detect degenerate parameter intervals. |
+| **Fixture** | `fixture_sources/12-2c-surfaces/Gs180.py` |
+| **STEP File** | `step-examples/12-2c-surfaces/Gs180.stp` |
+| **Surface Type** | B_SPLINE_SURFACE_WITH_KNOTS (degree 2 U, degree 1 V; 3×2 control points) |
+| **Basis/Trim** | B-spline with clustered interior knots [0.0, 0.5, 0.5, 0.5, 1.0] (mult: [2,2,2]); trimmed [0.0–1.0]×[0.0–1.0] |
+| **Key Issue** | Multiplicities {2,2,2} create zero-width intervals at knot values. Bounding box computation must tolerate degenerate spans. |
+| **Status** | Built, validated. Demonstrates ComputeBoxes deficiency with clustered knots. |
+
+### Gs181 — ShapeConstruct_Surface.ConvertCurveToSurface invalid-basis bypass
+
+| Field | Value |
+|-------|-------|
+| **Defect** | PLANE-based RECTANGULAR_TRIMMED_SURFACE with inverted axis orientation. ConvertCurveToSurface fails to validate basis surface axis consistency before curve-lifting, causing parameter mismatch. |
+| **Fixture** | `fixture_sources/12-2c-surfaces/Gs181.py` |
+| **STEP File** | `step-examples/12-2c-surfaces/Gs181.stp` |
+| **Surface Type** | PLANE with reversed Z-axis (negative direction) |
+| **Basis/Trim** | RECTANGULAR_TRIMMED_SURFACE trimming inverted plane [-1.0–1.0]×[-1.0–1.0] |
+| **Key Issue** | Basis plane has negative axis; ConvertCurveToSurface should validate but skips axis-direction guard. Leads to incorrect 3D curve inference from 2D edge parameters. |
+| **Status** | Built, validated. Demonstrates axis-validation omission in curve conversion. |
+
+### Gs182 — ShapeUpgrade_Surface.SplitContinuity periodic-knot discontinuity mask
+
+| Field | Value |
+|-------|-------|
+| **Defect** | Periodic B_SPLINE_SURFACE_WITH_KNOTS (pole_list has repeated first/last pole) with interior C1 discontinuity. SplitContinuity fails to detect discontinuity across periodic seam (u=0≡u=1). |
+| **Fixture** | `fixture_sources/12-2c-surfaces/Gs182.py` |
+| **STEP File** | `step-examples/12-2c-surfaces/Gs182.stp` |
+| **Surface Type** | B_SPLINE_SURFACE_WITH_KNOTS (degree 2 U, degree 1 V; 4×2 control points, periodic U) |
+| **Basis/Trim** | B-spline with first and last poles matching; interior C1 gap at seam. Trimmed [0.0–1.0]×[0.0–1.0] |
+| **Key Issue** | Periodic topology bypasses seam-detection guard in SplitContinuity. C1 discontinuity at u=0 remains unsplit. |
+| **Status** | Built, validated. Demonstrates periodic seam cache-invalidation bug. |
+
+### Gs183 — ShapeAnalysis_Surface.ComputeSingularities edge-proximity cache-invalidation
+
+| Field | Value |
+|-------|-------|
+| **Defect** | CYLINDRICAL_SURFACE trimmed by RECTANGULAR_TRIMMED_SURFACE with edge extremely close to (but not exactly at) the cylinder axis singularity (v=0). ComputeSingularities cache remains valid even though edge proximity triggers tolerance-dependent singularity detection. |
+| **Fixture** | `fixture_sources/12-2c-surfaces/Gs183.py` |
+| **STEP File** | `step-examples/12-2c-surfaces/Gs183.stp` |
+| **Surface Type** | CYLINDRICAL_SURFACE (radius 1.0, axis along Z) |
+| **Basis/Trim** | Trimmed [0.0–2π]×[0.001–1.0] (lower edge 0.001 units from axis singularity at v=0) |
+| **Key Issue** | Edge placement within tolerance distance of cached singularity region should invalidate cache, but guard is omitted. Closure checks miss near-singular geometry. |
+| **Status** | Built, validated. Demonstrates cache-invalidation omission near singularities. |
+
 ### Ad117 — STEP reader crashes on minimal file with malformed `STYLED_ITEM`
 - **Category**: §12.11 adversarial / parser-robustness (sub-class: SEGV on style record)
 - **Sources**: OCCT MANTIS#0029979; bug-reporter language: "crash by reading STEP file", "STEP reader crashes on import", "segmentation fault on small STEP file". (OCCT MANTIS tracker 502 as of 2026-05-02)
@@ -28996,6 +29108,18 @@ Edge loop gap (0.05 mm) accepted despite closure tolerance (0.01 mm). BRepBuilde
 
 ### N165 — `tolerance_conservatism` — no safety margin
 Distance 0.099999 mm compared against 0.1 mm tolerance w/o margin buffer. Single-ULP boundary case. Tests conservative threshold application.
+
+# Wave 73C — Tolerance Fixtures (N166–N170)
+
+### N166 — InTolerance VERTEX inverted-comparison bug | ShapeAnalysis_ShapeTolerance | tolerance | ShapeAnalysis_ShapeTolerance.InTolerance.vertex_tolerance_filtering_BUGGY | vertex range filter uses >= instead of <= | tolerance-regression | reproducible | true
+
+### N167 — LimitTolerance iamax boundary-condition flip | ShapeFix_ShapeTolerance | tolerance | ShapeFix_ShapeTolerance.LimitTolerance.iamax_logic_flip | equality check (tmax >= tmin) semantically requires (tmax > tmin), edge case unchecked | boundary-condition-ambiguity | reproducible | true
+
+### N168 — LimitTolerance recursive WIRE double-mutation | ShapeFix_ShapeTolerance | double-mutation | ShapeFix_ShapeTolerance.LimitTolerance.recursive_wire_vertices | shared vertices in wire mutated twice on single call | double-mutation | reproducible | true
+
+### N169 — GetTolerance mixed-precision accumulation | BRep_Tool | tolerance | BRep_Tool::GetTolerance | accumulates vertex/edge tolerances without precision normalization | precision-tolerance-mismatch | reproducible | true
+
+### N170 — Sewing unevaluated distance filter bypass | BRepBuilderAPI_Sewing | tolerance | BRepBuilderAPI_Sewing.AnalysisNearestEdges.unevaluated_distance_filter_first_pass | first-pass distance check bypassed, over-tolerance edges enter candidate pool | kernel-pair | reproducible | true
 
 ### M161 — Reader does not validate cross-references; dangling references silently accepted
 - **Category**: §12.8 mixed / auxiliary (sub-class: missing input validation)
