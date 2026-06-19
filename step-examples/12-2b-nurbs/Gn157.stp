@@ -1,62 +1,45 @@
 ISO-10303-21;
-/* Gn157 - Rational B-spline with extreme weight ratio (1.0e4), numerical instability
-   Defect: RATIONAL_B_SPLINE_SURFACE with weight range spanning 4 orders of
-   magnitude (1.0 to 10000.0). This creates numerical conditioning problems in
-   rational evaluation. Control point poles: 3x2, degrees 2/1.
-   Healing must either rescale weights or flag as ill-conditioned. */
+/* Gn157: rational B-spline surface with extreme weight ratio */
 HEADER;
-FILE_DESCRIPTION(('Gn157 - Rational surface with extreme weight ratio, conditioning risk'),'2;1');
-FILE_NAME('Gn157.stp','2026-06-17T00:00:00',('auto'),(''),
-  'auto','','');
+FILE_DESCRIPTION(('Gn157'),'2;1');
+FILE_NAME('Gn157.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
 FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-/* 3x2 control net, degree 2/1 */
-#10=CARTESIAN_POINT('p00',(0.0,0.0,0.0));
-#11=CARTESIAN_POINT('p01',(0.0,1.0,0.0));
-#20=CARTESIAN_POINT('p10',(1.0,0.0,0.5));
-#21=CARTESIAN_POINT('p11',(1.0,1.0,1.0));
-#30=CARTESIAN_POINT('p20',(2.0,0.0,0.0));
-#31=CARTESIAN_POINT('p21',(2.0,1.0,0.0));
-/* Defect: Weights with extreme ratio.
-   3x2 poles => 6 weights total.
-   Weights: (1.0, 10000.0, 1.0, 1.0, 1.0, 1.0)
-   Ratio: max/min = 10000 => ill-conditioned rational evaluation.
-   Degree 2/1, so knot counts: (3+2+1=6 for U), (2+1+1=4 for V)
-   Multiplicities U: (3,3), V: (2,2)
-   Knots U: (0,0,0,1,1,1), V: (0,0,1,1) */
-#100=RATIONAL_B_SPLINE_SURFACE(
-  ((#10,#11),(#20,#21),(#30,#31)),
-  ((1.0,10000.0),(1.0,1.0),(1.0,1.0)),
-  'extreme_weight');
-#101=B_SPLINE_SURFACE_WITH_KNOTS(#100,
-  2,1,
-  ((#10,#11),(#20,#21),(#30,#31)),
-  .UNSPECIFIED.,.F.,.F.,.F.,
-  (3,3),
-  (2,2),
-  (0.0,0.0,0.0,1.0,1.0,1.0),
-  (0.0,0.0,1.0,1.0),
-  .UNSPECIFIED.);
-/* Reference LINE */
-#110=CARTESIAN_POINT('origin',(0.0,0.0,0.0));
-#111=DIRECTION('dir',(1.0,0.0,0.0));
-#112=VECTOR('vec',#111,1.0);
-#113=LINE('ref_axis',#110,#112);
-#9990=APPLICATION_CONTEXT('automotive_design');
-#9000=PRODUCT_CONTEXT('',#9990,'mechanical');
-#9001=PRODUCT('Gn157','Gn157','',(#9000));
-#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
-#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#9990,'design');
-#9004=PRODUCT_DEFINITION('','',#9002,#9003);
-#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
-#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
-#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
-#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
-#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
-#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
-#9020=GEOMETRIC_CURVE_SET('curve_set',(#113));
-#9022=GEOMETRICALLY_BOUNDED_WIREFRAME_SHAPE_REPRESENTATION('',(#9020),#9010);
-#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=CARTESIAN_POINT('',(0.0,1.0,0.0));
+#3=CARTESIAN_POINT('',(1.0,0.0,0.5));
+#4=CARTESIAN_POINT('',(1.0,1.0,1.0));
+#5=CARTESIAN_POINT('',(2.0,0.0,0.0));
+#6=CARTESIAN_POINT('',(2.0,1.0,0.0));
+#7=(B_SPLINE_SURFACE(2,1,((#1,#2),(#3,#4),(#5,#6)),.UNSPECIFIED.,.F.,.F.,.F.)B_SPLINE_SURFACE_WITH_KNOTS((3,3),(2,2),(0.0,1.0),(0.0,1.0),.UNSPECIFIED.)BOUNDED_SURFACE()GEOMETRIC_REPRESENTATION_ITEM()RATIONAL_B_SPLINE_SURFACE(((1.0,10000.0),(1.0,1.0),(1.0,1.0)))REPRESENTATION_ITEM('')SURFACE());
+#8=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#9=CARTESIAN_POINT('',(2.0,0.0,0.0));
+#10=VERTEX_POINT('',#8);
+#11=VERTEX_POINT('',#9);
+#12=DIRECTION('',(1.0,0.0,0.0));
+#13=VECTOR('',#12,2.0);
+#14=LINE('',#8,#13);
+#15=EDGE_CURVE('',#10,#11,#14,.T.);
+#16=ORIENTED_EDGE('',$,$,#15,.T.);
+#17=EDGE_LOOP('',(#16));
+#18=FACE_OUTER_BOUND('',#17,.T.);
+#19=ADVANCED_FACE('',(#18),#7,.T.);
+#20=OPEN_SHELL('',(#19));
+#21=SHELL_BASED_SURFACE_MODEL('',(#20));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('Gn157','Gn157','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#21),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
 ENDSEC;
 END-ISO-10303-21;
