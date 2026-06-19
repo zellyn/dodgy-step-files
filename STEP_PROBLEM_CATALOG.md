@@ -556,6 +556,7 @@ Entries within each section are not implicitly ordered. See the *Index by catego
 - **Expected kernel behavior**: reject with a precise "attribute count mismatch" diagnostic naming the field.
 - **Notes**: **See also**: Lh004. Synonyms: "FILE_NAME wrong number of attributes", "FILE_SCHEMA arity mismatch", "FILE_DESCRIPTION extra attribute", "header record with too few parameters", "FILE_SCHEMA single string instead of list".
 - **Byte assertion**: matches(rb'FILE_NAME\([^;]*\);')
+- **Tier-3 assertion**: load == "ok"
 - **OCC behavior**: silently accepts with diagnostic but loads empty result; outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: Header metadata fields load with empty/wrong values; downstream consumers that branch on schema name or implementation level pick the wrong code path even though the DATA section is well-formed.
@@ -570,6 +571,7 @@ Entries within each section are not implicitly ordered. See the *Index by catego
 - **Notes**: **See also**: Lh007, Lh008, Lh009. Synonyms: "FILE_SCHEMA without double parentheses", "schema written as single string not list", "FILE_SCHEMA('AUTOMOTIVE_DESIGN') instead of list", "FILE_SCHEMA list missing outer parens", "schema name not in list-of-string".
 - **Byte assertion**: matches(rb"FILE_SCHEMA\s*\(\s*'")
 - **Byte assertion**: matches(rb"FILE_SCHEMA\(\s*'")
+- **Tier-3 assertion**: load == "ok"
 - **Model impact**: Header metadata fields load with empty/wrong values; downstream consumers that branch on schema name or implementation level pick the wrong code path even though the DATA section is well-formed.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
@@ -655,6 +657,7 @@ Entries within each section are not implicitly ordered. See the *Index by catego
 - **Notes**: **See also**: Lh011. Synonyms: "unquoted timestamp in FILE_NAME", "STEP date without apostrophes", "bare timestamp parses as identifier", "FILE_NAME date not a STRING", "timestamp tokenizes as numbers".
 - **Byte assertion**: matches(rb"FILE_NAME\(\s*'[^']*'\s*,\s*[0-9]{4}-[0-9]{2}-[0-9]{2}T")
 - **Byte assertion**: matches(rb"FILE_NAME\([^;]*,\s*\d{4}-\d{2}-\d{2}T")
+- **Tier-3 assertion**: load == "ok"
 - **Model impact**: Header metadata fields load with empty/wrong values; downstream consumers that branch on schema name or implementation level pick the wrong code path even though the DATA section is well-formed.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
@@ -760,6 +763,7 @@ Entries within each section are not implicitly ordered. See the *Index by catego
 - **Notes**: **See also**: Ad038, Lh024. **OCC behavior**: silently accepts duplicate instance IDs (typically last-write-wins) without diagnostic; kernel mishandling; the catalog above forbids silent overwrite. Synonyms: "duplicate instance ID in DATA", "#42 defined twice in STEP", "concatenated STEP files have ID collision", "two definitions of same #N", "instance ID overwrites previous".
 - **Byte assertion**: count_entity_def(b'PRODUCT') >= 2 or matches(rb'(?s)#4=PRODUCT.*#4=PRODUCT')
 - **Byte assertion**: matches(rb'(?s)#4=PRODUCT.*#4=PRODUCT')
+- **Tier-3 assertion**: load == "ok"
 - **Model impact**: Cross-references that depend on the duplicated/illegal instance number resolve to the wrong entity (or to NULL); affected sub-trees attach to incorrect parents and the resulting BRep contains dangling or mis-typed references.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
@@ -772,6 +776,7 @@ Entries within each section are not implicitly ordered. See the *Index by catego
 - **Notes**: **See also**: Ls038. Synonyms: "whitespace between # and digits of instance ID", "tab between hash and number in #ID", "comment inside instance reference", "# 12 with space in STEP", "stepcode tolerates space inside ID".
 - **Byte assertion**: matches(rb'#\s+\d+\s*=') or matches(rb'#/\*[^*]*\*/\d') or matches(rb'#\d+\t\d')
 - **Byte assertion**: matches(rb'#\s+\d') or matches(rb'#/\*')
+- **Tier-3 assertion**: load == "ok"
 - **OCC behavior**: silently accepts with diagnostic but loads empty result; outside catalog's allowed set ({heal, reject}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: Header metadata fields load with empty/wrong values; downstream consumers that branch on schema name or implementation level pick the wrong code path even though the DATA section is well-formed.
@@ -786,6 +791,7 @@ Entries within each section are not implicitly ordered. See the *Index by catego
 - **Notes**: **See also**: Ad080, Lh022. Synonyms: "#NNN reused across DATA sections", "Ed.3 multi-section ID collision", "two DATA sections share #10", "namespace flattened across sections", "STEP multi-section reference broken".
 - **Byte assertion**: count(b'DATA;') + count(b"DATA('") >= 2
 - **Byte assertion**: count(b'DATA') >= 2
+- **Tier-3 assertion**: load == "ok"
 - **OCC behavior**: silently accepts with diagnostic but loads empty result; outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: Header metadata fields load with empty/wrong values; downstream consumers that branch on schema name or implementation level pick the wrong code path even though the DATA section is well-formed.
@@ -800,6 +806,7 @@ Entries within each section are not implicitly ordered. See the *Index by catego
 - **Notes**: Synonyms: "mixing #NNN and @NNN in same STEP", "value-instance reference where entity expected", "@1 used as #1", "Ed.3 disjoint namespaces confused", "@NNN at #NNN slot".
 - **Byte assertion**: matches(rb'@\d+\s*=')
 - **Byte assertion**: matches(rb'@1\s*=')
+- **Tier-3 assertion**: load == "ok"
 - **OCC behavior**: silently accepts with diagnostic but loads empty result; outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: Header metadata fields load with empty/wrong values; downstream consumers that branch on schema name or implementation level pick the wrong code path even though the DATA section is well-formed.
@@ -827,6 +834,7 @@ Entries within each section are not implicitly ordered. See the *Index by catego
 - **Notes**: **See also**: Lh026, Lh028. Synonyms: "non-numeric # in ANCHOR entry", "ANCHOR with bad instance ID syntax", "malformed entity reference in ANCHOR", "ANCHOR section grammar violation", "anchor target ID not a number".
 - **Byte assertion**: contains(b'#42@x') or matches(rb'#\d+@[a-zA-Z]')
 - **Byte assertion**: contains(b'#42@x')
+- **Tier-3 assertion**: load == "ok"
 - **OCC behavior**: silently accepts with diagnostic but loads empty result; outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: Header metadata fields load with empty/wrong values; downstream consumers that branch on schema name or implementation level pick the wrong code path even though the DATA section is well-formed.
@@ -842,6 +850,7 @@ Entries within each section are not implicitly ordered. See the *Index by catego
 - **Notes**: Cross-oracle: pure-Python Part-21 validator rejects (reject(E_UNRESOLVED_REFS)); OCCT silently accepts (load is `empty`). OCC auto-heals a spec-level violation. Synonyms: "ANCHOR points at undefined #NNN", "anchor references missing instance", "filtered instance still in ANCHOR", "ANCHOR forward reference unresolved", "STEP anchor names ghost entity".
 - **Byte assertion**: contains(b'ANCHOR;')
 - **Byte assertion**: matches(rb'<[^>]+>=#100;')
+- **Tier-3 assertion**: load == "ok"
 - **OCC behavior**: silently accepts with diagnostic but loads empty result; outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: Header metadata fields load with empty/wrong values; downstream consumers that branch on schema name or implementation level pick the wrong code path even though the DATA section is well-formed.
@@ -903,6 +912,7 @@ Entries within each section are not implicitly ordered. See the *Index by catego
 - **Notes**: Synonyms: "#NAME constant reference where #NNN expected", "@NAME used as instance reference", "schema constant in STEP DATA", "#PI as alias not resolved", "constant reference unresolved".
 - **Byte assertion**: matches(rb'#[A-Z][A-Z_]*\b')
 - **Byte assertion**: matches(rb'#PI\b')
+- **Tier-3 assertion**: load == "ok"
 - **OCC behavior**: silently accepts with diagnostic but loads empty result; outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: Header metadata fields load with empty/wrong values; downstream consumers that branch on schema name or implementation level pick the wrong code path even though the DATA section is well-formed.
@@ -959,6 +969,7 @@ Entries within each section are not implicitly ordered. See the *Index by catego
 - **Notes**: **See also**: Ls001. Synonyms: "Fortran D exponent in STEP", "1.0D5 instead of 1.0E5", "legacy Fortran writer emits D exponent", "I-DEAS D-exponent REAL", "CADAM D-style exponent".
 - **Byte assertion**: matches(rb'\d[Dd][+-]?\d')
 - **Byte assertion**: contains(b'1.0D5') or contains(b'1.5D-3')
+- **Tier-3 assertion**: load == "ok"
 - **OCC behavior**: silently accepts with diagnostic but loads empty result; outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: Tokenizer or grammar mismatch causes the affected entity (or the whole DATA section) to fail to parse; no entity is constructed at the offending instance number, and back-references to it become dangling.
@@ -987,6 +998,7 @@ Entries within each section are not implicitly ordered. See the *Index by catego
 - **Notes**: **See also**: Ls001. Synonyms: "underscore in numeric literal", "1_000_000 in STEP REAL", "digit grouping in STEP number", "Python-style underscore in STEP", "thousands separator inside number".
 - **Byte assertion**: matches(rb'\d_\d')
 - **Byte assertion**: count(b'_') >= 2 or matches(rb'\d_\d{3}')
+- **Tier-3 assertion**: load == "ok"
 - **OCC behavior**: silently accepts with diagnostic but loads empty result; outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: Tokenizer or grammar mismatch causes the affected entity (or the whole DATA section) to fail to parse; no entity is constructed at the offending instance number, and back-references to it become dangling.
@@ -1016,6 +1028,7 @@ Entries within each section are not implicitly ordered. See the *Index by catego
 - **Notes**: **See also**: Ls001. Synonyms: "hex literal in STEP integer", "0x10 in STEP", "octal interpretation of 010", "STEP integer with 0x prefix", "non-decimal integer literal".
 - **Byte assertion**: contains(b'0x10') or contains(b'0X10') or matches(rb'POSITIVE_INTEGER_VALUE\(010\)')
 - **Byte assertion**: contains(b'0X') or contains(b'0x10')
+- **Tier-3 assertion**: load == "ok"
 - **OCC behavior**: silently accepts with diagnostic but loads empty result; outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: Tokenizer or grammar mismatch causes the affected entity (or the whole DATA section) to fail to parse; no entity is constructed at the offending instance number, and back-references to it become dangling.
@@ -1074,6 +1087,7 @@ Entries within each section are not implicitly ordered. See the *Index by catego
 - **Expected kernel behavior**: Strict reject with precise location diagnostic.
 - **Byte assertion**: matches(rb"'[xp]'\s*\(")
 - **Byte assertion**: matches(rb"'\w'\s+\(")
+- **Tier-3 assertion**: load == "ok"
 - **OCC behavior**: silently accepts with diagnostic but loads empty result; outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Notes**: Synonyms: "missing comma between STEP attributes", "Expecting comma found _3DV", "STEP attribute separator dropped", "two attributes adjacent without comma", "comma-less attribute list".
@@ -1089,6 +1103,7 @@ Entries within each section are not implicitly ordered. See the *Index by catego
 - **Notes**: **OCC behavior**: silently treats the empty slot as `$` (omitted) and proceeds; kernel mishandling; the catalog above forbids silent slot-equivalence. Synonyms: "double comma in STEP aggregate", "(a,,b) empty slot", "STEP entity attribute slot empty", "empty parameter slot in entity", "consecutive commas in attribute list".
 - **Byte assertion**: matches(rb',\s*,') or matches(rb'\(\s*,')
 - **Byte assertion**: count(b',,') >= 1
+- **Tier-3 assertion**: load == "ok"
 - **Model impact**: Tokenizer or grammar mismatch causes the affected entity (or the whole DATA section) to fail to parse; no entity is constructed at the offending instance number, and back-references to it become dangling.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
@@ -1101,6 +1116,7 @@ Entries within each section are not implicitly ordered. See the *Index by catego
 - **Notes**: Synonyms: "trailing comma in STEP aggregate", "(1.,2.,3.,) extra comma", "JS-style trailing comma in STEP", "extra comma at end of list", "aggregate ends with comma".
 - **Byte assertion**: matches(rb',\s*\)')
 - **Byte assertion**: count(b',)') >= 1
+- **Tier-3 assertion**: load == "ok"
 - **OCC behavior**: silently accepts with diagnostic but loads empty result; outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: Tokenizer or grammar mismatch causes the affected entity (or the whole DATA section) to fail to parse; no entity is constructed at the offending instance number, and back-references to it become dangling.
@@ -1116,6 +1132,7 @@ Entries within each section are not implicitly ordered. See the *Index by catego
 - **Notes**: Cross-oracle: pure-Python Part-21 validator rejects (reject(E_UNRESOLVED_REFS)); OCCT silently accepts (load is `empty`). OCC auto-heals a spec-level violation. Synonyms: "double semicolon after STEP instance", "STEP file has ;;", "extra semicolon between entities", "empty entity from double semicolon", "trailing semicolon after instance".
 - **Byte assertion**: contains(b';;')
 - **Byte assertion**: count(b';;') >= 2
+- **Tier-3 assertion**: load == "ok"
 - **OCC behavior**: silently accepts with diagnostic but loads empty result; outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: Tokenizer or grammar mismatch causes the affected entity (or the whole DATA section) to fail to parse; no entity is constructed at the offending instance number, and back-references to it become dangling.
@@ -1131,6 +1148,7 @@ Entries within each section are not implicitly ordered. See the *Index by catego
 - **Notes**: Cross-oracle: pure-Python Part-21 validator rejects (reject(E_PAREN_UNBALANCED)); OCCT silently accepts (load is `empty`). OCC auto-heals a spec-level violation. Synonyms: "missing closing paren in STEP aggregate", "paren imbalance in STEP", "unbalanced parens in coordinate list", "truncated nested aggregate", "STEP aggregate closes wrong number of parens".
 - **Byte assertion**: matches(rb'IFCPOLYLINE\(\(#\d+,#\d+,#\d+\);')
 - **Byte assertion**: matches(rb'\(#\d+,#\d+,#\d+\);')
+- **Tier-3 assertion**: load == "ok"
 - **OCC behavior**: silently accepts with diagnostic but loads empty result; outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: Tokenizer or grammar mismatch causes the affected entity (or the whole DATA section) to fail to parse; no entity is constructed at the offending instance number, and back-references to it become dangling.
@@ -1184,6 +1202,7 @@ Entries within each section are not implicitly ordered. See the *Index by catego
 - **Notes**: Synonyms: "legacy SCOPE block in STEP", "Edition 1 SCOPE/ENDSCOPE", "EXPORT list in STEP", "old-style scope delimiters", "Ed.1 scope blocks in modern STEP".
 - **Byte assertion**: contains(b'SCOPE') and contains(b'ENDSCOPE')
 - **Byte assertion**: count(b'SCOPE') >= 2
+- **Tier-3 assertion**: load == "ok"
 - **Model impact**: Tokenizer or grammar mismatch causes the affected entity (or the whole DATA section) to fail to parse; no entity is constructed at the offending instance number, and back-references to it become dangling.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
@@ -1227,6 +1246,7 @@ Entries within each section are not implicitly ordered. See the *Index by catego
 - **Expected kernel behavior**: Heal and accept: only `*/` ends a comment; `/*` within a comment is literal text. After the first `*/` everything else is code.
 - **Byte assertion**: contains(b'/* outer /*')
 - **Byte assertion**: count(b'/*') >= 2
+- **Tier-3 assertion**: load == "ok"
 - **Notes**: Synonyms: "nested comment in STEP", "Windows path inside STEP comment breaks scanner", "URL in STEP comment opens nested comment", "/*/ inside STEP comment", "comment nesting confusion".
 - **OCC behavior**: silently accepts with diagnostic but loads empty result; outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
@@ -1255,6 +1275,7 @@ Entries within each section are not implicitly ordered. See the *Index by catego
 - **Notes**: **See also**: Le028. Synonyms: "tab as STEP token separator", "FF as token separator", "tab between # and =", "ignored char inside STEP token", "whitespace handling in STEP scanner".
 - **Byte assertion**: matches(rb'#\s+\d') or matches(rb'\t')
 - **Byte assertion**: matches(rb'#\s+\d')
+- **Tier-3 assertion**: load == "ok"
 - **OCC behavior**: silently accepts with diagnostic but loads empty result; outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: Tokenizer or grammar mismatch causes the affected entity (or the whole DATA section) to fail to parse; no entity is constructed at the offending instance number, and back-references to it become dangling.
@@ -1269,6 +1290,7 @@ Entries within each section are not implicitly ordered. See the *Index by catego
 - **Notes**: **See also**: Ls035. Synonyms: "STEP enum missing dotted delimiters", "lowercase enum body", "missing leading dot on STEP enum", "quoted enum value", "STEP enum value malformed".
 - **Byte assertion**: contains(b'.LENGTHUNIT,') or contains(b'.true.') or contains(b'(TRUE)') or contains(b'."LEFT".')
 - **Byte assertion**: matches(rb'\.[a-z]+\.|\bTRUE\b|\bLEFT\.')
+- **Tier-3 assertion**: load == "ok"
 - **OCC behavior**: silently accepts with diagnostic but loads empty result; outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: Tokenizer or grammar mismatch causes the affected entity (or the whole DATA section) to fail to parse; no entity is constructed at the offending instance number, and back-references to it become dangling.
@@ -1327,6 +1349,7 @@ Entries within each section are not implicitly ordered. See the *Index by catego
 - **Notes**: Synonyms: "very long STEP entity name", "fixed-buffer overflow on long name", "hyphen in STEP identifier", "BS7752-1 entity name rejected", "STEP entity name with dash".
 - **Byte assertion**: matches(rb'#\d+\s*=\s*A{50,}\(') or matches(rb'#\d+\s*=\s*[A-Z]+-\d+\(')
 - **Byte assertion**: matches(rb'A{50,}|BS7752-1')
+- **Tier-3 assertion**: load == "ok"
 - **OCC behavior**: silently accepts with diagnostic but loads empty result; outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: Tokenizer or grammar mismatch causes the affected entity (or the whole DATA section) to fail to parse; no entity is constructed at the offending instance number, and back-references to it become dangling.
@@ -1356,6 +1379,7 @@ Entries within each section are not implicitly ordered. See the *Index by catego
 - **Notes**: Synonyms: "X escape outside string literal", "STEP control directive in BINARY", "directive in enumeration name", "backslash X in non-string slot", "control directive between top-level tokens".
 - **Byte assertion**: matches(rb"\(\s*\d+\.\\X\\")
 - **Byte assertion**: matches(rb"\\X\\09")
+- **Tier-3 assertion**: load == "ok"
 - **OCC behavior**: silently accepts with diagnostic but loads empty result; outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: Tokenizer or grammar mismatch causes the affected entity (or the whole DATA section) to fail to parse; no entity is constructed at the offending instance number, and back-references to it become dangling.
@@ -1839,6 +1863,7 @@ _Section summary: 82 entries._
 - **Expected kernel behavior**: heal; split the curve at C0 points so each piece is at least C1; emit each piece as its own `EDGE_CURVE` with shared vertices.
 - **Notes**: **See also**: Gs025. **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: catalog asks for healing; OCC neither heals nor rejects; the input is dropped on the floor without diagnostic. Synonyms: "C0 join in B-spline curve needs split", "BSpline curve has slope discontinuity", "split BSpline at interior knot multiplicity equal to degree", "downstream tool needs C1 continuity", "tangent break inside B-spline curve".
 - **Byte assertion**: contains(b'B_SPLINE_CURVE')
+- **Tier-3 assertion**: load == "ok"
 - **Model impact**: The B-spline definition is structurally invalid (knot multiplicity, degree, or control-net mismatch); the curve/surface either evaluates to NaN at parameter queries or is discarded, leaving its parent face/edge with degenerate geometry.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(3) ifc=schema_n/a`
 
@@ -2017,6 +2042,7 @@ _Section summary: 82 entries._
 - **Expected kernel behavior**: Heal and accept; derive parameter curve from 3D curve when consistent with the host surface.
 - **Notes**: **See also**: Gp010. Synonyms: "flat 3D curve as p-curve instead of 2D PCURVE", "Parasolid file with 3D curve in lieu of pcurve", "associated_geometry has 3D LINE on PLANE", "importer hardcoded for 2D pcurve sees 3D curve", "3D edge curve in p-curve slot on flat surface".
 - **Byte assertion**: contains(b'CARTESIAN_POINT')
+- **Tier-3 assertion**: load == "ok"
 - **Model impact**: The B-spline definition is structurally invalid (knot multiplicity, degree, or control-net mismatch); the curve/surface either evaluates to NaN at parameter queries or is discarded, leaving its parent face/edge with degenerate geometry.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
 
@@ -2775,6 +2801,7 @@ _Section summary: 101 entries._
 - **Notes**: Synonyms: "face has two outer boundaries", "disjoint regions packed into one face", "face covers two separate islands", "multiply-connected face needs splitting", "two outer wires on same face".
 - **Byte assertion**: count(b'FACE_OUTER_BOUND') >= 2
 - **Byte assertion**: count_entity_def(b'ADVANCED_FACE') == 1
+- **Tier-3 assertion**: load == "ok"
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal, reject}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: Shell topology loads with inconsistent face orientations or non-manifold edges; BRepCheck flags the shell as invalid, and boolean / offset operations on the solid either produce wrong-sided results or fail outright.
@@ -3024,6 +3051,7 @@ _Section summary: 101 entries._
 - **Notes**: **See also**: Gs001. Synonyms: "torus with negative minor radius flips normal", "degenerate torus orientation ambiguous", "shared edge reused with opposite directions on torus seam", "hole or stud confused on torus", "torus profile inverted by negative radius".
 - **Byte assertion**: contains(b'OPEN_SHELL')
 - **Byte assertion**: count_entity_def(b'ADVANCED_FACE') == 1
+- **Tier-3 assertion**: load == "ok"
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: Shell topology loads with inconsistent face orientations or non-manifold edges; BRepCheck flags the shell as invalid, and boolean / offset operations on the solid either produce wrong-sided results or fail outright.
@@ -3039,6 +3067,7 @@ _Section summary: 101 entries._
 - **Notes**: **See also**: Tsh009. Synonyms: "revolved feature comes in with wrong angle", "complementary sweep on revolve import", "revolution direction reversed", "axis orientation misread on revolved solid", "revolve sweeps the wrong way".
 - **Byte assertion**: contains(b'OPEN_SHELL')
 - **Byte assertion**: count_entity_def(b'ADVANCED_FACE') == 1
+- **Tier-3 assertion**: load == "ok"
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: Shell topology loads with inconsistent face orientations or non-manifold edges; BRepCheck flags the shell as invalid, and boolean / offset operations on the solid either produce wrong-sided results or fail outright.
@@ -12579,6 +12608,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Byte assertion**: contains(b'DATA;')
 - **Byte assertion**: contains(b'HEADER;')
 - **Byte assertion**: count(b'ENDSEC;') >= 2
+- **Tier-3 assertion**: load == "ok"
 - **OCC behavior**: silently accepts with diagnostic but loads empty result; outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: Interface/transfer layer fails to map the entity to its OCCT counterpart; the loaded Transfer document records the entity as un-transferred, and the affected sub-tree is absent from the resulting BRep.
@@ -12719,6 +12749,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Expected kernel behavior**: Reject comma-separated leaves in strict mode; lenient mode may accept-with-warning.
 - **Notes**: **See also**: Ls010, Ls048. Synonyms: "complex entity leaves separated by commas", "multiple-inheritance leaves with comma separators", "STEP complex record uses commas not whitespace", "comma in complex entity rejected", "complex entity grammar violation".
 - **Byte assertion**: matches(rb'#\d+\s*=\s*\(\s*[A-Z_]+\([^)]*\),\s*[A-Z_]+')
+- **Tier-3 assertion**: load == "ok"
 - **Model impact**: Tokenizer or grammar mismatch causes the affected entity (or the whole DATA section) to fail to parse; no entity is constructed at the offending instance number, and back-references to it become dangling.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
@@ -12743,6 +12774,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Expected kernel behavior**: Strict reject; lenient mode may default to `.T.` with a warning.
 - **Notes**: **See also**: Ls034, Ls035, Ls050. Synonyms: "bare TRUE without dots in STEP", "BOOLEAN written without dot delimiters", "EDGE_CURVE same_sense bare keyword", "TRUE/FALSE without dot framing", "STEP boolean missing enum dots".
 - **Byte assertion**: matches(rb',\s*TRUE\)')
+- **Tier-3 assertion**: load == "ok"
 - **Model impact**: Tokenizer or grammar mismatch causes the affected entity (or the whole DATA section) to fail to parse; no entity is constructed at the offending instance number, and back-references to it become dangling.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
@@ -12995,6 +13027,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Notes**: Cross-oracle: pure-Python Part-21 validator rejects (reject(E_UNRESOLVED_REFS)); OCCT silently accepts (load is `empty`). OCC auto-heals a spec-level violation.
 - **Byte assertion**: contains(b'#999')
 - **Byte assertion**: matches(rb'#\d+=[^;]*#999')
+- **Tier-3 assertion**: load == "ok"
 - **OCC behavior**: silently accepts with diagnostic but loads empty result; outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P2
 - **Model impact**: Crafted input drives the parser into an undefined-behavior path; observed effects range from silent acceptance with no model, to OOB read producing junk attribute values, to process termination by signal.
@@ -13016,6 +13049,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Notes**: 
 - **Byte assertion**: matches(rb'CARTESIAN_POINT\([^;]*,\s*,') or matches(rb'CARTESIAN_POINT\([^;]*\([^)]*,\s*,[^)]*\)')
 - **Byte assertion**: matches(rb'\(\s*\d+\.0\s*,\s*,')
+- **Tier-3 assertion**: load == "ok"
 - **Model impact**: Crafted input drives the parser into an undefined-behavior path; observed effects range from silent acceptance with no model, to OOB read producing junk attribute values, to process termination by signal.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
@@ -13033,6 +13067,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Expected kernel behavior**: Reject: trailing comma is a syntax error; emit diagnostic and skip entity.
 - **Notes**: **See also**: Ad088.
 - **Byte assertion**: matches(rb',\s*\)\s*\)\s*;')
+- **Tier-3 assertion**: load == "ok"
 - **OCC behavior**: silently accepts with diagnostic but loads empty result; outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P2
 - **Model impact**: Crafted input drives the parser into an undefined-behavior path; observed effects range from silent acceptance with no model, to OOB read producing junk attribute values, to process termination by signal.
@@ -13052,6 +13087,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Notes**: Cross-oracle: pure-Python Part-21 validator rejects (reject(E_CLOSE_CASE)); OCCT silently accepts (load is `empty`). OCC auto-heals a spec-level violation.
 - **Byte assertion**: bytes_ends_with(b'end-iso-10303-21;') or contains(b'end-iso-10303-21;')
 - **Byte assertion**: bytes_ends_with(b'end-iso-10303-21;')
+- **Tier-3 assertion**: load == "ok"
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal, reject}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P2
 - **Model impact**: Crafted input drives the parser into an undefined-behavior path; observed effects range from silent acceptance with no model, to OOB read producing junk attribute values, to process termination by signal.
@@ -13074,6 +13110,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Notes**: **See also**: Le023. **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({warn-and-proceed}). Kernel-bug witnessed: catalog wants a warning to surface; OCC accepts without any diagnostic.
 - **Byte assertion**: matches(rb"CARTESIAN_POINT\([^;]*,\(\s*\d+\s*,\s*\d+\s*,\s*\d+\s*,\s*\d+")
 - **Byte assertion**: count(b',') >= 5 and matches(rb'\(\d+,\d+,\d+,\d+,\d+,\d+\)')
+- **Tier-3 assertion**: load == "ok"
 - **Model impact**: Crafted input drives the parser into an undefined-behavior path; observed effects range from silent acceptance with no model, to OOB read producing junk attribute values, to process termination by signal.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
@@ -13091,6 +13128,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Notes**: **See also**: Pf027.
 - **Byte assertion**: count_entity_def(b'CARTESIAN_POINT') >= 20
 - **Byte assertion**: count(b'#') >= 30
+- **Tier-3 assertion**: load == "ok"
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P2
 - **Model impact**: Crafted input drives the parser into an undefined-behavior path; observed effects range from silent acceptance with no model, to OOB read producing junk attribute values, to process termination by signal.
@@ -13109,6 +13147,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Notes**: **See also**: Ad082. Provenance tier: runtime-only; there is no `.stp` to author; the defect is triggered by an empty or null path passed to the reader API, which fails before any file content is read. Demonstrating this requires invoking the reader with bad arguments, not a fixture file. **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers must reject this fixture per the catalog's stated invariant.
 - **Byte assertion**: contains(b'ISO-10303-21')
 - **Byte assertion**: contains(b'END-ISO-10303-21')
+- **Tier-3 assertion**: load == "ok"
 - **Model impact**: Crafted input drives the parser into an undefined-behavior path; observed effects range from silent acceptance with no model, to OOB read producing junk attribute values, to process termination by signal.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
@@ -13126,6 +13165,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Notes**: **See also**: Tsh023, Tsh024. **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers must reject this fixture per the catalog's stated invariant.
 - **Byte assertion**: matches(rb"OPEN_SHELL\('[^']*',\(\)\)")
 - **Byte assertion**: matches(rb'\(\)\)')
+- **Tier-3 assertion**: load == "ok"
 - **Model impact**: Crafted input drives the parser into an undefined-behavior path; observed effects range from silent acceptance with no model, to OOB read producing junk attribute values, to process termination by signal.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
@@ -13145,6 +13185,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Notes**: **See also**: Ad081. **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers must reject this fixture per the catalog's stated invariant.
 - **Byte assertion**: contains(b'Pro/E') or contains(b'Pro/Engineer')
 - **Byte assertion**: contains(b'STYLED_ITEM') and contains(b'Pro')
+- **Tier-3 assertion**: load == "ok"
 - **Model impact**: Crafted input drives the parser into an undefined-behavior path; observed effects range from silent acceptance with no model, to OOB read producing junk attribute values, to process termination by signal.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
@@ -13162,6 +13203,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Notes**: **See also**: A030.
 - **Byte assertion**: contains(b'TESSELLATED_SHELL')
 - **Byte assertion**: contains(b'TESSELLATED')
+- **Tier-3 assertion**: load == "ok"
 - **Model impact**: Crafted input drives the parser into an undefined-behavior path; observed effects range from silent acceptance with no model, to OOB read producing junk attribute values, to process termination by signal.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
@@ -13198,6 +13240,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Notes**: **See also**: Tfa056.
 - **Byte assertion**: count_entity_def(b'ADVANCED_FACE') >= 3 and contains(b'sliver')
 - **Byte assertion**: count_entity_def(b'ADVANCED_FACE') >= 4
+- **Tier-3 assertion**: load == "ok"
 - **Model impact**: Crafted input drives the parser into an undefined-behavior path; observed effects range from silent acceptance with no model, to OOB read producing junk attribute values, to process termination by signal.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
@@ -13217,6 +13260,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Notes**: **See also**: Tsh056. **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: catalog asks for healing; OCC neither heals nor rejects; the input is dropped on the floor without diagnostic.
 - **Byte assertion**: contains(b'teardrop') or matches(rb'EDGE_CURVE\([^;]*#(\d+),#\1,')
 - **Byte assertion**: contains(b'EDGE_LOOP') and contains(b'EDGE_CURVE')
+- **Tier-3 assertion**: load == "ok"
 - **Model impact**: Crafted input drives the parser into an undefined-behavior path; observed effects range from silent acceptance with no model, to OOB read producing junk attribute values, to process termination by signal.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
@@ -13234,6 +13278,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Notes**: **See also**: A076. Provenance tier: cross-file-state; bytes alone cannot demonstrate this defect; the symptom is monotonic process-RSS growth across many successive reads of any STEP file. Demonstrating this requires the kernel to retain state across documents and an external memory measurement, not a single fixture.
 - **Byte assertion**: contains(b'ISO-10303-21')
 - **Byte assertion**: contains(b'END-ISO-10303-21')
+- **Tier-3 assertion**: load == "ok"
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P2
 - **Model impact**: Crafted input drives the parser into an undefined-behavior path; observed effects range from silent acceptance with no model, to OOB read producing junk attribute values, to process termination by signal.
@@ -13249,6 +13294,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Notes**: Sibling of Ad104 (XXE via SYSTEM URI); both attack the STEP-XML wrapper. Synonyms: "billion laughs in STEP", "XML entity bomb in STEP-XML", "exponential entity expansion". Provenance tier: cross-file-state; defect is in the .stpx wrapper's DTD layer, not in the .stp body; bytes-level demonstration is the XML prologue. **See also**: Ad104, Ad108, Ad109. **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers must reject this fixture per the catalog's stated invariant.
 - **Byte assertion**: contains(b'<!DOCTYPE') and contains(b'<!ENTITY')
 - **Byte assertion**: contains(b'&lol') or contains(b'lol9')
+- **Tier-3 assertion**: load == "ok"
 - **Model impact**: Crafted input drives the parser into an undefined-behavior path; observed effects range from silent acceptance with no model, to OOB read producing junk attribute values, to process termination by signal.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
@@ -13262,6 +13308,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Notes**: Twin of Ad104 (external entity inside the document); this entry attacks the DOCTYPE itself. Synonyms: "external DTD in STEP-XML", "remote DTD fetch", "XXE via DOCTYPE SYSTEM". Provenance tier: cross-file-state; defect is in the .stpx wrapper, not in the .stp body. **See also**: Ad104, Ad107, Ad109. **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers must reject this fixture per the catalog's stated invariant.
 - **Byte assertion**: contains(b'<!DOCTYPE') and contains(b'SYSTEM')
 - **Byte assertion**: contains(b'http://') or contains(b'evil.dtd')
+- **Tier-3 assertion**: load == "ok"
 - **Model impact**: Crafted input drives the parser into an undefined-behavior path; observed effects range from silent acceptance with no model, to OOB read producing junk attribute values, to process termination by signal.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
@@ -13275,6 +13322,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Notes**: Strongest of the XXE family — combines local-file read with network exfiltration. Synonyms: "OOB-XXE", "parameter entity XXE", "data exfiltration via DTD". Provenance tier: cross-file-state — defect is in the .stpx wrapper, not in the .stp body. **See also**: Ad104, Ad107, Ad108. **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers must reject this fixture per the catalog's stated invariant.
 - **Byte assertion**: contains(b'<!DOCTYPE') and contains(b'<!ENTITY %')
 - **Byte assertion**: contains(b'%exfil') or contains(b'%eval') or contains(b'%file')
+- **Tier-3 assertion**: load == "ok"
 - **Model impact**: Crafted input drives the parser into an undefined-behavior path; observed effects range from silent acceptance with no model, to OOB read producing junk attribute values, to process termination by signal.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
@@ -13288,6 +13336,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Notes**: Distinct from Ad027 (instance-count bomb at parser layer) and Ad105 (archive header lies about size — Ad105 is detectable from the header alone, this entry's gzip stream actually produces the bytes when decoded). **See also**: Ad027, Ad105, Ad111, Ad112, Pf030. Provenance tier: cross-file-state — bytes alone (a Part-21 body) cannot demonstrate this defect; the bomb is in the gzip wrapper.
 - **Byte assertion**: contains(b'gzip') or contains(b'.stpz') or contains(b'decompression')
 - **Byte assertion**: contains(b'bomb') or contains(b'ratio') or contains(b'.stpz')
+- **Tier-3 assertion**: load == "ok"
 - **Model impact**: Crafted input drives the parser into an undefined-behavior path; observed effects range from silent acceptance with no model, to OOB read producing junk attribute values, to process termination by signal.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
@@ -13301,6 +13350,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Notes**: Companion to Ad110 (gzip wrapper) — different container, same defect class. Distinct from Ad105 (archive *header* lies; this entry's bomb actually decompresses). **See also**: Ad027, Ad105, Ad110, Ad112, Pf030. Provenance tier: cross-file-state — bytes alone (a Part-21 body) cannot demonstrate this defect; the bomb is in the ZIP wrapper. **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers must reject this fixture per the catalog's stated invariant.
 - **Byte assertion**: contains(b'3MF') or contains(b'IFCZIP') or contains(b'ZIP')
 - **Byte assertion**: contains(b'bomb') or contains(b'ratio')
+- **Tier-3 assertion**: load == "ok"
 - **Model impact**: Crafted input drives the parser into an undefined-behavior path; observed effects range from silent acceptance with no model, to OOB read producing junk attribute values, to process termination by signal.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
@@ -13314,6 +13364,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Notes**: Companion to Ad110 (single-layer ratio bomb); orthogonal axis (depth, not ratio). **See also**: Ad027, Ad105, Ad110, Ad111, Pf030. Provenance tier: cross-file-state; bytes alone (a Part-21 body) cannot demonstrate this defect; the bomb is in the stack of gzip wrappers. **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers must reject this fixture per the catalog's stated invariant.
 - **Byte assertion**: contains(b'gzip') or contains(b'nested') or contains(b'recursive')
 - **Byte assertion**: contains(b'.stpz') or contains(b'recursion') or contains(b'depth')
+- **Tier-3 assertion**: load == "ok"
 - **Model impact**: Crafted input drives the parser into an undefined-behavior path; observed effects range from silent acceptance with no model, to OOB read producing junk attribute values, to process termination by signal.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
@@ -13327,6 +13378,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Notes**: Sibling-pair-specific cousin of Ad106 (general EXTERNAL_FILE TOCTOU). Provenance tier: cross-file-state; bytes alone cannot demonstrate this defect; the symptom is a filesystem race between path-resolution operations. The static fixture is document-only: no real symlink is created in the repo. **See also**: Ad106, Ad114, Ad115. **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers must reject this fixture per the catalog's stated invariant.
 - **Byte assertion**: contains(b'TOCTOU') or contains(b'symlink') or contains(b'sibling')
 - **Byte assertion**: contains(b'.input.stp') or contains(b'race')
+- **Tier-3 assertion**: load == "ok"
 - **Model impact**: Crafted input drives the parser into an undefined-behavior path; observed effects range from silent acceptance with no model, to OOB read producing junk attribute values, to process termination by signal.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
@@ -13340,6 +13392,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Notes**: Companion to Ad106 (TOCTOU on EXTERNAL_FILE) and Ad113 (sibling-pair race) — a different angle on the same filesystem-trust defect class. Provenance tier: cross-file-state — bytes alone cannot demonstrate this defect; the symptom requires a symlink in the receiver-side filesystem. The static fixture is document-only: no real symlink is created in the repo (cross-platform-unfriendly). **See also**: Ad106, Ad113, Ad115. **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers must reject this fixture per the catalog's stated invariant.
 - **Byte assertion**: contains(b'symlink') or contains(b'passwd') or contains(b'/etc/')
 - **Byte assertion**: contains(b'O_NOFOLLOW') or contains(b'symlink') or contains(b'/etc/passwd')
+- **Tier-3 assertion**: load == "ok"
 - **Model impact**: Crafted input drives the parser into an undefined-behavior path; observed effects range from silent acceptance with no model, to OOB read producing junk attribute values, to process termination by signal.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
@@ -13353,6 +13406,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Notes**: Third TOCTOU vector after Ad113 (sibling-pair race) and Ad114 (symlink-following) — separate axis (directory-swap, not symlink-swap). Provenance tier: cross-file-state — bytes alone cannot demonstrate this defect; the symptom requires a concurrent attacker process. The static fixture is document-only. **See also**: Ad106, Ad113, Ad114.
 - **Byte assertion**: contains(b'TOCTOU') or contains(b'rename') or contains(b'stat')
 - **Byte assertion**: contains(b'directory') or contains(b'race') or contains(b'fstat')
+- **Tier-3 assertion**: load == "ok"
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P2
 - **Model impact**: Crafted input drives the parser into an undefined-behavior path; observed effects range from silent acceptance with no model, to OOB read producing junk attribute values, to process termination by signal.
@@ -13379,6 +13433,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Byte assertion**: count_entity_def(b'ORIENTED_EDGE') >= 3
 - **Byte assertion**: contains(b'EDGE_LOOP')
 - **Byte assertion**: contains(b'EDGE_LOOP') and count_entity_def(b'ORIENTED_EDGE') >= 3
+- **Tier-3 assertion**: load == "ok"
 - **Model impact**: Crafted input drives the parser into an undefined-behavior path; observed effects range from silent acceptance with no model, to OOB read producing junk attribute values, to process termination by signal.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
@@ -13395,6 +13450,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Notes**: **See also**: Tsh037.
 - **Byte assertion**: contains(b'EDGE_CURVE') and contains(b'hlr')
 - **Byte assertion**: contains(b'EDGE_CURVE') and contains(b'VERTEX_POINT')
+- **Tier-3 assertion**: load == "ok"
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P2
 - **Model impact**: Crafted input drives the parser into an undefined-behavior path; observed effects range from silent acceptance with no model, to OOB read producing junk attribute values, to process termination by signal.
@@ -13417,6 +13473,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Notes**: **See also**: Tsh050, N045. Provenance tier: runtime-only; bytes alone cannot demonstrate this defect; the symptom is a use-after-free against the vertex-union table during a second merge pass. The static fixture encodes only the input precondition (coincident vertices); the stale-entry access requires the kernel to perform two successive merge operations and retain the multi-pass merge state.
 - **Byte assertion**: contains(b'ISO-10303-21')
 - **Byte assertion**: contains(b'END-ISO-10303-21')
+- **Tier-3 assertion**: load == "ok"
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P2
 - **Model impact**: Crafted input drives the parser into an undefined-behavior path; observed effects range from silent acceptance with no model, to OOB read producing junk attribute values, to process termination by signal.
@@ -13432,6 +13489,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Notes**: First entry exercising the STEP-XML wrapper as an attack surface. Synonyms: "XXE in STEP", "STEP-XML external entity", "billion-laughs sibling for XML", "DTD reads sensitive file", "external entity in STEP-XML". Provenance tier: cross-file-state. The defect is in the .stpx wrapper, not in the .stp body; bytes-level demonstration is in the XML-prologue layer. **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers must reject this fixture per the catalog's stated invariant.
 - **Byte assertion**: contains(b'<!DOCTYPE') and contains(b'<!ENTITY')
 - **Byte assertion**: contains(b'SYSTEM') or contains(b'file://')
+- **Tier-3 assertion**: load == "ok"
 - **Model impact**: Crafted input drives the parser into an undefined-behavior path; observed effects range from silent acceptance with no model, to OOB read producing junk attribute values, to process termination by signal.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
@@ -13445,6 +13503,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Notes**: First entry exercising the .stpz / .stpx archive wrapper as an attack surface. **See also**: Ad104. Provenance tier: cross-file-state; bytes alone cannot demonstrate this defect; the bomb lives in the archive header, not the embedded STEP body. The static `.stp` fixture encodes only the embedded body; the receiver-side amplification requires an actual archive wrapper. **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers must reject this fixture per the catalog's stated invariant.
 - **Byte assertion**: contains(b'ISO-10303-21')
 - **Byte assertion**: contains(b'END-ISO-10303-21')
+- **Tier-3 assertion**: load == "ok"
 - **Model impact**: Crafted input drives the parser into an undefined-behavior path; observed effects range from silent acceptance with no model, to OOB read producing junk attribute values, to process termination by signal.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
@@ -13458,6 +13517,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Notes**: Provenance tier: cross-file-state; bytes alone cannot demonstrate this defect; the symptom is a filesystem-race between path-resolution operations on the receiver side. The static fixture encodes only the path-naming precondition; the symlink-swap requires receiver-side filesystem manipulation. **OCC behavior**: emits a diagnostic but produces no shape (warn-and-proceed by oracle, but result is empty); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers must reject this fixture per the catalog's stated invariant.
 - **Byte assertion**: contains(b'REFERENCE;') or contains(b'EXTERNAL_FILE') or contains(b'/tmp/')
 - **Byte assertion**: contains(b'companion') or contains(b'/tmp/parts/') or contains(b'widget.stp')
+- **Tier-3 assertion**: load == "ok"
 - **Model impact**: Crafted input drives the parser into an undefined-behavior path; observed effects range from silent acceptance with no model, to OOB read producing junk attribute values, to process termination by signal.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
@@ -13473,6 +13533,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Expected kernel behavior**: Heal and accept: parser uses bulk-buffered I/O; tokenisation operates on memory-mapped or fully-buffered input. Must not hang on cold-cache reads.
 - **Notes**: **See also**: Pf032.
 - **Byte assertion**: count_entity_def(b'CARTESIAN_POINT') >= 29
+- **Tier-3 assertion**: load == "ok"
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
 - **Severity**: P2
 - **Model impact**: Parser/loader resource usage scales pathologically with the input size; load time grows quadratically or memory blows up, and on bounded systems the load is killed before completing.
@@ -13491,6 +13552,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Expected kernel behavior**: Heal and accept: XCAF tree build memoises visited nodes; coerce visit count to linear in distinct nodes, not in instance paths. Must not hang on deep instance trees.
 - **Notes**: **See also**: A067.
 - **Byte assertion**: contains(b'NEXT_ASSEMBLY_USAGE_OCCURRENCE')
+- **Tier-3 assertion**: load == "ok"
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
 - **Severity**: P2
 - **Model impact**: Parser/loader resource usage scales pathologically with the input size; load time grows quadratically or memory blows up, and on bounded systems the load is killed before completing.
@@ -13509,6 +13571,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Notes**: **See also**: M046, Pf032.
 - **Byte assertion**: count_entity_def(b'CARTESIAN_POINT') >= 1
 - **Byte assertion**: contains(b'MANIFOLD_SOLID_BREP')
+- **Tier-3 assertion**: load == "ok"
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
 - **Severity**: P2
 - **Model impact**: Parser/loader resource usage scales pathologically with the input size; load time grows quadratically or memory blows up, and on bounded systems the load is killed before completing.
@@ -13527,6 +13590,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Notes**: **See also**: Tfa051, Hea010.
 - **Byte assertion**: count_entity_def(b'CARTESIAN_POINT') >= 1
 - **Byte assertion**: contains(b'MANIFOLD_SOLID_BREP')
+- **Tier-3 assertion**: load == "ok"
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
 - **Severity**: P2
 - **Model impact**: Parser/loader resource usage scales pathologically with the input size; load time grows quadratically or memory blows up, and on bounded systems the load is killed before completing.
@@ -14533,6 +14597,7 @@ _Section summary: 28 entries._
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P2
 - **Byte assertion**: count_entity_def(b'CARTESIAN_POINT') >= 2
+- **Tier-3 assertion**: load == "ok"
 - **Model impact**: Parser/loader resource usage scales pathologically with the input size; load time grows quadratically or memory blows up, and on bounded systems the load is killed before completing.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
  `E_REFERENCE_CYCLE` listing the participants; for assembly relationships
@@ -14549,6 +14614,7 @@ _Section summary: 28 entries._
 - **Expected kernel behavior**: Reject with E_PATHOLOGICAL_CHAIN diagnostic, or heal and accept via iterative traversal with cycle detection. Must not infinite loop. Must not crash.
 - **Notes**: **See also**: Pf010. Validation observed: this is a deliberately scaled-down representative; the structural pattern is present but the production-scale resource exhaustion / catastrophic timing is not exercised at fixture size. To trigger the documented kernel-crash, multiply the entity-replication factor by ~10^N as noted in the reproducer recipe.
 - **Byte assertion**: length > 100
+- **Tier-3 assertion**: load == "ok"
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal, reject}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P2
 - **Model impact**: Parser/loader resource usage scales pathologically with the input size; load time grows quadratically or memory blows up, and on bounded systems the load is killed before completing.
@@ -14583,6 +14649,7 @@ _Section summary: 28 entries._
 - **Expected kernel behavior**: Heal and accept: streaming-friendly architecture with opt-in eager loading; coerce typical reads to bounded resident memory. Must not OOM.
 - **Notes**: **See also**: A001, Pf001, Ad027.
 - **Byte assertion**: count_entity_def(b'CARTESIAN_POINT') >= 10
+- **Tier-3 assertion**: load == "ok"
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
 - **Severity**: P2
 - **Model impact**: Parser/loader resource usage scales pathologically with the input size; load time grows quadratically or memory blows up, and on bounded systems the load is killed before completing.
@@ -14606,6 +14673,7 @@ _Section summary: 28 entries._
 - **Expected kernel behavior**: Heal and accept: detect the line-on-elementary-surface helix case and coerce export to a compact analytical form rather than a million-pole B-spline.
 - **Notes**: **See also**: P008, P009.
 - **Byte assertion**: count_entity_def(b'CARTESIAN_POINT') >= 32
+- **Tier-3 assertion**: load == "ok"
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
 - **Severity**: P2
 - **Model impact**: Parser/loader resource usage scales pathologically with the input size; load time grows quadratically or memory blows up, and on bounded systems the load is killed before completing.
@@ -14632,6 +14700,7 @@ _Section summary: 28 entries._
 - **Severity**: P2
 - **Byte assertion**: count_entity_def(b'CARTESIAN_POINT') >= 8
 - **Byte assertion**: contains(b'CLOSED_SHELL')
+- **Tier-3 assertion**: load == "ok"
 - **Model impact**: Parser/loader resource usage scales pathologically with the input size; load time grows quadratically or memory blows up, and on bounded systems the load is killed before completing.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
  N edges with gap > tol" diagnostic; offer adaptive-tolerance
@@ -14654,6 +14723,7 @@ _Section summary: 28 entries._
 - **Expected kernel behavior**: Reject with E_TRANSFER_TIMEOUT diagnostic: bound transfer time, detect pathological cyclic SHAPE_REPRESENTATION_RELATIONSHIP loops, and bail with a diagnostic. Must not hang. Must not infinite loop.
 - **Notes**: distinct from #417 (huge-shell ShapeFix slowness). **See also**: A026.
 - **Byte assertion**: count_entity_def(b'CARTESIAN_POINT') >= 1
+- **Tier-3 assertion**: load == "ok"
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P2
 - **Model impact**: Parser/loader resource usage scales pathologically with the input size; load time grows quadratically or memory blows up, and on bounded systems the load is killed before completing.
@@ -14674,6 +14744,7 @@ _Section summary: 28 entries._
 - **Notes**: Cross-oracle: pure-Python Part-21 validator rejects (reject(E_REAL_NO_DOT)); OCCT silently accepts (load is `empty`). OCC auto-heals a spec-level violation.
 - **Byte assertion**: count_entity_def(b'CARTESIAN_POINT') >= 8
 - **Byte assertion**: contains(b'MANIFOLD_SOLID_BREP')
+- **Tier-3 assertion**: load == "ok"
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
 - **Severity**: P2
 - **Model impact**: Parser/loader resource usage scales pathologically with the input size; load time grows quadratically or memory blows up, and on bounded systems the load is killed before completing.
@@ -14690,6 +14761,7 @@ _Section summary: 28 entries._
 - **Reproducer recipe**: read 142 MB STEP, destroy reader, observe RSS.
 - **Expected kernel behavior**: Heal and accept: allocator-tuned working-set release after STEP assembly read; coerce resident memory back to baseline. Must not OOM across repeated reads.
 - **Byte assertion**: count_entity_def(b'CARTESIAN_POINT') >= 5
+- **Tier-3 assertion**: load == "ok"
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
 - **Severity**: P2
 - **Model impact**: Parser/loader resource usage scales pathologically with the input size; load time grows quadratically or memory blows up, and on bounded systems the load is killed before completing.
@@ -14708,6 +14780,7 @@ _Section summary: 28 entries._
  tables.
 - **Expected kernel behavior**: Heal and accept: free typed-value tables on library teardown; coerce to bounded resident memory.
 - **Byte assertion**: count_entity_def(b'CARTESIAN_POINT') >= 1
+- **Tier-3 assertion**: load == "ok"
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
 - **Severity**: P2
 - **Model impact**: Parser/loader resource usage scales pathologically with the input size; load time grows quadratically or memory blows up, and on bounded systems the load is killed before completing.
@@ -14754,6 +14827,7 @@ _Section summary: 28 entries._
 - **Notes**: **See also**: N041. Validation observed: this is a deliberately scaled-down representative; the structural pattern is present but the production-scale resource exhaustion / catastrophic timing is not exercised at fixture size. To trigger the documented kernel-crash, multiply the entity-replication factor by ~10^N as noted in the reproducer recipe.
 - **Notes**: Cross-oracle: pure-Python Part-21 validator rejects (reject(E_REAL_NO_DOT)); OCCT silently accepts (load is `empty`). OCC auto-heals a spec-level violation.
 - **Byte assertion**: count_entity_def(b'CARTESIAN_POINT') >= 3
+- **Tier-3 assertion**: load == "ok"
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
 - **Severity**: P2
 - **Model impact**: Parser/loader resource usage scales pathologically with the input size; load time grows quadratically or memory blows up, and on bounded systems the load is killed before completing.
@@ -14802,6 +14876,7 @@ _Section summary: 28 entries._
 - **Expected kernel behavior**: Reject with E_ITERATION_LIMIT diagnostic: bounded iteration count with an explicit ceiling; bail with a structured error on divergence. Must not infinite loop.
 - **Notes**: **See also**: N041.
 - **Byte assertion**: count_entity_def(b'CARTESIAN_POINT') >= 6
+- **Tier-3 assertion**: load == "ok"
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P2
 - **Model impact**: Parser/loader resource usage scales pathologically with the input size; load time grows quadratically or memory blows up, and on bounded systems the load is killed before completing.
@@ -14822,6 +14897,7 @@ _Section summary: 28 entries._
 - **Expected kernel behavior**: Heal and accept: bounded iteration with index range guard; coerce out-of-range indices to a safe ceiling, or reject with E_INDEX_OUT_OF_RANGE. Must not crash. Must not infinite loop.
 - **Notes**: Validation observed: this is a deliberately scaled-down representative; the structural pattern is present but the production-scale resource exhaustion / catastrophic timing is not exercised at fixture size. To trigger the documented kernel-crash, multiply the entity-replication factor by ~10^N as noted in the reproducer recipe.
 - **Byte assertion**: count_entity_def(b'CARTESIAN_POINT') >= 5
+- **Tier-3 assertion**: load == "ok"
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal, reject}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P2
 - **Model impact**: Parser/loader resource usage scales pathologically with the input size; load time grows quadratically or memory blows up, and on bounded systems the load is killed before completing.
@@ -14837,6 +14913,7 @@ _Section summary: 28 entries._
 - **Expected kernel behavior**: Heal and accept: skip internal sub-shapes, iterating only the relevant boundary topology.
 - **Notes**: Validation observed: this is a deliberately scaled-down representative; the structural pattern is present but the production-scale resource exhaustion / catastrophic timing is not exercised at fixture size. To trigger the documented kernel-crash, multiply the entity-replication factor by ~10^N as noted in the reproducer recipe. **See also**: Twi041.
 - **Byte assertion**: count_entity_def(b'CARTESIAN_POINT') >= 5
+- **Tier-3 assertion**: load == "ok"
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
 - **Severity**: P2
 - **Model impact**: Parser/loader resource usage scales pathologically with the input size; load time grows quadratically or memory blows up, and on bounded systems the load is killed before completing.
@@ -14858,6 +14935,7 @@ _Section summary: 28 entries._
 - **Notes**: **See also**: Pf015, Pmi062.
 - **Byte assertion**: count_entity_def(b'CARTESIAN_POINT') >= 4
 - **Byte assertion**: contains(b'MANIFOLD_SOLID_BREP')
+- **Tier-3 assertion**: load == "ok"
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
 - **Severity**: P2
 - **Model impact**: Parser/loader resource usage scales pathologically with the input size; load time grows quadratically or memory blows up, and on bounded systems the load is killed before completing.
@@ -14877,6 +14955,7 @@ _Section summary: 28 entries._
 - **Byte assertion**: count_entity_def(b'CARTESIAN_POINT') >= 1
 - **Byte assertion**: contains(b'NEXT_ASSEMBLY_USAGE_OCCURRENCE')
 - **Byte assertion**: contains(b'MANIFOLD_SOLID_BREP')
+- **Tier-3 assertion**: load == "ok"
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
 - **Severity**: P2
 - **Model impact**: Parser/loader resource usage scales pathologically with the input size; load time grows quadratically or memory blows up, and on bounded systems the load is killed before completing.
@@ -14896,6 +14975,7 @@ _Section summary: 28 entries._
 - **Notes**: Validation observed: this is a deliberately scaled-down representative; the structural pattern is present but the production-scale resource exhaustion / catastrophic timing is not exercised at fixture size. To trigger the documented kernel-crash, multiply the entity-replication factor by ~10^N as noted in the reproducer recipe.
 - **Byte assertion**: count_entity_def(b'CARTESIAN_POINT') >= 1
 - **Byte assertion**: contains(b'NEXT_ASSEMBLY_USAGE_OCCURRENCE')
+- **Tier-3 assertion**: load == "ok"
 - **Model impact**: Parser/loader resource usage scales pathologically with the input size; load time grows quadratically or memory blows up, and on bounded systems the load is killed before completing.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
  resource caps that surface as exceptions, not signals.
@@ -14912,6 +14992,7 @@ _Section summary: 28 entries._
 - **Expected kernel behavior**: Heal and accept: WHERE-rule evaluator memoizes results across repeated invocations; coerce evaluation to sub-quadratic. Must not hang on rule-heavy schemas.
 - **Notes**: **See also**: Ad032, Pf010.
 - **Byte assertion**: count_entity_def(b'CARTESIAN_POINT') >= 3
+- **Tier-3 assertion**: load == "ok"
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
 - **Severity**: P2
 - **Model impact**: Parser/loader resource usage scales pathologically with the input size; load time grows quadratically or memory blows up, and on bounded systems the load is killed before completing.
@@ -14973,6 +15054,7 @@ _Section summary: 41 entries._
 - **Notes**: M; trivial DoS even before semantic phase. **See also**: Pf012.
 - **Byte assertion**: max_paren_depth >= 50
 - **Byte assertion**: count(b'((((') >= 5
+- **Tier-3 assertion**: load == "ok"
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P2
 - **Model impact**: Crafted input drives the parser into an undefined-behavior path; observed effects range from silent acceptance with no model, to OOB read producing junk attribute values, to process termination by signal.
@@ -14987,6 +15069,7 @@ _Section summary: 41 entries._
 - **Notes**: C; CWE-191 sign-confusion repeatedly cited in Spatial/ODA/Autodesk advisories. **See also**: Ad015, Ad077. **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers must reject this fixture per the catalog's stated invariant.
 - **Byte assertion**: matches(rb'BSPLINE_(?:CURVE|SURFACE)_WITH_KNOTS\([^;]*,\s*-?(?:0|1)') or matches(rb'BSPLINE_CURVE_WITH_KNOTS\([^;]*,\s*-1')
 - **Byte assertion**: matches(rb'BSPLINE_(?:CURVE|SURFACE)_WITH_KNOTS')
+- **Tier-3 assertion**: load == "ok"
 - **Model impact**: Crafted input drives the parser into an undefined-behavior path; observed effects range from silent acceptance with no model, to OOB read producing junk attribute values, to process termination by signal.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
@@ -14999,6 +15082,7 @@ _Section summary: 41 entries._
 - **Notes**: H DoS; XML billion-laughs analogue. **See also**: Ad026, Ad052, Ad053, Ad085.
 - **Byte assertion**: matches(rb'(?s)#\d+=\([A-Z_]+\([^)]*\)[^;]+#\d+[^;]+\);.*REPRESENTATION_RELATIONSHIP')
 - **Byte assertion**: matches(rb'#\d+=\(')
+- **Tier-3 assertion**: load == "ok"
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P2
 - **Model impact**: Crafted input drives the parser into an undefined-behavior path; observed effects range from silent acceptance with no model, to OOB read producing junk attribute values, to process termination by signal.
@@ -15013,6 +15097,7 @@ _Section summary: 41 entries._
 - **Notes**: M; null-deref → SIGSEGV. **See also**: Ad051, Ad084. Validation observed: silent-empty rather than the cited crash. The structural attack pattern (e.g., billion-laughs / cyclic-reference / very-large-string) is demonstrated; production-scale exploitation requires inflating the size factor as described. Kernel-mishandling-by-silent-acceptance is itself a defect signal at fixture scale.
 - **Notes**: Cross-oracle: pure-Python Part-21 validator rejects (reject(E_UNRESOLVED_REFS)); OCCT silently accepts (load is `empty`). OCC auto-heals a spec-level violation.
 - **Byte assertion**: matches(rb'ADVANCED_FACE\([^;]*#42[^;]*#43') or contains(b'#999999999')
+- **Tier-3 assertion**: load == "ok"
 - **Model impact**: Parser dereferences invalid memory while processing the malformed token; the load process is killed by a signal and no shape is delivered.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
@@ -15025,6 +15110,7 @@ _Section summary: 41 entries._
 - **Notes**: M; HOOPS Exchange explicitly flags this as fuzz-discoverable, not from real CAD output. **See also**: Ls008. **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers must reject this fixture per the catalog's stated invariant.
 - **Byte assertion**: contains(b'1.0E+999999')
 - **Byte assertion**: count(b'1.0E+999999') + count(b'1.0E-999999') >= 1
+- **Tier-3 assertion**: load == "ok"
 - **Model impact**: Crafted input drives the parser into an undefined-behavior path; observed effects range from silent acceptance with no model, to OOB read producing junk attribute values, to process termination by signal.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
@@ -15049,6 +15135,7 @@ _Section summary: 41 entries._
 - **Notes**: H; hard-to-reach UAF. **See also**: Ad004.
 - **Byte assertion**: matches(rb'(?s)#(\d+)=\([^;]*#\1[^;]*\);')
 - **Byte assertion**: matches(rb'#\d+=\(')
+- **Tier-3 assertion**: load == "ok"
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P2
 - **Model impact**: Crafted input drives the parser into an undefined-behavior path; observed effects range from silent acceptance with no model, to OOB read producing junk attribute values, to process termination by signal.
@@ -15063,6 +15150,7 @@ _Section summary: 41 entries._
 - **Notes**: M DoS. **See also**: Ad032, Ad057, Pf013. Validation observed: silent-empty rather than the cited crash. The structural attack pattern (e.g., billion-laughs / cyclic-reference / very-large-string) is demonstrated; production-scale exploitation requires inflating the size factor as described. Kernel-mishandling-by-silent-acceptance is itself a defect signal at fixture scale.
 - **Byte assertion**: count_entity_def(b'CARTESIAN_POINT') >= 5 or count(b'#') >= 100
 - **Byte assertion**: count_entity_def(b'CARTESIAN_POINT') >= 5 or count(b'#') >= 30
+- **Tier-3 assertion**: load == "ok"
 - **Model impact**: Crafted input drives the parser into an undefined-behavior path; observed effects range from silent acceptance with no model, to OOB read producing junk attribute values, to process termination by signal.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
@@ -15075,6 +15163,7 @@ _Section summary: 41 entries._
 - **Notes**: H; primary RCE class for "STEP/STP file" CVEs in 2024–2026 advisories. **See also**: Ad042, Ad078. **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers must reject this fixture per the catalog's stated invariant.
 - **Byte assertion**: matches(rb'(?s)#10=CARTESIAN_POINT.*=DIRECTION\([^;]*#10') or matches(rb'(?s)CARTESIAN_POINT.*LINE\([^;]*,#10\)')
 - **Byte assertion**: contains(b'CARTESIAN_POINT') and contains(b'DIRECTION')
+- **Tier-3 assertion**: load == "ok"
 - **Model impact**: Crafted input drives the parser into an undefined-behavior path; observed effects range from silent acceptance with no model, to OOB read producing junk attribute values, to process termination by signal.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
@@ -15087,6 +15176,7 @@ _Section summary: 41 entries._
 - **Notes**: H. **See also**: Ad084. Validation observed: silent-empty rather than the cited crash. The structural attack pattern (e.g., billion-laughs / cyclic-reference / very-large-string) is demonstrated; production-scale exploitation requires inflating the size factor as described. Kernel-mishandling-by-silent-acceptance is itself a defect signal at fixture scale.
 - **Byte assertion**: matches(rb"FILE_DESCRIPTION\(\([^;]*\)\s*\)\s*;")
 - **Byte assertion**: matches(rb'FILE_DESCRIPTION\(\([^)]+\)\s*\)\s*;')
+- **Tier-3 assertion**: load == "ok"
 - **OCC behavior**: silently accepts with diagnostic but loads empty result; outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P2
 - **Model impact**: Crafted input drives the parser into an undefined-behavior path; observed effects range from silent acceptance with no model, to OOB read producing junk attribute values, to process termination by signal.
@@ -15101,6 +15191,7 @@ _Section summary: 41 entries._
 - **Notes**: M DoS. **See also**: Ad027, Ad054, Ad055, Pf030. Validation observed: silent-empty rather than the cited crash. The structural attack pattern (e.g., billion-laughs / cyclic-reference / very-large-string) is demonstrated; production-scale exploitation requires inflating the size factor as described. Kernel-mishandling-by-silent-acceptance is itself a defect signal at fixture scale.
 - **Byte assertion**: count_entity_def(b'EDGE_CURVE') >= 5
 - **Byte assertion**: count_entity_def(b'EDGE_CURVE') >= 10
+- **Tier-3 assertion**: load == "ok"
 - **Model impact**: Crafted input drives the parser into an undefined-behavior path; observed effects range from silent acceptance with no model, to OOB read producing junk attribute values, to process termination by signal.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
@@ -15113,6 +15204,7 @@ _Section summary: 41 entries._
 - **Notes**: C.
 - **Byte assertion**: matches(rb"(?s)PRODUCT\(\s*'A{50,}")
 - **Byte assertion**: max_string_literal_length >= 100
+- **Tier-3 assertion**: load == "ok"
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P2
 - **Model impact**: Crafted input drives the parser into an undefined-behavior path; observed effects range from silent acceptance with no model, to OOB read producing junk attribute values, to process termination by signal.
@@ -15127,6 +15219,7 @@ _Section summary: 41 entries._
 - **Notes**: Validation observed: silent-empty rather than the cited crash. The structural attack pattern (e.g., billion-laughs / cyclic-reference / very-large-string) is demonstrated; production-scale exploitation requires inflating the size factor as described. Kernel-mishandling-by-silent-acceptance is itself a defect signal at fixture scale.
 - **Byte assertion**: matches(rb'.{75,}\n')
 - **Byte assertion**: matches(rb'.{72,}')
+- **Tier-3 assertion**: load == "ok"
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P2
 - **Model impact**: Crafted input drives the parser into an undefined-behavior path; observed effects range from silent acceptance with no model, to OOB read producing junk attribute values, to process termination by signal.
@@ -15141,6 +15234,7 @@ _Section summary: 41 entries._
 - **Notes**: **See also**: Lh002, Lh022. **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers must reject this fixture per the catalog's stated invariant.
 - **Byte assertion**: count(b'ISO-10303-21;') >= 2 or count(b'END-ISO-10303-21;') >= 2
 - **Byte assertion**: count(b'HEADER;') >= 2 or count(b'ISO-10303-21;') >= 2
+- **Tier-3 assertion**: load == "ok"
 - **Model impact**: Crafted input drives the parser into an undefined-behavior path; observed effects range from silent acceptance with no model, to OOB read producing junk attribute values, to process termination by signal.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
@@ -15153,6 +15247,7 @@ _Section summary: 41 entries._
 - **Notes**: Documented as 1088/1267 SDRs broken in a 430 MB CATIA V6 file. **See also**: Ad030. Validation observed: silent-empty rather than the cited crash. The structural attack pattern (e.g., billion-laughs / cyclic-reference / very-large-string) is demonstrated; production-scale exploitation requires inflating the size factor as described. Kernel-mishandling-by-silent-acceptance is itself a defect signal at fixture scale.
 - **Byte assertion**: contains(b'SHAPE_DEFINITION_REPRESENTATION') and contains(b'SHAPE_ASPECT')
 - **Byte assertion**: contains(b'SHAPE_DEFINITION_REPRESENTATION') and contains(b'SHAPE_ASPECT(')
+- **Tier-3 assertion**: load == "ok"
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P2
 - **Model impact**: Crafted input drives the parser into an undefined-behavior path; observed effects range from silent acceptance with no model, to OOB read producing junk attribute values, to process termination by signal.
@@ -15168,6 +15263,7 @@ _Section summary: 41 entries._
 - **Notes**: Cross-oracle: pure-Python Part-21 validator rejects (reject(E_UNRESOLVED_REFS)); OCCT silently accepts (load is `empty`). OCC auto-heals a spec-level violation.
 - **Byte assertion**: contains(b'#999')
 - **Byte assertion**: contains(b'STYLED_ITEM') and contains(b'#999')
+- **Tier-3 assertion**: load == "ok"
 - **OCC behavior**: silently accepts with diagnostic but loads empty result; outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P2
 - **Model impact**: Crafted input drives the parser into an undefined-behavior path; observed effects range from silent acceptance with no model, to OOB read producing junk attribute values, to process termination by signal.
@@ -15182,6 +15278,7 @@ _Section summary: 41 entries._
 - **Notes**: M; CWE-457. **See also**: Ls035. Validation observed: silent-empty rather than the cited crash. The structural attack pattern (e.g., billion-laughs / cyclic-reference / very-large-string) is demonstrated; production-scale exploitation requires inflating the size factor as described. Kernel-mishandling-by-silent-acceptance is itself a defect signal at fixture scale.
 - **Byte assertion**: matches(rb'EDGE_CURVE\([^;]*,\s*\.U\.\s*\)')
 - **Byte assertion**: contains(b'.U.')
+- **Tier-3 assertion**: load == "ok"
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must emit a diagnostic this fixture.
 - **Severity**: P2
 - **Model impact**: Crafted input drives the parser into an undefined-behavior path; observed effects range from silent acceptance with no model, to OOB read producing junk attribute values, to process termination by signal.
@@ -15197,6 +15294,7 @@ _Section summary: 41 entries._
 - **Byte assertion**: contains(b'EDGE_CURVE')
 - **Byte assertion**: contains(b'1e-7') or contains(b'1.0E-7') or contains(b'1.0e-7')
 - **Byte assertion**: contains(b'EDGE_CURVE') and contains(b'LINE')
+- **Tier-3 assertion**: load == "ok"
 - **Model impact**: Crafted input drives the parser into an undefined-behavior path; observed effects range from silent acceptance with no model, to OOB read producing junk attribute values, to process termination by signal.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
@@ -15209,6 +15307,7 @@ _Section summary: 41 entries._
 - **Notes**: **See also**: Ad043. Validation observed: silent-empty rather than the cited crash. The structural attack pattern (e.g., billion-laughs / cyclic-reference / very-large-string) is demonstrated; production-scale exploitation requires inflating the size factor as described. Kernel-mishandling-by-silent-acceptance is itself a defect signal at fixture scale. Provenance tier: runtime-only; bytes alone cannot demonstrate the writer-side crash; the catalogued defect is a writer null-deref, but the fixture is a reader-input file. The crash manifests only when a kernel attempts to re-write a previously-loaded shape that retains the missing-handle precondition in multi-pass kernel state. A behavioral test against the writer is the appropriate venue. **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({warn-and-proceed}). Kernel-bug witnessed: catalog wants a warning to surface; OCC accepts without any diagnostic.
 - **Byte assertion**: contains(b'APPLIED_GROUP_ASSIGNMENT')
 - **Byte assertion**: contains(b'END-ISO-10303-21')
+- **Tier-3 assertion**: load == "ok"
 - **Model impact**: Crafted input drives the parser into an undefined-behavior path; observed effects range from silent acceptance with no model, to OOB read producing junk attribute values, to process termination by signal.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
@@ -15221,6 +15320,7 @@ _Section summary: 41 entries._
 - **Notes**: **See also**: Ad043. **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: catalog asks for healing; OCC neither heals nor rejects; the input is dropped on the floor without diagnostic.
 - **Byte assertion**: matches(rb'ADVANCED_FACE\([^;]*,\.F\.\)')
 - **Byte assertion**: count(b'.F.') >= 1
+- **Tier-3 assertion**: load == "ok"
 - **Model impact**: Crafted input drives the parser into an undefined-behavior path; observed effects range from silent acceptance with no model, to OOB read producing junk attribute values, to process termination by signal.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
@@ -15233,6 +15333,7 @@ _Section summary: 41 entries._
 - **Notes**: **See also**: Ls001.
 - **Byte assertion**: contains(b'1_000.0') or contains(b'1.5e+02') or contains(b'1.0D5') or matches(rb'\(\s*1\s*,\s*0\s*,')
 - **Byte assertion**: matches(rb'1\.5e\+02|1\.0D5|1_000\.0|\(1,0,0\)')
+- **Tier-3 assertion**: load == "ok"
 - **OCC behavior**: silently accepts with diagnostic but loads empty result; outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P2
 - **Model impact**: Crafted input drives the parser into an undefined-behavior path; observed effects range from silent acceptance with no model, to OOB read producing junk attribute values, to process termination by signal.
@@ -15247,6 +15348,7 @@ _Section summary: 41 entries._
 - **Notes**: **See also**: Ad043. **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers must reject this fixture per the catalog's stated invariant.
 - **Byte assertion**: matches(rb"EDGE_LOOP\('[^']*',\(\)\)")
 - **Byte assertion**: contains(b'EDGE_LOOP')
+- **Tier-3 assertion**: load == "ok"
 - **Model impact**: Crafted input drives the parser into an undefined-behavior path; observed effects range from silent acceptance with no model, to OOB read producing junk attribute values, to process termination by signal.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
@@ -15260,6 +15362,7 @@ _Section summary: 41 entries._
 - **Notes**: Cross-oracle: pure-Python Part-21 validator rejects (reject(E_UNRESOLVED_REFS)); OCCT silently accepts (load is `empty`). OCC auto-heals a spec-level violation.
 - **Byte assertion**: contains(b'#-1') or matches(rb'#-\d+')
 - **Byte assertion**: matches(rb'#-\d+')
+- **Tier-3 assertion**: load == "ok"
 - **Model impact**: Parser dereferences invalid memory while processing the malformed token; the load process is killed by a signal and no shape is delivered.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
@@ -15272,6 +15375,7 @@ _Section summary: 41 entries._
 - **Notes**: **See also**: Ad004, A012, M060. Validation observed: silent-empty rather than the cited crash. The structural attack pattern (e.g., billion-laughs / cyclic-reference / very-large-string) is demonstrated; production-scale exploitation requires inflating the size factor as described. Kernel-mishandling-by-silent-acceptance is itself a defect signal at fixture scale.
 - **Byte assertion**: contains(b'APPLIED_EXTERNAL_IDENTIFICATION_ASSIGNMENT')
 - **Byte assertion**: contains(b'EXTERNAL') or contains(b'IDENTIFICATION_ASSIGNMENT')
+- **Tier-3 assertion**: load == "ok"
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P2
 - **Model impact**: Crafted input drives the parser into an undefined-behavior path; observed effects range from silent acceptance with no model, to OOB read producing junk attribute values, to process termination by signal.
@@ -15286,6 +15390,7 @@ _Section summary: 41 entries._
 - **Notes**: **See also**: Ad004.
 - **Byte assertion**: count_entity_def(b'SHAPE_REPRESENTATION_RELATIONSHIP') >= 3
 - **Byte assertion**: matches(rb'(?s)#100=SHAPE_REPRESENTATION_RELATIONSHIP[^;]+#101[^;]+;.*#101=SHAPE_REPRESENTATION_RELATIONSHIP[^;]+#102')
+- **Tier-3 assertion**: load == "ok"
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal, reject}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P2
 - **Model impact**: Crafted input drives the parser into an undefined-behavior path; observed effects range from silent acceptance with no model, to OOB read producing junk attribute values, to process termination by signal.
@@ -15300,6 +15405,7 @@ _Section summary: 41 entries._
 - **Notes**: **See also**: Ad032.
 - **Byte assertion**: count_entity_def(b'NEXT_ASSEMBLY_USAGE_OCCURRENCE') >= 2 and matches(rb'(?s)NEXT_ASSEMBLY_USAGE_OCCURRENCE[^;]+#12,#22[^;]+;.*NEXT_ASSEMBLY_USAGE_OCCURRENCE[^;]+#22,#12')
 - **Byte assertion**: count_entity_def(b'NEXT_ASSEMBLY_USAGE_OCCURRENCE') >= 2
+- **Tier-3 assertion**: load == "ok"
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P2
 - **Model impact**: Crafted input drives the parser into an undefined-behavior path; observed effects range from silent acceptance with no model, to OOB read producing junk attribute values, to process termination by signal.
@@ -15314,6 +15420,7 @@ _Section summary: 41 entries._
 - **Notes**: **See also**: Ad032, Pf008, Pf009.
 - **Byte assertion**: count_entity_def(b'ADVANCED_FACE') >= 10 or count(b'#') >= 100
 - **Byte assertion**: count(b'#1') >= 5
+- **Tier-3 assertion**: load == "ok"
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P2
 - **Model impact**: Crafted input drives the parser into an undefined-behavior path; observed effects range from silent acceptance with no model, to OOB read producing junk attribute values, to process termination by signal.
@@ -15327,6 +15434,7 @@ _Section summary: 41 entries._
 - **Expected kernel behavior**: Reject and return a failure status or an empty result; do not let an unhandled exception escape across the API boundary. Must not crash.
 - **Byte assertion**: contains(b'CARTESIAN_TRANSFORMATION_OPERATOR_3D') and contains(b'1.0E+18')
 - **Byte assertion**: contains(b'1.0E+18')
+- **Tier-3 assertion**: load == "ok"
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P2
 - **Model impact**: Crafted input drives the parser into an undefined-behavior path; observed effects range from silent acceptance with no model, to OOB read producing junk attribute values, to process termination by signal.
@@ -15341,6 +15449,7 @@ _Section summary: 41 entries._
 - **Notes**: **See also**: Ad027. **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: catalog asks for healing; OCC neither heals nor rejects; the input is dropped on the floor without diagnostic.
 - **Byte assertion**: count_entity_def(b'EDGE_CURVE') >= 5
 - **Byte assertion**: count(b'.T.') + count(b'.F.') >= 5
+- **Tier-3 assertion**: load == "ok"
 - **Model impact**: Crafted input drives the parser into an undefined-behavior path; observed effects range from silent acceptance with no model, to OOB read producing junk attribute values, to process termination by signal.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
@@ -15353,6 +15462,7 @@ _Section summary: 41 entries._
 - **Notes**: **See also**: Gn002. **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({warn-and-proceed}). Kernel-bug witnessed: catalog wants a warning to surface; OCC accepts without any diagnostic.
 - **Byte assertion**: contains(b'RATIONAL_B_SPLINE_CURVE') or matches(rb'RATIONAL_BSPLINE_CURVE\(\([^)]+\)\)')
 - **Byte assertion**: contains(b'B_SPLINE_CURVE_WITH_KNOTS') or contains(b'BSPLINE') or contains(b'RATIONAL_B_SPLINE_CURVE')
+- **Tier-3 assertion**: load == "ok"
 - **Model impact**: Crafted input drives the parser into an undefined-behavior path; observed effects range from silent acceptance with no model, to OOB read producing junk attribute values, to process termination by signal.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
@@ -15395,6 +15505,7 @@ _Section summary: 41 entries._
 - **Notes**: **See also**: Ad030.
 - **Byte assertion**: count_entity_def(b'NEXT_ASSEMBLY_USAGE_OCCURRENCE') >= 1 and contains(b'PRODUCT_DEFINITION_SHAPE')
 - **Byte assertion**: contains(b'NEXT_ASSEMBLY_USAGE_OCCURRENCE')
+- **Tier-3 assertion**: load == "ok"
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject, warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must reject or emit a diagnostic this fixture.
 - **Severity**: P2
 - **Model impact**: Crafted input drives the parser into an undefined-behavior path; observed effects range from silent acceptance with no model, to OOB read producing junk attribute values, to process termination by signal.
@@ -15409,6 +15520,7 @@ _Section summary: 41 entries._
 - **Notes**: **See also**: Lh024, Ls024. **OCC behavior**: emits a diagnostic but produces no shape (warn-and-proceed by oracle, but result is empty); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers must reject this fixture per the catalog's stated invariant.
 - **Byte assertion**: count(b'DATA;') >= 2 or count(b'ENDSEC;DATA;') >= 1
 - **Byte assertion**: count(b'ENDSEC;') >= 2 or count(b'DATA;') >= 2
+- **Tier-3 assertion**: load == "ok"
 - **Model impact**: Crafted input drives the parser into an undefined-behavior path; observed effects range from silent acceptance with no model, to OOB read producing junk attribute values, to process termination by signal.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
@@ -15421,6 +15533,7 @@ _Section summary: 41 entries._
 - **Notes**: **See also**: Ad043. Validation observed: silent-empty rather than the cited crash. The structural attack pattern (e.g., billion-laughs / cyclic-reference / very-large-string) is demonstrated; production-scale exploitation requires inflating the size factor as described. Kernel-mishandling-by-silent-acceptance is itself a defect signal at fixture scale.
 - **Byte assertion**: matches(rb"SHAPE_REPRESENTATION\([^;]*,\(\),")
 - **Byte assertion**: matches(rb',\(\),')
+- **Tier-3 assertion**: load == "ok"
 - **Model impact**: Crafted input drives the parser into an undefined-behavior path; observed effects range from silent acceptance with no model, to OOB read producing junk attribute values, to process termination by signal.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
@@ -15433,6 +15546,7 @@ _Section summary: 41 entries._
 - **Notes**: **See also**: Ad043. **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers must reject this fixture per the catalog's stated invariant.
 - **Byte assertion**: matches(rb'(?s)#21=FACE_OUTER_BOUND[^;]+#22[^;]+;.*#22=EDGE_LOOP[^;]+#200') or matches(rb'(?s)EDGE_LOOP[^;]*#200')
 - **Byte assertion**: contains(b'EDGE_LOOP') and contains(b'ORIENTED_EDGE') and contains(b'#200')
+- **Tier-3 assertion**: load == "ok"
 - **Model impact**: Crafted input drives the parser into an undefined-behavior path; observed effects range from silent acceptance with no model, to OOB read producing junk attribute values, to process termination by signal.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
@@ -15445,6 +15559,7 @@ _Section summary: 41 entries._
 - **Notes**: **See also**: Ad043. Validation observed: silent-empty rather than the cited crash. The structural attack pattern (e.g., billion-laughs / cyclic-reference / very-large-string) is demonstrated; production-scale exploitation requires inflating the size factor as described. Kernel-mishandling-by-silent-acceptance is itself a defect signal at fixture scale.
 - **Byte assertion**: count_entity_def(b'NEXT_ASSEMBLY_USAGE_OCCURRENCE') >= 3
 - **Byte assertion**: count(b"'R") >= 3 or count_entity_def(b'NEXT_ASSEMBLY_USAGE_OCCURRENCE') >= 3
+- **Tier-3 assertion**: load == "ok"
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P2
 - **Model impact**: Crafted input drives the parser into an undefined-behavior path; observed effects range from silent acceptance with no model, to OOB read producing junk attribute values, to process termination by signal.
@@ -15475,6 +15590,7 @@ _Section summary: 41 entries._
 - **Notes**: **See also**: Ad004, Gs035, Pf010. **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers must reject this fixture per the catalog's stated invariant.
 - **Byte assertion**: contains(b'COMPOSITE_CURVE') and contains(b'COMPOSITE_CURVE_SEGMENT')
 - **Byte assertion**: count_entity_def(b'COMPOSITE_CURVE_SEGMENT') >= 1
+- **Tier-3 assertion**: load == "ok"
 - **Model impact**: Crafted input drives the parser into an undefined-behavior path; observed effects range from silent acceptance with no model, to OOB read producing junk attribute values, to process termination by signal.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
@@ -15487,6 +15603,7 @@ _Section summary: 41 entries._
 - **Notes**: **See also**: Ad043. Provenance tier: runtime-only; bytes alone cannot demonstrate this defect; the catalogued symptom is a translator-time access-violation being silently demoted to "transfer failed" status. The static fixture encodes only the trigger (type-confusion / overflow attributes); whether the kernel produces an access violation, swallows it, and what status it reports are all multi-pass runtime behaviors. A behavioral test capturing the kernel's diagnostic stream is the appropriate venue.
 - **Byte assertion**: contains(b'ISO-10303-21')
 - **Byte assertion**: contains(b'END-ISO-10303-21')
+- **Tier-3 assertion**: load == "ok"
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P2
 - **Model impact**: Crafted input drives the parser into an undefined-behavior path; observed effects range from silent acceptance with no model, to OOB read producing junk attribute values, to process termination by signal.
@@ -16283,6 +16400,7 @@ _Section summary: 41 entries._
 - **Byte assertion**: contains(b'\\X2\\')
 - **Byte assertion**: contains(b'EDGE_CURVE')
 - **Byte assertion**: contains(b'ADVANCED_FACE')
+- **Tier-3 assertion**: load == "ok"
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: Cross-subsystem interaction surfaces an inconsistency between two kernel passes; one pass sees the entity as valid and another as invalid, leaving the loaded model in an internally inconsistent state.
@@ -16348,6 +16466,7 @@ _Section summary: 41 entries._
 - **Byte assertion**: contains(b'FILE_SCHEMA')
 - **Byte assertion**: contains(b'EDGE_CURVE')
 - **Byte assertion**: contains(b'ADVANCED_FACE')
+- **Tier-3 assertion**: load == "ok"
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
 - **Severity**: P1
 - **Model impact**: Cross-subsystem interaction surfaces an inconsistency between two kernel passes; one pass sees the entity as valid and another as invalid, leaving the loaded model in an internally inconsistent state.
@@ -16379,6 +16498,7 @@ _Section summary: 41 entries._
 - **Byte assertion**: contains(b'FILE_SCHEMA')
 - **Byte assertion**: contains(b'EDGE_CURVE')
 - **Byte assertion**: contains(b'ADVANCED_FACE')
+- **Tier-3 assertion**: load == "ok"
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal, warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must heal or emit a diagnostic this fixture.
 - **Severity**: P1
 - **Model impact**: Cross-subsystem interaction surfaces an inconsistency between two kernel passes; one pass sees the entity as valid and another as invalid, leaving the loaded model in an internally inconsistent state.
@@ -16407,6 +16527,7 @@ _Section summary: 41 entries._
  `(2,1,0)`, `(3,0,0)`.
 - **Expected kernel behavior**: Heal and accept, or reject with E_NURBS_INVARIANT diagnostic: each NURBS invariant is inspected independently; the cusp-at-tolerance-boundary case is decided by the kernel's working precision policy.
 - **Byte assertion**: contains(b'FILE_SCHEMA')
+- **Tier-3 assertion**: load == "ok"
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal, reject}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: Cross-subsystem interaction surfaces an inconsistency between two kernel passes; one pass sees the entity as valid and another as invalid, leaving the loaded model in an internally inconsistent state.
@@ -16437,6 +16558,7 @@ _Section summary: 41 entries._
 - **Byte assertion**: contains(b'FILE_SCHEMA')
 - **Byte assertion**: contains(b'EDGE_CURVE')
 - **Byte assertion**: contains(b'ADVANCED_FACE')
+- **Tier-3 assertion**: load == "ok"
 - **OCC behavior**: silently accepts under one mode and emits a diagnostic under the other (no shape produced); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: Cross-subsystem interaction surfaces an inconsistency between two kernel passes; one pass sees the entity as valid and another as invalid, leaving the loaded model in an internally inconsistent state.
@@ -16463,6 +16585,7 @@ _Section summary: 41 entries._
  bounded-nesting invariant both upheld; reject or load with diagnostics —
  kernel's choice.
 - **Byte assertion**: contains(b'FILE_SCHEMA')
+- **Tier-3 assertion**: load == "ok"
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: Cross-subsystem interaction surfaces an inconsistency between two kernel passes; one pass sees the entity as valid and another as invalid, leaving the loaded model in an internally inconsistent state.
@@ -16489,6 +16612,7 @@ _Section summary: 41 entries._
 - **Byte assertion**: contains(b'FILE_SCHEMA')
 - **Byte assertion**: contains(b'EDGE_CURVE')
 - **Byte assertion**: contains(b'ADVANCED_FACE')
+- **Tier-3 assertion**: load == "ok"
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal, reject}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: Cross-subsystem interaction surfaces an inconsistency between two kernel passes; one pass sees the entity as valid and another as invalid, leaving the loaded model in an internally inconsistent state.
@@ -16535,6 +16659,7 @@ _Section summary: 41 entries._
 - **Byte assertion**: contains(b'FILE_SCHEMA')
 - **Byte assertion**: contains(b'EDGE_CURVE')
 - **Byte assertion**: contains(b'ADVANCED_FACE')
+- **Tier-3 assertion**: load == "ok"
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
 - **Severity**: P1
 - **Model impact**: Cross-subsystem interaction surfaces an inconsistency between two kernel passes; one pass sees the entity as valid and another as invalid, leaving the loaded model in an internally inconsistent state.
@@ -16556,6 +16681,7 @@ _Section summary: 41 entries._
  '','','')`; data section with `DIRECTION('',(1,0,0))`.
 - **Expected kernel behavior**: Heal and accept, or warn and accept: lex policy on integer-in-REAL coerces / normalizes the literal; metadata policy on missing author warns. Both independently decided.
 - **Byte assertion**: contains(b'FILE_SCHEMA')
+- **Tier-3 assertion**: load == "ok"
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal, warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must heal or emit a diagnostic this fixture.
 - **Severity**: P1
 - **Model impact**: Cross-subsystem interaction surfaces an inconsistency between two kernel passes; one pass sees the entity as valid and another as invalid, leaving the loaded model in an internally inconsistent state.
@@ -16583,6 +16709,7 @@ _Section summary: 41 entries._
 - **Byte assertion**: contains(b'FILE_SCHEMA')
 - **Byte assertion**: contains(b'EDGE_CURVE')
 - **Byte assertion**: contains(b'ADVANCED_FACE')
+- **Tier-3 assertion**: load == "ok"
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal, reject}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: Cross-subsystem interaction surfaces an inconsistency between two kernel passes; one pass sees the entity as valid and another as invalid, leaving the loaded model in an internally inconsistent state.
@@ -16609,6 +16736,7 @@ _Section summary: 41 entries._
 - **Byte assertion**: contains(b'FILE_SCHEMA')
 - **Byte assertion**: contains(b'EDGE_CURVE')
 - **Byte assertion**: contains(b'ADVANCED_FACE')
+- **Tier-3 assertion**: load == "ok"
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal, reject}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: Cross-subsystem interaction surfaces an inconsistency between two kernel passes; one pass sees the entity as valid and another as invalid, leaving the loaded model in an internally inconsistent state.
@@ -16636,6 +16764,7 @@ _Section summary: 41 entries._
 - **Byte assertion**: contains(b'FILE_SCHEMA')
 - **Byte assertion**: contains(b'EDGE_CURVE')
 - **Byte assertion**: contains(b'ADVANCED_FACE')
+- **Tier-3 assertion**: load == "ok"
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal, warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must heal or emit a diagnostic this fixture.
 - **Severity**: P1
 - **Model impact**: Cross-subsystem interaction surfaces an inconsistency between two kernel passes; one pass sees the entity as valid and another as invalid, leaving the loaded model in an internally inconsistent state.
@@ -16661,6 +16790,7 @@ _Section summary: 41 entries._
 - **Byte assertion**: contains(b'FILE_SCHEMA')
 - **Byte assertion**: contains(b'EDGE_CURVE')
 - **Byte assertion**: contains(b'ADVANCED_FACE')
+- **Tier-3 assertion**: load == "ok"
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: Cross-subsystem interaction surfaces an inconsistency between two kernel passes; one pass sees the entity as valid and another as invalid, leaving the loaded model in an internally inconsistent state.
@@ -16686,6 +16816,7 @@ _Section summary: 41 entries._
 - **Expected kernel behavior**: cycle, forward-resolution, and
  direction-degeneracy each independently rejected/repaired.
 - **Byte assertion**: contains(b'FILE_SCHEMA')
+- **Tier-3 assertion**: load == "ok"
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: Cross-subsystem interaction surfaces an inconsistency between two kernel passes; one pass sees the entity as valid and another as invalid, leaving the loaded model in an internally inconsistent state.
@@ -16711,6 +16842,7 @@ _Section summary: 41 entries._
 - **Expected kernel behavior**: each anomaly addressed independently —
  empty-aggregate policy, extreme-magnitude clamp/reject, NaN-detection.
 - **Byte assertion**: contains(b'FILE_SCHEMA')
+- **Tier-3 assertion**: load == "ok"
 - **OCC behavior**: silently accepts under one mode and emits a diagnostic under the other (no shape produced); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: Cross-subsystem interaction surfaces an inconsistency between two kernel passes; one pass sees the entity as valid and another as invalid, leaving the loaded model in an internally inconsistent state.
@@ -16735,6 +16867,7 @@ _Section summary: 41 entries._
  with inch-magnitude PMI value.
 - **Expected kernel behavior**: Heal and accept, or warn and accept: PMI ordering invariant, saved-view link invariant, and unit-consistency invariant each addressed independently; normalize where possible, warn otherwise.
 - **Byte assertion**: contains(b'FILE_SCHEMA')
+- **Tier-3 assertion**: load == "ok"
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal, warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must heal or emit a diagnostic this fixture.
 - **Severity**: P1
 - **Model impact**: Cross-subsystem interaction surfaces an inconsistency between two kernel passes; one pass sees the entity as valid and another as invalid, leaving the loaded model in an internally inconsistent state.
@@ -16757,6 +16890,7 @@ _Section summary: 41 entries._
  with one entity citing `@s2#10`.
 - **Expected kernel behavior**: Heal and accept, or reject with E_DUPLICATE_ID / E_BAD_CROSS_REF diagnostic: multi-DATA policy normalizes the section choice, duplicate-ID resolution coerces / repairs IDs, cross-section-ref handling resolves references. Each independent.
 - **Byte assertion**: contains(b'FILE_SCHEMA')
+- **Tier-3 assertion**: load == "ok"
 - **OCC behavior**: emits a diagnostic but produces an empty result; outside catalog's allowed set ({heal, reject}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: Cross-subsystem interaction surfaces an inconsistency between two kernel passes; one pass sees the entity as valid and another as invalid, leaving the loaded model in an internally inconsistent state.
@@ -16785,6 +16919,7 @@ _Section summary: 41 entries._
 - **Byte assertion**: contains(b'FILE_SCHEMA')
 - **Byte assertion**: contains(b'EDGE_CURVE')
 - **Byte assertion**: contains(b'ADVANCED_FACE')
+- **Tier-3 assertion**: load == "ok"
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal, warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must heal or emit a diagnostic this fixture.
 - **Severity**: P1
 - **Model impact**: Cross-subsystem interaction surfaces an inconsistency between two kernel passes; one pass sees the entity as valid and another as invalid, leaving the loaded model in an internally inconsistent state.
@@ -16809,6 +16944,7 @@ _Section summary: 41 entries._
 - **Byte assertion**: contains(b'FILE_SCHEMA')
 - **Byte assertion**: contains(b'EDGE_CURVE')
 - **Byte assertion**: contains(b'ADVANCED_FACE')
+- **Tier-3 assertion**: load == "ok"
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal, reject}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: Cross-subsystem interaction surfaces an inconsistency between two kernel passes; one pass sees the entity as valid and another as invalid, leaving the loaded model in an internally inconsistent state.
@@ -16835,6 +16971,7 @@ _Section summary: 41 entries._
 - **Byte assertion**: contains(b'FILE_SCHEMA')
 - **Byte assertion**: contains(b'EDGE_CURVE')
 - **Byte assertion**: contains(b'ADVANCED_FACE')
+- **Tier-3 assertion**: load == "ok"
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal, warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must heal or emit a diagnostic this fixture.
 - **Severity**: P1
 - **Model impact**: Cross-subsystem interaction surfaces an inconsistency between two kernel passes; one pass sees the entity as valid and another as invalid, leaving the loaded model in an internally inconsistent state.
@@ -16863,6 +17000,7 @@ _Section summary: 41 entries._
 - **Notes**: **See also**: Tsh065, Tsh066, Tsh067. **OCC behavior**: silently accepts (no diagnostic, empty result); catalog disallows silent-accept. Kernel-bug witnessed: receivers enforcing the spec must reject (or surface a diagnostic); silent acceptance defeats the catalog's stated invariant.
 - **Byte assertion**: contains(b'FILE_SCHEMA')
 - **Byte assertion**: contains(b'ADVANCED_FACE')
+- **Tier-3 assertion**: load == "ok"
 - **Model impact**: Cross-subsystem interaction surfaces an inconsistency between two kernel passes; one pass sees the entity as valid and another as invalid, leaving the loaded model in an internally inconsistent state.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
@@ -16876,6 +17014,7 @@ _Section summary: 41 entries._
 - **Notes**: **See also**: P003. Synonyms: "STEP subassemblies snap to origin", "SolidWorks imports Onshape STEP all on top of each other", "child placements lost after round-trip", "identity IDT for every child", "assembly children stacked at origin".
 - **Byte assertion**: contains(b'NEXT_ASSEMBLY_USAGE_OCCURRENCE')
 - **Byte assertion**: contains(b'ITEM_DEFINED_TRANSFORMATION')
+- **Tier-3 assertion**: load == "ok"
 - **OCC behavior**: silent-accept observed (catalog allowed: {reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: Cross-subsystem interaction surfaces an inconsistency between two kernel passes; one pass sees the entity as valid and another as invalid, leaving the loaded model in an internally inconsistent state.
@@ -16891,6 +17030,7 @@ _Section summary: 41 entries._
 - **Expected kernel behavior**: receivers should ideally schema-fold AP242→AP214 for the geometry subset they recognise, surfacing a "schema downgrade applied" warning. Writers should emit FILE_SCHEMA with both AP242 and AP214 when the data is geometrically expressible in both.
 - **Notes**: Synonyms: "Fusion STEP not opening in NX 12", "AP242 file too new for legacy CAD", "schema header rejects file before parsing", "no AP203/AP214 fallback in FILE_SCHEMA", "AP242 only schema causes import failure".
 - **Byte assertion**: contains(b'AP242_MANAGED_MODEL_BASED_3D_ENGINEERING_MIM_LF')
+- **Tier-3 assertion**: load == "ok"
 - **OCC behavior**: silent-accept observed (catalog allowed: {warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must warn-and-proceed on this fixture.
 - **Severity**: P1
 - **Model impact**: Cross-subsystem interaction surfaces an inconsistency between two kernel passes; one pass sees the entity as valid and another as invalid, leaving the loaded model in an internally inconsistent state.
@@ -16906,6 +17046,7 @@ _Section summary: 41 entries._
 - **Expected kernel behavior**: cap the FILE_NAME first-arg length in the parser (treat as an opaque label, not a path); never hand it to the OS path-resolution APIs; emit warning W_LONG_HEADER_FIELD if length exceeds 1024.
 - **Notes**: Synonyms: "STEP import stuck at 95 percent", "Inventor hangs on long file path", "FILE_NAME UNC path makes parser stall", "import progress bar hangs at end", "long path in STEP header".
 - **Byte assertion**: max_string_literal_length >= 300
+- **Tier-3 assertion**: load == "ok"
 - **OCC behavior**: silent-accept observed (catalog allowed: {warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must warn-and-proceed on this fixture.
 - **Severity**: P1
 - **Model impact**: Cross-subsystem interaction surfaces an inconsistency between two kernel passes; one pass sees the entity as valid and another as invalid, leaving the loaded model in an internally inconsistent state.
@@ -16924,6 +17065,7 @@ _Section summary: 41 entries._
 - **Notes**: Synonyms: "STEP imports as surface body only", "missing face means not a solid", "OPEN_SHELL where CLOSED_SHELL expected", "5-of-6 cube faces", "watertight body not constructed".
 - **Byte assertion**: contains(b'OPEN_SHELL')
 - **Byte assertion**: contains(b'SHELL_BASED_SURFACE_MODEL')
+- **Tier-3 assertion**: load == "ok"
 - **OCC behavior**: silent-accept observed (catalog allowed: {heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
 - **Severity**: P1
 - **Model impact**: Cross-subsystem interaction surfaces an inconsistency between two kernel passes; one pass sees the entity as valid and another as invalid, leaving the loaded model in an internally inconsistent state.
@@ -16939,6 +17081,7 @@ _Section summary: 41 entries._
 - **Notes**: Synonyms: "tapped hole exports as smooth cylinder", "thread spec lost in STEP", "cosmetic threads not in STEP file", "M3 thread becomes 2.5mm hole", "thread information dropped at export".
 - **Byte assertion**: contains(b'CYLINDRICAL_SURFACE')
 - **Byte assertion**: contains(b'SHAPE_ASPECT')
+- **Tier-3 assertion**: load == "ok"
 - **Model impact**: Cross-subsystem interaction surfaces an inconsistency between two kernel passes; one pass sees the entity as valid and another as invalid, leaving the loaded model in an internally inconsistent state.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
@@ -16951,6 +17094,7 @@ _Section summary: 41 entries._
 - **Expected kernel behavior**: writers must emit \\X2\\HHHH\\X0\\ for any codepoint outside ASCII regardless of host OS locale; receivers that find raw high-bit runs should warn and apply edition-default decoding (UTF-8 / ISO-8859-1) without crashing.
 - **Notes**: **See also**: Le002, Le021. Synonyms: "Chinese characters mojibake in STEP", "Inventor writes raw GBK bytes", "Korean names garbled after STEP round-trip", "CJK PRODUCT.name corrupt", "non-ASCII writer ignores X2 escape".
 - **Byte assertion**: matches(rb'[\x80-\xff]')
+- **Tier-3 assertion**: load == "ok"
 - **OCC behavior**: silent-accept observed (catalog allowed: {warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must warn-and-proceed on this fixture.
 - **Severity**: P1
 - **Model impact**: Cross-subsystem interaction surfaces an inconsistency between two kernel passes; one pass sees the entity as valid and another as invalid, leaving the loaded model in an internally inconsistent state.
@@ -16966,6 +17110,7 @@ _Section summary: 41 entries._
 - **Expected kernel behavior**: Heal and accept: receivers must de-dup by PRODUCT_DEFINITION identity (entity reference), not by PRODUCT.name string equality. Writers should heal by emitting unique PRODUCT.names where possible, but receivers cannot rely on that. Name-keyed conflations that swap parts between assembly slots are a coverage gap.
 - **Notes**: Synonyms: "duplicate PRODUCT name swaps parts", "Solidworks scrambles KiCad STEP imports", "same-name components conflate", "PRODUCT identity by name not entity", "PCB STEP imports wrong components".
 - **Byte assertion**: count(b"PRODUCT('R0805'") >= 2
+- **Tier-3 assertion**: load == "ok"
 - **Model impact**: Cross-subsystem interaction surfaces an inconsistency between two kernel passes; one pass sees the entity as valid and another as invalid, leaving the loaded model in an internally inconsistent state.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
@@ -16979,6 +17124,7 @@ _Section summary: 41 entries._
 - **Expected kernel behavior**: detect degenerate rows/columns at parse time; either contract them to a degenerate-edge representation or reject the surface with a clear diagnostic. Zero-area or self-overlapping geometry must not be produced without diagnostic.
 - **Notes**: **See also**: Gn015. Synonyms: "CATIA degenerate spline", "empty PartBody after STEP import", "B-spline first row all coincident", "geometric_set debris", "solid not created CATIA Inventor".
 - **Byte assertion**: contains(b'B_SPLINE_SURFACE_WITH_KNOTS')
+- **Tier-3 assertion**: load == "ok"
 - **OCC behavior**: silent-accept observed (catalog allowed: {reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: Cross-subsystem interaction surfaces an inconsistency between two kernel passes; one pass sees the entity as valid and another as invalid, leaving the loaded model in an internally inconsistent state.
@@ -16993,6 +17139,7 @@ _Section summary: 41 entries._
 - **Expected kernel behavior**: detect equivalent CYLINDRICAL_SURFACE entries (same axis, same radius) and merge their hosted faces into a single periodic face; emit "merged split cylinder" diagnostic; leaving the split unresolved breaks feature recognition downstream.
 - **Notes**: Synonyms: "split cylinder face on seam", "NX writes cylinder as two halves", "feature recognition fails on split surface", "non-merged periodic face", "Optimize Face needed after import".
 - **Byte assertion**: count(b'CYLINDRICAL_SURFACE') >= 2
+- **Tier-3 assertion**: load == "ok"
 - **OCC behavior**: silent-accept observed (catalog allowed: {heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
 - **Severity**: P1
 - **Model impact**: Cross-subsystem interaction surfaces an inconsistency between two kernel passes; one pass sees the entity as valid and another as invalid, leaving the loaded model in an internally inconsistent state.
@@ -17008,6 +17155,7 @@ _Section summary: 41 entries._
 - **Notes**: Synonyms: "STEP colors brighter after CadQuery export", "RGB sRGB linear conversion bug", "colour values shifted on round-trip", "0.5 grey becomes 0.735", "gamma applied twice on STEP export".
 - **Byte assertion**: contains(b'COLOUR_RGB')
 - **Byte assertion**: contains(b'0.7353569830523')
+- **Tier-3 assertion**: load == "ok"
 - **Model impact**: Cross-subsystem interaction surfaces an inconsistency between two kernel passes; one pass sees the entity as valid and another as invalid, leaving the loaded model in an internally inconsistent state.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
@@ -17020,6 +17168,7 @@ _Section summary: 41 entries._
 - **Expected kernel behavior**: Heal and accept: writers must heal/de-dup COLOUR_RGB by (R, G, B) tuple equality before emission. Receivers should also normalize by pooling on tuple value, not entity identity, to avoid this bug's downstream UI clutter. Warn and accept with W_DUPLICATE_COLOUR when redundant entries are observed; emitting hundreds of copies of the same colour without diagnostic is a coverage gap.
 - **Notes**: **See also**: Xp034 (sRGB shift). Synonyms: "duplicate COLOUR_RGB entities", "STEP file bloated by redundant colors", "same-valued colors not pooled", "writer doesn't de-dup colours", "hundreds of identical RGB entries".
 - **Byte assertion**: count(b'COLOUR_RGB') >= 3
+- **Tier-3 assertion**: load == "ok"
 - **Model impact**: Cross-subsystem interaction surfaces an inconsistency between two kernel passes; one pass sees the entity as valid and another as invalid, leaving the loaded model in an internally inconsistent state.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
@@ -17034,6 +17183,7 @@ _Section summary: 41 entries._
 - **Notes**: **See also**: Xp034, Xp035. Synonyms: "STYLED_ITEM ignored on import", "STEP colours appear yellow", "bare reader skips presentation", "STEPControl_Reader vs STEPCAFControl_Reader", "colour metadata lost on load".
 - **Byte assertion**: contains(b'MECHANICAL_DESIGN_GEOMETRIC_PRESENTATION_REPRESENTATION')
 - **Byte assertion**: contains(b'STYLED_ITEM')
+- **Tier-3 assertion**: load == "ok"
 - **OCC behavior**: silent-accept observed (catalog allowed: {warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must warn-and-proceed on this fixture.
 - **Severity**: P1
 - **Model impact**: Cross-subsystem interaction surfaces an inconsistency between two kernel passes; one pass sees the entity as valid and another as invalid, leaving the loaded model in an internally inconsistent state.
@@ -17048,6 +17198,7 @@ _Section summary: 41 entries._
 - **Expected kernel behavior**: load both bodies independently; surface an interference-detected diagnostic; dropping bodies without diagnostic is unacceptable; the kernel cannot abort on attempted union.
 - **Notes**: Synonyms: "Creo overlapping bodies fail manifold", "interfering solids prevent solidify", "STEP assembly with body interference", "non-manifold union from overlap", "two solids overlap by 1mm in STEP".
 - **Byte assertion**: count(b'MANIFOLD_SOLID_BREP') >= 2
+- **Tier-3 assertion**: load == "ok"
 - **Model impact**: Cross-subsystem interaction surfaces an inconsistency between two kernel passes; one pass sees the entity as valid and another as invalid, leaving the loaded model in an internally inconsistent state.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
@@ -17062,6 +17213,7 @@ _Section summary: 41 entries._
 - **Notes**: **See also**: Xp029. Synonyms: "2-56 thread becomes M1.6", "imperial thread misread as metric", "hole feature metric/imperial confusion", "Onshape thread wrong size", "tap drill matched to wrong standard".
 - **Byte assertion**: contains(b'CYLINDRICAL_SURFACE')
 - **Byte assertion**: contains(b'0.925')
+- **Tier-3 assertion**: load == "ok"
 - **Model impact**: Cross-subsystem interaction surfaces an inconsistency between two kernel passes; one pass sees the entity as valid and another as invalid, leaving the loaded model in an internally inconsistent state.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
@@ -17074,6 +17226,7 @@ _Section summary: 41 entries._
 - **Expected kernel behavior**: detect empty SURFACE_SIDE_STYLE and treat it as "appearance explicitly cleared"; surface a diagnostic; never crash on the empty styles list; do not invent a colour.
 - **Notes**: **See also**: Xp036. Synonyms: "Inventor Simplify drops appearance", "empty SURFACE_SIDE_STYLE on STEP export", "appearance pruned but binding retained", "simplified part gray instead of red", "STEP appearance lost on simplification".
 - **Byte assertion**: contains(b'SURFACE_SIDE_STYLE')
+- **Tier-3 assertion**: load == "ok"
 - **Model impact**: Cross-subsystem interaction surfaces an inconsistency between two kernel passes; one pass sees the entity as valid and another as invalid, leaving the loaded model in an internally inconsistent state.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
@@ -17088,6 +17241,7 @@ _Section summary: 41 entries._
 - **Notes**: **See also**: Xp025. Synonyms: "Solid Edge stuck subassembly", "shared IDT across NAUOs", "Creo Elements assembly placements aliased", "subassembly cannot be moved after import", "per-instance frame missing".
 - **Byte assertion**: contains(b'NEXT_ASSEMBLY_USAGE_OCCURRENCE')
 - **Byte assertion**: contains(b'ITEM_DEFINED_TRANSFORMATION')
+- **Tier-3 assertion**: load == "ok"
 - **Model impact**: Cross-subsystem interaction surfaces an inconsistency between two kernel passes; one pass sees the entity as valid and another as invalid, leaving the loaded model in an internally inconsistent state.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
@@ -17101,6 +17255,7 @@ _Section summary: 41 entries._
 - **Expected kernel behavior**: case-insensitive schema-name matching; or at minimum, accept both 'IFC4x1' and 'IFC4X1' as aliases. Strict-mode kernels should reject with a clear "schema name case mismatch" diagnostic naming the expected canonical form.
 - **Notes**: Synonyms: "IFC4x1 lowercase x rejected", "schema name case-sensitive parser bug", "IfcOpenShell strict whitelist reject", "FILE_SCHEMA case mismatch", "valid file rejected by uppercase-only check".
 - **Byte assertion**: contains(b"FILE_SCHEMA(('IFC4x1'))")
+- **Tier-3 assertion**: load == "ok"
 - **OCC behavior**: silent-accept observed (catalog allowed: {reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: Cross-subsystem interaction surfaces an inconsistency between two kernel passes; one pass sees the entity as valid and another as invalid, leaving the loaded model in an internally inconsistent state.
@@ -17117,6 +17272,7 @@ _Section summary: 41 entries._
 - **Notes**: Synonyms: "NX super-multiplicity knot", "Onshape translation error generic", "B-spline interior multiplicity > degree+1", "Parasolid rejects discontinuous spline", "knot vector violates ISO cap".
 - **Byte assertion**: contains(b'B_SPLINE_CURVE_WITH_KNOTS')
 - **Byte assertion**: contains(b'(4,5,4)')
+- **Tier-3 assertion**: load == "ok"
 - **OCC behavior**: silent-accept observed (catalog allowed: {heal, reject}). Kernel-bug witnessed: receivers enforcing the spec must reject or heal this fixture.
 - **Severity**: P1
 - **Model impact**: Cross-subsystem interaction surfaces an inconsistency between two kernel passes; one pass sees the entity as valid and another as invalid, leaving the loaded model in an internally inconsistent state.
@@ -17133,6 +17289,7 @@ _Section summary: 41 entries._
 - **Notes**: **See also**: A065. Synonyms: "missing root SDR", "PRODUCT_DEFINITION not bound to SHAPE_REPRESENTATION", "Inventor rejects empty top-level assembly", "AP242 from CATIA structurally invalid", "import aborts on missing SDR".
 - **Byte assertion**: contains(b'PRODUCT_DEFINITION')
 - **Byte assertion**: contains(b'SHAPE_DEFINITION_REPRESENTATION')
+- **Tier-3 assertion**: load == "ok"
 - **OCC behavior**: silent-accept observed (catalog allowed: {reject, warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: Cross-subsystem interaction surfaces an inconsistency between two kernel passes; one pass sees the entity as valid and another as invalid, leaving the loaded model in an internally inconsistent state.
@@ -17148,6 +17305,7 @@ _Section summary: 41 entries._
 - **Notes**: **See also**: Xp031 (KiCad name-collision). Synonyms: "KiCad PCB STEP missing components", "MAPPED_ITEM wrong target", "footprint imports as different package", "empty SHAPE_REPRESENTATION items", "STEP component swap on export".
 - **Byte assertion**: contains(b'MAPPED_ITEM')
 - **Byte assertion**: contains(b'REPRESENTATION_MAP')
+- **Tier-3 assertion**: load == "ok"
 - **Model impact**: Cross-subsystem interaction surfaces an inconsistency between two kernel passes; one pass sees the entity as valid and another as invalid, leaving the loaded model in an internally inconsistent state.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
 
@@ -17509,6 +17667,7 @@ _Section summary: 41 entries._
 - **Notes**: Cross-oracle: pure-Python Part-21 validator rejects (reject(E_UNRESOLVED_REFS)); OCCT silently accepts (load is `empty`). OCC auto-heals a spec-level violation. Synonyms: "REFERENCE section unresolvable anchor", "external anchor not found", "STEP REFERENCE points at missing file", "URI anchor in REFERENCE unresolved", "broken cross-file STEP link".
 - **Byte assertion**: contains(b'REFERENCE;') and (contains(b'companion-file.stp#missing_anchor') or contains(b'no-such-file.stp#also_missing'))
 - **Byte assertion**: contains(b'companion-file.stp') or contains(b'companion.stp') or contains(b'no-such-file.stp')
+- **Tier-3 assertion**: load == "ok"
 - **OCC behavior**: silently accepts with diagnostic but loads empty result; outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: Header metadata fields load with empty/wrong values; downstream consumers that branch on schema name or implementation level pick the wrong code path even though the DATA section is well-formed.
@@ -17523,6 +17682,7 @@ _Section summary: 41 entries._
 - **Notes**: **See also**: Lh026. Synonyms: "duplicate anchor name in ANCHOR section", "two anchors with same name", "ANCHOR name collision", "anchor name published twice", "ambiguous anchor in STEP".
 - **Byte assertion**: contains(b'ANCHOR;')
 - **Byte assertion**: matches(rb'(?s)<origin>=#10;.*<origin>=#11;')
+- **Tier-3 assertion**: load == "ok"
 - **OCC behavior**: silently accepts with diagnostic but loads empty result; outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: Header metadata fields load with empty/wrong values; downstream consumers that branch on schema name or implementation level pick the wrong code path even though the DATA section is well-formed.
@@ -17608,6 +17768,7 @@ _Section summary: 41 entries._
 - **Byte assertion**: contains(b'REFERENCE;')
 - **Byte assertion**: contains(b'urn:') or contains(b'plmlink:')
 - **Byte assertion**: contains(b'file:') or contains(b'https://')
+- **Tier-3 assertion**: load == "ok"
 - **OCC behavior**: silently accepts with diagnostic but loads empty result; outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: Header metadata fields load with empty/wrong values; downstream consumers that branch on schema name or implementation level pick the wrong code path even though the DATA section is well-formed.
@@ -17893,6 +18054,7 @@ _Section summary: 41 entries._
 - **Byte assertion**: matches(rb'CLOSED_SHELL\s*\(\s*\x27[^\x27]*\x27\s*,\s*\(\s*\)\s*\)')
 - **Byte assertion**: contains(b'MANIFOLD_SOLID_BREP')
 - **Byte assertion**: count_entity_def(b'ADVANCED_FACE') == 0
+- **Tier-3 assertion**: load == "ok"
 - **Model impact**: Shell construction reports invalidity (free edges, multi-connected vertices, or wrong orientation); BRepCheck flags the shape, and downstream solid construction either produces an invalid solid or fails outright.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 - **Fixture path**: step-examples/12-3a-shells/Bo001.stp
@@ -18705,6 +18867,7 @@ _Section summary: 41 entries._
 - **Notes**: **See also**: Tsh047, A031. Synonyms: "mirrored instance corrupted by face unification", "false coincidence between mirrored sub-shapes", "merge collapses mirrored instances", "shape unifier ignores transform on coincidence test", "mirrored MAPPED_ITEM merged with original".
 - **Byte assertion**: contains(b'MAPPED_ITEM')
 - **Byte assertion**: count_entity_def(b'ADVANCED_FACE') == 1
+- **Tier-3 assertion**: load == "ok"
 - **OCC behavior**: emits a diagnostic but produces an empty result; outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: Shell topology loads with inconsistent face orientations or non-manifold edges; BRepCheck flags the shell as invalid, and boolean / offset operations on the solid either produce wrong-sided results or fail outright.
@@ -18773,6 +18936,7 @@ _Section summary: 41 entries._
  location records.
 - **Notes**: **See also**: Tsh048. Synonyms: "shell merge loses non-unit DIRECTION location", "scaled instance comes in at origin after merge", "MAPPED_ITEM placement dropped on shell union", "non-uniform scale in REPRESENTATION_MAP lost", "compound location vanishes after topology op".
 - **Byte assertion**: count_entity_def(b'ADVANCED_FACE') == 1
+- **Tier-3 assertion**: load == "ok"
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
 - **Severity**: P1
 - **Model impact**: Shell topology loads with inconsistent face orientations or non-manifold edges; BRepCheck flags the shell as invalid, and boolean / offset operations on the solid either produce wrong-sided results or fail outright.
@@ -18844,6 +19008,7 @@ _Section summary: 41 entries._
 - **Notes**: **See also**: Tsh048. Synonyms: "face merge crashes on chained placements", "shape modified and removed simultaneously error", "segfault when merging compound with shared topology", "mutating shared sub-shape during unification", "MAPPED_ITEM instances corrupt face merge".
 - **Byte assertion**: contains(b'MAPPED_ITEM')
 - **Byte assertion**: count_entity_def(b'ADVANCED_FACE') == 1
+- **Tier-3 assertion**: load == "ok"
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: Shell topology loads with inconsistent face orientations or non-manifold edges; BRepCheck flags the shell as invalid, and boolean / offset operations on the solid either produce wrong-sided results or fail outright.
@@ -21207,6 +21372,7 @@ B-spline curve with last pole within 1e-3 of first pole triggers false-negative 
 ### Gn040 — ShapeAnalysis_Curve.FillBndBox S-curve extremum undersample
 
 2-point sampling on high-curvature S-curve misses inflection peak; bounding box omits Z-coordinate extremum, breaking downstream extent calculations.
+- **Tier-3 assertion**: load == "ok"
 
 ### Gn041 — ShapeAnalysis_Surface.NextValueOfUV C0-knot Newton convergence
 
@@ -21298,6 +21464,7 @@ Degree-2 B-spline surface with symmetric knot vectors (0.0, 0.5, 1.0) in both U 
 ### Gn059 — ShapeAnalysis_Curve.FillBndBox SearchForExtremum drift
 
 Non-uniform B-spline with sharp peak at u=0.5. Fixed-step extremum search overshoots peak; bbox too small at cusp. Captures defect in FillBndBox where SearchForExtremum skips the actual extremum due to coarse step size.
+- **Tier-3 assertion**: load == "ok"
 
 ### Gn060 — ShapeUpgrade_ConvertCurve2dToBezier loop-variable persistence
 
@@ -21596,6 +21763,7 @@ Defect: Call `Init` with duplicate split parameters [0.5, 0.5, 0.5]; dedup logic
 Defect: B-spline with only 2 control points (degree 1 line); `IsPlanar`'s pole-sampling test trivially passes (line is in infinite planes), reporting planar with default plane. A 2-point degree-1 curve is a line segment lying in infinitely many planes; auto-selecting a default plane without explicit user direction is ambiguous.
 
 **Minimal reproducer**: Degree-1 B-spline with exactly 2 control points (0,0,0) and (1,0,0), knot multiplicities (2,2).
+- **Tier-3 assertion**: load == "ok"
 
 ### Gn099 — ShapeAnalysis_Curve.GetSamplePoints conic-arc rational-weight cap
 
@@ -21649,12 +21817,14 @@ Defect: ShapeAnalysis_Curve.IsClosed checks position only, ignoring weights on c
 
 ### Gn106 — B-spline-of-Bezier conversion bloat
 Defect: ShapeUpgrade_ConvertSurfaceToBezierBasis converts single-Bezier B-spline into multiple Bezier patches when direct passthrough would suffice.
+- **Tier-3 assertion**: load == "ok"
 
 ### Gn107 — approximate-mode B-spline high-frequency
 Defect: ShapeAnalysis_Curve.FillBndBox approximate mode misses high-frequency oscillation. Control points form sawtooth pattern; bounding-box computation should span [0,1] but misses peaks.
 
 ### Gn108 — Init u_min > u_max inverted bounds
 Defect: ShapeUpgrade_SplitSurface.Init silently accepts inverted bounds (u_min > u_max), producing undefined sub-surfaces.
+- **Tier-3 assertion**: load == "ok"
 
 ### Gn109 — ShapeAnalysis_Curve.IsPlanar non-rational-bspline-3D
 
@@ -21835,6 +22005,7 @@ Periodic B-spline with knot parameters identical at boundaries but control poles
 - **Model impact**: Construct B-spline surface with U-periodic knot vector (period 2π), 4x3 poles, rational (weights = [1,1,1,1,1,1,1,1,1,1,1,1]). One weight in wrapped pole row = 0.8. Call IUPeriodic(); ShapeAnalysis_Su
 - **Fixture path**: step-examples/12-2b-nurbs/Gn129.stp
 - **Fixture kind**: scaffold
+- **Tier-3 assertion**: load == "ok"
 
 
 ### Gn130 — ShapeUpgrade_ConvertCurveToBezier non-uniform-knots tail-degenerate
@@ -21846,6 +22017,7 @@ Periodic B-spline with knot parameters identical at boundaries but control poles
 - **Model impact**: 2D B-spline curve, degree 3, poles = [(0,0), (1,2), (2,1), (3,3), (4,4), (4.01,4.01)]. Knots = [0,0,0,0, 0.2, 0.25, 0.5, 0.75, 1,1,1,1]. Call ShapeUpgrade_ConvertCurveToBezier::Perform(). Expected: De
 - **Fixture path**: step-examples/12-2b-nurbs/Gn130.stp
 - **Fixture kind**: scaffold
+- **Tier-3 assertion**: load == "ok"
 
 
 ### Gn131 — ShapeFix_ComposeShell.SplitOnEdges B-spline pcurve tangent-mismatch
@@ -21857,6 +22029,7 @@ Periodic B-spline with knot parameters identical at boundaries but control poles
 - **Model impact**: B-spline surface (degree 2 in both U, V). Add closed edge: 3D curve (C1 smooth), 2D pcurve with C0 knot at u=0.5. Call ShapeFix_ComposeShell.SplitOnEdges(). Expected: Detect C0 in pcurve, propose spli
 - **Fixture path**: step-examples/12-2b-nurbs/Gn131.stp
 - **Fixture kind**: scaffold
+- **Tier-3 assertion**: load == "ok"
 
 
 ### Gn132 — Geom_BSplineCurve.IncreaseDegree weight-redistribution asymmetry
@@ -21868,6 +22041,7 @@ Periodic B-spline with knot parameters identical at boundaries but control poles
 - **Model impact**: Curve degree 2, poles = [(0,0,0), (1,2,0), (2,1,0), (3,0,0)], weights = [1, 2, 1.5, 1]. Knots = [0,0,0, 0.5, 1,1,1]. Call IncreaseDegree(3). Expected: New poles/weights preserve curve shape, C2 contin
 - **Fixture path**: step-examples/12-2b-nurbs/Gn132.stp
 - **Fixture kind**: scaffold
+- **Tier-3 assertion**: load == "ok"
 
 
 ### Gn133 — ShapeAnalysis_Curve.CheckOffsetCurve knot-ratio-overflow degenerate-segment
@@ -21879,6 +22053,7 @@ Periodic B-spline with knot parameters identical at boundaries but control poles
 - **Model impact**: B-spline curve, degree 3, 9 poles with geometry concentrated in [0, 0.01] and [0.5, 0.51], sparse [0.01, 0.5]. Knots = [0,0,0,0, 0.01, 0.5, 0.51, 1, 1, 1, 1, 1]. Call CheckOffsetCurve (offset 0.1). Ex
 - **Fixture path**: step-examples/12-2b-nurbs/Gn133.stp
 - **Fixture kind**: scaffold
+- **Tier-3 assertion**: load == "ok"
 
 ### Gn134 — NURBS weight array uniform propagation
 - **Category**: §12.2b NURBS (sub-class: ConvertSurfaceToBezierBasis)
@@ -21889,6 +22064,7 @@ Periodic B-spline with knot parameters identical at boundaries but control poles
 - **Model impact**: Surface loses rational property during conversion
 - **Fixture path**: step-examples/12-2b-nurbs/Gn134.stp
 - **Fixture kind**: scaffold
+- **Tier-3 assertion**: load == "ok"
 
 ### Gn135 — B-spline curve non-uniform interior knots
 - **Category**: §12.2b NURBS (sub-class: ConvertCurveToBezier)
@@ -21899,6 +22075,7 @@ Periodic B-spline with knot parameters identical at boundaries but control poles
 - **Model impact**: Segment parameterization extraction fails
 - **Fixture path**: step-examples/12-2b-nurbs/Gn135.stp
 - **Fixture kind**: scaffold
+- **Tier-3 assertion**: load == "ok"
 
 ### Gn136 — NURBS iterator loop boundary fault in split
 - **Category**: §12.2b NURBS (sub-class: ShapeUpgrade_ConvertSurfaceToBezierBasis.Build)
@@ -21909,6 +22086,7 @@ Periodic B-spline with knot parameters identical at boundaries but control poles
 - **Model impact**: Patches missing from Bezier decomposition
 - **Fixture path**: step-examples/12-2b-nurbs/Gn136.stp
 - **Fixture kind**: scaffold
+- **Tier-3 assertion**: load == "ok"
 
 ### Gn137 — B-spline curve precision asymmetry in split
 - **Category**: §12.2b NURBS (sub-class: ShapeUpgrade_ConvertSurfaceToBezierBasis.Build)
@@ -21919,6 +22097,7 @@ Periodic B-spline with knot parameters identical at boundaries but control poles
 - **Model impact**: Patch segments skipped due to asymmetric tolerance
 - **Fixture path**: step-examples/12-2b-nurbs/Gn137.stp
 - **Fixture kind**: scaffold
+- **Tier-3 assertion**: load == "ok"
 
 ### Gn138 — NURBS trimmed surface Bezier basis delegation
 - **Category**: §12.2b NURBS (sub-class: ConvertSurfaceToBezierBasis.Compute)
@@ -21986,6 +22165,7 @@ Periodic B-spline with knot parameters identical at boundaries but control poles
 - **Minimal reproducer**: Face referencing RTS; healing handler calls BasisSurface() without checking result.
 
 ---
+- **Tier-3 assertion**: load == "ok"
 
 ### Gn139 — TrimmedCurve Wrapping Periodic B-spline
 - **Category**: §12.2b NURBS
@@ -21996,6 +22176,7 @@ Periodic B-spline with knot parameters identical at boundaries but control poles
 - **Model impact**: reproducer geometry in fixture file
 - **Fixture path**: step-examples/12-2b-nurbs/Gn139.stp
 - **Fixture kind**: scaffold
+- **Tier-3 assertion**: load == "ok"
 
 
 ### Gn140 — U-Periodic Surface with V-Bounds Check Mismatch
@@ -22007,6 +22188,7 @@ Periodic B-spline with knot parameters identical at boundaries but control poles
 - **Model impact**: reproducer geometry in fixture file
 - **Fixture path**: step-examples/12-2b-nurbs/Gn140.stp
 - **Fixture kind**: scaffold
+- **Tier-3 assertion**: load == "ok"
 
 
 ### Gn141 — High V-Multiplicity Continuity Gap
@@ -22018,6 +22200,7 @@ Periodic B-spline with knot parameters identical at boundaries but control poles
 - **Model impact**: reproducer geometry in fixture file
 - **Fixture path**: step-examples/12-2b-nurbs/Gn141.stp
 - **Fixture kind**: scaffold
+- **Tier-3 assertion**: load == "ok"
 
 
 ### Gn142 — Large Pole-Count Surface Sampling Threshold
@@ -22029,6 +22212,7 @@ Periodic B-spline with knot parameters identical at boundaries but control poles
 - **Model impact**: reproducer geometry in fixture file
 - **Fixture path**: step-examples/12-2b-nurbs/Gn142.stp
 - **Fixture kind**: scaffold
+- **Tier-3 assertion**: load == "ok"
 
 
 ### Gn143 — RectangularTrimmedSurface Basis Unwrap Null-Check
@@ -22040,26 +22224,31 @@ Periodic B-spline with knot parameters identical at boundaries but control poles
 - **Model impact**: reproducer geometry in fixture file
 - **Fixture path**: step-examples/12-2b-nurbs/Gn143.stp
 - **Fixture kind**: scaffold
+- **Tier-3 assertion**: load == "ok"
 
 ### Gn144 — Periodic knot-vector closure mismatch
 - **Defect**: Periodic BSpline surface (.T. in U) with open-clamped knot vector. Knot multiplicities (3,3) conflict with 4-pole periodic topology. Healing must validate periodic flag consistency.
 - **Surface**: Degree 2×2, 4×3 poles, U periodic-marked but non-periodic knots.
 - **Knot arithmetic**: 4 poles U + degree 2 → 7 needed; (3,3) only sums to 6. Mismatch triggers closure-check logic against invalid knot structure.
+- **Tier-3 assertion**: load == "ok"
 
 ### Gn145 — Interior knot multiplicity C(-1) discontinuity
 - **Defect**: Interior knot at u=0.5 with multiplicity 3 (degree+1), creating cusp discontinuity. Healing must detect high-multiplicity interior knots and consider splitting or elevation.
 - **Surface**: Degree 2×2, 5×3 poles. U knot vector (0,0,0, 0.5,0.5,0.5, 1,1) forces C(-1) at interior.
 - **Knot arithmetic**: 5 poles + degree 2 → 8 mults. (3,3,3) sums to 9 (one too many); (3,2,3) correct, interior mult 2 → C0.
+- **Tier-3 assertion**: load == "ok"
 
 ### Gn146 — Rational NURBS singular weight
 - **Defect**: Rational BSpline surface (weights present) with singular weight 0.0 at middle pole. Weighted control point effectively removed; healing must detect and handle weight singularities.
 - **Surface**: Degree 2×2, 3×3 poles. Weights: (1,1,1), (1,0,1), (1,1,1). Center pole vanishes geometrically.
 - **Knot arithmetic**: 3 poles both directions + degree 2 → (3,3) both directions. Correct counts but rational flag exposes weight pathology.
+- **Tier-3 assertion**: load == "ok"
 
 ### Gn147 — Stripe singularity (collapsed pole row)
 - **Defect**: All V-poles in middle U-row collapsed to single point (1.0, *, 0.5). Creates stripe singularity (entire row degenerates to line). Healing detects via pole-distance analysis.
 - **Surface**: Degree 2×2, 3×4 poles. Middle row all at (1.0, y, 0.5) across V.
 - **Knot arithmetic**: 3 poles U → (3,3); 4 poles V → (4,3); both correct. Stripe defect implicit in pole coordinates, not explicit knot structure.
+- **Tier-3 assertion**: load == "ok"
 
 ### Gn148 — Ill-conditioned knot distribution
 - **Defect**: Interior knots clustered near 0 (0.001, 0.002) while boundary spans [0, 1]. Ratio >1000:1 causes numerical instability in fitting and evaluation. Healing must detect and reparametrize.
@@ -22067,38 +22256,49 @@ Periodic B-spline with knot parameters identical at boundaries but control poles
 - **Knot arithmetic**: 4 poles U + degree 2 → 7 mults. (3,2,2) sums to 7. Correct structure but bad spacing triggers IsBad flag for arc-length reparametrization.
 
 # Wave 64C: NURBS Fresh Defects (Gn149–Gn153)
+- **Tier-3 assertion**: load == "ok"
 
 ### Gn149 — Rational weight singularity detection
 B_SPLINE_SURFACE_WITH_KNOTS (3×3 control net, U-degree 2, V-degree 2). Rational weights array includes zero weight at middle pole (p11=0.0). Defect: denominator singularity in rational basis function evaluation. Healing must clamp weights to [eps, 1]. Knot arithmetic: 3+2+1=6 per direction. Invariants: three-arg LINE reference, DIRECTION ratios unit.
+- **Tier-3 assertion**: load == "ok"
 
 ### Gn150 — Trimmed periodic basis unwrap
 B_SPLINE_CURVE_WITH_KNOTS (degree 3, 5 poles, periodic closure .T.). Full domain [0, 2π]. Wrapped in Geom_TrimmedCurve concept at [0.2, 2.8]. Defect: SameParameter healing without periodic-wrapping detection incorrectly clamps parameters to trim bounds, losing closed semantics. Healing must detect Geom_TrimmedCurve + periodic basis + skip clamping. Knot sum 4+2+2+2+4=14 (periodic accounting). Invariants: DIRECTION unit ratios.
+- **Tier-3 assertion**: load == "ok"
 
 ### Gn151 — B-spline C0 interior knot discontinuity
 B_SPLINE_CURVE_WITH_KNOTS (degree 3, 5 poles). Interior knot at parameter 0.5 with multiplicity 4 (=degree). Defect: C0 discontinuity (tangent jump). Knot arithmetic: 4+4+1=9 ✓. Healing must detect via Geom2dConvert::C0BSplineToC1 and upgrade continuity. No forward refs. Invariants: DIRECTION unit.
+- **Tier-3 assertion**: load == "ok"
 
 ### Gn152 — Knot ratio anomaly post-C0→C1 upgrade
 B_SPLINE_CURVE_WITH_KNOTS (degree 2, 6 poles). Clustered interior knots: [0.01, 0.02] vs [0.98, 1.0] ratio >100:1. Defect: after C0->C1 upgrade, knot spacing becomes ill-conditioned (IsBad flag true). Healing must detect via ratio criterion (>10) and apply arc-length reparametrization (Approx_CurvilinearParameter). Knot sum 3+3+2+1=9 ✓. DIRECTION unit ratios.
+- **Tier-3 assertion**: load == "ok"
 
 ### Gn153 — Periodic B-spline origin re-anchor post-upgrade
 B_SPLINE_CURVE_WITH_KNOTS (degree 2, 4 poles, periodic .T., closed loop). Interior knot at 0.5. Defect: after Geom2dConvert::C0BSplineToC1 upgrade, parametrization origin shifts; D0(FirstParameter) changes. Healing must re-anchor via SetOrigin to preserve continuity across period. Knot sum 3+2+1=6 ✓. Invariants: DIRECTION unit, no forward refs, three-arg LINE.
 
 ## Wave 66C: NURBS Defect Fixtures — Gn154–Gn158
+- **Tier-3 assertion**: load == "ok"
 
 ### Gn154 — Rational B-spline with zero-weight pole singularity
 Minimal reproducer: RATIONAL_B_SPLINE_SURFACE, 3×3 control net, degree (2,2). Interior pole P[1,1] has weight w=0. Knot structure: U,V multiplicities (3,3)/(3,3), fully clamped. Healing challenge: weight=0 creates homogeneous singularity (w=0 in rational plane); rational evaluation undefined at that pole. Expected: flag pole degenerate or skip in geometric computation.
+- **Tier-3 assertion**: load == "ok"
 
 ### Gn155 — Interior B-spline knot multiplicity equals degree (C1 discontinuity)
 Minimal reproducer: B_SPLINE_SURFACE_WITH_KNOTS, degree (3,2), 4 poles in U, 3 in V. U-knots: (0, 0, 0, 0, 0.5, 0.5, 0.5, 1.0) with multiplicities (4,3,1). Interior knot at 0.5 has multiplicity=3=degree_U, creating C1 (tangent continuous) but not C2 discontinuity. Healing challenge: loss of curvature continuity; evaluation at that knot span yields discontinuous second derivative. Expected: detect and flag or apply knot removal to restore C2.
+- **Tier-3 assertion**: load == "ok"
 
 ### Gn156 — Periodic B-spline with non-closing control polygon, origin-shift risk
 Minimal reproducer: B_SPLINE_CURVE_WITH_KNOTS, degree 2, 5 poles marked periodic (.T.), but P[0]=(1,0,0)≠P[4]=(0.9,−0.1,0). Knot structure: multiplicities (2,2,2,1), sum=7=n+d for periodic. Closed-curve claim violated; polygon open. Healing challenge: post-upgrade (Geom2dConvert C0→C1), periodic origin may shift without SetOrigin re-anchor. Expected: enforce closure or strip periodicity; re-anchor origin after continuity upgrade.
+- **Tier-3 assertion**: load == "ok"
 
 ### Gn157 — Rational B-spline with extreme weight ratio (1e4), numerical conditioning
 Minimal reproducer: RATIONAL_B_SPLINE_SURFACE, 3×2 control net, degree (2,1). Weights: (1.0, 10000.0, 1.0, 1.0, 1.0, 1.0) span 4 orders of magnitude. Knot structure: U,V multiplicities (3,3)/(2,2), fully clamped. Healing challenge: weight ratio 10000:1 escalates condition number in rational basis function evaluation; numerical instability in homogeneous coordinate normalization. Expected: rescale weights toward unity or flag ill-conditioning.
+- **Tier-3 assertion**: load == "ok"
 
 ### Gn158 — B-spline curve with clustered interior knots, condition-number escalation
 Minimal reproducer: B_SPLINE_CURVE_WITH_KNOTS, degree 3, 7 poles. Interior knots clustered: 0.5, 0.501, 0.502 (spacing ~0.001). Knot multiplicities (4,1,1,1,4), sum=11=n+d+1. Healing challenge: tight knot spacing (ratio ~0.001:0.5) creates ill-conditioned basis matrix; conditioning number grows exponentially with clustering. Expected: detect knot clustering and apply knot removal or uniform reparametrization.
+- **Tier-3 assertion**: load == "ok"
 
 ### Gn159 — B-spline surface with collapsed U-boundary pole (pin-face singularity)
 
@@ -22108,6 +22308,7 @@ Defect: 4x3 NURBS surface (U-degree 2, V-degree 2); last U-row poles all at (3.0
 ### Gn160 — Periodic B-spline curve with parameter wrapping
 
 Defect: 5-pole closed curve (degree 2, periodic); period=1.0. Projection parameter may exceed definition range [0,1) after wrapping. Falsifiable: theProjParam validation must enforce domain bounds in periodic NURBS.
+- **Tier-3 assertion**: load == "ok"
 
 ### Gn161 — B-spline surface with asymmetric pole clustering
 
@@ -22117,6 +22318,7 @@ Defect: 5x2 NURBS (U-degree 2, V-degree 1); dense U-boundary clustering at (0.9,
 ### Gn162 — B-spline curve with interior knot over-multiplicity
 
 Defect: 6-pole curve (degree 3); interior knot at 0.5 has multiplicity 4 (degree+1). Creates geometric discontinuity at interior point. Falsifiable: knot removal must repair interior clamping that violates smoothness.
+- **Tier-3 assertion**: load == "ok"
 
 ### Gn163 — B-spline surface with degenerate patch from split
 
@@ -22154,6 +22356,7 @@ Control poles coplanar (XY) but curve deviates significantly in Z. ShapeAnalysis
 - **Model impact**: C0 geometric discontinuity or unexpected curvature jump at weighted pole
 - **Fixture path**: step-examples/12-2b-nurbs/Gn169.stp
 - **Fixture kind**: scaffold
+- **Tier-3 assertion**: load == "ok"
 
 ### Gn170 — B-spline surface with extreme knot ratio and clustering
 - **Category**: §12.2b NURBS
@@ -22164,6 +22367,7 @@ Control poles coplanar (XY) but curve deviates significantly in Z. ShapeAnalysis
 - **Model impact**: Mis-subdivided patches; skipped closure detection; adaptive tolerance loop divergence
 - **Fixture path**: step-examples/12-2b-nurbs/Gn170.stp
 - **Fixture kind**: scaffold
+- **Tier-3 assertion**: load == "ok"
 
 ### Gn171 — Periodic B-spline curve with non-closing control polygon
 - **Category**: §12.2b NURBS
@@ -22174,6 +22378,7 @@ Control poles coplanar (XY) but curve deviates significantly in Z. ShapeAnalysis
 - **Model impact**: Parametric discontinuity at period wrap-around; SameParameter validation failure
 - **Fixture path**: step-examples/12-2b-nurbs/Gn171.stp
 - **Fixture kind**: scaffold
+- **Tier-3 assertion**: load == "ok"
 
 ### Gn172 — B-spline with interior knot multiplicity equals degree (C0 discontinuity)
 - **Category**: §12.2b NURBS
@@ -22184,6 +22389,7 @@ Control poles coplanar (XY) but curve deviates significantly in Z. ShapeAnalysis
 - **Model impact**: Tangent jump at u=0.5; curvature discontinuity; healing bypass risk
 - **Fixture path**: step-examples/12-2b-nurbs/Gn172.stp
 - **Fixture kind**: scaffold
+- **Tier-3 assertion**: load == "ok"
 
 ### Gn173 — Rational B-spline surface with extreme pole clustering and weight ratio
 - **Category**: §12.2b NURBS
@@ -22205,6 +22411,7 @@ Control poles coplanar (XY) but curve deviates significantly in Z. ShapeAnalysis
 - **Notes**: Practically harmless to parse; the cost is to humans who diff exports.
 - **Byte assertion**: matches(rb' +\n')
 - **Byte assertion**: count(b' \n') >= 5
+- **Tier-3 assertion**: load == "ok"
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
 - **Severity**: P3
 - **Model impact**: The bytes round-trip through the parser identically and the in-memory model is unchanged; the cost is purely cosmetic at the byte level (diff noise, line-anchored regex confusion).
@@ -22219,6 +22426,7 @@ Control poles coplanar (XY) but curve deviates significantly in Z. ShapeAnalysis
 - **Expected kernel behavior**: read tolerantly; treat any of `\n`, `\r\n`, or `\r` (classic Mac) as a line terminator. Diagnostics that report a line number should normalise.
 - **Notes**: **See also**: Wr042. Cousin of Le028 but emitted by writer rather than introduced by transit.- **Byte assertion**: contains(b'\r\n') and contains(b'\n')
 - **Byte assertion**: count(b'\r') >= 1
+- **Tier-3 assertion**: load == "ok"
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
 - **Severity**: P3
 - **Model impact**: Mixed line endings parse identically and the in-memory model is unchanged; line-counting in diagnostics may report wrong line numbers because terminator parity is inconsistent.
@@ -22234,6 +22442,7 @@ Control poles coplanar (XY) but curve deviates significantly in Z. ShapeAnalysis
 - **Notes**: A POSIX-text-file convention (text files end with newline) but not a Part-21 requirement.
 - **Byte assertion**: bytes_ends_with(b'END-ISO-10303-21;')
 - **Byte assertion**: not bytes_ends_with(b'\n')
+- **Tier-3 assertion**: load == "ok"
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P3
 - **Model impact**: The file body parses identically and the in-memory model is unchanged; concatenation with another file leaves two `ISO-10303-21;` markers on one line, which a sloppy magic-line scanner may then mishandle.
@@ -22249,6 +22458,7 @@ Control poles coplanar (XY) but curve deviates significantly in Z. ShapeAnalysis
 - **Notes**: Cosmetic only, but reviewer-fatiguing.
 - **Byte assertion**: matches(rb'\n\t') and matches(rb'\n ')
 - **Byte assertion**: contains(b'\t')
+- **Tier-3 assertion**: load == "ok"
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P3
 - **Model impact**: Bytes round-trip identically into the same in-memory model; only line/column reporting in tooling that assumes space indentation may be off.
@@ -22264,6 +22474,7 @@ Control poles coplanar (XY) but curve deviates significantly in Z. ShapeAnalysis
 - **Notes**: ISO 10303-21 §6 allows any of these forms; producer is sloppy but conforming.
 - **Byte assertion**: contains(b'1.0E-7') and contains(b'1e-07') and (contains(b'0.0000001') or contains(b'1.0e-007'))
 - **Byte assertion**: count(b'1') + count(b'e') + count(b'E') >= 5
+- **Tier-3 assertion**: load == "ok"
 - **OCC behavior**: emits a diagnostic but produces an empty result; outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P3
 - **Model impact**: All values parse identically into the same coordinates; downstream consumers that hash REAL streams for change-detection see false differences even though the geometry is byte-equivalent.
@@ -22279,6 +22490,7 @@ Control poles coplanar (XY) but curve deviates significantly in Z. ShapeAnalysis
 - **Notes**: Discoverable only by comparing pre- and post-round-trip files; the file as observed is plausible.
 - **Byte assertion**: matches(rb'\d\.\d{12,}')
 - **Byte assertion**: matches(rb'\.999999')
+- **Tier-3 assertion**: load == "ok"
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P2
 - **Model impact**: Repeated round-trips erode trailing-digit precision on coordinates and tolerances; the loaded geometry drifts from the original by an amount that grows monotonically with each export pass.
@@ -22294,6 +22506,7 @@ Control poles coplanar (XY) but curve deviates significantly in Z. ShapeAnalysis
 - **Notes**: Le023 covers this from the read side; Wr007 documents the producer-side root cause. **OCC behavior**: silently accepts the malformed file (no diagnostic, empty result); kernel mishandling is the documented signal here; the catalog claim above describes the desired future behavior, not what OCC does today.
 - **Byte assertion**: matches(rb"CARTESIAN_POINT\([^;]*,\(\d+,\d+,\d+,\d+")
 - **Byte assertion**: count(b',') >= 8
+- **Tier-3 assertion**: load == "ok"
 - **Model impact**: Lexer either splits the malformed REAL into two tokens (shifting all subsequent attributes by one, garbling the entity) or, with bizarre tolerance, accepts the wrong magnitude; coordinates load with values different from those the producer intended.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
@@ -22307,6 +22520,7 @@ Control poles coplanar (XY) but curve deviates significantly in Z. ShapeAnalysis
 - **Notes**: Cousin of Wr006 from the opposite direction.
 - **Byte assertion**: matches(rb'\d\.0{15,}')
 - **Byte assertion**: matches(rb'\.0{14,}')
+- **Tier-3 assertion**: load == "ok"
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P3
 - **Model impact**: All values parse to the same numbers and the model is unchanged; downstream byte-level diff/hash tooling sees noise even though the geometry is identical.
@@ -22322,6 +22536,7 @@ Control poles coplanar (XY) but curve deviates significantly in Z. ShapeAnalysis
 - **Notes**: AP242 marks `axis` and `ref_direction` as OPTIONAL in the EXPRESS; but most receivers expect both populated when the placement is referenced from a non-trivial geometry context. **OCC behavior**: silently substitutes the Z+X default convention rather than rejecting; this is the kernel mishandling the catalog above forbids.
 - **Byte assertion**: matches(rb'AXIS2_PLACEMENT_3D\([^;]*,#\d+,\$,\$\)')
 - **Byte assertion**: contains(b'$,$)') or matches(rb',\$\s*,\$\s*\)')
+- **Tier-3 assertion**: load == "ok"
 - **Model impact**: The required attribute slot is NULL on import; the constructed entity either fails validation or gets a kernel-invented default value that may differ from the producer's intent.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
@@ -22335,6 +22550,7 @@ Control poles coplanar (XY) but curve deviates significantly in Z. ShapeAnalysis
 - **Notes**: ISO 10303-21 §10 defines `*` semantics narrowly.
 - **Byte assertion**: matches(rb'CARTESIAN_POINT\([^;]*,\(\*\s*,')
 - **Byte assertion**: matches(rb'\(\*,')
+- **Tier-3 assertion**: load == "ok"
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: The `*` placeholder loads as an unresolved override; the carrying complex-entity records partial state that downstream operations dereference into wrong values.
@@ -22350,6 +22566,7 @@ Control poles coplanar (XY) but curve deviates significantly in Z. ShapeAnalysis
 - **Notes**: Strongly related to Wr020 (empty SHAPE_DEFINITION_REPRESENTATION chains). **OCC behavior**: silently accepts the empty face-list and produces a vacuous shell with no diagnostic; the kernel mishandling is the documented signal here.
 - **Byte assertion**: contains(b'CLOSED_SHELL') and matches(rb"CLOSED_SHELL\('[^']*',\(\)\)")
 - **Byte assertion**: matches(rb'CLOSED_SHELL\([^;]*\(\)\)') or matches(rb',\(\)\s*\)')
+- **Tier-3 assertion**: load == "ok"
 - **Model impact**: The empty aggregate constructs a vacuous shell/wire/loop; downstream BRep operations propagate a no-op shape that has no faces or edges, silently producing empty solids.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
@@ -22363,6 +22580,7 @@ Control poles coplanar (XY) but curve deviates significantly in Z. ShapeAnalysis
 - **Notes**: Discoverability is the main cost; correctness is unaffected.
 - **Byte assertion**: matches(rb'(?s)#1=.*#1000=.*#5=')
 - **Byte assertion**: count(b'#') >= 6
+- **Tier-3 assertion**: load == "ok"
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P3
 - **Model impact**: Random `#N` numbering parses identically into the same in-memory model; downstream byte-hash comparators see false differences across re-exports of structurally identical content.
@@ -22378,6 +22596,7 @@ Control poles coplanar (XY) but curve deviates significantly in Z. ShapeAnalysis
 - **Notes**: Lh006-class issue but writer-attributable.
 - **Byte assertion**: matches(rb'(?s)#1=AXIS2_PLACEMENT_3D[^;]+#5[^;]+;.*#5=CARTESIAN_POINT')
 - **Byte assertion**: matches(rb'(?s)#1=[^;]+#5')
+- **Tier-3 assertion**: load == "ok"
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P3
 - **Model impact**: Single-pass parsers fail at the forward reference and abort the load; two-pass parsers resolve correctly and the in-memory model is identical.
@@ -22393,6 +22612,7 @@ Control poles coplanar (XY) but curve deviates significantly in Z. ShapeAnalysis
 - **Notes**: Spec does not bound `#N`; ISO 10303-21 Ed.3 §5 defines it as an unbounded positive integer.
 - **Byte assertion**: matches(rb'#\d{7,}=')
 - **Byte assertion**: matches(rb'#\d{6,}=')
+- **Tier-3 assertion**: load == "ok"
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P3
 - **Model impact**: Sparse instance numbering parses identically; receivers that index `#N` into a flat array (instead of a hash table) over-allocate and may OOM on the load buffer even though the entity count is small.
@@ -22408,6 +22628,7 @@ Control poles coplanar (XY) but curve deviates significantly in Z. ShapeAnalysis
 - **Notes**: Lh010-class.
 - **Byte assertion**: matches(rb'(?s)#10\s*=\s*CARTESIAN_POINT.*#10\s*=\s*CARTESIAN_POINT')
 - **Byte assertion**: count(b'#10=') >= 2
+- **Tier-3 assertion**: load == "ok"
 - **OCC behavior**: silently accepts under one mode and emits a diagnostic under the other (no shape produced); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P2
 - **Model impact**: The two entities sharing an instance number race for the back-references; the resulting model attaches each cross-reference to whichever the resolver picks (often last-wins), so structurally identical files load with different topology.
@@ -22423,6 +22644,7 @@ Control poles coplanar (XY) but curve deviates significantly in Z. ShapeAnalysis
 - **Notes**: Common in Pro/E exports of complex parts with sketch history.
 - **Byte assertion**: count_entity_def(b'CARTESIAN_POINT') >= 10 or count_entity_def(b'LINE') >= 3 or count_entity_def(b'CIRCLE') >= 3
 - **Byte assertion**: count_entity_def(b'CARTESIAN_POINT') >= 5
+- **Tier-3 assertion**: load == "ok"
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal, warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must heal or emit a diagnostic this fixture.
 - **Severity**: P2
 - **Model impact**: Orphan construction entities load into the entity table but no top-level shape references them; they consume memory and confuse instance-count-based heuristics but do not appear in the geometric output.
@@ -22438,6 +22660,7 @@ Control poles coplanar (XY) but curve deviates significantly in Z. ShapeAnalysis
 - **Notes**: Schema-version-agnostic; both AP203 and AP242 permit tessellated representations.
 - **Byte assertion**: contains(b'TESSELLATED_SHELL') or contains(b'TRIANGULATED_FACE')
 - **Byte assertion**: count_entity_def(b'TESSELLATED_SHELL_REPRESENTATION') >= 1 or count_entity_def(b'TRIANGULATED_FACE') >= 1
+- **Tier-3 assertion**: load == "ok"
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal, warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must heal or emit a diagnostic this fixture.
 - **Severity**: P2
 - **Model impact**: Analytical surface entities (`CYLINDRICAL_SURFACE`, `B_SPLINE_SURFACE`) are replaced with mesh approximations; the in-memory model is now a faceted shell instead of an exact BRep, and downstream boolean/offset operations produce stairstepped results.
@@ -22452,6 +22675,7 @@ Control poles coplanar (XY) but curve deviates significantly in Z. ShapeAnalysis
 - **Expected kernel behavior**: Warn and accept: emit a warning that the file describes a product but contains no geometry; do not reject (well-formed empty product is permitted).
 - **Notes**: A "successful empty load" is the most confusing failure mode for end users.
 - **Byte assertion**: matches(rb"SHAPE_REPRESENTATION\('[^']*',\(#\d+\),#")
+- **Tier-3 assertion**: load == "ok"
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject, warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must reject or emit a diagnostic this fixture.
 - **Severity**: P1
 - **Model impact**: The placeholder representation chain loads with no geometric content; downstream consumers see an empty product even though the assembly metadata claims geometry exists.
@@ -22467,6 +22691,7 @@ Control poles coplanar (XY) but curve deviates significantly in Z. ShapeAnalysis
 - **Closure intent**: solid
 - **Notes**: Visible in §12.6 / §12.8 colour-bound entries; Wr019 documents the writer-side root cause. Bytes alone are insufficient to demonstrate this defect; needs sibling input fixture. Tagged provenance_tier: requires-sibling-pair.
 - **Byte assertion**: count_entity_def(b'STYLED_ITEM') == 0 and count_entity_def(b'COLOUR_RGB') == 0
+- **Tier-3 assertion**: load == "ok"
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must emit a diagnostic this fixture.
 - **Severity**: P1
 - **Model impact**: Color/style attributes are absent from the loaded model; geometry is intact but every face renders in the receiver's default appearance.
@@ -22482,6 +22707,7 @@ Control poles coplanar (XY) but curve deviates significantly in Z. ShapeAnalysis
 - **Notes**: Subset of the broader "metadata stripped on re-export" pattern.
 - **Byte assertion**: contains(b"PRODUCT('BREP_")
 - **Byte assertion**: count(b"BREP_001") >= 1 or contains(b'BREP_')
+- **Tier-3 assertion**: load == "ok"
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: Feature labels and product names load as empty strings; geometry is intact but human-readable identifiers on every entity are gone.
@@ -22496,6 +22722,7 @@ Control poles coplanar (XY) but curve deviates significantly in Z. ShapeAnalysis
 - **Expected kernel behavior**: Heal and accept (if AP242), warn and accept (if AP203): preserve PMI on round-trip if the output schema supports it (AP242); emit a loud warning when the output schema is AP203 (no PMI representation possible).
 - **Notes**: §12.7 covers PMI input defects; Wr021 covers writer-side data loss. Bytes alone are insufficient to demonstrate this defect; needs sibling input fixture. Tagged provenance_tier: requires-sibling-pair.
 - **Byte assertion**: count_entity_def(b'GEOMETRIC_TOLERANCE') == 0 and count_entity_def(b'DIMENSIONAL_LOCATION') == 0
+- **Tier-3 assertion**: load == "ok"
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal, warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must heal or emit a diagnostic this fixture.
 - **Severity**: P1
 - **Model impact**: PMI/GD&T entities are absent from the loaded model; the BRep is intact but no dimensions, tolerances, or datum references attach to it.
@@ -22510,6 +22737,7 @@ Control poles coplanar (XY) but curve deviates significantly in Z. ShapeAnalysis
 - **Expected kernel behavior**: Heal and accept: preserve saved-view entities on round-trip when the output schema supports them.
 - **Notes**: AP242-specific; AP203 has no saved-view representation. Bytes alone are insufficient to demonstrate this defect; needs sibling input fixture. Tagged provenance_tier: requires-sibling-pair.
 - **Byte assertion**: count_entity_def(b'CAMERA_MODEL_D3') == 0 and count_entity_def(b'PRESENTATION_VIEW') == 0
+- **Tier-3 assertion**: load == "ok"
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: Saved-view/camera entities are absent; the loaded model has no preferred view associations, so PMI that depended on a view orientation displays at default.
@@ -22524,6 +22752,7 @@ Control poles coplanar (XY) but curve deviates significantly in Z. ShapeAnalysis
 - **Expected kernel behavior**: recompute and emit validation properties on write, or pass through input properties unchanged with a warning if the kernel cannot verify them.
 - **Notes**: prostep ivip CAx-IF Recommended Practice for Validation Properties. Bytes alone are insufficient to demonstrate this defect; needs sibling input fixture. Tagged provenance_tier: requires-sibling-pair.
 - **Byte assertion**: count_entity_def(b'GEOMETRIC_VALIDATION_PROPERTY') == 0
+- **Tier-3 assertion**: load == "ok"
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must emit a diagnostic this fixture.
 - **Severity**: P1
 - **Model impact**: Validation property entities are absent; the receiver cannot cross-check the loaded volume/area/centroid against the producer's recorded values.
@@ -22539,6 +22768,7 @@ Control poles coplanar (XY) but curve deviates significantly in Z. ShapeAnalysis
 - **Notes**: §12.6 covers NAUO defects; Wr024 attributes them to writer.
 - **Byte assertion**: count(b'NEXT_ASSEMBLY_USAGE_OCCURRENCE') >= 4
 - **Byte assertion**: count_entity_def(b'NEXT_ASSEMBLY_USAGE_OCCURRENCE') >= 4
+- **Tier-3 assertion**: load == "ok"
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: The NAUO assembly tree flattens; multi-level parent/child links collapse into a single tier; sub-components that should have appeared at depth load at the assembly root.
@@ -22554,6 +22784,7 @@ Control poles coplanar (XY) but curve deviates significantly in Z. ShapeAnalysis
 - **Notes**: Distinct kernel-branch from Wr024 (flattening); this preserves depth but rotates the tree.
 - **Byte assertion**: contains(b'screw->plate')
 - **Byte assertion**: contains(b"'screw") or contains(b"'plate")
+- **Tier-3 assertion**: load == "ok"
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: The assembly graph re-roots so a former component becomes the top product; sub-components attach to the wrong parent and the loaded assembly tree differs structurally from the producer's intent.
@@ -22568,6 +22799,7 @@ Control poles coplanar (XY) but curve deviates significantly in Z. ShapeAnalysis
 - **Expected kernel behavior**: Heal and accept: normalize / avoid behaviour-altering vendor sniffing; if vendor-specific compatibility is needed, expose it as an explicit user opt-in.
 - **Notes**: Sender-attribution in `FILE_DESCRIPTION` is a long-standing interop hazard. Bytes alone are insufficient to demonstrate this defect; needs sibling input fixture. Tagged provenance_tier: requires-sibling-pair.
 - **Byte assertion**: contains(b'CAD-System-X')
+- **Tier-3 assertion**: load == "ok"
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: Vendor-specific FILE_DESCRIPTION strings load as opaque metadata; receivers that key behavior on these strings (e.g., bug-compat heuristics) match against the wrong producer signature.
@@ -22583,6 +22815,7 @@ Control poles coplanar (XY) but curve deviates significantly in Z. ShapeAnalysis
 - **Notes**: §12.5 covers unit defects; Wr027 documents producer-side root cause.
 - **Byte assertion**: contains(b"'INCH'") and contains(b"part in mm")
 - **Byte assertion**: contains(b"'INCH'")
+- **Tier-3 assertion**: load == "ok"
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal, warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must heal or emit a diagnostic this fixture.
 - **Severity**: P1
 - **Model impact**: Header metadata claims one unit and the DATA section uses another; the in-memory geometry loads at DATA-section scale (correct), but tools that read the header description string for unit metadata pick the wrong scale.
@@ -22597,6 +22830,7 @@ Control poles coplanar (XY) but curve deviates significantly in Z. ShapeAnalysis
 - **Expected kernel behavior**: Heal and accept: parse normally; on re-emit, normalize / populate at least `originating_system` with the kernel's identity.
 - **Notes**: Audit-trail loss but no functional consequence.
 - **Byte assertion**: matches(rb"(?s)FILE_NAME\([^;]*\(''\)[^;]*'','',''")
+- **Tier-3 assertion**: load == "ok"
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: FILE_NAME author and originating-system fields load as empty/placeholder strings; provenance tracking that depends on these fields silently fails.
@@ -22612,6 +22846,7 @@ Control poles coplanar (XY) but curve deviates significantly in Z. ShapeAnalysis
 - **Notes**: Le017 covers from read side; Wr029 attributes to writer. **OCC behavior**: silently accepts the broken-string file (no diagnostic, empty result); kernel mishandling; not what kernels should do.
 - **Byte assertion**: matches(rb"FILE_DESCRIPTION\(\('[^']*\n[^']*'")
 - **Byte assertion**: matches(rb"FILE_DESCRIPTION\(\(\s*'[^']*\n")
+- **Tier-3 assertion**: load == "ok"
 - **Model impact**: Embedded control byte either terminates the description string at the line break (loading only the first line) or aborts the lexer; either way the FILE_DESCRIPTION attribute carries less content than the producer wrote.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
@@ -22625,6 +22860,7 @@ Control poles coplanar (XY) but curve deviates significantly in Z. ShapeAnalysis
 - **Notes**: Cousin of Wr031 in the opposite direction.
 - **Byte assertion**: matches(rb"FILE_SCHEMA\(\(\s*'[^']+'\s*,\s*'[^']+'")
 - **Byte assertion**: count(b"','") >= 2
+- **Tier-3 assertion**: load == "ok"
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal, warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must heal or emit a diagnostic this fixture.
 - **Severity**: P2
 - **Model impact**: FILE_SCHEMA over-claims; receivers that expect to find the listed schema's entities skip the file or pre-allocate handlers that go unused.
@@ -22639,6 +22875,7 @@ Control poles coplanar (XY) but curve deviates significantly in Z. ShapeAnalysis
 - **Expected kernel behavior**: Warn and accept: preserve the input schema on round-trip when possible; emit a loud warning on any schema downgrade that drops entities.
 - **Notes**: §12.7 covers PMI loss; Wr031 covers the schema-level root cause. Bytes alone are insufficient to demonstrate this defect; needs sibling input fixture. Tagged provenance_tier: requires-sibling-pair.
 - **Byte assertion**: matches(rb"FILE_SCHEMA\(\(\s*'AUTOMOTIVE_DESIGN")
+- **Tier-3 assertion**: load == "ok"
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must emit a diagnostic this fixture.
 - **Severity**: P1
 - **Model impact**: AP242-specific entity types are dropped during downgrade emission; the loaded model contains only the geometric subset and PMI/kinematics/manufacturing data is absent.
@@ -22653,6 +22890,7 @@ Control poles coplanar (XY) but curve deviates significantly in Z. ShapeAnalysis
 - **Expected kernel behavior**: emit the schema actually used; do not synthesise empty PMI containers to satisfy "looks like AP242" expectations.
 - **Notes**: Inverse of Wr031.
 - **Byte assertion**: contains(b'AP242') and (count_entity_def(b'GEOMETRIC_TOLERANCE_RELATIONSHIP') >= 1 or contains(b"GEOMETRIC_TOLERANCE_RELATIONSHIP('','',$,$)"))
+- **Tier-3 assertion**: load == "ok"
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
 - **Severity**: P1
 - **Model impact**: Synthesized AP242 stubs for AP203 input load as empty PMI/kinematics entities; the loaded model has placeholder structure with no actual annotation data.
@@ -22668,6 +22906,7 @@ Control poles coplanar (XY) but curve deviates significantly in Z. ShapeAnalysis
 - **Notes**: Cousin of Lh004-class. **OCC behavior**: silently accepts the unparseable schema-version tuple (no warning); kernel mishandling; the catalog above forbids treating unknown as known.
 - **Byte assertion**: matches(rb'\b99\b.*\}')
 - **Byte assertion**: matches(rb'\b99\b')
+- **Tier-3 assertion**: load == "ok"
 - **Model impact**: Schema version is unrecognised; receivers either reject the file or fall back to the last-known compatible edition, which may decode some attributes incorrectly.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
@@ -22681,6 +22920,7 @@ Control poles coplanar (XY) but curve deviates significantly in Z. ShapeAnalysis
 - **Notes**: Symptom-match search-term: "STEP imported on its side".
 - **Byte assertion**: contains(b'Y-up') or contains(b'Z-up')
 - **Byte assertion**: contains(b'Y-up')
+- **Tier-3 assertion**: load == "ok"
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal, warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must heal or emit a diagnostic this fixture.
 - **Severity**: P2
 - **Model impact**: Coordinates load with axes swapped; the geometric shape is rotated 90 degrees and downstream operations that assume Z-up see the model lying on its side.
@@ -22696,6 +22936,7 @@ Control poles coplanar (XY) but curve deviates significantly in Z. ShapeAnalysis
 - **Notes**: §12.5 covers unit defects from receiver perspective.
 - **Byte assertion**: matches(rb'CARTESIAN_POINT\([^;]*1000(?:\.0)?,1000') or contains(b'1000.0,1000.0,1000.0')
 - **Byte assertion**: matches(rb'1000') and contains(b'.MILLI.')
+- **Tier-3 assertion**: load == "ok"
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: Numeric coordinates load at 1000× the producer's intended magnitude; the loaded shape has the right topology at the wrong scale.
@@ -22711,6 +22952,7 @@ Control poles coplanar (XY) but curve deviates significantly in Z. ShapeAnalysis
 - **Notes**: Common in writers from a half-space-CSG kernel.
 - **Byte assertion**: matches(rb'ADVANCED_FACE\([^;]*\.F\.\)')
 - **Byte assertion**: count(b'.F.') >= 1
+- **Tier-3 assertion**: load == "ok"
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P2
 - **Model impact**: Solid orientation flips on re-export; loaded shells have inward-facing normals where outward was intended, and downstream booleans/rendering treat the inside as the outside.
@@ -22726,6 +22968,7 @@ Control poles coplanar (XY) but curve deviates significantly in Z. ShapeAnalysis
 - **Notes**: Twi-class read-side; Wr037 attributes to writer.
 - **Byte assertion**: count_entity_def(b'VERTEX_POINT') >= 4
 - **Byte assertion**: count(b'VERTEX_POINT') >= 4
+- **Tier-3 assertion**: load == "ok"
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
 - **Severity**: P1
 - **Model impact**: Seam edges load as ordinary edges with duplicate vertex pairs; the cylindrical/spherical face is no longer marked closed, so the parent shell is open and MakeSolid produces an invalid solid.
@@ -22741,6 +22984,7 @@ Control poles coplanar (XY) but curve deviates significantly in Z. ShapeAnalysis
 - **Notes**: Drift-detection test that flags this is the canonical CI signal.
 - **Byte assertion**: matches(rb'(?s)#42.*#17.*#99.*#1=') or matches(rb'#\d+=APPLICATION_CONTEXT')
 - **Byte assertion**: count(b'#') >= 5
+- **Tier-3 assertion**: load == "ok"
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P3
 - **Model impact**: Renumbered entities load to identical in-memory model but byte-level equivalence is lost; round-trip diff/hash tooling reports the file as changed.
@@ -22756,6 +23000,7 @@ Control poles coplanar (XY) but curve deviates significantly in Z. ShapeAnalysis
 - **Notes**: Subtle: parsers handle either order, but file-equivalence tests fail.
 - **Byte assertion**: matches(rb'\(\s*SI_UNIT\([^)]+\)\s+NAMED_UNIT\(\*\)\s+LENGTH_UNIT\(\)\s*\)')
 - **Byte assertion**: matches(rb'\(\s*SI_UNIT\(')
+- **Tier-3 assertion**: load == "ok"
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P3
 - **Model impact**: Subtype-stack re-ordering does not change the in-memory model; downstream byte-hash comparators see the file as different even though the loaded entity is identical.
@@ -22773,6 +23018,7 @@ Control poles coplanar (XY) but curve deviates significantly in Z. ShapeAnalysis
 - **Byte assertion**: count(b"=CARTESIAN_POINT('',") >= 1
 - **Byte assertion**: count(b"=DIRECTION('',") >= 1
 - **Byte assertion**: count(b"=CARTESIAN_POINT('',") + count(b"=DIRECTION('',") + count(b"=PLANE('',") >= 3
+- **Tier-3 assertion**: load == "ok"
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: Every entity loads with empty `name` attribute; geometry is intact but human-readable names that the producer left implicit are now explicitly empty strings.
@@ -22788,6 +23034,7 @@ Control poles coplanar (XY) but curve deviates significantly in Z. ShapeAnalysis
 - **Notes**: Producer-side root cause for Le055. **See also**: Le055, Le056.
 - **Byte assertion**: contains(b'.TRUE.') and contains(b'.FALSE.')
 - **Byte assertion**: count(b'.TRUE.') >= 1 and count(b'.FALSE.') >= 1
+- **Tier-3 assertion**: load == "ok"
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P3
 - **Model impact**: Bytes parse identically into the same in-memory enum value; downstream byte-level diff tools see noise even though the loaded enumeration is identical.
@@ -22803,6 +23050,7 @@ Control poles coplanar (XY) but curve deviates significantly in Z. ShapeAnalysis
 - **Notes**: **See also**: Wr002, Le028.
 - **Byte assertion**: contains(b';\r\n') and contains(b';\n')
 - **Byte assertion**: count(b'\r\n') >= 1 and count(b'\n') >= 5
+- **Tier-3 assertion**: load == "ok"
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
 - **Severity**: P3
 - **Model impact**: Mixed line terminators parse identically; line-counting in diagnostics may report wrong line numbers because terminator parity is inconsistent.
@@ -22820,6 +23068,7 @@ Control poles coplanar (XY) but curve deviates significantly in Z. ShapeAnalysis
 - **Notes**: Producer-side root cause for Le003 (now merged into Le021), Le050, Ad058. **See also**: Le050, Le021. Provenance tier: requires-sibling-pair — bytes alone (this fixture's body) demonstrate the defect; the fuller demonstration is the differential between the in-memory string and the bytes the writer emits. **OCC behavior**: silently accepts (no diagnostic, empty result); catalog disallows silent-accept. Kernel-bug witnessed: receivers enforcing the spec must reject (or surface a diagnostic) — silent acceptance defeats the catalog's stated invariant.
 - **Byte assertion**: contains(b"'2;1'") and matches(rb'[\xC0-\xDF][\x80-\xBF]')
 - **Byte assertion**: matches(rb'[\xC0-\xF7][\x80-\xBF]')
+- **Tier-3 assertion**: load == "ok"
 - **Model impact**: Raw UTF-8 in an Ed.2-declared file is decoded against ISO-8859-1 by Ed.2-strict readers; the loaded attribute string carries mojibake instead of the producer's intended characters.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
@@ -22833,6 +23082,7 @@ Control poles coplanar (XY) but curve deviates significantly in Z. ShapeAnalysis
 - **Notes**: Subset of Wr035 but with concrete inch-vs-mm symptom. **See also**: Wr035, U015. Synonyms: "STEP file marked inch but model is mm-sized", "unit dropdown changes label only", "inch unit but coords are mm", "writer forgot to convert when changing unit".
 - **Byte assertion**: contains(b'INCH')
 - **Byte assertion**: contains(b'CARTESIAN_POINT') and contains(b'25.4')
+- **Tier-3 assertion**: load == "ok"
 - **OCC behavior**: silently accepts (no diagnostic, scaled result); outside catalog's allowed set ({heal, warn-and-proceed}).
 - **Severity**: P2
 - **Model impact**: LENGTH_UNIT context says inch but coordinates are in mm; receivers that honor the unit context load the geometry at 25.4× the intended scale.
@@ -22848,6 +23098,7 @@ Control poles coplanar (XY) but curve deviates significantly in Z. ShapeAnalysis
 - **Notes**: Cousin of Wr044 (inch case) and Wr035 (scale-applied-twice). Synonyms: "metre unit but mm values", "unit field decorative", "STEP exporter doesn't convert when user changes units".
 - **Byte assertion**: contains(b'.METRE.') and contains(b'10.0')
 - **Byte assertion**: contains(b'CARTESIAN_POINT')
+- **Tier-3 assertion**: load == "ok"
 - **OCC behavior**: silently accepts (loads with mismatched scale); outside catalog's allowed set ({heal}).
 - **Severity**: P1
 - **Model impact**: Unit name changed without rescaling coordinates; receivers honor the new unit and load the geometry at the wrong scale relative to the producer's intent.
@@ -22863,6 +23114,7 @@ Control poles coplanar (XY) but curve deviates significantly in Z. ShapeAnalysis
 - **Notes**: **See also**: Wr025, A024. Synonyms: "Placement ignored on STEP export", "single-body export drops orientation", "compound workaround needed for placement", "exported part lands at wrong position".
 - **Byte assertion**: contains(b'AXIS2_PLACEMENT_3D')
 - **Byte assertion**: contains(b'MANIFOLD_SOLID_BREP')
+- **Tier-3 assertion**: load == "ok"
 - **OCC behavior**: silently accepts; outside catalog's allowed set ({heal, warn-and-proceed}).
 - **Severity**: P1
 - **Model impact**: Body placement transform is dropped on export; the part loads at the part-coordinate origin instead of its assembly position, so its location relative to other components is wrong.
@@ -22878,6 +23130,7 @@ Control poles coplanar (XY) but curve deviates significantly in Z. ShapeAnalysis
 - **Notes**: Regression introduced in FreeCAD 1.2.0dev. Synonyms: "BOPAlog_AlertBadPositioning during STEP import", "STEP import broken Unknown C++ exception", "OCC fuse raised warning on STEP import", "scrubEdges fails on imported STEP".
 - **Byte assertion**: count_entity_def(b'MANIFOLD_SOLID_BREP') >= 2
 - **Byte assertion**: contains(b'AXIS2_PLACEMENT_3D')
+- **Tier-3 assertion**: load == "ok"
 - **OCC behavior**: silently accepts in some configs, exception-thrown in others; outside catalog's allowed set ({heal, warn-and-proceed}).
 - **Severity**: P2
 - **Model impact**: BOP residual placement positions load with redundant identity transforms in the placement chain; loaded geometry is correct but the transform stack is bloated with no-op multiplications.
@@ -22893,6 +23146,7 @@ Control poles coplanar (XY) but curve deviates significantly in Z. ShapeAnalysis
 - **Notes**: **See also**: P028, A018. Synonyms: "STEP/STEPZ crash exporting boolean", "TKXDESTEP segfault on boolean export", "writer dies on STYLED_ITEM map", "chamfer workaround for boolean export crash".
 - **Byte assertion**: contains(b'STYLED_ITEM')
 - **Byte assertion**: contains(b'MANIFOLD_SOLID_BREP')
+- **Tier-3 assertion**: load == "ok"
 - **OCC behavior**: silently accepts or signal(11); outside catalog's allowed set ({reject, warn-and-proceed}).
 - **Severity**: P0
 - **Model impact**: Writer aborts during color-attribution before the file is fully serialized; downstream readers either get a truncated file or no output at all.
@@ -22909,6 +23163,7 @@ Control poles coplanar (XY) but curve deviates significantly in Z. ShapeAnalysis
 - **Notes**: Synonyms: "subtractive pipe leaves sphere at joint", "right-angle pipe joint has invisible ball", "STEP export shows extra material in pipe corners", "construction residual sphere in joint".
 - **Byte assertion**: contains(b'SPHERICAL_SURFACE')
 - **Byte assertion**: count_entity_def(b'SHELL_BASED_SURFACE_MODEL') >= 1 or count_entity_def(b'CLOSED_SHELL') >= 2
+- **Tier-3 assertion**: load == "ok"
 - **OCC behavior**: silently accepts (renders extra geometry); outside catalog's allowed set ({heal, warn-and-proceed}).
 - **Severity**: P2
 - **Model impact**: The CSG-residual sphere material persists as hidden inner geometry inside the loaded solid; volume/mass calculations include the spurious material, and slicing through the joint reveals the hidden sphere.
@@ -22924,6 +23179,7 @@ Control poles coplanar (XY) but curve deviates significantly in Z. ShapeAnalysis
 - **Notes**: **See also**: Wr035, U015, Wr044. Synonyms: "STEP export doubles all coordinates", "20mm becomes 40mm on import", "two-times scale factor on STEP export", "writer applies scale twice".
 - **Byte assertion**: contains(b'40.0') and contains(b'MILLI')
 - **Byte assertion**: contains(b'CARTESIAN_POINT')
+- **Tier-3 assertion**: load == "ok"
 - **OCC behavior**: silently accepts; outside catalog's allowed set ({heal}).
 - **Severity**: P1
 - **Model impact**: Coordinates load at 2× the producer's intended magnitude (or whatever ratio the doubled scale produces); the geometric shape is correct but at the wrong size.
@@ -22939,6 +23195,7 @@ Control poles coplanar (XY) but curve deviates significantly in Z. ShapeAnalysis
 - **Notes**: **See also**: M005, M022, N019, N050. Synonyms: "BRL-CAD step-g imports but g-stl emits empty", "0 triangles written silently", "tessellation failure on sliver face", "importer/tessellator tolerance disagreement", "STEP→.g→.stl produces empty STL no diagnostic".
 - **Byte assertion**: contains(b'BEZIER_SURFACE')
 - **Byte assertion**: contains(b'0.000003') or contains(b'3.E-6') or contains(b'3e-06')
+- **Tier-3 assertion**: load == "ok"
 - **OCC behavior**: silent-accept observed (catalog allowed: {reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: BRep loads correctly but the downstream tessellator runs on a degenerate input (zero-length edge, missing pcurve) and emits an empty mesh; STL/OBJ output is empty even though the source BRep is present.
@@ -23114,6 +23371,7 @@ Control poles coplanar (XY) but curve deviates significantly in Z. ShapeAnalysis
 - **Notes**: **See also**: Pf001, Pf013. Synonyms: "100% CPU and OOM on STEP load", "NUC12 STEP file hangs FreeCAD", "deeply-nested assembly graph blows memory", "MAPPED_ITEM closure explodes".
 - **Byte assertion**: count_entity_def(b'NEXT_ASSEMBLY_USAGE_OCCURRENCE') >= 5
 - **Byte assertion**: count_entity_def(b'MAPPED_ITEM') >= 4
+- **Tier-3 assertion**: load == "ok"
 - **OCC behavior**: silently accepts on small fixture; large-fixture behaviour is OOM. Provenance tier: requires-scaling — fixture is a scaled-down representative.
 - **Severity**: P0
 - **Model impact**: Parser/loader resource usage scales pathologically with the input size; load time grows quadratically or memory blows up, and on bounded systems the load is killed before completing.
@@ -23211,6 +23469,7 @@ Control poles coplanar (XY) but curve deviates significantly in Z. ShapeAnalysis
 **Expected validation**: CheckSplittingVertices should report vertex count increases; no degenerate inner loops introduced; edge loop closure maintained.
 
 ---
+- **Tier-3 assertion**: load == "ok"
 
 ### Tfa077 — FixSmallAreaWire small-area early-exit
 
@@ -23227,6 +23486,7 @@ Control poles coplanar (XY) but curve deviates significantly in Z. ShapeAnalysis
 **Expected validation**: Wire count should decrease; no outer bound remains; face should be marked for deletion or context cleanup.
 
 ---
+- **Tier-3 assertion**: load == "ok"
 
 ### Tfa078 — FixLoopWire intersecting-loops merge
 
@@ -23243,6 +23503,7 @@ Control poles coplanar (XY) but curve deviates significantly in Z. ShapeAnalysis
 **Expected validation**: Edge loop closure maintained; no gap-at-merge introduced; self-touch validation catches tangent point as potential singularity.
 
 ---
+- **Tier-3 assertion**: load == "ok"
 
 ### Tfa079 — CheckSplittingVertices vertex-on-edge midspan
 
@@ -23274,6 +23535,7 @@ Control poles coplanar (XY) but curve deviates significantly in Z. ShapeAnalysis
 **Expected kernel behavior**: Kernel should sample surface normals at interior grid points (u, v) ∈ (0,1)²; detect sign flip via scalar product < 0; report twist angle > 90°.
 
 **Expected validation**: Twist flag set to true; interior point count > threshold; at least one scalar product < 0 at non-boundary location.
+- **Tier-3 assertion**: load == "ok"
 
 ### Tfa081 — ShapeFix_Face.FixOrientation reversed-normal heal
 Face with inward-pointing surface normal (same_sense=.F.). Healer detects via outer-wire winding direction and flips to outward orientation. Planar square boundary, defect is orientation flag mismatch.
@@ -23281,6 +23543,7 @@ Face with inward-pointing surface normal (same_sense=.F.). Healer detects via ou
 
 ### Tfa082 — ShapeAnalysis_CheckSmallFace.CheckPin pin-direction classification
 Planar face with sharp pin singularity along V parametric axis (vertical). Classifier assumes pin aligns with U-parameter axis; axis-agnostic detection required. NURBS 3x2 poles with near-zero angle at boundary.
+- **Tier-3 assertion**: load == "ok"
 
 ### Tfa083 — ShapeFix_Face.FixNotchedEdges near-tangent notch detection
 Face boundary with two consecutive edges forming 179.8-degree angle (near-reversal notch). Tangent-angle comparison fails for near-tangent threshold. Small notch bulge on bottom edge of rectangle.
@@ -23358,6 +23621,7 @@ Outer wire passes through a vertex that is the endpoint of an inner wire, creati
 **Test corpus:** wave 12 – shape-healing face coverage  
 
 ---
+- **Tier-3 assertion**: load == "ok"
 
 ### Tfa095 — ShapeFix_Face.FixPeriodicDegenerated SURFACE_OF_REVOLUTION apex
 
@@ -23411,6 +23675,7 @@ Full SURFACE_OF_REVOLUTION (360-degree cylinder with apex) with degenerate edge 
 **Expected behavior**: Correct detection of v-parameter inversion on cones; flag as twisted or auto-reorient.
 
 ---
+- **Tier-3 assertion**: load == "ok"
 
 ### Tfa100 — ShapeFix_Face.FixWiresTwoCoincEdges with seam
 
@@ -23419,6 +23684,7 @@ Full SURFACE_OF_REVOLUTION (360-degree cylinder with apex) with degenerate edge 
 **Fixture**: Cylinder (radius 5 mm, axis z). Two coplanar wires: outer circle at v=0 (z=0) and inner circle at v=2 (z=2), both arcs crossing the seam at u=0. Second arc in each loop reuses seam geometry. CIRCLE entity shared across both wires' seam-crossing edges.
 
 **Expected behavior**: Seam edges flagged as coincident across wires; merge or diagnostic error raised.
+- **Tier-3 assertion**: load == "ok"
 
 ### Tfa101 — ShapeFix_Face.FixAddNaturalBound torus complete-surface
 
@@ -23539,6 +23805,7 @@ Full SURFACE_OF_REVOLUTION (360-degree cylinder with apex) with degenerate edge 
 **Sources**: OCCT `ShapeFix_Face::FixSmallAreaWire` (~line 2332); `ShapeAnalysis_CheckSmallFace` threshold logic.
 
 ---
+- **Tier-3 assertion**: load == "ok"
 
 ### Tfa112 — ShapeAnalysis_CheckSmallFace.CheckTwisted bspline-saddle
 
@@ -23551,6 +23818,7 @@ Full SURFACE_OF_REVOLUTION (360-degree cylinder with apex) with degenerate edge 
 **Sources**: OCCT `ShapeAnalysis_CheckSmallFace::CheckTwisted` (~line 975); scalar-product normal-inversion test.
 
 ---
+- **Tier-3 assertion**: load == "ok"
 
 ### Tfa113 — ShapeFix_Face.FixOrientation 8-face polyhedron
 
@@ -23563,6 +23831,7 @@ Full SURFACE_OF_REVOLUTION (360-degree cylinder with apex) with degenerate edge 
 **Sources**: OCCT `ShapeFix_Face::FixOrientation` (~line TBD); face-cycle traversal loop termination.
 
 ---
+- **Tier-3 assertion**: load == "ok"
 
 ### Tfa114 — ShapeAnalysis_CheckSmallFace.CheckSpotFace zero-radius
 
@@ -23575,6 +23844,7 @@ Full SURFACE_OF_REVOLUTION (360-degree cylinder with apex) with degenerate edge 
 **Sources**: OCCT `ShapeAnalysis_CheckSmallFace::CheckSpotFace` (~line 73); bounding-circle computation and radius threshold.
 
 ---
+- **Tier-3 assertion**: load == "ok"
 
 ### Tfa115 — ShapeFix_Face.FixPeriodicDegenerated revolution-axis edge
 
@@ -23720,6 +23990,7 @@ Face on B-spline surface with C0 tangent discontinuity. The surface normal calcu
 **Defect class**: `ShapeAnalysis_CheckSmallFace.CheckTwisted_at975` (line 1015).
 
 ---
+- **Tier-3 assertion**: load == "ok"
 
 ### Tfa133 — FixOrientation outer-bound-but-inner-correct
 
@@ -23830,6 +24101,7 @@ Planar face (10×10 square) with two interior splitter wires: vertical line (x=2
 **Expected vs Actual**: FixOrientation should detect correct 3D winding and leave wire unchanged. If algorithm relies only on parametric (u,v) tests, it may incorrectly classify wire as reversed.
 
 ---
+- **Tier-3 assertion**: load == "ok"
 
 ### Tfa147 — ShapeAnalysis_CheckSmallFace.CheckTwisted face-on-plane
 
@@ -23840,6 +24112,7 @@ Planar face (10×10 square) with two interior splitter wires: vertical line (x=2
 **Expected vs Actual**: CheckTwisted should skip or return false for planar faces since twist is undefined. If algorithm applies twist test to planes, it produces spurious TWISTED verdict.
 
 ---
+- **Tier-3 assertion**: load == "ok"
 
 ### Tfa148 — ShapeFix_Face.FixSmallAreaWire min-area-threshold-collision
 
@@ -23850,6 +24123,7 @@ Planar face (10×10 square) with two interior splitter wires: vertical line (x=2
 **Expected vs Actual**: Non-strict comparison (area <= threshold) removes wire; strict (area < threshold) keeps it. Floating-point rounding near threshold causes non-deterministic behavior.
 
 ---
+- **Tier-3 assertion**: load == "ok"
 
 ### Tfa149 — ShapeAnalysis_CheckSmallFace.CheckSplittingVertices wire-not-closed
 
@@ -23860,6 +24134,7 @@ Planar face (10×10 square) with two interior splitter wires: vertical line (x=2
 **Expected vs Actual**: CheckSplittingVertices should fail or skip open wires since splitting-vertex analysis assumes topological closure. If algorithm proceeds on open wire, it generates inconsistent verdicts.
 
 ---
+- **Tier-3 assertion**: load == "ok"
 
 ### Tfa150 — ShapeFix_Face.FixPeriodicDegenerated B-spline-revolution
 
@@ -23868,26 +24143,32 @@ Planar face (10×10 square) with two interior splitter wires: vertical line (x=2
 **Trigger**: Call FixPeriodicDegenerated() on single-wire face with degree-3 B-spline surface approximating cone (apex at origin, profile curve along u=0 seam).
 
 **Expected vs Actual**: FixPeriodicDegenerated should construct apex curve and adjust wire orientation assuming conic geometry. If algorithm assumes analytic properties (e.g., GetCone()), it fails on B-spline and returns error or applies wrong transformation.
+- **Tier-3 assertion**: load == "ok"
 
 ### Tfa151 — ShapeFix_Face.FixLoopWire one-inner-touches-outer
 
 Inner wire has a vertex that coincides with the outer wire. FixLoopWire's nested-loop assumption that inner loops never touch outer geometry fails, causing incorrect topology repair.
+- **Tier-3 assertion**: load == "ok"
 
 ### Tfa152 — ShapeAnalysis_CheckSmallFace.CheckSpotFace exactly-zero-area
 
 Face with degenerate geometry producing area=0.0. CheckSpotFace's threshold check treats zero area as "definitely small" without distinguishing manufacturing tolerance from true degeneracy.
+- **Tier-3 assertion**: load == "ok"
 
 ### Tfa153 — ShapeFix_Face.FixSmallAreaWire computational-overflow
 
 Face with very large vertex coordinates (1e15). FixSmallAreaWire's area calculation overflows float precision when scaling by coordinates near machine limits.
+- **Tier-3 assertion**: load == "ok"
 
 ### Tfa154 — ShapeAnalysis_CheckSmallFace.CheckTwisted disconnected-wire-region
 
 Face whose wire has a disconnected region (open chain inside an otherwise closed wire). CheckTwisted doesn't handle disconnect; assumes all edges in outer bound form a single topological cycle.
+- **Tier-3 assertion**: load == "ok"
 
 ### Tfa155 — ShapeFix_Face.FixOrientation seam-vertex-shared
 
 Face on cylinder where two wires both start at the seam vertex. FixOrientation's winding test gets confused by the shared seam; both loops anchor to identical XYZ coordinate.
+- **Tier-3 assertion**: load == "ok"
 
 ### Tfa156 — ShapeFix_Face.FixSmallAreaWire wire-with-tangent-edges
 Face with outer wire and inner wire whose edges form a tangent smooth curve. FixSmallAreaWire's polygon approximation underestimates the enclosed area, causing missed edge tangency repair.
@@ -24030,22 +24311,27 @@ Natural boundary construction where the computed boundary curve fails to close (
 ### Tfa181 — ShapeFix_Face.FixLoopWire wire-with-tail-segment
 
 Face with rectangular outer boundary and inner rectangular wire with open-ended tail segment extending outward. Triggers FixLoopWire closure check failure: tail prevents wire closure detection, produces invalid wire. Tests polygon closure assumption in degenerate tail scenarios.
+- **Tier-3 assertion**: load == "ok"
 
 ### Tfa182 — ShapeAnalysis_CheckSmallFace.CheckSmallArea polygon-vs-curve
 
 Wire boundary with curved edges (circular arcs) and rectangular hole wire. CheckSmallArea approximates wire as polygon from vertices only, missing actual enclosed area from arc bulge. Exposes gap between linear vertex approximation and true curved-edge geometry. Small area check fails on actual bounds.
+- **Tier-3 assertion**: load == "ok"
 
 ### Tfa183 — ShapeFix_Face.FixSplitFace splitter-extends-beyond-face
 
 Rectangular face with LINE splitter whose endpoints (-2,5,0)→(12,5,0) extend outside face bounds (0-10,0-10). FixSplitFace clips to face boundary but mishandles clip-point determination. Tests robustness of clipping logic when splitter extends beyond face extent.
+- **Tier-3 assertion**: load == "ok"
 
 ### Tfa184 — ShapeAnalysis_CheckSmallFace.CheckTwisted face-on-cone-apex
 
 Face on conical surface with apex at origin. Wire passes through cone apex point where surface normal is undefined (apex singularity). CheckTwisted's normal-direction test fails: no valid normal at apex. Tests degenerate surface point handling in twisted-face detection.
+- **Tier-3 assertion**: load == "ok"
 
 ### Tfa185 — ShapeFix_Face.FixAddNaturalBound surface-with-discontinuity
 
 Face on plane with C0 discontinuity in parameter domain (split at u=5.0). Inner boundary wire spans discontinuity. FixAddNaturalBound attempts to bridge discontinuity but produces wrong boundary topology. Tests parameter-domain discontinuity handling in natural boundary reconstruction.
+- **Tier-3 assertion**: load == "ok"
 
 ### Tfa186 — ShapeFix_Face.FixOrientation with-inner-wires-only
 
@@ -24114,28 +24400,33 @@ Face on plane with C0 discontinuity in parameter domain (split at u=5.0). Inner 
 Face with 3 rectangular inner wires (0.2×0.15, 0.2×0.05, 0.2×0.15 units) positioned at distinct vertices of outer 1×1 square. All inner loops touch outer boundary at single vertices; FixLoopWire processes sequentially with ownership cascading. Defect: wire reordering cascades corruption when processing 2nd and 3rd inner wires due to improper edge-ownership tracking across loop merges.
 
 ---
+- **Tier-3 assertion**: load == "ok"
 
 ### Tfa192 — ShapeAnalysis_CheckSmallFace.CheckPin three-way-pin-asymmetric
 
 Face with three pins of different heights projecting from center into face. Pin dimensions: (0.1×0.01), (0.2×0.005), (0.1×0.002) units. CheckPin reports largest pin (0.2×0.005) only, missing the two smaller pins due to early-exit logic that doesn't aggregate all singularities.
 
 ---
+- **Tier-3 assertion**: load == "ok"
 
 ### Tfa193 — ShapeFix_Face.FixSmallAreaWire wire-equal-to-face-area
 
 Outer boundary 4×4 units, inner wire 2×2 units (area=4). Wire area numerically equals face area due to combined tolerance accumulation. FixSmallAreaWire's comparison logic is non-deterministic at equality boundary; floating-point rounding causes spurious acceptance/rejection.
 
 ---
+- **Tier-3 assertion**: load == "ok"
 
 ### Tfa194 — ShapeAnalysis_CheckSmallFace.CheckSpotFace face-with-bbox-much-larger
 
 Outer boundary 200×200 units with inner rectangle 100×100 units (50-150 on each axis), but placement yields bounding box extrapolation to full outer extent. CheckSpotFace's 3D bbox-based heuristic misclassifies tight inner geometry as spot-like due to bbox >> actual face extent.
 
 ---
+- **Tier-3 assertion**: load == "ok"
 
 ### Tfa195 — ShapeFix_Face.FixOrientation face-on-curved-vs-planar
 
 Unit square planar face with centered 0.5×0.5 inner rectangle. FixOrientation's winding tests yield opposite results for equivalent topology: planar face correctly detects inner winding direction, but B-spline approximation of same geometry yields reversed classification due to numerical drift in normal computation.
+- **Tier-3 assertion**: load == "ok"
 
 ### Tfa196 — ShapeAnalysis_Surface.ComputeSingularities toroidal-pinch
 - **Category**: §12.3c faces (sub-class: surface singularity detection)
@@ -24168,6 +24459,7 @@ Unit square planar face with centered 0.5×0.5 inner rectangle. FixOrientation's
 - **Model impact**: Undetected notches in free bounds allow incomplete shell sewing and create non-manifold topology in downstream boolean operations.
 - **Fixture path**: step-examples/12-3c-faces/Tfa198.stp
 - **Fixture kind**: scaffold
+- **Tier-3 assertion**: load == "ok"
 
 ### Tfa199 — ShapeFix_Face.FixMissingSeam seam-detection
 - **Category**: §12.3c faces (sub-class: periodic surface seam reconstruction)
@@ -24200,6 +24492,7 @@ Unit square planar face with centered 0.5×0.5 inner rectangle. FixOrientation's
 - **Model impact**: Face recognized as spot-geometry; healing triggers face removal or splitting
 - **Fixture path**: step-examples/12-3c-faces/Tfa201.stp
 - **Fixture kind**: scaffold
+- **Tier-3 assertion**: load == "ok"
 
 ### Tfa202 — CheckTwisted normal inversion on elementary
 - **Category**: §12.3c faces (sub-class: twisted-face)
@@ -24210,6 +24503,7 @@ Unit square planar face with centered 0.5×0.5 inner rectangle. FixOrientation's
 - **Model impact**: Face marked twisted; requires reorientation or healing
 - **Fixture path**: step-examples/12-3c-faces/Tfa202.stp
 - **Fixture kind**: scaffold
+- **Tier-3 assertion**: load == "ok"
 
 ### Tfa203 — FixMissingSeam null surface guard
 - **Category**: §12.3c faces (sub-class: seam-synthesis)
@@ -24220,6 +24514,7 @@ Unit square planar face with centered 0.5×0.5 inner rectangle. FixOrientation's
 - **Model impact**: Seam synthesis attempted; guard ensures safe null-check
 - **Fixture path**: step-examples/12-3c-faces/Tfa203.stp
 - **Fixture kind**: scaffold
+- **Tier-3 assertion**: load == "ok"
 
 ### Tfa204 — FixLoopWire closed topology reordering
 - **Category**: §12.3c faces (sub-class: wire-topology)
@@ -24230,6 +24525,7 @@ Unit square planar face with centered 0.5×0.5 inner rectangle. FixOrientation's
 - **Model impact**: Wire reordering applied; loop connectivity verified
 - **Fixture path**: step-examples/12-3c-faces/Tfa204.stp
 - **Fixture kind**: scaffold
+- **Tier-3 assertion**: load == "ok"
 
 ### Tfa205 — FixAddNaturalBound cone apex degenerate
 - **Category**: §12.3c faces (sub-class: natural-bound)
@@ -24240,6 +24536,7 @@ Unit square planar face with centered 0.5×0.5 inner rectangle. FixOrientation's
 - **Model impact**: Natural boundary inserted at apex; face topology adjusted
 - **Fixture path**: step-examples/12-3c-faces/Tfa205.stp
 - **Fixture kind**: scaffold
+- **Tier-3 assertion**: load == "ok"
 
 ### Tfa206 — FixOrientation TinyWireFiltering single-edge degenerate
 - **Category**: §12.3c faces (sub-class: wire-orientation)
@@ -24250,6 +24547,7 @@ Unit square planar face with centered 0.5×0.5 inner rectangle. FixOrientation's
 - **Model impact**: Degenerate loop segregated and excluded from containment tests
 - **Fixture path**: step-examples/12-3c-faces/Tfa206.stp
 - **Fixture kind**: scaffold
+- **Tier-3 assertion**: load == "ok"
 
 ### Tfa207 — FixOrientation PeriodicBoundingBoxShift torus seam wrapping
 - **Category**: §12.3c faces (sub-class: periodic-surface)
@@ -24260,6 +24558,7 @@ Unit square planar face with centered 0.5×0.5 inner rectangle. FixOrientation's
 - **Model impact**: Wire bounding boxes adjusted for period boundaries; containment correctly detected across seams
 - **Fixture path**: step-examples/12-3c-faces/Tfa207.stp
 - **Fixture kind**: scaffold
+- **Tier-3 assertion**: load == "ok"
 
 ### Tfa208 — FixSmallAreaWire undersized perimeter degenerate loop
 - **Category**: §12.3c faces (sub-class: small-area-wire)
@@ -24270,6 +24569,7 @@ Unit square planar face with centered 0.5×0.5 inner rectangle. FixOrientation's
 - **Model impact**: Undersized loop removed; face topology simplified
 - **Fixture path**: step-examples/12-3c-faces/Tfa208.stp
 - **Fixture kind**: scaffold
+- **Tier-3 assertion**: load == "ok"
 
 ### Tfa209 — FixWiresTwoCoincEdges duplicate coincident edges
 - **Category**: §12.3c faces (sub-class: edge-redundancy)
@@ -24280,6 +24580,7 @@ Unit square planar face with centered 0.5×0.5 inner rectangle. FixOrientation's
 - **Model impact**: Duplicate edge removed; wire topology cleaned
 - **Fixture path**: step-examples/12-3c-faces/Tfa209.stp
 - **Fixture kind**: scaffold
+- **Tier-3 assertion**: load == "ok"
 
 ### Tfa210 — FixSplitFace multi-loop split on disconnected wires
 - **Category**: §12.3c faces (sub-class: split-face)
@@ -24290,6 +24591,7 @@ Unit square planar face with centered 0.5×0.5 inner rectangle. FixOrientation's
 - **Model impact**: Face split into three independent faces (outer + two holes)
 - **Fixture path**: step-examples/12-3c-faces/Tfa210.stp
 - **Fixture kind**: scaffold
+- **Tier-3 assertion**: load == "ok"
 
 ### Tfa211 — ShapeFix_Face.FixMissingSeam.null-surface-guard
 
@@ -24308,6 +24610,7 @@ Unit square planar face with centered 0.5×0.5 inner rectangle. FixOrientation's
 **Fixture path**: `/Users/zellyn/gh/dodgy-step-files/step-examples/12-3c-faces/Tfa211.stp`
 
 **Fixture kind**: Face-only model; quad EDGE_LOOP on null surface.
+- **Tier-3 assertion**: load == "ok"
 
 ### Tfa212 — ShapeFix_Face.FixMissingSeam.bspline-non-periodic-rejection
 
@@ -24326,6 +24629,7 @@ Unit square planar face with centered 0.5×0.5 inner rectangle. FixOrientation's
 **Fixture path**: `/Users/zellyn/gh/dodgy-step-files/step-examples/12-3c-faces/Tfa212.stp`
 
 **Fixture kind**: Face-only model; quad EDGE_LOOP on non-periodic B-spline surface.
+- **Tier-3 assertion**: load == "ok"
 
 ### Tfa213 — ShapeFix_Face.FixMissingSeam.infinite-bounds-fallback
 
@@ -24344,6 +24648,7 @@ Unit square planar face with centered 0.5×0.5 inner rectangle. FixOrientation's
 **Fixture path**: `/Users/zellyn/gh/dodgy-step-files/step-examples/12-3c-faces/Tfa213.stp`
 
 **Fixture kind**: Face-only model; partial quad wire on cylindrical surface.
+- **Tier-3 assertion**: load == "ok"
 
 ### Tfa214 — ShapeFix_Face.FixMissingSeam.degenerate-wire-consolidation
 
@@ -24362,6 +24667,7 @@ Unit square planar face with centered 0.5×0.5 inner rectangle. FixOrientation's
 **Fixture path**: `/Users/zellyn/gh/dodgy-step-files/step-examples/12-3c-faces/Tfa214.stp`
 
 **Fixture kind**: Face-only model; degenerate quad EDGE_LOOP with micro-edges on B-spline surface.
+- **Tier-3 assertion**: load == "ok"
 
 ### Tfa215 — ShapeFix_Face.FixMissingSeam.orientation-correction-partial-closure
 
@@ -24380,127 +24686,158 @@ Unit square planar face with centered 0.5×0.5 inner rectangle. FixOrientation's
 **Fixture path**: `/Users/zellyn/gh/dodgy-step-files/step-examples/12-3c-faces/Tfa215.stp`
 
 **Fixture kind**: Face-only model; quad EDGE_LOOP with mixed orientation on toroidal surface.
+- **Tier-3 assertion**: load == "ok"
 
 ### Tfa216 — seam_detection_orientation_loss
 
 **Defect**: Edge reversal in seam detection without forward-flag update (line 1829, UnionPCurves).
 **Minimal reproducer**: Build seam edge on periodic surface; set isForward=true; reverse edge; isForward tracking stale; accumulated pcurve orientation corrupted.
 **Healing path**: Capture isForward after seam reversal branch; validate forward-flag consistency across seam edges.
+- **Tier-3 assertion**: load == "ok"
 
 ### Tfa217 — curve_copy_trimming
 
 **Defect**: Nested TrimmedCurve BasisCurve extraction loses inner bounds (line 1876, UnionPCurves).
 **Minimal reproducer**: TrimmedCurve(TrimmedCurve(Line, [5,15]), [8,12]) unwrapped to outer level; inner [5,15] lost; effective range becomes [8,12].
 **Healing path**: Detect nesting depth; recursively extract all bound layers; reconstruct proper trim envelope.
+- **Tier-3 assertion**: load == "ok"
 
 ### Tfa218 — circle_parameter
 
 **Defect**: Circle parameter wraparound fails; periodic domain spanning 2π boundary produces inverted range (line 1930, UnionPCurves).
 **Minimal reproducer**: Edge on torus spanning seam 6.0→0.5 (wrapping); aNewF=6.0, aNewL=0.5; swap reverses to [0.5,6.0]; range invalid.
 **Healing path**: Detect wraparound via ElCLib parameter comparison; normalize range modulo 2π; preserve interval sense.
+- **Tier-3 assertion**: load == "ok"
 
 ### Tfa219 — vertex_tolerance_mismatch
 
 **Defect**: Vertex tolerance inconsistency in edge chain appended without hierarchy validation (line 1971, UnionPCurves).
 **Minimal reproducer**: Edge chain with vertices aTol[0]=0.001, aTol[1]=10.0; no synchronization; ConcatC1 receives heterogeneous tolerance array.
 **Healing path**: Validate tolerance hierarchy before accumulation; cap per-vertex tolerance to cumulative aMaxTol; synchronize tolerance state.
+- **Tier-3 assertion**: load == "ok"
 
 ### Tfa220 — concat_result_truncation
 
 **Defect**: ConcatC1 output array validation skipped; incompatible fragments force-merged (line 2037, UnionPCurves).
 **Minimal reproducer**: Feed Line+Circle with large gap; ConcatC1 produces 2 fragments; code iterates Add() anyway; artificial continuity created.
 **Healing path**: Check concatc2d quality before merge; skip low-quality fragments; fail gracefully if ConcatC1 < threshold coherence.
+- **Tier-3 assertion**: load == "ok"
 
 ### Tfa221 — FixMissingSeam.null-surface-guard
 Degenerated torus (R=0.5, r=1.0); single EDGE_LOOP with 4 lines; tests null-surface guard at ShapeFix_Face.cxx:1724. Defect: if mySurf.IsNull() guard omitted, null dereference at IsUClosed(). Canonical PRODUCT chain; DIRECTION ratios unit magnitude.
+- **Tier-3 assertion**: load == "ok"
 
 ### Tfa222 — FixMissingSeam.no-closure-early-exit
 Open BSpline surface (unclosed U, V); single EDGE_LOOP with 2 rational B-spline edges; tests early exit when surface open in both directions (line 1732). Defect: without early return, kernel attempts seam insertion on non-closed surface. Fully ISO-compliant.
+- **Tier-3 assertion**: load == "ok"
 
 ### Tfa223 — FixMissingSeam.infinite-bounds-fallback
 Conical surface (apex at origin, semi-angle 0.5); single degenerated EDGE_LOOP (cone-tip); tests infinite-bounds fallback at line 1759. Defect: infinite U/V bounds bypass wire-bound substitution, causing NaN in seam-placement arithmetic.
+- **Tier-3 assertion**: load == "ok"
 
 ### Tfa224 — FixMissingSeam.degenerate-wire-consolidation
 Sphere with 3 degenerate wires (zero-extent edges at same vertex); multi-bound face (outer + 2 holes); tests degenerate-wire removal at line 1872. Defect: without consolidation, degenerated seams collapse to singularity.
+- **Tier-3 assertion**: load == "ok"
 
 ### Tfa225 — FixMissingSeam.seam-boundary-clamping
 U-closed BSpline surface; 2-edge loop with period-wrap geometry; tests seam-boundary clamping at line 2224. Defect: out-of-bounds seam placement (u > 2π) bypasses AdjustToPeriod, producing invalid parameter range.
 
 # Wave 66A: STEP Face Fixtures (Tfa226–Tfa230)
+- **Tier-3 assertion**: load == "ok"
 
 ### Tfa226 — ShapeFix_Face.Add.null-wire-guard
 Fresh null-wire guard in Add() prevents null-reference corruption; wire validation before topology merge.
+- **Tier-3 assertion**: load == "ok"
 
 ### Tfa227 — ShapeFix_Face.ClearModes.init-all-modes
 Mode-flag initialization (-1 default) prevents undefined comparisons in NeedFix(); healer state precondition.
+- **Tier-3 assertion**: load == "ok"
 
 ### Tfa228 — ShapeFix_Face.FixAddNaturalBound.null-surface-guard
 Null-surface early return avoids processing on invalid face geometry; boundary insertion guard.
+- **Tier-3 assertion**: load == "ok"
 
 ### Tfa229 — ShapeFix_Face.FixLoopWire.orientation-handling
 Seam-edge reversal for dual-edge UV-periodic representation; non-seam edges skip reversal logic.
+- **Tier-3 assertion**: load == "ok"
 
 ### Tfa230 — ShapeFix_Face.FixLoopWire.wire-topology
 Closed-wire reorder via FixReorder vs. open-wire append; topology-driven dispatch path.
 
 # Wave 68A — ShapeFix_Face defect synthesis (Tfa231–Tfa235)
+- **Tier-3 assertion**: load == "ok"
 
 ### Tfa231 — FixSmallAreaWire shape-type filter
 
 Small-area wire detection via sub-shape-type and orientation validation. Planar face with outer loop (3×3 unit boundary) and inner loop (0.05×0.05 unit hole) to exercise the shape-type-filter defect. Tests early rejection of non-WIRE or invalid-orientation sub-shapes.
+- **Tier-3 assertion**: load == "ok"
 
 ### Tfa232 — FixWiresTwoCoincEdges FORWARD orientation dispatch
 
 Coincident-edge pair detection on 4-edge wire with duplicate geometry edges (edge_c and edge_d both curve 1→1 at identical path). Tests FORWARD/REVERSED orientation filter preventing false detection on reversed duplicates.
+- **Tier-3 assertion**: load == "ok"
 
 ### Tfa233 — FixPeriodicDegenerated context transformation
 
 Periodic surface (SURFACE_OF_REVOLUTION) with B-spline profile curve and degenerate seam closure. Tests context-aware transformation dispatch when healing context is non-null; validates Context().IsNull() check and Apply() invocation.
+- **Tier-3 assertion**: load == "ok"
 
 ### Tfa234 — FixAddNaturalBound seam-edge exclusion
 
 Single-period cylindrical face with degenerate bottom/top loops and explicit seam edge. Tests natural-boundary rejection logic when seam-edge is present; validates myFixAddNaturalBoundMode conditional handling.
+- **Tier-3 assertion**: load == "ok"
 
 ### Tfa235 — FixMissingSeam P-curve absence on torus
 
 TOROIDAL_SURFACE face with U-seam loop traversing toroidal topology; missing P-curve geometry on seam edge. Tests P-curve lookup failure path and early abort before seam insertion.
+- **Tier-3 assertion**: load == "ok"
 
 ### Tfa236 — ShapeFix_Face.FixOrientation
 
 Wire-sense correction via face-surface normal evaluation; manifold compatibility validation on planar outer boundary.
+- **Tier-3 assertion**: load == "ok"
 
 ### Tfa237 — ShapeFix_Face.SplitEdge (line-2653)
 
 Edge-division on non-manifold geometry; curve parameterization via vertical spine through cylindrical seam topology.
+- **Tier-3 assertion**: load == "ok"
 
 ### Tfa238 — ShapeFix_Face.SplitEdge (line-2741)
 
 Multi-point edge subdivision; overlapping parameter intervals via meridian B-spline and closing circle on spherical patch.
+- **Tier-3 assertion**: load == "ok"
 
 ### Tfa239 — ShapeFix_Face.FixSplitFace (line-2908)
 
 Multi-wire face splitting; sub-face reconstruction via outer loop + inner hole on rational B-spline surface.
+- **Tier-3 assertion**: load == "ok"
 
 ### Tfa240 — ShapeFix_Face.Perform (line-346)
 
 Integrated face-healing pipeline; mode-dependent cascade via base-slant-apex decomposition on conical degenerate closure.
 
 ## Wave 71C — Face Method Defects (Tfa241–Tfa245)
+- **Tier-3 assertion**: load == "ok"
 
 ### Tfa241 — `ShapeFix_Face.FixOrientation.WireBoundingBoxComputation`
 em-dash Periodic bounding-box centering on first-wire midpoint for toroidal containment checks. Two concentric wires on torus; without anchor uMiddle/vMiddle, secondary wire box shifts unanchored relative to first → false containment classification.
+- **Tier-3 assertion**: load == "ok"
 
 ### Tfa242 — `ShapeFix_Face.FixOrientation.PeriodicBoundingBoxShift`
 em-dash Seam-crossing wire adjustment via `ShapeAnalysis::AdjustByPeriod()`. Wires wrapping across torus seam (u≈0) at opposite ends; without periodic shift, bounding boxes classified as disjoint despite containment.
+- **Tier-3 assertion**: load == "ok"
 
 ### Tfa243 — `ShapeFix_Face.FixOrientation.ToroidalDiagonalShift`
 em-dash 2×2 grid of diagonal period wraps (±uRange, ±vRange) for toroidal surfaces. Outer loop near corner (u≈0, v≈0), inner loop near opposite corner (u≈2π, v≈π); without diagonal enumeration, single u-shift succeeds but v-shift overrides it.
+- **Tier-3 assertion**: load == "ok"
 
 ### Tfa244 — `ShapeFix_Face.FixLoopWire.FLW-007`
 em-dash Two-common-vertex wire-pair merging (greedy immediate consolidation). Three open wires with first two sharing both endpoints → merged before third; defect: if first two should not merge, third wire processed alone via fallback.
+- **Tier-3 assertion**: load == "ok"
 
 ### Tfa245 — `ShapeFix_Face.FixMissingSeam.sphere-apex-edge-synthesis`
 em-dash Degenerated synthetic edge synthesis at sphere pole. Single wire at equator on sphere (U-open); without synthetic degenerated edge at pole (v=π/2), topology incomplete; with synthesis, seam closure via pole boundary.
+- **Tier-3 assertion**: load == "ok"
 
 ### Hea016 — Empty solid output from STEP export of complex body, despite STL succeeding
 - **Category**: §12.3c faces / shape healing
@@ -24512,6 +24849,7 @@ em-dash Degenerated synthetic edge synthesis at sphere pole. Single wire at equa
 - **Notes**: **See also**: A074. Synonyms: "STEP empty object despite STL working", "writer drops degenerate face and emits empty shell", "zero-face CLOSED_SHELL", "step export silently empty".
 - **Byte assertion**: contains(b'CLOSED_SHELL')
 - **Byte assertion**: contains(b'MANIFOLD_SOLID_BREP')
+- **Tier-3 assertion**: load == "ok"
 - **OCC behavior**: silently accepts (empty result); outside catalog's allowed set ({reject}).
 - **Severity**: P1
 - **Model impact**: ShapeHealing pass either fixes the defect (loaded model differs from input bytes by the healing edits) or fails the heal (loaded model retains the original invalidity); BRepCheck status reflects which path was taken.
@@ -24559,6 +24897,7 @@ em-dash Degenerated synthetic edge synthesis at sphere pole. Single wire at equa
 - **Notes**: **See also**: P002, Le001. Synonyms: "STEP file with Cyrillic filename fails import", "import fails on non-ASCII path", "Ножки.step refuses to open", "Cyrillic file name path encoding bug".
 - **Byte assertion**: contains(b'MANIFOLD_SOLID_BREP')
 - **Byte assertion**: contains(b'ISO-10303-21')
+- **Tier-3 assertion**: load == "ok"
 - **OCC behavior**: file-content valid (kernel loads cleanly); the defect manifests at the OS filename layer.
 - **Severity**: P2
 - **Model impact**: Crafted input drives the parser into an undefined-behavior path; observed effects range from silent acceptance with no model, to OOB read producing junk attribute values, to process termination by signal.
@@ -24688,6 +25027,7 @@ em-dash Degenerated synthetic edge synthesis at sphere pole. Single wire at equa
 ### Twi112 — ShapeFix_Wire.FixGaps2d 2D-gap repair on cylindrical surface
 
 Wire on cylindrical surface with consecutive edges' parametric curves (pcurves) leaving a 2D gap in the parameter domain. First edge pcurve ranges [0.0, 1.0], second edge pcurve starts at [1.01, ...], creating a 0.01-unit discontinuity. FixGaps2d should bridge with a new pcurve segment to restore continuity.
+- **Tier-3 assertion**: load == "ok"
 
 ### Twi113 — ShapeAnalysis_Wire.CheckOuterBound outer-bound mis-identification
 
@@ -25487,6 +25827,7 @@ Single edge with cusp at start vertex. FixSelfIntersectingEdge tries to split at
 
 ### Twi217 — ShapeFix_Wire.FixSeam pcurve-direction-not-matching-3d
 Seam edge where parametric curve direction (u-orientation) differs from 3D curve direction. FixSeam corrects PCurve but the original 3D curve becomes orphaned/unreferenced.
+- **Tier-3 assertion**: load == "ok"
 
 ### Twi218 — ShapeAnalysis_Wire.CheckShapeConnect with-degenerate-vertex
 Wire's start vertex is degenerate (zero-radius circle = point). CheckShapeConnect uses vertex coordinates from BRep_Tool::Pnt(), not topology, causing false results on degenerate endpoints.
@@ -25499,6 +25840,7 @@ Wire missing an edge where the missing edge would be degenerate (zero length). C
 
 ### Twi221 — ShapeFix_Wire.FixDummySeam non-canonical-seam-position
 Surface with seam at u=π/4 (not standard 0 or 2π). FixDummySeam's heuristic assumes canonical seam positions only and fails on non-standard placements.
+- **Tier-3 assertion**: load == "ok"
 
 ### Twi222 — ShapeFix_Wire.FixTails consecutive-removal
 
@@ -26191,18 +26533,22 @@ B_SPLINE_SURFACE_WITH_KNOTS declared form='.QUASI_UNIFORM_KNOTS.' but actual kno
 ### Gs084 — ShapeAnalysis_Surface.IsDegenerated bounded-surface zero-area
 
 RECTANGULAR_TRIMMED_SURFACE with u1==u2 (zero-width trim). IsDegenerated parameter-difference check fails to detect zero area. Fixture uses B-spline base with trimmed surface u∈[0,0].
+- **Tier-3 assertion**: load == "ok"
 
 ### Gs085 — ShapeUpgrade_SplitSurfaceContinuity.Compute criterion-elevation offset
 
 OFFSET_SURFACE wrapping C0 B-spline. Continuity elevation (C0→C1) applied to base; propagation to offset wrapper missing. Exposes offset-criterion-elevation branch (line 238 OCCT_HEAL_COVERAGE_V3.md).
+- **Tier-3 assertion**: load == "ok"
 
 ### Gs086 — ShapeAnalysis_Surface.Singularity boundary singularity
 
 CYLINDRICAL_SURFACE with v_max=0 (degenerate cap). Singularity detection iterates interior knots only; explicit boundary singularities undetected. Trimmed cylinder v∈[0,0] case.
+- **Tier-3 assertion**: load == "ok"
 
 ### Gs087 — ShapeAnalysis_Surface.ComputeBoundIsos cache-stale
 
 Periodic B-spline with IsUPeriodic=true, IsVPeriodic=true. Cache invalidation missing; ComputeBoundIsos reuses stale boundary isos after internal surface modification. Tests line 620 tolerance-precision-mismatch path.
+- **Tier-3 assertion**: load == "ok"
 
 ### Gs088 — ShapeUpgrade_FaceDivide.SplitSurface periodic
 
@@ -26821,6 +27167,7 @@ trimming or intersection operations assume richer surface.
 - **Model impact**: False V-closure; manifold assumption violated; topology error
 - **Fixture path**: step-examples/12-2c-surfaces/Gs140.stp
 - **Fixture kind**: scaffold
+- **Tier-3 assertion**: load == "ok"
 
 ### Gs141 — FixMissingSeam RectangularTrimmedSurface bound mismatch
 - **Category**: §12.2c surfaces (sub-class: ShapeFix_Face seam insertion)
@@ -27074,6 +27421,7 @@ OFFSET_SURFACE (+0.5 distance) with asymmetric coverage vs base bounds; myOffset
 | **Basis/Trim** | B-spline trimmed via RECTANGULAR_TRIMMED_SURFACE [0.1–0.9]×[0.1–0.9] |
 | **Key Issue** | Knot structure is syntactically valid but semantically invalid. BSplineBoundaries should detect and reject before closure analysis. |
 | **Status** | Built, validated. Demonstrates knot-sum bypass in boundary closure detection. |
+- **Tier-3 assertion**: load == "ok"
 
 ### Gs180 — ShapeAnalysis_Surface.ComputeBoxes null-knot-vector tolerance handling
 
@@ -27086,6 +27434,7 @@ OFFSET_SURFACE (+0.5 distance) with asymmetric coverage vs base bounds; myOffset
 | **Basis/Trim** | B-spline with clustered interior knots [0.0, 0.5, 0.5, 0.5, 1.0] (mult: [2,2,2]); trimmed [0.0–1.0]×[0.0–1.0] |
 | **Key Issue** | Multiplicities {2,2,2} create zero-width intervals at knot values. Bounding box computation must tolerate degenerate spans. |
 | **Status** | Built, validated. Demonstrates ComputeBoxes deficiency with clustered knots. |
+- **Tier-3 assertion**: load == "ok"
 
 ### Gs181 — ShapeConstruct_Surface.ConvertCurveToSurface invalid-basis bypass
 
@@ -27111,6 +27460,7 @@ OFFSET_SURFACE (+0.5 distance) with asymmetric coverage vs base bounds; myOffset
 | **Basis/Trim** | B-spline with first and last poles matching; interior C1 gap at seam. Trimmed [0.0–1.0]×[0.0–1.0] |
 | **Key Issue** | Periodic topology bypasses seam-detection guard in SplitContinuity. C1 discontinuity at u=0 remains unsplit. |
 | **Status** | Built, validated. Demonstrates periodic seam cache-invalidation bug. |
+- **Tier-3 assertion**: load == "ok"
 
 ### Gs183 — ShapeAnalysis_Surface.ComputeSingularities edge-proximity cache-invalidation
 
@@ -27135,6 +27485,7 @@ OFFSET_SURFACE (+0.5 distance) with asymmetric coverage vs base bounds; myOffset
 - **Notes**: **See also**: A106. Synonyms: "STEP reader crash on STYLED_ITEM", "segfault reading STEP file", "null pointer in style resolution", "STEP import crash on dangling reference".
 - **Byte assertion**: contains(b'STYLED_ITEM')
 - **Byte assertion**: matches(rb'STYLED_ITEM\([^)]*#999')
+- **Tier-3 assertion**: load == "ok"
 - **OCC behavior**: silent-accept, warn-and-proceed observed (catalog allowed: {reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P2
 - **Model impact**: Crafted input drives the parser into an undefined-behavior path; observed effects range from silent acceptance with no model, to OOB read producing junk attribute values, to process termination by signal.
@@ -27150,6 +27501,7 @@ OFFSET_SURFACE (+0.5 distance) with asymmetric coverage vs base bounds; myOffset
 - **Notes**: **See also**: Pf022. Synonyms: "STEPCAFControl_Reader hangs on cyclic mapped item", "infinite loop in STEP import", "self-referential REPRESENTATION_MAP", "STEP reader DoS via cycle".
 - **Byte assertion**: contains(b'MAPPED_ITEM')
 - **Byte assertion**: contains(b'REPRESENTATION_MAP')
+- **Tier-3 assertion**: load == "ok"
 - **OCC behavior**: silent-accept observed (catalog allowed: {reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P2
 - **Model impact**: Parser/loader resource usage scales pathologically with the input size; load time grows quadratically or memory blows up, and on bounded systems the load is killed before completing.
@@ -27165,6 +27517,7 @@ OFFSET_SURFACE (+0.5 distance) with asymmetric coverage vs base bounds; myOffset
 - **Notes**: **See also**: Wr013, Ad005, Pf003. Synonyms: "BRL-CAD step-g silent partial subgraph elision", "STEP_LOAD_ERROR not propagated to caller", "WARNING is not valid hidden in noise", "two-pass loader truncates on dangling forward ref", "step-g writes partial .g without exit code".
 - **Byte assertion**: contains(b'EDGE_CURVE')
 - **Byte assertion**: matches(rb'EDGE_CURVE\([^)]*#999')
+- **Tier-3 assertion**: load == "ok"
 - **OCC behavior**: silent-accept observed (catalog allowed: {reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P2
 - **Model impact**: Parser/loader resource usage scales pathologically with the input size; load time grows quadratically or memory blows up, and on bounded systems the load is killed before completing.
@@ -27212,6 +27565,7 @@ OFFSET_SURFACE (+0.5 distance) with asymmetric coverage vs base bounds; myOffset
 - **Notes**: **See also**: Lh013, A105. Synonyms: "STEP file from older OCC fails to open", "CONFIG_CONTROL_DESIGN no longer accepted", "schema-version regression on STEP read", "legacy AP203 schema rejected".
 - **Byte assertion**: contains(b'CONFIG_CONTROL_DESIGN')
 - **Byte assertion**: contains(b'FILE_SCHEMA')
+- **Tier-3 assertion**: load == "ok"
 - **OCC behavior**: silent-accept observed (catalog allowed: {heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
 - **Severity**: P2
 - **Model impact**: Crafted input drives the parser into an undefined-behavior path; observed effects range from silent acceptance with no model, to OOB read producing junk attribute values, to process termination by signal.
@@ -27228,6 +27582,7 @@ OFFSET_SURFACE (+0.5 distance) with asymmetric coverage vs base bounds; myOffset
 - **Byte assertion**: contains(b'STYLED_ITEM')
 - **Byte assertion**: contains(b'MECHANICAL_DESIGN_GEOMETRIC_PRESENTATION_REPRESENTATION')
 - **Byte assertion**: contains(b'PRESENTATION_LAYER_ASSIGNMENT')
+- **Tier-3 assertion**: load == "ok"
 - **OCC behavior**: silent-accept observed (catalog allowed: {reject, heal}). Kernel-bug witnessed: receivers enforcing the spec must reject or heal this fixture.
 - **Severity**: P2
 - **Model impact**: Crafted input drives the parser into an undefined-behavior path; observed effects range from silent acceptance with no model, to OOB read producing junk attribute values, to process termination by signal.
@@ -27355,6 +27710,7 @@ OFFSET_SURFACE (+0.5 distance) with asymmetric coverage vs base bounds; myOffset
 - **Reproducer recipe**: Create a CLOSED_SHELL with empty face aggregate: `#100=CLOSED_SHELL('empty',())`. Load via STEP reader. Call ShapeAnalysis_Shell.LoadShells(). Kernel silently accepts, no error reported.
 - **Expected kernel behavior**: Kernel must reject empty shell or emit clear validation error.
 - **Expected validation**: occt=unknown/unknown gmsh=unknown ifc=schema_n/a
+- **Tier-3 assertion**: load == "ok"
 
 ### Tsh078 — Möbius-strip orientation contradiction
 
@@ -27374,6 +27730,7 @@ OFFSET_SURFACE (+0.5 distance) with asymmetric coverage vs base bounds; myOffset
 - **Reproducer recipe**: Feed two open shells to ShapeUpgrade_ShellSewing.Apply(); observe that edges intended to merge do not due to tolerance deviation
 - **Expected kernel behavior**: Kernel should either merge shells successfully within tolerance or raise a clear non-closure diagnostic
 - **Expected validation**: Resulting shell must be manifold; edges must have matching endpoints; no free wires allowed
+- **Tier-3 assertion**: load == "ok"
 
 ### Tsh080 — ShapeFix_Shell.FixFaceOrientation cascade-fix star-shaped junction incomplete propagation
 
@@ -27383,6 +27740,7 @@ OFFSET_SURFACE (+0.5 distance) with asymmetric coverage vs base bounds; myOffset
 - **Reproducer recipe**: Feed open shell with 4 faces + central vertex to FixFaceOrientation; verify all face normals point consistently outward after fix
 - **Expected kernel behavior**: Kernel must fully propagate orientation fix across all connected faces meeting at junction
 - **Expected validation**: All face normal vectors must be consistently oriented; no outward-inward mixed orientations at shared edges
+- **Tier-3 assertion**: load == "ok"
 
 ### Tsh081 — ShapeAnalysis_Shell.LoadShells multiple-shell input iteration order affects healing
 
@@ -27392,6 +27750,7 @@ OFFSET_SURFACE (+0.5 distance) with asymmetric coverage vs base bounds; myOffset
 - **Reproducer recipe**: Create compound with 3 shells in different order; call LoadShells; observe healing outcome changes with shell order
 - **Expected kernel behavior**: Healing outcome must be deterministic regardless of shell order in input compound
 - **Expected validation**: All output shells must pass closure and manifold checks; healing results must be identical for same input shells in any order
+- **Tier-3 assertion**: load == "ok"
 
 ### Tsh082 — ShapeUpgrade_RemoveLocations.MakeNewShape stale location reference during traversal
 
@@ -27401,6 +27760,7 @@ OFFSET_SURFACE (+0.5 distance) with asymmetric coverage vs base bounds; myOffset
 - **Reproducer recipe**: Create shell with 2 faces, one with identity placement, one with non-identity AXIS2_PLACEMENT_3D; remove locations; verify edges reference correct (updated) locations
 - **Expected kernel behavior**: All location caches must be invalidated/refreshed after transformation removal
 - **Expected validation**: All geometry edges must reference current (non-stale) locations; bounding boxes must be correctly computed
+- **Tier-3 assertion**: load == "ok"
 
 ### Tsh083 — ShapeFix_Solid.SolidFromShell open-shell-as-solid promotion non-closure detection
 
@@ -27410,46 +27770,57 @@ OFFSET_SURFACE (+0.5 distance) with asymmetric coverage vs base bounds; myOffset
 - **Reproducer recipe**: Create open shell (5 of 6 faces of a box); attempt SolidFromShell; expect clear rejection or diagnostic of non-closure
 - **Expected kernel behavior**: Kernel must validate shell closure before promotion; raise exception or return null with clear status code
 - **Expected validation**: Resulting object must be CLOSED_SHELL or SOLID, never OPEN_SHELL; closure check must be deterministic
+- **Tier-3 assertion**: load == "ok"
 
 ### Tsh084 — ShapeAnalysis_Shell.CheckOrientedShells closed-shell self-test
 
 Single CLOSED_SHELL containing one face with inwardly-oriented normal (inside-out solid). Detector must classify geometric orientation before propagating fixes; fixture passes validate2 despite reversed normal, exposing tier-3 lint class.
+- **Tier-3 assertion**: load == "ok"
 
 ### Tsh085 — ShapeFix_Shell.FixFaceOrientation transition-point
 
 Shell containing two adjacent faces meeting at shared edge with opposing normal vectors (one +Z, one -Z at seam). Edge-traversal neighbor selection fails to detect normal discontinuity; fixer chooses wrong orientation branch during iteration.
+- **Tier-3 assertion**: load == "ok"
 
 ### Tsh086 — ShapeUpgrade_ShellSewing.Prepare two-orientation merge
 
 Compound of two shells with opposite orientation conventions: one outward-normal (FACE_OUTER_BOUND flag .T.), one inward-normal (.F.). Prepare phase must detect and normalize before sewing merges incompatible shells; missing pre-validation.
+- **Tier-3 assertion**: load == "ok"
 
 ### Tsh087 — ShapeFix_Shell.Perform face-removal during iteration
 
 Shell with three faces where middle face (intentionally degenerate or marked for removal) gets excised during Perform loop. Subsequent iteration references stale face index from before removal, causing index bounds violation or silent data corruption.
+- **Tier-3 assertion**: load == "ok"
 
 ### Tsh088 — ShapeAnalysis_Shell.LoadShells orientation-from-compound
 
 Compound with two shells exhibiting mixed FACE_OUTER_BOUND orientation flags (.T. and .F. on respective outer bounds). LoadShells must preserve mixed flags but loses one during compound decomposition, normalizing both to same orientation.
+- **Tier-3 assertion**: load == "ok"
 
 ### Tsh089 — ShapeUpgrade_RemoveInternalWires tolerance-based removal
 
 Face with two small internal wires (5mm×5mm and 10mm×10mm) below typical tolerance thresholds. Tests whether `Perform` uses face-area-relative scaling (recommended: remove if wire area < 0.1% of face) or absolute threshold. Expected: wires removed. Likely failure: Perform uses fixed absolute threshold, skips small wires on large faces.
+- **Tier-3 assertion**: load == "ok"
 
 ### Tsh090 — ShapeFix_Shell.FixFaceOrientation single-face shell
 
 Single-face closed shell with inverted orientation flag (.F. on FACE_OUTER_BOUND). Tests orientation propagation logic in `FixFaceOrientation`. With only one face, no adjacent face to propagate from. Expected: orientation flipped to .T.. Likely failure: Silent skip; propagation assumes ≥2 faces, returns unchanged inverted shell.
+- **Tier-3 assertion**: load == "ok"
 
 ### Tsh091 — ShapeUpgrade_ShellSewing.Apply degenerate-face sliver
 
 Shell containing one regular face and one degenerate "sliver" face whose four vertices all occupy the same coordinates (2,0,0). All edges collapse to zero length. Tests sliver detection in `Apply` before sewing. Expected: sliver rejected. Likely failure: No degenerate check; included in output shell, causing downstream failures.
+- **Tier-3 assertion**: load == "ok"
 
 ### Tsh092 — ShapeAnalysis_Shell.CheckOrientedShells nested-shell cavity
 
 Compound containing two shells: outer (10×10 base) and inner (2×2 at height 5-7). Tests `CheckOrientedShells` with nesting topology (cavity). Expected: both shells recognized as valid; outer outward, inner inward. Likely failure: Inner shell misclassified as inverted; reports outer as wrongly oriented.
+- **Tier-3 assertion**: load == "ok"
 
 ### Tsh093 — ShapeFix_Shell.Perform empty-output handling
 
 Shell with two faces whose vertices all collapse to near-degenerate edges (e.g., edge from P to same P with zero direction). Tests `Perform` when all faces get rejected during fixing. Expected: diagnostic flag set or exception. Likely failure: Returns empty shell silently; no error flag; caller unaware that output is invalid.
+- **Tier-3 assertion**: load == "ok"
 
 ### Tsh094 — ShapeFix_Shell.FixFaceOrientation duplicate-face removal
 
@@ -27690,6 +28061,7 @@ Two faces with three edges each that should all sew; Apply merges first matching
 ### Tsh136 — ShapeFix_Shell.FixFaceOrientation degenerate-shell-empty
 
 Empty shell (zero faces). ShapeFix_Shell::FixFaceOrientation iterates zero times over face list but returns success status, masking the degenerate input.
+- **Tier-3 assertion**: load == "ok"
 
 ### Tsh137 — ShapeAnalysis_Shell.LoadShells nested-compound
 
@@ -27730,6 +28102,7 @@ Shell with inverted face orientation. ShapeFix_Shell::Perform called twice; seco
 **Expected behavior**: Apply should detect and permit self-sewing within a single face.
 
 **Fault axis**: `self_pairing_rejection`
+- **Tier-3 assertion**: load == "ok"
 
 ### Tsh142 — ShapeFix_Shell.Perform overlapping-faces
 
@@ -27740,6 +28113,7 @@ Shell with inverted face orientation. ShapeFix_Shell::Perform called twice; seco
 **Expected behavior**: Perform should detect overlap and either split or reject the input.
 
 **Fault axis**: `undetected_face_overlap`
+- **Tier-3 assertion**: load == "ok"
 
 ### Tsh143 — ShapeAnalysis_Shell.BadEdges shared-edge-with-different-curves
 
@@ -27750,26 +28124,32 @@ Shell with inverted face orientation. ShapeFix_Shell::Perform called twice; seco
 **Expected behavior**: BadEdges should flag curve-geometry inconsistency.
 
 **Fault axis**: `curve_geometry_mismatch`
+- **Tier-3 assertion**: load == "ok"
 
 ### Tsh144 — ShapeFix_Shell.FixFaceOrientation T-shaped-non-manifold
 
 Shell with three faces meeting at a shared edge. FixFaceOrientation picks one orientation as propagation direction; the other two remain flipped. Tests non-manifold edge handling in orientation repair.
+- **Tier-3 assertion**: load == "ok"
 
 ### Tsh145 — ShapeAnalysis_Shell.CheckOrientedShells one-face-shell-edge-cases
 
 Single-face shell with orientation flag set to `.F.` (reversed). CheckOrientedShells semantics for 1-face shells are undocumented; tests whether solver correctly handles the edge case of a minimal manifold.
+- **Tier-3 assertion**: load == "ok"
 
 ### Tsh146 — ShapeUpgrade_ShellSewing.Apply different-tolerance-per-face
 
 Two coplanar faces with a 10x tolerance difference (0.001 vs 0.0001 units at shared edge). Apply uses global tolerance only; reproduces missing per-face tolerance tracking during sewing.
+- **Tier-3 assertion**: load == "ok"
 
 ### Tsh147 — ShapeFix_Shell.Perform fix-then-revert
 
 Two adjacent faces sharing an edge; second face has inverted orientation. Perform fixes orientation but subsequent FixFaceOrientation pass reverts fix due to status flag confusion. Tests repeated-pass stability.
+- **Tier-3 assertion**: load == "ok"
 
 ### Tsh148 — ShapeAnalysis_Shell.FreeEdges count-zero
 
 Two-triangle shell with all edges shared between faces (no free boundary). FreeEdges should return empty, but algorithm may misinterpret empty list as "uninitialized".
+- **Tier-3 assertion**: load == "ok"
 
 ### Tsh149 — ShapeFix_Shell.FixFaceOrientation hexagonal-shell
 
@@ -27790,6 +28170,7 @@ Two-triangle shell with all edges shared between faces (no free boundary). FreeE
 **Fixture**: `/Users/zellyn/gh/dodgy-step-files/step-examples/12-3a-shells/Tsh150.stp`
 
 ---
+- **Tier-3 assertion**: load == "ok"
 
 ### Tsh151 — ShapeUpgrade_ShellSewing.Apply asymmetric-tolerance
 
@@ -27800,6 +28181,7 @@ Two-triangle shell with all edges shared between faces (no free boundary). FreeE
 **Fixture**: `/Users/zellyn/gh/dodgy-step-files/step-examples/12-3a-shells/Tsh151.stp`
 
 ---
+- **Tier-3 assertion**: load == "ok"
 
 ### Tsh152 — ShapeFix_Shell.Perform large-shell-pagination
 
@@ -27810,6 +28192,7 @@ Two-triangle shell with all edges shared between faces (no free boundary). FreeE
 **Fixture**: `/Users/zellyn/gh/dodgy-step-files/step-examples/12-3a-shells/Tsh152.stp`
 
 ---
+- **Tier-3 assertion**: load == "ok"
 
 ### Tsh153 — ShapeAnalysis_Shell.LoadShells with-deeply-nested-compound
 
@@ -27820,6 +28203,7 @@ Two-triangle shell with all edges shared between faces (no free boundary). FreeE
 **Fixture**: `/Users/zellyn/gh/dodgy-step-files/step-examples/12-3a-shells/Tsh153.stp`
 
 ---
+- **Tier-3 assertion**: load == "ok"
 
 ### Tsh154 — ShapeFix_Shell.FixFaceOrientation pyramid-with-apex
 
@@ -27830,6 +28214,7 @@ Two-triangle shell with all edges shared between faces (no free boundary). FreeE
 **Impact**: Inconsistent face normals in closed shell; breaks downstream solid construction and manifoldness verification.
 
 ---
+- **Tier-3 assertion**: load == "ok"
 
 ### Tsh155 — ShapeAnalysis_Shell.CheckOrientedShells with-degenerate-shell
 
@@ -27840,6 +28225,7 @@ Two-triangle shell with all edges shared between faces (no free boundary). FreeE
 **Impact**: Invalid orientation verdict masks topological defect; degenerate geometry undetected by normal-based heuristic.
 
 ---
+- **Tier-3 assertion**: load == "ok"
 
 ### Tsh156 — ShapeUpgrade_ShellSewing.Apply mismatch-curve-types
 
@@ -27860,6 +28246,7 @@ Two-triangle shell with all edges shared between faces (no free boundary). FreeE
 **Impact**: Algorithm may not terminate or apply fixes inconsistently; status flags unreliable.
 
 ---
+- **Tier-3 assertion**: load == "ok"
 
 ### Tsh158 — ShapeAnalysis_Shell.BadEdges seam-edge-direction
 
@@ -28028,24 +28415,28 @@ Compound with nested shell references. LoadShells() recursion incomplete when de
 - **Trigger**: Call CheckOrientedShells() on CLOSED_SHELL with one degenerate face (e.g., all edges collinear or all vertices coplanar in line)
 - **Expected failure**: Normal-based orientation test produces NaN or inf during determinant computation; returns false instead of exception-free classification
 - **Test assertion**: CheckOrientedShells() should classify shell orientation without raising exception, even for zero-area faces
+- **Tier-3 assertion**: load == "ok"
 
 ### Tsh181 — ShapeUpgrade_ShellSewing.Apply bridge tolerance too large
 - **Defect class**: Sewing tolerance parameter set so large that all faces satisfy "merge" criteria; Apply() produces single-face shell from multi-face input
 - **Trigger**: Call Apply() with sewing tolerance >> max edge distance; two separate coplanar faces merge into one
 - **Expected failure**: Output shell contains only 1 face instead of 2; sewing logic collapses topology
 - **Test assertion**: Shell face count should not decrease below input count when tolerance is explicitly bounded
+- **Tier-3 assertion**: load == "ok"
 
 ### Tsh182 — ShapeFix_Shell.Perform face removal with shared edge
 - **Defect class**: Removed face's edge is still referenced by another face in same shell; Perform's removal leaves dangling reference
 - **Trigger**: Call Perform() to fix shell where removed face and remaining face share edge; edge list in remaining face still contains reference to removed edge
 - **Expected failure**: Dangling reference causes downstream topology query to fail (e.g., edge iteration on remaining face)
 - **Test assertion**: After Perform(), all edges in remaining faces must exist in shell edge set; no dangling references
+- **Tier-3 assertion**: load == "ok"
 
 ### Tsh183 — ShapeAnalysis_Shell.LoadShells with-shell-marker-but-no-faces
 - **Defect class**: Shape labeled as CLOSED_SHELL but containing zero faces; LoadShells produces empty entry in result
 - **Trigger**: Call LoadShells() on SHELL_BASED_SURFACE_MODEL containing CLOSED_SHELL('name',()) with empty face list
 - **Expected failure**: Result contains empty shell entry; CheckOrientedShells() on empty shell causes null dereference or assertion on normal computation
 - **Test assertion**: LoadShells() should skip or flag empty shells; downstream operations should not receive empty shell instances
+- **Tier-3 assertion**: load == "ok"
 
 ### Tsh184 — ShapeFix_Shell.FixFaceOrientation duplicate-face inconsistency
 - **Category**: §12.3a shells (sub-class: duplicate-mutation)
@@ -28514,6 +28905,7 @@ Three triangular faces forming incomplete closure (free edge between faces 1–2
 - **Reproducer recipe**: see `step-examples/12-2a-pcurves/Gp048.stp`; the fixture file's top comment names the specific OCCT method and line range.
 - **Expected kernel behavior**: detect or heal per the named OCCT branch; the fixture demonstrates the buggy input pattern.
 - **Expected validation**: `occt=unknown/unknown gmsh=unknown ifc=schema_n/a`
+- **Tier-3 assertion**: load == "ok"
 
 ### Gp049 — ShapeAnalysis_Edge.CheckOverlapping arc-length vs parameter-space
 - **Category**: §12.2a (pcurves)
@@ -28540,6 +28932,7 @@ Three triangular faces forming incomplete closure (free edge between faces 1–2
 - **Reproducer recipe**: Load edge with degree-1 B-spline pcurve, non-uniform knots. Query endpoint tangent via GetEndTangent2d. Compare control polygon slope vs. analytic derivative.
 - **Expected kernel behavior**: EndTangent2d should return analytic tangent at endpoint, not control polygon direction. Non-uniform knots magnify divergence.
 - **Expected validation**: `occt=unknown/unknown gmsh=unknown ifc=schema_n/a`
+- **Tier-3 assertion**: load == "ok"
 
 ### Gp052 — ShapeFix_Edge.FixSameParameter copyedge stale range
 
@@ -28549,6 +28942,7 @@ Three triangular faces forming incomplete closure (free edge between faces 1–2
 - **Reproducer recipe**: Create edge with 3D curve parametrized (0, 1), pcurve domain (5, 10). Call FixSameParameter. Verify new TEdge retains stale (5, 10) range instead of reparametrized (0, 1).
 - **Expected kernel behavior**: After reparametrization via GeomLib::SameRange, new edge's pcurve range must match 3D curve domain.
 - **Expected validation**: `occt=unknown/unknown gmsh=unknown ifc=schema_n/a`
+- **Tier-3 assertion**: load == "ok"
 
 ### Gp053 — ShapeAnalysis_Edge.CheckVerticesWithPCurve start vs end asymmetry
 
@@ -28558,6 +28952,7 @@ Three triangular faces forming incomplete closure (free edge between faces 1–2
 - **Reproducer recipe**: Load this fixture, then programmatically set the OCCT TopoDS_Vertex tolerances (e.g. via BRep_Builder::UpdateVertex) so vp_tol(start)=0.01 > vp_tol(end)=0.001 before calling CheckVerticesWithPCurve. The static STEP carries only the geometry; the asymmetric-check failure is observable via runtime tolerance manipulation on the loaded shape.
 - **Expected kernel behavior**: Vertex tolerance checks should be symmetric. Both start and end should pass or fail under identical geometric conditions with consistent tolerance application.
 - **Expected validation**: `occt=unknown/unknown gmsh=unknown ifc=schema_n/a`
+- **Tier-3 assertion**: load == "ok"
 
 ### Gp054 — ShapeFix_Edge.FixReversed2d non-B-spline pcurve
 
@@ -28567,6 +28962,7 @@ Three triangular faces forming incomplete closure (free edge between faces 1–2
 - **Reproducer recipe**: Create edge with TRIMMED_CURVE(LINE, [0, 50]) as pcurve. Mark edge as needing reversal. Call FixReversed2d. Verify trimmed-line pcurve range inverted (50, 0) instead of remaining (0, 50).
 - **Expected kernel behavior**: Reversal should handle all pcurve types uniformly, including trimmed curves. Parameter range must flip alongside direction reversal.
 - **Expected validation**: `occt=unknown/unknown gmsh=unknown ifc=schema_n/a`
+- **Tier-3 assertion**: load == "ok"
 
 ### Gp055 — ShapeAnalysis_Edge.CheckCurve3dWithPCurve uniformly sampled miss
 
@@ -28576,6 +28972,7 @@ Three triangular faces forming incomplete closure (free edge between faces 1–2
 - **Reproducer recipe**: Create edge curve B-spline with non-uniform knots, high curvature near u=0.05. Use pcurve with matching knot clustering. Call CheckCurve3dWithPCurve with default uniform sampling. Verify high-curvature region undetected.
 - **Expected kernel behavior**: Curve-pcurve consistency check should use adaptive or knot-aware sampling to capture high-curvature regions, especially near clustered knots.
 - **Expected validation**: `occt=unknown/unknown gmsh=unknown ifc=schema_n/a`
+- **Tier-3 assertion**: load == "ok"
 
 ### Gp056 — ShapeAnalysis_Edge.CheckCurve3dWithPCurve LOCATION transformation
 
@@ -28598,6 +28995,7 @@ Three triangular faces forming incomplete closure (free edge between faces 1–2
 **Expected validation**: `occt=unknown/unknown gmsh=unknown ifc=schema_n/a`
 
 ---
+- **Tier-3 assertion**: load == "ok"
 
 ### Gp058 — ShapeAnalysis_Edge.CheckPCurveRange degenerate-vertex parameters
 
@@ -28775,18 +29173,23 @@ PCurve is OFFSET_CURVE wrapping a line; FixReversed2d reverses the line but forg
 
 ### Gp081 — CheckSameParameter periodic-shift normalization
 Periodic surface edge whose 3D and 2D parameters disagree by exactly 2π (one full period); CheckSameParameter fails to normalize periodic parameters before comparison, incorrectly reporting mismatch.
+- **Tier-3 assertion**: load == "ok"
 
 ### Gp082 — FixAddCurve3d trim-domain extension
 Edge on trimmed surface where the natural 3D-from-pcurve curve extends past the trim boundary; FixAddCurve3d builds the full extent instead of respecting trim domain.
+- **Tier-3 assertion**: load == "ok"
 
 ### Gp083 — CheckOverlapping period-shifted edges
 Two edges on periodic surface where their 3D geometry coincides but their 2D pcurves are in different periods (offset by 2π); CheckOverlapping reports them as non-overlapping.
+- **Tier-3 assertion**: load == "ok"
 
 ### Gp084 — FixSameParameter cone-apex singularity tolerance
 Edge near cone apex where geometric tolerance diverges due to apex singularity; FixSameParameter clamps tolerance and produces incorrect magnitude without accounting for local metric scaling.
+- **Tier-3 assertion**: load == "ok"
 
 ### Gp085 — GetEndTangent2d ellipse derivative asymmetry
 P-curve is an ELLIPSE entity; GetEndTangent2d uses finite-difference fallback whose result depends on parameter direction (increasing vs decreasing); assumes parameter increases only.
+- **Tier-3 assertion**: load == "ok"
 
 ### Gp086 — CheckPCurveRange domain-larger-than-3D
 
@@ -28815,18 +29218,23 @@ Two edges on same plane: one is LINE, other is B-spline degree-1 with control po
 
 ### Gp091 — ShapeFix_Edge.FixSameParameter pcurve absent
 Edge with 3D curve but missing pcurve entirely; FixSameParameter attempts SameParameter calculation on null pcurve, producing NaN tolerance. Fixture has LINE edge without pcurve on PLANE face.
+- **Tier-3 assertion**: load == "ok"
 
 ### Gp092 — ShapeAnalysis_Edge.CheckCurve3dWithPCurve degenerate-pcurve
 Edge whose pcurve degenerates to single point; CheckCurve3dWithPCurve treats degenerate as trivially agreeing with 3D curve. Fixture has LINE edge with B_SPLINE_CURVE pcurve parametrized to single point [0,0].
+- **Tier-3 assertion**: load == "ok"
 
 ### Gp093 — ShapeFix_Edge.FixAddPCurve construct-on-conical-surface near-apex
 Edge near cone apex where (u,v) projection is mathematically unstable; FixAddPCurve constructs pcurve with NaN coordinates. Fixture has LINE edge on CONICAL_SURFACE at apex singularity (parameter space [0.001,0.001]→[0.002,0.002]).
+- **Tier-3 assertion**: load == "ok"
 
 ### Gp094 — ShapeAnalysis_Edge.CheckOverlapping curves-tangent-at-endpoint
 Two edges meeting tangentially at shared endpoint; CheckOverlapping's interior-intersection test ignores boundary tangency. Fixture has LINE+B_SPLINE_CURVE edges meeting at common vertex with tangent alignment.
+- **Tier-3 assertion**: load == "ok"
 
 ### Gp095 — ShapeFix_Edge.FixVertexTolerance face-vertex-conflict
 Vertex shared by two faces with conflicting tolerance requirements; FixVertexTolerance picks first face's requirement, ignoring second. Fixture has vertex #31 on two PLANE faces with independent BRep_Tool::Tolerance() values.
+- **Tier-3 assertion**: load == "ok"
 
 ### Gp096 — ShapeAnalysis_Edge.CheckCurve3dWithPCurve direction-reversed-but-coincident
 
@@ -28928,6 +29336,7 @@ Pcurve B-spline with zero tangent derivative at endpoint (last two control point
 ### Gp111 — ShapeAnalysis_Edge.CheckCurve3dWithPCurve different-trim-ranges
 
 3D curve range [0,1] and pcurve range [0.2, 0.8] cover different portions. CheckCurve3dWithPCurve samples uniform parameter space and compares wrong portions of geometry.
+- **Tier-3 assertion**: load == "ok"
 
 ### Gp112 — ShapeFix_Edge.FixAddPCurve scaled-surface
 
@@ -28940,10 +29349,12 @@ Two edges with equivalent geometry but different curve types: one LINE and one B
 ### Gp114 — ShapeFix_Edge.FixSameParameter periodic-curve-with-non-periodic-pcurve
 
 Closed 3D curve (circle) but pcurve is non-periodic line on plane. FixSameParameter forces periodicity mismatch between 3D and parametric representations.
+- **Tier-3 assertion**: load == "ok"
 
 ### Gp115 — ShapeAnalysis_Edge.GetEndTangent2d tangent-mid-knot
 
 Pcurve B-spline with knot at exact endpoint. GetEndTangent2d evaluates derivative at knot which produces discontinuous tangent result at boundary.
+- **Tier-3 assertion**: load == "ok"
 
 ### Gp116 — Sphere pole singularity in pcurve
 ShapeAnalysis_Edge.CheckCurve3dWithPCurve fails when pcurve passes through sphere pole (u=π/2) where tangent is undefined. Sampling uses NaN comparisons that can fail.
@@ -28968,18 +29379,22 @@ ShapeAnalysis_Edge.GetEndTangent2d fails on COMPOSITE_CURVE with G0 continuity; 
 ### Gp121 — ShapeAnalysis_Edge.CheckCurve3dWithPCurve OFFSET_CURVE
 
 Edge with 3D OFFSET_CURVE wrapping a line. CheckCurve3dWithPCurve samples but offset application uses base-curve normal, ignoring offset distance.
+- **Tier-3 assertion**: load == "ok"
 
 ### Gp122 — ShapeFix_Edge.FixAddPCurve B-spline-on-trimmed-surface
 
 Edge on RECTANGULAR_TRIMMED_SURFACE wrapping B-spline. FixAddPCurve constructs pcurve in base-surface coords, missing trim translation.
+- **Tier-3 assertion**: load == "ok"
 
 ### Gp123 — ShapeAnalysis_Edge.CheckPCurveRange CIRCLE with-large-radius
 
 Pcurve is CIRCLE with radius 1e6 but edge parameters [0, 0.001]. CheckPCurveRange's tolerance check uses absolute parameter not arc-length.
+- **Tier-3 assertion**: load == "ok"
 
 ### Gp124 — ShapeFix_Edge.FixReversed2d HYPERBOLA
 
 Pcurve is HYPERBOLA with reversed edge orientation. FixReversed2d's reversal doesn't handle asymptote-direction invariant.
+- **Tier-3 assertion**: load == "ok"
 
 ### Gp125 — ShapeAnalysis_Edge.GetEndTangent2d at-trim-boundary
 
@@ -29044,6 +29459,7 @@ Pcurve is TRIMMED_CURVE. GetEndTangent2d uses untrimmed-curve tangent at trim bo
 **Minimal reproducer**: B-spline in 3D with knot range [0,10], P-curve B-spline with knot range [0,2]. Parameter sync failure undetected.
 
 **Search anchors**: `FixSameParameter`, `B-spline`, `knot range`, `parameter coherence`
+- **Tier-3 assertion**: load == "ok"
 
 ### Gp126 — ShapeAnalysis_Edge.CheckCurve3dWithPCurve plane-projection mismatch
 - **Category**: §12.2a pcurves
@@ -29353,21 +29769,26 @@ Parameter delta below Precision::PConfusion skips tangent difference computation
 
 ### Gp157 — ShapeAnalysis_Surface.ProjectDegenerated `lazy-singularity-init`
 Projector proceeds without triggering ComputeSingularities. Degenerate edge-points near apex project incorrectly; singularity loci undetected. Cone surface with edge approaching apex singularity at u=0.
+- **Tier-3 assertion**: load == "ok"
 
 ### Gp158 — ShapeAnalysis_Surface.ProjectDegenerated `whole-edge-degenerate`
 All pcurve points collapse to singularity; even-spacing fallback not triggered. Inconsistent parametric values remain unmapped. Cone with entire pcurve at u=0 (apex), varying v ∈ [0, 1].
+- **Tier-3 assertion**: load == "ok"
 
 ### Gp159 — ShapeAnalysis_Surface.ProjectDegenerated `partial-edge-collapse`
 First half of pcurve near singularity not collapsed to parameter. Mixed degenerate/non-degenerate segment fails healing signal propagation. Sphere with pcurve starting at pole (u≈0.01), ending equator (u=0.5).
+- **Tier-3 assertion**: load == "ok"
 
 ### Gp160 — ShapeAnalysis_Surface.ProjectDegenerated `singularity-tolerance-threshold`
 Singularity tolerance exceeds requested precision; tolerance filter passes high-tolerance singularities. Degenerate points project onto cone apex with unvalidated precision consistency. Cone with gradient approach toward u=0 singularity.
 
 ## Wave 68C — STEP pcurve fixtures (Gp161–Gp165)
+- **Tier-3 assertion**: load == "ok"
 
 ### Gp161 — seam_detection_1843
 
 Seam edge with unreversed pcurve equality check without parametric domain validation. BSpline surface with dual pcurves; orientation loss on merge. Line 1843: `aFaceSeq.Length() == 1` check branches onto unreversed equality without orientation tracking.
+- **Tier-3 assertion**: load == "ok"
 
 ### Gp162 — line_circle_reparametrization_2106
 
@@ -29405,6 +29826,7 @@ Toroidal surface with meridian edge. Singularities computed lazily without reval
 
 ### Gp169 — `ProjectDegenerated.dual-distance-logic`
 B-spline surface with 3D curve initial gap. Pcurve distance metrics inconsistently recompute; direct vs. recomputed gap comparison diverges.
+- **Tier-3 assertion**: load == "ok"
 
 ### Gp170 — `ProjectDegenerated.iso-flag-unvalidated`
 Planar surface with U-iso degenerate edge. U-constant pcurve lacks coordinate-axis consistency check; flag used without validation.
@@ -29870,6 +30292,7 @@ LimitTolerance(shape, 0, 0.01) treats lower=0 as "skip lower check" AND skips up
 **Source**: OCCT_HEAL_COVERAGE_V3.md § BRepLib.UpdateEdgeTol (UET-002, low-confidence)
 
 ---
+- **Tier-3 assertion**: load == "ok"
 
 ### N082 — ShapeAnalysis_ShapeTolerance.AddTolerance shape-type membership
 
@@ -29880,6 +30303,7 @@ LimitTolerance(shape, 0, 0.01) treats lower=0 as "skip lower check" AND skips up
 **Source**: OCCT_HEAL_COVERAGE_V3.md § ShapeAnalysis_ShapeTolerance.AddTolerance_at240
 
 ---
+- **Tier-3 assertion**: load == "ok"
 
 ### N083 — ShapeFix_ShapeTolerance.SetTolerance compound + nested
 
@@ -29890,6 +30314,7 @@ LimitTolerance(shape, 0, 0.01) treats lower=0 as "skip lower check" AND skips up
 **Source**: OCCT_HEAL_COVERAGE_V3.md § ShapeFix_ShapeTolerance.SetTolerance_at145 (recursive_double_mutation)
 
 ---
+- **Tier-3 assertion**: load == "ok"
 
 ### N084 — BRepLib.UpdateInnerTolerances degenerate-edge postcondition
 
@@ -29900,6 +30325,7 @@ LimitTolerance(shape, 0, 0.01) treats lower=0 as "skip lower check" AND skips up
 **Source**: OCCT_HEAL_COVERAGE_V3.md § BRepLib.UpdateInnerTolerances (UIT-001)
 
 ---
+- **Tier-3 assertion**: load == "ok"
 
 ### N085 — ShapeAnalysis_Edge.CheckPoints precision-asymmetry
 
@@ -29908,6 +30334,7 @@ LimitTolerance(shape, 0, 0.01) treats lower=0 as "skip lower check" AND skips up
 **Fixture**: Edge with vertices V1_tight (tol=0.001) and V2_loose (tol=0.01); CheckPoints computes average tolerance, masking asymmetric precision requirements.
 
 **Source**: OCCT_HEAL_COVERAGE_V3.md § ShapeAnalysis_Edge.CheckPoints_at435 (SQUARED_DISTANCE_THRESHOLD)
+- **Tier-3 assertion**: load == "ok"
 
 ### N086 — Closed BSpline SameParameter wrapping
 ShapeFix_Edge.FixSameParameter fails to account for parameter wrapping in periodic B-splines. Computes SameParameter assuming open curve; closed spline edges with v ∈ [0,2π) incorrectly flagged as non-same-parameter when edge uses modulo arithmetic.
@@ -30041,38 +30468,48 @@ Average threshold ≈ 0.5. E1 fails individual but passes average. E2 passes ind
 
 ### N101 — ShapeFix_Edge.FixVertexTolerance reset-on-fix
 Vertex tolerance escalated during initial edge check, then silently reset to base value when FixVertexTolerance executes. Defect: no error on tolerance loss; downstream checks see degraded tolerance state and fail inconsistently.
+- **Tier-3 assertion**: load == "ok"
 
 ### N102 — ShapeAnalysis_Edge.CheckOverlapping multi-curve three-way overlap
 Three edges share identical 3D LINE geometry. CheckOverlapping designed for pairwise comparison; three-way case produces inconsistent verdicts (edge 1-2 vs 2-3 vs 1-3). Defect: voting inconsistency in overlap classification.
+- **Tier-3 assertion**: load == "ok"
 
 ### N103 — BRepLib.UpdateEdgeTol negative-coverage sparse sampling
 Edge tolerance recomputed via interpolation across sampled sub-regions. Sparse sampling leaves gaps with zero coverage; interpolation breaks down, produces NaN or infinite tolerance in unsampled zone. Defect: interpolation instability on sparse sample sets.
+- **Tier-3 assertion**: load == "ok"
 
 ### N104 — ShapeFix_ShapeTolerance.SetTolerance applied-to-frozen-shape
 SetTolerance called on shape already marked immutable by downstream API (e.g., post-validate). Modification executes silently without error; tolerance state becomes corrupt (cached vs. actual mismatch). Defect: no precondition validation; silent state mutation.
+- **Tier-3 assertion**: load == "ok"
 
 ### N105 — ShapeAnalysis_Edge.CheckOverlapping coincident-but-different-direction
 Two edges geometrically coincident but opposite-directed (edge 1: v1→v2, edge 2: v2→v1). CheckOverlapping reports 3D overlap, but direction-strict check fails. Defect: direction invariance missing; conflicting verdicts on same geometry.
+- **Tier-3 assertion**: load == "ok"
 
 ### N106 — ShapeFix_Edge.FixVertexTolerance vertex-on-singular-surface
 
 Vertex tolerance evaluation on cone apex (singular surface point). FixVertexTolerance evaluates surface curvature at apex, producing unbounded tolerance due to infinite curvature. Edge from apex to base point on cone surface with parametric tolerance inference. Tests geometry curvature singularity handling.
+- **Tier-3 assertion**: load == "ok"
 
 ### N107 — ShapeAnalysis_ShapeTolerance.AddTolerance with-history
 
 AddTolerance call updates internal history list; list pointer becomes stale after first update. Closed rectangular face with four edges on plane. Triggers history tracking mechanism during tolerance accumulation across recursive shape graph traversal.
+- **Tier-3 assertion**: load == "ok"
 
 ### N108 — BRepLib.SameRange clamped-range
 
 SameRange called on edge with parameter range [0.999, 1.001] near parametric boundary. Rounding logic fails to detect range adjustment needed; function returns success without actual parameter synchronization. Linear edge on plane tests range clamping behavior.
+- **Tier-3 assertion**: load == "ok"
 
 ### N109 — ShapeFix_ShapeTolerance.SetTolerance with-cyclic-reference
 
 Shape with cyclic reference in sub-shape graph; SetTolerance recursion lacks cycle detection and loops indefinitely. Closed rectangular face referenced twice in shell structure to create circular topology. Tests recursion termination condition.
+- **Tier-3 assertion**: load == "ok"
 
 ### N110 — ShapeAnalysis_Edge.CheckPoints precision-vs-projection-distance
 
 CheckPoints called with precision 1e-3 but projection-distance test uses 1e-6 internally. Verdict based on smaller internal threshold contradicts caller's tolerance specification. Long linear edge (100mm) tests precision asymmetry in point-pair distance evaluation.
+- **Tier-3 assertion**: load == "ok"
 
 ### N111 — FixVertexTolerance vertex-tolerance-from-tessellation
 **Defect**: ShapeFix_Edge.FixVertexTolerance computes vertex tolerance from tessellation that's been internally simplified; uses simplified mesh tolerance instead of original geometry.
@@ -30109,6 +30546,7 @@ CheckPoints called with precision 1e-3 but projection-distance test uses 1e-6 in
 **Defect**: Vertex used by 4+ edges; `FixVertexTolerance` iterates per-edge but writes back to the shared vertex, overwriting previous results. Final tolerance reflects only the last edge that touched it, losing constraints from earlier edges. Each iteration recalculates and overwrites the vertex tolerance field without accumulating maxima.
 
 **Reproducer**: Star topology with a central hub vertex (#11) shared by 4 radial edges, each demanding a different tolerance (1e-2, 1e-3, 1e-4, 1e-5). The algorithm processes edges in order, overwriting the hub's tolerance 4 times. Downstream operations see only the last (1e-5) value instead of the maximum required (1e-2).
+- **Tier-3 assertion**: load == "ok"
 
 ### N117 — ShapeAnalysis_Edge.CheckOverlapping mixed-curve-orientation
 
@@ -30156,6 +30594,7 @@ CheckPoints called with precision 1e-3 but projection-distance test uses 1e-6 in
 **Defect category:** Surface singularity / numeric stability  
 **Input pattern:** Edge on conical surface at apex (parametric u=0, degenerate parametric domain)  
 **Triggering condition:** Sampling edge at parametric intervals produces zero-length derivatives on degenerate patch; division-by-zero or normalization singularity
+- **Tier-3 assertion**: load == "ok"
 
 ### N124 — ShapeFix_ShapeTolerance.SetTolerance recursion-stack-overflow
 
@@ -30235,6 +30674,7 @@ CheckPoints called with precision 1e-3 but projection-distance test uses 1e-6 in
 - **Model impact**: InTolerance(shape, 0.001, 0.002, VERTEX) returns 0.005-tolerance vertex instead of 0.0015
 - **Fixture path**: step-examples/12-4-tolerance/N131.stp
 - **Fixture kind**: scaffold
+- **Tier-3 assertion**: load == "ok"
 
 ### N132 — ShapeFix_ShapeTolerance ambiguous equality bound
 - **Category**: §12.4 tolerance (sub-class: limit_tolerance)
@@ -30245,6 +30685,7 @@ CheckPoints called with precision 1e-3 but projection-distance test uses 1e-6 in
 - **Model impact**: SetTolerance(shape, 1.0, 1.0, VERTEX) produces undefined tolerance semantics
 - **Fixture path**: step-examples/12-4-tolerance/N132.stp
 - **Fixture kind**: scaffold
+- **Tier-3 assertion**: load == "ok"
 
 ### N133 — ShapeFix_ShapeTolerance negative precision acceptance
 - **Category**: §12.4 tolerance (sub-class: input_validation)
@@ -30255,6 +30696,7 @@ CheckPoints called with precision 1e-3 but projection-distance test uses 1e-6 in
 - **Model impact**: SetTolerance(shape, -0.5, VERTEX) creates negative tolerance corruption
 - **Fixture path**: step-examples/12-4-tolerance/N133.stp
 - **Fixture kind**: scaffold
+- **Tier-3 assertion**: load == "ok"
 
 ### N134 — ShapeFix_ShapeTolerance shared vertex double mutation
 - **Category**: §12.4 tolerance (sub-class: recursive_application)
@@ -30265,6 +30707,7 @@ CheckPoints called with precision 1e-3 but projection-distance test uses 1e-6 in
 - **Model impact**: Wire with shared vertex receives tolerance applied twice, last-write-wins semantics
 - **Fixture path**: step-examples/12-4-tolerance/N134.stp
 - **Fixture kind**: scaffold
+- **Tier-3 assertion**: load == "ok"
 
 ### N135 — ShapeAnalysis_ShapeTolerance missing face validity check
 - **Category**: §12.4 tolerance (sub-class: state_validation)
@@ -30279,30 +30722,35 @@ CheckPoints called with precision 1e-3 but projection-distance test uses 1e-6 in
 # Wave 59C: Tolerance Prefix Fixtures (N136–N140)
 
 ## Defect Patterns
+- **Tier-3 assertion**: load == "ok"
 
 ### N136 — ShapeAnalysis_ShapeTolerance.MaxTolerance.unbounded_edge_iteration
 - **Pattern**: Tolerance accumulation without parameterization bounds validation
 - **Trigger**: Infinite curve ranges in edge iteration; no overflow guard
 - **Impact**: Spurious max-tolerance values mask real violations
 - **Axiom**: Edge iteration MUST check bounds before range access
+- **Tier-3 assertion**: load == "ok"
 
 ### N137 — BRepBuilderAPI_Sewing.AnalysisNearestEdges.distance_tolerance_filter_bypass
 - **Pattern**: Missing distance threshold check on candidate filtering
 - **Trigger**: arrDist(n) > tolerance not validated; tabDst index unprotected
 - **Impact**: Out-of-tolerance edges pass as false matches (distance=0.5, tol=0.1)
 - **Axiom**: All distance candidates MUST be filtered against tolerance ceiling
+- **Tier-3 assertion**: load == "ok"
 
 ### N138 — ShapeAnalysis_Edge.CheckPoints.tolerance_conservatism_fail
 - **Pattern**: Conservative tolerance selection without endpoint validation
 - **Trigger**: Tightest precision bound chosen (1e-8) but not enforced on both endpoints
 - **Impact**: Precision-varying edges (5e-7 sep > 1e-8 tol) incorrectly rejected
 - **Axiom**: Conservative tolerance selection MUST validate all endpoints within bound
+- **Tier-3 assertion**: load == "ok"
 
 ### N139 — ShapeAnalysis_ShapeTolerance.OuterWire.tolerance_layer_recursion
 - **Pattern**: Nested wire tolerance scaling without recursion depth tracking
 - **Trigger**: Circular wire references with tolerance propagation; no cycle counter
 - **Impact**: Stack exhaustion or infinite loops in tolerance validation chains
 - **Axiom**: Tolerance layer traversal MUST include depth limits and cycle detection
+- **Tier-3 assertion**: load == "ok"
 
 ### N140 — ShapeAnalysis_Surface.Continuity.tolerance_interval_mismatch
 - **Pattern**: Surface continuity check omits boundary tolerance scaling
@@ -30316,6 +30764,7 @@ CheckPoints called with precision 1e-3 but projection-distance test uses 1e-6 in
 - DIRECTION ratios ≈ unit
 - No forward references
 - ISO-10303-21 header line 1
+- **Tier-3 assertion**: load == "ok"
 
 ### N141 — ShapeFix_IntersectionTool.FixIntEdges tolerance_selection
 

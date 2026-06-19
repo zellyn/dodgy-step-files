@@ -340,7 +340,9 @@
       "spec-violation",
       "performance"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "Cyclic / self-referential reference graph causes infinite recursion"
   },
   {
@@ -377,7 +379,9 @@
       "crash",
       "performance"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "`EntityCluster` infinite recursion / leak on pathological deep chain"
   },
   {
@@ -451,7 +455,9 @@
     "taxonomy": [
       "performance"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "Entity-count amplification: tiny file, many GB resident"
   },
   {
@@ -490,7 +496,9 @@
     "taxonomy": [
       "performance"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "Long helix exported as huge B-spline (millions of poles)"
   },
   {
@@ -528,7 +536,9 @@
     "taxonomy": [
       "performance"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "Pathological B-rep from mesh conversion: `OPEN_SHELL` from OpenSCAD/STL→STEP"
   },
   {
@@ -563,7 +573,9 @@
     "taxonomy": [
       "performance"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "STEP assembly reader hangs in Transfer on cyclic `SHAPE_REPRESENTATION_RELATIONSHIP` web (Catia/NX-emitted file, OCCT 7.9)"
   },
   {
@@ -598,7 +610,9 @@
       "silent-loss",
       "performance"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "Healing pipeline hangs on huge single-shell input (multi-pass divergence)"
   },
   {
@@ -631,7 +645,9 @@
     "taxonomy": [
       "performance"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "Memory not released after STEP assembly read (Linux / Docker)"
   },
   {
@@ -664,7 +680,9 @@
     "taxonomy": [
       "performance"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "Memory leaks in STEP/IGES controller initialisation enum tables"
   },
   {
@@ -734,7 +752,9 @@
       "silent-loss",
       "performance"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "Floating / non-deterministic crash in shape healing on near-apex `CONICAL_SURFACE` edge"
   },
   {
@@ -811,7 +831,9 @@
     "taxonomy": [
       "performance"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "Iterative ShapeFix exposes new defect every pass (unbounded)"
   },
   {
@@ -846,7 +868,9 @@
       "crash",
       "performance"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "Self-intersection-healing tool enters infinite loop on `EDGE_LOOP` with crossed diagonals (out-of-range split index)"
   },
   {
@@ -882,7 +906,9 @@
       "crash",
       "performance"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "`ADVANCED_FACE` with internal-vertex `VERTEX_LOOP` `FACE_BOUND` (`.U.`) causes outer-wire-detection infinite loop (IFC-derived)"
   },
   {
@@ -920,7 +946,9 @@
     "taxonomy": [
       "performance"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "Mixed-scale features produce millions of tiny faces post-tessellation"
   },
   {
@@ -955,7 +983,9 @@
     "taxonomy": [
       "performance"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "Rhino joins > 10k face polysurfaces in O(n²)"
   },
   {
@@ -990,7 +1020,9 @@
       "crash",
       "performance"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "`TDocStd_Document` creation aborts process under VSCode server runtime"
   },
   {
@@ -1026,7 +1058,9 @@
     "taxonomy": [
       "performance"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "Schema-EXPRESS WHERE-rule evaluation bomb (billion-laughs analogue)"
   },
   {
@@ -1063,7 +1097,9 @@
     "taxonomy": [
       "performance"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "STEP read parsing slow due to single-pass tokenisation"
   },
   {
@@ -1100,7 +1136,9 @@
     "taxonomy": [
       "performance"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "Reader hangs during XCAF tree build on deep assembly"
   },
   {
@@ -1137,7 +1175,9 @@
     "taxonomy": [
       "performance"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "Long-running mesh on STEP file load"
   },
   {
@@ -1174,7 +1214,9 @@
     "taxonomy": [
       "performance"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "Shape-divide pass raises end-of-iteration on large shape"
   },
   {
@@ -1213,7 +1255,9 @@
       "crash",
       "performance"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "Large assembly STEP loads at 100% CPU with unbounded memory growth until OOM"
   },
   {
@@ -1251,7 +1295,9 @@
       "crash",
       "performance"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "`STEPCAFControl_Reader` hangs in infinite loop on cyclic `MAPPED_ITEM` reference"
   },
   {
@@ -1291,7 +1337,9 @@
     "taxonomy": [
       "performance"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "Two-pass loader: dangling forward-ref subgraph silently truncated (BRL-CAD step-g)"
   },
   {
@@ -1366,7 +1414,9 @@
     "taxonomy": [
       "adversarial"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "Stack overflow via deeply nested aggregate parentheses"
   },
   {
@@ -1407,7 +1457,9 @@
       "silent-loss",
       "adversarial"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "Negative / zero `B_SPLINE` degree or empty knot/multiplicity lists drive `malloc` size confusion"
   },
   {
@@ -1448,7 +1500,9 @@
     "taxonomy": [
       "adversarial"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "Cyclic complex-entity reference graph causes infinite recursion"
   },
   {
@@ -1487,7 +1541,9 @@
       "spec-violation",
       "adversarial"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "Dangling forward reference to undefined `#NNN`"
   },
   {
@@ -1525,7 +1581,9 @@
       "silent-loss",
       "adversarial"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "Float literal with extreme exponent (`1E999999`) propagates as inf/NaN"
   },
   {
@@ -1599,7 +1657,9 @@
     "taxonomy": [
       "adversarial"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "Self-referencing complex-entity instance during construction"
   },
   {
@@ -1639,7 +1699,9 @@
       "crash",
       "adversarial"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "STEP \"zip bomb\": 10⁷ tiny instances exhaust memory"
   },
   {
@@ -1679,7 +1741,9 @@
       "silent-loss",
       "adversarial"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "Type-confusion via mis-typed reference (CARTESIAN_POINT used as DIRECTION)"
   },
   {
@@ -1717,7 +1781,9 @@
       "crash",
       "adversarial"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "Malformed `FILE_DESCRIPTION` (missing `implementation_level` argument) triggers use-after-free in deferred header diagnostic"
   },
   {
@@ -1757,7 +1823,9 @@
       "crash",
       "adversarial"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "Schema-EXPRESS rule recursion bomb"
   },
   {
@@ -1792,7 +1860,9 @@
     "taxonomy": [
       "adversarial"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "Translator OOB write copying parsed string into packed C struct"
   },
   {
@@ -1827,7 +1897,9 @@
       "crash",
       "adversarial"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "IGES-style 80-column padding sensitivity (shared translator code paths)"
   },
   {
@@ -1867,7 +1939,9 @@
       "spec-violation",
       "adversarial"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "File concatenation produces conflicting IDs and dual end-markers"
   },
   {
@@ -1907,7 +1981,9 @@
       "spec-violation",
       "adversarial"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "Reference to entity-of-wrong-type in attribute slot"
   },
   {
@@ -1948,7 +2024,9 @@
       "silent-loss",
       "adversarial"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "STEP read raises uncaught exception on null / invalid entity reference"
   },
   {
@@ -1985,7 +2063,9 @@
       "crash",
       "adversarial"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "`EDGE_CURVE.same_sense` boolean read uninitialised"
   },
   {
@@ -2026,7 +2106,9 @@
       "silent-loss",
       "adversarial"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "Healing pipeline raises exception on real input with `EDGE_CURVE` vertices off the `LINE` by sub-confusion offset (\"must not throw\")"
   },
   {
@@ -2066,7 +2148,9 @@
       "silent-loss",
       "adversarial"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "STEP writer crashes on `ADVANCED_FACE` `EDGE_CURVE` with no `SURFACE_CURVE` / pcurve plus empty `APPLIED_GROUP_ASSIGNMENT`"
   },
   {
@@ -2103,7 +2187,9 @@
       "silent-loss",
       "adversarial"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "`ADVANCED_FACE` `same_sense=.F.` inverts surface normal: negative or invalid face area after orientation fix"
   },
   {
@@ -2141,7 +2227,9 @@
       "spec-violation",
       "adversarial"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "Real literal lacks decimal point or has Fortran `D` exponent"
   },
   {
@@ -2181,7 +2269,9 @@
       "silent-loss",
       "adversarial"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "Empty `EDGE_LOOP` / empty wire / empty entity iterator crashes reader"
   },
   {
@@ -2216,7 +2306,9 @@
       "silent-loss",
       "adversarial"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "Reference to non-existent entity number (negative or out-of-range)"
   },
   {
@@ -2255,7 +2347,9 @@
       "crash",
       "adversarial"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "STEP file referencing itself as external file (infinite loop)"
   },
   {
@@ -2291,7 +2385,9 @@
     "taxonomy": [
       "adversarial"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "Cyclic / reference-to-reference chain of `SHAPE_REPRESENTATION_RELATIONSHIP`"
   },
   {
@@ -2327,7 +2423,9 @@
     "taxonomy": [
       "adversarial"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "Mutual-cycle `NEXT_ASSEMBLY_USAGE_OCCURRENCE` chain hangs reader's `Transfer` phase forever"
   },
   {
@@ -2366,7 +2464,9 @@
     "taxonomy": [
       "adversarial"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "Stack overflow when meshing TBB pool from STEP import"
   },
   {
@@ -2400,7 +2500,9 @@
     "taxonomy": [
       "adversarial"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "General-transform constructor throws on extreme non-uniform face stretch"
   },
   {
@@ -2437,7 +2539,9 @@
       "silent-loss",
       "adversarial"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "Memory leak / unbounded RSS after STEP assembly read (typed-value / BOOLEAN-enum table allocations not freed)"
   },
   {
@@ -2474,7 +2578,9 @@
       "silent-loss",
       "adversarial"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "Mismatched weight / pole counts in BSpline (writer-emitted)"
   },
   {
@@ -2584,7 +2690,9 @@
     "taxonomy": [
       "adversarial"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "`NEXT_ASSEMBLY_USAGE_OCCURRENCE` child as PRODUCT_DEFINITION_SHAPE (mis-typed select)"
   },
   {
@@ -2621,7 +2729,9 @@
     "taxonomy": [
       "adversarial"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "Two `DATA` sections with colliding `#NNN` id space in one file (token-boundary attack)"
   },
   {
@@ -2658,7 +2768,9 @@
       "crash",
       "adversarial"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "Empty `SHAPE_REPRESENTATION.items` plus dangling `PRODUCT_DEFINITION_SHAPE` triggers out-of-range abort in root-transfer (Rhino-6 emit)"
   },
   {
@@ -2695,7 +2807,9 @@
       "silent-loss",
       "adversarial"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "Late-bound forward reference (`FACE_OUTER_BOUND` → `EDGE_LOOP` → `ORIENTED_EDGE` defined later) trips binary BREP indexed-map lookup"
   },
   {
@@ -2733,7 +2847,9 @@
       "crash",
       "adversarial"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "Multiple `PRODUCT`s share the same name; only `NEXT_ASSEMBLY_USAGE_OCCURRENCE` id disambiguates (assembly reader flat-load label collision)"
   },
   {
@@ -2813,7 +2929,9 @@
       "silent-loss",
       "adversarial"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "Composite-curve-segment self-cyclic reference"
   },
   {
@@ -2850,7 +2968,9 @@
     "taxonomy": [
       "adversarial"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "Translator silently masks segfault-class faults as \"transfer failed\" on type-confused / overflow attribute references"
   },
   {
@@ -2888,7 +3008,9 @@
       "silent-loss",
       "adversarial"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "STEP reader crashes on file with unresolved entity reference"
   },
   {
@@ -2925,7 +3047,9 @@
     "taxonomy": [
       "adversarial"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "Crash on reading STEP with malformed parameter values"
   },
   {
@@ -2960,7 +3084,9 @@
     "taxonomy": [
       "adversarial"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "Reader broken parsing on missing last parameter"
   },
   {
@@ -2995,7 +3121,9 @@
       "silent-loss",
       "adversarial"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "Lower-case `End-ISO-10303-21` token rejected"
   },
   {
@@ -3032,7 +3160,9 @@
       "silent-loss",
       "adversarial"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "Crash on STEP file from non-C locale (decimal separator)"
   },
   {
@@ -3071,7 +3201,9 @@
     "taxonomy": [
       "adversarial"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "Crash reading large STEP file: exception during transfer"
   },
   {
@@ -3109,7 +3241,9 @@
       "silent-loss",
       "adversarial"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "Empty / null input file path causes crash"
   },
   {
@@ -3149,7 +3283,9 @@
       "silent-loss",
       "adversarial"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "Shell translator dereferences null on empty face list"
   },
   {
@@ -3187,7 +3323,9 @@
       "silent-loss",
       "adversarial"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "STEP file from Pro/Engineer crashes (vendor-attribution)"
   },
   {
@@ -3225,7 +3363,9 @@
     "taxonomy": [
       "adversarial"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "Crash on AP242 file: access violation reading entity"
   },
   {
@@ -3296,7 +3436,9 @@
     "taxonomy": [
       "adversarial"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "Infinite recursion during ShapeFix after Boolean cut"
   },
   {
@@ -3333,7 +3475,9 @@
       "silent-loss",
       "adversarial"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "Self-intersection healing of a wire with self-tangent loop pcurve never terminates"
   },
   {
@@ -3371,7 +3515,9 @@
     "taxonomy": [
       "adversarial"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "Memory leak reading STEP file into TDocStd_Document"
   },
   {
@@ -3411,7 +3557,9 @@
       "silent-loss",
       "adversarial"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "Wire edge-curve healing reads past end of edge list after edge removal (open EDGE_LOOP / non-closed 3-edge wire)"
   },
   {
@@ -3447,7 +3595,9 @@
     "taxonomy": [
       "adversarial"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "Crash transferring HLR-created shapes via STEP writer"
   },
   {
@@ -3485,7 +3635,9 @@
     "taxonomy": [
       "adversarial"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "Coincident VERTEX_POINTs at identical CARTESIAN_POINT coordinates trigger vertex-merge healing throws on already-absorbed vertex"
   },
   {
@@ -3523,7 +3675,9 @@
       "spec-violation",
       "adversarial"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "STEP-XML wrapper carries a DTD with external-entity reference (XXE)"
   },
   {
@@ -3562,7 +3716,9 @@
       "silent-loss",
       "adversarial"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "`.stpz` / `.stpx` archive container claims gigabytes of uncompressed data"
   },
   {
@@ -3599,7 +3755,9 @@
       "spec-violation",
       "adversarial"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "`EXTERNAL_FILE` URI resolves through a symlink (TOCTOU race)"
   },
   {
@@ -3641,7 +3799,9 @@
       "spec-violation",
       "adversarial"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "STEP-XML wrapper carries a billion-laughs entity-expansion bomb"
   },
   {
@@ -3683,7 +3843,9 @@
       "spec-violation",
       "adversarial"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "STEP-XML DOCTYPE references an external DTD over the network"
   },
   {
@@ -3724,7 +3886,9 @@
       "silent-loss",
       "adversarial"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "STEP-XML parameter-entity injection exfiltrates local file via out-of-band DTD"
   },
   {
@@ -3766,7 +3930,9 @@
     "taxonomy": [
       "adversarial"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "`.stpz` gzip wrapper expands ratio 1:10000 into multi-gigabyte body"
   },
   {
@@ -3810,7 +3976,9 @@
       "silent-loss",
       "adversarial"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "ZIP bomb inside a 3MF / IFCZIP container that wraps a STEP body"
   },
   {
@@ -3853,7 +4021,9 @@
       "silent-loss",
       "adversarial"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "Nested gzip-of-gzip-of-..stpz triggers N-level recursive decompression"
   },
   {
@@ -3894,7 +4064,9 @@
       "silent-loss",
       "adversarial"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "Symlink swap between read of `.input.stp` and read of `.stp` (sibling-pair TOCTOU)"
   },
   {
@@ -3935,7 +4107,9 @@
       "silent-loss",
       "adversarial"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "STEP fixture path is a symlink to `/etc/passwd` or other privileged file"
   },
   {
@@ -3975,7 +4149,9 @@
     "taxonomy": [
       "adversarial"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "Directory-entry race between `stat()` and `open()` on STEP fixture path"
   },
   {
@@ -4013,7 +4189,9 @@
     "taxonomy": [
       "adversarial"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "Non-ASCII (Cyrillic / multi-byte) filename or path causes STEP import to fail"
   },
   {
@@ -4051,7 +4229,9 @@
       "crash",
       "adversarial"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "STEP reader crashes on minimal file with malformed `STYLED_ITEM`"
   },
   {
@@ -4089,7 +4269,9 @@
     "taxonomy": [
       "adversarial"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "Forward-compat: STEP files written by an older OCC version no longer open in a newer build"
   },
   {
@@ -4131,7 +4313,9 @@
       "spec-violation",
       "adversarial"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "\"Unknown ENTITY type\" warning is not a hard failure (presentation subgraph silently dropped, BRL-CAD step-g)"
   },
   {
@@ -4166,7 +4350,9 @@
     "taxonomy": [
       "interop"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "Malformed `\\X2\\` escape in PRODUCT.name AND self-intersecting wire"
   },
   {
@@ -4237,7 +4423,9 @@
     "taxonomy": [
       "interop"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "Sliver face × non-manifold edge (3 faces share one edge)"
   },
   {
@@ -4272,7 +4460,9 @@
     "taxonomy": [
       "interop"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "PMI annotation × tessellation-vs-BRep mix in a single AP242 file"
   },
   {
@@ -4305,7 +4495,9 @@
     "taxonomy": [
       "interop"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "NURBS knot vector × control-point weight × tolerance-boundary cusp"
   },
   {
@@ -4341,7 +4533,9 @@
       "silent-loss",
       "interop"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "Schema-mismatch × forward-reference × unresolved entity"
   },
   {
@@ -4374,7 +4568,9 @@
     "taxonomy": [
       "interop"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "Cyclic complex-entity reference × deeply-nested aggregate"
   },
   {
@@ -4409,7 +4605,9 @@
     "taxonomy": [
       "interop"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "Empty EDGE_LOOP × empty FACE_OUTER_BOUND × otherwise-valid solid"
   },
   {
@@ -4477,7 +4675,9 @@
     "taxonomy": [
       "interop"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "Negative torus radius × pcurve disagreement × tiny edge"
   },
   {
@@ -4510,7 +4710,9 @@
     "taxonomy": [
       "interop"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "REAL missing decimal × integer in DIRECTION × empty FILE_NAME author"
   },
   {
@@ -4545,7 +4747,9 @@
     "taxonomy": [
       "interop"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "Reversed face normal × non-watertight shell × duplicate edge"
   },
   {
@@ -4580,7 +4784,9 @@
     "taxonomy": [
       "interop"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "Cone apex pcurve × surface-folded × non-manifold vertex"
   },
   {
@@ -4615,7 +4821,9 @@
     "taxonomy": [
       "interop"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "Open shell as MANIFOLD_SOLID_BREP.outer × tolerance-violation × unit mismatch"
   },
   {
@@ -4650,7 +4858,9 @@
     "taxonomy": [
       "interop"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "Self-intersecting wire on cylindrical (periodic) face × seam-edge missing"
   },
   {
@@ -4683,7 +4893,9 @@
     "taxonomy": [
       "interop"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "Forward reference × cyclic reference × invalid axis-placement"
   },
   {
@@ -4716,7 +4928,9 @@
     "taxonomy": [
       "interop"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "Empty geometric-set × extreme coordinates × NaN component"
   },
   {
@@ -4749,7 +4963,9 @@
     "taxonomy": [
       "interop"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "PMI without saved-view × unit-system mismatch × forward references"
   },
   {
@@ -4782,7 +4998,9 @@
     "taxonomy": [
       "interop"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "Multiple DATA sections × duplicated entity ID × cross-section reference"
   },
   {
@@ -4817,7 +5035,9 @@
     "taxonomy": [
       "interop"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "Tessellated face × BRep face sharing PMI × unit-system inch/mm collision"
   },
   {
@@ -4852,7 +5072,9 @@
     "taxonomy": [
       "interop"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "Disconnected EDGE_LOOP × pcurve missing × wire bypassing seam"
   },
   {
@@ -4887,7 +5109,9 @@
     "taxonomy": [
       "interop"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "Time-bomb tolerance × negative-radius torus × cyclic seam edge"
   },
   {
@@ -4962,7 +5186,9 @@
       "silent-loss",
       "interop"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "Tessellated topology × shared shell × void containment in one fixture"
   },
   {
@@ -5000,7 +5226,9 @@
     "taxonomy": [
       "interop"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "Onshape→SolidWorks: assembly children snap to origin (placements lost)"
   },
   {
@@ -5035,7 +5263,9 @@
     "taxonomy": [
       "interop"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "Fusion 360 AP242 export rejected by NX 12 (no AP242 import)"
   },
   {
@@ -5070,7 +5300,9 @@
     "taxonomy": [
       "interop"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "Inventor STEP import \"stuck at 95%\" — long path in FILE_NAME author field"
   },
   {
@@ -5107,7 +5339,9 @@
     "taxonomy": [
       "interop"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "Onshape \"imports as one Surface\" — missing face yields OPEN_SHELL"
   },
   {
@@ -5143,7 +5377,9 @@
     "taxonomy": [
       "interop"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "Onshape STEP/SLDPRT export drops cosmetic thread metadata"
   },
   {
@@ -5181,7 +5417,9 @@
     "taxonomy": [
       "interop"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "Inventor exports Asian (CJK) characters as raw legacy-codepage bytes"
   },
   {
@@ -5217,7 +5455,9 @@
       "round-trip",
       "interop"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "KiCad STEP imports cleanly in FreeCAD but corrupts in SolidWorks (PRODUCT.name de-dup)"
   },
   {
@@ -5254,7 +5494,9 @@
     "taxonomy": [
       "interop"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "CATIA V5 degenerate B-spline surface → Inventor \"empty PartBody\""
   },
   {
@@ -5290,7 +5532,9 @@
     "taxonomy": [
       "interop"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "NX-emitted cylinder split into two ADVANCED_FACE halves at the seam"
   },
   {
@@ -5326,7 +5570,9 @@
       "round-trip",
       "interop"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "CadQuery RGB shifted by sRGB→linear conversion on STEP export"
   },
   {
@@ -5362,7 +5608,9 @@
     "taxonomy": [
       "interop"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "CadQuery STEP writer emits redundant COLOUR_RGB entities for identical colours"
   },
   {
@@ -5402,7 +5650,9 @@
       "round-trip",
       "interop"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "STYLED_ITEM colours dropped by bare STEPControl_Reader (vs XCAF reader)"
   },
   {
@@ -5437,7 +5687,9 @@
     "taxonomy": [
       "interop"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "Creo Parametric assembly STEP with overlapping bodies fails manifold solid"
   },
   {
@@ -5476,7 +5728,9 @@
       "round-trip",
       "interop"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "Onshape 2-56 UNC tap drill misclassified as M1.6 metric clearance hole"
   },
   {
@@ -5513,7 +5767,9 @@
     "taxonomy": [
       "interop"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "Inventor \"simplified part\" loses appearance via empty SURFACE_SIDE_STYLE"
   },
   {
@@ -5551,7 +5807,9 @@
     "taxonomy": [
       "interop"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "Solid Edge import of Creo Elements STEP: \"stuck\" sub-assemblies"
   },
   {
@@ -5585,7 +5843,9 @@
     "taxonomy": [
       "interop"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "IfcOpenShell rejects valid IFC4X1 file due to lowercase 'x' in schema name"
   },
   {
@@ -5622,7 +5882,9 @@
     "taxonomy": [
       "interop"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "NX → Onshape \"translation error\" via super-multiplicity B-spline knot"
   },
   {
@@ -5660,7 +5922,9 @@
       "spec-violation",
       "interop"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "CATIA AP242 → Inventor: top-level PRODUCT_DEFINITION without SDR"
   },
   {
@@ -5699,7 +5963,9 @@
     "taxonomy": [
       "interop"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "KiCad PCB STEP export: missing components / wrong MAPPED_ITEM target"
   },
   {
@@ -5735,7 +6001,9 @@
     "taxonomy": [
       "writer"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "Trailing whitespace on every record line"
   },
   {
@@ -5772,7 +6040,9 @@
     "taxonomy": [
       "writer"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "Mixed CRLF and LF line endings within one file"
   },
   {
@@ -5807,7 +6077,9 @@
     "taxonomy": [
       "writer"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "Final `END-ISO-10303-21;` without trailing newline"
   },
   {
@@ -5842,7 +6114,9 @@
     "taxonomy": [
       "writer"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "Tab characters used for line continuation indentation inconsistently"
   },
   {
@@ -5878,7 +6152,9 @@
     "taxonomy": [
       "writer"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "Floating-point format inconsistency within one file"
   },
   {
@@ -5914,7 +6190,9 @@
       "round-trip",
       "writer"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "Floating-point precision degradation on round-trip"
   },
   {
@@ -5950,7 +6228,9 @@
       "silent-loss",
       "writer"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "Locale-sensitive decimal separator emitted (comma instead of period)"
   },
   {
@@ -5985,7 +6265,9 @@
     "taxonomy": [
       "writer"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "Excessive trailing zeros in numeric output"
   },
   {
@@ -6020,7 +6302,9 @@
     "taxonomy": [
       "writer"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "Spurious `$` for required parameter (writer omits required value)"
   },
   {
@@ -6055,7 +6339,9 @@
     "taxonomy": [
       "writer"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "Re-emitted `*` (overridden) where schema does not allow it"
   },
   {
@@ -6091,7 +6377,9 @@
       "silent-loss",
       "writer"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "Empty parameter list `()` where the schema requires at least one element"
   },
   {
@@ -6126,7 +6414,9 @@
     "taxonomy": [
       "writer"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "Random `#N` numbering with no monotonic structure"
   },
   {
@@ -6161,7 +6451,9 @@
     "taxonomy": [
       "writer"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "Forward references where sequential numbering was expected"
   },
   {
@@ -6196,7 +6488,9 @@
     "taxonomy": [
       "writer"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "Sparse instance numbering with huge gaps"
   },
   {
@@ -6231,7 +6525,9 @@
     "taxonomy": [
       "writer"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "Duplicate `#N` instance numbers in the same DATA section"
   },
   {
@@ -6266,7 +6562,9 @@
     "taxonomy": [
       "writer"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "Re-output of intermediate construction entities (orphan geometry)"
   },
   {
@@ -6302,7 +6600,9 @@
       "round-trip",
       "writer"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "Tessellation re-emitted from B-rep input (silent precision loss)"
   },
   {
@@ -6336,7 +6636,9 @@
     "taxonomy": [
       "writer"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "Empty `SHAPE_DEFINITION_REPRESENTATION` chain (placeholder structure with no geometry)"
   },
   {
@@ -6372,7 +6674,9 @@
       "round-trip",
       "writer"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "Re-export drops face and solid colour assignments"
   },
   {
@@ -6409,7 +6713,9 @@
       "round-trip",
       "writer"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "Re-export drops feature labels and product names"
   },
   {
@@ -6444,7 +6750,9 @@
       "round-trip",
       "writer"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "PMI annotations dropped on re-export"
   },
   {
@@ -6479,7 +6787,9 @@
       "round-trip",
       "writer"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "Saved-view / camera metadata lost on re-export"
   },
   {
@@ -6514,7 +6824,9 @@
       "round-trip",
       "writer"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "Validation properties (volume/area/centroid) dropped on re-export"
   },
   {
@@ -6550,7 +6862,9 @@
       "round-trip",
       "writer"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "NAUO assembly-tree flattened on re-export"
   },
   {
@@ -6586,7 +6900,9 @@
       "round-trip",
       "writer"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "NAUO chain re-rooted incorrectly (component becomes top)"
   },
   {
@@ -6621,7 +6937,9 @@
     "taxonomy": [
       "writer"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "Vendor-specific FILE_DESCRIPTION strings that downstream readers special-case"
   },
   {
@@ -6656,7 +6974,9 @@
     "taxonomy": [
       "writer"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "Unit context emitted twice with different units (HEADER vs DATA mismatch)"
   },
   {
@@ -6690,7 +7010,9 @@
     "taxonomy": [
       "writer"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "`FILE_NAME.author` and `originating_system` fields blank or auto-filled with placeholder"
   },
   {
@@ -6726,7 +7048,9 @@
       "silent-loss",
       "writer"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "`FILE_DESCRIPTION` strings containing newlines or unescaped control characters"
   },
   {
@@ -6761,7 +7085,9 @@
     "taxonomy": [
       "writer"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "`FILE_SCHEMA` listing schemas the file does not actually use"
   },
   {
@@ -6796,7 +7122,9 @@
       "round-trip",
       "writer"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "Schema downgrade on export (AP242 input emitted as AP203, entities lost)"
   },
   {
@@ -6831,7 +7159,9 @@
       "round-trip",
       "writer"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "Schema upgrade on export (AP203 input emitted as AP242 with synthesised stubs)"
   },
   {
@@ -6868,7 +7198,9 @@
       "spec-violation",
       "writer"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "`FILE_SCHEMA` declares schema version that does not exist"
   },
   {
@@ -6903,7 +7235,9 @@
     "taxonomy": [
       "writer"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "Coordinate-system axis swap without notification (Y-up vs Z-up)"
   },
   {
@@ -6939,7 +7273,9 @@
       "round-trip",
       "writer"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "Coordinate scale-factor applied twice (model 1000× larger or smaller than expected)"
   },
   {
@@ -6975,7 +7311,9 @@
       "round-trip",
       "writer"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "Re-export inverts solid orientation (inside becomes outside)"
   },
   {
@@ -7011,7 +7349,9 @@
       "round-trip",
       "writer"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "Loss of seam-edge marking on closed surfaces (cylinder seam emitted as ordinary edge)"
   },
   {
@@ -7047,7 +7387,9 @@
       "round-trip",
       "writer"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "Re-emitted file uses entity-numbering pattern that breaks round-trip equivalence"
   },
   {
@@ -7083,7 +7425,9 @@
       "round-trip",
       "writer"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "Re-export re-orders attributes within complex (subtype-stack) records"
   },
   {
@@ -7120,7 +7464,9 @@
       "round-trip",
       "writer"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "Empty `name` strings on every entity (writer pre-fills `''` instead of omitting)"
   },
   {
@@ -7158,7 +7504,9 @@
     "taxonomy": [
       "writer"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "Writer emits `.TRUE.` / `.FALSE.` instead of canonical `.T.` / `.F.`"
   },
   {
@@ -7196,7 +7544,9 @@
       "crash",
       "writer"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "Inconsistent end-of-record terminator: `;\\n` and `;\\r\\n` mixed in same file"
   },
   {
@@ -7235,7 +7585,9 @@
       "silent-loss",
       "writer"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "Writer emits raw UTF-8 bytes in string literal where Ed.2 mandates `\\X\\` / `\\X2\\` escape"
   },
   {
@@ -7274,7 +7626,9 @@
       "round-trip",
       "writer"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "Inch unit declared in `LENGTH_UNIT` context but coordinates emitted in millimetres (no conversion)"
   },
   {
@@ -7309,7 +7663,9 @@
     "taxonomy": [
       "writer"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "Unit name in `LENGTH_UNIT` changed without rescaling coordinate values"
   },
   {
@@ -7348,7 +7704,9 @@
       "round-trip",
       "writer"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "Body Placement (rotation/translation) not applied during STEP export of a single part"
   },
   {
@@ -7383,7 +7741,9 @@
     "taxonomy": [
       "writer"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "STEP import regressed by `BOPAlog_AlertBadPositioning` warnings (writer emits CSG-residual positions)"
   },
   {
@@ -7422,7 +7782,9 @@
       "crash",
       "writer"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "Boolean-result body crashes STEP writer in `libTKXDESTEP` color-attribution pass"
   },
   {
@@ -7457,7 +7819,9 @@
     "taxonomy": [
       "writer"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "Subtractive pipe at right-angle joints emits hidden sphere of material in joint"
   },
   {
@@ -7497,7 +7861,9 @@
       "round-trip",
       "writer"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "Geometry coordinate values doubled on export (writer applies scale and unit-conversion both)"
   },
   {
@@ -7537,7 +7903,9 @@
     "taxonomy": [
       "writer"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "step-g imports cleanly but downstream `g-stl` tessellator silently writes zero triangles"
   },
   {
@@ -10052,7 +10420,9 @@
       "spec-violation",
       "syntax"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "FILE_DESCRIPTION/FILE_NAME/FILE_SCHEMA arity mismatch (extra or missing attributes)"
   },
   {
@@ -10090,7 +10460,9 @@
     "taxonomy": [
       "syntax"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "`FILE_SCHEMA` written without the required double parentheses (list of strings)"
   },
   {
@@ -10318,7 +10690,9 @@
     "taxonomy": [
       "syntax"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "Unquoted timestamp in FILE_NAME (timestamp not a STRING)"
   },
   {
@@ -10585,7 +10959,9 @@
       "spec-violation",
       "syntax"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "Duplicate instance ID (`#N=..` defined twice within one DATA section)"
   },
   {
@@ -10622,7 +10998,9 @@
       "spec-violation",
       "syntax"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "Whitespace, tab, or comment between `#` and digits of an instance ID"
   },
   {
@@ -10659,7 +11037,9 @@
     "taxonomy": [
       "syntax"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "Reuse of `#NNN` across different DATA sections (Ed.3 multi-section)"
   },
   {
@@ -10694,7 +11074,9 @@
       "spec-violation",
       "syntax"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "Mixing `#NNN` (entity) and `@NNN` (value) namespaces (Ed.3)"
   },
   {
@@ -10765,7 +11147,9 @@
     "taxonomy": [
       "syntax"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "Malformed entity ID inside an ANCHOR entry (non-numeric `#`)"
   },
   {
@@ -10801,7 +11185,9 @@
       "spec-violation",
       "syntax"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "Forward reference inside ANCHOR section to undefined data instance"
   },
   {
@@ -10949,7 +11335,9 @@
       "spec-violation",
       "syntax"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "Constant reference (`#NAME`/`@NAME`) used where instance reference required"
   },
   {
@@ -11022,7 +11410,9 @@
       "spec-violation",
       "syntax"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "REFERENCE section pointing at unresolvable external anchor"
   },
   {
@@ -11059,7 +11449,9 @@
       "spec-violation",
       "syntax"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "ANCHOR section publishing the same anchor name twice"
   },
   {
@@ -11285,7 +11677,9 @@
       "spec-violation",
       "syntax"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "REFERENCE section with mixed URI schemes including unsupported schemes"
   },
   {
@@ -11583,7 +11977,9 @@
     "taxonomy": [
       "syntax"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "Model marked Loaded without entities; load skipped silently"
   },
   {
@@ -11975,7 +12371,9 @@
     "taxonomy": [
       "syntax"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "Fortran-style `D` exponent (`1.0D5`)"
   },
   {
@@ -12049,7 +12447,9 @@
     "taxonomy": [
       "syntax"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "Numeric literal with embedded underscore digit-grouping"
   },
   {
@@ -12123,7 +12523,9 @@
     "taxonomy": [
       "syntax"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "Integer literal with hex/octal forms"
   },
   {
@@ -12270,7 +12672,9 @@
     "taxonomy": [
       "syntax"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "Missing comma between attribute values"
   },
   {
@@ -12304,7 +12708,9 @@
     "taxonomy": [
       "syntax"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "Double comma / empty parameter slot"
   },
   {
@@ -12338,7 +12744,9 @@
     "taxonomy": [
       "syntax"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "Trailing comma at end of aggregate"
   },
   {
@@ -12373,7 +12781,9 @@
       "silent-loss",
       "syntax"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "Two consecutive semicolons (`;;`) after instance"
   },
   {
@@ -12408,7 +12818,9 @@
       "silent-loss",
       "syntax"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "Missing closing `)` of an aggregate (paren imbalance)"
   },
   {
@@ -12548,7 +12960,9 @@
     "taxonomy": [
       "syntax"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "Legacy SCOPE/ENDSCOPE blocks (Edition 1) and EXPORT lists"
   },
   {
@@ -12655,7 +13069,9 @@
     "taxonomy": [
       "syntax"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "Forward-slash inside `/* .. */` comment treated as nested-comment open"
   },
   {
@@ -12727,7 +13143,9 @@
     "taxonomy": [
       "syntax"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "Whitespace handling: tab/CR/LF/FF as token separators or ignored chars"
   },
   {
@@ -12763,7 +13181,9 @@
     "taxonomy": [
       "syntax"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "Enumeration value missing dotted delimiters or with bad casing"
   },
   {
@@ -12913,7 +13333,9 @@
     "taxonomy": [
       "syntax"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "Excessively long entity name"
   },
   {
@@ -12983,7 +13405,9 @@
     "taxonomy": [
       "syntax"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "Print/control directives appearing outside string-literal context"
   },
   {
@@ -13056,7 +13480,9 @@
     "taxonomy": [
       "syntax"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "Complex / multiple-inheritance entity record: leaves separated by commas"
   },
   {
@@ -13133,7 +13559,9 @@
     "taxonomy": [
       "syntax"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "Boolean attribute given bare `TRUE` (no dots)"
   },
   {
@@ -14800,7 +15228,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "ShapeFix_Edge.FixAddPCurve degenerate-curve at cone apex"
   },
   {
@@ -14895,7 +15325,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "ShapeAnalysis_Edge.GetEndTangent2d B-spline endpoint tangent divergence"
   },
   {
@@ -14926,7 +15358,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "ShapeFix_Edge.FixSameParameter copyedge stale range"
   },
   {
@@ -14957,7 +15391,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "ShapeAnalysis_Edge.CheckVerticesWithPCurve start vs end asymmetry"
   },
   {
@@ -14988,7 +15424,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "ShapeFix_Edge.FixReversed2d non-B-spline pcurve"
   },
   {
@@ -15019,7 +15457,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "ShapeAnalysis_Edge.CheckCurve3dWithPCurve uniformly sampled miss"
   },
   {
@@ -15847,7 +16287,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "CheckSameParameter periodic-shift normalization"
   },
   {
@@ -15878,7 +16320,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "FixAddCurve3d trim-domain extension"
   },
   {
@@ -15909,7 +16353,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "CheckOverlapping period-shifted edges"
   },
   {
@@ -15940,7 +16386,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "FixSameParameter cone-apex singularity tolerance"
   },
   {
@@ -15971,7 +16419,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "GetEndTangent2d ellipse derivative asymmetry"
   },
   {
@@ -16167,7 +16617,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "ShapeFix_Edge.FixSameParameter pcurve absent"
   },
   {
@@ -16198,7 +16650,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "ShapeAnalysis_Edge.CheckCurve3dWithPCurve degenerate-pcurve"
   },
   {
@@ -16229,7 +16683,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "ShapeFix_Edge.FixAddPCurve construct-on-conical-surface near-apex"
   },
   {
@@ -16260,7 +16716,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "ShapeAnalysis_Edge.CheckOverlapping curves-tangent-at-endpoint"
   },
   {
@@ -16291,7 +16749,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "ShapeFix_Edge.FixVertexTolerance face-vertex-conflict"
   },
   {
@@ -16803,7 +17263,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "ShapeAnalysis_Edge.CheckCurve3dWithPCurve different-trim-ranges"
   },
   {
@@ -16896,7 +17358,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "ShapeFix_Edge.FixSameParameter periodic-curve-with-non-periodic-pcurve"
   },
   {
@@ -16927,7 +17391,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "ShapeAnalysis_Edge.GetEndTangent2d tangent-mid-knot"
   },
   {
@@ -17123,7 +17589,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "ShapeAnalysis_Edge.CheckCurve3dWithPCurve OFFSET_CURVE"
   },
   {
@@ -17154,7 +17622,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "ShapeFix_Edge.FixAddPCurve B-spline-on-trimmed-surface"
   },
   {
@@ -17185,7 +17655,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "ShapeAnalysis_Edge.CheckPCurveRange CIRCLE with-large-radius"
   },
   {
@@ -17216,7 +17688,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "ShapeFix_Edge.FixReversed2d HYPERBOLA"
   },
   {
@@ -18291,7 +18765,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "ShapeAnalysis_Surface.ProjectDegenerated `lazy-singularity-init`"
   },
   {
@@ -18322,7 +18798,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "ShapeAnalysis_Surface.ProjectDegenerated `whole-edge-degenerate`"
   },
   {
@@ -18353,7 +18831,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "ShapeAnalysis_Surface.ProjectDegenerated `partial-edge-collapse`"
   },
   {
@@ -18415,7 +18895,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "seam_detection_1843"
   },
   {
@@ -18675,7 +19157,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "`ProjectDegenerated.dual-distance-logic`"
   },
   {
@@ -19080,7 +19564,9 @@
       "silent-loss",
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "C0 BSpline curves should be split into C1+ pieces"
   },
   {
@@ -19605,7 +20091,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "Flat 3D curve as p-curve (instead of 2D PCURVE)"
   },
   {
@@ -19974,7 +20462,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "ShapeAnalysis_Curve.FillBndBox S-curve extremum undersample"
   },
   {
@@ -20593,7 +21083,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "ShapeAnalysis_Curve.FillBndBox SearchForExtremum drift"
   },
   {
@@ -21854,7 +22346,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "ShapeAnalysis_Curve.IsPlanar exactly-2-points"
   },
   {
@@ -22106,7 +22600,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "B-spline-of-Bezier conversion bloat"
   },
   {
@@ -22168,7 +22664,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "Init u_min > u_max inverted bounds"
   },
   {
@@ -22849,7 +23347,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "Geom_BSplineSurface periodic-U-closure weight-extraction"
   },
   {
@@ -22880,7 +23380,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "ShapeUpgrade_ConvertCurveToBezier non-uniform-knots tail-degenerate"
   },
   {
@@ -22911,7 +23413,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "ShapeFix_ComposeShell.SplitOnEdges B-spline pcurve tangent-mismatch"
   },
   {
@@ -22942,7 +23446,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "Geom_BSplineCurve.IncreaseDegree weight-redistribution asymmetry"
   },
   {
@@ -22973,7 +23479,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "ShapeAnalysis_Curve.CheckOffsetCurve knot-ratio-overflow degenerate-segment"
   },
   {
@@ -23004,7 +23512,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "NURBS weight array uniform propagation"
   },
   {
@@ -23035,7 +23545,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "B-spline curve non-uniform interior knots"
   },
   {
@@ -23066,7 +23578,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "NURBS iterator loop boundary fault in split"
   },
   {
@@ -23097,7 +23611,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "B-spline curve precision asymmetry in split"
   },
   {
@@ -23159,7 +23675,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "TrimmedCurve Wrapping Periodic B-spline"
   },
   {
@@ -23190,7 +23708,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "U-Periodic Surface with V-Bounds Check Mismatch"
   },
   {
@@ -23221,7 +23741,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "High V-Multiplicity Continuity Gap"
   },
   {
@@ -23252,7 +23774,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "Large Pole-Count Surface Sampling Threshold"
   },
   {
@@ -23283,7 +23807,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "RectangularTrimmedSurface Basis Unwrap Null-Check"
   },
   {
@@ -23314,7 +23840,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "Periodic knot-vector closure mismatch"
   },
   {
@@ -23345,7 +23873,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "Interior knot multiplicity C(-1) discontinuity"
   },
   {
@@ -23376,7 +23906,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "Rational NURBS singular weight"
   },
   {
@@ -23407,7 +23939,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "Stripe singularity (collapsed pole row)"
   },
   {
@@ -23469,7 +24003,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "Rational weight singularity detection"
   },
   {
@@ -23500,7 +24036,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "Trimmed periodic basis unwrap"
   },
   {
@@ -23531,7 +24069,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "B-spline C0 interior knot discontinuity"
   },
   {
@@ -23562,7 +24102,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "Knot ratio anomaly post-C0→C1 upgrade"
   },
   {
@@ -23624,7 +24166,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "Rational B-spline with zero-weight pole singularity"
   },
   {
@@ -23655,7 +24199,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "Interior B-spline knot multiplicity equals degree (C1 discontinuity)"
   },
   {
@@ -23686,7 +24232,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "Periodic B-spline with non-closing control polygon, origin-shift risk"
   },
   {
@@ -23717,7 +24265,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "Rational B-spline with extreme weight ratio (1e4), numerical conditioning"
   },
   {
@@ -23748,7 +24298,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "B-spline curve with clustered interior knots, condition-number escalation"
   },
   {
@@ -23812,7 +24364,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "Periodic B-spline curve with parameter wrapping"
   },
   {
@@ -23876,7 +24430,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "B-spline curve with interior knot over-multiplicity"
   },
   {
@@ -24103,7 +24659,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "Rational B-spline with weight singularity near origin"
   },
   {
@@ -24134,7 +24692,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "B-spline surface with extreme knot ratio and clustering"
   },
   {
@@ -24165,7 +24725,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "Periodic B-spline curve with non-closing control polygon"
   },
   {
@@ -24196,7 +24758,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "B-spline with interior knot multiplicity equals degree (C0 discontinuity)"
   },
   {
@@ -27086,7 +27650,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "ShapeAnalysis_Surface.IsDegenerated bounded-surface zero-area"
   },
   {
@@ -27117,7 +27683,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "ShapeUpgrade_SplitSurfaceContinuity.Compute criterion-elevation offset"
   },
   {
@@ -27148,7 +27716,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "ShapeAnalysis_Surface.Singularity boundary singularity"
   },
   {
@@ -27179,7 +27749,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "ShapeAnalysis_Surface.ComputeBoundIsos cache-stale"
   },
   {
@@ -28941,7 +29513,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "IsVClosed Bezier pole-coincidence shortcut"
   },
   {
@@ -30218,7 +30792,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "ShapeAnalysis_Surface.BSplineBoundaries rational-knot-sum validation omission"
   },
   {
@@ -30249,7 +30825,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "ShapeAnalysis_Surface.ComputeBoxes null-knot-vector tolerance handling"
   },
   {
@@ -30313,7 +30891,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "ShapeUpgrade_Surface.SplitContinuity periodic-knot discontinuity mask"
   },
   {
@@ -30384,7 +30964,9 @@
       "silent-loss",
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "Outer shell of a solid is empty (zero faces)"
   },
   {
@@ -32242,7 +32824,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "Face has multiple outer wires (face needs splitting into disjoint regions)"
   },
   {
@@ -32868,7 +33452,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "`DEGENERATE_TOROIDAL_SURFACE` with negative minor radius and same `EDGE_CURVE` reused with opposite senses (orientation ambiguity)"
   },
   {
@@ -32904,7 +33490,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "Revolved shape imported with complementary (reversed) angle"
   },
   {
@@ -33332,7 +33920,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "Same-domain face unification corrupts shape with mirrored sub-instance"
   },
   {
@@ -33446,7 +34036,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "Shell shared-face union loses location when REPRESENTATION_MAP / AXIS2_PLACEMENT_3D ref_direction encodes a non-unit (scaled) DIRECTION"
   },
   {
@@ -33565,7 +34157,9 @@
       "crash",
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "Merging adjacent same-surface faces crashes when input has chained placements"
   },
   {
@@ -34427,7 +35021,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "Empty CLOSED_SHELL"
   },
   {
@@ -34491,7 +35087,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "ShapeUpgrade_ShellSewing.Apply two-shell sew vertex-tolerance mismatch gap"
   },
   {
@@ -34522,7 +35120,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "ShapeFix_Shell.FixFaceOrientation cascade-fix star-shaped junction incomplete propagation"
   },
   {
@@ -34553,7 +35153,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "ShapeAnalysis_Shell.LoadShells multiple-shell input iteration order affects healing"
   },
   {
@@ -34584,7 +35186,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "ShapeUpgrade_RemoveLocations.MakeNewShape stale location reference during traversal"
   },
   {
@@ -34615,7 +35219,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "ShapeFix_Solid.SolidFromShell open-shell-as-solid promotion non-closure detection"
   },
   {
@@ -34646,7 +35252,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "ShapeAnalysis_Shell.CheckOrientedShells closed-shell self-test"
   },
   {
@@ -34677,7 +35285,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "ShapeFix_Shell.FixFaceOrientation transition-point"
   },
   {
@@ -34708,7 +35318,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "ShapeUpgrade_ShellSewing.Prepare two-orientation merge"
   },
   {
@@ -34739,7 +35351,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "ShapeFix_Shell.Perform face-removal during iteration"
   },
   {
@@ -34770,7 +35384,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "ShapeAnalysis_Shell.LoadShells orientation-from-compound"
   },
   {
@@ -34801,7 +35417,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "ShapeUpgrade_RemoveInternalWires tolerance-based removal"
   },
   {
@@ -34832,7 +35450,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "ShapeFix_Shell.FixFaceOrientation single-face shell"
   },
   {
@@ -34863,7 +35483,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "ShapeUpgrade_ShellSewing.Apply degenerate-face sliver"
   },
   {
@@ -34894,7 +35516,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "ShapeAnalysis_Shell.CheckOrientedShells nested-shell cavity"
   },
   {
@@ -34925,7 +35549,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "ShapeFix_Shell.Perform empty-output handling"
   },
   {
@@ -36290,7 +36916,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "ShapeFix_Shell.FixFaceOrientation degenerate-shell-empty"
   },
   {
@@ -36449,7 +37077,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "ShapeUpgrade_ShellSewing.Apply self-sewing"
   },
   {
@@ -36480,7 +37110,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "ShapeFix_Shell.Perform overlapping-faces"
   },
   {
@@ -36511,7 +37143,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "ShapeAnalysis_Shell.BadEdges shared-edge-with-different-curves"
   },
   {
@@ -36542,7 +37176,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "ShapeFix_Shell.FixFaceOrientation T-shaped-non-manifold"
   },
   {
@@ -36573,7 +37209,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "ShapeAnalysis_Shell.CheckOrientedShells one-face-shell-edge-cases"
   },
   {
@@ -36604,7 +37242,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "ShapeUpgrade_ShellSewing.Apply different-tolerance-per-face"
   },
   {
@@ -36635,7 +37275,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "ShapeFix_Shell.Perform fix-then-revert"
   },
   {
@@ -36666,7 +37308,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "ShapeAnalysis_Shell.FreeEdges count-zero"
   },
   {
@@ -37688,7 +38332,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "ShapeAnalysis_Shell.CheckOrientedShells single-face zero-area"
   },
   {
@@ -37719,7 +38365,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "ShapeUpgrade_ShellSewing.Apply bridge tolerance too large"
   },
   {
@@ -37750,7 +38398,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "ShapeFix_Shell.Perform face removal with shared edge"
   },
   {
@@ -37781,7 +38431,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "ShapeAnalysis_Shell.LoadShells with-shell-marker-but-no-faces"
   },
   {
@@ -43112,7 +43764,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "ShapeFix_Wire.FixGaps2d 2D-gap repair on cylindrical surface"
   },
   {
@@ -46467,7 +47121,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "ShapeFix_Wire.FixSeam pcurve-direction-not-matching-3d"
   },
   {
@@ -46591,7 +47247,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "ShapeFix_Wire.FixDummySeam non-canonical-seam-position"
   },
   {
@@ -48954,7 +49612,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "Empty solid output from STEP export of complex body, despite STL succeeding"
   },
   {
@@ -51750,7 +52410,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "CheckTwisted normal-inversion"
   },
   {
@@ -51814,7 +52476,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "ShapeAnalysis_CheckSmallFace.CheckPin pin-direction classification"
   },
   {
@@ -52382,7 +53046,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "ShapeFix_Face.FixWiresTwoCoincEdges with seam"
   },
   {
@@ -53968,7 +54634,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "ShapeFix_Face.FixPeriodicDegenerated B-spline-revolution"
   },
   {
@@ -53999,7 +54667,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "ShapeFix_Face.FixLoopWire one-inner-touches-outer"
   },
   {
@@ -54030,7 +54700,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "ShapeAnalysis_CheckSmallFace.CheckSpotFace exactly-zero-area"
   },
   {
@@ -54061,7 +54733,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "ShapeFix_Face.FixSmallAreaWire computational-overflow"
   },
   {
@@ -54092,7 +54766,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "ShapeAnalysis_CheckSmallFace.CheckTwisted disconnected-wire-region"
   },
   {
@@ -54123,7 +54799,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "ShapeFix_Face.FixOrientation seam-vertex-shared"
   },
   {
@@ -54965,7 +55643,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "ShapeFix_Face.FixLoopWire wire-with-tail-segment"
   },
   {
@@ -54996,7 +55676,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "ShapeAnalysis_CheckSmallFace.CheckSmallArea polygon-vs-curve"
   },
   {
@@ -55027,7 +55709,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "ShapeFix_Face.FixSplitFace splitter-extends-beyond-face"
   },
   {
@@ -55058,7 +55742,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "ShapeAnalysis_CheckSmallFace.CheckTwisted face-on-cone-apex"
   },
   {
@@ -55089,7 +55775,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "ShapeFix_Face.FixAddNaturalBound surface-with-discontinuity"
   },
   {
@@ -55401,7 +56089,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "ShapeFix_Face.FixOrientation face-on-curved-vs-planar"
   },
   {
@@ -55498,7 +56188,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "ShapeAnalysis_FreeBoundsProperties.CheckNotches gap-after-fix"
   },
   {
@@ -55595,7 +56287,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "CheckSpotFace parametric interior singularity"
   },
   {
@@ -55626,7 +56320,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "CheckTwisted normal inversion on elementary"
   },
   {
@@ -55657,7 +56353,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "FixMissingSeam null surface guard"
   },
   {
@@ -55688,7 +56386,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "FixLoopWire closed topology reordering"
   },
   {
@@ -55719,7 +56419,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "FixAddNaturalBound cone apex degenerate"
   },
   {
@@ -55750,7 +56452,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "FixOrientation TinyWireFiltering single-edge degenerate"
   },
   {
@@ -55781,7 +56485,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "FixOrientation PeriodicBoundingBoxShift torus seam wrapping"
   },
   {
@@ -55812,7 +56518,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "FixSmallAreaWire undersized perimeter degenerate loop"
   },
   {
@@ -55843,7 +56551,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "FixWiresTwoCoincEdges duplicate coincident edges"
   },
   {
@@ -55874,7 +56584,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "FixSplitFace multi-loop split on disconnected wires"
   },
   {
@@ -55905,7 +56617,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "ShapeFix_Face.FixMissingSeam.null-surface-guard"
   },
   {
@@ -55936,7 +56650,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "ShapeFix_Face.FixMissingSeam.bspline-non-periodic-rejection"
   },
   {
@@ -55967,7 +56683,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "ShapeFix_Face.FixMissingSeam.infinite-bounds-fallback"
   },
   {
@@ -55998,7 +56716,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "ShapeFix_Face.FixMissingSeam.degenerate-wire-consolidation"
   },
   {
@@ -56029,7 +56749,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "ShapeFix_Face.FixMissingSeam.orientation-correction-partial-closure"
   },
   {
@@ -56060,7 +56782,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "seam_detection_orientation_loss"
   },
   {
@@ -56091,7 +56815,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "curve_copy_trimming"
   },
   {
@@ -56122,7 +56848,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "circle_parameter"
   },
   {
@@ -56153,7 +56881,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "vertex_tolerance_mismatch"
   },
   {
@@ -56184,7 +56914,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "concat_result_truncation"
   },
   {
@@ -56215,7 +56947,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "FixMissingSeam.null-surface-guard"
   },
   {
@@ -56246,7 +56980,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "FixMissingSeam.no-closure-early-exit"
   },
   {
@@ -56277,7 +57013,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "FixMissingSeam.infinite-bounds-fallback"
   },
   {
@@ -56308,7 +57046,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "FixMissingSeam.degenerate-wire-consolidation"
   },
   {
@@ -56370,7 +57110,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "ShapeFix_Face.Add.null-wire-guard"
   },
   {
@@ -56401,7 +57143,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "ShapeFix_Face.ClearModes.init-all-modes"
   },
   {
@@ -56432,7 +57176,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "ShapeFix_Face.FixAddNaturalBound.null-surface-guard"
   },
   {
@@ -56463,7 +57209,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "ShapeFix_Face.FixLoopWire.orientation-handling"
   },
   {
@@ -56525,7 +57273,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "FixSmallAreaWire shape-type filter"
   },
   {
@@ -56556,7 +57306,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "FixWiresTwoCoincEdges FORWARD orientation dispatch"
   },
   {
@@ -56587,7 +57339,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "FixPeriodicDegenerated context transformation"
   },
   {
@@ -56618,7 +57372,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "FixAddNaturalBound seam-edge exclusion"
   },
   {
@@ -56649,7 +57405,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "FixMissingSeam P-curve absence on torus"
   },
   {
@@ -56680,7 +57438,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "ShapeFix_Face.FixOrientation"
   },
   {
@@ -56711,7 +57471,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "ShapeFix_Face.SplitEdge (line-2653)"
   },
   {
@@ -56742,7 +57504,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "ShapeFix_Face.SplitEdge (line-2741)"
   },
   {
@@ -56773,7 +57537,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "ShapeFix_Face.FixSplitFace (line-2908)"
   },
   {
@@ -56835,7 +57601,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "`ShapeFix_Face.FixOrientation.WireBoundingBoxComputation`"
   },
   {
@@ -56866,7 +57634,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "`ShapeFix_Face.FixOrientation.PeriodicBoundingBoxShift`"
   },
   {
@@ -56897,7 +57667,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "`ShapeFix_Face.FixOrientation.ToroidalDiagonalShift`"
   },
   {
@@ -56928,7 +57700,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "`ShapeFix_Face.FixLoopWire.FLW-007`"
   },
   {
@@ -56959,7 +57733,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "`ShapeFix_Face.FixMissingSeam.sphere-apex-edge-synthesis`"
   },
   {
@@ -59990,7 +60766,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "ShapeAnalysis_Edge.CheckPoints precision-asymmetry"
   },
   {
@@ -60500,7 +61278,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "ShapeFix_Edge.FixVertexTolerance reset-on-fix"
   },
   {
@@ -60531,7 +61311,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "ShapeAnalysis_Edge.CheckOverlapping multi-curve three-way overlap"
   },
   {
@@ -60562,7 +61344,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "BRepLib.UpdateEdgeTol negative-coverage sparse sampling"
   },
   {
@@ -60593,7 +61377,9 @@
     "taxonomy": [
       "spec-violation"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "ShapeFix_ShapeTolerance.SetTolerance applied-to-frozen-shape"
   },
   {
@@ -60624,7 +61410,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "ShapeAnalysis_Edge.CheckOverlapping coincident-but-different-direction"
   },
   {
@@ -60655,7 +61443,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "ShapeFix_Edge.FixVertexTolerance vertex-on-singular-surface"
   },
   {
@@ -60686,7 +61476,9 @@
     "taxonomy": [
       "spec-violation"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "ShapeAnalysis_ShapeTolerance.AddTolerance with-history"
   },
   {
@@ -60717,7 +61509,9 @@
     "taxonomy": [
       "spec-violation"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "BRepLib.SameRange clamped-range"
   },
   {
@@ -60748,7 +61542,9 @@
     "taxonomy": [
       "spec-violation"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "ShapeFix_ShapeTolerance.SetTolerance with-cyclic-reference"
   },
   {
@@ -60779,7 +61575,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "ShapeAnalysis_Edge.CheckPoints precision-vs-projection-distance"
   },
   {
@@ -60975,7 +61773,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "ShapeFix_Edge.FixVertexTolerance shared-by-many-edges"
   },
   {
@@ -61202,7 +62002,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "BRepLib.UpdateEdgeTol with-edge-on-degenerate-surface"
   },
   {
@@ -61464,7 +62266,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "ShapeAnalysis_ShapeTolerance vertex range inversion"
   },
   {
@@ -61495,7 +62299,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "ShapeFix_ShapeTolerance ambiguous equality bound"
   },
   {
@@ -61526,7 +62332,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "ShapeFix_ShapeTolerance negative precision acceptance"
   },
   {
@@ -61557,7 +62365,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "ShapeFix_ShapeTolerance shared vertex double mutation"
   },
   {
@@ -61619,7 +62429,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "ShapeAnalysis_ShapeTolerance.MaxTolerance.unbounded_edge_iteration"
   },
   {
@@ -61650,7 +62462,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "BRepBuilderAPI_Sewing.AnalysisNearestEdges.distance_tolerance_filter_bypass"
   },
   {
@@ -61681,7 +62495,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "ShapeAnalysis_Edge.CheckPoints.tolerance_conservatism_fail"
   },
   {
@@ -61712,7 +62528,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "ShapeAnalysis_ShapeTolerance.OuterWire.tolerance_layer_recursion"
   },
   {
