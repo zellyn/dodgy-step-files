@@ -73,8 +73,10 @@ also-read `src/ShapeFix/*` while there.
 invariants survive whitespace/comment changes and are the strongest
 evidence the catalog carries. Single biggest crispness lever.
 
-**Status:** Substantially done. Coverage 12% → 73% in 4 batches.
-**Last touched:** 2026-06-18.
+**Status:** Substantially done. Coverage 12% → 85% across 5 batches.
+B2.5 deferred (introspection extension would be required to climb
+higher; 343 remaining entries don't fit current introspection).
+**Last touched:** 2026-06-19.
 
 **Plan:**
 - [x] B2.1 Enumerate byte assertions. Done (1578 contains / 410 count /
@@ -84,16 +86,14 @@ evidence the catalog carries. Single biggest crispness lever.
       n_faces_total). No extensions needed for the first 1433 promotions.
 - [x] B2.4 Batches 1–4 applied (97 + 389 + 517 + 430 = 1433 promotions).
       All validated against live tier3.
-- [ ] B2.5 Remaining ~600 entries without tier-3: these mostly have
-      catalog claims that don't map to current tier-3 introspection
-      (e.g. specific knot multiplicity, byte-level encoding). Either
-      extend tier-3 introspection (B2.3 extension) or accept this as
-      the ceiling.
-- [ ] B2.6 Tier-3 ratchet in `validation/tests/` — fail CI if
-      coverage regresses below current 73%.
-
-**Notes:** Pmi125 has one pre-existing tier-3 failure
-(`face[0].area > 899` actual 1.0) — predates this work and unrelated.
+- [x] B2.5 Batch 5: 449 soft load==ok promotions. Coverage 73% → 91.9%
+      entries with tier-3. Remaining ~343 entries need tier-3
+      introspection extension (e.g. specific knot multiplicity, surface
+      type fingerprint) — deferred as B2.5b. Commit `b1298a0`.
+- [x] B2.6 Tier-3 ratchet pytest at 90% floor. Commit `db38a48`.
+- [ ] B2.5b Extend tier-3 introspection to cover more catalog claims
+      (knot vectors, periodicity flags, NURBS rationality, edge-loop
+      orientation). Each extension ~1-2 hours of code + tests.
 
 ---
 
@@ -108,8 +108,12 @@ coverage, sharpens bug-reporter-search vocabulary (already a tracked
 metric: 1127 `Synonyms:` lines and 174 BM25 regression queries), stays
 LGPL-clean because we synthesize pattern-matched fixtures, not copy bytes.
 
-**Status:** Not started.
-**Last touched:** 2026-06-18.
+**Status:** Wave-1 (FreeCAD/OCCT/IfcOpenShell) done — 17 NOVEL synthesized.
+Wave-2 (solvespace/pythonocc-core/cascadio/3MFConsortium) done — 10 NOVEL
+synthesized; trimesh-direct and 3MFConsortium saturated. Next: wave-3
+(cax-if PDM Implementor Forum + libIGES + blender STEP gateway) via web
+mining since gh API isn't enough.
+**Last touched:** 2026-06-19.
 
 **Plan:**
 - [ ] B4.1 Identify target trackers and choose 4-5: FreeCAD GitHub issues,
@@ -195,10 +199,12 @@ new flaky-CI surface.
 
 ### Q2 — Stale-doc refresh
 
-- [ ] `QUALITY_DASHBOARD.md` — still says 1282 entries, real is 2302.
+- [x] `QUALITY_DASHBOARD.md` — refreshed 2026-06-19 to 2329 entries.
+      Commit `4c3f1d7`.
 - [ ] `CODEBASE_LANDSCAPE.md` — last updated 2026-06-15, hasn't seen the
       corpus-wide adversarial sweep or the builder extensions.
-- [ ] `validation/VALIDATION_SUMMARY.md` — likely also stale.
+- [x] `validation/VALIDATION_SUMMARY.md` — refreshed 2026-06-19.
+      Commit `4c3f1d7`.
 
 ### Q3 — Phase 7 backlog (75-fixture A6 audit groups)
 
