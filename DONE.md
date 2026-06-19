@@ -8,6 +8,22 @@ Append newest at the top.
 
 ---
 
+## 2026-06-19 (long-session continuation, batch 6 — tier-3 + final dashboard)
+
+- **Tier-3 promote: 6 safer entries** from Expected validation
+  patterns (empty→shape_null, shape(N)→load=="ok", reject→load=="ok").
+  Skipped 163 signal-fixture promotions because their tier-3 itself
+  would crash under the signal path. Tier-3 coverage 92.8% → 93.1%.
+  Commit `6976c31`.
+- **Dashboards refreshed: 99.49% CONFIRMED, 0 ERROR.** Filled the 10
+  stale Tsh074-Tsh083 cache locally; `_final_verdict` re-run brings
+  ERROR to 0. Final figures: CONFIRMED 2337 + WEAK 12 + ERROR 0 of
+  2349 entries with oracle cache. Commit `81ee7cc`.
+- **BACKLOG.md: B4 wave-3 logged with saturation signal**
+  (wave-1 24.6%, wave-2 10.5%, wave-3 9.3% novelty; FOSS surface
+  saturating; wave-4 deferred to commercial trackers). Commit
+  `2b5a21a`.
+
 ## 2026-06-19 (long-session continuation, batch 5 — catalog hygiene)
 
 - **Expected validation coverage: 98.5 → 99.8% (2342/2347).** Catalog
