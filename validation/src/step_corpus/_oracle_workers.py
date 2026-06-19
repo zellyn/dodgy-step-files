@@ -335,6 +335,26 @@ def oracle_part21_strict(path: str):
         _emit({"status": "exception", "error": str(e)[:400]})
 
 
+def oracle_solvespace(path: str) -> None:
+    """Solvespace cross-kernel oracle: STEP via independent (non-OCCT) parser.
+
+    Install-optional: when solvespace isn't in PATH, emits
+    ``{status: "not_installed"}`` quickly.
+    """
+    try:
+        from pathlib import Path as _P
+        from step_corpus._solvespace_oracle import run_solvespace
+        result = run_solvespace(_P(path), timeout_s=30)
+        _emit({
+            "status": result["status"],
+            "n_solids": result["n_solids"],
+            "stderr_tail": result["stderr_tail"],
+            "duration_ms": result["duration_ms"],
+        })
+    except Exception as e:
+        _emit({"status": "exception", "error": str(e)[:400]})
+
+
 ORACLES = {
     "ifcopenshell": oracle_ifcopenshell,
     "occt_heal_on": lambda p: oracle_occt(p, healing=True),
@@ -344,6 +364,7 @@ ORACLES = {
     "part21_strict": oracle_part21_strict,
     "manifold": oracle_manifold,
     "ocaf": oracle_ocaf,
+    "solvespace": oracle_solvespace,
 }
 
 

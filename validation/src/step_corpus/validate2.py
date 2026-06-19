@@ -25,7 +25,7 @@ import sys
 import traceback
 from pathlib import Path
 
-ORACLES = ["ifcopenshell", "occt_heal_on", "occt_heal_off", "gmsh_autofix_on", "gmsh_autofix_off", "part21_strict", "manifold", "ocaf"]
+ORACLES = ["ifcopenshell", "occt_heal_on", "occt_heal_off", "gmsh_autofix_on", "gmsh_autofix_off", "part21_strict", "manifold", "ocaf", "solvespace"]
 
 
 def byte_signature(path: Path) -> dict:
@@ -262,6 +262,17 @@ def derive_summary(per_oracle: dict) -> dict:
         s["ocaf"] = "timeout"
     else:
         s["ocaf"] = st
+
+    # Solvespace cross-kernel oracle. Compact summary form:
+    # "loaded(n_solids=N)" / "rejected" / "not_installed" / "timeout".
+    d = per_oracle.get("solvespace", {})
+    st = d.get("status", "unknown")
+    if st == "loaded":
+        s["solvespace"] = f"loaded(n_solids={d.get('n_solids', 0)})"
+    elif st == "not_installed":
+        s["solvespace"] = "not_installed"
+    else:
+        s["solvespace"] = st
 
     return s
 
