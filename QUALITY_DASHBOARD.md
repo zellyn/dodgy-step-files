@@ -43,7 +43,7 @@ at the bottom) to recompute._
 | OCCT-API token-hits in scored fields | **0** |
 | Distinct §12.x sections | **19** (added §12.14 mesh) |
 | Bug-report search regression queries | **340** (last computed; rerun pending) |
-| Pytest self-tests | **516** (+15 from solvespace_oracle, tier3_coverage_ratchet, others) |
+| Pytest self-tests | **520** (+19 over the old 501 — solvespace_oracle, tier3_coverage_ratchet, mesh-related) |
 | OCAF/XCAF document-level oracle (`_ocaf_oracle`) | tests label/color/transform/assembly persistence on §12.6-assembly entries; 70/102 fixtures load OCAF tree, 30 fail at OCAF reader, 2 segfault (subprocess-isolated) |
 | Per-fixture HTML byte highlighting | **2020/2343** byte assertions (86 %) yield positional matches; **961/1318** browse pages render `<mark>`-highlighted defect bytes inline |
 | Conformance Kit (curated subset) | **80 entries / 1282** (~3.5 % of current 2313); count predates corpus growth — rerun pending |
