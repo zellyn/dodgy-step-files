@@ -51,8 +51,14 @@ def test_violate_disallowed_below_ceiling(conformance_rows) -> None:
 
 
 def test_no_no_oracle_entries(conformance_rows) -> None:
-    """Every entry should have an oracle baseline (validate2 output)."""
-    no_oracle = [r for r in conformance_rows if r["verdict"] == "no-oracle"]
+    """Every entry should have an oracle baseline (validate2 output).
+
+    Excludes Me* mesh fixtures — their oracle is the mesh-tier oracle
+    (validation/src/step_corpus/_mesh_oracle.py), not validate2.
+    """
+    no_oracle = [r for r in conformance_rows
+                 if r["verdict"] == "no-oracle"
+                 and not r["id"].startswith("Me")]
     if no_oracle:
         ids = ", ".join(r["id"] for r in no_oracle[:10])
         pytest.fail(f"{len(no_oracle)} entries lack oracle output: {ids}")

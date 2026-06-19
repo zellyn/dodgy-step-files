@@ -36,5 +36,9 @@ loop = f.edge_loop([
 ])
 face = f.advanced_face([f.face_outer_bound(loop)], plane)
 shell = f._emit_raw(f"CLOSED_SHELL('outer',(#{face.eid}))")
-f._emit_raw(f"MANIFOLD_SOLID_BREP('valid_content',#{shell.eid})")
-f.add_product_chain(f.shell_based_surface_model([]))
+msb = f._emit_raw(f"MANIFOLD_SOLID_BREP('valid_content',#{shell.eid})")
+# PRODUCT chain anchored on the MSB so OCC actually loads a shape.
+# The defect is the reader API (non-seekable stream) — the bytes must
+# be well-formed so the receiver gets the right answer when fed the
+# file through a seekable path.
+f.add_product_chain(msb, mode="brep_shape")

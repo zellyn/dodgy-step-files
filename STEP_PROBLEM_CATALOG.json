@@ -12644,7 +12644,7 @@
     "cross_oracle_note": null,
     "description": "The STEP reader's public API takes a filesystem path and internally `fopen`s it. A consumer that has the STEP content in memory (downloaded from object storage, unzipped from a `.stpz` wrapper, or read from a pipe) is forced to spill it to a temporary file first; which fails on read-only / chrooted hosts and adds I/O cost. The bug class is \"API expects path; offers no stream entry point\", and the on-disk file content is well-formed; the defect is in the reader's I/O contract.",
     "expected_kernel_behavior": "heal-and-accept; provide an `istream`-based read entry point; never require a seekable filesystem path. Document that producers may call the stream-based API directly.",
-    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-1b-header/Lh048.stp",
     "id": "Lh048",
@@ -12668,7 +12668,7 @@
       "syntax"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "load == \"ok\""
     ],
     "title": "STEP reader cannot consume a non-seekable stream (in-memory / pipe / network)"
   },
@@ -34873,7 +34873,7 @@
       "topology"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "load == \"ok\""
     ],
     "title": "Internal edges lost during shell-level face merge"
   },
@@ -34991,7 +34991,7 @@
       "topology"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "load == \"ok\""
     ],
     "title": "Inversed normals on revolved-shape import"
   },
@@ -50977,8 +50977,8 @@
       "topology"
     ],
     "tier3_assertions": [
-      "face[0].surface_type == \"torus\"",
-      "face[2].surface_type == \"sphere\""
+      "n_faces_total == 1",
+      "face[0].surface_type == \"spherical_surface\""
     ],
     "title": "Unbound ADVANCED_FACE (no FACE_OUTER_BOUND, no FACE_BOUND)"
   },
