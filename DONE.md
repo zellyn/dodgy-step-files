@@ -10,13 +10,21 @@ Append newest at the top.
 
 ## 2026-06-19 (long-session continuation)
 
-- **Q3 phase-7 wave-2: 5 no-bounds AF assembly fixtures regen'd.** A017
-  (transform on subshape), A018 (wrong-scope STYLED_ITEM), A019 (shared
-  PLANE per-face colors), A020 (bare top-level STYLED_ITEM), A022 (PLA
-  collisions), A023 (non-identity REPRESENTATION_MAP), A073 (3 MAPPED_ITEMs
-  at distinct locations), A079 (sub-shape transparency + INVISIBILITY).
-  Commits `defb5e1`, `0f0733e`, `385d6c5`, `caffeb7`, `d15ed71`,
-  `bfeca29`, `db09e57`, `03ba138`.
+- **Q3 phase-7 wave-2 COMPLETE: §12.6 assembly all 22 no-bounds-AF
+  fixtures regen'd.** A017–A107 spanning the assembly section. Each
+  fixture now demonstrates its specific catalog claim with real
+  geometry + the entity types the claim describes (NAUO, MAPPED_ITEM,
+  STYLED_ITEM, COLOUR_RGB, MECHANISM, KINEMATIC_TOPOLOGY_STRUCTURE,
+  APPLICATION_CONTEXT, NON_MANIFOLD_SURFACE_SHAPE_REPRESENTATION,
+  PRESENTATION_STYLE_ASSIGNMENT, PRESENTATION_LAYER_ASSIGNMENT,
+  INVISIBILITY, SURFACE_STYLE_TRANSPARENT,
+  MECHANICAL_DESIGN_GEOMETRIC_PRESENTATION_REPRESENTATION, etc.).
+  Commits `defb5e1` through `4741742`. The only remaining
+  `no_bounds_advanced_face` match in §12.6 is `A074.input` which is a
+  sibling-input file (not a primary fixture).
+- **§12.6 IDs regen'd in this wave:** A017, A018, A019, A020, A022,
+  A023, A064, A073, A079, A080, A083, A085, A087, A089, A095, A097,
+  A099, A100, A102, A103, A105, A106, A107.
 - **Q3 phase-7 wave-1 EXTENDED: 17 empty-loop fixtures regen'd.** Pf008,
   Pf015, Pf017, Pf027, Pf028, Pf001, Pf033, Pf034, M162, M163, M164,
   M166, A019, A064, Ad055, Ad064, Ad084, Pmi083. The 9 remaining
