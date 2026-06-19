@@ -31661,6 +31661,7 @@ exercised against CGAL PMP / MeshFix.
 - **Byte assertion**: contains(b'EDGE_CURVE')
 - **Byte assertion**: contains(b'LINE')
 - **Tier-3 assertion**: shape_null == True
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(3) ifc=schema_n/a`
 - **Model impact**: Receivers that compute curve length / parametric extent / point-on-curve from the LINE alone get unbounded answers; downstream BRep traversal that should yield two endpoints sees an unbounded geometric edge.
 
 ### M190 — Compound with free VERTEX_POINT silently dropped on STEP export
@@ -31685,6 +31686,7 @@ exercised against CGAL PMP / MeshFix.
 - **Byte assertion**: contains(b'TOROIDAL_SURFACE')
 - **Byte assertion**: contains(b'CYLINDRICAL_SURFACE')
 - **Tier-3 assertion**: shape_null == True
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(10) ifc=schema_n/a`
 - **Model impact**: Round-trip produces a shape whose nbshapes counts (edges, vertices, faces) differ from the in-memory original; downstream consumers that rely on a stable shape signature fail validation.
 
 ### Ad120 — SURFACE_OF_REVOLUTION on 3-point-arc profile crashes consumer on import
@@ -31697,6 +31699,7 @@ exercised against CGAL PMP / MeshFix.
 - **Byte assertion**: contains(b'SURFACE_OF_REVOLUTION')
 - **Byte assertion**: contains(b'B_SPLINE_CURVE_WITH_KNOTS')
 - **Tier-3 assertion**: load == "ok"
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=reject ifc=schema_n/a`
 - **Model impact**: Receivers crash or hang on the near-degenerate revolution; the input file is syntactically clean but exercises a numerical-stability corner the reader's revolution-handling path was not designed for.
 
 ### Wr054 — Swept spherical face orientation inverted on STEP export round-trip
@@ -31709,6 +31712,7 @@ exercised against CGAL PMP / MeshFix.
 - **Byte assertion**: contains(b'SPHERICAL_SURFACE')
 - **Byte assertion**: contains(b'ADVANCED_FACE')
 - **Tier-3 assertion**: load == "ok"
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=reject ifc=schema_n/a`
 - **Model impact**: Receivers using shell-level normals to compute volume see negative volume; viewers render the face with inverted lighting; BRepCheck flags the shell as invalid orientation.
 
 ### A108 — Draft-mirrored body silently dropped on STEP export (mirror NAUO)
@@ -31722,6 +31726,7 @@ exercised against CGAL PMP / MeshFix.
 - **Byte assertion**: contains(b'MAPPED_ITEM')
 - **Byte assertion**: contains(b'REPRESENTATION_MAP')
 - **Tier-3 assertion**: load == "ok"
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 - **Model impact**: Round-trip output has half the expected NAUO sub-shapes; downstream consumers that traverse the PRODUCT graph miss the mirrored child entirely; assembly tree is structurally lossy.
 
 ### Ad121 — Corrupted STEP export: CARTESIAN_POINT with mismatched coord count
@@ -31733,6 +31738,7 @@ exercised against CGAL PMP / MeshFix.
 - **Notes**: Synonyms: "corrupted STEP export", "CARTESIAN_POINT 4 coordinates wrong", "schema arity mismatch on point", "wrong number of coords in STEP point", "FreeCAD export corrupted file".
 - **Byte assertion**: contains(b'CARTESIAN_POINT')
 - **Tier-3 assertion**: load == "ok"
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 - **Model impact**: Strict readers reject the file; lenient readers silently truncate to (1,2,3) and downstream geometry shifts by the truncated component.
 
 ### Ad122 — Damaged STEP export: writer reuses entity-ID slots
@@ -31744,6 +31750,7 @@ exercised against CGAL PMP / MeshFix.
 - **Notes**: Synonyms: "duplicate STEP entity ID", "writer reused entity slot", "STEP forward ref points to wrong entity", "geometry damaged in STEP export", "FreeCAD export damaged geometry".
 - **Byte assertion**: contains(b'CARTESIAN_POINT')
 - **Tier-3 assertion**: load == "ok"
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 - **Model impact**: Receivers using a streaming parser may bind the forward reference to whichever of the two entities wins the second pass; output is non-deterministic.
 
 ### Ad123 — Step Export: crash on PCURVE processing (dangling surface ref)
@@ -31755,6 +31762,7 @@ exercised against CGAL PMP / MeshFix.
 - **Notes**: Synonyms: "STEP Export crash PCurve", "PCURVE null deref crash", "OCCT segfault on STEP export PCurve", "dangling surface ref crashes writer", "PCurve to missing surface crashes".
 - **Byte assertion**: contains(b'PCURVE')
 - **Tier-3 assertion**: load == "ok"
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 - **Model impact**: Production crash on what looks like a small fixture; data-loss for the entire export session.
 
 ### Ad124 — Segfault from malformed step-ids (non-numeric forward-ref payload)
@@ -31766,6 +31774,7 @@ exercised against CGAL PMP / MeshFix.
 - **Notes**: Synonyms: "ifcopenshell segfault malformed step-id", "non-numeric STEP id crash", "STEP forward-ref into string segfault", "#xx token inside label crashes reader", "STEP reader segfaults on malformed id".
 - **Byte assertion**: contains(b'PRESENTATION_LAYER_ASSIGNMENT')
 - **Tier-3 assertion**: load == "ok"
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 - **Model impact**: Reader unavailable until the file is removed; affects batch-mode pipelines that process untrusted STEP input.
 
 ### Ad125 — Segfault on malformed STEP-IDs: negative ID after atoi() parse
@@ -31777,6 +31786,7 @@ exercised against CGAL PMP / MeshFix.
 - **Notes**: Synonyms: "negative STEP id segfault", "STEP reader atoi -1 crash", "#-1 as STEP id crashes", "unsigned index from signed STEP id segfault", "malformed STEP-IDs segfault variant".
 - **Byte assertion**: contains(b'PRESENTATION_LAYER_ASSIGNMENT')
 - **Tier-3 assertion**: load == "ok"
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 - **Model impact**: Reader crashes; if the slot happened to be readable, the wrong entity gets dereferenced and downstream geometry is mis-bound.
 
 ### Ad126 — `add()` with explicit STEP ID causes segfault on auto-ID collision
@@ -31788,6 +31798,7 @@ exercised against CGAL PMP / MeshFix.
 - **Notes**: Synonyms: "ifcopenshell add() step_id segfault", "STEP id collision on writer crash", "explicit step_id collides with auto-id", "forward ref past end of data section crashes", "writer auto-id collision segfault".
 - **Byte assertion**: contains(b'PROPERTY_DEFINITION')
 - **Tier-3 assertion**: load == "ok"
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 - **Model impact**: Output file either crashes the writer mid-emit or contains an unresolvable forward reference that crashes the next reader.
 
 ### U046 — Link scaled with -1 (mirror) not exported correctly to STEP
@@ -31800,6 +31811,7 @@ exercised against CGAL PMP / MeshFix.
 - **Byte assertion**: contains(b'REPRESENTATION_MAP')
 - **Byte assertion**: contains(b'MAPPED_ITEM')
 - **Tier-3 assertion**: load == "ok"
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 - **Model impact**: Exported STEP has no mirrored instance; downstream consumer sees half the geometry the source authored.
 
 ### U047 — IfcConvert STEP output at wrong scale (LENGTH_UNIT vs coord mismatch)
@@ -31811,6 +31823,7 @@ exercised against CGAL PMP / MeshFix.
 - **Notes**: Synonyms: "IfcConvert STEP wrong scale", "LENGTH_UNIT mismatch STEP output", "STEP coordinates in metres but unit says mm", "STEP scale wrong on IFC convert", "model 1000x smaller than authored".
 - **Byte assertion**: contains(b'LENGTH_UNIT')
 - **Tier-3 assertion**: load == "ok"
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 - **Model impact**: Downstream measurements (volume, mass, manufacturing tolerances) are off by 10^9 or 10^3 depending on dimensionality; can ship parts at the wrong scale.
 
 ### Tsh229 — Missing or incorrect faces in displayed STEP file
@@ -31823,6 +31836,7 @@ exercised against CGAL PMP / MeshFix.
 - **Byte assertion**: contains(b'CLOSED_SHELL')
 - **Byte assertion**: contains(b'ADVANCED_FACE')
 - **Tier-3 assertion**: load == "ok"
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 - **Model impact**: Visual inspection misleads the user about completeness; downstream meshing produces a leaky surface.
 
 ### Tsh230 — Surface from STEP file wrongly imported / tessellated (self-intersecting NURBS net)
@@ -31834,6 +31848,7 @@ exercised against CGAL PMP / MeshFix.
 - **Notes**: Synonyms: "STEP surface wrongly imported", "B-spline tessellation flipped triangles", "self-intersecting NURBS surface STEP", "wrong tessellation of NURBS surface", "B_SPLINE_SURFACE imported wrong".
 - **Byte assertion**: contains(b'B_SPLINE_SURFACE_WITH_KNOTS')
 - **Tier-3 assertion**: load == "ok"
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 - **Model impact**: Visualization is corrupt; collision detection / volume computation against the tessellated surface is wrong.
 
 ### Tfa246 — STEP import missing edges: FACE_OUTER_BOUND wraps empty EDGE_LOOP
@@ -31846,6 +31861,7 @@ exercised against CGAL PMP / MeshFix.
 - **Byte assertion**: contains(b'FACE_OUTER_BOUND')
 - **Byte assertion**: contains(b'EDGE_LOOP')
 - **Tier-3 assertion**: load == "ok"
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 - **Model impact**: Imported face has no boundary; downstream operations (offset, fillet) produce empty results.
 
 ### Tfa247 — Exported STEP produces empty objects (SHAPE_REPRESENTATION with no items)
@@ -31857,6 +31873,7 @@ exercised against CGAL PMP / MeshFix.
 - **Notes**: Synonyms: "STEP empty object", "SHAPE_REPRESENTATION no items", "Models exported empty STEP", "FreeCAD STEP empty objects", "STEP rep with empty items list".
 - **Byte assertion**: contains(b'SHAPE_REPRESENTATION')
 - **Tier-3 assertion**: load == "ok"
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 - **Model impact**: The PRODUCT chain looks valid but no geometry is present; downstream pipeline treats the export as success when it failed.
 
 ### Tfa248 — Draft OrthoArray missing objects on STEP export (MAPPED_ITEM dropped)
@@ -31869,6 +31886,7 @@ exercised against CGAL PMP / MeshFix.
 - **Byte assertion**: contains(b'REPRESENTATION_MAP')
 - **Byte assertion**: contains(b'MAPPED_ITEM')
 - **Tier-3 assertion**: load == "ok"
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 - **Model impact**: Output has 25% of authored geometry; pipelines that count instances fail downstream sanity checks.
 
 ### A109 — Combining STEP files corrupts assembly tree (NAUO wrong parent)
@@ -31880,6 +31898,7 @@ exercised against CGAL PMP / MeshFix.
 - **Notes**: Synonyms: "STEP merge tree corruption", "NAUO wrong parent after combine", "combining STEP files tree messed up", "STEP assembly graph re-keyed wrong", "FreeCAD combine STEP tree broken".
 - **Byte assertion**: contains(b'NEXT_ASSEMBLY_USAGE_OCCURRENCE')
 - **Tier-3 assertion**: load == "ok"
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 - **Model impact**: Assembly traversal hits an orphan or wrong-parent sub-tree; downstream BoM extraction reports wrong parent-child relationships.
 
 ### A110 — Entity STEP id used as element name on serialization
@@ -31891,6 +31910,7 @@ exercised against CGAL PMP / MeshFix.
 - **Notes**: Synonyms: "STEP id used as element name", "PRODUCT name is STEP id", "IfcConverter step-id naming", "writer used entity id for product name", "STEP serialization names from id".
 - **Byte assertion**: contains(b'PRODUCT')
 - **Tier-3 assertion**: load == "ok"
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 - **Model impact**: BoM tables and assembly trees become unreadable; user can't tell parts apart by name.
 
 ### Tb024 — STEP labels with IfcShapeAspect have wrong location reference
@@ -31903,6 +31923,7 @@ exercised against CGAL PMP / MeshFix.
 - **Byte assertion**: contains(b'SHAPE_ASPECT')
 - **Byte assertion**: contains(b'GEOMETRIC_ITEM_SPECIFIC_USAGE')
 - **Tier-3 assertion**: load == "ok"
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 - **Model impact**: PMI annotations attach to the wrong feature on import; downstream tolerance checks reference the wrong geometry.
 
 ### Wr055 — Writer regression flips half of ORIENTED_EDGE directions
@@ -31915,6 +31936,7 @@ exercised against CGAL PMP / MeshFix.
 - **Byte assertion**: contains(b'ORIENTED_EDGE')
 - **Byte assertion**: matches(rb'\.F\.')
 - **Tier-3 assertion**: load == "ok"
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 - **Model impact**: Receivers that compute face normals from loop traversal get inconsistent results — half the faces point "in" and half point "out"; mesh-output renders unlit / unselectable.
 
 ### Wr056 — Writer aliases geometrically-identical entities (shared substructure)
@@ -31927,6 +31949,7 @@ exercised against CGAL PMP / MeshFix.
 - **Byte assertion**: count(b'MAPPED_ITEM') >= 2
 - **Byte assertion**: contains(b'REPRESENTATION_MAP')
 - **Tier-3 assertion**: load == "ok"
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 - **Model impact**: Geometric integrity is correct on read; semantic integrity breaks when downstream code assumes each MAPPED_ITEM is independent. Round-trip through a healing pipeline can drop "duplicate" copies that were really shared aliases.
 
 ### Wr057 — Big-endian (s390x) writer emits empty STEP without diagnostic
@@ -31939,6 +31962,7 @@ exercised against CGAL PMP / MeshFix.
 - **Byte assertion**: contains(b'SHAPE_REPRESENTATION')
 - **Byte assertion**: matches(rb'SHAPE_REPRESENTATION\([^)]*\(\)\s*,')
 - **Tier-3 assertion**: load == "ok"
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 - **Model impact**: Downstream pipeline thinks the export succeeded; an entire model is silently lost.
 
 ### Lh049 — Big-endian / s390x byte-order in OCCT wrapper drops shapes
@@ -31950,6 +31974,7 @@ exercised against CGAL PMP / MeshFix.
 - **Notes**: Synonyms: "cascadio endianness s390x", "OCCT wrapper big-endian byte-order", "STEP shapes dropped on big-endian", "cascadio tests fail s390x wrong endianness", "OCCT binding endian bug".
 - **Byte assertion**: contains(b'REPRESENTATION_RELATIONSHIP')
 - **Tier-3 assertion**: load == "ok"
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 - **Model impact**: A receiver on big-endian arch silently drops shapes — downstream pipeline sees fewer entities than were authored.
 
 ### Wr058 — XCAF → STEP export crashes on umlaut in label
@@ -31962,6 +31987,7 @@ exercised against CGAL PMP / MeshFix.
 - **Byte assertion**: contains(b'PROPERTY_DEFINITION')
 - **Byte assertion**: matches(rb'[\x80-\xff]')
 - **Tier-3 assertion**: load == "ok"
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 - **Model impact**: Cannot export any model whose user-facing labels contain Western European characters; pipeline aborts mid-emit, partial output file.
 
 ### Ad127 — Corrupted STEP with missing references kills Python process (OSD::SetSignal)
@@ -31973,6 +31999,7 @@ exercised against CGAL PMP / MeshFix.
 - **Notes**: Synonyms: "pythonocc STEP missing ref kills Python", "OSD::SetSignal escapes Python try/except", "STEP crash kills process not exception", "missing references kills python OCC", "OCC signal handler escape on STEP read".
 - **Byte assertion**: contains(b'PRESENTATION_LAYER_ASSIGNMENT')
 - **Tier-3 assertion**: load == "ok"
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 - **Model impact**: Production pipeline cannot defend against a single broken file by wrapping reads in try/except; whole worker process dies.
 
 ### Wr059 — STEP→BREP→STEP round-trip inflates cylinder analytic surface into B-spline
@@ -31984,6 +32011,7 @@ exercised against CGAL PMP / MeshFix.
 - **Notes**: Synonyms: "pythonocc STEP round-trip cylinder spline", "STEP→BREP→STEP analytic surface lost", "cylinder becomes B-spline after round-trip", "OCC writer inflates analytic to NURBS", "STEP cylinder NURBS approximation after round-trip".
 - **Byte assertion**: contains(b'B_SPLINE_SURFACE_WITH_KNOTS')
 - **Tier-3 assertion**: load == "ok"
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 - **Model impact**: Downstream CAM toolpaths use NURBS sampling rather than analytic cylindrical math; tolerances drop; file size grows.
 
 ### Wr060 — Solidworks AP214 → OCCT version upgrade mis-locates surfaces
@@ -31996,6 +32024,7 @@ exercised against CGAL PMP / MeshFix.
 - **Byte assertion**: contains(b'PLANE')
 - **Byte assertion**: contains(b'AXIS2_PLACEMENT_3D')
 - **Tier-3 assertion**: load == "ok"
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 - **Model impact**: Same file produces a different model depending on receiver version; round-trip stability is lost across kernel upgrades.
 
 ### Pf039 — STEP→GLB infinite loop on assembly traversal (self-referencing NAUO)
@@ -32007,6 +32036,7 @@ exercised against CGAL PMP / MeshFix.
 - **Notes**: Synonyms: "cascadio assembly infinite loop", "STEP assembly traversal stuck", "cycle in assembly graph cascadio", "self-referencing NAUO stuck", "STEP-to-GLB stuck on assembly".
 - **Byte assertion**: contains(b'NEXT_ASSEMBLY_USAGE_OCCURRENCE')
 - **Tier-3 assertion**: load == "ok"
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 - **Model impact**: Conversion pipeline hangs indefinitely; CI / batch processing wedges.
 
 ### Pf038 — STEP→GLB OOM, memory not released during translation pipeline
@@ -32019,4 +32049,5 @@ exercised against CGAL PMP / MeshFix.
 - **Byte assertion**: count_entity_def(b'MAPPED_ITEM') >= 8
 - **Byte assertion**: contains(b'REPRESENTATION_MAP')
 - **Tier-3 assertion**: load == "ok"
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 - **Model impact**: Cannot convert assemblies above a per-process memory budget; pipeline crashes mid-batch.
