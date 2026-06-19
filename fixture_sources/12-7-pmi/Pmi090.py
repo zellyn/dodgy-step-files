@@ -56,3 +56,9 @@ f._emit_raw(
     f"'550e8400-e29b-41d4-a716-446655440000',"
     f"#{ident_role.eid},(#{shape_aspect.eid}))"
 )
+
+# DATUM_FEATURE — required by byte assertion.
+f._emit_raw(
+    f"DATUM_FEATURE('df_uuid','datum feature for UUID test','',"
+    f"#{shape_aspect.eid})"
+)
