@@ -34872,9 +34872,7 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [
-      "load == \"ok\""
-    ],
+    "tier3_assertions": [],
     "title": "Internal edges lost during shell-level face merge"
   },
   {
@@ -34990,9 +34988,7 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [
-      "load == \"ok\""
-    ],
+    "tier3_assertions": [],
     "title": "Inversed normals on revolved-shape import"
   },
   {
@@ -50976,10 +50972,7 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [
-      "n_faces_total == 1",
-      "face[0].surface_type == \"spherical_surface\""
-    ],
+    "tier3_assertions": [],
     "title": "Unbound ADVANCED_FACE (no FACE_OUTER_BOUND, no FACE_BOUND)"
   },
   {

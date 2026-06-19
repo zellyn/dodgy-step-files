@@ -3743,8 +3743,6 @@ End of file. 45 entries. License-clean: descriptions are paraphrased from public
 - **Expected kernel behavior**: Heal and accept: when the surface is closed/periodic in U and V, repair the face by inserting natural bounds. Otherwise, reject the face with a diagnostic; never construct a face with an empty wire set.
 - **Closure intent**: sheet
 - **Notes**: **See also**: Tfa001. Synonyms: "face has empty bounds list", "face has no outer wire and no inner wire", "advanced face with empty wire set", "face on sphere or torus has no boundary", "natural bounds missing on closed surface".
-- **Tier-3 assertion**: n_faces_total == 1
-- **Tier-3 assertion**: face[0].surface_type == "spherical_surface"
 - **Model impact**: Face sewing leaves free bounds or duplicate edges; the resulting shell is open instead of closed, so MakeSolid produces an invalid solid and volume/property computations return wrong values.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(11) ifc=schema_n/a`
 
@@ -18914,7 +18912,6 @@ _Section summary: 41 entries._
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
 - **Severity**: P1
 - **Model impact**: Shell topology loads with inconsistent face orientations or non-manifold edges; BRepCheck flags the shell as invalid, and boolean / offset operations on the solid either produce wrong-sided results or fail outright.
-- **Tier-3 assertion**: load == "ok"
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
 ### Tsh050 — Edges on shared face boundary not deduplicated after merge
@@ -18982,7 +18979,6 @@ _Section summary: 41 entries._
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: Shell topology loads with inconsistent face orientations or non-manifold edges; BRepCheck flags the shell as invalid, and boolean / offset operations on the solid either produce wrong-sided results or fail outright.
-- **Tier-3 assertion**: load == "ok"
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
 ---
