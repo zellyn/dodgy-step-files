@@ -18914,6 +18914,7 @@ _Section summary: 41 entries._
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
 - **Severity**: P1
 - **Model impact**: Shell topology loads with inconsistent face orientations or non-manifold edges; BRepCheck flags the shell as invalid, and boolean / offset operations on the solid either produce wrong-sided results or fail outright.
+- **Tier-3 assertion**: shape_null == True
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
 ### Tsh050 — Edges on shared face boundary not deduplicated after merge
@@ -18981,6 +18982,7 @@ _Section summary: 41 entries._
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: Shell topology loads with inconsistent face orientations or non-manifold edges; BRepCheck flags the shell as invalid, and boolean / offset operations on the solid either produce wrong-sided results or fail outright.
+- **Tier-3 assertion**: shape_null == True
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
 ---
@@ -21941,6 +21943,7 @@ Degree-3 Bezier curve (already in Bezier form). ConvertCurve2dToBezier should be
 ### Gn128 — ShapeAnalysis_Curve.IsClosed B-spline with-identical-knots-different-poles
 
 Periodic B-spline with knot parameters identical at boundaries but control poles differing by 1e-3. IsClosed checks knot equality only and reports true, but geometry gap persists at closure point.
+- **Tier-3 assertion**: shape_null == True
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 ### Gn129 — Geom_BSplineSurface periodic-U-closure weight-extraction
 - **Category**: §12.2b NURBS
@@ -22050,6 +22053,7 @@ Periodic B-spline with knot parameters identical at boundaries but control poles
 - **Model impact**: Bounds mismatch in recursive Bezier conversion
 - **Fixture path**: step-examples/12-2b-nurbs/Gn138.stp
 - **Fixture kind**: scaffold
+- **Tier-3 assertion**: load == "ok"
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
 ### Gn139 — TrimmedCurve Wrapping Periodic B-spline
 - **Category**: §12.2b NURBS
@@ -26877,6 +26881,7 @@ gets converted to Bezier patches without detecting the self-intersection. Result
 - **Model impact**: Surface and trimming geometry
 - **Fixture path**: step-examples/12-2c-surfaces/Gs135.stp
 - **Fixture kind**: scaffold
+- **Tier-3 assertion**: load == "ok"
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=reject ifc=schema_n/a`
 ### Gs136 — ShapeAnalysis_Surface.Singularity TOROIDAL_SURFACE non-standard-axis
 - **Category**: §12.2c surfaces (sub-class: surface)
@@ -29134,6 +29139,7 @@ Pcurve is HYPERBOLA with reversed edge orientation. FixReversed2d's reversal doe
 ### Gp125 — ShapeAnalysis_Edge.GetEndTangent2d at-trim-boundary
 
 Pcurve is TRIMMED_CURVE. GetEndTangent2d uses untrimmed-curve tangent at trim boundary, producing wrong direction.
+- **Tier-3 assertion**: load == "ok"
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 ### Gp126 — ShapeAnalysis_Edge.CheckCurve3dWithPCurve plane-projection mismatch
 - **Category**: §12.2a pcurves

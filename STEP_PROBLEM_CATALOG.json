@@ -18527,7 +18527,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "ShapeAnalysis_Edge.GetEndTangent2d at-trim-boundary"
   },
   {
@@ -24177,7 +24179,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "ShapeAnalysis_Curve.IsClosed B-spline with-identical-knots-different-poles"
   },
   {
@@ -24505,7 +24509,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "NURBS trimmed surface Bezier basis delegation"
   },
   {
@@ -30249,7 +30255,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "ShapeUpgrade_ConvertSurfaceToBezierBasis with-self-intersecting"
   },
   {
@@ -34864,7 +34872,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Internal edges lost during shell-level face merge"
   },
   {
@@ -34980,7 +34990,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Inversed normals on revolved-shape import"
   },
   {
