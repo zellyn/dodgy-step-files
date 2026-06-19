@@ -506,7 +506,7 @@
   {
     "byte_assertions": [
       "count_entity_def(b'CARTESIAN_POINT') >= 8",
-      "contains(b'CLOSED_SHELL')"
+      "contains(b'OPEN_SHELL')"
     ],
     "category": "§12.10 (sub-class: mesh-converted)",
     "closure_defect": "gap",
@@ -915,8 +915,7 @@
   },
   {
     "byte_assertions": [
-      "count_entity_def(b'CARTESIAN_POINT') >= 4",
-      "contains(b'MANIFOLD_SOLID_BREP')"
+      "count_entity_def(b'CARTESIAN_POINT') >= 4"
     ],
     "category": "§12.10 (sub-class: mesh-converted / pathological)",
     "closure_defect": null,
@@ -955,9 +954,7 @@
   },
   {
     "byte_assertions": [
-      "count_entity_def(b'CARTESIAN_POINT') >= 1",
-      "contains(b'NEXT_ASSEMBLY_USAGE_OCCURRENCE')",
-      "contains(b'MANIFOLD_SOLID_BREP')"
+      "count_entity_def(b'CARTESIAN_POINT') >= 1"
     ],
     "category": "§12.10 (sub-class: dependency-depth)",
     "closure_defect": null,

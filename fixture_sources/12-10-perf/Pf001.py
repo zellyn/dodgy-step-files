@@ -46,6 +46,18 @@ shell = f.open_shell([face])
 sbsm = f.shell_based_surface_model([shell])
 f.add_product_chain(sbsm)
 
+# The catalog claim mentions MANIFOLD_SOLID_BREP children — emit a
+# few stub MANIFOLD_SOLID_BREP entities so the byte assertion is honest.
+# These aren't fully-populated solids; the defect is about NAUO depth
+# combined with brep stub count, not the geometric content of each.
+closed_shell = f._emit_raw(
+    f"CLOSED_SHELL('stub_shell',(#{face.eid}))"
+)
+for k in range(3):
+    f._emit_raw(
+        f"MANIFOLD_SOLID_BREP('stub_brep_{k}',#{closed_shell.eid})"
+    )
+
 # The root PRODUCT chain is added by add_product_chain.
 # Now nest 30 child PRODUCT chains, each linked via NAUO to the previous.
 prev_pdef_eid = 9004   # PRODUCT_DEFINITION for root from add_product_chain

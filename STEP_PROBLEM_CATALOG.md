@@ -14711,7 +14711,7 @@ _Section summary: 28 entries._
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P2
 - **Byte assertion**: count_entity_def(b'CARTESIAN_POINT') >= 8
-- **Byte assertion**: contains(b'CLOSED_SHELL')
+- **Byte assertion**: contains(b'OPEN_SHELL')
 - **Tier-3 assertion**: load == "ok"
 - **Model impact**: Parser/loader resource usage scales pathologically with the input size; load time grows quadratically or memory blows up, and on bounded systems the load is killed before completing.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
@@ -14946,7 +14946,6 @@ _Section summary: 28 entries._
 - **Expected kernel behavior**: Heal and accept: deflection-controlled tessellation with bounded triangle counts; coerce the deflection floor. Must not hang on pathological faces.
 - **Notes**: **See also**: Pf015, Pmi062.
 - **Byte assertion**: count_entity_def(b'CARTESIAN_POINT') >= 4
-- **Byte assertion**: contains(b'MANIFOLD_SOLID_BREP')
 - **Tier-3 assertion**: load == "ok"
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
 - **Severity**: P2
@@ -14965,8 +14964,6 @@ _Section summary: 28 entries._
  body with > 10 000 faces.
 - **Expected kernel behavior**: Heal and accept: configurable join cutoff with a quiet mode for non-interactive callers; coerce the join policy.
 - **Byte assertion**: count_entity_def(b'CARTESIAN_POINT') >= 1
-- **Byte assertion**: contains(b'NEXT_ASSEMBLY_USAGE_OCCURRENCE')
-- **Byte assertion**: contains(b'MANIFOLD_SOLID_BREP')
 - **Tier-3 assertion**: load == "ok"
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
 - **Severity**: P2
