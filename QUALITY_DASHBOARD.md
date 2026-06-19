@@ -10,16 +10,17 @@ at the bottom) to recompute._
 
 | Metric | Value |
 |---|---:|
-| Catalog entries | **2,329** |
-| Active fixtures (`.stp` files) | **2,329** (+ 7 sibling-input fixtures) |
+| Catalog entries | **2,347** |
+| Active fixtures (`.stp` files) | **2,347** (+ 7 sibling-input fixtures) |
 | Quarantined (preserved as evidence; replaced in active corpus) | **150** (84 early-waves + 66 phase_F_boilerplate) |
 | Mesh fixtures (§12-14 mesh corpus) | **5** seed fixtures via Python builder + JSON/OBJ/PLY co-emit + pure-Python oracle |
 | Adversarial-verification sweep (2026-06-18, full corpus) | **2,280 / 2,309** (98.7 %) verified VALID; 23 CONFIRMED_WEAK; 0 CONFIRMED_INVALID after regen |
 | CONFIRMED (Expected-validation line matches live oracle output) | **2337 / 2349** (99.49 %) per `_final_verdict` 2026-06-19; 12 WEAK, 0 ERROR |
-| Machine-checkable **tier-3** assertions in catalog | **2,568** across **1,986** entries (≥85 % coverage; B2 batch-5 + 90 % pytest floor) |
-| Machine-checkable **byte** assertions in catalog | **2,347** across **1,056** entries |
-| Total machine-checkable invariants | **4,915** |
-| Entries with at least one invariant | **>2,000 / 2,329** (>85 %) |
+| Expected validation coverage | **2342 / 2347** (99.8 %) — remaining 5 are Me* mesh fixtures (different oracle) |
+| Machine-checkable **tier-3** assertions in catalog | ≥**2,184** entries (93.1 % coverage; CI ratchet floor at 90 %) |
+| Machine-checkable **byte** assertions in catalog | ≥**2,347** across ≥**1,056** entries |
+| Total machine-checkable invariants | ≥**4,915** |
+| Entries with at least one invariant | **>2,180 / 2,347** (>92 %) |
 | Bug-reporter synonyms | **1127** `Synonyms:` lines covering most §12.1-§12.8 entries (improves BM25 recall on natural-language queries) |
 | Writer-pathology runtime oracle (`_writer_oracle`) | 34 simulated / 9 skipped = **43 Wr* entries** covered with active byte-level reproduction |
 | Category-lint structural-issue ratchet | **0** violations |
