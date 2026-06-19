@@ -1343,6 +1343,79 @@
   },
   {
     "byte_assertions": [
+      "count_entity_def(b'MAPPED_ITEM') >= 8",
+      "contains(b'REPRESENTATION_MAP')"
+    ],
+    "category": "§12.10 perf (sub-class: per-instance tessellation cache)",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": null,
+    "description": "A wide-fanout assembly (one source shape, many MAPPED_ITEM instances) causes the converter's tessellation cache to grow per-instance rather than sharing the source mesh. The cache is never garbage-collected during translation, so memory grows linearly with instance count until the kernel OOMs.",
+    "expected_kernel_behavior": "share tessellation cache across instances of the same source; release cache pages when no longer reachable.",
+    "expected_validation": "",
+    "fixture_kind": null,
+    "fixture_path": "step-examples/12-10-perf/Pf038.stp",
+    "id": "Pf038",
+    "notes": "Synonyms: \"cascadio OOM STEP-to-GLB\", \"STEP conversion memory leak\", \"tessellation cache not shared\", \"OOM on assembly STEP conversion\", \"memory grows per instance\".",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-sufficient",
+    "reproducer": "one REPRESENTATION_MAP + N MAPPED_ITEMs (N ~ 8 here, the real reports were thousands).",
+    "section": "12.10",
+    "section_dir": "12-10-perf",
+    "see_also": [],
+    "sender": "",
+    "severity": null,
+    "sources": [
+      "Pattern-mined from trimesh/cascadio#22 (LGPL-clean — pattern only, no bytes copied). User-reported reproducer: cascadio leaks memory until OOM when converting STEP→GLB."
+    ],
+    "taxonomy": [
+      "crash",
+      "performance"
+    ],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
+    "title": "STEP→GLB OOM, memory not released during translation pipeline"
+  },
+  {
+    "byte_assertions": [
+      "contains(b'NEXT_ASSEMBLY_USAGE_OCCURRENCE')"
+    ],
+    "category": "§12.10 perf (sub-class: cycle-undetected assembly)",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": null,
+    "description": "A NEXT_ASSEMBLY_USAGE_OCCURRENCE references the same PRODUCT as both parent and child — the assembly graph has a self-loop. cascadio's traversal (depth-first, no visited-set) never terminates.",
+    "expected_kernel_behavior": "maintain a visited-set during assembly traversal; reject cycles with a diagnostic.",
+    "expected_validation": "",
+    "fixture_kind": null,
+    "fixture_path": "step-examples/12-10-perf/Pf039.stp",
+    "id": "Pf039",
+    "notes": "Synonyms: \"cascadio assembly infinite loop\", \"STEP assembly traversal stuck\", \"cycle in assembly graph cascadio\", \"self-referencing NAUO stuck\", \"STEP-to-GLB stuck on assembly\".",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-sufficient",
+    "reproducer": "`NEXT_ASSEMBLY_USAGE_OCCURRENCE('self_loop','','',#9001,#9001,$)` (same PRODUCT on both ends).",
+    "section": "12.10",
+    "section_dir": "12-10-perf",
+    "see_also": [],
+    "sender": "",
+    "severity": null,
+    "sources": [
+      "Pattern-mined from trimesh/cascadio#19 (LGPL-clean — pattern only, no bytes copied). User-reported reproducer: cascadio \"stuck on assembly STEP\" — infinite loop because the assembly graph contains a cycle the traversal doesn't detect."
+    ],
+    "taxonomy": [
+      "crash",
+      "performance"
+    ],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
+    "title": "STEP→GLB infinite loop on assembly traversal (self-referencing NAUO)"
+  },
+  {
+    "byte_assertions": [
       "max_string_literal_length >= 32768",
       "length > 32768",
       "matches(rb\"PERSON\\([^;]*'A{1000,}\")"
@@ -4571,6 +4644,42 @@
       "load == \"ok\""
     ],
     "title": "`add()` with explicit STEP ID causes segfault on auto-ID collision"
+  },
+  {
+    "byte_assertions": [
+      "contains(b'PRESENTATION_LAYER_ASSIGNMENT')"
+    ],
+    "category": "§12.11 adversarial (sub-class: signal-handler escape)",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": null,
+    "description": "Distinct from Ad117 (style-dangling) and Ad123 (PCURVE-dangling) — this fixture exercises the *catchability gap*. OCC's signal handler design means that any null-deref on a STEP read becomes process-fatal even when the user wrote `try: ... except Exception:`. A dangling layer-assignment reference is the simplest reproducer.",
+    "expected_kernel_behavior": "convert null-derefs in STEP read paths into recoverable exceptions; reserve OSD::SetSignal for truly-uncatchable kernel state.",
+    "expected_validation": "",
+    "fixture_kind": null,
+    "fixture_path": "step-examples/12-11-adversarial/Ad127.stp",
+    "id": "Ad127",
+    "notes": "Synonyms: \"pythonocc STEP missing ref kills Python\", \"OSD::SetSignal escapes Python try/except\", \"STEP crash kills process not exception\", \"missing references kills python OCC\", \"OCC signal handler escape on STEP read\".",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-sufficient",
+    "reproducer": "`PRESENTATION_LAYER_ASSIGNMENT('kill_python','#9999 dangling',(#9999))` where `#9999` does not exist.",
+    "section": "12.11",
+    "section_dir": "12-11-adversarial",
+    "see_also": [],
+    "sender": "",
+    "severity": null,
+    "sources": [
+      "Pattern-mined from pythonocc/pythonocc-core#1295 (LGPL-clean — pattern only, no bytes copied). User-reported reproducer: opening a corrupted STEP with missing references kills the Python process rather than raising a catchable exception. Root cause: OCC's OSD::SetSignal converts SIGSEGV into a process kill instead of a recoverable exception."
+    ],
+    "taxonomy": [
+      "crash",
+      "adversarial"
+    ],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
+    "title": "Corrupted STEP with missing references kills Python process (OSD::SetSignal)"
   },
   {
     "byte_assertions": [
@@ -8277,6 +8386,227 @@
       "load == \"ok\""
     ],
     "title": "Swept spherical face orientation inverted on STEP export round-trip"
+  },
+  {
+    "byte_assertions": [
+      "contains(b'ORIENTED_EDGE')",
+      "matches(rb'\\.F\\.')"
+    ],
+    "category": "§12.13 writer-pathology (sub-class: edge-orientation systematic-flip)",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": null,
+    "description": "An EDGE_LOOP that should have all `.T.` ORIENTED_EDGE flags has every other entry flipped to `.F.`. The geometric path is the same (the underlying EDGE_CURVE endpoints don't change), but the loop's directed-traversal sense is broken: receivers that follow the orientation flags end up with face normals pointing every which way. Distinct from Tsh012 (.U. seam flag) and Wr054 (single-face inversion) — this is a *systematic* half-population reversal.",
+    "expected_kernel_behavior": "validate edge-loop orientation consistency before emit; check loop traversal forms a closed cycle in either direction.",
+    "expected_validation": "",
+    "fixture_kind": null,
+    "fixture_path": "step-examples/12-13-writer-pathology/Wr055.stp",
+    "id": "Wr055",
+    "notes": "Synonyms: \"Solvespace STEP wrong edge direction\", \"half flipped ORIENTED_EDGE writer bug\", \"STEP edges reversed every other\", \"3DViewStation renders STEP wrong after Solvespace\", \"writer flips edge direction systematically\".",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-sufficient",
+    "reproducer": "4 ORIENTED_EDGEs in a loop with flags `(.T., .F., .T., .F.)` where the loop should be all `.T.` for a consistent CCW traversal.",
+    "section": "12.13",
+    "section_dir": "12-13-writer-pathology",
+    "see_also": [],
+    "sender": "",
+    "severity": null,
+    "sources": [
+      "Pattern-mined from solvespace/solvespace#1601 (LGPL-clean — pattern only, no bytes copied). User-reported reproducer: Solvespace commit `bb6cc1a0..d1b52cd6` introduced a regression where ORIENTED_EDGE flags came out reversed for half the edges in a loop. Kisters 3DViewStation rendered the result as a 3D mess",
+      "some readers accept it silently."
+    ],
+    "taxonomy": [
+      "writer"
+    ],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
+    "title": "Writer regression flips half of ORIENTED_EDGE directions"
+  },
+  {
+    "byte_assertions": [
+      "count(b'MAPPED_ITEM') >= 2",
+      "contains(b'REPRESENTATION_MAP')"
+    ],
+    "category": "§12.13 writer-pathology (sub-class: writer-dedup-aliasing)",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": null,
+    "description": "Two (or more) MAPPED_ITEMs point at the same REPRESENTATION_MAP via a single underlying definition. The writer treats geometrically-identical surfaces as a single shared entity, so any mutation (post-emit edit or downstream healer) propagates to every alias. Receivers that mutate one instance and expect the others independent are surprised.",
+    "expected_kernel_behavior": "surface the aliasing in the catalog tier-3 introspection (`n_unique_surfaces` vs `n_surface_references`); document writer policy.",
+    "expected_validation": "",
+    "fixture_kind": null,
+    "fixture_path": "step-examples/12-13-writer-pathology/Wr056.stp",
+    "id": "Wr056",
+    "notes": "Synonyms: \"Solvespace exported duplicated entities aliased\", \"STEP writer aliases shared substructure\", \"MAPPED_ITEM shared one map\", \"writer dedup creates aliasing\", \"shared-substructure mutation propagates\".",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-sufficient",
+    "reproducer": "one REPRESENTATION_MAP referenced by two distinct MAPPED_ITEM call-sites.",
+    "section": "12.13",
+    "section_dir": "12-13-writer-pathology",
+    "see_also": [],
+    "sender": "",
+    "severity": null,
+    "sources": [
+      "Pattern-mined from solvespace/solvespace#1589 (LGPL-clean — pattern only, no bytes copied). User-reported: Solvespace's \"Export volumes\" path deliberately collapses geometrically-identical instances by reference rather than emitting per-instance copies",
+      "one entity becomes the alias for many call-sites."
+    ],
+    "taxonomy": [
+      "writer"
+    ],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
+    "title": "Writer aliases geometrically-identical entities (shared substructure)"
+  },
+  {
+    "byte_assertions": [
+      "contains(b'SHAPE_REPRESENTATION')",
+      "matches(rb'SHAPE_REPRESENTATION\\([^)]*\\(\\)\\s*,')"
+    ],
+    "category": "§12.13 writer-pathology (sub-class: architecture-class endianness bug)",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": null,
+    "description": "The writer's surface-collection pass reads a structure whose byte-order was assumed little-endian; on s390x, the iteration count returns garbage and the writer concludes there are no surfaces. The resulting file is structurally valid but semantically empty.",
+    "expected_kernel_behavior": "assert non-empty before emit; fail visibly when no surfaces were collected.",
+    "expected_validation": "",
+    "fixture_kind": null,
+    "fixture_path": "step-examples/12-13-writer-pathology/Wr057.stp",
+    "id": "Wr057",
+    "notes": "Synonyms: \"Solvespace s390x STEP empty\", \"no surfaces to export STEP\", \"big-endian STEP writer regression\", \"Debian s390x STEP regression\", \"STEP writer silent empty on big-endian\".",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-sufficient",
+    "reproducer": "`SHAPE_REPRESENTATION('s390x_empty',(),#9005)` (empty items).",
+    "section": "12.13",
+    "section_dir": "12-13-writer-pathology",
+    "see_also": [],
+    "sender": "",
+    "severity": null,
+    "sources": [
+      "Pattern-mined from solvespace/solvespace#1264 (LGPL-clean — pattern only, no bytes copied). User-reported reproducer: Solvespace on s390x emits `SHAPE_REPRESENTATION` with an empty items list — \"no surfaces to export\" — without any diagnostic."
+    ],
+    "taxonomy": [
+      "writer"
+    ],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
+    "title": "Big-endian (s390x) writer emits empty STEP without diagnostic"
+  },
+  {
+    "byte_assertions": [
+      "contains(b'PROPERTY_DEFINITION')",
+      "matches(rb'[\\x80-\\xff]')"
+    ],
+    "category": "§12.13 writer-pathology (sub-class: encoding crash on emit)",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": null,
+    "description": "Distinct from Le022 (read-side encoding) — this is *writer-side* crash on non-ASCII content. The XCAF document holds a label with an umlaut; on emit, the writer's TCollection_ExtendedString → ascii conversion path dereferences a null and crashes the entire Python process.",
+    "expected_kernel_behavior": "writer must encode-or-reject non-ASCII labels; never let a TCollection conversion crash become a process kill.",
+    "expected_validation": "",
+    "fixture_kind": null,
+    "fixture_path": "step-examples/12-13-writer-pathology/Wr058.stp",
+    "id": "Wr058",
+    "notes": "Synonyms: \"pythonocc XCAF umlaut crash STEP export\", \"TCollection_ExtendedString crash on emit\", \"STEP writer crashes on non-ASCII label\", \"umlaut in PRODUCT name crashes\", \"label with ü crashes STEP write\".",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-sufficient",
+    "reproducer": "`PROPERTY_DEFINITION('umlaut_label','Schlüssel','',#9001)` (UTF-8 bytes for 'ü').",
+    "section": "12.13",
+    "section_dir": "12-13-writer-pathology",
+    "see_also": [],
+    "sender": "",
+    "severity": null,
+    "sources": [
+      "Pattern-mined from pythonocc/pythonocc-core#1278 (LGPL-clean — pattern only, no bytes copied). User-reported reproducer: setting a label name containing 'ü' crashes during XCAF→STEP export. Crash sourced to TCollection_ExtendedString conversion path."
+    ],
+    "taxonomy": [
+      "crash",
+      "writer"
+    ],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
+    "title": "XCAF → STEP export crashes on umlaut in label"
+  },
+  {
+    "byte_assertions": [
+      "contains(b'B_SPLINE_SURFACE_WITH_KNOTS')"
+    ],
+    "category": "§12.13 writer-pathology (sub-class: analytic-to-NURBS-inflation)",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": null,
+    "description": "The BREP intermediate loses the analytic-surface metadata; on re-export, the OCCT writer reconstructs the surface as a B-spline approximation rather than an analytic CYLINDRICAL_SURFACE. The geometry is *approximately* preserved but the parameterization, derivatives, and downstream meshing all change. Distinct from Wr053 (torus-fused) because the source surface was a clean analytic, not a fused solid.",
+    "expected_kernel_behavior": "BREP intermediate must preserve analytic-surface metadata; writer must prefer analytic emit when the surface admits one.",
+    "expected_validation": "",
+    "fixture_kind": null,
+    "fixture_path": "step-examples/12-13-writer-pathology/Wr059.stp",
+    "id": "Wr059",
+    "notes": "Synonyms: \"pythonocc STEP round-trip cylinder spline\", \"STEP→BREP→STEP analytic surface lost\", \"cylinder becomes B-spline after round-trip\", \"OCC writer inflates analytic to NURBS\", \"STEP cylinder NURBS approximation after round-trip\".",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-sufficient",
+    "reproducer": "a B_SPLINE_SURFACE_WITH_KNOTS with degree-1 control net approximating a cylinder, replacing what should be a CYLINDRICAL_SURFACE.",
+    "section": "12.13",
+    "section_dir": "12-13-writer-pathology",
+    "see_also": [],
+    "sender": "",
+    "severity": null,
+    "sources": [
+      "Pattern-mined from pythonocc/pythonocc-core#661 (LGPL-clean — pattern only, no bytes copied). User-reported reproducer: a cylinder authored as analytic CYLINDRICAL_SURFACE comes out as a B_SPLINE_SURFACE_WITH_KNOTS after BREP round-trip, even when the source had clean analytic geometry."
+    ],
+    "taxonomy": [
+      "round-trip",
+      "writer"
+    ],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
+    "title": "STEP→BREP→STEP round-trip inflates cylinder analytic surface into B-spline"
+  },
+  {
+    "byte_assertions": [
+      "contains(b'PLANE')",
+      "contains(b'AXIS2_PLACEMENT_3D')"
+    ],
+    "category": "§12.13 writer-pathology (sub-class: receiver-side version regression)",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": null,
+    "description": "A SOLIDWORKS-shape STEP file uses a specific AXIS2_PLACEMENT_3D location form that the new OCCT reader interprets differently. The result is that a PLANE at (10, 0, 0) gets placed at (10 + δ, 0, 0) in the loaded shape.",
+    "expected_kernel_behavior": "writer-form compatibility across versions; reader version-pinning notes for vendor-specific writers.",
+    "expected_validation": "",
+    "fixture_kind": null,
+    "fixture_path": "step-examples/12-13-writer-pathology/Wr060.stp",
+    "id": "Wr060",
+    "notes": "Synonyms: \"pythonocc OCC upgrade surface offset\", \"Solidworks AP214 STEP offset wrong\", \"OCC 0.18.2 → 7.4.0 STEP regression\", \"STEP surfaces moved after OCC upgrade\", \"vendor writer regression OCC upgrade\".",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-sufficient",
+    "reproducer": "PLANE referenced through an AXIS2_PLACEMENT_3D at (10.0, 0.0, 0.0).",
+    "section": "12.13",
+    "section_dir": "12-13-writer-pathology",
+    "see_also": [],
+    "sender": "",
+    "severity": null,
+    "sources": [
+      "Pattern-mined from pythonocc/pythonocc-core#794 (LGPL-clean — pattern only, no bytes copied). User-reported reproducer: STEP files written by Solidworks AP214 import fine under OCCT 0.18.2",
+      "under OCCT 7.4.0 the same files come out with surfaces offset by a non-zero translation. The bytes are identical",
+      "the receiver's regression is the defect."
+    ],
+    "taxonomy": [
+      "writer"
+    ],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
+    "title": "Solidworks AP214 → OCCT version upgrade mis-locates surfaces"
   },
   {
     "byte_assertions": [],
@@ -12268,6 +12598,41 @@
       "shape_null == True"
     ],
     "title": "STEP reader cannot consume a non-seekable stream (in-memory / pipe / network)"
+  },
+  {
+    "byte_assertions": [
+      "contains(b'REPRESENTATION_RELATIONSHIP')"
+    ],
+    "category": "§12.1b header (sub-class: architecture-class endianness)",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": null,
+    "description": "Distinct from Wr057 — this is the *reader side* of the same architecture class. The OCCT wrapper's entity-table reader assumes little-endian on disk; on big-endian hosts it reads malformed entity-IDs and drops shapes from the data section. The file content is well-formed; the wrapper layer's byte-order assumption is wrong.",
+    "expected_kernel_behavior": "explicit endianness handling in the wrapper's binary buffers; CI matrix on at least one big-endian arch.",
+    "expected_validation": "",
+    "fixture_kind": null,
+    "fixture_path": "step-examples/12-1b-header/Lh049.stp",
+    "id": "Lh049",
+    "notes": "Synonyms: \"cascadio endianness s390x\", \"OCCT wrapper big-endian byte-order\", \"STEP shapes dropped on big-endian\", \"cascadio tests fail s390x wrong endianness\", \"OCCT binding endian bug\".",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-sufficient",
+    "reproducer": "`REPRESENTATION_RELATIONSHIP('endian_drop','',#9005,#9005)` — a self-referencing rep-rel that the wrapper drops on big-endian.",
+    "section": "12.1b",
+    "section_dir": "12-1b-header",
+    "see_also": [],
+    "sender": "",
+    "severity": null,
+    "sources": [
+      "Pattern-mined from trimesh/cascadio#2251 (LGPL-clean — pattern only, no bytes copied). User-reported reproducer: cascadio tests fail on s390x with wrong endianness in OCCT binding's entity-decode path."
+    ],
+    "taxonomy": [
+      "syntax"
+    ],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
+    "title": "Big-endian / s390x byte-order in OCCT wrapper drops shapes"
   },
   {
     "byte_assertions": [

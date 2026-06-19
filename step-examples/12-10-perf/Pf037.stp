@@ -1,57 +1,44 @@
 ISO-10303-21;
-/* Pf037 - Two-pass loader: instantiation succeeds, second-pass Load fails on missing forward ref
-   Defect: BRL-CAD step-g uses a two-pass model: pass 1 instantiates one
-   C++ object per STEP entity, registering each via id; pass 2 walks the
-   list again calling Load() on each, which dereferences forward refs
-   through the id->object map.  When a referenced id was never created
-   in pass 1 (for instance because its complex-entity record is
-   syntactically malformed and pass 1 silently skipped it), pass 2 sets
-   STEPWrapper.entity_status[id] = STEP_LOAD_ERROR for the *referencing*
-   entity but the upstream caller does not check entity_status for the
-   shells/solids it consumes.  The shape-definition path completes,
-   bu_log emits "WARNING: <name> is not valid" once, and the resulting
-   .g file is missing the entire face/edge/curve subgraph that depended
-   on the broken reference - with no obvious link back to the offending
-   id.  The perf angle: on large assemblies the user only notices the
-   missing geometry after a multi-minute import; the diagnostic stream
-   is too noisy to spot the specific WARNING line.
-   Sources: BRL-CAD src/conv/step/STEPWrapper.cpp - WARNING is not valid
-   message; entity_status[id] = STEP_LOAD_ERROR set but not propagated. */
+/* Pf037: EDGE_CURVE with dangling #999 forward reference (silent truncation) */
 HEADER;
-FILE_DESCRIPTION(
-  ('Pf037 - two-pass loader silently elides subgraph rooted at malformed forward ref'),
-  '2;1');
-FILE_NAME('Pf037.stp','2026-05-02T00:00:00',('cad-research-suite'),(''),
-  'cad-research-suite','','');
+FILE_DESCRIPTION(('Pf037'),'2;1');
+FILE_NAME('Pf037.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
 FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-/* A minimal cube-ish setup; one EDGE_CURVE references id #999 which is
-   never defined in this file - pass 1 sees a forward ref, pass 2's
-   Load() hits the gap. */
-#10=CARTESIAN_POINT('p0',(0.0,0.0,0.0));
-#11=CARTESIAN_POINT('p1',(1.0,0.0,0.0));
-#12=CARTESIAN_POINT('p2',(1.0,1.0,0.0));
-#13=CARTESIAN_POINT('p3',(0.0,1.0,0.0));
-#20=VERTEX_POINT('',#10);
-#21=VERTEX_POINT('',#11);
-#22=VERTEX_POINT('',#12);
-#23=VERTEX_POINT('',#13);
-#30=DIRECTION('',(1.0,0.0,0.0));
-#31=DIRECTION('',(0.0,1.0,0.0));
-#32=VECTOR('',#30,1.0);
-#33=VECTOR('',#31,1.0);
-#34=LINE('',#10,#32);
-#35=LINE('',#11,#33);
-#36=LINE('',#13,#32);
-#37=LINE('',#10,#33);
-/* Defect: this EDGE_CURVE references basis curve #999 which never appears
-   in the DATA section.  Pass 1 instantiates the EDGE_CURVE object; pass 2
-   tries to dereference #999, sets entity_status to STEP_LOAD_ERROR but
-   the parent face/shell consumer never checks. */
-#40=EDGE_CURVE('e_a',#20,#21,#999,.T.);
-#41=EDGE_CURVE('e_b',#21,#22,#35,.T.);
-#42=EDGE_CURVE('e_c',#23,#22,#36,.T.);
-#43=EDGE_CURVE('e_d',#20,#23,#37,.T.);
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=DIRECTION('',(0.0,0.0,1.0));
+#3=DIRECTION('',(1.0,0.0,0.0));
+#4=AXIS2_PLACEMENT_3D('',#1,#2,#3);
+#5=PLANE('',#4);
+#6=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#7=CARTESIAN_POINT('',(1.0,0.0,0.0));
+#8=VERTEX_POINT('',#6);
+#9=VERTEX_POINT('',#7);
+#10=DIRECTION('',(1.0,0.0,0.0));
+#11=VECTOR('',#10,1.0);
+#12=LINE('',#6,#11);
+#13=EDGE_CURVE('',#8,#9,#12,.T.);
+#14=ORIENTED_EDGE('',$,$,#13,.T.);
+#15=EDGE_LOOP('',(#14));
+#16=FACE_OUTER_BOUND('',#15,.T.);
+#17=ADVANCED_FACE('',(#16),#5,.T.);
+#18=OPEN_SHELL('',(#17));
+#19=SHELL_BASED_SURFACE_MODEL('',(#18));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('Pf037','Pf037','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#19),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
+#9063=EDGE_CURVE('dangling_subgraph',#10,#11,#999,.T.);
 ENDSEC;
 END-ISO-10303-21;

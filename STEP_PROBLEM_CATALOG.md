@@ -31904,3 +31904,119 @@ exercised against CGAL PMP / MeshFix.
 - **Byte assertion**: contains(b'GEOMETRIC_ITEM_SPECIFIC_USAGE')
 - **Tier-3 assertion**: load == "ok"
 - **Model impact**: PMI annotations attach to the wrong feature on import; downstream tolerance checks reference the wrong geometry.
+
+### Wr055 — Writer regression flips half of ORIENTED_EDGE directions
+- **Category**: §12.13 writer-pathology (sub-class: edge-orientation systematic-flip)
+- **Sources**: Pattern-mined from solvespace/solvespace#1601 (LGPL-clean — pattern only, no bytes copied). User-reported reproducer: Solvespace commit `bb6cc1a0..d1b52cd6` introduced a regression where ORIENTED_EDGE flags came out reversed for half the edges in a loop. Kisters 3DViewStation rendered the result as a 3D mess; some readers accept it silently.
+- **Description**: An EDGE_LOOP that should have all `.T.` ORIENTED_EDGE flags has every other entry flipped to `.F.`. The geometric path is the same (the underlying EDGE_CURVE endpoints don't change), but the loop's directed-traversal sense is broken: receivers that follow the orientation flags end up with face normals pointing every which way. Distinct from Tsh012 (.U. seam flag) and Wr054 (single-face inversion) — this is a *systematic* half-population reversal.
+- **Reproducer recipe**: 4 ORIENTED_EDGEs in a loop with flags `(.T., .F., .T., .F.)` where the loop should be all `.T.` for a consistent CCW traversal.
+- **Expected kernel behavior**: validate edge-loop orientation consistency before emit; check loop traversal forms a closed cycle in either direction.
+- **Notes**: Synonyms: "Solvespace STEP wrong edge direction", "half flipped ORIENTED_EDGE writer bug", "STEP edges reversed every other", "3DViewStation renders STEP wrong after Solvespace", "writer flips edge direction systematically".
+- **Byte assertion**: contains(b'ORIENTED_EDGE')
+- **Byte assertion**: matches(rb'\.F\.')
+- **Tier-3 assertion**: load == "ok"
+- **Model impact**: Receivers that compute face normals from loop traversal get inconsistent results — half the faces point "in" and half point "out"; mesh-output renders unlit / unselectable.
+
+### Wr056 — Writer aliases geometrically-identical entities (shared substructure)
+- **Category**: §12.13 writer-pathology (sub-class: writer-dedup-aliasing)
+- **Sources**: Pattern-mined from solvespace/solvespace#1589 (LGPL-clean — pattern only, no bytes copied). User-reported: Solvespace's "Export volumes" path deliberately collapses geometrically-identical instances by reference rather than emitting per-instance copies; one entity becomes the alias for many call-sites.
+- **Description**: Two (or more) MAPPED_ITEMs point at the same REPRESENTATION_MAP via a single underlying definition. The writer treats geometrically-identical surfaces as a single shared entity, so any mutation (post-emit edit or downstream healer) propagates to every alias. Receivers that mutate one instance and expect the others independent are surprised.
+- **Reproducer recipe**: one REPRESENTATION_MAP referenced by two distinct MAPPED_ITEM call-sites.
+- **Expected kernel behavior**: surface the aliasing in the catalog tier-3 introspection (`n_unique_surfaces` vs `n_surface_references`); document writer policy.
+- **Notes**: Synonyms: "Solvespace exported duplicated entities aliased", "STEP writer aliases shared substructure", "MAPPED_ITEM shared one map", "writer dedup creates aliasing", "shared-substructure mutation propagates".
+- **Byte assertion**: count(b'MAPPED_ITEM') >= 2
+- **Byte assertion**: contains(b'REPRESENTATION_MAP')
+- **Tier-3 assertion**: load == "ok"
+- **Model impact**: Geometric integrity is correct on read; semantic integrity breaks when downstream code assumes each MAPPED_ITEM is independent. Round-trip through a healing pipeline can drop "duplicate" copies that were really shared aliases.
+
+### Wr057 — Big-endian (s390x) writer emits empty STEP without diagnostic
+- **Category**: §12.13 writer-pathology (sub-class: architecture-class endianness bug)
+- **Sources**: Pattern-mined from solvespace/solvespace#1264 (LGPL-clean — pattern only, no bytes copied). User-reported reproducer: Solvespace on s390x emits `SHAPE_REPRESENTATION` with an empty items list — "no surfaces to export" — without any diagnostic.
+- **Description**: The writer's surface-collection pass reads a structure whose byte-order was assumed little-endian; on s390x, the iteration count returns garbage and the writer concludes there are no surfaces. The resulting file is structurally valid but semantically empty.
+- **Reproducer recipe**: `SHAPE_REPRESENTATION('s390x_empty',(),#9005)` (empty items).
+- **Expected kernel behavior**: assert non-empty before emit; fail visibly when no surfaces were collected.
+- **Notes**: Synonyms: "Solvespace s390x STEP empty", "no surfaces to export STEP", "big-endian STEP writer regression", "Debian s390x STEP regression", "STEP writer silent empty on big-endian".
+- **Byte assertion**: contains(b'SHAPE_REPRESENTATION')
+- **Byte assertion**: matches(rb'SHAPE_REPRESENTATION\([^)]*\(\)\s*,')
+- **Tier-3 assertion**: load == "ok"
+- **Model impact**: Downstream pipeline thinks the export succeeded; an entire model is silently lost.
+
+### Lh049 — Big-endian / s390x byte-order in OCCT wrapper drops shapes
+- **Category**: §12.1b header (sub-class: architecture-class endianness)
+- **Sources**: Pattern-mined from trimesh/cascadio#2251 (LGPL-clean — pattern only, no bytes copied). User-reported reproducer: cascadio tests fail on s390x with wrong endianness in OCCT binding's entity-decode path.
+- **Description**: Distinct from Wr057 — this is the *reader side* of the same architecture class. The OCCT wrapper's entity-table reader assumes little-endian on disk; on big-endian hosts it reads malformed entity-IDs and drops shapes from the data section. The file content is well-formed; the wrapper layer's byte-order assumption is wrong.
+- **Reproducer recipe**: `REPRESENTATION_RELATIONSHIP('endian_drop','',#9005,#9005)` — a self-referencing rep-rel that the wrapper drops on big-endian.
+- **Expected kernel behavior**: explicit endianness handling in the wrapper's binary buffers; CI matrix on at least one big-endian arch.
+- **Notes**: Synonyms: "cascadio endianness s390x", "OCCT wrapper big-endian byte-order", "STEP shapes dropped on big-endian", "cascadio tests fail s390x wrong endianness", "OCCT binding endian bug".
+- **Byte assertion**: contains(b'REPRESENTATION_RELATIONSHIP')
+- **Tier-3 assertion**: load == "ok"
+- **Model impact**: A receiver on big-endian arch silently drops shapes — downstream pipeline sees fewer entities than were authored.
+
+### Wr058 — XCAF → STEP export crashes on umlaut in label
+- **Category**: §12.13 writer-pathology (sub-class: encoding crash on emit)
+- **Sources**: Pattern-mined from pythonocc/pythonocc-core#1278 (LGPL-clean — pattern only, no bytes copied). User-reported reproducer: setting a label name containing 'ü' crashes during XCAF→STEP export. Crash sourced to TCollection_ExtendedString conversion path.
+- **Description**: Distinct from Le022 (read-side encoding) — this is *writer-side* crash on non-ASCII content. The XCAF document holds a label with an umlaut; on emit, the writer's TCollection_ExtendedString → ascii conversion path dereferences a null and crashes the entire Python process.
+- **Reproducer recipe**: `PROPERTY_DEFINITION('umlaut_label','Schlüssel','',#9001)` (UTF-8 bytes for 'ü').
+- **Expected kernel behavior**: writer must encode-or-reject non-ASCII labels; never let a TCollection conversion crash become a process kill.
+- **Notes**: Synonyms: "pythonocc XCAF umlaut crash STEP export", "TCollection_ExtendedString crash on emit", "STEP writer crashes on non-ASCII label", "umlaut in PRODUCT name crashes", "label with ü crashes STEP write".
+- **Byte assertion**: contains(b'PROPERTY_DEFINITION')
+- **Byte assertion**: matches(rb'[\x80-\xff]')
+- **Tier-3 assertion**: load == "ok"
+- **Model impact**: Cannot export any model whose user-facing labels contain Western European characters; pipeline aborts mid-emit, partial output file.
+
+### Ad127 — Corrupted STEP with missing references kills Python process (OSD::SetSignal)
+- **Category**: §12.11 adversarial (sub-class: signal-handler escape)
+- **Sources**: Pattern-mined from pythonocc/pythonocc-core#1295 (LGPL-clean — pattern only, no bytes copied). User-reported reproducer: opening a corrupted STEP with missing references kills the Python process rather than raising a catchable exception. Root cause: OCC's OSD::SetSignal converts SIGSEGV into a process kill instead of a recoverable exception.
+- **Description**: Distinct from Ad117 (style-dangling) and Ad123 (PCURVE-dangling) — this fixture exercises the *catchability gap*. OCC's signal handler design means that any null-deref on a STEP read becomes process-fatal even when the user wrote `try: ... except Exception:`. A dangling layer-assignment reference is the simplest reproducer.
+- **Reproducer recipe**: `PRESENTATION_LAYER_ASSIGNMENT('kill_python','#9999 dangling',(#9999))` where `#9999` does not exist.
+- **Expected kernel behavior**: convert null-derefs in STEP read paths into recoverable exceptions; reserve OSD::SetSignal for truly-uncatchable kernel state.
+- **Notes**: Synonyms: "pythonocc STEP missing ref kills Python", "OSD::SetSignal escapes Python try/except", "STEP crash kills process not exception", "missing references kills python OCC", "OCC signal handler escape on STEP read".
+- **Byte assertion**: contains(b'PRESENTATION_LAYER_ASSIGNMENT')
+- **Tier-3 assertion**: load == "ok"
+- **Model impact**: Production pipeline cannot defend against a single broken file by wrapping reads in try/except; whole worker process dies.
+
+### Wr059 — STEP→BREP→STEP round-trip inflates cylinder analytic surface into B-spline
+- **Category**: §12.13 writer-pathology (sub-class: analytic-to-NURBS-inflation)
+- **Sources**: Pattern-mined from pythonocc/pythonocc-core#661 (LGPL-clean — pattern only, no bytes copied). User-reported reproducer: a cylinder authored as analytic CYLINDRICAL_SURFACE comes out as a B_SPLINE_SURFACE_WITH_KNOTS after BREP round-trip, even when the source had clean analytic geometry.
+- **Description**: The BREP intermediate loses the analytic-surface metadata; on re-export, the OCCT writer reconstructs the surface as a B-spline approximation rather than an analytic CYLINDRICAL_SURFACE. The geometry is *approximately* preserved but the parameterization, derivatives, and downstream meshing all change. Distinct from Wr053 (torus-fused) because the source surface was a clean analytic, not a fused solid.
+- **Reproducer recipe**: a B_SPLINE_SURFACE_WITH_KNOTS with degree-1 control net approximating a cylinder, replacing what should be a CYLINDRICAL_SURFACE.
+- **Expected kernel behavior**: BREP intermediate must preserve analytic-surface metadata; writer must prefer analytic emit when the surface admits one.
+- **Notes**: Synonyms: "pythonocc STEP round-trip cylinder spline", "STEP→BREP→STEP analytic surface lost", "cylinder becomes B-spline after round-trip", "OCC writer inflates analytic to NURBS", "STEP cylinder NURBS approximation after round-trip".
+- **Byte assertion**: contains(b'B_SPLINE_SURFACE_WITH_KNOTS')
+- **Tier-3 assertion**: load == "ok"
+- **Model impact**: Downstream CAM toolpaths use NURBS sampling rather than analytic cylindrical math; tolerances drop; file size grows.
+
+### Wr060 — Solidworks AP214 → OCCT version upgrade mis-locates surfaces
+- **Category**: §12.13 writer-pathology (sub-class: receiver-side version regression)
+- **Sources**: Pattern-mined from pythonocc/pythonocc-core#794 (LGPL-clean — pattern only, no bytes copied). User-reported reproducer: STEP files written by Solidworks AP214 import fine under OCCT 0.18.2; under OCCT 7.4.0 the same files come out with surfaces offset by a non-zero translation. The bytes are identical; the receiver's regression is the defect.
+- **Description**: A SOLIDWORKS-shape STEP file uses a specific AXIS2_PLACEMENT_3D location form that the new OCCT reader interprets differently. The result is that a PLANE at (10, 0, 0) gets placed at (10 + δ, 0, 0) in the loaded shape.
+- **Reproducer recipe**: PLANE referenced through an AXIS2_PLACEMENT_3D at (10.0, 0.0, 0.0).
+- **Expected kernel behavior**: writer-form compatibility across versions; reader version-pinning notes for vendor-specific writers.
+- **Notes**: Synonyms: "pythonocc OCC upgrade surface offset", "Solidworks AP214 STEP offset wrong", "OCC 0.18.2 → 7.4.0 STEP regression", "STEP surfaces moved after OCC upgrade", "vendor writer regression OCC upgrade".
+- **Byte assertion**: contains(b'PLANE')
+- **Byte assertion**: contains(b'AXIS2_PLACEMENT_3D')
+- **Tier-3 assertion**: load == "ok"
+- **Model impact**: Same file produces a different model depending on receiver version; round-trip stability is lost across kernel upgrades.
+
+### Pf039 — STEP→GLB infinite loop on assembly traversal (self-referencing NAUO)
+- **Category**: §12.10 perf (sub-class: cycle-undetected assembly)
+- **Sources**: Pattern-mined from trimesh/cascadio#19 (LGPL-clean — pattern only, no bytes copied). User-reported reproducer: cascadio "stuck on assembly STEP" — infinite loop because the assembly graph contains a cycle the traversal doesn't detect.
+- **Description**: A NEXT_ASSEMBLY_USAGE_OCCURRENCE references the same PRODUCT as both parent and child — the assembly graph has a self-loop. cascadio's traversal (depth-first, no visited-set) never terminates.
+- **Reproducer recipe**: `NEXT_ASSEMBLY_USAGE_OCCURRENCE('self_loop','','',#9001,#9001,$)` (same PRODUCT on both ends).
+- **Expected kernel behavior**: maintain a visited-set during assembly traversal; reject cycles with a diagnostic.
+- **Notes**: Synonyms: "cascadio assembly infinite loop", "STEP assembly traversal stuck", "cycle in assembly graph cascadio", "self-referencing NAUO stuck", "STEP-to-GLB stuck on assembly".
+- **Byte assertion**: contains(b'NEXT_ASSEMBLY_USAGE_OCCURRENCE')
+- **Tier-3 assertion**: load == "ok"
+- **Model impact**: Conversion pipeline hangs indefinitely; CI / batch processing wedges.
+
+### Pf038 — STEP→GLB OOM, memory not released during translation pipeline
+- **Category**: §12.10 perf (sub-class: per-instance tessellation cache)
+- **Sources**: Pattern-mined from trimesh/cascadio#22 (LGPL-clean — pattern only, no bytes copied). User-reported reproducer: cascadio leaks memory until OOM when converting STEP→GLB.
+- **Description**: A wide-fanout assembly (one source shape, many MAPPED_ITEM instances) causes the converter's tessellation cache to grow per-instance rather than sharing the source mesh. The cache is never garbage-collected during translation, so memory grows linearly with instance count until the kernel OOMs.
+- **Reproducer recipe**: one REPRESENTATION_MAP + N MAPPED_ITEMs (N ~ 8 here, the real reports were thousands).
+- **Expected kernel behavior**: share tessellation cache across instances of the same source; release cache pages when no longer reachable.
+- **Notes**: Synonyms: "cascadio OOM STEP-to-GLB", "STEP conversion memory leak", "tessellation cache not shared", "OOM on assembly STEP conversion", "memory grows per instance".
+- **Byte assertion**: count_entity_def(b'MAPPED_ITEM') >= 8
+- **Byte assertion**: contains(b'REPRESENTATION_MAP')
+- **Tier-3 assertion**: load == "ok"
+- **Model impact**: Cannot convert assemblies above a per-process memory budget; pipeline crashes mid-batch.
