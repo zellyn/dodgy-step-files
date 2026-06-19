@@ -183,17 +183,7 @@ new flaky-CI surface.
 
 ## Smaller queued items
 
-### Q1 — 23 CONFIRMED_WEAK fixtures, bespoke regens
-
-**Why:** Present but not crisp. These demonstrate the claim weakly — a
-better fixture would be a clearer reproducer. Lower priority than the
-three Bs above because they're not blocking anything.
-
-**Status:** Listed in `audit/confirmed_weak.txt`.
-**Last touched:** 2026-06-18.
-
-**Plan:** Take per-fixture as time permits. Use the same builder pattern
-as the round-1 + round-2 INVALID regens. Each fixture: ~30 min.
+### Q1 — 23 CONFIRMED_WEAK fixtures, bespoke regens — DONE
 
 ### Q2 — Stale-doc refresh
 

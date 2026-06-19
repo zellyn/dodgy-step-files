@@ -16,10 +16,14 @@ Append newest at the top.
 - **B2 batch 3: 517 tier-3 promotions for §12.3 + §12.4.** Coverage
   1309 → 1689 (+380); entries 727 → 1244 (32% → 54%). Includes 256
   n_faces_total count assertions on real geometry. Commit `68631c9`.
-- **Q1: regen 6 weak fixtures (Gn134, Gn157, Gn155, Gp081, Gs151, Gs177).**
-  23 → 17 in queue. Each rebuild uses a correct entity form
-  (rational B-spline, periodic cylindrical/toroidal, proper FACE_BOUND
-  count) so the catalog claim is actually verifiable from geometry.
+- **Q1 COMPLETE: all 23 CONFIRMED_WEAK fixtures regen'd.** Final batches:
+  Gn065 / Gn089 / Gp148 / N087 (commit `53db2ce`),
+  Gs072 / Gs135 / N154 / N155 (commit `74f3727`),
+  Tfa082 / Tfa171 / Tfa237 / Tsh022 (commit `718d9e4`),
+  Tsh082 / Twi194 / Twi240 / Twi250 (commit `9e9d734`).
+- **Q1 first six (Gn134, Gn157, Gn155, Gp081, Gs151, Gs177).** Each rebuild
+  uses a correct entity form (rational B-spline, periodic cyl/torus,
+  proper FACE_BOUND count) so the catalog claim is verifiable.
 - **Q2: QUALITY_DASHBOARD.md top-line stats refresh.** Replaced stale
   1282/831/241 numbers with current 2302/1309/727. Other rows still
   reflect old runs; documented at bottom. Commit `ab4e0e2`.
