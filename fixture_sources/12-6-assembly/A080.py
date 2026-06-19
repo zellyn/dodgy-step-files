@@ -75,3 +75,14 @@ sss = f._emit_raw(f"SURFACE_SIDE_STYLE('',(#{ssfa.eid}))")
 ssu = f._emit_raw(f"SURFACE_STYLE_USAGE(.BOTH.,#{sss.eid})")
 psa = f._emit_raw(f"PRESENTATION_STYLE_ASSIGNMENT((#{ssu.eid}))")
 f._emit_raw(f"STYLED_ITEM('branch_styling',(#{psa.eid}),#{face.eid})")
+
+# Second STYLED_ITEM + COLOUR_RGB for the Leaf branch (the catalog
+# claim is about per-branch colours, plural).
+colour2 = f._emit_raw("COLOUR_RGB('leaf_color',0.2,0.5,0.7)")
+fasc2 = f._emit_raw(f"FILL_AREA_STYLE_COLOUR('',#{colour2.eid})")
+fas2 = f._emit_raw(f"FILL_AREA_STYLE('',(#{fasc2.eid}))")
+ssfa2 = f._emit_raw(f"SURFACE_STYLE_FILL_AREA(#{fas2.eid})")
+sss2 = f._emit_raw(f"SURFACE_SIDE_STYLE('',(#{ssfa2.eid}))")
+ssu2 = f._emit_raw(f"SURFACE_STYLE_USAGE(.BOTH.,#{sss2.eid})")
+psa2 = f._emit_raw(f"PRESENTATION_STYLE_ASSIGNMENT((#{ssu2.eid}))")
+f._emit_raw(f"STYLED_ITEM('leaf_styling',(#{psa2.eid}),#{face.eid})")
