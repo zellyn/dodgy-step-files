@@ -110,9 +110,12 @@ LGPL-clean because we synthesize pattern-matched fixtures, not copy bytes.
 
 **Status:** Wave-1 (FreeCAD/OCCT/IfcOpenShell) done — 17 NOVEL synthesized.
 Wave-2 (solvespace/pythonocc-core/cascadio/3MFConsortium) done — 10 NOVEL
-synthesized; trimesh-direct and 3MFConsortium saturated. Next: wave-3
-(cax-if PDM Implementor Forum + libIGES + blender STEP gateway) via web
-mining since gh API isn't enough.
+synthesized; trimesh-direct and 3MFConsortium saturated. Wave-3
+(KiCad/CadQuery/OCE/FreeCAD-extended/KiBot/Blender-addon) done — 8 NOVEL
+synthesized; 9.3% yield (down from wave-2's 10.5% and wave-1's 24.6%) —
+saturation signal. Next: wave-4 pivot to commercial-tracker bug-fix
+changelogs (Solid Edge, NX, Inventor) or academic CAD-interop papers —
+deferred since FOSS surface is saturating.
 **Last touched:** 2026-06-19.
 
 **Plan:**
