@@ -27,6 +27,13 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y --no-install-recommends libglu1-mesa
 
+      # Cross-kernel oracle: Solvespace gives an independent STEP parser
+      # (not OCCT-backed) for kernel-disagreement detection. See
+      # CROSS_KERNEL_SURVEY.md for the survey + decision.
+      - name: Install Solvespace
+        run: sudo apt-get install -y --no-install-recommends solvespace
+        continue-on-error: true   # don't block CI if the package is unavailable
+
       - name: Set up uv
         uses: astral-sh/setup-uv@v3
         with:
