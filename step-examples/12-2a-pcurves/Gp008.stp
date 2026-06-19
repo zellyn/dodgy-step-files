@@ -1,59 +1,57 @@
 ISO-10303-21;
-/* Gp008 - Pcurve oscillations producing wire-intersector corruption
- * Defect: a B_SPLINE_CURVE_WITH_KNOTS pcurve whose control polygon has
- * high-frequency oscillations near the boundary of its host BSpline
- * surface. ShapeFix_WireIntersector mis-detects intersections because
- * the curve has many zero-crossings of curvature. */
+/* Gp008: pcurve oscillations producing wire-intersector corruption */
 HEADER;
-FILE_DESCRIPTION(('Gp008 test case','Pcurve oscillations corrupt wire intersector'),'2;1');
-FILE_NAME('Gp008.stp','2026-04-27T00:00:00',(''),(''),'auto-generated','','');
-FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+FILE_DESCRIPTION(('Gp008'),'2;1');
+FILE_NAME('Gp008.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('automotive_design');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
-#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
-#11=DIRECTION('',(0.0,0.0,1.0));
-#12=DIRECTION('',(1.0,0.0,0.0));
-#13=AXIS2_PLACEMENT_3D('',#10,#11,#12);
-#20=PLANE('',#13);
-/* 3D curve: smooth line from (0,0,0) to (1,0,0) */
-#21=CARTESIAN_POINT('',(0.0,0.0,0.0));
-#22=CARTESIAN_POINT('',(1.0,0.0,0.0));
-#23=B_SPLINE_CURVE_WITH_KNOTS('',1,(#21,#22),.POLYLINE_FORM.,.F.,.F.,
-  (2,2),(0.0,1.0),.UNSPECIFIED.);
-#40=VERTEX_POINT('',#21);
-#41=VERTEX_POINT('',#22);
-/* Defect: 2D B-spline pcurve with oscillating control polygon
- * Endpoints are (0,0) and (1,0), but interior control points ride
- * up and down with high frequency producing many curvature reversals. */
-#71=CARTESIAN_POINT('',(0.0,0.0));
-#72=CARTESIAN_POINT('',(0.1,0.05));
-#73=CARTESIAN_POINT('',(0.2,-0.05));
-#74=CARTESIAN_POINT('',(0.3,0.05));
-#75=CARTESIAN_POINT('',(0.4,-0.05));
-#76=CARTESIAN_POINT('',(0.5,0.05));
-#77=CARTESIAN_POINT('',(0.6,-0.05));
-#78=CARTESIAN_POINT('',(0.7,0.05));
-#79=CARTESIAN_POINT('',(0.8,-0.05));
-#80=CARTESIAN_POINT('',(0.9,0.05));
-#81=CARTESIAN_POINT('',(1.0,0.0));
-#82=B_SPLINE_CURVE_WITH_KNOTS('',3,
-  (#71,#72,#73,#74,#75,#76,#77,#78,#79,#80,#81),
-  .UNSPECIFIED.,.F.,.F.,
-  (4,1,1,1,1,1,1,1,4),
-  (0.0,0.125,0.25,0.375,0.5,0.625,0.75,0.875,1.0),
-  .UNSPECIFIED.);
-#85=( GEOMETRIC_REPRESENTATION_CONTEXT(2)
-      PARAMETRIC_REPRESENTATION_CONTEXT()
-      REPRESENTATION_CONTEXT('parametric','2D') );
-#86=DEFINITIONAL_REPRESENTATION('',(#82),#85);
-#87=PCURVE('',#20,#86);
-#50=SURFACE_CURVE('',#23,(#87),.PCURVE_S1.);
-#60=EDGE_CURVE('',#40,#41,#50,.T.);
-#61=ORIENTED_EDGE('',*,*,#60,.T.);
-#62=EDGE_LOOP('',(#61));
-#63=FACE_OUTER_BOUND('',#62,.T.);
-#64=ADVANCED_FACE('',(#63),#20,.T.);
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=DIRECTION('',(0.0,0.0,1.0));
+#3=DIRECTION('',(1.0,0.0,0.0));
+#4=AXIS2_PLACEMENT_3D('',#1,#2,#3);
+#5=PLANE('',#4);
+#6=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#7=CARTESIAN_POINT('',(1.0,0.0,0.0));
+#8=VERTEX_POINT('',#6);
+#9=VERTEX_POINT('',#7);
+#10=B_SPLINE_CURVE_WITH_KNOTS('',1,(#6,#7),.POLYLINE_FORM.,.F.,.F.,(2,2),(0.0,1.0),.UNSPECIFIED.);
+#11=CARTESIAN_POINT('',(0.0,0.0));
+#12=CARTESIAN_POINT('',(0.1,0.05));
+#13=CARTESIAN_POINT('',(0.2,-0.05));
+#14=CARTESIAN_POINT('',(0.3,0.05));
+#15=CARTESIAN_POINT('',(0.4,-0.05));
+#16=CARTESIAN_POINT('',(0.5,0.05));
+#17=CARTESIAN_POINT('',(0.6,-0.05));
+#18=CARTESIAN_POINT('',(0.7,0.05));
+#19=CARTESIAN_POINT('',(0.8,-0.05));
+#20=CARTESIAN_POINT('',(0.9,0.05));
+#21=CARTESIAN_POINT('',(1.0,0.0));
+#22=B_SPLINE_CURVE_WITH_KNOTS('',3,(#11,#12,#13,#14,#15,#16,#17,#18,#19,#20,#21),.UNSPECIFIED.,.F.,.F.,(4,1,1,1,1,1,1,1,4),(0.0,0.125,0.25,0.375,0.5,0.625,0.75,0.875,1.0),.UNSPECIFIED.);
+#23=(GEOMETRIC_REPRESENTATION_CONTEXT(2)PARAMETRIC_REPRESENTATION_CONTEXT()REPRESENTATION_CONTEXT('','2D'));
+#24=DEFINITIONAL_REPRESENTATION('',(#22),#23);
+#25=PCURVE('',#5,#24);
+#26=SURFACE_CURVE('',#10,(#25),.PCURVE_S1.);
+#27=EDGE_CURVE('',#8,#9,#26,.T.);
+#28=ORIENTED_EDGE('',$,$,#27,.T.);
+#29=EDGE_LOOP('',(#28));
+#30=FACE_OUTER_BOUND('',#29,.T.);
+#31=ADVANCED_FACE('',(#30),#5,.T.);
+#32=OPEN_SHELL('',(#31));
+#33=SHELL_BASED_SURFACE_MODEL('',(#32));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('Gp008','Gp008','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#33),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
 ENDSEC;
 END-ISO-10303-21;

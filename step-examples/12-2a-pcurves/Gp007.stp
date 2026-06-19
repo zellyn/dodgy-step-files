@@ -1,55 +1,52 @@
 ISO-10303-21;
-/* Gp007 - Pcurve range incompatible with edge range (CheckPCurveRange)
- * Defect: the pcurve in 2D is a TRIMMED_CURVE whose trim parameters
- * are [0.0, 2.5], but the underlying basis B-spline has its natural
- * domain explicitly declared as [0.0, 1.0]. The trim band [1.0, 2.5]
- * lies outside the pcurve's basis-curve domain, so evaluation on that
- * portion is undefined. ShapeAnalysis_Edge::CheckPCurveRange flags it. */
+/* Gp007: edge parameter range outside pcurve domain */
 HEADER;
-FILE_DESCRIPTION(('Gp007 test case','Pcurve range incompatible with edge range'),'2;1');
-FILE_NAME('Gp007.stp','2026-04-27T00:00:00',(''),(''),'auto-generated','','');
-FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+FILE_DESCRIPTION(('Gp007'),'2;1');
+FILE_NAME('Gp007.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('automotive_design');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
-#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
-#11=DIRECTION('',(0.0,0.0,1.0));
-#12=DIRECTION('',(1.0,0.0,0.0));
-#13=AXIS2_PLACEMENT_3D('',#10,#11,#12);
-/* Finite planar surface */
-#20=PLANE('',#13);
-/* 3D curve: a finite B-spline whose natural parameter domain is [0,1] */
-#21=CARTESIAN_POINT('',(0.0,0.0,0.0));
-#22=CARTESIAN_POINT('',(1.0,0.0,0.0));
-#23=B_SPLINE_CURVE_WITH_KNOTS('',1,(#21,#22),.POLYLINE_FORM.,.F.,.F.,
-  (2,2),(0.0,1.0),.UNSPECIFIED.);
-#40=VERTEX_POINT('',#21);
-#41=VERTEX_POINT('',#22);
-/* 2D pcurve basis: a degree-1 B-spline in UV with explicit knots [0,1].
- * Natural parameter domain is therefore [0.0, 1.0]. */
-#71=CARTESIAN_POINT('',(0.0,0.0));
-#72=CARTESIAN_POINT('',(1.0,0.0));
-#73=B_SPLINE_CURVE_WITH_KNOTS('',1,(#71,#72),.POLYLINE_FORM.,.F.,.F.,
-  (2,2),(0.0,1.0),.UNSPECIFIED.);
-/* Defect-bearing entity: TRIMMED_CURVE wraps the pcurve basis with
- * trim parameters [0.0, 2.5]. trim_2 = 2.5 lies OUTSIDE the basis
- * domain [0.0, 1.0]; evaluation past parameter 1.0 is undefined. */
-#80=PARAMETER_VALUE(0.0);
-#81=PARAMETER_VALUE(2.5);
-#82=TRIMMED_CURVE('',#73,(#80),(#81),.T.,.PARAMETER.);
-#75=( GEOMETRIC_REPRESENTATION_CONTEXT(2)
-      PARAMETRIC_REPRESENTATION_CONTEXT()
-      REPRESENTATION_CONTEXT('parametric','2D') );
-#70=DEFINITIONAL_REPRESENTATION('',(#82),#75);
-#76=PCURVE('',#20,#70);
-#50=SURFACE_CURVE('',#23,(#76),.PCURVE_S1.);
-/* EDGE_CURVE references the SURFACE_CURVE whose pcurve carries the
- * out-of-domain trim. CheckPCurveRange must reject [0,2.5] vs [0,1]. */
-#60=EDGE_CURVE('',#40,#41,#50,.T.);
-#61=ORIENTED_EDGE('',*,*,#60,.T.);
-#62=EDGE_LOOP('',(#61));
-#63=FACE_OUTER_BOUND('',#62,.T.);
-#64=ADVANCED_FACE('',(#63),#20,.T.);
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=DIRECTION('',(0.0,0.0,1.0));
+#3=DIRECTION('',(1.0,0.0,0.0));
+#4=AXIS2_PLACEMENT_3D('',#1,#2,#3);
+#5=PLANE('',#4);
+#6=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#7=CARTESIAN_POINT('',(1.0,0.0,0.0));
+#8=VERTEX_POINT('',#6);
+#9=VERTEX_POINT('',#7);
+#10=B_SPLINE_CURVE_WITH_KNOTS('',1,(#1_p_start,#1_p_end),.POLYLINE_FORM.,.F.,.F.,(2,2),(0.0,1.0),.UNSPECIFIED.);
+#11=B_SPLINE_CURVE_WITH_KNOTS('',1,(#6,#7),.POLYLINE_FORM.,.F.,.F.,(2,2),(0.0,1.0),.UNSPECIFIED.);
+#12=CARTESIAN_POINT('',(0.0,0.0));
+#13=CARTESIAN_POINT('',(1.0,0.0));
+#14=B_SPLINE_CURVE_WITH_KNOTS('',1,(#12,#13),.POLYLINE_FORM.,.F.,.F.,(2,2),(0.0,1.0),.UNSPECIFIED.);
+#15=PARAMETER_VALUE(0.0);
+#16=PARAMETER_VALUE(2.5);
+#17=TRIMMED_CURVE('',#14,(#15),(#16),.T.,.PARAMETER.);
+#18=(GEOMETRIC_REPRESENTATION_CONTEXT(2)PARAMETRIC_REPRESENTATION_CONTEXT()REPRESENTATION_CONTEXT('','2D'));
+#19=DEFINITIONAL_REPRESENTATION('',(#17),#18);
+#20=PCURVE('',#5,#19);
+#21=SURFACE_CURVE('',#11,(#20),.PCURVE_S1.);
+#22=EDGE_CURVE('',#8,#9,#21,.T.);
+#23=ORIENTED_EDGE('',$,$,#22,.T.);
+#24=EDGE_LOOP('',(#23));
+#25=FACE_OUTER_BOUND('',#24,.T.);
+#26=ADVANCED_FACE('',(#25),#5,.T.);
+#27=OPEN_SHELL('',(#26));
+#28=SHELL_BASED_SURFACE_MODEL('',(#27));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('Gp007','Gp007','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#28),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
 ENDSEC;
 END-ISO-10303-21;
