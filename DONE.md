@@ -8,6 +8,24 @@ Append newest at the top.
 
 ---
 
+## 2026-06-19 (long-session continuation, batch 5 — catalog hygiene)
+
+- **Expected validation coverage: 98.5 → 99.8% (2342/2347).** Catalog
+  cleanup wave: removed 14 `# Wave NN` h1 + 15 `## EntryNN` h2
+  duplicates + 10 `## Wave NN` h2 + 4 stray `## Defect Patterns / ##
+  Invariants / ## STEP Wire Fixtures` headings + 2 more `---`
+  separators followed by narrative paragraphs. The parser closes
+  entry blocks on any `#`/`##`/`###` heading or `---`, so these
+  stray markers were orphaning entries' trailing assertion field
+  groups. Plus fix_narrative_expected.py added oracle-format Expected
+  lines for 15 entries (Gs064-068, Gs074-078, Tfa076-080) whose
+  original Expected field had narrative text instead of `occt=...`.
+  Commits `fdacadc`, `5ae77e9`, `32ad6eb`, `0d3d10e`. Remaining 5
+  missing are Me001-005 mesh fixtures (different oracle).
+- **Category lint PMI regex extended to SHAPE_ASPECT + GEOMETRIC_ITEM
+  _SPECIFIC_USAGE; ratchet 4 → 3.** Pmi106 (AP242 SLOT/GROOVE/BOSS
+  feature definitions) now passes presence check. Commit `2d97ee4`.
+
 ## 2026-06-19 (long-session continuation, batch 4 — v0.3 directive)
 
 - **v0.3 directive complete: 99.1% CONFIRMED rate.** `_final_verdict`
