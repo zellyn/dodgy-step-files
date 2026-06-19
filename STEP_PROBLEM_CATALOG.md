@@ -21941,7 +21941,7 @@ Degree-3 Bezier curve (already in Bezier form). ConvertCurve2dToBezier should be
 ### Gn128 — ShapeAnalysis_Curve.IsClosed B-spline with-identical-knots-different-poles
 
 Periodic B-spline with knot parameters identical at boundaries but control poles differing by 1e-3. IsClosed checks knot equality only and reports true, but geometry gap persists at closure point.
-
+- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 ### Gn129 — Geom_BSplineSurface periodic-U-closure weight-extraction
 - **Category**: §12.2b NURBS
 - **Sources**: OCCT/see OCCT/v3
@@ -22050,7 +22050,7 @@ Periodic B-spline with knot parameters identical at boundaries but control poles
 - **Model impact**: Bounds mismatch in recursive Bezier conversion
 - **Fixture path**: step-examples/12-2b-nurbs/Gn138.stp
 - **Fixture kind**: scaffold
-
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
 ### Gn139 — TrimmedCurve Wrapping Periodic B-spline
 - **Category**: §12.2b NURBS
 - **Sources**: OCCT/v3 NURBS branches
@@ -29144,7 +29144,7 @@ Pcurve is HYPERBOLA with reversed edge orientation. FixReversed2d's reversal doe
 ### Gp125 — ShapeAnalysis_Edge.GetEndTangent2d at-trim-boundary
 
 Pcurve is TRIMMED_CURVE. GetEndTangent2d uses untrimmed-curve tangent at trim boundary, producing wrong direction.
-
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 ### Gp126 — ShapeAnalysis_Edge.CheckCurve3dWithPCurve plane-projection mismatch
 - **Category**: §12.2a pcurves
 - **Sources**: OCCT/ShapeAnalysis_Edge::CheckCurve3dWithPCurve
