@@ -147,6 +147,10 @@ def _check_empty_face_bounds(entry: dict, body: bytes) -> str | None:
 
 
 def lint_one(entry: dict) -> list[str]:
+    # §12.14 mesh fixtures live under mesh-examples/ and are JSON, not STEP.
+    # The Part-21-shaped checks below don't apply.
+    if entry.get("section") == "12.14":
+        return []
     fixture = EXAMPLES / entry["section_dir"] / f"{entry['id']}.stp"
     if not fixture.is_file():
         return [f"{entry['id']}: fixture file missing"]

@@ -129,11 +129,15 @@ def test_corpus_entity_match_under_threshold():
 def test_corpus_runs_on_every_canonical_entry():
     """Every canonical entry with a recipe should resolve to a fixture
     file under step-examples/. Catches new IDs whose prefix isn't in
-    the section map.
+    the section map. §12.14 mesh fixtures (Me*) live under mesh-examples/
+    in a non-STEP JSON format and are intentionally excluded.
     """
     catalog_text = CATALOG.read_text()
     unmapped = []
     for eid, _block in iter_canonical_entries(catalog_text):
+        # Skip §12.14 mesh entries — they aren't STEP fixtures.
+        if eid.startswith("Me") and eid[2:].isdigit():
+            continue
         fp = fixture_path_for_id(EXAMPLES, eid)
         if fp is None:
             unmapped.append(eid)
