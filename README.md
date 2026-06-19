@@ -102,18 +102,19 @@ Concretely, the cited surface includes:
 
 That total problem space is enormous — somewhere in the high thousands of distinct defect classes once fully enumerated.
 
-### Where we actually are (as of 2026-06-17)
+### Where we actually are (as of 2026-06-18)
 
 | Measure | Count |
 |---|---:|
-| Catalog entries (distinct defect classes documented) | ~2,287 |
-| Active fixtures on disk | ~2,200 |
+| Catalog entries (distinct defect classes documented) | 2,302 |
+| Active fixtures on disk | 2,309 |
 | Fixtures with `Part-21 validator: accept` (0 unintentional syntactic errors) | ~all non-framing |
 | Fixtures with `reject` matching an intentional defect claim (DanglingRef, GB18030, etc.) | 11 |
-| Fixtures with Python builder source under `fixture_sources/` | 66 |
-| Fixtures individually adversarially verified VALID (do they really demonstrate the claim?) | ~440 |
-| Catalog entries without a fixture yet (described, not synthesized) | ~800 |
-| Fixtures awaiting individual semantic verification | ~1,700 |
+| Fixtures with Python builder source under `fixture_sources/` | 82 |
+| **Fixtures individually adversarially verified VALID** (do they really demonstrate the claim?) | **2,280 (98%)** |
+| Fixtures with weak demonstration (present but not crisp) | 23 |
+| Fixtures with claim-vs-geometry mismatch (in regen queue) | 6 |
+| Fixtures awaiting individual semantic verification | 0 |
 | Historical quarantine (preserved as evidence; replaced in active corpus) | 84 + 66 |
 
 The catalog uses `### ID — title` for each entry. Numbers are best-effort current; re-run `python -m step_corpus._part21_validator --corpus` and `python -m step_corpus._corpus_consistency_lint` from the `validation/` directory to recompute.
@@ -123,7 +124,7 @@ The catalog uses `### ID — title` for each entry. Numbers are best-effort curr
 - **Mesh defects (MeshFix / CGAL PMP) are catalogued but not synthesized** into STEP fixtures. STEP isn't a mesh format, so this gap is structural, not just unfinished work; mesh defects need a parallel mesh-fixture format that doesn't exist here yet.
 - **OCCT branch coverage**: the v3 deep-pass enumerates 2058 implementation branches, of which the catalog currently has ~2,287 entries spanning many of them — but a substantial chunk of those entries describe related-or-overlapping defect classes, so true unique-branch coverage is lower than the raw count suggests.
 - **Other CAD codebases**: HOOPS, JT, IFC, Parasolid, ACIS — listed in `CODEBASE_LANDSCAPE.md` as worth auditing, mostly not yet deep-passed.
-- **Semantic verification gap**: most fixtures pass *structural* validation (the Part-21 validator says yes) but only ~20% have been individually attacked by an adversarial verifier asking "does the geometry *demonstrate* the catalog-claimed defect, or is it generic boilerplate?". The recent audit work is whittling this down, ~30 fixtures per cycle.
+- **Semantic verification gap (CLOSED, 2026-06-18)**: the corpus-wide adversarial sweep ran 100% sample coverage in two-pass Haiku→Sonnet verification. 98% of fixtures (2,280/2,309) demonstrate their claim crisply; the remaining 29 are either weak (23) or claim-vs-geometry mismatches (6 in regen queue at `audit/CONFIRMED_INVALID_REGEN_QUEUE.md`).
 - **Sender/receiver attribution**: many entries cite the OCCT method that exhibits the defect, not the producer that wrote the malformed file. Real-world provenance attribution (which CAD tools produce which defects, at what rates) is a separate effort outside this corpus.
 
 ### How to read the corpus given the gap
@@ -151,7 +152,8 @@ This README's count tables should be re-checked and updated at every release. Co
 
 - `audit/SESSION_SUMMARY_*.md` — what was found and fixed in each major audit pass
 - `audit/lint_rule_candidates.md` — Part-21-validator rules proposed but not yet implemented
-- `audit/audit_remaining.txt` — fixture IDs still awaiting individual adversarial verification
+- `audit/audit_remaining.txt` — fixture IDs still awaiting individual adversarial verification (currently empty; sweep complete)
+- `audit/CONFIRMED_INVALID_REGEN_QUEUE.md` — the small list of fixtures whose geometry doesn't yet match the claim
 - `fixture_followups/` — per-fixture notes on weak-or-invalid findings with regen plans
 
 ## What the validator does

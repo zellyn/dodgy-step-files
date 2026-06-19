@@ -25225,14 +25225,12 @@ creating a pinch point where the surface crosses itself.
 ### Gs097 — ShapeUpgrade_FaceDivideArea.Perform threshold reset
 - **Category**: §12.2c surfaces (sub-class: face)
 - **Sources**: OCCT/ShapeAnalysis (see fixture)
-- **Description**: Face splitting by area threshold; threshold value 0.0 should mean
-"don't split" but is incorrectly treated as "split every sub-face".
-Reproducer: Planar face with area threshold 0.0 triggers infinite recursion.
-- **Expected kernel behavior**: heal: investigate / reject: geometric degeneracy
-- **Notes**: synthesized from earlier wave; backfilled from fixture comment
+- **Description**: ShapeUpgrade_FaceDivideArea splits a face when its area exceeds a runtime threshold parameter; threshold value 0.0 should be a no-op ("don't split") but is incorrectly treated as "split every sub-face", triggering unbounded recursion. The threshold is a runtime API argument, not a STEP attribute, so this fixture provides only the geometric setup (a planar face); the defect is observable when calling `ShapeUpgrade_FaceDivideArea::SetMaxArea(0.0); Perform()` on the loaded shape.
+- **Expected kernel behavior**: treat threshold=0.0 as identity / no-op
+- **Notes**: synthesized from earlier wave; backfilled from fixture comment. Runtime-only defect: reproduce via kernel-API invocation, not via static STEP file content.
 - **Model impact**: Surface and trimming geometry
 - **Fixture path**: step-examples/12-2c-surfaces/Gs097.stp
-- **Fixture kind**: scaffold
+- **Fixture kind**: scaffold (kernel-test-pair: shape only; runtime invocation required to reproduce)
 
 ### Gs098 — ShapeAnalysis_Surface.IsDegenerated revolution-axis-on-curve
 - **Category**: §12.2c surfaces (sub-class: curve)
@@ -29027,9 +29025,10 @@ V-parameter gap detection missing: curves separated by 1.0 in V (gap beyond over
 ### N152 — `BRepBuilderAPI_Sewing.SameParameterEdge.location-transform-in-tolerance-eval`
 
 **Axis**: surface geometry transformation  
-**Defect**: Transform surface by location before D0 evaluation in tolerance computation. Omitting location transform yields false tolerance on untransformed surface.  
-**Reproducer**: Surface at origin, placement applied (+100mm Y). Compute tolerance with/without transform; difference ±0.001–0.01mm.  
-**Falsifiable**: D0 evaluation must use `aS->Transformed(loc2)` not raw `aS`. Without transform, distance computed to wrong reference surface.
+**Defect**: BRepBuilderAPI_Sewing::SameParameterEdge must transform the surface by its TopLoc_Location before D0 evaluation in tolerance computation; omitting the transform yields a false tolerance computed against an untransformed reference surface. The fixture provides the static setup (two PLANEs with distinct AXIS2_PLACEMENT_3D locations and edges lying on them); the asymmetric-evaluation defect is observable when calling SameParameterEdge on the loaded shape pair.  
+**Reproducer**: Two faces on translated AXIS2_PLACEMENT_3D (one at origin, one offset +100 mm Y). After load, invoke BRepBuilderAPI_Sewing::SameParameterEdge on the shared edge pair; tolerance computed without `aS->Transformed(loc2)` differs from the correct value by the offset magnitude.  
+**Falsifiable**: D0 evaluation must use `aS->Transformed(loc2)` not raw `aS`. The defect is runtime-only — STEP cannot encode the asymmetric kernel-call; it provides only the geometric setup.  
+**Fixture kind**: scaffold (kernel-test-pair: shape only; runtime invocation required to reproduce)
 
 ---
 
