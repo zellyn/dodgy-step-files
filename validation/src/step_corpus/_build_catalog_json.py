@@ -68,6 +68,7 @@ PREFIX_MAP: list[tuple[str, str, str]] = [
     ("A", "12.6", "12-6-assembly"),
     ("P", "12.6", "12-6-assembly"),  # P001..P028: FreeCAD-origin findings
     ("M", "12.8", "12-8-mixed"),
+    ("Me", "12.14", "12-14-mesh"),  # mesh-defect fixtures (parallel corpus, not Part-21)
 ]
 
 
@@ -409,7 +410,14 @@ def build_entry(entry_id: str, title: str, fields: dict[str, str], block_text: s
     sources_raw = fields.get("Sources") or fields.get("Source(s)") or fields.get("Source") or ""
     notes_raw = _normalize_inline(fields.get("Notes", ""))
 
-    fixture_relative = f"step-examples/{section_dir}/{entry_id}.stp"
+    # Honor an explicit "Fixture path" field when present (e.g. §12.14 mesh
+    # fixtures use mesh-examples/.../<id>.mesh.json). Default to the
+    # STEP location otherwise.
+    explicit_path = _normalize_inline(fields.get("Fixture path", ""))
+    if explicit_path:
+        fixture_relative = explicit_path
+    else:
+        fixture_relative = f"step-examples/{section_dir}/{entry_id}.stp"
 
     # Structured fields extracted from notes prose / assertion lines
     provenance_tier = _extract_provenance_tier(notes_raw)

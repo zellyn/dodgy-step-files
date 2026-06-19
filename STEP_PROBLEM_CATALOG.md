@@ -31118,3 +31118,69 @@ Distance 0.099999 mm compared against 0.1 mm tolerance w/o margin buffer. Single
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 - **Fixture path**: step-examples/12-8-mixed/M189.stp
+
+## §12.14 Mesh defects (parallel corpus, not Part-21)
+
+The entries below describe **mesh-geometry** defects rather than STEP/Part-21
+fixtures. The defect carrier is a JSON mesh file under `mesh-examples/12-14-mesh/`
+synthesized via `validation/src/step_corpus/mesh_builder.py`. Each fixture
+carries the actual defective geometry (non-manifold edges, degenerate
+triangles, near-coincident vertices, holes, self-intersections) in its
+triangle list and vertex array — healers must confront the defect; there is
+no prose helping them. The `metadata.assertions` array is the mesh-side
+equivalent of STEP tier-3 assertions: machine-checkable pointers a verifier
+can use to confirm the defect is where the catalog says it is.
+
+Mesh oracle integration (Q4.5 in `BACKLOG.md`) is in progress; until then,
+these fixtures are byte-checkable via their JSON structure but not yet
+exercised against CGAL PMP / MeshFix.
+
+### Me001 — non-manifold edge: three triangles share a single edge
+- **Category**: §12.14 mesh defects (sub-class: topology/non-manifold)
+- **Sources**: `MESH_DEFECT_TAXONOMY.md` #9 (`non_manifold_edge`); CGAL PMP `non_manifold_vertices`; MeshFix `cutAndStitch`.
+- **Description**: edge `(v0, v2)` is incident on three distinct triangles, violating 2-manifold topology. Half-edge data structures cannot represent this without splitting the edge or duplicating data.
+- **Reproducer recipe**: vertex list `[(0,0,0), (1,0,0), (0,1,0), (0,0,1), (-1,0,0)]`; triangle list `[(0,1,2), (0,2,3), (0,2,4)]` — all three triangles literally share the edge `(0, 2)`.
+- **Expected kernel behavior**: healer must split the edge or cut the mesh along it before assuming 2-manifold traversal.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=3`
+- **Fixture path**: mesh-examples/12-14-mesh/Me001.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me002 — degenerate triangle: three collinear vertices, area=0
+- **Category**: §12.14 mesh defects (sub-class: degeneracy/area)
+- **Sources**: `MESH_DEFECT_TAXONOMY.md` #4 (`zero_area_triangle`); CGAL `is_degenerate_triangle_face`; MeshFix `removeDegenerateTriangles`.
+- **Description**: triangle 1 has three vertices collinear along the X axis; area is exactly 0 and normal is undefined. Every traversal that uses the face normal breaks.
+- **Reproducer recipe**: triangle 1 vertices `(0,-1,0), (1,-1,0), (2,-1,0)` — all on the line y=-1, z=0. Triangle 0 is a clean control.
+- **Expected kernel behavior**: detect zero-area triangles and either remove or flag; never compute a normal from a degenerate face.
+- **Mesh assertion**: `triangle_area_lt triangle=1 lt=1e-12`
+- **Fixture path**: mesh-examples/12-14-mesh/Me002.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me003 — near-coincident vertices: 5e-8 separation, distinct entries
+- **Category**: §12.14 mesh defects (sub-class: precision/T-junction)
+- **Sources**: `MESH_DEFECT_TAXONOMY.md` #3 (`near_coincident_vertices`); CGAL `Snapping/snap_vertices`; MeshFix `meshclean`.
+- **Description**: vertices 1 and 2 sit at `(1.0, 0, 0)` and `(1.00000005, 0, 0)` — 5e-8 apart, well under any typical CAD tolerance (~1e-6) but stored as distinct records. Triangles reference both; the mesh is polygon-soup-with-near-duplicates.
+- **Reproducer recipe**: vertex 1 `= (1.0, 0, 0)`, vertex 2 `= (1.00000005, 0, 0)`; triangle 0 uses vertex 1, triangle 1 uses vertex 2.
+- **Expected kernel behavior**: snap vertices within tolerance; failing to do so leaves T-junctions and tiny cracks at the seam.
+- **Mesh assertion**: `vertex_pair_distance_lt pair=[1,2] lt=1e-7`
+- **Fixture path**: mesh-examples/12-14-mesh/Me003.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me004 — boundary hole: 3×3 patch with one triangle missing
+- **Category**: §12.14 mesh defects (sub-class: topology/boundary)
+- **Sources**: `MESH_DEFECT_TAXONOMY.md` #11 (`boundary_hole`); CGAL `triangulate_hole`; MeshFix `fillSmallBoundaries`.
+- **Description**: a 3×3 vertex grid that should be covered by 8 triangles (two per cell) has one triangle deliberately omitted, leaving a triangular hole. The boundary cycle of edges incident on only one face is the unfilled hole.
+- **Reproducer recipe**: 9 vertices on the (i, j) integer lattice with i, j ∈ {0, 1, 2}; triangle list omits the upper triangle of cell (1, 1).
+- **Expected kernel behavior**: detect boundary cycles on what should be a closed patch and either fill or report.
+- **Mesh assertion**: `hole_boundary loop=[v_at(1,1), v_at(2,2), v_at(1,2)]`
+- **Fixture path**: mesh-examples/12-14-mesh/Me004.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me005 — self-intersecting face pair: XY and XZ triangles cross at v0
+- **Category**: §12.14 mesh defects (sub-class: self-intersection)
+- **Sources**: `MESH_DEFECT_TAXONOMY.md` #15 (`self_intersection_face_pair`); CGAL `self_intersections`; MeshFix `selectIntersectingTriangles`.
+- **Description**: triangle 0 lies in the XY plane and triangle 1 lies in the XZ plane; the planes intersect along the X axis and both triangles span x=0..1, so their interiors cross. Common in CSG output and scan reconstructions.
+- **Reproducer recipe**: triangle 0 = `(0,0,0), (1,1,0), (1,-1,0)`; triangle 1 = `(0,0,0), (1,0,1), (1,0,-1)`.
+- **Expected kernel behavior**: detect the geometric crossing and either split the triangles or report.
+- **Mesh assertion**: `triangles_self_intersect triangles=[0, 1]`
+- **Fixture path**: mesh-examples/12-14-mesh/Me005.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder

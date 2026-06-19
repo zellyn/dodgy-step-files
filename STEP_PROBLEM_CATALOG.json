@@ -7541,6 +7541,171 @@
     "title": "step-g imports cleanly but downstream `g-stl` tessellator silently writes zero triangles"
   },
   {
+    "byte_assertions": [],
+    "category": "§12.14 mesh defects (sub-class: topology/non-manifold)",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": null,
+    "description": "edge `(v0, v2)` is incident on three distinct triangles, violating 2-manifold topology. Half-edge data structures cannot represent this without splitting the edge or duplicating data.",
+    "expected_kernel_behavior": "healer must split the edge or cut the mesh along it before assuming 2-manifold traversal.",
+    "expected_validation": "",
+    "fixture_kind": null,
+    "fixture_path": "mesh-examples/12-14-mesh/Me001.mesh.json",
+    "id": "Me001",
+    "notes": "",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-sufficient",
+    "reproducer": "vertex list `[(0,0,0), (1,0,0), (0,1,0), (0,0,1), (-1,0,0)]`; triangle list `[(0,1,2), (0,2,3), (0,2,4)]` — all three triangles literally share the edge `(0, 2)`.",
+    "section": "12.14",
+    "section_dir": "12-14-mesh",
+    "see_also": [],
+    "sender": "",
+    "severity": null,
+    "sources": [
+      "`MESH_DEFECT_TAXONOMY.md` #9 (`non_manifold_edge`)",
+      "CGAL PMP `non_manifold_vertices`",
+      "MeshFix `cutAndStitch`."
+    ],
+    "taxonomy": [
+      "topology"
+    ],
+    "tier3_assertions": [],
+    "title": "non-manifold edge: three triangles share a single edge"
+  },
+  {
+    "byte_assertions": [],
+    "category": "§12.14 mesh defects (sub-class: degeneracy/area)",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": null,
+    "description": "triangle 1 has three vertices collinear along the X axis; area is exactly 0 and normal is undefined. Every traversal that uses the face normal breaks.",
+    "expected_kernel_behavior": "detect zero-area triangles and either remove or flag; never compute a normal from a degenerate face.",
+    "expected_validation": "",
+    "fixture_kind": null,
+    "fixture_path": "mesh-examples/12-14-mesh/Me002.mesh.json",
+    "id": "Me002",
+    "notes": "",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-sufficient",
+    "reproducer": "triangle 1 vertices `(0,-1,0), (1,-1,0), (2,-1,0)` — all on the line y=-1, z=0. Triangle 0 is a clean control.",
+    "section": "12.14",
+    "section_dir": "12-14-mesh",
+    "see_also": [],
+    "sender": "",
+    "severity": null,
+    "sources": [
+      "`MESH_DEFECT_TAXONOMY.md` #4 (`zero_area_triangle`)",
+      "CGAL `is_degenerate_triangle_face`",
+      "MeshFix `removeDegenerateTriangles`."
+    ],
+    "taxonomy": [
+      "spec-violation"
+    ],
+    "tier3_assertions": [],
+    "title": "degenerate triangle: three collinear vertices, area=0"
+  },
+  {
+    "byte_assertions": [],
+    "category": "§12.14 mesh defects (sub-class: precision/T-junction)",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": null,
+    "description": "vertices 1 and 2 sit at `(1.0, 0, 0)` and `(1.00000005, 0, 0)` — 5e-8 apart, well under any typical CAD tolerance (~1e-6) but stored as distinct records. Triangles reference both; the mesh is polygon-soup-with-near-duplicates.",
+    "expected_kernel_behavior": "snap vertices within tolerance; failing to do so leaves T-junctions and tiny cracks at the seam.",
+    "expected_validation": "",
+    "fixture_kind": null,
+    "fixture_path": "mesh-examples/12-14-mesh/Me003.mesh.json",
+    "id": "Me003",
+    "notes": "",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-sufficient",
+    "reproducer": "vertex 1 `= (1.0, 0, 0)`, vertex 2 `= (1.00000005, 0, 0)`; triangle 0 uses vertex 1, triangle 1 uses vertex 2.",
+    "section": "12.14",
+    "section_dir": "12-14-mesh",
+    "see_also": [],
+    "sender": "",
+    "severity": null,
+    "sources": [
+      "`MESH_DEFECT_TAXONOMY.md` #3 (`near_coincident_vertices`)",
+      "CGAL `Snapping/snap_vertices`",
+      "MeshFix `meshclean`."
+    ],
+    "taxonomy": [
+      "spec-violation"
+    ],
+    "tier3_assertions": [],
+    "title": "near-coincident vertices: 5e-8 separation, distinct entries"
+  },
+  {
+    "byte_assertions": [],
+    "category": "§12.14 mesh defects (sub-class: topology/boundary)",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": null,
+    "description": "a 3×3 vertex grid that should be covered by 8 triangles (two per cell) has one triangle deliberately omitted, leaving a triangular hole. The boundary cycle of edges incident on only one face is the unfilled hole.",
+    "expected_kernel_behavior": "detect boundary cycles on what should be a closed patch and either fill or report.",
+    "expected_validation": "",
+    "fixture_kind": null,
+    "fixture_path": "mesh-examples/12-14-mesh/Me004.mesh.json",
+    "id": "Me004",
+    "notes": "",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-sufficient",
+    "reproducer": "9 vertices on the (i, j) integer lattice with i, j ∈ {0, 1, 2}; triangle list omits the upper triangle of cell (1, 1).",
+    "section": "12.14",
+    "section_dir": "12-14-mesh",
+    "see_also": [],
+    "sender": "",
+    "severity": null,
+    "sources": [
+      "`MESH_DEFECT_TAXONOMY.md` #11 (`boundary_hole`)",
+      "CGAL `triangulate_hole`",
+      "MeshFix `fillSmallBoundaries`."
+    ],
+    "taxonomy": [
+      "topology"
+    ],
+    "tier3_assertions": [],
+    "title": "boundary hole: 3×3 patch with one triangle missing"
+  },
+  {
+    "byte_assertions": [],
+    "category": "§12.14 mesh defects (sub-class: self-intersection)",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": null,
+    "description": "triangle 0 lies in the XY plane and triangle 1 lies in the XZ plane; the planes intersect along the X axis and both triangles span x=0..1, so their interiors cross. Common in CSG output and scan reconstructions.",
+    "expected_kernel_behavior": "detect the geometric crossing and either split the triangles or report.",
+    "expected_validation": "",
+    "fixture_kind": null,
+    "fixture_path": "mesh-examples/12-14-mesh/Me005.mesh.json",
+    "id": "Me005",
+    "notes": "",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-sufficient",
+    "reproducer": "triangle 0 = `(0,0,0), (1,1,0), (1,-1,0)`; triangle 1 = `(0,0,0), (1,0,1), (1,0,-1)`.",
+    "section": "12.14",
+    "section_dir": "12-14-mesh",
+    "see_also": [],
+    "sender": "",
+    "severity": null,
+    "sources": [
+      "`MESH_DEFECT_TAXONOMY.md` #15 (`self_intersection_face_pair`)",
+      "CGAL `self_intersections`",
+      "MeshFix `selectIntersectingTriangles`."
+    ],
+    "taxonomy": [
+      "spec-violation"
+    ],
+    "tier3_assertions": [],
+    "title": "self-intersecting face pair: XY and XZ triangles cross at v0"
+  },
+  {
     "byte_assertions": [
       "bytes_starts_with(b'\\xef\\xbb\\xbf')",
       "matches(rb'\\xef\\xbb\\xbf')"
