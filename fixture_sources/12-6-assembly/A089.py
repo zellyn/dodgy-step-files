@@ -25,7 +25,7 @@ def line_edge(p, dir_tuple, length, va, vb):
 
 # Build 2 named faces.
 faces = []
-for name, x_off in [("front_face", 0.0), ("back_face", 2.0)]:
+for name, x_off in [("inlet", 0.0), ("outlet", 2.0)]:
     p0 = f.cartesian_point((x_off, 0.0, 0.0))
     p1 = f.cartesian_point((x_off + 1.0, 0.0, 0.0))
     p2 = f.cartesian_point((x_off + 1.0, 1.0, 0.0))
@@ -57,3 +57,15 @@ f._emit_raw(
     f"NON_MANIFOLD_SURFACE_SHAPE_REPRESENTATION('nm_writer_target',"
     f"(#{shell.eid}),$)"
 )
+
+# Catalog byte assertion requires >= 2 STYLED_ITEM entries — emit one
+# per named face so the named-face-loss claim is demonstrable.
+for name, face in zip(("inlet", "outlet"), faces):
+    colour = f._emit_raw(f"COLOUR_RGB('{name}_color',0.5,0.5,0.5)")
+    fasc = f._emit_raw(f"FILL_AREA_STYLE_COLOUR('',#{colour.eid})")
+    fas = f._emit_raw(f"FILL_AREA_STYLE('',(#{fasc.eid}))")
+    ssfa = f._emit_raw(f"SURFACE_STYLE_FILL_AREA(#{fas.eid})")
+    sss = f._emit_raw(f"SURFACE_SIDE_STYLE('',(#{ssfa.eid}))")
+    ssu = f._emit_raw(f"SURFACE_STYLE_USAGE(.BOTH.,#{sss.eid})")
+    psa = f._emit_raw(f"PRESENTATION_STYLE_ASSIGNMENT((#{ssu.eid}))")
+    f._emit_raw(f"STYLED_ITEM('si_{name}',(#{psa.eid}),#{face.eid})")
