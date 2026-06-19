@@ -1,73 +1,70 @@
 ISO-10303-21;
-/* Ad084 - XCAFDoc_ShapeTool::FindSubShape crash building XCAF tree
-   Source: STEP_PROBLEM_CATALOG.md §12.11 Ad084;
-           mining 18-other-issues.md I003 (OCCT #1200, propeller.zip).
-   Pattern: STEP read crashes inside FindSubShape while building the
-           XCAF (eXtended CAD Application Framework) document tree on
-           an otherwise well-formed file. Root cause is a NULL TopoDS
-           shape returned by the indexed sub-shape map - the lookup
-           hits a slot that was inserted but never populated, and a
-           null-deref follows when XCAFDoc walks the children.
-   Reproducer recipe (per catalog): ReadFile + Transfer on shipped
-           propeller.stp.
-   Expected kernel behavior: reject or heal without crashing - any
-           null sub-shape must be a recoverable diagnostic, never a
-           crash.
-   STEP analogue: a STYLED_ITEM whose `item` slot points at a
-   SHAPE_REPRESENTATION that owns an empty (non-null but contentless)
-   ADVANCED_FACE; the XCAF tree builder walks the face's bounds list
-   and dereferences a null inner shell. License-clean: synthesized. */
+/* Ad084: sliver planar face + STYLED_ITEM (XCAF FindSubShape crash trigger) */
 HEADER;
-FILE_DESCRIPTION(
-  ('Ad084 - XCAF FindSubShape null-deref probe'),
-  '2;1');
-FILE_NAME('Ad084.stp','2026-04-26T00:00:00',
-  ('auto-generated'),(''),'auto-generated','','');
+FILE_DESCRIPTION(('Ad084'),'2;1');
+FILE_NAME('Ad084.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
 FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('automotive_design');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
-  'automotive_design',2001,#1);
-#3=PRODUCT_CONTEXT('',#1,'mechanical');
-#4=PRODUCT('Propeller','XCAF probe','',(#3));
-#5=PRODUCT_DEFINITION_FORMATION('','',#4);
-#6=PRODUCT_DEFINITION_CONTEXT('',#1,'design');
-#7=PRODUCT_DEFINITION('design','',#5,#6);
-#8=PRODUCT_DEFINITION_SHAPE('','',#7);
-#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
-#11=DIRECTION('',(0.0,0.0,1.0));
-#12=DIRECTION('',(1.0,0.0,0.0));
-#13=AXIS2_PLACEMENT_3D('',#10,#11,#12);
-#14=PLANE('',#13);
-#15=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
-     GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#16))
-     GLOBAL_UNIT_ASSIGNED_CONTEXT((#17,#18,#19))
-     REPRESENTATION_CONTEXT('','3D'));
-#16=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.E-7),#17,
-  'distance_accuracy_value','');
-#17=(LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT(.MILLI.,.METRE.));
-#18=(NAMED_UNIT(*) PLANE_ANGLE_UNIT() SI_UNIT($,.RADIAN.));
-#19=(NAMED_UNIT(*) SI_UNIT($,.STERADIAN.) SOLID_ANGLE_UNIT());
-/* face with a bounds entry pointing at a non-existent edge_loop slot.
-   the XCAF tree builder enumerates face bounds and dereferences. */
-#20=FACE_OUTER_BOUND('',#21,.T.);
-#21=EDGE_LOOP('',());
-#22=ADVANCED_FACE('faceA',(#20),#14,.T.);
-#23=OPEN_SHELL('shellA',(#22));
-#24=SHELL_BASED_SURFACE_MODEL('Propeller',(#23));
-#30=SHAPE_REPRESENTATION('Propeller',(#13,#24),#15);
-#31=SHAPE_DEFINITION_REPRESENTATION(#8,#30);
-/* STYLED_ITEM into the empty face - XCAF visits the styled item,
-   crawls down to the face's bounds, and finds an empty edge loop
-   exactly where FindSubShape expects an indexable child. */
-#40=COLOUR_RGB('red',1.0,0.0,0.0);
-#41=FILL_AREA_STYLE_COLOUR('',#40);
-#42=FILL_AREA_STYLE('',(#41));
-#43=SURFACE_STYLE_FILL_AREA(#42);
-#44=SURFACE_SIDE_STYLE('',(#43));
-#45=SURFACE_STYLE_USAGE(.BOTH.,#44);
-#46=PRESENTATION_STYLE_ASSIGNMENT((#45));
-#47=STYLED_ITEM('',(#46),#22);
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=DIRECTION('',(0.0,0.0,1.0));
+#3=DIRECTION('',(1.0,0.0,0.0));
+#4=AXIS2_PLACEMENT_3D('',#1,#2,#3);
+#5=PLANE('',#4);
+#6=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#7=CARTESIAN_POINT('',(10.0,0.0,0.0));
+#8=CARTESIAN_POINT('',(10.0,1.0E-05,0.0));
+#9=CARTESIAN_POINT('',(0.0,1.0E-05,0.0));
+#10=VERTEX_POINT('',#6);
+#11=VERTEX_POINT('',#7);
+#12=VERTEX_POINT('',#8);
+#13=VERTEX_POINT('',#9);
+#14=DIRECTION('',(1.0,0.0,0.0));
+#15=VECTOR('',#14,10.0);
+#16=LINE('',#6,#15);
+#17=EDGE_CURVE('',#10,#11,#16,.T.);
+#18=DIRECTION('',(0.0,1.0,0.0));
+#19=VECTOR('',#18,1.0E-05);
+#20=LINE('',#7,#19);
+#21=EDGE_CURVE('',#11,#12,#20,.T.);
+#22=DIRECTION('',(-1.0,0.0,0.0));
+#23=VECTOR('',#22,10.0);
+#24=LINE('',#8,#23);
+#25=EDGE_CURVE('',#12,#13,#24,.T.);
+#26=DIRECTION('',(0.0,-1.0,0.0));
+#27=VECTOR('',#26,1.0E-05);
+#28=LINE('',#9,#27);
+#29=EDGE_CURVE('',#13,#10,#28,.T.);
+#30=ORIENTED_EDGE('',$,$,#17,.T.);
+#31=ORIENTED_EDGE('',$,$,#21,.T.);
+#32=ORIENTED_EDGE('',$,$,#25,.T.);
+#33=ORIENTED_EDGE('',$,$,#29,.T.);
+#34=EDGE_LOOP('',(#30,#31,#32,#33));
+#35=FACE_OUTER_BOUND('',#34,.T.);
+#36=ADVANCED_FACE('',(#35),#5,.T.);
+#37=OPEN_SHELL('',(#36));
+#38=SHELL_BASED_SURFACE_MODEL('',(#37));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('Ad084','Ad084','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#38),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
+#9063=COLOUR_RGB('xcaf_trigger',0.5,0.5,0.5);
+#9064=FILL_AREA_STYLE_COLOUR('',#9063);
+#9065=FILL_AREA_STYLE('',(#9064));
+#9066=SURFACE_STYLE_FILL_AREA(#9065);
+#9067=SURFACE_SIDE_STYLE('',(#9066));
+#9068=SURFACE_STYLE_USAGE(.BOTH.,#9067);
+#9069=PRESENTATION_STYLE_ASSIGNMENT((#9068));
+#9070=STYLED_ITEM('xcaf_trigger',(#9069),#36);
 ENDSEC;
 END-ISO-10303-21;
