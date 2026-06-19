@@ -1,52 +1,63 @@
 ISO-10303-21;
-/* Gp014 - Shared pcurve across multiple edges (SYRKO)
- * Defect: a single PCURVE instance (#77) is referenced by two different
- * EDGE_CURVE instances (#60 and #160) via their SURFACE_CURVE
- * associated_geometry lists. Trim ops applied to one edge corrupt the
- * other because they share the same pcurve handle. */
+/* Gp014: Same PCURVE instance referenced by two distinct EDGE_CURVEs (SYRKO aliasing) */
 HEADER;
-FILE_DESCRIPTION(('Gp014 test case','Shared pcurve across multiple edges'),'2;1');
-FILE_NAME('Gp014.stp','2026-04-27T00:00:00',(''),(''),'auto-generated','','');
-FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+FILE_DESCRIPTION(('Gp014'),'2;1');
+FILE_NAME('Gp014.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('automotive_design');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
-#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
-#11=DIRECTION('',(0.0,0.0,1.0));
-#12=DIRECTION('',(1.0,0.0,0.0));
-#13=AXIS2_PLACEMENT_3D('',#10,#11,#12);
-#20=PLANE('',#13);
-/* Two distinct 3D curves, both lying along Y=0 line on the plane */
-#30=CARTESIAN_POINT('',(0.0,0.0,0.0));
-#31=DIRECTION('',(1.0,0.0,0.0));
-#32=VECTOR('',#31,1.0);
-#33=LINE('',#30,#32);
-#34=CARTESIAN_POINT('',(1.0,0.0,0.0));
-#35=LINE('',#34,#32);
-#40=VERTEX_POINT('',#30);
-#41=VERTEX_POINT('',#34);
-#42=CARTESIAN_POINT('',(2.0,0.0,0.0));
-#43=VERTEX_POINT('',#42);
-/* Single shared pcurve in 2D parameter space */
-#71=CARTESIAN_POINT('',(0.0,0.0));
-#72=DIRECTION('',(1.0,0.0));
-#73=VECTOR('',#72,1.0);
-#74=LINE('',#71,#73);
-#75=( GEOMETRIC_REPRESENTATION_CONTEXT(2)
-      PARAMETRIC_REPRESENTATION_CONTEXT()
-      REPRESENTATION_CONTEXT('parametric','2D') );
-#76=DEFINITIONAL_REPRESENTATION('',(#74),#75);
-#77=PCURVE('',#20,#76);
-/* Defect: both surface curves share the SAME pcurve handle #77 */
-#50=SURFACE_CURVE('',#33,(#77),.PCURVE_S1.);
-#150=SURFACE_CURVE('',#35,(#77),.PCURVE_S1.);
-#60=EDGE_CURVE('',#40,#41,#50,.T.);
-#160=EDGE_CURVE('',#41,#43,#150,.T.);
-#61=ORIENTED_EDGE('',*,*,#60,.T.);
-#161=ORIENTED_EDGE('',*,*,#160,.T.);
-#62=EDGE_LOOP('',(#61,#161));
-#63=FACE_OUTER_BOUND('',#62,.T.);
-#64=ADVANCED_FACE('',(#63),#20,.T.);
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=DIRECTION('',(0.0,0.0,1.0));
+#3=DIRECTION('',(1.0,0.0,0.0));
+#4=AXIS2_PLACEMENT_3D('',#1,#2,#3);
+#5=CYLINDRICAL_SURFACE('',#4,1.0);
+#6=(GEOMETRIC_REPRESENTATION_CONTEXT(2)PARAMETRIC_REPRESENTATION_CONTEXT()REPRESENTATION_CONTEXT('UV','2D'));
+#7=CARTESIAN_POINT('',(0.0,0.25));
+#8=DIRECTION('',(1.0,0.0));
+#9=VECTOR('',#8,6.283185307);
+#10=LINE('',#7,#9);
+#11=DEFINITIONAL_REPRESENTATION('shared_pc',(#10),#6);
+#12=PCURVE('shared',#5,#11);
+#13=CARTESIAN_POINT('',(1.0,0.0,0.25));
+#14=VERTEX_POINT('',#13);
+#15=CARTESIAN_POINT('',(0.0,0.0,0.25));
+#16=DIRECTION('',(0.0,0.0,1.0));
+#17=DIRECTION('',(1.0,0.0,0.0));
+#18=AXIS2_PLACEMENT_3D('',#15,#16,#17);
+#19=CIRCLE('',#18,1.0);
+#20=SURFACE_CURVE('',#19,(#12),.PCURVE_S1.);
+#21=EDGE_CURVE('bottom_circle',#14,#14,#20,.T.);
+#22=CARTESIAN_POINT('',(1.0,0.0,0.75));
+#23=VERTEX_POINT('',#22);
+#24=CARTESIAN_POINT('',(0.0,0.0,0.75));
+#25=DIRECTION('',(0.0,0.0,1.0));
+#26=DIRECTION('',(1.0,0.0,0.0));
+#27=AXIS2_PLACEMENT_3D('',#24,#25,#26);
+#28=CIRCLE('',#27,1.0);
+#29=SURFACE_CURVE('',#28,(#12),.PCURVE_S1.);
+#30=EDGE_CURVE('top_circle',#23,#23,#29,.T.);
+#31=ORIENTED_EDGE('',$,$,#21,.T.);
+#32=EDGE_LOOP('',(#31));
+#33=ORIENTED_EDGE('',$,$,#30,.T.);
+#34=EDGE_LOOP('',(#33));
+#35=FACE_OUTER_BOUND('',#32,.T.);
+#36=FACE_BOUND('',#34,.T.);
+#37=ADVANCED_FACE('',(#35,#36),#5,.T.);
+#38=OPEN_SHELL('',(#37));
+#39=SHELL_BASED_SURFACE_MODEL('',(#38));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('Gp014','Gp014','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#39),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
 ENDSEC;
 END-ISO-10303-21;

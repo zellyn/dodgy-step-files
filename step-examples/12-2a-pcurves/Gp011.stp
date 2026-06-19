@@ -1,46 +1,51 @@
 ISO-10303-21;
-/* Gp011 - Seam curve with same pcurve referenced twice
- * Defect: SEAM_CURVE on a periodic CYLINDRICAL_SURFACE references the
- * same PCURVE handle twice in associated_geometry. Properly the seam
- * needs two distinct pcurves, one at U=0 and one at U=2pi. */
+/* Gp011: SEAM_CURVE associated_geometry contains same PCURVE twice (both banks aliased) */
 HEADER;
-FILE_DESCRIPTION(('Gp011 test case','Seam curve with duplicated pcurve'),'2;1');
-FILE_NAME('Gp011.stp','2026-04-27T00:00:00',(''),(''),'auto-generated','','');
-FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+FILE_DESCRIPTION(('Gp011'),'2;1');
+FILE_NAME('Gp011.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('automotive_design');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
-#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
-#11=DIRECTION('',(0.0,0.0,1.0));
-#12=DIRECTION('',(1.0,0.0,0.0));
-#13=AXIS2_PLACEMENT_3D('',#10,#11,#12);
-#20=CYLINDRICAL_SURFACE('',#13,10.0);
-/* 3D curve: vertical line on seam */
-#30=CARTESIAN_POINT('',(10.0,0.0,0.0));
-#31=DIRECTION('',(0.0,0.0,1.0));
-#32=VECTOR('',#31,1.0);
-#33=LINE('',#30,#32);
-#40=VERTEX_POINT('',#30);
-#41=CARTESIAN_POINT('',(10.0,0.0,5.0));
-#42=VERTEX_POINT('',#41);
-/* Single 2D pcurve at U=0, V varying from 0 to 5 */
-#71=CARTESIAN_POINT('',(0.0,0.0));
-#72=DIRECTION('',(0.0,1.0));
-#73=VECTOR('',#72,1.0);
-#74=LINE('',#71,#73);
-#75=( GEOMETRIC_REPRESENTATION_CONTEXT(2)
-      PARAMETRIC_REPRESENTATION_CONTEXT()
-      REPRESENTATION_CONTEXT('parametric','2D') );
-#76=DEFINITIONAL_REPRESENTATION('',(#74),#75);
-#77=PCURVE('',#20,#76);
-/* Defect: same pcurve handle (#77) appears twice in associated_geometry
- * Should be (#77, #77') where #77' lives at U=2pi. */
-#50=SEAM_CURVE('',#33,(#77,#77),.PCURVE_S1.);
-#60=EDGE_CURVE('',#40,#42,#50,.T.);
-#61=ORIENTED_EDGE('',*,*,#60,.T.);
-#62=EDGE_LOOP('',(#61));
-#63=FACE_OUTER_BOUND('',#62,.T.);
-#64=ADVANCED_FACE('',(#63),#20,.T.);
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=DIRECTION('',(0.0,0.0,1.0));
+#3=DIRECTION('',(1.0,0.0,0.0));
+#4=AXIS2_PLACEMENT_3D('',#1,#2,#3);
+#5=CYLINDRICAL_SURFACE('',#4,1.0);
+#6=CARTESIAN_POINT('',(0.0,0.0,0.5));
+#7=DIRECTION('',(0.0,0.0,1.0));
+#8=DIRECTION('',(1.0,0.0,0.0));
+#9=AXIS2_PLACEMENT_3D('',#6,#7,#8);
+#10=CIRCLE('',#9,1.0);
+#11=CARTESIAN_POINT('',(1.0,0.0,0.5));
+#12=VERTEX_POINT('',#11);
+#13=(GEOMETRIC_REPRESENTATION_CONTEXT(2)PARAMETRIC_REPRESENTATION_CONTEXT()REPRESENTATION_CONTEXT('UV','2D'));
+#14=CARTESIAN_POINT('',(0.0,0.5));
+#15=DIRECTION('',(1.0,0.0));
+#16=VECTOR('',#15,6.283185307);
+#17=LINE('',#14,#16);
+#18=DEFINITIONAL_REPRESENTATION('pc_bank1',(#17),#13);
+#19=PCURVE('',#5,#18);
+#20=SEAM_CURVE('',#10,(#19,#19),.PCURVE_S1.);
+#21=EDGE_CURVE('',#12,#12,#20,.T.);
+#22=ORIENTED_EDGE('',$,$,#21,.T.);
+#23=EDGE_LOOP('',(#22));
+#24=FACE_OUTER_BOUND('',#23,.T.);
+#25=ADVANCED_FACE('',(#24),#5,.T.);
+#26=OPEN_SHELL('',(#25));
+#27=SHELL_BASED_SURFACE_MODEL('',(#26));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('Gp011','Gp011','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#27),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
 ENDSEC;
 END-ISO-10303-21;

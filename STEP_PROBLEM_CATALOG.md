@@ -1505,7 +1505,7 @@ _Section summary: 82 entries._
 - **Byte assertion**: count_entity_def(b'PCURVE') >= 1
 - **Tier-3 assertion**: shape_null == True
 - **Model impact**: The pcurve attribute on the affected EDGE_CURVE/SEAM_CURVE is missing, NULL, or inconsistent with its 3D companion; downstream meshing and boolean operations either rebuild it from the 3D edge (introducing tolerance error) or dereference a null handle and abort.
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(3) ifc=schema_n/a`
 
 ### Gp012 — `SURFACE_CURVE` / seam-curve `associated_geometry` list contains a null `$` entry
 - **Category**: §12.2a pcurve
@@ -1518,7 +1518,7 @@ _Section summary: 82 entries._
 - **Byte assertion**: count_entity_def(b'PCURVE') >= 1
 - **Tier-3 assertion**: shape_null == True
 - **Model impact**: The pcurve attribute on the affected EDGE_CURVE/SEAM_CURVE is missing, NULL, or inconsistent with its 3D companion; downstream meshing and boolean operations either rebuild it from the 3D edge (introducing tolerance error) or dereference a null handle and abort.
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(3) ifc=schema_n/a`
 
 ### Gp013 — CATIA "like-seam": two pcurves on same near-closed `B_SPLINE_SURFACE_WITH_KNOTS`
 - **Category**: §12.2a pcurve
@@ -1533,7 +1533,7 @@ _Section summary: 82 entries._
 - **Byte assertion**: count_entity_def(b'PCURVE') >= 2
 - **Tier-3 assertion**: shape_null == True
 - **Model impact**: The pcurve attribute on the affected EDGE_CURVE/SEAM_CURVE is missing, NULL, or inconsistent with its 3D companion; downstream meshing and boolean operations either rebuild it from the 3D edge (introducing tolerance error) or dereference a null handle and abort.
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(6) ifc=schema_n/a`
 
 ### Gp014 — Shared pcurve across multiple edges (SYRKO)
 - **Category**: §12.2a pcurve
@@ -1548,7 +1548,7 @@ _Section summary: 82 entries._
 - **Byte assertion**: count_entity_def(b'PCURVE') >= 1
 - **Tier-3 assertion**: shape_null == True
 - **Model impact**: The pcurve attribute on the affected EDGE_CURVE/SEAM_CURVE is missing, NULL, or inconsistent with its 3D companion; downstream meshing and boolean operations either rebuild it from the 3D edge (introducing tolerance error) or dereference a null handle and abort.
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(6) ifc=schema_n/a`
 
 ### Gp015 — Pcurve/3D-curve trimming failure ("Trimming of 2D curve failed")
 - **Category**: §12.2a pcurve
@@ -1562,7 +1562,7 @@ _Section summary: 82 entries._
 - **Byte assertion**: count_entity_def(b'PCURVE') >= 1
 - **Tier-3 assertion**: shape_null == True
 - **Model impact**: The pcurve attribute on the affected EDGE_CURVE/SEAM_CURVE is missing, NULL, or inconsistent with its 3D companion; downstream meshing and boolean operations either rebuild it from the 3D edge (introducing tolerance error) or dereference a null handle and abort.
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=reject ifc=schema_n/a`
 
 ### Gp016 — Pcurve in shifted/transformed UV frame relative to host surface
 - **Category**: §12.2a pcurve
