@@ -24807,7 +24807,7 @@
     "cross_oracle_note": null,
     "description": "Interior knots clustered near 0 (0.001, 0.002) while boundary spans [0, 1]. Ratio >1000:1 causes numerical instability in fitting and evaluation. Healing must detect and reparametrize.",
     "expected_kernel_behavior": "heal or reject (mechanism-specific; see Description)",
-    "expected_validation": "",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2b-nurbs/Gn148.stp",
     "id": "Gn148",
@@ -24827,7 +24827,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "Ill-conditioned knot distribution"
   },
   {
@@ -30641,7 +30643,7 @@
     "cross_oracle_note": null,
     "description": "Classifies edge points as degenerate by testing proximity to singularities. If singularities uninitialized (myNbDeg < 0) or tolerance threshold inconsistent with ComputeSingularities, gap metric misses true degenerate edges near apex, poles, or seams.",
     "expected_kernel_behavior": "heal—recompute singularities if stale; apply consistent tolerance filtering",
-    "expected_validation": "",
+    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2c-surfaces/Gs148.stp",
     "id": "Gs148",
@@ -30661,7 +30663,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "DegeneratedValues singularity gap classification"
   },
   {
@@ -31299,7 +31303,7 @@
     "cross_oracle_note": null,
     "description": "B-spline C0 continuity asymmetric detection",
     "expected_kernel_behavior": "heal or reject (mechanism-specific; see Description)",
-    "expected_validation": "",
+    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2c-surfaces/Gs168.stp",
     "id": "Gs168",
@@ -31319,7 +31323,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "B-spline C0 continuity asymmetric detection"
   },
   {
@@ -31625,7 +31631,7 @@
     "cross_oracle_note": null,
     "description": "OffsetSurface Edge Degeneracy",
     "expected_kernel_behavior": "heal or reject (mechanism-specific; see Description)",
-    "expected_validation": "",
+    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2c-surfaces/Gs178.stp",
     "id": "Gs178",
@@ -31645,7 +31651,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "OffsetSurface Edge Degeneracy"
   },
   {
@@ -40340,7 +40348,7 @@
     "cross_oracle_note": null,
     "description": "Face traversal during wire collection must filter non-WIRE shapes (e.g., isolated vertices). Without type guard, non-wire subshapes passed to wire processing, causing type-safety crash.",
     "expected_kernel_behavior": "heal",
-    "expected_validation": "",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-3a-shells/Tsh213.stp",
     "id": "Tsh213",
@@ -40360,7 +40368,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 1"
+    ],
     "title": "Wire collection type-filter gate"
   },
   {
@@ -49037,7 +49047,7 @@
     "cross_oracle_note": null,
     "description": "Edges form a notch pattern at a junction vertex where multiple curves meet at shallow angles or with tangency that creates local concavity. The healing operation splits the offending curve at the notch point to eliminate the discontinuity and restore smooth wire traversal.",
     "expected_kernel_behavior": "heal: split edge at notch point / reject: if notch detection fails",
-    "expected_validation": "",
+    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-3b-wires/Twi241.stp",
     "id": "Twi241",
@@ -49057,7 +49067,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "ShapeFix_Wire.FixNotchedEdges notch-at-multi-edge-junction"
   },
   {
@@ -49857,7 +49869,7 @@
     "cross_oracle_note": null,
     "description": "FixGap3d parameter-discontinuity",
     "expected_kernel_behavior": "heal or reject (mechanism-specific; see Description)",
-    "expected_validation": "",
+    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-3b-wires/Twi266.stp",
     "id": "Twi266",
@@ -49877,7 +49889,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "FixGap3d parameter-discontinuity"
   },
   {
@@ -58355,7 +58369,7 @@
     "cross_oracle_note": null,
     "description": "FixMissingSeam.seam-boundary-clamping",
     "expected_kernel_behavior": "heal or reject (mechanism-specific; see Description)",
-    "expected_validation": "",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-3c-faces/Tfa225.stp",
     "id": "Tfa225",
@@ -58375,7 +58389,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "FixMissingSeam.seam-boundary-clamping"
   },
   {
@@ -58518,7 +58534,7 @@
     "cross_oracle_note": null,
     "description": "ShapeFix_Face.FixLoopWire.wire-topology",
     "expected_kernel_behavior": "heal or reject (mechanism-specific; see Description)",
-    "expected_validation": "",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-3c-faces/Tfa230.stp",
     "id": "Tfa230",
@@ -58538,7 +58554,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "ShapeFix_Face.FixLoopWire.wire-topology"
   },
   {
@@ -64815,7 +64833,7 @@
     "cross_oracle_note": null,
     "description": "`tolerance_conservatism` — no safety margin",
     "expected_kernel_behavior": "heal or reject (mechanism-specific; see Description)",
-    "expected_validation": "",
+    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-4-tolerance/N165.stp",
     "id": "N165",
@@ -64835,7 +64853,9 @@
     "taxonomy": [
       "spec-violation"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "`tolerance_conservatism` — no safety margin"
   },
   {

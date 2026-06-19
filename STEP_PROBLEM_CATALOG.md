@@ -21942,58 +21942,6 @@ Degree-3 Bezier curve (already in Bezier form). ConvertCurve2dToBezier should be
 
 Periodic B-spline with knot parameters identical at boundaries but control poles differing by 1e-3. IsClosed checks knot equality only and reports true, but geometry gap persists at closure point.
 
-# Wave 54C: Gn129–Gn133 NURBS fixtures
-
-## Gn129 — Geom_BSplineSurface periodic-U-closure weight-extraction
-
-**Defect**: B-spline surface with U-periodic declaration (IUPeriodic=.T.) but weight vector initialized to 1.0 uniformly. Healing logic for periodic surfaces calls UPeriod() and assumes proper weight handling in periodicity checks. Without weight-aware closure validation, false closure detected even though weights differ at wrapped edges.
-
-**Minimal reproducer**: Construct B-spline surface with U-periodic knot vector (period 2π), 4x3 poles, rational (weights = [1,1,1,1,1,1,1,1,1,1,1,1]). One weight in wrapped pole row = 0.8. Call IUPeriodic(); ShapeAnalysis_Surface.IsUClosed(). Expected: Correctly account for weight differences, flag as not-closed if poles/weights don't match. Incorrect: Ignore weight disparity, return true.
-
-**File**: `/Users/zellyn/gh/dodgy-step-files/step-examples/12-2b-nurbs/Gn129.stp`
-
----
-
-## Gn130 — ShapeUpgrade_ConvertCurveToBezier non-uniform-knots tail-degenerate
-
-**Defect**: B-spline curve degree 3, 6 control poles, with non-uniform knot spacing (cluster of 3 knots in [0.2, 0.25], then sparse [0.5, 0.75, 1.0]). ConvertCurveToBezier splits into Bezier segments at each interior knot, but does not validate segment continuity. Last segment (tail) degenerates because the final poles are collinear.
-
-**Minimal reproducer**: 2D B-spline curve, degree 3, poles = [(0,0), (1,2), (2,1), (3,3), (4,4), (4.01,4.01)]. Knots = [0,0,0,0, 0.2, 0.25, 0.5, 0.75, 1,1,1,1]. Call ShapeUpgrade_ConvertCurveToBezier::Perform(). Expected: Detect degenerate tail, warn or skip. Incorrect: Output includes degenerate segment.
-
-**File**: `/Users/zellyn/gh/dodgy-step-files/step-examples/12-2b-nurbs/Gn130.stp`
-
----
-
-## Gn131 — ShapeFix_ComposeShell.SplitOnEdges B-spline pcurve tangent-mismatch
-
-**Defect**: Closed shell edge with 3D B-spline curve (degree 2, 5 poles, smooth) paired with 2D pcurve on surface (degree 3, knot discontinuity at parameter u=0.5). SplitOnEdges does not check pcurve continuity class before composing. Tangent mismatch violates SameParameter constraint post-healing.
-
-**Minimal reproducer**: B-spline surface (degree 2 in both U, V). Add closed edge: 3D curve (C1 smooth), 2D pcurve with C0 knot at u=0.5. Call ShapeFix_ComposeShell.SplitOnEdges(). Expected: Detect C0 in pcurve, propose split or upgrade. Incorrect: Compose without detecting discontinuity.
-
-**File**: `/Users/zellyn/gh/dodgy-step-files/step-examples/12-2b-nurbs/Gn131.stp`
-
----
-
-## Gn132 — Geom_BSplineCurve.IncreaseDegree weight-redistribution asymmetry
-
-**Defect**: Rational B-spline curve (degree 2, 4 poles) with non-uniform weights [1.0, 2.0, 1.5, 1.0]. IncreaseDegree to degree 3 inserts new control points via Oslo algorithm. Weight redistribution is not properly scaled, causing geometric shift and loss of continuity properties.
-
-**Minimal reproducer**: Curve degree 2, poles = [(0,0,0), (1,2,0), (2,1,0), (3,0,0)], weights = [1, 2, 1.5, 1]. Knots = [0,0,0, 0.5, 1,1,1]. Call IncreaseDegree(3). Expected: New poles/weights preserve curve shape, C2 continuity. Incorrect: Asymmetric weight distribution shifts curve.
-
-**File**: `/Users/zellyn/gh/dodgy-step-files/step-examples/12-2b-nurbs/Gn132.stp`
-
----
-
-## Gn133 — ShapeAnalysis_Curve.CheckOffsetCurve knot-ratio-overflow degenerate-segment
-
-**Defect**: B-spline curve with 9 poles, degree 3, knot vector with outlier spacings ([0, 0, 0, 0, 0.01, 0.5, 0.51, 1, 1, 1, 1, 1]). CheckOffsetCurve evaluates each segment and detects knot-ratio > 100. Degenerate segment (between 0.5 and 0.51) causes offset evaluation to fail or produce invalid tangent.
-
-**Minimal reproducer**: B-spline curve, degree 3, 9 poles with geometry concentrated in [0, 0.01] and [0.5, 0.51], sparse [0.01, 0.5]. Knots = [0,0,0,0, 0.01, 0.5, 0.51, 1, 1, 1, 1, 1]. Call CheckOffsetCurve (offset 0.1). Expected: Detect knot-ratio anomaly, flag for reparametrization. Incorrect: Evaluate on ill-conditioned segment, produce NaN tangent.
-
-**File**: `/Users/zellyn/gh/dodgy-step-files/step-examples/12-2b-nurbs/Gn133.stp`
-
-- **Tier-3 assertion**: shape_null == True
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 ### Gn129 — Geom_BSplineSurface periodic-U-closure weight-extraction
 - **Category**: §12.2b NURBS
 - **Sources**: OCCT/see OCCT/v3
@@ -22103,63 +22051,6 @@ Periodic B-spline with knot parameters identical at boundaries but control poles
 - **Fixture path**: step-examples/12-2b-nurbs/Gn138.stp
 - **Fixture kind**: scaffold
 
-# Wave 59B — NURBS Fixtures (Gn139–Gn143)
-
-## Gn139: TrimmedCurve Wrapping Periodic B-spline
-
-**Defect**: Periodic B-spline basis (IsPeriodic=true) wrapped in TrimmedCurve. SameParameter handler fails to detect periodicity, incorrectly clamps parameters to trim bounds.
-
-**Geometry**: 6-pole periodic cubic (degree 3) wrapped at [0.1, 0.9].
-- **Knot arithmetic**: 6 poles + degree 3 + 1 = 10 knot slots. Interior multiplicities all 1 with period 1.0 → sum check ✓
-- **Axis**: periodic_range_semantics, TrimmedCurve_periodicity_override
-- **Minimal reproducer**: BRepLib::SameParameter detects TrimmedCurve but skips period extraction.
-
----
-
-## Gn140: U-Periodic Surface with V-Bounds Check Mismatch
-
-**Defect**: U-closed surface (period 1.0). ExtendFace.periodic_bounds_adjust uses wrong variable (aSVMax vs aSVMin) for V-closed validation, causing false positives when V-max undefined.
-
-**Geometry**: 3×4 U-periodic (degree 2) / V-open (degree 2) surface.
-- **Knot arithmetic**: U: 3 poles + 2 + 1 = 6 mults (period 1.0). V: 4 poles + 2 + 1 = 7 mults (3,1,3) sum=7 ✓
-- **Axis**: periodicity-conditional, v_periodic_inversion
-- **Minimal reproducer**: Face with U-closed BSplineSurface; call ExtendFace with unbounded V-range.
-
----
-
-## Gn141: High V-Multiplicity Continuity Gap
-
-**Defect**: V-interior knot multiplicity equals degree (2). GeomAPI_ProjectPointOnSurface closure sampling checks UMultiplicity but ignores VMultiplicity, missing G0 discontinuity.
-
-**Geometry**: 4×3 surface (degree 2/2). V-knots (3,2,3); interior mult=2.
-- **Knot arithmetic**: U: 4 poles + 2 + 1 = 7 mults (3,1,3) sum=7. V: 3 poles + 2 + 1 = 6 mults → (3,2,3) sum=8 ✓
-- **Axis**: continuity_discontinuity, inherent-continuity-detection
-- **Minimal reproducer**: Project point onto surface; derivative at V=0.5 undefined (mult==degree).
-
----
-
-## Gn142: Large Pole-Count Surface Sampling Threshold
-
-**Defect**: 7×8 pole grid (56 poles; documents NbUPoles×NbVPoles > 8192 risk). ShapeAnalysis_Surface.Perform increments myNbBigSplines but lacks early-exit, causing timeout on expensive closure validation.
-
-**Geometry**: 8×7 cubic (degree 3/3), fully clamped.
-- **Knot arithmetic**: U: 8 poles + 3 + 1 = 12 mults (4,1,1,1,1,1,4) sum=12. V: 7 poles + 3 + 1 = 11 mults (4,1,1,1,1,4) sum=11 ✓
-- **Axis**: loop-validation, criterion-met-optimization
-- **Minimal reproducer**: Surface with > 8192 pole product; Perform() called without sample-count guard.
-
----
-
-## Gn143: RectangularTrimmedSurface Basis Unwrap Null-Check
-
-**Defect**: Geom_RectangularTrimmedSurface unwrapping assumes BasisSurface non-null. Down_cast followed by dereference without null guard.
-
-**Geometry**: 3×3 B-spline (degree 2/2) wrapped in RectangularTrimmedSurface [0.2..0.8]×[0.3..0.7].
-- **Knot arithmetic**: U: 3 poles + 2 + 1 = 6 mults (3,3) sum=6. V: 3 poles + 2 + 1 = 6 mults (3,3) sum=6 ✓
-- **Axis**: null-safety, surface-type-dispatch
-- **Minimal reproducer**: Face referencing RTS; healing handler calls BasisSurface() without checking result.
-
-- **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
 ### Gn139 — TrimmedCurve Wrapping Periodic B-spline
 - **Category**: §12.2b NURBS
 - **Sources**: OCCT/v3 NURBS branches
@@ -22244,7 +22135,6 @@ Periodic B-spline with knot parameters identical at boundaries but control poles
 - **Surface**: Degree 2×2, 4×3 poles. U knots (0,0,0, 0.001,0.002, 1,1) create extreme clustering.
 - **Knot arithmetic**: 4 poles U + degree 2 → 7 mults. (3,2,2) sums to 7. Correct structure but bad spacing triggers IsBad flag for arc-length reparametrization.
 
-# Wave 64C: NURBS Fresh Defects (Gn149–Gn153)
 - **Tier-3 assertion**: load == "ok"
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
 ### Gn149 — Rational weight singularity detection
@@ -24685,7 +24575,6 @@ Sphere with 3 degenerate wires (zero-extent edges at same vertex); multi-bound f
 ### Tfa225 — FixMissingSeam.seam-boundary-clamping
 U-closed BSpline surface; 2-edge loop with period-wrap geometry; tests seam-boundary clamping at line 2224. Defect: out-of-bounds seam placement (u > 2π) bypasses AdjustToPeriod, producing invalid parameter range.
 
-# Wave 66A: STEP Face Fixtures (Tfa226–Tfa230)
 - **Tier-3 assertion**: load == "ok"
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 ### Tfa226 — ShapeFix_Face.Add.null-wire-guard
@@ -24707,7 +24596,6 @@ Seam-edge reversal for dual-edge UV-periodic representation; non-seam edges skip
 ### Tfa230 — ShapeFix_Face.FixLoopWire.wire-topology
 Closed-wire reorder via FixReorder vs. open-wire append; topology-driven dispatch path.
 
-# Wave 68A — ShapeFix_Face defect synthesis (Tfa231–Tfa235)
 - **Tier-3 assertion**: load == "ok"
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 ### Tfa231 — FixSmallAreaWire shape-type filter
@@ -25891,8 +25779,6 @@ Wire has a 3D gap at a junction (endpoints separated by ~1e-8, within tolerance)
 - **Fixture path**: step-examples/12-3b-wires/Twi241.stp
 - **Fixture kind**: scaffold
 
-# Wave 56B: Wire Prefix Fixtures (Twi242–Twi246)
-
 Geometric defects in wire topology and edge coherence.
 - **Tier-3 assertion**: shape_null == True
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
@@ -26064,7 +25950,6 @@ Wire open by small gap at closure; FixClosed misses repair when endpoint distanc
 ### Twi266 — FixGap3d parameter-discontinuity
 Wire with 3D curve reversing at edge junction; FixGap3d fails to detect reversals violating parametric continuity.
 
-# Wave 69B: ShapeAnalysis_Wire Method Coverage
 - **Tier-3 assertion**: shape_null == True
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 ### Twi267 — ShapeAnalysis_Wire.CheckOuterBound
@@ -27151,7 +27036,6 @@ trimming or intersection operations assume richer surface.
 - **Fixture path**: step-examples/12-2c-surfaces/Gs148.stp
 - **Fixture kind**: scaffold
 
-# Wave 58C: Surface Analysis & Repair Defects
 - **Tier-3 assertion**: shape_null == True
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 ### Gs149 — ShapeAnalysis_Surface.IsUVBounded
@@ -27248,7 +27132,6 @@ ShapeUpgrade_ShapeCopy calls BasisSurface() without null check. If basis is null
 
 ShapeUpgrade observer flags C0 surfaces via !(IsCNu(1) && IsCNv(1)). Asymmetry: if U is C1 but V is C0, flag increments; if V is C1 and U is C0, detection may skip. Fixture: B-SPLINE_SURFACE C0 in U-direction (C1 in V); verify myNbC0Surfaces incremented.
 
-# Wave 70A: STEP Surface Fixtures — IDs Gs169–Gs173
 - **Tier-3 assertion**: shape_null == True
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 ### Gs169 — ShapeAnalysis_Surface: rational surface knot-unaware sampling gap
@@ -27297,7 +27180,6 @@ OFFSET_SURFACE (+0.5 distance) with asymmetric coverage vs base bounds; myOffset
 ### Gs178 — OffsetSurface Edge Degeneracy
 **Defect**: `ShapeAnalysis_Surface.ComputeSingularities.bounded-surface-edge-singularities` — 4-edge midpoint sampling omitted. OffsetSurface (0.5 offset from plane); corner distances capture collapse signature. Without: edge-tangency anomalies undetected.
 
-# Wave 73B: Surface Defect Fixtures (Gs179–Gs183)
 - **Tier-3 assertion**: shape_null == True
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 ### Gs179 — ShapeAnalysis_Surface.BSplineBoundaries rational-knot-sum validation omission
@@ -28635,7 +28517,6 @@ Compound with nested shell references. LoadShells() recursion incomplete when de
 - **Fixture path**: step-examples/12-3a-shells/Tsh213.stp
 - **Fixture kind**: scaffold
 
-# Wave 65B: ShapeFix_Shell Defect Fixtures
 - **Tier-3 assertion**: n_faces_total == 1
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### Tsh214 — ShapeFix_Shell.FixFaceOrientation.duplicate_faces_undetected
@@ -29264,67 +29145,6 @@ Pcurve is HYPERBOLA with reversed edge orientation. FixReversed2d's reversal doe
 
 Pcurve is TRIMMED_CURVE. GetEndTangent2d uses untrimmed-curve tangent at trim boundary, producing wrong direction.
 
-# Wave 54B Fixtures — Gp126–Gp130
-
-## Gp126 — ShapeAnalysis_Edge.CheckCurve3dWithPCurve plane-projection mismatch
-
-**Method**: `ShapeAnalysis_Edge::CheckCurve3dWithPCurve`  
-**Defect axis**: `pcurve_extraction_failure`  
-**Falsifiable claim**: Analyzer silently passes when 3D curve endpoints and P-curve projections don't match under plane projection; fails to detect inconsistency specific to planar surfaces (Geom_Plane).
-
-**Minimal reproducer**: Edge on plane with 3D line from (0,0,0)→(5,0,0) but P-curve line (0,0)→(5.5,0) in 2D. Endpoint mismatch under projection not detected.
-
-**Search anchors**: `IsKind<Geom_Plane>`, `CheckCurve3dWithPCurve`, `endpoints`, `Geom_Plane`
-
----
-
-## Gp127 — ShapeAnalysis_Edge.CheckCurve3dWithPCurve missing P-curve (FAIL1)
-
-**Method**: `ShapeAnalysis_Edge::CheckCurve3dWithPCurve`  
-**Defect axis**: `pcurve_extraction_failure`  
-**Falsifiable claim**: Analyzer silently returns false when P-curve extraction fails (FAIL1 status), masking missing or corrupt parametric curve data.
-
-**Minimal reproducer**: SURFACE_CURVE with empty pcurve list on cylindrical surface. CheckCurve3dWithPCurve returns false without reporting extraction failure.
-
-**Search anchors**: `PCurve()`, `FAIL1`, `return false`, `extraction`
-
----
-
-## Gp128 — ShapeFix_Edge.FixAddPCurve transform surface down_cast failure
-
-**Method**: `ShapeFix_Edge::FixAddPCurve`  
-**Defect axis**: `unsafe_type_narrowing`  
-**Falsifiable claim**: Non-identity location with offset surface causes Transformed() to return incompatible type; down_cast fails, exception handling missing.
-
-**Minimal reproducer**: Edge on OFFSET_SURFACE with non-identity location. Transformed() returns surface that fails safe down_cast to expected type, causing null dereference or exception.
-
-**Search anchors**: `Transformed()`, `down_cast`, `location.IsIdentity()`, `OFFSET_SURFACE`
-
----
-
-## Gp129 — ShapeAnalysis_Curve.Project degenerate-curve NaN
-
-**Method**: `ShapeAnalysis_Curve::Project`  
-**Defect axis**: `derivative_degeneracy_escalation`  
-**Falsifiable claim**: Project returns NaN on degenerate curves; comparison NaN < f is false, allowing return false via dist > tol path, silently masking failure.
-
-**Minimal reproducer**: Degenerate B-spline with all control points identical (collapses to point). Project returns NaN; distance check fails to catch.
-
-**Search anchors**: `Project()`, `NaN`, `dist > tol`, `degenerate`
-
----
-
-## Gp130 — ShapeFix_Edge.FixSameParameter B-spline parameter range mismatch
-
-**Method**: `ShapeFix_Edge::FixSameParameter`  
-**Defect axis**: `PARAMETER_SYNC`  
-**Falsifiable claim**: B-spline 3D span [0..10] vs P-curve 2D span [0..2] parameter mismatch silent; FixSameParameter misses compression ratio inconsistency.
-
-**Minimal reproducer**: B-spline in 3D with knot range [0,10], P-curve B-spline with knot range [0,2]. Parameter sync failure undetected.
-
-**Search anchors**: `FixSameParameter`, `B-spline`, `knot range`, `parameter coherence`
-- **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 ### Gp126 — ShapeAnalysis_Edge.CheckCurve3dWithPCurve plane-projection mismatch
 - **Category**: §12.2a pcurves
 - **Sources**: OCCT/ShapeAnalysis_Edge::CheckCurve3dWithPCurve
@@ -30549,8 +30369,6 @@ CheckPoints called with precision 1e-3 but projection-distance test uses 1e-6 in
 - **Fixture path**: step-examples/12-4-tolerance/N135.stp
 - **Fixture kind**: scaffold
 
-# Wave 59C: Tolerance Prefix Fixtures (N136–N140)
-
 ## Defect Patterns
 - **Tier-3 assertion**: load == "ok"
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
@@ -30748,7 +30566,6 @@ Edge loop gap (0.05 mm) accepted despite closure tolerance (0.01 mm). BRepBuilde
 ### N165 — `tolerance_conservatism` — no safety margin
 Distance 0.099999 mm compared against 0.1 mm tolerance w/o margin buffer. Single-ULP boundary case. Tests conservative threshold application.
 
-# Wave 73C — Tolerance Fixtures (N166–N170)
 - **Tier-3 assertion**: shape_null == True
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 ### N166 — InTolerance VERTEX inverted-comparison bug | ShapeAnalysis_ShapeTolerance | tolerance | ShapeAnalysis_ShapeTolerance.InTolerance.vertex_tolerance_filtering_BUGGY | vertex range filter uses >= instead of <= | tolerance-regression | reproducible | true
