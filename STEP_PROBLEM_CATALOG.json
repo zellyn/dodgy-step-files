@@ -13069,7 +13069,9 @@
       "silent-loss",
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Pcurve endpoints disagree with edge vertex 3D positions"
   },
   {
@@ -13109,7 +13111,9 @@
       "silent-loss",
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Pcurve with single-pole apex on sphere/cone (singularity)"
   },
   {
@@ -13147,7 +13151,9 @@
       "silent-loss",
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Edge parameter range outside the pcurve's natural domain"
   },
   {
@@ -13185,7 +13191,9 @@
       "silent-loss",
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Pcurve oscillations producing wire-intersector corruption"
   },
   {
@@ -13224,7 +13232,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Surface_curve.associated_geometry contains a 3D curve in lieu of pcurve"
   },
   {
@@ -13261,7 +13271,9 @@
       "silent-loss",
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Seam curve with same pcurve referenced twice"
   },
   {
@@ -13298,7 +13310,9 @@
       "silent-loss",
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "`SURFACE_CURVE` / seam-curve `associated_geometry` list contains a null `$` entry"
   },
   {
@@ -13336,7 +13350,9 @@
       "silent-loss",
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "CATIA \"like-seam\": two pcurves on same near-closed `B_SPLINE_SURFACE_WITH_KNOTS`"
   },
   {
@@ -13374,7 +13390,9 @@
       "silent-loss",
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Shared pcurve across multiple edges (SYRKO)"
   },
   {
@@ -13410,7 +13428,9 @@
       "silent-loss",
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Pcurve/3D-curve trimming failure (\"Trimming of 2D curve failed\")"
   },
   {
@@ -13448,7 +13468,9 @@
       "silent-loss",
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Pcurve in shifted/transformed UV frame relative to host surface"
   },
   {
@@ -13480,7 +13502,9 @@
       "silent-loss",
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Pcurve gaps / nearly-duplicate pcurves near periodic boundary after `B_SPLINE_SURFACE` conversion"
   },
   {
@@ -13555,7 +13579,9 @@
       "silent-loss",
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "2D gap between adjacent edges in wire — pcurves disagree in UV"
   },
   {
@@ -13594,7 +13620,9 @@
       "silent-loss",
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "3D curve and pcurve on same edge disagree about edge location (skewed/off-unit pcurve `LINE`)"
   },
   {
@@ -13636,7 +13664,9 @@
       "silent-loss",
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "`EDGE_CURVE` `SameParameter=.T.` asserted but 3D curve and pcurve use different parameterisations (degenerate B-spline pcurve)"
   },
   {
@@ -13673,7 +13703,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Point-projection onto trimmed periodic `CYLINDRICAL_SURFACE` returns UV outside trimmed band (pcurve start parameter shifted by period)"
   },
   {
@@ -13711,7 +13743,9 @@
       "silent-loss",
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Pcurve refit after non-uniform scale produces large errors"
   },
   {
@@ -13749,7 +13783,9 @@
       "silent-loss",
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "`EDGE_LOOP` contour not closed in UV (Jordan-curve violation across periodic-surface seam)"
   },
   {
@@ -13787,7 +13823,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Closed-face splitter leaves new pcurves out of sync with 3D curves on `CYLINDRICAL_SURFACE`"
   },
   {
@@ -13825,7 +13863,9 @@
       "silent-loss",
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Wire crosses periodic-surface seam without an explicit seam edge (pcurve trim range vs vertex angular position mismatch)"
   },
   {
@@ -13859,7 +13899,9 @@
       "silent-loss",
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Period-shift fix on revolved face leaves wire in inconsistent UV band, blocks meshing"
   },
   {
@@ -13895,7 +13937,9 @@
       "silent-loss",
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Bent / polyline-form `B_SPLINE` pcurve from PRO/E IGES requires protective handling"
   },
   {
@@ -13931,7 +13975,9 @@
       "round-trip",
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Cylinder represented twice as duplicate `CYLINDRICAL_SURFACE` instances loses analytic identity"
   },
   {
@@ -13965,7 +14011,9 @@
       "silent-loss",
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "B-spline curve has C0 internal break that downstream tools cannot ingest"
   },
   {
@@ -13999,7 +14047,9 @@
       "silent-loss",
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Composite curve segments do not meet within connectivity tolerance"
   },
   {
@@ -14033,7 +14083,9 @@
       "silent-loss",
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Edge has 3D curve but no pcurve, requiring projection onto host surface"
   },
   {
@@ -14071,7 +14123,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Pcurve shifting on non-periodic surface produces wrong result"
   },
   {
@@ -14109,7 +14163,9 @@
       "crash",
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Pcurve projection produces infinite line instead of bounded"
   },
   {
@@ -14148,7 +14204,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Vertex 3D point and pcurve do not match within tolerance"
   },
   {
@@ -14189,7 +14247,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Pcurve projection unstable on closed B-spline curve"
   },
   {
@@ -14227,7 +14287,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Pcurves emitted by default duplicate / contradict the surface 3D curve"
   },
   {
@@ -14258,7 +14320,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Sample-point divergence between 3D curve and PCURVE exceeds tolerance."
   },
   {
@@ -14320,7 +14384,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "B-spline PCURVE reversal corrupts knot-vector structure without re-evaluation."
   },
   {
@@ -14351,7 +14417,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Endpoint-bias projection picks wrong candidate when multiple equidistant points exist."
   },
   {
@@ -14382,7 +14450,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Edge copy during SameParameter recomputation inherits stale parameter range when curve is BSpline."
   },
   {
@@ -14537,7 +14607,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "ShapeFix_Edge.FixSameParameter recursive SameRange"
   },
   {
@@ -14878,7 +14950,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "ShapeAnalysis_Edge.CheckCurve3dWithPCurve sample-count threshold"
   },
   {
@@ -14909,7 +14983,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "ShapeFix_Edge.FixAddPCurve trimmed-surface boundary"
   },
   {
@@ -14940,7 +15016,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "ShapeAnalysis_Edge.CheckOverlapping bounded-curve trim"
   },
   {
@@ -14971,7 +15049,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "ShapeFix_Edge.FixRemovePCurve degenerate-on-cone"
   },
   {
@@ -15002,7 +15082,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "ShapeAnalysis_Edge.GetEndTangent2d POLYLINE variant"
   },
   {
@@ -15312,7 +15394,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "ShapeAnalysis_Edge.CheckOverlapping with surfaces"
   },
   {
@@ -15343,7 +15427,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "ShapeFix_Edge.FixAddPCurve periodic-surface-seam"
   },
   {
@@ -15374,7 +15460,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "ShapeAnalysis_Edge.CheckCurve3dWithPCurve sampling-period-mismatch"
   },
   {
@@ -15405,7 +15493,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "ShapeFix_Edge.FixSameParameter near-degenerate"
   },
   {
@@ -15436,7 +15526,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "ShapeAnalysis_Edge.CheckOverlapping degenerate-pcurve"
   },
   {
@@ -15467,7 +15559,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "ShapeFix_Edge.FixReversed2d offset-curve handling"
   },
   {
@@ -15653,7 +15747,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "CheckPCurveRange domain-larger-than-3D"
   },
   {
@@ -15684,7 +15780,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "FixAddPCurve high-curvature near-tangent"
   },
   {
@@ -15715,7 +15813,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "CheckSameParameter B-spline parameter shift"
   },
   {
@@ -15746,7 +15846,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "FixReversed2d trimmed-circle"
   },
   {
@@ -15777,7 +15879,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "CheckOverlapping spline-vs-line"
   },
   {
@@ -16087,7 +16191,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "ShapeAnalysis_Edge.GetEndTangent2d POLYLINE first-point"
   },
   {
@@ -16180,7 +16286,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 1"
+    ],
     "title": "ShapeAnalysis_Edge.CheckPCurveRange CIRCLE-vs-trim-mismatch"
   },
   {
@@ -16242,7 +16350,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "ShapeAnalysis_Edge.CheckOverlapping zero-tolerance-overlap"
   },
   {
@@ -16273,7 +16383,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "CheckSameParameter spline-vs-spline-shifted"
   },
   {
@@ -16304,7 +16416,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "FixSameParameter degenerate-on-spline"
   },
   {
@@ -16335,7 +16449,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "CheckPCurveRange B-spline-out-of-knot"
   },
   {
@@ -16366,7 +16482,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "FixReversed2d composite-pcurve"
   },
   {
@@ -16397,7 +16515,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "GetEndTangent2d zero-derivative"
   },
   {
@@ -16583,7 +16703,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 1"
+    ],
     "title": "Sphere pole singularity in pcurve"
   },
   {
@@ -16614,7 +16736,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 1"
+    ],
     "title": "Closed pcurve, open 3D curve mismatch"
   },
   {
@@ -16645,7 +16769,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Very-many-samples high-curvature edge"
   },
   {
@@ -16676,7 +16802,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 1"
+    ],
     "title": "Cylinder seam-edge pcurve ambiguity"
   },
   {
@@ -16707,7 +16835,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 1"
+    ],
     "title": "Composite pcurve tangent discontinuity"
   },
   {
@@ -16893,7 +17023,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "ShapeAnalysis_Edge.CheckCurve3dWithPCurve plane-projection mismatch"
   },
   {
@@ -16955,7 +17087,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "ShapeFix_Edge.FixAddPCurve transform surface down_cast failure"
   },
   {
@@ -16986,7 +17120,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "ShapeAnalysis_Curve.Project degenerate-curve NaN"
   },
   {
@@ -17017,7 +17153,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "ShapeFix_Edge.FixSameParameter B-spline parameter range mismatch"
   },
   {
@@ -17079,7 +17217,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "PCurve projection tolerance escalation unchecked"
   },
   {
@@ -17110,7 +17250,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "FixSameParameter scope ambiguity on non-SameRange edges"
   },
   {
@@ -17141,7 +17283,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "BoundedCurve endpoint distance early return bias"
   },
   {
@@ -17172,7 +17316,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "FixSameParameter copyedge range divergence"
   },
   {
@@ -17203,7 +17349,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "ShapeFix_Edge.FixRemovePCurve.orphan_pcurves"
   },
   {
@@ -17234,7 +17382,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "ShapeFix_Face.FixMissingSeam.pcurve-translation-period-sync"
   },
   {
@@ -17265,7 +17415,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 1"
+    ],
     "title": "ShapeFix_IntersectionTool.SplitEdge2.pcurve-endpoint-detection"
   },
   {
@@ -17296,7 +17448,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "BRepBuilderAPI_Sewing.SameParameterEdge.seam-dual-pcurve-extraction"
   },
   {
@@ -17389,7 +17543,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Negligible Parameter Delta Precision Loss"
   },
   {
@@ -17420,7 +17576,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Endpoint Tangent from Interior Point Fallback"
   },
   {
@@ -17451,7 +17609,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Asymmetric Start Tangent Forward Difference"
   },
   {
@@ -17482,7 +17642,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Zero Magnitude Tangent from Flat Section"
   },
   {
@@ -17513,7 +17675,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "D1 derivative zero; falls back to D2 second derivative"
   },
   {
@@ -17544,7 +17708,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "D2 second derivative zero; falls back to D3 third derivative"
   },
   {
@@ -17575,7 +17741,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "D3 third derivative zero; falls back to line endpoints"
   },
   {
@@ -17606,7 +17774,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Straight-line tangent magnitude zero; complete tangent degeneracy"
   },
   {
@@ -17668,7 +17838,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "ShapeAnalysis_Edge.CheckPCurveRange periodic_range_semantics"
   },
   {
@@ -17699,7 +17871,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "ShapeAnalysis_Edge.CheckVerticesWithPCurve location_transformation_semantics"
   },
   {
@@ -17730,7 +17904,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "ShapeAnalysis_Edge.CheckCurve3dWithPCurve planar_surface_bypass"
   },
   {
@@ -17761,7 +17937,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 1"
+    ],
     "title": "ShapeAnalysis_Edge.CheckVerticesWithPCurve selective_vertex_checking"
   },
   {
@@ -17792,7 +17970,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "ShapeAnalysis_Edge.CheckCurve3dWithPCurve pcurve_extraction_failure"
   },
   {
@@ -17823,7 +18003,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "ShapeAnalysis_Edge.GetEndTangent2d `parameter_degeneracy_precision`"
   },
   {
@@ -18009,7 +18191,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "line_circle_reparametrization_2106"
   },
   {
@@ -18040,7 +18224,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "circle_parameter_1930"
   },
   {
@@ -18071,7 +18257,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "range_mismatch_2055"
   },
   {
@@ -18133,7 +18321,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "`ProjectDegenerated.whole-edge-degenerate`"
   },
   {
@@ -18164,7 +18354,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "`ProjectDegenerated.partial-edge-collapse`"
   },
   {
@@ -18195,7 +18387,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "`ProjectDegenerated.lazy-compute`"
   },
   {
@@ -18257,7 +18451,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "`ProjectDegenerated.iso-flag-unvalidated`"
   },
   {
@@ -18294,7 +18490,9 @@
       "silent-loss",
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "`B_SPLINE_SURFACE_WITH_KNOTS` U knots duplicated without justifying multiplicity"
   },
   {
@@ -18333,7 +18531,9 @@
       "silent-loss",
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "RATIONAL_BSPLINE_CURVE / SURFACE with `NbWeights ≠ NbControlPoints`"
   },
   {
@@ -18435,7 +18635,9 @@
       "round-trip",
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Under-sampled `B_SPLINE_CURVE_WITH_KNOTS` for long helical thread (Creo relative-accuracy tessellation)"
   },
   {
@@ -18471,7 +18673,9 @@
       "silent-loss",
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "High-curvature curves: knot multiplicity at full degree producing near-cusps"
   },
   {
@@ -18504,7 +18708,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "High-degree NURBS surface bloat (degree >5, redundant knots)"
   },
   {
@@ -18540,7 +18746,9 @@
       "silent-loss",
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Out-of-range / NaN NURBS control points"
   },
   {
@@ -18578,7 +18786,9 @@
       "silent-loss",
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Excess-degree `B_SPLINE_CURVE_WITH_KNOTS` / `B_SPLINE_SURFACE_WITH_KNOTS` requiring degree restriction"
   },
   {
@@ -18650,7 +18860,9 @@
       "silent-loss",
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Convert elementary to BSpline (or back): producer/consumer requires specific form"
   },
   {
@@ -18691,7 +18903,9 @@
       "round-trip",
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "`B_SPLINE_SURFACE_WITH_KNOTS` that fits a `PLANE` / `CYLINDRICAL_SURFACE` / `CONICAL_SURFACE` / `SPHERICAL_SURFACE` / `TOROIDAL_SURFACE` (canonical recognition)"
   },
   {
@@ -18725,7 +18939,9 @@
       "silent-loss",
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Rational `B_SPLINE_SURFACE_WITH_KNOTS` that is actually a `SURFACE_OF_REVOLUTION` (sqrt(2)/2 weights, 360° sweep)"
   },
   {
@@ -18761,7 +18977,9 @@
       "round-trip",
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "`SURFACE_OF_REVOLUTION` on `ELLIPSE`: basis curve becomes `TRIMMED_CURVE` over rational B-spline plus non-unit axis `DIRECTION` after round-trip"
   },
   {
@@ -18798,7 +19016,9 @@
       "silent-loss",
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "`B_SPLINE_SURFACE_WITH_KNOTS` requiring split-at-interior-knots Bezier conversion for legacy export"
   },
   {
@@ -18833,7 +19053,9 @@
       "silent-loss",
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Bezier surface and rational Bezier surface unimplemented (BRL-CAD step-g)"
   },
   {
@@ -18866,7 +19088,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Degenerate zero-length `B_SPLINE` pcurve (coincident control points / sample count <2)"
   },
   {
@@ -18902,7 +19126,9 @@
       "silent-loss",
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Spline approximation of analytic primitive (sender philosophy)"
   },
   {
@@ -18939,7 +19165,9 @@
       "crash",
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "`OFFSET_SURFACE` of complex BSpline base fails parsing only when wrapped"
   },
   {
@@ -18974,7 +19202,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "STEP→BREP silently injects new `B_SPLINE_CURVE_WITH_KNOTS` (analytic `CIRCLE` cylinder cap edges replaced)"
   },
   {
@@ -19009,7 +19239,9 @@
       "silent-loss",
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Self-intersecting `B_SPLINE_CURVE_WITH_KNOTS` edge (figure-eight or fold; coincident first/last control points)"
   },
   {
@@ -19046,7 +19278,9 @@
       "silent-loss",
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Folded/non-injective BSpline surface (Jacobian flip)"
   },
   {
@@ -19079,7 +19313,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "High-degree clamped `B_SPLINE_CURVE_WITH_KNOTS` requiring degree-restriction with continuity guarantee"
   },
   {
@@ -19149,7 +19385,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "`EDGE_CURVE` periodic-to-non-periodic conversion on small-edge export (swapped start/end vertices on tiny-radius rational B-spline arc)"
   },
   {
@@ -19184,7 +19422,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Pro/E non-uniform parameter scaling on 2D Geom2dAPI_Interpolate curves"
   },
   {
@@ -19221,7 +19461,9 @@
       "silent-loss",
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Pcurve / 3D-curve large jumps on closed-but-not-periodic `B_SPLINE_SURFACE_WITH_KNOTS` (undeclared `closed_u` seam)"
   },
   {
@@ -19255,7 +19497,9 @@
       "silent-loss",
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "B-spline knots packed below parametric resolution"
   },
   {
@@ -19290,7 +19534,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Circle translated to NURBS form with rational weights but missing weight metadata"
   },
   {
@@ -19327,7 +19573,9 @@
       "silent-loss",
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "`B_SPLINE_SURFACE_WITH_KNOTS` V knot vector strictly descending"
   },
   {
@@ -19364,7 +19612,9 @@
       "silent-loss",
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "BSpline curve whose knot vector collapses to a single unique value"
   },
   {
@@ -19403,7 +19653,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "`BOUNDED_PCURVE` LoadONBrep stub (BRL-CAD step-g)"
   },
   {
@@ -19434,7 +19686,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "ShapeAnalysis_Curve.IsClosed B-spline near-closure rejection"
   },
   {
@@ -19496,7 +19750,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "ShapeAnalysis_Surface.NextValueOfUV C0-knot Newton convergence"
   },
   {
@@ -19527,7 +19783,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "ShapeUpgrade_ConvertSurfaceToBezierBasis double-knot thin patch"
   },
   {
@@ -19589,7 +19847,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "ShapeUpgrade_ConvertCurve2dToBezier degree-elevation skip on degree=1"
   },
   {
@@ -19620,7 +19880,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "ShapeUpgrade_SplitSurface.Init split-parameters validation out-of-domain"
   },
   {
@@ -19651,7 +19913,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "ShapeAnalysis_Curve.IsPlanar near-coplanar at tolerance boundary"
   },
   {
@@ -19682,7 +19946,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "ShapeAnalysis_Curve.GetSamplePoints 2D rational weight-ratio dominance"
   },
   {
@@ -19713,7 +19979,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "ShapeFix_Edge.FixSameParameter B-spline endpoint knot-multiplicity"
   },
   {
@@ -19744,7 +20012,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "ShapeAnalysis_Curve.IsClosed parameter-infinite B-spline curve with knot sentinel"
   },
   {
@@ -19775,7 +20045,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "ShapeUpgrade_SplitSurface.SetUSplitValues empty parameter list"
   },
   {
@@ -19806,7 +20078,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "ShapeAnalysis_Curve.GetSamplePoints offset/trimmed recursion depth"
   },
   {
@@ -19837,7 +20111,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "ShapeUpgrade_ConvertSurfaceToBezierBasis knot-multiplicity C0 boundary"
   },
   {
@@ -19868,7 +20144,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "ShapeAnalysis_Curve.IsPlanar weighted BSpline poles threshold false positive"
   },
   {
@@ -19899,7 +20177,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "ShapeAnalysis_Curve.IsPlanar BSpline dispatch false-negative"
   },
   {
@@ -19961,7 +20241,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "ShapeAnalysis_Curve.FillBndBox exact-mode knot-boundary clamping"
   },
   {
@@ -19992,7 +20274,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "ShapeAnalysis_Curve.GetSamplePoints high-radius full-circle 360K cap"
   },
   {
@@ -20085,7 +20369,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "ShapeUpgrade_ConvertCurve2dToBezier loop-variable persistence"
   },
   {
@@ -20116,7 +20402,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "ShapeAnalysis_Curve.GetSamplePoints (3D 2pt LINE shortcut)"
   },
   {
@@ -20147,7 +20435,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "ShapeUpgrade_SplitSurface.SetVSplitValues out-of-order"
   },
   {
@@ -20178,7 +20468,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "ShapeAnalysis_Curve.GetSamplePoints rational pole density"
   },
   {
@@ -20333,7 +20625,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "ShapeAnalysis_Curve.FillBndBox elliptic-arc midpoint sampling"
   },
   {
@@ -20364,7 +20658,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "ShapeAnalysis_Curve.GetSamplePoints BSpline knot-aware sampling"
   },
   {
@@ -20395,7 +20691,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "ShapeUpgrade_ConvertCurve2dToBezier weight-based delegation"
   },
   {
@@ -20426,7 +20724,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "ShapeAnalysis_Curve.IsClosed BezierCurve check"
   },
   {
@@ -20457,7 +20757,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "ShapeUpgrade_SplitSurface explicit-knot-spec mismatch"
   },
   {
@@ -20488,7 +20790,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "ShapeAnalysis_Curve.FillBndBox composite-curve segment switch"
   },
   {
@@ -20643,7 +20947,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "ShapeUpgrade_ConvertCurve2dToBezier double-degree-elevation knot error"
   },
   {
@@ -20674,7 +20980,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "ShapeAnalysis_Curve.IsPlanar BSpline interior bow"
   },
   {
@@ -20705,7 +21013,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "ShapeUpgrade_SplitSurface.SetUSplitValues duplicate dedup"
   },
   {
@@ -20736,7 +21046,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "ShapeAnalysis_Curve.GetSamplePoints CIRCLE scale-insensitive cap"
   },
   {
@@ -20767,7 +21079,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "ShapeUpgrade_ConvertSurfaceToBezierBasis multi-patch seam drift"
   },
   {
@@ -20798,7 +21112,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "ShapeAnalysis_Curve.FillBndBox endpoint-bias extremum miss"
   },
   {
@@ -20953,7 +21269,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "ShapeAnalysis_Curve.IsClosed B-spline open-via-knots"
   },
   {
@@ -20984,7 +21302,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "ShapeUpgrade_SplitSurface non-rectangular-region"
   },
   {
@@ -21015,7 +21335,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "ShapeAnalysis_Curve.IsPlanar Z-NaN"
   },
   {
@@ -21046,7 +21368,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "ShapeUpgrade_ConvertCurve2dToBezier endpoint-pole-multiplicity"
   },
   {
@@ -21077,7 +21401,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "ShapeAnalysis_Curve.GetSamplePoints offset-curve sample-density"
   },
   {
@@ -21108,7 +21434,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "ShapeUpgrade_ConvertSurfaceToBezierBasis u-and-v-knot-asymmetry"
   },
   {
@@ -21139,7 +21467,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "ShapeAnalysis_Curve.IsClosed degree-0-curve"
   },
   {
@@ -21170,7 +21500,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "ShapeUpgrade_ConvertSurfaceToBezierBasis 1x1-control-grid"
   },
   {
@@ -21201,7 +21533,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "ShapeAnalysis_Curve.FillBndBox infinite-bbox"
   },
   {
@@ -21232,7 +21566,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "ShapeUpgrade_SplitSurface.Init duplicate-split-values"
   },
   {
@@ -21418,7 +21754,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "ShapeAnalysis_Curve.FillBndBox bspline-bezier-mixed"
   },
   {
@@ -21449,7 +21787,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 1"
+    ],
     "title": "trimmed-recursion on B-spline"
   },
   {
@@ -21604,7 +21944,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "ShapeAnalysis_Curve.IsPlanar non-rational-bspline-3D"
   },
   {
@@ -21635,7 +21977,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "ShapeUpgrade_ConvertSurfaceToBezierBasis bezier-with-trim"
   },
   {
@@ -21666,7 +22010,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "ShapeAnalysis_Curve.GetSamplePoints cubic-with-flat-region"
   },
   {
@@ -21697,7 +22043,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "ShapeUpgrade_SplitSurface.Init split-at-knot"
   },
   {
@@ -21728,7 +22076,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "ShapeAnalysis_Curve.IsClosed periodic-with-knot-asymmetry"
   },
   {
@@ -21759,7 +22109,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "ShapeAnalysis_Curve.IsClosed knot-vector-not-symmetric"
   },
   {
@@ -21790,7 +22142,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "ShapeUpgrade_ConvertSurfaceToBezierBasis non-uniform-degree"
   },
   {
@@ -21821,7 +22175,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "ShapeAnalysis_Curve.GetSamplePoints near-collinear-poles"
   },
   {
@@ -21852,7 +22208,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "ShapeUpgrade_SplitSurface with-rational-and-non-rational-mixed"
   },
   {
@@ -21883,7 +22241,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "ShapeAnalysis_Curve.IsPlanar two-points-and-one-offset"
   },
   {
@@ -22038,7 +22398,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "ShapeAnalysis_Curve.IsClosed COMPOSITE_CURVE with-direction-reversal"
   },
   {
@@ -22069,7 +22431,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "ShapeAnalysis_Curve.FillBndBox with-degenerate-segments"
   },
   {
@@ -22100,7 +22464,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "ShapeUpgrade_SplitSurface.SetVSplitValues partial-domain"
   },
   {
@@ -22131,7 +22497,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "ShapeAnalysis_Curve.GetSamplePoints CIRCLE with-trim-near-2π"
   },
   {
@@ -22162,7 +22530,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "ShapeUpgrade_ConvertCurve2dToBezier with-already-bezier"
   },
   {
@@ -23154,7 +23524,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "B-spline surface with collapsed U-boundary pole (pin-face singularity)"
   },
   {
@@ -23216,7 +23588,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "B-spline surface with asymmetric pole clustering"
   },
   {
@@ -23309,7 +23683,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Rational BSpline Closure Detection Bypass"
   },
   {
@@ -23340,7 +23716,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Ill-Conditioned Knot Spacing (44:1 Ratio)"
   },
   {
@@ -23371,7 +23749,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Boundary Pole Singularity (First Row)"
   },
   {
@@ -23402,7 +23782,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Non-Planar Degree-4 BSpline"
   },
   {
@@ -23433,7 +23815,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Interior C0 Discontinuity (Tangent Jump)"
   },
   {
@@ -23623,7 +24007,9 @@
       "silent-loss",
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Curve approximation cannot meet the requested tolerance"
   },
   {
@@ -23657,7 +24043,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Surface tangent / normal undefined at a parameter (LProp_Status.Undefined)"
   },
   {
@@ -23693,7 +24081,9 @@
       "silent-loss",
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Closed B-spline curve has reversed end-tangent"
   },
   {
@@ -23728,7 +24118,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Pcurve and 3D curve disagree by a measurable distance (CheckCurveOnSurface)"
   },
   {
@@ -23765,7 +24157,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "TOROIDAL_SURFACE with negative MajorRadius (SolidWorks/Pro-E orientation marker)"
   },
   {
@@ -23800,7 +24194,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Degenerate (lemon/apple) torus where minor_radius >= major_radius"
   },
   {
@@ -23836,7 +24232,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Surface periodicity not declared but actually closed"
   },
   {
@@ -23870,7 +24268,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Surface singularities (degenerate poles) not in declared form"
   },
   {
@@ -23904,7 +24304,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Pcurve U coordinate outside canonical [0, 2π) seam range on `CYLINDRICAL_SURFACE` (whole wire off by period)"
   },
   {
@@ -23945,7 +24347,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Self-intersecting / figure-eight `EDGE_LOOP` wire on planar face (non-simple polygon)"
   },
   {
@@ -23984,7 +24388,9 @@
       "silent-loss",
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Self-intersecting / folded `B_SPLINE_SURFACE_WITH_KNOTS` (Jacobian sign change, transposed interior rows)"
   },
   {
@@ -24019,7 +24425,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Crossed-trim `EDGE_LOOP` with non-shared diagonals (mesh-derived BRep, STL→STEP)"
   },
   {
@@ -24056,7 +24464,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Non-simple `EDGE_LOOP` (face boundary self-crosses in UV: bow-tie quadrilateral)"
   },
   {
@@ -24097,7 +24507,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Zero-area / sliver / degenerate `ADVANCED_FACE` (sliver, spot, strip, pin; tiny aspect-ratio rectangle)"
   },
   {
@@ -24135,7 +24547,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Sliver face (high aspect ratio, two long edges within tolerance)"
   },
   {
@@ -24172,7 +24586,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Mismatched orientation of 3D curve and pcurve"
   },
   {
@@ -24211,7 +24627,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Pcurves shifted by integer period on closed surface"
   },
   {
@@ -24248,7 +24666,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Line displaced from true position (FPX Expert PCB)"
   },
   {
@@ -24286,7 +24706,9 @@
       "round-trip",
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Round-trip planar face becomes trimmed B-spline (degree-1 NURBS)"
   },
   {
@@ -24323,7 +24745,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "`B_SPLINE_CURVE_WITH_KNOTS` C0 cusp / kink at interior knot of full multiplicity (C1 expected)"
   },
   {
@@ -24393,7 +24817,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Pseudo-seam edge: `SURFACE_CURVE` claims `PCURVE_S1_AND_S2` but lists same pcurve twice"
   },
   {
@@ -24430,7 +24856,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Curve with last < first parameter range"
   },
   {
@@ -24467,7 +24895,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Edge geometry inconsistent with adjacent faces' actual intersection"
   },
   {
@@ -24503,7 +24933,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "`ADVANCED_FACE` with two `FACE_OUTER_BOUND` entries (duplicated outer contour, overlapping pcurves)"
   },
   {
@@ -24539,7 +24971,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Surface-of-linear-extrusion whose direction is parallel to its basis line"
   },
   {
@@ -24574,7 +25008,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Trim curves on `TOROIDAL_SURFACE` / NURBS produce jagged tessellation borders (`TRIMMED_CURVE` on `ELLIPSE` pcurve)"
   },
   {
@@ -24612,7 +25048,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Twisted / pinched / vertex-split face: `EDGE_LOOP` revisits a shared vertex (Möbius-cell pathology)"
   },
   {
@@ -24651,7 +25089,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Composite curve segment with null `parent_curve`"
   },
   {
@@ -24689,7 +25129,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Negative-radius / zero-magnitude direction or vector"
   },
   {
@@ -24725,7 +25167,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Offset of a surface-of-linear-extrusion fails iso-curve evaluation"
   },
   {
@@ -24762,7 +25206,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Pcurve U/V parameter has large jump near periodic boundary on BSpline"
   },
   {
@@ -24800,7 +25246,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Helical sweep / variable-radius blend silently emitted as incomplete shell (cap-only face on `SPHERICAL_SURFACE` with `VERTEX_LOOP` bound)"
   },
   {
@@ -24837,7 +25285,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "High-curvature curve / cusp from NURBS knot insertion"
   },
   {
@@ -24872,7 +25322,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "`RECTANGULAR_COMPOSITE_SURFACE` with non-uniform patch grid"
   },
   {
@@ -24908,7 +25360,9 @@
       "spec-violation",
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "`CURVE_BOUNDED_SURFACE` with self-intersecting (bowtie) boundary"
   },
   {
@@ -24946,7 +25400,9 @@
       "spec-violation",
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "`OFFSET_CURVE_3D` with `ref_distance` equal to the basis curve's radius of curvature (collapse)"
   },
   {
@@ -24983,7 +25439,9 @@
       "spec-violation",
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "`INTERSECTION_CURVE` between two surfaces with multiple disjoint intersection branches, only one represented"
   },
   {
@@ -25022,7 +25480,9 @@
       "spec-violation",
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "`SURFACE_OF_REVOLUTION` whose revolution axis crosses the basis curve at an interior point"
   },
   {
@@ -25060,7 +25520,9 @@
       "spec-violation",
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "`SURFACE_OF_LINEAR_EXTRUSION` with zero-magnitude extrusion vector"
   },
   {
@@ -25096,7 +25558,9 @@
       "spec-violation",
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "`BLENDED_EDGE_SURFACE` with mismatched fillet radii at a shared vertex"
   },
   {
@@ -25134,7 +25598,9 @@
       "spec-violation",
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "`OFFSET_CURVE_2D` with sign of `ref_distance` flipping mid composite-curve chain"
   },
   {
@@ -25169,7 +25635,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "B-spline surface has C0 isoparametric line that triggers split-on-import"
   },
   {
@@ -25206,7 +25674,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Toroidal surface stored incorrectly: major / minor swapped"
   },
   {
@@ -25243,7 +25713,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Sphere/cylinder cut produces wrong pcurves on second seam"
   },
   {
@@ -25281,7 +25753,9 @@
       "round-trip",
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Surface of revolution with offset basis curve breaks on export"
   },
   {
@@ -25319,7 +25793,9 @@
       "round-trip",
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Scaled sphere as B-spline approximation broken on export"
   },
   {
@@ -25357,7 +25833,9 @@
       "crash",
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Composite curve segment self-cyclic to its containing composite"
   },
   {
@@ -25396,7 +25874,9 @@
       "silent-loss",
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Composite curve segment with infinite trim parameters"
   },
   {
@@ -25434,7 +25914,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "`SURFACE_OF_REVOLUTION` of an ellipse around its own centre produces a degenerate surface"
   },
   {
@@ -25474,7 +25956,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "`RECTANGULAR_COMPOSITE_SURFACE` LoadONBrep stub (BRL-CAD step-g)"
   },
   {
@@ -25513,7 +25997,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "`SURFACE_PATCH` `transition_code` / `u_sense` / `v_sense` parsed but ignored (BRL-CAD step-g)"
   },
   {
@@ -25544,7 +26030,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "B-spline knot-multiplicity closure sanity"
   },
   {
@@ -25575,7 +26063,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Spherical surface pole singularity detection"
   },
   {
@@ -25606,7 +26096,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "B-spline surface normal degeneracy at cusp"
   },
   {
@@ -25637,7 +26129,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Trimmed cylinder ValueOfUV dispatch"
   },
   {
@@ -25668,7 +26162,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Trimmed offset surface Bezier delegation"
   },
   {
@@ -25823,7 +26319,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "ShapeAnalysis_Surface.UVFromIso boundary U-iso failure"
   },
   {
@@ -25978,7 +26476,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "ShapeUpgrade_ConvertSurfaceToBezierBasis plane-approximation thin patch"
   },
   {
@@ -26133,7 +26633,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Offset-of-Offset Sign Error"
   },
   {
@@ -26164,7 +26666,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "ShapeAnalysis_Surface.UVFromIso periodic reset"
   },
   {
@@ -26195,7 +26699,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "ShapeUpgrade_FaceDivide.SplitSurface boundary-merge"
   },
   {
@@ -26226,7 +26732,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "ShapeAnalysis_Surface.IsUClosed extrusion-base form"
   },
   {
@@ -26257,7 +26765,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "ShapeAnalysis_Surface.NextValueOfUV curvature step-size"
   },
   {
@@ -26288,7 +26798,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "ShapeUpgrade_ConvertSurfaceToBezierBasis quasi-uniform vs non-uniform mismatch"
   },
   {
@@ -26443,7 +26955,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 1"
+    ],
     "title": "ShapeUpgrade_FaceDivide.SplitSurface periodic"
   },
   {
@@ -26474,7 +26988,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "ShapeAnalysis_Surface.UVFromIso B-spline midspan failure"
   },
   {
@@ -26505,7 +27021,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "ShapeUpgrade_ConvertSurfaceToBezierBasis thin-patch elimination threshold"
   },
   {
@@ -26536,7 +27054,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "ShapeAnalysis_Surface.IsUClosed B-spline rational weights"
   },
   {
@@ -26567,7 +27087,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "ShapeAnalysis_Surface.ComputeBoundIsos extrusion-direction reset"
   },
   {
@@ -26598,7 +27120,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "ShapeUpgrade_SplitSurface BSpline irregular knots"
   },
   {
@@ -26629,7 +27153,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "ShapeAnalysis_Surface.UVFromIso parameter-clamp underflow"
   },
   {
@@ -26660,7 +27186,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "ShapeUpgrade_ConvertSurfaceToBezierBasis sphere"
   },
   {
@@ -26691,7 +27219,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "ShapeAnalysis_Surface.ComputeSingularities torus pinch"
   },
   {
@@ -26722,7 +27252,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "ShapeUpgrade_FaceDivideArea.Perform threshold reset"
   },
   {
@@ -26753,7 +27285,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "ShapeAnalysis_Surface.IsDegenerated revolution-axis-on-curve"
   },
   {
@@ -26784,7 +27318,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Sphere pole singularity: iso-curve sampling misses pole"
   },
   {
@@ -26815,7 +27351,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "SplitSurface trim-aware split: splits base not trimmed wrapper"
   },
   {
@@ -26846,7 +27384,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "ShapeAnalysis_Surface.ValueOfUV: antipodal sphere convergence failure"
   },
   {
@@ -26877,7 +27417,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "ConvertSurfaceToBezierBasis: Bezier passthrough produces re-extracted copy"
   },
   {
@@ -26908,7 +27450,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "IsUClosed: periodic-vs-closed semantic mismatch"
   },
   {
@@ -26939,7 +27483,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "SURFACE_OF_REVOLUTION with profile-on-axis"
   },
   {
@@ -26970,7 +27516,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "FaceDivide crossing-curves defect"
   },
   {
@@ -27001,7 +27549,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Concentrated-poles surface with Newton underflow"
   },
   {
@@ -27032,7 +27582,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Closed-surface preservation in Bezier conversion"
   },
   {
@@ -27063,7 +27615,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Singularity boundary classification error"
   },
   {
@@ -27094,7 +27648,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "ShapeAnalysis_Surface.UVFromIso v-iso-at-pole"
   },
   {
@@ -27125,7 +27681,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "ShapeUpgrade_SplitSurface.SetUSplitValues count-mismatch"
   },
   {
@@ -27156,7 +27714,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "ShapeAnalysis_Surface.IsDegenerated SURFACE_OF_LINEAR_EXTRUSION zero-extrusion"
   },
   {
@@ -27187,7 +27747,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "ShapeUpgrade_ConvertSurfaceToBezierBasis cone-with-trim"
   },
   {
@@ -27218,7 +27780,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "ShapeAnalysis_Surface.ComputeBoundIsos negative-trim"
   },
   {
@@ -27254,7 +27818,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "B-spline surface"
   },
   {
@@ -27290,7 +27856,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "B-spline surface"
   },
   {
@@ -27326,7 +27894,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "B-spline surface"
   },
   {
@@ -27362,7 +27932,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "B-spline surface"
   },
   {
@@ -27398,7 +27970,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "B-spline surface"
   },
   {
@@ -27429,7 +28003,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "CONICAL_SURFACE with zero radius (degenerate point)"
   },
   {
@@ -27460,7 +28036,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "FaceDivide splitter curve tangent to boundary (zero-area sub-face)"
   },
   {
@@ -27491,7 +28069,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "SurfaceNewton trapped in local minimum of distance function"
   },
   {
@@ -27522,7 +28102,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Rational B-spline surface with zero weight (degenerate interior)"
   },
   {
@@ -27553,7 +28135,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "TOROIDAL_SURFACE with major_radius < minor_radius (self-intersecting)"
   },
   {
@@ -27584,7 +28168,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "B-SPLINE_SURFACE with u_periodic flag but non-coincident poles"
   },
   {
@@ -27615,7 +28201,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "B-SPLINE_SURFACE with very wide U domain"
   },
   {
@@ -27646,7 +28234,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "B-SPLINE_SURFACE with high-curvature Newton singularity"
   },
   {
@@ -27677,7 +28267,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "B-SPLINE_SURFACE with degenerate edge after split"
   },
   {
@@ -27708,7 +28300,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "TOROIDAL_SURFACE with v-closed property and u-iso wraparound"
   },
   {
@@ -27739,7 +28333,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "CYLINDRICAL_SURFACE with non-unit radius underflowing tolerance check"
   },
   {
@@ -27770,7 +28366,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "FACE with trim coincident to existing split edge"
   },
   {
@@ -27801,7 +28399,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "TOROIDAL_SURFACE with Newton iteration near convergence"
   },
   {
@@ -27832,7 +28432,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "TOROIDAL_SURFACE wrongly elevated to non-analytic Bezier"
   },
   {
@@ -27863,7 +28465,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "CYLINDRICAL_SURFACE degenerate edge with sub-optimal projection"
   },
   {
@@ -28049,7 +28653,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "IsUClosed pole-singularity false positive"
   },
   {
@@ -28111,7 +28717,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "FixMissingSeam RectangularTrimmedSurface bound mismatch"
   },
   {
@@ -28142,7 +28750,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Segment rational-weight singularity"
   },
   {
@@ -28173,7 +28783,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "MakeBSpline grid-sampling false periodicity"
   },
   {
@@ -28204,7 +28816,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "ComputeBoxes null-ISO silent skip"
   },
   {
@@ -28235,7 +28849,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "ProjectDegenerated lazy singularity init"
   },
   {
@@ -28266,7 +28882,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "SurfaceNewton zero-normal break"
   },
   {
@@ -28297,7 +28915,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "ValueOfUV projection beyond bound"
   },
   {
@@ -28359,7 +28979,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "ShapeAnalysis_Surface.IsUVBounded"
   },
   {
@@ -28390,7 +29012,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "ShapeConstruct_Surface.AdjustByTransformation"
   },
   {
@@ -28421,7 +29045,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "ShapeFix_Face.FixWireTool"
   },
   {
@@ -28452,7 +29078,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "ShapeUpgrade_Surface.SplitSurface"
   },
   {
@@ -28483,7 +29111,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "ShapeAnalysis_Surface.CalcMaxDegree"
   },
   {
@@ -28514,7 +29144,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "CheckSmall weak tolerance comparison"
   },
   {
@@ -28545,7 +29177,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "CopyTrimmedSurface uv-param loss"
   },
   {
@@ -28576,7 +29210,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "EditVertex ordering corruption"
   },
   {
@@ -28607,7 +29243,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "GetSurfaceType misidentification via precision"
   },
   {
@@ -28638,7 +29276,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "AddFace null geometry propagation"
   },
   {
@@ -28669,7 +29309,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "RectangularTrimmedSurface null-basis unwrap"
   },
   {
@@ -28700,7 +29342,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "GeomAdaptor_Surface offset-surface misclassification"
   },
   {
@@ -28731,7 +29375,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Face with null geometric surface"
   },
   {
@@ -28762,7 +29408,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Surface C0 in single direction undetected"
   },
   {
@@ -28793,7 +29441,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "ShapeUpgrade large-pole B-spline threshold"
   },
   {
@@ -28824,7 +29474,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "BezierSurface pole extraction dispatch"
   },
   {
@@ -28855,7 +29507,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "OffsetSurface detection and collection mode"
   },
   {
@@ -28886,7 +29540,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "SurfaceOfRevolution V-closed seam edge gap"
   },
   {
@@ -28917,7 +29573,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "RectangularTrimmedSurface null basis detection"
   },
   {
@@ -28979,7 +29637,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "ShapeAnalysis_Surface: rational surface knot-unaware sampling gap"
   },
   {
@@ -29010,7 +29670,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "ShapeAnalysis_Surface: trimmed surface closure validation skip"
   },
   {
@@ -29041,7 +29703,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "ShapeAnalysis_Surface: surface domain mismatch on projection result"
   },
   {
@@ -29072,7 +29736,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "ShapeAnalysis_Surface: degenerate surface derivative guard omission"
   },
   {
@@ -29134,7 +29800,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "SphericalSurface Pole Singularities"
   },
   {
@@ -29165,7 +29833,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "ToroidalSurface Dual-Pinch Singularities"
   },
   {
@@ -29196,7 +29866,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "RectangularTrimmedSurface Null Basis"
   },
   {
@@ -29227,7 +29899,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "ConicalSurface Apex Singularity"
   },
   {
@@ -29351,7 +30025,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 1"
+    ],
     "title": "ShapeConstruct_Surface.ConvertCurveToSurface invalid-basis bypass"
   },
   {
@@ -29413,7 +30089,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 1"
+    ],
     "title": "ShapeAnalysis_Surface.ComputeSingularities edge-proximity cache-invalidation"
   },
   {

@@ -1397,6 +1397,7 @@ _Section summary: 82 entries._
 - **Byte assertion**: contains(b'SURFACE_CURVE')
 - **Byte assertion**: contains(b'EDGE_CURVE')
 - **Byte assertion**: count_entity_def(b'PCURVE') >= 1
+- **Tier-3 assertion**: shape_null == True
 - **Model impact**: The pcurve attribute on the affected EDGE_CURVE/SEAM_CURVE is missing, NULL, or inconsistent with its 3D companion; downstream meshing and boolean operations either rebuild it from the 3D edge (introducing tolerance error) or dereference a null handle and abort.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
@@ -1411,6 +1412,7 @@ _Section summary: 82 entries._
 - **Byte assertion**: contains(b'SURFACE_CURVE')
 - **Byte assertion**: contains(b'EDGE_CURVE')
 - **Byte assertion**: count_entity_def(b'PCURVE') >= 1
+- **Tier-3 assertion**: shape_null == True
 - **Model impact**: The pcurve attribute on the affected EDGE_CURVE/SEAM_CURVE is missing, NULL, or inconsistent with its 3D companion; downstream meshing and boolean operations either rebuild it from the 3D edge (introducing tolerance error) or dereference a null handle and abort.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
@@ -1424,6 +1426,7 @@ _Section summary: 82 entries._
 - **Byte assertion**: contains(b'SURFACE_CURVE')
 - **Byte assertion**: contains(b'EDGE_CURVE')
 - **Byte assertion**: count_entity_def(b'PCURVE') >= 1
+- **Tier-3 assertion**: shape_null == True
 - **Model impact**: The pcurve attribute on the affected EDGE_CURVE/SEAM_CURVE is missing, NULL, or inconsistent with its 3D companion; downstream meshing and boolean operations either rebuild it from the 3D edge (introducing tolerance error) or dereference a null handle and abort.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
@@ -1437,6 +1440,7 @@ _Section summary: 82 entries._
 - **Byte assertion**: contains(b'SURFACE_CURVE')
 - **Byte assertion**: contains(b'EDGE_CURVE')
 - **Byte assertion**: count_entity_def(b'PCURVE') >= 1
+- **Tier-3 assertion**: shape_null == True
 - **Model impact**: The pcurve attribute on the affected EDGE_CURVE/SEAM_CURVE is missing, NULL, or inconsistent with its 3D companion; downstream meshing and boolean operations either rebuild it from the 3D edge (introducing tolerance error) or dereference a null handle and abort.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
@@ -1451,6 +1455,7 @@ _Section summary: 82 entries._
 - **Byte assertion**: contains(b'SURFACE_CURVE')
 - **Byte assertion**: contains(b'EDGE_CURVE')
 - **Byte assertion**: contains(b'PCURVE')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: The pcurve attribute on the affected EDGE_CURVE/SEAM_CURVE is missing, NULL, or inconsistent with its 3D companion; downstream meshing and boolean operations either rebuild it from the 3D edge (introducing tolerance error) or dereference a null handle and abort.
@@ -1465,6 +1470,7 @@ _Section summary: 82 entries._
 - **Notes**: **See also**: Twi022. **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal, reject}). Kernel-bug witnessed: catalog allows either heal or reject; OCC silently accepts the bad input without doing either. Synonyms: "seam edge has same pcurve in both slots", "seam_curve associated_geometry references one pcurve twice", "two banks of seam point at same 2D curve", "seam pcurve duplicated instead of period-shifted", "seam wire fails to close around cylinder".
 - **Byte assertion**: contains(b'EDGE_CURVE')
 - **Byte assertion**: count_entity_def(b'PCURVE') >= 1
+- **Tier-3 assertion**: shape_null == True
 - **Model impact**: The pcurve attribute on the affected EDGE_CURVE/SEAM_CURVE is missing, NULL, or inconsistent with its 3D companion; downstream meshing and boolean operations either rebuild it from the 3D edge (introducing tolerance error) or dereference a null handle and abort.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
@@ -1477,6 +1483,7 @@ _Section summary: 82 entries._
 - **Notes**: **See also**: Twi022. **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: catalog asks for healing; OCC neither heals nor rejects; the input is dropped on the floor without diagnostic. Synonyms: "seam edge on periodic surface missing one of its two parametric curves", "null pcurve in associated_geometry list", "seam_curve has dollar-sign for second pcurve", "missing pcurve entry on seam edge", "associated_geometry contains null parametric curve member", "seam pcurve list has $ placeholder".
 - **Byte assertion**: contains(b'EDGE_CURVE')
 - **Byte assertion**: count_entity_def(b'PCURVE') >= 1
+- **Tier-3 assertion**: shape_null == True
 - **Model impact**: The pcurve attribute on the affected EDGE_CURVE/SEAM_CURVE is missing, NULL, or inconsistent with its 3D companion; downstream meshing and boolean operations either rebuild it from the 3D edge (introducing tolerance error) or dereference a null handle and abort.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
@@ -1491,6 +1498,7 @@ _Section summary: 82 entries._
 - **Byte assertion**: contains(b'SURFACE_CURVE')
 - **Byte assertion**: contains(b'EDGE_CURVE')
 - **Byte assertion**: count_entity_def(b'PCURVE') >= 2
+- **Tier-3 assertion**: shape_null == True
 - **Model impact**: The pcurve attribute on the affected EDGE_CURVE/SEAM_CURVE is missing, NULL, or inconsistent with its 3D companion; downstream meshing and boolean operations either rebuild it from the 3D edge (introducing tolerance error) or dereference a null handle and abort.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
@@ -1505,6 +1513,7 @@ _Section summary: 82 entries._
 - **Byte assertion**: contains(b'SURFACE_CURVE')
 - **Byte assertion**: contains(b'EDGE_CURVE')
 - **Byte assertion**: count_entity_def(b'PCURVE') >= 1
+- **Tier-3 assertion**: shape_null == True
 - **Model impact**: The pcurve attribute on the affected EDGE_CURVE/SEAM_CURVE is missing, NULL, or inconsistent with its 3D companion; downstream meshing and boolean operations either rebuild it from the 3D edge (introducing tolerance error) or dereference a null handle and abort.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
@@ -1518,6 +1527,7 @@ _Section summary: 82 entries._
 - **Byte assertion**: contains(b'SURFACE_CURVE')
 - **Byte assertion**: contains(b'EDGE_CURVE')
 - **Byte assertion**: count_entity_def(b'PCURVE') >= 1
+- **Tier-3 assertion**: shape_null == True
 - **Model impact**: The pcurve attribute on the affected EDGE_CURVE/SEAM_CURVE is missing, NULL, or inconsistent with its 3D companion; downstream meshing and boolean operations either rebuild it from the 3D edge (introducing tolerance error) or dereference a null handle and abort.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
@@ -1532,6 +1542,7 @@ _Section summary: 82 entries._
 - **Byte assertion**: contains(b'SURFACE_CURVE')
 - **Byte assertion**: contains(b'EDGE_CURVE')
 - **Byte assertion**: count_entity_def(b'PCURVE') >= 1
+- **Tier-3 assertion**: shape_null == True
 - **Model impact**: The pcurve attribute on the affected EDGE_CURVE/SEAM_CURVE is missing, NULL, or inconsistent with its 3D companion; downstream meshing and boolean operations either rebuild it from the 3D edge (introducing tolerance error) or dereference a null handle and abort.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
@@ -1544,6 +1555,7 @@ _Section summary: 82 entries._
 - **Notes**: **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers must reject this fixture per the catalog's stated invariant. Synonyms: "nearly-duplicate pcurves at converted seam", "small UV gap after periodic-to-NURBS conversion", "pcurve gap near wraparound", "two pcurves on same edge after BSpline conversion", "periodic surface converted to NURBS leaves seam pcurve mismatch".
 - **Model impact**: The pcurve attribute on the affected EDGE_CURVE/SEAM_CURVE is missing, NULL, or inconsistent with its 3D companion; downstream meshing and boolean operations either rebuild it from the 3D edge (introducing tolerance error) or dereference a null handle and abort.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Tier-3 assertion**: shape_null == True
 
 ### Gp019 — Edge on a composite-surface face is missing per-patch pcurve
 - **Category**: §12.2a pcurve
@@ -1567,6 +1579,7 @@ _Section summary: 82 entries._
 - **Notes**: **See also**: Gp026, Twi003. **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers must reject this fixture per the catalog's stated invariant. Synonyms: "2D gap between consecutive edges in wire", "pcurves disagree at shared vertex in UV", "wire connected in 3D but open in UV", "pcurve endpoint mismatch at shared vertex", "edges share 3D vertex but pcurves diverge".
 - **Model impact**: The pcurve attribute on the affected EDGE_CURVE/SEAM_CURVE is missing, NULL, or inconsistent with its 3D companion; downstream meshing and boolean operations either rebuild it from the 3D edge (introducing tolerance error) or dereference a null handle and abort.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Tier-3 assertion**: shape_null == True
 
 ### Gp021 — 3D curve and pcurve on same edge disagree about edge location (skewed/off-unit pcurve `LINE`)
 - **Category**: §12.2a pcurve
@@ -1578,6 +1591,7 @@ _Section summary: 82 entries._
 - **Byte assertion**: contains(b'SURFACE_CURVE')
 - **Byte assertion**: contains(b'EDGE_CURVE')
 - **Byte assertion**: count_entity_def(b'PCURVE') >= 1
+- **Tier-3 assertion**: shape_null == True
 - **Model impact**: The pcurve attribute on the affected EDGE_CURVE/SEAM_CURVE is missing, NULL, or inconsistent with its 3D companion; downstream meshing and boolean operations either rebuild it from the 3D edge (introducing tolerance error) or dereference a null handle and abort.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
@@ -1591,6 +1605,7 @@ _Section summary: 82 entries._
 - **Byte assertion**: contains(b'SURFACE_CURVE')
 - **Byte assertion**: contains(b'EDGE_CURVE')
 - **Byte assertion**: count_entity_def(b'PCURVE') >= 1
+- **Tier-3 assertion**: shape_null == True
 - **Model impact**: The pcurve attribute on the affected EDGE_CURVE/SEAM_CURVE is missing, NULL, or inconsistent with its 3D companion; downstream meshing and boolean operations either rebuild it from the 3D edge (introducing tolerance error) or dereference a null handle and abort.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
@@ -1604,6 +1619,7 @@ _Section summary: 82 entries._
 - **Byte assertion**: contains(b'SURFACE_CURVE')
 - **Byte assertion**: contains(b'EDGE_CURVE')
 - **Byte assertion**: count_entity_def(b'PCURVE') >= 1
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: The pcurve attribute on the affected EDGE_CURVE/SEAM_CURVE is missing, NULL, or inconsistent with its 3D companion; downstream meshing and boolean operations either rebuild it from the 3D edge (introducing tolerance error) or dereference a null handle and abort.
@@ -1620,6 +1636,7 @@ _Section summary: 82 entries._
 - **Byte assertion**: contains(b'SURFACE_CURVE')
 - **Byte assertion**: contains(b'EDGE_CURVE')
 - **Byte assertion**: count_entity_def(b'PCURVE') >= 1
+- **Tier-3 assertion**: shape_null == True
 - **Model impact**: The pcurve attribute on the affected EDGE_CURVE/SEAM_CURVE is missing, NULL, or inconsistent with its 3D companion; downstream meshing and boolean operations either rebuild it from the 3D edge (introducing tolerance error) or dereference a null handle and abort.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
@@ -1632,6 +1649,7 @@ _Section summary: 82 entries._
 - **Notes**: **See also**: Gp020, Gp028, Gs012, Twi020. **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers must reject this fixture per the catalog's stated invariant. Synonyms: "edge_loop not closed in UV", "Jordan curve violation across periodic seam", "outer wire fails to close in parametric domain", "renderer falls back to isolines instead of triangulating", "face contour open across cylinder seam".
 - **Model impact**: The pcurve attribute on the affected EDGE_CURVE/SEAM_CURVE is missing, NULL, or inconsistent with its 3D companion; downstream meshing and boolean operations either rebuild it from the 3D edge (introducing tolerance error) or dereference a null handle and abort.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Tier-3 assertion**: shape_null == True
 
 ### Gp027 — Closed-face splitter leaves new pcurves out of sync with 3D curves on `CYLINDRICAL_SURFACE`
 - **Category**: §12.2a pcurve
@@ -1643,6 +1661,7 @@ _Section summary: 82 entries._
 - **Byte assertion**: contains(b'SURFACE_CURVE')
 - **Byte assertion**: contains(b'EDGE_CURVE')
 - **Byte assertion**: count_entity_def(b'PCURVE') >= 1
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal, reject}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: The pcurve attribute on the affected EDGE_CURVE/SEAM_CURVE is missing, NULL, or inconsistent with its 3D companion; downstream meshing and boolean operations either rebuild it from the 3D edge (introducing tolerance error) or dereference a null handle and abort.
@@ -1658,6 +1677,7 @@ _Section summary: 82 entries._
 - **Byte assertion**: contains(b'SURFACE_CURVE')
 - **Byte assertion**: contains(b'EDGE_CURVE')
 - **Byte assertion**: count_entity_def(b'PCURVE') >= 1
+- **Tier-3 assertion**: shape_null == True
 - **Model impact**: The pcurve attribute on the affected EDGE_CURVE/SEAM_CURVE is missing, NULL, or inconsistent with its 3D companion; downstream meshing and boolean operations either rebuild it from the 3D edge (introducing tolerance error) or dereference a null handle and abort.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
@@ -1670,6 +1690,7 @@ _Section summary: 82 entries._
 - **Notes**: **See also**: Gs019. **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers must reject this fixture per the catalog's stated invariant. Synonyms: "period-shift fix leaves wire across multiple bands", "wire endpoints in inconsistent UV bands after period adjust", "triangulation blocked by mixed-band pcurves", "revolved face period shift fails to converge", "pcurve endpoints scattered across periods after healing".
 - **Model impact**: The pcurve attribute on the affected EDGE_CURVE/SEAM_CURVE is missing, NULL, or inconsistent with its 3D companion; downstream meshing and boolean operations either rebuild it from the 3D edge (introducing tolerance error) or dereference a null handle and abort.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Tier-3 assertion**: shape_null == True
 
 ### Gp030 — Bent / polyline-form `B_SPLINE` pcurve from PRO/E IGES requires protective handling
 - **Category**: §12.2a pcurve
@@ -1682,6 +1703,7 @@ _Section summary: 82 entries._
 - **Byte assertion**: contains(b'SURFACE_CURVE')
 - **Byte assertion**: contains(b'EDGE_CURVE')
 - **Byte assertion**: count_entity_def(b'PCURVE') >= 1
+- **Tier-3 assertion**: shape_null == True
 - **Model impact**: The pcurve attribute on the affected EDGE_CURVE/SEAM_CURVE is missing, NULL, or inconsistent with its 3D companion; downstream meshing and boolean operations either rebuild it from the 3D edge (introducing tolerance error) or dereference a null handle and abort.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
@@ -1694,6 +1716,7 @@ _Section summary: 82 entries._
 - **Notes**: **See also**: Gn023, Gp016. **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: catalog asks for healing; OCC neither heals nor rejects; the input is dropped on the floor without diagnostic. Synonyms: "duplicate CYLINDRICAL_SURFACE instances after IGES BRep round-trip", "cylinder analytic identity lost", "two copies of same cylindrical surface", "duplicate analytic surfaces after IGES round-trip", "pcurves on supposedly-same cylinder disagree".
 - **Model impact**: The pcurve attribute on the affected EDGE_CURVE/SEAM_CURVE is missing, NULL, or inconsistent with its 3D companion; downstream meshing and boolean operations either rebuild it from the 3D edge (introducing tolerance error) or dereference a null handle and abort.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Tier-3 assertion**: shape_null == True
 
 ### Gn001 — `B_SPLINE_SURFACE_WITH_KNOTS` U knots duplicated without justifying multiplicity
 - **Category**: §12.2b NURBS/knots
@@ -1703,6 +1726,7 @@ _Section summary: 82 entries._
 - **Expected kernel behavior**: accept the identical-knot case with a warning; treat as multiplicity bump if internally consistent; never crash.
 - **Notes**: **See also**: Gn003, Gn036. **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({warn-and-proceed}). Kernel-bug witnessed: catalog wants a warning to surface; OCC accepts without any diagnostic. Synonyms: "duplicate knot value at non-end", "B-spline U knot vector has consecutive equal interior knots", "knot multiplicity not bumped despite repeated value", "two equal interior knots with multiplicity 1 each", "BSpline surface knot vector has bogus repeated entries".
 - **Byte assertion**: contains(b'B_SPLINE_SURFACE')
+- **Tier-3 assertion**: shape_null == True
 - **Model impact**: The B-spline definition is structurally invalid (knot multiplicity, degree, or control-net mismatch); the curve/surface either evaluates to NaN at parameter queries or is discarded, leaving its parent face/edge with degenerate geometry.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
@@ -1715,6 +1739,7 @@ _Section summary: 82 entries._
 - **Notes**: Validation observed: silent-empty (the malformed complex-instance entity is dropped at parse without a diagnostic) rather than the cited heal-or-crash. Specific reader-contract code path returns a quiet false at fixture scale; the kernel-mishandling-by-silent-acceptance still demonstrates the defect class. **See also**: Ad059. **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: catalog asks for healing; OCC neither heals nor rejects; the input is dropped on the floor without diagnostic. Synonyms: "rational B-spline weights count doesn't match poles", "weights array length differs from control points", "NbWeights ≠ NbControlPoints", "NURBS curve weight vector wrong length", "rational BSpline missing weight or has extra weight".
 - **Byte assertion**: contains(b'B_SPLINE_SURFACE')
 - **Byte assertion**: contains(b'B_SPLINE_CURVE')
+- **Tier-3 assertion**: shape_null == True
 - **Model impact**: The B-spline definition is structurally invalid (knot multiplicity, degree, or control-net mismatch); the curve/surface either evaluates to NaN at parameter queries or is discarded, leaving its parent face/edge with degenerate geometry.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
@@ -1750,6 +1775,7 @@ _Section summary: 82 entries._
 - **Expected kernel behavior**: Heal and accept: writers should preserve authored B-spline degree/knot structure exactly; never resample/refit during export; consumers should warn-and-accept (report tessellation-induced distortion via `geometric_validation_property` mismatch).
 - **Notes**: Synonyms: "Creo helical thread under-sampled in STEP export", "B-spline approximation of helix has too few control points", "helix BSpline zigzags from coarse tessellation", "Creo relative-accuracy export warps long helix", "tall helical thread visibly distorted in STEP".
 - **Byte assertion**: contains(b'B_SPLINE_CURVE')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: The B-spline definition is structurally invalid (knot multiplicity, degree, or control-net mismatch); the curve/surface either evaluates to NaN at parameter queries or is discarded, leaving its parent face/edge with degenerate geometry.
@@ -1763,6 +1789,7 @@ _Section summary: 82 entries._
 - **Expected kernel behavior**: accept geometrically; flag as a quality warning; downstream meshers must detect and refuse / refit before meshing.
 - **Notes**: **See also**: Gs040. **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject, warn-and-proceed}). Kernel-bug witnessed: receivers must reject this fixture per the catalog's stated invariant. Synonyms: "knot multiplicity exceeds degree+1", "B-spline near-cusp from full-degree interior knot", "rational B-spline weight ratio over 1000 causes mesher fail", "knot multiplicity equals order produces cusp", "high-curvature NURBS curve over-resolves mesher".
 - **Byte assertion**: contains(b'B_SPLINE_CURVE')
+- **Tier-3 assertion**: shape_null == True
 - **Model impact**: The B-spline definition is structurally invalid (knot multiplicity, degree, or control-net mismatch); the curve/surface either evaluates to NaN at parameter queries or is discarded, leaving its parent face/edge with degenerate geometry.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
@@ -1774,6 +1801,7 @@ _Section summary: 82 entries._
 - **Expected kernel behavior**: Accept on import; offer heal-and-accept (re-fit / degree-reduction within tolerance) via `ShapeCustom_BSplineRestriction`.
 - **Notes**: Synonyms: "high-degree NURBS surface bloat", "B-spline degree above 5 with hundreds of poles", "redundant knots inflate NURBS surface", "degree-9 NURBS where degree-3 would suffice", "BSpline surface degree-elevation bloat slows mesher".
 - **Byte assertion**: contains(b'B_SPLINE_SURFACE')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts with diagnostic but loads empty result; outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: The B-spline definition is structurally invalid (knot multiplicity, degree, or control-net mismatch); the curve/surface either evaluates to NaN at parameter queries or is discarded, leaving its parent face/edge with degenerate geometry.
@@ -1787,6 +1815,7 @@ _Section summary: 82 entries._
 - **Expected kernel behavior**: reject the surface; refuse to materialize. At minimum, refuse to use it for projection or intersection. Validate magnitudes against bounding-box envelope.
 - **Notes**: **See also**: Gs036. **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers must reject this fixture per the catalog's stated invariant. Synonyms: "NURBS control point coordinates out of range", "NaN in B-spline surface poles", "huge coordinate values 1e100 in NURBS", "NURBS pole has impossible coordinates", "NaN propagation from B-spline control points".
 - **Byte assertion**: contains(b'B_SPLINE_SURFACE')
+- **Tier-3 assertion**: shape_null == True
 - **Model impact**: The B-spline definition is structurally invalid (knot multiplicity, degree, or control-net mismatch); the curve/surface either evaluates to NaN at parameter queries or is discarded, leaving its parent face/edge with degenerate geometry.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
@@ -1798,6 +1827,7 @@ _Section summary: 82 entries._
 - **Expected kernel behavior**: heal; re-fit within stated tolerance; report deviation; refuse output if requested continuity cannot be met.
 - **Notes**: **See also**: Gn026. **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal, reject}). Kernel-bug witnessed: catalog allows either heal or reject; OCC silently accepts the bad input without doing either. Synonyms: "excess-degree B-spline curve needs degree reduction", "high-degree NURBS surface 9x7 over-spec", "degree-restriction healer needed for legacy export", "B-spline degree exceeds target system limit", "rank-deficient high-degree NURBS net".- **Byte assertion**: contains(b'B_SPLINE_SURFACE')
 - **Byte assertion**: contains(b'B_SPLINE_CURVE')
+- **Tier-3 assertion**: shape_null == True
 - **Model impact**: The B-spline definition is structurally invalid (knot multiplicity, degree, or control-net mismatch); the curve/surface either evaluates to NaN at parameter queries or is discarded, leaving its parent face/edge with degenerate geometry.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
@@ -1820,6 +1850,7 @@ _Section summary: 82 entries._
 - **Expected kernel behavior**: heal; exact algebraic conversion both ways (degree-d Bezier ⇄ NURBS with mult = degree+1; cylinder/cone/sphere ⇄ rational degree-2 NURBS).
 - **Notes**: **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: catalog asks for healing; OCC neither heals nor rejects; the input is dropped on the floor without diagnostic. Synonyms: "convert elementary surface to B-spline", "convert NURBS to analytic primitive", "downstream needs uniform NURBS for every face", "exact algebraic conversion between cylinder and BSpline", "kernel must convert plane/cylinder to NURBS on demand".
 - **Byte assertion**: contains(b'B_SPLINE_SURFACE')
+- **Tier-3 assertion**: shape_null == True
 - **Model impact**: The B-spline definition is structurally invalid (knot multiplicity, degree, or control-net mismatch); the curve/surface either evaluates to NaN at parameter queries or is discarded, leaving its parent face/edge with degenerate geometry.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
@@ -1831,6 +1862,7 @@ _Section summary: 82 entries._
 - **Expected kernel behavior**: heal; fit candidate primitive within user-specified tolerance, replace surface; reject canonicalization if recovered surface deviates beyond tolerance (otherwise watertightness may be lost).
 - **Notes**: **See also**: Gs024, N030. **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal, reject}). Kernel-bug witnessed: catalog allows either heal or reject; OCC silently accepts the bad input without doing either. Synonyms: "BSpline surface should be canonical plane", "B-spline that is actually a cylinder/cone/sphere/torus", "canonical recognition needed on NURBS", "feature recognition cannot find axis on B-spline cylinder", "analytic primitive lost in NURBS form".
 - **Byte assertion**: contains(b'B_SPLINE_SURFACE')
+- **Tier-3 assertion**: shape_null == True
 - **Model impact**: The B-spline definition is structurally invalid (knot multiplicity, degree, or control-net mismatch); the curve/surface either evaluates to NaN at parameter queries or is discarded, leaving its parent face/edge with degenerate geometry.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
@@ -1842,6 +1874,7 @@ _Section summary: 82 entries._
 - **Expected kernel behavior**: heal; detect rotational symmetry in the control net within tolerance; replace with `SURFACE_OF_REVOLUTION` carrying the recovered axis and profile curve.
 - **Notes**: **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: catalog asks for healing; OCC neither heals nor rejects; the input is dropped on the floor without diagnostic. Synonyms: "rational B-spline surface is actually surface of revolution", "exact-circle NURBS sqrt(2)/2 weight pattern", "BSpline 360-degree sweep should be SURFACE_OF_REVOLUTION", "cylinder/torus stored as rational BSpline net", "rotational symmetry hidden in NURBS control net".
 - **Byte assertion**: contains(b'B_SPLINE_SURFACE')
+- **Tier-3 assertion**: shape_null == True
 - **Model impact**: The B-spline definition is structurally invalid (knot multiplicity, degree, or control-net mismatch); the curve/surface either evaluates to NaN at parameter queries or is discarded, leaving its parent face/edge with degenerate geometry.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
@@ -1853,6 +1886,7 @@ _Section summary: 82 entries._
 - **Expected kernel behavior**: heal; preserve analytic basis curve (no Trimmed wrapper); reset orthonormal X/Y axes within 1e-6.
 - **Notes**: **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: catalog asks for healing; OCC neither heals nor rejects; the input is dropped on the floor without diagnostic. Synonyms: "ELLIPSE basis curve becomes TRIMMED_CURVE on round-trip", "surface_of_revolution loses analytic ellipse basis", "non-unit axis direction after BSpline round-trip", "rational B-spline approximation of ellipse replaces analytic curve", "ellipse swept basis turns into NURBS after STEP read-back".
 - **Byte assertion**: contains(b'B_SPLINE_CURVE')
+- **Tier-3 assertion**: shape_null == True
 - **Model impact**: The B-spline definition is structurally invalid (knot multiplicity, degree, or control-net mismatch); the curve/surface either evaluates to NaN at parameter queries or is discarded, leaving its parent face/edge with degenerate geometry.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
@@ -1865,6 +1899,7 @@ _Section summary: 82 entries._
 - **Notes**: **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: catalog asks for healing; OCC neither heals nor rejects; the input is dropped on the floor without diagnostic. Synonyms: "split B-spline surface at interior knots into Bezier patches", "convert NURBS to Bezier for legacy receiver", "Bezier conversion needed for downstream tool", "exact split at interior knots produces Bezier patches", "legacy receiver expects Bezier not arbitrary NURBS".
 - **Byte assertion**: contains(b'B_SPLINE_SURFACE')
 - **Byte assertion**: contains(b'BEZIER')
+- **Tier-3 assertion**: shape_null == True
 - **Model impact**: The B-spline definition is structurally invalid (knot multiplicity, degree, or control-net mismatch); the curve/surface either evaluates to NaN at parameter queries or is discarded, leaving its parent face/edge with degenerate geometry.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
@@ -1878,6 +1913,7 @@ _Section summary: 82 entries._
 - **Notes**: **OCC behavior**: silently drops the Bezier surface and produces empty geometry without a diagnostic; kernel mishandling; the catalog above forbids silent face-geometry loss. Synonyms: "BEZIER_SURFACE algebraically degree-d NURBS dropped", "rational Bezier patch with knot multiplicity equal to degree+1 unhandled", "Bezier basis surface needs internal NURBS conversion", "trivially-convertible Bezier surface form unhandled".
 - **Byte assertion**: contains(b'B_SPLINE_SURFACE')
 - **Byte assertion**: contains(b'BEZIER')
+- **Tier-3 assertion**: shape_null == True
 - **Model impact**: The B-spline definition is structurally invalid (knot multiplicity, degree, or control-net mismatch); the curve/surface either evaluates to NaN at parameter queries or is discarded, leaving its parent face/edge with degenerate geometry.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
@@ -1889,6 +1925,7 @@ _Section summary: 82 entries._
 - **Expected kernel behavior**: Heal and accept: enforce minimum sample count >= 2; fall back to endpoint+midpoint+endpoint and refine adaptively.
 - **Notes**: Synonyms: "zero-length B-spline pcurve from coincident control points", "degenerate degree-1 BSpline pcurve", "pcurve evaluates to single point at seam", "pcurve sample count below 2", "B-spline pcurve collapsed to one point at apex".
 - **Byte assertion**: contains(b'B_SPLINE_CURVE')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: The B-spline definition is structurally invalid (knot multiplicity, degree, or control-net mismatch); the curve/surface either evaluates to NaN at parameter queries or is discarded, leaving its parent face/edge with degenerate geometry.
@@ -1903,6 +1940,7 @@ _Section summary: 82 entries._
 - **Expected kernel behavior**: heal by analytic recovery (Spatial "Geometry Simplification" / OCCT canonical recognition).
 - **Notes**: **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: catalog asks for healing; OCC neither heals nor rejects; the input is dropped on the floor without diagnostic. Synonyms: "spline approximation of analytic primitive", "cylinder exported as B-spline by sender", "analytic surface lost via NURBS export", "kernel emits B-spline instead of preserving cylinder", "geometry simplification needed to recover analytics".
 - **Byte assertion**: contains(b'B_SPLINE_SURFACE')
+- **Tier-3 assertion**: shape_null == True
 - **Model impact**: The B-spline definition is structurally invalid (knot multiplicity, degree, or control-net mismatch); the curve/surface either evaluates to NaN at parameter queries or is discarded, leaving its parent face/edge with degenerate geometry.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
@@ -1914,6 +1952,7 @@ _Section summary: 82 entries._
 - **Expected kernel behavior**: Heal and accept: parse offset-of-spline-surface correctly; iso evaluation must descend through offset/extrusion wrappers (cross-ref `Geom_OffsetSurface` over `Geom_SurfaceOfLinearExtrusion`). Must not crash on wrapped offsets.
 - **Notes**: **See also**: Gs037, Tfa026. Synonyms: "OFFSET_SURFACE wrapping complex BSpline fails", "offset surface evaluation fails on B-spline base", "broken indirection through OFFSET_SURFACE on NURBS", "offset over complex B_SPLINE_SURFACE not parsed", "wrapped offset surface crashes import".
 - **Byte assertion**: contains(b'B_SPLINE_SURFACE')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: The B-spline definition is structurally invalid (knot multiplicity, degree, or control-net mismatch); the curve/surface either evaluates to NaN at parameter queries or is discarded, leaving its parent face/edge with degenerate geometry.
@@ -1927,6 +1966,7 @@ _Section summary: 82 entries._
 - **Expected kernel behavior**: Heal and accept: preserve analytic curve types through internal serialization; only convert to NURBS on explicit request. Must not silently inject B-splines.
 - **Notes**: **See also**: Gp031. Synonyms: "STEP-to-BREP injects B-spline approximations", "circle cap edge replaced by NURBS on BRep round-trip", "analytic CIRCLE replaced with B_SPLINE_CURVE", "BRepTools writer silently converts circles to B-splines", "cylinder cap circles become NURBS approximations".
 - **Byte assertion**: contains(b'B_SPLINE_CURVE')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: The B-spline definition is structurally invalid (knot multiplicity, degree, or control-net mismatch); the curve/surface either evaluates to NaN at parameter queries or is discarded, leaving its parent face/edge with degenerate geometry.
@@ -1940,6 +1980,7 @@ _Section summary: 82 entries._
 - **Expected kernel behavior**: heal by re-fitting / sub-setting; reject if the edge cannot be split cleanly; check parameter monotonicity under reprojection.
 - **Notes**: **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal, reject}). Kernel-bug witnessed: catalog allows either heal or reject; OCC silently accepts the bad input without doing either. Synonyms: "B-spline curve self-intersects", "figure-eight B-spline edge with coincident first/last poles", "BSpline edge crosses itself", "self-loop in 3D B-spline curve", "EDGE_CURVE B-spline forms figure eight".
 - **Byte assertion**: contains(b'B_SPLINE_CURVE')
+- **Tier-3 assertion**: shape_null == True
 - **Model impact**: The B-spline definition is structurally invalid (knot multiplicity, degree, or control-net mismatch); the curve/surface either evaluates to NaN at parameter queries or is discarded, leaving its parent face/edge with degenerate geometry.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
@@ -1951,6 +1992,7 @@ _Section summary: 82 entries._
 - **Expected kernel behavior**: heal by surface re-fit; reject with "non-injective surface parametrization" diagnostic; never silently use such a surface for projection.
 - **Notes**: **See also**: Gs010, Gs034. **OCC behavior**: silently accepts the folded surface and uses it for projection without a diagnostic; kernel mishandling; the catalog above forbids silent acceptance. Synonyms: "folded BSpline surface Jacobian flips sign", "non-injective NURBS surface parametrisation", "B-spline surface has interior rows transposed", "Jacobian sign change inside surface domain", "surface folds back on itself in parameter space".
 - **Byte assertion**: contains(b'B_SPLINE_SURFACE')
+- **Tier-3 assertion**: shape_null == True
 - **Model impact**: The B-spline definition is structurally invalid (knot multiplicity, degree, or control-net mismatch); the curve/surface either evaluates to NaN at parameter queries or is discarded, leaving its parent face/edge with degenerate geometry.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
@@ -1965,6 +2007,7 @@ _Section summary: 82 entries._
 - **Severity**: P1
 - **Model impact**: The B-spline definition is structurally invalid (knot multiplicity, degree, or control-net mismatch); the curve/surface either evaluates to NaN at parameter queries or is discarded, leaving its parent face/edge with degenerate geometry.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Tier-3 assertion**: shape_null == True
 
 ### Gn030 — Flat 3D curve as p-curve (instead of 2D PCURVE)
 - **Category**: §12.2b NURBS/knots
@@ -1985,6 +2028,7 @@ _Section summary: 82 entries._
 - **Expected kernel behavior**: Heal and accept: when converting a closed/periodic BSpline edge to non-periodic, permute vertices so the resulting edge range is consistent.
 - **Notes**: **See also**: Gs019. Synonyms: "small-edge B-spline arc has swapped vertices", "tiny radius rational B-spline arc inverted", "EDGE_CURVE periodic-to-non-periodic conversion bug", "OCCT writer doesn permute closed-curve vertices", "small B-spline edge inverted on round-trip".
 - **Byte assertion**: contains(b'B_SPLINE_CURVE')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: The B-spline definition is structurally invalid (knot multiplicity, degree, or control-net mismatch); the curve/surface either evaluates to NaN at parameter queries or is discarded, leaving its parent face/edge with degenerate geometry.
@@ -1999,6 +2043,7 @@ _Section summary: 82 entries._
 - **Expected kernel behavior**: Heal and accept: honor scale parameters when reconstructing 2D BSpline interpolation curves.
 - **Notes**: **See also**: Gp024. Synonyms: "Pro/E non-uniform parameter scaling on 2D curves", "Geom2dAPI_Interpolate scaling tags ignored", "PRO/Engineer 2D BSpline interpolation scaling lost", "per-segment chord-length parameterisation not honored", "Pro/E 2D curve scale parameters dropped".
 - **Byte assertion**: contains(b'B_SPLINE_CURVE')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: The B-spline definition is structurally invalid (knot multiplicity, degree, or control-net mismatch); the curve/surface either evaluates to NaN at parameter queries or is discarded, leaving its parent face/edge with degenerate geometry.
@@ -2013,6 +2058,7 @@ _Section summary: 82 entries._
 - **Notes**: **See also**: Gs038. **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({warn-and-proceed}). Kernel-bug witnessed: catalog wants a warning to surface; OCC accepts without any diagnostic. Synonyms: "closed-but-not-periodic BSpline surface seam undeclared", "u_closed flag F but surface geometrically closed", "huge UV jump on B-spline surface near wrap-around", "self-touching BSpline surface periodicity not recognized", "pcurve crosses near-period boundary on undeclared seam".
 - **Byte assertion**: contains(b'B_SPLINE_SURFACE')
 - **Byte assertion**: contains(b'B_SPLINE_CURVE')
+- **Tier-3 assertion**: shape_null == True
 - **Model impact**: The B-spline definition is structurally invalid (knot multiplicity, degree, or control-net mismatch); the curve/surface either evaluates to NaN at parameter queries or is discarded, leaving its parent face/edge with degenerate geometry.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
@@ -2030,6 +2076,7 @@ End of file.
 - **Notes**: Recurs across OCCT bug R001 (bug11857) and Mantis 0026376; maintainer-acknowledged orientation pathology in J010. **See also**: Gs036, Tsh035. Synonyms: "torus negative major radius", "TOROIDAL_SURFACE has negative MajorRadius", "SolidWorks negative-radius torus orientation marker", "Pro/E torus with sign-flipped radius", "torus radius negative encodes face flip".
 - **Byte assertion**: contains(b'TOROIDAL_SURFACE(')
 - **Byte assertion**: contains(b'-50.0,10.0')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal, reject}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: The affected surface or curve has degenerate parameterization (zero-length axis, non-unit direction, near-zero radius); evaluations at the degenerate parameter produce NaN/Inf, which propagates into face bounds and downstream BRep operations.
@@ -2046,6 +2093,7 @@ End of file.
 - **Byte assertion**: contains(b'TOROIDAL_SURFACE(')
 - **Byte assertion**: contains(b'2.0,3.0')
 - **Byte assertion**: contains(b'VERTEX_LOOP(')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: The affected surface or curve has degenerate parameterization (zero-length axis, non-unit direction, near-zero radius); evaluations at the degenerate parameter produce NaN/Inf, which propagates into face bounds and downstream BRep operations.
@@ -2061,6 +2109,7 @@ End of file.
 - **Notes**: **See also**: Gp013. Synonyms: "BSpline surface declared non-periodic but actually closed", "u_closed flag false but first/last rows coincide", "near-period BSpline surface periodicity not detected", "geometric closure on B-spline surface not flagged", "first and last control rows identical but flag says non-periodic".
 - **Byte assertion**: contains(b'B_SPLINE_SURFACE_WITH_KNOTS(')
 - **Byte assertion**: count(b'(10.0,0.0,0.0)') >= 2
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: The affected surface or curve has degenerate parameterization (zero-length axis, non-unit direction, near-zero radius); evaluations at the degenerate parameter produce NaN/Inf, which propagates into face bounds and downstream BRep operations.
@@ -2077,6 +2126,7 @@ End of file.
 - **Notes**: Synonyms: "surface singularity not declared", "degenerate pole on sphere/cone unflagged", "BSpline surface has collapsed row at pole", "intersection routine misbehaves at singular pole", "sphere outer loop touches both poles without degenerate edge".
 - **Byte assertion**: contains(b'B_SPLINE_SURFACE_WITH_KNOTS(')
 - **Byte assertion**: count(b'(0.0,0.0,10.0)') >= 3
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: The affected surface or curve has degenerate parameterization (zero-length axis, non-unit direction, near-zero radius); evaluations at the degenerate parameter produce NaN/Inf, which propagates into face bounds and downstream BRep operations.
@@ -2092,6 +2142,7 @@ End of file.
 - **Notes**: Synonyms: "pcurve U coordinate outside [0,2pi) seam range", "whole wire shifted by 4pi on cylinder", "wire pcurves in wrong period band", "pcurve U far outside canonical range", "cylinder pcurves all offset by full periods".
 - **Byte assertion**: contains(b'CYLINDRICAL_SURFACE(')
 - **Byte assertion**: contains(b'12.5663706144')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal, reject}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: The affected surface or curve has degenerate parameterization (zero-length axis, non-unit direction, near-zero radius); evaluations at the degenerate parameter produce NaN/Inf, which propagates into face bounds and downstream BRep operations.
@@ -2108,6 +2159,7 @@ End of file.
 - **Byte assertion**: contains(b'EDGE_LOOP(')
 - **Byte assertion**: count_entity_def(b'ORIENTED_EDGE') == 4
 - **Byte assertion**: count_entity_def(b'EDGE_CURVE') == 4
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: The affected surface or curve has degenerate parameterization (zero-length axis, non-unit direction, near-zero radius); evaluations at the degenerate parameter produce NaN/Inf, which propagates into face bounds and downstream BRep operations.
@@ -2124,6 +2176,7 @@ End of file.
 - **Byte assertion**: contains(b'B_SPLINE_SURFACE_WITH_KNOTS(')
 - **Byte assertion**: contains(b'(15.0,5.0,2.0)')
 - **Byte assertion**: contains(b'(0.0,5.0,2.0)')
+- **Tier-3 assertion**: shape_null == True
 - **Model impact**: The affected surface or curve has degenerate parameterization (zero-length axis, non-unit direction, near-zero radius); evaluations at the degenerate parameter produce NaN/Inf, which propagates into face bounds and downstream BRep operations.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
@@ -2139,6 +2192,7 @@ End of file.
 - **Byte assertion**: contains(b'EDGE_LOOP(')
 - **Byte assertion**: count_entity_def(b'ORIENTED_EDGE') == 2
 - **Byte assertion**: count_entity_def(b'EDGE_CURVE') == 2
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: The affected surface or curve has degenerate parameterization (zero-length axis, non-unit direction, near-zero radius); evaluations at the degenerate parameter produce NaN/Inf, which propagates into face bounds and downstream BRep operations.
@@ -2156,6 +2210,7 @@ End of file.
 - **Byte assertion**: contains(b'EDGE_LOOP(')
 - **Byte assertion**: count_entity_def(b'ORIENTED_EDGE') == 4
 - **Byte assertion**: contains(b'PLANE(')
+- **Tier-3 assertion**: shape_null == True
 - **Model impact**: The affected surface or curve has degenerate parameterization (zero-length axis, non-unit direction, near-zero radius); evaluations at the degenerate parameter produce NaN/Inf, which propagates into face bounds and downstream BRep operations.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
@@ -2171,6 +2226,7 @@ End of file.
 - **Byte assertion**: contains(b'1.0E-7')
 - **Byte assertion**: contains(b'(100.0,0.0,0.0)')
 - **Byte assertion**: count_entity_def(b'ORIENTED_EDGE') == 4
+- **Tier-3 assertion**: shape_null == True
 - **Model impact**: The affected surface or curve has degenerate parameterization (zero-length axis, non-unit direction, near-zero radius); evaluations at the degenerate parameter produce NaN/Inf, which propagates into face bounds and downstream BRep operations.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
@@ -2186,6 +2242,7 @@ End of file.
 - **Byte assertion**: contains(b'1.0E-5')
 - **Byte assertion**: contains(b'(250.0,0.0,0.0)')
 - **Byte assertion**: count_entity_def(b'EDGE_CURVE') == 4
+- **Tier-3 assertion**: shape_null == True
 - **Model impact**: The affected surface or curve has degenerate parameterization (zero-length axis, non-unit direction, near-zero radius); evaluations at the degenerate parameter produce NaN/Inf, which propagates into face bounds and downstream BRep operations.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
@@ -2201,6 +2258,7 @@ End of file.
 - **Byte assertion**: contains(b'CYLINDRICAL_SURFACE(')
 - **Byte assertion**: contains(b'SURFACE_CURVE(')
 - **Byte assertion**: contains(b'(0.0,5.0)')
+- **Tier-3 assertion**: shape_null == True
 - **Model impact**: The affected surface or curve has degenerate parameterization (zero-length axis, non-unit direction, near-zero radius); evaluations at the degenerate parameter produce NaN/Inf, which propagates into face bounds and downstream BRep operations.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
@@ -2217,6 +2275,7 @@ End of file.
 - **Byte assertion**: contains(b'CYLINDRICAL_SURFACE(')
 - **Byte assertion**: contains(b'6.2831853072')
 - **Byte assertion**: count_entity_def(b'PCURVE') == 2
+- **Tier-3 assertion**: shape_null == True
 - **Model impact**: The affected surface or curve has degenerate parameterization (zero-length axis, non-unit direction, near-zero radius); evaluations at the degenerate parameter produce NaN/Inf, which propagates into face bounds and downstream BRep operations.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
@@ -2233,6 +2292,7 @@ End of file.
 - **Byte assertion**: contains(b'(0.0,0.0,0.5)')
 - **Byte assertion**: contains(b'(10.0,0.0,0.0)')
 - **Byte assertion**: contains(b'LINE(')
+- **Tier-3 assertion**: shape_null == True
 - **Model impact**: The affected surface or curve has degenerate parameterization (zero-length axis, non-unit direction, near-zero radius); evaluations at the degenerate parameter produce NaN/Inf, which propagates into face bounds and downstream BRep operations.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
@@ -2249,6 +2309,7 @@ End of file.
 - **Byte assertion**: contains(b'B_SPLINE_SURFACE_WITH_KNOTS(')
 - **Byte assertion**: count_entity_def(b'PLANE') == 0
 - **Byte assertion**: contains(b'(100.0,50.0,0.0)')
+- **Tier-3 assertion**: shape_null == True
 - **Model impact**: The affected surface or curve has degenerate parameterization (zero-length axis, non-unit direction, near-zero radius); evaluations at the degenerate parameter produce NaN/Inf, which propagates into face bounds and downstream BRep operations.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
@@ -2264,6 +2325,7 @@ End of file.
 - **Byte assertion**: contains(b'B_SPLINE_CURVE_WITH_KNOTS(')
 - **Byte assertion**: contains(b'(4,4,4)')
 - **Byte assertion**: contains(b'(0.0,0.5,1.0)')
+- **Tier-3 assertion**: shape_null == True
 - **Model impact**: The affected surface or curve has degenerate parameterization (zero-length axis, non-unit direction, near-zero radius); evaluations at the degenerate parameter produce NaN/Inf, which propagates into face bounds and downstream BRep operations.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
@@ -2295,6 +2357,7 @@ End of file.
 - **Severity**: P1
 - **Byte assertion**: contains(b'.PCURVE_S1_AND_S2.')
 - **Byte assertion**: contains(b'(#46,#46)')
+- **Tier-3 assertion**: shape_null == True
 - **Model impact**: The affected surface or curve has degenerate parameterization (zero-length axis, non-unit direction, near-zero radius); evaluations at the degenerate parameter produce NaN/Inf, which propagates into face bounds and downstream BRep operations.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
@@ -2311,6 +2374,7 @@ End of file.
 - **Byte assertion**: contains(b'TRIMMED_CURVE(')
 - **Byte assertion**: contains(b'PARAMETER_VALUE(6.2831853071795864)')
 - **Byte assertion**: contains(b'PARAMETER_VALUE(0.0)')
+- **Tier-3 assertion**: shape_null == True
 - **Model impact**: The affected surface or curve has degenerate parameterization (zero-length axis, non-unit direction, near-zero radius); evaluations at the degenerate parameter produce NaN/Inf, which propagates into face bounds and downstream BRep operations.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
@@ -2325,6 +2389,7 @@ End of file.
 - **Severity**: P1
 - **Byte assertion**: contains(b'CYLINDRICAL_SURFACE(')
 - **Byte assertion**: contains(b'(10.5,0.0,0.0)')
+- **Tier-3 assertion**: shape_null == True
 - **Model impact**: The affected surface or curve has degenerate parameterization (zero-length axis, non-unit direction, near-zero radius); evaluations at the degenerate parameter produce NaN/Inf, which propagates into face bounds and downstream BRep operations.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
@@ -2339,6 +2404,7 @@ End of file.
 - **Severity**: P1
 - **Byte assertion**: count_entity_def(b'FACE_OUTER_BOUND') == 2
 - **Byte assertion**: contains(b'(#81,#82)')
+- **Tier-3 assertion**: shape_null == True
 - **Model impact**: The affected surface or curve has degenerate parameterization (zero-length axis, non-unit direction, near-zero radius); evaluations at the degenerate parameter produce NaN/Inf, which propagates into face bounds and downstream BRep operations.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
@@ -2354,6 +2420,7 @@ End of file.
 - **Severity**: P1
 - **Byte assertion**: contains(b'SURFACE_OF_LINEAR_EXTRUSION(')
 - **Byte assertion**: count_entity_def(b'LINE') == 1
+- **Tier-3 assertion**: shape_null == True
 - **Model impact**: The affected surface or curve has degenerate parameterization (zero-length axis, non-unit direction, near-zero radius); evaluations at the degenerate parameter produce NaN/Inf, which propagates into face bounds and downstream BRep operations.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
@@ -2369,6 +2436,7 @@ End of file.
 - **Byte assertion**: contains(b'TOROIDAL_SURFACE(')
 - **Byte assertion**: contains(b'TRIMMED_CURVE(')
 - **Byte assertion**: contains(b'ELLIPSE(')
+- **Tier-3 assertion**: shape_null == True
 - **Model impact**: The affected surface or curve has degenerate parameterization (zero-length axis, non-unit direction, near-zero radius); evaluations at the degenerate parameter produce NaN/Inf, which propagates into face bounds and downstream BRep operations.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
@@ -2383,6 +2451,7 @@ End of file.
 - **Severity**: P1
 - **Byte assertion**: count_entity_def(b'ORIENTED_EDGE') == 6
 - **Byte assertion**: contains(b'(5.0,5.0,0.0)')
+- **Tier-3 assertion**: shape_null == True
 - **Model impact**: The affected surface or curve has degenerate parameterization (zero-length axis, non-unit direction, near-zero radius); evaluations at the degenerate parameter produce NaN/Inf, which propagates into face bounds and downstream BRep operations.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
@@ -2398,6 +2467,7 @@ End of file.
 - **Byte assertion**: contains(b'COMPOSITE_CURVE_SEGMENT(')
 - **Byte assertion**: contains(b',$)')
 - **Byte assertion**: contains(b'COMPOSITE_CURVE(')
+- **Tier-3 assertion**: shape_null == True
 - **Model impact**: The affected surface or curve has degenerate parameterization (zero-length axis, non-unit direction, near-zero radius); evaluations at the degenerate parameter produce NaN/Inf, which propagates into face bounds and downstream BRep operations.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
@@ -2412,6 +2482,7 @@ End of file.
 - **Severity**: P1
 - **Byte assertion**: contains(b'DIRECTION(\'\',(0.0,0.0,0.0))')
 - **Byte assertion**: count(b'DIRECTION(\'\',(0.0,0.0,1.0))') >= 2
+- **Tier-3 assertion**: shape_null == True
 - **Model impact**: The affected surface or curve has degenerate parameterization (zero-length axis, non-unit direction, near-zero radius); evaluations at the degenerate parameter produce NaN/Inf, which propagates into face bounds and downstream BRep operations.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
@@ -2424,6 +2495,7 @@ End of file.
 - **Notes**: Validation observed: silent-empty rather than the cited UIso/VIso exception. The exception path is downstream of an extra analysis pass that the validate2 transfer pipeline does not invoke at fixture scale; the kernel-mishandling-by-silent-acceptance still demonstrates the defect class. **See also**: Gn021. Synonyms: "offset of surface-of-linear-extrusion fails iso-curve evaluation", "OFFSET_SURFACE over SURFACE_OF_LINEAR_EXTRUSION throws on iso eval", "iso evaluation can not descend through offset wrappers", "composite surface chain fails UIso", "offset extrusion surface evaluation fails".
 - **Byte assertion**: contains(b'OFFSET_SURFACE(')
 - **Byte assertion**: contains(b'SURFACE_OF_LINEAR_EXTRUSION(')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal, reject}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: The affected surface or curve has degenerate parameterization (zero-length axis, non-unit direction, near-zero radius); evaluations at the degenerate parameter produce NaN/Inf, which propagates into face bounds and downstream BRep operations.
@@ -2441,6 +2513,7 @@ End of file.
 - **Byte assertion**: contains(b'B_SPLINE_SURFACE_WITH_KNOTS(')
 - **Byte assertion**: contains(b'(0.99,0.5)')
 - **Byte assertion**: contains(b'.T.,.F.,.F.')
+- **Tier-3 assertion**: shape_null == True
 - **Model impact**: The affected surface or curve has degenerate parameterization (zero-length axis, non-unit direction, near-zero radius); evaluations at the degenerate parameter produce NaN/Inf, which propagates into face bounds and downstream BRep operations.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
@@ -2456,6 +2529,7 @@ End of file.
 - **Byte assertion**: contains(b'SPHERICAL_SURFACE(')
 - **Byte assertion**: contains(b'VERTEX_LOOP(')
 - **Byte assertion**: contains(b'OPEN_SHELL(')
+- **Tier-3 assertion**: shape_null == True
 - **Model impact**: The affected surface or curve has degenerate parameterization (zero-length axis, non-unit direction, near-zero radius); evaluations at the degenerate parameter produce NaN/Inf, which propagates into face bounds and downstream BRep operations.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
@@ -2471,6 +2545,7 @@ End of file.
 - **Byte assertion**: contains(b'B_SPLINE_CURVE_WITH_KNOTS(')
 - **Byte assertion**: contains(b'(4,3,4)')
 - **Byte assertion**: contains(b'(0.0,0.5,1.0)')
+- **Tier-3 assertion**: shape_null == True
 - **Model impact**: The affected surface or curve has degenerate parameterization (zero-length axis, non-unit direction, near-zero radius); evaluations at the degenerate parameter produce NaN/Inf, which propagates into face bounds and downstream BRep operations.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
@@ -12344,6 +12419,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Notes**: Synonyms: "fit didn't converge". Bytes alone are insufficient to demonstrate this defect; needs sibling input fixture. Tagged provenance_tier: runtime-only. **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers must reject this fixture per the catalog's stated invariant.
 - **Byte assertion**: contains(b'LINE(')
 - **Byte assertion**: count_entity_def(b'CARTESIAN_POINT') >= 5
+- **Tier-3 assertion**: shape_null == True
 - **Model impact**: Geometric-utility computation (intersection, projection, extrema) returns a wrong or NULL result; downstream operations that depend on it propagate the wrong value into the loaded geometry.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 - **Fixture path**: step-examples/12-2c-surfaces/Gb001.stp
@@ -12358,6 +12434,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Notes**: Common cause of NaN propagation when the caller assumes Defined. Bytes alone are insufficient to demonstrate this defect; needs sibling input fixture. Tagged provenance_tier: runtime-only. Synonyms: "surface tangent undefined", "normal not computable", "pole on surface returns LProp_Status.Undefined", "surface partial derivatives vanish at parameter", "U-tangent zero at sphere pole".
 - **Byte assertion**: contains(b'SPHERICAL_SURFACE(')
 - **Byte assertion**: count_entity_def(b'SPHERICAL_SURFACE') == 1
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: Geometric-utility computation (intersection, projection, extrema) returns a wrong or NULL result; downstream operations that depend on it propagate the wrong value into the loaded geometry.
@@ -12375,6 +12452,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Byte assertion**: contains(b'B_SPLINE_CURVE_WITH_KNOTS(')
 - **Byte assertion**: contains(b'.T.,.F.')
 - **Byte assertion**: count_entity_def(b'CARTESIAN_POINT') == 5
+- **Tier-3 assertion**: shape_null == True
 - **Model impact**: Geometric-utility computation (intersection, projection, extrema) returns a wrong or NULL result; downstream operations that depend on it propagate the wrong value into the loaded geometry.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 - **Fixture path**: step-examples/12-2c-surfaces/Gb003.stp
@@ -12390,6 +12468,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Byte assertion**: contains(b'PCURVE(')
 - **Byte assertion**: contains(b'SURFACE_CURVE(')
 - **Byte assertion**: contains(b'EDGE_CURVE(')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: Geometric-utility computation (intersection, projection, extrema) returns a wrong or NULL result; downstream operations that depend on it propagate the wrong value into the loaded geometry.
@@ -12417,6 +12496,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Severity**: P1
 - **Byte assertion**: contains(b'TOROIDAL_SURFACE(')
 - **Byte assertion**: contains(b'0.5,5.0')
+- **Tier-3 assertion**: shape_null == True
 - **Model impact**: The affected surface or curve has degenerate parameterization (zero-length axis, non-unit direction, near-zero radius); evaluations at the degenerate parameter produce NaN/Inf, which propagates into face bounds and downstream BRep operations.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
@@ -12436,6 +12516,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Byte assertion**: contains(b'SPHERICAL_SURFACE(')
 - **Byte assertion**: contains(b'CYLINDRICAL_SURFACE(')
 - **Byte assertion**: contains(b'3.141592653589793')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: The affected surface or curve has degenerate parameterization (zero-length axis, non-unit direction, near-zero radius); evaluations at the degenerate parameter produce NaN/Inf, which propagates into face bounds and downstream BRep operations.
@@ -12457,6 +12538,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Notes**: **See also**: Gs046, A083. Synonyms: "surface of revolution with offset basis curve breaks on export", "OFFSET_CURVE_3D relationship lost on STEP round-trip", "offset baked into B-spline approximation on export", "AP242 offset curve dropped in serialization", "edits to original X no longer propagate after round-trip".
 - **Byte assertion**: contains(b'OFFSET_CURVE_3D(')
 - **Byte assertion**: contains(b'SURFACE_OF_REVOLUTION(')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: The affected surface or curve has degenerate parameterization (zero-length axis, non-unit direction, near-zero radius); evaluations at the degenerate parameter produce NaN/Inf, which propagates into face bounds and downstream BRep operations.
@@ -12477,6 +12559,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Byte assertion**: contains(b'MAPPED_ITEM(')
 - **Byte assertion**: contains(b'RECTANGULAR_TRIMMED_SURFACE(')
 - **Byte assertion**: contains(b'B_SPLINE_SURFACE_WITH_KNOTS(')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: The affected surface or curve has degenerate parameterization (zero-length axis, non-unit direction, near-zero radius); evaluations at the degenerate parameter produce NaN/Inf, which propagates into face bounds and downstream BRep operations.
@@ -12493,6 +12576,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Severity**: P1
 - **Byte assertion**: contains(b'COMPOSITE_CURVE_SEGMENT(.CONTINUOUS.,.T.,#30)')
 - **Byte assertion**: contains(b'COMPOSITE_CURVE(')
+- **Tier-3 assertion**: shape_null == True
 - **Model impact**: The affected surface or curve has degenerate parameterization (zero-length axis, non-unit direction, near-zero radius); evaluations at the degenerate parameter produce NaN/Inf, which propagates into face bounds and downstream BRep operations.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
@@ -12506,6 +12590,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Byte assertion**: contains(b'PARAMETER_VALUE(-1.0E40)')
 - **Byte assertion**: contains(b'PARAMETER_VALUE(1.0E40)')
 - **Byte assertion**: contains(b'COMPOSITE_CURVE_SEGMENT(')
+- **Tier-3 assertion**: shape_null == True
 - **Model impact**: The affected surface or curve has degenerate parameterization (zero-length axis, non-unit direction, near-zero radius); evaluations at the degenerate parameter produce NaN/Inf, which propagates into face bounds and downstream BRep operations.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
@@ -17197,6 +17282,7 @@ _Section summary: 41 entries._
 - **Byte assertion**: contains(b'RECTANGULAR_COMPOSITE_SURFACE(')
 - **Byte assertion**: count_entity_def(b'SURFACE_PATCH') == 2
 - **Byte assertion**: contains(b'(0.0,0.3)')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: The affected surface or curve has degenerate parameterization (zero-length axis, non-unit direction, near-zero radius); evaluations at the degenerate parameter produce NaN/Inf, which propagates into face bounds and downstream BRep operations.
@@ -17214,6 +17300,7 @@ _Section summary: 41 entries._
 - **Byte assertion**: contains(b'CURVE_BOUNDED_SURFACE(')
 - **Byte assertion**: contains(b'BOUNDARY_CURVE(')
 - **Byte assertion**: count_entity_def(b'POLYLINE') == 4
+- **Tier-3 assertion**: shape_null == True
 - **Model impact**: The affected surface or curve has degenerate parameterization (zero-length axis, non-unit direction, near-zero radius); evaluations at the degenerate parameter produce NaN/Inf, which propagates into face bounds and downstream BRep operations.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
@@ -17229,6 +17316,7 @@ _Section summary: 41 entries._
 - **Byte assertion**: contains(b'OFFSET_CURVE_3D(')
 - **Byte assertion**: contains(b'-5.0')
 - **Byte assertion**: contains(b'CIRCLE(')
+- **Tier-3 assertion**: shape_null == True
 - **Model impact**: The affected surface or curve has degenerate parameterization (zero-length axis, non-unit direction, near-zero radius); evaluations at the degenerate parameter produce NaN/Inf, which propagates into face bounds and downstream BRep operations.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
@@ -17244,6 +17332,7 @@ _Section summary: 41 entries._
 - **Byte assertion**: contains(b'INTERSECTION_CURVE(')
 - **Byte assertion**: contains(b'TOROIDAL_SURFACE(')
 - **Byte assertion**: contains(b'CIRCLE(\'outer_branch\'')
+- **Tier-3 assertion**: shape_null == True
 - **Model impact**: The affected surface or curve has degenerate parameterization (zero-length axis, non-unit direction, near-zero radius); evaluations at the degenerate parameter produce NaN/Inf, which propagates into face bounds and downstream BRep operations.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
@@ -17259,6 +17348,7 @@ _Section summary: 41 entries._
 - **Byte assertion**: contains(b'SURFACE_OF_REVOLUTION(')
 - **Byte assertion**: contains(b'AXIS1_PLACEMENT(')
 - **Byte assertion**: contains(b'(-2.0,0.0,0.0)')
+- **Tier-3 assertion**: shape_null == True
 - **Model impact**: The affected surface or curve has degenerate parameterization (zero-length axis, non-unit direction, near-zero radius); evaluations at the degenerate parameter produce NaN/Inf, which propagates into face bounds and downstream BRep operations.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
@@ -17273,6 +17363,7 @@ _Section summary: 41 entries._
 - **Severity**: P1
 - **Byte assertion**: contains(b'SURFACE_OF_LINEAR_EXTRUSION(')
 - **Byte assertion**: contains(b"VECTOR('extr_v',#20,0.0)")
+- **Tier-3 assertion**: shape_null == True
 - **Model impact**: The affected surface or curve has degenerate parameterization (zero-length axis, non-unit direction, near-zero radius); evaluations at the degenerate parameter produce NaN/Inf, which propagates into face bounds and downstream BRep operations.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
@@ -17288,6 +17379,7 @@ _Section summary: 41 entries._
 - **Byte assertion**: count_entity_def(b'BLENDED_EDGE_SURFACE') == 2
 - **Byte assertion**: contains(b"BLENDED_EDGE_SURFACE('blendA_radius_1',#25,1.0)")
 - **Byte assertion**: contains(b"BLENDED_EDGE_SURFACE('blendB_radius_2',#31,2.0)")
+- **Tier-3 assertion**: shape_null == True
 - **Model impact**: The affected surface or curve has degenerate parameterization (zero-length axis, non-unit direction, near-zero radius); evaluations at the degenerate parameter produce NaN/Inf, which propagates into face bounds and downstream BRep operations.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
@@ -17303,6 +17395,7 @@ _Section summary: 41 entries._
 - **Byte assertion**: count_entity_def(b'OFFSET_CURVE_2D') == 2
 - **Byte assertion**: contains(b"OFFSET_CURVE_2D('off1',#20,1.0,.T.)")
 - **Byte assertion**: contains(b"OFFSET_CURVE_2D('off2',#21,-1.0,.T.)")
+- **Tier-3 assertion**: shape_null == True
 - **Model impact**: The affected surface or curve has degenerate parameterization (zero-length axis, non-unit direction, near-zero radius); evaluations at the degenerate parameter produce NaN/Inf, which propagates into face bounds and downstream BRep operations.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
@@ -17320,6 +17413,7 @@ _Section summary: 41 entries._
 - **Byte assertion**: contains(b'B_SPLINE_SURFACE_WITH_KNOTS(')
 - **Byte assertion**: contains(b'(3,3,3)')
 - **Byte assertion**: contains(b'(0.0,0.5,1.0)')
+- **Tier-3 assertion**: shape_null == True
 - **Model impact**: The affected surface or curve has degenerate parameterization (zero-length axis, non-unit direction, near-zero radius); evaluations at the degenerate parameter produce NaN/Inf, which propagates into face bounds and downstream BRep operations.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
@@ -20418,6 +20512,7 @@ they capture invariants shared by a family of healing methods. Filed under
 - **Expected kernel behavior**: detect the C0 break and either split the curve into two C∞-internal pieces, raise the knot multiplicity to enforce a true G1+ join, or report the discontinuity as a quality metric so downstream tools can handle it explicitly.
 - **Notes**: Same defect applies to pcurve splitting on host surfaces. **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: catalog asks for healing; OCC neither heals nor rejects; the input is dropped on the floor without diagnostic. Synonyms: "B-spline curve has C0 internal break", "interior knot multiplicity equals degree creates kink", "downstream tools cannot ingest C0 spline", "knot multiplicity=degree produces visible cusp", "B-spline kink at interior knot".
 - **Byte assertion**: contains(b'EDGE_CURVE')
+- **Tier-3 assertion**: shape_null == True
 - **Model impact**: The pcurve attribute on the affected EDGE_CURVE/SEAM_CURVE is missing, NULL, or inconsistent with its 3D companion; downstream meshing and boolean operations either rebuild it from the 3D edge (introducing tolerance error) or dereference a null handle and abort.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
@@ -20429,6 +20524,7 @@ they capture invariants shared by a family of healing methods. Filed under
 - **Expected kernel behavior**: report the connectivity defect with the offending segment indices and 3D gap; either bridge the segments by inserting a connecting curve, snap endpoints, or refuse to treat the aggregate as a single curve.
 - **Notes**: Similar defect class to `Twi-` wire connectivity but at the curve-aggregate level. **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal, reject}). Kernel-bug witnessed: catalog allows either heal or reject; OCC silently accepts the bad input without doing either. Synonyms: "composite curve segments don't meet", "gap between consecutive composite curve segments", "composite_curve has disconnected segments", "segment N+1 starts far from segment N's end", "composite curve connectivity check fails".
 - **Byte assertion**: contains(b'EDGE_CURVE')
+- **Tier-3 assertion**: shape_null == True
 - **Model impact**: The pcurve attribute on the affected EDGE_CURVE/SEAM_CURVE is missing, NULL, or inconsistent with its 3D companion; downstream meshing and boolean operations either rebuild it from the 3D edge (introducing tolerance error) or dereference a null handle and abort.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
@@ -20440,6 +20536,7 @@ they capture invariants shared by a family of healing methods. Filed under
 - **Expected kernel behavior**: synthesize the missing pcurve via projection, validate same-parameter consistency afterwards, and emit an analytic 2D line where the underlying surface admits one (e.g., on cylinders, spheres). Alternatively, refuse the edge and require a sender that supplies pcurves.
 - **Notes**: Distinct from a *bad* pcurve (Twi-class). Also see Gp019 (edge without pcurve). **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal, reject}). Kernel-bug witnessed: catalog allows either heal or reject; OCC silently accepts the bad input without doing either. Synonyms: "edge has no parametric curve", "pcurve absent on face edge", "tessellator fails on edge with no UV curve", "kernel must project 3D curve onto surface", "edge without 2D representation needs synthesis".
 - **Byte assertion**: contains(b'EDGE_CURVE')
+- **Tier-3 assertion**: shape_null == True
 - **Model impact**: The pcurve attribute on the affected EDGE_CURVE/SEAM_CURVE is missing, NULL, or inconsistent with its 3D companion; downstream meshing and boolean operations either rebuild it from the 3D edge (introducing tolerance error) or dereference a null handle and abort.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
@@ -20458,6 +20555,7 @@ they capture invariants shared by a family of healing methods. Filed under
 - **Byte assertion**: contains(b'SURFACE_CURVE')
 - **Byte assertion**: contains(b'EDGE_CURVE')
 - **Byte assertion**: count_entity_def(b'PCURVE') >= 1
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: The pcurve attribute on the affected EDGE_CURVE/SEAM_CURVE is missing, NULL, or inconsistent with its 3D companion; downstream meshing and boolean operations either rebuild it from the 3D edge (introducing tolerance error) or dereference a null handle and abort.
@@ -20479,6 +20577,7 @@ they capture invariants shared by a family of healing methods. Filed under
 - **Byte assertion**: contains(b'SURFACE_CURVE')
 - **Byte assertion**: contains(b'EDGE_CURVE')
 - **Byte assertion**: count_entity_def(b'PCURVE') >= 1
+- **Tier-3 assertion**: shape_null == True
 - **Model impact**: The pcurve attribute on the affected EDGE_CURVE/SEAM_CURVE is missing, NULL, or inconsistent with its 3D companion; downstream meshing and boolean operations either rebuild it from the 3D edge (introducing tolerance error) or dereference a null handle and abort.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
@@ -20498,6 +20597,7 @@ they capture invariants shared by a family of healing methods. Filed under
 - **Byte assertion**: contains(b'SURFACE_CURVE')
 - **Byte assertion**: contains(b'EDGE_CURVE')
 - **Byte assertion**: count_entity_def(b'PCURVE') >= 1
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: The pcurve attribute on the affected EDGE_CURVE/SEAM_CURVE is missing, NULL, or inconsistent with its 3D companion; downstream meshing and boolean operations either rebuild it from the 3D edge (introducing tolerance error) or dereference a null handle and abort.
@@ -20519,6 +20619,7 @@ they capture invariants shared by a family of healing methods. Filed under
 - **Byte assertion**: contains(b'SURFACE_CURVE')
 - **Byte assertion**: contains(b'EDGE_CURVE')
 - **Byte assertion**: count_entity_def(b'PCURVE') >= 1
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: The pcurve attribute on the affected EDGE_CURVE/SEAM_CURVE is missing, NULL, or inconsistent with its 3D companion; downstream meshing and boolean operations either rebuild it from the 3D edge (introducing tolerance error) or dereference a null handle and abort.
@@ -20535,6 +20636,7 @@ they capture invariants shared by a family of healing methods. Filed under
 - **Expected kernel behavior**: detect knots whose separation is below working precision; either widen the gap (by perturbing one knot up to nominal precision), merge the two knots and adjust multiplicity, or reject the curve as numerically ill-conditioned.
 - **Notes**: Same defect on surface knot vectors should be flagged identically. **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal, reject}). Kernel-bug witnessed: catalog allows either heal or reject; OCC silently accepts the bad input without doing either. Synonyms: "B-spline knots packed below parametric resolution", "consecutive knots differ by less than working epsilon", "near-equal knots produce NaN derivatives", "knot interval rounds to zero", "BSpline ill-conditioned at near-coincident knot pair".
 - **Byte assertion**: contains(b'B_SPLINE_CURVE')
+- **Tier-3 assertion**: shape_null == True
 - **Model impact**: The B-spline definition is structurally invalid (knot multiplicity, degree, or control-net mismatch); the curve/surface either evaluates to NaN at parameter queries or is discarded, leaving its parent face/edge with degenerate geometry.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
@@ -20554,6 +20656,7 @@ they capture invariants shared by a family of healing methods. Filed under
 - **Expected kernel behavior**: Reject untagged rationals: every B-spline with non-uniform weights must be tagged `RATIONAL_B_SPLINE_CURVE` (complex entity); receivers check the tag before applying weights. Must not silently accept missing tag.
 - **Notes**: **See also**: Gn014. Synonyms: "rational B-spline missing RATIONAL flag", "circle as NURBS without rational marker", "weights present but RATIONAL_B_SPLINE_CURVE entity tag missing", "untagged rational B-spline imports as polygonal", "circle exact-NURBS form misses rational complex entity".
 - **Byte assertion**: contains(b'B_SPLINE_CURVE')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: The B-spline definition is structurally invalid (knot multiplicity, degree, or control-net mismatch); the curve/surface either evaluates to NaN at parameter queries or is discarded, leaving its parent face/edge with degenerate geometry.
@@ -20567,6 +20670,7 @@ they capture invariants shared by a family of healing methods. Filed under
 - **Expected kernel behavior**: reject the surface with a diagnostic naming the offending index; never silently accept.
 - **Notes**: **See also**: Gn001, Gn003. **OCC behavior**: silently accepts (no diagnostic, empty result); catalog disallows silent-accept. Kernel-bug witnessed: receivers enforcing the spec must reject (or surface a diagnostic); silent acceptance defeats the catalog's stated invariant. Synonyms: "B-spline knots non-monotonic", "V knot vector strictly descending", "BSpline surface knot vector not non-decreasing", "knots violate non-decreasing invariant", "knot value smaller than prior in BSpline surface".
 - **Byte assertion**: contains(b'B_SPLINE_SURFACE')
+- **Tier-3 assertion**: shape_null == True
 - **Model impact**: The B-spline definition is structurally invalid (knot multiplicity, degree, or control-net mismatch); the curve/surface either evaluates to NaN at parameter queries or is discarded, leaving its parent face/edge with degenerate geometry.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
@@ -20578,6 +20682,7 @@ they capture invariants shared by a family of healing methods. Filed under
 - **Expected kernel behavior**: reject the curve with a precise diagnostic; emit a warning; continue translating the remainder of the file.
 - **Notes**: **See also**: Gn001, Gn003. **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject, warn-and-proceed}). Kernel-bug witnessed: receivers must reject this fixture per the catalog's stated invariant. Synonyms: "B-spline surface single distinct knot", "BSpline knot vector collapses to one unique value", "empty parametric range from collapsed knots", "all knots equal produces empty domain", "BSpline curve with degenerate knot vector throws".
 - **Byte assertion**: contains(b'B_SPLINE_CURVE')
+- **Tier-3 assertion**: shape_null == True
 - **Model impact**: The B-spline definition is structurally invalid (knot multiplicity, degree, or control-net mismatch); the curve/surface either evaluates to NaN at parameter queries or is discarded, leaving its parent face/edge with degenerate geometry.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
@@ -20590,6 +20695,7 @@ they capture invariants shared by a family of healing methods. Filed under
 - **Expected kernel behavior**: heal-and-accept; `BoundedPCurve::LoadONBrep` must defer to its underlying definitional basis curve and reparameterise to the bounded subrange; if unhandled, emit `W_BOUNDED_PCURVE_FALLBACK` and project from 3D.
 - **Notes**: **See also**: Gn019, Twi100, Twi101. Synonyms: "BOUNDED_PCURVE LoadONBrep stub", "step-g BOUNDED_PCURVE drop", "BOUNDED_PCURVE subtype unimplemented".
 - **Byte assertion**: contains(b'BOUNDED_PCURVE')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silent-accept observed (catalog allowed: {heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
 - **Severity**: P1
 - **Model impact**: The B-spline definition is structurally invalid (knot multiplicity, degree, or control-net mismatch); the curve/surface either evaluates to NaN at parameter queries or is discarded, leaving its parent face/edge with degenerate geometry.
@@ -20600,6 +20706,7 @@ they capture invariants shared by a family of healing methods. Filed under
 ### Gn039 — ShapeAnalysis_Curve.IsClosed B-spline near-closure rejection
 
 B-spline curve with last pole within 1e-3 of first pole triggers false-negative closure test; healing tools reject intended closure fixes due to exact-equality requirement.
+- **Tier-3 assertion**: shape_null == True
 
 ### Gn040 — ShapeAnalysis_Curve.FillBndBox S-curve extremum undersample
 
@@ -20608,10 +20715,12 @@ B-spline curve with last pole within 1e-3 of first pole triggers false-negative 
 ### Gn041 — ShapeAnalysis_Surface.NextValueOfUV C0-knot Newton convergence
 
 B-spline surface with C0 discontinuity at interior U-knot (multiplicity=degree) causes Newton iteration to converge to wrong-side solution due to derivative invalidity at knot.
+- **Tier-3 assertion**: shape_null == True
 
 ### Gn042 — ShapeUpgrade_ConvertSurfaceToBezierBasis double-knot thin patch
 
 B-spline surface with double knot (multiplicity=2) at interior U-position yields degenerate Bezier patches after knot insertion; extent filter fails removal.
+- **Tier-3 assertion**: shape_null == True
 
 ### Gn043 — ShapeAnalysis_Curve.GetSamplePoints rational curve 4x amplification
 
@@ -20620,46 +20729,57 @@ Rational B-spline with non-uniform weights (1.0, 2.0 variation) triggers 4x samp
 ### Gn044 — ShapeUpgrade_ConvertCurve2dToBezier degree-elevation skip on degree=1
 
 2D B-spline curve of degree 1 with 3 control points. Degree-elevation logic should elevate to degree 3 before Bezier extraction but skips this step when input degree equals 1, causing downstream conversion failures.
+- **Tier-3 assertion**: shape_null == True
 
 ### Gn045 — ShapeUpgrade_SplitSurface.Init split-parameters validation out-of-domain
 
 B-spline surface with split request using u_split values outside [u_min, u_max]. Init() must reject these values but currently accepts them, producing empty patches instead of raising validation error.
+- **Tier-3 assertion**: shape_null == True
 
 ### Gn046 — ShapeAnalysis_Curve.IsPlanar near-coplanar at tolerance boundary
 
 4-point cubic B-spline where 3 control points are coplanar and the 4th is offset by exactly 1.0E-7 (planarity tolerance). IsPlanar() returns true at the tolerance boundary despite curve being technically non-planar.
+- **Tier-3 assertion**: shape_null == True
 
 ### Gn047 — ShapeAnalysis_Curve.GetSamplePoints 2D rational weight-ratio dominance
 
 2D rational B-spline with alternating weight values (1.0 and 10.0) creating a 10:1 weight ratio. GetSamplePoints() sample density dominated by rational denominator, causing non-uniform parameter distribution and missing curve features.
+- **Tier-3 assertion**: shape_null == True
 
 ### Gn048 — ShapeFix_Edge.FixSameParameter B-spline endpoint knot-multiplicity
 
 5-point cubic B-spline with endpoint knot multiplicity equal to degree (3), placing the endpoint parameter exactly at knot boundary. SameParameter test incorrectly detects discontinuity at the endpoint due to multiplicity configuration.
+- **Tier-3 assertion**: shape_null == True
 
 ### Gn049 — ShapeAnalysis_Curve.IsClosed parameter-infinite B-spline curve with knot sentinel
 
 B-spline curve with one parameter (U_MAX) set to infinity sentinel value (`1.797...e+308`). IsClosed checks closure before validating parameter bounds, allowing NaN comparisons on infinite knot value. Expects rejection at parameter validation layer.
+- **Tier-3 assertion**: shape_null == True
 
 ### Gn050 — ShapeUpgrade_SplitSurface.SetUSplitValues empty parameter list
 
 Valid B-spline surface (degree 2×2, 3×4 control net) fed to SetUSplitValues with empty split parameter list. Code initializes without diagnostic message and produces no surface splits. Lacks error signaling for degenerate input.
+- **Tier-3 assertion**: shape_null == True
 
 ### Gn051 — ShapeAnalysis_Curve.GetSamplePoints offset/trimmed recursion depth
 
 Curve nesting: `OFFSET_CURVE(TRIMMED_CURVE(B_SPLINE))` with 0.5mm offset on trimmed domain [0.25, 0.75]. GetSamplePoints recursion selects incorrect sample density when unwrapping nested derivative curves; interior evaluation may fail.
+- **Tier-3 assertion**: shape_null == True
 
 ### Gn052 — ShapeUpgrade_ConvertSurfaceToBezierBasis knot-multiplicity C0 boundary
 
 B-spline surface (degree 3×3) with interior V-knot at 0.5 where multiplicity equals degree (4,3,4 pattern), creating C0 continuity. Converter re-inserts at this boundary despite already full multiplicity; spurious subdivisions follow.
+- **Tier-3 assertion**: shape_null == True
 
 ### Gn053 — ShapeAnalysis_Curve.IsPlanar weighted BSpline poles threshold false positive
 
 4-point rational B-spline with weights [1,1,8,1] and poles within ±0.02mm of XY plane. Curve interior (midspan) evaluates 1.2mm off-plane due to weight amplification; IsPlanar checks only control-point distance to plane, missing interior deviation.
+- **Tier-3 assertion**: shape_null == True
 
 ### Gn054 — ShapeAnalysis_Curve.IsPlanar BSpline dispatch false-negative
 
 B-spline degree-3 curve with poles clustered in XY plane but high-curvature interior sections bow out to Z=5. IsPlanar samples only poles; threshold check fails when interior geometry dominates. Validates2 passes; tier-3 lint should flag.
+- **Tier-3 assertion**: shape_null == True
 
 ### Gn055 — ShapeUpgrade_SplitSurface knot-spec mismatch on QUASI_UNIFORM
 
@@ -20668,10 +20788,12 @@ Degree-2 B-spline surface marked `.QUASI_UNIFORM_KNOTS.` but knot vectors are pi
 ### Gn056 — ShapeAnalysis_Curve.FillBndBox exact-mode knot-boundary clamping
 
 Degree-2 B-spline with knot exactly at t=0.5 (multiplicity 1 in interior). Exact-mode FillBndBox samples both sides of knot but clamps result at knot value, missing parabolic peak at t=0.5 (0.5, ±0.5, 0).
+- **Tier-3 assertion**: shape_null == True
 
 ### Gn057 — ShapeAnalysis_Curve.GetSamplePoints high-radius full-circle 360K cap
 
 Full-circle CIRCLE entity with radius 1,000,000 meters. GetSamplePoints caps at 360 samples; 1-degree resolution insufficient to detect near-tangent intersections in high-curvature regions.
+- **Tier-3 assertion**: shape_null == True
 
 ### Gn058 — ShapeUpgrade_ConvertSurfaceToBezierBasis symmetric-knot asymmetric extraction
 
@@ -20684,18 +20806,22 @@ Non-uniform B-spline with sharp peak at u=0.5. Fixed-step extremum search oversh
 ### Gn060 — ShapeUpgrade_ConvertCurve2dToBezier loop-variable persistence
 
 2D B-spline with 6+ segments (degree 2, 9 control points). Loop variable j1 doesn't reset between outer iterations, causing patch skip during C0→Bezier decomposition. Knot multiplicities create multiple continuity breaks.
+- **Tier-3 assertion**: shape_null == True
 
 ### Gn061 — ShapeAnalysis_Curve.GetSamplePoints (3D 2pt LINE shortcut)
 
 LINE trimmed to [2.0, 8.0] on 10-unit baseline. 2-point shortcut samples only trimmed endpoints, missing midspan information (u=5.0) used by downstream healing for curvature/degeneracy detection.
+- **Tier-3 assertion**: shape_null == True
 
 ### Gn062 — ShapeUpgrade_SplitSurface.SetVSplitValues out-of-order
 
 Bi-quadratic B-spline surface (3×3 control points, degree 2×2). When split values passed as [1.0, 0.5, 0.2] without sort, Init produces inverted sub-patches with swapped parameter ranges.
+- **Tier-3 assertion**: shape_null == True
 
 ### Gn063 — ShapeAnalysis_Curve.GetSamplePoints rational pole density
 
 5-control-point NURBS with weight 150.0 at midpoint (u=0.5), creating extreme cusp. Sample density doesn't scale with pole weight; uniform grid misses the sharp feature pulled by high-weight pole.
+- **Tier-3 assertion**: shape_null == True
 
 ### Gn064 — ShapeAnalysis_Curve.IsClosed periodic vs closed semantic
 
@@ -20704,6 +20830,7 @@ Bi-quadratic B-spline surface (3×3 control points, degree 2×2). When split val
 **Trigger:** ShapeAnalysis_Curve::IsClosed() on periodic BSpline with non-closing poles.
 
 ---
+- **Tier-3 assertion**: shape_null == True
 
 ### Gn065 — ShapeUpgrade_ConvertSurfaceToBezierBasis BSpline-of-BSpline
 
@@ -20712,6 +20839,7 @@ Bi-quadratic B-spline surface (3×3 control points, degree 2×2). When split val
 **Trigger:** ShapeUpgrade_ConvertSurfaceToBezierBasis on composite curves with nested trimmed BSplines.
 
 ---
+- **Tier-3 assertion**: shape_null == True
 
 ### Gn066 — ShapeAnalysis_Curve.IsPlanar OffsetCurve detection failure
 
@@ -20720,6 +20848,7 @@ Bi-quadratic B-spline surface (3×3 control points, degree 2×2). When split val
 **Trigger:** ShapeAnalysis_Curve::IsPlanar() on OFFSET_CURVE_3D with constant offset direction.
 
 ---
+- **Tier-3 assertion**: shape_null == True
 
 ### Gn067 — ShapeUpgrade_SplitSurface degree mismatch
 
@@ -20728,12 +20857,14 @@ Bi-quadratic B-spline surface (3×3 control points, degree 2×2). When split val
 **Trigger:** ShapeUpgrade_SplitSurface on surfaces with unequal u/v degrees.
 
 ---
+- **Tier-3 assertion**: shape_null == True
 
 ### Gn068 — ShapeAnalysis_Curve.FillBndBox elliptic-arc midpoint sampling
 
 **Defect:** Trimmed ELLIPSE arc with high aspect ratio. FillBndBox samples midpoint at π/2 (correct for unit ellipse), but actual Y-max is at a different parameter for high-eccentricity ellipses.
 
 **Trigger:** ShapeAnalysis_Curve::FillBndBox() on trimmed high-aspect-ratio ellipse arcs.
+- **Tier-3 assertion**: shape_null == True
 
 ### Gn069 — ShapeAnalysis_Curve.GetSamplePoints BSpline knot-aware sampling
 
@@ -20742,6 +20873,7 @@ Bi-quadratic B-spline surface (3×3 control points, degree 2×2). When split val
 **Minimal reproducer:** `Gn069.stp` — B-spline degree 3, 6 poles, clamped, with knot vector `(0,0,0,0, 0.5,0.51,0.52, 1,1,1,1)`. GetSamplePoints(curve, 0.01) expected to use at most ~50 samples total; actual: >500 in [0.5, 0.52].
 
 **Defect axis:** `input-shape`
+- **Tier-3 assertion**: shape_null == True
 
 ### Gn070 — ShapeUpgrade_ConvertCurve2dToBezier weight-based delegation
 
@@ -20750,6 +20882,7 @@ Bi-quadratic B-spline surface (3×3 control points, degree 2×2). When split val
 **Minimal reproducer:** `Gn070.stp` — 2D rational B-spline degree 2, 5 poles, all weights = 1.0. Converter should produce non-rational Bezier output; actual: rational BEZIER_CURVE with weights=1.0.
 
 **Defect axis:** `input-shape`
+- **Tier-3 assertion**: shape_null == True
 
 ### Gn071 — ShapeAnalysis_Curve.IsClosed BezierCurve check
 
@@ -20758,6 +20891,7 @@ Bi-quadratic B-spline surface (3×3 control points, degree 2×2). When split val
 **Minimal reproducer:** `Gn071.stp` — BEZIER_CURVE degree 3, 5 poles, first = last = (0,0,0). IsClosed() returns false because implementation treats as B-spline (which requires explicit periodic flag).
 
 **Defect axis:** `input-shape`
+- **Tier-3 assertion**: shape_null == True
 
 ### Gn072 — ShapeUpgrade_SplitSurface explicit-knot-spec mismatch
 
@@ -20766,6 +20900,7 @@ Bi-quadratic B-spline surface (3×3 control points, degree 2×2). When split val
 **Minimal reproducer:** `Gn072.stp` — B-spline surface 4x4 poles, degree (2,2), U-knots non-uniform `(0,0,0,0.3,0.6,1,1,1)` declared as `.UNIFORM_KNOTS.` (.F.). SplitSurface produces splits aligned to incorrect uniform grid instead of actual knot intervals.
 
 **Defect axis:** `input-shape`
+- **Tier-3 assertion**: shape_null == True
 
 ### Gn073 — ShapeAnalysis_Curve.FillBndBox composite-curve segment switch
 
@@ -20774,6 +20909,7 @@ Bi-quadratic B-spline surface (3×3 control points, degree 2×2). When split val
 **Minimal reproducer:** `Gn073.stp` — COMPOSITE_CURVE with three degree-2 B-spline segments. Segment 1 ends at y=1.2; Segment 2 peaks at y≈1.5 near the transition; FillBndBox misses this maximum because sampling stops before segment handoff.
 
 **Defect axis:** `input-shape`
+- **Tier-3 assertion**: shape_null == True
 
 ### Gn074 — ShapeUpgrade_ConvertSurfaceToBezierBasis degree truncation
 
@@ -20782,6 +20918,7 @@ Bi-quadratic B-spline surface (3×3 control points, degree 2×2). When split val
 **Minimal reproducer:** B-spline surface with degree u=7, v=7 (8×8 control points). Algorithm has hardcoded max degree limit and silently truncates instead of proper degree-reduction, producing sub-patches with incorrect degree.
 
 ---
+- **Tier-3 assertion**: shape_null == True
 
 ### Gn075 — ShapeAnalysis_Curve.FillBndBox approximation-mode underestimate
 
@@ -20790,6 +20927,7 @@ Bi-quadratic B-spline surface (3×3 control points, degree 2×2). When split val
 **Minimal reproducer:** B-spline degree-3 curve with sharp curvature peak between interior knots. Approximation-mode uses discrete sampling instead of exact control-polygon analysis, reporting bbox ~10% smaller than actual.
 
 ---
+- **Tier-3 assertion**: shape_null == True
 
 ### Gn076 — ShapeUpgrade_SplitSurface u-multiplicity loss
 
@@ -20798,6 +20936,7 @@ Bi-quadratic B-spline surface (3×3 control points, degree 2×2). When split val
 **Minimal reproducer:** B-spline surface (degree u=3, v=2) with u-knot multiplicity vector (4,2,2,4). Splitting at u=0.5 fails to transfer interior multiplicity-2 information to sub-patches.
 
 ---
+- **Tier-3 assertion**: shape_null == True
 
 ### Gn077 — ShapeAnalysis_Curve.IsClosed with self-intersecting direction reversal
 
@@ -20806,42 +20945,49 @@ Bi-quadratic B-spline surface (3×3 control points, degree 2×2). When split val
 **Minimal reproducer:** B-spline degree-2 curve with control polygon [P0,P1,P2,P3,P4] where P4=P0 (closes) but P2 direction-reversal causes self-intersection. IsClosed reports closed but misses crossing.
 
 ---
+- **Tier-3 assertion**: shape_null == True
 
 ### Gn078 — ShapeUpgrade_ConvertCurve2dToBezier double-degree-elevation knot error
 
 **Defect axis:** curve-type-handling  
 **False-claim:** ConvertCurve2dToBezier correctly handles multi-step degree elevation.  
 **Minimal reproducer:** 2D B-spline degree-2 curve (6 control points) elevated to degree 4. Algorithm assumes single-step elevation and produces incorrect knot vector; correct path is 2→3→4 (two steps).
+- **Tier-3 assertion**: shape_null == True
 
 ### Gn079 — ShapeAnalysis_Curve.IsPlanar BSpline interior bow
 
 **Defect**: Degree-3 B-spline with 5 control points nominally planar but interior control point deviates 2mm perpendicular to plane. IsPlanar evaluates only at control point parameter values, missing interior curvature deviation.
 
 **Fixture**: Curve with endpoints at z=0, interior pole at z=2mm; all other poles in z=0 plane.
+- **Tier-3 assertion**: shape_null == True
 
 ### Gn080 — ShapeUpgrade_SplitSurface.SetUSplitValues duplicate dedup
 
 **Defect**: Split parameter array [0.3, 0.3, 0.7] deduplicates but removes wrong copy, producing incorrect patch grid topology.
 
 **Fixture**: 5×5 degree-3 surface with knots designed for [0.3, 0.3, 0.7] split sequence.
+- **Tier-3 assertion**: shape_null == True
 
 ### Gn081 — ShapeAnalysis_Curve.GetSamplePoints CIRCLE scale-insensitive cap
 
 **Defect**: Full-circle CIRCLE (radius 0.001mm) samples with fixed 360-point cap regardless of scale, producing 1µm spacing for 1µm radius curve (exceeds 1e-7 tolerance).
 
 **Fixture**: Micro-scale CIRCLE trimmed to full range; parametrization [0, 2π].
+- **Tier-3 assertion**: shape_null == True
 
 ### Gn082 — ShapeUpgrade_ConvertSurfaceToBezierBasis multi-patch seam drift
 
 **Defect**: B-spline surface with interior knots in both U and V converts to N×M Bezier grid with seam tolerance mismatch between adjacent patches.
 
 **Fixture**: 6×6 degree-2 surface with knots at u,v=0.33,0.67 forcing 2×2 Bezier patch grid.
+- **Tier-3 assertion**: shape_null == True
 
 ### Gn083 — ShapeAnalysis_Curve.FillBndBox endpoint-bias extremum miss
 
 **Defect**: Curve with non-extremal endpoints; FillBndBox samples interior and endpoints but skips actual extremum location, producing too-large bounding box.
 
 **Fixture**: Degree-3 curve, 7 poles, Y range [-0.8, 0.5] with minimum not at endpoints.
+- **Tier-3 assertion**: shape_null == True
 
 ### Gn084 — ShapeAnalysis_Curve.IsPlanar tolerance-zero
 
@@ -20852,6 +20998,7 @@ Bi-quadratic B-spline surface (3×3 control points, degree 2×2). When split val
 **File:** Gn084.stp
 
 ---
+- **Tier-3 assertion**: shape_null == True
 
 ### Gn085 — ShapeUpgrade_ConvertSurfaceToBezierBasis cylinder-conversion
 
@@ -20862,6 +21009,7 @@ Bi-quadratic B-spline surface (3×3 control points, degree 2×2). When split val
 **File:** Gn085.stp
 
 ---
+- **Tier-3 assertion**: shape_null == True
 
 ### Gn086 — ShapeAnalysis_Curve.GetSamplePoints helix-sampling
 
@@ -20872,6 +21020,7 @@ Bi-quadratic B-spline surface (3×3 control points, degree 2×2). When split val
 **File:** Gn086.stp
 
 ---
+- **Tier-3 assertion**: shape_null == True
 
 ### Gn087 — ShapeUpgrade_SplitSurface.SetUSplitValues neg-zero
 
@@ -20882,6 +21031,7 @@ Bi-quadratic B-spline surface (3×3 control points, degree 2×2). When split val
 **File:** Gn087.stp
 
 ---
+- **Tier-3 assertion**: shape_null == True
 
 ### Gn088 — ShapeAnalysis_Curve.IsClosed B-spline open-via-knots
 
@@ -20890,50 +21040,60 @@ Bi-quadratic B-spline surface (3×3 control points, degree 2×2). When split val
 **Fixture:** Degree-3 B-spline (6 control points, first and last coincident at origin); knot multiplicities (4,1,1,4) clamp endpoints, making curve open despite polygon closure.
 
 **File:** Gn088.stp
+- **Tier-3 assertion**: shape_null == True
 
 ### Gn089 — ShapeUpgrade_SplitSurface non-rectangular-region
 
 Defect: B-spline surface trimmed to non-rectangular region (triangular trim); SplitSurface attempts axis-aligned split but the trim breaks the assumption. Fixture: degree-3 degree-2 surface with 4x3 control points, trimmed boundary defining a triangular region within parameter space.
+- **Tier-3 assertion**: shape_null == True
 
 ### Gn090 — ShapeAnalysis_Curve.IsPlanar Z-NaN
 
 Defect: B-spline with one control point having Z=NaN; IsPlanar's pole sampling produces NaN result, which IEEE compare-with-zero returns false (so "is planar" reported). Fixture: degree-3 curve with 6 control points; middle pole has Z=1.0E+100 to simulate NaN behavior.
+- **Tier-3 assertion**: shape_null == True
 
 ### Gn091 — ShapeUpgrade_ConvertCurve2dToBezier endpoint-pole-multiplicity
 
 Defect: 2D B-spline whose endpoint knot multiplicity is degree (open), but inner multiplicity is also degree (C0 break); converter expects only-endpoint-clamped. Fixture: degree-3 2D curve with 7 control points, knot multiplicities (4,3,3,4).
+- **Tier-3 assertion**: shape_null == True
 
 ### Gn092 — ShapeAnalysis_Curve.GetSamplePoints offset-curve sample-density
 
 Defect: OFFSET_CURVE wrapping a B-spline; sample density inherited from base curve doesn't account for offset's local curvature change. Fixture: degree-3 B-spline with 8 control points wrapped by OFFSET_CURVE with 1.5mm offset in Z direction.
+- **Tier-3 assertion**: shape_null == True
 
 ### Gn093 — ShapeUpgrade_ConvertSurfaceToBezierBasis u-and-v-knot-asymmetry
 
 Defect: Surface with u_degree=3, v_degree=5 and asymmetric knot multiplicities; conversion's symmetric assumption produces wrong Bezier patch count in U vs V. Fixture: 4x6 control point grid, degree-3 in U, degree-5 in V, knot multiplicities (3,1,3) in U and (5,1,5) in V.
+- **Tier-3 assertion**: shape_null == True
 
 ### Gn094 — ShapeAnalysis_Curve.IsClosed degree-0-curve
 
 Defect: B-spline of degree 0 (piecewise constant); `IsClosed` reports false but the curve has no meaningful direction, so closed-vs-open is ill-defined. A degree-0 B-spline is piecewise constant segments with no tangent or direction. The `IsClosed` logic assumes non-zero degree and fails to handle the degenerate case properly.
 
 **Minimal reproducer**: Degree-0 B-spline with 3 control points and knot vector (2,1,1,2) creating 3 constant-value intervals.
+- **Tier-3 assertion**: shape_null == True
 
 ### Gn095 — ShapeUpgrade_ConvertSurfaceToBezierBasis 1x1-control-grid
 
 Defect: Degenerate B-spline surface with only 1 control point (collapsed to a single point); converter doesn't reject and produces a 0-patch Bezier. A degree (3,3) surface with a 1×1 net is geometrically invalid (requires ≥4 points per axis for degree 3). Proper validation should reject single-point grids; conversion yields empty result.
 
 **Minimal reproducer**: `B_SPLINE_SURFACE_WITH_KNOTS` degree (3,3), 1 control point, knot multiplicities (2,2) on both axes.
+- **Tier-3 assertion**: shape_null == True
 
 ### Gn096 — ShapeAnalysis_Curve.FillBndBox infinite-bbox
 
 Defect: Curve with NaN/inf control points; `FillBndBox` returns an unbounded bbox without flagging the invalid input. At least one control point contains inf or NaN coordinate, causing bbox calculation to fail silently and produce an infinite or undefined bounding box.
 
 **Minimal reproducer**: Degree-3 B-spline with 4 control points, one having Z coordinate = 1.0E308 (infinity).
+- **Tier-3 assertion**: shape_null == True
 
 ### Gn097 — ShapeUpgrade_SplitSurface.Init duplicate-split-values
 
 Defect: Call `Init` with duplicate split parameters [0.5, 0.5, 0.5]; dedup logic doesn't fully collapse, leaving phantom splits. The surface is split at the same parameter value multiple times, and the deduplication logic fails to fully remove redundant split locations.
 
 **Minimal reproducer**: Degree (2,2) surface with interior knot at 0.5 on both axes; `Init` called with triplicate U-split [0.5, 0.5, 0.5].
+- **Tier-3 assertion**: shape_null == True
 
 ### Gn098 — ShapeAnalysis_Curve.IsPlanar exactly-2-points
 
@@ -20948,6 +21108,7 @@ Degree-2 rational B-spline (circular arc) with weight pole at t=0.5. GetSamplePo
 **File**: `/Users/zellyn/gh/dodgy-step-files/step-examples/12-2b-nurbs/Gn099.stp`
 
 ---
+- **Tier-3 assertion**: shape_null == True
 
 ### Gn100 — ShapeUpgrade_SplitSurface high-multiplicity-clamp
 
@@ -20956,6 +21117,7 @@ B-spline surface with U knot multiplicity vector (4,4,4), degree 3, and only 3 c
 **File**: `/Users/zellyn/gh/dodgy-step-files/step-examples/12-2b-nurbs/Gn100.stp`
 
 ---
+- **Tier-3 assertion**: shape_null == True
 
 ### Gn101 — ShapeAnalysis_Curve.IsClosed COMPOSITE_CURVE with-discontinuity
 
@@ -20964,6 +21126,7 @@ Composite curve with 3 segments where segment 2 starts at (1.1, 0.1, 0) but segm
 **File**: `/Users/zellyn/gh/dodgy-step-files/step-examples/12-2b-nurbs/Gn101.stp`
 
 ---
+- **Tier-3 assertion**: shape_null == True
 
 ### Gn102 — ShapeUpgrade_ConvertCurve2dToBezier degree-elevation-skip
 
@@ -20972,15 +21135,18 @@ Degree-0 B-spline (piecewise constant function). When degree-elevation code comp
 **File**: `/Users/zellyn/gh/dodgy-step-files/step-examples/12-2b-nurbs/Gn102.stp`
 
 ---
+- **Tier-3 assertion**: shape_null == True
 
 ### Gn103 — ShapeAnalysis_Curve.FillBndBox bspline-bezier-mixed
 
 Composite curve mixing a degree-3 B-spline segment (requires 4 samples) with a degree-2 Bezier segment (requires 3 samples). FillBndBox dispatches per-segment but applies B-spline sample count to the Bezier component, undersample the Bezier's curvature extrema.
 
 **File**: `/Users/zellyn/gh/dodgy-step-files/step-examples/12-2b-nurbs/Gn103.stp`
+- **Tier-3 assertion**: shape_null == True
 
 ### Gn104 — trimmed-recursion on B-spline
 Defect: ShapeUpgrade_SplitSurfaceContinuity.Compute recursively subdivides trimmed B-spline ignoring trim bounds, producing overlapping sub-patches.
+- **Tier-3 assertion**: n_faces_total == 1
 
 ### Gn105 — rational-with-coincident-poles IsClosed
 Defect: ShapeAnalysis_Curve.IsClosed checks position only, ignoring weights on coincident poles. Closed rational curve with coincident start/end but different weights.
@@ -20997,42 +21163,52 @@ Defect: ShapeUpgrade_SplitSurface.Init silently accepts inverted bounds (u_min >
 ### Gn109 — ShapeAnalysis_Curve.IsPlanar non-rational-bspline-3D
 
 Non-rational B-spline degree-4 curve with control polygon ostensibly coplanar but interior sampled values bow out 0.15 units. Pole-sampling strategy in IsPlanar misses interior bulge; detects polygon but not actual curve geometry.
+- **Tier-3 assertion**: shape_null == True
 
 ### Gn110 — ShapeUpgrade_ConvertSurfaceToBezierBasis bezier-with-trim
 
 BEZIER_SURFACE wrapped in RECTANGULAR_TRIMMED_SURFACE via FACE_BOUND. Conversion logic treats as untrimmed (uses base knot vector [4,4] on both directions, spans 0.0..1.0) and ignores trim loop (0.25..0.75 square); produces wrong patches outside trim.
+- **Tier-3 assertion**: shape_null == True
 
 ### Gn111 — ShapeAnalysis_Curve.GetSamplePoints cubic-with-flat-region
 
 Cubic B-spline with control points #3, #4, #5 collinear (flat plateau from t=0.4 to t=0.7). Sampler under-weights this region (zero second derivative); coarse knot insertion misses inflection transition.
+- **Tier-3 assertion**: shape_null == True
 
 ### Gn112 — ShapeUpgrade_SplitSurface.Init split-at-knot
 
 Curve knot vector has interior knot at t=0.5 with multiplicity 2. Init's split request at t=0.5 triggers phantom boost (attempts insertion into already-multiplied knot); creates spurious Bezier segment boundary.
+- **Tier-3 assertion**: shape_null == True
 
 ### Gn113 — ShapeAnalysis_Curve.IsClosed periodic-with-knot-asymmetry
 
 B-spline with periodic flag (.T.) but knot multiplicities at endpoints differ: u_min has multiplicity 2, u_max has multiplicity 2 but computed span widths asymmetric. IsClosed reports .T. based on flag, ignoring asymmetry in knot partition.
+- **Tier-3 assertion**: shape_null == True
 
 ### Gn114 — ShapeAnalysis_Curve.IsClosed knot-vector-not-symmetric
 
 Closed B-spline curve (degree 3, 7 control points) with asymmetric knot multiplicities at endpoints (multiplicity 2 at start, 2 at end). Poles form a closed loop but knot vector lacks symmetry. IsClosed incorrectly reports closed based on pole coincidence while downstream code assumes symmetric knot structure.
+- **Tier-3 assertion**: shape_null == True
 
 ### Gn115 — ShapeUpgrade_ConvertSurfaceToBezierBasis non-uniform-degree
 
 B-spline surface with highly disparate degrees: U direction degree 5, V direction degree 1. Control point layout (7×2) creates vastly different patch sizes when converted to Bezier basis. Tests Init's assumption of uniform degree across dimensions.
+- **Tier-3 assertion**: shape_null == True
 
 ### Gn116 — ShapeAnalysis_Curve.GetSamplePoints near-collinear-poles
 
 B-spline curve (degree 3, 5 control points) with poles nearly collinear in XY plane (offsets ~1e-5 in Y). Sampler detects "almost linear" geometry and returns minimal sample count, failing to discretize the sparse curvature information.
+- **Tier-3 assertion**: shape_null == True
 
 ### Gn117 — ShapeUpgrade_SplitSurface with-rational-and-non-rational-mixed
 
 Rational B-spline surface (degree 2×1) with mixed rationality: weights specified (rational in U) but V direction non-rational. Init's split logic assumes uniform rationality and produces incorrect patch boundaries.
+- **Tier-3 assertion**: shape_null == True
 
 ### Gn118 — ShapeAnalysis_Curve.IsPlanar two-points-and-one-offset
 
 Degenerate B-spline curve (degree 2, 3 points) where first two poles are coincident and third is spatially offset. IsPlanar's degenerate-input handler produces a verdict but computes a meaningless "plane" from insufficient independent points.
+- **Tier-3 assertion**: shape_null == True
 
 ### Gn119 — ShapeAnalysis_Curve.GetSamplePoints with-clustered-knots
 
@@ -21041,6 +21217,7 @@ Degenerate B-spline curve (degree 2, 3 points) where first two poles are coincid
 **Geometry:** Cubic B-spline with control polygon (0,0,0)→(4,2,0). Interior knots at {0.2, 0.20025, 0.2005, 0.200750, 0.20100, 0.8}.
 
 ---
+- **Tier-3 assertion**: shape_null == True
 
 ### Gn120 — ShapeUpgrade_ConvertSurfaceToBezierBasis with-clamped-knots-degenerate
 
@@ -21049,6 +21226,7 @@ Degenerate B-spline curve (degree 2, 3 points) where first two poles are coincid
 **Geometry:** 4×2 control grid, U knots clamped {0.0, 0.0, 0.0, 1.0, 1.0, 1.0}, V knots unclamped {0.1, 0.2, 0.3}.
 
 ---
+- **Tier-3 assertion**: shape_null == True
 
 ### Gn121 — ShapeAnalysis_Curve.IsPlanar B-spline-of-degree-1
 
@@ -21057,6 +21235,7 @@ Degenerate B-spline curve (degree 2, 3 points) where first two poles are coincid
 **Geometry:** 5-point degree-1 B-spline: (0,0,0)→(1,0,0)→(2,1,1)→(3,0,0)→(4,0,0). Point #22 at (2,1,1) lifts the control polygon out XY plane.
 
 ---
+- **Tier-3 assertion**: shape_null == True
 
 ### Gn122 — ShapeUpgrade_SplitSurface.Init with-control-net-collapsed
 
@@ -21065,28 +21244,34 @@ Degenerate B-spline curve (degree 2, 3 points) where first two poles are coincid
 **Geometry:** 4×2 surface, degree (2,2), 8 control points collapsed to 2 unique positions.
 
 ---
+- **Tier-3 assertion**: shape_null == True
 
 ### Gn123 — ShapeAnalysis_Curve.IsClosed COMPOSITE_CURVE with-direction-reversal
 
 **Defect:** Composite curve with 2 line segments: first forward (0,0,0)→(2,0,0), second reversed (2,0,0)→(0,0,0). IsClosed checks endpoint coincidence but ignores direction reversal, missing topological mismatch.
 
 **Geometry:** Two lines, segment 1 direction (1,0,0), segment 2 direction (-1,0,0) with REVERSE sense flag.
+- **Tier-3 assertion**: shape_null == True
 
 ### Gn124 — ShapeAnalysis_Curve.FillBndBox with-degenerate-segments
 
 Composite curve containing a degenerate segment (zero-length). FillBndBox samples all segments including the degenerate one, causing the bounding box to contain a collapsed axis. Downstream code assumes all bbox axes span non-zero ranges.
+- **Tier-3 assertion**: shape_null == True
 
 ### Gn125 — ShapeUpgrade_SplitSurface.SetVSplitValues partial-domain
 
 BSpline surface with full V domain [0,1]. Split values provided only for partial range [0.3, 0.7]. SetVSplitValues clips silently, leaving V ranges [0, 0.3) and (0.7, 1] unprocessed and unsplit.
+- **Tier-3 assertion**: shape_null == True
 
 ### Gn126 — ShapeAnalysis_Curve.GetSamplePoints CIRCLE with-trim-near-2π
 
 Trimmed circle with parameters [0.001, 2π-0.001]. GetSamplePoints uses 360-degree cap for sampling, but the trim removes start/end points, leaving a tiny gap that the sampling grid misses.
+- **Tier-3 assertion**: shape_null == True
 
 ### Gn127 — ShapeUpgrade_ConvertCurve2dToBezier with-already-bezier
 
 Degree-3 Bezier curve (already in Bezier form). ConvertCurve2dToBezier should be a no-op but instead elevates the degree and replicates control points unnecessarily.
+- **Tier-3 assertion**: shape_null == True
 
 ### Gn128 — ShapeAnalysis_Curve.IsClosed B-spline with-identical-knots-different-poles
 
@@ -21143,6 +21328,7 @@ Periodic B-spline with knot parameters identical at boundaries but control poles
 **File**: `/Users/zellyn/gh/dodgy-step-files/step-examples/12-2b-nurbs/Gn133.stp`
 
 ---
+- **Tier-3 assertion**: shape_null == True
 
 ### Gn129 — Geom_BSplineSurface periodic-U-closure weight-extraction
 - **Category**: §12.2b NURBS
@@ -21421,6 +21607,7 @@ Minimal reproducer: B_SPLINE_CURVE_WITH_KNOTS, degree 3, 7 poles. Interior knots
 ### Gn159 — B-spline surface with collapsed U-boundary pole (pin-face singularity)
 
 Defect: 4x3 NURBS surface (U-degree 2, V-degree 2); last U-row poles all at (3.0,1.5,0.0). CheckPin detects singularity; FixPinFace unimplemented. Falsifiable: pin-face repair must flatten degenerate boundary edge.
+- **Tier-3 assertion**: shape_null == True
 
 ### Gn160 — Periodic B-spline curve with parameter wrapping
 
@@ -21429,6 +21616,7 @@ Defect: 5-pole closed curve (degree 2, periodic); period=1.0. Projection paramet
 ### Gn161 — B-spline surface with asymmetric pole clustering
 
 Defect: 5x2 NURBS (U-degree 2, V-degree 1); dense U-boundary clustering at (0.9,0.95,1.0) with sparse V direction (2 poles only). CheckSmallFace boundary-focused IsoStat must detect asymmetric singularities. Falsifiable: pole-grid boundary scan catches strips missed by interior iteration.
+- **Tier-3 assertion**: shape_null == True
 
 ### Gn162 — B-spline curve with interior knot over-multiplicity
 
@@ -21439,21 +21627,27 @@ Defect: 6-pole curve (degree 3); interior knot at 0.5 has multiplicity 4 (degree
 Defect: 3x3 NURBS (U-degree 2, V-degree 2); middle U-row poles near-identical (1.5,1.5,0.01). SplitSurface produces zero-area or empty patches. Falsifiable: patch validation rejects degenerate outputs from split operations.
 
 ## Wave 72A: NURBS Healing Defects (Gn164–Gn168)
+- **Tier-3 assertion**: shape_null == True
 
 ### Gn164 — Rational BSpline Closure Detection Bypass
 Rational surface with varying weights requires knot-aware grid sampling, not pole-based shortcut. ShapeAnalysis_Surface.IsURational() gate bypassed.
+- **Tier-3 assertion**: shape_null == True
 
 ### Gn165 — Ill-Conditioned Knot Spacing (44:1 Ratio)
 Clustered interior knots create numerical instability. BRepLib::SameParameter knot anomaly detection (critratio > 10) triggers arc-length reparametrization.
+- **Tier-3 assertion**: shape_null == True
 
 ### Gn166 — Boundary Pole Singularity (First Row)
 U-boundary poles coalesce; ShapeAnalysis_CheckSmallFace.CheckPin must iterate boundary rows via IsoStat, not interior poles.
+- **Tier-3 assertion**: shape_null == True
 
 ### Gn167 — Non-Planar Degree-4 BSpline
 Control poles coplanar (XY) but curve deviates significantly in Z. ShapeAnalysis_Curve.IsPlanar pole-sufficiency false positive.
+- **Tier-3 assertion**: shape_null == True
 
 ### Gn168 — Interior C0 Discontinuity (Tangent Jump)
 2D B-spline with C0 (positional) but not C1 (tangent) at u=0.5. BRepLib::SameParameter invokes Geom2dConvert::C0BSplineToC1 healing.
+- **Tier-3 assertion**: shape_null == True
 
 ### Gn169 — Rational B-spline with weight singularity near origin
 - **Category**: §12.2b NURBS
@@ -24964,6 +25158,7 @@ Edges E1(V0→V2), E2(V1→V2), E3(V2→V3). V2 extent=3. Tests end-vertex (V2) 
 - **Notes**: **See also**: Gs049, A083. Synonyms: "STEP error for ellipse revol shape", "ellipse revolved around its own centre", "SURFACE_OF_REVOLUTION poles", "degenerate ellipse-of-revolution surface".
 - **Byte assertion**: contains(b'SURFACE_OF_REVOLUTION')
 - **Byte assertion**: contains(b'ELLIPSE')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silent-accept observed (catalog allowed: {heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
 - **Severity**: P1
 - **Model impact**: The affected surface or curve has degenerate parameterization (zero-length axis, non-unit direction, near-zero radius); evaluations at the degenerate parameter produce NaN/Inf, which propagates into face bounds and downstream BRep operations.
@@ -24979,6 +25174,7 @@ Edges E1(V0→V2), E2(V1→V2), E3(V2→V3). V2 extent=3. Tests end-vertex (V2) 
 - **Notes**: **See also**: Gs058, Gs041, Tfa036, Gn018. Synonyms: "RECTANGULAR_COMPOSITE_SURFACE LoadONBrep stub", "step-g composite quilt unimplemented", "patch quilt face dropped", "promote to NURBS not done", "BRL-CAD step-g RECTANGULAR_COMPOSITE_SURFACE skipped".
 - **Byte assertion**: contains(b'RECTANGULAR_COMPOSITE_SURFACE')
 - **Byte assertion**: contains(b'SURFACE_PATCH')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silent-accept observed (catalog allowed: {heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
 - **Severity**: P1
 - **Model impact**: The affected surface or curve has degenerate parameterization (zero-length axis, non-unit direction, near-zero radius); evaluations at the degenerate parameter produce NaN/Inf, which propagates into face bounds and downstream BRep operations.
@@ -24994,6 +25190,7 @@ Edges E1(V0→V2), E2(V1→V2), E3(V2→V3). V2 extent=3. Tests end-vertex (V2) 
 - **Notes**: **See also**: Gs057, Gn017. Synonyms: "SURFACE_PATCH transition_code dropped", "step-g ignores patch continuity metadata", "CONT_SAME_GRADIENT_SAME_CURVATURE not applied", "u_sense / v_sense booleans lost", "patch-boundary C2 hint discarded by importer".
 - **Byte assertion**: contains(b'SURFACE_PATCH')
 - **Byte assertion**: contains(b'CONT_SAME_GRADIENT_SAME_CURVATURE')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silent-accept observed (catalog allowed: {heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
 - **Severity**: P1
 - **Model impact**: The affected surface or curve has degenerate parameterization (zero-length axis, non-unit direction, near-zero radius); evaluations at the degenerate parameter produce NaN/Inf, which propagates into face bounds and downstream BRep operations.
@@ -25007,6 +25204,7 @@ Edges E1(V0→V2), E2(V1→V2), E3(V2→V3). V2 extent=3. Tests end-vertex (V2) 
 - **Actual closure**: Last pole at u_max offset 0.01 in Z, breaking closure
 - **Trigger**: Midpoint sample in IsUClosed detects pole mismatch despite knot structure
 - **Expected healing**: Surface marked as non-closed; subsequent passes may split or reject
+- **Tier-3 assertion**: shape_null == True
 
 ### Gs060 — Spherical surface pole singularity detection
 - **Defect class**: `ShapeAnalysis_Surface.ComputeSingularities`
@@ -25015,6 +25213,7 @@ Edges E1(V0→V2), E2(V1→V2), E3(V2→V3). V2 extent=3. Tests end-vertex (V2) 
 - **Singularity**: Natural poles at v=π/2 (north) and v=-π/2 (south)
 - **Trigger**: Gradient analysis of surface position; normal becomes degenerate at poles
 - **Expected healing**: Poles marked in singularity map; edge loops adjusted to avoid pole crossing
+- **Tier-3 assertion**: shape_null == True
 
 ### Gs061 — B-spline surface normal degeneracy at cusp
 - **Defect class**: `ShapeAnalysis_Surface.SurfaceNewton`
@@ -25023,6 +25222,7 @@ Edges E1(V0→V2), E2(V1→V2), E3(V2→V3). V2 extent=3. Tests end-vertex (V2) 
 - **Degeneracy**: Two rows (v=1, v=2) have parallel X-directional tangent vectors; normal becomes singular
 - **Trigger**: Newton iteration for closest-point projection diverges when normal is near-zero
 - **Expected healing**: Projection fails; surface may be rejected or split at cusp
+- **Tier-3 assertion**: shape_null == True
 
 ### Gs062 — Trimmed cylinder ValueOfUV dispatch
 - **Defect class**: `ShapeAnalysis_Surface.ValueOfUV`
@@ -25031,6 +25231,7 @@ Edges E1(V0→V2), E2(V1→V2), E3(V2→V3). V2 extent=3. Tests end-vertex (V2) 
 - **Dispatch bug**: ValueOfUV checks basis type (CYLINDER) but ignores trim bounds
 - **Trigger**: Inversion of 3D point to (u,v) produces parameters outside trim domain
 - **Expected healing**: Out-of-bounds (u,v) detected; point re-projected or clamped to trim
+- **Tier-3 assertion**: shape_null == True
 
 ### Gs063 — Trimmed offset surface Bezier delegation
 - **Defect class**: `ShapeUpgrade_ConvertSurfaceToBezierBasis.Compute`
@@ -25039,6 +25240,7 @@ Edges E1(V0→V2), E2(V1→V2), E3(V2→V3). V2 extent=3. Tests end-vertex (V2) 
 - **Delegation bug**: Recursion converts basis surface (trimmed plane) without re-applying trim or offset
 - **Trigger**: Bezier decomposition ignores trim parameters and offset displacement
 - **Expected healing**: Conversion result is untrimmed and unoff-set; healer must reject or reapply constraints
+- **Tier-3 assertion**: shape_null == True
 
 ### Gs064 — ShapeAnalysis_Surface.IsVClosed midpoint sampling on torus
 
@@ -25056,6 +25258,7 @@ Edges E1(V0→V2), E2(V1→V2), E3(V2→V3). V2 extent=3. Tests end-vertex (V2) 
 **Expected validation**: Pass on V-closure detection; fail on false-negative IsVClosed result.
 
 ---
+- **Tier-3 assertion**: shape_null == True
 
 ### Gs065 — ShapeAnalysis_Surface.ValueOfUV near-tangent surface
 
@@ -25073,6 +25276,7 @@ Edges E1(V0→V2), E2(V1→V2), E3(V2→V3). V2 extent=3. Tests end-vertex (V2) 
 **Expected validation**: Reject divergent Newton; fallback to closest-point or parametric projection method.
 
 ---
+- **Tier-3 assertion**: shape_null == True
 
 ### Gs066 — ShapeAnalysis_Surface.SortSingularities cone vs cylinder differing singularities
 
@@ -25090,6 +25294,7 @@ Edges E1(V0→V2), E2(V1→V2), E3(V2→V3). V2 extent=3. Tests end-vertex (V2) 
 **Expected validation**: Detect singularity cardinality mismatch (2 poles vs 1 apex); flag as defect or auto-correct.
 
 ---
+- **Tier-3 assertion**: shape_null == True
 
 ### Gs067 — ShapeUpgrade_ConvertSurfaceToBezierBasis offset surface with negative distance
 
@@ -25107,6 +25312,7 @@ Edges E1(V0→V2), E2(V1→V2), E3(V2→V3). V2 extent=3. Tests end-vertex (V2) 
 **Expected validation**: Converted Bezier surface must maintain parallel plane property with opposite normal.
 
 ---
+- **Tier-3 assertion**: shape_null == True
 
 ### Gs068 — ShapeAnalysis_Surface.UVFromIso boundary U-iso failure
 
@@ -25122,6 +25328,7 @@ Edges E1(V0→V2), E2(V1→V2), E3(V2→V3). V2 extent=3. Tests end-vertex (V2) 
 **Expected kernel behavior**: Kernel must check parameter bounds before projection; clamp or return error code, never silently return garbage UV.
 
 **Expected validation**: Reject out-of-bounds iso request; signal error rather than produce uninitialized result.
+- **Tier-3 assertion**: shape_null == True
 
 ### Gs069 — ShapeAnalysis_Surface.IsDegenerated zero-length axis
 
@@ -25134,6 +25341,7 @@ Edges E1(V0→V2), E2(V1→V2), E3(V2→V3). V2 extent=3. Tests end-vertex (V2) 
 **File**: `/Users/zellyn/gh/dodgy-step-files/step-examples/12-2c-surfaces/Gs069.stp`
 
 ---
+- **Tier-3 assertion**: shape_null == True
 
 ### Gs070 — ShapeUpgrade_SplitSurfaceContinuity.Compute trimmed-fallback
 
@@ -25146,6 +25354,7 @@ Edges E1(V0→V2), E2(V1→V2), E3(V2→V3). V2 extent=3. Tests end-vertex (V2) 
 **File**: `/Users/zellyn/gh/dodgy-step-files/step-examples/12-2c-surfaces/Gs070.stp`
 
 ---
+- **Tier-3 assertion**: shape_null == True
 
 ### Gs071 — ShapeAnalysis_Surface.ProjectDegenerated even-redistribution
 
@@ -25158,6 +25367,7 @@ Edges E1(V0→V2), E2(V1→V2), E3(V2→V3). V2 extent=3. Tests end-vertex (V2) 
 **File**: `/Users/zellyn/gh/dodgy-step-files/step-examples/12-2c-surfaces/Gs071.stp`
 
 ---
+- **Tier-3 assertion**: shape_null == True
 
 ### Gs072 — ShapeAnalysis_Surface.ValueOfUV bounded surface Newton overflow
 
@@ -25170,6 +25380,7 @@ Edges E1(V0→V2), E2(V1→V2), E3(V2→V3). V2 extent=3. Tests end-vertex (V2) 
 **File**: `/Users/zellyn/gh/dodgy-step-files/step-examples/12-2c-surfaces/Gs072.stp`
 
 ---
+- **Tier-3 assertion**: shape_null == True
 
 ### Gs073 — ShapeUpgrade_ConvertSurfaceToBezierBasis plane-approximation thin patch
 
@@ -25180,6 +25391,7 @@ Edges E1(V0→V2), E2(V1→V2), E3(V2→V3). V2 extent=3. Tests end-vertex (V2) 
 **Fixture kind**: standard
 
 **File**: `/Users/zellyn/gh/dodgy-step-files/step-examples/12-2c-surfaces/Gs073.stp`
+- **Tier-3 assertion**: shape_null == True
 
 ### Gs074 — Plane Singularity Misclassification
 
@@ -25190,6 +25402,7 @@ Edges E1(V0→V2), E2(V1→V2), E3(V2→V3). V2 extent=3. Tests end-vertex (V2) 
 **Expected validation:** PASS: No singularities detected; FAIL: Report singularity or crash.
 
 ---
+- **Tier-3 assertion**: shape_null == True
 
 ### Gs075 — Cylindrical Surface Seam-Aware Split
 
@@ -25200,6 +25413,7 @@ Edges E1(V0→V2), E2(V1→V2), E3(V2→V3). V2 extent=3. Tests end-vertex (V2) 
 **Expected validation:** PASS: Seam metadata preserved; FAIL: Seam lost or incorrect split topology.
 
 ---
+- **Tier-3 assertion**: shape_null == True
 
 ### Gs076 — Newton Fallback Comparison Bias
 
@@ -25210,6 +25424,7 @@ Edges E1(V0→V2), E2(V1→V2), E3(V2→V3). V2 extent=3. Tests end-vertex (V2) 
 **Expected validation:** PASS: Correct root selected; FAIL: Wrong root or projection off-surface.
 
 ---
+- **Tier-3 assertion**: shape_null == True
 
 ### Gs077 — Newton Discriminant Near-Zero Abort
 
@@ -25220,6 +25435,7 @@ Edges E1(V0→V2), E2(V1→V2), E3(V2→V3). V2 extent=3. Tests end-vertex (V2) 
 **Expected validation:** PASS: Convergence achieved; FAIL: Premature return-false or no root.
 
 ---
+- **Tier-3 assertion**: shape_null == True
 
 ### Gs078 — Offset-of-Offset Sign Error
 
@@ -25228,26 +25444,32 @@ Edges E1(V0→V2), E2(V1→V2), E3(V2→V3). V2 extent=3. Tests end-vertex (V2) 
 **Reproducer recipe:** Create nested offset (PLANE→+0.5 offset→+0.5 offset); convert both to Bezier basis; verify Z-coordinate at origin; expected: 1.0; actual: 0.0 or -1.0.  
 **Expected kernel behavior:** Recursive offset sign preserved through ConvertSurfaceToBezierBasis conversion chain.  
 **Expected validation:** PASS: Correct offset accumulation; FAIL: Sign flip or coordinate mismatch.
+- **Tier-3 assertion**: shape_null == True
 
 ### Gs079 — ShapeAnalysis_Surface.UVFromIso periodic reset
 
 B_SPLINE_SURFACE_WITH_KNOTS, U-periodic (periodic_u=.T.), u_upper=2π. Reproduces silent wraparound when querying u_iso=2π that maps to u_iso=0, breaking downstream code expecting original parameter.
+- **Tier-3 assertion**: shape_null == True
 
 ### Gs080 — ShapeUpgrade_FaceDivide.SplitSurface boundary-merge
 
 B_SPLINE_SURFACE with internal knot at natural face boundary. SplitSurface splits at boundary-coincident knot, producing degenerate sub-face with coincident control points.
+- **Tier-3 assertion**: shape_null == True
 
 ### Gs081 — ShapeAnalysis_Surface.IsUClosed extrusion-base form
 
 SURFACE_OF_LINEAR_EXTRUSION with open parabolic base curve. IsUClosed correctly returns false but loses extrusion-axis closure metadata needed by downstream processors.
+- **Tier-3 assertion**: shape_null == True
 
 ### Gs082 — ShapeAnalysis_Surface.NextValueOfUV curvature step-size
 
 B_SPLINE_SURFACE with sharp peak (Z=5.0 at center). Newton iteration for surface point location exhibits curvature-driven step collapse below epsilon tolerance before convergence.
+- **Tier-3 assertion**: shape_null == True
 
 ### Gs083 — ShapeUpgrade_ConvertSurfaceToBezierBasis quasi-uniform vs non-uniform mismatch
 
 B_SPLINE_SURFACE_WITH_KNOTS declared form='.QUASI_UNIFORM_KNOTS.' but actual knots are non-uniform. Bezier converter follows form tag and produces incorrect patch geometry.
+- **Tier-3 assertion**: shape_null == True
 
 ### Gs084 — ShapeAnalysis_Surface.IsDegenerated bounded-surface zero-area
 
@@ -25268,21 +25490,27 @@ Periodic B-spline with IsUPeriodic=true, IsVPeriodic=true. Cache invalidation mi
 ### Gs088 — ShapeUpgrade_FaceDivide.SplitSurface periodic
 
 CYLINDRICAL_SURFACE split at u=0 (seam). SplitSurface produces two identical patches instead of preserving wrapped periodicity. Tests line 304+ knot-removal-threshold on periodic geometry.
+- **Tier-3 assertion**: n_faces_total == 1
 
 ### Gs089 — ShapeAnalysis_Surface.UVFromIso B-spline midspan failure
 B-spline surface with interior knot at u=0.5 in iso-curve at v=0.5. Bisection algorithm in UVFromIso converges on wrong side of knot, returning incorrect UV parameters.
+- **Tier-3 assertion**: shape_null == True
 
 ### Gs090 — ShapeUpgrade_ConvertSurfaceToBezierBasis thin-patch elimination threshold
 Bezier surface with near-collinear control points (width 1e-9). Absolute area comparison fails to eliminate degenerate patch; needs normalized area threshold.
+- **Tier-3 assertion**: shape_null == True
 
 ### Gs091 — ShapeAnalysis_Surface.IsUClosed B-spline rational weights
 Rational B-spline surface with asymmetric weights at U closure (first=1.0, last=2.0). Weighted projection differs from geometric distance; closure detection misses boundary condition.
+- **Tier-3 assertion**: shape_null == True
 
 ### Gs092 — ShapeAnalysis_Surface.ComputeBoundIsos extrusion-direction reset
 Surface of linear extrusion with non-unit direction vector (2.0,0.0,0.0). Cached BoundIsos reflect pre-normalization range; recomputation fails to invalidate cache.
+- **Tier-3 assertion**: shape_null == True
 
 ### Gs093 — ShapeUpgrade_SplitSurface BSpline irregular knots
 B-spline surface with irregular V knot multiplicities (3,1,3) on 4 control points. SplitSurface assumes uniform multiplicities, causing over-subdivision and invalid knot structure.
+- **Tier-3 assertion**: shape_null == True
 
 ### Gs094 — ShapeAnalysis_Surface.UVFromIso parameter-clamp underflow
 - **Category**: §12.2c surfaces (sub-class: face)
@@ -25294,6 +25522,7 @@ causing incorrect parameter mapping on extremely narrow domains.
 - **Model impact**: Surface and trimming geometry
 - **Fixture path**: step-examples/12-2c-surfaces/Gs094.stp
 - **Fixture kind**: scaffold
+- **Tier-3 assertion**: shape_null == True
 
 ### Gs095 — ShapeUpgrade_ConvertSurfaceToBezierBasis sphere
 - **Category**: §12.2c surfaces (sub-class: face)
@@ -25305,6 +25534,7 @@ but pole regions become degenerate Bezier patches with zero-area. Control points
 - **Model impact**: Surface and trimming geometry
 - **Fixture path**: step-examples/12-2c-surfaces/Gs095.stp
 - **Fixture kind**: scaffold
+- **Tier-3 assertion**: shape_null == True
 
 ### Gs096 — ShapeAnalysis_Surface.ComputeSingularities torus pinch
 - **Category**: §12.2c surfaces (sub-class: face)
@@ -25316,6 +25546,7 @@ creating a pinch point where the surface crosses itself.
 - **Model impact**: Surface and trimming geometry
 - **Fixture path**: step-examples/12-2c-surfaces/Gs096.stp
 - **Fixture kind**: scaffold
+- **Tier-3 assertion**: shape_null == True
 
 ### Gs097 — ShapeUpgrade_FaceDivideArea.Perform threshold reset
 - **Category**: §12.2c surfaces (sub-class: face)
@@ -25326,6 +25557,7 @@ creating a pinch point where the surface crosses itself.
 - **Model impact**: Surface and trimming geometry
 - **Fixture path**: step-examples/12-2c-surfaces/Gs097.stp
 - **Fixture kind**: scaffold (kernel-test-pair: shape only; runtime invocation required to reproduce)
+- **Tier-3 assertion**: shape_null == True
 
 ### Gs098 — ShapeAnalysis_Surface.IsDegenerated revolution-axis-on-curve
 - **Category**: §12.2c surfaces (sub-class: curve)
@@ -25337,6 +25569,7 @@ missing the degenerate apex singularity.
 - **Model impact**: Surface and trimming geometry
 - **Fixture path**: step-examples/12-2c-surfaces/Gs098.stp
 - **Fixture kind**: scaffold
+- **Tier-3 assertion**: shape_null == True
 
 ### Gs099 — Sphere pole singularity: iso-curve sampling misses pole
 - **Category**: §12.2c surfaces (sub-class: curve)
@@ -25350,6 +25583,7 @@ sampling fails to detect singular points at poles.
 - **Model impact**: Surface and trimming geometry
 - **Fixture path**: step-examples/12-2c-surfaces/Gs099.stp
 - **Fixture kind**: scaffold
+- **Tier-3 assertion**: shape_null == True
 
 ### Gs100 — SplitSurface trim-aware split: splits base not trimmed wrapper
 - **Category**: §12.2c surfaces (sub-class: face)
@@ -25361,6 +25595,7 @@ by extracting and splitting the base surface, ignoring the trim bounds. Result: 
 - **Model impact**: Surface and trimming geometry
 - **Fixture path**: step-examples/12-2c-surfaces/Gs100.stp
 - **Fixture kind**: scaffold
+- **Tier-3 assertion**: shape_null == True
 
 ### Gs101 — ShapeAnalysis_Surface.ValueOfUV: antipodal sphere convergence failure
 - **Category**: §12.2c surfaces (sub-class: surface)
@@ -25373,6 +25608,7 @@ Newton initializes on the wrong sheet and converges to wrong root.
 - **Model impact**: Surface and trimming geometry
 - **Fixture path**: step-examples/12-2c-surfaces/Gs101.stp
 - **Fixture kind**: scaffold
+- **Tier-3 assertion**: shape_null == True
 
 ### Gs102 — ConvertSurfaceToBezierBasis: Bezier passthrough produces re-extracted copy
 - **Category**: §12.2c surfaces (sub-class: face)
@@ -25385,6 +25621,7 @@ reconstructs Bezier, producing numerically different (re-extracted) surface.
 - **Model impact**: Surface and trimming geometry
 - **Fixture path**: step-examples/12-2c-surfaces/Gs102.stp
 - **Fixture kind**: scaffold
+- **Tier-3 assertion**: shape_null == True
 
 ### Gs103 — IsUClosed: periodic-vs-closed semantic mismatch
 - **Category**: §12.2c surfaces (sub-class: face)
@@ -25396,6 +25633,7 @@ reconstructs Bezier, producing numerically different (re-extracted) surface.
 - **Model impact**: Surface and trimming geometry
 - **Fixture path**: step-examples/12-2c-surfaces/Gs103.stp
 - **Fixture kind**: scaffold
+- **Tier-3 assertion**: shape_null == True
 
 ### Gs104 — SURFACE_OF_REVOLUTION with profile-on-axis
 - **Category**: §12.2c surfaces (sub-class: curve)
@@ -25409,6 +25647,7 @@ not properly classified as singular.
 - **Model impact**: Surface and trimming geometry
 - **Fixture path**: step-examples/12-2c-surfaces/Gs104.stp
 - **Fixture kind**: scaffold
+- **Tier-3 assertion**: shape_null == True
 
 ### Gs105 — FaceDivide crossing-curves defect
 - **Category**: §12.2c surfaces (sub-class: curve)
@@ -25421,6 +25660,7 @@ splitter curves and produces overlapping sub-faces on same surface.
 - **Model impact**: Surface and trimming geometry
 - **Fixture path**: step-examples/12-2c-surfaces/Gs105.stp
 - **Fixture kind**: scaffold
+- **Tier-3 assertion**: shape_null == True
 
 ### Gs106 — Concentrated-poles surface with Newton underflow
 - **Category**: §12.2c surfaces (sub-class: face)
@@ -25434,6 +25674,7 @@ at.
 - **Model impact**: Surface and trimming geometry
 - **Fixture path**: step-examples/12-2c-surfaces/Gs106.stp
 - **Fixture kind**: scaffold
+- **Tier-3 assertion**: shape_null == True
 
 ### Gs107 — Closed-surface preservation in Bezier conversion
 - **Category**: §12.2c surfaces (sub-class: face)
@@ -25446,6 +25687,7 @@ Bezier patches don't maintain seam closure or periodic boundary conditions.
 - **Model impact**: Surface and trimming geometry
 - **Fixture path**: step-examples/12-2c-surfaces/Gs107.stp
 - **Fixture kind**: scaffold
+- **Tier-3 assertion**: shape_null == True
 
 ### Gs108 — Singularity boundary classification error
 - **Category**: §12.2c surfaces (sub-class: face)
@@ -25458,6 +25700,7 @@ the analyzer treats the boundary as exclusive, misclassifying interior vs.
 - **Model impact**: Surface and trimming geometry
 - **Fixture path**: step-examples/12-2c-surfaces/Gs108.stp
 - **Fixture kind**: scaffold
+- **Tier-3 assertion**: shape_null == True
 
 ### Gs109 — ShapeAnalysis_Surface.UVFromIso v-iso-at-pole
 - **Category**: §12.2c surfaces (sub-class: face)
@@ -25471,6 +25714,7 @@ UVFromIso accepts the.
 - **Model impact**: Surface and trimming geometry
 - **Fixture path**: step-examples/12-2c-surfaces/Gs109.stp
 - **Fixture kind**: scaffold
+- **Tier-3 assertion**: shape_null == True
 
 ### Gs110 — ShapeUpgrade_SplitSurface.SetUSplitValues count-mismatch
 - **Category**: §12.2c surfaces (sub-class: face)
@@ -25484,6 +25728,7 @@ allocation expects 2; the 3rd value is ignored.
 - **Model impact**: Surface and trimming geometry
 - **Fixture path**: step-examples/12-2c-surfaces/Gs110.stp
 - **Fixture kind**: scaffold
+- **Tier-3 assertion**: shape_null == True
 
 ### Gs111 — ShapeAnalysis_Surface.IsDegenerated SURFACE_OF_LINEAR_EXTRUSION zero-extrusion
 - **Category**: §12.2c surfaces (sub-class: curve)
@@ -25496,6 +25741,7 @@ which returns positive value for zero VECTOR magnitude due to sign bug. Reproduc
 - **Model impact**: Surface and trimming geometry
 - **Fixture path**: step-examples/12-2c-surfaces/Gs111.stp
 - **Fixture kind**: scaffold
+- **Tier-3 assertion**: shape_null == True
 
 ### Gs112 — ShapeUpgrade_ConvertSurfaceToBezierBasis cone-with-trim
 - **Category**: §12.2c surfaces (sub-class: face)
@@ -25509,6 +25755,7 @@ cone; conversion to Bezier.
 - **Model impact**: Surface and trimming geometry
 - **Fixture path**: step-examples/12-2c-surfaces/Gs112.stp
 - **Fixture kind**: scaffold
+- **Tier-3 assertion**: shape_null == True
 
 ### Gs113 — ShapeAnalysis_Surface.ComputeBoundIsos negative-trim
 - **Category**: §12.2c surfaces (sub-class: curve)
@@ -25522,6 +25769,7 @@ v_max=0.0); ComputeBoundIsos generates iso curves with.
 - **Model impact**: Surface and trimming geometry
 - **Fixture path**: step-examples/12-2c-surfaces/Gs113.stp
 - **Fixture kind**: scaffold
+- **Tier-3 assertion**: shape_null == True
 
 ### Gs114 — B-spline surface
 - **Category**: §12.2c surfaces (sub-class: b-spline)
@@ -25531,6 +25779,7 @@ v_max=0.0); ComputeBoundIsos generates iso curves with.
 - **Notes**: **See also**: Gs115, Gs116, Gs117, Gs118. synthesized from earlier wave; backfilled from fixture comment- **Model impact**: Surface and trimming geometry
 - **Fixture path**: step-examples/12-2c-surfaces/Gs114.stp
 - **Fixture kind**: scaffold
+- **Tier-3 assertion**: shape_null == True
 
 ### Gs115 — B-spline surface
 - **Category**: §12.2c surfaces (sub-class: b-spline)
@@ -25540,6 +25789,7 @@ v_max=0.0); ComputeBoundIsos generates iso curves with.
 - **Notes**: **See also**: Gs114, Gs116, Gs117, Gs118. synthesized from earlier wave; backfilled from fixture comment- **Model impact**: Surface and trimming geometry
 - **Fixture path**: step-examples/12-2c-surfaces/Gs115.stp
 - **Fixture kind**: scaffold
+- **Tier-3 assertion**: shape_null == True
 
 ### Gs116 — B-spline surface
 - **Category**: §12.2c surfaces (sub-class: b-spline)
@@ -25549,6 +25799,7 @@ v_max=0.0); ComputeBoundIsos generates iso curves with.
 - **Notes**: **See also**: Gs114, Gs115, Gs117, Gs118. synthesized from earlier wave; backfilled from fixture comment- **Model impact**: Surface and trimming geometry
 - **Fixture path**: step-examples/12-2c-surfaces/Gs116.stp
 - **Fixture kind**: scaffold
+- **Tier-3 assertion**: shape_null == True
 
 ### Gs117 — B-spline surface
 - **Category**: §12.2c surfaces (sub-class: b-spline)
@@ -25558,6 +25809,7 @@ v_max=0.0); ComputeBoundIsos generates iso curves with.
 - **Notes**: **See also**: Gs114, Gs115, Gs116, Gs118. synthesized from earlier wave; backfilled from fixture comment- **Model impact**: Surface and trimming geometry
 - **Fixture path**: step-examples/12-2c-surfaces/Gs117.stp
 - **Fixture kind**: scaffold
+- **Tier-3 assertion**: shape_null == True
 
 ### Gs118 — B-spline surface
 - **Category**: §12.2c surfaces (sub-class: b-spline)
@@ -25567,6 +25819,7 @@ v_max=0.0); ComputeBoundIsos generates iso curves with.
 - **Notes**: **See also**: Gs114, Gs115, Gs116, Gs117. synthesized from earlier wave; backfilled from fixture comment- **Model impact**: Surface and trimming geometry
 - **Fixture path**: step-examples/12-2c-surfaces/Gs118.stp
 - **Fixture kind**: scaffold
+- **Tier-3 assertion**: shape_null == True
 
 ### Gs119 — CONICAL_SURFACE with zero radius (degenerate point)
 - **Category**: §12.2c surfaces (sub-class: face)
@@ -25578,6 +25831,7 @@ cone with radius 0 and arbitrary semi-angle (effectively a degenerate point). Is
 - **Model impact**: Surface and trimming geometry
 - **Fixture path**: step-examples/12-2c-surfaces/Gs119.stp
 - **Fixture kind**: scaffold
+- **Tier-3 assertion**: shape_null == True
 
 ### Gs120 — FaceDivide splitter curve tangent to boundary (zero-area sub-face)
 - **Category**: §12.2c surfaces (sub-class: curve)
@@ -25589,6 +25843,7 @@ when splitter curve is tangent to face boundary at a single point. The division 
 - **Model impact**: Surface and trimming geometry
 - **Fixture path**: step-examples/12-2c-surfaces/Gs120.stp
 - **Fixture kind**: scaffold
+- **Tier-3 assertion**: shape_null == True
 
 ### Gs121 — SurfaceNewton trapped in local minimum of distance function
 - **Category**: §12.2c surfaces (sub-class: face)
@@ -25600,6 +25855,7 @@ when the surface has multiple local minima of the distance function. Newton iter
 - **Model impact**: Surface and trimming geometry
 - **Fixture path**: step-examples/12-2c-surfaces/Gs121.stp
 - **Fixture kind**: scaffold
+- **Tier-3 assertion**: shape_null == True
 
 ### Gs122 — Rational B-spline surface with zero weight (degenerate interior)
 - **Category**: §12.2c surfaces (sub-class: face)
@@ -25611,6 +25867,7 @@ where one weight is 0, producing degenerate interior region. The split operation
 - **Model impact**: Surface and trimming geometry
 - **Fixture path**: step-examples/12-2c-surfaces/Gs122.stp
 - **Fixture kind**: scaffold
+- **Tier-3 assertion**: shape_null == True
 
 ### Gs123 — TOROIDAL_SURFACE with major_radius < minor_radius (self-intersecting)
 - **Category**: §12.2c surfaces (sub-class: face)
@@ -25623,6 +25880,7 @@ touches itself) but IsVClosed doesn't detect the invalid configuration.
 - **Model impact**: Surface and trimming geometry
 - **Fixture path**: step-examples/12-2c-surfaces/Gs123.stp
 - **Fixture kind**: scaffold
+- **Tier-3 assertion**: shape_null == True
 
 ### Gs124 — B-SPLINE_SURFACE with u_periodic flag but non-coincident poles
 - **Category**: §12.2c surfaces (sub-class: face)
@@ -25636,6 +25894,7 @@ have geometrically coincident boundaries.
 - **Model impact**: Surface and trimming geometry
 - **Fixture path**: step-examples/12-2c-surfaces/Gs124.stp
 - **Fixture kind**: scaffold
+- **Tier-3 assertion**: shape_null == True
 
 ### Gs125 — B-SPLINE_SURFACE with very wide U domain
 - **Category**: §12.2c surfaces (sub-class: face)
@@ -25649,6 +25908,7 @@ parameter range of 1.0, causing memory bloat and numerical issues.
 - **Model impact**: Surface and trimming geometry
 - **Fixture path**: step-examples/12-2c-surfaces/Gs125.stp
 - **Fixture kind**: scaffold
+- **Tier-3 assertion**: shape_null == True
 
 ### Gs126 — B-SPLINE_SURFACE with high-curvature Newton singularity
 - **Category**: §12.2c surfaces (sub-class: face)
@@ -25662,6 +25922,7 @@ incorrect UV projections and surface reference failures.
 - **Model impact**: Surface and trimming geometry
 - **Fixture path**: step-examples/12-2c-surfaces/Gs126.stp
 - **Fixture kind**: scaffold
+- **Tier-3 assertion**: shape_null == True
 
 ### Gs127 — B-SPLINE_SURFACE with degenerate edge after split
 - **Category**: §12.2c surfaces (sub-class: face)
@@ -25675,6 +25936,7 @@ to reference invalid surface boundaries.
 - **Model impact**: Surface and trimming geometry
 - **Fixture path**: step-examples/12-2c-surfaces/Gs127.stp
 - **Fixture kind**: scaffold
+- **Tier-3 assertion**: shape_null == True
 
 ### Gs128 — TOROIDAL_SURFACE with v-closed property and u-iso wraparound
 - **Category**: §12.2c surfaces (sub-class: face)
@@ -25688,6 +25950,7 @@ with v-iso and produces incorrect parameter projection.
 - **Model impact**: Surface and trimming geometry
 - **Fixture path**: step-examples/12-2c-surfaces/Gs128.stp
 - **Fixture kind**: scaffold
+- **Tier-3 assertion**: shape_null == True
 
 ### Gs129 — CYLINDRICAL_SURFACE with non-unit radius underflowing tolerance check
 - **Category**: §12.2c surfaces (sub-class: face)
@@ -25701,6 +25964,7 @@ causing the method to incorrectly report closure even when the.
 - **Model impact**: Surface and trimming geometry
 - **Fixture path**: step-examples/12-2c-surfaces/Gs129.stp
 - **Fixture kind**: scaffold
+- **Tier-3 assertion**: shape_null == True
 
 ### Gs130 — FACE with trim coincident to existing split edge
 - **Category**: §12.2c surfaces (sub-class: face)
@@ -25714,6 +25978,7 @@ area or degenerate bounds.
 - **Model impact**: Surface and trimming geometry
 - **Fixture path**: step-examples/12-2c-surfaces/Gs130.stp
 - **Fixture kind**: scaffold
+- **Tier-3 assertion**: shape_null == True
 
 ### Gs131 — TOROIDAL_SURFACE with Newton iteration near convergence
 - **Category**: §12.2c surfaces (sub-class: face)
@@ -25728,6 +25993,7 @@ the.
 - **Model impact**: Surface and trimming geometry
 - **Fixture path**: step-examples/12-2c-surfaces/Gs131.stp
 - **Fixture kind**: scaffold
+- **Tier-3 assertion**: shape_null == True
 
 ### Gs132 — TOROIDAL_SURFACE wrongly elevated to non-analytic Bezier
 - **Category**: §12.2c surfaces (sub-class: face)
@@ -25741,6 +26007,7 @@ producing a non-analytic BSpline surface with wrong continuity class.
 - **Model impact**: Surface and trimming geometry
 - **Fixture path**: step-examples/12-2c-surfaces/Gs132.stp
 - **Fixture kind**: scaffold
+- **Tier-3 assertion**: shape_null == True
 
 ### Gs133 — CYLINDRICAL_SURFACE degenerate edge with sub-optimal projection
 - **Category**: §12.2c surfaces (sub-class: face)
@@ -25755,6 +26022,7 @@ fails to minimize the.
 - **Model impact**: Surface and trimming geometry
 - **Fixture path**: step-examples/12-2c-surfaces/Gs133.stp
 - **Fixture kind**: scaffold
+- **Tier-3 assertion**: shape_null == True
 
 ### Gs134 — ShapeAnalysis_Surface.UVFromIso intermediate-bounce
 - **Category**: §12.2c surfaces (sub-class: face)
@@ -25825,6 +26093,7 @@ trimming or intersection operations assume richer surface.
 - **Model impact**: Incorrectly marked as U-closed; seam placement assumes closure; geometry distortion
 - **Fixture path**: step-examples/12-2c-surfaces/Gs139.stp
 - **Fixture kind**: scaffold
+- **Tier-3 assertion**: shape_null == True
 
 ### Gs140 — IsVClosed Bezier pole-coincidence shortcut
 - **Category**: §12.2c surfaces (sub-class: ShapeAnalysis_Surface closure detection)
@@ -25845,6 +26114,7 @@ trimming or intersection operations assume richer surface.
 - **Model impact**: Seam misaligned; discontinuity at seam; surface warping
 - **Fixture path**: step-examples/12-2c-surfaces/Gs141.stp
 - **Fixture kind**: scaffold
+- **Tier-3 assertion**: shape_null == True
 
 ### Gs142 — Segment rational-weight singularity
 - **Category**: §12.2c surfaces (sub-class: ShapeUpgrade_Surface splitting)
@@ -25855,6 +26125,7 @@ trimming or intersection operations assume richer surface.
 - **Model impact**: Weight discontinuity; unstable boundary evaluation; invalid split patches
 - **Fixture path**: step-examples/12-2c-surfaces/Gs142.stp
 - **Fixture kind**: scaffold
+- **Tier-3 assertion**: shape_null == True
 
 ### Gs143 — MakeBSpline grid-sampling false periodicity
 - **Category**: §12.2c surfaces (sub-class: ShapeConstruct_Surface grid reconstruction)
@@ -25865,6 +26136,7 @@ trimming or intersection operations assume richer surface.
 - **Model impact**: Incorrect periodicity flag; invalid knot structure; seam placement error
 - **Fixture path**: step-examples/12-2c-surfaces/Gs143.stp
 - **Fixture kind**: scaffold (kernel-test-pair: shape only; runtime invocation required to reproduce)
+- **Tier-3 assertion**: shape_null == True
 
 ### Gs144 — ComputeBoxes null-ISO silent skip
 
@@ -25876,6 +26148,7 @@ trimming or intersection operations assume richer surface.
 - **Model impact**: Incomplete bounding box; downstream operations using this box (e.g., interference checks) may miss overlaps
 - **Fixture path**: step-examples/12-2c-surfaces/Gs144.stp
 - **Fixture kind**: scaffold
+- **Tier-3 assertion**: shape_null == True
 
 ### Gs145 — ProjectDegenerated lazy singularity init
 
@@ -25887,6 +26160,7 @@ trimming or intersection operations assume richer surface.
 - **Model impact**: Degenerate edges misaligned with singularity; edges collapse to wrong u/v value
 - **Fixture path**: step-examples/12-2c-surfaces/Gs145.stp
 - **Fixture kind**: scaffold
+- **Tier-3 assertion**: shape_null == True
 
 ### Gs146 — SurfaceNewton zero-normal break
 
@@ -25898,6 +26172,7 @@ trimming or intersection operations assume richer surface.
 - **Model impact**: Projection returns nan/inf; downstream face evaluation fails
 - **Fixture path**: step-examples/12-2c-surfaces/Gs146.stp
 - **Fixture kind**: scaffold
+- **Tier-3 assertion**: shape_null == True
 
 ### Gs147 — ValueOfUV projection beyond bound
 
@@ -25909,6 +26184,7 @@ trimming or intersection operations assume richer surface.
 - **Model impact**: Incorrect parametric mapping; edges snap to wrong surface regions
 - **Fixture path**: step-examples/12-2c-surfaces/Gs147.stp
 - **Fixture kind**: scaffold
+- **Tier-3 assertion**: shape_null == True
 
 ### Gs148 — DegeneratedValues singularity gap classification
 
@@ -25922,122 +26198,153 @@ trimming or intersection operations assume richer surface.
 - **Fixture kind**: scaffold
 
 # Wave 58C: Surface Analysis & Repair Defects
+- **Tier-3 assertion**: shape_null == True
 
 ### Gs149 — ShapeAnalysis_Surface.IsUVBounded
 **Defect**: Parameter gap classification on trimmed B-spline surfaces with inverted or missing bounds.
 **Geometry**: B_SPLINE_SURFACE_WITH_KNOTS (3x2, deg 2u/1v) trimmed to u:[0.5,2.5] v:[0.2,0.8].
 **Test**: Verify IsUVBounded correctly identifies bounded status despite inverted or malformed trim.
+- **Tier-3 assertion**: shape_null == True
 
 ### Gs150 — ShapeConstruct_Surface.AdjustByTransformation
 **Defect**: Placement inconsistency after coordinate system transformation on cylindrical surface.
 **Geometry**: CYLINDRICAL_SURFACE (radius 2.5) with offset AXIS2_PLACEMENT_3D at (1,2,3).
 **Test**: Verify surface parameterization remains coherent after transformation adjustment.
+- **Tier-3 assertion**: shape_null == True
 
 ### Gs151 — ShapeFix_Face.FixWireTool
 **Defect**: Seam edge consolidation failure on toroidal closed surfaces (duplicate/malformed wires).
 **Geometry**: TOROIDAL_SURFACE (major 5.0, minor 2.0) with u/v-periodic bounds.
 **Test**: Verify FixWireTool correctly handles seam edges without duplication on U-closed surface.
+- **Tier-3 assertion**: shape_null == True
 
 ### Gs152 — ShapeUpgrade_Surface.SplitSurface
 **Defect**: Parametric split ignores RECTANGULAR_TRIMMED_SURFACE bounds, extending patches beyond envelope.
 **Geometry**: B_SPLINE_SURFACE_WITH_KNOTS (4x4, deg 3/3) trimmed to u:[1.0,3.0] v:[1.5,3.5].
 **Test**: Verify split patches respect trim bounds and maintain G1 continuity.
+- **Tier-3 assertion**: shape_null == True
 
 ### Gs153 — ShapeAnalysis_Surface.CalcMaxDegree
 **Defect**: Knot multiplicity mismatch (sum != n+p+1) causes incorrect effective degree computation.
 **Geometry**: B_SPLINE_SURFACE_WITH_KNOTS (3x3, deg 2/2) with intentionally mismatched knots.
 **Test**: Verify CalcMaxDegree detects and handles knot-count inconsistency gracefully.
+- **Tier-3 assertion**: shape_null == True
 
 ### Gs154 — CheckSmall weak tolerance comparison
 ShapeAnalysis_WireVertex::CheckSmall uses undocumented internal threshold independent of schema tolerance. Closely-spaced vertices (within declared tolerance) may be spuriously marked degenerate, causing edge collapse in healing.
+- **Tier-3 assertion**: shape_null == True
 
 ### Gs155 — CopyTrimmedSurface uv-param loss
 ShapeUpgrade_ShapeCopyTool::CopyTrimmedSurface on TOROIDAL_SURFACE loses parametrization bounds in copy. RECTANGULAR_TRIMMED_SURFACE trim range becomes semantically invalid, breaking topology.
+- **Tier-3 assertion**: shape_null == True
 
 ### Gs156 — EditVertex ordering corruption
 ShapeExtend_WireData::EditVertex corrupts edge-to-vertex connectivity during in-place reorder. Multi-edge wires with shared vertices break EDGE_LOOP closure invariants.
+- **Tier-3 assertion**: shape_null == True
 
 ### Gs157 — GetSurfaceType misidentification via precision
 ShapeAnalysis_Geom::GetSurfaceType uses fixed classification thresholds independent of model scale. CONICAL_SURFACE near-cylindrical cases misclassified, triggering wrong healing path.
+- **Tier-3 assertion**: shape_null == True
 
 ### Gs158 — AddFace null geometry propagation
 BRepBuilderAPI_Sewing::AddFace does not validate non-null surface reference on ADVANCED_FACE. Invalid geometry propagates silently, breaking shell coherence.
+- **Tier-3 assertion**: shape_null == True
 
 ### Gs159 — RectangularTrimmedSurface null-basis unwrap
 **Defect**: GeomAdaptor_Surface unwraps trimmed surfaces without null-checking BasisSurface result. Unwrap-null handling in GeomAdaptor_Surface constructor passes null to downstream classifier, triggering undefined behavior.
+- **Tier-3 assertion**: shape_null == True
 
 ### Gs160 — GeomAdaptor_Surface offset-surface misclassification
 **Defect**: Type switch covers 5 standard types (plane, cylinder, cone, sphere, torus) but omits offset-surface branch. Offset surfaces fall to default case (LOther), losing semantic grouping and confusing downstream algorithms expecting elementary surfaces.
+- **Tier-3 assertion**: shape_null == True
 
 ### Gs161 — Face with null geometric surface
 **Defect**: Face with null surface is silently dropped from partitioned output lists without error logging or recovery. Geometry loss in healing workflows that partition by surface type (SF-003).
+- **Tier-3 assertion**: shape_null == True
 
 ### Gs162 — Surface C0 in single direction undetected
 **Defect**: ShapeUpgrade continuity check uses AND logic (C1 in both U and V required) instead of OR. Surfaces discontinuous in only one direction are not flagged as C0. Requires B-spline with C1-U, C0-V knot multiplicity.
+- **Tier-3 assertion**: shape_null == True
 
 ### Gs163 — ShapeUpgrade large-pole B-spline threshold
 **Defect**: ShapeUpgrade observer tracks pole count exceeding 8192 (NbUPoles × NbVPoles) but threshold is hardcoded without justification. Surfaces near boundary not flagged; downstream algorithms may fail on unexpectedly large interpolation tasks.
+- **Tier-3 assertion**: shape_null == True
 
 ### Gs164 — BezierSurface pole extraction dispatch
 
 ShapeUpgrade_ShapeCopy dispatches pole extraction to BSplineSurface or BezierSurface. Missing mutual exclusion: surfaces classified as both offset-like and Bezier-like may be counted twice. Fixture: BEZIER_SURFACE 5x5 poles; observer myNbBezierSurf incremented exactly once.
+- **Tier-3 assertion**: shape_null == True
 
 ### Gs165 — OffsetSurface detection and collection mode
 
 ShapeUpgrade observer detects OffsetSurface via IsKind check; missing mode guard causes offset faces collected regardless of myOffsetSurfaceMode setting. Fixture: OFFSET_SURFACE 0.5 offset from PLANE_SURFACE; verify myNbOffsetSurf > 0 and collection behavior.
+- **Tier-3 assertion**: shape_null == True
 
 ### Gs166 — SurfaceOfRevolution V-closed seam edge gap
 
 ShapeAnalysis_Sewing.IsVClosedSurface checks V-parameter overlap on revolution surfaces. Edge pairs separated by gap > 0 may bypass overlap validation; no explicit distance check confirms closure. Fixture: SURFACE_OF_REVOLUTION with closed basis; separated edge U-parameters; verify V-closure validation.
+- **Tier-3 assertion**: shape_null == True
 
 ### Gs167 — RectangularTrimmedSurface null basis detection
 
 ShapeUpgrade_ShapeCopy calls BasisSurface() without null check. If basis is null (malformed), down_cast succeeds but result overwritten to null; downstream GeomAdaptor_Surface(null) invokes undefined behavior. Fixture: RECTANGULAR_TRIMMED_SURFACE with basis; verify null-safety on extraction.
+- **Tier-3 assertion**: shape_null == True
 
 ### Gs168 — B-spline C0 continuity asymmetric detection
 
 ShapeUpgrade observer flags C0 surfaces via !(IsCNu(1) && IsCNv(1)). Asymmetry: if U is C1 but V is C0, flag increments; if V is C1 and U is C0, detection may skip. Fixture: B-SPLINE_SURFACE C0 in U-direction (C1 in V); verify myNbC0Surfaces incremented.
 
 # Wave 70A: STEP Surface Fixtures — IDs Gs169–Gs173
+- **Tier-3 assertion**: shape_null == True
 
 ### Gs169 — ShapeAnalysis_Surface: rational surface knot-unaware sampling gap
 
 Rational B-spline with triple knot at u=1.0; grid sampling omits knot-position guards, missing curvature discontinuity. Defect: knot multiplicity not honored in evaluation grid.
+- **Tier-3 assertion**: shape_null == True
 
 ### Gs170 — ShapeAnalysis_Surface: trimmed surface closure validation skip
 
 RECTANGULAR_TRIMMED_SURFACE on U-periodic base (u-span trim crosses seam); closure check absent, UV domain treated as continuous. Defect: no closure-aware parameterization guard.
+- **Tier-3 assertion**: shape_null == True
 
 ### Gs171 — ShapeAnalysis_Surface: surface domain mismatch on projection result
 
 NextValueOfUV returns UV outside RECTANGULAR_TRIMMED_SURFACE domain bounds [0.2,0.8]²; bounds-check missing on result validation. Defect: unchecked UV parameter alignment.
+- **Tier-3 assertion**: shape_null == True
 
 ### Gs172 — ShapeAnalysis_Surface: degenerate surface derivative guard omission
 
 Collapsed B-spline (all poles Z=0, D1≈0) triggers division by zero in normal-projection logic. Defect: zero-magnitude derivative not guarded before evaluation.
+- **Tier-3 assertion**: shape_null == True
 
 ### Gs173 — ShapeUpgrade_ShapeCopy: offset surface mode coverage validation omission
 
 OFFSET_SURFACE (+0.5 distance) with asymmetric coverage vs base bounds; myOffsetSurfaceMode enabled without scope/extent check. Defect: offset face coverage unchecked during collection.
 
 ## Wave 72-B: Surface Methods Singularity Detection
+- **Tier-3 assertion**: shape_null == True
 
 ### Gs174 — SphericalSurface Pole Singularities
 **Defect**: `ShapeAnalysis_Surface.ComputeSingularities.spherical-pole-singularities` — Fails to detect both north/south poles when singularities cached. Sphere (radius 1.0); both V-closed vertex loops. Healing detects dual poles; without fix myUIsoDeg=false at each.
+- **Tier-3 assertion**: shape_null == True
 
 ### Gs175 — ToroidalSurface Dual-Pinch Singularities
 **Defect**: `ShapeAnalysis_Surface.ComputeSingularities.toroidal-pinch-singularities` — Dual pinch detection omitted when majorR>minorR. Torus (majorR=3.0, minorR=1.5); expects 2 singularities at angular positions. Without: reports 1 pinch; missing inner-radius collapse.
+- **Tier-3 assertion**: shape_null == True
 
 ### Gs176 — RectangularTrimmedSurface Null Basis
 **Defect**: `Geom_RectangularTrimmedSurface.BasisSurface unwrap` — Down_cast succeeds; null check skipped on BasisSurface() result. Trimmed B-spline (3×3, deg-2); null basis overwrite triggers undefined GeomAdaptor behavior.
+- **Tier-3 assertion**: shape_null == True
 
 ### Gs177 — ConicalSurface Apex Singularity
 **Defect**: `ShapeAnalysis_Surface.ComputeSingularities.conic-apex-singularity` — Apex at v-parameter undetected. Cone (π/4 semi-angle, refRad 1.0); singularity point matches 3D apex. Without: healing misses cone-collapse degeneracy.
+- **Tier-3 assertion**: shape_null == True
 
 ### Gs178 — OffsetSurface Edge Degeneracy
 **Defect**: `ShapeAnalysis_Surface.ComputeSingularities.bounded-surface-edge-singularities` — 4-edge midpoint sampling omitted. OffsetSurface (0.5 offset from plane); corner distances capture collapse signature. Without: edge-tangency anomalies undetected.
 
 # Wave 73B: Surface Defect Fixtures (Gs179–Gs183)
+- **Tier-3 assertion**: shape_null == True
 
 ### Gs179 — ShapeAnalysis_Surface.BSplineBoundaries rational-knot-sum validation omission
 
@@ -26074,6 +26381,7 @@ OFFSET_SURFACE (+0.5 distance) with asymmetric coverage vs base bounds; myOffset
 | **Basis/Trim** | RECTANGULAR_TRIMMED_SURFACE trimming inverted plane [-1.0–1.0]×[-1.0–1.0] |
 | **Key Issue** | Basis plane has negative axis; ConvertCurveToSurface should validate but skips axis-direction guard. Leads to incorrect 3D curve inference from 2D edge parameters. |
 | **Status** | Built, validated. Demonstrates axis-validation omission in curve conversion. |
+- **Tier-3 assertion**: n_faces_total == 1
 
 ### Gs182 — ShapeUpgrade_Surface.SplitContinuity periodic-knot discontinuity mask
 
@@ -26098,6 +26406,7 @@ OFFSET_SURFACE (+0.5 distance) with asymmetric coverage vs base bounds; myOffset
 | **Basis/Trim** | Trimmed [0.0–2π]×[0.001–1.0] (lower edge 0.001 units from axis singularity at v=0) |
 | **Key Issue** | Edge placement within tolerance distance of cached singularity region should invalidate cache, but guard is omitted. Closure checks miss near-singular geometry. |
 | **Status** | Built, validated. Demonstrates cache-invalidation omission near singularities. |
+- **Tier-3 assertion**: n_faces_total == 1
 
 ### Ad117 — STEP reader crashes on minimal file with malformed `STYLED_ITEM`
 - **Category**: §12.11 adversarial / parser-robustness (sub-class: SEGV on style record)
@@ -27335,6 +27644,7 @@ Three triangular faces forming incomplete closure (free edge between faces 1–2
 - **Notes**: **See also**: Gp028, Tfa023. Synonyms: "STEP writer pcurves disagree with 3D curves", "disable writing pcurves to STEP and IGES by default", "edge tolerance violated by writer pcurve", "pcurve drift after STEP round-trip".
 - **Byte assertion**: contains(b'PCURVE')
 - **Byte assertion**: contains(b'SURFACE_CURVE')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silent-accept observed (catalog allowed: {heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
 - **Severity**: P1
 - **Model impact**: The pcurve attribute on the affected EDGE_CURVE/SEAM_CURVE is missing, NULL, or inconsistent with its 3D companion; downstream meshing and boolean operations either rebuild it from the 3D edge (introducing tolerance error) or dereference a null handle and abort.
@@ -27346,6 +27656,7 @@ Three triangular faces forming incomplete closure (free edge between faces 1–2
 - **Defect**: Midspan 3D curve point (5,0,0) maps to PCURVE point (5.1,0,0) — 0.1 mm divergence exceeding edge tolerance 0.001 mm.
 - **Healer impact**: CheckCurve3dWithPCurve sample-point inspection detects the mismatch and flags the edge for healing or healing-time analysis.
 - **File**: `step-examples/12-2a-pcurves/Gp041.stp`
+- **Tier-3 assertion**: shape_null == True
 
 ### Gp042 — Edge on planar face missing PCURVE despite 3D curve geometry.
 
@@ -27360,6 +27671,7 @@ Three triangular faces forming incomplete closure (free edge between faces 1–2
 - **Defect**: Reversing parametric direction without re-evaluating knot domain leaves stale multiplicity data. Naive range flip keeps knot structure intact even though parameter direction is inverted.
 - **Healer impact**: FixReversed2d attempts to reverse PCURVE but the knot-vector corruption causes wrong parameter mapping during edge reconstruction.
 - **File**: `step-examples/12-2a-pcurves/Gp043.stp`
+- **Tier-3 assertion**: shape_null == True
 
 ### Gp044 — Endpoint-bias projection picks wrong candidate when multiple equidistant points exist.
 
@@ -27367,6 +27679,7 @@ Three triangular faces forming incomplete closure (free edge between faces 1–2
 - **Defect**: Both endpoints and interior point are equidistant from probe point. Project's endpoint-bias returns endpoint distance even when interior local-min is the true projection. PCURVE maps to wrong parameter bounds.
 - **Healer impact**: Project returns suboptimal projection result, causing downstream healers to misalign PCURVE parameter mapping or report stale boundary conditions.
 - **File**: `step-examples/12-2a-pcurves/Gp044.stp`
+- **Tier-3 assertion**: shape_null == True
 
 ### Gp045 — Edge copy during SameParameter recomputation inherits stale parameter range when curve is BSpline.
 
@@ -27374,6 +27687,7 @@ Three triangular faces forming incomplete closure (free edge between faces 1–2
 - **Defect**: FixSameParameter copies EDGE_CURVE to new TEdge but preserves old range bounds. New BSpline's actual knot domain differs from preserved bounds, causing parameter mismatch between 3D and 2D curves.
 - **Healer impact**: Edge copy trap: parameter range bounds become stale when BSpline geometry is recomputed. SameParameter recomputation fails to detect and correct the range corruption.
 - **File**: `step-examples/12-2a-pcurves/Gp045.stp`
+- **Tier-3 assertion**: shape_null == True
 
 ### Gp046 — ShapeFix_Edge.FixVertexTolerance face-context null underestimates multi-surface tolerance
 - **Category**: §12.2a (pcurves)
@@ -27414,6 +27728,7 @@ Three triangular faces forming incomplete closure (free edge between faces 1–2
 - **Reproducer recipe**: see `step-examples/12-2a-pcurves/Gp050.stp`; the fixture file's top comment names the specific OCCT method and line range.
 - **Expected kernel behavior**: detect or heal per the named OCCT branch; the fixture demonstrates the buggy input pattern.
 - **Expected validation**: `occt=unknown/unknown gmsh=unknown ifc=schema_n/a`
+- **Tier-3 assertion**: shape_null == True
 
 ### Gp051 — ShapeAnalysis_Edge.GetEndTangent2d B-spline endpoint tangent divergence
 
@@ -27515,18 +27830,23 @@ Three triangular faces forming incomplete closure (free edge between faces 1–2
 
 ### Gp061 — ShapeAnalysis_Edge.CheckCurve3dWithPCurve sample-count threshold
 Very short edge (0.001 units on cylindrical surface) triggers sample-count collapse to 2, skipping midspan validation between 3D curve and pcurve. Reproduces OCCT scaling logic that reduces samples below viable threshold for short edges.
+- **Tier-3 assertion**: shape_null == True
 
 ### Gp062 — ShapeFix_Edge.FixAddPCurve trimmed-surface boundary
 Edge on RECTANGULAR_TRIMMED_SURFACE (u,v ∈ [0,1]) with 3D endpoint at (1.0, 1.1, 0.0), extending beyond v_max trim boundary. FixAddPCurve constructs pcurve without validating trim window constraints.
+- **Tier-3 assertion**: shape_null == True
 
 ### Gp063 — ShapeAnalysis_Edge.CheckOverlapping bounded-curve trim
 Two edges share identical 3D line but with non-overlapping parameter ranges: edge1 covers parameter [0,5], edge2 covers [10,15]. CheckOverlapping fails to intersect trim domains and falsely reports overlap.
+- **Tier-3 assertion**: shape_null == True
 
 ### Gp064 — ShapeFix_Edge.FixRemovePCurve degenerate-on-cone
 Edge at cone apex where 3D curve has zero length (degenerate point). PCurve is parametrically valid but references degenerate geometry. FixRemovePCurve removes pcurve, leaving only unusable zero-length 3D curve.
+- **Tier-3 assertion**: shape_null == True
 
 ### Gp065 — ShapeAnalysis_Edge.GetEndTangent2d POLYLINE variant
 Pcurve as POLYLINE with 5 control points: (0,0)→(0.5,0)→(1,1)→(2,0.5)→(5,0). GetEndTangent2d uses last two points to compute first-endpoint tangent, returning direction (3,-0.5) instead of correct (1,0).
+- **Tier-3 assertion**: shape_null == True
 
 ### Gp066 — ShapeFix_Edge.FixSameParameter selection-bias tolerance comparison
 
@@ -27537,6 +27857,7 @@ Pcurve as POLYLINE with 5 control points: (0,0)→(0.5,0)→(1,1)→(2,0.5)→(5
 **Trigger**: `ShapeFix_Edge::FixSameParameter()` on this edge will choose first-exceeds instead of minimum-feasible.
 
 ---
+- **Tier-3 assertion**: shape_null == True
 
 ### Gp067 — ShapeAnalysis_Edge.CheckCurve3dWithPCurve trimmed-bspline misclassification
 
@@ -27547,6 +27868,7 @@ Pcurve as POLYLINE with 5 control points: (0,0)→(0.5,0)→(1,1)→(2,0.5)→(5
 **Trigger**: `ShapeAnalysis_Edge::CheckCurve3dWithPCurve()` will miss the out-of-window mismatch due to trim masking.
 
 ---
+- **Tier-3 assertion**: shape_null == True
 
 ### Gp068 — ShapeFix_Edge.FixReversed2d circular-curve range
 
@@ -27557,6 +27879,7 @@ Pcurve as POLYLINE with 5 control points: (0,0)→(0.5,0)→(1,1)→(2,0.5)→(5
 **Trigger**: `ShapeFix_Edge::FixReversed2d()` on reversed orientation will produce malformed circular-parameter edge.
 
 ---
+- **Tier-3 assertion**: shape_null == True
 
 ### Gp069 — ShapeAnalysis_Edge.CheckOverlapping common-sub-pattern miss
 
@@ -27567,6 +27890,7 @@ Pcurve as POLYLINE with 5 control points: (0,0)→(0.5,0)→(1,1)→(2,0.5)→(5
 **Trigger**: `ShapeAnalysis_Edge::CheckOverlapping(edge1, edge2)` will return false (no overlap detected) despite interior sharing.
 
 ---
+- **Tier-3 assertion**: shape_null == True
 
 ### Gp070 — ShapeFix_Edge.FixVertexTolerance double-update
 
@@ -27577,6 +27901,7 @@ Pcurve as POLYLINE with 5 control points: (0,0)→(0.5,0)→(1,1)→(2,0.5)→(5
 **Trigger**: Sequential `ShapeFix_Edge::FixVertexTolerance()` calls on both edges will double-escalate the shared vertex.
 
 ---
+- **Tier-3 assertion**: shape_null == True
 
 ### Gp071 — ShapeAnalysis_Edge.CheckCurve3dWithPCurve scaled-host-surface
 
@@ -27585,6 +27910,7 @@ Pcurve as POLYLINE with 5 control points: (0,0)→(0.5,0)→(1,1)→(2,0.5)→(5
 **Fixture**: Plane with Z-axis direction scaled to 2.0; 3D line and pcurve both parametrically correct but 3D validation fails due to scale mismatch.
 
 ---
+- **Tier-3 assertion**: shape_null == True
 
 ### Gp072 — ShapeFix_Edge.FixAddPCurve B-spline projection failure
 
@@ -27593,6 +27919,7 @@ Pcurve as POLYLINE with 5 control points: (0,0)→(0.5,0)→(1,1)→(2,0.5)→(5
 **Fixture**: Plane surface Z=0; cubic B-spline 3D curve with control point offset 0.001 perpendicular to plane; no pcurve initially, triggers projection logic.
 
 ---
+- **Tier-3 assertion**: shape_null == True
 
 ### Gp073 — ShapeAnalysis_Edge.CheckSameParameter periodic-domain
 
@@ -27601,6 +27928,7 @@ Pcurve as POLYLINE with 5 control points: (0,0)→(0.5,0)→(1,1)→(2,0.5)→(5
 **Fixture**: Cylindrical surface; helix 3D curve θ∈[0,2π]; pcurve wraps U∈[π,3π] (same physical span, different parametrization); triggers periodic-domain phase mismatch.
 
 ---
+- **Tier-3 assertion**: shape_null == True
 
 ### Gp074 — ShapeFix_Edge.FixSameParameter precision-cliff
 
@@ -27609,32 +27937,39 @@ Pcurve as POLYLINE with 5 control points: (0,0)→(0.5,0)→(1,1)→(2,0.5)→(5
 **Fixture**: Plane surface; B-spline 3D curve with control point at 1.999999999999 (engineered to hit FP cliff); tight tolerance 1.0E-15; recomputation cycles.
 
 ---
+- **Tier-3 assertion**: shape_null == True
 
 ### Gp075 — ShapeAnalysis_Edge.CheckOverlapping with surfaces
 
 **Defect**: Two edges on two different host surfaces that happen to coincide in 3D (same line segment). `CheckOverlapping` uses host-surface metadata and sees them as distinct despite 3D coincidence.
 
 **Fixture**: Two plane surfaces (different entities, both Z=0); identical 3D line segment on each; edges form two separate faces sharing the 3D line; metadata-based check misses overlap.
+- **Tier-3 assertion**: shape_null == True
 
 ### Gp076 — ShapeFix_Edge.FixAddPCurve periodic-surface-seam
 
 Edge 3D curve lies on cylindrical seam (u=0); FixAddPCurve constructs pcurve at u=0 but should also accept u=2π as equivalent on periodic surfaces.
+- **Tier-3 assertion**: shape_null == True
 
 ### Gp077 — ShapeAnalysis_Edge.CheckCurve3dWithPCurve sampling-period-mismatch
 
 PCurve has period 2π but 3D curve has period 4π (double helix wrap); uniform parameter sampling misaligns 3D/2D comparisons.
+- **Tier-3 assertion**: shape_null == True
 
 ### Gp078 — ShapeFix_Edge.FixSameParameter near-degenerate
 
 3D curve length (1e-8) is just above Confusion threshold; FixSameParameter's degenerate check fails to catch this boundary case.
+- **Tier-3 assertion**: shape_null == True
 
 ### Gp079 — ShapeAnalysis_Edge.CheckOverlapping degenerate-pcurve
 
 One edge's pcurve is degenerate (collapsed to point); CheckOverlapping's 2D intersection logic reports false overlap with non-degenerate edges.
+- **Tier-3 assertion**: shape_null == True
 
 ### Gp080 — ShapeFix_Edge.FixReversed2d offset-curve handling
 
 PCurve is OFFSET_CURVE wrapping a line; FixReversed2d reverses the line but forgets to flip offset direction, inverting the pcurve.
+- **Tier-3 assertion**: shape_null == True
 
 ### Gp081 — CheckSameParameter periodic-shift normalization
 Periodic surface edge whose 3D and 2D parameters disagree by exactly 2π (one full period); CheckSameParameter fails to normalize periodic parameters before comparison, incorrectly reporting mismatch.
@@ -27654,22 +27989,27 @@ P-curve is an ELLIPSE entity; GetEndTangent2d uses finite-difference fallback wh
 ### Gp086 — CheckPCurveRange domain-larger-than-3D
 
 Edge with B-spline 3D curve spanning [0,5] but B-spline pcurve spanning [0,10]. CheckPCurveRange validates pcurve range against basis curve bounds; this fixture exposes out-of-bounds pcurve parameter range. Defect: analyzer fails to flag domain overspanning on non-periodic curves.
+- **Tier-3 assertion**: shape_null == True
 
 ### Gp087 — FixAddPCurve high-curvature near-tangent
 
 Edge near surface contact where two B-spline surfaces are near-tangent (curvature ~0.6–0.62). FixAddPCurve projects edge onto first surface but receives multiple candidate projections. Algorithm picks arbitrary candidate without disambiguating. Defect: projection multiplicity not resolved; no heuristic for tangency context.
+- **Tier-3 assertion**: shape_null == True
 
 ### Gp088 — CheckSameParameter B-spline parameter shift
 
 Edge with B-spline 3D curve and B-spline pcurve; 3D knot vector [0,1,2] but pcurve knot vector [0.1,1.1,2.1]. CheckSameParameter compares parameter ranges at unshifted positions and reports false mismatch. Defect: method assumes knot vectors aligned; does not account for parameter space shift.
+- **Tier-3 assertion**: shape_null == True
 
 ### Gp089 — FixReversed2d trimmed-circle
 
 Pcurve TRIMMED_CURVE wrapping CIRCLE; 3D edge is TRIMMED_CURVE wrapping CIRCLE with different trim parameters. FixReversed2d reverses the circle geometry but ignores trim bounds, causing parameter reversal to overshoot. Defect: circle-reversal logic does not propagate trim-parameter semantics.
+- **Tier-3 assertion**: shape_null == True
 
 ### Gp090 — CheckOverlapping spline-vs-line
 
 Two edges on same plane: one is LINE, other is B-spline degree-1 with control points at endpoints (equivalent to line geometrically). CheckOverlapping compares types strictly (LINE vs B_SPLINE_CURVE) and reports non-overlapping despite coincident geometry. Defect: type-exact matching; no geometric equivalence check.
+- **Tier-3 assertion**: shape_null == True
 
 ### Gp091 — ShapeFix_Edge.FixSameParameter pcurve absent
 Edge with 3D curve but missing pcurve entirely; FixSameParameter attempts SameParameter calculation on null pcurve, producing NaN tolerance. Fixture has LINE edge without pcurve on PLANE face.
@@ -27705,6 +28045,7 @@ Edge with COMPOSITE_CURVE as its 3D curve. FixAddPCurve constructs the pcurve fr
 **Defect class**: `curve-extraction-failure`  
 
 ---
+- **Tier-3 assertion**: shape_null == True
 
 ### Gp098 — ShapeAnalysis_Edge.CheckOverlapping arc-tangent-to-line
 
@@ -27733,6 +28074,7 @@ PCURVE as POLYLINE. GetEndTangent2d uses last two points for last endpoint but f
 **Fixture**: STEP file with POLYLINE (3D and 2D) with multiple segments.  
 **Method**: `ShapeAnalysis_Edge::GetEndTangent2d`  
 **Defect class**: `selective_vertex_checking`
+- **Tier-3 assertion**: shape_null == True
 
 ### Gp101 — ShapeAnalysis_Edge.CheckCurve3dWithPCurve sample-skip near-endpoint
 
@@ -27745,6 +28087,7 @@ Edge on torus near minor radius singularity (v ≈ 0). 3D curve is spiral. FixAd
 ### Gp103 — ShapeAnalysis_Edge.CheckPCurveRange CIRCLE-vs-trim-mismatch
 
 Plane edge with 3D circle arc from parameter 0.5 to 6.0 rad (outside [0, 2π]). PCurve is untrimmed circle [0, 2π]. CheckPCurveRange fails to detect parameter range mismatch between pcurve domain and edge vertex parameters.
+- **Tier-3 assertion**: n_faces_total == 1
 
 ### Gp104 — ShapeFix_Edge.FixSameParameter offset-curve-3d
 
@@ -27753,26 +28096,32 @@ Plane edge whose 3D curve is OFFSET_CURVE (0.2 offset from base B-spline). PCurv
 ### Gp105 — ShapeAnalysis_Edge.CheckOverlapping zero-tolerance-overlap
 
 Two edges with literally coincident 3D geometry (identical LINE 0→5 in x-axis, identical pcurves). Both reference same plane surface. CheckOverlapping with zero tolerance reports non-overlapping due to floating-point comparison; misses exact coincidence.
+- **Tier-3 assertion**: shape_null == True
 
 ### Gp106 — CheckSameParameter spline-vs-spline-shifted
 
 Edge with B-spline 3D curve and B-spline pcurve; pcurve's parameter range [1,2] is shifted 1.0 unit from 3D curve [0,1]. CheckSameParameter compares raw ranges and reports false mismatch despite representing identical geometry.
+- **Tier-3 assertion**: shape_null == True
 
 ### Gp107 — FixSameParameter degenerate-on-spline
 
 Edge whose 3D curve is B-spline of degree 0 (control-point-only, no smoothing). FixSameParameter identifies it as degenerate but does not invoke degenerate-edge fix path.
+- **Tier-3 assertion**: shape_null == True
 
 ### Gp108 — CheckPCurveRange B-spline-out-of-knot
 
 Pcurve B-spline with knot range [0,5] used on edge parametrized [-1,6]. CheckPCurveRange fails to detect and report that pcurve evaluation falls outside valid knot domain.
+- **Tier-3 assertion**: shape_null == True
 
 ### Gp109 — FixReversed2d composite-pcurve
 
 Pcurve is COMPOSITE_CURVE with two line segments. FixReversed2d reverses parameter direction but leaves segment order unchanged, producing invalid geometry.
+- **Tier-3 assertion**: shape_null == True
 
 ### Gp110 — GetEndTangent2d zero-derivative
 
 Pcurve B-spline with zero tangent derivative at endpoint (last two control points coincident). GetEndTangent2d returns NaN instead of computing fallback tangent from interior curvature.
+- **Tier-3 assertion**: shape_null == True
 
 ### Gp111 — ShapeAnalysis_Edge.CheckCurve3dWithPCurve different-trim-ranges
 
@@ -27796,18 +28145,23 @@ Pcurve B-spline with knot at exact endpoint. GetEndTangent2d evaluates derivativ
 
 ### Gp116 — Sphere pole singularity in pcurve
 ShapeAnalysis_Edge.CheckCurve3dWithPCurve fails when pcurve passes through sphere pole (u=π/2) where tangent is undefined. Sampling uses NaN comparisons that can fail.
+- **Tier-3 assertion**: n_faces_total == 1
 
 ### Gp117 — Closed pcurve, open 3D curve mismatch
 ShapeFix_Edge.FixAddCurve3d constructs wrong 3D curve when pcurve is closed circle but edge is open. Closure doesn't match edge vertices.
+- **Tier-3 assertion**: n_faces_total == 1
 
 ### Gp118 — Very-many-samples high-curvature edge
 ShapeAnalysis_Edge.CheckCurve3dWithPCurve under-samples long B-spline with sharp oscillations; log-scaling still misses fine features.
+- **Tier-3 assertion**: shape_null == True
 
 ### Gp119 — Cylinder seam-edge pcurve ambiguity
 ShapeFix_Edge.FixSameParameter handles seam edge (u=0 vs u=2π) ambiguously; pcurve parameter mismatch between 0 and 2π.
+- **Tier-3 assertion**: n_faces_total == 1
 
 ### Gp120 — Composite pcurve tangent discontinuity
 ShapeAnalysis_Edge.GetEndTangent2d fails on COMPOSITE_CURVE with G0 continuity; tangent jump at segment join causes discontinuity.
+- **Tier-3 assertion**: n_faces_total == 1
 
 ### Gp121 — ShapeAnalysis_Edge.CheckCurve3dWithPCurve OFFSET_CURVE
 
@@ -27898,6 +28252,7 @@ Pcurve is TRIMMED_CURVE. GetEndTangent2d uses untrimmed-curve tangent at trim bo
 - **Model impact**: Edge on plane with 3D line from (0,0,0)→(5,0,0) but P-curve line (0,0)→(5.5,0) in 2D. Endpoint mismatch under projection not detected.
 - **Fixture path**: step-examples/12-2a-pcurves/Gp126.stp
 - **Fixture kind**: scaffold
+- **Tier-3 assertion**: shape_null == True
 
 
 ### Gp127 — ShapeAnalysis_Edge.CheckCurve3dWithPCurve missing P-curve (FAIL1)
@@ -27920,6 +28275,7 @@ Pcurve is TRIMMED_CURVE. GetEndTangent2d uses untrimmed-curve tangent at trim bo
 - **Model impact**: Edge on OFFSET_SURFACE with non-identity location. Transformed() returns surface that fails safe down_cast to expected type, causing null dereference or exception.
 - **Fixture path**: step-examples/12-2a-pcurves/Gp128.stp
 - **Fixture kind**: scaffold
+- **Tier-3 assertion**: shape_null == True
 
 
 ### Gp129 — ShapeAnalysis_Curve.Project degenerate-curve NaN
@@ -27931,6 +28287,7 @@ Pcurve is TRIMMED_CURVE. GetEndTangent2d uses untrimmed-curve tangent at trim bo
 - **Model impact**: Degenerate B-spline with all control points identical (collapses to point). Project returns NaN; distance check fails to catch.
 - **Fixture path**: step-examples/12-2a-pcurves/Gp129.stp
 - **Fixture kind**: scaffold
+- **Tier-3 assertion**: shape_null == True
 
 
 ### Gp130 — ShapeFix_Edge.FixSameParameter B-spline parameter range mismatch
@@ -27942,6 +28299,7 @@ Pcurve is TRIMMED_CURVE. GetEndTangent2d uses untrimmed-curve tangent at trim bo
 - **Model impact**: B-spline in 3D with knot range [0,10], P-curve B-spline with knot range [0,2]. Parameter sync failure undetected.
 - **Fixture path**: step-examples/12-2a-pcurves/Gp130.stp
 - **Fixture kind**: scaffold
+- **Tier-3 assertion**: shape_null == True
 
 ### Gp131 — Confusion tolerance fallback downgrades precision
 - **Category**: §12.2a pcurves (sub-class: ShapeAnalysis_Curve.Project_at212)
@@ -27962,6 +28320,7 @@ Pcurve is TRIMMED_CURVE. GetEndTangent2d uses untrimmed-curve tangent at trim bo
 - **Model impact**: Edge with high-curvature bezier and mismatched vertex tolerance; repair completes but PCurve falls outside tolerance envelope
 - **Fixture path**: step-examples/12-2a-pcurves/Gp132.stp
 - **Fixture kind**: scaffold
+- **Tier-3 assertion**: shape_null == True
 
 ### Gp133 — FixSameParameter scope ambiguity on non-SameRange edges
 - **Category**: §12.2a pcurves (sub-class: ShapeFix_Edge.FixSameParameter)
@@ -27972,6 +28331,7 @@ Pcurve is TRIMMED_CURVE. GetEndTangent2d uses untrimmed-curve tangent at trim bo
 - **Model impact**: Polyline edge with non-matching parameterization on 3D and 2D; repair completes without checking all PCurve deviations
 - **Fixture path**: step-examples/12-2a-pcurves/Gp133.stp
 - **Fixture kind**: scaffold
+- **Tier-3 assertion**: shape_null == True
 
 ### Gp134 — BoundedCurve endpoint distance early return bias
 - **Category**: §12.2a pcurves (sub-class: ShapeAnalysis_Curve.Project_at155)
@@ -27982,6 +28342,7 @@ Pcurve is TRIMMED_CURVE. GetEndTangent2d uses untrimmed-curve tangent at trim bo
 - **Model impact**: Parabolic arc with interior minimum closer than either endpoint; projection returns endpoint parameter when interior parameter is correct
 - **Fixture path**: step-examples/12-2a-pcurves/Gp134.stp
 - **Fixture kind**: scaffold
+- **Tier-3 assertion**: shape_null == True
 
 ### Gp135 — FixSameParameter copyedge range divergence
 - **Category**: §12.2a pcurves (sub-class: ShapeFix_Edge.FixSameParameter)
@@ -27992,6 +28353,7 @@ Pcurve is TRIMMED_CURVE. GetEndTangent2d uses untrimmed-curve tangent at trim bo
 - **Model impact**: Periodic circular edge with seam-adjacent PCurves; copyedge range adjustment desynchronizes 2D curves
 - **Fixture path**: step-examples/12-2a-pcurves/Gp135.stp
 - **Fixture kind**: scaffold
+- **Tier-3 assertion**: shape_null == True
 
 
 ### Gp136 — ShapeFix_Edge.FixRemovePCurve.orphan_pcurves
@@ -28003,6 +28365,7 @@ Pcurve is TRIMMED_CURVE. GetEndTangent2d uses untrimmed-curve tangent at trim bo
 - **Model impact**: Multi-face edge with inconsistent PCurves on two faces. Remove 3D curve without updating face-edge relationships. Result: stale PCurves remain, causing downstream validation failures. - **Search ancho
 - **Fixture path**: step-examples/12-2a-pcurves/Gp136.stp
 - **Fixture kind**: scaffold
+- **Tier-3 assertion**: shape_null == True
 
 
 ### Gp137 — ShapeFix_Face.FixMissingSeam.pcurve-translation-period-sync
@@ -28014,6 +28377,7 @@ Pcurve is TRIMMED_CURVE. GetEndTangent2d uses untrimmed-curve tangent at trim bo
 - **Model impact**: Periodic surface (cylinder) with non-boundary wire requiring period shift. Without PCurve translation: 3D geometry fixed but UV wraps incorrectly. With translation: 3D-UV consistent. - **Search anchor
 - **Fixture path**: step-examples/12-2a-pcurves/Gp137.stp
 - **Fixture kind**: scaffold
+- **Tier-3 assertion**: shape_null == True
 
 
 ### Gp138 — ShapeFix_IntersectionTool.SplitEdge2.pcurve-endpoint-detection
@@ -28025,6 +28389,7 @@ Pcurve is TRIMMED_CURVE. GetEndTangent2d uses untrimmed-curve tangent at trim bo
 - **Model impact**: Arc edge with reversed PCurve orientation requiring interior split. Without endpoint detection: cuts inverted. With detection: fragments correctly identified. - **Search anchors**: 'endpoint detection
 - **Fixture path**: step-examples/12-2a-pcurves/Gp138.stp
 - **Fixture kind**: scaffold
+- **Tier-3 assertion**: n_faces_total == 1
 
 
 ### Gp139 — BRepBuilderAPI_Sewing.SameParameterEdge.seam-dual-pcurve-extraction
@@ -28036,6 +28401,7 @@ Pcurve is TRIMMED_CURVE. GetEndTangent2d uses untrimmed-curve tangent at trim bo
 - **Model impact**: Torus with seam edge along minor circle. Single PCurve (u=0, v=0..2π) missing reversed variant. Result: non-manifold geometry. - **Search anchors**: 'isSeam', 'dual PCurve', 'seam-dual-pcurve-extracti
 - **Fixture path**: step-examples/12-2a-pcurves/Gp139.stp
 - **Fixture kind**: scaffold
+- **Tier-3 assertion**: shape_null == True
 
 
 ### Gp140 — ShapeFix_ComposeShell.SplitByLine.pcurve-missing-skip
@@ -28067,6 +28433,7 @@ Pcurve is TRIMMED_CURVE. GetEndTangent2d uses untrimmed-curve tangent at trim bo
 - **Model impact**: Tangent magnitude dropped to epsilon; D1 fallback not triggered
 - **Fixture path**: step-examples/12-2a-pcurves/Gp142.stp
 - **Fixture kind**: scaffold
+- **Tier-3 assertion**: shape_null == True
 
 ### Gp143 — Endpoint Tangent from Interior Point Fallback
 - **Category**: §12.2a pcurves
@@ -28077,6 +28444,7 @@ Pcurve is TRIMMED_CURVE. GetEndTangent2d uses untrimmed-curve tangent at trim bo
 - **Model impact**: Computed tangent does not match true derivative at endpoint
 - **Fixture path**: step-examples/12-2a-pcurves/Gp143.stp
 - **Fixture kind**: scaffold
+- **Tier-3 assertion**: shape_null == True
 
 ### Gp144 — Asymmetric Start Tangent Forward Difference
 - **Category**: §12.2a pcurves
@@ -28087,6 +28455,7 @@ Pcurve is TRIMMED_CURVE. GetEndTangent2d uses untrimmed-curve tangent at trim bo
 - **Model impact**: Start tangent direction diverges from derivative; end uses backward diff
 - **Fixture path**: step-examples/12-2a-pcurves/Gp144.stp
 - **Fixture kind**: scaffold
+- **Tier-3 assertion**: shape_null == True
 
 ### Gp145 — Zero Magnitude Tangent from Flat Section
 - **Category**: §12.2a pcurves
@@ -28097,6 +28466,7 @@ Pcurve is TRIMMED_CURVE. GetEndTangent2d uses untrimmed-curve tangent at trim bo
 - **Model impact**: Tangent vector magnitude zero; D1 escalation path triggered
 - **Fixture path**: step-examples/12-2a-pcurves/Gp145.stp
 - **Fixture kind**: scaffold
+- **Tier-3 assertion**: shape_null == True
 
 ### Gp146 — D1 derivative zero; falls back to D2 second derivative
 - **Category**: §12.2a pcurves
@@ -28107,6 +28477,7 @@ Pcurve is TRIMMED_CURVE. GetEndTangent2d uses untrimmed-curve tangent at trim bo
 - **Model impact**: Reading fails tangent detection; downstream tangent-dependent healers silently accept degenerate geometry
 - **Fixture path**: step-examples/12-2a-pcurves/Gp146.stp
 - **Fixture kind**: scaffold
+- **Tier-3 assertion**: shape_null == True
 
 ### Gp147 — D2 second derivative zero; falls back to D3 third derivative
 - **Category**: §12.2a pcurves
@@ -28117,6 +28488,7 @@ Pcurve is TRIMMED_CURVE. GetEndTangent2d uses untrimmed-curve tangent at trim bo
 - **Model impact**: Reading cascades to cubic term; tangent accuracy becomes order-dependent rather than geometry-driven
 - **Fixture path**: step-examples/12-2a-pcurves/Gp147.stp
 - **Fixture kind**: scaffold
+- **Tier-3 assertion**: shape_null == True
 
 ### Gp148 — D3 third derivative zero; falls back to line endpoints
 - **Category**: §12.2a pcurves
@@ -28127,6 +28499,7 @@ Pcurve is TRIMMED_CURVE. GetEndTangent2d uses untrimmed-curve tangent at trim bo
 - **Model impact**: Reading uses degenerate line tangent; endpoint-based orientation masks curve structure failure
 - **Fixture path**: step-examples/12-2a-pcurves/Gp148.stp
 - **Fixture kind**: scaffold
+- **Tier-3 assertion**: shape_null == True
 
 ### Gp149 — Straight-line tangent magnitude zero; complete tangent degeneracy
 - **Category**: §12.2a pcurves
@@ -28137,6 +28510,7 @@ Pcurve is TRIMMED_CURVE. GetEndTangent2d uses untrimmed-curve tangent at trim bo
 - **Model impact**: Reading returns no tangent; downstream geometry dependent on tangent direction fails silently
 - **Fixture path**: step-examples/12-2a-pcurves/Gp149.stp
 - **Fixture kind**: scaffold
+- **Tier-3 assertion**: shape_null == True
 
 ### Gp150 — Edge orientation reversal negates computed tangent post-computation
 - **Category**: §12.2a pcurves
@@ -28149,24 +28523,31 @@ Pcurve is TRIMMED_CURVE. GetEndTangent2d uses untrimmed-curve tangent at trim bo
 - **Fixture kind**: scaffold
 
 ## Wave 64A: STEP P-Curve Fixtures (Gp151–Gp155)
+- **Tier-3 assertion**: shape_null == True
 
 ### Gp151 — ShapeAnalysis_Edge.CheckPCurveRange periodic_range_semantics
 Periodic P-curve with parameter range straddling 2π boundary; validation assumes wrap-around is intentional without detecting non-monotonic parametrization. Reproduces OCCT line 1007 defect.
+- **Tier-3 assertion**: shape_null == True
 
 ### Gp152 — ShapeAnalysis_Edge.CheckVerticesWithPCurve location_transformation_semantics
 Edge bound to surface with non-identity location; P-curve endpoint transform omitted from vertex distance check. Analyzer fails to apply surface location xform to V1/V2 projections. Reproduces line 539 defect.
+- **Tier-3 assertion**: shape_null == True
 
 ### Gp153 — ShapeAnalysis_Edge.CheckCurve3dWithPCurve planar_surface_bypass
 3D line and 2D P-curve endpoints mismatch on planar surface; consistency check skipped for plane geometry. Analyzer silently passes despite V2 at (3,1,0) ≠ P-curve projection. Reproduces line 384 defect.
+- **Tier-3 assertion**: shape_null == True
 
 ### Gp154 — ShapeAnalysis_Edge.CheckVerticesWithPCurve selective_vertex_checking
 First vertex offset from 3D curve start; distance check omitted when vtx==2 parameter set. Analyzer masks V1 discrepancy while checking V2. Reproduces line 533 defect.
+- **Tier-3 assertion**: n_faces_total == 1
 
 ### Gp155 — ShapeAnalysis_Edge.CheckCurve3dWithPCurve pcurve_extraction_failure
 Empty P-curve representation with null curve data; extraction fails silently at FAIL1 status. Analyzer masks missing parametric curve without reporting diagnostic. Reproduces line 391 defect.
+- **Tier-3 assertion**: shape_null == True
 
 ### Gp156 — ShapeAnalysis_Edge.GetEndTangent2d `parameter_degeneracy_precision`
 Parameter delta below Precision::PConfusion skips tangent difference computation. Analyzer omits validation when (cl - cf) falls below confusion threshold, failing to report parametrically-degenerate edges. B-spline pcurve with negligible range [0, 1e-8].
+- **Tier-3 assertion**: shape_null == True
 
 ### Gp157 — ShapeAnalysis_Surface.ProjectDegenerated `lazy-singularity-init`
 Projector proceeds without triggering ComputeSingularities. Degenerate edge-points near apex project incorrectly; singularity loci undetected. Cone surface with edge approaching apex singularity at u=0.
@@ -28189,35 +28570,43 @@ Seam edge with unreversed pcurve equality check without parametric domain valida
 ### Gp162 — line_circle_reparametrization_2106
 
 TrimmedCurve wrapping Line/Circle skips geometric basis validation during reparametrization. Non-canonical curve geometry mapping failure. Line 2106–2139: Type detection via Geom2dAdaptor fails to unwrap trimmed geometry, producing incorrect parameter mapping.
+- **Tier-3 assertion**: shape_null == True
 
 ### Gp163 — circle_parameter_1930
 
 Circle parametrization assumes aNewF ≤ aNewL without handling periodic wraparound. Torus seam edge spanning parameter discontinuity (2π → 0). Line 1930: `ElCLib::Parameter()` returns angles on opposite sides of 2π; swap logic (line 1932) produces inverted range.
+- **Tier-3 assertion**: shape_null == True
 
 ### Gp164 — range_mismatch_2055
 
 3D edge range compared to 2D pcurve range without periodic parametrization validation. Cylindrical surface with circular parametrization discontinuity. Line 2055–2060: `aRange3d` vs. `aRange` mismatch with periodic surfaces triggers false reparametrization.
+- **Tier-3 assertion**: shape_null == True
 
 ### Gp165 — vertex_tolerance_mismatch_1971
 
 Vertex tolerance extracted without validation against accumulating tolerance array. Edge chain with heterogeneous vertex tolerances triggers incoherent continuity checks. Line 1971–1972: `TopExp::CommonVertex()` retrieves unvalidated tolerance; `aTolVerSeq.Append()` stores unsorted values.
 
 ## Wave 70B: STEP Pcurve Fixtures (Gp166–Gp170)
+- **Tier-3 assertion**: shape_null == True
 
 ### Gp166 — `ProjectDegenerated.whole-edge-degenerate`
 Conical surface with entire pcurve collapsing to apex singularity. Fixtures force redistribution of degenerate points along non-degenerate parametric axis.
+- **Tier-3 assertion**: shape_null == True
 
 ### Gp167 — `ProjectDegenerated.partial-edge-collapse`
 Spherical surface with half-edge pcurve near pole (singularity), tail normal. Tests collapse of degenerate segment endpoint to singularity parameter.
+- **Tier-3 assertion**: shape_null == True
 
 ### Gp168 — `ProjectDegenerated.lazy-compute`
 Toroidal surface with meridian edge. Singularities computed lazily without revalidation; traversing torus singularity boundaries triggers stale cache.
+- **Tier-3 assertion**: shape_null == True
 
 ### Gp169 — `ProjectDegenerated.dual-distance-logic`
 B-spline surface with 3D curve initial gap. Pcurve distance metrics inconsistently recompute; direct vs. recomputed gap comparison diverges.
 
 ### Gp170 — `ProjectDegenerated.iso-flag-unvalidated`
 Planar surface with U-iso degenerate edge. U-constant pcurve lacks coordinate-axis consistency check; flag used without validation.
+- **Tier-3 assertion**: shape_null == True
 
 ### A105 — Regression OCC 6.9.1 → 7.4.0: colours stop appearing on certain STEP files
 - **Category**: §12.6 assembly hierarchy (sub-class: appearance regression across kernel versions)
