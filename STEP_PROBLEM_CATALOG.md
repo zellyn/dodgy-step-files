@@ -31723,3 +31723,184 @@ exercised against CGAL PMP / MeshFix.
 - **Byte assertion**: contains(b'REPRESENTATION_MAP')
 - **Tier-3 assertion**: load == "ok"
 - **Model impact**: Round-trip output has half the expected NAUO sub-shapes; downstream consumers that traverse the PRODUCT graph miss the mirrored child entirely; assembly tree is structurally lossy.
+
+### Ad121 — Corrupted STEP export: CARTESIAN_POINT with mismatched coord count
+- **Category**: §12.11 adversarial (sub-class: aggregate-arity / schema-violation)
+- **Sources**: Pattern-mined from FreeCAD/FreeCAD#30860 (LGPL-clean — pattern only, no bytes copied). User-reported reproducer: STEP export from FreeCAD produces a file flagged as corrupted by receiver.
+- **Description**: A `CARTESIAN_POINT` is emitted with 4 coordinate values instead of the schema-mandated 3. Receivers either reject the file outright ("file corrupted") or silently truncate, producing a wrong-coordinate point. Distinct from Ad077 because the aggregate is over-long, not zero-length; the schema-level constraint is "exactly 3", not ">=1".
+- **Reproducer recipe**: `CARTESIAN_POINT('',(1.0,2.0,3.0,4.0))` somewhere in the data section, file otherwise valid.
+- **Expected kernel behavior**: enforce schema arity on aggregates; reject or report the over-long literal at parse time with a precise diagnostic naming the entity-line.
+- **Notes**: Synonyms: "corrupted STEP export", "CARTESIAN_POINT 4 coordinates wrong", "schema arity mismatch on point", "wrong number of coords in STEP point", "FreeCAD export corrupted file".
+- **Byte assertion**: contains(b'CARTESIAN_POINT')
+- **Tier-3 assertion**: load == "ok"
+- **Model impact**: Strict readers reject the file; lenient readers silently truncate to (1,2,3) and downstream geometry shifts by the truncated component.
+
+### Ad122 — Damaged STEP export: writer reuses entity-ID slots
+- **Category**: §12.11 adversarial (sub-class: identifier-collision / schema-violation)
+- **Sources**: Pattern-mined from FreeCAD/FreeCAD#25774 (LGPL-clean — pattern only, no bytes copied). User-reported reproducer: "geometry of exported STEP is damaged".
+- **Description**: The writer reuses an entity-ID slot for two entities — either by reset-counter bug or by emitting a duplicate without a fresh ID. Receivers that resolve forward references encounter the second entity's value and silently drop the first; resulting geometry has the wrong sub-shape at the colliding ID. Distinct from Ad117 because the collision is among data-section entries, not styled-item dangling refs.
+- **Reproducer recipe**: emit two entities at the same ID (or a duplicate CARTESIAN_POINT in a slot already used by a vertex).
+- **Expected kernel behavior**: detect ID collisions at parse time; reject the file with an error pointing at the colliding pair.
+- **Notes**: Synonyms: "duplicate STEP entity ID", "writer reused entity slot", "STEP forward ref points to wrong entity", "geometry damaged in STEP export", "FreeCAD export damaged geometry".
+- **Byte assertion**: contains(b'CARTESIAN_POINT')
+- **Tier-3 assertion**: load == "ok"
+- **Model impact**: Receivers using a streaming parser may bind the forward reference to whichever of the two entities wins the second pass; output is non-deterministic.
+
+### Ad123 — Step Export: crash on PCURVE processing (dangling surface ref)
+- **Category**: §12.11 adversarial (sub-class: dangling-reference crash)
+- **Sources**: Pattern-mined from Open-Cascade-SAS/OCCT#80 (LGPL-clean — pattern only, no bytes copied). User-reported reproducer: STEP export crashes during PCURVE processing.
+- **Description**: A `PCURVE` references a surface entity ID that does not exist anywhere in the data section. The writer (or downstream consumer) follows the reference during processing and dereferences a null pointer — SIGSEGV. Distinct from Ad117 because the dangling reference is on PCURVE/surface graphs, not STYLED_ITEM/style graphs.
+- **Reproducer recipe**: `#10=PCURVE('crash',#9999,#9999)` where #9999 does not exist.
+- **Expected kernel behavior**: validate forward-reference targets exist before traversing them; on missing reference, log a diagnostic and continue rather than dereference.
+- **Notes**: Synonyms: "STEP Export crash PCurve", "PCURVE null deref crash", "OCCT segfault on STEP export PCurve", "dangling surface ref crashes writer", "PCurve to missing surface crashes".
+- **Byte assertion**: contains(b'PCURVE')
+- **Tier-3 assertion**: load == "ok"
+- **Model impact**: Production crash on what looks like a small fixture; data-loss for the entire export session.
+
+### Ad124 — Segfault from malformed step-ids (non-numeric forward-ref payload)
+- **Category**: §12.11 adversarial (sub-class: malformed-id segfault)
+- **Sources**: Pattern-mined from IfcOpenShell/IfcOpenShell#6032 (LGPL-clean — pattern only, no bytes copied). User-reported reproducer: file with bad `#NNN` tokens segfaults the reader.
+- **Description**: A label or layer-name string in the data section contains a `#NNN`-style token that the reader's tokenizer picks up as a forward reference even though it lies *inside* a quoted string. The reader then dereferences a non-existent entity → SIGSEGV.
+- **Reproducer recipe**: emit `PRESENTATION_LAYER_ASSIGNMENT('seg','non-numeric forward-ref',(#9999))` — the layer-name string is benign but `#9999` is not a defined entity.
+- **Expected kernel behavior**: only resolve `#NNN` tokens that appear at attribute boundaries; verify referenced ID exists in the data section before dereferencing.
+- **Notes**: Synonyms: "ifcopenshell segfault malformed step-id", "non-numeric STEP id crash", "STEP forward-ref into string segfault", "#xx token inside label crashes reader", "STEP reader segfaults on malformed id".
+- **Byte assertion**: contains(b'PRESENTATION_LAYER_ASSIGNMENT')
+- **Tier-3 assertion**: load == "ok"
+- **Model impact**: Reader unavailable until the file is removed; affects batch-mode pipelines that process untrusted STEP input.
+
+### Ad125 — Segfault on malformed STEP-IDs: negative ID after atoi() parse
+- **Category**: §12.11 adversarial (sub-class: malformed-id segfault)
+- **Sources**: Pattern-mined from IfcOpenShell/IfcOpenShell#5680 (LGPL-clean — pattern only, no bytes copied). Distinct from Ad124: this variant exposes the failure when the reader parses an explicit negative ID and uses it as an array index.
+- **Description**: A label literal embeds a `#-1` token; on parse, the reader calls `atoi()` and gets `-1`, then uses it as an unsigned array index into the entity table. The hash slot dereferences out-of-bounds → SIGSEGV.
+- **Reproducer recipe**: `PRESENTATION_LAYER_ASSIGNMENT('neg_id_label','#-1',(#9001))`.
+- **Expected kernel behavior**: reject negative `#-N` IDs during tokenization; constrain entity IDs to non-negative integers per ISO 10303-21.
+- **Notes**: Synonyms: "negative STEP id segfault", "STEP reader atoi -1 crash", "#-1 as STEP id crashes", "unsigned index from signed STEP id segfault", "malformed STEP-IDs segfault variant".
+- **Byte assertion**: contains(b'PRESENTATION_LAYER_ASSIGNMENT')
+- **Tier-3 assertion**: load == "ok"
+- **Model impact**: Reader crashes; if the slot happened to be readable, the wrong entity gets dereferenced and downstream geometry is mis-bound.
+
+### Ad126 — `add()` with explicit STEP ID causes segfault on auto-ID collision
+- **Category**: §12.11 adversarial (sub-class: writer-side id collision)
+- **Sources**: Pattern-mined from IfcOpenShell/IfcOpenShell#2726 (LGPL-clean — pattern only, no bytes copied). User-reported reproducer: `f.add(entity, step_id=N)` crashes when N matches an auto-generated ID.
+- **Description**: The writer accepts an explicit STEP ID for the new entity but does not reserve it in the auto-ID counter. When the auto-ID later reaches N, the writer emits a duplicate at slot N, and downstream traversal hits the wrong entity → SIGSEGV. The bug is on the writer side; the resulting file (if it materializes) has a forward reference past the end of the data section.
+- **Reproducer recipe**: emit `PROPERTY_DEFINITION('collide','add_step_id_collision','',#9999)` (forward ref past data-section length).
+- **Expected kernel behavior**: writer-side: reserve explicitly-assigned IDs in the auto-counter. Reader-side: validate every forward reference resolves before dereferencing.
+- **Notes**: Synonyms: "ifcopenshell add() step_id segfault", "STEP id collision on writer crash", "explicit step_id collides with auto-id", "forward ref past end of data section crashes", "writer auto-id collision segfault".
+- **Byte assertion**: contains(b'PROPERTY_DEFINITION')
+- **Tier-3 assertion**: load == "ok"
+- **Model impact**: Output file either crashes the writer mid-emit or contains an unresolvable forward reference that crashes the next reader.
+
+### U046 — Link scaled with -1 (mirror) not exported correctly to STEP
+- **Category**: §12.5 units & transforms (sub-class: mirror-determinant lost)
+- **Sources**: Pattern-mined from FreeCAD/FreeCAD#29209 (LGPL-clean — pattern only, no bytes copied). User-reported reproducer: "Link scaled with -1 does not export correctly to STEP".
+- **Description**: A Link instance with scale `(-1, 1, 1)` (mirror across YZ plane) is encoded via a `REPRESENTATION_MAP` with an `AXIS2_PLACEMENT_3D` whose `ref_direction` is `(-1, 0, 0)`. Some writers normalize the placement before emit, replacing the negative-determinant direction with `(1, 0, 0)` and silently dropping the mirror. Distinct from A108 because the loss is in the unit/transform layer, not in the assembly tree.
+- **Reproducer recipe**: `MAPPED_ITEM` whose `REPRESENTATION_MAP`'s location uses a negated `DIRECTION((-1, 0, 0))`.
+- **Expected kernel behavior**: preserve negative-determinant placements verbatim; encode mirror semantics explicitly so receivers can reconstruct them.
+- **Notes**: Synonyms: "FreeCAD Link scale -1 not exported", "mirror scale dropped on STEP export", "AXIS2_PLACEMENT_3D normalized determinant lost", "negative scale not exported correctly", "Link mirror export broken".
+- **Byte assertion**: contains(b'REPRESENTATION_MAP')
+- **Byte assertion**: contains(b'MAPPED_ITEM')
+- **Tier-3 assertion**: load == "ok"
+- **Model impact**: Exported STEP has no mirrored instance; downstream consumer sees half the geometry the source authored.
+
+### U047 — IfcConvert STEP output at wrong scale (LENGTH_UNIT vs coord mismatch)
+- **Category**: §12.5 units & transforms (sub-class: unit-coord mismatch)
+- **Sources**: Pattern-mined from IfcOpenShell/IfcOpenShell#6623 (LGPL-clean — pattern only, no bytes copied). User-reported reproducer: "IfcConvert: STEP model's scale is wrong".
+- **Description**: The file declares `LENGTH_UNIT(.MILLI.,.METRE.)` (millimetres) but the numeric coordinate values are in metres — they should have been multiplied by 1000 on emit. Receivers honour the declared unit and treat the geometry as millimetre-scale, producing an output 1000x smaller than the source authored.
+- **Reproducer recipe**: `LENGTH_UNIT(.MILLI.,.METRE.)` plus `CARTESIAN_POINT('',(1.0,1.0,1.0))` meant to represent (1 m, 1 m, 1 m).
+- **Expected kernel behavior**: writer-side: apply the declared unit's conversion factor before emit. Reader-side: optionally sanity-check coord magnitudes against unit (heuristic: warn when all coords < 0.01 mm).
+- **Notes**: Synonyms: "IfcConvert STEP wrong scale", "LENGTH_UNIT mismatch STEP output", "STEP coordinates in metres but unit says mm", "STEP scale wrong on IFC convert", "model 1000x smaller than authored".
+- **Byte assertion**: contains(b'LENGTH_UNIT')
+- **Tier-3 assertion**: load == "ok"
+- **Model impact**: Downstream measurements (volume, mass, manufacturing tolerances) are off by 10^9 or 10^3 depending on dimensionality; can ship parts at the wrong scale.
+
+### Tsh229 — Missing or incorrect faces in displayed STEP file
+- **Category**: §12.3a shell (sub-class: face-display drop)
+- **Sources**: Pattern-mined from Open-Cascade-SAS/OCCT#349 (LGPL-clean — pattern only, no bytes copied). User-reported reproducer: STEP file with valid faces displays incomplete in viewer.
+- **Description**: A CLOSED_SHELL references a "ghost" ADVANCED_FACE whose surface is a forward reference to a non-existent entity. The loader skips the ghost during display but doesn't surface the error, so viewers show fewer faces than the file authored.
+- **Reproducer recipe**: CLOSED_SHELL with one real face + one ghost face whose `face_geometry` is `#9999` (non-existent).
+- **Expected kernel behavior**: reject the file (or skip the ghost) with a diagnostic; report face count diff in load-time logs.
+- **Notes**: Synonyms: "missing faces in STEP display", "incomplete STEP faces in viewer", "ghost face skipped silently", "OCCT STEP missing face display", "CLOSED_SHELL face dropped silently".
+- **Byte assertion**: contains(b'CLOSED_SHELL')
+- **Byte assertion**: contains(b'ADVANCED_FACE')
+- **Tier-3 assertion**: load == "ok"
+- **Model impact**: Visual inspection misleads the user about completeness; downstream meshing produces a leaky surface.
+
+### Tsh230 — Surface from STEP file wrongly imported / tessellated (self-intersecting NURBS net)
+- **Category**: §12.3a shell × §12.2b NURBS (sub-class: degenerate-control-net surface)
+- **Sources**: Pattern-mined from Open-Cascade-SAS/OCCT#382 (LGPL-clean — pattern only, no bytes copied). User-reported reproducer: "one surface from STEP file is wrongly imported or tessellated".
+- **Description**: A `B_SPLINE_SURFACE_WITH_KNOTS` is emitted with a control-point net whose interior point overlaps the corner-pair midpoint, producing a self-intersecting parameterisation. The loader accepts the surface, but the tessellator produces flipped triangles where the surface folds onto itself.
+- **Reproducer recipe**: 2x2 B-spline with control points `(0,0,0)`, `(1,0.5,0.5)`, `(0.5,1,0)`, `(0.5,0.5,0.5)`. Bi-degree 1.
+- **Expected kernel behavior**: detect self-intersection in the control net before tessellation; flag with a diagnostic rather than tessellate.
+- **Notes**: Synonyms: "STEP surface wrongly imported", "B-spline tessellation flipped triangles", "self-intersecting NURBS surface STEP", "wrong tessellation of NURBS surface", "B_SPLINE_SURFACE imported wrong".
+- **Byte assertion**: contains(b'B_SPLINE_SURFACE_WITH_KNOTS')
+- **Tier-3 assertion**: load == "ok"
+- **Model impact**: Visualization is corrupt; collision detection / volume computation against the tessellated surface is wrong.
+
+### Tfa246 — STEP import missing edges: FACE_OUTER_BOUND wraps empty EDGE_LOOP
+- **Category**: §12.3c face-sliver-sewing (sub-class: writer edge-drop)
+- **Sources**: Pattern-mined from FreeCAD/FreeCAD#17807 (LGPL-clean — pattern only, no bytes copied). User-reported reproducer: "STEP: import missing Edges".
+- **Description**: A `FACE_OUTER_BOUND` references an `EDGE_LOOP` whose `edge_list` is empty. The source-side face had edges but the writer dropped the edge curves during emit. Receivers either reject the face or render it as an unbounded surface patch. Distinct from Tfa002 because the face_geometry is a planar bounded surface where edges *should* exist, not a full sphere.
+- **Reproducer recipe**: `FACE_OUTER_BOUND` → `EDGE_LOOP('lost_edges',())`.
+- **Expected kernel behavior**: validate bound has ≥1 edge for non-full-surface geometries; report writer-side as malformed.
+- **Notes**: Synonyms: "STEP import missing edges", "FreeCAD STEP missing edges", "EDGE_LOOP empty edge_list", "FACE_OUTER_BOUND empty loop", "writer dropped face edges".
+- **Byte assertion**: contains(b'FACE_OUTER_BOUND')
+- **Byte assertion**: contains(b'EDGE_LOOP')
+- **Tier-3 assertion**: load == "ok"
+- **Model impact**: Imported face has no boundary; downstream operations (offset, fillet) produce empty results.
+
+### Tfa247 — Exported STEP produces empty objects (SHAPE_REPRESENTATION with no items)
+- **Category**: §12.3c face-sliver-sewing (sub-class: representation-empty)
+- **Sources**: Pattern-mined from FreeCAD/FreeCAD#20396 (LGPL-clean — pattern only, no bytes copied). User-reported reproducer: "Models exported to STEP crash or produce empty objects".
+- **Description**: A `SHAPE_REPRESENTATION` is emitted with an empty items list. Some receivers report the object as missing; others crash on the empty traversal.
+- **Reproducer recipe**: `SHAPE_REPRESENTATION('empty_obj',(),#9005)`.
+- **Expected kernel behavior**: validate ≥1 item in any non-trivial SHAPE_REPRESENTATION; surface as writer-side diagnostic.
+- **Notes**: Synonyms: "STEP empty object", "SHAPE_REPRESENTATION no items", "Models exported empty STEP", "FreeCAD STEP empty objects", "STEP rep with empty items list".
+- **Byte assertion**: contains(b'SHAPE_REPRESENTATION')
+- **Tier-3 assertion**: load == "ok"
+- **Model impact**: The PRODUCT chain looks valid but no geometry is present; downstream pipeline treats the export as success when it failed.
+
+### Tfa248 — Draft OrthoArray missing objects on STEP export (MAPPED_ITEM dropped)
+- **Category**: §12.3c face-sliver-sewing (sub-class: orthoarray-instance-drop)
+- **Sources**: Pattern-mined from FreeCAD/FreeCAD#26319 (LGPL-clean — pattern only, no bytes copied). User-reported reproducer: "STEP: Export doesn't work correct with Draft OrthoArray - missing objects".
+- **Description**: A Draft OrthoArray (4-instance grid) emits only one of the four `MAPPED_ITEM` instances. Receivers see only one body where the source authored four. Distinct from A108 because the loss is at the array-level (3 of 4 dropped), not at the mirror-level (1 of 1 dropped).
+- **Reproducer recipe**: one `REPRESENTATION_MAP` + one `MAPPED_ITEM` where the source authored four; comment notes the missing siblings.
+- **Expected kernel behavior**: preserve all array instances; emit `MAPPED_ITEM` per source-side instance.
+- **Notes**: Synonyms: "Draft OrthoArray missing on STEP export", "STEP array instances dropped", "FreeCAD OrthoArray STEP export", "MAPPED_ITEM array incomplete", "STEP writer drops array siblings".
+- **Byte assertion**: contains(b'REPRESENTATION_MAP')
+- **Byte assertion**: contains(b'MAPPED_ITEM')
+- **Tier-3 assertion**: load == "ok"
+- **Model impact**: Output has 25% of authored geometry; pipelines that count instances fail downstream sanity checks.
+
+### A109 — Combining STEP files corrupts assembly tree (NAUO wrong parent)
+- **Category**: §12.6 assembly (sub-class: tree-merge-corruption)
+- **Sources**: Pattern-mined from FreeCAD/FreeCAD#11441 (LGPL-clean — pattern only, no bytes copied). User-reported reproducer: "Combining STEP files messes tree structure in resulting file".
+- **Description**: After merging two STEP files, a `NEXT_ASSEMBLY_USAGE_OCCURRENCE` points to the *wrong* parent PRODUCT — typically because the merge tool didn't re-key the assembly graph. Receivers see a sub-assembly under the wrong parent or as an orphan node.
+- **Reproducer recipe**: `NEXT_ASSEMBLY_USAGE_OCCURRENCE('wrong_parent','...','',#9001,#9999,$)` where `#9999` is not a PRODUCT.
+- **Expected kernel behavior**: merge tools must re-key all NAUO references; readers should validate NAUO endpoints are PRODUCT entities.
+- **Notes**: Synonyms: "STEP merge tree corruption", "NAUO wrong parent after combine", "combining STEP files tree messed up", "STEP assembly graph re-keyed wrong", "FreeCAD combine STEP tree broken".
+- **Byte assertion**: contains(b'NEXT_ASSEMBLY_USAGE_OCCURRENCE')
+- **Tier-3 assertion**: load == "ok"
+- **Model impact**: Assembly traversal hits an orphan or wrong-parent sub-tree; downstream BoM extraction reports wrong parent-child relationships.
+
+### A110 — Entity STEP id used as element name on serialization
+- **Category**: §12.6 assembly (sub-class: name-from-id)
+- **Sources**: Pattern-mined from IfcOpenShell/IfcOpenShell#923 (LGPL-clean — pattern only, no bytes copied). User-reported reproducer: "use entity STEP id for naming elements upon serialization in IfcConverter".
+- **Description**: The writer emits `PRODUCT('#9001','step-id-as-name','',(#9001))` — the human-readable name slot is populated with the STEP entity ID rather than a real label. Downstream BoM tools display "Part #9001" instead of "Door Handle".
+- **Reproducer recipe**: `PRODUCT('#9001','step-id-as-name','',(#9001))`.
+- **Expected kernel behavior**: preserve source-side labels; only fall back to entity IDs when no label is available, with a diagnostic.
+- **Notes**: Synonyms: "STEP id used as element name", "PRODUCT name is STEP id", "IfcConverter step-id naming", "writer used entity id for product name", "STEP serialization names from id".
+- **Byte assertion**: contains(b'PRODUCT')
+- **Tier-3 assertion**: load == "ok"
+- **Model impact**: BoM tables and assembly trees become unreadable; user can't tell parts apart by name.
+
+### Tb024 — STEP labels with IfcShapeAspect have wrong location reference
+- **Category**: §12.7 PMI (sub-class: shape-aspect-target-wrong)
+- **Sources**: Pattern-mined from IfcOpenShell/IfcOpenShell#5363 (LGPL-clean — pattern only, no bytes copied). User-reported reproducer: "Exporting STEP File with Labels Associated to IfcShapeAspect – Location Issue".
+- **Description**: A `SHAPE_ASPECT` is associated with a label, but the `GEOMETRIC_ITEM_SPECIFIC_USAGE` that ties the aspect to a geometric item references a wrong (non-existent) target ID. Receivers either reject the GISU or attach the label to the wrong feature.
+- **Reproducer recipe**: `SHAPE_ASPECT` + `GEOMETRIC_ITEM_SPECIFIC_USAGE` whose `definition` slot references `#9999` (non-existent).
+- **Expected kernel behavior**: validate every GISU's `definition` reference resolves to a real geometric item; reject otherwise.
+- **Notes**: Synonyms: "IfcShapeAspect location wrong", "STEP labels with shape aspect location issue", "GEOMETRIC_ITEM_SPECIFIC_USAGE dangling target", "SHAPE_ASPECT wrong feature attach", "label location lost in STEP export".
+- **Byte assertion**: contains(b'SHAPE_ASPECT')
+- **Byte assertion**: contains(b'GEOMETRIC_ITEM_SPECIFIC_USAGE')
+- **Tier-3 assertion**: load == "ok"
+- **Model impact**: PMI annotations attach to the wrong feature on import; downstream tolerance checks reference the wrong geometry.

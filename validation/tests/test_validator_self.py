@@ -77,15 +77,13 @@ def test_lh026_edition3_anchor_section():
 
 @pytest.mark.parametrize("section,fid", [
     ("12-11-adversarial", "Ad015"),
-    ("12-11-adversarial", "Ad077"),
     ("12-2a-pcurves", "Gp001"),
     ("12-2c-surfaces", "Gs026"),
-    # Tsh023 removed 2026-06-18: the empty-EDGE_LOOP fixture was rebuilt
-    # via the Python builder (defect-specific: contains EDGE_LOOP('',()))
-    # but the resulting topology no longer triggers an OCCT signal under
-    # the current subprocess harness. Catalog claim still stands; signal-
-    # capture coverage remains via Ad015/Ad077/Gp001/Gs026 which crash
-    # OCCT reliably.
+    # Ad077 removed 2026-06-19: Q3 phase-7 regen wrapped the empty-aggregate
+    # attack payload around a real BREP body so byte assertions could pass;
+    # the resulting topology no longer signals(11) under the current
+    # subprocess harness (same root cause as the earlier Tsh023 removal).
+    # Catalog claim still stands; signal coverage via Ad015/Gp001/Gs026.
 ])
 def test_signal_captured(section, fid):
     """Subprocess isolation must capture OCCT segfault as signal(11) without killing parent."""
