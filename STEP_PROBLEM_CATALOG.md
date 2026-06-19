@@ -31693,3 +31693,16 @@ exercised against CGAL PMP / MeshFix.
 - **Byte assertion**: contains(b'ADVANCED_FACE')
 - **Tier-3 assertion**: load == "ok"
 - **Model impact**: Receivers using shell-level normals to compute volume see negative volume; viewers render the face with inverted lighting; BRepCheck flags the shell as invalid orientation.
+
+### A108 — Draft-mirrored body silently dropped on STEP export (mirror NAUO)
+- **Category**: §12.6 assembly (sub-class: mirror-transform NAUO drop)
+- **Sources**: Pattern-mined from FreeCAD/FreeCAD#13581 (LGPL-clean — pattern only, no bytes copied). User-reported reproducer: Part Design body + Draft 'Mirror' tool → STEP export drops the mirrored body. "Only one of the bodies will be in the step file."
+- **Description**: An assembly compound containing a PRODUCT subassembly with one body and a mirrored copy of that body has the mirror dropped during STEP export. The mirrored body is structurally a NEXT_ASSEMBLY_USAGE_OCCURRENCE that references the source PRODUCT via a MAPPED_ITEM under an AXIS2_PLACEMENT_3D whose ref_direction is negated (mirror reflection, negative determinant). Some writers' NAUO emit-path silently skips placements with a negative-determinant transformation, dropping the mirrored sub-assembly from the output.
+- **Reproducer recipe**: parent PRODUCT 'Body' + child PRODUCT 'Body_Mirrored'; child reached via NEXT_ASSEMBLY_USAGE_OCCURRENCE → MAPPED_ITEM → REPRESENTATION_MAP whose location is an AXIS2_PLACEMENT_3D with ref_direction `(-1, 0, 0)` (mirror across YZ plane).
+- **Expected kernel behavior**: preserve all NAUO entries through export regardless of placement determinant; emit MAPPED_ITEM with the mirror placement; flag negative-determinant placements as mirror transforms in the consuming reader rather than dropping.
+- **Notes**: Synonyms: "Draft Mirror lost on STEP export", "mirrored body not in STEP", "negative-determinant NAUO dropped", "STEP writer skips mirror placement", "Part Design mirror body missing after export". See also A104 (mirror-related Mantis ticket).
+- **Byte assertion**: contains(b'NEXT_ASSEMBLY_USAGE_OCCURRENCE')
+- **Byte assertion**: contains(b'MAPPED_ITEM')
+- **Byte assertion**: contains(b'REPRESENTATION_MAP')
+- **Tier-3 assertion**: load == "ok"
+- **Model impact**: Round-trip output has half the expected NAUO sub-shapes; downstream consumers that traverse the PRODUCT graph miss the mirrored child entirely; assembly tree is structurally lossy.

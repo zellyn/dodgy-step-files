@@ -68726,6 +68726,43 @@
   },
   {
     "byte_assertions": [
+      "contains(b'NEXT_ASSEMBLY_USAGE_OCCURRENCE')",
+      "contains(b'MAPPED_ITEM')",
+      "contains(b'REPRESENTATION_MAP')"
+    ],
+    "category": "§12.6 assembly (sub-class: mirror-transform NAUO drop)",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": null,
+    "description": "An assembly compound containing a PRODUCT subassembly with one body and a mirrored copy of that body has the mirror dropped during STEP export. The mirrored body is structurally a NEXT_ASSEMBLY_USAGE_OCCURRENCE that references the source PRODUCT via a MAPPED_ITEM under an AXIS2_PLACEMENT_3D whose ref_direction is negated (mirror reflection, negative determinant). Some writers' NAUO emit-path silently skips placements with a negative-determinant transformation, dropping the mirrored sub-assembly from the output.",
+    "expected_kernel_behavior": "preserve all NAUO entries through export regardless of placement determinant; emit MAPPED_ITEM with the mirror placement; flag negative-determinant placements as mirror transforms in the consuming reader rather than dropping.",
+    "expected_validation": "",
+    "fixture_kind": null,
+    "fixture_path": "step-examples/12-6-assembly/A108.stp",
+    "id": "A108",
+    "notes": "Synonyms: \"Draft Mirror lost on STEP export\", \"mirrored body not in STEP\", \"negative-determinant NAUO dropped\", \"STEP writer skips mirror placement\", \"Part Design mirror body missing after export\". See also A104 (mirror-related Mantis ticket).",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-sufficient",
+    "reproducer": "parent PRODUCT 'Body' + child PRODUCT 'Body_Mirrored'; child reached via NEXT_ASSEMBLY_USAGE_OCCURRENCE → MAPPED_ITEM → REPRESENTATION_MAP whose location is an AXIS2_PLACEMENT_3D with ref_direction `(-1, 0, 0)` (mirror across YZ plane).",
+    "section": "12.6",
+    "section_dir": "12-6-assembly",
+    "see_also": [],
+    "sender": "",
+    "severity": null,
+    "sources": [
+      "Pattern-mined from FreeCAD/FreeCAD#13581 (LGPL-clean — pattern only, no bytes copied). User-reported reproducer: Part Design body + Draft 'Mirror' tool → STEP export drops the mirrored body. \"Only one of the bodies will be in the step file.\""
+    ],
+    "taxonomy": [
+      "assembly"
+    ],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
+    "title": "Draft-mirrored body silently dropped on STEP export (mirror NAUO)"
+  },
+  {
+    "byte_assertions": [
       "contains(b'CONFIG_CONTROL_DESIGN')",
       "declared_schema == b'CONFIG_CONTROL_DESIGN'",
       "count_entity_def(b'PRODUCT') == 0"
