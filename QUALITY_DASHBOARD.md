@@ -41,14 +41,14 @@ at the bottom) to recompute._
 | Catalog claim formalization (auto-extracted outcome tags) | **604** entries tagged with allowed/disallowed outcomes |
 | Outcome conformance (live oracle vs catalog `allowed` set) | **248 conform · 931 outside-allowed · 100 violate-disallowed · 3 no-tags** |
 | OCCT-API token-hits in scored fields | **0** |
-| Distinct §12.x sections | **18** |
-| Bug-report search regression queries | **340** |
-| Pytest self-tests | **501** |
+| Distinct §12.x sections | **19** (added §12.14 mesh) |
+| Bug-report search regression queries | **340** (last computed; rerun pending) |
+| Pytest self-tests | **516** (+15 from solvespace_oracle, tier3_coverage_ratchet, others) |
 | OCAF/XCAF document-level oracle (`_ocaf_oracle`) | tests label/color/transform/assembly persistence on §12.6-assembly entries; 70/102 fixtures load OCAF tree, 30 fail at OCAF reader, 2 segfault (subprocess-isolated) |
 | Per-fixture HTML byte highlighting | **2020/2343** byte assertions (86 %) yield positional matches; **961/1318** browse pages render `<mark>`-highlighted defect bytes inline |
-| Conformance Kit (curated subset) | **80 entries / 1282** (~6.2 %) in `CONFORMANCE_KIT.md` and `browse/conformance-kit/`; covers all 15 taxonomy tags |
-| Formal defect-class definitions | **88 definitions** (15 taxonomy + 73 sub-classes) in `DEFECT_CLASS_DEFINITIONS.md` and `browse/defect-classes/` |
-| Per-entry **Model impact** annotations | **1282 / 1282** entries describe data/geometry/program-level effect |
+| Conformance Kit (curated subset) | **80 entries / 1282** (~3.5 % of current 2313); count predates corpus growth — rerun pending |
+| Formal defect-class definitions | **88 definitions** (15 taxonomy + 73 sub-classes) in `DEFECT_CLASS_DEFINITIONS.md` and `browse/defect-classes/`; covers the v0.3 catalog, not yet extended to §12.14 mesh |
+| Per-entry **Model impact** annotations | last computed at 1282-entry corpus — rerun pending against current 2313 |
 | OCCT path:line citation audit | 49 unique citations verified — 100 % resolve in current OCCT |
 | Bug-tracker URL audit | 153 OCCT MANTIS URLs · FreeCAD / IfcOpenShell / CadQuery / sourceforge / GitHub all resolve cleanly |
 | GitHub Pages browse site (`/index.html`, `/browse/`, `/browse/by-tag/`) | **1305+ HTML files** (1282 per-fixture + 18 section indexes + 1 catalog browser + 16 by-tag pages). Pages served from repo root via `.nojekyll` |
