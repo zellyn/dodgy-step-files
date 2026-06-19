@@ -1,36 +1,64 @@
 ISO-10303-21;
-/* Xp030 - Cross-product: Inventor's STEP exporter writes Asian (Chinese,
- *   Korean, Japanese) characters as raw GBK / Shift_JIS bytes instead of
- *   ISO 10303-21 \X2\ escapes; receivers that assume ISO-8859-1 or UTF-8
- *   show mojibake.
- * Source: Autodesk KB "STEP files converted in Inventor, do not display
- *   Asian characters as expected such as Korean and Chinese"; Inventor
- *   forum 6686585 "How can I get Inventor to correctly translate Chinese
- *   Character".
- * Defect: PRODUCT.name carries the bytes 0xC3 0xBF 0xC2 0xB7 0xC3 0xA9
- *   (which is what GBK 0xD6 0xD0 "ZH" looks like after a Latin-1 ->
- *   UTF-8 mis-recoding). The intent was Chinese "中文" via \X2\4E2D 6587\X0\
- *   but Inventor wrote raw legacy-codepage bytes without escapes. */
+/* Xp030: Inventor exports CJK chars as raw legacy-codepage bytes */
 HEADER;
-FILE_DESCRIPTION(('Xp030 cross-product','Inventor Asian chars not escaped'),'2;1');
-FILE_NAME('Xp030.stp','2026-05-02T00:00:00',(''),(''),'Inventor;2024','','');
-FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+FILE_DESCRIPTION(('Xp030'),'2;1');
+FILE_NAME('Xp030.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('automotive_design');
-/* PRODUCT.name has raw legacy-codepage bytes (mojibake on receive) */
-#3=PRODUCT('part-Ã¿Â·Ã©','desc-without-X2-escape','',(#4));
-#4=PRODUCT_CONTEXT('',#1,'mechanical');
-#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
-#11=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
-#12=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
-#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#10,'tol','');
-#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13))GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12))REPRESENTATION_CONTEXT('','3D'));
-#20=CARTESIAN_POINT('',(0.0,0.0,0.0));
-#21=DIRECTION('',(0.0,0.0,1.0));
-#22=DIRECTION('',(1.0,0.0,0.0));
-#23=AXIS2_PLACEMENT_3D('',#20,#21,#22);
-#24=PLANE('',#23);
-#25=ADVANCED_FACE('',(),#24,.T.);
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=DIRECTION('',(0.0,0.0,1.0));
+#3=DIRECTION('',(1.0,0.0,0.0));
+#4=AXIS2_PLACEMENT_3D('',#1,#2,#3);
+#5=PLANE('',#4);
+#6=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#7=CARTESIAN_POINT('',(1.0,0.0,0.0));
+#8=CARTESIAN_POINT('',(1.0,1.0,0.0));
+#9=CARTESIAN_POINT('',(0.0,1.0,0.0));
+#10=VERTEX_POINT('',#6);
+#11=VERTEX_POINT('',#7);
+#12=VERTEX_POINT('',#8);
+#13=VERTEX_POINT('',#9);
+#14=DIRECTION('',(1.0,0.0,0.0));
+#15=VECTOR('',#14,1.0);
+#16=LINE('',#6,#15);
+#17=EDGE_CURVE('',#10,#11,#16,.T.);
+#18=DIRECTION('',(0.0,1.0,0.0));
+#19=VECTOR('',#18,1.0);
+#20=LINE('',#7,#19);
+#21=EDGE_CURVE('',#11,#12,#20,.T.);
+#22=DIRECTION('',(-1.0,0.0,0.0));
+#23=VECTOR('',#22,1.0);
+#24=LINE('',#8,#23);
+#25=EDGE_CURVE('',#12,#13,#24,.T.);
+#26=DIRECTION('',(0.0,-1.0,0.0));
+#27=VECTOR('',#26,1.0);
+#28=LINE('',#9,#27);
+#29=EDGE_CURVE('',#13,#10,#28,.T.);
+#30=ORIENTED_EDGE('',$,$,#17,.T.);
+#31=ORIENTED_EDGE('',$,$,#21,.T.);
+#32=ORIENTED_EDGE('',$,$,#25,.T.);
+#33=ORIENTED_EDGE('',$,$,#29,.T.);
+#34=EDGE_LOOP('',(#30,#31,#32,#33));
+#35=FACE_OUTER_BOUND('',#34,.T.);
+#36=ADVANCED_FACE('',(#35),#5,.T.);
+#37=OPEN_SHELL('',(#36));
+#38=SHELL_BASED_SURFACE_MODEL('',(#37));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('Xp030','Xp030','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#38),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
+#9063=/* Inventor wrote legacy-codepage CJK bytes in PRODUCT.name */;
+#9064=PRESENTATION_LAYER_ASSIGNMENT('パート','legacy CJK bytes',());
 ENDSEC;
 END-ISO-10303-21;

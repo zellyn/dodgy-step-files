@@ -1,43 +1,64 @@
 ISO-10303-21;
-/* Xp031 - Cross-product: KiCad-emitted STEP file imports cleanly into
- *   FreeCAD but corrupts in SolidWorks 2021 - several footprint instances
- *   are rotated and replaced by other components in the assembly.
- * Source: forum.kicad.info t/47681 "Wrong parts assignment when opening
- *   STEP files in Solidworks 2021"; forum.kicad.info t/46359 "STEP file
- *   corrupting on import to Solidworks (but not freecad)".
- * Defect: two PRODUCT_DEFINITIONs share the exact same PRODUCT.name and
- *   PRODUCT_CONTEXT (both labelled 'R0805'). KiCad assigns each footprint
- *   instance a unique IDT; FreeCAD honours the IDT. SolidWorks de-dups by
- *   PRODUCT.name and re-uses the first occurrence's geometry for all
- *   instances - effectively swapping the part that should be in slot B
- *   with the one in slot A. */
+/* Xp031: KiCad STEP corrupts in SolidWorks — PRODUCT.name dedup */
 HEADER;
-FILE_DESCRIPTION(('Xp031 cross-product','KiCad->Solidworks duplicate name'),'2;1');
-FILE_NAME('Xp031.stp','2026-05-02T00:00:00',(''),(''),'KiCad;StepWriter','','');
-FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+FILE_DESCRIPTION(('Xp031'),'2;1');
+FILE_NAME('Xp031.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('automotive_design');
-#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
-#11=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
-#12=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
-#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#10,'tol','');
-#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13))GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12))REPRESENTATION_CONTEXT('','3D'));
-/* Two identically-named PRODUCTs intended as distinct instances. */
-#20=PRODUCT('R0805','R0805','distinct-instance-A',(#21));
-#21=PRODUCT_CONTEXT('',#1,'mechanical');
-#22=PRODUCT_DEFINITION_FORMATION('','',#20);
-#23=PRODUCT_DEFINITION('R0805','first-instance',#22,#24);
-#24=PRODUCT_DEFINITION_CONTEXT('',#1,'design');
-#30=PRODUCT('R0805','R0805','distinct-instance-B',(#21));
-#31=PRODUCT_DEFINITION_FORMATION('','',#30);
-#32=PRODUCT_DEFINITION('R0805','second-instance-collides',#31,#24);
-/* SolidWorks de-dup heuristic conflates #23 and #32, swapping geometry. */
-#40=CARTESIAN_POINT('',(0.0,0.0,0.0));
-#41=DIRECTION('',(0.0,0.0,1.0));
-#42=DIRECTION('',(1.0,0.0,0.0));
-#43=AXIS2_PLACEMENT_3D('',#40,#41,#42);
-#44=PLANE('',#43);
-#45=ADVANCED_FACE('shared_geometry_swapped_in_swx',(),#44,.T.);
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=DIRECTION('',(0.0,0.0,1.0));
+#3=DIRECTION('',(1.0,0.0,0.0));
+#4=AXIS2_PLACEMENT_3D('',#1,#2,#3);
+#5=PLANE('',#4);
+#6=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#7=CARTESIAN_POINT('',(1.0,0.0,0.0));
+#8=CARTESIAN_POINT('',(1.0,1.0,0.0));
+#9=CARTESIAN_POINT('',(0.0,1.0,0.0));
+#10=VERTEX_POINT('',#6);
+#11=VERTEX_POINT('',#7);
+#12=VERTEX_POINT('',#8);
+#13=VERTEX_POINT('',#9);
+#14=DIRECTION('',(1.0,0.0,0.0));
+#15=VECTOR('',#14,1.0);
+#16=LINE('',#6,#15);
+#17=EDGE_CURVE('',#10,#11,#16,.T.);
+#18=DIRECTION('',(0.0,1.0,0.0));
+#19=VECTOR('',#18,1.0);
+#20=LINE('',#7,#19);
+#21=EDGE_CURVE('',#11,#12,#20,.T.);
+#22=DIRECTION('',(-1.0,0.0,0.0));
+#23=VECTOR('',#22,1.0);
+#24=LINE('',#8,#23);
+#25=EDGE_CURVE('',#12,#13,#24,.T.);
+#26=DIRECTION('',(0.0,-1.0,0.0));
+#27=VECTOR('',#26,1.0);
+#28=LINE('',#9,#27);
+#29=EDGE_CURVE('',#13,#10,#28,.T.);
+#30=ORIENTED_EDGE('',$,$,#17,.T.);
+#31=ORIENTED_EDGE('',$,$,#21,.T.);
+#32=ORIENTED_EDGE('',$,$,#25,.T.);
+#33=ORIENTED_EDGE('',$,$,#29,.T.);
+#34=EDGE_LOOP('',(#30,#31,#32,#33));
+#35=FACE_OUTER_BOUND('',#34,.T.);
+#36=ADVANCED_FACE('',(#35),#5,.T.);
+#37=OPEN_SHELL('',(#36));
+#38=SHELL_BASED_SURFACE_MODEL('',(#37));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('Xp031','Xp031','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#38),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
+#9063=PRODUCT('R0805','resistor #1','',(#9001));
+#9064=PRODUCT('R0805','resistor #2','',(#9001));
 ENDSEC;
 END-ISO-10303-21;
