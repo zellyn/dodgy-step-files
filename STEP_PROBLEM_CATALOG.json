@@ -7541,6 +7541,42 @@
     "title": "step-g imports cleanly but downstream `g-stl` tessellator silently writes zero triangles"
   },
   {
+    "byte_assertions": [
+      "contains(b'EDGE_CURVE')",
+      "contains(b'LINE')"
+    ],
+    "category": "§12.13 writer-pathology (sub-class: unbounded-curve emission)",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": null,
+    "description": "A STEP writer emits an EDGE_CURVE whose `edge_geometry` slot is filled by an unbounded LINE entity rather than a TRIMMED_CURVE(LINE, t0, t1) or a SURFACE_CURVE with explicit param bookkeeping. The vertices nominally define the edge's domain, but the LINE itself carries no parametric extent, so receivers that traverse the LINE directly (rather than the EDGE_CURVE bookkeeping) walk into an unbounded range.",
+    "expected_kernel_behavior": "heal — re-bound the LINE via implicit vertex-parameter projection, or wrap it in a TRIMMED_CURVE post-load.",
+    "expected_validation": "",
+    "fixture_kind": null,
+    "fixture_path": "step-examples/12-13-writer-pathology/Wr052.stp",
+    "id": "Wr052",
+    "notes": "Synonyms: \"EDGE_CURVE points to unbounded LINE\", \"STEP writer emits untrimmed curve\", \"missing TRIMMED_CURVE wrapper around LINE\", \"line-edge without parametric trim\". See also Twi248 (null-3D-curve sibling case).",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-sufficient",
+    "reproducer": "a single EDGE_CURVE with edge_geometry = #(LINE). No TRIMMED_CURVE, no SURFACE_CURVE wrapper. Two distinct VERTEX_POINTs delimit the topological edge but the geometric curve is intrinsically unbounded.",
+    "section": "12.13",
+    "section_dir": "12-13-writer-pathology",
+    "see_also": [],
+    "sender": "",
+    "severity": null,
+    "sources": [
+      "Pattern-mined from OCCT/tests/bugs/step/bug32817_1 (LGPL-clean — pattern only, no bytes copied). OCCT method `STEPControl_Writer::Transfer` on a single-line edge."
+    ],
+    "taxonomy": [
+      "writer"
+    ],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
+    "title": "Writer emits EDGE_CURVE backed by untrimmed LINE entity"
+  },
+  {
     "byte_assertions": [],
     "category": "§12.14 mesh defects (sub-class: topology/non-manifold)",
     "closure_defect": null,
@@ -80887,6 +80923,42 @@
       "shape_null == True"
     ],
     "title": "AP238 boring tool diameter declared as negative"
+  },
+  {
+    "byte_assertions": [
+      "contains(b'GEOMETRIC_SET')",
+      "contains(b'VERTEX_POINT')"
+    ],
+    "category": "§12.8 mixed (sub-class: compound write-side losses)",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": null,
+    "description": "A geometric compound carries both a SHELL_BASED_SURFACE_MODEL and a free VERTEX_POINT that isn't part of any face / edge / shell. Several STEP writers' transfer paths walk the compound looking for solids/shells/faces/edges and silently omit loose vertices, so a write+read round-trip loses the free vertex.",
+    "expected_kernel_behavior": "preserve free vertices through write+read; emit a CARTESIAN_POINT + VERTEX_POINT pair in the output GEOMETRIC_SET items list.",
+    "expected_validation": "",
+    "fixture_kind": null,
+    "fixture_path": "step-examples/12-8-mixed/M190.stp",
+    "id": "M190",
+    "notes": "Synonyms: \"compound free vertex dropped on STEP write\", \"STEP exporter loses loose vertex\", \"free VERTEX_POINT not in shell\", \"compound items list missing vertex on round-trip\".",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-sufficient",
+    "reproducer": "a GEOMETRIC_SET containing two items: a SHELL_BASED_SURFACE_MODEL (representing a planar face) and a VERTEX_POINT at coordinates well outside the face's bounding box. After write+read, only the shell survives.",
+    "section": "12.8",
+    "section_dir": "12-8-mixed",
+    "see_also": [],
+    "sender": "",
+    "severity": null,
+    "sources": [
+      "Pattern-mined from OCCT/tests/bugs/step/bug33053 (LGPL-clean — pattern only, no bytes copied). OCCT method `STEPControl_Writer::Transfer` on a GEOMETRIC_SET / compound containing both a shell and a free VERTEX."
+    ],
+    "taxonomy": [
+      "round-trip"
+    ],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
+    "title": "Compound with free VERTEX_POINT silently dropped on STEP export"
   },
   {
     "byte_assertions": [],

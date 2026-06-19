@@ -31184,3 +31184,27 @@ exercised against CGAL PMP / MeshFix.
 - **Mesh assertion**: `triangles_self_intersect triangles=[0, 1]`
 - **Fixture path**: mesh-examples/12-14-mesh/Me005.mesh.json
 - **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Wr052 — Writer emits EDGE_CURVE backed by untrimmed LINE entity
+- **Category**: §12.13 writer-pathology (sub-class: unbounded-curve emission)
+- **Sources**: Pattern-mined from OCCT/tests/bugs/step/bug32817_1 (LGPL-clean — pattern only, no bytes copied). OCCT method `STEPControl_Writer::Transfer` on a single-line edge.
+- **Description**: A STEP writer emits an EDGE_CURVE whose `edge_geometry` slot is filled by an unbounded LINE entity rather than a TRIMMED_CURVE(LINE, t0, t1) or a SURFACE_CURVE with explicit param bookkeeping. The vertices nominally define the edge's domain, but the LINE itself carries no parametric extent, so receivers that traverse the LINE directly (rather than the EDGE_CURVE bookkeeping) walk into an unbounded range.
+- **Reproducer recipe**: a single EDGE_CURVE with edge_geometry = #(LINE). No TRIMMED_CURVE, no SURFACE_CURVE wrapper. Two distinct VERTEX_POINTs delimit the topological edge but the geometric curve is intrinsically unbounded.
+- **Expected kernel behavior**: heal — re-bound the LINE via implicit vertex-parameter projection, or wrap it in a TRIMMED_CURVE post-load.
+- **Notes**: Synonyms: "EDGE_CURVE points to unbounded LINE", "STEP writer emits untrimmed curve", "missing TRIMMED_CURVE wrapper around LINE", "line-edge without parametric trim". See also Twi248 (null-3D-curve sibling case).
+- **Byte assertion**: contains(b'EDGE_CURVE')
+- **Byte assertion**: contains(b'LINE')
+- **Tier-3 assertion**: shape_null == True
+- **Model impact**: Receivers that compute curve length / parametric extent / point-on-curve from the LINE alone get unbounded answers; downstream BRep traversal that should yield two endpoints sees an unbounded geometric edge.
+
+### M190 — Compound with free VERTEX_POINT silently dropped on STEP export
+- **Category**: §12.8 mixed (sub-class: compound write-side losses)
+- **Sources**: Pattern-mined from OCCT/tests/bugs/step/bug33053 (LGPL-clean — pattern only, no bytes copied). OCCT method `STEPControl_Writer::Transfer` on a GEOMETRIC_SET / compound containing both a shell and a free VERTEX.
+- **Description**: A geometric compound carries both a SHELL_BASED_SURFACE_MODEL and a free VERTEX_POINT that isn't part of any face / edge / shell. Several STEP writers' transfer paths walk the compound looking for solids/shells/faces/edges and silently omit loose vertices, so a write+read round-trip loses the free vertex.
+- **Reproducer recipe**: a GEOMETRIC_SET containing two items: a SHELL_BASED_SURFACE_MODEL (representing a planar face) and a VERTEX_POINT at coordinates well outside the face's bounding box. After write+read, only the shell survives.
+- **Expected kernel behavior**: preserve free vertices through write+read; emit a CARTESIAN_POINT + VERTEX_POINT pair in the output GEOMETRIC_SET items list.
+- **Notes**: Synonyms: "compound free vertex dropped on STEP write", "STEP exporter loses loose vertex", "free VERTEX_POINT not in shell", "compound items list missing vertex on round-trip".
+- **Byte assertion**: contains(b'GEOMETRIC_SET')
+- **Byte assertion**: contains(b'VERTEX_POINT')
+- **Tier-3 assertion**: shape_null == True
+- **Model impact**: Compound on round-trip has one fewer sub-shape than the in-memory original; downstream consumers that expect the original compound's item count fail topology-count validation.
