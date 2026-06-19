@@ -90,3 +90,22 @@ title + body, never copy bytes.
 ## Findings
 
 (populated as wave-1 classification completes)
+
+## 2026-06-19 — Wave-A adversarial sweep on this-session additions
+
+Scope: 40 entries (B4 wave-1 + wave-2 + wave-3 NOVEL fixtures plus
+Q3 phase-7 wave-3 new IDs). Method: Haiku read each catalog section,
+extracted byte assertions, then read the .stp and verified the bytes
+embodied the catalog claim.
+
+Result: **40 CLEAR_PASS / 0 WEAK_PASS / 0 CONFIRMED_INVALID**.
+
+Spot-checks confirmed: Ad123 PCURVE #9999, Wr053 TOROIDAL_SURFACE +
+CYLINDRICAL_SURFACE fused, Wr055 alternating .T./.F. ORIENTED_EDGE
+flags, Wr061 COLOUR_RGB(0.871,...) aliceblue sRGB shift, A112 three
+'C1'-labelled NAUOs, Pf038 8x MAPPED_ITEM under one REPRESENTATION_MAP,
+U047 LENGTH_UNIT(.MILLI.,.METRE.) with metre-scale coords.
+
+IDs: Ad120-127 (8), Wr052-062 (11), A108-112 (5), Pf037-039 (3),
+Lh049, U046-048 (3), Tsh229-231 (3), Tfa246-248 (3), Tb024, Twi277,
+N171 — = 40 total.
