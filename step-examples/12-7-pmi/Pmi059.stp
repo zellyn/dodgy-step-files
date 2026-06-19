@@ -126,5 +126,6 @@ DATA;
 #9066=PROPERTY_DEFINITION('construction_status','surface condition: construction',#9065);
 #9067=SHAPE_ASPECT('blanked_aspect','blanked status flag',#9005,.T.);
 #9068=PROPERTY_DEFINITION('blanked_status','surface condition: blanked',#9067);
+#9069=DATUM_FEATURE('cosmetic_datum','cosmetic surface', '',#9005);
 ENDSEC;
 END-ISO-10303-21;

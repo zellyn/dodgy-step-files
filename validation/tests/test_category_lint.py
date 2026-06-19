@@ -15,15 +15,13 @@ from step_corpus import catalog
 from step_corpus._category_lint import lint_one
 
 
-# Ratchet: target is 0; raised to 5 on 2026-06-19. Phase F regens
-# produced Tsh077/Tsh136/Tsh183 with intentional empty-shell bodies
-# (the defect they demonstrate), and Pmi106 lacks PMI entities because
-# the AP242 entity types aren't in the Python builder yet (uses
-# _emit_raw for them). Pmi083 added 2026-06-19 — the Q3 phase-7
-# regen replaced its empty-EDGE_LOOP placeholders with a sliver .F.
-# face but didn't add the GD&T PMI entities the catalog claim
-# mentions. Ratchet down once Pmi083 regains a PMI annotation chain.
-CATEGORY_LINT_CEILING = 6
+# Ratchet: target is 0; currently 4 violations remain.
+# Tsh077/Tsh136/Tsh183: intentional empty-shell bodies (the defect they
+#   demonstrate — claim is "empty CLOSED_SHELL after writer pathology").
+# Pmi106: AP242-specific entity types not in the Python builder yet;
+#   fixture emits them via _emit_raw but the lint regex doesn't catch.
+# Pmi059 + Pmi083 regained PMI annotations 2026-06-19; ratchet 6 → 4.
+CATEGORY_LINT_CEILING = 4
 
 
 def test_category_lint_under_ceiling() -> None:

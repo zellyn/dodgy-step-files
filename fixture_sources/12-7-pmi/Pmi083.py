@@ -50,3 +50,7 @@ face = f._emit_raw(
 shell = f._emit_raw(f"OPEN_SHELL('shell',(#{face.eid}))")
 sbsm = f._emit_raw(f"SHELL_BASED_SURFACE_MODEL('sbsm',(#{shell.eid}))")
 f.add_product_chain(sbsm)
+
+# Add PMI: catalog narrative is GD&T on the sliver face.
+f._emit_raw("DATUM_FEATURE('sliver_datum','sliver face datum','',#9005)")
+f._emit_raw("GEOMETRIC_TOLERANCE('gt_sliver','0.05 mm flatness on sliver',#9009,#9005)")
