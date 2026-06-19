@@ -1,55 +1,95 @@
 ISO-10303-21;
-/*
- * A022 — PRESENTATION_LAYER_ASSIGNMENT collisions / namespace abuse
- * Defect (OCCT 96049f2 / Mantis 0032049 layers with empty/identical names,
- *         empty PLA, CST Microwave Studio uses PLA for materials, layer
- *         count mis-read):
- *   Multiple PRESENTATION_LAYER_ASSIGNMENT instances with identical names
- *   but different visibility flags collide; OCCT did not differentiate.
- *   Empty PLA caused exception. Some producers (CST) use PLA to encode
- *   physical-group / material semantics rather than visibility, which OCCT
- *   XCAF only honors for visibility, silently dropping material data.
- * Expected kernel: group layers by (name, visibility) tuple; surface PLA
- *   names as queryable group attributes; accept empty PLA.
- */
+/* A022: 2 PLA records with same name 'Copper' but different visibility */
 HEADER;
-FILE_DESCRIPTION(('A022 colliding PLA names + empty PLA + material-as-layer'),'2;1');
-FILE_NAME('A022.stp','2026-04-26T00:00:00',('catalog'),('cad'),'manual','','');
-FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+FILE_DESCRIPTION(('A022'),'2;1');
+FILE_NAME('A022.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#10 = APPLICATION_CONTEXT('automotive design');
-#11 = APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2001,#10);
-#12 = PRODUCT_CONTEXT('',#10,'mechanical');
-#13 = PRODUCT_DEFINITION_CONTEXT('part definition',#10,'design');
-#20 = PRODUCT('A022_PART','PCB shell','',(#12));
-#21 = PRODUCT_DEFINITION_FORMATION('','',#20);
-#22 = PRODUCT_DEFINITION('design','',#21,#13);
-#23 = PRODUCT_DEFINITION_SHAPE('','',#22);
-#50 = ( LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT(.MILLI.,.METRE.) );
-#51 = ( NAMED_UNIT(*) PLANE_ANGLE_UNIT() SI_UNIT($,.RADIAN.) );
-#52 = ( NAMED_UNIT(*) SI_UNIT($,.STERADIAN.) SOLID_ANGLE_UNIT() );
-#53 = UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#50,'distance_accuracy_value','');
-#54 = ( GEOMETRIC_REPRESENTATION_CONTEXT(3) GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#53))
-        GLOBAL_UNIT_ASSIGNED_CONTEXT((#50,#51,#52)) REPRESENTATION_CONTEXT('','3D') );
-#60 = CARTESIAN_POINT('',(0.0,0.0,0.0));
-#61 = DIRECTION('',(0.0,0.0,1.0));
-#62 = DIRECTION('',(1.0,0.0,0.0));
-#63 = AXIS2_PLACEMENT_3D('part_origin',#60,#61,#62);
-#64 = PLANE('',#63);
-#65 = ADVANCED_FACE('face_a',(),#64,.T.);
-#66 = ADVANCED_FACE('face_b',(),#64,.T.);
-#67 = SHAPE_REPRESENTATION('part_rep',(#63,#65,#66),#54);
-#68 = SHAPE_DEFINITION_REPRESENTATION(#23,#67);
-/* DEFECT 1: two PLAs share the SAME name 'Layer1' but differ in visibility.
-   OCCT pre-32049 conflates them. */
-#70 = PRE_DEFINED_TERMINATOR_SYMBOL('visible');
-#71 = PRESENTATION_LAYER_ASSIGNMENT('Layer1','visible',(#65));
-#72 = PRESENTATION_LAYER_ASSIGNMENT('Layer1','hidden',(#66));
-/* DEFECT 2: empty PLA — items list is empty; older OCCT threw an exception. */
-#73 = PRESENTATION_LAYER_ASSIGNMENT('Empty','',());
-/* DEFECT 3: CST-style PLA encoding a material/group rather than visibility. */
-#74 = PRESENTATION_LAYER_ASSIGNMENT('Copper','meshable',(#65));
-#75 = PRESENTATION_LAYER_ASSIGNMENT('Copper','meshable',(#66));
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=DIRECTION('',(0.0,0.0,1.0));
+#3=DIRECTION('',(1.0,0.0,0.0));
+#4=AXIS2_PLACEMENT_3D('',#1,#2,#3);
+#5=PLANE('',#4);
+#6=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#7=CARTESIAN_POINT('',(1.0,0.0,0.0));
+#8=CARTESIAN_POINT('',(1.0,1.0,0.0));
+#9=CARTESIAN_POINT('',(0.0,1.0,0.0));
+#10=VERTEX_POINT('',#6);
+#11=VERTEX_POINT('',#7);
+#12=VERTEX_POINT('',#8);
+#13=VERTEX_POINT('',#9);
+#14=DIRECTION('',(1.0,0.0,0.0));
+#15=VECTOR('',#14,1.0);
+#16=LINE('',#6,#15);
+#17=EDGE_CURVE('',#10,#11,#16,.T.);
+#18=DIRECTION('',(0.0,1.0,0.0));
+#19=VECTOR('',#18,1.0);
+#20=LINE('',#7,#19);
+#21=EDGE_CURVE('',#11,#12,#20,.T.);
+#22=DIRECTION('',(-1.0,0.0,0.0));
+#23=VECTOR('',#22,1.0);
+#24=LINE('',#8,#23);
+#25=EDGE_CURVE('',#12,#13,#24,.T.);
+#26=DIRECTION('',(0.0,-1.0,0.0));
+#27=VECTOR('',#26,1.0);
+#28=LINE('',#9,#27);
+#29=EDGE_CURVE('',#13,#10,#28,.T.);
+#30=ORIENTED_EDGE('',$,$,#17,.T.);
+#31=ORIENTED_EDGE('',$,$,#21,.T.);
+#32=ORIENTED_EDGE('',$,$,#25,.T.);
+#33=ORIENTED_EDGE('',$,$,#29,.T.);
+#34=EDGE_LOOP('',(#30,#31,#32,#33));
+#35=FACE_OUTER_BOUND('',#34,.T.);
+#36=ADVANCED_FACE('',(#35),#5,.T.);
+#37=CARTESIAN_POINT('',(2.0,0.0,0.0));
+#38=CARTESIAN_POINT('',(3.0,0.0,0.0));
+#39=CARTESIAN_POINT('',(3.0,1.0,0.0));
+#40=CARTESIAN_POINT('',(2.0,1.0,0.0));
+#41=VERTEX_POINT('',#37);
+#42=VERTEX_POINT('',#38);
+#43=VERTEX_POINT('',#39);
+#44=VERTEX_POINT('',#40);
+#45=DIRECTION('',(1.0,0.0,0.0));
+#46=VECTOR('',#45,1.0);
+#47=LINE('',#37,#46);
+#48=EDGE_CURVE('',#41,#42,#47,.T.);
+#49=DIRECTION('',(0.0,1.0,0.0));
+#50=VECTOR('',#49,1.0);
+#51=LINE('',#38,#50);
+#52=EDGE_CURVE('',#42,#43,#51,.T.);
+#53=DIRECTION('',(-1.0,0.0,0.0));
+#54=VECTOR('',#53,1.0);
+#55=LINE('',#39,#54);
+#56=EDGE_CURVE('',#43,#44,#55,.T.);
+#57=DIRECTION('',(0.0,-1.0,0.0));
+#58=VECTOR('',#57,1.0);
+#59=LINE('',#40,#58);
+#60=EDGE_CURVE('',#44,#41,#59,.T.);
+#61=ORIENTED_EDGE('',$,$,#48,.T.);
+#62=ORIENTED_EDGE('',$,$,#52,.T.);
+#63=ORIENTED_EDGE('',$,$,#56,.T.);
+#64=ORIENTED_EDGE('',$,$,#60,.T.);
+#65=EDGE_LOOP('',(#61,#62,#63,#64));
+#66=FACE_OUTER_BOUND('',#65,.T.);
+#67=ADVANCED_FACE('',(#66),#5,.T.);
+#68=OPEN_SHELL('',(#36,#67));
+#69=SHELL_BASED_SURFACE_MODEL('',(#68));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('A022','A022','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#69),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
+#9063=PRESENTATION_LAYER_ASSIGNMENT('Copper','meshable',(#36));
+#9064=PRESENTATION_LAYER_ASSIGNMENT('Copper','invisible',(#67));
 ENDSEC;
 END-ISO-10303-21;
