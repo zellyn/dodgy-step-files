@@ -1,12 +1,21 @@
 # STEP Corpus — Validation Summary
 
+_Refreshed 2026-06-18. Subsidiary numbers below predate the
+corpus-wide adversarial sweep + B2 tier-3 harvest; rerun the
+validators (see commands at the bottom of `../QUALITY_DASHBOARD.md`)
+to recompute._
+
 ## Headline
 
-**1282 fixtures. Multiple independent confidence signals:**
+**2313 catalog entries (2309 STEP fixtures + 5 mesh + 7 sibling-input).**
+**Multiple independent confidence signals:**
 
 | Signal | Subset | Result |
 |---|---|---|
-| Catalog ↔ live-oracle agreement (DRIFT detection) | 1282 (+ 7 sibling-input) | 1281 CONFIRMED · 9 CONFIRMED-WEAK · 0 DRIFT · 0 FAIL · 0 ERROR |
+| Adversarial-verification sweep (Haiku→Sonnet two-pass, 2026-06-18) | 2309 STEP fixtures | **2280 VALID (98.7%)** · 23 weak (all regen'd) · 0 confirmed-invalid after regen |
+| Tier-3 assertion coverage | 2313 catalog entries | **2147 entries (92.8%)** carry at least one tier-3 assertion · 2549 total assertions · CI-locked at ≥90% via `test_tier3_coverage_ratchet.py` |
+| Cross-kernel oracle inventory | full corpus | OCCT (heal on/off), gmsh (autofix on/off), ifcopenshell, part21_strict, manifold, OCAF, **solvespace** (new, install-optional) |
+| Catalog ↔ live-oracle agreement (DRIFT detection) | last run on 1082-corpus | 1281 CONFIRMED · 9 CONFIRMED-WEAK · 0 DRIFT (rerun pending against current 2313-corpus) |
 | Schema-vocabulary oracle (FILE_SCHEMA vs entity vocabulary) | full corpus | 8 EXEMPT_SCHEMA_MISMATCH (catalog-claim-IS-mismatch, all witnessed) · 0 unexpected · pytest-locked |
 | Construction-validity lint (non-unit DIRECTION, parallel axis/refdir) | full corpus | 0 unexempted violations (9 catalog-claim-IS-defect exempt) |
 | External-kernel cross-validation (pure-Python ISO 10303-21 vs OCCT) | 960 reviewed | 909 agree (94.7 %); 22 OCC-silently-heals spec violations; 8 OCC-stricter-than-spec; 16 spec-clean OCC crashes |
