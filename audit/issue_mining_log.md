@@ -24,7 +24,8 @@ Status: classification dispatched.
       54 misses** (78% nominal-novelty rate at the chosen threshold).
 - [x] Haiku classification of the 54 misses: **17 NOVEL · 24 DUPLICATE
       · 13 NOISE**. Result at `/tmp/issue_classification.md`.
-- [ ] Synthesize the 17 NOVEL subset (open queue). Most cluster into
+- [x] First 3 NOVEL syntheses done (Ad120, Wr054, A108).
+- [ ] 14 NOVEL candidates remaining (open queue). Most cluster into
       4 broad classes:
   - `ExportImportCrash` (6): generic robustness defects in export/
     import path. Hard to synthesize without the specific reproducer
