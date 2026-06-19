@@ -2568,6 +2568,7 @@ _Section summary: 101 entries._
 - **Byte assertion**: contains(b'OPEN_SHELL')
 - **Byte assertion**: contains(b'MANIFOLD_SOLID_BREP')
 - **Byte assertion**: count_entity_def(b'ADVANCED_FACE') == 6
+- **Tier-3 assertion**: n_faces_total == 6
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal, warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must heal or emit a diagnostic this fixture.
 - **Severity**: P1
 - **Model impact**: Shell topology loads with inconsistent face orientations or non-manifold edges; BRepCheck flags the shell as invalid, and boolean / offset operations on the solid either produce wrong-sided results or fail outright.
@@ -2586,6 +2587,7 @@ _Section summary: 101 entries._
 - **Byte assertion**: contains(b'OPEN_SHELL')
 - **Byte assertion**: contains(b'FACETED_BREP')
 - **Byte assertion**: count_entity_def(b'ADVANCED_FACE') == 6
+- **Tier-3 assertion**: n_faces_total == 6
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: Shell topology loads with inconsistent face orientations or non-manifold edges; BRepCheck flags the shell as invalid, and boolean / offset operations on the solid either produce wrong-sided results or fail outright.
@@ -2604,6 +2606,7 @@ _Section summary: 101 entries._
 - **Byte assertion**: contains(b'OPEN_SHELL')
 - **Byte assertion**: contains(b'SHELL_BASED_SURFACE_MODEL')
 - **Byte assertion**: count_entity_def(b'MANIFOLD_SOLID_BREP') == 0
+- **Tier-3 assertion**: n_faces_total == 4
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
 - **Severity**: P1
 - **Model impact**: Shell topology loads with inconsistent face orientations or non-manifold edges; BRepCheck flags the shell as invalid, and boolean / offset operations on the solid either produce wrong-sided results or fail outright.
@@ -2622,6 +2625,7 @@ _Section summary: 101 entries._
 - **Byte assertion**: contains(b'OPEN_SHELL')
 - **Byte assertion**: contains(b'SHELL_BASED_SURFACE_MODEL')
 - **Byte assertion**: count_entity_def(b'ADVANCED_FACE') == 5
+- **Tier-3 assertion**: n_faces_total == 5
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
 - **Severity**: P1
 - **Model impact**: Shell topology loads with inconsistent face orientations or non-manifold edges; BRepCheck flags the shell as invalid, and boolean / offset operations on the solid either produce wrong-sided results or fail outright.
@@ -2641,6 +2645,7 @@ _Section summary: 101 entries._
 - **Byte assertion**: contains(b'CLOSED_SHELL')
 - **Byte assertion**: contains(b'MANIFOLD_SOLID_BREP')
 - **Byte assertion**: count_entity_def(b'ADVANCED_FACE') == 6
+- **Tier-3 assertion**: n_faces_total == 6
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
 - **Severity**: P1
 - **Model impact**: Shell topology loads with inconsistent face orientations or non-manifold edges; BRepCheck flags the shell as invalid, and boolean / offset operations on the solid either produce wrong-sided results or fail outright.
@@ -2659,6 +2664,7 @@ _Section summary: 101 entries._
 - **Byte assertion**: contains(b'OPEN_SHELL')
 - **Byte assertion**: contains(b'SHELL_BASED_SURFACE_MODEL')
 - **Byte assertion**: count_entity_def(b'ADVANCED_FACE') == 5
+- **Tier-3 assertion**: n_faces_total == 5
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal, reject}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: Shell topology loads with inconsistent face orientations or non-manifold edges; BRepCheck flags the shell as invalid, and boolean / offset operations on the solid either produce wrong-sided results or fail outright.
@@ -2689,6 +2695,7 @@ _Section summary: 101 entries._
 - **Byte assertion**: contains(b'CLOSED_SHELL')
 - **Byte assertion**: contains(b'MANIFOLD_SOLID_BREP')
 - **Byte assertion**: count_entity_def(b'ADVANCED_FACE') == 6
+- **Tier-3 assertion**: n_faces_total == 6
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: Shell topology loads with inconsistent face orientations or non-manifold edges; BRepCheck flags the shell as invalid, and boolean / offset operations on the solid either produce wrong-sided results or fail outright.
@@ -2704,6 +2711,7 @@ _Section summary: 101 entries._
 - **Byte assertion**: contains(b'CLOSED_SHELL')
 - **Byte assertion**: contains(b'MANIFOLD_SOLID_BREP')
 - **Byte assertion**: count_entity_def(b'ADVANCED_FACE') == 6
+- **Tier-3 assertion**: n_faces_total == 6
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: Shell topology loads with inconsistent face orientations or non-manifold edges; BRepCheck flags the shell as invalid, and boolean / offset operations on the solid either produce wrong-sided results or fail outright.
@@ -2720,6 +2728,7 @@ _Section summary: 101 entries._
 - **Byte assertion**: contains(b'CLOSED_SHELL')
 - **Byte assertion**: contains(b'MANIFOLD_SOLID_BREP')
 - **Byte assertion**: count_entity_def(b'ADVANCED_FACE') == 6
+- **Tier-3 assertion**: n_faces_total == 6
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal, reject}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: Shell topology loads with inconsistent face orientations or non-manifold edges; BRepCheck flags the shell as invalid, and boolean / offset operations on the solid either produce wrong-sided results or fail outright.
@@ -2735,6 +2744,7 @@ _Section summary: 101 entries._
 - **Byte assertion**: contains(b'FACE_OUTER_BOUND')
 - **Byte assertion**: contains(b'FACE_BOUND')
 - **Byte assertion**: count_entity_def(b'ADVANCED_FACE') == 1
+- **Tier-3 assertion**: n_faces_total == 1
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: Shell topology loads with inconsistent face orientations or non-manifold edges; BRepCheck flags the shell as invalid, and boolean / offset operations on the solid either produce wrong-sided results or fail outright.
@@ -2750,6 +2760,7 @@ _Section summary: 101 entries._
 - **Byte assertion**: contains(b'.U.')
 - **Byte assertion**: contains(b'EDGE_CURVE')
 - **Byte assertion**: count_entity_def(b'ADVANCED_FACE') == 1
+- **Tier-3 assertion**: n_faces_total == 1
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal, warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must heal or emit a diagnostic this fixture.
 - **Severity**: P1
 - **Model impact**: Shell topology loads with inconsistent face orientations or non-manifold edges; BRepCheck flags the shell as invalid, and boolean / offset operations on the solid either produce wrong-sided results or fail outright.
@@ -2764,6 +2775,7 @@ _Section summary: 101 entries._
 - **Notes**: Synonyms: "face has two outer boundaries", "disjoint regions packed into one face", "face covers two separate islands", "multiply-connected face needs splitting", "two outer wires on same face".
 - **Byte assertion**: count(b'FACE_OUTER_BOUND') >= 2
 - **Byte assertion**: count_entity_def(b'ADVANCED_FACE') == 1
+- **Tier-3 assertion**: n_faces_total == 2
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal, reject}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: Shell topology loads with inconsistent face orientations or non-manifold edges; BRepCheck flags the shell as invalid, and boolean / offset operations on the solid either produce wrong-sided results or fail outright.
@@ -2779,6 +2791,7 @@ _Section summary: 101 entries._
 - **Notes**: **See also**: Tsh009. Synonyms: "interior void mis-classified as positive volume", "hollow part loses its inner cavity", "void shell oriented backwards", "internal hole counts as solid material", "BREP_WITH_VOIDS void direction wrong".
 - **Byte assertion**: contains(b'ORIENTED_CLOSED_SHELL')
 - **Byte assertion**: count_entity_def(b'CLOSED_SHELL') == 2
+- **Tier-3 assertion**: n_faces_total == 12
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal, warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must heal or emit a diagnostic this fixture.
 - **Severity**: P1
 - **Model impact**: Shell topology loads with inconsistent face orientations or non-manifold edges; BRepCheck flags the shell as invalid, and boolean / offset operations on the solid either produce wrong-sided results or fail outright.
@@ -2794,6 +2807,7 @@ _Section summary: 101 entries._
 - **Byte assertion**: contains(b'CLOSED_SHELL')
 - **Byte assertion**: contains(b'MANIFOLD_SOLID_BREP')
 - **Byte assertion**: count_entity_def(b'ADVANCED_FACE') == 3
+- **Tier-3 assertion**: n_faces_total == 3
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
 - **Severity**: P1
 - **Model impact**: Shell topology loads with inconsistent face orientations or non-manifold edges; BRepCheck flags the shell as invalid, and boolean / offset operations on the solid either produce wrong-sided results or fail outright.
@@ -2824,6 +2838,7 @@ _Section summary: 101 entries._
 - **Byte assertion**: contains(b'OPEN_SHELL')
 - **Byte assertion**: contains(b'SHELL_BASED_SURFACE_MODEL')
 - **Byte assertion**: count_entity_def(b'ADVANCED_FACE') == 3
+- **Tier-3 assertion**: n_faces_total == 3
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject, warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must reject or emit a diagnostic this fixture.
 - **Severity**: P1
 - **Model impact**: Shell topology loads with inconsistent face orientations or non-manifold edges; BRepCheck flags the shell as invalid, and boolean / offset operations on the solid either produce wrong-sided results or fail outright.
@@ -2840,6 +2855,7 @@ _Section summary: 101 entries._
 - **Byte assertion**: contains(b'OPEN_SHELL')
 - **Byte assertion**: contains(b'SHELL_BASED_SURFACE_MODEL')
 - **Byte assertion**: count_entity_def(b'ADVANCED_FACE') == 2
+- **Tier-3 assertion**: n_faces_total == 2
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
 - **Severity**: P1
 - **Model impact**: Shell topology loads with inconsistent face orientations or non-manifold edges; BRepCheck flags the shell as invalid, and boolean / offset operations on the solid either produce wrong-sided results or fail outright.
@@ -2855,6 +2871,7 @@ _Section summary: 101 entries._
 - **Notes**: **See also**: M045. Synonyms: "non-manifold STEP loses colors and PMI", "color attributes dropped on multi-shell import", "PMI lost when reading non-manifold body", "XCAF metadata not applied to non-manifold parts", "writer drops faces in non-manifold export".
 - **Byte assertion**: contains(b'OPEN_SHELL')
 - **Byte assertion**: count_entity_def(b'ADVANCED_FACE') == 2
+- **Tier-3 assertion**: n_faces_total == 2
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: Shell topology loads with inconsistent face orientations or non-manifold edges; BRepCheck flags the shell as invalid, and boolean / offset operations on the solid either produce wrong-sided results or fail outright.
@@ -2870,6 +2887,7 @@ _Section summary: 101 entries._
 - **Notes**: **See also**: Twi001. Cross-oracle: pure-Python Part-21 validator accepts (`accept`); OCCT crashes (`signal(11)`). The crash is on the kernel side; the file is spec-conformant Part-21. **OCC behavior**: crashes (signal 11) on the empty `EDGE_LOOP`; exactly the kernel mishandling the catalog above forbids; documented here so kernel authors know this is what OCC currently does. Synonyms: "wire has no edges", "empty face boundary list", "shell with zero faces crashes reader", "loop with empty edge aggregate", "empty list crashes import".
 - **Byte assertion**: matches(rb'EDGE_LOOP\s*\(\s*\x27[^\x27]*\x27\s*,\s*\(\s*\)\s*\)')
 - **Byte assertion**: contains(b'SHELL_BASED_SURFACE_MODEL')
+- **Tier-3 assertion**: n_faces_total == 2
 - **Model impact**: Parser dereferences invalid memory while processing the malformed token; the load process is killed by a signal and no shape is delivered.
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 
@@ -2884,6 +2902,7 @@ _Section summary: 101 entries._
 - **Byte assertion**: contains(b'OPEN_SHELL')
 - **Byte assertion**: contains(b'SHELL_BASED_SURFACE_MODEL')
 - **Byte assertion**: count_entity_def(b'ADVANCED_FACE') == 2
+- **Tier-3 assertion**: n_faces_total == 2
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal, warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must heal or emit a diagnostic this fixture.
 - **Severity**: P1
 - **Model impact**: Shell topology loads with inconsistent face orientations or non-manifold edges; BRepCheck flags the shell as invalid, and boolean / offset operations on the solid either produce wrong-sided results or fail outright.
@@ -2912,6 +2931,7 @@ _Section summary: 101 entries._
 - **Notes**: **See also**: Tsh026. Synonyms: "duplicate face between adjacent parts", "two solids touch but don't share geometry", "non-shared coincident face", "FEA mesh has no node continuity at part interface", "zero-thickness contact between parts".
 - **Byte assertion**: count_entity_def(b'MANIFOLD_SOLID_BREP') == 2
 - **Byte assertion**: count_entity_def(b'CLOSED_SHELL') == 2
+- **Tier-3 assertion**: n_faces_total == 1
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal, warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must heal or emit a diagnostic this fixture.
 - **Severity**: P1
 - **Model impact**: Shell topology loads with inconsistent face orientations or non-manifold edges; BRepCheck flags the shell as invalid, and boolean / offset operations on the solid either produce wrong-sided results or fail outright.
@@ -2928,6 +2948,7 @@ _Section summary: 101 entries._
 - **Byte assertion**: contains(b'OPEN_SHELL')
 - **Byte assertion**: contains(b'SHELL_BASED_SURFACE_MODEL')
 - **Byte assertion**: count_entity_def(b'ADVANCED_FACE') == 2
+- **Tier-3 assertion**: n_faces_total == 2
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
 - **Severity**: P1
 - **Model impact**: Shell topology loads with inconsistent face orientations or non-manifold edges; BRepCheck flags the shell as invalid, and boolean / offset operations on the solid either produce wrong-sided results or fail outright.
@@ -2971,6 +2992,7 @@ _Section summary: 101 entries._
 - **Notes**: **See also**: Tsh009. Synonyms: "single face flipped on cube", "one wall of box has wrong normal", "non-PWN solid in dataset", "face same-sense flag mismatched with neighbours", "non-orientable body imported from Thingi10K".
 - **Byte assertion**: contains(b'CLOSED_SHELL')
 - **Byte assertion**: contains(b'MANIFOLD_SOLID_BREP')
+- **Tier-3 assertion**: n_faces_total == 2
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: Shell topology loads with inconsistent face orientations or non-manifold edges; BRepCheck flags the shell as invalid, and boolean / offset operations on the solid either produce wrong-sided results or fail outright.
@@ -2987,6 +3009,7 @@ _Section summary: 101 entries._
 - **Notes**: **See also**: Gs018, A024. Synonyms: "mirrored block produces flipped surface", "negative-determinant transform inverts normals", "left-handed instance reverses face direction", "mirrored part imports inside-out", "MAPPED_ITEM with mirror loses orientation".
 - **Byte assertion**: contains(b'OPEN_SHELL')
 - **Byte assertion**: contains(b'SHELL_BASED_SURFACE_MODEL')
+- **Tier-3 assertion**: n_faces_total == 2
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: Shell topology loads with inconsistent face orientations or non-manifold edges; BRepCheck flags the shell as invalid, and boolean / offset operations on the solid either produce wrong-sided results or fail outright.
@@ -3031,6 +3054,7 @@ _Section summary: 101 entries._
 - **Notes**: Synonyms: "compound contains only wires no solid", "wireframe-only STEP body", "free edges with no parent face", "empty wireframe model", "STEP file is just curves no surfaces".
 - **Byte assertion**: contains(b'GEOMETRIC_CURVE_SET')
 - **Byte assertion**: count_entity_def(b'ADVANCED_FACE') == 0
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
 - **Severity**: P1
 - **Model impact**: Shell topology loads with inconsistent face orientations or non-manifold edges; BRepCheck flags the shell as invalid, and boolean / offset operations on the solid either produce wrong-sided results or fail outright.
@@ -3047,6 +3071,7 @@ _Section summary: 101 entries._
 - **Byte assertion**: contains(b'OPEN_SHELL')
 - **Byte assertion**: contains(b'SHELL_BASED_SURFACE_MODEL')
 - **Byte assertion**: count_entity_def(b'ADVANCED_FACE') == 1
+- **Tier-3 assertion**: n_faces_total == 1
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
 - **Severity**: P1
 - **Model impact**: Shell topology loads with inconsistent face orientations or non-manifold edges; BRepCheck flags the shell as invalid, and boolean / offset operations on the solid either produce wrong-sided results or fail outright.
@@ -3064,6 +3089,7 @@ _Section summary: 101 entries._
 - **Notes**: **See also**: Tsh019, M053. Synonyms: "shared edge bridging two open shells", "T-junction edge across shell boundary", "slicer flags imported geometry as non-manifold", "Bambu Studio classifies STEP as non-manifold mesh", "edge appears in two shell groups".
 - **Byte assertion**: count_entity_def(b'OPEN_SHELL') == 2
 - **Byte assertion**: contains(b'SHELL_BASED_SURFACE_MODEL')
+- **Tier-3 assertion**: n_faces_total == 2
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: Shell topology loads with inconsistent face orientations or non-manifold edges; BRepCheck flags the shell as invalid, and boolean / offset operations on the solid either produce wrong-sided results or fail outright.
@@ -3082,6 +3108,7 @@ _Section summary: 101 entries._
 - **Severity**: P1
 - **Model impact**: Shell topology loads with inconsistent face orientations or non-manifold edges; BRepCheck flags the shell as invalid, and boolean / offset operations on the solid either produce wrong-sided results or fail outright.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Tier-3 assertion**: n_faces_total == 2
 
 ### Tsh042 — `bad vertex`: vertex misplaced relative to incident edges
 - **Category**: §12.3a shell-orientation
@@ -3110,6 +3137,7 @@ _Section summary: 101 entries._
 - **Severity**: P1
 - **Byte assertion**: contains(b"EDGE_LOOP('',())")
 - **Byte assertion**: count_entity_def(b'ORIENTED_EDGE') == 0
+- **Tier-3 assertion**: shape_null == True
 - **Model impact**: The wire/loop closes with a topological gap or self-intersection; the parent face loads with broken bounds, BRepCheck reports `BRepCheck_NotClosed` or `BRepCheck_SelfIntersectingWire`, and downstream face triangulation skips or mis-bounds the region.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
@@ -3167,6 +3195,7 @@ _Section summary: 101 entries._
 - **Byte assertion**: contains(b"ORIENTED_EDGE('',*,*,#31,.T.)")
 - **Byte assertion**: count_entity_def(b'EDGE_CURVE') == 0
 - **Byte assertion**: contains(b'VERTEX_POINT(')
+- **Tier-3 assertion**: shape_null == True
 - **Model impact**: The wire/loop closes with a topological gap or self-intersection; the parent face loads with broken bounds, BRepCheck reports `BRepCheck_NotClosed` or `BRepCheck_SelfIntersectingWire`, and downstream face triangulation skips or mis-bounds the region.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
@@ -3390,6 +3419,7 @@ _Section summary: 101 entries._
 - **Byte assertion**: contains(b'GEOMETRIC_CURVE_SET(')
 - **Byte assertion**: count_entity_def(b'EDGE_CURVE') == 3
 - **Byte assertion**: count_entity_def(b'EDGE_LOOP') == 0
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal, warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must heal or emit a diagnostic this fixture.
 - **Severity**: P1
 - **Model impact**: The wire/loop closes with a topological gap or self-intersection; the parent face loads with broken bounds, BRepCheck reports `BRepCheck_NotClosed` or `BRepCheck_SelfIntersectingWire`, and downstream face triangulation skips or mis-bounds the region.
@@ -3692,6 +3722,7 @@ End of file. 45 entries. License-clean: descriptions are paraphrased from public
 - **Byte assertion**: contains(b'FACE_OUTER_BOUND(')
 - **Byte assertion**: count_entity_def(b'EDGE_LOOP') >= 2
 - **Byte assertion**: count_entity_def(b'ADVANCED_FACE') >= 1
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal, warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must heal or emit a diagnostic this fixture.
 - **Severity**: P1
 - **Model impact**: Face sewing leaves free bounds or duplicate edges; the resulting shell is open instead of closed, so MakeSolid produces an invalid solid and volume/property computations return wrong values.
@@ -3897,6 +3928,7 @@ End of file. 45 entries. License-clean: descriptions are paraphrased from public
 - **Byte assertion**: contains(b'CYLINDRICAL_SURFACE(')
 - **Byte assertion**: contains(b'(-10.0,0.0,0.0)')
 - **Byte assertion**: contains(b'(-10.0,0.0,5.0)')
+- **Tier-3 assertion**: shape_null == True
 - **Model impact**: Face sewing leaves free bounds or duplicate edges; the resulting shell is open instead of closed, so MakeSolid produces an invalid solid and volume/property computations return wrong values.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
@@ -3939,6 +3971,7 @@ End of file. 45 entries. License-clean: descriptions are paraphrased from public
 - **Byte assertion**: contains(b'(0.0,1.0E-6,0.0)')
 - **Byte assertion**: count_entity_def(b'VERTEX_POINT') == 5
 - **Byte assertion**: count_entity_def(b'CARTESIAN_POINT') >= 5
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: Face sewing leaves free bounds or duplicate edges; the resulting shell is open instead of closed, so MakeSolid produces an invalid solid and volume/property computations return wrong values.
@@ -3985,6 +4018,7 @@ End of file. 45 entries. License-clean: descriptions are paraphrased from public
 - **Byte assertion**: contains(b'line_shared')
 - **Byte assertion**: count_entity_def(b'EDGE_CURVE') >= 2
 - **Byte assertion**: contains(b'p0')
+- **Tier-3 assertion**: shape_null == True
 - **Model impact**: Face sewing leaves free bounds or duplicate edges; the resulting shell is open instead of closed, so MakeSolid produces an invalid solid and volume/property computations return wrong values.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
@@ -4088,6 +4122,7 @@ _Section summary: 70 entries._
 - **Byte assertion**: count_entity_def(b'UNCERTAINTY_MEASURE_WITH_UNIT') == 3
 - **Byte assertion**: contains(b'1.0E-7') and contains(b'1.0E-3') and contains(b'1.0E-2')
 - **Byte assertion**: contains(b'GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: Coordinate or tolerance values trigger numerical degeneracy in kernel predicates; edges merge or split at the wrong vertex, and the resulting topology disagrees with what the producer encoded.
@@ -4103,6 +4138,7 @@ _Section summary: 70 entries._
 - **Byte assertion**: count_entity_def(b'UNCERTAINTY_MEASURE_WITH_UNIT') == 2
 - **Byte assertion**: contains(b'1.0E-6') and contains(b'2.0E-3')
 - **Byte assertion**: count_entity_def(b'EDGE_CURVE') == 2
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: Coordinate or tolerance values trigger numerical degeneracy in kernel predicates; edges merge or split at the wrong vertex, and the resulting topology disagrees with what the producer encoded.
@@ -4118,6 +4154,7 @@ _Section summary: 70 entries._
 - **Byte assertion**: contains(b'2.0E-7') and contains(b'1.0E-1')
 - **Byte assertion**: count_entity_def(b'UNCERTAINTY_MEASURE_WITH_UNIT') == 2
 - **Byte assertion**: count_entity_def(b'EDGE_CURVE') == 2
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: Coordinate or tolerance values trigger numerical degeneracy in kernel predicates; edges merge or split at the wrong vertex, and the resulting topology disagrees with what the producer encoded.
@@ -4133,6 +4170,7 @@ _Section summary: 70 entries._
 - **Byte assertion**: contains(b'PCURVE') and contains(b'SURFACE_CURVE')
 - **Byte assertion**: contains(b'PLANE') and count_entity_def(b'EDGE_CURVE') == 1
 - **Byte assertion**: contains(b'1.0E-6')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: Coordinate or tolerance values trigger numerical degeneracy in kernel predicates; edges merge or split at the wrong vertex, and the resulting topology disagrees with what the producer encoded.
@@ -4148,6 +4186,7 @@ _Section summary: 70 entries._
 - **Byte assertion**: contains(b'CYLINDRICAL_SURFACE')
 - **Byte assertion**: contains(b'PCURVE') and contains(b'SURFACE_CURVE')
 - **Byte assertion**: contains(b'1.0E-7')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal, reject}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: Coordinate or tolerance values trigger numerical degeneracy in kernel predicates; edges merge or split at the wrong vertex, and the resulting topology disagrees with what the producer encoded.
@@ -4163,6 +4202,7 @@ _Section summary: 70 entries._
 - **Byte assertion**: count_entity_def(b'B_SPLINE_CURVE_WITH_KNOTS') == 2
 - **Byte assertion**: contains(b'PCURVE') and contains(b'SURFACE_CURVE')
 - **Byte assertion**: contains(b'1.0E-3')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal, reject}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: Coordinate or tolerance values trigger numerical degeneracy in kernel predicates; edges merge or split at the wrong vertex, and the resulting topology disagrees with what the producer encoded.
@@ -4178,6 +4218,7 @@ _Section summary: 70 entries._
 - **Notes**: **See also**: N025. Synonyms: "vertex tolerance bumped by tiny constant multiplier", "translator multiplies tolerance by 1.000001", "tolerance creeps up across repeated reads", "constant multiplier applied to vertex tolerance".
 - **Byte assertion**: contains(b'1.0E-6') and contains(b'EDGE_CURVE')
 - **Byte assertion**: count_entity_def(b'VERTEX_POINT') == 2
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: Coordinate or tolerance values trigger numerical degeneracy in kernel predicates; edges merge or split at the wrong vertex, and the resulting topology disagrees with what the producer encoded.
@@ -4205,6 +4246,7 @@ _Section summary: 70 entries._
 - **Notes**: Synonyms: "vertex sits far from edge endpoints", "edges end far from their stored vertex", "vertex tolerance disc spans whole feature", "incident edges disagree with vertex position".
 - **Byte assertion**: contains(b'1.0E-4')
 - **Byte assertion**: count_entity_def(b'VERTEX_POINT') == 2 and count_entity_def(b'EDGE_CURVE') == 1
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: Coordinate or tolerance values trigger numerical degeneracy in kernel predicates; edges merge or split at the wrong vertex, and the resulting topology disagrees with what the producer encoded.
@@ -4222,6 +4264,7 @@ _Section summary: 70 entries._
 - **Severity**: P1
 - **Byte assertion**: contains(b'1.0E-4')
 - **Byte assertion**: count_entity_def(b'VERTEX_POINT') == 2 and count_entity_def(b'EDGE_CURVE') == 1
+- **Tier-3 assertion**: shape_null == True
 - **Model impact**: Coordinate or tolerance values trigger numerical degeneracy in kernel predicates; edges merge or split at the wrong vertex, and the resulting topology disagrees with what the producer encoded.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
@@ -4237,6 +4280,7 @@ _Section summary: 70 entries._
 - **Byte assertion**: contains(b'CYLINDRICAL_SURFACE')
 - **Byte assertion**: contains(b'1.0E-3')
 - **Byte assertion**: count_entity_def(b'EDGE_CURVE') == 1
+- **Tier-3 assertion**: shape_null == True
 - **Model impact**: Coordinate or tolerance values trigger numerical degeneracy in kernel predicates; edges merge or split at the wrong vertex, and the resulting topology disagrees with what the producer encoded.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
@@ -4251,6 +4295,7 @@ _Section summary: 70 entries._
 - **Notes**: Synonyms: "lowering face tolerance creates vertex/vertex intersection", "ShapeFix sees coincident vertices as separate", "shrinking tolerance triggers spurious intersections".
 - **Byte assertion**: contains(b'1.0E-9')
 - **Byte assertion**: count_entity_def(b'VERTEX_POINT') == 2
+- **Tier-3 assertion**: shape_null == True
 - **Model impact**: Coordinate or tolerance values trigger numerical degeneracy in kernel predicates; edges merge or split at the wrong vertex, and the resulting topology disagrees with what the producer encoded.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
@@ -4266,6 +4311,7 @@ _Section summary: 70 entries._
 - **Byte assertion**: count_entity_def(b'EDGE_CURVE') == 3
 - **Byte assertion**: count_entity_def(b'VERTEX_POINT') == 3
 - **Byte assertion**: contains(b'1.0E-9')
+- **Tier-3 assertion**: shape_null == True
 - **Model impact**: Coordinate or tolerance values trigger numerical degeneracy in kernel predicates; edges merge or split at the wrong vertex, and the resulting topology disagrees with what the producer encoded.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
@@ -4280,6 +4326,7 @@ _Section summary: 70 entries._
 - **Notes**: Synonyms: "tiny edge that should have collapsed", "vertex separation below declared tolerance but edge survives", "intersection edge that should be zero-length", "filter doesn't merge near-coincident vertices into one".
 - **Byte assertion**: contains(b'1.0E-7')
 - **Byte assertion**: count_entity_def(b'VERTEX_POINT') == 2
+- **Tier-3 assertion**: shape_null == True
 - **Model impact**: Coordinate or tolerance values trigger numerical degeneracy in kernel predicates; edges merge or split at the wrong vertex, and the resulting topology disagrees with what the producer encoded.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
@@ -4294,6 +4341,7 @@ _Section summary: 70 entries._
 - **Severity**: P1
 - **Byte assertion**: contains(b'1.0E-7')
 - **Byte assertion**: count_entity_def(b'EDGE_CURVE') == 1
+- **Tier-3 assertion**: shape_null == True
 - **Model impact**: Coordinate or tolerance values trigger numerical degeneracy in kernel predicates; edges merge or split at the wrong vertex, and the resulting topology disagrees with what the producer encoded.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
@@ -4309,6 +4357,7 @@ _Section summary: 70 entries._
 - **Severity**: P1
 - **Byte assertion**: count_entity_def(b'UNCERTAINTY_MEASURE_WITH_UNIT') == 3
 - **Byte assertion**: contains(b'1.0E-4') and contains(b'1.0E-2') and contains(b'5.0E-3')
+- **Tier-3 assertion**: shape_null == True
 - **Model impact**: Coordinate or tolerance values trigger numerical degeneracy in kernel predicates; edges merge or split at the wrong vertex, and the resulting topology disagrees with what the producer encoded.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
@@ -4323,6 +4372,7 @@ _Section summary: 70 entries._
 - **Severity**: P1
 - **Byte assertion**: matches(rb'LENGTH_MEASURE\(\s*0\.027352')
 - **Byte assertion**: count_entity_def(b'UNCERTAINTY_MEASURE_WITH_UNIT') == 1
+- **Tier-3 assertion**: shape_null == True
 - **Model impact**: Coordinate or tolerance values trigger numerical degeneracy in kernel predicates; edges merge or split at the wrong vertex, and the resulting topology disagrees with what the producer encoded.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
@@ -4336,6 +4386,7 @@ _Section summary: 70 entries._
 - **Byte assertion**: not_contains(b'UNCERTAINTY_MEASURE_WITH_UNIT(')
 - **Byte assertion**: contains(b'GEOMETRIC_REPRESENTATION_CONTEXT')
 - **Byte assertion**: count_entity_def(b'EDGE_CURVE') == 1
+- **Tier-3 assertion**: shape_null == True
 - **Model impact**: Coordinate or tolerance values trigger numerical degeneracy in kernel predicates; edges merge or split at the wrong vertex, and the resulting topology disagrees with what the producer encoded.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
@@ -4351,6 +4402,7 @@ _Section summary: 70 entries._
 - **Byte assertion**: contains(b'OFFSET_SURFACE')
 - **Byte assertion**: contains(b'PLANE')
 - **Byte assertion**: contains(b'1.0E-6')
+- **Tier-3 assertion**: shape_null == True
 - **Model impact**: Coordinate or tolerance values trigger numerical degeneracy in kernel predicates; edges merge or split at the wrong vertex, and the resulting topology disagrees with what the producer encoded.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
@@ -4367,6 +4419,7 @@ _Section summary: 70 entries._
 - **Byte assertion**: count_entity_def(b'AXIS2_PLACEMENT_3D') == 3
 - **Byte assertion**: matches(rb'0\.05')
 - **Byte assertion**: not_contains(b'EDGE_CURVE')
+- **Tier-3 assertion**: shape_null == True
 - **Model impact**: Coordinate or tolerance values trigger numerical degeneracy in kernel predicates; edges merge or split at the wrong vertex, and the resulting topology disagrees with what the producer encoded.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
@@ -4382,6 +4435,7 @@ _Section summary: 70 entries._
 - **Notes**: Synonyms: "VRML uses board center, STEP uses board bottom", "Z=0 differs between formats from same producer", "components shifted by half board thickness across formats".
 - **Byte assertion**: contains(b'1.0E-5')
 - **Byte assertion**: count_entity_def(b'EDGE_CURVE') == 1
+- **Tier-3 assertion**: shape_null == True
 - **Model impact**: Coordinate or tolerance values trigger numerical degeneracy in kernel predicates; edges merge or split at the wrong vertex, and the resulting topology disagrees with what the producer encoded.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
@@ -4398,6 +4452,7 @@ _Section summary: 70 entries._
 - **Byte assertion**: count_entity_def(b'EDGE_CURVE') == 1
 - **Byte assertion**: count_entity_def(b'LINE') == 1
 - **Byte assertion**: contains(b'1.0E-6')
+- **Tier-3 assertion**: shape_null == True
 - **Model impact**: Coordinate or tolerance values trigger numerical degeneracy in kernel predicates; edges merge or split at the wrong vertex, and the resulting topology disagrees with what the producer encoded.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
@@ -4413,6 +4468,7 @@ _Section summary: 70 entries._
 - **Byte assertion**: count_entity_def(b'PLANE') == 2
 - **Byte assertion**: count_entity_def(b'EDGE_CURVE') == 1
 - **Byte assertion**: contains(b'1.0E-5')
+- **Tier-3 assertion**: shape_null == True
 - **Model impact**: Coordinate or tolerance values trigger numerical degeneracy in kernel predicates; edges merge or split at the wrong vertex, and the resulting topology disagrees with what the producer encoded.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
@@ -4428,6 +4484,7 @@ _Section summary: 70 entries._
 - **Byte assertion**: count_entity_def(b'VERTEX_POINT') == 4
 - **Byte assertion**: count_entity_def(b'EDGE_CURVE') == 2
 - **Byte assertion**: contains(b'1.0E-7')
+- **Tier-3 assertion**: shape_null == True
 - **Model impact**: Coordinate or tolerance values trigger numerical degeneracy in kernel predicates; edges merge or split at the wrong vertex, and the resulting topology disagrees with what the producer encoded.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
@@ -4442,6 +4499,7 @@ _Section summary: 70 entries._
 - **Severity**: P1
 - **Byte assertion**: count_entity_def(b'UNCERTAINTY_MEASURE_WITH_UNIT') == 2
 - **Byte assertion**: contains(b'1.0E-6') and contains(b'5.0E-4')
+- **Tier-3 assertion**: shape_null == True
 - **Model impact**: Coordinate or tolerance values trigger numerical degeneracy in kernel predicates; edges merge or split at the wrong vertex, and the resulting topology disagrees with what the producer encoded.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
@@ -4457,6 +4515,7 @@ _Section summary: 70 entries._
 - **Byte assertion**: contains(b'CYLINDRICAL_SURFACE')
 - **Byte assertion**: contains(b'.MILLI.')
 - **Byte assertion**: contains(b'1.0E-6')
+- **Tier-3 assertion**: shape_null == True
 - **Model impact**: Coordinate or tolerance values trigger numerical degeneracy in kernel predicates; edges merge or split at the wrong vertex, and the resulting topology disagrees with what the producer encoded.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
@@ -4472,6 +4531,7 @@ _Section summary: 70 entries._
 - **Byte assertion**: not_contains(b'LENGTH_UNIT()')
 - **Byte assertion**: contains(b'PLANE_ANGLE_UNIT') and contains(b'SOLID_ANGLE_UNIT')
 - **Byte assertion**: not_contains(b'UNCERTAINTY_MEASURE_WITH_UNIT(')
+- **Tier-3 assertion**: shape_null == True
 - **Model impact**: Coordinate or tolerance values trigger numerical degeneracy in kernel predicates; edges merge or split at the wrong vertex, and the resulting topology disagrees with what the producer encoded.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
@@ -4488,6 +4548,7 @@ _Section summary: 70 entries._
 - **Byte assertion**: contains(b'CONVERSION_BASED_UNIT') or contains(b'.METRE.')
 - **Byte assertion**: matches(rb'0\.0254')
 - **Byte assertion**: contains(b'EDGE_CURVE')
+- **Tier-3 assertion**: shape_null == True
 - **Model impact**: Coordinate or tolerance values trigger numerical degeneracy in kernel predicates; edges merge or split at the wrong vertex, and the resulting topology disagrees with what the producer encoded.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
@@ -4503,6 +4564,7 @@ _Section summary: 70 entries._
 - **Byte assertion**: contains(b'B_SPLINE_SURFACE_WITH_KNOTS')
 - **Byte assertion**: count_entity_def(b'CARTESIAN_POINT') == 8
 - **Byte assertion**: contains(b'1.0E-6')
+- **Tier-3 assertion**: shape_null == True
 - **Model impact**: Coordinate or tolerance values trigger numerical degeneracy in kernel predicates; edges merge or split at the wrong vertex, and the resulting topology disagrees with what the producer encoded.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
@@ -4517,6 +4579,7 @@ _Section summary: 70 entries._
 - **Severity**: P1
 - **Byte assertion**: count_entity_def(b'B_SPLINE_SURFACE_WITH_KNOTS') == 2
 - **Byte assertion**: contains(b'1.0E-5')
+- **Tier-3 assertion**: shape_null == True
 - **Model impact**: Coordinate or tolerance values trigger numerical degeneracy in kernel predicates; edges merge or split at the wrong vertex, and the resulting topology disagrees with what the producer encoded.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
@@ -4531,6 +4594,7 @@ _Section summary: 70 entries._
 - **Byte assertion**: contains(b'RUNOUT_TOLERANCE_WITH_VALUES')
 - **Byte assertion**: contains(b'RUNOUT_ZONE_DEFINITION')
 - **Byte assertion**: contains(b'RUNOUT_ZONE_ORIENTATION_REFERENCE_DIRECTION')
+- **Tier-3 assertion**: shape_null == True
 - **Model impact**: Coordinate or tolerance values trigger numerical degeneracy in kernel predicates; edges merge or split at the wrong vertex, and the resulting topology disagrees with what the producer encoded.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
@@ -4543,6 +4607,7 @@ _Section summary: 70 entries._
 - **Notes**: **See also**: N034. Synonyms: "tolerance measure encoded multiple ways", "reader handles only one tolerance subtype", "polymorphic measure-with-unit confuses parser", "AP242 complex form for tolerance value not read".
 - **Byte assertion**: contains(b'MEASURE_REPRESENTATION_ITEM') or contains(b'LENGTH_MEASURE_WITH_UNIT')
 - **Byte assertion**: count(b'0.005') >= 3
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
 - **Severity**: P1
 - **Model impact**: Coordinate or tolerance values trigger numerical degeneracy in kernel predicates; edges merge or split at the wrong vertex, and the resulting topology disagrees with what the producer encoded.
@@ -4560,6 +4625,7 @@ _Section summary: 70 entries._
 - **Byte assertion**: count_entity_def(b'PLUS_MINUS_TOLERANCE') == 4
 - **Byte assertion**: contains(b'-0.005') and contains(b'0.005')
 - **Byte assertion**: contains(b'PLANE_ANGLE_MEASURE_WITH_UNIT')
+- **Tier-3 assertion**: shape_null == True
 - **Model impact**: Coordinate or tolerance values trigger numerical degeneracy in kernel predicates; edges merge or split at the wrong vertex, and the resulting topology disagrees with what the producer encoded.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
@@ -4575,6 +4641,7 @@ _Section summary: 70 entries._
 - **Byte assertion**: count_entity_def(b'PLUS_MINUS_TOLERANCE') == 2
 - **Byte assertion**: contains(b'0.01') and contains(b'-0.01')
 - **Byte assertion**: contains(b'5.0')
+- **Tier-3 assertion**: shape_null == True
 - **Model impact**: Coordinate or tolerance values trigger numerical degeneracy in kernel predicates; edges merge or split at the wrong vertex, and the resulting topology disagrees with what the producer encoded.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
@@ -4590,6 +4657,7 @@ _Section summary: 70 entries._
 - **Byte assertion**: contains(b'2.0E-2')
 - **Byte assertion**: count_entity_def(b'EDGE_CURVE') == 1
 - **Byte assertion**: contains(b'GEOMETRIC_REPRESENTATION_ITEM')
+- **Tier-3 assertion**: shape_null == True
 - **Model impact**: Coordinate or tolerance values trigger numerical degeneracy in kernel predicates; edges merge or split at the wrong vertex, and the resulting topology disagrees with what the producer encoded.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
@@ -4605,6 +4673,7 @@ _Section summary: 70 entries._
 - **Byte assertion**: count_entity_def(b'B_SPLINE_CURVE_WITH_KNOTS') == 2
 - **Byte assertion**: count_entity_def(b'EDGE_CURVE') == 2
 - **Byte assertion**: contains(b'1.0E-5')
+- **Tier-3 assertion**: shape_null == True
 - **Model impact**: Coordinate or tolerance values trigger numerical degeneracy in kernel predicates; edges merge or split at the wrong vertex, and the resulting topology disagrees with what the producer encoded.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
@@ -4619,6 +4688,7 @@ _Section summary: 70 entries._
 - **Notes**: Synonyms: "face-pair gap exceeds interval bound", "model not watertight by interval-solid metric", "shared edge gap larger than interval radius", "interval-solid validity violated".
 - **Byte assertion**: count_entity_def(b'B_SPLINE_SURFACE_WITH_KNOTS') == 2
 - **Byte assertion**: contains(b'1.0E-5')
+- **Tier-3 assertion**: shape_null == True
 - **Model impact**: Coordinate or tolerance values trigger numerical degeneracy in kernel predicates; edges merge or split at the wrong vertex, and the resulting topology disagrees with what the producer encoded.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
@@ -4631,6 +4701,7 @@ _Section summary: 70 entries._
 - **Notes**: **See also**: N040. Synonyms: "healer inflates tolerance 1000x on already-good shapes", "post-fix tolerance bloated everywhere", "tolerance jumped from 1e-6 to 1e-3 after heal", "healing pass touches every subshape", "uniform tolerance bloat after fix".
 - **Byte assertion**: count_entity_def(b'UNCERTAINTY_MEASURE_WITH_UNIT') == 2
 - **Byte assertion**: contains(b'1.0E-6') and contains(b'1.0E-3')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
 - **Severity**: P1
 - **Model impact**: Coordinate or tolerance values trigger numerical degeneracy in kernel predicates; edges merge or split at the wrong vertex, and the resulting topology disagrees with what the producer encoded.
@@ -4648,6 +4719,7 @@ _Section summary: 70 entries._
 - **Byte assertion**: count_entity_def(b'UNCERTAINTY_MEASURE_WITH_UNIT') == 2
 - **Byte assertion**: contains(b'1.0E-3') and contains(b'1.0E-6')
 - **Byte assertion**: count_entity_def(b'VERTEX_POINT') == 4
+- **Tier-3 assertion**: shape_null == True
 - **Model impact**: Coordinate or tolerance values trigger numerical degeneracy in kernel predicates; edges merge or split at the wrong vertex, and the resulting topology disagrees with what the producer encoded.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
@@ -4662,6 +4734,7 @@ _Section summary: 70 entries._
 - **Severity**: P1
 - **Byte assertion**: count_entity_def(b'EDGE_CURVE') == 4
 - **Byte assertion**: contains(b'1.0E-7') and contains(b'4.2E-3')
+- **Tier-3 assertion**: shape_null == True
 - **Model impact**: Coordinate or tolerance values trigger numerical degeneracy in kernel predicates; edges merge or split at the wrong vertex, and the resulting topology disagrees with what the producer encoded.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
@@ -4689,6 +4762,7 @@ _Section summary: 70 entries._
 - **Byte assertion**: count_entity_def(b'CYLINDRICAL_SURFACE') == 1
 - **Byte assertion**: count_entity_def(b'UNCERTAINTY_MEASURE_WITH_UNIT') == 3
 - **Byte assertion**: contains(b'6.3E-5') and contains(b'8.3E-2')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
 - **Severity**: P1
 - **Model impact**: Coordinate or tolerance values trigger numerical degeneracy in kernel predicates; edges merge or split at the wrong vertex, and the resulting topology disagrees with what the producer encoded.
@@ -4704,6 +4778,7 @@ _Section summary: 70 entries._
 - **Byte assertion**: contains(b'APPLIED_IDENTIFICATION_ASSIGNMENT')
 - **Byte assertion**: contains(b'IDENTIFICATION_ROLE')
 - **Byte assertion**: count_entity_def(b'ADVANCED_FACE') == 2
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
 - **Severity**: P1
 - **Model impact**: Coordinate or tolerance values trigger numerical degeneracy in kernel predicates; edges merge or split at the wrong vertex, and the resulting topology disagrees with what the producer encoded.
@@ -5383,6 +5458,7 @@ End of file. 44 distinct entries.
 - **Notes**: **See also**: Twi049, N039. **OCC behavior**: silently filters out the edge-internal intersection with no diagnostic; kernel mishandling; the catalog above forbids silent filtering. Synonyms: "edge-internal intersection ignored", "two edges cross inside parameter range but missed", "intersection check only at endpoints", "vertex tolerance check skips edge interior".
 - **Byte assertion**: count_entity_def(b'EDGE_CURVE') == 2
 - **Byte assertion**: contains(b'1.0E-3')
+- **Tier-3 assertion**: shape_null == True
 - **Model impact**: Coordinate or tolerance values trigger numerical degeneracy in kernel predicates; edges merge or split at the wrong vertex, and the resulting topology disagrees with what the producer encoded.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
@@ -5444,6 +5520,7 @@ End of file. 44 distinct entries.
 - **Byte assertion**: contains(b'INTERSECTION_CURVE')
 - **Byte assertion**: count_entity_def(b'CYLINDRICAL_SURFACE') == 2
 - **Byte assertion**: count_entity_def(b'PCURVE') == 2
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
 - **Severity**: P1
 - **Model impact**: Coordinate or tolerance values trigger numerical degeneracy in kernel predicates; edges merge or split at the wrong vertex, and the resulting topology disagrees with what the producer encoded.
@@ -17429,6 +17506,7 @@ _Section summary: 41 entries._
 - **Notes**: Umbrella entry; covers the "iterate until stable" requirement common to multi-defect shells. **See also**: Hea001 (shape-level), Hea002 (solid-level). Synonyms: "shell needs iterative healing", "per-face fixes interact with shell-level repair", "one-pass healing leaves residual defects", "multiple defects need orchestrated cleanup", "shell healer must converge".
 - **Byte assertion**: contains(b'OPEN_SHELL')
 - **Byte assertion**: count_entity_def(b'ADVANCED_FACE') == 2
+- **Tier-3 assertion**: n_faces_total == 2
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: Shell topology loads with inconsistent face orientations or non-manifold edges; BRepCheck flags the shell as invalid, and boolean / offset operations on the solid either produce wrong-sided results or fail outright.
@@ -17445,6 +17523,7 @@ _Section summary: 41 entries._
 - **Notes**: Free edges are also called "naked edges" in some kernels; both terms in scope. Synonyms: "naked edges versus duplicate edges", "open shell free boundary classification", "edge appears once is legal but twice with same orientation isn't", "shell analyzer must distinguish leak from intentional opening", "non-watertight defect versus open boundary".
 - **Byte assertion**: contains(b'OPEN_SHELL')
 - **Byte assertion**: count_entity_def(b'ADVANCED_FACE') == 2
+- **Tier-3 assertion**: n_faces_total == 2
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: Shell topology loads with inconsistent face orientations or non-manifold edges; BRepCheck flags the shell as invalid, and boolean / offset operations on the solid either produce wrong-sided results or fail outright.
@@ -18193,6 +18272,7 @@ _Section summary: 41 entries._
 - **Byte assertion**: contains(b'CLOSED_SHELL')
 - **Byte assertion**: contains(b'MANIFOLD_SOLID_BREP')
 - **Byte assertion**: count_entity_def(b'ADVANCED_FACE') == 7
+- **Tier-3 assertion**: n_faces_total == 7
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: Shell topology loads with inconsistent face orientations or non-manifold edges; BRepCheck flags the shell as invalid, and boolean / offset operations on the solid either produce wrong-sided results or fail outright.
@@ -18219,6 +18299,7 @@ _Section summary: 41 entries._
 - **Notes**: **See also**: Tfa016, Tsh047. Synonyms: "tiny stitched edges not merged", "near-collinear edge chain not unified", "cumulative angle deviation across edges", "redundant slivers left after healing", "per-edge angle threshold misses chain".
 - **Byte assertion**: contains(b'OPEN_SHELL')
 - **Byte assertion**: count_entity_def(b'ADVANCED_FACE') == 2
+- **Tier-3 assertion**: n_faces_total == 2
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
 - **Severity**: P1
 - **Model impact**: Shell topology loads with inconsistent face orientations or non-manifold edges; BRepCheck flags the shell as invalid, and boolean / offset operations on the solid either produce wrong-sided results or fail outright.
@@ -18244,6 +18325,7 @@ _Section summary: 41 entries._
 - **Byte assertion**: contains(b'OPEN_SHELL')
 - **Byte assertion**: contains(b'CYLINDRICAL_SURFACE')
 - **Byte assertion**: count_entity_def(b'ADVANCED_FACE') == 2
+- **Tier-3 assertion**: n_faces_total == 2
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
 - **Severity**: P1
 - **Model impact**: Shell topology loads with inconsistent face orientations or non-manifold edges; BRepCheck flags the shell as invalid, and boolean / offset operations on the solid either produce wrong-sided results or fail outright.
@@ -18266,6 +18348,7 @@ _Section summary: 41 entries._
 - **Notes**: **See also**: Tsh047, A031. Synonyms: "mirrored instance corrupted by face unification", "false coincidence between mirrored sub-shapes", "merge collapses mirrored instances", "shape unifier ignores transform on coincidence test", "mirrored MAPPED_ITEM merged with original".
 - **Byte assertion**: contains(b'MAPPED_ITEM')
 - **Byte assertion**: count_entity_def(b'ADVANCED_FACE') == 1
+- **Tier-3 assertion**: n_faces_total == 3
 - **OCC behavior**: emits a diagnostic but produces an empty result; outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: Shell topology loads with inconsistent face orientations or non-manifold edges; BRepCheck flags the shell as invalid, and boolean / offset operations on the solid either produce wrong-sided results or fail outright.
@@ -18310,6 +18393,7 @@ _Section summary: 41 entries._
 - **Expected kernel behavior**: Heal and accept: coerce / merge so edges shared between merged faces are removed from the resulting wire; only true boundary edges of the union are retained.
 - **Notes**: **See also**: Tsh046, Tsh049. Provenance tier: runtime-only; bytes alone cannot demonstrate this defect; the static fixture encodes only the merge precondition (two coplanar faces sharing an edge). The defective wire arises only after the kernel performs the merge operation. A behavioral test against the merge implementation is the appropriate venue. Synonyms: "shared edges not removed after face merge", "interior edge listed twice in merged wire", "dangling zero-area edge after unification", "merged face wire still has internal partitions", "edges between merged faces not deduped".
 - **Byte assertion**: count_entity_def(b'ADVANCED_FACE') == 1
+- **Tier-3 assertion**: n_faces_total == 1
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: Shell topology loads with inconsistent face orientations or non-manifold edges; BRepCheck flags the shell as invalid, and boolean / offset operations on the solid either produce wrong-sided results or fail outright.
@@ -18333,6 +18417,7 @@ _Section summary: 41 entries._
  location records.
 - **Notes**: **See also**: Tsh048. Synonyms: "shell merge loses non-unit DIRECTION location", "scaled instance comes in at origin after merge", "MAPPED_ITEM placement dropped on shell union", "non-uniform scale in REPRESENTATION_MAP lost", "compound location vanishes after topology op".
 - **Byte assertion**: count_entity_def(b'ADVANCED_FACE') == 1
+- **Tier-3 assertion**: n_faces_total == 3
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
 - **Severity**: P1
 - **Model impact**: Shell topology loads with inconsistent face orientations or non-manifold edges; BRepCheck flags the shell as invalid, and boolean / offset operations on the solid either produce wrong-sided results or fail outright.
@@ -18381,6 +18466,7 @@ _Section summary: 41 entries._
 - **Notes**: **See also**: Tsh023. Synonyms: "face merge crashes on empty edge loop", "construction error during unification", "merge aborts on face with no edges", "low-level error from face unifier on empty wire", "empty wire fails precondition during merge".
 - **Byte assertion**: matches(rb'EDGE_LOOP\s*\(\s*\x27[^\x27]*\x27\s*,\s*\(\s*\)\s*\)')
 - **Byte assertion**: count_entity_def(b'ADVANCED_FACE') == 1
+- **Tier-3 assertion**: n_faces_total == 1
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal, reject}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: Shell topology loads with inconsistent face orientations or non-manifold edges; BRepCheck flags the shell as invalid, and boolean / offset operations on the solid either produce wrong-sided results or fail outright.
@@ -18403,6 +18489,7 @@ _Section summary: 41 entries._
 - **Notes**: **See also**: Tsh048. Synonyms: "face merge crashes on chained placements", "shape modified and removed simultaneously error", "segfault when merging compound with shared topology", "mutating shared sub-shape during unification", "MAPPED_ITEM instances corrupt face merge".
 - **Byte assertion**: contains(b'MAPPED_ITEM')
 - **Byte assertion**: count_entity_def(b'ADVANCED_FACE') == 1
+- **Tier-3 assertion**: n_faces_total == 3
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: Shell topology loads with inconsistent face orientations or non-manifold edges; BRepCheck flags the shell as invalid, and boolean / offset operations on the solid either produce wrong-sided results or fail outright.
@@ -18423,6 +18510,7 @@ _Section summary: 41 entries._
 - **Expected kernel behavior**: Heal and accept: normalize the same-surface check to compare oriented surfaces (normal direction included); opposite-orientation faces are not merged unless the kernel deliberately re-orients first.
 - **Notes**: **See also**: Tfa016, Tsh001. Synonyms: "merge of opposite-normal faces returns inverted face", "merging same-plane faces with opposite normals breaks shell", "unifier ignores face direction", "merged face has wrong outward direction", "opposite-orientation faces merged silently".
 - **Byte assertion**: count_entity_def(b'ADVANCED_FACE') == 2
+- **Tier-3 assertion**: n_faces_total == 2
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: Shell topology loads with inconsistent face orientations or non-manifold edges; BRepCheck flags the shell as invalid, and boolean / offset operations on the solid either produce wrong-sided results or fail outright.
@@ -18444,6 +18532,7 @@ _Section summary: 41 entries._
  map); reject pathological wires before iterating.
 - **Notes**: **See also**: Twi076, Tsh056b. Synonyms: "face merge hangs on figure-eight wire", "infinite loop in unifier on non-simple wire", "edge walker stuck on pinched face", "non-simple wire causes hang", "face merge fails to terminate".
 - **Byte assertion**: count_entity_def(b'ADVANCED_FACE') == 1
+- **Tier-3 assertion**: n_faces_total == 1
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: Shell topology loads with inconsistent face orientations or non-manifold edges; BRepCheck flags the shell as invalid, and boolean / offset operations on the solid either produce wrong-sided results or fail outright.
@@ -18471,6 +18560,7 @@ _Section summary: 41 entries._
 - **Notes**: **See also**: Tsh055, Tfa018. Synonyms: "near-tangent face merge produces self-overlapping face", "small angle deviation passes merge but creates invalid result", "merged face wire crosses itself", "merge across near-coplanar faces breaks geometry", "tiny normal mismatch corrupts face union".
 - **Byte assertion**: contains(b'OPEN_SHELL')
 - **Byte assertion**: count_entity_def(b'ADVANCED_FACE') == 2
+- **Tier-3 assertion**: n_faces_total == 2
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
 - **Severity**: P1
 - **Model impact**: Shell topology loads with inconsistent face orientations or non-manifold edges; BRepCheck flags the shell as invalid, and boolean / offset operations on the solid either produce wrong-sided results or fail outright.
@@ -18492,6 +18582,7 @@ _Section summary: 41 entries._
 - **Notes**: **See also**: Tsh050. Defect manifests at runtime; fixture establishes the input precondition (two coplanar faces sharing edge E, with a property association marking E as `keep`). Synonyms: "kept edges still merged through", "edge preservation flag ignored by merge", "keep-edges list not respected", "protected edges removed by unifier", "feature edges lost after merge".
 - **Byte assertion**: contains(b'OPEN_SHELL')
 - **Byte assertion**: count_entity_def(b'ADVANCED_FACE') == 2
+- **Tier-3 assertion**: n_faces_total == 2
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: Shell topology loads with inconsistent face orientations or non-manifold edges; BRepCheck flags the shell as invalid, and boolean / offset operations on the solid either produce wrong-sided results or fail outright.
@@ -18517,6 +18608,7 @@ _Section summary: 41 entries._
 - **Expected kernel behavior**: Heal and accept: normalize history to record every input → output edge mapping including intermediate states; downstream attribute transfer follows the chain.
 - **Notes**: **See also**: A007. Synonyms: "history map missing intermediate edges after merge", "PMI lost during multi-pass face merge", "color attribute disappears on edges from merged faces", "shape history incomplete after unification", "edge mapping doesn't follow merge chain".
 - **Byte assertion**: count_entity_def(b'ADVANCED_FACE') == 4
+- **Tier-3 assertion**: n_faces_total == 4
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: Shell topology loads with inconsistent face orientations or non-manifold edges; BRepCheck flags the shell as invalid, and boolean / offset operations on the solid either produce wrong-sided results or fail outright.
@@ -18537,6 +18629,7 @@ _Section summary: 41 entries._
 - **Notes**: **See also**: Tfa054, Pf027. Fixture is a scaled representative (8 disjoint single-face shells) of the catalog's 50; topology pattern (N independent shells in a compound) is identical. Synonyms: "face merge takes hours on assembly", "quadratic complexity in face unifier", "face merger runs all-pairs across compound", "assembly-level merge hangs", "performance regression on N-solid compound".
 - **Byte assertion**: count_entity_def(b'OPEN_SHELL') == 8
 - **Byte assertion**: count_entity_def(b'ADVANCED_FACE') == 8
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: Shell topology loads with inconsistent face orientations or non-manifold edges; BRepCheck flags the shell as invalid, and boolean / offset operations on the solid either produce wrong-sided results or fail outright.
@@ -18557,6 +18650,7 @@ _Section summary: 41 entries._
 - **Expected kernel behavior**: Heal and accept: normalize so non-manifold interior edges (≥3 incident faces) are not merge-eligible; preserve all incident-face records during traversal.
 - **Notes**: **See also**: Tsh019, Tfa032. Synonyms: "face merge corrupts non-manifold interior edge", "InvalidMultiConnexity error after Boolean", "edge connected to too many faces after merge", "non-manifold interior seam breaks unifier", "merge across non-manifold edge produces bad shape".
 - **Byte assertion**: count_entity_def(b'ADVANCED_FACE') == 4
+- **Tier-3 assertion**: n_faces_total == 4
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: Shell topology loads with inconsistent face orientations or non-manifold edges; BRepCheck flags the shell as invalid, and boolean / offset operations on the solid either produce wrong-sided results or fail outright.
@@ -18672,6 +18766,7 @@ _Section summary: 41 entries._
 - **Byte assertion**: contains(b'V0_dropped_endpoint')
 - **Byte assertion**: contains(b'four_edges_first_dropped')
 - **Byte assertion**: count_entity_def(b'EDGE_CURVE') == 4
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: The wire/loop closes with a topological gap or self-intersection; the parent face loads with broken bounds, BRepCheck reports `BRepCheck_NotClosed` or `BRepCheck_SelfIntersectingWire`, and downstream face triangulation skips or mis-bounds the region.
@@ -18717,6 +18812,7 @@ _Section summary: 41 entries._
 - **Byte assertion**: contains(b'D_to_B_again')
 - **Byte assertion**: contains(b'B_to_E')
 - **Byte assertion**: contains(b'A_to_B')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: The wire/loop closes with a topological gap or self-intersection; the parent face loads with broken bounds, BRepCheck reports `BRepCheck_NotClosed` or `BRepCheck_SelfIntersectingWire`, and downstream face triangulation skips or mis-bounds the region.
@@ -18739,6 +18835,7 @@ _Section summary: 41 entries._
 - **Byte assertion**: contains(b'long_way_around')
 - **Byte assertion**: contains(b'CIRCLE(')
 - **Byte assertion**: contains(b'(0.7080734182735711,-0.7061278960829493,0.0)')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: The wire/loop closes with a topological gap or self-intersection; the parent face loads with broken bounds, BRepCheck reports `BRepCheck_NotClosed` or `BRepCheck_SelfIntersectingWire`, and downstream face triangulation skips or mis-bounds the region.
@@ -18763,6 +18860,7 @@ _Section summary: 41 entries._
 - **Byte assertion**: contains(b'e3_short_1mm_chamfer')
 - **Byte assertion**: contains(b'e6_short_1mm_fillet_marker')
 - **Byte assertion**: contains(b'hex_with_two_short_features')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: The wire/loop closes with a topological gap or self-intersection; the parent face loads with broken bounds, BRepCheck reports `BRepCheck_NotClosed` or `BRepCheck_SelfIntersectingWire`, and downstream face triangulation skips or mis-bounds the region.
@@ -18787,6 +18885,7 @@ _Section summary: 41 entries._
 - **Byte assertion**: contains(b'(0.0,0.001,0.0)')
 - **Byte assertion**: contains(b'(100.0,0.001,0.0)')
 - **Byte assertion**: contains(b'(0.0,0.01,0.0)')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: emits a diagnostic but produces an empty result; outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: Face sewing leaves free bounds or duplicate edges; the resulting shell is open instead of closed, so MakeSolid produces an invalid solid and volume/property computations return wrong values.
@@ -18811,6 +18910,7 @@ _Section summary: 41 entries._
 - **Severity**: P0
 - **Model impact**: Parser dereferences invalid memory while processing the malformed token; the load process is killed by a signal and no shape is delivered.
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
+- **Tier-3 assertion**: n_faces_total == 1
 
 ### Tfa063 — Stack overflow on `RemoveSmallFaces` due to unbounded recursion
 - **Category**: §12.3c faces/sewing
@@ -18830,6 +18930,7 @@ _Section summary: 41 entries._
 - **Byte assertion**: contains(b'plane_z_0')
 - **Byte assertion**: contains(b'slab_face_0')
 - **Byte assertion**: contains(b'(0.0,0.0,0.0001)')
+- **Tier-3 assertion**: shape_null == True
 - **Model impact**: Face sewing leaves free bounds or duplicate edges; the resulting shell is open instead of closed, so MakeSolid produces an invalid solid and volume/property computations return wrong values.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
@@ -18992,6 +19093,7 @@ _Section summary: 41 entries._
 - **Byte assertion**: contains(b'OPEN_SHELL')
 - **Byte assertion**: contains(b'CYLINDRICAL_SURFACE')
 - **Byte assertion**: count_entity_def(b'ADVANCED_FACE') == 5
+- **Tier-3 assertion**: n_faces_total == 5
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal, reject}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: Shell topology loads with inconsistent face orientations or non-manifold edges; BRepCheck flags the shell as invalid, and boolean / offset operations on the solid either produce wrong-sided results or fail outright.
@@ -19015,6 +19117,7 @@ _Section summary: 41 entries._
 - **Byte assertion**: contains(b'TOROIDAL_SURFACE')
 - **Byte assertion**: contains(b'OPEN_SHELL')
 - **Byte assertion**: count_entity_def(b'ADVANCED_FACE') == 2
+- **Tier-3 assertion**: n_faces_total == 2
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: Shell topology loads with inconsistent face orientations or non-manifold edges; BRepCheck flags the shell as invalid, and boolean / offset operations on the solid either produce wrong-sided results or fail outright.
@@ -19038,6 +19141,7 @@ _Section summary: 41 entries._
 - **Notes**: **See also**: Tsh059, Tsh058. Defect manifests at runtime (modification history is API-level state); fixture establishes the input precondition (two coplanar faces sharing edge E). **OCC behavior**: silently accepts the input shape with no diagnostic; the contract drift is what the catalog above documents — the merge-history contract is not yet codified, and the catalog claim describes the desired future behavior. Provenance tier: runtime-only — bytes alone cannot demonstrate this defect; the symptom is an undocumented contract for the post-merge modification-history map (a kernel API-level data structure produced by the merge operation). Demonstrating this requires a kernel runtime trace of the modification-history map after the merge. Synonyms: "edge history contract undocumented after merge", "removed edges have no consistent history record", "modification history disagrees between versions", "merge edge tracking ambiguous", "history map missing on removed shared edge".
 - **Byte assertion**: contains(b'OPEN_SHELL')
 - **Byte assertion**: count_entity_def(b'ADVANCED_FACE') == 2
+- **Tier-3 assertion**: n_faces_total == 2
 - **Model impact**: Shell topology loads with inconsistent face orientations or non-manifold edges; BRepCheck flags the shell as invalid, and boolean / offset operations on the solid either produce wrong-sided results or fail outright.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
@@ -19052,6 +19156,7 @@ _Section summary: 41 entries._
 - **Byte assertion**: contains(b'TESSELLATED_SHELL_REPRESENTATION')
 - **Byte assertion**: count(b'TRIANGULATED_FACE') >= 2
 - **Byte assertion**: count(b'COORDINATES_LIST') >= 2
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject, warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must reject or emit a diagnostic this fixture.
 - **Severity**: P1
 - **Model impact**: Shell topology loads with inconsistent face orientations or non-manifold edges; BRepCheck flags the shell as invalid, and boolean / offset operations on the solid either produce wrong-sided results or fail outright.
@@ -19068,6 +19173,7 @@ _Section summary: 41 entries._
 - **Byte assertion**: count_entity_def(b'MANIFOLD_SOLID_BREP') == 2
 - **Byte assertion**: count_entity_def(b'CLOSED_SHELL') == 1
 - **Byte assertion**: count_entity_def(b'ADVANCED_FACE') == 6
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: Shell topology loads with inconsistent face orientations or non-manifold edges; BRepCheck flags the shell as invalid, and boolean / offset operations on the solid either produce wrong-sided results or fail outright.
@@ -19084,6 +19190,7 @@ _Section summary: 41 entries._
 - **Byte assertion**: contains(b'BREP_WITH_VOIDS')
 - **Byte assertion**: contains(b'ORIENTED_CLOSED_SHELL')
 - **Byte assertion**: count_entity_def(b'CLOSED_SHELL') == 2
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal, reject}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: Shell topology loads with inconsistent face orientations or non-manifold edges; BRepCheck flags the shell as invalid, and boolean / offset operations on the solid either produce wrong-sided results or fail outright.
@@ -19286,6 +19393,7 @@ _Section summary: 41 entries._
 - **Byte assertion**: contains(b'(10.005,10.0,0.0)')
 - **Byte assertion**: contains(b'1.0E-06')
 - **Byte assertion**: contains(b'UNCERTAINTY_MEASURE_WITH_UNIT(')
+- **Tier-3 assertion**: n_faces_total == 1
 - **Model impact**: The wire/loop closes with a topological gap or self-intersection; the parent face loads with broken bounds, BRepCheck reports `BRepCheck_NotClosed` or `BRepCheck_SelfIntersectingWire`, and downstream face triangulation skips or mis-bounds the region.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 
@@ -19343,6 +19451,7 @@ _Section summary: 41 entries._
 - **Byte assertion**: contains(b'CYLINDRICAL_SURFACE(')
 - **Byte assertion**: contains(b'edge2_no_3d')
 - **Byte assertion**: contains(b'6.2831853')
+- **Tier-3 assertion**: shape_null == True
 - **Model impact**: The wire/loop closes with a topological gap or self-intersection; the parent face loads with broken bounds, BRepCheck reports `BRepCheck_NotClosed` or `BRepCheck_SelfIntersectingWire`, and downstream face triangulation skips or mis-bounds the region.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
@@ -19448,6 +19557,7 @@ _Section summary: 41 entries._
 - **Byte assertion**: contains(b'(10.005,10.0,0.0)')
 - **Byte assertion**: contains(b'1.0E-06')
 - **Byte assertion**: count_entity_def(b'EDGE_CURVE') == 4
+- **Tier-3 assertion**: n_faces_total == 1
 - **Model impact**: The wire/loop closes with a topological gap or self-intersection; the parent face loads with broken bounds, BRepCheck reports `BRepCheck_NotClosed` or `BRepCheck_SelfIntersectingWire`, and downstream face triangulation skips or mis-bounds the region.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 
@@ -19464,6 +19574,7 @@ _Section summary: 41 entries._
 - **Byte assertion**: contains(b'(10.005,10.0,0.0)')
 - **Byte assertion**: contains(b'1.0E-06')
 - **Byte assertion**: contains(b'PLANE(')
+- **Tier-3 assertion**: n_faces_total == 1
 - **Model impact**: The wire/loop closes with a topological gap or self-intersection; the parent face loads with broken bounds, BRepCheck reports `BRepCheck_NotClosed` or `BRepCheck_SelfIntersectingWire`, and downstream face triangulation skips or mis-bounds the region.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 
@@ -19479,6 +19590,7 @@ _Section summary: 41 entries._
 - **Severity**: P1
 - **Byte assertion**: contains(b'(10.005,10.0,0.0)')
 - **Byte assertion**: contains(b'UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-06)')
+- **Tier-3 assertion**: n_faces_total == 1
 - **Model impact**: The wire/loop closes with a topological gap or self-intersection; the parent face loads with broken bounds, BRepCheck reports `BRepCheck_NotClosed` or `BRepCheck_SelfIntersectingWire`, and downstream face triangulation skips or mis-bounds the region.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 
@@ -19566,6 +19678,7 @@ _Section summary: 41 entries._
 - **Byte assertion**: contains(b'CYLINDRICAL_SURFACE(')
 - **Byte assertion**: contains(b'B_pc_starts_at_U10p5')
 - **Byte assertion**: contains(b'(10.5,0.0)')
+- **Tier-3 assertion**: shape_null == True
 - **Model impact**: The wire/loop closes with a topological gap or self-intersection; the parent face loads with broken bounds, BRepCheck reports `BRepCheck_NotClosed` or `BRepCheck_SelfIntersectingWire`, and downstream face triangulation skips or mis-bounds the region.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
@@ -19579,6 +19692,7 @@ _Section summary: 41 entries._
 - **Byte assertion**: contains(b'(1.05,0.0,0.0)')
 - **Byte assertion**: contains(b'(2.07,0.0,0.0)')
 - **Byte assertion**: contains(b'(2.0,1.06,0.0)')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: The wire/loop closes with a topological gap or self-intersection; the parent face loads with broken bounds, BRepCheck reports `BRepCheck_NotClosed` or `BRepCheck_SelfIntersectingWire`, and downstream face triangulation skips or mis-bounds the region.
@@ -19594,6 +19708,7 @@ _Section summary: 41 entries._
 - **Byte assertion**: contains(b'CYLINDRICAL_SURFACE(')
 - **Byte assertion**: contains(b'(1.5,0.0)')
 - **Byte assertion**: contains(b'(3.4,0.0)')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: The wire/loop closes with a topological gap or self-intersection; the parent face loads with broken bounds, BRepCheck reports `BRepCheck_NotClosed` or `BRepCheck_SelfIntersectingWire`, and downstream face triangulation skips or mis-bounds the region.
@@ -19611,6 +19726,7 @@ _Section summary: 41 entries._
 - **Byte assertion**: contains(b'(5.0,0.01)')
 - **Byte assertion**: contains(b'B_SPLINE_CURVE_WITH_KNOTS(')
 - **Byte assertion**: contains(b'PCURVE(')
+- **Tier-3 assertion**: shape_null == True
 - **Model impact**: The wire/loop closes with a topological gap or self-intersection; the parent face loads with broken bounds, BRepCheck reports `BRepCheck_NotClosed` or `BRepCheck_SelfIntersectingWire`, and downstream face triangulation skips or mis-bounds the region.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
@@ -19626,6 +19742,7 @@ _Section summary: 41 entries._
 - **Byte assertion**: contains(b'.PCURVE_S1_AND_S2.')
 - **Byte assertion**: contains(b'forward_at_U_2pi')
 - **Byte assertion**: contains(b'reversed_at_U_0')
+- **Tier-3 assertion**: shape_null == True
 - **Model impact**: The wire/loop closes with a topological gap or self-intersection; the parent face loads with broken bounds, BRepCheck reports `BRepCheck_NotClosed` or `BRepCheck_SelfIntersectingWire`, and downstream face triangulation skips or mis-bounds the region.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
@@ -19651,6 +19768,7 @@ _Section summary: 41 entries._
 - **Notes**: **See also**: Twi072. Per-junction counterpart to Twi069. Synonyms: "single-junction parametric gap query", "specific UV gap location query", "ask about one specific junction in wire UV", "per-index 2D gap diagnostic".- **Byte assertion**: contains(b'CYLINDRICAL_SURFACE(')
 - **Byte assertion**: contains(b'junction2_pcurve_gap_0p5')
 - **Byte assertion**: contains(b'(2.5,0.0)')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: The wire/loop closes with a topological gap or self-intersection; the parent face loads with broken bounds, BRepCheck reports `BRepCheck_NotClosed` or `BRepCheck_SelfIntersectingWire`, and downstream face triangulation skips or mis-bounds the region.
@@ -19679,6 +19797,7 @@ _Section summary: 41 entries._
 - **Byte assertion**: contains(b'(3.001,0.0,0.0)')
 - **Byte assertion**: contains(b'foreign_edge')
 - **Byte assertion**: contains(b'open_three_edge_wire')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: The wire/loop closes with a topological gap or self-intersection; the parent face loads with broken bounds, BRepCheck reports `BRepCheck_NotClosed` or `BRepCheck_SelfIntersectingWire`, and downstream face triangulation skips or mis-bounds the region.
@@ -19710,6 +19829,7 @@ _Section summary: 41 entries._
 - **Byte assertion**: contains(b'B_dir_retrace_with_1e6_offset')
 - **Byte assertion**: contains(b'(-10.0,0.00001,0.0)')
 - **Byte assertion**: contains(b'tail_pair')
+- **Tier-3 assertion**: shape_null == True
 - **Model impact**: The wire/loop closes with a topological gap or self-intersection; the parent face loads with broken bounds, BRepCheck reports `BRepCheck_NotClosed` or `BRepCheck_SelfIntersectingWire`, and downstream face triangulation skips or mis-bounds the region.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
@@ -19723,6 +19843,7 @@ _Section summary: 41 entries._
 - **Byte assertion**: contains(b'scrambled_3_1_4_2')
 - **Byte assertion**: count_entity_def(b'EDGE_CURVE') == 4
 - **Byte assertion**: count_entity_def(b'ORIENTED_EDGE') == 4
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: The wire/loop closes with a topological gap or self-intersection; the parent face loads with broken bounds, BRepCheck reports `BRepCheck_NotClosed` or `BRepCheck_SelfIntersectingWire`, and downstream face triangulation skips or mis-bounds the region.
@@ -19771,6 +19892,7 @@ _Section summary: 41 entries._
 - **Byte assertion**: contains(b'edge_with_line')
 - **Byte assertion**: contains(b'edge_with_arc')
 - **Byte assertion**: count_entity_def(b'EDGE_CURVE') == 2
+- **Tier-3 assertion**: shape_null == True
 - **Model impact**: The wire/loop closes with a topological gap or self-intersection; the parent face loads with broken bounds, BRepCheck reports `BRepCheck_NotClosed` or `BRepCheck_SelfIntersectingWire`, and downstream face triangulation skips or mis-bounds the region.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 - **Fixture path**: step-examples/12-3b-wires/Twi081.stp
@@ -19786,6 +19908,7 @@ _Section summary: 41 entries._
 - **Byte assertion**: contains(b'mismatched_param')
 - **Byte assertion**: contains(b'DIRECTION_2D(')
 - **Byte assertion**: contains(b'(2.0,0.0)')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: The wire/loop closes with a topological gap or self-intersection; the parent face loads with broken bounds, BRepCheck reports `BRepCheck_NotClosed` or `BRepCheck_SelfIntersectingWire`, and downstream face triangulation skips or mis-bounds the region.
@@ -19805,6 +19928,7 @@ _Section summary: 41 entries._
 - **Byte assertion**: contains(b'positive_length_line')
 - **Byte assertion**: contains(b'degenerate_flag_lying')
 - **Byte assertion**: contains(b'(1.0,0.0,0.0)')
+- **Tier-3 assertion**: shape_null == True
 - **Model impact**: The wire/loop closes with a topological gap or self-intersection; the parent face loads with broken bounds, BRepCheck reports `BRepCheck_NotClosed` or `BRepCheck_SelfIntersectingWire`, and downstream face triangulation skips or mis-bounds the region.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 - **Fixture path**: step-examples/12-3b-wires/Twi083.stp
@@ -19822,6 +19946,7 @@ _Section summary: 41 entries._
 - **Byte assertion**: contains(b'CIRCLE(')
 - **Byte assertion**: contains(b'end_NOT_equal_to_start')
 - **Byte assertion**: contains(b'(1.5,0.0,0.0)')
+- **Tier-3 assertion**: shape_null == True
 - **Model impact**: The wire/loop closes with a topological gap or self-intersection; the parent face loads with broken bounds, BRepCheck reports `BRepCheck_NotClosed` or `BRepCheck_SelfIntersectingWire`, and downstream face triangulation skips or mis-bounds the region.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 - **Fixture path**: step-examples/12-3b-wires/Twi084.stp
@@ -19839,6 +19964,7 @@ _Section summary: 41 entries._
 - **Byte assertion**: contains(b'vertex_at_t5')
 - **Byte assertion**: contains(b'(5.0,0.0,0.0)')
 - **Byte assertion**: contains(b'point_param_mismatch')
+- **Tier-3 assertion**: shape_null == True
 - **Model impact**: The wire/loop closes with a topological gap or self-intersection; the parent face loads with broken bounds, BRepCheck reports `BRepCheck_NotClosed` or `BRepCheck_SelfIntersectingWire`, and downstream face triangulation skips or mis-bounds the region.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 - **Fixture path**: step-examples/12-3b-wires/Twi085.stp
@@ -19856,6 +19982,7 @@ _Section summary: 41 entries._
 - **Byte assertion**: contains(b'collapsed_line_edge')
 - **Byte assertion**: contains(b'#11,#11,#22')
 - **Byte assertion**: count_entity_def(b'VERTEX_POINT') == 1
+- **Tier-3 assertion**: shape_null == True
 - **Model impact**: The wire/loop closes with a topological gap or self-intersection; the parent face loads with broken bounds, BRepCheck reports `BRepCheck_NotClosed` or `BRepCheck_SelfIntersectingWire`, and downstream face triangulation skips or mis-bounds the region.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 - **Fixture path**: step-examples/12-3b-wires/Twi086.stp
@@ -19873,6 +20000,7 @@ _Section summary: 41 entries._
 - **Byte assertion**: contains(b'y_wire_branching')
 - **Byte assertion**: count_entity_def(b'EDGE_CURVE') == 3
 - **Byte assertion**: count_entity_def(b'ORIENTED_EDGE') == 3
+- **Tier-3 assertion**: shape_null == True
 - **Model impact**: The wire/loop closes with a topological gap or self-intersection; the parent face loads with broken bounds, BRepCheck reports `BRepCheck_NotClosed` or `BRepCheck_SelfIntersectingWire`, and downstream face triangulation skips or mis-bounds the region.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 - **Fixture path**: step-examples/12-3b-wires/Twi087.stp
@@ -19888,6 +20016,7 @@ _Section summary: 41 entries._
 - **Byte assertion**: contains(b'pcurve_only_edge')
 - **Byte assertion**: contains(b',$,.T.)')
 - **Byte assertion**: count_entity_def(b'EDGE_CURVE') == 1
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: The wire/loop closes with a topological gap or self-intersection; the parent face loads with broken bounds, BRepCheck reports `BRepCheck_NotClosed` or `BRepCheck_SelfIntersectingWire`, and downstream face triangulation skips or mis-bounds the region.
@@ -19907,6 +20036,7 @@ _Section summary: 41 entries._
 - **Byte assertion**: contains(b'over_split_chain')
 - **Byte assertion**: contains(b'mid_unused')
 - **Byte assertion**: count_entity_def(b'EDGE_CURVE') == 2
+- **Tier-3 assertion**: shape_null == True
 - **Model impact**: The wire/loop closes with a topological gap or self-intersection; the parent face loads with broken bounds, BRepCheck reports `BRepCheck_NotClosed` or `BRepCheck_SelfIntersectingWire`, and downstream face triangulation skips or mis-bounds the region.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 - **Fixture path**: step-examples/12-3b-wires/Twi089.stp
@@ -22623,6 +22753,7 @@ Control poles coplanar (XY) but curve deviates significantly in Z. ShapeAnalysis
 - **Notes**: **See also**: P015. Synonyms: "lettering bottoms not closed", "text feature pocket floor missing", "embossed text exports as non-solid", "EDGE_LOOP one edge short on STEP export".
 - **Byte assertion**: count_entity_def(b'EDGE_LOOP') >= 1
 - **Byte assertion**: contains(b'FACE_OUTER_BOUND')
+- **Tier-3 assertion**: n_faces_total == 1
 - **OCC behavior**: silently accepts (loads as open shell); outside catalog's allowed set ({heal, warn-and-proceed}).
 - **Severity**: P1
 - **Model impact**: Face sewing leaves free bounds or duplicate edges; the resulting shell is open instead of closed, so MakeSolid produces an invalid solid and volume/property computations return wrong values.
@@ -22638,6 +22769,7 @@ Control poles coplanar (XY) but curve deviates significantly in Z. ShapeAnalysis
 - **Notes**: **See also**: Tfa038, Twi091, Gs042. Synonyms: "CURVE_BOUNDED_SURFACE implicit_outer unset", "STEP face implicit_outer .U. silently dropped", "step-g BUnset boolean defaults to drop", "ambiguous outer-boundary semantics", "BOOLEAN attribute .U. accepted but undefined".
 - **Byte assertion**: contains(b'CURVE_BOUNDED_SURFACE')
 - **Byte assertion**: contains(b'.U.')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silent-accept observed (catalog allowed: {reject, heal}). Kernel-bug witnessed: receivers enforcing the spec must reject or heal this fixture.
 - **Severity**: P1
 - **Model impact**: Face sewing leaves free bounds or duplicate edges; the resulting shell is open instead of closed, so MakeSolid produces an invalid solid and volume/property computations return wrong values.
@@ -22650,6 +22782,7 @@ Control poles coplanar (XY) but curve deviates significantly in Z. ShapeAnalysis
 - **Reproducer recipe**: Cone geometry with semi-angle ~0.52 rad, apex at V=-1; wire wrapping cone at V=1..3 with non-decreasing U. FixPeriodicDegenerated applies apex curve construction and conditionally reverses wire when apex below wire lower bound.
 - **Expected kernel behavior**: OCCT healing should detect apex positioning, build correct downward apex curve, and reverse wire orientation consistently. Failure: wire reversal applied but apex curve direction remains inconsistent.
 - **Expected validation**: `occt=unknown/unknown gmsh=unknown ifc=schema_n/a`
+- **Tier-3 assertion**: n_faces_total == 1
 
 ### Tfa072 — ShapeFix_FixSmallFace.ReplaceVerticesInCaseOfSpot coherence
 - **Category**: §12.3c (face / sewing / free bounds)
@@ -22658,6 +22791,7 @@ Control poles coplanar (XY) but curve deviates significantly in Z. ShapeAnalysis
 - **Reproducer recipe**: Spot face on plane with 3 vertices clustered at ~0.001 unit radius from origin; one vertex at tol=0.001, another at tol=0.0001. Mean position computed without tolerance weighting; tolerance closure fails to enclose all vertices.
 - **Expected kernel behavior**: Kernel should validate wire existence exhaustively (all edges in face belong to wire), then compute vertex mean with tolerance scaling that encloses all originals. Failure: tolerance drift allows vertices outside enclosing ball.
 - **Expected validation**: `occt=unknown/unknown gmsh=unknown ifc=schema_n/a`
+- **Tier-3 assertion**: n_faces_total == 1
 
 ### Tfa073 — ShapeFix_FixSmallFace.ComputeSharedEdgeForStripFace asymmetry
 - **Category**: §12.3c (face / sewing / free bounds)
@@ -22666,6 +22800,7 @@ Control poles coplanar (XY) but curve deviates significantly in Z. ShapeAnalysis
 - **Reproducer recipe**: Two edges E1=(V1,V2) and E2=(V3,V4) where dev(V1,V3)=0.00005 (<tol), but dev(V2,V4)=1.5 (>>tol). V1 merged to V3; V2 remains unmerged; shared edge created with (V3, V4) semantics violated.
 - **Expected kernel behavior**: Kernel should either merge both endpoint pairs or neither. Asymmetric merging produces degenerate shared edge that breaks strip-face topology.
 - **Expected validation**: `occt=unknown/unknown gmsh=unknown ifc=schema_n/a`
+- **Tier-3 assertion**: shape_null == True
 
 ### Tfa074 — ShapeFix_Face.FixWiresTwoCoincEdges orientation detection
 - **Category**: §12.3c (face / sewing / free bounds)
@@ -22674,6 +22809,7 @@ Control poles coplanar (XY) but curve deviates significantly in Z. ShapeAnalysis
 - **Reproducer recipe**: Single PLANE face with 2-edge wire containing identical edge E at FORWARD orientation twice. Pattern should trigger merge but orientation check at 2876 does not correctly identify matching orientation.
 - **Expected kernel behavior**: When E1==E2 and both at FORWARD, wires should be merged into single wire. Failure: orientation sensitivity rejects merge even though orientations match.
 - **Expected validation**: `occt=unknown/unknown gmsh=unknown ifc=schema_n/a`
+- **Tier-3 assertion**: n_faces_total == 2
 
 ### Tfa075 — ShapeFix_ComposeShell.MakeFacesOnPatch fallback resolution
 - **Category**: §12.3c (face / sewing / free bounds)
@@ -22682,6 +22818,7 @@ Control poles coplanar (XY) but curve deviates significantly in Z. ShapeAnalysis
 - **Reproducer recipe**: Patch with single degenerate loop; single-edge WIRE loop passed through. Type-checking shortcut skips root-finding; residual loop promoted without face construction.
 - **Expected kernel behavior**: Kernel should distinguish between single-WIRE (valid, construct face) and single-non-WIRE (error, abort or fallback with diagnostic). Failure: non-WIRE loop bypass leads to unresolved topology.
 - **Expected validation**: `occt=unknown/unknown gmsh=unknown ifc=schema_n/a`
+- **Tier-3 assertion**: shape_null == True
 
 ### Tfa076 — FixAddNaturalBound seam-edge skip
 
@@ -22746,6 +22883,7 @@ Control poles coplanar (XY) but curve deviates significantly in Z. ShapeAnalysis
 **Expected validation**: Splitting vertex count > 0; parameter values in (0, 1) exclusive; distances below tolerance.
 
 ---
+- **Tier-3 assertion**: n_faces_total == 1
 
 ### Tfa080 — CheckTwisted normal-inversion
 
@@ -22763,15 +22901,18 @@ Control poles coplanar (XY) but curve deviates significantly in Z. ShapeAnalysis
 
 ### Tfa081 — ShapeFix_Face.FixOrientation reversed-normal heal
 Face with inward-pointing surface normal (same_sense=.F.). Healer detects via outer-wire winding direction and flips to outward orientation. Planar square boundary, defect is orientation flag mismatch.
+- **Tier-3 assertion**: n_faces_total == 1
 
 ### Tfa082 — ShapeAnalysis_CheckSmallFace.CheckPin pin-direction classification
 Planar face with sharp pin singularity along V parametric axis (vertical). Classifier assumes pin aligns with U-parameter axis; axis-agnostic detection required. NURBS 3x2 poles with near-zero angle at boundary.
 
 ### Tfa083 — ShapeFix_Face.FixNotchedEdges near-tangent notch detection
 Face boundary with two consecutive edges forming 179.8-degree angle (near-reversal notch). Tangent-angle comparison fails for near-tangent threshold. Small notch bulge on bottom edge of rectangle.
+- **Tier-3 assertion**: n_faces_total == 1
 
 ### Tfa084 — ShapeAnalysis_FreeBoundsProperties.CheckNotches gap-after-fix
 Rectangular face with interior notch that, when removed, leaves 0.1-unit gap between surviving edges. CheckNotches must flag orphaned gaps as invalid; defect: gap detection skipped.
+- **Tier-3 assertion**: n_faces_total == 1
 
 ### Tfa085 — ShapeFix_Face.FixSplitFace split-result multiplicity
 Rectangular face with two parallel interior edges (at X=3, X=7) creating 3 sub-zones. FixSplitFace loop assumes binary split and misses zones beyond the first pair. Represented as single face with two inner bounds.
@@ -22781,12 +22922,15 @@ Face with three wires sharing a coincident edge. FixWiresTwoCoincEdges only hand
 
 ### Tfa087 — ShapeAnalysis_CheckSmallFace.CheckStripEdges: aspect-ratio threshold
 Face with aspect ratio exactly equal to the strip-detection threshold (100.0). Non-strict comparison (≤ instead of <) misclassifies as strip when it should not. Very thin rectangle 100.0 × 1.0 on plane.
+- **Tier-3 assertion**: n_faces_total == 1
 
 ### Tfa088 — ShapeFix_Face.FixAddNaturalBound: sphere natural boundary
 Full-sphere face (complete spherical surface) requesting natural boundary correction. The code attempts to construct a single-edge bound when a "no-boundary" representation should be used. Sphere radius 5.0 centered at origin.
+- **Tier-3 assertion**: n_faces_total == 1
 
 ### Tfa089 — ShapeAnalysis_CheckSmallFace.CheckSpotFace: tolerance scaling
 Face slightly larger than the spot threshold (0.1 × 0.1 square) but with vertex tolerances (0.05) larger than the face dimension. Tolerance-scaled spot comparison incorrectly misclassifies as spot face.
+- **Tier-3 assertion**: n_faces_total == 1
 
 ### Tfa090 — ShapeFix_Face.Perform: mode-flag ordering
 Face with reversed outer orientation and incomplete inner bound (missing closing edge). Mode-flag order in Perform prevents FixNaturalBound from running before FixOrientation, blocking proper edge-completion and orientation correction sequence. Square 5.0 × 5.0 with 1.0 × 1.0 incomplete hole.
@@ -22813,6 +22957,7 @@ Face whose BSpline surface has both convex and concave regions (hyperbolic parab
 **Test corpus:** wave 12 – shape-healing face coverage  
 
 ---
+- **Tier-3 assertion**: n_faces_total == 1
 
 ### Tfa093 — ShapeFix_Face.FixSmallAreaWire interior-wire skip
 
@@ -22857,6 +23002,7 @@ Full SURFACE_OF_REVOLUTION (360-degree cylinder with apex) with degenerate edge 
 **Expected behavior**: Diagnostic or corrective handling of degenerate outer wires; never silent skip.
 
 ---
+- **Tier-3 assertion**: n_faces_total == 1
 
 ### Tfa097 — ShapeAnalysis_CheckSmallFace.CheckPinFace blunt-pin classification
 
@@ -22867,6 +23013,7 @@ Full SURFACE_OF_REVOLUTION (360-degree cylinder with apex) with degenerate edge 
 **Expected behavior**: Angular classification correctly distinguishes blunt (~10°) pins from sharp (>30°) features.
 
 ---
+- **Tier-3 assertion**: n_faces_total == 1
 
 ### Tfa098 — ShapeFix_Face.FixSplitFace null-line
 
@@ -22877,6 +23024,7 @@ Full SURFACE_OF_REVOLUTION (360-degree cylinder with apex) with degenerate edge 
 **Expected behavior**: Validation of all edge geometries before split processing; graceful error reporting for null references.
 
 ---
+- **Tier-3 assertion**: n_faces_total == 1
 
 ### Tfa099 — ShapeAnalysis_CheckSmallFace.CheckTwisted concave-cone
 
@@ -22903,6 +23051,7 @@ Full SURFACE_OF_REVOLUTION (360-degree cylinder with apex) with degenerate edge 
 **Fixture**: `/Users/zellyn/gh/dodgy-step-files/step-examples/12-3c-faces/Tfa101.stp`
 
 **Geometry**: Toroidal surface (major radius 5.0, minor radius 1.0) with placeholder boundary edges forming a minimal closed loop.
+- **Tier-3 assertion**: n_faces_total == 1
 
 ### Tfa102 — ShapeAnalysis_CheckSmallFace.CheckSmallArea aspect-ratio infinite
 
@@ -22911,6 +23060,7 @@ Full SURFACE_OF_REVOLUTION (360-degree cylinder with apex) with degenerate edge 
 **Fixture**: `/Users/zellyn/gh/dodgy-step-files/step-examples/12-3c-faces/Tfa102.stp`
 
 **Geometry**: Plane with an extremely thin rectangle (1000.0 × 0.0001) to trigger aspect-ratio calculation overflow.
+- **Tier-3 assertion**: n_faces_total == 1
 
 ### Tfa103 — ShapeFix_Face.FixPeriodicDegenerated apex-at-V-min
 
@@ -22919,6 +23069,7 @@ Full SURFACE_OF_REVOLUTION (360-degree cylinder with apex) with degenerate edge 
 **Fixture**: `/Users/zellyn/gh/dodgy-step-files/step-examples/12-3c-faces/Tfa103.stp`
 
 **Geometry**: Conical surface with apex at v_min (v=0) and a 5-vertex wire encircling at v=5.0 (away from apex).
+- **Tier-3 assertion**: n_faces_total == 1
 
 ### Tfa104 — ShapeAnalysis_CheckSmallFace.CheckSplittingVertices NM-vertex
 
@@ -22927,6 +23078,7 @@ Full SURFACE_OF_REVOLUTION (360-degree cylinder with apex) with degenerate edge 
 **Fixture**: `/Users/zellyn/gh/dodgy-step-files/step-examples/12-3c-faces/Tfa104.stp`
 
 **Geometry**: Planar face with 3 triangular sub-regions sharing a central vertex (non-manifold, 3-edge incidence).
+- **Tier-3 assertion**: n_faces_total == 2
 
 ### Tfa105 — ShapeFix_Face.FixSmallAreaWire seam-aware
 
@@ -22983,6 +23135,7 @@ Full SURFACE_OF_REVOLUTION (360-degree cylinder with apex) with degenerate edge 
 **Fixture**: `/Users/zellyn/gh/dodgy-step-files/step-examples/12-3c-faces/Tfa109.stp`
 
 ---
+- **Tier-3 assertion**: n_faces_total == 1
 
 ### Tfa110 — Single-edge circular wire orientation ambiguity
 
@@ -22997,6 +23150,7 @@ Full SURFACE_OF_REVOLUTION (360-degree cylinder with apex) with degenerate edge 
 ---
 
 **Coverage**: 5 fixtures synthesized per OCCT_HEAL_COVERAGE_V3.md wave 21 specifications. All fixtures conform to mandatory PRODUCT chain and STEP-AP structure.
+- **Tier-3 assertion**: n_faces_total == 1
 
 ### Tfa111 — ShapeFix_Face.FixSmallAreaWire mixed-context
 
@@ -23055,6 +23209,7 @@ Full SURFACE_OF_REVOLUTION (360-degree cylinder with apex) with degenerate edge 
 **Expected behavior**: FixPeriodicDegenerated correctly constructs the degenerate edge as a line on the revolution axis and orients the wire to match face handedness.
 
 **Sources**: OCCT `ShapeFix_Face::FixPeriodicDegenerated` (~line 3102); apex-curve construction for revolution surfaces.
+- **Tier-3 assertion**: n_faces_total == 1
 
 ### Tfa116 — ShapeFix_Face.FixLoopWire concentric circles
 
@@ -23079,6 +23234,7 @@ Full SURFACE_OF_REVOLUTION (360-degree cylinder with apex) with degenerate edge 
 **Search anchors:** 'CheckSplittingVertices', 'degenerate edge', 'T-vertex', 'zero-length'
 
 ---
+- **Tier-3 assertion**: n_faces_total == 2
 
 ### Tfa118 — ShapeFix_Face.FixSplitFace line-tangent-to-wire
 
@@ -23113,21 +23269,27 @@ Full SURFACE_OF_REVOLUTION (360-degree cylinder with apex) with degenerate edge 
 **Minimal reproducer:** Conical surface trimmed to u∈[0,π], v∈[1,3]; FixAddNaturalBound adds bounds using full cone apex domain instead of trimmed range.
 
 **Search anchors:** 'FixAddNaturalBound', 'CONICAL_SURFACE', 'trimmed bounds', 'natural boundary'
+- **Tier-3 assertion**: n_faces_total == 1
 
 ### Tfa121 — ShapeFix_Face.FixWiresTwoCoincEdges different-host-surfaces
 Face with two wires whose edges geometrically coincide in 3D but reside on different planes (one on PLANE, one on offset plane). FixWiresTwoCoincEdges checks only 3D coincidence and misses surface mismatch when merging coincident edges.
+- **Tier-3 assertion**: shape_null == True
 
 ### Tfa122 — ShapeAnalysis_CheckSmallFace.CheckTwisted self-touching wire
 Face whose outer wire self-touches at a non-endpoint vertex within the face interior. CheckTwisted's classification logic treats self-contact as face twist when geometrically the wire is merely internally tangent.
+- **Tier-3 assertion**: shape_null == True
 
 ### Tfa123 — ShapeFix_Face.FixSmallAreaWire near-collinear edges
 Face with 4-edge wire where 3 consecutive edges are near-collinear (deviation ~tolerance). FixSmallAreaWire's area calculation produces a tiny or near-zero value despite the wire being geometrically valid.
+- **Tier-3 assertion**: shape_null == True
 
 ### Tfa124 — ShapeAnalysis_CheckSmallFace.CheckSpotFace asymmetric
 Small face with one long dimension (50 units) and one short dimension (0.5 units), forming a strip-like spot. CheckSpotFace classifies based on enclosing-circle diameter, misclassifying strip-like spots.
+- **Tier-3 assertion**: shape_null == True
 
 ### Tfa125 — ShapeFix_Face.FixPeriodicDegenerated u-axis-degenerate
 Spherical surface where U direction is degenerate at the south pole (v=0). FixPeriodicDegenerated handles V-degenerate surfaces but assumes U parametric direction is always non-degenerate.
+- **Tier-3 assertion**: shape_null == True
 
 ### Tfa126 — FixLoopWire: crossing-wires defect
 
@@ -23140,24 +23302,28 @@ Face has outer wire and inner wire (hole) that cross each other instead of nesti
 **Defect axis:** `geometry-probe` / `tolerance`
 
 Face with pin-like morphology (very thin rectangle: 10×1.5) where width exceeds CheckPin's maximum pin-width threshold. Algorithm reports face is not a pin despite pin structure. Reproducer: rectangular plane face with aspect ratio triggering false negative.
+- **Tier-3 assertion**: n_faces_total == 1
 
 ### Tfa128 — FixOrientation: already-correct
 
 **Defect axis:** `api-contract` / `incomplete_fix`
 
 Face whose normal orientation is already correct according to the face geometry and bounds. FixOrientation runs the correction algorithm and produces identical output but marks myStatus as "fixed" even though no change occurred. Reproducer: simple 5×5 square with correct ccw outer boundary and correct normal.
+- **Tier-3 assertion**: n_faces_total == 1
 
 ### Tfa129 — CheckSplittingVertices: T-vertex at B-spline midpoint
 
 **Defect axis:** `curve_validation` / `parameter_coherence`
 
 Vertex positioned at exact midpoint of a B-spline edge (not a LINE). CheckSplittingVertices uses parameter domain midpoint (0.5) for detection rather than 3D spatial midpoint, causing misdetection. Reproducer: rectangular face with T-junction vertex at parameter u=0.5 on non-line edge.
+- **Tier-3 assertion**: n_faces_total == 1
 
 ### Tfa130 — FixSmallAreaWire: mixed-size-wires
 
 **Defect axis:** `orientation_classification` / `cardinality-dispatch`
 
 Face declares two outer-wire candidates: one large (20×20) and one tiny (0.2×0.2) with no nesting relationship. FixSmallAreaWire's outer-vs-inner detection heuristic selects tiny wire as outer because it processes area-sorted list incorrectly. Reproducer: single plane face with two disjoint FACE_OUTER_BOUND entries of vastly different scales.
+- **Tier-3 assertion**: n_faces_total == 1
 
 ### Tfa131 — FixWiresTwoCoincEdges crossing-wires-coincident-segment
 
@@ -23216,6 +23382,7 @@ Face with three small inner wires (areas 0.01, 0.0225, 0.04) on a 20×20 outer s
 **Taxonomy:** OCCT heal logic, edge-case boundary condition detection.
 
 ---
+- **Tier-3 assertion**: n_faces_total == 1
 
 ### Tfa137 — ShapeAnalysis_CheckSmallFace.CheckTwisted face-with-hole
 
@@ -23262,10 +23429,12 @@ Face with two inner wires where first uses LINE edge and second uses geometrical
 ### Tfa142 — ShapeAnalysis_CheckSmallFace.CheckSmallArea torus-patch
 
 Small face on TOROIDAL_SURFACE with major radius 5.0 and minor radius 1.0. CheckSmallArea computes area via parametric (u,v)-domain projection as planar polygon, ignoring torus surface curvature. Actual 3D area differs significantly from projection; parametric bounds [0.0, 0.2] × [0.0, 0.3] yield false positives or negatives in small-area classification depending on projection method. Defect exposes curvature-unawareness in area approximation.
+- **Tier-3 assertion**: n_faces_total == 1
 
 ### Tfa143 — ShapeFix_Face.FixAddNaturalBound cone-with-apex-in-domain
 
 CONICAL_SURFACE with apex at origin (0,0,0) and half-angle 0.52 radians. Face has single partial boundary wire at height z=5.0 spanning v-direction (theta 0 to π/2), leaving uncovered parametric region. FixAddNaturalBound attempts to add natural bounds via isNeedAddNaturalBound predicate, but boundary construction includes apex-region edges where pcurve is singular (radius=0). Apex makes pcurve-evaluation undefined; test triggers FAN-001/FAN-003 path failures.
+- **Tier-3 assertion**: n_faces_total == 1
 
 ### Tfa144 — ShapeAnalysis_CheckSmallFace.CheckPinFace 3D-vs-parametric-pin
 
@@ -23274,6 +23443,7 @@ B_SPLINE_SURFACE_WITH_KNOTS stretched non-uniformly (control points in y-directi
 ### Tfa145 — ShapeFix_Face.FixSplitFace two-splitters
 
 Planar face (10×10 square) with two interior splitter wires: vertical line (x=2, y∈[0,10]) and horizontal line (y=5, x∈[0,10]) intersecting at (2,5). FixSplitFace applies splitters sequentially in a loop; after first splitter creates two sub-faces, the loop structure sees stale topology when applying second splitter. Edge/vertex deduplication from first split not synchronized before second split processes; results in incorrect face tessellation or undetected edge-reuse violations at intersection point.
+- **Tier-3 assertion**: n_faces_total == 1
 
 ### Tfa146 — ShapeFix_Face.FixOrientation parametric-vs-3D-winding
 
@@ -23345,67 +23515,84 @@ Face on cylinder where two wires both start at the seam vertex. FixOrientation's
 
 ### Tfa156 — ShapeFix_Face.FixSmallAreaWire wire-with-tangent-edges
 Face with outer wire and inner wire whose edges form a tangent smooth curve. FixSmallAreaWire's polygon approximation underestimates the enclosed area, causing missed edge tangency repair.
+- **Tier-3 assertion**: shape_null == True
 
 ### Tfa157 — ShapeAnalysis_CheckSmallFace.CheckPin extreme-axis-pin
 Pin face with 1000x aspect ratio (1000mm × 1mm). CheckPin's threshold calculation overflows when processing extreme aspect ratios on thin axis pins.
+- **Tier-3 assertion**: shape_null == True
 
 ### Tfa158 — ShapeFix_Face.FixOrientation closed-shell-context-loss
 Face with ambiguous orientation flag and inner hole. FixOrientation makes context-free decisions that would benefit from closed-shell context; applied in isolation, orientation fix is unreliable.
+- **Tier-3 assertion**: shape_null == True
 
 ### Tfa159 — ShapeAnalysis_CheckSmallFace.CheckStripFace cylindrical-strip
 Strip face on cylindrical surface (narrow angular band, full height). CheckStripFace's aspect ratio uses parametric domain (0–2π, bounded v), which doesn't reflect true 3D strip geometry in 3D arc length.
+- **Tier-3 assertion**: shape_null == True
 
 ### Tfa160 — ShapeFix_Face.FixWiresTwoCoincEdges loop-inside-loop
 Face with inner wire (hole) fully inside outer wire; inner wire's bottom edge is geometrically coincident with outer wire's bottom edge. FixWiresTwoCoincEdges detects the coincidence but cannot resolve ownership.
+- **Tier-3 assertion**: shape_null == True
 
 ### Tfa161 — ShapeFix_Face.FixOrientation single-loop-face
 
 Face with exactly one loop (outer boundary only). FixOrientation's containment-check logic assumes multiple wires exist for inner-bound detection; single-wire case short-circuits when comparing against non-existent inner wires, failing to validate self-orientation. Triggers via Tfa161.stp (AUTOMOTIVE_DESIGN schema, PLANE surface, rectangular loop).
+- **Tier-3 assertion**: n_faces_total == 1
 
 ### Tfa162 — ShapeAnalysis_CheckSmallFace.CheckSpotFace negative-area-detection
 
 Face with vertices ordered to produce negative signed area (CCW instead of CW on plane-like surface). CheckSpotFace calculates bounding-box area and applies absolute-value masking, hiding the orientation error. Minimal reproducer uses PLANE surface, reversed face orientation (.F.), quad loop with swapped point order to trigger negative area calculation.
+- **Tier-3 assertion**: n_faces_total == 1
 
 ### Tfa163 — ShapeFix_Face.FixSplitFace splitter-along-edge
 
 Face with splitter line (virtual dividing edge) that geometrically coincides with existing outer boundary edge. FixSplitFace fails to detect coincidence and produces duplicate faces instead of merging. Fixture: rectangular face (2.0 x 1.0 PLANE) simulates scenario where splitter at interior u=1.0 aligns with outer edge.
+- **Tier-3 assertion**: n_faces_total == 1
 
 ### Tfa164 — ShapeAnalysis_CheckSmallFace.CheckPin two-pins-on-one-face
 
 Face with two thin pin extensions (small protruding edges) at different locations. CheckPin iterates pole-grid once, reports first pin, then halts—missing second pin. Fixture: 1.0 x 1.0 rectangular loop with two degenerate pin-like edges appended (0.5 x 0.001 and parallel), triggering missed-detection at iteration boundary.
+- **Tier-3 assertion**: n_faces_total == 1
 
 ### Tfa165 — ShapeFix_Face.FixAddNaturalBound subsurface
 
 Face defined on trimmed subset of larger PLANE surface; actual wire bounds (0.5..1.5 in both u,v) are interior to surface's natural domain (infinite plane). FixAddNaturalBound applies natural-bound logic using larger surface's domain, not trimmed boundaries, producing inconsistent bounds. Fixture: unit square at (0.5..1.5, 0.5..1.5) on infinite plane.
+- **Tier-3 assertion**: n_faces_total == 1
 
 ### Tfa166 — ShapeFix_Face.FixSmallAreaWire negative-area-from-orientation
 
 Wire with incorrect traversal direction producing negative signed area. Inner hole traversed counter-clockwise instead of clockwise; FixSmallAreaWire uses absolute value during area check but fails to correct wire orientation before returning, leaving the face with an incorrectly-oriented inner bound.
+- **Tier-3 assertion**: shape_null == True
 
 ### Tfa167 — ShapeAnalysis_CheckSmallFace.CheckTwisted mobius-strip-face
 
 Face with self-intersecting geometry simulating a Möbius strip (one-sided surface). Normal vectors at opposite ends of the strip point in opposite directions; CheckTwisted's pairwise normal comparison at sample points produces inconsistent results due to the topological twist, causing false negatives on degeneracy detection.
+- **Tier-3 assertion**: shape_null == True
 
 ### Tfa168 — ShapeFix_Face.FixOrientation degenerate-edge-only
 
 Face whose outer wire consists exclusively of degenerate edges (all edges collapse to a single point). FixOrientation attempts to extract direction from edge vectors; with no valid edge directions available, the direction vector remains undefined or zero, making orientation correction impossible.
+- **Tier-3 assertion**: shape_null == True
 
 ### Tfa169 — ShapeAnalysis_CheckSmallFace.CheckSplittingVertices vertex-shared-by-many
 
 Planar face with a central vertex shared by six or more edges (star geometry with hub). CheckSplittingVertices uses pairwise edge-angle comparisons; with >5 edges meeting at one vertex, the quadratic comparison logic produces spurious splitting-vertex detections or misses actual problematic configurations.
+- **Tier-3 assertion**: shape_null == True
 
 ### Tfa170 — ShapeFix_Face.FixWiresTwoCoincEdges asymmetric-tolerance-merge
 
 Two inner wires with identical geometry but different per-vertex tolerances (inner_tight_tol=0.001 vs inner_loose_tol=0.1). FixWiresTwoCoincEdges merges coincident edges using the first wire's tolerance values and silently discards the second wire's tighter constraints, potentially losing precision requirements.
+- **Tier-3 assertion**: shape_null == True
 
 ### Tfa171 — ShapeFix_Face.FixLoopWire complex-self-intersection
 Face with inner wire containing triple-point self-intersection. FixLoopWire's merge logic handles double-points but not triples, where three edges meet at a single point. The fixture exercises the pathological case where self-intersection detection fails and merge creates degenerate sub-faces.
+- **Tier-3 assertion**: n_faces_total == 1
 
 ### Tfa172 — ShapeAnalysis_CheckSmallArea non-planar-face
 Parametrically small face on curved B-spline surface where geometric area differs significantly from parametric area. CheckSmallArea uses parametric bounds and misses the actual 3D footprint, triggering false negatives on near-degenerate curved faces.
 
 ### Tfa173 — ShapeFix_Face.FixSplitFace splitter-tangent-at-vertex
 Splitter LINE that is tangent to the face boundary at one of its endpoint vertices. FixSplitFace does not detect the tangency condition and produces degenerate sub-face with zero area, violating the face validity contract.
+- **Tier-3 assertion**: n_faces_total == 1
 
 ### Tfa174 — ShapeAnalysis_CheckSmallFace.CheckTwisted near-flat-saddle
 Face on a near-flat saddle surface (Gaussian curvature close to zero, very mild principal curvatures). CheckTwisted's twist detection threshold gives indeterminate verdict—saddle orientation cannot be reliably inferred from coordinate-space tests.
@@ -23422,6 +23609,7 @@ Natural boundary construction where the computed boundary curve fails to close (
 **Evidence:** Fixture contains a 101-edge circular polygon; FixOrientation's edge enumeration will overflow the internal buffer.  
 **Status:** VALID  
 **File:** `Tfa176.stp`
+- **Tier-3 assertion**: n_faces_total == 1
 
 ### Tfa177 — ShapeAnalysis_CheckSmallFace.CheckPin near-zero-tip-angle
 
@@ -23494,6 +23682,7 @@ Face on plane with C0 discontinuity in parameter domain (split at u=5.0). Inner 
 **Fixture**: ADVANCED_FACE with two rectangular FACE_INNER_BOUND loops only, no FACE_OUTER_BOUND.
 
 ---
+- **Tier-3 assertion**: n_faces_total == 2
 
 ### Tfa187 — ShapeAnalysis_CheckSmallFace.CheckPin pin-with-fillet
 
@@ -23518,6 +23707,7 @@ Face on plane with C0 discontinuity in parameter domain (split at u=5.0). Inner 
 **Fixture**: ADVANCED_FACE with outer wire (2×2 square, area=4) and inner wire (4.5×4.5 rectangle, area≈20, extends past outer bounds).
 
 ---
+- **Tier-3 assertion**: n_faces_total == 1
 
 ### Tfa189 — ShapeAnalysis_CheckSmallFace.CheckTwisted face-on-sphere-with-pole
 
@@ -23530,6 +23720,7 @@ Face on plane with C0 discontinuity in parameter domain (split at u=5.0). Inner 
 **Fixture**: SPHERICAL_SURFACE (radius 5) with ADVANCED_FACE boundary loop spanning south pole → equator → north pole → equator → south.
 
 ---
+- **Tier-3 assertion**: n_faces_total == 1
 
 ### Tfa190 — ShapeFix_Face.FixWiresTwoCoincEdges with-coincident-vertex-only
 
@@ -23540,6 +23731,7 @@ Face on plane with C0 discontinuity in parameter domain (split at u=5.0). Inner 
 **Axis**: `cardinality-dispatch`
 
 **Fixture**: ADVANCED_FACE with outer wire (10×10 rectangle) and inner wire (triangle) touching only at single shared vertex (5,5), no shared edges.
+- **Tier-3 assertion**: n_faces_total == 1
 
 ### Tfa191 — ShapeFix_Face.FixLoopWire with-multiple-inner-loops-touching
 
@@ -23578,6 +23770,7 @@ Unit square planar face with centered 0.5×0.5 inner rectangle. FixOrientation's
 - **Model impact**: Undetected pinch singularities allow downstream face healers to apply local fixes at the coincident-point locus, producing non-manifold topology or unexpected edge collapses.
 - **Fixture path**: step-examples/12-3c-faces/Tfa196.stp
 - **Fixture kind**: scaffold
+- **Tier-3 assertion**: n_faces_total == 1
 
 ### Tfa197 — ShapeAnalysis_Surface.IsUClosed bspline-periodic-u
 - **Category**: §12.3c faces (sub-class: periodic surface closure check)
@@ -23588,6 +23781,7 @@ Unit square planar face with centered 0.5×0.5 inner rectangle. FixOrientation's
 - **Model impact**: Misclassification of surface closure leads to incorrect seam-edge detection and failed face boundary reconstruction on periodic surfaces.
 - **Fixture path**: step-examples/12-3c-faces/Tfa197.stp
 - **Fixture kind**: scaffold
+- **Tier-3 assertion**: n_faces_total == 1
 
 ### Tfa198 — ShapeAnalysis_FreeBoundsProperties.CheckNotches gap-after-fix
 - **Category**: §12.3c faces (sub-class: gap detection in free bounds)
@@ -23608,6 +23802,7 @@ Unit square planar face with centered 0.5×0.5 inner rectangle. FixOrientation's
 - **Model impact**: Missing seam edges produce non-manifold topology and incorrect surface normal orientation; downstream face classification and boolean operations fail.
 - **Fixture path**: step-examples/12-3c-faces/Tfa199.stp
 - **Fixture kind**: scaffold
+- **Tier-3 assertion**: n_faces_total == 1
 
 ### Tfa200 — ShapeAnalysis_Surface.DegeneratedValues cone-apex-degeneracy
 - **Category**: §12.3c faces (sub-class: cone surface apex degeneracy)
@@ -23618,6 +23813,7 @@ Unit square planar face with centered 0.5×0.5 inner rectangle. FixOrientation's
 - **Model impact**: Undetected cone apex degeneracy allows face healers to apply standard curve operations at the apex, producing numerical instability and corrupted surface geometry.
 - **Fixture path**: step-examples/12-3c-faces/Tfa200.stp
 - **Fixture kind**: scaffold
+- **Tier-3 assertion**: n_faces_total == 1
 
 ### Tfa201 — CheckSpotFace parametric interior singularity
 - **Category**: §12.3c faces (sub-class: spot-detection)
@@ -24000,6 +24196,7 @@ em-dash Degenerated synthetic edge synthesis at sphere pole. Single wire at equa
 - **Notes**: **See also**: Twi045, Tsh021. Synonyms: "edge curve with identical vertices", "self-loop EDGE_CURVE", "zero-length edge written by OCCT", "STEP edge endpoints are the same vertex".
 - **Byte assertion**: contains(b'EDGE_CURVE')
 - **Byte assertion**: matches(rb'EDGE_CURVE\([^)]*#10,#10')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silent-accept observed (catalog allowed: {heal, reject}). Kernel-bug witnessed: receivers enforcing the spec must reject or heal this fixture.
 - **Severity**: P1
 - **Model impact**: The wire/loop closes with a topological gap or self-intersection; the parent face loads with broken bounds, BRepCheck reports `BRepCheck_NotClosed` or `BRepCheck_SelfIntersectingWire`, and downstream face triangulation skips or mis-bounds the region.
@@ -24015,6 +24212,7 @@ em-dash Degenerated synthetic edge synthesis at sphere pole. Single wire at equa
 - **Notes**: **See also**: Gs054, Gs037, Tfa036. Synonyms: "COMPOSITE_CURVE_ON_SURFACE LoadONBrep stub", "step-g drops composite-curve-on-surface", "composite basis unimplemented", "PointAtStart not implemented for composite", "fillet quadrant chain dropped from STEP import".
 - **Byte assertion**: contains(b'COMPOSITE_CURVE_ON_SURFACE')
 - **Byte assertion**: contains(b'COMPOSITE_CURVE_SEGMENT')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silent-accept observed (catalog allowed: {heal, reject}). Kernel-bug witnessed: receivers enforcing the spec must reject or heal this fixture.
 - **Severity**: P1
 - **Model impact**: The wire/loop closes with a topological gap or self-intersection; the parent face loads with broken bounds, BRepCheck reports `BRepCheck_NotClosed` or `BRepCheck_SelfIntersectingWire`, and downstream face triangulation skips or mis-bounds the region.
@@ -24029,6 +24227,7 @@ em-dash Degenerated synthetic edge synthesis at sphere pole. Single wire at equa
 - **Expected kernel behavior**: heal-and-accept; Polyline must override `LoadONBrep` to build a piecewise-linear `ON_PolylineCurve`; if more than 2 vertices, optionally promote to a degree-1 B-spline with knot multiplicity 2 at endpoints.
 - **Notes**: **See also**: Twi100, Pmi053. Synonyms: "POLYLINE basis dropped", "step-g Polyline LoadONBrep stub", "broken-line chamfer disappears on STEP import", "polyline silently lost", "Pro/E chamfer polyline drops in BRL-CAD".
 - **Byte assertion**: contains(b'POLYLINE')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silent-accept observed (catalog allowed: {heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
 - **Severity**: P1
 - **Model impact**: The wire/loop closes with a topological gap or self-intersection; the parent face loads with broken bounds, BRepCheck reports `BRepCheck_NotClosed` or `BRepCheck_SelfIntersectingWire`, and downstream face triangulation skips or mis-bounds the region.
@@ -24041,6 +24240,7 @@ em-dash Degenerated synthetic edge synthesis at sphere pole. Single wire at equa
 - **Reproducer recipe**: Wire with 3 edges (E1, E3 normal; E2_degen at index 2, connecting P2->P2 with zero-length geometry). Call FixDegenerated; index modulo n=2 wraps to unexpected position.
 - **Expected kernel behavior**: Reject or heal by either removing degenerate or correctly inserting at end without wraparound.
 - **Expected validation**: `occt=unknown/unknown gmsh=unknown ifc=schema_n/a`
+- **Tier-3 assertion**: n_faces_total == 1
 
 ### Twi103 — ShapeFix_Wire.FixSelfIntersectingEdge 30-iteration convergence silently exits
 - **Category**: §12.3b (wire/loop/edge)
@@ -24049,6 +24249,7 @@ em-dash Degenerated synthetic edge synthesis at sphere pole. Single wire at equa
 - **Reproducer recipe**: Wire with S-curve self-intersecting topology at 4 edges (forming two crossing pairs). Each repair iteration shifts vertices without resolving underlying topology. After 30 iterations, algorithm exits and returns success despite unresolved intersections.
 - **Expected kernel behavior**: Exit with error status or diagnostic indicating convergence failure, not silent acceptance.
 - **Expected validation**: `occt=unknown/unknown gmsh=unknown ifc=schema_n/a`
+- **Tier-3 assertion**: n_faces_total == 2
 
 ### Twi104 — ShapeAnalysis_Wire.CheckTail misclassifies degenerate orientation
 - **Category**: §12.3b (wire/loop/edge)
@@ -24057,6 +24258,7 @@ em-dash Degenerated synthetic edge synthesis at sphere pole. Single wire at equa
 - **Reproducer recipe**: Wire with 3 edges where E1 normal; E2, E3 nearly parallel with near-zero parametric extent relative to parent curve. CheckTail binary search at line 2356 misclassifies E3 as tail due to inverted domain bounds.
 - **Expected kernel behavior**: Correctly identify tail or report invalid orientation without false positive.
 - **Expected validation**: `occt=unknown/unknown gmsh=unknown ifc=schema_n/a`
+- **Tier-3 assertion**: n_faces_total == 1
 
 ### Twi105 — ShapeAnalysis_Wire.CheckIntersectingEdges seam-gap tolerance filter miss
 - **Category**: §12.3b (wire/loop/edge)
@@ -24065,6 +24267,7 @@ em-dash Degenerated synthetic edge synthesis at sphere pole. Single wire at equa
 - **Reproducer recipe**: Wire with 4 edges where E1 horizontal; E3 diagonal intersecting E1 in space; E2, E4 create seam offset at vertex. Intersection point falls in 0.05 unit spatial gap with 0.1 unit vertex tolerance. CheckIntersectingEdges misses intersection at line 1645.
 - **Expected kernel behavior**: Detect intersection despite seam-gap offset; report or repair.
 - **Expected validation**: `occt=unknown/unknown gmsh=unknown ifc=schema_n/a`
+- **Tier-3 assertion**: n_faces_total == 1
 
 ### Twi106 — ShapeFix_Wire.FixIntersectingEdges accumulation cascade without upper bound
 - **Category**: §12.3b (wire/loop/edge)
@@ -24073,26 +24276,31 @@ em-dash Degenerated synthetic edge synthesis at sphere pole. Single wire at equa
 - **Reproducer recipe**: Wire with 5 edges (P0->P1->P2->P3->P4->P0) in zigzag: E2 crosses E1; E3 crosses E2; E4 crosses E3; E5 crosses E4 and E1. FixIntersectingEdges splits each; split vertices create new intersection cascade between E4 and newly-split E2. Iteration limit or tolerance cap never enforced.
 - **Expected kernel behavior**: Bound repair iterations and enforce that tolerance does not grow with each split; reject if unresolvable.
 - **Expected validation**: `occt=unknown/unknown gmsh=unknown ifc=schema_n/a`
+- **Tier-3 assertion**: n_faces_total == 2
 
 ### Twi107 — FixReorder Mode-Cascade
 **Defect**: Wire with edges in wrong order (E0→E2→E1→E3→E4). FixReorder fails (ReorderOK=false), cascading suppression to FixSmall, FixConnected, FixSelfIntersection per SF_Perform lines 320, 331, 355.
 **Pattern**: 5-edge closed loop on plane; deliberate edge order reversal triggers reorder impossibility.
 **Coverage**: SF_Perform_002 (mode_override_cascade), SF_Perform_003 (conditional_skip_wrong), SF_Perform_004 (dependency_coupling).
+- **Tier-3 assertion**: n_faces_total == 1
 
 ### Twi108 — FixGaps3d 3D-Gap Repair
 **Defect**: Wire with adjacent edges missing exactly (gap ~0.05 unit in Z between P1 and P2 vertices). Vertex-tolerance ball overlap but distance exceeds Confusion threshold.
 **Pattern**: 4-edge planar loop with deliberate Z-offset at P2 to force FixGaps3d bridge repair.
 **Coverage**: ShapeFix_Wire.FixGaps3d edge vertex connection tolerance handling.
+- **Tier-3 assertion**: n_faces_total == 1
 
 ### Twi109 — FixShifted Period-Shift on Closed Surface
 **Defect**: Cylindrical wire (periodic in U) where edge E3 pcurve is shifted by +2π in parameter space, breaking U continuity. 3D curve correct; pcurve jumps discontinuously.
 **Pattern**: 4-edge closed loop on CYLINDRICAL_SURFACE; E3 pcurve uses u∈[8.06, 8.06] (shifted) instead of u∈[0.78, 0.78] (true).
 **Coverage**: ShapeFix_Wire.FixShifted periodic surface parameter normalization.
+- **Tier-3 assertion**: n_faces_total == 1
 
 ### Twi110 — CheckEdgeCurves 3D-vs-2D Coherence
 **Defect**: Cylindrical wire where edge E3 3D curve (LINE P2→P3) is geometrically correct but pcurve maps to surface parameters (u, v) that evaluate to misaligned 3D point, failing curve/pcurve coherence.
 **Pattern**: 4-edge cylindrical loop; E3 pcurve v-extent artificially expanded to -5.0 to break sampling alignment.
 **Coverage**: ShapeAnalysis_Wire.CheckEdgeCurves 3D curve vs pcurve-on-surface point sampling mismatch.
+- **Tier-3 assertion**: n_faces_total == 1
 
 ### Twi111 — FixDummySeam Dummy-Seam Removal
 **Defect**: Cylindrical wire with extraneous seam edge pair (dummy_seam + seam_close) at P1 that no longer matches true seam line (u=0, 2π). Seam edge lies near u=0.002, falsely marked as seam.
@@ -24106,58 +24314,72 @@ Wire on cylindrical surface with consecutive edges' parametric curves (pcurves) 
 ### Twi113 — ShapeAnalysis_Wire.CheckOuterBound outer-bound mis-identification
 
 Face with multiple wires where the loop with largest enclosed area (20×20 outer rectangle) is not tagged as FACE_OUTER_BOUND; smaller hole loop (4×4) is present. CheckOuterBound should detect the outer rectangle as the true boundary and flag misidentification.
+- **Tier-3 assertion**: shape_null == True
 
 ### Twi114 — ShapeFix_Wire.FixTails tail-elimination
 
 Wire ending in a small "tail" edge (length 0.05 units) much shorter than its neighbors (length 10.0). Tail extends from (0,10) to (0,10.05). FixTails should identify and remove this degenerate edge to restore wire closure.
+- **Tier-3 assertion**: shape_null == True
 
 ### Twi115 — ShapeAnalysis_Wire.CheckGap3d threshold-comparison edge
 
 Adjacent edges where the gap between endpoint of first edge (10.0, 0.0, 0.0) and start of second edge (10.0001, 5.0, 0.0) equals exactly 0.0001 units, matching default vertex tolerance. Threshold check uses >= instead of >, causing boundary-case gaps to be silently accepted.
+- **Tier-3 assertion**: shape_null == True
 
 ### Twi116 — ShapeFix_Wire.FixConnected vertex-sharing mismatch
 
 Wire with edges that should connect via a shared vertex but use different VERTEX_POINT entities at identical coordinates (10.0, 0.0, 0.0): v2a in edge1→edge2 transition, v2b in edge3 start. FixConnected should unify these duplicate vertices into a single reference.
+- **Tier-3 assertion**: shape_null == True
 
 ### Twi117 — ShapeFix_Wire.FixNotchedEdges singular-derivative
 
 Wire with edges whose 3D-curve derivatives are parallel at shared vertex. Notch detector samples tangent angle but tangent is undefined at singular derivative endpoint. Edge sequence: straight line (tangent: 1,0,0) followed by cubic Bézier with zero derivative at start. FixNotchedEdges silently fails because tangent vector is degenerate.
+- **Tier-3 assertion**: shape_null == True
 
 ### Twi118 — ShapeAnalysis_Wire.CheckLacking lacking-edge tangency
 
 Adjacent edges with gap; CheckLacking detects via tangent-angle test but fails when one tangent is computed from degenerate (zero-length) sub-curve. Edge 2 is degenerate cubic (all control points coincident), creating undefined tangent. Distance-gap check should fire but computation reaches no decision path.
+- **Tier-3 assertion**: shape_null == True
 
 ### Twi119 — ShapeFix_Wire.FixSmall threshold-on-tolerance
 
 Wire with "small" edge exactly at user-configured small-edge threshold (1e-5). FixSmall uses non-strict comparison at one code site and strict at another, causing inconsistent behavior. Floating-point equality test at threshold boundary is undefined; edge may or may not be flagged for removal.
+- **Tier-3 assertion**: shape_null == True
 
 ### Twi120 — ShapeAnalysis_Wire.CheckShapeConnect 4-way orientation encoding
 
 Wire boundary where edges should be merged at hub vertex; CheckShapeConnect's DONE2/3/4 status codes encode 4 specific orientation merge templates. Radial edges meeting at center with mixed pattern (--,++,-+) hits no branch condition, silent merge-decision miss. Status propagation undefined.
+- **Tier-3 assertion**: shape_null == True
 
 ### Twi121 — ShapeFix_Wire.FixSeam closed-surface seam reset
 
 Wire on cylindrical surface where seam-edge tolerance gets reset to 0.0 unconditionally. Seam edge at u-parameter boundary (topology closure) has user-set tolerance 0.001; FixSeam erases it. Downstream CheckConnected tolerance mismatch detection fails.
+- **Tier-3 assertion**: shape_null == True
 
 ### Twi122 — ShapeFix_Wire.FixTails wire-tail asymmetry
 
 Wire with first edge 0.0001mm (very short) and final edge normal-length (1.0mm). FixTails detects short trailing edges and removes them, but fails to symmetrically validate leading edges. Repair chain should either detect both or apply consistent threshold logic.
+- **Tier-3 assertion**: shape_null == True
 
 ### Twi123 — ShapeAnalysis_Wire.CheckGap2d tolerance-equality misclassification
 
 Adjacent parametric curves with gap exactly equal to vertex tolerance threshold (1.0E-7mm). Non-strict comparison (≤ vs <) in FP arithmetic causes inconsistent flagging based on rounding. CheckGap2d must use strict inequality or epsilon-band guards.
+- **Tier-3 assertion**: shape_null == True
 
 ### Twi124 — ShapeFix_Wire.FixIntersectingEdges 2.0000001 magic-constant
 
 Wire edges with intersection detection tolerance multiplied by literal constant 2.0000001. When input tolerance is just above 2.0mm, scaled margin collapses, causing false-negative intersection detection. Tolerance scaling should use adaptive or documented multiplier.
+- **Tier-3 assertion**: shape_null == True
 
 ### Twi125 — ShapeAnalysis_Wire.CheckSelfIntersection bounding-box pruning
 
 Wire with very narrow bounding box (1.0 unit square) where two edges intersect exactly at bbox corner (1.0, 0.0). Spatial pruning excludes edge-pairs at bbox boundaries, missing the intersection. CheckSelfIntersection needs to include boundary cases in AABBox tests.
+- **Tier-3 assertion**: shape_null == True
 
 ### Twi126 — ShapeFix_Wire.FixClosed linear submethod cascade
 
 FixClosed chains FixConnected → FixDegenerated → FixLacking sequentially. After FixConnected modifies wire (fixes gap), FixDegenerated's internal state flags may skip degenerate-edge detection due to prior fix. Cascade must reset internal state or use independent analysis per sub-method.
+- **Tier-3 assertion**: shape_null == True
 
 ### Twi127 — ShapeFix_Wire.FixReorder UV-disjoint regions
 
@@ -24168,6 +24390,7 @@ FixClosed chains FixConnected → FixDegenerated → FixLacking sequentially. Af
 **Status**: VALID — triggers FixReorder branch that handles periodic seam crossing.
 
 ---
+- **Tier-3 assertion**: shape_null == True
 
 ### Twi128 — ShapeAnalysis_Wire.CheckTail tail-edge orientation flip
 
@@ -24178,6 +24401,7 @@ FixClosed chains FixConnected → FixDegenerated → FixLacking sequentially. Af
 **Status**: VALID — isolates orientation polarity assumption in tail detection.
 
 ---
+- **Tier-3 assertion**: shape_null == True
 
 ### Twi129 — ShapeFix_Wire.FixSelfIntersectingEdge inflection-self-touch
 
@@ -24188,6 +24412,7 @@ FixClosed chains FixConnected → FixDegenerated → FixLacking sequentially. Af
 **Status**: VALID — exposes inflection-point self-touch blind spot.
 
 ---
+- **Tier-3 assertion**: shape_null == True
 
 ### Twi130 — ShapeAnalysis_Wire.CheckIntersectingEdges adjacency exemption
 
@@ -24198,6 +24423,7 @@ FixClosed chains FixConnected → FixDegenerated → FixLacking sequentially. Af
 **Status**: VALID — wire-level intersection detection vulnerability.
 
 ---
+- **Tier-3 assertion**: shape_null == True
 
 ### Twi131 — ShapeFix_Wire.FixLacking degenerate-edge insertion
 
@@ -24208,21 +24434,27 @@ FixClosed chains FixConnected → FixDegenerated → FixLacking sequentially. Af
 **Status**: VALID — degenerate-edge insertion ambiguity on cone apex / sphere pole singularities.
 
 ---
+- **Tier-3 assertion**: shape_null == True
 
 ### Twi132 — ShapeFix_Wire.FixDummySeam non-periodic-surface
 Wire on PLANE (non-periodic) with edge orientation pattern that triggers seam-like heuristic. FixDummySeam logic should be no-op for non-periodic surfaces but incorrectly evaluates the heuristic trigger conditions.
+- **Tier-3 assertion**: shape_null == True
 
 ### Twi133 — ShapeAnalysis_Wire.CheckCurveGap bspline endpoint precision
 Wire with adjacent B-spline edges. CheckCurveGap evaluates curve endpoints using parameter sampling method which accumulates floating-point precision loss, causing false gap detection between valid endpoints.
+- **Tier-3 assertion**: shape_null == True
 
 ### Twi134 — ShapeFix_Wire.FixShifted non-2π shift
 Wire on SURFACE_OF_REVOLUTION (periodic in θ) with pcurves shifted by π (half period). FixShifted assumes all periodic shifts are multiples of 2π and skips correction for odd multiples.
+- **Tier-3 assertion**: shape_null == True
 
 ### Twi135 — ShapeAnalysis_Wire.CheckGap2d trimmed-pcurve gap
 Adjacent edges with pcurves defined as TRIMMED_CURVEs of different basis line curves. CheckGap2d compares 2d endpoints in the trimmed parameter spaces instead of evaluating the actual basis curve positions, reporting false gaps.
+- **Tier-3 assertion**: shape_null == True
 
 ### Twi136 — ShapeFix_Wire.FixConnected vertex-replacement chain
 Three edges forming chain with vertex duplicates: v1→v2(dup)→v3(dup)→v4. FixConnected replaces v2 with v3, then v3 with another vertex, leaving intermediate vertices orphaned in the replacement map.
+- **Tier-3 assertion**: shape_null == True
 
 ### Twi137 — ShapeFix_Wire.FixIntersectingEdges 2D-only intersection
 
@@ -24298,6 +24530,7 @@ Wire contains a LINE edge that intersects a CIRCLE arc edge. FixIntersectingEdge
 **Root cause**: Parameter extraction at line 3026 uses conditional ternary without validating parameter space; arc parametrization is non-linear
 
 ---
+- **Tier-3 assertion**: n_faces_total == 1
 
 ### Twi153 — ShapeAnalysis_Wire.CheckIntersectingEdges B-spline self-intersection
 
@@ -24308,6 +24541,7 @@ B-spline edge has a self-intersection (loops back on itself). CheckIntersectingE
 **Root cause**: Pairwise edge comparison at line 1563 does not test edge against itself; no injection assumption validation
 
 ---
+- **Tier-3 assertion**: n_faces_total == 1
 
 ### Twi154 — ShapeFix_Wire.FixSeam edge-direction reversed
 
@@ -24328,6 +24562,7 @@ Wire contains zero-length edge (start vertex == end vertex). CheckGap3d's adjace
 **Root cause**: Gap check at line 1125 does not guard against start==end vertex; direction undefined, floating-point evaluation order non-deterministic
 
 ---
+- **Tier-3 assertion**: n_faces_total == 1
 
 ### Twi156 — ShapeFix_Wire.FixReorder duplicate-edge
 
@@ -24339,18 +24574,22 @@ Wire contains same edge twice with forward and reverse orientations. FixReorder 
 
 ### Twi157 — ShapeAnalysis_Wire.CheckSelfIntersection figure-8 wire
 Wire whose path forms a figure-8 (crosses itself at one point). CheckSelfIntersection must detect the crossing at the self-intersection point where the two lobes meet.
+- **Tier-3 assertion**: n_faces_total == 1
 
 ### Twi158 — ShapeFix_Wire.FixGaps2d 2D-gap on periodic surface
 Wire on cylindrical surface where 2D pcurves leave a gap exactly at u=0 (the seam). FixGaps2d's gap-bridging fails to handle seam-crossing correctly.
 
 ### Twi159 — ShapeAnalysis_Wire.CheckOrder wire-completely-reversed
 4-edge closed wire where all edges are .F. orientation. CheckOrder should detect reverse-traversal and flag it as a fixable mode rather than failing silently.
+- **Tier-3 assertion**: n_faces_total == 1
 
 ### Twi160 — ShapeFix_Wire.FixLacking degenerate-vertex-gap
 Wire missing an edge between v1 and v2 where dist(v1,v2) < Confusion (effectively coincident). FixLacking inserts a degenerate edge but the construction has wrong direction.
+- **Tier-3 assertion**: n_faces_total == 1
 
 ### Twi161 — ShapeAnalysis_Wire.CheckGap2d on B-spline pcurve
 Adjacent edges with B-spline pcurves. CheckGap2d evaluates at knot vector endpoints but start/end pole positions may differ, leaving a gap in connectivity.
+- **Tier-3 assertion**: n_faces_total == 1
 
 ### Twi162 — ShapeFix_Wire.FixIntersectingEdges 3-edge-mutual-intersection
 **Axis**: `healer-state` | **Kind**: `fixture`  
@@ -24358,6 +24597,7 @@ Adjacent edges with B-spline pcurves. CheckGap2d evaluates at knot vector endpoi
 **Claim**: Without cycle detection, pairwise splitting of 3 mutually-intersecting edges leaves at least one pair with undetected overlap.  
 **Reproducer**: Three line segments (horizontal, vertical, diagonal) passing through (5,5,0); wire loop enclosing all three. FixIntersectingEdges should split pairwise but create invalid vertex/edge correspondence.  
 **Fixture**: `/Users/zellyn/gh/dodgy-step-files/step-examples/12-3b-wires/Twi162.stp`
+- **Tier-3 assertion**: n_faces_total == 1
 
 ### Twi163 — ShapeAnalysis_Wire.CheckIntersectingEdges trimmed-edges-overlap-base-curve
 **Axis**: `conformance-probe` | **Kind**: `fixture`  
@@ -24365,6 +24605,7 @@ Adjacent edges with B-spline pcurves. CheckGap2d evaluates at knot vector endpoi
 **Claim**: Without range-overlap detection on shared-base-curve edges, CheckIntersectingEdges reports false-clean on edges [0.0–0.6] and [0.4–0.9] of same curve.  
 **Reproducer**: Degree-3 B-spline base curve; two EDGE_CURVEs both reference it with parameter ranges [0.0, 0.6] and [0.4, 0.9]. CheckIntersectingEdges must detect overlap.  
 **Fixture**: `/Users/zellyn/gh/dodgy-step-files/step-examples/12-3b-wires/Twi163.stp`
+- **Tier-3 assertion**: n_faces_total == 1
 
 ### Twi164 — ShapeFix_Wire.FixReorder algorithm-cycle
 **Axis**: `healer-state` | **Kind**: `fixture`  
@@ -24372,6 +24613,7 @@ Adjacent edges with B-spline pcurves. CheckGap2d evaluates at knot vector endpoi
 **Claim**: Without cycle detection in FixReorder's dependency graph, a diamond-shaped wire with overlapping edge endpoints causes infinite loop or hanging reorder pass.  
 **Reproducer**: Four-edge diamond (v0→v1→v2→v3→v0) with near-tangent junctions creating bi-directional ordering constraints. FixReorder should detect cycle and exit gracefully.  
 **Fixture**: `/Users/zellyn/gh/dodgy-step-files/step-examples/12-3b-wires/Twi164.stp`
+- **Tier-3 assertion**: n_faces_total == 1
 
 ### Twi165 — ShapeAnalysis_Wire.CheckTail B-spline subdivided
 **Axis**: `healer-state` | **Kind**: `fixture`  
@@ -24379,6 +24621,7 @@ Adjacent edges with B-spline pcurves. CheckGap2d evaluates at knot vector endpoi
 **Claim**: Without knot-continuity awareness, CheckTail flags C1 discontinuities at every sub-curve join as tail failures, over-reporting defects.  
 **Reproducer**: Straight edge followed by three B-spline sub-curves (representing subdivided single curve), each with C1 discontinuity at junction. CheckTail should not fire on subdivisions of single logical edge.  
 **Fixture**: `/Users/zellyn/gh/dodgy-step-files/step-examples/12-3b-wires/Twi165.stp`
+- **Tier-3 assertion**: n_faces_total == 1
 
 ### Twi166 — ShapeFix_Wire.FixSelfIntersectingEdge near-grazing
 **Axis**: `input-shape` | **Kind**: `fixture`  
@@ -24386,6 +24629,7 @@ Adjacent edges with B-spline pcurves. CheckGap2d evaluates at knot vector endpoi
 **Claim**: Without degenerate-intersection filtering, FixSelfIntersectingEdge splits a B-spline at a point within Confusion tolerance, creating topologically invalid sub-edges.  
 **Reproducer**: B-spline curve looping back on itself with endpoints separated by 0.0001 unit, creating near-intersection within default Confusion (~1e-7). FixSelfIntersectingEdge must skip or merge degenerate splits.  
 **Fixture**: `/Users/zellyn/gh/dodgy-step-files/step-examples/12-3b-wires/Twi166.stp`
+- **Tier-3 assertion**: n_faces_total == 1
 
 ### Twi167 — ShapeFix_Wire.FixIntersectingEdges loop-collapse
 
@@ -24396,6 +24640,7 @@ Adjacent edges with B-spline pcurves. CheckGap2d evaluates at knot vector endpoi
 **Search anchors**: `FixIntersectingEdges`, `loop-collapse`, `degenerate wire`
 
 ---
+- **Tier-3 assertion**: shape_null == True
 
 ### Twi168 — ShapeAnalysis_Wire.CheckShapeConnect different-vertex-counts
 
@@ -24406,6 +24651,7 @@ Adjacent edges with B-spline pcurves. CheckGap2d evaluates at knot vector endpoi
 **Search anchors**: `CheckShapeConnect`, `different-vertex-counts`, `edge-connectivity`
 
 ---
+- **Tier-3 assertion**: shape_null == True
 
 ### Twi169 — ShapeFix_Wire.FixDegenerated insert-between-degenerate
 
@@ -24416,6 +24662,7 @@ Adjacent edges with B-spline pcurves. CheckGap2d evaluates at knot vector endpoi
 **Search anchors**: `FixDegenerated`, `insert-between-degenerate`, `consecutive degenerate edges`
 
 ---
+- **Tier-3 assertion**: shape_null == True
 
 ### Twi170 — ShapeAnalysis_Wire.CheckGap3d 3D-vs-pcurve-disagreement
 
@@ -24426,6 +24673,7 @@ Adjacent edges with B-spline pcurves. CheckGap2d evaluates at knot vector endpoi
 **Search anchors**: `CheckGap3d`, `3D-vs-pcurve-disagreement`, `gap reporting`
 
 ---
+- **Tier-3 assertion**: shape_null == True
 
 ### Twi171 — ShapeFix_Wire.FixReorder reverse-then-forward
 
@@ -24434,6 +24682,7 @@ Adjacent edges with B-spline pcurves. CheckGap2d evaluates at knot vector endpoi
 **Failure mode**: Single-direction sweep misses mixed-mode case; incomplete reordering  
 **Minimal reproducer**: Five-edge wire [forward, forward, forward, forward, reverse]; call FixReorder; expect correct ordering, observe partial result  
 **Search anchors**: `FixReorder`, `reverse-then-forward`, `mixed orientation`
+- **Tier-3 assertion**: shape_null == True
 
 ### Twi172 — ShapeFix_Wire.FixSelfIntersectingEdge cusp-edge
 
@@ -24442,6 +24691,7 @@ Adjacent edges with B-spline pcurves. CheckGap2d evaluates at knot vector endpoi
 **Fixture:** B-spline curve with zero derivative at midpoint connecting two vertices. FixSelfIntersectingEdge fails during tangent computation at cusp location.
 
 ---
+- **Tier-3 assertion**: shape_null == True
 
 ### Twi173 — ShapeAnalysis_Wire.CheckLacking endpoint-degenerate
 
@@ -24450,6 +24700,7 @@ Adjacent edges with B-spline pcurves. CheckGap2d evaluates at knot vector endpoi
 **Fixture:** Three-edge loop with intermediate vertices nearly coincident, creating gap where edge should connect. Degenerate-vertex masking prevents detection of the missing linking edge.
 
 ---
+- **Tier-3 assertion**: shape_null == True
 
 ### Twi174 — ShapeFix_Wire.FixDummySeam non-cylindrical
 
@@ -24458,6 +24709,7 @@ Adjacent edges with B-spline pcurves. CheckGap2d evaluates at knot vector endpoi
 **Fixture:** Closed loop on conical surface at uniform height. FixDummySeam's cylindrical-seam heuristic misidentifies cone apex region and incorrectly processes edges.
 
 ---
+- **Tier-3 assertion**: shape_null == True
 
 ### Twi175 — ShapeAnalysis_Wire.CheckTail negative-parameter
 
@@ -24466,32 +24718,39 @@ Adjacent edges with B-spline pcurves. CheckGap2d evaluates at knot vector endpoi
 **Fixture:** Pentagon wire with final short edge using B-spline parametrization with negative parameter range. CheckTail's binary search fails due to [0, length] bounds assumption.
 
 ---
+- **Tier-3 assertion**: shape_null == True
 
 ### Twi176 — ShapeFix_Wire.FixIntersectingEdges concurrent-modification
 
 **Defect:** Wire where FixIntersectingEdges modifies the edge list while iterating; downstream operations get stale iterator.
 
 **Fixture:** Self-intersecting figure-eight wire with six edges creating crossing pattern. FixIntersectingEdges split operations invalidate iteration cursors during concurrent list modification.
+- **Tier-3 assertion**: shape_null == True
 
 ### Twi177 — ShapeAnalysis_Wire.CheckOuterBound nested-faces
 
 Wire is the outer bound of an inner face within a larger face. `CheckOuterBound` classifies based on enclosed area but the nested context is missing, causing it to misidentify the wire's role within compound geometry.
+- **Tier-3 assertion**: shape_null == True
 
 ### Twi178 — ShapeFix_Wire.FixSelfIntersection convergence-oscillation
 
 Wire whose self-intersection fix produces output that re-introduces a different self-intersection pattern. `FixSelfIntersection` oscillates between two competing fix strategies without converging to a stable solution.
+- **Tier-3 assertion**: shape_null == True
 
 ### Twi179 — ShapeAnalysis_Wire.CheckGap2d on-trimmed-pcurve
 
 Adjacent edges with `TRIMMED_CURVE` pcurves. `CheckGap2d` compares trim bounds against untrimmed parameters and incorrectly reports gap values when both edges are trimmed.
+- **Tier-3 assertion**: shape_null == True
 
 ### Twi180 — ShapeFix_Wire.FixGaps3d 4-edge-gap-chain
 
 Wire with 4 consecutive edges all having tiny gaps between them. `FixGaps3d` bridges each individual gap independently but the chain of bridges accumulates curvature deviations.
+- **Tier-3 assertion**: shape_null == True
 
 ### Twi181 — ShapeAnalysis_Wire.CheckGap3d B-spline-vs-LINE
 
 Adjacent edges where one is a `B_SPLINE_CURVE` and the other is `LINE`. `CheckGap3d`'s endpoint extraction applies different parametric interpretation for the two curve types, causing false gap detection.
+- **Tier-3 assertion**: shape_null == True
 
 ### Twi182 — ShapeFix_Wire.FixTails very-small-tail
 
@@ -24502,6 +24761,7 @@ Adjacent edges where one is a `B_SPLINE_CURVE` and the other is `LINE`. `CheckGa
 **Fixture path**: `/Users/zellyn/gh/dodgy-step-files/step-examples/12-3b-wires/Twi182.stp`  
 **Fixture kind**: `STEP_STANDALONE`  
 **Schema**: `AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }`
+- **Tier-3 assertion**: shape_null == True
 
 ### Twi183 — ShapeAnalysis_Wire.CheckSeam non-cylindrical-seam
 
@@ -24512,6 +24772,7 @@ Adjacent edges where one is a `B_SPLINE_CURVE` and the other is `LINE`. `CheckGa
 **Fixture path**: `/Users/zellyn/gh/dodgy-step-files/step-examples/12-3b-wires/Twi183.stp`  
 **Fixture kind**: `STEP_STANDALONE`  
 **Schema**: `AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }`
+- **Tier-3 assertion**: n_faces_total == 1
 
 ### Twi184 — ShapeFix_Wire.FixConnected zero-length-edge-between
 
@@ -24522,6 +24783,7 @@ Adjacent edges where one is a `B_SPLINE_CURVE` and the other is `LINE`. `CheckGa
 **Fixture path**: `/Users/zellyn/gh/dodgy-step-files/step-examples/12-3b-wires/Twi184.stp`  
 **Fixture kind**: `STEP_STANDALONE`  
 **Schema**: `AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }`
+- **Tier-3 assertion**: shape_null == True
 
 ### Twi185 — ShapeAnalysis_Wire.CheckSelfIntersection coincident-curves
 
@@ -24532,6 +24794,7 @@ Adjacent edges where one is a `B_SPLINE_CURVE` and the other is `LINE`. `CheckGa
 **Fixture path**: `/Users/zellyn/gh/dodgy-step-files/step-examples/12-3b-wires/Twi185.stp`  
 **Fixture kind**: `STEP_STANDALONE`  
 **Schema**: `AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }`
+- **Tier-3 assertion**: shape_null == True
 
 ### Twi186 — ShapeFix_Wire.FixIntersectingEdges parametric-overlap
 
@@ -24542,6 +24805,7 @@ Adjacent edges where one is a `B_SPLINE_CURVE` and the other is `LINE`. `CheckGa
 **Fixture path**: `/Users/zellyn/gh/dodgy-step-files/step-examples/12-3b-wires/Twi186.stp`  
 **Fixture kind**: `STEP_STANDALONE`  
 **Schema**: `AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }`
+- **Tier-3 assertion**: n_faces_total == 1
 
 ### Twi187 — ShapeFix_Wire.FixLacking insertion-cascade
 
@@ -24550,6 +24814,7 @@ Adjacent edges where one is a `B_SPLINE_CURVE` and the other is `LINE`. `CheckGa
 **Minimal reproducer**: Wire with gap from (10,0) to (20,0) followed by another gap; invoke FixLacking(). Without re-evaluation: second insertion uses stale position. With fix: gap detection re-runs after each insertion.
 
 **Falsifiable claim**: FixLacking must re-check for gaps after each edge insertion to catch cascading missing edges.
+- **Tier-3 assertion**: shape_null == True
 
 ### Twi188 — ShapeAnalysis_Wire.CheckSelfIntersectingEdge B-spline-with-loop
 
@@ -24558,6 +24823,7 @@ Adjacent edges where one is a `B_SPLINE_CURVE` and the other is `LINE`. `CheckGa
 **Minimal reproducer**: B-spline edge with control points forming self-loop: (0,0)→(5,5)→(10,5)→(5,0)→(10,0); invoke CheckSelfIntersectingEdge(). Without full-curve check: interior crossing at (7.5,2.5) missed. With fix: curve parameterization swept for internal intersections.
 
 **Falsifiable claim**: CheckSelfIntersectingEdge must examine curve interior, not just endpoints, to detect self-crossing splines.
+- **Tier-3 assertion**: shape_null == True
 
 ### Twi189 — ShapeFix_Wire.FixGaps3d directional-extension
 
@@ -24566,6 +24832,7 @@ Adjacent edges where one is a `B_SPLINE_CURVE` and the other is `LINE`. `CheckGa
 **Minimal reproducer**: Gap from (5,5) to (5,5.1); extend edge 1 OR edge 2. Without direction preference: result depends on iteration order. With fix: extend geometrically-preferred edge (e.g., lower slope change).
 
 **Falsifiable claim**: FixGaps3d must select gap-fill direction based on geometry, not arbitrary edge ordering.
+- **Tier-3 assertion**: shape_null == True
 
 ### Twi190 — ShapeAnalysis_Wire.CheckShapeConnect three-edge-fan
 
@@ -24574,6 +24841,7 @@ Adjacent edges where one is a `B_SPLINE_CURVE` and the other is `LINE`. `CheckGa
 **Minimal reproducer**: Vertex (#33) shared by edges 1→3, 2→3, 3→4 (three edges); invoke CheckShapeConnect(). Without fan support: reports false DONE or incorrect closing verdict. With fix: handles n-way vertex junctions.
 
 **Falsifiable claim**: CheckShapeConnect must validate connectivity for fan topologies (>2 edges per vertex).
+- **Tier-3 assertion**: shape_null == True
 
 ### Twi191 — ShapeFix_Wire.FixIntersectingEdges parameter-monotonicity
 
@@ -24582,6 +24850,7 @@ Adjacent edges where one is a `B_SPLINE_CURVE` and the other is `LINE`. `CheckGa
 **Minimal reproducer**: Wire with parameter sequence [0.0-0.2, 0.5-0.8, 0.1-0.4, 0.7-1.0, 0.3-0.6]; invoke FixIntersectingEdges(). Without ordering preservation: sort reorders edges to [0.0-0.2, 0.1-0.4, 0.3-0.6, 0.5-0.8, 0.7-1.0], breaking topology. With fix: preserve wire order during intersection resolution.
 
 **Falsifiable claim**: FixIntersectingEdges must not reorder edges; intersection resolution must maintain original wire sequence.
+- **Tier-3 assertion**: shape_null == True
 
 ### Twi192 — FixGaps2d 2D-only-bridge
 
@@ -24592,6 +24861,7 @@ Adjacent edges where one is a `B_SPLINE_CURVE` and the other is `LINE`. `CheckGa
 **Test hook**: Invoke FixGaps2d; verify bridge edge's 3D points fail surface containment check.
 
 ---
+- **Tier-3 assertion**: n_faces_total == 1
 
 ### Twi193 — CheckOrder index-mode-clash
 
@@ -24602,6 +24872,7 @@ Adjacent edges where one is a `B_SPLINE_CURVE` and the other is `LINE`. `CheckGa
 **Test hook**: Wire on cylinder crossing seam; CheckOrder(theMode3D=true) should detect reordering needed but doesn't.
 
 ---
+- **Tier-3 assertion**: n_faces_total == 1
 
 ### Twi194 — FixIntersectingEdges shared-vertex-misclassification
 
@@ -24612,6 +24883,7 @@ Adjacent edges where one is a `B_SPLINE_CURVE` and the other is `LINE`. `CheckGa
 **Test hook**: Wire with parameter-space overlap at shared vertices; FixIntersectingEdges misclassifies as true intersection.
 
 ---
+- **Tier-3 assertion**: n_faces_total == 1
 
 ### Twi195 — CheckClosed open-tail-vs-spur
 
@@ -24622,6 +24894,7 @@ Adjacent edges where one is a `B_SPLINE_CURVE` and the other is `LINE`. `CheckGa
 **Test hook**: Wire with small closing gap; CheckClosed returns false but lacks intermediate status for "near-closed" classification.
 
 ---
+- **Tier-3 assertion**: n_faces_total == 1
 
 ### Twi196 — FixDegenerated zero-length-after-trim
 
@@ -24630,6 +24903,7 @@ Adjacent edges where one is a `B_SPLINE_CURVE` and the other is `LINE`. `CheckGa
 **Mechanism**: Edge E2 has valid 3D geometry (LINE from (5,0,0) to (15,0,0), 10 units long) but its pcurve trim range is [5.0, 5.0] (zero-width, single point in parameter space). The 3D curve is geometrically non-degenerate, so BRep_Tool::Degenerated returns false. However, the effective parametric range is zero. FixDegenerated only checks pre-marked degeneracy, missing trim-induced zero-length.
 
 **Test hook**: Wire with non-degenerate 3D edge but zero-length trim; FixDegenerated should detect but doesn't flag for removal.
+- **Tier-3 assertion**: n_faces_total == 1
 
 ### Twi197 — ShapeFix_Wire.FixTails iteration-with-removal
 
@@ -24642,6 +24916,7 @@ Adjacent edges where one is a `B_SPLINE_CURVE` and the other is `LINE`. `CheckGa
 **Search anchors**: `FixTails`, `Remove()`, `iterator invalidation`, `sequence mutation`
 
 ---
+- **Tier-3 assertion**: shape_null == True
 
 ### Twi198 — ShapeAnalysis_Wire.CheckSelfIntersection coincident-line-segments
 
@@ -24654,6 +24929,7 @@ Adjacent edges where one is a `B_SPLINE_CURVE` and the other is `LINE`. `CheckGa
 **Search anchors**: `CheckSelfIntersection`, `handle equality`, `geometric coincidence`, `parameter range overlap`
 
 ---
+- **Tier-3 assertion**: shape_null == True
 
 ### Twi199 — ShapeFix_Wire.FixGaps3d gap-larger-than-Confusion-but-less-than-vertex-tolerance
 
@@ -24666,6 +24942,7 @@ Adjacent edges where one is a `B_SPLINE_CURVE` and the other is `LINE`. `CheckGa
 **Search anchors**: `FixGaps3d`, `Precision::Confusion()`, `BRep_Tool::Tolerance`, `threshold mismatch`
 
 ---
+- **Tier-3 assertion**: shape_null == True
 
 ### Twi200 — ShapeAnalysis_Wire.CheckOrder cycle-vs-acyclic
 
@@ -24678,6 +24955,7 @@ Adjacent edges where one is a `B_SPLINE_CURVE` and the other is `LINE`. `CheckGa
 **Search anchors**: `CheckOrder`, `vertex degree`, `branching detection`, `wire topology validation`
 
 ---
+- **Tier-3 assertion**: shape_null == True
 
 ### Twi201 — ShapeFix_Wire.FixSeam mismatched-pcurve-direction
 
@@ -24688,6 +24966,7 @@ Adjacent edges where one is a `B_SPLINE_CURVE` and the other is `LINE`. `CheckGa
 **Minimal reproducer**: Cylinder seam edge; first pcurve parametrized 0→2π, second parametrized 2π→0; FixSeam assumes first direction is canonical.
 
 **Search anchors**: `FixSeam`, `pcurve direction`, `seam edge`, `parametric orientation mismatch`
+- **Tier-3 assertion**: shape_null == True
 
 ### Twi202 — ShapeFix_Wire.FixReorder duplicate-vertex-causes-cycle
 
@@ -24696,6 +24975,7 @@ Wire with two edges sharing both endpoints (parallel paths). FixReorder attempts
 **Fixture:** `/Users/zellyn/gh/dodgy-step-files/step-examples/12-3b-wires/Twi202.stp`
 
 ---
+- **Tier-3 assertion**: n_faces_total == 1
 
 ### Twi203 — ShapeAnalysis_Wire.CheckTail B-spline tail-detection
 
@@ -24704,6 +24984,7 @@ Wire's last edge is a B-spline with smoothly decreasing magnitude approaching ze
 **Fixture:** `/Users/zellyn/gh/dodgy-step-files/step-examples/12-3b-wires/Twi203.stp`
 
 ---
+- **Tier-3 assertion**: n_faces_total == 1
 
 ### Twi204 — ShapeFix_Wire.FixIntersectingEdges 3-edges-at-vertex
 
@@ -24712,6 +24993,7 @@ Three edges meeting at single point (star configuration). FixIntersectingEdges p
 **Fixture:** `/Users/zellyn/gh/dodgy-step-files/step-examples/12-3b-wires/Twi204.stp`
 
 ---
+- **Tier-3 assertion**: n_faces_total == 1
 
 ### Twi205 — ShapeAnalysis_Wire.CheckIntersectingEdges B-spline-tangent-touch
 
@@ -24720,12 +25002,14 @@ Two B-spline edges touching tangentially (single point, no crossing). CheckInter
 **Fixture:** `/Users/zellyn/gh/dodgy-step-files/step-examples/12-3b-wires/Twi205.stp`
 
 ---
+- **Tier-3 assertion**: n_faces_total == 1
 
 ### Twi206 — ShapeFix_Wire.FixSelfIntersectingEdge cusp-at-vertex
 
 Single edge with cusp at start vertex. FixSelfIntersectingEdge tries to split at cusp but cusp coincides with endpoint, preventing proper healing.
 
 **Fixture:** `/Users/zellyn/gh/dodgy-step-files/step-examples/12-3b-wires/Twi206.stp`
+- **Tier-3 assertion**: n_faces_total == 1
 
 ### Twi207 — ShapeFix_Wire.FixGaps2d gap-at-knot-discontinuity
 
@@ -24736,6 +25020,7 @@ Single edge with cusp at start vertex. FixSelfIntersectingEdge tries to split at
 **Search anchors**: `FixGaps2d`, `knot`, `B-spline`, `parametric discontinuity`, `pcurve gap`.
 
 ---
+- **Tier-3 assertion**: shape_null == True
 
 ### Twi208 — ShapeAnalysis_Wire.CheckSelfIntersection coincident-with-tangency
 
@@ -24746,6 +25031,7 @@ Single edge with cusp at start vertex. FixSelfIntersectingEdge tries to split at
 **Search anchors**: `CheckSelfIntersection`, `overlapping edges`, `tangent`, `geometric coincidence`, `ambiguous verdict`.
 
 ---
+- **Tier-3 assertion**: shape_null == True
 
 ### Twi209 — ShapeFix_Wire.FixReorder mixed-curve-types-vertex-merge
 
@@ -24756,6 +25042,7 @@ Single edge with cusp at start vertex. FixSelfIntersectingEdge tries to split at
 **Search anchors**: `FixReorder`, `mixed curve types`, `LINE CIRCLE BSPLINE`, `vertex merge`, `heterogeneous edges`.
 
 ---
+- **Tier-3 assertion**: shape_null == True
 
 ### Twi210 — ShapeAnalysis_Wire.CheckClosed near-closed-with-perpendicular-distance
 
@@ -24766,6 +25053,7 @@ Single edge with cusp at start vertex. FixSelfIntersectingEdge tries to split at
 **Search anchors**: `CheckClosed`, `near-closed`, `perpendicular distance`, `3D vs surface closure`, `sub-tolerance gap`.
 
 ---
+- **Tier-3 assertion**: shape_null == True
 
 ### Twi211 — ShapeFix_Wire.FixLacking surface-edge-direction-mismatch
 
@@ -24774,6 +25062,7 @@ Single edge with cusp at start vertex. FixSelfIntersectingEdge tries to split at
 **Fixture**: `/Users/zellyn/gh/dodgy-step-files/step-examples/12-3b-wires/Twi211.stp` — 5-edge wire on CYLINDRICAL_SURFACE (radius 5, z-axis). Edges: arc u∈[0,1], arc u∈[1,2], degenerate u=2, arc u∈[2,2.1] with .F. sense (MISMATCH), arc u∈[2.1,2π→0]. FixLacking error in direction inference on periodic surface.
 
 **Search anchors**: `FixLacking`, `CYLINDRICAL_SURFACE`, `direction mismatch`, `same_sense flag`, `missing edge`, `seam wrapping`.
+- **Tier-3 assertion**: shape_null == True
 
 ### Twi212 — ShapeFix_Wire.FixIntersectingEdges trim-aware-intersection
 
@@ -24782,6 +25071,7 @@ Single edge with cusp at start vertex. FixSelfIntersectingEdge tries to split at
 **Fixture:** Two collinear line edges on same base curve. Edge 1 restricted to [0,5] (avoiding origin), Edge 2 restricted to [6,10] (starting after gap). Base curves overlap everywhere, but trimmed ranges don't. Expected: no intersection. Defect: split at base-curve intersection point.
 
 ---
+- **Tier-3 assertion**: shape_null == True
 
 ### Twi213 — ShapeAnalysis_Wire.CheckGap3d using-pcurve-distance
 
@@ -24790,6 +25080,7 @@ Single edge with cusp at start vertex. FixSelfIntersectingEdge tries to split at
 **Fixture:** Two edges in sequence with 3D endpoints matching (5,0) at junction, but pcurve of second edge starts at u=7 instead of u=5, creating parametric gap. Expected: CheckGap3d detects pcurve discontinuity. Defect: 3D-only check misses it.
 
 ---
+- **Tier-3 assertion**: shape_null == True
 
 ### Twi214 — ShapeFix_Wire.FixSelfIntersection figure-eight-pattern
 
@@ -24798,6 +25089,7 @@ Single edge with cusp at start vertex. FixSelfIntersectingEdge tries to split at
 **Fixture:** B-spline curve from (5,5) to (5,-5) crossing itself at origin (0,0). Control points arranged to create classic figure-8. Expected: single wire with self-intersection flagged. Defect: split produces two wires.
 
 ---
+- **Tier-3 assertion**: shape_null == True
 
 ### Twi215 — ShapeAnalysis_Wire.CheckTail multi-tail-detection
 
@@ -24806,12 +25098,14 @@ Single edge with cusp at start vertex. FixSelfIntersectingEdge tries to split at
 **Fixture:** Rectangular loop with two small spikes: one from (5,0)→(5,-2)→(5,0), one from (10,5)→(12,5)→(10,5). Expected: CheckTail enumerates both candidates. Defect: reports only first.
 
 ---
+- **Tier-3 assertion**: shape_null == True
 
 ### Twi216 — ShapeFix_Wire.FixDegenerated removal-cascade
 
 **Defect:** Wire with multiple degenerate edges. FixDegenerated removes sequentially but removal changes vertex map, invalidating subsequent removals.
 
 **Fixture:** Open chain alternating normal and degenerate edges: normal→degen(zero-length)→normal→degen(zero-length)→normal. Expected: all degenerates removed consistently. Defect: cascade fails due to stale indices.
+- **Tier-3 assertion**: shape_null == True
 
 ### Twi217 — ShapeFix_Wire.FixSeam pcurve-direction-not-matching-3d
 Seam edge where parametric curve direction (u-orientation) differs from 3D curve direction. FixSeam corrects PCurve but the original 3D curve becomes orphaned/unreferenced.
@@ -24899,22 +25193,27 @@ Wire missing edge where existing path passes through degenerate vertex. FixLacki
 ### Twi232 — ShapeFix_Wire.FixSelfIntersection two-edges-two-intersections
 
 Two edges that cross at TWO distinct points in 3D space. FixSelfIntersection handles single intersection per edge pair only; with multiple crossings, the second intersection remains undetected and unrepaired.
+- **Tier-3 assertion**: shape_null == True
 
 ### Twi233 — ShapeAnalysis_Wire.CheckOuterBound winding-number-zero
 
 Wire forming a figure-8 pattern (two loops meeting at pinch vertex). The 3D winding number around a test point is zero. CheckOuterBound's enclosing test returns inconclusive, failing to classify the wire correctly as inner/outer bound.
+- **Tier-3 assertion**: shape_null == True
 
 ### Twi234 — ShapeFix_Wire.FixDegenerated zero-vertex
 
 Wire containing a vertex at exactly the origin (0,0,0). FixDegenerated's vertex-distance test uses absolute comparison and treats the origin specially, failing to recognize degenerate edges incident to it.
+- **Tier-3 assertion**: n_faces_total == 1
 
 ### Twi235 — ShapeAnalysis_Wire.CheckTail B-spline-tangent-mismatch
 
 Wire's tail edge has tangent at start that doesn't match the previous edge's tangent at end, forming a sharp corner. CheckTail's smooth-only assumption misses this case when B-splines are involved.
+- **Tier-3 assertion**: shape_null == True
 
 ### Twi236 — ShapeFix_Wire.FixGaps3d bridge-creates-degeneracy
 
 Wire has a 3D gap at a junction (endpoints separated by ~1e-8, within tolerance). FixGaps3d attempts to bridge by creating a new edge, but the bridge itself becomes degenerate with coincident or near-coincident endpoints.
+- **Tier-3 assertion**: n_faces_total == 1
 
 ### Twi237 — ShapeFix_Wire.FixSmall edge-coalescing tolerance
 - **Category**: §12.3b wires (sub-class: size-threshold)
@@ -24925,6 +25224,7 @@ Wire has a 3D gap at a junction (endpoints separated by ~1e-8, within tolerance)
 - **Model impact**: Produces a wire with reduced edge count after coalescing micro-segments
 - **Fixture path**: step-examples/12-3b-wires/Twi237.stp
 - **Fixture kind**: scaffold
+- **Tier-3 assertion**: shape_null == True
 
 ### Twi238 — ShapeFix_Wire.FixConnected disconnected-endpoints vertex-merge-fails
 - **Category**: §12.3b wires (sub-class: endpoint-connectivity)
@@ -24935,6 +25235,7 @@ Wire has a 3D gap at a junction (endpoints separated by ~1e-8, within tolerance)
 - **Model impact**: Connected wire topology or rejection with diagnostic status
 - **Fixture path**: step-examples/12-3b-wires/Twi238.stp
 - **Fixture kind**: scaffold
+- **Tier-3 assertion**: shape_null == True
 
 ### Twi239 — ShapeFix_Wire.FixClosed open-wire-closure-degenerate
 - **Category**: §12.3b wires (sub-class: closure-verification)
@@ -24945,6 +25246,7 @@ Wire has a 3D gap at a junction (endpoints separated by ~1e-8, within tolerance)
 - **Model impact**: Closed wire with possible degenerate edge, or open-wire rejection
 - **Fixture path**: step-examples/12-3b-wires/Twi239.stp
 - **Fixture kind**: scaffold
+- **Tier-3 assertion**: shape_null == True
 
 ### Twi240 — ShapeFix_Wire.FixShifted seam-vertex-position-mismatch
 - **Category**: §12.3b wires (sub-class: seam-parametrization)
@@ -24955,6 +25257,7 @@ Wire has a 3D gap at a junction (endpoints separated by ~1e-8, within tolerance)
 - **Model impact**: Wire with adjusted seam parametrization, geometric identity preserved
 - **Fixture path**: step-examples/12-3b-wires/Twi240.stp
 - **Fixture kind**: scaffold
+- **Tier-3 assertion**: shape_null == True
 
 ### Twi241 — ShapeFix_Wire.FixNotchedEdges notch-at-multi-edge-junction
 - **Category**: §12.3b wires (sub-class: tangency-discontinuity)
@@ -24969,6 +25272,7 @@ Wire has a 3D gap at a junction (endpoints separated by ~1e-8, within tolerance)
 # Wave 56B: Wire Prefix Fixtures (Twi242–Twi246)
 
 Geometric defects in wire topology and edge coherence.
+- **Tier-3 assertion**: shape_null == True
 
 ### Twi242 — ShapeAnalysis_Wire.CheckOrder
 - **Defect**: Edge orientation reversal breaks traversal order
@@ -24976,6 +25280,7 @@ Geometric defects in wire topology and edge coherence.
 - **Test axiom**: CheckOrder detects non-linear topology in wire where one edge opposes expected direction
 - **Repair entry**: ShapeFix_Wire.FixReorder should reorient edges to restore consistency
 - **Fixture kind**: Standard STEP
+- **Tier-3 assertion**: shape_null == True
 
 ### Twi243 — ShapeAnalysis_Wire.CheckConnected
 - **Defect**: Sharp discontinuity at junction (non-smooth tangent transition)
@@ -24983,6 +25288,7 @@ Geometric defects in wire topology and edge coherence.
 - **Test axiom**: CheckConnected flags discontinuous tangent; FixConnected may blend or split at sharp angle
 - **Repair entry**: ShapeFix_Wire.FixConnected detects and addresses tangent discontinuity
 - **Fixture kind**: Standard STEP
+- **Tier-3 assertion**: shape_null == True
 
 ### Twi244 — ShapeAnalysis_Wire.CheckSmall
 - **Defect**: Degenerate zero-length edge in closed loop
@@ -24990,6 +25296,7 @@ Geometric defects in wire topology and edge coherence.
 - **Test axiom**: CheckSmall flags sub-tolerance edges; FixSmall removes them
 - **Repair entry**: ShapeFix_Wire.FixSmall must identify and suppress degenerate edge
 - **Fixture kind**: Standard STEP
+- **Tier-3 assertion**: shape_null == True
 
 ### Twi245 — ShapeAnalysis_Wire closure gap
 - **Defect**: EDGE_LOOP topology declares closed but 3D geometry has gap at closure point
@@ -24997,6 +25304,7 @@ Geometric defects in wire topology and edge coherence.
 - **Test axiom**: Wire validation detects geometric gap; fix must insert bridge or adjust endpoint
 - **Repair entry**: ShapeFix_Wire.FixSeam or FixConnected detects and repairs closure gap
 - **Fixture kind**: Standard STEP
+- **Tier-3 assertion**: shape_null == True
 
 ### Twi246 — ShapeAnalysis_Wire.CheckSameParameter
 - **Defect**: Multiple edges share same curve (overlapping geometry)
@@ -25004,6 +25312,7 @@ Geometric defects in wire topology and edge coherence.
 - **Test axiom**: CheckSameParameter or topological analysis flags edge multiplicity; ambiguous parametrization
 - **Repair entry**: ShapeFix_Wire.FixSameParameter or Merging detects overlapped curve and flags for split/merge
 - **Fixture kind**: Standard STEP
+- **Tier-3 assertion**: shape_null == True
 
 ### Twi247 — BRepLib::SameParameter exception silent skip
 
@@ -25015,6 +25324,7 @@ Geometric defects in wire topology and edge coherence.
 - **Model impact**: Non-sameparametrized edge silently skipped during healing pass
 - **Fixture path**: step-examples/12-3b-wires/Twi247.stp
 - **Fixture kind**: scaffold
+- **Tier-3 assertion**: shape_null == True
 
 ### Twi248 — BRepLib::SameParameter null 3D curve dereference
 
@@ -25026,6 +25336,7 @@ Geometric defects in wire topology and edge coherence.
 - **Model impact**: Kernel crash during SameParameter evaluation
 - **Fixture path**: step-examples/12-3b-wires/Twi248.stp
 - **Fixture kind**: scaffold
+- **Tier-3 assertion**: n_faces_total == 1
 
 ### Twi249 — ShapeFix_IntersectionTool CutEdge range too small
 
@@ -25037,6 +25348,7 @@ Geometric defects in wire topology and edge coherence.
 - **Model impact**: Degenerate edge in healed wire
 - **Fixture path**: step-examples/12-3b-wires/Twi249.stp
 - **Fixture kind**: scaffold
+- **Tier-3 assertion**: shape_null == True
 
 ### Twi250 — ShapeFix_IntersectionTool FindVertAndSplitEdge endpoint selection
 
@@ -25048,6 +25360,7 @@ Geometric defects in wire topology and edge coherence.
 - **Model impact**: Non-deterministic edge splitting in multi-wire healing
 - **Fixture path**: step-examples/12-3b-wires/Twi250.stp
 - **Fixture kind**: scaffold
+- **Tier-3 assertion**: shape_null == True
 
 ### Twi251 — ShapeFix_IntersectionTool FixIntersectingWires null input guard
 
@@ -25059,94 +25372,120 @@ Geometric defects in wire topology and edge coherence.
 - **Model impact**: Silent failure when wire geometry context is missing
 - **Fixture path**: step-examples/12-3b-wires/Twi251.stp
 - **Fixture kind**: scaffold
+- **Tier-3 assertion**: shape_null == True
 
 ### Twi252 — ShapeAnalysis_Wire.CheckConnected.WIRE_NOT_LOADED
 
 Wire with zero edges; validates that CheckConnected detects unloaded state. Without IsLoaded guard, null-dereference on edge sequence access.
+- **Tier-3 assertion**: shape_null == True
 
 ### Twi253 — ShapeAnalysis_Wire.CheckConnected.NULL_EDGE_VERTICES
 
 EDGE_CURVE with null V2 endpoint; validates null-vertex detection. Without null check, segfault on IsSame() dereference.
+- **Tier-3 assertion**: shape_null == True
 
 ### Twi254 — ShapeAnalysis_Wire.CheckConnected.SAME_VERTEX_BOTH_ENDS
 
 Single edge where FirstVertex == LastVertex (self-loop); validates loop detection. Without V1.IsSame(V2) guard, connectivity masked.
+- **Tier-3 assertion**: shape_null == True
 
 ### Twi255 — ShapeAnalysis_Wire.CheckLoop.null-vertices
 
 Multi-edge wire with one edge having null V1 endpoint; validates FAIL2 encoding. Without null check, segfault on BRep_Tool::Tolerance().
+- **Tier-3 assertion**: shape_null == True
 
 ### Twi256 — ShapeAnalysis_Wire.CheckLoop.degenerated-edge-filter
 
 Wire with degenerate self-loop (1e-12 magnitude) plus normal edge; validates degen filtering. Without BRep_Tool::Degenerated filter, vertex extent inflates.
 
 ## Wave 65C: Twi257–Twi261 CheckLoop Fixtures
+- **Tier-3 assertion**: shape_null == True
 
 ### Twi257 — unloaded-or-trivial-wire
 Single edge (NbEdges<2); CheckLoop returns false immediately. Without IsLoaded/NbEdges guard, iteration causes false classification.
+- **Tier-3 assertion**: shape_null == True
 
 ### Twi258 — self-loop-small-edge
 Self-loop with length 0.05 (below tolerance). CheckSmall must filter before counting; without filter, spurious loop.
+- **Tier-3 assertion**: shape_null == True
 
 ### Twi259 — self-loop-binding
 Two self-loop edges at same vertex. Double-append required (Extent=4). Without: Extent=2, no multi-vertex detection.
+- **Tier-3 assertion**: shape_null == True
 
 ### Twi260 — multi-vertex-self-loop-check
 Three self-loop edges at vertex (Extent=6 after append). Extent>2 and isMultiVertex must add vertex to loop map.
+- **Tier-3 assertion**: shape_null == True
 
 ### Twi261 — dual-vertex-binding
 Three edges with V2 having three incident edges (Extent=3). Both V1 and V2 lists must be appended; asymmetric append loses degree count.
 
 ## Wave 67A STEP Wire Fixtures
+- **Tier-3 assertion**: shape_null == True
 
 ### Twi262 — CheckOrder nullface
 ShapeAnalysis_Wire.CheckOrder silently skips validation when 2D mode requested but face context is null.
+- **Tier-3 assertion**: shape_null == True
 
 ### Twi263 — CheckSelfIntersection acyclic-crossing
 Wire with self-crossing edges in acyclic configuration; detection depends on segment traversal order.
+- **Tier-3 assertion**: shape_null == True
 
 ### Twi264 — FixConnected gap-skip
 Wire with vertex mismatch at edge junction; FixConnected skips repair when vertices within tolerance but unequal.
+- **Tier-3 assertion**: shape_null == True
 
 ### Twi265 — FixClosed endpoint-mismatch
 Wire open by small gap at closure; FixClosed misses repair when endpoint distance uses inconsistent precision.
+- **Tier-3 assertion**: shape_null == True
 
 ### Twi266 — FixGap3d parameter-discontinuity
 Wire with 3D curve reversing at edge junction; FixGap3d fails to detect reversals violating parametric continuity.
 
 # Wave 69B: ShapeAnalysis_Wire Method Coverage
+- **Tier-3 assertion**: shape_null == True
 
 ### Twi267 — ShapeAnalysis_Wire.CheckOuterBound
 Wire outer-bound detection; IsOuterBound flag not propagated correctly after outer boundary classification.
+- **Tier-3 assertion**: shape_null == True
 
 ### Twi268 — ShapeAnalysis_Wire.CheckSeam
 Seam edge classification; seam flag not detected when edge traverses surface parametric seam discontinuity.
+- **Tier-3 assertion**: n_faces_total == 1
 
 ### Twi269 — ShapeAnalysis_Wire.CheckSelfIntersectingEdge
 Individual edge self-crossing; curve loop detection fails on parametric reversals.
+- **Tier-3 assertion**: shape_null == True
 
 ### Twi270 — ShapeAnalysis_Wire.CheckShapeConnect
 Multi-edge shape connectivity validation; disconnected edge chains not flagged when vertices lie within tolerance.
+- **Tier-3 assertion**: n_faces_total == 1
 
 ### Twi271 — ShapeAnalysis_Wire.CheckTail
 Wire terminus validation; tail edge proximity check fails when endpoint gaps exceed local curve curvature radius.
 
 ## STEP Wire Fixtures: Wave 71-B (Twi272–Twi276)
+- **Tier-3 assertion**: shape_null == True
 
 ### Twi272 — CheckLoop Unloaded/Trivial
 Single-edge wire V1→V2. Tests guard against multi-vertex loop detection on degenerate wire (<2 edges). Must skip analysis. **Path**: `step-examples/12-3b-wires/Twi272.stp`
+- **Tier-3 assertion**: shape_null == True
 
 ### Twi273 — CheckLoop Null Vertices
 Edge with null V1 vertex. Tests null-check guard that encodes FAIL2 status before dereference. Prevents segfault. **Path**: `step-examples/12-3b-wires/Twi273.stp`
+- **Tier-3 assertion**: shape_null == True
 
 ### Twi274 — CheckLoop Seam Classification
 Wire on closed surface: regular edge + seam (V→V). Seam must exclude from loop degree count. Without filter, spurious multi-vertex detection. **Path**: `step-examples/12-3b-wires/Twi274.stp`
+- **Tier-3 assertion**: shape_null == True
 
 ### Twi275 — CheckLoop Multi-Vertex Self-Loop
 Three self-loop edges at V1. Tests double-append binding and multi-vertex gate. Extent=6 after appends triggers loop detection. **Path**: `step-examples/12-3b-wires/Twi275.stp`
+- **Tier-3 assertion**: shape_null == True
 
 ### Twi276 — CheckLoop Multi-Vertex V2-Check
 Edges E1(V0→V2), E2(V1→V2), E3(V2→V3). V2 extent=3. Tests end-vertex (V2) loop detection symmetry. **Path**: `step-examples/12-3b-wires/Twi276.stp`
+- **Tier-3 assertion**: shape_null == True
 
 ### Gs056 — `SURFACE_OF_REVOLUTION` of an ellipse around its own centre produces a degenerate surface
 - **Category**: §12.2c surface / curve degeneracies (sub-class: revolution of conic)
@@ -26542,6 +26881,7 @@ OFFSET_SURFACE (+0.5 distance) with asymmetric coverage vs base bounds; myOffset
 - **Notes**: **See also**: Tsh021, Tsh041. Synonyms: "STEP Reader allows opened shells as outer", "MANIFOLD_SOLID_BREP open outer", "non-closed outer shell accepted as solid", "STEP solid invariant violated by reader".
 - **Byte assertion**: contains(b'MANIFOLD_SOLID_BREP')
 - **Byte assertion**: contains(b'OPEN_SHELL') or contains(b'CLOSED_SHELL')
+- **Tier-3 assertion**: n_faces_total == 2
 - **OCC behavior**: silent-accept observed (catalog allowed: {reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: Shell topology loads with inconsistent face orientations or non-manifold edges; BRepCheck flags the shell as invalid, and boolean / offset operations on the solid either produce wrong-sided results or fail outright.
@@ -26555,6 +26895,7 @@ OFFSET_SURFACE (+0.5 distance) with asymmetric coverage vs base bounds; myOffset
 - **Reproducer recipe**: Load Tsh069.stp; invoke OCCT shell analyzer; CheckOrientedShells should report orientation conflict between Face A (outward +Z) and Face B (outward -Z) sharing the base edge loop.
 - **Expected kernel behavior**: Kernel should detect that faces with opposing normals on shared edges violate the manifold orientation invariant and flag the shell as non-manifold or require reorientation.
 - **Expected validation**: `occt=unknown/unknown gmsh=unknown ifc=schema_n/a`
+- **Tier-3 assertion**: n_faces_total == 3
 
 ### Tsh070 — FixFaceOrientation Multiconnect-Edge Classification
 
@@ -26564,6 +26905,7 @@ OFFSET_SURFACE (+0.5 distance) with asymmetric coverage vs base bounds; myOffset
 - **Reproducer recipe**: Load Tsh070.stp; invoke OCCT face orientation fixer; FixFaceOrientation should fail or produce inconsistent results when trying to propagate orientation across the 3-face multiconnect edge.
 - **Expected kernel behavior**: Kernel should either reject the non-manifold topology or use special handling for multiconnect edges; unambiguous orientation propagation is impossible without additional constraints.
 - **Expected validation**: `occt=unknown/unknown gmsh=unknown ifc=schema_n/a`
+- **Tier-3 assertion**: n_faces_total == 3
 
 ### Tsh071 — BadEdges Detection for Mismatched Edge Ordering
 
@@ -26573,6 +26915,7 @@ OFFSET_SURFACE (+0.5 distance) with asymmetric coverage vs base bounds; myOffset
 - **Reproducer recipe**: Load Tsh071.stp; invoke OCCT bad-edge detector; BadEdges should report edge #23/#47 as having inconsistent direction across Face A and Face B.
 - **Expected kernel behavior**: Kernel should detect that the two faces reference curves with opposite parametric directions and flag this as a topology error requiring edge consolidation or reorientation.
 - **Expected validation**: `occt=unknown/unknown gmsh=unknown ifc=schema_n/a`
+- **Tier-3 assertion**: n_faces_total == 2
 
 ### Tsh072 — FreeEdges Detection for Non-Closed Shells
 
@@ -26582,6 +26925,7 @@ OFFSET_SURFACE (+0.5 distance) with asymmetric coverage vs base bounds; myOffset
 - **Reproducer recipe**: Load Tsh072.stp; invoke OCCT free-edge detector; FreeEdges should return compounds containing #45 and #49 as free edges not present in any neighboring face.
 - **Expected kernel behavior**: Kernel should identify free edges, marking the shell as non-closed and non-manifold; validation should fail or flag the shell as incomplete.
 - **Expected validation**: `occt=unknown/unknown gmsh=unknown ifc=schema_n/a`
+- **Tier-3 assertion**: n_faces_total == 2
 
 ### Tsh073 — Perform Context State Reuse Vulnerability
 
@@ -26591,6 +26935,7 @@ OFFSET_SURFACE (+0.5 distance) with asymmetric coverage vs base bounds; myOffset
 - **Reproducer recipe**: Load Tsh073.stp; invoke OCCT fixer Perform() on the shell; then invoke Perform() again without resetting context; observe that Face 2 is orientation-fixed twice, leaving the shell in an inconsistent state.
 - **Expected kernel behavior**: Kernel should either automatically reset context between calls or throw an error on second Perform() without explicit context clear; currently double-fix silently corrupts orientation.
 - **Expected validation**: `occt=unknown/unknown gmsh=unknown ifc=schema_n/a`
+- **Tier-3 assertion**: n_faces_total == 5
 
 ### Tsh074 — Duplicate faces in shell
 
@@ -26600,6 +26945,7 @@ OFFSET_SURFACE (+0.5 distance) with asymmetric coverage vs base bounds; myOffset
 - **Reproducer recipe**: Create a CLOSED_SHELL containing two ADVANCED_FACE entities with identical edge loops, vertices, and plane reference. Call ShapeFix_Shell.Perform(). Observe that FixFaceOrientation fixes one face but not the other, leaving inconsistent orientations.
 - **Expected kernel behavior**: Kernel should reject duplicate face detection or unify orientation across all geometry instances.
 - **Expected validation**: occt=unknown/unknown gmsh=unknown ifc=schema_n/a
+- **Tier-3 assertion**: n_faces_total == 2
 
 ### Tsh075 — Non-orientable Möbius shell
 
@@ -26609,6 +26955,7 @@ OFFSET_SURFACE (+0.5 distance) with asymmetric coverage vs base bounds; myOffset
 - **Reproducer recipe**: Create an OPEN_SHELL with two ADVANCED_FACE entities sharing one edge but with a twist arrangement (both faces oriented forward across the shared edge, creating Möbius topology). Call ShapeAnalysis_Shell.CheckOrientedShells(). Healer crashes during propagation.
 - **Expected kernel behavior**: Kernel must detect non-orientable topology and either reject the shell or flag it for special handling.
 - **Expected validation**: occt=unknown/unknown gmsh=unknown ifc=schema_n/a
+- **Tier-3 assertion**: n_faces_total == 2
 
 ### Tsh076 — Shell-count escalation on decomposition
 
@@ -26618,6 +26965,7 @@ OFFSET_SURFACE (+0.5 distance) with asymmetric coverage vs base bounds; myOffset
 - **Reproducer recipe**: Create a CLOSED_SHELL containing three disconnected cubes (three independent face clusters with no shared edges). Call ShapeFix_Shell.Perform(). Observe NbShells increases from 1 to 3, breaking orientation-fix logic that expects single shell.
 - **Expected kernel behavior**: Kernel must reconcile multi-shell output or emit error if input cannot be treated as single shell.
 - **Expected validation**: occt=unknown/unknown gmsh=unknown ifc=schema_n/a
+- **Tier-3 assertion**: n_faces_total == 3
 
 ### Tsh077 — Empty CLOSED_SHELL
 
@@ -26636,6 +26984,7 @@ OFFSET_SURFACE (+0.5 distance) with asymmetric coverage vs base bounds; myOffset
 - **Reproducer recipe**: Create an OPEN_SHELL with one ADVANCED_FACE whose edge loop has 4 edges forming a topological twist (edge sequence creates orientation flip around loop). Call ShapeFix_Shell.FixFaceOrientation(). Propagation detects contradictory orientation and crashes.
 - **Expected kernel behavior**: Kernel must detect non-orientable surface topology and either reject or flag for manual repair.
 - **Expected validation**: occt=unknown/unknown gmsh=unknown ifc=schema_n/a
+- **Tier-3 assertion**: n_faces_total == 1
 
 ### Tsh079 — ShapeUpgrade_ShellSewing.Apply two-shell sew vertex-tolerance mismatch gap
 
@@ -26733,6 +27082,7 @@ Shell contains two ADVANCED_FACEs that are geometrically identical (same surface
 **Minimal reproducer**: Create shell with two copies of identical face geometry; call FixFaceOrientation; observe one face flipped, other unchanged or vice versa.
 
 ---
+- **Tier-3 assertion**: n_faces_total == 2
 
 ### Tsh095 — ShapeUpgrade_ShellSewing.ApplySewing self-intersecting shell
 
@@ -26745,6 +27095,7 @@ Shell with two faces that intersect each other (T-intersection or X-crossing). F
 **Minimal reproducer**: Create two planar faces with edges that physically cross; call ApplySewing; expect rejection, observe acceptance.
 
 ---
+- **Tier-3 assertion**: n_faces_total == 2
 
 ### Tsh096 — ShapeAnalysis_Shell.CheckOrientedShells degenerate-face
 
@@ -26757,6 +27108,7 @@ Shell contains a degenerate face (zero-area, e.g. all vertices collapsed to sing
 **Minimal reproducer**: Create face with all vertices at same point; call CheckOrientedShells; expect error or rejection, observe classification attempt with undefined normal.
 
 ---
+- **Tier-3 assertion**: n_faces_total == 2
 
 ### Tsh097 — ShapeFix_Shell.Perform context-state accumulation
 
@@ -26769,6 +27121,7 @@ Perform runs multiple sub-fixers (FixFaceOrientation, FixWireGaps, FixShellOrien
 **Minimal reproducer**: Create ShapeFix_Shell with misoriented faces; call Perform() twice; observe myStatus on second call reflects first failure, not second success.
 
 ---
+- **Tier-3 assertion**: shape_null == True
 
 ### Tsh098 — ShapeUpgrade_RemoveLocations.Remove location-after-traversal
 
@@ -26779,38 +27132,46 @@ During MakeNewShape traversal, shape's location is removed from top-level entity
 **Falsifiable claim**: Shape location removed from solid but not from contained faces; downstream face observation sees original location, causing geometric inconsistency.
 
 **Minimal reproducer**: Create translated shell; call RemoveLocations; inspect face coordinates—expect world frame, observe translated frame.
+- **Tier-3 assertion**: n_faces_total == 1
 
 ### Tsh099 — ShapeAnalysis_Shell.CheckOrientedShells one-face-shell
 
 Single ADVANCED_FACE wrapped as CLOSED_SHELL. The "shell orientation" checker reports a verdict despite orientation being meaningful only for ≥2 faces. Exposes analyzer's blind assumption about shell complexity.
+- **Tier-3 assertion**: n_faces_total == 1
 
 ### Tsh100 — ShapeFix_Shell.FixFaceOrientation tangent-edge propagation
 
 Two coplanar faces (z=0) meeting at shared edge; dihedral angle=0°. Orientation propagation cannot determine which face "wins" and fails to propagate consistently. Tests boundary case where topology rules break down.
+- **Tier-3 assertion**: n_faces_total == 2
 
 ### Tsh101 — ShapeUpgrade_ShellSewing.Apply tolerance-driven merge
 
 Two shells with closest vertices offset by (0.0005, 0.0005, 0) — within tolerance (1.0E-3). Sewing merges shells but fails to update merged vertex tolerance to cumulative value, leaving orphaned tight tolerance.
+- **Tier-3 assertion**: n_faces_total == 2
 
 ### Tsh102 — ShapeFix_Solid.SolidFromShell hollow-solid cavity loss
 
 Outer shell (0–2, 0–2, 0–2) contains inner shell (0.5–1.5, 0.5–1.5, 0.5–1.5). SolidFromShell converts to MANIFOLD_SOLID_BREP with cavity but loses cavity orientation markers, making downstream cavity operations unsafe.
+- **Tier-3 assertion**: n_faces_total == 4
 
 ### Tsh103 — ShapeAnalysis_Shell.FreeEdges seam-edge classification
 
 Two faces (z=0, z=1) with named seam edges ('seam_e0', 'seam_e1', 'seam_conn0', 'seam_conn1'). FreeEdges incorrectly classifies matched seam pairs as free, violating closed-shell invariant.
+- **Tier-3 assertion**: n_faces_total == 2
 
 ### Tsh104 — ShapeFix_Shell.FixFaceOrientation reverse-edge propagation
 
 Shell where one face's edge is referenced with `.F.` by a neighbor; orientation propagation should flip but the logic only handles `.T.` inputs. Two adjacent rectangular faces share edge #37; Face2 references it as `.F.` while Face1 uses `.T.`. FixFaceOrientation's propagation logic fails to cascade the flip through the graph.
 
 **File:** `Tsh104.stp`
+- **Tier-3 assertion**: n_faces_total == 2
 
 ### Tsh105 — ShapeAnalysis_Shell.CheckOrientedShells unconnected components
 
 Shell with two disjoint sub-shells (not topologically connected); CheckOrientedShells reports a single verdict instead of per-component. Contains two isolated square faces (Component 1 at origin, Component 2 at x=10) with no shared edges. CheckOrientedShells must detect and report orientation issues per connected component.
 
 **File:** `Tsh105.stp`
+- **Tier-3 assertion**: n_faces_total == 2
 
 ### Tsh106 — ShapeUpgrade_RemoveInternalWires shell-level skip
 
@@ -26823,6 +27184,7 @@ Shell-level RemoveInternalWires is called but doesn't propagate to face-level in
 Perform's orientation pass runs FixFaceOrientation then re-checks; the recheck flips orientation again when invariant is achieved (oscillation). Three-face corner shell where each pair shares edges; subtle orientation inconsistencies cause FixFaceOrientation to flip Face 3, then recheck flips it back, creating oscillation loop.
 
 **File:** `Tsh107.stp`
+- **Tier-3 assertion**: shape_null == True
 
 ### Tsh108 — ShapeUpgrade_ShellSewing.Apply zero-tolerance
 
@@ -26909,34 +27271,41 @@ Shell with 5 faces; Perform's early-exit condition (myStatus contains FAIL2) tri
 **Defect**: ShapeFix_Shell.Perform receives COMPOUND with multiple CLOSED_SHELLs; processes first shell only, silently ignores rest.
 **Expected**: All shells should be processed or error raised.
 **Fixture**: Two unit squares in parallel planes (z=0, z=2) wrapped in COMPOUND; SHELL_BASED_SURFACE_MODEL contains both.
+- **Tier-3 assertion**: n_faces_total == 2
 
 ### Tsh130 — ShapeAnalysis_Shell.CheckOrientedShells closed-shell-with-free-edges
 **Defect**: CLOSED_SHELL entity marker claims closure, but topology has free edges (5 cube faces; one missing = free boundary).
 **Expected**: CheckOrientedShells should validate that CLOSED marker matches actual topological closure.
 **Fixture**: Cube topology missing one face (right face omitted); CLOSED_SHELL claims closure with 5 faces only.
+- **Tier-3 assertion**: n_faces_total == 5
 
 ### Tsh131 — ShapeUpgrade_ShellSewing.Apply already-sewn
 **Defect**: Sewing input is already well-formed sewn shell with matching edge pairs; Apply proceeds anyway, accumulating tolerance noise on merged edges.
 **Expected**: Apply should detect sewn closure and short-circuit without re-processing.
 **Fixture**: Perfect cube (6 faces, all edges shared); CLOSED_SHELL with no free boundaries or duplicate edges.
+- **Tier-3 assertion**: n_faces_total == 6
 
 ### Tsh132 — ShapeFix_Shell.FixFaceOrientation flat-shell
 **Defect**: Shell consists entirely of coplanar faces (flat shell, 2x2 grid of unit squares in z=0).
 **Expected**: FixFaceOrientation's normal-vector comparison fails when all normals are parallel/anti-parallel (indeterminate).
 **Fixture**: Four coplanar unit squares arranged in 2x2 grid; all in z=0 plane; all normals (0,0,±1).
+- **Tier-3 assertion**: n_faces_total == 4
 
 ### Tsh133 — ShapeUpgrade_RemoveLocations.Remove top-down
 **Defect**: RemoveLocations called top-down on COMPOUND with transformed sub-shapes; parent transform removed but child local transforms stale.
 **Expected**: Child geometry should update when parent location removed.
 **Fixture**: COMPOUND containing transformed shell instances with AXIS2_PLACEMENT_3D refs; top-level cascading removal.
+- **Tier-3 assertion**: n_faces_total == 1
 
 ### Tsh134 — CheckOrientedShells edge-tolerance
 
 Shell with two adjacent faces sharing an edge within geometric tolerance (1.0E-7mm) but with slightly offset vertex positions (within tolerance, but identity-mismatch triggers false-positive). Tests ShapeAnalysis_Shell::CheckOrientedShells vertex-matching using identity rather than tolerance-aware comparison.
+- **Tier-3 assertion**: n_faces_total == 2
 
 ### Tsh135 — ShapeUpgrade_ShellSewing.Apply face-with-multiple-edges-to-merge
 
 Two faces with three edges each that should all sew; Apply merges first matching edge-pair and ignores remaining two edges. Tests ShapeUpgrade_ShellSewing::Apply incomplete multi-edge merge detection.
+- **Tier-3 assertion**: n_faces_total == 2
 
 ### Tsh136 — ShapeFix_Shell.FixFaceOrientation degenerate-shell-empty
 
@@ -26945,10 +27314,12 @@ Empty shell (zero faces). ShapeFix_Shell::FixFaceOrientation iterates zero times
 ### Tsh137 — ShapeAnalysis_Shell.LoadShells nested-compound
 
 Compound containing compound containing shell. ShapeAnalysis_Shell::LoadShells recursive descent terminates at first nesting level, failing to extract inner shell.
+- **Tier-3 assertion**: n_faces_total == 1
 
 ### Tsh138 — ShapeFix_Shell.Perform repeated-call-state
 
 Shell with inverted face orientation. ShapeFix_Shell::Perform called twice; second call reuses myStatus from first Perform without reset, skipping needed orientation fixes. Tests state-accumulation regression.
+- **Tier-3 assertion**: n_faces_total == 2
 
 ### Tsh139 — ShapeFix_Shell.FixFaceOrientation cylindrical-shell
 
@@ -27133,6 +27504,7 @@ Two-triangle shell with all edges shared between faces (no free boundary). FreeE
 **Fixture**: Unit cube with all 6 faces marked `.F.` (inverted), all edge windings consistent locally but globally inside-out. Tests whether orientation consensus detects absolute inversion vs. relative inconsistency.
 
 ---
+- **Tier-3 assertion**: n_faces_total == 6
 
 ### Tsh161 — ShapeUpgrade_ShellSewing.Apply with-history-tracking
 
@@ -27165,42 +27537,50 @@ Two-triangle shell with all edges shared between faces (no free boundary). FreeE
 **Defect class**: state_accumulation | ShapeFix_Shell.Perform.context_null_initialize
 
 Shell from previous fix pass that left context state behind; Perform() inherits stale ShapeBuild_ReShape state. Multiple sequential calls without Context().IsNull() check reuse accumulated reshape operations, causing double-fixes on identical geometry.
+- **Tier-3 assertion**: n_faces_total == 2
 
 ### Tsh165 — ShapeAnalysis_Shell.CheckOrientedShells multi-component
 
 **Defect class**: verdict_merge_loss | ShapeAnalysis_Shell.CheckOrientedShells_at142
 
 Shell with 3 disjoint sub-shells (isolated face clusters). CheckOrientedShells reports per-component but verdict-merge logic loses one sub-shell from final verdict. Tests compound decomposition robustness.
+- **Tier-3 assertion**: n_faces_total == 3
 
 ### Tsh166 — ShapeUpgrade_ShellSewing.Apply face-with-same-base
 
 **Defect class**: deduplication_skip | ShapeUpgrade_ShellSewing.Apply_at83
 
 Sewing input has two faces sharing the same underlying surface entity (PLANE reference). Apply doesn't detect duplication and produces overlapping output faces. Tests surface identity checking.
+- **Tier-3 assertion**: n_faces_total == 2
 
 ### Tsh167 — ShapeFix_Shell.FixFaceOrientation with-empty-loop
 
 **Defect class**: edge_loop_degeneracy | ShapeFix_Shell.FixFaceOrientation_at1428
 
 Shell with one face whose outer loop is empty (zero edges). FixFaceOrientation produces arbitrary orientation for degenerate face. Tests boundary validation in orientation fix.
+- **Tier-3 assertion**: n_faces_total == 2
 
 ### Tsh168 — ShapeAnalysis_Shell.LoadShells skipping-non-shell
 
 **Defect class**: silent_filtering | ShapeAnalysis_Shell.LoadShells_at46
 
 Input compound has mixed entities (shells + solids + faces). LoadShells filters to shells only and silently ignores non-shell children without warning. Tests compound entity filtering semantics.
+- **Tier-3 assertion**: n_faces_total == 1
 
 ### Tsh169 — ShapeFix_Shell.Perform shell-with-floating-faces
 
 Shell containing disconnected faces not reachable from main topology. Perform() fails to isolate floating face; output shell retains unpredictable adjacency.
+- **Tier-3 assertion**: n_faces_total == 2
 
 ### Tsh170 — ShapeAnalysis_Shell.CheckOrientedShells with-zero-tolerance
 
 Adjacent faces with exact edge coincidence. CheckOrientedShells(tolerance=0) produces ambiguous match verdicts; adjacent-face orientation propagation undefined.
+- **Tier-3 assertion**: n_faces_total == 2
 
 ### Tsh171 — ShapeUpgrade_ShellSewing.Apply with-cross-shell-intersection
 
 Two distinct shells geometrically overlapping. Apply() ignores intersection; merged shell contains self-intersecting face topology.
+- **Tier-3 assertion**: n_faces_total == 2
 
 ### Tsh172 — ShapeFix_Shell.FixFaceOrientation with-3-faces-sharing-vertex
 
@@ -27209,6 +27589,7 @@ Non-manifold vertex shared by three faces with conflicting outward normals. FixF
 ### Tsh173 — ShapeAnalysis_Shell.LoadShells with-recursive-compound
 
 Compound with nested shell references. LoadShells() recursion incomplete when detecting cyclic structure; verdict incomplete or truncated.
+- **Tier-3 assertion**: n_faces_total == 2
 
 ### Tsh174 — ShapeFix_Shell.FixFaceOrientation with-empty-shell-after-fix
 
@@ -27217,6 +27598,7 @@ Compound with nested shell references. LoadShells() recursion incomplete when de
 **Trigger**: Degenerate faces (zero-area, line-like geometry) that fail topological validation. When Perform clears all faces, a subsequent FixFaceOrientation call succeeds on empty shell, masking the repair failure.
 
 **Input**: Shell with two coplanar degenerate faces (line segments with opposite orientations). Each forms a closed loop via reversed edge self-references.
+- **Tier-3 assertion**: n_faces_total == 2
 
 ### Tsh175 — ShapeAnalysis_Shell.CheckOrientedShells with-self-touching-shell
 
@@ -27225,6 +27607,7 @@ Compound with nested shell references. LoadShells() recursion incomplete when de
 **Trigger**: Two separate faces sharing exactly one vertex with no edge adjacency. Edge-based analysis skips non-edge topological contacts, allowing misorientation to pass validation.
 
 **Input**: Shell with two square faces meeting at diagonal corner (1,1). First face: [0,1]x[0,1]; second: [1,2]x[1,2]. Both on same plane, sharing only vertex point.
+- **Tier-3 assertion**: shape_null == True
 
 ### Tsh176 — ShapeUpgrade_ShellSewing.Apply with-coincident-but-different-orientation
 
@@ -27233,6 +27616,7 @@ Compound with nested shell references. LoadShells() recursion incomplete when de
 **Trigger**: Identical geometry (same vertices, edges, surface) with opposite face orientations (+Z vs. -Z). Sewing algorithm merges without orientation conflict detection.
 
 **Input**: Compound with two open shells. Shell 1: square [0,1]x[0,1] on plane Z=0 with normal +Z. Shell 2: identical square with normal -Z (all edges reversed). No shared edge loop between them.
+- **Tier-3 assertion**: shape_null == True
 
 ### Tsh177 — ShapeFix_Shell.Perform infinite-loop-detection
 
@@ -27241,6 +27625,7 @@ Compound with nested shell references. LoadShells() recursion incomplete when de
 **Trigger**: Multiple faces sharing same edge loop with conflicting orientations. Attempting to fix face 1's orientation invalidates face 2's fix. Counter-based loop detection exhausts iteration limit before convergence.
 
 **Input**: Shell with two faces sharing same triangular edge loop. Face 1: normal +Z. Face 2: normal -Z (reversed). Fix oscillates between correcting face orientations without global stabilization.
+- **Tier-3 assertion**: n_faces_total == 2
 
 ### Tsh178 — ShapeAnalysis_Shell.FreeEdges with-degenerate-edges
 
@@ -27249,12 +27634,14 @@ Compound with nested shell references. LoadShells() recursion incomplete when de
 **Trigger**: Zero-length edges (same start/end vertex) created by degenerate curves. FreeEdges classification treats them as boundary edges despite not topologically bounding any face.
 
 **Input**: Shell with one normal triangular face and three separate degenerate self-loop edges (zero-length from each triangle vertex back to itself). FreeEdges analysis should exclude degenerates; instead counts all three as free edges.
+- **Tier-3 assertion**: n_faces_total == 1
 
 ### Tsh179 — ShapeFix_Shell.FixFaceOrientation hex-prism orientation propagation oscillation
 - **Defect class**: Orientation propagation across 6 lateral faces of hexagonal prism creates oscillating fix-pattern
 - **Trigger**: Call FixFaceOrientation() on shell with 8 faces (hex base, top, 6 lateral faces); propagation walks edges and flips orientation at each lateral face inconsistently
 - **Expected failure**: Lateral faces alternate between correct and flipped normals; final state oscillates between two invalid patterns
 - **Test assertion**: Shell orientation state after Perform() should stabilize, not oscillate between two configurations
+- **Tier-3 assertion**: shape_null == True
 
 ### Tsh180 — ShapeAnalysis_Shell.CheckOrientedShells single-face zero-area
 - **Defect class**: Shell containing single face with computed area exactly 0.0; normal-based orientation test fails to classify orientation
@@ -27289,6 +27676,7 @@ Compound with nested shell references. LoadShells() recursion incomplete when de
 - **Model impact**: Shell with duplicate geometry produces mixed-orientation face sets unsuitable for solid conversion
 - **Fixture path**: step-examples/12-3a-shells/Tsh184.stp
 - **Fixture kind**: scaffold
+- **Tier-3 assertion**: n_faces_total == 3
 
 ### Tsh185 — ShapeFix_Solid.Perform context-stale-state cumulative fixes
 - **Category**: §12.3a shells (sub-class: state-accumulation)
@@ -27299,6 +27687,7 @@ Compound with nested shell references. LoadShells() recursion incomplete when de
 - **Model impact**: Repeated healing attempts produce over-corrected geometry with inverted or multiply-flipped faces
 - **Fixture path**: step-examples/12-3a-shells/Tsh185.stp
 - **Fixture kind**: scaffold
+- **Tier-3 assertion**: n_faces_total == 6
 
 ### Tsh186 — ShapeFix_Solid.SolidFromShell orientation-infinite-point non-closed shell
 - **Category**: §12.3a shells (sub-class: precondition-violation)
@@ -27309,6 +27698,7 @@ Compound with nested shell references. LoadShells() recursion incomplete when de
 - **Model impact**: Open shell incorrectly classified as valid solid; geometry produces invalid downstream topology
 - **Fixture path**: step-examples/12-3a-shells/Tsh186.stp
 - **Fixture kind**: scaffold
+- **Tier-3 assertion**: n_faces_total == 5
 
 ### Tsh187 — BRepBuilderAPI_Sewing.AnalysisNearestEdges section-bound-lookup gate
 - **Category**: §12.3a shells (sub-class: healer-state)
@@ -27319,6 +27709,7 @@ Compound with nested shell references. LoadShells() recursion incomplete when de
 - **Model impact**: Adjacent shells with near-gap remain unseamed despite tolerance permitting merge; geometry stays disjoint
 - **Fixture path**: step-examples/12-3a-shells/Tsh187.stp
 - **Fixture kind**: scaffold
+- **Tier-3 assertion**: shape_null == True
 
 ### Tsh188 — ShapeFix_Shell.Perform progress-abort inconsistent-status
 - **Category**: §12.3a shells (sub-class: inconsistent-error-reporting)
@@ -27329,6 +27720,7 @@ Compound with nested shell references. LoadShells() recursion incomplete when de
 - **Model impact**: Caller receives false but unknown whether healing succeeded, partially succeeded, or was aborted; downstream decisions corrupted
 - **Fixture path**: step-examples/12-3a-shells/Tsh188.stp
 - **Fixture kind**: scaffold
+- **Tier-3 assertion**: n_faces_total == 4
 
 ### Tsh189 — ShapeAnalysis_Shell.BadEdges uninitialized compound
 - **Category**: §12.3a shells (sub-class: initialization-order)
@@ -27339,6 +27731,7 @@ Compound with nested shell references. LoadShells() recursion incomplete when de
 - **Model impact**: Returns uninitialized compound or empty set instead of reported bad edges
 - **Fixture path**: step-examples/12-3a-shells/Tsh189.stp
 - **Fixture kind**: scaffold
+- **Tier-3 assertion**: shape_null == True
 
 ### Tsh190 — ShapeAnalysis_Shell.FreeEdges uninitialized compound
 - **Category**: §12.3a shells (sub-class: initialization-order)
@@ -27349,6 +27742,7 @@ Compound with nested shell references. LoadShells() recursion incomplete when de
 - **Model impact**: Fails to detect free-edge topology; returns uninitialized extent
 - **Fixture path**: step-examples/12-3a-shells/Tsh190.stp
 - **Fixture kind**: scaffold
+- **Tier-3 assertion**: shape_null == True
 
 ### Tsh191 — ShapeFix_Shell.FixFaceOrientation multi-connected edge unbounded
 - **Category**: §12.3a shells (sub-class: unbounded-iteration)
@@ -27359,6 +27753,7 @@ Compound with nested shell references. LoadShells() recursion incomplete when de
 - **Model impact**: O(n^2) or worse complexity; potential hang on pathological meshes
 - **Fixture path**: step-examples/12-3a-shells/Tsh191.stp
 - **Fixture kind**: scaffold
+- **Tier-3 assertion**: n_faces_total == 3
 
 ### Tsh192 — ShapeFix_Shell.Perform closed-flag sync-failure
 - **Category**: §12.3a shells (sub-class: invariant-violation)
@@ -27369,6 +27764,7 @@ Compound with nested shell references. LoadShells() recursion incomplete when de
 - **Model impact**: Downstream solid construction assumes watertight geometry; fails validation
 - **Fixture path**: step-examples/12-3a-shells/Tsh192.stp
 - **Fixture kind**: scaffold
+- **Tier-3 assertion**: n_faces_total == 1
 
 ### Tsh193 — ShapeUpgrade_ShellSewing.Apply tolerance-boundary classification
 - **Category**: §12.3a shells (sub-class: tolerance-branch)
@@ -27379,6 +27775,7 @@ Compound with nested shell references. LoadShells() recursion incomplete when de
 - **Model impact**: Inconsistent face merging; shells may or may not sew depending on tolerance epsilon
 - **Fixture path**: step-examples/12-3a-shells/Tsh193.stp
 - **Fixture kind**: scaffold
+- **Tier-3 assertion**: n_faces_total == 2
 
 ### Tsh194 — ShapeAnalysis_Shell.BadEdges uninitialized extent
 - **Category**: §12.3a shells (sub-class: initialization-order; lazy-init)
@@ -27389,6 +27786,7 @@ Compound with nested shell references. LoadShells() recursion incomplete when de
 - **Model impact**: Shell read with geometry containing degenerate edges; attempting BadEdges() query before Perform completes yields undefined extent
 - **Fixture path**: step-examples/12-3a-shells/Tsh194.stp
 - **Fixture kind**: scaffold
+- **Tier-3 assertion**: n_faces_total == 1
 
 ### Tsh195 — ShapeFix_Shell.FixFaceOrientation duplicate faces undetected
 - **Category**: §12.3a shells (sub-class: duplicate_mutation)
@@ -27399,6 +27797,7 @@ Compound with nested shell references. LoadShells() recursion incomplete when de
 - **Model impact**: Reading shell with duplicate faces produces faces with opposing normals
 - **Fixture path**: step-examples/12-3a-shells/Tsh195.stp
 - **Fixture kind**: scaffold
+- **Tier-3 assertion**: n_faces_total == 2
 
 ### Tsh196 — ShapeFix_Shell.FixFaceOrientation multi-connected edge unbounded loop
 - **Category**: §12.3a shells (sub-class: multiconnect_edge_loop_unbounded)
@@ -27409,6 +27808,7 @@ Compound with nested shell references. LoadShells() recursion incomplete when de
 - **Model impact**: Face with repeated edges produces undefined outer-bound semantics
 - **Fixture path**: step-examples/12-3a-shells/Tsh196.stp
 - **Fixture kind**: scaffold
+- **Tier-3 assertion**: n_faces_total == 1
 
 ### Tsh197 — ShapeFix_Shell.FixFaceOrientation shells extraction loss
 - **Category**: §12.3a shells (sub-class: shells_extraction_loss)
@@ -27419,6 +27819,7 @@ Compound with nested shell references. LoadShells() recursion incomplete when de
 - **Model impact**: Reading compound with two shells; only first undergoes orientation repair; second shell discarded
 - **Fixture path**: step-examples/12-3a-shells/Tsh197.stp
 - **Fixture kind**: scaffold
+- **Tier-3 assertion**: n_faces_total == 2
 
 ### Tsh198 — ShapeFix_Shell.Perform context null initialize
 - **Category**: §12.3a shells (sub-class: context_null_initialize)
@@ -27429,6 +27830,7 @@ Compound with nested shell references. LoadShells() recursion incomplete when de
 - **Model impact**: Shell with inverted face orientation; Perform() repairs but null context prevents fix recording
 - **Fixture path**: step-examples/12-3a-shells/Tsh198.stp
 - **Fixture kind**: scaffold
+- **Tier-3 assertion**: n_faces_total == 1
 
 ### Tsh199 — Duplicate faces orientation inconsistency
 - **Category**: §12.3a shells (sub-class: face-orientation-propagation)
@@ -27539,6 +27941,7 @@ Compound with nested shell references. LoadShells() recursion incomplete when de
 - **Model impact**: Shell with single cylindrical face; reads with orientation-undefined seam.
 - **Fixture path**: step-examples/12-3a-shells/Tsh209.stp
 - **Fixture kind**: scaffold
+- **Tier-3 assertion**: n_faces_total == 1
 
 ### Tsh210 — Shell tolerance iteration filtering
 - **Category**: §12.3a shells (sub-class: tolerance-analysis)
@@ -27549,6 +27952,7 @@ Compound with nested shell references. LoadShells() recursion incomplete when de
 - **Model impact**: Shell reads with face-tolerance anomaly; kernel must report shell in result.
 - **Fixture path**: step-examples/12-3a-shells/Tsh210.stp
 - **Fixture kind**: scaffold
+- **Tier-3 assertion**: n_faces_total == 1
 
 ### Tsh211 — Degenerate edge-only wire removal
 - **Category**: §12.3a shells (sub-class: degenerate-pruning)
@@ -27559,6 +27963,7 @@ Compound with nested shell references. LoadShells() recursion incomplete when de
 - **Model impact**: Face with outer loop plus inner degenerate wire; reads with degenerate wire present.
 - **Fixture path**: step-examples/12-3a-shells/Tsh211.stp
 - **Fixture kind**: scaffold
+- **Tier-3 assertion**: n_faces_total == 2
 
 ### Tsh212 — Mixed wire/edge orientation conflict
 - **Category**: §12.3a shells (sub-class: orientation-repair)
@@ -27569,6 +27974,7 @@ Compound with nested shell references. LoadShells() recursion incomplete when de
 - **Model impact**: Face with 4x4 square + 2x2 hole; reads with misoriented hole boundary.
 - **Fixture path**: step-examples/12-3a-shells/Tsh212.stp
 - **Fixture kind**: scaffold
+- **Tier-3 assertion**: n_faces_total == 1
 
 ### Tsh213 — Wire collection type-filter gate
 - **Category**: §12.3a shells (sub-class: type-safety)
@@ -27581,58 +27987,74 @@ Compound with nested shell references. LoadShells() recursion incomplete when de
 - **Fixture kind**: scaffold
 
 # Wave 65B: ShapeFix_Shell Defect Fixtures
+- **Tier-3 assertion**: n_faces_total == 1
 
 ### Tsh214 — ShapeFix_Shell.FixFaceOrientation.duplicate_faces_undetected
 — Duplicate faces in shell; aMapAdded detects but only warns; independent orientation fixes create inconsistency.
+- **Tier-3 assertion**: n_faces_total == 2
 
 ### Tsh215 — ShapeFix_Shell.Perform.context_null_initialize
 — Multiple Perform() calls reuse stale context; SetContext state accumulation applies reshape operations twice.
+- **Tier-3 assertion**: n_faces_total == 1
 
 ### Tsh216 — ShapeFix_Shell.Perform.progress_abort_inconsistency
 — User abort during face-fix loop indistinguishable from failure; myStatus/return value mismatch.
+- **Tier-3 assertion**: n_faces_total == 4
 
 ### Tsh217 — ShapeFix_Shell.Perform.closed_flag_sync_failure
 — Closed() flag out-of-sync with HasFreeEdges after FixFaceOrientation; breaks downstream solid construction.
+- **Tier-3 assertion**: n_faces_total == 4
 
 ### Tsh218 — ShapeFix_Shell.FixFaceOrientation.shells_extraction_loss
 — GetShells() fails to partition disconnected face clusters; edge-classification gap creates orphaned faces.
 
 ## Wave 68B — ShapeFix_Shell Defects (Tsh219–Tsh223)
+- **Tier-3 assertion**: n_faces_total == 2
 
 ### Tsh219 — duplicate_faces_undetected
 Duplicate faces in shell; `aMapAdded` only warns. Independent orientation fixes yield inconsistent outward directions. Closure criterion fails.
+- **Tier-3 assertion**: n_faces_total == 3
 
 ### Tsh220 — multiconnect_edge_loop_unbounded
 Non-manifold shell with 3+ faces per edge; unbounded iteration without complexity guard causes O(n²) behavior. Pathological mesh triggers hang.
+- **Tier-3 assertion**: n_faces_total == 3
 
 ### Tsh221 — context_null_initialize
 Multiple `Perform()` calls reuse stale context; accumulated reshape operations apply twice. Stale context state causes double-fixing of face orientations.
+- **Tier-3 assertion**: n_faces_total == 2
 
 ### Tsh222 — closed_flag_sync_failure
 Shell marked closed but contains free edges after face orientation fix. `Closed()` flag not reset; downstream solid construction assumes watertight but topology invalid.
+- **Tier-3 assertion**: n_faces_total == 6
 
 ### Tsh223 — shells_extraction_loss
 `GetShells()` fails to partition all faces; remaining faces discarded or orphaned. Incomplete decomposition breaks topology validation and orientation analysis.
+- **Tier-3 assertion**: n_faces_total == 2
 
 ### Tsh224 — ShapeFix_Shell.FixFaceOrientation duplicate_faces_undetected
 
 Shell with two congruent unit-square faces (at z=0, z=1). aMapAdded tracks duplicates but only warns; FixFaceOrientation flips one, leaves other unchanged. Inconsistent outward directions result.
+- **Tier-3 assertion**: n_faces_total == 2
 
 ### Tsh225 — ShapeFix_Shell.FixFaceOrientation multiconnect_edge_loop_unbounded
 
 Three triangular faces meeting at shared central edge (non-manifold, 3+ incident). isAccountMultiConex loop iterates without bound on pathological mesh; O(n^2) complexity pathological behavior.
+- **Tier-3 assertion**: n_faces_total == 3
 
 ### Tsh226 — ShapeFix_Shell.FixFaceOrientation shells_extraction_loss
 
 Two isolated unit-square face clusters (5.0+ units apart, no shared edges). GetShells() fails partition; unreachable face cluster orphaned, incomplete shell decomposition.
+- **Tier-3 assertion**: n_faces_total == 2
 
 ### Tsh227 — ShapeFix_Shell.FixFaceOrientation error_faces_mebius_assumption
 
 Two coplanar unit squares with ambiguous orientations. aErrFaces mis-classified as Mobius-leaf; intrinsic non-orientability unconfirmed, spurious single-face shells created.
+- **Tier-3 assertion**: n_faces_total == 2
 
 ### Tsh228 — ShapeFix_Shell.Perform closed_flag_sync_failure
 
 Three triangular faces forming incomplete closure (free edge between faces 1–2). Shell.Closed() flag marked true but HasFreeEdges detects edge post-FixFaceOrientation; sync breaks.
+- **Tier-3 assertion**: n_faces_total == 3
 
 ### Gp040 — Pcurves emitted by default duplicate / contradict the surface 3D curve
 - **Category**: §12.2a pcurve defects (sub-class: writer-emitted pcurves disagree with 3D)
@@ -28676,6 +29098,7 @@ Planar surface with U-iso degenerate edge. U-constant pcurve lacks coordinate-ax
 - **Notes**: **See also**: Tfa023, A079. Synonyms: "STEP export duplicates surfaces", "non-conformal faces after STEP round-trip", "writer emits two surfaces for one shared surface", "face-face adjacency lost on round-trip".
 - **Byte assertion**: count_entity_def(b'PLANE') >= 2 or count_entity_def(b'CYLINDRICAL_SURFACE') >= 2
 - **Byte assertion**: contains(b'ADVANCED_FACE')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silent-accept observed (catalog allowed: {heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
 - **Severity**: P1
 - **Model impact**: Face sewing leaves free bounds or duplicate edges; the resulting shell is open instead of closed, so MakeSolid produces an invalid solid and volume/property computations return wrong values.
@@ -28737,6 +29160,7 @@ Planar surface with U-iso degenerate edge. U-constant pcurve lacks coordinate-ax
 - **Notes**: **See also**: N015, N028, Twi099. Synonyms: "reading STEP file produces invalid shape", "BRepCheck flags imported shape", "STEP import yields shape that fails Analyzer", "tolerance mismatch between producer and receiver".
 - **Byte assertion**: contains(b'EDGE_CURVE')
 - **Byte assertion**: contains(b'VERTEX_POINT')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silent-accept observed (catalog allowed: {heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
 - **Severity**: P1
 - **Model impact**: Coordinate or tolerance values trigger numerical degeneracy in kernel predicates; edges merge or split at the wrong vertex, and the resulting topology disagrees with what the producer encoded.
@@ -28752,6 +29176,7 @@ Planar surface with U-iso degenerate edge. U-constant pcurve lacks coordinate-ax
 - **Notes**: **See also**: N019, U033. Umbrella over N019 (which is the offset-surface specific manifestation). Synonyms: "STEP UNCERTAINTY_MEASURE_WITH_UNIT ignored", "importer hard-codes 1e-3 tolerance", "distance_accuracy_value not consumed", "BRL-CAD step-g ignores file uncertainty everywhere", "tight-precision authoring downgraded to working precision". **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
 - **Byte assertion**: contains(b'UNCERTAINTY_MEASURE_WITH_UNIT')
 - **Byte assertion**: contains(b'1.0E-6') or contains(b'1e-6')
+- **Tier-3 assertion**: shape_null == True
 - **Model impact**: Coordinate or tolerance values trigger numerical degeneracy in kernel predicates; edges merge or split at the wrong vertex, and the resulting topology disagrees with what the producer encoded.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
@@ -28762,6 +29187,7 @@ Planar surface with U-iso degenerate edge. U-constant pcurve lacks coordinate-ax
 - **Reproducer recipe**: Call InTolerance(shape, 0.001, 0.002, TopAbs_VERTEX) on a shape with vertices at tol=0.0015 (in-range) and tol=0.005 (out-of-range). Buggy result returns only the 0.005 vertex; correct result returns only the 0.0015 vertex.
 - **Expected kernel behavior**: reject the inverted comparison; filter vertices with (tol >= valmin && tol <= valmax) consistently with FACE/EDGE branches
 - **Expected validation**: `occt=unknown/unknown gmsh=unknown ifc=schema_n/a`
+- **Tier-3 assertion**: n_faces_total == 1
 
 ### N052 — BRepBuilderAPI_Sewing.SameParameterEdge SetMaxTolerance bypass
 - **Category**: §12.4 (sub-class: api-contract-violation)
@@ -28772,6 +29198,7 @@ Planar surface with U-iso degenerate edge. U-constant pcurve lacks coordinate-ax
 - **Fixture kind**: kernel-test-pair
 - **Notes**: The `N052.stp` fixture documents the input geometry but the defect only manifests when paired with the `SetMaxTolerance(0.01)` runtime API call above. A passive STEP loader will not trigger the bypass; the consuming test harness must invoke `BRepBuilderAPI_Sewing` with an explicit cap. **See also**: N055.
 - **Expected validation**: `occt=unknown/unknown gmsh=unknown ifc=schema_n/a`
+- **Tier-3 assertion**: shape_null == True
 
 ### N053 — ShapeAnalysis_ShapeTolerance.AddTolerance polarity asymmetry
 - **Category**: §12.4 (sub-class: tolerance-array-asymmetry)
@@ -28780,6 +29207,7 @@ Planar surface with U-iso degenerate edge. U-constant pcurve lacks coordinate-ax
 - **Reproducer recipe**: Call AddTolerance on shape with edge tolerance 0.0015 and bounds [0.001, 0.002]. Asymmetric comparisons (myTols[0] > cmin vs myTols[2] < cmax) cause nondeterministic rejection despite in-range value.
 - **Expected kernel behavior**: apply symmetric comparisons consistently: both array elements checked with same directional logic relative to bounds
 - **Expected validation**: `occt=unknown/unknown gmsh=unknown ifc=schema_n/a`
+- **Tier-3 assertion**: n_faces_total == 1
 
 ### N054 — ShapeFix_Edge.FixVertexTolerance multi-surface underestimation
 - **Category**: §12.4 (sub-class: face-context-null-bypass)
@@ -28788,6 +29216,7 @@ Planar surface with U-iso degenerate edge. U-constant pcurve lacks coordinate-ax
 - **Reproducer recipe**: Create edge shared between plane and cylindrical surfaces. Vertex at intersection. Call FixVertexTolerance with face context=null. Single-surface (plane only) tolerance computed as 0.001; correct tolerance should be ≥0.002 accounting for both plane and cylinder.
 - **Expected kernel behavior**: accept edge if both surfaces available; reject or escalate tolerance if single-surface evaluation only; signal ambiguity
 - **Expected validation**: `occt=unknown/unknown gmsh=unknown ifc=schema_n/a`
+- **Tier-3 assertion**: n_faces_total == 2
 
 ### N055 — ShapeFix_ShapeTolerance.LimitTolerance boundary ambiguity
 - **Category**: §12.4 (sub-class: equality-boundary-undefined)
@@ -28798,6 +29227,7 @@ Planar surface with U-iso degenerate edge. U-constant pcurve lacks coordinate-ax
 - **Fixture kind**: kernel-test-pair
 - **Notes**: The `N055.stp` fixture provides the input shape but the bug is in the `LimitTolerance` API's parameter validation — only a runtime caller passing `tmin == tmax` will exercise the buggy clamp logic. The catalog entry's "Reproducer recipe" line is the canonical paired test. **See also**: N052.
 - **Expected validation**: `occt=unknown/unknown gmsh=unknown ifc=schema_n/a`
+- **Tier-3 assertion**: shape_null == True
 
 ### N056 — ShapeFix_ShapeTolerance.SetTolerance bulk-rewrite
 
@@ -28805,6 +29235,7 @@ Defect: SetTolerance(shape, t, type) overwrites tolerances on all sub-elements
 even when they already exceed the new tolerance value, causing silent precision
 loss. When tolerance is reduced globally, higher-precision edges/vertices should
 be preserved or warned; instead they are silently clamped downward.
+- **Tier-3 assertion**: n_faces_total == 1
 
 ### N057 — ShapeAnalysis_ShapeTolerance.GlobalTolerance weight dispatch inversion
 
@@ -28812,6 +29243,7 @@ Defect: GlobalTolerance(shape, type, 0=avg) computes weighted average tolerance,
 but weight assignment inverts for nested shapes—shell's faces are counted twice,
 skewing the average toward face tolerances and violating unbiased averaging
 semantics across all geometry types.
+- **Tier-3 assertion**: n_faces_total == 2
 
 ### N058 — BRepLib.SameRange null-pcurve null-check dereference
 
@@ -28819,6 +29251,7 @@ Defect: SameRange rescales PCurve domains to match 3D edge parameter range, but
 assumes the PCurve exists. When an edge has a null 2D curve on a face (parametric
 curve extraction failed), SameRange dereferences the null pointer without check,
 masking the failure and corrupting downstream edge state.
+- **Tier-3 assertion**: n_faces_total == 1
 
 ### N059 — BRepLib.UpdateEdgeTol sampling-grid undersample
 
@@ -28826,6 +29259,7 @@ Defect: UpdateEdgeTol uses 23-sample default grid to detect maximum distance
 between 3D curve and 2D parametric curve. On B-spline edges with high-curvature
 peaks between sample points, the peak distance is never observed, causing
 underestimated edge tolerance that fails later validation.
+- **Tier-3 assertion**: n_faces_total == 1
 
 ### N060 — ShapeFix_Edge.FixSameParameter SameParameterEdge upper-bound
 
@@ -28833,6 +29267,7 @@ Defect: FixSameParameter computes tolerance to synchronize 3D and parametric
 curves; when computed tolerance exceeds user ceiling, silently clamps without
 flagging. Caller sees "tolerances fixed" but edge is actually incompatible—
 same-parameter constraint cannot be achieved at the ceiling value.
+- **Tier-3 assertion**: n_faces_total == 1
 
 ### N061 — BRepLib.BoundingVertex bounding-sphere under-estimate
 
@@ -28845,6 +29280,7 @@ same-parameter constraint cannot be achieved at the ceiling value.
 **Expected behavior**: Bounding sphere radius ≥ 1e-8; heuristic produces ~0.0 (machine epsilon).
 
 ---
+- **Tier-3 assertion**: shape_null == True
 
 ### N062 — ShapeAnalysis_ShapeTolerance.GlobalTolerance min/max dispatch
 
@@ -28857,6 +29293,7 @@ same-parameter constraint cannot be achieved at the ceiling value.
 **Expected behavior**: GlobalTolerance(mode=-1) should consistently return 1e-3; actual behavior depends on traversal order.
 
 ---
+- **Tier-3 assertion**: n_faces_total == 1
 
 ### N063 — ShapeFix_Edge.FixVertexTolerance escalation cascade
 
@@ -28869,6 +29306,7 @@ same-parameter constraint cannot be achieved at the ceiling value.
 **Expected behavior**: After two FixVertexTolerance calls, vertex tolerance should be ≤ max(edge tolerances) = 1e-4; actual behavior escalates beyond this.
 
 ---
+- **Tier-3 assertion**: shape_null == True
 
 ### N064 — ShapeAnalysis_Edge.CheckPoints precision asymmetry
 
@@ -28881,6 +29319,7 @@ same-parameter constraint cannot be achieved at the ceiling value.
 **Expected behavior**: CheckPoints should validate each endpoint against its own tolerance; actual behavior uses a single conflated value.
 
 ---
+- **Tier-3 assertion**: n_faces_total == 1
 
 ### N065 — ShapeFix_ShapeTolerance.LimitTolerance partial-tree application
 
@@ -28891,26 +29330,32 @@ same-parameter constraint cannot be achieved at the ceiling value.
 **Tolerance state**: High tolerance (1e-1) in GEOMETRIC_REPRESENTATION_CONTEXT.
 
 **Expected behavior**: LimitTolerance(compound, max=1e-4) should limit all geometry; actual behavior skips the solid's interior faces/edges/vertices.
+- **Tier-3 assertion**: shape_null == True
 
 ### N066 — ShapeAnalysis_ShapeTolerance.OverTolerance >= vs > comparison
 
 OverTolerance comparison operator bug: method uses `>=` instead of `>` when comparing vertex tolerance against threshold, flagging 0.0 tolerance as exceeding any positive threshold. Root cause: boundary condition equality treated as over-tolerance state rather than at-threshold state. Fixture: vertex with 0.0 declared tolerance, global context 1e-3. OverTolerance(shape, 1e-3) should return false; with bug returns true.
+- **Tier-3 assertion**: n_faces_total == 1
 
 ### N067 — ShapeFix_ShapeTolerance.SetTolerance compound cascade incomplete
 
 SetTolerance recursion stops at shell boundary: compound→shell descent succeeds, but faces within the shell remain unmodified. Tolerance propagation violates transitivity contract. Root cause: sub-shape iteration halts at first boundary-type mismatch rather than continuing depth-first. Fixture: two-face shell inside compound with initial tolerance 0.1; SetTolerance(compound, 0.001) leaves face tolerance unchanged.
+- **Tier-3 assertion**: n_faces_total == 2
 
 ### N068 — BRepLib.UpdateInnerTolerances minimal 2-point sampling
 
 UpdateInnerTolerances edge-tolerance computation samples B-spline at endpoints only (2 samples), missing interior curvature. Deviation at mid-curve peak not captured in tolerance estimate. Root cause: sample-count hardcoded to 2 or loop exits early. Fixture: 4-control-point B-spline with 5-unit bulge at center, parameterized [0,1], global context 1e-4. Endpoint sampling misses interior curvature requiring ~1e-2 tolerance.
+- **Tier-3 assertion**: n_faces_total == 1
 
 ### N069 — ShapeAnalysis_Edge.CheckOverlapping parameter vs arc-length scale
 
 Overlap detection compares edges by parameter distance, not arc length, causing false positives when parameter ranges differ in scale. Edge1 domain [0,1] vs Edge2 domain [0,100] both represent same 1mm geometry; parameter distance 0.5 is dimensionless. Root cause: tolerance comparison uses parameter delta without range normalization. Fixture: two overlapping 1mm lines with parameter domains [0,1] and [0,100].
+- **Tier-3 assertion**: n_faces_total == 1
 
 ### N070 — ShapeFix_ShapeTolerance.LimitTolerance zero lower-bound as no-op marker
 
 LimitTolerance(shape, 0, 0.01) treats lower=0 as "skip lower check" AND skips upper check entirely; shape with 0.5mm tolerance receives no enforcement of 0.01mm upper limit. Root cause: conditional uses single `if(lower>0)` gate for entire tolerance-clamping logic. Fixture: triangle face with 0.5mm tolerance; LimitTolerance(..., 0, 0.01) leaves tolerance at 0.5mm instead of clamping to 0.01mm.
+- **Tier-3 assertion**: n_faces_total == 1
 
 ### N071 — BRepLib.UpdateEdgeTol surface-mesh consistency unchecked
 
@@ -28923,6 +29368,7 @@ LimitTolerance(shape, 0, 0.01) treats lower=0 as "skip lower check" AND skips up
 **Bug:** returns 0.001mm; mesh contribution unchecked.
 
 ---
+- **Tier-3 assertion**: n_faces_total == 1
 
 ### N072 — ShapeFix_Edge.FixSameParameter precision-loss via TempSameRange
 
@@ -28935,6 +29381,7 @@ LimitTolerance(shape, 0, 0.01) treats lower=0 as "skip lower check" AND skips up
 **Bug:** tolerance not updated; effective precision worsens silently.
 
 ---
+- **Tier-3 assertion**: n_faces_total == 1
 
 ### N073 — BRepLib.UpdateDeflection null-triangulation skip
 
@@ -28947,6 +29394,7 @@ LimitTolerance(shape, 0, 0.01) treats lower=0 as "skip lower check" AND skips up
 **Bug:** silent no-op; deflection state uninitialized.
 
 ---
+- **Tier-3 assertion**: n_faces_total == 1
 
 ### N074 — ShapeAnalysis_Edge.CheckPoints colinear-points shortcut
 
@@ -28959,6 +29407,7 @@ LimitTolerance(shape, 0, 0.01) treats lower=0 as "skip lower check" AND skips up
 **Bug:** colinear shortcut skips parameter correspondence check.
 
 ---
+- **Tier-3 assertion**: shape_null == True
 
 ### N075 — ShapeFix_ShapeTolerance.SetTolerance vertex-not-in-shape
 
@@ -28969,6 +29418,7 @@ LimitTolerance(shape, 0, 0.01) treats lower=0 as "skip lower check" AND skips up
 **Expected:** Apply vertex tolerance to incident vertices of all faces OR raise error.
 
 **Bug:** silent no-op; user believes vertices were updated.
+- **Tier-3 assertion**: shape_null == True
 
 ### N076 — ShapeAnalysis_ShapeTolerance.AddTolerance cumulative-mode
 
@@ -28979,6 +29429,7 @@ LimitTolerance(shape, 0, 0.01) treats lower=0 as "skip lower check" AND skips up
 **Trigger**: Invoke ShapeAnalysis_ShapeTolerance::AddTolerance(shape, tol_value, mode=true) twice on the same shape. Expected: each call independently aggregates; Observed: second call adds to remnant state from first call.
 
 ---
+- **Tier-3 assertion**: shape_null == True
 
 ### N077 — BRepLib.BuildCurves3d batch-batch failure
 
@@ -28989,6 +29440,7 @@ LimitTolerance(shape, 0, 0.01) treats lower=0 as "skip lower check" AND skips up
 **Trigger**: Call BRepLib::BuildCurves3d(edge_set) where edge_set contains {edge1_valid, edge2_valid, edge3_no_curve}. Expected: return false + report which edges succeeded; Observed: return false with no granularity.
 
 ---
+- **Tier-3 assertion**: shape_null == True
 
 ### N078 — ShapeFix_Edge.FixSameParameter precision-floor
 
@@ -28999,6 +29451,7 @@ LimitTolerance(shape, 0, 0.01) treats lower=0 as "skip lower check" AND skips up
 **Trigger**: Call ShapeFix_Edge::FixSameParameter on the edge. Expected: preserve 1e-16 tolerance through interior check; Observed: clamp to floor (1e-7), losing the declared spec.
 
 ---
+- **Tier-3 assertion**: shape_null == True
 
 ### N079 — ShapeAnalysis_Edge.CheckPointsAreOnEdges sphere-pole
 
@@ -29009,6 +29462,7 @@ LimitTolerance(shape, 0, 0.01) treats lower=0 as "skip lower check" AND skips up
 **Trigger**: Call ShapeAnalysis_Edge::CheckPointsAreOnEdges on the pole-touching edge. Expected: vertex at (0,0,10) marked as on edge; Observed: false negative due to singular U.
 
 ---
+- **Tier-3 assertion**: shape_null == True
 
 ### N080 — ShapeFix_ShapeTolerance.LimitTolerance recursive-only-vertex
 
@@ -29019,6 +29473,7 @@ LimitTolerance(shape, 0, 0.01) treats lower=0 as "skip lower check" AND skips up
 **Trigger**: Call ShapeFix_ShapeTolerance::LimitTolerance(compound, 1e-6, 1e-4, TopAbs_VERTEX). Expected: apply limits to all 8 vertices; Observed: descent halts at Face 1, leaving Face 2 vertices untouched.
 
 ---
+- **Tier-3 assertion**: shape_null == True
 
 ### N081 — BRepLib.UpdateEdgeTol dual-path divergence
 
@@ -29070,18 +29525,23 @@ LimitTolerance(shape, 0, 0.01) treats lower=0 as "skip lower check" AND skips up
 
 ### N086 — Closed BSpline SameParameter wrapping
 ShapeFix_Edge.FixSameParameter fails to account for parameter wrapping in periodic B-splines. Computes SameParameter assuming open curve; closed spline edges with v ∈ [0,2π) incorrectly flagged as non-same-parameter when edge uses modulo arithmetic.
+- **Tier-3 assertion**: n_faces_total == 1
 
 ### N087 — CheckOverlapping parameterization mismatch
 ShapeAnalysis_Edge.CheckOverlapping compares parametric parameter values directly without normalizing parameterization speed. Two edges following identical 3D geometry but with different speed (arc-length vs. chord-length) parameter domains fail overlap detection; parameter-space comparison yields false negative.
+- **Tier-3 assertion**: n_faces_total == 2
 
 ### N088 — Vertex at cone apex zero tolerance
 BRepLib.UpdateInnerTolerances samples curve at parameter points to compute vertex tolerance, but cone apex (singular point) has zero radius. Computation returns 0.0 tolerance; edge touching apex incorrectly marked as arbitrarily small tolerance constraint instead of recognizing degeneracy.
+- **Tier-3 assertion**: n_faces_total == 1
 
 ### N089 — LimitTolerance recursion stops at WIRE
 ShapeFix_ShapeTolerance.LimitTolerance with mode=TopAbs_VERTEX recursively applies limits to faces and wires but fails to descend into wire's edge collection or edge's vertex endpoints. Shell with deeply nested geometry (Face→Wire→Edge→Vertex) applies tolerance only to Face/Wire level; innermost vertices unconstrained.
+- **Tier-3 assertion**: n_faces_total == 1
 
 ### N090 — GlobalTolerance weighted mode edge direction bug
 ShapeAnalysis_ShapeTolerance.GlobalTolerance mode=2 (weighted average) counts forward and reversed edges separately for denominator but sums their tolerance contributions. Shape with N/2 forward + N/2 reversed edges computed as avg(tol_sum) / (2N) instead of / N; weighting factor doubled, result halved.
+- **Tier-3 assertion**: n_faces_total == 1
 
 ### N091 — ShapeFix_Edge.FixSameParameter wrong-floor-clamp
 
@@ -29092,6 +29552,7 @@ ShapeAnalysis_ShapeTolerance.GlobalTolerance mode=2 (weighted average) counts fo
 **File**: `/Users/zellyn/gh/dodgy-step-files/step-examples/12-4-tolerance/N091.stp`
 
 ---
+- **Tier-3 assertion**: n_faces_total == 1
 
 ### N092 — ShapeAnalysis_ShapeTolerance.AddTolerance type-mismatch
 
@@ -29102,6 +29563,7 @@ ShapeAnalysis_ShapeTolerance.GlobalTolerance mode=2 (weighted average) counts fo
 **File**: `/Users/zellyn/gh/dodgy-step-files/step-examples/12-4-tolerance/N092.stp`
 
 ---
+- **Tier-3 assertion**: n_faces_total == 1
 
 ### N093 — BRepLib.UpdateInnerTolerances on-degenerate-curve
 
@@ -29112,6 +29574,7 @@ ShapeAnalysis_ShapeTolerance.GlobalTolerance mode=2 (weighted average) counts fo
 **File**: `/Users/zellyn/gh/dodgy-step-files/step-examples/12-4-tolerance/N093.stp`
 
 ---
+- **Tier-3 assertion**: n_faces_total == 1
 
 ### N094 — ShapeFix_Edge.FixVertexTolerance precision-floor
 
@@ -29122,6 +29585,7 @@ ShapeAnalysis_ShapeTolerance.GlobalTolerance mode=2 (weighted average) counts fo
 **File**: `/Users/zellyn/gh/dodgy-step-files/step-examples/12-4-tolerance/N094.stp`
 
 ---
+- **Tier-3 assertion**: n_faces_total == 1
 
 ### N095 — ShapeAnalysis_Edge.CheckPoints tolerance-aware-distance
 
@@ -29130,6 +29594,7 @@ ShapeAnalysis_ShapeTolerance.GlobalTolerance mode=2 (weighted average) counts fo
 **Pattern**: Edge with endpoints in different precision contexts (1e-9 vs 1e-3). CheckPoints uses min() instead of directional thresholds, incorrectly harmonizes asymmetric precision.
 
 **File**: `/Users/zellyn/gh/dodgy-step-files/step-examples/12-4-tolerance/N095.stp`
+- **Tier-3 assertion**: n_faces_total == 1
 
 ### N096 — BRepLib.UpdateInnerTolerances cone-apex-singularity
 
@@ -29140,6 +29605,7 @@ ShapeAnalysis_ShapeTolerance.GlobalTolerance mode=2 (weighted average) counts fo
 **Expected failure**: UpdateInnerTolerances reports NaN, Inf, or excessive tolerance on shared apex vertex.
 
 ---
+- **Tier-3 assertion**: shape_null == True
 
 ### N097 — ShapeFix_ShapeTolerance.LimitTolerance same-min-and-max
 
@@ -29150,6 +29616,7 @@ ShapeAnalysis_ShapeTolerance.GlobalTolerance mode=2 (weighted average) counts fo
 **Expected behavior**: All tolerances normalized to 0.001. **Actual**: Unchanged.
 
 ---
+- **Tier-3 assertion**: shape_null == True
 
 ### N098 — ShapeAnalysis_ShapeTolerance.GlobalTolerance empty-shape
 
@@ -29160,6 +29627,7 @@ ShapeAnalysis_ShapeTolerance.GlobalTolerance mode=2 (weighted average) counts fo
 **Expected**: Flag "no data" or distinct sentinel value. **Actual**: Returns 0.
 
 ---
+- **Tier-3 assertion**: shape_null == True
 
 ### N099 — BRepLib.UpdateEdgeTol multi-face-edge buffer overflow
 
@@ -29170,6 +29638,7 @@ ShapeAnalysis_ShapeTolerance.GlobalTolerance mode=2 (weighted average) counts fo
 **Expected failure**: Memory access violation, incorrect tolerance computation, or platform-dependent crash.
 
 ---
+- **Tier-3 assertion**: shape_null == True
 
 ### N100 — ShapeAnalysis_Edge.CheckPoints precision-asymmetry-extreme
 
@@ -29182,6 +29651,7 @@ ShapeAnalysis_ShapeTolerance.GlobalTolerance mode=2 (weighted average) counts fo
 Average threshold ≈ 0.5. E1 fails individual but passes average. E2 passes individual but fails average. Result: asymmetric, false-negative verdicts.
 
 **Expected failure**: CheckPoints returns incorrect boolean for both pairs.
+- **Tier-3 assertion**: shape_null == True
 
 ### N101 — ShapeFix_Edge.FixVertexTolerance reset-on-fix
 Vertex tolerance escalated during initial edge check, then silently reset to base value when FixVertexTolerance executes. Defect: no error on tolerance loss; downstream checks see degraded tolerance state and fail inconsistently.
@@ -29222,26 +29692,31 @@ CheckPoints called with precision 1e-3 but projection-distance test uses 1e-6 in
 **Defect**: ShapeFix_Edge.FixVertexTolerance computes vertex tolerance from tessellation that's been internally simplified; uses simplified mesh tolerance instead of original geometry.
 **Pattern**: Single-face shell with edge; UNCERTAINTY_MEASURE_WITH_UNIT set to 1.23E-7 (tessellation-derived tolerance).
 **File**: `/Users/zellyn/gh/dodgy-step-files/step-examples/12-4-tolerance/N111.stp`
+- **Tier-3 assertion**: n_faces_total == 1
 
 ### N112 — CheckOverlapping with-tolerance-zero
 **Defect**: ShapeAnalysis_Edge.CheckOverlapping called with absolute tolerance 0; algorithm uses internal epsilon but reports as "no tolerance".
 **Pattern**: Two overlapping edges (line1 and line2-overlapping) with 1.0E-8 vertical offset; UNCERTAINTY_MEASURE set to 0.0.
 **File**: `/Users/zellyn/gh/dodgy-step-files/step-examples/12-4-tolerance/N112.stp`
+- **Tier-3 assertion**: n_faces_total == 2
 
 ### N113 — UpdateEdgeTol with-coincident-vertices
 **Defect**: BRepLib.UpdateEdgeTol on edge with start and end vertices coincident (degenerate); divides by edge length producing inf tolerance.
 **Pattern**: Degenerate edge where both vertices reference same point (#1); edge length is zero.
 **File**: `/Users/zellyn/gh/dodgy-step-files/step-examples/12-4-tolerance/N113.stp`
+- **Tier-3 assertion**: n_faces_total == 1
 
 ### N114 — FixSameParameter with-NaN-input
 **Defect**: ShapeFix_Edge.FixSameParameter with edge whose 3D curve has NaN control point; NaN propagates through tolerance computation.
 **Pattern**: B-spline curve with control points including extreme values (1.0E+308 / -1.0E+308) representing NaN knot configuration.
 **File**: `/Users/zellyn/gh/dodgy-step-files/step-examples/12-4-tolerance/N114.stp`
+- **Tier-3 assertion**: n_faces_total == 1
 
 ### N115 — OverTolerance threshold-equality
 **Defect**: ShapeAnalysis_ShapeTolerance.OverTolerance with vertex tolerance exactly equal to threshold; non-strict comparison includes threshold in "over" result.
 **Pattern**: Single edge with vertex tolerance set to 0.5 mm, matching UNCERTAINTY_MEASURE threshold value.
 **File**: `/Users/zellyn/gh/dodgy-step-files/step-examples/12-4-tolerance/N115.stp`
+- **Tier-3 assertion**: n_faces_total == 1
 
 ### N116 — ShapeFix_Edge.FixVertexTolerance shared-by-many-edges
 
@@ -29254,24 +29729,28 @@ CheckPoints called with precision 1e-3 but projection-distance test uses 1e-6 in
 **Defect**: Overlapping edges where one is traversed forward and the other backward (geometrically identical path); `CheckOverlapping`'s directional test compares tangent directions and reports no overlap when they differ, even though the 3D curves are coincident. This masks topology errors where duplicate geometry should be detected.
 
 **Reproducer**: Two identical line segments (0,0,0) to (10,0,0), one with EDGE_CURVE forward direction (+X), one backward (−X direction). Both form a wire boundary loop. The directional mismatch causes the overlap check to return false negative.
+- **Tier-3 assertion**: n_faces_total == 1
 
 ### N118 — BRepLib.UpdateEdgeTol with-pcurve-discontinuity
 
 **Defect**: Edge whose pcurve has a C0 discontinuity in the middle; `UpdateEdgeTol` samples uniformly and the discontinuity contaminates one sample's tolerance calculation, inflating the entire edge tolerance to hide the discontinuity instead of reporting healing failure.
 
 **Reproducer**: Single edge spanning (0,0,0) to (10,0,0) in 3D with a composite pcurve consisting of two B-spline segments meeting at u=0.5. Segment A ends at (5.0, 0.0) in uv; segment B begins at (5.0, 0.5)—a 0.5-unit jump in v. Uniform sampling hits this discontinuity and inflates the edge tolerance to 0.5 rather than reporting the gap.
+- **Tier-3 assertion**: n_faces_total == 1
 
 ### N119 — ShapeFix_ShapeTolerance.LimitTolerance with-very-large-shape
 
 **Defect**: Shape with coordinates at 1e10 scale; `LimitTolerance`'s relative comparison underflows because input tolerance has no scale awareness. A tolerance of 1.0 is reasonable for coords at 1e10 (relative precision 1e−10), but relative checks like `(tol / MAX_COORD)` underflow to zero, causing the method to reject valid tolerances and report spurious violations.
 
 **Reproducer**: Single edge at (1e10, 1e10, 1e10) to (1e10, 1e10+1, 1e10) with nominal tolerance 1.0 in the uncertainty context. LimitTolerance's internal relative ratio test underflows, flagging this as an invalid tolerance configuration.
+- **Tier-3 assertion**: n_faces_total == 1
 
 ### N120 — ShapeAnalysis_ShapeTolerance.GlobalTolerance averaging-over-empty
 
 **Defect**: Call `GlobalTolerance` with mode=avg on a shape containing no vertices/edges of the requested type; division-by-zero produces NaN. The method accumulates sum across elements and divides by count at the end, but does not guard against empty iteration.
 
 **Reproducer**: Closed shell with a single triangular face and three boundary edges, but no free (isolated) vertices. Calling `GlobalTolerance` with selector=VERTEX and mode=averaging iterates over an empty vertex set, dividing total(0) by count(0) to produce NaN.
+- **Tier-3 assertion**: n_faces_total == 1
 
 ### N121 — ShapeFix_Edge.FixVertexTolerance with-tessellation-only-context
 
@@ -29284,6 +29763,7 @@ CheckPoints called with precision 1e-3 but projection-distance test uses 1e-6 in
 **Defect category:** Numeric validation / NaN propagation  
 **Input pattern:** Edge with parametric sample points; precision parameter initialized to 0.0 or missing  
 **Triggering condition:** NaN comparisons in point validation loop; `dist > NaN` always false, skipping tolerance checks
+- **Tier-3 assertion**: n_faces_total == 1
 
 ### N123 — BRepLib.UpdateEdgeTol with-edge-on-degenerate-surface
 
@@ -29296,12 +29776,14 @@ CheckPoints called with precision 1e-3 but projection-distance test uses 1e-6 in
 **Defect category:** Recursion depth control  
 **Input pattern:** Deeply nested COMPOUND_SHAPE structure (50+ levels of nesting)  
 **Triggering condition:** SetTolerance recurses on compound children without stack depth guard; uncontrolled recursion exhausts stack
+- **Tier-3 assertion**: n_faces_total == 1
 
 ### N125 — ShapeAnalysis_ShapeTolerance.AddTolerance concurrent-modification
 
 **Defect category:** Iterator invalidation / concurrent modification  
 **Input pattern:** Shell-based model with shared face/edge references; tolerance map iteration and modification in same pass  
 **Triggering condition:** AddTolerance mutates tolerance map while iterating; topology map corruption or inconsistent state on shared geometry
+- **Tier-3 assertion**: shape_null == True
 
 ### N126 — ShapeAnalysis_ShapeTolerance.InTolerance vertex-filtering-inverted
 - **Category**: §12.4 tolerance (sub-class: vertex-filtering bug)
@@ -29312,6 +29794,7 @@ CheckPoints called with precision 1e-3 but projection-distance test uses 1e-6 in
 - **Model impact**: Reading produces incorrect vertex subset when invoking InTolerance with TopAbs_VERTEX
 - **Fixture path**: step-examples/12-4-tolerance/N126.stp
 - **Fixture kind**: scaffold
+- **Tier-3 assertion**: shape_null == True
 
 ### N127 — ShapeFix_ShapeTolerance.SetTolerance no-validation-negative-precision
 - **Category**: §12.4 tolerance (sub-class: input-validation)
@@ -29322,6 +29805,7 @@ CheckPoints called with precision 1e-3 but projection-distance test uses 1e-6 in
 - **Model impact**: Reading with negative tolerance override produces incorrect shape validity assessment
 - **Fixture path**: step-examples/12-4-tolerance/N127.stp
 - **Fixture kind**: scaffold
+- **Tier-3 assertion**: shape_null == True
 
 ### N128 — ShapeFix_ShapeTolerance.LimitTolerance boundary-equality-nondeterminism
 - **Category**: §12.4 tolerance (sub-class: boundary-condition ambiguity)
@@ -29332,6 +29816,7 @@ CheckPoints called with precision 1e-3 but projection-distance test uses 1e-6 in
 - **Model impact**: Reading with equal min/max tolerance bounds produces unpredictable clamped values
 - **Fixture path**: step-examples/12-4-tolerance/N128.stp
 - **Fixture kind**: scaffold
+- **Tier-3 assertion**: shape_null == True
 
 ### N129 — BRep_Tool::Tolerance vertex-null-dereference-risk
 - **Category**: §12.4 tolerance (sub-class: null-check omission)
@@ -29342,6 +29827,7 @@ CheckPoints called with precision 1e-3 but projection-distance test uses 1e-6 in
 - **Model impact**: Reading triggers null-pointer dereference when querying vertex tolerance
 - **Fixture path**: step-examples/12-4-tolerance/N129.stp
 - **Fixture kind**: scaffold
+- **Tier-3 assertion**: shape_null == True
 
 ### N130 — ShapeFix_ShapeTolerance.SetTolerance recursive-double-mutation-shared-vertex
 - **Category**: §12.4 tolerance (sub-class: double-mutation)
@@ -29352,6 +29838,7 @@ CheckPoints called with precision 1e-3 but projection-distance test uses 1e-6 in
 - **Model impact**: Reading produces vertex tolerance inconsistent with intended min/max clamping
 - **Fixture path**: step-examples/12-4-tolerance/N130.stp
 - **Fixture kind**: scaffold
+- **Tier-3 assertion**: shape_null == True
 
 ### N131 — ShapeAnalysis_ShapeTolerance vertex range inversion
 - **Category**: §12.4 tolerance (sub-class: vertex_filtering)
@@ -29450,6 +29937,7 @@ CheckPoints called with precision 1e-3 but projection-distance test uses 1e-6 in
 - **Reproducer**: V1 tol=0.001, V2 tol=0.01, intersection near V2.
 - **Impact**: Intersection result uses insufficient tolerance for high-tolerance vertices.
 - **STEP**: `/Users/zellyn/gh/dodgy-step-files/step-examples/12-4-tolerance/N141.stp`
+- **Tier-3 assertion**: shape_null == True
 
 ### N142 — ShapeUpgrade_ConvertCurve2dToBezier precision-semantics,asymmetric-tolerance
 
@@ -29457,6 +29945,7 @@ CheckPoints called with precision 1e-3 but projection-distance test uses 1e-6 in
 - **Reproducer**: myUSplitValues above myUSplitParams; condition fails when param > parU.
 - **Impact**: Loop exits prematurely, skipping valid parameter splits.
 - **STEP**: `/Users/zellyn/gh/dodgy-step-files/step-examples/12-4-tolerance/N142.stp`
+- **Tier-3 assertion**: shape_null == True
 
 ### N143 — ShapeUpgrade_RemoveLocations.MakeNewShape null-reference-tolerance
 
@@ -29464,6 +29953,7 @@ CheckPoints called with precision 1e-3 but projection-distance test uses 1e-6 in
 - **Reproducer**: Edge with compound anAncShape not in map; RebuildShape receives null face.
 - **Impact**: UpdateEdge call fails silently; 2D curve updates skipped.
 - **STEP**: `/Users/zellyn/gh/dodgy-step-files/step-examples/12-4-tolerance/N143.stp`
+- **Tier-3 assertion**: shape_null == True
 
 ### N144 — ShapeUpgrade_UnifySameDomain.UnionPCurves vertex_tolerance_mismatch
 
@@ -29471,6 +29961,7 @@ CheckPoints called with precision 1e-3 but projection-distance test uses 1e-6 in
 - **Reproducer**: Shared vertex V1(tol=1e-3) and V2(tol=1e-2) at junction; max_tolerance_tracking inconsistent.
 - **Impact**: Concatenated PCurve has mismatched tolerance across chain.
 - **STEP**: `/Users/zellyn/gh/dodgy-step-files/step-examples/12-4-tolerance/N144.stp`
+- **Tier-3 assertion**: shape_null == True
 
 ### N145 — BRepBuilderAPI_Sewing.SameParameterEdge setMaxTolerance-bypass-raw-write
 
@@ -29478,26 +29969,32 @@ CheckPoints called with precision 1e-3 but projection-distance test uses 1e-6 in
 - **Reproducer**: MaxTolerance=0.01 cap; computed tolerance=0.05; raw write at line 1168 ignores cap.
 - **Impact**: Edge tolerance exceeds API contract; cap enforcement violated.
 - **STEP**: `/Users/zellyn/gh/dodgy-step-files/step-examples/12-4-tolerance/N145.stp`
+- **Tier-3 assertion**: shape_null == True
 
 ### N146 — EvaluateDistances.zero_angle_count_guard
 
 BRepBuilderAPI_Sewing angular precision defect: division-by-zero on degenerate surface (zero D1 normal magnitude). nbComputedAngle guard missing; tabAng becomes NaN when evaluating edges on plane/point-like geometry.
+- **Tier-3 assertion**: shape_null == True
 
 ### N147 — FindCandidates.acceptance_criteria_composite_filter
 
 Composite AND condition omitted: candidates exceeding myTolerance (0.15 > 0.1) with undersized coverage falsely accepted. Full condition (aMaxDist<=tol AND arrLen>minTol) required but first clause alone applied.
+- **Tier-3 assertion**: shape_null == True
 
 ### N148 — EvaluateDistances.projection_direction_selection
 
 Curve-length comparison fails at parity (5.0 vs 4.9): backwards projection direction selected, reporting distance to far branch. True separation 0.1 masked when lengths nearly equal.
+- **Tier-3 assertion**: shape_null == True
 
 ### N149 — FindCandidates.equidistant_precision_test
 
 Precision-equality guard absent: candidates differing by 1e-11 inserted as distinct despite Precision::Confusion (~1e-10) threshold. Tiebreaker logic bypassed for numerically identical distances.
+- **Tier-3 assertion**: shape_null == True
 
 ### N150 — IsMergedClosed.v_overlap_negativity_test
 
 V-parameter gap detection missing: curves separated by 1.0 in V (gap beyond overlap tolerance) proceed to distInner/distOuter logic. dist<0 check omitted; non-overlapping geometries incorrectly merged on U-closed surfaces.
+- **Tier-3 assertion**: shape_null == True
 
 ### N151 — `BRepBuilderAPI_Sewing.SameParameterEdge.recursive-tolerance-comparison`
 
@@ -29507,6 +30004,7 @@ V-parameter gap detection missing: curves separated by 1.0 in V (gap beyond over
 **Falsifiable**: Comparison ensures monotonic tolerance decrease across recursive attempts. Remove check; second worse result improperly accepted.
 
 ---
+- **Tier-3 assertion**: shape_null == True
 
 ### N152 — `BRepBuilderAPI_Sewing.SameParameterEdge.location-transform-in-tolerance-eval`
 
@@ -29517,6 +30015,7 @@ V-parameter gap detection missing: curves separated by 1.0 in V (gap beyond over
 **Fixture kind**: scaffold (kernel-test-pair: shape only; runtime invocation required to reproduce)
 
 ---
+- **Tier-3 assertion**: n_faces_total == 2
 
 ### N153 — `BRepBuilderAPI_Sewing.SameParameterEdge.final-tolerance-validation`
 
@@ -29526,6 +30025,7 @@ V-parameter gap detection missing: curves separated by 1.0 in V (gap beyond over
 **Falsifiable**: Condition `tolEdge1 > MaxTolerance()` triggers `edge.Nullify()`. Remove check; bypass edges escape validation.
 
 ---
+- **Tier-3 assertion**: shape_null == True
 
 ### N154 — `ShapeUpgrade_UnifySameDomain.MergeSubSeq.circle_spatial_closure_tolerance`
 
@@ -29535,6 +30035,7 @@ V-parameter gap detection missing: curves separated by 1.0 in V (gap beyond over
 **Falsifiable**: Spatial distance threshold `aP0.SquareDistance(aP1) <= (aTol*aTol)` overrides topological identity. Omit check; non-identical endpoints treated as open.
 
 ---
+- **Tier-3 assertion**: shape_null == True
 
 ### N155 — `ShapeAnalysis_CheckSmallFace.CheckPin.tolerance-fallback`
 
@@ -29542,50 +30043,66 @@ V-parameter gap detection missing: curves separated by 1.0 in V (gap beyond over
 **Defect**: Falls back to default tolerance (1e-4) if myPrecision < 0 (invalid). Negative precision causes undefined comparison in sharpness tests.  
 **Reproducer**: CheckPin with myPrecision=-1. Without fallback: IsoStat uses invalid tolerance, spurious results. With fallback: toler=1e-4 guards comparisons.  
 **Falsifiable**: Guard `if (myPrecision < 0) toler = 1.e-4` prevents invalid tolerance propagation. Remove; negative precision passes through to undefined behavior.
+- **Tier-3 assertion**: shape_null == True
 
 ### N156 — tolerance_asymmetry conflation
 Extreme precision asymmetry (preci1=1e-12, preci2=0.5) in CheckPoints logic; dual squared-distance condition masks both tolerance extremes, creating false-negative distance checks.
+- **Tier-3 assertion**: shape_null == True
 
 ### N157 — distance_tolerance_filter_second_pass bypass
 BRepBuilderAPI_Sewing omits distance threshold check; out-of-tolerance candidates (tabDst=0.8 exceeding myTolerance=0.1) included in comparison via bypassed filter.
+- **Tier-3 assertion**: shape_null == True
 
 ### N158 — location_transform_in_tolerance_eval bypass
 SameParameterEdge tolerance computation ignores surface location placement; edge on transformed surface (translate +100mm, rotate 45°) yields false tolerance sans transform.
+- **Tier-3 assertion**: shape_null == True
 
 ### N159 — direct_BRep_TEdge_tolerance_write bypass
 Raw write to BRep_TEdge bypasses SetMaxTolerance API validation; computed tolerance (0.05) exceeds cap (0.01) via direct memory write.
+- **Tier-3 assertion**: shape_null == True
 
 ### N160 — ComputeTol overflow_error tolerance corruption
 Mismatch between 3D and 2D curves (error 1e10+) accumulated into SameParameter tolerance; no early abort causes corruption when degenerate 2D paired with 3D line.
 
 ## wave 72C — STEP tolerance fixtures (N161–N165)
+- **Tier-3 assertion**: shape_null == True
 
 ### N161 — `tolerance_escalation` — unbounded multiplier
 Tolerance escalation during sewing lacks upper bound. Factor 1000× applied without capping; initial 1e-7 becomes 1e-4. Tests BRepBuilderAPI_Sewing escalation validation.
+- **Tier-3 assertion**: shape_null == True
 
 ### N162 — `tolerance_selection` — coarse fallback unvalidated
 Fine tolerance unavailable; fallback to coarse without magnitude check. 0.1 mm coarse applied without confirming safety. Tests ShapeAnalysis precision fallback logic.
+- **Tier-3 assertion**: shape_null == True
 
 ### N163 — `precision_tolerance` — mixed-unit-scale mismatch
 Tolerance declared in metre (1e-7) unscaled against millimetre coordinates (1.0). Factor-of-10000 discrepancy. Tests unit consistency in precision handling.
+- **Tier-3 assertion**: shape_null == True
 
 ### N164 — `tolerance_closure` — EDGE_LOOP gap exceeds threshold
 Edge loop gap (0.05 mm) accepted despite closure tolerance (0.01 mm). BRepBuilderAPI_Sewing skips gap validation. Tests loop closure enforcement.
+- **Tier-3 assertion**: shape_null == True
 
 ### N165 — `tolerance_conservatism` — no safety margin
 Distance 0.099999 mm compared against 0.1 mm tolerance w/o margin buffer. Single-ULP boundary case. Tests conservative threshold application.
 
 # Wave 73C — Tolerance Fixtures (N166–N170)
+- **Tier-3 assertion**: shape_null == True
 
 ### N166 — InTolerance VERTEX inverted-comparison bug | ShapeAnalysis_ShapeTolerance | tolerance | ShapeAnalysis_ShapeTolerance.InTolerance.vertex_tolerance_filtering_BUGGY | vertex range filter uses >= instead of <= | tolerance-regression | reproducible | true
+- **Tier-3 assertion**: n_faces_total == 1
 
 ### N167 — LimitTolerance iamax boundary-condition flip | ShapeFix_ShapeTolerance | tolerance | ShapeFix_ShapeTolerance.LimitTolerance.iamax_logic_flip | equality check (tmax >= tmin) semantically requires (tmax > tmin), edge case unchecked | boundary-condition-ambiguity | reproducible | true
+- **Tier-3 assertion**: n_faces_total == 1
 
 ### N168 — LimitTolerance recursive WIRE double-mutation | ShapeFix_ShapeTolerance | double-mutation | ShapeFix_ShapeTolerance.LimitTolerance.recursive_wire_vertices | shared vertices in wire mutated twice on single call | double-mutation | reproducible | true
+- **Tier-3 assertion**: n_faces_total == 1
 
 ### N169 — GetTolerance mixed-precision accumulation | BRep_Tool | tolerance | BRep_Tool::GetTolerance | accumulates vertex/edge tolerances without precision normalization | precision-tolerance-mismatch | reproducible | true
+- **Tier-3 assertion**: n_faces_total == 1
 
 ### N170 — Sewing unevaluated distance filter bypass | BRepBuilderAPI_Sewing | tolerance | BRepBuilderAPI_Sewing.AnalysisNearestEdges.unevaluated_distance_filter_first_pass | first-pass distance check bypassed, over-tolerance edges enter candidate pool | kernel-pair | reproducible | true
+- **Tier-3 assertion**: n_faces_total == 2
 
 ### M161 — Reader does not validate cross-references; dangling references silently accepted
 - **Category**: §12.8 mixed / auxiliary (sub-class: missing input validation)

@@ -31486,7 +31486,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 6"
+    ],
     "title": "ManifoldSolidBrep.outer references OPEN_SHELL"
   },
   {
@@ -31523,7 +31525,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 6"
+    ],
     "title": "FACETED_BREP.outer references OPEN_SHELL"
   },
   {
@@ -31561,7 +31565,9 @@
       "round-trip",
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 4"
+    ],
     "title": "Closed solid round-trips as SHELL_BASED_SURFACE_MODEL/OPEN_SHELL (SpaceClaim regression)"
   },
   {
@@ -31601,7 +31607,9 @@
       "round-trip",
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 5"
+    ],
     "title": "Sheet bodies imported in place of solids (FEA pipeline)"
   },
   {
@@ -31638,7 +31646,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 6"
+    ],
     "title": "Solid demoted by stricter receiver tolerance (\"clean in FreeCAD, broken in SolidWorks\")"
   },
   {
@@ -31678,7 +31688,9 @@
       "round-trip",
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 5"
+    ],
     "title": "Bundled component STEP packages emit OPEN_SHELL components"
   },
   {
@@ -31750,7 +31762,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 6"
+    ],
     "title": "Mis-oriented faces in shell (Möbius-detect)"
   },
   {
@@ -31794,7 +31808,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 6"
+    ],
     "title": "Solid built from open shell with inward-pointing outer-shell normals"
   },
   {
@@ -31831,7 +31847,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 6"
+    ],
     "title": "Reversed face normal in closed shell (\"inside-out\" shading)"
   },
   {
@@ -31869,7 +31887,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 1"
+    ],
     "title": "`FACE_OUTER_BOUND` orientation flag inconsistent with required winding"
   },
   {
@@ -31905,7 +31925,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 1"
+    ],
     "title": "Mixed `.T.`/`.F.` flags on `ORIENTED_EDGE` mismatched against parameter direction"
   },
   {
@@ -31939,7 +31961,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 2"
+    ],
     "title": "Face has multiple outer wires (face needs splitting into disjoint regions)"
   },
   {
@@ -31975,7 +31999,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 12"
+    ],
     "title": "Brep_with_voids: void shell oriented `.T.` instead of `.F.` (ProSTEP TR9)"
   },
   {
@@ -32013,7 +32039,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 3"
+    ],
     "title": "Volume orientation mismatch between `LastShape()` and parent solid"
   },
   {
@@ -32095,7 +32123,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 3"
+    ],
     "title": "Edge appearing only once or more than twice on faces (Q064 non-2-manifold)"
   },
   {
@@ -32133,7 +32163,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 2"
+    ],
     "title": "Non-manifold vertex (bowtie / hourglass / fan-of-fans)"
   },
   {
@@ -32169,7 +32201,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 2"
+    ],
     "title": "Non-manifold STEP loses XCAF attributes (color/PMI) on read"
   },
   {
@@ -32207,7 +32241,9 @@
       "crash",
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 2"
+    ],
     "title": "Empty `EDGE_LOOP` / empty face list on shells"
   },
   {
@@ -32243,7 +32279,9 @@
       "crash",
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 2"
+    ],
     "title": "`CONNECTED_FACE_SET` containing non-face entities"
   },
   {
@@ -32321,7 +32359,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 1"
+    ],
     "title": "Coincident-but-not-shared faces between adjacent solids"
   },
   {
@@ -32357,7 +32397,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 2"
+    ],
     "title": "`STYLED_ITEM` attached to sub-tolerance sliver `ADVANCED_FACE` (lost / mis-bound on healing)"
   },
   {
@@ -32469,7 +32511,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 2"
+    ],
     "title": "Single `ADVANCED_FACE` with `same_sense=.F.` flipped inward in `CLOSED_SHELL` (Thingi10K cluster)"
   },
   {
@@ -32507,7 +32551,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 2"
+    ],
     "title": "Mirrored block instances flip surface direction with parameter-space curves"
   },
   {
@@ -32614,7 +32660,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Free wires/edges in compound (Q029, F080 — no faces, INTERNAL orientation)"
   },
   {
@@ -32652,7 +32700,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 1"
+    ],
     "title": "Self-touching boundary cycle (figure-eight wire after triangulation)"
   },
   {
@@ -32689,7 +32739,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 2"
+    ],
     "title": "`EDGE_CURVE` shared across two `OPEN_SHELL`s in one `SHELL_BASED_SURFACE_MODEL` (T-junction mis-classified as non-manifold by slicer)"
   },
   {
@@ -32722,7 +32774,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 2"
+    ],
     "title": "Shell extrusion with shared edges yields CompSolid with duplicated internal faces"
   },
   {
@@ -32799,7 +32853,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 2"
+    ],
     "title": "Multi-face shell needs orchestrated face-by-face plus shell-wide healing (e.g., OPEN_SHELL with two ADVANCED_FACEs where one has same_sense=.F. flipped relative to neighbour)"
   },
   {
@@ -32833,7 +32889,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 2"
+    ],
     "title": "Free edges in OPEN_SHELL distinguished from non-watertight defects (e.g., two adjacent ADVANCED_FACEs each define their own EDGE_CURVE on a common boundary instead of sharing one)"
   },
   {
@@ -32872,7 +32930,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 7"
+    ],
     "title": "`MANIFOLD_SOLID_BREP` whose outer shell loses the closed flag after face unification"
   },
   {
@@ -32911,7 +32971,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 2"
+    ],
     "title": "Adjacent same-domain faces fail to merge across linear-edge chain"
   },
   {
@@ -32951,7 +33013,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 2"
+    ],
     "title": "Same-domain face unification crosses cylinder seam and produces non-manifold result"
   },
   {
@@ -32989,7 +33053,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 3"
+    ],
     "title": "Same-domain face unification corrupts shape with mirrored sub-instance"
   },
   {
@@ -33065,7 +33131,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 1"
+    ],
     "title": "Edges on shared face boundary not deduplicated after merge"
   },
   {
@@ -33101,7 +33169,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 3"
+    ],
     "title": "Shell shared-face union loses location when REPRESENTATION_MAP / AXIS2_PLACEMENT_3D ref_direction encodes a non-unit (scaled) DIRECTION"
   },
   {
@@ -33179,7 +33249,9 @@
       "crash",
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 1"
+    ],
     "title": "Merging coplanar adjacent faces fails with construction error on shape with empty edge loop"
   },
   {
@@ -33218,7 +33290,9 @@
       "crash",
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 3"
+    ],
     "title": "Merging adjacent same-surface faces crashes when input has chained placements"
   },
   {
@@ -33255,7 +33329,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 2"
+    ],
     "title": "Merging adjacent same-surface faces with opposite normals returns inverted face"
   },
   {
@@ -33292,7 +33368,9 @@
       "crash",
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 1"
+    ],
     "title": "Merging adjacent same-surface faces hangs on a face whose wire forms a figure-eight"
   },
   {
@@ -33331,7 +33409,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 2"
+    ],
     "title": "Merging near-tangent adjacent ADVANCED_FACEs (PLANE normals differ ~1e-4 rad, shared EDGE_CURVE with mismatched vertex z) returns self-overlapping face"
   },
   {
@@ -33367,7 +33447,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 2"
+    ],
     "title": "Adjacent same-surface face merge ignores edge-preservation request"
   },
   {
@@ -33403,7 +33485,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 4"
+    ],
     "title": "Coplanar-face merge history map omits intermediate shapes (multiple ADVANCED_FACEs aliasing the same FACE_OUTER_BOUND and same PLANE)"
   },
   {
@@ -33443,7 +33527,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Same-surface face merge runs quadratically across disjoint shells"
   },
   {
@@ -33480,7 +33566,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 4"
+    ],
     "title": "Merging same-surface faces around a non-manifold interior edge corrupts topology"
   },
   {
@@ -33528,7 +33616,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 5"
+    ],
     "title": "Merging adjacent same-surface faces returns topologically invalid shape (OPEN_SHELL of multiple CYLINDRICAL_SURFACE faces with degenerate seam edges where two distinct VERTEX_POINTs share coords)"
   },
   {
@@ -33568,7 +33658,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 2"
+    ],
     "title": "Adjacent toroidal faces with identical parameters are not detected as same-surface"
   },
   {
@@ -33608,7 +33700,9 @@
       "silent-loss",
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 2"
+    ],
     "title": "Same-surface face merge edge-removal history contract is undocumented"
   },
   {
@@ -33645,7 +33739,9 @@
       "spec-violation",
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Tessellated shell with shared nodes between adjacent triangulated faces"
   },
   {
@@ -33682,7 +33778,9 @@
       "spec-violation",
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Same `CLOSED_SHELL` referenced from two `MANIFOLD_SOLID_BREP` entities"
   },
   {
@@ -33719,7 +33817,9 @@
       "spec-violation",
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Inner void shell extends beyond outer shell extent (void poking through)"
   },
   {
@@ -33757,7 +33857,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 2"
+    ],
     "title": "`MANIFOLD_SOLID_BREP` whose outer shell is open (not closed) silently accepted"
   },
   {
@@ -33788,7 +33890,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 3"
+    ],
     "title": "CheckOrientedShells Normal-Flip Detection"
   },
   {
@@ -33819,7 +33923,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 3"
+    ],
     "title": "FixFaceOrientation Multiconnect-Edge Classification"
   },
   {
@@ -33850,7 +33956,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 2"
+    ],
     "title": "BadEdges Detection for Mismatched Edge Ordering"
   },
   {
@@ -33881,7 +33989,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 2"
+    ],
     "title": "FreeEdges Detection for Non-Closed Shells"
   },
   {
@@ -33912,7 +34022,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 5"
+    ],
     "title": "Perform Context State Reuse Vulnerability"
   },
   {
@@ -33943,7 +34055,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 2"
+    ],
     "title": "Duplicate faces in shell"
   },
   {
@@ -33974,7 +34088,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 2"
+    ],
     "title": "Non-orientable Möbius shell"
   },
   {
@@ -34005,7 +34121,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 3"
+    ],
     "title": "Shell-count escalation on decomposition"
   },
   {
@@ -34067,7 +34185,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 1"
+    ],
     "title": "Möbius-strip orientation contradiction"
   },
   {
@@ -34687,7 +34807,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 1"
+    ],
     "title": "ShapeUpgrade_RemoveLocations.Remove location-after-traversal"
   },
   {
@@ -34718,7 +34840,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 1"
+    ],
     "title": "ShapeAnalysis_Shell.CheckOrientedShells one-face-shell"
   },
   {
@@ -34749,7 +34873,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 2"
+    ],
     "title": "ShapeFix_Shell.FixFaceOrientation tangent-edge propagation"
   },
   {
@@ -34780,7 +34906,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 2"
+    ],
     "title": "ShapeUpgrade_ShellSewing.Apply tolerance-driven merge"
   },
   {
@@ -34811,7 +34939,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 4"
+    ],
     "title": "ShapeFix_Solid.SolidFromShell hollow-solid cavity loss"
   },
   {
@@ -34842,7 +34972,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 2"
+    ],
     "title": "ShapeAnalysis_Shell.FreeEdges seam-edge classification"
   },
   {
@@ -34873,7 +35005,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 2"
+    ],
     "title": "ShapeFix_Shell.FixFaceOrientation reverse-edge propagation"
   },
   {
@@ -34904,7 +35038,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 2"
+    ],
     "title": "ShapeAnalysis_Shell.CheckOrientedShells unconnected components"
   },
   {
@@ -34966,7 +35102,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "ShapeFix_Shell.Perform double-orient oscillation"
   },
   {
@@ -35648,7 +35786,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 2"
+    ],
     "title": "ShapeFix_Shell.Perform compound-input"
   },
   {
@@ -35679,7 +35819,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 5"
+    ],
     "title": "ShapeAnalysis_Shell.CheckOrientedShells closed-shell-with-free-edges"
   },
   {
@@ -35710,7 +35852,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 6"
+    ],
     "title": "ShapeUpgrade_ShellSewing.Apply already-sewn"
   },
   {
@@ -35741,7 +35885,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 4"
+    ],
     "title": "ShapeFix_Shell.FixFaceOrientation flat-shell"
   },
   {
@@ -35772,7 +35918,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 1"
+    ],
     "title": "ShapeUpgrade_RemoveLocations.Remove top-down"
   },
   {
@@ -35803,7 +35951,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 2"
+    ],
     "title": "CheckOrientedShells edge-tolerance"
   },
   {
@@ -35834,7 +35984,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 2"
+    ],
     "title": "ShapeUpgrade_ShellSewing.Apply face-with-multiple-edges-to-merge"
   },
   {
@@ -35896,7 +36048,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 1"
+    ],
     "title": "ShapeAnalysis_Shell.LoadShells nested-compound"
   },
   {
@@ -35927,7 +36081,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 2"
+    ],
     "title": "ShapeFix_Shell.Perform repeated-call-state"
   },
   {
@@ -36733,7 +36889,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 2"
+    ],
     "title": "ShapeFix_Shell.Perform with-context-pollution"
   },
   {
@@ -36764,7 +36922,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 3"
+    ],
     "title": "ShapeAnalysis_Shell.CheckOrientedShells multi-component"
   },
   {
@@ -36795,7 +36955,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 2"
+    ],
     "title": "ShapeUpgrade_ShellSewing.Apply face-with-same-base"
   },
   {
@@ -36826,7 +36988,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 2"
+    ],
     "title": "ShapeFix_Shell.FixFaceOrientation with-empty-loop"
   },
   {
@@ -36857,7 +37021,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 1"
+    ],
     "title": "ShapeAnalysis_Shell.LoadShells skipping-non-shell"
   },
   {
@@ -36888,7 +37054,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 2"
+    ],
     "title": "ShapeFix_Shell.Perform shell-with-floating-faces"
   },
   {
@@ -36919,7 +37087,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 2"
+    ],
     "title": "ShapeAnalysis_Shell.CheckOrientedShells with-zero-tolerance"
   },
   {
@@ -36950,7 +37120,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 2"
+    ],
     "title": "ShapeUpgrade_ShellSewing.Apply with-cross-shell-intersection"
   },
   {
@@ -37012,7 +37184,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 2"
+    ],
     "title": "ShapeAnalysis_Shell.LoadShells with-recursive-compound"
   },
   {
@@ -37043,7 +37217,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 2"
+    ],
     "title": "ShapeFix_Shell.FixFaceOrientation with-empty-shell-after-fix"
   },
   {
@@ -37074,7 +37250,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "ShapeAnalysis_Shell.CheckOrientedShells with-self-touching-shell"
   },
   {
@@ -37105,7 +37283,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "ShapeUpgrade_ShellSewing.Apply with-coincident-but-different-orientation"
   },
   {
@@ -37136,7 +37316,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 2"
+    ],
     "title": "ShapeFix_Shell.Perform infinite-loop-detection"
   },
   {
@@ -37167,7 +37349,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 1"
+    ],
     "title": "ShapeAnalysis_Shell.FreeEdges with-degenerate-edges"
   },
   {
@@ -37198,7 +37382,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "ShapeFix_Shell.FixFaceOrientation hex-prism orientation propagation oscillation"
   },
   {
@@ -37353,7 +37539,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 3"
+    ],
     "title": "ShapeFix_Shell.FixFaceOrientation duplicate-face inconsistency"
   },
   {
@@ -37384,7 +37572,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 6"
+    ],
     "title": "ShapeFix_Solid.Perform context-stale-state cumulative fixes"
   },
   {
@@ -37415,7 +37605,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 5"
+    ],
     "title": "ShapeFix_Solid.SolidFromShell orientation-infinite-point non-closed shell"
   },
   {
@@ -37446,7 +37638,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "BRepBuilderAPI_Sewing.AnalysisNearestEdges section-bound-lookup gate"
   },
   {
@@ -37477,7 +37671,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 4"
+    ],
     "title": "ShapeFix_Shell.Perform progress-abort inconsistent-status"
   },
   {
@@ -37508,7 +37704,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "ShapeAnalysis_Shell.BadEdges uninitialized compound"
   },
   {
@@ -37539,7 +37737,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "ShapeAnalysis_Shell.FreeEdges uninitialized compound"
   },
   {
@@ -37570,7 +37770,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 3"
+    ],
     "title": "ShapeFix_Shell.FixFaceOrientation multi-connected edge unbounded"
   },
   {
@@ -37601,7 +37803,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 1"
+    ],
     "title": "ShapeFix_Shell.Perform closed-flag sync-failure"
   },
   {
@@ -37632,7 +37836,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 2"
+    ],
     "title": "ShapeUpgrade_ShellSewing.Apply tolerance-boundary classification"
   },
   {
@@ -37663,7 +37869,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 1"
+    ],
     "title": "ShapeAnalysis_Shell.BadEdges uninitialized extent"
   },
   {
@@ -37694,7 +37902,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 2"
+    ],
     "title": "ShapeFix_Shell.FixFaceOrientation duplicate faces undetected"
   },
   {
@@ -37725,7 +37935,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 1"
+    ],
     "title": "ShapeFix_Shell.FixFaceOrientation multi-connected edge unbounded loop"
   },
   {
@@ -37756,7 +37968,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 2"
+    ],
     "title": "ShapeFix_Shell.FixFaceOrientation shells extraction loss"
   },
   {
@@ -37787,7 +38001,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 1"
+    ],
     "title": "ShapeFix_Shell.Perform context null initialize"
   },
   {
@@ -38128,7 +38344,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 1"
+    ],
     "title": "U-closed seam-edge period wrapping"
   },
   {
@@ -38159,7 +38377,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 1"
+    ],
     "title": "Shell tolerance iteration filtering"
   },
   {
@@ -38190,7 +38410,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 2"
+    ],
     "title": "Degenerate edge-only wire removal"
   },
   {
@@ -38221,7 +38443,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 1"
+    ],
     "title": "Mixed wire/edge orientation conflict"
   },
   {
@@ -38283,7 +38507,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 2"
+    ],
     "title": "ShapeFix_Shell.FixFaceOrientation.duplicate_faces_undetected"
   },
   {
@@ -38314,7 +38540,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 1"
+    ],
     "title": "ShapeFix_Shell.Perform.context_null_initialize"
   },
   {
@@ -38345,7 +38573,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 4"
+    ],
     "title": "ShapeFix_Shell.Perform.progress_abort_inconsistency"
   },
   {
@@ -38376,7 +38606,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 4"
+    ],
     "title": "ShapeFix_Shell.Perform.closed_flag_sync_failure"
   },
   {
@@ -38438,7 +38670,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 3"
+    ],
     "title": "duplicate_faces_undetected"
   },
   {
@@ -38469,7 +38703,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 3"
+    ],
     "title": "multiconnect_edge_loop_unbounded"
   },
   {
@@ -38500,7 +38736,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 2"
+    ],
     "title": "context_null_initialize"
   },
   {
@@ -38531,7 +38769,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 6"
+    ],
     "title": "closed_flag_sync_failure"
   },
   {
@@ -38562,7 +38802,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 2"
+    ],
     "title": "shells_extraction_loss"
   },
   {
@@ -38593,7 +38835,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 2"
+    ],
     "title": "ShapeFix_Shell.FixFaceOrientation duplicate_faces_undetected"
   },
   {
@@ -38624,7 +38868,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 3"
+    ],
     "title": "ShapeFix_Shell.FixFaceOrientation multiconnect_edge_loop_unbounded"
   },
   {
@@ -38655,7 +38901,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 2"
+    ],
     "title": "ShapeFix_Shell.FixFaceOrientation shells_extraction_loss"
   },
   {
@@ -38686,7 +38934,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 2"
+    ],
     "title": "ShapeFix_Shell.FixFaceOrientation error_faces_mebius_assumption"
   },
   {
@@ -38717,7 +38967,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 3"
+    ],
     "title": "ShapeFix_Shell.Perform closed_flag_sync_failure"
   },
   {
@@ -38755,7 +39007,9 @@
       "crash",
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Empty edge_list in EDGE_LOOP"
   },
   {
@@ -38914,7 +39168,9 @@
       "crash",
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "ORIENTED_EDGE.edge_element references non-EDGE_CURVE"
   },
   {
@@ -39507,7 +39763,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "ConnectEdgesToWires fails on INTERNAL-only edges / non-determinism"
   },
   {
@@ -40258,7 +40516,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 1"
+    ],
     "title": "Vertex tolerance smaller than the edge endpoint discrepancy it must absorb"
   },
   {
@@ -40398,7 +40658,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Wire whose edges accumulate several pcurve / 3D-curve defects at once"
   },
   {
@@ -40648,7 +40910,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 1"
+    ],
     "title": "Vertex 3D point and edge 3D-curve endpoint disagree beyond tolerance"
   },
   {
@@ -40683,7 +40947,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 1"
+    ],
     "title": "Vertex 3D point and edge pcurve endpoint disagree beyond tolerance"
   },
   {
@@ -40717,7 +40983,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 1"
+    ],
     "title": "Vertex tolerance check returns required inflation amount (rectangular wire with VERTEX_POINT offset from underlying LINE endpoint; UNCERTAINTY_MEASURE_WITH_UNIT too small to absorb the gap)"
   },
   {
@@ -40927,7 +41195,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Lacking edge: 2D gap not absorbable by vertex tolerance"
   },
   {
@@ -40962,7 +41232,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Wire 3D-gap analysis must enumerate all gaps (EDGE_LOOP with multiple junctions where consecutive ORIENTED_EDGEs have mismatched VERTEX_POINTs, e.g., 0.05-0.07 mm gaps)"
   },
   {
@@ -40997,7 +41269,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Wire 2D-gap analysis must enumerate all pcurve gaps"
   },
   {
@@ -41032,7 +41306,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Curve gap within a single edge: 3D curve and pcurve drift mid-edge"
   },
   {
@@ -41067,7 +41343,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Seam edge has its two pcurves swapped"
   },
   {
@@ -41139,7 +41417,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Per-junction 2D pcurve gap query"
   },
   {
@@ -41210,7 +41490,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Connect-shape diagnostic: how does a foreign ORIENTED_EDGE attach to an EDGE_LOOP wire (e.g., open 3-edge wire plus a free edge near its tail with a sub-mm gap)?"
   },
   {
@@ -41280,7 +41562,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Wire tail / sliver: two adjacent EDGE_CURVEs form a sharp 180° fold over sub-tolerance width (one edge nearly retraces the other in opposite direction)"
   },
   {
@@ -41315,7 +41599,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Wire-order analysis: reorder unordered edges (no reversal needed)"
   },
   {
@@ -41421,7 +41707,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Edge has multiple distinct 3D curves attached"
   },
   {
@@ -41456,7 +41744,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Edge `same_range` flag claims parametric agreement that does not hold"
   },
   {
@@ -41491,7 +41781,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "EDGE_CURVE flagged degenerate but its 3D LINE has positive length (non-zero distance between distinct VERTEX_POINTs)"
   },
   {
@@ -41526,7 +41818,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Closed-curve edge has different start and end vertex points"
   },
   {
@@ -41561,7 +41855,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Edge endpoint vertex's 3D point disagrees with curve evaluation at the boundary parameter"
   },
   {
@@ -41596,7 +41892,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Edge geometry is a line through two coincident points (zero-length line edge)"
   },
   {
@@ -41631,7 +41929,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Wire is non-manifold: a vertex is incident to >2 edges of the wire"
   },
   {
@@ -41666,7 +41966,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Edge in topology has no 3D curve attached"
   },
   {
@@ -41701,7 +42003,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Two collinear edges meeting at a degree-2 vertex should be fused into one edge"
   },
   {
@@ -41893,7 +42197,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Wire endpoint first/last edge skipped during wire build (open EDGE_LOOP missing first ORIENTED_EDGE; orphan VERTEX_POINT defined but never referenced)"
   },
   {
@@ -41969,7 +42275,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Wire with internal cross-loop translates incorrectly"
   },
   {
@@ -42007,7 +42315,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Edge-projection-aux range computation loses precision on periodic curves"
   },
   {
@@ -42046,7 +42356,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "`FixTails` removes wire tail edges incorrectly (EDGE_LOOP with intentional short feature edges, e.g., a chamfer edge plus a disconnected free-floating short edge)"
   },
   {
@@ -42084,7 +42396,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "`EDGE_CURVE` whose start and end vertex point at the same `VERTEX_POINT`"
   },
   {
@@ -42124,7 +42438,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "`COMPOSITE_CURVE_ON_SURFACE` LoadONBrep stub (BRL-CAD step-g)"
   },
   {
@@ -42162,7 +42478,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "`POLYLINE` basis curve LoadONBrep stub (BRL-CAD step-g)"
   },
   {
@@ -42193,7 +42511,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 1"
+    ],
     "title": "ShapeFix_Wire.FixDegenerated modulo-index wraparound at wire end"
   },
   {
@@ -42224,7 +42544,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 2"
+    ],
     "title": "ShapeFix_Wire.FixSelfIntersectingEdge 30-iteration convergence silently exits"
   },
   {
@@ -42255,7 +42577,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 1"
+    ],
     "title": "ShapeAnalysis_Wire.CheckTail misclassifies degenerate orientation"
   },
   {
@@ -42286,7 +42610,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 1"
+    ],
     "title": "ShapeAnalysis_Wire.CheckIntersectingEdges seam-gap tolerance filter miss"
   },
   {
@@ -42317,7 +42643,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 2"
+    ],
     "title": "ShapeFix_Wire.FixIntersectingEdges accumulation cascade without upper bound"
   },
   {
@@ -42348,7 +42676,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 1"
+    ],
     "title": "FixReorder Mode-Cascade"
   },
   {
@@ -42379,7 +42709,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 1"
+    ],
     "title": "FixGaps3d 3D-Gap Repair"
   },
   {
@@ -42410,7 +42742,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 1"
+    ],
     "title": "FixShifted Period-Shift on Closed Surface"
   },
   {
@@ -42441,7 +42775,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 1"
+    ],
     "title": "CheckEdgeCurves 3D-vs-2D Coherence"
   },
   {
@@ -42534,7 +42870,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "ShapeAnalysis_Wire.CheckOuterBound outer-bound mis-identification"
   },
   {
@@ -42565,7 +42903,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "ShapeFix_Wire.FixTails tail-elimination"
   },
   {
@@ -42596,7 +42936,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "ShapeAnalysis_Wire.CheckGap3d threshold-comparison edge"
   },
   {
@@ -42627,7 +42969,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "ShapeFix_Wire.FixConnected vertex-sharing mismatch"
   },
   {
@@ -42658,7 +43002,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "ShapeFix_Wire.FixNotchedEdges singular-derivative"
   },
   {
@@ -42689,7 +43035,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "ShapeAnalysis_Wire.CheckLacking lacking-edge tangency"
   },
   {
@@ -42720,7 +43068,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "ShapeFix_Wire.FixSmall threshold-on-tolerance"
   },
   {
@@ -42751,7 +43101,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "ShapeAnalysis_Wire.CheckShapeConnect 4-way orientation encoding"
   },
   {
@@ -42782,7 +43134,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "ShapeFix_Wire.FixSeam closed-surface seam reset"
   },
   {
@@ -42813,7 +43167,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "ShapeFix_Wire.FixTails wire-tail asymmetry"
   },
   {
@@ -42844,7 +43200,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "ShapeAnalysis_Wire.CheckGap2d tolerance-equality misclassification"
   },
   {
@@ -42875,7 +43233,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "ShapeFix_Wire.FixIntersectingEdges 2.0000001 magic-constant"
   },
   {
@@ -42906,7 +43266,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "ShapeAnalysis_Wire.CheckSelfIntersection bounding-box pruning"
   },
   {
@@ -42937,7 +43299,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "ShapeFix_Wire.FixClosed linear submethod cascade"
   },
   {
@@ -43123,7 +43487,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "ShapeFix_Wire.FixDummySeam non-periodic-surface"
   },
   {
@@ -43154,7 +43520,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "ShapeAnalysis_Wire.CheckCurveGap bspline endpoint precision"
   },
   {
@@ -43185,7 +43553,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "ShapeFix_Wire.FixShifted non-2π shift"
   },
   {
@@ -43216,7 +43586,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "ShapeAnalysis_Wire.CheckGap2d trimmed-pcurve gap"
   },
   {
@@ -43247,7 +43619,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "ShapeFix_Wire.FixConnected vertex-replacement chain"
   },
   {
@@ -43898,7 +44272,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 1"
+    ],
     "title": "ShapeAnalysis_Wire.CheckSelfIntersection figure-8 wire"
   },
   {
@@ -43960,7 +44336,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 1"
+    ],
     "title": "ShapeAnalysis_Wire.CheckOrder wire-completely-reversed"
   },
   {
@@ -43991,7 +44369,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 1"
+    ],
     "title": "ShapeFix_Wire.FixLacking degenerate-vertex-gap"
   },
   {
@@ -44022,7 +44402,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 1"
+    ],
     "title": "ShapeAnalysis_Wire.CheckGap2d on B-spline pcurve"
   },
   {
@@ -44053,7 +44435,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 1"
+    ],
     "title": "ShapeFix_Wire.FixIntersectingEdges 3-edge-mutual-intersection"
   },
   {
@@ -44084,7 +44468,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 1"
+    ],
     "title": "ShapeAnalysis_Wire.CheckIntersectingEdges trimmed-edges-overlap-base-curve"
   },
   {
@@ -44115,7 +44501,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 1"
+    ],
     "title": "ShapeFix_Wire.FixReorder algorithm-cycle"
   },
   {
@@ -44146,7 +44534,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 1"
+    ],
     "title": "ShapeAnalysis_Wire.CheckTail B-spline subdivided"
   },
   {
@@ -44177,7 +44567,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 1"
+    ],
     "title": "ShapeFix_Wire.FixSelfIntersectingEdge near-grazing"
   },
   {
@@ -44332,7 +44724,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "ShapeFix_Wire.FixReorder reverse-then-forward"
   },
   {
@@ -44487,7 +44881,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "ShapeFix_Wire.FixIntersectingEdges concurrent-modification"
   },
   {
@@ -44518,7 +44914,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "ShapeAnalysis_Wire.CheckOuterBound nested-faces"
   },
   {
@@ -44549,7 +44947,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "ShapeFix_Wire.FixSelfIntersection convergence-oscillation"
   },
   {
@@ -44580,7 +44980,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "ShapeAnalysis_Wire.CheckGap2d on-trimmed-pcurve"
   },
   {
@@ -44611,7 +45013,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "ShapeFix_Wire.FixGaps3d 4-edge-gap-chain"
   },
   {
@@ -44642,7 +45046,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "ShapeAnalysis_Wire.CheckGap3d B-spline-vs-LINE"
   },
   {
@@ -44673,7 +45079,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "ShapeFix_Wire.FixTails very-small-tail"
   },
   {
@@ -44704,7 +45112,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 1"
+    ],
     "title": "ShapeAnalysis_Wire.CheckSeam non-cylindrical-seam"
   },
   {
@@ -44735,7 +45145,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "ShapeFix_Wire.FixConnected zero-length-edge-between"
   },
   {
@@ -44766,7 +45178,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "ShapeAnalysis_Wire.CheckSelfIntersection coincident-curves"
   },
   {
@@ -44797,7 +45211,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 1"
+    ],
     "title": "ShapeFix_Wire.FixIntersectingEdges parametric-overlap"
   },
   {
@@ -44828,7 +45244,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "ShapeFix_Wire.FixLacking insertion-cascade"
   },
   {
@@ -44859,7 +45277,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "ShapeAnalysis_Wire.CheckSelfIntersectingEdge B-spline-with-loop"
   },
   {
@@ -44890,7 +45310,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "ShapeFix_Wire.FixGaps3d directional-extension"
   },
   {
@@ -44921,7 +45343,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "ShapeAnalysis_Wire.CheckShapeConnect three-edge-fan"
   },
   {
@@ -44952,7 +45376,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "ShapeFix_Wire.FixIntersectingEdges parameter-monotonicity"
   },
   {
@@ -45107,7 +45533,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 1"
+    ],
     "title": "FixDegenerated zero-length-after-trim"
   },
   {
@@ -45262,7 +45690,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "ShapeFix_Wire.FixSeam mismatched-pcurve-direction"
   },
   {
@@ -45417,7 +45847,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 1"
+    ],
     "title": "ShapeFix_Wire.FixSelfIntersectingEdge cusp-at-vertex"
   },
   {
@@ -45572,7 +46004,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "ShapeFix_Wire.FixLacking surface-edge-direction-mismatch"
   },
   {
@@ -45727,7 +46161,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "ShapeFix_Wire.FixDegenerated removal-cascade"
   },
   {
@@ -46223,7 +46659,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "ShapeFix_Wire.FixSelfIntersection two-edges-two-intersections"
   },
   {
@@ -46254,7 +46692,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "ShapeAnalysis_Wire.CheckOuterBound winding-number-zero"
   },
   {
@@ -46285,7 +46725,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 1"
+    ],
     "title": "ShapeFix_Wire.FixDegenerated zero-vertex"
   },
   {
@@ -46316,7 +46758,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "ShapeAnalysis_Wire.CheckTail B-spline-tangent-mismatch"
   },
   {
@@ -46347,7 +46791,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 1"
+    ],
     "title": "ShapeFix_Wire.FixGaps3d bridge-creates-degeneracy"
   },
   {
@@ -46378,7 +46824,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "ShapeFix_Wire.FixSmall edge-coalescing tolerance"
   },
   {
@@ -46409,7 +46857,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "ShapeFix_Wire.FixConnected disconnected-endpoints vertex-merge-fails"
   },
   {
@@ -46440,7 +46890,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "ShapeFix_Wire.FixClosed open-wire-closure-degenerate"
   },
   {
@@ -46471,7 +46923,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "ShapeFix_Wire.FixShifted seam-vertex-position-mismatch"
   },
   {
@@ -46533,7 +46987,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "ShapeAnalysis_Wire.CheckOrder"
   },
   {
@@ -46564,7 +47020,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "ShapeAnalysis_Wire.CheckConnected"
   },
   {
@@ -46595,7 +47053,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "ShapeAnalysis_Wire.CheckSmall"
   },
   {
@@ -46626,7 +47086,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "ShapeAnalysis_Wire closure gap"
   },
   {
@@ -46657,7 +47119,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "ShapeAnalysis_Wire.CheckSameParameter"
   },
   {
@@ -46688,7 +47152,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "BRepLib::SameParameter exception silent skip"
   },
   {
@@ -46720,7 +47186,9 @@
       "crash",
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 1"
+    ],
     "title": "BRepLib::SameParameter null 3D curve dereference"
   },
   {
@@ -46751,7 +47219,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "ShapeFix_IntersectionTool CutEdge range too small"
   },
   {
@@ -46782,7 +47252,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "ShapeFix_IntersectionTool FindVertAndSplitEdge endpoint selection"
   },
   {
@@ -46813,7 +47285,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "ShapeFix_IntersectionTool FixIntersectingWires null input guard"
   },
   {
@@ -46844,7 +47318,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "ShapeAnalysis_Wire.CheckConnected.WIRE_NOT_LOADED"
   },
   {
@@ -46875,7 +47351,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "ShapeAnalysis_Wire.CheckConnected.NULL_EDGE_VERTICES"
   },
   {
@@ -46906,7 +47384,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "ShapeAnalysis_Wire.CheckConnected.SAME_VERTEX_BOTH_ENDS"
   },
   {
@@ -46937,7 +47417,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "ShapeAnalysis_Wire.CheckLoop.null-vertices"
   },
   {
@@ -46999,7 +47481,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "unloaded-or-trivial-wire"
   },
   {
@@ -47030,7 +47514,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "self-loop-small-edge"
   },
   {
@@ -47061,7 +47547,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "self-loop-binding"
   },
   {
@@ -47092,7 +47580,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "multi-vertex-self-loop-check"
   },
   {
@@ -47154,7 +47644,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "CheckOrder nullface"
   },
   {
@@ -47185,7 +47677,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "CheckSelfIntersection acyclic-crossing"
   },
   {
@@ -47216,7 +47710,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "FixConnected gap-skip"
   },
   {
@@ -47247,7 +47743,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "FixClosed endpoint-mismatch"
   },
   {
@@ -47309,7 +47807,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "ShapeAnalysis_Wire.CheckOuterBound"
   },
   {
@@ -47340,7 +47840,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 1"
+    ],
     "title": "ShapeAnalysis_Wire.CheckSeam"
   },
   {
@@ -47371,7 +47873,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "ShapeAnalysis_Wire.CheckSelfIntersectingEdge"
   },
   {
@@ -47402,7 +47906,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 1"
+    ],
     "title": "ShapeAnalysis_Wire.CheckShapeConnect"
   },
   {
@@ -47464,7 +47970,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "CheckLoop Unloaded/Trivial"
   },
   {
@@ -47495,7 +48003,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "CheckLoop Null Vertices"
   },
   {
@@ -47526,7 +48036,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "CheckLoop Seam Classification"
   },
   {
@@ -47557,7 +48069,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "CheckLoop Multi-Vertex Self-Loop"
   },
   {
@@ -47588,7 +48102,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "CheckLoop Multi-Vertex V2-Check"
   },
   {
@@ -48307,7 +48823,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "FaceOuterBound translation failed (face incomplete without outer wire)"
   },
   {
@@ -48857,7 +49375,9 @@
       "crash",
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Same-domain face merge across periodic seam: shared `EDGE_CURVE` reused with `.T.`/`.F.` on both halves (missed-seam reconstruction)"
   },
   {
@@ -48976,7 +49496,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Almost-closed `EDGE_LOOP` with sub-tolerance gap and wrong Closed flag (ConnectEdgesToWires)"
   },
   {
@@ -49090,7 +49612,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Glue Edges: duplicate `EDGE_CURVE` instances over duplicated `LINE` / `VERTEX_POINT` entities (coincident edges)"
   },
   {
@@ -50266,7 +50790,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Sewing of thin faces takes excessive time during seam-edge creation"
   },
   {
@@ -50300,7 +50826,9 @@
       "silent-loss",
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 1"
+    ],
     "title": "Face crash during fix on invalid face — null inner wire"
   },
   {
@@ -50339,7 +50867,9 @@
       "crash",
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Stack overflow on `RemoveSmallFaces` due to unbounded recursion"
   },
   {
@@ -50535,7 +51065,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "STEP export duplicates surfaces, leading to non-conformal geometry between adjacent faces"
   },
   {
@@ -50572,7 +51104,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 1"
+    ],
     "title": "Lettering bottoms not closed in exported STEP (text-on-surface non-solid result)"
   },
   {
@@ -50613,7 +51147,9 @@
       "silent-loss",
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "`CURVE_BOUNDED_SURFACE.implicit_outer = .U.` (unset BOOLEAN) leaves boundary semantics ambiguous (BRL-CAD step-g)"
   },
   {
@@ -50644,7 +51180,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 1"
+    ],
     "title": "ShapeFix_Face.FixPeriodicDegenerated apex-curve direction"
   },
   {
@@ -50675,7 +51213,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 1"
+    ],
     "title": "ShapeFix_FixSmallFace.ReplaceVerticesInCaseOfSpot coherence"
   },
   {
@@ -50706,7 +51246,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "ShapeFix_FixSmallFace.ComputeSharedEdgeForStripFace asymmetry"
   },
   {
@@ -50737,7 +51279,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 2"
+    ],
     "title": "ShapeFix_Face.FixWiresTwoCoincEdges orientation detection"
   },
   {
@@ -50768,7 +51312,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "ShapeFix_ComposeShell.MakeFacesOnPatch fallback resolution"
   },
   {
@@ -50954,7 +51500,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 1"
+    ],
     "title": "ShapeFix_Face.FixOrientation reversed-normal heal"
   },
   {
@@ -51016,7 +51564,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 1"
+    ],
     "title": "ShapeFix_Face.FixNotchedEdges near-tangent notch detection"
   },
   {
@@ -51047,7 +51597,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 1"
+    ],
     "title": "ShapeAnalysis_FreeBoundsProperties.CheckNotches gap-after-fix"
   },
   {
@@ -51140,7 +51692,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 1"
+    ],
     "title": "ShapeAnalysis_CheckSmallFace.CheckStripEdges: aspect-ratio threshold"
   },
   {
@@ -51171,7 +51725,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 1"
+    ],
     "title": "ShapeFix_Face.FixAddNaturalBound: sphere natural boundary"
   },
   {
@@ -51202,7 +51758,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 1"
+    ],
     "title": "ShapeAnalysis_CheckSmallFace.CheckSpotFace: tolerance scaling"
   },
   {
@@ -51574,7 +52132,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 1"
+    ],
     "title": "ShapeFix_Face.FixAddNaturalBound torus complete-surface"
   },
   {
@@ -51605,7 +52165,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 1"
+    ],
     "title": "ShapeAnalysis_CheckSmallFace.CheckSmallArea aspect-ratio infinite"
   },
   {
@@ -51636,7 +52198,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 1"
+    ],
     "title": "ShapeFix_Face.FixPeriodicDegenerated apex-at-V-min"
   },
   {
@@ -51667,7 +52231,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 2"
+    ],
     "title": "ShapeAnalysis_CheckSmallFace.CheckSplittingVertices NM-vertex"
   },
   {
@@ -52008,7 +52574,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 1"
+    ],
     "title": "ShapeFix_Face.FixPeriodicDegenerated revolution-axis edge"
   },
   {
@@ -52163,7 +52731,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 1"
+    ],
     "title": "ShapeFix_Face.FixAddNaturalBound trimmed-conical"
   },
   {
@@ -52194,7 +52764,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "ShapeFix_Face.FixWiresTwoCoincEdges different-host-surfaces"
   },
   {
@@ -52225,7 +52797,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "ShapeAnalysis_CheckSmallFace.CheckTwisted self-touching wire"
   },
   {
@@ -52256,7 +52830,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "ShapeFix_Face.FixSmallAreaWire near-collinear edges"
   },
   {
@@ -52287,7 +52863,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "ShapeAnalysis_CheckSmallFace.CheckSpotFace asymmetric"
   },
   {
@@ -52318,7 +52896,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "ShapeFix_Face.FixPeriodicDegenerated u-axis-degenerate"
   },
   {
@@ -52380,7 +52960,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 1"
+    ],
     "title": "CheckPin: oversized-pin"
   },
   {
@@ -52411,7 +52993,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 1"
+    ],
     "title": "FixOrientation: already-correct"
   },
   {
@@ -52442,7 +53026,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 1"
+    ],
     "title": "CheckSplittingVertices: T-vertex at B-spline midpoint"
   },
   {
@@ -52473,7 +53059,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 1"
+    ],
     "title": "FixSmallAreaWire: mixed-size-wires"
   },
   {
@@ -52845,7 +53433,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 1"
+    ],
     "title": "ShapeAnalysis_CheckSmallFace.CheckSmallArea torus-patch"
   },
   {
@@ -52876,7 +53466,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 1"
+    ],
     "title": "ShapeFix_Face.FixAddNaturalBound cone-with-apex-in-domain"
   },
   {
@@ -52938,7 +53530,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 1"
+    ],
     "title": "ShapeFix_Face.FixSplitFace two-splitters"
   },
   {
@@ -53279,7 +53873,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "ShapeFix_Face.FixSmallAreaWire wire-with-tangent-edges"
   },
   {
@@ -53310,7 +53906,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "ShapeAnalysis_CheckSmallFace.CheckPin extreme-axis-pin"
   },
   {
@@ -53341,7 +53939,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "ShapeFix_Face.FixOrientation closed-shell-context-loss"
   },
   {
@@ -53372,7 +53972,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "ShapeAnalysis_CheckSmallFace.CheckStripFace cylindrical-strip"
   },
   {
@@ -53403,7 +54005,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "ShapeFix_Face.FixWiresTwoCoincEdges loop-inside-loop"
   },
   {
@@ -53434,7 +54038,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 1"
+    ],
     "title": "ShapeFix_Face.FixOrientation single-loop-face"
   },
   {
@@ -53465,7 +54071,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 1"
+    ],
     "title": "ShapeAnalysis_CheckSmallFace.CheckSpotFace negative-area-detection"
   },
   {
@@ -53496,7 +54104,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 1"
+    ],
     "title": "ShapeFix_Face.FixSplitFace splitter-along-edge"
   },
   {
@@ -53527,7 +54137,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 1"
+    ],
     "title": "ShapeAnalysis_CheckSmallFace.CheckPin two-pins-on-one-face"
   },
   {
@@ -53558,7 +54170,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 1"
+    ],
     "title": "ShapeFix_Face.FixAddNaturalBound subsurface"
   },
   {
@@ -53589,7 +54203,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "ShapeFix_Face.FixSmallAreaWire negative-area-from-orientation"
   },
   {
@@ -53620,7 +54236,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "ShapeAnalysis_CheckSmallFace.CheckTwisted mobius-strip-face"
   },
   {
@@ -53651,7 +54269,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "ShapeFix_Face.FixOrientation degenerate-edge-only"
   },
   {
@@ -53682,7 +54302,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "ShapeAnalysis_CheckSmallFace.CheckSplittingVertices vertex-shared-by-many"
   },
   {
@@ -53713,7 +54335,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "ShapeFix_Face.FixWiresTwoCoincEdges asymmetric-tolerance-merge"
   },
   {
@@ -53744,7 +54368,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 1"
+    ],
     "title": "ShapeFix_Face.FixLoopWire complex-self-intersection"
   },
   {
@@ -53806,7 +54432,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 1"
+    ],
     "title": "ShapeFix_Face.FixSplitFace splitter-tangent-at-vertex"
   },
   {
@@ -53899,7 +54527,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 1"
+    ],
     "title": "ShapeFix_Face.FixOrientation face-with-100-edges"
   },
   {
@@ -54333,7 +54963,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 1"
+    ],
     "title": "ShapeFix_Face.FixWiresTwoCoincEdges with-coincident-vertex-only"
   },
   {
@@ -54519,7 +55151,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 1"
+    ],
     "title": "ShapeAnalysis_Surface.ComputeSingularities toroidal-pinch"
   },
   {
@@ -54550,7 +55184,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 1"
+    ],
     "title": "ShapeAnalysis_Surface.IsUClosed bspline-periodic-u"
   },
   {
@@ -54612,7 +55248,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 1"
+    ],
     "title": "ShapeFix_Face.FixMissingSeam seam-detection"
   },
   {
@@ -54643,7 +55281,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 1"
+    ],
     "title": "ShapeAnalysis_Surface.DegeneratedValues cone-apex-degeneracy"
   },
   {
@@ -56075,7 +56715,9 @@
     "taxonomy": [
       "units"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Vertex `UNCERTAINTY_MEASURE_WITH_UNIT` larger than edge / face value (tolerance hierarchy violation)"
   },
   {
@@ -56112,7 +56754,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Wireframe gap-fix inflates tolerance instead of bridging the gap"
   },
   {
@@ -56150,7 +56794,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Same-domain face merge inflates shared-vertex tolerance to worst input"
   },
   {
@@ -56190,7 +56836,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Edge same-parameter flag asserted but 3D curve and pcurve disagree at sampled parameters (`SameParameter=.T.` lie)"
   },
   {
@@ -56227,7 +56875,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Splitting a closed periodic face leaves new edges with reversed pcurve vs 3D curve parameterisation"
   },
   {
@@ -56265,7 +56915,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Pcurve drifts out of sync with 3D-curve parameterisation (geometric flavour)"
   },
   {
@@ -56301,7 +56953,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Vertex tolerance bump factor hard-coded `1.000001 *` on disagreement"
   },
   {
@@ -56372,7 +57026,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Vertex 3D point lies far from incident-edge curve endpoints (dispersion exceeds tolerance)"
   },
   {
@@ -56409,7 +57065,9 @@
     "taxonomy": [
       "units"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "`EDGE_CURVE` shorter than vertex tolerance (tiny edge covered by vertices, `distance_accuracy` exceeds edge length)"
   },
   {
@@ -56446,7 +57104,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Seam edge inserted inside an existing vertex tolerance ball produces zero-length edge"
   },
   {
@@ -56480,7 +57140,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Setting face tolerance to a tiny value then ShapeFix produces vertex/vertex intersections"
   },
   {
@@ -56516,7 +57178,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Boolean cascade vertex deviation (independently computed pairwise intersections)"
   },
   {
@@ -56550,7 +57214,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Spurious tiny `EDGE_CURVE` that should have collapsed: vertex separation below declared tolerance"
   },
   {
@@ -56586,7 +57252,9 @@
     "taxonomy": [
       "units"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "`xstep.cascade.unit M` meters setting inflates tolerance and corrupts geometry"
   },
   {
@@ -56623,7 +57291,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Edge tolerance 2-3 orders of magnitude > file tolerance (CATIA per-edge precision)"
   },
   {
@@ -56661,7 +57331,9 @@
     "taxonomy": [
       "units"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "`UNCERTAINTY_MEASURE_WITH_UNIT` populated with a fixed field-default value (untrustworthy)"
   },
   {
@@ -56698,7 +57370,9 @@
     "taxonomy": [
       "units"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "`GEOMETRIC_REPRESENTATION_CONTEXT` missing `GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT` leaf → fall back to read.precision"
   },
   {
@@ -56735,7 +57409,9 @@
     "taxonomy": [
       "units"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "`OFFSET_SURFACE` with sub-tolerance offset (fixed-tolerance importer hard-codes 1e-3)"
   },
   {
@@ -56770,7 +57446,9 @@
     "taxonomy": [
       "assembly"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Coordinate-system origin offset: hard-coded BOARD_OFFSET 0.05mm in PCB→MCAD pipeline"
   },
   {
@@ -56804,7 +57482,9 @@
     "taxonomy": [
       "spec-violation"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "VRML/STEP origin convention mismatch within same producer"
   },
   {
@@ -56842,7 +57522,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "`EDGE_CURVE` based on `LINE` displaced from true vertex position"
   },
   {
@@ -56879,7 +57561,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "`EDGE_CURVE` 3D `LINE` stale relative to translated host `PLANE` (rebuild-edge case)"
   },
   {
@@ -56919,7 +57603,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Coincident-but-not-shared vertices/edges (cross-translator round-off)"
   },
   {
@@ -56957,7 +57643,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Cross-kernel topology rejection: source-valid, target-invalid by tolerance bookkeeping"
   },
   {
@@ -56992,7 +57680,9 @@
     "taxonomy": [
       "silent-loss"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Small-mm `CYLINDRICAL_SURFACE` with target-unit mismatch (gmsh `OCCTargetUnit` silently ignored on `importShapesNativePointer` path)"
   },
   {
@@ -57027,7 +57717,9 @@
     "taxonomy": [
       "units"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "`GEOMETRIC_REPRESENTATION_CONTEXT` missing `LENGTH_UNIT` (only angle units present) → user-configured cascade.unit ignored"
   },
   {
@@ -57066,7 +57758,9 @@
     "taxonomy": [
       "units"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Inch-units silent treatment as mm (25.4× scale error)"
   },
   {
@@ -57107,7 +57801,9 @@
     "taxonomy": [
       "pmi"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Quarter `CYLINDRICAL_SURFACE` stored as `B_SPLINE_SURFACE_WITH_KNOTS` (canonical recognition tolerance budget)"
   },
   {
@@ -57146,7 +57842,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Surface discontinuities introduced by translation (G0/G1/G2 break at shared edges)"
   },
   {
@@ -57182,7 +57880,9 @@
     "taxonomy": [
       "spec-violation"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Tolerance type entity coverage: AP242 tolerance entities dropped on import"
   },
   {
@@ -57219,7 +57919,9 @@
     "taxonomy": [
       "units"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Tolerance value polymorphic encoding (`MeasureRepresentationItem` vs plain measure)"
   },
   {
@@ -57256,7 +57958,9 @@
     "taxonomy": [
       "pmi"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "`+/-` tolerance bounds inverted, equal, or wrong measure type"
   },
   {
@@ -57293,7 +57997,9 @@
     "taxonomy": [
       "pmi"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Default tolerance precision: missing decimal-place qualifier"
   },
   {
@@ -57328,7 +58034,9 @@
     "taxonomy": [
       "round-trip"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Centroid validation breaks down when relative threshold goes below modeling tolerance"
   },
   {
@@ -57364,7 +58072,9 @@
     "taxonomy": [
       "pmi"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Curve gaps between adjacent segments after format conversion (LOTAR exchange defect)"
   },
   {
@@ -57398,7 +58108,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Patrikalakis interval-solid violation: face-pair gap exceeds bound"
   },
   {
@@ -57435,7 +58147,9 @@
     "taxonomy": [
       "units"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Healing pass over-eagerly inflates tolerances 1000× on sub-shapes that needed no fix (post-fix `UNCERTAINTY_MEASURE_WITH_UNIT` bloat)"
   },
   {
@@ -57474,7 +58188,9 @@
     "taxonomy": [
       "units"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "`Limit Tolerance` clamp re-exposes gaps that bloated tolerances were hiding (Salome)"
   },
   {
@@ -57511,7 +58227,9 @@
     "taxonomy": [
       "units"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Manifold ε-validity contract: cumulative transform error inflates ε beyond input scale"
   },
   {
@@ -57584,7 +58302,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Shape-to-shape distance reports nonzero gap for clearly intersecting parts"
   },
   {
@@ -57626,7 +58346,9 @@
     "taxonomy": [
       "round-trip"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Persistent IDs lost across editing/translation breaks PMI tolerance attachment"
   },
   {
@@ -57663,7 +58385,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Vertex tolerance under-checked: edge-internal intersection ignored"
   },
   {
@@ -57778,7 +58502,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Walk-line initial step unrelated to tolerance during surface intersection"
   },
   {
@@ -57817,7 +58543,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Reading a structurally valid STEP file produces an invalid `TopoDS_Shape`"
   },
   {
@@ -57856,7 +58584,9 @@
     "taxonomy": [
       "silent-loss"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "File-supplied `UNCERTAINTY_MEASURE_WITH_UNIT` parsed but never consumed (BRL-CAD step-g)"
   },
   {
@@ -57887,7 +58617,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 1"
+    ],
     "title": "ShapeAnalysis_ShapeTolerance.InTolerance vertex polarity inversion"
   },
   {
@@ -57920,7 +58652,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "BRepBuilderAPI_Sewing.SameParameterEdge SetMaxTolerance bypass"
   },
   {
@@ -57951,7 +58685,9 @@
     "taxonomy": [
       "spec-violation"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 1"
+    ],
     "title": "ShapeAnalysis_ShapeTolerance.AddTolerance polarity asymmetry"
   },
   {
@@ -57982,7 +58718,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 2"
+    ],
     "title": "ShapeFix_Edge.FixVertexTolerance multi-surface underestimation"
   },
   {
@@ -58015,7 +58753,9 @@
     "taxonomy": [
       "spec-violation"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "ShapeFix_ShapeTolerance.LimitTolerance boundary ambiguity"
   },
   {
@@ -58046,7 +58786,9 @@
     "taxonomy": [
       "spec-violation"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 1"
+    ],
     "title": "ShapeFix_ShapeTolerance.SetTolerance bulk-rewrite"
   },
   {
@@ -58077,7 +58819,9 @@
     "taxonomy": [
       "spec-violation"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 2"
+    ],
     "title": "ShapeAnalysis_ShapeTolerance.GlobalTolerance weight dispatch inversion"
   },
   {
@@ -58108,7 +58852,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 1"
+    ],
     "title": "BRepLib.SameRange null-pcurve null-check dereference"
   },
   {
@@ -58139,7 +58885,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 1"
+    ],
     "title": "BRepLib.UpdateEdgeTol sampling-grid undersample"
   },
   {
@@ -58170,7 +58918,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 1"
+    ],
     "title": "ShapeFix_Edge.FixSameParameter SameParameterEdge upper-bound"
   },
   {
@@ -58325,7 +59075,9 @@
     "taxonomy": [
       "spec-violation"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "ShapeFix_ShapeTolerance.LimitTolerance partial-tree application"
   },
   {
@@ -58356,7 +59108,9 @@
     "taxonomy": [
       "spec-violation"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 1"
+    ],
     "title": "ShapeAnalysis_ShapeTolerance.OverTolerance >= vs > comparison"
   },
   {
@@ -58387,7 +59141,9 @@
     "taxonomy": [
       "spec-violation"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 2"
+    ],
     "title": "ShapeFix_ShapeTolerance.SetTolerance compound cascade incomplete"
   },
   {
@@ -58418,7 +59174,9 @@
     "taxonomy": [
       "spec-violation"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 1"
+    ],
     "title": "BRepLib.UpdateInnerTolerances minimal 2-point sampling"
   },
   {
@@ -58449,7 +59207,9 @@
     "taxonomy": [
       "units"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 1"
+    ],
     "title": "ShapeAnalysis_Edge.CheckOverlapping parameter vs arc-length scale"
   },
   {
@@ -58480,7 +59240,9 @@
     "taxonomy": [
       "spec-violation"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 1"
+    ],
     "title": "ShapeFix_ShapeTolerance.LimitTolerance zero lower-bound as no-op marker"
   },
   {
@@ -58635,7 +59397,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "ShapeFix_ShapeTolerance.SetTolerance vertex-not-in-shape"
   },
   {
@@ -58976,7 +59740,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 1"
+    ],
     "title": "Closed BSpline SameParameter wrapping"
   },
   {
@@ -59007,7 +59773,9 @@
     "taxonomy": [
       "spec-violation"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 2"
+    ],
     "title": "CheckOverlapping parameterization mismatch"
   },
   {
@@ -59038,7 +59806,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 1"
+    ],
     "title": "Vertex at cone apex zero tolerance"
   },
   {
@@ -59069,7 +59839,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 1"
+    ],
     "title": "LimitTolerance recursion stops at WIRE"
   },
   {
@@ -59100,7 +59872,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 1"
+    ],
     "title": "GlobalTolerance weighted mode edge direction bug"
   },
   {
@@ -59255,7 +60029,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 1"
+    ],
     "title": "ShapeAnalysis_Edge.CheckPoints tolerance-aware-distance"
   },
   {
@@ -59410,7 +60186,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "ShapeAnalysis_Edge.CheckPoints precision-asymmetry-extreme"
   },
   {
@@ -59751,7 +60529,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 1"
+    ],
     "title": "FixVertexTolerance vertex-tolerance-from-tessellation"
   },
   {
@@ -59782,7 +60562,9 @@
     "taxonomy": [
       "spec-violation"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 2"
+    ],
     "title": "CheckOverlapping with-tolerance-zero"
   },
   {
@@ -59813,7 +60595,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 1"
+    ],
     "title": "UpdateEdgeTol with-coincident-vertices"
   },
   {
@@ -59844,7 +60628,9 @@
     "taxonomy": [
       "spec-violation"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 1"
+    ],
     "title": "FixSameParameter with-NaN-input"
   },
   {
@@ -59875,7 +60661,9 @@
     "taxonomy": [
       "spec-violation"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 1"
+    ],
     "title": "OverTolerance threshold-equality"
   },
   {
@@ -59937,7 +60725,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 1"
+    ],
     "title": "ShapeAnalysis_Edge.CheckOverlapping mixed-curve-orientation"
   },
   {
@@ -59968,7 +60758,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 1"
+    ],
     "title": "BRepLib.UpdateEdgeTol with-pcurve-discontinuity"
   },
   {
@@ -59999,7 +60791,9 @@
     "taxonomy": [
       "spec-violation"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 1"
+    ],
     "title": "ShapeFix_ShapeTolerance.LimitTolerance with-very-large-shape"
   },
   {
@@ -60030,7 +60824,9 @@
     "taxonomy": [
       "spec-violation"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 1"
+    ],
     "title": "ShapeAnalysis_ShapeTolerance.GlobalTolerance averaging-over-empty"
   },
   {
@@ -60092,7 +60888,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 1"
+    ],
     "title": "ShapeAnalysis_Edge.CheckPoints with-NaN-precision-input"
   },
   {
@@ -60154,7 +60952,9 @@
     "taxonomy": [
       "spec-violation"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 1"
+    ],
     "title": "ShapeFix_ShapeTolerance.SetTolerance recursion-stack-overflow"
   },
   {
@@ -60185,7 +60985,9 @@
     "taxonomy": [
       "spec-violation"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "ShapeAnalysis_ShapeTolerance.AddTolerance concurrent-modification"
   },
   {
@@ -60216,7 +61018,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "ShapeAnalysis_ShapeTolerance.InTolerance vertex-filtering-inverted"
   },
   {
@@ -60247,7 +61051,9 @@
     "taxonomy": [
       "spec-violation"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "ShapeFix_ShapeTolerance.SetTolerance no-validation-negative-precision"
   },
   {
@@ -60278,7 +61084,9 @@
     "taxonomy": [
       "spec-violation"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "ShapeFix_ShapeTolerance.LimitTolerance boundary-equality-nondeterminism"
   },
   {
@@ -60309,7 +61117,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "BRep_Tool::Tolerance vertex-null-dereference-risk"
   },
   {
@@ -60340,7 +61150,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "ShapeFix_ShapeTolerance.SetTolerance recursive-double-mutation-shared-vertex"
   },
   {
@@ -60681,7 +61493,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "ShapeFix_IntersectionTool.FixIntEdges tolerance_selection"
   },
   {
@@ -60712,7 +61526,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "ShapeUpgrade_ConvertCurve2dToBezier precision-semantics,asymmetric-tolerance"
   },
   {
@@ -60743,7 +61559,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "ShapeUpgrade_RemoveLocations.MakeNewShape null-reference-tolerance"
   },
   {
@@ -60774,7 +61592,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "ShapeUpgrade_UnifySameDomain.UnionPCurves vertex_tolerance_mismatch"
   },
   {
@@ -60805,7 +61625,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "BRepBuilderAPI_Sewing.SameParameterEdge setMaxTolerance-bypass-raw-write"
   },
   {
@@ -60836,7 +61658,9 @@
     "taxonomy": [
       "spec-violation"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "EvaluateDistances.zero_angle_count_guard"
   },
   {
@@ -60867,7 +61691,9 @@
     "taxonomy": [
       "spec-violation"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "FindCandidates.acceptance_criteria_composite_filter"
   },
   {
@@ -60898,7 +61724,9 @@
     "taxonomy": [
       "spec-violation"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "EvaluateDistances.projection_direction_selection"
   },
   {
@@ -60929,7 +61757,9 @@
     "taxonomy": [
       "spec-violation"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "FindCandidates.equidistant_precision_test"
   },
   {
@@ -60960,7 +61790,9 @@
     "taxonomy": [
       "spec-violation"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "IsMergedClosed.v_overlap_negativity_test"
   },
   {
@@ -61115,7 +61947,9 @@
     "taxonomy": [
       "spec-violation"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "`ShapeAnalysis_CheckSmallFace.CheckPin.tolerance-fallback`"
   },
   {
@@ -61146,7 +61980,9 @@
     "taxonomy": [
       "spec-violation"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "tolerance_asymmetry conflation"
   },
   {
@@ -61177,7 +62013,9 @@
     "taxonomy": [
       "spec-violation"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "distance_tolerance_filter_second_pass bypass"
   },
   {
@@ -61208,7 +62046,9 @@
     "taxonomy": [
       "spec-violation"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "location_transform_in_tolerance_eval bypass"
   },
   {
@@ -61239,7 +62079,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "direct_BRep_TEdge_tolerance_write bypass"
   },
   {
@@ -61301,7 +62143,9 @@
     "taxonomy": [
       "spec-violation"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "`tolerance_escalation` — unbounded multiplier"
   },
   {
@@ -61332,7 +62176,9 @@
     "taxonomy": [
       "spec-violation"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "`tolerance_selection` — coarse fallback unvalidated"
   },
   {
@@ -61363,7 +62209,9 @@
     "taxonomy": [
       "units"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "`precision_tolerance` — mixed-unit-scale mismatch"
   },
   {
@@ -61394,7 +62242,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "`tolerance_closure` — EDGE_LOOP gap exceeds threshold"
   },
   {
@@ -61456,7 +62306,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 1"
+    ],
     "title": "InTolerance VERTEX inverted-comparison bug | ShapeAnalysis_ShapeTolerance | tolerance | ShapeAnalysis_ShapeTolerance.InTolerance.vertex_tolerance_filtering_BUGGY | vertex range filter uses >= instead of <= | tolerance-regression | reproducible | true"
   },
   {
@@ -61487,7 +62339,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 1"
+    ],
     "title": "LimitTolerance iamax boundary-condition flip | ShapeFix_ShapeTolerance | tolerance | ShapeFix_ShapeTolerance.LimitTolerance.iamax_logic_flip | equality check (tmax >= tmin) semantically requires (tmax > tmin), edge case unchecked | boundary-condition-ambiguity | reproducible | true"
   },
   {
@@ -61518,7 +62372,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 1"
+    ],
     "title": "LimitTolerance recursive WIRE double-mutation | ShapeFix_ShapeTolerance | double-mutation | ShapeFix_ShapeTolerance.LimitTolerance.recursive_wire_vertices | shared vertices in wire mutated twice on single call | double-mutation | reproducible | true"
   },
   {
@@ -61549,7 +62405,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 1"
+    ],
     "title": "GetTolerance mixed-precision accumulation | BRep_Tool | tolerance | BRep_Tool::GetTolerance | accumulates vertex/edge tolerances without precision normalization | precision-tolerance-mismatch | reproducible | true"
   },
   {
@@ -61580,7 +62438,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 2"
+    ],
     "title": "Sewing unevaluated distance filter bypass | BRepBuilderAPI_Sewing | tolerance | BRepBuilderAPI_Sewing.AnalysisNearestEdges.unevaluated_distance_filter_first_pass | first-pass distance check bypassed, over-tolerance edges enter candidate pool | kernel-pair | reproducible | true"
   },
   {
