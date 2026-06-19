@@ -22156,7 +22156,6 @@ B_SPLINE_CURVE_WITH_KNOTS (degree 2, 6 poles). Clustered interior knots: [0.01, 
 ### Gn153 — Periodic B-spline origin re-anchor post-upgrade
 B_SPLINE_CURVE_WITH_KNOTS (degree 2, 4 poles, periodic .T., closed loop). Interior knot at 0.5. Defect: after Geom2dConvert::C0BSplineToC1 upgrade, parametrization origin shifts; D0(FirstParameter) changes. Healing must re-anchor via SetOrigin to preserve continuity across period. Knot sum 3+2+1=6 ✓. Invariants: DIRECTION unit, no forward refs, three-arg LINE.
 
-## Wave 66C: NURBS Defect Fixtures — Gn154–Gn158
 - **Tier-3 assertion**: load == "ok"
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
 ### Gn154 — Rational B-spline with zero-weight pole singularity
@@ -22203,7 +22202,6 @@ Defect: 6-pole curve (degree 3); interior knot at 0.5 has multiplicity 4 (degree
 
 Defect: 3x3 NURBS (U-degree 2, V-degree 2); middle U-row poles near-identical (1.5,1.5,0.01). SplitSurface produces zero-area or empty patches. Falsifiable: patch validation rejects degenerate outputs from split operations.
 
-## Wave 72A: NURBS Healing Defects (Gn164–Gn168)
 - **Tier-3 assertion**: shape_null == True
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 ### Gn164 — Rational BSpline Closure Detection Bypass
@@ -24647,7 +24645,6 @@ Multi-wire face splitting; sub-face reconstruction via outer loop + inner hole o
 
 Integrated face-healing pipeline; mode-dependent cascade via base-slant-apex decomposition on conical degenerate closure.
 
-## Wave 71C — Face Method Defects (Tfa241–Tfa245)
 - **Tier-3 assertion**: load == "ok"
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 ### Tfa241 — `ShapeFix_Face.FixOrientation.WireBoundingBoxComputation`
@@ -25906,7 +25903,6 @@ Multi-edge wire with one edge having null V1 endpoint; validates FAIL2 encoding.
 
 Wire with degenerate self-loop (1e-12 magnitude) plus normal edge; validates degen filtering. Without BRep_Tool::Degenerated filter, vertex extent inflates.
 
-## Wave 65C: Twi257–Twi261 CheckLoop Fixtures
 - **Tier-3 assertion**: shape_null == True
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 ### Twi257 — unloaded-or-trivial-wire
@@ -25928,7 +25924,6 @@ Three self-loop edges at vertex (Extent=6 after append). Extent>2 and isMultiVer
 ### Twi261 — dual-vertex-binding
 Three edges with V2 having three incident edges (Extent=3). Both V1 and V2 lists must be appended; asymmetric append loses degree count.
 
-## Wave 67A STEP Wire Fixtures
 - **Tier-3 assertion**: shape_null == True
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 ### Twi262 — CheckOrder nullface
@@ -27158,7 +27153,6 @@ Collapsed B-spline (all poles Z=0, D1≈0) triggers division by zero in normal-p
 
 OFFSET_SURFACE (+0.5 distance) with asymmetric coverage vs base bounds; myOffsetSurfaceMode enabled without scope/extent check. Defect: offset face coverage unchecked during collection.
 
-## Wave 72-B: Surface Methods Singularity Detection
 - **Tier-3 assertion**: shape_null == True
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 ### Gs174 — SphericalSurface Pole Singularities
@@ -28538,7 +28532,6 @@ Compound with nested shell references. LoadShells() recursion incomplete when de
 ### Tsh218 — ShapeFix_Shell.FixFaceOrientation.shells_extraction_loss
 — GetShells() fails to partition disconnected face clusters; edge-classification gap creates orphaned faces.
 
-## Wave 68B — ShapeFix_Shell Defects (Tsh219–Tsh223)
 - **Tier-3 assertion**: n_faces_total == 2
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(14) ifc=schema_n/a`
 ### Tsh219 — duplicate_faces_undetected
@@ -29415,7 +29408,6 @@ Pcurve is TRIMMED_CURVE. GetEndTangent2d uses untrimmed-curve tangent at trim bo
 - **Fixture path**: step-examples/12-2a-pcurves/Gp150.stp
 - **Fixture kind**: scaffold
 
-## Wave 64A: STEP P-Curve Fixtures (Gp151–Gp155)
 - **Tier-3 assertion**: shape_null == True
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 ### Gp151 — ShapeAnalysis_Edge.CheckPCurveRange periodic_range_semantics
@@ -29457,7 +29449,6 @@ First half of pcurve near singularity not collapsed to parameter. Mixed degenera
 ### Gp160 — ShapeAnalysis_Surface.ProjectDegenerated `singularity-tolerance-threshold`
 Singularity tolerance exceeds requested precision; tolerance filter passes high-tolerance singularities. Degenerate points project onto cone apex with unvalidated precision consistency. Cone with gradient approach toward u=0 singularity.
 
-## Wave 68C — STEP pcurve fixtures (Gp161–Gp165)
 - **Tier-3 assertion**: load == "ok"
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 ### Gp161 — seam_detection_1843
@@ -29484,7 +29475,6 @@ Circle parametrization assumes aNewF ≤ aNewL without handling periodic wraparo
 
 Vertex tolerance extracted without validation against accumulating tolerance array. Edge chain with heterogeneous vertex tolerances triggers incoherent continuity checks. Line 1971–1972: `TopExp::CommonVertex()` retrieves unvalidated tolerance; `aTolVerSeq.Append()` stores unsorted values.
 
-## Wave 70B: STEP Pcurve Fixtures (Gp166–Gp170)
 - **Tier-3 assertion**: shape_null == True
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 ### Gp166 — `ProjectDegenerated.whole-edge-degenerate`

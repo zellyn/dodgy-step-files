@@ -19326,7 +19326,7 @@
     "cross_oracle_note": null,
     "description": "Edge with REVERSED orientation; tangent computed then negated without validation of orientation consistency with curve parameterization. Analyzer fails to detect when orientation reversal applied post-computation masks tangent-reversal errors.",
     "expected_kernel_behavior": "Heal (orientation validation)",
-    "expected_validation": "",
+    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2a-pcurves/Gp150.stp",
     "id": "Gp150",
@@ -19346,7 +19346,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Edge orientation reversal negates computed tangent post-computation"
   },
   {
@@ -19654,7 +19656,7 @@
     "cross_oracle_note": null,
     "description": "ShapeAnalysis_Surface.ProjectDegenerated `singularity-tolerance-threshold`",
     "expected_kernel_behavior": "heal or reject (mechanism-specific; see Description)",
-    "expected_validation": "",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2a-pcurves/Gp160.stp",
     "id": "Gp160",
@@ -19674,7 +19676,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "ShapeAnalysis_Surface.ProjectDegenerated `singularity-tolerance-threshold`"
   },
   {
@@ -19817,7 +19821,7 @@
     "cross_oracle_note": null,
     "description": "vertex_tolerance_mismatch_1971",
     "expected_kernel_behavior": "heal or reject (mechanism-specific; see Description)",
-    "expected_validation": "",
+    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2a-pcurves/Gp165.stp",
     "id": "Gp165",
@@ -19837,7 +19841,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "vertex_tolerance_mismatch_1971"
   },
   {
@@ -24972,7 +24978,7 @@
     "cross_oracle_note": null,
     "description": "Periodic B-spline origin re-anchor post-upgrade",
     "expected_kernel_behavior": "heal or reject (mechanism-specific; see Description)",
-    "expected_validation": "",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2b-nurbs/Gn153.stp",
     "id": "Gn153",
@@ -24992,7 +24998,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "Periodic B-spline origin re-anchor post-upgrade"
   },
   {
@@ -25300,7 +25308,7 @@
     "cross_oracle_note": null,
     "description": "B-spline surface with degenerate patch from split",
     "expected_kernel_behavior": "heal or reject (mechanism-specific; see Description)",
-    "expected_validation": "",
+    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2b-nurbs/Gn163.stp",
     "id": "Gn163",
@@ -25320,7 +25328,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "B-spline surface with degenerate patch from split"
   },
   {
@@ -31468,7 +31478,7 @@
     "cross_oracle_note": null,
     "description": "ShapeUpgrade_ShapeCopy: offset surface mode coverage validation omission",
     "expected_kernel_behavior": "heal or reject (mechanism-specific; see Description)",
-    "expected_validation": "",
+    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2c-surfaces/Gs173.stp",
     "id": "Gs173",
@@ -31488,7 +31498,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "ShapeUpgrade_ShapeCopy: offset surface mode coverage validation omission"
   },
   {
@@ -40513,7 +40525,7 @@
     "cross_oracle_note": null,
     "description": "ShapeFix_Shell.FixFaceOrientation.shells_extraction_loss",
     "expected_kernel_behavior": "heal or reject (mechanism-specific; see Description)",
-    "expected_validation": "",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=shape(14) ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-3a-shells/Tsh218.stp",
     "id": "Tsh218",
@@ -40533,7 +40545,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 2"
+    ],
     "title": "ShapeFix_Shell.FixFaceOrientation.shells_extraction_loss"
   },
   {
@@ -49543,7 +49557,7 @@
     "cross_oracle_note": null,
     "description": "ShapeAnalysis_Wire.CheckLoop.degenerated-edge-filter",
     "expected_kernel_behavior": "heal or reject (mechanism-specific; see Description)",
-    "expected_validation": "",
+    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-3b-wires/Twi256.stp",
     "id": "Twi256",
@@ -49563,7 +49577,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "ShapeAnalysis_Wire.CheckLoop.degenerated-edge-filter"
   },
   {
@@ -49706,7 +49722,7 @@
     "cross_oracle_note": null,
     "description": "dual-vertex-binding",
     "expected_kernel_behavior": "heal or reject (mechanism-specific; see Description)",
-    "expected_validation": "",
+    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-3b-wires/Twi261.stp",
     "id": "Twi261",
@@ -49726,7 +49742,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "dual-vertex-binding"
   },
   {
@@ -58864,7 +58882,7 @@
     "cross_oracle_note": null,
     "description": "ShapeFix_Face.Perform (line-346)",
     "expected_kernel_behavior": "heal or reject (mechanism-specific; see Description)",
-    "expected_validation": "",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-3c-faces/Tfa240.stp",
     "id": "Tfa240",
@@ -58884,7 +58902,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "ShapeFix_Face.Perform (line-346)"
   },
   {
