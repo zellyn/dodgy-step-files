@@ -1461,7 +1461,7 @@ _Section summary: 82 entries._
 - **Byte assertion**: count_entity_def(b'PCURVE') >= 1
 - **Tier-3 assertion**: shape_null == True
 - **Model impact**: The pcurve attribute on the affected EDGE_CURVE/SEAM_CURVE is missing, NULL, or inconsistent with its 3D companion; downstream meshing and boolean operations either rebuild it from the 3D edge (introducing tolerance error) or dereference a null handle and abort.
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(3) ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=reject ifc=schema_n/a`
 
 ### Gp008 — Pcurve oscillations producing wire-intersector corruption
 - **Category**: §12.2a pcurve
@@ -1475,7 +1475,7 @@ _Section summary: 82 entries._
 - **Byte assertion**: count_entity_def(b'PCURVE') >= 1
 - **Tier-3 assertion**: shape_null == True
 - **Model impact**: The pcurve attribute on the affected EDGE_CURVE/SEAM_CURVE is missing, NULL, or inconsistent with its 3D companion; downstream meshing and boolean operations either rebuild it from the 3D edge (introducing tolerance error) or dereference a null handle and abort.
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(3) ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=reject ifc=schema_n/a`
 
 ### Gp010 — Surface_curve.associated_geometry contains a 3D curve in lieu of pcurve
 - **Category**: §12.2a pcurve

@@ -1,82 +1,105 @@
 """Gp008 — Pcurve oscillations producing wire-intersector corruption.
 
-Catalog claim: A pcurve produced by projecting a 3D curve onto a host
+Catalog claim: a pcurve produced by projecting a 3D curve onto a host
 surface oscillates at high frequency; the projector lacks adaptive
 sampling. A subsequent wire self-intersection check mis-detects the
 oscillations as crossings and corrupts wire topology.
 
-Fixture: Planar surface with an edge whose 2D B-spline pcurve control
-polygon oscillates wildly in the V direction (high-frequency up/down
-motion). The control points produce many zero-crossings of curvature,
-triggering spurious self-intersection detection.
+Fixture (rebuilt 2026-06-19 per Sonnet verify): the host MUST be a
+B_SPLINE_SURFACE_WITH_KNOTS — the catalog's specific defect class is
+non-adaptive projection onto a NURBS surface; projecting onto a flat
+PLANE is trivial and doesn't demonstrate the claim. The 3D edge runs
+near a curved boundary of the host; the resulting 2D pcurve is a
+B-spline whose control polygon oscillates in V (alternating large /
+small displacements), plausibly the output of a fixed-step projector
+that under-samples the surface curvature near the boundary.
 """
 from step_corpus.step_builder import StepFile
 
 f = StepFile(catalog_id="Gp008",
-             defect="pcurve oscillations producing wire-intersector corruption")
+             defect="pcurve oscillations on B_SPLINE_SURFACE_WITH_KNOTS host (non-adaptive projection)")
 
-# Planar surface (z=0)
-orig = f.cartesian_point((0.0, 0.0, 0.0))
-zdir = f.direction((0.0, 0.0, 1.0))
-xdir = f.direction((1.0, 0.0, 0.0))
-plc = f.axis2_placement_3d(orig, zdir, xdir)
-plane = f._emit_raw(f"PLANE('',#{plc.eid})")
 
-# 3D curve: smooth line from (0,0,0) to (1,0,0)
-p_start = f.cartesian_point((0.0, 0.0, 0.0))
-p_end = f.cartesian_point((1.0, 0.0, 0.0))
-v_start = f.vertex_point(p_start)
-v_end = f.vertex_point(p_end)
+def cp(*coords):
+    return f.cartesian_point(coords)
 
-line3d = f._emit_raw(
-    f"B_SPLINE_CURVE_WITH_KNOTS('',1,(#{p_start.eid},#{p_end.eid}),.POLYLINE_FORM.,.F.,.F.,"
-    "(2,2),(0.0,1.0),.UNSPECIFIED.)"
+
+# B_SPLINE_SURFACE_WITH_KNOTS host — 4x4 control net, bi-degree 2.
+# The v=0 row has bumps in z that an adaptive projector would catch
+# but a fixed-step one would alias to oscillations in pcurve space.
+net = [
+    [cp(0.0, 0.0, 0.0),  cp(1.0, 0.0, 0.4),  cp(2.0, 0.0, 0.4),  cp(3.0, 0.0, 0.0)],
+    [cp(0.0, 0.3, 0.0),  cp(1.0, 0.3, 0.8),  cp(2.0, 0.3, 0.8),  cp(3.0, 0.3, 0.0)],
+    [cp(0.0, 0.7, 0.0),  cp(1.0, 0.7, 0.5),  cp(2.0, 0.7, 0.5),  cp(3.0, 0.7, 0.0)],
+    [cp(0.0, 1.0, 0.0),  cp(1.0, 1.0, 0.0),  cp(2.0, 1.0, 0.0),  cp(3.0, 1.0, 0.0)],
+]
+flat_rows = ["(" + ",".join(f"#{p.eid}" for p in row) + ")" for row in net]
+cp_grid = "(" + ",".join(flat_rows) + ")"
+host_surface = f._emit_raw(
+    f"B_SPLINE_SURFACE_WITH_KNOTS('host_nurbs',2,2,{cp_grid},"
+    f".UNSPECIFIED.,.F.,.F.,.F.,(3,1,3),(3,1,3),(0.0,0.5,1.0),(0.0,0.5,1.0),.UNSPECIFIED.)"
 )
 
-# DEFECT: 2D B-spline pcurve with high-frequency oscillating control polygon
-# Endpoints at (0,0) and (1,0), but interior control points ride up/down
-# producing many curvature reversals that trigger false self-intersection detection
-uv_cpts = [
-    f.cartesian_point((0.0, 0.0)),      # 0: start
-    f.cartesian_point((0.1, 0.05)),     # 1: up
-    f.cartesian_point((0.2, -0.05)),    # 2: down
-    f.cartesian_point((0.3, 0.05)),     # 3: up
-    f.cartesian_point((0.4, -0.05)),    # 4: down
-    f.cartesian_point((0.5, 0.05)),     # 5: up
-    f.cartesian_point((0.6, -0.05)),    # 6: down
-    f.cartesian_point((0.7, 0.05)),     # 7: up
-    f.cartesian_point((0.8, -0.05)),    # 8: down
-    f.cartesian_point((0.9, 0.05)),     # 9: up
-    f.cartesian_point((1.0, 0.0)),      # 10: end
-]
+# 3D edge runs near the curved v=0 boundary of the surface.
+p0 = cp(0.5, 0.05, 0.15)
+p1 = cp(2.5, 0.05, 0.15)
+v0 = f.vertex_point(p0)
+v1 = f.vertex_point(p1)
+dir3d = f.direction((1.0, 0.0, 0.0))
+vec3d = f.vector(dir3d, 2.0)
+curve_3d = f.line(p0, vec3d)
 
-# Cubic B-spline with 11 control points and appropriate knot vector
-# Degree 3, knots: (4,1,1,1,1,1,1,1,4) spanning [0,1]
-line2d = f._emit_raw(
-    f"B_SPLINE_CURVE_WITH_KNOTS('',3,"
-    f"({','.join(f'#{pt.eid}' for pt in uv_cpts)}),"
-    f".UNSPECIFIED.,.F.,.F.,"
-    f"(4,1,1,1,1,1,1,1,4),"
-    f"(0.0,0.125,0.25,0.375,0.5,0.625,0.75,0.875,1.0),"
-    f".UNSPECIFIED.)"
+# Oscillating 2D pcurve: 13 control points whose V values alternate with
+# growing amplitude, producing 11+ sign changes of the second derivative.
+# Plausibly the output of a fixed-step projector that aliases the host's
+# subtle curvature in the v<0.5 region into high-frequency oscillation.
+osc_pts = [
+    f.cartesian_point((0.17, 0.20)),
+    f.cartesian_point((0.22, 0.50)),
+    f.cartesian_point((0.27, 0.15)),
+    f.cartesian_point((0.33, 0.55)),
+    f.cartesian_point((0.39, 0.12)),
+    f.cartesian_point((0.45, 0.58)),
+    f.cartesian_point((0.51, 0.10)),
+    f.cartesian_point((0.57, 0.60)),
+    f.cartesian_point((0.63, 0.13)),
+    f.cartesian_point((0.69, 0.56)),
+    f.cartesian_point((0.75, 0.17)),
+    f.cartesian_point((0.81, 0.50)),
+    f.cartesian_point((0.83, 0.22)),
+]
+osc_refs = ",".join(f"#{p.eid}" for p in osc_pts)
+# Degree-3 B-spline; n=13 control points → 13+3+1=17 knot multiplicity entries.
+# Open uniform knots clamped at endpoints (mults 4,4) with 9 interior simple knots.
+pcurve_basis = f._emit_raw(
+    f"B_SPLINE_CURVE_WITH_KNOTS('osc_pcurve',3,({osc_refs}),"
+    f".UNSPECIFIED.,.F.,.F.,(4,1,1,1,1,1,1,1,1,1,4),"
+    f"(0.0,0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0),.UNSPECIFIED.)"
 )
 
 prc = f._emit_raw(
     "(GEOMETRIC_REPRESENTATION_CONTEXT(2)PARAMETRIC_REPRESENTATION_CONTEXT()"
-    "REPRESENTATION_CONTEXT('','2D'))"
+    "REPRESENTATION_CONTEXT('UV','2D'))"
 )
-defrep = f._emit_raw(f"DEFINITIONAL_REPRESENTATION('',(#{line2d.eid}),#{prc.eid})")
-pcurve = f._emit_raw(f"PCURVE('',#{plane.eid},#{defrep.eid})")
+defrep = f._emit_raw(
+    f"DEFINITIONAL_REPRESENTATION('osc_pcurve_def',(#{pcurve_basis.eid}),#{prc.eid})"
+)
+pcurve = f._emit_raw(f"PCURVE('uv_curve',#{host_surface.eid},#{defrep.eid})")
+
 surface_curve = f._emit_raw(
-    f"SURFACE_CURVE('',#{line3d.eid},(#{pcurve.eid}),.PCURVE_S1.)"
+    f"SURFACE_CURVE('edge_with_osc_pcurve',#{curve_3d.eid},"
+    f"(#{pcurve.eid}),.PCURVE_S1.)"
 )
 edge = f._emit_raw(
-    f"EDGE_CURVE('',#{v_start.eid},#{v_end.eid},#{surface_curve.eid},.T.)"
+    f"EDGE_CURVE('osc_edge',#{v0.eid},#{v1.eid},#{surface_curve.eid},.T.)"
 )
 
-# Build the face and shell for the PRODUCT chain
+# PRODUCT chain so the fixture loads as a real shape.
 loop = f.edge_loop([f.oriented_edge(edge, True)])
-face = f.advanced_face([f.face_outer_bound(loop)], plane)
+fob = f.face_outer_bound(loop)
+face = f._emit_raw(
+    f"ADVANCED_FACE('face_on_nurbs',(#{fob.eid}),#{host_surface.eid},.T.)"
+)
 shell = f.open_shell([face])
 sbsm = f.shell_based_surface_model([shell])
 f.add_product_chain(sbsm)

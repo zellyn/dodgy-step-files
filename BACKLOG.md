@@ -16,7 +16,40 @@ Conventions:
 
 ---
 
+## Operating principles
+
+- **Quality > completeness, always.** We can pause expansion at any time to chase
+  a quality concern. The only requirement: if we defer expansion work, log the
+  deferred items here so they aren't forgotten. (User invariant 2026-06-19.)
+
 ## Active initiatives
+
+### Q5 — Silent-empty subset strengthening (DEFERRED-IN-PROGRESS)
+
+**Why:** Per QUALITY_DASHBOARD, 88% of the ~755 silent-empty fixtures are
+structurally inert under #N reference swap — i.e., random byte-flips look
+identical to the catalog's intended defect. Strengthening = adding a
+PRODUCT chain + real geometry that demonstrates the specific claim so the
+fixture moves into the oracle-active subset.
+
+**Status (2026-06-19):** Pilot of 5 §12-2a-pcurves fixtures pushed (commit
+`29c1c03`). Sonnet rigorous verify caught **2/5 weak** (Gp007 FAILS_CLAIM,
+Gp008 SLOPPY) — Opus regen'd both per Sonnet recipes; awaiting Sonnet
+re-verify. Three Haiku scale-up chunks finished locally (97 more Gp
+fixtures) but **discarded** — Haiku's 40% miss rate is unacceptable
+under the quality bar; the local file changes were rolled back rather
+than committed. New strategy: Sonnet-generates instead of Haiku-generates.
+**Last touched:** 2026-06-19.
+
+**Plan:**
+- [x] Q5.0 Pilot: 5 Gp fixtures pushed (`29c1c03`)
+- [x] Q5.1 Sonnet verify pilot 5 → 2 STRONG, 1 WEAK_PASS_OK, 1 FAILS, 1 SLOPPY
+- [x] Q5.2 Opus regen Gp007 + Gp008 per Sonnet recipes (awaiting re-verify)
+- [x] Q5.3 Discard Haiku-generated chunks 1-3 (40% slop rate; rolled back locally, never pushed)
+- [ ] Q5.4 Architecture: Sonnet-generates the fixture, Sonnet-self-verifies the bytes match the claim, only commit when STRONG_PASS. Opus regen on STILL_FAILS.
+- [ ] Q5.5 Re-attack the 97 Gp + ~650 other silent-empty entries under new architecture, in small batches with Sonnet verification gating every commit.
+
+
 
 ### B1 — Mine OCCT's `tests/` tree for parsing-wisdom coverage — WAVE 1 DONE
 
