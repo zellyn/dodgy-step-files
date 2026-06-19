@@ -22,8 +22,36 @@ Status: classification dispatched.
       69 issues total.
 - [x] BM25 search each against the catalog at threshold 60: **15 hits,
       54 misses** (78% nominal-novelty rate at the chosen threshold).
-- [ ] Haiku classification of the 54 misses (in progress).
-- [ ] Synthesize the NOVEL subset.
+- [x] Haiku classification of the 54 misses: **17 NOVEL · 24 DUPLICATE
+      · 13 NOISE**. Result at `/tmp/issue_classification.md`.
+- [ ] Synthesize the 17 NOVEL subset (open queue). Most cluster into
+      4 broad classes:
+  - `ExportImportCrash` (6): generic robustness defects in export/
+    import path. Hard to synthesize without the specific reproducer
+    files; many are already covered structurally by §12.11 Ad*
+    crash-witnesses.
+  - `GeometryLoss` (4): missing faces/edges/content on round-trip.
+    Pattern-matches existing §12.13 Wr* writer-pathology entries;
+    individual subclasses worth synthesizing if the bug body cites a
+    specific entity type.
+  - `SurfaceDefect` (2): from OCCT issue tracker; surface/face
+    geometry corruption on export/import. Specific to NURBS/B-spline
+    or trimmed-surface entities.
+  - `AssemblyOpDefect` (1): mirror/array/join feature-export defect.
+    Specific to §12.6 Assembly mirror semantics.
+  - `ScaleDefect` (1): scaling / coordinate transformation.
+  - Other (3): miscellaneous specific patterns.
+
+Next step: open each high-value bug body to identify the specific
+entity-level pattern, then synthesize.
+
+### Wave 1 nominal-novelty conclusion
+
+After classification, true novelty rate is **17 / 69 = 24.6%** —
+significantly higher than B1's OCCT-tests novelty (0.67%). The issue
+trackers expose user-facing patterns that the regression-test corpus
+doesn't. B4 should continue with future waves to keep mining this
+richer signal source.
 
 Inventory cached at `/tmp/issue_corpus.json` (69 records). Misses
 classification at `/tmp/issue_misses.json` (54 records). Top match
