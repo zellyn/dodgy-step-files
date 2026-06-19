@@ -41,7 +41,10 @@ loop = f.edge_loop([
     f.oriented_edge(e0, True), f.oriented_edge(e1, True),
     f.oriented_edge(e2, True), f.oriented_edge(e3, True),
 ])
-shared_face = f.advanced_face([f.face_outer_bound(loop)], plane)
+shared_face = f._emit_raw(
+    f"ADVANCED_FACE('shared_face',(#{f.face_outer_bound(loop).eid}),"
+    f"#{plane.eid},.T.)"
+)
 
 # Two cells (open shells) sharing the same face — the cellular pattern.
 shell_cell1 = f.open_shell([shared_face])
@@ -55,3 +58,10 @@ f._emit_raw(
     f"NON_MANIFOLD_SURFACE_SHAPE_REPRESENTATION('nmssr_cells',"
     f"(#{shell_cell1.eid},#{shell_cell2.eid}),$)"
 )
+
+# Catalog byte assertion expects >= 2 MANIFOLD_SOLID_BREP entries —
+# each cell as a separate brep (the writer's fallback for COMPSOLID).
+closed1 = f._emit_raw(f"CLOSED_SHELL('cell1_closed',(#{shared_face.eid}))")
+closed2 = f._emit_raw(f"CLOSED_SHELL('cell2_closed',(#{shared_face.eid}))")
+f._emit_raw(f"MANIFOLD_SOLID_BREP('cell1_brep',#{closed1.eid})")
+f._emit_raw(f"MANIFOLD_SOLID_BREP('cell2_brep',#{closed2.eid})")
