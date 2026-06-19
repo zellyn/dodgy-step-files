@@ -4,22 +4,22 @@ A single-page tour of what's inside, what holds up under adversarial validation,
 
 ## Top-line stats
 
-_Refreshed 2026-06-18. Many "best-effort current" metrics below were
+_Refreshed 2026-06-19. Many "best-effort current" metrics below were
 last computed at the noted timestamps; rerun the validators (commands
 at the bottom) to recompute._
 
 | Metric | Value |
 |---|---:|
-| Catalog entries | **2,302** |
-| Active fixtures (`.stp` files) | **2,309** (+ 7 sibling-input fixtures) |
+| Catalog entries | **2,329** |
+| Active fixtures (`.stp` files) | **2,329** (+ 7 sibling-input fixtures) |
 | Quarantined (preserved as evidence; replaced in active corpus) | **150** (84 early-waves + 66 phase_F_boilerplate) |
-| Mesh fixtures (new §12-14 mesh corpus, Q4 in progress) | **5** seed fixtures via Python builder |
+| Mesh fixtures (§12-14 mesh corpus) | **5** seed fixtures via Python builder + JSON/OBJ/PLY co-emit + pure-Python oracle |
 | Adversarial-verification sweep (2026-06-18, full corpus) | **2,280 / 2,309** (98.7 %) verified VALID; 23 CONFIRMED_WEAK; 0 CONFIRMED_INVALID after regen |
 | CONFIRMED (Expected-validation line matches live oracle output) | (recompute via `_final_verdict`) |
-| Machine-checkable **tier-3** assertions in catalog | **1,309** across **727** entries (B2 in progress; was 831/241 before §12.1+§12.2 harvest) |
-| Machine-checkable **byte** assertions in catalog | **2,318** across **1,035** entries |
-| Total machine-checkable invariants | **3,627** |
-| Entries with at least one invariant | **>1,035 / 2,302** (>45 %) |
+| Machine-checkable **tier-3** assertions in catalog | **2,568** across **1,986** entries (≥85 % coverage; B2 batch-5 + 90 % pytest floor) |
+| Machine-checkable **byte** assertions in catalog | **2,347** across **1,056** entries |
+| Total machine-checkable invariants | **4,915** |
+| Entries with at least one invariant | **>2,000 / 2,329** (>85 %) |
 | Bug-reporter synonyms | **1127** `Synonyms:` lines covering most §12.1-§12.8 entries (improves BM25 recall on natural-language queries) |
 | Writer-pathology runtime oracle (`_writer_oracle`) | 34 simulated / 9 skipped = **43 Wr* entries** covered with active byte-level reproduction |
 | Category-lint structural-issue ratchet | **0** violations |
