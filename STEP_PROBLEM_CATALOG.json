@@ -36000,7 +36000,7 @@
     "cross_oracle_note": null,
     "description": "ShapeAnalysis_Shell.CheckOrientedShells closed-shell self-test",
     "expected_kernel_behavior": "heal or reject (mechanism-specific; see Description)",
-    "expected_validation": "",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=empty ifc=accept(0)",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-3a-shells/Tsh084.stp",
     "id": "Tsh084",
@@ -36033,7 +36033,7 @@
     "cross_oracle_note": null,
     "description": "ShapeFix_Shell.FixFaceOrientation transition-point",
     "expected_kernel_behavior": "heal or reject (mechanism-specific; see Description)",
-    "expected_validation": "",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=empty ifc=accept(0)",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-3a-shells/Tsh085.stp",
     "id": "Tsh085",
@@ -36066,7 +36066,7 @@
     "cross_oracle_note": null,
     "description": "ShapeUpgrade_ShellSewing.Prepare two-orientation merge",
     "expected_kernel_behavior": "heal or reject (mechanism-specific; see Description)",
-    "expected_validation": "",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=empty ifc=accept(0)",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-3a-shells/Tsh086.stp",
     "id": "Tsh086",
@@ -36099,7 +36099,7 @@
     "cross_oracle_note": null,
     "description": "ShapeFix_Shell.Perform face-removal during iteration",
     "expected_kernel_behavior": "heal or reject (mechanism-specific; see Description)",
-    "expected_validation": "",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=empty ifc=accept(0)",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-3a-shells/Tsh087.stp",
     "id": "Tsh087",
@@ -36132,7 +36132,7 @@
     "cross_oracle_note": null,
     "description": "ShapeAnalysis_Shell.LoadShells orientation-from-compound",
     "expected_kernel_behavior": "heal or reject (mechanism-specific; see Description)",
-    "expected_validation": "",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=empty ifc=accept(0)",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-3a-shells/Tsh088.stp",
     "id": "Tsh088",
@@ -36165,7 +36165,7 @@
     "cross_oracle_note": null,
     "description": "ShapeUpgrade_RemoveInternalWires tolerance-based removal",
     "expected_kernel_behavior": "heal or reject (mechanism-specific; see Description)",
-    "expected_validation": "",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=empty ifc=accept(0)",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-3a-shells/Tsh089.stp",
     "id": "Tsh089",
@@ -36198,7 +36198,7 @@
     "cross_oracle_note": null,
     "description": "ShapeFix_Shell.FixFaceOrientation single-face shell",
     "expected_kernel_behavior": "heal or reject (mechanism-specific; see Description)",
-    "expected_validation": "",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=empty ifc=accept(0)",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-3a-shells/Tsh090.stp",
     "id": "Tsh090",
@@ -36231,7 +36231,7 @@
     "cross_oracle_note": null,
     "description": "ShapeUpgrade_ShellSewing.Apply degenerate-face sliver",
     "expected_kernel_behavior": "heal or reject (mechanism-specific; see Description)",
-    "expected_validation": "",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=empty ifc=accept(0)",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-3a-shells/Tsh091.stp",
     "id": "Tsh091",
@@ -36264,7 +36264,7 @@
     "cross_oracle_note": null,
     "description": "ShapeAnalysis_Shell.CheckOrientedShells nested-shell cavity",
     "expected_kernel_behavior": "heal or reject (mechanism-specific; see Description)",
-    "expected_validation": "",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=empty ifc=accept(0)",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-3a-shells/Tsh092.stp",
     "id": "Tsh092",
@@ -36297,7 +36297,7 @@
     "cross_oracle_note": null,
     "description": "ShapeFix_Shell.Perform empty-output handling",
     "expected_kernel_behavior": "heal or reject (mechanism-specific; see Description)",
-    "expected_validation": "",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=empty ifc=accept(0)",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-3a-shells/Tsh093.stp",
     "id": "Tsh093",
@@ -36454,7 +36454,7 @@
     "cross_oracle_note": null,
     "description": "ShapeUpgrade_RemoveLocations.Remove location-after-traversal",
     "expected_kernel_behavior": "heal or reject (mechanism-specific; see Description)",
-    "expected_validation": "",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-3a-shells/Tsh098.stp",
     "id": "Tsh098",
@@ -36487,7 +36487,7 @@
     "cross_oracle_note": null,
     "description": "ShapeAnalysis_Shell.CheckOrientedShells one-face-shell",
     "expected_kernel_behavior": "heal or reject (mechanism-specific; see Description)",
-    "expected_validation": "",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-3a-shells/Tsh099.stp",
     "id": "Tsh099",
@@ -36520,7 +36520,7 @@
     "cross_oracle_note": null,
     "description": "ShapeFix_Shell.FixFaceOrientation tangent-edge propagation",
     "expected_kernel_behavior": "heal or reject (mechanism-specific; see Description)",
-    "expected_validation": "",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=reject ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-3a-shells/Tsh100.stp",
     "id": "Tsh100",
@@ -36553,7 +36553,7 @@
     "cross_oracle_note": null,
     "description": "ShapeUpgrade_ShellSewing.Apply tolerance-driven merge",
     "expected_kernel_behavior": "heal or reject (mechanism-specific; see Description)",
-    "expected_validation": "",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=shape(16) ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-3a-shells/Tsh101.stp",
     "id": "Tsh101",
@@ -36586,7 +36586,7 @@
     "cross_oracle_note": null,
     "description": "ShapeFix_Solid.SolidFromShell hollow-solid cavity loss",
     "expected_kernel_behavior": "heal or reject (mechanism-specific; see Description)",
-    "expected_validation": "",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=shape(36) ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-3a-shells/Tsh102.stp",
     "id": "Tsh102",
@@ -36619,7 +36619,7 @@
     "cross_oracle_note": null,
     "description": "ShapeAnalysis_Shell.FreeEdges seam-edge classification",
     "expected_kernel_behavior": "heal or reject (mechanism-specific; see Description)",
-    "expected_validation": "",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=shape(18) ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-3a-shells/Tsh103.stp",
     "id": "Tsh103",
@@ -36652,7 +36652,7 @@
     "cross_oracle_note": null,
     "description": "ShapeFix_Shell.FixFaceOrientation reverse-edge propagation",
     "expected_kernel_behavior": "heal or reject (mechanism-specific; see Description)",
-    "expected_validation": "",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-3a-shells/Tsh104.stp",
     "id": "Tsh104",
@@ -36685,7 +36685,7 @@
     "cross_oracle_note": null,
     "description": "ShapeAnalysis_Shell.CheckOrientedShells unconnected components",
     "expected_kernel_behavior": "heal or reject (mechanism-specific; see Description)",
-    "expected_validation": "",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=shape(18) ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-3a-shells/Tsh105.stp",
     "id": "Tsh105",
@@ -36718,7 +36718,7 @@
     "cross_oracle_note": null,
     "description": "ShapeUpgrade_RemoveInternalWires shell-level skip",
     "expected_kernel_behavior": "heal or reject (mechanism-specific; see Description)",
-    "expected_validation": "",
+    "expected_validation": "occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-3a-shells/Tsh106.stp",
     "id": "Tsh106",
@@ -36736,6 +36736,7 @@
       "synthesized — no external source cited"
     ],
     "taxonomy": [
+      "crash",
       "topology"
     ],
     "tier3_assertions": [],
@@ -36749,7 +36750,7 @@
     "cross_oracle_note": null,
     "description": "ShapeFix_Shell.Perform double-orient oscillation",
     "expected_kernel_behavior": "heal or reject (mechanism-specific; see Description)",
-    "expected_validation": "",
+    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-3a-shells/Tsh107.stp",
     "id": "Tsh107",
@@ -36782,7 +36783,7 @@
     "cross_oracle_note": null,
     "description": "ShapeUpgrade_ShellSewing.Apply zero-tolerance",
     "expected_kernel_behavior": "heal or reject (mechanism-specific; see Description)",
-    "expected_validation": "",
+    "expected_validation": "occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-3a-shells/Tsh108.stp",
     "id": "Tsh108",
@@ -36800,6 +36801,7 @@
       "synthesized — no external source cited"
     ],
     "taxonomy": [
+      "crash",
       "topology"
     ],
     "tier3_assertions": [],
@@ -36813,7 +36815,7 @@
     "cross_oracle_note": null,
     "description": "ShapeFix_Shell.Perform rejection orphan vertices",
     "expected_kernel_behavior": "heal or reject (mechanism-specific; see Description)",
-    "expected_validation": "",
+    "expected_validation": "occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-3a-shells/Tsh109.stp",
     "id": "Tsh109",
@@ -36831,6 +36833,7 @@
       "synthesized — no external source cited"
     ],
     "taxonomy": [
+      "crash",
       "topology"
     ],
     "tier3_assertions": [],
@@ -36844,7 +36847,7 @@
     "cross_oracle_note": null,
     "description": "ShapeUpgrade_ShellSewing tolerance-scale interaction",
     "expected_kernel_behavior": "heal or reject (mechanism-specific; see Description)",
-    "expected_validation": "",
+    "expected_validation": "occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-3a-shells/Tsh110.stp",
     "id": "Tsh110",
@@ -36862,6 +36865,7 @@
       "synthesized — no external source cited"
     ],
     "taxonomy": [
+      "crash",
       "topology"
     ],
     "tier3_assertions": [],
@@ -36875,7 +36879,7 @@
     "cross_oracle_note": null,
     "description": "ShapeAnalysis_Shell.CheckOrientedShells torus topology",
     "expected_kernel_behavior": "heal or reject (mechanism-specific; see Description)",
-    "expected_validation": "",
+    "expected_validation": "occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-3a-shells/Tsh111.stp",
     "id": "Tsh111",
@@ -36893,6 +36897,7 @@
       "synthesized — no external source cited"
     ],
     "taxonomy": [
+      "crash",
       "topology"
     ],
     "tier3_assertions": [],
@@ -36906,7 +36911,7 @@
     "cross_oracle_note": null,
     "description": "ShapeFix_Shell.FixFaceOrientation T-junction ambiguity",
     "expected_kernel_behavior": "heal or reject (mechanism-specific; see Description)",
-    "expected_validation": "",
+    "expected_validation": "occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-3a-shells/Tsh112.stp",
     "id": "Tsh112",
@@ -36924,6 +36929,7 @@
       "synthesized — no external source cited"
     ],
     "taxonomy": [
+      "crash",
       "topology"
     ],
     "tier3_assertions": [],
@@ -36937,7 +36943,7 @@
     "cross_oracle_note": null,
     "description": "ShapeUpgrade_RemoveInternalWires edge-loop aliasing",
     "expected_kernel_behavior": "heal or reject (mechanism-specific; see Description)",
-    "expected_validation": "",
+    "expected_validation": "occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-3a-shells/Tsh113.stp",
     "id": "Tsh113",
@@ -36955,6 +36961,7 @@
       "synthesized — no external source cited"
     ],
     "taxonomy": [
+      "crash",
       "topology"
     ],
     "tier3_assertions": [],
@@ -36968,7 +36975,7 @@
     "cross_oracle_note": null,
     "description": "wedge near-tangent dihedral angle",
     "expected_kernel_behavior": "heal or reject (mechanism-specific; see Description)",
-    "expected_validation": "",
+    "expected_validation": "occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-3a-shells/Tsh114.stp",
     "id": "Tsh114",
@@ -36986,6 +36993,7 @@
       "synthesized — no external source cited"
     ],
     "taxonomy": [
+      "crash",
       "topology"
     ],
     "tier3_assertions": [],
@@ -36999,7 +37007,7 @@
     "cross_oracle_note": null,
     "description": "orientation flag mismatch (CLOSED_SHELL single face)",
     "expected_kernel_behavior": "heal or reject (mechanism-specific; see Description)",
-    "expected_validation": "",
+    "expected_validation": "occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-3a-shells/Tsh115.stp",
     "id": "Tsh115",
@@ -37017,6 +37025,7 @@
       "synthesized — no external source cited"
     ],
     "taxonomy": [
+      "crash",
       "topology"
     ],
     "tier3_assertions": [],
@@ -37030,7 +37039,7 @@
     "cross_oracle_note": null,
     "description": "lone inverted face in 6-face cube",
     "expected_kernel_behavior": "heal or reject (mechanism-specific; see Description)",
-    "expected_validation": "",
+    "expected_validation": "occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-3a-shells/Tsh116.stp",
     "id": "Tsh116",
@@ -37048,6 +37057,7 @@
       "synthesized — no external source cited"
     ],
     "taxonomy": [
+      "crash",
       "topology"
     ],
     "tier3_assertions": [],
@@ -37061,7 +37071,7 @@
     "cross_oracle_note": null,
     "description": "aliased EDGE_LOOP (inner bound references outer of another face)",
     "expected_kernel_behavior": "heal or reject (mechanism-specific; see Description)",
-    "expected_validation": "",
+    "expected_validation": "occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-3a-shells/Tsh117.stp",
     "id": "Tsh117",
@@ -37079,6 +37089,7 @@
       "synthesized — no external source cited"
     ],
     "taxonomy": [
+      "crash",
       "topology"
     ],
     "tier3_assertions": [],
@@ -37092,7 +37103,7 @@
     "cross_oracle_note": null,
     "description": "5-face open box (missing top, free edges on rim)",
     "expected_kernel_behavior": "heal or reject (mechanism-specific; see Description)",
-    "expected_validation": "",
+    "expected_validation": "occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-3a-shells/Tsh118.stp",
     "id": "Tsh118",
@@ -37110,6 +37121,7 @@
       "synthesized — no external source cited"
     ],
     "taxonomy": [
+      "crash",
       "topology"
     ],
     "tier3_assertions": [],
@@ -39795,7 +39807,7 @@
     "cross_oracle_note": null,
     "description": "Non-manifold shell with edge shared by three faces triggers unbounded orientation-fixing loop when isAccountMultiConex=true. No explicit termination guard for pathological connectivity patterns.",
     "expected_kernel_behavior": "heal (bounded iteration with backtracking limit)",
-    "expected_validation": "",
+    "expected_validation": "occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-3a-shells/Tsh201.stp",
     "id": "Tsh201",
@@ -39813,6 +39825,7 @@
       "OCCT/ShapeFix_Shell.FixFaceOrientation.multiconnect_edge_loop_unbounded"
     ],
     "taxonomy": [
+      "crash",
       "topology"
     ],
     "tier3_assertions": [],
@@ -39826,7 +39839,7 @@
     "cross_oracle_note": null,
     "description": "Multiple Perform() calls reuse stale Context() if null-initialized at first call. Accumulated reshape operations apply duplicatively on second pass, corrupting face topology.",
     "expected_kernel_behavior": "heal (reset or validate context fresh per invocation)",
-    "expected_validation": "",
+    "expected_validation": "occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-3a-shells/Tsh202.stp",
     "id": "Tsh202",
@@ -39844,6 +39857,7 @@
       "OCCT/ShapeFix_Shell.Perform.context_null_initialize"
     ],
     "taxonomy": [
+      "crash",
       "topology"
     ],
     "tier3_assertions": [],
@@ -39857,7 +39871,7 @@
     "cross_oracle_note": null,
     "description": "Two faces with nearly-touching edges (sub-micron gap within tolerance threshold) fail to merge during sewing second pass. Distance tolerance filter rejects edges below threshold, leaving micro-gaps unstitched.",
     "expected_kernel_behavior": "heal (merge sub-tolerance edges or report explicitly)",
-    "expected_validation": "",
+    "expected_validation": "occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-3a-shells/Tsh203.stp",
     "id": "Tsh203",
@@ -39875,6 +39889,7 @@
       "OCCT/BRepBuilderAPI_Sewing.AnalysisNearestEdges.distance_tolerance_filter"
     ],
     "taxonomy": [
+      "crash",
       "topology"
     ],
     "tier3_assertions": [],
@@ -39888,7 +39903,7 @@
     "cross_oracle_note": null,
     "description": "Shell containing two identical faces with opposite orientations. The aMapAdded tracking only warns about duplicates but processes both faces independently, causing repeated orientation fixes and inconsistent outward directions.",
     "expected_kernel_behavior": "Reject or heal with consistent orientation",
-    "expected_validation": "",
+    "expected_validation": "occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-3a-shells/Tsh204.stp",
     "id": "Tsh204",
@@ -39906,6 +39921,7 @@
       "OCCT/ShapeFix_Shell.FixFaceOrientation"
     ],
     "taxonomy": [
+      "crash",
       "topology"
     ],
     "tier3_assertions": [],
@@ -39919,7 +39935,7 @@
     "cross_oracle_note": null,
     "description": "Shell with two face clusters disconnected by edge classification error. GetShells() may fail to partition isolated clusters, leading to incomplete shell set and missing faces.",
     "expected_kernel_behavior": "Extract all face clusters or reject",
-    "expected_validation": "",
+    "expected_validation": "occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-3a-shells/Tsh205.stp",
     "id": "Tsh205",
@@ -39937,6 +39953,7 @@
       "OCCT/ShapeFix_Shell.FixFaceOrientation"
     ],
     "taxonomy": [
+      "crash",
       "topology"
     ],
     "tier3_assertions": [],
@@ -39950,7 +39967,7 @@
     "cross_oracle_note": null,
     "description": "Performs repairable orientation fix on single-face shell. Multiple Perform() calls without context reset may reuse stale ShapeBuild_ReShape, accumulating reshape operations and applying fixes twice.",
     "expected_kernel_behavior": "Either reset context or track idempotence",
-    "expected_validation": "",
+    "expected_validation": "occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-3a-shells/Tsh206.stp",
     "id": "Tsh206",
@@ -39968,6 +39985,7 @@
       "OCCT/ShapeFix_Shell.Perform"
     ],
     "taxonomy": [
+      "crash",
       "topology"
     ],
     "tier3_assertions": [],
@@ -39981,7 +39999,7 @@
     "cross_oracle_note": null,
     "description": "Multi-face shell where user abort (aPS.More() == false) returns false but myStatus already set; partial fixes applied despite abort signal, leaving shell in inconsistent state.",
     "expected_kernel_behavior": "Revert partial fixes on abort or guarantee completeness",
-    "expected_validation": "",
+    "expected_validation": "occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-3a-shells/Tsh207.stp",
     "id": "Tsh207",
@@ -39999,6 +40017,7 @@
       "OCCT/ShapeFix_Shell.Perform"
     ],
     "taxonomy": [
+      "crash",
       "topology"
     ],
     "tier3_assertions": [],
@@ -40012,7 +40031,7 @@
     "cross_oracle_note": null,
     "description": "Closed shell with interconnected faces where orientation fix creates free edges. Shell.Closed() flag not reset despite post-fix free edges detected, breaking closure invariant.",
     "expected_kernel_behavior": "Synchronize closed flag after fix or reject",
-    "expected_validation": "",
+    "expected_validation": "occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-3a-shells/Tsh208.stp",
     "id": "Tsh208",
@@ -40030,6 +40049,7 @@
       "OCCT/ShapeFix_Shell.Perform"
     ],
     "taxonomy": [
+      "crash",
       "topology"
     ],
     "tier3_assertions": [],
@@ -40043,7 +40063,7 @@
     "cross_oracle_note": null,
     "description": "Shell with U-closed surface (cylindrical) and seam edge crossing parametric boundary (U=0→2π). Orientation propagation fails to detect period wraparound, causing undefined seam edge orientation.",
     "expected_kernel_behavior": "heal",
-    "expected_validation": "",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-3a-shells/Tsh209.stp",
     "id": "Tsh209",
@@ -40076,7 +40096,7 @@
     "cross_oracle_note": null,
     "description": "Shell containing single face with out-of-range tolerance (0.0015 μm, query [0.001, 0.002]). Recursive shell-mode filtering must include container shell even if child face is in-range. Validates shell-face recursion path.",
     "expected_kernel_behavior": "heal",
-    "expected_validation": "",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-3a-shells/Tsh210.stp",
     "id": "Tsh210",
@@ -40109,7 +40129,7 @@
     "cross_oracle_note": null,
     "description": "Shell face with inner wire containing single degenerate edge (zero-length, both endpoints identical). DispatchWires must detect and remove wire when NbEdges()==1 && Degenerated(edge).",
     "expected_kernel_behavior": "heal",
-    "expected_validation": "",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=shape(10) ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-3a-shells/Tsh211.stp",
     "id": "Tsh211",
@@ -40142,7 +40162,7 @@
     "cross_oracle_note": null,
     "description": "Face with inner hole wire (INTERNAL orientation) containing edge with EXTERNAL orientation (conflicting). BreakWires must detect and flip edge orientation, incrementing nbnew counter for segment finalization.",
     "expected_kernel_behavior": "heal",
-    "expected_validation": "",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=shape(17) ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-3a-shells/Tsh212.stp",
     "id": "Tsh212",
@@ -40206,7 +40226,7 @@
     "cross_oracle_note": null,
     "description": "ShapeFix_Shell.FixFaceOrientation.duplicate_faces_undetected",
     "expected_kernel_behavior": "heal or reject (mechanism-specific; see Description)",
-    "expected_validation": "",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=shape(10) ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-3a-shells/Tsh214.stp",
     "id": "Tsh214",
@@ -40239,7 +40259,7 @@
     "cross_oracle_note": null,
     "description": "ShapeFix_Shell.Perform.context_null_initialize",
     "expected_kernel_behavior": "heal or reject (mechanism-specific; see Description)",
-    "expected_validation": "",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=shape(7) ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-3a-shells/Tsh215.stp",
     "id": "Tsh215",
@@ -40272,7 +40292,7 @@
     "cross_oracle_note": null,
     "description": "ShapeFix_Shell.Perform.progress_abort_inconsistency",
     "expected_kernel_behavior": "heal or reject (mechanism-specific; see Description)",
-    "expected_validation": "",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=shape(17) ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-3a-shells/Tsh216.stp",
     "id": "Tsh216",
@@ -40305,7 +40325,7 @@
     "cross_oracle_note": null,
     "description": "ShapeFix_Shell.Perform.closed_flag_sync_failure",
     "expected_kernel_behavior": "heal or reject (mechanism-specific; see Description)",
-    "expected_validation": "",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=shape(12) ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-3a-shells/Tsh217.stp",
     "id": "Tsh217",
@@ -40369,7 +40389,7 @@
     "cross_oracle_note": null,
     "description": "duplicate_faces_undetected",
     "expected_kernel_behavior": "heal or reject (mechanism-specific; see Description)",
-    "expected_validation": "",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=shape(19) ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-3a-shells/Tsh219.stp",
     "id": "Tsh219",
@@ -40402,7 +40422,7 @@
     "cross_oracle_note": null,
     "description": "multiconnect_edge_loop_unbounded",
     "expected_kernel_behavior": "heal or reject (mechanism-specific; see Description)",
-    "expected_validation": "",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=shape(3) ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-3a-shells/Tsh220.stp",
     "id": "Tsh220",
@@ -40435,7 +40455,7 @@
     "cross_oracle_note": null,
     "description": "context_null_initialize",
     "expected_kernel_behavior": "heal or reject (mechanism-specific; see Description)",
-    "expected_validation": "",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=shape(10) ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-3a-shells/Tsh221.stp",
     "id": "Tsh221",
@@ -40468,7 +40488,7 @@
     "cross_oracle_note": null,
     "description": "closed_flag_sync_failure",
     "expected_kernel_behavior": "heal or reject (mechanism-specific; see Description)",
-    "expected_validation": "",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=reject ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-3a-shells/Tsh222.stp",
     "id": "Tsh222",
@@ -40501,7 +40521,7 @@
     "cross_oracle_note": null,
     "description": "shells_extraction_loss",
     "expected_kernel_behavior": "heal or reject (mechanism-specific; see Description)",
-    "expected_validation": "",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=shape(14) ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-3a-shells/Tsh223.stp",
     "id": "Tsh223",
@@ -40534,7 +40554,7 @@
     "cross_oracle_note": null,
     "description": "ShapeFix_Shell.FixFaceOrientation duplicate_faces_undetected",
     "expected_kernel_behavior": "heal or reject (mechanism-specific; see Description)",
-    "expected_validation": "",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=shape(18) ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-3a-shells/Tsh224.stp",
     "id": "Tsh224",
@@ -40567,7 +40587,7 @@
     "cross_oracle_note": null,
     "description": "ShapeFix_Shell.FixFaceOrientation multiconnect_edge_loop_unbounded",
     "expected_kernel_behavior": "heal or reject (mechanism-specific; see Description)",
-    "expected_validation": "",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=shape(11) ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-3a-shells/Tsh225.stp",
     "id": "Tsh225",
@@ -40600,7 +40620,7 @@
     "cross_oracle_note": null,
     "description": "ShapeFix_Shell.FixFaceOrientation shells_extraction_loss",
     "expected_kernel_behavior": "heal or reject (mechanism-specific; see Description)",
-    "expected_validation": "",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=shape(18) ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-3a-shells/Tsh226.stp",
     "id": "Tsh226",
@@ -40633,7 +40653,7 @@
     "cross_oracle_note": null,
     "description": "ShapeFix_Shell.FixFaceOrientation error_faces_mebius_assumption",
     "expected_kernel_behavior": "heal or reject (mechanism-specific; see Description)",
-    "expected_validation": "",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=shape(18) ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-3a-shells/Tsh227.stp",
     "id": "Tsh227",
@@ -40666,7 +40686,7 @@
     "cross_oracle_note": null,
     "description": "ShapeFix_Shell.Perform closed_flag_sync_failure",
     "expected_kernel_behavior": "heal or reject (mechanism-specific; see Description)",
-    "expected_validation": "",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=shape(17) ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-3a-shells/Tsh228.stp",
     "id": "Tsh228",
