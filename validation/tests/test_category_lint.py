@@ -15,12 +15,10 @@ from step_corpus import catalog
 from step_corpus._category_lint import lint_one
 
 
-# Ratchet: target is 0; currently 3 violations remain.
-# Tsh077/Tsh136/Tsh183: intentional empty-shell bodies (the defect they
-#   demonstrate — claim is "empty CLOSED_SHELL after writer pathology").
-# Pmi106 ratched out 2026-06-19 — PMI regex now matches SHAPE_ASPECT +
-# GEOMETRIC_ITEM_SPECIFIC_USAGE which the fixture emits.
-CATEGORY_LINT_CEILING = 3
+# Ratchet: target hit (0). All intentional empty-shell-IS-defect
+# fixtures are now in EXEMPT_EMPTY_SHELL (Tsh023/077/136/183/Bo001);
+# Pmi106 PMI regex extended; Pmi059/Pmi083 regained PMI chains.
+CATEGORY_LINT_CEILING = 0
 
 
 def test_category_lint_under_ceiling() -> None:

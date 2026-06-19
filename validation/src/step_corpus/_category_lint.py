@@ -62,6 +62,10 @@ EXEMPT_EMPTY_SHELL = {
     # Fixtures where empty shell IS the catalog defect.
     "Tsh023",  # Catalog title: "Empty EDGE_LOOP / empty face list on shells"
     "Bo001",   # Catalog title: "Outer shell of a solid is empty (zero faces)"
+    # Phase F regen fixtures whose claim is post-pathology empty body:
+    "Tsh077",  # writer-pathology empty CLOSED_SHELL (post-defect output)
+    "Tsh136",  # writer-pathology empty CLOSED_SHELL
+    "Tsh183",  # writer-pathology empty CLOSED_SHELL
 }
 
 EXEMPT_EMPTY_FACE_BOUNDS = {
