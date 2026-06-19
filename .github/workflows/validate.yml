@@ -12,7 +12,11 @@ jobs:
   validate:
     name: Run multi-tier validator on every fixture
     runs-on: ubuntu-latest
-    timeout-minutes: 60
+    # Corpus has grown to 2347+ fixtures (2026-06-19); _run_corpus with
+    # 4 workers + multiple oracles (OCCT heal_on/off, gmsh autofix, ifc,
+    # solvespace, manifold3d, OCAF) typically takes 50-75 min. Bumped
+    # from 60 to 120 to absorb growth headroom.
+    timeout-minutes: 120
 
     steps:
       - name: Checkout

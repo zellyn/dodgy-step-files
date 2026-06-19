@@ -1577,7 +1577,7 @@ _Section summary: 82 entries._
 - **Byte assertion**: count_entity_def(b'PCURVE') >= 1
 - **Tier-3 assertion**: shape_null == True
 - **Model impact**: The pcurve attribute on the affected EDGE_CURVE/SEAM_CURVE is missing, NULL, or inconsistent with its 3D companion; downstream meshing and boolean operations either rebuild it from the 3D edge (introducing tolerance error) or dereference a null handle and abort.
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(3) ifc=schema_n/a`
 
 ### Gp018 — Pcurve gaps / nearly-duplicate pcurves near periodic boundary after `B_SPLINE_SURFACE` conversion
 - **Category**: §12.2a pcurve
@@ -1587,7 +1587,7 @@ _Section summary: 82 entries._
 - **Expected kernel behavior**: adjust pcurve domain to match the converted surface (segmenting where needed) so the wraparound gap is bridged, or reject the converted result as a fidelity loss.
 - **Notes**: **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers must reject this fixture per the catalog's stated invariant. Synonyms: "nearly-duplicate pcurves at converted seam", "small UV gap after periodic-to-NURBS conversion", "pcurve gap near wraparound", "two pcurves on same edge after BSpline conversion", "periodic surface converted to NURBS leaves seam pcurve mismatch".
 - **Model impact**: The pcurve attribute on the affected EDGE_CURVE/SEAM_CURVE is missing, NULL, or inconsistent with its 3D companion; downstream meshing and boolean operations either rebuild it from the 3D edge (introducing tolerance error) or dereference a null handle and abort.
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(3) ifc=schema_n/a`
 - **Tier-3 assertion**: shape_null == True
 
 ### Gp019 — Edge on a composite-surface face is missing per-patch pcurve
@@ -1611,7 +1611,7 @@ _Section summary: 82 entries._
 - **Expected kernel behavior**: reconcile the parametric representation so the wire is connected in UV; snap pcurve endpoints to a common UV value, recompute one pcurve from the other, or reject as malformed if the gap exceeds the kernel's working precision.
 - **Notes**: **See also**: Gp026, Twi003. **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers must reject this fixture per the catalog's stated invariant. Synonyms: "2D gap between consecutive edges in wire", "pcurves disagree at shared vertex in UV", "wire connected in 3D but open in UV", "pcurve endpoint mismatch at shared vertex", "edges share 3D vertex but pcurves diverge".
 - **Model impact**: The pcurve attribute on the affected EDGE_CURVE/SEAM_CURVE is missing, NULL, or inconsistent with its 3D companion; downstream meshing and boolean operations either rebuild it from the 3D edge (introducing tolerance error) or dereference a null handle and abort.
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=reject ifc=schema_n/a`
 - **Tier-3 assertion**: shape_null == True
 
 ### Gp021 — 3D curve and pcurve on same edge disagree about edge location (skewed/off-unit pcurve `LINE`)
@@ -1626,7 +1626,7 @@ _Section summary: 82 entries._
 - **Byte assertion**: count_entity_def(b'PCURVE') >= 1
 - **Tier-3 assertion**: shape_null == True
 - **Model impact**: The pcurve attribute on the affected EDGE_CURVE/SEAM_CURVE is missing, NULL, or inconsistent with its 3D companion; downstream meshing and boolean operations either rebuild it from the 3D edge (introducing tolerance error) or dereference a null handle and abort.
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(3) ifc=schema_n/a`
 
 ### Gp022 — `EDGE_CURVE` `SameParameter=.T.` asserted but 3D curve and pcurve use different parameterisations (degenerate B-spline pcurve)
 - **Category**: §12.2a pcurve
@@ -1640,7 +1640,7 @@ _Section summary: 82 entries._
 - **Byte assertion**: count_entity_def(b'PCURVE') >= 1
 - **Tier-3 assertion**: shape_null == True
 - **Model impact**: The pcurve attribute on the affected EDGE_CURVE/SEAM_CURVE is missing, NULL, or inconsistent with its 3D companion; downstream meshing and boolean operations either rebuild it from the 3D edge (introducing tolerance error) or dereference a null handle and abort.
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(3) ifc=schema_n/a`
 
 ### Gp023 — Point-projection onto trimmed periodic `CYLINDRICAL_SURFACE` returns UV outside trimmed band (pcurve start parameter shifted by period)
 - **Category**: §12.2a pcurve
