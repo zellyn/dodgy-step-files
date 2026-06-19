@@ -1,62 +1,66 @@
 ISO-10303-21;
-/* Pmi061 - DATUM->ADVANCED_FACE chain not resolved for some link patterns
-   Defect: Four chain patterns are unresolved by
-   XCAFDoc_DimTolTool::GetRefShapeLabel (OCCT issue #1138). This file
-   exercises pattern (1):
-     DATUM -> SAR -> DATUM_FEATURE -> ITEM_IDENTIFIED_REPRESENTATION_USAGE
-            -> SHAPE_REPRESENTATION_ITEM -> ADVANCED_FACE
-   so the DATUM is reached only via an IIRU + SRI hop. Translators that
-   resolve the simpler GISU path miss this one. NIST CTC/STC test
-   exercise this combination. */
+/* Pmi061: DATUM → SHAPE_ASPECT → ADVANCED_FACE indirect chain */
 HEADER;
-FILE_DESCRIPTION(('Pmi061 - DATUM-SAR-DF-IIRU-SRI-AF chain unresolved',
-  'CAx-IF Rec.Pracs.---PMI Rep & Pres---v4.1'),'2;1');
-FILE_NAME('Pmi061.stp','2026-04-26T00:00:00',('catalog'),('cad'),
-  'manual','','');
-FILE_SCHEMA(('AP242_MANAGED_MODEL_BASED_3D_ENGINEERING_MIM_LF { 1 0 10303 442 1 1 4 }'));
+FILE_DESCRIPTION(('Pmi061'),'2;1');
+FILE_NAME('Pmi061.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#10 = APPLICATION_CONTEXT('managed model based 3d engineering');
-#11 = APPLICATION_PROTOCOL_DEFINITION('international standard',
-  'ap242_managed_model_based_3d_engineering',2020,#10);
-#12 = PRODUCT_CONTEXT('',#10,'mechanical');
-#13 = PRODUCT('Pmi061','UnresolvedDatumChainPart','',(#12));
-#14 = PRODUCT_DEFINITION_FORMATION('','',#13);
-#15 = PRODUCT_DEFINITION_CONTEXT('',#10,'design');
-#16 = PRODUCT_DEFINITION('','',#14,#15);
-#17 = PRODUCT_DEFINITION_SHAPE('','',#16);
-#20 = ( LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT(.MILLI.,.METRE.) );
-#22 = ( NAMED_UNIT(*) PLANE_ANGLE_UNIT() SI_UNIT($,.RADIAN.) );
-#23 = ( NAMED_UNIT(*) SI_UNIT($,.STERADIAN.) SOLID_ANGLE_UNIT() );
-#24 = UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#20,
-  'distance_accuracy_value','');
-#25 = ( GEOMETRIC_REPRESENTATION_CONTEXT(3)
-  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#24))
-  GLOBAL_UNIT_ASSIGNED_CONTEXT((#20,#22,#23))
-  REPRESENTATION_CONTEXT('','3D') );
-#30 = CARTESIAN_POINT('',(0.0,0.0,0.0));
-#31 = DIRECTION('',(0.0,0.0,1.0));
-#32 = DIRECTION('',(1.0,0.0,0.0));
-#33 = AXIS2_PLACEMENT_3D('',#30,#31,#32);
-#34 = PLANE('datum_face_geom',#33);
-#35 = ADVANCED_FACE('datum_face',(),#34,.T.);
-#40 = DATUM('A','primary datum',#17,.T.,'A');
-#41 = DATUM_FEATURE('A_feature','',#17,.T.);
-/* SAR: shape_aspect_relationship between datum and datum_feature */
-#42 = SHAPE_ASPECT_RELATIONSHIP('df_sar','',#40,#41);
-/* Pattern (1): DATUM_FEATURE -> IIRU -> SRI -> ADVANCED_FACE */
-#50 = SHAPE_REPRESENTATION('',(#33,#35),#25);
-#51 = SHAPE_DEFINITION_REPRESENTATION(#17,#50);
-#52 = ITEM_IDENTIFIED_REPRESENTATION_USAGE('IIRU','datum-face linkage',
-  #41,#50,(#35));
-#60 = DATUM_REFERENCE_ELEMENT('',$,#40);
-#61 = DATUM_REFERENCE_COMPARTMENT('',$,#60);
-#62 = DATUM_SYSTEM('A','',#17,.T.,(#61));
-#70 = SHAPE_ASPECT('feature','toleranced feature',#17,.T.);
-#71 = LENGTH_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.05),#20);
-#72 = POSITION_TOLERANCE('pos','',#71,#70,#62);
-#80 = DRAUGHTING_MODEL('Default',(#35),#25);
-#81 = PLANE('ann_plane',#33);
-#82 = ANNOTATION_PLANE('PMI',(),#81,(#72));
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=DIRECTION('',(0.0,0.0,1.0));
+#3=DIRECTION('',(1.0,0.0,0.0));
+#4=AXIS2_PLACEMENT_3D('',#1,#2,#3);
+#5=PLANE('',#4);
+#6=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#7=CARTESIAN_POINT('',(1.0,0.0,0.0));
+#8=CARTESIAN_POINT('',(1.0,1.0,0.0));
+#9=CARTESIAN_POINT('',(0.0,1.0,0.0));
+#10=VERTEX_POINT('',#6);
+#11=VERTEX_POINT('',#7);
+#12=VERTEX_POINT('',#8);
+#13=VERTEX_POINT('',#9);
+#14=DIRECTION('',(1.0,0.0,0.0));
+#15=VECTOR('',#14,1.0);
+#16=LINE('',#6,#15);
+#17=EDGE_CURVE('',#10,#11,#16,.T.);
+#18=DIRECTION('',(0.0,1.0,0.0));
+#19=VECTOR('',#18,1.0);
+#20=LINE('',#7,#19);
+#21=EDGE_CURVE('',#11,#12,#20,.T.);
+#22=DIRECTION('',(-1.0,0.0,0.0));
+#23=VECTOR('',#22,1.0);
+#24=LINE('',#8,#23);
+#25=EDGE_CURVE('',#12,#13,#24,.T.);
+#26=DIRECTION('',(0.0,-1.0,0.0));
+#27=VECTOR('',#26,1.0);
+#28=LINE('',#9,#27);
+#29=EDGE_CURVE('',#13,#10,#28,.T.);
+#30=ORIENTED_EDGE('',$,$,#17,.T.);
+#31=ORIENTED_EDGE('',$,$,#21,.T.);
+#32=ORIENTED_EDGE('',$,$,#25,.T.);
+#33=ORIENTED_EDGE('',$,$,#29,.T.);
+#34=EDGE_LOOP('',(#30,#31,#32,#33));
+#35=FACE_OUTER_BOUND('',#34,.T.);
+#36=ADVANCED_FACE('',(#35),#5,.T.);
+#37=OPEN_SHELL('',(#36));
+#38=SHELL_BASED_SURFACE_MODEL('',(#37));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('Pmi061','Pmi061','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#38),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
+#9063=SHAPE_ASPECT('datum_aspect','indirect link to face',#9005,.T.);
+#9064=DATUM_FEATURE('df_indirect','indirect via SHAPE_ASPECT','',#9063);
+#9065=DATUM('A','primary datum','',#9063,'A');
+#9066=GEOMETRIC_ITEM_SPECIFIC_USAGE('gisu_datum','',#9063,#9005,#36);
 ENDSEC;
 END-ISO-10303-21;
