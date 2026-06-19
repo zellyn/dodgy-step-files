@@ -10,6 +10,11 @@ Append newest at the top.
 
 ## 2026-06-18
 
+- **Q4.1–Q4.3: mesh_builder skeleton + 5 first-cut mesh fixtures.**
+  `validation/src/step_corpus/mesh_builder.py` mirrors step_builder
+  API. Five §12-14-mesh fixtures (non-manifold edge, degenerate
+  triangle, near-coincident vertices, boundary hole, self-intersecting
+  triangles) validate the JSON schema v0. Commit `cc855c9`.
 - **B2 batch 2: 389 tier-3 promotions for §12.2 NURBS/surfaces/pcurves.**
   Coverage 920 → 1259 assertions (+339), 338 → 727 entries (15% → 32%).
   Commit `87e884f`.

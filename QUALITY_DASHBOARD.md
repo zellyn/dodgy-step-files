@@ -4,21 +4,22 @@ A single-page tour of what's inside, what holds up under adversarial validation,
 
 ## Top-line stats
 
+_Refreshed 2026-06-18. Many "best-effort current" metrics below were
+last computed at the noted timestamps; rerun the validators (commands
+at the bottom) to recompute._
+
 | Metric | Value |
 |---|---:|
-| Catalog entries | **1282** |
-| Fixtures (`.stp` files) | **1282** + 7 sibling-input fixtures (`<id>.input.stp`) |
-| CONFIRMED (Expected-validation line matches live oracle output) | **1281** (99.38 %) |
-| CONFIRMED-WEAK | **9** (0.72 %) |
-| DRIFT / FAIL / ERROR | **0** / **0** / **0** |
-| Forward adversarial review (bytes support claim) | **918 / 960** demonstrate · 42 runtime-only (perf/process-state) · 0 weak after remediation |
-| Reverse self-evidence (cold-read description finds canonical entry top-3) | **87.4 %** across 960 reviewed fixtures |
-| Reverse-test weak entries (beyond-10 + not-found) | **16 / 960** (1.7 %) |
-| Mutation-test sensitivity (100-fixture stratified sample, 3 attempts each) | **91.8 %** flip oracle output (90/98; 8 undetected are signal-segfault baselines where byte mutation can't easily flip the crash state) |
-| Machine-checkable **tier-3** assertions in catalog | **831** across **241** entries |
-| Machine-checkable **byte** assertions in catalog | **2249** across **1003** entries |
-| Total machine-checkable invariants | **3080** (all passing) |
-| Entries with at least one invariant | **>1003 / 1282** (>78 %) |
+| Catalog entries | **2,302** |
+| Active fixtures (`.stp` files) | **2,309** (+ 7 sibling-input fixtures) |
+| Quarantined (preserved as evidence; replaced in active corpus) | **150** (84 early-waves + 66 phase_F_boilerplate) |
+| Mesh fixtures (new §12-14 mesh corpus, Q4 in progress) | **5** seed fixtures via Python builder |
+| Adversarial-verification sweep (2026-06-18, full corpus) | **2,280 / 2,309** (98.7 %) verified VALID; 23 CONFIRMED_WEAK; 0 CONFIRMED_INVALID after regen |
+| CONFIRMED (Expected-validation line matches live oracle output) | (recompute via `_final_verdict`) |
+| Machine-checkable **tier-3** assertions in catalog | **1,309** across **727** entries (B2 in progress; was 831/241 before §12.1+§12.2 harvest) |
+| Machine-checkable **byte** assertions in catalog | **2,318** across **1,035** entries |
+| Total machine-checkable invariants | **3,627** |
+| Entries with at least one invariant | **>1,035 / 2,302** (>45 %) |
 | Bug-reporter synonyms | **1127** `Synonyms:` lines covering most §12.1-§12.8 entries (improves BM25 recall on natural-language queries) |
 | Writer-pathology runtime oracle (`_writer_oracle`) | 34 simulated / 9 skipped = **43 Wr* entries** covered with active byte-level reproduction |
 | Category-lint structural-issue ratchet | **0** violations |

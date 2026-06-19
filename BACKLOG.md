@@ -237,22 +237,9 @@ deliberately simple and the *real* artifact is the in-memory model.
 **Last touched:** 2026-06-18.
 
 **Plan:**
-- [ ] Q4.1 Draft `mesh_builder.py` skeleton: `MeshFile`, `Vertex`,
-      `Triangle`. Mirror the `step_builder.py` API shape so the
-      cognitive load is familiar.
-- [ ] Q4.2 Define the JSON schema. Top level: `{vertices, triangles,
-      metadata}`. `vertices` is a list of `[x, y, z]`. `triangles` is a
-      list of `[i0, i1, i2]` referencing vertex indices. `metadata`
-      carries the catalog ID, defect-class string, and a list of
-      machine-checkable assertions — pointers like
-      `{edge: [0,2], shared_by_n_triangles: 3}` for non-manifold,
-      `{triangle: 7, area_lt: 1e-9}` for degenerate, etc. The
-      assertions are the mesh equivalent of STEP tier-3 assertions:
-      mechanical verifiers can confirm the defect is where the catalog
-      says it is.
-- [ ] Q4.3 First-cut mesh fixtures: pick 5 entries from
-      `MESH_DEFECT_TAXONOMY.md` and synthesize **numerically defective
-      meshes**. Catalog as §12.14-mesh (new section).
+- [x] Q4.1 Draft `mesh_builder.py` skeleton. Done in cc855c9.
+- [x] Q4.2 Define the JSON schema v0. Done in cc855c9.
+- [x] Q4.3 First-cut mesh fixtures (Me001–Me005). Done in cc855c9.
 - [ ] Q4.4 Optional interop emitters: also write the same mesh as PLY
       and OBJ (where representable, given the format limitations), so
       consumers without our format can still load the unbroken parts.
