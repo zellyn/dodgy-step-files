@@ -180,33 +180,42 @@ Pre-existing task #116. Not blocking but should not be forgotten.
 
 **Why:** STEP isn't a mesh format and no existing mesh format (OBJ, PLY,
 STL, glTF) carries the richness needed to express most MeshFix/CGAL PMP
-defects (non-manifold edges, degenerate triangles, near-coincident
-vertices with annotation, etc.). The Python-builder pattern that worked
-for STEP fixtures would work just as well here: define a Mesh model, a
-defect-annotation layer, and serialize to JSON. We invent our own format
-but it's deliberately simple and the *real* artifact is the in-memory
-model, not the file.
+defects. The Python-builder pattern that worked for STEP fixtures works
+just as well here: define a Mesh model that emits **numerically
+defective JSON** (a non-manifold mesh has three triangles literally
+sharing an edge in the triangle list; a degenerate triangle has its
+zero-area indices right there; near-coincident vertices have distinct
+entries at sub-tolerance positions). The defect IS in the geometry;
+healers don't get a free pass. We invent our own format but it's
+deliberately simple and the *real* artifact is the in-memory model.
 
 **Status:** Not started.
 **Last touched:** 2026-06-18.
 
 **Plan:**
 - [ ] Q4.1 Draft `mesh_builder.py` skeleton: `MeshFile`, `Vertex`,
-      `Triangle`, `EdgeAnnotation`. Mirror the `step_builder.py` API
-      shape so the cognitive load is familiar.
+      `Triangle`. Mirror the `step_builder.py` API shape so the
+      cognitive load is familiar.
 - [ ] Q4.2 Define the JSON schema. Top level: `{vertices, triangles,
-      defect_annotations, metadata}`. Defect annotations are a typed
-      union: `non_manifold_edge | degenerate_triangle | near_coincident_vertex
-      | hole | self_intersection | inverted_normal | ...`.
+      metadata}`. `vertices` is a list of `[x, y, z]`. `triangles` is a
+      list of `[i0, i1, i2]` referencing vertex indices. `metadata`
+      carries the catalog ID, defect-class string, and a list of
+      machine-checkable assertions — pointers like
+      `{edge: [0,2], shared_by_n_triangles: 3}` for non-manifold,
+      `{triangle: 7, area_lt: 1e-9}` for degenerate, etc. The
+      assertions are the mesh equivalent of STEP tier-3 assertions:
+      mechanical verifiers can confirm the defect is where the catalog
+      says it is.
 - [ ] Q4.3 First-cut mesh fixtures: pick 5 entries from
-      `MESH_DEFECT_TAXONOMY.md` and synthesize. Catalog as §12.14-mesh
-      (new section).
+      `MESH_DEFECT_TAXONOMY.md` and synthesize **numerically defective
+      meshes**. Catalog as §12.14-mesh (new section).
 - [ ] Q4.4 Optional interop emitters: also write the same mesh as PLY
-      and OBJ (where representable), so consumers without our format
-      can still load the unbroken parts.
+      and OBJ (where representable, given the format limitations), so
+      consumers without our format can still load the unbroken parts.
 - [ ] Q4.5 Mesh-tier oracle: subprocess-isolated wrapper around CGAL PMP
-      (or MeshFix), report which defects each detects. Drops into the
-      same multi-tier-validator harness as the STEP oracles.
+      (or MeshFix). Healer reads JSON, attempts repair, reports
+      detected-vs-undetected defects. Drops into the same
+      multi-tier-validator harness as the STEP oracles.
 - [ ] Q4.6 Decide naming + extension: `.mesh.json`? `.stp-mesh`? Note in
       catalog as parallel-to-STEP, not part of it.
 
