@@ -2607,7 +2607,7 @@ _Section summary: 101 entries._
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal, warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must heal or emit a diagnostic this fixture.
 - **Severity**: P1
 - **Model impact**: Shell topology loads with inconsistent face orientations or non-manifold edges; BRepCheck flags the shell as invalid, and boolean / offset operations on the solid either produce wrong-sided results or fail outright.
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(26) ifc=schema_n/a`
 
 ### Tsh002 — FACETED_BREP.outer references OPEN_SHELL
 - **Category**: §12.3a shell-orientation
@@ -2626,7 +2626,7 @@ _Section summary: 101 entries._
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: Shell topology loads with inconsistent face orientations or non-manifold edges; BRepCheck flags the shell as invalid, and boolean / offset operations on the solid either produce wrong-sided results or fail outright.
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(26) ifc=schema_n/a`
 
 ### Tsh003 — Closed solid round-trips as SHELL_BASED_SURFACE_MODEL/OPEN_SHELL (SpaceClaim regression)
 - **Category**: §12.3a shell-orientation
@@ -2645,7 +2645,7 @@ _Section summary: 101 entries._
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
 - **Severity**: P1
 - **Model impact**: Shell topology loads with inconsistent face orientations or non-manifold edges; BRepCheck flags the shell as invalid, and boolean / offset operations on the solid either produce wrong-sided results or fail outright.
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(14) ifc=schema_n/a`
 
 ### Tsh004 — Sheet bodies imported in place of solids (FEA pipeline)
 - **Category**: §12.3a shell-orientation
@@ -2664,7 +2664,7 @@ _Section summary: 101 entries._
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
 - **Severity**: P1
 - **Model impact**: Shell topology loads with inconsistent face orientations or non-manifold edges; BRepCheck flags the shell as invalid, and boolean / offset operations on the solid either produce wrong-sided results or fail outright.
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=reject ifc=schema_n/a`
 
 ### Tsh005 — Solid demoted by stricter receiver tolerance ("clean in FreeCAD, broken in SolidWorks")
 - **Category**: §12.3a shell-orientation
@@ -2684,7 +2684,7 @@ _Section summary: 101 entries._
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
 - **Severity**: P1
 - **Model impact**: Shell topology loads with inconsistent face orientations or non-manifold edges; BRepCheck flags the shell as invalid, and boolean / offset operations on the solid either produce wrong-sided results or fail outright.
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(26) ifc=schema_n/a`
 
 ### Tsh006 — Bundled component STEP packages emit OPEN_SHELL components
 - **Category**: §12.3a shell-orientation
@@ -2703,7 +2703,7 @@ _Section summary: 101 entries._
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal, reject}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: Shell topology loads with inconsistent face orientations or non-manifold edges; BRepCheck flags the shell as invalid, and boolean / offset operations on the solid either produce wrong-sided results or fail outright.
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(25) ifc=schema_n/a`
 
 ### Tsh007 — `IsClosed` flag inconsistent with actual shell topology
 - **Category**: §12.3a shell-orientation
@@ -2734,7 +2734,7 @@ _Section summary: 101 entries._
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: Shell topology loads with inconsistent face orientations or non-manifold edges; BRepCheck flags the shell as invalid, and boolean / offset operations on the solid either produce wrong-sided results or fail outright.
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(27) ifc=schema_n/a`
 
 ### Tsh009 — Solid built from open shell with inward-pointing outer-shell normals
 - **Category**: §12.3a shell-orientation
@@ -2750,7 +2750,7 @@ _Section summary: 101 entries._
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: Shell topology loads with inconsistent face orientations or non-manifold edges; BRepCheck flags the shell as invalid, and boolean / offset operations on the solid either produce wrong-sided results or fail outright.
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(27) ifc=schema_n/a`
 
 ### Tsh010 — Reversed face normal in closed shell ("inside-out" shading)
 - **Category**: §12.3a shell-orientation
@@ -2767,7 +2767,7 @@ _Section summary: 101 entries._
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal, reject}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: Shell topology loads with inconsistent face orientations or non-manifold edges; BRepCheck flags the shell as invalid, and boolean / offset operations on the solid either produce wrong-sided results or fail outright.
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(27) ifc=schema_n/a`
 
 ### Tsh011 — `FACE_OUTER_BOUND` orientation flag inconsistent with required winding
 - **Category**: §12.3a shell-orientation
@@ -2783,7 +2783,7 @@ _Section summary: 101 entries._
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: Shell topology loads with inconsistent face orientations or non-manifold edges; BRepCheck flags the shell as invalid, and boolean / offset operations on the solid either produce wrong-sided results or fail outright.
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(11) ifc=schema_n/a`
 
 ### Tsh012 — Mixed `.T.`/`.F.` flags on `ORIENTED_EDGE` mismatched against parameter direction
 - **Category**: §12.3a shell-orientation
@@ -2799,7 +2799,7 @@ _Section summary: 101 entries._
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal, warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must heal or emit a diagnostic this fixture.
 - **Severity**: P1
 - **Model impact**: Shell topology loads with inconsistent face orientations or non-manifold edges; BRepCheck flags the shell as invalid, and boolean / offset operations on the solid either produce wrong-sided results or fail outright.
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 
 ### Tsh013 — Face has multiple outer wires (face needs splitting into disjoint regions)
 - **Category**: §12.3a shell-orientation
@@ -2814,7 +2814,7 @@ _Section summary: 101 entries._
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal, reject}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: Shell topology loads with inconsistent face orientations or non-manifold edges; BRepCheck flags the shell as invalid, and boolean / offset operations on the solid either produce wrong-sided results or fail outright.
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(18) ifc=schema_n/a`
 
 ### Tsh015 — Brep_with_voids: void shell oriented `.T.` instead of `.F.` (ProSTEP TR9)
 - **Category**: §12.3a shell-orientation
@@ -2830,7 +2830,7 @@ _Section summary: 101 entries._
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal, warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must heal or emit a diagnostic this fixture.
 - **Severity**: P1
 - **Model impact**: Shell topology loads with inconsistent face orientations or non-manifold edges; BRepCheck flags the shell as invalid, and boolean / offset operations on the solid either produce wrong-sided results or fail outright.
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(53) ifc=schema_n/a`
 
 ### Tsh018 — Volume orientation mismatch between `LastShape()` and parent solid
 - **Category**: §12.3a shell-orientation
@@ -2846,7 +2846,7 @@ _Section summary: 101 entries._
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
 - **Severity**: P1
 - **Model impact**: Shell topology loads with inconsistent face orientations or non-manifold edges; BRepCheck flags the shell as invalid, and boolean / offset operations on the solid either produce wrong-sided results or fail outright.
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 
 ### Tsh019 — Non-manifold edge (≥3 incident faces) in shell or solid
 - **Category**: §12.3a shell-orientation
@@ -2877,7 +2877,7 @@ _Section summary: 101 entries._
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject, warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must reject or emit a diagnostic this fixture.
 - **Severity**: P1
 - **Model impact**: Shell topology loads with inconsistent face orientations or non-manifold edges; BRepCheck flags the shell as invalid, and boolean / offset operations on the solid either produce wrong-sided results or fail outright.
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=reject ifc=schema_n/a`
 
 ### Tsh021 — Non-manifold vertex (bowtie / hourglass / fan-of-fans)
 - **Category**: §12.3a shell-orientation
@@ -2894,7 +2894,7 @@ _Section summary: 101 entries._
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
 - **Severity**: P1
 - **Model impact**: Shell topology loads with inconsistent face orientations or non-manifold edges; BRepCheck flags the shell as invalid, and boolean / offset operations on the solid either produce wrong-sided results or fail outright.
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(13) ifc=schema_n/a`
 
 ### Tsh022 — Non-manifold STEP loses XCAF attributes (color/PMI) on read
 - **Category**: §12.3a shell-orientation
@@ -2910,7 +2910,7 @@ _Section summary: 101 entries._
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: Shell topology loads with inconsistent face orientations or non-manifold edges; BRepCheck flags the shell as invalid, and boolean / offset operations on the solid either produce wrong-sided results or fail outright.
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(15) ifc=schema_n/a`
 
 ### Tsh023 — Empty `EDGE_LOOP` / empty face list on shells
 - **Category**: §12.3a shell-orientation
@@ -2924,7 +2924,7 @@ _Section summary: 101 entries._
 - **Byte assertion**: contains(b'SHELL_BASED_SURFACE_MODEL')
 - **Tier-3 assertion**: n_faces_total == 2
 - **Model impact**: Parser dereferences invalid memory while processing the malformed token; the load process is killed by a signal and no shape is delivered.
-- **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(10) ifc=schema_n/a`
 
 ### Tsh024 — `CONNECTED_FACE_SET` containing non-face entities
 - **Category**: §12.3a shell-orientation
@@ -2941,7 +2941,7 @@ _Section summary: 101 entries._
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal, warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must heal or emit a diagnostic this fixture.
 - **Severity**: P1
 - **Model impact**: Shell topology loads with inconsistent face orientations or non-manifold edges; BRepCheck flags the shell as invalid, and boolean / offset operations on the solid either produce wrong-sided results or fail outright.
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(18) ifc=schema_n/a`
 
 ### Tsh026 — Coincident / duplicate `ADVANCED_FACE` instances in `CLOSED_SHELL`
 - **Category**: §12.3a shell-orientation
@@ -2970,7 +2970,7 @@ _Section summary: 101 entries._
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal, warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must heal or emit a diagnostic this fixture.
 - **Severity**: P1
 - **Model impact**: Shell topology loads with inconsistent face orientations or non-manifold edges; BRepCheck flags the shell as invalid, and boolean / offset operations on the solid either produce wrong-sided results or fail outright.
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 
 ### Tsh028 — `STYLED_ITEM` attached to sub-tolerance sliver `ADVANCED_FACE` (lost / mis-bound on healing)
 - **Category**: §12.3a shell-orientation
@@ -2987,7 +2987,7 @@ _Section summary: 101 entries._
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
 - **Severity**: P1
 - **Model impact**: Shell topology loads with inconsistent face orientations or non-manifold edges; BRepCheck flags the shell as invalid, and boolean / offset operations on the solid either produce wrong-sided results or fail outright.
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(16) ifc=schema_n/a`
 
 ### Tsh029 — Naked / dangling edge in shell (free edges, LOTAR integrity defect)
 - **Category**: §12.3a shell-orientation
@@ -3031,7 +3031,7 @@ _Section summary: 101 entries._
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: Shell topology loads with inconsistent face orientations or non-manifold edges; BRepCheck flags the shell as invalid, and boolean / offset operations on the solid either produce wrong-sided results or fail outright.
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(18) ifc=schema_n/a`
 
 ### Tsh033 — Mirrored block instances flip surface direction with parameter-space curves
 - **Category**: §12.3a shell-orientation
@@ -3048,7 +3048,7 @@ _Section summary: 101 entries._
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: Shell topology loads with inconsistent face orientations or non-manifold edges; BRepCheck flags the shell as invalid, and boolean / offset operations on the solid either produce wrong-sided results or fail outright.
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(18) ifc=schema_n/a`
 
 ### Tsh035 — `DEGENERATE_TOROIDAL_SURFACE` with negative minor radius and same `EDGE_CURVE` reused with opposite senses (orientation ambiguity)
 - **Category**: §12.3a shell-orientation
@@ -3064,7 +3064,7 @@ _Section summary: 101 entries._
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: Shell topology loads with inconsistent face orientations or non-manifold edges; BRepCheck flags the shell as invalid, and boolean / offset operations on the solid either produce wrong-sided results or fail outright.
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 
 ### Tsh036 — Revolved shape imported with complementary (reversed) angle
 - **Category**: §12.3a shell-orientation
@@ -3080,7 +3080,7 @@ _Section summary: 101 entries._
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: Shell topology loads with inconsistent face orientations or non-manifold edges; BRepCheck flags the shell as invalid, and boolean / offset operations on the solid either produce wrong-sided results or fail outright.
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 
 ### Tsh037 — Free wires/edges in compound (Q029, F080 — no faces, INTERNAL orientation)
 - **Category**: §12.3a shell-orientation
@@ -3112,7 +3112,7 @@ _Section summary: 101 entries._
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
 - **Severity**: P1
 - **Model impact**: Shell topology loads with inconsistent face orientations or non-manifold edges; BRepCheck flags the shell as invalid, and boolean / offset operations on the solid either produce wrong-sided results or fail outright.
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 
 ### Tsh040 — `EDGE_CURVE` shared across two `OPEN_SHELL`s in one `SHELL_BASED_SURFACE_MODEL` (T-junction mis-classified as non-manifold by slicer)
 - **Category**: §12.3a shell-orientation
@@ -3130,7 +3130,7 @@ _Section summary: 101 entries._
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: Shell topology loads with inconsistent face orientations or non-manifold edges; BRepCheck flags the shell as invalid, and boolean / offset operations on the solid either produce wrong-sided results or fail outright.
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(15) ifc=schema_n/a`
 
 ### Tsh041 — Shell extrusion with shared edges yields CompSolid with duplicated internal faces
 - **Category**: §12.3a shell-orientation
@@ -3144,7 +3144,7 @@ _Section summary: 101 entries._
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: Shell topology loads with inconsistent face orientations or non-manifold edges; BRepCheck flags the shell as invalid, and boolean / offset operations on the solid either produce wrong-sided results or fail outright.
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(11) ifc=schema_n/a`
 - **Tier-3 assertion**: n_faces_total == 2
 
 ### Tsh042 — `bad vertex`: vertex misplaced relative to incident edges
@@ -6379,7 +6379,7 @@ _Section summary: 84 entries._
 - **Tier-3 assertion**: face[0].surface_type == "plane"
 - **Tier-3 assertion**: brepcheck.valid == True
 - **Model impact**: The assembly graph loads with broken parent/child links or with the wrong transform on a MAPPED_ITEM/NEXT_ASSEMBLY_USAGE_OCCURRENCE; affected sub-components either fail to instance or appear at the wrong position relative to the assembly origin.
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 
 ### A018 — STYLED_ITEM at wrong scope: assembly-level color override lost or misbound
 - **Category**: §12.6 (sub-class: color/layer attribution per-instance)
@@ -6393,7 +6393,7 @@ _Section summary: 84 entries._
 - **Tier-3 assertion**: face[0].surface_type == "plane"
 - **Tier-3 assertion**: face[1].surface_type == "plane"
 - **Model impact**: The assembly graph loads with broken parent/child links or with the wrong transform on a MAPPED_ITEM/NEXT_ASSEMBLY_USAGE_OCCURRENCE; affected sub-components either fail to instance or appear at the wrong position relative to the assembly origin.
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(2) ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 
 ### A019 — Per-face `STYLED_ITEM` colours collapse to a single hue when multiple `ADVANCED_FACE`s share one supporting `PLANE`
 - **Category**: §12.6 (sub-class: color attribution / face binding)
@@ -6407,7 +6407,7 @@ _Section summary: 84 entries._
 - **Tier-3 assertion**: face[0].surface_type == "plane"
 - **Tier-3 assertion**: face[2].surface_type == "plane"
 - **Model impact**: The assembly graph loads with broken parent/child links or with the wrong transform on a MAPPED_ITEM/NEXT_ASSEMBLY_USAGE_OCCURRENCE; affected sub-components either fail to instance or appear at the wrong position relative to the assembly origin.
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(3) ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(27) ifc=schema_n/a`
 
 ### A020 — Bare STYLED_ITEM at top level (no MDGPR / DRAUGHTING_MODEL parent)
 - **Category**: §12.6 (sub-class: styled_item parenting)
@@ -6423,7 +6423,7 @@ _Section summary: 84 entries._
 - **OCC behavior**: loads a shape (no diagnostic) — reading as healing; outside catalog's allowed set ({reject, warn-and-proceed}). Documented divergence: OCC's auto-repair is stronger than the catalog's reject-only stance; conservative kernels may reject.
 - **Severity**: P1
 - **Model impact**: The assembly graph loads with broken parent/child links or with the wrong transform on a MAPPED_ITEM/NEXT_ASSEMBLY_USAGE_OCCURRENCE; affected sub-components either fail to instance or appear at the wrong position relative to the assembly origin.
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 
 ### A021 — CDORSI WR1 violated by per-component styling in Saved View
 - **Category**: §12.6 (sub-class: CONTEXT_DEPENDENT_OVER_RIDING_STYLED_ITEM)
@@ -6453,7 +6453,7 @@ _Section summary: 84 entries._
 - **Tier-3 assertion**: face[0].surface_type == "plane"
 - **Tier-3 assertion**: face[1].surface_type == "plane"
 - **Model impact**: The assembly graph loads with broken parent/child links or with the wrong transform on a MAPPED_ITEM/NEXT_ASSEMBLY_USAGE_OCCURRENCE; affected sub-components either fail to instance or appear at the wrong position relative to the assembly origin.
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(2) ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(18) ifc=schema_n/a`
 
 ### A023 — Mapped_item / representation_map identity transform requirement (Saved Views)
 - **Category**: §12.6 (sub-class: mapped_item / representation_map)
@@ -6466,7 +6466,7 @@ _Section summary: 84 entries._
 - **Tier-3 assertion**: face[0].surface_type == "plane"
 - **Tier-3 assertion**: brepcheck.valid == True
 - **Model impact**: The assembly graph loads with broken parent/child links or with the wrong transform on a MAPPED_ITEM/NEXT_ASSEMBLY_USAGE_OCCURRENCE; affected sub-components either fail to instance or appear at the wrong position relative to the assembly origin.
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 
 ### A024 — `MAPPED_ITEM` `AXIS2_PLACEMENT_3D` with left-handed (mirrored, negative-determinant) frame
 - **Category**: §12.6 (sub-class: assembly placement transform / mirror handling)
@@ -7094,7 +7094,7 @@ End of file. Total: 38 entries (A001.A038).
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: The assembly graph loads with broken parent/child links or with the wrong transform on a MAPPED_ITEM/NEXT_ASSEMBLY_USAGE_OCCURRENCE; affected sub-components either fail to instance or appear at the wrong position relative to the assembly origin.
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(54) ifc=schema_n/a`
 
 ### A065 — Empty `AppliedGroupAssignment` raises exception in writer
 - **Category**: §12.6 assembly
@@ -7280,7 +7280,7 @@ End of file. Total: 38 entries (A001.A038).
 - **Tier-3 assertion**: face[0].surface_type == "plane"
 - **Tier-3 assertion**: face[1].surface_type == "plane"
 - **Model impact**: The assembly graph loads with broken parent/child links or with the wrong transform on a MAPPED_ITEM/NEXT_ASSEMBLY_USAGE_OCCURRENCE; affected sub-components either fail to instance or appear at the wrong position relative to the assembly origin.
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(2) ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 
 ### A074 — Texture lost when saving binary XBF after STEP import
 - **Category**: §12.6 assembly
@@ -7405,7 +7405,7 @@ End of file. Total: 38 entries (A001.A038).
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: The assembly graph loads with broken parent/child links or with the wrong transform on a MAPPED_ITEM/NEXT_ASSEMBLY_USAGE_OCCURRENCE; affected sub-components either fail to instance or appear at the wrong position relative to the assembly origin.
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=signal(11) ifc=schema_n/a`
 
 ### A080 — Hierarchy & colours lost on partial-document IGES/STEP write
 - **Category**: §12.6 assembly
@@ -7425,7 +7425,7 @@ End of file. Total: 38 entries (A001.A038).
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: The assembly graph loads with broken parent/child links or with the wrong transform on a MAPPED_ITEM/NEXT_ASSEMBLY_USAGE_OCCURRENCE; affected sub-components either fail to instance or appear at the wrong position relative to the assembly origin.
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 
 ### A081 — Material attribute overridden by generic colour on round-trip
 - **Category**: §12.6 assembly
@@ -7485,7 +7485,7 @@ End of file. Total: 38 entries (A001.A038).
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: The assembly graph loads with broken parent/child links or with the wrong transform on a MAPPED_ITEM/NEXT_ASSEMBLY_USAGE_OCCURRENCE; affected sub-components either fail to instance or appear at the wrong position relative to the assembly origin.
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=reject ifc=schema_n/a`
 
 ### A084 — STEP exporter writes untrimmed curve where trimmed expected
 - **Category**: §12.6 assembly
@@ -7530,7 +7530,7 @@ End of file. Total: 38 entries (A001.A038).
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: The assembly graph loads with broken parent/child links or with the wrong transform on a MAPPED_ITEM/NEXT_ASSEMBLY_USAGE_OCCURRENCE; affected sub-components either fail to instance or appear at the wrong position relative to the assembly origin.
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 
 ---
 
@@ -7572,7 +7572,7 @@ End of file. Total: 38 entries (A001.A038).
 - **Tier-3 assertion**: face[0].surface_type == "plane"
 - **Tier-3 assertion**: face[1].surface_type == "plane"
 - **Model impact**: The assembly graph loads with broken parent/child links or with the wrong transform on a MAPPED_ITEM/NEXT_ASSEMBLY_USAGE_OCCURRENCE; affected sub-components either fail to instance or appear at the wrong position relative to the assembly origin.
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(2) ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(36) ifc=schema_n/a`
 
 ### A088 — Empty assembly causes writer to throw
 - **Category**: §12.6 assembly
@@ -7610,7 +7610,7 @@ End of file. Total: 38 entries (A001.A038).
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: The assembly graph loads with broken parent/child links or with the wrong transform on a MAPPED_ITEM/NEXT_ASSEMBLY_USAGE_OCCURRENCE; affected sub-components either fail to instance or appear at the wrong position relative to the assembly origin.
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(18) ifc=schema_n/a`
 
 ### Pmi077 — PMI text values wrong when document LENGTH_UNIT is METRE but DIMENSIONAL_VALUE is in inches/mm without unit conversion
 - **Category**: §12.7 PMI/GD&T
@@ -7668,7 +7668,7 @@ End of file. Total: 38 entries (A001.A038).
 - **Tier-3 assertion**: face[0].surface_type == "plane"
 - **Tier-3 assertion**: face[1].surface_type == "plane"
 - **Model impact**: The PMI/GD&T annotation either fails to attach to its target geometry or loads with wrong tolerance/datum metadata; the model geometry is unchanged but the semantic PMI structure is broken or invisible to downstream tools.
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(2) ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 
 ### Pmi080 — GD&T tolerance frame missing tolerance-zone plane reference
 - **Category**: §12.7 PMI/GD&T
@@ -7748,7 +7748,7 @@ End of file. Total: 38 entries (A001.A038).
 - **Tier-3 assertion**: face[0].surface_type == "plane"
 - **Tier-3 assertion**: face[0].sliver_aspect_max_min > 1e6
 - **Model impact**: The PMI/GD&T annotation either fails to attach to its target geometry or loads with wrong tolerance/datum metadata; the model geometry is unchanged but the semantic PMI structure is broken or invisible to downstream tools.
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 
 ### Pmi084 — Coordinate-system connection points for dimensions missing
 - **Category**: §12.7 PMI/GD&T
@@ -8271,7 +8271,7 @@ _Section summary: 106 entries._
 - **Tier-3 assertion**: face[0].surface_type == "plane"
 - **Tier-3 assertion**: brepcheck.valid == True
 - **Model impact**: The PMI/GD&T annotation either fails to attach to its target geometry or loads with wrong tolerance/datum metadata; the model geometry is unchanged but the semantic PMI structure is broken or invisible to downstream tools.
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 
 ### Pmi034 — placed_datum_target_feature shared DatumTargetType_Area null deref
 - **Category**: §12.7 (sub-class: datum-targets)
@@ -8347,7 +8347,7 @@ _Section summary: 106 entries._
 - **OCC behavior**: loads a shape (no diagnostic) — reading as healing; outside catalog's allowed set ({warn-and-proceed}). Documented divergence: OCC's auto-repair is stronger than the catalog's warn-only stance; conservative kernels should still emit a diagnostic.
 - **Severity**: P1
 - **Model impact**: The PMI/GD&T annotation either fails to attach to its target geometry or loads with wrong tolerance/datum metadata; the model geometry is unchanged but the semantic PMI structure is broken or invisible to downstream tools.
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 
 ### Pmi042 — Empty semantic-text string in PMI
 - **Category**: §12.7 (sub-class: semantic-vs-graphic)
@@ -8392,7 +8392,7 @@ _Section summary: 106 entries._
 - **Tier-3 assertion**: face[0].surface_type == "plane"
 - **Tier-3 assertion**: brepcheck.valid == True
 - **Model impact**: The PMI/GD&T annotation either fails to attach to its target geometry or loads with wrong tolerance/datum metadata; the model geometry is unchanged but the semantic PMI structure is broken or invisible to downstream tools.
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 
 ### Pmi045 — Graphic-only PMI with no semantic backing
 - **Category**: §12.7 (sub-class: semantic-vs-graphic)
@@ -8550,7 +8550,7 @@ _Section summary: 106 entries._
 - **Tier-3 assertion**: face[0].surface_type == "plane"
 - **Tier-3 assertion**: brepcheck.valid == True
 - **Model impact**: The PMI/GD&T annotation either fails to attach to its target geometry or loads with wrong tolerance/datum metadata; the model geometry is unchanged but the semantic PMI structure is broken or invisible to downstream tools.
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(18) ifc=schema_n/a`
 
 ### Pmi058 — PMI visibility / configuration loss across saved views
 - **Category**: §12.7 (sub-class: saved-view)
@@ -8579,7 +8579,7 @@ _Section summary: 106 entries._
 - **Tier-3 assertion**: face[0].surface_type == "plane"
 - **Tier-3 assertion**: brepcheck.valid == True
 - **Model impact**: The PMI/GD&T annotation either fails to attach to its target geometry or loads with wrong tolerance/datum metadata; the model geometry is unchanged but the semantic PMI structure is broken or invisible to downstream tools.
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(27) ifc=schema_n/a`
 
 ### Pmi060 — Tolerance datum description NULL on re-export
 - **Category**: §12.7 (sub-class: datum-frame)
@@ -8607,7 +8607,7 @@ _Section summary: 106 entries._
 - **Tier-3 assertion**: face[0].surface_type == "plane"
 - **Tier-3 assertion**: brepcheck.valid == True
 - **Model impact**: The PMI/GD&T annotation either fails to attach to its target geometry or loads with wrong tolerance/datum metadata; the model geometry is unchanged but the semantic PMI structure is broken or invisible to downstream tools.
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 
 ### Pmi062 — STEP-to-glTF balloon inflation on AP242 (mesh count explosion)
 - **Category**: §12.7 (sub-class: semantic-vs-graphic / hole-feature)
@@ -8619,7 +8619,7 @@ _Section summary: 106 entries._
 - **Tier-3 assertion**: face[0].surface_type == "cylinder"
 - **Tier-3 assertion**: brepcheck.valid == True
 - **Model impact**: The PMI/GD&T annotation either fails to attach to its target geometry or loads with wrong tolerance/datum metadata; the model geometry is unchanged but the semantic PMI structure is broken or invisible to downstream tools.
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=reject ifc=schema_n/a`
 
 ### Pmi063 — FILE_DESCRIPTION missing references to CAx-IF Recommended Practices
 - **Category**: §12.7 (sub-class: semantic-vs-graphic)
@@ -8907,7 +8907,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **OCC behavior**: silently accepts (no diagnostic, empty result) — exactly the behavior the catalog forbids. Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: The PMI/GD&T annotation either fails to attach to its target geometry or loads with wrong tolerance/datum metadata; the model geometry is unchanged but the semantic PMI structure is broken or invisible to downstream tools.
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 
 ### Pmi091 — `ROUND_HOLE` feature whose `internal_diameter` exceeds host face's bounded extent
 - **Category**: §12.7 (sub-class: AP242 feature definition)
@@ -10146,7 +10146,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **OCC behavior**: silently accepts with diagnostic but loads empty result; outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 - **Fixture path**: step-examples/12-8-mixed/M075.stp
 
 ### M076 — AP238 cutting-tool feedrate stated in wrong dimensional unit
@@ -10447,7 +10447,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Byte assertion**: contains(b'NETWORK')
 - **Tier-3 assertion**: n_faces_total == 1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 - **Fixture path**: step-examples/12-8-mixed/M087.stp
 
 ### M088 — AP210 etherometric vs metric measurement context confusion
@@ -11804,7 +11804,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 - **Fixture path**: step-examples/12-8-mixed/M136.stp
 
 ### M137 — AP203 APPLIED_ACTION_ASSIGNMENT applies to mixed-class object list
@@ -13584,7 +13584,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
 - **Severity**: P2
 - **Model impact**: Parser/loader resource usage scales pathologically with the input size; load time grows quadratically or memory blows up, and on bounded systems the load is killed before completing.
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1296) ifc=schema_n/a`
 
 ### Pf034 — Shape-divide pass raises end-of-iteration on large shape
 - **Category**: §12.10 performance
@@ -13603,7 +13603,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
 - **Severity**: P2
 - **Model impact**: Parser/loader resource usage scales pathologically with the input size; load time grows quadratically or memory blows up, and on bounded systems the load is killed before completing.
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 
 ---
 
@@ -14452,7 +14452,7 @@ _Section summary: 28 entries._
 - **Byte assertion**: contains(b'MANIFOLD_SOLID_BREP')
 - **Tier-3 assertion**: shape_null == True
 - **Model impact**: Parser/loader resource usage scales pathologically with the input size; load time grows quadratically or memory blows up, and on bounded systems the load is killed before completing.
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
  OCCT #417 documents an analogous one-shell case in OCCT.
 
 ### Pf002 — Quadratic-cost STEP write on dense forward-reference `VERTEX_POINT` / `EDGE_CURVE` / `ADVANCED_FACE` web (200k-entity scale)
@@ -14568,7 +14568,7 @@ _Section summary: 28 entries._
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
 - **Severity**: P2
 - **Model impact**: Parser/loader resource usage scales pathologically with the input size; load time grows quadratically or memory blows up, and on bounded systems the load is killed before completing.
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(900) ifc=schema_n/a`
  with explicit stack; reject early with clear diagnostic if depth > N.
 
 ### Pf009 — Stack overflow when meshing with TBB pool from STEP import
@@ -14712,7 +14712,7 @@ _Section summary: 28 entries._
 - **Byte assertion**: contains(b'OPEN_SHELL')
 - **Tier-3 assertion**: load == "ok"
 - **Model impact**: Parser/loader resource usage scales pathologically with the input size; load time grows quadratically or memory blows up, and on bounded systems the load is killed before completing.
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(700) ifc=schema_n/a`
  N edges with gap > tol" diagnostic; offer adaptive-tolerance
  `ShapeFix_Shell`; configurable join cutoff.
 
@@ -14758,7 +14758,7 @@ _Section summary: 28 entries._
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
 - **Severity**: P2
 - **Model impact**: Parser/loader resource usage scales pathologically with the input size; load time grows quadratically or memory blows up, and on bounded systems the load is killed before completing.
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(441) ifc=schema_n/a`
  shell-fix step at large counts; bound iteration count.
 
 ### Pf018 — Memory not released after STEP assembly read (Linux / Docker)
@@ -14948,7 +14948,7 @@ _Section summary: 28 entries._
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
 - **Severity**: P2
 - **Model impact**: Parser/loader resource usage scales pathologically with the input size; load time grows quadratically or memory blows up, and on bounded systems the load is killed before completing.
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(67) ifc=schema_n/a`
  warn-when-budget-unreachable; small-feature pre-removal pass.
 
 ### Pf028 — Rhino joins > 10k face polysurfaces in O(n²)
@@ -14966,7 +14966,7 @@ _Section summary: 28 entries._
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
 - **Severity**: P2
 - **Model impact**: Parser/loader resource usage scales pathologically with the input size; load time grows quadratically or memory blows up, and on bounded systems the load is killed before completing.
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(900) ifc=schema_n/a`
  for nested-block warnings; lazy shell evaluation.
 
 ### Pf029 — `TDocStd_Document` creation aborts process under VSCode server runtime
@@ -15432,7 +15432,7 @@ _Section summary: 41 entries._
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P2
 - **Model impact**: Crafted input drives the parser into an undefined-behavior path; observed effects range from silent acceptance with no model, to OOB read producing junk attribute values, to process termination by signal.
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1296) ifc=schema_n/a`
 
 ### Ad056 — General-transform constructor throws on extreme non-uniform face stretch
 - **Category**: §12.11 (sub-class: malformed-numeric)
@@ -15487,7 +15487,7 @@ _Section summary: 41 entries._
 - **Byte assertion**: contains(b"'component1_1|dipole1'") or matches(rb'MANIFOLD_SURFACE_SHAPE_REPRESENTATION')
 - **Byte assertion**: contains(b'_') and contains(b'MANIFOLD_SURFACE_SHAPE_REPRESENTATION')
 - **Model impact**: Crafted input drives the parser into an undefined-behavior path; observed effects range from silent acceptance with no model, to OOB read producing junk attribute values, to process termination by signal.
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 
 ### Ad077 — Zero-length aggregates trigger `count-1` underflow / 4 GB loop walk (signed-integer attribute used as unsigned)
 - **Category**: §12.11 (sub-class: malformed-numeric / DoS)
@@ -15502,7 +15502,7 @@ _Section summary: 41 entries._
 - **OCC behavior**: crashes with signal(11); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture; never crash.
 - **Severity**: P0
 - **Model impact**: Parser dereferences invalid memory while processing the malformed token; the load process is killed by a signal and no shape is delivered.
-- **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 
 ### Ad078 — `NEXT_ASSEMBLY_USAGE_OCCURRENCE` child as PRODUCT_DEFINITION_SHAPE (mis-typed select)
 - **Category**: §12.11 (sub-class: type-confusion)
@@ -15587,7 +15587,7 @@ _Section summary: 41 entries._
 - **Byte assertion**: contains(b'STYLED_ITEM') and contains(b'PRESENTATION_STYLE_ASSIGNMENT')
 - **Byte assertion**: contains(b'STYLED_ITEM')
 - **Model impact**: Crafted input drives the parser into an undefined-behavior path; observed effects range from silent acceptance with no model, to OOB read producing junk attribute values, to process termination by signal.
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 
 ### Ad085 — Composite-curve-segment self-cyclic reference
 - **Category**: §12.11 (sub-class: cyclic-reference)
@@ -17012,7 +17012,7 @@ _Section summary: 41 entries._
 - **Byte assertion**: contains(b'ADVANCED_FACE')
 - **Tier-3 assertion**: load == "ok"
 - **Model impact**: Cross-subsystem interaction surfaces an inconsistency between two kernel passes; one pass sees the entity as valid and another as invalid, leaving the loaded model in an internally inconsistent state.
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 
 ### Xp025 — Onshape→SolidWorks: assembly children snap to origin (placements lost)
 - **Category**: §12.12 cross-product (assembly placement × writer pathology)
@@ -17044,7 +17044,7 @@ _Section summary: 41 entries._
 - **OCC behavior**: silent-accept observed (catalog allowed: {warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must warn-and-proceed on this fixture.
 - **Severity**: P1
 - **Model impact**: Cross-subsystem interaction surfaces an inconsistency between two kernel passes; one pass sees the entity as valid and another as invalid, leaving the loaded model in an internally inconsistent state.
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 
 ### Xp027 — Inventor STEP import "stuck at 95%" — long path in FILE_NAME author field
 - **Category**: §12.12 cross-product (header parsing × receiver path-buffer)
@@ -17060,7 +17060,7 @@ _Section summary: 41 entries._
 - **OCC behavior**: silent-accept observed (catalog allowed: {warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must warn-and-proceed on this fixture.
 - **Severity**: P1
 - **Model impact**: Cross-subsystem interaction surfaces an inconsistency between two kernel passes; one pass sees the entity as valid and another as invalid, leaving the loaded model in an internally inconsistent state.
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 
 ### Xp028 — Onshape "imports as one Surface" — missing face yields OPEN_SHELL
 - **Category**: §12.12 cross-product (topology completeness × receiver behaviour)
@@ -17079,7 +17079,7 @@ _Section summary: 41 entries._
 - **OCC behavior**: silent-accept observed (catalog allowed: {heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
 - **Severity**: P1
 - **Model impact**: Cross-subsystem interaction surfaces an inconsistency between two kernel passes; one pass sees the entity as valid and another as invalid, leaving the loaded model in an internally inconsistent state.
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 
 ### Xp029 — Onshape STEP/SLDPRT export drops cosmetic thread metadata
 - **Category**: §12.12 cross-product (PMI/feature × writer metadata)
@@ -17093,7 +17093,7 @@ _Section summary: 41 entries._
 - **Byte assertion**: contains(b'SHAPE_ASPECT')
 - **Tier-3 assertion**: load == "ok"
 - **Model impact**: Cross-subsystem interaction surfaces an inconsistency between two kernel passes; one pass sees the entity as valid and another as invalid, leaving the loaded model in an internally inconsistent state.
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 
 ### Xp030 — Inventor exports Asian (CJK) characters as raw legacy-codepage bytes
 - **Category**: §12.12 cross-product (encoding × writer)
@@ -17108,7 +17108,7 @@ _Section summary: 41 entries._
 - **OCC behavior**: silent-accept observed (catalog allowed: {warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must warn-and-proceed on this fixture.
 - **Severity**: P1
 - **Model impact**: Cross-subsystem interaction surfaces an inconsistency between two kernel passes; one pass sees the entity as valid and another as invalid, leaving the loaded model in an internally inconsistent state.
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 
 ### Xp031 — KiCad STEP imports cleanly in FreeCAD but corrupts in SolidWorks (PRODUCT.name de-dup)
 - **Category**: §12.12 cross-product (assembly identity × receiver heuristic)
@@ -17122,7 +17122,7 @@ _Section summary: 41 entries._
 - **Byte assertion**: count(b"PRODUCT('R0805'") >= 2
 - **Tier-3 assertion**: load == "ok"
 - **Model impact**: Cross-subsystem interaction surfaces an inconsistency between two kernel passes; one pass sees the entity as valid and another as invalid, leaving the loaded model in an internally inconsistent state.
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 
 ### Xp032 — CATIA V5 degenerate B-spline surface → Inventor "empty PartBody"
 - **Category**: §12.12 cross-product (NURBS × receiver healing)
@@ -17138,7 +17138,7 @@ _Section summary: 41 entries._
 - **OCC behavior**: silent-accept observed (catalog allowed: {reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: Cross-subsystem interaction surfaces an inconsistency between two kernel passes; one pass sees the entity as valid and another as invalid, leaving the loaded model in an internally inconsistent state.
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 
 ### Xp033 — NX-emitted cylinder split into two ADVANCED_FACE halves at the seam
 - **Category**: §12.12 cross-product (face merging × receiver heal)
@@ -17153,7 +17153,7 @@ _Section summary: 41 entries._
 - **OCC behavior**: silent-accept observed (catalog allowed: {heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
 - **Severity**: P1
 - **Model impact**: Cross-subsystem interaction surfaces an inconsistency between two kernel passes; one pass sees the entity as valid and another as invalid, leaving the loaded model in an internally inconsistent state.
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 
 ### Xp034 — CadQuery RGB shifted by sRGB→linear conversion on STEP export
 - **Category**: §12.12 cross-product (appearance × writer colour space)
@@ -17167,7 +17167,7 @@ _Section summary: 41 entries._
 - **Byte assertion**: contains(b'0.7353569830523')
 - **Tier-3 assertion**: load == "ok"
 - **Model impact**: Cross-subsystem interaction surfaces an inconsistency between two kernel passes; one pass sees the entity as valid and another as invalid, leaving the loaded model in an internally inconsistent state.
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 
 ### Xp035 — CadQuery STEP writer emits redundant COLOUR_RGB entities for identical colours
 - **Category**: §12.12 cross-product (writer optimisation × file size)
@@ -17180,7 +17180,7 @@ _Section summary: 41 entries._
 - **Byte assertion**: count(b'COLOUR_RGB') >= 3
 - **Tier-3 assertion**: load == "ok"
 - **Model impact**: Cross-subsystem interaction surfaces an inconsistency between two kernel passes; one pass sees the entity as valid and another as invalid, leaving the loaded model in an internally inconsistent state.
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 
 ### Xp036 — STYLED_ITEM colours dropped by bare STEPControl_Reader (vs XCAF reader)
 - **Category**: §12.12 cross-product (appearance × receiver reader choice)
@@ -17197,7 +17197,7 @@ _Section summary: 41 entries._
 - **OCC behavior**: silent-accept observed (catalog allowed: {warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must warn-and-proceed on this fixture.
 - **Severity**: P1
 - **Model impact**: Cross-subsystem interaction surfaces an inconsistency between two kernel passes; one pass sees the entity as valid and another as invalid, leaving the loaded model in an internally inconsistent state.
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 
 ### Xp037 — Creo Parametric assembly STEP with overlapping bodies fails manifold solid
 - **Category**: §12.12 cross-product (topology × receiver healing)
@@ -17210,7 +17210,7 @@ _Section summary: 41 entries._
 - **Byte assertion**: count(b'MANIFOLD_SOLID_BREP') >= 2
 - **Tier-3 assertion**: load == "ok"
 - **Model impact**: Cross-subsystem interaction surfaces an inconsistency between two kernel passes; one pass sees the entity as valid and another as invalid, leaving the loaded model in an internally inconsistent state.
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 
 ### Xp038 — Onshape 2-56 UNC tap drill misclassified as M1.6 metric clearance hole
 - **Category**: §12.12 cross-product (PMI × receiver feature recognition)
@@ -17225,7 +17225,7 @@ _Section summary: 41 entries._
 - **Byte assertion**: contains(b'0.925')
 - **Tier-3 assertion**: load == "ok"
 - **Model impact**: Cross-subsystem interaction surfaces an inconsistency between two kernel passes; one pass sees the entity as valid and another as invalid, leaving the loaded model in an internally inconsistent state.
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 
 ### Xp039 — Inventor "simplified part" loses appearance via empty SURFACE_SIDE_STYLE
 - **Category**: §12.12 cross-product (appearance × writer pruning)
@@ -17238,7 +17238,7 @@ _Section summary: 41 entries._
 - **Byte assertion**: contains(b'SURFACE_SIDE_STYLE')
 - **Tier-3 assertion**: load == "ok"
 - **Model impact**: Cross-subsystem interaction surfaces an inconsistency between two kernel passes; one pass sees the entity as valid and another as invalid, leaving the loaded model in an internally inconsistent state.
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 
 ### Xp040 — Solid Edge import of Creo Elements STEP: "stuck" sub-assemblies
 - **Category**: §12.12 cross-product (assembly × receiver UI)
@@ -17317,7 +17317,7 @@ _Section summary: 41 entries._
 - **Byte assertion**: contains(b'REPRESENTATION_MAP')
 - **Tier-3 assertion**: load == "ok"
 - **Model impact**: Cross-subsystem interaction surfaces an inconsistency between two kernel passes; one pass sees the entity as valid and another as invalid, leaving the loaded model in an internally inconsistent state.
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 
 ## §12.1a Encoding
 
@@ -18041,7 +18041,7 @@ _Section summary: 41 entries._
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: Shell topology loads with inconsistent face orientations or non-manifold edges; BRepCheck flags the shell as invalid, and boolean / offset operations on the solid either produce wrong-sided results or fail outright.
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(15) ifc=schema_n/a`
 
 ### Tsh044 — Free edges in OPEN_SHELL distinguished from non-watertight defects (e.g., two adjacent ADVANCED_FACEs each define their own EDGE_CURVE on a common boundary instead of sharing one)
 - **Category**: §12.3a shells / orientation (sub-class: edge sharing)
@@ -18058,7 +18058,7 @@ _Section summary: 41 entries._
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: Shell topology loads with inconsistent face orientations or non-manifold edges; BRepCheck flags the shell as invalid, and boolean / offset operations on the solid either produce wrong-sided results or fail outright.
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(18) ifc=schema_n/a`
 
 ### Bo001 — Outer shell of a solid is empty (zero faces)
 - **Category**: §12.3a (sub-class: shell completeness)
@@ -18812,7 +18812,7 @@ _Section summary: 41 entries._
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: Shell topology loads with inconsistent face orientations or non-manifold edges; BRepCheck flags the shell as invalid, and boolean / offset operations on the solid either produce wrong-sided results or fail outright.
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(32) ifc=schema_n/a`
 
 ### Tsh046 — Adjacent same-domain faces fail to merge across linear-edge chain
 - **Category**: §12.3a shells/orientation
@@ -18839,7 +18839,7 @@ _Section summary: 41 entries._
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
 - **Severity**: P1
 - **Model impact**: Shell topology loads with inconsistent face orientations or non-manifold edges; BRepCheck flags the shell as invalid, and boolean / offset operations on the solid either produce wrong-sided results or fail outright.
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(27) ifc=schema_n/a`
 
 ### Tsh047 — Same-domain face unification crosses cylinder seam and produces non-manifold result
 - **Category**: §12.3a shells/orientation
@@ -18865,7 +18865,7 @@ _Section summary: 41 entries._
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
 - **Severity**: P1
 - **Model impact**: Shell topology loads with inconsistent face orientations or non-manifold edges; BRepCheck flags the shell as invalid, and boolean / offset operations on the solid either produce wrong-sided results or fail outright.
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(12) ifc=schema_n/a`
 
 ### Tsh048 — Same-domain face unification corrupts shape with mirrored sub-instance
 - **Category**: §12.3a shells/orientation
@@ -18888,7 +18888,7 @@ _Section summary: 41 entries._
 - **OCC behavior**: emits a diagnostic but produces an empty result; outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: Shell topology loads with inconsistent face orientations or non-manifold edges; BRepCheck flags the shell as invalid, and boolean / offset operations on the solid either produce wrong-sided results or fail outright.
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(27) ifc=schema_n/a`
 
 ### Tsh049 — Internal edges lost during shell-level face merge
 - **Category**: §12.3a shells/orientation
@@ -18933,7 +18933,7 @@ _Section summary: 41 entries._
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: Shell topology loads with inconsistent face orientations or non-manifold edges; BRepCheck flags the shell as invalid, and boolean / offset operations on the solid either produce wrong-sided results or fail outright.
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(13) ifc=schema_n/a`
 
 ### Tsh051 — Shell shared-face union loses location when REPRESENTATION_MAP / AXIS2_PLACEMENT_3D ref_direction encodes a non-unit (scaled) DIRECTION
 - **Category**: §12.3a shells/orientation
@@ -18957,7 +18957,7 @@ _Section summary: 41 entries._
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
 - **Severity**: P1
 - **Model impact**: Shell topology loads with inconsistent face orientations or non-manifold edges; BRepCheck flags the shell as invalid, and boolean / offset operations on the solid either produce wrong-sided results or fail outright.
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(27) ifc=schema_n/a`
 
 ### Tsh052 — Inversed normals on revolved-shape import
 - **Category**: §12.3a shells/orientation
@@ -19006,7 +19006,7 @@ _Section summary: 41 entries._
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal, reject}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: Shell topology loads with inconsistent face orientations or non-manifold edges; BRepCheck flags the shell as invalid, and boolean / offset operations on the solid either produce wrong-sided results or fail outright.
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
 
 ### Tsh054 — Merging adjacent same-surface faces crashes when input has chained placements
 - **Category**: §12.3a shells/orientation
@@ -19029,7 +19029,7 @@ _Section summary: 41 entries._
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: Shell topology loads with inconsistent face orientations or non-manifold edges; BRepCheck flags the shell as invalid, and boolean / offset operations on the solid either produce wrong-sided results or fail outright.
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(27) ifc=schema_n/a`
 
 ### Tsh055 — Merging adjacent same-surface faces with opposite normals returns inverted face
 - **Category**: §12.3a shells/orientation
@@ -19050,7 +19050,7 @@ _Section summary: 41 entries._
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: Shell topology loads with inconsistent face orientations or non-manifold edges; BRepCheck flags the shell as invalid, and boolean / offset operations on the solid either produce wrong-sided results or fail outright.
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(15) ifc=schema_n/a`
 
 ### Tsh056 — Merging adjacent same-surface faces hangs on a face whose wire forms a figure-eight
 - **Category**: §12.3a shells/orientation
@@ -19072,7 +19072,7 @@ _Section summary: 41 entries._
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: Shell topology loads with inconsistent face orientations or non-manifold edges; BRepCheck flags the shell as invalid, and boolean / offset operations on the solid either produce wrong-sided results or fail outright.
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(13) ifc=schema_n/a`
 
 ### Tsh057 — Merging near-tangent adjacent ADVANCED_FACEs (PLANE normals differ ~1e-4 rad, shared EDGE_CURVE with mismatched vertex z) returns self-overlapping face
 - **Category**: §12.3a shells/orientation
@@ -19100,7 +19100,7 @@ _Section summary: 41 entries._
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
 - **Severity**: P1
 - **Model impact**: Shell topology loads with inconsistent face orientations or non-manifold edges; BRepCheck flags the shell as invalid, and boolean / offset operations on the solid either produce wrong-sided results or fail outright.
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(18) ifc=schema_n/a`
 
 ### Tsh058 — Adjacent same-surface face merge ignores edge-preservation request
 - **Category**: §12.3a shells/orientation
@@ -19122,7 +19122,7 @@ _Section summary: 41 entries._
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: Shell topology loads with inconsistent face orientations or non-manifold edges; BRepCheck flags the shell as invalid, and boolean / offset operations on the solid either produce wrong-sided results or fail outright.
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(15) ifc=schema_n/a`
 
 ### Tsh059 — Coplanar-face merge history map omits intermediate shapes (multiple ADVANCED_FACEs aliasing the same FACE_OUTER_BOUND and same PLANE)
 - **Category**: §12.3a shells/orientation
@@ -19148,7 +19148,7 @@ _Section summary: 41 entries._
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: Shell topology loads with inconsistent face orientations or non-manifold edges; BRepCheck flags the shell as invalid, and boolean / offset operations on the solid either produce wrong-sided results or fail outright.
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(25) ifc=schema_n/a`
 
 ### Tsh060 — Same-surface face merge runs quadratically across disjoint shells
 - **Category**: §12.3a shells/orientation
@@ -19190,7 +19190,7 @@ _Section summary: 41 entries._
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: Shell topology loads with inconsistent face orientations or non-manifold edges; BRepCheck flags the shell as invalid, and boolean / offset operations on the solid either produce wrong-sided results or fail outright.
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(12) ifc=schema_n/a`
 
 ---
 
@@ -19445,7 +19445,7 @@ _Section summary: 41 entries._
 - **OCC behavior**: crashes (signal 11) on some heal modes and warn-and-proceed on others; outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture; never crash.
 - **Severity**: P0
 - **Model impact**: Parser dereferences invalid memory while processing the malformed token; the load process is killed by a signal and no shape is delivered.
-- **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 - **Tier-3 assertion**: n_faces_total == 1
 
 ### Tfa063 — Stack overflow on `RemoveSmallFaces` due to unbounded recursion
@@ -19633,7 +19633,7 @@ _Section summary: 41 entries._
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal, reject}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: Shell topology loads with inconsistent face orientations or non-manifold edges; BRepCheck flags the shell as invalid, and boolean / offset operations on the solid either produce wrong-sided results or fail outright.
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(40) ifc=schema_n/a`
 
 ### Tsh063 — Adjacent toroidal faces with identical parameters are not detected as same-surface
 - **Category**: §12.3a shells/orientation
@@ -19657,7 +19657,7 @@ _Section summary: 41 entries._
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: Shell topology loads with inconsistent face orientations or non-manifold edges; BRepCheck flags the shell as invalid, and boolean / offset operations on the solid either produce wrong-sided results or fail outright.
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(12) ifc=schema_n/a`
 
 ### Tsh064 — Same-surface face merge edge-removal history contract is undocumented
 - **Category**: §12.3a shells/orientation
@@ -19679,7 +19679,7 @@ _Section summary: 41 entries._
 - **Byte assertion**: count_entity_def(b'ADVANCED_FACE') == 2
 - **Tier-3 assertion**: n_faces_total == 2
 - **Model impact**: Shell topology loads with inconsistent face orientations or non-manifold edges; BRepCheck flags the shell as invalid, and boolean / offset operations on the solid either produce wrong-sided results or fail outright.
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(8) ifc=schema_n/a`
 
 ### Tsh065 — Tessellated shell with shared nodes between adjacent triangulated faces
 - **Category**: §12.3a shells/orientation (sub-class: tessellated topology connectivity)
@@ -19713,7 +19713,7 @@ _Section summary: 41 entries._
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: Shell topology loads with inconsistent face orientations or non-manifold edges; BRepCheck flags the shell as invalid, and boolean / offset operations on the solid either produce wrong-sided results or fail outright.
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 
 ### Tsh067 — Inner void shell extends beyond outer shell extent (void poking through)
 - **Category**: §12.3a shells/orientation (sub-class: BREP_WITH_VOIDS containment)
@@ -19730,7 +19730,7 @@ _Section summary: 41 entries._
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal, reject}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: Shell topology loads with inconsistent face orientations or non-manifold edges; BRepCheck flags the shell as invalid, and boolean / offset operations on the solid either produce wrong-sided results or fail outright.
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 
 ## §12.3a — Sewing-specific defects (Sw)
 
@@ -19748,7 +19748,7 @@ _Section summary: 41 entries._
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: Sewing leaves the shell open or produces non-manifold edges; loaded shape is a compound of free faces instead of a closed shell, and MakeSolid downstream fails to produce a valid solid.
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(17) ifc=schema_n/a`
 - **Fixture path**: step-examples/12-3a-shells/Sw001.stp
 
 ### Sw002 — Sliver face silently dropped by sewing
@@ -19765,7 +19765,7 @@ _Section summary: 41 entries._
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must emit a diagnostic this fixture.
 - **Severity**: P1
 - **Model impact**: Sewing leaves the shell open or produces non-manifold edges; loaded shape is a compound of free faces instead of a closed shell, and MakeSolid downstream fails to produce a valid solid.
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 - **Fixture path**: step-examples/12-3a-shells/Sw002.stp
 
 ### Sw003 — Degenerate face (collapsed wire) marked as such by sewing but accepted upstream
@@ -19800,7 +19800,7 @@ _Section summary: 41 entries._
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal, warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must heal or emit a diagnostic this fixture.
 - **Severity**: P1
 - **Model impact**: Sewing leaves the shell open or produces non-manifold edges; loaded shape is a compound of free faces instead of a closed shell, and MakeSolid downstream fails to produce a valid solid.
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 - **Fixture path**: step-examples/12-3a-shells/Sw004.stp
 
 ### Sw005 — Fast-sewing face host surface has infinite extent
@@ -19817,7 +19817,7 @@ _Section summary: 41 entries._
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: Sewing leaves the shell open or produces non-manifold edges; loaded shape is a compound of free faces instead of a closed shell, and MakeSolid downstream fails to produce a valid solid.
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 - **Fixture path**: step-examples/12-3a-shells/Sw005.stp
 
 ### Sw006 — Fast-sewing face whose parametric bounds are tighter than surface natural bounds
@@ -19834,7 +19834,7 @@ _Section summary: 41 entries._
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: Sewing leaves the shell open or produces non-manifold edges; loaded shape is a compound of free faces instead of a closed shell, and MakeSolid downstream fails to produce a valid solid.
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 - **Fixture path**: step-examples/12-3a-shells/Sw006.stp
 
 ### Sw007 — Fast-sewing cannot find the canonical vertex for a wire endpoint
@@ -22572,7 +22572,7 @@ Control poles coplanar (XY) but curve deviates significantly in Z. ShapeAnalysis
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must emit a diagnostic this fixture.
 - **Severity**: P1
 - **Model impact**: Color/style attributes are absent from the loaded model; geometry is intact but every face renders in the receiver's default appearance.
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 
 ### Wr020 — Re-export drops feature labels and product names
 - **Category**: §12.13 writer-pathology (sub-class: round-trip data loss)
@@ -22588,7 +22588,7 @@ Control poles coplanar (XY) but curve deviates significantly in Z. ShapeAnalysis
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: Feature labels and product names load as empty strings; geometry is intact but human-readable identifiers on every entity are gone.
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 
 ### Wr021 — PMI annotations dropped on re-export
 - **Category**: §12.13 writer-pathology (sub-class: round-trip data loss)
@@ -22603,7 +22603,7 @@ Control poles coplanar (XY) but curve deviates significantly in Z. ShapeAnalysis
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal, warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must heal or emit a diagnostic this fixture.
 - **Severity**: P1
 - **Model impact**: PMI/GD&T entities are absent from the loaded model; the BRep is intact but no dimensions, tolerances, or datum references attach to it.
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 
 ### Wr022 — Saved-view / camera metadata lost on re-export
 - **Category**: §12.13 writer-pathology (sub-class: round-trip data loss)
@@ -22618,7 +22618,7 @@ Control poles coplanar (XY) but curve deviates significantly in Z. ShapeAnalysis
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: Saved-view/camera entities are absent; the loaded model has no preferred view associations, so PMI that depended on a view orientation displays at default.
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 
 ### Wr023 — Validation properties (volume/area/centroid) dropped on re-export
 - **Category**: §12.13 writer-pathology (sub-class: round-trip data loss)
@@ -22633,7 +22633,7 @@ Control poles coplanar (XY) but curve deviates significantly in Z. ShapeAnalysis
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must emit a diagnostic this fixture.
 - **Severity**: P1
 - **Model impact**: Validation property entities are absent; the receiver cannot cross-check the loaded volume/area/centroid against the producer's recorded values.
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 
 ### Wr024 — NAUO assembly-tree flattened on re-export
 - **Category**: §12.13 writer-pathology (sub-class: round-trip data loss)
@@ -22756,7 +22756,7 @@ Control poles coplanar (XY) but curve deviates significantly in Z. ShapeAnalysis
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must emit a diagnostic this fixture.
 - **Severity**: P1
 - **Model impact**: AP242-specific entity types are dropped during downgrade emission; the loaded model contains only the geometric subset and PMI/kinematics/manufacturing data is absent.
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 
 ### Wr032 — Schema upgrade on export (AP203 input emitted as AP242 with synthesised stubs)
 - **Category**: §12.13 writer-pathology (sub-class: schema downgrade / upgrade)
@@ -22771,7 +22771,7 @@ Control poles coplanar (XY) but curve deviates significantly in Z. ShapeAnalysis
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
 - **Severity**: P1
 - **Model impact**: Synthesized AP242 stubs for AP203 input load as empty PMI/kinematics entities; the loaded model has placeholder structure with no actual annotation data.
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 
 ### Wr033 — `FILE_SCHEMA` declares schema version that does not exist
 - **Category**: §12.13 writer-pathology (sub-class: schema downgrade)
@@ -22833,7 +22833,7 @@ Control poles coplanar (XY) but curve deviates significantly in Z. ShapeAnalysis
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P2
 - **Model impact**: Solid orientation flips on re-export; loaded shells have inward-facing normals where outward was intended, and downstream booleans/rendering treat the inside as the outside.
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 
 ### Wr037 — Loss of seam-edge marking on closed surfaces (cylinder seam emitted as ordinary edge)
 - **Category**: §12.13 writer-pathology (sub-class: round-trip data loss)
@@ -22899,7 +22899,7 @@ Control poles coplanar (XY) but curve deviates significantly in Z. ShapeAnalysis
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: Every entity loads with empty `name` attribute; geometry is intact but human-readable names that the producer left implicit are now explicitly empty strings.
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 
 ### Wr041 — Writer emits `.TRUE.` / `.FALSE.` instead of canonical `.T.` / `.F.`
 - **Category**: §12.13 writer-pathology (sub-class: lexeme conformance)
@@ -22995,7 +22995,7 @@ Control poles coplanar (XY) but curve deviates significantly in Z. ShapeAnalysis
 - **OCC behavior**: silently accepts; outside catalog's allowed set ({heal, warn-and-proceed}).
 - **Severity**: P1
 - **Model impact**: Body placement transform is dropped on export; the part loads at the part-coordinate origin instead of its assembly position, so its location relative to other components is wrong.
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(2) ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 
 ### Wr047 — STEP import regressed by `BOPAlog_AlertBadPositioning` warnings (writer emits CSG-residual positions)
 - **Category**: §12.13 writer-pathology (sub-class: writer-side positioning errors)
@@ -23011,7 +23011,7 @@ Control poles coplanar (XY) but curve deviates significantly in Z. ShapeAnalysis
 - **OCC behavior**: silently accepts in some configs, exception-thrown in others; outside catalog's allowed set ({heal, warn-and-proceed}).
 - **Severity**: P2
 - **Model impact**: BOP residual placement positions load with redundant identity transforms in the placement chain; loaded geometry is correct but the transform stack is bloated with no-op multiplications.
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(4) ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 
 ### Wr048 — Boolean-result body crashes STEP writer in `libTKXDESTEP` color-attribution pass
 - **Category**: §12.13 writer-pathology (sub-class: writer crash)
@@ -23027,7 +23027,7 @@ Control poles coplanar (XY) but curve deviates significantly in Z. ShapeAnalysis
 - **OCC behavior**: silently accepts or signal(11); outside catalog's allowed set ({reject, warn-and-proceed}).
 - **Severity**: P0
 - **Model impact**: Writer aborts during color-attribution before the file is fully serialized; downstream readers either get a truncated file or no output at all.
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(2) ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 
 ### Wr049 — Subtractive pipe at right-angle joints emits hidden sphere of material in joint
 - **Category**: §12.13 writer-pathology (sub-class: feature-construction artefact)
@@ -23044,7 +23044,7 @@ Control poles coplanar (XY) but curve deviates significantly in Z. ShapeAnalysis
 - **OCC behavior**: silently accepts (renders extra geometry); outside catalog's allowed set ({heal, warn-and-proceed}).
 - **Severity**: P2
 - **Model impact**: The CSG-residual sphere material persists as hidden inner geometry inside the loaded solid; volume/mass calculations include the spurious material, and slicing through the joint reveals the hidden sphere.
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(8) ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 
 ### Wr050 — Geometry coordinate values doubled on export (writer applies scale and unit-conversion both)
 - **Category**: §12.13 writer-pathology (sub-class: units / coordinate scale)
@@ -23108,7 +23108,7 @@ Control poles coplanar (XY) but curve deviates significantly in Z. ShapeAnalysis
 - **OCC behavior**: silently accepts (loads stale geometry); outside catalog's allowed set ({heal, warn-and-proceed}).
 - **Severity**: P1
 - **Model impact**: The assembly graph loads with broken parent/child links or with the wrong transform on a MAPPED_ITEM/NEXT_ASSEMBLY_USAGE_OCCURRENCE; affected sub-components either fail to instance or appear at the wrong position relative to the assembly origin.
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(6) ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(48) ifc=schema_n/a`
 
 ### A100 — Importer routes Assembly-module assemblies into Part containers (Assembly graph lost)
 - **Category**: §12.6 assembly hierarchy
@@ -23124,7 +23124,7 @@ Control poles coplanar (XY) but curve deviates significantly in Z. ShapeAnalysis
 - **OCC behavior**: silently accepts (drops kinematics); outside catalog's allowed set ({heal, warn-and-proceed}).
 - **Severity**: P1
 - **Model impact**: The assembly graph loads with broken parent/child links or with the wrong transform on a MAPPED_ITEM/NEXT_ASSEMBLY_USAGE_OCCURRENCE; affected sub-components either fail to instance or appear at the wrong position relative to the assembly origin.
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(18) ifc=schema_n/a`
 
 ### A101 — SubShapeBinder-derived Boolean Cut crashes downstream slicers and re-import
 - **Category**: §12.6 assembly hierarchy
@@ -23156,7 +23156,7 @@ Control poles coplanar (XY) but curve deviates significantly in Z. ShapeAnalysis
 - **OCC behavior**: silently accepts (loads as open shell); outside catalog's allowed set ({heal, warn-and-proceed}).
 - **Severity**: P1
 - **Model impact**: The assembly graph loads with broken parent/child links or with the wrong transform on a MAPPED_ITEM/NEXT_ASSEMBLY_USAGE_OCCURRENCE; affected sub-components either fail to instance or appear at the wrong position relative to the assembly origin.
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(7) ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(63) ifc=schema_n/a`
 
 ### M165 — Knurled body exports STEP with holes in surface (slicer reports non-manifold)
 - **Category**: §12.8 mixed (sub-class: feature-detail / sliver faces)
@@ -23186,7 +23186,7 @@ Control poles coplanar (XY) but curve deviates significantly in Z. ShapeAnalysis
 - **OCC behavior**: silently accepts; outside catalog's allowed set ({heal, warn-and-proceed}).
 - **Severity**: P1
 - **Model impact**: Tessellated geometry attached to the BRep loads with inconsistent or missing triangle data; viewers that prefer the producer's tessellation render incorrect facets, while kernels that re-mesh from the BRep ignore the defect entirely.
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(6) ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(180) ifc=schema_n/a`
 
 ### M162 — Fillet faces re-import as rounded edge (Onshape/Rhino) but as fillet in producer
 - **Category**: §12.8 mixed (sub-class: feature-classification / surface category)
@@ -23202,7 +23202,7 @@ Control poles coplanar (XY) but curve deviates significantly in Z. ShapeAnalysis
 - **OCC behavior**: silently accepts (loads as bspline); outside catalog's allowed set ({heal, warn-and-proceed}).
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(11) ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=reject ifc=schema_n/a`
 
 ### M163 — Imported STEP per-face colours scramble after any unrelated edit operation (style binding instability)
 - **Category**: §12.8 mixed (sub-class: appearance / styled-item binding)
@@ -23218,7 +23218,7 @@ Control poles coplanar (XY) but curve deviates significantly in Z. ShapeAnalysis
 - **OCC behavior**: silently accepts (binds correctly initially); outside catalog's allowed set ({heal}).
 - **Severity**: P1
 - **Model impact**: Appearance/style attributes detach from their target shape; the geometry loads correctly but colors, layers, or material assignments are dropped or attached to the wrong sub-shape.
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(6) ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(54) ifc=schema_n/a`
 
 ### M164 — Linear pattern of arc-shaped feature emits twisted/corrupted faces in STEP
 - **Category**: §12.8 mixed (sub-class: tessellation / pattern)
@@ -23234,7 +23234,7 @@ Control poles coplanar (XY) but curve deviates significantly in Z. ShapeAnalysis
 - **OCC behavior**: silently accepts (loads inverted instance); outside catalog's allowed set ({heal, warn-and-proceed}).
 - **Severity**: P1
 - **Model impact**: Tessellated geometry attached to the BRep loads with inconsistent or missing triangle data; viewers that prefer the producer's tessellation render incorrect facets, while kernels that re-mesh from the BRep ignore the defect entirely.
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(8) ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 
 ### Pf035 — Large assembly STEP loads at 100% CPU with unbounded memory growth until OOM
 - **Category**: §12.10 scale & performance
@@ -23250,7 +23250,7 @@ Control poles coplanar (XY) but curve deviates significantly in Z. ShapeAnalysis
 - **OCC behavior**: silently accepts on small fixture; large-fixture behaviour is OOM. Provenance tier: requires-scaling — fixture is a scaled-down representative.
 - **Severity**: P0
 - **Model impact**: Parser/loader resource usage scales pathologically with the input size; load time grows quadratically or memory blows up, and on bounded systems the load is killed before completing.
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 
 ### Tfa069 — Lettering bottoms not closed in exported STEP (text-on-surface non-solid result)
 - **Category**: §12.3c faces / sewing / free bounds
@@ -24728,7 +24728,7 @@ em-dash Degenerated synthetic edge synthesis at sphere pole. Single wire at equa
 - **OCC behavior**: file-content valid (kernel loads cleanly); the defect manifests at the OS filename layer.
 - **Severity**: P2
 - **Model impact**: Crafted input drives the parser into an undefined-behavior path; observed effects range from silent acceptance with no model, to OOB read producing junk attribute values, to process termination by signal.
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(2) ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 
 ### Twi099 — `EDGE_CURVE` whose start and end vertex point at the same `VERTEX_POINT`
 - **Category**: §12.3b wires / loops / edges (sub-class: degenerate edge)
@@ -27254,7 +27254,7 @@ OFFSET_SURFACE (+0.5 distance) with asymmetric coverage vs base bounds; myOffset
 - **OCC behavior**: silent-accept, warn-and-proceed observed (catalog allowed: {reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P2
 - **Model impact**: Crafted input drives the parser into an undefined-behavior path; observed effects range from silent acceptance with no model, to OOB read producing junk attribute values, to process termination by signal.
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 
 ### Pf036 — `STEPCAFControl_Reader` hangs in infinite loop on cyclic `MAPPED_ITEM` reference
 - **Category**: §12.10 scale & performance (sub-class: hang / DoS)
@@ -27286,7 +27286,7 @@ OFFSET_SURFACE (+0.5 distance) with asymmetric coverage vs base bounds; myOffset
 - **OCC behavior**: silent-accept observed (catalog allowed: {reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P2
 - **Model impact**: Parser/loader resource usage scales pathologically with the input size; load time grows quadratically or memory blows up, and on bounded systems the load is killed before completing.
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(3) ifc=schema_n/a`
 
 ### A103 — Geometry imports correctly but every face arrives with no colour assigned
 - **Category**: §12.6 assembly hierarchy (sub-class: appearance dropped on import)
@@ -27302,7 +27302,7 @@ OFFSET_SURFACE (+0.5 distance) with asymmetric coverage vs base bounds; myOffset
 - **OCC behavior**: silent-accept observed (catalog allowed: {heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
 - **Severity**: P1
 - **Model impact**: The assembly graph loads with broken parent/child links or with the wrong transform on a MAPPED_ITEM/NEXT_ASSEMBLY_USAGE_OCCURRENCE; affected sub-components either fail to instance or appear at the wrong position relative to the assembly origin.
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(18) ifc=schema_n/a`
 
 ### Lh048 — STEP reader cannot consume a non-seekable stream (in-memory / pipe / network)
 - **Category**: §12.1b header structure & instance numbering (sub-class: pipeline / I/O API)
@@ -27385,7 +27385,7 @@ OFFSET_SURFACE (+0.5 distance) with asymmetric coverage vs base bounds; myOffset
 - **OCC behavior**: silent-accept observed (catalog allowed: {reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: Shell topology loads with inconsistent face orientations or non-manifold edges; BRepCheck flags the shell as invalid, and boolean / offset operations on the solid either produce wrong-sided results or fail outright.
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(16) ifc=schema_n/a`
 
 ### Tsh069 — CheckOrientedShells Normal-Flip Detection
 
@@ -29510,7 +29510,7 @@ Planar surface with U-iso degenerate edge. U-constant pcurve lacks coordinate-ax
 - **OCC behavior**: silent-accept observed (catalog allowed: {heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
 - **Severity**: P1
 - **Model impact**: The assembly graph loads with broken parent/child links or with the wrong transform on a MAPPED_ITEM/NEXT_ASSEMBLY_USAGE_OCCURRENCE; affected sub-components either fail to instance or appear at the wrong position relative to the assembly origin.
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 
 ### M160 — STEP file imports as a near-empty document despite well-formed entities
 - **Category**: §12.8 mixed / auxiliary (sub-class: silent-empty import)
@@ -29540,7 +29540,7 @@ Planar surface with U-iso degenerate edge. U-constant pcurve lacks coordinate-ax
 - **OCC behavior**: silent-accept observed (catalog allowed: {reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: The assembly graph loads with broken parent/child links or with the wrong transform on a MAPPED_ITEM/NEXT_ASSEMBLY_USAGE_OCCURRENCE; affected sub-components either fail to instance or appear at the wrong position relative to the assembly origin.
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 
 ### A107 — `BinXCAF` regression: documents with colour cannot be re-loaded after save
 - **Category**: §12.6 assembly hierarchy (sub-class: persistence-format regression)
@@ -29556,7 +29556,7 @@ Planar surface with U-iso degenerate edge. U-constant pcurve lacks coordinate-ax
 - **OCC behavior**: silent-accept observed (catalog allowed: {heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
 - **Severity**: P1
 - **Model impact**: The assembly graph loads with broken parent/child links or with the wrong transform on a MAPPED_ITEM/NEXT_ASSEMBLY_USAGE_OCCURRENCE; affected sub-components either fail to instance or appear at the wrong position relative to the assembly origin.
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 
 ### Tfa068 — STEP export duplicates surfaces, leading to non-conformal geometry between adjacent faces
 - **Category**: §12.3c faces / sewing / free bounds (sub-class: writer-side duplicate surfaces)
@@ -29604,7 +29604,7 @@ Planar surface with U-iso degenerate edge. U-constant pcurve lacks coordinate-ax
 - **OCC behavior**: silent-accept observed (catalog allowed: {heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
 - **Severity**: P1
 - **Model impact**: The assembly graph loads with broken parent/child links or with the wrong transform on a MAPPED_ITEM/NEXT_ASSEMBLY_USAGE_OCCURRENCE; affected sub-components either fail to instance or appear at the wrong position relative to the assembly origin.
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
 
 ### A096 — `STEPCAFControl_Writer` skips a shape when it has identity location and partner shapes have non-identity locations
 - **Category**: §12.6 assembly hierarchy (sub-class: writer drops identity-located instance)
@@ -30583,7 +30583,7 @@ Distance 0.099999 mm compared against 0.1 mm tolerance w/o margin buffer. Single
 - **OCC behavior**: silent-accept, warn-and-proceed observed (catalog allowed: {reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
 
 ### Pmi094 — XCAF GD&T data does not round-trip to STEP AP242 PMI
 - **Category**: §12.7 PMI / GD&T (sub-class: GD&T export coverage gap)
@@ -30599,7 +30599,7 @@ Distance 0.099999 mm compared against 0.1 mm tolerance w/o margin buffer. Single
 - **OCC behavior**: silent-accept observed (catalog allowed: {heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
 - **Severity**: P1
 - **Model impact**: The PMI/GD&T annotation either fails to attach to its target geometry or loads with wrong tolerance/datum metadata; the model geometry is unchanged but the semantic PMI structure is broken or invisible to downstream tools.
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 
 ### Pmi095 — `SLOT` feature with length less than width (degenerate slot)
 - **Category**: §12.7 (sub-class: AP242 feature definition)
@@ -30816,7 +30816,7 @@ Distance 0.099999 mm compared against 0.1 mm tolerance w/o margin buffer. Single
 - **OCC behavior**: silent-accept observed (catalog allowed: {heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
 - **Severity**: P1
 - **Model impact**: The assembly graph loads with broken parent/child links or with the wrong transform on a MAPPED_ITEM/NEXT_ASSEMBLY_USAGE_OCCURRENCE; affected sub-components either fail to instance or appear at the wrong position relative to the assembly origin.
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 
 ### U044 — `gp_Trsf::SetDisplacement` between two `AXIS2_PLACEMENT_3D` records produces wrong transform
 - **Category**: §12.5 units & coordinate systems (sub-class: incorrect placement composition)
