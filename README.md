@@ -255,7 +255,7 @@ Walk `step-examples/<section>/<id>.stp` and load metadata from `STEP_PROBLEM_CAT
 
 ## Project status
 
-The catalog covers §12.1–§12.13 (18 distinct sub-sections) with **~2,287 canonical entries** as of 2026-06-17. The corpus has roughly one license-clean fixture per entry (~2,200 `.stp` files; 84 quarantined pending proper regen). See **"Aspiration vs current state"** above for what these numbers do and don't imply.
+The catalog covers §12.1–§12.13 (18 distinct sub-sections) with **2,302 canonical entries** as of 2026-06-18. The corpus has roughly one license-clean fixture per entry (2,309 `.stp` files; 150 historical quarantines in `_quarantine/` — 84 early-waves + 66 phase_F_boilerplate — all of which have been replaced in the active corpus by defect-specific regens). See **"Aspiration vs current state"** above for what these numbers do and don't imply.
 
 The Part-21 validator under `validation/src/step_corpus/_part21_validator.py` runs across the corpus in seconds and finds 0 unintentional syntactic errors in non-framing sections. The multi-tier semantic validator runs across all fixtures and produces a verdict matrix with structured fields (provenance_tier, tier3_assertions, byte_assertions).
 

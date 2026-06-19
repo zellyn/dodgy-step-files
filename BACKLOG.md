@@ -2,8 +2,9 @@
 
 This file is the only authoritative backlog for the corpus. Anything not
 captured here is at risk of being forgotten. When picking up work,
-**start here, work top-down**. When finishing work, **strike through and
-move to `## Done` at bottom; don't delete** — provenance matters.
+**start here, work top-down**. When finishing work, **move the entry to
+`DONE.md`** with completion date + commit SHA. This file should contain
+ONLY pending work — never edit history into it.
 
 Conventions:
 - Each initiative has an **ID** (e.g. `B1`) for cross-reference.
@@ -175,19 +176,49 @@ as the round-1 + round-2 INVALID regens. Each fixture: ~30 min.
 
 Pre-existing task #116. Not blocking but should not be forgotten.
 
+### Q4 — Mesh-fixture format (Python builder + JSON serialization)
+
+**Why:** STEP isn't a mesh format and no existing mesh format (OBJ, PLY,
+STL, glTF) carries the richness needed to express most MeshFix/CGAL PMP
+defects (non-manifold edges, degenerate triangles, near-coincident
+vertices with annotation, etc.). The Python-builder pattern that worked
+for STEP fixtures would work just as well here: define a Mesh model, a
+defect-annotation layer, and serialize to JSON. We invent our own format
+but it's deliberately simple and the *real* artifact is the in-memory
+model, not the file.
+
+**Status:** Not started.
+**Last touched:** 2026-06-18.
+
+**Plan:**
+- [ ] Q4.1 Draft `mesh_builder.py` skeleton: `MeshFile`, `Vertex`,
+      `Triangle`, `EdgeAnnotation`. Mirror the `step_builder.py` API
+      shape so the cognitive load is familiar.
+- [ ] Q4.2 Define the JSON schema. Top level: `{vertices, triangles,
+      defect_annotations, metadata}`. Defect annotations are a typed
+      union: `non_manifold_edge | degenerate_triangle | near_coincident_vertex
+      | hole | self_intersection | inverted_normal | ...`.
+- [ ] Q4.3 First-cut mesh fixtures: pick 5 entries from
+      `MESH_DEFECT_TAXONOMY.md` and synthesize. Catalog as §12.14-mesh
+      (new section).
+- [ ] Q4.4 Optional interop emitters: also write the same mesh as PLY
+      and OBJ (where representable), so consumers without our format
+      can still load the unbroken parts.
+- [ ] Q4.5 Mesh-tier oracle: subprocess-isolated wrapper around CGAL PMP
+      (or MeshFix), report which defects each detects. Drops into the
+      same multi-tier-validator harness as the STEP oracles.
+- [ ] Q4.6 Decide naming + extension: `.mesh.json`? `.stp-mesh`? Note in
+      catalog as parallel-to-STEP, not part of it.
+
+**Estimate:** 1-2 days for Q4.1–Q4.3 (skeleton + first 5 fixtures); the
+catalog + oracle work scales with how many defect classes we synthesize.
+
+**Hazards:** Risk of bikeshedding the JSON schema. Keep the first cut
+narrow — 3-4 defect types — and let real fixtures pull on the schema as
+they need it.
+
 ---
 
 ## Done
 
-- [x] Full-corpus adversarial verification sweep (2280/2309 = 98% VALID).
-      Two rounds: Haiku sweep → Sonnet verify on weak/invalid flags.
-      Completed 2026-06-18.
-- [x] Round-1 CONFIRMED_INVALID regen (Tsh028, Gp053, Gs140, Gs143).
-      Completed 2026-06-18 in commit fef9542.
-- [x] Round-2 CONFIRMED_INVALID regen (Gs097, N152, Tfa132, Twi248,
-      Twi268, Twi270). Completed 2026-06-18 in commit 87ddf14.
-- [x] README.md refresh — replaced stale 440/20% claims with current
-      2280/98%. Completed 2026-06-18 in commit 87ddf14.
-- [x] Python builder extension: rational B-spline weights, B-spline
-      curves + surfaces, rectangular trimmed surface, complex-instance
-      emission via _emit_raw. Completed 2026-06-17/18.
+See `DONE.md` for completed work history.
