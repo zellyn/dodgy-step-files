@@ -10,6 +10,19 @@ Append newest at the top.
 
 ## 2026-06-18
 
+- **B2 batch 4: 430 tier-3 promotions for §12.5–§12.13 + Tb prefix.**
+  Coverage 1689 → 2119 assertions, 1244 → 1674 entries (54% → 73%).
+  Validation: 2118/2119 pass.
+- **B2 batch 3: 517 tier-3 promotions for §12.3 + §12.4.** Coverage
+  1309 → 1689 (+380); entries 727 → 1244 (32% → 54%). Includes 256
+  n_faces_total count assertions on real geometry. Commit `68631c9`.
+- **Q1: regen 6 weak fixtures (Gn134, Gn157, Gn155, Gp081, Gs151, Gs177).**
+  23 → 17 in queue. Each rebuild uses a correct entity form
+  (rational B-spline, periodic cylindrical/toroidal, proper FACE_BOUND
+  count) so the catalog claim is actually verifiable from geometry.
+- **Q2: QUALITY_DASHBOARD.md top-line stats refresh.** Replaced stale
+  1282/831/241 numbers with current 2302/1309/727. Other rows still
+  reflect old runs; documented at bottom. Commit `ab4e0e2`.
 - **Q4.1–Q4.3: mesh_builder skeleton + 5 first-cut mesh fixtures.**
   `validation/src/step_corpus/mesh_builder.py` mirrors step_builder
   API. Five §12-14-mesh fixtures (non-manifold edge, degenerate

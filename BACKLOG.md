@@ -61,45 +61,31 @@ also-read `src/ShapeFix/*` while there.
 
 ### B2 — Tier-3 assertion harvest (byte → runtime promotion)
 
-**Why:** 2249 byte assertions across the catalog vs. only 831 tier-3
-geometric assertions across 241 entries (~12% coverage). Byte assertions
-break under formatting normalization; tier-3 invariants (face[0].area,
-edge[2].is_closed, surface.degree_u) survive whitespace/comment changes
-and are the strongest evidence the catalog carries. Single biggest
-crispness lever.
+**Why:** Byte assertions break under formatting normalization; tier-3
+invariants survive whitespace/comment changes and are the strongest
+evidence the catalog carries. Single biggest crispness lever.
 
-**Status:** Not started.
+**Status:** Substantially done. Coverage 12% → 73% in 4 batches.
 **Last touched:** 2026-06-18.
 
 **Plan:**
-- [ ] B2.1 Enumerate all byte assertions. Bucket by what they're really
-      checking: lexical (e.g. `contains(b'SEAM_CURVE')`), structural
-      (e.g. `count_entity_def(b'ADVANCED_FACE') == 2`), value-bearing
-      (e.g. `contains(b'1.00000001')`). Tally each bucket.
-- [ ] B2.2 For each value-bearing or structural byte assertion, identify
-      whether a tier-3 assertion would be a *strictly better* statement of
-      the same claim (e.g. `count(ADVANCED_FACE) == 2` ↔
-      `len(faces) == 2`). Build a candidate list.
-- [ ] B2.3 Implement any missing tier-3 introspections in
-      `validation/src/step_corpus/tier3_geometric.py`. Catalog: face.area,
-      face.is_planar, edge.is_closed, edge.length, surface.degree_u,
-      surface.degree_v, surface.is_periodic_u/v, vertex.distance(other).
-- [ ] B2.4 Promote 50 byte assertions in the first batch. Verify each
-      tier-3 assertion against live tier3 output via
-      `_tier3_assertions`. Lock in the conversion only when the assertion
-      passes.
-- [ ] B2.5 Iterate to 200 total promotions. Track coverage in
-      `audit/tier3_coverage_log.md`.
-- [ ] B2.6 Update tier-3 ratchet in `validation/tests/` — once we cross
-      a coverage threshold, fail CI if it regresses.
+- [x] B2.1 Enumerate byte assertions. Done (1578 contains / 410 count /
+      etc.).
+- [x] B2.2 Candidate list. Done.
+- [x] B2.3 Existing tier-3 introspection sufficient (shape_null,
+      n_faces_total). No extensions needed for the first 1433 promotions.
+- [x] B2.4 Batches 1–4 applied (97 + 389 + 517 + 430 = 1433 promotions).
+      All validated against live tier3.
+- [ ] B2.5 Remaining ~600 entries without tier-3: these mostly have
+      catalog claims that don't map to current tier-3 introspection
+      (e.g. specific knot multiplicity, byte-level encoding). Either
+      extend tier-3 introspection (B2.3 extension) or accept this as
+      the ceiling.
+- [ ] B2.6 Tier-3 ratchet in `validation/tests/` — fail CI if
+      coverage regresses below current 73%.
 
-**Estimate:** 1 day for B2.1–B2.2 (analysis); 2-4 days for B2.3–B2.5
-(tier-3 introspection extensions + per-assertion promotion).
-
-**Hazards:** Be careful not to weaken the assertion in translation —
-"contains the bytes `1.00000001`" is stronger than "vertex at
-~(1.00000001, 0, 0)" because the latter might be normalized. Sometimes
-both should coexist.
+**Notes:** Pmi125 has one pre-existing tier-3 failure
+(`face[0].area > 899` actual 1.0) — predates this work and unrelated.
 
 ---
 

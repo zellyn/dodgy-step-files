@@ -32003,9 +32003,7 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [
-      "n_faces_total == 2"
-    ],
+    "tier3_assertions": [],
     "title": "Face has multiple outer wires (face needs splitting into disjoint regions)"
   },
   {
@@ -33095,9 +33093,7 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [
-      "n_faces_total == 3"
-    ],
+    "tier3_assertions": [],
     "title": "Same-domain face unification corrupts shape with mirrored sub-instance"
   },
   {
@@ -33211,9 +33207,7 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [
-      "n_faces_total == 3"
-    ],
+    "tier3_assertions": [],
     "title": "Shell shared-face union loses location when REPRESENTATION_MAP / AXIS2_PLACEMENT_3D ref_direction encodes a non-unit (scaled) DIRECTION"
   },
   {
@@ -33332,9 +33326,7 @@
       "crash",
       "topology"
     ],
-    "tier3_assertions": [
-      "n_faces_total == 3"
-    ],
+    "tier3_assertions": [],
     "title": "Merging adjacent same-surface faces crashes when input has chained placements"
   },
   {

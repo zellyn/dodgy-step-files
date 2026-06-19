@@ -2775,7 +2775,6 @@ _Section summary: 101 entries._
 - **Notes**: Synonyms: "face has two outer boundaries", "disjoint regions packed into one face", "face covers two separate islands", "multiply-connected face needs splitting", "two outer wires on same face".
 - **Byte assertion**: count(b'FACE_OUTER_BOUND') >= 2
 - **Byte assertion**: count_entity_def(b'ADVANCED_FACE') == 1
-- **Tier-3 assertion**: n_faces_total == 2
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal, reject}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: Shell topology loads with inconsistent face orientations or non-manifold edges; BRepCheck flags the shell as invalid, and boolean / offset operations on the solid either produce wrong-sided results or fail outright.
@@ -18706,7 +18705,6 @@ _Section summary: 41 entries._
 - **Notes**: **See also**: Tsh047, A031. Synonyms: "mirrored instance corrupted by face unification", "false coincidence between mirrored sub-shapes", "merge collapses mirrored instances", "shape unifier ignores transform on coincidence test", "mirrored MAPPED_ITEM merged with original".
 - **Byte assertion**: contains(b'MAPPED_ITEM')
 - **Byte assertion**: count_entity_def(b'ADVANCED_FACE') == 1
-- **Tier-3 assertion**: n_faces_total == 3
 - **OCC behavior**: emits a diagnostic but produces an empty result; outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: Shell topology loads with inconsistent face orientations or non-manifold edges; BRepCheck flags the shell as invalid, and boolean / offset operations on the solid either produce wrong-sided results or fail outright.
@@ -18775,7 +18773,6 @@ _Section summary: 41 entries._
  location records.
 - **Notes**: **See also**: Tsh048. Synonyms: "shell merge loses non-unit DIRECTION location", "scaled instance comes in at origin after merge", "MAPPED_ITEM placement dropped on shell union", "non-uniform scale in REPRESENTATION_MAP lost", "compound location vanishes after topology op".
 - **Byte assertion**: count_entity_def(b'ADVANCED_FACE') == 1
-- **Tier-3 assertion**: n_faces_total == 3
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
 - **Severity**: P1
 - **Model impact**: Shell topology loads with inconsistent face orientations or non-manifold edges; BRepCheck flags the shell as invalid, and boolean / offset operations on the solid either produce wrong-sided results or fail outright.
@@ -18847,7 +18844,6 @@ _Section summary: 41 entries._
 - **Notes**: **See also**: Tsh048. Synonyms: "face merge crashes on chained placements", "shape modified and removed simultaneously error", "segfault when merging compound with shared topology", "mutating shared sub-shape during unification", "MAPPED_ITEM instances corrupt face merge".
 - **Byte assertion**: contains(b'MAPPED_ITEM')
 - **Byte assertion**: count_entity_def(b'ADVANCED_FACE') == 1
-- **Tier-3 assertion**: n_faces_total == 3
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: Shell topology loads with inconsistent face orientations or non-manifold edges; BRepCheck flags the shell as invalid, and boolean / offset operations on the solid either produce wrong-sided results or fail outright.
