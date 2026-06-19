@@ -65,29 +65,39 @@ oracle signal.
 
 ## Per-section table
 
-Each section maps to one fixture directory under `step-examples/` and one validation report under `validation/reports/`.
+Each section maps to one fixture directory under `step-examples/` (or
+`mesh-examples/` for §12.14) and one validation report under
+`validation/reports/`. Counts refreshed 2026-06-18.
 
-| Section | Fixtures | CONFIRMED | WEAK |
-|---|---:|---:|---:|
-| §12.1a encoding (`Le*`) | 56 | 55 | 1 |
-| §12.1b header (`Lh*`) | 43 | 43 | 0 |
-| §12.1c syntax (`Ls*`,`In*`) | 45 | 45 | 0 |
-| §12.2a pcurves (`Gp*`) | 32 | 31 | 1 |
-| §12.2b NURBS (`Gn*`) | 31 | 30 | 1 |
-| §12.2c surfaces (`Gs*`,`Gb*`) | 49 | 49 | 0 |
-| §12.3a shells (`Tsh*`,`Bo*`,`Sw*`,`Ps*`) | 99 | 99 | 0 |
-| §12.3b wires (`Twi*`) | 90 | 90 | 0 |
-| §12.3c faces (`Tfa*`,`Hea*`) | 76 | 76 | 0 |
-| §12.4 tolerance (`N*`,`Tb*`) | 70 | 70 | 0 |
-| §12.5 units (`U*`) | 31 | 31 | 0 |
-| §12.6 assembly (`A*`/`P*`) | 89 | 87 | 2 |
-| §12.7 PMI (`Pmi*`) | 83 | 83 | 0 |
-| §12.8 mixed (`M*`,`Os*`,`Fi*`) | 118 | 117 | 1 |
-| §12.10 perf (`Pf*`) | 32 | 28 | 4 |
-| §12.11 adversarial (`Ad*`) | 70 | 62 | 8 |
-| §12.12 cross-product (`Xp*`) | 24 | 24 | 0 |
-| §12.13 writer-pathology (`Wr*`) | 44 | 44 | 0 |
-| **Total** | **1082** | **1064** | **18** |
+| Section | Section dir | Fixtures |
+|---|---|---:|
+| §12.1a encoding | 12-1a-encoding | 54 |
+| §12.1b header | 12-1b-header | 44 |
+| §12.1c syntax | 12-1c-syntax | 46 |
+| §12.2a pcurves | 12-2a-pcurves | 163 |
+| §12.2b NURBS | 12-2b-nurbs | 167 |
+| §12.2c surfaces | 12-2c-surfaces | 177 |
+| §12.3a shells | 12-3a-shells | 259 |
+| §12.3b wires | 12-3b-wires | 268 |
+| §12.3c faces | 12-3c-faces | 256 |
+| §12.4 tolerance | 12-4-tolerance | 192 |
+| §12.5 units | 12-5-units | 34 |
+| §12.6 assembly | 12-6-assembly | 101 |
+| §12.7 PMI | 12-7-pmi | 121 |
+| §12.8 mixed | 12-8-mixed | 217 |
+| §12.10 perf | 12-10-perf | 35 |
+| §12.11 adversarial | 12-11-adversarial | 74 |
+| §12.12 cross-product | 12-12-cross-product | 44 |
+| §12.13 writer-pathology | 12-13-writer-pathology | 52 |
+| §12.14 mesh | 12-14-mesh | 5 |
+| **Total** | | **2309** |
+
+Per-section CONFIRMED/WEAK breakdown last computed under the old
+1082-entry corpus; rerun `_final_verdict` to recompute against
+the current 2309-fixture set. The full-corpus adversarial sweep
+(2026-06-18) found 2280/2309 (98.7%) VALID; the per-section
+distribution of weak fixtures was concentrated in §12.2b NURBS
+and §12.2c surfaces (now all regenerated — see DONE.md).
 
 ## Most interesting findings
 
