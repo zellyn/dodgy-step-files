@@ -32051,3 +32051,103 @@ exercised against CGAL PMP / MeshFix.
 - **Tier-3 assertion**: load == "ok"
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 - **Model impact**: Cannot convert assemblies above a per-process memory budget; pipeline crashes mid-batch.
+
+### A111 — VRML→STEP gateway silently drops non-STEP component placeholders
+- **Category**: §12.6 assembly (sub-class: PCB→MCAD gateway loss)
+- **Sources**: Pattern-mined from KiCad gitlab#11482 (LGPL-clean — pattern only, no bytes copied). User-reported reproducer: VRML 3D-model components in a KiCad PCB project survive into the STEP file as placeholder MAPPED_ITEMs whose REPRESENTATION_MAP target was never resolved; receivers see a bare PCB with no components and no diagnostic.
+- **Description**: A MAPPED_ITEM emits a REPRESENTATION_MAP whose target (`#9999` here) is a dangling forward reference. The producer logs "Cannot add a VRML model to a STEP file" but emits the PCB with placeholders anyway. STEP-level diagnostic is absent.
+- **Reproducer recipe**: `REPRESENTATION_MAP(#plc, #9999)` + `MAPPED_ITEM('vrml_placeholder',...,#9999)`.
+- **Expected kernel behavior**: emit a STEP-level diagnostic (PROPERTY_DEFINITION or comment) for each silently-dropped component; track in PRODUCT_DEFINITION chain.
+- **Notes**: Synonyms: "KiCad VRML STEP placeholders dropped", "PCB STEP bare board no components", "MAPPED_ITEM dangling target on PCB", "VRML→STEP gateway silent", "KiCad cannot add VRML to STEP".
+- **Byte assertion**: contains(b'MAPPED_ITEM')
+- **Byte assertion**: contains(b'REPRESENTATION_MAP')
+- **Tier-3 assertion**: load == "ok"
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
+- **Model impact**: PCB exports look complete to the producer but downstream rendering / inspection has no components.
+
+### A112 — NAUO name reuse: dedup-by-name collapses distinct instances
+- **Category**: §12.6 assembly (sub-class: identifier-collision dedup)
+- **Sources**: Pattern-mined from KiCad gitlab#14125 + CadQuery/cadquery#1962 (LGPL-clean — pattern only, no bytes copied). User-reported reproducer: KiCad emits N capacitor instances all labelled `C1`; downstream kernels (and some converters) deduplicate by NAUO.id and collapse all instances into one placement.
+- **Description**: Three `NEXT_ASSEMBLY_USAGE_OCCURRENCE` entries share the same `id` slot (`C1`). Receivers that key on NAUO.id (rather than entity #N) deduplicate and lose two of the three instances.
+- **Reproducer recipe**: three NAUOs with identical first-arg label.
+- **Expected kernel behavior**: NAUO ids should not be assumed unique within a file; key dedup on entity reference, not the label string.
+- **Notes**: Synonyms: "KiCad STEP NAUO duplicate names", "CadQuery STEP assembly dedup collapse", "STEP NAUO name reuse loses instances", "C1 C1 C1 in STEP collapses", "PCB assembly STEP same-name NAUOs".
+- **Byte assertion**: count(b"NEXT_ASSEMBLY_USAGE_OCCURRENCE('C1") >= 3
+- **Tier-3 assertion**: load == "ok"
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
+- **Model impact**: PCB BoM extraction shows 1 capacitor instead of N; downstream ECAD↔MCAD parity check fails.
+
+### U048 — Vendor library AXIS2_PLACEMENT_3D bakes 90° Z rotation into convention
+- **Category**: §12.5 units & transforms (sub-class: vendor-coordinate-convention drift)
+- **Sources**: Pattern-mined from INTI-CMNB/KiBot#912 (LGPL-clean — pattern only, no bytes copied). User-reported reproducer: JLCPCB's KiCad library emits STEP with an implicit 90° Z rotation in its AXIS2_PLACEMENT_3D ref_direction, while the kicad-packages3D library does not. Downstream renderers (Blender export, KiCad's render_3d) re-apply the rotation; KiCad's native viewer ignores it.
+- **Description**: `AXIS2_PLACEMENT_3D` uses a `ref_direction` of `(0, 1, 0)` (Y axis) where the receiver-side convention expects `(1, 0, 0)` (X axis). Distinct from N021 (origin defect) — this is the *orientation* twin.
+- **Reproducer recipe**: `AXIS2_PLACEMENT_3D(#origin, #zdir, #(0,1,0))` referenced from a MAPPED_ITEM.
+- **Expected kernel behavior**: document vendor-coordinate conventions per library; provide convention probes for component-import pipelines.
+- **Notes**: Synonyms: "JLCPCB KiBot STEP rotation 90", "vendor library AXIS2_PLACEMENT rotation", "MAPPED_ITEM orientation convention drift", "STEP component 90 degree off", "Blender STEP component rotated wrong".
+- **Byte assertion**: contains(b'MAPPED_ITEM')
+- **Byte assertion**: contains(b'AXIS2_PLACEMENT_3D')
+- **Tier-3 assertion**: load == "ok"
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
+- **Model impact**: Component placement in downstream MCAD is 90° off; manual rotation correction needed per part.
+
+### Tsh231 — Revolve 288°-360° band triggers SURFACE_OF_REVOLUTION bound flip
+- **Category**: §12.3a shells (sub-class: revolution split-angle boundary flip)
+- **Sources**: Pattern-mined from CadQuery/cadquery#1338 (LGPL-clean — pattern only, no bytes copied). User-reported reproducer: a revolve operation in the 288°-360° band emits a SURFACE_OF_REVOLUTION whose face-bound orientation is flipped, producing an inverted / toroidal result.
+- **Description**: SURFACE_OF_REVOLUTION around a Y axis from an arc profile, where the sweep angle crosses OCCT's internal split-angle boundary (~288°). The resulting surface is geometrically correct; the bound is wrong, producing a face with reversed normal. Distinct from Tsh012 (seam .U. flag) — this is *bound* orientation, not seam handling.
+- **Reproducer recipe**: SURFACE_OF_REVOLUTION + AXIS1_PLACEMENT around Y axis through origin.
+- **Expected kernel behavior**: validate face bound orientation against surface parameterisation; flip bound or emit diagnostic.
+- **Notes**: Synonyms: "CadQuery revolve 288 to 360 inverted", "SURFACE_OF_REVOLUTION boundary flip", "revolve near-full band orientation wrong", "OCCT split angle revolve bug", "revolve 320 degree inverted result".
+- **Byte assertion**: contains(b'SURFACE_OF_REVOLUTION')
+- **Byte assertion**: contains(b'AXIS1_PLACEMENT')
+- **Tier-3 assertion**: load == "ok"
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
+- **Model impact**: Boolean operations against the resulting shape produce wrong results; viewer renders with inverted lighting.
+
+### Wr061 — X11 'aliceblue' colour shifted by sRGB→linear conversion on emit
+- **Category**: §12.13 writer-pathology (sub-class: gamma-conversion color shift)
+- **Sources**: Pattern-mined from CadQuery/cadquery#1411 (LGPL-clean — pattern only, no bytes copied). User-reported reproducer: setting an X11 named colour ("aliceblue") on a face round-trips through OCCT's Quantity_Color sRGB→linear conversion, yielding `COLOUR_RGB(0.871, 0.939, 1.0)` in the emitted STEP rather than the X11-spec `(0.94, 0.97, 1.0)`.
+- **Description**: Distinct from Xp034 (CadQuery RGB sRGB shift on a non-named colour) — this is the *named-colour* path, where the spec-correct value is taken from X11 and the conversion is applied silently. Receivers that compare colours-by-RGB hit a non-trivial difference.
+- **Reproducer recipe**: `COLOUR_RGB('aliceblue_srgb_shifted',0.871,0.939,1.0)`.
+- **Expected kernel behavior**: emit X11 named colours at their spec value, or expose the gamma-conversion as configurable.
+- **Notes**: Synonyms: "CadQuery aliceblue STEP colour wrong", "named colour sRGB linear shift STEP", "Quantity_Color gamma conversion writer", "X11 colour name STEP value wrong", "CadQuery COLOUR_RGB aliceblue 0.871".
+- **Byte assertion**: contains(b'COLOUR_RGB')
+- **Byte assertion**: contains(b'0.871')
+- **Tier-3 assertion**: load == "ok"
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
+- **Model impact**: Inspection / DRC pipelines that key on colour see "almost aliceblue" instead of an exact match; named-colour palettes round-trip lossy.
+
+### Twi277 — SURFACE_CURVE wraps null after StepGeom_SurfaceCurve downcast (OCE legacy)
+- **Category**: §12.3b wires (sub-class: downcast null-deref)
+- **Sources**: Pattern-mined from tpaviot/oce#607 (LGPL-clean — pattern only, no bytes copied). User-reported reproducer: legacy OCE 0.18.x crashes in `StepToTopoDS_TranslateEdgeLoop::Init` when a SURFACE_CURVE's `curve_3d` slot resolves to null after `StepGeom_SurfaceCurve` downcast.
+- **Description**: Distinct from Ad117/Ad123 (style/PCURVE dangling) — here the entity resolves to a valid SURFACE_CURVE pointer, but after the kernel downcasts to the specific subtype its `curve_3d` slot is null. The crash happens in edge-loop translation, not style resolution.
+- **Reproducer recipe**: `SURFACE_CURVE('null_after_downcast',#9999,(),.CURVE_3D.)` where `#9999` is non-existent.
+- **Expected kernel behavior**: validate downcast results in entity-graph traversal; treat post-downcast null as recoverable error, not SIGSEGV.
+- **Notes**: Synonyms: "OCE SurfaceCurve downcast crash", "StepGeom_SurfaceCurve null curve_3d", "SURFACE_CURVE translates null edge loop", "OCE 0.18.x EDGE_LOOP crash", "legacy OCC SurfaceCurve segfault".
+- **Byte assertion**: contains(b'SURFACE_CURVE')
+- **Tier-3 assertion**: load == "ok"
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
+- **Model impact**: Legacy OCE-based pipelines crash; modern OCCT has fixed but the pattern surfaces a class of downcast-null issues.
+
+### N171 — Shared CIRCLE basis between EDGE_CURVEs at different scales (radius derivation defect)
+- **Category**: §12.4 tolerance (sub-class: shared-geometry measure derivation)
+- **Sources**: Pattern-mined from FreeCAD/FreeCAD#17201 (LGPL-clean — pattern only, no bytes copied). User-reported reproducer: Quick Measure reports radius `5.5 mm` for a face whose actual radius is `4.7 mm`. Onshape/Fusion read it correctly. The two EDGE_CURVEs share a CIRCLE basis but one is trimmed/scaled inconsistently relative to its containing transformation.
+- **Description**: A CIRCLE entity has radius 5.5; one EDGE_CURVE references it under an identity transform, another under a containing 0.855x scale → effective radius 4.7. Receivers that read the basis radius rather than computing the post-transform radius display the wrong measurement.
+- **Reproducer recipe**: CIRCLE('shared_basis_r5_5', plc, 5.5) referenced by two EDGE_CURVEs with a comment documenting the second one's containing-scale.
+- **Expected kernel behavior**: measure derivation must compute post-transform geometry; never assume basis radius equals world-space radius.
+- **Notes**: Synonyms: "FreeCAD Quick Measure wrong radius", "shared CIRCLE basis EDGE_CURVE scale", "STEP measure derivation wrong", "circle basis vs containing scale", "Quick Measure 5.5 vs 4.7 radius".
+- **Byte assertion**: contains(b'CIRCLE')
+- **Tier-3 assertion**: load == "ok"
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
+- **Model impact**: Measure tools report wrong values; downstream CAM toolpaths reference the wrong dimension.
+
+### Wr062 — STEP→mesh gateway round-trip loses COLOUR_RGB and assembly hierarchy
+- **Category**: §12.13 writer-pathology (sub-class: gateway round-trip metadata loss)
+- **Sources**: Pattern-mined from Blender's MStep/STEPper/SimLab addon class — public addon trackers don't expose patches; the gateway-loss class is real and reported across third-party Blender STEP importers. (LGPL-clean — pattern only, no bytes copied.)
+- **Description**: A STEP file authored with COLOUR_RGB + NEXT_ASSEMBLY_USAGE_OCCURRENCE survives a STEP→mesh→STEP round-trip with both metadata classes stripped. The mesh format that bridged the two (typically OBJ or PLY) doesn't carry colour-per-face or assembly-hierarchy metadata.
+- **Reproducer recipe**: a PROPERTY_DEFINITION marker referencing PRODUCT_DEFINITION — codifies the loss as a meta-defect on the writer.
+- **Expected kernel behavior**: gateway translators must preserve metadata classes when round-tripping, even if the intermediate format doesn't natively carry them (use side-channel JSON or skip the round-trip).
+- **Notes**: Synonyms: "Blender STEP addon loses color", "STEP-mesh-STEP round-trip loses assembly", "MStep STEPper SimLab metadata stripped", "STEP gateway loss color hierarchy", "STEP to OBJ to STEP loses NAUO".
+- **Byte assertion**: contains(b'PROPERTY_DEFINITION')
+- **Tier-3 assertion**: load == "ok"
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
+- **Model impact**: Round-tripping through a non-STEP mesh format loses colour/grouping; downstream MCAD inspection has no anchor for material/component identity.

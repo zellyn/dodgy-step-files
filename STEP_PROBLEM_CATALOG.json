@@ -8609,6 +8609,79 @@
     "title": "Solidworks AP214 → OCCT version upgrade mis-locates surfaces"
   },
   {
+    "byte_assertions": [
+      "contains(b'COLOUR_RGB')",
+      "contains(b'0.871')"
+    ],
+    "category": "§12.13 writer-pathology (sub-class: gamma-conversion color shift)",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": null,
+    "description": "Distinct from Xp034 (CadQuery RGB sRGB shift on a non-named colour) — this is the *named-colour* path, where the spec-correct value is taken from X11 and the conversion is applied silently. Receivers that compare colours-by-RGB hit a non-trivial difference.",
+    "expected_kernel_behavior": "emit X11 named colours at their spec value, or expose the gamma-conversion as configurable.",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a",
+    "fixture_kind": null,
+    "fixture_path": "step-examples/12-13-writer-pathology/Wr061.stp",
+    "id": "Wr061",
+    "notes": "Synonyms: \"CadQuery aliceblue STEP colour wrong\", \"named colour sRGB linear shift STEP\", \"Quantity_Color gamma conversion writer\", \"X11 colour name STEP value wrong\", \"CadQuery COLOUR_RGB aliceblue 0.871\".",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-sufficient",
+    "reproducer": "`COLOUR_RGB('aliceblue_srgb_shifted',0.871,0.939,1.0)`.",
+    "section": "12.13",
+    "section_dir": "12-13-writer-pathology",
+    "see_also": [],
+    "sender": "",
+    "severity": null,
+    "sources": [
+      "Pattern-mined from CadQuery/cadquery#1411 (LGPL-clean — pattern only, no bytes copied). User-reported reproducer: setting an X11 named colour (\"aliceblue\") on a face round-trips through OCCT's Quantity_Color sRGB→linear conversion, yielding `COLOUR_RGB(0.871, 0.939, 1.0)` in the emitted STEP rather than the X11-spec `(0.94, 0.97, 1.0)`."
+    ],
+    "taxonomy": [
+      "writer"
+    ],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
+    "title": "X11 'aliceblue' colour shifted by sRGB→linear conversion on emit"
+  },
+  {
+    "byte_assertions": [
+      "contains(b'PROPERTY_DEFINITION')"
+    ],
+    "category": "§12.13 writer-pathology (sub-class: gateway round-trip metadata loss)",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": null,
+    "description": "A STEP file authored with COLOUR_RGB + NEXT_ASSEMBLY_USAGE_OCCURRENCE survives a STEP→mesh→STEP round-trip with both metadata classes stripped. The mesh format that bridged the two (typically OBJ or PLY) doesn't carry colour-per-face or assembly-hierarchy metadata.",
+    "expected_kernel_behavior": "gateway translators must preserve metadata classes when round-tripping, even if the intermediate format doesn't natively carry them (use side-channel JSON or skip the round-trip).",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a",
+    "fixture_kind": null,
+    "fixture_path": "step-examples/12-13-writer-pathology/Wr062.stp",
+    "id": "Wr062",
+    "notes": "Synonyms: \"Blender STEP addon loses color\", \"STEP-mesh-STEP round-trip loses assembly\", \"MStep STEPper SimLab metadata stripped\", \"STEP gateway loss color hierarchy\", \"STEP to OBJ to STEP loses NAUO\".",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-sufficient",
+    "reproducer": "a PROPERTY_DEFINITION marker referencing PRODUCT_DEFINITION — codifies the loss as a meta-defect on the writer.",
+    "section": "12.13",
+    "section_dir": "12-13-writer-pathology",
+    "see_also": [],
+    "sender": "",
+    "severity": null,
+    "sources": [
+      "Pattern-mined from Blender's MStep/STEPper/SimLab addon class — public addon trackers don't expose patches",
+      "the gateway-loss class is real and reported across third-party Blender STEP importers. (LGPL-clean — pattern only, no bytes copied.)"
+    ],
+    "taxonomy": [
+      "round-trip",
+      "writer"
+    ],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
+    "title": "STEP→mesh gateway round-trip loses COLOUR_RGB and assembly hierarchy"
+  },
+  {
     "byte_assertions": [],
     "category": "§12.14 mesh defects (sub-class: topology/non-manifold)",
     "closure_defect": null,
@@ -40665,6 +40738,42 @@
   },
   {
     "byte_assertions": [
+      "contains(b'SURFACE_OF_REVOLUTION')",
+      "contains(b'AXIS1_PLACEMENT')"
+    ],
+    "category": "§12.3a shells (sub-class: revolution split-angle boundary flip)",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": null,
+    "description": "SURFACE_OF_REVOLUTION around a Y axis from an arc profile, where the sweep angle crosses OCCT's internal split-angle boundary (~288°). The resulting surface is geometrically correct; the bound is wrong, producing a face with reversed normal. Distinct from Tsh012 (seam .U. flag) — this is *bound* orientation, not seam handling.",
+    "expected_kernel_behavior": "validate face bound orientation against surface parameterisation; flip bound or emit diagnostic.",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a",
+    "fixture_kind": null,
+    "fixture_path": "step-examples/12-3a-shells/Tsh231.stp",
+    "id": "Tsh231",
+    "notes": "Synonyms: \"CadQuery revolve 288 to 360 inverted\", \"SURFACE_OF_REVOLUTION boundary flip\", \"revolve near-full band orientation wrong\", \"OCCT split angle revolve bug\", \"revolve 320 degree inverted result\".",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-sufficient",
+    "reproducer": "SURFACE_OF_REVOLUTION + AXIS1_PLACEMENT around Y axis through origin.",
+    "section": "12.3a",
+    "section_dir": "12-3a-shells",
+    "see_also": [],
+    "sender": "",
+    "severity": null,
+    "sources": [
+      "Pattern-mined from CadQuery/cadquery#1338 (LGPL-clean — pattern only, no bytes copied). User-reported reproducer: a revolve operation in the 288°-360° band emits a SURFACE_OF_REVOLUTION whose face-bound orientation is flipped, producing an inverted / toroidal result."
+    ],
+    "taxonomy": [
+      "topology"
+    ],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
+    "title": "Revolve 288°-360° band triggers SURFACE_OF_REVOLUTION bound flip"
+  },
+  {
+    "byte_assertions": [
       "contains(b\"EDGE_LOOP('',())\")",
       "count_entity_def(b'ORIENTED_EDGE') == 0"
     ],
@@ -49803,6 +49912,42 @@
       "shape_null == True"
     ],
     "title": "CheckLoop Multi-Vertex V2-Check"
+  },
+  {
+    "byte_assertions": [
+      "contains(b'SURFACE_CURVE')"
+    ],
+    "category": "§12.3b wires (sub-class: downcast null-deref)",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": null,
+    "description": "Distinct from Ad117/Ad123 (style/PCURVE dangling) — here the entity resolves to a valid SURFACE_CURVE pointer, but after the kernel downcasts to the specific subtype its `curve_3d` slot is null. The crash happens in edge-loop translation, not style resolution.",
+    "expected_kernel_behavior": "validate downcast results in entity-graph traversal; treat post-downcast null as recoverable error, not SIGSEGV.",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a",
+    "fixture_kind": null,
+    "fixture_path": "step-examples/12-3b-wires/Twi277.stp",
+    "id": "Twi277",
+    "notes": "Synonyms: \"OCE SurfaceCurve downcast crash\", \"StepGeom_SurfaceCurve null curve_3d\", \"SURFACE_CURVE translates null edge loop\", \"OCE 0.18.x EDGE_LOOP crash\", \"legacy OCC SurfaceCurve segfault\".",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-sufficient",
+    "reproducer": "`SURFACE_CURVE('null_after_downcast',#9999,(),.CURVE_3D.)` where `#9999` is non-existent.",
+    "section": "12.3b",
+    "section_dir": "12-3b-wires",
+    "see_also": [],
+    "sender": "",
+    "severity": null,
+    "sources": [
+      "Pattern-mined from tpaviot/oce#607 (LGPL-clean — pattern only, no bytes copied). User-reported reproducer: legacy OCE 0.18.x crashes in `StepToTopoDS_TranslateEdgeLoop::Init` when a SURFACE_CURVE's `curve_3d` slot resolves to null after `StepGeom_SurfaceCurve` downcast."
+    ],
+    "taxonomy": [
+      "crash",
+      "topology"
+    ],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
+    "title": "SURFACE_CURVE wraps null after StepGeom_SurfaceCurve downcast (OCE legacy)"
   },
   {
     "byte_assertions": [],
@@ -64417,6 +64562,41 @@
   },
   {
     "byte_assertions": [
+      "contains(b'CIRCLE')"
+    ],
+    "category": "§12.4 tolerance (sub-class: shared-geometry measure derivation)",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": null,
+    "description": "A CIRCLE entity has radius 5.5; one EDGE_CURVE references it under an identity transform, another under a containing 0.855x scale → effective radius 4.7. Receivers that read the basis radius rather than computing the post-transform radius display the wrong measurement.",
+    "expected_kernel_behavior": "measure derivation must compute post-transform geometry; never assume basis radius equals world-space radius.",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a",
+    "fixture_kind": null,
+    "fixture_path": "step-examples/12-4-tolerance/N171.stp",
+    "id": "N171",
+    "notes": "Synonyms: \"FreeCAD Quick Measure wrong radius\", \"shared CIRCLE basis EDGE_CURVE scale\", \"STEP measure derivation wrong\", \"circle basis vs containing scale\", \"Quick Measure 5.5 vs 4.7 radius\".",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-sufficient",
+    "reproducer": "CIRCLE('shared_basis_r5_5', plc, 5.5) referenced by two EDGE_CURVEs with a comment documenting the second one's containing-scale.",
+    "section": "12.4",
+    "section_dir": "12-4-tolerance",
+    "see_also": [],
+    "sender": "",
+    "severity": null,
+    "sources": [
+      "Pattern-mined from FreeCAD/FreeCAD#17201 (LGPL-clean — pattern only, no bytes copied). User-reported reproducer: Quick Measure reports radius `5.5 mm` for a face whose actual radius is `4.7 mm`. Onshape/Fusion read it correctly. The two EDGE_CURVEs share a CIRCLE basis but one is trimmed/scaled inconsistently relative to its containing transformation."
+    ],
+    "taxonomy": [
+      "units"
+    ],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
+    "title": "Shared CIRCLE basis between EDGE_CURVEs at different scales (radius derivation defect)"
+  },
+  {
+    "byte_assertions": [
       "contains(b'1.0E-3')",
       "count_entity_def(b'EDGE_CURVE') == 2",
       "count_entity_def(b'VERTEX_POINT') == 4"
@@ -66696,6 +66876,43 @@
       "load == \"ok\""
     ],
     "title": "IfcConvert STEP output at wrong scale (LENGTH_UNIT vs coord mismatch)"
+  },
+  {
+    "byte_assertions": [
+      "contains(b'MAPPED_ITEM')",
+      "contains(b'AXIS2_PLACEMENT_3D')"
+    ],
+    "category": "§12.5 units & transforms (sub-class: vendor-coordinate-convention drift)",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": null,
+    "description": "`AXIS2_PLACEMENT_3D` uses a `ref_direction` of `(0, 1, 0)` (Y axis) where the receiver-side convention expects `(1, 0, 0)` (X axis). Distinct from N021 (origin defect) — this is the *orientation* twin.",
+    "expected_kernel_behavior": "document vendor-coordinate conventions per library; provide convention probes for component-import pipelines.",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a",
+    "fixture_kind": null,
+    "fixture_path": "step-examples/12-5-units/U048.stp",
+    "id": "U048",
+    "notes": "Synonyms: \"JLCPCB KiBot STEP rotation 90\", \"vendor library AXIS2_PLACEMENT rotation\", \"MAPPED_ITEM orientation convention drift\", \"STEP component 90 degree off\", \"Blender STEP component rotated wrong\".",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-sufficient",
+    "reproducer": "`AXIS2_PLACEMENT_3D(#origin, #zdir, #(0,1,0))` referenced from a MAPPED_ITEM.",
+    "section": "12.5",
+    "section_dir": "12-5-units",
+    "see_also": [],
+    "sender": "",
+    "severity": null,
+    "sources": [
+      "Pattern-mined from INTI-CMNB/KiBot#912 (LGPL-clean — pattern only, no bytes copied). User-reported reproducer: JLCPCB's KiCad library emits STEP with an implicit 90° Z rotation in its AXIS2_PLACEMENT_3D ref_direction, while the kicad-packages3D library does not. Downstream renderers (Blender export, KiCad's render_3d) re-apply the rotation",
+      "KiCad's native viewer ignores it."
+    ],
+    "taxonomy": [
+      "units"
+    ],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
+    "title": "Vendor library AXIS2_PLACEMENT_3D bakes 90° Z rotation into convention"
   },
   {
     "byte_assertions": [
@@ -69735,6 +69952,79 @@
       "load == \"ok\""
     ],
     "title": "Entity STEP id used as element name on serialization"
+  },
+  {
+    "byte_assertions": [
+      "contains(b'MAPPED_ITEM')",
+      "contains(b'REPRESENTATION_MAP')"
+    ],
+    "category": "§12.6 assembly (sub-class: PCB→MCAD gateway loss)",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": null,
+    "description": "A MAPPED_ITEM emits a REPRESENTATION_MAP whose target (`#9999` here) is a dangling forward reference. The producer logs \"Cannot add a VRML model to a STEP file\" but emits the PCB with placeholders anyway. STEP-level diagnostic is absent.",
+    "expected_kernel_behavior": "emit a STEP-level diagnostic (PROPERTY_DEFINITION or comment) for each silently-dropped component; track in PRODUCT_DEFINITION chain.",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a",
+    "fixture_kind": null,
+    "fixture_path": "step-examples/12-6-assembly/A111.stp",
+    "id": "A111",
+    "notes": "Synonyms: \"KiCad VRML STEP placeholders dropped\", \"PCB STEP bare board no components\", \"MAPPED_ITEM dangling target on PCB\", \"VRML→STEP gateway silent\", \"KiCad cannot add VRML to STEP\".",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-sufficient",
+    "reproducer": "`REPRESENTATION_MAP(#plc, #9999)` + `MAPPED_ITEM('vrml_placeholder',...,#9999)`.",
+    "section": "12.6",
+    "section_dir": "12-6-assembly",
+    "see_also": [],
+    "sender": "",
+    "severity": null,
+    "sources": [
+      "Pattern-mined from KiCad gitlab#11482 (LGPL-clean — pattern only, no bytes copied). User-reported reproducer: VRML 3D-model components in a KiCad PCB project survive into the STEP file as placeholder MAPPED_ITEMs whose REPRESENTATION_MAP target was never resolved",
+      "receivers see a bare PCB with no components and no diagnostic."
+    ],
+    "taxonomy": [
+      "assembly"
+    ],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
+    "title": "VRML→STEP gateway silently drops non-STEP component placeholders"
+  },
+  {
+    "byte_assertions": [
+      "count(b\"NEXT_ASSEMBLY_USAGE_OCCURRENCE('C1\") >= 3"
+    ],
+    "category": "§12.6 assembly (sub-class: identifier-collision dedup)",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": null,
+    "description": "Three `NEXT_ASSEMBLY_USAGE_OCCURRENCE` entries share the same `id` slot (`C1`). Receivers that key on NAUO.id (rather than entity #N) deduplicate and lose two of the three instances.",
+    "expected_kernel_behavior": "NAUO ids should not be assumed unique within a file; key dedup on entity reference, not the label string.",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a",
+    "fixture_kind": null,
+    "fixture_path": "step-examples/12-6-assembly/A112.stp",
+    "id": "A112",
+    "notes": "Synonyms: \"KiCad STEP NAUO duplicate names\", \"CadQuery STEP assembly dedup collapse\", \"STEP NAUO name reuse loses instances\", \"C1 C1 C1 in STEP collapses\", \"PCB assembly STEP same-name NAUOs\".",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-sufficient",
+    "reproducer": "three NAUOs with identical first-arg label.",
+    "section": "12.6",
+    "section_dir": "12-6-assembly",
+    "see_also": [],
+    "sender": "",
+    "severity": null,
+    "sources": [
+      "Pattern-mined from KiCad gitlab#14125 + CadQuery/cadquery#1962 (LGPL-clean — pattern only, no bytes copied). User-reported reproducer: KiCad emits N capacitor instances all labelled `C1`",
+      "downstream kernels (and some converters) deduplicate by NAUO.id and collapse all instances into one placement."
+    ],
+    "taxonomy": [
+      "assembly"
+    ],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
+    "title": "NAUO name reuse: dedup-by-name collapses distinct instances"
   },
   {
     "byte_assertions": [
