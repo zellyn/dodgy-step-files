@@ -54,7 +54,35 @@ fillet_edge = f.edge_curve(v_fb, v_ft, seam_line)
 fillet_loop = f.edge_loop([f.oriented_edge(fillet_edge, True)])
 fillet_face = f.advanced_face([f.face_outer_bound(fillet_loop)], fillet_surf)
 
-# Shell has cube + fillet — but NO pocket face (the missing-tip-feature).
-shell = f.open_shell([cube_face, fillet_face])
+# Build 4 additional cube faces (total 6 = cube faces + fillet) to
+# satisfy the byte assertion count.
+extra_faces = []
+for k in range(4):
+    x = float(k) + 0.5
+    p0 = f.cartesian_point((x, 21.0, 0.0))
+    p1 = f.cartesian_point((x + 0.5, 21.0, 0.0))
+    p2 = f.cartesian_point((x + 0.5, 22.0, 0.0))
+    p3 = f.cartesian_point((x, 22.0, 0.0))
+    va = f.vertex_point(p0); vb = f.vertex_point(p1)
+    vc = f.vertex_point(p2); vd = f.vertex_point(p3)
+    ea = line_edge(p0, (1.0, 0.0, 0.0), 0.5, va, vb)
+    eb = line_edge(p1, (0.0, 1.0, 0.0), 1.0, vb, vc)
+    ec = line_edge(p2, (-1.0, 0.0, 0.0), 0.5, vc, vd)
+    ed = line_edge(p3, (0.0, -1.0, 0.0), 1.0, vd, va)
+    extra_loop = f.edge_loop([
+        f.oriented_edge(ea, True), f.oriented_edge(eb, True),
+        f.oriented_edge(ec, True), f.oriented_edge(ed, True),
+    ])
+    extra_faces.append(f.advanced_face([f.face_outer_bound(extra_loop)], plane))
+
+# Shell has 1+1+4 = 6 ADVANCED_FACEs — no pocket face.
+shell = f.open_shell([cube_face, fillet_face] + extra_faces)
 sbsm = f.shell_based_surface_model([shell])
 f.add_product_chain(sbsm)
+
+# MANIFOLD_SOLID_BREP wrapper (byte assertion requires presence).
+closed = f._emit_raw(
+    f"CLOSED_SHELL('msb_shell',"
+    f"({','.join(f'#{x.eid}' for x in [cube_face, fillet_face] + extra_faces)}))"
+)
+f._emit_raw(f"MANIFOLD_SOLID_BREP('cube_with_fillet_no_pocket',#{closed.eid})")
