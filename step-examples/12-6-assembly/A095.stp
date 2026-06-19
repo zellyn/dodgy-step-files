@@ -1,36 +1,48 @@
 ISO-10303-21;
-/* A095 - STEP export of part with sub-mm fillet generates malformed shape on receiver
- * Defect: writer's emission precision (1.0e-6) is too coarse for a 0.05mm fillet on a
- * 10mm part — the fillet's distinct vertex coordinates collapse to the same point. */
+/* A095: small CYLINDRICAL_SURFACE + near-coincident vertices (fillet collapse) */
 HEADER;
-FILE_DESCRIPTION(('A095 - sub-mm fillet collapses at writer precision'),'2;1');
-FILE_NAME('A095.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');
-FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+FILE_DESCRIPTION(('A095'),'2;1');
+FILE_NAME('A095.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('automotive_design');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
-/* Two vertices that ARE distinct in the source (a 0.05mm-radius fillet) but
-   collapse to the same coordinate at writer's 1.0e-6 precision. */
-#10=CARTESIAN_POINT('v1',(0.0000005,0.0,0.0));
-#11=CARTESIAN_POINT('v2',(0.0000004,0.0,0.0));
-#12=DIRECTION('',(0.0,0.0,1.0));
-#13=DIRECTION('',(1.0,0.0,0.0));
-#14=AXIS2_PLACEMENT_3D('fillet_axis',#10,#12,#13);
-#15=CYLINDRICAL_SURFACE('tiny_fillet',#14,0.00005);
-#20=VERTEX_POINT('',#10);
-#21=VERTEX_POINT('',#11);
-#30=DIRECTION('',(1.0,0.0,0.0));
-#31=VECTOR('',#30,0.0001);
-#32=LINE('fillet_edge',#10,#31);
-#33=EDGE_CURVE('collapse_edge',#20,#21,#32,.T.);
-#40=ADVANCED_FACE('fillet_face',(),#15,.T.);
-/* Assembly wiring so this fixture is a representative §12.6 entry. */
-#50=PRODUCT_CONTEXT('',#1,'mechanical');
-#51=PRODUCT('A095_round_part','sub-mm fillet','',(#50));
-#52=PRODUCT_DEFINITION_FORMATION('','',#51);
-#53=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
-#54=PRODUCT_DEFINITION('design','',#52,#53);
-#55=NEXT_ASSEMBLY_USAGE_OCCURRENCE('inst','round_part_inst','',#54,#54,$);
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=DIRECTION('',(0.0,0.0,1.0));
+#3=DIRECTION('',(1.0,0.0,0.0));
+#4=AXIS2_PLACEMENT_3D('',#1,#2,#3);
+#5=CYLINDRICAL_SURFACE('tiny_fillet',#4,0.05);
+#6=CARTESIAN_POINT('',(0.05,0.0,0.0));
+#7=CARTESIAN_POINT('',(0.050000001,0.0,0.0));
+#8=VERTEX_POINT('',#6);
+#9=VERTEX_POINT('',#7);
+#10=DIRECTION('',(1.0,0.0,0.0));
+#11=VECTOR('',#10,1.0E-07);
+#12=LINE('',#6,#11);
+#13=EDGE_CURVE('',#8,#9,#12,.T.);
+#14=ORIENTED_EDGE('',$,$,#13,.T.);
+#15=EDGE_LOOP('',(#14));
+#16=FACE_OUTER_BOUND('',#15,.T.);
+#17=ADVANCED_FACE('',(#16),#5,.T.);
+#18=OPEN_SHELL('',(#17));
+#19=SHELL_BASED_SURFACE_MODEL('',(#18));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('A095','A095','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#19),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
+#9063=PRODUCT_CONTEXT('sub',#9000,'mechanical');
+#9064=PRODUCT('Sub','Sub','',(#9063));
+#9065=PRODUCT_DEFINITION_FORMATION('','',#9064);
+#9066=PRODUCT_DEFINITION('design','',#9065,#9003);
+#9067=NEXT_ASSEMBLY_USAGE_OCCURRENCE('1','sub','',#9004,#9066,$);
 ENDSEC;
 END-ISO-10303-21;
