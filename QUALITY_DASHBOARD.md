@@ -15,7 +15,7 @@ at the bottom) to recompute._
 | Quarantined (preserved as evidence; replaced in active corpus) | **150** (84 early-waves + 66 phase_F_boilerplate) |
 | Mesh fixtures (§12-14 mesh corpus) | **5** seed fixtures via Python builder + JSON/OBJ/PLY co-emit + pure-Python oracle |
 | Adversarial-verification sweep (2026-06-18, full corpus) | **2,280 / 2,309** (98.7 %) verified VALID; 23 CONFIRMED_WEAK; 0 CONFIRMED_INVALID after regen |
-| CONFIRMED (Expected-validation line matches live oracle output) | (recompute via `_final_verdict`) |
+| CONFIRMED (Expected-validation line matches live oracle output) | **2327 / 2349** (99.1 %) per `_final_verdict` 2026-06-19; 12 WEAK, 10 ERROR |
 | Machine-checkable **tier-3** assertions in catalog | **2,568** across **1,986** entries (≥85 % coverage; B2 batch-5 + 90 % pytest floor) |
 | Machine-checkable **byte** assertions in catalog | **2,347** across **1,056** entries |
 | Total machine-checkable invariants | **4,915** |
