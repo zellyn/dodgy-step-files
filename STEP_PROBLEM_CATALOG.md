@@ -23344,7 +23344,7 @@ Control poles coplanar (XY) but curve deviates significantly in Z. ShapeAnalysis
 **Expected validation**: CheckSplittingVertices should report vertex count increases; no degenerate inner loops introduced; edge loop closure maintained.
 
 - **Tier-3 assertion**: load == "ok"
-
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 ### Tfa077 — FixSmallAreaWire small-area early-exit
 
 **Category**: §12.3c Face Topology — ShapeFix_Face Wire Removal
@@ -23360,7 +23360,7 @@ Control poles coplanar (XY) but curve deviates significantly in Z. ShapeAnalysis
 **Expected validation**: Wire count should decrease; no outer bound remains; face should be marked for deletion or context cleanup.
 
 - **Tier-3 assertion**: load == "ok"
-
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 ### Tfa078 — FixLoopWire intersecting-loops merge
 
 **Category**: §12.3c Face Topology — ShapeFix_Face Loop Merging
@@ -23376,7 +23376,7 @@ Control poles coplanar (XY) but curve deviates significantly in Z. ShapeAnalysis
 **Expected validation**: Edge loop closure maintained; no gap-at-merge introduced; self-touch validation catches tangent point as potential singularity.
 
 - **Tier-3 assertion**: load == "ok"
-
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 ### Tfa079 — CheckSplittingVertices vertex-on-edge midspan
 
 **Category**: §12.3c Face Topology — ShapeAnalysis_CheckSmallFace Vertex Detection
@@ -23392,7 +23392,7 @@ Control poles coplanar (XY) but curve deviates significantly in Z. ShapeAnalysis
 **Expected validation**: Splitting vertex count > 0; parameter values in (0, 1) exclusive; distances below tolerance.
 
 - **Tier-3 assertion**: n_faces_total == 1
-
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(14) ifc=schema_n/a`
 ### Tfa080 — CheckTwisted normal-inversion
 
 **Category**: §12.3c Face Topology — ShapeAnalysis_CheckSmallFace Twist Detection
@@ -23407,7 +23407,7 @@ Control poles coplanar (XY) but curve deviates significantly in Z. ShapeAnalysis
 
 **Expected validation**: Twist flag set to true; interior point count > threshold; at least one scalar product < 0 at non-boundary location.
 - **Tier-3 assertion**: load == "ok"
-
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 ### Tfa081 — ShapeFix_Face.FixOrientation reversed-normal heal
 Face with inward-pointing surface normal (same_sense=.F.). Healer detects via outer-wire winding direction and flips to outward orientation. Planar square boundary, defect is orientation flag mismatch.
 - **Tier-3 assertion**: n_faces_total == 1
@@ -23648,7 +23648,6 @@ Full SURFACE_OF_REVOLUTION (360-degree cylinder with apex) with degenerate edge 
 
 **Fixture**: `/Users/zellyn/gh/dodgy-step-files/step-examples/12-3c-faces/Tfa110.stp`
 
----
 
 **Coverage**: 5 fixtures synthesized per OCCT_HEAL_COVERAGE_V3.md wave 21 specifications. All fixtures conform to mandatory PRODUCT chain and STEP-AP structure.
 - **Tier-3 assertion**: n_faces_total == 1
@@ -25966,7 +25965,6 @@ Multi-edge shape connectivity validation; disconnected edge chains not flagged w
 ### Twi271 — ShapeAnalysis_Wire.CheckTail
 Wire terminus validation; tail edge proximity check fails when endpoint gaps exceed local curve curvature radius.
 
-## STEP Wire Fixtures: Wave 71-B (Twi272–Twi276)
 - **Tier-3 assertion**: shape_null == True
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 ### Twi272 — CheckLoop Unloaded/Trivial
@@ -26099,7 +26097,7 @@ Edges E1(V0→V2), E2(V1→V2), E3(V2→V3). V2 extent=3. Tests end-vertex (V2) 
 **Expected validation**: Pass on V-closure detection; fail on false-negative IsVClosed result.
 
 - **Tier-3 assertion**: shape_null == True
-
+- **Expected validation**: `occt=empty/empty gmsh=empty ifc=accept(0)`
 ### Gs065 — ShapeAnalysis_Surface.ValueOfUV near-tangent surface
 
 **Category**: §12.2c — Surface projection & tangency  
@@ -26116,7 +26114,7 @@ Edges E1(V0→V2), E2(V1→V2), E3(V2→V3). V2 extent=3. Tests end-vertex (V2) 
 **Expected validation**: Reject divergent Newton; fallback to closest-point or parametric projection method.
 
 - **Tier-3 assertion**: shape_null == True
-
+- **Expected validation**: `occt=empty/empty gmsh=empty ifc=accept(0)`
 ### Gs066 — ShapeAnalysis_Surface.SortSingularities cone vs cylinder differing singularities
 
 **Category**: §12.2c — Singularity classification  
@@ -26133,7 +26131,7 @@ Edges E1(V0→V2), E2(V1→V2), E3(V2→V3). V2 extent=3. Tests end-vertex (V2) 
 **Expected validation**: Detect singularity cardinality mismatch (2 poles vs 1 apex); flag as defect or auto-correct.
 
 - **Tier-3 assertion**: shape_null == True
-
+- **Expected validation**: `occt=empty/empty gmsh=empty ifc=accept(0)`
 ### Gs067 — ShapeUpgrade_ConvertSurfaceToBezierBasis offset surface with negative distance
 
 **Category**: §12.2c — Offset surface conversion  
@@ -26150,7 +26148,7 @@ Edges E1(V0→V2), E2(V1→V2), E3(V2→V3). V2 extent=3. Tests end-vertex (V2) 
 **Expected validation**: Converted Bezier surface must maintain parallel plane property with opposite normal.
 
 - **Tier-3 assertion**: shape_null == True
-
+- **Expected validation**: `occt=empty/empty gmsh=empty ifc=accept(0)`
 ### Gs068 — ShapeAnalysis_Surface.UVFromIso boundary U-iso failure
 
 **Category**: §12.2c — Iso-curve projection  
@@ -26166,7 +26164,7 @@ Edges E1(V0→V2), E2(V1→V2), E3(V2→V3). V2 extent=3. Tests end-vertex (V2) 
 
 **Expected validation**: Reject out-of-bounds iso request; signal error rather than produce uninitialized result.
 - **Tier-3 assertion**: shape_null == True
-
+- **Expected validation**: `occt=empty/empty gmsh=empty ifc=accept(0)`
 ### Gs069 — ShapeAnalysis_Surface.IsDegenerated zero-length axis
 
 **Source**: OCCT_HEAL_COVERAGE_V3.md §12.2c
@@ -26235,7 +26233,7 @@ Edges E1(V0→V2), E2(V1→V2), E3(V2→V3). V2 extent=3. Tests end-vertex (V2) 
 **Expected validation:** PASS: No singularities detected; FAIL: Report singularity or crash.
 
 - **Tier-3 assertion**: shape_null == True
-
+- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 ### Gs075 — Cylindrical Surface Seam-Aware Split
 
 **Sources:** ShapeUpgrade_ClosedFaceDivide.SplitSurface (OCCT)  
@@ -26245,7 +26243,7 @@ Edges E1(V0→V2), E2(V1→V2), E3(V2→V3). V2 extent=3. Tests end-vertex (V2) 
 **Expected validation:** PASS: Seam metadata preserved; FAIL: Seam lost or incorrect split topology.
 
 - **Tier-3 assertion**: shape_null == True
-
+- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 ### Gs076 — Newton Fallback Comparison Bias
 
 **Sources:** ShapeAnalysis_Surface.NextValueOfUV (OCCT)  
@@ -26255,7 +26253,7 @@ Edges E1(V0→V2), E2(V1→V2), E3(V2→V3). V2 extent=3. Tests end-vertex (V2) 
 **Expected validation:** PASS: Correct root selected; FAIL: Wrong root or projection off-surface.
 
 - **Tier-3 assertion**: shape_null == True
-
+- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 ### Gs077 — Newton Discriminant Near-Zero Abort
 
 **Sources:** ShapeAnalysis_Surface.SurfaceNewton (OCCT)  
@@ -26265,7 +26263,7 @@ Edges E1(V0→V2), E2(V1→V2), E3(V2→V3). V2 extent=3. Tests end-vertex (V2) 
 **Expected validation:** PASS: Convergence achieved; FAIL: Premature return-false or no root.
 
 - **Tier-3 assertion**: shape_null == True
-
+- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 ### Gs078 — Offset-of-Offset Sign Error
 
 **Sources:** ShapeUpgrade_ConvertSurfaceToBezierBasis (OCCT)  
@@ -26274,7 +26272,7 @@ Edges E1(V0→V2), E2(V1→V2), E3(V2→V3). V2 extent=3. Tests end-vertex (V2) 
 **Expected kernel behavior:** Recursive offset sign preserved through ConvertSurfaceToBezierBasis conversion chain.  
 **Expected validation:** PASS: Correct offset accumulation; FAIL: Sign flip or coordinate mismatch.
 - **Tier-3 assertion**: shape_null == True
-
+- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 ### Gs079 — ShapeAnalysis_Surface.UVFromIso periodic reset
 
 B_SPLINE_SURFACE_WITH_KNOTS, U-periodic (periodic_u=.T.), u_upper=2π. Reproduces silent wraparound when querying u_iso=2π that maps to u_iso=0, breaking downstream code expecting original parameter.
@@ -28049,7 +28047,6 @@ Two-triangle shell with all edges shared between faces (no free boundary). FreeE
 
 **Fixture**: Two triangular faces. Shared vertex at origin; two EDGE_CURVE entities reference it but curve start/end points disagree. FreeEdges will classify the edge pair as connected despite geometric gap, failing to report a topological discontinuity.
 
----
 
 **Catalog**: Wave 43 baseline — 5 STEP shell fixtures targeting OCCT heal subsystem consensus/orientation/sewing/history defects. All fixtures use AUTOMOTIVE_DESIGN v3.1.1 schema, SHELL_BASED_SURFACE_MODEL wrapper, and mandatory PRODUCT chain. ID range Tsh159–Tsh163.
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
@@ -30359,7 +30356,6 @@ CheckPoints called with precision 1e-3 but projection-distance test uses 1e-6 in
 - **Fixture path**: step-examples/12-4-tolerance/N135.stp
 - **Fixture kind**: scaffold
 
-## Defect Patterns
 - **Tier-3 assertion**: load == "ok"
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 ### N136 — ShapeAnalysis_ShapeTolerance.MaxTolerance.unbounded_edge_iteration
@@ -30396,7 +30392,6 @@ CheckPoints called with precision 1e-3 but projection-distance test uses 1e-6 in
 - **Impact**: Near-matching patches falsely pass continuity despite parameter misalignment
 - **Axiom**: Continuity interval comparison MUST scale tolerance at domain boundaries
 
-## Invariants
 - All fixtures follow N100 PRODUCT chain and EDGE_LOOP closure rules
 - THREE-ARG LINE with separate VECTOR (no self-ref)
 - DIRECTION ratios ≈ unit
@@ -30534,7 +30529,6 @@ Raw write to BRep_TEdge bypasses SetMaxTolerance API validation; computed tolera
 ### N160 — ComputeTol overflow_error tolerance corruption
 Mismatch between 3D and 2D curves (error 1e10+) accumulated into SameParameter tolerance; no early abort causes corruption when degenerate 2D paired with 3D line.
 
-## wave 72C — STEP tolerance fixtures (N161–N165)
 - **Tier-3 assertion**: shape_null == True
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 ### N161 — `tolerance_escalation` — unbounded multiplier

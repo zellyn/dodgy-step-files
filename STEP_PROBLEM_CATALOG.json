@@ -27862,7 +27862,7 @@
     "cross_oracle_note": null,
     "description": "ShapeAnalysis_Surface.IsVClosed midpoint sampling on torus",
     "expected_kernel_behavior": "heal or reject (mechanism-specific; see Description)",
-    "expected_validation": "",
+    "expected_validation": "occt=empty/empty gmsh=empty ifc=accept(0)",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2c-surfaces/Gs064.stp",
     "id": "Gs064",
@@ -27895,7 +27895,7 @@
     "cross_oracle_note": null,
     "description": "ShapeAnalysis_Surface.ValueOfUV near-tangent surface",
     "expected_kernel_behavior": "heal or reject (mechanism-specific; see Description)",
-    "expected_validation": "",
+    "expected_validation": "occt=empty/empty gmsh=empty ifc=accept(0)",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2c-surfaces/Gs065.stp",
     "id": "Gs065",
@@ -27928,7 +27928,7 @@
     "cross_oracle_note": null,
     "description": "ShapeAnalysis_Surface.SortSingularities cone vs cylinder differing singularities",
     "expected_kernel_behavior": "heal or reject (mechanism-specific; see Description)",
-    "expected_validation": "",
+    "expected_validation": "occt=empty/empty gmsh=empty ifc=accept(0)",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2c-surfaces/Gs066.stp",
     "id": "Gs066",
@@ -27961,7 +27961,7 @@
     "cross_oracle_note": null,
     "description": "ShapeUpgrade_ConvertSurfaceToBezierBasis offset surface with negative distance",
     "expected_kernel_behavior": "heal or reject (mechanism-specific; see Description)",
-    "expected_validation": "",
+    "expected_validation": "occt=empty/empty gmsh=empty ifc=accept(0)",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2c-surfaces/Gs067.stp",
     "id": "Gs067",
@@ -27994,7 +27994,7 @@
     "cross_oracle_note": null,
     "description": "ShapeAnalysis_Surface.UVFromIso boundary U-iso failure",
     "expected_kernel_behavior": "heal or reject (mechanism-specific; see Description)",
-    "expected_validation": "",
+    "expected_validation": "occt=empty/empty gmsh=empty ifc=accept(0)",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2c-surfaces/Gs068.stp",
     "id": "Gs068",
@@ -28192,7 +28192,7 @@
     "cross_oracle_note": null,
     "description": "Plane Singularity Misclassification",
     "expected_kernel_behavior": "heal or reject (mechanism-specific; see Description)",
-    "expected_validation": "",
+    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2c-surfaces/Gs074.stp",
     "id": "Gs074",
@@ -28225,7 +28225,7 @@
     "cross_oracle_note": null,
     "description": "Cylindrical Surface Seam-Aware Split",
     "expected_kernel_behavior": "heal or reject (mechanism-specific; see Description)",
-    "expected_validation": "",
+    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2c-surfaces/Gs075.stp",
     "id": "Gs075",
@@ -28258,7 +28258,7 @@
     "cross_oracle_note": null,
     "description": "Newton Fallback Comparison Bias",
     "expected_kernel_behavior": "heal or reject (mechanism-specific; see Description)",
-    "expected_validation": "",
+    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2c-surfaces/Gs076.stp",
     "id": "Gs076",
@@ -28291,7 +28291,7 @@
     "cross_oracle_note": null,
     "description": "Newton Discriminant Near-Zero Abort",
     "expected_kernel_behavior": "heal or reject (mechanism-specific; see Description)",
-    "expected_validation": "",
+    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2c-surfaces/Gs077.stp",
     "id": "Gs077",
@@ -28324,7 +28324,7 @@
     "cross_oracle_note": null,
     "description": "Offset-of-Offset Sign Error",
     "expected_kernel_behavior": "heal or reject (mechanism-specific; see Description)",
-    "expected_validation": "",
+    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2c-surfaces/Gs078.stp",
     "id": "Gs078",
@@ -38723,7 +38723,7 @@
     "cross_oracle_note": null,
     "description": "ShapeAnalysis_Shell.FreeEdges edge-by-vertex-coincidence",
     "expected_kernel_behavior": "heal or reject (mechanism-specific; see Description)",
-    "expected_validation": "",
+    "expected_validation": "occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-3a-shells/Tsh163.stp",
     "id": "Tsh163",
@@ -38741,6 +38741,7 @@
       "synthesized — no external source cited"
     ],
     "taxonomy": [
+      "crash",
       "topology"
     ],
     "tier3_assertions": [],
@@ -50052,7 +50053,7 @@
     "cross_oracle_note": null,
     "description": "ShapeAnalysis_Wire.CheckTail",
     "expected_kernel_behavior": "heal or reject (mechanism-specific; see Description)",
-    "expected_validation": "",
+    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-3b-wires/Twi271.stp",
     "id": "Twi271",
@@ -50072,7 +50073,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "ShapeAnalysis_Wire.CheckTail"
   },
   {
@@ -53504,7 +53507,7 @@
     "cross_oracle_note": null,
     "description": "FixAddNaturalBound seam-edge skip",
     "expected_kernel_behavior": "heal or reject (mechanism-specific; see Description)",
-    "expected_validation": "",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-3c-faces/Tfa076.stp",
     "id": "Tfa076",
@@ -53537,7 +53540,7 @@
     "cross_oracle_note": null,
     "description": "FixSmallAreaWire small-area early-exit",
     "expected_kernel_behavior": "heal or reject (mechanism-specific; see Description)",
-    "expected_validation": "",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-3c-faces/Tfa077.stp",
     "id": "Tfa077",
@@ -53570,7 +53573,7 @@
     "cross_oracle_note": null,
     "description": "FixLoopWire intersecting-loops merge",
     "expected_kernel_behavior": "heal or reject (mechanism-specific; see Description)",
-    "expected_validation": "",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-3c-faces/Tfa078.stp",
     "id": "Tfa078",
@@ -53603,7 +53606,7 @@
     "cross_oracle_note": null,
     "description": "CheckSplittingVertices vertex-on-edge midspan",
     "expected_kernel_behavior": "heal or reject (mechanism-specific; see Description)",
-    "expected_validation": "",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=shape(14) ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-3c-faces/Tfa079.stp",
     "id": "Tfa079",
@@ -53636,7 +53639,7 @@
     "cross_oracle_note": null,
     "description": "CheckTwisted normal-inversion",
     "expected_kernel_behavior": "heal or reject (mechanism-specific; see Description)",
-    "expected_validation": "",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-3c-faces/Tfa080.stp",
     "id": "Tfa080",
@@ -54616,7 +54619,7 @@
     "cross_oracle_note": null,
     "description": "Single-edge circular wire orientation ambiguity",
     "expected_kernel_behavior": "heal or reject (mechanism-specific; see Description)",
-    "expected_validation": "",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=shape(3) ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-3c-faces/Tfa110.stp",
     "id": "Tfa110",
@@ -54636,7 +54639,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 1"
+    ],
     "title": "Single-edge circular wire orientation ambiguity"
   },
   {
@@ -63869,7 +63874,7 @@
     "cross_oracle_note": null,
     "description": "OverTolerance(shell) iterates faces without existence/validity check. Empty or deleted face iterators FAIL TO REPORT tolerance violations; out-of-tolerance geometry escapes validation.",
     "expected_kernel_behavior": "reject",
-    "expected_validation": "",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-4-tolerance/N135.stp",
     "id": "N135",
@@ -63889,7 +63894,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "ShapeAnalysis_ShapeTolerance missing face validity check"
   },
   {
@@ -64032,7 +64039,7 @@
     "cross_oracle_note": null,
     "description": "ShapeAnalysis_Surface.Continuity.tolerance_interval_mismatch",
     "expected_kernel_behavior": "heal or reject (mechanism-specific; see Description)",
-    "expected_validation": "",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-4-tolerance/N140.stp",
     "id": "N140",
@@ -64052,7 +64059,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
     "title": "ShapeAnalysis_Surface.Continuity.tolerance_interval_mismatch"
   },
   {
@@ -64690,7 +64699,7 @@
     "cross_oracle_note": null,
     "description": "ComputeTol overflow_error tolerance corruption",
     "expected_kernel_behavior": "heal or reject (mechanism-specific; see Description)",
-    "expected_validation": "",
+    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-4-tolerance/N160.stp",
     "id": "N160",
@@ -64710,7 +64719,9 @@
     "taxonomy": [
       "spec-violation"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "ComputeTol overflow_error tolerance corruption"
   },
   {
