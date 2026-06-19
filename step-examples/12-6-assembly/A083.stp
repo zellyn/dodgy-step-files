@@ -1,38 +1,44 @@
 ISO-10303-21;
-/* A083 - Exporter generates B-spline approximation with C0 isolines.
- * Defect: a face on a SURFACE_OF_REVOLUTION of a parabolic profile around
- * the Z axis; the exporter fallback emits a B-spline with C0 along
- * control-point rows. The fixture encodes the input that triggers this. */
+/* A083: SURFACE_OF_REVOLUTION on B-spline parabolic_profile */
 HEADER;
-FILE_DESCRIPTION(('A083 test case','Exporter emits C0-isoline B-spline for revolution'),'2;1');
-FILE_NAME('A083.stp','2026-04-30T00:00:00',(''),(''),'cad-research-suite','','');
-FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+FILE_DESCRIPTION(('A083'),'2;1');
+FILE_NAME('A083.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('automotive_design');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
-#10=PRODUCT_CONTEXT('',#1,'mechanical');
-#11=PRODUCT('part1','part1','part1',(#10));
-#12=PRODUCT_DEFINITION_FORMATION('','',#11);
-#13=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
-#14=PRODUCT_DEFINITION('','',#12,#13);
-#15=PRODUCT_DEFINITION_SHAPE('','',#14);
-/* Z axis for revolution */
-#100=CARTESIAN_POINT('axis_origin',(0.0,0.0,0.0));
-#101=DIRECTION('axis_z',(0.0,0.0,1.0));
-#102=AXIS1_PLACEMENT('rev_axis',#100,#101);
-/* B-spline profile approximating y = x^2 (parabola) in the XZ plane.
- * Five control points; degree 2; clamped knot vector. */
-#110=CARTESIAN_POINT('p0',(1.0,0.0,0.0));
-#111=CARTESIAN_POINT('p1',(1.5,0.0,0.5));
-#112=CARTESIAN_POINT('p2',(2.0,0.0,1.0));
-#113=CARTESIAN_POINT('p3',(2.5,0.0,2.25));
-#114=CARTESIAN_POINT('p4',(3.0,0.0,4.0));
-#120=B_SPLINE_CURVE_WITH_KNOTS('parabolic_profile',2,(#110,#111,#112,#113,#114),
-       .UNSPECIFIED.,.F.,.F.,(3,1,3),(0.0,0.5,1.0),.UNSPECIFIED.);
-/* Surface of revolution sweeping the parabolic profile around Z */
-#130=SURFACE_OF_REVOLUTION('parabolic_revolution',#120,#102);
-/* Face on the revolved surface */
-#140=ADVANCED_FACE('parabolic_face',(),#130,.T.);
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('',(0.1,0.0,0.0));
+#2=CARTESIAN_POINT('',(0.5,0.0,0.25));
+#3=CARTESIAN_POINT('',(1.0,0.0,1.0));
+#4=B_SPLINE_CURVE_WITH_KNOTS('parabolic_profile',2,(#1,#2,#3),.UNSPECIFIED.,.F.,.F.,(3,3),(0.0,1.0),.UNSPECIFIED.);
+#5=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#6=DIRECTION('',(0.0,0.0,1.0));
+#7=AXIS1_PLACEMENT('rev_axis',#5,#6);
+#8=SURFACE_OF_REVOLUTION('parabolic_revolution',#4,#7);
+#9=VERTEX_POINT('',#1);
+#10=VERTEX_POINT('',#3);
+#11=DIRECTION('',(1.0,0.0,0.0));
+#12=VECTOR('',#11,0.9);
+#13=LINE('',#1,#12);
+#14=EDGE_CURVE('',#9,#10,#13,.T.);
+#15=ORIENTED_EDGE('',$,$,#14,.T.);
+#16=EDGE_LOOP('',(#15));
+#17=FACE_OUTER_BOUND('',#16,.T.);
+#18=ADVANCED_FACE('',(#17),#8,.T.);
+#19=OPEN_SHELL('',(#18));
+#20=SHELL_BASED_SURFACE_MODEL('',(#19));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('A083','A083','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#20),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
 ENDSEC;
 END-ISO-10303-21;
