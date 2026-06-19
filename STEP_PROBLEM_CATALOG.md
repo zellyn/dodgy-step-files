@@ -1656,7 +1656,7 @@ _Section summary: 82 entries._
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: The pcurve attribute on the affected EDGE_CURVE/SEAM_CURVE is missing, NULL, or inconsistent with its 3D companion; downstream meshing and boolean operations either rebuild it from the 3D edge (introducing tolerance error) or dereference a null handle and abort.
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 
 ### Gp024 — Pcurve refit after non-uniform scale produces large errors
 - **Category**: §12.2a pcurve
@@ -1671,7 +1671,7 @@ _Section summary: 82 entries._
 - **Byte assertion**: count_entity_def(b'PCURVE') >= 1
 - **Tier-3 assertion**: shape_null == True
 - **Model impact**: The pcurve attribute on the affected EDGE_CURVE/SEAM_CURVE is missing, NULL, or inconsistent with its 3D companion; downstream meshing and boolean operations either rebuild it from the 3D edge (introducing tolerance error) or dereference a null handle and abort.
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=reject ifc=schema_n/a`
 
 ### Gp026 — `EDGE_LOOP` contour not closed in UV (Jordan-curve violation across periodic-surface seam)
 - **Category**: §12.2a pcurve
@@ -1681,7 +1681,7 @@ _Section summary: 82 entries._
 - **Expected kernel behavior**: connect the wire endpoints via period-shifting / vertex-merging / seam-insertion as appropriate, or reject as malformed when the gap exceeds the working tolerance budget.
 - **Notes**: **See also**: Gp020, Gp028, Gs012, Twi020. **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers must reject this fixture per the catalog's stated invariant. Synonyms: "edge_loop not closed in UV", "Jordan curve violation across periodic seam", "outer wire fails to close in parametric domain", "renderer falls back to isolines instead of triangulating", "face contour open across cylinder seam".
 - **Model impact**: The pcurve attribute on the affected EDGE_CURVE/SEAM_CURVE is missing, NULL, or inconsistent with its 3D companion; downstream meshing and boolean operations either rebuild it from the 3D edge (introducing tolerance error) or dereference a null handle and abort.
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(5) ifc=schema_n/a`
 - **Tier-3 assertion**: shape_null == True
 
 ### Gp027 — Closed-face splitter leaves new pcurves out of sync with 3D curves on `CYLINDRICAL_SURFACE`
@@ -1698,7 +1698,7 @@ _Section summary: 82 entries._
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal, reject}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: The pcurve attribute on the affected EDGE_CURVE/SEAM_CURVE is missing, NULL, or inconsistent with its 3D companion; downstream meshing and boolean operations either rebuild it from the 3D edge (introducing tolerance error) or dereference a null handle and abort.
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 
 ### Gp028 — Wire crosses periodic-surface seam without an explicit seam edge (pcurve trim range vs vertex angular position mismatch)
 - **Category**: §12.2a pcurve
@@ -1712,7 +1712,7 @@ _Section summary: 82 entries._
 - **Byte assertion**: count_entity_def(b'PCURVE') >= 1
 - **Tier-3 assertion**: shape_null == True
 - **Model impact**: The pcurve attribute on the affected EDGE_CURVE/SEAM_CURVE is missing, NULL, or inconsistent with its 3D companion; downstream meshing and boolean operations either rebuild it from the 3D edge (introducing tolerance error) or dereference a null handle and abort.
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(5) ifc=schema_n/a`
 
 ### Gp029 — Period-shift fix on revolved face leaves wire in inconsistent UV band, blocks meshing
 - **Category**: §12.2a pcurve
@@ -3744,7 +3744,7 @@ End of file. 45 entries. License-clean: descriptions are paraphrased from public
 - **Closure intent**: sheet
 - **Notes**: **See also**: Tfa001. Synonyms: "face has empty bounds list", "face has no outer wire and no inner wire", "advanced face with empty wire set", "face on sphere or torus has no boundary", "natural bounds missing on closed surface".
 - **Model impact**: Face sewing leaves free bounds or duplicate edges; the resulting shell is open instead of closed, so MakeSolid produces an invalid solid and volume/property computations return wrong values.
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(11) ifc=schema_n/a`
+- **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 
 ### Tfa003 — FaceOuterBound translation failed (face incomplete without outer wire)
 - **Category**: §12.3c face-sliver-sewing
@@ -18912,7 +18912,7 @@ _Section summary: 41 entries._
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
 - **Severity**: P1
 - **Model impact**: Shell topology loads with inconsistent face orientations or non-manifold edges; BRepCheck flags the shell as invalid, and boolean / offset operations on the solid either produce wrong-sided results or fail outright.
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 
 ### Tsh050 — Edges on shared face boundary not deduplicated after merge
 - **Category**: §12.3a shells/orientation
@@ -18979,7 +18979,7 @@ _Section summary: 41 entries._
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: Shell topology loads with inconsistent face orientations or non-manifold edges; BRepCheck flags the shell as invalid, and boolean / offset operations on the solid either produce wrong-sided results or fail outright.
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 
 ---
 

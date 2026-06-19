@@ -1,50 +1,63 @@
 ISO-10303-21;
-/* Gp028 - Cyclic seam edge crossing in ShapeFix_ComposeShell
- * Defect: outer wire of a CYLINDRICAL_SURFACE face crosses the U=0/U=2pi
- * seam direction without an explicit seam edge. ShapeFix_ComposeShell
- * sees an open contour in UV. The wire must be augmented with the
- * seam edge to close the contour. */
+/* Gp028: Cylinder face wire crosses U=0/2pi seam without seam edge: pcurve LINE runs u=5.5 to u=6.78 (crossing 2pi=6.283); vertex angles approx -0.78 and +0.50 rad; receiver must insert seam edge but none is provided */
 HEADER;
-FILE_DESCRIPTION(('Gp028 test case','Cyclic seam edge crossing in ComposeShell'),'2;1');
-FILE_NAME('Gp028.stp','2026-04-27T00:00:00',(''),(''),'auto-generated','','');
-FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+FILE_DESCRIPTION(('Gp028'),'2;1');
+FILE_NAME('Gp028.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('automotive_design');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
-#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
-#11=DIRECTION('',(0.0,0.0,1.0));
-#12=DIRECTION('',(1.0,0.0,0.0));
-#13=AXIS2_PLACEMENT_3D('',#10,#11,#12);
-#20=CYLINDRICAL_SURFACE('',#13,10.0);
-/* Two vertices placed on opposite sides of the seam.
- * V0 at angle 5.5 (just before 2pi); V1 at angle 0.5 (just after 0) */
-#40=CARTESIAN_POINT('',(7.08670,-7.05540,0.0));
-#41=VERTEX_POINT('',#40);
-#42=CARTESIAN_POINT('',(8.77583,4.79426,0.0));
-#43=VERTEX_POINT('',#42);
-/* 3D curve: shorter geodesic arc that passes across the seam (U=0/2pi) */
-#30=CARTESIAN_POINT('',(0.0,0.0,0.0));
-#31=DIRECTION('',(0.0,0.0,1.0));
-#33=AXIS2_PLACEMENT_3D('',#30,#31,#12);
-#34=CIRCLE('',#33,10.0);
-/* Pcurve runs from U=5.5 to U=6.78 (=2pi+0.5) - crosses U=2pi
- * without any seam edge inserted at U=2pi/U=0. */
-#71=CARTESIAN_POINT('',(5.5,0.0));
-#72=DIRECTION('',(1.0,0.0));
-#73=VECTOR('',#72,1.28319);
-#74=LINE('',#71,#73);
-#75=( GEOMETRIC_REPRESENTATION_CONTEXT(2)
-      PARAMETRIC_REPRESENTATION_CONTEXT()
-      REPRESENTATION_CONTEXT('parametric','2D') );
-#76=DEFINITIONAL_REPRESENTATION('',(#74),#75);
-#77=PCURVE('',#20,#76);
-#50=SURFACE_CURVE('',#34,(#77),.PCURVE_S1.);
-#60=EDGE_CURVE('',#41,#43,#50,.T.);
-#61=ORIENTED_EDGE('',*,*,#60,.T.);
-/* Defect: only this single crossing edge in the loop - no seam edge */
-#62=EDGE_LOOP('',(#61));
-#63=FACE_OUTER_BOUND('',#62,.T.);
-#64=ADVANCED_FACE('',(#63),#20,.T.);
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=DIRECTION('',(0.0,0.0,1.0));
+#3=DIRECTION('',(1.0,0.0,0.0));
+#4=AXIS2_PLACEMENT_3D('',#1,#2,#3);
+#5=CYLINDRICAL_SURFACE('',#4,1.0);
+#6=(GEOMETRIC_REPRESENTATION_CONTEXT(2)PARAMETRIC_REPRESENTATION_CONTEXT()REPRESENTATION_CONTEXT('UV','2D'));
+#7=CARTESIAN_POINT('',(0.708669774291,-0.70554032557,0.0));
+#8=CARTESIAN_POINT('',(0.87758256189,0.479425538604,1.0));
+#9=VERTEX_POINT('',#7);
+#10=VERTEX_POINT('',#8);
+#11=DIRECTION('',(0.108297997686,0.759737804582,0.641147418294));
+#12=VECTOR('',#11,1.55970369913);
+#13=LINE('',#7,#12);
+#14=CARTESIAN_POINT('',(5.5,0.0));
+#15=DIRECTION('',(0.788024373725,0.615644041972));
+#16=VECTOR('',#15,1.62431524034);
+#17=LINE('',#14,#16);
+#18=DEFINITIONAL_REPRESENTATION('pc_seam_cross',(#17),#6);
+#19=PCURVE('seam_cross',#5,#18);
+#20=SURFACE_CURVE('seam_crossing',#13,(#19),.PCURVE_S1.);
+#21=EDGE_CURVE('seam_cross',#9,#10,#20,.T.);
+#22=DIRECTION('',(-0.108297997686,-0.759737804582,-0.641147418294));
+#23=VECTOR('',#22,1.55970369913);
+#24=LINE('',#8,#23);
+#25=CARTESIAN_POINT('',(6.78,1.0));
+#26=DIRECTION('',(-0.788024373725,-0.615644041972));
+#27=VECTOR('',#26,1.62431524034);
+#28=LINE('',#25,#27);
+#29=DEFINITIONAL_REPRESENTATION('pc_back',(#28),#6);
+#30=PCURVE('back',#5,#29);
+#31=SURFACE_CURVE('back',#24,(#30),.PCURVE_S1.);
+#32=EDGE_CURVE('back',#10,#9,#31,.T.);
+#33=ORIENTED_EDGE('',$,$,#21,.T.);
+#34=ORIENTED_EDGE('',$,$,#32,.T.);
+#35=EDGE_LOOP('',(#33,#34));
+#36=FACE_OUTER_BOUND('',#35,.T.);
+#37=ADVANCED_FACE('',(#36),#5,.T.);
+#38=OPEN_SHELL('',(#37));
+#39=SHELL_BASED_SURFACE_MODEL('',(#38));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('Gp028','Gp028','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#39),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
 ENDSEC;
 END-ISO-10303-21;

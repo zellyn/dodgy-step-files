@@ -1,68 +1,91 @@
 ISO-10303-21;
-/* Gp023 - ValueOfUV returns UV outside trimmed face range
- * Defect: a face on a CYLINDRICAL_SURFACE (full periodic) is trimmed
- * to U in [pi, 2pi] only. A 3D point above the face has two valid
- * pre-images (one near U=0, one near U=2pi); naive projection returns
- * U=0.001 - outside the trimmed range, even though U=2*pi-0.001 is in.
- *
- * Fix vs prior: pcurve LINE direction-vector magnitude was 1.0 which
- * only covered [pi, pi+1]. We now wrap the pcurve LINE in a
- * TRIMMED_CURVE with explicit trim parameters [0.0, pi] so the U-band
- * the edge sweeps in 2D is exactly [pi, 2pi]. */
+/* Gp023: Trimmed cylinder face U in [pi,2pi]: left seam edge pcurve LINE starts at u=0 (shifted by -pi from correct u=pi); point-projection returns UV outside the [pi,2pi] trimmed band */
 HEADER;
-FILE_DESCRIPTION(('Gp023 test case','ValueOfUV returns UV outside trimmed range'),'2;1');
-FILE_NAME('Gp023.stp','2026-04-27T00:00:00',(''),(''),'auto-generated','','');
-FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+FILE_DESCRIPTION(('Gp023'),'2;1');
+FILE_NAME('Gp023.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('automotive_design');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
-#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
-#11=DIRECTION('',(0.0,0.0,1.0));
-#12=DIRECTION('',(1.0,0.0,0.0));
-#13=AXIS2_PLACEMENT_3D('',#10,#11,#12);
-#20=CYLINDRICAL_SURFACE('',#13,10.0);
-/* Outer wire vertices: two on the bottom (V=0), two on the top (V=5) */
-#40=CARTESIAN_POINT('',(-10.0,0.0,0.0));
-#41=VERTEX_POINT('',#40);
-#42=CARTESIAN_POINT('',(10.0,0.0,0.0));
-#43=VERTEX_POINT('',#42);
-#44=CARTESIAN_POINT('',(-10.0,0.0,5.0));
-#45=VERTEX_POINT('',#44);
-#46=CARTESIAN_POINT('',(10.0,0.0,5.0));
-#47=VERTEX_POINT('',#46);
-/* 3D circle for the bottom edge, used as the SURFACE_CURVE 3D-curve */
-#30=CARTESIAN_POINT('',(0.0,0.0,0.0));
-#31=DIRECTION('',(0.0,0.0,1.0));
-#32=DIRECTION('',(-1.0,0.0,0.0));
-#33=AXIS2_PLACEMENT_3D('',#30,#31,#32);
-#34=CIRCLE('',#33,10.0);
-/* 2D pcurve: a LINE through (pi, 0) along +U.
- * Direction vector magnitude was 1.0 (defect) — corrected to PI so
- * the LINE's natural parametric extent over [0,1] would still be 1
- * unit; we therefore additionally wrap in a TRIMMED_CURVE with
- * trim parameters [0.0, PI] giving an explicit 2D-domain U sweep
- * of length PI starting at U=PI (i.e. covering [pi, 2pi]). */
-#71=CARTESIAN_POINT('',(3.14159265358979,0.0));
-#72=DIRECTION('',(1.0,0.0));
-#73=VECTOR('',#72,3.14159265358979);
-#74=LINE('',#71,#73);
-#78=PARAMETER_VALUE(0.0);
-#79=PARAMETER_VALUE(3.14159265358979);
-#84=TRIMMED_CURVE('',#74,(#78),(#79),.T.,.PARAMETER.);
-#75=( GEOMETRIC_REPRESENTATION_CONTEXT(2)
-      PARAMETRIC_REPRESENTATION_CONTEXT()
-      REPRESENTATION_CONTEXT('parametric','2D') );
-#76=DEFINITIONAL_REPRESENTATION('',(#84),#75);
-#77=PCURVE('',#20,#76);
-#50=SURFACE_CURVE('',#34,(#77),.PCURVE_S1.);
-#60=EDGE_CURVE('',#41,#43,#50,.T.);
-/* For brevity only the bottom edge is fully built. The face's UV
- * range is pinned by the pcurve TRIMMED_CURVE domain [pi, 2pi].
- * ValueOfUV must respect this when projecting 3D points. */
-#61=ORIENTED_EDGE('',*,*,#60,.T.);
-#62=EDGE_LOOP('',(#61));
-#63=FACE_OUTER_BOUND('',#62,.T.);
-#64=ADVANCED_FACE('',(#63),#20,.T.);
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=DIRECTION('',(0.0,0.0,1.0));
+#3=DIRECTION('',(1.0,0.0,0.0));
+#4=AXIS2_PLACEMENT_3D('',#1,#2,#3);
+#5=CYLINDRICAL_SURFACE('',#4,1.0);
+#6=(GEOMETRIC_REPRESENTATION_CONTEXT(2)PARAMETRIC_REPRESENTATION_CONTEXT()REPRESENTATION_CONTEXT('UV','2D'));
+#7=CARTESIAN_POINT('',(-1.0,0.0,0.0));
+#8=CARTESIAN_POINT('',(1.0,0.0,0.0));
+#9=CARTESIAN_POINT('',(-1.0,0.0,1.0));
+#10=CARTESIAN_POINT('',(1.0,0.0,1.0));
+#11=VERTEX_POINT('',#7);
+#12=VERTEX_POINT('',#8);
+#13=VERTEX_POINT('',#9);
+#14=VERTEX_POINT('',#10);
+#15=DIRECTION('',(0.0,0.0,1.0));
+#16=VECTOR('',#15,1.0);
+#17=LINE('',#7,#16);
+#18=CARTESIAN_POINT('',(0.0,0.0));
+#19=DIRECTION('',(0.0,1.0));
+#20=VECTOR('',#19,1.0);
+#21=LINE('',#18,#20);
+#22=DEFINITIONAL_REPRESENTATION('pc_left_shifted',(#21),#6);
+#23=PCURVE('left_period_shifted',#5,#22);
+#24=SURFACE_CURVE('left_seam',#17,(#23),.PCURVE_S1.);
+#25=EDGE_CURVE('left_seam',#11,#13,#24,.T.);
+#26=LINE('',#8,#16);
+#27=CARTESIAN_POINT('',(6.28318530718,0.0));
+#28=DIRECTION('',(0.0,1.0));
+#29=VECTOR('',#28,1.0);
+#30=LINE('',#27,#29);
+#31=DEFINITIONAL_REPRESENTATION('pc_right',(#30),#6);
+#32=PCURVE('right_seam',#5,#31);
+#33=SURFACE_CURVE('right_seam',#26,(#32),.PCURVE_S1.);
+#34=EDGE_CURVE('right_seam',#12,#14,#33,.T.);
+#35=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#36=DIRECTION('',(0.0,0.0,1.0));
+#37=DIRECTION('',(1.0,0.0,0.0));
+#38=AXIS2_PLACEMENT_3D('',#35,#36,#37);
+#39=CIRCLE('',#38,1.0);
+#40=CARTESIAN_POINT('',(3.14159265359,0.0));
+#41=DIRECTION('',(1.0,0.0));
+#42=VECTOR('',#41,3.14159265359);
+#43=LINE('',#40,#42);
+#44=DEFINITIONAL_REPRESENTATION('pc_bot',(#43),#6);
+#45=PCURVE('bot_arc',#5,#44);
+#46=SURFACE_CURVE('bot_arc',#39,(#45),.PCURVE_S1.);
+#47=EDGE_CURVE('bot_arc',#11,#12,#46,.T.);
+#48=CARTESIAN_POINT('',(0.0,0.0,1.0));
+#49=AXIS2_PLACEMENT_3D('',#48,#36,#37);
+#50=CIRCLE('',#49,1.0);
+#51=CARTESIAN_POINT('',(3.14159265359,1.0));
+#52=DIRECTION('',(1.0,0.0));
+#53=VECTOR('',#52,3.14159265359);
+#54=LINE('',#51,#53);
+#55=DEFINITIONAL_REPRESENTATION('pc_top',(#54),#6);
+#56=PCURVE('top_arc',#5,#55);
+#57=SURFACE_CURVE('top_arc',#50,(#56),.PCURVE_S1.);
+#58=EDGE_CURVE('top_arc',#13,#14,#57,.T.);
+#59=ORIENTED_EDGE('',$,$,#47,.T.);
+#60=ORIENTED_EDGE('',$,$,#34,.T.);
+#61=ORIENTED_EDGE('',$,$,#58,.F.);
+#62=ORIENTED_EDGE('',$,$,#25,.F.);
+#63=EDGE_LOOP('',(#59,#60,#61,#62));
+#64=FACE_OUTER_BOUND('',#63,.T.);
+#65=ADVANCED_FACE('',(#64),#5,.T.);
+#66=OPEN_SHELL('',(#65));
+#67=SHELL_BASED_SURFACE_MODEL('',(#66));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('Gp023','Gp023','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#67),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
 ENDSEC;
 END-ISO-10303-21;

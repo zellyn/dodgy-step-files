@@ -15132,7 +15132,7 @@
     "cross_oracle_note": null,
     "description": "A face on a periodic surface (full `CYLINDRICAL_SURFACE`, `TOROIDAL_SURFACE`, etc.) is trimmed to a sub-band of U (e.g. U in [π, 2π]). Pcurve parameterisations for edges following a `CIRCLE` start at the wrong angle relative to the trimmed band; e.g. a pcurve `LINE` starts at u=π instead of u=0, off by π from the circle start angle. Equivalently, projecting a 3D point onto the trimmed periodic surface returns a UV pair outside the face's actual `[UMin,UMax]/[VMin,VMax]` band, even though a valid in-range pre-image exists in another period. Mesh-node reprojection during sheet-metal unfolding lands in the wrong period.",
     "expected_kernel_behavior": "Heal and accept: a point-projection onto a trimmed periodic surface must return a UV that lies inside the face's actual parameter band when an in-range pre-image exists (re-shifting by full periods as required). Must not silently return out-of-band UV.",
-    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2a-pcurves/Gp023.stp",
     "id": "Gp023",
@@ -15171,7 +15171,7 @@
     "cross_oracle_note": null,
     "description": "STEP files contain no pcurves natively; on Rhino export, pcurves are computed against the host surface. After scaling the 3D model by 1000, pcurve evaluation error scales by 1000 too, producing validation messages like \"Distance from end of trim to 3D edge is 0.05 (edge tol = 0.0001)\".",
     "expected_kernel_behavior": "heal; refit pcurves after scale, recompute pcurves at export, or scale `edge_tolerance` consistently.",
-    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=reject ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2a-pcurves/Gp024.stp",
     "id": "Gp024",
@@ -15207,7 +15207,7 @@
     "cross_oracle_note": null,
     "description": "In a face's parametric (UV) domain, the outer `EDGE_LOOP`'s start and end vertices do not coincide within face tolerance, so the contour does not partition the plane (Jordan-curve failure). Typical pattern: face on a `CYLINDRICAL_SURFACE` whose seam edges each carry pcurves referenced via separate `DEFINITIONAL_REPRESENTATION`s that do not align; a gap remains at the u=2π vs u=0 seam between consecutive `ORIENTED_EDGE`s. Caused by missed seam edges on periodic surfaces, or by corrupt pcurves with gaps.",
     "expected_kernel_behavior": "connect the wire endpoints via period-shifting / vertex-merging / seam-insertion as appropriate, or reject as malformed when the gap exceeds the working tolerance budget.",
-    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=shape(5) ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2a-pcurves/Gp026.stp",
     "id": "Gp026",
@@ -15251,7 +15251,7 @@
     "cross_oracle_note": null,
     "description": "A pass that splits closed periodic faces / solids (full `CYLINDRICAL_SURFACE`, `TOROIDAL_SURFACE`) along their seams produces new edges whose pcurves do not satisfy the same-parameter invariant — pcurve and 3D curve disagree at the same parameter value. Typical pattern: an `EDGE_CURVE` between vertices (10,0,0) and (-10,0,0) on a cylinder traverses the seam from u=0 to u=π in 3D, but the pcurve `LINE` is parameterised over [0, 1] instead of [0, π] — same UV path, different parameterisation, so the seam/branch handling is wrong. A topology checker reports invalid edges. The splitter returns a topologically inconsistent intermediate state.",
     "expected_kernel_behavior": "Heal and accept: a face-splitter must restore the same-parameter invariant on the new edges before returning, or reject the operation. Returning an invalid intermediate burdens every caller.",
-    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2a-pcurves/Gp027.stp",
     "id": "Gp027",
@@ -15291,7 +15291,7 @@
     "cross_oracle_note": null,
     "description": "A wire bounding a face on a periodic `CYLINDRICAL_SURFACE` (or torus, etc.) traverses the U=0 / U=2π seam, but the input does not include the seam edge that would carry the wire from one side of the seam to the other. Typical signature: pcurve `LINE` trim range (e.g. starts at u=5.5 with length 1.28) corresponds to a different angular interval on the cylinder than the 3D vertex positions imply (vertex angles around -0.78 rad and +0.50 rad), so pcurve and 3D-vertex angular positions disagree. Downstream shell composition sees an open contour in UV even though the wire is closed in 3D.",
     "expected_kernel_behavior": "detect that the wire crosses the seam and insert the seam edge automatically, or reject as malformed.",
-    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=shape(5) ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2a-pcurves/Gp028.stp",
     "id": "Gp028",
@@ -34849,7 +34849,7 @@
     "cross_oracle_note": null,
     "description": "A face-unification step encounters two same-domain faces with a shared boundary plus one or more internal wires (holes). The algorithm merges the outer boundaries correctly but discards the inner wires entirely, producing a face without its expected holes. Visible as solid mass appearing where a hole should be.",
     "expected_kernel_behavior": "face-merge must preserve all `FACE_INNER_BOUND` wires from input faces; only the outer boundary is unified.",
-    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
+    "expected_validation": "occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-3a-shells/Tsh049.stp",
     "id": "Tsh049",
@@ -34870,6 +34870,7 @@
       "OCCT MANTIS#0027315 (OCCT MANTIS tracker 502 as of 2026-05-02)"
     ],
     "taxonomy": [
+      "crash",
       "topology"
     ],
     "tier3_assertions": [],
@@ -34964,7 +34965,7 @@
     "cross_oracle_note": null,
     "description": "A revolved solid (`SURFACE_OF_REVOLUTION` over a profile that closes through the axis) is imported with face normals pointing inward. Visible as the part appearing inside-out in viewers, or as inverted normals when exported to VRML/STL. Fixture exhibits the kernel's choice of revolved-face orientation when the profile direction and axis convention disagree.",
     "expected_kernel_behavior": "Heal and accept: normalize / coerce the sphere face to be oriented outward (away from the enclosed volume) regardless of profile direction; for non-closed revolutions the convention is \"outward of the swept body\".",
-    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
+    "expected_validation": "occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-3a-shells/Tsh052.stp",
     "id": "Tsh052",
@@ -34986,6 +34987,7 @@
       "OCCT GitHub#699 (OCCT MANTIS tracker 502 as of 2026-05-02)"
     ],
     "taxonomy": [
+      "crash",
       "topology"
     ],
     "tier3_assertions": [],
@@ -50949,7 +50951,7 @@
     "cross_oracle_note": null,
     "description": "An `ADVANCED_FACE` is emitted with an empty bounds list; no `FACE_OUTER_BOUND` and no `FACE_BOUND`. Either the writer dropped the loop or the face represents a complete surface (sphere/torus) where natural bounds are implied.",
     "expected_kernel_behavior": "Heal and accept: when the surface is closed/periodic in U and V, repair the face by inserting natural bounds. Otherwise, reject the face with a diagnostic; never construct a face with an empty wire set.",
-    "expected_validation": "occt=shape(1)/shape(1) gmsh=shape(11) ifc=schema_n/a",
+    "expected_validation": "occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-3c-faces/Tfa002.stp",
     "id": "Tfa002",
@@ -50970,6 +50972,7 @@
       "04-occt-translation Q019"
     ],
     "taxonomy": [
+      "crash",
       "topology"
     ],
     "tier3_assertions": [],
