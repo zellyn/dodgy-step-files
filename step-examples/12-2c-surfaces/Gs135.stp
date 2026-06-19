@@ -1,74 +1,48 @@
 ISO-10303-21;
-/* Gs135 - ShapeUpgrade_ConvertSurfaceToBezierBasis with-self-intersecting
- *
- * Defect: Self-intersecting B-spline surface (rare but valid in topology)
- * gets converted to Bezier patches without detecting the self-intersection.
- * Result: overlapping patches with reversed normals in intersection zone.
- *
- * Reproducer: Degree-4 B-spline with a twisted control-point grid that
- * creates a figure-8 pattern when viewed from certain angle. Self-intersection
- * occurs in interior patch, not at boundaries.
- *
- * Expected kernel behavior:
- *   heal - detect self-intersection before conversion; split at crossing or
- *   report non-orientable surface that cannot be converted. */
+/* Gs135: B-spline surface with self-intersecting twisted control net */
 HEADER;
-FILE_DESCRIPTION(('Gs135 test case','Self-intersecting surface Bezier conversion'),'2;1');
-FILE_NAME('Gs135.stp','2026-06-15T00:00:00',(''),(''),'auto-generated','','');
+FILE_DESCRIPTION(('Gs135'),'2;1');
+FILE_NAME('Gs135.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
 FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('automotive_design');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
-/* Base coordinate system */
-#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
-#11=DIRECTION('',(0.0,0.0,1.0));
-#12=DIRECTION('',(1.0,0.0,0.0));
-#13=AXIS2_PLACEMENT_3D('',#10,#11,#12);
-/* Control grid for self-intersecting surface - 5x3 with twist */
-#20=CARTESIAN_POINT('',(0.0,0.0,0.0));
-#21=CARTESIAN_POINT('',(1.0,-0.5,0.0));
-#22=CARTESIAN_POINT('',(2.0,0.0,0.0));
-#23=CARTESIAN_POINT('',(3.0,0.5,0.0));
-#24=CARTESIAN_POINT('',(4.0,0.0,0.0));
-#25=CARTESIAN_POINT('',(0.0,0.0,1.0));
-#26=CARTESIAN_POINT('',(1.0,2.0,1.5));
-#27=CARTESIAN_POINT('',(2.0,0.0,2.0));
-#28=CARTESIAN_POINT('',(3.0,-2.0,1.5));
-#29=CARTESIAN_POINT('',(4.0,0.0,1.0));
-#30=CARTESIAN_POINT('',(0.0,0.0,2.0));
-#31=CARTESIAN_POINT('',(1.0,-0.5,2.0));
-#32=CARTESIAN_POINT('',(2.0,0.0,2.0));
-#33=CARTESIAN_POINT('',(3.0,0.5,2.0));
-#34=CARTESIAN_POINT('',(4.0,0.0,2.0));
-/* Degree-4 B-spline surface with self-intersection */
-#50=B_SPLINE_SURFACE_WITH_KNOTS('',4,2,(#20,#21,#22,#23,#24,#25,#26,#27,#28,#29,#30,#31,#32,#33,#34),
-  ((0.0,0.0,0.0,0.0,0.0,1.0,1.0,1.0,1.0,1.0),(0.0,0.0,0.0,1.0,1.0,1.0)),
-  ((1.0,1.0,1.0,1.0,1.0),(1.0,1.0,1.0)),.F.,.F.,.F.);
-/* Vertices and edge loop */
-#60=CARTESIAN_POINT('',(0.0,0.0,0.0));
-#61=VERTEX_POINT('',#60);
-#62=CARTESIAN_POINT('',(4.0,0.0,0.0));
-#63=VERTEX_POINT('',#62);
-#70=LINE('',#60,#60);
-#71=EDGE_CURVE('',#61,#63,#70,.T.);
-#72=ORIENTED_EDGE('',*,*,#71,.T.);
-#80=EDGE_LOOP('',(#72));
-#81=FACE_OUTER_BOUND('',#80,.T.);
-#82=ADVANCED_FACE('',(#81),#50,.T.);
-/* PRODUCT chain */
-#9000=PRODUCT_CONTEXT('',#1,'mechanical');
-#9001=PRODUCT('Gs135','Gs135','',(#9000));
-#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
-#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
-#9004=PRODUCT_DEFINITION('','',#9002,#9003);
-#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
-#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
-#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
-#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
-#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
-#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
-#9022=GEOMETRICALLY_BOUNDED_SURFACE_SHAPE_REPRESENTATION('',(#82),#9010);
-#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=CARTESIAN_POINT('',(1.0,0.0,0.0));
+#3=CARTESIAN_POINT('',(2.0,0.0,0.0));
+#4=CARTESIAN_POINT('',(0.0,1.0,3.0));
+#5=CARTESIAN_POINT('',(1.0,1.0,-3.0));
+#6=CARTESIAN_POINT('',(2.0,1.0,3.0));
+#7=CARTESIAN_POINT('',(0.0,2.0,0.0));
+#8=CARTESIAN_POINT('',(1.0,2.0,0.0));
+#9=CARTESIAN_POINT('',(2.0,2.0,0.0));
+#10=B_SPLINE_SURFACE_WITH_KNOTS('twisted_self_intersect',2,2,((#1,#2,#3),(#4,#5,#6),(#7,#8,#9)),.UNSPECIFIED.,.F.,.F.,.F.,(3,3),(3,3),(0.0,1.0),(0.0,1.0),.UNSPECIFIED.);
+#11=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#12=CARTESIAN_POINT('',(2.0,0.0,0.0));
+#13=VERTEX_POINT('',#11);
+#14=VERTEX_POINT('',#12);
+#15=DIRECTION('',(1.0,0.0,0.0));
+#16=VECTOR('',#15,2.0);
+#17=LINE('',#11,#16);
+#18=EDGE_CURVE('',#13,#14,#17,.T.);
+#19=ORIENTED_EDGE('',$,$,#18,.T.);
+#20=EDGE_LOOP('',(#19));
+#21=FACE_OUTER_BOUND('',#20,.T.);
+#22=ADVANCED_FACE('',(#21),#10,.T.);
+#23=OPEN_SHELL('',(#22));
+#24=SHELL_BASED_SURFACE_MODEL('',(#23));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('Gs135','Gs135','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#24),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
 ENDSEC;
 END-ISO-10303-21;

@@ -30426,9 +30426,10 @@ V-parameter gap detection missing: curves separated by 1.0 in V (gap beyond over
 ### N155 — `ShapeAnalysis_CheckSmallFace.CheckPin.tolerance-fallback`
 
 **Axis**: precision contract validation  
-**Defect**: Falls back to default tolerance (1e-4) if myPrecision < 0 (invalid). Negative precision causes undefined comparison in sharpness tests.  
-**Reproducer**: CheckPin with myPrecision=-1. Without fallback: IsoStat uses invalid tolerance, spurious results. With fallback: toler=1e-4 guards comparisons.  
-**Falsifiable**: Guard `if (myPrecision < 0) toler = 1.e-4` prevents invalid tolerance propagation. Remove; negative precision passes through to undefined behavior.
+**Defect**: ShapeAnalysis_CheckSmallFace::CheckPin falls back to a default tolerance (1e-4) when `myPrecision < 0` (invalid). Negative precision causes undefined comparison in sharpness tests. `myPrecision` is a runtime kernel-call parameter set via the analyzer API — not a STEP attribute, so this defect is not encodable in static Part-21. The fixture provides a CheckPin candidate shape (pin face with documentary UNCERTAINTY_MEASURE entries describing the negative-precision scenario); the negative-precision call must be made at runtime to actually reproduce the bug.  
+**Reproducer**: Load this fixture, then call `ShapeAnalysis_CheckSmallFace::SetPrecision(-1.0)` followed by `CheckPin()` on the loaded face. Without the `if (myPrecision < 0) toler = 1.e-4` guard, comparisons receive negative tolerance and IsoStat results are undefined.  
+**Falsifiable**: Guard `if (myPrecision < 0) toler = 1.e-4` prevents invalid tolerance propagation. Remove; negative precision passes through to undefined behavior.  
+**Fixture kind**: scaffold (kernel-test-pair: shape only; runtime invocation required to reproduce)
 - **Tier-3 assertion**: shape_null == True
 
 ### N156 — tolerance_asymmetry conflation

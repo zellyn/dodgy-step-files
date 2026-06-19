@@ -1,72 +1,57 @@
 ISO-10303-21;
-/* N154 - ShapeUpgrade_UnifySameDomain.MergeSubSeq.circle_spatial_closure_tolerance
- * Defect: Fallback closure detection using spatial distance and per-vertex tolerance.
- * Reproducer: Circle arc V0,...,V1 where V0.IsSame(V1)=false but Pnt distance ~1.0e-8.
- * Expected: isClosed=true (spatially closed within tolerance). Without: open chain.
- * Test: tolerance-aware spatial check ensures closure at precision limit.
- */
+/* N154: topologically open wire with sub-tolerance spatial closure */
 HEADER;
-FILE_DESCRIPTION(('N154 circle_spatial_closure_tolerance'),'2;1');
-FILE_NAME('N154.stp','2026-06-16T00:00:00',(''),(''),
-  'cad-research-suite','','');
+FILE_DESCRIPTION(('N154'),'2;1');
+FILE_NAME('N154.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
 FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('automotive design');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
-  'automotive_design',2009,#1);
-/* Origin and axes */
-#10=CARTESIAN_POINT('origin',(0.0,0.0,0.0));
-#11=DIRECTION('z',(0.0,0.0,1.0));
-#12=DIRECTION('x',(1.0,0.0,0.0));
-#13=AXIS2_PLACEMENT_3D('plc',#10,#11,#12);
-/* Circle start point (topologically distinct from end) */
-#20=CARTESIAN_POINT('circle_start',(1.0,0.0,0.0));
-#21=VERTEX_POINT('v_circle_start',#20);
-/* Circle mid point */
-#30=CARTESIAN_POINT('circle_mid',(0.0,1.0,0.0));
-#31=VERTEX_POINT('v_circle_mid',#30);
-/* Circle end point (spatially ~1.0e-8 away from start, topologically distinct) */
-#40=CARTESIAN_POINT('circle_end',(1.0E-8,1.0E-8,0.0));
-#41=VERTEX_POINT('v_circle_end',#40);
-/* Arc 1: start to mid */
-#50=DIRECTION('arc1_dir',(0.0,1.0,0.0));
-#51=VECTOR('arc1_vec',#50,1.0);
-#52=LINE('arc1_line',#20,#51);
-#53=EDGE_CURVE('arc1',#21,#31,#52,.T.);
-/* Arc 2: mid to end (creates closure gap) */
-#60=DIRECTION('arc2_dir',(0.0,-1.0,0.0));
-#61=VECTOR('arc2_vec',#60,1.0);
-#62=LINE('arc2_line',#30,#61);
-#63=EDGE_CURVE('arc2',#31,#41,#62,.T.);
-/* Tolerance markers */
-#80=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
-#81=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
-#82=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
-#83=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#80,
-  'distance_accuracy_value','nominal_tolerance');
-#84=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-8),#80,
-  'distance_accuracy_value','point_distance_gap');
-#85=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#80,
-  'distance_accuracy_value','closure_tolerance');
-#86=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
-  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#83))
-  GLOBAL_UNIT_ASSIGNED_CONTEXT((#80,#81,#82))
-  REPRESENTATION_CONTEXT('closure_tolerance_ctx','3D'));
-/* PRODUCT CHAIN */
-#9000=PRODUCT_CONTEXT('',#1,'mechanical');
-#9001=PRODUCT('N154','N154','',(#9000));
-#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
-#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
-#9004=PRODUCT_DEFINITION('','',#9002,#9003);
-#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
-#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
-#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
-#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
-#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
-#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
-#9021=SHELL_BASED_SURFACE_MODEL('sbsm',(#80));
-#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#9010);
-#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=CARTESIAN_POINT('',(1.0,0.0,0.0));
+#3=CARTESIAN_POINT('',(1.00000001,1.0E-08,0.0));
+#4=CARTESIAN_POINT('',(2.0,0.0,0.0));
+#5=VERTEX_POINT('',#1);
+#6=VERTEX_POINT('',#2);
+#7=VERTEX_POINT('',#3);
+#8=VERTEX_POINT('',#4);
+#9=DIRECTION('',(1.0,0.0,0.0));
+#10=VECTOR('',#9,1.0);
+#11=LINE('',#1,#10);
+#12=EDGE_CURVE('',#5,#6,#11,.T.);
+#13=DIRECTION('',(1.0,0.0,0.0));
+#14=VECTOR('',#13,1.0);
+#15=LINE('',#3,#14);
+#16=EDGE_CURVE('',#7,#8,#15,.T.);
+#17=DIRECTION('',(-1.0,0.0,0.0));
+#18=VECTOR('',#17,2.0);
+#19=LINE('',#4,#18);
+#20=EDGE_CURVE('',#8,#5,#19,.T.);
+#21=ORIENTED_EDGE('',$,$,#12,.T.);
+#22=ORIENTED_EDGE('',$,$,#16,.T.);
+#23=ORIENTED_EDGE('',$,$,#20,.T.);
+#24=EDGE_LOOP('',(#21,#22,#23));
+#25=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#26=DIRECTION('',(0.0,0.0,1.0));
+#27=DIRECTION('',(1.0,0.0,0.0));
+#28=AXIS2_PLACEMENT_3D('',#25,#26,#27);
+#29=PLANE('',#28);
+#30=FACE_OUTER_BOUND('',#24,.T.);
+#31=ADVANCED_FACE('',(#30),#29,.T.);
+#32=OPEN_SHELL('',(#31));
+#33=SHELL_BASED_SURFACE_MODEL('',(#32));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('N154','N154','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#33),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
 ENDSEC;
 END-ISO-10303-21;
