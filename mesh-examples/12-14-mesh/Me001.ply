@@ -1,0 +1,19 @@
+ply
+format ascii 1.0
+comment Me001: non-manifold edge: three triangles share edge (v0, v2)
+comment defect_class: non_manifold_edge
+element vertex 5
+property float x
+property float y
+property float z
+element face 3
+property list uchar int vertex_indices
+end_header
+0 0 0
+1 0 0
+0 1 0
+0 0 1
+-1 0 0
+3 0 1 2
+3 0 2 3
+3 0 2 4

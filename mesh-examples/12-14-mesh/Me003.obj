@@ -1,0 +1,8 @@
+# Me003: near-coincident vertices: 5e-8 separation, distinct entries
+# defect_class: near_coincident_vertices
+v 0 0 0
+v 1 0 0
+v 1.00000005 0 0
+v 0.5 1 0
+f 1 2 4
+f 3 1 4

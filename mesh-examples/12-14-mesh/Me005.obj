@@ -1,0 +1,9 @@
+# Me005: self-intersecting face pair: XY and XZ triangles crossing
+# defect_class: self_intersection_face_pair
+v 0 0 0
+v 1 1 0
+v 1 -1 0
+v 1 0 1
+v 1 0 -1
+f 1 2 3
+f 1 4 5

@@ -155,6 +155,46 @@ class MeshFile:
         readability and diff-friendliness."""
         return json.dumps(self.to_dict(), indent=2, sort_keys=False) + "\n"
 
+    def render_obj(self) -> str:
+        """Render as Wavefront OBJ (interop). Defect metadata is lost;
+        consumers without our JSON format can still load the geometry.
+
+        Degenerate triangles (e.g. `f a b a`) and triangles indexing
+        near-coincident-but-distinct vertices are preserved verbatim —
+        OBJ doesn't dedupe vertices for us. Self-intersection and
+        non-manifold-edge are present in the raw triangle list."""
+        lines = [f"# {self.catalog_id}: {self.title}",
+                 f"# defect_class: {self.defect_class}"]
+        for x, y, z in self.vertices:
+            lines.append(f"v {x:.12g} {y:.12g} {z:.12g}")
+        # OBJ uses 1-based vertex indices.
+        for i0, i1, i2 in self.triangles:
+            lines.append(f"f {i0 + 1} {i1 + 1} {i2 + 1}")
+        return "\n".join(lines) + "\n"
+
+    def render_ply(self) -> str:
+        """Render as ASCII PLY (interop). Same caveat as OBJ — defect
+        metadata isn't preserved, but the actual defective geometry is."""
+        header = [
+            "ply",
+            "format ascii 1.0",
+            f"comment {self.catalog_id}: {self.title}",
+            f"comment defect_class: {self.defect_class}",
+            f"element vertex {len(self.vertices)}",
+            "property float x",
+            "property float y",
+            "property float z",
+            f"element face {len(self.triangles)}",
+            "property list uchar int vertex_indices",
+            "end_header",
+        ]
+        body = []
+        for x, y, z in self.vertices:
+            body.append(f"{x:.12g} {y:.12g} {z:.12g}")
+        for i0, i1, i2 in self.triangles:
+            body.append(f"3 {i0} {i1} {i2}")
+        return "\n".join(header + body) + "\n"
+
 
 # ----- CLI entry point -----
 
@@ -182,6 +222,9 @@ def _run_source(source_path: Path) -> tuple[MeshFile, Path]:
 def main() -> None:
     if len(sys.argv) < 2:
         print("usage: python -m step_corpus.mesh_builder <source.py> [--write]")
+        print("                                                      [--co-emit]")
+        print("  --write    write <id>.mesh.json to mesh-examples/<section>/")
+        print("  --co-emit  also write <id>.obj and <id>.ply (interop formats)")
         raise SystemExit(2)
     source = Path(sys.argv[1])
     mesh, out_path = _run_source(source)
@@ -189,6 +232,13 @@ def main() -> None:
     if "--write" in sys.argv:
         out_path.write_text(rendered)
         print(f"wrote {out_path}")
+        if "--co-emit" in sys.argv:
+            obj_path = out_path.with_suffix("").with_suffix(".obj")
+            ply_path = out_path.with_suffix("").with_suffix(".ply")
+            obj_path.write_text(mesh.render_obj())
+            ply_path.write_text(mesh.render_ply())
+            print(f"wrote {obj_path}")
+            print(f"wrote {ply_path}")
     else:
         print(rendered)
 
