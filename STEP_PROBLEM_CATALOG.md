@@ -28023,78 +28023,78 @@ Box shell with bottom + 4 sides; top face omitted, creating free edges on the up
 ### Tsh124 — ShapeUpgrade_RemoveInternalWires faces-with-multiple-internal-wires
 
 Face with 3 internal wires (holes); RemoveInternalWires iterates internal wires but removes them in wrong order, leaving inconsistent face state. OCCT processes multi-hole faces; iteration order mismatch causes dangling wire references.
-
+- **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 ### Tsh125 — ShapeFix_Shell.Perform recursive context
 
 Shell with 4 faces requiring orientation fixing; Perform calls FixFaceOrientation which calls Perform recursively; recursion termination uses depth counter but doesn't reset for sibling-face processing. Second invocation encounters depth state from first face.
-
+- **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 ### Tsh126 — ShapeAnalysis_Shell.CheckOrientedShells coplanar-faces
 
 Shell with two coplanar abutting faces sharing an edge; CheckOrientedShells treats them as a flat surface and reports inconclusive result. Face normals are collinear; orientation check fails to distinguish manifold from non-manifold.
-
+- **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 ### Tsh127 — ShapeUpgrade_ShellSewing.Apply different-shell-tolerances
 
 Two shells in sewing input (Shell 1 and Shell 2) have implicitly different tolerance contexts; Apply uses first shell's tolerance, ignoring second's. Tolerance mismatch causes stitching to miss seams or create gaps.
-
+- **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 ### Tsh128 — ShapeFix_Shell.FixFaceOrientation early-exit
 
 Shell with 5 faces; Perform's early-exit condition (myStatus contains FAIL2) triggers on false positive during face 2 processing, halting before faces 3–5 are processed. Remaining faces skip orientation fixing.
-
+- **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 ### Tsh129 — ShapeFix_Shell.Perform compound-input
 **Defect**: ShapeFix_Shell.Perform receives COMPOUND with multiple CLOSED_SHELLs; processes first shell only, silently ignores rest.
 **Expected**: All shells should be processed or error raised.
 **Fixture**: Two unit squares in parallel planes (z=0, z=2) wrapped in COMPOUND; SHELL_BASED_SURFACE_MODEL contains both.
 - **Tier-3 assertion**: n_faces_total == 2
-
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(18) ifc=schema_n/a`
 ### Tsh130 — ShapeAnalysis_Shell.CheckOrientedShells closed-shell-with-free-edges
 **Defect**: CLOSED_SHELL entity marker claims closure, but topology has free edges (5 cube faces; one missing = free boundary).
 **Expected**: CheckOrientedShells should validate that CLOSED marker matches actual topological closure.
 **Fixture**: Cube topology missing one face (right face omitted); CLOSED_SHELL claims closure with 5 faces only.
 - **Tier-3 assertion**: n_faces_total == 5
-
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=reject ifc=schema_n/a`
 ### Tsh131 — ShapeUpgrade_ShellSewing.Apply already-sewn
 **Defect**: Sewing input is already well-formed sewn shell with matching edge pairs; Apply proceeds anyway, accumulating tolerance noise on merged edges.
 **Expected**: Apply should detect sewn closure and short-circuit without re-processing.
 **Fixture**: Perfect cube (6 faces, all edges shared); CLOSED_SHELL with no free boundaries or duplicate edges.
 - **Tier-3 assertion**: n_faces_total == 6
-
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=reject ifc=schema_n/a`
 ### Tsh132 — ShapeFix_Shell.FixFaceOrientation flat-shell
 **Defect**: Shell consists entirely of coplanar faces (flat shell, 2x2 grid of unit squares in z=0).
 **Expected**: FixFaceOrientation's normal-vector comparison fails when all normals are parallel/anti-parallel (indeterminate).
 **Fixture**: Four coplanar unit squares arranged in 2x2 grid; all in z=0 plane; all normals (0,0,±1).
 - **Tier-3 assertion**: n_faces_total == 4
-
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(36) ifc=schema_n/a`
 ### Tsh133 — ShapeUpgrade_RemoveLocations.Remove top-down
 **Defect**: RemoveLocations called top-down on COMPOUND with transformed sub-shapes; parent transform removed but child local transforms stale.
 **Expected**: Child geometry should update when parent location removed.
 **Fixture**: COMPOUND containing transformed shell instances with AXIS2_PLACEMENT_3D refs; top-level cascading removal.
 - **Tier-3 assertion**: n_faces_total == 1
-
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### Tsh134 — CheckOrientedShells edge-tolerance
 
 Shell with two adjacent faces sharing an edge within geometric tolerance (1.0E-7mm) but with slightly offset vertex positions (within tolerance, but identity-mismatch triggers false-positive). Tests ShapeAnalysis_Shell::CheckOrientedShells vertex-matching using identity rather than tolerance-aware comparison.
 - **Tier-3 assertion**: n_faces_total == 2
-
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(18) ifc=schema_n/a`
 ### Tsh135 — ShapeUpgrade_ShellSewing.Apply face-with-multiple-edges-to-merge
 
 Two faces with three edges each that should all sew; Apply merges first matching edge-pair and ignores remaining two edges. Tests ShapeUpgrade_ShellSewing::Apply incomplete multi-edge merge detection.
 - **Tier-3 assertion**: n_faces_total == 2
-
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(14) ifc=schema_n/a`
 ### Tsh136 — ShapeFix_Shell.FixFaceOrientation degenerate-shell-empty
 
 Empty shell (zero faces). ShapeFix_Shell::FixFaceOrientation iterates zero times over face list but returns success status, masking the degenerate input.
 - **Tier-3 assertion**: load == "ok"
-
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 ### Tsh137 — ShapeAnalysis_Shell.LoadShells nested-compound
 
 Compound containing compound containing shell. ShapeAnalysis_Shell::LoadShells recursive descent terminates at first nesting level, failing to extract inner shell.
 - **Tier-3 assertion**: n_faces_total == 1
-
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### Tsh138 — ShapeFix_Shell.Perform repeated-call-state
 
 Shell with inverted face orientation. ShapeFix_Shell::Perform called twice; second call reuses myStatus from first Perform without reset, skipping needed orientation fixes. Tests state-accumulation regression.
 - **Tier-3 assertion**: n_faces_total == 2
-
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(15) ifc=schema_n/a`
 ### Tsh139 — ShapeFix_Shell.FixFaceOrientation cylindrical-shell
 
 **Defect**: Cylindrical pipe (open shell with two end-caps and cylindrical wall). Orientation propagation across the cylindrical seam fails; faces have inconsistent outward normals.
@@ -28104,7 +28104,7 @@ Shell with inverted face orientation. ShapeFix_Shell::Perform called twice; seco
 **Expected behavior**: FixFaceOrientation should propagate consistent orientation across seams.
 
 **Fault axis**: `orientation_seam_inconsistency`
-
+- **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 ### Tsh140 — ShapeAnalysis_Shell.CheckOrientedShells curved-faces
 
 **Defect**: Shell with mix of planar and curved (cylindrical) faces. Orientation consistency check uses planar normal logic for curved faces, yielding false negatives.
@@ -28114,7 +28114,7 @@ Shell with inverted face orientation. ShapeFix_Shell::Perform called twice; seco
 **Expected behavior**: CheckOrientedShells should validate curved-face normals separately.
 
 **Fault axis**: `curved_face_normal_fallacy`
-
+- **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 ### Tsh141 — ShapeUpgrade_ShellSewing.Apply self-sewing
 
 **Defect**: Sewing input includes a strip face whose two long edges should merge with themselves (strip seam). Apply doesn't allow self-pairing and fails silently.
@@ -28125,7 +28125,7 @@ Shell with inverted face orientation. ShapeFix_Shell::Perform called twice; seco
 
 **Fault axis**: `self_pairing_rejection`
 - **Tier-3 assertion**: load == "ok"
-
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 ### Tsh142 — ShapeFix_Shell.Perform overlapping-faces
 
 **Defect**: Shell with two faces that overlap on a sub-region. Perform doesn't detect overlap and resulting shell has tangled topology.
@@ -28136,7 +28136,7 @@ Shell with inverted face orientation. ShapeFix_Shell::Perform called twice; seco
 
 **Fault axis**: `undetected_face_overlap`
 - **Tier-3 assertion**: load == "ok"
-
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 ### Tsh143 — ShapeAnalysis_Shell.BadEdges shared-edge-with-different-curves
 
 **Defect**: Two faces share a topological edge but their curve geometries differ (one is line, other is spline). BadEdges should detect curve mismatch.
@@ -28147,32 +28147,32 @@ Shell with inverted face orientation. ShapeFix_Shell::Perform called twice; seco
 
 **Fault axis**: `curve_geometry_mismatch`
 - **Tier-3 assertion**: load == "ok"
-
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 ### Tsh144 — ShapeFix_Shell.FixFaceOrientation T-shaped-non-manifold
 
 Shell with three faces meeting at a shared edge. FixFaceOrientation picks one orientation as propagation direction; the other two remain flipped. Tests non-manifold edge handling in orientation repair.
 - **Tier-3 assertion**: load == "ok"
-
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 ### Tsh145 — ShapeAnalysis_Shell.CheckOrientedShells one-face-shell-edge-cases
 
 Single-face shell with orientation flag set to `.F.` (reversed). CheckOrientedShells semantics for 1-face shells are undocumented; tests whether solver correctly handles the edge case of a minimal manifold.
 - **Tier-3 assertion**: load == "ok"
-
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 ### Tsh146 — ShapeUpgrade_ShellSewing.Apply different-tolerance-per-face
 
 Two coplanar faces with a 10x tolerance difference (0.001 vs 0.0001 units at shared edge). Apply uses global tolerance only; reproduces missing per-face tolerance tracking during sewing.
 - **Tier-3 assertion**: load == "ok"
-
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 ### Tsh147 — ShapeFix_Shell.Perform fix-then-revert
 
 Two adjacent faces sharing an edge; second face has inverted orientation. Perform fixes orientation but subsequent FixFaceOrientation pass reverts fix due to status flag confusion. Tests repeated-pass stability.
 - **Tier-3 assertion**: load == "ok"
-
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 ### Tsh148 — ShapeAnalysis_Shell.FreeEdges count-zero
 
 Two-triangle shell with all edges shared between faces (no free boundary). FreeEdges should return empty, but algorithm may misinterpret empty list as "uninitialized".
 - **Tier-3 assertion**: load == "ok"
-
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 ### Tsh149 — ShapeFix_Shell.FixFaceOrientation hexagonal-shell
 
 **Defect**: Hexagonal prism (8 faces); FixFaceOrientation traverses faces and propagation around the hexagon takes multiple passes. Tests orientation logic correctness with closed topological loops that create interaction patterns between adjacent faces.
@@ -28182,7 +28182,7 @@ Two-triangle shell with all edges shared between faces (no free boundary). FreeE
 **Fixture**: `/Users/zellyn/gh/dodgy-step-files/step-examples/12-3a-shells/Tsh149.stp`
 
 ---
-
+- **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 ### Tsh150 — ShapeAnalysis_Shell.CheckOrientedShells thin-shell
 
 **Defect**: Shell that's effectively 2D (very thin extruded); orientation logic uses normal vectors but the thin extrusion makes normals near-coplanar. Tests robustness when geometric orientation becomes numerically ambiguous.
@@ -28193,7 +28193,7 @@ Two-triangle shell with all edges shared between faces (no free boundary). FreeE
 
 ---
 - **Tier-3 assertion**: load == "ok"
-
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 ### Tsh151 — ShapeUpgrade_ShellSewing.Apply asymmetric-tolerance
 
 **Defect**: Two faces with tolerances on the same edge differ by 100x; Apply uses the smaller and the larger face's edge gets a tolerance-violation. Tests tolerance bias logic during sewing.
@@ -28204,7 +28204,7 @@ Two-triangle shell with all edges shared between faces (no free boundary). FreeE
 
 ---
 - **Tier-3 assertion**: load == "ok"
-
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 ### Tsh152 — ShapeFix_Shell.Perform large-shell-pagination
 
 **Defect**: Shell with 100+ faces; Perform processes in batches but batch boundary causes a face to be skipped. Tests batch-processing logic robustness at pagination boundaries.
@@ -28215,7 +28215,7 @@ Two-triangle shell with all edges shared between faces (no free boundary). FreeE
 
 ---
 - **Tier-3 assertion**: load == "ok"
-
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 ### Tsh153 — ShapeAnalysis_Shell.LoadShells with-deeply-nested-compound
 
 **Defect**: Compound containing compound containing compound containing shells; LoadShells's recursion depth limit truncates. Tests recursion unwinding on deeply nested compound topology.
@@ -28226,7 +28226,7 @@ Two-triangle shell with all edges shared between faces (no free boundary). FreeE
 
 ---
 - **Tier-3 assertion**: load == "ok"
-
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 ### Tsh154 — ShapeFix_Shell.FixFaceOrientation pyramid-with-apex
 
 **Defect**: Pyramid shell where the apex vertex is shared by N triangular faces (fan configuration). Orientation propagation from apex doesn't decide consistent direction; some faces flip outward, others inward.
@@ -28237,7 +28237,7 @@ Two-triangle shell with all edges shared between faces (no free boundary). FreeE
 
 ---
 - **Tier-3 assertion**: load == "ok"
-
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 ### Tsh155 — ShapeAnalysis_Shell.CheckOrientedShells with-degenerate-shell
 
 **Defect**: Shell where all faces are degenerate (zero-area). CheckOrientedShells's normal-based test produces a verdict but the verdict is meaningless on zero-area geometry.
@@ -28248,7 +28248,7 @@ Two-triangle shell with all edges shared between faces (no free boundary). FreeE
 
 ---
 - **Tier-3 assertion**: load == "ok"
-
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 ### Tsh156 — ShapeUpgrade_ShellSewing.Apply mismatch-curve-types
 
 **Defect**: Shells to merge have edges of different curve types (LINE vs BSpline) at corresponding seam positions. Apply doesn't unify the types before merging.
@@ -28258,7 +28258,7 @@ Two-triangle shell with all edges shared between faces (no free boundary). FreeE
 **Impact**: Merged shell contains mixed curve types at same edge; downstream algorithms expect uniform representation.
 
 ---
-
+- **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 ### Tsh157 — ShapeFix_Shell.Perform circular-fix-dependency
 
 **Defect**: Three faces where fixing face A requires fixing face B which requires fixing face A. Perform doesn't detect circular dependency and may loop or produce inconsistent result.
@@ -28269,7 +28269,7 @@ Two-triangle shell with all edges shared between faces (no free boundary). FreeE
 
 ---
 - **Tier-3 assertion**: load == "ok"
-
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 ### Tsh158 — ShapeAnalysis_Shell.BadEdges seam-edge-direction
 
 **Defect**: Shell with seam edges where the two halves traverse the seam in same direction (should be opposite). BadEdges should flag this but uses 3D distance only, missing the direction mismatch.
@@ -28277,7 +28277,7 @@ Two-triangle shell with all edges shared between faces (no free boundary). FreeE
 **Trigger**: Periodic surface with seam edge traversed same way on both halves; BadEdges checks 3D proximity, not parametric direction.
 
 **Impact**: Seam edge direction inconsistency undetected; breaks surface continuity assumptions in downstream healing.
-
+- **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 ### Tsh159 — ShapeFix_Shell.FixFaceOrientation tetrahedron-flipped
 
 **Problem**: Orientation propagation around triangular faces uses adjacency-only logic, missing one mis-oriented face in a tetrahedron when consensus differs. Affects SetFaceCheckStatus flow where one face orientation violates the global consensus but adjacency-based flip detection doesn't catch it.
@@ -28285,7 +28285,7 @@ Two-triangle shell with all edges shared between faces (no free boundary). FreeE
 **Fixture**: Regular tetrahedron with west face marked `.F.` (inverted); all other faces outward-oriented. Edge reuse ensures no free edges, but face4's flipped same_sense breaks propagation chain.
 
 ---
-
+- **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 ### Tsh160 — ShapeAnalysis_Shell.CheckOrientedShells inverted-trace
 
 **Problem**: A shell where all faces are consistently inverted (inward-facing normals) forms a topologically valid cycle but has globally reversed orientation. Implicit orientation trace yields a closed loop but travels the "inside-out" direction, confusing orientation consensus checks.
@@ -28294,7 +28294,7 @@ Two-triangle shell with all edges shared between faces (no free boundary). FreeE
 
 ---
 - **Tier-3 assertion**: n_faces_total == 6
-
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(26) ifc=schema_n/a`
 ### Tsh161 — ShapeUpgrade_ShellSewing.Apply with-history-tracking
 
 **Problem**: ShellSewing's Apply method produces correct topological output but doesn't record intermediate geometry states in the history map. Caller cannot trace which edges were merged or which faces were refined.
@@ -28302,7 +28302,7 @@ Two-triangle shell with all edges shared between faces (no free boundary). FreeE
 **Fixture**: Two coplanar triangles sharing one edge, second triangle vertex offset by 0.001 units in z to simulate near-coincident geometry requiring sewing. Valid output, but history-map defect breaks change auditing.
 
 ---
-
+- **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 ### Tsh162 — ShapeFix_Shell.Perform reports-fixed-but-still-broken
 
 **Problem**: Pyramid with apex triangles exhibiting subtle face-orientation and edge-sense mismatches. Perform() reports myStatus=DONE (successfully fixed) but the West face remains inverted; defect persists because fix logic doesn't re-validate after repair.
@@ -28310,7 +28310,7 @@ Two-triangle shell with all edges shared between faces (no free boundary). FreeE
 **Fixture**: Square base + 4 triangular sides. West face's same_sense=`.F.` and reversed edges simulate state where simple flip detection passes but deeper consistency checks fail. Perform's exit condition is satisfied prematurely.
 
 ---
-
+- **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 ### Tsh163 — ShapeAnalysis_Shell.FreeEdges edge-by-vertex-coincidence
 
 **Problem**: Two edges reference the same vertex (topological coincidence) but their geometry diverges at that vertex. FreeEdges treats them as connected (no free edge) because adjacency checks vertex identity, not geometric continuity.
@@ -28320,66 +28320,66 @@ Two-triangle shell with all edges shared between faces (no free boundary). FreeE
 ---
 
 **Catalog**: Wave 43 baseline — 5 STEP shell fixtures targeting OCCT heal subsystem consensus/orientation/sewing/history defects. All fixtures use AUTOMOTIVE_DESIGN v3.1.1 schema, SHELL_BASED_SURFACE_MODEL wrapper, and mandatory PRODUCT chain. ID range Tsh159–Tsh163.
-
+- **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 ### Tsh164 — ShapeFix_Shell.Perform with-context-pollution
 
 **Defect class**: state_accumulation | ShapeFix_Shell.Perform.context_null_initialize
 
 Shell from previous fix pass that left context state behind; Perform() inherits stale ShapeBuild_ReShape state. Multiple sequential calls without Context().IsNull() check reuse accumulated reshape operations, causing double-fixes on identical geometry.
 - **Tier-3 assertion**: n_faces_total == 2
-
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(15) ifc=schema_n/a`
 ### Tsh165 — ShapeAnalysis_Shell.CheckOrientedShells multi-component
 
 **Defect class**: verdict_merge_loss | ShapeAnalysis_Shell.CheckOrientedShells_at142
 
 Shell with 3 disjoint sub-shells (isolated face clusters). CheckOrientedShells reports per-component but verdict-merge logic loses one sub-shell from final verdict. Tests compound decomposition robustness.
 - **Tier-3 assertion**: n_faces_total == 3
-
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(27) ifc=schema_n/a`
 ### Tsh166 — ShapeUpgrade_ShellSewing.Apply face-with-same-base
 
 **Defect class**: deduplication_skip | ShapeUpgrade_ShellSewing.Apply_at83
 
 Sewing input has two faces sharing the same underlying surface entity (PLANE reference). Apply doesn't detect duplication and produces overlapping output faces. Tests surface identity checking.
 - **Tier-3 assertion**: n_faces_total == 2
-
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(10) ifc=schema_n/a`
 ### Tsh167 — ShapeFix_Shell.FixFaceOrientation with-empty-loop
 
 **Defect class**: edge_loop_degeneracy | ShapeFix_Shell.FixFaceOrientation_at1428
 
 Shell with one face whose outer loop is empty (zero edges). FixFaceOrientation produces arbitrary orientation for degenerate face. Tests boundary validation in orientation fix.
 - **Tier-3 assertion**: n_faces_total == 2
-
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(10) ifc=schema_n/a`
 ### Tsh168 — ShapeAnalysis_Shell.LoadShells skipping-non-shell
 
 **Defect class**: silent_filtering | ShapeAnalysis_Shell.LoadShells_at46
 
 Input compound has mixed entities (shells + solids + faces). LoadShells filters to shells only and silently ignores non-shell children without warning. Tests compound entity filtering semantics.
 - **Tier-3 assertion**: n_faces_total == 1
-
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### Tsh169 — ShapeFix_Shell.Perform shell-with-floating-faces
 
 Shell containing disconnected faces not reachable from main topology. Perform() fails to isolate floating face; output shell retains unpredictable adjacency.
 - **Tier-3 assertion**: n_faces_total == 2
-
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(18) ifc=schema_n/a`
 ### Tsh170 — ShapeAnalysis_Shell.CheckOrientedShells with-zero-tolerance
 
 Adjacent faces with exact edge coincidence. CheckOrientedShells(tolerance=0) produces ambiguous match verdicts; adjacent-face orientation propagation undefined.
 - **Tier-3 assertion**: n_faces_total == 2
-
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(15) ifc=schema_n/a`
 ### Tsh171 — ShapeUpgrade_ShellSewing.Apply with-cross-shell-intersection
 
 Two distinct shells geometrically overlapping. Apply() ignores intersection; merged shell contains self-intersecting face topology.
 - **Tier-3 assertion**: n_faces_total == 2
-
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(18) ifc=schema_n/a`
 ### Tsh172 — ShapeFix_Shell.FixFaceOrientation with-3-faces-sharing-vertex
 
 Non-manifold vertex shared by three faces with conflicting outward normals. FixFaceOrientation() orientation propagation cannot resolve 3-way conflict.
-
+- **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 ### Tsh173 — ShapeAnalysis_Shell.LoadShells with-recursive-compound
 
 Compound with nested shell references. LoadShells() recursion incomplete when detecting cyclic structure; verdict incomplete or truncated.
 - **Tier-3 assertion**: n_faces_total == 2
-
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(18) ifc=schema_n/a`
 ### Tsh174 — ShapeFix_Shell.FixFaceOrientation with-empty-shell-after-fix
 
 **Defect**: Shell where Perform removes all faces; FixFaceOrientation runs on the empty shell and reports success without detecting the void.
@@ -28388,7 +28388,7 @@ Compound with nested shell references. LoadShells() recursion incomplete when de
 
 **Input**: Shell with two coplanar degenerate faces (line segments with opposite orientations). Each forms a closed loop via reversed edge self-references.
 - **Tier-3 assertion**: n_faces_total == 2
-
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(8) ifc=schema_n/a`
 ### Tsh175 — ShapeAnalysis_Shell.CheckOrientedShells with-self-touching-shell
 
 **Defect**: Shell where two faces touch at a single point (not edge); CheckOrientedShells uses edge-only adjacency and misses the touch.
@@ -28397,7 +28397,7 @@ Compound with nested shell references. LoadShells() recursion incomplete when de
 
 **Input**: Shell with two square faces meeting at diagonal corner (1,1). First face: [0,1]x[0,1]; second: [1,2]x[1,2]. Both on same plane, sharing only vertex point.
 - **Tier-3 assertion**: shape_null == True
-
+- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 ### Tsh176 — ShapeUpgrade_ShellSewing.Apply with-coincident-but-different-orientation
 
 **Defect**: Two shells with coincident faces in opposite orientations; Apply doesn't detect orientation conflict and produces overlapping output.
@@ -28406,7 +28406,7 @@ Compound with nested shell references. LoadShells() recursion incomplete when de
 
 **Input**: Compound with two open shells. Shell 1: square [0,1]x[0,1] on plane Z=0 with normal +Z. Shell 2: identical square with normal -Z (all edges reversed). No shared edge loop between them.
 - **Tier-3 assertion**: shape_null == True
-
+- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 ### Tsh177 — ShapeFix_Shell.Perform infinite-loop-detection
 
 **Defect**: Shell whose fix repeatedly invalidates a previous fix; Perform should detect loop but uses simple counter that fires too late.
@@ -28415,7 +28415,7 @@ Compound with nested shell references. LoadShells() recursion incomplete when de
 
 **Input**: Shell with two faces sharing same triangular edge loop. Face 1: normal +Z. Face 2: normal -Z (reversed). Fix oscillates between correcting face orientations without global stabilization.
 - **Tier-3 assertion**: n_faces_total == 2
-
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(8) ifc=schema_n/a`
 ### Tsh178 — ShapeAnalysis_Shell.FreeEdges with-degenerate-edges
 
 **Defect**: Shell where some edges are degenerate (zero-length); FreeEdges counts them as free even though they don't bound a face.
@@ -28424,42 +28424,42 @@ Compound with nested shell references. LoadShells() recursion incomplete when de
 
 **Input**: Shell with one normal triangular face and three separate degenerate self-loop edges (zero-length from each triangle vertex back to itself). FreeEdges analysis should exclude degenerates; instead counts all three as free edges.
 - **Tier-3 assertion**: n_faces_total == 1
-
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(7) ifc=schema_n/a`
 ### Tsh179 — ShapeFix_Shell.FixFaceOrientation hex-prism orientation propagation oscillation
 - **Defect class**: Orientation propagation across 6 lateral faces of hexagonal prism creates oscillating fix-pattern
 - **Trigger**: Call FixFaceOrientation() on shell with 8 faces (hex base, top, 6 lateral faces); propagation walks edges and flips orientation at each lateral face inconsistently
 - **Expected failure**: Lateral faces alternate between correct and flipped normals; final state oscillates between two invalid patterns
 - **Test assertion**: Shell orientation state after Perform() should stabilize, not oscillate between two configurations
 - **Tier-3 assertion**: shape_null == True
-
+- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 ### Tsh180 — ShapeAnalysis_Shell.CheckOrientedShells single-face zero-area
 - **Defect class**: Shell containing single face with computed area exactly 0.0; normal-based orientation test fails to classify orientation
 - **Trigger**: Call CheckOrientedShells() on CLOSED_SHELL with one degenerate face (e.g., all edges collinear or all vertices coplanar in line)
 - **Expected failure**: Normal-based orientation test produces NaN or inf during determinant computation; returns false instead of exception-free classification
 - **Test assertion**: CheckOrientedShells() should classify shell orientation without raising exception, even for zero-area faces
 - **Tier-3 assertion**: load == "ok"
-
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 ### Tsh181 — ShapeUpgrade_ShellSewing.Apply bridge tolerance too large
 - **Defect class**: Sewing tolerance parameter set so large that all faces satisfy "merge" criteria; Apply() produces single-face shell from multi-face input
 - **Trigger**: Call Apply() with sewing tolerance >> max edge distance; two separate coplanar faces merge into one
 - **Expected failure**: Output shell contains only 1 face instead of 2; sewing logic collapses topology
 - **Test assertion**: Shell face count should not decrease below input count when tolerance is explicitly bounded
 - **Tier-3 assertion**: load == "ok"
-
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 ### Tsh182 — ShapeFix_Shell.Perform face removal with shared edge
 - **Defect class**: Removed face's edge is still referenced by another face in same shell; Perform's removal leaves dangling reference
 - **Trigger**: Call Perform() to fix shell where removed face and remaining face share edge; edge list in remaining face still contains reference to removed edge
 - **Expected failure**: Dangling reference causes downstream topology query to fail (e.g., edge iteration on remaining face)
 - **Test assertion**: After Perform(), all edges in remaining faces must exist in shell edge set; no dangling references
 - **Tier-3 assertion**: load == "ok"
-
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 ### Tsh183 — ShapeAnalysis_Shell.LoadShells with-shell-marker-but-no-faces
 - **Defect class**: Shape labeled as CLOSED_SHELL but containing zero faces; LoadShells produces empty entry in result
 - **Trigger**: Call LoadShells() on SHELL_BASED_SURFACE_MODEL containing CLOSED_SHELL('name',()) with empty face list
 - **Expected failure**: Result contains empty shell entry; CheckOrientedShells() on empty shell causes null dereference or assertion on normal computation
 - **Test assertion**: LoadShells() should skip or flag empty shells; downstream operations should not receive empty shell instances
 - **Tier-3 assertion**: load == "ok"
-
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 ### Tsh184 — ShapeFix_Shell.FixFaceOrientation duplicate-face inconsistency
 - **Category**: §12.3a shells (sub-class: duplicate-mutation)
 - **Sources**: OCCT/ShapeFix_Shell.FixFaceOrientation (line 1440)
@@ -28470,7 +28470,7 @@ Compound with nested shell references. LoadShells() recursion incomplete when de
 - **Fixture path**: step-examples/12-3a-shells/Tsh184.stp
 - **Fixture kind**: scaffold
 - **Tier-3 assertion**: n_faces_total == 3
-
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=reject ifc=schema_n/a`
 ### Tsh185 — ShapeFix_Solid.Perform context-stale-state cumulative fixes
 - **Category**: §12.3a shells (sub-class: state-accumulation)
 - **Sources**: OCCT/ShapeFix_Solid.Perform (line 463)
@@ -28481,7 +28481,7 @@ Compound with nested shell references. LoadShells() recursion incomplete when de
 - **Fixture path**: step-examples/12-3a-shells/Tsh185.stp
 - **Fixture kind**: scaffold
 - **Tier-3 assertion**: n_faces_total == 6
-
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=reject ifc=schema_n/a`
 ### Tsh186 — ShapeFix_Solid.SolidFromShell orientation-infinite-point non-closed shell
 - **Category**: §12.3a shells (sub-class: precondition-violation)
 - **Sources**: OCCT/ShapeFix_Solid.SolidFromShell (line 668)
@@ -28492,7 +28492,7 @@ Compound with nested shell references. LoadShells() recursion incomplete when de
 - **Fixture path**: step-examples/12-3a-shells/Tsh186.stp
 - **Fixture kind**: scaffold
 - **Tier-3 assertion**: n_faces_total == 5
-
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=reject ifc=schema_n/a`
 ### Tsh187 — BRepBuilderAPI_Sewing.AnalysisNearestEdges section-bound-lookup gate
 - **Category**: §12.3a shells (sub-class: healer-state)
 - **Sources**: OCCT/BRepBuilderAPI_Sewing.AnalysisNearestEdges (line 1636)
@@ -28503,7 +28503,7 @@ Compound with nested shell references. LoadShells() recursion incomplete when de
 - **Fixture path**: step-examples/12-3a-shells/Tsh187.stp
 - **Fixture kind**: scaffold
 - **Tier-3 assertion**: shape_null == True
-
+- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 ### Tsh188 — ShapeFix_Shell.Perform progress-abort inconsistent-status
 - **Category**: §12.3a shells (sub-class: inconsistent-error-reporting)
 - **Sources**: OCCT/ShapeFix_Shell.Perform (line 130)
@@ -28514,7 +28514,7 @@ Compound with nested shell references. LoadShells() recursion incomplete when de
 - **Fixture path**: step-examples/12-3a-shells/Tsh188.stp
 - **Fixture kind**: scaffold
 - **Tier-3 assertion**: n_faces_total == 4
-
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=reject ifc=schema_n/a`
 ### Tsh189 — ShapeAnalysis_Shell.BadEdges uninitialized compound
 - **Category**: §12.3a shells (sub-class: initialization-order)
 - **Sources**: OCCT/ShapeAnalysis_Shell::BadEdges (line 283)
@@ -28525,7 +28525,7 @@ Compound with nested shell references. LoadShells() recursion incomplete when de
 - **Fixture path**: step-examples/12-3a-shells/Tsh189.stp
 - **Fixture kind**: scaffold
 - **Tier-3 assertion**: shape_null == True
-
+- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 ### Tsh190 — ShapeAnalysis_Shell.FreeEdges uninitialized compound
 - **Category**: §12.3a shells (sub-class: initialization-order)
 - **Sources**: OCCT/ShapeAnalysis_Shell::FreeEdges (line 305)
@@ -28536,7 +28536,7 @@ Compound with nested shell references. LoadShells() recursion incomplete when de
 - **Fixture path**: step-examples/12-3a-shells/Tsh190.stp
 - **Fixture kind**: scaffold
 - **Tier-3 assertion**: shape_null == True
-
+- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 ### Tsh191 — ShapeFix_Shell.FixFaceOrientation multi-connected edge unbounded
 - **Category**: §12.3a shells (sub-class: unbounded-iteration)
 - **Sources**: OCCT/ShapeFix_Shell::FixFaceOrientation (line 1455)
@@ -28547,7 +28547,7 @@ Compound with nested shell references. LoadShells() recursion incomplete when de
 - **Fixture path**: step-examples/12-3a-shells/Tsh191.stp
 - **Fixture kind**: scaffold
 - **Tier-3 assertion**: n_faces_total == 3
-
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=reject ifc=schema_n/a`
 ### Tsh192 — ShapeFix_Shell.Perform closed-flag sync-failure
 - **Category**: §12.3a shells (sub-class: invariant-violation)
 - **Sources**: OCCT/ShapeFix_Shell::Perform (line 159)
@@ -28558,7 +28558,7 @@ Compound with nested shell references. LoadShells() recursion incomplete when de
 - **Fixture path**: step-examples/12-3a-shells/Tsh192.stp
 - **Fixture kind**: scaffold
 - **Tier-3 assertion**: n_faces_total == 1
-
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=reject ifc=schema_n/a`
 ### Tsh193 — ShapeUpgrade_ShellSewing.Apply tolerance-boundary classification
 - **Category**: §12.3a shells (sub-class: tolerance-branch)
 - **Sources**: OCCT/ShapeUpgrade_ShellSewing::Apply (line 99)
@@ -28569,7 +28569,7 @@ Compound with nested shell references. LoadShells() recursion incomplete when de
 - **Fixture path**: step-examples/12-3a-shells/Tsh193.stp
 - **Fixture kind**: scaffold
 - **Tier-3 assertion**: n_faces_total == 2
-
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(18) ifc=schema_n/a`
 ### Tsh194 — ShapeAnalysis_Shell.BadEdges uninitialized extent
 - **Category**: §12.3a shells (sub-class: initialization-order; lazy-init)
 - **Sources**: OCCT/ShapeAnalysis_Shell (line 283)
@@ -28580,7 +28580,7 @@ Compound with nested shell references. LoadShells() recursion incomplete when de
 - **Fixture path**: step-examples/12-3a-shells/Tsh194.stp
 - **Fixture kind**: scaffold
 - **Tier-3 assertion**: n_faces_total == 1
-
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### Tsh195 — ShapeFix_Shell.FixFaceOrientation duplicate faces undetected
 - **Category**: §12.3a shells (sub-class: duplicate_mutation)
 - **Sources**: OCCT/ShapeFix_Shell (line 1440)
@@ -28591,7 +28591,7 @@ Compound with nested shell references. LoadShells() recursion incomplete when de
 - **Fixture path**: step-examples/12-3a-shells/Tsh195.stp
 - **Fixture kind**: scaffold
 - **Tier-3 assertion**: n_faces_total == 2
-
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(10) ifc=schema_n/a`
 ### Tsh196 — ShapeFix_Shell.FixFaceOrientation multi-connected edge unbounded loop
 - **Category**: §12.3a shells (sub-class: multiconnect_edge_loop_unbounded)
 - **Sources**: OCCT/ShapeFix_Shell (line 1428)
@@ -28602,7 +28602,7 @@ Compound with nested shell references. LoadShells() recursion incomplete when de
 - **Fixture path**: step-examples/12-3a-shells/Tsh196.stp
 - **Fixture kind**: scaffold
 - **Tier-3 assertion**: n_faces_total == 1
-
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### Tsh197 — ShapeFix_Shell.FixFaceOrientation shells extraction loss
 - **Category**: §12.3a shells (sub-class: shells_extraction_loss)
 - **Sources**: OCCT/ShapeFix_Shell (line 1428)
@@ -28613,7 +28613,7 @@ Compound with nested shell references. LoadShells() recursion incomplete when de
 - **Fixture path**: step-examples/12-3a-shells/Tsh197.stp
 - **Fixture kind**: scaffold
 - **Tier-3 assertion**: n_faces_total == 2
-
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(18) ifc=schema_n/a`
 ### Tsh198 — ShapeFix_Shell.Perform context null initialize
 - **Category**: §12.3a shells (sub-class: context_null_initialize)
 - **Sources**: OCCT/ShapeFix_Shell (line 1420)
@@ -28624,7 +28624,7 @@ Compound with nested shell references. LoadShells() recursion incomplete when de
 - **Fixture path**: step-examples/12-3a-shells/Tsh198.stp
 - **Fixture kind**: scaffold
 - **Tier-3 assertion**: n_faces_total == 1
-
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### Tsh199 — Duplicate faces orientation inconsistency
 - **Category**: §12.3a shells (sub-class: face-orientation-propagation)
 - **Sources**: OCCT/ShapeFix_Shell.FixFaceOrientation
@@ -28634,7 +28634,7 @@ Compound with nested shell references. LoadShells() recursion incomplete when de
 - **Model impact**: Reads as non-manifold shell with conflicting face normals
 - **Fixture path**: step-examples/12-3a-shells/Tsh199.stp
 - **Fixture kind**: scaffold
-
+- **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 ### Tsh200 — BadEdges uninitialized extent
 - **Category**: §12.3a shells (sub-class: lazy-initialization)
 - **Sources**: OCCT/ShapeAnalysis_Shell.BadEdges_at281
@@ -28644,7 +28644,7 @@ Compound with nested shell references. LoadShells() recursion incomplete when de
 - **Model impact**: Reads as clean shell despite containing undetected gap edges
 - **Fixture path**: step-examples/12-3a-shells/Tsh200.stp
 - **Fixture kind**: scaffold
-
+- **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 ### Tsh201 — Multi-connected edge unbounded iteration
 - **Category**: §12.3a shells (sub-class: non-manifold-handling)
 - **Sources**: OCCT/ShapeFix_Shell.FixFaceOrientation.multiconnect_edge_loop_unbounded
