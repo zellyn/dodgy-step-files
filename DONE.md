@@ -8,6 +8,26 @@ Append newest at the top.
 
 ---
 
+## 2026-06-19 (long-session continuation, batch 2)
+
+- **B4 wave-1 extension: 16 issue-tracker fixtures synthesized.** Adds
+  Ad121/122/123/124/125/126 (6 adversarial — FreeCAD#30860, #25774,
+  OCCT#80, IfcOpen#6032/5680/2726), U046/U047 (2 unit/scale —
+  FreeCAD#29209, IfcOpen#6623), Tsh229/230 (2 shell/surface — OCCT#349,
+  #382), Tfa246/247/248 (3 face — FreeCAD#17807, #20396, #26319),
+  A109/110 (2 assembly — FreeCAD#11441, IfcOpen#923), Tb024 (1 PMI —
+  IfcOpen#5363). Corpus 2313 → 2329. Commit `e0829da`.
+- **Q3 phase-7 wave-3 COMPLETE: §12.10/§12.1b/§12.3c trio + §12.12
+  cross-product 16-pack + §12.11 adversarial 4-pack + §12.3a 7-pack.**
+  Pf035 (NUC12 closure), Lh048 (non-seekable stream), Tfa002 (full
+  SPHERICAL_SURFACE empty bounds), Ad077/116/117/118 (adversarial),
+  Sw001/002/004/005/006 + Tsh066/067 (shells), Xp024-Xp044
+  (cross-product). Commits `4ca129f`, `e581fba`, `8a06221`, `d07b694`.
+  All Q3 phase-7 no-bounds-AF fixtures complete this session: 60/60.
+- **Wr020 lint-exempt:** added to EXEMPT_FILENAME_MATCH; defect IS that
+  FILE_NAME first arg became 'BREP_001.stp' (label loss). Marker
+  `/* catalog_id: Wr020 */` ensures ID-in-text lint still fires.
+
 ## 2026-06-19 (long-session continuation)
 
 - **Q3 phase-7 wave-2 COMPLETE: §12.6 assembly all 22 no-bounds-AF
