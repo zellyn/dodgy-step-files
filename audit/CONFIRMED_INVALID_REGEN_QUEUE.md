@@ -16,19 +16,19 @@ structural-grep-verify with a higher-tier model before regen/quarantine.
 | Gs140 | 12-2c-surfaces | False-periodicity grid | First/last V-columns didn't coincide; also malformed flat control list + self-ref LINE | RESOLVED: rebuilt via Gs140.py with proper 4×4 Bezier grid; V=0 and V=3 rows now spatially identical |
 | Gs143 | 12-2c-surfaces | MakeBSpline false-periodic point grid | Defect lives in OCCT runtime; not Part-21-representable | RESOLVED: catalog reword — documented as kernel-test-pair shape carrier (scaffold) |
 
-## Round 2: weak-verify pass (2026-06-18)
+## Round 2: weak-verify pass (2026-06-18) — ALL RESOLVED
 
 Sonnet re-verified the 64 weak_valid candidates. 35 promoted to ACTUALLY_VALID
 (Haiku over-flag); 23 remain genuinely weak; 6 new CONFIRMED_INVALID surfaced:
 
-| ID | Section | Failure mode | Suggested fix |
+| ID | Section | Failure mode | Resolution |
 |----|---------|--------------|---------------|
-| Gs097 | 12-2c-surfaces | "area threshold 0.0" is a runtime API param, not STEP-encodable; file is a plain planar face | Catalog reword (runtime-only defect, like Gp053/Gs143) |
-| N152 | 12-4-tolerance | SHELL_BASED_SURFACE_MODEL references LENGTH_UNIT (#100); broken differently than claimed | Bespoke regen via builder |
-| Tfa132 | 12-3c-faces | Claims B-spline surface with C0 discontinuity; file contains only a PLANE (comment in file admits the substitution) | Bespoke regen with real B-spline carrier + C0 |
-| Twi248 | 12-3b-wires | Claims edge with only 2D pcurve (null 3D); all 4 edges have full 3D LINE geometry | Bespoke regen to remove 3D geometry from target edge |
-| Twi268 | 12-3b-wires | Claims seam edge on periodic surface; file is flat planar square with no periodic surface | Bespoke regen with real periodic surface (CYLINDRICAL/TOROIDAL) |
-| Twi270 | 12-3b-wires | Claims disconnected edge chains near tolerance; file is a perfectly connected planar square | Bespoke regen with actual disconnection |
+| Gs097 | 12-2c-surfaces | runtime API threshold, not STEP-encodable | RESOLVED: catalog reword as runtime-only |
+| N152 | 12-4-tolerance | structurally broken SBSM | RESOLVED: rebuilt scaffold via builder + reworded as kernel-test-pair |
+| Tfa132 | 12-3c-faces | claim says B-spline w/ C0 break; file was just a PLANE | RESOLVED: rebuilt with real degree-3 B-spline + interior knot mult=3 at u=0.5 |
+| Twi248 | 12-3b-wires | claim says null 3D; all edges had 3D LINE | RESOLVED: rebuilt with SURFACE_CURVE($, pcurve) for one edge |
+| Twi268 | 12-3b-wires | claim says periodic seam; file was flat plane | RESOLVED: rebuilt on CYLINDRICAL_SURFACE with edge along u=0 seam |
+| Twi270 | 12-3b-wires | claim says within-tolerance disconnect; file was connected | RESOLVED: rebuilt with 5e-8mm gap at vertex shared by edge0/edge1 |
 
 ## Notes for follow-up
 
