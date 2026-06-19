@@ -8020,6 +8020,44 @@
     "title": "Toroidal-surface portion of fused solid corrupted on STEP round-trip"
   },
   {
+    "byte_assertions": [
+      "contains(b'SPHERICAL_SURFACE')",
+      "contains(b'ADVANCED_FACE')"
+    ],
+    "category": "§12.13 writer-pathology (sub-class: face-normal inversion)",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": null,
+    "description": "A SPHERICAL_SURFACE in an OPEN_SHELL has its enclosing ADVANCED_FACE marked with face_normal `.F.` rather than `.T.` after a writer-side round-trip. Geometry-side surface parameters (center, radius) are preserved; topology-side orientation flag is wrong. Receivers using the topological normal compute inside-out lighting / inverted volume.",
+    "expected_kernel_behavior": "validate face_normal against surface_normal; flag inverted-face on shell or heal by reversing.",
+    "expected_validation": "",
+    "fixture_kind": null,
+    "fixture_path": "step-examples/12-13-writer-pathology/Wr054.stp",
+    "id": "Wr054",
+    "notes": "Synonyms: \"spherical face inverted on STEP export\", \"Part Sweep sphere normal flipped after round-trip\", \"ADVANCED_FACE .F. on sphere wrong\", \"sphere face inside-out after writer\", \"swept sphere orientation lost\".",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-sufficient",
+    "reproducer": "SPHERICAL_SURFACE at origin radius 1. ADVANCED_FACE wrapping it with face_normal `.F.`. Hemisphere bounded by an equator CIRCLE. Pack into OPEN_SHELL + SHELL_BASED_SURFACE_MODEL.",
+    "section": "12.13",
+    "section_dir": "12-13-writer-pathology",
+    "see_also": [],
+    "sender": "",
+    "severity": null,
+    "sources": [
+      "Pattern-mined from FreeCAD/FreeCAD#14710 (LGPL-clean — pattern only, no bytes copied). User-reported reproducer: Part Sweep with a spherical face produces an inverted face after STEP round-trip",
+      "magenta face inside-out in viewers."
+    ],
+    "taxonomy": [
+      "round-trip",
+      "writer"
+    ],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
+    "title": "Swept spherical face orientation inverted on STEP export round-trip"
+  },
+  {
     "byte_assertions": [],
     "category": "§12.14 mesh defects (sub-class: topology/non-manifold)",
     "closure_defect": null,

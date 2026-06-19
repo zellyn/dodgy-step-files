@@ -31681,3 +31681,15 @@ exercised against CGAL PMP / MeshFix.
 - **Byte assertion**: contains(b'B_SPLINE_CURVE_WITH_KNOTS')
 - **Tier-3 assertion**: load == "ok"
 - **Model impact**: Receivers crash or hang on the near-degenerate revolution; the input file is syntactically clean but exercises a numerical-stability corner the reader's revolution-handling path was not designed for.
+
+### Wr054 — Swept spherical face orientation inverted on STEP export round-trip
+- **Category**: §12.13 writer-pathology (sub-class: face-normal inversion)
+- **Sources**: Pattern-mined from FreeCAD/FreeCAD#14710 (LGPL-clean — pattern only, no bytes copied). User-reported reproducer: Part Sweep with a spherical face produces an inverted face after STEP round-trip; magenta face inside-out in viewers.
+- **Description**: A SPHERICAL_SURFACE in an OPEN_SHELL has its enclosing ADVANCED_FACE marked with face_normal `.F.` rather than `.T.` after a writer-side round-trip. Geometry-side surface parameters (center, radius) are preserved; topology-side orientation flag is wrong. Receivers using the topological normal compute inside-out lighting / inverted volume.
+- **Reproducer recipe**: SPHERICAL_SURFACE at origin radius 1. ADVANCED_FACE wrapping it with face_normal `.F.`. Hemisphere bounded by an equator CIRCLE. Pack into OPEN_SHELL + SHELL_BASED_SURFACE_MODEL.
+- **Expected kernel behavior**: validate face_normal against surface_normal; flag inverted-face on shell or heal by reversing.
+- **Notes**: Synonyms: "spherical face inverted on STEP export", "Part Sweep sphere normal flipped after round-trip", "ADVANCED_FACE .F. on sphere wrong", "sphere face inside-out after writer", "swept sphere orientation lost".
+- **Byte assertion**: contains(b'SPHERICAL_SURFACE')
+- **Byte assertion**: contains(b'ADVANCED_FACE')
+- **Tier-3 assertion**: load == "ok"
+- **Model impact**: Receivers using shell-level normals to compute volume see negative volume; viewers render the face with inverted lighting; BRepCheck flags the shell as invalid orientation.
