@@ -1,65 +1,47 @@
 ISO-10303-21;
-/* Pmi062 - STEP-to-glTF balloon inflation on AP242 (mesh count explosion)
-   Defect: An AP242 file with a hole feature plus PMI yields, on glTF
-   conversion via RWGltf_CafWriter with SetMergeFaces(true), a vastly
-   inflated mesh count and "cardioid-like" extra geometry around the
-   hole. The same model exported as AP203 converts cleanly. The
-   ingredient that triggers the inflation is the AP242 PMI binding
-   (DIMENSIONAL_SIZE / GEOMETRIC_TOLERANCE) on the cylindrical face,
-   which the merge-faces logic incorrectly retains as a face boundary.
-   (OCCT issue #1081). */
+/* Pmi062: AP242 hole + PMI annotation chain (glTF write target) */
 HEADER;
-FILE_DESCRIPTION(('Pmi062 - AP242 PMI causes glTF mesh inflation',
-  'CAx-IF Rec.Pracs.---PMI Rep & Pres---v4.1'),'2;1');
-FILE_NAME('Pmi062.stp','2026-04-26T00:00:00',('catalog'),('cad'),
-  'manual','','');
-FILE_SCHEMA(('AP242_MANAGED_MODEL_BASED_3D_ENGINEERING_MIM_LF { 1 0 10303 442 1 1 4 }'));
+FILE_DESCRIPTION(('Pmi062'),'2;1');
+FILE_NAME('Pmi062.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#10 = APPLICATION_CONTEXT('managed model based 3d engineering');
-#11 = APPLICATION_PROTOCOL_DEFINITION('international standard',
-  'ap242_managed_model_based_3d_engineering',2020,#10);
-#12 = PRODUCT_CONTEXT('',#10,'mechanical');
-#13 = PRODUCT('Pmi062','GltfBalloonPart','',(#12));
-#14 = PRODUCT_DEFINITION_FORMATION('','',#13);
-#15 = PRODUCT_DEFINITION_CONTEXT('',#10,'design');
-#16 = PRODUCT_DEFINITION('','',#14,#15);
-#17 = PRODUCT_DEFINITION_SHAPE('','',#16);
-#20 = ( LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT(.MILLI.,.METRE.) );
-#22 = ( NAMED_UNIT(*) PLANE_ANGLE_UNIT() SI_UNIT($,.RADIAN.) );
-#23 = ( NAMED_UNIT(*) SI_UNIT($,.STERADIAN.) SOLID_ANGLE_UNIT() );
-#24 = UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#20,
-  'distance_accuracy_value','');
-#25 = ( GEOMETRIC_REPRESENTATION_CONTEXT(3)
-  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#24))
-  GLOBAL_UNIT_ASSIGNED_CONTEXT((#20,#22,#23))
-  REPRESENTATION_CONTEXT('','3D') );
-#30 = CARTESIAN_POINT('hole_center',(0.0,0.0,0.0));
-#31 = DIRECTION('',(0.0,0.0,1.0));
-#32 = DIRECTION('',(1.0,0.0,0.0));
-#33 = AXIS2_PLACEMENT_3D('',#30,#31,#32);
-#34 = CYLINDRICAL_SURFACE('hole',#33,5.0);
-#35 = ADVANCED_FACE('hole_face',(),#34,.T.);
-/* Hole feature with semantic PMI - triggers AP242-only merge-faces bug */
-#40 = SHAPE_ASPECT('hole_sa','through hole',#17,.T.);
-#41 = GEOMETRIC_ITEM_SPECIFIC_USAGE('GISU',$,#40,#42,#35);
-#42 = SHAPE_REPRESENTATION('',(#33,#35),#25);
-#43 = SHAPE_DEFINITION_REPRESENTATION(#17,#42);
-#50 = DIMENSIONAL_SIZE(#40,'diameter');
-#51 = MEASURE_REPRESENTATION_ITEM('nom',LENGTH_MEASURE(10.0),#20);
-#52 = SHAPE_DIMENSION_REPRESENTATION('',(#51),#25);
-#60 = DATUM('A','primary',#17,.T.,'A');
-#61 = DATUM_REFERENCE_ELEMENT('',$,#60);
-#62 = DATUM_REFERENCE_COMPARTMENT('',$,#61);
-#63 = DATUM_SYSTEM('A','',#17,.T.,(#62));
-#70 = LENGTH_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.1),#20);
-#71 = POSITION_TOLERANCE('pos','',#70,#40,#63);
-#80 = PLUS_MINUS_TOLERANCE(#81,#50);
-#81 = TOLERANCE_VALUE(#82,#83);
-#82 = LENGTH_MEASURE_WITH_UNIT(LENGTH_MEASURE(-0.05),#20);
-#83 = LENGTH_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.05),#20);
-#90 = DRAUGHTING_MODEL('Default',(#35),#25);
-#91 = PLANE('ann_plane',#33);
-#92 = ANNOTATION_PLANE('PMI',(),#91,(#71));
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=DIRECTION('',(0.0,0.0,1.0));
+#3=DIRECTION('',(1.0,0.0,0.0));
+#4=AXIS2_PLACEMENT_3D('',#1,#2,#3);
+#5=CYLINDRICAL_SURFACE('hole_cyl',#4,5.0);
+#6=CARTESIAN_POINT('',(5.0,0.0,0.0));
+#7=VERTEX_POINT('',#6);
+#8=CARTESIAN_POINT('',(5.0,0.0,10.0));
+#9=VERTEX_POINT('',#8);
+#10=DIRECTION('',(0.0,0.0,1.0));
+#11=VECTOR('',#10,10.0);
+#12=CARTESIAN_POINT('',(5.0,0.0,0.0));
+#13=LINE('',#12,#11);
+#14=EDGE_CURVE('',#7,#9,#13,.T.);
+#15=ORIENTED_EDGE('',$,$,#14,.T.);
+#16=EDGE_LOOP('',(#15));
+#17=FACE_OUTER_BOUND('',#16,.T.);
+#18=ADVANCED_FACE('',(#17),#5,.T.);
+#19=OPEN_SHELL('',(#18));
+#20=SHELL_BASED_SURFACE_MODEL('',(#19));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('Pmi062','Pmi062','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#20),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
+#9063=SHAPE_ASPECT('hole_feature','',#9005,.T.);
+#9064=DIMENSIONAL_SIZE(#9063,'diameter','10.0 mm');
+#9065=GEOMETRIC_TOLERANCE('position_tol','0.05 mm position',#9009,#9063);
 ENDSEC;
 END-ISO-10303-21;
