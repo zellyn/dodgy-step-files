@@ -4819,6 +4819,7 @@ End of file. 44 distinct entries.
 - **Byte assertion**: contains(b'1.0E-3')
 - **Byte assertion**: count_entity_def(b'EDGE_CURVE') == 2
 - **Byte assertion**: count_entity_def(b'VERTEX_POINT') == 4
+- **Tier-3 assertion**: shape_null == True
 - **Model impact**: Tolerance/precision interaction creates a latent invalidity that does not surface at load time; downstream operations (boolean, fillet, mesh) on the affected sub-shape later fail or produce wrong geometry.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
@@ -4847,6 +4848,7 @@ End of file. 44 distinct entries.
 - **Byte assertion**: contains(b'1.0E-7')
 - **Byte assertion**: count_entity_def(b'EDGE_CURVE') == 3
 - **Byte assertion**: count_entity_def(b'VERTEX_POINT') == 4
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
 - **Severity**: P1
 - **Model impact**: Tolerance/precision interaction creates a latent invalidity that does not surface at load time; downstream operations (boolean, fillet, mesh) on the affected sub-shape later fail or produce wrong geometry.
@@ -4881,6 +4883,7 @@ End of file. 44 distinct entries.
 - **Byte assertion**: count_entity_def(b'UNCERTAINTY_MEASURE_WITH_UNIT') == 3
 - **Byte assertion**: contains(b'1.0E-6') and contains(b'1.0E-5') and contains(b'1.0E-4')
 - **Byte assertion**: contains(b'.MILLI.')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: Tolerance/precision interaction creates a latent invalidity that does not surface at load time; downstream operations (boolean, fillet, mesh) on the affected sub-shape later fail or produce wrong geometry.
@@ -4910,6 +4913,7 @@ End of file. 44 distinct entries.
 - **Notes**: Synonyms: "tolerance hierarchy inverts under inch conversion", "non-decimal scale flips uncertainty ordering", "inch unit breaks vertex/edge tolerance ratio", "tolerance hierarchy fails after mm-to-inch conversion".
 - **Byte assertion**: count_entity_def(b'UNCERTAINTY_MEASURE_WITH_UNIT') == 3
 - **Byte assertion**: contains(b'1.000E-6') and contains(b'1.001E-6') and contains(b'1.002E-6')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject, warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must reject or emit a diagnostic this fixture.
 - **Severity**: P1
 - **Model impact**: Tolerance/precision interaction creates a latent invalidity that does not surface at load time; downstream operations (boolean, fillet, mesh) on the affected sub-shape later fail or produce wrong geometry.
@@ -4997,6 +5001,7 @@ End of file. 44 distinct entries.
 - **Byte assertion**: contains(b'B_SPLINE_CURVE_WITH_KNOTS')
 - **Byte assertion**: count_entity_def(b'CARTESIAN_POINT') == 5
 - **Byte assertion**: contains(b'1.0E-7')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: Tolerance/precision interaction creates a latent invalidity that does not surface at load time; downstream operations (boolean, fillet, mesh) on the affected sub-shape later fail or produce wrong geometry.
@@ -5024,6 +5029,7 @@ End of file. 44 distinct entries.
 - **Byte assertion**: contains(b'B_SPLINE_CURVE_WITH_KNOTS')
 - **Byte assertion**: count_entity_def(b'CARTESIAN_POINT') == 5
 - **Byte assertion**: contains(b'1.0E-6')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: Tolerance/precision interaction creates a latent invalidity that does not surface at load time; downstream operations (boolean, fillet, mesh) on the affected sub-shape later fail or produce wrong geometry.
@@ -5051,6 +5057,7 @@ End of file. 44 distinct entries.
  self-intersecting in another", "rounded coordinates fixed self-intersection".
 - **Byte assertion**: count_entity_def(b'EDGE_CURVE') == 2
 - **Byte assertion**: contains(b'1.0E-6')
+- **Tier-3 assertion**: shape_null == True
 - **Model impact**: Tolerance/precision interaction creates a latent invalidity that does not surface at load time; downstream operations (boolean, fillet, mesh) on the affected sub-shape later fail or produce wrong geometry.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
@@ -5077,6 +5084,7 @@ End of file. 44 distinct entries.
 - **Byte assertion**: count_entity_def(b'EDGE_CURVE') == 4
 - **Byte assertion**: count_entity_def(b'VERTEX_POINT') == 4
 - **Byte assertion**: contains(b'1.0E-7')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal, warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must heal or emit a diagnostic this fixture.
 - **Severity**: P1
 - **Model impact**: Tolerance/precision interaction creates a latent invalidity that does not surface at load time; downstream operations (boolean, fillet, mesh) on the affected sub-shape later fail or produce wrong geometry.
@@ -5104,6 +5112,7 @@ End of file. 44 distinct entries.
 - **Byte assertion**: contains(b'CYLINDRICAL_SURFACE')
 - **Byte assertion**: count_entity_def(b'PCURVE') == 2
 - **Byte assertion**: contains(b'1.0E-3')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: emits a diagnostic but produces an empty result; outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: Tolerance/precision interaction creates a latent invalidity that does not surface at load time; downstream operations (boolean, fillet, mesh) on the affected sub-shape later fail or produce wrong geometry.
@@ -5129,6 +5138,7 @@ End of file. 44 distinct entries.
 - **Byte assertion**: contains(b'SPHERICAL_SURFACE') and contains(b'CIRCLE')
 - **Byte assertion**: count_entity_def(b'VERTEX_POINT') == 1
 - **Byte assertion**: contains(b'1.0E-7')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: Tolerance/precision interaction creates a latent invalidity that does not surface at load time; downstream operations (boolean, fillet, mesh) on the affected sub-shape later fail or produce wrong geometry.
@@ -5158,6 +5168,7 @@ End of file. 44 distinct entries.
  coordinate", "underflow during transform".
 - **Byte assertion**: contains(b'1.0E-7')
 - **Byte assertion**: count_entity_def(b'EDGE_CURVE') == 1
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: Tolerance/precision interaction creates a latent invalidity that does not surface at load time; downstream operations (boolean, fillet, mesh) on the affected sub-shape later fail or produce wrong geometry.
@@ -5209,6 +5220,7 @@ End of file. 44 distinct entries.
 - **Notes**: Synonyms: "edge length right at sqrt(tolerance)", "is comparison squared or linear ambiguous", "edge size at sqrt(tol) trips classifier", "boundary case for squared vs linear edge comparison".
 - **Byte assertion**: contains(b'1.0E-6')
 - **Byte assertion**: count_entity_def(b'EDGE_CURVE') == 1
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: Tolerance/precision interaction creates a latent invalidity that does not surface at load time; downstream operations (boolean, fillet, mesh) on the affected sub-shape later fail or produce wrong geometry.
@@ -5239,6 +5251,7 @@ End of file. 44 distinct entries.
 - **Byte assertion**: count_entity_def(b'EDGE_CURVE') == 5
 - **Byte assertion**: count_entity_def(b'VERTEX_POINT') == 6
 - **Byte assertion**: contains(b'1.0E-6')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal, reject}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: Tolerance/precision interaction creates a latent invalidity that does not surface at load time; downstream operations (boolean, fillet, mesh) on the affected sub-shape later fail or produce wrong geometry.
@@ -5290,6 +5303,7 @@ End of file. 44 distinct entries.
 - **Notes**: Searchable as "zero tolerance file", "exact arithmetic STEP". Synonyms: "UNCERTAINTY value of zero", "no fuzzy compare allowed", "tolerance literally zero in file", "exact equality required by zero uncertainty".
 - **Byte assertion**: matches(rb'LENGTH_MEASURE\(\s*0\.0\)')
 - **Byte assertion**: count_entity_def(b'UNCERTAINTY_MEASURE_WITH_UNIT') == 1
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: Tolerance/precision interaction creates a latent invalidity that does not surface at load time; downstream operations (boolean, fillet, mesh) on the affected sub-shape later fail or produce wrong geometry.
@@ -5316,6 +5330,7 @@ End of file. 44 distinct entries.
 - **Notes**: **See also**: Tb018, Tb020. **OCC behavior**: silently substitutes the floored working-precision value for the absurdly-tight declared uncertainty; kernel mishandling; the catalog above forbids silent substitution. Synonyms: "uncertainty 1e-30 below working precision", "absurdly tight tolerance", "tolerance below kernel resolution", "tolerance value impossibly small".
 - **Byte assertion**: contains(b'1.0E-30')
 - **Byte assertion**: count_entity_def(b'EDGE_CURVE') == 1
+- **Tier-3 assertion**: shape_null == True
 - **Model impact**: Tolerance/precision interaction creates a latent invalidity that does not surface at load time; downstream operations (boolean, fillet, mesh) on the affected sub-shape later fail or produce wrong geometry.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
@@ -5337,6 +5352,7 @@ End of file. 44 distinct entries.
 - **Notes**: **See also**: Tb019. Synonyms: "uncertainty 1e30 absurdly loose", "tolerance bigger than the model", "everything fuzzy-equal under huge tolerance", "tolerance value impossibly large".
 - **Byte assertion**: contains(b'1.0E+30')
 - **Byte assertion**: count_entity_def(b'EDGE_CURVE') == 1
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject, warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must reject or emit a diagnostic this fixture.
 - **Severity**: P1
 - **Model impact**: Tolerance/precision interaction creates a latent invalidity that does not surface at load time; downstream operations (boolean, fillet, mesh) on the affected sub-shape later fail or produce wrong geometry.
@@ -5365,6 +5381,7 @@ End of file. 44 distinct entries.
  ambiguity in context".
 - **Byte assertion**: count_entity_def(b'UNCERTAINTY_MEASURE_WITH_UNIT') == 3
 - **Byte assertion**: contains(b'1.0E-3') and contains(b'1.0E-6') and contains(b'1.0E-9')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: Tolerance/precision interaction creates a latent invalidity that does not surface at load time; downstream operations (boolean, fillet, mesh) on the affected sub-shape later fail or produce wrong geometry.
@@ -5393,6 +5410,7 @@ End of file. 44 distinct entries.
  "STEP file 1000× too tight or too loose".
 - **Byte assertion**: contains(b'1.0E-6')
 - **Byte assertion**: count_entity_def(b'EDGE_CURVE') == 1
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: Tolerance/precision interaction creates a latent invalidity that does not surface at load time; downstream operations (boolean, fillet, mesh) on the affected sub-shape later fail or produce wrong geometry.
@@ -5409,6 +5427,7 @@ End of file. 44 distinct entries.
 - **Notes**: Spatial twin of Tb013 (denormalised near-zero). **See also**: Tb013. Searchable as "STEP file far-from-origin", "GIS coordinates lose precision", "absolute UTM in STEP file". Synonyms: "coordinates near 1e15 lose precision", "model placed at GIS-style absolute coordinates", "vertices wobble at huge coords", "float64 ULP exceeds declared tolerance", "model far from origin loses precision".
 - **Byte assertion**: matches(rb'\d\.\d+e\+?15') or contains(b'1.234567890123e+15')
 - **Byte assertion**: contains(b'1.234567890123e15') or contains(b'1.234567890123E15') or contains(b'1234567890123')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: Tolerance/precision interaction creates a latent invalidity that does not surface at load time; downstream operations (boolean, fillet, mesh) on the affected sub-shape later fail or produce wrong geometry.
@@ -5544,6 +5563,7 @@ _Section summary: 31 entries._
 - **Notes**: **See also**: U002, U003, U015. **OCC behavior**: silently accepts the millimetre-prefixed file with no scale-mismatch diagnostic. The surrounding tooling pipeline is what mis-reads; the catalog above forbids silent rescaling. Synonyms: "Solid Edge mm imported as meters 1000x bigger", "Inventor reads STEP mm as metres", "STEP imported 1000 times too large", "mm prefix ignored on STEP import", "MILLI METRE silently treated as METRE".
 - **Byte assertion**: contains(b'SI_UNIT(.MILLI.,.METRE.)') or contains(b'SI_UNIT(.MILLI., .METRE.)')
 - **Byte assertion**: matches(rb'GEOMETRIC_REPRESENTATION_CONTEXT|REPRESENTATION_CONTEXT')
+- **Tier-3 assertion**: shape_null == True
 - **Model impact**: Unit/coordinate-system metadata is wrong or missing; coordinates are interpreted at the wrong scale or in the wrong frame, so the loaded geometry is the right shape at the wrong size or pose.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
@@ -5560,6 +5580,7 @@ _Section summary: 31 entries._
 - **Notes**: **See also**: U001. Synonyms: "Onshape STEP comes in 1000x too small in NX", "Onshape always emits METRE", "NX reads metres as mm", "STEP metres misread as mm", "metric STEP 1000x smaller in NX".
 - **Byte assertion**: matches(rb'SI_UNIT\(\$\s*,\s*\.METRE\.\)')
 - **Byte assertion**: count(b'.METRE.') >= 1
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: Unit/coordinate-system metadata is wrong or missing; coordinates are interpreted at the wrong scale or in the wrong frame, so the loaded geometry is the right shape at the wrong size or pose.
@@ -5578,6 +5599,7 @@ _Section summary: 31 entries._
 - **Notes**: **See also**: U001. Synonyms: "Onshape inch workspace exports mm STEP", "STEP coordinates 25.4 instead of 1", "inch workspace lost in metric STEP", "display unit lost on Onshape export", "inch model with mm declaration".
 - **Byte assertion**: contains(b'SI_UNIT(.MILLI.,.METRE.)') or contains(b'SI_UNIT(.MILLI., .METRE.)')
 - **Byte assertion**: matches(rb'25\.4|63\.5')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
 - **Severity**: P1
 - **Model impact**: Unit/coordinate-system metadata is wrong or missing; coordinates are interpreted at the wrong scale or in the wrong frame, so the loaded geometry is the right shape at the wrong size or pose.
@@ -5596,6 +5618,7 @@ _Section summary: 31 entries._
 - **Notes**: **See also**: U031. Synonyms: "Inventor STEP forces RADIAN angles", "angle unit changes from DEGREE to RADIAN", "doc preference broken on STEP round-trip", "Inventor switches plane_angle to radians", "STEP angle unit overwritten on import".
 - **Byte assertion**: contains(b'.RADIAN.')
 - **Byte assertion**: count(b'.RADIAN.') >= 1
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: Unit/coordinate-system metadata is wrong or missing; coordinates are interpreted at the wrong scale or in the wrong frame, so the loaded geometry is the right shape at the wrong size or pose.
@@ -5613,6 +5636,7 @@ _Section summary: 31 entries._
 - **Notes**: **OCC behavior**: silently consumes the mismatched mm-context file as written without surfacing a unit-vs-coordinate-magnitude inconsistency; the catalog claim above is producer-side, but on the read side OCC's lack of sanity-check is the kernel mishandling. Synonyms: "Plant 3D STEP unit context disagrees with drawing", "sub-mm coords in mm STEP context", "Plant 3D unit mismatch", "AutoCAD Plant 3D wrong STEP units", "drawing units differ from STEP unit".
 - **Byte assertion**: contains(b'SI_UNIT(.MILLI.,.METRE.)') or contains(b'SI_UNIT(.MILLI., .METRE.)')
 - **Byte assertion**: matches(rb'CARTESIAN_POINT')
+- **Tier-3 assertion**: shape_null == True
 - **Model impact**: Unit/coordinate-system metadata is wrong or missing; coordinates are interpreted at the wrong scale or in the wrong frame, so the loaded geometry is the right shape at the wrong size or pose.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
@@ -5629,6 +5653,7 @@ _Section summary: 31 entries._
 - **Notes**: **See also**: N029, U023. Synonyms: "PrePoMax double-applies inch scaling", "STEP body 25.4x too large in PrePoMax", "inch STEP scaled twice by 25.4", "double inch-to-mm conversion", "PrePoMax inch import 25.4x off".
 - **Byte assertion**: contains(b"CONVERSION_BASED_UNIT('INCH'")
 - **Byte assertion**: contains(b'25.4') or matches(rb'LENGTH_MEASURE\(25\.4\)')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: Unit/coordinate-system metadata is wrong or missing; coordinates are interpreted at the wrong scale or in the wrong frame, so the loaded geometry is the right shape at the wrong size or pose.
@@ -5684,6 +5709,7 @@ _Section summary: 31 entries._
 - **Notes**: **See also**: Pf022. Synonyms: "OCCT 7.8 ignores write.units setting", "STEP exports as METRE despite mm setting", "write.step.unit silently ignored", "OCCT regression on STEP write unit", "100m oversized part from STEP write".
 - **Byte assertion**: matches(rb'SI_UNIT\(\s*\$\s*,\s*\.METRE\.\)') or contains(b'SI_UNIT($,.METRE.)')
 - **Byte assertion**: contains(b'.METRE.')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: Unit/coordinate-system metadata is wrong or missing; coordinates are interpreted at the wrong scale or in the wrong frame, so the loaded geometry is the right shape at the wrong size or pose.
@@ -5701,6 +5727,7 @@ _Section summary: 31 entries._
 - **Notes**: **See also**: U001. Synonyms: "FreeCAD STEP labelled inch but values mm", "model in mm but file says inches", "re-import 25.4x too large from FreeCAD STEP", "mm coords with INCH declaration", "OCCT 7.8.1 mislabels STEP as inches".
 - **Byte assertion**: contains(b"CONVERSION_BASED_UNIT('INCH'")
 - **Byte assertion**: matches(rb"'INCH'")
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must emit a diagnostic this fixture.
 - **Severity**: P1
 - **Model impact**: Unit/coordinate-system metadata is wrong or missing; coordinates are interpreted at the wrong scale or in the wrong frame, so the loaded geometry is the right shape at the wrong size or pose.
@@ -5717,6 +5744,7 @@ _Section summary: 31 entries._
 - **Notes**: **See also**: A025. Synonyms: "duplicate INCH CONVERSION_BASED_UNIT instances", "two #N for same INCH unit", "duplicate inch unit definitions in STEP", "dimension export uses inconsistent inch units", "redundant INCH conversion entities".
 - **Byte assertion**: count(b"CONVERSION_BASED_UNIT('INCH'") >= 2
 - **Byte assertion**: count(b"'INCH'") >= 2
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: Unit/coordinate-system metadata is wrong or missing; coordinates are interpreted at the wrong scale or in the wrong frame, so the loaded geometry is the right shape at the wrong size or pose.
@@ -5733,6 +5761,7 @@ _Section summary: 31 entries._
 - **Notes**: Synonyms: "tessellated annotation no global unit context", "PMI tessellation 25.4x wrong", "tessellated coords without unit anchor", "annotation outside global_unit_assigned_context", "tessellated PMI silent unit drop".
 - **Byte assertion**: contains(b'TESSELLATED_SHAPE_REPRESENTATION')
 - **Byte assertion**: contains(b'TESSELLATED_ANNOTATION_OCCURRENCE') or contains(b'TESSELLATED_GEOMETRIC_SET') or contains(b'TESSELLATED_SHAPE_REPRESENTATION')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: Unit/coordinate-system metadata is wrong or missing; coordinates are interpreted at the wrong scale or in the wrong frame, so the loaded geometry is the right shape at the wrong size or pose.
@@ -5748,6 +5777,7 @@ _Section summary: 31 entries._
 - **Expected kernel behavior**: Heal and accept: normalize emit / validate to the same unit on validation properties as on geometry; coerce `unit_component` to be present and consistent.
 - **Byte assertion**: contains(b'AREA_MEASURE') or contains(b'VOLUME_MEASURE')
 - **Byte assertion**: contains(b'MEASURE_REPRESENTATION_ITEM')
+- **Tier-3 assertion**: shape_null == True
 - **Notes**: Synonyms: "validation properties units mismatch GRC", "mass area volume in different unit than geometry", "MEASURE_REPRESENTATION_ITEM no unit_component", "STEP validation property unit drift", "validation property unit not consistent".
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
@@ -5765,6 +5795,7 @@ _Section summary: 31 entries._
 - **Notes**: **See also**: U026. Synonyms: "KILO prefix missing on mass_unit", "Newton built without kilo prefix", "force_unit derived from gram instead of kg", "STEP Newton off by 1000", "mass_unit prefix wrong in derived SI".
 - **Byte assertion**: contains(b'DERIVED_UNIT_ELEMENT')
 - **Byte assertion**: contains(b'force_unit') or contains(b'FORCE_UNIT') or contains(b'mass_unit') or contains(b'MASS_UNIT')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: Unit/coordinate-system metadata is wrong or missing; coordinates are interpreted at the wrong scale or in the wrong frame, so the loaded geometry is the right shape at the wrong size or pose.
@@ -5781,6 +5812,7 @@ _Section summary: 31 entries._
 - **Notes**: **See also**: Pmi067. Synonyms: "INCH lowercase in CONVERSION_BASED_UNIT", "STEP inch spelled as 'inch' or 'IN'", "case-sensitive inch lookup fails", "'inches' in CONVERSION_BASED_UNIT name", "STEP unit name wrong case".
 - **Byte assertion**: contains(b"'inch'") or contains(b"'IN'") or contains(b"'inches'")
 - **Byte assertion**: count(b"CONVERSION_BASED_UNIT(") >= 2
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal, warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must heal or emit a diagnostic this fixture.
 - **Severity**: P1
 - **Model impact**: Unit/coordinate-system metadata is wrong or missing; coordinates are interpreted at the wrong scale or in the wrong frame, so the loaded geometry is the right shape at the wrong size or pose.
@@ -5797,6 +5829,7 @@ _Section summary: 31 entries._
 - **Notes**: **See also**: U006. Synonyms: "wrong inch conversion factor in STEP", "INCH factor not 25.4", "missing LENGTH_MEASURE_WITH_UNIT for inch", "STEP inch factor 2.54 instead of 25.4", "inch conversion factor mismatched".
 - **Byte assertion**: matches(rb'LENGTH_MEASURE\(2\.54[Ee]?\d*\)') or matches(rb'LENGTH_MEASURE\(2\.54\)')
 - **Byte assertion**: contains(b'2.54') or contains(b'2.54E1')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: Unit/coordinate-system metadata is wrong or missing; coordinates are interpreted at the wrong scale or in the wrong frame, so the loaded geometry is the right shape at the wrong size or pose.
@@ -5812,6 +5845,7 @@ _Section summary: 31 entries._
 - **Expected kernel behavior**: reject or fall back to base SI; cross-validate `dimensional_exponents` vs. quantity used at reference site.
 - **Byte assertion**: contains(b'DIMENSIONAL_EXPONENTS(0.0,0.0,0.0,0.0,0.0,0.0,0.0)') or matches(rb'DIMENSIONAL_EXPONENTS\(0(?:\.0)?(?:,\s*0(?:\.0)?){6}\)')
 - **Byte assertion**: contains(b"'POUND'") or contains(b'DIMENSIONAL_EXPONENTS')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Notes**: Synonyms: "dimensional_exponents wrong for unit", "POUND with all-zero exponents", "DIMENSIONAL_EXPONENTS inconsistent with name", "STEP unit exponents mass-zero", "exponents don't match unit type".
@@ -5829,6 +5863,7 @@ _Section summary: 31 entries._
 - **Notes**: **See also**: N018. Synonyms: "STEP reader returns wrong primary unit", "stepfileunits returns wrong unit", "file-units API inconsistent with applied unit", "primary length unit mismatched", "reader API unit query wrong".
 - **Byte assertion**: count(b'LENGTH_UNIT()') >= 2
 - **Byte assertion**: count(b'LENGTH_UNIT') >= 2
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: Unit/coordinate-system metadata is wrong or missing; coordinates are interpreted at the wrong scale or in the wrong frame, so the loaded geometry is the right shape at the wrong size or pose.
@@ -5845,6 +5880,7 @@ _Section summary: 31 entries._
 - **Notes**: **See also**: U021. **OCC behavior**: silently treats unsupported `DERIVED_UNIT` constructs as identity scale with no diagnostic; kernel mishandling; the catalog above forbids silent identity-substitution. Synonyms: "derived_unit treated as identity scale", "BRL-CAD step-g derived unit TODO", "kg.m/s^2 derived unit unsupported", "DERIVED_UNIT lookup falls through", "non-SI derived unit identity-scale bug".
 - **Byte assertion**: contains(b'DERIVED_UNIT')
 - **Byte assertion**: contains(b'DERIVED_UNIT_ELEMENT') or contains(b'DERIVED_UNIT')
+- **Tier-3 assertion**: shape_null == True
 - **Model impact**: Unit/coordinate-system metadata is wrong or missing; coordinates are interpreted at the wrong scale or in the wrong frame, so the loaded geometry is the right shape at the wrong size or pose.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
@@ -5859,6 +5895,7 @@ _Section summary: 31 entries._
 - **Notes**: **See also**: N016. Synonyms: "two GEOMETRIC_REPRESENTATION_CONTEXT different units", "mm BRep with metre PMI in same STEP", "shape_representation and CGR units differ", "PMI and BRep on different unit contexts", "multiple GRC unit conflict".
 - **Byte assertion**: contains(b'.MILLI.') and matches(rb'SI_UNIT\(\$\s*,\s*\.METRE\.\)')
 - **Byte assertion**: count_entity_def(b'GEOMETRIC_REPRESENTATION_CONTEXT') >= 2 or count(b'GEOMETRIC_REPRESENTATION_CONTEXT') >= 2
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: Unit/coordinate-system metadata is wrong or missing; coordinates are interpreted at the wrong scale or in the wrong frame, so the loaded geometry is the right shape at the wrong size or pose.
@@ -5875,6 +5912,7 @@ _Section summary: 31 entries._
 - **Notes**: **See also**: U004. Synonyms: "DEG vs RADIAN complex entity", "CONVERSION_BASED_UNIT('DEG') wrong factor", "PLANE_ANGLE_UNIT missing from complex", "STEP degree unit factor not pi/180", "complex angle unit malformed".
 - **Byte assertion**: contains(b"CONVERSION_BASED_UNIT('DEG'") or contains(b'PLANE_ANGLE_UNIT')
 - **Byte assertion**: matches(rb"CONVERSION_BASED_UNIT\('DEG'")
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: Unit/coordinate-system metadata is wrong or missing; coordinates are interpreted at the wrong scale or in the wrong frame, so the loaded geometry is the right shape at the wrong size or pose.
@@ -5898,6 +5936,7 @@ _Section summary: 31 entries._
 - **Notes**: **See also**: U025, U028. Synonyms: "xstep.cascade.unit overridden by file unit", "default unit ignored when file declares unit", "configured default conflicts with STEP unit", "reader applies conversion twice", "STEP unit default vs file divergence".
 - **Byte assertion**: contains(b"CONVERSION_BASED_UNIT('INCH'")
 - **Byte assertion**: contains(b'INCH') and contains(b'25.4')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must emit a diagnostic this fixture.
 - **Severity**: P1
 - **Model impact**: Unit/coordinate-system metadata is wrong or missing; coordinates are interpreted at the wrong scale or in the wrong frame, so the loaded geometry is the right shape at the wrong size or pose.
@@ -5916,6 +5955,7 @@ _Section summary: 31 entries._
 - **Notes**: **See also**: U023. Synonyms: "mile-to-mm factor wrong by 1000", "MILE conversion 1609.344 instead of 1609344", "metres-to-mm prefix applied to miles", "STEP mile under-scaled 1000x", "wrong mile conversion factor on export".
 - **Byte assertion**: contains(b'1609.344')
 - **Byte assertion**: contains(b"CONVERSION_BASED_UNIT('MILE'")
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: Unit/coordinate-system metadata is wrong or missing; coordinates are interpreted at the wrong scale or in the wrong frame, so the loaded geometry is the right shape at the wrong size or pose.
@@ -5934,6 +5974,7 @@ _Section summary: 31 entries._
 - **Expected kernel behavior**: Heal and accept: normalize / coerce every numeric attribute emitted to the declared file unit; never mix internal and declared units.
 - **Notes**: **See also**: U034. Synonyms: "ellipse semi-axes in mm but STEP declares inch", "ellipse exports with mismatched unit", "STEP ellipse re-import 25.4x off", "non-mm unit corrupts ellipse export", "ELLIPSE coords wrong unit".
 - **Byte assertion**: contains(b'ELLIPSE')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: Unit/coordinate-system metadata is wrong or missing; coordinates are interpreted at the wrong scale or in the wrong frame, so the loaded geometry is the right shape at the wrong size or pose.
@@ -5952,6 +5993,7 @@ _Section summary: 31 entries._
 - **Notes**: **See also**: U025. Synonyms: "BinXCAF loses length unit", "XBF binary loses INCH unit on save", "non-default unit not preserved in XBF", "OCCT binary persistence drops unit", "STEP unit lost through XBF round-trip".
 - **Byte assertion**: contains(b"CONVERSION_BASED_UNIT('INCH'")
 - **Byte assertion**: contains(b'25.4') or contains(b'INCH')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: Unit/coordinate-system metadata is wrong or missing; coordinates are interpreted at the wrong scale or in the wrong frame, so the loaded geometry is the right shape at the wrong size or pose.
@@ -5972,6 +6014,7 @@ _Section summary: 31 entries._
 - **Notes**: **See also**: M046. Synonyms: "RescaleGeometry skips triangulation", "B-rep rescaled but mesh not", "triangulation at wrong scale after rescale", "OCCT rescale partial across representations", "mesh scale wrong after unit conversion".
 - **Byte assertion**: contains(b'TRIANGULATED_FACE')
 - **Byte assertion**: contains(b'INCH')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: Unit/coordinate-system metadata is wrong or missing; coordinates are interpreted at the wrong scale or in the wrong frame, so the loaded geometry is the right shape at the wrong size or pose.
@@ -5992,6 +6035,7 @@ _Section summary: 31 entries._
 - **Notes**: **See also**: U028. Synonyms: "MAPPED_ITEM cross-context unit composition", "STEP scales composed as additional units", "model kilometres in size from MAPPED_ITEM", "1000x1000 unit composition error", "cross-context REPRESENTATION_MAP unit bug".
 - **Byte assertion**: contains(b'MAPPED_ITEM')
 - **Byte assertion**: contains(b'.MILLI.') and contains(b'.METRE.')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: Unit/coordinate-system metadata is wrong or missing; coordinates are interpreted at the wrong scale or in the wrong frame, so the loaded geometry is the right shape at the wrong size or pose.
@@ -6007,6 +6051,7 @@ _Section summary: 31 entries._
 - **Notes**: Angular twin of U001 (mm vs inches). **See also**: U031, Pmi067. Synonyms: "STEP angle wrong by 57x", "deg/rad confusion", "rotation off by pi/180".
 - **Byte assertion**: contains(b"CONVERSION_BASED_UNIT('DEGREE'") or contains(b"CONVERSION_BASED_UNIT('DEG'")
 - **Byte assertion**: contains(b'PLANE_ANGLE_MEASURE(1.5708') or contains(b'PLANE_ANGLE_MEASURE(90.0')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject, warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must reject or emit a diagnostic this fixture.
 - **Severity**: P1
 - **Model impact**: Unit/coordinate-system metadata is wrong or missing; coordinates are interpreted at the wrong scale or in the wrong frame, so the loaded geometry is the right shape at the wrong size or pose.
@@ -6021,6 +6066,7 @@ _Section summary: 31 entries._
 - **Expected kernel behavior**: Heal and accept: detect / normalize the dimensional signature of pressure (mass^1 length^-1 time^-2) and bind to a Pa context regardless of element order; coerce SI prefix mismatches deterministically; warn when the composition does not reduce to a recognised SI unit.
 - **Notes**: First entry exercising multi-element DERIVED_UNIT composition. **See also**: U021, U026, U041. Synonyms: "STEP pressure Pa garbled", "Pa unit not recognised from derived chain", "DERIVED_UNIT pressure 1000x wrong", "validation pressure derived unit", "Pa from kg.m^-1.s^-2 not bound".- **Byte assertion**: contains(b'DERIVED_UNIT_ELEMENT') and contains(b'DERIVED_UNIT(')
 - **Byte assertion**: count(b'DERIVED_UNIT_ELEMENT') >= 3
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: Unit/coordinate-system metadata is wrong or missing; coordinates are interpreted at the wrong scale or in the wrong frame, so the loaded geometry is the right shape at the wrong size or pose.
@@ -6036,6 +6082,7 @@ _Section summary: 31 entries._
 - **Notes**: **See also**: U040. **OCC behavior**: silently accepts (no diagnostic, empty result); catalog disallows silent-accept. Kernel-bug witnessed: receivers enforcing the spec must reject (or surface a diagnostic); silent acceptance defeats the catalog's stated invariant. Synonyms: "STEP viscosity unit not recognised", "Pa.s read as Pa", "dynamic viscosity derived chain unsupported", "STEP material viscosity wrong unit", "viscosity flattened to pressure".
 - **Byte assertion**: contains(b'DERIVED_UNIT_ELEMENT') and contains(b'DERIVED_UNIT(')
 - **Byte assertion**: count(b'DERIVED_UNIT_ELEMENT') >= 3
+- **Tier-3 assertion**: shape_null == True
 - **Model impact**: Unit/coordinate-system metadata is wrong or missing; coordinates are interpreted at the wrong scale or in the wrong frame, so the loaded geometry is the right shape at the wrong size or pose.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
@@ -6049,6 +6096,7 @@ _Section summary: 31 entries._
 - **Notes**: First entry exercising THERMODYNAMIC_TEMPERATURE_UNIT in a derived-unit chain. **See also**: U040, U041. Synonyms: "STEP specific heat unit garbled", "J/(kg.K) derived chain unrecognised", "thermal property unit garbled", "specific heat capacity unit dropped", "STEP material thermal unit not bound".
 - **Byte assertion**: contains(b'DERIVED_UNIT_ELEMENT') and contains(b'DERIVED_UNIT(')
 - **Byte assertion**: contains(b'THERMODYNAMIC_TEMPERATURE_UNIT')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: Unit/coordinate-system metadata is wrong or missing; coordinates are interpreted at the wrong scale or in the wrong frame, so the loaded geometry is the right shape at the wrong size or pose.
@@ -6074,6 +6122,7 @@ _Section summary: 84 entries._
 - **Byte assertion**: count_entity_def(b'NEXT_ASSEMBLY_USAGE_OCCURRENCE') == 3
 - **Byte assertion**: count_entity_def(b'MAPPED_ITEM') == 3
 - **Byte assertion**: contains(b"AXIS2_PLACEMENT_3D('SHARED_PLACEMENT'")
+- **Tier-3 assertion**: shape_null == True
 - **Model impact**: The assembly graph loads with broken parent/child links or with the wrong transform on a MAPPED_ITEM/NEXT_ASSEMBLY_USAGE_OCCURRENCE; affected sub-components either fail to instance or appear at the wrong position relative to the assembly origin.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
@@ -6087,6 +6136,7 @@ _Section summary: 84 entries._
 - **Notes**: **See also**: Pmi058. Synonyms: "hidden bodies still appear in exported STEP", "suppressed parts leak into output", "ghost geometry visible after import", "writer drops hidden bodies but leaves dangling assembly references", "INVISIBILITY flag ignored on round-trip".
 - **Byte assertion**: count_entity_def(b'NEXT_ASSEMBLY_USAGE_OCCURRENCE') == 2
 - **Byte assertion**: contains(b'HIDDEN')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must emit a diagnostic this fixture.
 - **Severity**: P1
 - **Model impact**: The assembly graph loads with broken parent/child links or with the wrong transform on a MAPPED_ITEM/NEXT_ASSEMBLY_USAGE_OCCURRENCE; affected sub-components either fail to instance or appear at the wrong position relative to the assembly origin.
@@ -6103,6 +6153,7 @@ _Section summary: 84 entries._
 - **Byte assertion**: count_entity_def(b'NEXT_ASSEMBLY_USAGE_OCCURRENCE') == 1
 - **Byte assertion**: contains(b'MANIFOLD_SURFACE_SHAPE_REPRESENTATION')
 - **Byte assertion**: contains(b'PHANTOM_INSTANCE')
+- **Tier-3 assertion**: shape_null == True
 - **Model impact**: The assembly graph loads with broken parent/child links or with the wrong transform on a MAPPED_ITEM/NEXT_ASSEMBLY_USAGE_OCCURRENCE; affected sub-components either fail to instance or appear at the wrong position relative to the assembly origin.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
@@ -6117,6 +6168,7 @@ _Section summary: 84 entries._
 - **Notes**: Cross-oracle: pure-Python Part-21 validator rejects (reject(E_UNRESOLVED_REFS)); OCCT silently accepts (load is `empty`). OCC auto-heals a spec-level violation.
 - **Byte assertion**: count_entity_def(b'NEXT_ASSEMBLY_USAGE_OCCURRENCE') == 2
 - **Byte assertion**: contains(b'#99999')
+- **Tier-3 assertion**: shape_null == True
 - **Model impact**: The assembly graph loads with broken parent/child links or with the wrong transform on a MAPPED_ITEM/NEXT_ASSEMBLY_USAGE_OCCURRENCE; affected sub-components either fail to instance or appear at the wrong position relative to the assembly origin.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
@@ -6132,6 +6184,7 @@ _Section summary: 84 entries._
 - **Byte assertion**: count_entity_def(b'NEXT_ASSEMBLY_USAGE_OCCURRENCE') == 3
 - **Byte assertion**: count_entity_def(b'REPRESENTATION_MAP') == 3
 - **Byte assertion**: count_entity_def(b'MAPPED_ITEM') == 3
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal, reject}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: The assembly graph loads with broken parent/child links or with the wrong transform on a MAPPED_ITEM/NEXT_ASSEMBLY_USAGE_OCCURRENCE; affected sub-components either fail to instance or appear at the wrong position relative to the assembly origin.
@@ -6147,6 +6200,7 @@ _Section summary: 84 entries._
 - **Notes**: **See also**: A007. Synonyms: "subassembly snaps back to origin on import", "instance positioned at world origin instead of designed location", "imported part loses its placement", "all components stacked at (0,0,0)", "MAPPED_ITEM transform dropped".
 - **Byte assertion**: count_entity_def(b'NEXT_ASSEMBLY_USAGE_OCCURRENCE') >= 2
 - **Byte assertion**: count_entity_def(b'SHAPE_REPRESENTATION_RELATIONSHIP') == 0
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must emit a diagnostic this fixture.
 - **Severity**: P1
 - **Model impact**: The assembly graph loads with broken parent/child links or with the wrong transform on a MAPPED_ITEM/NEXT_ASSEMBLY_USAGE_OCCURRENCE; affected sub-components either fail to instance or appear at the wrong position relative to the assembly origin.
@@ -6161,6 +6215,7 @@ _Section summary: 84 entries._
 - **Notes**: **See also**: A006. **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: catalog asks for healing; OCC neither heals nor rejects; the input is dropped on the floor without diagnostic. Synonyms: "axis placement swapped between subassembly and parent", "rep_1 and rep_2 mixed up in SHAPE_REPRESENTATION_RELATIONSHIP", "component oriented incorrectly after import", "transform applied to wrong frame on round-trip", "subassembly axes flipped vs designed".
 - **Byte assertion**: contains(b'ITEM_DEFINED_TRANSFORMATION')
 - **Byte assertion**: contains(b'swapped')
+- **Tier-3 assertion**: shape_null == True
 - **Model impact**: The assembly graph loads with broken parent/child links or with the wrong transform on a MAPPED_ITEM/NEXT_ASSEMBLY_USAGE_OCCURRENCE; affected sub-components either fail to instance or appear at the wrong position relative to the assembly origin.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
@@ -6173,6 +6228,7 @@ _Section summary: 84 entries._
 - **Notes**: Validation observed: silent-empty rather than crash. Kernel-mishandling-by-silent-acceptance still demonstrates the defect class. **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: catalog asks for healing; OCC neither heals nor rejects; the input is dropped on the floor without diagnostic. Synonyms: "AP242 Ed.2 product_definition_relationship SELECT widened", "writer uses Ed.1 SELECT and reader expects Ed.2", "schema-mismatch on related/relating types", "product_definition_relationship references rejected by older importers".
 - **Byte assertion**: contains(b'NEXT_ASSEMBLY_USAGE_OCCURRENCE')
 - **Byte assertion**: contains(b'MAPPED_ITEM')
+- **Tier-3 assertion**: shape_null == True
 - **Model impact**: The assembly graph loads with broken parent/child links or with the wrong transform on a MAPPED_ITEM/NEXT_ASSEMBLY_USAGE_OCCURRENCE; affected sub-components either fail to instance or appear at the wrong position relative to the assembly origin.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
@@ -6185,6 +6241,7 @@ _Section summary: 84 entries._
 - **Notes**: **See also**: A034. **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: catalog asks for healing; OCC neither heals nor rejects; the input is dropped on the floor without diagnostic. Synonyms: "NAUO target points to PRODUCT_DEFINITION_SHAPE not PRODUCT_DEFINITION", "assembly link uses wrong entity type", "schema rule broken for component reference", "STEP reader confused by NAUO->PDS chain".
 - **Byte assertion**: count_entity_def(b'NEXT_ASSEMBLY_USAGE_OCCURRENCE') == 1
 - **Byte assertion**: contains(b"NEXT_ASSEMBLY_USAGE_OCCURRENCE('1','BAD'")
+- **Tier-3 assertion**: shape_null == True
 - **Model impact**: The assembly graph loads with broken parent/child links or with the wrong transform on a MAPPED_ITEM/NEXT_ASSEMBLY_USAGE_OCCURRENCE; affected sub-components either fail to instance or appear at the wrong position relative to the assembly origin.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
@@ -6198,6 +6255,7 @@ _Section summary: 84 entries._
 - **Byte assertion**: count_entity_def(b'NEXT_ASSEMBLY_USAGE_OCCURRENCE') == 2
 - **Byte assertion**: contains(b'LEFT_LEAF_INSTANCE')
 - **Byte assertion**: contains(b'RIGHT_LEAF_INSTANCE')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: The assembly graph loads with broken parent/child links or with the wrong transform on a MAPPED_ITEM/NEXT_ASSEMBLY_USAGE_OCCURRENCE; affected sub-components either fail to instance or appear at the wrong position relative to the assembly origin.
@@ -6213,6 +6271,7 @@ _Section summary: 84 entries._
 - **Notes**: **See also**: N044. Synonyms: "two parts with same name confused on import", "PRODUCT name collision between subassemblies", "duplicate component names cause wrong wiring", "import merges differently-located parts that share a name".
 - **Byte assertion**: count_entity_def(b'NEXT_ASSEMBLY_USAGE_OCCURRENCE') == 3
 - **Byte assertion**: count(b"'Cap'") >= 3
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: The assembly graph loads with broken parent/child links or with the wrong transform on a MAPPED_ITEM/NEXT_ASSEMBLY_USAGE_OCCURRENCE; affected sub-components either fail to instance or appear at the wrong position relative to the assembly origin.
@@ -6227,6 +6286,7 @@ _Section summary: 84 entries._
 - **Notes**: **See also**: Pf010, Ad052, M060. **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers must reject this fixture per the catalog's stated invariant. Synonyms: "external reference points back to itself", "cyclic file dependency in assembly", "STEP file references its own product", "external-anchor loop crashes reader".
 - **Byte assertion**: contains(b'APPLIED_EXTERNAL_IDENTIFICATION_ASSIGNMENT')
 - **Byte assertion**: contains(b'self_ref')
+- **Tier-3 assertion**: shape_null == True
 - **Model impact**: The assembly graph loads with broken parent/child links or with the wrong transform on a MAPPED_ITEM/NEXT_ASSEMBLY_USAGE_OCCURRENCE; affected sub-components either fail to instance or appear at the wrong position relative to the assembly origin.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
@@ -6239,6 +6299,7 @@ _Section summary: 84 entries._
 - **Notes**: **See also**: M008, Pmi065. **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers must reject this fixture per the catalog's stated invariant. Synonyms: "STEP reader returns success even when external file missing", "no error when referenced subassembly file is absent", "silent partial-load on missing externals", "reader treats missing referenced file as OK".
 - **Byte assertion**: contains(b'APPLIED_EXTERNAL_IDENTIFICATION_ASSIGNMENT')
 - **Byte assertion**: contains(b'part_3.stp')
+- **Tier-3 assertion**: shape_null == True
 - **Model impact**: The assembly graph loads with broken parent/child links or with the wrong transform on a MAPPED_ITEM/NEXT_ASSEMBLY_USAGE_OCCURRENCE; affected sub-components either fail to instance or appear at the wrong position relative to the assembly origin.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
@@ -6252,6 +6313,7 @@ _Section summary: 84 entries._
 - **Notes**: **OCC behavior**: emits a diagnostic but produces no shape (warn-and-proceed by oracle, but result is empty); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers must reject this fixture per the catalog's stated invariant. Synonyms: "external anchor points to multiple entities", "EXTERNAL_ANCHOR uniqueness violated", "orphan EER source references", "non-1:1 anchor mapping breaks resolution".
 - **Byte assertion**: count_entity_def(b'NEXT_ASSEMBLY_USAGE_OCCURRENCE') == 1
 - **Byte assertion**: contains(b'EXTERNAL_ANCHOR') or contains(b'externally_defined_representation_item')
+- **Tier-3 assertion**: shape_null == True
 - **Model impact**: The assembly graph loads with broken parent/child links or with the wrong transform on a MAPPED_ITEM/NEXT_ASSEMBLY_USAGE_OCCURRENCE; affected sub-components either fail to instance or appear at the wrong position relative to the assembly origin.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
@@ -6265,6 +6327,7 @@ _Section summary: 84 entries._
 - **Byte assertion**: count_entity_def(b'NEXT_ASSEMBLY_USAGE_OCCURRENCE') == 2
 - **Byte assertion**: contains(b'AS1_TO_LBR')
 - **Byte assertion**: contains(b'LBR_TO_NUT')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: The assembly graph loads with broken parent/child links or with the wrong transform on a MAPPED_ITEM/NEXT_ASSEMBLY_USAGE_OCCURRENCE; affected sub-components either fail to instance or appear at the wrong position relative to the assembly origin.
@@ -6379,6 +6442,7 @@ _Section summary: 84 entries._
 - **Notes**: **See also**: A017, Pmi068, Tsh033. **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers must reject this fixture per the catalog's stated invariant. Synonyms: "MAPPED_ITEM transform has negative determinant", "left-handed frame in component placement", "mirrored axis placement in MAPPED_ITEM", "improper rotation on assembly transform".
 - **Byte assertion**: contains(b'MAPPED_ITEM')
 - **Byte assertion**: contains(b'MIRROR')
+- **Tier-3 assertion**: shape_null == True
 - **Model impact**: The assembly graph loads with broken parent/child links or with the wrong transform on a MAPPED_ITEM/NEXT_ASSEMBLY_USAGE_OCCURRENCE; affected sub-components either fail to instance or appear at the wrong position relative to the assembly origin.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
@@ -6392,6 +6456,7 @@ _Section summary: 84 entries._
 - **Notes**: **See also**: A010, U016. Synonyms: "non-ASCII component name garbled on import", "Unicode characters in part name corrupted", "Part 21 backslash-X encoding not decoded", "special characters in NAUO instance name lost", "Chinese / Japanese / German labels broken on round-trip".
 - **Byte assertion**: count_entity_def(b'NEXT_ASSEMBLY_USAGE_OCCURRENCE') == 4
 - **Byte assertion**: contains(b'PRODUCT')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: The assembly graph loads with broken parent/child links or with the wrong transform on a MAPPED_ITEM/NEXT_ASSEMBLY_USAGE_OCCURRENCE; affected sub-components either fail to instance or appear at the wrong position relative to the assembly origin.
@@ -6405,6 +6470,7 @@ _Section summary: 84 entries._
 - **Expected kernel behavior**: Heal and accept by indexing entity IDs once at parse and using indexed lookup, not nested scan; bound healing loops by entity count; expose costly orientation-healing work as opt-in / progress-reportable. Must not hang on quadratic input.
 - **Notes**: **See also**: Pf016, Pf017. Synonyms: "huge assembly takes forever to load", "O(n^2) graph traversal during STEP read", "many siblings sharing one product slow loader to crawl", "assembly reader scales quadratically with NAUO count".
 - **Byte assertion**: count_entity_def(b'NEXT_ASSEMBLY_USAGE_OCCURRENCE') >= 20
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: The assembly graph loads with broken parent/child links or with the wrong transform on a MAPPED_ITEM/NEXT_ASSEMBLY_USAGE_OCCURRENCE; affected sub-components either fail to instance or appear at the wrong position relative to the assembly origin.
@@ -6419,6 +6485,7 @@ _Section summary: 84 entries._
 - **Notes**: **See also**: N044. **OCC behavior**: emits a diagnostic but produces no shape (warn-and-proceed by oracle, but result is empty); outside catalog's allowed set ({heal}). Kernel-bug witnessed: catalog asks for healing; OCC neither heals nor rejects; the input is dropped on the floor without diagnostic. Synonyms: "defeaturing for CAE drops references to original geometry", "simplified mesh loses link to source PMI", "downstream tool can't trace back to original part", "reference loss when feature suppressed for analysis".
 - **Byte assertion**: contains(b'SHAPE_ASPECT')
 - **Byte assertion**: contains(b'load_face_orphan')
+- **Tier-3 assertion**: shape_null == True
 - **Model impact**: The assembly graph loads with broken parent/child links or with the wrong transform on a MAPPED_ITEM/NEXT_ASSEMBLY_USAGE_OCCURRENCE; affected sub-components either fail to instance or appear at the wrong position relative to the assembly origin.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
@@ -6431,6 +6498,7 @@ _Section summary: 84 entries._
 - **Notes**: **See also**: A016. **OCC behavior**: silently drops UDAs whose target binding does not match its expectations rather than preserving them verbatim; kernel mishandling; the catalog above forbids silent re-binding (or silent loss). Synonyms: "UDA bound to wrong target after import", "user-defined attribute target inconsistent", "attribute assigned to part but appears on instance", "UDA target-binding mismatch".
 - **Byte assertion**: contains(b'SHAPE_ASPECT')
 - **Byte assertion**: contains(b'mat_aspect')
+- **Tier-3 assertion**: shape_null == True
 - **Model impact**: The assembly graph loads with broken parent/child links or with the wrong transform on a MAPPED_ITEM/NEXT_ASSEMBLY_USAGE_OCCURRENCE; affected sub-components either fail to instance or appear at the wrong position relative to the assembly origin.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
@@ -6443,6 +6511,7 @@ _Section summary: 84 entries._
 - **Notes**: **See also**: A031, A032, Pmi010. Synonyms: "header schema differs from instance schema in Part 21", "AP203 header but AP242 entities inside", "edition-mixed STEP file confuses reader", "schema declared in HEADER doesn't match body".
 - **Byte assertion**: contains(b'NEXT_ASSEMBLY_USAGE_OCCURRENCE')
 - **Byte assertion**: contains(b'SHAPE_ASPECT')
+- **Tier-3 assertion**: shape_null == True
 - **Model impact**: The assembly graph loads with broken parent/child links or with the wrong transform on a MAPPED_ITEM/NEXT_ASSEMBLY_USAGE_OCCURRENCE; affected sub-components either fail to instance or appear at the wrong position relative to the assembly origin.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
@@ -6455,6 +6524,7 @@ _Section summary: 84 entries._
 - **Notes**: **See also**: A030, M049. **OCC behavior**: emits a diagnostic but produces no shape (warn-and-proceed by oracle, but result is empty); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers must reject this fixture per the catalog's stated invariant. Synonyms: "retired AP214 kinematics entity in current file", "obsolete kinematics entity rejected", "schema migration drops legacy kinematics".
 - **Byte assertion**: contains(b'KINEMATIC_LINK_REPRESENTATION')
 - **Byte assertion**: contains(b'KINEMATIC_PROPERTY_DEFINITION') or contains(b'KINEMATIC_LINK_REPRESENTATION_RELATION')
+- **Tier-3 assertion**: shape_null == True
 - **Model impact**: The assembly graph loads with broken parent/child links or with the wrong transform on a MAPPED_ITEM/NEXT_ASSEMBLY_USAGE_OCCURRENCE; affected sub-components either fail to instance or appear at the wrong position relative to the assembly origin.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
@@ -6467,6 +6537,7 @@ _Section summary: 84 entries._
 - **Notes**: **See also**: A030. **OCC behavior**: emits a diagnostic but produces no shape (warn-and-proceed by oracle, but result is empty); outside catalog's allowed set ({heal}). Kernel-bug witnessed: catalog asks for healing; OCC neither heals nor rejects; the input is dropped on the floor without diagnostic. Synonyms: "enum order changed between AP242 Ed.2 and Ed.3", "wrong enum value on schema migration", "enum reordering between editions breaks file".
 - **Byte assertion**: contains(b'GEOMETRIC_TOLERANCE_WITH_DATUM_REFERENCE')
 - **Byte assertion**: contains(b'GEOMETRIC_TOLERANCE_WITH_MODIFIERS')
+- **Tier-3 assertion**: shape_null == True
 - **Model impact**: The assembly graph loads with broken parent/child links or with the wrong transform on a MAPPED_ITEM/NEXT_ASSEMBLY_USAGE_OCCURRENCE; affected sub-components either fail to instance or appear at the wrong position relative to the assembly origin.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
@@ -6479,6 +6550,7 @@ _Section summary: 84 entries._
 - **Notes**: **See also**: A010. Synonyms: "applied_external_identification_assignment name lost", "product_definition_with_associated_documents name dropped", "external doc-id stripped on round-trip", "PLM document reference name disappears".
 - **Byte assertion**: contains(b'PRODUCT_DEFINITION_WITH_ASSOCIATED_DOCUMENTS')
 - **Byte assertion**: contains(b'APPLIED_EXTERNAL_IDENTIFICATION_ASSIGNMENT')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts with diagnostic but loads empty result; outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: The assembly graph loads with broken parent/child links or with the wrong transform on a MAPPED_ITEM/NEXT_ASSEMBLY_USAGE_OCCURRENCE; affected sub-components either fail to instance or appear at the wrong position relative to the assembly origin.
@@ -6495,6 +6567,7 @@ _Section summary: 84 entries._
 - **Byte assertion**: contains(b'SHAPE_ASPECT')
 - **Byte assertion**: contains(b'catia_aspect')
 - **Byte assertion**: contains(b'SHAPE_DEFINITION_REPRESENTATION(#90,')
+- **Tier-3 assertion**: shape_null == True
 - **Model impact**: The assembly graph loads with broken parent/child links or with the wrong transform on a MAPPED_ITEM/NEXT_ASSEMBLY_USAGE_OCCURRENCE; affected sub-components either fail to instance or appear at the wrong position relative to the assembly origin.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
@@ -6507,6 +6580,7 @@ _Section summary: 84 entries._
 - **Notes**: **See also**: A036. Synonyms: "product node has both subassemblies and direct geometry", "mixed product structure confuses reader", "leaf shape attached to non-leaf product", "PRODUCT_DEFINITION carries shape AND children".
 - **Byte assertion**: count_entity_def(b'NEXT_ASSEMBLY_USAGE_OCCURRENCE') == 2
 - **Byte assertion**: count_entity_def(b'MAPPED_ITEM') == 2
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts with diagnostic but loads empty result; outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: The assembly graph loads with broken parent/child links or with the wrong transform on a MAPPED_ITEM/NEXT_ASSEMBLY_USAGE_OCCURRENCE; affected sub-components either fail to instance or appear at the wrong position relative to the assembly origin.
@@ -6521,6 +6595,7 @@ _Section summary: 84 entries._
 - **Notes**: **See also**: A035. Synonyms: "AP203 1998 ShapeAspect-attached SDR pattern", "hybrid AP203 file uses old ShapeAspect chain", "legacy AP203 product structure".
 - **Byte assertion**: contains(b'SHAPE_ASPECT')
 - **Byte assertion**: contains(b'legacy_link') or contains(b'AP203 hybrid')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts with diagnostic but loads empty result; outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: The assembly graph loads with broken parent/child links or with the wrong transform on a MAPPED_ITEM/NEXT_ASSEMBLY_USAGE_OCCURRENCE; affected sub-components either fail to instance or appear at the wrong position relative to the assembly origin.
@@ -6535,6 +6610,7 @@ _Section summary: 84 entries._
 - **Notes**: **See also**: A003. **OCC behavior**: emits a diagnostic but produces no shape (warn-and-proceed by oracle, but result is empty); outside catalog's allowed set ({heal}). Kernel-bug witnessed: catalog asks for healing; OCC neither heals nor rejects; the input is dropped on the floor without diagnostic. Synonyms: "minimal STEP has no PRODUCT entity", "implicit product structure missing", "file lacks any product definition", "geometry-only STEP without metadata".
 - **Byte assertion**: count_entity_def(b'PRODUCT_DEFINITION_SHAPE') == 0
 - **Byte assertion**: count_entity_def(b'NEXT_ASSEMBLY_USAGE_OCCURRENCE') == 0
+- **Tier-3 assertion**: shape_null == True
 - **Model impact**: The assembly graph loads with broken parent/child links or with the wrong transform on a MAPPED_ITEM/NEXT_ASSEMBLY_USAGE_OCCURRENCE; affected sub-components either fail to instance or appear at the wrong position relative to the assembly origin.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
@@ -6546,6 +6622,7 @@ _Section summary: 84 entries._
 - **Expected kernel behavior**: Heal and accept: apply unit scaling to construction-geometry placements; expose `read.step.constructivegeom.relationship` opt-in flag.
 - **Notes**: **See also**: M011. Synonyms: "constructive geometry representation relationship axis placements", "CGR carries assembly-level placements", "constructive geometry connects subassembly axis frames".
 - **Byte assertion**: contains(b'CONSTRUCTIVE_GEOMETRY_REPRESENTATION_RELATIONSHIP')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts with diagnostic but loads empty result; outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: The assembly graph loads with broken parent/child links or with the wrong transform on a MAPPED_ITEM/NEXT_ASSEMBLY_USAGE_OCCURRENCE; affected sub-components either fail to instance or appear at the wrong position relative to the assembly origin.
@@ -6568,6 +6645,7 @@ End of file. Total: 38 entries (A001.A038).
 - **Byte assertion**: contains(b'CONFIG_CONTROL_DESIGN')
 - **Byte assertion**: declared_schema == b'CONFIG_CONTROL_DESIGN'
 - **Byte assertion**: count_entity_def(b'PRODUCT') == 0
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: Defect causes the loader to either abort, silently drop the affected entity, or accept it with corrupted attributes; downstream operations on the affected sub-shape produce results inconsistent with the producer's intent.
@@ -6582,6 +6660,7 @@ End of file. Total: 38 entries (A001.A038).
 - **Expected kernel behavior**: Heal and accept: auto-detect or honor STEP-21 `\X2\` / `\X4\` escape sequences; expose a per-file encoding override; warn if bytes don't decode as declared encoding.
 - **Notes**: Synonyms: "GB18030 encoded part names corrupt after read", "non-UTF-8 string literals in STEP", "Chinese locale code page in name strings", "encoding mismatch garbles labels".
 - **Byte assertion**: contains(b'\\X2\\') or matches(rb"[\x80-\xff]")
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
 - **Severity**: P1
 - **Model impact**: Defect causes the loader to either abort, silently drop the affected entity, or accept it with corrupted attributes; downstream operations on the affected sub-shape produce results inconsistent with the producer's intent.
@@ -6596,6 +6675,7 @@ End of file. Total: 38 entries (A001.A038).
 - **Expected kernel behavior**: Sanitize/escape names at parse time; reject obviously invalid bytes with a warning.
 - **Notes**: Synonyms: "control characters in STEP name strings", "illegal-XML bytes break downstream tools", "raw 0x00-0x1F in PRODUCT.name", "XML serializer chokes on bytes from STEP".
 - **Byte assertion**: matches(rb'\\X\\[0-9A-Fa-f]{2}') or matches(rb"[\x00-\x08\x0b\x0c\x0e-\x1f]")
+- **Tier-3 assertion**: shape_null == True
 - **Model impact**: Defect causes the loader to either abort, silently drop the affected entity, or accept it with corrupted attributes; downstream operations on the affected sub-shape produce results inconsistent with the producer's intent.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
@@ -6609,6 +6689,7 @@ End of file. Total: 38 entries (A001.A038).
 - **Notes**: Synonyms: "spherical face inverted on certain sweep orientations", "sphere normal pointing inward", "revolved sphere face flipped", "inside-out spherical surface".
 - **Byte assertion**: contains(b'SPHERICAL_SURFACE')
 - **Byte assertion**: contains(b'FACE_OUTER_BOUND')
+- **Tier-3 assertion**: n_faces_total == 1
 - **Model impact**: Topology defect leaves the BRep in a non-manifold or open-shell state; BRepCheck reports an invalidity, and downstream meshing or boolean operations on the affected shape either fail or produce geometry that disagrees with the producer's intent.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(6) ifc=schema_n/a`
 
@@ -6623,6 +6704,7 @@ End of file. Total: 38 entries (A001.A038).
 - **Byte assertion**: contains(b'SURFACE_OF_REVOLUTION')
 - **Byte assertion**: count_entity_def(b'ELLIPSE') >= 1
 - **Byte assertion**: contains(b'TRIMMED_CURVE')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
 - **Severity**: P1
 - **Model impact**: Defect causes the loader to either abort, silently drop the affected entity, or accept it with corrupted attributes; downstream operations on the affected sub-shape produce results inconsistent with the producer's intent.
@@ -6637,6 +6719,7 @@ End of file. Total: 38 entries (A001.A038).
 - **Expected kernel behavior**: Heal and accept: surface honored as curved on display tessellation across versions. Must not silently flatten.
 - **Notes**: Synonyms: "sharp B-spline surface flattens between OCCT versions", "high-curvature NURBS surface loses detail", "B-spline curvature flattened on import", "surface detail lost across version upgrade".
 - **Byte assertion**: contains(b'B_SPLINE_SURFACE_WITH_KNOTS') or contains(b'B_SPLINE')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
 - **Severity**: P1
 - **Model impact**: Defect causes the loader to either abort, silently drop the affected entity, or accept it with corrupted attributes; downstream operations on the affected sub-shape produce results inconsistent with the producer's intent.
@@ -6651,6 +6734,7 @@ End of file. Total: 38 entries (A001.A038).
 - **Expected kernel behavior**: Heal and accept: linear scaling with face count, not catastrophic. Must not hang on long helix.
 - **Notes**: **See also**: Pf014. Synonyms: "long helix becomes huge B-spline that takes forever to import", "spring/screw thread import hangs", "helical curve approximation explodes file size", "catastrophic import time on long helix".
 - **Byte assertion**: contains(b'B_SPLINE_CURVE_WITH_KNOTS') or contains(b'B_SPLINE')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
 - **Severity**: P2
 - **Model impact**: Parser/loader resource usage scales pathologically with the input size; load time grows quadratically or memory blows up, and on bounded systems the load is killed before completing.
@@ -6668,6 +6752,7 @@ End of file. Total: 38 entries (A001.A038).
 - **Severity**: P1
 - **Byte assertion**: contains(b'SURFACE_CURVE')
 - **Byte assertion**: contains(b'PCURVE')
+- **Tier-3 assertion**: shape_null == True
 - **Model impact**: Defect causes the loader to either abort, silently drop the affected entity, or accept it with corrupted attributes; downstream operations on the affected sub-shape produce results inconsistent with the producer's intent.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
@@ -6681,6 +6766,7 @@ End of file. Total: 38 entries (A001.A038).
 - **Notes**: Synonyms: "standalone AXIS2_PLACEMENT_3D entities silently dropped", "datum frame lost on import", "orphan axis placement disappears", "construction frames stripped by reader".
 - **Byte assertion**: count_entity_def(b'PRESENTATION_LAYER_ASSIGNMENT') >= 1
 - **Byte assertion**: count_entity_def(b'AXIS2_PLACEMENT_3D') >= 2
+- **Tier-3 assertion**: shape_null == True
 - **Model impact**: The assembly graph loads with broken parent/child links or with the wrong transform on a MAPPED_ITEM/NEXT_ASSEMBLY_USAGE_OCCURRENCE; affected sub-components either fail to instance or appear at the wrong position relative to the assembly origin.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
@@ -6695,6 +6781,7 @@ End of file. Total: 38 entries (A001.A038).
 - **Byte assertion**: contains(b'GEOMETRIC_TOLERANCE_WITH_DATUM_REFERENCE')
 - **Byte assertion**: contains(b'KINEMATIC_JOINT') or contains(b'MECHANISM')
 - **Byte assertion**: declared_schema.startswith(b'AP242')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: crashes with signal(11); outside catalog's allowed set ({heal, warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must heal or emit a diagnostic this fixture; never crash.
 - **Severity**: P0
 - **Model impact**: Parser dereferences invalid memory while processing the malformed token; the load process is killed by a signal and no shape is delivered.
@@ -6710,6 +6797,7 @@ End of file. Total: 38 entries (A001.A038).
 - **Notes**: Synonyms: "STEP-XML stpx file unsupported", "compressed stpz STEP file can't open", ".stpx and .stpz formats not handled", "XML-encoded STEP rejected".
 - **Byte assertion**: contains(b'.stpz') or contains(b'.stpx') or contains(b'application/x-stepz')
 - **Byte assertion**: contains(b'DOCUMENT_FILE')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal, reject}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: Defect causes the loader to either abort, silently drop the affected entity, or accept it with corrupted attributes; downstream operations on the affected sub-shape produce results inconsistent with the producer's intent.
@@ -6726,6 +6814,7 @@ End of file. Total: 38 entries (A001.A038).
 - **Byte assertion**: contains(b'CONFIG_CONTROL_DESIGN')
 - **Byte assertion**: contains(b'SEAM_CURVE')
 - **Byte assertion**: contains(b'PCURVE')
+- **Tier-3 assertion**: shape_null == True
 - **Model impact**: Defect causes the loader to either abort, silently drop the affected entity, or accept it with corrupted attributes; downstream operations on the affected sub-shape produce results inconsistent with the producer's intent.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
@@ -6739,6 +6828,7 @@ End of file. Total: 38 entries (A001.A038).
 - **Notes**: Synonyms: "PCURVE 2D trace drifts off surface after Boolean", "UV parameter shifts beyond tolerance", "pcurve start point doesn't match 3D edge", "parametric curve disagrees with surface geometry".
 - **Byte assertion**: count_entity_def(b'PCURVE') >= 1
 - **Byte assertion**: contains(b'SURFACE_CURVE')
+- **Tier-3 assertion**: shape_null == True
 - **Model impact**: Defect causes the loader to either abort, silently drop the affected entity, or accept it with corrupted attributes; downstream operations on the affected sub-shape produce results inconsistent with the producer's intent.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
@@ -6754,6 +6844,7 @@ End of file. Total: 38 entries (A001.A038).
 - **Notes**: **See also**: M052. Synonyms: "open shell exported as MANIFOLD_SOLID_BREP", "non-manifold geometry mislabeled as solid", "writer claims solid but topology is open shell", "MANIFOLD_SOLID_BREP with missing faces".
 - **Byte assertion**: count_entity_def(b'MANIFOLD_SOLID_BREP') >= 1
 - **Byte assertion**: contains(b'FACE_OUTER_BOUND')
+- **Tier-3 assertion**: n_faces_total == 1
 - **Model impact**: Topology defect leaves the BRep in a non-manifold or open-shell state; BRepCheck reports an invalidity, and downstream meshing or boolean operations on the affected shape either fail or produce geometry that disagrees with the producer's intent.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(3) ifc=schema_n/a`
 
@@ -6769,6 +6860,7 @@ End of file. Total: 38 entries (A001.A038).
 - **Notes**: Synonyms: "pre-Boolean operands left in file alongside result", "duplicate solids: original plus boolean output", "writer ships both inputs and output of cut/union", "extra geometry left over from history".
 - **Byte assertion**: count_entity_def(b'NEXT_ASSEMBLY_USAGE_OCCURRENCE') == 3
 - **Byte assertion**: count_entity_def(b'MAPPED_ITEM') == 3
+- **Tier-3 assertion**: shape_null == True
 - **Model impact**: The assembly graph loads with broken parent/child links or with the wrong transform on a MAPPED_ITEM/NEXT_ASSEMBLY_USAGE_OCCURRENCE; affected sub-components either fail to instance or appear at the wrong position relative to the assembly origin.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
@@ -6782,6 +6874,7 @@ End of file. Total: 38 entries (A001.A038).
 - **Notes**: Synonyms: "free wires in top-level COMPOUND silently dropped", "loose curves in compound stripped on write", "wireframe-only entities lost on export", "construction wires not exported".
 - **Byte assertion**: count_entity_def(b'EDGE_CURVE') >= 2
 - **Byte assertion**: count_entity_def(b'VERTEX_POINT') >= 2
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
 - **Severity**: P1
 - **Model impact**: The assembly graph loads with broken parent/child links or with the wrong transform on a MAPPED_ITEM/NEXT_ASSEMBLY_USAGE_OCCURRENCE; affected sub-components either fail to instance or appear at the wrong position relative to the assembly origin.
@@ -6799,6 +6892,7 @@ End of file. Total: 38 entries (A001.A038).
 - **Notes**: Synonyms: "AXIS2_PLACEMENT_3D has negative determinant", "improper rotation in placement matrix", "left-handed frame in axis placement", "mirror transform encoded as rotation".
 - **Byte assertion**: contains(b'MAPPED_ITEM')
 - **Byte assertion**: contains(b'mirror_origin') or contains(b'mirror_z') or contains(b'left-handed')
+- **Tier-3 assertion**: shape_null == True
 - **Model impact**: Defect causes the loader to either abort, silently drop the affected entity, or accept it with corrupted attributes; downstream operations on the affected sub-shape produce results inconsistent with the producer's intent.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
@@ -6812,6 +6906,7 @@ End of file. Total: 38 entries (A001.A038).
 - **Notes**: **See also**: M041. Synonyms: "geometry invisible after import due to default transparency", "fully transparent default style emitted", "all parts render invisible because of alpha=0", "default presentation_style sets transparency".
 - **Byte assertion**: contains(b'SURFACE_STYLE_RENDERING_WITH_PROPERTIES') or contains(b'transparency')
 - **Byte assertion**: contains(b'COLOUR_RGB')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
@@ -6827,6 +6922,7 @@ End of file. Total: 38 entries (A001.A038).
 - **Notes**: Synonyms: "edge curve doesn't lie on adjacent face within tolerance", "edge geometry mismatches face geometry", "edge-curve / surface gap exceeds tolerance", "sliver between edge and face".
 - **Byte assertion**: count_entity_def(b'CIRCLE') >= 1
 - **Byte assertion**: count_entity_def(b'EDGE_CURVE') >= 2
+- **Tier-3 assertion**: n_faces_total == 2
 - **Model impact**: Topology defect leaves the BRep in a non-manifold or open-shell state; BRepCheck reports an invalidity, and downstream meshing or boolean operations on the affected shape either fail or produce geometry that disagrees with the producer's intent.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(8) ifc=schema_n/a`
 
@@ -6843,6 +6939,7 @@ End of file. Total: 38 entries (A001.A038).
 - **Byte assertion**: count_entity_def(b'SURFACE_OF_REVOLUTION') >= 1
 - **Byte assertion**: contains(b'TRIMMED_CURVE')
 - **Byte assertion**: contains(b'CIRCLE')
+- **Tier-3 assertion**: shape_null == True
 - **Model impact**: Defect causes the loader to either abort, silently drop the affected entity, or accept it with corrupted attributes; downstream operations on the affected sub-shape produce results inconsistent with the producer's intent.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
@@ -6858,6 +6955,7 @@ End of file. Total: 38 entries (A001.A038).
 - **Notes**: Synonyms: "FACE_OUTER_BOUND orientation flag inverted", "negative-volume pocket from mixed bound flags", "outer loop reversed creates pocket instead of solid", "orientation flag mismatch produces inside-out face".
 - **Byte assertion**: count_entity_def(b'MANIFOLD_SOLID_BREP') >= 1
 - **Byte assertion**: matches(rb'FACE_OUTER_BOUND.*\.F\.')
+- **Tier-3 assertion**: n_faces_total == 2
 - **Model impact**: Topology defect leaves the BRep in a non-manifold or open-shell state; BRepCheck reports an invalidity, and downstream meshing or boolean operations on the affected shape either fail or produce geometry that disagrees with the producer's intent.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(2) ifc=schema_n/a`
 
@@ -6871,6 +6969,7 @@ End of file. Total: 38 entries (A001.A038).
 - **Notes**: **See also**: A005. Synonyms: "subassembly hierarchy flattened during merge", "merge step squashes assembly tree", "import merges children into parent product".
 - **Byte assertion**: count_entity_def(b'NEXT_ASSEMBLY_USAGE_OCCURRENCE') >= 2
 - **Byte assertion**: count_entity_def(b'MAPPED_ITEM') == 2
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
 - **Severity**: P1
 - **Model impact**: The assembly graph loads with broken parent/child links or with the wrong transform on a MAPPED_ITEM/NEXT_ASSEMBLY_USAGE_OCCURRENCE; affected sub-components either fail to instance or appear at the wrong position relative to the assembly origin.
@@ -6886,6 +6985,7 @@ End of file. Total: 38 entries (A001.A038).
 - **Notes**: Synonyms: "body name overwritten by last operation label", "exported part name shows internal feature name", "body label corrupted by history rename", "feature name leaked as body name on export".
 - **Byte assertion**: count_entity_def(b'NEXT_ASSEMBLY_USAGE_OCCURRENCE') >= 2
 - **Byte assertion**: contains(b'MAPPED_ITEM')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
 - **Severity**: P1
 - **Model impact**: The assembly graph loads with broken parent/child links or with the wrong transform on a MAPPED_ITEM/NEXT_ASSEMBLY_USAGE_OCCURRENCE; affected sub-components either fail to instance or appear at the wrong position relative to the assembly origin.
@@ -6901,6 +7001,7 @@ End of file. Total: 38 entries (A001.A038).
 - **Notes**: This entry documents a runtime / process-state interaction defect (gmsh's `Geometry.OCCTargetUnit` setting persists into FreeCAD's STEP export in the same Python process). It is intentionally NOT falsifiable from a single .stp file; the fixture P026.stp is illustrative only. To reproduce, run a Python session that imports both gmsh and FreeCAD/OCCT in sequence with the unit-setting middle step, then export STEP — the export will be 1000× scaled. CI validation marks this entry as PROCESS-STATE — out of scope for static-file oracles. Synonyms: "global OCCT unit setting persists across in-process clients", "unit context contaminated between concurrent calls", "process-wide unit state leaks between sessions", "MILLI/METRE context confused by prior call".
 - **Byte assertion**: contains(b'LENGTH_UNIT') and contains(b'MILLI')
 - **Byte assertion**: matches(rb'CARTESIAN_POINT[^;]*1000[0-9]')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
 - **Severity**: P1
 - **Model impact**: Unit/coordinate-system metadata is wrong or missing; coordinates are interpreted at the wrong scale or in the wrong frame, so the loaded geometry is the right shape at the wrong size or pose.
@@ -6917,6 +7018,7 @@ End of file. Total: 38 entries (A001.A038).
 - **Notes**: Synonyms: "Boolean-history face with degenerate hole-loop pcurve crashes writer", "writer dies on degenerate inner-loop pcurve", "STEP write crash from boolean leftover".
 - **Byte assertion**: contains(b'PCURVE')
 - **Byte assertion**: contains(b'B_SPLINE') or contains(b'SURFACE_CURVE')
+- **Tier-3 assertion**: shape_null == True
 - **Model impact**: Defect causes the loader to either abort, silently drop the affected entity, or accept it with corrupted attributes; downstream operations on the affected sub-shape produce results inconsistent with the producer's intent.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
@@ -6932,6 +7034,7 @@ End of file. Total: 38 entries (A001.A038).
 - **Severity**: P1
 - **Byte assertion**: contains(b'NEXT_ASSEMBLY_USAGE_OCCURRENCE')
 - **Byte assertion**: contains(b'Empty/null shape entries') or contains(b'P028') or contains(b'truncated')
+- **Tier-3 assertion**: shape_null == True
 - **Model impact**: The assembly graph loads with broken parent/child links or with the wrong transform on a MAPPED_ITEM/NEXT_ASSEMBLY_USAGE_OCCURRENCE; affected sub-components either fail to instance or appear at the wrong position relative to the assembly origin.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
@@ -6952,6 +7055,7 @@ End of file. Total: 38 entries (A001.A038).
 - **Byte assertion**: count_entity_def(b'STYLED_ITEM') == 6
 - **Byte assertion**: contains(b'PRESENTATION_LAYER_ASSIGNMENT')
 - **Byte assertion**: contains(b'COLOUR_RGB')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: The assembly graph loads with broken parent/child links or with the wrong transform on a MAPPED_ITEM/NEXT_ASSEMBLY_USAGE_OCCURRENCE; affected sub-components either fail to instance or appear at the wrong position relative to the assembly origin.
@@ -6973,6 +7077,7 @@ End of file. Total: 38 entries (A001.A038).
 - **Byte assertion**: contains(b'APPLIED_GROUP_ASSIGNMENT')
 - **Byte assertion**: contains(b'GROUP(')
 - **Byte assertion**: matches(rb'APPLIED_GROUP_ASSIGNMENT\(#\d+,\s*\(\s*\)\)')
+- **Tier-3 assertion**: shape_null == True
 - **Model impact**: The assembly graph loads with broken parent/child links or with the wrong transform on a MAPPED_ITEM/NEXT_ASSEMBLY_USAGE_OCCURRENCE; affected sub-components either fail to instance or appear at the wrong position relative to the assembly origin.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
@@ -6993,6 +7098,7 @@ End of file. Total: 38 entries (A001.A038).
 - **Byte assertion**: contains(b'NEXT_ASSEMBLY_USAGE_OCCURRENCE')
 - **Byte assertion**: contains(b'ITEM_DEFINED_TRANSFORMATION')
 - **Byte assertion**: contains(b'root_loc') or contains(b'child_loc')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: The assembly graph loads with broken parent/child links or with the wrong transform on a MAPPED_ITEM/NEXT_ASSEMBLY_USAGE_OCCURRENCE; affected sub-components either fail to instance or appear at the wrong position relative to the assembly origin.
@@ -7036,6 +7142,7 @@ End of file. Total: 38 entries (A001.A038).
 - **Byte assertion**: contains(b'STYLED_ITEM')
 - **Byte assertion**: contains(b'COLOUR_RGB')
 - **Byte assertion**: contains(b'root_styled') or contains(b'root_red')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: The assembly graph loads with broken parent/child links or with the wrong transform on a MAPPED_ITEM/NEXT_ASSEMBLY_USAGE_OCCURRENCE; affected sub-components either fail to instance or appear at the wrong position relative to the assembly origin.
@@ -7055,6 +7162,7 @@ End of file. Total: 38 entries (A001.A038).
 - **Notes**: Provenance tier: writer-side; writer rejects zero-density material; symptom is on the writing kernel, not the file.
 - **Byte assertion**: contains(b'MASS_DENSITY_MEASURE(0.0)')
 - **Byte assertion**: contains(b'PROPERTY_DEFINITION')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: The assembly graph loads with broken parent/child links or with the wrong transform on a MAPPED_ITEM/NEXT_ASSEMBLY_USAGE_OCCURRENCE; affected sub-components either fail to instance or appear at the wrong position relative to the assembly origin.
@@ -7075,6 +7183,7 @@ End of file. Total: 38 entries (A001.A038).
 - **Notes**: Provenance tier: runtime-only; kernel imports STEP but loses layer info; defect is in the importer, not byte-encodable.
 - **Byte assertion**: count_entity_def(b'PRESENTATION_LAYER_ASSIGNMENT') >= 1
 - **Byte assertion**: contains(b"'layer1'")
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: The assembly graph loads with broken parent/child links or with the wrong transform on a MAPPED_ITEM/NEXT_ASSEMBLY_USAGE_OCCURRENCE; affected sub-components either fail to instance or appear at the wrong position relative to the assembly origin.
@@ -7092,6 +7201,7 @@ End of file. Total: 38 entries (A001.A038).
 - **Notes**: **See also**: A064, A070. Synonyms: "free-shape visibility flag lost on STEP write", "INVISIBILITY of free shapes not written", "free body hidden flag dropped".
 - **Notes**: Provenance tier: writer-side; visibility flag lost on STEP write; symptom is on the writing kernel.
 - **Byte assertion**: contains(b'INVISIBILITY')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: The assembly graph loads with broken parent/child links or with the wrong transform on a MAPPED_ITEM/NEXT_ASSEMBLY_USAGE_OCCURRENCE; affected sub-components either fail to instance or appear at the wrong position relative to the assembly origin.
@@ -7112,6 +7222,7 @@ End of file. Total: 38 entries (A001.A038).
 - **Byte assertion**: count_entity_def(b'CARTESIAN_POINT') == 1
 - **Byte assertion**: count_entity_def(b'VERTEX_POINT') == 1
 - **Byte assertion**: contains(b'emitted_twice')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: The assembly graph loads with broken parent/child links or with the wrong transform on a MAPPED_ITEM/NEXT_ASSEMBLY_USAGE_OCCURRENCE; affected sub-components either fail to instance or appear at the wrong position relative to the assembly origin.
@@ -7152,6 +7263,7 @@ End of file. Total: 38 entries (A001.A038).
 - **Notes**: Provenance tier: requires-sibling-pair; texture lost across XBF roundtrip; needs both pre- and post-roundtrip files.
 - **Byte assertion**: contains(b'IMAGE_TEXTURE')
 - **Byte assertion**: contains(b'TEXTURE_MAPPING')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal, reject}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: The assembly graph loads with broken parent/child links or with the wrong transform on a MAPPED_ITEM/NEXT_ASSEMBLY_USAGE_OCCURRENCE; affected sub-components either fail to instance or appear at the wrong position relative to the assembly origin.
@@ -7174,6 +7286,7 @@ End of file. Total: 38 entries (A001.A038).
 - **Notes**: Provenance tier: runtime-only; kernel reports no free-shape after import; defect is reader behavior.
 - **Byte assertion**: contains(b'MANIFOLD_SURFACE_SHAPE_REPRESENTATION')
 - **Byte assertion**: not_contains(b'ADVANCED_BREP_SHAPE_REPRESENTATION')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal, reject}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: The assembly graph loads with broken parent/child links or with the wrong transform on a MAPPED_ITEM/NEXT_ASSEMBLY_USAGE_OCCURRENCE; affected sub-components either fail to instance or appear at the wrong position relative to the assembly origin.
@@ -7195,6 +7308,7 @@ End of file. Total: 38 entries (A001.A038).
 - **Byte assertion**: count_entity_def(b'GENERAL_PROPERTY') >= 2
 - **Byte assertion**: contains(b'GENERAL_PROPERTY_ASSOCIATION')
 - **Byte assertion**: declared_schema.startswith(b'AP242')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: The assembly graph loads with broken parent/child links or with the wrong transform on a MAPPED_ITEM/NEXT_ASSEMBLY_USAGE_OCCURRENCE; affected sub-components either fail to instance or appear at the wrong position relative to the assembly origin.
@@ -7214,6 +7328,7 @@ End of file. Total: 38 entries (A001.A038).
 - **Byte assertion**: contains(b'NEXT_ASSEMBLY_USAGE_OCCURRENCE')
 - **Byte assertion**: contains(b'STYLED_ITEM')
 - **Byte assertion**: contains(b'COLOUR_RGB')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: The assembly graph loads with broken parent/child links or with the wrong transform on a MAPPED_ITEM/NEXT_ASSEMBLY_USAGE_OCCURRENCE; affected sub-components either fail to instance or appear at the wrong position relative to the assembly origin.
@@ -7232,6 +7347,7 @@ End of file. Total: 38 entries (A001.A038).
 - **Notes**: **See also**: A072. Synonyms: "compound-with-vertex emitted as empty in non-manifold export", "non-manifold STEP write skips vertex-only compound", "vertex inside compound dropped on export".
 - **Notes**: Provenance tier: writer-side; non-manifold export emits empty compound where vertex expected.
 - **Byte assertion**: count_entity_def(b'VERTEX_POINT') >= 1
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: The assembly graph loads with broken parent/child links or with the wrong transform on a MAPPED_ITEM/NEXT_ASSEMBLY_USAGE_OCCURRENCE; affected sub-components either fail to instance or appear at the wrong position relative to the assembly origin.
@@ -7250,6 +7366,7 @@ End of file. Total: 38 entries (A001.A038).
 - **Byte assertion**: contains(b'INVISIBILITY')
 - **Byte assertion**: count_entity_def(b'STYLED_ITEM') >= 1
 - **Byte assertion**: contains(b'transparent_face') or contains(b'invisible_face')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: The assembly graph loads with broken parent/child links or with the wrong transform on a MAPPED_ITEM/NEXT_ASSEMBLY_USAGE_OCCURRENCE; affected sub-components either fail to instance or appear at the wrong position relative to the assembly origin.
@@ -7269,6 +7386,7 @@ End of file. Total: 38 entries (A001.A038).
 - **Byte assertion**: count_entity_def(b'NEXT_ASSEMBLY_USAGE_OCCURRENCE') == 2
 - **Byte assertion**: count_entity_def(b'STYLED_ITEM') >= 2
 - **Byte assertion**: count_entity_def(b'COLOUR_RGB') >= 2
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: The assembly graph loads with broken parent/child links or with the wrong transform on a MAPPED_ITEM/NEXT_ASSEMBLY_USAGE_OCCURRENCE; affected sub-components either fail to instance or appear at the wrong position relative to the assembly origin.
@@ -7287,6 +7405,7 @@ End of file. Total: 38 entries (A001.A038).
 - **Notes**: **See also**: A068, A079. Synonyms: "material attribute overridden by generic colour on round-trip", "material color clobbered by surface color", "round-trip swaps material for color".
 - **Byte assertion**: contains(b'SURFACE_STYLE_REFLECTANCE_AMBIENT')
 - **Byte assertion**: contains(b'COLOUR_RGB')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: The assembly graph loads with broken parent/child links or with the wrong transform on a MAPPED_ITEM/NEXT_ASSEMBLY_USAGE_OCCURRENCE; affected sub-components either fail to instance or appear at the wrong position relative to the assembly origin.
@@ -7304,6 +7423,7 @@ End of file. Total: 38 entries (A001.A038).
 - **Notes**: **See also**: Pf027. Synonyms: "STEP write fails when assembly path name exceeds 150 characters", "long path name breaks export", "writer truncates or errors on long names".
 - **Notes**: Provenance tier: writer-side; writer fails / truncates on long output path; runtime writer behavior.
 - **Byte assertion**: contains(b'Big-path STEP write fails') or contains(b'150 character')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: The assembly graph loads with broken parent/child links or with the wrong transform on a MAPPED_ITEM/NEXT_ASSEMBLY_USAGE_OCCURRENCE; affected sub-components either fail to instance or appear at the wrong position relative to the assembly origin.
@@ -7326,6 +7446,7 @@ End of file. Total: 38 entries (A001.A038).
 - **Byte assertion**: contains(b'SURFACE_OF_REVOLUTION')
 - **Byte assertion**: contains(b'B_SPLINE_CURVE_WITH_KNOTS')
 - **Byte assertion**: contains(b'parabolic_profile') or contains(b'parabolic_revolution')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: The assembly graph loads with broken parent/child links or with the wrong transform on a MAPPED_ITEM/NEXT_ASSEMBLY_USAGE_OCCURRENCE; affected sub-components either fail to instance or appear at the wrong position relative to the assembly origin.
@@ -7347,6 +7468,7 @@ End of file. Total: 38 entries (A001.A038).
 - **Byte assertion**: contains(b'CIRCLE')
 - **Byte assertion**: contains(b'EDGE_CURVE')
 - **Byte assertion**: contains(b'half_arc_full_curve') or contains(b'parent')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: The assembly graph loads with broken parent/child links or with the wrong transform on a MAPPED_ITEM/NEXT_ASSEMBLY_USAGE_OCCURRENCE; affected sub-components either fail to instance or appear at the wrong position relative to the assembly origin.
@@ -7369,6 +7491,7 @@ End of file. Total: 38 entries (A001.A038).
 - **Notes**: Provenance tier: writer-side; writer loses COMPSOLID in non-manifold export.
 - **Byte assertion**: count_entity_def(b'MANIFOLD_SOLID_BREP') >= 2
 - **Byte assertion**: contains(b'shared_face') or contains(b'shared_plane')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: The assembly graph loads with broken parent/child links or with the wrong transform on a MAPPED_ITEM/NEXT_ASSEMBLY_USAGE_OCCURRENCE; affected sub-components either fail to instance or appear at the wrong position relative to the assembly origin.
@@ -7392,6 +7515,7 @@ End of file. Total: 38 entries (A001.A038).
 - **Notes**: **See also**: A030. Synonyms: "exporter ignores write.step.schema parameter", "schema setting not applied on export", "AP203/AP214/AP242 selection ignored by writer".
 - **Notes**: Provenance tier: runtime-only; writer ignores configuration flag; runtime config behavior.
 - **Byte assertion**: contains(b'Writer ignores write.step.schema') or contains(b'write.step.schema')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: The assembly graph loads with broken parent/child links or with the wrong transform on a MAPPED_ITEM/NEXT_ASSEMBLY_USAGE_OCCURRENCE; affected sub-components either fail to instance or appear at the wrong position relative to the assembly origin.
@@ -7429,6 +7553,7 @@ End of file. Total: 38 entries (A001.A038).
 - **Notes**: Provenance tier: writer-side; writer throws on empty assembly.
 - **Byte assertion**: contains(b'empty_assy')
 - **Byte assertion**: count_entity_def(b'PRODUCT') == 2
+- **Tier-3 assertion**: shape_null == True
 - **Model impact**: The assembly graph loads with broken parent/child links or with the wrong transform on a MAPPED_ITEM/NEXT_ASSEMBLY_USAGE_OCCURRENCE; affected sub-components either fail to instance or appear at the wrong position relative to the assembly origin.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
@@ -7446,6 +7571,7 @@ End of file. Total: 38 entries (A001.A038).
 - **Notes**: **See also**: A064, A085. Synonyms: "subshape names lost in non-manifold STEP output", "non-manifold export drops face/edge labels", "names missing in non-manifold writer".
 - **Byte assertion**: count_entity_def(b'STYLED_ITEM') >= 2
 - **Byte assertion**: contains(b"'inlet'") and contains(b"'outlet'")
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: The assembly graph loads with broken parent/child links or with the wrong transform on a MAPPED_ITEM/NEXT_ASSEMBLY_USAGE_OCCURRENCE; affected sub-components either fail to instance or appear at the wrong position relative to the assembly origin.
@@ -7465,6 +7591,7 @@ End of file. Total: 38 entries (A001.A038).
 - **Notes**: **See also**: U023, U028. Synonyms: "PMI text values wrong when LENGTH_UNIT is METRE but values in inches", "dimension unit conversion missing", "DIMENSIONAL_VALUE without unit conversion shows wrong number".
 - **Byte assertion**: contains(b'DIMENSIONAL_VALUE')
 - **Byte assertion**: contains(b'LENGTH_UNIT')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: emits a diagnostic but produces an empty result; outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: The PMI/GD&T annotation either fails to attach to its target geometry or loads with wrong tolerance/datum metadata; the model geometry is unchanged but the semantic PMI structure is broken or invisible to downstream tools.
@@ -7485,6 +7612,7 @@ End of file. Total: 38 entries (A001.A038).
 - **Notes**: Synonyms: "PMI text location wrong after import", "annotation moved to wrong place on import", "PMI text appears displaced".
 - **Byte assertion**: contains(b'ANNOTATION_TEXT_OCCURRENCE')
 - **Byte assertion**: count_entity_def(b'CARTESIAN_POINT') == 2
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: The PMI/GD&T annotation either fails to attach to its target geometry or loads with wrong tolerance/datum metadata; the model geometry is unchanged but the semantic PMI structure is broken or invisible to downstream tools.
@@ -7524,6 +7652,7 @@ End of file. Total: 38 entries (A001.A038).
 - **Byte assertion**: contains(b'GEOMETRIC_TOLERANCE')
 - **Byte assertion**: contains(b'TOLERANCE_ZONE_FORM')
 - **Byte assertion**: contains(b'SHAPE_ASPECT')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: The PMI/GD&T annotation either fails to attach to its target geometry or loads with wrong tolerance/datum metadata; the model geometry is unchanged but the semantic PMI structure is broken or invisible to downstream tools.
@@ -7542,6 +7671,7 @@ End of file. Total: 38 entries (A001.A038).
 - **Notes**: **See also**: Pmi078. Synonyms: "GD&T saved-views label name silently emptied", "saved view label blank after export", "GD&T view name dropped silently".
 - **Byte assertion**: count_entity_def(b'PRESENTATION_VIEW') == 2
 - **Byte assertion**: contains(b'ANNOTATION_PLANE')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: The PMI/GD&T annotation either fails to attach to its target geometry or loads with wrong tolerance/datum metadata; the model geometry is unchanged but the semantic PMI structure is broken or invisible to downstream tools.
@@ -7560,6 +7690,7 @@ End of file. Total: 38 entries (A001.A038).
 - **Byte assertion**: contains(b'CLIPPING_PLANE')
 - **Byte assertion**: count_entity_def(b'DRAUGHTING_CALLOUT') == 3
 - **Byte assertion**: contains(b'PRESENTATION_VIEW')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: The PMI/GD&T annotation either fails to attach to its target geometry or loads with wrong tolerance/datum metadata; the model geometry is unchanged but the semantic PMI structure is broken or invisible to downstream tools.
@@ -7599,6 +7730,7 @@ End of file. Total: 38 entries (A001.A038).
 - **Byte assertion**: count_entity_def(b'AXIS2_PLACEMENT_3D') == 3
 - **Byte assertion**: contains(b'DIMENSIONAL_LOCATION')
 - **Byte assertion**: contains(b'PRESENTED_ITEM_REPRESENTATION')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: The PMI/GD&T annotation either fails to attach to its target geometry or loads with wrong tolerance/datum metadata; the model geometry is unchanged but the semantic PMI structure is broken or invisible to downstream tools.
@@ -7616,6 +7748,7 @@ End of file. Total: 38 entries (A001.A038).
 - **Notes**: **See also**: A076. Synonyms: "dimension names dropped on round-trip", "tolerance label disappears", "dimension name not preserved".
 - **Byte assertion**: contains(b'DIMENSIONAL_LOCATION')
 - **Byte assertion**: count_entity_def(b'SHAPE_ASPECT') == 2
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: The PMI/GD&T annotation either fails to attach to its target geometry or loads with wrong tolerance/datum metadata; the model geometry is unchanged but the semantic PMI structure is broken or invisible to downstream tools.
@@ -7640,6 +7773,7 @@ End of file. Total: 38 entries (A001.A038).
 - **Notes**: **See also**: A076. Synonyms: "empty IGES/STEP write loses general attributes", "writing empty doc strips general attributes", "general attributes dropped on empty write".
 - **Byte assertion**: count_entity_def(b'GENERAL_PROPERTY') == 3
 - **Byte assertion**: contains(b'ANNOTATION_PLANE')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: The PMI/GD&T annotation either fails to attach to its target geometry or loads with wrong tolerance/datum metadata; the model geometry is unchanged but the semantic PMI structure is broken or invisible to downstream tools.
@@ -7675,6 +7809,7 @@ _Section summary: 106 entries._
 - **Byte assertion**: count_entity_def(b'DIMENSIONAL_SIZE') == 2
 - **Byte assertion**: contains(b'blanked-width')
 - **Byte assertion**: count_entity_def(b'SHAPE_DIMENSION_REPRESENTATION') == 2
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
 - **Severity**: P1
 - **Model impact**: The PMI/GD&T annotation either fails to attach to its target geometry or loads with wrong tolerance/datum metadata; the model geometry is unchanged but the semantic PMI structure is broken or invisible to downstream tools.
@@ -7690,6 +7825,7 @@ _Section summary: 106 entries._
 - **Byte assertion**: count_entity_def(b'PARALLELISM_TOLERANCE') == 2
 - **Byte assertion**: contains(b'GEOMETRIC_TOLERANCE_RELATIONSHIP')
 - **Byte assertion**: contains(b'composite') or contains(b'stacked')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
 - **Severity**: P1
 - **Model impact**: The PMI/GD&T annotation either fails to attach to its target geometry or loads with wrong tolerance/datum metadata; the model geometry is unchanged but the semantic PMI structure is broken or invisible to downstream tools.
@@ -7708,6 +7844,7 @@ _Section summary: 106 entries._
 - **Byte assertion**: count_entity_def(b'ANNOTATION_CURVE_OCCURRENCE') == 2
 - **Byte assertion**: contains(b'DRAUGHTING_CALLOUT')
 - **Byte assertion**: count_entity_def(b'POLYLINE') == 2
+- **Tier-3 assertion**: shape_null == True
 - **Model impact**: The PMI/GD&T annotation either fails to attach to its target geometry or loads with wrong tolerance/datum metadata; the model geometry is unchanged but the semantic PMI structure is broken or invisible to downstream tools.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
@@ -7721,6 +7858,7 @@ _Section summary: 106 entries._
 - **Byte assertion**: contains(b'TESSELLATED_ANNOTATION_OCCURRENCE')
 - **Byte assertion**: contains(b'ANNOTATION_CURVE_OCCURRENCE')
 - **Byte assertion**: contains(b'TRIANGULATED_FACE')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal, warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must heal or emit a diagnostic this fixture.
 - **Severity**: P1
 - **Model impact**: The PMI/GD&T annotation either fails to attach to its target geometry or loads with wrong tolerance/datum metadata; the model geometry is unchanged but the semantic PMI structure is broken or invisible to downstream tools.
@@ -7737,6 +7875,7 @@ _Section summary: 106 entries._
 - **Byte assertion**: count_entity_def(b'CAMERA_MODEL_D3') == 2
 - **Byte assertion**: count_entity_def(b'DRAUGHTING_MODEL') == 2
 - **Byte assertion**: count_entity_def(b'MODEL_GEOMETRIC_VIEW') == 0
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: crashes with signal(11); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture; never crash.
 - **Severity**: P0
 - **Model impact**: Parser dereferences invalid memory while processing the malformed token; the load process is killed by a signal and no shape is delivered.
@@ -7752,6 +7891,7 @@ _Section summary: 106 entries._
 - **Byte assertion**: contains(b'PLUS_MINUS_TOLERANCE')
 - **Byte assertion**: contains(b'TOLERANCE_VALUE')
 - **Byte assertion**: count_entity_def(b'PRECISION_QUALIFIER') == 0
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must emit a diagnostic this fixture.
 - **Severity**: P1
 - **Model impact**: The PMI/GD&T annotation either fails to attach to its target geometry or loads with wrong tolerance/datum metadata; the model geometry is unchanged but the semantic PMI structure is broken or invisible to downstream tools.
@@ -7767,6 +7907,7 @@ _Section summary: 106 entries._
 - **Byte assertion**: contains(b'VALUE_FORMAT_TYPE_QUALIFIER')
 - **Byte assertion**: contains(b'PLUS_MINUS_TOLERANCE')
 - **Byte assertion**: contains(b'CONVERSION_BASED_UNIT')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
 - **Severity**: P1
 - **Model impact**: The PMI/GD&T annotation either fails to attach to its target geometry or loads with wrong tolerance/datum metadata; the model geometry is unchanged but the semantic PMI structure is broken or invisible to downstream tools.
@@ -7782,6 +7923,7 @@ _Section summary: 106 entries._
 - **Byte assertion**: contains(b'POSITION_TOLERANCE')
 - **Byte assertion**: contains(b'TOLERANCE_ZONE_FORM')
 - **Byte assertion**: contains(b'DATUM_SYSTEM')
+- **Tier-3 assertion**: shape_null == True
 - **Model impact**: The PMI/GD&T annotation either fails to attach to its target geometry or loads with wrong tolerance/datum metadata; the model geometry is unchanged but the semantic PMI structure is broken or invisible to downstream tools.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
@@ -7795,6 +7937,7 @@ _Section summary: 106 entries._
 - **Byte assertion**: count_entity_def(b'ID_ATTRIBUTE') == 3
 - **Byte assertion**: contains(b'DIMENSIONAL_SIZE')
 - **Byte assertion**: contains(b'DIMENSIONAL_LOCATION')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
 - **Severity**: P1
 - **Model impact**: The PMI/GD&T annotation either fails to attach to its target geometry or loads with wrong tolerance/datum metadata; the model geometry is unchanged but the semantic PMI structure is broken or invisible to downstream tools.
@@ -7810,6 +7953,7 @@ _Section summary: 106 entries._
 - **Byte assertion**: count_entity_def(b'DIMENSIONAL_SIZE') == 3
 - **Byte assertion**: count_entity_def(b'SHAPE_ASPECT') == 3
 - **Byte assertion**: contains(b'PLUS_MINUS_TOLERANCE')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
 - **Severity**: P1
 - **Model impact**: The PMI/GD&T annotation either fails to attach to its target geometry or loads with wrong tolerance/datum metadata; the model geometry is unchanged but the semantic PMI structure is broken or invisible to downstream tools.
@@ -7824,6 +7968,7 @@ _Section summary: 106 entries._
 - **Notes**: **See also**: Pmi047. Synonyms: "annotation_plane plane vs planar_box ambiguity", "ambiguous annotation_plane representation", "annotation plane shape unclear (plane or planar_box)".- **Byte assertion**: count_entity_def(b'ANNOTATION_PLANE') == 2
 - **Byte assertion**: contains(b'PLANAR_BOX')
 - **Byte assertion**: contains(b'PLANE')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
 - **Severity**: P1
 - **Model impact**: The PMI/GD&T annotation either fails to attach to its target geometry or loads with wrong tolerance/datum metadata; the model geometry is unchanged but the semantic PMI structure is broken or invisible to downstream tools.
@@ -7838,6 +7983,7 @@ _Section summary: 106 entries._
 - **Notes**: **See also**: Pmi047. Synonyms: "annotation geometry slightly offset from annotation_plane", "PMI text not exactly in declared plane", "small-offset PMI parallelism violation".- **Byte assertion**: contains(b'ANNOTATION_CURVE_OCCURRENCE')
 - **Byte assertion**: contains(b'ANNOTATION_PLANE')
 - **Byte assertion**: contains(b'POLYLINE')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
 - **Severity**: P1
 - **Model impact**: The PMI/GD&T annotation either fails to attach to its target geometry or loads with wrong tolerance/datum metadata; the model geometry is unchanged but the semantic PMI structure is broken or invisible to downstream tools.
@@ -7853,6 +7999,7 @@ _Section summary: 106 entries._
 - **Byte assertion**: count_entity_def(b'DRAUGHTING_MODEL') == 2
 - **Byte assertion**: count_entity_def(b'DESCRIPTION_ATTRIBUTE') == 2
 - **Byte assertion**: count_entity_def(b'PLANE') == 5
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
 - **Severity**: P1
 - **Model impact**: The PMI/GD&T annotation either fails to attach to its target geometry or loads with wrong tolerance/datum metadata; the model geometry is unchanged but the semantic PMI structure is broken or invisible to downstream tools.
@@ -7868,6 +8015,7 @@ _Section summary: 106 entries._
 - **Byte assertion**: count_entity_def(b'ANNOTATION_CURVE_OCCURRENCE') == 2
 - **Byte assertion**: count_entity_def(b'DRAUGHTING_MODEL') == 2
 - **Byte assertion**: count_entity_def(b'POLYLINE') == 2
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must emit a diagnostic this fixture.
 - **Severity**: P1
 - **Model impact**: The PMI/GD&T annotation either fails to attach to its target geometry or loads with wrong tolerance/datum metadata; the model geometry is unchanged but the semantic PMI structure is broken or invisible to downstream tools.
@@ -7883,6 +8031,7 @@ _Section summary: 106 entries._
 - **Byte assertion**: contains(b'CAMERA_MODEL_D3')
 - **Byte assertion**: contains(b'VIEW_VOLUME')
 - **Byte assertion**: contains(b'ANNOTATION_PLANE')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: crashes with signal(11); outside catalog's allowed set ({heal, warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must heal or emit a diagnostic this fixture; never crash.
 - **Severity**: P0
 - **Model impact**: Parser dereferences invalid memory while processing the malformed token; the load process is killed by a signal and no shape is delivered.
@@ -7898,6 +8047,7 @@ _Section summary: 106 entries._
 - **Byte assertion**: count_entity_def(b'DRAUGHTING_MODEL') == 2
 - **Byte assertion**: contains(b'ANNOTATION_CURVE_OCCURRENCE')
 - **Byte assertion**: count_entity_def(b'MAPPED_ITEM') == 0
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal, warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must heal or emit a diagnostic this fixture.
 - **Severity**: P1
 - **Model impact**: The PMI/GD&T annotation either fails to attach to its target geometry or loads with wrong tolerance/datum metadata; the model geometry is unchanged but the semantic PMI structure is broken or invisible to downstream tools.
@@ -7913,6 +8063,7 @@ _Section summary: 106 entries._
 - **Notes**: **See also**: Pmi023, Pmi024. **OCC behavior**: silently accepts duplicate UUIDs without warning, leaving the duplicate-binding policy implicit; kernel mishandling; the catalog above requires a warning. Synonyms: "duplicate UUID across multiple identified_item entities", "two PMI items share the same UUID", "UUID collision among PMI items".
 - **Byte assertion**: count_entity_def(b'UUID_ATTRIBUTE') == 2
 - **Byte assertion**: count(b'4ce0acf8-1a2b-4c3d-9e8f-7a6b5c4d3e2f') >= 2
+- **Tier-3 assertion**: shape_null == True
 - **Model impact**: The PMI/GD&T annotation either fails to attach to its target geometry or loads with wrong tolerance/datum metadata; the model geometry is unchanged but the semantic PMI structure is broken or invisible to downstream tools.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
@@ -7926,6 +8077,7 @@ _Section summary: 106 entries._
 - **Byte assertion**: count_entity_def(b'UUID_ATTRIBUTE') == 2
 - **Byte assertion**: contains(b'4ce0acf8-1a2b-4c3d-9e8f-7a6b5c4d3e2f')
 - **Byte assertion**: contains(b'a1b2c3d4-5e6f-7a8b-9c0d-1e2f3a4b5c6d')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal, warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must heal or emit a diagnostic this fixture.
 - **Severity**: P1
 - **Model impact**: The PMI/GD&T annotation either fails to attach to its target geometry or loads with wrong tolerance/datum metadata; the model geometry is unchanged but the semantic PMI structure is broken or invisible to downstream tools.
@@ -7941,6 +8093,7 @@ _Section summary: 106 entries._
 - **Byte assertion**: contains(b'UUID_ATTRIBUTE')
 - **Byte assertion**: contains(b'XYZ')
 - **Byte assertion**: matches(rb"'4ce0ACF8-1a2b-4c3d-9e8f-7a6b5c4dXYZ'")
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
 - **Severity**: P1
 - **Model impact**: The PMI/GD&T annotation either fails to attach to its target geometry or loads with wrong tolerance/datum metadata; the model geometry is unchanged but the semantic PMI structure is broken or invisible to downstream tools.
@@ -7956,6 +8109,7 @@ _Section summary: 106 entries._
 - **Byte assertion**: count_entity_def(b'DATUM') == 2
 - **Byte assertion**: count_entity_def(b'DATUM_REFERENCE_COMPARTMENT') == 3
 - **Byte assertion**: contains(b'POSITION_TOLERANCE')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal, reject}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: The PMI/GD&T annotation either fails to attach to its target geometry or loads with wrong tolerance/datum metadata; the model geometry is unchanged but the semantic PMI structure is broken or invisible to downstream tools.
@@ -7971,6 +8125,7 @@ _Section summary: 106 entries._
 - **Byte assertion**: count_entity_def(b'DATUM') == 3
 - **Byte assertion**: contains(b'DATUM_SYSTEM')
 - **Byte assertion**: contains(b'POSITION_TOLERANCE')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: The PMI/GD&T annotation either fails to attach to its target geometry or loads with wrong tolerance/datum metadata; the model geometry is unchanged but the semantic PMI structure is broken or invisible to downstream tools.
@@ -7986,6 +8141,7 @@ _Section summary: 106 entries._
 - **Byte assertion**: count_entity_def(b'DATUM_REFERENCE') == 3
 - **Byte assertion**: contains(b'POSITION_TOLERANCE_WITH_DATUM_REFERENCE')
 - **Byte assertion**: count_entity_def(b'DATUM_SYSTEM') == 0
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal, warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must heal or emit a diagnostic this fixture.
 - **Severity**: P1
 - **Model impact**: The PMI/GD&T annotation either fails to attach to its target geometry or loads with wrong tolerance/datum metadata; the model geometry is unchanged but the semantic PMI structure is broken or invisible to downstream tools.
@@ -8001,6 +8157,7 @@ _Section summary: 106 entries._
 - **Byte assertion**: contains(b'COMMON_DATUM')
 - **Byte assertion**: count_entity_def(b'DATUM') == 2
 - **Byte assertion**: contains(b'DATUM_SYSTEM')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal, warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must heal or emit a diagnostic this fixture.
 - **Severity**: P1
 - **Model impact**: The PMI/GD&T annotation either fails to attach to its target geometry or loads with wrong tolerance/datum metadata; the model geometry is unchanged but the semantic PMI structure is broken or invisible to downstream tools.
@@ -8016,6 +8173,7 @@ _Section summary: 106 entries._
 - **Byte assertion**: contains(b'DATUM_SYSTEM_AP242')
 - **Byte assertion**: contains(b'DATUM_REFERENCE')
 - **Byte assertion**: contains(b'DATUM_REFERENCE_ELEMENT')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: The PMI/GD&T annotation either fails to attach to its target geometry or loads with wrong tolerance/datum metadata; the model geometry is unchanged but the semantic PMI structure is broken or invisible to downstream tools.
@@ -8031,6 +8189,7 @@ _Section summary: 106 entries._
 - **Byte assertion**: contains(b'PROJECTED_ZONE_DEFINITION')
 - **Byte assertion**: contains(b'POSITION_TOLERANCE')
 - **Byte assertion**: contains(b'TOLERANCE_ZONE_FORM')
+- **Tier-3 assertion**: shape_null == True
 - **Model impact**: The PMI/GD&T annotation either fails to attach to its target geometry or loads with wrong tolerance/datum metadata; the model geometry is unchanged but the semantic PMI structure is broken or invisible to downstream tools.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
@@ -8044,6 +8203,7 @@ _Section summary: 106 entries._
 - **Byte assertion**: contains(b'PROJECTED_ZONE_DEFINITION')
 - **Byte assertion**: contains(b'CYLINDRICAL_SURFACE')
 - **Byte assertion**: contains(b'POSITION_TOLERANCE')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject, warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must reject or emit a diagnostic this fixture.
 - **Severity**: P1
 - **Model impact**: The PMI/GD&T annotation either fails to attach to its target geometry or loads with wrong tolerance/datum metadata; the model geometry is unchanged but the semantic PMI structure is broken or invisible to downstream tools.
@@ -8059,6 +8219,7 @@ _Section summary: 106 entries._
 - **Byte assertion**: contains(b'PLACED_DATUM_TARGET_FEATURE')
 - **Byte assertion**: contains(b'DATUM')
 - **Byte assertion**: contains(b'MEASURE_REPRESENTATION_ITEM')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must emit a diagnostic this fixture.
 - **Severity**: P1
 - **Model impact**: The PMI/GD&T annotation either fails to attach to its target geometry or loads with wrong tolerance/datum metadata; the model geometry is unchanged but the semantic PMI structure is broken or invisible to downstream tools.
@@ -8087,6 +8248,7 @@ _Section summary: 106 entries._
 - **Byte assertion**: count_entity_def(b'PLACED_DATUM_TARGET_FEATURE') == 2
 - **Byte assertion**: count_entity_def(b'PROPERTY_DEFINITION') == 2
 - **Byte assertion**: contains(b'DESCRIPTIVE_REPRESENTATION_ITEM')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: The PMI/GD&T annotation either fails to attach to its target geometry or loads with wrong tolerance/datum metadata; the model geometry is unchanged but the semantic PMI structure is broken or invisible to downstream tools.
@@ -8102,6 +8264,7 @@ _Section summary: 106 entries._
 - **Byte assertion**: contains(b'PLACED_DATUM_TARGET_FEATURE')
 - **Byte assertion**: contains(b'SHAPE_ASPECT_RELATIONSHIP')
 - **Byte assertion**: contains(b'SHAPE_ASPECT')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
 - **Severity**: P1
 - **Model impact**: The PMI/GD&T annotation either fails to attach to its target geometry or loads with wrong tolerance/datum metadata; the model geometry is unchanged but the semantic PMI structure is broken or invisible to downstream tools.
@@ -8117,6 +8280,7 @@ _Section summary: 106 entries._
 - **Byte assertion**: contains(b'SHAPE_ASPECT')
 - **Byte assertion**: contains(b'DIMENSIONAL_SIZE')
 - **Byte assertion**: contains(b'PLUS_MINUS_TOLERANCE')
+- **Tier-3 assertion**: shape_null == True
 - **Model impact**: The PMI/GD&T annotation either fails to attach to its target geometry or loads with wrong tolerance/datum metadata; the model geometry is unchanged but the semantic PMI structure is broken or invisible to downstream tools.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
@@ -8130,6 +8294,7 @@ _Section summary: 106 entries._
 - **Byte assertion**: count_entity_def(b'PLUS_MINUS_TOLERANCE') == 2
 - **Byte assertion**: count_entity_def(b'TOLERANCE_VALUE') == 2
 - **Byte assertion**: contains(b'DIMENSIONAL_SIZE')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal, warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must heal or emit a diagnostic this fixture.
 - **Severity**: P1
 - **Model impact**: The PMI/GD&T annotation either fails to attach to its target geometry or loads with wrong tolerance/datum metadata; the model geometry is unchanged but the semantic PMI structure is broken or invisible to downstream tools.
@@ -8159,6 +8324,7 @@ _Section summary: 106 entries._
 - **Byte assertion**: contains(b'PERPENDICULARITY_TOLERANCE')
 - **Byte assertion**: contains(b'DESCRIPTIVE_REPRESENTATION_ITEM')
 - **Byte assertion**: contains(b'DATUM_SYSTEM')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must emit a diagnostic this fixture.
 - **Severity**: P1
 - **Model impact**: The PMI/GD&T annotation either fails to attach to its target geometry or loads with wrong tolerance/datum metadata; the model geometry is unchanged but the semantic PMI structure is broken or invisible to downstream tools.
@@ -8174,6 +8340,7 @@ _Section summary: 106 entries._
 - **Byte assertion**: count_entity_def(b'POSITION_TOLERANCE') == 2
 - **Byte assertion**: count_entity_def(b'GEOMETRIC_TOLERANCE_RELATIONSHIP') == 2
 - **Byte assertion**: contains(b'DATUM_SYSTEM')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: The PMI/GD&T annotation either fails to attach to its target geometry or loads with wrong tolerance/datum metadata; the model geometry is unchanged but the semantic PMI structure is broken or invisible to downstream tools.
@@ -8203,6 +8370,7 @@ _Section summary: 106 entries._
 - **Byte assertion**: contains(b'ANNOTATION_CURVE_OCCURRENCE')
 - **Byte assertion**: contains(b'COLOUR_RGB')
 - **Byte assertion**: contains(b'STYLED_ITEM')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: The PMI/GD&T annotation either fails to attach to its target geometry or loads with wrong tolerance/datum metadata; the model geometry is unchanged but the semantic PMI structure is broken or invisible to downstream tools.
@@ -8218,6 +8386,7 @@ _Section summary: 106 entries._
 - **Byte assertion**: contains(b'DRAUGHTING_ANNOTATION_OCCURRENCE')
 - **Byte assertion**: contains(b'PRESENTATION_STYLE_ASSIGNMENT')
 - **Byte assertion**: contains(b'COLOUR_RGB')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: The PMI/GD&T annotation either fails to attach to its target geometry or loads with wrong tolerance/datum metadata; the model geometry is unchanged but the semantic PMI structure is broken or invisible to downstream tools.
@@ -8232,6 +8401,7 @@ _Section summary: 106 entries._
 - **Notes**: **See also**: Pmi014, Pmi015. Synonyms: "annotation has no annotation_plane", "PMI text without associated plane", "annotation_plane reference missing".- **Byte assertion**: contains(b'ANNOTATION_CURVE_OCCURRENCE')
 - **Byte assertion**: contains(b'PRESENTATION_STYLE_ASSIGNMENT')
 - **Byte assertion**: count_entity_def(b'ANNOTATION_PLANE') == 1
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: The PMI/GD&T annotation either fails to attach to its target geometry or loads with wrong tolerance/datum metadata; the model geometry is unchanged but the semantic PMI structure is broken or invisible to downstream tools.
@@ -8247,6 +8417,7 @@ _Section summary: 106 entries._
 - **Byte assertion**: contains(b'ANNOTATION_CURVE_OCCURRENCE')
 - **Byte assertion**: count_entity_def(b'COLOUR_RGB') == 0
 - **Byte assertion**: count_entity_def(b'STYLED_ITEM') == 0
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal, warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must heal or emit a diagnostic this fixture.
 - **Severity**: P1
 - **Model impact**: The PMI/GD&T annotation either fails to attach to its target geometry or loads with wrong tolerance/datum metadata; the model geometry is unchanged but the semantic PMI structure is broken or invisible to downstream tools.
@@ -8278,6 +8449,7 @@ _Section summary: 106 entries._
 - **Byte assertion**: contains(b'ANNOTATION_CURVE_OCCURRENCE')
 - **Byte assertion**: contains(b'POLYLINE')
 - **Byte assertion**: contains(b'CURVE_STYLE')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal, warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must heal or emit a diagnostic this fixture.
 - **Severity**: P1
 - **Model impact**: The PMI/GD&T annotation either fails to attach to its target geometry or loads with wrong tolerance/datum metadata; the model geometry is unchanged but the semantic PMI structure is broken or invisible to downstream tools.
@@ -8293,6 +8465,7 @@ _Section summary: 106 entries._
 - **Byte assertion**: contains(b'B_SPLINE_CURVE_WITH_KNOTS')
 - **Byte assertion**: contains(b'ANNOTATION_CURVE_OCCURRENCE')
 - **Byte assertion**: contains(b'PRESENTATION_STYLE_ASSIGNMENT')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal, warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must heal or emit a diagnostic this fixture.
 - **Severity**: P1
 - **Model impact**: The PMI/GD&T annotation either fails to attach to its target geometry or loads with wrong tolerance/datum metadata; the model geometry is unchanged but the semantic PMI structure is broken or invisible to downstream tools.
@@ -8308,6 +8481,7 @@ _Section summary: 106 entries._
 - **Byte assertion**: count_entity_def(b'DIMENSIONAL_SIZE') == 4
 - **Byte assertion**: count_entity_def(b'SHAPE_ASPECT') == 3
 - **Byte assertion**: contains(b'PLUS_MINUS_TOLERANCE')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: The PMI/GD&T annotation either fails to attach to its target geometry or loads with wrong tolerance/datum metadata; the model geometry is unchanged but the semantic PMI structure is broken or invisible to downstream tools.
@@ -8323,6 +8497,7 @@ _Section summary: 106 entries._
 - **Byte assertion**: contains(b'TESSELLATED_ANNOTATION_OCCURRENCE')
 - **Byte assertion**: contains(b'ANNOTATION_CURVE_OCCURRENCE')
 - **Byte assertion**: contains(b'COMPLEX_TRIANGULATED_SURFACE_SET')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal, warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must heal or emit a diagnostic this fixture.
 - **Severity**: P1
 - **Model impact**: The PMI/GD&T annotation either fails to attach to its target geometry or loads with wrong tolerance/datum metadata; the model geometry is unchanged but the semantic PMI structure is broken or invisible to downstream tools.
@@ -8352,6 +8527,7 @@ _Section summary: 106 entries._
 - **Byte assertion**: count_entity_def(b'DRAUGHTING_MODEL') == 2
 - **Byte assertion**: contains(b'CONFIGURATION_DESIGN')
 - **Byte assertion**: count_entity_def(b'CONFIGURATION_ITEM') == 2
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal, warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must heal or emit a diagnostic this fixture.
 - **Severity**: P1
 - **Model impact**: The PMI/GD&T annotation either fails to attach to its target geometry or loads with wrong tolerance/datum metadata; the model geometry is unchanged but the semantic PMI structure is broken or invisible to downstream tools.
@@ -8380,6 +8556,7 @@ _Section summary: 106 entries._
 - **Byte assertion**: contains(b'DATUM_FEATURE')
 - **Byte assertion**: contains(b'POSITION_TOLERANCE')
 - **Byte assertion**: contains(b'DATUM_SYSTEM')
+- **Tier-3 assertion**: shape_null == True
 - **Model impact**: The PMI/GD&T annotation either fails to attach to its target geometry or loads with wrong tolerance/datum metadata; the model geometry is unchanged but the semantic PMI structure is broken or invisible to downstream tools.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
@@ -8419,6 +8596,7 @@ _Section summary: 106 entries._
 - **Byte assertion**: contains(b'PLACED_DATUM_TARGET_FEATURE')
 - **Byte assertion**: contains(b'DATUM_SYSTEM')
 - **Byte assertion**: contains(b'POSITION_TOLERANCE')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must emit a diagnostic this fixture.
 - **Severity**: P1
 - **Model impact**: The PMI/GD&T annotation either fails to attach to its target geometry or loads with wrong tolerance/datum metadata; the model geometry is unchanged but the semantic PMI structure is broken or invisible to downstream tools.
@@ -8434,6 +8612,7 @@ _Section summary: 106 entries._
 - **Byte assertion**: contains(b'COMPONENT_PATH_SHAPE_ASPECT')
 - **Byte assertion**: contains(b'DOCUMENT_FILE')
 - **Byte assertion**: count_entity_def(b'PRODUCT') == 3
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: The PMI/GD&T annotation either fails to attach to its target geometry or loads with wrong tolerance/datum metadata; the model geometry is unchanged but the semantic PMI structure is broken or invisible to downstream tools.
@@ -8449,6 +8628,7 @@ _Section summary: 106 entries._
 - **Byte assertion**: count_entity_def(b'DIMENSIONAL_SIZE') == 4
 - **Byte assertion**: count_entity_def(b'SHAPE_ASPECT') == 4
 - **Byte assertion**: contains(b'PLUS_MINUS_TOLERANCE')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: The PMI/GD&T annotation either fails to attach to its target geometry or loads with wrong tolerance/datum metadata; the model geometry is unchanged but the semantic PMI structure is broken or invisible to downstream tools.
@@ -8464,6 +8644,7 @@ _Section summary: 106 entries._
 - **Byte assertion**: contains(b'CONVERSION_BASED_UNIT') or contains(b'INCH')
 - **Byte assertion**: contains(b'DIMENSIONAL_EXPONENTS')
 - **Byte assertion**: contains(b'PLUS_MINUS_TOLERANCE')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal, warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must heal or emit a diagnostic this fixture.
 - **Severity**: P1
 - **Model impact**: The PMI/GD&T annotation either fails to attach to its target geometry or loads with wrong tolerance/datum metadata; the model geometry is unchanged but the semantic PMI structure is broken or invisible to downstream tools.
@@ -8479,6 +8660,7 @@ _Section summary: 106 entries._
 - **Byte assertion**: contains(b'CARTESIAN_TRANSFORMATION_OPERATOR_3D')
 - **Byte assertion**: contains(b'ITEM_DEFINED_TRANSFORMATION')
 - **Byte assertion**: count_entity_def(b'PLANE') == 2
+- **Tier-3 assertion**: shape_null == True
 - **Model impact**: The PMI/GD&T annotation either fails to attach to its target geometry or loads with wrong tolerance/datum metadata; the model geometry is unchanged but the semantic PMI structure is broken or invisible to downstream tools.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
@@ -8498,6 +8680,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Byte assertion**: contains(b'DIMENSIONAL_LOCATION_WITH_PATH')
 - **Byte assertion**: contains(b'SHAPE_ASPECT_RELATIONSHIP')
 - **Byte assertion**: count_entity_def(b'SHAPE_ASPECT') == 2
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: The PMI/GD&T annotation either fails to attach to its target geometry or loads with wrong tolerance/datum metadata; the model geometry is unchanged but the semantic PMI structure is broken or invisible to downstream tools.
@@ -8513,6 +8696,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Byte assertion**: count_entity_def(b'GEOMETRIC_TOLERANCE') == 3
 - **Byte assertion**: count_entity_def(b'GEOMETRIC_TOLERANCE_RELATIONSHIP') == 3
 - **Byte assertion**: count_entity_def(b'SHAPE_ASPECT') == 3
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: The PMI/GD&T annotation either fails to attach to its target geometry or loads with wrong tolerance/datum metadata; the model geometry is unchanged but the semantic PMI structure is broken or invisible to downstream tools.
@@ -8527,6 +8711,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Notes**: **See also**: Pmi030, Pmi031. Synonyms: "PROJECTED_ZONE_DEFINITION with zero offset", "projected zone offset is zero", "zero-length projected zone".
 - **Byte assertion**: contains(b'PROJECTED_ZONE_DEFINITION')
 - **Byte assertion**: contains(b'GEOMETRIC_TOLERANCE_WITH_DEFINED_UNIT')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject, warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must reject or emit a diagnostic this fixture.
 - **Severity**: P1
 - **Model impact**: The PMI/GD&T annotation either fails to attach to its target geometry or loads with wrong tolerance/datum metadata; the model geometry is unchanged but the semantic PMI structure is broken or invisible to downstream tools.
@@ -8542,6 +8727,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Byte assertion**: contains(b'DIMENSION_PAIR')
 - **Byte assertion**: count_entity_def(b'DIMENSIONAL_SIZE') == 2
 - **Byte assertion**: contains(b'DIMENSIONAL_EXPONENTS')
+- **Tier-3 assertion**: shape_null == True
 - **Model impact**: The PMI/GD&T annotation either fails to attach to its target geometry or loads with wrong tolerance/datum metadata; the model geometry is unchanged but the semantic PMI structure is broken or invisible to downstream tools.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
@@ -8554,6 +8740,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Notes**: **See also**: Pmi070. Synonyms: "compound feature with self-referential pattern membership", "hole pattern includes itself", "self-loop in pattern membership".
 - **Byte assertion**: count_entity_def(b'SHAPE_ASPECT') == 3
 - **Byte assertion**: count_entity_def(b'SHAPE_ASPECT_RELATIONSHIP') == 3
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject, warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must reject or emit a diagnostic this fixture.
 - **Severity**: P1
 - **Model impact**: The PMI/GD&T annotation either fails to attach to its target geometry or loads with wrong tolerance/datum metadata; the model geometry is unchanged but the semantic PMI structure is broken or invisible to downstream tools.
@@ -8569,6 +8756,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Byte assertion**: count_entity_def(b'DIMENSIONAL_SIZE') == 2
 - **Byte assertion**: count_entity_def(b'MEASURE_REPRESENTATION_ITEM') == 2
 - **Byte assertion**: contains(b'SHAPE_ASPECT')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal, warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must heal or emit a diagnostic this fixture.
 - **Severity**: P1
 - **Model impact**: The PMI/GD&T annotation either fails to attach to its target geometry or loads with wrong tolerance/datum metadata; the model geometry is unchanged but the semantic PMI structure is broken or invisible to downstream tools.
@@ -8584,6 +8772,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Byte assertion**: count_entity_def(b'NEXT_ASSEMBLY_USAGE_OCCURRENCE') == 2
 - **Byte assertion**: count_entity_def(b'PRODUCT') == 2
 - **Byte assertion**: count_entity_def(b'PRODUCT_DEFINITION') == 2
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: The PMI/GD&T annotation either fails to attach to its target geometry or loads with wrong tolerance/datum metadata; the model geometry is unchanged but the semantic PMI structure is broken or invisible to downstream tools.
@@ -8598,6 +8787,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Notes**: First entry exercising AP242 ED4 composite-property semantics. **OCC behavior**: silently accepts the contradictory composite layer stack with no diagnostic; kernel mishandling; the catalog above forbids silent first-wins acceptance. Synonyms: "composite-property layer stack with contradictory materials", "layered material attributes conflict", "composite layer materials inconsistent".
 - **Byte assertion**: count_entity_def(b'PROPERTY_DEFINITION') == 2
 - **Byte assertion**: contains(b'PROPERTY_DEFINITION_RELATIONSHIP')
+- **Tier-3 assertion**: shape_null == True
 - **Model impact**: The PMI/GD&T annotation either fails to attach to its target geometry or loads with wrong tolerance/datum metadata; the model geometry is unchanged but the semantic PMI structure is broken or invisible to downstream tools.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
@@ -8678,6 +8868,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Byte assertion**: contains(b'APPLIED_IDENTIFICATION_ASSIGNMENT')
 - **Byte assertion**: contains(b'IDENTIFICATION_ROLE')
 - **Byte assertion**: contains(b'DATUM_FEATURE')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result) — exactly the behavior the catalog forbids. Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: The PMI/GD&T annotation either fails to attach to its target geometry or loads with wrong tolerance/datum metadata; the model geometry is unchanged but the semantic PMI structure is broken or invisible to downstream tools.
@@ -9231,6 +9422,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Notes**: Synonyms: "fillet stops short", "ambiguous fillet next-edge", "fillet walking failure", "fillet hits a vertex it can't continue past", "high-valence vertex breaks fillet".
 - **Byte assertion**: count_entity_def(b'EDGE_CURVE') == 4
 - **Byte assertion**: contains(b'valence_4_vertex')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: Fillet/chamfer operation fails to construct the rolling-ball geometry; loaded BRep has the unfilleted edges (no smoothing applied) or a NULL shape if the operation aborted, and downstream BRepCheck flags the affected edges.
@@ -9265,6 +9457,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Byte assertion**: contains(b'e3_self_crossing')
 - **Byte assertion**: contains(b'B_SPLINE_CURVE_WITH_KNOTS')
 - **Byte assertion**: contains(b'figure_eight')
+- **Tier-3 assertion**: shape_null == True
 - **Model impact**: Fillet/chamfer operation fails to construct the rolling-ball geometry; loaded BRep has the unfilleted edges (no smoothing applied) or a NULL shape if the operation aborted, and downstream BRepCheck flags the affected edges.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 - **Fixture path**: step-examples/12-8-mixed/Fi004.stp
@@ -9297,6 +9490,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Notes**: Synonyms: "fillet 4-edge corner unsupported", "fillet at high-valence corner fails", "four-way corner fillet not handled", "fillet termination vertex too many edges". **See also**: Fi002. Distinct: Fi002 is about *walking-into*; Fi006 is about *terminating-at*. **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers must reject this fixture per the catalog's stated invariant.
 - **Byte assertion**: contains(b'valence_4_corner')
 - **Byte assertion**: count_entity_def(b'EDGE_CURVE') == 4
+- **Tier-3 assertion**: shape_null == True
 - **Model impact**: Fillet/chamfer operation fails to construct the rolling-ball geometry; loaded BRep has the unfilleted edges (no smoothing applied) or a NULL shape if the operation aborted, and downstream BRepCheck flags the affected edges.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 - **Fixture path**: step-examples/12-8-mixed/Fi006.stp
@@ -9364,6 +9558,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Byte assertion**: contains(b'OFFSET_SURFACE')
 - **Byte assertion**: contains(b'CYLINDRICAL_SURFACE')
 - **Byte assertion**: contains(b'OFFSET_SURFACE(#14,-5.0')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: Offset operation produces a shape with collapsed or inverted faces; loaded topology has zero-area faces or self-intersecting shells that fail BRepCheck.
@@ -9380,6 +9575,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Notes**: Synonyms: "negative offset", "flipped offset face", "offset reversed", "offset inside-out", "offset distance greater than radius". **See also**: Os002.
 - **Byte assertion**: contains(b'CYLINDRICAL_SURFACE')
 - **Byte assertion**: matches(rb'CYLINDRICAL_SURFACE\(\'cyl_r5\',#13,5\.0\)')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: Offset operation produces a shape with collapsed or inverted faces; loaded topology has zero-area faces or self-intersecting shells that fail BRepCheck.
@@ -9444,6 +9640,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Expected kernel behavior**: Heal and accept: extrapolate via tangent prolongation; or reject (terminate the offset at the trim boundary).
 - **Notes**: Synonyms: "offset extrapolation failure", "B-spline can't extend past trim", "offset edge needs analytic extension", "clamped spline has no extrapolation".
 - **Byte assertion**: contains(b'B_SPLINE_CURVE_WITH_KNOTS')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal, reject}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: Offset operation fails or produces an invalid shape; the kernel returns NULL or raises `StdFail_NotDone`, and the offset feature is absent from the resulting BRep.
@@ -9476,6 +9673,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Notes**: Synonyms: "loft topology mismatch", "open and closed loft profile", "ThruSections mixed open/closed wires", "loft profile boundary inconsistent". **See also**: Os010.
 - **Byte assertion**: contains(b'CIRCLE')
 - **Byte assertion**: contains(b'LINE')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: ThruSections fails to construct the loft body; the kernel returns a NULL shape or aborts with `StdFail_NotDone`, and the assembly is missing the lofted member.
@@ -9492,6 +9690,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Notes**: Synonyms: "loft can't pair edges", "loft profiles inconsistent", "loft edge count mismatch", "ThruSections profiles have different edge counts". **See also**: Os009.
 - **Byte assertion**: contains(b'EDGE_LOOP')
 - **Byte assertion**: count_entity_def(b'EDGE_CURVE') == 8
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: ThruSections fails to construct the loft body; the kernel returns a NULL shape or aborts with `StdFail_NotDone`, and the assembly is missing the lofted member.
@@ -9508,6 +9707,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Notes**: Synonyms: "point-to-wire loft", "loft wrong usage", "loft section is a point", "ThruSections used outside envelope", "loft from vertex to wire".
 - **Byte assertion**: contains(b'VERTEX_POINT')
 - **Byte assertion**: contains(b'CIRCLE')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: ThruSections fails to construct the loft body; the kernel returns a NULL shape or aborts with `StdFail_NotDone`, and the assembly is missing the lofted member.
@@ -9523,6 +9723,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Expected kernel behavior**: Always synthesize 3D curves from pcurves; emit warning if synthesis residual exceeds tolerance.
 - **Notes**: Synonyms: "loft edge missing 3D curve", "loft produces pcurve-only edges", "EDGE_CURVE has null edge_geometry", "loft edges have only parametric form".
 - **Byte assertion**: contains(b'EDGE_CURVE')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal, warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must heal or emit a diagnostic this fixture.
 - **Severity**: P1
 - **Model impact**: ThruSections fails to construct the loft body; the kernel returns a NULL shape or aborts with `StdFail_NotDone`, and the assembly is missing the lofted member.
@@ -9540,6 +9741,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Byte assertion**: contains(b'PLANE')
 - **Byte assertion**: contains(b'LINE')
 - **Byte assertion**: contains(b'10.0')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: Pipe sweep cannot construct the swept body; the kernel returns a NULL shape and the swept feature is absent from the loaded assembly.
@@ -9556,6 +9758,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Notes**: Synonyms: "sweep auxiliary failure", "pipe contact impossible", "auxiliary spine too short", "KeepContact fails along sweep".
 - **Byte assertion**: contains(b'LINE')
 - **Byte assertion**: count_entity_def(b'LINE') >= 2
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: Pipe sweep cannot construct the swept body; the kernel returns a NULL shape and the swept feature is absent from the loaded assembly.
@@ -9623,6 +9826,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Notes**: Synonyms: "incompatible fill constraints", "fill constraint incompatible", "fill corner tangent contradicts", "n-sided fill conflicting tangents".
 - **Byte assertion**: contains(b'SHAPE_ASPECT')
 - **Byte assertion**: count_entity_def(b'EDGE_CURVE') >= 3
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
 - **Severity**: P1
 - **Model impact**: Offset operation fails or produces an invalid shape; the kernel returns NULL or raises `StdFail_NotDone`, and the offset feature is absent from the resulting BRep.
@@ -9639,6 +9843,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Notes**: Synonyms: "centerline failure", "middle path fails", "centerline of strip can't be computed", "medial axis between wires fails".
 - **Byte assertion**: contains(b'EDGE_LOOP')
 - **Byte assertion**: contains(b'EDGE_CURVE')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: Offset operation fails or produces an invalid shape; the kernel returns NULL or raises `StdFail_NotDone`, and the offset feature is absent from the resulting BRep.
@@ -9655,6 +9860,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Notes**: Synonyms: "swept-surface fold", "evolved surface self-intersects", "swept profile crosses itself", "MakeEvolved self-intersection along spine".
 - **Byte assertion**: contains(b'B_SPLINE_CURVE_WITH_KNOTS')
 - **Byte assertion**: contains(b'CIRCLE')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: Pipe sweep cannot construct the swept body; the kernel returns a NULL shape and the swept feature is absent from the loaded assembly.
@@ -9671,6 +9877,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Notes**: Synonyms: "curve too far from surface", "projection failed", "no normal projection", "normal projection has no foot", "curve has no projection on target".
 - **Byte assertion**: contains(b'SPHERICAL_SURFACE')
 - **Byte assertion**: contains(b'LINE')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: Offset operation fails or produces an invalid shape; the kernel returns NULL or raises `StdFail_NotDone`, and the offset feature is absent from the resulting BRep.
@@ -9686,6 +9893,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Expected kernel behavior**: Reparameterize the shorter edge; emit a warning.
 - **Notes**: Synonyms: "free edge pair length mismatch", "sewn edge pair parameter length differs", "non-unit DIRECTION on edge pair", "FindContigousEdges mismatch".
 - **Byte assertion**: count_entity_def(b'LINE') == 2
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must emit a diagnostic this fixture.
 - **Severity**: P1
 - **Model impact**: Offset operation fails or produces an invalid shape; the kernel returns NULL or raises `StdFail_NotDone`, and the offset feature is absent from the resulting BRep.
@@ -9702,6 +9910,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Notes**: Synonyms: "thicken collision", "thicken self-intersects", "thickening too much", "shell thickness exceeds local diameter", "thicken inner surface collides".
 - **Byte assertion**: contains(b'CYLINDRICAL_SURFACE')
 - **Byte assertion**: matches(rb'LENGTH_MEASURE\(-10\.0\)')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: Offset operation fails or produces an invalid shape; the kernel returns NULL or raises `StdFail_NotDone`, and the offset feature is absent from the resulting BRep.
@@ -9724,6 +9933,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Expected kernel behavior**: Heal and accept: tessellated content emitted whenever the output schema supports it; config controls reading, not writing. Must not silently skip.
 - **Notes**: Synonyms: "tessellation dropped on write", "STEP writer drops triangulation", "pretessellated faces silently lost", "TESSELLATED_FACE not exported", "tessellation gating flag unset". **See also**: M056.
 - **Byte assertion**: contains(b'TRIANGULATED_FACE')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
 - **Severity**: P1
 - **Model impact**: Tessellated geometry attached to the BRep loads with inconsistent or missing triangle data; viewers that prefer the producer's tessellation render incorrect facets, while kernels that re-mesh from the BRep ignore the defect entirely.
@@ -9742,6 +9952,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Byte assertion**: contains(b'TRIANGULATED_FACE')
 - **Byte assertion**: contains(b'no_pnval')
 - **Byte assertion**: contains(b"TRIANGULATED_FACE('no_pnval','',(#100),(),(),(),'',$)")
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
 - **Severity**: P1
 - **Model impact**: Tessellated geometry attached to the BRep loads with inconsistent or missing triangle data; viewers that prefer the producer's tessellation render incorrect facets, while kernels that re-mesh from the BRep ignore the defect entirely.
@@ -9787,6 +9998,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Byte assertion**: contains(b'AP238_STEP_NC_MIM')
 - **Byte assertion**: contains(b'MACHINING_OPERATION')
 - **Byte assertion**: contains(b'WORKPLAN')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject, warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must reject or emit a diagnostic this fixture.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
@@ -9813,6 +10025,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Byte assertion**: contains(b'AP238_STEP_NC_MIM')
 - **Byte assertion**: contains(b'COMPOSITE_CURVE')
 - **Byte assertion**: contains(b'TRAJECTORY')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
@@ -9842,6 +10055,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Byte assertion**: contains(b'AP238_STEP_NC_MIM')
 - **Byte assertion**: contains(b'TRAJECTORY')
 - **Byte assertion**: count_entity_def(b'GEOMETRIC_REPRESENTATION_ITEM') >= 1
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal, reject}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
@@ -9869,6 +10083,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Byte assertion**: contains(b'AP238_STEP_NC_MIM')
 - **Byte assertion**: contains(b'MACHINING_WORKINGSTEP')
 - **Byte assertion**: contains(b'SETUP')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
@@ -9892,6 +10107,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
  as un-executable or skip the malformed branches and warn.
 - **Notes**: Synonyms: "missing subroutine", "STEP-NC dangling executable", "selective branch unresolved", "control-flow target not declared".
 - **Byte assertion**: contains(b'SELECTIVE')
+- **Tier-3 assertion**: n_faces_total == 1
 - **OCC behavior**: silently accepts with diagnostic but loads empty result; outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
@@ -9920,6 +10136,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Byte assertion**: contains(b'AP238_STEP_NC_MIM')
 - **Byte assertion**: contains(b'CUTTING_TOOL')
 - **Byte assertion**: contains(b'MACHINING_TOOL_FEEDSPEED')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject, warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must reject or emit a diagnostic this fixture.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
@@ -9944,6 +10161,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Byte assertion**: contains(b'AP238_STEP_NC_MIM')
 - **Byte assertion**: contains(b'WORKPIECE_SETUP')
 - **Byte assertion**: contains(b'WORKPIECE')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
@@ -9969,6 +10187,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Notes**: Synonyms: "AP209 hex node count wrong", "quadratic hex with 12 nodes not 20", "FEA element node count wrong for hex8", "AP209 element under-noded", "hex element missing mid-edge nodes". **See also**: M037, M109, analog, tetrahedral, the.- **Byte assertion**: contains(b'STRUCTURAL_ANALYSIS_DESIGN')
 - **Byte assertion**: contains(b'quadratic_hexahedron')
 - **Byte assertion**: contains(b'VOLUME_3D_ELEMENT_DESCRIPTOR')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject, warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must reject or emit a diagnostic this fixture.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
@@ -9992,6 +10211,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Notes**: Synonyms: "AP209 boundary condition has no nodes", "FEM constraint applies to nothing", "empty NODE_GROUP on constraint", "BC node-set unresolved", "AP209 boundary condition empty". **See also**: M037, M038. **OCC behavior**: silently consumes the AP209 file as a B-rep producer (FEM constraints are ignored entirely on the read path) without surfacing that the empty-node-group constraint was abandoned; kernel mishandling; the catalog above forbids silent application.
 - **Byte assertion**: contains(b'SINGLE_POINT_CONSTRAINT')
 - **Byte assertion**: contains(b'NODE_GROUP')
+- **Tier-3 assertion**: shape_null == True
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 - **Fixture path**: step-examples/12-8-mixed/M079.stp
@@ -10016,6 +10236,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Byte assertion**: contains(b'STRUCTURAL_ANALYSIS_DESIGN')
 - **Byte assertion**: contains(b'DERIVED_UNIT')
 - **Byte assertion**: contains(b'200000.0')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must emit a diagnostic this fixture.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
@@ -10040,6 +10261,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Notes**: Synonyms: "over-integration", "wrong Gauss rule", "AP209 integration point count wrong", "FEM element locks artificially stiff", "integration_point_count vs element_type mismatch".
 - **Byte assertion**: contains(b'STRUCTURAL_ANALYSIS_DESIGN')
 - **Byte assertion**: contains(b'CURVE_3D_ELEMENT_DESCRIPTOR')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
@@ -10064,6 +10286,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
  "element flipped".
 - **Byte assertion**: contains(b'STRUCTURAL_ANALYSIS_DESIGN')
 - **Byte assertion**: contains(b'SURFACE_3D_ELEMENT_DESCRIPTOR')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
@@ -10086,6 +10309,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Byte assertion**: contains(b'STRUCTURAL_ANALYSIS_DESIGN')
 - **Byte assertion**: contains(b'NODE_WITH_FORCE')
 - **Byte assertion**: contains(b'FEA_MODEL')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal, warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must heal or emit a diagnostic this fixture.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
@@ -10109,6 +10333,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Notes**: Synonyms: "composite has no plies", "FEM laminate empty", "AP209 laminate stack zero entries", "LAMINATE_TABLE empty", "composite stack has no layers". **See also**: M050 (composite LLAI gaps).
 - **Byte assertion**: contains(b'STRUCTURAL_ANALYSIS_DESIGN')
 - **Byte assertion**: contains(b'LAMINATE_TABLE')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject, warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must reject or emit a diagnostic this fixture.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
@@ -10135,6 +10360,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Byte assertion**: contains(b'ELECTRONIC_ASSEMBLY_INTERCONNECT_AND_PACKAGING_DESIGN')
 - **Byte assertion**: contains(b'LAMINATE_OR_PLY_DEFINITION')
 - **Byte assertion**: count_entity_def(b'MATERIAL_DESIGNATION') >= 2
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal, reject}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
@@ -10160,6 +10386,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Byte assertion**: contains(b'ELECTRONIC_ASSEMBLY_INTERCONNECT_AND_PACKAGING_DESIGN')
 - **Byte assertion**: contains(b'VIA_DEFINITION')
 - **Byte assertion**: contains(b'LAMINATE_OR_PLY_DEFINITION')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
@@ -10183,6 +10410,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Notes**: Synonyms: "PCB net dangling", "unresolved terminal", "AP210 net references missing TERMINAL", "signal net node has no endpoint", "network has dangling node".
 - **Byte assertion**: contains(b'TERMINAL')
 - **Byte assertion**: contains(b'NETWORK')
+- **Tier-3 assertion**: n_faces_total == 1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 - **Fixture path**: step-examples/12-8-mixed/M087.stp
@@ -10207,6 +10435,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Byte assertion**: contains(b'ELECTRONIC_ASSEMBLY_INTERCONNECT_AND_PACKAGING_DESIGN')
 - **Byte assertion**: contains(b'PLY_BOUNDARY_REPRESENTATION')
 - **Byte assertion**: contains(b'LAMINATE_OR_PLY_DEFINITION')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject, warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must reject or emit a diagnostic this fixture.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
@@ -10230,6 +10459,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Notes**: Synonyms: "stackup z conflict", "PCB layer overlap", "plies overlap in Z", "AP210 stackup physically impossible", "two dielectrics in same Z range".
 - **Byte assertion**: contains(b'ELECTRONIC_ASSEMBLY_INTERCONNECT_AND_PACKAGING_DESIGN')
 - **Byte assertion**: count_entity_def(b'LAMINATE_OR_PLY_DEFINITION') >= 2
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
@@ -10255,6 +10485,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Notes**: Synonyms: "BoM stub", "PCB part definition missing", "AP210 NAUO has no PRODUCT_DEFINITION chain", "BoM line item is name-only", "PDM child has no geometry".
 - **Byte assertion**: contains(b'ELECTRONIC_ASSEMBLY_INTERCONNECT_AND_PACKAGING_DESIGN')
 - **Byte assertion**: contains(b'NEXT_ASSEMBLY_USAGE_OCCURRENCE')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal, reject}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
@@ -10278,6 +10509,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Byte assertion**: contains(b'ELECTRONIC_ASSEMBLY_INTERCONNECT_AND_PACKAGING_DESIGN')
 - **Byte assertion**: contains(b'CONDUCTOR_TRACK_PROFILE')
 - **Byte assertion**: contains(b'PLY_BOUNDARY_REPRESENTATION')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
@@ -10308,6 +10540,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Byte assertion**: contains(b'AP238_STEP_NC_MIM')
 - **Byte assertion**: contains(b'WORKPLAN(')
 - **Byte assertion**: contains(b'MACHINING_OPERATION')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
@@ -10334,6 +10567,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
  geometry absent".
 - **Byte assertion**: contains(b'AP238_STEP_NC_MIM')
 - **Byte assertion**: contains(b'MACHINING_OPERATION')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
@@ -10364,6 +10598,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Byte assertion**: contains(b'AP238_STEP_NC_MIM')
 - **Byte assertion**: contains(b'SETUP')
 - **Byte assertion**: contains(b'AXIS2_PLACEMENT_3D')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
@@ -10390,6 +10625,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Byte assertion**: contains(b'AP238_STEP_NC_MIM')
 - **Byte assertion**: contains(b'TIME_MEASURE')
 - **Byte assertion**: contains(b'MACHINING_OPERATION')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
@@ -10416,6 +10652,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Byte assertion**: contains(b'AP238_STEP_NC_MIM')
 - **Byte assertion**: contains(b'TRAJECTORY')
 - **Byte assertion**: contains(b'COMPOSITE_CURVE_SEGMENT')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
@@ -10444,6 +10681,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Byte assertion**: contains(b'AP238_STEP_NC_MIM')
 - **Byte assertion**: contains(b'MACHINING_WORKINGSTEP')
 - **Byte assertion**: count_entity_def(b'WORKPIECE') >= 2
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: FEA mesh/load entities attach to wrong target geometry or load with corrupted node/element references; the analysis dataset becomes inconsistent with the underlying BRep.
@@ -10471,6 +10709,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Byte assertion**: contains(b'AP238_STEP_NC_MIM')
 - **Byte assertion**: contains(b'MACHINING_TOOL_FEEDSPEED')
 - **Byte assertion**: contains(b'50000.0')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
@@ -10494,6 +10733,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
  "missing feed value".
 - **Byte assertion**: contains(b'AP238_STEP_NC_MIM')
 - **Byte assertion**: contains(b'MACHINING_TOOL_FEEDSPEED')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
@@ -10521,6 +10761,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Byte assertion**: contains(b'AP238_STEP_NC_MIM')
 - **Byte assertion**: contains(b'DRILLING_OPERATION')
 - **Byte assertion**: contains(b'WORKPLAN')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
@@ -10547,6 +10788,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
  dimensionality", "Z-step on freeform".
 - **Byte assertion**: contains(b'AP238_STEP_NC_MIM')
 - **Byte assertion**: contains(b'TWO5D_MILLING_OPERATION')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: FEA mesh/load entities attach to wrong target geometry or load with corrupted node/element references; the analysis dataset becomes inconsistent with the underlying BRep.
@@ -10572,6 +10814,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Notes**: Synonyms: "duplicate hole drill", "coincident drilling targets", "AP238 two drill ops at same point", "STEP-NC redundant drill", "drill-on-drill collision".
 - **Byte assertion**: contains(b'AP238_STEP_NC_MIM')
 - **Byte assertion**: count_entity_def(b'DRILLING_OPERATION') >= 2
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
@@ -10601,6 +10844,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
  "missing retract".
 - **Byte assertion**: contains(b'AP238_STEP_NC_MIM')
 - **Byte assertion**: contains(b'TRAJECTORY')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
@@ -10628,6 +10872,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
  confusion".
 - **Byte assertion**: contains(b'AP238_STEP_NC_MIM')
 - **Byte assertion**: contains(b'SETUP')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal, reject}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
@@ -10655,6 +10900,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Byte assertion**: contains(b'AP238_STEP_NC_MIM')
 - **Byte assertion**: contains(b'2026-04-30T10:00:00')
 - **Byte assertion**: contains(b'2026-04-30T09:00:00')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must emit a diagnostic this fixture.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
@@ -10682,6 +10928,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Byte assertion**: contains(b'AP238_STEP_NC_MIM')
 - **Byte assertion**: contains(b'TIME_MEASURE')
 - **Byte assertion**: contains(b'180000.0')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must emit a diagnostic this fixture.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
@@ -10707,6 +10954,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Notes**: Synonyms: "zero-diameter tool", "AP238 tool dimension missing", "milling tool diameter is zero or negative", "STEP-NC bad tool size", "cutting tool has no radial offset".
 - **Byte assertion**: contains(b'AP238_STEP_NC_MIM')
 - **Byte assertion**: contains(b'POSITIVE_LENGTH_MEASURE(0.0)')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
@@ -10733,6 +10981,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
  unspecified".
 - **Byte assertion**: contains(b'AP238_STEP_NC_MIM')
 - **Byte assertion**: contains(b'FREEFORM_MILLING_OPERATION')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
@@ -10758,6 +11007,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Byte assertion**: contains(b'STRUCTURAL_ANALYSIS_DESIGN')
 - **Byte assertion**: contains(b'linear_hexahedron')
 - **Byte assertion**: contains(b'VOLUME_3D_ELEMENT_DESCRIPTOR')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject, warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must reject or emit a diagnostic this fixture.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
@@ -10786,6 +11036,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Byte assertion**: contains(b'STRUCTURAL_ANALYSIS_DESIGN')
 - **Byte assertion**: contains(b'DIRECTION')
 - **Byte assertion**: contains(b'(2.0,0.0,0.0)')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal, reject}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
@@ -10810,6 +11061,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Notes**: Synonyms: "AP209 SPC orphan node", "boundary condition on missing node", "FEM constraint references node not in mesh", "single_point_constraint targets unknown node". **See also**: M083 (load analog), M079 (empty-group analog).
 - **Byte assertion**: contains(b'STRUCTURAL_ANALYSIS_DESIGN')
 - **Byte assertion**: contains(b'SINGLE_POINT_CONSTRAINT')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject, warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must reject or emit a diagnostic this fixture.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
@@ -10836,6 +11088,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Notes**: Synonyms: "MPC loop", "AP209 master-slave cycle", "multi_point_constraint dependency cycle", "MPC dependency cycle", "FEM constraint chain loops".
 - **Byte assertion**: contains(b'STRUCTURAL_ANALYSIS_DESIGN')
 - **Byte assertion**: count_entity_def(b'MULTI_POINT_CONSTRAINT') >= 3
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
@@ -10863,6 +11116,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
  "FEM hex with coincident nodes".
 - **Byte assertion**: contains(b'STRUCTURAL_ANALYSIS_DESIGN')
 - **Byte assertion**: contains(b'VOLUME_3D_ELEMENT_DESCRIPTOR')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal, reject}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: Appearance/style attributes detach from their target shape; the geometry loads correctly but colors, layers, or material assignments are dropped or attached to the wrong sub-shape.
@@ -10888,6 +11142,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
  ratio".
 - **Byte assertion**: contains(b'STRUCTURAL_ANALYSIS_DESIGN')
 - **Byte assertion**: contains(b'VOLUME_3D_ELEMENT_DESCRIPTOR')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
@@ -10916,6 +11171,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
  sign".
 - **Byte assertion**: contains(b'STRUCTURAL_ANALYSIS_DESIGN')
 - **Byte assertion**: contains(b'NODE_WITH_FORCE')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal, reject}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
@@ -10939,6 +11195,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Notes**: Synonyms: "AP209 mode count too high", "eigensolver over-request", "modal extraction count exceeds DOF rank", "more modes than DOFs", "AP209 NaN modes returned".
 - **Byte assertion**: contains(b'STRUCTURAL_ANALYSIS_DESIGN')
 - **Byte assertion**: contains(b'FEA_MODEL')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
@@ -10966,6 +11223,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
  missing values".
 - **Byte assertion**: contains(b'STRUCTURAL_ANALYSIS_DESIGN')
 - **Byte assertion**: contains(b'ANISOTROPIC_LINEAR_ELASTICITY')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
@@ -10993,6 +11251,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
  "mesh discontinuity".
 - **Byte assertion**: contains(b'STRUCTURAL_ANALYSIS_DESIGN')
 - **Byte assertion**: count_entity_def(b'VOLUME_3D_ELEMENT_DESCRIPTOR') >= 2
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
@@ -11019,6 +11278,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Byte assertion**: contains(b'STRUCTURAL_ANALYSIS_DESIGN')
 - **Byte assertion**: contains(b'SURFACE_3D_ELEMENT_DESCRIPTOR')
 - **Byte assertion**: contains(b'POSITIVE_LENGTH_MEASURE(0.0)')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject, warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must reject or emit a diagnostic this fixture.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
@@ -11049,6 +11309,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Byte assertion**: contains(b'STRUCTURAL_ANALYSIS_DESIGN')
 - **Byte assertion**: contains(b'SINGLE_POINT_CONSTRAINT')
 - **Byte assertion**: contains(b'(0.5,0.5,0.707)')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
@@ -11074,6 +11335,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
  wrong", "time series unsorted".
 - **Byte assertion**: contains(b'STRUCTURAL_ANALYSIS_DESIGN')
 - **Byte assertion**: contains(b'NODE_WITH_FORCE')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
@@ -11102,6 +11364,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
  wrong CSYS".
 - **Byte assertion**: contains(b'STRUCTURAL_ANALYSIS_DESIGN')
 - **Byte assertion**: contains(b'AXIS2_PLACEMENT_3D')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal, warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must heal or emit a diagnostic this fixture.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
@@ -11127,6 +11390,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Byte assertion**: contains(b'STRUCTURAL_ANALYSIS_DESIGN')
 - **Byte assertion**: contains(b'linear_tetrahedron')
 - **Byte assertion**: contains(b'VOLUME_3D_ELEMENT_DESCRIPTOR')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
@@ -11155,6 +11419,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Byte assertion**: contains(b'STRUCTURAL_ANALYSIS_DESIGN')
 - **Byte assertion**: contains(b'FEA_MODEL_3D')
 - **Byte assertion**: contains(b'VOLUME_3D_ELEMENT_DESCRIPTOR')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: FEA mesh/load entities attach to wrong target geometry or load with corrupted node/element references; the analysis dataset becomes inconsistent with the underlying BRep.
@@ -11177,6 +11442,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
  repeats".
 - **Byte assertion**: contains(b'STRUCTURAL_ANALYSIS_DESIGN')
 - **Byte assertion**: contains(b'NODE_GROUP')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
@@ -11208,6 +11474,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
  "AP203 PDM date conflict". **See also**: A012.
 - **Byte assertion**: contains(b'CONFIG_CONTROL_DESIGN')
 - **Byte assertion**: count_entity_def(b'TIME_INTERVAL_BASED_EFFECTIVITY') >= 2
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject, warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must reject or emit a diagnostic this fixture.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
@@ -11234,6 +11501,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Byte assertion**: contains(b'CONFIG_CONTROL_DESIGN')
 - **Byte assertion**: contains(b'DOCUMENT_FILE')
 - **Byte assertion**: contains(b"DOCUMENT_FILE('','','',")
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
@@ -11262,6 +11530,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Byte assertion**: contains(b'CONFIG_CONTROL_DESIGN')
 - **Byte assertion**: contains(b'APPROVAL_DATE_TIME')
 - **Byte assertion**: contains(b'TIME_INTERVAL_BASED_EFFECTIVITY')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
@@ -11292,6 +11561,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Byte assertion**: contains(b'CONFIG_CONTROL_DESIGN')
 - **Byte assertion**: count_entity_def(b'PRODUCT_DEFINITION_FORMATION') >= 3
 - **Byte assertion**: contains(b'PRODUCT_DEFINITION_RELATIONSHIP')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
@@ -11323,6 +11593,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Byte assertion**: contains(b'CONFIG_CONTROL_DESIGN')
 - **Byte assertion**: count_entity_def(b'SECURITY_CLASSIFICATION') >= 2
 - **Byte assertion**: contains(b'CC_DESIGN_SECURITY_CLASSIFICATION')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
@@ -11352,6 +11623,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Byte assertion**: contains(b'CONFIG_CONTROL_DESIGN')
 - **Byte assertion**: count_entity_def(b'PRODUCT_CONTEXT') >= 2
 - **Byte assertion**: contains(b'PRODUCT_DEFINITION')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
@@ -11380,6 +11652,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Byte assertion**: contains(b'CONFIG_CONTROL_DESIGN')
 - **Byte assertion**: contains(b'APPLIED_GROUP_ASSIGNMENT')
 - **Byte assertion**: count_entity_def(b'MATERIAL_DESIGNATION') == 0
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
@@ -11408,6 +11681,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Byte assertion**: contains(b'CONFIG_CONTROL_DESIGN')
 - **Byte assertion**: count_entity_def(b'DATE_AND_TIME') >= 2
 - **Byte assertion**: contains(b'COORDINATED_UNIVERSAL_TIME_OFFSET')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
@@ -11435,6 +11709,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Byte assertion**: contains(b'CONFIG_CONTROL_DESIGN')
 - **Byte assertion**: count_entity_def(b'PERSON') >= 2
 - **Byte assertion**: contains(b"PERSON('jdoe',")
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
@@ -11463,6 +11738,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Byte assertion**: contains(b'CONFIG_CONTROL_DESIGN')
 - **Byte assertion**: contains(b'DESIGN_CONTEXT')
 - **Byte assertion**: contains(b'MECHANICAL_CONTEXT')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
@@ -11489,6 +11765,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
  "PDM approval points to phantom".
 - **Byte assertion**: contains(b'CC_DESIGN_APPROVAL')
 - **Byte assertion**: contains(b'#999')
+- **Tier-3 assertion**: n_faces_total == 1
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
@@ -11517,6 +11794,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Byte assertion**: contains(b'CONFIG_CONTROL_DESIGN')
 - **Byte assertion**: contains(b'APPLIED_ACTION_ASSIGNMENT')
 - **Byte assertion**: contains(b'DOCUMENT_FILE')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal, reject, warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must heal, reject, or emit a diagnostic this fixture.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
@@ -11545,6 +11823,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Byte assertion**: contains(b'CONFIG_CONTROL_DESIGN')
 - **Byte assertion**: contains(b'APPROVAL_PERSON_ORGANIZATION')
 - **Byte assertion**: contains(b"PERSON('','',")
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
@@ -11571,6 +11850,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
  effectivity", "empty effectivity window".
 - **Byte assertion**: contains(b'CONFIG_CONTROL_DESIGN')
 - **Byte assertion**: contains(b'TIME_INTERVAL_BASED_EFFECTIVITY')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject, warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must reject or emit a diagnostic this fixture.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
@@ -11600,6 +11880,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Byte assertion**: contains(b'CONFIG_CONTROL_DESIGN')
 - **Byte assertion**: contains(b'PRODUCT_DEFINITION_FORMATION_WITH_SPECIFIED_SOURCE')
 - **Byte assertion**: contains(b'.MADE.')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
@@ -11626,6 +11907,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Byte assertion**: contains(b'CONFIG_CONTROL_DESIGN')
 - **Byte assertion**: count_entity_def(b'PRODUCT_CATEGORY_RELATIONSHIP') >= 2
 - **Byte assertion**: count_entity_def(b'PRODUCT_CATEGORY') >= 2
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject, warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must reject or emit a diagnostic this fixture.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
@@ -11655,6 +11937,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Byte assertion**: contains(b'CONFIG_CONTROL_DESIGN')
 - **Byte assertion**: contains(b'APPLIED_ACTION_ASSIGNMENT')
 - **Byte assertion**: contains(b'PRODUCT_DEFINITION_RELATIONSHIP')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject, warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must reject or emit a diagnostic this fixture.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
@@ -11684,6 +11967,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Byte assertion**: contains(b'ELECTRONIC_ASSEMBLY_INTERCONNECT_AND_PACKAGING_DESIGN')
 - **Byte assertion**: contains(b'VIA_DEFINITION')
 - **Byte assertion**: contains(b'LAMINATE_TABLE')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject, warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must reject or emit a diagnostic this fixture.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
@@ -11711,6 +11995,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Byte assertion**: contains(b'ELECTRONIC_ASSEMBLY_INTERCONNECT_AND_PACKAGING_DESIGN')
 - **Byte assertion**: count_entity_def(b'NETWORK_NODE') >= 3
 - **Byte assertion**: contains(b'NETWORK')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
@@ -11740,6 +12025,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Byte assertion**: contains(b'ELECTRONIC_ASSEMBLY_INTERCONNECT_AND_PACKAGING_DESIGN')
 - **Byte assertion**: contains(b'fixed_side')
 - **Byte assertion**: contains(b"'BOTTOM'")
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
@@ -11770,6 +12056,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Byte assertion**: contains(b'ELECTRONIC_ASSEMBLY_INTERCONNECT_AND_PACKAGING_DESIGN')
 - **Byte assertion**: contains(b'VIA_DEFINITION')
 - **Byte assertion**: contains(b'pad_diameter')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
@@ -11799,6 +12086,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Byte assertion**: contains(b'ELECTRONIC_ASSEMBLY_INTERCONNECT_AND_PACKAGING_DESIGN')
 - **Byte assertion**: contains(b'AXIS2_PLACEMENT_3D')
 - **Byte assertion**: contains(b'TOP_ONLY')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
@@ -11825,6 +12113,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Byte assertion**: contains(b'ELECTRONIC_ASSEMBLY_INTERCONNECT_AND_PACKAGING_DESIGN')
 - **Byte assertion**: count_entity_def(b'NETWORK') >= 2
 - **Byte assertion**: contains(b"NETWORK('VCC',")
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
@@ -11851,6 +12140,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
  inverted".
 - **Byte assertion**: contains(b'ELECTRONIC_ASSEMBLY_INTERCONNECT_AND_PACKAGING_DESIGN')
 - **Byte assertion**: count_entity_def(b'TERMINAL') >= 4
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
@@ -11879,6 +12169,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Byte assertion**: contains(b'ELECTRONIC_ASSEMBLY_INTERCONNECT_AND_PACKAGING_DESIGN')
 - **Byte assertion**: count_entity_def(b'CONDUCTOR_TRACK_PROFILE') >= 2
 - **Byte assertion**: contains(b'NETWORK')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
@@ -11909,6 +12200,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Byte assertion**: contains(b'ELECTRONIC_ASSEMBLY_INTERCONNECT_AND_PACKAGING_DESIGN')
 - **Byte assertion**: contains(b'characteristic_impedance')
 - **Byte assertion**: contains(b'CONDUCTOR_TRACK_PROFILE')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
@@ -11935,6 +12227,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Byte assertion**: contains(b'ELECTRONIC_ASSEMBLY_INTERCONNECT_AND_PACKAGING_DESIGN')
 - **Byte assertion**: contains(b'VIA_DEFINITION')
 - **Byte assertion**: contains(b'LAMINATE_TABLE')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
@@ -11962,6 +12255,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Byte assertion**: contains(b'ELECTRONIC_ASSEMBLY_INTERCONNECT_AND_PACKAGING_DESIGN')
 - **Byte assertion**: contains(b'VIA_DEFINITION')
 - **Byte assertion**: contains(b'BURIED')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
@@ -11988,6 +12282,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Byte assertion**: contains(b'ELECTRONIC_ASSEMBLY_INTERCONNECT_AND_PACKAGING_DESIGN')
 - **Byte assertion**: contains(b'NEXT_ASSEMBLY_USAGE_OCCURRENCE')
 - **Byte assertion**: contains(b'library_pin_count')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
@@ -12015,6 +12310,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Byte assertion**: contains(b'ELECTRONIC_ASSEMBLY_INTERCONNECT_AND_PACKAGING_DESIGN')
 - **Byte assertion**: contains(b'NETWORK_NODE')
 - **Byte assertion**: contains(b'CARTESIAN_POINT')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
@@ -12043,6 +12339,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Byte assertion**: contains(b'ELECTRONIC_ASSEMBLY_INTERCONNECT_AND_PACKAGING_DESIGN')
 - **Byte assertion**: contains(b"NETWORK('PWR_5V'")
 - **Byte assertion**: contains(b'mechanical_placement_constraint')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
@@ -12072,6 +12369,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Byte assertion**: contains(b'ELECTRONIC_ASSEMBLY_INTERCONNECT_AND_PACKAGING_DESIGN')
 - **Byte assertion**: contains(b'solder_mask')
 - **Byte assertion**: contains(b'PLY_BOUNDARY_REPRESENTATION')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
@@ -12099,6 +12397,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Byte assertion**: contains(b'ELECTRONIC_ASSEMBLY_INTERCONNECT_AND_PACKAGING_DESIGN')
 - **Byte assertion**: contains(b'library_pin_pitch_mm')
 - **Byte assertion**: contains(b'assembly_pin_pitch_mm')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
@@ -12126,6 +12425,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Byte assertion**: contains(b'ELECTRONIC_ASSEMBLY_INTERCONNECT_AND_PACKAGING_DESIGN')
 - **Byte assertion**: contains(b'PWR_HDR_4')
 - **Byte assertion**: count_entity_def(b'TERMINAL') >= 4
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
@@ -12144,6 +12444,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Notes**: Synonyms: "STEP self-reference loop", "external reference loops", "external file is same as main", "DOCUMENT_FILE points to self". **See also**: A012, Ad052.
 - **Byte assertion**: contains(b'DOCUMENT_FILE')
 - **Byte assertion**: contains(b"'M060.stp'")
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must emit a diagnostic this fixture.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
@@ -12160,6 +12461,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Notes**: Synonyms: "scale dropped", "AXIS2_PLACEMENT scale lost", "non-unit DIRECTION scale stripped", "ITEM_DEFINED_TRANSFORMATION ignored scale".
 - **Byte assertion**: contains(b'AXIS2_PLACEMENT_3D')
 - **Byte assertion**: matches(rb'DIRECTION\(\'not_unit_length\',\(2\.0,0\.0,0\.0\)\)')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
@@ -12176,6 +12478,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Notes**: Synonyms: "assembly direction conflict", "SRR vs NAUO direction mismatch", "parent/child conflict in STEP", "assembly relation reversed".
 - **Byte assertion**: contains(b'NEXT_ASSEMBLY_USAGE_OCCURRENCE')
 - **Byte assertion**: contains(b'SHAPE_REPRESENTATION_RELATIONSHIP')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
@@ -12192,6 +12495,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Notes**: Synonyms: "STEP no units, defaulted", "kernel guessed units", "model 1000x wrong", "no unit context, default mm applied", "SHAPE_REPRESENTATION lacks unit context". Common cause of "model is 1000× wrong" symptom.
 - **Byte assertion**: contains(b'GEOMETRIC_REPRESENTATION_CONTEXT')
 - **Byte assertion**: matches(rb'GEOMETRIC_REPRESENTATION_CONTEXT\(\'no_units\',\$,3\)')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
@@ -12209,6 +12513,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Byte assertion**: contains(b'GEOMETRIC_REPRESENTATION_CONTEXT')
 - **Byte assertion**: contains(b'no_uncertainty')
 - **Byte assertion**: count_entity_def(b'UNCERTAINTY_MEASURE_WITH_UNIT') == 0
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
 - **Severity**: P1
 - **Model impact**: Appearance/style attributes detach from their target shape; the geometry loads correctly but colors, layers, or material assignments are dropped or attached to the wrong sub-shape.
@@ -12225,6 +12530,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Notes**: Synonyms: "hybrid product", "assembly with shape", "product is both assembly and part", "PDM product has direct geometry plus children", "shape-vs-NAUO ambiguity".
 - **Byte assertion**: contains(b'NEXT_ASSEMBLY_USAGE_OCCURRENCE')
 - **Byte assertion**: contains(b'SHAPE_DEFINITION_REPRESENTATION')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
@@ -12256,6 +12562,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Notes**: Synonyms: "child at origin bug", "STEP transformation creation failed", "child placement wrong", "ITEM_DEFINED_TRANSFORMATION fell back to identity", "zero-vector DIRECTION in placement". **OCC behavior**: silently substitutes the identity placement when the transformation reference cannot be resolved, leaving children at the origin without a diagnostic; kernel mishandling; the catalog above forbids silent identity-substitution.
 - **Byte assertion**: contains(b'ITEM_DEFINED_TRANSFORMATION')
 - **Byte assertion**: matches(rb'DIRECTION\(\'zero_vec\',\(0\.0,0\.0,0\.0\)\)')
+- **Tier-3 assertion**: shape_null == True
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 - **Fixture path**: step-examples/12-8-mixed/M067.stp
@@ -13239,6 +13546,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Expected kernel behavior**: reject attribute-count mismatches strictly; or, in tolerant mode, log the schema mismatch and accept the entity with the minimum-arity interpretation. Document the chosen policy.
 - **Notes**: Synonyms: "AP203 schema declared but uses AP242 entities", "schema-version vs entity-vocabulary disagreement", "AP203 tag with AP242 arity", "FILE_SCHEMA mismatch with DATA". **See also**: A030, Lh019.
 - **Byte assertion**: contains(b'CONFIG_CONTROL_DESIGN')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
@@ -13253,6 +13561,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Notes**: Synonyms: "AP203 tag with AP214 entities", "schema-version vs entity-vocabulary disagreement", "AP214-only entity in AP203 file", "mixed schema declaration". **See also**: Lh007, Lh019, M057.
 - **Byte assertion**: contains(b'CONFIG_CONTROL_DESIGN')
 - **Byte assertion**: contains(b'APPLIED_GROUP_ASSIGNMENT')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject, warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must reject or emit a diagnostic this fixture.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
@@ -13267,6 +13576,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Notes**: Synonyms: "AP242 ED1 with ED2 enum", "schema-edition mismatch", "ED2-only enumeration in ED1 file", "tolerance enum value not in declared edition". **See also**: M057, M058.
 - **Byte assertion**: contains(b'TOLERANCE_ZONE_FORM')
 - **Byte assertion**: contains(b'442 1 1 1')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
@@ -13285,6 +13595,7 @@ _Section summary: 52 entries._
 - **Byte assertion**: contains(b'TESSELLATED_SHAPE_REPRESENTATION')
 - **Byte assertion**: contains(b'AXIS2_PLACEMENT_3D')
 - **Byte assertion**: matches(rb'TESSELLATED_SHAPE_REPRESENTATION\([^)]*#133')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: Tessellated geometry attached to the BRep loads with inconsistent or missing triangle data; viewers that prefer the producer's tessellation render incorrect facets, while kernels that re-mesh from the BRep ignore the defect entirely.
@@ -13298,6 +13609,7 @@ _Section summary: 52 entries._
 - **Expected kernel behavior**: heal — emit only `tessellated_edge` (no connecting edge) for free boundaries; on read, do not infer a closed shell when free edges are present.
 - **Notes**: Synonyms: "tessellated_connecting_edge on free edge", "open shell connecting edge invalid", "free-boundary connecting edge has only one face", "face2 missing on boundary edge".
 - **Byte assertion**: contains(b'TESSELLATED_CONNECTING_EDGE')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: Tessellated geometry attached to the BRep loads with inconsistent or missing triangle data; viewers that prefer the producer's tessellation render incorrect facets, while kernels that re-mesh from the BRep ignore the defect entirely.
@@ -13311,6 +13623,7 @@ _Section summary: 52 entries._
 - **Expected kernel behavior**: heal; merge nearly-coincident vertices using model uncertainty, or report the gap.
 - **Notes**: Synonyms: "tessellation not watertight", "duplicate vertices on shared edge", "per-face coordinates_list causes gaps", "tessellated mesh has sub-tolerance gaps", "shared edge vertices don't match across faces".
 - **Byte assertion**: count_entity_def(b'COORDINATES_LIST') == 6
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: Tessellated geometry attached to the BRep loads with inconsistent or missing triangle data; viewers that prefer the producer's tessellation render incorrect facets, while kernels that re-mesh from the BRep ignore the defect entirely.
@@ -13338,6 +13651,7 @@ _Section summary: 52 entries._
 - **Notes**: Synonyms: "integer_representation_item missing dot", "INTEGER serialized as REAL", "Part-21 INTEGER without trailing decimal", "non-conforming integer encoding".
 - **Byte assertion**: contains(b'INTEGER_REPRESENTATION_ITEM')
 - **Byte assertion**: matches(rb"INTEGER_REPRESENTATION_ITEM\('number of faces',6\)")
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: Appearance/style attributes detach from their target shape; the geometry loads correctly but colors, layers, or material assignments are dropped or attached to the wrong sub-shape.
@@ -13365,6 +13679,7 @@ _Section summary: 52 entries._
 - **Byte assertion**: contains(b'CONSTRUCTIVE_GEOMETRY_REPRESENTATION')
 - **Byte assertion**: contains(b'PLANE')
 - **Byte assertion**: contains(b'LINE')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
@@ -13391,6 +13706,7 @@ _Section summary: 52 entries._
 - **Notes**: Synonyms: "TCGR requires AP242 Ed.4", "tessellated supplemental geometry rejected", "AP242 edition too old for TCGR", "schema-version vs entity-vocabulary disagreement".
 - **Byte assertion**: contains(b'TESSELLATED_CONSTRUCTIVE_GEOMETRY_REPRESENTATION')
 - **Byte assertion**: contains(b'442 2 1 4')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: Tessellated geometry attached to the BRep loads with inconsistent or missing triangle data; viewers that prefer the producer's tessellation render incorrect facets, while kernels that re-mesh from the BRep ignore the defect entirely.
@@ -13405,6 +13721,7 @@ _Section summary: 52 entries._
 - **Notes**: Synonyms: "saved view supplemental split", "CGR scattered across views", "supplemental geometry in multiple representations", "saved-view subset CGR". **See also**: Pmi017.
 - **Byte assertion**: contains(b'CONSTRUCTIVE_GEOMETRY_REPRESENTATION')
 - **Byte assertion**: contains(b'supplemental geometry subset')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
@@ -13434,6 +13751,7 @@ _Section summary: 52 entries._
 - **Byte assertion**: contains(b'TESSELLATED_GEOMETRIC_SET')
 - **Byte assertion**: contains(b'10.0)')
 - **Byte assertion**: contains(b'annot_coords_absolute')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: Tessellated geometry attached to the BRep loads with inconsistent or missing triangle data; viewers that prefer the producer's tessellation render incorrect facets, while kernels that re-mesh from the BRep ignore the defect entirely.
@@ -13448,6 +13766,7 @@ _Section summary: 52 entries._
 - **Notes**: Synonyms: "empty tessellated_curve_set", "tessellation has no points or strips", "tessellated curve set has no data", "empty line_strips and coordinates".
 - **Byte assertion**: contains(b'TESSELLATED_CURVE_SET')
 - **Byte assertion**: matches(rb'TESSELLATED_CURVE_SET\([^)]*,\(\)\)')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must emit a diagnostic this fixture.
 - **Severity**: P1
 - **Model impact**: Tessellated geometry attached to the BRep loads with inconsistent or missing triangle data; viewers that prefer the producer's tessellation render incorrect facets, while kernels that re-mesh from the BRep ignore the defect entirely.
@@ -13463,6 +13782,7 @@ _Section summary: 52 entries._
 - **Byte assertion**: contains(b'TESSELLATED_SOLID')
 - **Byte assertion**: contains(b'tet_no_style')
 - **Byte assertion**: not_contains(b'PRESENTATION_STYLE_ASSIGNMENT')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must emit a diagnostic this fixture.
 - **Severity**: P1
 - **Model impact**: Tessellated geometry attached to the BRep loads with inconsistent or missing triangle data; viewers that prefer the producer's tessellation render incorrect facets, while kernels that re-mesh from the BRep ignore the defect entirely.
@@ -13490,6 +13810,7 @@ _Section summary: 52 entries._
 - **Expected kernel behavior**: heal; correctly unfold strips/fans to individual triangles preserving orientation.
 - **Notes**: Synonyms: "TRIANGLE_STRIP indices misaligned", "fan strip mis-decoded", "complex_triangulated_face strip wrong", "tessellation strip topology mishandled".
 - **Byte assertion**: contains(b'COMPLEX_TRIANGULATED_FACE')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: Tessellated geometry attached to the BRep loads with inconsistent or missing triangle data; viewers that prefer the producer's tessellation render incorrect facets, while kernels that re-mesh from the BRep ignore the defect entirely.
@@ -13505,6 +13826,7 @@ _Section summary: 52 entries._
 - **Byte assertion**: contains(b'STYLED_ITEM')
 - **Byte assertion**: contains(b'TRIANGULATED_FACE')
 - **Byte assertion**: contains(b'COLOUR_RGB')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: Tessellated geometry attached to the BRep loads with inconsistent or missing triangle data; viewers that prefer the producer's tessellation render incorrect facets, while kernels that re-mesh from the BRep ignore the defect entirely.
@@ -13518,6 +13840,7 @@ _Section summary: 52 entries._
 - **Expected kernel behavior**: heal; translate as PMI carrier with mesh presentation.
 - **Notes**: Synonyms: "tessellated GD&T not imported", "TESSELLATED_ANNOTATION_OCCURRENCE skipped", "PMI tessellation entities unrecognized", "tessellated annotation lost on read".
 - **Byte assertion**: contains(b'TESSELLATED_ANNOTATION_OCCURRENCE')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: Tessellated geometry attached to the BRep loads with inconsistent or missing triangle data; viewers that prefer the producer's tessellation render incorrect facets, while kernels that re-mesh from the BRep ignore the defect entirely.
@@ -13533,6 +13856,7 @@ _Section summary: 52 entries._
 - **Byte assertion**: contains(b'COMPLEX_TRIANGULATED_SURFACE_SET')
 - **Byte assertion**: contains(b'stl_origin_cube')
 - **Byte assertion**: count_entity_def(b'MANIFOLD_SOLID_BREP') == 0
+- **Tier-3 assertion**: shape_null == True
 - **Model impact**: Tessellated geometry attached to the BRep loads with inconsistent or missing triangle data; viewers that prefer the producer's tessellation render incorrect facets, while kernels that re-mesh from the BRep ignore the defect entirely.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
@@ -13603,6 +13927,7 @@ _Section summary: 52 entries._
 - **Notes**: Synonyms: "surface sampling validation fails", "validation property fails check", "(u,v,XYZ) sample point mismatch", "NURBS reparametrization breaks GVP". **See also**: M026, N031.
 - **Byte assertion**: contains(b'COMPOUND_REPRESENTATION_ITEM')
 - **Byte assertion**: contains(b'SHAPE_ASPECT')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: Validation properties (volume/area/centroid) load but do not match the kernel's computed values; consumers that trust the embedded numbers diverge from those that recompute from the geometry.
@@ -13631,6 +13956,7 @@ _Section summary: 52 entries._
 - **Notes**: Synonyms: "PMI count validation fails", "validation property fails check", "GD&T count mismatch on import", "tolerance count differs after read". **See also**: M026.
 - **Byte assertion**: contains(b'INTEGER_REPRESENTATION_ITEM')
 - **Byte assertion**: contains(b'PROPERTY_DEFINITION')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject, warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must reject or emit a diagnostic this fixture.
 - **Severity**: P1
 - **Model impact**: Validation properties (volume/area/centroid) load but do not match the kernel's computed values; consumers that trust the embedded numbers diverge from those that recompute from the geometry.
@@ -13644,6 +13970,7 @@ _Section summary: 52 entries._
 - **Expected kernel behavior**: heal; match either form (replace `_` with space before compare).
 - **Notes**: Synonyms: "GVP name underscore vs space", "validation property naming inconsistent", "geometric_validation_property naming form", "RP changed name format".
 - **Byte assertion**: contains(b"PROPERTY_DEFINITION('geometric_validation_property'")
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: Validation properties (volume/area/centroid) load but do not match the kernel's computed values; consumers that trust the embedded numbers diverge from those that recompute from the geometry.
@@ -13658,6 +13985,7 @@ _Section summary: 52 entries._
 - **Notes**: Synonyms: "GVP missing unit_component", "validation property no units", "validation value with no unit", "unit_component absent on property".
 - **Byte assertion**: contains(b'MEASURE_REPRESENTATION_ITEM')
 - **Byte assertion**: matches(rb'LENGTH_MEASURE\(123.45\),\$')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: Validation properties (volume/area/centroid) load but do not match the kernel's computed values; consumers that trust the embedded numbers diverge from those that recompute from the geometry.
@@ -13673,6 +14001,7 @@ _Section summary: 52 entries._
 - **Byte assertion**: contains(b'volume mm3')
 - **Byte assertion**: contains(b'GENERAL_PROPERTY')
 - **Byte assertion**: contains(b"'Volume'")
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must emit a diagnostic this fixture.
 - **Severity**: P1
 - **Model impact**: Validation properties (volume/area/centroid) load but do not match the kernel's computed values; consumers that trust the embedded numbers diverge from those that recompute from the geometry.
@@ -13687,6 +14016,7 @@ _Section summary: 52 entries._
 - **Notes**: Synonyms: "supplemental geometry wrong type", "CGR has unsupported entity", "supplemental items beyond allowed list", "GISU references wrong type". **See also**: M011.
 - **Byte assertion**: contains(b'CONSTRUCTIVE_GEOMETRY_REPRESENTATION')
 - **Byte assertion**: contains(b'B_SPLINE_SURFACE_WITH_KNOTS')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
@@ -13701,6 +14031,7 @@ _Section summary: 52 entries._
 - **Notes**: Synonyms: "single-item CGR crashes translator", "constructive_geometry_representation crash", "CGR with one item silent-empty", "translator exception on tiny CGR". **See also**: Pf008. Validation observed: silent-empty rather than crash. Kernel-mishandling-by-silent-acceptance still demonstrates the defect class.
 - **Byte assertion**: contains(b'CONSTRUCTIVE_GEOMETRY_REPRESENTATION')
 - **Byte assertion**: count_entity_def(b'PLANE') == 1
+- **Tier-3 assertion**: shape_null == True
 - **Model impact**: Appearance/style attributes detach from their target shape; the geometry loads correctly but colors, layers, or material assignments are dropped or attached to the wrong sub-shape.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
@@ -13713,6 +14044,7 @@ _Section summary: 52 entries._
 - **Notes**: Synonyms: "datum target axes nearly identical", "near-collinear DIRECTION pair", "frame cross-product near zero", "datum frame ill-conditioned".
 - **Byte assertion**: contains(b'0.001')
 - **Byte assertion**: contains(b'CONSTRUCTIVE_GEOMETRY_REPRESENTATION')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal, warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must heal or emit a diagnostic this fixture.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
@@ -13727,6 +14059,7 @@ _Section summary: 52 entries._
 - **Notes**: Synonyms: "AP209 element wrong node count", "FEA element node count wrong for hex8", "quadratic_tetrahedron with 8 nodes", "unknown FEM element type".
 - **Byte assertion**: contains(b'quadratic_tetrahedron')
 - **Byte assertion**: contains(b'VOLUME_3D_ELEMENT_DESCRIPTOR')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
@@ -13742,6 +14075,7 @@ _Section summary: 52 entries._
 - **Byte assertion**: contains(b'FREEDOM_AND_COEFFICIENT')
 - **Byte assertion**: contains(b'2.0')
 - **Byte assertion**: contains(b'SINGLE_POINT_CONSTRAINT')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must emit a diagnostic this fixture.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
@@ -13769,6 +14103,7 @@ _Section summary: 52 entries._
 - **Notes**: Synonyms: "STYLED_ITEM null item", "presentation_style_assignment null element", "OCCT NULL deref on STYLED_ITEM", "null reference in style chain". **See also**: A018, A020.
 - **Byte assertion**: contains(b'STYLED_ITEM')
 - **Byte assertion**: contains(b"STYLED_ITEM('null_item_style',(#606),$)")
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
 - **Severity**: P1
 - **Model impact**: Appearance/style attributes detach from their target shape; the geometry loads correctly but colors, layers, or material assignments are dropped or attached to the wrong sub-shape.
@@ -13782,6 +14117,7 @@ _Section summary: 52 entries._
 - **Expected kernel behavior**: heal — read optional `SURFACE_STYLE_TRANSPARENT` if present; default α=1; emit on export when source α<1; assign to XCAF visual attribute.
 - **Notes**: Synonyms: "surface transparency ignored", "SURFACE_STYLE_TRANSPARENT lost", "alpha lost on STEP import", "transparency not applied". **See also**: P019.
 - **Byte assertion**: contains(b'SURFACE_STYLE_TRANSPARENT')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: Appearance/style attributes detach from their target shape; the geometry loads correctly but colors, layers, or material assignments are dropped or attached to the wrong sub-shape.
@@ -13797,6 +14133,7 @@ _Section summary: 52 entries._
 - **Byte assertion**: contains(b'STYLED_ITEM')
 - **Byte assertion**: contains(b'NEXT_ASSEMBLY_USAGE_OCCURRENCE')
 - **Byte assertion**: contains(b'COLOUR_RGB')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
 - **Severity**: P1
 - **Model impact**: Appearance/style attributes detach from their target shape; the geometry loads correctly but colors, layers, or material assignments are dropped or attached to the wrong sub-shape.
@@ -13810,6 +14147,7 @@ _Section summary: 52 entries._
 - **Expected kernel behavior**: Heal and accept: group layers by (name, visibility) tuple.
 - **Notes**: Synonyms: "layer name collision", "duplicate PRESENTATION_LAYER_ASSIGNMENT", "layers not differentiated by visibility", "layer with empty name". **See also**: A022.
 - **Byte assertion**: count_entity_def(b'PRESENTATION_LAYER_ASSIGNMENT') >= 2
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
@@ -13825,6 +14163,7 @@ _Section summary: 52 entries._
 - **Byte assertion**: contains(b'PRESENTATION_LAYER_ASSIGNMENT')
 - **Byte assertion**: contains(b'DRAUGHTING_MODEL')
 - **Byte assertion**: matches(rb'PRESENTATION_LAYER_ASSIGNMENT\([^)]*,\(\)\)')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
 - **Severity**: P1
 - **Model impact**: Appearance/style attributes detach from their target shape; the geometry loads correctly but colors, layers, or material assignments are dropped or attached to the wrong sub-shape.
@@ -13866,6 +14205,7 @@ _Section summary: 52 entries._
 - **Notes**: Synonyms: "texture lost on translation", "IMAGE_TEXTURE not preserved", "UV mapping dropped", "bitmap material lost".
 - **Byte assertion**: contains(b'IMAGE_TEXTURE')
 - **Byte assertion**: contains(b'TEXTURE_MAPPING')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
@@ -13881,6 +14221,7 @@ _Section summary: 52 entries._
 - **Notes**: Synonyms: "material attributes silently dropped", "STEP export loses appearance", "physical attributes missing on export", "material/density lost on STEP write", "appearance stripped on STEP output". **See also**: Pmi059.
 - **Byte assertion**: contains(b'MATERIAL_DESIGNATION')
 - **Byte assertion**: contains(b'MASS_DENSITY_MEASURE(0.0)')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
 - **Severity**: P1
 - **Model impact**: Appearance/style attributes detach from their target shape; the geometry loads correctly but colors, layers, or material assignments are dropped or attached to the wrong sub-shape.
@@ -13896,6 +14237,7 @@ _Section summary: 52 entries._
 - **Byte assertion**: contains(b'KINEMATIC_LINK_REPRESENTATION_RELATION')
 - **Byte assertion**: contains(b'CYLINDRICAL_PAIR_RANGE')
 - **Byte assertion**: contains(b'MECHANISM')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
@@ -13910,6 +14252,7 @@ _Section summary: 52 entries._
 - **Notes**: Synonyms: "composite LLAI gaps", "limited length area indicator missing", "ply extends only over part of base", "LLAI metadata inconsistent across vendors".
 - **Byte assertion**: contains(b'COMPOSITE_PLY_DEFINITION')
 - **Byte assertion**: contains(b'LIMITED_AREA_INDICATOR')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
@@ -13925,6 +14268,7 @@ _Section summary: 52 entries._
 - **Notes**: Synonyms: "bare GEOMETRIC_SET silent-empty", "wireframe-only file appears empty", "GEOMETRIC_CURVE_SET with non-geometric children", "bare surface set rejected as no solid". **OCC behavior**: silently produces empty results on bare `GEOMETRIC_SET` / `GEOMETRIC_CURVE_SET` files without surfacing the wireframe-only or surface-only nature of the input; kernel mishandling; the catalog above forbids silent drop.
 - **Byte assertion**: contains(b'GEOMETRIC_SET')
 - **Byte assertion**: contains(b'DESCRIPTIVE_REPRESENTATION_ITEM')
+- **Tier-3 assertion**: shape_null == True
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
@@ -13968,6 +14312,7 @@ _Section summary: 52 entries._
 - **Notes**: Synonyms: "FACETED_BREP linked to OPEN_SHELL", "schema-illegal faceted brep", "faceted brep needs closed shell", "schema-version vs entity-vocabulary disagreement".
 - **Byte assertion**: contains(b'FACETED_BREP')
 - **Byte assertion**: contains(b'OPEN_SHELL')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal, reject}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
@@ -13999,6 +14344,7 @@ _Section summary: 52 entries._
 - **Byte assertion**: contains(b'TESSELLATED_SHAPE_REPRESENTATION')
 - **Byte assertion**: contains(b'TESSELLATED_ANNOTATION_OCCURRENCE')
 - **Byte assertion**: contains(b'GEOMETRIC_CURVE_SET')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
 - **Severity**: P1
 - **Model impact**: Tessellated geometry attached to the BRep loads with inconsistent or missing triangle data; viewers that prefer the producer's tessellation render incorrect facets, while kernels that re-mesh from the BRep ignore the defect entirely.
@@ -14032,6 +14378,7 @@ _Section summary: 28 entries._
 - **Byte assertion**: count_entity_def(b'CARTESIAN_POINT') >= 1
 - **Byte assertion**: contains(b'NEXT_ASSEMBLY_USAGE_OCCURRENCE')
 - **Byte assertion**: contains(b'MANIFOLD_SOLID_BREP')
+- **Tier-3 assertion**: shape_null == True
 - **Model impact**: Parser/loader resource usage scales pathologically with the input size; load time grows quadratically or memory blows up, and on bounded systems the load is killed before completing.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
  OCCT #417 documents an analogous one-shell case in OCCT.
@@ -14050,6 +14397,7 @@ _Section summary: 28 entries._
  entities through OCCT's STEP writer; time the write phase.
 - **Expected kernel behavior**: Heal and accept (performance contract): sub-minute write at 200k entities via amortized O(N) writer with indexed reference resolution. Must not hang.
 - **Byte assertion**: count_entity_def(b'CARTESIAN_POINT') >= 8
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
 - **Severity**: P2
 - **Model impact**: Parser/loader resource usage scales pathologically with the input size; load time grows quadratically or memory blows up, and on bounded systems the load is killed before completing.
@@ -14068,6 +14416,7 @@ _Section summary: 28 entries._
  parser + reference-resolution dominate.
 - **Expected kernel behavior**: Heal and accept (performance contract): bounded, parallelism-friendly read path; recover from forward-reference DATA sections without quadratic resolution. Must not hang.
 - **Byte assertion**: count_entity_def(b'CARTESIAN_POINT') >= 1
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
 - **Severity**: P2
 - **Model impact**: Parser/loader resource usage scales pathologically with the input size; load time grows quadratically or memory blows up, and on bounded systems the load is killed before completing.
@@ -14083,6 +14432,7 @@ _Section summary: 28 entries._
  `LINE` / `B_SPLINE_CURVE_WITH_KNOTS` entries inside `GEOMETRIC_SET`s.
 - **Expected kernel behavior**: Heal and accept (performance contract): use bbox indexing for matching / locating geometric-set elements; coerce the lookup to sub-quadratic. Must not hang on geometric-set-heavy files.
 - **Byte assertion**: count_entity_def(b'CARTESIAN_POINT') >= 9
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
 - **Severity**: P2
 - **Model impact**: Parser/loader resource usage scales pathologically with the input size; load time grows quadratically or memory blows up, and on bounded systems the load is killed before completing.
@@ -14101,6 +14451,7 @@ _Section summary: 28 entries._
 - **Expected kernel behavior**: Heal and accept: skip the self-intersection check by default on simple input; reject only when the caller opts in and the check fails. Must not hang on perforated sheets.
 - **Notes**: **See also**: N042.
 - **Byte assertion**: count_entity_def(b'CARTESIAN_POINT') >= 10
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal, reject}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P2
 - **Model impact**: Parser/loader resource usage scales pathologically with the input size; load time grows quadratically or memory blows up, and on bounded systems the load is killed before completing.
@@ -14120,6 +14471,7 @@ _Section summary: 28 entries._
  with thousands of holes.
 - **Expected kernel behavior**: Heal and accept (performance contract): lazy UV-bound computation; cheap type-only surface queries that do not trigger eager wire-walks. Must not hang on faces with many holes.
 - **Byte assertion**: count_entity_def(b'CARTESIAN_POINT') >= 8
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
 - **Severity**: P2
 - **Model impact**: Parser/loader resource usage scales pathologically with the input size; load time grows quadratically or memory blows up, and on bounded systems the load is killed before completing.
@@ -14140,6 +14492,7 @@ _Section summary: 28 entries._
 - **Notes**: **See also**: M035, Pf009, Pf012, Ad055.
 - **Byte assertion**: count_entity_def(b'CARTESIAN_POINT') >= 1
 - **Byte assertion**: contains(b'MANIFOLD_SOLID_BREP')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
 - **Severity**: P2
 - **Model impact**: Parser/loader resource usage scales pathologically with the input size; load time grows quadratically or memory blows up, and on bounded systems the load is killed before completing.
@@ -14156,6 +14509,7 @@ _Section summary: 28 entries._
 - **Notes**: **See also**: Pf008, Ad055.
 - **Byte assertion**: count_entity_def(b'CARTESIAN_POINT') >= 4
 - **Byte assertion**: contains(b'MANIFOLD_SOLID_BREP')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
 - **Severity**: P2
 - **Model impact**: Parser/loader resource usage scales pathologically with the input size; load time grows quadratically or memory blows up, and on bounded systems the load is killed before completing.
@@ -17556,6 +17910,7 @@ _Section summary: 41 entries._
 - **Byte assertion**: contains(b'MANIFOLD_SOLID_BREP')
 - **Byte assertion**: contains(b'#999')
 - **Byte assertion**: count_entity_def(b'CLOSED_SHELL') == 0
+- **Tier-3 assertion**: shape_null == True
 - **Model impact**: Shell construction reports invalidity (free edges, multi-connected vertices, or wrong orientation); BRepCheck flags the shape, and downstream solid construction either produces an invalid solid or fails outright.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 - **Fixture path**: step-examples/12-3a-shells/Bo002.stp
@@ -17644,6 +17999,7 @@ _Section summary: 41 entries._
 - **Byte assertion**: contains(b'EDGE_CURVE')
 - **Byte assertion**: contains(b'VERTEX_POINT')
 - **Byte assertion**: contains(b'LINE')
+- **Tier-3 assertion**: shape_null == True
 - **Model impact**: Shell construction reports invalidity (free edges, multi-connected vertices, or wrong orientation); BRepCheck flags the shape, and downstream solid construction either produces an invalid solid or fails outright.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 - **Fixture path**: step-examples/12-3a-shells/Bo008.stp
@@ -17703,6 +18059,7 @@ _Section summary: 41 entries._
 - **Byte assertion**: contains(b'COMPLEX_TRIANGULATED_FACE')
 - **Byte assertion**: contains(b'COORDINATES_LIST')
 - **Byte assertion**: declared_schema == b'AP242_MANAGED_MODEL_BASED_3D_ENGINEERING_MIM_LF { 1 0 10303 442 1 1 4 }'
+- **Tier-3 assertion**: shape_null == True
 - **Model impact**: Shell construction reports invalidity (free edges, multi-connected vertices, or wrong orientation); BRepCheck flags the shape, and downstream solid construction either produces an invalid solid or fails outright.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 - **Fixture path**: step-examples/12-3a-shells/Bo027.stp
@@ -17733,6 +18090,7 @@ _Section summary: 41 entries._
 - **Byte assertion**: contains(b'EDGE_CURVE')
 - **Byte assertion**: contains(b'VERTEX_POINT')
 - **Byte assertion**: count_entity_def(b'CARTESIAN_POINT') == 3
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: Shell construction reports invalidity (free edges, multi-connected vertices, or wrong orientation); BRepCheck flags the shape, and downstream solid construction either produces an invalid solid or fails outright.
@@ -19208,6 +19566,7 @@ _Section summary: 41 entries._
 - **Notes**: Bug-reporter synonyms: "T-edge after sewing", "non-manifold sewing", "three faces meet at one edge", "sewing produces multiple edge", "non-manifold join after stitch".
 - **Byte assertion**: count_entity_def(b'ADVANCED_FACE') == 3
 - **Byte assertion**: count_entity_def(b'PLANE') >= 3
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: Sewing leaves the shell open or produces non-manifold edges; loaded shape is a compound of free faces instead of a closed shell, and MakeSolid downstream fails to produce a valid solid.
@@ -19224,6 +19583,7 @@ _Section summary: 41 entries._
 - **Notes**: Synonyms: "silent face loss", "sliver face drop", "face missing after sewing", "sewer dropped sub-tolerance face", "sub-micron sliver removed without warning".
 - **Byte assertion**: count_entity_def(b'ADVANCED_FACE') == 1
 - **Byte assertion**: contains(b'sliver')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must emit a diagnostic this fixture.
 - **Severity**: P1
 - **Model impact**: Sewing leaves the shell open or produces non-manifold edges; loaded shape is a compound of free faces instead of a closed shell, and MakeSolid downstream fails to produce a valid solid.
@@ -19240,6 +19600,7 @@ _Section summary: 41 entries._
 - **Notes**: Synonyms: "back-and-forth wire", "fold-line face", "zero-area face accepted", "degenerate face wire collapses to line", "face collapsed to a line or point".
 - **Byte assertion**: count_entity_def(b'ADVANCED_FACE') == 1
 - **Byte assertion**: contains(b'zero_area_face')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal, reject}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: Sewing leaves the shell open or produces non-manifold edges; loaded shape is a compound of free faces instead of a closed shell, and MakeSolid downstream fails to produce a valid solid.
@@ -19257,6 +19618,7 @@ _Section summary: 41 entries._
 - **Closure defect**: unstitched_seam
 - **Notes**: **See also**: Sw005. Synonyms: "fast sewing fails on null face", "null surface in fast sew", "ADVANCED_FACE with no face_geometry", "face_geometry slot is dollar", "fast-sewer aborts on missing surface".- **Byte assertion**: matches(rb'ADVANCED_FACE\([^,]+,\(\),\$,')
 - **Byte assertion**: contains(b'OPEN_SHELL')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal, warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must heal or emit a diagnostic this fixture.
 - **Severity**: P1
 - **Model impact**: Sewing leaves the shell open or produces non-manifold edges; loaded shape is a compound of free faces instead of a closed shell, and MakeSolid downstream fails to produce a valid solid.
@@ -19273,6 +19635,7 @@ _Section summary: 41 entries._
 - **Notes**: **See also**: Sw004. Synonyms: "untrimmed face", "infinite extent face", "infinite surface in sewing", "unbounded plane face fails fast sew", "face missing rectangular trim".- **Byte assertion**: count_entity_def(b'ADVANCED_FACE') == 1
 - **Byte assertion**: not_contains(b'RECTANGULAR_TRIMMED_SURFACE')
 - **Byte assertion**: count_entity_def(b'PLANE') >= 1
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: Sewing leaves the shell open or produces non-manifold edges; loaded shape is a compound of free faces instead of a closed shell, and MakeSolid downstream fails to produce a valid solid.
@@ -19289,6 +19652,7 @@ _Section summary: 41 entries._
 - **Notes**: Bug-reporter synonyms: "wire doesn't fill face", "loose pcurve bounds", "trimmed face fails fast sewing", "non-natural bounds reject fast sew", "wire excursion smaller than surface trim range".
 - **Byte assertion**: contains(b'RECTANGULAR_TRIMMED_SURFACE')
 - **Byte assertion**: count_entity_def(b'ADVANCED_FACE') == 1
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: Sewing leaves the shell open or produces non-manifold edges; loaded shape is a compound of free faces instead of a closed shell, and MakeSolid downstream fails to produce a valid solid.
@@ -19305,6 +19669,7 @@ _Section summary: 41 entries._
 - **Notes**: Rare; depends on hash function used. Provenance tier: runtime-only; bytes alone cannot demonstrate this defect; the symptom is a hash-bucket collision inside the fast-sewing vertex table during a sewing operation. The static fixture encodes only the inputs; whether they collide depends on the kernel's specific hash function and table size. A behavioral test against the sewing implementation is the appropriate venue. Synonyms: "fast sew vertex hashing mismatch", "vertex not found", "widely-separated VERTEX_POINTs collide in hash", "hash bucket collision in vertex table", "spatial hash needed instead of bit-equal".
 - **Byte assertion**: count_entity_def(b'VERTEX_POINT') == 2
 - **Byte assertion**: contains(b'1.0e6') or contains(b'1.0E6') or contains(b'1.E6') or contains(b'1000000')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: Sewing leaves the shell open or produces non-manifold edges; loaded shape is a compound of free faces instead of a closed shell, and MakeSolid downstream fails to produce a valid solid.
@@ -19322,6 +19687,7 @@ _Section summary: 41 entries._
 - **Byte assertion**: contains(b'B_SPLINE_CURVE_WITH_KNOTS')
 - **Byte assertion**: contains(b'LINE')
 - **Byte assertion**: count_entity_def(b'EDGE_CURVE') == 2
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: Sewing leaves the shell open or produces non-manifold edges; loaded shape is a compound of free faces instead of a closed shell, and MakeSolid downstream fails to produce a valid solid.
@@ -19339,6 +19705,7 @@ _Section summary: 41 entries._
 - **Byte assertion**: contains(b'LINE_2D')
 - **Byte assertion**: contains(b'EDGE_CURVE')
 - **Byte assertion**: contains(b'VECTOR_2D')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: Sewing leaves the shell open or produces non-manifold edges; loaded shape is a compound of free faces instead of a closed shell, and MakeSolid downstream fails to produce a valid solid.
@@ -20418,6 +20785,7 @@ they capture invariants shared by a family of healing methods. Filed under
 - **Byte assertion**: contains(b'non_uniform_3d')
 - **Byte assertion**: contains(b'uniform_pcurve')
 - **Byte assertion**: contains(b'B_SPLINE_CURVE_WITH_KNOTS(')
+- **Tier-3 assertion**: shape_null == True
 - **Model impact**: ShapeHealing pass either fixes the defect (loaded model differs from input bytes by the healing edits) or fails the heal (loaded model retains the original invalidity); BRepCheck status reflects which path was taken.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
@@ -20431,6 +20799,7 @@ they capture invariants shared by a family of healing methods. Filed under
 - **Byte assertion**: contains(b'non_uniform_metric')
 - **Byte assertion**: contains(b'B_SPLINE_SURFACE_WITH_KNOTS(')
 - **Byte assertion**: contains(b'cluster_lo_a')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: ShapeHealing pass either fixes the defect (loaded model differs from input bytes by the healing edits) or fails the heal (loaded model retains the original invalidity); BRepCheck status reflects which path was taken.
@@ -20446,6 +20815,7 @@ they capture invariants shared by a family of healing methods. Filed under
 - **Byte assertion**: contains(b'B_SPLINE_CURVE_WITH_KNOTS(')
 - **Byte assertion**: contains(b'(3,3,3)')
 - **Byte assertion**: contains(b'(0.0,0.5,1.0)')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: ShapeHealing pass either fixes the defect (loaded model differs from input bytes by the healing edits) or fails the heal (loaded model retains the original invalidity); BRepCheck status reflects which path was taken.
@@ -22588,6 +22958,7 @@ Control poles coplanar (XY) but curve deviates significantly in Z. ShapeAnalysis
 - **Notes**: Synonyms: "self-import refused", "round-trip with same version broken", "freecad cannot read its own export", "RC2-exported STEP fails RC2 import".
 - **Byte assertion**: contains(b'SHAPE_REPRESENTATION')
 - **Byte assertion**: matches(rb'#10\s*=\s*SHAPE_REPRESENTATION')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal, warn-and-proceed}).
 - **Severity**: P1
 - **Model impact**: The assembly graph loads with broken parent/child links or with the wrong transform on a MAPPED_ITEM/NEXT_ASSEMBLY_USAGE_OCCURRENCE; affected sub-components either fail to instance or appear at the wrong position relative to the assembly origin.
@@ -22603,6 +22974,7 @@ Control poles coplanar (XY) but curve deviates significantly in Z. ShapeAnalysis
 - **Notes**: Synonyms: "PartDesign Tip not exported", "last feature missing from STEP", "pocket dropped on STEP export", "exported body is one feature behind the Tip".
 - **Byte assertion**: contains(b'MANIFOLD_SOLID_BREP')
 - **Byte assertion**: count_entity_def(b'ADVANCED_FACE') >= 6
+- **Tier-3 assertion**: n_faces_total == 6
 - **OCC behavior**: silently accepts (loads stale geometry); outside catalog's allowed set ({heal, warn-and-proceed}).
 - **Severity**: P1
 - **Model impact**: The assembly graph loads with broken parent/child links or with the wrong transform on a MAPPED_ITEM/NEXT_ASSEMBLY_USAGE_OCCURRENCE; affected sub-components either fail to instance or appear at the wrong position relative to the assembly origin.
@@ -22618,6 +22990,7 @@ Control poles coplanar (XY) but curve deviates significantly in Z. ShapeAnalysis
 - **Notes**: **See also**: P011 (PMI silently discarded). Synonyms: "Assembly module not supported by STEP importer", "joints lost on STEP import", "kinematic data discarded", "imported into Part not Assembly".
 - **Byte assertion**: contains(b'MECHANISM') or contains(b'KINEMATIC_JOINT')
 - **Byte assertion**: contains(b'NEXT_ASSEMBLY_USAGE_OCCURRENCE')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (drops kinematics); outside catalog's allowed set ({heal, warn-and-proceed}).
 - **Severity**: P1
 - **Model impact**: The assembly graph loads with broken parent/child links or with the wrong transform on a MAPPED_ITEM/NEXT_ASSEMBLY_USAGE_OCCURRENCE; affected sub-components either fail to instance or appear at the wrong position relative to the assembly origin.
@@ -22633,6 +23006,7 @@ Control poles coplanar (XY) but curve deviates significantly in Z. ShapeAnalysis
 - **Notes**: **See also**: A018. Synonyms: "SubShapeBinder Boolean Cut crashes slicer", "asterisk edge element escapes file body", "STEP makes PrusaSlicer crash on import", "boolean from SubShapeBinder broken on export".
 - **Byte assertion**: matches(rb'ORIENTED_EDGE\s*\([^)]*,\*,\*')
 - **Byte assertion**: contains(b'EDGE_LOOP')
+- **Tier-3 assertion**: n_faces_total == 1
 - **OCC behavior**: silently accepts or signal(11); outside catalog's allowed set ({reject, warn-and-proceed}).
 - **Severity**: P0
 - **Model impact**: Parser dereferences invalid memory while processing the malformed token; the load process is killed by a signal and no shape is delivered.
@@ -22648,6 +23022,7 @@ Control poles coplanar (XY) but curve deviates significantly in Z. ShapeAnalysis
 - **Notes**: **See also**: P015. Synonyms: "cap export marked damaged by slicer", "thin-walled body has open shell", "PartDesign cap STEP fails slicer ingest", "step broken but stl fine".
 - **Byte assertion**: contains(b'MANIFOLD_SOLID_BREP')
 - **Byte assertion**: contains(b'CLOSED_SHELL')
+- **Tier-3 assertion**: n_faces_total == 7
 - **OCC behavior**: silently accepts (loads as open shell); outside catalog's allowed set ({heal, warn-and-proceed}).
 - **Severity**: P1
 - **Model impact**: The assembly graph loads with broken parent/child links or with the wrong transform on a MAPPED_ITEM/NEXT_ASSEMBLY_USAGE_OCCURRENCE; affected sub-components either fail to instance or appear at the wrong position relative to the assembly origin.
@@ -22663,6 +23038,7 @@ Control poles coplanar (XY) but curve deviates significantly in Z. ShapeAnalysis
 - **Notes**: Synonyms: "knurl produces holes on STEP export", "dense feature cluster has missing faces", "small triangular faces dropped", "STEP non-manifold due to sliver faces".
 - **Byte assertion**: contains(b'MANIFOLD_SOLID_BREP')
 - **Byte assertion**: count_entity_def(b'ADVANCED_FACE') >= 4
+- **Tier-3 assertion**: n_faces_total == 4
 - **OCC behavior**: silently accepts (renders with holes); outside catalog's allowed set ({heal, warn-and-proceed}).
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
@@ -22678,6 +23054,7 @@ Control poles coplanar (XY) but curve deviates significantly in Z. ShapeAnalysis
 - **Notes**: **See also**: P023. Synonyms: "fin array crashes export tessellator", "heatsink causes vrml crash and step misorientation", "tightly spaced parallel solids cause writer issues".
 - **Byte assertion**: count_entity_def(b'MANIFOLD_SOLID_BREP') >= 3
 - **Byte assertion**: matches(rb'FACE_OUTER_BOUND[^;]*\.F\.')
+- **Tier-3 assertion**: n_faces_total == 3
 - **OCC behavior**: silently accepts; outside catalog's allowed set ({heal, warn-and-proceed}).
 - **Severity**: P1
 - **Model impact**: Tessellated geometry attached to the BRep loads with inconsistent or missing triangle data; viewers that prefer the producer's tessellation render incorrect facets, while kernels that re-mesh from the BRep ignore the defect entirely.
@@ -22693,6 +23070,7 @@ Control poles coplanar (XY) but curve deviates significantly in Z. ShapeAnalysis
 - **Notes**: **See also**: P007. Synonyms: "fillet emitted as B-spline instead of torus", "Onshape sees rounded edge not fillet", "feature category lost on STEP export", "STEP fillet is bspline".
 - **Byte assertion**: contains(b'B_SPLINE_SURFACE_WITH_KNOTS')
 - **Byte assertion**: contains(b'PLANE') and contains(b'CYLINDRICAL_SURFACE')
+- **Tier-3 assertion**: n_faces_total == 3
 - **OCC behavior**: silently accepts (loads as bspline); outside catalog's allowed set ({heal, warn-and-proceed}).
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
@@ -22708,6 +23086,7 @@ Control poles coplanar (XY) but curve deviates significantly in Z. ShapeAnalysis
 - **Notes**: **See also**: A018. Synonyms: "imported step colors scramble after edit", "STYLED_ITEM binding by index breaks on document change", "face colors get random after unrelated Part add", "color corruption non-reversible".
 - **Byte assertion**: count_entity_def(b'STYLED_ITEM') >= 4
 - **Byte assertion**: contains(b'COLOUR_RGB')
+- **Tier-3 assertion**: n_faces_total == 6
 - **OCC behavior**: silently accepts (binds correctly initially); outside catalog's allowed set ({heal}).
 - **Severity**: P1
 - **Model impact**: Appearance/style attributes detach from their target shape; the geometry loads correctly but colors, layers, or material assignments are dropped or attached to the wrong sub-shape.
@@ -22723,6 +23102,7 @@ Control poles coplanar (XY) but curve deviates significantly in Z. ShapeAnalysis
 - **Notes**: **See also**: P018, A006. Synonyms: "LinearPattern of arc twisted on STEP export", "pattern instance count 4 corrupts orientation", "tessellation issue with arc pattern", "fourth instance is inverted".
 - **Byte assertion**: count_entity_def(b'MAPPED_ITEM') >= 4
 - **Byte assertion**: matches(rb'DIRECTION\([^)]*,\(0\.0,0\.0,-1\.0\)')
+- **Tier-3 assertion**: n_faces_total == 4
 - **OCC behavior**: silently accepts (loads inverted instance); outside catalog's allowed set ({heal, warn-and-proceed}).
 - **Severity**: P1
 - **Model impact**: Tessellated geometry attached to the BRep loads with inconsistent or missing triangle data; viewers that prefer the producer's tessellation render incorrect facets, while kernels that re-mesh from the BRep ignore the defect entirely.
@@ -24151,6 +24531,7 @@ em-dash Degenerated synthetic edge synthesis at sphere pole. Single wire at equa
 - **Notes**: Synonyms: "Extrude of 2D Offset fails STEP export", "self-intersecting offset trace produces non-manifold", "step from 2d offset is invalid", "orca says offset extrude is non-manifold".
 - **Byte assertion**: contains(b'B_SPLINE_CURVE_WITH_KNOTS')
 - **Byte assertion**: contains(b'EDGE_LOOP')
+- **Tier-3 assertion**: n_faces_total == 1
 - **OCC behavior**: silently accepts (loads partial); outside catalog's allowed set ({heal, reject}).
 - **Severity**: P1
 - **Model impact**: ShapeHealing pass either fixes the defect (loaded model differs from input bytes by the healing edits) or fails the heal (loaded model retains the original invalidity); BRepCheck status reflects which path was taken.
@@ -24166,6 +24547,7 @@ em-dash Degenerated synthetic edge synthesis at sphere pole. Single wire at equa
 - **Notes**: **See also**: U015, Wr044. Synonyms: "slicer ignores STEP unit declaration", "INCH unit silently treated as mm by receiver", "unit-context inversion on receiver side".
 - **Byte assertion**: contains(b'INCH')
 - **Byte assertion**: contains(b'CONVERSION_BASED_UNIT')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: heals with diagnostic; outside catalog's allowed set ({heal, warn-and-proceed}).
 - **Severity**: P1
 - **Model impact**: Unit/coordinate-system metadata is wrong or missing; coordinates are interpreted at the wrong scale or in the wrong frame, so the loaded geometry is the right shape at the wrong size or pose.
@@ -26802,6 +27184,7 @@ OFFSET_SURFACE (+0.5 distance) with asymmetric coverage vs base bounds; myOffset
 - **Notes**: **See also**: A105, A081. Synonyms: "STEP model imported with no colours", "colours present in file lost on import", "STYLED_ITEM not reaching XCAFDoc_ColorTool", "appearance dropped during STEP read".
 - **Byte assertion**: contains(b'STYLED_ITEM')
 - **Byte assertion**: contains(b'COLOUR_RGB')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silent-accept observed (catalog allowed: {heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
 - **Severity**: P1
 - **Model impact**: The assembly graph loads with broken parent/child links or with the wrong transform on a MAPPED_ITEM/NEXT_ASSEMBLY_USAGE_OCCURRENCE; affected sub-components either fail to instance or appear at the wrong position relative to the assembly origin.
@@ -26865,6 +27248,7 @@ OFFSET_SURFACE (+0.5 distance) with asymmetric coverage vs base bounds; myOffset
 - **Byte assertion**: contains(b'EXTERNALLY_DEFINED_ITEM')
 - **Byte assertion**: contains(b'PRODUCT_DEFINITION')
 - **Byte assertion**: count_entity_def(b'PRODUCT_DEFINITION') >= 2
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silent-accept observed (catalog allowed: {heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
 - **Severity**: P1
 - **Model impact**: The assembly graph loads with broken parent/child links or with the wrong transform on a MAPPED_ITEM/NEXT_ASSEMBLY_USAGE_OCCURRENCE; affected sub-components either fail to instance or appear at the wrong position relative to the assembly origin.
@@ -29040,6 +29424,7 @@ Planar surface with U-iso degenerate edge. U-constant pcurve lacks coordinate-ax
 - **Notes**: **See also**: A103, A081. Synonyms: "regression colours no longer showing on STEP files", "OCC 7.4 colour pipeline regression", "MECHANICAL_DESIGN_GEOMETRIC_PRESENTATION_REPRESENTATION colour dropped", "appearance lost across kernel versions".
 - **Byte assertion**: contains(b'MECHANICAL_DESIGN_GEOMETRIC_PRESENTATION_REPRESENTATION')
 - **Byte assertion**: contains(b'COLOUR_RGB')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silent-accept observed (catalog allowed: {heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
 - **Severity**: P1
 - **Model impact**: The assembly graph loads with broken parent/child links or with the wrong transform on a MAPPED_ITEM/NEXT_ASSEMBLY_USAGE_OCCURRENCE; affected sub-components either fail to instance or appear at the wrong position relative to the assembly origin.
@@ -29055,6 +29440,7 @@ Planar surface with U-iso degenerate edge. U-constant pcurve lacks coordinate-ax
 - **Notes**: **See also**: A067, M120. Synonyms: "STEP file is not imported correctly", "reader returns empty document on valid file", "SHAPE_REPRESENTATION_RELATIONSHIP not traversed", "silent-empty import on legitimate STEP file".
 - **Byte assertion**: contains(b'SHAPE_REPRESENTATION_RELATIONSHIP')
 - **Byte assertion**: contains(b'MANIFOLD_SOLID_BREP') or contains(b'ADVANCED_BREP_SHAPE_REPRESENTATION')
+- **Tier-3 assertion**: n_faces_total == 1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(3) ifc=schema_n/a`
 
@@ -29068,6 +29454,7 @@ Planar surface with U-iso degenerate edge. U-constant pcurve lacks coordinate-ax
 - **Notes**: **See also**: Ad117, A104. Synonyms: "access violation in StepVisual_PresentationStyleAssignment", "crash on empty style list", "STEP translator segfault on style", "presentation style assignment indexing past end".
 - **Byte assertion**: contains(b'PRESENTATION_STYLE_ASSIGNMENT')
 - **Byte assertion**: matches(rb'PRESENTATION_STYLE_ASSIGNMENT\(\(\s*\)\)')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silent-accept observed (catalog allowed: {reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: The assembly graph loads with broken parent/child links or with the wrong transform on a MAPPED_ITEM/NEXT_ASSEMBLY_USAGE_OCCURRENCE; affected sub-components either fail to instance or appear at the wrong position relative to the assembly origin.
@@ -29083,6 +29470,7 @@ Planar surface with U-iso degenerate edge. U-constant pcurve lacks coordinate-ax
 - **Notes**: **See also**: A105, A081, U036. Synonyms: "regression cannot read BinOcaf document with colour", "BinXCAF colour driver tag unknown", "persistence format regression after 7.4", "OCAF colour lost on reload".
 - **Byte assertion**: contains(b'COLOUR_RGB')
 - **Byte assertion**: contains(b'STYLED_ITEM') or contains(b'PRESENTATION_LAYER_ASSIGNMENT')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silent-accept observed (catalog allowed: {heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
 - **Severity**: P1
 - **Model impact**: The assembly graph loads with broken parent/child links or with the wrong transform on a MAPPED_ITEM/NEXT_ASSEMBLY_USAGE_OCCURRENCE; affected sub-components either fail to instance or appear at the wrong position relative to the assembly origin.
@@ -29130,6 +29518,7 @@ Planar surface with U-iso degenerate edge. U-constant pcurve lacks coordinate-ax
 - **Notes**: **See also**: N028, Twi099. Synonyms: "STEP export fail for round part in FreeCAD", "fillet edges go missing on round-trip", "writer precision drops sub-mm fillet", "round part exported as sharp edges".
 - **Byte assertion**: contains(b'CYLINDRICAL_SURFACE')
 - **Byte assertion**: contains(b'CARTESIAN_POINT')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silent-accept observed (catalog allowed: {heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
 - **Severity**: P1
 - **Model impact**: The assembly graph loads with broken parent/child links or with the wrong transform on a MAPPED_ITEM/NEXT_ASSEMBLY_USAGE_OCCURRENCE; affected sub-components either fail to instance or appear at the wrong position relative to the assembly origin.
@@ -29145,6 +29534,7 @@ Planar surface with U-iso degenerate edge. U-constant pcurve lacks coordinate-ax
 - **Notes**: **See also**: A082, A104. Synonyms: "STEPCAFControl_Writer drops identity-placed instance", "writer skips identity-location instance with partners", "STEP export missing assembly instance", "identity-transform instance not exported".
 - **Byte assertion**: contains(b'NEXT_ASSEMBLY_USAGE_OCCURRENCE')
 - **Byte assertion**: count_entity_def(b'NEXT_ASSEMBLY_USAGE_OCCURRENCE') >= 2
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silent-accept observed (catalog allowed: {heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
 - **Severity**: P1
 - **Model impact**: The assembly graph loads with broken parent/child links or with the wrong transform on a MAPPED_ITEM/NEXT_ASSEMBLY_USAGE_OCCURRENCE; affected sub-components either fail to instance or appear at the wrong position relative to the assembly origin.
@@ -30114,6 +30504,7 @@ Distance 0.099999 mm compared against 0.1 mm tolerance w/o margin buffer. Single
 - **Notes**: **See also**: Ad117, M165. Synonyms: "STEP reader does not check wrong data", "dangling references silently accepted", "no cross-reference validation in IGES/STEP", "missing input validation in reader".
 - **Byte assertion**: contains(b'EDGE_CURVE')
 - **Byte assertion**: matches(rb'#9999')
+- **Tier-3 assertion**: n_faces_total == 1
 - **OCC behavior**: silent-accept, warn-and-proceed observed (catalog allowed: {reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
@@ -30129,6 +30520,7 @@ Distance 0.099999 mm compared against 0.1 mm tolerance w/o margin buffer. Single
 - **Notes**: **See also**: Pmi031. Synonyms: "export of GDT from XCAF to STEP", "geometric tolerances not written to STEP AP242", "PMI lost on STEP export", "XCAF GD&T not round-tripping".
 - **Byte assertion**: contains(b'GEOMETRIC_TOLERANCE') or contains(b'DIMENSIONAL_LOCATION') or contains(b'AP242')
 - **Byte assertion**: contains(b'PRODUCT_DEFINITION_SHAPE')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silent-accept observed (catalog allowed: {heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
 - **Severity**: P1
 - **Model impact**: The PMI/GD&T annotation either fails to attach to its target geometry or loads with wrong tolerance/datum metadata; the model geometry is unchanged but the semantic PMI structure is broken or invisible to downstream tools.
@@ -30145,6 +30537,7 @@ Distance 0.099999 mm compared against 0.1 mm tolerance w/o margin buffer. Single
 - **Byte assertion**: contains(b'SLOT')
 - **Byte assertion**: contains(b'slot_length')
 - **Byte assertion**: contains(b'slot_width')
+- **Tier-3 assertion**: n_faces_total == 1
 - **OCC behavior**: heal observed (catalog allowed: {reject, warn-and-proceed}). Documented divergence: OCC's lenient/healing parser accepts where the spec text says reject; conservative kernels enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: The PMI/GD&T annotation either fails to attach to its target geometry or loads with wrong tolerance/datum metadata; the model geometry is unchanged but the semantic PMI structure is broken or invisible to downstream tools.
@@ -30161,6 +30554,7 @@ Distance 0.099999 mm compared against 0.1 mm tolerance w/o margin buffer. Single
 - **Byte assertion**: contains(b'SLOT')
 - **Byte assertion**: contains(b'slot_depth')
 - **Byte assertion**: contains(b'host_thickness')
+- **Tier-3 assertion**: n_faces_total == 1
 - **OCC behavior**: heal observed (catalog allowed: {reject, warn-and-proceed}). Documented divergence: OCC's lenient/healing parser accepts where the spec text says reject; conservative kernels enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: The PMI/GD&T annotation either fails to attach to its target geometry or loads with wrong tolerance/datum metadata; the model geometry is unchanged but the semantic PMI structure is broken or invisible to downstream tools.
@@ -30177,6 +30571,7 @@ Distance 0.099999 mm compared against 0.1 mm tolerance w/o margin buffer. Single
 - **Byte assertion**: contains(b'SLOT')
 - **Byte assertion**: contains(b'round_end')
 - **Byte assertion**: contains(b'rectangular')
+- **Tier-3 assertion**: n_faces_total == 1
 - **OCC behavior**: heal observed (catalog allowed: {reject}). Documented divergence: OCC's lenient/healing parser accepts where the spec text says reject; conservative kernels enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: The PMI/GD&T annotation either fails to attach to its target geometry or loads with wrong tolerance/datum metadata; the model geometry is unchanged but the semantic PMI structure is broken or invisible to downstream tools.
@@ -30193,6 +30588,7 @@ Distance 0.099999 mm compared against 0.1 mm tolerance w/o margin buffer. Single
 - **Byte assertion**: contains(b'SLOT')
 - **Byte assertion**: contains(b'AXIS2_PLACEMENT_3D')
 - **Byte assertion**: contains(b'slot_axis_z_PARALLEL_TO_FACE')
+- **Tier-3 assertion**: n_faces_total == 1
 - **OCC behavior**: heal observed (catalog allowed: {reject, warn-and-proceed}). Documented divergence: OCC's lenient/healing parser accepts where the spec text says reject; conservative kernels enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: The PMI/GD&T annotation either fails to attach to its target geometry or loads with wrong tolerance/datum metadata; the model geometry is unchanged but the semantic PMI structure is broken or invisible to downstream tools.
@@ -30209,6 +30605,7 @@ Distance 0.099999 mm compared against 0.1 mm tolerance w/o margin buffer. Single
 - **Byte assertion**: count_entity_def(b'SHAPE_ASPECT') >= 3
 - **Byte assertion**: contains(b'SLOT')
 - **Byte assertion**: not_contains(b'RECTANGULAR_PATTERN')
+- **Tier-3 assertion**: n_faces_total == 1
 - **Model impact**: The PMI/GD&T annotation either fails to attach to its target geometry or loads with wrong tolerance/datum metadata; the model geometry is unchanged but the semantic PMI structure is broken or invisible to downstream tools.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 
@@ -30223,6 +30620,7 @@ Distance 0.099999 mm compared against 0.1 mm tolerance w/o margin buffer. Single
 - **Byte assertion**: contains(b'GROOVE')
 - **Byte assertion**: contains(b'groove_width')
 - **Byte assertion**: contains(b'width_DEFECT')
+- **Tier-3 assertion**: n_faces_total == 1
 - **OCC behavior**: heal observed (catalog allowed: {reject}). Documented divergence: OCC's lenient/healing parser accepts where the spec text says reject; conservative kernels enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: The PMI/GD&T annotation either fails to attach to its target geometry or loads with wrong tolerance/datum metadata; the model geometry is unchanged but the semantic PMI structure is broken or invisible to downstream tools.
@@ -30239,6 +30637,7 @@ Distance 0.099999 mm compared against 0.1 mm tolerance w/o margin buffer. Single
 - **Byte assertion**: contains(b'GROOVE')
 - **Byte assertion**: contains(b'sweep_end')
 - **Byte assertion**: contains(b'sweep_end_OPEN')
+- **Tier-3 assertion**: n_faces_total == 1
 - **OCC behavior**: heal observed (catalog allowed: {reject, warn-and-proceed}). Documented divergence: OCC's lenient/healing parser accepts where the spec text says reject; conservative kernels enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: The PMI/GD&T annotation either fails to attach to its target geometry or loads with wrong tolerance/datum metadata; the model geometry is unchanged but the semantic PMI structure is broken or invisible to downstream tools.
@@ -30255,6 +30654,7 @@ Distance 0.099999 mm compared against 0.1 mm tolerance w/o margin buffer. Single
 - **Byte assertion**: contains(b'GROOVE')
 - **Byte assertion**: contains(b'CYLINDRICAL_SURFACE')
 - **Byte assertion**: contains(b'depth_DEFECT_exceeds_radius')
+- **Tier-3 assertion**: n_faces_total == 1
 - **OCC behavior**: heal observed (catalog allowed: {reject, warn-and-proceed}). Documented divergence: OCC's lenient/healing parser accepts where the spec text says reject; conservative kernels enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: The PMI/GD&T annotation either fails to attach to its target geometry or loads with wrong tolerance/datum metadata; the model geometry is unchanged but the semantic PMI structure is broken or invisible to downstream tools.
@@ -30271,6 +30671,7 @@ Distance 0.099999 mm compared against 0.1 mm tolerance w/o margin buffer. Single
 - **Byte assertion**: contains(b'BOSS')
 - **Byte assertion**: contains(b'boss_diameter')
 - **Byte assertion**: contains(b'host_thickness')
+- **Tier-3 assertion**: n_faces_total == 1
 - **Model impact**: The PMI/GD&T annotation either fails to attach to its target geometry or loads with wrong tolerance/datum metadata; the model geometry is unchanged but the semantic PMI structure is broken or invisible to downstream tools.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 
@@ -30285,6 +30686,7 @@ Distance 0.099999 mm compared against 0.1 mm tolerance w/o margin buffer. Single
 - **Byte assertion**: contains(b'BOSS')
 - **Byte assertion**: contains(b'boss_height')
 - **Byte assertion**: contains(b'height_DEFECT_zero')
+- **Tier-3 assertion**: n_faces_total == 1
 - **OCC behavior**: heal observed (catalog allowed: {reject}). Documented divergence: OCC's lenient/healing parser accepts where the spec text says reject; conservative kernels enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: The PMI/GD&T annotation either fails to attach to its target geometry or loads with wrong tolerance/datum metadata; the model geometry is unchanged but the semantic PMI structure is broken or invisible to downstream tools.
@@ -30301,6 +30703,7 @@ Distance 0.099999 mm compared against 0.1 mm tolerance w/o margin buffer. Single
 - **Byte assertion**: contains(b'BOSS')
 - **Byte assertion**: contains(b'boss_base_FLOATING')
 - **Byte assertion**: contains(b'AXIS2_PLACEMENT_3D')
+- **Tier-3 assertion**: n_faces_total == 1
 - **OCC behavior**: heal observed (catalog allowed: {reject}). Documented divergence: OCC's lenient/healing parser accepts where the spec text says reject; conservative kernels enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: The PMI/GD&T annotation either fails to attach to its target geometry or loads with wrong tolerance/datum metadata; the model geometry is unchanged but the semantic PMI structure is broken or invisible to downstream tools.
@@ -30318,6 +30721,7 @@ Distance 0.099999 mm compared against 0.1 mm tolerance w/o margin buffer. Single
 - **Byte assertion**: contains(b'GROOVE')
 - **Byte assertion**: contains(b'BOSS')
 - **Byte assertion**: contains(b'#9999')
+- **Tier-3 assertion**: n_faces_total == 1
 - **OCC behavior**: heal, warn-and-proceed observed (catalog allowed: {reject}). Documented divergence: OCC's lenient/healing parser accepts where the spec text says reject; conservative kernels enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: The PMI/GD&T annotation either fails to attach to its target geometry or loads with wrong tolerance/datum metadata; the model geometry is unchanged but the semantic PMI structure is broken or invisible to downstream tools.
@@ -30333,6 +30737,7 @@ Distance 0.099999 mm compared against 0.1 mm tolerance w/o margin buffer. Single
 - **Notes**: **See also**: M165, A067. Synonyms: "error transferring STEP model to OCAF document", "STEPCAFControl_Reader Transfer returns false", "parser succeeds but transfer fails", "duplicate APPLICATION_CONTEXT breaks transfer".
 - **Byte assertion**: contains(b'APPLICATION_CONTEXT')
 - **Byte assertion**: count_entity_def(b'APPLICATION_CONTEXT') >= 2
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silent-accept observed (catalog allowed: {heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
 - **Severity**: P1
 - **Model impact**: The assembly graph loads with broken parent/child links or with the wrong transform on a MAPPED_ITEM/NEXT_ASSEMBLY_USAGE_OCCURRENCE; affected sub-components either fail to instance or appear at the wrong position relative to the assembly origin.
@@ -30348,6 +30753,7 @@ Distance 0.099999 mm compared against 0.1 mm tolerance w/o margin buffer. Single
 - **Notes**: **See also**: U015, U016. Synonyms: "gp_Trsf incorrect transformation between two Ax3", "left-handed placement gives wrong transform", "STEP MAPPED_ITEM placement composition wrong", "AXIS2_PLACEMENT_3D handedness ignored".
 - **Byte assertion**: contains(b'AXIS2_PLACEMENT_3D')
 - **Byte assertion**: contains(b'MAPPED_ITEM') or contains(b'REPRESENTATION_MAP')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silent-accept observed (catalog allowed: {heal, reject}). Kernel-bug witnessed: receivers enforcing the spec must reject or heal this fixture.
 - **Severity**: P1
 - **Model impact**: Unit/coordinate-system metadata is wrong or missing; coordinates are interpreted at the wrong scale or in the wrong frame, so the loaded geometry is the right shape at the wrong size or pose.
@@ -30363,6 +30769,7 @@ Distance 0.099999 mm compared against 0.1 mm tolerance w/o margin buffer. Single
 - **Notes**: **See also**: U015, Wr050, M061. Synonyms: "CartesianTransformationOperator scale parsed but ignored", "STEP scale operator does nothing on import", "step-g LoadONBrep stub for transformation operator", "uniform scale 25.4 dropped by reader", "BRL-CAD subassembly arrives unit scale despite operator scale".
 - **Byte assertion**: contains(b'CARTESIAN_TRANSFORMATION_OPERATOR_3D')
 - **Byte assertion**: contains(b'25.4')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silent-accept observed (catalog allowed: {heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
 - **Severity**: P1
 - **Model impact**: Unit/coordinate-system metadata is wrong or missing; coordinates are interpreted at the wrong scale or in the wrong frame, so the loaded geometry is the right shape at the wrong size or pose.
@@ -30378,6 +30785,7 @@ Distance 0.099999 mm compared against 0.1 mm tolerance w/o margin buffer. Single
 - **Byte assertion**: contains(b'AP238_STEP_NC_MIM')
 - **Byte assertion**: contains(b'TURNING_OPERATION(')
 - **Byte assertion**: contains(b'30.0')
+- **Tier-3 assertion**: shape_null == True
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 - **Fixture path**: step-examples/12-8-mixed/M167.stp
@@ -30392,6 +30800,7 @@ Distance 0.099999 mm compared against 0.1 mm tolerance w/o margin buffer. Single
 - **Byte assertion**: contains(b'AP238_STEP_NC_MIM')
 - **Byte assertion**: contains(b'TURNING_FINISHING_FACE')
 - **Byte assertion**: contains(b'feed_outward_WRONG')
+- **Tier-3 assertion**: shape_null == True
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 - **Fixture path**: step-examples/12-8-mixed/M168.stp
@@ -30406,6 +30815,7 @@ Distance 0.099999 mm compared against 0.1 mm tolerance w/o margin buffer. Single
 - **Byte assertion**: contains(b'AP238_STEP_NC_MIM')
 - **Byte assertion**: contains(b'TURNING_ROUGHING')
 - **Byte assertion**: contains(b'TURNING_MACHINING_TOOL')
+- **Tier-3 assertion**: shape_null == True
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 - **Fixture path**: step-examples/12-8-mixed/M169.stp
@@ -30421,6 +30831,7 @@ Distance 0.099999 mm compared against 0.1 mm tolerance w/o margin buffer. Single
 - **Byte assertion**: contains(b'TURNING_OPERATION(')
 - **Byte assertion**: contains(b'radial_feed')
 - **Byte assertion**: contains(b'axial_feed')
+- **Tier-3 assertion**: shape_null == True
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 - **Fixture path**: step-examples/12-8-mixed/M170.stp
@@ -30435,6 +30846,7 @@ Distance 0.099999 mm compared against 0.1 mm tolerance w/o margin buffer. Single
 - **Byte assertion**: contains(b'AP238_STEP_NC_MIM')
 - **Byte assertion**: contains(b'THREAD_TURNING')
 - **Byte assertion**: contains(b'THREAD(')
+- **Tier-3 assertion**: shape_null == True
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 - **Fixture path**: step-examples/12-8-mixed/M171.stp
@@ -30449,6 +30861,7 @@ Distance 0.099999 mm compared against 0.1 mm tolerance w/o margin buffer. Single
 - **Byte assertion**: contains(b'AP238_STEP_NC_MIM')
 - **Byte assertion**: contains(b'TURNING_OPERATION(')
 - **Byte assertion**: contains(b'WORKPIECE(')
+- **Tier-3 assertion**: shape_null == True
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 - **Fixture path**: step-examples/12-8-mixed/M172.stp
@@ -30463,6 +30876,7 @@ Distance 0.099999 mm compared against 0.1 mm tolerance w/o margin buffer. Single
 - **Byte assertion**: contains(b'AP238_STEP_NC_MIM')
 - **Byte assertion**: contains(b'MILLING_TOOLPATH')
 - **Byte assertion**: contains(b'MILLING_CUTTING_TOOL')
+- **Tier-3 assertion**: shape_null == True
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 - **Fixture path**: step-examples/12-8-mixed/M173.stp
@@ -30478,6 +30892,7 @@ Distance 0.099999 mm compared against 0.1 mm tolerance w/o margin buffer. Single
 - **Byte assertion**: contains(b'MILLING_FEED_RATE')
 - **Byte assertion**: contains(b'1200.0')
 - **Byte assertion**: contains(b'300.0')
+- **Tier-3 assertion**: shape_null == True
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 - **Fixture path**: step-examples/12-8-mixed/M174.stp
@@ -30492,6 +30907,7 @@ Distance 0.099999 mm compared against 0.1 mm tolerance w/o margin buffer. Single
 - **Byte assertion**: contains(b'AP238_STEP_NC_MIM')
 - **Byte assertion**: contains(b'DRILLING_OPERATION')
 - **Byte assertion**: contains(b'tool_axis_tilted')
+- **Tier-3 assertion**: shape_null == True
 - **Model impact**: FEA mesh/load entities attach to wrong target geometry or load with corrupted node/element references; the analysis dataset becomes inconsistent with the underlying BRep.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 - **Fixture path**: step-examples/12-8-mixed/M175.stp
@@ -30507,6 +30923,7 @@ Distance 0.099999 mm compared against 0.1 mm tolerance w/o margin buffer. Single
 - **Byte assertion**: contains(b'BORING_OPERATION')
 - **Byte assertion**: contains(b'BORING_TOOL')
 - **Byte assertion**: contains(b'15.0')
+- **Tier-3 assertion**: shape_null == True
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 - **Fixture path**: step-examples/12-8-mixed/M176.stp
@@ -30521,6 +30938,7 @@ Distance 0.099999 mm compared against 0.1 mm tolerance w/o margin buffer. Single
 - **Byte assertion**: contains(b'AP238_STEP_NC_MIM')
 - **Byte assertion**: contains(b'COOLANT_OPERATION')
 - **Byte assertion**: contains(b'.THROUGH_TOOL.')
+- **Tier-3 assertion**: shape_null == True
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 - **Fixture path**: step-examples/12-8-mixed/M177.stp
@@ -30535,6 +30953,7 @@ Distance 0.099999 mm compared against 0.1 mm tolerance w/o margin buffer. Single
 - **Byte assertion**: contains(b'AP238_STEP_NC_MIM')
 - **Byte assertion**: contains(b'INSPECTION_PROBING(')
 - **Byte assertion**: contains(b'probe_path_through_part')
+- **Tier-3 assertion**: shape_null == True
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 - **Fixture path**: step-examples/12-8-mixed/M178.stp
@@ -30549,6 +30968,7 @@ Distance 0.099999 mm compared against 0.1 mm tolerance w/o margin buffer. Single
 - **Byte assertion**: contains(b'AP238_STEP_NC_MIM')
 - **Byte assertion**: contains(b'TOUCH_PROBING(')
 - **Byte assertion**: contains(b'TOUCH_PROBE(')
+- **Tier-3 assertion**: shape_null == True
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 - **Fixture path**: step-examples/12-8-mixed/M179.stp
@@ -30563,6 +30983,7 @@ Distance 0.099999 mm compared against 0.1 mm tolerance w/o margin buffer. Single
 - **Byte assertion**: contains(b'AP238_STEP_NC_MIM')
 - **Byte assertion**: contains(b'INSPECTION_RESULT')
 - **Byte assertion**: contains(b'PLUS_MINUS_TOLERANCE')
+- **Tier-3 assertion**: shape_null == True
 - **Model impact**: FEA mesh/load entities attach to wrong target geometry or load with corrupted node/element references; the analysis dataset becomes inconsistent with the underlying BRep.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 - **Fixture path**: step-examples/12-8-mixed/M180.stp
@@ -30576,6 +30997,7 @@ Distance 0.099999 mm compared against 0.1 mm tolerance w/o margin buffer. Single
 - **Notes**: Synonyms: "AP238 fixturing absent", "STEP-NC clamps missing on workpiece", "workpiece-complete with empty clamping list", "no keep-out zones declared".
 - **Byte assertion**: contains(b'AP238_STEP_NC_MIM')
 - **Byte assertion**: contains(b'WORKPIECE_COMPLETE_FOR_NC')
+- **Tier-3 assertion**: shape_null == True
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 - **Fixture path**: step-examples/12-8-mixed/M181.stp
@@ -30591,6 +31013,7 @@ Distance 0.099999 mm compared against 0.1 mm tolerance w/o margin buffer. Single
 - **Byte assertion**: contains(b'SETUP_INSTRUCTION')
 - **Byte assertion**: contains(b'2026-05-02T09:00:00')
 - **Byte assertion**: contains(b'2026-05-02T08:30:00')
+- **Tier-3 assertion**: shape_null == True
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 - **Fixture path**: step-examples/12-8-mixed/M182.stp
@@ -30605,6 +31028,7 @@ Distance 0.099999 mm compared against 0.1 mm tolerance w/o margin buffer. Single
 - **Byte assertion**: contains(b'AP238_STEP_NC_MIM')
 - **Byte assertion**: contains(b'WORKPIECE_SETUP')
 - **Byte assertion**: contains(b'workpiece_csys_rotated')
+- **Tier-3 assertion**: shape_null == True
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 - **Fixture path**: step-examples/12-8-mixed/M183.stp
@@ -30618,6 +31042,7 @@ Distance 0.099999 mm compared against 0.1 mm tolerance w/o margin buffer. Single
 - **Notes**: Synonyms: "AP238 dependency cycle", "STEP-NC executable graph loop", "workplan A precedes B precedes A", "circular precedes".
 - **Byte assertion**: contains(b'AP238_STEP_NC_MIM')
 - **Byte assertion**: count_entity_def(b'EXECUTABLE_RELATIONSHIP') >= 2
+- **Tier-3 assertion**: shape_null == True
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 - **Fixture path**: step-examples/12-8-mixed/M184.stp
@@ -30632,6 +31057,7 @@ Distance 0.099999 mm compared against 0.1 mm tolerance w/o margin buffer. Single
 - **Byte assertion**: contains(b'AP238_STEP_NC_MIM')
 - **Byte assertion**: contains(b'MACHINING_TOOL_FEEDSPEED')
 - **Byte assertion**: contains(b'12000.0')
+- **Tier-3 assertion**: shape_null == True
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 - **Fixture path**: step-examples/12-8-mixed/M185.stp
@@ -30646,6 +31072,7 @@ Distance 0.099999 mm compared against 0.1 mm tolerance w/o margin buffer. Single
 - **Byte assertion**: contains(b'AP238_STEP_NC_MIM')
 - **Byte assertion**: contains(b'COOLANT_OPERATION')
 - **Byte assertion**: contains(b'magnesium')
+- **Tier-3 assertion**: shape_null == True
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 - **Fixture path**: step-examples/12-8-mixed/M186.stp
@@ -30660,6 +31087,7 @@ Distance 0.099999 mm compared against 0.1 mm tolerance w/o margin buffer. Single
 - **Byte assertion**: contains(b'AP238_STEP_NC_MIM')
 - **Byte assertion**: contains(b'KNURLING_OPERATION')
 - **Byte assertion**: contains(b'KNURLING_TOOL')
+- **Tier-3 assertion**: shape_null == True
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 - **Fixture path**: step-examples/12-8-mixed/M187.stp
@@ -30674,6 +31102,7 @@ Distance 0.099999 mm compared against 0.1 mm tolerance w/o margin buffer. Single
 - **Byte assertion**: contains(b'AP238_STEP_NC_MIM')
 - **Byte assertion**: contains(b'DEBURRING_OPERATION')
 - **Byte assertion**: contains(b'phantom_edge_NOT_ON_PART')
+- **Tier-3 assertion**: shape_null == True
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 - **Fixture path**: step-examples/12-8-mixed/M188.stp
@@ -30688,6 +31117,7 @@ Distance 0.099999 mm compared against 0.1 mm tolerance w/o margin buffer. Single
 - **Byte assertion**: contains(b'AP238_STEP_NC_MIM')
 - **Byte assertion**: contains(b'BORING_TOOL')
 - **Byte assertion**: contains(b'-12.0')
+- **Tier-3 assertion**: shape_null == True
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 - **Fixture path**: step-examples/12-8-mixed/M189.stp

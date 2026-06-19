@@ -36,7 +36,9 @@
     "taxonomy": [
       "performance"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Multi-GB Creo AP242 assemblies trigger unbounded receiver memory"
   },
   {
@@ -69,7 +71,9 @@
     "taxonomy": [
       "performance"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Quadratic-cost STEP write on dense forward-reference `VERTEX_POINT` / `EDGE_CURVE` / `ADVANCED_FACE` web (200k-entity scale)"
   },
   {
@@ -102,7 +106,9 @@
     "taxonomy": [
       "performance"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "50-second read on a 20 MB STEP: forward-reference DATA section forces multi-pass resolution (single-threaded)"
   },
   {
@@ -136,7 +142,9 @@
     "taxonomy": [
       "performance"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Slow STEP import on geometric-set-heavy file"
   },
   {
@@ -171,7 +179,9 @@
     "taxonomy": [
       "performance"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Quadratic self-intersection check dominates STEP read on perforated sheets"
   },
   {
@@ -204,7 +214,9 @@
     "taxonomy": [
       "performance"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "`ADVANCED_FACE` with many circular inner `FACE_BOUND` holes triggers eager UV-bounds wire-walk on every type-only surface query"
   },
   {
@@ -245,7 +257,9 @@
     "taxonomy": [
       "performance"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Stack overflow on huge faces-per-shell counts"
   },
   {
@@ -282,7 +296,9 @@
     "taxonomy": [
       "performance"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Stack overflow when meshing with TBB pool from STEP import"
   },
   {
@@ -30166,7 +30182,9 @@
       "silent-loss",
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "MANIFOLD_SOLID_BREP with dangling shell reference (outer points to a non-existent entity)"
   },
   {
@@ -30375,7 +30393,9 @@
       "silent-loss",
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Sub-shape attached at the wrong topological level"
   },
   {
@@ -30515,7 +30535,9 @@
       "silent-loss",
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Per-vertex normals supplied for a triangulated face are inconsistent across smooth edges"
   },
   {
@@ -30584,7 +30606,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "EDGE_CURVE start VERTEX_POINT lies off the underlying LINE: inner-vertex tolerance smaller than the deviation it bounds"
   },
   {
@@ -31164,7 +31188,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Three or more faces share a boundary edge after sewing (non-manifold result)"
   },
   {
@@ -31198,7 +31224,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Sliver face silently dropped by sewing"
   },
   {
@@ -31232,7 +31260,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Degenerate face (collapsed wire) marked as such by sewing but accepted upstream"
   },
   {
@@ -31267,7 +31297,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Fast-sewing face has null surface reference"
   },
   {
@@ -31303,7 +31335,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Fast-sewing face host surface has infinite extent"
   },
   {
@@ -31337,7 +31371,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Fast-sewing face whose parametric bounds are tighter than surface natural bounds"
   },
   {
@@ -31371,7 +31407,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Fast-sewing cannot find the canonical vertex for a wire endpoint"
   },
   {
@@ -31408,7 +31446,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Fast-sewing cannot match candidate EDGE_CURVE to global edge table: same endpoints but different underlying curves (LINE vs degree-1 B_SPLINE_CURVE_WITH_KNOTS)"
   },
   {
@@ -31443,7 +31483,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "`same_parameter` flag-skip trap during fast sewing"
   },
   {
@@ -48349,7 +48391,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Transferring parameter values between 3D curve and pcurve when EDGE_CURVE has B_SPLINE_CURVE_WITH_KNOTS in 3D and a LINE pcurve with non-affine reparam"
   },
   {
@@ -48384,7 +48428,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Transfer parameters using projection (not affine remapping)"
   },
   {
@@ -48419,7 +48465,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Convert curves and surfaces of a shape (e.g., FACE_OUTER_BOUND on a degree-2 B_SPLINE_CURVE_WITH_KNOTS) to Bezier representation"
   },
   {
@@ -48710,7 +48758,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 1"
+    ],
     "title": "Extrude of 2D Offset of Sketch fails STEP export as non-manifold (offset trace not closed)"
   },
   {
@@ -62479,7 +62529,9 @@
       "silent-loss",
       "round-trip"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Sub-tolerance vertex gap that closes at 1e-3 but yawns open at 1e-7"
   },
   {
@@ -62516,7 +62568,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Sub-tolerance vertex gap that closes at 1e-7 but inflates at 1e-3"
   },
   {
@@ -62554,7 +62608,9 @@
     "taxonomy": [
       "units"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Vertex-edge-face tolerance hierarchy holds in mm but inverts in m"
   },
   {
@@ -62588,7 +62644,9 @@
     "taxonomy": [
       "round-trip"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Vertex-edge-face hierarchy holds in mm but inverts when scaled to inches"
   },
   {
@@ -62696,7 +62754,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "NURBS knot-difference quantum below tolerance: knot collapses or doesn't"
   },
   {
@@ -62733,7 +62793,9 @@
     "taxonomy": [
       "units"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "NURBS knot-difference quantum scaled by parametric range"
   },
   {
@@ -62769,7 +62831,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Self-intersection visible at full precision but rounded out at receiver tolerance"
   },
   {
@@ -62804,7 +62868,9 @@
     "taxonomy": [
       "round-trip"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Self-intersection that vanishes when round-tripped through float32"
   },
   {
@@ -62839,7 +62905,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Periodic-surface seam matching requires period-relative tolerance"
   },
   {
@@ -62874,7 +62942,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Sphere seam matching across pole singularity"
   },
   {
@@ -62908,7 +62978,9 @@
     "taxonomy": [
       "crash"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Coordinate at 1e-300 tests as \"near zero\" only under denormalized math"
   },
   {
@@ -62978,7 +63050,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Sliver edge length at sqrt(tol) — under squared comparison or linear?"
   },
   {
@@ -63013,7 +63087,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Tolerance budget exhausted by accumulation across long edge chain"
   },
   {
@@ -63082,7 +63158,9 @@
     "taxonomy": [
       "units"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "UNCERTAINTY value of exactly zero — no fuzzy compare"
   },
   {
@@ -63119,7 +63197,9 @@
     "taxonomy": [
       "units"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "UNCERTAINTY value of `1.0E-30` — below any sane working precision"
   },
   {
@@ -63155,7 +63235,9 @@
     "taxonomy": [
       "units"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "UNCERTAINTY value of `1.0E+30` — astronomically loose"
   },
   {
@@ -63189,7 +63271,9 @@
     "taxonomy": [
       "units"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Multiple UNCERTAINTY entries with conflicting values, no labels"
   },
   {
@@ -63225,7 +63309,9 @@
     "taxonomy": [
       "units"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Tolerance declared in different units than coordinates"
   },
   {
@@ -63262,7 +63348,9 @@
     "taxonomy": [
       "units"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Coordinates near 1e15 where float64 ULP exceeds declared tolerance"
   },
   {
@@ -63301,7 +63389,9 @@
       "silent-loss",
       "units"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Solid Edge mm exported STEP read as meters by Inventor (imported part 1000 times bigger than expected)"
   },
   {
@@ -63337,7 +63427,9 @@
     "taxonomy": [
       "units"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Onshape always emits METRE; NX rescales as if mm (1000× too small)"
   },
   {
@@ -63373,7 +63465,9 @@
     "taxonomy": [
       "units"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Onshape inch workspace exports metric STEP (inch-shaped coordinates in mm `LENGTH_UNIT` context)"
   },
   {
@@ -63410,7 +63504,9 @@
       "round-trip",
       "units"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Inventor STEP export switches angle unit from DEGREE to RADIAN, breaks doc preference on round-trip"
   },
   {
@@ -63444,7 +63540,9 @@
     "taxonomy": [
       "units"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Plant 3D exports STEP whose `LENGTH_UNIT` context disagrees with authored drawing units (sub-mm coordinates in mm context)"
   },
   {
@@ -63481,7 +63579,9 @@
     "taxonomy": [
       "units"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "PrePoMax double-applies inch→mm scaling on inch STEP (25.4× too large)"
   },
   {
@@ -63590,7 +63690,9 @@
       "silent-loss",
       "units"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "`LENGTH_UNIT` is bare `SI_UNIT(METRE)` but coordinates are mm-sized (`STEP Export` ignores `write.units` since OCCT 7.8 regression)"
   },
   {
@@ -63628,7 +63730,9 @@
     "taxonomy": [
       "units"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "FreeCAD/OCCT 7.8.1: model in mm but file labelled as inches (re-import 25.4× too large)"
   },
   {
@@ -63666,7 +63770,9 @@
       "round-trip",
       "units"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Duplicate `CONVERSION_BASED_UNIT` 'INCH' instances (factor 25.4) cause invalid cross-references in dimension export"
   },
   {
@@ -63701,7 +63807,9 @@
     "taxonomy": [
       "units"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Tessellated annotation coordinates with no global unit context (silent 25.4×)"
   },
   {
@@ -63736,7 +63844,9 @@
     "taxonomy": [
       "units"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Validation properties (mass / area / volume) emitted with units mismatched to GRC"
   },
   {
@@ -63773,7 +63883,9 @@
     "taxonomy": [
       "units"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "KILO prefix REQUIRED on `mass_unit` referenced from a derived SI unit (Newton)"
   },
   {
@@ -63809,7 +63921,9 @@
     "taxonomy": [
       "units"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "`'INCH'` spelled as `'inch'` / `'IN'` / `'inches'` on `CONVERSION_BASED_UNIT`"
   },
   {
@@ -63845,7 +63959,9 @@
     "taxonomy": [
       "units"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Conversion factor for `'INCH'` is wrong / omitted"
   },
   {
@@ -63879,7 +63995,9 @@
     "taxonomy": [
       "units"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "`dimensional_exponents` inconsistent with declared unit"
   },
   {
@@ -63915,7 +64033,9 @@
     "taxonomy": [
       "units"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Reader API reports wrong primary length unit on multi-context files"
   },
   {
@@ -63951,7 +64071,9 @@
     "taxonomy": [
       "units"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "`derived_unit` / non-SI unit handling incomplete (BRL-CAD step-g)"
   },
   {
@@ -63990,7 +64112,9 @@
     "taxonomy": [
       "units"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Two `GEOMETRIC_REPRESENTATION_CONTEXT` instances with different `LENGTH_UNIT` (mm BRep vs metre PMI/CGR)"
   },
   {
@@ -64027,7 +64151,9 @@
     "taxonomy": [
       "units"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "`CONVERSION_BASED_UNIT('DEG',#9)` / DEG vs RADIAN encoding via complex entity"
   },
   {
@@ -64065,7 +64191,9 @@
     "taxonomy": [
       "units"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Unit-default flag silently overridden by file's first unit-record"
   },
   {
@@ -64102,7 +64230,9 @@
       "round-trip",
       "units"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Mile-to-millimetre conversion factor mis-applied on export"
   },
   {
@@ -64137,7 +64267,9 @@
     "taxonomy": [
       "units"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Exporting ellipse with non-mm unit corrupts geometry"
   },
   {
@@ -64173,7 +64305,9 @@
     "taxonomy": [
       "units"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "`BinXCAF` does not preserve length unit"
   },
   {
@@ -64209,7 +64343,9 @@
     "taxonomy": [
       "units"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "`RescaleGeometry` does not rescale triangulations"
   },
   {
@@ -64246,7 +64382,9 @@
     "taxonomy": [
       "units"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "STEP read produces unexpectedly enormous scaling on parts (MAPPED_ITEM target uses MM while source REPRESENTATION_MAP context uses METRE: cross-context unit composition error)"
   },
   {
@@ -64284,7 +64422,9 @@
     "taxonomy": [
       "units"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Plane-angle unit declared as DEGREE but values stored as radians (or vice-versa)"
   },
   {
@@ -64322,7 +64462,9 @@
     "taxonomy": [
       "units"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Pressure unit `Pa` built from a derived-unit chain (`kg / (m * s^2)`)"
   },
   {
@@ -64360,7 +64502,9 @@
       "silent-loss",
       "units"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Dynamic-viscosity unit `Pa·s` built from a derived-unit chain (`kg / (m * s)`)"
   },
   {
@@ -64398,7 +64542,9 @@
     "taxonomy": [
       "units"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Specific-heat-capacity unit `J/(kg·K)` built from a derived-unit chain (`m^2 / (s^2 * K)`)"
   },
   {
@@ -64436,7 +64582,9 @@
     "taxonomy": [
       "units"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Slicer-side unit-context inversion: STEP says mm, slicer reads as inches"
   },
   {
@@ -64474,7 +64622,9 @@
     "taxonomy": [
       "units"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "`gp_Trsf::SetDisplacement` between two `AXIS2_PLACEMENT_3D` records produces wrong transform"
   },
   {
@@ -64513,7 +64663,9 @@
     "taxonomy": [
       "units"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "`CARTESIAN_TRANSFORMATION_OPERATOR` `scale` attribute parsed but never applied (BRL-CAD step-g)"
   },
   {
@@ -64552,7 +64704,9 @@
       "round-trip",
       "assembly"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Duplicated component instances collapsed to a single transform on export"
   },
   {
@@ -64588,7 +64742,9 @@
     "taxonomy": [
       "assembly"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Hidden / suppressed bodies leak into export, or are dropped silently"
   },
   {
@@ -64627,7 +64783,9 @@
       "silent-loss",
       "assembly"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Empty / phantom assembly nodes (PRODUCT_DEFINITION with no shape)"
   },
   {
@@ -64662,7 +64820,9 @@
       "silent-loss",
       "assembly"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "`NEXT_ASSEMBLY_USAGE_OCCURRENCE` references missing `PRODUCT_DEFINITION` (unresolved NAUO target)"
   },
   {
@@ -64700,7 +64860,9 @@
       "round-trip",
       "assembly"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Lost assembly hierarchy on round-trip (flatten to single CATPart / single solid)"
   },
   {
@@ -64736,7 +64898,9 @@
     "taxonomy": [
       "assembly"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Components collapse to (0,0,0) / placement transforms lost"
   },
   {
@@ -64773,7 +64937,9 @@
       "silent-loss",
       "assembly"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "SHAPE_REPRESENTATION_RELATIONSHIP with swapped/mixed rep_1/rep_2 axis placements"
   },
   {
@@ -64809,7 +64975,9 @@
       "silent-loss",
       "assembly"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "AP242 Ed.2 widened SELECT for product_definition_relationship.related/relating"
   },
   {
@@ -64846,7 +65014,9 @@
       "silent-loss",
       "assembly"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "NAUO references PRODUCT_DEFINITION_SHAPE instead of PRODUCT_DEFINITION"
   },
   {
@@ -64885,7 +65055,9 @@
       "round-trip",
       "assembly"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "NAUO instance name lost on round-trip / re-export"
   },
   {
@@ -64921,7 +65093,9 @@
     "taxonomy": [
       "assembly"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Naming collision: same component referenced by colliding `PRODUCT.name` across sub-assemblies"
   },
   {
@@ -64961,7 +65135,9 @@
       "silent-loss",
       "assembly"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Self-reference / cyclic external file reference"
   },
   {
@@ -65000,7 +65176,9 @@
       "spec-violation",
       "assembly"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "STEP assembly reader returns success even when external-reference files are missing"
   },
   {
@@ -65034,7 +65212,9 @@
     "taxonomy": [
       "assembly"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "EXTERNAL_ANCHOR uniqueness (1:1 anchor↔entity) violated; orphan EER source"
   },
   {
@@ -65071,7 +65251,9 @@
     "taxonomy": [
       "assembly"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "UDA on multi-level reference designator (MLRD) ignored"
   },
   {
@@ -65382,7 +65564,9 @@
       "silent-loss",
       "assembly"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "`MAPPED_ITEM` `AXIS2_PLACEMENT_3D` with left-handed (mirrored, negative-determinant) frame"
   },
   {
@@ -65419,7 +65603,9 @@
     "taxonomy": [
       "assembly"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Names with special / non-ASCII / encoded characters lost or corrupted"
   },
   {
@@ -65455,7 +65641,9 @@
     "taxonomy": [
       "assembly"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Quadratic-time assembly graph traversal: many `NEXT_ASSEMBLY_USAGE_OCCURRENCE` siblings share a single leaf `PRODUCT_DEFINITION`"
   },
   {
@@ -65491,7 +65679,9 @@
     "taxonomy": [
       "assembly"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Reference loss when defeaturing / simplifying for CAE"
   },
   {
@@ -65529,7 +65719,9 @@
       "round-trip",
       "assembly"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "User-Defined Attribute (UDA) target-binding inconsistency"
   },
   {
@@ -65567,7 +65759,9 @@
     "taxonomy": [
       "assembly"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Edition-mixed Part 21 file (header schema vs instance schema)"
   },
   {
@@ -65604,7 +65798,9 @@
     "taxonomy": [
       "assembly"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Schema migration: retired AP214/AP203 kinematics entities"
   },
   {
@@ -65640,7 +65836,9 @@
     "taxonomy": [
       "assembly"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Schema migration: enum-value reordering between AP242 Ed.2 and Ed.3"
   },
   {
@@ -65676,7 +65874,9 @@
     "taxonomy": [
       "assembly"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "`applied_external_identification_assignment` /`product_definition_with_associated_documents` name dropped"
   },
   {
@@ -65714,7 +65914,9 @@
       "crash",
       "assembly"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "CheckSRRReversesNAUO segfault on SDR with SHAPE_ASPECT instead of PROPERTY_DEFINITION"
   },
   {
@@ -65750,7 +65952,9 @@
     "taxonomy": [
       "assembly"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Product with both sub-assemblies and direct shape"
   },
   {
@@ -65786,7 +65990,9 @@
     "taxonomy": [
       "assembly"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Hybrid AP203 (≤1998) using ShapeAspect-attached SDR"
   },
   {
@@ -65822,7 +66028,9 @@
     "taxonomy": [
       "assembly"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Implicit / minimalist product structure missing entirely"
   },
   {
@@ -65857,7 +66065,9 @@
     "taxonomy": [
       "assembly"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Constructive Geometry Representation Relationship — assembly axis placements"
   },
   {
@@ -65897,7 +66107,9 @@
     "taxonomy": [
       "assembly"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Subshape names not transferred on STEP import"
   },
   {
@@ -65936,7 +66148,9 @@
       "round-trip",
       "assembly"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Empty `AppliedGroupAssignment` raises exception in writer"
   },
   {
@@ -65972,7 +66186,9 @@
     "taxonomy": [
       "assembly"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "`UpdateAssemblies` produces wrong compounds for located roots"
   },
   {
@@ -66054,7 +66270,9 @@
       "round-trip",
       "assembly"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Color of root label not exported through XCAF"
   },
   {
@@ -66088,7 +66306,9 @@
     "taxonomy": [
       "assembly"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Material with zero density blocks STEP write"
   },
   {
@@ -66122,7 +66342,9 @@
     "taxonomy": [
       "assembly"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Layers not imported from STEP file"
   },
   {
@@ -66156,7 +66378,9 @@
     "taxonomy": [
       "assembly"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Visibility flag of free shapes lost on STEP write"
   },
   {
@@ -66192,7 +66416,9 @@
     "taxonomy": [
       "assembly"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Compound with single vertex written as compound-of-two-points"
   },
   {
@@ -66268,7 +66494,9 @@
     "taxonomy": [
       "assembly"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Texture lost when saving binary XBF after STEP import"
   },
   {
@@ -66306,7 +66534,9 @@
     "taxonomy": [
       "assembly"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Free-shape-after-import is empty"
   },
   {
@@ -66342,7 +66572,9 @@
     "taxonomy": [
       "assembly"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "General attributes (AP242 GENERAL_PROPERTY) dropped on import"
   },
   {
@@ -66382,7 +66614,9 @@
     "taxonomy": [
       "assembly"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Sub-assembly extraction loses XDE attributes"
   },
   {
@@ -66416,7 +66650,9 @@
     "taxonomy": [
       "assembly"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Compound-with-vertex emitted as empty in non-manifold export"
   },
   {
@@ -66455,7 +66691,9 @@
     "taxonomy": [
       "assembly"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Visibility / colour ignored for sub-shapes by `XCAFPrs_AISObject`"
   },
   {
@@ -66494,7 +66732,9 @@
     "taxonomy": [
       "assembly"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Hierarchy & colours lost on partial-document IGES/STEP write"
   },
   {
@@ -66533,7 +66773,9 @@
       "round-trip",
       "assembly"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Material attribute overridden by generic colour on round-trip"
   },
   {
@@ -66566,7 +66808,9 @@
     "taxonomy": [
       "assembly"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Big-path STEP write fails with name >150 characters"
   },
   {
@@ -66603,7 +66847,9 @@
       "round-trip",
       "assembly"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "STEP exporter generates bad geometry for revolution / extrusion since 7.4.0"
   },
   {
@@ -66638,7 +66884,9 @@
     "taxonomy": [
       "assembly"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "STEP exporter writes untrimmed curve where trimmed expected"
   },
   {
@@ -66673,7 +66921,9 @@
     "taxonomy": [
       "assembly"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "STEP exporter loses `COMPSOLID` in nonmanifold writes"
   },
   {
@@ -66708,7 +66958,9 @@
     "taxonomy": [
       "assembly"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Step exporter not respecting `write.step.schema` configuration"
   },
   {
@@ -66785,7 +67037,9 @@
     "taxonomy": [
       "assembly"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Empty assembly causes writer to throw"
   },
   {
@@ -66823,7 +67077,9 @@
     "taxonomy": [
       "assembly"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Sub-shape names lost in non-manifold STEP output"
   },
   {
@@ -66861,7 +67117,9 @@
     "taxonomy": [
       "assembly"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "STEP export of a part with a fillet/round generates malformed shape on receiver"
   },
   {
@@ -66899,7 +67157,9 @@
     "taxonomy": [
       "assembly"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "`STEPCAFControl_Writer` skips a shape when it has identity location and partner shapes have non-identity locations"
   },
   {
@@ -66937,7 +67197,9 @@
     "taxonomy": [
       "assembly"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Error transferring `.stp` model from `STEPCAFControl_Reader` to OCAF document"
   },
   {
@@ -66973,7 +67235,9 @@
       "round-trip",
       "assembly"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Writer-emitted STEP cannot be re-imported by the same writing process (round-trip refused)"
   },
   {
@@ -67008,7 +67272,9 @@
     "taxonomy": [
       "assembly"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 6"
+    ],
     "title": "PartDesign Body export omits last-feature operation when feature is the visible Tip"
   },
   {
@@ -67045,7 +67311,9 @@
     "taxonomy": [
       "assembly"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Importer routes Assembly-module assemblies into Part containers (Assembly graph lost)"
   },
   {
@@ -67083,7 +67351,9 @@
       "crash",
       "assembly"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 1"
+    ],
     "title": "SubShapeBinder-derived Boolean Cut crashes downstream slicers and re-import"
   },
   {
@@ -67120,7 +67390,9 @@
     "taxonomy": [
       "assembly"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 7"
+    ],
     "title": "Cap part exports as STEP that downstream slicers flag as damaged (open shell wrapped as solid)"
   },
   {
@@ -67158,7 +67430,9 @@
     "taxonomy": [
       "assembly"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Geometry imports correctly but every face arrives with no colour assigned"
   },
   {
@@ -67198,7 +67472,9 @@
       "crash",
       "assembly"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Exception raised during STEP write with `ExternalReferences` mode in XDE document"
   },
   {
@@ -67236,7 +67512,9 @@
     "taxonomy": [
       "assembly"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Regression OCC 6.9.1 → 7.4.0: colours stop appearing on certain STEP files"
   },
   {
@@ -67275,7 +67553,9 @@
       "crash",
       "assembly"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Access violation in `StepVisual_PresentationStyleAssignment` while translating STEP file"
   },
   {
@@ -67315,7 +67595,9 @@
       "round-trip",
       "assembly"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "`BinXCAF` regression: documents with colour cannot be re-loaded after save"
   },
   {
@@ -67351,7 +67633,9 @@
       "round-trip",
       "assembly"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Schema variant: CONFIG_CONTROL_DESIGN with no PRODUCT entity"
   },
   {
@@ -67385,7 +67669,9 @@
       "round-trip",
       "assembly"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Non-UTF-8 (GB18030 / locale code page) in string literals"
   },
   {
@@ -67418,7 +67704,9 @@
     "taxonomy": [
       "assembly"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Control characters / illegal-XML bytes in name strings corrupt downstream documents"
   },
   {
@@ -67452,7 +67740,9 @@
     "taxonomy": [
       "assembly"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 1"
+    ],
     "title": "Inverted spherical face on certain sweep orientations"
   },
   {
@@ -67488,7 +67778,9 @@
       "round-trip",
       "assembly"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "360° revolution of arc-of-ellipse produces self-intersecting solid"
   },
   {
@@ -67521,7 +67813,9 @@
     "taxonomy": [
       "assembly"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "High-curvature B-spline surface flattens between OCCT versions"
   },
   {
@@ -67556,7 +67850,9 @@
     "taxonomy": [
       "assembly"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Long helix represented as huge B-spline causes catastrophic import time"
   },
   {
@@ -67592,7 +67888,9 @@
     "taxonomy": [
       "assembly"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Helical sweep tessellates with garbled facets at seam"
   },
   {
@@ -67627,7 +67925,9 @@
       "silent-loss",
       "assembly"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Standalone AXIS2_PLACEMENT_3D entities silently dropped"
   },
   {
@@ -67663,7 +67963,9 @@
       "crash",
       "assembly"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "AP242 PMI / GD&T / kinematics annotations silently discarded"
   },
   {
@@ -67697,7 +67999,9 @@
     "taxonomy": [
       "assembly"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "STEP-XML (`.stpx`) and compressed (`.stpz`) variants unsupported"
   },
   {
@@ -67732,7 +68036,9 @@
     "taxonomy": [
       "assembly"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "AP203-claimed file uses AP214/AP242-only entities"
   },
   {
@@ -67767,7 +68073,9 @@
       "round-trip",
       "assembly"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "`PCURVE` start point shifted in V from 3D `EDGE_CURVE` lift (UV drift beyond tolerance after Boolean)"
   },
   {
@@ -67803,7 +68111,9 @@
     "taxonomy": [
       "assembly"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 1"
+    ],
     "title": "Non-manifold or open shell exported as `MANIFOLD_SOLID_BREP`"
   },
   {
@@ -67837,7 +68147,9 @@
     "taxonomy": [
       "assembly"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Pre-Boolean operands shipped alongside result solid"
   },
   {
@@ -67872,7 +68184,9 @@
       "silent-loss",
       "assembly"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Free wires in a top-level COMPOUND silently dropped"
   },
   {
@@ -67907,7 +68221,9 @@
       "round-trip",
       "assembly"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Improper rotation (negative determinant) in `AXIS2_PLACEMENT_3D`"
   },
   {
@@ -67943,7 +68259,9 @@
     "taxonomy": [
       "assembly"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Default-emitted full transparency renders objects invisible"
   },
   {
@@ -67977,7 +68295,9 @@
     "taxonomy": [
       "assembly"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 2"
+    ],
     "title": "Edge-curve geometry mismatches face geometry within tolerance"
   },
   {
@@ -68012,7 +68332,9 @@
     "taxonomy": [
       "assembly"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Helical seam degeneracy from arc-by-3-points + 360° revolve"
   },
   {
@@ -68046,7 +68368,9 @@
     "taxonomy": [
       "assembly"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 2"
+    ],
     "title": "Mixed `FACE_OUTER_BOUND` orientation flag (negative-volume pocket)"
   },
   {
@@ -68083,7 +68407,9 @@
       "round-trip",
       "assembly"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Flattened sub-assembly hierarchy after merge"
   },
   {
@@ -68118,7 +68444,9 @@
       "round-trip",
       "assembly"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Body name overwritten by last-operation label on export"
   },
   {
@@ -68152,7 +68480,9 @@
     "taxonomy": [
       "assembly"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "`LENGTH_UNIT(.MILLI., .METRE.)` context but `CARTESIAN_POINT` coordinates pre-scaled ×1000 (global OCCT unit setting contaminated across in-process clients)"
   },
   {
@@ -68188,7 +68518,9 @@
       "crash",
       "assembly"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Boolean-history Faces with degenerate hole-loop pcurves crash writer"
   },
   {
@@ -68223,7 +68555,9 @@
       "crash",
       "assembly"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Empty/null shape entries in OCAF document corrupt writer"
   },
   {
@@ -68299,7 +68633,9 @@
     "taxonomy": [
       "pmi"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Blank/hidden dimensions exported as semantic dimensions"
   },
   {
@@ -68335,7 +68671,9 @@
       "round-trip",
       "pmi"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Stacked vs composite tolerance frames mis-tagged"
   },
   {
@@ -68371,7 +68709,9 @@
     "taxonomy": [
       "pmi"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Non-coplanar leader collapsed onto annotation plane loses attachment"
   },
   {
@@ -68406,7 +68746,9 @@
     "taxonomy": [
       "pmi"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Mixing Polyline and Tessellated PMI presentation in one file"
   },
   {
@@ -68442,7 +68784,9 @@
       "crash",
       "pmi"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Saved-view name location ambiguous (camera_model_d3 vs model_geometric_view)"
   },
   {
@@ -68479,7 +68823,9 @@
     "taxonomy": [
       "pmi"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Tolerance precision: missing decimal-place qualifier fallback chain"
   },
   {
@@ -68514,7 +68860,9 @@
     "taxonomy": [
       "pmi"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Rounding mode unspecified (ASME banker's vs ISO half-up)"
   },
   {
@@ -68552,7 +68900,9 @@
       "crash",
       "pmi"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Tolerance zone form name from AP242 Ed.2 used in Ed.1 file"
   },
   {
@@ -68587,7 +68937,9 @@
     "taxonomy": [
       "pmi"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Identical id_attribute reused across shape_aspect / dimensional_location / dimensional_size / shape_aspect_relationship"
   },
   {
@@ -68626,7 +68978,9 @@
       "round-trip",
       "pmi"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Counterbore/countersink emitted as separate dimensions with no compound link"
   },
   {
@@ -68662,7 +69016,9 @@
     "taxonomy": [
       "pmi"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "annotation_plane: plane vs planar_box ambiguity"
   },
   {
@@ -68698,7 +69054,9 @@
     "taxonomy": [
       "pmi"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Annotation geometry must be in plane PARALLEL to annotation_plane (small offset)"
   },
   {
@@ -68736,7 +69094,9 @@
     "taxonomy": [
       "pmi"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Saved-view supplemental geometry split via \"supplemental geometry subset\""
   },
   {
@@ -68771,7 +69131,9 @@
     "taxonomy": [
       "pmi"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Identical Graphic PMI duplicated across saved views"
   },
   {
@@ -68807,7 +69169,9 @@
       "crash",
       "pmi"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "camera_model_d3 viewpoint not modeled per RP §9"
   },
   {
@@ -68842,7 +69206,9 @@
     "taxonomy": [
       "pmi"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Saved view missing required mapped_item"
   },
   {
@@ -68880,7 +69246,9 @@
       "silent-loss",
       "pmi"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Duplicate UUID on multiple identified_item"
   },
   {
@@ -68918,7 +69286,9 @@
       "round-trip",
       "pmi"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Multiple UUIDs for the same identified_item"
   },
   {
@@ -68955,7 +69325,9 @@
     "taxonomy": [
       "pmi"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Illegal characters inside a UUID value"
   },
   {
@@ -68992,7 +69364,9 @@
     "taxonomy": [
       "pmi"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Datum reference frame contains identical datums"
   },
   {
@@ -69029,7 +69403,9 @@
     "taxonomy": [
       "pmi"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Datum letters not unique within product"
   },
   {
@@ -69066,7 +69442,9 @@
     "taxonomy": [
       "pmi"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "datum_reference (legacy) used instead of datum_system in AP242"
   },
   {
@@ -69103,7 +69481,9 @@
     "taxonomy": [
       "pmi"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "common_datum vs common_datum_list (multi-feature datum)"
   },
   {
@@ -69139,7 +69519,9 @@
       "crash",
       "pmi"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Datum system carries mixed Datum_System / Datum_Reference SELECT array"
   },
   {
@@ -69175,7 +69557,9 @@
       "silent-loss",
       "pmi"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Negative projected tolerance zone length"
   },
   {
@@ -69210,7 +69594,9 @@
     "taxonomy": [
       "pmi"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Projected zone projection_end is not a plane"
   },
   {
@@ -69245,7 +69631,9 @@
     "taxonomy": [
       "pmi"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Datum target dimension equals zero"
   },
   {
@@ -69316,7 +69704,9 @@
       "crash",
       "pmi"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "placed_datum_target_feature shared DatumTargetType_Area null deref"
   },
   {
@@ -69351,7 +69741,9 @@
     "taxonomy": [
       "pmi"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "relating_shape_aspect / related_shape_aspect reversed"
   },
   {
@@ -69387,7 +69779,9 @@
       "silent-loss",
       "pmi"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "shape_aspect.product_definitional flag wrong polarity"
   },
   {
@@ -69422,7 +69816,9 @@
     "taxonomy": [
       "pmi"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Multiple plus_minus_tolerance on a single dimension"
   },
   {
@@ -69494,7 +69890,9 @@
     "taxonomy": [
       "pmi"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Empty semantic-text string in PMI"
   },
   {
@@ -69531,7 +69929,9 @@
     "taxonomy": [
       "pmi"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Lower-case relation names where RP requires lower-case keywords"
   },
   {
@@ -69603,7 +70003,9 @@
     "taxonomy": [
       "pmi"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Graphic-only PMI with no semantic backing"
   },
   {
@@ -69638,7 +70040,9 @@
     "taxonomy": [
       "pmi"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "characterized_object with non-PMI draughting subtypes for graphic PMI"
   },
   {
@@ -69675,7 +70079,9 @@
     "taxonomy": [
       "pmi"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Annotation has no annotation_plane"
   },
   {
@@ -69710,7 +70116,9 @@
     "taxonomy": [
       "pmi"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Graphic PMI annotation missing color"
   },
   {
@@ -69784,7 +70192,9 @@
     "taxonomy": [
       "pmi"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "annotation_curve_occurrence leader with single point"
   },
   {
@@ -69819,7 +70229,9 @@
     "taxonomy": [
       "pmi"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "basis_curve for leader/annotation not on allowed list"
   },
   {
@@ -69857,7 +70269,9 @@
     "taxonomy": [
       "pmi"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "AP242 hole feature missing required attribute / inconsistent dims"
   },
   {
@@ -69892,7 +70306,9 @@
     "taxonomy": [
       "pmi"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Tessellated alongside curve annotations for the same callout (AP242 ed2 conflict)"
   },
   {
@@ -69967,7 +70383,9 @@
     "taxonomy": [
       "pmi"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "PMI visibility / configuration loss across saved views"
   },
   {
@@ -70042,7 +70460,9 @@
       "round-trip",
       "pmi"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Tolerance datum description NULL on re-export"
   },
   {
@@ -70148,7 +70568,9 @@
     "taxonomy": [
       "pmi"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "FILE_DESCRIPTION missing references to CAx-IF Recommended Practices"
   },
   {
@@ -70186,7 +70608,9 @@
     "taxonomy": [
       "pmi"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "DDP / EER cross-file PMI references break on repackaging"
   },
   {
@@ -70223,7 +70647,9 @@
     "taxonomy": [
       "pmi"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Compound-feature semantics (HTC counterbore/countersink/counterdrill) per Hole RP"
   },
   {
@@ -70260,7 +70686,9 @@
     "taxonomy": [
       "pmi"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "`'INCH'` named differently on conversion_based_unit"
   },
   {
@@ -70297,7 +70725,9 @@
     "taxonomy": [
       "pmi"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Annotation_plane orientation flipped on import (mirror determinant)"
   },
   {
@@ -70333,7 +70763,9 @@
       "spec-violation",
       "pmi"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "`DIMENSIONAL_LOCATION_WITH_PATH` whose path connects unrelated shape aspects"
   },
   {
@@ -70371,7 +70803,9 @@
       "spec-violation",
       "pmi"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "`GEOMETRIC_TOLERANCE_RELATIONSHIP` cycle (A→B→C→A)"
   },
   {
@@ -70409,7 +70843,9 @@
       "spec-violation",
       "pmi"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "`PROJECTED_ZONE_DEFINITION` with zero offset"
   },
   {
@@ -70444,7 +70880,9 @@
     "taxonomy": [
       "pmi"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "`DIMENSION_PAIR` with mismatched units between paired members"
   },
   {
@@ -70481,7 +70919,9 @@
       "spec-violation",
       "pmi"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Compound feature with self-referential pattern membership"
   },
   {
@@ -70518,7 +70958,9 @@
     "taxonomy": [
       "pmi"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Hole feature whose `depth` exceeds host-part bounding-box thickness"
   },
   {
@@ -70554,7 +70996,9 @@
       "spec-violation",
       "pmi"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "`KINEMATIC_JOINT` referencing the same link as both ends (self-loop)"
   },
   {
@@ -70589,7 +71033,9 @@
       "silent-loss",
       "pmi"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Composite-property layer stack with contradictory material attributes"
   },
   {
@@ -70627,7 +71073,9 @@
       "round-trip",
       "pmi"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "PMI text values wrong when document LENGTH_UNIT is METRE but DIMENSIONAL_VALUE is in inches/mm without unit conversion"
   },
   {
@@ -70662,7 +71110,9 @@
       "round-trip",
       "pmi"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "PMI text location wrong after import"
   },
   {
@@ -70738,7 +71188,9 @@
     "taxonomy": [
       "pmi"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "GD&T tolerance frame missing tolerance-zone plane reference"
   },
   {
@@ -70774,7 +71226,9 @@
     "taxonomy": [
       "pmi"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "GD&T saved-views label name silently emptied"
   },
   {
@@ -70813,7 +71267,9 @@
     "taxonomy": [
       "pmi"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Saved-views and clipping planes lost on STEP read"
   },
   {
@@ -70886,7 +71342,9 @@
     "taxonomy": [
       "pmi"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Coordinate-system connection points for dimensions missing"
   },
   {
@@ -70923,7 +71381,9 @@
       "round-trip",
       "pmi"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Dimension names dropped on round-trip"
   },
   {
@@ -70960,7 +71420,9 @@
     "taxonomy": [
       "pmi"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Empty IGES/STEP write loses general attributes"
   },
   {
@@ -71138,7 +71600,9 @@
       "round-trip",
       "pmi"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Persistent UUID lost on round-trip (PMI association breaks)"
   },
   {
@@ -71306,7 +71770,9 @@
       "round-trip",
       "pmi"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "XCAF GD&T data does not round-trip to STEP AP242 PMI"
   },
   {
@@ -71349,7 +71815,9 @@
       "spec-violation",
       "pmi"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 1"
+    ],
     "title": "`SLOT` feature with length less than width (degenerate slot)"
   },
   {
@@ -71392,7 +71860,9 @@
       "spec-violation",
       "pmi"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 1"
+    ],
     "title": "`SLOT` blind depth exceeds host face thickness (through-slot in non-through context)"
   },
   {
@@ -71434,7 +71904,9 @@
       "spec-violation",
       "pmi"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 1"
+    ],
     "title": "`SLOT` end-condition declared `round_end` but profile is rectangular"
   },
   {
@@ -71476,7 +71948,9 @@
       "spec-violation",
       "pmi"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 1"
+    ],
     "title": "`SLOT` axis not perpendicular to host face"
   },
   {
@@ -71517,7 +71991,9 @@
       "round-trip",
       "pmi"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 1"
+    ],
     "title": "Three coaxial `SLOT` features instead of a `RECTANGULAR_PATTERN`"
   },
   {
@@ -71559,7 +72035,9 @@
       "spec-violation",
       "pmi"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 1"
+    ],
     "title": "`GROOVE` feature with width = 0 (degenerate)"
   },
   {
@@ -71600,7 +72078,9 @@
       "spec-violation",
       "pmi"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 1"
+    ],
     "title": "`GROOVE` sweep does not close (open path on cylindrical host)"
   },
   {
@@ -71642,7 +72122,9 @@
       "spec-violation",
       "pmi"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 1"
+    ],
     "title": "`GROOVE` radial depth exceeds cylindrical host radius (depth wraps past axis)"
   },
   {
@@ -71683,7 +72165,9 @@
     "taxonomy": [
       "pmi"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 1"
+    ],
     "title": "`BOSS` diameter smaller than host plate thickness (feature-class mismatch)"
   },
   {
@@ -71725,7 +72209,9 @@
       "spec-violation",
       "pmi"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 1"
+    ],
     "title": "`BOSS` height = 0 (zero-protrusion boss)"
   },
   {
@@ -71767,7 +72253,9 @@
       "spec-violation",
       "pmi"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 1"
+    ],
     "title": "`BOSS` base not coplanar with host face (boss floats above substrate)"
   },
   {
@@ -71809,7 +72297,9 @@
       "spec-violation",
       "pmi"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 1"
+    ],
     "title": "`SLOT`/`GROOVE`/`BOSS` reference non-existent host face (dangling GISU target)"
   },
   {
@@ -73012,7 +73502,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Fillet contour walks into a high-valence vertex (> 3 incident edges)"
   },
   {
@@ -73083,7 +73575,9 @@
     "taxonomy": [
       "silent-loss"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Fillet contour is geometrically inconsistent (disjoint or self-crossing)"
   },
   {
@@ -73154,7 +73648,9 @@
     "taxonomy": [
       "silent-loss"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Fillet at a 4-edge corner unsupported"
   },
   {
@@ -73261,7 +73757,9 @@
     "taxonomy": [
       "assembly"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "AP242 Edition 1 disallows axis2_placement_3d in tessellated_shape_representation"
   },
   {
@@ -73295,7 +73793,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Free-edge tessellated shell cannot use tessellated_connecting_edge"
   },
   {
@@ -73329,7 +73829,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Watertightness lost when each tessellated face has its own coordinates_list"
   },
   {
@@ -73402,7 +73904,9 @@
     "taxonomy": [
       "syntax"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "integer_representation_item serialized without trailing decimal point"
   },
   {
@@ -73476,7 +73980,9 @@
     "taxonomy": [
       "round-trip"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Bound vs. unbound supplemental elements (planes, lines)"
   },
   {
@@ -73550,7 +74056,9 @@
     "taxonomy": [
       "spec-violation"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "tessellated_constructive_geometry_representation requires AP242 Ed.4"
   },
   {
@@ -73588,7 +74096,9 @@
     "taxonomy": [
       "spec-violation"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Saved-view supplemental geometry split across multiple CGRs"
   },
   {
@@ -73659,7 +74169,9 @@
     "taxonomy": [
       "pmi"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Tessellated PMI placement: third coordinate must be 0 in tessellated_geometric_set (repositioned form preferred)"
   },
   {
@@ -73694,7 +74206,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Tessellated curve set missing both coordinates and line_strips"
   },
   {
@@ -73733,7 +74247,9 @@
     "taxonomy": [
       "spec-violation"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Tessellated geometry without a styled_item (no color)"
   },
   {
@@ -73803,7 +74319,9 @@
     "taxonomy": [
       "spec-violation"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "TRIANGLE_STRIP / TRIANGLE_FAN in COMPLEX_TRIANGULATED_FACE mis-decoded"
   },
   {
@@ -73844,7 +74362,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Tessellated face style binding lost (no TransferBRep_ShapeBinder)"
   },
   {
@@ -73879,7 +74399,9 @@
     "taxonomy": [
       "pmi"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Tessellated GD&T (annotation) entities not imported"
   },
   {
@@ -73916,7 +74438,9 @@
     "taxonomy": [
       "silent-loss"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "STL-derived tessellated_solid / triangulated_face ignored by importers"
   },
   {
@@ -74111,7 +74635,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Surface-sampling-point validation property failure"
   },
   {
@@ -74185,7 +74711,9 @@
     "taxonomy": [
       "round-trip"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "PMI-count validation property failure"
   },
   {
@@ -74220,7 +74748,9 @@
     "taxonomy": [
       "spec-violation"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Validation property naming: \"geometric_validation_property\" with underscores vs spaces"
   },
   {
@@ -74255,7 +74785,9 @@
     "taxonomy": [
       "units"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Validation property: missing unit_component"
   },
   {
@@ -74291,7 +74823,9 @@
     "taxonomy": [
       "spec-violation"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Validation property name not in CAx-IF list / mismatches associated general_property name"
   },
   {
@@ -74329,7 +74863,9 @@
     "taxonomy": [
       "spec-violation"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Constructive geometry / supplemental geometry not allowed type"
   },
   {
@@ -74367,7 +74903,9 @@
     "taxonomy": [
       "crash"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Single-item Constructive_Geometry_Representation crashes translator"
   },
   {
@@ -74403,7 +74941,9 @@
     "taxonomy": [
       "pmi"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Datum target axes nearly identical"
   },
   {
@@ -74438,7 +74978,9 @@
     "taxonomy": [
       "spec-violation"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "AP209 FEM element wrong node count"
   },
   {
@@ -74474,7 +75016,9 @@
     "taxonomy": [
       "spec-violation"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "AP209 freedom_and_coefficient `a` ≠ 1, or single_point_constraint `b` ≠ 0"
   },
   {
@@ -74552,7 +75096,9 @@
     "taxonomy": [
       "spec-violation"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "STYLED_ITEM.item is NULL or unresolved"
   },
   {
@@ -74590,7 +75136,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Surface transparency (SURFACE_STYLE_TRANSPARENT) ignored on import"
   },
   {
@@ -74630,7 +75178,9 @@
     "taxonomy": [
       "spec-violation"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Color override at root label not applied (regression)"
   },
   {
@@ -74667,7 +75217,9 @@
     "taxonomy": [
       "spec-violation"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Layer with empty/duplicate name colliding with another"
   },
   {
@@ -74706,7 +75258,9 @@
     "taxonomy": [
       "crash"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Empty DRAUGHTING_MODEL / PRESENTATION_LAYER_ASSIGNMENT"
   },
   {
@@ -74817,7 +75371,9 @@
     "taxonomy": [
       "spec-violation"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Texture / bitmap (IMAGE_TEXTURE / TEXTURE_MAPPING) loss on translation"
   },
   {
@@ -74856,7 +75412,9 @@
       "silent-loss",
       "round-trip"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Material / appearance / physical attributes silently dropped on STEP export"
   },
   {
@@ -74895,7 +75453,9 @@
     "taxonomy": [
       "spec-violation"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Schema migration: 53 retired kinematics entities (AP242 Ed.1)"
   },
   {
@@ -74931,7 +75491,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Composite material LLAI (Limited Length / Area Indicator) gaps"
   },
   {
@@ -74969,7 +75531,9 @@
     "taxonomy": [
       "silent-loss"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Bare GEOMETRIC_SET / GEOMETRIC_CURVE_SET with non-geometric children or mesh-as-surfaces"
   },
   {
@@ -75083,7 +75647,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "FACETED_BREP linked to OPEN_SHELL (schema-illegal)"
   },
   {
@@ -75160,7 +75726,9 @@
     "taxonomy": [
       "round-trip"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Tessellation export missing or conflicting with B-rep representation"
   },
   {
@@ -75196,7 +75764,9 @@
     "taxonomy": [
       "spec-violation"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "File declaring AP203 schema but emitting AP242-arity entities"
   },
   {
@@ -75234,7 +75804,9 @@
     "taxonomy": [
       "spec-violation"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "File mixing AP203 schema declaration with AP214-only entity types in DATA"
   },
   {
@@ -75271,7 +75843,9 @@
     "taxonomy": [
       "spec-violation"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "File with AP242 ED1 schema string but ED2-only enumeration value"
   },
   {
@@ -75308,7 +75882,9 @@
     "taxonomy": [
       "assembly"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "External reference resolves to the same file as the main file"
   },
   {
@@ -75342,7 +75918,9 @@
     "taxonomy": [
       "assembly"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Scaling-factor encoded as non-unit DIRECTION ratios in AXIS2_PLACEMENT_3D / ITEM_DEFINED_TRANSFORMATION skipped on write"
   },
   {
@@ -75376,7 +75954,9 @@
     "taxonomy": [
       "assembly"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "SRR reverses the relation defined by NAUO; conflict resolved silently"
   },
   {
@@ -75411,7 +75991,9 @@
     "taxonomy": [
       "units"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Entity has no unit context; defaults silently applied"
   },
   {
@@ -75446,7 +76028,9 @@
     "taxonomy": [
       "units"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "GEOMETRIC_REPRESENTATION_CONTEXT lacks UNCERTAINTY_MEASURE_WITH_UNIT; reader-side default precision substituted"
   },
   {
@@ -75480,7 +76064,9 @@
     "taxonomy": [
       "assembly"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Product has both sub-assemblies and a directly-assigned shape"
   },
   {
@@ -75548,7 +76134,9 @@
     "taxonomy": [
       "assembly"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Transformation relation creation failed (AXIS2_PLACEMENT_3D with zero-vector DIRECTION ratios in ITEM_DEFINED_TRANSFORMATION); placement falls back to identity"
   },
   {
@@ -75587,7 +76175,9 @@
     "taxonomy": [
       "spec-violation"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Pretessellated geometry skipped on STEP write"
   },
   {
@@ -75625,7 +76215,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "`TRIANGULATED_FACE` emitted without `pnval` indices"
   },
   {
@@ -75698,7 +76290,9 @@
     "taxonomy": [
       "spec-violation"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "AP238 machining_operation references nonexistent process_aspect"
   },
   {
@@ -75733,7 +76327,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "AP238 toolpath_curve open chain claimed as closed contour"
   },
   {
@@ -75768,7 +76364,9 @@
     "taxonomy": [
       "units"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "AP238 part-coordinate vs machine-coordinate unit mismatch"
   },
   {
@@ -75803,7 +76401,9 @@
     "taxonomy": [
       "spec-violation"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "AP238 left-handed setup coordinate frame on multi-axis machine"
   },
   {
@@ -75836,7 +76436,9 @@
     "taxonomy": [
       "spec-violation"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 1"
+    ],
     "title": "AP238 selective control-flow references unresolved branch executable"
   },
   {
@@ -75871,7 +76473,9 @@
     "taxonomy": [
       "spec-violation"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "AP238 cutting-tool feedrate stated in wrong dimensional unit"
   },
   {
@@ -75906,7 +76510,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "AP238 fixture references different workpiece than the setup is machining"
   },
   {
@@ -75944,7 +76550,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "AP209 quadratic_hexahedron with wrong node count (12 instead of 20)"
   },
   {
@@ -75981,7 +76589,9 @@
     "taxonomy": [
       "spec-violation"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "AP209 boundary condition with no nodes attached"
   },
   {
@@ -76017,7 +76627,9 @@
     "taxonomy": [
       "units"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "AP209 material property unit mismatch by 6 orders of magnitude"
   },
   {
@@ -76051,7 +76663,9 @@
     "taxonomy": [
       "spec-violation"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "AP209 integration_point_count not consistent with element_type"
   },
   {
@@ -76085,7 +76699,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "AP209 surface element node order is clockwise (negative Jacobian)"
   },
   {
@@ -76120,7 +76736,9 @@
     "taxonomy": [
       "spec-violation"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "AP209 nodal load applied to a node not in the model node set"
   },
   {
@@ -76156,7 +76774,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "AP209 composite laminate has empty ply stack"
   },
   {
@@ -76191,7 +76811,9 @@
     "taxonomy": [
       "spec-violation"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "AP210 ply with mismatched top/bottom material designations"
   },
   {
@@ -76226,7 +76848,9 @@
     "taxonomy": [
       "spec-violation"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "AP210 via drilled outside the conductor / board outline"
   },
   {
@@ -76260,7 +76884,9 @@
     "taxonomy": [
       "spec-violation"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 1"
+    ],
     "title": "AP210 signal net node references unresolved terminal"
   },
   {
@@ -76296,7 +76922,9 @@
     "taxonomy": [
       "units"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "AP210 etherometric vs metric measurement context confusion"
   },
   {
@@ -76330,7 +76958,9 @@
     "taxonomy": [
       "spec-violation"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "AP210 stackup plies overlap in the Z direction"
   },
   {
@@ -76364,7 +76994,9 @@
     "taxonomy": [
       "spec-violation"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "AP210 BoM line item with no PRODUCT_DEFINITION chain"
   },
   {
@@ -76399,7 +77031,9 @@
     "taxonomy": [
       "spec-violation"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "AP210 conductor trace exits the board outline"
   },
   {
@@ -76434,7 +77068,9 @@
     "taxonomy": [
       "spec-violation"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "AP238 workplan workingsteps in non-executable order"
   },
   {
@@ -76468,7 +77104,9 @@
     "taxonomy": [
       "spec-violation"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "AP238 machining_tool referenced without cutting-edge geometry"
   },
   {
@@ -76503,7 +77141,9 @@
     "taxonomy": [
       "spec-violation"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "AP238 setup placement inconsistent with workpiece coordinate system"
   },
   {
@@ -76538,7 +77178,9 @@
     "taxonomy": [
       "spec-violation"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "AP238 machining_operation declares negative execution time"
   },
   {
@@ -76573,7 +77215,9 @@
     "taxonomy": [
       "spec-violation"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "AP238 trajectory missing connecting curves between adjacent segments"
   },
   {
@@ -76608,7 +77252,9 @@
     "taxonomy": [
       "spec-violation"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "AP238 workingstep references a feature not on the workpiece"
   },
   {
@@ -76643,7 +77289,9 @@
     "taxonomy": [
       "spec-violation"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "AP238 tool feedrate exceeds manufacturer rated maximum"
   },
   {
@@ -76677,7 +77325,9 @@
     "taxonomy": [
       "spec-violation"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "AP238 tool feedrate declared as zero"
   },
   {
@@ -76712,7 +77362,9 @@
     "taxonomy": [
       "spec-violation"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "AP238 spindle-on issued after first tool-workpiece contact"
   },
   {
@@ -76746,7 +77398,9 @@
     "taxonomy": [
       "spec-violation"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "AP238 two5d_milling_operation applied to a 3D-only feature"
   },
   {
@@ -76780,7 +77434,9 @@
     "taxonomy": [
       "spec-violation"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "AP238 drilling sequence with coincident hole positions"
   },
   {
@@ -76815,7 +77471,9 @@
       "crash",
       "spec-violation"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "AP238 tool trajectory passes through workpiece body before designated cut"
   },
   {
@@ -76849,7 +77507,9 @@
     "taxonomy": [
       "spec-violation"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "AP238 producer emits SETUP where WORKPIECE_SETUP is required"
   },
   {
@@ -76885,7 +77545,9 @@
     "taxonomy": [
       "spec-violation"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "AP238 ISO 8601 timestamps on operations going backwards"
   },
   {
@@ -76920,7 +77582,9 @@
     "taxonomy": [
       "units"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "AP238 workplan total execution time exceeds shift length"
   },
   {
@@ -76954,7 +77618,9 @@
     "taxonomy": [
       "spec-violation"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "AP238 cutting tool diameter declared as zero or negative"
   },
   {
@@ -76988,7 +77654,9 @@
     "taxonomy": [
       "spec-violation"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "AP238 freeform_milling_operation without surface-tolerance attribute"
   },
   {
@@ -77027,7 +77695,9 @@
     "taxonomy": [
       "spec-violation"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "AP209 linear_hexahedron with only 4 nodes (should be 8)"
   },
   {
@@ -77063,7 +77733,9 @@
     "taxonomy": [
       "spec-violation"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "AP209 ply orientation vector not normalized"
   },
   {
@@ -77101,7 +77773,9 @@
     "taxonomy": [
       "spec-violation"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "AP209 single_point_constraint applied to a node not in the mesh"
   },
   {
@@ -77135,7 +77809,9 @@
     "taxonomy": [
       "assembly"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "AP209 multi_point_constraint chain forms a dependency cycle"
   },
   {
@@ -77169,7 +77845,9 @@
     "taxonomy": [
       "spec-violation"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "AP209 element_representation with degenerate jacobian (collapsed corner)"
   },
   {
@@ -77204,7 +77882,9 @@
     "taxonomy": [
       "spec-violation"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "AP209 hex element with aspect ratio greater than 10000"
   },
   {
@@ -77238,7 +77918,9 @@
     "taxonomy": [
       "spec-violation"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "AP209 nodal force distribution with negative weights"
   },
   {
@@ -77272,7 +77954,9 @@
     "taxonomy": [
       "spec-violation"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "AP209 modal extraction count exceeds DOF rank"
   },
   {
@@ -77306,7 +77990,9 @@
     "taxonomy": [
       "spec-violation"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "AP209 anisotropic material with missing tensor components"
   },
   {
@@ -77340,7 +78026,9 @@
     "taxonomy": [
       "spec-violation"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "AP209 non-conforming mesh: tet and hex sharing a face with mismatched node counts"
   },
   {
@@ -77375,7 +78063,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "AP209 shell element with zero plate thickness"
   },
   {
@@ -77410,7 +78100,9 @@
     "taxonomy": [
       "spec-violation"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "AP209 symmetry plane not perpendicular to a coordinate axis"
   },
   {
@@ -77444,7 +78136,9 @@
     "taxonomy": [
       "spec-violation"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "AP209 time-history loadcase with non-monotonically increasing time vector"
   },
   {
@@ -77478,7 +78172,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "AP209 ply orientation expressed in wrong reference frame"
   },
   {
@@ -77513,7 +78209,9 @@
     "taxonomy": [
       "assembly"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "AP209 element references the same node twice in its node list"
   },
   {
@@ -77548,7 +78246,9 @@
     "taxonomy": [
       "assembly"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "AP209 fea_model includes element referencing a node outside its node-set"
   },
   {
@@ -77582,7 +78282,9 @@
     "taxonomy": [
       "spec-violation"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "AP209 node_group declares the same node id twice"
   },
   {
@@ -77619,7 +78321,9 @@
     "taxonomy": [
       "spec-violation"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "AP203 effectivity periods overlap with conflicting product configurations"
   },
   {
@@ -77655,7 +78359,9 @@
     "taxonomy": [
       "spec-violation"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "AP203 DOCUMENT_FILE referenced with empty URI / path field"
   },
   {
@@ -77691,7 +78397,9 @@
     "taxonomy": [
       "spec-violation"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "AP203 design approved AFTER its effectivity start date"
   },
   {
@@ -77727,7 +78435,9 @@
     "taxonomy": [
       "spec-violation"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "AP203 new revision references parent not in change-history chain"
   },
   {
@@ -77763,7 +78473,9 @@
     "taxonomy": [
       "spec-violation"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "AP203 assembly classified at lower security level than its components"
   },
   {
@@ -77799,7 +78511,9 @@
     "taxonomy": [
       "spec-violation"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "AP203 PRODUCT_DEFINITION linked to wrong PRODUCT_CONTEXT frame_of_reference"
   },
   {
@@ -77835,7 +78549,9 @@
     "taxonomy": [
       "spec-violation"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "AP203 material-class APPLIED_GROUP_ASSIGNMENT without a material reference"
   },
   {
@@ -77871,7 +78587,9 @@
     "taxonomy": [
       "spec-violation"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "AP203 inconsistent ISO 8601 date formats within the same file"
   },
   {
@@ -77907,7 +78625,9 @@
     "taxonomy": [
       "spec-violation"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "AP203 two distinct PERSON entities share the same id"
   },
   {
@@ -77943,7 +78663,9 @@
     "taxonomy": [
       "spec-violation"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "AP203 declares CONFIG_CONTROL_DESIGN (CC1) but uses CC2-only entities"
   },
   {
@@ -77978,7 +78700,9 @@
     "taxonomy": [
       "spec-violation"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 1"
+    ],
     "title": "AP203 APPROVED_ITEM points to a product not in the design pool"
   },
   {
@@ -78014,7 +78738,9 @@
     "taxonomy": [
       "spec-violation"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "AP203 APPLIED_ACTION_ASSIGNMENT applies to mixed-class object list"
   },
   {
@@ -78050,7 +78776,9 @@
     "taxonomy": [
       "spec-violation"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "AP203 APPROVAL_PERSON_ORGANIZATION with empty PERSON field"
   },
   {
@@ -78085,7 +78813,9 @@
     "taxonomy": [
       "spec-violation"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "AP203 effectivity start date is AFTER its end date"
   },
   {
@@ -78121,7 +78851,9 @@
     "taxonomy": [
       "spec-violation"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "AP203 make-or-buy declaration contradicts external supplier record"
   },
   {
@@ -78157,7 +78889,9 @@
     "taxonomy": [
       "spec-violation"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "AP203 PRODUCT_CATEGORY hierarchy contains a cycle"
   },
   {
@@ -78193,7 +78927,9 @@
     "taxonomy": [
       "spec-violation"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "AP203 CHANGE_REQUEST targets revision already superseded"
   },
   {
@@ -78229,7 +78965,9 @@
     "taxonomy": [
       "spec-violation"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "AP210 vias declared with stack-up positions out of board-layer order"
   },
   {
@@ -78265,7 +79003,9 @@
     "taxonomy": [
       "spec-violation"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "AP210 NETWORK_NODE chain forms a cycle (signal feedback path)"
   },
   {
@@ -78301,7 +79041,9 @@
     "taxonomy": [
       "spec-violation"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "AP210 fixed-side reference inverts top/bottom semantics"
   },
   {
@@ -78338,7 +79080,9 @@
     "taxonomy": [
       "spec-violation"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "AP210 drill diameter exceeds pad diameter (annular ring inverted)"
   },
   {
@@ -78374,7 +79118,9 @@
     "taxonomy": [
       "spec-violation"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "AP210 surface-mount component oriented on wrong board side"
   },
   {
@@ -78410,7 +79156,9 @@
     "taxonomy": [
       "spec-violation"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "AP210 same NETWORK identifier used for two unrelated nets"
   },
   {
@@ -78445,7 +79193,9 @@
     "taxonomy": [
       "spec-violation"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "AP210 component pin numbering doesn't match physical pin sequence"
   },
   {
@@ -78481,7 +79231,9 @@
     "taxonomy": [
       "spec-violation"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "AP210 differential-pair traces have > 5 % length mismatch"
   },
   {
@@ -78517,7 +79269,9 @@
     "taxonomy": [
       "spec-violation"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "AP210 declared trace impedance contradicts stackup geometry"
   },
   {
@@ -78553,7 +79307,9 @@
     "taxonomy": [
       "spec-violation"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "AP210 microvia depth exceeds substrate thickness"
   },
   {
@@ -78589,7 +79345,9 @@
     "taxonomy": [
       "spec-violation"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "AP210 buried via has only one terminating layer reference"
   },
   {
@@ -78625,7 +79383,9 @@
     "taxonomy": [
       "spec-violation"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "AP210 placement footprint pin count conflicts with library footprint"
   },
   {
@@ -78661,7 +79421,9 @@
     "taxonomy": [
       "spec-violation"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "AP210 net connectivity ends at a non-pin element"
   },
   {
@@ -78697,7 +79459,9 @@
     "taxonomy": [
       "spec-violation"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "AP210 power net carries only mechanical placement constraint"
   },
   {
@@ -78733,7 +79497,9 @@
     "taxonomy": [
       "spec-violation"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "AP210 solder mask covers a pad that should be exposed"
   },
   {
@@ -78769,7 +79535,9 @@
     "taxonomy": [
       "spec-violation"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "AP210 assembly footprint pitch conflicts with component-library footprint"
   },
   {
@@ -78805,7 +79573,9 @@
     "taxonomy": [
       "spec-violation"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "AP210 connector keying / polarization missing"
   },
   {
@@ -78843,7 +79613,9 @@
     "taxonomy": [
       "assembly"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 1"
+    ],
     "title": "STEP file imports as a near-empty document despite well-formed entities"
   },
   {
@@ -78881,7 +79653,9 @@
     "taxonomy": [
       "silent-loss"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 1"
+    ],
     "title": "Reader does not validate cross-references; dangling references silently accepted"
   },
   {
@@ -78918,7 +79692,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 3"
+    ],
     "title": "Fillet faces re-import as rounded edge (Onshape/Rhino) but as fillet in producer"
   },
   {
@@ -78955,7 +79731,9 @@
     "taxonomy": [
       "spec-violation"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 6"
+    ],
     "title": "Imported STEP per-face colours scramble after any unrelated edit operation (style binding instability)"
   },
   {
@@ -78993,7 +79771,9 @@
     "taxonomy": [
       "assembly"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 4"
+    ],
     "title": "Linear pattern of arc-shaped feature emits twisted/corrupted faces in STEP"
   },
   {
@@ -79028,7 +79808,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 4"
+    ],
     "title": "Knurled body exports STEP with holes in surface (slicer reports non-manifold)"
   },
   {
@@ -79065,7 +79847,9 @@
     "taxonomy": [
       "crash"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "n_faces_total == 3"
+    ],
     "title": "Heatsink-style fin array crashes export pipeline at faceted sub-shape boundary"
   },
   {
@@ -79101,7 +79885,9 @@
     "taxonomy": [
       "spec-violation"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "AP238 turning operation cut depth exceeds workpiece radius"
   },
   {
@@ -79137,7 +79923,9 @@
     "taxonomy": [
       "spec-violation"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "AP238 turning_finishing_face with feed direction inverted"
   },
   {
@@ -79173,7 +79961,9 @@
     "taxonomy": [
       "spec-violation"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "AP238 turning_roughing stepover exceeds tool nose radius"
   },
   {
@@ -79210,7 +80000,9 @@
     "taxonomy": [
       "spec-violation"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "AP238 turning feed-direction ambiguous (radial vs axial conflict)"
   },
   {
@@ -79246,7 +80038,9 @@
     "taxonomy": [
       "spec-violation"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "AP238 thread_turning pitch differs from thread-spec pitch"
   },
   {
@@ -79282,7 +80076,9 @@
     "taxonomy": [
       "spec-violation"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "AP238 turning_operation on workpiece without rotation axis"
   },
   {
@@ -79318,7 +80114,9 @@
     "taxonomy": [
       "spec-violation"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "AP238 milling_toolpath consecutive points spaced beyond tool diameter"
   },
   {
@@ -79355,7 +80153,9 @@
     "taxonomy": [
       "spec-violation"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "AP238 milling_feed_rate varies along path with no F-code transition"
   },
   {
@@ -79391,7 +80191,9 @@
     "taxonomy": [
       "spec-violation"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "AP238 drilling_operation tool axis not normal to feature face"
   },
   {
@@ -79428,7 +80230,9 @@
     "taxonomy": [
       "spec-violation"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "AP238 boring tool diameter exceeds start-hole diameter"
   },
   {
@@ -79464,7 +80268,9 @@
     "taxonomy": [
       "spec-violation"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "AP238 coolant_operation requests through-tool flow on tool with no internal cooling"
   },
   {
@@ -79501,7 +80307,9 @@
       "crash",
       "spec-violation"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "AP238 inspection_probing path passes through workpiece body"
   },
   {
@@ -79537,7 +80345,9 @@
     "taxonomy": [
       "spec-violation"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "AP238 touch_probing tolerance smaller than probe stylus radius"
   },
   {
@@ -79573,7 +80383,9 @@
     "taxonomy": [
       "spec-violation"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "AP238 inspection_result measurement uncertainty exceeds feature tolerance"
   },
   {
@@ -79608,7 +80420,9 @@
     "taxonomy": [
       "spec-violation"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "AP238 workpiece_complete_for_nc missing required clamping references"
   },
   {
@@ -79646,7 +80460,9 @@
     "taxonomy": [
       "spec-violation"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "AP238 setup_instruction sequence with non-monotonic time stamps"
   },
   {
@@ -79682,7 +80498,9 @@
     "taxonomy": [
       "spec-violation"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "AP238 workpiece_setup coordinate system not aligned with machine axes"
   },
   {
@@ -79717,7 +80535,9 @@
     "taxonomy": [
       "spec-violation"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "AP238 executable_relationship forms a cycle (A precedes B, B precedes A)"
   },
   {
@@ -79753,7 +80573,9 @@
     "taxonomy": [
       "spec-violation"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "AP238 machining_tool_feedspeed product exceeds tool envelope"
   },
   {
@@ -79790,7 +80612,9 @@
     "taxonomy": [
       "spec-violation"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "AP238 coolant type incompatible with workpiece material"
   },
   {
@@ -79826,7 +80650,9 @@
     "taxonomy": [
       "spec-violation"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "AP238 knurling_operation pitch finer than tool resolution"
   },
   {
@@ -79862,7 +80688,9 @@
     "taxonomy": [
       "spec-violation"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "AP238 deburring_operation references edge not present in workpiece"
   },
   {
@@ -79898,7 +80726,9 @@
     "taxonomy": [
       "spec-violation"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "AP238 boring tool diameter declared as negative"
   },
   {
@@ -79969,7 +80799,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Inward offset by a distance equal to a cylinder's radius (face collapses to axis)"
   },
   {
@@ -80005,7 +80837,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Inward offset by a distance greater than a cylinder's radius (face inverts)"
   },
   {
@@ -80143,7 +80977,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Offset edge-extension step fails: clamped B_SPLINE_CURVE_WITH_KNOTS has no analytic extension past its trim domain"
   },
   {
@@ -80214,7 +81050,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "ThruSections loft profile is closed wire mixed with open wire"
   },
   {
@@ -80250,7 +81088,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "ThruSections loft profiles have inconsistent edge counts"
   },
   {
@@ -80284,7 +81124,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "ThruSections loft used outside its supported envelope"
   },
   {
@@ -80317,7 +81159,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "ThruSections / loft produces an EDGE_CURVE with no 3D curve (edge_geometry slot is null '$' — pcurve-only edge)"
   },
   {
@@ -80352,7 +81196,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Pipe section plane does not intersect the guide curve"
   },
   {
@@ -80386,7 +81232,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Pipe section drifts beyond auxiliary spine reach (impossible contact)"
   },
   {
@@ -80529,7 +81377,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "N-sided fill: constraint set is geometrically incompatible"
   },
   {
@@ -80563,7 +81413,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Middle-path computation between two wires fails"
   },
   {
@@ -80597,7 +81449,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "MakeEvolved: profile sweep along a non-planar spine self-intersects"
   },
   {
@@ -80631,7 +81485,9 @@
     "taxonomy": [
       "geometry"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Normal projection: source curve has no projection on target surface"
   },
   {
@@ -80664,7 +81520,9 @@
     "taxonomy": [
       "units"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "FindContigousEdges: paired LINEs/VECTORs from sewing have unequal parameter lengths (unit vs non-unit DIRECTION) for the same 3D extent"
   },
   {
@@ -80698,7 +81556,9 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "MakeThickSolid: thickening direction passes through a self-intersection"
   }
 ]
