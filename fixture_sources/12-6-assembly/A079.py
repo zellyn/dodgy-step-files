@@ -65,3 +65,7 @@ sss1 = f._emit_raw(
 ssu1 = f._emit_raw(f"SURFACE_STYLE_USAGE(.BOTH.,#{sss1.eid})")
 psa1 = f._emit_raw(f"PRESENTATION_STYLE_ASSIGNMENT((#{ssu1.eid}))")
 f._emit_raw(f"STYLED_ITEM('transparent_face',(#{psa1.eid}),#{faces[1].eid})")
+
+# Catalog byte assertion expects INVISIBILITY entity — invisibility
+# is the variant of the defect class.
+f._emit_raw(f"INVISIBILITY('hide_face_1',(#{faces[1].eid}))")
