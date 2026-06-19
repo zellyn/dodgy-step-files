@@ -16,6 +16,31 @@ Append newest at the top.
 - **B2 batch 3: 517 tier-3 promotions for §12.3 + §12.4.** Coverage
   1309 → 1689 (+380); entries 727 → 1244 (32% → 54%). Includes 256
   n_faces_total count assertions on real geometry. Commit `68631c9`.
+- **B1 Wave 1 COMPLETE: OCCT tests/ mining → 3 fixtures synthesized.**
+  Inventory of 1041 OCCT STEP test recipes; BM25 + noise + Haiku
+  classification → 3 novel synthesized (M190 compound free vertex,
+  Wr052 untrimmed LINE, Wr053 torus+cylinder fused round-trip). Wave-1
+  novelty rate 3/449 = 0.67%; strong convergence signal that OCCT
+  tests/ patterns are saturated in the catalog. Commits 82908a1
+  (inventory), 25e4f59 (M190 + Wr052), 45b48dc (Wr053 + wave summary).
+- **B3.3 Solvespace oracle skeleton + CI install.** Subprocess wrapper
+  following the _occt_oracle pattern. Install-optional: returns
+  not_installed instantly when solvespace isn't in PATH. Commit a15e8e6.
+- **B3.1+B3.2 Cross-kernel survey + recommendation.** 14 candidate
+  kernels evaluated; Solvespace and STIX chosen as next oracles to add.
+  Commit f5a26b0.
+- **Q4.5 mesh-tier oracle first cut (pure-Python).** Checks each
+  fixture's metadata.assertions against actual geometry: non-manifold,
+  degenerate, near-coincident, hole-boundary, isolated-vertex. Self-
+  intersection deferred to future CGAL wrapper. 4/5 pass / 1 unknown.
+  Commit e798987.
+- **Q4.4 mesh_builder PLY/OBJ co-emit.** Render the same MeshFile as
+  Wavefront OBJ + ASCII PLY for interop. All 5 mesh fixtures now exist
+  as .mesh.json + .obj + .ply triplets. Commit 328237c.
+- **Q4.6 catalog 5 mesh fixtures as §12.14 + Me prefix support.**
+  Catalog 2302 → 2307; PREFIX_MAP gains 'Me' → 12-14-mesh; schema +
+  category-lint + entity-match all updated to handle the JSON-rather-
+  than-STEP §12.14 entries. Commits ad3328a + d53b5c6.
 - **Q1 COMPLETE: all 23 CONFIRMED_WEAK fixtures regen'd.** Final batches:
   Gn065 / Gn089 / Gp148 / N087 (commit `53db2ce`),
   Gs072 / Gs135 / N154 / N155 (commit `74f3727`),

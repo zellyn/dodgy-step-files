@@ -18,7 +18,15 @@ Conventions:
 
 ## Active initiatives
 
-### B1 — Mine OCCT's `tests/` tree for parsing-wisdom coverage
+### B1 — Mine OCCT's `tests/` tree for parsing-wisdom coverage — WAVE 1 DONE
+
+Wave-1 result: 3 / 449 OCCT prose tests synthesized as novel fixtures.
+0.67% novelty rate. The OCCT tests/ corpus is **saturated** against our
+catalog — further mining waves here are diminishing returns. See
+DONE.md and `audit/occt_mining_log.md` for details. Skip remaining
+sub-steps; pivot to B4 (issue trackers) for non-saturated sources.
+
+### B1-archive — original B1 plan (now wave-1 complete):
 
 **Why:** OCCT's `tests/de/step/*` and `tests/bug/*` directories are the most
 concentrated record of 20+ years of accumulated STEP-parsing healing in
