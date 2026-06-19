@@ -10,6 +10,17 @@ Append newest at the top.
 
 ## 2026-06-18
 
+- **B2 batch 2: 389 tier-3 promotions for §12.2 NURBS/surfaces/pcurves.**
+  Coverage 920 → 1259 assertions (+339), 338 → 727 entries (15% → 32%).
+  Commit `87e884f`.
+- **B2 batch 1: 97 tier-3 shape_null promotions for §12.1.** Coverage
+  831 → 920 assertions, 241 → 338 entries (12% → 15%). All §12.1
+  framing-defect entries now have `shape_null == True` as a
+  format-robust tier-3 assertion alongside their byte assertions.
+  Commit `c0239b8`.
+- **BACKLOG.md: added B4 (real-world issue-tracker mining).**
+  Commit `c0239b8`.
+
 - **README.md quarantine claim fix.** Stale wording "84 quarantined
   pending proper regen" replaced with accurate "150 historical
   quarantines; all replaced in the active corpus by defect-specific
