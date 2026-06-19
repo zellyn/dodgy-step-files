@@ -42,6 +42,7 @@ EXEMPT_END_MARKER = {
 # (e.g., .ifc extension for IFC schema mismatch test).
 EXEMPT_FILENAME_MATCH = {
     "Lh019",  # IFC4 schema declared with .ifc filename
+    "Wr020",  # label-loss defect: writer renamed product to 'BREP_001'
 }
 
 # Entries whose body is not latin-1 / ASCII (UTF-16 etc.); skip ID-in-text check.

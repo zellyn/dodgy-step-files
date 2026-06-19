@@ -1,20 +1,13 @@
-"""Wr020 — Re-export drops feature labels and product names.
+"""Ad117 — STEP reader crashes on malformed STYLED_ITEM (OCCT MANTIS#0029979).
 
-Catalog claim: feature names disappear; PRODUCT entries get default
-'BREP_001'-style names instead of feature labels.
-
-Previous fixture used empty-EDGE_LOOP placeholders. Regen: one face +
-PRODUCT renamed to 'BREP_001' — the post-pathology output.
+Catalog claim: a STYLED_ITEM references a non-existent presentation-
+style record (or empty styles list) → style-resolution dereferences a
+null pointer → SIGSEGV on a 1 KB fixture.
 """
 from step_corpus.step_builder import StepFile
 
-f = StepFile(catalog_id="Wr020",
-             defect="PRODUCT renamed to BREP_001 (label loss)")
-# Marker so lint can locate the catalog ID; the actual demonstrated
-# defect is that the product name *inside the data section* becomes
-# 'BREP_001' rather than 'Wr020'.
-f._emit_raw("/* catalog_id: Wr020 (product label was lost on re-export) */")
-f.catalog_id = "BREP_001"   # builder uses this for the PRODUCT name
+f = StepFile(catalog_id="Ad117",
+             defect="STYLED_ITEM references non-existent style #999 (crash)")
 
 orig = f.cartesian_point((0.0, 0.0, 0.0))
 zdir = f.direction((0.0, 0.0, 1.0))
@@ -44,3 +37,7 @@ face = f.advanced_face([f.face_outer_bound(loop)], plane)
 shell = f.open_shell([face])
 sbsm = f.shell_based_surface_model([shell])
 f.add_product_chain(sbsm)
+
+# The crash payload: STYLED_ITEM with a dangling style reference (#999
+# does not exist anywhere else in the file). Style-resolution → SIGSEGV.
+f._emit_raw(f"STYLED_ITEM('crash_styled',(#999),#{face.eid})")

@@ -1,23 +1,48 @@
 ISO-10303-21;
-/* Ad118 - Forward-compat: legacy CONFIG_CONTROL_DESIGN schema rejected by newer reader
- * Defect: file declares older AP203 schema string CONFIG_CONTROL_DESIGN; newer kernel
- * builds reject the schema even when the entities themselves are recognisable. */
+/* Ad118: AP203 1994 schema (CONFIG_CONTROL_DESIGN) rejected by newer kernel */
 HEADER;
-FILE_DESCRIPTION(('Ad118 - legacy CONFIG_CONTROL_DESIGN schema rejected'),'2;1');
-FILE_NAME('Ad118.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');
-/* Older AP203 schema name; current readers may refuse this identifier. */
+FILE_DESCRIPTION(('Ad118'),'2;1');
+FILE_NAME('Ad118.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
 FILE_SCHEMA(('CONFIG_CONTROL_DESIGN'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('configuration controlled 3d designs of mechanical parts and assemblies');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard','config_control_design',1994,#1);
-#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
-#11=DIRECTION('',(0.0,0.0,1.0));
-#12=DIRECTION('',(1.0,0.0,0.0));
-#13=AXIS2_PLACEMENT_3D('',#10,#11,#12);
-#20=PLANE('',#13);
-#30=ADVANCED_FACE('',(),#20,.T.);
-#40=CLOSED_SHELL('',(#30));
-#50=MANIFOLD_SOLID_BREP('legacy_part',#40);
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=DIRECTION('',(0.0,0.0,1.0));
+#3=DIRECTION('',(1.0,0.0,0.0));
+#4=AXIS2_PLACEMENT_3D('',#1,#2,#3);
+#5=PLANE('',#4);
+#6=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#7=CARTESIAN_POINT('',(1.0,0.0,0.0));
+#8=CARTESIAN_POINT('',(1.0,1.0,0.0));
+#9=CARTESIAN_POINT('',(0.0,1.0,0.0));
+#10=VERTEX_POINT('',#6);
+#11=VERTEX_POINT('',#7);
+#12=VERTEX_POINT('',#8);
+#13=VERTEX_POINT('',#9);
+#14=DIRECTION('',(1.0,0.0,0.0));
+#15=VECTOR('',#14,1.0);
+#16=LINE('',#6,#15);
+#17=EDGE_CURVE('',#10,#11,#16,.T.);
+#18=DIRECTION('',(0.0,1.0,0.0));
+#19=VECTOR('',#18,1.0);
+#20=LINE('',#7,#19);
+#21=EDGE_CURVE('',#11,#12,#20,.T.);
+#22=DIRECTION('',(-1.0,0.0,0.0));
+#23=VECTOR('',#22,1.0);
+#24=LINE('',#8,#23);
+#25=EDGE_CURVE('',#12,#13,#24,.T.);
+#26=DIRECTION('',(0.0,-1.0,0.0));
+#27=VECTOR('',#26,1.0);
+#28=LINE('',#9,#27);
+#29=EDGE_CURVE('',#13,#10,#28,.T.);
+#30=ORIENTED_EDGE('',$,$,#17,.T.);
+#31=ORIENTED_EDGE('',$,$,#21,.T.);
+#32=ORIENTED_EDGE('',$,$,#25,.T.);
+#33=ORIENTED_EDGE('',$,$,#29,.T.);
+#34=EDGE_LOOP('',(#30,#31,#32,#33));
+#35=FACE_OUTER_BOUND('',#34,.T.);
+#36=ADVANCED_FACE('',(#35),#5,.T.);
+#37=CLOSED_SHELL('outer',(#36));
+#38=BREP_WITH_VOIDS('old_brep',#37,());
 ENDSEC;
 END-ISO-10303-21;
