@@ -1,9 +1,11 @@
 """Wr019 — Re-export drops face and solid colour assignments.
 
-Catalog claim: colours lost on STEP round-trip.
+Catalog claim: colours lost on STEP round-trip. The fixture represents
+the POST-round-trip output (geometry present, no STYLED_ITEM or
+COLOUR_RGB).
 
 Previous fixture used empty-EDGE_LOOP placeholders. Regen: one real
-face + STYLED_ITEM + COLOUR_RGB — the round-trip target.
+face + NO colour entities (the post-round-trip absence is the defect).
 """
 from step_corpus.step_builder import StepFile
 
@@ -39,11 +41,6 @@ shell = f.open_shell([face])
 sbsm = f.shell_based_surface_model([shell])
 f.add_product_chain(sbsm)
 
-colour = f._emit_raw("COLOUR_RGB('roundtrip_target',0.4,0.5,0.6)")
-fasc = f._emit_raw(f"FILL_AREA_STYLE_COLOUR('',#{colour.eid})")
-fas = f._emit_raw(f"FILL_AREA_STYLE('',(#{fasc.eid}))")
-ssfa = f._emit_raw(f"SURFACE_STYLE_FILL_AREA(#{fas.eid})")
-sss = f._emit_raw(f"SURFACE_SIDE_STYLE('',(#{ssfa.eid}))")
-ssu = f._emit_raw(f"SURFACE_STYLE_USAGE(.BOTH.,#{sss.eid})")
-psa = f._emit_raw(f"PRESENTATION_STYLE_ASSIGNMENT((#{ssu.eid}))")
-f._emit_raw(f"STYLED_ITEM('si_roundtrip',(#{psa.eid}),#{face.eid})")
+# NO STYLED_ITEM, NO COLOUR_RGB — this fixture represents the
+# POST-round-trip output where colors got dropped. Byte assertion
+# verifies the absence of color entities.
