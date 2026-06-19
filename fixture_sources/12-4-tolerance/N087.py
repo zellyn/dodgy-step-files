@@ -21,19 +21,22 @@ f = StepFile(catalog_id="N087",
 p_start = f.cartesian_point((0.0, 0.0, 0.0))
 p_end = f.cartesian_point((1.0, 0.0, 0.0))
 
-# Direction and vector for the line
+# Common direction. Two VECTORs of different magnitudes ⇒ different
+# parameterization speeds on the same 3D geometry.
 line_dir = f.direction((1.0, 0.0, 0.0))
-line_vec = f.vector(line_dir, 1.0)
+vec_slow = f.vector(line_dir, 1.0)   # speed 1 unit per param
+vec_fast = f.vector(line_dir, 2.0)   # speed 2 units per param — 2x faster
 
-# First edge: line with standard parameterization [0, 1]
-line1 = f.line(p_start, line_vec)
+# First edge: line at speed 1.0; param range covers [0, 1] for unit segment.
+line1 = f.line(p_start, vec_slow)
 v_start = f.vertex_point(p_start)
 v_end = f.vertex_point(p_end)
 edge1 = f.edge_curve(v_start, v_end, line1)
 
-# Second edge: same line but with raw parameter domain [0, 2] (stretched parameterization)
-# This represents a different parameterization speed mapping same 3D geometry
-line2 = f.line(p_start, line_vec)
+# Second edge: line at speed 2.0; param range covers [0, 0.5] for the same
+# unit segment. CheckOverlapping comparing raw params would see {0..1} vs
+# {0..0.5} on identical 3D and (without normalization) declare no overlap.
+line2 = f.line(p_start, vec_fast)
 # Edge spans [0, 2] instead of [0, 1], same 3D geometry but different parameterization
 edge2 = f.edge_curve(v_start, v_end, line2)
 
