@@ -8,6 +8,52 @@ Append newest at the top.
 
 ---
 
+## 2026-06-19 (long-session continuation)
+
+- **Q3 phase-7 wave-1: regen Pf017 with 49-face shell.** Replaced
+  empty-EDGE_LOOP placeholder pathology with a real 7×7 grid in one
+  CLOSED_SHELL — true huge-single-shell pattern matching the catalog
+  claim about ShapeFix multi-pass divergence. Commit `3a8fd88`.
+- **Q2: QUALITY_DASHBOARD pytest count corrected to 520** (was 516
+  estimate). Commit `e80706d`.
+- **Q2: QUALITY_DASHBOARD stale-line cleanup** — section count → 19;
+  pytest count + others marked as predating corpus growth. Commit
+  `5d15e88`.
+- **Q2: VALIDATION_SUMMARY headline refresh** with adversarial-sweep
+  and tier-3-coverage rows. Commit `b683f2f`.
+- **B2.5 round 2: 22 load != ok tier-3 promotions** for §12.1
+  fail-to-load fixtures. Coverage 91.9% → 92.8%. Commit `9a46a58`.
+- **B4 wave-1: 3 fixtures synthesized** from FreeCAD issue tracker:
+  Ad120 (revolution-arc-crash, #16681), Wr054 (sphere face inversion,
+  #14710), A108 (mirror NAUO drop, #13581). 14 NOVEL candidates
+  remain in queue. Commits `69f1175`, `252c988`, `6ff16f1`.
+- **B4 wave-1 classification: 17 NOVEL / 24 DUP / 13 NOISE.**
+  Real-world issue-tracker novelty rate 17/69 = 24.6%. Commit
+  `08177b4`.
+- **B4 wave-1 inventory: 69 STEP issues across FreeCAD / OCCT /
+  IfcOpenShell.** Commit `3b480d1`.
+- **B3.4 solvespace oracle wired into validate2.** ORACLES list +
+  derive_summary emit `solvespace` column; install-optional graceful
+  fallback. 514 pytest pass. Commit `01e7e68`.
+- **B3.3 solvespace cross-kernel oracle skeleton + CI install.**
+  Commit `a15e8e6`.
+- **B3.1+B3.2 cross-kernel survey + recommendation.** 14 candidate
+  kernels evaluated → Solvespace + STIX selected. Commit `f5a26b0`.
+- **B2.6 tier-3 ratchet pytest** at 90% floor. Commit `db38a48`.
+- **B2.5 batch 5: 449 soft load==ok promotions.** Coverage 73% →
+  91.9% entries with tier-3. Commit `b1298a0`.
+- **B1.5 wave-1: 3 fixtures synthesized from OCCT tests/ mining**
+  (M190 compound free vertex, Wr052 untrimmed LINE, Wr053 torus
+  fused round-trip). Commits `25e4f59`, `45b48dc`.
+- **B1.1–B1.4 OCCT tests/ inventory.** 1041 test recipes, BM25
+  match → 3 NOVEL after Haiku classification. Commit `82908a1`.
+- **Q4.5 mesh-tier oracle (pure-Python first cut).** 4 pass /
+  1 unknown. Commit `e798987`.
+- **Q4.4 mesh_builder PLY/OBJ co-emit.** 15 interop files. Commit
+  `328237c`.
+- **Q4.6 catalog 5 mesh fixtures as §12.14 + Me prefix support.**
+  Commits `ad3328a` + `d53b5c6`.
+
 ## 2026-06-18
 
 - **B2 batch 4: 430 tier-3 promotions for §12.5–§12.13 + Tb prefix.**
