@@ -146,6 +146,11 @@ EXEMPT_SCHEMA_MISMATCH = {
     # default; AP242-schema support is on the builder-extension backlog).
     "Tsh065",  # tessellated shell (TESSELLATED_SHELL_REPRESENTATION etc.)
     "M087",    # AP210 NETWORK_NODE
+    # Q3 phase-7 regens (2026-06-19) — cross-product fixtures whose
+    # catalog claim involves AP242 entities (TRIANGULATED_SURFACE_SET,
+    # MIM_LF schema marker) emitted under the builder's default AP214
+    # header. The schema-vs-vocabulary mismatch IS part of the claim.
+    "Xp024",   # tessellated topology × shared shell × void containment
 }
 
 # Schema-name patterns that map to schema-IDs we care about.
