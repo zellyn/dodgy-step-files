@@ -50,18 +50,15 @@ behavior and fails CI on mismatch; that's its load-bearing role.
 
 ## Verdict matrix
 
-_Refreshed 2026-06-19 after the v0.3 Expected-validation populating pass._
+_Refreshed 2026-06-19 after the catalog-hygiene cleanup + Tsh074-083 cache refill._
 
 | Verdict | Count | % |
 |---|---:|---:|
-| CONFIRMED | 2327 | 99.06 |
+| CONFIRMED | 2337 | 99.49 |
 | CONFIRMED-WEAK | 12 | 0.51 |
 | DRIFT | 0 | 0 |
 | FAIL | 0 | 0 |
-| ERROR | 10 | 0.43 |
-
-The ERROR count is shells whose validate2 cache is stale or recently
-regenerated; CI's `_run_corpus` refreshes them on every push.
+| ERROR | 0 | 0 |
 
 ### Verdict semantics
 
