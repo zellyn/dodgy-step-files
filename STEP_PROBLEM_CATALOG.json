@@ -417,7 +417,9 @@
     "taxonomy": [
       "performance"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load != \"ok\""
+    ],
     "title": "Stack overflow via deeply nested aggregate parens"
   },
   {
@@ -1376,7 +1378,9 @@
       "spec-violation",
       "adversarial"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load != \"ok\""
+    ],
     "title": "Heap buffer overflow on overlong `'…'` string literal"
   },
   {
@@ -3400,7 +3404,9 @@
     "taxonomy": [
       "adversarial"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load != \"ok\""
+    ],
     "title": "Comment string inside STEP file breaks parser"
   },
   {
@@ -4677,7 +4683,9 @@
     "taxonomy": [
       "interop"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load != \"ok\""
+    ],
     "title": "UTF-8 BOM × missing END marker × out-of-range surface knot vector"
   },
   {
@@ -5184,7 +5192,9 @@
     "taxonomy": [
       "interop"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load != \"ok\""
+    ],
     "title": "Deeply nested aggregate × overlong string literal in one fixture (Pf × Ad cross-product)"
   },
   {
@@ -8256,7 +8266,9 @@
       "spec-violation",
       "encoding"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load != \"ok\""
+    ],
     "title": "UTF-8 BOM at start of `ISO-10303-21;`"
   },
   {
@@ -8759,7 +8771,9 @@
     "taxonomy": [
       "encoding"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load != \"ok\""
+    ],
     "title": "Unterminated string literal"
   },
   {
@@ -8923,7 +8937,9 @@
       "spec-violation",
       "encoding"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load != \"ok\""
+    ],
     "title": "String literal exceeds Ed.3 32 769-octet limit"
   },
   {
@@ -9306,7 +9322,9 @@
     "taxonomy": [
       "encoding"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load != \"ok\""
+    ],
     "title": "UTF-16 / UTF-32 BOM mistaken for an ASCII file"
   },
   {
@@ -9778,7 +9796,9 @@
       "spec-violation",
       "encoding"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load != \"ok\""
+    ],
     "title": "String literal at the Edition-3 length limit (32768 characters)"
   },
   {
@@ -10386,7 +10406,9 @@
       "spec-violation",
       "syntax"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load != \"ok\""
+    ],
     "title": "Missing or malformed closing marker `END-ISO-10303-21;`"
   },
   {
@@ -10421,7 +10443,9 @@
       "spec-violation",
       "syntax"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load != \"ok\""
+    ],
     "title": "Missing `ENDSEC;` between sections"
   },
   {
@@ -11185,7 +11209,9 @@
     "taxonomy": [
       "syntax"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load != \"ok\""
+    ],
     "title": "Edition-3 ANCHOR / REFERENCE / SIGNATURE sections present in Edition-2 readers"
   },
   {
@@ -11449,7 +11475,9 @@
       "spec-violation",
       "syntax"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load != \"ok\""
+    ],
     "title": "Multi-DATA-section file with cross-section reference via `@section_name#NNN`"
   },
   {
@@ -11561,7 +11589,9 @@
     "taxonomy": [
       "syntax"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load != \"ok\""
+    ],
     "title": "SIGNATURE section with unknown signature algorithm"
   },
   {
@@ -11677,7 +11707,9 @@
       "spec-violation",
       "syntax"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load != \"ok\""
+    ],
     "title": "Multi-DATA-section file with `#NNN` reuse and ambiguous local reference"
   },
   {
@@ -11789,7 +11821,9 @@
       "spec-violation",
       "syntax"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load != \"ok\""
+    ],
     "title": "SIGNATURE section appearing before DATA (signature-over-empty-content)"
   },
   {
@@ -11861,7 +11895,9 @@
     "taxonomy": [
       "syntax"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load != \"ok\""
+    ],
     "title": "Cross-section reference resolves through chain (`@s1#10` defined as `@s2#20`)"
   },
   {
@@ -11899,7 +11935,9 @@
       "spec-violation",
       "syntax"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load != \"ok\""
+    ],
     "title": "Cross-section reference to undefined section name"
   },
   {
@@ -12929,7 +12967,9 @@
     "taxonomy": [
       "syntax"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load != \"ok\""
+    ],
     "title": "Trailing semicolon after `ENDSEC` missing"
   },
   {
@@ -12965,7 +13005,9 @@
     "taxonomy": [
       "syntax"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load != \"ok\""
+    ],
     "title": "Missing or malformed opening magic line `ISO-10303-21;`"
   },
   {
@@ -13519,7 +13561,9 @@
     "taxonomy": [
       "syntax"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "load != \"ok\""
+    ],
     "title": "STEP parser syntax error messages inaccessible to caller (e.g., entities with unclosed parentheses and missing string quotes)"
   },
   {

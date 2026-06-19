@@ -69,6 +69,7 @@ Entries within each section are not implicitly ordered. See the *Index by catego
 - **Notes**: Cross-oracle: pure-Python Part-21 validator accepts (`warn(W_BOM)`); OCCT rejects (`reject`). OCC enforces stricter framing than the spec text requires. Synonyms: "UTF-8 BOM before ISO-10303-21", "byte order mark at start of STEP file", "EF BB BF before magic line", "parser fails on first byte BOM", "STEP file starts with BOM".
 - **Byte assertion**: bytes_starts_with(b'\xef\xbb\xbf')
 - **Byte assertion**: matches(rb'\xef\xbb\xbf')
+- **Tier-3 assertion**: load != "ok"
 - **Model impact**: The leading BOM bytes either cause the magic-line check to fail (no model loaded) or are silently consumed; downstream byte offsets in diagnostics shift by three.
 - **Expected validation**: `occt=reject/reject gmsh=reject ifc=reject`
 
@@ -255,6 +256,7 @@ Entries within each section are not implicitly ordered. See the *Index by catego
 - **Byte assertion**: matches(rb"'unclosed_string_then_eof")
 - **Byte assertion**: not_contains(b'END-ISO-10303-21;')
 - **Byte assertion**: matches(rb"#20=PERSON\(")
+- **Tier-3 assertion**: load != "ok"
 - **Model impact**: The scanner consumes bytes until the next stray apostrophe (or EOF), swallowing all following entity instances; the DATA section parse aborts and no model is produced.
 - **Expected validation**: `occt=reject/reject gmsh=reject ifc=schema_n/a`
 
@@ -313,6 +315,7 @@ Entries within each section are not implicitly ordered. See the *Index by catego
 - **Byte assertion**: max_string_literal_length > 32768
 - **Byte assertion**: length > 32768
 - **Byte assertion**: matches(rb"PERSON\(\s*'p1','A{1000,}")
+- **Tier-3 assertion**: load != "ok"
 - **Model impact**: Length fields in fixed-size string buffers may overflow or wrap; affected attribute values are truncated, and the host entity records only the prefix of the producer's intended payload.
 - **Expected validation**: `occt=reject/reject gmsh=reject ifc=schema_n/a`
 
@@ -462,6 +465,7 @@ Entries within each section are not implicitly ordered. See the *Index by catego
 - **Notes**: **See also**: Le001. Synonyms: "STEP file in UTF-16", "FF FE BOM in STEP", "UTF-32 STEP not recognised", "wide-encoded STEP fails to parse", "two-byte encoded STEP file rejected".
 - **Byte assertion**: bytes_starts_with(b'\xff\xfe') or bytes_starts_with(b'\xfe\xff')
 - **Byte assertion**: length > 100
+- **Tier-3 assertion**: load != "ok"
 - **Model impact**: Wide-encoded bytes are tokenized as ASCII, producing nonsense entity names; no model is constructed and the load aborts before the DATA section.
 - **Expected validation**: `occt=reject/reject gmsh=reject ifc=reject`
 
@@ -520,6 +524,7 @@ Entries within each section are not implicitly ordered. See the *Index by catego
 - **Notes**: **See also**: Ad038. Synonyms: "missing END-ISO-10303-21 marker", "truncated STEP file no end marker", "STEP closes with END_ISO_10303_21 underscores", "duplicate END marker in STEP", "trailing garbage after end marker".
 - **Byte assertion**: not bytes_ends_with(b'END-ISO-10303-21;')
 - **Byte assertion**: contains(b'ENDSEC;')
+- **Tier-3 assertion**: load != "ok"
 - **Model impact**: The header check fails before any DATA-section work begins; the load aborts and no entities are constructed.
 - **Expected validation**: `occt=reject/reject gmsh=reject ifc=schema_n/a`
 
@@ -532,6 +537,7 @@ Entries within each section are not implicitly ordered. See the *Index by catego
 - **Notes**: Synonyms: "missing ENDSEC between sections", "STEP HEADER runs into DATA", "ENDSEC token without semicolon", "section keyword without ENDSEC", "STEP section terminator missing".
 - **Byte assertion**: matches(rb'FILE_SCHEMA[^;]+;\s*DATA;')
 - **Byte assertion**: not matches(rb'FILE_SCHEMA.*\)\)\s*;\s*ENDSEC;')
+- **Tier-3 assertion**: load != "ok"
 - **Model impact**: Header metadata fields load with empty/wrong values; downstream consumers that branch on schema name or implementation level pick the wrong code path even though the DATA section is well-formed.
 - **Expected validation**: `occt=reject/reject gmsh=reject ifc=schema_n/a`
 
@@ -822,6 +828,7 @@ Entries within each section are not implicitly ordered. See the *Index by catego
 - **Notes**: Cross-oracle: pure-Python Part-21 validator accepts (`accept`); OCCT rejects (`reject`). OCC enforces stricter framing than the spec text requires. Synonyms: "ANCHOR section in Edition 2 reader", "REFERENCE section unknown", "SIGNATURE section ignored", "Edition 3 sections fail in old reader", "STEP Ed.3 sections rejected".
 - **Byte assertion**: contains(b'ANCHOR;') or contains(b'REFERENCE;') or contains(b'SIGNATURE;')
 - **Byte assertion**: count(b'ENDSEC') >= 3
+- **Tier-3 assertion**: load != "ok"
 - **Model impact**: Header metadata fields load with empty/wrong values; downstream consumers that branch on schema name or implementation level pick the wrong code path even though the DATA section is well-formed.
 - **Expected validation**: `occt=reject/reject gmsh=reject ifc=schema_n/a`
 
@@ -1163,6 +1170,7 @@ Entries within each section are not implicitly ordered. See the *Index by catego
 - **Notes**: Synonyms: "ENDSEC without trailing semicolon", "STEP ENDSEC missing semicolon", "section terminator no semicolon", "ENDSEC followed by newline only", "STEP ENDSEC newline before next keyword".
 - **Byte assertion**: matches(rb'ENDSEC\s*\n\s*DATA;')
 - **Byte assertion**: count(b'ENDSEC') >= 1
+- **Tier-3 assertion**: load != "ok"
 - **Model impact**: Tokenizer or grammar mismatch causes the affected entity (or the whole DATA section) to fail to parse; no entity is constructed at the offending instance number, and back-references to it become dangling.
 - **Expected validation**: `occt=reject/reject gmsh=reject ifc=schema_n/a`
 
@@ -1175,6 +1183,7 @@ Entries within each section are not implicitly ordered. See the *Index by catego
 - **Notes**: **See also**: Le001. Synonyms: "missing opening ISO-10303-21 line", "STEP file no magic header", "lowercase iso-10303-21", "double-hyphen in ISO-10303-21", "BOM before STEP magic".
 - **Byte assertion**: count(b'ISO-10303-21;') >= 1 or contains(b'iso-10303-21')
 - **Byte assertion**: matches(rb'iso-10303-21|ISO-10303-21')
+- **Tier-3 assertion**: load != "ok"
 - **Model impact**: Tokenizer or grammar mismatch causes the affected entity (or the whole DATA section) to fail to parse; no entity is constructed at the offending instance number, and back-references to it become dangling.
 - **Expected validation**: `occt=reject/reject gmsh=reject ifc=reject`
 
@@ -12738,6 +12747,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Notes**: **See also**: Ad088. Synonyms: "STEP parser error message inaccessible", "syntax error not surfaced to caller", "unclosed paren error swallowed", "parser warnings don't reach API", "STEP error log not exposed".
 - **Byte assertion**: contains(b'syntax error') or contains(b'two distinct syntax errors')
 - **Byte assertion**: count(b'syntax error') >= 2 or contains(b'two distinct')
+- **Tier-3 assertion**: load != "ok"
 - **Model impact**: Tokenizer or grammar mismatch causes the affected entity (or the whole DATA section) to fail to parse; no entity is constructed at the offending instance number, and back-references to it become dangling.
 - **Expected validation**: `occt=reject/reject gmsh=reject ifc=schema_n/a`
 
@@ -13221,6 +13231,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Notes**: Cross-oracle: pure-Python Part-21 validator accepts (`accept`); OCCT rejects (`reject`). OCC enforces stricter framing than the spec text requires.
 - **Byte assertion**: contains(b'*/ENDSEC;')
 - **Byte assertion**: contains(b'/*') and contains(b'ENDSEC')
+- **Tier-3 assertion**: load != "ok"
 - **OCC behavior**: rejects the file; outside catalog's allowed set ({heal}). Documented divergence: OCC is stricter than the catalog's lenient stance — both behaviors are defensible.
 - **Severity**: P2
 - **Model impact**: Crafted input drives the parser into an undefined-behavior path; observed effects range from silent acceptance with no model, to OOB read producing junk attribute values, to process termination by signal.
@@ -14631,6 +14642,7 @@ _Section summary: 28 entries._
 - **Expected kernel behavior**: Reject with E_DEPTH_EXCEEDED diagnostic: enforce a depth ceiling (e.g. 64) and emit a structured error. Must not crash via stack overflow.
 - **Notes**: **See also**: Pf008, Ad002.
 - **Byte assertion**: count_entity_def(b'CARTESIAN_POINT') >= 3
+- **Tier-3 assertion**: load != "ok"
 - **Model impact**: Parser/loader resource usage scales pathologically with the input size; load time grows quadratically or memory blows up, and on bounded systems the load is killed before completing.
 - **Expected validation**: `occt=reject/reject gmsh=reject ifc=schema_n/a`
  `E_AGGREGATE_TOO_DEEP`.
@@ -15042,6 +15054,7 @@ _Section summary: 41 entries._
 - **Byte assertion**: max_string_literal_length >= 32768
 - **Byte assertion**: length > 32768
 - **Byte assertion**: matches(rb"PERSON\([^;]*'A{1000,}")
+- **Tier-3 assertion**: load != "ok"
 - **Model impact**: Crafted input drives the parser into an undefined-behavior path; observed effects range from silent acceptance with no model, to OOB read producing junk attribute values, to process termination by signal.
 - **Expected validation**: `occt=reject/reject gmsh=reject ifc=schema_n/a`
 
@@ -16635,6 +16648,7 @@ _Section summary: 41 entries._
  v-knots `(0,0,0,0.4,0.3,1,1,1)`; no closing `END-ISO-10303-21;`.
 - **Expected kernel behavior**: Heal and accept, or reject with diagnostic: each invariant is addressed independently; encoding policy on BOM, framing-token policy, knot-vector validity. A kernel that rejects (fails fast) on BOM never gets to the knot defect; one that heals (accepts) BOM must then face it.
 - **Byte assertion**: contains(b'FILE_SCHEMA')
+- **Tier-3 assertion**: load != "ok"
 - **Model impact**: Cross-subsystem interaction surfaces an inconsistency between two kernel passes; one pass sees the entity as valid and another as invalid, leaving the loaded model in an internally inconsistent state.
 - **Expected validation**: `occt=reject/reject gmsh=reject ifc=reject`
 
@@ -16987,6 +17001,7 @@ _Section summary: 41 entries._
 - **Notes**: **See also**: Pf012.
 - **Byte assertion**: max_paren_depth >= 60
 - **Byte assertion**: max_string_literal_length >= 32770
+- **Tier-3 assertion**: load != "ok"
 - **Model impact**: Cross-subsystem interaction surfaces an inconsistency between two kernel passes; one pass sees the entity as valid and another as invalid, leaving the loaded model in an internally inconsistent state.
 - **Expected validation**: `occt=reject/reject gmsh=reject ifc=schema_n/a`
 
@@ -17433,6 +17448,7 @@ _Section summary: 41 entries._
 - **Notes**: Cross-oracle: pure-Python Part-21 validator accepts (`accept`); OCCT rejects (`reject`). OCC enforces stricter framing than the spec text requires. Synonyms: "string literal at 32768 char limit", "STEP string at exact Ed.3 maximum", "boundary-length string literal", "off-by-one on max string length", "max-length string truncated".
 - **Byte assertion**: max_string_literal_length >= 32768
 - **Byte assertion**: max_string_literal_length >= 32700
+- **Tier-3 assertion**: load != "ok"
 - **Model impact**: The string-encoding defect either causes the lexer to abort or to record an attribute value different from the producer's bytes; no geometric data is corrupted but identifiers/descriptions on the carrying entity are wrong.
 - **Expected validation**: `occt=reject/reject gmsh=reject ifc=schema_n/a`
 
@@ -17654,6 +17670,7 @@ _Section summary: 41 entries._
 - **Notes**: **See also**: Lh024. Synonyms: "cross-section reference @section#NNN", "Ed.3 named DATA section reference", "Ed.2 reader rejects @section#NNN", "named DATA section unsupported", "multi-DATA section cross reference".
 - **Byte assertion**: contains(b"DATA('geometry'") or contains(b"DATA('pmi'") or contains(b'@geometry#') or contains(b'@geom#')
 - **Byte assertion**: contains(b'@geometry#') or contains(b'@geom#') or contains(b'@pmi#')
+- **Tier-3 assertion**: load != "ok"
 - **Model impact**: Header metadata fields load with empty/wrong values; downstream consumers that branch on schema name or implementation level pick the wrong code path even though the DATA section is well-formed.
 - **Expected validation**: `occt=reject/reject gmsh=reject ifc=schema_n/a`
 
@@ -17699,6 +17716,7 @@ _Section summary: 41 entries._
 - **Byte assertion**: contains(b'SIGNATURE;')
 - **Byte assertion**: contains(b'algo=unknown-future-1')
 - **Byte assertion**: contains(b'algo=unknown')
+- **Tier-3 assertion**: load != "ok"
 - **OCC behavior**: rejects the file; outside catalog's allowed set ({warn-and-proceed}). Documented divergence: OCC is stricter than the catalog's lenient stance — both behaviors are defensible.
 - **Severity**: P1
 - **Model impact**: Header metadata fields load with empty/wrong values; downstream consumers that branch on schema name or implementation level pick the wrong code path even though the DATA section is well-formed.
@@ -17741,6 +17759,7 @@ _Section summary: 41 entries._
 - **Notes**: **See also**: Lh024, Lh033. Synonyms: "#NNN reuse with ambiguous local reference", "intra-section reference resolves wrong", "missing @name prefix on reference", "STEP multi-DATA local-reference ambiguity", "bare #NNN in multi-section STEP".
 - **Byte assertion**: contains(b"DATA('geom'") or contains(b"DATA('pmi'") or contains(b'@geom#')
 - **Byte assertion**: contains(b'@geom') or contains(b'@geometry')
+- **Tier-3 assertion**: load != "ok"
 - **Model impact**: Cross-references that depend on the duplicated/illegal instance number resolve to the wrong entity (or to NULL); affected sub-trees attach to incorrect parents and the resulting BRep contains dangling or mis-typed references.
 - **Expected validation**: `occt=reject/reject gmsh=reject ifc=schema_n/a`
 
@@ -17784,6 +17803,7 @@ _Section summary: 41 entries._
 - **Notes**: Cross-oracle: pure-Python Part-21 validator accepts (`accept`); OCCT rejects (`reject`). OCC enforces stricter framing than the spec text requires. Synonyms: "SIGNATURE before DATA section", "STEP signed empty content", "SIGNATURE at top of file", "signature over zero-content STEP", "STEP signature placement wrong".
 - **Byte assertion**: matches(rb'(?s)SIGNATURE;.*DATA;')
 - **Byte assertion**: contains(b'SIGNATURE') and contains(b'DATA')
+- **Tier-3 assertion**: load != "ok"
 - **Model impact**: Header metadata fields load with empty/wrong values; downstream consumers that branch on schema name or implementation level pick the wrong code path even though the DATA section is well-formed.
 - **Expected validation**: `occt=reject/reject gmsh=reject ifc=schema_n/a`
 
@@ -17816,6 +17836,7 @@ _Section summary: 41 entries._
 - **Notes**: **See also**: Lh033, Lh039. Synonyms: "chained cross-section reference", "@s1#10 resolves to @s2#20", "transitive @section reference", "STEP cross-section chain", "multi-hop named-section reference".
 - **Byte assertion**: contains(b"DATA('foundation'") and contains(b"DATA('derived'") and contains(b'@derived#') and contains(b'@foundation#')
 - **Byte assertion**: count(b'@') >= 2
+- **Tier-3 assertion**: load != "ok"
 - **OCC behavior**: rejects the file; outside catalog's allowed set ({heal}). Documented divergence: OCC is stricter than the catalog's lenient stance — both behaviors are defensible.
 - **Severity**: P1
 - **Model impact**: Header metadata fields load with empty/wrong values; downstream consumers that branch on schema name or implementation level pick the wrong code path even though the DATA section is well-formed.
@@ -17830,6 +17851,7 @@ _Section summary: 41 entries._
 - **Notes**: **See also**: Lh033, Lh039. Synonyms: "misspelled section name in cross-reference", "@geomtry instead of @geometry", "STEP @section name typo", "renamed section reference broken", "cross-reference to non-existent section".
 - **Byte assertion**: contains(b"DATA('geometry'") and contains(b"DATA('pmi'") and contains(b'@geomtry#')
 - **Byte assertion**: contains(b'@geomtry')
+- **Tier-3 assertion**: load != "ok"
 - **Model impact**: Header metadata fields load with empty/wrong values; downstream consumers that branch on schema name or implementation level pick the wrong code path even though the DATA section is well-formed.
 - **Expected validation**: `occt=reject/reject gmsh=reject ifc=schema_n/a`
 
