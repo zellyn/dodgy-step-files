@@ -1,46 +1,62 @@
 ISO-10303-21;
-/* Pmi083 - Annotation plane orientation flipped.
- * Defect: an ADVANCED_FACE has same_sense = .F. (face flipped relative
- * to its underlying surface). A GD&T ANNOTATION_PLANE shares the same
- * surface; reader copies the surface normal but ignores the face's
- * .F. orientation, so the annotation plane points the wrong way. */
+/* Pmi083: sliver ADVANCED_FACE marked .F. (high aspect ratio + reversed orientation) */
 HEADER;
-FILE_DESCRIPTION(('Pmi083 test case','Annotation plane orientation flipped'),'2;1');
-FILE_NAME('Pmi083.stp','2026-04-30T00:00:00',(''),(''),'cad-research-suite','','');
-FILE_SCHEMA(('AP242_MANAGED_MODEL_BASED_3D_ENGINEERING_MIM_LF { 1 0 10303 442 3 0 0 }'));
+FILE_DESCRIPTION(('Pmi083'),'2;1');
+FILE_NAME('Pmi083.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('managed model based 3d engineering');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard','ap242_managed_model_based_3d_engineering',2020,#1);
-#10=PRODUCT_CONTEXT('',#1,'mechanical');
-#11=PRODUCT('part1','part1','part1',(#10));
-#12=PRODUCT_DEFINITION_FORMATION('','',#11);
-#13=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
-#14=PRODUCT_DEFINITION('','',#12,#13);
-#15=PRODUCT_DEFINITION_SHAPE('','',#14);
-/* Shared planar surface */
-#100=CARTESIAN_POINT('',(0.0,0.0,0.0));
-#101=DIRECTION('z_normal',(0.0,0.0,1.0));
-#102=DIRECTION('x_ref',(1.0,0.0,0.0));
-#103=AXIS2_PLACEMENT_3D('',#100,#101,#102);
-#104=PLANE('shared_surface',#103);
-/* Reversed face: same_sense = .F. - this is the load-bearing flag */
-#105=EDGE_LOOP('',());
-#106=FACE_OUTER_BOUND('',#105,.T.);
-#107=ADVANCED_FACE('reversed_face',(#106),#104,.F.);
-/* Annotation plane sharing the same surface placement.
- * Reader will copy #103's normal (+Z) but the face's .F. flag means
- * the outward face normal is -Z; mismatch flips the annotation. */
-#110=ANNOTATION_PLANE('flipped_normal','',(),#103);
-/* Add SDR linking PRODUCT to existing geometry. */
-#9000=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
-#9001=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
-#9002=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
-#9003=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9000,'distance_accuracy_value','');
-#9004=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9003))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9000,#9001,#9002))REPRESENTATION_CONTEXT('','3D'));
-#9010=OPEN_SHELL('wrap_shell',(#107));
-#9011=SHELL_BASED_SURFACE_MODEL('wrap_sbsm',(#9010));
-#9020=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9011),#9004);
-#9021=SHAPE_DEFINITION_REPRESENTATION(#15,#9020);
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=DIRECTION('',(0.0,0.0,1.0));
+#3=DIRECTION('',(1.0,0.0,0.0));
+#4=AXIS2_PLACEMENT_3D('',#1,#2,#3);
+#5=PLANE('',#4);
+#6=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#7=CARTESIAN_POINT('',(10.0,0.0,0.0));
+#8=CARTESIAN_POINT('',(10.0,1.0E-05,0.0));
+#9=CARTESIAN_POINT('',(0.0,1.0E-05,0.0));
+#10=VERTEX_POINT('',#6);
+#11=VERTEX_POINT('',#7);
+#12=VERTEX_POINT('',#8);
+#13=VERTEX_POINT('',#9);
+#14=DIRECTION('',(1.0,0.0,0.0));
+#15=VECTOR('',#14,10.0);
+#16=LINE('',#6,#15);
+#17=EDGE_CURVE('',#10,#11,#16,.T.);
+#18=DIRECTION('',(0.0,1.0,0.0));
+#19=VECTOR('',#18,1.0E-05);
+#20=LINE('',#7,#19);
+#21=EDGE_CURVE('',#11,#12,#20,.T.);
+#22=DIRECTION('',(-1.0,0.0,0.0));
+#23=VECTOR('',#22,10.0);
+#24=LINE('',#8,#23);
+#25=EDGE_CURVE('',#12,#13,#24,.T.);
+#26=DIRECTION('',(0.0,-1.0,0.0));
+#27=VECTOR('',#26,1.0E-05);
+#28=LINE('',#9,#27);
+#29=EDGE_CURVE('',#13,#10,#28,.T.);
+#30=ORIENTED_EDGE('',$,$,#17,.T.);
+#31=ORIENTED_EDGE('',$,$,#21,.T.);
+#32=ORIENTED_EDGE('',$,$,#25,.T.);
+#33=ORIENTED_EDGE('',$,$,#29,.T.);
+#34=EDGE_LOOP('',(#30,#31,#32,#33));
+#35=FACE_OUTER_BOUND('',#34,.T.);
+#36=ADVANCED_FACE('sliver_flipped_face',(#35),#5,.F.);
+#37=OPEN_SHELL('shell',(#36));
+#38=SHELL_BASED_SURFACE_MODEL('sbsm',(#37));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('Pmi083','Pmi083','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#38),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
 ENDSEC;
 END-ISO-10303-21;
