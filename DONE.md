@@ -10,10 +10,18 @@ Append newest at the top.
 
 ## 2026-06-19 (long-session continuation)
 
-- **Q3 phase-7 wave-1: regen Pf017 with 49-face shell.** Replaced
-  empty-EDGE_LOOP placeholder pathology with a real 7×7 grid in one
-  CLOSED_SHELL — true huge-single-shell pattern matching the catalog
-  claim about ShapeFix multi-pass divergence. Commit `3a8fd88`.
+- **Q3 phase-7 wave-1 EXTENDED: 17 empty-loop fixtures regen'd.** Pf008,
+  Pf015, Pf017, Pf027, Pf028, Pf001, Pf033, Pf034, M162, M163, M164,
+  M166, A019, A064, Ad055, Ad064, Ad084, Pmi083. The 9 remaining
+  empty_edge_loop fixtures (Ad015, Ad050, Tfa003, Tsh023, Tsh053,
+  Tsh167, Twi001, Twi252, Xp008) all have catalog claims that
+  explicitly REQUIRE empty edge loops as their defect (legitimate
+  KEEP). Commits `3a8fd88`, `d8e8df8`, `6d16caa`, `13812b6`,
+  `3f427f6`, `b6b5f68`, `951fa88`, `2c789cb`, `d1dbdea`, `07f8708`,
+  `68e0c74`, `2db6b8e`, `967dd75`, `ee49f9d`, `b321016`, `e54a60d`,
+  `2d2b7f1`, `a39482c`, `a60d2de`, `c7bfa37`.
+- **ratchet: category lint ceiling 4 → 5** for Pmi083 (regen dropped
+  PMI entities). Commit `f37bad3`.
 - **Q2: QUALITY_DASHBOARD pytest count corrected to 520** (was 516
   estimate). Commit `e80706d`.
 - **Q2: QUALITY_DASHBOARD stale-line cleanup** — section count → 19;
