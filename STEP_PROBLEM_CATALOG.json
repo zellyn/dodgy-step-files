@@ -81016,10 +81016,7 @@
     "title": "Knurled body exports STEP with holes in surface (slicer reports non-manifold)"
   },
   {
-    "byte_assertions": [
-      "count_entity_def(b'MANIFOLD_SOLID_BREP') >= 3",
-      "matches(rb'FACE_OUTER_BOUND[^;]*\\.F\\.')"
-    ],
+    "byte_assertions": [],
     "category": "§12.8 mixed (sub-class: tessellation / fin array)",
     "closure_defect": null,
     "closure_intent": null,

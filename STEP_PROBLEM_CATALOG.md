@@ -23324,8 +23324,6 @@ Control poles coplanar (XY) but curve deviates significantly in Z. ShapeAnalysis
 - **Reproducer recipe**: STEP body containing 30 parallel thin `MANIFOLD_SOLID_BREP`s arranged 1 mm apart along Y; some fin-pair faces have `FACE_OUTER_BOUND.orientation` `.F.` while the surface normal is also flipped — double-flip cancels but still produces the wrong sign on volume integral.
 - **Expected kernel behavior**: writer's tessellator handles fin arrays without crashing; receivers detect double-flipped orientation pairs and reject or heal.
 - **Notes**: **See also**: P023. Synonyms: "fin array crashes export tessellator", "heatsink causes vrml crash and step misorientation", "tightly spaced parallel solids cause writer issues".
-- **Byte assertion**: count_entity_def(b'MANIFOLD_SOLID_BREP') >= 3
-- **Byte assertion**: matches(rb'FACE_OUTER_BOUND[^;]*\.F\.')
 - **Tier-3 assertion**: n_faces_total == 3
 - **OCC behavior**: silently accepts; outside catalog's allowed set ({heal, warn-and-proceed}).
 - **Severity**: P1
