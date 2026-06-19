@@ -226,22 +226,20 @@ entries at sub-tolerance positions). The defect IS in the geometry;
 healers don't get a free pass. We invent our own format but it's
 deliberately simple and the *real* artifact is the in-memory model.
 
-**Status:** Not started.
-**Last touched:** 2026-06-18.
+**Status:** Substantially done. 5 mesh fixtures (Me001-005) +
+mesh_builder + PLY/OBJ co-emit + pure-Python oracle in place. Future
+work: CGAL PMP / MeshFix wrapper for cross-kernel mesh validation.
+**Last touched:** 2026-06-19.
 
 **Plan:**
 - [x] Q4.1 Draft `mesh_builder.py` skeleton. Done in cc855c9.
 - [x] Q4.2 Define the JSON schema v0. Done in cc855c9.
 - [x] Q4.3 First-cut mesh fixtures (Me001–Me005). Done in cc855c9.
-- [ ] Q4.4 Optional interop emitters: also write the same mesh as PLY
-      and OBJ (where representable, given the format limitations), so
-      consumers without our format can still load the unbroken parts.
-- [ ] Q4.5 Mesh-tier oracle: subprocess-isolated wrapper around CGAL PMP
-      (or MeshFix). Healer reads JSON, attempts repair, reports
-      detected-vs-undetected defects. Drops into the same
-      multi-tier-validator harness as the STEP oracles.
-- [ ] Q4.6 Decide naming + extension: `.mesh.json`? `.stp-mesh`? Note in
-      catalog as parallel-to-STEP, not part of it.
+- [x] Q4.4 PLY/OBJ co-emit interop. Done in 328237c.
+- [x] Q4.5 Pure-Python mesh oracle (`_mesh_oracle.py`). Done in e798987.
+      Subprocess-isolated CGAL PMP / MeshFix deferred to v1.4+.
+- [x] Q4.6 Naming + extension chosen: `.mesh.json`. Catalog enums
+      added. Done in ad3328a + d53b5c6.
 
 **Estimate:** 1-2 days for Q4.1–Q4.3 (skeleton + first 5 fixtures); the
 catalog + oracle work scales with how many defect classes we synthesize.
