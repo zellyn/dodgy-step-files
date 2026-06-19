@@ -37116,14 +37116,16 @@
     "title": "5-face open box (missing top, free edges on rim)"
   },
   {
-    "byte_assertions": [],
+    "byte_assertions": [
+      "contains(b'ADVANCED_FACE')"
+    ],
     "category": "§12.3a",
     "closure_defect": null,
     "closure_intent": null,
     "cross_oracle_note": null,
     "description": "ShapeFix_Shell.Perform unused-vertex retention",
     "expected_kernel_behavior": "heal or reject (mechanism-specific; see Description)",
-    "expected_validation": "",
+    "expected_validation": "occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-3a-shells/Tsh119.stp",
     "id": "Tsh119",
@@ -37141,20 +37143,23 @@
       "synthesized — no external source cited"
     ],
     "taxonomy": [
+      "crash",
       "topology"
     ],
     "tier3_assertions": [],
     "title": "ShapeFix_Shell.Perform unused-vertex retention"
   },
   {
-    "byte_assertions": [],
+    "byte_assertions": [
+      "contains(b'ADVANCED_FACE')"
+    ],
     "category": "§12.3a",
     "closure_defect": null,
     "closure_intent": null,
     "cross_oracle_note": null,
     "description": "ShapeAnalysis_Shell.CheckOrientedShells uniform-orientation wrong direction",
     "expected_kernel_behavior": "heal or reject (mechanism-specific; see Description)",
-    "expected_validation": "",
+    "expected_validation": "occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-3a-shells/Tsh120.stp",
     "id": "Tsh120",
@@ -37172,20 +37177,23 @@
       "synthesized — no external source cited"
     ],
     "taxonomy": [
+      "crash",
       "topology"
     ],
     "tier3_assertions": [],
     "title": "ShapeAnalysis_Shell.CheckOrientedShells uniform-orientation wrong direction"
   },
   {
-    "byte_assertions": [],
+    "byte_assertions": [
+      "contains(b'ADVANCED_FACE')"
+    ],
     "category": "§12.3a",
     "closure_defect": null,
     "closure_intent": null,
     "cross_oracle_note": null,
     "description": "ShapeUpgrade_ShellSewing.ApplySewing tolerance-cascade",
     "expected_kernel_behavior": "heal or reject (mechanism-specific; see Description)",
-    "expected_validation": "",
+    "expected_validation": "occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-3a-shells/Tsh121.stp",
     "id": "Tsh121",
@@ -37203,20 +37211,23 @@
       "synthesized — no external source cited"
     ],
     "taxonomy": [
+      "crash",
       "topology"
     ],
     "tier3_assertions": [],
     "title": "ShapeUpgrade_ShellSewing.ApplySewing tolerance-cascade"
   },
   {
-    "byte_assertions": [],
+    "byte_assertions": [
+      "contains(b'ADVANCED_FACE')"
+    ],
     "category": "§12.3a",
     "closure_defect": null,
     "closure_intent": null,
     "cross_oracle_note": null,
     "description": "ShapeFix_Shell.FixFaceOrientation across-edge propagation",
     "expected_kernel_behavior": "heal or reject (mechanism-specific; see Description)",
-    "expected_validation": "",
+    "expected_validation": "occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-3a-shells/Tsh122.stp",
     "id": "Tsh122",
@@ -37234,20 +37245,23 @@
       "synthesized — no external source cited"
     ],
     "taxonomy": [
+      "crash",
       "topology"
     ],
     "tier3_assertions": [],
     "title": "ShapeFix_Shell.FixFaceOrientation across-edge propagation"
   },
   {
-    "byte_assertions": [],
+    "byte_assertions": [
+      "contains(b'ADVANCED_FACE')"
+    ],
     "category": "§12.3a",
     "closure_defect": null,
     "closure_intent": null,
     "cross_oracle_note": null,
     "description": "ShapeAnalysis_Shell.BadEdges adjacent-face mismatch",
     "expected_kernel_behavior": "heal or reject (mechanism-specific; see Description)",
-    "expected_validation": "",
+    "expected_validation": "occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-3a-shells/Tsh123.stp",
     "id": "Tsh123",
@@ -37265,6 +37279,7 @@
       "synthesized — no external source cited"
     ],
     "taxonomy": [
+      "crash",
       "topology"
     ],
     "tier3_assertions": [],

@@ -27994,27 +27994,32 @@ Box shell with bottom + 4 sides; top face omitted, creating free edges on the up
 **Defect**: Shell where `ShapeFix_Shell::Perform` removes a degenerate face; vertex used only by that face becomes orphaned in shell topology, leaked to parent structure.
 **Pattern**: Three-face shell; Face 3 is degenerate triangle at single point using orphan vertex #26; Perform removes Face 3 but orphan remains in shell edge/vertex graph.
 **Severity**: CEILING (v0.3 tier-3 validation).
-
+- **Byte assertion**: contains(b'ADVANCED_FACE')
+- **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 ### Tsh120 — ShapeAnalysis_Shell.CheckOrientedShells uniform-orientation wrong direction
 **Defect**: All faces have consistent orientation flag (both .T.) but normals systematically inverted (inside-out solid). `CheckOrientedShells` consistency test passes but geometric test fails.
 **Pattern**: Two-face shell; Face 1 plane normal defined as (0,0,-1) instead of (0,0,+1); Face 2 plane normal as (0,+1,0) instead of (0,-1,0). Both faces use .T. orientation flag. Faces share edge #51.
 **Severity**: CEILING (v0.3 tier-3 validation).
-
+- **Byte assertion**: contains(b'ADVANCED_FACE')
+- **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 ### Tsh121 — ShapeUpgrade_ShellSewing.ApplySewing tolerance-cascade
 **Defect**: First sewing pass produces valid shell; second sewing pass on output is no-op but tolerance epsilon accumulates in edge geometry, causing downstream healing failures.
 **Pattern**: Two-face shell with parallel planes offset by 0.0001mm (tolerance threshold). Face 1 at z=0; Face 2 at z=0.0001. Both have identical edge loop structure but separate edge geometries. Sewing should merge but tolerance causes drift.
 **Severity**: CEILING (v0.3 tier-3 validation).
-
+- **Byte assertion**: contains(b'ADVANCED_FACE')
+- **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 ### Tsh122 — ShapeFix_Shell.FixFaceOrientation across-edge propagation
 **Defect**: Two faces share edge #51 with consistent same-sense flags (.T. and .T.) but propagation logic expects alternating flags; internal edge reversal blocks correct orientation propagation.
 **Pattern**: Two-face shell sharing edge #51. Face 1 uses #51 as .T.; Face 2 should use #51 as .F. for manifold topology but uses .T. instead. Propagation flips incorrectly due to edge direction reversal.
 **Severity**: CEILING (v0.3 tier-3 validation).
-
+- **Byte assertion**: contains(b'ADVANCED_FACE')
+- **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 ### Tsh123 — ShapeAnalysis_Shell.BadEdges adjacent-face mismatch
 **Defect**: Two faces share edge #51; both traverse it in same direction (.T. orientation). Creates non-manifold edge (both face normals on same side of edge) but passes AP203 syntax validation.
 **Pattern**: Two-face shell; Face 1 (bottom, z=0) traverses #51 as .T.; Face 2 (front, y=0) also traverses #51 as .T. Both go from vertex #20 to vertex #21, creating non-manifold configuration.
 **Severity**: CEILING (v0.3 tier-3 validation).
-
+- **Byte assertion**: contains(b'ADVANCED_FACE')
+- **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 ### Tsh124 — ShapeUpgrade_RemoveInternalWires faces-with-multiple-internal-wires
 
 Face with 3 internal wires (holes); RemoveInternalWires iterates internal wires but removes them in wrong order, leaving inconsistent face state. OCCT processes multi-hole faces; iteration order mismatch causes dangling wire references.
