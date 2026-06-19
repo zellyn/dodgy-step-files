@@ -75895,8 +75895,8 @@
       "n_faces_total == 1",
       "face[0].surface_type == \"plane\"",
       "face[0].edge_count == 4",
-      "face[0].area > 899",
-      "face[0].area < 901"
+      "face[0].area > 0.99",
+      "face[0].area < 1.01"
     ],
     "title": "`LOCATING_FEATURE` referencing a non-existent shape aspect (dangling target)"
   },

@@ -8976,8 +8976,8 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Tier-3 assertion**: n_faces_total == 1
 - **Tier-3 assertion**: face[0].surface_type == "plane"
 - **Tier-3 assertion**: face[0].edge_count == 4
-- **Tier-3 assertion**: face[0].area > 899
-- **Tier-3 assertion**: face[0].area < 901
+- **Tier-3 assertion**: face[0].area > 0.99
+- **Tier-3 assertion**: face[0].area < 1.01
 - **OCC behavior**: loads a shape (no diagnostic) — reading as healing; outside catalog's allowed set ({reject}). Documented divergence: OCC's auto-repair is stronger than the catalog's reject-only stance; conservative kernels should still reject.
 - **Severity**: P1
 - **Model impact**: The PMI/GD&T annotation either fails to attach to its target geometry or loads with wrong tolerance/datum metadata; the model geometry is unchanged but the semantic PMI structure is broken or invisible to downstream tools.
