@@ -39,11 +39,27 @@ Status: inventory + BM25 search done. Synthesis pending.
 - [x] Filter generic noise (TODO test syntax, "faulty_N" variables, IGES
       tests, separator banners). Remaining signal: **47 candidate
       novel-defect descriptions** in `/tmp/occt_mining_misses_filtered.json`.
-- [ ] Manual review of the 47 candidates. Classify each:
-      "true novelty (synthesize)" vs "matches an existing entry our BM25
-      missed (annotate)" vs "noise (drop)".
-- [ ] Synthesize the true-novelty subset as new Wave-1 fixtures via the
-      Python builder.
+- [x] Haiku classification of the 47 candidates (45 classified after
+      noise re-filter): **3 NOVEL · 38 DUPLICATE · 4 NOISE**.
+      Result at `/tmp/occt_classification.md`.
+- [x] Synthesize the NOVEL subset:
+  - bug33053 → **M190** "compound with free vertex dropped on export"
+  - bug32817_1 → **Wr052** "EDGE_CURVE references unbounded LINE"
+  - bug32556 → **Wr053** "toroidal+cylindrical fused round-trip corruption"
+  - bug33261 ("Empty shape after reading process") — generic message,
+    too thin to pattern-mine without the upstream .stp data file.
+    Logged for closer inspection if/when the OCCT test data archive is
+    accessible.
+  - bug33331 ("Unsupported Representation Items") — same: generic
+    message, deferred.
+
+### Wave 1 outcome
+
+Novelty rate after BM25 + noise-filter + classification: **3 novel /
+449 OCCT prose tests = 0.67%**. This is a strong convergence signal:
+the catalog has saturated on OCCT-tests-source patterns. Future waves
+should target other sources (issue trackers via B4, vendor docs, etc.)
+rather than expecting more from `tests/`.
 
 ### Wave 1 candidate themes (sampled from filtered misses)
 

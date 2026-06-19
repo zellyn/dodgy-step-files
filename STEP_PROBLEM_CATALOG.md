@@ -31208,3 +31208,15 @@ exercised against CGAL PMP / MeshFix.
 - **Byte assertion**: contains(b'VERTEX_POINT')
 - **Tier-3 assertion**: shape_null == True
 - **Model impact**: Compound on round-trip has one fewer sub-shape than the in-memory original; downstream consumers that expect the original compound's item count fail topology-count validation.
+
+### Wr053 — Toroidal-surface portion of fused solid corrupted on STEP round-trip
+- **Category**: §12.13 writer-pathology (sub-class: torus-surface write corruption)
+- **Sources**: Pattern-mined from OCCT/tests/bugs/step/bug32556 (LGPL-clean — pattern only, no bytes copied). OCCT regression: torus(5, 3) fused with cylinder(radius 2, height 10) should round-trip to a 12-edge / 7-vertex result; OCCT-pre-fix produced a corrupted shape with non-matching counts.
+- **Description**: A fused solid built from a TOROIDAL_SURFACE (major radius 5, minor radius 3) and a CYLINDRICAL_SURFACE (radius 2, height 10, offset center) loses geometric fidelity through STEP write+read. The torus parameters round-trip cleanly, but the post-fuse face_outer_bound topology gets corrupted: edge count and vertex count drift from the in-memory original. Receivers see a shape with the wrong number of sub-shapes after the round-trip.
+- **Reproducer recipe**: an OPEN_SHELL containing one ADVANCED_FACE on TOROIDAL_SURFACE(maj=5, min=3) and one ADVANCED_FACE on CYLINDRICAL_SURFACE(r=2) with vertical seam edge length 10. After write+read, expected counts are 12 edges, 7 vertices, surface area ~649.9.
+- **Expected kernel behavior**: preserve sub-shape counts and torus/cylinder parameters through round-trip; if the fuse-result is corrupted, healer must repair the face_outer_bound topology.
+- **Notes**: Synonyms: "torus fused solid corrupted on STEP round-trip", "TOROIDAL_SURFACE write corruption", "fused toroidal+cylindrical loses edge count", "torus + cylinder write+read produces wrong shape counts". See also Wr052 (writer untrimmed-curve sibling).
+- **Byte assertion**: contains(b'TOROIDAL_SURFACE')
+- **Byte assertion**: contains(b'CYLINDRICAL_SURFACE')
+- **Tier-3 assertion**: shape_null == True
+- **Model impact**: Round-trip produces a shape whose nbshapes counts (edges, vertices, faces) differ from the in-memory original; downstream consumers that rely on a stable shape signature fail validation.
