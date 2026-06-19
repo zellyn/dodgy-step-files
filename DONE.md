@@ -8,6 +8,30 @@ Append newest at the top.
 
 ---
 
+## 2026-06-19 (long-session continuation, batch 3)
+
+- **B4 wave-2 mining: 10 NOVEL fixtures synthesized.** Sources:
+  solvespace#1601 (Wr055 half-flipped ORIENTED_EDGEs), #1589 (Wr056
+  writer aliasing), #1264 (Wr057 s390x empty), pythonocc#1278 (Wr058
+  umlaut crash), #661 (Wr059 cyl→NURBS), #794 (Wr060 vendor offset),
+  #1295 (Ad127 OSD::SetSignal escape), cascadio#19 (Pf039 traversal
+  loop), #22 (Pf038 OOM), #2251 (Lh049 reader endianness). Plus
+  Pf037 fixture for previously-orphan BRL-CAD step-g catalog entry.
+  Commit `dce921e`. Wave-2 yield 10/95 ≈ 10.5% (vs wave-1 24.6%);
+  trimesh-direct and 3MFConsortium saturated.
+- **Schema oracle: exempt Xp024 (AP242 TRIANGULATED_SURFACE_SET in
+  AP214 file).** Same precedent as Tsh065/M087: AP242 vocabulary IS
+  the catalog claim's mismatch. Commit `f1e99f6`.
+- **Pmi059 + Pmi083 regained PMI annotation chains; category-lint
+  ceiling 6 → 4.** Pmi059 emits DATUM_FEATURE; Pmi083 emits
+  DATUM_FEATURE + GEOMETRIC_TOLERANCE. Remaining 4 violations are
+  intentional and documented (Tsh077/136/183 empty-shell-IS-defect,
+  Pmi106 AP242-not-in-builder). Commit `e451b79`.
+- **Q2 doc refresh: QUALITY_DASHBOARD + VALIDATION_SUMMARY** to
+  2026-06-19 numbers. Catalog 2302 → 2329 entries; tier-3 coverage
+  ≥85% (1986/2329); 4915 total machine-checkable invariants. Commit
+  `4c3f1d7`.
+
 ## 2026-06-19 (long-session continuation, batch 2)
 
 - **B4 wave-1 extension: 16 issue-tracker fixtures synthesized.** Adds
