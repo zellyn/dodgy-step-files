@@ -103,6 +103,50 @@ both should coexist.
 
 ---
 
+### B4 — Mine real-world issue trackers for independent-provenance fixtures
+
+**Why:** The catalog grew from OCCT source + literature + LLM deep-passes —
+all *internal* views of what defects exist. Sampling real bug reports from
+OSS issue trackers (FreeCAD, Solvespace, OCCT MANTIS, libIGES, py-OCC,
+trimesh, etc.) gives independent provenance: *what users actually hit*,
+not just what theory or source-code reading predicts. Cross-validates
+coverage, sharpens bug-reporter-search vocabulary (already a tracked
+metric: 1127 `Synonyms:` lines and 174 BM25 regression queries), stays
+LGPL-clean because we synthesize pattern-matched fixtures, not copy bytes.
+
+**Status:** Not started.
+**Last touched:** 2026-06-18.
+
+**Plan:**
+- [ ] B4.1 Identify target trackers and choose 4-5: FreeCAD GitHub issues,
+      Solvespace GitHub, OCCT MANTIS, libIGES, py-OCC, trimesh, pythonOCC,
+      blender STEP import bugs. Pick by activity + bug-report quality.
+- [ ] B4.2 Build a sampler. For each tracker, fetch 30-50 recent
+      STEP-related bug reports (via GitHub API + label filter / MANTIS
+      query). Save title + body + attached file links to a local
+      `audit/bug_mining/<tracker>/<id>.json`.
+- [ ] B4.3 For each sampled report, extract: (a) the defect *pattern*
+      described, (b) entities/values implicated, (c) what was wrong from
+      the user's perspective. NEVER download attached STEP files — we
+      synthesize from pattern, never copy.
+- [ ] B4.4 Match against existing catalog. For each report, run the BM25
+      bug-search to find the top-3 catalog entries. Tally hit-rate:
+      *novelty rate* = (no-good-match / total).
+- [ ] B4.5 For non-matches, synthesize new fixtures via the builder.
+      Adds entries to `step-examples/` + catalog.
+- [ ] B4.6 Run the adversarial-verify loop to bring novelties to the
+      98%+ VALID bar.
+- [ ] B4.7 Log per-wave novelty-rate in `audit/issue_mining_log.md`.
+
+**Estimate:** B4.1–B4.3 ~1 day (sampling infra); B4.4 ~1 day (match
+analysis); B4.5–B4.7 scales with novelty rate. If novelty is ~20% as
+expected, 30 reports → ~6 new fixtures per wave.
+
+**Hazards:** Issue-tracker terms-of-service usually require attribution
+on direct quotation. We synthesize, don't quote, but record the source
+ticket ID in `Sources:` field so provenance is preserved. Watch for
+private/customer-confidential reports — skip those.
+
 ### B3 — Cross-kernel validation matrix
 
 **Why:** Each fixture currently runs through OCCT + gmsh + ifcopenshell.

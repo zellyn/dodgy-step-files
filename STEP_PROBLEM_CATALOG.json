@@ -7591,7 +7591,9 @@
     "taxonomy": [
       "encoding"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Edition-default encoding mismatch (Ed.2 ISO-8859-1 vs Ed.3 UTF-8)"
   },
   {
@@ -7631,7 +7633,9 @@
       "spec-violation",
       "encoding"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "`\\X\\` (single-byte ISO-8859) escape with bad hex digit count or non-hex input"
   },
   {
@@ -7676,7 +7680,9 @@
       "crash",
       "encoding"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "`\\X2\\…\\X0\\` (UCS-2) escape: 3 hex digits in one group"
   },
   {
@@ -7713,7 +7719,9 @@
       "spec-violation",
       "encoding"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "`\\X4\\…\\X0\\` (UCS-4) escape with hex run not divisible by 8 or containing surrogate code points"
   },
   {
@@ -7747,7 +7755,9 @@
       "spec-violation",
       "encoding"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "`\\X2\\` endianness confusion / lone-surrogate handling"
   },
   {
@@ -7784,7 +7794,9 @@
       "silent-loss",
       "encoding"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "`\\S\\X` (8-bit shift) directive: misuse, chaining, or apostrophe-after-`\\S\\`"
   },
   {
@@ -7822,7 +7834,9 @@
       "spec-violation",
       "encoding"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "`\\P{X}\\` page-shift directive: bad selector / state-machine omission"
   },
   {
@@ -7856,7 +7870,9 @@
       "spec-violation",
       "encoding"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "`\\F\\` font-shift directive consumed wrongly"
   },
   {
@@ -7892,7 +7908,9 @@
       "crash",
       "encoding"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "`\\N\\` notation directive misused as C-style newline escape"
   },
   {
@@ -7927,7 +7945,9 @@
     "taxonomy": [
       "encoding"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Unrecognised backslash control directive in a string"
   },
   {
@@ -7965,7 +7985,9 @@
     "taxonomy": [
       "encoding"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Apostrophe-doubling escape `''` confused with string terminator"
   },
   {
@@ -7998,7 +8020,9 @@
     "taxonomy": [
       "encoding"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Apostrophe inside a `\\X2\\…\\X0\\` block decoded as string close"
   },
   {
@@ -8074,7 +8098,9 @@
       "spec-violation",
       "encoding"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Single backslash inside a string literal (Windows path)"
   },
   {
@@ -8116,7 +8142,9 @@
       "spec-violation",
       "encoding"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Raw control character (U+0000.U+001F) in string body"
   },
   {
@@ -8154,7 +8182,9 @@
       "round-trip",
       "encoding"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Inline newline inside an unterminated literal silently concatenated"
   },
   {
@@ -8237,7 +8267,9 @@
       "spec-violation",
       "encoding"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Component name in non-UTF-8 locale encoding (GB18030 / Shift-JIS / cp1251 / DOS850)"
   },
   {
@@ -8276,7 +8308,9 @@
     "taxonomy": [
       "encoding"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Non-ASCII / Japanese / Greek Unicode in PRODUCT.name via `\\X2\\…\\X0\\`"
   },
   {
@@ -8312,7 +8346,9 @@
       "spec-violation",
       "encoding"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Locale-dependent decimal separator inside numeric attribute"
   },
   {
@@ -8347,7 +8383,9 @@
       "silent-loss",
       "encoding"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Empty / blank / single-space NAME silently emptied"
   },
   {
@@ -8383,7 +8421,9 @@
       "crash",
       "encoding"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "`\\X0\\` end-marker missing — remainder treated as encoded content"
   },
   {
@@ -8418,7 +8458,9 @@
       "silent-loss",
       "encoding"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "8-bit characters and case-insensitive keyword tolerance in lexer"
   },
   {
@@ -8454,7 +8496,9 @@
       "silent-loss",
       "encoding"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Stray NUL bytes / DOS `\\r\\n` line endings inside the file"
   },
   {
@@ -8487,7 +8531,9 @@
     "taxonomy": [
       "encoding"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Header `FILE_DESCRIPTION` strings containing commas or parentheses (regex-split bug)"
   },
   {
@@ -8523,7 +8569,9 @@
     "taxonomy": [
       "encoding"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "`\\PE\\` selector and `\\Q\\x` directive support"
   },
   {
@@ -8596,7 +8644,9 @@
     "taxonomy": [
       "encoding"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "`\\X2\\…\\X0\\` or `\\N\\` escape spanning a physical line break"
   },
   {
@@ -8632,7 +8682,9 @@
     "taxonomy": [
       "encoding"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Encoding directives emitted in Ed.3 UTF-8 file unnecessarily"
   },
   {
@@ -8671,7 +8723,9 @@
       "round-trip",
       "encoding"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Round-trip loss of `\\X2\\` content through XML / DB layer"
   },
   {
@@ -8708,7 +8762,9 @@
     "taxonomy": [
       "encoding"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "`\\PE\\` alphabet-extension directive switching to a non-Latin code page mid-string"
   },
   {
@@ -8745,7 +8801,9 @@
       "spec-violation",
       "encoding"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Bare `\\PE\\` directive at end-of-string with no operand letter"
   },
   {
@@ -8781,7 +8839,9 @@
       "spec-violation",
       "encoding"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "`\\PE\\` selector letter outside the legal A.I range"
   },
   {
@@ -8821,7 +8881,9 @@
       "silent-loss",
       "encoding"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "`\\Q\\` numeric-character-reference at the upper Unicode boundary (U+10FFFF)"
   },
   {
@@ -8861,7 +8923,9 @@
       "spec-violation",
       "encoding"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "`\\Q\\` encoding a code point in the UTF-16 surrogate range (U+D800.U+DFFF)"
   },
   {
@@ -8899,7 +8963,9 @@
       "silent-loss",
       "encoding"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "`\\Q\\` payload contains non-decimal characters"
   },
   {
@@ -8936,7 +9002,9 @@
       "silent-loss",
       "encoding"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "`\\X4\\` with a valid supplementary-plane code point followed by a short trailing hex run"
   },
   {
@@ -8975,7 +9043,9 @@
       "spec-violation",
       "encoding"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "`\\X2\\` payload containing UTF-16 surrogate halves"
   },
   {
@@ -9046,7 +9116,9 @@
     "taxonomy": [
       "encoding"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "String literal containing every legal printable ASCII character"
   },
   {
@@ -9082,7 +9154,9 @@
     "taxonomy": [
       "encoding"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "REAL literal at IEEE-754 subnormal / minimum-normal / maximum boundaries"
   },
   {
@@ -9119,7 +9193,9 @@
       "spec-violation",
       "encoding"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "REAL literal exceeding double range (overflow → +Inf / underflow → 0)"
   },
   {
@@ -9156,7 +9232,9 @@
     "taxonomy": [
       "encoding"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Carriage-return stripping during STEP file write"
   },
   {
@@ -9194,7 +9272,9 @@
     "taxonomy": [
       "encoding"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Unicode characters in STEP export silently dropped"
   },
   {
@@ -9233,7 +9313,9 @@
     "taxonomy": [
       "encoding"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "`\\X2\\…\\X0\\` (UCS-2) escape: missing `\\X0\\` terminator"
   },
   {
@@ -9272,7 +9354,9 @@
       "spec-violation",
       "encoding"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "`\\X2\\…\\X0\\` (UCS-2) escape: whitespace splits the hex run"
   },
   {
@@ -9312,7 +9396,9 @@
       "spec-violation",
       "encoding"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "`\\X2\\…\\X0\\` (UCS-2) escape: nested `\\X2\\` opened without closing the prior"
   },
   {
@@ -9351,7 +9437,9 @@
       "silent-loss",
       "encoding"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "High-bit byte ambiguous between Windows-1252 and ISO-8859-1"
   },
   {
@@ -9391,7 +9479,9 @@
       "spec-violation",
       "encoding"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Boolean lexeme written as `.TRUE.` / `.FALSE.` instead of canonical `.T.` / `.F.`"
   },
   {
@@ -9431,7 +9521,9 @@
       "spec-violation",
       "encoding"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Mixed `.T.` and `.TRUE.` boolean lexemes within one file"
   },
   {
@@ -9472,7 +9564,9 @@
       "spec-violation",
       "encoding"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Records terminated with `;\\n` plus extra blank lines between records"
   },
   {
@@ -9515,7 +9609,9 @@
       "spec-violation",
       "encoding"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Final record before `ENDSEC;` lacks trailing newline at EOF"
   },
   {
@@ -9553,7 +9649,9 @@
     "taxonomy": [
       "encoding"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "German umlauts in `PRODUCT.name` mis-decoded by reader (Latin-1/UTF-8 confusion)"
   },
   {
@@ -9661,7 +9759,9 @@
       "spec-violation",
       "syntax"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "HEADER section missing one of the three required entities (FILE_DESCRIPTION / FILE_NAME / FILE_SCHEMA), wrong order, or duplicated"
   },
   {
@@ -9771,7 +9871,9 @@
     "taxonomy": [
       "syntax"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Multiple schema names listed inside a single FILE_SCHEMA"
   },
   {
@@ -9806,7 +9908,9 @@
     "taxonomy": [
       "syntax"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Duplicate `FILE_SCHEMA` records with conflicting schema names"
   },
   {
@@ -9843,7 +9947,9 @@
       "spec-violation",
       "syntax"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Blank, mis-cased, or unrecognized schema name"
   },
   {
@@ -9880,7 +9986,9 @@
       "spec-violation",
       "syntax"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "`FileImplementationLevel` non-canonical value"
   },
   {
@@ -9917,7 +10025,9 @@
       "spec-violation",
       "syntax"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "`FileTimeStamp` not in ISO-8601 form"
   },
   {
@@ -9990,7 +10100,9 @@
     "taxonomy": [
       "syntax"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Non-deterministic / build-time timestamp pollution"
   },
   {
@@ -10027,7 +10139,9 @@
       "spec-violation",
       "syntax"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "User-defined HEADER entity not prefixed with `!`"
   },
   {
@@ -10060,7 +10174,9 @@
     "taxonomy": [
       "syntax"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Edition-3 extra header entities (`FILE_INFO`, `FILE_POPULATION`, `SECTION_LANGUAGE`, …)"
   },
   {
@@ -10095,7 +10211,9 @@
       "silent-loss",
       "syntax"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "User-defined entity name with `!` prefix in DATA section"
   },
   {
@@ -10131,7 +10249,9 @@
     "taxonomy": [
       "syntax"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Lower-case keyword (`ifcperson`, `cartesian_point`, `ENTITY` etc.)"
   },
   {
@@ -10169,7 +10289,9 @@
     "taxonomy": [
       "syntax"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "FILE_SCHEMA names a schema that disagrees with entity types in DATA"
   },
   {
@@ -10458,7 +10580,9 @@
     "taxonomy": [
       "syntax"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Schema name in FILE_SCHEMA has whitespace, comments, or vendor extensions inside the list"
   },
   {
@@ -10495,7 +10619,9 @@
     "taxonomy": [
       "syntax"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Lower-case `name` field values where Recommended-Practices keywords are defined"
   },
   {
@@ -10531,7 +10657,9 @@
     "taxonomy": [
       "syntax"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Header recognition relies on FILE_NAME originating-system substring (I-DEAS auto-detect)"
   },
   {
@@ -10747,7 +10875,9 @@
     "taxonomy": [
       "syntax"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "User-defined HEADER entity (`!FOO`) emitted before required HEADER records"
   },
   {
@@ -10785,7 +10915,9 @@
       "spec-violation",
       "syntax"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "`FILE_POPULATION` header record naming an unterminated population set"
   },
   {
@@ -10859,7 +10991,9 @@
     "taxonomy": [
       "syntax"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "`FILE_INFO` Edition-3 record contradicting `FILE_NAME` date"
   },
   {
@@ -10964,7 +11098,9 @@
     "taxonomy": [
       "syntax"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Header `FILE_DESCRIPTION` with comments inside string"
   },
   {
@@ -11078,7 +11214,9 @@
       "spec-violation",
       "syntax"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "HEADER section contains only `/* */` comments and no required records"
   },
   {
@@ -11114,7 +11252,9 @@
       "spec-violation",
       "syntax"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Lower-case section keywords (`data;` instead of `DATA;`)"
   },
   {
@@ -11151,7 +11291,9 @@
     "taxonomy": [
       "syntax"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "STEP reader cannot consume a non-seekable stream (in-memory / pipe / network)"
   },
   {
@@ -11221,7 +11363,9 @@
     "taxonomy": [
       "syntax"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Load-time warning vs data-content warning: severity confusion"
   },
   {
@@ -11256,7 +11400,9 @@
     "taxonomy": [
       "syntax"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "A \"Mend\" demotes a Fail to a Warning, hiding the original failure (e.g., B_SPLINE_CURVE_WITH_KNOTS with wrong knot count auto-fixed)"
   },
   {
@@ -11292,7 +11438,9 @@
     "taxonomy": [
       "syntax"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Reader exception swallowed (entity bound to null) when B_SPLINE control points use extreme-magnitude or subnormal coordinates (1.0E+308 / 5.0E-324)"
   },
   {
@@ -11327,7 +11475,9 @@
     "taxonomy": [
       "syntax"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Transfer watchdog fires: dependency cycle in entity references"
   },
   {
@@ -11362,7 +11512,9 @@
     "taxonomy": [
       "syntax"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Transfer Status remains Void after Defined was expected: unknown entity type in DATA section silently skipped (e.g., made-up future-schema entity)"
   },
   {
@@ -11410,7 +11562,9 @@
       "silent-loss",
       "syntax"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "`LoadONBrep` virtual-dispatch fall-through umbrella (BRL-CAD step-g)"
   },
   {
@@ -11452,7 +11606,9 @@
     "taxonomy": [
       "syntax"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "REAL literal missing mandatory decimal point"
   },
   {
@@ -11488,7 +11644,9 @@
     "taxonomy": [
       "syntax"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "REAL literal with no digit before the decimal point"
   },
   {
@@ -11524,7 +11682,9 @@
     "taxonomy": [
       "syntax"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Lower-case `e` exponent or whitespace around exponent"
   },
   {
@@ -11596,7 +11756,9 @@
     "taxonomy": [
       "syntax"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Explicit positive sign on numeric literal (`+1.0`)"
   },
   {
@@ -11668,7 +11830,9 @@
     "taxonomy": [
       "syntax"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Float literal with extreme exponent / non-finite real"
   },
   {
@@ -11741,7 +11905,9 @@
     "taxonomy": [
       "syntax"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Complex / multiple-inheritance entity record: non-alphabetic leaf ordering"
   },
   {
@@ -11777,7 +11943,9 @@
     "taxonomy": [
       "syntax"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Empty parameter list `()` versus typed empty parameter"
   },
   {
@@ -11811,7 +11979,9 @@
     "taxonomy": [
       "syntax"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Untyped (`*`) attribute used where derived not declared / `$` confused with `*`"
   },
   {
@@ -12087,7 +12257,9 @@
       "silent-loss",
       "syntax"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Tail garbage after end marker"
   },
   {
@@ -12156,7 +12328,9 @@
       "silent-loss",
       "syntax"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Comment terminator absent — runs through EOF"
   },
   {
@@ -12190,7 +12364,9 @@
     "taxonomy": [
       "syntax"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Apostrophe inside `/* .. */` comment misread as string delimiter"
   },
   {
@@ -12258,7 +12434,9 @@
     "taxonomy": [
       "syntax"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Comment longer than implementation buffer"
   },
   {
@@ -12369,7 +12547,9 @@
     "taxonomy": [
       "syntax"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Boolean attribute given `.U.` (LOGICAL UNKNOWN at BOOLEAN slot)"
   },
   {
@@ -12403,7 +12583,9 @@
     "taxonomy": [
       "syntax"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Binary literal `\"…\"` malformed (bit-count nibble or hex case)"
   },
   {
@@ -12440,7 +12622,9 @@
     "taxonomy": [
       "syntax"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Instance ID `#0` (must be positive non-zero)"
   },
   {
@@ -12508,7 +12692,9 @@
     "taxonomy": [
       "syntax"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "String concatenation across consecutive literals (not allowed)"
   },
   {
@@ -12653,7 +12839,9 @@
       "silent-loss",
       "syntax"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Complex / multiple-inheritance entity record: ancestor leaf omitted"
   },
   {
@@ -12728,7 +12916,9 @@
     "taxonomy": [
       "syntax"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Boolean attribute given long-form `.UNKNOWN.`"
   },
   {
@@ -12764,7 +12954,9 @@
     "taxonomy": [
       "syntax"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Instance ID with 22 digits (overflows `uint64_t` accumulator)"
   },
   {
@@ -12801,7 +12993,9 @@
       "silent-loss",
       "syntax"
     ],
-    "tier3_assertions": [],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
     "title": "Instance ID just past `UINT64_MAX` wraps to a low-numbered ID"
   },
   {
@@ -26506,13 +26700,13 @@
     "closure_defect": null,
     "closure_intent": null,
     "cross_oracle_note": null,
-    "description": "Face splitting by area threshold; threshold value 0.0 should mean \"don't split\" but is incorrectly treated as \"split every sub-face\". Reproducer: Planar face with area threshold 0.0 triggers infinite recursion.",
-    "expected_kernel_behavior": "heal: investigate / reject: geometric degeneracy",
+    "description": "ShapeUpgrade_FaceDivideArea splits a face when its area exceeds a runtime threshold parameter; threshold value 0.0 should be a no-op (\"don't split\") but is incorrectly treated as \"split every sub-face\", triggering unbounded recursion. The threshold is a runtime API argument, not a STEP attribute, so this fixture provides only the geometric setup (a planar face); the defect is observable when calling `ShapeUpgrade_FaceDivideArea::SetMaxArea(0.0); Perform()` on the loaded shape.",
+    "expected_kernel_behavior": "treat threshold=0.0 as identity / no-op",
     "expected_validation": "",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2c-surfaces/Gs097.stp",
     "id": "Gs097",
-    "notes": "synthesized from earlier wave; backfilled from fixture comment",
+    "notes": "synthesized from earlier wave; backfilled from fixture comment. Runtime-only defect: reproduce via kernel-API invocation, not via static STEP file content.",
     "occ_behavior_note": null,
     "pair_with": null,
     "provenance_tier": "bytes-sufficient",

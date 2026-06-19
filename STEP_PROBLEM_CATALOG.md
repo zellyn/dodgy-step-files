@@ -79,6 +79,7 @@ Entries within each section are not implicitly ordered. See the *Index by catego
 - **Reproducer recipe**: an Ed.3 file body containing the raw bytes `\xC3\xA9` for "é"; or an Ed.2 file using `'\X\E9'` read by an Ed.3-only tool.
 - **Expected kernel behavior**: Heal and accept: inspect the FILE_DESCRIPTION `implementation_level` and conformance-class declaration to determine edition; accept both forms regardless and never assume the file declares its encoding.
 - **Byte assertion**: contains(b'\\X\\E9')
+- **Tier-3 assertion**: shape_null == True
 - **Notes**: Synonyms: "STEP file with mixed Ed.2 and Ed.3 encoding", "Edition 2 file read as UTF-8", "raw é byte misread as Latin-1", "non-ASCII byte interpreted by wrong edition", "Edition mismatch on accented characters".
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
@@ -95,6 +96,7 @@ Entries within each section are not implicitly ordered. See the *Index by catego
 - **Byte assertion**: contains(b'\\X\\e9')
 - **Byte assertion**: contains(b'\\X\\009')
 - **Byte assertion**: contains(b'\\X\\F')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: Malformed hex escape leaves the affected string attribute either truncated or containing wrong code points; the host entity (PERSON, PRODUCT, etc.) loads with a corrupted name field.
@@ -108,6 +110,7 @@ Entries within each section are not implicitly ordered. See the *Index by catego
 - **Expected kernel behavior**: validate group count and codepoint range; emit `E_BAD_X2_DIRECTIVE` on malformed input; warn-and-best-effort decode the chars present without crashing.
 - **Notes**: Crash potential when an out-of-range value is fed to a downstream UTF-8 encoder. Validation observed: silent-empty rather than the cited crash; the malformed string in PERSON.name does not reach the downstream UTF-8 encoder at fixture scale; the kernel-mishandling-by-silent-acceptance still demonstrates the defect class. **See also**: Le026, Le032, Le051, Le052, Le053. Synonyms: "X2 UCS-2 escape with three hex digits", "X2 hex group not multiple of four", "malformed Unicode escape in PERSON name", "X2 directive odd-length payload", "STEP Unicode escape rejects 3-digit group".
 - **Byte assertion**: contains(b'\\X2\\03B\\X0\\')
+- **Tier-3 assertion**: shape_null == True
 - **Model impact**: The `\X2\` block is consumed incorrectly; subsequent bytes leak into the decoded string and the carrying entity attribute records garbled text instead of the intended Unicode.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
@@ -120,6 +123,7 @@ Entries within each section are not implicitly ordered. See the *Index by catego
 - **Byte assertion**: contains(b'\\X4\\03C0\\X0\\')
 - **Byte assertion**: contains(b'\\X4\\0000D83D\\X0\\')
 - **Byte assertion**: contains(b'\\X4\\00110000\\X0\\')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Notes**: Synonyms: "X4 UCS-4 escape malformed", "supplementary plane character broken", "lone surrogate in X4 escape", "code point above U+10FFFF in STEP", "X4 hex run not divisible by 8".
@@ -133,6 +137,7 @@ Entries within each section are not implicitly ordered. See the *Index by catego
 - **Reproducer recipe**: `'\X2\D800\X0\'` (lone high surrogate).
 - **Expected kernel behavior**: validate surrogate pairing; reject lone surrogates; always interpret hex groups as big-endian.
 - **Byte assertion**: contains(b'\\X2\\D800\\X0\\')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Notes**: Synonyms: "lone surrogate in STEP string", "X2 endianness wrong", "invalid UTF-8 from STEP encoder", "surrogate-half decoded as character", "STEP Unicode endian flipped".
@@ -149,6 +154,7 @@ Entries within each section are not implicitly ordered. See the *Index by catego
 - **Notes**: Cross-oracle: pure-Python Part-21 validator rejects (reject(E_STRING_OPEN)); OCCT silently accepts (load is `empty`). OCC auto-heals a spec-level violation. Synonyms: "S directive followed by apostrophe closes string", "8-bit shift escape misuse", "chained S directives", "string truncated at backslash S apostrophe", "STEP string ends mid-escape".
 - **Byte assertion**: contains(b'\\S\\')
 - **Byte assertion**: count(b'\\S\\') >= 2
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: The 8-bit shift directive desynchronizes the string scanner; the host attribute loads with merged or truncated content, and parity tracking for the rest of the DATA section may be off by one apostrophe.
@@ -163,6 +169,7 @@ Entries within each section are not implicitly ordered. See the *Index by catego
 - **Notes**: Synonyms: "lowercase page selector", "P directive with digit selector", "Polish characters garbled in STEP", "page-shift state machine ignored", "PA through PI page directive bad".
 - **Byte assertion**: contains(b'\\Pg\\') or contains(b'\\P1\\') or contains(b'\\P!\\')
 - **Byte assertion**: count(b'\\P') >= 2
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: The page selector is ignored or silently mishandled; characters after the directive decode against the wrong ISO-8859 page so the attribute string carries the wrong glyphs even though the entity is otherwise valid.
@@ -175,6 +182,7 @@ Entries within each section are not implicitly ordered. See the *Index by catego
 - **Reproducer recipe**: `'mix\F\katakana hello'` (illegal multi-letter tag).
 - **Expected kernel behavior**: reject with diagnostic; ignoring the directive is safer than over-consuming text.
 - **Byte assertion**: contains(b'\\F\\')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Notes**: Synonyms: "F directive consumes too many bytes", "font-shift escape multi-character", "CJK font tag confused with STEP escape", "F directive treated as HTML tag", "font shift directive runs past one letter".
@@ -190,6 +198,7 @@ Entries within each section are not implicitly ordered. See the *Index by catego
 - **Notes**: Validation observed: silent-empty rather than the cited crash. Specific crash code path may not be reached at fixture scale; the kernel-mishandling-by-silent-acceptance still demonstrates the defect class. Synonyms: "N directive misread as newline", "literal newline encoded with backslash N", "N notation directive missing operand", "C-style newline escape rejected", "N escape spans line break".
 - **Byte assertion**: contains(b'\\N\\')
 - **Byte assertion**: count(b'\\N\\') >= 2
+- **Tier-3 assertion**: shape_null == True
 - **Model impact**: The `\N\` directive is misinterpreted as a newline marker; literal text intended by the producer is silently re-flowed and the loaded attribute differs from the source bytes.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
@@ -201,6 +210,7 @@ Entries within each section are not implicitly ordered. See the *Index by catego
 - **Expected kernel behavior**: reject the directive; recover by passing the bytes through literally with a warning.
 - **Notes**: **See also**: Le030. Synonyms: "unknown backslash escape in string", "made-up control directive", "STEP rejects unknown escape", "vendor-extension escape passes through", "non-standard backslash sequence".
 - **Byte assertion**: contains(b'\\Z\\') or contains(b'\\M\\')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal, reject, warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must heal, reject, or emit a diagnostic this fixture.
 - **Severity**: P1
 - **Model impact**: Malformed hex escape leaves the affected string attribute either truncated or containing wrong code points; the host entity (PERSON, PRODUCT, etc.) loads with a corrupted name field.
@@ -215,6 +225,7 @@ Entries within each section are not implicitly ordered. See the *Index by catego
 - **Notes**: Synonyms: "doubled apostrophe in STEP string misread as terminator", "It''s parsed as two strings", "embedded quote breaks string", "apostrophe doubling not recognised", "single quote escape mishandled".
 - **Byte assertion**: contains(b"O''Brien") or contains(b"a''b") or contains(b"''''")
 - **Byte assertion**: count(b"''") >= 3
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: Mistaking `''` for a string terminator desynchronizes the entity-parameter parser; subsequent attributes shift by one position and downstream entity construction either fails type-check or builds the wrong sub-tree.
@@ -227,6 +238,7 @@ Entries within each section are not implicitly ordered. See the *Index by catego
 - **Reproducer recipe**: `'pre\X\27post'`
 - **Expected kernel behavior**: Heal and accept: scanner must recognise `\X\` consumes exactly two hex digits and `\X2\` continues until `\X0\` before deciding apostrophe parity.
 - **Byte assertion**: contains(b'\\X\\27')
+- **Tier-3 assertion**: shape_null == True
 - **Notes**: Synonyms: "hex 27 inside X2 escape closes string", "apostrophe code-point misread as quote", "X2 block contains 27 garbles parser", "string closes inside Unicode escape", "embedded apostrophe code in hex run".
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
@@ -255,6 +267,7 @@ Entries within each section are not implicitly ordered. See the *Index by catego
 - **Notes**: Synonyms: "literal backslash from Windows path", "single backslash inside string", "C:\path forms accidental escape", "Windows file path escapes confused", "STEP string contains raw backslash".
 - **Byte assertion**: matches(rb"'C:\\\\[A-Za-z]")
 - **Byte assertion**: count(b'C:\\') >= 1
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P2
 - **Model impact**: The accidental directive consumes following bytes; the loaded path string is shorter than the source bytes, and round-trip writers may emit a different value than they read.
@@ -269,6 +282,7 @@ Entries within each section are not implicitly ordered. See the *Index by catego
 - **Notes**: **See also**: Le018, Le028. Synonyms: "raw tab in STEP string", "literal newline inside string", "raw control char inside literal", "NUL byte inside STEP string", "binary control byte unencoded in attribute".
 - **Byte assertion**: matches(rb"'[^']*[\x00-\x08\x0b\x0c\x0e-\x1f][^']*'")
 - **Byte assertion**: matches(rb"'[^']*\t[^']*'")
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: Raw control bytes either abort the lexer at the offending offset or silently concatenate split content; either way the attribute value differs from the producer's intended bytes.
@@ -283,6 +297,7 @@ Entries within each section are not implicitly ordered. See the *Index by catego
 - **Notes**: **See also**: Le017. Synonyms: "string spanning multiple lines silently joined", "newline inside literal eaten", "two-line description merged into one", "STEP string joins lines without separator", "multiline literal becomes single line".
 - **Byte assertion**: matches(rb"FILE_DESCRIPTION\(\('first line\nsecond line'")
 - **Byte assertion**: matches(rb"PERSON\(\s*'p1','para1\s*\n")
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: Raw control bytes either abort the lexer at the offending offset or silently concatenate split content; either way the attribute value differs from the producer's intended bytes.
@@ -311,6 +326,7 @@ Entries within each section are not implicitly ordered. See the *Index by catego
 - **Notes**: **See also**: Le022, Le035. Synonyms: "GB18030 bytes raw in STEP product name", "Shift-JIS in PRODUCT.name", "Cyrillic cp1251 chars unescaped", "Japanese characters as raw bytes in STEP", "non-UTF-8 locale bytes in attribute".
 - **Byte assertion**: matches(rb"'[^']*[\\x80-\\xff][^']*'")
 - **Byte assertion**: matches(rb"PRODUCT\([^;]*[\x80-\xff]")
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: The 8-bit shift directive desynchronizes the string scanner; the host attribute loads with merged or truncated content, and parity tracking for the rest of the DATA section may be off by one apostrophe.
@@ -325,6 +341,7 @@ Entries within each section are not implicitly ordered. See the *Index by catego
 - **Notes**: **See also**: Le021, Le036. Synonyms: "Japanese product name in STEP", "Greek letters in PMI annotation", "X2 Unicode lost on import", "non-ASCII PRODUCT name shows as question marks", "Asian characters dropped on read".
 - **Byte assertion**: contains(b'\\X2\\03B1\\X0\\')
 - **Byte assertion**: count(b'\\X2\\') >= 1
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: Non-ASCII characters are dropped, replaced with `?`, or mojibaked; the entity loads but its name/description attribute carries different glyphs than the producer wrote.
@@ -339,6 +356,7 @@ Entries within each section are not implicitly ordered. See the *Index by catego
 - **Notes**: Synonyms: "European decimal comma in STEP REAL", "1,5 instead of 1.5 in attribute", "locale comma corrupts coordinates", "German locale STEP REAL parse fail", "decimal separator wrong in numeric".
 - **Byte assertion**: matches(rb"CARTESIAN_POINT\('[^']*',\([0-9]+,[0-9]+,")
 - **Byte assertion**: matches(rb'\(0,\s*0,\s*0,\s*0,\s*0\)')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: Numeric or character data is parsed against the wrong locale rules; coordinates or attribute strings load with values different from those the producer wrote, potentially producing degenerate geometry downstream.
@@ -352,6 +370,7 @@ Entries within each section are not implicitly ordered. See the *Index by catego
 - **Expected kernel behavior**: Heal and accept: distinguish empty `''` from whitespace-only `' '`; preserve the sender's literal value, or apply a "useful-length" trim only after explicit user opt-in. Must not silently empty.
 - **Byte assertion**: matches(rb"PRODUCT\(' ',")
 - **Byte assertion**: count(b"PRODUCT('") >= 1
+- **Tier-3 assertion**: shape_null == True
 - **Notes**: Synonyms: "empty PRODUCT name silently dropped", "single-space NAME becomes empty", "blank string trimmed in STEP", "whitespace-only NAME loses content", "STEP attribute becomes empty after import".
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P2
@@ -366,6 +385,7 @@ Entries within each section are not implicitly ordered. See the *Index by catego
 - **Expected kernel behavior**: warn and best-effort decode the Unicode chars present; revert to literal-ASCII mode at the closing apostrophe; do not crash.
 - **Notes**: Validation observed: silent-empty rather than the cited garbling. Specific crash code path may not be reached at fixture scale; the kernel-mishandling-by-silent-acceptance still demonstrates the defect class. **See also**: Le005. Synonyms: "X2 escape missing X0 terminator", "Unicode run leaks into rest of string", "no X0 closer on hex run", "tail of string treated as encoded", "missing X0 garbles STEP literal".
 - **Byte assertion**: contains(b'\\X2\\00B0')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must emit a diagnostic this fixture.
 - **Severity**: P1
 - **Model impact**: The `\X2\` block is consumed incorrectly; subsequent bytes leak into the decoded string and the carrying entity attribute records garbled text instead of the intended Unicode.
@@ -381,6 +401,7 @@ Entries within each section are not implicitly ordered. See the *Index by catego
 - **Notes**: Cross-oracle: pure-Python Part-21 validator rejects (reject(E_MAGIC_CASE)); OCCT silently accepts (load is `empty`). OCC auto-heals a spec-level violation. Synonyms: "high-bit byte in EXPRESS schema rejected", "8-bit char in STEP comment", "lex grammar tolerates Latin-1", "degree symbol in schema comment fails", "non-ASCII in keywords".
 - **Byte assertion**: contains(b'iso-10303-21;') or contains(b'EndSec;') or contains(b'End-Iso-10303-21;')
 - **Byte assertion**: matches(rb'[\x80-\xff]')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts under one heal mode and rejects under the other (no shape produced); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: Bytes ≥ 0x80 in comments or keywords are rewritten or rejected; the schema/file either fails to load entirely or loads with corrupted comment/keyword tokens.
@@ -397,6 +418,7 @@ Entries within each section are not implicitly ordered. See the *Index by catego
 - **Byte assertion**: contains(b'\r\n')
 - **Byte assertion**: contains(b'\x00')
 - **Byte assertion**: matches(rb'\x00')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: rejects under one heal mode and silently accepts under the other; outside catalog's allowed set ({warn-and-proceed}). Documented divergence: OCC is stricter than the catalog's warn-and-proceed stance — both behaviors are defensible.
 - **Severity**: P1
 - **Model impact**: Raw control bytes either abort the lexer at the offending offset or silently concatenate split content; either way the attribute value differs from the producer's intended bytes.
@@ -410,6 +432,7 @@ Entries within each section are not implicitly ordered. See the *Index by catego
 - **Expected kernel behavior**: Heal and accept: tokenise strings before splitting parameters; treat `'…'` content opaquely.
 - **Notes**: Synonyms: "FILE_DESCRIPTION with comma trips header parser", "regex header parser breaks on parens", "comma inside string splits header wrong", "IFC header parens confuse split", "header description with embedded comma".
 - **Byte assertion**: matches(rb"FILE_DESCRIPTION\(\(\s*'[^']*\([^)]+\)")
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: The header parameter parser splits on punctuation inside string literals; FILE_DESCRIPTION fields load with the wrong number of strings and producer metadata is misattributed or lost.
@@ -424,6 +447,7 @@ Entries within each section are not implicitly ordered. See the *Index by catego
 - **Notes**: **See also**: Le012. Synonyms: "PE directive not implemented", "Q directive passes through as literal", "alternate-quote escape unrecognised", "legacy Q directive in STEP", "STEP PE escape ignored".
 - **Byte assertion**: contains(b'\\PE\\') or contains(b'\\Q\\')
 - **Byte assertion**: contains(b'\\Q\\') or contains(b'\\PE\\')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P2
 - **Model impact**: Unimplemented directive bytes pass through as literal text; the loaded attribute string contains raw `\PE\` or `\Q\` sequences instead of decoded characters.
@@ -450,6 +474,7 @@ Entries within each section are not implicitly ordered. See the *Index by catego
 - **Notes**: **See also**: Le005. Synonyms: "X2 escape split across CRLF", "hex run broken by line break", "directive spanning line break", "STEP escape across newline", "Unicode hex run interrupted by newline".
 - **Byte assertion**: matches(rb'\\X2\\[^\\\\]*\r?\n[^\\\\]*\\X0\\')
 - **Byte assertion**: count(b'\\X2\\') >= 1
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P2
 - **Model impact**: A whitespace-only attribute is silently emptied during normalization; the loaded entity records `''` where the source carried `' '`, losing the producer's intent.
@@ -463,6 +488,7 @@ Entries within each section are not implicitly ordered. See the *Index by catego
 - **Expected kernel behavior**: Heal and accept both edition styles regardless of declared edition; never assume the file declares its encoding mode.
 - **Notes**: **See also**: Le021. Synonyms: "unnecessary X escapes in UTF-8 file", "Ed.2 escapes in Ed.3 STEP", "double-decoded UTF-8", "redundant control directives in modern STEP", "X escape in UTF-8 file double-decodes".
 - **Byte assertion**: contains(b'\\X\\') and matches(rb"'[^']*[\xc0-\xff][\x80-\xbf]")
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: Bytes are decoded twice or against the wrong edition default; the resulting string carries either double-encoded UTF-8 or replacement characters where the producer intended a specific code point.
@@ -480,6 +506,7 @@ Entries within each section are not implicitly ordered. See the *Index by catego
 - **Byte assertion**: contains(b'\\X4\\')
 - **Byte assertion**: contains(b'\\X2\\')
 - **Byte assertion**: contains(b'\\\\')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: Round-trip through the kernel's storage layer drops or replaces rare code points; re-exported files differ from the original Unicode content even though both instances are individually valid.
@@ -517,6 +544,7 @@ Entries within each section are not implicitly ordered. See the *Index by catego
 - **Expected kernel behavior**: reject with "missing required header entity X" or "header section out of order"; never null-deref the schema pointer.
 - **Notes**: **See also**: Lh005. Synonyms: "FILE_SCHEMA missing from HEADER", "FILE_NAME twice in HEADER", "DATA before HEADER in STEP", "header records out of order", "duplicated header entity".
 - **Byte assertion**: not matches(rb'FILE_SCHEMA\s*\(')
+- **Tier-3 assertion**: shape_null == True
 - **Model impact**: Cross-references that depend on the duplicated/illegal instance number resolve to the wrong entity (or to NULL); affected sub-trees attach to incorrect parents and the resulting BRep contains dangling or mis-typed references.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=reject`
 
@@ -555,6 +583,7 @@ Entries within each section are not implicitly ordered. See the *Index by catego
 - **Notes**: Validation observed: silent-empty (no shape produced) rather than the cited divergent-pick behavior. Specific divergent-pick code path may not be exercised at fixture scale; the kernel-mishandling-by-silent-acceptance still demonstrates the defect class (implementation-defined behavior on multi-schema lists). **See also**: Lh006. Synonyms: "multiple schemas in FILE_SCHEMA", "FILE_SCHEMA lists AP203 and AP214 together", "two schema names in one FILE_SCHEMA", "STEP picks wrong schema from multi-list", "compound FILE_SCHEMA confuses receiver".
 - **Byte assertion**: matches(rb"FILE_SCHEMA\(\(\s*'[^']+'\s*,\s*'[^']+'\s*\)\)")
 - **Byte assertion**: count(b"','") >= 2 or matches(rb"FILE_SCHEMA\(\(\s*'[^']+',\s*'")
+- **Tier-3 assertion**: shape_null == True
 - **Model impact**: Header metadata fields load with empty/wrong values; downstream consumers that branch on schema name or implementation level pick the wrong code path even though the DATA section is well-formed.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
@@ -566,6 +595,7 @@ Entries within each section are not implicitly ordered. See the *Index by catego
 - **Expected kernel behavior**: reject; exactly one FILE_SCHEMA permitted.
 - **Notes**: **See also**: Lh006. Synonyms: "duplicate FILE_SCHEMA records", "two FILE_SCHEMA lines in HEADER", "conflicting schema names in header", "second FILE_SCHEMA overrides first", "schema declared twice with different names".
 - **Byte assertion**: count(b'FILE_SCHEMA') >= 2
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: Cross-references that depend on the duplicated/illegal instance number resolve to the wrong entity (or to NULL); affected sub-trees attach to incorrect parents and the resulting BRep contains dangling or mis-typed references.
@@ -580,6 +610,7 @@ Entries within each section are not implicitly ordered. See the *Index by catego
 - **Notes**: **See also**: Lh006. Synonyms: "empty FILE_SCHEMA value", "mixed-case schema name", "vendor schema in FILE_SCHEMA", "comma-separated schemas inside one string", "unrecognised schema name".
 - **Byte assertion**: matches(rb"FILE_SCHEMA\(\(\s*'AUTOMOTIVE_DESIGN_MIM(?!_LF)'")
 - **Byte assertion**: contains(b'AUTOMOTIVE_DESIGN_MIM')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: Header metadata fields load with empty/wrong values; downstream consumers that branch on schema name or implementation level pick the wrong code path even though the DATA section is well-formed.
@@ -594,6 +625,7 @@ Entries within each section are not implicitly ordered. See the *Index by catego
 - **Notes**: **See also**: Le020. Synonyms: "non-canonical implementation_level in FILE_DESCRIPTION", "STEP conformance code wrong format", "vendor branding in implementation_level", "1.0 instead of 1;1 in header", "implementation_level overflow".
 - **Byte assertion**: contains(b"'Simulia 2018'") or matches(rb"FILE_DESCRIPTION\([^;]*'1\.0'")
 - **Byte assertion**: contains(b'Simulia') or contains(b"'1.0'")
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject, warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must reject or emit a diagnostic this fixture.
 - **Severity**: P1
 - **Model impact**: Header metadata fields load with empty/wrong values; downstream consumers that branch on schema name or implementation level pick the wrong code path even though the DATA section is well-formed.
@@ -607,6 +639,7 @@ Entries within each section are not implicitly ordered. See the *Index by catego
 - **Expected kernel behavior**: Warn and accept: lexically valid as STRING; semantic layer warns; do not reject (block import) on non-conformant timestamp.
 - **Notes**: **See also**: Lh012, Lh013. Synonyms: "FILE_NAME timestamp not ISO-8601", "RFC 822 date in STEP header", "STEP timestamp 27/12/2003 format", "epoch integer in FILE_NAME timestamp", "locale-formatted date in header".
 - **Byte assertion**: matches(rb"FILE_NAME\([^;]*'[0-9]{1,2}/[0-9]{1,2}/[0-9]{2,4}")
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject, warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must reject or emit a diagnostic this fixture.
 - **Severity**: P1
 - **Model impact**: Header metadata fields load with empty/wrong values; downstream consumers that branch on schema name or implementation level pick the wrong code path even though the DATA section is well-formed.
@@ -636,6 +669,7 @@ Entries within each section are not implicitly ordered. See the *Index by catego
 - **Byte assertion**: contains(b'FILE_NAME')
 - **Byte assertion**: contains(b'FILE_SCHEMA')
 - **Byte assertion**: contains(b'HEADER;')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: Header metadata fields load with empty/wrong values; downstream consumers that branch on schema name or implementation level pick the wrong code path even though the DATA section is well-formed.
@@ -650,6 +684,7 @@ Entries within each section are not implicitly ordered. See the *Index by catego
 - **Notes**: **See also**: Lh017. Synonyms: "vendor HEADER entity without bang prefix", "user-defined header missing exclamation mark", "VENDOR_INFO bare without !", "non-spec header entity collides with future spec", "custom HEADER record name not prefixed".
 - **Byte assertion**: matches(rb"FILE_SCHEMA\([^;]*\);\s*VENDOR_INFO\(")
 - **Byte assertion**: contains(b'VENDOR_INFO')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject, warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must reject or emit a diagnostic this fixture.
 - **Severity**: P1
 - **Model impact**: Header metadata fields load with empty/wrong values; downstream consumers that branch on schema name or implementation level pick the wrong code path even though the DATA section is well-formed.
@@ -662,6 +697,7 @@ Entries within each section are not implicitly ordered. See the *Index by catego
 - **Reproducer recipe**: append `FILE_INFO('Report Date','2025-04-21 18:16:37', ..);` between FILE_SCHEMA and ENDSEC.
 - **Expected kernel behavior**: accept any number of extra header entities under Edition 3; warn for unknown names; reject under strict Edition-2.
 - **Byte assertion**: contains(b'FILE_POPULATION') or contains(b'SECTION_LANGUAGE') or contains(b'FILE_INFO')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Notes**: Synonyms: "FILE_POPULATION header record", "Edition 3 extra header entities", "SECTION_LANGUAGE in HEADER", "Ed.2 reader rejects FILE_INFO", "Edition 3 header beyond required three".
@@ -678,6 +714,7 @@ Entries within each section are not implicitly ordered. See the *Index by catego
 - **Notes**: Cross-oracle: pure-Python Part-21 validator rejects (reject(E_UNRESOLVED_REFS)); OCCT silently accepts (load is `empty`). OCC auto-heals a spec-level violation. Synonyms: "bang-prefixed entity in DATA section", "user-defined entity rejected by regex", "!FOO entity in DATA", "schema reader rejects ! prefix", "STEP entity name with exclamation mark".
 - **Byte assertion**: matches(rb'#\d+\s*=\s*!')
 - **Byte assertion**: matches(rb'#\d+\s*=\s*!\w+\(')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: Header metadata fields load with empty/wrong values; downstream consumers that branch on schema name or implementation level pick the wrong code path even though the DATA section is well-formed.
@@ -692,6 +729,7 @@ Entries within each section are not implicitly ordered. See the *Index by catego
 - **Notes**: **See also**: Lh030. Synonyms: "lowercase keyword in STEP file", "ifcperson instead of IFCPERSON", "cartesian_point in lowercase", "mixed-case entity name", "STEP entity not all caps".
 - **Byte assertion**: contains(b'cartesian_point') or contains(b'Cartesian_Point') or contains(b'ifcperson')
 - **Byte assertion**: matches(rb'EndSec;|End-Iso-10303-21;|cartesian_point|Cartesian_Point|ifcperson')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must emit a diagnostic this fixture.
 - **Severity**: P1
 - **Model impact**: Header metadata fields load with empty/wrong values; downstream consumers that branch on schema name or implementation level pick the wrong code path even though the DATA section is well-formed.
@@ -707,6 +745,7 @@ Entries within each section are not implicitly ordered. See the *Index by catego
 - **Byte assertion**: contains(b'IFC2X3_PROJECT')
 - **Byte assertion**: matches(rb"FILE_SCHEMA\(\('IFC4'\)\)")
 - **Byte assertion**: contains(b'IFC2X3') and contains(b'IFC4')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: Header metadata fields load with empty/wrong values; downstream consumers that branch on schema name or implementation level pick the wrong code path even though the DATA section is well-formed.
@@ -817,6 +856,7 @@ Entries within each section are not implicitly ordered. See the *Index by catego
 - **Expected kernel behavior**: Heal and accept: parse FILE_SCHEMA via the same robust string-literal tokenizer as DATA; choose the most-capable supported schema; never fall back to byte-level regex on the raw header.
 - **Byte assertion**: matches(rb"FILE_SCHEMA\([^;]*/\*[^;]*\*/")
 - **Byte assertion**: contains(b'/* legacy */') or contains(b'/* ')
+- **Tier-3 assertion**: shape_null == True
 - **Notes**: Synonyms: "comment inside FILE_SCHEMA list", "vendor extension in schema name list", "whitespace in FILE_SCHEMA element", "FILE_SCHEMA with embedded comment", "schema-name list malformed".
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
@@ -832,6 +872,7 @@ Entries within each section are not implicitly ordered. See the *Index by catego
 - **Notes**: Adjacent to Lh018 but specifically about RP-defined string attribute values rather than Part-21 keywords. **See also**: Lh018, Pmi043. Synonyms: "lower-case enum value in name field", "Recommended Practices keyword case mismatch", "composite spelled in mixed case", "STEP attribute string-compare fails on case", "RP-defined keyword not lower-case".
 - **Byte assertion**: contains(b"GEOMETRIC_TOLERANCE_RELATIONSHIP('Composite'")
 - **Byte assertion**: contains(b"'Composite'")
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: Header metadata fields load with empty/wrong values; downstream consumers that branch on schema name or implementation level pick the wrong code path even though the DATA section is well-formed.
@@ -847,6 +888,7 @@ Entries within each section are not implicitly ordered. See the *Index by catego
 - **Notes**: **See also**: Lh019. Synonyms: "I-DEAS auto-detect by FILE_NAME substring", "preprocessor_version string match brittle", "false-positive non-manifold detection", "STEP receiver inferring vendor from header", "originating-system substring detection".
 - **Byte assertion**: contains(b'I-DEAS')
 - **Byte assertion**: matches(rb"FILE_NAME\([^;]*'I-DEAS")
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: Header metadata fields load with empty/wrong values; downstream consumers that branch on schema name or implementation level pick the wrong code path even though the DATA section is well-formed.
@@ -874,6 +916,7 @@ Entries within each section are not implicitly ordered. See the *Index by catego
 - **Notes**: A primary cause of integer-vs-real type-coercion bugs. **See also**: Ad049, Ls002, Ls003, Ls004, Ls005, Ls006, Ls009. **OCC behavior**: silently coerces the integer to a REAL with no diagnostic; kernel mishandling; the catalog above forbids silent coercion. Synonyms: "REAL with no decimal point", "integer where REAL required", "1 written instead of 1.", "DIRECTION coords missing dots", "STEP REAL missing trailing period".
 - **Byte assertion**: matches(rb"DIRECTION\([^;]*,\(\s*1\s*,")
 - **Byte assertion**: contains(b'(1,0,0)') or matches(rb',\(1,\d')
+- **Tier-3 assertion**: shape_null == True
 - **Model impact**: Tokenizer or grammar mismatch causes the affected entity (or the whole DATA section) to fail to parse; no entity is constructed at the offending instance number, and back-references to it become dangling.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
@@ -886,6 +929,7 @@ Entries within each section are not implicitly ordered. See the *Index by catego
 - **Notes**: **See also**: Ls001. Synonyms: "REAL with no digit before decimal", ".5 instead of 0.5 in STEP", "leading-dot REAL literal", "%g formatter emits .5", "missing zero before decimal".
 - **Byte assertion**: matches(rb"\(\s*\.\d")
 - **Byte assertion**: contains(b'.5') and matches(rb'\(\.\d')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: Tokenizer or grammar mismatch causes the affected entity (or the whole DATA section) to fail to parse; no entity is constructed at the offending instance number, and back-references to it become dangling.
@@ -900,6 +944,7 @@ Entries within each section are not implicitly ordered. See the *Index by catego
 - **Notes**: **See also**: Ls001. Synonyms: "lowercase e in REAL exponent", "1e+18 instead of 1E+18", "whitespace in REAL exponent", "STEP exponent has plus sign", "non-standard exponent in STEP".
 - **Byte assertion**: matches(rb'\d[eE]\+?\d') and (matches(rb'\d e\d') or matches(rb'\d\.?e[+-]?\d'))
 - **Byte assertion**: matches(rb'\d[Ee][+-]?\d')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must emit a diagnostic this fixture.
 - **Severity**: P1
 - **Model impact**: Tokenizer or grammar mismatch causes the affected entity (or the whole DATA section) to fail to parse; no entity is constructed at the offending instance number, and back-references to it become dangling.
@@ -929,6 +974,7 @@ Entries within each section are not implicitly ordered. See the *Index by catego
 - **Notes**: **See also**: Ls001. **OCC behavior**: silently strips the leading `+` sign with no diagnostic on the surrounding context; kernel mishandling; the catalog above expects uniform handling without sign-stripping. Synonyms: "plus sign on positive REAL", "+1.0 in STEP literal", "explicit positive sign on numeric", "STEP rejects leading plus", "INTEGER with explicit plus".
 - **Byte assertion**: matches(rb'\(\s*\+\d')
 - **Byte assertion**: matches(rb'\(\+\d')
+- **Tier-3 assertion**: shape_null == True
 - **Model impact**: Tokenizer or grammar mismatch causes the affected entity (or the whole DATA section) to fail to parse; no entity is constructed at the offending instance number, and back-references to it become dangling.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
@@ -955,6 +1001,7 @@ Entries within each section are not implicitly ordered. See the *Index by catego
 - **Notes**: **See also**: Ad014. Synonyms: "1.0E+999999 overflows to infinity", "STEP REAL becomes inf", "NaN from STEP", "infinity in geometry pipeline", "non-finite REAL breaks sort".
 - **Byte assertion**: contains(b'1.0E+999999') or contains(b'1.0E-999999')
 - **Byte assertion**: count(b'E+999999') + count(b'E-999999') >= 1
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: Tokenizer or grammar mismatch causes the affected entity (or the whole DATA section) to fail to parse; no entity is constructed at the offending instance number, and back-references to it become dangling.
@@ -983,6 +1030,7 @@ Entries within each section are not implicitly ordered. See the *Index by catego
 - **Notes**: **See also**: Ls047, Ls048. Synonyms: "complex entity leaves out of order", "multiple-inheritance leaves not alphabetic", "STEP complex record wrong order", "leaf order divergent from external mapping", "complex entity ordering error".
 - **Byte assertion**: matches(rb'#\d+\s*=\s*\(\s*[A-Z_]+\(')
 - **Byte assertion**: count(b'NAMED_UNIT(*)') >= 1 or contains(b'PLANE_ANGLE_UNIT()')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: Tokenizer or grammar mismatch causes the affected entity (or the whole DATA section) to fail to parse; no entity is constructed at the offending instance number, and back-references to it become dangling.
@@ -997,6 +1045,7 @@ Entries within each section are not implicitly ordered. See the *Index by catego
 - **Notes**: **See also**: Ad015. Synonyms: "empty parameter list versus null", "PRODUCT() with no attributes", "zero-attribute STEP entity", "schema expects attributes but none provided", "empty parens for typed parameter".
 - **Byte assertion**: contains(b'PRODUCT();') or contains(b'IFCMEASURE(IFCLENGTHMEASURE())')
 - **Byte assertion**: matches(rb'PRODUCT\(\s*\)') or contains(b'IFCMEASURE(')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: Tokenizer or grammar mismatch causes the affected entity (or the whole DATA section) to fail to parse; no entity is constructed at the offending instance number, and back-references to it become dangling.
@@ -1011,6 +1060,7 @@ Entries within each section are not implicitly ordered. See the *Index by catego
 - **Notes**: Synonyms: "dollar versus star in STEP attribute", "* used where $ expected", "$ used in derived slot", "untyped parameter confusion", "STEP null vs derived marker".
 - **Byte assertion**: matches(rb',\s*\*\s*[,)]')
 - **Byte assertion**: count(b'*') >= 2
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: Tokenizer or grammar mismatch causes the affected entity (or the whole DATA section) to fail to parse; no entity is constructed at the offending instance number, and back-references to it become dangling.
@@ -1119,6 +1169,7 @@ Entries within each section are not implicitly ordered. See the *Index by catego
 - **Notes**: **See also**: Ad080.
 - **Notes**: Cross-oracle: pure-Python Part-21 validator rejects (reject(E_NO_CLOSE)); OCCT silently accepts (load is `empty`). OCC auto-heals a spec-level violation. Synonyms: "garbage after STEP end marker", "log lines after END-ISO-10303-21", "concatenated STEP files", "data after STEP terminator", "stray DATA after end marker".
 - **Byte assertion**: matches(rb'(?s)END-ISO-10303-21;.+\S')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject, warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must reject or emit a diagnostic this fixture.
 - **Severity**: P1
 - **Model impact**: Tokenizer or grammar mismatch causes the affected entity (or the whole DATA section) to fail to parse; no entity is constructed at the offending instance number, and back-references to it become dangling.
@@ -1146,6 +1197,7 @@ Entries within each section are not implicitly ordered. See the *Index by catego
 - **Notes**: Cross-oracle: pure-Python Part-21 validator rejects (reject(E_NO_CLOSE)); OCCT silently accepts (load is `empty`). OCC auto-heals a spec-level violation. Synonyms: "unclosed STEP comment runs through EOF", "comment without closing star-slash", "STEP lexer reads past file end", "/* without */ in STEP", "comment terminator missing".
 - **Byte assertion**: bytes_ends_with(b'closing it') or matches(rb'(?s)/\*[^*]+$')
 - **Byte assertion**: matches(rb'(?s)/\*[^*]*$')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: Tokenizer or grammar mismatch causes the affected entity (or the whole DATA section) to fail to parse; no entity is constructed at the offending instance number, and back-references to it become dangling.
@@ -1161,6 +1213,7 @@ Entries within each section are not implicitly ordered. See the *Index by catego
 - **Notes**: Synonyms: "apostrophe inside STEP comment misread", "comment containing single quote breaks parser", "comment apostrophe paired with later quote", "STEP comment quote desyncs scanner", "in-comment apostrophe confuses lexer".
 - **Byte assertion**: matches(rb"/\*[^*]*'[^*]*\*/")
 - **Byte assertion**: matches(rb"/\*[^*]*'")
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: Tokenizer or grammar mismatch causes the affected entity (or the whole DATA section) to fail to parse; no entity is constructed at the offending instance number, and back-references to it become dangling.
@@ -1188,6 +1241,7 @@ Entries within each section are not implicitly ordered. See the *Index by catego
 - **Expected kernel behavior**: Comment length unbounded (memory-bound only); never silently truncate.
 - **Byte assertion**: length > 8192
 - **Byte assertion**: length > 8000
+- **Tier-3 assertion**: shape_null == True
 - **Notes**: Synonyms: "STEP comment exceeds buffer", "8KB comment limit", "multi-page log banner in STEP", "long comment rejected by stepcode", "huge STEP comment overflows buffer".
 - **Model impact**: Tokenizer or grammar mismatch causes the affected entity (or the whole DATA section) to fail to parse; no entity is constructed at the offending instance number, and back-references to it become dangling.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
@@ -1229,6 +1283,7 @@ Entries within each section are not implicitly ordered. See the *Index by catego
 - **Notes**: **See also**: Ad044, Ls034, Ls049, Ls050. Synonyms: "dot-U at BOOLEAN slot", "LOGICAL value in BOOLEAN attribute", "same_sense given .U.", "STEP boolean given UNKNOWN", "uninitialised bool from .U.".
 - **Byte assertion**: contains(b'.U.')
 - **Byte assertion**: matches(rb',\.U\.\)')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject, warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must reject or emit a diagnostic this fixture.
 - **Severity**: P1
 - **Model impact**: Tokenizer or grammar mismatch causes the affected entity (or the whole DATA section) to fail to parse; no entity is constructed at the offending instance number, and back-references to it become dangling.
@@ -1243,6 +1298,7 @@ Entries within each section are not implicitly ordered. See the *Index by catego
 - **Notes**: Synonyms: "malformed BINARY literal in STEP", "binary literal lowercase hex", "wrong leading nibble on BINARY", "odd hex-digit count in STEP binary", "BINARY missing leading nibble".
 - **Byte assertion**: contains(b'"0dead"') or contains(b'"4DEAD"') or contains(b'"FF"') or contains(b'"3DEAD"')
 - **Byte assertion**: count(b'"') >= 4
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: Tokenizer or grammar mismatch causes the affected entity (or the whole DATA section) to fail to parse; no entity is constructed at the offending instance number, and back-references to it become dangling.
@@ -1256,6 +1312,7 @@ Entries within each section are not implicitly ordered. See the *Index by catego
 - **Expected kernel behavior**: Reject `#0` with `E_INSTANCE_ID_RANGE`; continue parsing the remainder of the section rather than skipping it.
 - **Notes**: **See also**: Lh023, Ls051, Ls052. Synonyms: "instance ID #0 invalid", "STEP entity numbered zero", "zero instance ID rejected", "#0 as definition or reference", "non-positive STEP instance ID".
 - **Byte assertion**: contains(b'#0=')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: Tokenizer or grammar mismatch causes the affected entity (or the whole DATA section) to fail to parse; no entity is constructed at the offending instance number, and back-references to it become dangling.
@@ -1284,6 +1341,7 @@ Entries within each section are not implicitly ordered. See the *Index by catego
 - **Notes**: Synonyms: "adjacent STEP string literals", "two strings line-wrap into one slot", "C-style string concatenation in STEP", "STEP string concatenation not allowed", "consecutive literals corrupt data".
 - **Byte assertion**: matches(rb"'[^']+'\s+'[^']+'")
 - **Byte assertion**: matches(rb"'[^']{2,}'\s+'")
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: Tokenizer or grammar mismatch causes the affected entity (or the whole DATA section) to fail to parse; no entity is constructed at the offending instance number, and back-references to it become dangling.
@@ -12082,6 +12140,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Byte assertion**: contains(b'DATA;')
 - **Byte assertion**: contains(b'HEADER;')
 - **Byte assertion**: count(b'ENDSEC;') >= 2
+- **Tier-3 assertion**: shape_null == True
 - **Model impact**: Interface/transfer layer fails to map the entity to its OCCT counterpart; the loaded Transfer document records the entity as un-transferred, and the affected sub-tree is absent from the resulting BRep.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 - **Fixture path**: step-examples/12-1c-syntax/In002.stp
@@ -12097,6 +12156,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Byte assertion**: contains(b'DATA;')
 - **Byte assertion**: contains(b'HEADER;')
 - **Byte assertion**: count(b'ENDSEC;') >= 2
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must emit a diagnostic this fixture.
 - **Severity**: P1
 - **Model impact**: Interface/transfer layer fails to map the entity to its OCCT counterpart; the loaded Transfer document records the entity as un-transferred, and the affected sub-tree is absent from the resulting BRep.
@@ -12114,6 +12174,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Byte assertion**: contains(b'DATA;')
 - **Byte assertion**: contains(b'HEADER;')
 - **Byte assertion**: count(b'ENDSEC;') >= 2
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: Interface/transfer layer fails to map the entity to its OCCT counterpart; the loaded Transfer document records the entity as un-transferred, and the affected sub-tree is absent from the resulting BRep.
@@ -12133,6 +12194,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Byte assertion**: contains(b'DATA;')
 - **Byte assertion**: contains(b'HEADER;')
 - **Byte assertion**: count(b'ENDSEC;') >= 2
+- **Tier-3 assertion**: shape_null == True
 - **Model impact**: Interface/transfer layer fails to map the entity to its OCCT counterpart; the loaded Transfer document records the entity as un-transferred, and the affected sub-tree is absent from the resulting BRep.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 - **Fixture path**: step-examples/12-1c-syntax/In012.stp
@@ -12150,6 +12212,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Byte assertion**: contains(b'DATA;')
 - **Byte assertion**: contains(b'HEADER;')
 - **Byte assertion**: count(b'ENDSEC;') >= 2
+- **Tier-3 assertion**: shape_null == True
 - **Model impact**: Interface/transfer layer fails to map the entity to its OCCT counterpart; the loaded Transfer document records the entity as un-transferred, and the affected sub-tree is absent from the resulting BRep.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 - **Fixture path**: step-examples/12-1c-syntax/In013.stp
@@ -12164,6 +12227,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Notes**: **See also**: Gn038, Twi100, Twi101, Gs057, Gs058, U045, In013, Pf037. Synonyms: "step-g LoadONBrep not implemented umbrella", "virtual-dispatch fall-through silently drops geometry", "stderr-only diagnostic for missing subtype", "BRL-CAD step-g cannot escalate stub-misses to error".
 - **Byte assertion**: contains(b'SEAM_CURVE')
 - **Byte assertion**: contains(b'CYLINDRICAL_SURFACE')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silent-accept observed (catalog allowed: {reject, heal}). Kernel-bug witnessed: receivers enforcing the spec must reject or heal this fixture.
 - **Severity**: P1
 - **Model impact**: Interface/transfer layer fails to map the entity to its OCCT counterpart; the loaded Transfer document records the entity as un-transferred, and the affected sub-tree is absent from the resulting BRep.
@@ -12209,6 +12273,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Notes**: **See also**: Ls010, Ls047. **OCC behavior**: silently accepts (no diagnostic, empty result); catalog disallows silent-accept. Kernel-bug witnessed: receivers enforcing the spec must reject (or surface a diagnostic); silent acceptance defeats the catalog's stated invariant. Synonyms: "complex entity ancestor leaf omitted", "NAMED_UNIT missing from complex unit record", "STEP multi-inheritance ancestor missing", "incomplete leaf chain in complex entity", "leaf elision in complex record".
 - **Byte assertion**: matches(rb'#\d+\s*=\s*\(\s*CONVERSION_BASED_UNIT')
 - **Byte assertion**: not_contains(b'NAMED_UNIT(*)')
+- **Tier-3 assertion**: shape_null == True
 - **Model impact**: Tokenizer or grammar mismatch causes the affected entity (or the whole DATA section) to fail to parse; no entity is constructed at the offending instance number, and back-references to it become dangling.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
@@ -12231,6 +12296,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Expected kernel behavior**: Reject the value at the BOOLEAN slot; never leave the bool uninitialised.
 - **Notes**: **See also**: Ad044, Ls034, Ls035, Ls049. Synonyms: "STEP boolean given .UNKNOWN.", "long-form UNKNOWN at BOOLEAN slot", "LOGICAL UNKNOWN long form", "STEP same_sense .UNKNOWN.", "three-state value at BOOLEAN attribute".
 - **Byte assertion**: contains(b'.UNKNOWN.')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: Tokenizer or grammar mismatch causes the affected entity (or the whole DATA section) to fail to parse; no entity is constructed at the offending instance number, and back-references to it become dangling.
@@ -12244,6 +12310,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Expected kernel behavior**: Detect overflow during digit accumulation and reject with `E_INSTANCE_ID_RANGE`; if width must be capped, emit a precise per-instance diagnostic and continue parsing.
 - **Notes**: **See also**: Ls038, Ls052. Synonyms: "22-digit instance ID overflows uint64", "huge instance ID overflows accumulator", "STEP ID width exceeds 20 digits", "stepcode skips section on big ID", "instance ID too wide for uint64_t".
 - **Byte assertion**: matches(rb'#\d{20,}=')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject, warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must reject or emit a diagnostic this fixture.
 - **Severity**: P1
 - **Model impact**: Tokenizer or grammar mismatch causes the affected entity (or the whole DATA section) to fail to parse; no entity is constructed at the offending instance number, and back-references to it become dangling.
@@ -12257,6 +12324,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Expected kernel behavior**: Detect overflow during digit accumulation and reject with `E_INSTANCE_ID_RANGE`; never silently wrap.
 - **Notes**: **See also**: Ls038, Ls051. **OCC behavior**: silently accepts (no diagnostic, empty result); catalog disallows silent-accept. Kernel-bug witnessed: receivers enforcing the spec must reject (or surface a diagnostic); silent acceptance defeats the catalog's stated invariant. Synonyms: "instance ID wraps to low number", "ID past UINT64_MAX collides with #1", "modular wrap on STEP instance ID", "STEP ID overflow type confusion", "huge ID wraps to small ID".
 - **Byte assertion**: contains(b'#18446744073709551617=')
+- **Tier-3 assertion**: shape_null == True
 - **Model impact**: Tokenizer or grammar mismatch causes the affected entity (or the whole DATA section) to fail to parse; no entity is constructed at the offending instance number, and back-references to it become dangling.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
@@ -16579,6 +16647,7 @@ _Section summary: 41 entries._
 - **Notes**: **See also**: Le030, Le012. Distinct from Le030 in that this entry exercises a mid-string page switch with a non-default page (Le030 covers the bare `\PE\` recognition only). Synonyms: "PE alphabet-extension directive ignored", "PE switches code page mid-string", "non-Latin code page selector", "STEP PE not implemented", "PE directive treated as literal".
 - **Byte assertion**: contains(b'\\PE\\')
 - **Byte assertion**: count(b'\\PE\\') >= 2
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must emit a diagnostic this fixture.
 - **Severity**: P2
 - **Model impact**: Unimplemented directive bytes pass through as literal text; the loaded attribute string contains raw `\PE\` or `\Q\` sequences instead of decoded characters.
@@ -16592,6 +16661,7 @@ _Section summary: 41 entries._
 - **Expected kernel behavior**: reject the malformed directive with a precise diagnostic citing the string offset; never let the closing apostrophe be consumed as a directive operand.
 - **Notes**: **See also**: Le037, Le039. Synonyms: "bare PE at end of string", "PE directive without operand letter", "PE truncated at apostrophe", "PE escape with no follow byte", "STEP PE with missing selector".
 - **Byte assertion**: matches(rb"\\PE\\'")
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P2
 - **Model impact**: Unimplemented directive bytes pass through as literal text; the loaded attribute string contains raw `\PE\` or `\Q\` sequences instead of decoded characters.
@@ -16605,6 +16675,7 @@ _Section summary: 41 entries._
 - **Expected kernel behavior**: reject with a diagnostic citing the invalid selector; fallback (treat as default page) is acceptable if a warning is emitted.
 - **Notes**: **See also**: Le037. Synonyms: "PE selector outside A.I range", "out-of-range page selector letter", "STEP PE with selector Z", "invalid page-selector letter", "code-page letter not in legal set".
 - **Byte assertion**: contains(b'\\PE\\Z')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject, warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must reject or emit a diagnostic this fixture.
 - **Severity**: P2
 - **Model impact**: Unimplemented directive bytes pass through as literal text; the loaded attribute string contains raw `\PE\` or `\Q\` sequences instead of decoded characters.
@@ -16620,6 +16691,7 @@ _Section summary: 41 entries._
 - **Notes**: **See also**: Le030, Le041, Le042. Validation observed: ifcopenshell terminates via process signal — the `\Q\.\Q\` form may interact badly with the parser's ASCII-only string decoder. **OCC behavior**: silently accepts the file and either truncates to BMP or passes the digits through verbatim; kernel mishandling — the catalog above forbids silent BMP truncation. Synonyms: "Q directive at U+10FFFF boundary", "STEP Q encodes max Unicode", "supplementary plane via Q escape", "Q escape decodes high code point", "Q directive at top of Unicode".
 - **Byte assertion**: contains(b'\\Q\\1114111\\Q\\')
 - **Byte assertion**: contains(b'1114111')
+- **Tier-3 assertion**: shape_null == True
 - **Model impact**: The string-encoding defect either causes the lexer to abort or to record an attribute value different from the producer's bytes; no geometric data is corrupted but identifiers/descriptions on the carrying entity are wrong.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=process_signal`
 
@@ -16632,6 +16704,7 @@ _Section summary: 41 entries._
 - **Notes**: **See also**: Le044 (the matching `\X2\` defect). Synonyms: "Q directive encodes surrogate", "STEP Q with U+D800 lone surrogate", "surrogate half via Q escape", "ill-formed UTF-8 from Q surrogate", "WTF-8 from STEP Q escape".
 - **Byte assertion**: contains(b'\\Q\\55296\\Q\\')
 - **Byte assertion**: contains(b'55296')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject, warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must reject or emit a diagnostic this fixture.
 - **Severity**: P1
 - **Model impact**: The string-encoding defect either causes the lexer to abort or to record an attribute value different from the producer's bytes; no geometric data is corrupted but identifiers/descriptions on the carrying entity are wrong.
@@ -16645,6 +16718,7 @@ _Section summary: 41 entries._
 - **Expected kernel behavior**: reject any non-decimal payload with a precise diagnostic citing the offending characters; never silently substitute 0 for a malformed payload.
 - **Notes**: **See also**: Le030, Le040. **OCC behavior**: silently accepts non-decimal `\Q\` payloads and either substitutes 0 or coerces via leading digits; kernel mishandling; the catalog above forbids silent substitution. Synonyms: "Q directive with hex digits", "Q escape with 0x prefix", "Q payload not decimal", "whitespace inside Q numeric", "non-decimal Q payload".
 - **Byte assertion**: contains(b'\\Q\\0x') or matches(rb'\\Q\\\s')
+- **Tier-3 assertion**: shape_null == True
 - **Model impact**: The string-encoding defect either causes the lexer to abort or to record an attribute value different from the producer's bytes; no geometric data is corrupted but identifiers/descriptions on the carrying entity are wrong.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=process_signal`
 
@@ -16656,6 +16730,7 @@ _Section summary: 41 entries._
 - **Expected kernel behavior**: reject the whole `\X4\.\X0\` block as malformed, or reject only the trailing short group with a diagnostic; never silently truncate.
 - **Notes**: **See also**: Le006. **OCC behavior**: silently accepts the malformed `\X4\.\X0\` block and either truncates the trailing short group or interprets it incorrectly; kernel mishandling; the catalog above forbids silent truncation. Synonyms: "X4 with valid plus short trailing run", "supplementary char then partial X4 group", "X4 mixed valid and malformed", "X4 valid leader with truncated tail", "X4 followed by short hex run".
 - **Byte assertion**: contains(b'\\X4\\0001F60000041\\X0\\')
+- **Tier-3 assertion**: shape_null == True
 - **Model impact**: Out-of-range or malformed UCS-4 code points either pass through as invalid UTF-8 or stop the load entirely; downstream consumers see either mojibake or no model.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=process_signal`
 
@@ -16668,6 +16743,7 @@ _Section summary: 41 entries._
 - **Notes**: **See also**: Le006, Le041. Distinct from Le006 (which exercises hex run length, not surrogate semantics). Synonyms: "X2 payload contains UTF-16 surrogate halves", "Java char[] surrogate written as X2", "X2 with U+D800 surrogate", "lone surrogate in X2 hex run", "X2 surrogate-half value".
 - **Byte assertion**: contains(b'\\X2\\D801\\X0\\') or contains(b'\\X2\\D801DC37\\X0\\')
 - **Byte assertion**: count(b'\\X2\\') >= 2
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject, warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must reject or emit a diagnostic this fixture.
 - **Severity**: P1
 - **Model impact**: The `\X2\` block is consumed incorrectly; subsequent bytes leak into the decoded string and the carrying entity attribute records garbled text instead of the intended Unicode.
@@ -16697,6 +16773,7 @@ _Section summary: 41 entries._
 - **Notes**: **See also**: Le036. Synonyms: "string with every printable ASCII", "STEP literal containing all printable bytes", "embedded apostrophe and backslash and =", "round-trip every printable ASCII", "all-ASCII string literal".
 - **Byte assertion**: matches(rb"'[^']* !\"#")
 - **Byte assertion**: contains(b"#$%&")
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: The string-encoding defect either causes the lexer to abort or to record an attribute value different from the producer's bytes; no geometric data is corrupted but identifiers/descriptions on the carrying entity are wrong.
@@ -16711,6 +16788,7 @@ _Section summary: 41 entries._
 - **Fixture kind**: conformance-probe
 - **Notes**: **See also**: Le048. Synonyms: "REAL at IEEE-754 subnormal", "smallest normal double in STEP", "max double 1.798E+308 in REAL", "subnormal value loses precision", "REAL at IEEE boundary".
 - **Byte assertion**: contains(b'4.9406564584124654E-324') or contains(b'2.2250738585072014E-308') or contains(b'-0.0')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: The string-encoding defect either causes the lexer to abort or to record an attribute value different from the producer's bytes; no geometric data is corrupted but identifiers/descriptions on the carrying entity are wrong.
@@ -16725,6 +16803,7 @@ _Section summary: 41 entries._
 - **Notes**: **See also**: Le047. Synonyms: "REAL exceeds double range", "1.0E+999 overflows to inf", "STEP REAL underflows to zero", "STEP REAL emits +Inf", "non-finite REAL from overflow".
 - **Byte assertion**: contains(b'1.0E+999') or contains(b'1.0E-999')
 - **Byte assertion**: matches(rb'1\.0E[+-]999')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: The string-encoding defect either causes the lexer to abort or to record an attribute value different from the producer's bytes; no geometric data is corrupted but identifiers/descriptions on the carrying entity are wrong.
@@ -16746,6 +16825,7 @@ _Section summary: 41 entries._
 - **Pair with**: Le049.input
 - **Notes**: **See also**: Le017, Le028. Provenance tier: requires-sibling-pair; bytes alone cannot demonstrate the writer-side stripping; the defect is the differential between the writer's input (string containing `\r`) and its output (string without `\r`). Demonstrating this requires both an input fixture and the corrupted output it produces, exercised through a STEP writer. Synonyms: "STEP writer strips carriage return", "CR removed during STEP write", "line endings normalised by writer", "STEP export drops CR", "writer rewrites CRLF to LF".
 - **Byte assertion**: contains(b'ISO-10303-21')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: The string-encoding defect either causes the lexer to abort or to record an attribute value different from the producer's bytes; no geometric data is corrupted but identifiers/descriptions on the carrying entity are wrong.
@@ -16766,6 +16846,7 @@ _Section summary: 41 entries._
 - **Pair with**: Le050.input
 - **Notes**: **See also**: Le022, Le001. Provenance tier: requires-sibling-pair; bytes alone cannot demonstrate the writer-side dropping; the defect is the differential between the in-memory document name and the bytes the writer emits. Demonstrating this requires both the producer-input state (document with non-ASCII name) and the corrupted output it produces. Synonyms: "Unicode dropped in STEP export", "Cyrillic name lost on write", "non-ASCII silently stripped by writer", "STEP writer drops accented chars", "Unicode characters lost during export".
 - **Byte assertion**: contains(b'ISO-10303-21')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: The string-encoding defect either causes the lexer to abort or to record an attribute value different from the producer's bytes; no geometric data is corrupted but identifiers/descriptions on the carrying entity are wrong.
@@ -16780,6 +16861,7 @@ _Section summary: 41 entries._
 - **Notes**: **See also**: Le005, Le052, Le053. Synonyms: "backslash X2 unicode escape missing terminating backslash X0", "X2 escape missing X0 terminator", "backslash X2 hex run not closed with backslash X0", "STEP unicode escape unterminated no X0", "missing X0 terminator on X2 directive".
 - **Byte assertion**: contains(b'\\X2\\30A2')
 - **Byte assertion**: not_contains(b'\\X2\\30A2\\X0\\')
+- **Tier-3 assertion**: shape_null == True
 - **Model impact**: The `\X2\` block is consumed incorrectly; subsequent bytes leak into the decoded string and the carrying entity attribute records garbled text instead of the intended Unicode.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
@@ -16791,6 +16873,7 @@ _Section summary: 41 entries._
 - **Expected kernel behavior**: emit `E_BAD_X2_DIRECTIVE`; reject the string or, in lenient mode, drop the whitespace and continue with a warning.
 - **Notes**: **See also**: Le005, Le051, Le053. Synonyms: "whitespace inside X2 hex run", "X2 hex broken by space", "X2 groups split by whitespace", "whitespace mid-Unicode-escape", "X2 payload non-contiguous".
 - **Byte assertion**: contains(b'\\X2\\30A2 30A4\\X0\\')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject, warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must reject or emit a diagnostic this fixture.
 - **Severity**: P1
 - **Model impact**: The `\X2\` block is consumed incorrectly; subsequent bytes leak into the decoded string and the carrying entity attribute records garbled text instead of the intended Unicode.
@@ -16805,6 +16888,7 @@ _Section summary: 41 entries._
 - **Notes**: **See also**: Le005, Le051, Le052. Synonyms: "nested X2 directive in STEP", "X2 opened twice without closing", "re-entrant X2 escape", "X2 inside X2 garbles content", "consecutive X2 without X0".
 - **Byte assertion**: contains(b'\\X2\\30A2\\X2\\30A4\\X0\\')
 - **Byte assertion**: count(b'\\X2\\') >= 2
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: The `\X2\` block is consumed incorrectly; subsequent bytes leak into the decoded string and the carrying entity attribute records garbled text instead of the intended Unicode.
@@ -16820,6 +16904,7 @@ _Section summary: 41 entries._
 - **Notes**: Synonyms: "smart-quote in STEP", "cp1252 high-bit", "C1 control byte in string". **See also**: Le002, Le009. Validation observed: silent acceptance; kernel-mishandling-by-silent-page-reinterpretation demonstrates the defect class.
 - **Byte assertion**: contains(b'\\X\\91') or contains(b'\\X\\92') or contains(b'\\X\\80') or contains(b'\\X\\97')
 - **Byte assertion**: matches(rb'\\X\\(80|91|92|93|94|97|99)')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: The page selector is ignored or silently mishandled; characters after the directive decode against the wrong ISO-8859 page so the attribute string carries the wrong glyphs even though the entity is otherwise valid.
@@ -16835,6 +16920,7 @@ _Section summary: 41 entries._
 - **Notes**: Cousin of Wr041 (writer-side root cause). **See also**: Wr041, Le027. Synonyms: "STEP boolean wrong format", "long-form boolean", "TRUE/FALSE in STEP file". **OCC behavior**: silently accepts (no diagnostic, empty result); catalog disallows silent-accept. Kernel-bug witnessed: receivers enforcing the spec must reject (or surface a diagnostic); silent acceptance defeats the catalog's stated invariant.
 - **Byte assertion**: contains(b'.TRUE.') or contains(b'.FALSE.')
 - **Byte assertion**: count(b'.TRUE.') + count(b'.FALSE.') >= 1
+- **Tier-3 assertion**: shape_null == True
 - **Model impact**: The string-encoding defect either causes the lexer to abort or to record an attribute value different from the producer's bytes; no geometric data is corrupted but identifiers/descriptions on the carrying entity are wrong.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
@@ -16848,6 +16934,7 @@ _Section summary: 41 entries._
 - **Notes**: **See also**: Le055, Wr041. **OCC behavior**: silently accepts (no diagnostic, empty result); catalog disallows silent-accept. Kernel-bug witnessed: receivers enforcing the spec must reject (or surface a diagnostic); silent acceptance defeats the catalog's stated invariant. Synonyms: "mixed .T. and .TRUE. in STEP", "STEP file uses both short and long boolean", "long-form and short-form boolean mixed", "inconsistent boolean lexemes", "STEP boolean inconsistent in file".
 - **Byte assertion**: contains(b'.T.') and contains(b'.TRUE.')
 - **Byte assertion**: count(b'.T.') >= 1 and count(b'.TRUE.') >= 1
+- **Tier-3 assertion**: shape_null == True
 - **Model impact**: The string-encoding defect either causes the lexer to abort or to record an attribute value different from the producer's bytes; no geometric data is corrupted but identifiers/descriptions on the carrying entity are wrong.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
@@ -16861,6 +16948,7 @@ _Section summary: 41 entries._
 - **Notes**: Sibling of Le056 (Part 1, different EOR variant). **See also**: Le054, Le056, Le058. Synonyms: "blank lines in STEP DATA", "non-canonical record separator", "mixed EOR whitespace".
 - **Byte assertion**: matches(rb';\n\n') or matches(rb';\n#')
 - **Byte assertion**: count(b';\n\n') >= 1 or count(b';\n') >= 3
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: The string-encoding defect either causes the lexer to abort or to record an attribute value different from the producer's bytes; no geometric data is corrupted but identifiers/descriptions on the carrying entity are wrong.
@@ -16876,6 +16964,7 @@ _Section summary: 41 entries._
 - **Notes**: Companion to Le056 / Le057 (other EOR variants). **See also**: Le054, Le056, Le057. Synonyms: "no newline at EOF in STEP", "ENDSEC without preceding newline", "POSIX-incomplete final line in Part-21".
 - **Byte assertion**: matches(rb'\);ENDSEC;END-ISO-10303-21;\Z') or matches(rb'\);ENDSEC;')
 - **Byte assertion**: not_contains(b'ENDSEC;\nEND-ISO-10303-21;\n') or contains(b';ENDSEC;END-ISO-10303-21;')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal, reject}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: Raw control bytes either abort the lexer at the offending offset or silently concatenate split content; either way the attribute value differs from the producer's intended bytes.
@@ -16949,6 +17038,7 @@ _Section summary: 41 entries._
 - **Notes**: **See also**: Lh016. Synonyms: "user-defined HEADER entity before required records", "!COMPANY_INFO before FILE_DESCRIPTION", "vendor header out of order", "bang-prefix header at wrong position", "STEP header order violated by !FOO".
 - **Byte assertion**: contains(b'!COMPANY_INFO')
 - **Byte assertion**: count(b'!') >= 1
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: rejects under one heal mode and silently accepts under the other; outside catalog's allowed set ({warn-and-proceed}). Documented divergence: OCC is stricter than the catalog's warn-and-proceed stance — both behaviors are defensible.
 - **Severity**: P1
 - **Model impact**: Header metadata fields load with empty/wrong values; downstream consumers that branch on schema name or implementation level pick the wrong code path even though the DATA section is well-formed.
@@ -16963,6 +17053,7 @@ _Section summary: 41 entries._
 - **Notes**: **See also**: Lh016. **OCC behavior**: silently accepts the unterminated `FILE_POPULATION` record with no diagnostic; kernel mishandling; the catalog above forbids silent application to an arbitrary subset. Synonyms: "FILE_POPULATION unterminated", "STEP population set without close marker", "FILE_POPULATION missing terminator", "instances belong to no population", "ambiguous FILE_POPULATION boundary".
 - **Byte assertion**: contains(b'FILE_POPULATION(')
 - **Byte assertion**: contains(b'release_a')
+- **Tier-3 assertion**: shape_null == True
 - **Model impact**: Header metadata fields load with empty/wrong values; downstream consumers that branch on schema name or implementation level pick the wrong code path even though the DATA section is well-formed.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
@@ -16987,6 +17078,7 @@ _Section summary: 41 entries._
 - **Notes**: **See also**: Lh016. **OCC behavior**: silently picks one timestamp without surfacing the conflict; kernel mishandling; the catalog above forbids silent preference. Synonyms: "FILE_INFO contradicts FILE_NAME date", "two timestamps disagree in header", "FILE_NAME and FILE_INFO timestamps differ", "STEP header timestamp conflict", "Ed.3 FILE_INFO date disagrees".
 - **Byte assertion**: contains(b'FILE_INFO(')
 - **Byte assertion**: count(b"'2026-04") + count(b"'2016-01") >= 1
+- **Tier-3 assertion**: shape_null == True
 - **Model impact**: Header metadata fields load with empty/wrong values; downstream consumers that branch on schema name or implementation level pick the wrong code path even though the DATA section is well-formed.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
@@ -17033,6 +17125,7 @@ _Section summary: 41 entries._
 - **Notes**: **See also**: Ad097, Le029.
 - **Notes**: Cross-oracle: pure-Python Part-21 validator accepts (`accept`); OCCT rejects (`reject`). OCC enforces stricter framing than the spec text requires. Synonyms: "FILE_DESCRIPTION string contains comment", "/* inside FILE_DESCRIPTION string", "embedded comment in header literal", "STEP comment inside string", "header description with comment characters".
 - **Byte assertion**: matches(rb"FILE_DESCRIPTION\(\([^)]*/\*[^)]*\*/[^)]*\)")
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: rejects the file; outside catalog's allowed set ({heal}). Documented divergence: OCC is stricter than the catalog's lenient stance — both behaviors are defensible.
 - **Severity**: P1
 - **Model impact**: Header metadata fields load with empty/wrong values; downstream consumers that branch on schema name or implementation level pick the wrong code path even though the DATA section is well-formed.
@@ -17074,6 +17167,7 @@ _Section summary: 41 entries._
 - **Notes**: Distinguishable from Lh043 (comments-inside-string). **See also**: Lh037, Lh042. Synonyms: "HEADER contains only comments", "STEP header missing required records", "FILE_DESCRIPTION absent from header", "comment-only HEADER section", "empty HEADER with /* */ only".
 - **Byte assertion**: contains(b'HEADER;') and contains(b'ENDSEC;') and not_contains(b'FILE_DESCRIPTION(')
 - **Byte assertion**: not_contains(b'FILE_NAME(') and not_contains(b'FILE_SCHEMA(')
+- **Tier-3 assertion**: shape_null == True
 - **Model impact**: Header metadata fields load with empty/wrong values; downstream consumers that branch on schema name or implementation level pick the wrong code path even though the DATA section is well-formed.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=reject`
 
@@ -17087,6 +17181,7 @@ _Section summary: 41 entries._
 - **Notes**: Distinct from Le027 (8-bit / case-insensitive lexer); Le027 is lexer-side tolerance for entity-type keywords; Lh047 is the framing keywords specifically. Synonyms: "lowercase data; instead of DATA;", "lowercase STEP framing keywords", "header; in STEP file", "endsec; lowercase", "STEP framing keyword case wrong".
 - **Byte assertion**: contains(b'header;') or contains(b'data;') or contains(b'endsec;')
 - **Byte assertion**: contains(b'data;')
+- **Tier-3 assertion**: shape_null == True
 - **Model impact**: Header metadata fields load with empty/wrong values; downstream consumers that branch on schema name or implementation level pick the wrong code path even though the DATA section is well-formed.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=reject`
 
@@ -26074,6 +26169,7 @@ OFFSET_SURFACE (+0.5 distance) with asymmetric coverage vs base bounds; myOffset
 - **Notes**: **See also**: Pf022. Synonyms: "STEP reader requires file path", "no in-memory STEP import", "cannot read STEP from std::istream", "API needs filesystem path".
 - **Byte assertion**: contains(b'ISO-10303-21')
 - **Byte assertion**: contains(b'MANIFOLD_SOLID_BREP') or contains(b'CARTESIAN_POINT')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silent-accept observed (catalog allowed: {heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
 - **Severity**: P1
 - **Model impact**: Cross-references that depend on the duplicated/illegal instance number resolve to the wrong entity (or to NULL); affected sub-trees attach to incorrect parents and the resulting BRep contains dangling or mis-typed references.
@@ -28206,6 +28302,7 @@ Planar surface with U-iso degenerate edge. U-constant pcurve lacks coordinate-ax
 - **Notes**: **See also**: Le002, Le021. Synonyms: "bug in OCC with german letter", "umlaut in PRODUCT.name garbled", "ISO-8859-1 ä misread as UTF-8 by STEP reader", "high-bit byte mis-decoded in part name".
 - **Byte assertion**: contains(b'\xe4') or contains(b'\xf6') or contains(b'\xfc')
 - **Byte assertion**: contains(b'PRODUCT')
+- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silent-accept observed (catalog allowed: {heal, reject}). Kernel-bug witnessed: receivers enforcing the spec must reject or heal this fixture.
 - **Severity**: P1
 - **Model impact**: The string-encoding defect either causes the lexer to abort or to record an attribute value different from the producer's bytes; no geometric data is corrupted but identifiers/descriptions on the carrying entity are wrong.
