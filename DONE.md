@@ -8,6 +8,32 @@ Append newest at the top.
 
 ---
 
+## 2026-06-19 (long-session continuation, batch 4 — v0.3 directive)
+
+- **v0.3 directive complete: 99.1% CONFIRMED rate.** `_final_verdict`
+  re-run shows CONFIRMED 1322 → 2327, CONFIRMED-WEAK 6 → 12, ERROR
+  1021 → 10. Achieved via:
+  - Expected validation lines populated for v0.3-tagged Tsh119-Tsh123
+    plus 31 wave-1/wave-2 + 8 wave-3 + 77 Tsh124-200 + 63 Tsh084-118 +
+    335 Twi/Tfa + 481 Gp/Gn/Gs/N entries. Coverage 73.7% → 97.9%
+    (2298/2347). Commits `0a41ace`, `31f5b65`, `2d97ee4`, `c310436`,
+    `3c1c758`, `a290b1c`, `59d0f37`, `4a97261`.
+  - 179 mid-entry `---` separators removed (parser was treating them
+    as entry boundaries, orphaning the trailing assertion field
+    group). Commit `4a97261`.
+  - 35 `occt=unknown/...` placeholders replaced with real validate2
+    output from /tmp/cad-v2-out. Commit `4a97261`.
+- **B4 wave-3 mining: 8 NOVEL fixtures synthesized** from
+  pythonocc-core / solvespace / cascadio / KiCad-gitlab /
+  CadQuery+OCP / OCE / KiBot / Blender-addon ecosystem. Yield 8/86 ≈
+  9.3% (saturating). Commit `d7e702d`.
+- **PMI category-lint regex extended** to recognize SHAPE_ASPECT +
+  GEOMETRIC_ITEM_SPECIFIC_USAGE as PMI entities; Pmi106 now passes
+  the §12.7 presence check. Category-lint ceiling ratched 4 → 3.
+  Commit `2d97ee4`.
+- **VALIDATION_SUMMARY + QUALITY_DASHBOARD refreshed** with the new
+  99.1% CONFIRMED rate. Commit `1b178b4`.
+
 ## 2026-06-19 (long-session continuation, batch 3)
 
 - **B4 wave-2 mining: 10 NOVEL fixtures synthesized.** Sources:
