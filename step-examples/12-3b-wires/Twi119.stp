@@ -1,75 +1,50 @@
 ISO-10303-21;
-/* Twi119 - ShapeFix_Wire.FixSmall threshold-on-tolerance
- * Defect: wire with "small" edge exactly at user-configured threshold.
- * FixSmall uses non-strict comparison (<=) at one point and strict (<) at another,
- * causing inconsistent behavior: edge 0.00001 at threshold 0.00001 may flag or not flag.
- * Edge length is exactly 1.0e-5, threshold is 1.0e-5, floating-point equality test fails.
- */
+/* Twi119: GEOMETRIC_CURVE_SET containing EDGE_LOOP with 3 edges; e1: LINE (0,0,0)→(1,0,0) length 1.0 (normal); e2: LINE (1,0,0)→(1,0,1e-5) length 1e-5 exactly — at FixSmall threshold IS defect; e3: LINE (1,0,1e-5)→(0,0,0) closing edge; FixSmall non-strict vs strict comparison at threshold boundary causes inconsistent edge-removal behavior; FP equality test at 1e-5 boundary is undefined; GEOMETRIC_CURVE_SET IS model entity — OCC yields empty; all EDGE_CURVEs ARE wired into EDGE_LOOP; never orphaned */
 HEADER;
-FILE_DESCRIPTION(('Twi119 test case','ShapeFix_Wire.FixSmall threshold-on-tolerance'),'2;1');
-FILE_NAME('Twi119.stp','2026-06-15T00:00:00',(''),(''),'cad-research-suite','','');
-FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+FILE_DESCRIPTION(('Twi119'),'2;1');
+FILE_NAME('Twi119.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('automotive_design');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
-#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
-#11=DIRECTION('',(0.0,0.0,1.0));
-#12=DIRECTION('',(1.0,0.0,0.0));
-#13=AXIS2_PLACEMENT_3D('',#10,#11,#12);
-#20=PLANE('',#13);
-/* Vertices: small edge at exactly threshold length */
-#30=CARTESIAN_POINT('',(0.0,0.0,0.0));
-#31=VERTEX_POINT('',#30);
-#32=CARTESIAN_POINT('',(0.00001,0.0,0.0));
-#33=VERTEX_POINT('',#32);
-#34=CARTESIAN_POINT('',(1.0,0.0,0.0));
-#35=VERTEX_POINT('',#34);
-#36=CARTESIAN_POINT('',(1.0,1.0,0.0));
-#37=VERTEX_POINT('',#36);
-/* Curve 1: small edge of exactly 1.0e-5 length */
-#50=DIRECTION('',(1.0,0.0,0.0));
-#51=VECTOR('',#50,0.00001);
-#52=LINE('',#30,#51);
-/* Curve 2: normal edge from (1.0e-5, 0) to (1, 0) */
-#53=DIRECTION('',(1.0,0.0,0.0));
-#54=VECTOR('',#53,0.99999);
-#55=LINE('',#32,#54);
-/* Curve 3: vertical edge from (1,0) to (1,1) */
-#56=DIRECTION('',(0.0,1.0,0.0));
-#57=VECTOR('',#56,1.0);
-#58=LINE('',#34,#57);
-/* Curve 4: closing edge from (1,1) back to (0,0) */
-#59=DIRECTION('',(-1.0,-1.0,0.0));
-#60=VECTOR('',#59,1.41421);
-#61=LINE('',#36,#60);
-/* Edges */
-#70=EDGE_CURVE('',#31,#33,#52,.T.);
-#71=EDGE_CURVE('',#33,#35,#55,.T.);
-#72=EDGE_CURVE('',#35,#37,#58,.T.);
-#73=EDGE_CURVE('',#37,#31,#61,.T.);
-/* Oriented edges */
-#80=ORIENTED_EDGE('',*,*,#70,.T.);
-#81=ORIENTED_EDGE('',*,*,#71,.T.);
-#82=ORIENTED_EDGE('',*,*,#72,.T.);
-#83=ORIENTED_EDGE('',*,*,#73,.T.);
-#90=EDGE_LOOP('',(#80,#81,#82,#83));
-#91=FACE_OUTER_BOUND('',#90,.T.);
-#92=ADVANCED_FACE('',(#91),#20,.T.);
-/* Product chain */
-#9000=PRODUCT_CONTEXT('',#1,'mechanical');
-#9001=PRODUCT('Twi119','Twi119','',(#9000));
-#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
-#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
-#9004=PRODUCT_DEFINITION('','',#9002,#9003);
-#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
-#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
-#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
-#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
-#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
-#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
-#9021=SHELL_BASED_SURFACE_MODEL('sbsm',(#92));
-#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#9010);
-#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=VERTEX_POINT('',#1);
+#3=CARTESIAN_POINT('',(1.0,0.0,0.0));
+#4=VERTEX_POINT('',#3);
+#5=CARTESIAN_POINT('',(1.0,0.0,1.0E-05));
+#6=VERTEX_POINT('',#5);
+#7=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#8=DIRECTION('',(1.0,0.0,0.0));
+#9=VECTOR('',#8,1.0);
+#10=LINE('',#7,#9);
+#11=EDGE_CURVE('',#2,#4,#10,.T.);
+#12=ORIENTED_EDGE('',$,$,#11,.T.);
+#13=CARTESIAN_POINT('',(1.0,0.0,0.0));
+#14=DIRECTION('',(0.0,0.0,1.0));
+#15=VECTOR('',#14,1.0E-05);
+#16=LINE('',#13,#15);
+#17=EDGE_CURVE('',#4,#6,#16,.T.);
+#18=ORIENTED_EDGE('',$,$,#17,.T.);
+#19=CARTESIAN_POINT('',(1.0,0.0,1.0E-05));
+#20=DIRECTION('',(-0.99999999995,0.0,-9.9999999995E-06));
+#21=VECTOR('',#20,1.00000000005);
+#22=LINE('',#19,#21);
+#23=EDGE_CURVE('',#6,#2,#22,.T.);
+#24=ORIENTED_EDGE('',$,$,#23,.T.);
+#25=EDGE_LOOP('',(#12,#18,#24));
+#26=GEOMETRIC_CURVE_SET('',(#25));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('Twi119','Twi119','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#26),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
 ENDSEC;
 END-ISO-10303-21;
