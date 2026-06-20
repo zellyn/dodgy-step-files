@@ -49,6 +49,13 @@ than committed. New strategy: Sonnet-generates instead of Haiku-generates.
 - Gp066: FixSameParameter selection-bias algorithm bug — cannot embed algorithmic selection in static STEP geometry; bytes can only encode the post-bug result (broken curve), not the trigger.
 - Logged 2026-06-19 after Sonnet indep verify caught batch-7 mechanism mismatches.
 
+**Deferred (signal(11) archetype — need OCC-crash template):**
+- Gp096: CheckCurve3dWithPCurve direction-reversed-but-coincident — Expected occt=signal(11)/signal(11)
+- Gp098: CheckOverlapping arc-tangent-to-line — Expected occt=signal(11)/signal(11)
+- Gp099: FixSameParameter very-long-edge — Expected occt=signal(11)/signal(11)
+- Reason: signal(11) requires engineering a deliberate OCC SIGSEGV; Wave-B Sonnet pipeline doesn't have a template for this yet. Gp001 is the existing reference but is a hand-authored .stp without a fixture_source.py. Need to (a) reverse-engineer Gp001's crash trigger or (b) propose a new builder API for signal-11 fixtures.
+- Logged 2026-06-19 from batch 13 archetype-aware scan.
+
 **Plan:**
 - [x] Q5.0 Pilot: 5 Gp fixtures pushed (`29c1c03`)
 - [x] Q5.1 Sonnet verify pilot 5 → 2 STRONG, 1 WEAK_PASS_OK, 1 FAILS, 1 SLOPPY
