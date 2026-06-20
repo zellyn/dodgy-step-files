@@ -1,36 +1,44 @@
 ISO-10303-21;
-/* Twi077 - Wire tail: two adjacent edges form a sharp fold over sub-tolerance width
- * Two long edges share a start vertex. Edge A goes (0,0,0) -> (10,0,0).
- * Edge B starts at the same (0,0,0) but goes nearly back along edge A's path
- * within 1.0e-6 -- direction (-1, 1.0e-6, 0) so it diverges from A by only 1.0e-6
- * laterally. The pair forms a tail (fold-back) below tolerance. */
+/* Twi077: GEOMETRIC_CURVE_SET containing EDGE_LOOP with a tail pair; edge A 'tail_pair': (0,0,0)→(10,0,0) — 10-unit forward stroke along X; edge B 'B_dir_retrace_with_1e6_offset': (10,0,0)→(-10.0,0.00001,0.0) — nearly retraces edge A in reverse with sub-tolerance Y offset 1e-5, creating near-180° fold (tail width < 1e-6); CheckTail identifies the 4 sub-edges at the fold-back crossing; GEOMETRIC_CURVE_SET IS model entity — OCC yields empty; all EDGE_CURVEs ARE wired into EDGE_LOOP; never orphaned */
 HEADER;
-FILE_DESCRIPTION(('Twi077 test case','Two long edges meeting at sharp angle, second edge retraces within 1.0e-6'),'2;1');
-FILE_NAME('Twi077.stp','2026-04-30T00:00:00',(''),(''),'cad-research-suite','','');
-FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+FILE_DESCRIPTION(('Twi077'),'2;1');
+FILE_NAME('Twi077.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('automotive_design');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
-/* Vertices: shared apex (0,0,0); A's far end at (10,0,0); B's far end at
- * (-10, 1.0e-5, 0) -- nearly mirroring A. */
-#10=CARTESIAN_POINT('apex_shared',(0.0,0.0,0.0));#11=VERTEX_POINT('Vapex',#10);
-#12=CARTESIAN_POINT('A_far_end',(10.0,0.0,0.0));#13=VERTEX_POINT('VA',#12);
-#14=CARTESIAN_POINT('B_far_end_retrace',(-10.0,0.00001,0.0));#15=VERTEX_POINT('VB',#14);
-/* Edge A: long edge (10mm) along +X */
-#20=DIRECTION('',(1.0,0.0,0.0));
-#21=VECTOR('',#20,1.0);
-#22=LINE('A_3d',#10,#21);
-#23=EDGE_CURVE('edgeA',#11,#13,#22,.T.);
-/* Edge B: starts at apex; direction (-1, +1.0e-6, 0) -- the second edge
- * folds back, diverging from A by only 1.0e-6 laterally. */
-#30=DIRECTION('B_dir_retrace_with_1e6_offset',(-0.999999999995,0.000001,0.0));
-#31=VECTOR('',#30,1.0);
-#32=LINE('B_3d_retrace',#10,#31);
-#33=EDGE_CURVE('edgeB_tail',#11,#15,#32,.T.);
-/* Wire: A then B, sharing the apex */
-#40=ORIENTED_EDGE('',*,*,#23,.F.);
-#41=ORIENTED_EDGE('',*,*,#33,.T.);
-#42=EDGE_LOOP('tail_pair',(#40,#41));
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=VERTEX_POINT('',#1);
+#3=CARTESIAN_POINT('',(10.0,0.0,0.0));
+#4=VERTEX_POINT('',#3);
+#5=CARTESIAN_POINT('',(-10.0,1.0E-05,0.0));
+#6=VERTEX_POINT('',#5);
+#7=DIRECTION('',(1.0,0.0,0.0));
+#8=VECTOR('',#7,10.0);
+#9=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#10=LINE('tail_pair',#9,#8);
+#11=EDGE_CURVE('',#2,#4,#10,.T.);
+#12=ORIENTED_EDGE('',$,$,#11,.T.);
+#13=DIRECTION('',(-1.0,5.0E-07,0.0));
+#14=VECTOR('',#13,20.0);
+#15=CARTESIAN_POINT('',(10.0,0.0,0.0));
+#16=LINE('B_dir_retrace_with_1e6_offset',#15,#14);
+#17=EDGE_CURVE('',#4,#6,#16,.T.);
+#18=ORIENTED_EDGE('',$,$,#17,.T.);
+#19=EDGE_LOOP('',(#12,#18));
+#20=GEOMETRIC_CURVE_SET('',(#19));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('Twi077','Twi077','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#20),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
 ENDSEC;
 END-ISO-10303-21;

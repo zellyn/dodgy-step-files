@@ -1,26 +1,37 @@
 ISO-10303-21;
-/* Twi084 - Closed-curve edge has different start and end vertices.
- * Defect: EDGE_CURVE references a CIRCLE (closed curve) with
- * edge_start at (1,0,0) and edge_end at (1.5,0,0) - distinct points
- * even though the underlying curve is closed. */
+/* Twi084: GEOMETRIC_CURVE_SET containing EDGE_LOOP 'end_NOT_equal_to_start'; EDGE_CURVE geometry is a CIRCLE radius 1.0 centred at origin — closed curve; edge_start = #V1 at (1,0,0) (on circle at θ=0); edge_end = #V2 at (1.5,0.0,0.0) — NOT on the circle and NOT equal to start; closed-curve invariant violated: start ≠ end; BRepLib_MakeEdge DifferentPointsOnClosedCurve triggered; GEOMETRIC_CURVE_SET IS model entity — OCC yields empty; EDGE_CURVE IS wired into EDGE_LOOP; never orphaned */
 HEADER;
-FILE_DESCRIPTION(('Twi084 - Closed-curve edge has different start and end vertex points','Pass C gap-fill'),'2;1');
-FILE_NAME('Twi084.stp','2026-04-30T00:00:00',(''),(''),'gap-fill C','','');
-FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+FILE_DESCRIPTION(('Twi084'),'2;1');
+FILE_NAME('Twi084.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('automotive_design');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
-#10=CARTESIAN_POINT('center',(0.0,0.0,0.0));
-#11=CARTESIAN_POINT('start',(1.0,0.0,0.0));
-#12=CARTESIAN_POINT('end_NOT_equal_to_start',(1.5,0.0,0.0));
-#13=VERTEX_POINT('',#11);
-#14=VERTEX_POINT('',#12);
-#20=DIRECTION('',(0.0,0.0,1.0));
-#21=DIRECTION('',(1.0,0.0,0.0));
-#22=AXIS2_PLACEMENT_3D('',#10,#20,#21);
-#23=CIRCLE('closed_circle',#22,1.0);
-/* Defect: vertices differ but underlying CIRCLE is closed */
-#30=EDGE_CURVE('open_circle_edge',#13,#14,#23,.T.);
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=DIRECTION('',(0.0,0.0,1.0));
+#3=DIRECTION('',(1.0,0.0,0.0));
+#4=AXIS2_PLACEMENT_3D('',#1,#2,#3);
+#5=CIRCLE('',#4,1.0);
+#6=CARTESIAN_POINT('',(1.0,0.0,0.0));
+#7=VERTEX_POINT('',#6);
+#8=CARTESIAN_POINT('',(1.5,0.0,0.0));
+#9=VERTEX_POINT('',#8);
+#10=EDGE_CURVE('',#7,#9,#5,.T.);
+#11=ORIENTED_EDGE('',*,*,#10,.T.);
+#12=EDGE_LOOP('end_NOT_equal_to_start',(#11));
+#13=GEOMETRIC_CURVE_SET('',(#12));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('Twi084','Twi084','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#13),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
 ENDSEC;
 END-ISO-10303-21;

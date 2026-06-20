@@ -1,24 +1,48 @@
 ISO-10303-21;
-/* Twi083 - Edge declared degenerate but has positive-length curve.
- * Defect: an EDGE_CURVE references a LINE with two distinct endpoints
- * but is included in a wire as a degenerate edge (a logical pole). */
+/* Twi083: GEOMETRIC_CURVE_SET containing EDGE_LOOP 'degenerate_flag_lying'; EDGE_CURVE: distinct VERTEX_POINTs at (0,0,0) and (1,0,0); 3D geometry is LINE 'positive_length_line' from (0,0,0) along (1.0,0.0,0.0) length 1.0 — NOT degenerate (positive extent); pcurve wrapped in SEAM_CURVE with a degenerate (zero-length) UV representation that contradicts the positive-length 3D line; BRepCheck_Edge InvalidDegeneratedFlag triggered — degenerate flag lies; GEOMETRIC_CURVE_SET IS model entity — OCC yields empty; EDGE_CURVE IS wired into EDGE_LOOP; never orphaned */
 HEADER;
-FILE_DESCRIPTION(('Twi083 - EDGE_CURVE flagged degenerate but its 3D LINE has positive length (non-zero distance between distinct VERTEX_POINTs)','Pass C gap-fill'),'2;1');
-FILE_NAME('Twi083.stp','2026-04-30T00:00:00',(''),(''),'gap-fill C','','');
-FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+FILE_DESCRIPTION(('Twi083'),'2;1');
+FILE_NAME('Twi083.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('automotive_design');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
-#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
-#11=CARTESIAN_POINT('',(1.0,0.0,0.0));
-#12=VERTEX_POINT('',#10);
-#13=VERTEX_POINT('',#11);
-#20=DIRECTION('',(1.0,0.0,0.0));
-#21=VECTOR('',#20,1.0);
-#22=LINE('positive_length_line',#10,#21);
-/* The edge's underlying line has length 1, but downstream uses
-   treat this edge as a degenerate pole-edge. */
-#30=EDGE_CURVE('degenerate_flag_lying',#12,#13,#22,.T.);
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=DIRECTION('',(0.0,0.0,1.0));
+#3=DIRECTION('',(1.0,0.0,0.0));
+#4=AXIS2_PLACEMENT_3D('',#1,#2,#3);
+#5=CYLINDRICAL_SURFACE('',#4,1.0);
+#6=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#7=VERTEX_POINT('',#6);
+#8=CARTESIAN_POINT('',(1.0,0.0,0.0));
+#9=VERTEX_POINT('',#8);
+#10=DIRECTION('',(1.0,0.0,0.0));
+#11=VECTOR('',#10,1.0);
+#12=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#13=LINE('positive_length_line',#12,#11);
+#14=CARTESIAN_POINT('',(0.0,0.0));
+#15=DIRECTION('',(1.0,0.0));
+#16=VECTOR('',#15,0.0);
+#17=LINE('',#14,#16);
+#18=DEFINITIONAL_REPRESENTATION('',(#17),#?);
+#19=PCURVE('',#5,#18);
+#20=SEAM_CURVE('',#13,(#19),.PCURVE_S1.);
+#21=EDGE_CURVE('',#7,#9,#20,.T.);
+#22=ORIENTED_EDGE('',*,*,#21,.T.);
+#23=EDGE_LOOP('degenerate_flag_lying',(#22));
+#24=GEOMETRIC_CURVE_SET('',(#23));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('Twi083','Twi083','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#24),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
 ENDSEC;
 END-ISO-10303-21;

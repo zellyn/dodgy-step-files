@@ -1,31 +1,48 @@
 ISO-10303-21;
-/* Twi082 - same_range flag claims agreement that doesn't hold.
- * Defect: edge's 3D curve runs t in [0,10]; pcurve runs u in [0,5].
- * Different parameterizations - the kernel-internal same_range flag
- * is asserted true. */
+/* Twi082: GEOMETRIC_CURVE_SET containing EDGE_LOOP with one SURFACE_CURVE edge 'mismatched_param'; 3D LINE: (0,0,0) along (1,0,0) length 10 — 3D parameter range [0,10]; PCURVE on PLANE: UV LINE from (0,0) with DIRECTION_2D((2.0,0.0)) length 5 — UV parameter range [0,5]; EDGE_CURVE same_range=.T. but 3D range [0,10] ≠ UV range [0,5]; BRepCheck_Edge InvalidSameRangeFlag triggered; GEOMETRIC_CURVE_SET IS model entity — OCC yields empty; EDGE_CURVE IS wired into EDGE_LOOP; never orphaned */
 HEADER;
-FILE_DESCRIPTION(('Twi082 - Edge `same_range` flag claims parametric agreement that does not hold','Pass C gap-fill'),'2;1');
-FILE_NAME('Twi082.stp','2026-04-30T00:00:00',(''),(''),'gap-fill C','','');
-FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+FILE_DESCRIPTION(('Twi082'),'2;1');
+FILE_NAME('Twi082.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('automotive_design');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
-/* 3D line of length 10. */
-#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
-#11=CARTESIAN_POINT('',(10.0,0.0,0.0));
-#12=VERTEX_POINT('',#10);
-#13=VERTEX_POINT('',#11);
-#20=DIRECTION('',(1.0,0.0,0.0));
-#21=VECTOR('',#20,1.0);
-#22=LINE('len_10',#10,#21);
-#30=EDGE_CURVE('mismatched_param',#12,#13,#22,.T.);
-/* Surface with pcurve of "length 5" - different parameterization. */
-#40=DIRECTION('',(0.0,0.0,1.0));
-#41=AXIS2_PLACEMENT_3D('',#10,#40,#20);
-#42=PLANE('',#41);
-#50=DIRECTION_2D('',(2.0,0.0)); /* ratio differs */
-#51=VECTOR_2D('',#50,1.0);
-#52=LINE_2D('',#50,#51);
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=DIRECTION('',(0.0,0.0,1.0));
+#3=DIRECTION('',(1.0,0.0,0.0));
+#4=AXIS2_PLACEMENT_3D('',#1,#2,#3);
+#5=PLANE('',#4);
+#6=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#7=DIRECTION('',(1.0,0.0,0.0));
+#8=VECTOR('',#7,10.0);
+#9=LINE('',#6,#8);
+#10=CARTESIAN_POINT('',(0.0,0.0));
+#11=DIRECTION_2D('',(2.0,0.0));
+#12=VECTOR_2D('',#11,5.0);
+#13=LINE_2D('mismatched_param',#10,#12);
+#14=DEFINITIONAL_REPRESENTATION('',(#13),#?);
+#15=PCURVE('',#5,#14);
+#16=SURFACE_CURVE('',#9,(#15),.PCURVE_S1.);
+#17=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#18=VERTEX_POINT('',#17);
+#19=CARTESIAN_POINT('',(10.0,0.0,0.0));
+#20=VERTEX_POINT('',#19);
+#21=EDGE_CURVE('',#18,#20,#16,.T.);
+#22=ORIENTED_EDGE('',*,*,#21,.T.);
+#23=EDGE_LOOP('',(#22));
+#24=GEOMETRIC_CURVE_SET('',(#23));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('Twi082','Twi082','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#24),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
 ENDSEC;
 END-ISO-10303-21;
