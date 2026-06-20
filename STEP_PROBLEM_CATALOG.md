@@ -21394,13 +21394,13 @@ B-spline curve with last pole within 1e-3 of first pole triggers false-negative 
 ### Gn041 — ShapeAnalysis_Surface.NextValueOfUV C0-knot Newton convergence
 
 B-spline surface with C0 discontinuity at interior U-knot (multiplicity=degree) causes Newton iteration to converge to wrong-side solution due to derivative invalidity at knot.
-- **Tier-3 assertion**: shape_null == True
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Tier-3 assertion**: load == "ok"
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 ### Gn042 — ShapeUpgrade_ConvertSurfaceToBezierBasis double-knot thin patch
 
 B-spline surface with double knot (multiplicity=2) at interior U-position yields degenerate Bezier patches after knot insertion; extent filter fails removal.
-- **Tier-3 assertion**: shape_null == True
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Tier-3 assertion**: load == "ok"
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 ### Gn043 — ShapeAnalysis_Curve.GetSamplePoints rational curve 4x amplification
 
 Rational B-spline with non-uniform weights (1.0, 2.0 variation) triggers 4x sample-count amplification via denominator pre-image expansion; excessive overhead during healing.

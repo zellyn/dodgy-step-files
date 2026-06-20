@@ -64,6 +64,7 @@ than committed. New strategy: Sonnet-generates instead of Haiku-generates.
 - Gp141: Missing PCurve Extraction Failure — signal(11)
 - Gn003: BSpline curve with empty control_points_list — signal(11)
 - Gn004: Complex BSpline surface entity with empty knots/multiplicities — signal(11)
+- Gn043: nurbs signal(11) — to be addressed with signal(11) work later
 - Reason: signal(11) requires engineering a deliberate OCC SIGSEGV; Wave-B Sonnet pipeline doesn't have a template for this yet. Gp001 is the existing reference but is a hand-authored .stp without a fixture_source.py. Need to (a) reverse-engineer Gp001's crash trigger or (b) propose a new builder API for signal-11 fixtures.
 - Logged 2026-06-19 from batch 13-18 archetype-aware scans.
 

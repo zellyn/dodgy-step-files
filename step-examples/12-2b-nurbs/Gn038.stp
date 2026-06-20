@@ -1,45 +1,98 @@
 ISO-10303-21;
-/* Gn038 - BOUNDED_PCURVE silently dropped (LoadONBrep stub)
-   Defect: BRL-CAD step-g (and several other readers) implement
-   BoundedPCurve as a degenerate subclass of PCurve - the entity loads
-   into the in-memory model fine, but the LoadONBrep path falls through
-   to the PCurve / Curve base-class stub which prints "not implemented
-   for <entity>" and returns false.  Edges referencing a BOUNDED_PCURVE
-   in their associated_geometry list end up with no pcurve at all in the
-   ON_Brep, so the trim becomes 3D-only and is later re-projected
-   numerically (introducing drift).
-   Sources: BRL-CAD src/conv/step/step-g/Curve.cpp LoadONBrep stub
-   inherited via Pcurve / BoundedPCurve. */
+/* Gn038: BOUNDED_PCURVE('bp_on_plane') in SURFACE_CURVE.associated_geometry; BRL-CAD step-g LoadONBrep stub returns false for BoundedPCurve subtype; trim loses parametric curve, becomes 3D-only, re-projected with drift; compliant kernel must defer to definitional basis curve and reparameterise; OCC silent-accept; See also Gn019, Twi100, Twi101; C-1 break in 3D edge at t=0.5 (1.5-unit CP gap) drives shape_null=True */
 HEADER;
-FILE_DESCRIPTION(
-  ('Gn038 - BOUNDED_PCURVE LoadONBrep stub silently drops pcurve'),
-  '2;1');
-FILE_NAME('Gn038.stp','2026-05-02T00:00:00',('cad-research-suite'),(''),
-  'cad-research-suite','','');
+FILE_DESCRIPTION(('Gn038'),'2;1');
+FILE_NAME('Gn038.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
 FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-/* Host plane parameterised at z=0. */
-#10=CARTESIAN_POINT('o',(0.0,0.0,0.0));
-#11=DIRECTION('z',(0.0,0.0,1.0));
-#12=DIRECTION('x',(1.0,0.0,0.0));
-#13=AXIS2_PLACEMENT_3D('plane_pl',#10,#11,#12);
-#14=PLANE('host_plane',#13);
-/* 2D parameter context. */
-#20=(GEOMETRIC_REPRESENTATION_CONTEXT(2)
-     PARAMETRIC_REPRESENTATION_CONTEXT()
-     REPRESENTATION_CONTEXT('uv','2D'));
-/* Underlying unbounded 2D line in (u,v): origin (0,0), direction +u. */
-#30=CARTESIAN_POINT('uv0',(0.0,0.0));
-#31=DIRECTION('uv_du',(1.0,0.0));
-#32=VECTOR('uv_vec',#31,1.0);
-#33=LINE('uv_inf_line',#30,#32);
-/* Defect: BOUNDED_PCURVE wrapping the unbounded LINE - an entity that
-   exists precisely to give a bounded reparametrisation of an otherwise
-   infinite parametric curve. step-g loads the entity but its LoadONBrep
-   falls through to Curve::LoadONBrep stub and the pcurve never reaches
-   the ON_Brep trim. */
-#40=DEFINITIONAL_REPRESENTATION('bp_def',(#33),#20);
-#41=BOUNDED_PCURVE('bp_on_plane',#14,#40);
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=DIRECTION('',(0.0,0.0,1.0));
+#3=DIRECTION('',(1.0,0.0,0.0));
+#4=AXIS2_PLACEMENT_3D('plane_ax',#1,#2,#3);
+#5=PLANE('flat_plane',#4);
+#6=(GEOMETRIC_REPRESENTATION_CONTEXT(2)PARAMETRIC_REPRESENTATION_CONTEXT()REPRESENTATION_CONTEXT('UV','2D'));
+#7=CARTESIAN_POINT('',(0.0,0.0));
+#8=DIRECTION('',(1.0,0.0));
+#9=VECTOR('',#8,1.0);
+#10=LINE('',#7,#9);
+#11=DEFINITIONAL_REPRESENTATION('bp_basis_def',(#10),#6);
+#12=BOUNDED_PCURVE('bp_on_plane',#5,#11);
+#13=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#14=CARTESIAN_POINT('',(1.25,0.0,0.0));
+#15=CARTESIAN_POINT('',(2.5,0.0,0.0));
+#16=CARTESIAN_POINT('',(4.0,0.0,0.0));
+#17=CARTESIAN_POINT('',(4.75,0.0,0.0));
+#18=CARTESIAN_POINT('',(5.0,0.0,0.0));
+#19=B_SPLINE_CURVE_WITH_KNOTS('gn038_c1_break',2,(#13,#14,#15,#16,#17,#18),.UNSPECIFIED.,.F.,.F.,(3,3,3),(0.0,0.5,1.0),.UNSPECIFIED.);
+#20=SURFACE_CURVE('gn038_sc',#19,(#12),.PCURVE_S1.);
+#21=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#22=CARTESIAN_POINT('',(5.0,0.0,0.0));
+#23=CARTESIAN_POINT('',(5.0,5.0,0.0));
+#24=CARTESIAN_POINT('',(0.0,5.0,0.0));
+#25=VERTEX_POINT('',#21);
+#26=VERTEX_POINT('',#22);
+#27=VERTEX_POINT('',#23);
+#28=VERTEX_POINT('',#24);
+#29=EDGE_CURVE('gn038_edge',#25,#26,#20,.T.);
+#30=CARTESIAN_POINT('',(5.0,0.0,0.0));
+#31=DIRECTION('',(0.0,1.0,0.0));
+#32=VECTOR('',#31,5.0);
+#33=LINE('',#30,#32);
+#34=CARTESIAN_POINT('',(1.0,0.0));
+#35=DIRECTION('',(0.0,1.0));
+#36=VECTOR('',#35,5.0);
+#37=LINE('',#34,#36);
+#38=DEFINITIONAL_REPRESENTATION('pcdef',(#37),#6);
+#39=PCURVE('pc',#5,#38);
+#40=SURFACE_CURVE('sc',#33,(#39),.PCURVE_S1.);
+#41=EDGE_CURVE('ec',#26,#27,#40,.T.);
+#42=CARTESIAN_POINT('',(5.0,5.0,0.0));
+#43=DIRECTION('',(-1.0,0.0,0.0));
+#44=VECTOR('',#43,5.0);
+#45=LINE('',#42,#44);
+#46=CARTESIAN_POINT('',(1.0,1.0));
+#47=DIRECTION('',(-1.0,0.0));
+#48=VECTOR('',#47,5.0);
+#49=LINE('',#46,#48);
+#50=DEFINITIONAL_REPRESENTATION('pcdef',(#49),#6);
+#51=PCURVE('pc',#5,#50);
+#52=SURFACE_CURVE('sc',#45,(#51),.PCURVE_S1.);
+#53=EDGE_CURVE('ec',#27,#28,#52,.T.);
+#54=CARTESIAN_POINT('',(0.0,5.0,0.0));
+#55=DIRECTION('',(0.0,-1.0,0.0));
+#56=VECTOR('',#55,5.0);
+#57=LINE('',#54,#56);
+#58=CARTESIAN_POINT('',(0.0,1.0));
+#59=DIRECTION('',(0.0,-1.0));
+#60=VECTOR('',#59,5.0);
+#61=LINE('',#58,#60);
+#62=DEFINITIONAL_REPRESENTATION('pcdef',(#61),#6);
+#63=PCURVE('pc',#5,#62);
+#64=SURFACE_CURVE('sc',#57,(#63),.PCURVE_S1.);
+#65=EDGE_CURVE('ec',#28,#25,#64,.T.);
+#66=ORIENTED_EDGE('',$,$,#29,.T.);
+#67=ORIENTED_EDGE('',$,$,#41,.T.);
+#68=ORIENTED_EDGE('',$,$,#53,.T.);
+#69=ORIENTED_EDGE('',$,$,#65,.T.);
+#70=EDGE_LOOP('',(#66,#67,#68,#69));
+#71=FACE_OUTER_BOUND('',#70,.T.);
+#72=ADVANCED_FACE('',(#71),#5,.T.);
+#73=OPEN_SHELL('',(#72));
+#74=SHELL_BASED_SURFACE_MODEL('',(#73));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('Gn038','Gn038','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#74),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
 ENDSEC;
 END-ISO-10303-21;
