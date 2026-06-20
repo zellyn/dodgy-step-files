@@ -1,57 +1,69 @@
 ISO-10303-21;
-/* Gs011 - Trim curves with self-intersection (mesh-derived BRep, STL->STEP)
- *
- * Sources:  J024, X012
- * Senders:  FreeCAD `Part / Create shape from mesh`; other STL->STEP utilities
- * Originally also catalogued as: Gn028
- *
- * Defect: Mesh-to-BRep tools fit B_SPLINE_SURFACE_WITH_KNOTS patches per triangle
- *  and stitch; near sharp creases the patches' trim curves self-intersect or
- *  overlap. Output STEP loads but every later boolean fails.
- *
- * Reproducer:  STL with creases > ~30 degrees; sew tolerance <= 1.0e-6; resulting
- *  ADVANCED_FACE contains pcurves that cross.
- *
- * Expected kernel behavior:
- *   STL->STEP path should emit faceted BRep (FACETED_BREP / OPEN_SHELL) rather
- *   than smooth NURBS; or run self-intersection healing as a final step. */
+/* Gs011: EDGE_LOOP 2 edges: diagonal (0,0,0)→(10,10,0) and diagonal (0,10,0)→(10,0,0); cross at (5,5,0), no shared endpoints; crossed-trim STL→BRep wire; B_SPLINE_SURFACE_WITH_KNOTS IS ADVANCED_FACE.face_geometry; 2 ORIENTED_EDGEs 2 EDGE_CURVEs; shape_null=True */
 HEADER;
-FILE_DESCRIPTION(('Gs011 test case','Mesh-derived self-intersecting trim curves'),'2;1');
-FILE_NAME('Gs011.stp','2026-04-26T00:00:00',(''),(''),'auto-generated','','');
-FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+FILE_DESCRIPTION(('Gs011'),'2;1');
+FILE_NAME('Gs011.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('automotive_design');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
-#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
-#11=DIRECTION('',(0.0,0.0,1.0));
-#12=DIRECTION('',(1.0,0.0,0.0));
-#13=AXIS2_PLACEMENT_3D('',#10,#11,#12);
-#20=PLANE('',#13);
-/* Two trim segments cross in UV: A->B at (0,0)->(10,10), C->D at (0,10)->(10,0) */
-/* These pcurves overlap/cross within the same wire - typical mesh-stitch artefact. */
-#30=CARTESIAN_POINT('',(0.0,0.0,0.0));
-#31=VERTEX_POINT('',#30);
-#32=CARTESIAN_POINT('',(10.0,10.0,0.0));
-#33=VERTEX_POINT('',#32);
-#34=CARTESIAN_POINT('',(0.0,10.0,0.0));
-#35=VERTEX_POINT('',#34);
-#36=CARTESIAN_POINT('',(10.0,0.0,0.0));
-#37=VERTEX_POINT('',#36);
-#40=DIRECTION('',(0.7071067811865476,0.7071067811865476,0.0));
-#41=VECTOR('',#40,14.142135623730951);
-#42=LINE('',#30,#41);
-#43=DIRECTION('',(0.7071067811865476,-0.7071067811865476,0.0));
-#44=VECTOR('',#43,14.142135623730951);
-#45=LINE('',#34,#44);
-/* Defect: two edges of same wire cross in UV at (5,5) - mesh-stitch trim defect */
-#50=EDGE_CURVE('',#31,#33,#42,.T.);
-#51=EDGE_CURVE('',#35,#37,#45,.T.);
-#52=ORIENTED_EDGE('',*,*,#50,.T.);
-#53=ORIENTED_EDGE('',*,*,#51,.T.);
-/* Wire intentionally non-Jordan to trigger trim-curve self-intersection check */
-#60=EDGE_LOOP('',(#52,#53));
-#61=FACE_OUTER_BOUND('',#60,.T.);
-#62=ADVANCED_FACE('',(#61),#20,.T.);
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=CARTESIAN_POINT('',(0.0,10.0,0.0));
+#3=CARTESIAN_POINT('',(10.0,0.0,0.0));
+#4=CARTESIAN_POINT('',(10.0,10.0,0.0));
+#5=B_SPLINE_SURFACE_WITH_KNOTS('gs011_bilinear',1,1,((#1,#2),(#3,#4)),.UNSPECIFIED.,.F.,.F.,.F.,(2,2),(2,2),(0.0,1.0),(0.0,1.0),.UNSPECIFIED.);
+#6=(GEOMETRIC_REPRESENTATION_CONTEXT(2)PARAMETRIC_REPRESENTATION_CONTEXT()REPRESENTATION_CONTEXT('UV','2D'));
+#7=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#8=CARTESIAN_POINT('',(10.0,10.0,0.0));
+#9=CARTESIAN_POINT('',(0.0,10.0,0.0));
+#10=CARTESIAN_POINT('',(10.0,0.0,0.0));
+#11=VERTEX_POINT('',#7);
+#12=VERTEX_POINT('',#8);
+#13=VERTEX_POINT('',#9);
+#14=VERTEX_POINT('',#10);
+#15=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#16=DIRECTION('',(1.0,1.0,0.0));
+#17=VECTOR('',#16,14.1421356237);
+#18=LINE('',#15,#17);
+#19=CARTESIAN_POINT('',(0.0,0.0));
+#20=DIRECTION('',(1.0,1.0));
+#21=VECTOR('',#20,1.41421356237);
+#22=LINE('',#19,#21);
+#23=DEFINITIONAL_REPRESENTATION('pcdef',(#22),#6);
+#24=PCURVE('pc',#5,#23);
+#25=SURFACE_CURVE('sc',#18,(#24),.PCURVE_S1.);
+#26=EDGE_CURVE('ec',#11,#12,#25,.T.);
+#27=CARTESIAN_POINT('',(0.0,10.0,0.0));
+#28=DIRECTION('',(1.0,-1.0,0.0));
+#29=VECTOR('',#28,14.1421356237);
+#30=LINE('',#27,#29);
+#31=CARTESIAN_POINT('',(0.0,1.0));
+#32=DIRECTION('',(1.0,-1.0));
+#33=VECTOR('',#32,1.41421356237);
+#34=LINE('',#31,#33);
+#35=DEFINITIONAL_REPRESENTATION('pcdef',(#34),#6);
+#36=PCURVE('pc',#5,#35);
+#37=SURFACE_CURVE('sc',#30,(#36),.PCURVE_S1.);
+#38=EDGE_CURVE('ec',#13,#14,#37,.T.);
+#39=ORIENTED_EDGE('',$,$,#26,.T.);
+#40=ORIENTED_EDGE('',$,$,#38,.T.);
+#41=EDGE_LOOP('',(#39,#40));
+#42=FACE_OUTER_BOUND('',#41,.T.);
+#43=ADVANCED_FACE('',(#42),#5,.T.);
+#44=OPEN_SHELL('',(#43));
+#45=SHELL_BASED_SURFACE_MODEL('',(#44));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('Gs011','Gs011','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#45),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
 ENDSEC;
 END-ISO-10303-21;

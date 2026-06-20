@@ -1,48 +1,95 @@
 ISO-10303-21;
-/* Gs007 - Spatially-shifted contour on periodic surface (whole wire off by period)
- * Defect: All pcurves on a periodic surface are shifted by integer multiples of the
- * surface period. UV image is correctly shaped but offset by 2*pi in U from where it
- * should be. ShapeFix_Wire::FixShifted is required to re-align. */
+/* Gs007: CYLINDRICAL_SURFACE radius=5; all wire pcurve U coords shifted to [4pi,6pi] band (start U=12.5663706144=4pi); wire correctly shaped but offset by 2 full periods from canonical [0,2pi); IS ADVANCED_FACE.face_geometry; shape_null=True */
 HEADER;
-FILE_DESCRIPTION(('Gs007 test case','Whole wire shifted by surface period'),'2;1');
-FILE_NAME('Gs007.stp','2026-04-26T00:00:00',(''),(''),'auto-generated','','');
-FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+FILE_DESCRIPTION(('Gs007'),'2;1');
+FILE_NAME('Gs007.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('automotive_design');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
-#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
-#11=DIRECTION('',(0.0,0.0,1.0));
-#12=DIRECTION('',(1.0,0.0,0.0));
-#13=AXIS2_PLACEMENT_3D('',#10,#11,#12);
-/* Cylinder, period 2*pi in U */
-#20=CYLINDRICAL_SURFACE('',#13,5.0);
-/* 3D vertex points - canonical position on cylinder */
-#30=CARTESIAN_POINT('',(5.0,0.0,0.0));
-#31=VERTEX_POINT('',#30);
-#32=CARTESIAN_POINT('',(5.0,0.0,10.0));
-#33=VERTEX_POINT('',#32);
-/* 3D curve along generator */
-#34=DIRECTION('',(0.0,0.0,1.0));
-#35=VECTOR('',#34,1.0);
-#36=LINE('',#30,#35);
-/* Defect: pcurve placed at U=4*pi, V=0..10 instead of canonical U=0, V=0..10 */
-/* (parameter-space line in (U,V) plane — using LINE in 2D space) */
-#40=CARTESIAN_POINT('',(12.5663706144,0.0));
-#41=DIRECTION('',(0.0,1.0));
-#42=VECTOR('',#41,1.0);
-#43=LINE('',#40,#42);
-/* PCURVE wraps the 2D line tied to the surface */
-#44=DEFINITIONAL_REPRESENTATION('',(#43),#45);
-#45=( GEOMETRIC_REPRESENTATION_CONTEXT(2)
-      PARAMETRIC_REPRESENTATION_CONTEXT()
-      REPRESENTATION_CONTEXT('','') );
-#46=PCURVE('',#20,#44);
-#50=SURFACE_CURVE('',#36,(#46),.PCURVE_S1.);
-#60=EDGE_CURVE('',#31,#33,#50,.T.);
-#61=ORIENTED_EDGE('',*,*,#60,.T.);
-#62=EDGE_LOOP('',(#61));
-#63=FACE_OUTER_BOUND('',#62,.T.);
-#64=ADVANCED_FACE('',(#63),#20,.T.);
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=DIRECTION('',(0.0,0.0,1.0));
+#3=DIRECTION('',(1.0,0.0,0.0));
+#4=AXIS2_PLACEMENT_3D('gs007_ax',#1,#2,#3);
+#5=CYLINDRICAL_SURFACE('gs007_cyl',#4,5.0);
+#6=(GEOMETRIC_REPRESENTATION_CONTEXT(2)PARAMETRIC_REPRESENTATION_CONTEXT()REPRESENTATION_CONTEXT('UV','2D'));
+#7=CARTESIAN_POINT('',(5.0,0.0,0.0));
+#8=CARTESIAN_POINT('',(0.0,5.0,0.0));
+#9=CARTESIAN_POINT('',(0.0,5.0,4.0));
+#10=CARTESIAN_POINT('',(5.0,0.0,4.0));
+#11=VERTEX_POINT('',#7);
+#12=VERTEX_POINT('',#8);
+#13=VERTEX_POINT('',#9);
+#14=VERTEX_POINT('',#10);
+#15=CARTESIAN_POINT('',(5.0,0.0,0.0));
+#16=DIRECTION('',(-1.0,1.0,0.0));
+#17=VECTOR('',#16,5.0);
+#18=LINE('',#15,#17);
+#19=CARTESIAN_POINT('',(12.5663706144,0.0));
+#20=DIRECTION('',(1.0,0.0));
+#21=VECTOR('',#20,1.57079632679);
+#22=LINE('',#19,#21);
+#23=DEFINITIONAL_REPRESENTATION('pcdef',(#22),#6);
+#24=PCURVE('pc',#5,#23);
+#25=SURFACE_CURVE('sc',#18,(#24),.PCURVE_S1.);
+#26=EDGE_CURVE('ec',#11,#12,#25,.T.);
+#27=CARTESIAN_POINT('',(0.0,5.0,0.0));
+#28=DIRECTION('',(0.0,0.0,1.0));
+#29=VECTOR('',#28,4.0);
+#30=LINE('',#27,#29);
+#31=CARTESIAN_POINT('',(14.1371669412,0.0));
+#32=DIRECTION('',(0.0,1.0));
+#33=VECTOR('',#32,4.0);
+#34=LINE('',#31,#33);
+#35=DEFINITIONAL_REPRESENTATION('pcdef',(#34),#6);
+#36=PCURVE('pc',#5,#35);
+#37=SURFACE_CURVE('sc',#30,(#36),.PCURVE_S1.);
+#38=EDGE_CURVE('ec',#12,#13,#37,.T.);
+#39=CARTESIAN_POINT('',(0.0,5.0,4.0));
+#40=DIRECTION('',(1.0,-1.0,0.0));
+#41=VECTOR('',#40,5.0);
+#42=LINE('',#39,#41);
+#43=CARTESIAN_POINT('',(14.1371669412,4.0));
+#44=DIRECTION('',(-1.0,0.0));
+#45=VECTOR('',#44,1.57079632679);
+#46=LINE('',#43,#45);
+#47=DEFINITIONAL_REPRESENTATION('pcdef',(#46),#6);
+#48=PCURVE('pc',#5,#47);
+#49=SURFACE_CURVE('sc',#42,(#48),.PCURVE_S1.);
+#50=EDGE_CURVE('ec',#13,#14,#49,.T.);
+#51=CARTESIAN_POINT('',(5.0,0.0,4.0));
+#52=DIRECTION('',(0.0,0.0,-1.0));
+#53=VECTOR('',#52,4.0);
+#54=LINE('',#51,#53);
+#55=CARTESIAN_POINT('',(12.5663706144,4.0));
+#56=DIRECTION('',(0.0,-1.0));
+#57=VECTOR('',#56,4.0);
+#58=LINE('',#55,#57);
+#59=DEFINITIONAL_REPRESENTATION('pcdef',(#58),#6);
+#60=PCURVE('pc',#5,#59);
+#61=SURFACE_CURVE('sc',#54,(#60),.PCURVE_S1.);
+#62=EDGE_CURVE('ec',#14,#11,#61,.T.);
+#63=ORIENTED_EDGE('',$,$,#26,.T.);
+#64=ORIENTED_EDGE('',$,$,#38,.T.);
+#65=ORIENTED_EDGE('',$,$,#50,.T.);
+#66=ORIENTED_EDGE('',$,$,#62,.T.);
+#67=EDGE_LOOP('',(#63,#64,#65,#66));
+#68=FACE_OUTER_BOUND('',#67,.T.);
+#69=ADVANCED_FACE('',(#68),#5,.T.);
+#70=OPEN_SHELL('',(#69));
+#71=SHELL_BASED_SURFACE_MODEL('',(#70));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('Gs007','Gs007','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#71),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
 ENDSEC;
 END-ISO-10303-21;

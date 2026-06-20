@@ -1,39 +1,101 @@
 ISO-10303-21;
-/* Gs005 - Surface periodicity not declared but actually closed
- * Defect: B_SPLINE_SURFACE_WITH_KNOTS whose first and last U control rows coincide
- * is geometrically closed, yet u_closed flag is .F.. Translator does not recognize
- * closure; seam insertion / PCurve continuity logic falls back to incorrect cases. */
+/* Gs005: B_SPLINE_SURFACE_WITH_KNOTS u_closed=.F. but first/last control rows coincide at (10.0,0.0,0.0) within 1e-7; declared non-periodic but geometrically closed; IS ADVANCED_FACE.face_geometry; shape_null=True */
 HEADER;
-FILE_DESCRIPTION(('Gs005 test case','Undeclared periodic BSpline surface'),'2;1');
-FILE_NAME('Gs005.stp','2026-04-26T00:00:00',(''),(''),'auto-generated','','');
-FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+FILE_DESCRIPTION(('Gs005'),'2;1');
+FILE_NAME('Gs005.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('automotive_design');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
-/* 4x2 control net traces a closed loop (first row equals last row) along U */
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=CARTESIAN_POINT('',(10.0,0.0,0.0));
+#3=CARTESIAN_POINT('',(0.0,5.0,0.0));
+#4=CARTESIAN_POINT('',(10.0,5.0,0.0));
+#5=CARTESIAN_POINT('',(0.0,0.0,5.0));
+#6=CARTESIAN_POINT('',(10.0,0.0,5.0));
+#7=CARTESIAN_POINT('',(0.0,-5.0,0.0));
+#8=CARTESIAN_POINT('',(10.0,-5.0,0.0));
+#9=CARTESIAN_POINT('',(0.0,0.0,0.0));
 #10=CARTESIAN_POINT('',(10.0,0.0,0.0));
-#11=CARTESIAN_POINT('',(0.0,10.0,0.0));
-#12=CARTESIAN_POINT('',(-10.0,0.0,0.0));
-#13=CARTESIAN_POINT('',(0.0,-10.0,0.0));
-#14=CARTESIAN_POINT('',(10.0,0.0,0.0));
-/* Second V row at z=5; first==last for U closure */
-#15=CARTESIAN_POINT('',(10.0,0.0,5.0));
-#16=CARTESIAN_POINT('',(0.0,10.0,5.0));
-#17=CARTESIAN_POINT('',(-10.0,0.0,5.0));
-#18=CARTESIAN_POINT('',(0.0,-10.0,5.0));
-#19=CARTESIAN_POINT('',(10.0,0.0,5.0));
-/* Defect: u_closed=.F. yet rows[i,0] == rows[i,4] within 1.0e-7 -> de-facto closed */
-#20=B_SPLINE_SURFACE_WITH_KNOTS('',2,1,
-  ((#10,#15),(#11,#16),(#12,#17),(#13,#18),(#14,#19)),
-  .UNSPECIFIED.,.F.,.F.,.F.,
-  (3,1,1,3),(2,2),(0.0,0.25,0.75,1.0),(0.0,1.0),
-  .UNSPECIFIED.);
-/* Minimal face referencing the un-flagged-closed surface */
-#30=CARTESIAN_POINT('',(10.0,0.0,0.0));
-#31=VERTEX_POINT('',#30);
-#32=VERTEX_LOOP('',#31);
-#33=FACE_OUTER_BOUND('',#32,.T.);
-#34=ADVANCED_FACE('',(#33),#20,.T.);
+#11=B_SPLINE_SURFACE_WITH_KNOTS('gs005_notclosed',1,1,((#1,#2),(#3,#4),(#5,#6),(#7,#8),(#9,#10)),.UNSPECIFIED.,.F.,.F.,.F.,(2,1,1,1,2),(2,2),(0.0,1.0,2.0,3.0,4.0),(0.0,1.0),.UNSPECIFIED.);
+#12=(GEOMETRIC_REPRESENTATION_CONTEXT(2)PARAMETRIC_REPRESENTATION_CONTEXT()REPRESENTATION_CONTEXT('UV','2D'));
+#13=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#14=VERTEX_POINT('',#13);
+#15=CARTESIAN_POINT('',(0.0,5.0,0.0));
+#16=VERTEX_POINT('',#15);
+#17=CARTESIAN_POINT('',(10.0,5.0,0.0));
+#18=VERTEX_POINT('',#17);
+#19=CARTESIAN_POINT('',(10.0,0.0,0.0));
+#20=VERTEX_POINT('',#19);
+#21=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#22=DIRECTION('',(0.0,1.0,0.0));
+#23=VECTOR('',#22,5.0);
+#24=LINE('',#21,#23);
+#25=CARTESIAN_POINT('',(0.0,0.0));
+#26=DIRECTION('',(1.0,0.0));
+#27=VECTOR('',#26,1.0);
+#28=LINE('',#25,#27);
+#29=DEFINITIONAL_REPRESENTATION('pcdef',(#28),#12);
+#30=PCURVE('pc',#11,#29);
+#31=SURFACE_CURVE('sc',#24,(#30),.PCURVE_S1.);
+#32=EDGE_CURVE('ec',#14,#16,#31,.T.);
+#33=CARTESIAN_POINT('',(0.0,5.0,0.0));
+#34=DIRECTION('',(1.0,0.0,0.0));
+#35=VECTOR('',#34,10.0);
+#36=LINE('',#33,#35);
+#37=CARTESIAN_POINT('',(1.0,0.0));
+#38=DIRECTION('',(0.0,1.0));
+#39=VECTOR('',#38,1.0);
+#40=LINE('',#37,#39);
+#41=DEFINITIONAL_REPRESENTATION('pcdef',(#40),#12);
+#42=PCURVE('pc',#11,#41);
+#43=SURFACE_CURVE('sc',#36,(#42),.PCURVE_S1.);
+#44=EDGE_CURVE('ec',#16,#18,#43,.T.);
+#45=CARTESIAN_POINT('',(10.0,5.0,0.0));
+#46=DIRECTION('',(0.0,-1.0,0.0));
+#47=VECTOR('',#46,5.0);
+#48=LINE('',#45,#47);
+#49=CARTESIAN_POINT('',(1.0,1.0));
+#50=DIRECTION('',(-1.0,0.0));
+#51=VECTOR('',#50,1.0);
+#52=LINE('',#49,#51);
+#53=DEFINITIONAL_REPRESENTATION('pcdef',(#52),#12);
+#54=PCURVE('pc',#11,#53);
+#55=SURFACE_CURVE('sc',#48,(#54),.PCURVE_S1.);
+#56=EDGE_CURVE('ec',#18,#20,#55,.T.);
+#57=CARTESIAN_POINT('',(10.0,0.0,0.0));
+#58=DIRECTION('',(-1.0,0.0,0.0));
+#59=VECTOR('',#58,10.0);
+#60=LINE('',#57,#59);
+#61=CARTESIAN_POINT('',(0.0,1.0));
+#62=DIRECTION('',(0.0,-1.0));
+#63=VECTOR('',#62,1.0);
+#64=LINE('',#61,#63);
+#65=DEFINITIONAL_REPRESENTATION('pcdef',(#64),#12);
+#66=PCURVE('pc',#11,#65);
+#67=SURFACE_CURVE('sc',#60,(#66),.PCURVE_S1.);
+#68=EDGE_CURVE('ec',#20,#14,#67,.T.);
+#69=ORIENTED_EDGE('',$,$,#32,.T.);
+#70=ORIENTED_EDGE('',$,$,#44,.T.);
+#71=ORIENTED_EDGE('',$,$,#56,.T.);
+#72=ORIENTED_EDGE('',$,$,#68,.T.);
+#73=EDGE_LOOP('',(#69,#70,#71,#72));
+#74=FACE_OUTER_BOUND('',#73,.T.);
+#75=ADVANCED_FACE('',(#74),#11,.T.);
+#76=OPEN_SHELL('',(#75));
+#77=SHELL_BASED_SURFACE_MODEL('',(#76));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('Gs005','Gs005','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#77),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
 ENDSEC;
 END-ISO-10303-21;

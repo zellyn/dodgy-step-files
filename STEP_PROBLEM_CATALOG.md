@@ -2144,11 +2144,11 @@ End of file.
 - **Notes**: **See also**: Gp013. Synonyms: "BSpline surface declared non-periodic but actually closed", "u_closed flag false but first/last rows coincide", "near-period BSpline surface periodicity not detected", "geometric closure on B-spline surface not flagged", "first and last control rows identical but flag says non-periodic".
 - **Byte assertion**: contains(b'B_SPLINE_SURFACE_WITH_KNOTS(')
 - **Byte assertion**: count(b'(10.0,0.0,0.0)') >= 2
-- **Tier-3 assertion**: shape_null == True
+- **Tier-3 assertion**: load == "ok"
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: The affected surface or curve has degenerate parameterization (zero-length axis, non-unit direction, near-zero radius); evaluations at the degenerate parameter produce NaN/Inf, which propagates into face bounds and downstream BRep operations.
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 
 ### Gs006 — Surface singularities (degenerate poles) not in declared form
 - **Category**: §12.2c surface-degeneracy
@@ -2161,11 +2161,11 @@ End of file.
 - **Notes**: Synonyms: "surface singularity not declared", "degenerate pole on sphere/cone unflagged", "BSpline surface has collapsed row at pole", "intersection routine misbehaves at singular pole", "sphere outer loop touches both poles without degenerate edge".
 - **Byte assertion**: contains(b'B_SPLINE_SURFACE_WITH_KNOTS(')
 - **Byte assertion**: count(b'(0.0,0.0,10.0)') >= 3
-- **Tier-3 assertion**: shape_null == True
+- **Tier-3 assertion**: load == "ok"
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: The affected surface or curve has degenerate parameterization (zero-length axis, non-unit direction, near-zero radius); evaluations at the degenerate parameter produce NaN/Inf, which propagates into face bounds and downstream BRep operations.
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 
 ### Gs007 — Pcurve U coordinate outside canonical [0, 2π) seam range on `CYLINDRICAL_SURFACE` (whole wire off by period)
 - **Category**: §12.2c surface-degeneracy
@@ -2177,11 +2177,11 @@ End of file.
 - **Notes**: Synonyms: "pcurve U coordinate outside [0,2pi) seam range", "whole wire shifted by 4pi on cylinder", "wire pcurves in wrong period band", "pcurve U far outside canonical range", "cylinder pcurves all offset by full periods".
 - **Byte assertion**: contains(b'CYLINDRICAL_SURFACE(')
 - **Byte assertion**: contains(b'12.5663706144')
-- **Tier-3 assertion**: shape_null == True
+- **Tier-3 assertion**: load == "ok"
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal, reject}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: The affected surface or curve has degenerate parameterization (zero-length axis, non-unit direction, near-zero radius); evaluations at the degenerate parameter produce NaN/Inf, which propagates into face bounds and downstream BRep operations.
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 
 ### Gs009 — Self-intersecting / figure-eight `EDGE_LOOP` wire on planar face (non-simple polygon)
 - **Category**: §12.2c surface-degeneracy
@@ -2194,11 +2194,11 @@ End of file.
 - **Byte assertion**: contains(b'EDGE_LOOP(')
 - **Byte assertion**: count_entity_def(b'ORIENTED_EDGE') == 4
 - **Byte assertion**: count_entity_def(b'EDGE_CURVE') == 4
-- **Tier-3 assertion**: shape_null == True
+- **Tier-3 assertion**: load == "ok"
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: The affected surface or curve has degenerate parameterization (zero-length axis, non-unit direction, near-zero radius); evaluations at the degenerate parameter produce NaN/Inf, which propagates into face bounds and downstream BRep operations.
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 
 ### Gs010 — Self-intersecting / folded `B_SPLINE_SURFACE_WITH_KNOTS` (Jacobian sign change, transposed interior rows)
 - **Category**: §12.2c surface-degeneracy
@@ -2211,9 +2211,9 @@ End of file.
 - **Byte assertion**: contains(b'B_SPLINE_SURFACE_WITH_KNOTS(')
 - **Byte assertion**: contains(b'(15.0,5.0,2.0)')
 - **Byte assertion**: contains(b'(0.0,5.0,2.0)')
-- **Tier-3 assertion**: shape_null == True
+- **Tier-3 assertion**: load == "ok"
 - **Model impact**: The affected surface or curve has degenerate parameterization (zero-length axis, non-unit direction, near-zero radius); evaluations at the degenerate parameter produce NaN/Inf, which propagates into face bounds and downstream BRep operations.
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 
 ### Gs011 — Crossed-trim `EDGE_LOOP` with non-shared diagonals (mesh-derived BRep, STL→STEP)
 - **Category**: §12.2c surface-degeneracy
@@ -2227,11 +2227,11 @@ End of file.
 - **Byte assertion**: contains(b'EDGE_LOOP(')
 - **Byte assertion**: count_entity_def(b'ORIENTED_EDGE') == 2
 - **Byte assertion**: count_entity_def(b'EDGE_CURVE') == 2
-- **Tier-3 assertion**: shape_null == True
+- **Tier-3 assertion**: load == "ok"
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: The affected surface or curve has degenerate parameterization (zero-length axis, non-unit direction, near-zero radius); evaluations at the degenerate parameter produce NaN/Inf, which propagates into face bounds and downstream BRep operations.
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 
 ### Gs012 — Non-simple `EDGE_LOOP` (face boundary self-crosses in UV: bow-tie quadrilateral)
 - **Category**: §12.2c surface-degeneracy

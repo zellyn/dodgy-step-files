@@ -1,50 +1,99 @@
 ISO-10303-21;
-/* Gs006 - Surface singularities (degenerate poles) not in declared form
- *
- * Sources:  F070, W018 (Tech Soft 3D, HOOPS Exchange 2025.3.0), K010
- * Senders:  Pro/E PRO9234, PRO18206, PRO7226
- *
- * Defect: Surface has a degenerate row in the UV grid (cone apex, sphere pole,
- *  collapsed BSpline row) but the file does not flag the degeneracy. Surface-
- *  surface intersection algorithms and pcurve projection misbehave near these
- *  parametric singularities. Tech Soft 3D fixed singularity handling at
- *  intersections in HOOPS Exchange 2025.3.0.
- *
- * Reproducer:  BSpline surface whose first U row collapses to a single 3D point
- *  (a cone-apex pole), with no declared periodicity or pole flag.
- *
- * Expected kernel behavior:
- *   accept; intersection / projection routines must handle the singularity
- *   (insert degenerate edge, handle U/V wrap). */
+/* Gs006: B_SPLINE_SURFACE_WITH_KNOTS interior row collapsed to (0.0,0.0,10.0) (degenerate pole / cone-apex singularity); no singularity declared in STEP flags; IS ADVANCED_FACE.face_geometry; intersection/projection misbehaves; shape_null=True */
 HEADER;
-FILE_DESCRIPTION(('Gs006 test case','Undeclared BSpline pole row'),'2;1');
-FILE_NAME('Gs006.stp','2026-04-26T00:00:00',(''),(''),'auto-generated','','');
-FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+FILE_DESCRIPTION(('Gs006'),'2;1');
+FILE_NAME('Gs006.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('automotive_design');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
-/* All three control points of the V=0 row collapse to the same point (apex pole) */
-#10=CARTESIAN_POINT('',(0.0,0.0,10.0));
-#11=CARTESIAN_POINT('',(0.0,0.0,10.0));
-#12=CARTESIAN_POINT('',(0.0,0.0,10.0));
-/* V=1 row spreads out — cone-like patch */
-#13=CARTESIAN_POINT('',(5.0,0.0,0.0));
-#14=CARTESIAN_POINT('',(0.0,5.0,0.0));
-#15=CARTESIAN_POINT('',(-5.0,0.0,0.0));
-/* Defect: parametric singularity at V=0 (degenerate row), no declaration */
-#20=B_SPLINE_SURFACE_WITH_KNOTS('',2,1,
-  ((#10,#13),(#11,#14),(#12,#15)),
-  .UNSPECIFIED.,.F.,.F.,.F.,
-  (3,3),(2,2),(0.0,1.0),(0.0,1.0),
-  .UNSPECIFIED.);
-#30=CARTESIAN_POINT('',(0.0,0.0,10.0));
-#31=VERTEX_POINT('',#30);
-#32=VERTEX_LOOP('',#31);
-#33=FACE_OUTER_BOUND('',#32,.T.);
-#34=ADVANCED_FACE('',(#33),#20,.T.);
-/* Wrap face in a shell so consumers attempt area / volume integration over the
- * degenerate row and trip the singularity rather than silently skipping. */
-#40=OPEN_SHELL('',(#34));
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('',(10.0,0.0,0.0));
+#2=CARTESIAN_POINT('',(10.0,5.0,0.0));
+#3=CARTESIAN_POINT('',(0.0,0.0,10.0));
+#4=CARTESIAN_POINT('',(0.0,0.0,10.0));
+#5=CARTESIAN_POINT('',(0.0,0.0,10.0));
+#6=CARTESIAN_POINT('',(0.0,0.0,10.0));
+#7=CARTESIAN_POINT('',(10.0,0.0,0.0));
+#8=CARTESIAN_POINT('',(10.0,5.0,0.0));
+#9=B_SPLINE_SURFACE_WITH_KNOTS('gs006_degenerate_pole',2,1,((#1,#2),(#3,#4),(#5,#6),(#7,#8)),.UNSPECIFIED.,.F.,.F.,.F.,(3,2,3),(2,2),(0.0,0.5,1.0),(0.0,1.0),.UNSPECIFIED.);
+#10=(GEOMETRIC_REPRESENTATION_CONTEXT(2)PARAMETRIC_REPRESENTATION_CONTEXT()REPRESENTATION_CONTEXT('UV','2D'));
+#11=CARTESIAN_POINT('',(10.0,0.0,0.0));
+#12=CARTESIAN_POINT('',(10.0,0.01,0.0));
+#13=CARTESIAN_POINT('',(10.0,5.0,0.0));
+#14=CARTESIAN_POINT('',(10.0,4.99,0.0));
+#15=VERTEX_POINT('',#11);
+#16=VERTEX_POINT('',#12);
+#17=VERTEX_POINT('',#13);
+#18=VERTEX_POINT('',#14);
+#19=CARTESIAN_POINT('',(10.0,0.0,0.0));
+#20=DIRECTION('',(0.0,1.0,0.0));
+#21=VECTOR('',#20,0.01);
+#22=LINE('',#19,#21);
+#23=CARTESIAN_POINT('',(0.0,0.0));
+#24=DIRECTION('',(1.0,0.0));
+#25=VECTOR('',#24,1.0);
+#26=LINE('',#23,#25);
+#27=DEFINITIONAL_REPRESENTATION('pcdef',(#26),#10);
+#28=PCURVE('pc',#9,#27);
+#29=SURFACE_CURVE('sc',#22,(#28),.PCURVE_S1.);
+#30=EDGE_CURVE('ec',#15,#16,#29,.T.);
+#31=CARTESIAN_POINT('',(10.0,0.01,0.0));
+#32=DIRECTION('',(0.0,1.0,0.0));
+#33=VECTOR('',#32,4.99);
+#34=LINE('',#31,#33);
+#35=CARTESIAN_POINT('',(1.0,0.0));
+#36=DIRECTION('',(0.0,1.0));
+#37=VECTOR('',#36,1.0);
+#38=LINE('',#35,#37);
+#39=DEFINITIONAL_REPRESENTATION('pcdef',(#38),#10);
+#40=PCURVE('pc',#9,#39);
+#41=SURFACE_CURVE('sc',#34,(#40),.PCURVE_S1.);
+#42=EDGE_CURVE('ec',#16,#17,#41,.T.);
+#43=CARTESIAN_POINT('',(10.0,5.0,0.0));
+#44=DIRECTION('',(0.0,-1.0,0.0));
+#45=VECTOR('',#44,0.01);
+#46=LINE('',#43,#45);
+#47=CARTESIAN_POINT('',(1.0,1.0));
+#48=DIRECTION('',(-1.0,0.0));
+#49=VECTOR('',#48,1.0);
+#50=LINE('',#47,#49);
+#51=DEFINITIONAL_REPRESENTATION('pcdef',(#50),#10);
+#52=PCURVE('pc',#9,#51);
+#53=SURFACE_CURVE('sc',#46,(#52),.PCURVE_S1.);
+#54=EDGE_CURVE('ec',#17,#18,#53,.T.);
+#55=CARTESIAN_POINT('',(10.0,4.99,0.0));
+#56=DIRECTION('',(0.0,-1.0,0.0));
+#57=VECTOR('',#56,4.99);
+#58=LINE('',#55,#57);
+#59=CARTESIAN_POINT('',(0.0,1.0));
+#60=DIRECTION('',(0.0,-1.0));
+#61=VECTOR('',#60,1.0);
+#62=LINE('',#59,#61);
+#63=DEFINITIONAL_REPRESENTATION('pcdef',(#62),#10);
+#64=PCURVE('pc',#9,#63);
+#65=SURFACE_CURVE('sc',#58,(#64),.PCURVE_S1.);
+#66=EDGE_CURVE('ec',#18,#15,#65,.T.);
+#67=ORIENTED_EDGE('',$,$,#30,.T.);
+#68=ORIENTED_EDGE('',$,$,#42,.T.);
+#69=ORIENTED_EDGE('',$,$,#54,.T.);
+#70=ORIENTED_EDGE('',$,$,#66,.T.);
+#71=EDGE_LOOP('',(#67,#68,#69,#70));
+#72=FACE_OUTER_BOUND('',#71,.T.);
+#73=ADVANCED_FACE('',(#72),#9,.T.);
+#74=OPEN_SHELL('',(#73));
+#75=SHELL_BASED_SURFACE_MODEL('',(#74));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('Gs006','Gs006','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#75),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
 ENDSEC;
 END-ISO-10303-21;

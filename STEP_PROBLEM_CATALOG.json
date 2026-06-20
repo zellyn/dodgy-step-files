@@ -25906,7 +25906,7 @@
     "cross_oracle_note": null,
     "description": "A `B_SPLINE_SURFACE_WITH_KNOTS` whose first and last control rows coincide is geometrically closed but the schema flag `u_closed`/`v_closed` is set to `.F.`. The receiver does not recognise the closure unless it explicitly tests for it; seam insertion and PCurve continuity logic both fall back to non-periodic-surface cases and produce wrong results at the wraparound.",
     "expected_kernel_behavior": "detect the geometric closure on near-closed BSpline surfaces (regardless of the flag) and treat the surface as periodic for natural-bound and seam-insertion logic; or reject the input as inconsistent.",
-    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2c-surfaces/Gs005.stp",
     "id": "Gs005",
@@ -25929,7 +25929,7 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "load == \"ok\""
     ],
     "title": "Surface periodicity not declared but actually closed"
   },
@@ -25944,7 +25944,7 @@
     "cross_oracle_note": null,
     "description": "Surface has degenerate row in UV grid (cone apex, sphere pole, collapsed BSpline row) but the file does not flag the degeneracy. Surface-surface intersection algorithms and pcurve projection misbehave near these. Tech Soft 3D fixed singularity-handling at intersections in HOOPS Exchange 2025.3.0 (W018).",
     "expected_kernel_behavior": "Accept; intersection/projection routines must heal-and-accept the singularity (insert degenerate edge, handle U/V wrap).",
-    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2c-surfaces/Gs006.stp",
     "id": "Gs006",
@@ -25965,7 +25965,7 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "load == \"ok\""
     ],
     "title": "Surface singularities (degenerate poles) not in declared form"
   },
@@ -25980,7 +25980,7 @@
     "cross_oracle_note": null,
     "description": "Pcurves of an entire wire on a `CYLINDRICAL_SURFACE` (or other periodic surface) are shifted by an integer multiple of the surface period; for example a pcurve `LINE` whose start U coordinate is 12.566 (= 4π) on a radius-5 cylinder, more than 2π outside the canonical [0, 2π) seam range. The wire's UV image is correctly shaped but offset by 2π (or 4π) in U from where it should be. The whole contour is in the wrong period band; a re-alignment pass that does not produce a single coherent band leaves the wire un-meshable.",
     "expected_kernel_behavior": "detect the period-shift and re-base the wire's pcurves into a canonical / contiguous band. The post-condition is that all wire endpoints land in one period; otherwise the fix has not converged and a downstream mesher will reject the band.",
-    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2c-surfaces/Gs007.stp",
     "id": "Gs007",
@@ -26001,7 +26001,7 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "load == \"ok\""
     ],
     "title": "Pcurve U coordinate outside canonical [0, 2π) seam range on `CYLINDRICAL_SURFACE` (whole wire off by period)"
   },
@@ -26017,7 +26017,7 @@
     "cross_oracle_note": null,
     "description": "Family of self-intersection defects on a planar `ADVANCED_FACE` outer wire: an `EDGE_LOOP` whose underlying `LINE` segments cross each other (e.g. visiting four corners in the order (0,0)→(10,10)→(10,0)→(0,10)→(0,0), forming a figure-eight / non-simple polygon); a single edge whose 3D curve self-loops; two adjacent edges crossing at a vertex; outer/inner wires that overlap. STEP-imported wires from poor curve discretization or grazing intersections. Healing passes can address each, but tolerance can balloon.",
     "expected_kernel_behavior": "heal — re-fit/sub-set self-intersecting curves; remove overlap tails on split-at-seam wires; cap tolerance inflation when healing.",
-    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2c-surfaces/Gs009.stp",
     "id": "Gs009",
@@ -26044,7 +26044,7 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "load == \"ok\""
     ],
     "title": "Self-intersecting / figure-eight `EDGE_LOOP` wire on planar face (non-simple polygon)"
   },
@@ -26060,7 +26060,7 @@
     "cross_oracle_note": null,
     "description": "A `B_SPLINE_SURFACE_WITH_KNOTS` whose control net has interior rows transposed or that traverse U in opposite directions, so the Jacobian flips sign within the parameter range; a folded / non-injective surface parametrisation. Typical shape: a degree 3×2 surface with a 4×3 control net and clamped knot multiplicities like (4,4) U and (3,3) V where two interior rows swap order. Common output of poorly-trimmed offset surfaces or Boolean-derived subdivision surfaces.",
     "expected_kernel_behavior": "heal by surface re-fit; reject with \"non-injective surface parametrization\" diagnostic; never silently use the surface for projection.",
-    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2c-surfaces/Gs010.stp",
     "id": "Gs010",
@@ -26085,7 +26085,7 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "load == \"ok\""
     ],
     "title": "Self-intersecting / folded `B_SPLINE_SURFACE_WITH_KNOTS` (Jacobian sign change, transposed interior rows)"
   },
@@ -26101,7 +26101,7 @@
     "cross_oracle_note": null,
     "description": "Mesh-to-BRep tools fit `B_SPLINE_SURFACE_WITH_KNOTS` patches per triangle and stitch them; near sharp creases the patches' trim curves self-intersect or overlap. Typical shape: an `EDGE_LOOP` containing two diagonal `EDGE_CURVE`s — for example one running (0,0)→(10,10) and another (0,10)→(10,0) — which cross in UV at the centre and do not share endpoints, so the wire loop is two disjoint crossed diagonals. Output STEP loads but every later Boolean fails.",
     "expected_kernel_behavior": "STL→STEP path should emit faceted BRep (`FACETED_BREP` / `OPEN_SHELL`) rather than smooth NURBS; or run self-intersection healing as a final step.",
-    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2c-surfaces/Gs011.stp",
     "id": "Gs011",
@@ -26122,7 +26122,7 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "load == \"ok\""
     ],
     "title": "Crossed-trim `EDGE_LOOP` with non-shared diagonals (mesh-derived BRep, STL→STEP)"
   },
