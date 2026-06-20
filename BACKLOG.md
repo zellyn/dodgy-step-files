@@ -82,6 +82,7 @@ than committed. New strategy: Sonnet-generates instead of Haiku-generates.
 - Gn166 (Boundary pole singularity first row): same orphan-surface issue. Need B-spline surface IS face_geometry.
 - Logged 2026-06-20 from batch 49 indep verify systemic finding: Sonnet keeps building B-spline surfaces as orphans alongside the face's flat-plane geometry instead of swapping them in. Affects batch 49 final-nurbs trio.
 - Ps004, Ps005 (shells): Sonnet attempted post-hoc entity-args mutation (`ent.args[0].append(msb2)`) but ADVANCED_BREP_SHAPE_REPRESENTATION's items arg is stored as a string, not a list. Needs proper builder support for multi-MSB shape representations or a different mechanism encoding.
+- Tsh179 (shells): Sonnet used `f.method[index]` syntax (method-not-subscriptable error). Needs retry with proper builder API.
 - Logged 2026-06-20 from batch 31 indep verify systemic finding.
 - Reason: signal(11) requires engineering a deliberate OCC SIGSEGV; Wave-B Sonnet pipeline doesn't have a template for this yet. Gp001 is the existing reference but is a hand-authored .stp without a fixture_source.py. Need to (a) reverse-engineer Gp001's crash trigger or (b) propose a new builder API for signal-11 fixtures.
 - Logged 2026-06-19 from batch 13-18 archetype-aware scans.

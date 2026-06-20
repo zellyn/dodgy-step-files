@@ -1,37 +1,26 @@
 ISO-10303-21;
+/* Tsh183: CLOSED_SHELL with EMPTY face list IS the LoadShells defect trigger; SHELL_BASED_SURFACE_MODEL containing single CLOSED_SHELL('empty',()) — IS the input; CLOSED_SHELL IS syntactically valid STEP but contains zero ADVANCED_FACE references; LoadShells creates shell entry for empty marker — IS the defect path entry; CheckOrientedShells receives empty shell — IS the null-dereference trigger; normal computation on empty face iterator yields null dereference or assertion — IS the defect; fix: LoadShells must skip or flag shells with zero faces before downstream processing; emit E_LOAD_SHELLS_EMPTY_SHELL when CLOSED_SHELL with no faces IS encountered */
 HEADER;
-FILE_DESCRIPTION(('CAD kernel test fixture - ShapeAnalysis_Shell closed-shell marker with no faces'),'2;1');
-FILE_NAME('Tsh183.stp',
-          2026-06-15T12:00:00,
-          (''),
-          (''),
-          'Open CASCADE STEP writer 7.0',
-          'CAD kernel test',
-          '');
-FILE_SCHEMA((
-    'AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'
-));
+FILE_DESCRIPTION(('Tsh183'),'2;1');
+FILE_NAME('Tsh183.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#1=DIRECTION('',(-1.0,0.0,0.0));
-#2=DIRECTION('',(0.0,0.0,1.0));
-#3=DIRECTION('',(0.0,1.0,0.0));
-#4=CARTESIAN_POINT('',(0.0,0.0,0.0));
-#5=AXIS2_PLACEMENT_3D('',#4,#2,#3);
-#10=CLOSED_SHELL('empty_marked_closed_shell',());
-#11=SHELL_BASED_SURFACE_MODEL('sbsm_empty_closed',(#10));
-#12=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#11),#9010);
-#13=SHAPE_DEFINITION_REPRESENTATION(#9005,#12);
-#9000=PRODUCT_CONTEXT('',#1,'mechanical');
-#9001=PRODUCT('Tsh183','Tsh183','',(#9000));
-#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
-#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
-#9004=PRODUCT_DEFINITION('','',#9002,#9003);
-#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
-#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
-#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
-#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
-#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
-#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CLOSED_SHELL('',());
+#2=SHELL_BASED_SURFACE_MODEL('',(#1));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('Tsh183','Tsh183','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#2),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
 ENDSEC;
 END-ISO-10303-21;
