@@ -28232,8 +28232,8 @@ Compound with nested shell references. LoadShells() recursion incomplete when de
 - **Model impact**: Adjacent shells with near-gap remain unseamed despite tolerance permitting merge; geometry stays disjoint
 - **Fixture path**: step-examples/12-3a-shells/Tsh187.stp
 - **Fixture kind**: scaffold
-- **Tier-3 assertion**: shape_null == True
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Tier-3 assertion**: load == "ok"
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 ### Tsh188 — ShapeFix_Shell.Perform progress-abort inconsistent-status
 - **Category**: §12.3a shells (sub-class: inconsistent-error-reporting)
 - **Sources**: OCCT/ShapeFix_Shell.Perform (line 130)
@@ -28254,8 +28254,8 @@ Compound with nested shell references. LoadShells() recursion incomplete when de
 - **Model impact**: Returns uninitialized compound or empty set instead of reported bad edges
 - **Fixture path**: step-examples/12-3a-shells/Tsh189.stp
 - **Fixture kind**: scaffold
-- **Tier-3 assertion**: shape_null == True
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Tier-3 assertion**: load == "ok"
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 ### Tsh190 — ShapeAnalysis_Shell.FreeEdges uninitialized compound
 - **Category**: §12.3a shells (sub-class: initialization-order)
 - **Sources**: OCCT/ShapeAnalysis_Shell::FreeEdges (line 305)

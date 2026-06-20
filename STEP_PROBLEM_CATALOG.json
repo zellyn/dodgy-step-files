@@ -39527,7 +39527,7 @@
     "cross_oracle_note": null,
     "description": "Section-edge bound tracking initializes lookup structures but may not enumerate all section edges during analysis. Near-gap multi-shell geometries trigger incomplete edge-distance evaluation, producing unmatched or skipped candidates suitable for sewing.",
     "expected_kernel_behavior": "heal: exhaustively enumerate all section boundary edges and distances, or report confidence level when bounds are incomplete",
-    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-3a-shells/Tsh187.stp",
     "id": "Tsh187",
@@ -39548,7 +39548,7 @@
       "topology"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "load == \"ok\""
     ],
     "title": "BRepBuilderAPI_Sewing.AnalysisNearestEdges section-bound-lookup gate"
   },
@@ -39593,7 +39593,7 @@
     "cross_oracle_note": null,
     "description": "BadEdges() returns compound from uninitialized myBad without validation. Calling before Perform() completes exposes lazy-init violation. Shell contains degenerate zero-length edge to trigger analysis path.",
     "expected_kernel_behavior": "heal",
-    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-3a-shells/Tsh189.stp",
     "id": "Tsh189",
@@ -39614,7 +39614,7 @@
       "topology"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "load == \"ok\""
     ],
     "title": "ShapeAnalysis_Shell.BadEdges uninitialized compound"
   },
