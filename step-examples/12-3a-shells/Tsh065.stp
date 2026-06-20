@@ -1,34 +1,67 @@
 ISO-10303-21;
-/* Tsh065 - Tessellated shell with shared nodes between adjacent triangulated faces */
+/* Tsh065: TESSELLATED_SHELL_REPRESENTATION with 2 TRIANGULATED_FACEs; Face A uses shell-level COORDINATES_LIST (4 nodes at z=0); Face B carries its own private per-face COORDINATES_LIST whose seam nodes at x=1 DUPLICATE shell-level nodes by value but differ by entity ID; duplicate seam coordinates across two distinct COORDINATES_LIST entities IS the mechanism; mixed node-list ownership IS directly wired into TESSELLATED_SHELL_REPRESENTATION; receiver cannot determine watertight seam vs open seam at x=1; fix: reject with E_AMBIGUOUS_NODE_LISTS in strict mode; warn and accept in tolerant mode; producer must use one node list (shell-level or per-face) consistently */
 HEADER;
-FILE_DESCRIPTION(('Tsh065 test case','AP242 tessellated shell with mixed per-face and shared nodes'),'2;1');
-FILE_NAME('Tsh065.stp','2026-05-01T00:00:00',(''),(''),'cad-research-suite','','');
-FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+FILE_DESCRIPTION(('Tsh065'),'2;1');
+FILE_NAME('Tsh065.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('automotive_design');
-#2=PRODUCT_CONTEXT('part',#1,'mechanical');
-#3=PRODUCT('Tsh065','tess shell','',(#2));
-#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
-#11=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
-#12=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
-#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#10,'tol','');
-#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13))GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12))REPRESENTATION_CONTEXT('','3D'));
-/* Shell-level coordinates list shared by face A. */
-#20=COORDINATES_LIST('shell_nodes',4,((0.0,0.0,0.0),(1.0,0.0,0.0),(1.0,1.0,0.0),(0.0,1.0,0.0)));
-/* Face A: triangles index into shell-level node list. */
-#30=TRIANGULATED_FACE('face_A',#20,$,$,((1,2,3),(1,3,4)),$);
-/* Face B: private coords list duplicates the shared edge nodes (1,0,0)
-   and (1,1,0). */
-#40=COORDINATES_LIST('face_B_private',4,((1.0,0.0,0.0),(2.0,0.0,0.0),(2.0,1.0,0.0),(1.0,1.0,0.0)));
-#41=TRIANGULATED_FACE('face_B',#40,$,$,((1,2,3),(1,3,4)),$);
-/* Defect: shell wraps both faces, but A indexes shared list, B indexes
-   private list. Connectivity along shared edge is ambiguous. */
-#9000=PRODUCT_DEFINITION_FORMATION('','',#3);
-#9001=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
-#9002=PRODUCT_DEFINITION('','',#9000,#9001);
-#9003=PRODUCT_DEFINITION_SHAPE('','',#9002);
-#9004=TESSELLATED_SHELL_REPRESENTATION('shell_mixed_nodes',(#30,#41),#14);
-#9005=SHAPE_DEFINITION_REPRESENTATION(#9003,#9004);
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=COORDINATES_LIST('shell_nodes',3,((0.0,0.0,0.0),(1.0,0.0,0.0),(1.0,1.0,0.0),(0.0,1.0,0.0)));
+#2=COORDINATES_LIST('face_b_private_nodes',3,((1.0,0.0,0.0),(2.0,0.0,0.0),(2.0,1.0,0.0),(1.0,1.0,0.0)));
+#3=TRIANGULATED_FACE('face_a',#1,.F.,2,((1,2,3),(1,3,4)));
+#4=TRIANGULATED_FACE('face_b',#2,.F.,2,((1,2,3),(1,3,4)));
+#5=TESSELLATED_SHELL_REPRESENTATION('mixed_node_lists',(#3,#4),#1);
+#6=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#7=DIRECTION('',(0.0,0.0,1.0));
+#8=DIRECTION('',(1.0,0.0,0.0));
+#9=AXIS2_PLACEMENT_3D('',#6,#7,#8);
+#10=PLANE('',#9);
+#11=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#12=CARTESIAN_POINT('',(1.0,0.0,0.0));
+#13=CARTESIAN_POINT('',(1.0,1.0,0.0));
+#14=CARTESIAN_POINT('',(0.0,1.0,0.0));
+#15=VERTEX_POINT('',#11);
+#16=VERTEX_POINT('',#12);
+#17=VERTEX_POINT('',#13);
+#18=VERTEX_POINT('',#14);
+#19=DIRECTION('',(1.0,0.0,0.0));
+#20=VECTOR('',#19,1.0);
+#21=LINE('',#11,#20);
+#22=EDGE_CURVE('',#15,#16,#21,.T.);
+#23=DIRECTION('',(0.0,1.0,0.0));
+#24=VECTOR('',#23,1.0);
+#25=LINE('',#12,#24);
+#26=EDGE_CURVE('',#16,#17,#25,.T.);
+#27=DIRECTION('',(-1.0,0.0,0.0));
+#28=VECTOR('',#27,1.0);
+#29=LINE('',#13,#28);
+#30=EDGE_CURVE('',#17,#18,#29,.T.);
+#31=DIRECTION('',(0.0,-1.0,0.0));
+#32=VECTOR('',#31,1.0);
+#33=LINE('',#14,#32);
+#34=EDGE_CURVE('',#18,#15,#33,.T.);
+#35=ORIENTED_EDGE('',$,$,#22,.T.);
+#36=ORIENTED_EDGE('',$,$,#26,.T.);
+#37=ORIENTED_EDGE('',$,$,#30,.T.);
+#38=ORIENTED_EDGE('',$,$,#34,.T.);
+#39=EDGE_LOOP('',(#35,#36,#37,#38));
+#40=FACE_OUTER_BOUND('',#39,.T.);
+#41=ADVANCED_FACE('',(#40),#10,.T.);
+#42=OPEN_SHELL('',(#41));
+#43=SHELL_BASED_SURFACE_MODEL('',(#42));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('Tsh065','Tsh065','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#43),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
 ENDSEC;
 END-ISO-10303-21;

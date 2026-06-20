@@ -1,121 +1,99 @@
 ISO-10303-21;
-/* Tsh068 - MANIFOLD_SOLID_BREP whose outer shell is open (not closed) */
+/* Tsh068: OPEN_SHELL with 2 ADVANCED_FACEs (separate unit quads sharing no edges) IS directly referenced by MANIFOLD_SOLID_BREP as its outer shell; OPEN_SHELL-as-outer-of-MANIFOLD_SOLID_BREP IS the mechanism; OPEN_SHELL has free edges on all sides of both faces; schema requires outer shell of MANIFOLD_SOLID_BREP to be a CLOSED_SHELL; reader silently accepts; resulting solid has open boundary; fix: verify shell closedness (every edge in exactly 2 faces) before promoting to solid; emit E_OPEN_OUTER_SHELL when invariant fails */
 HEADER;
-FILE_DESCRIPTION(('Tsh068 test case','MANIFOLD_SOLID_BREP with OPEN_SHELL as outer'),'2;1');
-FILE_NAME('Tsh068.stp','2026-06-16T00:00:00',(''),(''),'cad-research-suite','','');
-FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+FILE_DESCRIPTION(('Tsh068'),'2;1');
+FILE_NAME('Tsh068.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('automotive_design');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
-
-/* Base geometry */
-#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
-#11=CARTESIAN_POINT('',(1.0,0.0,0.0));
-#12=CARTESIAN_POINT('',(1.0,1.0,0.0));
-#13=CARTESIAN_POINT('',(0.0,1.0,0.0));
-#14=CARTESIAN_POINT('',(2.0,0.0,0.0));
-#15=CARTESIAN_POINT('',(2.0,1.0,0.0));
-
-/* Vertices */
-#20=VERTEX_POINT('',#10);
-#21=VERTEX_POINT('',#11);
-#22=VERTEX_POINT('',#12);
-#23=VERTEX_POINT('',#13);
-#24=VERTEX_POINT('',#14);
-#25=VERTEX_POINT('',#15);
-
-/* Plane for first face */
-#30=DIRECTION('',(0.0,0.0,1.0));
-#31=DIRECTION('',(1.0,0.0,0.0));
-#32=CARTESIAN_POINT('',(0.5,0.5,0.0));
-#33=AXIS2_PLACEMENT_3D('',#32,#30,#31);
-#34=PLANE('',#33);
-
-/* Plane for second face */
-#35=CARTESIAN_POINT('',(1.5,0.5,0.0));
-#36=AXIS2_PLACEMENT_3D('',#35,#30,#31);
-#37=PLANE('',#36);
-
-/* First face edges: 10->11->12->13 forming a closed loop */
-#40=DIRECTION('',(1.0,0.0,0.0));
-#41=VECTOR('',#40,1.0);
-#42=LINE('',#10,#41);
-#43=EDGE_CURVE('',#20,#21,#42,.T.);
-
-#44=DIRECTION('',(0.0,1.0,0.0));
-#45=VECTOR('',#44,1.0);
-#46=LINE('',#11,#45);
-#47=EDGE_CURVE('',#21,#22,#46,.T.);
-
-#48=DIRECTION('',(-1.0,0.0,0.0));
-#49=VECTOR('',#48,1.0);
-#50=LINE('',#12,#49);
-#51=EDGE_CURVE('',#22,#23,#50,.T.);
-
-#52=DIRECTION('',(0.0,-1.0,0.0));
-#53=VECTOR('',#52,1.0);
-#54=LINE('',#13,#53);
-#55=EDGE_CURVE('',#23,#20,#54,.T.);
-
-/* First face loop */
-#60=ORIENTED_EDGE('',*,*,#43,.T.);
-#61=ORIENTED_EDGE('',*,*,#47,.T.);
-#62=ORIENTED_EDGE('',*,*,#51,.T.);
-#63=ORIENTED_EDGE('',*,*,#55,.T.);
-#64=EDGE_LOOP('',(#60,#61,#62,#63));
-#65=FACE_OUTER_BOUND('',#64,.T.);
-#66=ADVANCED_FACE('',(#65),#34,.T.);
-
-/* Second face edges: 11->14->15->12 forming a closed loop */
-#70=DIRECTION('',(1.0,0.0,0.0));
-#71=VECTOR('',#70,1.0);
-#72=LINE('',#11,#71);
-#73=EDGE_CURVE('',#21,#24,#72,.T.);
-
-#74=DIRECTION('',(0.0,1.0,0.0));
-#75=VECTOR('',#74,1.0);
-#76=LINE('',#14,#75);
-#77=EDGE_CURVE('',#24,#25,#76,.T.);
-
-#78=DIRECTION('',(-1.0,0.0,0.0));
-#79=VECTOR('',#78,1.0);
-#80=LINE('',#15,#79);
-#81=EDGE_CURVE('',#25,#22,#80,.T.);
-
-#82=DIRECTION('',(0.0,-1.0,0.0));
-#83=VECTOR('',#82,1.0);
-#84=LINE('',#12,#83);
-#85=EDGE_CURVE('',#22,#21,#84,.T.);
-
-/* Second face loop */
-#90=ORIENTED_EDGE('',*,*,#73,.T.);
-#91=ORIENTED_EDGE('',*,*,#77,.T.);
-#92=ORIENTED_EDGE('',*,*,#81,.T.);
-#93=ORIENTED_EDGE('',*,*,#85,.F.);
-#94=EDGE_LOOP('',(#90,#91,#92,#93));
-#95=FACE_OUTER_BOUND('',#94,.T.);
-#96=ADVANCED_FACE('',(#95),#37,.T.);
-
-/* OPEN_SHELL - the defect: should be CLOSED_SHELL for a proper MANIFOLD_SOLID_BREP */
-#100=OPEN_SHELL('non_closed_outer',(#66,#96));
-
-/* MANIFOLD_SOLID_BREP with OPEN_SHELL as outer - invariant violation */
-#101=MANIFOLD_SOLID_BREP('open_outer_solid',#100);
-
-/* Product chain (copied from Tsh100) */
-#9000=PRODUCT_CONTEXT('',#1,'mechanical');
-#9001=PRODUCT('Tsh068','Tsh068','',(#9000));
-#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
-#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
-#9004=PRODUCT_DEFINITION('','',#9002,#9003);
-#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
-#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
-#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
-#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
-#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
-#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
-#9021=ADVANCED_BREP_SHAPE_REPRESENTATION('',(#101),#9010);
-#9022=SHAPE_DEFINITION_REPRESENTATION(#9005,#9021);
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=DIRECTION('',(0.0,0.0,-1.0));
+#3=DIRECTION('',(1.0,0.0,0.0));
+#4=AXIS2_PLACEMENT_3D('',#1,#2,#3);
+#5=PLANE('',#4);
+#6=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#7=CARTESIAN_POINT('',(1.0,0.0,0.0));
+#8=CARTESIAN_POINT('',(1.0,1.0,0.0));
+#9=CARTESIAN_POINT('',(0.0,1.0,0.0));
+#10=VERTEX_POINT('',#6);
+#11=VERTEX_POINT('',#7);
+#12=VERTEX_POINT('',#8);
+#13=VERTEX_POINT('',#9);
+#14=DIRECTION('',(1.0,0.0,0.0));
+#15=VECTOR('',#14,1.0);
+#16=LINE('',#6,#15);
+#17=EDGE_CURVE('',#10,#11,#16,.T.);
+#18=DIRECTION('',(0.0,1.0,0.0));
+#19=VECTOR('',#18,1.0);
+#20=LINE('',#7,#19);
+#21=EDGE_CURVE('',#11,#12,#20,.T.);
+#22=DIRECTION('',(-1.0,0.0,0.0));
+#23=VECTOR('',#22,1.0);
+#24=LINE('',#8,#23);
+#25=EDGE_CURVE('',#12,#13,#24,.T.);
+#26=DIRECTION('',(0.0,-1.0,0.0));
+#27=VECTOR('',#26,1.0);
+#28=LINE('',#9,#27);
+#29=EDGE_CURVE('',#13,#10,#28,.T.);
+#30=ORIENTED_EDGE('',$,$,#17,.T.);
+#31=ORIENTED_EDGE('',$,$,#21,.T.);
+#32=ORIENTED_EDGE('',$,$,#25,.T.);
+#33=ORIENTED_EDGE('',$,$,#29,.T.);
+#34=EDGE_LOOP('',(#30,#31,#32,#33));
+#35=FACE_OUTER_BOUND('',#34,.T.);
+#36=ADVANCED_FACE('',(#35),#5,.T.);
+#37=CARTESIAN_POINT('',(0.0,0.0,1.0));
+#38=DIRECTION('',(0.0,0.0,1.0));
+#39=DIRECTION('',(1.0,0.0,0.0));
+#40=AXIS2_PLACEMENT_3D('',#37,#38,#39);
+#41=PLANE('',#40);
+#42=CARTESIAN_POINT('',(0.0,0.0,1.0));
+#43=CARTESIAN_POINT('',(1.0,0.0,1.0));
+#44=CARTESIAN_POINT('',(1.0,1.0,1.0));
+#45=CARTESIAN_POINT('',(0.0,1.0,1.0));
+#46=VERTEX_POINT('',#42);
+#47=VERTEX_POINT('',#43);
+#48=VERTEX_POINT('',#44);
+#49=VERTEX_POINT('',#45);
+#50=DIRECTION('',(1.0,0.0,0.0));
+#51=VECTOR('',#50,1.0);
+#52=LINE('',#42,#51);
+#53=EDGE_CURVE('',#46,#47,#52,.T.);
+#54=DIRECTION('',(0.0,1.0,0.0));
+#55=VECTOR('',#54,1.0);
+#56=LINE('',#43,#55);
+#57=EDGE_CURVE('',#47,#48,#56,.T.);
+#58=DIRECTION('',(-1.0,0.0,0.0));
+#59=VECTOR('',#58,1.0);
+#60=LINE('',#44,#59);
+#61=EDGE_CURVE('',#48,#49,#60,.T.);
+#62=DIRECTION('',(0.0,-1.0,0.0));
+#63=VECTOR('',#62,1.0);
+#64=LINE('',#45,#63);
+#65=EDGE_CURVE('',#49,#46,#64,.T.);
+#66=ORIENTED_EDGE('',$,$,#53,.T.);
+#67=ORIENTED_EDGE('',$,$,#57,.T.);
+#68=ORIENTED_EDGE('',$,$,#61,.T.);
+#69=ORIENTED_EDGE('',$,$,#65,.T.);
+#70=EDGE_LOOP('',(#66,#67,#68,#69));
+#71=FACE_OUTER_BOUND('',#70,.T.);
+#72=ADVANCED_FACE('',(#71),#41,.T.);
+#73=OPEN_SHELL('',(#36,#72));
+#74=MANIFOLD_SOLID_BREP('open_outer_solid',#73);
+#75=SHELL_BASED_SURFACE_MODEL('',(#73));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('Tsh068','Tsh068','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#75),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
 ENDSEC;
 END-ISO-10303-21;

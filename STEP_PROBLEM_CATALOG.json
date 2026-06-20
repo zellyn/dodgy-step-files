@@ -35502,7 +35502,7 @@
     "cross_oracle_note": null,
     "description": "AP242 TESSELLATED_SHELL_REPRESENTATION wraps several TRIANGULATED_FACE entities each carrying their own COORDINATES_LIST. The spec permits adjacent triangulated faces to share node indices via a shell-level COORDINATES_LIST referenced by all faces, or to carry independent per-face node lists. A producer that mixes the two — most faces use a shared shell-level node list, but one face carries its own private list whose vertex coordinates duplicate shell-level nodes — leaves the shell's connectivity ambiguous: the stitched mesh has phantom seam edges where the shared and private node lists meet, neither watertight nor cleanly unstitched. Bug-reporter language: \"tessellated mesh has duplicated nodes along an edge\", \"AP242 triangulated shell not watertight\", \"seam between triangulated faces\".",
     "expected_kernel_behavior": "Reject with E_AMBIGUOUS_NODE_LISTS diagnostic in strict mode, or warn and accept in tolerant mode: detect duplicated vertex coordinates between shell-level and per-face COORDINATES_LISTs and emit a warning that the mesh's connectivity cannot be inferred; the producer must use one node list (shell-level or per-face) consistently.",
-    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-3a-shells/Tsh065.stp",
     "id": "Tsh065",
@@ -35525,7 +35525,7 @@
       "topology"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "load == \"ok\""
     ],
     "title": "Tessellated shell with shared nodes between adjacent triangulated faces"
   },

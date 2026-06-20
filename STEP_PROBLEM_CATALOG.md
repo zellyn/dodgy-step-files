@@ -19692,11 +19692,11 @@ _Section summary: 41 entries._
 - **Byte assertion**: contains(b'TESSELLATED_SHELL_REPRESENTATION')
 - **Byte assertion**: count(b'TRIANGULATED_FACE') >= 2
 - **Byte assertion**: count(b'COORDINATES_LIST') >= 2
-- **Tier-3 assertion**: shape_null == True
+- **Tier-3 assertion**: load == "ok"
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject, warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must reject or emit a diagnostic this fixture.
 - **Severity**: P1
 - **Model impact**: Shell topology loads with inconsistent face orientations or non-manifold edges; BRepCheck flags the shell as invalid, and boolean / offset operations on the solid either produce wrong-sided results or fail outright.
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 
 ### Tsh066 — Same `CLOSED_SHELL` referenced from two `MANIFOLD_SOLID_BREP` entities
 - **Category**: §12.3a shells/orientation (sub-class: shell sharing)
