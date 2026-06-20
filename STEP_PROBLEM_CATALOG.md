@@ -21850,33 +21850,33 @@ Curve knot vector has interior knot at t=0.5 with multiplicity 2. Init's split r
 ### Gn113 — ShapeAnalysis_Curve.IsClosed periodic-with-knot-asymmetry
 
 B-spline with periodic flag (.T.) but knot multiplicities at endpoints differ: u_min has multiplicity 2, u_max has multiplicity 2 but computed span widths asymmetric. IsClosed reports .T. based on flag, ignoring asymmetry in knot partition.
-- **Tier-3 assertion**: shape_null == True
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Tier-3 assertion**: load == "ok"
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 ### Gn114 — ShapeAnalysis_Curve.IsClosed knot-vector-not-symmetric
 
 Closed B-spline curve (degree 3, 7 control points) with asymmetric knot multiplicities at endpoints (multiplicity 2 at start, 2 at end). Poles form a closed loop but knot vector lacks symmetry. IsClosed incorrectly reports closed based on pole coincidence while downstream code assumes symmetric knot structure.
-- **Tier-3 assertion**: shape_null == True
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Tier-3 assertion**: load == "ok"
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 ### Gn115 — ShapeUpgrade_ConvertSurfaceToBezierBasis non-uniform-degree
 
 B-spline surface with highly disparate degrees: U direction degree 5, V direction degree 1. Control point layout (7×2) creates vastly different patch sizes when converted to Bezier basis. Tests Init's assumption of uniform degree across dimensions.
-- **Tier-3 assertion**: shape_null == True
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Tier-3 assertion**: load == "ok"
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 ### Gn116 — ShapeAnalysis_Curve.GetSamplePoints near-collinear-poles
 
 B-spline curve (degree 3, 5 control points) with poles nearly collinear in XY plane (offsets ~1e-5 in Y). Sampler detects "almost linear" geometry and returns minimal sample count, failing to discretize the sparse curvature information.
-- **Tier-3 assertion**: shape_null == True
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Tier-3 assertion**: load == "ok"
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 ### Gn117 — ShapeUpgrade_SplitSurface with-rational-and-non-rational-mixed
 
 Rational B-spline surface (degree 2×1) with mixed rationality: weights specified (rational in U) but V direction non-rational. Init's split logic assumes uniform rationality and produces incorrect patch boundaries.
-- **Tier-3 assertion**: shape_null == True
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Tier-3 assertion**: load == "ok"
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 ### Gn118 — ShapeAnalysis_Curve.IsPlanar two-points-and-one-offset
 
 Degenerate B-spline curve (degree 2, 3 points) where first two poles are coincident and third is spatially offset. IsPlanar's degenerate-input handler produces a verdict but computes a meaningless "plane" from insufficient independent points.
-- **Tier-3 assertion**: shape_null == True
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Tier-3 assertion**: load == "ok"
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 ### Gn119 — ShapeAnalysis_Curve.GetSamplePoints with-clustered-knots
 
 **Defect:** B-spline curve degree 3, 8 control points, with 5 knots clustered within parameter range [0.20025, 0.20100] (width 0.001). GetSamplePoints over-counts samples in the cluster region, causing excessive subdivision or missed coarse regions.
