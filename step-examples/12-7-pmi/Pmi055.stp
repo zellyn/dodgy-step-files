@@ -1,70 +1,41 @@
 ISO-10303-21;
-/* Pmi055 - AP242 hole feature missing required attribute / inconsistent dims
-   Defect: A counterbore hole feature is encoded with three dimensional
-   sizes (drill diameter, counterbore diameter, counterbore depth), but
-   the counterbore_diameter (5.0) is LESS than the drill_diameter (6.0),
-   which is geometrically impossible. NIST SFA S054. The expected
-   relationship counterbore_diameter > drill_diameter and
-   drill_depth > counterbore_depth is violated. Also missing from this
-   file is a tip_angle for the drill, which AP242 hole-feature semantics
-   would require for a drilled-and-counterbored feature. */
+/* Pmi055: counterbore hole feature has inconsistent dimensions: counterbore_diameter < drill_diameter (4.0 < 6.0); AP242 requires counterbore diameter to exceed drill diameter; receivers must reject or warn; silently accepting geometrically impossible hole dimensions is forbidden; GEOMETRIC_CURVE_SET IS model entity — OCC yields empty */
 HEADER;
-FILE_DESCRIPTION(('Pmi055 - hole feature inconsistent dimensions',
-  'CAx-IF Rec.Pracs.---PMI Rep & Pres---v4.1'),'2;1');
-FILE_NAME('Pmi055.stp','2026-04-26T00:00:00',('catalog'),('cad'),
-  'manual','','');
-FILE_SCHEMA(('AP242_MANAGED_MODEL_BASED_3D_ENGINEERING_MIM_LF { 1 0 10303 442 1 1 4 }'));
+FILE_DESCRIPTION(('Pmi055'),'2;1');
+FILE_NAME('Pmi055.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#10 = APPLICATION_CONTEXT('managed model based 3d engineering');
-#11 = APPLICATION_PROTOCOL_DEFINITION('international standard',
-  'ap242_managed_model_based_3d_engineering',2020,#10);
-#12 = PRODUCT_CONTEXT('',#10,'mechanical');
-#13 = PRODUCT('Pmi055','InconsistentHolePart','',(#12));
-#14 = PRODUCT_DEFINITION_FORMATION('','',#13);
-#15 = PRODUCT_DEFINITION_CONTEXT('',#10,'design');
-#16 = PRODUCT_DEFINITION('','',#14,#15);
-#17 = PRODUCT_DEFINITION_SHAPE('','',#16);
-#20 = ( LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT(.MILLI.,.METRE.) );
-#22 = ( NAMED_UNIT(*) PLANE_ANGLE_UNIT() SI_UNIT($,.RADIAN.) );
-#23 = ( NAMED_UNIT(*) SI_UNIT($,.STERADIAN.) SOLID_ANGLE_UNIT() );
-#24 = UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#20,
-  'distance_accuracy_value','');
-#25 = ( GEOMETRIC_REPRESENTATION_CONTEXT(3)
-  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#24))
-  GLOBAL_UNIT_ASSIGNED_CONTEXT((#20,#22,#23))
-  REPRESENTATION_CONTEXT('','3D') );
-#30 = CARTESIAN_POINT('',(0.0,0.0,0.0));
-#31 = DIRECTION('',(0.0,0.0,1.0));
-#32 = DIRECTION('',(1.0,0.0,0.0));
-#33 = AXIS2_PLACEMENT_3D('',#30,#31,#32);
-/* Three shape_aspects modeling drill, counterbore and depth */
-#40 = SHAPE_ASPECT('drill','through hole',#17,.T.);
-#41 = SHAPE_ASPECT('cbore','counterbore',#17,.T.);
-#42 = SHAPE_ASPECT('cbore_depth','counterbore depth',#17,.T.);
-/* Defect: drill diameter 6.0 > counterbore diameter 5.0 */
-#50 = DIMENSIONAL_SIZE(#40,'diameter');
-#51 = MEASURE_REPRESENTATION_ITEM('drill_dia',LENGTH_MEASURE(6.0),#20);
-#52 = SHAPE_DIMENSION_REPRESENTATION('',(#51),#25);
-#53 = DIMENSIONAL_SIZE(#41,'diameter');
-#54 = MEASURE_REPRESENTATION_ITEM('cbore_dia',LENGTH_MEASURE(5.0),#20);
-#55 = SHAPE_DIMENSION_REPRESENTATION('',(#54),#25);
-#56 = DIMENSIONAL_SIZE(#42,'distance');
-#57 = MEASURE_REPRESENTATION_ITEM('cbore_depth',LENGTH_MEASURE(8.0),#20);
-#58 = SHAPE_DIMENSION_REPRESENTATION('',(#57),#25);
-/* Defect: drill_depth 4.0 < counterbore_depth 8.0 (also impossible) */
-#59 = DIMENSIONAL_SIZE(#40,'distance');
-#60 = MEASURE_REPRESENTATION_ITEM('drill_depth',LENGTH_MEASURE(4.0),#20);
-#61 = SHAPE_DIMENSION_REPRESENTATION('',(#60),#25);
-/* No tip_angle given for the drill - missing required attribute */
-#70 = PLUS_MINUS_TOLERANCE(#71,#50);
-#71 = TOLERANCE_VALUE(#72,#73);
-#72 = LENGTH_MEASURE_WITH_UNIT(LENGTH_MEASURE(-0.05),#20);
-#73 = LENGTH_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.05),#20);
-#80 = DRAUGHTING_MODEL('Default',(),#25);
-#81 = PLANE('ann_plane',#33);
-#82 = ANNOTATION_PLANE('PMI',(),#81,());
-#90 = SHAPE_REPRESENTATION('',(#33),#25);
-#91 = SHAPE_DEFINITION_REPRESENTATION(#17,#90);
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=GEOMETRIC_CURVE_SET('',(#1));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('Pmi055','Pmi055','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#2),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
+#9063=SHAPE_ASPECT('through_bore','',#9055,.T.);
+#9064=SHAPE_ASPECT('cbore_diameter','',#9055,.T.);
+#9065=SHAPE_ASPECT('cbore_depth','',#9055,.T.);
+#9066=DIMENSIONAL_SIZE(#9063,'bore_diameter');
+#9067=MEASURE_REPRESENTATION_ITEM('nominal',LENGTH_MEASURE(6.0),#9056);
+#9068=MEASURE_REPRESENTATION_ITEM('upper',LENGTH_MEASURE(0.05),#9056);
+#9069=MEASURE_REPRESENTATION_ITEM('lower',LENGTH_MEASURE(0.05),#9056);
+#9070=TOLERANCE_VALUE(#9068,#9069);
+#9071=PLUS_MINUS_TOLERANCE(#9070,#9066);
+#9072=DIMENSIONAL_SIZE(#9064,'cbore_diameter');
+#9073=MEASURE_REPRESENTATION_ITEM('nominal',LENGTH_MEASURE(4.0),#9056);
+#9074=DIMENSIONAL_SIZE(#9065,'cbore_depth');
+#9075=MEASURE_REPRESENTATION_ITEM('nominal',LENGTH_MEASURE(3.0),#9056);
+#9076=DIMENSIONAL_SIZE(#9063,'bore_depth');
+#9077=MEASURE_REPRESENTATION_ITEM('nominal',LENGTH_MEASURE(15.0),#9056);
 ENDSEC;
 END-ISO-10303-21;
