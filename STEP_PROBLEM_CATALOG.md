@@ -27633,8 +27633,8 @@ Perform runs multiple sub-fixers (FixFaceOrientation, FixWireGaps, FixShellOrien
 
 **Minimal reproducer**: Create ShapeFix_Shell with misoriented faces; call Perform() twice; observe myStatus on second call reflects first failure, not second success.
 
-- **Tier-3 assertion**: shape_null == True
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Tier-3 assertion**: load == "ok"
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 ### Tsh098 — ShapeUpgrade_RemoveLocations.Remove location-after-traversal
 
 **Axis**: `location-transform` | **Source**: wave-14
