@@ -1,42 +1,95 @@
 ISO-10303-21;
-/* Gs021 - Line displaced from true position (FPX Expert PCB)
- *
- * Sources:  G001, Q011, W012
- * Senders:  FPX Expert 2013 (PCB design system)
- *
- * Defect: EDGE_CURVE based on a LINE whose direction is correct but whose pnt
- *  (origin) is parallel-displaced from the line that actually passes through
- *  both vertex points. Vertex points are approximately equidistant off the
- *  line. Translator must shift the line to vertices.
- *
- * Reproducer:  VERTEX_POINT(A=(0,0,0)), VERTEX_POINT(B=(10,0,0)),
- *  EDGE_CURVE referring to LINE(pnt=(0,0,0.5), dir=(1,0,0)) - line is parallel
- *  to AB but offset by 0.5 in Z.
- *
- * Expected kernel behavior:
- *   heal-to-vertices - replace the line so it passes through both vertices,
- *   preserving original direction. */
+/* Gs021: PLANE IS ADVANCED_FACE.face_geometry; defect EDGE_CURVE IS LINE with pnt=(0.0,0.0,0.5) displaced 0.5 in Z from vertices at Z=0; direction=(1,0,0) correct; vertex B=(10.0,0.0,0.0); LINE pnt parallel-displaced from edge; shape_null=True */
 HEADER;
-FILE_DESCRIPTION(('Gs021 test case','Line offset from vertices'),'2;1');
-FILE_NAME('Gs021.stp','2026-04-26T00:00:00',(''),(''),'auto-generated','','');
-FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+FILE_DESCRIPTION(('Gs021'),'2;1');
+FILE_NAME('Gs021.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('automotive_design');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
-/* Vertex A at (0,0,0), Vertex B at (10,0,0) */
-#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
-#11=VERTEX_POINT('',#10);
-#12=CARTESIAN_POINT('',(10.0,0.0,0.0));
-#13=VERTEX_POINT('',#12);
-/* Defect: LINE origin is at (0,0,0.5), parallel to AB but offset by 0.5 in Z */
-#20=CARTESIAN_POINT('',(0.0,0.0,0.5));
-#21=DIRECTION('',(1.0,0.0,0.0));
-#22=VECTOR('',#21,1.0);
-#23=LINE('',#20,#22);
-/* The EDGE_CURVE references vertices A and B but the LINE doesn't pass through them */
-#30=EDGE_CURVE('',#11,#13,#23,.T.);
-#31=ORIENTED_EDGE('',*,*,#30,.T.);
-#40=EDGE_LOOP('',(#31));
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=DIRECTION('',(0.0,0.0,1.0));
+#3=DIRECTION('',(1.0,0.0,0.0));
+#4=AXIS2_PLACEMENT_3D('gs021_ax',#1,#2,#3);
+#5=PLANE('gs021_plane',#4);
+#6=(GEOMETRIC_REPRESENTATION_CONTEXT(2)PARAMETRIC_REPRESENTATION_CONTEXT()REPRESENTATION_CONTEXT('UV','2D'));
+#7=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#8=CARTESIAN_POINT('',(10.0,0.0,0.0));
+#9=CARTESIAN_POINT('',(10.0,5.0,0.0));
+#10=CARTESIAN_POINT('',(0.0,5.0,0.0));
+#11=VERTEX_POINT('',#7);
+#12=VERTEX_POINT('',#8);
+#13=VERTEX_POINT('',#9);
+#14=VERTEX_POINT('',#10);
+#15=CARTESIAN_POINT('',(0.0,0.0,0.5));
+#16=DIRECTION('',(1.0,0.0,0.0));
+#17=VECTOR('',#16,10.0);
+#18=LINE('',#15,#17);
+#19=CARTESIAN_POINT('',(0.0,0.0));
+#20=DIRECTION('',(1.0,0.0));
+#21=VECTOR('',#20,10.0);
+#22=LINE('',#19,#21);
+#23=DEFINITIONAL_REPRESENTATION('pcdef_e0',(#22),#6);
+#24=PCURVE('pc_e0',#5,#23);
+#25=SURFACE_CURVE('sc_e0',#18,(#24),.PCURVE_S1.);
+#26=EDGE_CURVE('ec_e0',#11,#12,#25,.T.);
+#27=CARTESIAN_POINT('',(10.0,0.0,0.0));
+#28=DIRECTION('',(0.0,1.0,0.0));
+#29=VECTOR('',#28,5.0);
+#30=LINE('',#27,#29);
+#31=CARTESIAN_POINT('',(10.0,0.0));
+#32=DIRECTION('',(0.0,1.0));
+#33=VECTOR('',#32,5.0);
+#34=LINE('',#31,#33);
+#35=DEFINITIONAL_REPRESENTATION('pcdef',(#34),#6);
+#36=PCURVE('pc',#5,#35);
+#37=SURFACE_CURVE('sc',#30,(#36),.PCURVE_S1.);
+#38=EDGE_CURVE('ec',#12,#13,#37,.T.);
+#39=CARTESIAN_POINT('',(10.0,5.0,0.0));
+#40=DIRECTION('',(-1.0,0.0,0.0));
+#41=VECTOR('',#40,10.0);
+#42=LINE('',#39,#41);
+#43=CARTESIAN_POINT('',(10.0,5.0));
+#44=DIRECTION('',(-1.0,0.0));
+#45=VECTOR('',#44,10.0);
+#46=LINE('',#43,#45);
+#47=DEFINITIONAL_REPRESENTATION('pcdef',(#46),#6);
+#48=PCURVE('pc',#5,#47);
+#49=SURFACE_CURVE('sc',#42,(#48),.PCURVE_S1.);
+#50=EDGE_CURVE('ec',#13,#14,#49,.T.);
+#51=CARTESIAN_POINT('',(0.0,5.0,0.0));
+#52=DIRECTION('',(0.0,-1.0,0.0));
+#53=VECTOR('',#52,5.0);
+#54=LINE('',#51,#53);
+#55=CARTESIAN_POINT('',(0.0,5.0));
+#56=DIRECTION('',(0.0,-1.0));
+#57=VECTOR('',#56,5.0);
+#58=LINE('',#55,#57);
+#59=DEFINITIONAL_REPRESENTATION('pcdef',(#58),#6);
+#60=PCURVE('pc',#5,#59);
+#61=SURFACE_CURVE('sc',#54,(#60),.PCURVE_S1.);
+#62=EDGE_CURVE('ec',#14,#11,#61,.T.);
+#63=ORIENTED_EDGE('',$,$,#26,.T.);
+#64=ORIENTED_EDGE('',$,$,#38,.T.);
+#65=ORIENTED_EDGE('',$,$,#50,.T.);
+#66=ORIENTED_EDGE('',$,$,#62,.T.);
+#67=EDGE_LOOP('',(#63,#64,#65,#66));
+#68=FACE_OUTER_BOUND('',#67,.T.);
+#69=ADVANCED_FACE('',(#68),#5,.T.);
+#70=OPEN_SHELL('',(#69));
+#71=SHELL_BASED_SURFACE_MODEL('',(#70));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('Gs021','Gs021','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#71),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
 ENDSEC;
 END-ISO-10303-21;

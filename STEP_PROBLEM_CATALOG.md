@@ -2245,9 +2245,9 @@ End of file.
 - **Byte assertion**: contains(b'EDGE_LOOP(')
 - **Byte assertion**: count_entity_def(b'ORIENTED_EDGE') == 4
 - **Byte assertion**: contains(b'PLANE(')
-- **Tier-3 assertion**: shape_null == True
+- **Tier-3 assertion**: load == "ok"
 - **Model impact**: The affected surface or curve has degenerate parameterization (zero-length axis, non-unit direction, near-zero radius); evaluations at the degenerate parameter produce NaN/Inf, which propagates into face bounds and downstream BRep operations.
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 
 ### Gs014 — Zero-area / sliver / degenerate `ADVANCED_FACE` (sliver, spot, strip, pin; tiny aspect-ratio rectangle)
 - **Category**: §12.2c surface-degeneracy
@@ -2261,9 +2261,9 @@ End of file.
 - **Byte assertion**: contains(b'1.0E-7')
 - **Byte assertion**: contains(b'(100.0,0.0,0.0)')
 - **Byte assertion**: count_entity_def(b'ORIENTED_EDGE') == 4
-- **Tier-3 assertion**: shape_null == True
+- **Tier-3 assertion**: load == "ok"
 - **Model impact**: The affected surface or curve has degenerate parameterization (zero-length axis, non-unit direction, near-zero radius); evaluations at the degenerate parameter produce NaN/Inf, which propagates into face bounds and downstream BRep operations.
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 
 ### Gs015 — Sliver face (high aspect ratio, two long edges within tolerance)
 - **Category**: §12.2c surface-degeneracy
@@ -2277,9 +2277,9 @@ End of file.
 - **Byte assertion**: contains(b'1.0E-5')
 - **Byte assertion**: contains(b'(250.0,0.0,0.0)')
 - **Byte assertion**: count_entity_def(b'EDGE_CURVE') == 4
-- **Tier-3 assertion**: shape_null == True
+- **Tier-3 assertion**: load == "ok"
 - **Model impact**: The affected surface or curve has degenerate parameterization (zero-length axis, non-unit direction, near-zero radius); evaluations at the degenerate parameter produce NaN/Inf, which propagates into face bounds and downstream BRep operations.
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 
 ### Gs018 — Mismatched orientation of 3D curve and pcurve
 - **Category**: §12.2c surface-degeneracy
@@ -2293,9 +2293,9 @@ End of file.
 - **Byte assertion**: contains(b'CYLINDRICAL_SURFACE(')
 - **Byte assertion**: contains(b'SURFACE_CURVE(')
 - **Byte assertion**: contains(b'(0.0,5.0)')
-- **Tier-3 assertion**: shape_null == True
+- **Tier-3 assertion**: load == "ok"
 - **Model impact**: The affected surface or curve has degenerate parameterization (zero-length axis, non-unit direction, near-zero radius); evaluations at the degenerate parameter produce NaN/Inf, which propagates into face bounds and downstream BRep operations.
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 
 ### Gs019 — Pcurves shifted by integer period on closed surface
 - **Category**: §12.2c surface-degeneracy
@@ -2310,9 +2310,9 @@ End of file.
 - **Byte assertion**: contains(b'CYLINDRICAL_SURFACE(')
 - **Byte assertion**: contains(b'6.2831853072')
 - **Byte assertion**: count_entity_def(b'PCURVE') == 2
-- **Tier-3 assertion**: shape_null == True
+- **Tier-3 assertion**: load == "ok"
 - **Model impact**: The affected surface or curve has degenerate parameterization (zero-length axis, non-unit direction, near-zero radius); evaluations at the degenerate parameter produce NaN/Inf, which propagates into face bounds and downstream BRep operations.
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 
 ### Gs021 — Line displaced from true position (FPX Expert PCB)
 - **Category**: §12.2c surface-degeneracy
@@ -2327,9 +2327,9 @@ End of file.
 - **Byte assertion**: contains(b'(0.0,0.0,0.5)')
 - **Byte assertion**: contains(b'(10.0,0.0,0.0)')
 - **Byte assertion**: contains(b'LINE(')
-- **Tier-3 assertion**: shape_null == True
+- **Tier-3 assertion**: load == "ok"
 - **Model impact**: The affected surface or curve has degenerate parameterization (zero-length axis, non-unit direction, near-zero radius); evaluations at the degenerate parameter produce NaN/Inf, which propagates into face bounds and downstream BRep operations.
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 
 ### Gs024 — Round-trip planar face becomes trimmed B-spline (degree-1 NURBS)
 - **Category**: §12.2c surface-degeneracy

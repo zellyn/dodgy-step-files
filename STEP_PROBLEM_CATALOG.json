@@ -26138,7 +26138,7 @@
     "cross_oracle_note": null,
     "description": "A face's outer or inner `EDGE_LOOP` has segments that cross each other in surface UV parameter space, even when 3D positions look fine; a bow-tie / self-crossing quadrilateral. Typical shape on a planar face: an `EDGE_LOOP` visiting four vertices where two diagonal `EDGE_CURVE`s ((0,0)→(10,10) and (10,0)→(0,10)) are interleaved with axial edges, producing a bow-tie in the face's UV plane. CADfix has a dedicated repair flow; failure in UV closure means the contour does not partition the plane (Jordan-curve violation).",
     "expected_kernel_behavior": "reject; boundary cannot be unambiguously interpreted; healers must split the face or report. Do not assume orientation by ad-hoc winding.",
-    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2c-surfaces/Gs012.stp",
     "id": "Gs012",
@@ -26161,7 +26161,7 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "load == \"ok\""
     ],
     "title": "Non-simple `EDGE_LOOP` (face boundary self-crosses in UV: bow-tie quadrilateral)"
   },
@@ -26177,7 +26177,7 @@
     "cross_oracle_note": null,
     "description": "Family of degenerate `ADVANCED_FACE` defects: spot (face collapses to a point, e.g. from Pro/E export rounding), strip (one parametric direction is near-zero), pin / sliver (extreme aspect ratio; for example a rectangle on a `PLANE` 100 units wide but only 1e-7 units tall, width many orders of magnitude smaller than length and within distance tolerance), and zero-area faces with collinear vertices. The underlying surface may be well-defined; the face's trim collapses the area.",
     "expected_kernel_behavior": "drop the face when below tolerance and merge its incident edges (or accept it and reject downstream operations that would deref it), never crash on a zero-area surface definition.",
-    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2c-surfaces/Gs014.stp",
     "id": "Gs014",
@@ -26204,7 +26204,7 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "load == \"ok\""
     ],
     "title": "Zero-area / sliver / degenerate `ADVANCED_FACE` (sliver, spot, strip, pin; tiny aspect-ratio rectangle)"
   },
@@ -26220,7 +26220,7 @@
     "cross_oracle_note": null,
     "description": "Face whose two long bounding edges lie within tolerance of each other so face has near-zero area but non-trivial perimeter. Often produced by surface-surface intersection with grazing angles, by Boolean intersection of nearly-tangent surfaces, or by trimming. Distinguished from zero-area in that the perimeter is non-trivial.",
     "expected_kernel_behavior": "heal; replace short edges with `tolerant_vertex`, then collapse the sliver face into a `tolerant_edge`. Reject if collapse would violate manifold-ness.",
-    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2c-surfaces/Gs015.stp",
     "id": "Gs015",
@@ -26244,7 +26244,7 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "load == \"ok\""
     ],
     "title": "Sliver face (high aspect ratio, two long edges within tolerance)"
   },
@@ -26260,7 +26260,7 @@
     "cross_oracle_note": null,
     "description": "An edge's 3D curve and 2D pcurve trace the edge in opposite parameter directions; sampling 3D curve at parameter t and pcurve at the same t lands at opposite ends of the edge. If left uncorrected, projecting between 3D and UV returns wrong-side parameters and downstream geometry queries return reversed answers.",
     "expected_kernel_behavior": "detect the direction mismatch and reverse the pcurve sense to align with the 3D curve, or reject as malformed.",
-    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2c-surfaces/Gs018.stp",
     "id": "Gs018",
@@ -26283,7 +26283,7 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "load == \"ok\""
     ],
     "title": "Mismatched orientation of 3D curve and pcurve"
   },
@@ -26299,7 +26299,7 @@
     "cross_oracle_note": null,
     "description": "A subset of Gs007 where individual pcurves on a periodic surface (rather than the whole wire) are shifted by integer multiples of the surface period; the per-edge shift may differ across the wire. The wire is geometrically correct in 3D but its UV image is broken into multiple period bands.",
     "expected_kernel_behavior": "re-shift each pcurve to land in a single coherent period band that matches its neighbours, preserving 3D consistency, or reject as malformed.",
-    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2c-surfaces/Gs019.stp",
     "id": "Gs019",
@@ -26324,7 +26324,7 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "load == \"ok\""
     ],
     "title": "Pcurves shifted by integer period on closed surface"
   },
@@ -26340,7 +26340,7 @@
     "cross_oracle_note": null,
     "description": "`EDGE_CURVE` based on a `LINE` whose direction is correct but whose `pnt` (origin) is parallel-displaced from the line that actually passes through both vertex points. Vertex points are approximately equidistant off the line. Translator must shift the line to vertices.",
     "expected_kernel_behavior": "heal-to-vertices; replace the line so it passes through both vertices, preserving original direction.",
-    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2c-surfaces/Gs021.stp",
     "id": "Gs021",
@@ -26363,7 +26363,7 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "load == \"ok\""
     ],
     "title": "Line displaced from true position (FPX Expert PCB)"
   },
