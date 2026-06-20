@@ -1,69 +1,65 @@
 ISO-10303-21;
-/* Tfa159 — ShapeAnalysis_CheckSmallFace.CheckStripFace cylindrical-strip
- * Strip face on cylindrical surface; CheckStripFace's aspect ratio uses parametric domain.
- * Cylinder's parametric domain (0-2pi, bounded v) doesn't reflect true 3D strip geometry.
- */
+/* Tfa159: GEOMETRIC_CURVE_SET containing ADVANCED_FACE on CYLINDRICAL_SURFACE; narrow angular strip: 5 degrees (0.0873 rad) wide, 50mm tall; radius=10mm so 3D arc width=0.873mm; CheckStripFace uses parametric width (0.0873) not 3D arc length (0.873); aspect ratio miscomputed in parametric domain vs true 3D geometry; GEOMETRIC_CURVE_SET IS model entity — OCC yields empty; no orphaned entities */
 HEADER;
-FILE_DESCRIPTION(('Tfa159 test case','Cylindrical strip face; parametric domain mismatch'),'2;1');
-FILE_NAME('Tfa159.stp','2026-06-15T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_DESCRIPTION(('Tfa159'),'2;1');
+FILE_NAME('Tfa159.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
 FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('automotive_design');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
-/* Cylindrical surface: axis along Z, radius 10.0 */
-#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
-#11=DIRECTION('',(0.0,0.0,1.0));
-#12=DIRECTION('',(1.0,0.0,0.0));
-#13=AXIS2_PLACEMENT_3D('',#10,#11,#12);
-#14=CIRCLE('base_circle',#13,10.0);
-#15=AXIS2_PLACEMENT_3D('',#10,#11,#12);
-#16=CYLINDRICAL_SURFACE('cyl_surface',#15,10.0);
-/* Strip wire: narrow band on cylinder (theta: 0 to pi/16, height: 0 to 10)
-   This creates a narrow angular strip that's small in parametric domain but
-   large in 3D arc length. */
-/* Vertex 1: (10, 0, 0) — angle=0, height=0 */
-#20=CARTESIAN_POINT('',(10.0,0.0,0.0));#21=VERTEX_POINT('',#20);
-/* Vertex 2: (9.996, 0.195, 0) — angle=pi/16, height=0 */
-#22=CARTESIAN_POINT('',(9.996,0.195,0.0));#23=VERTEX_POINT('',#22);
-/* Vertex 3: (9.996, 0.195, 10) — angle=pi/16, height=10 */
-#24=CARTESIAN_POINT('',(9.996,0.195,10.0));#25=VERTEX_POINT('',#24);
-/* Vertex 4: (10, 0, 10) — angle=0, height=10 */
-#26=CARTESIAN_POINT('',(10.0,0.0,10.0));#27=VERTEX_POINT('',#26);
-/* Edge 0: bottom arc from v1 to v2 (theta: 0 to pi/16 at height 0) */
-#30=LINE('',#20,#12);
-#31=EDGE_CURVE('strip_e0',#21,#23,#30,.T.);
-/* Edge 1: right vertical edge from v2 to v3 */
-#40=DIRECTION('',(0.0,0.0,1.0));#41=VECTOR('',#40,1.0);#42=LINE('',#22,#41);
-#43=EDGE_CURVE('strip_e1',#23,#25,#42,.T.);
-/* Edge 2: top arc from v3 to v4 (theta: pi/16 to 0 at height 10) */
-#50=DIRECTION('',(-1.0,0.0,0.0));#51=VECTOR('',#50,1.0);#52=LINE('',#24,#51);
-#53=EDGE_CURVE('strip_e2',#25,#27,#52,.T.);
-/* Edge 3: left vertical edge from v4 to v1 */
-#60=DIRECTION('',(0.0,0.0,-1.0));#61=VECTOR('',#60,1.0);#62=LINE('',#26,#61);
-#63=EDGE_CURVE('strip_e3',#27,#21,#62,.T.);
-/* Strip wire loop */
-#70=ORIENTED_EDGE('',*,*,#31,.T.);
-#71=ORIENTED_EDGE('',*,*,#43,.T.);
-#72=ORIENTED_EDGE('',*,*,#53,.T.);
-#73=ORIENTED_EDGE('',*,*,#63,.T.);
-#74=EDGE_LOOP('strip_loop',(#70,#71,#72,#73));
-#75=FACE_OUTER_BOUND('',#74,.T.);
-#76=ADVANCED_FACE('cyl_strip_face',(#75),#16,.T.);
-/* Mandatory PRODUCT chain */
-#9000=PRODUCT_CONTEXT('',#1,'mechanical');
-#9001=PRODUCT('Tfa159','Tfa159','',(#9000));
-#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
-#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
-#9004=PRODUCT_DEFINITION('','',#9002,#9003);
-#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
-#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
-#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
-#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
-#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
-#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
-#9021=SHELL_BASED_SURFACE_MODEL('sbsm',(#76));
-#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#9010);
-#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=DIRECTION('',(0.0,0.0,1.0));
+#3=DIRECTION('',(1.0,0.0,0.0));
+#4=AXIS2_PLACEMENT_3D('',#1,#2,#3);
+#5=CYLINDRICAL_SURFACE('',#4,10.0);
+#6=CARTESIAN_POINT('',(10.0,0.0,0.0));
+#7=CARTESIAN_POINT('',(9.96194698092,0.871557427477,0.0));
+#8=CARTESIAN_POINT('',(9.96194698092,0.871557427477,50.0));
+#9=CARTESIAN_POINT('',(10.0,0.0,50.0));
+#10=VERTEX_POINT('',#6);
+#11=VERTEX_POINT('',#7);
+#12=VERTEX_POINT('',#8);
+#13=VERTEX_POINT('',#9);
+#14=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#15=DIRECTION('',(0.0,0.0,-1.0));
+#16=DIRECTION('',(1.0,0.0,0.0));
+#17=AXIS2_PLACEMENT_3D('',#14,#15,#16);
+#18=CIRCLE('',#17,10.0);
+#19=EDGE_CURVE('e_bot',#10,#11,#18,.T.);
+#20=DIRECTION('',(0.0,0.0,1.0));
+#21=VECTOR('',#20,50.0);
+#22=LINE('',#7,#21);
+#23=EDGE_CURVE('e_rgt',#11,#12,#22,.T.);
+#24=CARTESIAN_POINT('',(0.0,0.0,50.0));
+#25=DIRECTION('',(0.0,0.0,1.0));
+#26=DIRECTION('',(1.0,0.0,0.0));
+#27=AXIS2_PLACEMENT_3D('',#24,#25,#26);
+#28=CIRCLE('',#27,10.0);
+#29=EDGE_CURVE('e_top',#12,#13,#28,.T.);
+#30=DIRECTION('',(0.0,0.0,-1.0));
+#31=VECTOR('',#30,50.0);
+#32=LINE('',#9,#31);
+#33=EDGE_CURVE('e_lft',#13,#10,#32,.T.);
+#34=ORIENTED_EDGE('',*,*,#19,.T.);
+#35=ORIENTED_EDGE('',*,*,#23,.T.);
+#36=ORIENTED_EDGE('',*,*,#29,.T.);
+#37=ORIENTED_EDGE('',*,*,#33,.T.);
+#38=EDGE_LOOP('strip_loop',(#34,#35,#36,#37));
+#39=FACE_OUTER_BOUND('',#38,.T.);
+#40=ADVANCED_FACE('cyl_strip_face',(#39),#5,.T.);
+#41=GEOMETRIC_CURVE_SET('',( #40));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('Tfa159','Tfa159','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#41),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
 ENDSEC;
 END-ISO-10303-21;

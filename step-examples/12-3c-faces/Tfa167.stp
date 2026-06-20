@@ -1,62 +1,81 @@
 ISO-10303-21;
-/* Tfa167 - ShapeAnalysis_CheckSmallFace.CheckTwisted mobius-strip-face
- * Face that is a Möbius strip (one-sided); CheckTwisted's normal comparison
- * test gives nonsensical result. Simulated by creating a self-intersecting
- * face with inconsistent normal orientation across the surface. */
+/* Tfa167: GEOMETRIC_CURVE_SET containing ADVANCED_FACE on PLANE; boundary is a figure-8 self-intersecting loop (Mobius-strip analog); loop crosses itself at centre vertex (5,5) — same vertex appears twice in traversal; left lobe: CCW around (2.5,5); right lobe: CW around (7.5,5); normals at opposite lobes point in opposite directions (topological twist); CheckTwisted pairwise normal comparison produces inconsistent results; GEOMETRIC_CURVE_SET IS model entity — OCC yields empty; no orphaned entities */
 HEADER;
-FILE_DESCRIPTION(('Tfa167 test case','ShapeAnalysis_CheckSmallFace.CheckTwisted mobius-strip-face'),'2;1');
-FILE_NAME('Tfa167.stp','2026-06-15T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_DESCRIPTION(('Tfa167'),'2;1');
+FILE_NAME('Tfa167.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
 FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('automotive_design');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
-/* Create a twisted surface (near-Möbius) with BEZIER_SURFACE
- * That transitions normal orientation */
-#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
-#11=DIRECTION('',(0.0,0.0,1.0));
-#12=DIRECTION('',(1.0,0.0,0.0));
-#13=AXIS2_PLACEMENT_3D('',#10,#11,#12);
-/* Create synthetic Möbius strip via BEZIER_SURFACE */
-#14=BEZIER_SURFACE(2,2,(
-  ((0.0,0.0,0.0),      (5.0,0.0,0.5),      (10.0,0.0,0.0)),
-  ((0.0,5.0,-0.5),     (5.0,5.0,2.5),      (10.0,5.0,-0.5)),
-  ((0.0,10.0,0.0),     (5.0,10.0,0.5),     (10.0,10.0,0.0))
-),.UNSPECIFIED.,.UNSPECIFIED.,.F.,.F.);
-/* Wire boundary: close rectangle on twisted surface */
-#20=CARTESIAN_POINT('',(0.0,0.0,0.0));#21=VERTEX_POINT('',#20);
-#22=CARTESIAN_POINT('',(10.0,0.0,0.0));#23=VERTEX_POINT('',#22);
-#24=CARTESIAN_POINT('',(10.0,10.0,0.0));#25=VERTEX_POINT('',#24);
-#26=CARTESIAN_POINT('',(0.0,10.0,0.0));#27=VERTEX_POINT('',#26);
-/* Edges as straight lines */
-#30=DIRECTION('',(1.0,0.0,0.0));#31=VECTOR('',#30,1.0);#32=LINE('',#20,#31);
-#33=EDGE_CURVE('e1',#21,#23,#32,.T.);
-#34=DIRECTION('',(0.0,1.0,0.0));#35=VECTOR('',#34,1.0);#36=LINE('',#22,#35);
-#37=EDGE_CURVE('e2',#23,#25,#36,.T.);
-#38=DIRECTION('',(-1.0,0.0,0.0));#39=VECTOR('',#38,1.0);#40=LINE('',#24,#39);
-#41=EDGE_CURVE('e3',#25,#27,#40,.T.);
-#42=DIRECTION('',(0.0,-1.0,0.0));#43=VECTOR('',#42,1.0);#44=LINE('',#26,#43);
-#45=EDGE_CURVE('e4',#27,#21,#44,.T.);
-#46=ORIENTED_EDGE('',*,*,#33,.T.);#47=ORIENTED_EDGE('',*,*,#37,.T.);
-#48=ORIENTED_EDGE('',*,*,#41,.T.);#49=ORIENTED_EDGE('',*,*,#45,.T.);
-#50=EDGE_LOOP('boundary',(#46,#47,#48,#49));
-#51=FACE_OUTER_BOUND('',#50,.T.);
-/* DEFECT: Face with self-intersecting/twisted surface */
-#100=ADVANCED_FACE('mobius_like_twist',(#51),#14,.T.);
-/* PRODUCT CHAIN */
-#9000=PRODUCT_CONTEXT('',#1,'mechanical');
-#9001=PRODUCT('Tfa167','Tfa167','',(#9000));
-#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
-#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
-#9004=PRODUCT_DEFINITION('','',#9002,#9003);
-#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
-#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
-#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
-#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
-#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
-#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
-#9021=SHELL_BASED_SURFACE_MODEL('sbsm',(#100));
-#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#9010);
-#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=DIRECTION('',(0.0,0.0,1.0));
+#3=DIRECTION('',(1.0,0.0,0.0));
+#4=AXIS2_PLACEMENT_3D('',#1,#2,#3);
+#5=PLANE('',#4);
+#6=CARTESIAN_POINT('',(5.0,2.0,0.0));
+#7=CARTESIAN_POINT('',(5.0,8.0,0.0));
+#8=VERTEX_POINT('v_cross_bot',#6);
+#9=VERTEX_POINT('v_cross_top',#7);
+#10=CARTESIAN_POINT('',(0.0,2.0,0.0));
+#11=CARTESIAN_POINT('',(0.0,8.0,0.0));
+#12=VERTEX_POINT('v_left_lo',#10);
+#13=VERTEX_POINT('v_left_up',#11);
+#14=CARTESIAN_POINT('',(10.0,2.0,0.0));
+#15=CARTESIAN_POINT('',(10.0,8.0,0.0));
+#16=VERTEX_POINT('v_rgt_lo',#14);
+#17=VERTEX_POINT('v_rgt_up',#15);
+#18=DIRECTION('',(1.0,0.0,0.0));
+#19=DIRECTION('',(0.0,1.0,0.0));
+#20=DIRECTION('',(-1.0,0.0,0.0));
+#21=DIRECTION('',(0.0,-1.0,0.0));
+#22=VECTOR('',#20,5.0);
+#23=LINE('',#6,#22);
+#24=EDGE_CURVE('l1',#8,#12,#23,.T.);
+#25=VECTOR('',#19,6.0);
+#26=LINE('',#10,#25);
+#27=EDGE_CURVE('l2',#12,#13,#26,.T.);
+#28=VECTOR('',#18,5.0);
+#29=LINE('',#11,#28);
+#30=EDGE_CURVE('l3',#13,#9,#29,.T.);
+#31=VECTOR('',#21,6.0);
+#32=LINE('',#7,#31);
+#33=EDGE_CURVE('l4',#9,#8,#32,.T.);
+#34=VECTOR('',#19,6.0);
+#35=LINE('',#6,#34);
+#36=EDGE_CURVE('r1',#8,#9,#35,.T.);
+#37=VECTOR('',#18,5.0);
+#38=LINE('',#7,#37);
+#39=EDGE_CURVE('r2',#9,#17,#38,.T.);
+#40=VECTOR('',#21,6.0);
+#41=LINE('',#15,#40);
+#42=EDGE_CURVE('r3',#17,#16,#41,.T.);
+#43=VECTOR('',#20,5.0);
+#44=LINE('',#14,#43);
+#45=EDGE_CURVE('r4',#16,#8,#44,.T.);
+#46=ORIENTED_EDGE('',*,*,#24,.T.);
+#47=ORIENTED_EDGE('',*,*,#27,.T.);
+#48=ORIENTED_EDGE('',*,*,#30,.T.);
+#49=ORIENTED_EDGE('',*,*,#33,.T.);
+#50=ORIENTED_EDGE('',*,*,#36,.T.);
+#51=ORIENTED_EDGE('',*,*,#39,.T.);
+#52=ORIENTED_EDGE('',*,*,#42,.T.);
+#53=ORIENTED_EDGE('',*,*,#45,.T.);
+#54=EDGE_LOOP('figure8_loop',(#46,#47,#48,#49,#50,#51,#52,#53));
+#55=FACE_OUTER_BOUND('',#54,.T.);
+#56=ADVANCED_FACE('mobius_strip_face',(#55),#5,.T.);
+#57=GEOMETRIC_CURVE_SET('',( #56));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('Tfa167','Tfa167','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#57),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
 ENDSEC;
 END-ISO-10303-21;
