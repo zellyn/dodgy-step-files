@@ -26291,7 +26291,7 @@
     "byte_assertions": [
       "contains(b'CYLINDRICAL_SURFACE(')",
       "contains(b'6.2831853072')",
-      "count_entity_def(b'PCURVE') == 2"
+      "count_entity_def(b'PCURVE') == 5"
     ],
     "category": "§12.2c surface-degeneracy",
     "closure_defect": null,
@@ -34882,7 +34882,7 @@
   },
   {
     "byte_assertions": [
-      "count_entity_def(b'ADVANCED_FACE') == 1"
+      "count_entity_def(b'ADVANCED_FACE') == 2"
     ],
     "category": "§12.3a shells/orientation",
     "closure_defect": null,
@@ -41164,7 +41164,7 @@
   },
   {
     "byte_assertions": [
-      "contains(b\"ORIENTED_EDGE('',*,*,#31,.T.)\")",
+      "contains(b\"ORIENTED_EDGE('',*,*,#7,.T.)\")",
       "count_entity_def(b'EDGE_CURVE') == 0",
       "contains(b'VERTEX_POINT(')"
     ],

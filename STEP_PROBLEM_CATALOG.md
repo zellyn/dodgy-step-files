@@ -2309,7 +2309,7 @@ End of file.
 - **Severity**: P1
 - **Byte assertion**: contains(b'CYLINDRICAL_SURFACE(')
 - **Byte assertion**: contains(b'6.2831853072')
-- **Byte assertion**: count_entity_def(b'PCURVE') == 2
+- **Byte assertion**: count_entity_def(b'PCURVE') == 5
 - **Tier-3 assertion**: load == "ok"
 - **Model impact**: The affected surface or curve has degenerate parameterization (zero-length axis, non-unit direction, near-zero radius); evaluations at the degenerate parameter produce NaN/Inf, which propagates into face bounds and downstream BRep operations.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
@@ -3229,7 +3229,7 @@ _Section summary: 101 entries._
 - **Notes**: The translator's edge-loop transfer pass must validate the dereferenced entity's type before treating it as an `EDGE_CURVE`. Validation observed: silent-empty rather than the cited crash. Without a PRODUCT chain the transfer never reaches the dereference site; with a wrap chain the receiver silently skips the bad oriented-edge. The kernel-mishandling-by-silent-acceptance still demonstrates the defect class; the bare-reader crash path is not exercised at fixture scale. **See also**: Twi004, Twi006. Synonyms: "edge points at vertex instead of curve", "wrong entity type behind ORIENTED_EDGE", "edge dereferences to non-curve", "type confusion in edge reference", "edge slot holds geometric set not curve".
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must emit a diagnostic this fixture.
 - **Severity**: P1
-- **Byte assertion**: contains(b"ORIENTED_EDGE('',*,*,#31,.T.)")
+- **Byte assertion**: contains(b"ORIENTED_EDGE('',*,*,#7,.T.)")
 - **Byte assertion**: count_entity_def(b'EDGE_CURVE') == 0
 - **Byte assertion**: contains(b'VERTEX_POINT(')
 - **Tier-3 assertion**: load == "ok"
@@ -18928,7 +18928,7 @@ _Section summary: 41 entries._
  orientations.
 - **Expected kernel behavior**: Heal and accept: coerce / merge so edges shared between merged faces are removed from the resulting wire; only true boundary edges of the union are retained.
 - **Notes**: **See also**: Tsh046, Tsh049. Provenance tier: runtime-only; bytes alone cannot demonstrate this defect; the static fixture encodes only the merge precondition (two coplanar faces sharing an edge). The defective wire arises only after the kernel performs the merge operation. A behavioral test against the merge implementation is the appropriate venue. Synonyms: "shared edges not removed after face merge", "interior edge listed twice in merged wire", "dangling zero-area edge after unification", "merged face wire still has internal partitions", "edges between merged faces not deduped".
-- **Byte assertion**: count_entity_def(b'ADVANCED_FACE') == 1
+- **Byte assertion**: count_entity_def(b'ADVANCED_FACE') == 2
 - **Tier-3 assertion**: n_faces_total == 1
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
