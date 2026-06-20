@@ -27347,7 +27347,7 @@
     "cross_oracle_note": null,
     "description": "A `TOROIDAL_SURFACE` is emitted with `major_radius` and `minor_radius` swapped (a producer convention from a legacy tool that stored them in opposite order). Reader interprets the values literally, producing a torus with reversed proportions; what should be a thin donut becomes an apple/lemon (minor > major, no central hole).",
     "expected_kernel_behavior": "detect inverted-radius case (minor ≥ major is the lemon/apple geometry); flag as suspicious for healers; reject if strict.",
-    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2c-surfaces/Gs050.stp",
     "id": "Gs050",
@@ -27371,7 +27371,7 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "load == \"ok\""
     ],
     "title": "Toroidal surface stored incorrectly: major / minor swapped"
   },
@@ -27387,7 +27387,7 @@
     "cross_oracle_note": null,
     "description": "A sphere is cut by a cylinder; the cut introduces a new edge that crosses the sphere's natural seam. Original sphere had one seam; after the cut, the result has two seams (original + cut), and the pcurves of the second seam are emitted referencing the wrong half of the sphere's parameter domain.",
     "expected_kernel_behavior": "Heal and accept: each seam edge must reference its own parameter domain; never share pcurves across distinct seams.",
-    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2c-surfaces/Gs051.stp",
     "id": "Gs051",
@@ -27410,7 +27410,7 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "load == \"ok\""
     ],
     "title": "Sphere/cylinder cut produces wrong pcurves on second seam"
   },
@@ -27425,7 +27425,7 @@
     "cross_oracle_note": null,
     "description": "A surface of revolution whose basis curve is itself an `OFFSET_CURVE_3D` round-trips through STEP/IGES; the offset relationship is lost; the receiver sees a freshly-evaluated B-spline approximation of the offset curve rather than the original \"offset by 0.1 of curve X\" representation. Subsequent edits (changing the original X) no longer propagate.",
     "expected_kernel_behavior": "Heal and accept: offset relationships are preserved through export when the receiver schema supports them; AP242 supports offset-based curves. Must not silently drop offset on export.",
-    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2c-surfaces/Gs052.stp",
     "id": "Gs052",
@@ -27450,7 +27450,7 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "load == \"ok\""
     ],
     "title": "Surface of revolution with offset basis curve breaks on export"
   },
@@ -27466,7 +27466,7 @@
     "cross_oracle_note": null,
     "description": "A sphere scaled non-uniformly by `MAPPED_ITEM` is exported as a `B_SPLINE_SURFACE` because the scaled sphere is no longer a sphere. The exporter writes the B-spline but with a parameter range mismatched to the underlying knot vector; re-import shows a partial / clipped sphere.",
     "expected_kernel_behavior": "Heal and accept: B-spline parameter range matches the external knot vector; emit canonical knot ranges (`[0, 2π]` etc.) when approximating analytic surfaces.",
-    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2c-surfaces/Gs053.stp",
     "id": "Gs053",
@@ -27490,7 +27490,7 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "load == \"ok\""
     ],
     "title": "Scaled sphere as B-spline approximation broken on export"
   },
@@ -27505,7 +27505,7 @@
     "cross_oracle_note": null,
     "description": "`COMPOSITE_CURVE_SEGMENT.parent_curve` references the very `COMPOSITE_CURVE` that contains the segment. Translator must break the recursion (drop the segment with a warning) rather than recursing forever or stack-overflowing.",
     "expected_kernel_behavior": "detect the cycle; drop the offending segment with a warning; never crash.",
-    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2c-surfaces/Gs054.stp",
     "id": "Gs054",
@@ -27530,7 +27530,7 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "load == \"ok\""
     ],
     "title": "Composite curve segment self-cyclic to its containing composite"
   },
@@ -27546,7 +27546,7 @@
     "cross_oracle_note": null,
     "description": "A `COMPOSITE_CURVE_SEGMENT` trims its `parent_curve` at infinite (or near-infinite, e.g. `1.0E40`) `PARAMETER_VALUE` literals. Downstream meshers cannot evaluate an unbounded trim; translators historically marked such wires `myInfiniteSegment` and unwrapped them to a compound of bounded edges.",
     "expected_kernel_behavior": "materialize the segment as a compound of bounded edges (or reject with a precise diagnostic); never accept an unbounded trim downstream.",
-    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2c-surfaces/Gs055.stp",
     "id": "Gs055",
@@ -27571,7 +27571,7 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "load == \"ok\""
     ],
     "title": "Composite curve segment with infinite trim parameters"
   },

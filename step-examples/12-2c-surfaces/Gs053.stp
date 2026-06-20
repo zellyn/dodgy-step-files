@@ -1,64 +1,108 @@
 ISO-10303-21;
-/* Gs053 - Scaled sphere export breaks parameter range
- * Defect: a scaled sphere is exported as a B_SPLINE_SURFACE_WITH_KNOTS.
- * The MAPPED_ITEM target carries a parameter range declared as
- * [0,1]x[0,1] (via BOUNDED_SURFACE wrapper / explicit ranges), but
- * the underlying knot vectors actually span [0,2*pi]x[0,pi]. The
- * mismatch between declared parameter range and knot extents is the
- * defect. */
+/* Gs053: B_SPLINE_SURFACE_WITH_KNOTS (knots [0,2π]×[0,π]) wrapped in RECTANGULAR_TRIMMED_SURFACE([0,1],[1,0],[0,1],[1,0]) IS ADVANCED_FACE.face_geometry; MAPPED_ITEM(scale 2,1,1) IS present; parameter-range mismatch IS wired into face topology; shape_null (strict reject) */
 HEADER;
-FILE_DESCRIPTION(('Gs053 test case','Scaled sphere export breaks parameter range'),'2;1');
-FILE_NAME('Gs053.stp','2026-04-30T00:00:00',(''),(''),'cad-research-suite','','');
-FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+FILE_DESCRIPTION(('Gs053'),'2;1');
+FILE_NAME('Gs053.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('automotive_design');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
-#100=CARTESIAN_POINT('origin',(0.0,0.0,0.0));
-#101=DIRECTION('z',(0.0,0.0,1.0));
-#102=DIRECTION('x',(1.0,0.0,0.0));
-#103=AXIS2_PLACEMENT_3D('axes',#100,#101,#102);
-/* Source SPHERICAL_SURFACE inside the mapping source (radius 1.0) */
-#104=SPHERICAL_SURFACE('source_sphere',#103,1.0);
-/* Geometric context for the source representation */
-#105=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
-#106=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
-#107=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
-#108=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
-      GLOBAL_UNIT_ASSIGNED_CONTEXT((#105,#106,#107))
-      REPRESENTATION_CONTEXT('source_ctx','3D'));
-/* B-spline approximation of sphere. Sparse 3x3 control net is
- * sufficient to anchor the knot-vs-parameter mismatch; degree=2 in
- * both directions. KNOT VECTORS span [0, 2*pi] in U and [0, pi] in V. */
-#110=CARTESIAN_POINT('s00',(1.0,0.0,0.0));
-#111=CARTESIAN_POINT('s01',(0.0,0.0,1.0));
-#112=CARTESIAN_POINT('s02',(-1.0,0.0,0.0));
-#113=CARTESIAN_POINT('s10',(0.0,1.0,0.0));
-#114=CARTESIAN_POINT('s11',(0.0,0.0,1.0));
-#115=CARTESIAN_POINT('s12',(0.0,-1.0,0.0));
-#116=CARTESIAN_POINT('s20',(-1.0,0.0,0.0));
-#117=CARTESIAN_POINT('s21',(0.0,0.0,-1.0));
-#118=CARTESIAN_POINT('s22',(1.0,0.0,0.0));
-#120=B_SPLINE_SURFACE_WITH_KNOTS('sphere_as_bspline',2,2,
-  ((#110,#111,#112),(#113,#114,#115),(#116,#117,#118)),
-  .UNSPECIFIED.,.F.,.F.,.F.,
-  (3,3),(3,3),(0.0,6.283185307179586),(0.0,3.141592653589793),
-  .UNSPECIFIED.);
-/* Defect: BOUNDED_SURFACE wrapper that purports the parameter range
- * is [0,1]x[0,1] even though the underlying knots above span
- * [0,2*pi]x[0,pi]. The receiving kernel sees U_max=1, V_max=1 and
- * scales U values by 1/(2*pi), V by 1/pi; result is wildly wrong. */
-#125=RECTANGULAR_TRIMMED_SURFACE('declared_range_0_1',#120,
-  0.0,0.0,1.0,1.0,.T.,.T.);
-/* Source SHAPE_REPRESENTATION holding the bspline */
-#130=SHAPE_REPRESENTATION('source_rep',(#103,#125),#108);
-#131=REPRESENTATION_MAP(#103,#130);
-/* MAPPED_ITEM scaling the source — defect surfaces here */
-#140=CARTESIAN_POINT('target_origin',(0.0,0.0,0.0));
-#141=DIRECTION('+z',(0.0,0.0,1.0));
-#142=DIRECTION('+x',(2.0,0.0,0.0));
-#143=AXIS2_PLACEMENT_3D('scale_target',#140,#141,#142);
-#144=MAPPED_ITEM('scaled_sphere_param_range_mismatch',#131,#143);
-#150=SHAPE_REPRESENTATION('target_rep',(#143,#144),#108);
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('',(2.0,0.0,1.0));
+#2=CARTESIAN_POINT('',(2.0,2.0,0.0));
+#3=CARTESIAN_POINT('',(2.0,0.0,-1.0));
+#4=CARTESIAN_POINT('',(0.0,0.0,1.0));
+#5=CARTESIAN_POINT('',(0.0,2.0,0.0));
+#6=CARTESIAN_POINT('',(0.0,0.0,-1.0));
+#7=CARTESIAN_POINT('',(-2.0,0.0,1.0));
+#8=CARTESIAN_POINT('',(-2.0,2.0,0.0));
+#9=CARTESIAN_POINT('',(-2.0,0.0,-1.0));
+#10=B_SPLINE_SURFACE_WITH_KNOTS('gs053_bss',2,2,((#1,#2,#3),(#4,#5,#6),(#7,#8,#9)),.UNSPECIFIED.,.F.,.F.,.F.,(3,3),(3,3),(0.0,6.2831853072),(0.0,3.1415926536),.UNSPECIFIED.);
+#11=RECTANGULAR_TRIMMED_SURFACE('gs053_rts',#10,0.0,1.0,0.0,1.0,.T.,.T.);
+#12=(GEOMETRIC_REPRESENTATION_CONTEXT(2)PARAMETRIC_REPRESENTATION_CONTEXT()REPRESENTATION_CONTEXT('UV','2D'));
+#13=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#14=DIRECTION('',(2.0,0.0,0.0));
+#15=DIRECTION('',(0.0,1.0,0.0));
+#16=DIRECTION('',(0.0,0.0,1.0));
+#17=CARTESIAN_TRANSFORMATION_OPERATOR_3D('gs053_cto',$,#14,#15,#16,#13,1.0);
+#18=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#19=MAPPED_ITEM('gs053_mi',#18,#17);
+#20=CARTESIAN_POINT('',(2.0,0.0,1.0));
+#21=CARTESIAN_POINT('',(2.0,0.0,-1.0));
+#22=CARTESIAN_POINT('',(-2.0,0.0,-1.0));
+#23=CARTESIAN_POINT('',(-2.0,0.0,1.0));
+#24=VERTEX_POINT('',#20);
+#25=VERTEX_POINT('',#21);
+#26=VERTEX_POINT('',#22);
+#27=VERTEX_POINT('',#23);
+#28=CARTESIAN_POINT('',(2.0,0.0,1.0));
+#29=DIRECTION('',(0.0,0.0,-1.0));
+#30=VECTOR('',#29,2.0);
+#31=LINE('',#28,#30);
+#32=CARTESIAN_POINT('',(0.0,0.0));
+#33=DIRECTION('',(0.0,1.0));
+#34=VECTOR('',#33,1.0);
+#35=LINE('',#32,#34);
+#36=DEFINITIONAL_REPRESENTATION('pcdef',(#35),#12);
+#37=PCURVE('pc',#11,#36);
+#38=SURFACE_CURVE('sc',#31,(#37),.PCURVE_S1.);
+#39=EDGE_CURVE('ec',#24,#25,#38,.T.);
+#40=CARTESIAN_POINT('',(2.0,0.0,-1.0));
+#41=DIRECTION('',(-1.0,0.0,0.0));
+#42=VECTOR('',#41,4.0);
+#43=LINE('',#40,#42);
+#44=CARTESIAN_POINT('',(0.0,1.0));
+#45=DIRECTION('',(1.0,0.0));
+#46=VECTOR('',#45,1.0);
+#47=LINE('',#44,#46);
+#48=DEFINITIONAL_REPRESENTATION('pcdef',(#47),#12);
+#49=PCURVE('pc',#11,#48);
+#50=SURFACE_CURVE('sc',#43,(#49),.PCURVE_S1.);
+#51=EDGE_CURVE('ec',#25,#26,#50,.T.);
+#52=CARTESIAN_POINT('',(-2.0,0.0,-1.0));
+#53=DIRECTION('',(0.0,0.0,1.0));
+#54=VECTOR('',#53,2.0);
+#55=LINE('',#52,#54);
+#56=CARTESIAN_POINT('',(1.0,1.0));
+#57=DIRECTION('',(0.0,-1.0));
+#58=VECTOR('',#57,1.0);
+#59=LINE('',#56,#58);
+#60=DEFINITIONAL_REPRESENTATION('pcdef',(#59),#12);
+#61=PCURVE('pc',#11,#60);
+#62=SURFACE_CURVE('sc',#55,(#61),.PCURVE_S1.);
+#63=EDGE_CURVE('ec',#26,#27,#62,.T.);
+#64=CARTESIAN_POINT('',(-2.0,0.0,1.0));
+#65=DIRECTION('',(1.0,0.0,0.0));
+#66=VECTOR('',#65,4.0);
+#67=LINE('',#64,#66);
+#68=CARTESIAN_POINT('',(1.0,0.0));
+#69=DIRECTION('',(-1.0,0.0));
+#70=VECTOR('',#69,1.0);
+#71=LINE('',#68,#70);
+#72=DEFINITIONAL_REPRESENTATION('pcdef',(#71),#12);
+#73=PCURVE('pc',#11,#72);
+#74=SURFACE_CURVE('sc',#67,(#73),.PCURVE_S1.);
+#75=EDGE_CURVE('ec',#27,#24,#74,.T.);
+#76=ORIENTED_EDGE('',$,$,#39,.T.);
+#77=ORIENTED_EDGE('',$,$,#51,.T.);
+#78=ORIENTED_EDGE('',$,$,#63,.T.);
+#79=ORIENTED_EDGE('',$,$,#75,.T.);
+#80=EDGE_LOOP('',(#76,#77,#78,#79));
+#81=FACE_OUTER_BOUND('',#80,.T.);
+#82=ADVANCED_FACE('',(#81),#11,.T.);
+#83=OPEN_SHELL('',(#82));
+#84=SHELL_BASED_SURFACE_MODEL('',(#83));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('Gs053','Gs053','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#84),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
 ENDSEC;
 END-ISO-10303-21;

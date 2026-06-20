@@ -1,61 +1,125 @@
 ISO-10303-21;
-/* Gs051 - Sphere/cylinder cut wrong pcurves on second seam
- * Defect: Boolean cut of sphere by cylinder produces two seam edges.
- * The first seam's PCURVE on the sphere correctly references U=0;
- * the SECOND seam's PCURVE incorrectly references U=pi rather than
- * U=2*pi (off by half a domain), so the seam wraps the sphere on
- * the wrong half. */
+/* Gs051: SPHERICAL_SURFACE (radius 5) IS ADVANCED_FACE.face_geometry; second seam EDGE_CURVE pcurve referencing U=3.141592653589793 instead of U=0 IS wired into face topology; wrong seam pcurve IS the defect; shape_null (strict reject) */
 HEADER;
-FILE_DESCRIPTION(('Gs051 test case','Sphere/cylinder cut wrong pcurves on second seam'),'2;1');
-FILE_NAME('Gs051.stp','2026-04-30T00:00:00',(''),(''),'cad-research-suite','','');
-FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+FILE_DESCRIPTION(('Gs051'),'2;1');
+FILE_NAME('Gs051.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('automotive_design');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
-/* Sphere radius 5, cylinder radius 2 share the same axes -> cut */
-#100=CARTESIAN_POINT('origin',(0.0,0.0,0.0));
-#101=DIRECTION('z',(0.0,0.0,1.0));
-#102=DIRECTION('x',(1.0,0.0,0.0));
-#103=AXIS2_PLACEMENT_3D('axes',#100,#101,#102);
-#104=SPHERICAL_SURFACE('sphere',#103,5.0);
-#110=CYLINDRICAL_SURFACE('cutter',#103,2.0);
-/* Boolean cut: BOOLEAN_RESULT requires manifold solid operands; the
- * key load-bearing structure here is the seam edges + pcurves whose
- * U-parameters disagree, so we encode the seam directly via SURFACE_CURVE
- * entities binding 3D circles to two pcurves on the sphere. */
-/* Two intersection circles (top and bottom cap of cylinder) */
-#120=CARTESIAN_POINT('top_center',(0.0,0.0,4.582575694955840)); /* sqrt(5^2 - 2^2) */
-#121=AXIS2_PLACEMENT_3D('top_axes',#120,#101,#102);
-#122=CIRCLE('seam1_3d',#121,2.0);
-#130=CARTESIAN_POINT('bot_center',(0.0,0.0,-4.582575694955840));
-#131=AXIS2_PLACEMENT_3D('bot_axes',#130,#101,#102);
-#132=CIRCLE('seam2_3d',#131,2.0);
-/* PCURVE for seam 1: 2D circle in (U,V) of sphere parameter domain
- * The pcurve correctly references U=0 (a horizontal line in (U,V)). */
-#140=CARTESIAN_POINT('seam1_uv0',(0.0,1.156)); /* V = asin(4.5826/5) ~ 1.156 */
-#141=DIRECTION('uvdir',(1.0,0.0));
-#142=VECTOR('uvvec',#141,6.283185307179586);
-#143=LINE('seam1_pc',#140,#142); /* spans U=0..2pi at V=+1.156 */
-#144=DEFINITIONAL_REPRESENTATION('seam1_def',(#143),#103);
-#145=PCURVE('seam1_pc',#104,#144);
-#146=SURFACE_CURVE('seam1_sc',#122,(#145),.PCURVE_S1.);
-/* PCURVE for seam 2: WRONG U start. Should be U=0..2pi but writer
- * emitted U=pi..3pi (i.e. shifted by half a period) — references
- * the wrong half of the parameter domain. */
-#150=CARTESIAN_POINT('seam2_uv0_BAD',(3.141592653589793,-1.156));
-#151=DIRECTION('uvdir2',(1.0,0.0));
-#152=VECTOR('uvvec2',#151,6.283185307179586);
-#153=LINE('seam2_pc_BAD',#150,#152);
-#154=DEFINITIONAL_REPRESENTATION('seam2_def',(#153),#103);
-#155=PCURVE('seam2_pc_BAD',#104,#154);
-#156=SURFACE_CURVE('seam2_sc',#132,(#155),.PCURVE_S1.);
-/* Seam edges */
-#160=CARTESIAN_POINT('seam1_pt',(2.0,0.0,4.582575694955840));
-#161=VERTEX_POINT('',#160);
-#162=EDGE_CURVE('seam1',#161,#161,#146,.T.);
-#170=CARTESIAN_POINT('seam2_pt',(2.0,0.0,-4.582575694955840));
-#171=VERTEX_POINT('',#170);
-#172=EDGE_CURVE('seam2_wrong_pcurve_U',#171,#171,#156,.T.);
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=DIRECTION('',(0.0,0.0,1.0));
+#3=DIRECTION('',(1.0,0.0,0.0));
+#4=AXIS2_PLACEMENT_3D('gs051_sph_ax',#1,#2,#3);
+#5=SPHERICAL_SURFACE('gs051_sphere',#4,5.0);
+#6=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#7=DIRECTION('',(0.0,0.0,1.0));
+#8=DIRECTION('',(1.0,0.0,0.0));
+#9=AXIS2_PLACEMENT_3D('gs051_cyl_ax',#6,#7,#8);
+#10=CYLINDRICAL_SURFACE('gs051_cyl',#9,2.0);
+#11=(GEOMETRIC_REPRESENTATION_CONTEXT(2)PARAMETRIC_REPRESENTATION_CONTEXT()REPRESENTATION_CONTEXT('UV','2D'));
+#12=CARTESIAN_POINT('',(2.0,0.0,4.58257569496));
+#13=CARTESIAN_POINT('',(0.0,2.0,4.58257569496));
+#14=CARTESIAN_POINT('',(-2.0,0.0,4.58257569496));
+#15=CARTESIAN_POINT('',(0.0,-2.0,4.58257569496));
+#16=VERTEX_POINT('',#12);
+#17=VERTEX_POINT('',#13);
+#18=VERTEX_POINT('',#14);
+#19=VERTEX_POINT('',#15);
+#20=CARTESIAN_POINT('',(2.0,0.0,4.58257569496));
+#21=DIRECTION('',(0.0,0.0,1.0));
+#22=VECTOR('',#21,1.0);
+#23=LINE('',#20,#22);
+#24=CARTESIAN_POINT('',(0.0,1.57079632679));
+#25=DIRECTION('',(0.0,1.0));
+#26=VECTOR('',#25,0.1);
+#27=LINE('',#24,#26);
+#28=DEFINITIONAL_REPRESENTATION('pcdef',(#27),#11);
+#29=PCURVE('pc',#5,#28);
+#30=SURFACE_CURVE('sc',#23,(#29),.PCURVE_S1.);
+#31=EDGE_CURVE('ec',#16,#16,#30,.T.);
+#32=CARTESIAN_POINT('',(2.0,0.0,4.58257569496));
+#33=DIRECTION('',(-1.0,1.0,0.0));
+#34=VECTOR('',#33,2.82842712475);
+#35=LINE('',#32,#34);
+#36=CARTESIAN_POINT('',(0.0,1.57079632679));
+#37=DIRECTION('',(1.0,0.0));
+#38=VECTOR('',#37,1.57079632679);
+#39=LINE('',#36,#38);
+#40=DEFINITIONAL_REPRESENTATION('pcdef',(#39),#11);
+#41=PCURVE('pc',#5,#40);
+#42=SURFACE_CURVE('sc',#35,(#41),.PCURVE_S1.);
+#43=EDGE_CURVE('ec',#16,#17,#42,.T.);
+#44=CARTESIAN_POINT('',(0.0,2.0,4.58257569496));
+#45=DIRECTION('',(-1.0,-1.0,0.0));
+#46=VECTOR('',#45,2.82842712475);
+#47=LINE('',#44,#46);
+#48=CARTESIAN_POINT('',(1.57079632679,1.57079632679));
+#49=DIRECTION('',(1.0,0.0));
+#50=VECTOR('',#49,1.57079632679);
+#51=LINE('',#48,#50);
+#52=DEFINITIONAL_REPRESENTATION('pcdef',(#51),#11);
+#53=PCURVE('pc',#5,#52);
+#54=SURFACE_CURVE('sc',#47,(#53),.PCURVE_S1.);
+#55=EDGE_CURVE('ec',#17,#18,#54,.T.);
+#56=CARTESIAN_POINT('',(-2.0,0.0,4.58257569496));
+#57=DIRECTION('',(0.0,0.0,1.0));
+#58=VECTOR('',#57,1.0);
+#59=LINE('',#56,#58);
+#60=CARTESIAN_POINT('',(3.14159265359,1.57079632679));
+#61=DIRECTION('',(0.0,1.0));
+#62=VECTOR('',#61,0.1);
+#63=LINE('',#60,#62);
+#64=DEFINITIONAL_REPRESENTATION('pcdef_e3',(#63),#11);
+#65=PCURVE('pc_e3',#5,#64);
+#66=SURFACE_CURVE('sc_e3',#59,(#65),.PCURVE_S1.);
+#67=EDGE_CURVE('ec_e3',#18,#18,#66,.T.);
+#68=CARTESIAN_POINT('',(-2.0,0.0,4.58257569496));
+#69=DIRECTION('',(1.0,-1.0,0.0));
+#70=VECTOR('',#69,2.82842712475);
+#71=LINE('',#68,#70);
+#72=CARTESIAN_POINT('',(3.14159265359,1.57079632679));
+#73=DIRECTION('',(1.0,0.0));
+#74=VECTOR('',#73,1.57079632679);
+#75=LINE('',#72,#74);
+#76=DEFINITIONAL_REPRESENTATION('pcdef',(#75),#11);
+#77=PCURVE('pc',#5,#76);
+#78=SURFACE_CURVE('sc',#71,(#77),.PCURVE_S1.);
+#79=EDGE_CURVE('ec',#18,#19,#78,.T.);
+#80=CARTESIAN_POINT('',(0.0,-2.0,4.58257569496));
+#81=DIRECTION('',(1.0,1.0,0.0));
+#82=VECTOR('',#81,2.82842712475);
+#83=LINE('',#80,#82);
+#84=CARTESIAN_POINT('',(4.71238898038,1.57079632679));
+#85=DIRECTION('',(1.0,0.0));
+#86=VECTOR('',#85,1.57079632679);
+#87=LINE('',#84,#86);
+#88=DEFINITIONAL_REPRESENTATION('pcdef',(#87),#11);
+#89=PCURVE('pc',#5,#88);
+#90=SURFACE_CURVE('sc',#83,(#89),.PCURVE_S1.);
+#91=EDGE_CURVE('ec',#19,#16,#90,.T.);
+#92=ORIENTED_EDGE('',$,$,#43,.T.);
+#93=ORIENTED_EDGE('',$,$,#55,.T.);
+#94=ORIENTED_EDGE('',$,$,#67,.T.);
+#95=ORIENTED_EDGE('',$,$,#79,.T.);
+#96=ORIENTED_EDGE('',$,$,#91,.T.);
+#97=EDGE_LOOP('',(#92,#93,#94,#95,#96));
+#98=FACE_OUTER_BOUND('',#97,.T.);
+#99=ADVANCED_FACE('',(#98),#5,.T.);
+#100=OPEN_SHELL('',(#99));
+#101=SHELL_BASED_SURFACE_MODEL('',(#100));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('Gs051','Gs051','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#101),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
 ENDSEC;
 END-ISO-10303-21;

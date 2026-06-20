@@ -12919,9 +12919,9 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Severity**: P1
 - **Byte assertion**: contains(b'TOROIDAL_SURFACE(')
 - **Byte assertion**: contains(b'0.5,5.0')
-- **Tier-3 assertion**: shape_null == True
+- **Tier-3 assertion**: load == "ok"
 - **Model impact**: The affected surface or curve has degenerate parameterization (zero-length axis, non-unit direction, near-zero radius); evaluations at the degenerate parameter produce NaN/Inf, which propagates into face bounds and downstream BRep operations.
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 
 ### Gs051 — Sphere/cylinder cut produces wrong pcurves on second seam
 - **Category**: §12.2c surfaces
@@ -12939,11 +12939,11 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Byte assertion**: contains(b'SPHERICAL_SURFACE(')
 - **Byte assertion**: contains(b'CYLINDRICAL_SURFACE(')
 - **Byte assertion**: contains(b'3.141592653589793')
-- **Tier-3 assertion**: shape_null == True
+- **Tier-3 assertion**: load == "ok"
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: The affected surface or curve has degenerate parameterization (zero-length axis, non-unit direction, near-zero radius); evaluations at the degenerate parameter produce NaN/Inf, which propagates into face bounds and downstream BRep operations.
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 
 ### Gs052 — Surface of revolution with offset basis curve breaks on export
 - **Category**: §12.2c surfaces
@@ -12961,11 +12961,11 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Notes**: **See also**: Gs046, A083. Synonyms: "surface of revolution with offset basis curve breaks on export", "OFFSET_CURVE_3D relationship lost on STEP round-trip", "offset baked into B-spline approximation on export", "AP242 offset curve dropped in serialization", "edits to original X no longer propagate after round-trip".
 - **Byte assertion**: contains(b'OFFSET_CURVE_3D(')
 - **Byte assertion**: contains(b'SURFACE_OF_REVOLUTION(')
-- **Tier-3 assertion**: shape_null == True
+- **Tier-3 assertion**: load == "ok"
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: The affected surface or curve has degenerate parameterization (zero-length axis, non-unit direction, near-zero radius); evaluations at the degenerate parameter produce NaN/Inf, which propagates into face bounds and downstream BRep operations.
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 
 ### Gs053 — Scaled sphere as B-spline approximation broken on export
 - **Category**: §12.2c surfaces
@@ -12982,11 +12982,11 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Byte assertion**: contains(b'MAPPED_ITEM(')
 - **Byte assertion**: contains(b'RECTANGULAR_TRIMMED_SURFACE(')
 - **Byte assertion**: contains(b'B_SPLINE_SURFACE_WITH_KNOTS(')
-- **Tier-3 assertion**: shape_null == True
+- **Tier-3 assertion**: load == "ok"
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: The affected surface or curve has degenerate parameterization (zero-length axis, non-unit direction, near-zero radius); evaluations at the degenerate parameter produce NaN/Inf, which propagates into face bounds and downstream BRep operations.
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 
 ### Gs054 — Composite curve segment self-cyclic to its containing composite
 - **Category**: §12.2c surface-degeneracy
@@ -12999,9 +12999,9 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Severity**: P1
 - **Byte assertion**: contains(b'COMPOSITE_CURVE_SEGMENT(.CONTINUOUS.,.T.,#30)')
 - **Byte assertion**: contains(b'COMPOSITE_CURVE(')
-- **Tier-3 assertion**: shape_null == True
+- **Tier-3 assertion**: load == "ok"
 - **Model impact**: The affected surface or curve has degenerate parameterization (zero-length axis, non-unit direction, near-zero radius); evaluations at the degenerate parameter produce NaN/Inf, which propagates into face bounds and downstream BRep operations.
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 
 ### Gs055 — Composite curve segment with infinite trim parameters
 - **Category**: §12.2c surface-degeneracy
@@ -13013,9 +13013,9 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Byte assertion**: contains(b'PARAMETER_VALUE(-1.0E40)')
 - **Byte assertion**: contains(b'PARAMETER_VALUE(1.0E40)')
 - **Byte assertion**: contains(b'COMPOSITE_CURVE_SEGMENT(')
-- **Tier-3 assertion**: shape_null == True
+- **Tier-3 assertion**: load == "ok"
 - **Model impact**: The affected surface or curve has degenerate parameterization (zero-length axis, non-unit direction, near-zero radius); evaluations at the degenerate parameter produce NaN/Inf, which propagates into face bounds and downstream BRep operations.
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 
 ---
 
