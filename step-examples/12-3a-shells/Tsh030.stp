@@ -1,61 +1,61 @@
 ISO-10303-21;
-/* Tsh030 - Non-finite (infinite) solid built from open shell
- * Defect: A TopoDS_Solid whose oriented shells do not bound a finite
- * region -- typically a half-space accidentally produced by Boolean.
- * BRepGProp::VolumeProperties returns infinite/NaN. Should be rejected
- * or downgraded to a shell with a diagnostic.
- *
- * This file: a single unbounded planar face wrapped as a CLOSED_SHELL
- * which is in turn wrapped as MANIFOLD_SOLID_BREP. The face is bounded
- * by a small square loop, but with only one face there is no enclosed
- * volume -- the "interior" is one half-space and the "exterior" is the
- * other. Volume integration diverges. This is the canonical pattern of
- * a half-space erroneously promoted to a solid.
- * Sources: B027 (check-finite). */
+/* Tsh030: MANIFOLD_SOLID_BREP wrapping a CLOSED_SHELL containing a single planar face; one plane cannot close any finite volume — shell encloses infinite half-space; non-finite solid IS wired into shell/face topology; strict receivers must reject */
 HEADER;
-FILE_DESCRIPTION(('Tsh030 test case','Half-space wrapped as solid (infinite volume)'),'2;1');
-FILE_NAME('Tsh030.stp','2026-04-26T00:00:00',(''),(''),'auto-generated','','');
-FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+FILE_DESCRIPTION(('Tsh030'),'2;1');
+FILE_NAME('Tsh030.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('automotive_design');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
-/* A single planar face on z=0. */
-#100=CARTESIAN_POINT('',(0.0,0.0,0.0));
-#101=CARTESIAN_POINT('',(1.0,0.0,0.0));
-#102=CARTESIAN_POINT('',(1.0,1.0,0.0));
-#103=CARTESIAN_POINT('',(0.0,1.0,0.0));
-#110=VERTEX_POINT('',#100); #111=VERTEX_POINT('',#101);
-#112=VERTEX_POINT('',#102); #113=VERTEX_POINT('',#103);
-#200=DIRECTION('',(0.0,0.0,1.0)); #201=DIRECTION('',(1.0,0.0,0.0));
-#211=AXIS2_PLACEMENT_3D('',#100,#200,#201); #212=PLANE('lone_face_plane',#211);
-#300=DIRECTION('',(1.0,0.0,0.0)); #301=VECTOR('',#300,1.0);
-#302=DIRECTION('',(0.0,1.0,0.0)); #303=VECTOR('',#302,1.0);
-#310=LINE('',#100,#301); #311=EDGE_CURVE('',#110,#111,#310,.T.);
-#312=LINE('',#101,#303); #313=EDGE_CURVE('',#111,#112,#312,.T.);
-#314=LINE('',#103,#301); #315=EDGE_CURVE('',#113,#112,#314,.T.);
-#316=LINE('',#100,#303); #317=EDGE_CURVE('',#110,#113,#316,.T.);
-#400=ORIENTED_EDGE('',*,*,#311,.T.); #401=ORIENTED_EDGE('',*,*,#313,.T.);
-#402=ORIENTED_EDGE('',*,*,#315,.F.); #403=ORIENTED_EDGE('',*,*,#317,.F.);
-#404=EDGE_LOOP('',(#400,#401,#402,#403)); #405=FACE_OUTER_BOUND('',#404,.T.);
-#406=ADVANCED_FACE('lone_planar_face',(#405),#212,.T.);
-/* Defect: a CLOSED_SHELL with only one face cannot bound a finite
-   volume. Wrapping it as MANIFOLD_SOLID_BREP yields an "infinite" solid. */
-#500=CLOSED_SHELL('half_space_shell',(#406));
-#510=MANIFOLD_SOLID_BREP('infinite_solid',#500);
-/* Minimal PRODUCT chain so OCCT TransferRoots produces a shape. */
-#9000=PRODUCT_CONTEXT('',#1,'mechanical');
-#9001=PRODUCT('Tsh030','Tsh030','',(#9000));
-#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
-#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
-#9004=PRODUCT_DEFINITION('','',#9002,#9003);
-#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
-#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
-#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
-#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
-#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
-#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
-#9022=ADVANCED_BREP_SHAPE_REPRESENTATION('',(#510),#9010);
-#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=CARTESIAN_POINT('',(10.0,0.0,0.0));
+#3=CARTESIAN_POINT('',(10.0,1.0E-06,0.0));
+#4=CARTESIAN_POINT('',(0.0,1.0E-06,0.0));
+#5=VERTEX_POINT('',#1);
+#6=VERTEX_POINT('',#2);
+#7=VERTEX_POINT('',#3);
+#8=VERTEX_POINT('',#4);
+#9=DIRECTION('',(1.0,0.0,0.0));
+#10=VECTOR('',#9,1.0);
+#11=LINE('',#1,#10);
+#12=EDGE_CURVE('',#5,#6,#11,.T.);
+#13=DIRECTION('',(0.0,1.0,0.0));
+#14=VECTOR('',#13,1.0);
+#15=LINE('',#2,#14);
+#16=EDGE_CURVE('',#6,#7,#15,.T.);
+#17=DIRECTION('',(-1.0,0.0,0.0));
+#18=VECTOR('',#17,1.0);
+#19=LINE('',#3,#18);
+#20=EDGE_CURVE('',#7,#8,#19,.T.);
+#21=DIRECTION('',(0.0,-1.0,0.0));
+#22=VECTOR('',#21,1.0);
+#23=LINE('',#4,#22);
+#24=EDGE_CURVE('',#8,#5,#23,.T.);
+#25=ORIENTED_EDGE('',$,$,#12,.T.);
+#26=ORIENTED_EDGE('',$,$,#16,.T.);
+#27=ORIENTED_EDGE('',$,$,#20,.T.);
+#28=ORIENTED_EDGE('',$,$,#24,.T.);
+#29=EDGE_LOOP('',(#25,#26,#27,#28));
+#30=DIRECTION('',(0.0,0.0,1.0));
+#31=DIRECTION('',(1.0,0.0,0.0));
+#32=AXIS2_PLACEMENT_3D('',#1,#30,#31);
+#33=PLANE('',#32);
+#34=FACE_OUTER_BOUND('',#29,.T.);
+#35=ADVANCED_FACE('',(#34),#33,.T.);
+#36=CLOSED_SHELL('',(#35));
+#37=MANIFOLD_SOLID_BREP('',#36);
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('Tsh030','Tsh030','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#37),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
 ENDSEC;
 END-ISO-10303-21;

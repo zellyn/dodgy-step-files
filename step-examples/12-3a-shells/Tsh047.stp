@@ -1,110 +1,83 @@
 ISO-10303-21;
-/* Tsh047 - Same-domain face unification crosses cylinder seam, produces non-manifold
- * Defect: Two ADVANCED_FACEs on the same CYLINDRICAL_SURFACE (radius 1, axis Z),
- * parameter ranges U=[0,pi] and U=[pi,2*pi], sharing two vertical seam edges.
- * After merging, the seam at U=0 is preserved but the merged face lists it twice
- * in its outer wire (non-manifold result).
- * Byte assertions: contains OPEN_SHELL, contains CYLINDRICAL_SURFACE,
- * count ADVANCED_FACE == 2 */
+/* Tsh047: OPEN_SHELL with 2 ADVANCED_FACEs on same CYLINDRICAL_SURFACE (R=1, axis Z), split at U=0 and U=pi into two half-cylinders; shared seam edges at U=0 and U=pi are wired with opposite orientations; face unifier must NOT merge across periodic seam; seam edges ARE the mechanism in shell/face/edge topology */
 HEADER;
-FILE_DESCRIPTION(('Tsh047 - cylinder seam crossed by face unifier producing non-manifold','2;1'),'2;1');
-FILE_NAME('Tsh047.stp','2026-06-16T00:00:00',(''),(''),'wave-regen','','');
-FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+FILE_DESCRIPTION(('Tsh047'),'2;1');
+FILE_NAME('Tsh047.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('automotive_design');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
-
-/* Cylindrical surface: radius 1, axis Z, height 1 */
-#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
-#11=DIRECTION('',(0.0,0.0,1.0));
-#12=DIRECTION('',(1.0,0.0,0.0));
-#13=AXIS2_PLACEMENT_3D('',#10,#11,#12);
-#14=CYLINDRICAL_SURFACE('cyl',#13,1.0);
-
-/* Seam vertices:
-   At U=0: bottom=(1,0,0) top=(1,0,1)
-   At U=pi: bottom=(-1,0,0) top=(-1,0,1) */
-#20=CARTESIAN_POINT('',(1.0,0.0,0.0));
-#21=CARTESIAN_POINT('',(1.0,0.0,1.0));
-#22=CARTESIAN_POINT('',(-1.0,0.0,0.0));
-#23=CARTESIAN_POINT('',(-1.0,0.0,1.0));
-
-#30=VERTEX_POINT('v_seam0_bot',#20);
-#31=VERTEX_POINT('v_seam0_top',#21);
-#32=VERTEX_POINT('v_seampi_bot',#22);
-#33=VERTEX_POINT('v_seampi_top',#23);
-
-/* Seam edge at U=0 (vertical line at x=1, y=0): bottom to top */
-#40=DIRECTION('',(0.0,0.0,1.0));
-#41=VECTOR('',#40,1.0);
-#42=LINE('',#20,#41);
-#43=EDGE_CURVE('seam0',#30,#31,#42,.T.);
-
-/* Seam edge at U=pi (vertical line at x=-1, y=0): bottom to top */
-#44=LINE('',#22,#41);
-#45=EDGE_CURVE('seampi',#32,#33,#44,.T.);
-
-/* Bottom circle arcs — use LINE approximation for simplicity */
-/* Half 1: from (1,0,0) to (-1,0,0) through (0,1,0) */
-#50=CARTESIAN_POINT('',(0.0,1.0,0.0));
-#51=DIRECTION('',(-1.0,0.0,0.0));
-#52=VECTOR('',#51,2.0);
-#53=LINE('',#20,#52);
-#54=EDGE_CURVE('bot_arc1',#30,#32,#53,.T.);
-
-/* Half 2: from (-1,0,0) to (1,0,0) through (0,-1,0) */
-#55=DIRECTION('',(1.0,0.0,0.0));
-#56=VECTOR('',#55,2.0);
-#57=LINE('',#22,#56);
-#58=EDGE_CURVE('bot_arc2',#32,#30,#57,.T.);
-
-/* Top circle arcs */
-#60=DIRECTION('',(-1.0,0.0,0.0));
-#61=VECTOR('',#60,2.0);
-#62=LINE('',#21,#61);
-#63=EDGE_CURVE('top_arc1',#31,#33,#62,.T.);
-
-#64=DIRECTION('',(1.0,0.0,0.0));
-#65=VECTOR('',#64,2.0);
-#66=LINE('',#23,#65);
-#67=EDGE_CURVE('top_arc2',#33,#31,#66,.T.);
-
-/* Face 1: U=[0,pi] — seam0 up, top_arc1 reverse, seampi down, bot_arc1 reverse */
-#100=ORIENTED_EDGE('',*,*,#43,.T.);
-#101=ORIENTED_EDGE('',*,*,#63,.T.);
-#102=ORIENTED_EDGE('',*,*,#45,.F.);
-#103=ORIENTED_EDGE('',*,*,#54,.F.);
-#104=EDGE_LOOP('',(#100,#101,#102,#103));
-#105=FACE_OUTER_BOUND('',#104,.T.);
-#106=ADVANCED_FACE('half_cyl_1',(#105),#14,.T.);
-
-/* Face 2: U=[pi,2pi] — seampi up, top_arc2 reverse, seam0 down, bot_arc2 reverse */
-#110=ORIENTED_EDGE('',*,*,#45,.T.);
-#111=ORIENTED_EDGE('',*,*,#67,.T.);
-#112=ORIENTED_EDGE('',*,*,#43,.F.);
-#113=ORIENTED_EDGE('',*,*,#58,.F.);
-#114=EDGE_LOOP('',(#110,#111,#112,#113));
-#115=FACE_OUTER_BOUND('',#114,.T.);
-#116=ADVANCED_FACE('half_cyl_2',(#115),#14,.T.);
-
-/* OPEN_SHELL of two half-cylinder faces sharing seam edges */
-#500=OPEN_SHELL('two_half_cylinders',(#106,#116));
-
-/* Mandatory PRODUCT chain */
-#9000=PRODUCT_CONTEXT('',#1,'mechanical');
-#9001=PRODUCT('Tsh047','Tsh047','',(#9000));
-#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
-#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
-#9004=PRODUCT_DEFINITION('','',#9002,#9003);
-#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
-#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
-#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
-#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
-#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
-#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
-#9021=SHELL_BASED_SURFACE_MODEL('sbsm',(#500));
-#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#9010);
-#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('',(1.0,0.0,0.0));
+#2=CARTESIAN_POINT('',(1.0,0.0,1.0));
+#3=CARTESIAN_POINT('',(-1.0,0.0,0.0));
+#4=CARTESIAN_POINT('',(-1.0,0.0,1.0));
+#5=VERTEX_POINT('',#1);
+#6=VERTEX_POINT('',#2);
+#7=VERTEX_POINT('',#3);
+#8=VERTEX_POINT('',#4);
+#9=CARTESIAN_POINT('',(1.0,0.0,0.0));
+#10=DIRECTION('',(0.0,0.0,1.0));
+#11=VECTOR('',#10,1.0);
+#12=LINE('',#9,#11);
+#13=EDGE_CURVE('',#5,#6,#12,.T.);
+#14=CARTESIAN_POINT('',(-1.0,0.0,0.0));
+#15=DIRECTION('',(0.0,0.0,1.0));
+#16=VECTOR('',#15,1.0);
+#17=LINE('',#14,#16);
+#18=EDGE_CURVE('',#7,#8,#17,.T.);
+#19=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#20=CARTESIAN_POINT('',(0.0,0.0,1.0));
+#21=DIRECTION('',(0.0,0.0,1.0));
+#22=DIRECTION('',(1.0,0.0,0.0));
+#23=AXIS2_PLACEMENT_3D('',#19,#21,#22);
+#24=CIRCLE('',#23,1.0);
+#25=EDGE_CURVE('',#5,#7,#24,.T.);
+#26=AXIS2_PLACEMENT_3D('',#19,#21,#22);
+#27=CIRCLE('',#26,1.0);
+#28=EDGE_CURVE('',#7,#5,#27,.T.);
+#29=DIRECTION('',(0.0,0.0,-1.0));
+#30=AXIS2_PLACEMENT_3D('',#20,#29,#22);
+#31=CIRCLE('',#30,1.0);
+#32=EDGE_CURVE('',#8,#6,#31,.T.);
+#33=AXIS2_PLACEMENT_3D('',#20,#29,#22);
+#34=CIRCLE('',#33,1.0);
+#35=EDGE_CURVE('',#6,#8,#34,.T.);
+#36=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#37=AXIS2_PLACEMENT_3D('',#36,#21,#22);
+#38=CYLINDRICAL_SURFACE('',#37,1.0);
+#39=ORIENTED_EDGE('',$,$,#13,.T.);
+#40=ORIENTED_EDGE('',$,$,#32,.T.);
+#41=ORIENTED_EDGE('',$,$,#18,.F.);
+#42=ORIENTED_EDGE('',$,$,#25,.T.);
+#43=EDGE_LOOP('',(#39,#40,#41,#42));
+#44=ORIENTED_EDGE('',$,$,#13,.T.);
+#45=ORIENTED_EDGE('',$,$,#32,.F.);
+#46=ORIENTED_EDGE('',$,$,#18,.F.);
+#47=ORIENTED_EDGE('',$,$,#25,.F.);
+#48=EDGE_LOOP('',(#44,#45,#46,#47));
+#49=FACE_OUTER_BOUND('',#48,.T.);
+#50=ADVANCED_FACE('',(#49),#38,.T.);
+#51=ORIENTED_EDGE('',$,$,#18,.T.);
+#52=ORIENTED_EDGE('',$,$,#35,.F.);
+#53=ORIENTED_EDGE('',$,$,#13,.F.);
+#54=ORIENTED_EDGE('',$,$,#28,.F.);
+#55=EDGE_LOOP('',(#51,#52,#53,#54));
+#56=FACE_OUTER_BOUND('',#55,.T.);
+#57=ADVANCED_FACE('',(#56),#38,.T.);
+#58=OPEN_SHELL('',(#50,#57));
+#59=SHELL_BASED_SURFACE_MODEL('',(#58));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('Tsh047','Tsh047','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#59),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
 ENDSEC;
 END-ISO-10303-21;
