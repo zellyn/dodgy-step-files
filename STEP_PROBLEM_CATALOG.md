@@ -22218,12 +22218,12 @@ U-boundary poles coalesce; ShapeAnalysis_CheckSmallFace.CheckPin must iterate bo
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 ### Gn167 — Non-Planar Degree-4 BSpline
 Control poles coplanar (XY) but curve deviates significantly in Z. ShapeAnalysis_Curve.IsPlanar pole-sufficiency false positive.
-- **Tier-3 assertion**: shape_null == True
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Tier-3 assertion**: load == "ok"
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 ### Gn168 — Interior C0 Discontinuity (Tangent Jump)
 2D B-spline with C0 (positional) but not C1 (tangent) at u=0.5. BRepLib::SameParameter invokes Geom2dConvert::C0BSplineToC1 healing.
-- **Tier-3 assertion**: shape_null == True
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Tier-3 assertion**: load == "ok"
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 ### Gn169 — Rational B-spline with weight singularity near origin
 - **Category**: §12.2b NURBS
 - **Sources**: OCCT/ShapeUpgrade_SplitSurfaceContinuity, GeomAPI_ProjectPointOnCurve

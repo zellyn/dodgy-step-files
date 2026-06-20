@@ -75,6 +75,10 @@ than committed. New strategy: Sonnet-generates instead of Haiku-generates.
 - Gn110: ConvertSurfaceToBezierBasis trim-ignored — catalog claims defect is triggered by an inner FACE_BOUND trim at 0.25..0.75, but Sonnet's fixture only emitted FACE_OUTER_BOUND with full extent. Needs explicit inner trim loop on the surface to actually trigger the documented behavior.
 - Gn160 (periodic B-spline parameter wrapping): live oracle returns empty/empty but Sonnet's analysis says geometry should load — fixture wires periodic B-spline as edge 3D curve on plane face, OCC rejects but mechanism narrative is unclear. Needs investigation of WHY OCC rejects.
 - Gn162 (B-spline interior knot mult=degree+1 Bezier-join): live oracle empty but Sonnet's analysis says tangent-only break should load — fixture wires the discontinuous B-spline as defect 3D curve; OCC rejects for unknown reason. Needs investigation.
+- Gn164 (Rational BSpline Closure Detection Bypass): catalog needs the rational B-spline surface to BE the face_geometry, but Sonnet's fixture builds the surface as an orphan alongside a flat-plane face. Recipe: pass the rational B-spline as the `surf` argument to `advanced_face()`, not the pre-built plane.
+- Gn165 (Ill-conditioned knot 44:1 ratio): same orphan-surface issue as Gn164. Need B-spline surface IS face_geometry.
+- Gn166 (Boundary pole singularity first row): same orphan-surface issue. Need B-spline surface IS face_geometry.
+- Logged 2026-06-20 from batch 49 indep verify systemic finding: Sonnet keeps building B-spline surfaces as orphans alongside the face's flat-plane geometry instead of swapping them in. Affects batch 49 final-nurbs trio.
 - Logged 2026-06-20 from batch 31 indep verify systemic finding.
 - Reason: signal(11) requires engineering a deliberate OCC SIGSEGV; Wave-B Sonnet pipeline doesn't have a template for this yet. Gp001 is the existing reference but is a hand-authored .stp without a fixture_source.py. Need to (a) reverse-engineer Gp001's crash trigger or (b) propose a new builder API for signal-11 fixtures.
 - Logged 2026-06-19 from batch 13-18 archetype-aware scans.

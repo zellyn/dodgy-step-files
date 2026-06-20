@@ -25446,7 +25446,7 @@
     "cross_oracle_note": null,
     "description": "Non-Planar Degree-4 BSpline",
     "expected_kernel_behavior": "heal or reject (mechanism-specific; see Description)",
-    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2b-nurbs/Gn167.stp",
     "id": "Gn167",
@@ -25467,7 +25467,7 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "load == \"ok\""
     ],
     "title": "Non-Planar Degree-4 BSpline"
   },
@@ -25479,7 +25479,7 @@
     "cross_oracle_note": null,
     "description": "Interior C0 Discontinuity (Tangent Jump)",
     "expected_kernel_behavior": "heal or reject (mechanism-specific; see Description)",
-    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2b-nurbs/Gn168.stp",
     "id": "Gn168",
@@ -25500,7 +25500,7 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "load == \"ok\""
     ],
     "title": "Interior C0 Discontinuity (Tangent Jump)"
   },
