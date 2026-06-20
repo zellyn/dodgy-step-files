@@ -1,71 +1,55 @@
 ISO-10303-21;
-/* Tsh012 - Mixed .T./.F. flags on ORIENTED_EDGE mismatched against
- *          parameter direction
- * Defect: EDGE_CURVE.same_sense boolean missing or illegal-formatted
- * leaves an uninitialized bool; OCCT generic boolean enum parsing
- * defaults to true if value is not .T. or .F.. Sources: Mantis 29944
- * (G028) and Q053.
- *
- * This file demonstrates several anti-patterns:
- *   - one EDGE_CURVE with .U. (UNKNOWN) -- not a legal STEP boolean
- *   - one EDGE_CURVE with omitted same_sense (parser substitutes default)
- *   - one ORIENTED_EDGE with .T. while underlying EDGE_CURVE has .F.,
- *     producing a mismatch */
+/* Tsh012: Single triangular ADVANCED_FACE: one EDGE_CURVE has same_sense=.U. (uninitialized/unknown boolean); non-deterministic edge direction between compiler runs; .U. flag IS wired into face/wire/edge topology; strict receivers must coerce to .T. and warn, or reject */
 HEADER;
-FILE_DESCRIPTION(('Tsh012 - ORIENTED_EDGE same_sense malformed'',''2;1'',''2;1'),'2;1');
-FILE_NAME('Tsh012.stp','2026-06-16T00:00:00',(''),(''),'wave-01','','');
-FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+FILE_DESCRIPTION(('Tsh012'),'2;1');
+FILE_NAME('Tsh012.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('automotive_design');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
-/* Square face on z=0 */
-#100=CARTESIAN_POINT('',(0.0,0.0,0.0));
-#101=CARTESIAN_POINT('',(1.0,0.0,0.0));
-#102=CARTESIAN_POINT('',(1.0,1.0,0.0));
-#103=CARTESIAN_POINT('',(0.0,1.0,0.0));
-#110=VERTEX_POINT('',#100); #111=VERTEX_POINT('',#101);
-#112=VERTEX_POINT('',#102); #113=VERTEX_POINT('',#103);
-#200=DIRECTION('',(0.0,0.0,1.0)); #201=DIRECTION('',(1.0,0.0,0.0));
-#211=AXIS2_PLACEMENT_3D('',#100,#200,#201); #212=PLANE('',#211);
-#300=DIRECTION('',(1.0,0.0,0.0)); #301=VECTOR('',#300,1.0);
-#302=DIRECTION('',(0.0,1.0,0.0)); #303=VECTOR('',#302,1.0);
-#310=LINE('',#100,#301);
-#312=LINE('',#101,#303);
-#314=LINE('',#103,#301);
-#316=LINE('',#100,#303);
-/* Edge 1: legal .T. */
-#320=EDGE_CURVE('e1',#110,#111,#310,.T.);
-/* Defect A: same_sense token .U. (UNKNOWN) -- not a legal STEP boolean */
-#321=EDGE_CURVE('e2_unknown',#111,#112,#312,.U.);
-/* Defect B: same_sense omitted by stripped Boolean (replaced with $) */
-#322=EDGE_CURVE('e3_missing',#113,#112,#314,$);
-/* Edge 4: same_sense .F. -- but the next ORIENTED_EDGE will use .T.
-   creating a mismatch with the curve direction */
-#323=EDGE_CURVE('e4_F',#110,#113,#316,.F.);
-#400=ORIENTED_EDGE('',*,*,#320,.T.);
-#401=ORIENTED_EDGE('',*,*,#321,.T.);
-#402=ORIENTED_EDGE('',*,*,#322,.F.);
-/* Defect C: ORIENTED_EDGE .T. on top of EDGE_CURVE same_sense .F. */
-#403=ORIENTED_EDGE('mismatch',*,*,#323,.T.);
-#404=EDGE_LOOP('',(#400,#401,#402,#403));
-#405=FACE_OUTER_BOUND('',#404,.T.);
-#406=ADVANCED_FACE('mixed_orientation',(#405),#212,.T.);
-#500=OPEN_SHELL('face_shell',(#406));
-#510=SHELL_BASED_SURFACE_MODEL('container',(#500));
-/* Mandatory PRODUCT chain */
-#9000=PRODUCT_CONTEXT('',#1,'mechanical');
-#9001=PRODUCT('Tsh012','Tsh012','',(#9000));
-#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
-#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
-#9004=PRODUCT_DEFINITION('','',#9002,#9003);
-#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
-#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
-#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
-#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
-#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
-#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
-#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#510),#9010);
-#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=CARTESIAN_POINT('',(2.0,0.0,0.0));
+#3=CARTESIAN_POINT('',(1.0,2.0,0.0));
+#4=VERTEX_POINT('',#1);
+#5=VERTEX_POINT('',#2);
+#6=VERTEX_POINT('',#3);
+#7=DIRECTION('',(1.0,0.0,0.0));
+#8=VECTOR('',#7,1.0);
+#9=LINE('',#1,#8);
+#10=EDGE_CURVE('',#4,#5,#9,.T.);
+#11=DIRECTION('',(-1.0,2.0,0.0));
+#12=VECTOR('',#11,1.0);
+#13=LINE('',#2,#12);
+#14=EDGE_CURVE('',#5,#6,#13,.U.);
+#15=DIRECTION('',(-1.0,-2.0,0.0));
+#16=VECTOR('',#15,1.0);
+#17=LINE('',#3,#16);
+#18=EDGE_CURVE('',#6,#4,#17,.T.);
+#19=ORIENTED_EDGE('',$,$,#10,.T.);
+#20=ORIENTED_EDGE('',$,$,#14,.T.);
+#21=ORIENTED_EDGE('',$,$,#18,.T.);
+#22=EDGE_LOOP('',(#19,#20,#21));
+#23=FACE_OUTER_BOUND('',#22,.T.);
+#24=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#25=DIRECTION('',(0,0,1));
+#26=DIRECTION('',(1,0,0));
+#27=AXIS2_PLACEMENT_3D('',#24,#25,#26);
+#28=PLANE('',#27);
+#29=ADVANCED_FACE('',(#23),#28,.T.);
+#30=OPEN_SHELL('',(#29));
+#31=SHELL_BASED_SURFACE_MODEL('',(#30));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('Tsh012','Tsh012','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#31),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
 ENDSEC;
 END-ISO-10303-21;
