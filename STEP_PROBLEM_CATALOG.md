@@ -26377,8 +26377,8 @@ creating a pinch point where the surface crosses itself.
 - **Model impact**: Surface and trimming geometry
 - **Fixture path**: step-examples/12-2c-surfaces/Gs096.stp
 - **Fixture kind**: scaffold
-- **Tier-3 assertion**: shape_null == True
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Tier-3 assertion**: load == "ok"
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 ### Gs097 — ShapeUpgrade_FaceDivideArea.Perform threshold reset
 - **Category**: §12.2c surfaces (sub-class: face)
 - **Sources**: OCCT/ShapeAnalysis (see fixture)
@@ -26388,8 +26388,8 @@ creating a pinch point where the surface crosses itself.
 - **Model impact**: Surface and trimming geometry
 - **Fixture path**: step-examples/12-2c-surfaces/Gs097.stp
 - **Fixture kind**: scaffold (kernel-test-pair: shape only; runtime invocation required to reproduce)
-- **Tier-3 assertion**: shape_null == True
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Tier-3 assertion**: load == "ok"
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 ### Gs098 — ShapeAnalysis_Surface.IsDegenerated revolution-axis-on-curve
 - **Category**: §12.2c surfaces (sub-class: curve)
 - **Sources**: OCCT/ShapeAnalysis (see fixture)
@@ -26400,8 +26400,8 @@ missing the degenerate apex singularity.
 - **Model impact**: Surface and trimming geometry
 - **Fixture path**: step-examples/12-2c-surfaces/Gs098.stp
 - **Fixture kind**: scaffold
-- **Tier-3 assertion**: shape_null == True
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Tier-3 assertion**: load == "ok"
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 ### Gs099 — Sphere pole singularity: iso-curve sampling misses pole
 - **Category**: §12.2c surfaces (sub-class: curve)
 - **Sources**: OCCT/ShapeAnalysis (see fixture)
@@ -26414,8 +26414,8 @@ sampling fails to detect singular points at poles.
 - **Model impact**: Surface and trimming geometry
 - **Fixture path**: step-examples/12-2c-surfaces/Gs099.stp
 - **Fixture kind**: scaffold
-- **Tier-3 assertion**: shape_null == True
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Tier-3 assertion**: load == "ok"
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 ### Gs100 — SplitSurface trim-aware split: splits base not trimmed wrapper
 - **Category**: §12.2c surfaces (sub-class: face)
 - **Sources**: OCCT/ShapeAnalysis (see fixture)
@@ -26426,8 +26426,8 @@ by extracting and splitting the base surface, ignoring the trim bounds. Result: 
 - **Model impact**: Surface and trimming geometry
 - **Fixture path**: step-examples/12-2c-surfaces/Gs100.stp
 - **Fixture kind**: scaffold
-- **Tier-3 assertion**: shape_null == True
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Tier-3 assertion**: load == "ok"
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 ### Gs101 — ShapeAnalysis_Surface.ValueOfUV: antipodal sphere convergence failure
 - **Category**: §12.2c surfaces (sub-class: surface)
 - **Sources**: OCCT/ShapeAnalysis (see fixture)
@@ -26439,8 +26439,8 @@ Newton initializes on the wrong sheet and converges to wrong root.
 - **Model impact**: Surface and trimming geometry
 - **Fixture path**: step-examples/12-2c-surfaces/Gs101.stp
 - **Fixture kind**: scaffold
-- **Tier-3 assertion**: shape_null == True
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Tier-3 assertion**: load == "ok"
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 ### Gs102 — ConvertSurfaceToBezierBasis: Bezier passthrough produces re-extracted copy
 - **Category**: §12.2c surfaces (sub-class: face)
 - **Sources**: OCCT/ShapeAnalysis (see fixture)

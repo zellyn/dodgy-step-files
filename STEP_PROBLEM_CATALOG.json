@@ -28927,7 +28927,7 @@
     "cross_oracle_note": null,
     "description": "Self-intersecting torus with major radius R < minor radius r. ComputeSingularities reports zero singularities despite self-intersection creating a pinch point where the surface crosses itself.",
     "expected_kernel_behavior": "heal: investigate / reject: geometric degeneracy",
-    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2c-surfaces/Gs096.stp",
     "id": "Gs096",
@@ -28948,7 +28948,7 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "load == \"ok\""
     ],
     "title": "ShapeAnalysis_Surface.ComputeSingularities torus pinch"
   },
@@ -28960,7 +28960,7 @@
     "cross_oracle_note": null,
     "description": "ShapeUpgrade_FaceDivideArea splits a face when its area exceeds a runtime threshold parameter; threshold value 0.0 should be a no-op (\"don't split\") but is incorrectly treated as \"split every sub-face\", triggering unbounded recursion. The threshold is a runtime API argument, not a STEP attribute, so this fixture provides only the geometric setup (a planar face); the defect is observable when calling `ShapeUpgrade_FaceDivideArea::SetMaxArea(0.0); Perform()` on the loaded shape.",
     "expected_kernel_behavior": "treat threshold=0.0 as identity / no-op",
-    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2c-surfaces/Gs097.stp",
     "id": "Gs097",
@@ -28981,7 +28981,7 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "load == \"ok\""
     ],
     "title": "ShapeUpgrade_FaceDivideArea.Perform threshold reset"
   },
@@ -28993,7 +28993,7 @@
     "cross_oracle_note": null,
     "description": "SURFACE_OF_REVOLUTION where basis curve passes through the axis. IsDegenerated only checks axis vector direction, not curve position, missing the degenerate apex singularity.",
     "expected_kernel_behavior": "heal: investigate / reject: geometric degeneracy",
-    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2c-surfaces/Gs098.stp",
     "id": "Gs098",
@@ -29014,7 +29014,7 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "load == \"ok\""
     ],
     "title": "ShapeAnalysis_Surface.IsDegenerated revolution-axis-on-curve"
   },
@@ -29026,7 +29026,7 @@
     "cross_oracle_note": null,
     "description": "ShapeAnalysis_Surface.Singularity() must report both poles of a sphere, but iso-curve sampling (e.g., UIso/VIso sampling) may miss poles if orientation places them outside the parametric trim bounds. Newton iteration on iso-curve sampling fails to detect singular points at poles.",
     "expected_kernel_behavior": "heal: investigate / reject: geometric degeneracy",
-    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2c-surfaces/Gs099.stp",
     "id": "Gs099",
@@ -29047,7 +29047,7 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "load == \"ok\""
     ],
     "title": "Sphere pole singularity: iso-curve sampling misses pole"
   },
@@ -29059,7 +29059,7 @@
     "cross_oracle_note": null,
     "description": "ShapeUpgrade_SplitSurface.Build() processes RECTANGULAR_TRIMMED_SURFACE by extracting and splitting the base surface, ignoring the trim bounds. Result: split patches extend beyond original trim, creating invalid geometry.",
     "expected_kernel_behavior": "heal: investigate / reject: geometric degeneracy",
-    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2c-surfaces/Gs100.stp",
     "id": "Gs100",
@@ -29080,7 +29080,7 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "load == \"ok\""
     ],
     "title": "SplitSurface trim-aware split: splits base not trimmed wrapper"
   },
@@ -29092,7 +29092,7 @@
     "cross_oracle_note": null,
     "description": "ValueOfUV() projects a 3D point onto a sphere using Newton iteration seeded from initial UV guess. When target is near the antipode of the seed, Newton initializes on the wrong sheet and converges to wrong root.",
     "expected_kernel_behavior": "heal: investigate / reject: geometric degeneracy",
-    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2c-surfaces/Gs101.stp",
     "id": "Gs101",
@@ -29113,7 +29113,7 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "load == \"ok\""
     ],
     "title": "ShapeAnalysis_Surface.ValueOfUV: antipodal sphere convergence failure"
   },
