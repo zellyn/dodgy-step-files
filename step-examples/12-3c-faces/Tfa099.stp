@@ -1,66 +1,97 @@
 ISO-10303-21;
-/* Tfa099 - ShapeAnalysis_CheckSmallFace.CheckTwisted concave-cone
- * Face on cone with wire wrapped such that v-parameter decreases (reverse wrap).
- * CheckTwisted's normal-direction test mis-classifies for v-decreasing wraps.
- * Constructs cone and wire with decreasing v-parameter. */
+/* Tfa099: CLOSED_SHELL: CONICAL_SURFACE face with v-decreasing wrap — outer loop vertices go from z=4 (v=4) to z=2 (v=2), so v-parameter decreases; ShapeAnalysis_CheckSmallFace::CheckTwisted normal-direction test mis-classifies v-decreasing wraps on cone surfaces as twisted; defect IS on live CLOSED_SHELL traversal path */
 HEADER;
-FILE_DESCRIPTION(('Tfa099 test case','Face on cone with v-decreasing wrap'),'2;1');
-FILE_NAME('Tfa099.stp','2026-06-15T00:00:00',(''),(''),'cad-research-suite','','');
-FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+FILE_DESCRIPTION(('Tfa099'),'2;1');
+FILE_NAME('Tfa099.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('automotive_design');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
-/* Cone surface: semi-vertical angle 30°, apex at origin, axis along z */
-#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
-#11=DIRECTION('',(0.0,0.0,1.0));#12=DIRECTION('',(1.0,0.0,0.0));
-#13=AXIS2_PLACEMENT_3D('',#10,#11,#12);
-#14=CONE('cone_surf',#13,1.0,0.5236);
-/* Vertices on cone: 4 points defining a wire at decreasing v (height) */
-/* Point 1: u=0, v=4.0 (z=4.0) */
-#20=CARTESIAN_POINT('',(4.0,0.0,4.0));#21=VERTEX_POINT('',#20);
-/* Point 2: u=π/2, v=4.0 (z=4.0) */
-#22=CARTESIAN_POINT('',(0.0,4.0,4.0));#23=VERTEX_POINT('',#22);
-/* Point 3: u=π/2, v=2.0 (z=2.0) -- v DECREASES */
-#24=CARTESIAN_POINT('',(0.0,2.0,2.0));#25=VERTEX_POINT('',#24);
-/* Point 4: u=0, v=2.0 (z=2.0) -- v DECREASES */
-#26=CARTESIAN_POINT('',(2.0,0.0,2.0));#27=VERTEX_POINT('',#26);
-/* Edges on cone surface (using line approximations in 3D) */
-/* Edge 1: (4,0,4) to (0,4,4) along v=4.0 circle */
-#30=DIRECTION('',(-1.0,1.0,0.0));#31=VECTOR('',#30,1.0);#32=LINE('',#20,#31);
-#33=EDGE_CURVE('cone_e1',#21,#23,#32,.T.);
-/* Edge 2: (0,4,4) to (0,2,2) -- v decreases from 4 to 2 */
-#34=DIRECTION('',(0.0,-1.0,-1.0));#35=VECTOR('',#34,1.0);#36=LINE('',#22,#35);
-#37=EDGE_CURVE('cone_e2_v_dec',#23,#25,#36,.T.);
-/* Edge 3: (0,2,2) to (2,0,2) -- v=2.0 circle, v still low */
-#38=DIRECTION('',(1.0,-1.0,0.0));#39=VECTOR('',#38,1.0);#40=LINE('',#24,#39);
-#41=EDGE_CURVE('cone_e3',#25,#27,#40,.T.);
-/* Edge 4: (2,0,2) to (4,0,4) -- v increases from 2 to 4 */
-#42=DIRECTION('',(1.0,0.0,1.0));#43=VECTOR('',#42,1.0);#44=LINE('',#26,#43);
-#45=EDGE_CURVE('cone_e4_v_inc',#27,#21,#44,.T.);
-/* Close outer loop with decreasing v wrap */
-#50=ORIENTED_EDGE('',*,*,#33,.T.);#51=ORIENTED_EDGE('',*,*,#37,.T.);
-#52=ORIENTED_EDGE('',*,*,#41,.T.);#53=ORIENTED_EDGE('',*,*,#45,.T.);
-#54=EDGE_LOOP('cone_v_decreasing',(#50,#51,#52,#53));
-#55=FACE_OUTER_BOUND('',#54,.T.);
-/* Face on cone with v-decreasing wrap */
-#60=ADVANCED_FACE('twisted_cone_face',(#55),#14,.T.);
-/* PRODUCT chain */
-#9000=PRODUCT_CONTEXT('',#1,'mechanical');
-#9001=PRODUCT('Tfa099','Tfa099','',(#9000));
-#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
-#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
-#9004=PRODUCT_DEFINITION('','',#9002,#9003);
-#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
-#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
-#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
-#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
-#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
-#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
-#9021=SHELL_BASED_SURFACE_MODEL('sbsm',(#70));
-#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#9010);
-#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
-/* Closed shell wrapper */
-#70=CLOSED_SHELL('shell',(#60));
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=DIRECTION('',(0.0,0.0,1.0));
+#3=DIRECTION('',(1.0,0.0,0.0));
+#4=AXIS2_PLACEMENT_3D('',#1,#2,#3);
+#5=CONICAL_SURFACE('',#4,0.0,0.523598775598);
+#6=CARTESIAN_POINT('',(2.30940107676,0.0,4.0));
+#7=CARTESIAN_POINT('',(-2.30940107676,0.0,4.0));
+#8=CARTESIAN_POINT('',(-1.15470053838,0.0,2.0));
+#9=CARTESIAN_POINT('',(1.15470053838,0.0,2.0));
+#10=VERTEX_POINT('',#6);
+#11=VERTEX_POINT('',#7);
+#12=VERTEX_POINT('',#8);
+#13=VERTEX_POINT('',#9);
+#14=DIRECTION('',(-1.0,0.0,0.0));
+#15=VECTOR('',#14,4.61880215352);
+#16=LINE('',#6,#15);
+#17=EDGE_CURVE('',#10,#11,#16,.T.);
+#18=DIRECTION('',(-0.5,0.0,-0.866025403784));
+#19=VECTOR('',#18,2.30940107676);
+#20=LINE('',#7,#19);
+#21=EDGE_CURVE('',#11,#12,#20,.T.);
+#22=DIRECTION('',(1.0,0.0,0.0));
+#23=VECTOR('',#22,2.30940107676);
+#24=LINE('',#8,#23);
+#25=EDGE_CURVE('',#12,#13,#24,.T.);
+#26=DIRECTION('',(0.5,0.0,0.866025403784));
+#27=VECTOR('',#26,2.30940107676);
+#28=LINE('',#9,#27);
+#29=EDGE_CURVE('',#13,#10,#28,.T.);
+#30=ORIENTED_EDGE('',$,$,#17,.T.);
+#31=ORIENTED_EDGE('',$,$,#21,.T.);
+#32=ORIENTED_EDGE('',$,$,#25,.T.);
+#33=ORIENTED_EDGE('',$,$,#29,.T.);
+#34=EDGE_LOOP('',(#30,#31,#32,#33));
+#35=FACE_OUTER_BOUND('',#34,.T.);
+#36=ADVANCED_FACE('',(#35),#5,.T.);
+#37=CARTESIAN_POINT('',(-1.15470053838,0.0,2.0));
+#38=CARTESIAN_POINT('',(1.15470053838,0.0,2.0));
+#39=CARTESIAN_POINT('',(1.15470053838,0.5,2.0));
+#40=CARTESIAN_POINT('',(-1.15470053838,0.5,2.0));
+#41=VERTEX_POINT('',#37);
+#42=VERTEX_POINT('',#38);
+#43=VERTEX_POINT('',#39);
+#44=VERTEX_POINT('',#40);
+#45=DIRECTION('',(0.0,1.0,0.0));
+#46=VECTOR('',#45,0.5);
+#47=LINE('',#38,#46);
+#48=EDGE_CURVE('',#42,#43,#47,.T.);
+#49=DIRECTION('',(-1.0,0.0,0.0));
+#50=VECTOR('',#49,2.30940107676);
+#51=LINE('',#39,#50);
+#52=EDGE_CURVE('',#43,#44,#51,.T.);
+#53=DIRECTION('',(0.0,-1.0,0.0));
+#54=VECTOR('',#53,0.5);
+#55=LINE('',#40,#54);
+#56=EDGE_CURVE('',#44,#41,#55,.T.);
+#57=DIRECTION('',(1.0,0.0,0.0));
+#58=VECTOR('',#57,2.30940107676);
+#59=LINE('',#37,#58);
+#60=EDGE_CURVE('',#41,#42,#59,.T.);
+#61=ORIENTED_EDGE('',$,$,#60,.T.);
+#62=ORIENTED_EDGE('',$,$,#48,.T.);
+#63=ORIENTED_EDGE('',$,$,#52,.T.);
+#64=ORIENTED_EDGE('',$,$,#56,.T.);
+#65=EDGE_LOOP('',(#61,#62,#63,#64));
+#66=DIRECTION('',(0.0,0.0,-1.0));
+#67=DIRECTION('',(1.0,0.0,0.0));
+#68=AXIS2_PLACEMENT_3D('',#37,#66,#67);
+#69=FACE_OUTER_BOUND('',#65,.T.);
+#70=PLANE('',#68);
+#71=ADVANCED_FACE('',(#69),#70,.T.);
+#72=CLOSED_SHELL('',(#36,#71));
+#73=MANIFOLD_SOLID_BREP('',#72);
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('Tfa099','Tfa099','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=ADVANCED_BREP_SHAPE_REPRESENTATION('',(#73),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
 ENDSEC;
 END-ISO-10303-21;
