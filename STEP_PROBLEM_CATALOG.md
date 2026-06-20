@@ -21807,8 +21807,8 @@ Degree-0 B-spline (piecewise constant function). When degree-elevation code comp
 Composite curve mixing a degree-3 B-spline segment (requires 4 samples) with a degree-2 Bezier segment (requires 3 samples). FillBndBox dispatches per-segment but applies B-spline sample count to the Bezier component, undersample the Bezier's curvature extrema.
 
 **File**: `/Users/zellyn/gh/dodgy-step-files/step-examples/12-2b-nurbs/Gn103.stp`
-- **Tier-3 assertion**: shape_null == True
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Tier-3 assertion**: load == "ok"
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 ### Gn104 — trimmed-recursion on B-spline
 Defect: ShapeUpgrade_SplitSurfaceContinuity.Compute recursively subdivides trimmed B-spline ignoring trim bounds, producing overlapping sub-patches.
 - **Tier-3 assertion**: n_faces_total == 1
@@ -21830,23 +21830,23 @@ Defect: ShapeUpgrade_SplitSurface.Init silently accepts inverted bounds (u_min >
 ### Gn109 — ShapeAnalysis_Curve.IsPlanar non-rational-bspline-3D
 
 Non-rational B-spline degree-4 curve with control polygon ostensibly coplanar but interior sampled values bow out 0.15 units. Pole-sampling strategy in IsPlanar misses interior bulge; detects polygon but not actual curve geometry.
-- **Tier-3 assertion**: shape_null == True
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Tier-3 assertion**: load == "ok"
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 ### Gn110 — ShapeUpgrade_ConvertSurfaceToBezierBasis bezier-with-trim
 
 BEZIER_SURFACE wrapped in RECTANGULAR_TRIMMED_SURFACE via FACE_BOUND. Conversion logic treats as untrimmed (uses base knot vector [4,4] on both directions, spans 0.0..1.0) and ignores trim loop (0.25..0.75 square); produces wrong patches outside trim.
-- **Tier-3 assertion**: shape_null == True
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Tier-3 assertion**: load == "ok"
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 ### Gn111 — ShapeAnalysis_Curve.GetSamplePoints cubic-with-flat-region
 
 Cubic B-spline with control points #3, #4, #5 collinear (flat plateau from t=0.4 to t=0.7). Sampler under-weights this region (zero second derivative); coarse knot insertion misses inflection transition.
-- **Tier-3 assertion**: shape_null == True
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Tier-3 assertion**: load == "ok"
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 ### Gn112 — ShapeUpgrade_SplitSurface.Init split-at-knot
 
 Curve knot vector has interior knot at t=0.5 with multiplicity 2. Init's split request at t=0.5 triggers phantom boost (attempts insertion into already-multiplied knot); creates spurious Bezier segment boundary.
-- **Tier-3 assertion**: shape_null == True
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Tier-3 assertion**: load == "ok"
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 ### Gn113 — ShapeAnalysis_Curve.IsClosed periodic-with-knot-asymmetry
 
 B-spline with periodic flag (.T.) but knot multiplicities at endpoints differ: u_min has multiplicity 2, u_max has multiplicity 2 but computed span widths asymmetric. IsClosed reports .T. based on flag, ignoring asymmetry in knot partition.

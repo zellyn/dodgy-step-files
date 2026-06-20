@@ -23336,7 +23336,7 @@
     "cross_oracle_note": null,
     "description": "ShapeAnalysis_Curve.FillBndBox bspline-bezier-mixed",
     "expected_kernel_behavior": "heal or reject (mechanism-specific; see Description)",
-    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2b-nurbs/Gn103.stp",
     "id": "Gn103",
@@ -23357,7 +23357,7 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "load == \"ok\""
     ],
     "title": "ShapeAnalysis_Curve.FillBndBox bspline-bezier-mixed"
   },
@@ -23532,7 +23532,7 @@
     "cross_oracle_note": null,
     "description": "ShapeAnalysis_Curve.IsPlanar non-rational-bspline-3D",
     "expected_kernel_behavior": "heal or reject (mechanism-specific; see Description)",
-    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2b-nurbs/Gn109.stp",
     "id": "Gn109",
@@ -23553,7 +23553,7 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "load == \"ok\""
     ],
     "title": "ShapeAnalysis_Curve.IsPlanar non-rational-bspline-3D"
   },
@@ -23565,7 +23565,7 @@
     "cross_oracle_note": null,
     "description": "ShapeUpgrade_ConvertSurfaceToBezierBasis bezier-with-trim",
     "expected_kernel_behavior": "heal or reject (mechanism-specific; see Description)",
-    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2b-nurbs/Gn110.stp",
     "id": "Gn110",
@@ -23586,7 +23586,7 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "load == \"ok\""
     ],
     "title": "ShapeUpgrade_ConvertSurfaceToBezierBasis bezier-with-trim"
   },
@@ -23598,7 +23598,7 @@
     "cross_oracle_note": null,
     "description": "ShapeAnalysis_Curve.GetSamplePoints cubic-with-flat-region",
     "expected_kernel_behavior": "heal or reject (mechanism-specific; see Description)",
-    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2b-nurbs/Gn111.stp",
     "id": "Gn111",
@@ -23619,7 +23619,7 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "load == \"ok\""
     ],
     "title": "ShapeAnalysis_Curve.GetSamplePoints cubic-with-flat-region"
   },
@@ -23631,7 +23631,7 @@
     "cross_oracle_note": null,
     "description": "ShapeUpgrade_SplitSurface.Init split-at-knot",
     "expected_kernel_behavior": "heal or reject (mechanism-specific; see Description)",
-    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2b-nurbs/Gn112.stp",
     "id": "Gn112",
@@ -23652,7 +23652,7 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "load == \"ok\""
     ],
     "title": "ShapeUpgrade_SplitSurface.Init split-at-knot"
   },
