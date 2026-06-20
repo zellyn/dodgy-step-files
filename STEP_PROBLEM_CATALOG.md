@@ -28587,11 +28587,11 @@ Three triangular faces forming incomplete closure (free edge between faces 1–2
 - **Notes**: **See also**: Gp028, Tfa023. Synonyms: "STEP writer pcurves disagree with 3D curves", "disable writing pcurves to STEP and IGES by default", "edge tolerance violated by writer pcurve", "pcurve drift after STEP round-trip".
 - **Byte assertion**: contains(b'PCURVE')
 - **Byte assertion**: contains(b'SURFACE_CURVE')
-- **Tier-3 assertion**: shape_null == True
+- **Tier-3 assertion**: shape_null == False
 - **OCC behavior**: silent-accept observed (catalog allowed: {heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
 - **Severity**: P1
 - **Model impact**: The pcurve attribute on the affected EDGE_CURVE/SEAM_CURVE is missing, NULL, or inconsistent with its 3D companion; downstream meshing and boolean operations either rebuild it from the 3D edge (introducing tolerance error) or dereference a null handle and abort.
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 
 ### Gp041 — Sample-point divergence between 3D curve and PCURVE exceeds tolerance.
 
@@ -28599,8 +28599,8 @@ Three triangular faces forming incomplete closure (free edge between faces 1–2
 - **Defect**: Midspan 3D curve point (5,0,0) maps to PCURVE point (5.1,0,0) — 0.1 mm divergence exceeding edge tolerance 0.001 mm.
 - **Healer impact**: CheckCurve3dWithPCurve sample-point inspection detects the mismatch and flags the edge for healing or healing-time analysis.
 - **File**: `step-examples/12-2a-pcurves/Gp041.stp`
-- **Tier-3 assertion**: shape_null == True
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Tier-3 assertion**: shape_null == False
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### Gp042 — Edge on planar face missing PCURVE despite 3D curve geometry.
 
 - **Geometry**: PLANE host; 3D LINE from (0,0,0) to (5,0,0); empty SURFACE_CURVE.associated_geometry list.
@@ -28614,24 +28614,24 @@ Three triangular faces forming incomplete closure (free edge between faces 1–2
 - **Defect**: Reversing parametric direction without re-evaluating knot domain leaves stale multiplicity data. Naive range flip keeps knot structure intact even though parameter direction is inverted.
 - **Healer impact**: FixReversed2d attempts to reverse PCURVE but the knot-vector corruption causes wrong parameter mapping during edge reconstruction.
 - **File**: `step-examples/12-2a-pcurves/Gp043.stp`
-- **Tier-3 assertion**: shape_null == True
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Tier-3 assertion**: shape_null == False
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### Gp044 — Endpoint-bias projection picks wrong candidate when multiple equidistant points exist.
 
 - **Geometry**: PLANE host; 3D B-spline arc degree 2 with inflection at midspan; PCURVE B-spline.
 - **Defect**: Both endpoints and interior point are equidistant from probe point. Project's endpoint-bias returns endpoint distance even when interior local-min is the true projection. PCURVE maps to wrong parameter bounds.
 - **Healer impact**: Project returns suboptimal projection result, causing downstream healers to misalign PCURVE parameter mapping or report stale boundary conditions.
 - **File**: `step-examples/12-2a-pcurves/Gp044.stp`
-- **Tier-3 assertion**: shape_null == True
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Tier-3 assertion**: shape_null == False
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### Gp045 — Edge copy during SameParameter recomputation inherits stale parameter range when curve is BSpline.
 
 - **Geometry**: PLANE host; 3D B-spline degree 2, knots (0.0, 0.333, 0.667, 1.0); matching PCURVE B-spline.
 - **Defect**: FixSameParameter copies EDGE_CURVE to new TEdge but preserves old range bounds. New BSpline's actual knot domain differs from preserved bounds, causing parameter mismatch between 3D and 2D curves.
 - **Healer impact**: Edge copy trap: parameter range bounds become stale when BSpline geometry is recomputed. SameParameter recomputation fails to detect and correct the range corruption.
 - **File**: `step-examples/12-2a-pcurves/Gp045.stp`
-- **Tier-3 assertion**: shape_null == True
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Tier-3 assertion**: shape_null == False
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### Gp046 — ShapeFix_Edge.FixVertexTolerance face-context null underestimates multi-surface tolerance
 - **Category**: §12.2a (pcurves)
 - **Sources**: deep-pass v3 record matching OCCT method/branch (see file comment)

@@ -1,80 +1,70 @@
 ISO-10303-21;
-/* Gp043 - ShapeFix_Edge.FixReversed2d B-spline knot-vector corruption
- * Defect: reversing a B-spline PCURVE's parametric direction without
- * re-evaluating the knot vector creates wrong parameter mapping. The
- * PCURVE B-spline has explicit knots (0.0, 0.333, 0.667, 1.0) with
- * control points mapping (u,v) space. Reversing the curve's direction
- * should negate the knots and reverse the control point order, but
- * a naive range flip without re-evaluating the knot vector leaves
- * stale knot multiplicity data. */
+/* Gp043: PLANE face; PCURVE degree-2 B-spline with asymmetric knots (0,0,0,0.2,1,1,1) wrapped in EDGE_CURVE same_sense=.F.; knot vector not reflected to (0,0,0,0.8,1,1,1) for the reversed edge — FixReversed2d stale-knot bug */
 HEADER;
-FILE_DESCRIPTION(('Gp043 test case','FixReversed2d B-spline knot-vector corruption'),'2;1');
-FILE_NAME('Gp043.stp','2026-06-15T00:00:00',(''),(''),'auto-generated','','');
-FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+FILE_DESCRIPTION(('Gp043'),'2;1');
+FILE_NAME('Gp043.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('automotive_design');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
-#3=(LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT(.MILLI.,.METRE.));
-#4=(NAMED_UNIT(*) PLANE_ANGLE_UNIT() SI_UNIT($,.RADIAN.));
-#5=(NAMED_UNIT(*) SI_UNIT($,.STERADIAN.) SOLID_ANGLE_UNIT());
-#6=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#3,'distance_accuracy_value','');
-#7=( GEOMETRIC_REPRESENTATION_CONTEXT(3)
-     GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#6))
-     GLOBAL_UNIT_ASSIGNED_CONTEXT((#3,#4,#5))
-     REPRESENTATION_CONTEXT('','3D') );
-/* Host plane */
-#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
-#11=DIRECTION('',(0.0,0.0,1.0));
-#12=DIRECTION('',(1.0,0.0,0.0));
-#13=AXIS2_PLACEMENT_3D('',#10,#11,#12);
-#14=PLANE('host_plane',#13);
-/* 3D curve: line from (0,0,0) to (10,0,0) */
-#20=CARTESIAN_POINT('',(0.0,0.0,0.0));
-#21=DIRECTION('',(1.0,0.0,0.0));
-#22=VECTOR('',#21,1.0);
-#23=LINE('line_3d',#20,#22);
-/* Vertices */
-#30=VERTEX_POINT('',(0.0,0.0,0.0));
-#31=CARTESIAN_POINT('',(10.0,0.0,0.0));
-#32=VERTEX_POINT('',#31);
-/* Defective PCURVE: B-spline with explicit knot vector that will be
- * corrupted if reversed without re-evaluating knot domain */
-#40=CARTESIAN_POINT('',(0.0,0.0));
-#41=CARTESIAN_POINT('',(3.333,2.5));
-#42=CARTESIAN_POINT('',(6.667,5.0));
-#43=CARTESIAN_POINT('',(10.0,7.5));
-#50=B_SPLINE_CURVE_WITH_KNOTS('bspline_pcurve',2,(#40,#41,#42,#43),
-  .UNSPECIFIED.,.F.,.F.,
-  (3,1,3),(0.0,0.5,1.0),.UNSPECIFIED.);
-#51=( GEOMETRIC_REPRESENTATION_CONTEXT(2)
-      PARAMETRIC_REPRESENTATION_CONTEXT()
-      REPRESENTATION_CONTEXT('parametric','2D') );
-#52=DEFINITIONAL_REPRESENTATION('',(#50),#51);
-#53=PCURVE('pcurve_reversed',#14,#52);
-/* SURFACE_CURVE with reversed PCURVE that has stale knot structure */
-#60=SURFACE_CURVE('edge_reversed',#23,(#53),.PCURVE_S1.);
-#70=EDGE_CURVE('edge_gp043',#30,#32,#60,.T.);
-#71=ORIENTED_EDGE('',*,*,#70,.T.);
-#72=EDGE_LOOP('',(#71));
-#73=FACE_OUTER_BOUND('',#72,.T.);
-#74=ADVANCED_FACE('',(#73),#14,.T.);
-#90=SHAPE_REPRESENTATION('Gp043',(#13,#74),#7);
-/* Wrap: PRODUCT chain so OCCT TransferRoots produces a shape. */
-#9000=PRODUCT_CONTEXT('',#1,'mechanical');
-#9001=PRODUCT('Gp043','Gp043','',(#9000));
-#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
-#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
-#9004=PRODUCT_DEFINITION('','',#9002,#9003);
-#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
-#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
-#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
-#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
-#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
-#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
-#9020=OPEN_SHELL('wrap_shell',(#74));
-#9021=SHELL_BASED_SURFACE_MODEL('wrap_sbsm',(#9020));
-#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#9010);
-#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=DIRECTION('',(0.0,0.0,1.0));
+#3=DIRECTION('',(1.0,0.0,0.0));
+#4=AXIS2_PLACEMENT_3D('',#1,#2,#3);
+#5=PLANE('',#4);
+#6=(GEOMETRIC_REPRESENTATION_CONTEXT(2)PARAMETRIC_REPRESENTATION_CONTEXT()REPRESENTATION_CONTEXT('UV','2D'));
+#7=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#8=CARTESIAN_POINT('',(1.0,0.0,0.0));
+#9=CARTESIAN_POINT('',(1.0,1.0,0.0));
+#10=CARTESIAN_POINT('',(0.0,1.0,0.0));
+#11=VERTEX_POINT('',#7);
+#12=VERTEX_POINT('',#8);
+#13=VERTEX_POINT('',#9);
+#14=VERTEX_POINT('',#10);
+#15=DIRECTION('',(-1.0,0.0,0.0));
+#16=VECTOR('',#15,1.0);
+#17=LINE('',#9,#16);
+#18=EDGE_CURVE('',#13,#14,#17,.T.);
+#19=DIRECTION('',(0.0,-1.0,0.0));
+#20=VECTOR('',#19,1.0);
+#21=LINE('',#10,#20);
+#22=EDGE_CURVE('',#14,#11,#21,.T.);
+#23=DIRECTION('',(0.0,1.0,0.0));
+#24=VECTOR('',#23,1.0);
+#25=LINE('',#8,#24);
+#26=EDGE_CURVE('',#12,#13,#25,.T.);
+#27=DIRECTION('',(-1.0,0.0,0.0));
+#28=VECTOR('',#27,1.0);
+#29=LINE('',#8,#28);
+#30=CARTESIAN_POINT('',(0.0,0.0));
+#31=CARTESIAN_POINT('',(0.2,0.0));
+#32=CARTESIAN_POINT('',(1.0,0.0));
+#33=B_SPLINE_CURVE_WITH_KNOTS('stale_knots_forward_form',2,(#30,#31,#32),.UNSPECIFIED.,.F.,.F.,(3,1,3),(0.0,0.2,1.0),.UNSPECIFIED.);
+#34=DEFINITIONAL_REPRESENTATION('stale_pcurve_def',(#33),#6);
+#35=PCURVE('stale_knots_pcurve',#5,#34);
+#36=SURFACE_CURVE('reverse_stale',#29,(#35),.PCURVE_S1.);
+#37=EDGE_CURVE('reversed_edge_with_stale_pcurve',#11,#12,#36,.F.);
+#38=ORIENTED_EDGE('',$,$,#37,.T.);
+#39=ORIENTED_EDGE('',$,$,#26,.T.);
+#40=ORIENTED_EDGE('',$,$,#18,.T.);
+#41=ORIENTED_EDGE('',$,$,#22,.T.);
+#42=EDGE_LOOP('',(#38,#39,#40,#41));
+#43=FACE_OUTER_BOUND('',#42,.T.);
+#44=ADVANCED_FACE('face_with_reversed_edge',(#43),#5,.T.);
+#45=OPEN_SHELL('',(#44));
+#46=SHELL_BASED_SURFACE_MODEL('',(#45));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('Gp043','Gp043','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#46),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
 ENDSEC;
 END-ISO-10303-21;

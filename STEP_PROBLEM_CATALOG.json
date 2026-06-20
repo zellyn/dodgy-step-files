@@ -15714,7 +15714,7 @@
     "cross_oracle_note": null,
     "description": "When pcurves are emitted alongside 3D curves on `EDGE_CURVE`, every receiver re-projects them to verify consistency. The writer's pcurve, computed by a separate pass after the 3D curve is fixed, often disagrees with the 3D curve at the edge tolerance; a re-import yields edges that drift off the surface, faces with `BRepCheck_InvalidEdgeOnSurface` errors, or sewing failures. The community workaround is to disable pcurve emission entirely; the kernel-side bug is that the two representations are not co-fitted.",
     "expected_kernel_behavior": "heal-and-accept; pcurves must be co-fitted with the 3D curve so that surface-evaluated pcurve and 3D curve agree within the edge tolerance; if they cannot be fitted, omit the pcurve and let the receiver re-project.",
-    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2a-pcurves/Gp040.stp",
     "id": "Gp040",
@@ -15739,7 +15739,7 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False"
     ],
     "title": "Pcurves emitted by default duplicate / contradict the surface 3D curve"
   },
@@ -15751,7 +15751,7 @@
     "cross_oracle_note": null,
     "description": "Midspan 3D curve point (5,0,0) maps to PCURVE point (5.1,0,0) — 0.1 mm divergence exceeding edge tolerance 0.001 mm. Geometry: PLANE host; 3D LINE from (0,0,0) to (10,0,0); PCURVE B-spline.",
     "expected_kernel_behavior": "CheckCurve3dWithPCurve sample-point inspection detects the mismatch and flags the edge for healing or healing-time analysis.",
-    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2a-pcurves/Gp041.stp",
     "id": "Gp041",
@@ -15772,7 +15772,7 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False"
     ],
     "title": "Sample-point divergence between 3D curve and PCURVE exceeds tolerance."
   },
@@ -15816,7 +15816,7 @@
     "cross_oracle_note": null,
     "description": "Reversing parametric direction without re-evaluating knot domain leaves stale multiplicity data. Naive range flip keeps knot structure intact even though parameter direction is inverted. Geometry: PLANE host; 3D LINE from (0,0,0) to (10,0,0); PCURVE B-spline degree 2, knots (0.0, 0.5, 1.0), control points (0,0), (3.333,2.5), (6.667,5.0), (10,7.5).",
     "expected_kernel_behavior": "FixReversed2d attempts to reverse PCURVE but the knot-vector corruption causes wrong parameter mapping during edge reconstruction.",
-    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2a-pcurves/Gp043.stp",
     "id": "Gp043",
@@ -15837,7 +15837,7 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False"
     ],
     "title": "B-spline PCURVE reversal corrupts knot-vector structure without re-evaluation."
   },
@@ -15849,7 +15849,7 @@
     "cross_oracle_note": null,
     "description": "Both endpoints and interior point are equidistant from probe point. Project's endpoint-bias returns endpoint distance even when interior local-min is the true projection. PCURVE maps to wrong parameter bounds. Geometry: PLANE host; 3D B-spline arc degree 2 with inflection at midspan; PCURVE B-spline.",
     "expected_kernel_behavior": "Project returns suboptimal projection result, causing downstream healers to misalign PCURVE parameter mapping or report stale boundary conditions.",
-    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2a-pcurves/Gp044.stp",
     "id": "Gp044",
@@ -15870,7 +15870,7 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False"
     ],
     "title": "Endpoint-bias projection picks wrong candidate when multiple equidistant points exist."
   },
@@ -15882,7 +15882,7 @@
     "cross_oracle_note": null,
     "description": "FixSameParameter copies EDGE_CURVE to new TEdge but preserves old range bounds. New BSpline's actual knot domain differs from preserved bounds, causing parameter mismatch between 3D and 2D curves. Geometry: PLANE host; 3D B-spline degree 2, knots (0.0, 0.333, 0.667, 1.0); matching PCURVE B-spline.",
     "expected_kernel_behavior": "Edge copy trap: parameter range bounds become stale when BSpline geometry is recomputed. SameParameter recomputation fails to detect and correct the range corruption.",
-    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2a-pcurves/Gp045.stp",
     "id": "Gp045",
@@ -15903,7 +15903,7 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False"
     ],
     "title": "Edge copy during SameParameter recomputation inherits stale parameter range when curve is BSpline."
   },
