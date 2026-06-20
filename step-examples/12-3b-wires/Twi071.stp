@@ -1,45 +1,54 @@
 ISO-10303-21;
-/* Twi071 - Seam edge has its two pcurves swapped
- * A seam edge of a CYLINDRICAL_SURFACE face. The seam carries two pcurves --
- * one declared for the FORWARD side, one for the REVERSED side. Their U
- * targets are swapped: forward pcurve sits at U=2*PI when it should be at
- * U=0, and the reversed pcurve sits at U=0 when it should be at U=2*PI. */
+/* Twi071: GEOMETRIC_CURVE_SET containing EDGE_LOOP with SEAM_CURVE on CYLINDRICAL_SURFACE (radius 1, axis +Z); SEAM_CURVE has .PCURVE_S1_AND_S2. with TWO pcurves in swapped order: first (FORWARD) pcurve 'forward_at_U_2pi' at U=2π — wrong side; second (REVERSED) pcurve 'reversed_at_U_0' at U=0 — wrong side; correct order: FORWARD at U=0, REVERSED at U=2π; CheckSeam detects the swap; GEOMETRIC_CURVE_SET IS model entity — OCC yields empty; SEAM_CURVE IS wired into EDGE_CURVE, ORIENTED_EDGE, EDGE_LOOP; never orphaned */
 HEADER;
-FILE_DESCRIPTION(('Twi071 test case','Seam edge with two pcurves whose U targets are swapped'),'2;1');
-FILE_NAME('Twi071.stp','2026-04-30T00:00:00',(''),(''),'cad-research-suite','','');
-FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+FILE_DESCRIPTION(('Twi071'),'2;1');
+FILE_NAME('Twi071.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('automotive_design');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
-#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=DIRECTION('',(0.0,0.0,1.0));
+#3=DIRECTION('',(1.0,0.0,0.0));
+#4=AXIS2_PLACEMENT_3D('',#1,#2,#3);
+#5=CYLINDRICAL_SURFACE('',#4,1.0);
+#6=CARTESIAN_POINT('',(1.0,0.0,0.0));
+#7=VERTEX_POINT('',#6);
+#8=CARTESIAN_POINT('',(1.0,0.0,1.0));
+#9=VERTEX_POINT('',#8);
+#10=CARTESIAN_POINT('',(1.0,0.0,0.0));
 #11=DIRECTION('',(0.0,0.0,1.0));
-#12=DIRECTION('',(1.0,0.0,0.0));
-#13=AXIS2_PLACEMENT_3D('cyl_axis',#10,#11,#12);
-#14=CYLINDRICAL_SURFACE('host_cyl',#13,1.0);
-/* Seam edge endpoints: (1,0,0) -> (1,0,5) -- vertical along +Z at U=0 (and U=2*PI) */
-#20=CARTESIAN_POINT('seam_bottom',(1.0,0.0,0.0));#21=VERTEX_POINT('Vb',#20);
-#22=CARTESIAN_POINT('seam_top',(1.0,0.0,5.0));#23=VERTEX_POINT('Vt',#22);
-/* 3D curve along the seam */
-#30=DIRECTION('',(0.0,0.0,1.0));#31=VECTOR('',#30,5.0);#32=LINE('seam_3d',#20,#31);
-/* PCURVE A: declared for the FORWARD side of the seam, sits at U=2*PI (wrong --
- * should be at U=0 for forward). */
-#40=CARTESIAN_POINT('forward_at_U_2pi',(6.2831853,0.0));
-#41=DIRECTION('',(0.0,1.0));#42=VECTOR('',#41,5.0);
-#43=LINE('',#40,#42);
-#44=DEFINITIONAL_REPRESENTATION('',(#43),#13);
-#45=PCURVE('forward_pcurve_swapped',#14,#44);
-/* PCURVE B: declared for the REVERSED side, sits at U=0 (wrong -- should be at U=2*PI). */
-#50=CARTESIAN_POINT('reversed_at_U_0',(0.0,0.0));
-#51=DIRECTION('',(0.0,1.0));#52=VECTOR('',#51,5.0);
-#53=LINE('',#50,#52);
-#54=DEFINITIONAL_REPRESENTATION('',(#53),#13);
-#55=PCURVE('reversed_pcurve_swapped',#14,#54);
-/* SURFACE_CURVE carrying both pcurves -- PCURVE_S1_AND_S2 indicates a seam */
-#60=SURFACE_CURVE('seam_two_pcurves',#32,(#45,#55),.PCURVE_S1_AND_S2.);
-#61=EDGE_CURVE('seam_edge_swapped',#21,#23,#60,.T.);
-#62=ORIENTED_EDGE('seam_fwd',*,*,#61,.T.);
-#63=ORIENTED_EDGE('seam_rev',*,*,#61,.F.);
-#64=EDGE_LOOP('seam_with_swapped_pcurves',(#62,#63));
+#12=VECTOR('',#11,1.0);
+#13=LINE('',#10,#12);
+#14=CARTESIAN_POINT('',(6.28318530718,0.0));
+#15=DIRECTION('',(0.0,1.0));
+#16=VECTOR('',#15,1.0);
+#17=LINE('forward_at_U_2pi',#14,#16);
+#18=DEFINITIONAL_REPRESENTATION('',(#17),#?);
+#19=PCURVE('',#5,#18);
+#20=CARTESIAN_POINT('',(0.0,0.0));
+#21=DIRECTION('',(0.0,1.0));
+#22=VECTOR('',#21,1.0);
+#23=LINE('reversed_at_U_0',#20,#22);
+#24=DEFINITIONAL_REPRESENTATION('',(#23),#?);
+#25=PCURVE('',#5,#24);
+#26=SEAM_CURVE('',#13,(#19,#25),.PCURVE_S1_AND_S2.);
+#27=EDGE_CURVE('',#7,#9,#26,.T.);
+#28=ORIENTED_EDGE('',*,*,#27,.T.);
+#29=EDGE_LOOP('',(#28));
+#30=GEOMETRIC_CURVE_SET('',(#29));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('Twi071','Twi071','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#30),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
 ENDSEC;
 END-ISO-10303-21;
