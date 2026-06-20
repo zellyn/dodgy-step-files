@@ -1,22 +1,33 @@
 ISO-10303-21;
-/* Os014 - Pipe-shell sweep with auxiliary spine too short.
- * Defect: main spine length 10; auxiliary spine length 5 parallel
- * offset 2. KeepContact mode requested. */
+/* Os014: GEOMETRIC_CURVE_SET containing two LINE entities; main spine: LINE from (0,0,0) along X, length 10; auxiliary spine: LINE from (0,2,0) along X, length 5 — too short; KeepContact mode: contact impossible after half the main spine; BRepOffsetAPI_MakePipeShell ImpossibleContact; GEOMETRIC_CURVE_SET IS model entity — OCC yields empty; no orphaned entities */
 HEADER;
-FILE_DESCRIPTION(('Os014 - pipe-shell impossible contact','Pass C gap-fill'),'2;1');
-FILE_NAME('Os014.stp','2026-04-30T00:00:00',(''),(''),'gap-fill C','','');
-FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+FILE_DESCRIPTION(('Os014'),'2;1');
+FILE_NAME('Os014.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('automotive_design');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
-#10=CARTESIAN_POINT('m_start',(0.0,0.0,0.0));
-#11=CARTESIAN_POINT('m_end',(10.0,0.0,0.0));
-#12=CARTESIAN_POINT('a_start',(0.0,2.0,0.0));
-#13=CARTESIAN_POINT('a_end',(5.0,2.0,0.0));
-#20=DIRECTION('',(1.0,0.0,0.0));
-#21=VECTOR('',#20,1.0);
-#22=LINE('main_spine_len_10',#10,#21);
-#23=LINE('aux_spine_len_5',#12,#21);
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=DIRECTION('',(1.0,0.0,0.0));
+#3=VECTOR('',#2,10.0);
+#4=LINE('',#1,#3);
+#5=CARTESIAN_POINT('',(0.0,2.0,0.0));
+#6=DIRECTION('',(1.0,0.0,0.0));
+#7=VECTOR('',#6,5.0);
+#8=LINE('',#5,#7);
+#9=GEOMETRIC_CURVE_SET('',(#4,#8));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('Os014','Os014','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
 ENDSEC;
 END-ISO-10303-21;
