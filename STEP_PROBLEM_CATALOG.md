@@ -28836,7 +28836,7 @@ Pcurve as POLYLINE with 5 control points: (0,0)→(0.5,0)→(1,1)→(2,0.5)→(5
 **Trigger**: `ShapeAnalysis_Edge::CheckOverlapping(edge1, edge2)` will return false (no overlap detected) despite interior sharing.
 
 - **Tier-3 assertion**: shape_null == True
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(11) ifc=schema_n/a`
 ### Gp070 — ShapeFix_Edge.FixVertexTolerance double-update
 
 **Defect**: Same vertex used by two edges; `FixVertexTolerance` computes tolerance from edge1 and escalates the vertex; then edge2 sees the elevated vertex and re-escalates, double-counting the tolerance rise.

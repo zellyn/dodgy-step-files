@@ -16667,7 +16667,7 @@
     "cross_oracle_note": null,
     "description": "ShapeAnalysis_Edge.CheckOverlapping common-sub-pattern miss",
     "expected_kernel_behavior": "heal or reject (mechanism-specific; see Description)",
-    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=shape(11) ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2a-pcurves/Gp069.stp",
     "id": "Gp069",

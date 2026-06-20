@@ -46,6 +46,7 @@ than committed. New strategy: Sonnet-generates instead of Haiku-generates.
 - Gp061: CheckCurve3dWithPCurve sample-count threshold (defect should be in pcurve bow that 2-sample misses, not in 3D curve)
 - Gp062: FixAddPCurve trim-window boundary (endpoint must extend BEYOND v_max trim boundary, not sit on it)
 - Gp063: CheckOverlapping false-positive on bounded-curve TRIMMED_CURVE pair (need 2 EDGE_CURVEs sharing 3D LINE with disjoint trim ranges [0,5] and [10,15] — current attempt had neither)
+- Gp066: FixSameParameter selection-bias algorithm bug — cannot embed algorithmic selection in static STEP geometry; bytes can only encode the post-bug result (broken curve), not the trigger.
 - Logged 2026-06-19 after Sonnet indep verify caught batch-7 mechanism mismatches.
 
 **Plan:**

@@ -1,60 +1,76 @@
 ISO-10303-21;
-/* Gp065 - ShapeAnalysis_Edge.GetEndTangent2d (POLYLINE variant)
- * Defect: pcurve as POLYLINE with 5+ points; GetEndTangent2d uses last two points
- * for first endpoint, but should use first two points. Returns wrong tangent. */
+/* Gp065: PLANE face; bottom edge PCurve is a POLYLINE with 5 CPs (0,0)->(0.5,0)->(1,1)->(2,0.5)->(5,0); GetEndTangent2d reads last-two-points giving tangent (3,-0.5) instead of first-segment (1,0); 3D curve is B-spline with C-1 positional break at t=0.5 (knot mult=3, CP[2]=(0,0,0) vs CP[3]=(5,0,0)) */
 HEADER;
-FILE_DESCRIPTION(('Gp065 test case','GetEndTangent2d POLYLINE variant'),'2;1');
-FILE_NAME('Gp065.stp','2026-06-15T00:00:00',(''),(''),'auto-generated','','');
-FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+FILE_DESCRIPTION(('Gp065'),'2;1');
+FILE_NAME('Gp065.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('automotive_design');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
-#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
-#11=DIRECTION('',(0.0,0.0,1.0));
-#12=DIRECTION('',(1.0,0.0,0.0));
-#13=AXIS2_PLACEMENT_3D('',#10,#11,#12);
-/* Plane surface */
-#20=PLANE('',#13);
-/* 3D edge curve - arbitrary line from (0,0,0) to (5,0,0) */
-#30=CARTESIAN_POINT('',(0.0,0.0,0.0));
-#31=DIRECTION('',(1.0,0.0,0.0));
-#32=VECTOR('',#31,5.0);
-#33=LINE('',#30,#32);
-/* Vertices */
-#40=VERTEX_POINT('',(0.0,0.0,0.0));
-#41=VERTEX_POINT('',(5.0,0.0,0.0));
-/* PCurve as POLYLINE with 5 points forming a path with non-obvious tangent.
- * Points: (0,0), (0.5,0), (1,1), (2,0.5), (5,0)
- * First tangent direction: (0.5,0) - (0,0) = (0.5,0) → direction (1,0)
- * Last two points before end: (2,0.5), (5,0) → direction (3,-0.5)
- * If algorithm uses wrong endpoint pair, tangent will be backwards. */
-#50=CARTESIAN_POINT('',(0.0,0.0));
-#51=CARTESIAN_POINT('',(0.5,0.0));
-#52=CARTESIAN_POINT('',(1.0,1.0));
-#53=CARTESIAN_POINT('',(2.0,0.5));
-#54=CARTESIAN_POINT('',(5.0,0.0));
-#55=POLYLINE('',(#50,#51,#52,#53,#54));
-#56=PCURVE('',#20,#55);
-#60=SURFACE_CURVE('',#33,(#56),.PCURVE_S1.);
-#70=EDGE_CURVE('',#40,#41,#60,.T.);
-#71=ORIENTED_EDGE('',*,*,#70,.T.);
-#72=EDGE_LOOP('',(#71));
-#73=FACE_OUTER_BOUND('',#72,.T.);
-#74=ADVANCED_FACE('',(#73),#20,.T.);
-#9000=PRODUCT_CONTEXT('',#1,'mechanical');
-#9001=PRODUCT('Gp065','Gp065','',(#9000));
-#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
-#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
-#9004=PRODUCT_DEFINITION('','',#9002,#9003);
-#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
-#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
-#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
-#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
-#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
-#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
-#9021=SHELL_BASED_SURFACE_MODEL('sbsm',(#72));
-#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#9010);
-#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=DIRECTION('',(0.0,0.0,1.0));
+#3=DIRECTION('',(1.0,0.0,0.0));
+#4=AXIS2_PLACEMENT_3D('',#1,#2,#3);
+#5=PLANE('',#4);
+#6=(GEOMETRIC_REPRESENTATION_CONTEXT(2)PARAMETRIC_REPRESENTATION_CONTEXT()REPRESENTATION_CONTEXT('UV','2D'));
+#7=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#8=CARTESIAN_POINT('',(5.0,0.0,0.0));
+#9=CARTESIAN_POINT('',(5.0,1.0,0.0));
+#10=CARTESIAN_POINT('',(0.0,1.0,0.0));
+#11=VERTEX_POINT('',#7);
+#12=VERTEX_POINT('',#8);
+#13=VERTEX_POINT('',#9);
+#14=VERTEX_POINT('',#10);
+#15=DIRECTION('',(0.0,1.0,0.0));
+#16=VECTOR('',#15,1.0);
+#17=DIRECTION('',(-1.0,0.0,0.0));
+#18=VECTOR('',#17,5.0);
+#19=DIRECTION('',(0.0,-1.0,0.0));
+#20=VECTOR('',#19,1.0);
+#21=LINE('',#8,#16);
+#22=EDGE_CURVE('',#12,#13,#21,.T.);
+#23=LINE('',#9,#18);
+#24=EDGE_CURVE('',#13,#14,#23,.T.);
+#25=LINE('',#10,#20);
+#26=EDGE_CURVE('',#14,#11,#25,.T.);
+#27=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#28=CARTESIAN_POINT('',(1.0,0.0,0.0));
+#29=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#30=CARTESIAN_POINT('',(5.0,0.0,0.0));
+#31=CARTESIAN_POINT('',(4.0,0.0,0.0));
+#32=CARTESIAN_POINT('',(5.0,0.0,0.0));
+#33=B_SPLINE_CURVE_WITH_KNOTS('tangent_break',2,(#27,#28,#29,#30,#31,#32),.UNSPECIFIED.,.F.,.F.,(3,3,3),(0.0,0.5,1.0),.UNSPECIFIED.);
+#34=CARTESIAN_POINT('',(0.0,0.0));
+#35=CARTESIAN_POINT('',(0.5,0.0));
+#36=CARTESIAN_POINT('',(1.0,1.0));
+#37=CARTESIAN_POINT('',(2.0,0.5));
+#38=CARTESIAN_POINT('',(5.0,0.0));
+#39=POLYLINE('bot_polyline_pc',(#34,#35,#36,#37,#38));
+#40=DEFINITIONAL_REPRESENTATION('bot_pc_def',(#39),#6);
+#41=PCURVE('bot_polyline',#5,#40);
+#42=SURFACE_CURVE('bot',#33,(#41),.PCURVE_S1.);
+#43=EDGE_CURVE('bot',#11,#12,#42,.T.);
+#44=ORIENTED_EDGE('',$,$,#43,.T.);
+#45=ORIENTED_EDGE('',$,$,#22,.T.);
+#46=ORIENTED_EDGE('',$,$,#24,.T.);
+#47=ORIENTED_EDGE('',$,$,#26,.T.);
+#48=EDGE_LOOP('',(#44,#45,#46,#47));
+#49=FACE_OUTER_BOUND('',#48,.T.);
+#50=ADVANCED_FACE('',(#49),#5,.T.);
+#51=OPEN_SHELL('',(#50));
+#52=SHELL_BASED_SURFACE_MODEL('',(#51));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('Gp065','Gp065','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#52),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
 ENDSEC;
 END-ISO-10303-21;
