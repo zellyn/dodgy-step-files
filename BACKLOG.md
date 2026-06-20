@@ -41,6 +41,13 @@ under the quality bar; the local file changes were rolled back rather
 than committed. New strategy: Sonnet-generates instead of Haiku-generates.
 **Last touched:** 2026-06-19.
 
+**Deferred (need bespoke regen per mechanism — not generic C-1 break):**
+- Gp050: SameRange recursive stack overflow (catalog says deg-3 / 10-CP / pcurve mismatch; need specific recipe, not C-1 break in 3D curve)
+- Gp061: CheckCurve3dWithPCurve sample-count threshold (defect should be in pcurve bow that 2-sample misses, not in 3D curve)
+- Gp062: FixAddPCurve trim-window boundary (endpoint must extend BEYOND v_max trim boundary, not sit on it)
+- Gp063: CheckOverlapping false-positive on bounded-curve TRIMMED_CURVE pair (need 2 EDGE_CURVEs sharing 3D LINE with disjoint trim ranges [0,5] and [10,15] — current attempt had neither)
+- Logged 2026-06-19 after Sonnet indep verify caught batch-7 mechanism mismatches.
+
 **Plan:**
 - [x] Q5.0 Pilot: 5 Gp fixtures pushed (`29c1c03`)
 - [x] Q5.1 Sonnet verify pilot 5 → 2 STRONG, 1 WEAK_PASS_OK, 1 FAILS, 1 SLOPPY
