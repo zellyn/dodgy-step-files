@@ -21585,8 +21585,8 @@ Bi-quadratic B-spline surface (3×3 control points, degree 2×2). When split val
 **Minimal reproducer:** `Gn073.stp` — COMPOSITE_CURVE with three degree-2 B-spline segments. Segment 1 ends at y=1.2; Segment 2 peaks at y≈1.5 near the transition; FillBndBox misses this maximum because sampling stops before segment handoff.
 
 **Defect axis:** `input-shape`
-- **Tier-3 assertion**: shape_null == True
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Tier-3 assertion**: load == "ok"
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 ### Gn074 — ShapeUpgrade_ConvertSurfaceToBezierBasis degree truncation
 
 **Defect axis:** kernel-pair  
@@ -21601,8 +21601,8 @@ Bi-quadratic B-spline surface (3×3 control points, degree 2×2). When split val
 **False-claim:** FillBndBox accurately computes bounding box for all curves.  
 **Minimal reproducer:** B-spline degree-3 curve with sharp curvature peak between interior knots. Approximation-mode uses discrete sampling instead of exact control-polygon analysis, reporting bbox ~10% smaller than actual.
 
-- **Tier-3 assertion**: shape_null == True
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Tier-3 assertion**: load == "ok"
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 ### Gn076 — ShapeUpgrade_SplitSurface u-multiplicity loss
 
 **Defect axis:** split-validation  
