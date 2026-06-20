@@ -22709,7 +22709,7 @@
     "cross_oracle_note": null,
     "description": "ShapeAnalysis_Curve.IsPlanar tolerance-zero",
     "expected_kernel_behavior": "heal or reject (mechanism-specific; see Description)",
-    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2b-nurbs/Gn084.stp",
     "id": "Gn084",
@@ -22730,7 +22730,7 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "load == \"ok\""
     ],
     "title": "ShapeAnalysis_Curve.IsPlanar tolerance-zero"
   },
@@ -22742,7 +22742,7 @@
     "cross_oracle_note": null,
     "description": "ShapeUpgrade_ConvertSurfaceToBezierBasis cylinder-conversion",
     "expected_kernel_behavior": "heal or reject (mechanism-specific; see Description)",
-    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2b-nurbs/Gn085.stp",
     "id": "Gn085",
@@ -22763,7 +22763,7 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "load == \"ok\""
     ],
     "title": "ShapeUpgrade_ConvertSurfaceToBezierBasis cylinder-conversion"
   },
@@ -22775,7 +22775,7 @@
     "cross_oracle_note": null,
     "description": "ShapeAnalysis_Curve.GetSamplePoints helix-sampling",
     "expected_kernel_behavior": "heal or reject (mechanism-specific; see Description)",
-    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2b-nurbs/Gn086.stp",
     "id": "Gn086",
@@ -22796,7 +22796,7 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "load == \"ok\""
     ],
     "title": "ShapeAnalysis_Curve.GetSamplePoints helix-sampling"
   },
@@ -22841,7 +22841,7 @@
     "cross_oracle_note": null,
     "description": "ShapeAnalysis_Curve.IsClosed B-spline open-via-knots",
     "expected_kernel_behavior": "heal or reject (mechanism-specific; see Description)",
-    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2b-nurbs/Gn088.stp",
     "id": "Gn088",
@@ -22862,7 +22862,7 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "load == \"ok\""
     ],
     "title": "ShapeAnalysis_Curve.IsClosed B-spline open-via-knots"
   },

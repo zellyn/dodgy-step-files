@@ -71,6 +71,7 @@ than committed. New strategy: Sonnet-generates instead of Haiku-generates.
 **Deferred (nurbs Wave-B — mechanism encoded only as orphan entity, not wired into face pipeline):**
 - Gn044: ConvertCurve2dToBezier degree-1 skip — degree-1 2D B-spline was placed as a standalone COMPOSITE_CURVE_SEGMENT orphan, not in any PCURVE/EDGE_CURVE chain. Needs the degree-1 B-spline to BE the pcurve of the face's defect edge.
 - Gn045: SplitSurface.Init out-of-domain — out-of-domain U=2.0 PCURVE was an orphan with no semantic meaning in STEP (no SplitSurface entity). Recipe TBD — may need TRIMMED_CURVE with out-of-domain U1/U2 wired into face's actual SURFACE_CURVE.
+- Gn087: SetUSplitValues neg-zero dedup — defect is pure OCC runtime behavior of SetUSplitValues([-0.0, 0.5, 1.0]); -0.0 cannot be encoded in STEP knot literals (which serialize as "0.0"). The fixture was indistinguishable from a plain flat patch + C-1 driver. No encodable trigger.
 - Logged 2026-06-20 from batch 31 indep verify systemic finding.
 - Reason: signal(11) requires engineering a deliberate OCC SIGSEGV; Wave-B Sonnet pipeline doesn't have a template for this yet. Gp001 is the existing reference but is a hand-authored .stp without a fixture_source.py. Need to (a) reverse-engineer Gp001's crash trigger or (b) propose a new builder API for signal-11 fixtures.
 - Logged 2026-06-19 from batch 13-18 archetype-aware scans.

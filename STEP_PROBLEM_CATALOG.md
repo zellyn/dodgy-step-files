@@ -21669,8 +21669,8 @@ Bi-quadratic B-spline surface (3×3 control points, degree 2×2). When split val
 
 **File:** Gn084.stp
 
-- **Tier-3 assertion**: shape_null == True
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Tier-3 assertion**: load == "ok"
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 ### Gn085 — ShapeUpgrade_ConvertSurfaceToBezierBasis cylinder-conversion
 
 **Defect:** Cylinder converted to Bezier patches; the resulting 4 Bezier patches have weights but conversion doesn't propagate the rational weights from the cylinder's analytic form.
@@ -21679,8 +21679,8 @@ Bi-quadratic B-spline surface (3×3 control points, degree 2×2). When split val
 
 **File:** Gn085.stp
 
-- **Tier-3 assertion**: shape_null == True
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Tier-3 assertion**: load == "ok"
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 ### Gn086 — ShapeAnalysis_Curve.GetSamplePoints helix-sampling
 
 **Defect:** GetSamplePoints determines sample count based on parameter range but not on curvature; long-pitch helix gets too few samples for mid-pitch deviation.
@@ -21689,8 +21689,8 @@ Bi-quadratic B-spline surface (3×3 control points, degree 2×2). When split val
 
 **File:** Gn086.stp
 
-- **Tier-3 assertion**: shape_null == True
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Tier-3 assertion**: load == "ok"
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 ### Gn087 — ShapeUpgrade_SplitSurface.SetUSplitValues neg-zero
 
 **Defect:** Split values containing -0.0; the dedup logic doesn't treat -0.0 == 0.0 and produces a spurious "split" at the boundary.
@@ -21708,8 +21708,8 @@ Bi-quadratic B-spline surface (3×3 control points, degree 2×2). When split val
 **Fixture:** Degree-3 B-spline (6 control points, first and last coincident at origin); knot multiplicities (4,1,1,4) clamp endpoints, making curve open despite polygon closure.
 
 **File:** Gn088.stp
-- **Tier-3 assertion**: shape_null == True
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Tier-3 assertion**: load == "ok"
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 ### Gn089 — ShapeUpgrade_SplitSurface non-rectangular-region
 
 Defect: B-spline surface trimmed to non-rectangular region (triangular trim); SplitSurface attempts axis-aligned split but the trim breaks the assumption. Fixture: degree-3 degree-2 surface with 4x3 control points, trimmed boundary defining a triangular region within parameter space.
