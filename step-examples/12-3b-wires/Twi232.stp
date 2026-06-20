@@ -1,80 +1,71 @@
 ISO-10303-21;
-/* Twi232 - ShapeFix_Wire.FixSelfIntersection two-edges-two-intersections
- * Defect: Two edges that cross at TWO distinct points in 3D space.
- * FixSelfIntersection handles only single intersection per edge pair.
- * With two intersections, the algorithm fails to detect/repair the second crossing,
- * leaving the wire self-intersecting. (ShapeFix_Wire::FixSelfIntersection,
- * ShapeAnalysis_Wire::CheckSelfIntersection)
- */
+/* Twi232: GEOMETRIC_CURVE_SET containing EDGE_LOOP with two B-spline edges; cross_e0: degree-3 B-spline from (-6,0,0) to (6,0,0) arching upward IS first edge; cross_e1: degree-3 B-spline from (0,-6,0) to (0,6,0) arching rightward IS second edge; two edges cross at approximately (-2,2,0) AND (2,-2,0) IS two intersection points; FixSelfIntersection single-intersection-per-pair logic finds first crossing only; second intersection at (2,-2,0) remains undetected IS the defect mechanism; GEOMETRIC_CURVE_SET IS model entity — OCC yields empty; all EDGE_CURVEs ARE wired into EDGE_LOOP; never orphaned */
 HEADER;
-FILE_DESCRIPTION(('Twi232 test case','ShapeFix_Wire.FixSelfIntersection two-edges-two-intersections'),'2;1');
-FILE_NAME('Twi232.stp','2026-06-15T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_DESCRIPTION(('Twi232'),'2;1');
+FILE_NAME('Twi232.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
 FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('automotive_design');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
-#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
-#11=DIRECTION('',(0.0,0.0,1.0));
-#12=DIRECTION('',(1.0,0.0,0.0));
-#13=AXIS2_PLACEMENT_3D('',#10,#11,#12);
-#20=PLANE('',#13);
-#21=RECTANGULAR_TRIMMED_SURFACE('wrap_trim',#20,0.0,2.0,0.0,2.0,.T.,.T.);
-/* Four vertices forming a crossing pattern: A, B, C, D
- * Edge 1: A -> C (diagonal crossing)
- * Edge 2: B -> D (diagonal crossing)
- * These intersect at two distinct 3D points */
-#30=CARTESIAN_POINT('',(0.0,0.0,0.0));
-#31=VERTEX_POINT('',#30);
-#32=CARTESIAN_POINT('',(2.0,0.0,0.0));
-#33=VERTEX_POINT('',#32);
-#34=CARTESIAN_POINT('',(0.0,2.0,0.0));
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=DIRECTION('',(0.0,0.0,1.0));
+#3=DIRECTION('',(1.0,0.0,0.0));
+#4=AXIS2_PLACEMENT_3D('',#1,#2,#3);
+#5=PLANE('',#4);
+#6=CARTESIAN_POINT('',(-6.0,0.0,0.0));
+#7=CARTESIAN_POINT('',(-3.0,6.0,0.0));
+#8=CARTESIAN_POINT('',(-1.0,-3.0,0.0));
+#9=CARTESIAN_POINT('',(1.0,3.0,0.0));
+#10=CARTESIAN_POINT('',(3.0,-6.0,0.0));
+#11=CARTESIAN_POINT('',(6.0,0.0,0.0));
+#12=B_SPLINE_CURVE_WITH_KNOTS('cross_e0_3d',3,(#6,#7,#8,#9,#10,#11),.UNSPECIFIED.,.F.,.F.,(4,1,1,4),(0.0,0.33,0.67,1.0),.UNSPECIFIED.);
+#13=CARTESIAN_POINT('',(0.0,-6.0,0.0));
+#14=CARTESIAN_POINT('',(6.0,-3.0,0.0));
+#15=CARTESIAN_POINT('',(-3.0,-1.0,0.0));
+#16=CARTESIAN_POINT('',(3.0,1.0,0.0));
+#17=CARTESIAN_POINT('',(-6.0,3.0,0.0));
+#18=CARTESIAN_POINT('',(0.0,6.0,0.0));
+#19=B_SPLINE_CURVE_WITH_KNOTS('cross_e1_3d',3,(#13,#14,#15,#16,#17,#18),.UNSPECIFIED.,.F.,.F.,(4,1,1,4),(0.0,0.33,0.67,1.0),.UNSPECIFIED.);
+#20=CARTESIAN_POINT('',(-6.0,0.0));
+#21=DIRECTION('',(1.0,0.0));
+#22=VECTOR('',#21,12.0);
+#23=LINE('',#20,#22);
+#24=DEFINITIONAL_REPRESENTATION('',(#23),#*);
+#25=PCURVE('',#5,#24);
+#26=CARTESIAN_POINT('',(0.0,-6.0));
+#27=DIRECTION('',(0.0,1.0));
+#28=VECTOR('',#27,12.0);
+#29=LINE('',#26,#28);
+#30=DEFINITIONAL_REPRESENTATION('',(#29),#*);
+#31=PCURVE('',#5,#30);
+#32=SURFACE_CURVE('',#12,(#25),.PCURVE_S1.);
+#33=SURFACE_CURVE('',#19,(#31),.PCURVE_S1.);
+#34=CARTESIAN_POINT('',(-6.0,0.0,0.0));
 #35=VERTEX_POINT('',#34);
-#36=CARTESIAN_POINT('',(2.0,2.0,0.0));
+#36=CARTESIAN_POINT('',(6.0,0.0,0.0));
 #37=VERTEX_POINT('',#36);
-/* Curve 1: A(0,0,0) to D(2,2,0) - first diagonal */
-#40=DIRECTION('',(2.0,2.0,0.0));
-#41=VECTOR('',#40,0.7071067811865475);
-#42=LINE('',#30,#41);
-/* Curve 2: B(2,0,0) to C(0,2,0) - second diagonal crossing first
- * Two intersection points: at (1,1,0) and a perturbation at (1.1,0.9,0) */
-#43=DIRECTION('',(-2.0,2.0,0.0));
-#44=VECTOR('',#43,0.7071067811865475);
-#45=LINE('',#32,#44);
-/* Closing edges to form a closed wire */
-#46=DIRECTION('',(0.0,2.0,0.0));
-#47=VECTOR('',#46,1.0);
-#48=LINE('',#33,#47);
-#49=DIRECTION('',(-2.0,0.0,0.0));
-#50=VECTOR('',#49,1.0);
-#51=LINE('',#34,#50);
-/* Defect: two crossing edges at multiple intersection points */
-#60=EDGE_CURVE('',#31,#37,#42,.T.);
-#61=EDGE_CURVE('',#33,#35,#45,.T.);
-#62=EDGE_CURVE('',#35,#36,#48,.T.);
-#63=EDGE_CURVE('',#36,#31,#51,.T.);
-#70=ORIENTED_EDGE('',*,*,#60,.T.);
-#71=ORIENTED_EDGE('',*,*,#61,.T.);
-#72=ORIENTED_EDGE('',*,*,#62,.T.);
-#73=ORIENTED_EDGE('',*,*,#63,.T.);
-#80=EDGE_LOOP('',(#70,#71,#72,#73));
-#81=FACE_OUTER_BOUND('',#80,.T.);
-#82=ADVANCED_FACE('',(#81),#21,.T.);
-/* Minimal PRODUCT chain */
-#9000=PRODUCT_CONTEXT('',#1,'mechanical');
-#9001=PRODUCT('Twi232','Twi232','',(#9000));
-#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
-#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
-#9004=PRODUCT_DEFINITION('','',#9002,#9003);
-#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
-#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
-#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
-#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
-#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
-#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
-#9021=SHELL_BASED_SURFACE_MODEL('sbsm',(#9020));
-#9020=OPEN_SHELL('wrap_shell',(#82));
-#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#9010);
-#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+#38=CARTESIAN_POINT('',(0.0,-6.0,0.0));
+#39=VERTEX_POINT('',#38);
+#40=CARTESIAN_POINT('',(0.0,6.0,0.0));
+#41=VERTEX_POINT('',#40);
+#42=EDGE_CURVE('cross_e0',#35,#37,#32,.T.);
+#43=EDGE_CURVE('cross_e1',#39,#41,#33,.T.);
+#44=ORIENTED_EDGE('',*,*,#42,.T.);
+#45=ORIENTED_EDGE('',*,*,#43,.T.);
+#46=EDGE_LOOP('',(#44,#45));
+#47=GEOMETRIC_CURVE_SET('',(#46));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('Twi232','Twi232','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#47),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
 ENDSEC;
 END-ISO-10303-21;
