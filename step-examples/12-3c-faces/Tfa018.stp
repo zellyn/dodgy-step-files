@@ -1,74 +1,82 @@
 ISO-10303-21;
-/* Tfa018 - UnifySameDomain SIGSEGV / invalid result on ReconstructMissedSeam
- * Defect: when unifying same-domain faces across a periodic seam, USD's
- * seam reconstruction crashes (release-mode invalid result; debug-mode
- * crash; or incomplete union). Multiple long-running OCCT bugs (Mantis
- * 0033193, 0032581, 0032623, 0032715). Healer should copy existing
- * pcurve when reconstructing seam, correctly identify periodicity, and
- * for closed-but-not-periodic surfaces modify underlying surface to be
- * periodic before merging.
- * Reproducer: compound of co-cylindrical faces with implicit seam
- * between them (each face occupies half of the cylinder).
- */
+/* Tfa018: GEOMETRIC_CURVE_SET containing two co-cylindrical ADVANCED_FACEs; seam EDGE_CURVE at x=-10 (the 180-degree seam line) is referenced by both halves' EDGE_LOOPs: face A uses it as .T. and face B uses it as .F.; same-edge-different-sense pattern triggers missed-seam reconstruction; kernel must copy a pcurve to reconstruct the seam edge correctly; GEOMETRIC_CURVE_SET IS model entity — OCC yields empty; no orphaned entities */
 HEADER;
-FILE_DESCRIPTION(('Tfa018 USD seam reconstruction crash'),'2;1');
-FILE_NAME('Tfa018.stp','2026-04-26T00:00:00',(''),(''),
-  'cad-research-suite','','');
-FILE_SCHEMA(('AUTOMOTIVE_DESIGN'));
+FILE_DESCRIPTION(('Tfa018'),'2;1');
+FILE_NAME('Tfa018.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('automotive design');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
-  'automotive_design',2009,#1);
-#10=CARTESIAN_POINT('axis_origin',(0.0,0.0,0.0));
-#11=DIRECTION('z',(0.0,0.0,1.0));
-#12=DIRECTION('x',(1.0,0.0,0.0));
-#13=AXIS2_PLACEMENT_3D('cyl_plc',#10,#11,#12);
-/* Shared cylinder R=10.                                                */
-#20=CYLINDRICAL_SURFACE('cyl',#13,10.0);
-/* Vertices: two top points + two bottom points at angles 0 and pi.
- * Implicit seam at angle 0 separates the two halves.                   */
-#30=CARTESIAN_POINT('a_bot',(10.0,0.0,0.0));
-#31=CARTESIAN_POINT('a_top',(10.0,0.0,5.0));
-#32=CARTESIAN_POINT('b_bot',(-10.0,0.0,0.0));
-#33=CARTESIAN_POINT('b_top',(-10.0,0.0,5.0));
-#40=VERTEX_POINT('',#30);
-#41=VERTEX_POINT('',#31);
-#42=VERTEX_POINT('',#32);
-#43=VERTEX_POINT('',#33);
-/* Half-circles at z=0 and z=5 (each spans 180 deg around axis).        */
-#50=AXIS2_PLACEMENT_3D('c0',#10,#11,#12);
-#51=CARTESIAN_POINT('c1_org',(0.0,0.0,5.0));
-#52=AXIS2_PLACEMENT_3D('c1',#51,#11,#12);
-#60=CIRCLE('full_bot',#50,10.0);
-#61=CIRCLE('full_top',#52,10.0);
-#62=DIRECTION('',(0.0,0.0,1.0));
-#63=VECTOR('',#62,5.0);
-#64=LINE('seam_a',#30,#63);
-#65=LINE('seam_b',#32,#63);
-/* Two halves: each face uses half the circle for top/bottom plus
- * vertical seam edges.                                                 */
-#70=EDGE_CURVE('half_bot_A',#30,#32,#60,.T.);
-#71=EDGE_CURVE('half_bot_B',#32,#30,#60,.T.);
-#72=EDGE_CURVE('half_top_A',#31,#33,#61,.T.);
-#73=EDGE_CURVE('half_top_B',#33,#31,#61,.T.);
-#74=EDGE_CURVE('seam_a',#30,#31,#64,.T.);
-#75=EDGE_CURVE('seam_b',#32,#33,#65,.T.);
-#80=ORIENTED_EDGE('',*,*,#70,.T.);
-#81=ORIENTED_EDGE('',*,*,#75,.T.);
-#82=ORIENTED_EDGE('',*,*,#72,.F.);
-#83=ORIENTED_EDGE('',*,*,#74,.F.);
-#84=ORIENTED_EDGE('',*,*,#71,.T.);
-#85=ORIENTED_EDGE('',*,*,#74,.T.);
-#86=ORIENTED_EDGE('',*,*,#73,.F.);
-#87=ORIENTED_EDGE('',*,*,#75,.F.);
-#90=EDGE_LOOP('A',(#80,#81,#82,#83));
-#91=EDGE_LOOP('B',(#84,#85,#86,#87));
-#100=FACE_OUTER_BOUND('',#90,.T.);
-#101=FACE_OUTER_BOUND('',#91,.T.);
-/* Defect site: two co-cylindrical faces meeting at an implicit seam.
- * USD's ReconstructMissedSeam crashes on this configuration.           */
-#110=ADVANCED_FACE('cyl_half_A',(#100),#20,.T.);
-#111=ADVANCED_FACE('cyl_half_B',(#101),#20,.T.);
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=DIRECTION('',(0.0,0.0,1.0));
+#3=DIRECTION('',(1.0,0.0,0.0));
+#4=AXIS2_PLACEMENT_3D('',#1,#2,#3);
+#5=CYLINDRICAL_SURFACE('',#4,10.0);
+#6=CARTESIAN_POINT('',(10.0,0.0,0.0));
+#7=VERTEX_POINT('',#6);
+#8=CARTESIAN_POINT('',(10.0,0.0,5.0));
+#9=VERTEX_POINT('',#8);
+#10=CARTESIAN_POINT('',(-10.0,0.0,0.0));
+#11=VERTEX_POINT('',#10);
+#12=CARTESIAN_POINT('',(-10.0,0.0,5.0));
+#13=VERTEX_POINT('',#12);
+#14=CARTESIAN_POINT('',(-10.0,0.0,0.0));
+#15=DIRECTION('',(0.0,0.0,1.0));
+#16=VECTOR('',#15,5.0);
+#17=LINE('',#14,#16);
+#18=EDGE_CURVE('rear_seam',#11,#13,#17,.T.);
+#19=CARTESIAN_POINT('',(10.0,0.0,0.0));
+#20=DIRECTION('',(0.0,0.0,1.0));
+#21=VECTOR('',#20,5.0);
+#22=LINE('',#19,#21);
+#23=EDGE_CURVE('front_seam',#7,#9,#22,.T.);
+#24=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#25=DIRECTION('',(0.0,0.0,1.0));
+#26=DIRECTION('',(1.0,0.0,0.0));
+#27=AXIS2_PLACEMENT_3D('',#24,#25,#26);
+#28=CIRCLE('',#27,10.0);
+#29=EDGE_CURVE('bot_arc_a',#7,#11,#28,.T.);
+#30=DIRECTION('',(-1.0,0.0,0.0));
+#31=AXIS2_PLACEMENT_3D('',#24,#25,#30);
+#32=CIRCLE('',#31,10.0);
+#33=EDGE_CURVE('bot_arc_b',#11,#7,#32,.T.);
+#34=CARTESIAN_POINT('',(0.0,0.0,5.0));
+#35=DIRECTION('',(0.0,0.0,1.0));
+#36=DIRECTION('',(1.0,0.0,0.0));
+#37=AXIS2_PLACEMENT_3D('',#34,#35,#36);
+#38=CIRCLE('',#37,10.0);
+#39=EDGE_CURVE('top_arc_a',#9,#13,#38,.T.);
+#40=DIRECTION('',(-1.0,0.0,0.0));
+#41=AXIS2_PLACEMENT_3D('',#34,#35,#40);
+#42=CIRCLE('',#41,10.0);
+#43=EDGE_CURVE('top_arc_b',#13,#9,#42,.T.);
+#44=ORIENTED_EDGE('',*,*,#29,.T.);
+#45=ORIENTED_EDGE('',*,*,#18,.T.);
+#46=ORIENTED_EDGE('',*,*,#39,.F.);
+#47=ORIENTED_EDGE('',*,*,#23,.F.);
+#48=EDGE_LOOP('loop_a',(#44,#45,#46,#47));
+#49=FACE_OUTER_BOUND('',#48,.T.);
+#50=ADVANCED_FACE('face_a',(#49),#5,.T.);
+#51=ORIENTED_EDGE('',*,*,#33,.T.);
+#52=ORIENTED_EDGE('',*,*,#23,.T.);
+#53=ORIENTED_EDGE('',*,*,#43,.T.);
+#54=ORIENTED_EDGE('',*,*,#18,.F.);
+#55=EDGE_LOOP('loop_b',(#51,#52,#53,#54));
+#56=FACE_OUTER_BOUND('',#55,.T.);
+#57=ADVANCED_FACE('face_b',(#56),#5,.T.);
+#58=GEOMETRIC_CURVE_SET('',(#50,#57));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('Tfa018','Tfa018','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#58),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
 ENDSEC;
 END-ISO-10303-21;
