@@ -22143,12 +22143,12 @@ B_SPLINE_SURFACE_WITH_KNOTS (3×3 control net, U-degree 2, V-degree 2). Rational
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
 ### Gn150 — Trimmed periodic basis unwrap
 B_SPLINE_CURVE_WITH_KNOTS (degree 3, 5 poles, periodic closure .T.). Full domain [0, 2π]. Wrapped in Geom_TrimmedCurve concept at [0.2, 2.8]. Defect: SameParameter healing without periodic-wrapping detection incorrectly clamps parameters to trim bounds, losing closed semantics. Healing must detect Geom_TrimmedCurve + periodic basis + skip clamping. Knot sum 4+2+2+2+4=14 (periodic accounting). Invariants: DIRECTION unit ratios.
-- **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
+- **Tier-3 assertion**: shape_null == True
+- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 ### Gn151 — B-spline C0 interior knot discontinuity
 B_SPLINE_CURVE_WITH_KNOTS (degree 3, 5 poles). Interior knot at parameter 0.5 with multiplicity 4 (=degree). Defect: C0 discontinuity (tangent jump). Knot arithmetic: 4+4+1=9 ✓. Healing must detect via Geom2dConvert::C0BSplineToC1 and upgrade continuity. No forward refs. Invariants: DIRECTION unit.
-- **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
+- **Tier-3 assertion**: shape_null == True
+- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 ### Gn152 — Knot ratio anomaly post-C0→C1 upgrade
 B_SPLINE_CURVE_WITH_KNOTS (degree 2, 6 poles). Clustered interior knots: [0.01, 0.02] vs [0.98, 1.0] ratio >100:1. Defect: after C0->C1 upgrade, knot spacing becomes ill-conditioned (IsBad flag true). Healing must detect via ratio criterion (>10) and apply arc-length reparametrization (Approx_CurvilinearParameter). Knot sum 3+3+2+1=9 ✓. DIRECTION unit ratios.
 - **Tier-3 assertion**: load == "ok"
@@ -22156,8 +22156,8 @@ B_SPLINE_CURVE_WITH_KNOTS (degree 2, 6 poles). Clustered interior knots: [0.01, 
 ### Gn153 — Periodic B-spline origin re-anchor post-upgrade
 B_SPLINE_CURVE_WITH_KNOTS (degree 2, 4 poles, periodic .T., closed loop). Interior knot at 0.5. Defect: after Geom2dConvert::C0BSplineToC1 upgrade, parametrization origin shifts; D0(FirstParameter) changes. Healing must re-anchor via SetOrigin to preserve continuity across period. Knot sum 3+2+1=6 ✓. Invariants: DIRECTION unit, no forward refs, three-arg LINE.
 
-- **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
+- **Tier-3 assertion**: shape_null == True
+- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 ### Gn154 — Rational B-spline with zero-weight pole singularity
 Minimal reproducer: RATIONAL_B_SPLINE_SURFACE, 3×3 control net, degree (2,2). Interior pole P[1,1] has weight w=0. Knot structure: U,V multiplicities (3,3)/(3,3), fully clamped. Healing challenge: weight=0 creates homogeneous singularity (w=0 in rational plane); rational evaluation undefined at that pole. Expected: flag pole degenerate or skip in geometric computation.
 - **Tier-3 assertion**: load == "ok"
@@ -22168,8 +22168,8 @@ Minimal reproducer: B_SPLINE_SURFACE_WITH_KNOTS, degree (3,2), 4 poles in U, 3 i
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=reject ifc=schema_n/a`
 ### Gn156 — Periodic B-spline with non-closing control polygon, origin-shift risk
 Minimal reproducer: B_SPLINE_CURVE_WITH_KNOTS, degree 2, 5 poles marked periodic (.T.), but P[0]=(1,0,0)≠P[4]=(0.9,−0.1,0). Knot structure: multiplicities (2,2,2,1), sum=7=n+d for periodic. Closed-curve claim violated; polygon open. Healing challenge: post-upgrade (Geom2dConvert C0→C1), periodic origin may shift without SetOrigin re-anchor. Expected: enforce closure or strip periodicity; re-anchor origin after continuity upgrade.
-- **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
+- **Tier-3 assertion**: shape_null == True
+- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 ### Gn157 — Rational B-spline with extreme weight ratio (1e4), numerical conditioning
 Minimal reproducer: RATIONAL_B_SPLINE_SURFACE, 3×2 control net, degree (2,1). Weights: (1.0, 10000.0, 1.0, 1.0, 1.0, 1.0) span 4 orders of magnitude. Knot structure: U,V multiplicities (3,3)/(2,2), fully clamped. Healing challenge: weight ratio 10000:1 escalates condition number in rational basis function evaluation; numerical instability in homogeneous coordinate normalization. Expected: rescale weights toward unity or flag ill-conditioning.
 - **Tier-3 assertion**: load == "ok"

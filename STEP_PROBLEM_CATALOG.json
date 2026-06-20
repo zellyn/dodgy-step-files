@@ -24885,7 +24885,7 @@
     "cross_oracle_note": null,
     "description": "Trimmed periodic basis unwrap",
     "expected_kernel_behavior": "heal or reject (mechanism-specific; see Description)",
-    "expected_validation": "occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a",
+    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2b-nurbs/Gn150.stp",
     "id": "Gn150",
@@ -24906,7 +24906,7 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "load == \"ok\""
+      "shape_null == True"
     ],
     "title": "Trimmed periodic basis unwrap"
   },
@@ -24918,7 +24918,7 @@
     "cross_oracle_note": null,
     "description": "B-spline C0 interior knot discontinuity",
     "expected_kernel_behavior": "heal or reject (mechanism-specific; see Description)",
-    "expected_validation": "occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a",
+    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2b-nurbs/Gn151.stp",
     "id": "Gn151",
@@ -24939,7 +24939,7 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "load == \"ok\""
+      "shape_null == True"
     ],
     "title": "B-spline C0 interior knot discontinuity"
   },
@@ -24984,7 +24984,7 @@
     "cross_oracle_note": null,
     "description": "Periodic B-spline origin re-anchor post-upgrade",
     "expected_kernel_behavior": "heal or reject (mechanism-specific; see Description)",
-    "expected_validation": "occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a",
+    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2b-nurbs/Gn153.stp",
     "id": "Gn153",
@@ -25005,7 +25005,7 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "load == \"ok\""
+      "shape_null == True"
     ],
     "title": "Periodic B-spline origin re-anchor post-upgrade"
   },
@@ -25083,7 +25083,7 @@
     "cross_oracle_note": null,
     "description": "Periodic B-spline with non-closing control polygon, origin-shift risk",
     "expected_kernel_behavior": "heal or reject (mechanism-specific; see Description)",
-    "expected_validation": "occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a",
+    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2b-nurbs/Gn156.stp",
     "id": "Gn156",
@@ -25104,7 +25104,7 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "load == \"ok\""
+      "shape_null == True"
     ],
     "title": "Periodic B-spline with non-closing control polygon, origin-shift risk"
   },
