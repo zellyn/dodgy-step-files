@@ -1,104 +1,93 @@
 ISO-10303-21;
-/* Tfa020 - Sewing - free bounds on closed shell
- * Defect: a shell that should be closed has free (naked) edges - edges
- * incident to fewer than two faces. Either a face is missing or
- * adjacent face boundaries weren't sewn within tolerance. Healer should
- * run BRepBuilderAPI_Sewing with model-derived tolerance, promote to
- * CLOSED_SHELL when topology proves closure, and recompute IsClosed
- * flag from connectivity.
- * Reproducer: shell exported as separate faces inside an OPEN_SHELL
- * with adjacent face edges sitting within 1.0e-5 m of each other but
- * referencing different EDGE_CURVE records.
- */
+/* Tfa020: OPEN_SHELL: two 10×10 coplanar ADVANCED_FACEs with free boundary edges; face[0] right edge at x=10 (ec_shared_a) and face[1] left edge at x=10.00001 (ec_shared_b, offset 1e-5 mm) are distinct EDGE_CURVEs — each belongs to only one face; free naked edges on what should be a closed shell; distance-gap is 1e-5 mm (within 1e-4 sewing tolerance) but topology has no shared edge; ShapeFix_Shell/ShapeUpgrade_ShellSewing must stitch free boundaries pairwise; defect IS on live OPEN_SHELL traversal path */
 HEADER;
-FILE_DESCRIPTION(('Tfa020 sewing free bounds open shell'),'2;1');
-FILE_NAME('Tfa020.stp','2026-04-26T00:00:00',(''),(''),
-  'cad-research-suite','','');
-FILE_SCHEMA(('AUTOMOTIVE_DESIGN'));
+FILE_DESCRIPTION(('Tfa020'),'2;1');
+FILE_NAME('Tfa020.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('automotive design');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
-  'automotive_design',2009,#1);
-#10=CARTESIAN_POINT('origin',(0.0,0.0,0.0));
-#11=DIRECTION('z',(0.0,0.0,1.0));
-#12=DIRECTION('x',(1.0,0.0,0.0));
-#13=AXIS2_PLACEMENT_3D('plc',#10,#11,#12);
-#14=PLANE('plane_xy',#13);
-/* Face A: square (0..10) x (0..10).                                    */
-#20=CARTESIAN_POINT('a0',(0.0,0.0,0.0));
-#21=CARTESIAN_POINT('a1',(10.0,0.0,0.0));
-#22=CARTESIAN_POINT('a2',(10.0,10.0,0.0));
-#23=CARTESIAN_POINT('a3',(0.0,10.0,0.0));
-/* Face B: shifted by 1.0e-5 in y so its left edge is "almost" coincident
- * with face A's right edge. Sewing must close this gap.                */
-#24=CARTESIAN_POINT('b0',(10.0,0.00001,0.0));
-#25=CARTESIAN_POINT('b1',(20.0,0.0,0.0));
-#26=CARTESIAN_POINT('b2',(20.0,10.0,0.0));
-#27=CARTESIAN_POINT('b3',(10.0,10.00001,0.0));
-#30=VERTEX_POINT('',#20);
-#31=VERTEX_POINT('',#21);
-#32=VERTEX_POINT('',#22);
-#33=VERTEX_POINT('',#23);
-#34=VERTEX_POINT('',#24);
-#35=VERTEX_POINT('',#25);
-#36=VERTEX_POINT('',#26);
-#37=VERTEX_POINT('',#27);
-#40=DIRECTION('',(1.0,0.0,0.0));
-#41=DIRECTION('',(0.0,1.0,0.0));
-#42=DIRECTION('',(-1.0,0.0,0.0));
-#43=DIRECTION('',(0.0,-1.0,0.0));
-#50=VECTOR('',#40,10.0);
-#51=VECTOR('',#41,10.0);
-#52=VECTOR('',#42,10.0);
-#53=VECTOR('',#43,10.0);
-#60=LINE('',#20,#50);
-#61=LINE('',#21,#51);
-#62=LINE('',#22,#52);
-#63=LINE('',#23,#53);
-#64=LINE('',#24,#50);
-#65=LINE('',#25,#51);
-#66=LINE('',#26,#52);
-#67=LINE('',#27,#53);
-#70=EDGE_CURVE('',#30,#31,#60,.T.);
-#71=EDGE_CURVE('',#31,#32,#61,.T.);
-#72=EDGE_CURVE('',#32,#33,#62,.T.);
-#73=EDGE_CURVE('',#33,#30,#63,.T.);
-#74=EDGE_CURVE('',#34,#35,#64,.T.);
-#75=EDGE_CURVE('',#35,#36,#65,.T.);
-#76=EDGE_CURVE('',#36,#37,#66,.T.);
-#77=EDGE_CURVE('',#37,#34,#67,.T.);
-#80=ORIENTED_EDGE('',*,*,#70,.T.);
-#81=ORIENTED_EDGE('',*,*,#71,.T.);
-#82=ORIENTED_EDGE('',*,*,#72,.T.);
-#83=ORIENTED_EDGE('',*,*,#73,.T.);
-#84=ORIENTED_EDGE('',*,*,#74,.T.);
-#85=ORIENTED_EDGE('',*,*,#75,.T.);
-#86=ORIENTED_EDGE('',*,*,#76,.T.);
-#87=ORIENTED_EDGE('',*,*,#77,.T.);
-#90=EDGE_LOOP('A',(#80,#81,#82,#83));
-#91=EDGE_LOOP('B',(#84,#85,#86,#87));
-#100=FACE_OUTER_BOUND('',#90,.T.);
-#101=FACE_OUTER_BOUND('',#91,.T.);
-#110=ADVANCED_FACE('A',(#100),#14,.T.);
-#111=ADVANCED_FACE('B',(#101),#14,.T.);
-/* Defect site: OPEN_SHELL with free bounds along each face's right and
- * the other face's left edge (separated by 1.0e-5).                      */
-#120=OPEN_SHELL('open_shell_to_sew',(#110,#111));
-/* Wrap: minimal PRODUCT chain so OCCT TransferRoots produces a shape. */
-#9000=PRODUCT_CONTEXT('',#1,'mechanical');
-#9001=PRODUCT('Tfa020','Tfa020','',(#9000));
-#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
-#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
-#9004=PRODUCT_DEFINITION('','',#9002,#9003);
-#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
-#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
-#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
-#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
-#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
-#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
-#9021=SHELL_BASED_SURFACE_MODEL('wrap_sbsm',(#120));
-#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#9010);
-#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=DIRECTION('',(0.0,0.0,1.0));
+#3=DIRECTION('',(1.0,0.0,0.0));
+#4=AXIS2_PLACEMENT_3D('',#1,#2,#3);
+#5=PLANE('',#4);
+#6=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#7=CARTESIAN_POINT('',(10.0,0.0,0.0));
+#8=CARTESIAN_POINT('',(10.0,10.0,0.0));
+#9=CARTESIAN_POINT('',(0.0,10.0,0.0));
+#10=VERTEX_POINT('',#6);
+#11=VERTEX_POINT('',#7);
+#12=VERTEX_POINT('',#8);
+#13=VERTEX_POINT('',#9);
+#14=DIRECTION('',(1.0,0.0,0.0));
+#15=VECTOR('',#14,10.0);
+#16=LINE('',#6,#15);
+#17=EDGE_CURVE('',#10,#11,#16,.T.);
+#18=DIRECTION('',(0.0,1.0,0.0));
+#19=VECTOR('',#18,10.0);
+#20=LINE('',#7,#19);
+#21=EDGE_CURVE('',#11,#12,#20,.T.);
+#22=DIRECTION('',(-1.0,0.0,0.0));
+#23=VECTOR('',#22,10.0);
+#24=LINE('',#8,#23);
+#25=EDGE_CURVE('',#12,#13,#24,.T.);
+#26=DIRECTION('',(0.0,-1.0,0.0));
+#27=VECTOR('',#26,10.0);
+#28=LINE('',#9,#27);
+#29=EDGE_CURVE('',#13,#10,#28,.T.);
+#30=ORIENTED_EDGE('',$,$,#17,.T.);
+#31=ORIENTED_EDGE('',$,$,#21,.T.);
+#32=ORIENTED_EDGE('',$,$,#25,.T.);
+#33=ORIENTED_EDGE('',$,$,#29,.T.);
+#34=EDGE_LOOP('',(#30,#31,#32,#33));
+#35=FACE_OUTER_BOUND('',#34,.T.);
+#36=ADVANCED_FACE('',(#35),#5,.T.);
+#37=CARTESIAN_POINT('',(10.00001,0.0,0.0));
+#38=CARTESIAN_POINT('',(10.00001,10.0,0.0));
+#39=CARTESIAN_POINT('',(20.00001,0.0,0.0));
+#40=CARTESIAN_POINT('',(20.00001,10.0,0.0));
+#41=VERTEX_POINT('',#37);
+#42=VERTEX_POINT('',#38);
+#43=VERTEX_POINT('',#39);
+#44=VERTEX_POINT('',#40);
+#45=DIRECTION('',(0.0,1.0,0.0));
+#46=VECTOR('',#45,10.0);
+#47=LINE('',#37,#46);
+#48=EDGE_CURVE('',#41,#42,#47,.T.);
+#49=DIRECTION('',(1.0,0.0,0.0));
+#50=VECTOR('',#49,10.0);
+#51=LINE('',#37,#50);
+#52=EDGE_CURVE('',#41,#43,#51,.T.);
+#53=DIRECTION('',(0.0,1.0,0.0));
+#54=VECTOR('',#53,10.0);
+#55=LINE('',#39,#54);
+#56=EDGE_CURVE('',#43,#44,#55,.T.);
+#57=DIRECTION('',(-1.0,0.0,0.0));
+#58=VECTOR('',#57,10.0);
+#59=LINE('',#40,#58);
+#60=EDGE_CURVE('',#44,#42,#59,.T.);
+#61=ORIENTED_EDGE('',$,$,#48,.F.);
+#62=ORIENTED_EDGE('',$,$,#52,.T.);
+#63=ORIENTED_EDGE('',$,$,#56,.T.);
+#64=ORIENTED_EDGE('',$,$,#60,.T.);
+#65=EDGE_LOOP('',(#61,#62,#63,#64));
+#66=FACE_OUTER_BOUND('',#65,.T.);
+#67=ADVANCED_FACE('',(#66),#5,.T.);
+#68=OPEN_SHELL('',(#36,#67));
+#69=SHELL_BASED_SURFACE_MODEL('',(#68));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('Tfa020','Tfa020','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#69),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
 ENDSEC;
 END-ISO-10303-21;

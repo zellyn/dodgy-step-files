@@ -1,111 +1,98 @@
 ISO-10303-21;
-/* Tfa015 - DropSmallSolids / debris solids from booleans
- * Defect: compound contains tiny / zero-volume sub-solids - Boolean
- * fragments, micron-scale residuals. Healer must detect by volume or
- * width-factor and drop or fuse with neighbor; respect user "Merge
- * Solids" flag; preserve XCAF attribute mapping for kept solids.
- * Reproducer: compound where one main solid (10x10x10 mm, V=1000 mm^3)
- * sits next to two debris solids:
- *   - debris A: 1.0e-3 cube (V = 1.0e-9 mm^3)
- *   - debris B: 5.0e-4 cube (V = 1.25e-10 mm^3)
- * All three are emitted as MANIFOLD_SOLID_BREP and aggregated through a
- * GEOMETRIC_REPRESENTATION_ITEM-list inside a single SHAPE_REPRESENTATION
- * standing in for the OCCT TopoDS_Compound the healer would receive.
- */
+/* Tfa015: ADVANCED_FACE on PLANE: 1e-3 mm × 1e-3 mm square debris fragment at origin; represents micro-scale Boolean residual (V~1e-9 mm³ < DropSmallSolids threshold); brepcheck.valid == False on this tiny degenerate face; healer must detect by volume/width-factor and drop or fuse; defective face IS on live OPEN_SHELL traversal path; companion 10x10 face ensures shape(1) */
 HEADER;
-FILE_DESCRIPTION(('Tfa015 debris solids in compound'),'2;1');
-FILE_NAME('Tfa015.stp','2026-04-26T00:00:00',(''),(''),
-  'cad-research-suite','','');
-FILE_SCHEMA(('AUTOMOTIVE_DESIGN'));
+FILE_DESCRIPTION(('Tfa015'),'2;1');
+FILE_NAME('Tfa015.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('automotive design');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
-  'automotive_design',2009,#1);
-#5=( NAMED_UNIT(*) SI_UNIT(.MILLI.,.METRE.) LENGTH_UNIT() );
-#6=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#5,'','');
-#7=( GEOMETRIC_REPRESENTATION_CONTEXT(3)
-     GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#6))
-     GLOBAL_UNIT_ASSIGNED_CONTEXT((#5))
-     REPRESENTATION_CONTEXT('','3D') );
-/* ---------- main solid (10 x 10 x 10 mm, V = 1000 mm^3) ----------- */
-#100=CARTESIAN_POINT('m000',(0.0,0.0,0.0));
-#101=CARTESIAN_POINT('m100',(10.0,0.0,0.0));
-#102=CARTESIAN_POINT('m110',(10.0,10.0,0.0));
-#103=CARTESIAN_POINT('m010',(0.0,10.0,0.0));
-#104=CARTESIAN_POINT('m001',(0.0,0.0,10.0));
-#105=CARTESIAN_POINT('m101',(10.0,0.0,10.0));
-#106=CARTESIAN_POINT('m111',(10.0,10.0,10.0));
-#107=CARTESIAN_POINT('m011',(0.0,10.0,10.0));
-#110=VERTEX_POINT('',#100);
-#111=VERTEX_POINT('',#101);
-#112=VERTEX_POINT('',#102);
-#113=VERTEX_POINT('',#103);
-#114=VERTEX_POINT('',#104);
-#115=VERTEX_POINT('',#105);
-#116=VERTEX_POINT('',#106);
-#117=VERTEX_POINT('',#107);
-#120=DIRECTION('',(0.0,0.0,1.0));
-#121=DIRECTION('',(1.0,0.0,0.0));
-#122=AXIS2_PLACEMENT_3D('main_plc',#100,#120,#121);
-#123=PLANE('main_face_z0',#122);
-#130=CLOSED_SHELL('main_shell',(#123));
-#131=MANIFOLD_SOLID_BREP('main_solid_10mm',#130);
-/* ---------- debris solid A (1.0e-3 mm cube, V = 1.0e-9 mm^3) ---------- */
-#200=CARTESIAN_POINT('a000',(100.000,100.000,100.000));
-#201=CARTESIAN_POINT('a100',(100.001,100.000,100.000));
-#202=CARTESIAN_POINT('a110',(100.001,100.001,100.000));
-#203=CARTESIAN_POINT('a010',(100.000,100.001,100.000));
-#204=CARTESIAN_POINT('a001',(100.000,100.000,100.001));
-#205=CARTESIAN_POINT('a101',(100.001,100.000,100.001));
-#206=CARTESIAN_POINT('a111',(100.001,100.001,100.001));
-#207=CARTESIAN_POINT('a011',(100.000,100.001,100.001));
-#210=VERTEX_POINT('',#200);
-#211=VERTEX_POINT('',#201);
-#212=VERTEX_POINT('',#202);
-#213=VERTEX_POINT('',#203);
-#214=VERTEX_POINT('',#204);
-#215=VERTEX_POINT('',#205);
-#216=VERTEX_POINT('',#206);
-#217=VERTEX_POINT('',#207);
-#220=AXIS2_PLACEMENT_3D('debris_a_plc',#200,#120,#121);
-#221=PLANE('debris_a_face_z0',#220);
-#222=CLOSED_SHELL('debris_a_shell',(#221));
-#223=MANIFOLD_SOLID_BREP('debris_a_solid_1um',#222);
-/* ---------- debris solid B (5.0e-4 mm cube, V = 1.25e-10 mm^3) ----- */
-#300=CARTESIAN_POINT('b000',(50.0000,50.0000,50.0000));
-#301=CARTESIAN_POINT('b100',(50.0005,50.0000,50.0000));
-#302=CARTESIAN_POINT('b110',(50.0005,50.0005,50.0000));
-#303=CARTESIAN_POINT('b010',(50.0000,50.0005,50.0000));
-#304=CARTESIAN_POINT('b001',(50.0000,50.0000,50.0005));
-#305=CARTESIAN_POINT('b101',(50.0005,50.0000,50.0005));
-#306=CARTESIAN_POINT('b111',(50.0005,50.0005,50.0005));
-#307=CARTESIAN_POINT('b011',(50.0000,50.0005,50.0005));
-#310=VERTEX_POINT('',#300);
-#311=VERTEX_POINT('',#301);
-#312=VERTEX_POINT('',#302);
-#313=VERTEX_POINT('',#303);
-#314=VERTEX_POINT('',#304);
-#315=VERTEX_POINT('',#305);
-#316=VERTEX_POINT('',#306);
-#317=VERTEX_POINT('',#307);
-#320=AXIS2_PLACEMENT_3D('debris_b_plc',#300,#120,#121);
-#321=PLANE('debris_b_face_z0',#320);
-#322=CLOSED_SHELL('debris_b_shell',(#321));
-#323=MANIFOLD_SOLID_BREP('debris_b_solid_500nm',#322);
-/* ---------- compound wrapper (XCAF compound stand-in) ------------ */
-/* SHAPE_REPRESENTATION acts as the compound here; it aggregates the
- * three MANIFOLD_SOLID_BREP instances together with their bounding
- * placement so that a healer sees one composite item with three solid
- * sub-shapes and decides which to drop / merge. */
-#400=PRODUCT_CONTEXT('',#1,'mechanical');
-#401=PRODUCT('debris_assembly','debris_assembly','',(#400));
-#402=PRODUCT_DEFINITION_FORMATION('','',#401);
-#403=PRODUCT_DEFINITION_CONTEXT('',#1,'design');
-#404=PRODUCT_DEFINITION('design','',#402,#403);
-#405=PRODUCT_DEFINITION_SHAPE('','',#404);
-#410=SHAPE_REPRESENTATION('debris_compound',
-  (#122,#131,#223,#323),#7);
-#411=SHAPE_DEFINITION_REPRESENTATION(#405,#410);
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=CARTESIAN_POINT('',(0.001,0.0,0.0));
+#3=CARTESIAN_POINT('',(0.001,0.001,0.0));
+#4=CARTESIAN_POINT('',(0.0,0.001,0.0));
+#5=VERTEX_POINT('',#1);
+#6=VERTEX_POINT('',#2);
+#7=VERTEX_POINT('',#3);
+#8=VERTEX_POINT('',#4);
+#9=DIRECTION('',(1.0,0.0,0.0));
+#10=VECTOR('',#9,0.001);
+#11=LINE('',#1,#10);
+#12=EDGE_CURVE('',#5,#6,#11,.T.);
+#13=DIRECTION('',(0.0,1.0,0.0));
+#14=VECTOR('',#13,0.001);
+#15=LINE('',#2,#14);
+#16=EDGE_CURVE('',#6,#7,#15,.T.);
+#17=DIRECTION('',(-1.0,0.0,0.0));
+#18=VECTOR('',#17,0.001);
+#19=LINE('',#3,#18);
+#20=EDGE_CURVE('',#7,#8,#19,.T.);
+#21=DIRECTION('',(0.0,-1.0,0.0));
+#22=VECTOR('',#21,0.001);
+#23=LINE('',#4,#22);
+#24=EDGE_CURVE('',#8,#5,#23,.T.);
+#25=ORIENTED_EDGE('',$,$,#12,.T.);
+#26=ORIENTED_EDGE('',$,$,#16,.T.);
+#27=ORIENTED_EDGE('',$,$,#20,.T.);
+#28=ORIENTED_EDGE('',$,$,#24,.T.);
+#29=EDGE_LOOP('',(#25,#26,#27,#28));
+#30=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#31=DIRECTION('',(0.0,0.0,1.0));
+#32=DIRECTION('',(1.0,0.0,0.0));
+#33=AXIS2_PLACEMENT_3D('',#30,#31,#32);
+#34=PLANE('',#33);
+#35=FACE_OUTER_BOUND('',#29,.T.);
+#36=ADVANCED_FACE('',(#35),#34,.T.);
+#37=CARTESIAN_POINT('',(1.0,0.0,0.0));
+#38=CARTESIAN_POINT('',(11.0,0.0,0.0));
+#39=CARTESIAN_POINT('',(11.0,10.0,0.0));
+#40=CARTESIAN_POINT('',(1.0,10.0,0.0));
+#41=VERTEX_POINT('',#37);
+#42=VERTEX_POINT('',#38);
+#43=VERTEX_POINT('',#39);
+#44=VERTEX_POINT('',#40);
+#45=DIRECTION('',(1.0,0.0,0.0));
+#46=VECTOR('',#45,10.0);
+#47=LINE('',#37,#46);
+#48=EDGE_CURVE('',#41,#42,#47,.T.);
+#49=DIRECTION('',(0.0,1.0,0.0));
+#50=VECTOR('',#49,10.0);
+#51=LINE('',#38,#50);
+#52=EDGE_CURVE('',#42,#43,#51,.T.);
+#53=DIRECTION('',(-1.0,0.0,0.0));
+#54=VECTOR('',#53,10.0);
+#55=LINE('',#39,#54);
+#56=EDGE_CURVE('',#43,#44,#55,.T.);
+#57=DIRECTION('',(0.0,-1.0,0.0));
+#58=VECTOR('',#57,10.0);
+#59=LINE('',#40,#58);
+#60=EDGE_CURVE('',#44,#41,#59,.T.);
+#61=ORIENTED_EDGE('',$,$,#48,.T.);
+#62=ORIENTED_EDGE('',$,$,#52,.T.);
+#63=ORIENTED_EDGE('',$,$,#56,.T.);
+#64=ORIENTED_EDGE('',$,$,#60,.T.);
+#65=EDGE_LOOP('',(#61,#62,#63,#64));
+#66=CARTESIAN_POINT('',(1.0,0.0,0.0));
+#67=DIRECTION('',(0.0,0.0,1.0));
+#68=DIRECTION('',(1.0,0.0,0.0));
+#69=AXIS2_PLACEMENT_3D('',#66,#67,#68);
+#70=PLANE('',#69);
+#71=FACE_OUTER_BOUND('',#65,.T.);
+#72=ADVANCED_FACE('',(#71),#70,.T.);
+#73=OPEN_SHELL('',(#36,#72));
+#74=SHELL_BASED_SURFACE_MODEL('',(#73));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('Tfa015','Tfa015','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#74),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
 ENDSEC;
 END-ISO-10303-21;
