@@ -32323,7 +32323,7 @@
     "cross_oracle_note": null,
     "description": "A vertex deep inside a face/shell carries a tolerance value that's smaller than the actual geometric deviation between its 3D point and the curves/surfaces it sits on. The vertex's \"tolerance ball\" doesn't actually contain the geometry it indexes. Bug-reporter language: \"vertex tolerance too small\", \"tolerance underestimates gap\", \"inner tolerance lies\".",
     "expected_kernel_behavior": "Heal and accept: recompute inner tolerances from actual deviations; bump tolerance up, or rebuild geometry to match.",
-    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-3a-shells/Bo030.stp",
     "id": "Bo030",
@@ -32344,7 +32344,7 @@
       "topology"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "load == \"ok\""
     ],
     "title": "EDGE_CURVE start VERTEX_POINT lies off the underlying LINE: inner-vertex tolerance smaller than the deviation it bounds"
   },

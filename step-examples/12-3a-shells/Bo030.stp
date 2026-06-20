@@ -1,42 +1,53 @@
 ISO-10303-21;
-/* Bo030 - Inner-vertex tolerance smaller than its actual deviation.
- * Defect: vertex declared with tolerance ~1.0e-7 but the 3D point
- * is ~1.0e-3 distant from the curve evaluation it indexes. */
+/* Bo030: EDGE_CURVE start VERTEX_POINT at (0,1e-3,0) lies 1e-3 from LINE starting at (0,0,0); deviation 1e-3 >> global UNCERTAINTY 1e-7; tolerance ball does NOT cover geometric deviation; defective EDGE_CURVE IS wired into EDGE_LOOP→ADVANCED_FACE→CLOSED_SHELL→MANIFOLD_SOLID_BREP shell topology */
 HEADER;
-FILE_DESCRIPTION(('Bo030 - inner tolerance underestimated','Pass C gap-fill'),'2;1');
-FILE_NAME('Bo030.stp','2026-04-30T00:00:00',(''),(''),'gap-fill C','','');
-FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+FILE_DESCRIPTION(('Bo030'),'2;1');
+FILE_NAME('Bo030.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('automotive_design');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
-/* Line (0,0,0)→(1,0,0). Vertex at (0, 0.001, 0) - 0.001 above the line. */
-#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
-#11=CARTESIAN_POINT('off_by_1e_minus_3',(0.0,0.001,0.0));
-#12=CARTESIAN_POINT('',(1.0,0.0,0.0));
-#20=VERTEX_POINT('on',#10);
-#21=VERTEX_POINT('off',#11);
-#22=VERTEX_POINT('',#12);
-#30=DIRECTION('',(1.0,0.0,0.0));
-#31=VECTOR('',#30,1.0);
-#32=LINE('',#10,#31);
-/* Edge declared with start vertex 1.0e-3 off the line - typical tolerance
-   model would mark vertex tolerance as 1.0e-7. */
-#40=EDGE_CURVE('tolerance_lying',#21,#22,#32,.T.);
-/* PRODUCT chain so OCCT loads the geometry. */
-#9000=PRODUCT_CONTEXT('',#1,'mechanical');
-#9001=PRODUCT('Bo030','Bo030','',(#9000));
-#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
-#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
-#9004=PRODUCT_DEFINITION('','',#9002,#9003);
-#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
-#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
-#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
-#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
-#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
-#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
-#9020=GEOMETRIC_CURVE_SET('wire_set',(#40));
-#9021=GEOMETRICALLY_BOUNDED_WIREFRAME_SHAPE_REPRESENTATION('',(#9020),#9010);
-#9022=SHAPE_DEFINITION_REPRESENTATION(#9005,#9021);
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=CARTESIAN_POINT('off_by_1e-3',(0.0,1.0E-3,0.0));
+#3=CARTESIAN_POINT('',(1.0,0.0,0.0));
+#4=VERTEX_POINT('off',#2);
+#5=VERTEX_POINT('',#3);
+#6=VERTEX_POINT('',#1);
+#7=DIRECTION('',(1.0,0.0,0.0));
+#8=DIRECTION('',(-1.0,0.0,0.0));
+#9=DIRECTION('',(0.0,1.0,0.0));
+#10=VECTOR('',#7,1.0);
+#11=VECTOR('',#8,1.0);
+#12=VECTOR('',#9,0.001);
+#13=DIRECTION('',(0.0,0.0,1.0));
+#14=AXIS2_PLACEMENT_3D('',#1,#13,#7);
+#15=PLANE('',#14);
+#16=LINE('',#1,#10);
+#17=EDGE_CURVE('tolerance_lying',#4,#5,#16,.T.);
+#18=LINE('',#3,#11);
+#19=EDGE_CURVE('',#5,#6,#18,.T.);
+#20=LINE('',#1,#12);
+#21=EDGE_CURVE('',#6,#4,#20,.T.);
+#22=ORIENTED_EDGE('',*,*,#17,.T.);
+#23=ORIENTED_EDGE('',*,*,#19,.T.);
+#24=ORIENTED_EDGE('',*,*,#21,.T.);
+#25=EDGE_LOOP('',(#22,#23,#24));
+#26=FACE_OUTER_BOUND('',#25,.T.);
+#27=ADVANCED_FACE('',(#26),#15,.T.);
+#28=CLOSED_SHELL('bo030_vtx_tol_underflow',(#27));
+#29=MANIFOLD_SOLID_BREP('bo030_solid',#28);
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('Bo030','Bo030','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=ADVANCED_BREP_SHAPE_REPRESENTATION('',(#29),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
 ENDSEC;
 END-ISO-10303-21;
