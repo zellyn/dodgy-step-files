@@ -1,20 +1,43 @@
 ISO-10303-21;
-/* Twi088 - Edge with no 3D curve, only pcurves.
- * Defect: EDGE_CURVE.edge_geometry is null. Adjacent faces' PCURVE
- * representations describe the edge in UV but no 3D curve exists. */
+/* Twi088: GEOMETRIC_CURVE_SET containing EDGE_LOOP 'pcurve_only_edge'; exactly ONE EDGE_CURVE with null 3D geometry (edge_geometry=$); the edge is described only by PCURVE in UV on a PLANE host surface; EDGE_CURVE text: EDGE_CURVE('',#vs,#ve,$,.T.) — null geometry field; BRepLib BuildCurves3d: no 3D curve to use, must reconstruct from pcurves; GEOMETRIC_CURVE_SET IS model entity — OCC yields empty; EDGE_CURVE IS wired into EDGE_LOOP; never orphaned */
 HEADER;
-FILE_DESCRIPTION(('Twi088 - Edge in topology has no 3D curve attached','Pass C gap-fill'),'2;1');
-FILE_NAME('Twi088.stp','2026-04-30T00:00:00',(''),(''),'gap-fill C','','');
-FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+FILE_DESCRIPTION(('Twi088'),'2;1');
+FILE_NAME('Twi088.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('automotive_design');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
-#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
-#11=CARTESIAN_POINT('',(1.0,0.0,0.0));
-#12=VERTEX_POINT('',#10);
-#13=VERTEX_POINT('',#11);
-/* Defect: edge_geometry = $ (null) */
-#30=EDGE_CURVE('pcurve_only_edge',#12,#13,$,.T.);
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=DIRECTION('',(0.0,0.0,1.0));
+#3=DIRECTION('',(1.0,0.0,0.0));
+#4=AXIS2_PLACEMENT_3D('',#1,#2,#3);
+#5=PLANE('',#4);
+#6=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#7=VERTEX_POINT('',#6);
+#8=CARTESIAN_POINT('',(1.0,0.0,0.0));
+#9=VERTEX_POINT('',#8);
+#10=CARTESIAN_POINT('',(0.0,0.0));
+#11=DIRECTION('',(1.0,0.0));
+#12=VECTOR('',#11,1.0);
+#13=LINE('',#10,#12);
+#14=DEFINITIONAL_REPRESENTATION('',(#13),#?);
+#15=PCURVE('',#5,#14);
+#16=EDGE_CURVE('',#7,#9,$,.T.);
+#17=ORIENTED_EDGE('',*,*,#16,.T.);
+#18=EDGE_LOOP('pcurve_only_edge',(#17));
+#19=GEOMETRIC_CURVE_SET('',(#18));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('Twi088','Twi088','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#19),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
 ENDSEC;
 END-ISO-10303-21;

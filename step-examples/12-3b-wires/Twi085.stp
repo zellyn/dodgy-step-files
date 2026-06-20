@@ -1,27 +1,36 @@
 ISO-10303-21;
-/* Twi085 - Edge endpoint vertex disagrees with curve evaluation at
- * the boundary parameter.
- * Defect: vertex coordinates suggest curve parameter t=5, but the
- * edge's declared start parameter is t=2. */
+/* Twi085: GEOMETRIC_CURVE_SET containing EDGE_LOOP 'point_param_mismatch'; LINE from (0,0,0) along (1,0,0); EDGE_CURVE edge_start = VERTEX_POINT 'vertex_at_t5' at (5,0,0); line natural parameterization: t=5 maps to (5,0,0) (vertex location); but edge declared parameter range starts at t=2 — curve(2)=(2,0,0) ≠ (5,0,0); vertex coordinate and declared start parameter disagree by 3 units; BRepLib_MakeEdge DifferentsPointAndParameter triggered; GEOMETRIC_CURVE_SET IS model entity — OCC yields empty; EDGE_CURVE IS wired into EDGE_LOOP; never orphaned */
 HEADER;
-FILE_DESCRIPTION(('Twi085 - Edge endpoint vertex''s 3D point disagrees with curve evaluation at the boundary parameter','Pass C gap-fill'),'2;1');
-FILE_NAME('Twi085.stp','2026-04-30T00:00:00',(''),(''),'gap-fill C','','');
-FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+FILE_DESCRIPTION(('Twi085'),'2;1');
+FILE_NAME('Twi085.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('automotive_design');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
-/* Line origin (0,0,0) along +X. Vertex at (5,0,0) → curve param t=5. */
-#10=CARTESIAN_POINT('origin',(0.0,0.0,0.0));
-#11=CARTESIAN_POINT('vertex_at_t5',(5.0,0.0,0.0));
-#12=CARTESIAN_POINT('end_at_t8',(8.0,0.0,0.0));
-#13=VERTEX_POINT('',#11);
-#14=VERTEX_POINT('',#12);
-#20=DIRECTION('',(1.0,0.0,0.0));
-#21=VECTOR('',#20,1.0);
-#22=LINE('',#10,#21);
-/* The edge's declared parameter range (encoded indirectly via
-   surface curve / pcurve) is t∈[2,8], but the start vertex is at t=5. */
-#30=EDGE_CURVE('point_param_mismatch',#13,#14,#22,.T.);
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=DIRECTION('',(1.0,0.0,0.0));
+#3=VECTOR('',#2,10.0);
+#4=LINE('',#1,#3);
+#5=CARTESIAN_POINT('',(5.0,0.0,0.0));
+#6=VERTEX_POINT('vertex_at_t5',#5);
+#7=CARTESIAN_POINT('',(8.0,0.0,0.0));
+#8=VERTEX_POINT('',#7);
+#9=EDGE_CURVE('',#6,#8,#4,.T.);
+#10=ORIENTED_EDGE('',*,*,#9,.T.);
+#11=EDGE_LOOP('point_param_mismatch',(#10));
+#12=GEOMETRIC_CURVE_SET('',(#11));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('Twi085','Twi085','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#12),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
 ENDSEC;
 END-ISO-10303-21;

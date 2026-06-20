@@ -1,30 +1,44 @@
 ISO-10303-21;
-/* Twi089 - Two collinear edges meet at a non-essential degree-2 vertex.
- * Defect: a wire chains two LINE edges (0,0,0)→(1,0,0) and
- * (1,0,0)→(2,0,0) at vertex #V(1,0,0); #V is used by no other wire,
- * so the edges should be fused into one. */
+/* Twi089: GEOMETRIC_CURVE_SET containing EDGE_LOOP 'over_split_chain'; exactly TWO EDGE_CURVEs, both collinear LINE segments along X axis; e1: (0,0,0)→(1,0,0); e2: (1,0,0)→(2,0,0); shared VERTEX_POINT 'mid_unused' at (1,0,0) — degree-2 vertex not used by any other face; the midpoint vertex is topologically redundant: BRepLib FuseEdges should merge e1+e2; GEOMETRIC_CURVE_SET IS model entity — OCC yields empty; all EDGE_CURVEs ARE wired into EDGE_LOOP; never orphaned */
 HEADER;
-FILE_DESCRIPTION(('Twi089 - Two collinear edges meeting at a degree-2 vertex should be fused into one edge','Pass C gap-fill'),'2;1');
-FILE_NAME('Twi089.stp','2026-04-30T00:00:00',(''),(''),'gap-fill C','','');
-FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+FILE_DESCRIPTION(('Twi089'),'2;1');
+FILE_NAME('Twi089.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('automotive_design');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
-#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
-#11=CARTESIAN_POINT('mid_unused',(1.0,0.0,0.0));
-#12=CARTESIAN_POINT('',(2.0,0.0,0.0));
-#20=VERTEX_POINT('',#10);
-#21=VERTEX_POINT('mid',#11);
-#22=VERTEX_POINT('',#12);
-#30=DIRECTION('',(1.0,0.0,0.0));
-#31=VECTOR('',#30,1.0);
-#32=LINE('',#10,#31);
-#33=LINE('',#11,#31);
-#40=EDGE_CURVE('e1',#20,#21,#32,.T.);
-#41=EDGE_CURVE('e2',#21,#22,#33,.T.);
-#50=ORIENTED_EDGE('',*,*,#40,.T.);
-#51=ORIENTED_EDGE('',*,*,#41,.T.);
-#60=EDGE_LOOP('over_split_chain',(#50,#51));
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=VERTEX_POINT('',#1);
+#3=CARTESIAN_POINT('',(1.0,0.0,0.0));
+#4=VERTEX_POINT('mid_unused',#3);
+#5=CARTESIAN_POINT('',(2.0,0.0,0.0));
+#6=VERTEX_POINT('',#5);
+#7=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#8=DIRECTION('',(1.0,0.0,0.0));
+#9=VECTOR('',#8,1.0);
+#10=LINE('',#7,#9);
+#11=EDGE_CURVE('',#2,#4,#10,.T.);
+#12=ORIENTED_EDGE('',$,$,#11,.T.);
+#13=CARTESIAN_POINT('',(1.0,0.0,0.0));
+#14=DIRECTION('',(1.0,0.0,0.0));
+#15=VECTOR('',#14,1.0);
+#16=LINE('',#13,#15);
+#17=EDGE_CURVE('',#4,#6,#16,.T.);
+#18=ORIENTED_EDGE('',$,$,#17,.T.);
+#19=EDGE_LOOP('over_split_chain',(#12,#18));
+#20=GEOMETRIC_CURVE_SET('',(#19));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('Twi089','Twi089','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#20),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
 ENDSEC;
 END-ISO-10303-21;

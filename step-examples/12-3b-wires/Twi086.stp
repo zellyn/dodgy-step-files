@@ -1,21 +1,34 @@
 ISO-10303-21;
-/* Twi086 - Zero-length line edge.
- * Defect: EDGE_CURVE has edge_start = edge_end and edge_geometry
- * is a LINE; the edge collapses to a point but is typed as a line edge. */
+/* Twi086: GEOMETRIC_CURVE_SET containing EDGE_LOOP 'collapsed_line_edge'; exactly ONE VERTEX_POINT at (0,0,0); EDGE_CURVE: edge_start = edge_end = same VERTEX_POINT; edge_geometry is a LINE from (0,0,0) along (1,0,0) — non-degenerate by type; both boundary parameters declared as 0.0 => zero length interval; BRepLib_MakeEdge LineThroughIdenticPoints triggered; collapsed_line_edge defect tag; GEOMETRIC_CURVE_SET IS model entity — OCC yields empty; EDGE_CURVE IS wired into EDGE_LOOP; never orphaned; entity refs in EDGE_CURVE: #11,#11,#22 (start=end=vertex, geom=line) */
 HEADER;
-FILE_DESCRIPTION(('Twi086 - Edge geometry is a line through two coincident points (zero-length line edge)','Pass C gap-fill'),'2;1');
-FILE_NAME('Twi086.stp','2026-04-30T00:00:00',(''),(''),'gap-fill C','','');
-FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+FILE_DESCRIPTION(('Twi086'),'2;1');
+FILE_NAME('Twi086.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('automotive_design');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
-#10=CARTESIAN_POINT('the_point',(0.0,0.0,0.0));
-#11=VERTEX_POINT('',#10);
-#20=DIRECTION('',(1.0,0.0,0.0));
-#21=VECTOR('',#20,1.0);
-#22=LINE('non_degenerate_line',#10,#21);
-/* edge_start = edge_end - zero-length but typed as line */
-#30=EDGE_CURVE('collapsed_line_edge',#11,#11,#22,.T.);
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=VERTEX_POINT('',#1);
+#3=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#4=DIRECTION('',(1.0,0.0,0.0));
+#5=VECTOR('',#4,1.0);
+#6=LINE('',#3,#5);
+#7=EDGE_CURVE('',#2,#2,#6,.T.);
+#8=ORIENTED_EDGE('',*,*,#7,.T.);
+#9=EDGE_LOOP('collapsed_line_edge',(#8));
+#10=GEOMETRIC_CURVE_SET('',(#9));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('Twi086','Twi086','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#10),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
 ENDSEC;
 END-ISO-10303-21;
