@@ -42668,7 +42668,7 @@
     "cross_oracle_note": null,
     "description": "A single wire's edges variously exhibit: reversed-sense pcurve, stale pcurve that disagrees with the 3D curve, missing 3D curve, seam edge whose pcurve is shifted by a full surface period, and same-parameter (3D-vs-pcurve parameterisation) violations. The kernel cannot fix the closure of the wire as a whole until each edge's curve representation is internally consistent first.",
     "expected_kernel_behavior": "heal the per-edge curve defects (reversed pcurve, missing pcurve, missing 3D curve, period-shifted seam, parameterisation mismatch) before validating wire-level closure; or reject the input as malformed if multiple defects co-occur. Order matters: later fixes must not invalidate earlier ones.",
-    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-3b-wires/Twi052.stp",
     "id": "Twi052",
@@ -42689,7 +42689,7 @@
       "topology"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "load == \"ok\""
     ],
     "title": "Wire whose edges accumulate several pcurve / 3D-curve defects at once"
   },

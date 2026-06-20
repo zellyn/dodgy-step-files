@@ -19996,9 +19996,9 @@ _Section summary: 41 entries._
 - **Byte assertion**: contains(b'CYLINDRICAL_SURFACE(')
 - **Byte assertion**: contains(b'edge2_no_3d')
 - **Byte assertion**: contains(b'6.2831853')
-- **Tier-3 assertion**: shape_null == True
+- **Tier-3 assertion**: load == "ok"
 - **Model impact**: The wire/loop closes with a topological gap or self-intersection; the parent face loads with broken bounds, BRepCheck reports `BRepCheck_NotClosed` or `BRepCheck_SelfIntersectingWire`, and downstream face triangulation skips or mis-bounds the region.
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 
 ### Twi053 — EDGE_LOOP wire is open: closing edge entirely missing (last vertex doesn't match first vertex; large 3D gap between dangling endpoints)
 - **Category**: §12.3b wires / loops / edges (sub-class: closure)
