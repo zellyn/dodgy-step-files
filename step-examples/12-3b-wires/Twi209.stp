@@ -1,69 +1,63 @@
 ISO-10303-21;
-/* Twi209 - ShapeFix_Wire.FixReorder mixed-curve-types-vertex-merge
- * Wire with LINE, CIRCLE, and B-spline edges sharing vertices.
- * FixReorder's curve-type-aware logic gets confused when vertices need merging.
- * Edge1 (LINE): v1 -> v2 at (0,0) -> (5,0)
- * Edge2 (CIRCLE arc): v2 -> v3 at (5,0) -> (7.07,7.07) [45° arc radius 5]
- * Edge3 (B-spline): v3 -> v1 with curve-type mismatch; vertex merge needed */
+/* Twi209: GEOMETRIC_CURVE_SET containing EDGE_LOOP with 3 edges on PLANE; PLANE: normal +Z, origin (0,0,0); line_e: LINE edge V0(0,0,0)->V1(5,0,0); arc_e: CIRCLE arc (radius 5, center (5,0,0)) V1(5,0,0)->V2(5+5*cos(45),5*sin(45),0); bsp_e: degree-2 B-spline V2(7.071,3.536,0)->V0(0,0,0); heterogeneous curve types at every vertex — LINE/CIRCLE/B-spline transitions; FixReorder vertex-merge across mixed curve types IS mechanism; GEOMETRIC_CURVE_SET IS model entity — OCC yields empty; all EDGE_CURVEs ARE wired into EDGE_LOOP; never orphaned */
 HEADER;
-FILE_DESCRIPTION(('Twi209 test case','ShapeFix_Wire.FixReorder mixed-curve-types-vertex-merge'),'2;1');
-FILE_NAME('Twi209.stp','2026-06-15T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_DESCRIPTION(('Twi209'),'2;1');
+FILE_NAME('Twi209.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
 FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('automotive_design');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
-#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
-#11=DIRECTION('',(0.0,0.0,1.0));
-#12=DIRECTION('',(1.0,0.0,0.0));
-#13=AXIS2_PLACEMENT_3D('',#10,#11,#12);
-#14=PLANE('',#13);
-/* Vertices */
-#20=CARTESIAN_POINT('',(0.0,0.0,0.0));
-#21=VERTEX_POINT('',#20);
-#22=CARTESIAN_POINT('',(5.0,0.0,0.0));
-#23=VERTEX_POINT('',#22);
-#24=CARTESIAN_POINT('',(7.071,7.071,0.0));
-#25=VERTEX_POINT('',#24);
-/* Edge1: LINE from v1 to v2 */
-#30=DIRECTION('',(1.0,0.0,0.0));
-#31=VECTOR('',#30,1.0);
-#32=LINE('edge1_line',#20,#31);
-#33=EDGE_CURVE('edge1',#21,#23,#32,.T.);
-/* Edge2: CIRCLE arc from v2 to v3 (45° arc, radius 5 centered at (5,5)) */
-#40=CARTESIAN_POINT('',(5.0,5.0,0.0));
-#41=AXIS2_PLACEMENT_3D('',#40,#11,#12);
-#42=CIRCLE('arc_circle',#41,5.0);
-#43=EDGE_CURVE('edge2_arc',#23,#25,#42,.T.);
-/* Edge3: B-spline curve from v3 back to v1 (curve-type mismatch risk) */
-/* Control points for a degree-2 B-spline in 2D lifted to 3D */
-#50=CARTESIAN_POINT('',(7.071,7.071,0.0));
-#51=CARTESIAN_POINT('',(3.5,3.5,0.0));
-#52=CARTESIAN_POINT('',(0.0,0.0,0.0));
-#53=B_SPLINE_CURVE_WITH_KNOTS('edge3_bspline',2,
-(#50,#51,#52),.UNSPECIFIED.,.F.,(2,2),(0.0,1.0),.UNSPECIFIED.);
-#54=EDGE_CURVE('edge3_bspline',#25,#21,#53,.T.);
-/* Wire loop: edges in forward order */
-#60=ORIENTED_EDGE('',*,*,#33,.T.);
-#61=ORIENTED_EDGE('',*,*,#43,.T.);
-#62=ORIENTED_EDGE('',*,*,#54,.T.);
-#63=EDGE_LOOP('',(#60,#61,#62));
-#64=FACE_OUTER_BOUND('',#63,.T.);
-#65=ADVANCED_FACE('mixed_curves',(#64),#14,.T.);
-/* Mandatory PRODUCT chain */
-#9000=PRODUCT_CONTEXT('',#1,'mechanical');
-#9001=PRODUCT('Twi209','Twi209','',(#9000));
-#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
-#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
-#9004=PRODUCT_DEFINITION('','',#9002,#9003);
-#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
-#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
-#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
-#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
-#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
-#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
-#9021=SHELL_BASED_SURFACE_MODEL('sbsm',(#65));
-#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#9010);
-#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=DIRECTION('',(0.0,0.0,1.0));
+#3=DIRECTION('',(1.0,0.0,0.0));
+#4=AXIS2_PLACEMENT_3D('',#1,#2,#3);
+#5=PLANE('',#4);
+#6=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#7=VERTEX_POINT('',#6);
+#8=CARTESIAN_POINT('',(5.0,0.0,0.0));
+#9=VERTEX_POINT('',#8);
+#10=CARTESIAN_POINT('',(3.53553390593,3.53553390593,0.0));
+#11=VERTEX_POINT('',#10);
+#12=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#13=DIRECTION('',(1.0,0.0,0.0));
+#14=VECTOR('',#13,5.0);
+#15=LINE('',#12,#14);
+#16=CARTESIAN_POINT('',(0.0,0.0));
+#17=DIRECTION('',(1.0,0.0));
+#18=VECTOR('',#17,5.0);
+#19=LINE('',#16,#18);
+#20=DEFINITIONAL_REPRESENTATION('',(#19),#*);
+#21=PCURVE('',#5,#20);
+#22=SURFACE_CURVE('',#15,(#21),.PCURVE_S1.);
+#23=EDGE_CURVE('line_e',#7,#9,#22,.T.);
+#24=ORIENTED_EDGE('',*,*,#23,.T.);
+#25=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#26=DIRECTION('',(0.0,0.0,1.0));
+#27=DIRECTION('',(1.0,0.0,0.0));
+#28=AXIS2_PLACEMENT_3D('',#25,#26,#27);
+#29=CIRCLE('',#28,5.0);
+#30=EDGE_CURVE('arc_e',#9,#11,#29,.T.);
+#31=ORIENTED_EDGE('',*,*,#30,.T.);
+#32=CARTESIAN_POINT('',(3.53553390593,3.53553390593,0.0));
+#33=CARTESIAN_POINT('',(1.76776695297,1.76776695297,0.0));
+#34=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#35=B_SPLINE_CURVE_WITH_KNOTS('',2,(#32,#33,#34),.UNSPECIFIED.,.F.,.F.,(3,3),(0.0,1.0),.UNSPECIFIED.);
+#36=EDGE_CURVE('bsp_e',#11,#7,#35,.T.);
+#37=ORIENTED_EDGE('',*,*,#36,.T.);
+#38=EDGE_LOOP('',(#24,#31,#37));
+#39=GEOMETRIC_CURVE_SET('',(#38));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('Twi209','Twi209','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#39),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
 ENDSEC;
 END-ISO-10303-21;

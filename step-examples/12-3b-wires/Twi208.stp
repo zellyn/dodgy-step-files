@@ -1,77 +1,78 @@
 ISO-10303-21;
-/* Twi208 - ShapeAnalysis_Wire.CheckSelfIntersection coincident-with-tangency
- * Wire with two edges that overlap geometrically and are also tangent at their
- * mutual contact point. Edge1 and Edge2 share the same LINE geometry but with
- * reversed orientations. They are tangent at a single point (t=0.5 on both).
- * CheckSelfIntersection's overlap detection chooses one verdict (tangent or
- * overlapping) but should report the ambiguity between these two conditions. */
+/* Twi208: GEOMETRIC_CURVE_SET containing EDGE_LOOP with 4 edges on PLANE; PLANE: normal +Z, origin (0,0,0); fwd_edge: EDGE_CURVE V0(0,0,0)->V1(5,0,0) referencing shared SURFACE_CURVE of bottom LINE, same_sense .T.; rev_edge: EDGE_CURVE V1(5,0,0)->V0(0,0,0) referencing SAME SURFACE_CURVE, same_sense .F. — retraces bottom line backward; geometric overlap with tangent contact at midpoint (2.5,0,0) IS defect; CheckSelfIntersection ambiguous overlap-vs-tangency verdict IS mechanism; right_e (V1->V2) and top_e (V2->V0) close the loop via two lines; GEOMETRIC_CURVE_SET IS model entity — OCC yields empty; all EDGE_CURVEs ARE wired into EDGE_LOOP; never orphaned */
 HEADER;
-FILE_DESCRIPTION(('Twi208 test case','ShapeAnalysis_Wire.CheckSelfIntersection coincident-with-tangency'),'2;1');
-FILE_NAME('Twi208.stp','2026-06-15T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_DESCRIPTION(('Twi208'),'2;1');
+FILE_NAME('Twi208.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
 FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('automotive_design');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
-#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
-#11=DIRECTION('',(0.0,0.0,1.0));
-#12=DIRECTION('',(1.0,0.0,0.0));
-#13=AXIS2_PLACEMENT_3D('',#10,#11,#12);
-#14=PLANE('',#13);
-/* Square wire with two edges that overlap */
-/* Vertices: v1=(0,0), v2=(10,0), v3=(10,10), v4=(0,10) */
-#20=CARTESIAN_POINT('',(0.0,0.0,0.0));
-#21=VERTEX_POINT('',#20);
-#22=CARTESIAN_POINT('',(10.0,0.0,0.0));
-#23=VERTEX_POINT('',#22);
-#24=CARTESIAN_POINT('',(10.0,10.0,0.0));
-#25=VERTEX_POINT('',#24);
-#26=CARTESIAN_POINT('',(0.0,10.0,0.0));
-#27=VERTEX_POINT('',#26);
-/* Bottom edge: v1 -> v2 (forward) */
-#30=DIRECTION('',(1.0,0.0,0.0));
-#31=VECTOR('',#30,1.0);
-#32=LINE('bottom_fwd',#20,#31);
-#33=EDGE_CURVE('bottom',#21,#23,#32,.T.);
-/* Right edge: v2 -> v3 (normal) */
-#40=DIRECTION('',(0.0,1.0,0.0));
-#41=VECTOR('',#40,1.0);
-#42=LINE('right',#22,#41);
-#43=EDGE_CURVE('right',#23,#25,#42,.T.);
-/* Top edge: v3 -> v4 (normal) */
-#50=DIRECTION('',(-1.0,0.0,0.0));
-#51=VECTOR('',#50,1.0);
-#52=LINE('top',#24,#51);
-#53=EDGE_CURVE('top',#25,#27,#52,.T.);
-/* Left-bottom retraced: v4 -> v2 (OVERLAPPING with bottom edge #32)
- * This edge uses the same LINE as the bottom edge but with reversed sense.
- * It goes from v4=(0,10) toward v2=(10,0), which retraces part of the path. */
-#60=DIRECTION('',(1.0,-1.0,0.0));
-#61=VECTOR('',#60,1.0);
-#62=LINE('left_retrace',#26,#61);
-#63=EDGE_CURVE('left_retrace',#27,#23,#62,.F.);
-/* Create the edge loop with tangent/overlapping edges */
-#70=ORIENTED_EDGE('',*,*,#33,.T.);
-#71=ORIENTED_EDGE('',*,*,#43,.T.);
-#72=ORIENTED_EDGE('',*,*,#53,.T.);
-#73=ORIENTED_EDGE('',*,*,#63,.T.);
-#74=EDGE_LOOP('',(#70,#71,#72,#73));
-#75=FACE_OUTER_BOUND('',#74,.T.);
-#76=ADVANCED_FACE('ambiguous_tangent',(#75),#14,.T.);
-/* Mandatory PRODUCT chain */
-#9000=PRODUCT_CONTEXT('',#1,'mechanical');
-#9001=PRODUCT('Twi208','Twi208','',(#9000));
-#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
-#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
-#9004=PRODUCT_DEFINITION('','',#9002,#9003);
-#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
-#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
-#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
-#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
-#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
-#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
-#9021=SHELL_BASED_SURFACE_MODEL('sbsm',(#76));
-#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#9010);
-#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=DIRECTION('',(0.0,0.0,1.0));
+#3=DIRECTION('',(1.0,0.0,0.0));
+#4=AXIS2_PLACEMENT_3D('',#1,#2,#3);
+#5=PLANE('',#4);
+#6=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#7=VERTEX_POINT('',#6);
+#8=CARTESIAN_POINT('',(5.0,0.0,0.0));
+#9=VERTEX_POINT('',#8);
+#10=CARTESIAN_POINT('',(5.0,5.0,0.0));
+#11=VERTEX_POINT('',#10);
+#12=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#13=DIRECTION('',(1.0,0.0,0.0));
+#14=VECTOR('',#13,5.0);
+#15=LINE('',#12,#14);
+#16=CARTESIAN_POINT('',(0.0,0.0));
+#17=DIRECTION('',(1.0,0.0));
+#18=VECTOR('',#17,5.0);
+#19=LINE('',#16,#18);
+#20=DEFINITIONAL_REPRESENTATION('',(#19),#*);
+#21=PCURVE('',#5,#20);
+#22=SURFACE_CURVE('',#15,(#21),.PCURVE_S1.);
+#23=EDGE_CURVE('fwd_edge',#7,#9,#22,.T.);
+#24=ORIENTED_EDGE('',*,*,#23,.T.);
+#25=EDGE_CURVE('rev_edge',#9,#7,#22,.F.);
+#26=ORIENTED_EDGE('',*,*,#25,.T.);
+#27=CARTESIAN_POINT('',(5.0,0.0,0.0));
+#28=DIRECTION('',(0.0,1.0,0.0));
+#29=VECTOR('',#28,5.0);
+#30=LINE('',#27,#29);
+#31=CARTESIAN_POINT('',(5.0,0.0));
+#32=DIRECTION('',(0.0,1.0));
+#33=VECTOR('',#32,5.0);
+#34=LINE('',#31,#33);
+#35=DEFINITIONAL_REPRESENTATION('',(#34),#*);
+#36=PCURVE('',#5,#35);
+#37=SURFACE_CURVE('',#30,(#36),.PCURVE_S1.);
+#38=EDGE_CURVE('right_e',#9,#11,#37,.T.);
+#39=ORIENTED_EDGE('',*,*,#38,.T.);
+#40=CARTESIAN_POINT('',(5.0,5.0,0.0));
+#41=DIRECTION('',(-0.707106781187,-0.707106781187,0.0));
+#42=VECTOR('',#41,7.07106781187);
+#43=LINE('',#40,#42);
+#44=CARTESIAN_POINT('',(5.0,5.0));
+#45=DIRECTION('',(-0.707106781187,-0.707106781187));
+#46=VECTOR('',#45,7.07106781187);
+#47=LINE('',#44,#46);
+#48=DEFINITIONAL_REPRESENTATION('',(#47),#*);
+#49=PCURVE('',#5,#48);
+#50=SURFACE_CURVE('',#43,(#49),.PCURVE_S1.);
+#51=EDGE_CURVE('top_e',#11,#7,#50,.T.);
+#52=ORIENTED_EDGE('',*,*,#51,.T.);
+#53=EDGE_LOOP('',(#24,#26,#39,#52));
+#54=GEOMETRIC_CURVE_SET('',(#53));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('Twi208','Twi208','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#54),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
 ENDSEC;
 END-ISO-10303-21;

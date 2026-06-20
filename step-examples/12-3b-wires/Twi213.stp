@@ -1,72 +1,76 @@
 ISO-10303-21;
-/* Twi213 — ShapeAnalysis_Wire.CheckGap3d using-pcurve-distance
- * Defect: Adjacent edges have valid 3D positional continuity but invalid pcurve
- * geometry (gap in parametric space); CheckGap3d defaults to 3D distance check
- * and misses the pcurve discontinuity entirely. */
+/* Twi213: GEOMETRIC_CURVE_SET containing EDGE_LOOP with 3 edges on PLANE; PLANE: normal +Z, origin (0,0,0); pcurve_gap_e0: LINE V0(0,0,0)->V1(5,0,0), pcurve LINE in UV from (0,0) direction (1,0) — pcurve ends at UV=(5,0); pcurve_gap_e1: LINE V1(5,0,0)->V2(10,0,0), pcurve LINE in UV STARTS at (7,0) instead of (5,0) — UV gap of 2 units IS the defect; both edges share 3D junction vertex V1=(5,0,0) — 3D continuity valid; CheckGap3d 3D-only check misses the UV pcurve gap IS the mechanism; close_e2: V2(10,0,0)->V0(0,0,0) closes the wire; GEOMETRIC_CURVE_SET IS model entity — OCC yields empty; all EDGE_CURVEs ARE wired into EDGE_LOOP; never orphaned */
 HEADER;
-FILE_DESCRIPTION(('Twi213 test case','CheckGap3d using-pcurve-distance'),'2;1');
-FILE_NAME('Twi213.stp','2026-06-15T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_DESCRIPTION(('Twi213'),'2;1');
+FILE_NAME('Twi213.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
 FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('automotive_design');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
-/* Surface: plane in XY */
-#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
-#11=DIRECTION('',(0.0,0.0,1.0));
-#12=DIRECTION('',(1.0,0.0,0.0));
-#13=AXIS2_PLACEMENT_3D('',#10,#11,#12);
-#14=PLANE('',#13);
-/* Edge 1: curve from (0,0) to (5,0) with pcurve (u,v)=(0,0) to (5,0) */
-#20=CARTESIAN_POINT('',(0.0,0.0,0.0));
-#21=VERTEX_POINT('',#20);
-#22=CARTESIAN_POINT('',(5.0,0.0,0.0));
-#23=VERTEX_POINT('',#22);
-#30=DIRECTION('',(1.0,0.0,0.0));
-#31=VECTOR('',#30,1.0);
-#32=LINE('',#20,#31);
-#40=TRIMMED_CURVE('',#32,.T.,#20,.T.,.T.,#22);
-#41=EDGE_CURVE('',#21,#23,#40,.T.);
-/* pcurve for Edge 1: u from 0 to 5 */
-#33=DIRECTION('',(1.0,0.0));
-#34=VECTOR('',#33,1.0);
-#35=LINE('',#10,#34);
-#36=TRIMMED_CURVE('',#35,.T.,#10,.T.,.T.,#22);
-/* Attach pcurve */
-#42=PCURVE('',#14,#36);
-/* Edge 2: curve from (5,0) to (10,0) with 3D continuity but pcurve gap
-   3D endpoint of Edge1 = (5,0) matches 3D startpoint of Edge2 = (5,0)
-   BUT: pcurve for Edge 2 goes from (7,0) to (10,0) - GAP IN PARAMETRIC SPACE! */
-#24=CARTESIAN_POINT('',(5.0,0.0,0.0));
-#25=VERTEX_POINT('',#24);
-#26=CARTESIAN_POINT('',(10.0,0.0,0.0));
-#27=VERTEX_POINT('',#26);
-#37=LINE('',#25,#31);
-#43=TRIMMED_CURVE('',#37,.T.,#25,.T.,.T.,#26);
-#44=EDGE_CURVE('',#25,#27,#43,.T.);
-/* pcurve for Edge 2: starts at (7,0) instead of (5,0) - discontinuity! */
-#38=CARTESIAN_POINT('',(7.0,0.0,0.0));
-#39=LINE('',#38,#33);
-#45=TRIMMED_CURVE('',#39,.T.,#38,.T.,.T.,#26);
-#46=PCURVE('',#14,#45);
-/* Wire: two edges with 3D continuity but parametric gap */
-#50=ORIENTED_EDGE('',*,*,#41,.T.);
-#51=ORIENTED_EDGE('',*,*,#44,.T.);
-#60=EDGE_LOOP('',(#50,#51));
-/* Mandatory product chain */
-#9000=PRODUCT_CONTEXT('',#1,'mechanical');
-#9001=PRODUCT('Twi213','Twi213','',(#9000));
-#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
-#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
-#9004=PRODUCT_DEFINITION('','',#9002,#9003);
-#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
-#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
-#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
-#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
-#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
-#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
-#9021=SHELL_BASED_SURFACE_MODEL('sbsm',(#60));
-#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#9010);
-#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=DIRECTION('',(0.0,0.0,1.0));
+#3=DIRECTION('',(1.0,0.0,0.0));
+#4=AXIS2_PLACEMENT_3D('',#1,#2,#3);
+#5=PLANE('',#4);
+#6=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#7=VERTEX_POINT('',#6);
+#8=CARTESIAN_POINT('',(5.0,0.0,0.0));
+#9=VERTEX_POINT('',#8);
+#10=CARTESIAN_POINT('',(10.0,0.0,0.0));
+#11=VERTEX_POINT('',#10);
+#12=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#13=DIRECTION('',(1.0,0.0,0.0));
+#14=VECTOR('',#13,5.0);
+#15=LINE('',#12,#14);
+#16=CARTESIAN_POINT('',(0.0,0.0));
+#17=DIRECTION('',(1.0,0.0));
+#18=VECTOR('',#17,5.0);
+#19=LINE('',#16,#18);
+#20=DEFINITIONAL_REPRESENTATION('',(#19),#*);
+#21=PCURVE('',#5,#20);
+#22=SURFACE_CURVE('',#15,(#21),.PCURVE_S1.);
+#23=EDGE_CURVE('pcurve_gap_e0',#7,#9,#22,.T.);
+#24=ORIENTED_EDGE('',*,*,#23,.T.);
+#25=CARTESIAN_POINT('',(5.0,0.0,0.0));
+#26=DIRECTION('',(1.0,0.0,0.0));
+#27=VECTOR('',#26,5.0);
+#28=LINE('',#25,#27);
+#29=CARTESIAN_POINT('',(7.0,0.0));
+#30=DIRECTION('',(1.0,0.0));
+#31=VECTOR('',#30,5.0);
+#32=LINE('',#29,#31);
+#33=DEFINITIONAL_REPRESENTATION('',(#32),#*);
+#34=PCURVE('',#5,#33);
+#35=SURFACE_CURVE('',#28,(#34),.PCURVE_S1.);
+#36=EDGE_CURVE('pcurve_gap_e1',#9,#11,#35,.T.);
+#37=ORIENTED_EDGE('',*,*,#36,.T.);
+#38=CARTESIAN_POINT('',(10.0,0.0,0.0));
+#39=DIRECTION('',(-1.0,0.0,0.0));
+#40=VECTOR('',#39,10.0);
+#41=LINE('',#38,#40);
+#42=CARTESIAN_POINT('',(10.0,0.0));
+#43=DIRECTION('',(-1.0,0.0));
+#44=VECTOR('',#43,10.0);
+#45=LINE('',#42,#44);
+#46=DEFINITIONAL_REPRESENTATION('',(#45),#*);
+#47=PCURVE('',#5,#46);
+#48=SURFACE_CURVE('',#41,(#47),.PCURVE_S1.);
+#49=EDGE_CURVE('close_e2',#11,#7,#48,.T.);
+#50=ORIENTED_EDGE('',*,*,#49,.T.);
+#51=EDGE_LOOP('',(#24,#37,#50));
+#52=GEOMETRIC_CURVE_SET('',(#51));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('Twi213','Twi213','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#52),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
 ENDSEC;
 END-ISO-10303-21;
