@@ -21110,7 +21110,7 @@
     "cross_oracle_note": null,
     "description": "A `B_SPLINE_SURFACE_WITH_KNOTS` V knot vector violates the non-decreasing invariant by containing a strictly descending pair (e.g. `(0.0, 0.6, 0.4, 1.0)`; 0.6 then 0.4). A compliant reader must reject the surface with a diagnostic naming the offending index.",
     "expected_kernel_behavior": "reject the surface with a diagnostic naming the offending index; never silently accept.",
-    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2b-nurbs/Gn036.stp",
     "id": "Gn036",
