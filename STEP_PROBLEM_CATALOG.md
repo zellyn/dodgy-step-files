@@ -21526,7 +21526,7 @@ Bi-quadratic B-spline surface (3×3 control points, degree 2×2). When split val
 **Trigger:** ShapeAnalysis_Curve::IsPlanar() on OFFSET_CURVE_3D with constant offset direction.
 
 - **Tier-3 assertion**: shape_null == True
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=accept(0)`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=accept(0)`
 ### Gn067 — ShapeUpgrade_SplitSurface degree mismatch
 
 **Defect:** B-spline surface with u_degree=2, v_degree=4. SplitSurface assumes equal degrees and reuses u_degree for v-split logic, causing knot vector misalignment.
@@ -21541,7 +21541,7 @@ Bi-quadratic B-spline surface (3×3 control points, degree 2×2). When split val
 
 **Trigger:** ShapeAnalysis_Curve::FillBndBox() on trimmed high-aspect-ratio ellipse arcs.
 - **Tier-3 assertion**: shape_null == True
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=accept(0)`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=accept(0)`
 ### Gn069 — ShapeAnalysis_Curve.GetSamplePoints BSpline knot-aware sampling
 
 **Falsifiable claim:** A B-spline curve with interior knots closely spaced at (0.5, 0.51, 0.52) over-densifies the sample point set, producing hundreds of samples in the 0.01-width region instead of proportional adaptive sampling across the full domain.
@@ -21559,7 +21559,7 @@ Bi-quadratic B-spline surface (3×3 control points, degree 2×2). When split val
 
 **Defect axis:** `input-shape`
 - **Tier-3 assertion**: shape_null == True
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 ### Gn071 — ShapeAnalysis_Curve.IsClosed BezierCurve check
 
 **Falsifiable claim:** A BEZIER_CURVE entity with matching first and last poles (closure property) is evaluated using B-spline closure semantics, returning false despite satisfying Bezier-specific closure.
