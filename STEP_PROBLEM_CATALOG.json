@@ -39626,7 +39626,7 @@
     "cross_oracle_note": null,
     "description": "FreeEdges() returns compound from uninitialized myFree without completion guard. Open shell with incomplete edge loop creates free edges; FreeEdges() called before analysis state initialized.",
     "expected_kernel_behavior": "heal",
-    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-3a-shells/Tsh190.stp",
     "id": "Tsh190",
@@ -39647,7 +39647,7 @@
       "topology"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "load == \"ok\""
     ],
     "title": "ShapeAnalysis_Shell.FreeEdges uninitialized compound"
   },

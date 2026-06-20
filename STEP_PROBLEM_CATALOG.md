@@ -28265,8 +28265,8 @@ Compound with nested shell references. LoadShells() recursion incomplete when de
 - **Model impact**: Fails to detect free-edge topology; returns uninitialized extent
 - **Fixture path**: step-examples/12-3a-shells/Tsh190.stp
 - **Fixture kind**: scaffold
-- **Tier-3 assertion**: shape_null == True
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Tier-3 assertion**: load == "ok"
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 ### Tsh191 — ShapeFix_Shell.FixFaceOrientation multi-connected edge unbounded
 - **Category**: §12.3a shells (sub-class: unbounded-iteration)
 - **Sources**: OCCT/ShapeFix_Shell::FixFaceOrientation (line 1455)

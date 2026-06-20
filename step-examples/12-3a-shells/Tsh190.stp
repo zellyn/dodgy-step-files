@@ -1,76 +1,56 @@
 ISO-10303-21;
-/* Tsh190 - ShapeAnalysis_Shell.FreeEdges uninitialized compound
- * Defect: FreeEdges() called without prior shell analysis completion;
- * myFree compound uninitialized. */
+/* Tsh190: OPEN_SHELL with INCOMPLETE EDGE LOOP IS the FreeEdges uninitialized-compound defect trigger; unit square face has only THREE oriented edges in loop — IS the incomplete loop; v00, v10, v11 form the wired boundary; edge e_top from v11 to v01 IS omitted — IS the free edge; the open left edge from v01 back to v00 IS also implicitly free — IS the second free boundary; FreeEdges() IS the defect path: returns myFree before Perform() populates it; Extent() on uninitialized myFree compound yields undefined result — IS the defect; fix: FreeEdges() must guard against pre-Perform call with completion flag; emit E_FREE_EDGES_UNINITIALIZED when FreeEdges() called before analysis completion */
 HEADER;
-FILE_DESCRIPTION(('Tsh190 - ShapeAnalysis_Shell FreeEdges lazy-init'',''2;1'',''2;1'),'2;1');
-FILE_NAME('Tsh190.stp','2026-06-16T00:00:00',(''),(''),'wave-55b','','');
-FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+FILE_DESCRIPTION(('Tsh190'),'2;1');
+FILE_NAME('Tsh190.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('automotive_design');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
-
-/* Four vertices for open shell (missing closing edge) */
-#100=CARTESIAN_POINT('',(0.0,0.0,0.0));
-#101=CARTESIAN_POINT('',(1.0,0.0,0.0));
-#102=CARTESIAN_POINT('',(1.0,1.0,0.0));
-#103=CARTESIAN_POINT('',(0.0,1.0,0.0));
-#110=VERTEX_POINT('',#100);
-#111=VERTEX_POINT('',#101);
-#112=VERTEX_POINT('',#102);
-#113=VERTEX_POINT('',#103);
-
-/* Three edges only (missing fourth edge closes loop) */
-#200=DIRECTION('',(1.0,0.0,0.0));
-#201=VECTOR('',#200,1.0);
-#210=LINE('',#100,#201);
-#211=EDGE_CURVE('',#110,#111,#210,.T.);
-
-#212=DIRECTION('',(0.0,1.0,0.0));
-#213=VECTOR('',#212,1.0);
-#214=LINE('',#101,#213);
-#215=EDGE_CURVE('',#111,#112,#214,.T.);
-
-#216=DIRECTION('',(-1.0,0.0,0.0));
-#217=VECTOR('',#216,1.0);
-#218=LINE('',#102,#217);
-#219=EDGE_CURVE('',#112,#103,#218,.T.);
-
-/* Missing fourth edge: 103->100 */
-
-/* Plane z=0 */
-#300=DIRECTION('',(0.0,0.0,1.0));
-#301=DIRECTION('',(1.0,0.0,0.0));
-#310=CARTESIAN_POINT('',(0.5,0.5,0.0));
-#311=AXIS2_PLACEMENT_3D('',#310,#300,#301);
-#312=PLANE('',#311);
-
-/* Open face loop (missing closing edge creates free edge) */
-#400=ORIENTED_EDGE('',*,*,#211,.T.);
-#401=ORIENTED_EDGE('',*,*,#215,.T.);
-#402=ORIENTED_EDGE('',*,*,#219,.T.);
-#410=EDGE_LOOP('',(#400,#401,#402));
-#420=FACE_OUTER_BOUND('',#410,.T.);
-#430=ADVANCED_FACE('',(#420),#312,.T.);
-
-/* Open shell */
-#500=OPEN_SHELL('open_shell',(#430));
-
-/* PRODUCT chain */
-#9000=PRODUCT_CONTEXT('',#1,'mechanical');
-#9001=PRODUCT('Tsh190','Tsh190','',(#9000));
-#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
-#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
-#9004=PRODUCT_DEFINITION('','',#9002,#9003);
-#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
-#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
-#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
-#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
-#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
-#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
-#9021=SHELL_BASED_SURFACE_MODEL('sbsm',(#500));
-#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#9010);
-#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=VERTEX_POINT('',#1);
+#3=CARTESIAN_POINT('',(1.0,0.0,0.0));
+#4=VERTEX_POINT('',#3);
+#5=CARTESIAN_POINT('',(1.0,1.0,0.0));
+#6=VERTEX_POINT('',#5);
+#7=CARTESIAN_POINT('',(0.0,1.0,0.0));
+#8=VERTEX_POINT('',#7);
+#9=DIRECTION('',(1.0,0.0,0.0));
+#10=VECTOR('',#9,1.0);
+#11=LINE('',#1,#10);
+#12=EDGE_CURVE('',#2,#4,#11,.T.);
+#13=DIRECTION('',(0.0,1.0,0.0));
+#14=VECTOR('',#13,1.0);
+#15=LINE('',#3,#14);
+#16=EDGE_CURVE('',#4,#6,#15,.T.);
+#17=DIRECTION('',(-1.0,0.0,0.0));
+#18=VECTOR('',#17,1.0);
+#19=LINE('',#5,#18);
+#20=EDGE_CURVE('',#6,#8,#19,.T.);
+#21=ORIENTED_EDGE('',$,$,#12,.T.);
+#22=ORIENTED_EDGE('',$,$,#16,.T.);
+#23=ORIENTED_EDGE('',$,$,#20,.T.);
+#24=EDGE_LOOP('',(#21,#22,#23));
+#25=DIRECTION('',(0.0,0.0,1.0));
+#26=DIRECTION('',(1.0,0.0,0.0));
+#27=AXIS2_PLACEMENT_3D('',#1,#25,#26);
+#28=PLANE('',#27);
+#29=FACE_OUTER_BOUND('',#24,.T.);
+#30=ADVANCED_FACE('',(#29),#28,.T.);
+#31=OPEN_SHELL('',(#30));
+#32=SHELL_BASED_SURFACE_MODEL('',(#31));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('Tsh190','Tsh190','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#32),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
 ENDSEC;
 END-ISO-10303-21;
