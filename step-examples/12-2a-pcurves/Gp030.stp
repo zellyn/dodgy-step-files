@@ -1,47 +1,87 @@
 ISO-10303-21;
-/* Gp030 - FixIE bend pcurves protective handling (PRO/E IGES)
- * Defect: PRO/E-style file in which a face has a pcurve with a sharp
- * deliberate bend (corner vertex). Generic FixIntersectingEdges would
- * try to "smooth" the bend, corrupting the geometry. The exporter is
- * marked PRO/E in the FILE_NAME originating system. */
+/* Gp030: PRO/E STEP: seam edge pcurve is degree-1 B_SPLINE_CURVE_WITH_KNOTS in .POLYLINE_FORM. with 3 control points forming an L-bend in UV; interior knot multiplicity=2=degree makes it C-1 (true breakpoint); generic ShapeFix_Wire intersection-fix would corrupt this vendor pcurve */
 HEADER;
-FILE_DESCRIPTION(('Gp030 test case','FixIE bend pcurves PRO/E IGES'),'2;1');
-FILE_NAME('Gp030.stp','2026-04-27T00:00:00',(''),(''),'auto-generated','PRO/Engineer 2001','');
-FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+FILE_DESCRIPTION(('Gp030'),'2;1');
+FILE_NAME('Gp030.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','Pro/ENGINEER','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('automotive_design');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
-#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=DIRECTION('',(0.0,0.0,1.0));
+#3=DIRECTION('',(1.0,0.0,0.0));
+#4=AXIS2_PLACEMENT_3D('',#1,#2,#3);
+#5=CYLINDRICAL_SURFACE('',#4,1.0);
+#6=(GEOMETRIC_REPRESENTATION_CONTEXT(2)PARAMETRIC_REPRESENTATION_CONTEXT()REPRESENTATION_CONTEXT('UV','2D'));
+#7=CARTESIAN_POINT('',(1.0,0.0,0.0));
+#8=CARTESIAN_POINT('',(1.0,0.0,1.0));
+#9=VERTEX_POINT('',#7);
+#10=VERTEX_POINT('',#8);
 #11=DIRECTION('',(0.0,0.0,1.0));
-#12=DIRECTION('',(1.0,0.0,0.0));
-#13=AXIS2_PLACEMENT_3D('',#10,#11,#12);
-#20=PLANE('',#13);
-/* 3D curve: 2-piece polyline forming an L shape (the bend in 3D) */
-#30=CARTESIAN_POINT('',(0.0,0.0,0.0));
-#31=CARTESIAN_POINT('',(1.0,0.0,0.0));
-#32=CARTESIAN_POINT('',(1.0,1.0,0.0));
-#33=B_SPLINE_CURVE_WITH_KNOTS('',1,(#30,#31,#32),.POLYLINE_FORM.,.F.,.F.,
-  (2,1,2),(0.0,0.5,1.0),.UNSPECIFIED.);
-#40=VERTEX_POINT('',#30);
-#42=VERTEX_POINT('',#32);
-/* Defect: pcurve has a sharp bend at parameter t=0.5
- * Knot multiplicity 1 at the interior preserves only C0 continuity. */
-#71=CARTESIAN_POINT('',(0.0,0.0));
-#72=CARTESIAN_POINT('',(1.0,0.0));
-#73=CARTESIAN_POINT('',(1.0,1.0));
-#74=B_SPLINE_CURVE_WITH_KNOTS('',1,(#71,#72,#73),.POLYLINE_FORM.,.F.,.F.,
-  (2,1,2),(0.0,0.5,1.0),.UNSPECIFIED.);
-#75=( GEOMETRIC_REPRESENTATION_CONTEXT(2)
-      PARAMETRIC_REPRESENTATION_CONTEXT()
-      REPRESENTATION_CONTEXT('parametric','2D') );
-#76=DEFINITIONAL_REPRESENTATION('',(#74),#75);
-#77=PCURVE('',#20,#76);
-#50=SURFACE_CURVE('',#33,(#77),.PCURVE_S1.);
-#60=EDGE_CURVE('',#40,#42,#50,.T.);
-#61=ORIENTED_EDGE('',*,*,#60,.T.);
-#62=EDGE_LOOP('',(#61));
-#63=FACE_OUTER_BOUND('',#62,.T.);
-#64=ADVANCED_FACE('',(#63),#20,.T.);
+#12=VECTOR('',#11,1.0);
+#13=LINE('',#7,#12);
+#14=CARTESIAN_POINT('',(0.0,0.0));
+#15=CARTESIAN_POINT('',(0.3,0.5));
+#16=CARTESIAN_POINT('',(0.0,1.0));
+#17=B_SPLINE_CURVE_WITH_KNOTS('proe_polyline',1,(#14,#15,#16),.POLYLINE_FORM.,.F.,.F.,(2,2,2),(0.0,0.5,1.0),.UNSPECIFIED.);
+#18=DEFINITIONAL_REPRESENTATION('pc_left_bend',(#17),#6);
+#19=PCURVE('proe_bent_pcurve',#5,#18);
+#20=SURFACE_CURVE('left_seam',#13,(#19),.PCURVE_S1.);
+#21=EDGE_CURVE('left_seam',#9,#10,#20,.T.);
+#22=LINE('',#7,#12);
+#23=CARTESIAN_POINT('',(6.28318530718,0.0));
+#24=DIRECTION('',(0.0,1.0));
+#25=VECTOR('',#24,1.0);
+#26=LINE('',#23,#25);
+#27=DEFINITIONAL_REPRESENTATION('pc_right',(#26),#6);
+#28=PCURVE('right_seam',#5,#27);
+#29=SURFACE_CURVE('right_seam',#22,(#28),.PCURVE_S1.);
+#30=EDGE_CURVE('right_seam',#9,#10,#29,.T.);
+#31=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#32=DIRECTION('',(0.0,0.0,1.0));
+#33=DIRECTION('',(1.0,0.0,0.0));
+#34=AXIS2_PLACEMENT_3D('',#31,#32,#33);
+#35=CIRCLE('',#34,1.0);
+#36=CARTESIAN_POINT('',(0.0,0.0));
+#37=DIRECTION('',(1.0,0.0));
+#38=VECTOR('',#37,6.28318530718);
+#39=LINE('',#36,#38);
+#40=DEFINITIONAL_REPRESENTATION('pc_bot',(#39),#6);
+#41=PCURVE('bot_arc',#5,#40);
+#42=SURFACE_CURVE('bot_arc',#35,(#41),.PCURVE_S1.);
+#43=EDGE_CURVE('bot_arc',#9,#9,#42,.T.);
+#44=CARTESIAN_POINT('',(0.0,0.0,1.0));
+#45=AXIS2_PLACEMENT_3D('',#44,#32,#33);
+#46=CIRCLE('',#45,1.0);
+#47=CARTESIAN_POINT('',(0.0,1.0));
+#48=DIRECTION('',(1.0,0.0));
+#49=VECTOR('',#48,6.28318530718);
+#50=LINE('',#47,#49);
+#51=DEFINITIONAL_REPRESENTATION('pc_top',(#50),#6);
+#52=PCURVE('top_arc',#5,#51);
+#53=SURFACE_CURVE('top_arc',#46,(#52),.PCURVE_S1.);
+#54=EDGE_CURVE('top_arc',#10,#10,#53,.T.);
+#55=ORIENTED_EDGE('',$,$,#43,.T.);
+#56=ORIENTED_EDGE('',$,$,#30,.T.);
+#57=ORIENTED_EDGE('',$,$,#54,.F.);
+#58=ORIENTED_EDGE('',$,$,#21,.F.);
+#59=EDGE_LOOP('',(#55,#56,#57,#58));
+#60=FACE_OUTER_BOUND('',#59,.T.);
+#61=ADVANCED_FACE('',(#60),#5,.T.);
+#62=OPEN_SHELL('',(#61));
+#63=SHELL_BASED_SURFACE_MODEL('',(#62));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('Gp030','Gp030','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#63),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
 ENDSEC;
 END-ISO-10303-21;

@@ -1722,7 +1722,7 @@ _Section summary: 82 entries._
 - **Expected kernel behavior**: a period-shift pass must produce a self-consistent UV band for all wire endpoints, or refuse the shift when no consistent band exists. A post-condition check on the band coverage catches the inconsistency.
 - **Notes**: **See also**: Gs019. **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers must reject this fixture per the catalog's stated invariant. Synonyms: "period-shift fix leaves wire across multiple bands", "wire endpoints in inconsistent UV bands after period adjust", "triangulation blocked by mixed-band pcurves", "revolved face period shift fails to converge", "pcurve endpoints scattered across periods after healing".
 - **Model impact**: The pcurve attribute on the affected EDGE_CURVE/SEAM_CURVE is missing, NULL, or inconsistent with its 3D companion; downstream meshing and boolean operations either rebuild it from the 3D edge (introducing tolerance error) or dereference a null handle and abort.
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(7) ifc=schema_n/a`
 - **Tier-3 assertion**: shape_null == True
 
 ### Gp030 — Bent / polyline-form `B_SPLINE` pcurve from PRO/E IGES requires protective handling
@@ -1738,7 +1738,7 @@ _Section summary: 82 entries._
 - **Byte assertion**: count_entity_def(b'PCURVE') >= 1
 - **Tier-3 assertion**: shape_null == True
 - **Model impact**: The pcurve attribute on the affected EDGE_CURVE/SEAM_CURVE is missing, NULL, or inconsistent with its 3D companion; downstream meshing and boolean operations either rebuild it from the 3D edge (introducing tolerance error) or dereference a null handle and abort.
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(7) ifc=schema_n/a`
 
 ### Gp031 — Cylinder represented twice as duplicate `CYLINDRICAL_SURFACE` instances loses analytic identity
 - **Category**: §12.2a pcurve
@@ -1748,7 +1748,7 @@ _Section summary: 82 entries._
 - **Expected kernel behavior**: heal; canonicalize duplicate analytic surfaces post-IGES; re-bind pcurves to the canonical surface.
 - **Notes**: **See also**: Gn023, Gp016. **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: catalog asks for healing; OCC neither heals nor rejects; the input is dropped on the floor without diagnostic. Synonyms: "duplicate CYLINDRICAL_SURFACE instances after IGES BRep round-trip", "cylinder analytic identity lost", "two copies of same cylindrical surface", "duplicate analytic surfaces after IGES round-trip", "pcurves on supposedly-same cylinder disagree".
 - **Model impact**: The pcurve attribute on the affected EDGE_CURVE/SEAM_CURVE is missing, NULL, or inconsistent with its 3D companion; downstream meshing and boolean operations either rebuild it from the 3D edge (introducing tolerance error) or dereference a null handle and abort.
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(12) ifc=schema_n/a`
 - **Tier-3 assertion**: shape_null == True
 
 ### Gn001 — `B_SPLINE_SURFACE_WITH_KNOTS` U knots duplicated without justifying multiplicity
@@ -21204,7 +21204,7 @@ they capture invariants shared by a family of healing methods. Filed under
 - **Byte assertion**: contains(b'EDGE_CURVE')
 - **Tier-3 assertion**: shape_null == True
 - **Model impact**: The pcurve attribute on the affected EDGE_CURVE/SEAM_CURVE is missing, NULL, or inconsistent with its 3D companion; downstream meshing and boolean operations either rebuild it from the 3D edge (introducing tolerance error) or dereference a null handle and abort.
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
 
 ### Gp035 — Edge has 3D curve but no pcurve, requiring projection onto host surface
 - **Category**: §12.2a pcurves/curves (sub-class: missing pcurve)
