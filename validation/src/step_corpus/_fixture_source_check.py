@@ -44,6 +44,23 @@ def _regenerate(src_path: Path) -> tuple[str, str | None]:
         return "", f"render error: {type(e).__name__}: {e}"
 
 
+def _print_first_diff_lines(current: str, rendered: str, out_path: Path, n: int = 5) -> None:
+    """Print up to n line-level mismatches for diagnosing CI-only drift."""
+    cur_lines = current.splitlines()
+    new_lines = rendered.splitlines()
+    shown = 0
+    for i, (a, b) in enumerate(zip(cur_lines, new_lines), 1):
+        if a != b:
+            print(f"  line {i}: on-disk  : {a[:160]}")
+            print(f"          regen    : {b[:160]}")
+            shown += 1
+            if shown >= n:
+                break
+    if shown == 0 and len(cur_lines) != len(new_lines):
+        print(f"  length differs: on-disk={len(cur_lines)} lines, regen={len(new_lines)} lines")
+    print(f"  byte-length: on-disk={len(current)} regen={len(rendered)}")
+
+
 def _expected_stp_path(src_path: Path) -> Path | None:
     """Map ``fixture_sources/<section>/<ID>.py`` to
     ``step-examples/<section>/<ID>.stp``.
@@ -110,6 +127,7 @@ def main(argv: list[str] | None = None) -> int:
             mismatched.append(out_path)
             if not args.quiet:
                 print(f"DRIFT   {out_path.relative_to(RESEARCH_ROOT)}")
+                _print_first_diff_lines(current, rendered, out_path)
             continue
         ok += 1
 
