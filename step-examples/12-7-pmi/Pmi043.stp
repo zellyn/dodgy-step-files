@@ -1,58 +1,38 @@
 ISO-10303-21;
-/* Pmi043 - Lower-case relation names where RP requires lower-case keywords
-   Defect: GEOMETRIC_TOLERANCE_RELATIONSHIP.name uses 'Composite' with a
-   capital C. The CAx-IF Recommended Practice requires lower-case keywords
-   such as 'composite', 'all around', and 'between' (see PMI v4.1 §10.1.1.2).
-   Case-sensitive readers will fail to recognize the composite frame and
-   treat the two tolerances as independent. NIST SFA S070 is the canonical
-   pointer. */
+/* Pmi043: GEOMETRIC_TOLERANCE_RELATIONSHIP name values use wrong capitalisation: 'Composite' and 'All Around' instead of the AP242 RP-required lowercase 'composite' and 'all around'; receivers must case-insensitive-normalize on read and warn on case mismatch; silently accepting mixed-case is forbidden; GEOMETRIC_CURVE_SET IS model entity — OCC yields empty */
 HEADER;
-FILE_DESCRIPTION(('Pmi043 - capitalized composite keyword',
-  'CAx-IF Rec.Pracs.---PMI Rep & Pres---v4.1'),'2;1');
-FILE_NAME('Pmi043.stp','2026-04-26T00:00:00',('catalog'),('cad'),
-  'manual','','');
-FILE_SCHEMA(('AP242_MANAGED_MODEL_BASED_3D_ENGINEERING_MIM_LF { 1 0 10303 442 1 1 4 }'));
+FILE_DESCRIPTION(('Pmi043'),'2;1');
+FILE_NAME('Pmi043.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#10 = APPLICATION_CONTEXT('managed model based 3d engineering');
-#11 = APPLICATION_PROTOCOL_DEFINITION('international standard',
-  'ap242_managed_model_based_3d_engineering',2020,#10);
-#12 = PRODUCT_CONTEXT('',#10,'mechanical');
-#13 = PRODUCT('Pmi043','BadCaseCompositePart','',(#12));
-#14 = PRODUCT_DEFINITION_FORMATION('','',#13);
-#15 = PRODUCT_DEFINITION_CONTEXT('',#10,'design');
-#16 = PRODUCT_DEFINITION('','',#14,#15);
-#17 = PRODUCT_DEFINITION_SHAPE('','',#16);
-#20 = ( LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT(.MILLI.,.METRE.) );
-#22 = ( NAMED_UNIT(*) PLANE_ANGLE_UNIT() SI_UNIT($,.RADIAN.) );
-#23 = ( NAMED_UNIT(*) SI_UNIT($,.STERADIAN.) SOLID_ANGLE_UNIT() );
-#24 = UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#20,
-  'distance_accuracy_value','');
-#25 = ( GEOMETRIC_REPRESENTATION_CONTEXT(3)
-  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#24))
-  GLOBAL_UNIT_ASSIGNED_CONTEXT((#20,#22,#23))
-  REPRESENTATION_CONTEXT('','3D') );
-#30 = CARTESIAN_POINT('',(0.0,0.0,0.0));
-#31 = DIRECTION('',(0.0,0.0,1.0));
-#32 = DIRECTION('',(1.0,0.0,0.0));
-#33 = AXIS2_PLACEMENT_3D('',#30,#31,#32);
-#40 = DATUM('A','primary',#17,.T.,'A');
-#41 = DATUM_REFERENCE_ELEMENT('',$,#40);
-#42 = DATUM_REFERENCE_COMPARTMENT('',$,#41);
-#43 = DATUM_SYSTEM('A','',#17,.T.,(#42));
-#50 = SHAPE_ASPECT('face','toleranced face',#17,.T.);
-#60 = LENGTH_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.5),#20);
-#61 = POSITION_TOLERANCE('upper',$,#60,#50,#43);
-#62 = LENGTH_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.1),#20);
-#63 = POSITION_TOLERANCE('lower',$,#62,#50,#43);
-/* Defect: 'Composite' with capital C; RP requires 'composite' */
-#70 = GEOMETRIC_TOLERANCE_RELATIONSHIP('Composite','',#61,#63);
-/* For comparison the 'all around' modifier is sometimes 'All Around' */
-#71 = GEOMETRIC_TOLERANCE_RELATIONSHIP('All Around','',#61,#63);
-#80 = DRAUGHTING_MODEL('Default',(),#25);
-#81 = PLANE('ann_plane',#33);
-#82 = ANNOTATION_PLANE('PMI',(),#81,(#61,#63));
-#90 = SHAPE_REPRESENTATION('',(#33),#25);
-#91 = SHAPE_DEFINITION_REPRESENTATION(#17,#90);
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=GEOMETRIC_CURVE_SET('',(#1));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('Pmi043','Pmi043','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#2),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
+#9063=SHAPE_ASPECT('datum_feature_A','',#9055,.T.);
+#9064=DATUM('A','',#9063,.T.);
+#9065=DATUM_REFERENCE_ELEMENT(#9064,$,$,$,$);
+#9066=DATUM_REFERENCE_COMPARTMENT('primary',(#9065));
+#9067=DATUM_SYSTEM('DRF',(#9066));
+#9068=SHAPE_ASPECT('surface_A','',#9055,.T.);
+#9069=SHAPE_ASPECT('surface_B','',#9055,.T.);
+#9070=MEASURE_REPRESENTATION_ITEM('tol',LENGTH_MEASURE(0.05),#9056);
+#9071=POSITION_TOLERANCE(#9068,#9070,#9067,$);
+#9072=POSITION_TOLERANCE(#9069,#9070,#9067,$);
+#9073=GEOMETRIC_TOLERANCE_RELATIONSHIP('Composite','',#9071,#9072);
+#9074=GEOMETRIC_TOLERANCE_RELATIONSHIP('All Around','',#9071,#9072);
 ENDSEC;
 END-ISO-10303-21;
