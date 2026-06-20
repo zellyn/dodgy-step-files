@@ -28126,8 +28126,8 @@ Compound with nested shell references. LoadShells() recursion incomplete when de
 **Trigger**: Two separate faces sharing exactly one vertex with no edge adjacency. Edge-based analysis skips non-edge topological contacts, allowing misorientation to pass validation.
 
 **Input**: Shell with two square faces meeting at diagonal corner (1,1). First face: [0,1]x[0,1]; second: [1,2]x[1,2]. Both on same plane, sharing only vertex point.
-- **Tier-3 assertion**: shape_null == True
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Tier-3 assertion**: load == "ok"
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 ### Tsh176 — ShapeUpgrade_ShellSewing.Apply with-coincident-but-different-orientation
 
 **Defect**: Two shells with coincident faces in opposite orientations; Apply doesn't detect orientation conflict and produces overlapping output.
@@ -28135,8 +28135,8 @@ Compound with nested shell references. LoadShells() recursion incomplete when de
 **Trigger**: Identical geometry (same vertices, edges, surface) with opposite face orientations (+Z vs. -Z). Sewing algorithm merges without orientation conflict detection.
 
 **Input**: Compound with two open shells. Shell 1: square [0,1]x[0,1] on plane Z=0 with normal +Z. Shell 2: identical square with normal -Z (all edges reversed). No shared edge loop between them.
-- **Tier-3 assertion**: shape_null == True
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Tier-3 assertion**: load == "ok"
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 ### Tsh177 — ShapeFix_Shell.Perform infinite-loop-detection
 
 **Defect**: Shell whose fix repeatedly invalidates a previous fix; Perform should detect loop but uses simple counter that fires too late.
